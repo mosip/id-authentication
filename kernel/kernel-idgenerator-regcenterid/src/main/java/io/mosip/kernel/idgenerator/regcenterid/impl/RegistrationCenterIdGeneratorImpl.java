@@ -3,8 +3,6 @@ package io.mosip.kernel.idgenerator.regcenterid.impl;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 
-import javax.transaction.Transactional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -25,7 +23,6 @@ import io.mosip.kernel.idgenerator.regcenterid.repository.RegistrationCenterIdRe
  *
  */
 @Component
-@Transactional
 public class RegistrationCenterIdGeneratorImpl implements RegistrationCenterIdGenerator<String> {
 
 	/**
@@ -72,16 +69,20 @@ public class RegistrationCenterIdGeneratorImpl implements RegistrationCenterIdGe
 				registrationCenterId.setCreatedDateTime(LocalDateTime.now(ZoneId.of("UTC")));
 				registrationCenterId.setUpdatedBy("default@user");
 				registrationCenterId.setUpdatedDateTime(null);
+				registrationCenterIdRepository.save(registrationCenterId);
 
 			} else {
-
 				generatedRCID = registrationCenterId.getRcid() + 1;
-				registrationCenterId.setRcid(generatedRCID);
-				registrationCenterId.setCreatedDateTime(LocalDateTime.now(ZoneId.of("UTC")));
-				registrationCenterId.setUpdatedDateTime(LocalDateTime.now(ZoneId.of("UTC")));
+				RegistrationCenterId entity = new RegistrationCenterId();
+				entity.setRcid(generatedRCID);
+				entity.setCreatedDateTime(LocalDateTime.now(ZoneId.of("UTC")));
+				entity.setUpdatedDateTime(LocalDateTime.now(ZoneId.of("UTC")));
+				entity.setUpdatedBy("default@user");
+				entity.setCreatedBy("default@user");
+				registrationCenterIdRepository.save(entity);
 
 			}
-			registrationCenterIdRepository.save(registrationCenterId);
+
 		} catch (DataAccessLayerException e) {
 			throw new RegistrationCenterIdServiceException(
 					RegistrationCenterIdConstant.REG_CEN_ID_INSERT_EXCEPTION.getErrorCode(),
