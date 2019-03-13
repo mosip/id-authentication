@@ -110,7 +110,7 @@ Apache DSL camel file "registration-processor-camel-routes.xml" need to be updat
 ------------
 - Without http end point:
 
-![HTTP stage diagram](_images/registration_external_http_integration.png)
+![HTTP stage diagram](_images/registration_external_without_http_integration.png)
 
 - With http end point:
 
