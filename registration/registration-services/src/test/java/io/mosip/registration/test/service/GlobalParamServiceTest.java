@@ -29,85 +29,75 @@ import io.mosip.registration.util.healthcheck.RegistrationSystemPropertiesChecke
 import io.mosip.registration.util.restclient.ServiceDelegateUtil;
 
 public class GlobalParamServiceTest {
-	
+
 	@Rule
 	public MockitoRule mockitoRule = MockitoJUnit.rule();
-	
+
 	@Mock
 	private AuditFactoryImpl auditFactory;
 
 	@InjectMocks
 	private GlobalParamServiceImpl gloablContextParamServiceImpl;
-	
+
 	@Mock
 	private GlobalParamDAOImpl globalContextParamDAOImpl;
-	
+
 	@Mock
 	RegistrationAppHealthCheckUtil registrationAppHealthCheckUtil;
-	
-	
+
 	@Mock
 	RegistrationSystemPropertiesChecker registrationSystemPropertiesChecker;
-	
+
 	@Mock
 	UserOnboardDAO onboardDAO;
-	
+
 	@Mock
 	ServiceDelegateUtil serviceDelegateUtil;
-	
 
 	@Test
-	public void getGlobalParamsTest() { 
-		
+	public void getGlobalParamsTest() {
+
 		doNothing().when(auditFactory).audit(Mockito.any(AuditEvent.class), Mockito.any(Components.class),
 				Mockito.anyString(), Mockito.anyString());
-		
-		Map<String,Object> globalParamMap = new LinkedHashMap<>();
+
+		Map<String, Object> globalParamMap = new LinkedHashMap<>();
 		Mockito.when(globalContextParamDAOImpl.getGlobalParams()).thenReturn(globalParamMap);
 		assertEquals(globalParamMap, gloablContextParamServiceImpl.getGlobalParams());
 	}
 
 	@Test
-	public void syncConfigDataTest() throws RegBaseCheckedException, HttpClientErrorException, SocketTimeoutException { 
-		
+	public void syncConfigDataTest() throws RegBaseCheckedException, HttpClientErrorException, SocketTimeoutException {
 
-		Mockito.when(onboardDAO.getCenterID(Mockito.anyString())).thenReturn("STN123");
-		Mockito.when(onboardDAO.getCenterID(Mockito.anyString())).thenReturn("abc123");
-		
-		HashMap<String,Object> globalParamJsonMap = new HashMap<>();
+		HashMap<String, Object> globalParamJsonMap = new HashMap<>();
 		globalParamJsonMap.put("retryAttempts", "3");
-		HashMap<String,Object> globalParamJsonMap2 = new HashMap<>();
+		HashMap<String, Object> globalParamJsonMap2 = new HashMap<>();
 		globalParamJsonMap2.put("loginSequence1", "OTP");
-		
-		globalParamJsonMap.put("map",globalParamJsonMap2);
-		
-		Mockito.when(serviceDelegateUtil.get(Mockito.anyString(), Mockito.anyMap(),Mockito.anyBoolean(),Mockito.anyString())).thenReturn(globalParamJsonMap);
+
+		globalParamJsonMap.put("map", globalParamJsonMap2);
+
+		Mockito.when(serviceDelegateUtil.get(Mockito.anyString(), Mockito.anyMap(), Mockito.anyBoolean(),
+				Mockito.anyString())).thenReturn(globalParamJsonMap);
 		Mockito.doNothing().when(globalContextParamDAOImpl).saveAll(Mockito.anyList());
-		
-		Map<String,Object> globalParamMap = new LinkedHashMap<>();
+
+		Map<String, Object> globalParamMap = new LinkedHashMap<>();
 		globalParamMap.put("ANY", "ANY");
 		Mockito.when(globalContextParamDAOImpl.getGlobalParams()).thenReturn(globalParamMap);
-		
+
 		gloablContextParamServiceImpl.synchConfigData(false);
 	}
-	
+
 	@Test
-	public void syncConfigDataExceptionTest() throws RegBaseCheckedException, HttpClientErrorException, SocketTimeoutException { 
-		
-			Mockito.when(onboardDAO.getCenterID(Mockito.anyString())).thenReturn("STN123");
-		Mockito.when(onboardDAO.getCenterID(Mockito.anyString())).thenReturn("abc123");
-		
-		Map<String,Object> globalParamMap = new LinkedHashMap<>();
+	public void syncConfigDataExceptionTest()
+			throws RegBaseCheckedException, HttpClientErrorException, SocketTimeoutException {
+
+		Map<String, Object> globalParamMap = new LinkedHashMap<>();
 		globalParamMap.put("ANY", "ANY");
 		Mockito.when(globalContextParamDAOImpl.getGlobalParams()).thenReturn(globalParamMap);
 
-		
-		Mockito.when(serviceDelegateUtil.get(Mockito.anyString(), Mockito.anyMap(),Mockito.anyBoolean(),Mockito.anyString())).thenThrow(HttpClientErrorException.class);
-		
+		Mockito.when(serviceDelegateUtil.get(Mockito.anyString(), Mockito.anyMap(), Mockito.anyBoolean(),
+				Mockito.anyString())).thenThrow(HttpClientErrorException.class);
+
 		gloablContextParamServiceImpl.synchConfigData(false);
 	}
-	
-
-
 
 }

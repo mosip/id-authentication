@@ -63,7 +63,7 @@ public class PolicySyncServiceTest {
 	@Before
 	public void initialize() {
 		Map<String, Object> temp = new HashMap<String, Object>();
-		temp.put("KEY_POLICY_SYNC_THRESHOLD_VALUE", "1");
+		temp.put("mosip.registration.key_policy_sync_threshold_value", "1");
 		applicationContext.setApplicationMap(temp);
 	}
 
