@@ -52,10 +52,8 @@ import io.mosip.registration.service.UserOnboardService;
 import io.mosip.registration.service.config.GlobalParamService;
 import io.mosip.registration.service.impl.CenterMachineReMapService;
 import io.mosip.registration.service.sync.SyncStatusValidatorService;
-import io.mosip.registration.service.template.NotificationService;
 import io.mosip.registration.service.template.TemplateService;
 import io.mosip.registration.util.acktemplate.TemplateGenerator;
-import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
 import javafx.animation.PauseTransition;
 import javafx.event.Event;
 import javafx.event.EventHandler;
@@ -115,9 +113,6 @@ public class BaseController {
 	private IrisCaptureController irisCaptureController;
 	@Autowired
 	private FaceCaptureController faceCaptureController;
-
-	@Autowired
-	private NotificationService notificationService;
 
 	@Autowired
 	private TemplateService templateService;
@@ -415,6 +410,8 @@ public class BaseController {
 		SessionContext.map().remove(RegistrationConstants.OLD_BIOMETRIC_EXCEPTION);
 		SessionContext.map().remove(RegistrationConstants.NEW_BIOMETRIC_EXCEPTION);
 
+		clearAllValues();
+		
 		SessionContext.userMap().remove(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION);
 		SessionContext.map().remove(RegistrationConstants.DUPLICATE_FINGER);
 
@@ -603,6 +600,8 @@ public class BaseController {
 			biometricExceptionController.clearSession();
 			fingerPrintCaptureController.clearFingerPrintDTO();
 			irisCaptureController.clearIrisData();
+			faceCaptureController.clearPhoto(RegistrationConstants.APPLICANT_IMAGE);
+			faceCaptureController.clearPhoto(RegistrationConstants.EXCEPTION_IMAGE);
 		}
 	}
 
