@@ -52,7 +52,7 @@ public class UserDetailServiceJob extends BaseJob {
 			userDetailService = applicationContext.getBean(UserDetailService.class);
 
 			// Run the Parent JOB always first
-			this.responseDTO = userDetailService.save();
+			this.responseDTO = userDetailService.save(triggerPoint);
 
 			// To run the child jobs after the parent job Success
 			if (responseDTO.getSuccessResponseDTO() != null) {
@@ -78,7 +78,7 @@ public class UserDetailServiceJob extends BaseJob {
 		LOGGER.info(LoggerConstants.USER_DETAIL_SERVICE_JOB_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "execute Job started");
 
-		this.responseDTO = userDetailService.save();
+		this.responseDTO = userDetailService.save(triggerPoint);
 		syncTransactionUpdate(responseDTO, triggerPoint, jobId);
 
 		LOGGER.info(LoggerConstants.USER_DETAIL_SERVICE_JOB_TITLE, RegistrationConstants.APPLICATION_NAME,

@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.exception.ExceptionUtils;
+import io.mosip.registration.processor.core.code.ApiName;
 import io.mosip.registration.processor.core.constant.AuditLogConstant;
 import io.mosip.registration.processor.core.constant.EventId;
 import io.mosip.registration.processor.core.constant.EventName;
@@ -131,7 +132,7 @@ public class QualityCheckManagerImpl implements QualityCheckManager<String, QCUs
 					: EventType.SYSTEM.toString();
 
 			clientAuditRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
-					AuditLogConstant.NO_ID.toString());
+					AuditLogConstant.NO_ID.toString(), ApiName.AUDIT);
 		}
 
 	}
@@ -192,7 +193,7 @@ public class QualityCheckManagerImpl implements QualityCheckManager<String, QCUs
 			eventType = eventId.equalsIgnoreCase(EventId.RPR_401.toString()) ? EventType.BUSINESS.toString()
 					: EventType.SYSTEM.toString();
 			clientAuditRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
-					AuditLogConstant.NO_ID.toString());
+					AuditLogConstant.NO_ID.toString(), ApiName.AUDIT);
 		}
 	}
 

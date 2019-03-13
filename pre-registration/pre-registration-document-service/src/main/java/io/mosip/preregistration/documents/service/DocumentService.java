@@ -32,26 +32,28 @@ import io.mosip.preregistration.core.code.EventId;
 import io.mosip.preregistration.core.code.EventName;
 import io.mosip.preregistration.core.code.EventType;
 import io.mosip.preregistration.core.common.dto.AuditRequestDto;
+import io.mosip.preregistration.core.common.dto.DocumentDeleteResponseDTO;
 import io.mosip.preregistration.core.common.dto.DocumentMultipartResponseDTO;
 import io.mosip.preregistration.core.common.dto.MainListResponseDTO;
 import io.mosip.preregistration.core.common.dto.MainRequestDTO;
 import io.mosip.preregistration.core.config.LoggerConfiguration;
+import io.mosip.preregistration.core.exception.HashingException;
 import io.mosip.preregistration.core.util.AuditLogUtil;
 import io.mosip.preregistration.core.util.CryptoUtil;
+import io.mosip.preregistration.core.util.HashUtill;
 import io.mosip.preregistration.core.util.ValidationUtil;
 import io.mosip.preregistration.documents.code.DocumentStatusMessages;
 import io.mosip.preregistration.documents.dto.DocumentCopyResponseDTO;
-import io.mosip.preregistration.documents.dto.DocumentDeleteResponseDTO;
 import io.mosip.preregistration.documents.dto.DocumentRequestDTO;
 import io.mosip.preregistration.documents.dto.DocumentResponseDTO;
 import io.mosip.preregistration.documents.entity.DocumentEntity;
 import io.mosip.preregistration.documents.errorcodes.ErrorCodes;
 import io.mosip.preregistration.documents.errorcodes.ErrorMessages;
-import io.mosip.preregistration.documents.exception.FSServerException;
 import io.mosip.preregistration.documents.exception.DocumentFailedToCopyException;
 import io.mosip.preregistration.documents.exception.DocumentFailedToUploadException;
 import io.mosip.preregistration.documents.exception.DocumentNotFoundException;
 import io.mosip.preregistration.documents.exception.DocumentVirusScanException;
+import io.mosip.preregistration.documents.exception.FSServerException;
 import io.mosip.preregistration.documents.exception.util.DocumentExceptionCatcher;
 import io.mosip.preregistration.documents.repository.util.DocumentDAO;
 import io.mosip.preregistration.documents.service.util.DocumentServiceUtil;
@@ -203,18 +205,21 @@ public class DocumentService {
 				documentEntity.setDocumentId(String.valueOf(getentity.getDocumentId()));
 			}
 			documentEntity.setDocName(file.getOriginalFilename());
+			byte[] encryptedDocument = cryptoUtil.encrypt(file.getBytes(), DateUtils.getUTCCurrentDateTime());
+			documentEntity.setDocHash(new String(HashUtill.hashUtill(encryptedDocument)));
 			documentEntity = documnetDAO.saveDocument(documentEntity);
 			if (documentEntity != null) {
 				String key = documentEntity.getDocCatCode() + "_" + documentEntity.getDocumentId();
-				byte[] encryptedDocument = cryptoUtil.encrypt(file.getBytes(), DateUtils.getUTCCurrentDateTime());
+				
 				boolean isStoreSuccess = fs.storeFile(documentEntity.getPreregId(), key,
 						new ByteArrayInputStream(encryptedDocument));
+				
 				if (!isStoreSuccess) {
 					throw new FSServerException(ErrorCodes.PRG_PAM_DOC_009.toString(),
 							ErrorMessages.DOCUMENT_FAILED_TO_UPLOAD.toString());
 				}
 				docResponseDto.setPreRegistrationId(documentEntity.getPreregId());
-				docResponseDto.setDocumnetId(String.valueOf(documentEntity.getDocumentId()));
+				docResponseDto.setDocumentId(String.valueOf(documentEntity.getDocumentId()));
 				docResponseDto.setDocumentName(documentEntity.getDocName());
 				docResponseDto.setDocumentCat(documentEntity.getDocCatCode());
 				docResponseDto.setDocumentType(documentEntity.getDocTypeCode());
@@ -256,9 +261,10 @@ public class DocumentService {
 				boolean destinationStatus=serviceUtil.callGetPreRegInfoRestService(destinationPreId);		
 				
 				DocumentEntity documentEntity = documnetDAO.findSingleDocument(sourcePreId, catCode);
+				DocumentEntity destEntity = documnetDAO.findSingleDocument(destinationPreId, catCode);
 				if (documentEntity != null && sourceStatus && destinationStatus) {
 					DocumentEntity copyDocumentEntity = documnetDAO
-							.saveDocument(serviceUtil.documentEntitySetter(destinationPreId, documentEntity));
+							.saveDocument(serviceUtil.documentEntitySetter(destinationPreId, documentEntity,destEntity));
 					sourceKey = documentEntity.getDocCatCode() + "_" + documentEntity.getDocumentId();
 					sourceBucketName = documentEntity.getPreregId();
 					copyFile(copyDocumentEntity, sourceBucketName, sourceKey);
@@ -378,11 +384,21 @@ public class DocumentService {
 							ErrorMessages.DOCUMENT_FAILED_TO_FETCH.toString());
 				}
 				byte[] cephBytes = IOUtils.toByteArray(file);
+				if(doc.getDocHash().equals(new String(HashUtill.hashUtill(cephBytes)))) {
+					
+				
 				LocalDateTime decryptionDateTime = DateUtils.getUTCCurrentDateTime();
 
 				allDocDto.setMultipartFile(cryptoUtil.decrypt(cephBytes, decryptionDateTime));
 				allDocDto.setPrereg_id(doc.getPreregId());
 				allDocRes.add(allDocDto);
+				}
+				else {
+					log.error("sessionId", "idType", "id", "In dtoSetter method of document service - " +
+				io.mosip.preregistration.core.errorcodes.ErrorMessages.HASHING_FAILED.name());
+					throw new HashingException(io.mosip.preregistration.core.errorcodes.ErrorCodes.PRG_CORE_REQ_010.name(),
+							io.mosip.preregistration.core.errorcodes.ErrorMessages.HASHING_FAILED.name());
+				}
 			}
 		} catch (Exception ex) {
 			log.error("sessionId", "idType", "id", "In dtoSetter method of document service - " + ex.getMessage());

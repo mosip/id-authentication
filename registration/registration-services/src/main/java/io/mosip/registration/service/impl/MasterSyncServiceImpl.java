@@ -6,7 +6,6 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 
 import java.io.IOException;
 import java.net.SocketTimeoutException;
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
@@ -85,7 +84,7 @@ public class MasterSyncServiceImpl implements MasterSyncService {
 	 * String)
 	 */
 	@Override
-	public ResponseDTO getMasterSync(String masterSyncDtls) {
+	public ResponseDTO getMasterSync(String masterSyncDtls,String triggerPoint) {
 
 		ResponseDTO responseDTO = null;
 		String resoponse = RegistrationConstants.EMPTY;
@@ -131,7 +130,7 @@ public class MasterSyncServiceImpl implements MasterSyncService {
 			LOGGER.info(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID,
 					"Fetching the last sync and machine Id details from databse Ends");
 
-			Object masterSyncJson = getMasterSyncJson(machineId, masterLastSyncTime);
+			Object masterSyncJson = getMasterSyncJson(machineId, masterLastSyncTime, triggerPoint);
 
 			if (null != masterSyncJson) {
 
@@ -199,7 +198,7 @@ public class MasterSyncServiceImpl implements MasterSyncService {
 	 * @return the master sync json
 	 * @throws RegBaseCheckedException the reg base checked exception
 	 */
-	private Object getMasterSyncJson(String machineId, LocalDateTime lastSyncTime) throws RegBaseCheckedException {
+	private Object getMasterSyncJson(String machineId, LocalDateTime lastSyncTime,String triggerPoint) throws RegBaseCheckedException {
 
 		Object response = null;
 		String time = RegistrationConstants.EMPTY;
@@ -221,7 +220,7 @@ public class MasterSyncServiceImpl implements MasterSyncService {
 		try {
 
 			response = serviceDelegateUtil.get(RegistrationConstants.MASTER_VALIDATOR_SERVICE_NAME, requestParamMap,
-					true);
+					true,triggerPoint);
 		} catch (HttpClientErrorException httpClientErrorException) {
 			LOGGER.error(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID,
 					httpClientErrorException.getRawStatusCode() + "Http error while pulling json from server"

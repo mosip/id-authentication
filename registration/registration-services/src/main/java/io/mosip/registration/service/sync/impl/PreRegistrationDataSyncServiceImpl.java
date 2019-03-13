@@ -106,7 +106,7 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 
 			/* REST call to get Pre Registartion Id's */
 			LinkedHashMap<String, Object> response = (LinkedHashMap<String, Object>) serviceDelegateUtil
-					.post(RegistrationConstants.GET_PRE_REGISTRATION_IDS, preRegistrationDataSyncDTO);
+					.post(RegistrationConstants.GET_PRE_REGISTRATION_IDS, preRegistrationDataSyncDTO,syncJobId);
 			TypeReference<MainResponseDTO<LinkedHashMap<String, Object>>> ref = new TypeReference<MainResponseDTO<LinkedHashMap<String, Object>>>() {
 			};
 			MainResponseDTO<LinkedHashMap<String, Object>> mainResponseDTO = new ObjectMapper()
@@ -231,7 +231,7 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 			try {
 				/* REST call to get packet */
 				MainResponseDTO<LinkedHashMap<String, Object>> mainResponseDTO = (MainResponseDTO<LinkedHashMap<String, Object>>) serviceDelegateUtil
-						.get(RegistrationConstants.GET_PRE_REGISTRATION, requestParamMap, false);
+						.get(RegistrationConstants.GET_PRE_REGISTRATION, requestParamMap, false,syncJobId);
 
 				if (isPacketNotEmpty(mainResponseDTO)) {
 

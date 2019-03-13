@@ -8,6 +8,7 @@ import java.util.ResourceBundle;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.dto.AuthTokenDTO;
 
 public class ApplicationContext {
 
@@ -25,6 +26,7 @@ public class ApplicationContext {
 	private ResourceBundle applicationLanguagevalidationBundle;
 	private String localLanguage;
 	private String applicationLanguge;
+	private AuthTokenDTO authTokenDTO;
 
 	private ApplicationContext() {
 	
@@ -128,6 +130,14 @@ public class ApplicationContext {
 
 	public static void loadResources() {
 		applicationContext.loadResourceBundle();
+	}
+
+	public static void setAuthTokenDTO(AuthTokenDTO authTokenDTO) {
+		applicationContext.authTokenDTO = authTokenDTO;
+	}
+
+	public static AuthTokenDTO authTokenDTO() {
+		return applicationContext.authTokenDTO;
 	}
 
 	/**

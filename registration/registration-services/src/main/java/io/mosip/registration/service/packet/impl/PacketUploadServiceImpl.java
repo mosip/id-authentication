@@ -86,7 +86,7 @@ public class PacketUploadServiceImpl implements PacketUploadService {
 		List<ErrorResponseDTO> erResponseDTOs = new ArrayList<>();
 		try {
 			LinkedHashMap<String, Object> response = (LinkedHashMap<String, Object>) serviceDelegateUtil.post(RegistrationConstants.PACKET_UPLOAD,
-					map);
+					map,RegistrationConstants.JOB_TRIGGER_POINT_USER);
 			if (response.get("response") != null && response.get("error") == null) {
 				SuccessResponseDTO successResponseDTO = new SuccessResponseDTO();
 				successResponseDTO.setCode(RegistrationConstants.SUCCESS);

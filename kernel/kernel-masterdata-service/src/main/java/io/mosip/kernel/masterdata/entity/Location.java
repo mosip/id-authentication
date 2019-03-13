@@ -45,7 +45,7 @@ public class Location extends BaseEntity implements Serializable {
 	private String name;
 
 	@Column(name = "hierarchy_level", nullable = false)
-	private int hierarchyLevel;
+	private short hierarchyLevel;
 
 	@Column(name = "hierarchy_level_name", nullable = false, length = 64)
 	private String hierarchyName;

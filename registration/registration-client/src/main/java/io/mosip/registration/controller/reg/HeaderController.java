@@ -177,6 +177,12 @@ public class HeaderController extends BaseController {
 	 */
 	public void syncData(ActionEvent event) {
 
+		if (isMachineRemapProcessStarted()) {
+
+			LOGGER.info(LoggerConstants.LOG_REG_HEADER, APPLICATION_NAME, APPLICATION_ID,
+					RegistrationConstants.MACHINE_CENTER_REMAP_MSG);
+			return;
+		}
 		AnchorPane syncData;
 		try {
 			auditFactory.audit(AuditEvent.NAV_SYNC_DATA, Components.NAVIGATION,
@@ -224,6 +230,12 @@ public class HeaderController extends BaseController {
 	 * Redirecting to PacketStatusSync Page
 	 */
 	public void syncPacketStatus(ActionEvent event) {
+		if (isMachineRemapProcessStarted()) {
+
+			LOGGER.info(LoggerConstants.LOG_REG_HEADER, APPLICATION_NAME, APPLICATION_ID,
+					RegistrationConstants.MACHINE_CENTER_REMAP_MSG);
+			return;
+		}
 		try {
 			auditFactory.audit(AuditEvent.SYNC_REGISTRATION_PACKET_STATUS, Components.SYNC_SERVER_TO_CLIENT,
 					SessionContext.userContext().getUserId(), AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
@@ -253,6 +265,12 @@ public class HeaderController extends BaseController {
 	 *            is an action event
 	 */
 	public void onBoardDevice(ActionEvent actionEvent) {
+		if (isMachineRemapProcessStarted()) {
+
+			LOGGER.info(LoggerConstants.LOG_REG_HEADER, APPLICATION_NAME, APPLICATION_ID,
+					RegistrationConstants.MACHINE_CENTER_REMAP_MSG);
+			return;
+		}
 		LOGGER.info(LoggerConstants.DEVICE_ONBOARD_PAGE_NAVIGATION, APPLICATION_NAME, APPLICATION_ID,
 				"Navigating to Device Onboarding Page");
 
@@ -291,6 +309,12 @@ public class HeaderController extends BaseController {
 	 */
 	@FXML
 	public void downloadPreRegData(ActionEvent event) {
+		if (isMachineRemapProcessStarted()) {
+
+			LOGGER.info(LoggerConstants.LOG_REG_HEADER, APPLICATION_NAME, APPLICATION_ID,
+					RegistrationConstants.MACHINE_CENTER_REMAP_MSG);
+			return;
+		}
 		auditFactory.audit(AuditEvent.SYNC_PRE_REGISTRATION_PACKET, Components.SYNC_SERVER_TO_CLIENT,
 				SessionContext.userContext().getUserId(), AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
 
@@ -310,6 +334,12 @@ public class HeaderController extends BaseController {
 	}
 
 	public void uploadPacketToServer() {
+		if (isMachineRemapProcessStarted()) {
+
+			LOGGER.info(LoggerConstants.LOG_REG_HEADER, APPLICATION_NAME, APPLICATION_ID,
+					RegistrationConstants.MACHINE_CENTER_REMAP_MSG);
+			return;
+		}
 		auditFactory.audit(AuditEvent.SYNC_PRE_REGISTRATION_PACKET, Components.SYNC_SERVER_TO_CLIENT,
 				SessionContext.userContext().getUserId(), AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
 

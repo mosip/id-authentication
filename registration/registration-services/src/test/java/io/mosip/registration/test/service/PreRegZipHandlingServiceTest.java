@@ -47,7 +47,6 @@ import io.mosip.registration.dto.demographic.MoroccoIdentity;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.service.external.impl.PreRegZipHandlingServiceImpl;
-import io.mosip.registration.util.kernal.RIDGenerator;
 
 public class PreRegZipHandlingServiceTest {
 
@@ -158,7 +157,7 @@ public class PreRegZipHandlingServiceTest {
 		RegistrationDTO registrationDTO = new RegistrationDTO();
 
 		// Set the RID
-		registrationDTO.setRegistrationId(RIDGenerator.nextRID());
+		registrationDTO.setRegistrationId("10011100110016320190307151917");
 
 		// Create objects for Biometric DTOS
 		BiometricDTO biometricDTO = new BiometricDTO();

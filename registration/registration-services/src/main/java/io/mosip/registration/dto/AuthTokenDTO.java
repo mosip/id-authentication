@@ -19,5 +19,6 @@ public class AuthTokenDTO {
 	private Timestamp tokenExpirationTime;
 	private long tokenMaxAge;
 	private long thresholdSeconds;
+	private String cookie;
 
 }

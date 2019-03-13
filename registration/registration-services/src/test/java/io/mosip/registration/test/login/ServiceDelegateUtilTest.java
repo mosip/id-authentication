@@ -104,7 +104,7 @@ public class ServiceDelegateUtilTest {
 		responseMap.put("responseHeader", header);
 		responseMap.put("responseBody", response);
 		Mockito.when(restClientUtil.invoke((Mockito.anyObject()))).thenReturn(responseMap);
-		assertNotNull(delegateUtil.get("otp_validator", requestParamMap, false));
+		assertNotNull(delegateUtil.get("otp_validator", requestParamMap, false,"System"));
 	}
 
 	@Test
@@ -127,7 +127,7 @@ public class ServiceDelegateUtilTest {
 		when(restClientUtil.invoke(Mockito.any())).thenReturn(responseMap);
 		OtpGeneratorRequestDTO generatorRequestDto = new OtpGeneratorRequestDTO();
 		generatorRequestDto.setKey("yashReddy");
-		assertNotNull(delegateUtil.post("otp_generator", generatorRequestDto));
+		assertNotNull(delegateUtil.post("otp_generator", generatorRequestDto,"System"));
 	}
 	
 	@Test
@@ -150,7 +150,7 @@ public class ServiceDelegateUtilTest {
 		responseMap.put("responseHeader", header);
 		responseMap.put("responseBody", response);
 		Mockito.when(restClientUtil.invoke((Mockito.anyObject()))).thenReturn(responseMap);
-		assertNotNull(delegateUtil.get("otp_validator", requestParamMap, false));
+		assertNotNull(delegateUtil.get("otp_validator", requestParamMap, false,"System"));
 	}
 	
 @Test
@@ -173,7 +173,7 @@ public class ServiceDelegateUtilTest {
 		when(restClientUtil.invoke(Mockito.any())).thenReturn(responseMap);
 		OtpGeneratorRequestDTO generatorRequestDto = new OtpGeneratorRequestDTO();
 		generatorRequestDto.setKey("yashReddy");
-		assertNotNull(delegateUtil.post("otp_generator", generatorRequestDto));
+		assertNotNull(delegateUtil.post("otp_generator", generatorRequestDto,"System"));
 	}
 	
 	

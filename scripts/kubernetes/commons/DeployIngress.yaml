@@ -9,11 +9,7 @@ metadata:
 spec:  
   rules:
   - http:
-      paths:    
-      - path: /ping
-        backend:
-          serviceName: ping-server
-          servicePort: 3000  
+      paths:
       - path: /uingenerator
         backend:
           serviceName: kernel-uingenerator-service
@@ -74,10 +70,6 @@ spec:
         backend:
           serviceName: kernel-licensekeymanager-service
           servicePort: 8093
-      - path: /config
-        backend:
-          serviceName: kernel-config-server
-          servicePort: 51000
       - path: /pre-registration/v1.0/auth
         backend:
           serviceName: pre-registration-auth-service
@@ -126,6 +118,10 @@ spec:
         backend:
           serviceName: registration-processor-abis
           servicePort: 9098
+      - path: /registration-connector
+        backend:
+          serviceName: registration-processor-connector-stage
+          servicePort: 8091 
       - path: /nginx
         backend:
           serviceName: sample-nginx

@@ -50,6 +50,7 @@ import io.mosip.registration.scheduler.SchedulerUtil;
 import io.mosip.registration.service.LoginService;
 import io.mosip.registration.service.UserOnboardService;
 import io.mosip.registration.service.config.GlobalParamService;
+import io.mosip.registration.service.impl.CenterMachineReMapService;
 import io.mosip.registration.service.sync.SyncStatusValidatorService;
 import io.mosip.registration.service.template.NotificationService;
 import io.mosip.registration.service.template.TemplateService;
@@ -129,6 +130,9 @@ public class BaseController {
 
 	@Autowired
 	private UserOnboardService userOnboardService;
+	
+	@Autowired
+	private CenterMachineReMapService centerMachineReMapService;
 
 	@Value("${USERNAME_PWD_LENGTH}")
 	private int usernamePwdLength;
@@ -804,6 +808,33 @@ public class BaseController {
 	 */
 	public void calculateRecaptureTime(String imageType) {
 		// will be implemented in the derived class.
+	}
+
+	/**
+	 * Checks if the machine is remapped to another center and starts the subsequent
+	 * processing accordingly
+	 */
+	public boolean isMachineRemapProcessStarted() {
+
+		Boolean isRemapped = centerMachineReMapService.isMachineRemapped();
+		if (isRemapped) {
+
+			String message = "You can not perform this operation as this Machine has been remapped to another center\n";
+
+			if (isPacketsPendingForEOD()) {
+				message += " Please Complete the EOD process for all the packets\n";
+			}
+			generateAlert(RegistrationConstants.INFO, message);
+			System.out.println("Remap calledddddd");
+			/* TODO - loading msg to be added */
+			/* centerMachineReMapService.handleReMapProcess(); */
+		}
+		return isRemapped;
+	}
+
+	protected boolean isPacketsPendingForEOD() {
+			
+		return centerMachineReMapService.isPacketsPendingForEOD();
 	}
 
 	public void popupStatge(String messgae, String imageUrl, String styleClass) {

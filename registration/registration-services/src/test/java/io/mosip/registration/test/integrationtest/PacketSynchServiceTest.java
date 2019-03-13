@@ -38,6 +38,7 @@ import io.mosip.registration.constants.RegistrationClientStatusCode;
 import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dao.RegistrationDAO;
+import io.mosip.registration.dto.PacketStatusDTO;
 import io.mosip.registration.dto.RegistrationCenterDetailDTO;
 import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.RegistrationPacketSyncDTO;
@@ -109,11 +110,11 @@ public class PacketSynchServiceTest extends BaseIntegrationTest{
 			List<String> actualres=a;
 			List<String> expectedres=new ArrayList<String>(100);
  			//Fetching Data from database through JAVA API
-			List<Registration> details=PsyncService.fetchPacketsToBeSynched();
+			List<PacketStatusDTO> details=PsyncService.fetchPacketsToBeSynched();
 			//System.out.println("==== "+details.size());
 			for (int i = 0; i < details.size(); i++) {
 				//System.out.println("==== "+details.get(i).getId());
-				expectedres.add(details.get(i).getId());
+				expectedres.add(details.get(i).getFileName());
 			}
 			 for (String i: actualres) {
 		            if (expectedres.contains(i)) {
@@ -143,7 +144,7 @@ public class PacketSynchServiceTest extends BaseIntegrationTest{
 		@Test public void validate_updateStatus_4() {
 			System.out.println("Test case 4");
 			Boolean expectedval=true;
-			List<Registration> details = PsyncService.fetchPacketsToBeSynched();
+			List<PacketStatusDTO> details = PsyncService.fetchPacketsToBeSynched();
 			Boolean actualval=PsyncService.updateSyncStatus(details);
 			System.out.println("validate_updateStatus== "+actualval);
 			assertEquals(expectedval, actualval);
@@ -196,7 +197,7 @@ public class PacketSynchServiceTest extends BaseIntegrationTest{
 				}
 						
 				try {
-					Object response=PsyncService.syncPacketsToServer(dtoList);
+					Object response=PsyncService.syncPacketsToServer(dtoList,"System");
 					Map<String,Object> m1=(Map<String, Object>)response;
 				//	Map<String,String>m2=(Map<String, String>) m1.get("error");
 					String actualmsg=(String) m1.get("response");
@@ -236,7 +237,7 @@ public class PacketSynchServiceTest extends BaseIntegrationTest{
 				}
 						
 				try {
-					Object response=PsyncService.syncPacketsToServer(dtoList);
+					Object response=PsyncService.syncPacketsToServer(dtoList,"System");
 					Map<String,Object> m1=(Map<String, Object>)response;
 					Map<String,String>m2=(Map<String, String>) m1.get("error");
 					String actualmsg=m2.get("message");
@@ -385,7 +386,11 @@ public class PacketSynchServiceTest extends BaseIntegrationTest{
 						System.out.println("beFORE=== "+regi.getClientStatusCode());	
 						
 						regi.setClientStatusCode(Status_code);
-						regDAO.updatePacketSyncStatus(regi);
+						
+						PacketStatusDTO packetStatusDTO=new PacketStatusDTO();
+						packetStatusDTO.setFileName(regi.getId());
+						packetStatusDTO.setPacketClientStatus(Status_code);
+						regDAO.updatePacketSyncStatus(packetStatusDTO);
 						System.out.println("aFTER=== "+regi.getClientStatusCode());					
 					}
 					return RandomID;

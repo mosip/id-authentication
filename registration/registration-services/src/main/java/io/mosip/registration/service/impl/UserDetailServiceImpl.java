@@ -41,7 +41,7 @@ public class UserDetailServiceImpl extends BaseService implements UserDetailServ
 	 * 
 	 * @see io.mosip.registration.service.UserDetailService#save()
 	 */
-	public ResponseDTO save() {
+	public ResponseDTO save(String triggerPoint) {
 
 		ResponseDTO responseDTO = new ResponseDTO();
 
@@ -61,7 +61,7 @@ public class UserDetailServiceImpl extends BaseService implements UserDetailServ
 
 		try {
 
-			UserDetailResponseDto userDetail = getUsrDetails(regCenterId);
+			UserDetailResponseDto userDetail = getUsrDetails(regCenterId,triggerPoint);
 			userDetailDAO.save(userDetail);
 			responseDTO = setSuccessResponse(responseDTO, RegistrationConstants.SUCCESS, null);
 
@@ -84,7 +84,7 @@ public class UserDetailServiceImpl extends BaseService implements UserDetailServ
 	 * @return the usr details
 	 * @throws RegBaseCheckedException the reg base checked exception
 	 */
-	private UserDetailResponseDto getUsrDetails(String regCentrId) throws RegBaseCheckedException {
+	private UserDetailResponseDto getUsrDetails(String regCentrId,String triggerPoint) throws RegBaseCheckedException {
 
 		LOGGER.info(LOG_REG_USER_DETAIL, APPLICATION_NAME, APPLICATION_ID,
 				"Entering into user detail rest calling method");
@@ -98,7 +98,7 @@ public class UserDetailServiceImpl extends BaseService implements UserDetailServ
 
 		try {
 			response = (UserDetailResponseDto) serviceDelegateUtil.get(RegistrationConstants.USER_DETAILS_SERVICE_NAME,
-					requestParamMap, true);
+					requestParamMap, true,triggerPoint);
 		} catch (HttpClientErrorException httpClientErrorException) {
 			LOGGER.error(LOG_REG_USER_DETAIL, APPLICATION_NAME, APPLICATION_ID,
 					httpClientErrorException.getRawStatusCode() + "Http error while pulling json from server"

@@ -612,6 +612,7 @@ public class RegistrationConstants {
 	public static final List<String> PACKET_STATUS_CODES_FOR_REMAPDELETE = Arrays.asList(PACKET_STATUS_CODE_REREGISTER,
 			PACKET_STATUS_CODE_PROCESSING, PACKET_STATUS_CODE_PROCESSED);
 	public static final String MACHINE_CENTER_REMAP_FLAG = "mosip.registrtaion.machinecenterchanged";
+	public static final String MACHINE_CENTER_REMAP_MSG = "Machine Center Remap process started";
 	public static final String PACKET_STATUS_READER_ID = "mosip.registration.status";
 	public static final String PACKET_SYNC_STATUS_ID = "mosip.registration.sync";
 	public static final String PACKET_SYNC_VERSION = "1.0";
@@ -1032,7 +1033,6 @@ public class RegistrationConstants {
 	public static final String AUDIT_LOGS_DELETION_EMPTY_MSG = "No Audit Logs Found to be deleted";
 
 	// Rest Authentication Constants
-
 	public static final String USER_DTO = "userDTO";
 	public static final String REST_OAUTH = "oauth";
 	public static final String REST_OAUTH_USER_NAME = "userName";
@@ -1042,6 +1042,11 @@ public class RegistrationConstants {
 	public static final String REST_AUTHORIZATION = "authorization";
 	public static final String REST_RESPONSE_BODY = "responseBody";
 	public static final String REST_RESPONSE_HEADERS = "responseHeader";
+	public static final String AUTH_SET_COOKIE = "Set-Cookie";
+	public static final String AUTH_AUTHORIZATION = "Authorization";
+	public static final String AUTH_EXPIRES = "Expires";
+	public static final String AUTH_MAX_AGE = "Max-Age";
+	public static final String REGISTRATION_CLIENT = "REGISTRATIONCLIENT";
 
 	// Packet Sync
 	public static final String PACKET_SYNC = "packet_sync";
@@ -1097,6 +1102,7 @@ public class RegistrationConstants {
 	public static final String MM = "mm";
 	public static final String YYYY = "yyyy";
 	public static final String DOB = "dob";
+	public static final String ERRORS = "errors";
 
 	public static final String ATTR_INDIVIDUAL_TYPE = "individualTypeCode";
 	public static final String ATTR_DATE_OF_BIRTH = "dateofbirth";

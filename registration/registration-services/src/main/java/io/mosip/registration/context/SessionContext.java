@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.dto.AuthTokenDTO;
 import io.mosip.registration.dto.AuthorizationDTO;
 import io.mosip.registration.dto.RegistrationCenterDetailDTO;
 
@@ -25,6 +26,7 @@ public class SessionContext {
 	private long timeoutInterval;
 	private long idealTime;
 	private Map<String, Object> mapObject;
+	private AuthTokenDTO authTokenDTO;
 
 	public static SessionContext getInstance() {
 		if (sessionContext == null) {
@@ -64,6 +66,14 @@ public class SessionContext {
 
 	public static long idealTime() {
 		return sessionContext.getIdealTime();
+	}
+
+	public static void setAuthTokenDTO(AuthTokenDTO authTokenDTO) {
+		sessionContext.authTokenDTO = authTokenDTO;
+	}
+
+	public static AuthTokenDTO authTokenDTO() {
+		return sessionContext.authTokenDTO;
 	}
 
 	public static String userId() {
