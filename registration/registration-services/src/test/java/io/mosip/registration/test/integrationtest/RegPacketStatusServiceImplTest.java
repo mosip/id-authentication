@@ -66,7 +66,7 @@ public class RegPacketStatusServiceImplTest {
 	@Test
 	public void packetSyncStatusTest() {
 		assertEquals(RegistrationConstants.PACKET_STATUS_SYNC_SUCCESS_MESSAGE, 
-				regPacketStatusServiceImpl.packetSyncStatus().getSuccessResponseDTO().getMessage());
+				regPacketStatusServiceImpl.packetSyncStatus("System").getSuccessResponseDTO().getMessage());
 	}
 	/**
 	 * Test Case for verifying the deletion of RegPacket.
@@ -116,18 +116,18 @@ public class RegPacketStatusServiceImplTest {
 	
 	@Test
 	public void syncPacketTest() throws JsonProcessingException {
-		responseDTO = regPacketStatusServiceImpl.syncPacket();
+		responseDTO = regPacketStatusServiceImpl.syncPacket("System");
 		ObjectMapper mapper = new ObjectMapper();
 		System.out.println(mapper.writer().writeValueAsString(responseDTO));
 	}
 	
 	@Test
 	public void packetSyncStatusTestAlternateFlow() throws JsonProcessingException {
-		responseDTO = regPacketStatusServiceImpl.packetSyncStatus();
+		responseDTO = regPacketStatusServiceImpl.packetSyncStatus("System");
 		ObjectMapper mapper = new ObjectMapper();
 		System.out.println(mapper.writer().writeValueAsString(responseDTO));
 		assertEquals(RegistrationConstants.PACKET_STATUS_SYNC_ERROR_RESPONSE, 
-				regPacketStatusServiceImpl.packetSyncStatus().getErrorResponseDTOs().get(0).getMessage());
+				regPacketStatusServiceImpl.packetSyncStatus("System").getErrorResponseDTOs().get(0).getMessage());
 	}
 	
 }

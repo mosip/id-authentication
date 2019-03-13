@@ -82,7 +82,7 @@ public class PolicySyncServiceTest {
 		String centerId = "centerId";
 		Mockito.when(userOnboardDAO.getStationID(Mockito.anyString())).thenReturn(machineId);
 		Mockito.when(userOnboardDAO.getCenterID(Mockito.anyString())).thenReturn(centerId);
-		Mockito.when(serviceDelegateUtil.get(Mockito.anyString(), Mockito.anyMap(), Mockito.anyBoolean()))
+		Mockito.when(serviceDelegateUtil.get(Mockito.anyString(), Mockito.anyMap(), Mockito.anyBoolean(),Mockito.anyString()))
 				.thenReturn(publicKeyResponse);
 		KeyStore keyStore = new KeyStore();
 		keyStore.setValidTillDtimes(Timestamp.valueOf(publicKeyResponse.getExpiryAt()));
@@ -122,7 +122,7 @@ public class PolicySyncServiceTest {
 	public void failureTest() throws HttpClientErrorException, SocketTimeoutException, RegBaseCheckedException {
 		PowerMockito.mockStatic(RegistrationAppHealthCheckUtil.class);
 		Mockito.when(RegistrationAppHealthCheckUtil.isNetworkAvailable()).thenReturn(true);
-		Mockito.when(serviceDelegateUtil.get(Mockito.anyString(), Mockito.anyMap(), Mockito.anyBoolean()))
+		Mockito.when(serviceDelegateUtil.get(Mockito.anyString(), Mockito.anyMap(), Mockito.anyBoolean(),Mockito.anyString()))
 				.thenThrow(KeyManagementException.class);
 
 		assertNotNull(policySyncServiceImpl.fetchPolicy());
@@ -133,7 +133,7 @@ public class PolicySyncServiceTest {
 			throws HttpClientErrorException, SocketTimeoutException, RegBaseCheckedException {
 		PowerMockito.mockStatic(RegistrationAppHealthCheckUtil.class);
 		Mockito.when(RegistrationAppHealthCheckUtil.isNetworkAvailable()).thenReturn(true);
-		Mockito.when(serviceDelegateUtil.get(Mockito.anyString(), Mockito.anyMap(), Mockito.anyBoolean()))
+		Mockito.when(serviceDelegateUtil.get(Mockito.anyString(), Mockito.anyMap(), Mockito.anyBoolean(),Mockito.anyString()))
 				.thenThrow(HttpClientErrorException.class);
 
 		assertNotNull(policySyncServiceImpl.fetchPolicy());

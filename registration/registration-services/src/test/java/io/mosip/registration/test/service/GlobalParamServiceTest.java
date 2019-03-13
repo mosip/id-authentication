@@ -81,7 +81,7 @@ public class GlobalParamServiceTest {
 		
 		globalParamJsonMap.put("map",globalParamJsonMap2);
 		
-		Mockito.when(serviceDelegateUtil.get(Mockito.anyString(), Mockito.anyMap(),Mockito.anyBoolean())).thenReturn(globalParamJsonMap);
+		Mockito.when(serviceDelegateUtil.get(Mockito.anyString(), Mockito.anyMap(),Mockito.anyBoolean(),Mockito.anyString())).thenReturn(globalParamJsonMap);
 		Mockito.doNothing().when(globalContextParamDAOImpl).saveAll(Mockito.anyList());
 		
 		Map<String,Object> globalParamMap = new LinkedHashMap<>();
@@ -102,7 +102,7 @@ public class GlobalParamServiceTest {
 		Mockito.when(globalContextParamDAOImpl.getGlobalParams()).thenReturn(globalParamMap);
 
 		
-		Mockito.when(serviceDelegateUtil.get(Mockito.anyString(), Mockito.anyMap(),Mockito.anyBoolean())).thenThrow(HttpClientErrorException.class);
+		Mockito.when(serviceDelegateUtil.get(Mockito.anyString(), Mockito.anyMap(),Mockito.anyBoolean(),Mockito.anyString())).thenThrow(HttpClientErrorException.class);
 		
 		gloablContextParamServiceImpl.synchConfigData(false);
 	}
