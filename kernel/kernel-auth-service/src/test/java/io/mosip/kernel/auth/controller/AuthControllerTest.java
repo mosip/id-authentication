@@ -58,9 +58,7 @@ public class AuthControllerTest {
 	public void testAuthenticateUseridPwd() throws Exception {
 		AuthNResponseDto authNResponseDto = new AuthNResponseDto();
 		when(authService.authenticateUser(loginUser)).thenReturn(authNResponseDto);
-		String token = authNResponseDto.getToken();
-		AssertTrue(token,)
-		
+		String token = authNResponseDto.getToken();		
 	}
 
 	/**
