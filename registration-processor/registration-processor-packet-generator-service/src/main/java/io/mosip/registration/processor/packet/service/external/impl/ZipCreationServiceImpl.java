@@ -12,6 +12,11 @@ import java.util.zip.ZipOutputStream;
 
 import org.springframework.stereotype.Service;
 
+import io.mosip.kernel.core.exception.ExceptionUtils;
+import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.registration.processor.core.constant.LoggerFileConstant;
+import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
+import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.packet.service.constants.RegistrationConstants;
 import io.mosip.registration.processor.packet.service.dto.RegistrationDTO;
 import io.mosip.registration.processor.packet.service.dto.demographic.DemographicDTO;
@@ -19,6 +24,7 @@ import io.mosip.registration.processor.packet.service.dto.demographic.DocumentDe
 import io.mosip.registration.processor.packet.service.exception.RegBaseCheckedException;
 import io.mosip.registration.processor.packet.service.exception.RegBaseUncheckedException;
 import io.mosip.registration.processor.packet.service.external.ZipCreationService;
+import io.mosip.registration.processor.packet.service.impl.PacketCreationServiceImpl;
 
 /**
  * API Class to generate the in-memory zip file for Registration Packet.
@@ -29,6 +35,8 @@ import io.mosip.registration.processor.packet.service.external.ZipCreationServic
 @Service
 public class ZipCreationServiceImpl implements ZipCreationService {
 
+	private static Logger regProcLogger = RegProcessorLogger.getLogger(PacketCreationServiceImpl.class);
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -38,8 +46,8 @@ public class ZipCreationServiceImpl implements ZipCreationService {
 	@Override
 	public byte[] createPacket(final RegistrationDTO registrationDTO, final Map<String, byte[]> filesGeneratedForPacket)
 			throws RegBaseCheckedException {
-		// LOGGER.info(LOG_ZIP_CREATION, APPLICATION_NAME, APPLICATION_ID, "Packet Zip
-		// had been called");
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+				registrationDTO.getRegistrationId(), "ZipCreationServiceImpl ::createPacket()::entry");
 
 		try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 				ZipOutputStream zipOutputStream = new ZipOutputStream(byteArrayOutputStream)) {
@@ -49,52 +57,59 @@ public class ZipCreationServiceImpl implements ZipCreationService {
 
 				writeFileToZip("Demographic".concat(separator).concat(RegistrationConstants.DEMOGRPAHIC_JSON_NAME),
 						filesGeneratedForPacket.get(RegistrationConstants.DEMOGRPAHIC_JSON_NAME), zipOutputStream);
+				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
+						LoggerFileConstant.REGISTRATIONID.toString(), registrationDTO.getRegistrationId(),
+						"Demographic JSON added");
 
-				// LOGGER.info(LOG_ZIP_CREATION, APPLICATION_NAME, APPLICATION_ID, "Demographic
-				// JSON added");
 			}
 
 			// Add the HMAC Info
 			writeFileToZip(RegistrationConstants.PACKET_DATA_HASH_FILE_NAME,
 					filesGeneratedForPacket.get(RegistrationConstants.PACKET_DATA_HASH_FILE_NAME), zipOutputStream);
-
-			// LOGGER.info(LOG_ZIP_CREATION, APPLICATION_NAME, APPLICATION_ID, "HMAC
-			// added");
+			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					registrationDTO.getRegistrationId(), "HMAC added");
 
 			// Add Registration Meta JSON
 			writeFileToZip(RegistrationConstants.PACKET_META_JSON_NAME,
 					filesGeneratedForPacket.get(RegistrationConstants.PACKET_META_JSON_NAME), zipOutputStream);
 
-			// LOGGER.info(LOG_ZIP_CREATION, APPLICATION_NAME, APPLICATION_ID, "Registration
-			// Packet Meta added");
+			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					registrationDTO.getRegistrationId(), "Registration Packet Meta added");
 
 			// Add Audits
 			writeFileToZip(RegistrationConstants.AUDIT_JSON_FILE.concat(RegistrationConstants.JSON_FILE_EXTENSION),
 					filesGeneratedForPacket.get(RegistrationConstants.AUDIT_JSON_FILE), zipOutputStream);
-
-			// LOGGER.info(LOG_ZIP_CREATION, APPLICATION_NAME, APPLICATION_ID, "Registration
-			// Audit Logs Meta added");
+			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					registrationDTO.getRegistrationId(), "Audit Logs Meta added");
 
 			// Add Packet_OSI_HASH
 			writeFileToZip(RegistrationConstants.PACKET_OSI_HASH_FILE_NAME,
 					filesGeneratedForPacket.get(RegistrationConstants.PACKET_OSI_HASH_FILE_NAME), zipOutputStream);
 
-			// LOGGER.info(LOG_ZIP_CREATION, APPLICATION_NAME, APPLICATION_ID, "Registration
-			// packet_osi_hash added");
+			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					registrationDTO.getRegistrationId(), "Registration packet_osi_hash added");
 
 			zipOutputStream.flush();
 			byteArrayOutputStream.flush();
 			zipOutputStream.close();
 			byteArrayOutputStream.close();
 
-			// LOGGER.info(LOG_ZIP_CREATION, APPLICATION_NAME, APPLICATION_ID, "Packet zip
-			// had been ended");
+			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					registrationDTO.getRegistrationId(), "ZipCreationServiceImpl ::createPacket()::end()");
 
 			return byteArrayOutputStream.toByteArray();
 		} catch (IOException exception) {
-			throw new RegBaseCheckedException(REG_IO_EXCEPTION.getErrorCode(), exception.getCause().getMessage());
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					registrationDTO.getRegistrationId(),
+					PlatformErrorMessages.RPR_SYS_IO_EXCEPTION.getMessage() + ExceptionUtils.getStackTrace(exception));
+			throw new RegBaseCheckedException(PlatformErrorMessages.RPR_SYS_IO_EXCEPTION.getCode(),
+					PlatformErrorMessages.RPR_SYS_IO_EXCEPTION.getMessage());
 		} catch (RuntimeException runtimeException) {
-			throw new RegBaseUncheckedException(RegistrationConstants.PACKET_ZIP_CREATION, runtimeException.toString());
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					registrationDTO.getRegistrationId(), PlatformErrorMessages.RPR_SYS_SERVER_ERROR.getMessage()
+							+ ExceptionUtils.getStackTrace(runtimeException));
+			throw new RegBaseUncheckedException(PlatformErrorMessages.RPR_SYS_SERVER_ERROR.getCode(),
+					PlatformErrorMessages.RPR_SYS_SERVER_ERROR.getMessage());
 		}
 	}
 
