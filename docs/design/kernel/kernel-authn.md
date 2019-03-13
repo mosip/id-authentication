@@ -102,7 +102,7 @@ Reference: https://github.com/mosip/mosip/wiki/Auth-SpringBoot-User-Guide
 
 6. If the Auth Token comes insides the Sliding Window Threshold, a new Auth Token will be issued. 
 
-![Angular authentication keeep alive flow](_images/kernel-authentication-keepalive-prereg)
+![Angular authentication keeep alive flow](_images/kernel-authentication-keepalive-prereg.jpg)
 
 
 Reference: https://github.com/mosip/mosip/wiki/Auth-Angular-User-Guide
