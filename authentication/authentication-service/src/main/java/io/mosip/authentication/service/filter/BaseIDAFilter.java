@@ -300,7 +300,7 @@ public abstract class BaseIDAFilter implements Filter {
 
 			if ((Objects.nonNull(url) && !url.isEmpty()) && (Objects.nonNull(contextPath) && !contextPath.isEmpty())) {
 				String[] splitedUrlByContext = url.split(contextPath);
-				id = "mosip.ida.api.ids." + splitedUrlByContext[1].split("/")[2];
+				id = "mosip.ida.api.ids." + splitedUrlByContext[1].split("/")[1];
 				if (!env.getProperty(id).equals(idFromRequest)) {
 					mosipLogger.error(SESSION_ID, EVENT_FILTER, BASE_IDA_FILTER,
 							IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());

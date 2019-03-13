@@ -52,7 +52,7 @@ public class VIDController {
 	 * @return the VID response DTO
 	 * @throws IdAuthenticationAppException the id authentication app exception
 	 */
-	@GetMapping(path = "0.8/vid/{uin}", produces = MediaType.APPLICATION_JSON_VALUE)
+	@GetMapping(path = "/vid/0.8/{uin}", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "VID Generation Request", response = IdAuthenticationAppException.class)
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "VID generated successfully"),
 			@ApiResponse(code = 400, message = "VID generation failed") })
