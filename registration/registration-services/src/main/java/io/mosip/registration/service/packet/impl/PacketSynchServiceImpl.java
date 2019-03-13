@@ -178,7 +178,7 @@ public class PacketSynchServiceImpl implements PacketSynchService {
 
 			}
 			RegistrationPacketSyncDTO registrationPacketSyncDTO = new RegistrationPacketSyncDTO();
-			registrationPacketSyncDTO.setRequestTimestamp(DateUtils.getUTCCurrentDateTimeString());
+			registrationPacketSyncDTO.setRequesttime(DateUtils.getUTCCurrentDateTimeString());
 			registrationPacketSyncDTO.setSyncRegistrationDTOs(syncRegistrationDTOs);
 			registrationPacketSyncDTO.setId(RegistrationConstants.PACKET_SYNC_STATUS_ID);
 			registrationPacketSyncDTO.setVersion(RegistrationConstants.PACKET_SYNC_VERSION);

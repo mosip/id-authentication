@@ -3,11 +3,13 @@ package io.mosip.registration.processor.print.service.config;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.env.AbstractEnvironment;
 import org.springframework.core.env.Environment;
@@ -15,8 +17,16 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.core.io.support.ResourcePropertySource;
 
+import io.mosip.kernel.cbeffutil.impl.CbeffImpl;
+import io.mosip.kernel.core.cbeffutil.spi.CbeffUtil;
+import io.mosip.kernel.core.pdfgenerator.spi.PDFGenerator;
+import io.mosip.kernel.core.qrcodegenerator.spi.QrCodeGenerator;
+import io.mosip.kernel.pdfgenerator.itext.impl.PDFGeneratorImpl;
+import io.mosip.kernel.qrcode.generator.zxing.QrcodeGeneratorImpl;
+import io.mosip.kernel.qrcode.generator.zxing.constant.QrVersion;
 import io.mosip.registration.processor.core.spi.print.service.PrintService;
 import io.mosip.registration.processor.core.spi.uincardgenerator.UinCardGenerator;
+import io.mosip.registration.processor.print.service.impl.PrintPostServiceImpl;
 import io.mosip.registration.processor.print.service.impl.PrintServiceImpl;
 import io.mosip.registration.processor.print.service.utility.UinCardGeneratorImpl;
 
@@ -31,9 +41,11 @@ public class PrintServiceConfig {
 	/**
 	 * Loads config server values.
 	 *
-	 * @param env the env
+	 * @param env
+	 *            the env
 	 * @return the property sources placeholder configurer
-	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
 	 */
 	@Bean
 	public PropertySourcesPlaceholderConfigurer getPropertySourcesPlaceholderConfigurer(Environment env)
@@ -60,7 +72,8 @@ public class PrintServiceConfig {
 	/**
 	 * Gets list of application name mentioned in bootstrap.properties
 	 *
-	 * @param env the env
+	 * @param env
+	 *            the env
 	 * @return the app names
 	 */
 	public List<String> getAppNames(Environment env) {
@@ -74,7 +87,7 @@ public class PrintServiceConfig {
 	 * @return the prints the service
 	 */
 	@Bean
-	public PrintService<?> getPrintService() {
+	public PrintService<Map<String, byte[]>> getPrintService() {
 		return new PrintServiceImpl();
 	}
 
@@ -86,6 +99,49 @@ public class PrintServiceConfig {
 	@Bean
 	public UinCardGenerator<ByteArrayOutputStream> getUinCardGeneratorImpl() {
 		return new UinCardGeneratorImpl();
+	}
+
+	/**
+	 * Gets the PDF generator.
+	 *
+	 * @return the PDF generator
+	 */
+	@Bean
+	@Primary
+	public PDFGenerator getPDFGenerator() {
+		return new PDFGeneratorImpl();
+	}
+
+	/**
+	 * Gets the qr code generator.
+	 *
+	 * @return the qr code generator
+	 */
+	@Bean
+	@Primary
+	public QrCodeGenerator<QrVersion> getQrCodeGenerator() {
+		return new QrcodeGeneratorImpl();
+	}
+
+	/**
+	 * Gets the cbeff util.
+	 *
+	 * @return the cbeff util
+	 */
+	@Bean
+	@Primary
+	public CbeffUtil getCbeffUtil() {
+		return new CbeffImpl();
+	}
+	
+	/**
+	 * Gets the print & post service impl.
+	 *
+	 * @return the print & post service impl
+	 */
+	@Bean
+	public PrintPostServiceImpl getPrintPostServiceImpl() {
+		return new PrintPostServiceImpl();
 	}
 
 }
