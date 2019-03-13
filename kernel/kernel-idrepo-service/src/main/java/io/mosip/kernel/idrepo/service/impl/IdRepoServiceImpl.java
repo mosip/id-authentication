@@ -255,7 +255,7 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, Uin> {
 	 * @throws IdRepoAppException
 	 *             the id repo app exception
 	 */
-	public void addDocuments(String uin, byte[] identityInfo, List<Documents> documents, String uinRefId,
+	private void addDocuments(String uin, byte[] identityInfo, List<Documents> documents, String uinRefId,
 			List<UinDocument> docList, List<UinBiometric> bioList) throws IdRepoAppException {
 		ObjectNode identityObject = (ObjectNode) convertToObject(identityInfo, ObjectNode.class);
 		documents.stream().filter(doc -> identityObject.has(doc.getCategory())).forEach(doc -> {
