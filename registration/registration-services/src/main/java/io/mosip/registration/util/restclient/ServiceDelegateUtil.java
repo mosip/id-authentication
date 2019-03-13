@@ -3,6 +3,8 @@ package io.mosip.registration.util.restclient;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
+import java.io.IOException;
+import java.io.StringReader;
 import java.net.SocketTimeoutException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -10,6 +12,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,8 +32,15 @@ import org.springframework.web.util.UriComponentsBuilder;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
+import io.mosip.registration.constants.LoginMode;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.ApplicationContext;
+import io.mosip.registration.context.SessionContext;
+import io.mosip.registration.dto.AuthNClientIDDTO;
+import io.mosip.registration.dto.AuthNRequestDTO;
+import io.mosip.registration.dto.AuthNUserOTPDTO;
+import io.mosip.registration.dto.AuthNUserPasswordDTO;
+import io.mosip.registration.dto.AuthTokenDTO;
 import io.mosip.registration.dto.LoginUserDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegistrationExceptionConstants;
@@ -57,8 +67,14 @@ public class ServiceDelegateUtil {
 	@Value("${HTTP_API_WRITE_TIMEOUT}")
 	int connectTimeout;
 
-	@Value("${AUTH_URL}")
+	@Value("${AUTH_URL:}")
 	private String urlPath;
+
+	@Value("${AUTH_CLIENT_ID:}")
+	private String clientId;
+
+	@Value("${AUTH_SECRET_KEY}")
+	private String secretKey;
 
 	private static final Logger LOGGER = AppConfig.getLogger(ServiceDelegateUtil.class);
 
@@ -506,6 +522,118 @@ public class ServiceDelegateUtil {
 				" get auth method calling ends");
 
 		return oAuthToken;
+
+	}
+
+	private AuthNRequestDTO prepareAuthNRequestDTO(LoginMode loginMode) {
+		LOGGER.info("REGISTRATION - SERVICE_DELEGATE_UTIL - PREAPRE_AUTH_N_REQUEST_DTO", APPLICATION_NAME,
+				APPLICATION_ID, "Preparing AuthNRequestDTO Based on Login Mode");
+
+		AuthNRequestDTO authNRequestDTO = new AuthNRequestDTO();
+		LoginUserDTO loginUserDTO = (LoginUserDTO) ApplicationContext.map().get("userDTO");
+
+		switch (loginMode) {
+		case PASSWORD:
+			AuthNUserPasswordDTO authNUserPasswordDTO = new AuthNUserPasswordDTO();
+			authNUserPasswordDTO.setAppId(RegistrationConstants.REGISTRATION_CLIENT);
+			authNUserPasswordDTO.setUserName(loginUserDTO.getUserId());
+			authNUserPasswordDTO.setPassword(loginUserDTO.getPassword());
+			authNRequestDTO.setRequest(authNUserPasswordDTO);
+			break;
+		case OTP:
+			AuthNUserOTPDTO authNUserOTPDTO = new AuthNUserOTPDTO();
+			authNUserOTPDTO.setAppId(RegistrationConstants.REGISTRATION_CLIENT);
+			authNUserOTPDTO.setUserId(loginUserDTO.getUserId());
+			authNUserOTPDTO.setOtp(loginUserDTO.getOtp());
+			authNRequestDTO.setRequest(authNUserOTPDTO);
+			break;
+		default:
+			AuthNClientIDDTO authNClientIDDTO = new AuthNClientIDDTO();
+			authNClientIDDTO.setAppId(RegistrationConstants.REGISTRATION_CLIENT);
+			authNClientIDDTO.setClientId(clientId);
+			authNClientIDDTO.setSecretKey(secretKey);
+			authNRequestDTO.setRequest(authNClientIDDTO);
+			break;
+		}
+
+		LOGGER.info("REGISTRATION - SERVICE_DELEGATE_UTIL - PREAPRE_AUTH_N_REQUEST_DTO", APPLICATION_NAME,
+				APPLICATION_ID, "Completed preparing AuthNRequestDTO Based on Login Mode");
+		
+		return authNRequestDTO;
+	}
+
+	public void getAuthToken(LoginMode loginMode) throws RegBaseCheckedException {
+
+		LOGGER.info("REGISTRATION - SERVICE_DELEGATE_UTIL - GET_AUTH_TOKEN", APPLICATION_NAME, APPLICATION_ID,
+				"Fetching Auth Token based on Login Mode");
+
+		Map<String, Object> responseMap = null;
+		HttpHeaders responseHeader = null;
+		RequestHTTPDTO requestHTTPDTO = new RequestHTTPDTO();
+
+		// setting headers
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON);
+		HttpEntity<Object> requestEntity = new HttpEntity<>(prepareAuthNRequestDTO(loginMode), headers);
+		requestHTTPDTO.setHttpEntity(requestEntity);
+		requestHTTPDTO.setClazz(Object.class);
+		requestHTTPDTO.setAuthRequired(false);
+
+		try {
+			String authNURL = environment
+					.getProperty("auth_by_" + loginMode.getCode().toLowerCase() + "." + RegistrationConstants.SERVICE_URL);
+			requestHTTPDTO.setUri(new URI(authNURL));
+		} catch (URISyntaxException uriSyntaxException) {
+			throw new RegBaseCheckedException(RegistrationConstants.REST_OAUTH_ERROR_CODE,
+					RegistrationConstants.REST_OAUTH_ERROR_MSG, uriSyntaxException);
+		}
+
+		requestHTTPDTO.setHttpMethod(HttpMethod.POST);
+
+		// set simple client http request
+		setTimeout(requestHTTPDTO);
+
+		try {
+			responseMap = restClientUtil.invoke(requestHTTPDTO);
+		} catch (HttpClientErrorException | HttpServerErrorException | ResourceAccessException
+				| SocketTimeoutException restException) {
+			throw new RegBaseCheckedException(RegistrationConstants.REST_OAUTH_ERROR_CODE,
+					RegistrationConstants.REST_OAUTH_ERROR_MSG, restException);
+		}
+
+		if (null != responseMap && responseMap.size() > 0) {
+
+			responseHeader = (HttpHeaders) responseMap.get(RegistrationConstants.REST_RESPONSE_HEADERS);
+
+			if (null != responseHeader.get(RegistrationConstants.AUTH_SET_COOKIE)
+					&& null != responseHeader.get(RegistrationConstants.AUTH_SET_COOKIE).get(0)) {
+				try {
+					Properties properties = new Properties();
+					properties.load(new StringReader(
+							responseHeader.get(RegistrationConstants.AUTH_SET_COOKIE).get(0).replaceAll(";", "\n")));
+					AuthTokenDTO authTokenDTO = new AuthTokenDTO();
+					authTokenDTO.setCookie(responseHeader.get(RegistrationConstants.AUTH_SET_COOKIE).get(0));
+					authTokenDTO.setToken(properties.getProperty(RegistrationConstants.AUTH_AUTHORIZATION));
+					authTokenDTO
+							.setTokenMaxAge(Long.valueOf(properties.getProperty(RegistrationConstants.AUTH_MAX_AGE)));
+					authTokenDTO.setLoginMode(loginMode.getCode());
+
+					if (loginMode.compareTo(LoginMode.CLIENTID) == 0) {
+						ApplicationContext.setAuthTokenDTO(authTokenDTO);
+					} else {
+						SessionContext.setAuthTokenDTO(authTokenDTO);
+					}
+
+				} catch (IOException ioException) {
+					throw new RegBaseCheckedException(RegistrationConstants.REST_OAUTH_ERROR_CODE,
+							RegistrationConstants.REST_OAUTH_ERROR_MSG, ioException);
+				}
+
+			}
+		}
+
+		LOGGER.info("REGISTRATION - SERVICE_DELEGATE_UTIL - GET_AUTH_TOKEN", APPLICATION_NAME, APPLICATION_ID,
+				"Completed fetching Auth Token based on Login Mode");
 
 	}
 

@@ -1032,7 +1032,6 @@ public class RegistrationConstants {
 	public static final String AUDIT_LOGS_DELETION_EMPTY_MSG = "No Audit Logs Found to be deleted";
 
 	// Rest Authentication Constants
-
 	public static final String USER_DTO = "userDTO";
 	public static final String REST_OAUTH = "oauth";
 	public static final String REST_OAUTH_USER_NAME = "userName";
@@ -1042,6 +1041,11 @@ public class RegistrationConstants {
 	public static final String REST_AUTHORIZATION = "authorization";
 	public static final String REST_RESPONSE_BODY = "responseBody";
 	public static final String REST_RESPONSE_HEADERS = "responseHeader";
+	public static final String AUTH_SET_COOKIE = "Set-Cookie";
+	public static final String AUTH_AUTHORIZATION = "Authorization";
+	public static final String AUTH_EXPIRES = "Expires";
+	public static final String AUTH_MAX_AGE = "Max-Age";
+	public static final String REGISTRATION_CLIENT = "REGISTRATIONCLIENT";
 
 	// Packet Sync
 	public static final String PACKET_SYNC = "packet_sync";

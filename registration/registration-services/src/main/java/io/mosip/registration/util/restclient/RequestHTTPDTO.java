@@ -17,8 +17,8 @@ public class RequestHTTPDTO {
 	private Class<?> clazz;
 	private URI uri;
 	private SimpleClientHttpRequestFactory simpleClientHttpRequestFactory;
-	
 	private boolean isPregRegSync;
+	private boolean isAuthRequired;
 
 	public HttpMethod getHttpMethod() {
 		return httpMethod;
@@ -66,6 +66,14 @@ public class RequestHTTPDTO {
 
 	public void setPregRegSync(boolean isPregRegSync) {
 		this.isPregRegSync = isPregRegSync;
-	}	
+	}
+
+	public boolean isAuthRequired() {
+		return isAuthRequired;
+	}
+
+	public void setAuthRequired(boolean isAuthRequired) {
+		this.isAuthRequired = isAuthRequired;
+	}
 
 }

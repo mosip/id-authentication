@@ -35,6 +35,7 @@ import io.mosip.registration.constants.AuditEvent;
 import io.mosip.registration.constants.AuditReferenceIdTypes;
 import io.mosip.registration.constants.Components;
 import io.mosip.registration.constants.LoggerConstants;
+import io.mosip.registration.constants.LoginMode;
 import io.mosip.registration.constants.ProcessNames;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.constants.RegistrationUIConstants;
@@ -65,6 +66,8 @@ import io.mosip.registration.service.UserOnboardService;
 import io.mosip.registration.util.common.OTPManager;
 import io.mosip.registration.util.common.PageFlow;
 import io.mosip.registration.util.healthcheck.RegistrationSystemPropertiesChecker;
+import io.mosip.registration.util.restclient.ServiceDelegateUtil;
+
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -195,6 +198,9 @@ public class LoginController extends BaseController implements Initializable {
 
 	@Autowired
 	private PageFlow pageFlow;
+
+	@Autowired
+	private ServiceDelegateUtil serviceDelegateUtil;
 
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
@@ -411,7 +417,7 @@ public class LoginController extends BaseController implements Initializable {
 	 * @return String loginMode
 	 * @throws RegBaseCheckedException
 	 */
-	public void validateCredentials(ActionEvent event) {
+	public void validateCredentials(ActionEvent event) throws RegBaseCheckedException {
 
 		auditFactory.audit(AuditEvent.LOGIN_WITH_PASSWORD, Components.LOGIN, userId.getText(),
 				AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
@@ -426,7 +432,12 @@ public class LoginController extends BaseController implements Initializable {
 		userDTO.setPassword(password.getText());
 
 		// TODO for temporary fix , but later userDto should be getting from session
+		userDTO = new LoginUserDTO();
+		userDTO.setPassword("110011");
+		userDTO.setUserId("110011");
 		ApplicationContext.map().put("userDTO", userDTO);
+		
+		serviceDelegateUtil.getAuthToken(LoginMode.PASSWORD);
 
 		boolean serverStatus = getConnectionCheck(userDTO);
 		boolean offlineStatus = false;
