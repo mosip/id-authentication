@@ -215,7 +215,6 @@ public class PacketHandlerController extends BaseController implements Initializ
 							errorMessage.append(errorResponseDTO.getMessage() + "\n\n");
 						}
 						generateAlert(RegistrationConstants.ERROR, errorMessage.toString().trim());
-
 					} else {
 						getScene(createRoot).setRoot(createRoot);
 					}

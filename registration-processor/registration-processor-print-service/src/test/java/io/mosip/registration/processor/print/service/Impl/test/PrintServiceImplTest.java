@@ -26,10 +26,17 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
+import org.springframework.test.util.ReflectionTestUtils;
 
+import io.mosip.kernel.core.cbeffutil.jaxbclasses.BDBInfoType;
+import io.mosip.kernel.core.cbeffutil.jaxbclasses.BIRType;
+import io.mosip.kernel.core.cbeffutil.jaxbclasses.SingleType;
+import io.mosip.kernel.core.cbeffutil.spi.CbeffUtil;
 import io.mosip.kernel.core.pdfgenerator.exception.PDFGeneratorException;
 import io.mosip.kernel.core.qrcodegenerator.exception.QrcodeGenerationException;
 import io.mosip.kernel.core.qrcodegenerator.spi.QrCodeGenerator;
+import io.mosip.kernel.core.util.CryptoUtil;
+import io.mosip.kernel.core.util.FileUtils;
 import io.mosip.kernel.qrcode.generator.zxing.constant.QrVersion;
 import io.mosip.registration.processor.core.constant.IdType;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
@@ -43,12 +50,13 @@ import io.mosip.registration.processor.message.sender.template.generator.Templat
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.packet.storage.utils.Utilities;
 import io.mosip.registration.processor.print.service.impl.PrintServiceImpl;
+import io.mosip.registration.processor.print.service.kernel.dto.Documents;
 import io.mosip.registration.processor.print.service.kernel.dto.IdResponseDTO;
 import io.mosip.registration.processor.print.service.kernel.dto.ResponseDTO;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ Utilities.class })
+@PrepareForTest({ Utilities.class, CryptoUtil.class, FileUtils.class })
 @PowerMockIgnore({ "javax.management.*", "javax.net.ssl.*" })
 public class PrintServiceImplTest {
 	
@@ -85,11 +93,14 @@ public class PrintServiceImplTest {
 	@Mock
 	private QrCodeGenerator<QrVersion> qrCodeGenerator;
 	
+	@Mock
+	private CbeffUtil cbeffutil;
+	
 	private ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 
 	/** The stage. */
 	@InjectMocks
-	private PrintService<byte[]> printService = new PrintServiceImpl();
+	private PrintService<Map<String, byte[]>> printService = new PrintServiceImpl();
 	
 	/**
 	 * Setup.
@@ -100,7 +111,9 @@ public class PrintServiceImplTest {
 	@SuppressWarnings("unchecked")
 	@Before
 	public void setup() throws Exception {
-		System.setProperty("primary.language", "eng");
+		ReflectionTestUtils.setField(printService, "langCode", "eng");
+		ReflectionTestUtils.setField(printService, "primaryLang", "eng");
+		ReflectionTestUtils.setField(printService, "secondaryLang", "ara");
 		
 		List<String> uinList = new ArrayList<>();
 		uinList.add("4238135072");
@@ -134,6 +147,32 @@ public class PrintServiceImplTest {
 
 		Object identity = identityMap;
 		response.setIdentity(identity);
+		
+		Documents doc1 = new Documents();
+		doc1.setCategory("individualBiometrics");
+		doc1.setValue("individual biometric value");
+		List<Documents> docList = new ArrayList<>();
+		docList.add(doc1);
+		
+		byte[] bioBytes = "individual biometric value".getBytes();
+		PowerMockito.mockStatic(CryptoUtil.class);
+		PowerMockito.when(CryptoUtil.class, "decodeBase64", anyString()).thenReturn(bioBytes);
+		
+		List<SingleType> singleList = new ArrayList<>();
+		singleList.add(SingleType.FACE);
+		BIRType type = new BIRType();
+		type.setBDB(bioBytes);
+		BDBInfoType bdbinfotype = new BDBInfoType();
+		bdbinfotype.setType(singleList);
+		type.setBDBInfo(bdbinfotype);
+		List<BIRType> birtypeList = new ArrayList<>();
+		birtypeList.add(type);
+		Mockito.when(cbeffutil.getBIRDataFromXML(any())).thenReturn(birtypeList);
+		
+		PowerMockito.mockStatic(FileUtils.class);
+		PowerMockito.doNothing().when(FileUtils.class, "writeByteArrayToFile", any(),any());
+		
+		response.setDocuments(docList);
 		idResponse.setResponse(response);
 		Mockito.when(restClientService.getApi(any(), any(), any(), any(), any())).thenReturn(idResponse);
 
@@ -189,7 +228,7 @@ public class PrintServiceImplTest {
 	public void testPdfGeneratedwithUINSuccess() {
 		String uin = "2046958192";
 		byte[] expected = outputStream.toByteArray();
-		byte[] result = printService.getPdf(IdType.UIN, uin );
+		byte[] result = printService.getPdf(IdType.UIN, uin ).get("uinPdf");
 		assertArrayEquals(expected, result);
 	}
 	
@@ -200,7 +239,7 @@ public class PrintServiceImplTest {
 		Mockito.when(packetInfoManager.getUINByRid(anyString())).thenReturn(uinList);
 		
 		byte[] expected = outputStream.toByteArray();
-		byte[] result = printService.getPdf(IdType.UIN, uinList.get(0) );
+		byte[] result = printService.getPdf(IdType.UIN, uinList.get(0) ).get("uinPdf");
 		assertArrayEquals(expected, result);
 	}
 	
@@ -280,6 +319,70 @@ public class PrintServiceImplTest {
 		
 		printService.getPdf(IdType.UIN, uinList.get(0) );
 		
+	}
+	
+	@Test
+	public void testPhotoNotSet() throws Exception {
+		Documents doc1 = new Documents();
+		doc1.setCategory("individualBiometrics");
+		doc1.setValue("individual biometric value");
+		List<Documents> docList = new ArrayList<>();
+		docList.add(doc1);
+		
+		byte[] bioBytes = "individual biometric value".getBytes();
+		PowerMockito.mockStatic(CryptoUtil.class);
+		PowerMockito.when(CryptoUtil.class, "decodeBase64", anyString()).thenReturn(bioBytes);
+		
+		List<SingleType> singleList = new ArrayList<>();
+		singleList.add(SingleType.FINGER);
+		BIRType type = new BIRType();
+		type.setBDB(bioBytes);
+		BDBInfoType bdbinfotype = new BDBInfoType();
+		bdbinfotype.setType(singleList);
+		type.setBDBInfo(bdbinfotype);
+		List<BIRType> birtypeList = new ArrayList<>();
+		birtypeList.add(type);
+		Mockito.when(cbeffutil.getBIRDataFromXML(any())).thenReturn(birtypeList);
+		
+		String uin = "2046958192";
+		byte[] expected = outputStream.toByteArray();
+		byte[] result = printService.getPdf(IdType.UIN, uin ).get("uinPdf");
+		assertArrayEquals(expected, result);
+	}
+	
+	@Test(expected = PDFGeneratorException.class)
+	public void testException() throws QrcodeGenerationException, IOException {
+		NullPointerException e = new NullPointerException();
+		Mockito.doThrow(e).when(qrCodeGenerator).generateQrCode(any(), any());
+		
+		String uin = "2046958192";
+		printService.getPdf(IdType.UIN, uin ).get("uinPdf");
+	}
+	
+	@Test
+	public void testQrCodeNotSet() throws QrcodeGenerationException, IOException {
+		Mockito.when(qrCodeGenerator.generateQrCode(any(), any())).thenReturn(null);
+		
+		String uin = "2046958192";
+		byte[] expected = outputStream.toByteArray();
+		byte[] result = printService.getPdf(IdType.UIN, uin ).get("uinPdf");
+		assertArrayEquals(expected, result);
+	}
+	
+	@Test(expected = PDFGeneratorException.class)
+	public void testIdResponseNull() throws ApisResourceAccessException {
+		Mockito.when(restClientService.getApi(any(), any(), any(), any(), any())).thenReturn(null);
+		
+		String uin = "2046958192";
+		printService.getPdf(IdType.UIN, uin ).get("uinPdf");
+	}
+	
+	@Test(expected = TemplateProcessingFailureException.class)
+	public void testTemplateFailure() throws ApisResourceAccessException, IOException {
+		Mockito.when(templateGenerator.getTemplate(any(), any(), anyString())).thenReturn(null);
+		
+		String uin = "2046958192";
+		printService.getPdf(IdType.UIN, uin ).get("uinPdf");
 	}
 	
 }

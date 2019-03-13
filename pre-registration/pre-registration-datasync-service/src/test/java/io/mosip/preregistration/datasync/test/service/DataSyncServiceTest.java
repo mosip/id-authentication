@@ -191,9 +191,13 @@ public class DataSyncServiceTest {
 		demography.setStatusCode("SAVE");
 		demography.setLangCode("12L");
 		demography.setPreRegistrationId(preid);
+
+		byte[] demographicDetails= {1,0,1,0,1,0}; 
+			 
+
 		demography.setDemographicDetails(null);
 
-		archiveDTO.setZipBytes(null);
+		archiveDTO.setZipBytes(demographicDetails);
 		archiveDTO.setFileName(demography.getPreRegistrationId().toString());
 
 		mainResponseDTO.setStatus(true);

@@ -50,7 +50,7 @@ public class DataSyncController {
 	 * @param DataSyncDTO
 	 * @return responseDto
 	 */
-	@PostMapping(path = "/retrieveAllPreRegIds", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@PostMapping(path = "/datasync", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "All PreRegistrationIds fetched successfully"),
 			@ApiResponse(code = 400, message = "Unable to fetch PreRegistrationIds ") })
 	@ApiOperation(value = "Fetch all PreRegistrationIds")
@@ -80,7 +80,7 @@ public class DataSyncController {
 	 * @param consumedData
 	 * @return response object
 	 */
-	@PostMapping(path = "/reverseDataSync", consumes = MediaType.APPLICATION_JSON_VALUE)
+	@PostMapping(path = "/datasync/store", consumes = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Store consumed Pre-Registrations")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Consumed Pre-Registrations saved"),
 			@ApiResponse(code = 400, message = "Unable to save the records") })

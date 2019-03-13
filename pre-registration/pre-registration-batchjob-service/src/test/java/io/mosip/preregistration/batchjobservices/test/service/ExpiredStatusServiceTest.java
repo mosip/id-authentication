@@ -3,6 +3,7 @@ package io.mosip.preregistration.batchjobservices.test.service;
 import static org.junit.Assert.assertEquals;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -54,12 +55,15 @@ public class ExpiredStatusServiceTest {
 	public void expiredAppointmentTest() {
 
 		MainResponseDTO<String> response = new MainResponseDTO<>();
-
+ 
 		demographicEntity.setPreRegistrationId("12345678909876");
+		demographicEntity.setStatusCode(StatusCodes.BOOKED.getCode());
 
 		bookingPK.setPreregistrationId("12345678909876");
 		bookingEntity.setBookingPK(bookingPK);
-		bookingEntity.setStatusCode(StatusCodes.BOOKED.getCode());
+		bookingEntity.setRegDate(LocalDate.parse("2018-12-04"));
+		bookingEntity.setSlotFromTime(LocalTime.parse("09:00"));
+		
 		bookedPreIdList.add(bookingEntity);
 		logger.info("demographicEntity " + demographicEntity);
 		logger.info("bookingEntity " + bookingEntity);

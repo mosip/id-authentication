@@ -70,14 +70,12 @@ export class MapComponent implements OnInit {
 
         addCommonProjections();
 
-        this.centers.forEach( center => {
-            if (!isNaN(center.latitude)) {
-                this.marker = new OlFeature({
-                    geometry: new OlPoint(fromLonLat([center.longitude, center.latitude]))
-                });
-                this.markers.push(this.marker);
-            }
-        });
+        for (let i in this.centers) {
+            this.marker = new OlFeature({
+                geometry: new OlPoint(fromLonLat([this.centers[i]['longitude'], this.centers[i]['latitude']]))
+            });
+            this.markers.push(this.marker);
+        }
 
         this.vectorSource = new OlVectorSource({
             features: this.markers

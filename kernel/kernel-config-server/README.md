@@ -2,12 +2,20 @@
 
 [Background & Design]( https://github.com/mosip/mosip/wiki/MOSIP-Configuration-Server )
 
+Default Port and Context Path
+
+```
+server.port=51000
+server.servlet.path=/config
+
+```
+
 **For Encryption Decryption of properties** <br/>
 <br/>
 Create keystore with following command: <br/>
 `keytool -genkeypair -alias <your-alias> -keyalg RSA -keystore server.keystore -storepass <store-password> --dname "CN=<your-CN>,OU=<OU>,O=<O>,L=<L>,S=<S>,C=<C>"`
 
-When you run the above command it will ask you for password for <your-alias> , choose your password or press enter for same password as < store-password >
+When you run the above command it will ask you for password for < your-alias > , choose your password or press enter for same password as < store-password >
 
 The JKS keystore uses a proprietary format. It is recommended to migrate to PKCS12 which is an industry standard format, migrate it using following command:
 `keytool -importkeystore -srckeystore server.keystore -destkeystore server.keystore -deststoretype pkcs12` <br/>
@@ -16,9 +24,10 @@ For more information look [here]( https://cloud.spring.io/spring-cloud-config/si
 **How To Run**
 <br/>
 To run the application: <br/>
-Make sure you have configured ssh keys to connect to git, because it will take ssh keys from default location, and give following command: <br/>
+Make sure you have configured ssh keys to connect to git, because it will take ssh keys from default location (${user.home}/.ssh) . 
+Now run the jar using the following command: <br/>
 <br/>
-`java -jar -Dspring.cloud.config.server.git.uri=< git-repo-ssh-url > -Dspring.cloud.config.server.git.search-paths=< config-folder-location-in-git-repo > -Dencrypt.keyStore.location=file:///< file-location-of-keystore > -Dencrypt.keyStore.password=< keystore-passowrd > -Dencrypt.keyStore.alias=< keystore-alias > -Dencrypt.keyStore.secret=< keystore-secret > -Dspring.security.user.name=< username-for-authentication > -Dspring.security.user.password=< password-for-authentication > < jar-name >`
+`java -jar -Dspring.cloud.config.server.git.uri=< git-repo-ssh-url > -Dspring.cloud.config.server.git.search-paths=< config-folder-location-in-git-repo > -Dencrypt.keyStore.location=file:///< file-location-of-keystore > -Dencrypt.keyStore.password=< keystore-passowrd > -Dencrypt.keyStore.alias=< keystore-alias > -Dencrypt.keyStore.secret=< keystore-secret > < jar-name >`
 <br/>
 <br/>
 To run it inside Docker container provide the follwing run time arguments:
@@ -40,31 +49,23 @@ The encryption keystore alias
 6. encrypt_keyStore_secret_env
 The encryption keyStore secret
 
-7. spring_security_username_env
-Username you want to use for spring security
-
-8. spring_security_username_env
-Password you want to use for spring security
-
-**NOTE** If you dont give username and password, config server will start with default username and password which is not recommended.
-
 The final docker run command should look like:
 
-`docker run --name=<name-the-container> -d -v <location-of-encrypt-keystore>/server.keystore:<mount-keystore-location-inside-container>/server.keystore:z -v /home/madmin/<location of folder containing git ssh keys>:<mount-ssh-location-inside-container>/.ssh:z -e git_url_env=<git_ssh_url_env> -e git_config_folder_env=<git_config_folder_env> -e encrypt_keyStore_location_env=file:///<mount-keystore-location-inside-container>/server.keystore -e encrypt_keyStore_password_env=<encrypt_keyStore_password_env> -e encrypt_keyStore_alias_env=<encrypt_keyStore_alias_env> -e encrypt_keyStore_secret_env=<encrypt_keyStore_secret_env> -e spring_security_username_env=<spring_security_username_env> -e spring_security_username_env=<spring_security_username_env> -p 51000:51000 <name-of-docker-image-you-built>`
+`docker run --name=<name-the-container> -d -v <location-of-encrypt-keystore>/server.keystore:<mount-keystore-location-inside-container>/server.keystore:z -v /home/madmin/<location of folder containing git ssh keys>:<mount-ssh-location-inside-container>/.ssh:z -e git_url_env=<git_ssh_url_env> -e git_config_folder_env=<git_config_folder_env> -e encrypt_keyStore_location_env=file:///<mount-keystore-location-inside-container>/server.keystore -e encrypt_keyStore_password_env=<encrypt_keyStore_password_env> -e encrypt_keyStore_alias_env=<encrypt_keyStore_alias_env> -e encrypt_keyStore_secret_env=<encrypt_keyStore_secret_env> -p 51000:51000 <name-of-docker-image-you-built>`
 <br/>
 <br/>
 **To Encrypt any property:** <br/>
 Run the following command : <br/>
-`curl http://<spring_security_username_env>:<spring_security_password_env>@<your-config-server-hostname>:<your-config-server-port>/encrypt -d <value-to-encrypt>`
+`curl http://<your-config-server-address>/<application-context-path-if-any>/encrypt -d <value-to-encrypt>`
 
 And place the encrypted value in client application properties file with the format: <br/>
 `password={cipher}<encrypted-value>`
 
 **To Decrypt any property manually:** <br/>
 
-`curl http://<spring_security_username_env>:<spring_security_password_env>@<your-config-server-hostname>:<your-config-server-port>/decrypt -d <encrypted-value-to-decrypt>`
+`curl http://<your-config-server-address>/<application-context-path-if-any>/decrypt -d <encrypted-value-to-decrypt>`
 
-**NOTE** There is no need to write decryption mechanism in client applications for encrypted values. They will be automatically decrypted.
+**NOTE** There is no need to write decryption mechanism in client applications for encrypted values. They will be automatically decrypted by config server. 
 
 
 
@@ -118,19 +119,13 @@ spring.cloud.config.server.git.cloneOnStart=true
 #encrypt.keyStore.alias=<your-encryption-keyStore-alias>
 #encrypt.keyStore.secret=<your-encryption-keyStore-secret>
 
-#For basic spring security
-###########################################
-#pass at runtime
-#spring.security.user.name=<username-you-want-to-give>
-#spring.security.user.password=<password-you-want-to-give>
-
 
 
 ```
 
 **Config hierarchy**
 
-![Confif Properties](../../docs/design/kernel/_images/GlobalProperties_1.jpg)
+![Config Properties](../../docs/design/kernel/_images/GlobalProperties_1.jpg)
 
 
 
@@ -150,8 +145,6 @@ spring.cloud.config.server.git.cloneOnStart=true
 
 ```
 spring.cloud.config.uri=http://<config-host-url>:<config-port>
-spring.cloud.config.username=<spring_security_username_env_given_in_config_server>
-spring.cloud.config.password=<spring_security_password_env_given_in_config_server>
 spring.cloud.config.label=<git-branch>
 spring.application.name=<application-name>
 spring.cloud.config.name=<property-file-to-pick-up-configuration-from>
