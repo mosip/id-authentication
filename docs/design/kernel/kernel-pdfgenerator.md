@@ -39,4 +39,4 @@ This application can be used converting plain/html template to PDF. It contains 
 ## Implementation
 
 
-**kernel-pdfgenerator-itext** [README](../../kernel/kernel-pdfgenerator-itext/README.md)
+**kernel-pdfgenerator-itext** [README](../../../kernel/kernel-pdfgenerator-itext/README.md)

@@ -55,4 +55,4 @@ This application can be used to facilitate data mapping between objects. It cont
 ## Implementation
 
 
-**kernel-datamapper-orika** [README](../../kernel/kernel-datamapper-orika/README.md)
+**kernel-datamapper-orika** [README](../../../kernel/kernel-datamapper-orika/README.md)

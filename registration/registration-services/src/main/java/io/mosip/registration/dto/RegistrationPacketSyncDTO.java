@@ -7,7 +7,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class RegistrationPacketSyncDTO {
 
 	private String id;
-	private String requestTimestamp;
+	private String 	requesttime;
 	private String version;
 	
 	@JsonProperty("request")
@@ -19,14 +19,6 @@ public class RegistrationPacketSyncDTO {
 
 	public void setId(String id) {
 		this.id = id;
-	}
-
-	public String getRequestTimestamp() {
-		return requestTimestamp;
-	}
-
-	public void setRequestTimestamp(String requestTimestamp) {
-		this.requestTimestamp = requestTimestamp;
 	}
 
 	public String getVersion() {
@@ -44,5 +36,15 @@ public class RegistrationPacketSyncDTO {
 	public void setSyncRegistrationDTOs(List<SyncRegistrationDTO> syncRegistrationDTOs) {
 		this.syncRegistrationDTOs = syncRegistrationDTOs;
 	}
+
+	public String getRequesttime() {
+		return requesttime;
+	}
+
+	public void setRequesttime(String requesttime) {
+		this.requesttime = requesttime;
+	}
+	
+	
 
 }

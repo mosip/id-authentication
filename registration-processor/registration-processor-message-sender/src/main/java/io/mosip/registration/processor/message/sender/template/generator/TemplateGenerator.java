@@ -86,11 +86,15 @@ public class TemplateGenerator {
 			pathSegments.add(templateTypeCode);
 			TemplateResponseDto template = (TemplateResponseDto) restClientService.getApi(ApiName.MASTER, pathSegments,
 					"", "", TemplateResponseDto.class);
-
-			InputStream is = new ByteArrayInputStream(
+			InputStream stream = null;
+			InputStream fileTextStream = null;
+			if(template != null) {
+				stream = new ByteArrayInputStream(
 					template.getTemplates().iterator().next().getFileText().getBytes());
+				fileTextStream = getTemplateManager().merge(stream, attributes);
+			}
 
-			return getTemplateManager().merge(is, attributes);
+			return fileTextStream;
 
 		} catch (TemplateResourceNotFoundException | TemplateParsingException | TemplateMethodInvocationException e) {
 			log.error("Template processing failed due to resource absence", e);

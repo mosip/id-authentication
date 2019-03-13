@@ -72,7 +72,7 @@ public class OtpValidatorServiceImpl implements OtpValidator<ResponseEntity<OtpV
 		responseDto = new OtpValidatorResponseDto();
 		responseDto.setMessage(OtpStatusConstants.FAILURE_MESSAGE.getProperty());
 		responseDto.setStatus(OtpStatusConstants.FAILURE_STATUS.getProperty());
-		validationResponseEntity = new ResponseEntity<>(responseDto, HttpStatus.NOT_ACCEPTABLE);
+		validationResponseEntity = new ResponseEntity<>(responseDto, HttpStatus.OK);
 
 		/*
 		 * Checking whether the key exists in repository or not. If not, throw an
@@ -93,7 +93,7 @@ public class OtpValidatorServiceImpl implements OtpValidator<ResponseEntity<OtpV
 
 			responseDto.setStatus(OtpStatusConstants.FAILURE_STATUS.getProperty());
 			responseDto.setMessage(OtpStatusConstants.OTP_EXPIRED_STATUS.getProperty());
-			return new ResponseEntity<>(responseDto, HttpStatus.NOT_ACCEPTABLE);
+			return new ResponseEntity<>(responseDto, HttpStatus.OK);
 		}
 		// This condition increases the validation attempt count.
 		if ((attemptCount < Integer.parseInt(numberOfValidationAttemptsAllowed))
@@ -118,7 +118,7 @@ public class OtpValidatorServiceImpl implements OtpValidator<ResponseEntity<OtpV
 			updateData(updateString, updateMap);
 			responseDto.setStatus(OtpStatusConstants.FAILURE_STATUS.getProperty());
 			responseDto.setMessage(OtpStatusConstants.FAILURE_AND_FREEZED_MESSAGE.getProperty());
-			validationResponseEntity = new ResponseEntity<>(responseDto, HttpStatus.NOT_ACCEPTABLE);
+			validationResponseEntity = new ResponseEntity<>(responseDto, HttpStatus.OK);
 			return validationResponseEntity;
 
 		}
@@ -184,7 +184,7 @@ public class OtpValidatorServiceImpl implements OtpValidator<ResponseEntity<OtpV
 				}
 			} else {
 				responseDto.setMessage(OtpStatusConstants.FAILURE_AND_FREEZED_MESSAGE.getProperty());
-				validationResponseEntity = new ResponseEntity<>(responseDto, HttpStatus.NOT_ACCEPTABLE);
+				validationResponseEntity = new ResponseEntity<>(responseDto, HttpStatus.OK);
 			}
 		}
 		return validationResponseEntity;

@@ -71,4 +71,13 @@ public interface TemplateService {
 
 	public IdResponseDto deleteTemplates(String id);
 
+	/**
+	 * To fetch all the {@link Template} based on template type code
+	 * 
+	 * @param templateTypeCode
+	 *            the template type code
+	 * @return {@link TemplateResponseDto}
+	 */
+	public TemplateResponseDto getAllTemplateByTemplateTypeCode(String templateTypeCode);
+
 }

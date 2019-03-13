@@ -1,7 +1,7 @@
 package io.mosip.kernel.masterdata.entity;
 
 import java.io.Serializable;
-import java.time.LocalTime;
+import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -54,7 +54,7 @@ public class UserDetails extends BaseEntity implements Serializable {
 	private String statusCode;
 
 	@Column(name = "last_login_dtimes")
-	private LocalTime lastLoginDateTime;
+	private LocalDateTime lastLoginDateTime;
 
 	@Column(name = "last_login_method", length = 64)
 	private String lastLoginMethod;

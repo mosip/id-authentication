@@ -68,7 +68,7 @@ public class RegProcDataRead {
 	{
 		boolean flag=false;
 
-		factory = new Configuration().configure("regproc.cfg.xml")
+		factory = new Configuration().configure("regprocinteg.cfg.xml")
 				.addAnnotatedClass(OtpEntity.class).buildSessionFactory();	
 		session = factory.getCurrentSession();
 		session.beginTransaction();
@@ -92,7 +92,7 @@ public class RegProcDataRead {
 	{
 		boolean flag=false;
 
-		factory = new Configuration().configure("regproc.cfg.xml")
+		factory = new Configuration().configure("regprocinteg.cfg.xml")
 				.addAnnotatedClass(OtpEntity.class).buildSessionFactory();	
 		session = factory.getCurrentSession();
 		session.beginTransaction();
@@ -284,7 +284,7 @@ public class RegProcDataRead {
     {
           boolean flag=false;
 
-          factory = new Configuration().configure("regproc.cfg.xml")
+          factory = new Configuration().configure("regprocinteg.cfg.xml")
                 .addAnnotatedClass(OtpEntity.class).buildSessionFactory();      
           session = factory.getCurrentSession();
           session.beginTransaction();
