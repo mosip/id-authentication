@@ -187,11 +187,15 @@ public enum DemoMatchType implements MatchType {
 	}
 	
 	private static List<IdentityInfoDTO> getIdInfoList(String value) {
-		IdentityInfoDTO identityDTOs=new IdentityInfoDTO();
-		identityDTOs.setValue(value);
-		List<IdentityInfoDTO> list=new ArrayList<IdentityInfoDTO>();
-		list.add(identityDTOs);
-		return list;
+		if(value != null) {
+			IdentityInfoDTO identityDTOs=new IdentityInfoDTO();
+			identityDTOs.setValue(value);
+			List<IdentityInfoDTO> list=new ArrayList<>();
+			list.add(identityDTOs);
+			return list;
+		} else {
+			return Collections.emptyList();
+		}
 	}
 
 	/**

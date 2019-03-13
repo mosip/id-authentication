@@ -435,8 +435,8 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	 * @param errors         the errors
 	 */
 	private void checkAtleastOneFingerRequestAvailable(AuthRequestDTO authRequestDTO, Errors errors) {
-
-		boolean isAtleastOneFingerRequestAvailable = checkAnyBioIdAvailable(authRequestDTO, "FINGER");
+		//FIXME add check for FGR_IMG also
+		boolean isAtleastOneFingerRequestAvailable = checkAnyBioIdAvailable(authRequestDTO, BioAuthType.FGR_MIN.getType());
 		if (!isAtleastOneFingerRequestAvailable) {
 			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE, "finger request is not available");
 			errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),

@@ -41,7 +41,7 @@ public class FilterConfig {
     public FilterRegistrationBean<IdAuthFilter> getIdAuthFilter() {
 	FilterRegistrationBean<IdAuthFilter> registrationBean = new FilterRegistrationBean<>();
 	registrationBean.setFilter(new IdAuthFilter());
-	registrationBean.addUrlPatterns("/0.8/auth");
+	registrationBean.addUrlPatterns("/auth/0.8/*");
 
 	return registrationBean;
     }
@@ -55,7 +55,7 @@ public class FilterConfig {
     public FilterRegistrationBean<KycAuthFilter> getEkycFilter() {
 	FilterRegistrationBean<KycAuthFilter> registrationBean = new FilterRegistrationBean<>();
 	registrationBean.setFilter(new KycAuthFilter());
-	registrationBean.addUrlPatterns("/0.8/ekyc");
+	registrationBean.addUrlPatterns("/ekyc/0.8/*");
 
 	return registrationBean;
     }
@@ -70,22 +70,23 @@ public class FilterConfig {
     public FilterRegistrationBean<InternalAuthFilter> getInternalAuthFilter() {
 	FilterRegistrationBean<InternalAuthFilter> registrationBean = new FilterRegistrationBean<>();
 	registrationBean.setFilter(new InternalAuthFilter());
-	registrationBean.addUrlPatterns("/0.8/auth/internal");
+	registrationBean.addUrlPatterns("/auth/internal/0.8/*");
 
 	return registrationBean;
     }
-   /* *//**
+   
+    /**
      * Gets the Static Pin Store Filter.
      *
      * @return Static Pin Store Filter
-     *//*
+     */
     @Bean
     public FilterRegistrationBean<DefaultIDAFilter> getStaticPinStoreFilter() {
 	FilterRegistrationBean<DefaultIDAFilter> registrationBean = new FilterRegistrationBean<>();
 	registrationBean.setFilter(new DefaultIDAFilter());
-	registrationBean.addUrlPatterns("/0.8/static-pin","/0.8/vid/*");
+	registrationBean.addUrlPatterns("/staticpin/0.8","/vid/0.8/*");
 
 	return registrationBean;
-    }*/
+    }
 
 }
