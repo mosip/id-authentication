@@ -5,36 +5,36 @@ import lombok.Data;
 @Data
 public class JsonRequestDTO {
 
-	private String nameEng;
+	private String nameLang1;
 
-	private String nameAra;
+	private String nameLang2;
 
 	private String phoneNumber;
 
-	private String addressLine1Ara;
+	private String addressLine1Lang1;
 
-	private String addressLine1Eng;
+	private String addressLine1Lang2;
 
-	private String addressLine2Ara;
+	private String addressLine2Lang1;
 
-	private String addressLine2Eng;
+	private String addressLine2Lang2;
 
-	private String addressLine3Ara;
+	private String addressLine3Lang1;
 
-	private String addressLine3Eng;
+	private String addressLine3Lang2;
 
-	private String regionAra;
+	private String regionLang1;
 
-	private String regionEng;
+	private String regionLang2;
 
-	private String provinceAra;
+	private String provinceLang1;
 
-	private String provinceEng;
+	private String provinceLang2;
 
 	private String postalCode;
 
-	private String cityAra;
+	private String cityLang1;
 
-	private String cityEng;
+	private String cityLang2;
 
 }

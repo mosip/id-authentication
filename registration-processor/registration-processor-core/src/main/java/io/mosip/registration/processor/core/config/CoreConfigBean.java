@@ -3,12 +3,12 @@ package io.mosip.registration.processor.core.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import io.mosip.registration.processor.core.notification.template.mapping.RegistrationProcessorNotificationTemplate;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.identify.RegistrationProcessorIdentity;
 import io.mosip.registration.processor.core.queue.factory.MosipQueueConnectionFactoryImpl;
 import io.mosip.registration.processor.core.queue.impl.MosipActiveMqImpl;
 import io.mosip.registration.processor.core.spi.queue.MosipQueueConnectionFactory;
 import io.mosip.registration.processor.core.spi.queue.MosipQueueManager;
+import io.mosip.registration.processor.core.template.generator.TemplateGenerator;
 
 @Configuration
 public class CoreConfigBean {
@@ -19,13 +19,13 @@ public class CoreConfigBean {
 	}
 
 	@Bean
-	RegistrationProcessorNotificationTemplate getRegistrationProcessorNotificationTemplate() {
-		return new RegistrationProcessorNotificationTemplate();
+	MosipQueueManager<?, ?> getMosipQueueManager(){
+		return new MosipActiveMqImpl();
 	}
 	
 	@Bean
-	MosipQueueManager<?, ?> getMosipQueueManager(){
-		return new MosipActiveMqImpl();
+	public TemplateGenerator getTemplateGenerator() {
+		return new TemplateGenerator();
 	}
 	
 	@Bean

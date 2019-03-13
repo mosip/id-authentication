@@ -20,10 +20,10 @@ public class UINCardConstant {
 	public static final String NAME_ARA = "name_ara";
 
 	/** The Constant PHONENUMBER. */
-	public static final String PHONENUMBER = "phoneNumber";
+	public static final String PHONENUMBER = "phone";
 
 	/** The Constant EMAILID. */
-	public static final String EMAILID = "emailID";
+	public static final String EMAILID = "email";
 
 	/** The Constant DATEOFBIRTH. */
 	public static final String DATEOFBIRTH = "dob";
