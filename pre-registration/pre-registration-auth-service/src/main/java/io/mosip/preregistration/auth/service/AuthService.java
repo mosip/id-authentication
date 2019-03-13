@@ -1,5 +1,9 @@
 package io.mosip.preregistration.auth.service;
 
+import java.net.HttpCookie;
+import java.util.ArrayList;
+import java.util.HashMap;
+
 /**
  * This class provides different methods for login called by the controller 
  * 
@@ -8,34 +12,27 @@ package io.mosip.preregistration.auth.service;
  */
 
 import java.util.List;
-
-import javax.servlet.http.HttpServletResponse;
+import java.util.Map;
+import java.util.regex.Pattern;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.web.client.RestTemplateBuilder;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
-import org.springframework.web.client.RestClientException;
-import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import io.mosip.kernel.core.logger.spi.Logger;
-import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.preregistration.auth.dto.MainRequestDTO;
 import io.mosip.preregistration.auth.dto.MainResponseDTO;
+import io.mosip.preregistration.auth.dto.Otp;
 import io.mosip.preregistration.auth.dto.OtpUser;
 import io.mosip.preregistration.auth.dto.OtpUserDTO;
-import io.mosip.preregistration.auth.dto.Otp;
+import io.mosip.preregistration.auth.dto.User;
 import io.mosip.preregistration.auth.dto.UserOtp;
 import io.mosip.preregistration.auth.dto.UserOtpDTO;
-import io.mosip.preregistration.auth.dto.User;
 import io.mosip.preregistration.auth.exceptions.util.AuthExceptionCatcher;
 import io.mosip.preregistration.auth.util.AuthCommonUtil;
 import io.mosip.preregistration.core.common.dto.AuthNResponse;
@@ -55,11 +52,9 @@ public class AuthService {
 	/**
 	 * Reference for ${sendOtp.resource.url} from property file
 	 */
-	//Need to remove the default value
 	@Value("${sendOtp.resource.url}")
 	private String sendOtpResourceUrl;
 	
-	@Value("${otpChannel}")
 	private List<String> otpChannel;
 	
 	@Value("${userIdType}")
@@ -67,6 +62,7 @@ public class AuthService {
 	
 	@Value("${appId}")
 	private String appId;
+	
 	
 	/**
 	 * Reference for ${mosip.prereg.app-id} from property file
@@ -86,17 +82,23 @@ public class AuthService {
 		MainResponseDTO<AuthNResponse> response  = null;
 		try {
 			Otp otp=userOtpRequest.getRequest();
+			otpChannel=authCommonUtil.validateUserIdAndLangCode(otp.getUserId(),otp.getLangCode());
+			if(otpChannel.size()==0) {
+				throw new IllegalArgumentException("Inavlid Parameters");
+			}
+			
 			OtpUser user=new OtpUser(otp.getUserId(), otp.getLangCode(), otpChannel, appId, useridtype);
 			OtpUserDTO otpUserDTO=new OtpUserDTO();
 			otpUserDTO.setRequest(user);
-			response  =	(MainResponseDTO<AuthNResponse>) AuthCommonUtil.getMainResponseDto(userOtpRequest);
-		ResponseEntity<AuthNResponse> responseEntity = null;
+			response  =	(MainResponseDTO<AuthNResponse>) authCommonUtil.getMainResponseDto(userOtpRequest);
+		 
 		String url=sendOtpResourceUrl+"/v1.0/authenticate/sendotp";
-		responseEntity=(ResponseEntity<AuthNResponse>) authCommonUtil.getResponseEntity(url,HttpMethod.POST,MediaType.APPLICATION_JSON,otpUserDTO,AuthNResponse.class);
-		response.setResponsetime(DateUtils.getUTCCurrentDateTimeString());
+
+		ResponseEntity<AuthNResponse> responseEntity=(ResponseEntity<AuthNResponse>) authCommonUtil.getResponseEntity(url,HttpMethod.POST,MediaType.APPLICATION_JSON,otpUserDTO,null,AuthNResponse.class);
+		response.setResponsetime(authCommonUtil.getCurrentResponseTime());
 		response.setResponse(responseEntity.getBody());
 		}
-		catch(HttpClientErrorException | HttpServerErrorException ex) {
+		catch(Exception ex) {
 			log.error("sessionId", "idType", "id",
 					"In callsendOtp method of kernel service- " + ex.getMessage());
 			new AuthExceptionCatcher().handle(ex,"sendOtp");	
@@ -121,14 +123,14 @@ public class AuthService {
 		UserOtp userOtp=new UserOtp(user.getUserId(), user.getOtp(), appId);
 		UserOtpDTO userOtpDTO=new UserOtpDTO();
 		userOtpDTO.setRequest(userOtp);
-		response  =	(MainResponseDTO<ResponseEntity<AuthNResponse>>) AuthCommonUtil.getMainResponseDto(userIdOtpRequest);
+		response  =	(MainResponseDTO<ResponseEntity<AuthNResponse>>) authCommonUtil.getMainResponseDto(userIdOtpRequest);
 		ResponseEntity<AuthNResponse> responseEntity = null;
 		String url=sendOtpResourceUrl+"/v1.0/authenticate/useridOTP";
-		responseEntity=(ResponseEntity<AuthNResponse>) authCommonUtil.getResponseEntity(url,HttpMethod.POST,MediaType.APPLICATION_JSON_UTF8,userOtpDTO,AuthNResponse.class);
-		response.setResponsetime(DateUtils.getUTCCurrentDateTimeString());
+		responseEntity=(ResponseEntity<AuthNResponse>) authCommonUtil.getResponseEntity(url,HttpMethod.POST,MediaType.APPLICATION_JSON_UTF8,userOtpDTO,null,AuthNResponse.class);
+		response.setResponsetime(authCommonUtil.getCurrentResponseTime());
 		response.setResponse(responseEntity);
 		}
-		catch(HttpClientErrorException | HttpServerErrorException ex) {
+		catch(Exception ex) {
 			log.error("sessionId", "idType", "id",
 					"In calluserIdOtp method of kernel service- " + ex.getMessage());
 			new AuthExceptionCatcher().handle(ex,"userIdOtp");	
@@ -136,27 +138,33 @@ public class AuthService {
 		
 		return response;
 	}
+	
+	/**
+	 * This method will invalidate the access token
+	 * 
+	 * @param authHeader
+	 * @return AuthNResponse
+	 */
 
-	public MainResponseDTO<AuthNResponse> invalidateToken(MainRequestDTO<?> invalidateTokenRequest){
+	public AuthNResponse invalidateToken(String authHeader){
 		log.info("sessionId", "idType", "id",
 				"In calluserIdOtp method of kernel service ");
-		MainResponseDTO<AuthNResponse> response  = null;
-		try {
-			response  =	(MainResponseDTO<AuthNResponse>) AuthCommonUtil.getMainResponseDto(invalidateTokenRequest);
 		ResponseEntity<AuthNResponse> responseEntity = null;
-		String url=sendOtpResourceUrl+"/v1.0/authenticate/invalidateToken";
-		responseEntity=(ResponseEntity<AuthNResponse>) authCommonUtil.getResponseEntity(url,HttpMethod.POST,MediaType.APPLICATION_JSON_UTF8,null,AuthNResponse.class);
-		response.setResponsetime(DateUtils.getUTCCurrentDateTimeString());
-		response.setResponse(responseEntity.getBody());
+
+		try {
+			Map<String,String> headersMap=new HashMap<>();
+			headersMap.put("Cookie",authHeader);
+		String url=sendOtpResourceUrl+"/v1.0/authorize/invalidateToken";
+		responseEntity=(ResponseEntity<AuthNResponse>) authCommonUtil.getResponseEntity(url,HttpMethod.POST,MediaType.APPLICATION_JSON,null,headersMap,AuthNResponse.class);
 		}
-		catch(HttpClientErrorException | HttpServerErrorException ex) {
+		catch(Exception ex) {
 			
 			log.error("sessionId", "idType", "id",
-					"In calluserIdOtp method of kernel service- " + ex.getMessage());
-			new AuthExceptionCatcher().handle(ex,"userIdOtp");	
+					"In call invalidateToken method of kernel service- " + ex.getMessage());
+			new AuthExceptionCatcher().handle(ex,"invalidateToken");	
 		}
 		
-		return response;
+		return responseEntity.getBody();
 	}
 	
 }

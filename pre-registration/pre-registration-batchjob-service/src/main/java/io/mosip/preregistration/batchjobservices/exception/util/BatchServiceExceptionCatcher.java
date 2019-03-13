@@ -2,10 +2,10 @@
  * Copyright
  * 
  */
-package io.mosip.preregistration.batchjobservices.exceptions.util;
+package io.mosip.preregistration.batchjobservices.exception.util;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
-import io.mosip.preregistration.batchjobservices.exceptions.NoPreIdAvailableException;
+import io.mosip.preregistration.batchjobservices.exception.NoPreIdAvailableException;
 import io.mosip.preregistration.core.exception.TableNotAccessibleException;
 
 /**
