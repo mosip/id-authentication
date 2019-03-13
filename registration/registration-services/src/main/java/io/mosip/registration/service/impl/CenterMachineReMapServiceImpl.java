@@ -20,6 +20,7 @@ import io.mosip.registration.dao.SyncJobConfigDAO;
 import io.mosip.registration.entity.GlobalParam;
 import io.mosip.registration.entity.Registration;
 import io.mosip.registration.entity.SyncJobDef;
+import io.mosip.registration.entity.id.GlobalParamId;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.service.packet.PacketUploadService;
 import io.mosip.registration.service.packet.RegPacketStatusService;
@@ -149,7 +150,9 @@ public class CenterMachineReMapServiceImpl implements CenterMachineReMapService 
 	 */
 	@Override
 	public Boolean isMachineRemapped() {
-		GlobalParam globalParam = globalParamDAO.get(RegistrationConstants.MACHINE_CENTER_REMAP_FLAG);
+		GlobalParamId globalParamId = new GlobalParamId();
+		globalParamId.setCode(RegistrationConstants.MACHINE_CENTER_REMAP_FLAG);
+		GlobalParam globalParam = globalParamDAO.get(globalParamId);
 		return globalParam != null ? Boolean.valueOf(globalParam.getVal()) : false;
 	}
 

@@ -240,7 +240,7 @@ public class RegistrationController extends BaseController {
 		boolean isValid = true;
 		if (!(boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
 			isValid = demographicDetailController.validateThisPane();
-			if (isValid && RegistrationConstants.ENABLE.equalsIgnoreCase(documentDisableFlag)) {
+			if (isValid && RegistrationConstants.ENABLE.equalsIgnoreCase(String.valueOf(ApplicationContext.map().get(RegistrationConstants.DOC_DISABLE_FLAG)))) {
 				isValid = validateDemographicPane(documentScanController.documentScanPane);
 			}
 		}
@@ -356,8 +356,8 @@ public class RegistrationController extends BaseController {
 		Map<String, Object> applicationContextMap = ApplicationContext.map();
 
 		registrationMetaDataDTO
-				.setCenterId((String) applicationContextMap.get(RegistrationConstants.REGISTARTION_CENTER));
-		registrationMetaDataDTO.setMachineId((String) applicationContextMap.get(RegistrationConstants.MACHINE_ID));
+				.setCenterId((String) applicationContextMap.get(RegistrationConstants.USER_CENTER_ID));
+		registrationMetaDataDTO.setMachineId((String) applicationContextMap.get(RegistrationConstants.USER_STATION_ID));
 		registrationMetaDataDTO
 				.setDeviceId((String) applicationContextMap.get(RegistrationConstants.DONGLE_SERIAL_NUMBER));
 

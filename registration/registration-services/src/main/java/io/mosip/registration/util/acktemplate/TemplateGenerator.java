@@ -30,7 +30,6 @@ import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.binary.StringUtils;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 
 import io.mosip.kernel.core.exception.ExceptionUtils;
@@ -71,18 +70,6 @@ public class TemplateGenerator extends BaseService {
 	 */
 	private static final Logger LOGGER = AppConfig.getLogger(TemplateGenerator.class);
 
-	@Value("${mosip.registration.document_disable_flag:}")
-	private String documentDisableFlag;
-
-	@Value("${mosip.registration.fingerprint_disable_flag:}")
-	private String fingerprintDisableFlag;
-
-	@Value("${mosip.registration.iris_disable_flag:}")
-	private String irisDisableFlag;
-
-	@Value("${mosip.registration.face_disable_flag:}")
-	private String faceDisableFlag;
-
 	@Autowired
 	QrCodeGenerator<QrVersion> qrCodeGenerator;
 
@@ -115,6 +102,10 @@ public class TemplateGenerator extends BaseService {
 
 			String platformLanguageCode = ApplicationContext.applicationLanguage();
 			String localLanguageCode = ApplicationContext.localLanguage();
+			String documentDisableFlag = String.valueOf(ApplicationContext.map().get(RegistrationConstants.DOC_DISABLE_FLAG));
+			String fingerPrintDisableFlag = String.valueOf(ApplicationContext.map().get(RegistrationConstants.FINGERPRINT_DISABLE_FLAG));
+			String irisDisableFlag = String.valueOf(ApplicationContext.map().get(RegistrationConstants.IRIS_DISABLE_FLAG));
+			String faceDisableFlag = String.valueOf(ApplicationContext.map().get(RegistrationConstants.FACE_DISABLE_FLAG));
 			MoroccoIdentity moroccoIdentity = (MoroccoIdentity) registration.getDemographicDTO().getDemographicInfoDTO()
 					.getIdentity();
 
@@ -233,7 +224,7 @@ public class TemplateGenerator extends BaseService {
 					}
 				}
 
-				if (RegistrationConstants.ENABLE.equalsIgnoreCase(fingerprintDisableFlag)) {
+				if (RegistrationConstants.ENABLE.equalsIgnoreCase(fingerPrintDisableFlag)) {
 					try {
 						BufferedImage leftPalmImage = ImageIO.read(this.getClass()
 								.getResourceAsStream(RegistrationConstants.TEMPLATE_LEFT_SLAP_IMAGE_PATH));
@@ -361,7 +352,7 @@ public class TemplateGenerator extends BaseService {
 						}
 					}
 				}
-				if (RegistrationConstants.ENABLE.equalsIgnoreCase(fingerprintDisableFlag)) {
+				if (RegistrationConstants.ENABLE.equalsIgnoreCase(fingerPrintDisableFlag)) {
 					boolean leftPalmCaptured = false;
 					boolean rightPalmCaptured = false;
 					boolean thumbsCaptured = false;
@@ -575,7 +566,7 @@ public class TemplateGenerator extends BaseService {
 			StringBuilder biometricsCaptured = new StringBuilder();
 			StringBuilder biometricsCapturedLocalLang = new StringBuilder();
 
-			if (RegistrationConstants.ENABLE.equalsIgnoreCase(fingerprintDisableFlag)) {
+			if (RegistrationConstants.ENABLE.equalsIgnoreCase(fingerPrintDisableFlag)) {
 				biometricsCaptured
 						.append(MessageFormat.format((String) applicationLanguageProperties.getString("fingersCount"),
 								String.valueOf(fingersAndIrises[0])));
@@ -602,7 +593,7 @@ public class TemplateGenerator extends BaseService {
 				biometricsCapturedLocalLang.append(localProperties.getString("faceCount"));
 			}
 
-			if (RegistrationConstants.ENABLE.equalsIgnoreCase(fingerprintDisableFlag)
+			if (RegistrationConstants.ENABLE.equalsIgnoreCase(fingerPrintDisableFlag)
 					|| RegistrationConstants.ENABLE.equalsIgnoreCase(irisDisableFlag)
 					|| RegistrationConstants.ENABLE.equalsIgnoreCase(faceDisableFlag)) {
 
@@ -773,7 +764,7 @@ public class TemplateGenerator extends BaseService {
 
 	private Map<String, Object> countMissingIrises(Map<String, Object> templateValues, RegistrationDTO registration,
 			String templateType) {
-		if (RegistrationConstants.ENABLE.equalsIgnoreCase(irisDisableFlag)) {
+		if (RegistrationConstants.ENABLE.equalsIgnoreCase(String.valueOf(ApplicationContext.map().get(RegistrationConstants.IRIS_DISABLE_FLAG)))) {
 			List<IrisDetailsDTO> irisDetailsDTOs = registration.getBiometricDTO().getApplicantBiometricDTO()
 					.getIrisDetailsDTO();
 			if (irisDetailsDTOs.size() == 2) {

@@ -1,5 +1,9 @@
 package io.mosip.registration.service.impl;
 
+import static io.mosip.registration.constants.LoggerConstants.LOG_PKT_RSA_ENCRYPTION;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
+
 import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
@@ -10,7 +14,6 @@ import java.security.spec.X509EncodedKeySpec;
 import javax.crypto.SecretKey;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.crypto.spi.Encryptor;
@@ -18,14 +21,11 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.dao.PolicySyncDAO;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.service.RSAEncryptionService;
-
-import static io.mosip.registration.constants.LoggerConstants.LOG_PKT_RSA_ENCRYPTION;
-import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
-import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
 /**
  * Accepts AES session key as bytes and encrypt it by using RSA algorithm
@@ -43,8 +43,6 @@ public class RSAEncryptionServiceImpl implements RSAEncryptionService {
 	private PolicySyncDAO policySyncDAO;
 	@Autowired
 	private Encryptor<PrivateKey, PublicKey, SecretKey> encryptor;
-	@Value("${mosip.kernel.keygenerator.asymmetric-algorithm-name:}")
-	private String asymmetricAlgorithmName;
 
 	/*
 	 * (non-Javadoc)
@@ -61,7 +59,7 @@ public class RSAEncryptionServiceImpl implements RSAEncryptionService {
 
 			// encrypt AES Session Key using RSA public key
 			PublicKey publicKey = KeyFactory
-					.getInstance(asymmetricAlgorithmName)
+					.getInstance(String.valueOf(ApplicationContext.map().get(RegistrationConstants.ASYMMETRIC_ALG_NAME)))
 					.generatePublic(new X509EncodedKeySpec(
 							CryptoUtil.decodeBase64(new String(policySyncDAO.findByMaxExpireTime().getPublicKey()))));
 

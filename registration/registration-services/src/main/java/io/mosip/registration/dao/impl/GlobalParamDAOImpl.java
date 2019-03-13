@@ -13,6 +13,7 @@ import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dao.GlobalParamDAO;
 import io.mosip.registration.dao.GlobalParamName;
 import io.mosip.registration.entity.GlobalParam;
+import io.mosip.registration.entity.id.GlobalParamId;
 import io.mosip.registration.repositories.GlobalParamRepository;
 
 /**
@@ -76,10 +77,10 @@ public class GlobalParamDAOImpl implements GlobalParamDAO {
 	 * @see io.mosip.registration.dao.GlobalParamDAO#get(java.lang.String)
 	 */
 	@Override
-	public GlobalParam get(String code) {
+	public GlobalParam get(GlobalParamId globalParamId) {
 		LOGGER.info("REGISTRATION - GLOBALPARAMS - GLOBAL_PARAM_DAO_IMPL", RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Get Global Param");
-		return globalParamRepository.findById(GlobalParam.class, code);
+		return globalParamRepository.findById(GlobalParam.class, globalParamId);
 	}
 
 	/*

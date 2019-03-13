@@ -201,9 +201,10 @@ public class RegistrationUIConstants {
 	// User Onboard
 	public static final String UNABLE_LOAD_USERONBOARD_SCREEN = bundle.getString("UNABLE_LOAD_USERONBOARD_SCREEN");
 	public static final String USER_ONBOARD_SUCCESS = bundle.getString("USER_ONBOARD_SUCCESS");
+	public static final String USER_MACHINE_VALIDATION_MSG = bundle.getString("USER_MACHINE_VALIDATION_MSG");
 
 	// Supervisor Authentication configuration from global_param
-	public static final String SUPERVISOR_AUTHENTICATION_CONFIGURATION = "SUPERVISOR_AUTHENTICATION_CONFIGURATION";
+	public static final String SUPERVISOR_AUTHENTICATION_CONFIGURATION = "mosip.registration.supervisor_authentication_configuration";
 
 	// Registration Approval - EOD Process
 	public static final String ERROR_IN_SYNC_AND_UPLOAD = bundle.getString("ERROR_IN_SYNC_AND_UPLOAD");

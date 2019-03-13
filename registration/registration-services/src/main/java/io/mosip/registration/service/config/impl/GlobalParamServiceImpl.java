@@ -20,22 +20,18 @@ import org.springframework.web.client.ResourceAccessException;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
-import io.mosip.registration.audit.AuditFactory;
 import io.mosip.registration.config.AppConfig;
-import io.mosip.registration.constants.AuditEvent;
-import io.mosip.registration.constants.AuditReferenceIdTypes;
-import io.mosip.registration.constants.Components;
 import io.mosip.registration.constants.LoggerConstants;
 import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dao.GlobalParamDAO;
-import io.mosip.registration.dao.UserOnboardDAO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.entity.GlobalParam;
+import io.mosip.registration.entity.id.GlobalParamId;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.service.BaseService;
 import io.mosip.registration.service.config.GlobalParamService;
 import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
-import io.mosip.registration.util.healthcheck.RegistrationSystemPropertiesChecker;
 
 /**
  * Class for implementing GlobalContextParam service
@@ -53,19 +49,10 @@ public class GlobalParamServiceImpl extends BaseService implements GlobalParamSe
 	private static final Logger LOGGER = AppConfig.getLogger(GlobalParamServiceImpl.class);
 
 	/**
-	 * Instance of {@code AuditFactory}
-	 */
-	@Autowired
-	private AuditFactory auditFactory;
-
-	/**
 	 * Class to retrieve Global parameters of application
 	 */
 	@Autowired
-	private GlobalParamDAO globalParamDAO;
-
-	@Autowired
-	private UserOnboardDAO userOnboardDAO;
+	private GlobalParamDAO globalParamDAO; 
 
 	/*
 	 * (non-Javadoc)
@@ -76,9 +63,6 @@ public class GlobalParamServiceImpl extends BaseService implements GlobalParamSe
 
 		LOGGER.info(LoggerConstants.GLOBAL_PARAM_SERVICE_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
 				"Fetching list of global params");
-
-		auditFactory.audit(AuditEvent.LOGIN_MODES_FETCH, Components.LOGIN_MODES, RegistrationConstants.APPLICATION_NAME,
-				AuditReferenceIdTypes.APPLICATION_ID.getReferenceTypeId());
 
 		return globalParamDAO.getGlobalParams();
 	}
@@ -140,9 +124,12 @@ public class GlobalParamServiceImpl extends BaseService implements GlobalParamSe
 				List<GlobalParam> list = new ArrayList<>();
 
 				for (Entry<String, String> key : globalParamMap.entrySet()) {
+					
+					GlobalParamId globalParamId = new GlobalParamId();
+					globalParamId.setCode(key.getKey());
 
-					GlobalParam globalParam = globalParamDAO.get(key.getKey());
-
+					GlobalParam globalParam = globalParamDAO.get(globalParamId);		
+					
 					if (globalParam != null) {
 						globalParam.setVal(globalParamMap.get(key.getKey()));
 
@@ -151,14 +138,18 @@ public class GlobalParamServiceImpl extends BaseService implements GlobalParamSe
 
 					} else {
 						globalParam = new GlobalParam();
-						globalParam.setCode(key.getKey());
-						globalParam.setLangCode("ENG");
-
+						//globalParamId.setCode(key.getKey());
+						globalParamId.setLangCode("eng");
+						globalParam.setGlobalParamId(globalParamId);
 						/* TODO Need to Add Description not key (CODE) */
 						globalParam.setName(key.getKey());
 						globalParam.setTyp("CONFIGURATION");
 						globalParam.setIsActive(true);
-						globalParam.setCrBy("brahma");
+						if (SessionContext.isSessionContextAvailable()) {
+							globalParam.setCrBy(SessionContext.userContext().getUserId());
+						} else {
+							globalParam.setCrBy(RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM);
+						} 
 						globalParam.setCrDtime(Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()));
 						globalParam.setVal(globalParamMap.get(key.getKey()));
 					}

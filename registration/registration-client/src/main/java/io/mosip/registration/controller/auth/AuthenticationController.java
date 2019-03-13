@@ -121,12 +121,6 @@ public class AuthenticationController extends BaseController implements Initiali
 	@Autowired
 	private FingerprintFacade fingerprintFacade;
 
-	@Value("${QUALITY_SCORE}")
-	private int qualityScore;
-
-	@Value("${CAPTURE_TIME_OUT}")
-	private int captureTimeOut;
-
 	@Value("${PROVIDER_NAME}")
 	private String providerName;
 
@@ -153,9 +147,6 @@ public class AuthenticationController extends BaseController implements Initiali
 
 	@Autowired
 	private Validations validations;
-
-	@Value("${USERNAME_PWD_LENGTH}")
-	private int usernamePwdLength;
 
 	private boolean isSupervisor = false;
 
@@ -436,6 +427,10 @@ public class AuthenticationController extends BaseController implements Initiali
 
 			LOGGER.info(LoggerConstants.LOG_REG_AUTH, APPLICATION_NAME, APPLICATION_ID,
 					"Ignoring FingerPrint, Iris, Face Authentication if the configuration is off");
+			
+			String fingerprintDisableFlag = String.valueOf(ApplicationContext.map().get(RegistrationConstants.FINGERPRINT_DISABLE_FLAG));
+			String irisDisableFlag = String.valueOf(ApplicationContext.map().get(RegistrationConstants.IRIS_DISABLE_FLAG));
+			String faceDisableFlag = String.valueOf(ApplicationContext.map().get(RegistrationConstants.FACE_DISABLE_FLAG));
 
 			removeAuthModes(userAuthenticationTypeList, fingerprintDisableFlag, RegistrationConstants.BIO);
 			removeAuthModes(userAuthenticationTypeList, irisDisableFlag, RegistrationConstants.IRIS);
@@ -472,11 +467,11 @@ public class AuthenticationController extends BaseController implements Initiali
 				String authenticationType = String
 						.valueOf(userAuthenticationTypeList.get(RegistrationConstants.PARAM_ZERO));
 
-				if ((RegistrationConstants.DISABLE.equalsIgnoreCase(fingerprintDisableFlag)
+				if ((RegistrationConstants.DISABLE.equalsIgnoreCase(String.valueOf(ApplicationContext.map().get(RegistrationConstants.FINGERPRINT_DISABLE_FLAG)))
 						&& authenticationType.equalsIgnoreCase(RegistrationConstants.BIO))
-						|| (RegistrationConstants.DISABLE.equalsIgnoreCase(irisDisableFlag)
+						|| (RegistrationConstants.DISABLE.equalsIgnoreCase(String.valueOf(ApplicationContext.map().get(RegistrationConstants.IRIS_DISABLE_FLAG)))
 								&& authenticationType.equalsIgnoreCase(RegistrationConstants.IRIS))
-						|| (RegistrationConstants.DISABLE.equalsIgnoreCase(faceDisableFlag)
+						|| (RegistrationConstants.DISABLE.equalsIgnoreCase(String.valueOf(ApplicationContext.map().get(RegistrationConstants.FACE_DISABLE_FLAG)))
 								&& authenticationType.equalsIgnoreCase(RegistrationConstants.FACE))) {
 
 					enableErrorPage();
@@ -493,7 +488,9 @@ public class AuthenticationController extends BaseController implements Initiali
 				if (!isSupervisor) {
 					
 					/* Check whether the biometric exceptions are enabled and supervisor authentication is required */
-					if ((toogleBioException != null && toogleBioException.booleanValue()) && isSupervisorAuthenticationRequired()) {
+					if ((toogleBioException != null && toogleBioException.booleanValue())
+							&& RegistrationConstants.ENABLE.equalsIgnoreCase(String.valueOf(
+									ApplicationContext.map().get(RegistrationConstants.SUPERVISOR_AUTH_CONFIG)))) {
 						authCount = 0;
 						isSupervisor = true;
 						getAuthenticationModes(ProcessNames.EXCEPTION.getType());
@@ -719,7 +716,8 @@ public class AuthenticationController extends BaseController implements Initiali
 		UserDetail userDetail = loginService.getUserDetail(userId);
 		if (userDetail != null) {
 			return userDetail.getUserRole().stream().anyMatch(userRole -> userRole.getUserRoleID().getRoleCode()
-					.equalsIgnoreCase(RegistrationConstants.SUPERVISOR_NAME));
+					.equalsIgnoreCase(RegistrationConstants.SUPERVISOR) || userRole.getUserRoleID().getRoleCode()
+					.equalsIgnoreCase(RegistrationConstants.ADMIN_ROLE));
 		}
 		return false;
 	}
@@ -737,7 +735,10 @@ public class AuthenticationController extends BaseController implements Initiali
 
 		boolean fpMatchStatus = false;
 		MosipFingerprintProvider fingerPrintConnector = fingerprintFacade.getFingerprintProviderFactory(providerName);
-		int statusCode = fingerPrintConnector.captureFingerprint(qualityScore, captureTimeOut, "");
+		int statusCode = fingerPrintConnector.captureFingerprint(
+				Integer.parseInt(String.valueOf(ApplicationContext.map().get(RegistrationConstants.QUALITY_SCORE))),
+				Integer.parseInt(String.valueOf(ApplicationContext.map().get(RegistrationConstants.CAPTURE_TIME_OUT))),
+				"");
 		if (statusCode != 0) {
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.DEVICE_FP_NOT_FOUND);
 		} else {
@@ -953,15 +954,6 @@ public class AuthenticationController extends BaseController implements Initiali
 			
 		}
 
-	}
-	
-	private boolean isSupervisorAuthenticationRequired() {
-		
-		/* Get Value from global_param_config */
-		String val = (String) (ApplicationContext.getInstance().getApplicationMap().get(RegistrationUIConstants.SUPERVISOR_AUTHENTICATION_CONFIGURATION));
-
-		/* Whether supervisor authentication required or not */
-		return "Y".equalsIgnoreCase(val);
 	}
 	
 	private void removeAuthModes(List<String> authList, String flag, String authCode) {

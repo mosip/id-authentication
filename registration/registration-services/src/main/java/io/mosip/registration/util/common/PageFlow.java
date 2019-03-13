@@ -5,7 +5,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -28,18 +27,6 @@ public class PageFlow {
 	 * Instance of LOGGER
 	 */
 	private static final Logger LOGGER = AppConfig.getLogger(PageFlow.class);
-	
-	@Value("${mosip.registration.document_disable_flag:}")
-	private String documentDisableFlag;
-	
-	@Value("${mosip.registration.fingerprint_disable_flag:}")
-	private String fingerprintDisableFlag;
-	
-	@Value("${mosip.registration.iris_disable_flag:}")
-	private String irisDisableFlag;
-	
-	@Value("${mosip.registration.face_disable_flag:}")
-	private String faceDisableFlag;
 	
 	public void getInitialPageDetails() {
 		
@@ -114,16 +101,16 @@ public class PageFlow {
 		
 		LOGGER.info(LoggerConstants.LOG_REG_PAGE_FLOW, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Updating Map values based on Configuration ");
-		
-		updateDetailMap(registrationMap, fingerprintDisableFlag, RegistrationConstants.FINGERPRINT_CAPTURE, RegistrationConstants.BIOMETRIC_EXCEPTION,RegistrationConstants.FINGER_PANE);
-		updateDetailMap(registrationMap, irisDisableFlag, RegistrationConstants.IRIS_CAPTURE, RegistrationConstants.BIOMETRIC_EXCEPTION,RegistrationConstants.IRIS_PANE);
-		updateDetailMap(registrationMap, faceDisableFlag, RegistrationConstants.FACE_CAPTURE,"","");
+			
+		updateDetailMap(registrationMap, String.valueOf(ApplicationContext.map().get(RegistrationConstants.FINGERPRINT_DISABLE_FLAG)), RegistrationConstants.FINGERPRINT_CAPTURE, RegistrationConstants.BIOMETRIC_EXCEPTION,RegistrationConstants.FINGER_PANE);
+		updateDetailMap(registrationMap, String.valueOf(ApplicationContext.map().get(RegistrationConstants.IRIS_DISABLE_FLAG)), RegistrationConstants.IRIS_CAPTURE, RegistrationConstants.BIOMETRIC_EXCEPTION,RegistrationConstants.IRIS_PANE);
+		updateDetailMap(registrationMap, String.valueOf(ApplicationContext.map().get(RegistrationConstants.FACE_DISABLE_FLAG)), RegistrationConstants.FACE_CAPTURE,"","");
 		
 		LOGGER.info(LoggerConstants.LOG_REG_PAGE_FLOW, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Updating Child values of Map based on Configuration");
 		
 		if(page.equalsIgnoreCase(RegistrationConstants.APPLICATION_NAME)) {
-			updateDetailMap(registrationMap, documentDisableFlag, RegistrationConstants.DOCUMENT_PANE,RegistrationConstants.DOCUMENT_SCAN,"");
+			updateDetailMap(registrationMap, String.valueOf(ApplicationContext.map().get(RegistrationConstants.DOC_DISABLE_FLAG)), RegistrationConstants.DOCUMENT_PANE,RegistrationConstants.DOCUMENT_SCAN,"");
 			
 			if(!registrationMap.get(RegistrationConstants.BIOMETRIC_EXCEPTION).get(RegistrationConstants.FINGER_PANE) && !registrationMap.get(RegistrationConstants.BIOMETRIC_EXCEPTION).get(RegistrationConstants.IRIS_PANE)) {
 				registrationMap.get(RegistrationConstants.BIOMETRIC_EXCEPTION).put(RegistrationConstants.VISIBILITY, false);

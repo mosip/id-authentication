@@ -7,7 +7,6 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 import java.sql.Timestamp;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -19,6 +18,7 @@ import io.mosip.registration.constants.AuditEvent;
 import io.mosip.registration.constants.AuditReferenceIdTypes;
 import io.mosip.registration.constants.Components;
 import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dao.AuditLogControlDAO;
 import io.mosip.registration.dao.RegistrationDAO;
@@ -76,10 +76,6 @@ public class PacketEncryptionServiceImpl implements PacketEncryptionService {
 	 */
 	@Autowired
 	private AuditLogControlDAO auditLogControlDAO;
-
-	@Value("${mosip.registration.max_reg_packet_size:0}")
-	private long maxPacketSize;
-
 	/**
 	 * Encrypts the input data using AES algorithm followed by RSA
 	 * 
@@ -101,7 +97,7 @@ public class PacketEncryptionServiceImpl implements PacketEncryptionService {
 					APPLICATION_ID, "Packet encrypted successfully");
 			
 			// Validate the size of the generated registration packet
-			long maxPacketSizeInBytes = maxPacketSize * 1024 * 1024;
+			long maxPacketSizeInBytes = Integer.parseInt(String.valueOf(ApplicationContext.map().get(RegistrationConstants.REG_PKT_SIZE))) * 1024 * 1024;
 			if (encryptedPacket.length > maxPacketSizeInBytes) {
 				LOGGER.error(LOG_PKT_ENCRYPTION, APPLICATION_NAME, APPLICATION_ID,
 						RegistrationExceptionConstants.REG_PACKET_SIZE_EXCEEDED_ERROR_CODE.getErrorMessage());

@@ -134,9 +134,6 @@ public class LoginController extends BaseController implements Initializable {
 	@FXML
 	private Label otpValidity;
 
-	@Value("${FINGER_PRINT_SCORE}")
-	private long fingerPrintScore;
-
 	@Value("${TIME_OUT_INTERVAL}")
 	private long timeoutInterval;
 
@@ -149,23 +146,8 @@ public class LoginController extends BaseController implements Initializable {
 	@Value("${otp_validity_in_mins}")
 	private long otpValidityImMins;
 
-	@Value("${QUALITY_SCORE}")
-	private int qualityScore;
-
-	@Value("${CAPTURE_TIME_OUT}")
-	private int captureTimeOut;
-
-	@Value("${USERNAME_PWD_LENGTH}")
-	private int usernamePwdLength;
-
 	@Value("${PROVIDER_NAME}")
 	private String deviceName;
-	
-	@Value("${mosip.registration.invalid_login_count:0}")
-	private int invalidLoginCount;
-	
-	@Value("${mosip.registration.invalid_login_time:0}")
-	private int invalidLoginTime;
 
 	@Autowired
 	private LoginService loginService;
@@ -208,7 +190,7 @@ public class LoginController extends BaseController implements Initializable {
 		stopTimer();
 		
 		password.textProperty().addListener((obsValue, oldValue, newValue) -> {
-			if(newValue.length() > usernamePwdLength) {
+			if(newValue.length() > Integer.parseInt(String.valueOf(ApplicationContext.map().get(RegistrationConstants.PWORD_LENGTH)))) {
 				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.PWORD_LENGTH);
 			}
 		});
@@ -236,12 +218,13 @@ public class LoginController extends BaseController implements Initializable {
 
 			try {
 
+				/* Save Global Param Values in Application Context's application map */
+				getGlobalParams();
+				ApplicationContext.loadResources();
+				validations.setResourceBundle();
 				BorderPane loginRoot = BaseController.load(getClass().getResource(RegistrationConstants.INITIAL_PAGE));
 
 				scene = getScene(loginRoot);
-
-				/* Save Global Param Values in Application Context's application map */
-				getGlobalParams();
 				pageFlow.getInitialPageDetails();
 
 				primaryStage.setMaximized(true);
@@ -281,25 +264,19 @@ public class LoginController extends BaseController implements Initializable {
 
 		if (userId.getText().isEmpty()) {
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.USERNAME_FIELD_EMPTY);
-		} else if (userId.getText().length() > usernamePwdLength) {
-			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.USRNAME_LENGTH);
 		} else {
 
 			try {
 
 				UserDetail userDetail = loginService.getUserDetail(userId.getText());
 
-				String regCenter = (String) ApplicationContext.map().get(RegistrationConstants.REGISTARTION_CENTER);
+				String centerId = userOnboardService.getMachineCenterId().get(RegistrationConstants.USER_CENTER_ID);
 
-				String stationId = userOnboardService.getMachineCenterId().get(RegistrationConstants.USER_CENTER_ID);
+				if (userDetail != null && userDetail.getRegCenterUser().getRegCenterUserId().getRegcntrId().equals(centerId)) {
 
-				if (regCenter.equals(stationId)) {
+					ApplicationContext.map().put(RegistrationConstants.USER_CENTER_ID, centerId);
 
-					ApplicationContext.map().put(RegistrationConstants.MACHINE_ID, stationId);
-
-					if (userDetail == null) {
-						generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.USER_NOT_ONBOARDED);
-					} else if (userDetail.getStatusCode().equalsIgnoreCase(RegistrationConstants.BLOCKED)) {
+					if (userDetail.getStatusCode().equalsIgnoreCase(RegistrationConstants.BLOCKED)) {
 						generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.BLOCKED_USER_ERROR);
 					} else {
 
@@ -328,7 +305,7 @@ public class LoginController extends BaseController implements Initializable {
 
 							Map<String, Object> sessionContextMap = SessionContext.getInstance().getMapObject();
 
-							sessionContextMap.put(RegistrationConstants.USER_STATION_ID, stationId);
+							ApplicationContext.map().put(RegistrationConstants.USER_STATION_ID, userOnboardService.getMachineCenterId().get(RegistrationConstants.USER_STATION_ID));
 
 							if (getCenterMachineStatus(userDetail)) {
 								sessionContextMap.put(RegistrationConstants.ONBOARD_USER, isNewUser);
@@ -341,6 +318,10 @@ public class LoginController extends BaseController implements Initializable {
 								loginList = loginService.getModesOfLogin(ProcessNames.ONBOARD.getType(),
 										RegistrationConstants.getRoles());
 							}
+							
+							String fingerprintDisableFlag = String.valueOf(ApplicationContext.map().get(RegistrationConstants.FINGERPRINT_DISABLE_FLAG));
+							String irisDisableFlag = String.valueOf(ApplicationContext.map().get(RegistrationConstants.IRIS_DISABLE_FLAG));
+							String faceDisableFlag = String.valueOf(ApplicationContext.map().get(RegistrationConstants.FACE_DISABLE_FLAG));
 
 							LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
 									"Ignoring FingerPrint login if the configuration is off");
@@ -397,7 +378,7 @@ public class LoginController extends BaseController implements Initializable {
 					}
 				} else {
 					generateAlert(RegistrationConstants.USER_MACHINE_VALIDATION_CODE,
-							RegistrationConstants.USER_MACHINE_VALIDATION_MSG);
+							RegistrationUIConstants.USER_MACHINE_VALIDATION_MSG);
 				}
 			} catch (RegBaseUncheckedException regBaseUncheckedException) {
 
@@ -865,7 +846,10 @@ public class LoginController extends BaseController implements Initializable {
 
 		MosipFingerprintProvider fingerPrintConnector = fingerprintFacade.getFingerprintProviderFactory(deviceName);
 
-		if (fingerPrintConnector.captureFingerprint(qualityScore, captureTimeOut, "") != 0) {
+		if (fingerPrintConnector.captureFingerprint(
+				Integer.parseInt(String.valueOf(ApplicationContext.map().get(RegistrationConstants.QUALITY_SCORE))),
+				Integer.parseInt(String.valueOf(ApplicationContext.map().get(RegistrationConstants.CAPTURE_TIME_OUT))),
+				"") != 0) {
 
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.DEVICE_FP_NOT_FOUND);
 
@@ -967,6 +951,12 @@ public class LoginController extends BaseController implements Initializable {
 		int loginCount = userDetail.getUnsuccessfulLoginCount() != null
 				? userDetail.getUnsuccessfulLoginCount().intValue()
 				: 0;
+				
+		int invalidLoginCount = Integer
+				.parseInt(String.valueOf(ApplicationContext.map().get(RegistrationConstants.INVALID_LOGIN_COUNT)));
+
+		int invalidLoginTime = Integer
+				.parseInt(String.valueOf(ApplicationContext.map().get(RegistrationConstants.INVALID_LOGIN_TIME)));
 
 		Timestamp loginTime = userDetail.getUserlockTillDtimes();
 

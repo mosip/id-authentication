@@ -128,18 +128,18 @@ public class UpdateUINController extends BaseController implements Initializable
 			SessionContext.map().put(RegistrationConstants.IS_CONSOLIDATED, RegistrationConstants.DISABLE);
 			fxUtils.validateOnType(uinUpdateRoot, uinId, validation);
 			biometricBox.getChildren().forEach(bio -> {
-				if (RegistrationConstants.DISABLE.equalsIgnoreCase(fingerprintDisableFlag)
+				if (RegistrationConstants.DISABLE.equalsIgnoreCase(String.valueOf(ApplicationContext.map().get(RegistrationConstants.FINGERPRINT_DISABLE_FLAG)))
 						&& RegistrationConstants.UIN_UPDATE_BIO_FP.equalsIgnoreCase(bio.getId())) {
 					bio.setVisible(false);
 					bio.setManaged(false);
 				}
-				if (RegistrationConstants.DISABLE.equalsIgnoreCase(irisDisableFlag)
+				if (RegistrationConstants.DISABLE.equalsIgnoreCase(String.valueOf(ApplicationContext.map().get(RegistrationConstants.IRIS_DISABLE_FLAG)))
 						&& RegistrationConstants.UIN_UPDATE_BIO_IRIS.equalsIgnoreCase(bio.getId())) {
 					bio.setVisible(false);
 					bio.setManaged(false);
 				}
-				if (RegistrationConstants.DISABLE.equalsIgnoreCase(fingerprintDisableFlag)
-						&& RegistrationConstants.DISABLE.equalsIgnoreCase(irisDisableFlag)
+				if (RegistrationConstants.DISABLE.equalsIgnoreCase(String.valueOf(ApplicationContext.map().get(RegistrationConstants.FINGERPRINT_DISABLE_FLAG)))
+						&& RegistrationConstants.DISABLE.equalsIgnoreCase(String.valueOf(ApplicationContext.map().get(RegistrationConstants.IRIS_DISABLE_FLAG)))
 						&& RegistrationConstants.UIN_UPDATE_BIO_EXCEPTION.equalsIgnoreCase(bio.getId())) {
 					bio.setVisible(false);
 					bio.setManaged(false);
@@ -184,12 +184,12 @@ public class UpdateUINController extends BaseController implements Initializable
 			} else {
 				biometricBox.getChildren().forEach(demographicNode -> {
 					if (demographicNode.getId().equalsIgnoreCase(RegistrationConstants.UIN_UPDATE_BIO_FP)
-							&& RegistrationConstants.DISABLE.equalsIgnoreCase(fingerprintDisableFlag)
+							&& RegistrationConstants.DISABLE.equalsIgnoreCase(String.valueOf(ApplicationContext.map().get(RegistrationConstants.FINGERPRINT_DISABLE_FLAG)))
 							|| demographicNode.getId().equalsIgnoreCase(RegistrationConstants.UIN_UPDATE_BIO_IRIS)
-									&& RegistrationConstants.DISABLE.equalsIgnoreCase(irisDisableFlag)
+									&& RegistrationConstants.DISABLE.equalsIgnoreCase(String.valueOf(ApplicationContext.map().get(RegistrationConstants.IRIS_DISABLE_FLAG)))
 							|| demographicNode.getId().equalsIgnoreCase(RegistrationConstants.UIN_UPDATE_BIO_EXCEPTION)
-									&& RegistrationConstants.DISABLE.equalsIgnoreCase(fingerprintDisableFlag)
-									&& RegistrationConstants.DISABLE.equalsIgnoreCase(irisDisableFlag)) {
+									&& RegistrationConstants.DISABLE.equalsIgnoreCase(String.valueOf(ApplicationContext.map().get(RegistrationConstants.FINGERPRINT_DISABLE_FLAG)))
+									&& RegistrationConstants.DISABLE.equalsIgnoreCase(String.valueOf(ApplicationContext.map().get(RegistrationConstants.IRIS_DISABLE_FLAG)))) {
 						demographicNode.setVisible(false);
 						demographicNode.setManaged(false);
 					}

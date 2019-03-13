@@ -5,7 +5,6 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 import static io.mosip.registration.constants.RegistrationConstants.MACHINE_MAPPING_LOGGER_TITLE;
 import static io.mosip.registration.exception.RegistrationExceptionConstants.REG_USER_MACHINE_MAP_CENTER_MACHINE_CODE;
-import static io.mosip.registration.exception.RegistrationExceptionConstants.REG_USER_MACHINE_MAP_MACHINE_MASTER_CODE;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -23,6 +22,7 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dao.MachineMappingDAO;
 import io.mosip.registration.dao.UserOnboardDAO;
@@ -174,8 +174,8 @@ public class UserOnboardDAOImpl implements UserOnboardDAO {
 			UserMachineMapping user = new UserMachineMapping();
 			UserMachineMappingID userID = new UserMachineMappingID();
 			userID.setUserID(SessionContext.userContext().getUserId());
-			userID.setCentreID(SessionContext.userContext().getRegistrationCenterDetailDTO().getRegistrationCenterId());
-			userID.setMachineID(SessionContext.map().get(RegistrationConstants.USER_STATION_ID).toString());
+			userID.setCentreID(ApplicationContext.map().get(RegistrationConstants.USER_CENTER_ID).toString());
+			userID.setMachineID(ApplicationContext.map().get(RegistrationConstants.USER_STATION_ID).toString());
 
 			user.setUserMachineMappingId(userID);
 			user.setCrBy(SessionContext.userContext().getUserId());
@@ -183,6 +183,7 @@ public class UserOnboardDAOImpl implements UserOnboardDAO {
 			user.setUpdBy(SessionContext.userContext().getUserId());
 			user.setUpdDtimes(Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()));
 			user.setIsActive(true);
+			user.setLangCode("eng");
 
 			machineMappingDAO.save(user);
 
@@ -228,8 +229,7 @@ public class UserOnboardDAOImpl implements UserOnboardDAO {
 
 			} else {
 
-				throw new RegBaseCheckedException(REG_USER_MACHINE_MAP_MACHINE_MASTER_CODE.getErrorCode(),
-						REG_USER_MACHINE_MAP_MACHINE_MASTER_CODE.getErrorMessage());
+				return null;
 			}
 
 		} catch (RuntimeException runtimeException) {

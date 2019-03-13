@@ -17,7 +17,6 @@ import javax.imageio.ImageIO;
 import org.joda.time.DateTime;
 import org.joda.time.Seconds;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 
 import io.mosip.kernel.core.exception.ExceptionUtils;
@@ -28,6 +27,7 @@ import io.mosip.registration.constants.AuditReferenceIdTypes;
 import io.mosip.registration.constants.Components;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.constants.RegistrationUIConstants;
+import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.controller.reg.RegistrationController;
@@ -90,9 +90,6 @@ public class FaceCaptureController extends BaseController implements Initializab
 
 	@Autowired
 	private UserOnboardParentController userOnboardParentController;
-
-	@Value("${mosip.registration.face_recapture_time:}")
-	private String configuredSecondsForRecapture;
 
 	private Timestamp lastPhotoCaptured;
 
@@ -321,7 +318,7 @@ public class FaceCaptureController extends BaseController implements Initializab
 	
 	@Override
 	public void calculateRecaptureTime(String photoType) {
-		int configuredSeconds = Integer.parseInt(configuredSecondsForRecapture);
+		int configuredSeconds = Integer.parseInt(String.valueOf(ApplicationContext.map().get(RegistrationConstants.FACE_RECAPTURE_TIME)));
 
 		if (photoType.equals(RegistrationConstants.APPLICANT_IMAGE)) {
 			/* Set Time which last photo was captured */
@@ -440,12 +437,17 @@ public class FaceCaptureController extends BaseController implements Initializab
 		selectedPhoto = sourcePane;
 		takePhoto.setDisable(true);
 		if (selectedPhoto.getId().equals(RegistrationConstants.APPLICANT_PHOTO_PANE)) {
-			if (validatePhotoTimer(lastPhotoCaptured, Integer.parseInt(configuredSecondsForRecapture), photoAlert)) {
+			if (validatePhotoTimer(lastPhotoCaptured,
+					Integer.parseInt(
+							String.valueOf(ApplicationContext.map().get(RegistrationConstants.FACE_RECAPTURE_TIME))),
+					photoAlert)) {
 				takePhoto.setDisable(false);
 				photoAlert.setVisible(false);
 			}
 		} else if (selectedPhoto.getId().equals(RegistrationConstants.EXCEPTION_PHOTO_PANE) && hasBiometricException
-				&& validatePhotoTimer(lastExceptionPhotoCaptured, Integer.parseInt(configuredSecondsForRecapture),
+				&& validatePhotoTimer(lastExceptionPhotoCaptured,
+						Integer.parseInt(String
+								.valueOf(ApplicationContext.map().get(RegistrationConstants.FACE_RECAPTURE_TIME))),
 						photoAlert)) {
 			takePhoto.setDisable(false);
 			photoAlert.setVisible(false);

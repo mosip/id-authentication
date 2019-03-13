@@ -13,7 +13,6 @@ import java.util.Map;
 import java.util.WeakHashMap;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -49,12 +48,6 @@ import io.mosip.registration.service.sync.SyncStatusValidatorService;
 @Service
 
 public class SyncStatusValidatorServiceImpl extends BaseService implements SyncStatusValidatorService {
-
-	@Value("${GPS_DEVICE_MODEL}")
-	private String gpsDeviceModel;
-	/** Object forserialPortConnected. */
-	@Value("${GPS_DEVICE_ENABLE_FLAG}")
-	private String gpsEnableFlag;
 
 	/** Object for SyncJobDAO class. */
 	@Autowired
@@ -294,10 +287,10 @@ public class SyncStatusValidatorServiceImpl extends BaseService implements SyncS
 		LOGGER.info(LoggerConstants.OPT_TO_REG_LOGGER_SESSION_ID, APPLICATION_NAME, APPLICATION_ID,
 				"Getting the center latitude and longitudes from session conext");
 
-		if (gpsEnableFlag.equalsIgnoreCase(RegistrationConstants.ENABLE)) {
+		if (RegistrationConstants.ENABLE.equalsIgnoreCase(getGlobalConfigValueOf(RegistrationConstants.GPS_DEVICE_DISABLE_FLAG))) {
 
 			Map<String, Object> gpsMapDetails = gpsFacade.getLatLongDtls(centerLatitude, centerLongitude,
-					gpsDeviceModel);
+					String.valueOf(ApplicationContext.map().get(RegistrationConstants.GPS_DEVICE_MODEL)));
 
 			if (RegistrationConstants.GPS_CAPTURE_SUCCESS_MSG
 					.equals(gpsMapDetails.get(RegistrationConstants.GPS_CAPTURE_ERROR_MSG))) {

@@ -1,5 +1,12 @@
 package io.mosip.registration.service.packet.impl;
 
+import static io.mosip.kernel.core.util.JsonUtils.javaObjectToJsonString;
+import static io.mosip.registration.constants.LoggerConstants.LOG_PKT_CREATION;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
+import static io.mosip.registration.constants.RegistrationConstants.DEMOGRPAHIC_JSON_NAME;
+import static io.mosip.registration.mapper.CustomObjectMapper.MAPPER_FACADE;
+
 import java.io.File;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -17,7 +24,6 @@ import javax.xml.bind.JAXBElement;
 import javax.xml.namespace.QName;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.auditmanager.entity.Audit;
@@ -72,13 +78,6 @@ import io.mosip.registration.service.external.ZipCreationService;
 import io.mosip.registration.service.packet.PacketCreationService;
 import io.mosip.registration.util.hmac.HMACGeneration;
 
-import static io.mosip.kernel.core.util.JsonUtils.javaObjectToJsonString;
-import static io.mosip.registration.constants.LoggerConstants.LOG_PKT_CREATION;
-import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
-import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
-import static io.mosip.registration.constants.RegistrationConstants.DEMOGRPAHIC_JSON_NAME;
-import static io.mosip.registration.mapper.CustomObjectMapper.MAPPER_FACADE;
-
 /**
  * Class for creating the Resident Registration
  * 
@@ -105,9 +104,7 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 	private AuditDAO auditDAO;
 	@Autowired
 	private MachineMappingDAO machineMappingDAO;
-	@Value("${mosip.registration.cbeff_only_unique_tags:}")
-	private String onlyUniqueRequiredInCBEFF;
-
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -443,7 +440,7 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 		String testTagType = null;
 		String testTagElementName = null;
 
-		if (RegistrationConstants.GLOBAL_CONFIG_TRUE_VALUE.equalsIgnoreCase(onlyUniqueRequiredInCBEFF)) {
+		if (RegistrationConstants.GLOBAL_CONFIG_TRUE_VALUE.equalsIgnoreCase(String.valueOf(ApplicationContext.map().get(RegistrationConstants.CBEFF_UNQ_TAG)))) {
 			testTagType = "Unique";
 		} else {
 			testTagType = random.nextInt() % 2 == 0 ? "Duplicate" : "Unique";
