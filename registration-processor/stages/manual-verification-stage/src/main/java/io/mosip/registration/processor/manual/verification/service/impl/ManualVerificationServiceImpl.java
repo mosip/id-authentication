@@ -17,6 +17,7 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.code.ApiName;
+import io.mosip.registration.processor.core.code.DedupeSourceName;
 import io.mosip.registration.processor.core.code.EventId;
 import io.mosip.registration.processor.core.code.EventName;
 import io.mosip.registration.processor.core.code.EventType;
@@ -85,7 +86,7 @@ public class ManualVerificationServiceImpl implements ManualVerificationService 
 	 * .adjudication.dto.UserDto)
 	 */
 	@Override
-	public ManualVerificationDTO assignApplicant(UserDto dto) {
+	public ManualVerificationDTO assignApplicant(UserDto dto,DedupeSourceName matchType) {
 		ManualVerificationDTO manualVerificationDTO = new ManualVerificationDTO();
 		List<ManualVerificationEntity> entities;
 		entities = basePacketRepository.getAssignedApplicantDetails(dto.getUserId(),
@@ -102,7 +103,7 @@ public class ManualVerificationServiceImpl implements ManualVerificationService 
 			manualVerificationDTO.setStatusCode(manualVerificationEntity.getStatusCode());
 			manualVerificationDTO.setReasonCode(manualVerificationEntity.getReasonCode());
 		} else {
-			entities = basePacketRepository.getFirstApplicantDetails(ManualVerificationStatus.PENDING.name());
+			entities = basePacketRepository.getFirstApplicantDetails(ManualVerificationStatus.PENDING.name(),matchType);
 			if (entities.isEmpty()) {
 				throw new NoRecordAssignedException(PlatformErrorMessages.RPR_MVS_NO_ASSIGNED_RECORD.getCode(),
 						PlatformErrorMessages.RPR_MVS_NO_ASSIGNED_RECORD.getMessage());

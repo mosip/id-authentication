@@ -102,7 +102,7 @@ public class DemodedupeProcessor {
 				// authenticating duplicateIds with provided packet biometrics
 				boolean isDuplicateAfterAuth = demoDedupe.authenticateDuplicates(registrationId, duplicateUINList);
 				if (isDuplicateAfterAuth) {
-
+					object.setIsValid(Boolean.FALSE);
 					int retryCount = registrationStatusDto.getRetryCount() != null
 							? registrationStatusDto.getRetryCount() + 1
 							: 1;

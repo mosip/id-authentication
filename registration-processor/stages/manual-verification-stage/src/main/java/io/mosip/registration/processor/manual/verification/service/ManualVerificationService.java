@@ -2,6 +2,7 @@ package io.mosip.registration.processor.manual.verification.service;
 
 import org.springframework.stereotype.Service;
 
+import io.mosip.registration.processor.core.code.DedupeSourceName;
 import io.mosip.registration.processor.core.packet.dto.PacketMetaInfo;
 import io.mosip.registration.processor.manual.verification.dto.ManualVerificationDTO;
 import io.mosip.registration.processor.manual.verification.dto.UserDto;
@@ -23,7 +24,7 @@ public interface ManualVerificationService {
 	 * @param dto            The {@link UserDto} to whom a regId needs to be assigned
 	 * @return {@link ManualVerificationDTO}
 	 */
-	public ManualVerificationDTO assignApplicant(UserDto dto);
+	public ManualVerificationDTO assignApplicant(UserDto dto,DedupeSourceName dedupeSourceName);
 
 	/**
 	 * This method returns a file related to a regId.

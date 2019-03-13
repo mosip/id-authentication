@@ -35,6 +35,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
+import io.mosip.registration.processor.core.code.DedupeSourceName;
 import io.mosip.registration.processor.core.constant.PacketFiles;
 import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.packet.dto.PacketMetaInfo;
@@ -120,7 +121,7 @@ public class ManualVerificationServiceTest {
 		manualVerificationDTO.setMatchedRefType("Type");
 		manualVerificationDTO.setStatusCode("PENDING");
 		entities.add(manualVerificationEntity);
-		Mockito.when(basePacketRepository.getFirstApplicantDetails(ManualVerificationStatus.PENDING.name()))
+		Mockito.when(basePacketRepository.getFirstApplicantDetails(ManualVerificationStatus.PENDING.name(),DedupeSourceName.DEMO))
 				.thenReturn(entities);
 		Mockito.when(basePacketRepository.getAssignedApplicantDetails(anyString(), anyString()))
 				.thenReturn(entities);
@@ -130,7 +131,7 @@ public class ManualVerificationServiceTest {
 	public void assignStatusMethodCheck() {
 		Mockito.when(basePacketRepository.getAssignedApplicantDetails(anyString(), anyString()))
 				.thenReturn(entities);
-		ManualVerificationDTO manualVerificationDTO1 = manualAdjudicationService.assignApplicant(dto);
+		ManualVerificationDTO manualVerificationDTO1 = manualAdjudicationService.assignApplicant(dto,DedupeSourceName.DEMO);
 		assertEquals(manualVerificationDTO, manualVerificationDTO1);
 
 	}
@@ -140,16 +141,16 @@ public class ManualVerificationServiceTest {
 		Mockito.when(basePacketRepository.getAssignedApplicantDetails(anyString(), anyString()))
 				.thenReturn(entitiesTemp);
 		Mockito.when(basePacketRepository.update(manualVerificationEntity)).thenReturn(manualVerificationEntity);
-		manualAdjudicationService.assignApplicant(dto);
+		manualAdjudicationService.assignApplicant(dto,DedupeSourceName.DEMO);
 	}
 
 	@Test(expected = NoRecordAssignedException.class)
 	public void noRecordAssignedExceptionAssignStatus() {
 		Mockito.when(basePacketRepository.getAssignedApplicantDetails(anyString(), anyString()))
 				.thenReturn(entitiesTemp);
-		Mockito.when(basePacketRepository.getFirstApplicantDetails(ManualVerificationStatus.PENDING.name()))
+		Mockito.when(basePacketRepository.getFirstApplicantDetails(ManualVerificationStatus.PENDING.name(),DedupeSourceName.DEMO))
 				.thenReturn(entitiesTemp);
-		manualAdjudicationService.assignApplicant(dto);
+		manualAdjudicationService.assignApplicant(dto,DedupeSourceName.DEMO);
 	}
 
 	@Test

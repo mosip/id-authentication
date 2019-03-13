@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
+import io.mosip.registration.processor.core.code.DedupeSourceName;
 import io.mosip.registration.processor.packet.storage.entity.BasePacketEntity;
 import io.mosip.registration.processor.packet.storage.entity.ManualVerificationEntity;
 
@@ -93,9 +94,9 @@ public interface BasePacketRepository<E extends BasePacketEntity<?>, T> extends 
 	 *            The statusCode
 	 * @return {@link ManualVerificationEntity}
 	 */
-	@Query(value = "SELECT mve FROM ManualVerificationEntity mve WHERE mve.crDtimes in "
+	@Query(value = "SELECT mve FROM ManualVerificationEntity mve WHERE mve.sourceName=:source_name AND mve.crDtimes in "
 			+ "(SELECT min(mve2.crDtimes) FROM ManualVerificationEntity mve2 where mve2.statusCode=:statusCode) and mve.statusCode=:statusCode")
-	public List<E> getFirstApplicantDetails(@Param("statusCode") String statusCode);
+	public List<E> getFirstApplicantDetails(@Param("statusCode") String statusCode,@Param("source_name")DedupeSourceName matchType);
 
 	/**
 	 * This method returns {@link ManualVerificationEntity} corresponding to
@@ -192,4 +193,5 @@ public interface BasePacketRepository<E extends BasePacketEntity<?>, T> extends 
 	 */
 	@Query("SELECT abis.id.regId FROM RegAbisRefEntity abis WHERE abis.abisRefId =:refId")
 	public List<String> getRidByReferenceId(@Param("refId") String refId);
+
 }
