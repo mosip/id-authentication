@@ -26,6 +26,12 @@ public final class PlatformErrorConstants {
 
 	/** The Constant RPR_PACKET_MANAGER_MODULE. */
 	public static final String RPR_PACKET_MANAGER_MODULE = RPR_REGISTRATION_PROCESSOR_PREFIX + "PKM-";
+	
+	/** The Constant RPR_OSI_VALIDATOR_MODULE. */
+	public static final String RPR_OSI_VALIDATOR_MODULE = RPR_REGISTRATION_PROCESSOR_PREFIX + "OSI-";
+	
+	/** The Constant RPR_DEMO_DEDUPE_MODULE. */
+	public static final String RPR_DEMO_DEDUPE_MODULE = RPR_REGISTRATION_PROCESSOR_PREFIX + "DDD-";
 
 	/** The Constant RPR_CAMEL_BRIDGE_MODULE. */
 	public static final String RPR_CAMEL_BRIDGE_MODULE = RPR_REGISTRATION_PROCESSOR_PREFIX + "CMB-";
@@ -60,11 +66,13 @@ public final class PlatformErrorConstants {
 	/** The Constant RPR_PRINTING_MODULE. */
 	public static final String RPR_PRINTING_MODULE = RPR_REGISTRATION_PROCESSOR_PREFIX + "PRT-";
 	
-	/** The Constant RPR_MOSIP_QUEUE_MODULE */
+	/**  The Constant RPR_MOSIP_QUEUE_MODULE. */
 	public static final String RPR_MOSIP_QUEUE_MODULE = RPR_REGISTRATION_PROCESSOR_PREFIX + "MQI-";
 
+	/** The Constant RPR_PACKET_VALIDATOR_MODULE. */
 	public static final String RPR_PACKET_VALIDATOR_MODULE = RPR_REGISTRATION_PROCESSOR_PREFIX + "PVM-";
 
+	/** The Constant RPR_UIN_GENERATOR_STAGE. */
 	public static final String RPR_UIN_GENERATOR_STAGE = RPR_REGISTRATION_PROCESSOR_PREFIX + "UGS-";
 
 	/**

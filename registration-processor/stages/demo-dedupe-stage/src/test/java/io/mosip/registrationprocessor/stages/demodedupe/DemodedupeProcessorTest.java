@@ -8,9 +8,12 @@ import static org.mockito.Matchers.anyList;
 import static org.mockito.Matchers.anyString;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
+import org.apache.commons.io.IOUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -18,18 +21,28 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
+import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.springframework.web.client.ResourceAccessException;
 
+import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
+import io.mosip.kernel.core.util.HMACUtils;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.code.EventId;
 import io.mosip.registration.processor.core.code.EventName;
 import io.mosip.registration.processor.core.code.EventType;
+import io.mosip.registration.processor.core.constant.PacketFiles;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
+import io.mosip.registration.processor.core.packet.dto.FieldValue;
+import io.mosip.registration.processor.core.packet.dto.FieldValueArray;
 import io.mosip.registration.processor.core.packet.dto.Identity;
+import io.mosip.registration.processor.core.packet.dto.PacketMetaInfo;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.DemographicInfoDto;
+import io.mosip.registration.processor.core.packet.dto.idjson.Document;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
+import io.mosip.registration.processor.core.util.JsonUtil;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.packet.storage.entity.IndividualDemographicDedupeEntity;
 import io.mosip.registration.processor.packet.storage.entity.ManualVerificationEntity;
@@ -47,6 +60,7 @@ import io.mosip.registration.processor.status.service.RegistrationStatusService;
  */
 @RunWith(PowerMockRunner.class)
 @PowerMockIgnore({ "javax.management.*", "javax.net.ssl.*" })
+@PrepareForTest({ JsonUtil.class, IOUtils.class, HMACUtils.class })
 public class DemodedupeProcessorTest {
 
 	/** The registration status service. */
@@ -71,6 +85,12 @@ public class DemodedupeProcessorTest {
 	/** The demo dedupe. */
 	@Mock
 	private DemoDedupe demoDedupe;
+	
+	@Mock
+	private InputStream inputStream;
+	
+	@Mock
+	private FileSystemAdapter adapter;
 
 	/** The dto. */
 	private MessageDTO dto = new MessageDTO();
@@ -83,8 +103,13 @@ public class DemodedupeProcessorTest {
 	private AuditLogRequestBuilder auditLogRequestBuilder = new AuditLogRequestBuilder();
 
 	@InjectMocks
-	DemodedupeProcessor demodedupeProcessor;
+	private DemodedupeProcessor demodedupeProcessor;
 
+	private InternalRegistrationStatusDto registrationStatusDto;
+	
+	private Identity identity = new Identity(); 
+	
+	private PacketMetaInfo packetMetaInfo;
 	/**
 	 * Sets the up.
 	 *
@@ -104,6 +129,76 @@ public class DemodedupeProcessorTest {
 		duplicateDtos.add(dto1);
 		duplicateDtos.add(dto2);
 
+		registrationStatusDto= new InternalRegistrationStatusDto();
+		registrationStatusDto.setRegistrationType("NEW");
+		registrationStatusDto.setRegistrationId("2018701130000410092018110735");
+		
+		packetMetaInfo = new PacketMetaInfo();
+
+		FieldValue registrationType = new FieldValue();
+		registrationType.setLabel("registrationType");
+		registrationType.setValue("New");
+
+		FieldValue applicantType = new FieldValue();
+		applicantType.setLabel("applicantType");
+		applicantType.setValue("Child");
+
+		FieldValue isVerified = new FieldValue();
+		isVerified.setLabel("isVerified");
+		isVerified.setValue("Verified");
+
+		FieldValue preRegistrationId = new FieldValue();
+		preRegistrationId.setLabel("preRegistrationId");
+		preRegistrationId.setValue("2018701130000410092018110736");
+
+		identity.setMetaData(Arrays.asList(registrationType, applicantType, isVerified, preRegistrationId));
+
+		Document documentPob = new Document();
+		documentPob.setDocumentCategory("PROOFOFDATEOFBIRTH");
+		documentPob.setDocumentName("ProofOfBirth");
+		Document document = new Document();
+		document.setDocumentCategory("PROOFOFRELATIONSHIP");
+		document.setDocumentName("ProofOfRelation");
+		List<Document> documents = new ArrayList<Document>();
+		documents.add(documentPob);
+		documents.add(document);
+		//Mockito.when(documentUtility.getDocumentList(any())).thenReturn(documents);
+		List<FieldValueArray> fieldValueArrayList = new ArrayList<FieldValueArray>();
+
+		FieldValueArray applicantBiometric = new FieldValueArray();
+		applicantBiometric.setLabel(PacketFiles.APPLICANTBIOMETRICSEQUENCE.name());
+		List<String> applicantBiometricValues = new ArrayList<String>();
+		applicantBiometricValues.add(PacketFiles.BOTHTHUMBS.name());
+		applicantBiometric.setValue(applicantBiometricValues);
+		fieldValueArrayList.add(applicantBiometric);
+		FieldValueArray introducerBiometric = new FieldValueArray();
+		introducerBiometric.setLabel(PacketFiles.INTRODUCERBIOMETRICSEQUENCE.name());
+		List<String> introducerBiometricValues = new ArrayList<String>();
+		introducerBiometricValues.add("introducerLeftThumb");
+		introducerBiometric.setValue(introducerBiometricValues);
+		fieldValueArrayList.add(introducerBiometric);
+		FieldValueArray applicantDemographic = new FieldValueArray();
+		applicantDemographic.setLabel(PacketFiles.APPLICANTDEMOGRAPHICSEQUENCE.name());
+		List<String> applicantDemographicValues = new ArrayList<String>();
+		applicantDemographicValues.add(PacketFiles.APPLICANTPHOTO.name());
+		applicantDemographicValues.add("ProofOfBirth");
+		applicantDemographicValues.add("ProofOfRelation");
+		applicantDemographicValues.add("ProofOfAddress");
+		applicantDemographicValues.add("ProofOfIdentity");
+		applicantDemographic.setValue(applicantDemographicValues);
+		fieldValueArrayList.add(applicantDemographic);
+		identity.setHashSequence(fieldValueArrayList);
+		List<String> sequence2 = new ArrayList<>();
+		sequence2.add("audit");
+		List<FieldValueArray> fieldValueArrayListSequence = new ArrayList<FieldValueArray>();
+		FieldValueArray hashsequence2= new FieldValueArray();
+		hashsequence2.setValue(sequence2);
+		fieldValueArrayListSequence.add(hashsequence2);
+		identity.setHashSequence2(fieldValueArrayListSequence);
+		packetMetaInfo.setIdentity(identity);
+		
+		
+		
 		AuditResponseDto auditResponseDto = new AuditResponseDto();
 		Mockito.doReturn(auditResponseDto).when(auditLogRequestBuilder).createAuditRequestBuilder(
 				"test case description", EventId.RPR_405.toString(), EventName.UPDATE.toString(),
@@ -117,13 +212,20 @@ public class DemodedupeProcessorTest {
 
 	/**
 	 * Test demo dedupe success.
+	 * @throws Exception 
 	 */
 	@Test
-	public void testDemoDedupeSuccess() {
-
+	public void testDemoDedupeSuccess() throws Exception {
+		byte[] b = "sds".getBytes();
 		List<DemographicInfoDto> emptyDuplicateDtoSet = new ArrayList<>();
+		Mockito.when(adapter.getFile(anyString(), anyString())).thenReturn(inputStream);
+		PowerMockito.mockStatic(JsonUtil.class);
+		PowerMockito.mockStatic(IOUtils.class);
+		PowerMockito.when(JsonUtil.class, "inputStreamtoJavaObject", inputStream, PacketMetaInfo.class).thenReturn(packetMetaInfo);
+		PowerMockito.when(IOUtils.class, "toByteArray", inputStream).thenReturn(b);
+		Mockito.when(registrationStatusService.getRegistrationStatus(any())).thenReturn(registrationStatusDto);
 		Mockito.when(demoDedupe.performDedupe(anyString())).thenReturn(emptyDuplicateDtoSet);
-
+		
 		MessageDTO messageDto = demodedupeProcessor.process(dto);
 		assertTrue(messageDto.getIsValid());
 
@@ -131,15 +233,18 @@ public class DemodedupeProcessorTest {
 
 	/**
 	 * Test demo dedupe potential match.
-	 *
-	 * @throws ApisResourceAccessException
-	 *             the apis resource access exception
-	 * @throws IOException
-	 *             Signals that an I/O exception has occurred.
+	 * @throws Exception 
 	 */
 	@SuppressWarnings("unchecked")
 	@Test
-	public void testDemoDedupePotentialMatch() throws ApisResourceAccessException, IOException {
+	public void testDemoDedupePotentialMatch() throws Exception {
+		byte[] b = "sds".getBytes();
+		Mockito.when(adapter.getFile(anyString(), anyString())).thenReturn(inputStream);
+		PowerMockito.mockStatic(JsonUtil.class);
+		PowerMockito.mockStatic(IOUtils.class);
+		PowerMockito.when(JsonUtil.class, "inputStreamtoJavaObject", inputStream, PacketMetaInfo.class).thenReturn(packetMetaInfo);
+		PowerMockito.when(IOUtils.class, "toByteArray", inputStream).thenReturn(b);
+		Mockito.when(registrationStatusService.getRegistrationStatus(any())).thenReturn(registrationStatusDto);
 		Mockito.when(manualVerficationRepository.save(any())).thenReturn(manualVerificationEntity);
 		Mockito.when(demoDedupe.performDedupe(anyString())).thenReturn(duplicateDtos);
 

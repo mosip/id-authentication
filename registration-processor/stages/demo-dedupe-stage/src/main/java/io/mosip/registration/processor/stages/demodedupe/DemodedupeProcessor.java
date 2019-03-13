@@ -21,10 +21,12 @@ import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.code.EventId;
 import io.mosip.registration.processor.core.code.EventName;
 import io.mosip.registration.processor.core.code.EventType;
+import io.mosip.registration.processor.core.code.ModuleName;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.constant.PacketFiles;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
+import io.mosip.registration.processor.core.exception.util.PlatformSuccessMessages;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.packet.dto.PacketMetaInfo;
@@ -68,9 +70,6 @@ public class DemodedupeProcessor {
 	@Autowired
 	private DemoDedupe demoDedupe;
 
-	/** The Constant MATCHED_REFERENCE_TYPE. */
-	private static final String MATCHED_REFERENCE_TYPE = "uin";
-
 	@Autowired
 	private PacketInfoManager<Identity, ApplicantInfoDto> packetInfoManager;
 	
@@ -81,12 +80,15 @@ public class DemodedupeProcessor {
 	InputStream demographicInfoStream = null;
 	
 	byte[] bytesArray = null;
+	private String description = "";
+	
+	private String code="";
 	
 	public MessageDTO process(MessageDTO object) {
 
 		object.setMessageBusAddress(MessageBusAddress.DEMO_DEDUPE_BUS_IN);
 		object.setInternalError(Boolean.FALSE);
-		String description = "";
+		
 		boolean isTransactionSuccessful = false;
 
 		String registrationId = object.getRid();
@@ -133,16 +135,16 @@ public class DemodedupeProcessor {
 
 					registrationStatusDto.setStatusComment(StatusMessage.PACKET_DEMO_DEDUPE_FAILED);
 					registrationStatusDto.setStatusCode(RegistrationStatusCode.PACKET_DEMO_DEDUPE_FAILED.toString());
-					description = "Packet Demo dedupe failed for registration id : " + registrationId;
 					demographicDedupeRepository.updateIsActiveIfDuplicateFound(registrationId);
 
 				} else {
 					object.setIsValid(Boolean.FALSE);
 					registrationStatusDto.setStatusComment(StatusMessage.PACKET_DEMO_POTENTIAL_MATCH);
 					registrationStatusDto.setStatusCode(RegistrationStatusCode.PACKET_DEMO_POTENTIAL_MATCH.toString());
-					description = "Potential duplicate packet found for registration id : " + registrationId;
+					code=  PlatformSuccessMessages.RPR_PKR_DEMO_DE_DUP_POTENTIAL_DUPLICATION_FOUND.getCode();
+					description = PlatformSuccessMessages.RPR_PKR_DEMO_DE_DUP_POTENTIAL_DUPLICATION_FOUND.getMessage()+" -- " + registrationId;
 
-					// Saving potential duplicates in reg_manual_verification table
+					// Saving potential duplicates mached so assign it for reg_manual_verification table
 					packetInfoManager.saveManualAdjudicationData(uniqueMatchedRefIdList, registrationId);
 				}
 
@@ -150,44 +152,44 @@ public class DemodedupeProcessor {
 				object.setIsValid(Boolean.TRUE);
 				registrationStatusDto.setStatusComment(StatusMessage.PACKET_DEMO_DEDUPE_SUCCESS);
 				registrationStatusDto.setStatusCode(RegistrationStatusCode.PACKET_DEMO_DEDUPE_SUCCESS.toString());
-				description = "Packet Demo dedupe successful for registration id : " + registrationId;
+				code=  PlatformSuccessMessages.RPR_PKR_DEMO_DE_DUP.getCode();
+				description = PlatformSuccessMessages.RPR_PKR_DEMO_DE_DUP.getMessage() + registrationId;
 			}
 
-			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					registrationId, description);
+			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), code, registrationId, description);
 			registrationStatusDto.setUpdatedBy(USER);
 			registrationStatusService.updateRegistrationStatus(registrationStatusDto);
 			isTransactionSuccessful = true;
 
 		} catch (IOException | ApisResourceAccessException e) {
-			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					registrationId,
-					PlatformErrorMessages.PACKET_DEMO_DEDUPE_FAILED.getMessage() + ExceptionUtils.getStackTrace(e));
+			code =  PlatformErrorMessages.PACKET_DEMO_DEDUPE_FAILED.getCode();
+			description = PlatformErrorMessages.PACKET_DEMO_DEDUPE_FAILED.getMessage();
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), code,registrationId,description + ExceptionUtils.getStackTrace(e));
 			object.setInternalError(Boolean.TRUE);
-			description = "Internal error occured while processing registration  id : " + registrationId;
+			
 		}
 		catch (FSAdapterException e) {
-			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					registrationId, PlatformErrorMessages.PACKET_DEMO_PACKET_STORE_NOT_ACCESSIBLE.getMessage()
-							+ ExceptionUtils.getStackTrace(e));
+			code =  PlatformErrorMessages.PACKET_DEMO_PACKET_STORE_NOT_ACCESSIBLE.getCode();
+			description = PlatformErrorMessages.PACKET_DEMO_PACKET_STORE_NOT_ACCESSIBLE.getMessage();
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), code,registrationId, description+ ExceptionUtils.getStackTrace(e));
 			object.setInternalError(Boolean.TRUE);
-			description = " registration  id : " + registrationId;
 		} catch (Exception ex) {
-			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					registrationId,
-					PlatformErrorMessages.PACKET_DEMO_DEDUPE_FAILED.getMessage() + ExceptionUtils.getStackTrace(ex));
+			code =  PlatformErrorMessages.PACKET_DEMO_DEDUPE_FAILED.getCode();
+			description = PlatformErrorMessages.PACKET_DEMO_DEDUPE_FAILED.getMessage();
+			
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), code,registrationId, description + ExceptionUtils.getStackTrace(ex));
 			object.setInternalError(Boolean.TRUE);
-			description = "Internal error occured while processing registration  id : " + registrationId;
 		} finally {
+			
+			description = isTransactionSuccessful?PlatformSuccessMessages.RPR_PKR_DEMO_DE_DUP.getMessage():description;
+			String eventId = isTransactionSuccessful?EventId.RPR_402.toString():EventId.RPR_405.toString();
+			String eventName = isTransactionSuccessful?EventName.UPDATE.toString():EventName.EXCEPTION.toString();
+			String eventType = isTransactionSuccessful?EventType.BUSINESS.toString():EventType.SYSTEM.toString();
 
-			String eventId = isTransactionSuccessful ? EventId.RPR_402.toString() : EventId.RPR_405.toString();
-			String eventName = eventId.equalsIgnoreCase(EventId.RPR_402.toString()) ? EventName.UPDATE.toString()
-					: EventName.EXCEPTION.toString();
-			String eventType = eventId.equalsIgnoreCase(EventId.RPR_402.toString()) ? EventType.BUSINESS.toString()
-					: EventType.SYSTEM.toString();
-
-			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
-					registrationId);
+			/** Module-Id can be Both Succes/Error code */
+			String moduleId = isTransactionSuccessful? PlatformSuccessMessages.RPR_PKR_DEMO_DE_DUP.getCode():code;
+			String moduleName= ModuleName.DEMO_DEDUPE.toString();
+			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,moduleId,moduleName,registrationId);
 
 		}
 

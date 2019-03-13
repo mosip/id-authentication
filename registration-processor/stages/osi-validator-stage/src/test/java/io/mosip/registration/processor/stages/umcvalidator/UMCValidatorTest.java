@@ -21,6 +21,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.springframework.http.HttpStatus;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.client.HttpClientErrorException;
 
 import io.mosip.kernel.core.exception.IOException;
@@ -28,6 +29,7 @@ import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
 import io.mosip.kernel.core.util.exception.JsonMappingException;
 import io.mosip.kernel.core.util.exception.JsonParseException;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
+import io.mosip.registration.processor.core.packet.dto.FieldValue;
 import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.packet.dto.RegOsiDto;
 import io.mosip.registration.processor.core.packet.dto.RegistrationCenterMachineDto;
@@ -46,8 +48,10 @@ import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.stages.osivalidator.UMCValidator;
+import io.mosip.registration.processor.stages.osivalidator.utils.OSIUtils;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class UMCValidatorTest.
  */
@@ -69,12 +73,20 @@ public class UMCValidatorTest {
 	/** The registration processor rest service. */
 	@Mock
 	private RegistrationProcessorRestClientService<Object> registrationProcessorRestService;
+	
+	/** The osi utils. */
+	@Mock
+	private OSIUtils osiUtils;
+	
+	Identity identity;
 
 	/** The rcm dto. */
 	RegistrationCenterMachineDto rcmDto = new RegistrationCenterMachineDto();
 
 	/** The reg osi. */
 	RegOsiDto regOsi;
+	
+	List<FieldValue> metaData;
 
 	/**
 	 * Sets the up.
@@ -98,6 +110,9 @@ public class UMCValidatorTest {
 		regOsi.setOfficerId("O1234");
 
 		regOsi.setSupervisorId("S1234");
+		
+		ReflectionTestUtils.setField(umcValidator, "isWorkingHourValidationRequired", true);
+		
 
 		ClassLoader classLoader = getClass().getClassLoader();
 		File idJsonFile = new File(classLoader.getResource("packet_meta_info.json").getFile());
@@ -106,7 +121,37 @@ public class UMCValidatorTest {
 		Mockito.when(adapter.getFile(any(), any())).thenReturn(packetMetaInfoStream);
 
 		Mockito.when(packetInfoManager.getOsi(anyString())).thenReturn(regOsi);
-
+		metaData = new ArrayList<>();
+		FieldValue fv = new FieldValue();
+		fv.setLabel("REGISTRATIONID");
+		fv.setValue("");
+		metaData.add(fv);
+		
+		fv = new FieldValue();
+		fv.setLabel("CENTERID");
+		fv.setValue("");
+		metaData.add(fv);
+		
+		fv = new FieldValue();
+		fv.setLabel("MACHINEID");
+		fv.setValue("");
+		metaData.add(fv);
+		
+		fv = new FieldValue();
+		fv.setLabel("GEOLOCLATITUDE");
+		fv.setValue("");
+		metaData.add(fv);
+		
+		fv = new FieldValue();
+		fv.setLabel("GEOLOCLONGITUDE");
+		fv.setValue("");
+		metaData.add(fv);
+		
+		fv = new FieldValue();
+		fv.setLabel("CREATIONDATE");
+		fv.setValue("");
+		metaData.add(fv);
+		
 	}
 
 	/**
@@ -126,7 +171,42 @@ public class UMCValidatorTest {
 		rcdto.setLongitude("80.24492");
 		rcdto.setLatitude("13.0049");
 		rcdto.setId("12245");
-
+		
+		
+		metaData = new ArrayList<>();
+		FieldValue fv = new FieldValue();
+		fv.setLabel("REGISTRATIONID");
+		fv.setValue("2018782130000121112018103016");
+		metaData.add(fv);
+		
+		fv = new FieldValue();
+		fv.setLabel("CENTERID");
+		fv.setValue("12245");
+		metaData.add(fv);
+		
+		fv = new FieldValue();
+		fv.setLabel("MACHINEID");
+		fv.setValue("yyeqy26356");
+		metaData.add(fv);
+		
+		fv = new FieldValue();
+		fv.setLabel("GEOLOCLATITUDE");
+		fv.setValue("13.0049");
+		metaData.add(fv);
+		
+		fv = new FieldValue();
+		fv.setLabel("GEOLOCLONGITUDE");
+		fv.setValue("80.24492");
+		metaData.add(fv);
+		
+		fv = new FieldValue();
+		fv.setLabel("CREATIONDATE");
+		fv.setValue("2018-11-28T15:34:20.122");
+		metaData.add(fv);
+		
+		identity = new Identity();
+		identity.setMetaData(metaData);
+		Mockito.when(osiUtils.getIdentity(any())).thenReturn(identity);
 		List<RegistrationCenterDto> rcdtos = new ArrayList<>();
 		rcdtos.add(rcdto);
 		RegistrationCenterResponseDto regrepdto = new RegistrationCenterResponseDto();
@@ -171,6 +251,8 @@ public class UMCValidatorTest {
 		registrationCenterDeviceHistoryDetails.setIsActive(true);
 		registrationCenterDeviceHistoryResponseDto
 				.setRegistrationCenterDeviceHistoryDetails(registrationCenterDeviceHistoryDetails);
+		
+		
 		Mockito.when(registrationProcessorRestService.getApi(any(), any(), any(), any(), any())).thenReturn(regrepdto)
 				.thenReturn(mhrepdto).thenReturn(offrepdto).thenReturn(offrepdto).thenReturn(test)
 				.thenReturn(deviceHistoryResponsedto).thenReturn(registrationCenterDeviceHistoryResponseDto);
@@ -221,7 +303,9 @@ public class UMCValidatorTest {
 
 		RegistrationCenterUserMachineMappingHistoryResponseDto offrepdto = new RegistrationCenterUserMachineMappingHistoryResponseDto();
 		offrepdto.setRegistrationCenters(officerucmdtos);
-
+		identity = new Identity();
+		identity.setMetaData(metaData);
+		Mockito.when(osiUtils.getIdentity(any())).thenReturn(identity);
 		Mockito.when(registrationProcessorRestService.getApi(any(), any(), any(), any(), any())).thenReturn(regrepdto)
 				.thenReturn(mhrepdto).thenReturn(offrepdto);
 		// UMC validation Failure;
@@ -269,7 +353,9 @@ public class UMCValidatorTest {
 
 		RegistrationCenterUserMachineMappingHistoryResponseDto offrepdto = new RegistrationCenterUserMachineMappingHistoryResponseDto();
 		offrepdto.setRegistrationCenters(officerucmdtos);
-
+		identity = new Identity();
+		identity.setMetaData(metaData);
+		Mockito.when(osiUtils.getIdentity(any())).thenReturn(identity);
 		Mockito.when(registrationProcessorRestService.getApi(any(), any(), any(), any(), any())).thenReturn(regrepdto)
 				.thenReturn(mhrepdto).thenReturn(offrepdto);
         // UMC validation Failure;
@@ -319,6 +405,9 @@ public class UMCValidatorTest {
 
 		RegistrationCenterUserMachineMappingHistoryResponseDto offrepdto = new RegistrationCenterUserMachineMappingHistoryResponseDto();
 		offrepdto.setRegistrationCenters(officerucmdtos);
+		identity = new Identity();
+		identity.setMetaData(metaData);
+		Mockito.when(osiUtils.getIdentity(any())).thenReturn(identity);
 		Mockito.when(registrationProcessorRestService.getApi(any(), any(), any(), any(), any())).thenReturn(regrepdto)
 				.thenReturn(mhrepdto).thenReturn(offrepdto);
         // UMC validation Failure;
@@ -368,7 +457,9 @@ public class UMCValidatorTest {
 
 		RegistrationCenterUserMachineMappingHistoryResponseDto offrepdto = new RegistrationCenterUserMachineMappingHistoryResponseDto();
 		offrepdto.setRegistrationCenters(officerucmdtos);
-
+		identity = new Identity();
+		identity.setMetaData(metaData);
+		Mockito.when(osiUtils.getIdentity(any())).thenReturn(identity);
 		Mockito.when(registrationProcessorRestService.getApi(any(), any(), any(), any(), any())).thenReturn(regrepdto)
 				.thenReturn(mhrepdto).thenReturn(offrepdto);
         // UMC validation Failure;
@@ -426,7 +517,9 @@ public class UMCValidatorTest {
 
 		RegistrationCenterUserMachineMappingHistoryResponseDto offrepdto = new RegistrationCenterUserMachineMappingHistoryResponseDto();
 		offrepdto.setRegistrationCenters(officerucmdtos);
-
+		identity = new Identity();
+		identity.setMetaData(metaData);
+		Mockito.when(osiUtils.getIdentity(any())).thenReturn(identity);
 		Mockito.when(registrationProcessorRestService.getApi(any(), any(), any(), any(), any())).thenReturn(regrepdto)
 				.thenReturn(mhrepdto).thenReturn(offrepdto);
         // UMC validation Failure;
@@ -476,7 +569,9 @@ public class UMCValidatorTest {
 
 		RegistrationCenterUserMachineMappingHistoryResponseDto offrepdto = new RegistrationCenterUserMachineMappingHistoryResponseDto();
 		offrepdto.setRegistrationCenters(officerucmdtos);
-
+		identity = new Identity();
+		identity.setMetaData(metaData);
+		Mockito.when(osiUtils.getIdentity(any())).thenReturn(identity);
 		Mockito.when(registrationProcessorRestService.getApi(any(), any(), any(), any(), any())).thenReturn(regrepdto)
 				.thenReturn(mhrepdto).thenReturn(offrepdto);
         // UMC validation Failure;
@@ -534,6 +629,9 @@ public class UMCValidatorTest {
 		ApisResourceAccessException apisResourceAccessException = Mockito.mock(ApisResourceAccessException.class);
 		HttpClientErrorException httpClientErrorException = new HttpClientErrorException(HttpStatus.BAD_REQUEST,
 				"Invalid request", null, responseBody, null);
+		identity = new Identity();
+		identity.setMetaData(metaData);
+		Mockito.when(osiUtils.getIdentity(any())).thenReturn(identity);
 		Mockito.when(apisResourceAccessException.getCause()).thenReturn(httpClientErrorException);
 
 		Mockito.when(registrationProcessorRestService.getApi(any(), any(), any(), any(), any())).thenReturn(regrepdto)
@@ -594,6 +692,10 @@ public class UMCValidatorTest {
 		ApisResourceAccessException apisResourceAccessException = Mockito.mock(ApisResourceAccessException.class);
 		HttpClientErrorException httpClientErrorException = new HttpClientErrorException(HttpStatus.BAD_REQUEST,
 				"Invalid request", null, responseBody, null);
+		
+		identity = new Identity();
+		identity.setMetaData(metaData);
+		Mockito.when(osiUtils.getIdentity(any())).thenReturn(identity);
 		Mockito.when(apisResourceAccessException.getCause()).thenReturn(httpClientErrorException);
 
 		Mockito.when(registrationProcessorRestService.getApi(any(), any(), any(), any(), any())).thenReturn(regrepdto)
@@ -665,6 +767,10 @@ public class UMCValidatorTest {
 		registrationCenterDeviceHistoryDetails.setIsActive(true);
 		registrationCenterDeviceHistoryResponseDto
 				.setRegistrationCenterDeviceHistoryDetails(registrationCenterDeviceHistoryDetails);
+		
+		identity = new Identity();
+		identity.setMetaData(metaData);
+		Mockito.when(osiUtils.getIdentity(any())).thenReturn(identity);
 		Mockito.when(registrationProcessorRestService.getApi(any(), any(), any(), any(), any())).thenReturn(regrepdto)
 				.thenReturn(mhrepdto).thenReturn(offrepdto).thenReturn(offrepdto).thenReturn(test)
 				.thenReturn(deviceHistoryResponsedto).thenReturn(registrationCenterDeviceHistoryResponseDto);
@@ -742,6 +848,10 @@ public class UMCValidatorTest {
 		registrationCenterDeviceHistoryDetails.setIsActive(true);
 		registrationCenterDeviceHistoryResponseDto
 				.setRegistrationCenterDeviceHistoryDetails(registrationCenterDeviceHistoryDetails);
+		
+		identity = new Identity();
+		identity.setMetaData(metaData);
+		Mockito.when(osiUtils.getIdentity(any())).thenReturn(identity);
 		Mockito.when(registrationProcessorRestService.getApi(any(), any(), any(), any(), any())).thenReturn(regrepdto)
 				.thenReturn(mhrepdto).thenReturn(offrepdto).thenReturn(offrepdto).thenReturn(test)
 				.thenReturn(deviceHistoryResponsedto).thenThrow(apisResourceAccessException);
@@ -818,6 +928,9 @@ public class UMCValidatorTest {
 		registrationCenterDeviceHistoryDetails.setIsActive(true);
 		registrationCenterDeviceHistoryResponseDto
 				.setRegistrationCenterDeviceHistoryDetails(registrationCenterDeviceHistoryDetails);
+		identity = new Identity();
+		identity.setMetaData(metaData);
+		Mockito.when(osiUtils.getIdentity(any())).thenReturn(identity);
 		Mockito.when(registrationProcessorRestService.getApi(any(), any(), any(), any(), any())).thenReturn(regrepdto)
 				.thenReturn(mhrepdto).thenReturn(offrepdto).thenReturn(offrepdto).thenReturn(test)
 				.thenThrow(apisResourceAccessException).thenReturn(registrationCenterDeviceHistoryResponseDto);
@@ -894,6 +1007,10 @@ public class UMCValidatorTest {
 		registrationCenterDeviceHistoryDetails.setIsActive(true);
 		registrationCenterDeviceHistoryResponseDto
 				.setRegistrationCenterDeviceHistoryDetails(registrationCenterDeviceHistoryDetails);
+		
+		identity = new Identity();
+		identity.setMetaData(metaData);
+		Mockito.when(osiUtils.getIdentity(any())).thenReturn(identity);
 		Mockito.when(registrationProcessorRestService.getApi(any(), any(), any(), any(), any()))
 				.thenThrow(apisResourceAccessException).thenReturn(mhrepdto).thenReturn(offrepdto).thenReturn(offrepdto)
 				.thenReturn(test).thenReturn(deviceHistoryResponsedto)
@@ -971,6 +1088,9 @@ public class UMCValidatorTest {
 		registrationCenterDeviceHistoryDetails.setIsActive(true);
 		registrationCenterDeviceHistoryResponseDto
 				.setRegistrationCenterDeviceHistoryDetails(registrationCenterDeviceHistoryDetails);
+		identity = new Identity();
+		identity.setMetaData(metaData);
+		Mockito.when(osiUtils.getIdentity(any())).thenReturn(identity);
 		Mockito.when(registrationProcessorRestService.getApi(any(), any(), any(), any(), any())).thenReturn(regrepdto)
 				.thenThrow(apisResourceAccessException).thenReturn(offrepdto).thenReturn(offrepdto).thenReturn(test)
 				.thenReturn(deviceHistoryResponsedto).thenReturn(registrationCenterDeviceHistoryResponseDto);
@@ -1047,6 +1167,9 @@ public class UMCValidatorTest {
 		registrationCenterDeviceHistoryDetails.setIsActive(true);
 		registrationCenterDeviceHistoryResponseDto
 				.setRegistrationCenterDeviceHistoryDetails(registrationCenterDeviceHistoryDetails);
+		identity = new Identity();
+		identity.setMetaData(metaData);
+		Mockito.when(osiUtils.getIdentity(any())).thenReturn(identity);
 		Mockito.when(registrationProcessorRestService.getApi(any(), any(), any(), any(), any())).thenReturn(regrepdto)
 				.thenReturn(mhrepdto).thenThrow(apisResourceAccessException).thenReturn(offrepdto).thenReturn(test)
 				.thenReturn(deviceHistoryResponsedto).thenReturn(registrationCenterDeviceHistoryResponseDto);

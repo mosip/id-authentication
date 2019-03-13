@@ -508,7 +508,7 @@ public class PacketInfoMapper {
 			String applicantName = null;
 			if (demoDto.getName() != null)
 				applicantName = getJsonValues(demoDto.getName(), languageArray[i]);
-			entity.setName(getHMACHashCode(applicantName));
+			entity.setName(getHMACHashCode(applicantName.trim().toUpperCase()));
 
 			if (demoDto.getDateOfBirth() != null) {
 				try {

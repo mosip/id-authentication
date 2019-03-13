@@ -53,6 +53,7 @@ import io.mosip.registration.processor.status.dto.TransactionDto;
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
 import io.mosip.registration.processor.status.service.TransactionService;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class OSIValidator.
  */
@@ -83,20 +84,18 @@ public class OSIValidator {
 	@Autowired
 	RegistrationProcessorRestClientService<Object> restClientService;
 
-	/** The transcation status service. */
-	@Autowired
-	private TransactionService<TransactionDto> transcationStatusService;
-
 	/** The env. */
 	@Autowired
 	private Environment env;
 	
+	/** The osi utils. */
 	@Autowired
 	private OSIUtils osiUtils;
 
 	/** The message. */
 	private String message = null;
 
+	/** The Constant TRUE. */
 	private static final String TRUE = "true";
 
 	/** The registration status dto. */
@@ -525,6 +524,13 @@ public class OSIValidator {
 		return isValidPin;
 	}
 
+	/**
+	 * Validate otp and pwd.
+	 *
+	 * @param password the password
+	 * @param otp the otp
+	 * @return true, if successful
+	 */
 	boolean validateOtpAndPwd(String password, String otp) {
 		if (password != null && password.equals(TRUE) || otp != null && otp.equals(TRUE)) {
 			return true;

@@ -186,6 +186,7 @@ public enum PlatformErrorMessages {
 	/** The structural validation failed. */
 	// Stages - Packet validator Exception error code and message
 	STRUCTURAL_VALIDATION_FAILED("", "Structural Validation Failed"),
+	
 
 	/** The unsupported encoding. */
 	// UIN check - JSON file encoding failed.
@@ -196,7 +197,7 @@ public enum PlatformErrorMessages {
 	OSI_VALIDATION_FAILED("", "OSI Validation Failed"),
 
 	/** The osi validation packet store not accessible. */
-	OSI_VALIDATION_PACKET_STORE_NOT_ACCESSIBLE("", "The Packet store set by the System is not accessible"),
+	OSI_VALIDATION_PACKET_STORE_NOT_ACCESSIBLE(PlatformErrorConstants.RPR_OSI_VALIDATOR_MODULE+"005", "The Packet store set by the System is not accessible"),
 
 	/** The packet demo dedupe failed. */
 	// Stages - Demo-Dedupe error code and message
