@@ -13,7 +13,6 @@ import java.util.Map;
 import java.util.ResourceBundle;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 
 import io.mosip.kernel.core.applicanttype.exception.InvalidApplicantArgumentException;
@@ -380,12 +379,7 @@ public class DemographicDetailController extends BaseController {
 	private Transliteration<String> transliteration;
 	@Autowired
 	private JsonValidator jsonValidator;
-
-	@Value("${mosip.registration.age_limit_for_child:0}")
-	private int minAge;
 	
-	@Value("${mosip.registration.max_age:0}")
-	private int maxAge;
 	private FXUtils fxUtils;
 	private Date dateOfBirth;
 	ResourceBundle applicationLabelBundle;
@@ -593,6 +587,10 @@ public class DemographicDetailController extends BaseController {
 					ageField.setText(oldValue);
 				}
 				int age = 0;
+				int minAge = Integer
+						.parseInt(String.valueOf(ApplicationContext.map().get(RegistrationConstants.MIN_AGE)));
+				int maxAge = Integer
+						.parseInt(String.valueOf(ApplicationContext.map().get(RegistrationConstants.MAX_AGE)));
 				if (newValue.matches("\\d{1,3}")) {
 					if (getRegistrationDTOFromSession().getSelectionListDTO() != null
 							&& getRegistrationDTOFromSession().getSelectionListDTO().isChild())

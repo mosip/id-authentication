@@ -14,7 +14,6 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 
 import io.mosip.kernel.core.exception.ExceptionUtils;
@@ -22,6 +21,7 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.constants.RegistrationUIConstants;
+import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.exception.RegBaseUncheckedException;
@@ -57,9 +57,6 @@ public class SendNotificationController extends BaseController implements Initia
 	@FXML
 	private Button send;
 
-	@Value("${mosip.registration.mode_of_communication:}")
-	private String modeOfCommunication;
-
 	@Autowired
 	private NotificationService notificationService;
 
@@ -93,6 +90,7 @@ public class SendNotificationController extends BaseController implements Initia
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
+		String modeOfCommunication = String.valueOf(ApplicationContext.map().get(RegistrationConstants.MODE_OF_COMM));
 		if (!modeOfCommunication.contains(RegistrationConstants.EMAIL_SERVICE.toUpperCase())) {
 			email.setVisible(false);
 			emailIcon.setVisible(false);

@@ -41,6 +41,7 @@ import io.mosip.kernel.core.util.StringUtils;
 import io.mosip.kernel.keygenerator.bouncycastle.KeyGenerator;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dto.PreRegistrationDTO;
 import io.mosip.registration.dto.RegistrationDTO;
@@ -63,8 +64,6 @@ public class PreRegZipHandlingServiceImpl implements PreRegZipHandlingService {
 
 	@Value("${PRE_REG_PACKET_LOCATION}")
 	private String preRegPacketLocation;
-	@Value("${mosip.registration.identity-class-name:}")
-	private String identityClassName;
 
 	@Autowired
 	private JsonValidator jsonValidator;
@@ -175,7 +174,7 @@ public class PreRegZipHandlingServiceImpl implements PreRegZipHandlingService {
 	@SuppressWarnings("unchecked")
 	private Identity validateJSONAndConvertToIdentity(StringBuilder jsonString)
 			throws IOException, JSONException, ClassNotFoundException {
-		Class<? extends Identity> identityClass = (Class<? extends Identity>) Class.forName(identityClassName);
+		Class<? extends Identity> identityClass = (Class<? extends Identity>) Class.forName(String.valueOf(ApplicationContext.map().get(RegistrationConstants.IDENTITY_CLASS_NAME)));
 		
 		return new ObjectMapper().readValue(new JSONObject(jsonString.toString()).get("identity").toString(),
 				identityClass);

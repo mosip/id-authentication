@@ -9,7 +9,6 @@ import java.util.Map;
 import java.util.WeakHashMap;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.exception.ExceptionUtils;
@@ -38,15 +37,6 @@ public class UserOnboardServiceImpl implements UserOnboardService {
 
 	@Autowired
 	private UserOnboardDAO userOnBoardDao;
-	
-	@Value("${mosip.registration.fingerprint_disable_flag:}")
-	protected String fingerprintDisableFlag;
-
-	@Value("${mosip.registration.iris_disable_flag:}")
-	protected String irisDisableFlag;
-
-	@Value("${mosip.registration.face_disable_flag:}")
-	protected String faceDisableFlag;
 
 	/**
 	 * logger for logging
@@ -78,9 +68,9 @@ public class UserOnboardServiceImpl implements UserOnboardService {
 
 		// API for validating biometrics need to be implemented
 		
-		if (RegistrationConstants.ENABLE.equalsIgnoreCase(fingerprintDisableFlag)
-				|| RegistrationConstants.ENABLE.equalsIgnoreCase(irisDisableFlag)
-				|| RegistrationConstants.ENABLE.equalsIgnoreCase(faceDisableFlag)) {
+		if (RegistrationConstants.ENABLE.equalsIgnoreCase(String.valueOf(ApplicationContext.map().get(RegistrationConstants.FINGERPRINT_DISABLE_FLAG)))
+				|| RegistrationConstants.ENABLE.equalsIgnoreCase(String.valueOf(ApplicationContext.map().get(RegistrationConstants.IRIS_DISABLE_FLAG)))
+				|| RegistrationConstants.ENABLE.equalsIgnoreCase(String.valueOf(ApplicationContext.map().get(RegistrationConstants.FACE_DISABLE_FLAG)))) {
 			
 			if (count >= UserOnBoardThresholdLimit) {
 				responseDTO = save(biometricDTO);

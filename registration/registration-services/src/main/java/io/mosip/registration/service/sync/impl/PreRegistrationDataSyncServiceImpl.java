@@ -18,7 +18,6 @@ import java.util.WeakHashMap;
 
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
@@ -34,6 +33,7 @@ import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.core.util.FileUtils;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dao.PreRegistrationDataSyncDAO;
 import io.mosip.registration.dto.MainResponseDTO;
@@ -62,9 +62,6 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 
 	@Autowired
 	SyncManager syncManager;
-
-	@Value("${PRE_REG_NO_OF_DAYS_LIMIT}")
-	private int noOfDays;
 
 	@Autowired
 	private PreRegZipHandlingService preRegZipHandlingService;
@@ -408,7 +405,7 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(reqTime);
-		cal.add(Calendar.DATE, noOfDays);
+		cal.add(Calendar.DATE, Integer.parseInt(String.valueOf(ApplicationContext.map().get(RegistrationConstants.PRE_REG_DAYS_LIMIT))));
 
 		/** To-Date */
 		return formatDate(cal);

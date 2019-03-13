@@ -73,19 +73,13 @@ public class Validations extends BaseController {
 			noAlert.add("cniOrPinNumber");
 			noAlert.add("uinId");
 			validationMessage = new StringBuilder();
-			validationBundle = ApplicationContext.applicationLanguageValidationBundle();
-			messageBundle = ApplicationContext.applicationMessagesBundle();
-			labelBundle = ApplicationContext.applicationLanguageBundle();
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error(RegistrationConstants.VALIDATION_LOGGER, APPLICATION_NAME, APPLICATION_ID, runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
 		}
 	}
 
 	
-	@PostConstruct
 	public void setResourceBundle() {
-		getGlobalParams();
-		ApplicationContext.loadResources();
 		validationBundle = ApplicationContext.applicationLanguageValidationBundle();
 		messageBundle = ApplicationContext.applicationMessagesBundle();
 		labelBundle = ApplicationContext.applicationLanguageBundle();

@@ -2,11 +2,11 @@ package io.mosip.registration.controller.reg;
 
 import static io.mosip.kernel.core.util.DateUtils.formatDate;
 import static io.mosip.registration.constants.LoggerConstants.PACKET_HANDLER;
-import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
-import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 import static io.mosip.registration.constants.RegistrationConstants.ACKNOWLEDGEMENT_TEMPLATE_PART_1;
 import static io.mosip.registration.constants.RegistrationConstants.ACKNOWLEDGEMENT_TEMPLATE_PART_2;
 import static io.mosip.registration.constants.RegistrationConstants.ACKNOWLEDGEMENT_TEMPLATE_PART_3;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -20,7 +20,6 @@ import java.util.ResourceBundle;
 import java.util.stream.IntStream;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 
 import io.mosip.kernel.core.exception.ExceptionUtils;
@@ -137,14 +136,6 @@ public class PacketHandlerController extends BaseController implements Initializ
 	
 	@Autowired
 	private NotificationService notificationService;
-
-	@Value("${mosip.registration.save_ack_inside_packet:}")
-	private String saveAck;
-
-	@Value("${mosip.registration.registration_packet_store_location:}")
-	private String packetStoreLocation;
-	@Value("${mosip.registration.packet_store_date_format:}")
-	private String storeDateFormat;
 
 	@Autowired
 	private RegistrationApprovalService registrationApprovalService;
@@ -551,7 +542,7 @@ public class PacketHandlerController extends BaseController implements Initializ
 					APPLICATION_ID, ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));
 		}
 
-		if (saveAck.equalsIgnoreCase(RegistrationConstants.ENABLE)) {
+		if (RegistrationConstants.ENABLE.equalsIgnoreCase(String.valueOf(ApplicationContext.map().get(RegistrationConstants.ACK_INSIDE_PACKET)))) {
 			registrationDTO.getDemographicDTO().getApplicantDocumentDTO().setAcknowledgeReceipt(ackInBytes);
 			registrationDTO.getDemographicDTO().getApplicantDocumentDTO().setAcknowledgeReceiptName(
 					"RegistrationAcknowledgement." + RegistrationConstants.ACKNOWLEDGEMENT_FORMAT);
@@ -577,7 +568,7 @@ public class PacketHandlerController extends BaseController implements Initializ
 				// Generate the file path for storing the Encrypted Packet and Acknowledgement
 				// Receipt
 				String seperator = "/";
-				String filePath = packetStoreLocation + seperator + formatDate(new Date(), storeDateFormat)
+				String filePath = String.valueOf(ApplicationContext.map().get(RegistrationConstants.PKT_STORE_LOC)) + seperator + formatDate(new Date(), String.valueOf(ApplicationContext.map().get(RegistrationConstants.PKT_STORE_DATE_FORMAT)))
 						.concat(seperator).concat(registrationDTO.getRegistrationId());
 
 				// Storing the Registration Acknowledge Receipt Image

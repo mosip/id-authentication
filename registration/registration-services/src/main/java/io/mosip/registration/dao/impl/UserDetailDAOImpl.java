@@ -18,6 +18,7 @@ import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.registration.config.AppConfig;
+import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dao.RegistrationCenterDAO;
 import io.mosip.registration.dao.UserDetailDAO;
@@ -129,7 +130,11 @@ public class UserDetailDAOImpl implements UserDetailDAO {
 				usrPwd.setStatusCode("00");
 				usrPwd.setIsActive(true);
 				usrPwd.setLangCode("eng");
-				usrPwd.setCrBy(SessionContext.userContext().getUserId());
+				if (SessionContext.isSessionContextAvailable()) {
+					usrPwd.setCrBy(SessionContext.userContext().getUserId());
+				} else {
+					usrPwd.setCrBy(RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM);
+				}
 				usrPwd.setCrDtime(Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()));
 				userPassword.add(usrPwd);
 
@@ -139,7 +144,11 @@ public class UserDetailDAOImpl implements UserDetailDAO {
 				userDtls.setMobile(userDtals.getMobile());
 				userDtls.setName(userDtals.getName());
 				userDtls.setLangCode("eng");
-				userDtls.setCrBy(SessionContext.userContext().getUserId());
+				if (SessionContext.isSessionContextAvailable()) {
+					userDtls.setCrBy(SessionContext.userContext().getUserId());
+				} else {
+					userDtls.setCrBy(RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM);
+				}
 				userDtls.setCrDtime(Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()));
 				userDtls.setIsActive(true);
 				userDtls.setStatusCode("00");
@@ -153,7 +162,11 @@ public class UserDetailDAOImpl implements UserDetailDAO {
 				UserRole roles = new UserRole();
 				roles.setIsActive(true);
 				roles.setLangCode("eng");
-				roles.setCrBy(SessionContext.userContext().getUserId());
+				if (SessionContext.isSessionContextAvailable()) {
+					roles.setCrBy(SessionContext.userContext().getUserId());
+				} else {
+					roles.setCrBy(RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM);
+				}
 				roles.setCrDtime(Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()));
 				String uName = role.getUserName();
 				role.getRoles().forEach(rol -> {
