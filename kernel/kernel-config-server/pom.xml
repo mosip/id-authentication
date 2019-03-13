@@ -7,7 +7,7 @@
 	<parent>
 		<groupId>io.mosip.kernel</groupId>
 		<artifactId>kernel-parent</artifactId>
-		<version>0.9.2</version>
+		<version>0.9.4</version>
 	</parent>
 	<artifactId>kernel-config-server</artifactId>
 	<description>Config Server for Mosip</description>
@@ -19,13 +19,13 @@
 			<version>${spring.boot.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-config-server</artifactId>
-			<version>${spring-cloud-config.version}</version>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-actuator</artifactId>
+			<version>${spring.boot.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-security</artifactId>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-config-server</artifactId>
 			<version>${spring-cloud-config.version}</version>
 		</dependency>
 		<dependency>
@@ -41,8 +41,8 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<version>${spring.boot.version}</version>
-				<configuration>	
-					<executable>true</executable>	
+				<configuration>
+					<executable>true</executable>
 				</configuration>
 				<executions>
 					<execution>

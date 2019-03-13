@@ -1,5 +1,7 @@
 package io.mosip.kernel.idgenerator.rid.entity;
 
+import java.time.LocalDateTime;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -28,4 +30,16 @@ public class Rid {
 	@Id
 	@Column(name = "curr_seq_no")
 	private int currentSequenceNo;
+	
+	@Column(name = "cr_by", nullable = false, length = 24)
+	private String createdBy;
+
+	@Column(name = "cr_dtimes", nullable = false)
+	private LocalDateTime createdDateTime;
+
+	@Column(name = "upd_by")
+	private String updatedBy;
+
+	@Column(name = "upd_dtimes")
+	private LocalDateTime updatedDateTime;
 }

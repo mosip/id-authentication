@@ -122,14 +122,15 @@ public class BookingDAO {
 	}
 
 	/**
+	 * This method find entity for status other then CANCEL.
 	 * @param preregistrationId
 	 * @param statusCode
 	 * @return RegistrationBookingEntity based on Pre registration id and status code.
 	 */
-	public RegistrationBookingEntity findPreIdAndStatusCode(String preregistrationId, String statusCode) {
+	public RegistrationBookingEntity findByPreRegistrationId(String preregistrationId) {
 		RegistrationBookingEntity entity = null;
 		try {
-			entity = registrationBookingRepository.findPreIdAndStatusCode(preregistrationId, statusCode);
+			entity = registrationBookingRepository.getPreRegId(preregistrationId);
 			if (entity == null) {
 				throw new BookingDataNotFoundException(ErrorCodes.PRG_BOOK_RCI_013.toString(),
 						ErrorMessages.BOOKING_DATA_NOT_FOUND.toString());
@@ -140,6 +141,7 @@ public class BookingDAO {
 		}
 		return entity;
 	}
+	
 
 	/**
 	 * @param bookingEnity
@@ -203,11 +205,10 @@ public class BookingDAO {
 	 * @param statusCode
 	 * @return List of RegistrationBookingEntity
 	 */
-	public List<RegistrationBookingEntity> findByRegistrationCenterIdAndStatusCode(String registrationCenterId,
-			String statusCode) {
-		List<RegistrationBookingEntity> entityList = new ArrayList<>();
+	public List<RegistrationBookingEntity> findByRegistrationCenterId(String registrationCenterId) {
+		List<RegistrationBookingEntity> entityList;
 		try {
-			entityList=registrationBookingRepository.findByRegistrationCenterIdAndStatusCode(registrationCenterId, statusCode);
+			entityList=registrationBookingRepository.findByRegistrationCenterId(registrationCenterId);
 			if (entityList.isEmpty()) {
 				throw new BookingDataNotFoundException(ErrorCodes.PRG_BOOK_RCI_013.toString(),
 						ErrorMessages.BOOKING_DATA_NOT_FOUND.toString());
@@ -217,7 +218,7 @@ public class BookingDAO {
 					ErrorMessages.BOOKING_TABLE_NOT_ACCESSIBLE.toString());
 		}
 		return entityList;
-	}
+	} 
 	
 	/**
 	 * @param regcntrId
@@ -261,7 +262,7 @@ public class BookingDAO {
 	
 	public int deleteByPreRegistrationId(String preId) {
 		int count=registrationBookingRepository.deleteByPreRegistrationId(preId);
-		if(count<0) {
+		if(count==0) {
 			throw new RecordFailedToDeleteException(ErrorCodes.PRG_BOOK_RCI_028.getCode(),
 					ErrorMessages.FAILED_TO_DELETE_THE_PRE_REGISTRATION_RECORD.getMessage());
 		}

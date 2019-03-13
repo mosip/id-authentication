@@ -49,7 +49,7 @@ public class RegistrationStatusEntity extends BaseRegistrationEntity {
 	private String createdBy;
 
 	/** The create date time. */
-	@Column(name = "cr_dtimes")
+	@Column(name = "cr_dtimes",nullable =false,updatable=false)
 	@CreationTimestamp
 	private LocalDateTime createDateTime;
 

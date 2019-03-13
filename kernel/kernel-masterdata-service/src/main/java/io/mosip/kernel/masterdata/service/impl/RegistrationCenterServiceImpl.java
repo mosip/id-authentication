@@ -300,7 +300,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 	 */
 	@Override
 	public RegistrationCenterResponseDto findRegistrationCenterByHierarchyLevelandTextAndLanguageCode(
-			String languageCode, Integer hierarchyLevel, String text) {
+			String languageCode, Short hierarchyLevel, String text) {
 		List<RegistrationCenter> registrationCentersList = null;
 		try {
 			Set<String> codes = getLocationCode(
@@ -534,12 +534,12 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 	 */
 	@Override
 	public RegistrationCenterResponseDto findRegistrationCenterByHierarchyLevelAndListTextAndlangCode(
-			String languageCode, Integer hierarchyLevel, List<String> names) {
+			String languageCode, Short hierarchyLevel, List<String> names) {
 		List<RegistrationCenterDto> registrationCentersDtoList = null;
 		List<RegistrationCenter> registrationCentersList = null;
 		Set<String> uniqueLocCode = new TreeSet<>();
 		try {
-			Map<Integer, List<Location>> parLocCodeToListOfLocation = locationService
+			Map<Short, List<Location>> parLocCodeToListOfLocation = locationService
 					.getLocationByLangCodeAndHierarchyLevel(languageCode, hierarchyLevel);
 			for (String name : names) {
 				Set<String> codes = getLocationCode(parLocCodeToListOfLocation, hierarchyLevel, name);
@@ -571,11 +571,11 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		return registrationCenterResponseDto;
 	}
 
-	private Set<String> getLocationCode(Map<Integer, List<Location>> levelToListOfLocationMap, Integer hierarchyLevel,
+	private Set<String> getLocationCode(Map<Short, List<Location>> levelToListOfLocationMap, Short hierarchyLevel,
 			String text) {
 		Set<String> uniqueLocCode = new TreeSet<>();
 		boolean isParent = false;
-		for (Entry<Integer, List<Location>> data : levelToListOfLocationMap.entrySet()) {
+		for (Entry<Short, List<Location>> data : levelToListOfLocationMap.entrySet()) {
 			if (!isParent) {
 				for (Location location : data.getValue()) {
 					if (text.trim().equalsIgnoreCase(location.getName().trim())) {

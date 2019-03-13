@@ -58,9 +58,12 @@ public class DaoConfig extends HibernateDaoConfig {
 	@Bean
 	@Lazy(false)
 	public static PropertyPlaceholderConfigurer properties() {
+		String profile = System.getProperty("spring.profiles.active") != null ? 
+				System.getProperty("spring.profiles.active") :
+			"integ";
 		PropertyPlaceholderConfigurer ppc = new PropertyPlaceholderConfigurer();
-
-		Resource[] resources = new ClassPathResource[] { new ClassPathResource("spring.properties") };
+		Resource[] resources = new ClassPathResource[] { new ClassPathResource("spring.properties") , 
+				new ClassPathResource("spring-"+ profile + ".properties")};
 		ppc.setLocations(resources);
 
 		Properties properties = new Properties();
@@ -70,17 +73,4 @@ public class DaoConfig extends HibernateDaoConfig {
 
 		return ppc;
 	}
-
-	public void reload() {
-		PropertyPlaceholderConfigurer propertyPlaceholderConfigurer = applicationContext
-				.getBean(PropertyPlaceholderConfigurer.class);
-		PropertiesConfig propertiesConfig = applicationContext.getBean("propertiesConfig", PropertiesConfig.class);
-
-		Properties properties = new Properties();
-		properties.putAll(propertiesConfig.getDBProps());
-
-		propertyPlaceholderConfigurer.setProperties(properties);
-		System.out.println("Refresh called");
-	}
-
 }

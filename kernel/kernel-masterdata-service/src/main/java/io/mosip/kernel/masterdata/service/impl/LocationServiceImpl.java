@@ -388,9 +388,9 @@ public class LocationServiceImpl implements LocationService {
 	}
 
 	@Override
-	public Map<Integer, List<Location>> getLocationByLangCodeAndHierarchyLevel(String langCode,
-			Integer hierarchyLevel) {
-		Map<Integer, List<Location>> map = new TreeMap<>();
+	public Map<Short, List<Location>> getLocationByLangCodeAndHierarchyLevel(String langCode,
+			Short hierarchyLevel) {
+		Map<Short, List<Location>> map = new TreeMap<>();
 		List<Location> locations = locationRepository.getAllLocationsByLangCodeAndLevel(langCode, hierarchyLevel);
 		if (!EmptyCheckUtils.isNullEmpty(locations)) {
 			for (Location location : locations) {

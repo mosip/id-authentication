@@ -4,6 +4,15 @@
   margin-bottom: 200px;
 }
 
+.ack__guidelines {
+    padding-right: 10%;
+    word-break: break-word;
+}
+
+.ack__guidelines li {
+  list-style-type: none;
+}
+
 .ack__header {
   padding: 0;
   margin: -10px 0 0 -20px;
