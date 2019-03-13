@@ -24,6 +24,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
@@ -46,23 +48,22 @@ import io.mosip.registration.processor.core.constant.IdType;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.constant.UinCardType;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
+import io.mosip.registration.processor.core.exception.TemplateProcessingFailureException;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
-import io.mosip.registration.processor.core.notification.template.mapping.NotificationTemplate;
 import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.JsonValue;
-import io.mosip.registration.processor.core.packet.dto.demographicinfo.identify.RegistrationProcessorIdentity;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.spi.print.service.PrintService;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.core.spi.uincardgenerator.UinCardGenerator;
+import io.mosip.registration.processor.core.template.generator.TemplateGenerator;
 import io.mosip.registration.processor.core.util.JsonUtil;
-import io.mosip.registration.processor.message.sender.exception.TemplateProcessingFailureException;
-import io.mosip.registration.processor.message.sender.template.generator.TemplateGenerator;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.packet.storage.exception.FieldNotFoundException;
 import io.mosip.registration.processor.packet.storage.exception.IdentityNotFoundException;
 import io.mosip.registration.processor.packet.storage.exception.InstantanceCreationException;
+import io.mosip.registration.processor.packet.storage.exception.ParsingException;
 import io.mosip.registration.processor.packet.storage.utils.Utilities;
 import io.mosip.registration.processor.print.service.dto.JsonFileDTO;
 import io.mosip.registration.processor.print.service.dto.JsonRequestDTO;
@@ -85,7 +86,7 @@ import io.mosip.registration.processor.status.service.RegistrationStatusService;
 public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 
 	/** The Constant FILE_SEPARATOR. */
-	public static final String FILE_SEPARATOR = "\\";
+	public static final String FILE_SEPARATOR = File.separator;
 
 	/** The Constant LANGUAGE. */
 	private static final String LANGUAGE = "language";
@@ -133,13 +134,6 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 	/** The utility. */
 	@Autowired
 	private Utilities utility;
-
-	/** The reg processor identity json. */
-	@Autowired
-	private RegistrationProcessorIdentity regProcessorIdentityJson;
-
-	/** The demographic identity. */
-	private JSONObject demographicIdentity = null;
 
 	/** The attributes. */
 	private Map<String, Object> attributes = new LinkedHashMap<>();
@@ -226,7 +220,7 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 
 			String jsonString = new JSONObject((Map) response.getResponse().getIdentity()).toString();
 
-			setTemplateAttributes(jsonString);
+			setTemplateAttributes(jsonString, attributes);
 			attributes.put(UINCardConstant.UIN, uin);
 
 			boolean isQRcodeSet = setQrCode();
@@ -331,6 +325,13 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 		return byteMap;
 	}
 
+	/**
+	 * Gets the pdf stream.
+	 *
+	 * @param pdf
+	 *            the pdf
+	 * @return the pdf stream
+	 */
 	private InputStream getpdfStream(ByteArrayOutputStream pdf) {
 		File pdfFile = new File(RESOURCE + attributes.get(UINCardConstant.UIN).toString() + ".pdf");
 		InputStream fileStream = null;
@@ -381,7 +382,6 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 	 * @return the byte[]
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
-	 * @throws io.mosip.kernel.core.exception.IOException
 	 */
 	private byte[] createTextFile() throws IOException {
 		byte[] jsonTextFileBytes = null;
@@ -391,21 +391,21 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 		jsonDto.setRequestTime(DateUtils.getUTCCurrentDateTimeString("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"));
 
 		JsonRequestDTO request = new JsonRequestDTO();
-		request.setNameAra((String) attributes.get(UINCardConstant.NAME_ARA));
-		request.setNameEng((String) attributes.get(UINCardConstant.NAME_ENG));
+		request.setNameLang1((String) attributes.get(UINCardConstant.NAME_ARA));
+		request.setNameLang2((String) attributes.get(UINCardConstant.NAME_ENG));
 		request.setPhoneNumber((String) attributes.get(UINCardConstant.PHONENUMBER));
-		request.setAddressLine1Ara((String) attributes.get(UINCardConstant.ADDRESSLINE1_ARA));
-		request.setAddressLine1Eng((String) attributes.get(UINCardConstant.ADDRESSLINE1_ENG));
-		request.setAddressLine2Ara((String) attributes.get(UINCardConstant.ADDRESSLINE2_ARA));
-		request.setAddressLine2Eng((String) attributes.get(UINCardConstant.ADDRESSLINE2_ENG));
-		request.setAddressLine3Ara((String) attributes.get(UINCardConstant.ADDRESSLINE3_ARA));
-		request.setAddressLine3Eng((String) attributes.get(UINCardConstant.ADDRESSLINE3_ENG));
-		request.setRegionAra((String) attributes.get(UINCardConstant.REGION_ARA));
-		request.setRegionEng((String) attributes.get(UINCardConstant.REGION_ENG));
-		request.setProvinceAra((String) attributes.get(UINCardConstant.PROVINCE_ARA));
-		request.setProvinceEng((String) attributes.get(UINCardConstant.PROVINCE_ENG));
-		request.setCityAra((String) attributes.get(UINCardConstant.CITY_ARA));
-		request.setCityEng((String) attributes.get(UINCardConstant.CITY_ENG));
+		request.setAddressLine1Lang1((String) attributes.get(UINCardConstant.ADDRESSLINE1_ARA));
+		request.setAddressLine1Lang2((String) attributes.get(UINCardConstant.ADDRESSLINE1_ENG));
+		request.setAddressLine2Lang1((String) attributes.get(UINCardConstant.ADDRESSLINE2_ARA));
+		request.setAddressLine2Lang2((String) attributes.get(UINCardConstant.ADDRESSLINE2_ENG));
+		request.setAddressLine3Lang1((String) attributes.get(UINCardConstant.ADDRESSLINE3_ARA));
+		request.setAddressLine3Lang2((String) attributes.get(UINCardConstant.ADDRESSLINE3_ENG));
+		request.setRegionLang1((String) attributes.get(UINCardConstant.REGION_ARA));
+		request.setRegionLang2((String) attributes.get(UINCardConstant.REGION_ENG));
+		request.setProvinceLang1((String) attributes.get(UINCardConstant.PROVINCE_ARA));
+		request.setProvinceLang2((String) attributes.get(UINCardConstant.PROVINCE_ENG));
+		request.setCityLang1((String) attributes.get(UINCardConstant.CITY_ARA));
+		request.setCityLang2((String) attributes.get(UINCardConstant.CITY_ENG));
 		request.setPostalCode((String) attributes.get(UINCardConstant.POSTALCODE));
 
 		jsonDto.setRequest(request);
@@ -431,14 +431,19 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 	 *             the qrcode generation exception
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
-	 * @throws IOException
-	 *             Signals that an I/O exception has occurred.
 	 */
 	private boolean setQrCode() throws QrcodeGenerationException, IOException {
+		// setting values for qrcode
+		for (Map.Entry<String, Object> entry : attributes.entrySet()) {
+			qrString.append(entry.getKey() + ":" + entry.getValue());
+		}
+
 		boolean isQRCodeSet = false;
 		byte[] qrCodeBytes = null;
 		qrCodeBytes = qrCodeGenerator.generateQrCode(qrString.toString(), QrVersion.V30);
 		if (qrCodeBytes != null) {
+			//InputStream qrStream = new ByteArrayInputStream(qrCodeBytes);
+
 			File qrCode = new File(RESOURCE + QRCODE_PHOTO);
 			FileUtils.writeByteArrayToFile(qrCode, qrCodeBytes);
 			isQRCodeSet = true;
@@ -521,114 +526,49 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 	 *
 	 * @param idJsonString
 	 *            the id json string
+	 * @param attribute
+	 *            the attribute
 	 * @return the artifacts
-	 * @throws IOException
-	 *             Signals that an I/O exception has occurred.
-	 * @throws ParseException
-	 *             the parse exception
+	 * @throws IOException 
+	 * 
 	 */
-	private void setTemplateAttributes(String idJsonString) throws IOException, ParseException {
-		NotificationTemplate template = new NotificationTemplate();
-		String getIdentityJsonString = Utilities.getJson(utility.getConfigServerFileStorageURL(),
-				utility.getGetRegProcessorIdentityJson());
+	@SuppressWarnings("unchecked")
+	private void setTemplateAttributes(String idJsonString, Map<String, Object> attribute) throws IOException {
+		try {
+			JSONObject demographicIdentity = JsonUtil.objectMapperReadValue(idJsonString, JSONObject.class);
+			if (demographicIdentity == null)
+				throw new IdentityNotFoundException(PlatformErrorMessages.RPR_PIS_IDENTITY_NOT_FOUND.getMessage());
 
-		regProcessorIdentityJson = (new ObjectMapper()).readValue(getIdentityJsonString,
-				RegistrationProcessorIdentity.class);
-		demographicIdentity = (JSONObject) JsonUtil.objectMapperReadValue(idJsonString, JSONObject.class);
+			String mapperJsonString = Utilities.getJson(utility.getConfigServerFileStorageURL(),
+					utility.getGetRegProcessorIdentityJson());
+			JSONObject mapperJson = JsonUtil.objectMapperReadValue(mapperJsonString, JSONObject.class);
+			JSONObject mapperIdentity = JsonUtil.getJSONObject(mapperJson,
+					utility.getGetRegProcessorDemographicIdentity());
 
-		if (demographicIdentity == null)
-			throw new IdentityNotFoundException(PlatformErrorMessages.RPR_PIS_IDENTITY_NOT_FOUND.getMessage());
-
-		template.setFirstName(getJsonValues(regProcessorIdentityJson.getIdentity().getName().getValue()));
-		template.setGender(getJsonValues(regProcessorIdentityJson.getIdentity().getGender().getValue()));
-		template.setEmailID(
-				(String) JsonUtil.getJSONValue(demographicIdentity,regProcessorIdentityJson.getIdentity().getEmail().getValue()));
-		template.setPhoneNumber(
-				(String) JsonUtil.getJSONValue(demographicIdentity,regProcessorIdentityJson.getIdentity().getPhone().getValue()));
-		template.setDateOfBirth(
-				(String) JsonUtil.getJSONValue(demographicIdentity,regProcessorIdentityJson.getIdentity().getDob().getValue()));
-		template.setAddressLine1(getJsonValues(regProcessorIdentityJson.getIdentity().getAddressLine1().getValue()));
-		template.setAddressLine2(getJsonValues(regProcessorIdentityJson.getIdentity().getAddressLine2().getValue()));
-		template.setAddressLine3(getJsonValues(regProcessorIdentityJson.getIdentity().getAddressLine3().getValue()));
-		template.setRegion(getJsonValues(regProcessorIdentityJson.getIdentity().getRegion().getValue()));
-		template.setProvince(getJsonValues(regProcessorIdentityJson.getIdentity().getProvince().getValue()));
-		template.setCity(getJsonValues(regProcessorIdentityJson.getIdentity().getCity().getValue()));
-		template.setPostalCode(
-				(String) JsonUtil.getJSONValue(demographicIdentity,regProcessorIdentityJson.getIdentity().getPostalCode().getValue()));
-
-		setAtrributes(template);
-	}
-
-	/**
-	 * Sets the atrributes.
-	 *
-	 * @param template
-	 *            the new atrributes
-	 */
-	private void setAtrributes(NotificationTemplate template) {
-		attributes.put(UINCardConstant.NAME_ENG, getParameter(template.getFirstName(), primaryLang));
-		attributes.put(UINCardConstant.NAME_ARA, getParameter(template.getFirstName(), secondaryLang));
-		attributes.put(UINCardConstant.GENDER_ENG, getParameter(template.getGender(), primaryLang));
-		attributes.put(UINCardConstant.GENDER_ARA, getParameter(template.getGender(), secondaryLang));
-		attributes.put(UINCardConstant.DATEOFBIRTH, template.getDateOfBirth());
-		attributes.put(UINCardConstant.ADDRESSLINE1_ENG, getParameter(template.getAddressLine1(), primaryLang));
-		attributes.put(UINCardConstant.ADDRESSLINE1_ARA, getParameter(template.getAddressLine1(), secondaryLang));
-		attributes.put(UINCardConstant.ADDRESSLINE2_ENG, getParameter(template.getAddressLine2(), primaryLang));
-		attributes.put(UINCardConstant.ADDRESSLINE2_ARA, getParameter(template.getAddressLine2(), secondaryLang));
-		attributes.put(UINCardConstant.ADDRESSLINE3_ENG, getParameter(template.getAddressLine3(), primaryLang));
-		attributes.put(UINCardConstant.ADDRESSLINE3_ARA, getParameter(template.getAddressLine3(), secondaryLang));
-		attributes.put(UINCardConstant.REGION_ENG, getParameter(template.getRegion(), primaryLang));
-		attributes.put(UINCardConstant.REGION_ARA, getParameter(template.getRegion(), secondaryLang));
-		attributes.put(UINCardConstant.PROVINCE_ENG, getParameter(template.getProvince(), primaryLang));
-		attributes.put(UINCardConstant.PROVINCE_ARA, getParameter(template.getProvince(), secondaryLang));
-		attributes.put(UINCardConstant.CITY_ENG, getParameter(template.getCity(), primaryLang));
-		attributes.put(UINCardConstant.CITY_ARA, getParameter(template.getCity(), secondaryLang));
-		attributes.put(UINCardConstant.POSTALCODE, template.getPostalCode());
-		attributes.put(UINCardConstant.PHONENUMBER, template.getPhoneNumber());
-		attributes.put(UINCardConstant.EMAILID, template.getEmailID());
-
-		for (Map.Entry<String, Object> entry : attributes.entrySet()) {
-			qrString.append(entry.getKey());
-			qrString.append(entry.getValue());
-		}
-	}
-
-	/**
-	 * Gets the parameter.
-	 *
-	 * @param jsonValues
-	 *            the json values
-	 * @param language
-	 *            the language
-	 * @return the parameter
-	 */
-	private String getParameter(JsonValue[] jsonValues, String language) {
-		String parameter = null;
-		if (jsonValues != null) {
-			for (int count = 0; count < jsonValues.length; count++) {
-				String lang = jsonValues[count].getLanguage();
-				if (language.contains(lang)) {
-					parameter = jsonValues[count].getValue();
-					break;
+			List<String> mapperJsonKeys = new ArrayList<>(mapperIdentity.keySet());
+			for (String key : mapperJsonKeys) {
+				JSONObject jsonValue = JsonUtil.getJSONObject(mapperIdentity, key);
+				Object object = JsonUtil.getJSONValue(demographicIdentity, (String)jsonValue.get(VALUE));
+				if (object instanceof ArrayList) {
+					JSONArray node = JsonUtil.getJSONArray(demographicIdentity, (String)jsonValue.get(VALUE));
+					JsonValue[] jsonValues = mapJsonNodeToJavaObject(JsonValue.class, node);
+					for (int count = 0; count < jsonValues.length; count++) {
+						String lang = jsonValues[count].getLanguage();
+						attribute.put(key + "_" + lang, jsonValues[count].getValue());
+					}
+				} else if (object instanceof LinkedHashMap) {
+					JSONObject json = JsonUtil.getJSONObject(demographicIdentity, (String)jsonValue.get(VALUE));
+					attribute.put(key, json.get(VALUE));
+				} else {
+					attribute.put(key, object);
 				}
 			}
+			
+		} catch (JsonParseException | JsonMappingException e) {
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					null, "Error while parsing Json file" + ExceptionUtils.getStackTrace(e));
+			throw new ParsingException(PlatformErrorMessages.RPR_SYS_JSON_PARSING_EXCEPTION.getMessage(), e);
 		}
-		return parameter;
-	}
-
-	/**
-	 * Gets the json values.
-	 *
-	 * @param identityKey
-	 *            the identity key
-	 * @return the json values
-	 */
-	private JsonValue[] getJsonValues(Object identityKey) {
-		JSONArray demographicJsonNode = null;
-		if (demographicIdentity != null)
-			demographicJsonNode = JsonUtil.getJSONArray(demographicIdentity, identityKey);
-
-		return (demographicJsonNode != null) ? mapJsonNodeToJavaObject(JsonValue.class, demographicJsonNode) : null;
 	}
 
 	/**
@@ -680,7 +620,6 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 		}
 
 		return javaObject;
-
 	}
 
 }

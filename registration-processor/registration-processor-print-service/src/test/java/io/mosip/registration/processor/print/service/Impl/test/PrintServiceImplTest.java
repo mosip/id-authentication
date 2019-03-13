@@ -40,13 +40,13 @@ import io.mosip.kernel.core.util.FileUtils;
 import io.mosip.kernel.qrcode.generator.zxing.constant.QrVersion;
 import io.mosip.registration.processor.core.constant.IdType;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
+import io.mosip.registration.processor.core.exception.TemplateProcessingFailureException;
 import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.spi.print.service.PrintService;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.core.spi.uincardgenerator.UinCardGenerator;
-import io.mosip.registration.processor.message.sender.exception.TemplateProcessingFailureException;
-import io.mosip.registration.processor.message.sender.template.generator.TemplateGenerator;
+import io.mosip.registration.processor.core.template.generator.TemplateGenerator;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.packet.storage.utils.Utilities;
 import io.mosip.registration.processor.print.service.impl.PrintServiceImpl;
@@ -112,8 +112,6 @@ public class PrintServiceImplTest {
 	@Before
 	public void setup() throws Exception {
 		ReflectionTestUtils.setField(printService, "langCode", "eng");
-		ReflectionTestUtils.setField(printService, "primaryLang", "eng");
-		ReflectionTestUtils.setField(printService, "secondaryLang", "ara");
 		
 		List<String> uinList = new ArrayList<>();
 		uinList.add("4238135072");
@@ -144,7 +142,8 @@ public class PrintServiceImplTest {
 		identityMap.put("phone", "9967878787");
 		identityMap.put("email", "raghavdce@gmail.com");
 		identityMap.put("postalCode", "900900");
-
+		identityMap.put("proofOfAddress", j2);
+		
 		Object identity = identityMap;
 		response.setIdentity(identity);
 		
