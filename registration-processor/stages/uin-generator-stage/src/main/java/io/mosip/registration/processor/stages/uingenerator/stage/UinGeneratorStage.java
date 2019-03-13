@@ -163,6 +163,7 @@ public class UinGeneratorStage extends MosipVerticleManager {
 	private static final String NULL_IDREPO_RESPONSE = "Response from IdRepo is null";
 	private static final String UIN_ACTIVATED = "ACTIVATED";
 	private static final String ACTIVATE_UIN = "ACTIVATE_UIN";
+	private static final String UIN_DEACTIVATED = "DEACTIVATED";
 	
 	private String description = "";
 	private boolean isTransactionSuccessful = false;
@@ -498,7 +499,62 @@ public class UinGeneratorStage extends MosipVerticleManager {
 		return result;
 	}
 
+	private IdResponseDTO deactivateUin(String uin, String regId) {
+		IdResponseDTO idResponseDto = new IdResponseDTO();
+		List<String> pathsegments = new ArrayList<>();
 
+		try {
+			idResponseDto = getIdRepoDataByUIN(uin);
+
+			if (idResponseDto.getResponse() != null && idResponseDto.getStatus().equalsIgnoreCase(UIN_DEACTIVATED)) {
+
+				registrationStatusDto.setStatusCode(RegistrationStatusCode.PACKET_UIN_UPDATION_FAILURE.toString());
+				registrationStatusDto.setStatusComment(UinStatusMessage.UIN_DEACTIVATE_FAILURE + regId);
+				description = UinStatusMessage.UIN_DEACTIVATE_FAILURE + regId;
+				return idResponseDto;
+
+			} else {
+				pathsegments.add(uin);
+				idRequestDTO.setId(idRepoUpdate);
+				idRequestDTO.setRegistrationId(regId);
+				idRequestDTO.setStatus(UIN_DEACTIVATED);
+				idRequestDTO.setTimestamp(DateUtils.getUTCCurrentDateTimeString());
+				idRequestDTO.setVersion(idRepoApiVersion);
+				// Gson gson = new GsonBuilder().create();
+				// String idReq = gson.toJson(idResponseDTO);
+
+				idResponseDto = (IdResponseDTO) registrationProcessorRestClientService.patchApi(ApiName.IDREPOSITORY,
+						pathsegments, "", "", idRequestDTO, IdResponseDTO.class);
+
+				if (idResponseDto != null && idResponseDto.getResponse() != null) {
+					if (idResponseDto.getStatus().equalsIgnoreCase("DEACTIVATED")) {
+						registrationStatusDto
+								.setStatusCode(RegistrationStatusCode.PACKET_UIN_UPDATION_SUCCESS.toString());
+						registrationStatusDto.setStatusComment(UinStatusMessage.UIN_DEACTIVATE_SUCCESS + regId);
+						description = UinStatusMessage.UIN_DEACTIVATE_SUCCESS + regId;
+					}
+				} else {
+
+					String statusComment = idResponseDto != null && idResponseDto.getErrors() != null
+							? idResponseDto.getErrors().get(0).getErrorMessage()
+							: NULL_IDREPO_RESPONSE;
+					registrationStatusDto.setStatusCode(RegistrationStatusCode.PACKET_UIN_UPDATION_FAILURE.toString());
+					registrationStatusDto.setStatusComment(statusComment);
+					description = statusComment;
+				}
+
+			}
+			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
+					LoggerFileConstant.REGISTRATIONID.toString() + regId, "Updated Response from IdRepo API",
+					"is : " + idResponseDto.toString());
+		} catch (ApisResourceAccessException e) {
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					registrationId, PlatformErrorMessages.RPR_SYS_JSON_PARSING_EXCEPTION.getMessage() + e.getMessage()
+							+ ExceptionUtils.getStackTrace(e));
+		}
+
+		return idResponseDto;
+	}
 
 
 	private IdResponseDTO getIdRepoDataByUIN(String uin) throws ApisResourceAccessException{
