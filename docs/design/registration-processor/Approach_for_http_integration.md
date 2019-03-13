@@ -71,7 +71,8 @@ Add additional route in DSL xml file with the apache HTTP end point
 		</choice>
 	</route>
 ```
--		 Add packetDetailsRequestHandler and packetDetailsResponseHandler spring bean. packetDetailsRequestHandler will fetch packet details using request id and packetDetailsResponseHandler handle response and send vertx event with MessageDTO to OSI validator as shown below:
+-			 Add packetDetailsRequestHandler and packetDetailsResponseHandler spring bean. packetDetailsRequestHandler will fetch packet details using request id and packetDetailsResponseHandler handle response and send vertx event with MessageDTO to OSI validator as shown below:
+
 ```html
 	<to uri="vertx:packet-validator-bus-in" />
 	```
