@@ -5,6 +5,7 @@ import java.util.List;
 import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
 import io.mosip.registration.dao.GlobalParamName;
 import io.mosip.registration.entity.GlobalParam;
+import io.mosip.registration.entity.id.GlobalParamId;
 
 /**
  * The repository interface for {@link GlobalParam} entity
@@ -13,7 +14,7 @@ import io.mosip.registration.entity.GlobalParam;
  * @since 1.0.0
  *
  */
-public interface GlobalParamRepository extends BaseRepository<GlobalParam, String> {
+public interface GlobalParamRepository extends BaseRepository<GlobalParam, GlobalParamId> {
 
 	/**
 	 * Retrieving global params.
