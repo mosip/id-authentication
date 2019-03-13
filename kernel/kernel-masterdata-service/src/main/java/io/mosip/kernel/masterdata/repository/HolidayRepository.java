@@ -29,6 +29,7 @@ public interface HolidayRepository extends BaseRepository<Holiday, Integer> {
 	 *            holiday id input from user
 	 * @return list of holidays for a particular id
 	 */
+	@Query("FROM Holiday where id=?1 and (isDeleted = false or isDeleted is null) and isActive = true")
 	List<Holiday> findAllById(int id);
 
 	/**
@@ -63,6 +64,7 @@ public interface HolidayRepository extends BaseRepository<Holiday, Integer> {
 	 *            input from user
 	 * @return list of holidays for the particular holiday id and language code
 	 */
+	@Query("FROM Holiday where id=?1 and holidayId.langCode = ?2 and (isDeleted = false or isDeleted is null) and isActive = true")
 	List<Holiday> findHolidayByIdAndHolidayIdLangCode(int holidayId, String langCode);
 
 	/**
@@ -89,6 +91,7 @@ public interface HolidayRepository extends BaseRepository<Holiday, Integer> {
 	 *            location code of the holiday
 	 * @return {@link Holiday}
 	 */
+	@Query("FROM Holiday where id=?1 and holidayId.locationCode = ?2 and (isDeleted = false or isDeleted is null) and isActive = true")
 	Holiday findHolidayByIdAndHolidayIdLocationCode(int id, String locationCode);
 
 	/**
