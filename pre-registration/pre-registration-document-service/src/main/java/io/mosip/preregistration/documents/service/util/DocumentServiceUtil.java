@@ -176,8 +176,8 @@ public class DocumentServiceUtil {
 		documentEntity.setStatusCode(StatusCodes.DOCUMENT_UPLOADED.getCode());
 		documentEntity.setLangCode(dto.getLangCode());
 		documentEntity.setCrDtime(LocalDateTime.now(ZoneId.of("UTC")));
-		documentEntity.setCrBy("Rajath");
-		documentEntity.setUpdBy("Rajath");
+		documentEntity.setCrBy("ADMIN");
+		documentEntity.setUpdBy("ADMIN");
 		documentEntity.setUpdDtime(LocalDateTime.now(ZoneId.of("UTC")));
 		documentEntity.setEncryptedDateTime(LocalDateTime.now(ZoneId.of("UTC")));
 		return documentEntity;
