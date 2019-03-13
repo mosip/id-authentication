@@ -21,11 +21,11 @@ public class TokenGenerator {
     MosipEnvironment mosipEnvironment;
 
     private Claims getBasicClaims(MosipUserDto mosipUser) {
-        Claims claims = Jwts.claims().setSubject(mosipUser.getUserName());
+        Claims claims = Jwts.claims().setSubject(mosipUser.getUserId());
         claims.put("mobile", mosipUser.getMobile());
         claims.put("mail", mosipUser.getMail());
         claims.put("role", mosipUser.getRole());
-
+        claims.put("name", mosipUser.getName());
         return claims;
     }
 
@@ -89,56 +89,34 @@ public class TokenGenerator {
 
 	public BasicTokenDto basicGenerate(MosipUserDto mosipUser) {
 		BasicTokenDto basicTokenDto = new BasicTokenDto();
-		 Claims claims = Jwts.claims().setSubject(mosipUser.getUserName());
+		 Claims claims = Jwts.claims().setSubject(mosipUser.getUserId());
 	        claims.put("mobile", mosipUser.getMobile());
 	        claims.put("mail", mosipUser.getMail());
 	        claims.put("role", mosipUser.getRole());
 	        claims.put("lang", mosipUser.getLangCode());
+	        claims.put("name", mosipUser.getName());
 	        TimeToken token = getToken(claims);
-	        String refreshToken = buildRefreshToken(claims);
+	        //String refreshToken = buildRefreshToken(claims);
 	        basicTokenDto.setAuthToken(token.getToken());
-	        basicTokenDto.setRefreshToken(refreshToken);
+	        //basicTokenDto.setRefreshToken(refreshToken);
 	        basicTokenDto.setExpiryTime(token.getExpTime());
 		return basicTokenDto;
 	}
 	public BasicTokenDto basicGenerateOTPToken(MosipUserDto mosipUser,boolean otpVerified) {
 		BasicTokenDto basicTokenDto = new BasicTokenDto();
-		 Claims claims = Jwts.claims().setSubject(mosipUser.getUserName());
+		 Claims claims = Jwts.claims().setSubject(mosipUser.getUserId());
 	        claims.put("mobile", mosipUser.getMobile());
 	        claims.put("mail", mosipUser.getMail());
 	        claims.put("role", mosipUser.getRole());
 	        claims.put("lang", mosipUser.getLangCode());
+	        claims.put("name", mosipUser.getName());
 	        claims.put("isOtpRequired", true);
 	        claims.put("isOtpVerified", otpVerified);
 	        TimeToken token = getToken(claims);
-	        String refreshToken = buildRefreshToken(claims);
 	        basicTokenDto.setAuthToken(token.getToken());
-	        basicTokenDto.setRefreshToken(refreshToken);
 	        basicTokenDto.setExpiryTime(token.getExpTime());
 		return basicTokenDto;
 	}
-
-	private String buildToken(Claims claims, long exptime) {
-        String secret = mosipEnvironment.getJwtSecret();
-        String token_base = mosipEnvironment.getTokenBase();
-        int token_expiry = mosipEnvironment.getTokenExpiry();
-
-        long currentTimeInMs = System.currentTimeMillis();
-        Date currentDate = new Date(currentTimeInMs);
-
-        JwtBuilder builder = Jwts.builder()
-                .setClaims(claims)
-                .setIssuedAt(currentDate)
-                .signWith(SignatureAlgorithm.HS512, secret);
-
-
-        if (token_expiry >= 0) {
-        	exptime = currentTimeInMs + token_expiry;
-            builder.setExpiration(new Date(exptime));
-        }
-
-        return token_base.concat(builder.compact());
-    }
 	
 	private TimeToken getToken(Claims claims) {
 		TimeToken timeToken = new TimeToken();
@@ -166,11 +144,12 @@ public class TokenGenerator {
     }
 
 	public String refreshToken(MosipUserDto mosipUser) {
-		 Claims claims = Jwts.claims().setSubject(mosipUser.getUserName());
+		 Claims claims = Jwts.claims().setSubject(mosipUser.getUserId());
 	        claims.put("mobile", mosipUser.getMobile());
 	        claims.put("mail", mosipUser.getMail());
 	        claims.put("role", mosipUser.getRole());
 	        claims.put("lang", mosipUser.getLangCode());
+	        claims.put("name", mosipUser.getName());
 		return buildRefreshToken(claims);
 	}
 	

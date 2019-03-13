@@ -98,7 +98,7 @@ public class IdRepoSecurityManager {
 			return encryptDecryptData(
 					restBuilder.buildRequest(RestServicesConstants.CRYPTO_MANAGER_ENCRYPT, request, ObjectNode.class));
 		} catch (IdRepoAppException e) {
-			mosipLogger.error(ID_REPO_SERVICE, ID_REPO_SECURITY_MANAGER, ENCRYPT_DECRYPT_DATA,
+			mosipLogger.error(IdRepoLogger.getUin(), ID_REPO_SECURITY_MANAGER, ENCRYPT_DECRYPT_DATA,
 					e.getErrorText());
 			throw new IdRepoAppException(IdRepoErrorConstants.ENCRYPTION_DECRYPTION_FAILED, e);
 		}
@@ -117,7 +117,7 @@ public class IdRepoSecurityManager {
 			return encryptDecryptData(
 					restBuilder.buildRequest(RestServicesConstants.CRYPTO_MANAGER_DECRYPT, request, ObjectNode.class));
 		} catch (IdRepoAppException e) {
-			mosipLogger.error(ID_REPO_SERVICE, ID_REPO_SECURITY_MANAGER, ENCRYPT_DECRYPT_DATA,
+			mosipLogger.error(IdRepoLogger.getUin(), ID_REPO_SECURITY_MANAGER, ENCRYPT_DECRYPT_DATA,
 					e.getErrorText());
 			throw new IdRepoAppException(IdRepoErrorConstants.ENCRYPTION_DECRYPTION_FAILED, e);
 		}
@@ -137,12 +137,12 @@ public class IdRepoSecurityManager {
 			if (response.has("data")) {
 				return response.get("data").asText().getBytes();
 			} else {
-				mosipLogger.error(ID_REPO_SERVICE, ID_REPO_SECURITY_MANAGER, ENCRYPT_DECRYPT_DATA,
+				mosipLogger.error(IdRepoLogger.getUin(), ID_REPO_SECURITY_MANAGER, ENCRYPT_DECRYPT_DATA,
 						"No data block found in response");
 				throw new IdRepoAppException(IdRepoErrorConstants.ENCRYPTION_DECRYPTION_FAILED);
 			}
 		} catch (RestServiceException e) {
-			mosipLogger.error(ID_REPO_SERVICE, ID_REPO_SECURITY_MANAGER, ENCRYPT_DECRYPT_DATA,
+			mosipLogger.error(IdRepoLogger.getUin(), ID_REPO_SECURITY_MANAGER, ENCRYPT_DECRYPT_DATA,
 					e.getErrorText());
 			throw new IdRepoAppException(IdRepoErrorConstants.ENCRYPTION_DECRYPTION_FAILED, e);
 		}

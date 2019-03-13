@@ -53,7 +53,7 @@ public interface LocationRepository extends BaseRepository<Location, CodeAndLang
 	 * 
 	 */
 	@Query(value = "FROM Location l where l.langCode=?1 and l.hierarchyLevel >=?2 and (l.isDeleted is null or l.isDeleted=false)")
-	List<Location> getAllLocationsByLangCodeAndLevel(String langCode, Integer level);
+	List<Location> getAllLocationsByLangCodeAndLevel(String langCode, Short level);
 
 	/**
 	 * checks whether the location name is valid location or not

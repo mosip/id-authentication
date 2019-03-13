@@ -5,6 +5,8 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
+
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -20,6 +22,7 @@ import com.google.gson.Gson;
 import io.restassured.response.Response;
 
 public class AssertIda {
+	protected static Logger logger = Logger.getLogger(AssertIda.class);
 	public boolean assertKernel(Response expectedResponse, JSONObject actualResponse,
 			ArrayList<String> listOfElementToRemove) throws JsonProcessingException, IOException, ParseException {
 		JSONObject expectedResponseBody = (JSONObject) new JSONParser().parse(expectedResponse.asString());
@@ -49,16 +52,16 @@ public class AssertIda {
 			JsonNode responseJson = mapper.readTree(resObj.toString());
 			JsonNode diffJson = JsonDiff.asJson(requestJson, responseJson);
 
-			System.err.println("======" + diffJson + "==========");
+			logger.info("======" + diffJson + "==========");
 			if (diffJson.toString().equals("[]")) {
-				System.out.println("equal");
+				logger.info("equal");
 				return true;
 			}
 
 			for (int i = 0; i < diffJson.size(); i++) {
 				JsonNode operation = diffJson.get(i);
 				if (!operation.get("op").toString().equals("\"move\"")) {
-					System.out.println("not equal");
+					logger.info("not equal");
 					return false;
 				}
 			}
@@ -66,7 +69,7 @@ public class AssertIda {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		System.out.println("equal");
+		logger.info("equal");
 		return true;
 
 	}

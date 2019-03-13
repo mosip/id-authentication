@@ -55,4 +55,4 @@ HttpStatus: 202 Accepted
 ## Implementation
 
 
-**kernel-emailnotification-service** [README](../../kernel/kernel-emailnotification-service/README.md)
+**kernel-emailnotification-service** [README](../../../kernel/kernel-emailnotification-service/README.md)

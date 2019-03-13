@@ -31,7 +31,7 @@ public class ZipUtilTest {
  
     	    byte[] data = Files.readAllBytes(Paths.get(this.getClass().getClassLoader().getResource("SampleFile.txt").toURI())); 
     	    byte[] returnedzippedByteArray = ZipUtils.zipByteArray(data);
-    	    String outputFile = System.getProperty("user.dir") + "\\compressedByteArray.zip";   
+    	    String outputFile = "compressedByteArray.zip";   
     	    Files.write(Paths.get(outputFile), returnedzippedByteArray);
     	    File returnFile= new File(outputFile);
         
@@ -46,7 +46,7 @@ public class ZipUtilTest {
  
     	    byte[] data = Files.readAllBytes(Paths.get(this.getClass().getClassLoader().getResource("SampleFile.txt").toURI())); 
     	    byte[] returnedzippedByteArray = ZipUtils.zipByteArray(data);
-    	    String finalPath = System.getProperty("user.dir") + "\\src\\final.txt";
+    	    String finalPath = "final.txt";
     	      
     	    byte[] returnedunzipByteArray =ZipUtils.unzipByteArray(returnedzippedByteArray);
     	    Files.write(Paths.get(finalPath), returnedunzipByteArray);
@@ -61,7 +61,7 @@ public class ZipUtilTest {
 	@Test
 	public void zipFileTest() throws FileNotFoundException, IOException, java.io.IOException {
 
-		String outputFile = System.getProperty("user.dir") + "\\compressed.zip";
+		String outputFile = "compressed.zip";
 		ClassLoader classLoader = getClass().getClassLoader();
 		String inputFile = classLoader.getResource("SampleFile.txt").getFile();
 		boolean ren = ZipUtils.zipFile(inputFile, outputFile);
@@ -84,7 +84,7 @@ public class ZipUtilTest {
 		ClassLoader classLoader = getClass().getClassLoader();
 		String inputMultFile1 = classLoader.getResource("File1.txt").getFile();
 		String inputMultFile2 = classLoader.getResource("File2.txt").getFile();
-		String outputMulFile = System.getProperty("user.dir") + "\\compressedMulty.zip";
+		String outputMulFile = "compressedMulty.zip";
 		String[] inputMultFile = { inputMultFile1, inputMultFile2 };
 
 		boolean ren = ZipUtils.zipMultipleFile(inputMultFile, outputMulFile);
@@ -105,7 +105,7 @@ public class ZipUtilTest {
 	@Test
 	public void zipDirectoryTest() throws FileNotFoundException, IOException {
 
-		String outputDir = System.getProperty("user.dir") + "\\compressedDir.zip";
+		String outputDir = "compressedDir.zip";
 		ClassLoader classLoader = getClass().getClassLoader();
 		String inputDir = classLoader.getResource("test").getFile();
 
@@ -127,7 +127,7 @@ public class ZipUtilTest {
 	@Test
 	public void unZipFileTest() throws FileNotFoundException, IOException {
 
-		String outputUnZip = System.getProperty("user.dir") + "\\unzip";
+		String outputUnZip = "unzip";
 		ClassLoader classLoader = getClass().getClassLoader();
 		String inputZipFile = classLoader.getResource("File1.zip").getFile();
 
@@ -157,7 +157,7 @@ public class ZipUtilTest {
 	@Test
 	public void unzipDTest() throws FileNotFoundException, IOException, java.io.IOException {
 
-		String outputUnZip = System.getProperty("user.dir") + "\\unzip";
+		String outputUnZip = "unzip";
 		ClassLoader classLoader = getClass().getClassLoader();
 		String zipFile = classLoader.getResource("test.zip").getFile();
 

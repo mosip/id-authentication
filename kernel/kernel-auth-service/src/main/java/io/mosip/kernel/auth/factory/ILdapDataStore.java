@@ -67,6 +67,7 @@ public class ILdapDataStore implements IDataStore {
 	 MosipEnvironment environment;
 	
 	private LdapConnection createAnonymousConnection() throws Exception {
+		LdapNetworkConnection network = new LdapNetworkConnection(dataBaseConfig.getUrl(),Integer.valueOf(dataBaseConfig.getPort()));
 		LdapConnection connection = new LdapNetworkConnection(dataBaseConfig.getUrl(),Integer.valueOf(dataBaseConfig.getPort()));
 		return connection;
 	}
@@ -191,7 +192,7 @@ public class ILdapDataStore implements IDataStore {
 			Entry userLookup = connection.lookup(userdn);
 			if (userLookup != null) {
 				mosipUserDto = new MosipUserDto();
-				mosipUserDto.setUserName(userLookup.get("uid").get().toString());
+				mosipUserDto.setUserId(userLookup.get("uid").get().toString());
 				mosipUserDto.setMobile(userLookup.get("mobile")!=null?userLookup.get("mobile").get().toString():null);
 				mosipUserDto.setMail(userLookup.get("mail")!=null?userLookup.get("mail").get().toString():null);
 				mosipUserDto.setUserPassword(userLookup.get("userPassword")!=null?userLookup.get("userPassword").get().getBytes():null);

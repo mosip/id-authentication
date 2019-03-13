@@ -28,7 +28,7 @@ public class RegistrationCenterMachineDeviceHistoryDto extends BaseDto  {
 	@Size(min = 1, max = 36)
 	private String deviceId;
 	
-	private LocalDateTime effectiveDateTime;
+	private LocalDateTime effectivetimes;
 	
 	
 }

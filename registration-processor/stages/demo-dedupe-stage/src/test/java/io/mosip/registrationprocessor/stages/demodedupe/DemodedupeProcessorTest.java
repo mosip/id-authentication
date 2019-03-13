@@ -6,6 +6,8 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyList;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -23,6 +25,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import org.springframework.web.client.ResourceAccessException;
 
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
+import io.mosip.registration.processor.core.code.ApiName;
 import io.mosip.registration.processor.core.code.EventId;
 import io.mosip.registration.processor.core.code.EventName;
 import io.mosip.registration.processor.core.code.EventType;
@@ -107,7 +110,7 @@ public class DemodedupeProcessorTest {
 		AuditResponseDto auditResponseDto = new AuditResponseDto();
 		Mockito.doReturn(auditResponseDto).when(auditLogRequestBuilder).createAuditRequestBuilder(
 				"test case description", EventId.RPR_405.toString(), EventName.UPDATE.toString(),
-				EventType.BUSINESS.toString(), "1234testcase");
+				EventType.BUSINESS.toString(), "1234testcase", ApiName.AUDIT);
 
 		InternalRegistrationStatusDto registrationStatusDto = new InternalRegistrationStatusDto();
 		Mockito.when(registrationStatusService.getRegistrationStatus(anyString())).thenReturn(registrationStatusDto);
@@ -146,7 +149,7 @@ public class DemodedupeProcessorTest {
 		Mockito.when(demoDedupe.authenticateDuplicates(anyString(), anyList())).thenReturn(false);
 
 		MessageDTO messageDto = demodedupeProcessor.process(dto);
-		assertFalse(messageDto.getIsValid());
+		verify(packetInfoManager, times(1)).saveManualAdjudicationData(anyList(), anyString());
 	}
 
 	/**

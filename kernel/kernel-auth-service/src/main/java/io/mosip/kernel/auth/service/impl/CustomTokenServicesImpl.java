@@ -44,7 +44,7 @@ public class CustomTokenServicesImpl implements CustomTokenServices {
 	
 	public static final String SELECT_TOKEN_NAME="select user_id,auth_token,refresh_token,expiration_time from iam.oauth_access_token where user_id like :userName ";
 	
-	public static final String DELETE_ACCESS_TOKEN="delete auth_token from iam.oauth_access_token where user_id like :userName";
+	public static final String DELETE_ACCESS_TOKEN="delete from iam.oauth_access_token where user_id like :userName";
 	
 	public static final String DELETE_REFRESH_TOKEN="delete from iam.oauth_access_token where user_id like :userName";
 	
@@ -164,20 +164,12 @@ public class CustomTokenServicesImpl implements CustomTokenServices {
 	@Override
 	public void revokeToken(String token) {
 		AuthToken authToken = getTokenDetails(token);
-		if(authToken.getRefreshToken()!=null)
-		{
-			removeRefreshToken(authToken.getUserId());
-		}
 		removeAccessToken(authToken.getUserId());
 	}
 
 	private void removeAccessToken(String userId) {
 		jdbcTemplate.update(deleteAccessToken, new MapSqlParameterSource().addValue("userName", userId));
 		
-	}
-
-	private void removeRefreshToken(String userId) {
-		jdbcTemplate.update(deleteRefreshToken, new MapSqlParameterSource().addValue("userName", userId));		
 	}
 
 }

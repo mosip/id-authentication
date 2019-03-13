@@ -21,7 +21,7 @@ import io.mosip.registration.processor.core.abstractverticle.MosipVerticleManage
 public class BioDedupeStage extends MosipVerticleManager {
 
 	/** The cluster manager url. */
-	@Value("${vertx.ignite.configuration}")
+	@Value("${vertx.cluster.configuration}")
 	private String clusterManagerUrl;
 
 	@Autowired

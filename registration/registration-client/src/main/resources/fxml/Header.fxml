@@ -70,19 +70,13 @@
                      </graphic>
                      <items>
                        <MenuItem mnemonicParsing="false" onAction="#uploadPacketToServer" text="%uploadpacket"/>
-						
-                        <SeparatorMenuItem />
-                        <MenuItem fx:id="virusScan" mnemonicParsing="false" onAction="#virusScan" text="%virusscan"/>                        	
-                     
+				    
                         <SeparatorMenuItem />
                         <MenuItem mnemonicParsing="false" onAction="#syncData" text="%syncdata"/>                        	
                        
                         <SeparatorMenuItem />
                         <MenuItem mnemonicParsing="false" onAction="#downloadPreRegData" text="%downloadpre-registrationdata"/>                        	
-                        
-                        <SeparatorMenuItem />
-                        <MenuItem mnemonicParsing="false" onAction="#onBoardDevice" text="%deviceonboarding"/>                        	
-                        
+             
                         <SeparatorMenuItem />
                         <MenuItem mnemonicParsing="false" onAction="#redirectHome" text="%home"/>                        	
                         
