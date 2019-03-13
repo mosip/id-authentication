@@ -73,19 +73,7 @@
 		</dependency>
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
-			<artifactId>kernel-pdfgenerator-itext</artifactId>
-			<version>${kernel.core.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-fsadapter-hdfs</artifactId>
-			<version>${kernel.core.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>io.mosip.kernel</groupId>
-			<artifactId>kernel-qrcodegenerator-zxing</artifactId>
 			<version>${kernel.core.version}</version>
 		</dependency>
 
@@ -109,6 +97,10 @@
 			<groupId>io.springfox</groupId>
 			<artifactId>springfox-swagger2</artifactId>
 			<version>${swagger.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.googlecode.json-simple</groupId>
+			<artifactId>json-simple</artifactId>
 		</dependency>
 	</dependencies>
 	<dependencyManagement>
