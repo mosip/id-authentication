@@ -131,7 +131,7 @@ public class PridGeneratorImpl implements PridGenerator<String> {
 			} else {
 
 				counterSecureRandom = listOfEntity.get(0).getSequenceCounter();
-
+				counterSecureRandom = new BigInteger(counterSecureRandom).add(BigInteger.ONE).toString();
 				random = listOfEntity.get(0).getRandomValue();
 
 				repository.updateCounterValue(counterSecureRandom, random);
@@ -142,8 +142,6 @@ public class PridGeneratorImpl implements PridGenerator<String> {
 			throw new PridException(PridExceptionConstant.PRID_INSERTION_EXCEPTION.getErrorCode(),
 					PridExceptionConstant.PRID_INSERTION_EXCEPTION.getErrorMessage(), e);
 		}
-
-		counterSecureRandom = new BigInteger(counterSecureRandom).add(BigInteger.ONE).toString();
 
 		SecretKey secretKey = new SecretKeySpec(counterSecureRandom.getBytes(),
 				PridPropertyConstant.ENCRYPTION_ALGORITHM.getProperty());

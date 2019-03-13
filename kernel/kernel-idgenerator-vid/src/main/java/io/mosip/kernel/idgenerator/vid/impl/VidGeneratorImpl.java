@@ -123,6 +123,7 @@ public class VidGeneratorImpl implements VidGenerator<String> {
 				repository.save(entity);
 			} else {
 				counterSecureRandom = listOfEntity.get(0).getSequenceCounter();
+				counterSecureRandom = new BigInteger(counterSecureRandom).add(BigInteger.ONE).toString();
 				random = listOfEntity.get(0).getRandomValue();
 				repository.updateCounterValue(counterSecureRandom, random);
 			}
@@ -131,7 +132,7 @@ public class VidGeneratorImpl implements VidGenerator<String> {
 			throw new VidException(VidExceptionConstant.VID_INSERTION_EXCEPTION.getErrorCode(),
 					VidExceptionConstant.VID_INSERTION_EXCEPTION.getErrorMessage(), e);
 		}
-		counterSecureRandom = new BigInteger(counterSecureRandom).add(BigInteger.ONE).toString();
+
 		SecretKey secretKey = new SecretKeySpec(counterSecureRandom.getBytes(),
 				VidPropertyConstant.ENCRYPTION_ALGORITHM.getProperty());
 		byte[] encryptedData = encryptor.symmetricEncrypt(secretKey, random.getBytes());
