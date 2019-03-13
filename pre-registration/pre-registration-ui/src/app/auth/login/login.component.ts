@@ -95,6 +95,8 @@ export class LoginComponent implements OnInit {
   loadConfigs() {
     this.dataService.getConfig().subscribe(
       response => {
+        console.log(response);
+
         this.configService.setConfig(response);
         this.setTimer();
         this.loadLanguagesWithConfig();
