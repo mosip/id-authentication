@@ -59,11 +59,11 @@ public class UinGeneratorRouter {
 	public Router createRouter(Vertx vertx) {
 		Router router = Router.router(vertx);
 
-		router.get(environment.getProperty(UinGeneratorConstant.ISSUE_UIN_PATH) + UinGeneratorConstant.V1_0)
+		router.get(environment.getProperty(UinGeneratorConstant.UIN))
 				.handler(this::getRouter);
 
 		router.route().handler(BodyHandler.create());
-		router.put(environment.getProperty(UinGeneratorConstant.UPDATE_UIN_STATUS_PATH)).handler(this::updateRouter);
+		router.put(environment.getProperty(UinGeneratorConstant.UIN)).handler(this::updateRouter);
 
 		checkAndGenerateUins(vertx);
 		return router;
