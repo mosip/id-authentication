@@ -4,6 +4,7 @@ import java.util.Properties;
 
 import javax.sql.DataSource;
 
+import org.apache.tools.ant.types.Environment;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;
@@ -25,6 +26,9 @@ import io.mosip.kernel.dataaccess.hibernate.config.HibernateDaoConfig;
  *
  */
 public class DaoConfig extends HibernateDaoConfig {
+	
+	@Autowired
+	private Environment environment;
 
 	private static DataSource dataSource;
 	
@@ -35,12 +39,6 @@ public class DaoConfig extends HibernateDaoConfig {
 
 		dataSource = driverManagerDataSource;
 	}
-
-	@Autowired
-	private ApplicationContext applicationContext;
-
-	@Value("${IRIS_THRESHOLD}")
-	private String irisThreshold;
 
 	@Override
 	@Bean(name = "dataSource")
