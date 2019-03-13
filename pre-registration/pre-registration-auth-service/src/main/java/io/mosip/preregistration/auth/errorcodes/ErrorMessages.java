@@ -9,5 +9,6 @@ package io.mosip.preregistration.auth.errorcodes;
 public enum ErrorMessages {
 
 	SEND_OTP_FAILED,
-	USERID_OTP_VALIDATION_FAILED;
+	USERID_OTP_VALIDATION_FAILED,
+	INVALIDATE_TOKEN_FAILED;
 }
