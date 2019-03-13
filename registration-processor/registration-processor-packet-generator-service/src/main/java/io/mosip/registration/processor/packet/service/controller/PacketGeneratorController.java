@@ -28,22 +28,41 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import springfox.documentation.annotations.ApiIgnore;
 
+/**
+ * The Class PacketGeneratorController.
+ */
 @RefreshScope
 @RestController
 @RequestMapping("/v0.1/registration-processor/packet-generator")
 @Api(tags = "PacketGenerator")
 public class PacketGeneratorController {
 
+	/** The packet generator service. */
 	@Autowired
 	private PacketGeneratorService packetGeneratorService;
 
+	/** The env. */
 	@Autowired
 	private Environment env;
 
+	/** The Constant REG_PACKET_GENERATOR_SERVICE_ID. */
 	private static final String REG_PACKET_GENERATOR_SERVICE_ID = "mosip.registration.processor.registration.packetgenerator.id";
+
+	/** The Constant REG_PACKET_GENERATOR_APPLICATION_VERSION. */
 	private static final String REG_PACKET_GENERATOR_APPLICATION_VERSION = "mosip.registration.processor.application.version";
+
+	/** The Constant DATETIME_PATTERN. */
 	private static final String DATETIME_PATTERN = "mosip.registration.processor.datetime.pattern";
 
+	/**
+	 * Gets the status.
+	 *
+	 * @param packerGeneratorRequestDto
+	 *            the packer generator request dto
+	 * @param errors
+	 *            the errors
+	 * @return the status
+	 */
 	@PostMapping(path = "/generatePacketAndUpload", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Get the status of packet", response = String.class)
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Get the status of packet "),
@@ -58,6 +77,13 @@ public class PacketGeneratorController {
 
 	}
 
+	/**
+	 * Builds the packet generator response.
+	 *
+	 * @param packerGeneratorResDto
+	 *            the packer generator res dto
+	 * @return the string
+	 */
 	public String buildPacketGeneratorResponse(PackerGeneratorResDto packerGeneratorResDto) {
 
 		PacketGeneratorResponseDto response = new PacketGeneratorResponseDto();

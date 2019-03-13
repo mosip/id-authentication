@@ -38,6 +38,9 @@ import io.mosip.registration.processor.packet.service.exception.RegBaseCheckedEx
 import io.mosip.registration.processor.packet.service.util.encryptor.EncryptorUtil;
 import io.mosip.registration.processor.packet.upload.service.SyncUploadEncryptionService;
 
+/**
+ * The Class SyncUploadEncryptionServiceImpl.
+ */
 @Service
 public class SyncUploadEncryptionServiceImpl implements SyncUploadEncryptionService {
 
@@ -49,8 +52,16 @@ public class SyncUploadEncryptionServiceImpl implements SyncUploadEncryptionServ
 	@Autowired
 	EncryptorUtil encryptorUtil;
 
+	/** The gson. */
 	Gson gson = new GsonBuilder().create();
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.registration.processor.packet.upload.service.
+	 * SyncUploadEncryptionService#uploadUinPacket(java.io.File, java.lang.String,
+	 * java.lang.String)
+	 */
 	public PackerGeneratorResDto uploadUinPacket(File decryptedUinZipFile, String registartionId, String creationTime) {
 		PackerGeneratorResDto packerGeneratorResDto = new PackerGeneratorResDto();
 
@@ -122,6 +133,13 @@ public class SyncUploadEncryptionServiceImpl implements SyncUploadEncryptionServ
 
 	}
 
+	/**
+	 * Packet sync.
+	 *
+	 * @param regId
+	 *            the reg id
+	 * @return the reg sync response DTO
+	 */
 	private RegSyncResponseDTO packetSync(String regId) {
 		RegSyncResponseDTO regSyncResponseDTO = null;
 		try {
