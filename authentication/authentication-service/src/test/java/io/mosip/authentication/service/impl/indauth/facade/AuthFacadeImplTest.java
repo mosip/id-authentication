@@ -230,11 +230,10 @@ public class AuthFacadeImplTest {
 		fingerIdentityInfoDtoList.add(faceValue);
 
 		IdentityDTO identitydto = new IdentityDTO();
-		identitydto.setBiometrics(fingerIdentityInfoDtoList);
 
 		RequestDTO requestDTO = new RequestDTO();
 		requestDTO.setDemographics(identitydto);
-
+		requestDTO.setBiometrics(fingerIdentityInfoDtoList);
 		authRequestDTO.setRequest(requestDTO);
 
 		BioInfo bioinfo = new BioInfo();
@@ -387,9 +386,9 @@ public class AuthFacadeImplTest {
 		fingerIdentityInfoDtoList.add(fingerValue);
 		fingerIdentityInfoDtoList.add(fingerValue2);
 
-		idDTO.setBiometrics(fingerIdentityInfoDtoList);
 		RequestDTO reqDTO = new RequestDTO();
 		reqDTO.setDemographics(idDTO);
+		reqDTO.setBiometrics(fingerIdentityInfoDtoList);
 		reqDTO.setOtp("456789");
 		authRequestDTO.setRequest(reqDTO);
 		authRequestDTO.setId("1234567");
@@ -707,11 +706,10 @@ public class AuthFacadeImplTest {
 		fingerIdentityInfoDtoList.add(faceValue);
 
 		IdentityDTO identitydto = new IdentityDTO();
-		identitydto.setBiometrics(fingerIdentityInfoDtoList);
 
 		RequestDTO requestDTO = new RequestDTO();
 		requestDTO.setDemographics(identitydto);
-
+		requestDTO.setBiometrics(fingerIdentityInfoDtoList);
 		authRequestDTO.setRequest(requestDTO);
 
 		BioInfo bioinfo = new BioInfo();
@@ -794,11 +792,10 @@ public class AuthFacadeImplTest {
 		fingerIdentityInfoDtoList.add(faceValue);
 
 		IdentityDTO identitydto = new IdentityDTO();
-		identitydto.setBiometrics(fingerIdentityInfoDtoList);
 
 		RequestDTO requestDTO = new RequestDTO();
 		requestDTO.setDemographics(identitydto);
-
+		requestDTO.setBiometrics(fingerIdentityInfoDtoList);
 		authRequestDTO.setRequest(requestDTO);
 
 		BioInfo bioinfo = new BioInfo();

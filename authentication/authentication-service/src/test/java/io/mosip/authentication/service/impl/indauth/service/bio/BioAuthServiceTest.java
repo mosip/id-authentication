@@ -138,8 +138,8 @@ public class BioAuthServiceTest {
 		bioIdentityInfoDTO.setSubType("Left IndexFinger");
 		bioIdentityInfoDTO.setValue(value);
 		leftIndexList.add(bioIdentityInfoDTO);
-		identity.setBiometrics(leftIndexList);
 		request.setDemographics(identity);
+		request.setBiometrics(leftIndexList);
 		authRequestDTO.setRequest(request);
 
 		IdentityInfoDTO identityInfoDTO1 = new IdentityInfoDTO();
@@ -226,8 +226,8 @@ public class BioAuthServiceTest {
 		bioIdentityInfoDTO.setSubType("LEFT_INDEX");
 		bioIdentityInfoDTO.setValue(value);
 		leftIndexList.add(bioIdentityInfoDTO);
-		identity.setBiometrics(leftIndexList);
 		request.setDemographics(identity);
+		request.setBiometrics(leftIndexList);
 		authRequestDTO.setRequest(request);
 		
 		
@@ -299,8 +299,8 @@ public class BioAuthServiceTest {
 		bioIdentityInfoDTO.setSubType("LEFT_INDEX");
 		bioIdentityInfoDTO.setValue(value);
 		leftIndexList.add(bioIdentityInfoDTO);
-		identity.setBiometrics(leftIndexList);
 		request.setDemographics(identity);
+		request.setBiometrics(leftIndexList);
 		authRequestDTO.setRequest(request);
 		
 		/*List<MatchInfo> matchInfoList = new ArrayList<>();
@@ -434,8 +434,8 @@ public class BioAuthServiceTest {
 		bioIdentityInfoDTO.setSubType("LEFT_INDEX");
 		bioIdentityInfoDTO.setValue(value);
 		leftIndexList.add(bioIdentityInfoDTO);
-		identity.setBiometrics(leftIndexList);
 		request.setDemographics(identity);
+		request.setBiometrics(leftIndexList);
 		authRequestDTO.setRequest(request);
 //		Map<String, List<IdentityInfoDTO>> bioIdentity = new HashMap<>();
 		IdentityInfoDTO identityInfoDTO1 = new IdentityInfoDTO();
@@ -531,8 +531,8 @@ public class BioAuthServiceTest {
 		bioIdentityInfoDTO.setSubType("LEFT_INDEX");
 		bioIdentityInfoDTO.setValue(value);
 		leftIndexList.add(bioIdentityInfoDTO);
-		identity.setBiometrics(leftIndexList);
 		request.setDemographics(identity);
+		request.setBiometrics(leftIndexList);
 		authRequestDTO.setRequest(request);
 //		Map<String, List<IdentityInfoDTO>> bioIdentity = new HashMap<>();
 		IdentityInfoDTO identityInfoDTO1 = new IdentityInfoDTO();
@@ -646,8 +646,8 @@ public class BioAuthServiceTest {
 		bioIdentityInfoDTO.setSubType("RIGHT_RING");
 		bioIdentityInfoDTO.setValue(value);
 		fingerList.add(bioIdentityInfoDTO);
-		identity.setBiometrics(fingerList);
 		request.setDemographics(identity);
+		request.setBiometrics(fingerList);
 		authRequestDTO.setRequest(request);
 		Map<String, List<IdentityInfoDTO>> bioIdentity = new HashMap<>();
 		IdentityInfoDTO identityInfoDTO1 = new IdentityInfoDTO();
@@ -783,8 +783,8 @@ public class BioAuthServiceTest {
 		bioIdentityInfoDTO.setSubType("RIGHT_INDEX");
 		bioIdentityInfoDTO.setValue(value);
 		fingerList.add(bioIdentityInfoDTO);
-		identity.setBiometrics(fingerList);
 		request.setDemographics(identity);
+		request.setBiometrics(fingerList);
 		authRequestDTO.setRequest(request);
 		Map<String, List<IdentityInfoDTO>> bioIdentity = new HashMap<>();
 		IdentityInfoDTO identityInfoDTO1 = new IdentityInfoDTO();
@@ -890,8 +890,8 @@ public class BioAuthServiceTest {
 		bioIdentityInfoDTO.setSubType("LEFT_EYE");
 		bioIdentityInfoDTO.setValue(value);
 		leftIndexList.add(bioIdentityInfoDTO);
-		identity.setBiometrics(leftIndexList);
 		request.setDemographics(identity);
+		request.setBiometrics(leftIndexList);
 		authRequestDTO.setRequest(request);
 		Map<String, List<IdentityInfoDTO>> bioIdentity = new HashMap<>();
 		IdentityInfoDTO identityInfoDTO1 = new IdentityInfoDTO();
@@ -1055,8 +1055,8 @@ public class BioAuthServiceTest {
 		bioIdentityInfoDTO.setSubType("RIGHT_INDEX");
 		bioIdentityInfoDTO.setValue(value);
 		fingerList.add(bioIdentityInfoDTO);
-		identity.setBiometrics(fingerList);
 		request.setDemographics(identity);
+		request.setBiometrics(fingerList);
 		authRequestDTO.setRequest(request);
 		
 		Map<String, List<IdentityInfoDTO>> bioIdentity = new HashMap<>();

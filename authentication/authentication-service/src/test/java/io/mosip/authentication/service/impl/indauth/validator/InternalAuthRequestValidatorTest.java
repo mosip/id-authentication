@@ -98,7 +98,7 @@ public class InternalAuthRequestValidatorTest {
 	public void testSupportFalse() {
 		assertFalse(internalAuthRequestValidator.supports(OtpRequestDTO.class));
 	}
-	@Ignore
+	
 	@Test
 	public void testinValidInternalAuthRequestValidator() {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
@@ -123,6 +123,16 @@ public class InternalAuthRequestValidatorTest {
 		idInfoList.add(idInfoDTO1);
 		IdentityDTO idDTO = new IdentityDTO();
 		idDTO.setName(idInfoList);
+		idDTO.setDob("25/11/1990");
+		idDTO.setAge("25");
+		IdentityInfoDTO idInfoDTOs = new IdentityInfoDTO();
+		idInfoDTOs.setLanguage(env.getProperty("mosip.secondary.lang-code"));
+		idInfoDTOs.setValue("V");
+		List<IdentityInfoDTO> idInfoLists = new ArrayList<>();
+		idInfoLists.add(idInfoDTOs);
+		idDTO.setDobType(idInfoLists);
+		authRequestDTO.setIndividualIdType("D");
+		authRequestDTO.setIndividualId("274390482564");
 		RequestDTO reqDTO = new RequestDTO();
 		reqDTO.setDemographics(idDTO);
 		authRequestDTO.setRequestedAuth(authTypeDTO);
@@ -141,7 +151,7 @@ public class InternalAuthRequestValidatorTest {
 		internalAuthRequestValidator.validate(authRequestDTO, errors);
 		assertTrue(errors.hasErrors());
 	}
-	@Ignore
+	
 	@Test
 	public void testinValidInternalAuthRequestValidator2() {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
@@ -163,6 +173,16 @@ public class InternalAuthRequestValidatorTest {
 		idInfoList.add(idInfoDTO1);
 		IdentityDTO idDTO = new IdentityDTO();
 		idDTO.setName(idInfoList);
+		idDTO.setDob("25/11/1990");
+		idDTO.setAge("25");
+		IdentityInfoDTO idInfoDTOs = new IdentityInfoDTO();
+		idInfoDTOs.setLanguage(env.getProperty("mosip.secondary.lang-code"));
+		idInfoDTOs.setValue("V");
+		List<IdentityInfoDTO> idInfoLists = new ArrayList<>();
+		idInfoLists.add(idInfoDTOs);
+		idDTO.setDobType(idInfoLists);
+		authRequestDTO.setIndividualIdType("D");
+		authRequestDTO.setIndividualId("274390482564");
 		RequestDTO reqDTO = new RequestDTO();
 		reqDTO.setDemographics(idDTO);
 		authRequestDTO.setRequestedAuth(authTypeDTO);
@@ -180,7 +200,7 @@ public class InternalAuthRequestValidatorTest {
 		internalAuthRequestValidator.validate(authRequestDTO, errors);
 		assertTrue(errors.hasErrors());
 	}
-	@Ignore
+	
 	@Test
 	public void testValidInternalAuthRequestValidator2() {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
@@ -203,6 +223,16 @@ public class InternalAuthRequestValidatorTest {
 		idInfoList.add(idInfoDTO1);
 		IdentityDTO idDTO = new IdentityDTO();
 		idDTO.setName(idInfoList);
+		idDTO.setDob("25/11/1990");
+		idDTO.setAge("25");
+		IdentityInfoDTO idInfoDTOs = new IdentityInfoDTO();
+		idInfoDTOs.setLanguage(env.getProperty("mosip.secondary.lang-code"));
+		idInfoDTOs.setValue("V");
+		List<IdentityInfoDTO> idInfoLists = new ArrayList<>();
+		idInfoLists.add(idInfoDTOs);
+		idDTO.setDobType(idInfoLists);
+		authRequestDTO.setIndividualIdType("D");
+		authRequestDTO.setIndividualId("274390482564");
 		RequestDTO reqDTO = new RequestDTO();
 		reqDTO.setDemographics(idDTO);
 		authRequestDTO.setRequestedAuth(authTypeDTO);
@@ -213,7 +243,7 @@ public class InternalAuthRequestValidatorTest {
 		assertFalse(errors.hasErrors());
 	}
 
-	@Ignore
+	
 	@Test
 	public void testinValiddata() {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
@@ -237,6 +267,16 @@ public class InternalAuthRequestValidatorTest {
 		idInfoList.add(idInfoDTO1);
 		IdentityDTO idDTO = new IdentityDTO();
 		idDTO.setName(idInfoList);
+		idDTO.setDob("25/11/1990");
+		idDTO.setAge("25");
+		IdentityInfoDTO idInfoDTOs = new IdentityInfoDTO();
+		idInfoDTOs.setLanguage(env.getProperty("mosip.secondary.lang-code"));
+		idInfoDTOs.setValue("V");
+		List<IdentityInfoDTO> idInfoLists = new ArrayList<>();
+		idInfoLists.add(idInfoDTOs);
+		idDTO.setDobType(idInfoLists);
+		authRequestDTO.setIndividualIdType("D");
+		authRequestDTO.setIndividualId("274390482564");
 		RequestDTO reqDTO = new RequestDTO();
 		reqDTO.setDemographics(idDTO);
 		authRequestDTO.setRequestedAuth(authTypeDTO);
@@ -246,7 +286,7 @@ public class InternalAuthRequestValidatorTest {
 		internalAuthRequestValidator.validate(authRequestDTO, errors);
 		assertTrue(errors.hasErrors());
 	}
-	@Ignore
+	
 	@Test
 	public void testValidInternalAuthRequestValidator() {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
@@ -258,47 +298,28 @@ public class InternalAuthRequestValidatorTest {
 		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
 		authTypeDTO.setDemo(false);
 		authTypeDTO.setBio(true);
-		BioInfo bioInfo = new BioInfo();
-		List<BioInfo> lb = new ArrayList<>();
-		lb.add(bioInfo);
-		authRequestDTO.setBioMetadata(lb);
-
-		IdentityInfoDTO idInfoDTO = new IdentityInfoDTO();
-		idInfoDTO.setLanguage("ara");
-
-		idInfoDTO.setValue("finger");
-		/*
-		 * IdentityInfoDTO idInfoDTO1 = new IdentityInfoDTO();
-		 * idInfoDTO1.setLanguage("fre"); idInfoDTO1.setValue("iris");
-		 */
-		List<IdentityInfoDTO> idInfoList = new ArrayList<>();
-		idInfoList.add(idInfoDTO);
-		AuthTypeDTO authType = new AuthTypeDTO();
-		authType.setBio(true);
-		authRequestDTO.setRequestedAuth(authType);
-
 		BioIdentityInfoDTO fingerValue = new BioIdentityInfoDTO();
 		fingerValue.setValue("finger");
 		fingerValue.setSubType("Thumb");
-		fingerValue.setType("finger");
+		fingerValue.setType("FIR");
 		BioIdentityInfoDTO irisValue = new BioIdentityInfoDTO();
 		irisValue.setValue("iris img");
 		irisValue.setSubType("left");
-		irisValue.setType("iris");
+		irisValue.setType("IIR");
 		BioIdentityInfoDTO faceValue = new BioIdentityInfoDTO();
 		faceValue.setValue("face img");
 		faceValue.setSubType("Thumb");
-		faceValue.setType("face");
+		faceValue.setType("FID");
 		List<BioIdentityInfoDTO> fingerIdentityInfoDtoList = new ArrayList<BioIdentityInfoDTO>();
 		fingerIdentityInfoDtoList.add(fingerValue);
 		fingerIdentityInfoDtoList.add(irisValue);
 		fingerIdentityInfoDtoList.add(faceValue);
 
 		IdentityDTO identitydto = new IdentityDTO();
-		identitydto.setBiometrics(fingerIdentityInfoDtoList);
 
 		RequestDTO requestDTO = new RequestDTO();
 		requestDTO.setDemographics(identitydto);
+		requestDTO.setBiometrics(fingerIdentityInfoDtoList);
 		BioInfo bioinfo = new BioInfo();
 		bioinfo.setBioType(BioAuthType.FGR_IMG.getType());
 		bioinfo.setDeviceId("123456789");
@@ -309,6 +330,8 @@ public class InternalAuthRequestValidatorTest {
 		authRequestDTO.setBioMetadata(bioInfoList);
 		authRequestDTO.setRequestedAuth(authTypeDTO);
 		authRequestDTO.setRequest(requestDTO);
+		authRequestDTO.setIndividualIdType("D");
+		authRequestDTO.setIndividualId("274390482564");
 		Mockito.when(idinfoHelper.isMatchtypeEnabled(Mockito.any())).thenReturn(Boolean.TRUE);
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		internalAuthRequestValidator.validate(authRequestDTO, errors);
@@ -316,7 +339,7 @@ public class InternalAuthRequestValidatorTest {
 		assertFalse(errors.hasErrors());
 	}
 
-	@Ignore
+	
 	@Test
 	public void testValidInternalAuthRequestValidatorEmptyID() {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
@@ -327,6 +350,7 @@ public class InternalAuthRequestValidatorTest {
 		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
 		IdentityDTO identitydto = new IdentityDTO();
 		authRequestDTO.setIndividualId("");
+		authRequestDTO.setIndividualIdType("D");
 		authTypeDTO.setDemo(true);
 		RequestDTO reqDTO = new RequestDTO();
 		reqDTO.setDemographics(identitydto);
@@ -337,7 +361,7 @@ public class InternalAuthRequestValidatorTest {
 		internalAuthRequestValidator.validate(authRequestDTO, errors);
 		assertTrue(errors.hasErrors());
 	}
-	@Ignore
+	
 	@Test
 	public void testInvalidInternalAuthRequestValidator() {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
@@ -360,6 +384,16 @@ public class InternalAuthRequestValidatorTest {
 		idInfoList.add(idInfoDTO1);
 		IdentityDTO idDTO = new IdentityDTO();
 		idDTO.setName(idInfoList);
+		idDTO.setDob("25/11/1990");
+		idDTO.setAge("25");
+		IdentityInfoDTO idInfoDTOs = new IdentityInfoDTO();
+		idInfoDTOs.setLanguage(env.getProperty("mosip.secondary.lang-code"));
+		idInfoDTOs.setValue("V");
+		List<IdentityInfoDTO> idInfoLists = new ArrayList<>();
+		idInfoLists.add(idInfoDTOs);
+		idDTO.setDobType(idInfoLists);
+		authRequestDTO.setIndividualIdType("D");
+		authRequestDTO.setIndividualId("274390482564");
 		RequestDTO reqDTO = new RequestDTO();
 		reqDTO.setDemographics(idDTO);
 		authRequestDTO.setRequestedAuth(authTypeDTO);
@@ -369,7 +403,7 @@ public class InternalAuthRequestValidatorTest {
 		internalAuthRequestValidator.validate(authRequestDTO, errors);
 		assertTrue(errors.hasErrors());
 	}
-	@Ignore
+	
 	@Test
 	public void testInvalidDate() {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
@@ -394,6 +428,16 @@ public class InternalAuthRequestValidatorTest {
 		idInfoList.add(idInfoDTO1);
 		IdentityDTO idDTO = new IdentityDTO();
 		idDTO.setName(idInfoList);
+		idDTO.setDob("25/11/1990");
+		idDTO.setAge("25");
+		IdentityInfoDTO idInfoDTOs = new IdentityInfoDTO();
+		idInfoDTOs.setLanguage(env.getProperty("mosip.secondary.lang-code"));
+		idInfoDTOs.setValue("V");
+		List<IdentityInfoDTO> idInfoLists = new ArrayList<>();
+		idInfoLists.add(idInfoDTOs);
+		idDTO.setDobType(idInfoLists);
+		authRequestDTO.setIndividualIdType("D");
+		authRequestDTO.setIndividualId("274390482564");
 		RequestDTO reqDTO = new RequestDTO();
 		reqDTO.setDemographics(idDTO);
 		authRequestDTO.setRequest(reqDTO);
