@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.mosip.kernel.core.http.RequestWrapper;
+import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.core.notification.spi.SmsNotification;
 import io.mosip.kernel.smsnotification.dto.SmsRequestDto;
 import io.mosip.kernel.smsnotification.dto.SmsResponseDto;
@@ -39,13 +41,11 @@ public class SmsNotificationController {
 	 *            the request dto for sms-notification.
 	 * @return the status and message as dto response.
 	 */
+	@ResponseFilter
 	@PostMapping(value = "/sms/send")
-	public ResponseEntity<SmsResponseDto> sendSmsNotification(@Valid @RequestBody SmsRequestDto smsRequestDto) {
-
-		return new ResponseEntity<>(
-				smsNotifierService.sendSmsNotification(smsRequestDto.getNumber(), smsRequestDto.getMessage()),
-				HttpStatus.OK);
-
+	public ResponseEntity<SmsResponseDto> sendSmsNotification(
+			@Valid @RequestBody RequestWrapper<SmsRequestDto> smsRequestDto) {
+		return new ResponseEntity<>(smsNotifierService.sendSmsNotification(smsRequestDto.getRequest().getNumber(),
+				smsRequestDto.getRequest().getMessage()), HttpStatus.OK);
 	}
-
 }
