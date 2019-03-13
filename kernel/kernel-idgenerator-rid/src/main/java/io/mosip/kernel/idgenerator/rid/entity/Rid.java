@@ -18,7 +18,7 @@ import lombok.Data;
  *
  */
 @Entity
-@Table(name = "rid_seq", schema = "reg")
+@Table(name = "rid_seq")
 @Data
 public class Rid {
 
