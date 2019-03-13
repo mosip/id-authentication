@@ -16,7 +16,7 @@ import lombok.Data;
  */
 @Data
 @Entity
-@Table(name = "prid", schema = "master")
+@Table(name = "prid", schema = "prereg")
 public class Prid {
 
 	/**

@@ -16,7 +16,7 @@ import lombok.Data;
  */
 @Data
 @Entity
-@Table(name = "vid", schema = "master")
+@Table(name = "vid", schema = "ida")
 public class Vid {
 	/**
 	 * Random value.
