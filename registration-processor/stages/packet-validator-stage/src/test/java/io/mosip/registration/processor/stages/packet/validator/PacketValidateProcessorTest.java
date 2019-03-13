@@ -317,7 +317,7 @@ public class PacketValidateProcessorTest {
 	public void testStructuralValidationSuccess() throws Exception {
 
 		MessageDTO messageDto = packetValidateProcessor.process(dto);
-		assertTrue("Test for successful packet Structural Validation", messageDto.getIsValid());
+		assertTrue("Test for successful Structural Validation", messageDto.getIsValid());
 
 	}
 
