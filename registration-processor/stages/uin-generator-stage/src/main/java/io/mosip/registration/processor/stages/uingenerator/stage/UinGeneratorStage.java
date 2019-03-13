@@ -197,7 +197,8 @@ public class UinGeneratorStage extends MosipVerticleManager {
 			JSONParser parser = new JSONParser();
 			identityJson = (JSONObject) parser.parse(getJsonStringFromBytes);
 			demographicIdentity = (JSONObject) identityJson.get("identity");
-			String uinFieldCheck = (String) demographicIdentity.get("UIN");
+			long uinFieldCheck1 = (long) demographicIdentity.get("UIN");
+			String uinFieldCheck = Long.toString(uinFieldCheck1);
 			boolean isUinCreate = false;
 			if (uinFieldCheck == null || uinFieldCheck.isEmpty()) {
 				String test = (String) registrationProcessorRestClientService.getApi(ApiName.UINGENERATOR, null, "", "",
@@ -218,9 +219,10 @@ public class UinGeneratorStage extends MosipVerticleManager {
 				isUinCreate = true;
 
 			} else {
-				if(("ACTIVATE_UIN").equalsIgnoreCase(object.getReg_type())) {
+				if ((UIN_ACTIVATED).equalsIgnoreCase(object.getReg_type())) {
 					idResponseDTO = reActivateUin(registrationId, uinFieldCheck);
-
+				} else if ((UIN_DEACTIVATED).equalsIgnoreCase(object.getReg_type())) {
+					idResponseDTO = deactivateUin(registrationId, uinFieldCheck);
 				}
 
 			}
@@ -499,7 +501,7 @@ public class UinGeneratorStage extends MosipVerticleManager {
 		return result;
 	}
 
-	private IdResponseDTO deactivateUin(String uin, String regId) {
+	private IdResponseDTO deactivateUin(String regId, String uin) {
 		IdResponseDTO idResponseDto = new IdResponseDTO();
 		List<String> pathsegments = new ArrayList<>();
 
@@ -527,7 +529,7 @@ public class UinGeneratorStage extends MosipVerticleManager {
 						pathsegments, "", "", idRequestDTO, IdResponseDTO.class);
 
 				if (idResponseDto != null && idResponseDto.getResponse() != null) {
-					if (idResponseDto.getStatus().equalsIgnoreCase("DEACTIVATED")) {
+					if (idResponseDto.getStatus().equalsIgnoreCase(UIN_DEACTIVATED)) {
 						registrationStatusDto
 								.setStatusCode(RegistrationStatusCode.PACKET_UIN_UPDATION_SUCCESS.toString());
 						registrationStatusDto.setStatusComment(UinStatusMessage.UIN_DEACTIVATE_SUCCESS + regId);
