@@ -16,6 +16,6 @@ public interface UserDetailService {
 	 *
 	 * @return the user detail
 	 */
-	public ResponseDTO save();
+	public ResponseDTO save(String triggerpoint);
 
 }

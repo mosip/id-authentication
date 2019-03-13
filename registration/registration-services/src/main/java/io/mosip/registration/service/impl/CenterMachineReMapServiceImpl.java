@@ -73,10 +73,10 @@ public class CenterMachineReMapServiceImpl {
 					try {
 
 						/* 2. sync packet status from server to Reg client */
-						packetStatusService.packetSyncStatus();
+						packetStatusService.packetSyncStatus(RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM);
 
 						/* 3.sync and upload the reg packets to server */
-						packetSynchService.syncAllPackets();
+						packetSynchService.packetSync(RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM);
 
 						packetUploadService.uploadAllSyncedPackets();
 

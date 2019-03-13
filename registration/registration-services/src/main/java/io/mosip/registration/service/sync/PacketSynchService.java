@@ -29,7 +29,7 @@ public interface PacketSynchService {
 	 * @throws URISyntaxException
 	 * @throws MosipJsonProcessingException
 	 */
-	ResponseDTO syncPacketsToServer(RegistrationPacketSyncDTO syncDtoList)
+	ResponseDTO syncPacketsToServer(RegistrationPacketSyncDTO syncDtoList,String triggerPoint)
 			throws RegBaseCheckedException, URISyntaxException, JsonProcessingException;
 
 	/**

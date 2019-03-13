@@ -90,8 +90,9 @@ public class GlobalParamServiceImpl extends BaseService implements GlobalParamSe
 
 		ResponseDTO responseDTO = new ResponseDTO();
 
+		String triggerPoint = (isJob ? RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM : RegistrationConstants.JOB_TRIGGER_POINT_USER);
 		/* Fetch Global Params from server */
-		saveGlobalParamsFromServer(responseDTO);
+		saveGlobalParamsFromServer(responseDTO,triggerPoint);
 
 		if (!isJob) {
 			/* If unable to fetch from server and no data in DB create error response */
@@ -121,7 +122,7 @@ public class GlobalParamServiceImpl extends BaseService implements GlobalParamSe
 		}
 	}
 
-	private void saveGlobalParamsFromServer(ResponseDTO responseDTO) {
+	private void saveGlobalParamsFromServer(ResponseDTO responseDTO,String triggerPoint) {
 
 		if (RegistrationAppHealthCheckUtil.isNetworkAvailable()) {
 
@@ -132,7 +133,7 @@ public class GlobalParamServiceImpl extends BaseService implements GlobalParamSe
 				/* REST CALL */
 				@SuppressWarnings("unchecked")
 				HashMap<String, Object> globalParamJsonMap = (HashMap<String, Object>) serviceDelegateUtil
-						.get(RegistrationConstants.GET_GLOBAL_CONFIG, requestParamMap, true);
+						.get(RegistrationConstants.GET_GLOBAL_CONFIG, requestParamMap, true,triggerPoint);
 				HashMap<String, String> globalParamMap = new HashMap<>();
 				parseToMap(globalParamJsonMap, globalParamMap);
 

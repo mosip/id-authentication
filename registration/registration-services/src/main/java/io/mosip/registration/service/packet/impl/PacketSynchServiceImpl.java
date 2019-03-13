@@ -102,7 +102,7 @@ public class PacketSynchServiceImpl implements PacketSynchService {
 				registrationPacketSyncDTO.setSyncRegistrationDTOs(syncDtoList);
 				registrationPacketSyncDTO.setId(RegistrationConstants.PACKET_SYNC_STATUS_ID);
 				registrationPacketSyncDTO.setVersion(RegistrationConstants.PACKET_SYNC_VERSION);
-				responseDTO = syncPacketsToServer(registrationPacketSyncDTO);
+				responseDTO = syncPacketsToServer(registrationPacketSyncDTO,RegistrationConstants.JOB_TRIGGER_POINT_USER);
 			}
 			if (responseDTO != null && responseDTO.getSuccessResponseDTO() != null) {
 
@@ -169,7 +169,7 @@ public class PacketSynchServiceImpl implements PacketSynchService {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public ResponseDTO syncPacketsToServer(RegistrationPacketSyncDTO syncDtoList)
+	public ResponseDTO syncPacketsToServer(RegistrationPacketSyncDTO syncDtoList,String triggerPoint)
 			throws RegBaseCheckedException, URISyntaxException, JsonProcessingException {
 		LOGGER.info("REGISTRATION - SYNCH_PACKETS_TO_SERVER - PACKET_SYNC_SERVICE", APPLICATION_NAME, APPLICATION_ID,
 				"Sync the packets to the server");
@@ -177,7 +177,7 @@ public class PacketSynchServiceImpl implements PacketSynchService {
 		ResponseDTO responseDTO = new ResponseDTO();
 		try {
 			LinkedHashMap<String, Object> response = (LinkedHashMap<String, Object>) serviceDelegateUtil.post(RegistrationConstants.PACKET_SYNC,
-					javaObjectToJsonString(syncDtoList));
+					javaObjectToJsonString(syncDtoList),triggerPoint);
 			if(response.get("response")!=null) {
 				SuccessResponseDTO successResponseDTO=new SuccessResponseDTO();
 				Map<String, Object> statusMap = new WeakHashMap<>();
@@ -277,7 +277,7 @@ public class PacketSynchServiceImpl implements PacketSynchService {
 			registrationPacketSyncDTO.setId(RegistrationConstants.PACKET_SYNC_STATUS_ID);
 			registrationPacketSyncDTO.setVersion(RegistrationConstants.PACKET_SYNC_VERSION);
 
-			ResponseDTO response = syncPacketsToServer(registrationPacketSyncDTO);
+			ResponseDTO response = syncPacketsToServer(registrationPacketSyncDTO,RegistrationConstants.JOB_TRIGGER_POINT_USER);
 
 			if (response != null && response.getSuccessResponseDTO() != null) {
 

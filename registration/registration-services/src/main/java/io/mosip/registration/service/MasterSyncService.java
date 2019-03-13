@@ -25,7 +25,7 @@ public interface MasterSyncService {
 	 * @param masterSyncDetails the master sync details
 	 * @return the master sync
 	 */
-	ResponseDTO getMasterSync(String masterSyncDetails);
+	ResponseDTO getMasterSync(String masterSyncDetails,String triggerPoint);
 
 	/**
 	 * Find location by hierarchy code.

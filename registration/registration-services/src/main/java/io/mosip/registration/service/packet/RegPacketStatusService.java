@@ -18,7 +18,7 @@ public interface RegPacketStatusService {
 	 * @return ResponseDTO which specifies either success response or error response
 	 *         after sync with server
 	 */
-	public ResponseDTO packetSyncStatus();
+	public ResponseDTO packetSyncStatus(String triggerpoint);
 	
 	/**
 	 * @return response DTO
@@ -28,7 +28,7 @@ public interface RegPacketStatusService {
 	 * Packet Sync Status
 	 * @return response DTO
 	 */
-	public ResponseDTO syncPacket();
+	public ResponseDTO syncPacket(String triggerpoint);
 	
 	/**
 	 * Delete Registrations

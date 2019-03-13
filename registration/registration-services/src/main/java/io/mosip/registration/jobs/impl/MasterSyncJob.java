@@ -57,7 +57,7 @@ public class MasterSyncJob extends BaseJob {
 			masterSyncService = applicationContext.getBean(MasterSyncService.class);
 
 			// Run the Parent JOB always first
-			this.responseDTO = masterSyncService.getMasterSync(RegistrationConstants.OPT_TO_REG_MDS_J00001);
+			this.responseDTO = masterSyncService.getMasterSync(RegistrationConstants.OPT_TO_REG_MDS_J00001,triggerPoint);
 
 			// To run the child jobs after the parent job Success
 			if (responseDTO.getSuccessResponseDTO() != null) {
@@ -83,7 +83,7 @@ public class MasterSyncJob extends BaseJob {
 		LOGGER.info(LoggerConstants.MASTER_SYNC_STATUS_JOB_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "execute Job started");
 
-		this.responseDTO = masterSyncService.getMasterSync(RegistrationConstants.OPT_TO_REG_MDS_J00001);
+		this.responseDTO = masterSyncService.getMasterSync(RegistrationConstants.OPT_TO_REG_MDS_J00001,triggerPoint);
 		syncTransactionUpdate(responseDTO, triggerPoint, jobId);
 
 		LOGGER.info(LoggerConstants.MASTER_SYNC_STATUS_JOB_TITLE, RegistrationConstants.APPLICATION_NAME,

@@ -54,7 +54,7 @@ public class OTPManager extends BaseService {
 				// obtain otpGeneratorResponseDto from serviceDelegateUtil
 				@SuppressWarnings("unchecked")
 				HashMap<String, String> responseMap = (HashMap<String, String>) serviceDelegateUtil
-						.post(RegistrationConstants.OTP_GENERATOR_SERVICE_NAME, otpGeneratorRequestDto);
+						.post(RegistrationConstants.OTP_GENERATOR_SERVICE_NAME, otpGeneratorRequestDto,RegistrationConstants.JOB_TRIGGER_POINT_USER);
 				if (responseMap != null && responseMap.get("otp") != null) {
 
 					// create Success Response
@@ -112,7 +112,7 @@ public class OTPManager extends BaseService {
 			try {
 				// Obtain otpValidatorResponseDto from service delegate util
 				otpValidatorResponseDto = (OtpValidatorResponseDTO) serviceDelegateUtil
-						.get(RegistrationConstants.OTP_VALIDATOR_SERVICE_NAME, requestParamMap, false);
+						.get(RegistrationConstants.OTP_VALIDATOR_SERVICE_NAME, requestParamMap, false,RegistrationConstants.JOB_TRIGGER_POINT_USER);
 				if (otpValidatorResponseDto != null && otpValidatorResponseDto.getStatus() != null
 						&& RegistrationConstants.SUCCESS.equalsIgnoreCase(otpValidatorResponseDto.getStatus())) {
 
