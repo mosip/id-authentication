@@ -155,20 +155,19 @@ public class UpdateIdentityDetailIDRepoNegativeScenario extends BaseTestCase imp
 		/**
 		 *  generating test data for each key or removing the element if not required
 		 */
+
+		if(testcaseName.split("_").length>2) {
+			if( testcaseName.split("_")[2].equalsIgnoreCase("missing"))
+				inputJson.remove(testcaseName.split("_")[1].toString());
+			propertyFileKeys.remove(testcaseName.split("_")[1].toString());
+		}
 		for (Object key : propertyFileKeys) {
 			if (testcaseName.split("_")[1].equalsIgnoreCase(key.toString()))
 				testDataProperty = "invalid";
 			else
 				testDataProperty = "valid";
 			
-			
-			
-			if(testcaseName.split("_").length>2) {
-				if( testcaseName.split("_")[2].equalsIgnoreCase("missing"))
-					inputJson.remove(testcaseName.split("_")[1].toString(),prop.get(key.toString()).toString());
-			}
-				
-			else if ((key.toString().equalsIgnoreCase("registrationId")))
+		 if ((key.toString().equalsIgnoreCase("registrationId")))
 				testDataValue = new RidGenerator().generateRID(testDataProperty);
 
 			else if ((key.toString().equalsIgnoreCase("individualBiometrics.format")))

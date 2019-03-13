@@ -153,6 +153,7 @@ public class IdRepoPostiveScenerio extends BaseTestCase implements ITest {
 		 *  generating test data for each key 
 		 */
 		for (Object key : propertyFileKeys) {
+			org.json.XML.toJSONObject("").toString();
 			/**
 			 * calling registration id
 			 */

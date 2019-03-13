@@ -1,0 +1,1 @@
+[{"Jira ID":"MOS-1423","Test case Name":"invalid_id_missing","status":"Fail"},{"Jira ID":"MOS-1423","Test case Name":"invalid_registrationId_missing","status":"Pass"},{"Jira ID":"MOS-1423","Test case Name":"invalid_timestamp_missing","status":"Pass"},{"Jira ID":"MOS-1423","Test case Name":"invalid_version_missing","status":"Pass"}]

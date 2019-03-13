@@ -66,7 +66,7 @@
       "postalCode" : "570004",
       "phone" : "9876543210",
       "email" : "abc@xyz.com",
-      "CNIENumber" : "6789545678909",
+      "CNIENumber" : 6789545678909,
       "localAdministrativeAuthority" : [ {
         "language" : "ara",
         "value" : "سلمى"

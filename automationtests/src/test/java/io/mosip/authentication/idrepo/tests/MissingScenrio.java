@@ -31,9 +31,10 @@ import org.testng.annotations.Test;
 import org.testng.asserts.SoftAssert;
 import org.testng.internal.BaseTestMethod;
 import org.testng.internal.TestResult;
-import com.google.common.base.Verify;
+
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
+import com.google.common.base.Verify;
 
 import io.mosip.authentication.idrepo.fw.util.PropertyFileLoader;
 import io.mosip.authentication.idrepo.fw.util.RidGenerator;
@@ -44,22 +45,17 @@ import io.mosip.service.BaseTestCase;
 import io.mosip.util.TestCaseReader;
 import io.restassured.response.Response;
 
-/**
- * @author Arjun Chandramohan
- *
- */
-
-public class StoreIdentityDetailIDRepoNegativeScenario extends BaseTestCase implements ITest {
-	StoreIdentityDetailIDRepoNegativeScenario() {
+public class MissingScenrio extends BaseTestCase implements ITest {
+	MissingScenrio() {
 		super();
 	}
 
 	private static Logger logger = Logger.getLogger(StoreIdentityDetailIDRepoNegativeScenario.class);
 	private static final String jiraID = "MOS-1423";
 	private static final String moduleName = "IdRepo";
-	private static final String apiName = "StoreIdData";
+	private static final String apiName = "MissingScenerio";
 	private static final String requestJsonStructure = "RequestMasterJsonStructure";
-	private static final String outputJsonName = "StoreIdDataOutput";
+	private static final String outputJsonName = "UpdateIdDataOutput";
 	private static final String service_URI = "/idrepo/identity/v1.0/";
 	private static final String service_URI_uin = "/uingenerator/v1.0/uin";
 	private static final String testDataFileName = "TestData";
@@ -100,7 +96,7 @@ public class StoreIdentityDetailIDRepoNegativeScenario extends BaseTestCase impl
 	public Object[][] readData(ITestContext context)
 			throws JsonParseException, JsonMappingException, IOException, ParseException {
 		String testParam = context.getCurrentXmlTest().getParameter("testType");
-		switch ("regression") {
+		switch (testParam) {
 		case "smoke":
 			return TestCaseReader.readTestCases(moduleName + "/" + apiName, "smoke");
 
@@ -169,9 +165,8 @@ public class StoreIdentityDetailIDRepoNegativeScenario extends BaseTestCase impl
 			
 			
 			
-		
 				
-		if ((key.toString().equalsIgnoreCase("registrationId")))
+			 if ((key.toString().equalsIgnoreCase("registrationId")))
 				testDataValue = new RidGenerator().generateRID(testDataProperty);
 
 			else if ((key.toString().equalsIgnoreCase("individualBiometrics.format")))

@@ -5,27 +5,35 @@
 	<!-- Passing Group as parmeter unsing "testType" Possible Groups are: smoke 
 		regression smokeAndRegression -->
 
-	<test name="ID Repo positve scenerio">
+	<!--<test name="ID Repo positve scenerio">
 		<parameter name="testType" value="smoke" />
 		<classes>
 			<class
-				name="io.mosip.authentication.tests.idRepo.IdRepoPostiveScenerio" />
+				name="io.mosip.authentication.idrepo.tests.IdRepoPostiveScenerio" />
 		</classes>
 	</test>
+	-->
 
-	<test name="ID Repo store identity data negative scenerio">
+	<!--  <test name="ID Repo store identity data negative scenerio">
 		<parameter name="testType" value="smoke" />
 		<classes>
 			<class
-				name="io.mosip.authentication.tests.idRepo.StoreIdentityDetailIDRepoNegativeScenario" />
+				name="io.mosip.authentication.idrepo.tests.StoreIdentityDetailIDRepoNegativeScenario" />
 		</classes>
-	</test>
+	</test> -->
 	<test name="ID Repo Update identity data negative scenerio">
-		<parameter name="testType" value="smoke" />
+		<parameter name="testType" value="regression" />
 		<classes>
 			<class
-				name="io.mosip.authentication.tests.idRepo.UpdateIdentityDetailIDRepoNegativeScenario" />
+				name="io.mosip.authentication.idrepo.tests.UpdateIdentityDetailIDRepoNegativeScenario" />
 		</classes>
-	</test>
+	</test> 
+	<!-- <test name="ID Repo Update identity data negative scenerio">
+		<parameter name="testType" value="smokeandreg" />
+		<classes>
+			<class
+				name="io.mosip.authentication.idrepo.tests.MissingScenrio" />
+		</classes>
+	</test>  -->
 </suite> 
 
