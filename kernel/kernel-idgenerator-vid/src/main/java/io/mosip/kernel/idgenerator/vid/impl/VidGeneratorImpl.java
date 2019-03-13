@@ -3,29 +3,56 @@
  */
 package io.mosip.kernel.idgenerator.vid.impl;
 
-import javax.annotation.PostConstruct;
+import java.math.BigInteger;
+import java.security.PrivateKey;
+import java.security.PublicKey;
+import java.util.List;
 
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.math3.random.RandomDataGenerator;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
+import javax.transaction.Transactional;
+
+import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
+import org.springframework.dao.DataAccessException;
+import org.springframework.stereotype.Component;
 
+import io.mosip.kernel.core.crypto.spi.Encryptor;
+import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.idgenerator.spi.VidGenerator;
 import io.mosip.kernel.core.util.ChecksumUtils;
-import io.mosip.kernel.idgenerator.vid.constant.VidGeneratorConstant;
+import io.mosip.kernel.idgenerator.vid.constant.VidExceptionConstant;
+import io.mosip.kernel.idgenerator.vid.constant.VidPropertyConstant;
+import io.mosip.kernel.idgenerator.vid.entity.Vid;
+import io.mosip.kernel.idgenerator.vid.exception.VidException;
+import io.mosip.kernel.idgenerator.vid.repository.VidRepository;
 import io.mosip.kernel.idgenerator.vid.util.VidFilterUtils;
 
 /**
- * This class generates a VId
+ * This class generates a Vid.
  * 
- * @author M1043226
+ * @author Tapaswini
  * @author Megha Tanga
+ * @author Ritesh Sinha
  * @since 1.0.0
  *
  */
-@Service
+@Component
+@Transactional
 public class VidGeneratorImpl implements VidGenerator<String> {
+
+	/**
+	 * Reference to {@link Encryptor}.
+	 */
+	@Autowired
+	Encryptor<PrivateKey, PublicKey, SecretKey> encryptor;
+
+	/**
+	 * Reference to repository.
+	 */
+	@Autowired
+	private VidRepository repository;
 
 	/**
 	 * Field to hold vidFilterUtils object
@@ -38,19 +65,6 @@ public class VidGeneratorImpl implements VidGenerator<String> {
 	 */
 	@Value("${mosip.kernel.vid.length}")
 	private int vidLength;
-	private static final RandomDataGenerator RANDOM_DATA_GENERATOR = new RandomDataGenerator();
-
-	private int generatedIdLength;
-
-	private long lowerBound;
-	private long upperBound;
-
-	@PostConstruct
-	public void vidGeneratorPostConstruct() {
-		generatedIdLength = vidLength - 1;
-		lowerBound = Long.parseLong(StringUtils.repeat(VidGeneratorConstant.ZERO, generatedIdLength));
-		upperBound = Long.parseLong(StringUtils.repeat(VidGeneratorConstant.NINE, generatedIdLength));
-	}
 
 	/**
 	 * Generates a Vid
@@ -64,13 +78,13 @@ public class VidGeneratorImpl implements VidGenerator<String> {
 	}
 
 	/**
-	 * Generates Id
+	 * This method Generates an id and then validate.
 	 */
 
 	private String generateVid() {
-		String generatedVid = generateRandomId(generatedIdLength, lowerBound, upperBound);
+		String generatedVid = generateRandomId();
 		while (!vidFilterUtils.isValidId(generatedVid) || generatedVid.contains(" ")) {
-			generatedVid = generateRandomId(generatedIdLength, lowerBound, upperBound);
+			generatedVid = generateRandomId();
 		}
 		return generatedVid;
 	}
@@ -80,17 +94,52 @@ public class VidGeneratorImpl implements VidGenerator<String> {
 	 * 
 	 * @param generatedIdLength
 	 *            The length of id to generate
-	 * @param lowerBound
-	 *            The lowerbound for generating id
-	 * @param upperBound
-	 *            The upperbound for generating id
 	 * @return the VId with checksum
 	 */
-	private String generateRandomId(int generatedIdLength, long lowerBound, long upperBound) {
-		Long generatedID = RANDOM_DATA_GENERATOR.nextSecureLong(lowerBound, upperBound);
-		String id = String.valueOf(generatedID);
-		String verhoeffDigit = ChecksumUtils.generateChecksumDigit(id);
-		return appendChecksum(id, verhoeffDigit);
+	private String generateRandomId() {
+
+		String counterSecureRandom = null;
+
+		String random = RandomStringUtils.random(Integer.parseInt(VidPropertyConstant.RANDOM_NUMBER_SIZE.getProperty()),
+				VidPropertyConstant.ZERO_TO_NINE.getProperty());
+		String vid = null;
+		List<Vid> listOfEntity = null;
+		try {
+			listOfEntity = repository.findRandomValues();
+		} catch (DataAccessLayerException | DataAccessException e) {
+			throw new VidException(VidExceptionConstant.VID_FETCH_EXCEPTION.getErrorCode(),
+					VidExceptionConstant.VID_FETCH_EXCEPTION.getErrorMessage(), e);
+		}
+		try {
+			Vid entity = new Vid();
+			if (listOfEntity.isEmpty()) {
+				do {
+					counterSecureRandom = RandomStringUtils.random(
+							Integer.parseInt(VidPropertyConstant.RANDOM_NUMBER_SIZE.getProperty()),
+							VidPropertyConstant.ZERO_TO_NINE.getProperty());
+				} while (counterSecureRandom.charAt(0) == '0');
+				entity.setRandomValue(random);
+				entity.setSequenceCounter(counterSecureRandom);
+				repository.save(entity);
+			} else {
+				counterSecureRandom = listOfEntity.get(0).getSequenceCounter();
+				random = listOfEntity.get(0).getRandomValue();
+				repository.updateCounterValue(counterSecureRandom, random);
+			}
+
+		} catch (DataAccessLayerException | DataAccessException e) {
+			throw new VidException(VidExceptionConstant.VID_INSERTION_EXCEPTION.getErrorCode(),
+					VidExceptionConstant.VID_INSERTION_EXCEPTION.getErrorMessage(), e);
+		}
+		counterSecureRandom = new BigInteger(counterSecureRandom).add(BigInteger.ONE).toString();
+		SecretKey secretKey = new SecretKeySpec(counterSecureRandom.getBytes(),
+				VidPropertyConstant.ENCRYPTION_ALGORITHM.getProperty());
+		byte[] encryptedData = encryptor.symmetricEncrypt(secretKey, random.getBytes());
+		BigInteger bigInteger = new BigInteger(encryptedData);
+		vid = String.valueOf(bigInteger.abs());
+		vid = vid.substring(0, vidLength - 1);
+		String verhoeffDigit = ChecksumUtils.generateChecksumDigit(vid);
+		return appendChecksum(vid, verhoeffDigit);
 	}
 
 	/**

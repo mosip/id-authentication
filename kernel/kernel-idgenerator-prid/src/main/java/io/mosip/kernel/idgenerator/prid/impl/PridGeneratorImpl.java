@@ -150,9 +150,9 @@ public class PridGeneratorImpl implements PridGenerator<String> {
 
 		byte[] encryptedData = encryptor.symmetricEncrypt(secretKey, random.getBytes());
 
-		BigInteger b = new BigInteger(encryptedData);
+		BigInteger bigInteger = new BigInteger(encryptedData);
 
-		prid = String.valueOf(b.abs());
+		prid = String.valueOf(bigInteger.abs());
 
 		prid = prid.substring(0, pridLength - 1);
 

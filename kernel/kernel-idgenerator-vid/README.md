@@ -11,8 +11,7 @@
 **Maven Dependency**
 
 ```
-	<dependencies>
-		<dependency>
+	<dependency>
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-idgenerator-vid</artifactId>
 			<version>${project.version}</version>
@@ -25,6 +24,44 @@
 ** Properties to be added in parent Spring Application environment **
 
 [application-dev.properties](../../config/application-dev.properties)
+
+
+```
+
+# length of the vid
+mosip.kernel.vid.length=16
+
+# Upper bound of number of digits in sequence allowed in id. For example if
+# limit is 3, then 12 is allowed but 123 is not allowed in id (in both
+# ascending and descending order)
+# to disable sequence limit validation assign 0 or negative value
+mosip.kernel.vid.length.sequence-limit=3
+
+# Number of digits in repeating block allowed in id. For example if limit is 2,
+# then 4xxx4 is allowed but 48xxx48 is not allowed in id (x is any digit)
+# to disable repeating block validation assign 0 or negative value
+mosip.kernel.vid.length.repeating-block-limit=2
+
+
+# Lower bound of number of digits allowed in between two repeating digits in
+# id. For example if limit is 2, then 11 and 1x1 is not allowed in id (x is any digit)
+# to disable repeating limit validation, assign 0  or negative value
+mosip.kernel.vid.length.repeating-limit=2
+
+# list of number that id should not be start with
+# to disable null
+mosip.kernel.vid.not-start-with=0,1
+
+#restricted numbers for vid
+mosip.kernel.vid.restricted-numbers=786,666
+
+# Crypto asymmetric algorithm name
+mosip.kernel.crypto.asymmetric-algorithm-name=RSA
+#Crypto symmetric algorithm name
+mosip.kernel.crypto.symmetric-algorithm-name=AES
+
+
+```
 
 
 ** Database Properties **

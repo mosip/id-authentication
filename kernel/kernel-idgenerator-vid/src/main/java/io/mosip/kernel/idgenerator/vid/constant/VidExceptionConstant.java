@@ -1,16 +1,16 @@
-package io.mosip.kernel.idgenerator.prid.constant;
+package io.mosip.kernel.idgenerator.vid.constant;
 
 /**
  * This enum contains all exception properties that are required to validate
- * PRID.
+ * VID.
  * 
  * @author Ritesh Sinha
  * @since 1.0.0
  *
  */
-public enum PridExceptionConstant {
-	PRID_FETCH_EXCEPTION("KER-PIG-001","Error occur while fetching counter and value details"),
-	PRID_INSERTION_EXCEPTION("KER-PIG-002","Error occur while updating counter details");
+public enum VidExceptionConstant {
+	VID_FETCH_EXCEPTION("KER-VIG-001", "Error occur while fetching counter and value details"),
+	VID_INSERTION_EXCEPTION("KER-VIG-002", "Error occur while updating counter details");
 
 	/**
 	 * The error code.
@@ -30,7 +30,7 @@ public enum PridExceptionConstant {
 	 * @param errorMessage
 	 *            the error message.
 	 */
-	PridExceptionConstant(String errorCode, String errorMessage) {
+	VidExceptionConstant(String errorCode, String errorMessage) {
 		this.errorCode = errorCode;
 
 		this.errorMessage = errorMessage;
@@ -54,5 +54,4 @@ public enum PridExceptionConstant {
 
 		return errorMessage;
 	}
-
 }
