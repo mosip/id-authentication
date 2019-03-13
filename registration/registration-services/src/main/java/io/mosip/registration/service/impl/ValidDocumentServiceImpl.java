@@ -25,7 +25,7 @@ public class ValidDocumentServiceImpl implements ValidDocumentService {
 	@Override
 	public List<DocumentCategoryDto> getDocumentCategories(String applicantType, String docCode, String langCode) {
 
-		List<ApplicantValidDocument> masterValidDocuments = validDocumentDAO.getValidDocuments(applicantType, docCode, langCode);
+		List<ApplicantValidDocument> masterValidDocuments = validDocumentDAO.getValidDocuments(applicantType, docCode);
 
 		List<String> validDocuments = new ArrayList<>();
 		masterValidDocuments.forEach(docs -> {

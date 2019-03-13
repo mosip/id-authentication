@@ -65,37 +65,20 @@ public class HMACGeneration {
 
 	private static void generateDemographicHash(final DemographicDTO demographicDTO,
 			final DemographicSequence demographicSequence) {
+		List<String> hashOrder = demographicSequence.getApplicant();
+
 		// generates applicant document hash
-		generateApplicantDocumentHash(demographicDTO, demographicSequence.getApplicant());
-	}
-
-	private static void generateApplicantDocumentHash(final DemographicDTO demographicDTO,
-			List<String> hashOrder) {
-		byte[] applicantPhotoBytes = demographicDTO.getApplicantDocumentDTO().getPhoto();
-		byte[] applicantExceptionPhotoBytes = demographicDTO.getApplicantDocumentDTO().getExceptionPhoto();
-		byte[] registrationAck = demographicDTO.getApplicantDocumentDTO().getAcknowledgeReceipt();
-
 		for (Entry<String, DocumentDetailsDTO> documentCategory : demographicDTO.getApplicantDocumentDTO()
 				.getDocuments().entrySet()) {
 			generateHash(documentCategory.getValue().getDocument(), documentCategory.getValue().getValue(), hashOrder);
 		}
 
-		// hash for applicant photo
-		if (applicantPhotoBytes != null) {
-			generateHash(applicantPhotoBytes, demographicDTO.getApplicantDocumentDTO().getPhotographName(), hashOrder);
-		}
-		// hash for exception Photo
-		if (applicantExceptionPhotoBytes != null) {
-			generateHash(applicantExceptionPhotoBytes, demographicDTO.getApplicantDocumentDTO().getExceptionPhotoName(),
-					hashOrder);
-		}
-
 		// Hash for Acknowledgement Receipt
+		byte[] registrationAck = demographicDTO.getApplicantDocumentDTO().getAcknowledgeReceipt();
 		if (registrationAck != null) {
 			generateHash(registrationAck, demographicDTO.getApplicantDocumentDTO().getAcknowledgeReceiptName(),
 					hashOrder);
 		}
-
 	}
 
 	private static void generateHash(final byte[] byteArray, final String filename, List<String> hashOrder) {

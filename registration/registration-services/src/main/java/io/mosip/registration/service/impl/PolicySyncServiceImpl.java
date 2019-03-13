@@ -110,7 +110,7 @@ public class PolicySyncServiceImpl extends BaseService implements PolicySyncServ
 		requestParams.put("referenceId", getCenterId(getStationId(getMacAddress())));
 		try {
 			PublicKeyResponse<String> publicKeyResponse = (PublicKeyResponse<String>) serviceDelegateUtil
-					.get("policysync", requestParams, false);
+					.get("policysync", requestParams, false,RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM);
 			keyStore.setId(UUID.randomUUID().toString());
 			keyStore.setPublicKey(((String) publicKeyResponse.getPublicKey()).getBytes());
 			keyStore.setValidFromDtimes(Timestamp.valueOf(publicKeyResponse.getIssuedAt()));

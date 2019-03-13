@@ -114,6 +114,24 @@ public class RegPacketStatusServiceImpl extends BaseService implements RegPacket
 
 	}
 
+	@Override
+	public void deletePacketsWhenMachineRemapped() {
+
+		LOGGER.info("REGISTRATION - DELETE-PACKETS-WHEN-MACHINE-REMAPPED - REG_PACKET_STATUS_SERVICE", APPLICATION_NAME,
+				APPLICATION_ID, "packet deletion when the machine ios remapped is started");
+
+		List<Registration> registrations = registrationDAO
+				.findByServerStatusCodeIn(RegistrationConstants.PACKET_STATUS_CODES_FOR_REMAPDELETE);
+		if (registrations != null && !registrations.isEmpty()) {
+
+			for (Registration registration : registrations) {
+
+				delete(registration);
+			}
+		}
+
+	}
+
 	private Timestamp getPacketDeletionLastDate(Timestamp reqTime) {
 
 		/* Get Calendar instance */
@@ -153,10 +171,10 @@ public class RegPacketStatusServiceImpl extends BaseService implements RegPacket
 	/**
 	 * update status for all packets that are synced with server
 	 *
-	 * @param registrations
-	 *            list of registration entities which are represented as
-	 *            LinkedHashMap which maps the attributes of registration entity to
-	 *            their respective values that are obtained after sync with server
+	 * @param registrations list of registration entities which are represented as
+	 *                      LinkedHashMap which maps the attributes of registration
+	 *                      entity to their respective values that are obtained
+	 *                      after sync with server
 	 */
 	private void updatePacketIdsByServerStatus(List<LinkedHashMap<String, String>> registrationStatuses) {
 		LOGGER.info("REGISTRATION - PACKET_STATUS_SYNC - REG_PACKET_STATUS_SERVICE", APPLICATION_NAME, APPLICATION_ID,
@@ -186,7 +204,7 @@ public class RegPacketStatusServiceImpl extends BaseService implements RegPacket
 	}
 
 	@SuppressWarnings("unchecked")
-	public synchronized ResponseDTO packetSyncStatus() {
+	public synchronized ResponseDTO packetSyncStatus(String triggerPoint) {
 
 		LOGGER.info("REGISTRATION - PACKET - STATUS - SYNC", APPLICATION_NAME, APPLICATION_ID,
 				"packet status sync called");
@@ -226,7 +244,7 @@ public class RegPacketStatusServiceImpl extends BaseService implements RegPacket
 
 				/* Obtain RegistrationStatusDTO from service delegate util */
 				LinkedHashMap<String, Object> packetStatusResponse = (LinkedHashMap<String, Object>) serviceDelegateUtil
-						.get(SERVICE_NAME, requestParamMap, true);
+						.get(SERVICE_NAME, requestParamMap, true, triggerPoint);
 				List<LinkedHashMap<String, String>> registrations = (List<LinkedHashMap<String, String>>) packetStatusResponse
 						.get(RegistrationConstants.PACKET_STATUS_READER_RESPONSE);
 				if (!registrations.isEmpty()) {
@@ -361,7 +379,7 @@ public class RegPacketStatusServiceImpl extends BaseService implements RegPacket
 		regPacketStatusDAO.delete(registration);
 	}
 
-	public ResponseDTO syncPacket() {
+	public ResponseDTO syncPacket(String triggerPoint) {
 
 		LOGGER.debug("REGISTRATION - SYNCH_PACKETS_TO_SERVER - REG_PACKET_STATUS_SERVICE", APPLICATION_NAME,
 				APPLICATION_ID, "Sync the packets to the server");
@@ -387,11 +405,11 @@ public class RegPacketStatusServiceImpl extends BaseService implements RegPacket
 					syncDtoList.add(syncDto);
 				}
 				RegistrationPacketSyncDTO registrationPacketSyncDTO = new RegistrationPacketSyncDTO();
-				registrationPacketSyncDTO.setRequestTimestamp(DateUtils.getUTCCurrentDateTimeString());
+				registrationPacketSyncDTO.setRequesttime(DateUtils.getUTCCurrentDateTimeString());
 				registrationPacketSyncDTO.setSyncRegistrationDTOs(syncDtoList);
 				registrationPacketSyncDTO.setId(RegistrationConstants.PACKET_SYNC_STATUS_ID);
 				registrationPacketSyncDTO.setVersion(RegistrationConstants.PACKET_SYNC_VERSION);
-				response = packetSynchService.syncPacketsToServer(registrationPacketSyncDTO);
+				response = packetSynchService.syncPacketsToServer(registrationPacketSyncDTO,triggerPoint);
 			} else {
 				successResponseDTO.setMessage(RegistrationConstants.SUCCESS);
 				responseDTO.setSuccessResponseDTO(successResponseDTO);
@@ -400,7 +418,7 @@ public class RegPacketStatusServiceImpl extends BaseService implements RegPacket
 				packetsToBeSynched.forEach(regPacket -> {
 					regPacket.setClientStatusCode(RegistrationClientStatusCode.META_INFO_SYN_SERVER.getCode());
 				});
-				packetSynchService.updateSyncStatus(packetsToBeSynched);
+				// packetSynchService.updateSyncStatus(packetsToBeSynched);
 				successResponseDTO.setMessage(RegistrationConstants.SUCCESS);
 				responseDTO.setSuccessResponseDTO(successResponseDTO);
 			}

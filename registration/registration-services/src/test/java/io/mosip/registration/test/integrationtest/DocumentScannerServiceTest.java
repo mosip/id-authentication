@@ -1,6 +1,7 @@
 package io.mosip.registration.test.integrationtest;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 import java.awt.image.BufferedImage;
 import java.net.URL;
@@ -96,6 +97,34 @@ public class DocumentScannerServiceTest {
 		intializeValues();
 		byte[] data = documentScannerServiceImpl.getImageBytesFromBufferedImage(bufferedImage);
 		assertNotNull(data);
+	}
+	
+	@Test(expected = IllegalArgumentException.class)
+	public void getImageBytesFromBufferedImageTestNull() throws java.io.IOException {
+		intializeValues();
+		byte[] data = documentScannerServiceImpl.getImageBytesFromBufferedImage(null);
+	}
+	
+	@Test(expected = NullPointerException.class)
+	public void pdfToImagesTestNull() throws java.io.IOException {
+		intializeValues();
+		byte[] data = documentScannerServiceImpl.asPDF(bufferedImages);
+		documentScannerServiceImpl.pdfToImages(null);
+
+	}
+	
+	@Test
+	public void getSingleImageFromListTestNull() throws java.io.IOException {
+		intializeValues();
+		byte[] data = documentScannerServiceImpl.asImage(null);
+		assertNull(data);
+	}
+	
+	@Test(expected = NullPointerException.class)
+	public void getSinglePDFInBytesTestNull() {
+		intializeValues();
+		byte[] data = documentScannerServiceImpl.asPDF(null);
+
 	}
 	private void intializeValues() {
 		ReflectionTestUtils.setField(documentScannerServiceImpl, "scannerDpi", 300);

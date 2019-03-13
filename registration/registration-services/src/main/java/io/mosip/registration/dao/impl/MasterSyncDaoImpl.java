@@ -454,7 +454,7 @@ public class MasterSyncDaoImpl implements MasterSyncDao {
 				Template templete = new Template();
 				templete.setId(templet.getId());
 				templete.setFileFormatCode(templet.getFileFormatCode());
-				templete.setFileTxt(templet.getFileText().getBytes());
+				templete.setFileTxt(templet.getFileText());
 				templete.setDescr(templet.getDescription());
 				templete.setActive(templet.getIsActive());
 				templete.setName(templet.getName());
@@ -489,6 +489,7 @@ public class MasterSyncDaoImpl implements MasterSyncDao {
 					tempType.setCrBy(RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM);
 				}
 				tempType.setCrDtimes(Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()));
+				masterTemplateTypeDtoEntity.add(tempType);
 			});
 
 			templateTypeRepository.saveAll(masterTemplateTypeDtoEntity);

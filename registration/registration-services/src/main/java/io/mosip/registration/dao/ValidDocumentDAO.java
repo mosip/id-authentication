@@ -10,15 +10,15 @@ import io.mosip.registration.entity.ApplicantValidDocument;
  *
  */
 public interface ValidDocumentDAO {
+
+
 	/**
-	 * This method fetches the valid documents
-	 * 
-	 * @return {@link List} of valid documents
-	 * 
+	 * Gets the valid documents.
+	 *
+	 * @param applicantType the applicant type
+	 * @param docCategoryCode the doc category code
+	 * @return the valid documents
 	 */
-
-	List<ApplicantValidDocument> getValidDocuments();
-
-	List<ApplicantValidDocument> getValidDocuments(String applicantType, String docCategoryCode, String langCode);
+	List<ApplicantValidDocument> getValidDocuments(String applicantType, String docCategoryCode);
 
 }

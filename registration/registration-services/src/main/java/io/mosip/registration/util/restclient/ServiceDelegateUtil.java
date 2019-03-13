@@ -81,7 +81,7 @@ public class ServiceDelegateUtil {
 	 * @throws HttpServerErrorException
 	 *             when server exception from server
 	 */
-	public Object get(String serviceName, Map<String, String> requestParams, boolean hasPathParams)
+	public Object get(String serviceName, Map<String, String> requestParams, boolean hasPathParams,String triggerPoint)
 			throws RegBaseCheckedException, HttpClientErrorException, SocketTimeoutException {
 
 		LOGGER.debug("REGISTRATION - SERVICE_DELEGATE_UTIL - GET", APPLICATION_NAME, APPLICATION_ID,
@@ -162,7 +162,7 @@ public class ServiceDelegateUtil {
 	 * @throws HttpServerErrorException
 	 *             when server exception from server
 	 */
-	public Object post(String serviceName, Object object)
+	public Object post(String serviceName, Object object,String triggerPoint)
 			throws RegBaseCheckedException, HttpClientErrorException, SocketTimeoutException, ResourceAccessException {
 		LOGGER.debug("REGISTRATION - SERVICE_DELEGATE_UTIL - POST", APPLICATION_NAME, APPLICATION_ID,
 				" post method called");

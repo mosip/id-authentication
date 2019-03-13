@@ -200,6 +200,12 @@ public class LoginController extends BaseController implements Initializable {
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		otpValidity.setText("Valid for " + otpValidityImMins + " minutes");
 		stopTimer();
+		
+		password.textProperty().addListener((obsValue, oldValue, newValue) -> {
+			if(newValue.length() > usernamePwdLength) {
+				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.PWORD_LENGTH);
+			}
+		});
 	}
 
 	private List<String> loginList = new ArrayList<>();

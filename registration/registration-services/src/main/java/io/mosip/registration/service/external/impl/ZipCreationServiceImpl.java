@@ -169,10 +169,6 @@ public class ZipCreationServiceImpl implements ZipCreationService {
 					documentCategory.getValue().getDocument(), zipOutputStream);
 		}
 
-		addToZip(demographicDTO.getApplicantDocumentDTO().getPhoto(),
-				folderName + demographicDTO.getApplicantDocumentDTO().getPhotographName(), zipOutputStream);
-		addToZip(demographicDTO.getApplicantDocumentDTO().getExceptionPhoto(),
-				folderName + demographicDTO.getApplicantDocumentDTO().getExceptionPhotoName(), zipOutputStream);
 		if (demographicDTO.getApplicantDocumentDTO().getAcknowledgeReceipt() != null) {
 			addToZip(demographicDTO.getApplicantDocumentDTO().getAcknowledgeReceipt(),
 					folderName + demographicDTO.getApplicantDocumentDTO().getAcknowledgeReceiptName(), zipOutputStream);

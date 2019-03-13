@@ -390,12 +390,12 @@ public class DataProvider {
 
 		RegistrationMetaDataDTO registrationMetaDataDTO = new RegistrationMetaDataDTO();
 		registrationMetaDataDTO.setRegistrationCategory("Parent");
-		registrationMetaDataDTO.setApplicationType("Child");
 		registrationMetaDataDTO.setGeoLatitudeLoc(13.0049);
 		registrationMetaDataDTO.setGeoLongitudeLoc(80.24492);
 		registrationMetaDataDTO.setCenterId("12245");
 		registrationMetaDataDTO.setMachineId("yyeqy26356");
 		registrationMetaDataDTO.setRegistrationCategory("New");
+		registrationMetaDataDTO.setApplicantTypeCode("007");
 		
 		return registrationMetaDataDTO;
 	}

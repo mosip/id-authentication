@@ -351,7 +351,7 @@
                                  <children>
                                     <Label fx:id="residenceLblLocalLanguage" layoutX="1.0" layoutY="2.0" text="%residence" />
                                     <Button fx:id="nationalLocalLanguage" layoutX="124.0" layoutY="-3.0" mnemonicParsing="false" styleClass="selectedResidence" text="%national" />
-                                    <Button fx:id="foreignerLocalLanguage" layoutX="206.0" layoutY="-3.0" mnemonicParsing="false" styleClass="residence" text="%foreigner" />
+                                    <Button fx:id="foreignerLocalLanguage" layoutX="236.0" layoutY="-3.0" mnemonicParsing="false" styleClass="residence" text="%foreigner" />
                                     <TextField fx:id="residenceLocalLanguage" layoutX="37.0" layoutY="10.0" visible="false" />
                                  </children>
                               </AnchorPane>

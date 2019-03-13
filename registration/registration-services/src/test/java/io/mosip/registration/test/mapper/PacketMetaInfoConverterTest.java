@@ -62,9 +62,6 @@ public class PacketMetaInfoConverterTest {
 		Assert.assertNotNull(packetMetaInfo.getIdentity().getBiometric().getApplicant().getRightIndex());
 		Assert.assertNotNull(packetMetaInfo.getIdentity().getBiometric().getApplicant().getLeftIndex());
 		Assert.assertNotNull(packetMetaInfo.getIdentity().getBiometric().getApplicant().getRightThumb());
-		Assert.assertNotNull(packetMetaInfo.getIdentity().getBiometric().getIntroducer().getIntroducerFingerprint());
-		Assert.assertNull(packetMetaInfo.getIdentity().getBiometric().getIntroducer().getIntroducerIris());
-		Assert.assertNull(packetMetaInfo.getIdentity().getBiometric().getIntroducer().getIntroducerImage());
 		Assert.assertNotNull(packetMetaInfo.getIdentity().getMetaData());
 		Assert.assertNotNull(packetMetaInfo.getIdentity().getOsiData());
 		Assert.assertNotNull(packetMetaInfo.getIdentity().getCheckSum());
@@ -122,9 +119,6 @@ public class PacketMetaInfoConverterTest {
 		Assert.assertNull(packetMetaInfo.getIdentity().getBiometric().getApplicant().getLeftLittle());
 		Assert.assertNull(packetMetaInfo.getIdentity().getBiometric().getApplicant().getLeftThumb());
 		Assert.assertNull(packetMetaInfo.getIdentity().getBiometric().getApplicant().getRightThumb());
-		Assert.assertNull(packetMetaInfo.getIdentity().getBiometric().getIntroducer().getIntroducerFingerprint());
-		Assert.assertNull(packetMetaInfo.getIdentity().getBiometric().getIntroducer().getIntroducerIris());
-		Assert.assertNull(packetMetaInfo.getIdentity().getBiometric().getIntroducer().getIntroducerImage());
 		Assert.assertNotNull(packetMetaInfo.getIdentity().getDocuments());
 		Assert.assertNotNull(packetMetaInfo.getIdentity().getMetaData());
 		Assert.assertNotNull(packetMetaInfo.getIdentity().getOsiData());

@@ -29,6 +29,7 @@ import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dao.MasterSyncDao;
 import io.mosip.registration.dao.impl.MasterSyncDaoImpl;
 import io.mosip.registration.dto.ApplicantValidDocumentDto;
+import io.mosip.registration.dto.IndividualTypeDto;
 import io.mosip.registration.dto.mastersync.ApplicationDto;
 import io.mosip.registration.dto.mastersync.BiometricAttributeDto;
 import io.mosip.registration.dto.mastersync.BiometricTypeDto;
@@ -60,7 +61,6 @@ import io.mosip.registration.dto.mastersync.TemplateDto;
 import io.mosip.registration.dto.mastersync.TemplateFileFormatDto;
 import io.mosip.registration.dto.mastersync.TemplateTypeDto;
 import io.mosip.registration.dto.mastersync.TitleDto;
-import io.mosip.registration.dto.mastersync.ValidDocumentDto;
 import io.mosip.registration.entity.ApplicantValidDocument;
 import io.mosip.registration.entity.Application;
 import io.mosip.registration.entity.BiometricAttribute;
@@ -71,6 +71,7 @@ import io.mosip.registration.entity.DocumentType;
 import io.mosip.registration.entity.Gender;
 import io.mosip.registration.entity.Holiday;
 import io.mosip.registration.entity.IdType;
+import io.mosip.registration.entity.IndividualType;
 import io.mosip.registration.entity.Language;
 import io.mosip.registration.entity.Location;
 import io.mosip.registration.entity.MachineMaster;
@@ -92,6 +93,7 @@ import io.mosip.registration.entity.Title;
 import io.mosip.registration.entity.id.ApplicantValidDocumentID;
 import io.mosip.registration.entity.id.CodeAndLanguageCodeID;
 import io.mosip.registration.entity.id.HolidayID;
+import io.mosip.registration.entity.id.IndividualTypeId;
 import io.mosip.registration.entity.id.RegDeviceTypeId;
 import io.mosip.registration.entity.id.RegMachineSpecId;
 import io.mosip.registration.exception.RegBaseCheckedException;
@@ -109,6 +111,7 @@ import io.mosip.registration.repositories.DocumentTypeRepository;
 import io.mosip.registration.repositories.GenderRepository;
 import io.mosip.registration.repositories.HolidayRepository;
 import io.mosip.registration.repositories.IdTypeRepository;
+import io.mosip.registration.repositories.IndividualTypeRepository;
 import io.mosip.registration.repositories.LanguageRepository;
 import io.mosip.registration.repositories.LocationRepository;
 import io.mosip.registration.repositories.MachineMasterRepository;
@@ -200,6 +203,8 @@ public class MasterSyncDaoImplTest {
 	private TitleRepository masterSyncTitleRepository;
 	@Mock
 	private ValidDocumentRepository masterSyncValidDocumentRepository;
+	@Mock
+	private IndividualTypeRepository individualTypeRepository;
 
 	/** Object for Sync language Repository. */
 	@Mock
@@ -360,6 +365,9 @@ public class MasterSyncDaoImplTest {
 
 		List<ApplicantValidDocumentDto> masterValidDocumnetsDto = new ArrayList<>();
 		masterSyncDto.setApplicantValidDocuments(masterValidDocumnetsDto);
+		
+		List<IndividualTypeDto> individualTypeDtos = new ArrayList<>();
+		masterSyncDto.setIndividualTypes(individualTypeDtos);
 
 		List<TemplateDto> masterTemplateDto = new ArrayList<>();
 		TemplateDto templet = new TemplateDto();
@@ -534,6 +542,15 @@ public class MasterSyncDaoImplTest {
 		reasonCategoryDto.setName("RC1001");
 		categorie.add(reasonCategoryDto);
 		masterSyncDto.setReasonCategory(categorie);
+		
+		List<IndividualTypeDto> individualTypes=new ArrayList<>();
+		IndividualTypeDto individualType=new IndividualTypeDto();
+		individualType.setCode("NFR");
+		individualType.setLangCode("eng");
+		individualType.setName("National");
+		individualType.setIsActive(true);
+		individualTypes.add(individualType);
+		masterSyncDto.setIndividualTypes(individualTypes);
 
 		// Code and Land Code
 		CodeAndLanguageCodeID codeaLang = new CodeAndLanguageCodeID();
@@ -615,6 +632,15 @@ public class MasterSyncDaoImplTest {
 		MasterDeviceType.setName("device");
 		MasterDeviceType.setDescription("deviceDescriptiom");
 		deviceType.add(MasterDeviceType);
+		List<IndividualType> masterIndividualType=new ArrayList<>();
+		IndividualType individualTypeEntity=new IndividualType();
+		IndividualTypeId individualTypeId=new IndividualTypeId();
+		individualTypeId.setCode("NFR");
+		individualTypeId.setLangCode("eng");
+		individualTypeEntity.setIndividualTypeId(individualTypeId);
+		individualTypeEntity.setName("National");
+		individualTypeEntity.setIsActive(true);
+		masterIndividualType.add(individualTypeEntity);
 		// Reg Center
 		List<RegistrationCenter> registrationCenters = new ArrayList<>();
 		RegistrationCenter registrationCenter = new RegistrationCenter();
@@ -1690,6 +1716,28 @@ public class MasterSyncDaoImplTest {
 		masterSyncDaoImpl.getValidDocumets("POA", "eng");
 
 		assertTrue(docList != null);
+
+	}
+	
+	@Test
+	public void individualTypes() {
+
+		List<IndividualType> masterIndividualType = new ArrayList<>();
+		IndividualType individualTypeEntity = new IndividualType();
+		IndividualTypeId individualTypeId = new IndividualTypeId();
+		individualTypeId.setCode("NFR");
+		individualTypeId.setLangCode("eng");
+		individualTypeEntity.setIndividualTypeId(individualTypeId);
+		individualTypeEntity.setName("National");
+		individualTypeEntity.setIsActive(true);
+		masterIndividualType.add(individualTypeEntity);
+
+		Mockito.when(masterSyncDao.getIndividulType(Mockito.anyString(), Mockito.anyString()))
+				.thenReturn(masterIndividualType);
+
+		masterSyncDaoImpl.getIndividulType("NFR", "eng");
+
+		assertTrue(masterIndividualType != null);
 
 	}
 
