@@ -43,7 +43,7 @@ import io.mosip.registration.jobs.JobTriggerListener;
 		"io.mosip.kernel.idvalidator", "io.mosip.kernel.ridgenerator", "io.mosip.kernel.qrcode",
 		"io.mosip.kernel.crypto", "io.mosip.kernel.jsonvalidator", "io.mosip.kernel.idgenerator",
 		"io.mosip.kernel.virusscanner", "io.mosip.kernel.transliteration" })
-@PropertySource("classpath:spring.properties")
+@PropertySource(value= {"classpath:spring.properties", "classpath:spring-${spring.profiles.active:integ}.properties"})
 public class AppConfig {
 
 	private static final RollingFileAppender MOSIP_ROLLING_APPENDER = new RollingFileAppender();

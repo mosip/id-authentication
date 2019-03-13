@@ -70,7 +70,7 @@ Below is the route details from original registration-processor-camel-routes.xml
 		</choice>
 	</route>
 ```
-Apache DSL camel file "registration-processor-camel-routes.xml" need to be updated with below:
+Apache DSL camel file "registration-processor-camel-routes.xml" need to be updated with below. Add PacketDetailsRequestHandler.java and PacketDetailsResponseHandler.java spring bean classes which will be added  in apache camel DSL as a processor between end points as shown in above sample DSL file. PacketDetailsRequestHandler will have logic to fetch packet details using request id from database and convert it into http post request to send. PacketDetailsResponseHandler handle response from http endpoint and send vertx event with json message (from MessageDTO) to OSI validator "<to uri="vertx:packet-validator-bus-in" />"
 
 ```html
 	<route id="packet-validator-->osi-validator route">
@@ -102,15 +102,15 @@ Apache DSL camel file "registration-processor-camel-routes.xml" need to be updat
 		</choice>
 	</route>
 ```
--			 Add PacketDetailsRequestHandler.java and PacketDetailsResponseHandler.java spring bean classes which will be added  in apache camel DSL as a processor between end points as shown in above sample DSL file. PacketDetailsRequestHandler will have logic to fetch packet details using request id from database and convert it into http post request to send. PacketDetailsResponseHandler handle response from http endpoint and send vertx event with json message (from MessageDTO) to OSI validator "<to uri="vertx:packet-validator-bus-in" />"
-
 
 **Logical Architecture Diagram**
+
+
 
 ------------
 - Without http end point:
 
-![HTTP stage diagram](_images/registration_external_http_integration.png)
+![HTTP stage diagram](_images/registration_external_without_http_integration.png)
 
 - With http end point:
 

@@ -99,7 +99,7 @@ public class ApplicantTypeImpl implements ApplicantType {
 			if (age >= Integer.parseInt(ageLimit)) {
 				ageCode = ADULT;
 			}
-			if (age < Integer.parseInt(ageLimit)) {
+			if (age >= 0 && age < Integer.parseInt(ageLimit)) {
 				ageCode = CHILD;
 			}
 		} catch (NumberFormatException e) {
@@ -116,8 +116,7 @@ public class ApplicantTypeImpl implements ApplicantType {
 		return str == null || str.trim().length() <= 0;
 	}
 
-	private String findApplicantType(String itc, String genderType, boolean isBioExPresent,
-			String ageCode) {
+	private String findApplicantType(String itc, String genderType, boolean isBioExPresent, String ageCode) {
 		if (itc.equals(FOREIGNER) && genderType.equals(MALE) && ageCode.equals(CHILD) && !isBioExPresent) {
 			// 1
 			return "001";
@@ -186,10 +185,10 @@ public class ApplicantTypeImpl implements ApplicantType {
 	}
 
 	private int calculateAge(String dob) {
-		int age = 0;
+		int age = -1;
 		LocalDate birthDate = LocalDateTime.parse(dob, DateTimeFormatter.ofPattern(UTC_DATETIME_PATTERN)).toLocalDate();
 		LocalDate currentDate = LocalDate.now();
-		if (birthDate != null && currentDate != null) {
+		if (!birthDate.isAfter(currentDate) && birthDate != null && currentDate != null) {
 			age = Period.between(birthDate, currentDate).getYears();
 		}
 		return age;
