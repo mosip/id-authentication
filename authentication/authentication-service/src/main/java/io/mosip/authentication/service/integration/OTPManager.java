@@ -166,7 +166,7 @@ public class OTPManager {
 
 	private void throwOtpException(String message) throws IdAuthenticationBusinessException {
 		if (message.equalsIgnoreCase(USER_BLOCKED)) {
-			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.BLOCKED_OTP_TO_VALIDATE);
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.BLOCKED_OTP_TO_GENERATE);
 		} else if (message.equalsIgnoreCase(OTP_EXPIRED)) {
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.EXPIRED_OTP);
 		} else if (message.equalsIgnoreCase(VALIDATION_UNSUCCESSFUL)) {
