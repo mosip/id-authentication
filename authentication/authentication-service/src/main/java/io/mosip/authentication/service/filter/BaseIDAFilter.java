@@ -57,6 +57,8 @@ import io.mosip.kernel.core.util.DateUtils;
  */
 public abstract class BaseIDAFilter implements Filter {
 
+	private static final String VERSION = "version";
+
 	/** The Constant VER_REX. */
 	private static final String VER_REX = "[\\s+a-zA-Z]";
 
@@ -292,7 +294,7 @@ public abstract class BaseIDAFilter implements Filter {
 	 */
 	protected void validateRequest(ResettableStreamHttpServletRequest requestWrapper, Map<String, Object> requestBody)
 			throws IdAuthenticationAppException {
-		String idFromRequest = (String) requestBody.get("id");
+
 		String id = null;
 		if (requestWrapper instanceof HttpServletRequestWrapper) {
 			String url = requestWrapper.getRequestURL().toString();
@@ -301,15 +303,18 @@ public abstract class BaseIDAFilter implements Filter {
 			if ((Objects.nonNull(url) && !url.isEmpty()) && (Objects.nonNull(contextPath) && !contextPath.isEmpty())) {
 				String[] splitedUrlByContext = url.split(contextPath);
 				id = "mosip.ida.api.ids." + splitedUrlByContext[1].split("/")[1];
-				if (!env.getProperty(id).equals(idFromRequest)) {
-					mosipLogger.error(SESSION_ID, EVENT_FILTER, BASE_IDA_FILTER,
-							IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
-					IdAuthenticationAppException idAuthenticationAppException = new IdAuthenticationAppException(
-							IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(), String.format(
-									IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), "id"));
-					throw idAuthenticationAppException;
+				if (requestBody != null && !requestBody.isEmpty() && requestBody.containsKey("id")) {
+					String idFromRequest = (String) requestBody.get("id");
+					if (!env.getProperty(id).equals(idFromRequest)) {
+						mosipLogger.error(SESSION_ID, EVENT_FILTER, BASE_IDA_FILTER,
+								IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
+						IdAuthenticationAppException idAuthenticationAppException = new IdAuthenticationAppException(
+								IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+								String.format(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(),
+										"id"));
+						throw idAuthenticationAppException;
+					}
 				}
-
 			}
 		}
 
@@ -327,9 +332,18 @@ public abstract class BaseIDAFilter implements Filter {
 			throws IdAuthenticationAppException {
 		try {
 			requestWrapper.resetInputStream();
-			Map<String, Object> responseMap = setResponseParams(getRequestBody(requestWrapper.getInputStream()),
+			Map<String, Object> requestBody = getRequestBody(requestWrapper.getInputStream());
+			Map<String, Object> responseMap = setResponseParams(requestBody,
 					getResponseBody(responseWrapper.toString()));
-			responseMap.put("version", getVersionFromUrl(requestWrapper));
+			responseMap.put(VERSION, getVersionFromUrl(requestWrapper));
+			String version;
+			if (Objects.nonNull(requestBody) && requestBody.get(VERSION) instanceof String) {
+				version = (String) requestBody.get(VERSION);
+			} else {
+				version = getVersionFromUrl(requestWrapper);
+			}
+			responseMap.replace(VERSION, version);
+
 			Map<String, Object> resultMap = constructResponse(responseMap);
 			String responseAsString = mapper.writeValueAsString(transformResponse(resultMap));
 			logTime((String) getResponseBody(responseAsString).get(RES_TIME), RESPONSE);
@@ -348,7 +362,10 @@ public abstract class BaseIDAFilter implements Filter {
 
 			if ((Objects.nonNull(url) && !url.isEmpty()) && (Objects.nonNull(contextPath) && !contextPath.isEmpty())) {
 				String[] splitedUrlByContext = url.split(contextPath);
-				ver = Arrays.stream(splitedUrlByContext[1].split("/")).filter(s -> !s.isEmpty()).findFirst()
+				ver = Arrays.stream(splitedUrlByContext[1].split("/"))
+						.filter(s -> !s.isEmpty())
+						.skip(1)
+						.findFirst()
 						.orElse(DEFAULT_VERSION).replaceAll(VER_REX, "");
 			}
 		}
@@ -368,6 +385,7 @@ public abstract class BaseIDAFilter implements Filter {
 		if (Objects.nonNull(requestBody) && Objects.nonNull(requestBody.get(TRANSACTION_ID))) {
 			responseBody.replace(TRANSACTION_ID, requestBody.get(TRANSACTION_ID));
 		}
+
 		if (Objects.nonNull(requestBody) && Objects.nonNull(requestBody.get(REQ_TIME))
 				&& isDate((String) requestBody.get(REQ_TIME))) {
 			ZoneId zone = ZonedDateTime.parse((CharSequence) requestBody.get(REQ_TIME)).getZone();

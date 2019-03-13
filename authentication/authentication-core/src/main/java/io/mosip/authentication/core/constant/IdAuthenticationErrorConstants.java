@@ -10,21 +10,24 @@ package io.mosip.authentication.core.constant;
  *
  */
 public enum IdAuthenticationErrorConstants {
+
+	INVALID_UIN("IDA-MLC-002", "Invalid UIN", "A0101"),
+	UIN_DEACTIVATED("IDA-MLC-003", "UIN has been deactivated", "A0102"),
+	INVALID_VID("IDA-MLC-004", "Invalid VID", "A0103"), 
+	EXPIRED_VID("IDA-MLC-005", "Expired VID", "A0104"),
+	// OTP
 	PHONE_EMAIL_NOT_REGISTERED("IDA-OTA-001",
 			"Phone no and e-mail not registered. Individual has to register and try again", "A0105"),
 	INVALID_OTP_REQUEST_TIMESTAMP("IDA-OTA-002", "Request to be received at MOSIP within 20 min", "A0106"),
 	OTP_REQUEST_FLOODED("IDA-OTA-003", "Innumerous OTP requests received"),
 	OTP_GENERATION_FAILED("IDA-OTA-004", "Could not generate/send OTP"),
-	EXPIRED_OTP("IDA-OTA-005", "OTP has expired", "A0107"), 
+	EXPIRED_OTP("IDA-OTA-005", "OTP has expired", "A0107"),
 	INVALID_OTP("IDA-OTA-006", "OTP is invalid", "A0108"),
 	INVALID_TXN_ID("IDA-OTA-007", "Input transactionID does not match transactionID of OTP Request"),
 	BLOCKED_OTP_TO_GENERATE("IDA-OTA-009", "UIN is locked for OTP generation. Please try again later"),
 	BLOCKED_OTP_TO_VALIDATE("IDA-OTA-011",
 			"UIN is locked for OTP validation due to exceeding no of invalid OTP trials"),
-	INVALID_UIN("IDA-MLC-002", "Invalid UIN", "A0101"),
-	UIN_DEACTIVATED("IDA-MLC-003", "UIN has been deactivated", "A0102"),
-	INVALID_VID("IDA-MLC-004", "Invalid VID", "A0103"), 
-	EXPIRED_VID("IDA-MLC-005", "Expired VID", "A0104"),
+
 	MISSING_INPUT_PARAMETER("IDA-MLC-006", "Missing Input Parameter - %s"),
 	UNABLE_TO_PROCESS("IDA-MLC-007", "Request could not be processed. Please try again"),
 	UNSUPPORTED_LANGUAGE("IDA-DEA-002", "Unsupported Language Code - %s", "A0111"),
@@ -79,13 +82,9 @@ public enum IdAuthenticationErrorConstants {
 	INVALID_REST_SERVICE("IDA-RST-004", "Rest service name is empty or invalid"),
 	INVALID_TIMEOUT("IDA-RST-005", "Timeout is invalid"), CLIENT_ERROR("IDA-RST-006", "4XX - Client Error occured"),
 	SERVER_ERROR("IDA-RST-007", "5XX - Server Error occured"),
-	CONNECTION_TIMED_OUT("IDA-RST-008", "Connection timed out"),
-	
-	//Public key Expired
-	MOSIP_PUBLICKEYEXP("IDA-MPA-005","MOSIP Public Key Expired");
-	
-	/*//LICENSE key Expired
-	MISP_LICENSEKEYEXP("IDA-MPA-016","License key of MISP has expired");*/
+	CONNECTION_TIMED_OUT("IDA-RST-008", "Connection timed out")
+
+	;
 
 	private final String errorCode;
 	private final String errorMessage;

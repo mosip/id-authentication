@@ -35,6 +35,7 @@ import org.springframework.web.context.WebApplicationContext;
 
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.AuthTypeDTO;
+import io.mosip.authentication.core.dto.indauth.IdType;
 import io.mosip.authentication.core.dto.indauth.IdentityDTO;
 import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
 import io.mosip.authentication.core.dto.indauth.RequestDTO;
@@ -114,6 +115,7 @@ public class AuthRequestValidatorTest {
 	public void testSupportFalse() {
 		assertFalse(authRequestValidator.supports(OTPRequestValidator.class));
 	}
+
 	@Ignore
 	@Test
 	public void testValidUin() {
@@ -149,7 +151,7 @@ public class AuthRequestValidatorTest {
 		System.err.println(errors);
 		assertFalse(errors.hasErrors());
 	}
-	@Ignore
+
 	@Test
 	public void testInvalidUin() {
 		Mockito.when(uinValidator.validateId(Mockito.anyString())).thenThrow(new InvalidIDException("id", "code"));
@@ -174,6 +176,7 @@ public class AuthRequestValidatorTest {
 		IdentityDTO idDTO = new IdentityDTO();
 		idDTO.setName(idInfoList);
 		authRequestDTO.setIndividualId("274390482564");
+		authRequestDTO.setIndividualIdType(IdType.UIN.getType());
 		RequestDTO reqDTO = new RequestDTO();
 		reqDTO.setDemographics(idDTO);
 		authRequestDTO.setRequestedAuth(authTypeDTO);
@@ -182,6 +185,7 @@ public class AuthRequestValidatorTest {
 		authRequestValidator.validate(authRequestDTO, errors);
 		assertTrue(errors.hasErrors());
 	}
+
 	@Ignore
 	@Test
 	public void testValidVid() {
@@ -217,6 +221,7 @@ public class AuthRequestValidatorTest {
 		authRequestValidator.validate(authRequestDTO, errors);
 		assertFalse(errors.hasErrors());
 	}
+
 	@Ignore
 	@Test
 	public void testInvalidVid() {

@@ -19,7 +19,6 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
-
 /**
  * The Class VIDController,it is an REST Api to generate the VID.
  * 
@@ -27,24 +26,23 @@ import io.swagger.annotations.ApiResponses;
  */
 @RestController
 public class VIDController {
-	
+
 	/** The Constant SESSION_ID. */
 	private static final String SESSION_ID = "sessionId";
-	
 
 	/** The mosipLogger. */
 	private Logger mosipLogger = IdaLogger.getLogger(VIDController.class);
-	
+
 	/** The uin validator. */
 	@Autowired
 	private UinValidatorImpl uinValidator;
-	
-	
+
 	/** The Static Pin Facade */
 	@Autowired
 	private VIDServiceImpl vidService;
 	
 	
+
 	/**
 	 * Generate VID.
 	 *
