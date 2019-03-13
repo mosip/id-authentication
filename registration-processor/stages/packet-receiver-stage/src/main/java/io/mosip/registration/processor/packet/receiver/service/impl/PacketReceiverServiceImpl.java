@@ -140,7 +140,7 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 						+ PlatformErrorMessages.RPR_PKR_INVALID_PACKET_FORMAT.getMessage();
 				throw new PacketNotValidException(PlatformErrorMessages.RPR_PKR_INVALID_PACKET_FORMAT.getMessage());
 			} 
-			else if (isDuplicatePacket(registrationId) || !isExternalStatusResend(registrationId)) {
+			else if (isDuplicatePacket(registrationId) && !isExternalStatusResend(registrationId)) {
 				throw new DuplicateUploadRequestException(
 						PlatformErrorMessages.RPR_PKR_DUPLICATE_PACKET_RECIEVED.getMessage());
 			} 
@@ -244,7 +244,7 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 	}
 
 	public Boolean isExternalStatusResend(String registrationId) {
-		List regIds=new ArrayList<RegistrationStatusSubRequestDto>();
+		List<RegistrationStatusSubRequestDto> regIds=new ArrayList<RegistrationStatusSubRequestDto>();
 		RegistrationStatusSubRequestDto registrationStatusSubRequestDto = new RegistrationStatusSubRequestDto();
 		registrationStatusSubRequestDto.setRegistrationId(registrationId);
 		regIds.add(registrationStatusSubRequestDto);

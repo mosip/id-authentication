@@ -87,8 +87,6 @@ import io.mosip.preregistration.core.util.HashUtill;
  * 
  * @author Rajath KR
  * @author Sanober Noor
- * @author Tapaswini Behera
- * @author Jagadishwari S
  * @author Ravi C Balaji
  * @since 1.0.0
  * 
@@ -896,8 +894,8 @@ LocalDateTime fromLocaldate=fromDate.atStartOfDay();
 	}
 	
 	@Test
-	public void callGetAppointmentDetailsRestServiceTest() throws ParseException {
-byte[] encryptedDemographicDetails= {1,0,1,0,1,0};
+	public void callGetAppointmentDetailsRestServiceTest() throws ParseException, org.json.simple.parser.ParseException {
+    byte[] encryptedDemographicDetails= jsonTestObject.toJSONString().getBytes();
 		
 		Mockito.when(cryptoUtil.encrypt(Mockito.any(),Mockito.any())).thenReturn(encryptedDemographicDetails);
 		
@@ -916,10 +914,12 @@ byte[] encryptedDemographicDetails= {1,0,1,0,1,0};
 
 		viewList.add(viewDto);
 		response.setResponse(viewList);
-		response.setStatus(Boolean.FALSE);
+		response.setStatus(Boolean.TRUE);
 		Mockito.when(cryptoUtil.decrypt(Mockito.any(), Mockito.any())).thenReturn(userEntityDetails.get(0).getApplicantDetailJson());
 		Mockito.when(demographicRepository.findByCreatedBy(userId, "Consumed")).thenReturn(userEntityDetails);
 		BookingRegistrationDTO bookingRegistrationDTO = null;
+		//Mockito.when(serviceUtil.getPostalCode(Mockito.any(), Mockito.any())).thenReturn("841232");
+		//Mockito.when(serviceUtil.getValueFromIdentity(Mockito.any(), Mockito.any())).thenReturn(JSONArray)
 		MainResponseDTO dto= new MainResponseDTO<>();
 		ResponseEntity<MainResponseDTO> respEntity = new ResponseEntity<>(dto, HttpStatus.OK);
 		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),

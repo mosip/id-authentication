@@ -2,7 +2,7 @@
  * Copyright
  * 
  */
-package io.mosip.preregistration.batchjobservices.exceptions.util;
+package io.mosip.preregistration.batchjobservices.exception.util;
 
 import java.util.Date;
 
@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 
 import io.mosip.kernel.core.util.DateUtils;
-import io.mosip.preregistration.batchjobservices.exceptions.NoPreIdAvailableException;
+import io.mosip.preregistration.batchjobservices.exception.NoPreIdAvailableException;
 import io.mosip.preregistration.core.common.dto.ExceptionJSONInfoDTO;
 import io.mosip.preregistration.core.common.dto.MainListResponseDTO;
 import io.mosip.preregistration.core.exception.TableNotAccessibleException;
