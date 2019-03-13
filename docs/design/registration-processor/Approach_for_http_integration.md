@@ -108,9 +108,13 @@ Apache DSL camel file "registration-processor-camel-routes.xml" need to be updat
 **Logical Architecture Diagram**
 
 ------------
-Below diagram before integration with http end point:
+- Without http end point:
 
 ![HTTP stage diagram](_images/registration_external_http_integration.png)
+
+- With http end point:
+
+![HTTP stage diagram](_images/registration_external_with_http_integration.png)
 
 
 **Class Diagram**
