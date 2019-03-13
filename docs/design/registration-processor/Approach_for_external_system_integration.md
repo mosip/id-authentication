@@ -1,8 +1,8 @@
 
-# Add HTTP stage 
+# External System Integration Stage 
 
 **Background**
-Technical stack used in Registration Processor gives ability to add or change order/sequence of stages/route in the flow. Most of the stages works in isolation, can be deployed independently and does not depend on the previous or next stage in the flow. This design document will helps support team to understand steps to integrate MOSIP with external system using http end point.
+Technical stack used in Registration Processor gives ability to add or change order/sequence of stages/route in the flow. Most of the stages works in isolation, can be deployed independently and does not depend on the previous or next stage in the flow. This design document will helps support team to understand steps to integrate with external system using vertx.
 
 **The target users are -**
 Product technical support team.
