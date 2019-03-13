@@ -64,7 +64,7 @@ public class LocationController {
 	public ResponseEntity<PostLocationCodeResponseDto> createLocationHierarchyDetails(
 			@Valid @RequestBody RequestWrapper<LocationDto> locationRequestDto) {
 
-		return new ResponseEntity<>(locationHierarchyService.createLocationHierarchy(locationRequestDto),
+		return new ResponseEntity<>(locationHierarchyService.createLocationHierarchy(locationRequestDto.getRequest()),
 				HttpStatus.OK);
 	}
 
@@ -110,7 +110,7 @@ public class LocationController {
 	public PostLocationCodeResponseDto updateLocationHierarchyDetails(
 			@Valid @RequestBody RequestWrapper<LocationDto> locationRequestDto) {
 
-		return locationHierarchyService.updateLocationDetails(locationRequestDto);
+		return locationHierarchyService.updateLocationDetails(locationRequestDto.getRequest());
 	}
 
 	/**

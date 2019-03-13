@@ -115,7 +115,7 @@ public class DeviceSpecificationController {
 	public ResponseEntity<IdAndLanguageCodeID> createDeviceSpecification(
 			@Valid @RequestBody RequestWrapper<DeviceSpecificationDto> deviceSpecification) {
 
-		return new ResponseEntity<>(deviceSpecificationService.createDeviceSpecification(deviceSpecification),
+		return new ResponseEntity<>(deviceSpecificationService.createDeviceSpecification(deviceSpecification.getRequest()),
 				HttpStatus.OK);
 	}
 
@@ -129,7 +129,7 @@ public class DeviceSpecificationController {
 			@ApiResponse(code = 500, message = "While updating device specification any error occured") })
 	public ResponseEntity<IdAndLanguageCodeID> updateDeviceSpecification(
 			@Valid @RequestBody RequestWrapper<DeviceSpecificationDto> deviceSpecification) {
-		return new ResponseEntity<>(deviceSpecificationService.updateDeviceSpecification(deviceSpecification),
+		return new ResponseEntity<>(deviceSpecificationService.updateDeviceSpecification(deviceSpecification.getRequest()),
 				HttpStatus.OK);
 	}
 

@@ -56,7 +56,7 @@ public class MachineTypeController {
 			@ApiResponse(code = 500, message = "While creating Machine Type any error occured") })
 	public ResponseEntity<CodeAndLanguageCodeID> createMachineType(
 			@Valid @RequestBody RequestWrapper<MachineTypeDto> machineType) {
-		return new ResponseEntity<>(machinetypeService.createMachineType(machineType), HttpStatus.OK);
+		return new ResponseEntity<>(machinetypeService.createMachineType(machineType.getRequest()), HttpStatus.OK);
 	}
 
 }

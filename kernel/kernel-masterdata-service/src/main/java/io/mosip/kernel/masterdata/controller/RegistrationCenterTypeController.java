@@ -50,7 +50,7 @@ public class RegistrationCenterTypeController {
 	public ResponseEntity<CodeAndLanguageCodeID> createRegistrationCenterType(
 			@Valid @RequestBody RequestWrapper<RegistrationCenterTypeDto> registrationCenterTypeDto) {
 		return new ResponseEntity<>(
-				registrationCenterTypeService.createRegistrationCenterType(registrationCenterTypeDto),
+				registrationCenterTypeService.createRegistrationCenterType(registrationCenterTypeDto.getRequest()),
 				HttpStatus.OK);
 	}
 
@@ -67,7 +67,7 @@ public class RegistrationCenterTypeController {
 	public ResponseEntity<CodeAndLanguageCodeID> updateRegistrationCenterType(
 			@Valid @RequestBody RequestWrapper<RegistrationCenterTypeDto> registrationCenterTypeDto) {
 		return new ResponseEntity<>(
-				registrationCenterTypeService.updateRegistrationCenterType(registrationCenterTypeDto), HttpStatus.OK);
+				registrationCenterTypeService.updateRegistrationCenterType(registrationCenterTypeDto.getRequest()), HttpStatus.OK);
 
 	}
 

@@ -9,9 +9,9 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
+import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.masterdata.constant.RegistrationCenterDeviceErrorCode;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterDeviceDto;
-import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.masterdata.dto.ResponseRegistrationCenterDeviceDto;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterDevice;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterDeviceHistory;
@@ -55,16 +55,16 @@ public class RegistrationCenterDeviceServiceImpl implements RegistrationCenterDe
 	@Override
 	@Transactional
 	public ResponseRegistrationCenterDeviceDto createRegistrationCenterAndDevice(
-			RequestWrapper<RegistrationCenterDeviceDto> requestDto) {
+			RegistrationCenterDeviceDto requestDto) {
 		ResponseRegistrationCenterDeviceDto registrationCenterDeviceDto = null;
 		try {
-			RegistrationCenterDevice registrationCenterDevice = MetaDataUtils.setCreateMetaData(requestDto.getRequest(),
+			RegistrationCenterDevice registrationCenterDevice = MetaDataUtils.setCreateMetaData(requestDto,
 					RegistrationCenterDevice.class);
 			RegistrationCenterDevice savedRegistrationCenterDevice = registrationCenterDeviceRepository
 					.create(registrationCenterDevice);
 
 			RegistrationCenterDeviceHistory registrationCenterDeviceHistory = MetaDataUtils
-					.setCreateMetaData(requestDto.getRequest(), RegistrationCenterDeviceHistory.class);
+					.setCreateMetaData(requestDto, RegistrationCenterDeviceHistory.class);
 			registrationCenterDeviceHistory.getRegistrationCenterDeviceHistoryPk()
 					.setEffectivetimes(registrationCenterDeviceHistory.getCreatedDateTime());
 			registrationCenterDeviceHistoryRepository.create(registrationCenterDeviceHistory);

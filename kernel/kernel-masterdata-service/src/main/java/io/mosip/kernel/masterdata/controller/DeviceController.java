@@ -108,7 +108,7 @@ public class DeviceController {
 			@ApiResponse(code = 500, message = "While creating device any error occured") })
 	public ResponseEntity<IdAndLanguageCodeID> createDevice(@Valid @RequestBody RequestWrapper<DeviceDto> deviceRequestDto) {
 
-		return new ResponseEntity<>(deviceService.createDevice(deviceRequestDto), HttpStatus.OK);
+		return new ResponseEntity<>(deviceService.createDevice(deviceRequestDto.getRequest()), HttpStatus.OK);
 	}
 
 	/**
@@ -130,7 +130,7 @@ public class DeviceController {
 			@ApiResponse(code = 500, message = "While updating device any error occured") })
 	public ResponseEntity<IdAndLanguageCodeID> updateDevice(@Valid @RequestBody RequestWrapper<DeviceDto> deviceRequestDto) {
 
-		return new ResponseEntity<>(deviceService.updateDevice(deviceRequestDto), HttpStatus.OK);
+		return new ResponseEntity<>(deviceService.updateDevice(deviceRequestDto.getRequest()), HttpStatus.OK);
 	}
 
 	/**

@@ -66,7 +66,7 @@ public interface HolidayService {
 	 * @throws MasterDataServiceException
 	 *             when entered data not created
 	 */
-	public HolidayIDDto saveHoliday(RequestWrapper<HolidayDto> holidayDto);
+	public HolidayIDDto saveHoliday(HolidayDto holidayDto);
 
 	/**
 	 * Method to update a holiday data
@@ -77,7 +77,7 @@ public interface HolidayService {
 	 * @throws MasterDataServiceException
 	 *             when entered data not updated
 	 */
-	public HolidayIDDto updateHoliday(RequestWrapper<HolidayUpdateDto> holidayDto);
+	public HolidayIDDto updateHoliday(HolidayUpdateDto holidayDto);
 
 	/**
 	 * Method to delete the holidays

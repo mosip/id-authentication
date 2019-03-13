@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.masterdata.constant.DeviceSpecificationErrorCode;
 import io.mosip.kernel.masterdata.dto.DeviceSpecificationDto;
-import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.entity.Device;
 import io.mosip.kernel.masterdata.entity.DeviceSpecification;
@@ -112,10 +111,10 @@ public class DeviceSpecificationServiceImpl implements DeviceSpecificationServic
 	 * createDeviceSpecification(io.mosip.kernel.masterdata.dto.RequestDto)
 	 */
 	@Override
-	public IdAndLanguageCodeID createDeviceSpecification(RequestWrapper<DeviceSpecificationDto> deviceSpecifications) {
+	public IdAndLanguageCodeID createDeviceSpecification(DeviceSpecificationDto deviceSpecifications) {
 		DeviceSpecification renDeviceSpecification = new DeviceSpecification();
 
-		DeviceSpecification entity = MetaDataUtils.setCreateMetaData(deviceSpecifications.getRequest(),
+		DeviceSpecification entity = MetaDataUtils.setCreateMetaData(deviceSpecifications,
 				DeviceSpecification.class);
 		try {
 			renDeviceSpecification = deviceSpecificationRepository.create(entity);
@@ -139,14 +138,14 @@ public class DeviceSpecificationServiceImpl implements DeviceSpecificationServic
 	 * updateDeviceSpecification(io.mosip.kernel.masterdata.dto.RequestDto)
 	 */
 	@Override
-	public IdAndLanguageCodeID updateDeviceSpecification(RequestWrapper<DeviceSpecificationDto> deviceSpecification) {
+	public IdAndLanguageCodeID updateDeviceSpecification(DeviceSpecificationDto deviceSpecification) {
 		IdAndLanguageCodeID idAndLanguageCodeID = new IdAndLanguageCodeID();
 		try {
 			DeviceSpecification entity = deviceSpecificationRepository
-					.findByIdAndLangCodeAndIsDeletedFalseorIsDeletedIsNull(deviceSpecification.getRequest().getId(),
-							deviceSpecification.getRequest().getLangCode());
+					.findByIdAndLangCodeAndIsDeletedFalseorIsDeletedIsNull(deviceSpecification.getId(),
+							deviceSpecification.getLangCode());
 			if (!EmptyCheckUtils.isNullEmpty(entity)) {
-				MetaDataUtils.setUpdateMetaData(deviceSpecification.getRequest(), entity, false);
+				MetaDataUtils.setUpdateMetaData(deviceSpecification, entity, false);
 				deviceSpecificationRepository.update(entity);
 				idAndLanguageCodeID.setId(entity.getId());
 				idAndLanguageCodeID.setLangCode(entity.getLangCode());

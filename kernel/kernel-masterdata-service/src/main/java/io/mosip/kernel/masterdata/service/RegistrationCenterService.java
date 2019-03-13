@@ -2,9 +2,9 @@ package io.mosip.kernel.masterdata.service;
 
 import java.util.List;
 
+import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterHolidayDto;
-import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.masterdata.dto.getresponse.RegistrationCenterResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.ResgistrationCenterStatusResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
@@ -119,7 +119,7 @@ public interface RegistrationCenterService {
 	 *            the input registration center dto.
 	 * @return the id response dto.
 	 */
-	public IdResponseDto createRegistrationCenter(RequestWrapper<RegistrationCenterDto> registrationCenterDto);
+	public IdResponseDto createRegistrationCenter(RegistrationCenterDto registrationCenterDto);
 
 	/**
 	 * This method would validate timestamp and id whether the given date in
