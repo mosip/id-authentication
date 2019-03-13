@@ -28,12 +28,12 @@ public enum AddressMatchingStrategy implements TextMatchingStrategy {
 			if (object instanceof LanguageType) {
 				LanguageType langType = ((LanguageType) object);
 				if (langType.equals(LanguageType.PRIMARY_LANG)) {
-					throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.ADDR_PRI_MISMATCH);
+					throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.DEMO_DATA_MISMATCH);
 				} else {
-					throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.ADDR_SEC_MISMATCH);
+					throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.DEMO_DATA_MISMATCH);
 				}
 			} else {
-				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNKNOWN_ERROR);
+				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS);
 			}
 		}
 	});

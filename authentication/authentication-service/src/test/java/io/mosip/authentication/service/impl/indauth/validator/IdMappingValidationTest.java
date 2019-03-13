@@ -27,7 +27,6 @@ import org.springframework.web.context.WebApplicationContext;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import io.mosip.authentication.core.dto.indauth.AdditionalFactorsDTO;
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.AuthTypeDTO;
 import io.mosip.authentication.core.dto.indauth.BioInfo;
@@ -166,9 +165,7 @@ public class IdMappingValidationTest {
 		requestedAuth.setOtp(true);
 		authRequestDTO.setRequestedAuth(requestedAuth);
 		RequestDTO request = new RequestDTO();
-		AdditionalFactorsDTO additionalFactors = new AdditionalFactorsDTO();
-		additionalFactors.setTotp("");
-		request.setAdditionalFactors(additionalFactors);
+		request.setOtp("");
 		authRequestDTO.setRequest(request);
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		Mockito.when(idinfoHelper.isMatchtypeEnabled(Mockito.any())).thenReturn(true);
@@ -184,9 +181,7 @@ public class IdMappingValidationTest {
 		requestedAuth.setPin(true);
 		authRequestDTO.setRequestedAuth(requestedAuth);
 		RequestDTO request = new RequestDTO();
-		AdditionalFactorsDTO additionalFactors = new AdditionalFactorsDTO();
-		additionalFactors.setStaticPin("");
-		request.setAdditionalFactors(additionalFactors);
+		request.setStaticPin("");
 		authRequestDTO.setRequest(request);
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		Mockito.when(idinfoHelper.isMatchtypeEnabled(Mockito.any())).thenReturn(true);
@@ -283,9 +278,7 @@ public class IdMappingValidationTest {
 		authTypeDTO.setOtp(true);
 		authRequestDTO.setRequestedAuth(authTypeDTO);
 		RequestDTO requestDTO = new RequestDTO();
-		AdditionalFactorsDTO additionalFactors = new AdditionalFactorsDTO();
-		additionalFactors.setTotp("123456");
-		requestDTO.setAdditionalFactors(additionalFactors);
+		requestDTO.setOtp("123456");
 		authRequestDTO.setRequest(requestDTO);
 		return authRequestDTO;
 	}
@@ -296,9 +289,7 @@ public class IdMappingValidationTest {
 		authTypeDTO.setPin(true);
 		authRequestDTO.setRequestedAuth(authTypeDTO);
 		RequestDTO requestDTO = new RequestDTO();
-		AdditionalFactorsDTO additionalFactors = new AdditionalFactorsDTO();
-		additionalFactors.setStaticPin("123456");
-		requestDTO.setAdditionalFactors(additionalFactors);
+		requestDTO.setStaticPin("123456");
 		authRequestDTO.setRequest(requestDTO);
 		return authRequestDTO;
 	}
@@ -334,14 +325,14 @@ public class IdMappingValidationTest {
 		IdentityInfoDTO agedto = new IdentityInfoDTO();
 		agedto.setLanguage("ara");
 		agedto.setValue("19");
-		identity.setAge(age);
+		identity.setAge("25");
 		/* Dob */
 		List<IdentityInfoDTO> dobList = new ArrayList<>();
 		IdentityInfoDTO dob = new IdentityInfoDTO();
 		dob.setLanguage("ara");
 		dob.setValue("18/03/1999/");
 		dobList.add(dob);
-		identity.setDob(dobList);
+		identity.setDob("25/11/1990");
 		/* Dob type */
 		List<IdentityInfoDTO> dobtypeList = new ArrayList<>();
 		IdentityInfoDTO dob1 = new IdentityInfoDTO();
@@ -385,7 +376,7 @@ public class IdMappingValidationTest {
 		pincodeList.add(pincode);
 		identity.setPinCode(pincodeList);
 
-		request.setIdentity(identity);
+		request.setDemographics(identity);
 		authRequestDTO.setRequest(request);
 		return authRequestDTO;
 	}

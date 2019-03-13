@@ -25,8 +25,6 @@ import io.mosip.kernel.core.logger.spi.Logger;
 @Component
 public class NotificationManager {
 
-
-	
 	private static final String SESSION_ID = "SESSION_ID";
 
 	/** Rest Helper */
@@ -39,15 +37,17 @@ public class NotificationManager {
 
 	/** Logger to log the actions */
 	private static Logger logger = IdaLogger.getLogger(NotificationManager.class);
-	
+
 	/**
 	 * Send sms notification.
 	 *
 	 * @param notificationMobileNo the notification mobile no
-	 * @param message the message
-	 * @throws IdAuthenticationBusinessException the id authentication business exception
+	 * @param message              the message
+	 * @throws IdAuthenticationBusinessException the id authentication business
+	 *                                           exception
 	 */
-	public void sendSmsNotification(String notificationMobileNo, String message) throws IdAuthenticationBusinessException {
+	public void sendSmsNotification(String notificationMobileNo, String message)
+			throws IdAuthenticationBusinessException {
 		try {
 			SmsRequestDto smsRequestDto = new SmsRequestDto();
 			smsRequestDto.setMessage(message);
@@ -58,17 +58,18 @@ public class NotificationManager {
 			restHelper.requestAsync(restRequestDTO);
 		} catch (IDDataValidationException e) {
 			logger.error(SESSION_ID, "Inside SMS Notification >>>>>", e.getErrorCode(), e.getErrorText());
-			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.NOTIFICATION_FAILED, e);
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.DATA_VALIDATION_FAILED, e);
 		}
 	}
-	
+
 	/**
 	 * Send email notification.
 	 *
-	 * @param emailId the email id
+	 * @param emailId     the email id
 	 * @param mailSubject the mail subject
 	 * @param mailContent the mail content
-	 * @throws IdAuthenticationBusinessException the id authentication business exception
+	 * @throws IdAuthenticationBusinessException the id authentication business
+	 *                                           exception
 	 */
 	public void sendEmailNotification(String emailId, String mailSubject, String mailContent)
 			throws IdAuthenticationBusinessException {
@@ -82,8 +83,9 @@ public class NotificationManager {
 					mailRequestDto, String.class);
 			restHelper.requestAsync(restRequestDTO);
 		} catch (IDDataValidationException e) {
+			//FIXME change error code
 			logger.error(SESSION_ID, "Inside Mail Notification >>>>>", e.getErrorCode(), e.getErrorText());
-			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.NOTIFICATION_FAILED, e);
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
 		}
 	}
 }

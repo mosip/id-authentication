@@ -100,7 +100,7 @@ public class OTPAuthServiceTest {
 		AuthTypeDTO authType = new AuthTypeDTO();
 		authType.setOtp(true);
 		authreqdto.setRequestedAuth(authType);
-		authserviceimpl.authenticate(authreqdto, "1234567890", Collections.emptyMap());
+		authserviceimpl.authenticate(authreqdto, "1234567890", Collections.emptyMap(),"123456");
 	}
 
 	@Ignore
@@ -111,7 +111,6 @@ public class OTPAuthServiceTest {
 		authType.setOtp(true);
 		authreqdto.setRequestedAuth(authType);
 		authreqdto.setTransactionID("1234567890");
-		authreqdto.setPartnerID("1234567890");
 		authreqdto.setRequestTime("2019-02-18T18:17:48.923+05:30");
 		List<AutnTxn> autntxnList = new ArrayList<AutnTxn>();
 		AutnTxn authtxn = new AutnTxn();
@@ -122,7 +121,7 @@ public class OTPAuthServiceTest {
 		Mockito.when(vidrepository.findVIDByUIN(Mockito.anyString(), Mockito.any())).thenReturn(valueList);
 		Mockito.when(repository.findByUinorVid(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),
 				Mockito.any(), Mockito.any())).thenReturn(valueList);
-		AuthStatusInfo authStatusInfo = authserviceimpl.authenticate(authreqdto, "1234567890", Collections.emptyMap());
+		AuthStatusInfo authStatusInfo = authserviceimpl.authenticate(authreqdto, "1234567890", Collections.emptyMap(),"123456");
 		assertNotNull(authStatusInfo);
 	}
 
@@ -136,7 +135,7 @@ public class OTPAuthServiceTest {
 		AuthRequestDTO authreqdto = new AuthRequestDTO();
 		authreqdto.setRequestTime("2019-02-18T18:17:48.923+05:30");
 		Mockito.when(otpmanager.validateOtp(Mockito.any(), Mockito.any())).thenReturn(true);
-		authserviceimpl.authenticate(authreqdto, "", Collections.emptyMap());
+		authserviceimpl.authenticate(authreqdto, "", Collections.emptyMap(),"123456");
 	}
 
 	/**
@@ -218,7 +217,7 @@ public class OTPAuthServiceTest {
 	@Test(expected = IDDataValidationException.class)
 	public void TestOtpisNotPresent() throws IdAuthenticationBusinessException {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
-		authserviceimpl.authenticate(authRequestDTO, "", Collections.emptyMap());
+		authserviceimpl.authenticate(authRequestDTO, "", Collections.emptyMap(),"123456");
 	}
 
 	/**
@@ -237,8 +236,7 @@ public class OTPAuthServiceTest {
 		valueList.add("1234567890");
 		otpAuthRequestDTO.setTransactionID("TXN00001");
 		otpAuthRequestDTO.setId("mosip.identity.auth");
-		otpAuthRequestDTO.getRequest().getIdentity().setUin("1234567890");
-		otpAuthRequestDTO.setPartnerID("TST0000001");
+		otpAuthRequestDTO.setIndividualId("426789089018");
 		ZoneOffset offset = ZoneOffset.MAX;
 		otpAuthRequestDTO.setRequestTime("2019-02-18T18:17:48.923+05:30");
 		AuthTypeDTO authType = new AuthTypeDTO();
@@ -248,7 +246,7 @@ public class OTPAuthServiceTest {
 				Mockito.any(), Mockito.any())).thenReturn(valueList);
 		Mockito.when(vidrepository.findVIDByUIN(Mockito.anyString(), Mockito.any())).thenReturn(valueList);
 		AuthStatusInfo authStatus = authserviceimpl.authenticate(otpAuthRequestDTO, "45345435345",
-				Collections.emptyMap());
+				Collections.emptyMap(),"123456");
 		assertFalse(authStatus.isStatus());
 	}
 
@@ -269,7 +267,6 @@ public class OTPAuthServiceTest {
 		valueList.add("1234567890");
 		otpAuthRequestDTO.setTransactionID("TXN00001");
 		otpAuthRequestDTO.setId("mosip.identity.auth");
-		otpAuthRequestDTO.setPartnerID("TST0000001");
 		ZoneOffset offset = ZoneOffset.MAX;
 		otpAuthRequestDTO.setRequestTime("2019-02-18T18:17:48.923+05:30");
 		AuthTypeDTO authType = new AuthTypeDTO();
@@ -277,7 +274,7 @@ public class OTPAuthServiceTest {
 		otpAuthRequestDTO.setRequestedAuth(authType);
 		Mockito.when(vidrepository.findVIDByUIN(Mockito.anyString(), Mockito.any())).thenReturn(valueList);
 		AuthStatusInfo authStatus = authserviceimpl.authenticate(otpAuthRequestDTO, "45345435345",
-				Collections.emptyMap());
+				Collections.emptyMap(),"123456");
 		assertFalse(authStatus.isStatus());
 	}
 

@@ -21,7 +21,7 @@ public enum DOBTypeMatchingStrategy implements TextMatchingStrategy {
 		if (reqInfo instanceof String) {
 			return DemoMatcherUtil.doExactMatch((String) reqInfo, (String) entityInfo);
 		} else {
-			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.DOB_TYPE_MISMATCH);
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.DEMOGRAPHIC_DATA_MISMATCH);
 		}
 	});
 

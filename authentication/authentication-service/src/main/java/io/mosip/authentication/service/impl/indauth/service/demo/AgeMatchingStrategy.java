@@ -27,7 +27,7 @@ public enum AgeMatchingStrategy implements TextMatchingStrategy {
 			return DemoMatcherUtil.doLessThanEqualToMatch(reqAge, entityAge);
 		} catch (NumberFormatException e) {
 			logError(e);
-			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.AGE_MISMATCH, e);
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.DEMO_DATA_MISMATCH, e);
 		}
 	});
 

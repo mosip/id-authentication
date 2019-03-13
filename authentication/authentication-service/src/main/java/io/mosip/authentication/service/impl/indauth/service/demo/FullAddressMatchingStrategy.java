@@ -75,15 +75,15 @@ public enum FullAddressMatchingStrategy implements TextMatchingStrategy {
 		if (object instanceof LanguageType) {
 			LanguageType langType = ((LanguageType) object);
 			if (langType.equals(LanguageType.PRIMARY_LANG)) {
-				logError(IdAuthenticationErrorConstants.FAD_PRI_MISMATCH);
-				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.FAD_PRI_MISMATCH);
+				logError(IdAuthenticationErrorConstants.DEMO_DATA_MISMATCH);
+				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.DEMO_DATA_MISMATCH);
 			} else {
-				logError(IdAuthenticationErrorConstants.FAD_SEC_MISMATCH);
-				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.FAD_SEC_MISMATCH);
+				logError(IdAuthenticationErrorConstants.DEMO_DATA_MISMATCH);
+				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.DEMO_DATA_MISMATCH);
 			}
 		} else {
-			logError(IdAuthenticationErrorConstants.UNKNOWN_ERROR);
-			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNKNOWN_ERROR);
+			logError(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS);
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS);
 		}
 	}
 

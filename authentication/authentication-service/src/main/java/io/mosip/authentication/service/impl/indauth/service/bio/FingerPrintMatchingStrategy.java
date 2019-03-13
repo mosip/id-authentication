@@ -28,26 +28,27 @@ public enum FingerPrintMatchingStrategy implements MatchingStrategy {
 				BiFunction<String, String, Double> func = (BiFunction<String, String, Double>) object;
 				return (int) func.apply((String) reqInfoValue, (String) entityInfoValue).doubleValue();
 			} else {
-				logError(IdAuthenticationErrorConstants.UNKNOWN_ERROR);
-				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNKNOWN_ERROR);
+				logError(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS);
+				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS);
 			}
 		} else {
 			Object object = props.get(BioAuthType.class.getSimpleName());
 			if (object instanceof BioAuthType) {
 				BioAuthType bioAuthType = ((BioAuthType) object);
 				if (bioAuthType.equals(BioAuthType.FGR_MIN)) {
-					logError(IdAuthenticationErrorConstants.FGRMIN_MISMATCH);
-					throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.FGRMIN_MISMATCH);
+					logError(IdAuthenticationErrorConstants.BIO_MISMATCH);
+					throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.BIO_MISMATCH.getErrorCode(),
+							String.format(IdAuthenticationErrorConstants.BIO_MISMATCH.getErrorMessage(), "id"));
 				} else if (bioAuthType.equals(BioAuthType.FGR_IMG)) {
-					logError(IdAuthenticationErrorConstants.FGRIMG_MISMATCH);
-					throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.FGRIMG_MISMATCH);
+					logError(IdAuthenticationErrorConstants.BIO_MISMATCH);
+					throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.BIO_MISMATCH);
 				} else {
-					logError(IdAuthenticationErrorConstants.UNKNOWN_ERROR);
-					throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNKNOWN_ERROR);
+					logError(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS);
+					throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS);
 				}
 			} else {
-				logError(IdAuthenticationErrorConstants.UNKNOWN_ERROR);
-				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNKNOWN_ERROR);
+				logError(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS);
+				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS);
 			}
 		}
 	});

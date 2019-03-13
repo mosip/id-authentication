@@ -105,7 +105,7 @@ public class AuthControllerTest {
 		AuthRequestDTO authReqDTO = new AuthRequestDTO();
 		Errors error = new BindException(authReqDTO, "authReqDTO");
 		error.rejectValue("id", "errorCode", "defaultMessage");
-		authController.authenticateApplication(authReqDTO, error);
+		authController.authenticateApplication(authReqDTO, error,"123456","123456");
 
 	}
 
@@ -113,9 +113,9 @@ public class AuthControllerTest {
 	public void authenticationFailed()
 			throws IdAuthenticationAppException, IdAuthenticationBusinessException, IdAuthenticationDaoException {
 		AuthRequestDTO authReqDTO = new AuthRequestDTO();
-		Mockito.when(authFacade.authenticateApplicant(authReqDTO, true))
+		Mockito.when(authFacade.authenticateApplicant(authReqDTO, true,"123456","123456"))
 				.thenThrow(new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UIN_DEACTIVATED));
-		authController.authenticateApplication(authReqDTO, error);
+		authController.authenticateApplication(authReqDTO, error,"123456","123456");
 
 	}
 
@@ -123,8 +123,8 @@ public class AuthControllerTest {
 	public void authenticationSuccess()
 			throws IdAuthenticationAppException, IdAuthenticationBusinessException, IdAuthenticationDaoException {
 		AuthRequestDTO authReqDTO = new AuthRequestDTO();
-		Mockito.when(authFacade.authenticateApplicant(authReqDTO, true)).thenReturn(new AuthResponseDTO());
-		authController.authenticateApplication(authReqDTO, error);
+		Mockito.when(authFacade.authenticateApplicant(authReqDTO, true,"123456","123456")).thenReturn(new AuthResponseDTO());
+		authController.authenticateApplication(authReqDTO, error,"123456","123456");
 
 	}
 
@@ -135,7 +135,7 @@ public class AuthControllerTest {
 		Errors errors = new BindException(kycAuthReqDTO, "kycAuthReqDTO");
 		errors.rejectValue("id", "errorCode", "defaultMessage");
 //		authFacade.authenticateApplicant(kycAuthReqDTO.getAuthRequest(), true);
-		authController.processKyc(kycAuthReqDTO, errors);
+		authController.processKyc(kycAuthReqDTO, errors,"123456","123456");
 	}
 
 	@Test

@@ -46,7 +46,7 @@ public class KeyManager {
 	private static final String SESSION_ID = "SESSION_ID";
 
 	/** The Constant SESSION_KEY. */
-	private static final String SESSION_KEY = "sessionKey";
+	private static final String SESSION_KEY = "requestSessionKey";
 
 	/** The Constant REQUEST. */
 	private static final String REQUEST = "request";
@@ -72,8 +72,6 @@ public class KeyManager {
 
 	@Autowired
 	private Environment environment;
-	
-
 
 	/** The logger. */
 	private static Logger logger = IdaLogger.getLogger(KeyManager.class);
@@ -84,8 +82,8 @@ public class KeyManager {
 	 * @param requestBody the request body
 	 * @param mapper      the mapper
 	 * @return the map
-	 * @throws IdAuthenticationAppException the id authentication app exception
-	 * @throws IdAuthenticationBusinessException 
+	 * @throws IdAuthenticationAppException      the id authentication app exception
+	 * @throws IdAuthenticationBusinessException
 	 */
 	@SuppressWarnings("unchecked")
 	public Map<String, Object> requestData(Map<String, Object> requestBody, ObjectMapper mapper)
@@ -108,7 +106,7 @@ public class KeyManager {
 					cryptoManagerRequestDto.setReferenceId(environment.getProperty("mosip.ida.publickey"));
 					cryptoManagerRequestDto.setTimeStamp(
 							DateUtils.getUTCCurrentDateTimeString(environment.getProperty("datetime.pattern")));
-					//cryptoManagerRequestDto.setTimeStamp("2031-03-07T12:58:41.762Z");
+					// cryptoManagerRequestDto.setTimeStamp("2031-03-07T12:58:41.762Z");
 					cryptoManagerRequestDto.setData(CryptoUtil.encodeBase64(
 							CryptoUtil.combineByteArray(encryptedRequest, encyptedSessionkey, keySplitter)));
 					restRequestDTO = restRequestFactory.buildRequest(RestServicesConstants.DECRYPTION_SERVICE,
@@ -116,29 +114,34 @@ public class KeyManager {
 					cryptomanagerResponseDto = restHelper.requestSync(restRequestDTO);
 					decryptedData = new String(Base64.decodeBase64(cryptomanagerResponseDto.getData()),
 							StandardCharsets.UTF_8);
-					logger.info(SESSION_ID, this.getClass().getSimpleName(), "requestData", "cryptomanagerResponseDto " + decryptedData);	
+					logger.info(SESSION_ID, this.getClass().getSimpleName(), "requestData",
+							"cryptomanagerResponseDto " + decryptedData);
 				} catch (RestServiceException e) {
 					logger.error(SESSION_ID, this.getClass().getSimpleName(), e.getErrorCode(), e.getErrorText());
-					 Optional<Object> responseBody = e.getResponseBody();
-						if (responseBody.isPresent()) {
-							Map<String, Object> idrepoMap = (Map<String, Object>) responseBody.get();
-							if (idrepoMap.containsKey("errors")) {
-								List<Map<String, Object>> idRepoerrorList = (List<Map<String, Object>>) idrepoMap.get("errors");
-								String keyExpErrorCode="KER-KMS-003"; //TODO FIXME integrate with kernel error constant
-								if (!idRepoerrorList.isEmpty() && idRepoerrorList.stream().anyMatch(
-										map -> map.containsKey("errCode") && ((String)map.get("errCode")).equalsIgnoreCase(keyExpErrorCode))) {
-									throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.MOSIP_PUBLICKEYEXP);
-								} else {
-									throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_PROCESS);
-								}
+					Optional<Object> responseBody = e.getResponseBody();
+					if (responseBody.isPresent()) {
+						Map<String, Object> idrepoMap = (Map<String, Object>) responseBody.get();
+						if (idrepoMap.containsKey("errors")) {
+							List<Map<String, Object>> idRepoerrorList = (List<Map<String, Object>>) idrepoMap
+									.get("errors");
+							String keyExpErrorCode = "KER-KMS-003"; // TODO FIXME integrate with kernel error constant
+							if (!idRepoerrorList.isEmpty()
+									&& idRepoerrorList.stream().anyMatch(map -> map.containsKey("errCode")
+											&& ((String) map.get("errCode")).equalsIgnoreCase(keyExpErrorCode))) {
+								throw new IdAuthenticationAppException(
+										IdAuthenticationErrorConstants.PUBLICKEY_EXPIRED);
+							} else {
+								throw new IdAuthenticationAppException(
+										IdAuthenticationErrorConstants.UNABLE_TO_PROCESS);
 							}
 						}
-					
+					}
+
 					logger.error(SESSION_ID, this.getClass().getSimpleName(), e.getErrorCode(), e.getErrorText());
 					throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.SERVER_ERROR);
 				} catch (IDDataValidationException e) {
 					logger.error(SESSION_ID, this.getClass().getSimpleName(), e.getErrorCode(), e.getErrorText());
-					throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST, e);
+					throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
 				}
 
 				request = mapper.readValue(decryptedData, new TypeReference<Map<String, Object>>() {
@@ -146,8 +149,8 @@ public class KeyManager {
 			}
 		} catch (IOException e) {
 			logger.error(SESSION_ID, this.getClass().getSimpleName(), "requestData", e.getMessage());
-			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorCode(),
-					IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorMessage());
+			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(),
+					IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorMessage());
 		}
 		return request;
 	}

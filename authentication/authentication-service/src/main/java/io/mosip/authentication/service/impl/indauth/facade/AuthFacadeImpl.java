@@ -26,6 +26,7 @@ import io.mosip.authentication.core.constant.RequestType;
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.AuthResponseDTO;
 import io.mosip.authentication.core.dto.indauth.AuthStatusInfo;
+
 import io.mosip.authentication.core.dto.indauth.IdType;
 import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
 import io.mosip.authentication.core.dto.indauth.KycAuthRequestDTO;
@@ -144,7 +145,7 @@ public class AuthFacadeImpl implements AuthFacade {
 	 *                                           exception.
 	 */
 	@Override
-	public AuthResponseDTO authenticateApplicant(AuthRequestDTO authRequestDTO, boolean isAuth)
+	public AuthResponseDTO authenticateApplicant(AuthRequestDTO authRequestDTO, boolean isAuth,String partnerId,String mispLK)
 			throws IdAuthenticationBusinessException {
 		
 		IdType idType=idInfoHelper.getUinOrVidType(authRequestDTO);
@@ -157,13 +158,13 @@ public class AuthFacadeImpl implements AuthFacade {
 		AuthResponseBuilder authResponseBuilder = AuthResponseBuilder.newInstance(env.getProperty(DATETIME_PATTERN));
 		Map<String, List<IdentityInfoDTO>> idInfo = null;
 		String uin = String.valueOf(idResDTO.get("uin"));
-		String tspId = authRequestDTO.getPartnerID();
+		String tspId = partnerId;
 		try {
 			idInfo = idInfoService.getIdInfo(idResDTO);
 			authResponseBuilder.setTxnID(authRequestDTO.getTransactionID());
 			Boolean staticTokenRequired = env.getProperty(STATIC_TOKEN_ENABLE, Boolean.class);
 			String staticTokenId = staticTokenRequired ? tokenIdGenerator.generateId(tspId, uin) : "";
-			List<AuthStatusInfo> authStatusList = processAuthType(authRequestDTO, idInfo, uin, isAuth, staticTokenId);
+			List<AuthStatusInfo> authStatusList = processAuthType(authRequestDTO, idInfo, uin, isAuth, staticTokenId,partnerId);
 			authStatusList.forEach(authResponseBuilder::addAuthStatusInfo);
 			// Set static token
 			if(staticTokenRequired) {
@@ -197,7 +198,7 @@ public class AuthFacadeImpl implements AuthFacade {
 	 *                                           exception
 	 */
 	private List<AuthStatusInfo> processAuthType(AuthRequestDTO authRequestDTO,
-			Map<String, List<IdentityInfoDTO>> idInfo, String uin, boolean isAuth, String staticTokenId)
+			Map<String, List<IdentityInfoDTO>> idInfo, String uin, boolean isAuth, String staticTokenId, String partnerId)
 			throws IdAuthenticationBusinessException {
 
 		List<AuthStatusInfo> authStatusList = new ArrayList<>();
@@ -209,13 +210,13 @@ public class AuthFacadeImpl implements AuthFacade {
 			idType = IdType.VID;
 		}
 
-		processOTPAuth(authRequestDTO, uin, isAuth, authStatusList, idType, staticTokenId);
+		processOTPAuth(authRequestDTO, uin, isAuth, authStatusList, idType, staticTokenId,partnerId);
 
-		processDemoAuth(authRequestDTO, idInfo, uin, isAuth, authStatusList, idType, staticTokenId);
+		processDemoAuth(authRequestDTO, idInfo, uin, isAuth, authStatusList, idType, staticTokenId,partnerId);
 
-		processBioAuth(authRequestDTO, idInfo, uin, isAuth, authStatusList, idType, staticTokenId);
+		processBioAuth(authRequestDTO, idInfo, uin, isAuth, authStatusList, idType, staticTokenId,partnerId);
 
-		processPinAuth(authRequestDTO, uin, isAuth, authStatusList, idType, staticTokenId);
+		processPinAuth(authRequestDTO, uin, isAuth, authStatusList, idType, staticTokenId,partnerId);
 
 		return authStatusList;
 	}
@@ -232,14 +233,14 @@ public class AuthFacadeImpl implements AuthFacade {
 	 * @throws IdAuthenticationBusinessException
 	 */
 	private void processPinAuth(AuthRequestDTO authRequestDTO, String uin, boolean isAuth,
-			List<AuthStatusInfo> authStatusList, IdType idType, String staticTokenId)
+			List<AuthStatusInfo> authStatusList, IdType idType, String staticTokenId,String partnerId)
 			throws IdAuthenticationBusinessException {
 		AuthStatusInfo statusInfo = null;
 		if (authRequestDTO.getRequestedAuth().isPin()) {
 			AuthStatusInfo pinValidationStatus;
 			try {
 
-				pinValidationStatus = pinAuthService.authenticate(authRequestDTO, uin, Collections.emptyMap());
+				pinValidationStatus = pinAuthService.authenticate(authRequestDTO, uin, Collections.emptyMap(),partnerId);
 				authStatusList.add(pinValidationStatus);
 				statusInfo = pinValidationStatus;
 			} finally {
@@ -265,14 +266,14 @@ public class AuthFacadeImpl implements AuthFacade {
 	 * @throws IdAuthenticationBusinessException
 	 */
 	private void processBioAuth(AuthRequestDTO authRequestDTO, Map<String, List<IdentityInfoDTO>> idInfo, String uin,
-			boolean isAuth, List<AuthStatusInfo> authStatusList, IdType idType, String staticTokenId)
+			boolean isAuth, List<AuthStatusInfo> authStatusList, IdType idType, String staticTokenId,String partnerId)
 			throws IdAuthenticationBusinessException {
 
 		AuthStatusInfo statusInfo = null;
 		if (authRequestDTO.getRequestedAuth().isBio()) {
 			AuthStatusInfo bioValidationStatus;
 			try {
-				bioValidationStatus = bioAuthService.authenticate(authRequestDTO, uin, idInfo);
+				bioValidationStatus = bioAuthService.authenticate(authRequestDTO, uin, idInfo,partnerId);
 				authStatusList.add(bioValidationStatus);
 				statusInfo = bioValidationStatus;
 			} finally {
@@ -297,13 +298,13 @@ public class AuthFacadeImpl implements AuthFacade {
 	 *                                           exception
 	 */
 	private void processDemoAuth(AuthRequestDTO authRequestDTO, Map<String, List<IdentityInfoDTO>> idInfo, String uin,
-			boolean isAuth, List<AuthStatusInfo> authStatusList, IdType idType, String staticTokenId)
+			boolean isAuth, List<AuthStatusInfo> authStatusList, IdType idType, String staticTokenId,String partnerId)
 			throws IdAuthenticationBusinessException {
 		AuthStatusInfo statusInfo = null;
 		if (authRequestDTO.getRequestedAuth().isDemo()) {
 			AuthStatusInfo demoValidationStatus;
 			try {
-				demoValidationStatus = demoAuthService.authenticate(authRequestDTO, uin, idInfo);
+				demoValidationStatus = demoAuthService.authenticate(authRequestDTO, uin, idInfo,partnerId);
 				authStatusList.add(demoValidationStatus);
 				statusInfo = demoValidationStatus;
 			} finally {
@@ -333,13 +334,13 @@ public class AuthFacadeImpl implements AuthFacade {
 	 *                                           exception
 	 */
 	private void processOTPAuth(AuthRequestDTO authRequestDTO, String uin, boolean isAuth,
-			List<AuthStatusInfo> authStatusList, IdType idType, String staticTokenId)
+			List<AuthStatusInfo> authStatusList, IdType idType, String staticTokenId,String partnerId)
 			throws IdAuthenticationBusinessException {
 		AuthStatusInfo statusInfo = null;
 		if (authRequestDTO.getRequestedAuth().isOtp()) {
 			AuthStatusInfo otpValidationStatus;
 			try {
-				otpValidationStatus = otpService.authenticate(authRequestDTO, uin, Collections.emptyMap());
+				otpValidationStatus = otpService.authenticate(authRequestDTO, uin, Collections.emptyMap(),partnerId);
 				authStatusList.add(otpValidationStatus);
 				statusInfo = otpValidationStatus;
 			} finally {
@@ -430,7 +431,7 @@ public class AuthFacadeImpl implements AuthFacade {
 			return autnTxn;
 		} catch (ParseException | io.mosip.kernel.core.exception.ParseException e) {
 			logger.error(DEFAULT_SESSION_ID, this.getClass().getName(), e.getClass().getName(), e.getMessage());
-			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST_TIMESTAMP,
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_OTP_REQUEST_TIMESTAMP,
 					e);
 		}
 	}
@@ -467,7 +468,7 @@ public class AuthFacadeImpl implements AuthFacade {
 	 *                                           exception
 	 */
 	@Override
-	public KycAuthResponseDTO processKycAuth(KycAuthRequestDTO kycAuthRequestDTO, AuthResponseDTO authResponseDTO)
+	public KycAuthResponseDTO processKycAuth(KycAuthRequestDTO kycAuthRequestDTO, AuthResponseDTO authResponseDTO,String partnerId)
 			throws IdAuthenticationBusinessException {
 		Map<String, Object> idResDTO = null;
 		String key = null;
@@ -481,7 +482,7 @@ public class AuthFacadeImpl implements AuthFacade {
 			}
 			String idvIdtype = idInfoHelper.getUinOrVidType(kycAuthRequestDTO).getType();
 			idResDTO = idAuthService.processIdType(idvIdtype, idvId, true);
-			key = "ekyc.mua.accesslevel." + kycAuthRequestDTO.getPartnerID();
+			key = "ekyc.mua.accesslevel." + partnerId;
 
 			if (idvIdtype.equals(IdType.UIN.getType())) {
 				idType = IdType.UIN;
@@ -497,14 +498,14 @@ public class AuthFacadeImpl implements AuthFacade {
 			ZoneId zone = zonedDateTime2.getZone();
 			resTime = DateUtils.formatDate(new Date(), dateTimePattern, TimeZone.getTimeZone(zone));
 			auditHelper.audit(AuditModules.EKYC_AUTH, AuditEvents.AUTH_REQUEST_RESPONSE,
-					kycAuthRequestDTO.getRequest().getIdentity().getUin(), idType, AuditModules.EKYC_AUTH.getDesc());
+					kycAuthRequestDTO.getIndividualId(), idType, AuditModules.EKYC_AUTH.getDesc());
 		}
 		Map<String, List<IdentityInfoDTO>> idInfo = idInfoService.getIdInfo(idResDTO);
 		KycResponseDTO response = null;
 		if (idResDTO != null && authResponseDTO.getStatus().equals(SUCCESS_STATUS)) {
 			response = kycService.retrieveKycInfo(String.valueOf(idResDTO.get("uin")),
 					KycType.getEkycAuthType(env.getProperty(key)),
-					kycAuthRequestDTO.getKycMetadata().getSecondaryLangCode(), idInfo);
+					kycAuthRequestDTO.getSecondaryLangCode(), idInfo);
 			response.setTtl(env.getProperty("ekyc.ttl.hours"));
 		}
 

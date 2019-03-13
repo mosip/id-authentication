@@ -292,7 +292,8 @@ public class NotificationServiceImpl implements NotificationService {
 			Objects.requireNonNull(templateName);
 			return idTemplateManager.applyTemplate(templateName, values);
 		} catch (IOException e) {
-			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.NOTIFICATION_FAILED, e);
+			//FIXME change the error code
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
 		}
 	}
 

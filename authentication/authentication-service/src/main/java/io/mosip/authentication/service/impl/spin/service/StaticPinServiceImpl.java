@@ -130,7 +130,7 @@ public class StaticPinServiceImpl implements StaticPinService {
 			return staticPinResponseDTO;
 		} catch (DataAccessException e) {
 			logger.error(SESSION_ID, this.getClass().getName(), e.getClass().getName(), e.getMessage());
-			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.STATICPIN_NOT_STORED_PINVAUE, e);
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.PIN_NOT_STORED, e);
 		}
 	}
 
