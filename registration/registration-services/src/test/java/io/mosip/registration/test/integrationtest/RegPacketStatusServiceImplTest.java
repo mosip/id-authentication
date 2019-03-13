@@ -130,7 +130,7 @@ public class RegPacketStatusServiceImplTest {
 	@Test
 	public void packetSyncStatusTestRegIdLessThanTwentyNineChars() throws JsonProcessingException {
 		setupDBWithRegId();
-		responseDTO = regPacketStatusServiceImpl.packetSyncStatus();
+		responseDTO = regPacketStatusServiceImpl.packetSyncStatus("System");
 		deleteTestData();
 		ObjectMapper mapper = new ObjectMapper();
 		System.out.println(mapper.writer().writeValueAsString(responseDTO));
