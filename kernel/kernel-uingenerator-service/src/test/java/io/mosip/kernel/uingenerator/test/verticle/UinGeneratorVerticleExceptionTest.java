@@ -54,7 +54,7 @@ public class UinGeneratorVerticleExceptionTest {
 	public void getUinExceptionTest(TestContext context) {
 		Async async = context.async();
 		WebClient client = WebClient.create(vertx);
-		client.get(port, "localhost", "/issueuin/v1.0").send(ar -> {
+		client.get(port, "localhost", "/uin").send(ar -> {
 			if (ar.succeeded()) {
 				HttpResponse<Buffer> response = ar.result();
 				context.assertEquals(200, response.statusCode());
