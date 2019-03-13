@@ -74,7 +74,7 @@ public class DocumentTypeController {
 	@ApiOperation(value = "Service to create document type", response = CodeAndLanguageCodeID.class)
 	public ResponseEntity<CodeAndLanguageCodeID> createDocumentType(
 			@Valid @RequestBody RequestWrapper<DocumentTypeDto> types) {
-		return new ResponseEntity<>(documentTypeService.createDocumentType(types), HttpStatus.OK);
+		return new ResponseEntity<>(documentTypeService.createDocumentType(types.getRequest()), HttpStatus.OK);
 	}
 
 	/**
@@ -88,7 +88,7 @@ public class DocumentTypeController {
 	@ApiOperation(value = "Service to update document type", response = CodeAndLanguageCodeID.class)
 	public ResponseEntity<CodeAndLanguageCodeID> updateDocumentType(
 			@ApiParam("Document Type DTO to update") @Valid @RequestBody RequestWrapper<DocumentTypeDto> types) {
-		return new ResponseEntity<>(documentTypeService.updateDocumentType(types), HttpStatus.OK);
+		return new ResponseEntity<>(documentTypeService.updateDocumentType(types.getRequest()), HttpStatus.OK);
 	}
 
 	/**

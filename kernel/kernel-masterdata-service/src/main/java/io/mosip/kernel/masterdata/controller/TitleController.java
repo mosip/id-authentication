@@ -73,7 +73,7 @@ public class TitleController {
 	@ResponseFilter
 	@PostMapping("/title")
 	public ResponseEntity<CodeAndLanguageCodeID> saveTitle(@Valid @RequestBody RequestWrapper<TitleDto> title) {
-		return new ResponseEntity<>(titleService.saveTitle(title), HttpStatus.OK);
+		return new ResponseEntity<>(titleService.saveTitle(title.getRequest()), HttpStatus.OK);
 
 	}
 
@@ -94,7 +94,7 @@ public class TitleController {
 			@ApiResponse(code = 500, message = "While updating title any error occured") })
 	public ResponseEntity<CodeAndLanguageCodeID> updateTitle(
 			@ApiParam("Title DTO to update") @Valid @RequestBody RequestWrapper<TitleDto> titles) {
-		return new ResponseEntity<>(titleService.updateTitle(titles), HttpStatus.OK);
+		return new ResponseEntity<>(titleService.updateTitle(titles.getRequest()), HttpStatus.OK);
 	}
 
 	/**

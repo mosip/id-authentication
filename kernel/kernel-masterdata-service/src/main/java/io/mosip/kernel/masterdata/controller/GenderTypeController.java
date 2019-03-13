@@ -73,7 +73,7 @@ public class GenderTypeController {
 	@ResponseFilter
 	@PostMapping("/gendertypes")
 	public ResponseEntity<CodeAndLanguageCodeID> saveGenderType(@Valid @RequestBody RequestWrapper<GenderTypeDto> gender) {
-		return new ResponseEntity<>(genderTypeService.saveGenderType(gender), HttpStatus.OK);
+		return new ResponseEntity<>(genderTypeService.saveGenderType(gender.getRequest()), HttpStatus.OK);
 
 	}
 
@@ -89,7 +89,7 @@ public class GenderTypeController {
 	@PutMapping("/gendertypes")
 	public ResponseEntity<CodeAndLanguageCodeID> updateGenderType(
 			@ApiParam("Data to update with metadata") @Valid @RequestBody RequestWrapper<GenderTypeDto> gender) {
-		return new ResponseEntity<>(genderTypeService.updateGenderType(gender), HttpStatus.OK);
+		return new ResponseEntity<>(genderTypeService.updateGenderType(gender.getRequest()), HttpStatus.OK);
 
 	}
 

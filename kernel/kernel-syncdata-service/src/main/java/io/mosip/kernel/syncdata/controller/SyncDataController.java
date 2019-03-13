@@ -44,7 +44,7 @@ import springfox.documentation.annotations.ApiIgnore;
  * @since 1.0.0
  */
 @RestController
-@RequestMapping(value = "/v1.0")
+//@RequestMapping(value = "/v1.0")
 public class SyncDataController {
 	/**
 	 * Service instance {@link SyncMasterDataService}

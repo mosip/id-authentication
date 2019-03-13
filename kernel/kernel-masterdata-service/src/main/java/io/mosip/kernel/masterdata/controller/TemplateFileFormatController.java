@@ -52,7 +52,7 @@ public class TemplateFileFormatController {
 	@PostMapping
 	public ResponseEntity<CodeAndLanguageCodeID> createTemplateFileFormat(
 			@Valid @RequestBody RequestWrapper<TemplateFileFormatDto> templateFileFormatRequestDto) {
-		return new ResponseEntity<>(templateFileFormatService.createTemplateFileFormat(templateFileFormatRequestDto),
+		return new ResponseEntity<>(templateFileFormatService.createTemplateFileFormat(templateFileFormatRequestDto.getRequest()),
 				HttpStatus.OK);
 
 	}
@@ -77,7 +77,7 @@ public class TemplateFileFormatController {
 	public ResponseEntity<CodeAndLanguageCodeID> updateDevice(
 			@Valid @RequestBody RequestWrapper<TemplateFileFormatDto> templateFileFormatRequestDto) {
 
-		return new ResponseEntity<>(templateFileFormatService.updateTemplateFileFormat(templateFileFormatRequestDto),
+		return new ResponseEntity<>(templateFileFormatService.updateTemplateFileFormat(templateFileFormatRequestDto.getRequest()),
 				HttpStatus.OK);
 	}
 

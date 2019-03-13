@@ -341,12 +341,12 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 	 * createRegistrationCenter(io.mosip.kernel.masterdata.dto.RequestDto)
 	 */
 	@Override
-	public IdResponseDto createRegistrationCenter(RequestWrapper<RegistrationCenterDto> registrationCenterDto) {
+	public IdResponseDto createRegistrationCenter(RegistrationCenterDto registrationCenterDto) {
 		try {
-			if (!EmptyCheckUtils.isNullEmpty(registrationCenterDto.getRequest().getLatitude())
-					&& !EmptyCheckUtils.isNullEmpty(registrationCenterDto.getRequest().getLongitude())) {
-				Float.parseFloat(registrationCenterDto.getRequest().getLatitude());
-				Float.parseFloat(registrationCenterDto.getRequest().getLongitude());
+			if (!EmptyCheckUtils.isNullEmpty(registrationCenterDto.getLatitude())
+					&& !EmptyCheckUtils.isNullEmpty(registrationCenterDto.getLongitude())) {
+				Float.parseFloat(registrationCenterDto.getLatitude());
+				Float.parseFloat(registrationCenterDto.getLongitude());
 			}
 		} catch (NullPointerException | NumberFormatException latLongException) {
 			throw new RequestException(ApplicationErrorCode.APPLICATION_REQUEST_EXCEPTION.getErrorCode(),
@@ -354,9 +354,9 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 							+ ExceptionUtils.parseException(latLongException));
 		}
 		RegistrationCenter entity = new RegistrationCenter();
-		entity = MetaDataUtils.setCreateMetaData(registrationCenterDto.getRequest(), entity.getClass());
+		entity = MetaDataUtils.setCreateMetaData(registrationCenterDto, entity.getClass());
 		RegistrationCenterHistory registrationCenterHistoryEntity = MetaDataUtils
-				.setCreateMetaData(registrationCenterDto.getRequest(), RegistrationCenterHistory.class);
+				.setCreateMetaData(registrationCenterDto, RegistrationCenterHistory.class);
 		registrationCenterHistoryEntity.setEffectivetimes(entity.getCreatedDateTime());
 		registrationCenterHistoryEntity.setCreatedDateTime(entity.getCreatedDateTime());
 		RegistrationCenter registrationCenter;

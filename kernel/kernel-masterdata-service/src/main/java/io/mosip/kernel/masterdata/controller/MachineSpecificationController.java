@@ -59,7 +59,7 @@ public class MachineSpecificationController {
 	public ResponseEntity<IdAndLanguageCodeID> createMachineSpecification(
 			@Valid @RequestBody RequestWrapper<MachineSpecificationDto> machineSpecification) {
 
-		return new ResponseEntity<>(machineSpecificationService.createMachineSpecification(machineSpecification),
+		return new ResponseEntity<>(machineSpecificationService.createMachineSpecification(machineSpecification.getRequest()),
 				HttpStatus.OK);
 	}
 
@@ -81,7 +81,7 @@ public class MachineSpecificationController {
 	public ResponseEntity<IdAndLanguageCodeID> updateMachineSpecification(
 			@Valid @RequestBody RequestWrapper<MachineSpecificationDto> machineSpecification) {
 
-		return new ResponseEntity<>(machineSpecificationService.updateMachineSpecification(machineSpecification),
+		return new ResponseEntity<>(machineSpecificationService.updateMachineSpecification(machineSpecification.getRequest()),
 				HttpStatus.OK);
 	}
 

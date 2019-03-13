@@ -46,7 +46,7 @@ public class PacketRejectionReasonController {
 	@PostMapping("/reasoncategory")
 	public ResponseEntity<CodeAndLanguageCodeID> createReasonCategories(@Valid@RequestBody RequestWrapper<PostReasonCategoryDto> requestDto) {
                 
-		return new ResponseEntity<>(reasonService.createReasonCategories(requestDto),HttpStatus.OK);
+		return new ResponseEntity<>(reasonService.createReasonCategories(requestDto.getRequest()),HttpStatus.OK);
 	}
 	
 	/**
@@ -58,7 +58,7 @@ public class PacketRejectionReasonController {
 	@PostMapping("/reasonlist")
 	public ResponseEntity<CodeLangCodeAndRsnCatCodeID> createReasonLists(@Valid@RequestBody RequestWrapper<ReasonListDto> requestDto) {
                 
-		return new ResponseEntity<>(reasonService.createReasonList(requestDto),HttpStatus.OK);
+		return new ResponseEntity<>(reasonService.createReasonList(requestDto.getRequest()),HttpStatus.OK);
 	}
 
 	/**

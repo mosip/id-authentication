@@ -55,7 +55,7 @@ public class DeviceTypeController {
 			@ApiResponse(code = 500, message = "While creating Device Type any error occured") })
 	public ResponseEntity<CodeAndLanguageCodeID> createDeviceType(
 			@Valid @RequestBody RequestWrapper<DeviceTypeDto> deviceTypes) {
-		return new ResponseEntity<>(deviceTypeService.createDeviceType(deviceTypes), HttpStatus.OK);
+		return new ResponseEntity<>(deviceTypeService.createDeviceType(deviceTypes.getRequest()), HttpStatus.OK);
 	}
 	 
 

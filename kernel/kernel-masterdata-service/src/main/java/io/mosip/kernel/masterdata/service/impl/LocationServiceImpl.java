@@ -15,7 +15,6 @@ import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.masterdata.constant.LocationErrorCode;
 import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.dto.LocationDto;
-import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.masterdata.dto.getresponse.LocationHierarchyDto;
 import io.mosip.kernel.masterdata.dto.getresponse.LocationHierarchyResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.LocationResponseDto;
@@ -158,13 +157,13 @@ public class LocationServiceImpl implements LocationService {
 	 */
 	@Override
 	@Transactional
-	public PostLocationCodeResponseDto createLocationHierarchy(RequestWrapper<LocationDto> locationRequestDto) {
+	public PostLocationCodeResponseDto createLocationHierarchy(LocationDto locationRequestDto) {
 
 		Location location = null;
 		Location locationResultantEntity = null;
 		PostLocationCodeResponseDto locationCodeDto = null;
 
-		location = MetaDataUtils.setCreateMetaData(locationRequestDto.getRequest(), Location.class);
+		location = MetaDataUtils.setCreateMetaData(locationRequestDto, Location.class);
 		try {
 			locationResultantEntity = locationRepository.create(location);
 		} catch (DataAccessLayerException | DataAccessException ex) {
@@ -188,8 +187,7 @@ public class LocationServiceImpl implements LocationService {
 	 */
 	@Override
 	@Transactional
-	public PostLocationCodeResponseDto updateLocationDetails(RequestWrapper<LocationDto> locationRequestDto) {
-		LocationDto locationDto = locationRequestDto.getRequest();
+	public PostLocationCodeResponseDto updateLocationDetails(LocationDto locationDto) {
 		PostLocationCodeResponseDto postLocationCodeResponseDto = new PostLocationCodeResponseDto();
 		CodeAndLanguageCodeID locationId = new CodeAndLanguageCodeID();
 		locationId.setCode(locationDto.getCode());
