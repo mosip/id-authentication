@@ -41,11 +41,12 @@
     margin: 20px 0 0 20px;
 }
 
-.time-seelection__slot-groups-div p{
+.time-seelection__slot-groups-div a{
     margin: 0 40px 5px 20px;
     font-weight: 500;
     color: #ccc;
     cursor: pointer;
+    text-decoration: none;
 }
 
 .time-seelection__slot-groups-div-selected {

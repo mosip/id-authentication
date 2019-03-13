@@ -40,6 +40,8 @@ export class TimeSelectionComponent implements OnInit {
   registrationCenterLunchTime = [];
   secondaryLang = localStorage.getItem('secondaryLangCode');
   secondaryLanguagelabels: any;
+  showMorning: boolean;
+  showAfternoon: boolean;
 
   constructor(
     private sharedService: SharedService,
@@ -118,8 +120,10 @@ export class TimeSelectionComponent implements OnInit {
         let toTime = slot.toTime.split(':');
         if (fromTime[0] < this.registrationCenterLunchTime[0]) {
           slot.tag = 'morning';
+          element.showMorning = true;
         } else {
           slot.tag = 'afternoon';
+          element.showAfternoon = true;
         }
         slot.displayTime = Number(fromTime[0]) > 12 ? Number(fromTime[0]) - 12 : fromTime[0];
         slot.displayTime += ':' + fromTime[1] + ' - ';
@@ -160,7 +164,19 @@ export class TimeSelectionComponent implements OnInit {
         }
       }
     });
+    this.enableBucketTabs();
     console.log(this.availabilityData[this.selectedTile]);
+  }
+
+  enableBucketTabs() {
+    const element = this.availabilityData[this.selectedTile];
+    if (element.showMorning && element.showAfternoon) {
+      this.tabSelected('morning');
+    } else if (element.showMorning) {
+      this.tabSelected('morning');
+    } else {
+      this.tabSelected('afternoon');
+    }
   }
 
   getSlotsforCenter(id) {
@@ -177,8 +193,11 @@ export class TimeSelectionComponent implements OnInit {
     );
   }
 
-  tabSelected(selection) {
-    this.activeTab = selection;
+  tabSelected(selection: string) {
+    if ((selection === 'morning' && this.availabilityData[this.selectedTile].showMorning) ||
+        (selection === 'afternoon' && this.availabilityData[this.selectedTile].showAfternoon)) {
+      this.activeTab = selection;
+    }    
     console.log(this.activeTab);
   }
 
@@ -267,6 +286,9 @@ export class TimeSelectionComponent implements OnInit {
   }
 
   navigateBack() {
+    this.temp.forEach(name => {
+      this.sharedService.addNameList(name);
+    })
     const url = Utils.getURL(this.router.url, 'pick-center');
     // const routeParams = this.router.url.split('/');
     // this.router.navigate([routeParams[1], routeParams[2], 'booking', 'pick-center']);

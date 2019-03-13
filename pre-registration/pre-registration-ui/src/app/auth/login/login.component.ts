@@ -72,7 +72,7 @@ export class LoginComponent implements OnInit {
     this.loadConfigs();
   }
 
-  private loginIdValidator() {
+  loginIdValidator() {
     this.errorMessage = undefined;
     const modes = this.configService.getConfigByKey('mosip.login.mode');
     const emailRegex = new RegExp(this.configService.getConfigByKey('mosip.regex.email'));
@@ -107,14 +107,17 @@ export class LoginComponent implements OnInit {
   loadLanguagesWithConfig () {
     const primaryLang = this.configService.getConfigByKey('mosip.primary-language');
     const secondaryLang = this.configService.getConfigByKey('mosip.secondary-language');
-    this.languages.push(appConstants.languageMapping[primaryLang].langName);
-    this.languages.push(appConstants.languageMapping[secondaryLang].langName);
+    if (appConstants.languageMapping[primaryLang] && appConstants.languageMapping[secondaryLang]) {
+      this.languages.push(appConstants.languageMapping[primaryLang].langName);
+      this.languages.push(appConstants.languageMapping[secondaryLang].langName);
+    }
     this.translate.addLangs([primaryLang, secondaryLang]);
     this.showSpinner = false;
   }
 
   setTimer() {
     const time = Number(this.configService.getConfigByKey('mosip.kernel.otp.expiry-time'));
+    console.log('time', this.configService.getConfigByKey('mosip.kernel.otp.expiry-time'));
     const minutes = time / 60;
     const seconds = time % 60;
     if (minutes < 10) {
