@@ -16,7 +16,6 @@ import java.util.ResourceBundle;
 import java.util.Timer;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.core.exception.ExceptionUtils;
@@ -128,21 +127,6 @@ public class BaseController {
 	
 	@Autowired
 	private CenterMachineReMapService centerMachineReMapService;
-
-	@Value("${USERNAME_PWD_LENGTH}")
-	private int usernamePwdLength;
-
-	@Value("${mosip.registration.document_disable_flag:}")
-	protected String documentDisableFlag;
-
-	@Value("${mosip.registration.fingerprint_disable_flag:}")
-	protected String fingerprintDisableFlag;
-
-	@Value("${mosip.registration.iris_disable_flag:}")
-	protected String irisDisableFlag;
-
-	@Value("${mosip.registration.face_disable_flag:}")
-	protected String faceDisableFlag;
 
 	protected ApplicationContext applicationContext = ApplicationContext.getInstance();
 
@@ -542,9 +526,6 @@ public class BaseController {
 		if (password.isEmpty()) {
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.PWORD_FIELD_EMPTY);
 			return RegistrationUIConstants.PWORD_FIELD_EMPTY;
-		} else if (password.length() > usernamePwdLength) {
-			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.PWORD_LENGTH);
-			return RegistrationUIConstants.PWORD_LENGTH;
 		} else {
 			String hashPassword = null;
 

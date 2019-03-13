@@ -1,12 +1,14 @@
 package io.mosip.registration.audit;
 
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
+
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.auditmanager.builder.AuditRequestBuilder;
@@ -17,10 +19,9 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.AuditEvent;
 import io.mosip.registration.constants.Components;
+import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
-
-import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
-import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
 /**
  * Class to Audit the events of Registration.
@@ -39,14 +40,6 @@ public class AuditFactoryImpl implements AuditFactory {
 	private static final Logger LOGGER = AppConfig.getLogger(AuditFactoryImpl.class);
 	@Autowired
 	private AuditHandler<AuditRequestDto> auditHandler;
-	@Value("${mosip.registration.audit_application_id:}")
-	private String applicationId;
-	@Value("${mosip.registration.audit_application_name:}")
-	private String applicationName;
-	@Value("${mosip.registration.audit_default_host_ip:}")
-	private String defaultHostIP;
-	@Value("${mosip.registration.audit_default_host_name:}")
-	private String defaultHostName;
 
 	/*
 	 * (non-Javadoc)
@@ -59,8 +52,8 @@ public class AuditFactoryImpl implements AuditFactory {
 	public void audit(AuditEvent auditEventEnum, Components appModuleEnum, String refId, String refIdType) {
 
 		// Getting Host IP Address and Name
-		String hostIP = defaultHostIP;
-		String hostName = defaultHostName;
+		String hostIP = String.valueOf(ApplicationContext.map().get(RegistrationConstants.DEFAULT_HOST_IP));
+		String hostName = String.valueOf(ApplicationContext.map().get(RegistrationConstants.DEFAULT_HOST_NAME));
 		try {
 			hostIP = InetAddress.getLocalHost().getHostAddress();
 			hostName = InetAddress.getLocalHost().getHostName();
@@ -70,8 +63,8 @@ public class AuditFactoryImpl implements AuditFactory {
 		}
 
 		AuditRequestBuilder auditRequestBuilder = new AuditRequestBuilder();
-		auditRequestBuilder.setActionTimeStamp(LocalDateTime.now(ZoneOffset.UTC)).setApplicationId(applicationId)
-				.setApplicationName(applicationName).setCreatedBy(SessionContext.userName())
+		auditRequestBuilder.setActionTimeStamp(LocalDateTime.now(ZoneOffset.UTC)).setApplicationId(String.valueOf(ApplicationContext.map().get(RegistrationConstants.APP_ID)))
+				.setApplicationName(String.valueOf(ApplicationContext.map().get(RegistrationConstants.APP_NAME))).setCreatedBy(SessionContext.userName())
 				.setDescription(auditEventEnum.getDescription()).setEventId(auditEventEnum.getId())
 				.setEventName(auditEventEnum.getName()).setEventType(auditEventEnum.getType()).setHostIp(hostIP)
 				.setHostName(hostName).setId(refId).setIdType(refIdType).setModuleId(appModuleEnum.getId())

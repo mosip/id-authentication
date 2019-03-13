@@ -47,12 +47,7 @@ public class ApplicationContext {
 			LOGGER.error("Application Context", RegistrationConstants.APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, exception.getMessage());
 		}
-		if (applicationLanguge == null || RegistrationConstants.EMPTY.equals(applicationLanguge)) {
-			applicationLanguge = RegistrationConstants.LANGUAGE_ENGLISH;
-		}
-		if (localLanguage == null || RegistrationConstants.EMPTY.equals(localLanguage)) {
-			localLanguage = RegistrationConstants.LANGUAGE_ARABIC;
-		}
+
 		
 		Locale applicationLanguageLocale = new Locale(applicationLanguge.substring(0, 2));
 		Locale secondaryLanguageLocale = new Locale(localLanguage.substring(0, 2));

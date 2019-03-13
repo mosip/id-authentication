@@ -99,7 +99,6 @@ public class RegistrationConstants {
 
 	// Authentication
 	public static final String SUPERVISOR_VERIFICATION = "Supervisor Login";
-	public static final String SUPERVISOR_NAME = "Supervisor";
 	public static final String SUPERVISOR_FINGERPRINT_LOGIN = "Supervisior Fingerprint Authentication";
 	public static final String FINGER_PRINT_SINGLE = "single";
 	public static final String FINGER_PRINT_MULTIPLE = "multiple";
@@ -664,7 +663,48 @@ public class RegistrationConstants {
 	public static final String GLOBAL_CONFIG_TRUE_VALUE = "Y";
 	public static final String REG_PAK_MAX_CNT_APPRV_LIMIT = "mosip.registration.reg_pak_max_cnt_apprv_limit";
 	public static final String REG_PAK_MAX_TIME_APPRV_LIMIT = "mosip.registration.reg_pak_max_time_apprv_limit";
-
+	public static final String DEFAULT_HOST_IP = "mosip.registration.audit_default_host_ip";
+	public static final String DEFAULT_HOST_NAME = "mosip.registration.audit_default_host_name";
+	public static final String APP_NAME = "mosip.registration.audit_application_name";
+	public static final String APP_ID = "mosip.registration.audit_application_id";
+	public static final String SUPERVISOR_AUTH_CONFIG = "mosip.registration.supervisor_authentication_configuration";
+	public static final String QUALITY_SCORE = "mosip.registration.quality_score";
+	public static final String CAPTURE_TIME_OUT = "mosip.registration.capture_time_out";
+	public static final String FINGER_PRINT_SCORE = "mosip.registration.finger_print_score";
+	public static final String INVALID_LOGIN_COUNT = "mosip.registration.invalid_login_count";
+	public static final String INVALID_LOGIN_TIME = "mosip.registration.invalid_login_time";
+	public static final String FACE_RECAPTURE_TIME = "mosip.registration.face_recapture_time";
+	public static final String NOTIFICATION_DISABLE_FLAG = "mosip.registration.send_notification_disable_flag";
+	public static final String MIN_AGE = "mosip.registration.age_limit_for_child";
+	public static final String MAX_AGE = "mosip.registration.max_age";
+	public static final String DOC_SIZE = "mosip.registration.document_size";
+	public static final String DOC_TYPE = "mosip.registration.document_scanner_doctype";
+	public static final String ACK_INSIDE_PACKET = "mosip.registration.save_ack_inside_packet";
+	public static final String PKT_STORE_LOC = "mosip.registration.registration_packet_store_location";
+	public static final String PKT_STORE_DATE_FORMAT = "mosip.registration.packet_store_date_format";
+	public static final String MODE_OF_COMM = "mosip.registration.mode_of_communication";
+	public static final String PWORD_LENGTH = "mosip.registration.username_pwd_length";
+	public static final String DOC_DISABLE_FLAG = "mosip.registration.document_disable_flag";
+	public static final String FINGERPRINT_DISABLE_FLAG = "mosip.registration.fingerprint_disable_flag";
+	public static final String IRIS_DISABLE_FLAG = "mosip.registration.iris_disable_flag";
+	public static final String FACE_DISABLE_FLAG = "mosip.registration.face_disable_flag";
+	public static final String GPS_SERIAL_PORT_WINDOWS = "mosip.registration.gps_serial_port_windows";
+	public static final String GPS_PORT_TIMEOUT = "mosip.registration.gps_port_timeout";
+	public static final String GPS_PORT_LINUX = "mosip.registration.gps_serial_port_linux";
+	public static final String DOC_SCAN_DPI = "mosip.registration.document_scanner_dpi";
+	public static final String DOC_SCAN_CONTRAST = "mosip.registration.document_scanner_contrast";
+	public static final String DOC_SCAN_BRIGHTNESS = "mosip.registration.document_scanner_brightness";
+	public static final String IDENTITY_CLASS_NAME = "mosip.registration.identity-class-name";
+	public static final String KEY_SPLITTER = "mosip.kernel.data-key-splitter";
+	public static final String ASYMMETRIC_ALG_NAME = "mosip.kernel.keygenerator.asymmetric-algorithm-name";
+	public static final String CBEFF_UNQ_TAG = "mosip.registration.cbeff_only_unique_tags";
+	public static final String REG_PKT_SIZE = "mosip.registration.max_reg_packet_size";
+	public static final String LOGS_PATH = "mosip.registration.logs_path";
+	public static final String DB_PATH = "mosip.registration.database_path";
+	public static final String CLIENT_PATH = "mosip.registration.client_path";
+	public static final String PRE_REG_DAYS_LIMIT = "mosip.registration.pre_reg_no_of_days_limit";
+	public static final String GPS_DEVICE_MODEL = "mosip.registration.gps_device_model";
+	public static final String GPS_DEVICE_DISABLE_FLAG = "mosip.registration.gps_device_enable_flag";
 	// Spring Batch-Jobs
 	public static final String JOB_TRIGGER_STARTED = "Trigger started";
 	public static final String JOB_TRIGGER_COMPLETED = "Trigger completed";
@@ -698,8 +738,6 @@ public class RegistrationConstants {
 	public static final String GPS_DEVICE_CONNECTION_FAILURE_ERRO_MSG = "GPS device not found. Please connect an on-boarded GPS device.";
 	public static final String GPS_REG_LGE‌_002 = "REG-LGE‌-002";
 	public static final String GPS_SERIAL_PORT = "COM4";
-	public static final String GPS_PORT_TIMEOUT = "1000";
-	public static final String GPS_DEVICE_MODEL = "BU343";
 	public static final String GPS_ERROR_CODE = "errorCode";
 	public static final String GPS_CAPTURING_EXCEPTION = "GPS_EXCEPTION";
 	public static final String GPS_SIGNAL = "$GP";
@@ -1017,9 +1055,8 @@ public class RegistrationConstants {
 	public static final String USER_STATION_ID = "stationId";
 	public static final String USER_CENTER_ID = "centerId";
 	public static final String USER_MACHINE_VALIDATION_CODE = "REG-URE‌-009";
-	public static final String USER_MACHINE_VALIDATION_MSG = "This computer is not mapped to the same Registration Centre as the dongle plugged in.";
 	public static final String USER_ONBOARD_DATA = "UserOnboardBiometricData";
-	public static final String USER_ON_BOARD_THRESHOLD_LIMIT = "USER_ON_BOARD_THRESHOLD_LIMIT";
+	public static final String USER_ON_BOARD_THRESHOLD_LIMIT = "mosip.registration.user_on_board_threshold_limit";
 
 	// Configuration Constants
 	public static final String AUDIT_LOG_DELETION_CONFIGURED_DAYS = "mosip.registration.AUDIT_LOG_DELETION_CONFIGURED_DAYS";

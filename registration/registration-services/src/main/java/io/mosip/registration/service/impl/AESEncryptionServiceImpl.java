@@ -1,5 +1,9 @@
 package io.mosip.registration.service.impl;
 
+import static io.mosip.registration.constants.LoggerConstants.LOG_PKT_AES_ENCRYPTION;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
+
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.Security;
@@ -7,7 +11,6 @@ import java.security.Security;
 import javax.crypto.SecretKey;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.crypto.spi.Encryptor;
@@ -22,15 +25,12 @@ import io.mosip.registration.constants.AuditEvent;
 import io.mosip.registration.constants.AuditReferenceIdTypes;
 import io.mosip.registration.constants.Components;
 import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.exception.RegistrationExceptionConstants;
 import io.mosip.registration.service.AESEncryptionService;
 import io.mosip.registration.service.RSAEncryptionService;
-
-import static io.mosip.registration.constants.LoggerConstants.LOG_PKT_AES_ENCRYPTION;
-import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
-import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
 /**
  * API class to encrypt the data using AES algorithm
@@ -58,9 +58,7 @@ public class AESEncryptionServiceImpl implements AESEncryptionService {
 	/** The key generator. */
 	@Autowired
 	private KeyGenerator keyGenerator;
-	@Value("${mosip.kernel.data-key-splitter:}")
-	private String keySplitter;
-
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -95,7 +93,7 @@ public class AESEncryptionServiceImpl implements AESEncryptionService {
 			auditFactory.audit(AuditEvent.PACKET_AES_ENCRYPTED, Components.PACKET_AES_ENCRYPTOR,
 					RegistrationConstants.APPLICATION_NAME, AuditReferenceIdTypes.APPLICATION_ID.getReferenceTypeId());
 
-			return CryptoUtil.combineByteArray(encryptedData, rsaEncryptedKey, keySplitter);
+			return CryptoUtil.combineByteArray(encryptedData, rsaEncryptedKey, String.valueOf(ApplicationContext.map().get(RegistrationConstants.KEY_SPLITTER)));
 		} catch (MosipInvalidDataException mosipInvalidDataException) {
 			throw new RegBaseCheckedException(RegistrationExceptionConstants.REG_INVALID_DATA_ERROR_CODE.getErrorCode(),
 					RegistrationExceptionConstants.REG_INVALID_DATA_ERROR_CODE.getErrorMessage());
