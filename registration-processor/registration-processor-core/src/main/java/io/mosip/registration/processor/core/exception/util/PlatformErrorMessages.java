@@ -457,7 +457,16 @@ public enum PlatformErrorMessages {
 
 	/** The rpr ugs packet store not accessible. */
 	RPR_UGS_PACKET_STORE_NOT_ACCESSIBLE(PlatformErrorConstants.RPR_UIN_GENERATOR_STAGE + "001",
-			"The Packet store set by the System is not accessible");
+			"The Packet store set by the System is not accessible"),
+	
+	RPR_PGS_FILE_NOT_PRESENT(PlatformErrorConstants.RPR_PACKET_GENERATOR_MODULE + "001",
+			"The Packet store set by the System is not accessible"),
+	RPR_PGS_INVALID_KEY_ILLEGAL_ARGUMENT(PlatformErrorConstants.RPR_PACKET_GENERATOR_MODULE + "002",
+			"The key is invalid or illegal argument"),
+	RPR_PGS_API_RESOURCE_NOT_AVAILABLE(PlatformErrorConstants.RPR_PACKET_GENERATOR_MODULE + "003",
+			"The Api resource is not available"),
+	RPR_PGS_REG_BASE_EXCEPTION(PlatformErrorConstants.RPR_PACKET_GENERATOR_MODULE + "004",
+			"reg Based checked exception");
 
 	/** The error message. */
 	private final String errorMessage;

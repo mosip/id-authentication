@@ -22,12 +22,20 @@ import org.springframework.util.LinkedMultiValueMap;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import io.mosip.kernel.core.exception.ExceptionUtils;
+import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.registration.processor.core.code.ApiName;
+import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
+import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
+import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
+import io.mosip.registration.processor.packet.exception.ApisresourceAccessException;
+import io.mosip.registration.processor.packet.exception.FileNotAccessibleException;
+import io.mosip.registration.processor.packet.exception.InvalidKeyNoArgJsonException;
+import io.mosip.registration.processor.packet.exception.RegbaseCheckedException;
 import io.mosip.registration.processor.packet.service.constants.RegistrationConstants;
-import io.mosip.registration.processor.packet.service.dto.PackerGeneratorFailureDto;
 import io.mosip.registration.processor.packet.service.dto.PackerGeneratorResDto;
 import io.mosip.registration.processor.packet.service.dto.PacketReceiverResponseDTO;
 import io.mosip.registration.processor.packet.service.dto.RegSyncResponseDTO;
@@ -43,6 +51,10 @@ import io.mosip.registration.processor.packet.upload.service.SyncUploadEncryptio
  */
 @Service
 public class SyncUploadEncryptionServiceImpl implements SyncUploadEncryptionService {
+	
+	/** The reg proc logger. */
+	private static Logger regProcLogger = RegProcessorLogger.getLogger(SyncUploadEncryptionServiceImpl.class);
+
 
 	/** The rest client service. */
 	@Autowired
@@ -72,7 +84,9 @@ public class SyncUploadEncryptionServiceImpl implements SyncUploadEncryptionServ
 		try {
 			decryptedFileStream = new FileInputStream(decryptedUinZipFile);
 
-			encryptedFilePath = encryptorUtil.encryptUinUpdatePacket(decryptedFileStream, registartionId, creationTime);
+
+			
+					encryptedFilePath = encryptorUtil.encryptUinUpdatePacket(decryptedFileStream, registartionId, creationTime);
 
 			RegSyncResponseDTO regSyncResponseDTO = packetSync(registartionId);
 			if (regSyncResponseDTO != null) {
@@ -110,21 +124,26 @@ public class SyncUploadEncryptionServiceImpl implements SyncUploadEncryptionServ
 			}
 
 		} catch (FileNotFoundException e) {
-			PackerGeneratorFailureDto dto = new PackerGeneratorFailureDto();
-			e.printStackTrace();
-			return dto;
+					regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
+					LoggerFileConstant.REGISTRATIONID.toString(),registartionId,
+					PlatformErrorMessages.RPR_PGS_FILE_NOT_PRESENT.getMessage()+ ExceptionUtils.getStackTrace(e));
+		    throw new FileNotAccessibleException(PlatformErrorMessages.RPR_PGS_FILE_NOT_PRESENT.getCode(),e);
+			
 		} catch (InvalidKeySpecException | NoSuchAlgorithmException | JSONException | IOException e) {
-			PackerGeneratorFailureDto dto = new PackerGeneratorFailureDto();
-			e.printStackTrace();
-			return dto;
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
+					LoggerFileConstant.REGISTRATIONID.toString(),registartionId,
+					PlatformErrorMessages.RPR_PGS_INVALID_KEY_ILLEGAL_ARGUMENT.getMessage()+ ExceptionUtils.getStackTrace(e));
+			throw new InvalidKeyNoArgJsonException(PlatformErrorMessages.RPR_PGS_INVALID_KEY_ILLEGAL_ARGUMENT.getCode());
 		} catch (ApisResourceAccessException e) {
-			PackerGeneratorFailureDto dto = new PackerGeneratorFailureDto();
-			e.printStackTrace();
-			return dto;
+					regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
+					LoggerFileConstant.REGISTRATIONID.toString(),registartionId,
+					PlatformErrorMessages.RPR_PGS_API_RESOURCE_NOT_AVAILABLE.getMessage()+ ExceptionUtils.getStackTrace(e));
+			throw new ApisresourceAccessException(PlatformErrorMessages.RPR_PGS_API_RESOURCE_NOT_AVAILABLE.getCode());
 		} catch (RegBaseCheckedException e) {
-			PackerGeneratorFailureDto dto = new PackerGeneratorFailureDto();
-			e.printStackTrace();
-			return dto;
+					regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
+					LoggerFileConstant.REGISTRATIONID.toString(),registartionId,
+					PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION.getMessage()+ ExceptionUtils.getStackTrace(e));
+			throw new RegbaseCheckedException(PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION.getCode());
 		} finally {
 
 		}

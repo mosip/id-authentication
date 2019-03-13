@@ -11,6 +11,10 @@ public final class PlatformErrorConstants {
 	 * RPR platform error codes.
 	 */
 	private static final String RPR_REGISTRATION_PROCESSOR_PREFIX = "RPR-";
+	
+	/** The constant RPR_PACKET_GENERATOR_MODULE. */
+	
+	public static final String RPR_PACKET_GENERATOR_MODULE =RPR_REGISTRATION_PROCESSOR_PREFIX + "PGS-";
 
 	/** The Constant RPR_PACKET_RECEIVER_MODULE. */
 	public static final String RPR_PACKET_RECEIVER_MODULE = RPR_REGISTRATION_PROCESSOR_PREFIX + "PKR-";
