@@ -9,6 +9,7 @@ import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.kernel.core.util.DateUtils;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class IdAuthFilter.
  *
@@ -17,10 +18,16 @@ import io.mosip.kernel.core.util.DateUtils;
 @Component
 public class IdAuthFilter extends BaseAuthFilter {
 	
+	/** The Constant POLICY_ID. */
+	private static final String POLICY_ID = "policyId";
+
+	/** The Constant ACTIVE_STATUS. */
 	private static final String ACTIVE_STATUS = "active";
 	
+	/** The Constant EXPIRY_DT. */
 	private static final String EXPIRY_DT = "expiryDt";
 	
+	/** The Constant STATUS. */
 	private static final String STATUS = "status";
 	
 	/** The Constant REQUEST. */
@@ -74,6 +81,13 @@ public class IdAuthFilter extends BaseAuthFilter {
 		return true;
 	}
 	
+	/**
+	 * License key MISP mapping is associated with this method.It checks for the license key expiry and staus.
+	 *
+	 * @param licenseKey the license key
+	 * @param mispId the misp id
+	 * @throws IdAuthenticationAppException the id authentication app exception
+	 */
 	private void licenseKeyMISPMapping(String licenseKey, String mispId) throws IdAuthenticationAppException {
 		String licensekeyMappingJson = env.getProperty("licensekey.mispmapping." + licenseKey + "." + mispId);
 		Map<String, String> licenseKeyMap = null;
@@ -97,6 +111,12 @@ public class IdAuthFilter extends BaseAuthFilter {
 
 	}
 
+	/**
+	 *this method checks whether  partner id is valid.
+	 *
+	 * @param partnerId the partner id
+	 * @throws IdAuthenticationAppException the id authentication app exception
+	 */
 	public void validPartnerId(String partnerId) throws IdAuthenticationAppException {
 		String partnerIdJson = env.getProperty("partner." + partnerId);
 		Map<String, String> partnerIdMap = null;
@@ -108,7 +128,7 @@ public class IdAuthFilter extends BaseAuthFilter {
 			} catch (IOException e) {
 				throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS);
 			}
-			 String policyId = partnerIdMap.get("policyId");
+			 String policyId = partnerIdMap.get(POLICY_ID);
 			 if(null==policyId || policyId.equalsIgnoreCase("")) {
 			  throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.PARTNER_NOT_REGISTERED);//FIXME
 			 } 
@@ -119,11 +139,30 @@ public class IdAuthFilter extends BaseAuthFilter {
 		}
 	}
 
-	public void validMISPPartnerMapping(String patnerId, String mispId) throws IdAuthenticationAppException {
-		boolean partnerPolicyMappingJson = env.getProperty("partner.policy." + patnerId + "." + mispId,boolean.class);
+	/**
+	 * Validates MISP partner mapping,if its valid it returns the policyId.
+	 *
+	 * @param partnerId the partner id
+	 * @param mispId the misp id
+	 * @return the string
+	 * @throws IdAuthenticationAppException the id authentication app exception
+	 */
+	public String validMISPPartnerMapping(String partnerId, String mispId) throws IdAuthenticationAppException {
+		boolean partnerPolicyMappingJson = env.getProperty("partner.policy." + partnerId + "." + mispId,boolean.class);
+		Map<String, String> partnerIdMap=null;
+		String  policyId=null;
 		if (partnerPolicyMappingJson != true) {
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.PARTNER_NOT_MAPPED);
 		}
+		String partnerIdJson = env.getProperty("misp.partner.mapping." + partnerId);
+		 try {
+			partnerIdMap = mapper.readValue(mapper.writeValueAsBytes(partnerIdJson), Map.class);
+			policyId=partnerIdMap.get(POLICY_ID);
+		} catch (IOException e) {
+			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS);
+		}
+		 return policyId;
 	}
+	
 	
 }
