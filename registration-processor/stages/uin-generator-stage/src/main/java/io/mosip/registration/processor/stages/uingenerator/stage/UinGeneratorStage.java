@@ -197,10 +197,11 @@ public class UinGeneratorStage extends MosipVerticleManager {
 			JSONParser parser = new JSONParser();
 			identityJson = (JSONObject) parser.parse(getJsonStringFromBytes);
 			demographicIdentity = (JSONObject) identityJson.get("identity");
-			long uinFieldCheck1 = (long) demographicIdentity.get("UIN");
-			String uinFieldCheck = Long.toString(uinFieldCheck1);
+			
+			 
+			Long uinFieldCheck = (Long) demographicIdentity.get("UIN");
 			boolean isUinCreate = false;
-			if (uinFieldCheck == null || uinFieldCheck.isEmpty()) {
+			if (uinFieldCheck == null) {
 				String test = (String) registrationProcessorRestClientService.getApi(ApiName.UINGENERATOR, null, "", "",
 						String.class);
 				Gson gsonObj = new Gson();
@@ -226,8 +227,6 @@ public class UinGeneratorStage extends MosipVerticleManager {
 				}
 
 			}
-
-
 			registrationStatusDto.setUpdatedBy(USER);
 			registrationStatusService.updateRegistrationStatus(registrationStatusDto);
 		} catch (FSAdapterException e) {
@@ -421,7 +420,7 @@ public class UinGeneratorStage extends MosipVerticleManager {
 	}
 
 
-	private IdResponseDTO reActivateUin(String regId,String uin) throws ApisResourceAccessException {
+	private IdResponseDTO reActivateUin(String regId,Long uin) throws ApisResourceAccessException {
 
 		IdResponseDTO result = getIdRepoDataByUIN(uin);
 
@@ -439,7 +438,7 @@ public class UinGeneratorStage extends MosipVerticleManager {
 
 				}else {
 
-					pathsegments.add(uin);
+					pathsegments.add(Long.toString(uin));
 					idRequestDTO.setId(idRepoUpdate);
 					idRequestDTO.setRegistrationId(regId);
 					idRequestDTO.setStatus(UIN_ACTIVATED);
@@ -495,13 +494,13 @@ public class UinGeneratorStage extends MosipVerticleManager {
 			}
 		} catch (ApisResourceAccessException e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					registrationId, PlatformErrorMessages.RPR_SYS_JSON_PARSING_EXCEPTION.getMessage() + e.getMessage()
+					regId, PlatformErrorMessages.RPR_SYS_JSON_PARSING_EXCEPTION.getMessage() + e.getMessage()
 					+ ExceptionUtils.getStackTrace(e));
 		}
 		return result;
 	}
 
-	private IdResponseDTO deactivateUin(String regId, String uin) {
+	private IdResponseDTO deactivateUin(String regId, Long uin) {
 		IdResponseDTO idResponseDto = new IdResponseDTO();
 		List<String> pathsegments = new ArrayList<>();
 
@@ -516,7 +515,7 @@ public class UinGeneratorStage extends MosipVerticleManager {
 				return idResponseDto;
 
 			} else {
-				pathsegments.add(uin);
+				pathsegments.add(Long.toString(uin));
 				idRequestDTO.setId(idRepoUpdate);
 				idRequestDTO.setRegistrationId(regId);
 				idRequestDTO.setStatus(UIN_DEACTIVATED);
@@ -559,11 +558,11 @@ public class UinGeneratorStage extends MosipVerticleManager {
 	}
 
 
-	private IdResponseDTO getIdRepoDataByUIN(String uin) throws ApisResourceAccessException{
+	private IdResponseDTO getIdRepoDataByUIN(Long uin) throws ApisResourceAccessException{
 		IdResponseDTO response  = new IdResponseDTO();
 
 		List<String> pathsegments = new ArrayList<>();
-		pathsegments.add(uin);
+		pathsegments.add(Long.toString(uin));
 		try {
 			response = (IdResponseDTO) registrationProcessorRestClientService.getApi(ApiName.IDREPOSITORY, pathsegments, "",
 					"", IdResponseDTO.class);
