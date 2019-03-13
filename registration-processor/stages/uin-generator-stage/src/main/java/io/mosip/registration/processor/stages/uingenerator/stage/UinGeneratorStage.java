@@ -442,7 +442,7 @@ public class UinGeneratorStage extends MosipVerticleManager {
 					idRequestDTO.setId(idRepoUpdate);
 					idRequestDTO.setRegistrationId(regId);
 					idRequestDTO.setStatus(UIN_ACTIVATED);
-					idRequestDTO.setTimestamp(DateUtils.formatToISOString(LocalDateTime.now()));
+					idRequestDTO.setTimestamp(DateUtils.getUTCCurrentDateTimeString());
 					idRequestDTO.setVersion(idRepoApiVersion);
 					Gson gson = new GsonBuilder().create();
 					String idReq = gson.toJson(idResponseDTO);
