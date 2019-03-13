@@ -27,12 +27,13 @@ import io.mosip.registration.service.sync.PacketSynchService;
 import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
 
 /**
+ * Class to handles all the operations when the machine is rempaped
  * 
  * @author balamurugan.ramamoorthy
  *
  */
 @Service
-public class CenterMachineReMapServiceImpl {
+public class CenterMachineReMapServiceImpl implements CenterMachineReMapService {
 
 	@Autowired
 	private GlobalParamDAO globalParamDAO;
@@ -54,16 +55,18 @@ public class CenterMachineReMapServiceImpl {
 
 	private static final Logger LOGGER = AppConfig.getLogger(CenterMachineReMapServiceImpl.class);
 
-	/**
-	 * Checks and handles all the operations to be done when the machine is re
-	 * mapped to another center
+	/*
+	 * (non-Javadoc)
 	 * 
+	 * @see io.mosip.registration.service.impl.CenterMachineReMapService#
+	 * handleReMapProcess()
 	 */
+	@Override
 	public void handleReMapProcess() {
 
 		Boolean isMachineReMapped = isMachineRemapped();
 		if (isMachineReMapped) {
-			LOGGER.info("REGISTRATION CENTER MACHINE REMAP : ", APPLICATION_NAME, APPLICATION_ID, 
+			LOGGER.info("REGISTRATION CENTER MACHINE REMAP : ", APPLICATION_NAME, APPLICATION_ID,
 					"handleReMapProcess called and machine has been remaped");
 
 			/* (TODO-has to check whether to delete or disable) 1.disable all sync jobs */
@@ -94,30 +97,30 @@ public class CenterMachineReMapServiceImpl {
 			/* 4.deletions of packets */
 			packetStatusService.deletePacketsWhenMachineRemapped();
 
-			/* TODO - call this directly from ui */
-			isPacketsPendingForEOD();
-
 		}
 
 	}
 
-	/**
-	 * checks if there is any Registration packets are not yet been processed by the
-	 * Reg processor
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @return boolean
+	 * @see io.mosip.registration.service.impl.CenterMachineReMapService#
+	 * isPacketsPendingForProcessing()
 	 */
+	@Override
 	public boolean isPacketsPendingForProcessing() {
 		List<Registration> registrations = registrationDAO
 				.findByServerStatusCodeNotIn(RegistrationConstants.PACKET_STATUS_CODES_FOR_REMAPDELETE);
 		return isNotNullNotEmpty(registrations);
 	}
 
-	/**
-	 * Checks if there is any Reg packets are pending for EOD Approval
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @return boolean
+	 * @see io.mosip.registration.service.impl.CenterMachineReMapService#
+	 * isPacketsPendingForEOD()
 	 */
+	@Override
 	public boolean isPacketsPendingForEOD() {
 		List<Registration> newRegistrations = registrationDAO
 				.getEnrollmentByStatus(RegistrationClientStatusCode.CREATED.getCode());
@@ -138,11 +141,13 @@ public class CenterMachineReMapServiceImpl {
 		}
 	}
 
-	/**
-	 * checks if the Machine has been re mapped to some other center
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @return
+	 * @see io.mosip.registration.service.impl.CenterMachineReMapService#
+	 * isMachineRemapped()
 	 */
+	@Override
 	public Boolean isMachineRemapped() {
 		GlobalParam globalParam = globalParamDAO.get(RegistrationConstants.MACHINE_CENTER_REMAP_FLAG);
 		return globalParam != null ? Boolean.valueOf(globalParam.getVal()) : false;

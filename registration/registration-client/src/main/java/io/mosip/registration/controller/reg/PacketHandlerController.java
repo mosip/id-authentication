@@ -197,6 +197,12 @@ public class PacketHandlerController extends BaseController implements Initializ
 	 * acknowledgement form
 	 */
 	public void createPacket() {
+		if (isMachineRemapProcessStarted()) {
+
+			LOGGER.info("REGISTRATION - CREATE_PACKET - REGISTRATION_OFFICER_PACKET_CONTROLLER", APPLICATION_NAME,
+					APPLICATION_ID, RegistrationConstants.MACHINE_CENTER_REMAP_MSG);
+			return;
+		}
 		if (isKeyValid()) {
 			LOGGER.info(PACKET_HANDLER, APPLICATION_NAME, APPLICATION_ID, "Creating of Registration Starting.");
 			try {
@@ -212,7 +218,7 @@ public class PacketHandlerController extends BaseController implements Initializ
 				if (!validateScreenAuthorization(createRoot.getId())) {
 					generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.AUTHORIZATION_ERROR);
 				} else {
-					StringBuilder errorMessage = new StringBuilder();
+					StringBuilder errorMessage = new StringBuilder();		
 					ResponseDTO responseDTO;
 					responseDTO = validateSyncStatus();
 					List<ErrorResponseDTO> errorResponseDTOs = responseDTO.getErrorResponseDTOs();
@@ -292,7 +298,16 @@ public class PacketHandlerController extends BaseController implements Initializ
 	 * Validating screen authorization and Approve, Reject and Hold packets
 	 */
 	public void approvePacket() {
+		if (isMachineRemapProcessStarted()) {
 
+			LOGGER.info("REGISTRATION - UPLOAD_PACKET - REGISTRATION_OFFICER_PACKET_CONTROLLER", APPLICATION_NAME,
+					APPLICATION_ID, RegistrationConstants.MACHINE_CENTER_REMAP_MSG);
+			/*
+			 * check if there is no pending packets and blocks the user to proceed further
+			 */
+			if (!isPacketsPendingForEOD())
+				return;
+		}
 		LOGGER.info(PACKET_HANDLER, APPLICATION_NAME, APPLICATION_ID, "Loading Pending Approval screen started.");
 		try {
 			auditFactory.audit(AuditEvent.NAV_APPROVE_REG, Components.NAVIGATION,
@@ -327,6 +342,12 @@ public class PacketHandlerController extends BaseController implements Initializ
 	 */
 	public void uploadPacket() {
 
+		if (isMachineRemapProcessStarted()) {
+
+			LOGGER.info("REGISTRATION - UPLOAD_PACKET - REGISTRATION_OFFICER_PACKET_CONTROLLER",
+					APPLICATION_NAME, APPLICATION_ID, RegistrationConstants.MACHINE_CENTER_REMAP_MSG);
+			return;
+		}
 		LOGGER.info(PACKET_HANDLER, APPLICATION_NAME, APPLICATION_ID, "Loading Packet Upload screen started.");
 		try {
 			auditFactory.audit(AuditEvent.NAV_UPLOAD_PACKETS, Components.NAVIGATION,
@@ -356,6 +377,12 @@ public class PacketHandlerController extends BaseController implements Initializ
 	}
 
 	public void updateUIN() {
+		if (isMachineRemapProcessStarted()) {
+
+			LOGGER.info("REGISTRATION - update UIN - REGISTRATION_OFFICER_PACKET_CONTROLLER", APPLICATION_NAME,
+					APPLICATION_ID, RegistrationConstants.MACHINE_CENTER_REMAP_MSG);
+			return;
+		}
 		if (isKeyValid()) {
 
 			LOGGER.info(PACKET_HANDLER, APPLICATION_NAME, APPLICATION_ID, "Loading Update UIN screen started.");
@@ -408,7 +435,12 @@ public class PacketHandlerController extends BaseController implements Initializ
 	 *            the event
 	 */
 	public void syncData() {
+		if (isMachineRemapProcessStarted()) {
 
+			LOGGER.info("REGISTRATION - SYNC_DATA - REGISTRATION_OFFICER_PACKET_CONTROLLER",
+					APPLICATION_NAME, APPLICATION_ID, RegistrationConstants.MACHINE_CENTER_REMAP_MSG);
+			return;
+		}
 		LOGGER.info(PACKET_HANDLER, APPLICATION_NAME, APPLICATION_ID, "Loading Sync Data screen started.");
 		AnchorPane syncData;
 		try {
@@ -437,6 +469,11 @@ public class PacketHandlerController extends BaseController implements Initializ
 	@FXML
 	public void downloadPreRegData() {
 
+		if (isMachineRemapProcessStarted()) {
+			LOGGER.info(PACKET_HANDLER, APPLICATION_NAME, APPLICATION_ID,
+					RegistrationConstants.MACHINE_CENTER_REMAP_MSG);
+			return;
+		}
 		auditFactory.audit(AuditEvent.NAV_DOWNLOAD_PRE_REG_DATA, Components.NAVIGATION,
 				SessionContext.userContext().getUserId(), AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
 
@@ -467,6 +504,12 @@ public class PacketHandlerController extends BaseController implements Initializ
 	 */
 	public void onBoardUser() {
 
+		if (isMachineRemapProcessStarted()) {
+
+			LOGGER.info("REGISTRATION - ONBOARD_USER_UPDATE - REGISTRATION_OFFICER_PACKET_CONTROLLER", APPLICATION_NAME,
+					APPLICATION_ID, RegistrationConstants.MACHINE_CENTER_REMAP_MSG);
+			return;
+		}
 		auditFactory.audit(AuditEvent.NAV_ON_BOARD_USER, Components.NAVIGATION, APPLICATION_NAME,
 				AuditReferenceIdTypes.APPLICATION_ID.getReferenceTypeId());
 
@@ -580,6 +623,13 @@ public class PacketHandlerController extends BaseController implements Initializ
 	 * Load re registration screen.
 	 */
 	public void loadReRegistrationScreen() {
+		
+		if (isMachineRemapProcessStarted()) {
+
+			LOGGER.info("REGISTRATION - LOAD_REREGISTRATION_SCREEN - REGISTRATION_OFFICER_PACKET_CONTROLLER",
+					APPLICATION_NAME, APPLICATION_ID, RegistrationConstants.MACHINE_CENTER_REMAP_MSG);
+			return;
+		}
 		LOGGER.info(PACKET_HANDLER, APPLICATION_NAME, APPLICATION_ID, "Loading re-registration screen sarted.");
 		try {
 			auditFactory.audit(AuditEvent.NAV_RE_REGISTRATION, Components.NAVIGATION,
