@@ -1,5 +1,7 @@
 package io.mosip.authentication.core.dto.indauth;
 
+import java.util.List;
+
 import lombok.Data;
 
 /**
@@ -23,5 +25,8 @@ public class RequestDTO {
 
 	/** variable to hold identity value */
 	private IdentityDTO demographics;
+	
+	/** List of biometric identity info */
+	private List<BioIdentityInfoDTO> biometrics;
 
 }

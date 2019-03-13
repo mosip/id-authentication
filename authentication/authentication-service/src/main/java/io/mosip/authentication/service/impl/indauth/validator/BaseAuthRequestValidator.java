@@ -340,12 +340,17 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	 */
 	private void validateFinger(AuthRequestDTO authRequestDTO, List<BioInfo> bioInfo, Errors errors) {
 		if ((isAvailableBioType(bioInfo, BioAuthType.FGR_MIN)
-				&& isDuplicateBioType(authRequestDTO, BioAuthType.FGR_MIN))
-				|| (isAvailableBioType(bioInfo, BioAuthType.FGR_IMG)
-						&& isDuplicateBioType(authRequestDTO, BioAuthType.FGR_IMG))) {
-			checkAtleastOneFingerRequestAvailable(authRequestDTO, errors);
+				&& isDuplicateBioType(authRequestDTO, BioAuthType.FGR_MIN))) {
+			checkAtleastOneFingerRequestAvailable(authRequestDTO, errors,BioAuthType.FGR_MIN.getType());
 			if (!errors.hasErrors()) {
-				validateFingerRequestCount(authRequestDTO, errors);
+				validateFingerRequestCount(authRequestDTO, errors,BioAuthType.FGR_MIN.getType());
+			}
+		}
+		if( (isAvailableBioType(bioInfo, BioAuthType.FGR_IMG)
+				&& isDuplicateBioType(authRequestDTO, BioAuthType.FGR_IMG))) {
+			checkAtleastOneFingerRequestAvailable(authRequestDTO, errors,BioAuthType.FGR_IMG.getType());
+			if (!errors.hasErrors()) {
+				validateFingerRequestCount(authRequestDTO, errors,BioAuthType.FGR_IMG.getType());
 			}
 		}
 	}
@@ -403,7 +408,7 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 
 	private List<BioIdentityInfoDTO> getBioIds(AuthRequestDTO authRequestDTO, String type) {
 		List<BioIdentityInfoDTO> identity = Optional.ofNullable(authRequestDTO.getRequest())
-				.map(RequestDTO::getDemographics).map(IdentityDTO::getBiometrics).orElseGet(Collections::emptyList);
+				.map(RequestDTO::getBiometrics).orElseGet(Collections::emptyList);
 		if (!identity.isEmpty()) {
 			List<BioIdentityInfoDTO> idendityInfoList = identity.stream().filter(Objects::nonNull)
 					.filter(bioId -> bioId.getType().equalsIgnoreCase(type)).collect(Collectors.toList());
@@ -434,9 +439,9 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	 * @param authRequestDTO the auth request DTO
 	 * @param errors         the errors
 	 */
-	private void checkAtleastOneFingerRequestAvailable(AuthRequestDTO authRequestDTO, Errors errors) {
-		//FIXME add check for FGR_IMG also
-		boolean isAtleastOneFingerRequestAvailable = checkAnyBioIdAvailable(authRequestDTO, BioAuthType.FGR_MIN.getType());
+	private void checkAtleastOneFingerRequestAvailable(AuthRequestDTO authRequestDTO, Errors errors,String bioAuthType) {
+	
+		boolean isAtleastOneFingerRequestAvailable = checkAnyBioIdAvailable(authRequestDTO, bioAuthType);
 		if (!isAtleastOneFingerRequestAvailable) {
 			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE, "finger request is not available");
 			errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
@@ -446,8 +451,7 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	}
 
 	private boolean checkAnyBioIdAvailable(AuthRequestDTO authRequestDTO, String type) {
-		return Optional.ofNullable(authRequestDTO.getRequest()).map(RequestDTO::getDemographics)
-				.map(IdentityDTO::getBiometrics)
+		return Optional.ofNullable(authRequestDTO.getRequest()).map(RequestDTO::getBiometrics)
 				.filter(list -> list.stream().anyMatch(bioId -> bioId.getType().equalsIgnoreCase(type))).isPresent();
 	}
 
@@ -537,10 +541,10 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	 * @param authRequestDTO the auth request DTO
 	 * @param errors         the errors
 	 */
-	private void validateFingerRequestCount(AuthRequestDTO authRequestDTO, Errors errors) {
-		Map<String, Long> fingerSubtypesCountsMap = getBioSubtypeCounts(authRequestDTO, "FINGER");
+	private void validateFingerRequestCount(AuthRequestDTO authRequestDTO, Errors errors,String bioType) {
+		Map<String, Long> fingerSubtypesCountsMap = getBioSubtypeCounts(authRequestDTO, bioType);
 		boolean anyInfoIsMoreThanOne = hasDuplicate(fingerSubtypesCountsMap);
-		Map<String, Long> fingerValuesCountsMap = getBioValueCounts(authRequestDTO, "FINGER");
+		Map<String, Long> fingerValuesCountsMap = getBioValueCounts(authRequestDTO,bioType);
 		boolean anyValueIsMoreThanOne = hasDuplicate(fingerValuesCountsMap);
 
 		if (anyInfoIsMoreThanOne || anyValueIsMoreThanOne) {
@@ -605,7 +609,7 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 				for (MatchType matchType : associatedMatchTypes) {
 					if (isMatchtypeEnabled(matchType)) {
 						List<IdentityInfoDTO> identityInfos = matchType
-								.getIdentityInfoList(authRequest.getRequest().getDemographics());
+								.getIdentityInfoList(authRequest.getRequest());
 						if (identityInfos != null && !identityInfos.isEmpty()) {
 							availableAuthTypeInfos.add(authType.getType());
 							hasMatch = true;
@@ -719,7 +723,7 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	 */
 	private void checkGender(AuthRequestDTO authRequest, Errors errors) {
 		List<IdentityInfoDTO> genderList = DemoMatchType.GENDER
-				.getIdentityInfoList(authRequest.getRequest().getDemographics());
+				.getIdentityInfoList(authRequest.getRequest());
 		if (genderList != null && !genderList.isEmpty()) {
 			Map<String, List<String>> fetchGenderType = null;
 			try {
@@ -761,7 +765,7 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	 */
 	private void checkDOBType(AuthRequestDTO authRequest, Errors errors) {
 		List<IdentityInfoDTO> dobTypeList = DemoMatchType.DOBTYPE
-				.getIdentityInfoList(authRequest.getRequest().getDemographics());
+				.getIdentityInfoList(authRequest.getRequest());
 		if (dobTypeList != null) {
 			for (IdentityInfoDTO identityInfoDTO : dobTypeList) {
 				if (!DOBType.isTypePresent(identityInfoDTO.getValue())) {
@@ -784,7 +788,7 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	 */
 	private void checkAge(AuthRequestDTO authRequest, Errors errors) {
 		List<IdentityInfoDTO> ageList = DemoMatchType.AGE
-				.getIdentityInfoList(authRequest.getRequest().getDemographics());
+				.getIdentityInfoList(authRequest.getRequest());
 		if (ageList != null) {
 			for (IdentityInfoDTO identityInfoDTO : ageList) {
 				try {
@@ -808,7 +812,7 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	 */
 	private void checkDOB(AuthRequestDTO authRequest, Errors errors) {
 		List<IdentityInfoDTO> dobList = DemoMatchType.DOB
-				.getIdentityInfoList(authRequest.getRequest().getDemographics());
+				.getIdentityInfoList(authRequest.getRequest());
 		if (dobList != null) {
 			for (IdentityInfoDTO identityInfoDTO : dobList) {
 				try {
@@ -908,7 +912,7 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	private void validateEmail(AuthRequestDTO authRequest, Errors errors) {
 		try {
 			List<IdentityInfoDTO> emailId = DemoMatchType.EMAIL
-					.getIdentityInfoList(authRequest.getRequest().getDemographics());
+					.getIdentityInfoList(authRequest.getRequest());
 			if (emailId != null) {
 				for (IdentityInfoDTO email : emailId) {
 					emailValidatorImpl.validateEmail(email.getValue());
@@ -932,7 +936,7 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	private void validatePhone(AuthRequestDTO authRequest, Errors errors) {
 		try {
 			List<IdentityInfoDTO> phoneNumber = DemoMatchType.PHONE
-					.getIdentityInfoList(authRequest.getRequest().getDemographics());
+					.getIdentityInfoList(authRequest.getRequest());
 			if (phoneNumber != null) {
 				for (IdentityInfoDTO phone : phoneNumber) {
 					phoneValidatorImpl.validatePhone(phone.getValue());

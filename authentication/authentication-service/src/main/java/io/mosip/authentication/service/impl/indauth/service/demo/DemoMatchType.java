@@ -20,6 +20,7 @@ import io.mosip.authentication.core.dto.indauth.AuthUsageDataBit;
 import io.mosip.authentication.core.dto.indauth.IdentityDTO;
 import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
 import io.mosip.authentication.core.dto.indauth.LanguageType;
+import io.mosip.authentication.core.dto.indauth.RequestDTO;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.indauth.match.IdMapping;
 import io.mosip.authentication.core.spi.indauth.match.MatchType;
@@ -142,7 +143,7 @@ public enum DemoMatchType implements MatchType {
 	private LanguageType langType;
 
 	/**  */
-	private Function<IdentityDTO, Map<String, List<IdentityInfoDTO>>> identityInfoFunction;
+	private Function<RequestDTO, Map<String, List<IdentityInfoDTO>>> identityInfoFunction;
 
 	/**  */
 	private IdMapping idMapping;
@@ -165,9 +166,9 @@ public enum DemoMatchType implements MatchType {
 			AuthUsageDataBit usedBit, AuthUsageDataBit matchedBit, boolean multiLanguage,
 			Function<Map<String, String>, Map<String, String>> entityInfoFetcher) {
 		this.idMapping = idMapping;
-		this.identityInfoFunction = (IdentityDTO identityDTO) -> {
+		this.identityInfoFunction = (RequestDTO identityDTO) -> {
 			Map<String, List<IdentityInfoDTO>> map = new HashMap<>();
-			map.put(idMapping.getIdname(), identityInfoFunction.apply(identityDTO));
+			map.put(idMapping.getIdname(), identityInfoFunction.apply(identityDTO.getDemographics()));
 			return map;
 		};
 		this.allowedMatchingStrategy = Collections.unmodifiableSet(allowedMatchingStrategy);
@@ -281,7 +282,7 @@ public enum DemoMatchType implements MatchType {
 	 * getIdentityInfoFunction()
 	 */
 	@Override
-	public Function<IdentityDTO, Map<String, List<IdentityInfoDTO>>> getIdentityInfoFunction() {
+	public Function<RequestDTO, Map<String, List<IdentityInfoDTO>>> getIdentityInfoFunction() {
 		return identityInfoFunction;
 	}
 
