@@ -19,6 +19,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.TimeZone;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import javax.servlet.Filter;
@@ -57,6 +58,10 @@ import io.mosip.kernel.core.util.DateUtils;
  */
 public abstract class BaseIDAFilter implements Filter {
 
+	/** The Constant ID. */
+	private static final String ID = "id";
+
+	/** The Constant VERSION. */
 	private static final String VERSION = "version";
 
 	/** The Constant VER_REX. */
@@ -303,21 +308,34 @@ public abstract class BaseIDAFilter implements Filter {
 			if ((Objects.nonNull(url) && !url.isEmpty()) && (Objects.nonNull(contextPath) && !contextPath.isEmpty())) {
 				String[] splitedUrlByContext = url.split(contextPath);
 				id = "mosip.ida.api.ids." + splitedUrlByContext[1].split("/")[1];
-				if (requestBody != null && !requestBody.isEmpty() && requestBody.containsKey("id")) {
-					String idFromRequest = (String) requestBody.get("id");
+				String verFromUrl = splitedUrlByContext[1].split("/")[2];
+				String verFromRequest = (String) requestBody.get(VERSION);
+				if (requestBody != null && !requestBody.isEmpty() && requestBody.containsKey(ID)) {
+					String idFromRequest = (String) requestBody.get(ID);
 					if (!env.getProperty(id).equals(idFromRequest)) {
-						mosipLogger.error(SESSION_ID, EVENT_FILTER, BASE_IDA_FILTER,
-								IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
-						IdAuthenticationAppException idAuthenticationAppException = new IdAuthenticationAppException(
-								IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
-								String.format(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(),
-										"id"));
-						throw idAuthenticationAppException;
+						exceptionhandling(ID);
+					}
+					String versionRegex = "\\d\\.\\d(\\.\\d)?";
+					Pattern versionPattern = Pattern.compile(versionRegex);
+					if (!versionPattern.matcher(verFromRequest).matches()) {
+						exceptionhandling(VERSION);
+					} else if (!verFromRequest.equals(verFromUrl)) {
+							exceptionhandling(VERSION);
+						}
 					}
 				}
 			}
 		}
 
+	
+
+	private void exceptionhandling(String type) throws IdAuthenticationAppException {
+		mosipLogger.error(SESSION_ID, EVENT_FILTER, BASE_IDA_FILTER,
+				IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
+		IdAuthenticationAppException idAuthenticationAppException = new IdAuthenticationAppException(
+				IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+				String.format(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), type));
+		throw idAuthenticationAppException;
 	}
 
 	/**
@@ -362,10 +380,7 @@ public abstract class BaseIDAFilter implements Filter {
 
 			if ((Objects.nonNull(url) && !url.isEmpty()) && (Objects.nonNull(contextPath) && !contextPath.isEmpty())) {
 				String[] splitedUrlByContext = url.split(contextPath);
-				ver = Arrays.stream(splitedUrlByContext[1].split("/"))
-						.filter(s -> !s.isEmpty())
-						.skip(1)
-						.findFirst()
+				ver = Arrays.stream(splitedUrlByContext[1].split("/")).filter(s -> !s.isEmpty()).skip(1).findFirst()
 						.orElse(DEFAULT_VERSION).replaceAll(VER_REX, "");
 			}
 		}
