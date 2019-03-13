@@ -35,7 +35,6 @@ public class OtpProvider {
 	 * @return the string OTP.
 	 */
 	public String computeOtp(String key, int otpLength, String macAlgorithm) {
-
 		try {
 			PasscodeGenerator pcg = new PasscodeGenerator(getSigning(key, macAlgorithm), otpLength);
 
