@@ -66,7 +66,7 @@ mosip.kernel.crypto.symmetric-algorithm-name=AES
 
 ** Database Properties **
 
-Schema : ids
+Schema : ida
 
 Table : vid
 
