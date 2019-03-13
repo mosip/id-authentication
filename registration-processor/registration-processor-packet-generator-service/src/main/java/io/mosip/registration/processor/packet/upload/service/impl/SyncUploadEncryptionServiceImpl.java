@@ -39,6 +39,7 @@ import io.mosip.registration.processor.packet.service.dto.RegistrationSyncReques
 import io.mosip.registration.processor.packet.service.dto.SyncRegistrationDTO;
 import io.mosip.registration.processor.packet.service.dto.SyncResponseDto;
 import io.mosip.registration.processor.packet.service.exception.RegBaseCheckedException;
+import io.mosip.registration.processor.packet.service.exception.RegBaseUncheckedException;
 import io.mosip.registration.processor.packet.service.util.encryptor.EncryptorUtil;
 import io.mosip.registration.processor.packet.upload.service.SyncUploadEncryptionService;
 
@@ -136,11 +137,10 @@ public class SyncUploadEncryptionServiceImpl implements SyncUploadEncryptionServ
 			// throw new
 			// ApisresourceAccessException(PlatformErrorMessages.RPR_PGS_API_RESOURCE_NOT_AVAILABLE.getCode());
 		} catch (RegBaseCheckedException e) {
-			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					registartionId,
-					PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION.getMessage() + ExceptionUtils.getStackTrace(e));
-			// throw new
-			// RegbaseCheckedException(PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION.getCode());
+					regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
+					LoggerFileConstant.REGISTRATIONID.toString(),registartionId,
+					PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION.getMessage()+ ExceptionUtils.getStackTrace(e));
+			throw new RegBaseUncheckedException(PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION.getCode(),PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION.getMessage());
 		} finally {
 
 		}
