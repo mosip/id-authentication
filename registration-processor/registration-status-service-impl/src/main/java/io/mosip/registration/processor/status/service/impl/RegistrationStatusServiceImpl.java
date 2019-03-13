@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Component;
 
+import com.itextpdf.text.log.SysoCounter;
+
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.registration.processor.core.code.ApiName;
@@ -278,6 +280,7 @@ public class RegistrationStatusServiceImpl
 				"", "RegistrationStatusServiceImpl::getByIds()::entry");
 		try {
 			List<String> registrationIds =new ArrayList<>();
+
 			for (RegistrationStatusSubRequestDto registrationStatusSubRequestDto : requestIds) {
 				registrationIds.add(registrationStatusSubRequestDto.getRegistrationId());
 			}
