@@ -117,8 +117,8 @@ public class OTPServiceImpl implements OTPService {
 
 		if (!checkIsEmptyorNull(email) && otpRequestDto.getOtpChannel().isEmail()) {
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.PHONE_EMAIL_NOT_REGISTERED);
-		} 
-		
+		}
+
 		if (!checkIsEmptyorNull(mobileNumber) && otpRequestDto.getOtpChannel().isPhone()) {
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.PHONE_EMAIL_NOT_REGISTERED);
 		}
@@ -335,8 +335,8 @@ public class OTPServiceImpl implements OTPService {
 			if (otp == null || otp.trim().isEmpty()) {
 				mosipLogger.error(SESSION_ID, this.getClass().getName(), " generateOtp", " generated OTP is: " + otp);
 				throw new IdAuthenticationBusinessException(
-						IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
-						String.format(IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(), "OTP"));
+						IdAuthenticationErrorConstants.OTP_GENERATION_FAILED.getErrorCode(),
+						String.format(IdAuthenticationErrorConstants.OTP_GENERATION_FAILED.getErrorMessage()));
 			}
 
 			mosipLogger.info(SESSION_ID, this.getClass().getName(), " generateOtp", " generated OTP is: " + otp);

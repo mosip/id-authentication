@@ -184,9 +184,9 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 			if (!pinOpt.isPresent()) {
 				mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE,
 						"Missing pinval in the request");
-				errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
+				errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.MISSING_AUTHTYPE.getErrorCode(),
 						new Object[] { REQUEST_ADDITIONAL_FACTORS_STATIC_PIN },
-						IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
+						IdAuthenticationErrorConstants.MISSING_AUTHTYPE.getErrorMessage());
 			} else {
 				checkAdditionalFactorsValue(pinOpt, PIN_VALUE, errors);
 			}
@@ -444,8 +444,8 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 		boolean isAtleastOneFingerRequestAvailable = checkAnyBioIdAvailable(authRequestDTO, bioAuthType);
 		if (!isAtleastOneFingerRequestAvailable) {
 			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE, "finger request is not available");
-			errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
-					new Object[] { FINGER }, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
+			errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.MISSING_AUTHTYPE.getErrorCode(),
+					new Object[] { FINGER }, IdAuthenticationErrorConstants.MISSING_AUTHTYPE.getErrorMessage());
 		}
 
 	}
@@ -465,8 +465,8 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 		boolean isIrisRequestAvailable = checkAnyBioIdAvailable(authRequestDTO, "IRIS");
 		if (!isIrisRequestAvailable) {
 			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE, "iris request is not available");
-			errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
-					new Object[] { IRIS }, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
+			errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.MISSING_AUTHTYPE.getErrorCode(),
+					new Object[] { IRIS }, IdAuthenticationErrorConstants.MISSING_AUTHTYPE.getErrorMessage());
 		}
 	}
 
@@ -480,8 +480,8 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 		boolean isFaceRequestAvailable = checkAnyBioIdAvailable(authRequestDTO, "FACE");
 		if (!isFaceRequestAvailable) {
 			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE, "face request is not available");
-			errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
-					new Object[] { FACE }, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
+			errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.MISSING_AUTHTYPE.getErrorCode(),
+					new Object[] { FACE }, IdAuthenticationErrorConstants.MISSING_AUTHTYPE.getErrorMessage());
 		}
 	}
 
@@ -880,9 +880,8 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 			if (!otp.isPresent()) {
 				mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE_CHECK_OTP_AUTH,
 						"INVALID_OTP - pinType is not OTP");
-				errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
-						new Object[] { "OTP" },
-						IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
+				errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.MISSING_AUTHTYPE.getErrorCode(),
+						new Object[] { "OTP" }, IdAuthenticationErrorConstants.MISSING_AUTHTYPE.getErrorMessage());
 			} else if (OTP_LENGTH != otp.orElse("").length()) {
 				mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE_CHECK_OTP_AUTH,
 						"INVALID_OTP - pinType is not OTP");

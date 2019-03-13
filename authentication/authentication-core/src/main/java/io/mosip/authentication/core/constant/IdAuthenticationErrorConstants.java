@@ -25,8 +25,8 @@ public enum IdAuthenticationErrorConstants {
 	EXPIRED_OTP("IDA-OTA-005", "OTP has expired", "A0107"),
 	INVALID_OTP("IDA-OTA-006", "OTP is invalid", "A0108"),
 	INVALID_TXN_ID("IDA-OTA-007", "Input transactionID does not match transactionID of OTP Request"),
-	UIN_LOCKED("IDA-OTA-008", "UIN is locked for OTP generation. Please try again later"),
-	BLOCKED_OTP_TO_GENERATE("IDA-OTA-009", "UIN is locked for OTP validation due to exceeding no of invalid OTP trials"),
+	BLOCKED_OTP_GENERATE("IDA-OTA-008", "UIN is locked for OTP generation. Please try again later"),
+	BLOCKED_OTP_VALIDATE("IDA-OTA-009", "UIN is locked for OTP validation due to exceeding no of invalid OTP trials"),
 
 	MISSING_INPUT_PARAMETER("IDA-MLC-006", "Missing Input Parameter - %s"),
 	UNABLE_TO_PROCESS("IDA-MLC-007", "Request could not be processed. Please try again"),
