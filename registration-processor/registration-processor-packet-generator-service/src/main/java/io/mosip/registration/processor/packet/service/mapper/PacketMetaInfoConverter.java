@@ -38,14 +38,6 @@ public class PacketMetaInfoConverter extends CustomConverter<RegistrationDTO, Pa
 			// Initialize PacketMetaInfo object
 			Identity identity = new Identity();
 			packetMetaInfo.setIdentity(identity);
-			// List<BiometricException> exceptionBiometrics = new LinkedList<>();
-			// identity.setExceptionBiometrics(exceptionBiometrics);
-			// Biometric biometric = new Biometric();
-			// identity.setBiometric(biometric);
-			// Applicant applicant = new Applicant();
-			// biometric.setApplicant(applicant);
-			// Introducer introducer = new Introducer();
-			// biometric.setIntroducer(introducer);
 
 			// Set MetaData
 			identity.setMetaData(getMetaData(source));
@@ -76,9 +68,7 @@ public class PacketMetaInfoConverter extends CustomConverter<RegistrationDTO, Pa
 		metaData.add(buildFieldValue("registrationType", metaDataDTO.getRegistrationCategory()));
 		// Add Applicant Type
 		metaData.add(buildFieldValue("applicantType", metaDataDTO.getApplicationType()));
-		// Add Pre-Registration ID
-		// metaData.add(buildFieldValue("preRegistrationId",
-		// registrationDTO.getPreRegistrationId()));
+
 		// Add Registration ID
 		metaData.add(buildFieldValue("registrationId", registrationDTO.getRegistrationId()));
 
@@ -95,29 +85,6 @@ public class PacketMetaInfoConverter extends CustomConverter<RegistrationDTO, Pa
 		fieldValue.setLabel(label);
 		fieldValue.setValue(value);
 		return fieldValue;
-	}
-
-	private boolean checkNull(List<?> list) {
-		boolean isNull = false;
-		if (list == null || list.isEmpty()) {
-			isNull = true;
-		}
-		return isNull;
-	}
-
-	private Object getObjectAt(List<?> list, int index) {
-		Object object = null;
-		if (!checkNull(list) && (index < list.size())) {
-			object = list.get(index);
-		}
-		return object;
-	}
-
-	private String removeFileExt(String fileName) {
-		if (fileName.contains(".")) {
-			fileName = fileName.substring(0, fileName.lastIndexOf('.'));
-		}
-		return fileName;
 	}
 
 }

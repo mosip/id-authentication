@@ -19,13 +19,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
+import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.jsonvalidator.exception.FileIOException;
 import io.mosip.kernel.core.jsonvalidator.exception.JsonIOException;
 import io.mosip.kernel.core.jsonvalidator.exception.JsonSchemaIOException;
 import io.mosip.kernel.core.jsonvalidator.exception.JsonValidationProcessingException;
 import io.mosip.kernel.core.jsonvalidator.spi.JsonValidator;
+import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.exception.JsonProcessingException;
 import io.mosip.registration.processor.core.constant.JsonConstant;
+import io.mosip.registration.processor.core.constant.LoggerFileConstant;
+import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
+import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.packet.service.PacketCreationService;
 import io.mosip.registration.processor.packet.service.builder.AuditRequestBuilder;
 import io.mosip.registration.processor.packet.service.builder.Builder;
@@ -39,7 +44,6 @@ import io.mosip.registration.processor.packet.service.dto.json.metadata.HashSequ
 import io.mosip.registration.processor.packet.service.dto.json.metadata.PacketMetaInfo;
 import io.mosip.registration.processor.packet.service.exception.RegBaseCheckedException;
 import io.mosip.registration.processor.packet.service.exception.RegBaseUncheckedException;
-import io.mosip.registration.processor.packet.service.exception.RegistrationExceptionConstants;
 import io.mosip.registration.processor.packet.service.external.ZipCreationService;
 import io.mosip.registration.processor.packet.service.util.hmac.HMACGeneration;
 
@@ -66,6 +70,8 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 
 	private String creationTime = null;
 
+	private static Logger regProcLogger = RegProcessorLogger.getLogger(PacketCreationServiceImpl.class);
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -75,13 +81,13 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 	@SuppressWarnings("unchecked")
 	@Override
 	public byte[] create(final RegistrationDTO registrationDTO) throws RegBaseCheckedException {
-		// LOGGER.info(LOG_PKT_CREATION, APPLICATION_NAME, APPLICATION_ID, "Registration
-		// Creation had been called");
+		String rid = registrationDTO.getRegistrationId();
 		try {
-			String rid = registrationDTO.getRegistrationId();
 
-			// Map object to store the UUID's generated for BIR in CBEFF
-			Map<String, String> birUUIDs = new HashMap<>();
+			String loggerMessage = "Byte array of %s file generated successfully";
+
+			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					rid, "PacketCreationServiceImpl ::create()::entry");
 
 			// Map object to store the byte array of JSON objects namely Demographic, HMAC,
 			// Packet Meta-Data and Audit
@@ -116,6 +122,8 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 
 			filesGeneratedForPacket.put(RegistrationConstants.AUDIT_JSON_FILE,
 					javaObjectToJsonString(auditDto).getBytes());
+			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					rid, String.format(loggerMessage, RegistrationConstants.AUDIT_JSON_FILE));
 
 			// Generating HMAC File as byte array
 			HashSequence hashSequence = new HashSequence(new DemographicSequence(new LinkedList<>()),
@@ -123,9 +131,15 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 			filesGeneratedForPacket.put(RegistrationConstants.PACKET_DATA_HASH_FILE_NAME,
 					HMACGeneration.generatePacketDTOHash(registrationDTO, filesGeneratedForPacket, hashSequence));
 
+			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					rid, String.format(loggerMessage, RegistrationConstants.PACKET_DATA_HASH_FILE_NAME));
+
 			// Generating packet_osi_hash text file as byte array
 			filesGeneratedForPacket.put(RegistrationConstants.PACKET_OSI_HASH_FILE_NAME, HMACGeneration
 					.generatePacketOSIHash(filesGeneratedForPacket, hashSequence.getOsiDataHashSequence()));
+
+			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					rid, String.format(loggerMessage, RegistrationConstants.PACKET_OSI_HASH_FILE_NAME));
 
 			// Generating Packet Meta-Info JSON as byte array
 			PacketMetaInfo packetInfo = MAPPER_FACADE.convert(registrationDTO, PacketMetaInfo.class, "packetMetaInfo");
@@ -150,22 +164,31 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 									.get());
 			filesGeneratedForPacket.put(RegistrationConstants.PACKET_META_JSON_NAME,
 					javaObjectToJsonString(packetInfo).getBytes());
-
+			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					rid, String.format(loggerMessage, RegistrationConstants.PACKET_META_JSON_NAME));
 			// Creating in-memory zip file for Packet Encryption
 			byte[] packetZipBytes = zipCreationService.createPacket(registrationDTO, filesGeneratedForPacket);
-
+			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					rid, "PacketCreationServiceImpl ::create()::exit()");
 			return packetZipBytes;
 		} catch (JsonProcessingException mosipJsonProcessingException) {
-			throw new RegBaseCheckedException(
-					RegistrationExceptionConstants.REG_JSON_PROCESSING_EXCEPTION.getErrorCode(),
-					RegistrationExceptionConstants.REG_JSON_PROCESSING_EXCEPTION.getErrorMessage());
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					rid, PlatformErrorMessages.RPR_PGS_JSON_PROCESSING_EXCEPTION.getMessage()
+							+ ExceptionUtils.getStackTrace(mosipJsonProcessingException));
+			throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_JSON_PROCESSING_EXCEPTION.getCode(),
+					PlatformErrorMessages.RPR_PGS_JSON_PROCESSING_EXCEPTION.getMessage());
 		} catch (JsonValidationProcessingException | JsonIOException | JsonSchemaIOException
 				| FileIOException jsonValidationException) {
-			throw new RegBaseCheckedException(
-					RegistrationExceptionConstants.REG_PACKET_JSON_VALIDATOR_ERROR_CODE.getErrorCode(),
-					RegistrationExceptionConstants.REG_PACKET_JSON_VALIDATOR_ERROR_CODE.getErrorMessage(),
-					jsonValidationException);
+
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					rid, PlatformErrorMessages.RPR_PGS_JSON_VALIDATOR_ERROR_CODE.getMessage()
+							+ ExceptionUtils.getStackTrace(jsonValidationException));
+			throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_JSON_VALIDATOR_ERROR_CODE.getCode(),
+					PlatformErrorMessages.RPR_PGS_JSON_VALIDATOR_ERROR_CODE.getMessage(), jsonValidationException);
 		} catch (RuntimeException runtimeException) {
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					rid, PlatformErrorMessages.RPR_SYS_SERVER_ERROR.getMessage()
+							+ ExceptionUtils.getStackTrace(runtimeException));
 			throw new RegBaseUncheckedException(RegistrationConstants.PACKET_CREATION_EXCEPTION,
 					runtimeException.toString());
 		}

@@ -12,9 +12,14 @@ import org.springframework.web.client.HttpClientErrorException;
 
 import com.google.gson.Gson;
 
+import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.idgenerator.spi.RidGenerator;
+import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.processor.core.code.ApiName;
+import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
+import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
+import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.packet.service.PacketCreationService;
 import io.mosip.registration.processor.packet.service.PacketGeneratorService;
@@ -63,6 +68,8 @@ public class PacketGeneratorServiceImpl implements PacketGeneratorService {
 	@Value("${primary.language}")
 	private String primaryLanguagecode;
 
+	private static Logger regProcLogger = RegProcessorLogger.getLogger(PacketCreationServiceImpl.class);
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -92,8 +99,15 @@ public class PacketGeneratorServiceImpl implements PacketGeneratorService {
 						registrationDTO.getRegistrationId(), creationTime);
 				return packerGeneratorResDto;
 			} catch (RegBaseCheckedException e) {
-
-				dto.setMessage("");
+				dto.setErrorCode(e.getErrorCode());
+				dto.setMessage(ExceptionUtils.getStackTrace(e));
+				return dto;
+			} catch (Exception e) {
+				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
+						LoggerFileConstant.REGISTRATIONID.toString(), registrationDTO.getRegistrationId(),
+						PlatformErrorMessages.RPR_PGS_JSON_PROCESSING_EXCEPTION.getMessage()
+								+ ExceptionUtils.getStackTrace(e));
+				dto.setMessage(ExceptionUtils.getStackTrace(e));
 				return dto;
 			}
 		} else {

@@ -11,10 +11,16 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
+import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.exception.IOException;
+import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.FileUtils;
+import io.mosip.registration.processor.core.constant.LoggerFileConstant;
+import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
+import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.packet.service.constants.RegistrationConstants;
 import io.mosip.registration.processor.packet.service.exception.RegBaseCheckedException;
+import io.mosip.registration.processor.packet.service.exception.RegBaseUncheckedException;
 import io.mosip.registration.processor.packet.service.external.StorageService;
 
 /**
@@ -28,9 +34,6 @@ import io.mosip.registration.processor.packet.service.external.StorageService;
 @Service
 public class StorageServiceImpl implements StorageService {
 
-	// private static final Logger LOGGER =
-	// AppConfig.getLogger(StorageServiceImpl.class);
-
 	@Value("${registration.processor.packet.storageLocation.encrypted}")
 	private String packetStoreLocationEncrypted;
 
@@ -39,6 +42,8 @@ public class StorageServiceImpl implements StorageService {
 
 	@Autowired
 	private Environment environment;
+
+	private static Logger regProcLogger = RegProcessorLogger.getLogger(StorageServiceImpl.class);
 
 	/*
 	 * (non-Javadoc)
@@ -49,11 +54,13 @@ public class StorageServiceImpl implements StorageService {
 	 */
 	@Override
 	public String storeToDisk(String registrationId, byte[] packet, boolean encrypted) throws RegBaseCheckedException {
+
 		try {
 			// Generate the file path for storing the Encrypted Packet and Acknowledgement
 			// Receipt
-			String seperator = "/";
 			String filePath = "";
+			String seperator = "/";
+
 			if (encrypted) {
 				filePath = packetStoreLocationEncrypted + seperator
 						+ formatDate(new Date(),
@@ -65,22 +72,27 @@ public class StorageServiceImpl implements StorageService {
 								environment.getProperty(RegistrationConstants.PACKET_STORE_DATE_FORMAT))
 										.concat(seperator).concat(registrationId);
 			}
-			// Storing the Encrypted Registration Packet as zip
+
 			FileUtils.copyToFile(new ByteArrayInputStream(packet),
 					new File(filePath.concat(RegistrationConstants.ZIP_FILE_EXTENSION)));
 
-			// LOGGER.info(LOG_PKT_STORAGE, APPLICATION_NAME, APPLICATION_ID, "Encrypted
-			// packet saved");
+			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					registrationId, "Packet saved in path");
 
 			return filePath.concat(RegistrationConstants.ZIP_FILE_EXTENSION);
 		} catch (IOException ioException) {
-			// throw new RegBaseCheckedException(REG_IO_EXCEPTION.getErrorCode(),
-			// REG_IO_EXCEPTION.getErrorMessage());
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					registrationId, PlatformErrorMessages.RPR_SYS_IO_EXCEPTION.getMessage()
+							+ ExceptionUtils.getStackTrace(ioException));
+			throw new RegBaseCheckedException(PlatformErrorMessages.RPR_SYS_IO_EXCEPTION.getCode(),
+					PlatformErrorMessages.RPR_SYS_IO_EXCEPTION.getMessage());
 		} catch (RuntimeException runtimeException) {
-			// throw new
-			// RegBaseUncheckedException(RegistrationConstants.ENCRYPTED_PACKET_STORAGE,
-			// runtimeException.toString());
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					registrationId, PlatformErrorMessages.RPR_SYS_SERVER_ERROR.getMessage()
+							+ ExceptionUtils.getStackTrace(runtimeException));
+			throw new RegBaseUncheckedException(PlatformErrorMessages.RPR_SYS_SERVER_ERROR.getCode(),
+					PlatformErrorMessages.RPR_SYS_SERVER_ERROR.getMessage());
 		}
-		return null;
+
 	}
 }

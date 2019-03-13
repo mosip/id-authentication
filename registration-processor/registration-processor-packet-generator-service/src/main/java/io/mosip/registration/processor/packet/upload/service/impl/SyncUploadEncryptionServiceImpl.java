@@ -31,10 +31,6 @@ import io.mosip.registration.processor.core.exception.ApisResourceAccessExceptio
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
-import io.mosip.registration.processor.packet.exception.ApisresourceAccessException;
-import io.mosip.registration.processor.packet.exception.FileNotAccessibleException;
-import io.mosip.registration.processor.packet.exception.InvalidKeyNoArgJsonException;
-import io.mosip.registration.processor.packet.exception.RegbaseCheckedException;
 import io.mosip.registration.processor.packet.service.constants.RegistrationConstants;
 import io.mosip.registration.processor.packet.service.dto.PackerGeneratorResDto;
 import io.mosip.registration.processor.packet.service.dto.PacketReceiverResponseDTO;
@@ -43,6 +39,7 @@ import io.mosip.registration.processor.packet.service.dto.RegistrationSyncReques
 import io.mosip.registration.processor.packet.service.dto.SyncRegistrationDTO;
 import io.mosip.registration.processor.packet.service.dto.SyncResponseDto;
 import io.mosip.registration.processor.packet.service.exception.RegBaseCheckedException;
+import io.mosip.registration.processor.packet.service.exception.RegBaseUncheckedException;
 import io.mosip.registration.processor.packet.service.util.encryptor.EncryptorUtil;
 import io.mosip.registration.processor.packet.upload.service.SyncUploadEncryptionService;
 
@@ -51,10 +48,9 @@ import io.mosip.registration.processor.packet.upload.service.SyncUploadEncryptio
  */
 @Service
 public class SyncUploadEncryptionServiceImpl implements SyncUploadEncryptionService {
-	
+
 	/** The reg proc logger. */
 	private static Logger regProcLogger = RegProcessorLogger.getLogger(SyncUploadEncryptionServiceImpl.class);
-
 
 	/** The rest client service. */
 	@Autowired
@@ -84,9 +80,7 @@ public class SyncUploadEncryptionServiceImpl implements SyncUploadEncryptionServ
 		try {
 			decryptedFileStream = new FileInputStream(decryptedUinZipFile);
 
-
-			
-					encryptedFilePath = encryptorUtil.encryptUinUpdatePacket(decryptedFileStream, registartionId, creationTime);
+			encryptedFilePath = encryptorUtil.encryptUinUpdatePacket(decryptedFileStream, registartionId, creationTime);
 
 			RegSyncResponseDTO regSyncResponseDTO = packetSync(registartionId);
 			if (regSyncResponseDTO != null) {
@@ -124,26 +118,29 @@ public class SyncUploadEncryptionServiceImpl implements SyncUploadEncryptionServ
 			}
 
 		} catch (FileNotFoundException e) {
-					regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
-					LoggerFileConstant.REGISTRATIONID.toString(),registartionId,
-					PlatformErrorMessages.RPR_PGS_FILE_NOT_PRESENT.getMessage()+ ExceptionUtils.getStackTrace(e));
-		    throw new FileNotAccessibleException(PlatformErrorMessages.RPR_PGS_FILE_NOT_PRESENT.getCode(),e);
-			
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					registartionId,
+					PlatformErrorMessages.RPR_PGS_FILE_NOT_PRESENT.getMessage() + ExceptionUtils.getStackTrace(e));
+			// throw new
+			// FileNotAccessibleException(PlatformErrorMessages.RPR_PGS_FILE_NOT_PRESENT.getCode(),e);
+
 		} catch (InvalidKeySpecException | NoSuchAlgorithmException | JSONException | IOException e) {
-			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
-					LoggerFileConstant.REGISTRATIONID.toString(),registartionId,
-					PlatformErrorMessages.RPR_PGS_INVALID_KEY_ILLEGAL_ARGUMENT.getMessage()+ ExceptionUtils.getStackTrace(e));
-			throw new InvalidKeyNoArgJsonException(PlatformErrorMessages.RPR_PGS_INVALID_KEY_ILLEGAL_ARGUMENT.getCode());
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					registartionId, PlatformErrorMessages.RPR_PGS_INVALID_KEY_ILLEGAL_ARGUMENT.getMessage()
+							+ ExceptionUtils.getStackTrace(e));
+			// throw new
+			// InvalidKeyNoArgJsonException(PlatformErrorMessages.RPR_PGS_INVALID_KEY_ILLEGAL_ARGUMENT.getCode());
 		} catch (ApisResourceAccessException e) {
-					regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
-					LoggerFileConstant.REGISTRATIONID.toString(),registartionId,
-					PlatformErrorMessages.RPR_PGS_API_RESOURCE_NOT_AVAILABLE.getMessage()+ ExceptionUtils.getStackTrace(e));
-			throw new ApisresourceAccessException(PlatformErrorMessages.RPR_PGS_API_RESOURCE_NOT_AVAILABLE.getCode());
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					registartionId, PlatformErrorMessages.RPR_PGS_API_RESOURCE_NOT_AVAILABLE.getMessage()
+							+ ExceptionUtils.getStackTrace(e));
+			// throw new
+			// ApisresourceAccessException(PlatformErrorMessages.RPR_PGS_API_RESOURCE_NOT_AVAILABLE.getCode());
 		} catch (RegBaseCheckedException e) {
 					regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
 					LoggerFileConstant.REGISTRATIONID.toString(),registartionId,
 					PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION.getMessage()+ ExceptionUtils.getStackTrace(e));
-			throw new RegbaseCheckedException(PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION.getCode());
+			throw new RegBaseUncheckedException(PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION.getCode(),PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION.getMessage());
 		} finally {
 
 		}
@@ -158,33 +155,30 @@ public class SyncUploadEncryptionServiceImpl implements SyncUploadEncryptionServ
 	 * @param regId
 	 *            the reg id
 	 * @return the reg sync response DTO
+	 * @throws ApisResourceAccessException
 	 */
-	private RegSyncResponseDTO packetSync(String regId) {
+	private RegSyncResponseDTO packetSync(String regId) throws ApisResourceAccessException {
 		RegSyncResponseDTO regSyncResponseDTO = null;
-		try {
 
-			List<SyncRegistrationDTO> syncDtoList = new ArrayList<>();
-			String response = null;
-			RegistrationSyncRequestDTO registrationSyncRequestDTO = new RegistrationSyncRequestDTO();
-			registrationSyncRequestDTO.setId("mosip.registration.sync");
-			registrationSyncRequestDTO.setVersion("1.0");
-			registrationSyncRequestDTO
-					.setRequesttime(DateUtils.getUTCCurrentDateTimeString("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"));
-			SyncRegistrationDTO syncDto = new SyncRegistrationDTO();
-			syncDto.setLangCode("ENG");
-			syncDto.setStatusComment("update UIN status");
-			syncDto.setRegistrationId(regId);
-			syncDto.setSyncStatus(RegistrationConstants.PACKET_STATUS_PRE_SYNC);
-			syncDto.setSyncType(RegistrationConstants.PACKET_STATUS_SYNC_TYPE);
-			syncDtoList.add(syncDto);
-			registrationSyncRequestDTO.setRequest(syncDtoList);
-			response = (String) restClientService.postApi(ApiName.SYNCSERVICE, "", "", registrationSyncRequestDTO,
-					String.class);
-			regSyncResponseDTO = gson.fromJson(response, RegSyncResponseDTO.class);
+		List<SyncRegistrationDTO> syncDtoList = new ArrayList<>();
+		String response = null;
+		RegistrationSyncRequestDTO registrationSyncRequestDTO = new RegistrationSyncRequestDTO();
+		registrationSyncRequestDTO.setId("mosip.registration.sync");
+		registrationSyncRequestDTO.setVersion("1.0");
+		registrationSyncRequestDTO
+				.setRequesttime(DateUtils.getUTCCurrentDateTimeString("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"));
+		SyncRegistrationDTO syncDto = new SyncRegistrationDTO();
+		syncDto.setLangCode("ENG");
+		syncDto.setStatusComment("update UIN status");
+		syncDto.setRegistrationId(regId);
+		syncDto.setSyncStatus(RegistrationConstants.PACKET_STATUS_PRE_SYNC);
+		syncDto.setSyncType(RegistrationConstants.PACKET_STATUS_SYNC_TYPE);
+		syncDtoList.add(syncDto);
+		registrationSyncRequestDTO.setRequest(syncDtoList);
+		response = (String) restClientService.postApi(ApiName.SYNCSERVICE, "", "", registrationSyncRequestDTO,
+				String.class);
+		regSyncResponseDTO = gson.fromJson(response, RegSyncResponseDTO.class);
 
-		} catch (Exception e) {
-
-		}
 		return regSyncResponseDTO;
 	}
 
