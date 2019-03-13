@@ -56,14 +56,10 @@ public enum DemoMatchType implements MatchType {
 	/** Secondary Date of Birth Type Match. */
 	AGE(IdaIdMapping.AGE, setOf(AgeMatchingStrategy.EXACT), identityDTO -> getIdInfoList(identityDTO.getAge()),
 			AuthUsageDataBit.USED_PI_AGE, AuthUsageDataBit.MATCHED_PI_AGE, false, entityInfoMap -> {
-				int age = -1;
-				try {
-					String value = entityInfoMap.values().stream().findFirst().orElse("");
-					age = Period.between(DateUtils.parseToDate(value, getDatePattern()).toInstant()
-							.atZone(ZoneId.systemDefault()).toLocalDate(), LocalDate.now()).getYears();
-				} catch (ParseException e) {
-					getLogger().error("sessionId", "IdType", "Id", e.getMessage());
-				}
+				String value = entityInfoMap.values().stream().findFirst().orElse("");
+				int age = Period.between(DateUtils.parseToDate(value, getDatePattern()).toInstant()
+						.atZone(ZoneId.systemDefault()).toLocalDate(), LocalDate.now()).getYears();
+				
 				Map<String, String> map = new LinkedHashMap<>();
 				map.put(IdaIdMapping.AGE.getIdname(), String.valueOf(age));
 				return map;

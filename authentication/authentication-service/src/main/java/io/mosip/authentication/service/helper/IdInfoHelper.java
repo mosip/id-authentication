@@ -63,7 +63,6 @@ import io.mosip.authentication.service.impl.indauth.service.pin.PinAuthType;
 import io.mosip.authentication.service.integration.MasterDataManager;
 import io.mosip.authentication.service.integration.OTPManager;
 import io.mosip.kernel.core.cbeffutil.spi.CbeffUtil;
-import io.mosip.kernel.core.exception.ParseException;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.core.util.DateUtils;
@@ -874,7 +873,7 @@ public class IdInfoHelper implements IdInfoFetcher {
 				.findAny().orElse("");
 	}
 
-	public String getUTCTime(String reqTime) throws ParseException, java.text.ParseException {
+	public String getUTCTime(String reqTime) {
 		Date reqDate = DateUtils.parseToDate(reqTime, environment.getProperty(DATETIME_PATTERN));
 		SimpleDateFormat dateFormatter = new SimpleDateFormat(environment.getProperty(DATETIME_PATTERN));
 		dateFormatter.setTimeZone(TimeZone.getTimeZone(ZoneId.of(UTC)));

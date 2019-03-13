@@ -19,6 +19,7 @@
 	<modules>
 		<module>authentication-core</module>
 		<module>authentication-service</module>
+		<module>authentication-demo</module>
 	</modules>
 
 	<properties>
@@ -34,10 +35,11 @@
 		<maven.sonar.version>3.2</maven.sonar.version>
 		<powermock.version>2.0.0</powermock.version>
 		<!-- Kernel components -->
-		<kernel.core.version>0.8.1</kernel.core.version>
-		<kernel.hibernate.version>0.8.1</kernel.hibernate.version>
-		<kernel.template.version>0.8.1</kernel.template.version>
-		<kernel.pdfgenerate.version>0.8.1</kernel.pdfgenerate.version>
+		<kernel.version>0.9.1</kernel.version>
+		<kernel.core.version>${kernel.version}</kernel.core.version>
+		<kernel.hibernate.version>${kernel.version}</kernel.hibernate.version>
+		<kernel.template.version>${kernel.version}</kernel.template.version>
+		<kernel.pdfgenerate.version>${kernel.version}</kernel.pdfgenerate.version>
 		<!-- Test & Logging -->
 		<junit.version>4.12</junit.version>
 		<mockito.version>1.10.19</mockito.version>

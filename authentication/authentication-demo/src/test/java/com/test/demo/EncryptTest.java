@@ -28,9 +28,9 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import io.mosip.demo.authentication.service.controller.Encrypt;
-import io.mosip.demo.authentication.service.dto.EncryptionRequestDto;
-import io.mosip.demo.authentication.service.dto.EncryptionResponseDto;
+import io.mosip.authentication.demo.service.controller.Encrypt;
+import io.mosip.authentication.demo.service.dto.EncryptionRequestDto;
+import io.mosip.authentication.demo.service.dto.EncryptionResponseDto;
 
 
 /**

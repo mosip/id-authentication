@@ -1,4 +1,4 @@
-package io.mosip.demo.authentication.service.config;
+package io.mosip.authentication.demo.service.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

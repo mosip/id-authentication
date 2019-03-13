@@ -1,4 +1,4 @@
-package io.mosip.demo.authentication.service.dto;
+package io.mosip.authentication.demo.service.dto;
 
 import lombok.Data;
 

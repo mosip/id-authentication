@@ -1,4 +1,4 @@
-package io.mosip.demo.authentication.service.controller;
+package io.mosip.authentication.demo.service.controller;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;

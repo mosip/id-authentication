@@ -3,7 +3,6 @@
  */
 package io.mosip.authentication.service.impl.indauth.facade;
 
-import java.text.ParseException;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -26,7 +25,6 @@ import io.mosip.authentication.core.constant.RequestType;
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.AuthResponseDTO;
 import io.mosip.authentication.core.dto.indauth.AuthStatusInfo;
-
 import io.mosip.authentication.core.dto.indauth.IdType;
 import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
 import io.mosip.authentication.core.dto.indauth.KycAuthRequestDTO;
@@ -48,6 +46,7 @@ import io.mosip.authentication.service.helper.AuditHelper;
 import io.mosip.authentication.service.helper.IdInfoHelper;
 import io.mosip.authentication.service.impl.indauth.builder.AuthResponseBuilder;
 import io.mosip.authentication.service.impl.indauth.service.bio.BioAuthType;
+import io.mosip.kernel.core.exception.ParseException;
 import io.mosip.kernel.core.idgenerator.spi.TokenIdGenerator;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
@@ -429,7 +428,7 @@ public class AuthFacadeImpl implements AuthFacade {
 			// FIXME
 			autnTxn.setLangCode(env.getProperty(MOSIP_PRIMARY_LANG_CODE));
 			return autnTxn;
-		} catch (ParseException | io.mosip.kernel.core.exception.ParseException e) {
+		} catch (ParseException e) {
 			logger.error(DEFAULT_SESSION_ID, this.getClass().getName(), e.getClass().getName(), e.getMessage());
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_OTP_REQUEST_TIMESTAMP,
 					e);

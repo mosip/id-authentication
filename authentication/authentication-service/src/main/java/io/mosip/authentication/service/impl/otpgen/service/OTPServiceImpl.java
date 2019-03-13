@@ -1,6 +1,5 @@
 package io.mosip.authentication.service.impl.otpgen.service;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.Collections;
@@ -32,6 +31,7 @@ import io.mosip.authentication.service.impl.indauth.service.demo.DemoMatchType;
 import io.mosip.authentication.service.integration.NotificationManager;
 import io.mosip.authentication.service.integration.OTPManager;
 import io.mosip.authentication.service.repository.AutnTxnRepository;
+import io.mosip.kernel.core.exception.ParseException;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.core.util.UUIDUtils;
@@ -217,7 +217,7 @@ public class OTPServiceImpl implements OTPService {
 			// FIXME
 			autnTxn.setLangCode(env.getProperty("mosip.primary.lang-code"));
 			return autnTxn;
-		} catch (ParseException | java.time.format.DateTimeParseException e) {
+		} catch (ParseException e) {
 			mosipLogger.error(SESSION_ID, this.getClass().getName(), e.getClass().getName(), e.getMessage());
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_OTP_REQUEST_TIMESTAMP,
 					e);
@@ -252,7 +252,7 @@ public class OTPServiceImpl implements OTPService {
 		try {
 			requestTime = DateUtils.parseToDate(otpRequestDto.getRequestTime(), env.getProperty(DATETIME_PATTERN));
 			reqTime = DateUtils.parseDateToLocalDateTime(requestTime);
-		} catch (java.text.ParseException e) {
+		} catch (ParseException e) {
 			mosipLogger.error(SESSION_ID, this.getClass().getName(), e.getClass().getName(), e.getMessage());
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_OTP_REQUEST_TIMESTAMP,
 					e);

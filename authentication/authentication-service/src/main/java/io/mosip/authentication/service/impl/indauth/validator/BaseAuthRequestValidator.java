@@ -1,6 +1,5 @@
 package io.mosip.authentication.service.impl.indauth.validator;
 
-import java.text.ParseException;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.Collections;
 import java.util.HashSet;
@@ -44,6 +43,7 @@ import io.mosip.authentication.service.validator.IdAuthValidator;
 import io.mosip.kernel.core.datavalidator.exception.InvalidPhoneNumberException;
 import io.mosip.kernel.core.datavalidator.exception.InvalideEmailException;
 import io.mosip.kernel.core.exception.ExceptionUtils;
+import io.mosip.kernel.core.exception.ParseException;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.datavalidator.email.impl.EmailValidatorImpl;
@@ -813,16 +813,10 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 			for (IdentityInfoDTO identityInfoDTO : dobList) {
 				try {
 					DateUtils.parseToDate(identityInfoDTO.getValue(), env.getProperty("dob.req.date.pattern"));
-				} catch (io.mosip.kernel.core.exception.ParseException e) {
+				} catch (ParseException e) {
 					// FIXME change to DOB - Invalid -DOB - Please enter DOB in specified date
 					// format or Age in the acceptable range
 
-					mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE,
-							"Demographic data – DOB(pi) did not match");
-					errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
-							new Object[] { "dob" },
-							IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
-				} catch (ParseException e) {
 					mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE,
 							"Demographic data – DOB(pi) did not match");
 					errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),

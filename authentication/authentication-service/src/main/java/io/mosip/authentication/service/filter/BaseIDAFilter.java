@@ -433,7 +433,7 @@ public abstract class BaseIDAFilter implements Filter {
 		try {
 			DateUtils.parseToDate(date, env.getProperty(DATETIME_PATTERN));
 			return true;
-		} catch (ParseException | java.text.ParseException e) {
+		} catch (ParseException e) {
 			mosipLogger.error("sessionId", BASE_IDA_FILTER, "validateDate", "\n" + ExceptionUtils.getStackTrace(e));
 		}
 		return false;
