@@ -288,13 +288,13 @@ public class ManualVerificationServiceImpl implements ManualVerificationService 
 					: EventType.SYSTEM.toString();
 
 			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
-					registrationId,ApiName.AUDIT);
+					registrationId, ApiName.AUDIT);
 		}
 		return manualVerificationDTO;
 
 	}
 
-	
+
 
 	/*
 	 * (non-Javadoc)

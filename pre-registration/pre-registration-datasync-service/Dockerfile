@@ -25,4 +25,4 @@ copy ./target/pre-registration-datasync-service-*.jar pre-registration-datasync-
 
 EXPOSE 9094
 
-CMD ["java","-Dspring.cloud.config.label=${spring_config_label_env}","-Dspring.profiles.active=${active_profile_env}","-Dspring.cloud.config.uri=${spring_config_url_env}","-jar","pre-registration-datasync-service.jar"] 
+CMD ["java","-jar","-Dspring.cloud.config.label=${spring_config_label_env}","-Dspring.profiles.active=${active_profile_env}","-Dspring.cloud.config.uri=${spring_config_url_env}","pre-registration-datasync-service.jar"]

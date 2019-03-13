@@ -193,7 +193,7 @@ public class QualityCheckManagerImpl implements QualityCheckManager<String, QCUs
 			eventType = eventId.equalsIgnoreCase(EventId.RPR_401.toString()) ? EventType.BUSINESS.toString()
 					: EventType.SYSTEM.toString();
 			clientAuditRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
-					AuditLogConstant.NO_ID.toString(),ApiName.AUDIT);
+					AuditLogConstant.NO_ID.toString(), ApiName.AUDIT);
 		}
 	}
 

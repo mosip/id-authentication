@@ -69,6 +69,7 @@ import io.mosip.registration.processor.packet.storage.entity.RegCenterMachineEnt
 import io.mosip.registration.processor.packet.storage.entity.RegOsiEntity;
 import io.mosip.registration.processor.packet.storage.exception.FileNotFoundInPacketStore;
 import io.mosip.registration.processor.packet.storage.exception.IdentityNotFoundException;
+import io.mosip.registration.processor.packet.storage.exception.ParsingException;
 import io.mosip.registration.processor.packet.storage.exception.TablenotAccessibleException;
 import io.mosip.registration.processor.packet.storage.exception.UnableToInsertData;
 import io.mosip.registration.processor.packet.storage.repository.BasePacketRepository;
@@ -640,7 +641,7 @@ public class PacketInfoManagerImplTest {
 	/**
 	 * Identity not found exception test.
 	 */
-	@Test(expected = IdentityNotFoundException.class)
+	@Test(expected = ParsingException.class)
 	public void identityNotFoundExceptionTest() {
 
 		Mockito.when(utility.getGetRegProcessorDemographicIdentity()).thenReturn(null);

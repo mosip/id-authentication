@@ -10,8 +10,6 @@ import io.mosip.kernel.auth.service.AuthService;
 import io.mosip.kernel.auth.service.CustomTokenServices;
 import io.swagger.annotations.Api;
 
-import java.security.SignatureException;
-
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -75,8 +73,6 @@ public class AuthController {
 			res.addCookie(cookie);
 			authNResponse.setMessage(authResponseDto.getMessage());
 			AuthToken token = getAuthToken(authResponseDto);
-			//Cookie refreshCookie = createRefreshCookie(authResponseDto.getRefreshToken(), mosipEnvironment.getTokenExpiry());
-			//res.addCookie(refreshCookie);
 			customTokenServices.StoreToken(token);
 		}
 		return new ResponseEntity<>(authNResponse, HttpStatus.OK);
@@ -135,8 +131,6 @@ public class AuthController {
 			res.addCookie(cookie);
 			authNResponse.setMessage(authResponseDto.getMessage());
 			AuthToken token = getAuthToken(authResponseDto);
-			//Cookie refreshCookie = createRefreshCookie(authResponseDto.getRefreshToken(), mosipEnvironment.getTokenExpiry());
-			//res.addCookie(refreshCookie);
 			customTokenServices.StoreToken(token);
 		}
 		return new ResponseEntity<>(authNResponse, HttpStatus.OK);
@@ -188,7 +182,6 @@ public class AuthController {
 				authToken = cookie.getValue();
 			}
 		}
-
 		mosipUserDtoToken = authService.validateToken(authToken);
 		if (mosipUserDtoToken != null) {
 			mosipUserDtoToken.setMessage(AuthConstant.TOKEN_SUCCESS_MESSAGE);
@@ -197,11 +190,11 @@ public class AuthController {
 		res.addCookie(cookie);
 		}catch(NonceExpiredException exp)
 		{
-			throw new NonceExpiredException(exp.getMessage());
+			throw new AuthManagerException(AuthConstant.UNAUTHORIZED_CODE,exp.getMessage());
 		}
 		catch(AuthManagerException e){
 			
-			throw new AuthManagerException("401",e.getMessage());
+			throw new AuthManagerException(AuthConstant.UNAUTHORIZED_CODE,e.getMessage());
 		}
 		return new ResponseEntity<>(mosipUserDtoToken.getMosipUserDto(), HttpStatus.OK);
 	}

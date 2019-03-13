@@ -8,11 +8,11 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URLDecoder;
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.junit.Before;
@@ -49,11 +50,9 @@ import io.mosip.kernel.core.idgenerator.spi.PridGenerator;
 import io.mosip.kernel.core.jsonvalidator.exception.HttpRequestException;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.jsonvalidator.impl.JsonValidatorImpl;
-import io.mosip.preregistration.application.code.RequestCodes;
 import io.mosip.preregistration.application.dto.DeletePreRegistartionDTO;
 import io.mosip.preregistration.application.dto.DemographicRequestDTO;
 import io.mosip.preregistration.application.dto.PreRegistrationViewDTO;
-import io.mosip.preregistration.application.dto.UpdateResponseDTO;
 import io.mosip.preregistration.application.entity.DemographicEntity;
 import io.mosip.preregistration.application.errorcodes.ErrorCodes;
 import io.mosip.preregistration.application.errorcodes.ErrorMessages;
@@ -81,14 +80,13 @@ import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
 import io.mosip.preregistration.core.exception.TableNotAccessibleException;
 import io.mosip.preregistration.core.util.AuditLogUtil;
 import io.mosip.preregistration.core.util.CryptoUtil;
+import io.mosip.preregistration.core.util.HashUtill;
 
 /**
  * Test class to test the PreRegistration Service methods
  * 
  * @author Rajath KR
  * @author Sanober Noor
- * @author Tapaswini Behera
- * @author Jagadishwari S
  * @author Ravi C Balaji
  * @since 1.0.0
  * 
@@ -172,9 +170,11 @@ public class DemographicServiceTest {
 
 	private Map<String, String> reqDateRange = new HashMap<>();
 
-	String fromDate = "";
-	String toDate = "";
-
+	LocalDate fromDate =LocalDate.now();
+	LocalDate toDate = LocalDate.now();
+	
+	JSONArray fullname;
+	LocalDateTime encryptionDateTime = DateUtils.getUTCCurrentDateTime();
 	/**
 	 * @throws ParseException
 	 * @throws FileNotFoundException
@@ -209,8 +209,12 @@ public class DemographicServiceTest {
 		preRegistrationEntity.setCreatedBy("9988905444");
 		preRegistrationEntity.setStatusCode("Pending_Appointment");
 		preRegistrationEntity.setUpdateDateTime(times);
-		preRegistrationEntity.setApplicantDetailJson(jsonTestObject.toJSONString().getBytes());
+		
+		byte[] encryptedDemographicDetails = cryptoUtil
+				.encrypt(jsonTestObject.toJSONString().getBytes(), encryptionDateTime);
+		//preRegistrationEntity.setApplicantDetailJson(encryptedDemographicDetails);
 		preRegistrationEntity.setPreRegistrationId("98746563542672");
+		preRegistrationEntity.setDemogDetailHash(HashUtill.hashUtill(jsonTestObject.toJSONString().getBytes()).toString());
 		userEntityDetails.add(preRegistrationEntity);
 
 		logger.info("Entity " + preRegistrationEntity);
@@ -242,11 +246,10 @@ public class DemographicServiceTest {
 		requestMap.put("reqTime", demographicRequestDTO.getReqTime().toString());
 		requestMap.put("request", demographicRequestDTO.getRequest().toString());
 
-		fromDate = "2018-12-06 09:49:29";
-		toDate = "2018-12-06 12:59:29";
+		
 
-		requestMap.put(RequestCodes.FROM_DATE.getCode(), fromDate);
-		requestMap.put(RequestCodes.TO_DATE.getCode(), toDate);
+	//	requestMap.put(RequestCodes.FROM_DATE.getCode(), fromDate);
+		//requestMap.put(RequestCodes.TO_DATE.getCode(), toDate);
 
 		requiredRequestMap.put("id", idUrl);
 		requiredRequestMap.put("ver", versionUrl);
@@ -274,6 +277,12 @@ public class DemographicServiceTest {
 	 */
 	@Test
 	public void successSaveImplTest() throws Exception {
+		
+		byte[] encryptedDemographicDetails= {1,0,1,0,1,0};
+		
+		Mockito.when(cryptoUtil.encrypt(Mockito.any(),Mockito.any())).thenReturn(encryptedDemographicDetails);
+		
+		preRegistrationEntity.setApplicantDetailJson(encryptedDemographicDetails);
 		Mockito.when(pridGenerator.generateId()).thenReturn("67547447647457");
 		Mockito.when(jsonValidator.validateJson(jsonObject.toString(), "mosip-prereg-identity-json-schema.json"))
 				.thenReturn(null);
@@ -282,13 +291,14 @@ public class DemographicServiceTest {
 		demographicResponseDTO.setDemographicDetails(jsonObject);
 		demographicResponseDTO.setPreRegistrationId("");
 		demographicResponseDTO.setCreatedBy("9988905444");
-		demographicResponseDTO.setCreatedDateTime(serviceUtil.getLocalDateString(times));
+		demographicResponseDTO.setCreatedDateTime(serviceUtil.getLocalDateString(LocalDateTime.now(ZoneId.of("UTC"))));
 		demographicResponseDTO.setStatusCode("Pending_Appointment");
 		createPreRegistrationDTO = new DemographicRequestDTO();
 		createPreRegistrationDTO.setDemographicDetails(jsonObject);
 		createPreRegistrationDTO.setPreRegistrationId("");
+		
 		createPreRegistrationDTO.setCreatedBy("9988905444");
-		createPreRegistrationDTO.setCreatedDateTime(serviceUtil.getLocalDateString(times));
+		createPreRegistrationDTO.setCreatedDateTime(serviceUtil.getLocalDateString(LocalDateTime.now(ZoneId.of("UTC"))));
 		demographicRequestDTO.setRequest(createPreRegistrationDTO);
 		List<DemographicResponseDTO> listOfCreatePreRegistrationDTO = new ArrayList<>();
 		listOfCreatePreRegistrationDTO.add(demographicResponseDTO);
@@ -306,6 +316,11 @@ public class DemographicServiceTest {
 	public void saveFailureCheck() throws Exception {
 		DataAccessLayerException exception = new DataAccessLayerException(ErrorCodes.PRG_PAM_APP_002.toString(),
 				ErrorMessages.PRE_REGISTRATION_TABLE_NOT_ACCESSIBLE.toString(), null);
+byte[] encryptedDemographicDetails= {1,0,1,0,1,0};
+		
+		Mockito.when(cryptoUtil.encrypt(Mockito.any(),Mockito.any())).thenReturn(encryptedDemographicDetails);
+		
+		preRegistrationEntity.setApplicantDetailJson(encryptedDemographicDetails);
 		Mockito.when(jsonValidator.validateJson(jsonObject.toString(), "mosip-prereg-identity-json-schema.json"))
 				.thenReturn(null);
 		Mockito.when(cryptoUtil.decrypt(Mockito.any(), Mockito.any())).thenReturn(jsonObject.toString().getBytes());
@@ -321,6 +336,12 @@ public class DemographicServiceTest {
 
 	@Test
 	public void successUpdateTest() throws Exception {
+byte[] encryptedDemographicDetails= {1,0,1,0,1,0};
+		
+		Mockito.when(cryptoUtil.encrypt(Mockito.any(),Mockito.any())).thenReturn(encryptedDemographicDetails);
+		
+		preRegistrationEntity.setApplicantDetailJson(encryptedDemographicDetails);
+		preRegistrationEntity.setDemogDetailHash(new String(HashUtill.hashUtill(preRegistrationEntity.getApplicantDetailJson())));
 		Mockito.when(jsonValidator.validateJson(jsonTestObject.toString(), "mosip-prereg-identity-json-schema.json"))
 				.thenReturn(null);
 		Mockito.when(demographicRepository.findBypreRegistrationId("98746563542672")).thenReturn(preRegistrationEntity);
@@ -343,6 +364,11 @@ public class DemographicServiceTest {
 	public void updateFailureCheck() throws Exception {
 		HttpRequestException exception = new HttpRequestException(ErrorCodes.PRG_PAM_APP_007.name(),
 				ErrorMessages.JSON_PARSING_FAILED.name());
+byte[] encryptedDemographicDetails= {1,0,1,0,1,0};
+		
+		Mockito.when(cryptoUtil.encrypt(Mockito.any(),Mockito.any())).thenReturn(encryptedDemographicDetails);
+		
+		preRegistrationEntity.setApplicantDetailJson(encryptedDemographicDetails);
 		Mockito.when(jsonValidator.validateJson(jsonTestObject.toString(), "mosip-prereg-identity-json-schema.json"))
 				.thenReturn(null);
 		Mockito.when(cryptoUtil.decrypt(Mockito.any(), Mockito.any())).thenReturn(jsonObject.toString().getBytes());
@@ -410,7 +436,11 @@ public class DemographicServiceTest {
 
 	@Test
 	public void getApplicationDetailsTest() throws ParseException {
-
+byte[] encryptedDemographicDetails= {1,0,1,0,1,0};
+		
+		Mockito.when(cryptoUtil.encrypt(Mockito.any(),Mockito.any())).thenReturn(encryptedDemographicDetails);
+		
+		preRegistrationEntity.setApplicantDetailJson(encryptedDemographicDetails);
 		RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
 		Mockito.when(restTemplateBuilder.build()).thenReturn(restTemplate);
 		String userId = "9988905444";
@@ -420,13 +450,12 @@ public class DemographicServiceTest {
 
 		viewDto = new PreRegistrationViewDTO();
 		viewDto.setPreRegistrationId("98746563542672");
-		viewDto.setFullname("rupika");
 		viewDto.setStatusCode(preRegistrationEntity.getStatusCode());
 		viewDto.setBookingRegistrationDTO(bookingRegistrationDTO);
 
 		viewList.add(viewDto);
 		response.setResponse(viewList);
-		response.setStatus(Boolean.TRUE);
+		response.setStatus(Boolean.FALSE);
 		MainResponseDTO<BookingRegistrationDTO> bookingResultDto = new MainResponseDTO<>();
 		BookingRegistrationDTO bookingResponse= new BookingRegistrationDTO();
 		bookingResponse.setRegDate("12/01/2018");
@@ -464,6 +493,12 @@ public class DemographicServiceTest {
 	@Test
 	public void getApplicationStatusTest() {
 		String preId = "98746563542672";
+byte[] encryptedDemographicDetails= {1,0,1,0,1,0};
+		
+		//Mockito.when(cryptoUtil.encrypt(Mockito.any(),Mockito.any())).thenReturn(encryptedDemographicDetails);
+		
+		preRegistrationEntity.setApplicantDetailJson(encryptedDemographicDetails);
+		preRegistrationEntity.setDemogDetailHash(new String(HashUtill.hashUtill(preRegistrationEntity.getApplicantDetailJson())));
 		MainListResponseDTO<PreRegistartionStatusDTO> response = new MainListResponseDTO<>();
 		List<PreRegistartionStatusDTO> statusList = new ArrayList<PreRegistartionStatusDTO>();
 		PreRegistartionStatusDTO statusDto = new PreRegistartionStatusDTO();
@@ -634,7 +669,7 @@ public class DemographicServiceTest {
 		String preRegId = "98746563542672";
 		preRegistrationEntity.setCreateDateTime(times);
 		preRegistrationEntity.setCreatedBy("9988905444");
-		preRegistrationEntity.setStatusCode("Pending_Appointment");
+		preRegistrationEntity.setStatusCode("Booked");
 		preRegistrationEntity.setUpdateDateTime(times);
 		preRegistrationEntity.setApplicantDetailJson(jsonTestObject.toJSONString().getBytes());
 		preRegistrationEntity.setPreRegistrationId("98746563542672");
@@ -701,6 +736,12 @@ public class DemographicServiceTest {
 
 	@Test
 	public void getPreRegistrationTest() {
+		byte[] encryptedDemographicDetails= {1,0,1,0,1,0};
+		
+		//Mockito.when(cryptoUtil.encrypt(Mockito.any(),Mockito.any())).thenReturn(encryptedDemographicDetails);
+		
+		preRegistrationEntity.setApplicantDetailJson(encryptedDemographicDetails);
+		preRegistrationEntity.setDemogDetailHash(new String(HashUtill.hashUtill(preRegistrationEntity.getApplicantDetailJson())));
 		Mockito.when(demographicRepository.findBypreRegistrationId("98746563542672")).thenReturn(preRegistrationEntity);
 		Mockito.when(cryptoUtil.decrypt(Mockito.any(), Mockito.any())).thenReturn(jsonObject.toString().getBytes());
 		MainListResponseDTO<DemographicResponseDTO> res = preRegistrationService.getDemographicData("98746563542672");
@@ -716,7 +757,7 @@ public class DemographicServiceTest {
 	@Test
 	public void updatePreRegistrationStatusTest() {
 		Mockito.when(demographicRepository.findBypreRegistrationId("98746563542672")).thenReturn(preRegistrationEntity);
-		UpdateResponseDTO<String> res = preRegistrationService.updatePreRegistrationStatus("98746563542672", "Booked");
+		MainResponseDTO<String> res = preRegistrationService.updatePreRegistrationStatus("98746563542672", "Booked");
 	}
 
 	@Test(expected = RecordNotFoundException.class)
@@ -733,8 +774,8 @@ public class DemographicServiceTest {
 
 	@Test
 	public void getApplicationByDateTest() {
-		String fromDate = "2018-12-06 09:49:29";
-		String toDate = "2018-12-06 12:59:29";
+		LocalDate fromDate =LocalDate.now(); 
+		LocalDate toDate =LocalDate.now();
 		MainListResponseDTO<String> response = new MainListResponseDTO<>();
 		List<String> preIds = new ArrayList<>();
 		List<DemographicEntity> details = new ArrayList<>();
@@ -748,19 +789,15 @@ public class DemographicServiceTest {
 
 		String dateFormat = "yyyy-MM-dd HH:mm:ss";
 		Date myFromDate;
-		try {
-			myFromDate = DateUtils.parseToDate(URLDecoder.decode(fromDate, "UTF-8"), dateFormat);
+			//myFromDate = DateUtils.parseToDate(URLDecoder.decode(fromDate, "UTF-8"), dateFormat);
 
-			Date myToDate = DateUtils.parseToDate(URLDecoder.decode(toDate, "UTF-8"), dateFormat);
-
-			Mockito.when(demographicRepository.findBycreateDateTimeBetween(
-					DateUtils.parseDateToLocalDateTime(myFromDate), DateUtils.parseDateToLocalDateTime(myToDate)))
+			//Date myToDate = DateUtils.parseToDate(URLDecoder.decode(toDate, "UTF-8"), dateFormat);
+LocalDateTime fromLocaldate=fromDate.atStartOfDay();
+			
+			LocalDateTime toLocaldate=toDate.atTime(23, 59, 59);
+			Mockito.when(demographicRepository.findBycreateDateTimeBetween(fromLocaldate,toLocaldate))
 					.thenReturn(details);
-		} catch (ParseException e) {
-			e.printStackTrace();
-		} catch (java.io.UnsupportedEncodingException e) {
-			e.printStackTrace();
-		}
+		
 		MainListResponseDTO<String> actualRes = preRegistrationService.getPreRegistrationByDate(fromDate, toDate);
 		assertEquals(actualRes.isStatus(), response.isStatus());
 
@@ -768,8 +805,12 @@ public class DemographicServiceTest {
 
 	@Test(expected = RecordNotFoundException.class)
 	public void getApplicationByDateFailureTest() {
-		String fromDate = "2018-12-06 09:49:29";
-		String toDate = "2018-12-06 12:59:29";
+		
+		LocalDate fromDate = LocalDate.now();
+		LocalDate toDate = LocalDate.now();
+		LocalDateTime fromLocaldate=fromDate.atStartOfDay();
+		
+		LocalDateTime toLocaldate=toDate.atTime(23, 59, 59);
 		MainListResponseDTO<String> response = new MainListResponseDTO<>();
 		List<String> preIds = new ArrayList<>();
 		DemographicEntity entity = new DemographicEntity();
@@ -780,25 +821,18 @@ public class DemographicServiceTest {
 
 		String dateFormat = "yyyy-MM-dd HH:mm:ss";
 		Date myFromDate;
-		try {
-			myFromDate = DateUtils.parseToDate(URLDecoder.decode(fromDate, "UTF-8"), dateFormat);
 
-			Date myToDate = DateUtils.parseToDate(URLDecoder.decode(toDate, "UTF-8"), dateFormat);
-
-			Mockito.when(demographicRepository.findBycreateDateTimeBetween(
-					DateUtils.parseDateToLocalDateTime(myFromDate), DateUtils.parseDateToLocalDateTime(myToDate)))
+			Mockito.when(demographicRepository.findBycreateDateTimeBetween(fromLocaldate,toLocaldate))
 					.thenReturn(null);
-		} catch (ParseException e) {
-			e.printStackTrace();
-		} catch (java.io.UnsupportedEncodingException e) {
-			e.printStackTrace();
-		}
 		preRegistrationService.getPreRegistrationByDate(fromDate, toDate);
 
 	}
-
-
-
+@Test(expected=RecordNotFoundException.class)
+public void getPreRegistrationByDateExceptionTest() {
+	LocalDate fromDate = LocalDate.now();
+	LocalDate toDate = LocalDate.now();
+	preRegistrationService.getPreRegistrationByDate(fromDate, toDate);
+}
 	/**
 	 * @throws Exception
 	 */
@@ -807,6 +841,7 @@ public class DemographicServiceTest {
 		SystemUnsupportedEncodingException exception = new SystemUnsupportedEncodingException(
 				ErrorCodes.PRG_PAM_APP_009.name(), ErrorMessages.UNSUPPORTED_ENCODING_CHARSET.name());
 
+		
 		MainListResponseDTO<String> response = new MainListResponseDTO<>();
 		List<String> preIds = new ArrayList<>();
 		List<DemographicEntity> details = new ArrayList<>();
@@ -819,12 +854,11 @@ public class DemographicServiceTest {
 		String dateFormat = "yyyy-MM-dd HH:mm:ss";
 		Date myFromDate;
 		Date myToDate;
-		myFromDate = DateUtils.parseToDate(URLDecoder.decode(fromDate, "UTF-8"), dateFormat);
+LocalDateTime fromLocaldate=fromDate.atStartOfDay();
+		
+		LocalDateTime toLocaldate=toDate.atTime(23, 59, 59);
 
-		myToDate = DateUtils.parseToDate(URLDecoder.decode(toDate, "UTF-8"), dateFormat);
-
-		Mockito.when(demographicRepository.findBycreateDateTimeBetween(DateUtils.parseDateToLocalDateTime(myFromDate),
-				DateUtils.parseDateToLocalDateTime(myToDate))).thenThrow(exception);
+		Mockito.when(demographicRepository.findBycreateDateTimeBetween(fromLocaldate,toLocaldate)).thenThrow(exception);
 		preRegistrationService.getPreRegistrationByDate(fromDate, toDate);
 
 	}
@@ -832,12 +866,11 @@ public class DemographicServiceTest {
 	/**
 	 * @throws Exception
 	 */
-	@Test(expected = io.mosip.kernel.core.exception.ParseException.class)
+	@Test(expected = DateParseException.class)
 	public void getBydateFailureParseCheck() throws Exception {
 		DateParseException exception = new DateParseException(ErrorCodes.PRG_PAM_APP_011.name(),
 				ErrorMessages.UNSUPPORTED_DATE_FORMAT.name());
-		String fromDate = "2018-12-06 09:49:29";
-		String toDate = "2018-12-06 12:59:29";
+		
 		MainListResponseDTO<String> response = new MainListResponseDTO<>();
 		List<String> preIds = new ArrayList<>();
 		List<DemographicEntity> details = new ArrayList<>();
@@ -848,23 +881,25 @@ public class DemographicServiceTest {
 		preIds.add("98746563542672");
 		response.setResponse(preIds);
 
-		String dateFormat = "yyyy-MM-dd HH:mm:ss.SSS";
-		Date myFromDate;
-		Date myToDate;
+		
+LocalDateTime fromLocaldate=fromDate.atStartOfDay();
+		
+		LocalDateTime toLocaldate=toDate.atTime(23, 59, 59);
 
-		myFromDate = DateUtils.parseToDate(URLDecoder.decode(fromDate, "UTF-0"), dateFormat);
+		
 
-		myToDate = DateUtils.parseToDate(URLDecoder.decode(toDate, "UTF-8"), dateFormat);
-
-		Mockito.when(demographicRepository.findBycreateDateTimeBetween(DateUtils.parseDateToLocalDateTime(myFromDate),
-				DateUtils.parseDateToLocalDateTime(myToDate))).thenThrow(exception);
+		Mockito.when(demographicRepository.findBycreateDateTimeBetween(fromLocaldate,toLocaldate)).thenThrow(exception);
 		preRegistrationService.getPreRegistrationByDate(fromDate, toDate);
 
 	}
 	
 	@Test
-	public void callGetAppointmentDetailsRestServiceTest() throws ParseException {
-
+	public void callGetAppointmentDetailsRestServiceTest() throws ParseException, org.json.simple.parser.ParseException {
+    byte[] encryptedDemographicDetails= jsonTestObject.toJSONString().getBytes();
+		
+		Mockito.when(cryptoUtil.encrypt(Mockito.any(),Mockito.any())).thenReturn(encryptedDemographicDetails);
+		
+		preRegistrationEntity.setApplicantDetailJson(encryptedDemographicDetails);
 		RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
 		Mockito.when(restTemplateBuilder.build()).thenReturn(restTemplate);
 		String userId = "9988905444";
@@ -874,7 +909,6 @@ public class DemographicServiceTest {
 
 		viewDto = new PreRegistrationViewDTO();
 		viewDto.setPreRegistrationId("98746563542672");
-		viewDto.setFullname("rupika");
 		viewDto.setStatusCode(preRegistrationEntity.getStatusCode());
 		viewDto.setBookingRegistrationDTO(bookingRegistrationDTO);
 
@@ -884,6 +918,8 @@ public class DemographicServiceTest {
 		Mockito.when(cryptoUtil.decrypt(Mockito.any(), Mockito.any())).thenReturn(userEntityDetails.get(0).getApplicantDetailJson());
 		Mockito.when(demographicRepository.findByCreatedBy(userId, "Consumed")).thenReturn(userEntityDetails);
 		BookingRegistrationDTO bookingRegistrationDTO = null;
+		//Mockito.when(serviceUtil.getPostalCode(Mockito.any(), Mockito.any())).thenReturn("841232");
+		//Mockito.when(serviceUtil.getValueFromIdentity(Mockito.any(), Mockito.any())).thenReturn(JSONArray)
 		MainResponseDTO dto= new MainResponseDTO<>();
 		ResponseEntity<MainResponseDTO> respEntity = new ResponseEntity<>(dto, HttpStatus.OK);
 		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),

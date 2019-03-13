@@ -16,7 +16,7 @@ public final class StatusMessage {
 	public static final String PACKET_BIOMETRIC_INSERTION_TO_ABIS = "Packet biometric insertion to ABIS is failed";
 
 	/** The Constant PACKET_BIODEDUPE_SUCCESS. */
-	public static final String PACKET_BIODEDUPE_SUCCESS = "Packet biodedupe successfull";
+	public static final String PACKET_BIODEDUPE_SUCCESS = "Packet biodedupe successful";
 
 	/** The Constant PACKET_BIOMETRIC_POTENTIAL_MATCH. */
 	public static final String PACKET_BIOMETRIC_POTENTIAL_MATCH = "Potential match found while processing bio dedupe";

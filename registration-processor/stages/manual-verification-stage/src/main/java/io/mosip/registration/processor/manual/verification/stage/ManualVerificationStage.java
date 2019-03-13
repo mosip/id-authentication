@@ -47,7 +47,7 @@ public class ManualVerificationStage extends MosipVerticleAPIManager{
 	/**
 	 * vertx Cluster Manager Url
 	 */
-	@Value("${vertx.ignite.configuration}")
+	@Value("${vertx.cluster.configuration}")
 	private String clusterManagerUrl;
 	/** The reg proc logger. */
 	private static Logger regProcLogger = RegProcessorLogger.getLogger(ManualVerificationStage.class);

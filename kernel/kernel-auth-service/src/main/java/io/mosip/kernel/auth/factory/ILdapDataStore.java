@@ -67,6 +67,7 @@ public class ILdapDataStore implements IDataStore {
 	 MosipEnvironment environment;
 	
 	private LdapConnection createAnonymousConnection() throws Exception {
+		LdapNetworkConnection network = new LdapNetworkConnection(dataBaseConfig.getUrl(),Integer.valueOf(dataBaseConfig.getPort()));
 		LdapConnection connection = new LdapNetworkConnection(dataBaseConfig.getUrl(),Integer.valueOf(dataBaseConfig.getPort()));
 		return connection;
 	}

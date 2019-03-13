@@ -47,6 +47,13 @@ public class MosipEnvironment implements EnvironmentAware {
 	
 	private String otpPrimaryLanguage = "auth.primary.language";
 	
+	private String uinGetDetailsUrl = "idrepo.api.getuindetails";
+	
+	public String getUinGetDetailsUrl()
+	{
+		return environment.getProperty(uinGetDetailsUrl);
+	}
+	
 	public String getPrimaryLanguage() {
 		return environment.getProperty(otpPrimaryLanguage);
 	}

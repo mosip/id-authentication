@@ -17,6 +17,8 @@ import io.mosip.kernel.core.fsadapter.exception.FSAdapterException;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.preregistration.core.common.dto.ExceptionJSONInfoDTO;
 import io.mosip.preregistration.core.common.dto.MainListResponseDTO;
+import io.mosip.preregistration.core.exception.DecryptionFailedException;
+import io.mosip.preregistration.core.exception.EncryptionFailedException;
 import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
 import io.mosip.preregistration.core.exception.TableNotAccessibleException;
 import io.mosip.preregistration.documents.code.DocumentStatusMessages;
@@ -388,5 +390,40 @@ public class DocumentExceptionHandler {
 	public String getCurrentResponseTime() {
 		return DateUtils.formatDate(new Date(System.currentTimeMillis()), dateTimeFormat);
 	}
+	
+	/**
+	 * @param e
+	 *            pass the exception
+	 * @param request
+	 *            pass the request
+	 * @return response for EncryptionFailedException
+	 */
+	@ExceptionHandler(EncryptionFailedException.class)
+	public ResponseEntity<MainListResponseDTO> encryptionFailedException(final EncryptionFailedException e,
+			WebRequest request) {
+		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getErrorText());
+		MainListResponseDTO<?> errorRes = new MainListResponseDTO<>();
+		errorRes.setErr(errorDetails);
+		errorRes.setStatus(responseStatus);
+		errorRes.setResTime(getCurrentResponseTime());
+		return new ResponseEntity<>(errorRes, HttpStatus.OK);
+	}
 
+	/**
+	 * @param e
+	 *            pass the exception
+	 * @param request
+	 *            pass the request
+	 * @return response for DecryptionFailedException
+	 */
+	@ExceptionHandler(DecryptionFailedException.class)
+	public ResponseEntity<MainListResponseDTO> decryptionFailedException(final DecryptionFailedException e,
+			WebRequest request) {
+		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getErrorText());
+		MainListResponseDTO<?> errorRes = new MainListResponseDTO<>();
+		errorRes.setErr(errorDetails);
+		errorRes.setStatus(responseStatus);
+		errorRes.setResTime(getCurrentResponseTime());
+		return new ResponseEntity<>(errorRes, HttpStatus.OK);
+	}
 }

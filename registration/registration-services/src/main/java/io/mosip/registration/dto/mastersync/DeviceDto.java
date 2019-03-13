@@ -37,8 +37,23 @@ public class DeviceDto extends MasterSyncBaseDto {
 	 * Field for language code
 	 */
 	private String langCode;
+	
+	/**
+	 * Field for language code
+	 */
+	private String validityDateTime;
 
 	private Boolean isActive;
+	
+	
+
+	public String getValidityDateTime() {
+		return validityDateTime;
+	}
+
+	public void setValidityDateTime(String validityDateTime) {
+		this.validityDateTime = validityDateTime;
+	}
 
 	public Boolean getIsActive() {
 		return isActive;
