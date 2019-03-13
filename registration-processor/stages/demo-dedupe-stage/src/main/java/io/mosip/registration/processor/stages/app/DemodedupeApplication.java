@@ -23,9 +23,5 @@ public class DemodedupeApplication {
 
 		DemodedupeStage demodedupeStage = configApplicationContext.getBean(DemodedupeStage.class);
 		demodedupeStage.deployVerticle();
-		MessageDTO dto = new MessageDTO();
-		dto.setRid("10011100110015620190305172945");
-		dto.setIsValid(false);
-		demodedupeStage.process(dto);
 	}
 }
