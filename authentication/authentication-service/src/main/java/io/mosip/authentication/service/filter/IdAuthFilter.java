@@ -1,11 +1,13 @@
 package io.mosip.authentication.service.filter;
 
+import java.io.IOException;
 import java.util.Map;
 
 import org.springframework.stereotype.Component;
 
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
+import io.mosip.kernel.core.util.DateUtils;
 
 /**
  * The Class IdAuthFilter.
@@ -14,6 +16,12 @@ import io.mosip.authentication.core.exception.IdAuthenticationAppException;
  */
 @Component
 public class IdAuthFilter extends BaseAuthFilter {
+	
+	private static final String ACTIVE_STATUS = "active";
+	
+	private static final String EXPIRY_DT = "expiryDt";
+	
+	private static final String STATUS = "status";
 	
 	/** The Constant REQUEST. */
 	private static final String REQUEST = "request";
@@ -66,44 +74,56 @@ public class IdAuthFilter extends BaseAuthFilter {
 		return true;
 	}
 	
-	private void licenseKeyMISPMapping(String licenseKey,String mispId) throws IdAuthenticationAppException {
-		String licensekeyMappingJson=env.getProperty("licensekey.mispmapping."+licenseKey+"."+mispId);
-		
-	  if(null!=licensekeyMappingJson) {
-//		  String lkExpiryDt = JsonPath.read(licensekeyMappingJson, "expiryDt"); 
-//		if(DateUtils.convertUTCToLocalDateTime(lkExpiryDt).isBefore(DateUtils.getUTCCurrentDateTime())){
-//			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.MISP_LICENSEKEYEXP);
-//		}
-//		String lkStatus = JsonPath.read(licensekeyMappingJson, "status");
-//		if(lkStatus!="active"){
-//			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.MISP_LKINACTIVE);
-//		}
+	private void licenseKeyMISPMapping(String licenseKey, String mispId) throws IdAuthenticationAppException {
+		String licensekeyMappingJson = env.getProperty("licensekey.mispmapping." + licenseKey + "." + mispId);
+		Map<String, String> licenseKeyMap = null;
+		if (null != licensekeyMappingJson) {
+			try {
+				licenseKeyMap = mapper.readValue(mapper.writeValueAsBytes(licensekeyMappingJson), Map.class);
+			} catch (IOException e) {
+				throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS);
+			}
+			String lkExpiryDt = licenseKeyMap.get(EXPIRY_DT);
+			if (DateUtils.convertUTCToLocalDateTime(lkExpiryDt).isBefore(DateUtils.getUTCCurrentDateTime())) {
+				throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.LICENSEKEY_EXPIRED);
+			}
+			String lkStatus = licenseKeyMap.get(STATUS);
+			if (lkStatus != ACTIVE_STATUS) {
+				throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.LICENSEKEY_SUSPENDED);
+			}
 		} else {
-			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.LICENSEKEY_EXPIRED);
+			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.INVALID_LICENSEKEY);
 		}
 
 	}
-    
+
 	public void validPartnerId(String partnerId) throws IdAuthenticationAppException {
 		String partnerIdJson = env.getProperty("partner." + partnerId);
+		Map<String, String> partnerIdMap = null;
 		if (null == partnerIdJson) {
-			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.LICENSEKEY_EXPIRED);
+			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.PARTNER_NOT_REGISTERED);
 		} else {
-//			 String policyId = JsonPath.read(partnerIdJson, "policyId");
-//		   if(null==policyId || policyId.equalsIgnoreCase("") )	
-//			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.POLICY_NOTREGISTERED);
-//		   String partnerStatus = JsonPath.read(partnerIdJson, "status"); 
-//		   if(partnerStatus!="active") {
-//			   throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.PARTNER_NOTACTIVE);   
-//		   }
+			try {
+				partnerIdMap = mapper.readValue(mapper.writeValueAsBytes(partnerIdJson), Map.class);
+			} catch (IOException e) {
+				throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS);
+			}
+			 String policyId = partnerIdMap.get("policyId");
+			 if(null==policyId || policyId.equalsIgnoreCase("")) {
+			  throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.PARTNER_NOT_REGISTERED);//FIXME
+			 } 
+			 String partnerStatus = partnerIdMap.get(STATUS);
+			 if(partnerStatus!=ACTIVE_STATUS) {
+			 throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.PARTNER_DEACTIVATED);
+			 }
 		}
 	}
 
 	public void validMISPPartnerMapping(String patnerId, String mispId) throws IdAuthenticationAppException {
-		String partnerPolicyMappingJson = env.getProperty("partner.policy." + patnerId + "." + mispId);
-		if (partnerPolicyMappingJson != "true") {
+		boolean partnerPolicyMappingJson = env.getProperty("partner.policy." + patnerId + "." + mispId,boolean.class);
+		if (partnerPolicyMappingJson != true) {
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.PARTNER_NOT_MAPPED);
 		}
-	 }
+	}
 	
 }

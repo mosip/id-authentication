@@ -80,8 +80,12 @@ public enum IdAuthenticationErrorConstants {
 	INVALID_TIMEOUT("IDA-RST-005", "Timeout is invalid"), CLIENT_ERROR("IDA-RST-006", "4XX - Client Error occured"),
 	SERVER_ERROR("IDA-RST-007", "5XX - Server Error occured"),
 	CONNECTION_TIMED_OUT("IDA-RST-008", "Connection timed out"),
-
-	;
+	
+	//Public key Expired
+	MOSIP_PUBLICKEYEXP("IDA-MPA-005","MOSIP Public Key Expired");
+	
+	/*//LICENSE key Expired
+	MISP_LICENSEKEYEXP("IDA-MPA-016","License key of MISP has expired");*/
 
 	private final String errorCode;
 	private final String errorMessage;
