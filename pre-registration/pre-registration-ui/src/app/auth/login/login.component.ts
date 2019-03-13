@@ -54,7 +54,6 @@ export class LoginComponent implements OnInit {
     localStorage.clear();
     localStorage.setItem('loggedOut', loggedOut);
     localStorage.setItem('langCode', this.langCode);
-
     this.showMessage();
   }
 
@@ -89,22 +88,24 @@ export class LoginComponent implements OnInit {
       if (!phoneRegex.test(this.inputContactDetails)) {
         this.errorMessage = 'Invalid email Entered';
       }
-    } 
+    }
     console.log('errorMessage', this.errorMessage);
   }
 
-
   loadConfigs() {
-    this.dataService.getConfig().subscribe(response => {
-      this.configService.setConfig(response);
-      this.setTimer();
-      this.loadLanguagesWithConfig();
-    }, error => {
-      this.router.navigate(['error']);
-    });
+    this.dataService.getConfig().subscribe(
+      response => {
+        this.configService.setConfig(response);
+        this.setTimer();
+        this.loadLanguagesWithConfig();
+      },
+      error => {
+        this.router.navigate(['error']);
+      }
+    );
   }
 
-  loadLanguagesWithConfig () {
+  loadLanguagesWithConfig() {
     const primaryLang = this.configService.getConfigByKey('mosip.primary-language');
     const secondaryLang = this.configService.getConfigByKey('mosip.secondary-language');
     if (appConstants.languageMapping[primaryLang] && appConstants.languageMapping[secondaryLang]) {
@@ -234,26 +235,29 @@ export class LoginComponent implements OnInit {
 
       this.dataService.sendOtp(this.inputContactDetails).subscribe(response => {
         console.log(response);
-      })
+      });
 
       // dynamic update of button text for Resend and Verify
     } else if (this.showVerify && this.errorMessage === undefined) {
-      this.dataService.verifyOtp(this.inputContactDetails, this.inputOTP).subscribe(response => {
-        console.log(response);
-        if (!response['errors']) {
-          clearInterval(this.timer);
-          localStorage.setItem('loggedIn', 'true');
-          this.authService.setToken();
+      this.dataService.verifyOtp(this.inputContactDetails, this.inputOTP).subscribe(
+        response => {
+          console.log(response);
+          if (!response['errors']) {
+            clearInterval(this.timer);
+            localStorage.setItem('loggedIn', 'true');
+            this.authService.setToken();
 
-          this.regService.setLoginId(this.inputContactDetails);
-          this.router.navigate(['dashboard']);
-        } else {
-          console.log(response['error']);
+            this.regService.setLoginId(this.inputContactDetails);
+            this.router.navigate(['dashboard']);
+          } else {
+            console.log(response['error']);
+            this.showOtpMessage();
+          }
+        },
+        error => {
           this.showOtpMessage();
         }
-      }, error => {
-        this.showOtpMessage();
-      });
+      );
     }
   }
 
