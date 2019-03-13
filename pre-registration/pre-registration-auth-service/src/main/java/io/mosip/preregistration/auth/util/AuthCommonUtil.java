@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import java.util.Date;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -15,10 +17,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
-import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.preregistration.auth.dto.MainRequestDTO;
 import io.mosip.preregistration.auth.dto.MainResponseDTO;
-import io.mosip.preregistration.core.config.LoggerConfiguration;
 
 /**
  * 
@@ -27,6 +28,10 @@ import io.mosip.preregistration.core.config.LoggerConfiguration;
  */
 @Component
 public class AuthCommonUtil {
+	
+	
+	@Value("${mosip.utc-datetime-pattern}")
+	private String utcDateTimePattern;
 	
 	/**
 	 * Autowired reference for {@link #restTemplateBuilder}
@@ -92,6 +97,7 @@ public class AuthCommonUtil {
 		
 	}
 	
+
 	public  List<String> validateUserIdAndLangCode(String userId,String langCode) {
 		List<String> list=new ArrayList<>();
 		if(langCode == null || userId == null) {
@@ -104,5 +110,10 @@ public class AuthCommonUtil {
 			list.add(emailChannel);
 			}
 		return list;
+	}
+
+	public String getCurrentResponseTime() {
+		return DateUtils.formatDate(new Date(System.currentTimeMillis()), utcDateTimePattern);
+
 	}
 }

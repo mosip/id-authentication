@@ -15,7 +15,8 @@
     "action_send": "Send OTP",
     "action_resend": "Resend",
     "action_verify": "Verify",
-    "logout_msg":"Applicant has to login with same Mobile/Email to access the created applications"
+    "logout_msg":"Applicant has to login with same Mobile/Email to access the created applications",
+    "otp_valid_label": "Valid for"
   },
 
   "stepper": {
@@ -126,7 +127,7 @@
     "login": {
       "msg1": "Email ID is not valid",
       "msg2": "Phone number is not valid",
-      "msg3": "OTP enter is not valid",
+      "msg3": "OTP entered is not valid",
       "msg4": "Login Successful"
     },
     "demographicDetails": {

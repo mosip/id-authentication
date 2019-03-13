@@ -4,6 +4,8 @@
  */
 package io.mosip.preregistration.documents.controller;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -19,11 +21,11 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.preregistration.core.common.dto.DocumentDeleteResponseDTO;
 import io.mosip.preregistration.core.common.dto.DocumentMultipartResponseDTO;
 import io.mosip.preregistration.core.common.dto.MainListResponseDTO;
 import io.mosip.preregistration.core.config.LoggerConfiguration;
 import io.mosip.preregistration.documents.dto.DocumentCopyResponseDTO;
-import io.mosip.preregistration.documents.dto.DocumentDeleteResponseDTO;
 import io.mosip.preregistration.documents.dto.DocumentResponseDTO;
 import io.mosip.preregistration.documents.service.DocumentService;
 import io.swagger.annotations.Api;
@@ -35,11 +37,8 @@ import io.swagger.annotations.ApiResponses;
 /**
  * This class provides different API's to perform operations on Document upload.
  * 
- * @author Rajath KR
  * @author Kishan Rathore
- * @author Tapaswini Behera
- * @author Jagadishwari S
- * @author Ravi C Balaji
+ * @author Rajath KR
  * @since 1.0.0
  */
 @RestController
@@ -100,8 +99,8 @@ public class DocumentController {
 	@ApiOperation(value = "Copy uploaded document")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Document successfully copied"),
 			@ApiResponse(code = 400, message = "Document copying failed") })
-	public ResponseEntity<MainListResponseDTO<DocumentCopyResponseDTO>> copyDocument(@RequestParam String catCode,
-			@RequestParam String sourcePrId, @RequestParam String destinationPreId) {
+	public ResponseEntity<MainListResponseDTO<DocumentCopyResponseDTO>> copyDocument(@Valid @RequestParam(required=true) String catCode,
+			@Valid @RequestParam(required=true) String sourcePrId, @Valid @RequestParam(required=true) String destinationPreId) {
 
 		log.info("sessionId", "idType", "id",
 				"In copyDocument method of document controller to copy the document for request " + catCode + ","
@@ -123,7 +122,7 @@ public class DocumentController {
 			@ApiResponse(code = 400, message = "Documents failed to reterive") })
 
 	public ResponseEntity<MainListResponseDTO<DocumentMultipartResponseDTO>> getAllDocumentforPreid(
-			@RequestParam String pre_registration_id) {
+			@Valid @RequestParam(required=true) String pre_registration_id) {
 		log.info("sessionId", "idType", "id",
 				"In getAllDocumentforPreid method of document controller to get all the document for pre_registration_id "
 						+ pre_registration_id);
@@ -143,9 +142,8 @@ public class DocumentController {
 	@ApiOperation(value = "Delete document by document Id")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Document successfully deleted"),
 			@ApiResponse(code = 400, message = "Document failed to delete") })
-
 	public ResponseEntity<MainListResponseDTO<DocumentDeleteResponseDTO>> deleteDocument(
-			@RequestParam String documentId) {
+			@Valid @RequestParam(required=true) String documentId) {
 		log.info("sessionId", "idType", "id",
 				"In deleteDocument method of document controller to delete the document for documentId " + documentId);
 		return ResponseEntity.status(HttpStatus.OK).body(documentUploadService.deleteDocument(documentId));
@@ -164,7 +162,7 @@ public class DocumentController {
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Documents successfully deleted"),
 			@ApiResponse(code = 400, message = "Documents failed to delete") })
 	public ResponseEntity<MainListResponseDTO<DocumentDeleteResponseDTO>> deleteAllByPreId(
-			@RequestParam String pre_registration_id) {
+		@Valid @RequestParam(required=true) String pre_registration_id) {
 		log.info("sessionId", "idType", "id",
 				"In deleteDocument method of document controller to delete all the document for preId "
 						+ pre_registration_id);

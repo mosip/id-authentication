@@ -4,11 +4,10 @@ import { Injectable } from '@angular/core';
   providedIn: 'root'
 })
 export class ConfigService {
-
   configs = {};
 
   public setConfig(configJson: any) {
-    this.configs = configJson;
+    this.configs = configJson.response;
     console.log(this.configs);
   }
 
@@ -16,4 +15,7 @@ export class ConfigService {
     return this.configs[key];
   }
 
+  public getConfig() {
+    return { ...this.configs };
+  }
 }

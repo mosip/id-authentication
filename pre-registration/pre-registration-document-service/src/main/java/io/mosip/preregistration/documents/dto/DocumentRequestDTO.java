@@ -50,33 +50,9 @@ public class DocumentRequestDTO implements Serializable {
 	private String docTypeCode;
 
 	/**
-	 * Document file format
-	 */
-	@JsonProperty("doc_file_format")
-	private String docFileFormat;
-
-	/**
-	 * Status code
-	 */
-	@JsonProperty("status_code")
-	private String statusCode;
-
-	/**
-	 * Uploaded Date Time
-	 */
-	@JsonProperty("upload_date_time")
-	private Date uploadDateTime;
-	
-	/**
 	 * Uploaded lang code
 	 */
 	@JsonProperty("lang_code")
 	private String langCode;
-
-	/**
-	 * uploaded By
-	 */
-	@JsonProperty("upload_by")
-	private String uploadBy;
 
 }

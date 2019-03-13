@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.io.IOUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -38,15 +39,16 @@ import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.core.virusscanner.spi.VirusScanner;
 import io.mosip.preregistration.core.code.AuditLogVariables;
 import io.mosip.preregistration.core.common.dto.AuditRequestDto;
+import io.mosip.preregistration.core.common.dto.DocumentDeleteResponseDTO;
 import io.mosip.preregistration.core.common.dto.DocumentMultipartResponseDTO;
 import io.mosip.preregistration.core.common.dto.MainListResponseDTO;
 import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
 import io.mosip.preregistration.core.exception.TableNotAccessibleException;
 import io.mosip.preregistration.core.util.AuditLogUtil;
 import io.mosip.preregistration.core.util.CryptoUtil;
+import io.mosip.preregistration.core.util.HashUtill;
 import io.mosip.preregistration.documents.code.DocumentStatusMessages;
 import io.mosip.preregistration.documents.dto.DocumentCopyResponseDTO;
-import io.mosip.preregistration.documents.dto.DocumentDeleteResponseDTO;
 import io.mosip.preregistration.documents.dto.DocumentRequestDTO;
 import io.mosip.preregistration.documents.dto.DocumentResponseDTO;
 import io.mosip.preregistration.documents.entity.DocumentEntity;
@@ -58,10 +60,13 @@ import io.mosip.preregistration.documents.exception.DocumentSizeExceedException;
 import io.mosip.preregistration.documents.exception.DocumentVirusScanException;
 import io.mosip.preregistration.documents.exception.FSServerException;
 import io.mosip.preregistration.documents.repository.DocumentRepository;
-import io.mosip.preregistration.documents.repository.util.DocumentDAO;
 import io.mosip.preregistration.documents.service.DocumentService;
 import io.mosip.preregistration.documents.service.util.DocumentServiceUtil;
 
+/**
+ * @author Sanober Noor
+ *@since 1.0.0
+ */
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class DocumentUploadServiceTest {
@@ -83,8 +88,8 @@ public class DocumentUploadServiceTest {
 	@MockBean
 	private DocumentRepository documentRepository;
 
-	@Autowired
-	private DocumentDAO documnetDAO;
+//	@Autowired
+//	private DocumentDAO documnetDAO;
 
 	@MockBean
 	private AuditLogUtil auditLogUtil;
@@ -98,10 +103,8 @@ public class DocumentUploadServiceTest {
 	private MockMultipartFile mockMultipartFileSizeCheck;
 	private MockMultipartFile mockMultipartFileExtnCheck;
 	private MockMultipartFile mockMultipartSaveCheck;
-	DocumentRequestDTO documentDto = new DocumentRequestDTO("48690172097498", "address", "POA", "PDF",
-			"Pending_Appointment", new Date(), "ENG", "Jagadishwari");
-	DocumentRequestDTO dummyDto = new DocumentRequestDTO("48690172097499", "address", "POI", "PDF",
-			"Pending_Appointment", new Date(), "ENG", "Jagadishwari");
+	DocumentRequestDTO documentDto = new DocumentRequestDTO("48690172097498", "address", "POA", "ENG");
+	DocumentRequestDTO dummyDto = new DocumentRequestDTO("48690172097499", "address", "POI", "ENG");
 	private DocumentEntity entity;
 	private DocumentEntity copyEntity;
 	String documentId;
@@ -126,16 +129,12 @@ public class DocumentUploadServiceTest {
 		docJson = "{\"id\": \"mosip.pre-registration.document.upload\",\"ver\" : \"1.0\","
 				+ "\"reqTime\" : \"2018-12-28T05:23:08.019Z\",\"request\" :"
 				+ "{\"pre_registartion_id\" : \"86710482195706\",\"doc_cat_code\" "
-				+ ": \"POA\",\"doc_typ_code\" : \"address\",\"lang_code\":\"ENG\","
-				+ "\"doc_file_format\" : \"pdf\",\"status_code\" : \"Pending-Appoinment\","
-				+ "\"upload_by\" : \"9900806086\",\"upload_date_time\" : \"2018-12-28T05:23:08.019Z\"}}";
+				+ ": \"POA\",\"doc_typ_code\" : \"address\",\"lang_code\":\"ENG\"}}";
 
 		errJson = "{\"id\": \"mosip.pre-registration.document.upload\",\"ver\" : \"1.0\","
 				+ "\"reqTime\" : \"2018-12-28T05:23:08.019Z\",\"request\" :"
 				+ "{\"pre_registartion_id\" : \"86710482195706\",\"doc_cat_code\" "
-				+ ": \"\",\"doc_typ_code\" : \"address\",\"lang_code\":\"ENG\","
-				+ "\"doc_file_format\" : \"pdf\",\"status_code\" : \"Pending-Appoinment\","
-				+ "\"upload_by\" : \"9900806086\",\"upload_date_time\" : \"2018-12-28T05:23:08.019Z\"}}";
+				+ ": \"\",\"doc_typ_code\" : \"address\",\"lang_code\":\"ENG\"}}";
 
 		ClassLoader classLoader = getClass().getClassLoader();
 
@@ -163,10 +162,12 @@ public class DocumentUploadServiceTest {
 				new FileInputStream(fileSaveCheck));
 
 		mockMultipartFile = new MockMultipartFile("file", "Doc.pdf", "mixed/multipart", new FileInputStream(file));
+		InputStream sourceFile = new FileInputStream(file);
+		byte[] cephBytes = IOUtils.toByteArray(sourceFile);
 
 		entity = new DocumentEntity("1", "48690172097498", "Doc.pdf", "address", "POA", "PDF", "Pending_Appointment",
 				"ENG", "Jagadishwari", DateUtils.parseDateToLocalDateTime(new Date()), "Jagadishwari",
-				DateUtils.parseDateToLocalDateTime(new Date()), DateUtils.parseDateToLocalDateTime(new Date()),"","");
+				DateUtils.parseDateToLocalDateTime(new Date()), DateUtils.parseDateToLocalDateTime(new Date()),"",new String(HashUtill.hashUtill(cephBytes)));
 
 		copyEntity = new DocumentEntity("2", "48690172097499", "Doc.pdf", "address", "POA", "PDF",
 				"Pending_Appointment", "ENG", "Jagadishwari", DateUtils.parseDateToLocalDateTime(new Date()),
@@ -463,7 +464,7 @@ public class DocumentUploadServiceTest {
 		allDocDto.setDoc_id(entity.getDocumentId());
 		allDocDto.setDoc_typ_code(entity.getDocTypeCode());
 		allDocDto.setPrereg_id(entity.getPreregId());
-		//documentGetAllDtos.add(allDocDto);
+		documentGetAllDtos.add(allDocDto);
 		MainListResponseDTO<DocumentMultipartResponseDTO> responseDto = new MainListResponseDTO<>();
 		responseDto.setResponse(documentGetAllDtos);
 
