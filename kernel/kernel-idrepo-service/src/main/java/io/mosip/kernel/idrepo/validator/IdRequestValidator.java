@@ -172,7 +172,7 @@ public class IdRequestValidator implements Validator {
 			validateVersion(request.getVersion(), errors);
 		}
 
-		if (!errors.hasErrors()) {
+		if (!errors.hasErrors() && Objects.nonNull(request.getId())) {
 			if (request.getId().equals(id.get(CREATE))) {
 				validateStatus(request.getStatus(), errors, CREATE);
 				LocalDateTime startTime = DateUtils.getUTCCurrentDateTime();
