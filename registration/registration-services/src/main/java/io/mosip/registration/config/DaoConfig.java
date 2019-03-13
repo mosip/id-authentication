@@ -26,9 +26,6 @@ import io.mosip.kernel.dataaccess.hibernate.config.HibernateDaoConfig;
  *
  */
 public class DaoConfig extends HibernateDaoConfig {
-	
-	@Autowired
-	private Environment environment;
 
 	private static DataSource dataSource;
 	
@@ -62,6 +59,8 @@ public class DaoConfig extends HibernateDaoConfig {
 		String profile = System.getProperty("spring.profiles.active") != null ? 
 				System.getProperty("spring.profiles.active") :
 			"integ";
+				
+		System.out.println("--------------------- Spring - " + profile + "---------------- properties loaded");
 		PropertyPlaceholderConfigurer ppc = new PropertyPlaceholderConfigurer();
 		Resource[] resources = new ClassPathResource[] { new ClassPathResource("spring.properties") , 
 				new ClassPathResource("spring-"+ profile + ".properties")};
@@ -71,6 +70,7 @@ public class DaoConfig extends HibernateDaoConfig {
 		properties.putAll(propertiesConfig().getDBProps());
 
 		ppc.setProperties(properties);
+		ppc.setTrimValues(true);
 
 		return ppc;
 	}
