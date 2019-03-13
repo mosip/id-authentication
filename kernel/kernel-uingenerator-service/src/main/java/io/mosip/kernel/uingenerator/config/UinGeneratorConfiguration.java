@@ -62,10 +62,8 @@ public class UinGeneratorConfiguration implements EnvironmentAware {
 	/**
 	 * Loads config server values
 	 *
-	 * @param env
-	 *            env
 	 * @return PropertySourcesPlaceholderConfigurer
-	 * @throws IOException
+	 * @throw IOException
 	 */
 	@Bean
 	@Autowired
@@ -98,8 +96,6 @@ public class UinGeneratorConfiguration implements EnvironmentAware {
 	/**
 	 * Gets list of application name mentioned in bootstrap.properties
 	 * 
-	 * @param env
-	 *            env
 	 * @return AppNames
 	 */
 	public List<String> getAppNames() {

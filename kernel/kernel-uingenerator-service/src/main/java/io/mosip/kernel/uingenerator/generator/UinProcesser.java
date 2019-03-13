@@ -56,6 +56,8 @@ public class UinProcesser {
 
 	/**
 	 * Create list of uins
+	 * 
+	 * @return List of uins
 	 */
 	public List<UinEntity> generateUins() {
 		return new ArrayList<>(uinGeneratorImpl.generateId());

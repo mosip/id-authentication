@@ -25,7 +25,10 @@ public interface UinGeneratorService {
 	/**
 	 * Upodate the status of the Uin from ISSUED to ASSIGNED
 	 * 
-	 * @return
+	 * @param uin 
+	 *          pass uin object as param
+	 * 
+	 * @return UinStatusUpdateReponseDto
 	 */
 	UinStatusUpdateReponseDto updateUinStatus(JsonObject uin);
 

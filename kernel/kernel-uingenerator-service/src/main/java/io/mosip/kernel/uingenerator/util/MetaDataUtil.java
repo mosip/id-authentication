@@ -24,7 +24,8 @@ public class MetaDataUtil {
 	 * 
 	 * @param entity
 	 *            entity
-	 * @return Entity with metadata
+	 * @return T 
+	 * 			Entity with metadata
 	 */
 	public <T extends BaseEntity> T setMetaData(T entity) {
 		String contextUser = UinGeneratorConstant.DEFAULTADMIN_MOSIP_IO;
@@ -40,7 +41,8 @@ public class MetaDataUtil {
 	 * 
 	 * @param entity
 	 *            entity
-	 * @return Entity with metadata
+	 * @return T 
+	 * 			Entity with metadata
 	 */
 	public <T extends BaseEntity> T setMetaDataUpdate(T entity) {
 		String contextUser = UinGeneratorConstant.DEFAULTADMIN_MOSIP_IO;

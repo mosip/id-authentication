@@ -16,7 +16,10 @@ import io.mosip.kernel.uingenerator.entity.UinEntity;
 public interface UinRepository extends JpaRepository<UinEntity, String> {
 
 	/**
-	 * Finds the number of free uins
+	 * Finds the number of free uins,
+	 * 
+	 * @param status 
+	 *          status of the uin
 	 * 
 	 * @return the number of free uins
 	 */
@@ -25,12 +28,18 @@ public interface UinRepository extends JpaRepository<UinEntity, String> {
 	/**
 	 * Finds an unused uin
 	 * 
+	 * @param status 
+	 *          status of the uin
+	 * 
 	 * @return an unused uin
 	 */
 	public UinEntity findFirstByStatus(String status);
 
 	/**
-	 * find a UIN
+	 * find a UIN in pool
+	 * 
+	 * @param uin
+	 *         pass uin as param
 	 * 
 	 * @return an unused uin
 	 */
