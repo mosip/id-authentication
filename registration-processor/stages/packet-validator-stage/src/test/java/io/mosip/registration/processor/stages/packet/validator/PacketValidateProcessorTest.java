@@ -335,6 +335,7 @@ public class PacketValidateProcessorTest {
 
 	@Test
 	public void testMasterDataValidationRegionFailure() throws Exception {
+
 		statusResponseDto = new StatusResponseDto();
 		statusResponseDto.setStatus("invalid");
 		when(env.getProperty("registration.processor.idjson.attributes")).thenReturn("region,province,city,postalcode");
@@ -347,9 +348,33 @@ public class PacketValidateProcessorTest {
 
 	@Test
 	public void testMasterDataValidationProvinceFailure() throws Exception {
+
+		IdentityJsonValues gender = new IdentityJsonValues();
+		IdentityJsonValues region = new IdentityJsonValues();
+		IdentityJsonValues province = new IdentityJsonValues();
+		IdentityJsonValues city = new IdentityJsonValues();
+		IdentityJsonValues postalcode = new IdentityJsonValues();
+
+		gender.setValue(null);
+		region.setValue(null);
+		province.setValue("Rabat");
+		city.setValue("bng-south");
+		postalcode.setValue("10000");
+
+		registrationProcessorIdentity = new RegistrationProcessorIdentity();
+
+		identityDemo.setGender(gender);
+		identityDemo.setRegion(region);
+		identityDemo.setProvince(province);
+		identityDemo.setCity(city);
+		identityDemo.setPostalCode(postalcode);
+		registrationProcessorIdentity.setIdentity(identityDemo);
+
 		statusResponseDto = new StatusResponseDto();
 		statusResponseDto.setStatus("invalid");
-		when(env.getProperty("registration.processor.idjson.attributes")).thenReturn("province,city,postalcode");
+		PowerMockito.when(JsonUtil.class, "inputStreamtoJavaObject", inputStream, RegistrationProcessorIdentity.class)
+				.thenReturn(registrationProcessorIdentity);
+
 		Mockito.when(registrationProcessorRestService.getApi(any(), any(), any(), any(), any()))
 				.thenReturn(statusResponseDto);
 
