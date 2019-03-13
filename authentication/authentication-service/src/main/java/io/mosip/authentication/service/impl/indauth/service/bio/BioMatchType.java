@@ -95,7 +95,7 @@ public enum BioMatchType implements MatchType {
 	FGRMIN_MULTI(IdaIdMapping.FINGERPRINT, setOf(MultiFingerprintMatchingStrategy.PARTIAL),
 			CbeffDocType.FMR, null, null),
 
-	RIGHT_IRIS(IdaIdMapping.RIGHTEYE, setOf(IrisMatchingStrategy.PARTIAL),
+	RIGHT_IRIS(IdaIdMapping.RIGHTIRIS, setOf(IrisMatchingStrategy.PARTIAL),
 			CbeffDocType.IRIS, SingleAnySubtypeType.RIGHT,null),
 
 	LEFT_IRIS(IdaIdMapping.LEFTEYE, setOf(IrisMatchingStrategy.PARTIAL), 
@@ -149,13 +149,7 @@ public enum BioMatchType implements MatchType {
 	private Map<String, List<IdentityInfoDTO>> getIdInfoFromBioIdInfo(IdentityDTO identityDTO) {
 		Optional<String> valueOpt = identityDTO.getBiometrics().stream().filter(bioId -> {
 			if (bioId.getType().equalsIgnoreCase(cbeffDocType.getName())) {
-				if (bioId.getType().equalsIgnoreCase(CbeffDocType.FMR.getName())) {
-					return (subType.name() + "_" + singleAnySubtype.name()).startsWith( bioId.getSubType());
-				} else if (bioId.getType().equalsIgnoreCase(CbeffDocType.IRIS.getName())) {
-					return bioId.getSubType().equalsIgnoreCase(subType.name());
-				} else if (bioId.getType().equalsIgnoreCase(CbeffDocType.FACE.getName())) {
-					return true;
-				}
+				return bioId.getSubType().equalsIgnoreCase(getIdMapping().getIdname());
 			}
 			return false;
 		}).map(BioIdentityInfoDTO::getValue).findAny();

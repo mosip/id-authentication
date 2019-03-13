@@ -41,16 +41,18 @@ public enum IdaIdMapping implements IdMapping {
 	FULLADDRESS("fullAddress", MappingConfig::getFullAddress),
 	OTP("otp", MappingConfig::getOtp), 
 	PIN("pin", MappingConfig::getPin), 
-	LEFTINDEX(),
-	LEFTLITTLE(), 
-	LEFTMIDDLE(), 
-	LEFTRING(), 
-	LEFTTHUMB(),
-	RIGHTINDEX(), 
-	RIGHTLITTLE(), 
-	RIGHTMIDDLE(), 
-	RIGHTRING(),
-	RIGHTTHUMB(), 
+	LEFTINDEX("LEFT_INDEX"),
+	LEFTLITTLE("LEFT_LEFT"), 
+	LEFTMIDDLE("LEFT_MIDDLE"), 
+	LEFTRING("LEFT_RING"), 
+	LEFTTHUMB("LEFT_THUMB"),
+	RIGHTINDEX("RIGHT_INDEX"), 
+	RIGHTLITTLE("RIGHT_LITTLE"), 
+	RIGHTMIDDLE("RIGHT_MIDDLE"), 
+	RIGHTRING("RIGHT_RING"),
+	RIGHTTHUMB("RIGHT_THUMB"), 
+	UNKNOWN_FINGER("UNKNOWN"),
+
 	FINGERPRINT("fingerprint", setOf(
 			LEFTINDEX,
 			LEFTLITTLE,
@@ -61,13 +63,16 @@ public enum IdaIdMapping implements IdMapping {
 			RIGHTLITTLE,
 			RIGHTMIDDLE,
 			RIGHTRING,
-			RIGHTTHUMB
+			RIGHTTHUMB,
+			UNKNOWN_FINGER
 			)),
-	RIGHTEYE(), 
-	LEFTEYE(), 
+	LEFTEYE("LEFT_IRIS"), 
+	RIGHTIRIS("RIGHT_IRIS"), 
+	UNKNOWN_IRIS("UNKNOWN"),
 	IRIS("iris", setOf(
-			RIGHTEYE,
-			LEFTEYE
+			RIGHTIRIS,
+			LEFTEYE,
+			UNKNOWN_IRIS
 			)), 
 	
 	FACE("face", cfg -> Collections.emptyList());
@@ -84,8 +89,8 @@ public enum IdaIdMapping implements IdMapping {
 		this.subIdMappings = Collections.emptySet();
 	}
 
-	private IdaIdMapping() {
-		this.idname = name();
+	private IdaIdMapping(String idname) {
+		this.idname = idname;
 		this.mappingFunction = (mappingConfig, matchType) -> getCbeffMapping(matchType);
 		this.subIdMappings = Collections.emptySet();
 	}
