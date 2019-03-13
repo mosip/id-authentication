@@ -25,7 +25,7 @@ import io.mosip.preregistration.batchjobservices.entity.ProcessedPreRegEntity;
 import io.mosip.preregistration.batchjobservices.entity.RegistrationBookingEntity;
 import io.mosip.preregistration.batchjobservices.entity.RegistrationBookingEntityConsumed;
 import io.mosip.preregistration.batchjobservices.entity.RegistrationBookingPKConsumed;
-import io.mosip.preregistration.batchjobservices.exceptions.util.BatchServiceExceptionCatcher;
+import io.mosip.preregistration.batchjobservices.exception.util.BatchServiceExceptionCatcher;
 import io.mosip.preregistration.batchjobservices.repository.dao.BatchServiceDAO;
 import io.mosip.preregistration.core.code.StatusCodes;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;

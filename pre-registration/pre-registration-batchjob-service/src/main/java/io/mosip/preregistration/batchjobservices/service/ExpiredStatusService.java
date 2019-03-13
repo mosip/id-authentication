@@ -18,7 +18,7 @@ import org.springframework.stereotype.Component;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.preregistration.batchjobservices.entity.DemographicEntity;
 import io.mosip.preregistration.batchjobservices.entity.RegistrationBookingEntity;
-import io.mosip.preregistration.batchjobservices.exceptions.util.BatchServiceExceptionCatcher;
+import io.mosip.preregistration.batchjobservices.exception.util.BatchServiceExceptionCatcher;
 import io.mosip.preregistration.batchjobservices.repository.dao.BatchServiceDAO;
 import io.mosip.preregistration.core.code.StatusCodes;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
