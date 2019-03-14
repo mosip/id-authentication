@@ -10,7 +10,6 @@ import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedHashMap;
@@ -66,9 +65,6 @@ public abstract class BaseIDAFilter implements Filter {
 	/** The Constant VERSION. */
 	private static final String VERSION = "version";
 
-	/** The Constant VER_REX. */
-	private static final String VER_REX = "[\\s+a-zA-Z]";
-
 	/** The Constant TRANSACTION_ID. */
 	private static final String TRANSACTION_ID = "transactionID";
 
@@ -84,9 +80,6 @@ public abstract class BaseIDAFilter implements Filter {
 	/** The Constant REQ_TIME. */
 	private static final String REQ_TIME = "reqTime";
 
-	/** The Constant DEFAULT_VERSION. */
-	private static final String DEFAULT_VERSION = "v1.0";
-
 	/** The Constant BASE_IDA_FILTER. */
 	private static final String BASE_IDA_FILTER = "BaseIDAFilter";
 
@@ -101,6 +94,12 @@ public abstract class BaseIDAFilter implements Filter {
 
 	/** The Constant EMPTY_JSON_OBJ_STRING. */
 	private static final String EMPTY_JSON_OBJ_STRING = "{";
+	
+	/** The Constant VERSION_REGEX. */
+	private static final String VERSION_REGEX = "\\d\\.\\d(\\.\\d)?";
+	
+	/** The Constant VERSION_PATTERN. */
+	private static final  Pattern VERSION_PATTERN = Pattern.compile(VERSION_REGEX);
 
 	/** The env. */
 	protected Environment env;
@@ -310,21 +309,33 @@ public abstract class BaseIDAFilter implements Filter {
 			if ((Objects.nonNull(url) && !url.isEmpty()) && (Objects.nonNull(contextPath) && !contextPath.isEmpty())) {
 				String[] splitedUrlByContext = url.split(contextPath);
 				id = MOSIP_IDA_API_IDS + splitedUrlByContext[1].split("/")[1];
-				String verFromUrl = splitedUrlByContext[1].split("/")[2];
-				if (requestBody != null && !requestBody.isEmpty() && requestBody.containsKey(ID)
+				requestWrapper.resetInputStream();
+				String verFromUrl = getVersionFromUrl(requestWrapper);
+				if (Objects.nonNull(requestBody) && !requestBody.isEmpty() && requestBody.containsKey(ID)
 						&& requestBody.containsKey(VERSION)) {
-					String verFromRequest = (String) requestBody.get(VERSION);
-					String idFromRequest = (String) requestBody.get(ID);
-					if (!env.getProperty(id).equals(idFromRequest)) {
-						exceptionhandling(ID);
-					}
-					String versionRegex = "\\d\\.\\d(\\.\\d)?";
-					Pattern versionPattern = Pattern.compile(versionRegex);
-					if (!versionPattern.matcher(verFromRequest).matches() || !verFromRequest.equals(verFromUrl)) {
-						exceptionhandling(VERSION);
-					}
+					validateVersion(requestBody, id, verFromUrl);
 				}
 			}
+		}
+	}
+
+	/**
+	 * Validate version.
+	 *
+	 * @param requestBody the request body
+	 * @param id the id
+	 * @param verFromUrl the ver from url
+	 * @throws IdAuthenticationAppException the id authentication app exception
+	 */
+	private void validateVersion(Map<String, Object> requestBody, String id, String verFromUrl)
+			throws IdAuthenticationAppException {
+		String verFromRequest = (String) requestBody.get(VERSION);
+		String idFromRequest = (String) requestBody.get(ID);
+		if (!env.getProperty(id).equals(idFromRequest)) {
+			exceptionhandling(ID);
+		}
+		if (!VERSION_PATTERN.matcher(verFromRequest).matches() || !verFromRequest.equals(verFromUrl)) {
+			exceptionhandling(VERSION);
 		}
 	}
 
@@ -378,8 +389,12 @@ public abstract class BaseIDAFilter implements Filter {
 
 			if ((Objects.nonNull(url) && !url.isEmpty()) && (Objects.nonNull(contextPath) && !contextPath.isEmpty())) {
 				String[] splitedUrlByContext = url.split(contextPath);
-				ver = Arrays.stream(splitedUrlByContext[1].split("/")).filter(s -> !s.isEmpty()).skip(1).findFirst()
-						.orElse(DEFAULT_VERSION).replaceAll(VER_REX, "");
+				String[] contextValues = splitedUrlByContext[1].split("/");
+				for (String path : contextValues) {
+					if(VERSION_PATTERN.matcher(path).matches()) {
+						return path;
+					}
+				}
 			}
 		}
 		return ver;

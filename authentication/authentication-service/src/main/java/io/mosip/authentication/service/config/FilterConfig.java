@@ -55,7 +55,7 @@ public class FilterConfig {
     public FilterRegistrationBean<KycAuthFilter> getEkycFilter() {
 	FilterRegistrationBean<KycAuthFilter> registrationBean = new FilterRegistrationBean<>();
 	registrationBean.setFilter(new KycAuthFilter());
-	registrationBean.addUrlPatterns("/ekyc/0.8/*");
+	registrationBean.addUrlPatterns("/kyc/0.8/*");
 
 	return registrationBean;
     }
