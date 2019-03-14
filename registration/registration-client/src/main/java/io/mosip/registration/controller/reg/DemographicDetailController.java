@@ -70,6 +70,7 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
@@ -410,7 +411,6 @@ public class DemographicDetailController extends BaseController {
 			addRegions();
 			populateGender();
 
-			toggleFunctionForResidence();
 			applicationLabelBundle = ApplicationContext.getInstance().getApplicationLanguageBundle();
 			localLabelBundle = ApplicationContext.getInstance().getLocalLanguageProperty();
 			List<IndividualTypeDto> applicantType = masterSyncService.getIndividualType(
@@ -501,76 +501,46 @@ public class DemographicDetailController extends BaseController {
 					runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
 		}
 	}
-
-	/**
-	 * Toggle functionality for residence.
-	 */
-	private void toggleFunctionForResidence() {
-		try {
-			LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID, "Entering into toggle function for resident status");
-
-			toggleSwitchForResidence.addListener(new ChangeListener<Boolean>() {
-				@Override
-				public void changed(ObservableValue<? extends Boolean> ov, Boolean oldValue, Boolean newValue) {
-					if (newValue) {
-						List<IndividualTypeDto> applicantType = masterSyncService.getIndividualType(RegistrationConstants.ATTR_FORINGER,
-								ApplicationContext.applicationLanguage());
-						residence.setText(applicantType.get(0).getName());
-						residence.setId(applicantType.get(0).getCode());
-						List<IndividualTypeDto> applicantTypeLocal = masterSyncService.getIndividualType(
-								RegistrationConstants.ATTR_FORINGER, ApplicationContext.localLanguage());
-						residenceLocalLanguage.setText(applicantTypeLocal.get(0).getName());
-						national.getStyleClass().clear();
-						foreigner.getStyleClass().clear();
-						nationalLocalLanguage.getStyleClass().clear();
-						foreignerLocalLanguage.getStyleClass().clear();
-						nationalLocalLanguage.getStyleClass().addAll("residence", "button");
-						foreignerLocalLanguage.getStyleClass().addAll("selectedResidence", "button");
-						foreigner.getStyleClass().addAll("selectedResidence", "button");
-						national.getStyleClass().addAll("residence", "button");
-					} else {
-						List<IndividualTypeDto> applicantType = masterSyncService.getIndividualType(
-								RegistrationConstants.ATTR_NON_FORINGER, ApplicationContext.applicationLanguage());
-						residence.setText(applicantType.get(0).getName());
-						residence.setId(applicantType.get(0).getCode());
-						List<IndividualTypeDto> applicantTypeLocal = masterSyncService.getIndividualType(
-								RegistrationConstants.ATTR_NON_FORINGER, ApplicationContext.localLanguage());
-						residenceLocalLanguage.setText(applicantTypeLocal.get(0).getName());
-						national.getStyleClass().clear();
-						foreigner.getStyleClass().clear();
-						nationalLocalLanguage.getStyleClass().clear();
-						foreignerLocalLanguage.getStyleClass().clear();
-						nationalLocalLanguage.getStyleClass().addAll("selectedResidence", "button");
-						foreignerLocalLanguage.getStyleClass().addAll("residence", "button");
-						national.getStyleClass().addAll("selectedResidence", "button");
-						foreigner.getStyleClass().addAll("residence", "button");
-					}
-				}
-			});
-
-			national.setOnMouseClicked((event) -> {
-				toggleSwitchForResidence.set(!toggleSwitchForResidence.get());
-			});
-			foreigner.setOnMouseClicked((event) -> {
-				toggleSwitchForResidence.set(!toggleSwitchForResidence.get());
-			});
-
-			nationalLocalLanguage.setOnMouseClicked((event) -> {
-				toggleSwitchForResidence.set(!toggleSwitchForResidence.get());
-			});
-			foreignerLocalLanguage.setOnMouseClicked((event) -> {
-				toggleSwitchForResidence.set(!toggleSwitchForResidence.get());
-			});
-
-			LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID, "Exiting the toggle function for resident status");
-		} catch (RuntimeException runtimeException) {
-			LOGGER.error("REGISTRATION - TOGGLING OF DOB AND AGE FAILED ", APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID,
-					runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
-		}
+	
+	@FXML
+	private void national(ActionEvent event){
+		List<IndividualTypeDto> applicantType = masterSyncService.getIndividualType(
+				RegistrationConstants.ATTR_NON_FORINGER, ApplicationContext.applicationLanguage());
+		residence.setText(applicantType.get(0).getName());
+		residence.setId(applicantType.get(0).getCode());
+		List<IndividualTypeDto> applicantTypeLocal = masterSyncService.getIndividualType(
+				RegistrationConstants.ATTR_NON_FORINGER, ApplicationContext.localLanguage());
+		residenceLocalLanguage.setText(applicantTypeLocal.get(0).getName());
+		national.getStyleClass().clear();
+		foreigner.getStyleClass().clear();
+		nationalLocalLanguage.getStyleClass().clear();
+		foreignerLocalLanguage.getStyleClass().clear();
+		nationalLocalLanguage.getStyleClass().addAll("selectedResidence", "button");
+		foreignerLocalLanguage.getStyleClass().addAll("residence", "button");
+		national.getStyleClass().addAll("selectedResidence", "button");
+		foreigner.getStyleClass().addAll("residence", "button");
 	}
+	
+	@FXML
+	private void foreigner(ActionEvent event){
+		List<IndividualTypeDto> applicantType = masterSyncService.getIndividualType(RegistrationConstants.ATTR_FORINGER,
+				ApplicationContext.applicationLanguage());
+		residence.setText(applicantType.get(0).getName());
+		residence.setId(applicantType.get(0).getCode());
+		List<IndividualTypeDto> applicantTypeLocal = masterSyncService.getIndividualType(
+				RegistrationConstants.ATTR_FORINGER, ApplicationContext.localLanguage());
+		residenceLocalLanguage.setText(applicantTypeLocal.get(0).getName());
+		national.getStyleClass().clear();
+		foreigner.getStyleClass().clear();
+		nationalLocalLanguage.getStyleClass().clear();
+		foreignerLocalLanguage.getStyleClass().clear();
+		nationalLocalLanguage.getStyleClass().addAll("residence", "button");
+		foreignerLocalLanguage.getStyleClass().addAll("selectedResidence", "button");
+		foreigner.getStyleClass().addAll("selectedResidence", "button");
+		national.getStyleClass().addAll("residence", "button");
+	}
+
+	
 
 	/**
 	 * To restrict the user not to enter any values other than integer values.
