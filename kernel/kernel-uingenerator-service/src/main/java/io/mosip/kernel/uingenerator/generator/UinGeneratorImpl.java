@@ -67,7 +67,7 @@ public class UinGeneratorImpl implements UinGenerator<Set<UinEntity>> {
 	 * @param uinLength
 	 *            The length of the uin
 	 * @param uinDefaultStatus
-	 * 			  The Default value of the uin 
+	 *            The Default value of the uin
 	 */
 	public UinGeneratorImpl(@Value("${mosip.kernel.uin.uins-to-generate}") long uinsCount,
 			@Value("${mosip.kernel.uin.length}") int uinLength,
@@ -96,6 +96,7 @@ public class UinGeneratorImpl implements UinGenerator<Set<UinEntity>> {
 			String generatedUIN = generateSingleId(generatedIdLength, lowerBound, upperBound);
 			if (uinFilterUtils.isValidId(generatedUIN)) {
 				UinEntity uinBean = new UinEntity(generatedUIN, uinDefaultStatus);
+				System.out.println("====uinBean===" + uinBean);
 				uins.add(metaDataUtil.setMetaData(uinBean));
 			}
 		}
@@ -134,7 +135,8 @@ public class UinGeneratorImpl implements UinGenerator<Set<UinEntity>> {
 	private String appendChecksum(int generatedIdLength, Long generatedID, String verhoeffDigit) {
 		StringBuilder uinStringBuilder = new StringBuilder();
 		uinStringBuilder.setLength(uinLength);
-		return uinStringBuilder.insert(0, generatedID).insert(generatedIdLength, verhoeffDigit).toString().trim();
+		String id = String.valueOf(generatedID).trim();
+		return uinStringBuilder.insert(0, id).insert(id.length(), verhoeffDigit).toString().trim();
 	}
 
 }

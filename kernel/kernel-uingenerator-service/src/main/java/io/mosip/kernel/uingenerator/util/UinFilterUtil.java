@@ -151,7 +151,7 @@ public class UinFilterUtil {
 				|| regexFilter(id, conjugativeEvenDigitsLimitPattern)
 				|| firstAndLastDigitsValidation(id, digitsGroupLimit)
 				|| firstAndLastDigitsReverseValidation(id, reverseDigitsGroupLimit) || restrictedAdminFilter(id)
-				|| validateNotStartWith(id));
+				|| validateNotStartWith(id) || validateLength(id));
 	}
 
 	/**
@@ -240,5 +240,17 @@ public class UinFilterUtil {
 			}
 		}
 		return false;
+	}
+
+	/**
+	 * to check whether the generated id is same as configured length
+	 * 
+	 * @param id
+	 *            generated uin
+	 * @return true if generated uin length is same as configured length ,otherwise
+	 *         false
+	 */
+	private boolean validateLength(String id) {
+		return id.length() != uinLength;
 	}
 }
