@@ -490,9 +490,12 @@ public enum PlatformErrorMessages {
 									"reg Based checked exception"),
 
 	RPR_PGS_JSON_PROCESSING_EXCEPTION(PlatformErrorConstants.RPR_PACKET_GENERATOR_MODULE + "005",
-			"Exception while parsing object to JSON"), RPR_PGS_JSON_VALIDATOR_ERROR_CODE(
+			"Exception while parsing object to JSON"),
+	RPR_PGS_JSON_VALIDATOR_ERROR_CODE(
 					PlatformErrorConstants.RPR_PACKET_GENERATOR_MODULE + "006",
-					"Exception while validating ID json file");
+					"Exception while validating ID json file"),
+	RPR_PGS_ENCRYPTOR_EXCEPTION(PlatformErrorConstants.RPR_PACKET_GENERATOR_MODULE + "006",
+			"Exception occured while encryting the packet");
 
 	/** The error message. */
 	private final String errorMessage;
