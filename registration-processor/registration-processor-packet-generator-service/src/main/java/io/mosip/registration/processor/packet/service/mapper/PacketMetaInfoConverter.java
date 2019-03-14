@@ -66,8 +66,6 @@ public class PacketMetaInfoConverter extends CustomConverter<RegistrationDTO, Pa
 
 		// Add Registration Type
 		metaData.add(buildFieldValue("registrationType", metaDataDTO.getRegistrationCategory()));
-		// Add Applicant Type
-		metaData.add(buildFieldValue("applicantType", metaDataDTO.getApplicationType()));
 
 		// Add Registration ID
 		metaData.add(buildFieldValue("registrationId", registrationDTO.getRegistrationId()));

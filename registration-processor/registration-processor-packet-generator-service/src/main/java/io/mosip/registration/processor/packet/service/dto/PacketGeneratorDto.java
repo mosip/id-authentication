@@ -2,20 +2,11 @@ package io.mosip.registration.processor.packet.service.dto;
 
 public class PacketGeneratorDto {
 
-	private String applicantType;
 	private String reason;
 	private String registrationType;
 	private String uin;
 	private String centerId;
 	private String machineId;
-
-	public String getApplicantType() {
-		return applicantType;
-	}
-
-	public void setApplicantType(String applicantType) {
-		this.applicantType = applicantType;
-	}
 
 	public String getReason() {
 		return reason;
