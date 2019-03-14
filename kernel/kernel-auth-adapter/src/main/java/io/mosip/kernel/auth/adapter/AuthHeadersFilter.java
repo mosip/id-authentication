@@ -26,15 +26,18 @@ public class AuthHeadersFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        response.setHeader("Access-Control-Allow-Origin", "*");
-        response.setHeader("Access-Control-Allow-Methods", "PUT, POST, GET, OPTIONS, DELETE");
-        response.setHeader("Access-Control-Allow-Headers", "content-type, Authorization");
-        response.setHeader("Access-Control-Expose-Headers", "Authorization");
-
-        if (request.getMethod().equals("OPTIONS")) {
-            response.setStatus(HttpServletResponse.SC_OK);
-        } else {
-            filterChain.doFilter(request, response);
-        }
-    }
+		String origin = request.getHeader("Origin");
+		if (origin != null && !origin.isEmpty()) {
+			response.setHeader("Access-Control-Allow-Origin", origin);
+		}
+		response.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE, PUT, PATCH");
+	   response.setHeader("Access-Control-Allow-Headers",
+				"Date, Content-Type, Accept, X-Requested-With, Authorization, From, X-Auth-Token, Request-Id");
+		response.setHeader("Access-Control-Expose-Headers", "Set-Cookie");
+		response.setHeader("Access-Control-Allow-Credentials", "true");
+		
+		if (!"OPTIONS".equalsIgnoreCase(request.getMethod())) {
+			filterChain.doFilter(request, response);
+		}
+}
 }
