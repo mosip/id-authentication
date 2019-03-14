@@ -27,7 +27,7 @@ public class FilterConfig {
     public FilterRegistrationBean<OTPFilter> getOtpFilter() {
 	FilterRegistrationBean<OTPFilter> registrationBean = new FilterRegistrationBean<>();
 	registrationBean.setFilter(new OTPFilter());
-	registrationBean.addUrlPatterns("/0.8/otp");
+	registrationBean.addUrlPatterns("/otp/0.8/*");
 
 	return registrationBean;
     }

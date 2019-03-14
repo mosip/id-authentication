@@ -35,7 +35,7 @@ public enum IdAuthenticationErrorConstants {
 	UNSUPPORTED_LANGUAGE("IDA-DEA-002", "Unsupported Language Code - %s", "A0111"),
 	DEMO_DATA_MISMATCH("IDA-DEA-003", "Demographic data - %s did not match", "A0112"),
 	MISSING_AUTHTYPE("IDA-MLC-015", "Missing  %s auth attribute"),
-	BIO_MISMATCH("IDA-BIA-001", "Biometric data - %s did not match", "A0113"),
+	BIO_MISMATCH("IDA-BIA-001", "Biometric data – FMR did not match", "A0113"),
 	DUPLICATE_FINGER("IDA-BIA-003", "Duplicate fingers in request", "A0114"),
 	FMR_INVALID("IDA-BIA-005", "Single FMR record contains more than one finger", "A0115"),
 	FINGER_EXCEEDING("IDA-BIA-006", "Number of FMR should not exceed 2"), 

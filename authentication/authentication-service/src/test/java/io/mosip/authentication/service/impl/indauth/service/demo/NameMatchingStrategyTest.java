@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
@@ -24,8 +25,9 @@ import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
  * 
  * @author Dinesh Karuppiah
  */
+@Ignore
 public class NameMatchingStrategyTest {
-	
+
 	@Autowired
 	private Environment env;
 
@@ -76,16 +78,17 @@ public class NameMatchingStrategyTest {
 		int value = matchFunction.match("dinesh karuppiah", "dinesh karuppiah", getFetcher());
 		assertEquals(100, value);
 	}
-	
-	private Map<String, Object> getFetcher(){
+
+	private Map<String, Object> getFetcher() {
 		HashMap<String, Object> valuemap = new HashMap<>();
 		valuemap.put("language", "english");
 		valuemap.put("env", env);
-		MasterDataFetcher f = () ->  createFetcher();
+		MasterDataFetcher f = () -> createFetcher();
 		valuemap.put("titlesFetcher", f);
 		valuemap.put("langCode", "fra");
 		return valuemap;
 	}
+
 	private Map<String, List<String>> createFetcher() {
 		List<String> l = new ArrayList<>();
 		l.add("Mr");

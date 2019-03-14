@@ -19,7 +19,10 @@ public enum EmailMatchingStrategy implements TextMatchingStrategy {
 		if (reqInfo instanceof String && entityInfo instanceof String) {
 			return DemoMatcherUtil.doExactMatch((String) reqInfo, (String) entityInfo);
 		} else {
-			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.DEMO_DATA_MISMATCH);
+			throw new IdAuthenticationBusinessException(
+					IdAuthenticationErrorConstants.DEMO_DATA_MISMATCH.getErrorCode(),
+					String.format(IdAuthenticationErrorConstants.DEMO_DATA_MISMATCH.getErrorMessage(),
+							DemoMatchType.EMAIL.getIdMapping().getIdname()));
 		}
 	});
 

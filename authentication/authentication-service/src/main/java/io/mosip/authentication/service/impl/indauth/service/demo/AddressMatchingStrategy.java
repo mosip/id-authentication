@@ -25,23 +25,7 @@ public enum AddressMatchingStrategy implements TextMatchingStrategy {
 			String entityInfoName = DemoNormalizer.normalizeAddress((String) entityInfo);
 			return DemoMatcherUtil.doExactMatch(refInfoName, entityInfoName);
 		} else {
-			Object object = props.get("languageType");
-			if (object instanceof LanguageType) {
-				LanguageType langType = ((LanguageType) object);
-				if (langType.equals(LanguageType.PRIMARY_LANG)) {
-					throw new IdAuthenticationBusinessException(
-							IdAuthenticationErrorConstants.DEMO_DATA_MISMATCH.getErrorCode(),
-							String.format(IdAuthenticationErrorConstants.DEMOGRAPHIC_DATA_MISMATCH.getErrorMessage(),
-									getLanguagecode(LanguageType.PRIMARY_LANG), DemoAuthType.ADDRESS.getType()));
-				} else {
-					throw new IdAuthenticationBusinessException(
-							IdAuthenticationErrorConstants.DEMO_DATA_MISMATCH.getErrorCode(),
-							String.format(IdAuthenticationErrorConstants.DEMOGRAPHIC_DATA_MISMATCH.getErrorMessage(),
-									getLanguagecode(LanguageType.PRIMARY_LANG), DemoAuthType.ADDRESS.getType()));
-				}
-			} else {
-				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS);
-			}
+			return 0;
 		}
 	});
 
@@ -60,10 +44,6 @@ public enum AddressMatchingStrategy implements TextMatchingStrategy {
 	AddressMatchingStrategy(MatchingStrategyType matchStrategyType, MatchFunction matchFunction) {
 		this.matchFunction = matchFunction;
 		this.matchStrategyType = matchStrategyType;
-	}
-
-	private static String getLanguagecode(LanguageType primaryLang) {
-		return primaryLang.PRIMARY_LANG.toString();
 	}
 
 	/*

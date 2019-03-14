@@ -58,6 +58,7 @@ import io.mosip.authentication.service.impl.indauth.builder.AuthStatusInfoBuilde
 import io.mosip.authentication.service.impl.indauth.match.IdaIdMapping;
 import io.mosip.authentication.service.impl.indauth.service.bio.BioAuthType;
 import io.mosip.authentication.service.impl.indauth.service.bio.BioMatchType;
+import io.mosip.authentication.service.impl.indauth.service.demo.DemoAuthType;
 import io.mosip.authentication.service.impl.indauth.service.pin.PinAuthType;
 import io.mosip.authentication.service.integration.MasterDataManager;
 import io.mosip.authentication.service.integration.OTPManager;
@@ -467,8 +468,7 @@ public class IdInfoHelper implements IdInfoFetcher {
 				Map<String, String> reqInfo = null;
 				reqInfo = getAuthReqestInfo(matchType, authRequestDTO);
 				if (null == reqInfo || reqInfo.isEmpty()) {
-					reqInfo = getIdentityRequestInfo(matchType, authRequestDTO.getRequest(),
-							input.getLanguage());
+					reqInfo = getIdentityRequestInfo(matchType, authRequestDTO.getRequest(), input.getLanguage());
 				}
 				if (null != reqInfo && reqInfo.size() > 0) {
 					Map<String, String> entityInfo = getEntityInfo(demoEntity, uin, authRequestDTO, input,
@@ -477,7 +477,8 @@ public class IdInfoHelper implements IdInfoFetcher {
 					Map<String, Object> matchProperties = input.getMatchProperties();
 					int mtOut = strategy.match(reqInfo, entityInfo, matchProperties);
 					boolean matchOutput = mtOut >= input.getMatchValue();
-					return new MatchOutput(mtOut, matchOutput, input.getMatchStrategyType(), matchType);
+					return new MatchOutput(mtOut, matchOutput, input.getMatchStrategyType(), matchType,
+							input.getLanguage());
 				}
 			} else {
 				// FIXME Log that matching strategy is not allowed for the match type.
@@ -673,7 +674,7 @@ public class IdInfoHelper implements IdInfoFetcher {
 	private void constructDemoError(MatchOutput matchOutput, AuthStatusInfoBuilder statusInfoBuilder) {
 		Optional<AuthType> authTypeForMatchType;
 		AuthType[] authTypes;
-		authTypes = PinAuthType.values();
+		authTypes = DemoAuthType.values();
 		authTypeForMatchType = AuthType.getAuthTypeForMatchType(matchOutput.getMatchType(), authTypes);
 
 		if (authTypeForMatchType.isPresent()) {
@@ -681,15 +682,10 @@ public class IdInfoHelper implements IdInfoFetcher {
 			List<String> mappings = IdaIdMapping.FULLADDRESS.getMappingFunction().apply(idMappingConfig,
 					matchOutput.getMatchType());
 			IdMapping idMapping = matchOutput.getMatchType().getIdMapping();
-			if (mappings.contains(idMapping.getIdname())) {
-				errors = new AuthError(IdAuthenticationErrorConstants.DEMOGRAPHIC_DATA_MISMATCH.getErrorCode(),
-						String.format(IdAuthenticationErrorConstants.DEMOGRAPHIC_DATA_MISMATCH.getErrorMessage(),
-								"address line item(s)"));
-			} else {
-				errors = new AuthError(IdAuthenticationErrorConstants.DEMOGRAPHIC_DATA_MISMATCH.getErrorCode(),
-						String.format(IdAuthenticationErrorConstants.DEMOGRAPHIC_DATA_MISMATCH.getErrorMessage(),
-								idMapping.getIdname()));
-			}
+			String name = mappings.contains(idMapping.getIdname()) ? "address line item(s)" : idMapping.getIdname();
+			errors = new AuthError(IdAuthenticationErrorConstants.DEMO_DATA_MISMATCH.getErrorCode(),
+					String.format(IdAuthenticationErrorConstants.DEMO_DATA_MISMATCH.getErrorMessage(),
+							name, matchOutput.getLanguage()));
 			statusInfoBuilder.addErrors(errors);
 		}
 	}
@@ -750,8 +746,8 @@ public class IdInfoHelper implements IdInfoFetcher {
 			AuthError errors = null;
 
 			if (authType.getDisplayName().equals(BioAuthType.FGR_MIN.getDisplayName())) {
-				errors = new AuthError(IdAuthenticationErrorConstants.FMR_INVALID.getErrorCode(),
-						IdAuthenticationErrorConstants.FMR_INVALID.getErrorMessage());
+				errors = new AuthError(IdAuthenticationErrorConstants.BIO_MISMATCH.getErrorCode(),
+						IdAuthenticationErrorConstants.BIO_MISMATCH.getErrorMessage());
 			}
 
 			else if (authType.getDisplayName().equals(BioAuthType.IRIS_IMG.getDisplayName())) {
