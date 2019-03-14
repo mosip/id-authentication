@@ -1,9 +1,9 @@
 package io.mosip.registration.processor.biodedupe;
 
-import org.springframework.boot.SpringApplication;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import io.mosip.registration.processor.biodedupe.stage.BioDedupeStage;
+import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 
 public class BioDedupeApplication {
 
@@ -27,6 +27,11 @@ public class BioDedupeApplication {
 		BioDedupeStage bioDedupeStage = configApplicationContext.getBean(BioDedupeStage.class);
 
 		bioDedupeStage.deployVerticle();
+		MessageDTO dto = new MessageDTO();
+		dto.setRid("10011100110015620190305172945");
+		//dto.setRid("10011100110015620190305172000");
+		dto.setIsValid(false);
+		bioDedupeStage.process(dto);
 	}
 
 }

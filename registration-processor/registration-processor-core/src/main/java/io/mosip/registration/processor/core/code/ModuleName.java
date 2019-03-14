@@ -3,7 +3,7 @@ package io.mosip.registration.processor.core.code;
 /**
  * @author M1048399 Horteppa
  *  
- * The Enum ModuleName.
+ *
  */
 public enum ModuleName {
 
@@ -14,5 +14,8 @@ public enum ModuleName {
 	OSI_VALIDATOR,
 	
 	/** The demo dedupe. */
-	DEMO_DEDUPE;
+	DEMO_DEDUPE,
+	
+	/** The bio dedupe. */
+	BIO_DEDUPE;
 }
