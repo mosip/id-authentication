@@ -26,6 +26,7 @@ import io.mosip.kernel.auditmanager.constant.AuditErrorCodes;
 import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseWrapper;
+import io.mosip.kernel.core.util.EmptyCheckUtils;
 
 /**
  * Class for handling API exceptions
@@ -88,15 +89,20 @@ public class ApiExceptionHandler {
 	private ResponseWrapper<ServiceError> setErrors(HttpServletRequest httpServletRequest) throws IOException {
 		RequestWrapper<?> requestWrapper = null;
 		ResponseWrapper<ServiceError> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponsetime(LocalDateTime.now(ZoneId.of("UTC")));
 		String requestBody = null;
 		if (httpServletRequest instanceof ContentCachingRequestWrapper) {
 			requestBody = new String(((ContentCachingRequestWrapper) httpServletRequest).getContentAsByteArray());
 		}
-		objectMapper.registerModule(new JavaTimeModule());
-		requestWrapper = objectMapper.readValue(requestBody, RequestWrapper.class);
-		responseWrapper.setId(requestWrapper.getId());
-		responseWrapper.setVersion(requestWrapper.getVersion());
-		responseWrapper.setResponsetime(LocalDateTime.now(ZoneId.of("UTC")));
+		if (EmptyCheckUtils.isNullEmpty(requestBody)) {
+			objectMapper.registerModule(new JavaTimeModule());
+			requestWrapper = objectMapper.readValue(requestBody, RequestWrapper.class);
+			responseWrapper.setId(requestWrapper.getId());
+			responseWrapper.setVersion(requestWrapper.getVersion());
+		} else {
+			responseWrapper.setId(null);
+			responseWrapper.setVersion(null);
+		}
 		return responseWrapper;
 	}
 
