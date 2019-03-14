@@ -291,10 +291,6 @@
 				<groupId>io.mosip.kernel</groupId>
 				<artifactId>kernel-applicanttype-api</artifactId>
 			</dependency>
-			<dependency>
-				<groupId>io.mosip.kernel</groupId>
-				<artifactId>kernel-applicanttype-service</artifactId>
-			</dependency>
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-cbeffutil-api</artifactId>
