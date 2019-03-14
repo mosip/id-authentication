@@ -27,7 +27,9 @@ import io.mosip.preregistration.transliteration.dto.TransliterationDTO;
 @Component
 public class TransliterationServiceUtil {
 	
-	private String dateTimeFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
+	
+	@Value("${mosip.utc-datetime-pattern}")
+	private String utcDateTimePattern;
 	
 	@Value("#{'${mosip.supported-languages}'.split(',')}")
 	private List<String> supportedLang;
@@ -61,7 +63,7 @@ public class TransliterationServiceUtil {
 	 * @return date.
 	 */
 	public String getCurrentResponseTime() {
-		return DateUtils.formatDate(new Date(System.currentTimeMillis()), dateTimeFormat);
+		return DateUtils.formatDate(new Date(System.currentTimeMillis()), utcDateTimePattern);
 	}
 
 	/**
@@ -69,7 +71,7 @@ public class TransliterationServiceUtil {
 	 * @return date in string.
 	 */
 	public String getDateString(Date date) {
-		return DateUtils.formatDate(date, dateTimeFormat);
+		return DateUtils.formatDate(date, utcDateTimePattern);
 	}
 
 	/**

@@ -1,1 +1,1 @@
-{"status":"N","err":[{"errorCode":"IDA-BIA-013","errorMessage":"Invalid bioType - null"}],"txnID":"8336535120","resTime":"2019-02-15T18:50:24.503+05:30","ver":"1.0"}
+{"status":"N","err":[{"errorCode":"IDA-IDV-003","errorMessage":"Missing Input Parameter - biotype"}],"resTime":"2019-03-12T12:15:45.218+05:30","ver":"0.8"}

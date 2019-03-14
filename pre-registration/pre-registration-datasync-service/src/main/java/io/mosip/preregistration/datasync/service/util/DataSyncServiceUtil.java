@@ -68,6 +68,7 @@ import io.mosip.preregistration.datasync.repository.ProcessedDataSyncRepo;
 
 /**
  * @author Ravi C Balaji
+ * @author Sanober Noor
  * @since 1.0.0
  */
 @Component

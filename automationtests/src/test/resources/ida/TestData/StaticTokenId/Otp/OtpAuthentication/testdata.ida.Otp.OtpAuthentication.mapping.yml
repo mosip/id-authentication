@@ -1,0 +1,110 @@
+testdata:
+  Otp_authentication_With_UIN_Pos_01:
+    input.otp-generate:
+      otpGenReq.idvId: $UIN$
+      otpGenReq.muaCode: 7404012868
+      otpGenReq.reqTime: $TIMESTAMP$
+      otpGenReq.txnID: $RANDOM:N:10$
+      otpGenReq.tspID: TSP00001
+    input.otp-auth-request:
+      otpAuthReq.idvId: $input.otp-generate:otpGenReq.idvId$
+      otpAuthReq.txnID: $input.otp-generate:otpGenReq.txnID$
+      otpAuthReq.tspID: $input.otp-generate:otpGenReq.tspID$
+      otpAuthReq.reqTime: $TIMESTAMP$
+      otpAuthReq.valuepinInfo: '%$input.otp-generate:otpGenReq.txnID$_$input.otp-generate:otpGenReq.tspID$%_30'
+    output.output-1-expected-otp-gen-res:
+      output.1.y.res.status: Y
+      ##output.1.y.res.txnID: $IGNORE$
+      output.1.y.res.resTime: $TIMESTAMP$
+      output.1.y.res.maskedEmail: $IGNORE$
+      output.1.y.res.maskedMobile: $IGNORE$
+    output.output-2-expected-otp-auth-res:
+      output.2.y.res.status: Y
+      output.2.y.res.reqTime: $TIMESTAMP$
+      output.2.y.res.resTime: $TIMESTAMP$
+      output.2.y.res.txnID: $input.otp-generate:otpGenReq.txnID$
+      
+  Otp_auth_invalid_UIN_regression_Neg_02:
+    input.otp-generate:
+      otpGenReq.idvId: $UIN$
+      otpGenReq.muaCode: 7404012868
+      otpGenReq.reqTime: $TIMESTAMP$
+      otpGenReq.txnID: $RANDOM:N:10$
+      otpGenReq.tspID: TSP00001
+    input.otp-auth-request:
+      otpAuthReq.idvId: 1234567890
+      otpAuthReq.txnID: $input.otp-generate:otpGenReq.txnID$
+      otpAuthReq.tspID: $input.otp-generate:otpGenReq.tspID$
+      otpAuthReq.reqTime: $TIMESTAMP$
+      otpAuthReq.valuepinInfo: '%$input.otp-generate:otpGenReq.txnID$_$input.otp-generate:otpGenReq.tspID$%_30'
+    output.output-1-expected-otp-gen-res:
+      output.1.y.res.status: Y
+      ##output.1.y.res.txnID: $IGNORE$
+      ##output.1.y.res.txnID: $IGNORE$
+      output.1.y.res.resTime: $TIMESTAMP$
+      output.1.y.res.maskedEmail: $IGNORE$
+      output.1.y.res.maskedMobile: $IGNORE$
+    output.output-2-expected-error-res:
+      output.2.y.res.status: N
+      output.2.y.res.resTime: $TIMESTAMP$
+      #output.2.y.res.txnID: $input.otp-generate:otpGenReq.txnID$
+      output.2.n.res.errorCode: IDA-MLC-002
+      output.2.n.res.errorMessage: Invalid UIN
+  
+  Otp_authentication_With_VID_Pos_03:
+    input.otp-generate:
+      otpGenReq.idvId: $VID$
+      otpGenReq.muaCode: 7404012868
+      otpGenReq.reqTime: $TIMESTAMP$
+      otpGenReq.txnID: $RANDOM:N:10$
+      otpGenReq.tspID: TSP00001
+      otpGenReq.idvIdType: V
+    input.otp-auth-request:
+      otpAuthReq.idvId: $input.otp-generate:otpGenReq.idvId$
+      otpAuthReq.txnID: $input.otp-generate:otpGenReq.txnID$
+      otpAuthReq.tspID: $input.otp-generate:otpGenReq.tspID$
+      otpAuthReq.idvIdType: V
+      otpAuthReq.reqTime: $TIMESTAMP$
+      otpAuthReq.valuepinInfo: '%$input.otp-generate:otpGenReq.txnID$_$input.otp-generate:otpGenReq.tspID$%_30'
+    output.output-1-expected-otp-gen-res:
+      output.1.y.res.status: Y
+      ##output.1.y.res.txnID: $IGNORE$
+      output.1.y.res.resTime: $TIMESTAMP$
+      output.1.y.res.maskedEmail: $IGNORE$
+      output.1.y.res.maskedMobile: $IGNORE$
+    output.output-2-expected-otp-auth-res:
+      output.2.y.res.status: Y
+      output.2.y.res.idType: V
+      output.2.y.res.reqTime: $TIMESTAMP$
+      output.2.y.res.resTime: $TIMESTAMP$
+      output.2.y.res.txnID: $input.otp-generate:otpGenReq.txnID$
+      
+  Otp_auth_invalid_VID_regression_Neg_04:
+    input.otp-generate:
+      otpGenReq.idvId: 12345678901
+      otpGenReq.muaCode: 7404012868
+      otpGenReq.reqTime: $TIMESTAMP$
+      otpGenReq.txnID: $RANDOM:N:10$
+      otpGenReq.tspID: TSP00001
+      otpGenReq.idvIdType: V
+    input.otp-auth-request:
+      otpAuthReq.idvId: 12345678901
+      otpAuthReq.txnID: $input.otp-generate:otpGenReq.txnID$
+      otpAuthReq.tspID: $input.otp-generate:otpGenReq.tspID$
+      otpAuthReq.idvIdType: V
+      otpAuthReq.reqTime: $TIMESTAMP$
+      otpAuthReq.valuepinInfo: '%$input.otp-generate:otpGenReq.txnID$_$input.otp-generate:otpGenReq.tspID$%_30'
+    output.output-1-expected-otp-gen-res:
+      output.1.y.res.status: N
+      ##output.1.y.res.txnID: $IGNORE$
+      ##output.1.y.res.txnID: $IGNORE$
+      output.1.y.res.resTime: $TIMESTAMP$
+      output.1.y.res.maskedEmail: $IGNORE$
+      output.1.y.res.maskedMobile: $IGNORE$
+    output.output-2-expected-error-res:
+      output.2.y.res.status: N
+      output.2.y.res.resTime: $TIMESTAMP$
+      #output.2.y.res.txnID: $input.otp-generate:otpGenReq.txnID$
+      output.2.n.res.errorCode: IDA-MLC-004
+      output.2.n.res.errorMessage: Invalid VID
+  
