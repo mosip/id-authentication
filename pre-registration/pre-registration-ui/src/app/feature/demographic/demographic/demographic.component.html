@@ -17,6 +17,7 @@
               placeholder="{{ 'demographic.label_name' | translate }}"
               [formControlName]="formControlNames.fullName"
               (focusout)="onTransliteration(fullName, formControlNames.fullNameSecondary)"
+              (change)="onTransliteration(fullName, formControlNames.fullNameSecondary)"
             />
             <mat-hint align="end">{{ fullName.value.length }} / 50</mat-hint>
             <mat-error *ngIf="!fullName.invalid"> {{ 'demographic.validation.name_required' | translate }} </mat-error>
