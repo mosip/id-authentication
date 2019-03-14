@@ -83,9 +83,9 @@ public class NotificationManager {
 					mailRequestDto, String.class);
 			restHelper.requestAsync(restRequestDTO);
 		} catch (IDDataValidationException e) {
-			//FIXME change error code
+			// FIXME change error code
 			logger.error(SESSION_ID, "Inside Mail Notification >>>>>", e.getErrorCode(), e.getErrorText());
-			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.DATA_VALIDATION_FAILED, e);
 		}
 	}
 }

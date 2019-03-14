@@ -88,8 +88,9 @@ public class InternalAuthRequestValidator extends BaseAuthRequestValidator {
 				}
 
 			} catch (ParseException e) {
-				errors.rejectValue(REQ_TIME, IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(),
-						new Object[] { REQ_TIME }, IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorMessage());
+				errors.rejectValue(REQ_TIME, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+						new Object[] { REQ_TIME },
+						IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
 			}
 
 		} else {

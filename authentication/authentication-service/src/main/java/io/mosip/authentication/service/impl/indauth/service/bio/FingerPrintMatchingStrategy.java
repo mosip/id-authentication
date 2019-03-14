@@ -28,8 +28,8 @@ public enum FingerPrintMatchingStrategy implements MatchingStrategy {
 				BiFunction<String, String, Double> func = (BiFunction<String, String, Double>) object;
 				return (int) func.apply((String) reqInfoValue, (String) entityInfoValue).doubleValue();
 			} else {
-				logError(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS);
-				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS);
+				logError(IdAuthenticationErrorConstants.INVALID_BIOMETRIC);
+				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_BIOMETRIC);
 			}
 		} else {
 			Object object = props.get(BioAuthType.class.getSimpleName());
@@ -37,18 +37,23 @@ public enum FingerPrintMatchingStrategy implements MatchingStrategy {
 				BioAuthType bioAuthType = ((BioAuthType) object);
 				if (bioAuthType.equals(BioAuthType.FGR_MIN)) {
 					logError(IdAuthenticationErrorConstants.BIO_MISMATCH);
-					throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.BIO_MISMATCH.getErrorCode(),
-							String.format(IdAuthenticationErrorConstants.BIO_MISMATCH.getErrorMessage(), "id"));
+					throw new IdAuthenticationBusinessException(
+							IdAuthenticationErrorConstants.BIO_MISMATCH.getErrorCode(),
+							String.format(IdAuthenticationErrorConstants.BIO_MISMATCH.getErrorMessage(),
+									BioAuthType.FGR_MIN.getType()));
 				} else if (bioAuthType.equals(BioAuthType.FGR_IMG)) {
 					logError(IdAuthenticationErrorConstants.BIO_MISMATCH);
-					throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.BIO_MISMATCH);
+					throw new IdAuthenticationBusinessException(
+							IdAuthenticationErrorConstants.BIO_MISMATCH.getErrorCode(),
+							String.format(IdAuthenticationErrorConstants.BIO_MISMATCH.getErrorMessage(),
+									BioAuthType.FACE_IMG.getType()));
 				} else {
-					logError(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS);
-					throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS);
+					logError(IdAuthenticationErrorConstants.INVALID_BIOMETRIC);
+					throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_BIOMETRIC);
 				}
 			} else {
-				logError(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS);
-				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS);
+				logError(IdAuthenticationErrorConstants.INVALID_BIOMETRIC);
+				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_BIOMETRIC);
 			}
 		}
 	});

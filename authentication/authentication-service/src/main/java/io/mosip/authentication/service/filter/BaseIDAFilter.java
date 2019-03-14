@@ -58,6 +58,8 @@ import io.mosip.kernel.core.util.DateUtils;
  */
 public abstract class BaseIDAFilter implements Filter {
 
+	private static final String MOSIP_IDA_API_IDS = "mosip.ida.api.ids.";
+
 	/** The Constant ID. */
 	private static final String ID = "id";
 
@@ -307,10 +309,11 @@ public abstract class BaseIDAFilter implements Filter {
 
 			if ((Objects.nonNull(url) && !url.isEmpty()) && (Objects.nonNull(contextPath) && !contextPath.isEmpty())) {
 				String[] splitedUrlByContext = url.split(contextPath);
-				id = "mosip.ida.api.ids." + splitedUrlByContext[1].split("/")[1];
+				id = MOSIP_IDA_API_IDS + splitedUrlByContext[1].split("/")[1];
 				String verFromUrl = splitedUrlByContext[1].split("/")[2];
-				String verFromRequest = (String) requestBody.get(VERSION);
-				if (requestBody != null && !requestBody.isEmpty() && requestBody.containsKey(ID)) {
+				if (requestBody != null && !requestBody.isEmpty() && requestBody.containsKey(ID)
+						&& requestBody.containsKey(VERSION)) {
+					String verFromRequest = (String) requestBody.get(VERSION);
 					String idFromRequest = (String) requestBody.get(ID);
 					if (!env.getProperty(id).equals(idFromRequest)) {
 						exceptionhandling(ID);
@@ -324,8 +327,6 @@ public abstract class BaseIDAFilter implements Filter {
 			}
 		}
 	}
-
-	
 
 	private void exceptionhandling(String type) throws IdAuthenticationAppException {
 		mosipLogger.error(SESSION_ID, EVENT_FILTER, BASE_IDA_FILTER,
