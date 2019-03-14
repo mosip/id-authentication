@@ -311,8 +311,9 @@ public abstract class BaseIDAFilter implements Filter {
 				String[] splitedUrlByContext = url.split(contextPath);
 				id = MOSIP_IDA_API_IDS + splitedUrlByContext[1].split("/")[1];
 				String verFromUrl = splitedUrlByContext[1].split("/")[2];
-				String verFromRequest = (String) requestBody.get(VERSION);
-				if (requestBody != null && !requestBody.isEmpty() && requestBody.containsKey(ID)) {
+				if (requestBody != null && !requestBody.isEmpty() && requestBody.containsKey(ID)
+						&& requestBody.containsKey(VERSION)) {
+					String verFromRequest = (String) requestBody.get(VERSION);
 					String idFromRequest = (String) requestBody.get(ID);
 					if (!env.getProperty(id).equals(idFromRequest)) {
 						exceptionhandling(ID);
@@ -322,14 +323,12 @@ public abstract class BaseIDAFilter implements Filter {
 					if (!versionPattern.matcher(verFromRequest).matches()) {
 						exceptionhandling(VERSION);
 					} else if (!verFromRequest.equals(verFromUrl)) {
-							exceptionhandling(VERSION);
-						}
+						exceptionhandling(VERSION);
 					}
 				}
 			}
 		}
-
-	
+	}
 
 	private void exceptionhandling(String type) throws IdAuthenticationAppException {
 		mosipLogger.error(SESSION_ID, EVENT_FILTER, BASE_IDA_FILTER,
