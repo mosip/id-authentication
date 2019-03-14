@@ -13,6 +13,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.Writer;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -133,7 +134,7 @@ public class PacketHandlerController extends BaseController implements Initializ
 
 	@Autowired
 	private PacketHandlerService packetHandlerService;
-	
+
 	@Autowired
 	private NotificationService notificationService;
 
@@ -167,6 +168,9 @@ public class PacketHandlerController extends BaseController implements Initializ
 		List<RegistrationApprovalDTO> pendingApprovalRegistrations = registrationApprovalService
 				.getEnrollmentByStatus(RegistrationClientStatusCode.CREATED.getCode());
 		List<PacketStatusDTO> reRegisterRegistrations = reRegistrationService.getAllReRegistrationPackets();
+		List<String> configuredFieldsfromDB = Arrays.asList(
+				String.valueOf(ApplicationContext.map().get(RegistrationConstants.UIN_UPDATE_CONFIG_FIELDS_FROM_DB))
+						.split(","));
 
 		if (!pendingApprovalRegistrations.isEmpty()) {
 			pendingApprovalCountLbl
@@ -176,11 +180,53 @@ public class PacketHandlerController extends BaseController implements Initializ
 			reRegistrationCountLbl.setText(reRegisterRegistrations.size() + " " + RegistrationUIConstants.APPLICATIONS);
 		}
 		if (!(String.valueOf(ApplicationContext.map().get(RegistrationConstants.UIN_UPDATE_CONFIG_FLAG)))
-				.equalsIgnoreCase(RegistrationConstants.ENABLE)) {
+				.equalsIgnoreCase(RegistrationConstants.ENABLE)
+				|| configuredFieldsfromDB.get(RegistrationConstants.PARAM_ZERO).isEmpty()
+				|| globalCheckForBiometrics(configuredFieldsfromDB,
+						String.valueOf(ApplicationContext.map().get(RegistrationConstants.FINGERPRINT_DISABLE_FLAG)),
+						RegistrationConstants.UIN_UPDATE_BIO_FP)
+				|| globalCheckForBiometrics(configuredFieldsfromDB,
+						String.valueOf(ApplicationContext.map().get(RegistrationConstants.IRIS_DISABLE_FLAG)),
+						RegistrationConstants.UIN_UPDATE_BIO_IRIS)
+				|| globalCheckForExceptionBiometrics(configuredFieldsfromDB,
+						String.valueOf(ApplicationContext.map().get(RegistrationConstants.FINGERPRINT_DISABLE_FLAG)),
+						String.valueOf(ApplicationContext.map().get(RegistrationConstants.IRIS_DISABLE_FLAG)))) {
 			uinUpdateBtn.setVisible(false);
 			uinUpdateImage.setVisible(false);
 		}
 
+	}
+
+	/**
+	 * Global check for biometrics.
+	 *
+	 * @param configuredFieldsfromDB the configured fieldsfrom DB
+	 * @param bioFlag                the biometric flag
+	 * @param bioName                the biometric name
+	 * @return true, if successful
+	 */
+	private boolean globalCheckForBiometrics(List<String> configuredFieldsfromDB, String bioFlag, String bioName) {
+		return configuredFieldsfromDB.size() == 1 && RegistrationConstants.DISABLE.equalsIgnoreCase(bioFlag)
+				&& configuredFieldsfromDB.get(RegistrationConstants.PARAM_ZERO).equalsIgnoreCase(bioName);
+	}
+
+	/**
+	 * Global check for exception biometrics.
+	 *
+	 * @param configuredFieldsfromDB the configured fieldsfrom DB
+	 * @param biofpFlag              the biometric fingerprint flag
+	 * @param bioirisFlag            the biometric iris flag
+	 * @return true, if successful
+	 */
+	private boolean globalCheckForExceptionBiometrics(List<String> configuredFieldsfromDB, String biofpFlag,
+			String bioirisFlag) {
+		return RegistrationConstants.DISABLE.equalsIgnoreCase(biofpFlag)
+				&& RegistrationConstants.DISABLE.equalsIgnoreCase(bioirisFlag)
+				&& ((configuredFieldsfromDB.size() == 3 && configuredFieldsfromDB
+						.containsAll(Arrays.asList(RegistrationConstants.UIN_UPDATE_BIO_EXCEPTION,
+								RegistrationConstants.UIN_UPDATE_BIO_FP, RegistrationConstants.UIN_UPDATE_BIO_IRIS)))
+						||(configuredFieldsfromDB.size() == 1  && configuredFieldsfromDB.get(RegistrationConstants.PARAM_ZERO)
+								.equalsIgnoreCase(RegistrationConstants.UIN_UPDATE_BIO_EXCEPTION)));
 	}
 
 	/**
@@ -209,7 +255,7 @@ public class PacketHandlerController extends BaseController implements Initializ
 				if (!validateScreenAuthorization(createRoot.getId())) {
 					generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.AUTHORIZATION_ERROR);
 				} else {
-					StringBuilder errorMessage = new StringBuilder();		
+					StringBuilder errorMessage = new StringBuilder();
 					ResponseDTO responseDTO;
 					responseDTO = validateSyncStatus();
 					List<ErrorResponseDTO> errorResponseDTOs = responseDTO.getErrorResponseDTOs();
@@ -241,14 +287,17 @@ public class PacketHandlerController extends BaseController implements Initializ
 			RegistrationDTO registrationDTO = (RegistrationDTO) SessionContext.map()
 					.get(RegistrationConstants.REGISTRATION_DATA);
 			ackReceiptController.setRegistrationData(registrationDTO);
-			
+
 			StringBuilder templateContent = new StringBuilder();
 			String platformLanguageCode = ApplicationContext.applicationLanguage();
-			templateContent.append(templateService.getHtmlTemplate(ACKNOWLEDGEMENT_TEMPLATE_PART_1, platformLanguageCode));
-			templateContent.append(templateService.getHtmlTemplate(ACKNOWLEDGEMENT_TEMPLATE_PART_2, platformLanguageCode));
-			templateContent.append(templateService.getHtmlTemplate(ACKNOWLEDGEMENT_TEMPLATE_PART_3, platformLanguageCode));
+			templateContent
+					.append(templateService.getHtmlTemplate(ACKNOWLEDGEMENT_TEMPLATE_PART_1, platformLanguageCode));
+			templateContent
+					.append(templateService.getHtmlTemplate(ACKNOWLEDGEMENT_TEMPLATE_PART_2, platformLanguageCode));
+			templateContent
+					.append(templateService.getHtmlTemplate(ACKNOWLEDGEMENT_TEMPLATE_PART_3, platformLanguageCode));
 			String ackTemplateText = templateContent.toString();
-			
+
 			if (ackTemplateText != null && !ackTemplateText.isEmpty()) {
 				ResponseDTO templateResponse = templateGenerator.generateTemplate(ackTemplateText, registrationDTO,
 						templateManagerBuilder, RegistrationConstants.ACKNOWLEDGEMENT_TEMPLATE);
@@ -334,8 +383,8 @@ public class PacketHandlerController extends BaseController implements Initializ
 
 		if (isMachineRemapProcessStarted()) {
 
-			LOGGER.info("REGISTRATION - UPLOAD_PACKET - REGISTRATION_OFFICER_PACKET_CONTROLLER",
-					APPLICATION_NAME, APPLICATION_ID, RegistrationConstants.MACHINE_CENTER_REMAP_MSG);
+			LOGGER.info("REGISTRATION - UPLOAD_PACKET - REGISTRATION_OFFICER_PACKET_CONTROLLER", APPLICATION_NAME,
+					APPLICATION_ID, RegistrationConstants.MACHINE_CENTER_REMAP_MSG);
 			return;
 		}
 		LOGGER.info(PACKET_HANDLER, APPLICATION_NAME, APPLICATION_ID, "Loading Packet Upload screen started.");
@@ -421,14 +470,13 @@ public class PacketHandlerController extends BaseController implements Initializ
 	/**
 	 * Sync data through batch jobs.
 	 *
-	 * @param event
-	 *            the event
+	 * @param event the event
 	 */
 	public void syncData() {
 		if (isMachineRemapProcessStarted()) {
 
-			LOGGER.info("REGISTRATION - SYNC_DATA - REGISTRATION_OFFICER_PACKET_CONTROLLER",
-					APPLICATION_NAME, APPLICATION_ID, RegistrationConstants.MACHINE_CENTER_REMAP_MSG);
+			LOGGER.info("REGISTRATION - SYNC_DATA - REGISTRATION_OFFICER_PACKET_CONTROLLER", APPLICATION_NAME,
+					APPLICATION_ID, RegistrationConstants.MACHINE_CENTER_REMAP_MSG);
 			return;
 		}
 		LOGGER.info(PACKET_HANDLER, APPLICATION_NAME, APPLICATION_ID, "Loading Sync Data screen started.");
@@ -488,8 +536,7 @@ public class PacketHandlerController extends BaseController implements Initializ
 	/**
 	 * change On-Board user Perspective
 	 * 
-	 * @param event
-	 *            is an action event
+	 * @param event is an action event
 	 * @throws IOException
 	 */
 	public void onBoardUser() {
@@ -541,7 +588,8 @@ public class PacketHandlerController extends BaseController implements Initializ
 					APPLICATION_ID, ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));
 		}
 
-		if (RegistrationConstants.ENABLE.equalsIgnoreCase(String.valueOf(ApplicationContext.map().get(RegistrationConstants.ACK_INSIDE_PACKET)))) {
+		if (RegistrationConstants.ENABLE.equalsIgnoreCase(
+				String.valueOf(ApplicationContext.map().get(RegistrationConstants.ACK_INSIDE_PACKET)))) {
 			registrationDTO.getDemographicDTO().getApplicantDocumentDTO().setAcknowledgeReceipt(ackInBytes);
 			registrationDTO.getDemographicDTO().getApplicantDocumentDTO().setAcknowledgeReceiptName(
 					"RegistrationAcknowledgement." + RegistrationConstants.ACKNOWLEDGEMENT_FORMAT);
@@ -555,7 +603,7 @@ public class PacketHandlerController extends BaseController implements Initializ
 
 			MoroccoIdentity moroccoIdentity = (MoroccoIdentity) registrationDTO.getDemographicDTO()
 					.getDemographicInfoDTO().getIdentity();
-			
+
 			try {
 
 				if (!String.valueOf(ApplicationContext.map().get(RegistrationConstants.EOD_PROCESS_CONFIG_FLAG))
@@ -567,8 +615,12 @@ public class PacketHandlerController extends BaseController implements Initializ
 				// Generate the file path for storing the Encrypted Packet and Acknowledgement
 				// Receipt
 				String seperator = "/";
-				String filePath = String.valueOf(ApplicationContext.map().get(RegistrationConstants.PKT_STORE_LOC)) + seperator + formatDate(new Date(), String.valueOf(ApplicationContext.map().get(RegistrationConstants.PKT_STORE_DATE_FORMAT)))
-						.concat(seperator).concat(registrationDTO.getRegistrationId());
+				String filePath = String.valueOf(ApplicationContext.map().get(RegistrationConstants.PKT_STORE_LOC))
+						+ seperator
+						+ formatDate(new Date(),
+								String.valueOf(
+										ApplicationContext.map().get(RegistrationConstants.PKT_STORE_DATE_FORMAT)))
+												.concat(seperator).concat(registrationDTO.getRegistrationId());
 
 				// Storing the Registration Acknowledge Receipt Image
 				FileUtils.copyToFile(new ByteArrayInputStream(ackInBytes),
@@ -584,7 +636,7 @@ public class PacketHandlerController extends BaseController implements Initializ
 						APPLICATION_ID,
 						regBaseCheckedException.getMessage() + ExceptionUtils.getStackTrace(regBaseCheckedException));
 			}
-			
+
 			sendNotification(moroccoIdentity.getEmail(), moroccoIdentity.getPhone(),
 					registrationDTO.getRegistrationId());
 
@@ -613,7 +665,7 @@ public class PacketHandlerController extends BaseController implements Initializ
 	 * Load re registration screen.
 	 */
 	public void loadReRegistrationScreen() {
-		
+
 		if (isMachineRemapProcessStarted()) {
 
 			LOGGER.info("REGISTRATION - LOAD_REREGISTRATION_SCREEN - REGISTRATION_OFFICER_PACKET_CONTROLLER",
@@ -668,8 +720,7 @@ public class PacketHandlerController extends BaseController implements Initializ
 	/**
 	 * Sync and upload packet.
 	 *
-	 * @throws RegBaseCheckedException
-	 *             the reg base checked exception
+	 * @throws RegBaseCheckedException the reg base checked exception
 	 */
 	private void syncAndUploadPacket() throws RegBaseCheckedException {
 		LOGGER.info(PACKET_HANDLER, APPLICATION_NAME, APPLICATION_ID, "Sync and Upload of created Packet started");
@@ -691,7 +742,7 @@ public class PacketHandlerController extends BaseController implements Initializ
 		return policySyncService.checkKeyValidation().getSuccessResponseDTO() != null;
 
 	}
-	
+
 	private void sendNotification(String email, String mobile, String regID) {
 		try {
 			if (RegistrationAppHealthCheckUtil.isNetworkAvailable()) {
@@ -703,7 +754,7 @@ public class PacketHandlerController extends BaseController implements Initializ
 					if (email != null && (notificationServiceName.toUpperCase())
 							.contains(RegistrationConstants.EMAIL_SERVICE.toUpperCase())) {
 						writeNotificationTemplate = getNotificationTemplate(RegistrationConstants.EMAIL_TEMPLATE);
-						if (!writeNotificationTemplate.toString().isEmpty()) {							
+						if (!writeNotificationTemplate.toString().isEmpty()) {
 							notificationResponse = notificationService.sendEmail(writeNotificationTemplate.toString(),
 									email, regID);
 							notificationAlert(notificationResponse, "Email Notification");
@@ -712,7 +763,7 @@ public class PacketHandlerController extends BaseController implements Initializ
 					if (mobile != null && (notificationServiceName.toUpperCase())
 							.contains(RegistrationConstants.SMS_SERVICE.toUpperCase())) {
 						writeNotificationTemplate = getNotificationTemplate(RegistrationConstants.SMS_TEMPLATE);
-						if (!writeNotificationTemplate.toString().isEmpty()) {							
+						if (!writeNotificationTemplate.toString().isEmpty()) {
 							notificationResponse = notificationService.sendSMS(writeNotificationTemplate.toString(),
 									mobile, regID);
 							notificationAlert(notificationResponse, "SMS Notification");
