@@ -191,7 +191,7 @@ export class DashBoardComponent implements OnInit {
   deletePreregistration(element: any) {
     this.dataStorageService.deleteRegistration(element.applicationID).subscribe(
       response => {
-        if(!response['errors']) {
+        if(!response['err']) {
           this.displayMessage(this.secondaryLanguagelabels.title_success,
             this.secondaryLanguagelabels.msg_deleted);
           const index = this.users.indexOf(element);
@@ -212,7 +212,7 @@ export class DashBoardComponent implements OnInit {
     element.regDto.pre_registration_id = element.applicationID;
             this.dataStorageService.cancelAppointment(new BookingModelRequest(element.regDto)).subscribe(
               response => {
-                if(!response['errors']) {
+                if(!response['err']) {
                   this.displayMessage(this.secondaryLanguagelabels.title_success,
                     this.secondaryLanguagelabels.msg_deleted);
                   const index = this.users.indexOf(element);
