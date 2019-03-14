@@ -228,7 +228,6 @@ export class DataStorageService {
     this.APPLICANT_VALID_DOCUMENTS_URL = this.APPLICANT_VALID_DOCUMENTS_URL + applicantCode + '/languages';
     return this.httpClient.get(this.APPLICANT_VALID_DOCUMENTS_URL, {
       params: new HttpParams().append('languages', localStorage.getItem('langCode'))
-      // params: new HttpParams().append('languages', 'eng')
     });
   }
 
