@@ -52,7 +52,9 @@ testdata:
       postalCode: 300033
       email: vjvignesh4@gmail.com
       parentOrGuardianRIDOrUIN: LONG:9457847125
-      CNIENumber: LONG:6789545678909
+      CNIENumber: 6789545678909
+      categorydocuments0: individualBiometrics
+      valuedocuments0: $ENCODEFILE:input/cbeff-bio-data.xml$
     output.output-1-expected-res:
       output.1.res.status: ACTIVATED
       output.1.res.timestamp: $IGNORE$
@@ -111,7 +113,7 @@ testdata:
       postalCode: 450005
       email: vjvignesh4@gmail.com
       parentOrGuardianRIDOrUIN: LONG:9457847125
-      CNIENumber: LONG:6789545678909
+      CNIENumber: 6789545678909
     output.output-1-expected-res:
       output.1.res.status: ACTIVATED
       output.1.res.timestamp: $IGNORE$
@@ -170,7 +172,7 @@ testdata:
       postalCode: 300033
       email: vjvignesh4@gmail.com
       parentOrGuardianRIDOrUIN: LONG:9457847125
-      CNIENumber: LONG:6789545678909
+      CNIENumber: 6789545678909
     output.output-1-expected-res:
       output.1.res.status: ACTIVATED
       output.1.res.timestamp: $IGNORE$
@@ -229,7 +231,7 @@ testdata:
       postalCode: 300033
       email: vjvignesh4@gmail.com
       parentOrGuardianRIDOrUIN: LONG:9457847125
-      CNIENumber: LONG:6789545678909
+      CNIENumber: 6789545678909
     output.output-1-expected-res:
       output.1.res.status: ACTIVATED
       output.1.res.timestamp: $IGNORE$
@@ -288,7 +290,7 @@ testdata:
       postalCode: 300033
       email: vjvignesh4@gmail.com
       parentOrGuardianRIDOrUIN: LONG:9457847125
-      CNIENumber: LONG:6789545678909
+      CNIENumber: 6789545678909
     output.output-1-expected-res:
       output.1.res.status: ACTIVATED
       output.1.res.timestamp: $IGNORE$
@@ -347,7 +349,7 @@ testdata:
       postalCode: 300033
       email: athilbanu@gmail.com
       parentOrGuardianRIDOrUIN: LONG:9457847126
-      CNIENumber: LONG:6789505678909
+      CNIENumber: 6789505678909
     output.output-1-expected-res:
       output.1.res.status: ACTIVATED
       output.1.res.timestamp: $IGNORE$
@@ -406,7 +408,7 @@ testdata:
       postalCode: 300033
       email: vjvignesh4@gmail.com
       parentOrGuardianRIDOrUIN: LONG:9457847125
-      CNIENumber: LONG:6789545678909
+      CNIENumber: 6789545678909
     output.output-1-expected-res:
       output.1.res.status: ACTIVATED
       output.1.res.timestamp: $IGNORE$
@@ -465,7 +467,7 @@ testdata:
       postalCode: 300033
       email: athilbanu@gmail.com
       parentOrGuardianRIDOrUIN: LONG:9457847126
-      CNIENumber: LONG:6789505678909
+      CNIENumber: 6789505678909
     output.output-1-expected-res:
       output.1.res.status: ACTIVATED
       output.1.res.timestamp: $IGNORE$
@@ -524,7 +526,7 @@ testdata:
       postalCode: 300033
       email: athilbanu@gmail.com
       parentOrGuardianRIDOrUIN: LONG:9457847126
-      CNIENumber: LONG:6789505678909
+      CNIENumber: 6789505678909
       documents: $REMOVE$
     output.output-1-expected-res:
       output.1.res.status: ACTIVATED
@@ -584,7 +586,7 @@ testdata:
       postalCode: 300033
       email: athilbanu@gmail.com
       parentOrGuardianRIDOrUIN: LONG:9457847126
-      CNIENumber: LONG:6789505678909
+      CNIENumber: 6789505678909
     output.output-1-expected-res:
       output.1.res.status: ACTIVATED
       output.1.res.timestamp: $IGNORE$
@@ -643,7 +645,7 @@ testdata:
       postalCode: 300033
       email: athilbanu@gmail.com
       parentOrGuardianRIDOrUIN: LONG:9457847126
-      CNIENumber: LONG:6789505678909
+      CNIENumber: 6789505678909
     output.output-1-expected-res:
       output.1.res.status: ACTIVATED
       output.1.res.timestamp: $IGNORE$
@@ -702,7 +704,7 @@ testdata:
       postalCode: 300033
       email: athilbanu@gmail.com
       parentOrGuardianRIDOrUIN: LONG:9457847126
-      CNIENumber: LONG:6789505678909
+      CNIENumber: 6789505678909
     output.output-1-expected-res:
       output.1.res.status: ACTIVATED
       output.1.res.timestamp: $IGNORE$
@@ -761,7 +763,7 @@ testdata:
       postalCode: 300033
       email: vjvignesh4@gmail.com
       parentOrGuardianRIDOrUIN: LONG:9457847126
-      CNIENumber: LONG:6789505678909
+      CNIENumber: 6789505678909
     output.output-1-expected-res:
       output.1.res.status: ACTIVATED
       output.1.res.timestamp: $IGNORE$
@@ -820,7 +822,7 @@ testdata:
       postalCode: 300033
       email: vjvignesh4@gmail.com
       parentOrGuardianRIDOrUIN: LONG:9457847126
-      CNIENumber: LONG:6789505678909
+      CNIENumber: 6789505678909
     output.output-1-expected-res:
       output.1.res.status: ACTIVATED
       output.1.res.timestamp: $IGNORE$
@@ -879,7 +881,7 @@ testdata:
       postalCode: 300033
       email: vjvignesh4@gmail.com
       parentOrGuardianRIDOrUIN: LONG:9457847126
-      CNIENumber: LONG:6789505678909
+      CNIENumber: 6789505678909
     output.output-1-expected-res:
       output.1.res.status: ACTIVATED
       output.1.res.timestamp: $IGNORE$
@@ -938,7 +940,7 @@ testdata:
       postalCode: 300033
       email: athilbanu@gmail.com
       parentOrGuardianRIDOrUIN: LONG:9457847126
-      CNIENumber: LONG:6789505678909
+      CNIENumber: 6789505678909
     output.output-1-expected-res:
       output.1.res.status: ACTIVATED
       output.1.res.timestamp: $IGNORE$
@@ -997,7 +999,7 @@ testdata:
       postalCode: 300033
       email: vjvignesh4@gmail.com
       parentOrGuardianRIDOrUIN: LONG:9003356458
-      CNIENumber: LONG:9003356458345
+      CNIENumber: 9003356458345
     output.output-1-expected-res:
       output.1.res.status: ACTIVATED
       output.1.res.timestamp: $IGNORE$
@@ -1056,7 +1058,7 @@ testdata:
       postalCode: 300033
       email: vjvignesh4@gmail.com
       parentOrGuardianRIDOrUIN: LONG:9457847126
-      CNIENumber: LONG:6789505678909
+      CNIENumber: 6789505678909
     output.output-1-expected-res:
       output.1.res.status: ACTIVATED
       output.1.res.timestamp: $IGNORE$
@@ -1115,7 +1117,7 @@ testdata:
       postalCode: 300033
       email: athilbanu@gmail.com
       parentOrGuardianRIDOrUIN: LONG:9457847126
-      CNIENumber: LONG:6789505678909
+      CNIENumber: 6789505678909
     output.output-1-expected-res:
       output.1.res.status: ACTIVATED
       output.1.res.timestamp: $IGNORE$
@@ -1174,7 +1176,7 @@ testdata:
       postalCode: 300033
       email: athilbanu@gmail.com
       parentOrGuardianRIDOrUIN: LONG:9457847126
-      CNIENumber: LONG:6789505678909
+      CNIENumber: 6789505678909
     output.output-1-expected-res:
       output.1.res.status: ACTIVATED
       output.1.res.timestamp: $IGNORE$
@@ -1233,7 +1235,7 @@ testdata:
       postalCode: 300033
       email: athilbanu@gmail.com
       parentOrGuardianRIDOrUIN: LONG:9457847126
-      CNIENumber: LONG:6789505678909
+      CNIENumber: 6789505678909
     output.output-1-expected-res:
       output.1.res.status: ACTIVATED
       output.1.res.timestamp: $IGNORE$
@@ -1292,7 +1294,7 @@ testdata:
       postalCode: 300033
       email: athilbanu@gmail.com
       parentOrGuardianRIDOrUIN: LONG:9457847126
-      CNIENumber: LONG:6789505678909
+      CNIENumber: 6789505678909
     output.output-1-expected-res:
       output.1.res.status: ACTIVATED
       output.1.res.timestamp: $IGNORE$
@@ -1351,7 +1353,7 @@ testdata:
       postalCode: 300033
       email: vjvignesh4@gmail.com
       parentOrGuardianRIDOrUIN: LONG:9457847126
-      CNIENumber: LONG:6789505678909
+      CNIENumber: 6789505678909
     output.output-1-expected-res:
       output.1.res.status: ACTIVATED
       output.1.res.timestamp: $IGNORE$
@@ -1410,7 +1412,7 @@ testdata:
       postalCode: 300033
       email: vjvignesh4@gmail.com
       parentOrGuardianRIDOrUIN: LONG:9457847126
-      CNIENumber: LONG:6789505678909
+      CNIENumber: 6789505678909
     output.output-1-expected-res:
       output.1.res.status: ACTIVATED
       output.1.res.timestamp: $IGNORE$
@@ -1469,7 +1471,7 @@ testdata:
       postalCode: 300033
       email: athilbanu@gmail.com
       parentOrGuardianRIDOrUIN: LONG:9457847126
-      CNIENumber: LONG:6789505678909
+      CNIENumber: 6789505678909
     output.output-1-expected-res:
       output.1.res.status: ACTIVATED
       output.1.res.timestamp: $IGNORE$
@@ -1528,7 +1530,7 @@ testdata:
       postalCode: 300033
       email: vjvignesh4@gmail.com
       parentOrGuardianRIDOrUIN: LONG:9457847126
-      CNIENumber: LONG:6789505678909
+      CNIENumber: 6789505678909
     output.output-1-expected-res:
       output.1.res.status: ACTIVATED
       output.1.res.timestamp: $IGNORE$
@@ -1587,7 +1589,7 @@ testdata:
       postalCode: 300033
       email: athilbanu@gmail.com
       parentOrGuardianRIDOrUIN: LONG:9457847126
-      CNIENumber: LONG:6789505678909
+      CNIENumber: 6789505678909
     output.output-1-expected-res:
       output.1.res.status: ACTIVATED
       output.1.res.timestamp: $IGNORE$
@@ -1646,7 +1648,7 @@ testdata:
       postalCode: 300033
       email: athilbanu@gmail.com
       parentOrGuardianRIDOrUIN: LONG:9457847126
-      CNIENumber: LONG:6789505678909
+      CNIENumber: 6789505678909
     output.output-1-expected-res:
       output.1.res.status: ACTIVATED
       output.1.res.timestamp: $IGNORE$
@@ -1705,7 +1707,7 @@ testdata:
       postalCode: 300033
       email: vjvignesh4@gmail.com
       parentOrGuardianRIDOrUIN: LONG:9457847126
-      CNIENumber: LONG:6789505678909
+      CNIENumber: 6789505678909
     output.output-1-expected-res:
       output.1.res.status: ACTIVATED
       output.1.res.timestamp: $IGNORE$
@@ -1764,7 +1766,7 @@ testdata:
       postalCode: 300033
       email: athilbanu@gmail.com
       parentOrGuardianRIDOrUIN: LONG:9457847126
-      CNIENumber: LONG:6789505678909
+      CNIENumber: 6789505678909
     output.output-1-expected-res:
       output.1.res.status: ACTIVATED
       output.1.res.timestamp: $IGNORE$
@@ -1823,7 +1825,7 @@ testdata:
       postalCode: 300033
       email: vjvignesh4@gmail.com
       parentOrGuardianRIDOrUIN: LONG:9457847126
-      CNIENumber: LONG:6789505678909
+      CNIENumber: 6789505678909
     output.output-1-expected-res:
       output.1.res.status: ACTIVATED
       output.1.res.timestamp: $IGNORE$
@@ -1882,7 +1884,7 @@ testdata:
       postalCode: 300033
       email: vignesh.vijayakumar@mindtree.com
       parentOrGuardianRIDOrUIN: LONG:9457847126
-      CNIENumber: LONG:6789505678909
+      CNIENumber: 6789505678909
     output.output-1-expected-res:
       output.1.res.status: ACTIVATED
       output.1.res.timestamp: $IGNORE$
@@ -1941,7 +1943,7 @@ testdata:
       postalCode: 300033
       email: vignesh.vijayakumar@mindtree.com
       parentOrGuardianRIDOrUIN: LONG:9457847126
-      CNIENumber: LONG:6789505678909
+      CNIENumber: 6789505678909
     output.output-1-expected-res:
       output.1.res.status: ACTIVATED
       output.1.res.timestamp: $IGNORE$
@@ -2000,7 +2002,7 @@ testdata:
       postalCode: 300033
       email: vignesh.vijayakumar@mindtree.com
       parentOrGuardianRIDOrUIN: LONG:9457847126
-      CNIENumber: LONG:6789505678909
+      CNIENumber: 6789505678909
     output.output-1-expected-res:
       output.1.res.status: ACTIVATED
       output.1.res.timestamp: $IGNORE$
@@ -2059,7 +2061,7 @@ testdata:
       postalCode: 300033
       email: vignesh.vijayakumar@mindtree.com
       parentOrGuardianRIDOrUIN: LONG:9457847126
-      CNIENumber: LONG:6789505678909
+      CNIENumber: 6789505678909
     output.output-1-expected-res:
       output.1.res.status: ACTIVATED
       output.1.res.timestamp: $IGNORE$

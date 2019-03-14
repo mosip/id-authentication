@@ -1,0 +1,1 @@
+{"status":"N","err":[{"errorCode":"IDA-DEA-035","errorMessage":"Invalid resident auth type (\"kycAuthType \" does not match with data in PID block)"}],"resTime":"2019-03-12T12:48:21.884+05:30","ver":"0.8"}

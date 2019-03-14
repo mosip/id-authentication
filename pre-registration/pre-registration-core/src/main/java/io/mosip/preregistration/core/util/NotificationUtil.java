@@ -24,6 +24,10 @@ import io.mosip.preregistration.core.common.dto.NotificationDTO;
 import io.mosip.preregistration.core.common.dto.NotificationResponseDTO;
 import io.mosip.preregistration.core.common.dto.SMSRequestDTO;
 
+/**
+ * @author Sanober Noor
+ *@since 1.0.0
+ */
 @Component
 public class NotificationUtil {
  
@@ -32,6 +36,15 @@ public class NotificationUtil {
 
 	@Value("${smsResourse.url}")
 	private String smsResourseUrl;
+	
+	@Value("${email.acknowledgement.template}")
+	private String emailAcknowledgement;
+	
+	@Value("${email.acknowledgement.subject.template}")
+	private String emailAcknowledgementSubject;
+	
+	@Value("${sms.acknowledgement.template}")
+	private String smsAcknowledgement;
 	
 	@Autowired
 	private TemplateUtil templateUtil;
@@ -78,7 +91,7 @@ public class NotificationUtil {
 		ResponseEntity<NotificationResponseDTO> resp = null;
 		MainListResponseDTO<NotificationResponseDTO> response = new MainListResponseDTO<>();
 		String merseTemplate = null;
-			String fileText = templateUtil.getTemplate(langCode, "Email-Acknowledgement");
+			String fileText = templateUtil.getTemplate(langCode, emailAcknowledgement);
 			merseTemplate =templateUtil.templateMerge(fileText, acknowledgementDTO);
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.MULTIPART_FORM_DATA);
@@ -113,7 +126,7 @@ public class NotificationUtil {
 	 */
 	public String getEmailSubject(NotificationDTO acknowledgementDTO, String langCode) throws IOException {
 
-		return  templateUtil.templateMerge(templateUtil.getTemplate(langCode, "Acknowledgement-email-subject"), acknowledgementDTO);
+		return  templateUtil.templateMerge(templateUtil.getTemplate(langCode, emailAcknowledgementSubject), acknowledgementDTO);
 	}
 	/**
 	 * This method will send the sms notification to the user
@@ -128,7 +141,7 @@ public class NotificationUtil {
 		MainListResponseDTO<NotificationResponseDTO> response = new MainListResponseDTO<>();
 		ResponseEntity<NotificationResponseDTO> resp = null;
 
-			String mergeTemplate = templateUtil.templateMerge(templateUtil.getTemplate(langCode, "SMS-Acknowledgement"),
+			String mergeTemplate = templateUtil.templateMerge(templateUtil.getTemplate(langCode, smsAcknowledgement),
 					acknowledgementDTO);
 			SMSRequestDTO smsRequestDTO = new SMSRequestDTO();
 			smsRequestDTO.setMessage(mergeTemplate);

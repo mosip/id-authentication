@@ -11,7 +11,6 @@ import java.util.Optional;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
@@ -50,6 +49,7 @@ import io.mosip.registration.processor.core.packet.dto.demographicinfo.JsonValue
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.identify.RegistrationProcessorIdentity;
 import io.mosip.registration.processor.core.packet.dto.idjson.Document;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
+import io.mosip.registration.processor.core.util.JsonUtil;
 import io.mosip.registration.processor.packet.storage.dao.PacketInfoDao;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.packet.storage.entity.ApplicantDemographicInfoJsonEntity;
@@ -531,7 +531,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 
 				T jsonNodeElement = (T) genericType.newInstance();
 
-				JSONObject objects = (JSONObject) demographicJsonNode.get(i);
+				JSONObject objects = JsonUtil.getJSONObjectFromArray(demographicJsonNode, i);
 				language = (String) objects.get(LANGUAGE);
 				value = (String) objects.get(VALUE);
 
@@ -571,7 +571,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 		JSONArray demographicJsonNode = null;
 
 		if (demographicIdentity != null)
-			demographicJsonNode = (JSONArray) demographicIdentity.get(identityKey);
+			demographicJsonNode = JsonUtil.getJSONArray(demographicIdentity, identityKey);
 		return (demographicJsonNode != null)
 				? (JsonValue[]) mapJsonNodeToJavaObject(JsonValue.class, demographicJsonNode)
 				: null;
@@ -596,15 +596,16 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 			ObjectMapper mapIdentityJsonStringToObject = new ObjectMapper();
 			regProcessorIdentityJson = mapIdentityJsonStringToObject.readValue(getIdentityJsonString,
 					RegistrationProcessorIdentity.class);
-			JSONParser parser = new JSONParser();
-			JSONObject demographicJson = (JSONObject) parser.parse(demographicJsonString);
-			demographicIdentity = (JSONObject) demographicJson.get(utility.getGetRegProcessorDemographicIdentity());
+			JSONObject demographicJson = (JSONObject) JsonUtil.objectMapperReadValue(demographicJsonString,
+					JSONObject.class);
+			demographicIdentity = JsonUtil.getJSONObject(demographicJson,
+					utility.getGetRegProcessorDemographicIdentity());
 			if (demographicIdentity == null)
 				throw new IdentityNotFoundException(PlatformErrorMessages.RPR_PIS_IDENTITY_NOT_FOUND.getMessage());
 
 			demographicData.setName(getJsonValues(regProcessorIdentityJson.getIdentity().getName().getValue()));
-			demographicData.setDateOfBirth(
-					(String) (demographicIdentity.get(regProcessorIdentityJson.getIdentity().getDob().getValue())));
+			demographicData.setDateOfBirth((String) JsonUtil.getJSONValue(demographicIdentity,
+					regProcessorIdentityJson.getIdentity().getDob().getValue()));
 			demographicData.setGender(getJsonValues(regProcessorIdentityJson.getIdentity().getGender().getValue()));
 		} catch (IOException e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
@@ -613,7 +614,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 			throw new MappingJsonException(PlatformErrorMessages.RPR_SYS_IDENTITY_JSON_MAPPING_EXCEPTION.getMessage(),
 					e);
 
-		} catch (ParseException e) {
+		} catch (Exception e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					"", e.getMessage() + ExceptionUtils.getStackTrace(e));
 
