@@ -158,7 +158,8 @@ public class PacketValidateProcessor {
 
 				InputStream idJsonStream = adapter.getFile(registrationId,
 						PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR + PacketFiles.ID.name());
-				String jsonString = IOUtils.toString(idJsonStream);
+				byte[] bytearray = IOUtils.toByteArray(idJsonStream);
+				String jsonString = new String(bytearray);
 
 				ValidationReport isSchemaValidated = jsonValidatorImpl.validateJson(jsonString,
 						"mosip-identity-json-schema.json");
@@ -169,8 +170,11 @@ public class PacketValidateProcessor {
 				List<Document> documentList = null;
 				if (isSchemaValidated.isValid()) {
 
-					RegistrationProcessorIdentity registrationProcessorIdentity = (RegistrationProcessorIdentity) JsonUtil
-							.inputStreamtoJavaObject(idJsonStream, RegistrationProcessorIdentity.class);
+					String getIdentityJsonString = Utilities.getJson(utility.getConfigServerFileStorageURL(),
+							utility.getGetRegProcessorIdentityJson());
+					ObjectMapper mapIdentityJsonStringToObject = new ObjectMapper();
+					regProcessorIdentityJson = mapIdentityJsonStringToObject.readValue(getIdentityJsonString,
+							RegistrationProcessorIdentity.class);
 
 					FilesValidation filesValidation = new FilesValidation(adapter, registrationStatusDto);
 					isFilesValidated = filesValidation.filesValidation(registrationId, packetMetaInfo.getIdentity());
@@ -195,9 +199,9 @@ public class PacketValidateProcessor {
 
 							if (isApplicantDocumentValidation) {
 								MasterDataValidation masterDataValidation = new MasterDataValidation(
-										registrationStatusDto, env, registrationProcessorRestService);
-								isMasterDataValidated = masterDataValidation
-										.validateMasterData(registrationProcessorIdentity);
+										registrationStatusDto, env, registrationProcessorRestService, utility,
+										regProcessorIdentityJson);
+								isMasterDataValidated = masterDataValidation.validateMasterData(jsonString);
 							}
 
 						}
