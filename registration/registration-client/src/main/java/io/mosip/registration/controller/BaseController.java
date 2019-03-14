@@ -103,7 +103,7 @@ public class BaseController {
 	@Autowired
 	private DemographicDetailController demographicDetailController;
 	@Autowired
-	private RegistrationPreviewController registrationPreviewController;
+	public RegistrationPreviewController registrationPreviewController;
 	@Autowired
 	private FingerPrintCaptureController fingerPrintCaptureController;
 	@Autowired
@@ -390,6 +390,13 @@ public class BaseController {
 		SessionContext.map().remove("mm");
 		SessionContext.map().remove("yyyy");
 		SessionContext.map().remove("toggleAgeOrDob");
+		SessionContext.map().remove("demographicDetail");
+		SessionContext.map().remove("documentScan");
+		SessionContext.map().remove("fingerPrintCapture");
+		SessionContext.map().remove("biometricException");
+		SessionContext.map().remove("faceCapture");
+		SessionContext.map().remove("irisCapture");
+		SessionContext.map().remove("registrationPreview");
 		SessionContext.map().remove("operatorAuthenticationPane");
 		SessionContext.map().remove(RegistrationConstants.OLD_BIOMETRIC_EXCEPTION);
 		SessionContext.map().remove(RegistrationConstants.NEW_BIOMETRIC_EXCEPTION);

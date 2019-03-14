@@ -101,7 +101,7 @@ public class RegistrationPreviewController extends BaseController {
 		templateContent.append(templateService.getHtmlTemplate(ACKNOWLEDGEMENT_TEMPLATE_PART_2, platformLanguageCode));
 		templateContent.append(templateService.getHtmlTemplate(ACKNOWLEDGEMENT_TEMPLATE_PART_3, platformLanguageCode));
 		String ackTemplateText = templateContent.toString();
-		
+
 		if (ackTemplateText != null && !ackTemplateText.isEmpty()) {
 			ResponseDTO templateResponse = templateGenerator.generateTemplate(ackTemplateText,
 					getRegistrationDTOFromSession(), templateManagerBuilder, RegistrationConstants.TEMPLATE_PREVIEW);
@@ -187,7 +187,21 @@ public class RegistrationPreviewController extends BaseController {
 				AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
 
 		SessionContext.map().put(RegistrationConstants.REGISTRATION_ISEDIT, true);
-		registrationController.showCurrentPage(RegistrationConstants.REGISTRATION_PREVIEW,
-				RegistrationConstants.FINGERPRINT_CAPTURE);
+		if (getRegistrationDTOFromSession().getSelectionListDTO() != null) {
+			SessionContext.map().put("registrationPreview", false);
+			if (getRegistrationDTOFromSession().getSelectionListDTO().isBiometricFingerprint()) {
+				SessionContext.map().put("fingerPrintCapture", true);
+			} else if (!getRegistrationDTOFromSession().getSelectionListDTO().isBiometricFingerprint()
+					&& getRegistrationDTOFromSession().getSelectionListDTO().isBiometricIris()) {
+				SessionContext.map().put("irisCapture", true);
+			} else {
+				SessionContext.map().put("faceCapture", true);
+			}
+			registrationController.showUINUpdateCurrentPage();
+		} else {
+			registrationController.showCurrentPage(RegistrationConstants.REGISTRATION_PREVIEW,
+					RegistrationConstants.FINGERPRINT_CAPTURE);
+		}
+
 	}
 }
