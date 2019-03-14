@@ -84,7 +84,7 @@ public class PacketGeneratorServiceImpl implements PacketGeneratorService {
 		PackerGeneratorFailureDto dto = new PackerGeneratorFailureDto();
 
 		RegistrationDTO registrationDTO = createRegistrationDTOObject(request.getUin(), request.getRegistrationType(),
-				request.getApplicantType(), request.getCenterId(), request.getMachineId());
+				request.getCenterId(), request.getMachineId());
 		byte[] packetZipBytes = null;
 		if (isValidCenter(request.getCenterId(), dto) && isValidMachine(request.getMachineId(), dto)) {
 			try {
@@ -130,12 +130,12 @@ public class PacketGeneratorServiceImpl implements PacketGeneratorService {
 	 *            the machine id
 	 * @return the registration DTO
 	 */
-	private RegistrationDTO createRegistrationDTOObject(String uin, String registrationType, String applicantType,
-			String centerId, String machineId) {
+	private RegistrationDTO createRegistrationDTOObject(String uin, String registrationType, String centerId,
+			String machineId) {
 		RegistrationDTO registrationDTO = new RegistrationDTO();
 		registrationDTO.setDemographicDTO(getDemographicDTO(uin));
-		RegistrationMetaDataDTO registrationMetaDataDTO = getRegistrationMetaDataDTO(registrationType, applicantType,
-				uin, centerId, machineId);
+		RegistrationMetaDataDTO registrationMetaDataDTO = getRegistrationMetaDataDTO(registrationType, uin, centerId,
+				machineId);
 		String registrationId = ridGeneratorImpl.generateId(registrationMetaDataDTO.getCenterId(),
 				registrationMetaDataDTO.getMachineId());
 		registrationDTO.setRegistrationId(registrationId);
@@ -177,11 +177,10 @@ public class PacketGeneratorServiceImpl implements PacketGeneratorService {
 	 *            the machine id
 	 * @return the registration meta data DTO
 	 */
-	private RegistrationMetaDataDTO getRegistrationMetaDataDTO(String registrationType, String applicantType,
-			String uin, String centerId, String machineId) {
+	private RegistrationMetaDataDTO getRegistrationMetaDataDTO(String registrationType, String uin, String centerId,
+			String machineId) {
 		RegistrationMetaDataDTO registrationMetaDataDTO = new RegistrationMetaDataDTO();
 
-		registrationMetaDataDTO.setApplicationType(applicantType);
 		registrationMetaDataDTO.setCenterId(centerId);
 		registrationMetaDataDTO.setMachineId(machineId);
 		registrationMetaDataDTO.setRegistrationCategory(registrationType);
