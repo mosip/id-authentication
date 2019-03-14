@@ -106,12 +106,9 @@ public class PreRegistrationDataSyncServiceImplTest {
 	
 	@Test
 	public void getPreRegistrationIds_ValidRegistrationCenterId() throws JsonProcessingException {
-		System.setProperty("http.proxyHost", "172.22.218.218");
-		System.setProperty("http.proxyPort", "8085");
-		ResponseDTO responseDTO = preRegistrationDataSyncService.getPreRegistrationIds("20916");
+		ResponseDTO responseDTO = preRegistrationDataSyncService.getPreRegistrationIds(RegistrationConstants.JOB_TRIGGER_POINT_USER);
 		ObjectMapper mapper = new ObjectMapper();
-		System.out.println(mapper.writer().writeValueAsString(responseDTO));
-		
+		System.out.println(mapper.writer().writeValueAsString(responseDTO));		
 	}
 	
 	
