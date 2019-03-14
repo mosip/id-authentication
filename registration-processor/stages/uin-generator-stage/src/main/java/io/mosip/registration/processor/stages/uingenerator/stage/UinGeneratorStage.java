@@ -61,6 +61,7 @@ import io.mosip.registration.processor.stages.uingenerator.idrepo.dto.IdResponse
 import io.mosip.registration.processor.stages.uingenerator.idrepo.dto.RequestDto;
 import io.mosip.registration.processor.stages.uingenerator.util.UinStatusMessage;
 import io.mosip.registration.processor.status.code.RegistrationStatusCode;
+import io.mosip.registration.processor.status.code.RegistrationType;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
@@ -166,12 +167,6 @@ public class UinGeneratorStage extends MosipVerticleManager {
 	/** The Constant NULL_IDREPO_RESPONSE. */
 	private static final String NULL_IDREPO_RESPONSE = "Response from IdRepo is null";
 	
-	/** The Constant UIN_ACTIVATED. */
-	private static final String UIN_ACTIVATED = "ACTIVATED";
-	
-	/** The Constant UIN_DEACTIVATED. */
-	private static final String UIN_DEACTIVATED = "DEACTIVATED";
-	
 	/** The description. */
 	private String description = "";
 	
@@ -254,9 +249,9 @@ public class UinGeneratorStage extends MosipVerticleManager {
 						LoggerFileConstant.REGISTRATIONID.toString() + registrationId, "Response from IdRepo API",
 						"is :" + idResponseDTO.toString());
 			} else {
-				if ((UIN_ACTIVATED).equalsIgnoreCase(object.getReg_type())) {
+				if ((RegistrationType.ACTIVATED.toString()).equalsIgnoreCase(object.getReg_type())) {
 					idResponseDTO = reActivateUin(registrationId, uinFieldCheck, object);
-				} else if ((UIN_DEACTIVATED).equalsIgnoreCase(object.getReg_type())) {
+				} else if ((RegistrationType.DEACTIVATED.toString()).equalsIgnoreCase(object.getReg_type())) {
 					idResponseDTO = deactivateUin(registrationId, uinFieldCheck, object);
 				}
 			}
@@ -459,7 +454,7 @@ public class UinGeneratorStage extends MosipVerticleManager {
 		try {
 			if (result != null && result.getResponse() != null) {
 
-				if ((UIN_ACTIVATED).equalsIgnoreCase(result.getStatus())) {
+				if ((RegistrationType.ACTIVATED.toString()).equalsIgnoreCase(result.getStatus())) {
 
 					registrationStatusDto.setStatusCode(RegistrationStatusCode.PACKET_UIN_UPDATION_FAILURE.toString());
 					registrationStatusDto.setStatusComment(
@@ -472,7 +467,7 @@ public class UinGeneratorStage extends MosipVerticleManager {
 					pathsegments.add(Long.toString(uin));
 					idRequestDTO.setId(idRepoUpdate);
 					idRequestDTO.setRegistrationId(regId);
-					idRequestDTO.setStatus(UIN_ACTIVATED);
+					idRequestDTO.setStatus(RegistrationType.ACTIVATED.toString());
 					idRequestDTO.setTimestamp(DateUtils.getUTCCurrentDateTimeString());
 					idRequestDTO.setVersion(idRepoApiVersion);
 					Gson gson = new GsonBuilder().create();
@@ -487,7 +482,7 @@ public class UinGeneratorStage extends MosipVerticleManager {
 
 					if (result != null && result.getResponse() != null) {
 
-						if ((UIN_ACTIVATED).equalsIgnoreCase(result.getStatus())) {
+						if ((RegistrationType.ACTIVATED.toString()).equalsIgnoreCase(result.getStatus())) {
 							isTransactionSuccessful = true;
 							registrationStatusDto
 									.setStatusCode(RegistrationStatusCode.PACKET_UIN_UPDATION_SUCCESS.toString());
@@ -544,7 +539,7 @@ public class UinGeneratorStage extends MosipVerticleManager {
 		try {
 			idResponseDto = getIdRepoDataByUIN(uin);
 
-			if (idResponseDto.getResponse() != null && idResponseDto.getStatus().equalsIgnoreCase(UIN_DEACTIVATED)) {
+			if (idResponseDto.getResponse() != null && idResponseDto.getStatus().equalsIgnoreCase(RegistrationType.DEACTIVATED.toString())) {
 
 				registrationStatusDto.setStatusCode(RegistrationStatusCode.PACKET_UIN_UPDATION_FAILURE.toString());
 				registrationStatusDto.setStatusComment(UinStatusMessage.UIN_DEACTIVATE_FAILURE + regId);
@@ -555,7 +550,7 @@ public class UinGeneratorStage extends MosipVerticleManager {
 				pathsegments.add(Long.toString(uin));
 				idRequestDTO.setId(idRepoUpdate);
 				idRequestDTO.setRegistrationId(regId);
-				idRequestDTO.setStatus(UIN_DEACTIVATED);
+				idRequestDTO.setStatus(RegistrationType.DEACTIVATED.toString());
 				idRequestDTO.setTimestamp(DateUtils.getUTCCurrentDateTimeString());
 				idRequestDTO.setVersion(idRepoApiVersion);
 
@@ -563,7 +558,7 @@ public class UinGeneratorStage extends MosipVerticleManager {
 						pathsegments, "", "", idRequestDTO, IdResponseDTO.class);
 
 				if (idResponseDto != null && idResponseDto.getResponse() != null) {
-					if (idResponseDto.getStatus().equalsIgnoreCase(UIN_DEACTIVATED)) {
+					if (idResponseDto.getStatus().equalsIgnoreCase(RegistrationType.DEACTIVATED.toString())) {
 						registrationStatusDto
 								.setStatusCode(RegistrationStatusCode.PACKET_UIN_UPDATION_SUCCESS.toString());
 						registrationStatusDto.setStatusComment(UinStatusMessage.UIN_DEACTIVATE_SUCCESS + regId);

@@ -51,6 +51,7 @@ import io.mosip.registration.processor.stages.utils.DocumentUtility;
 import io.mosip.registration.processor.stages.utils.FilesValidation;
 import io.mosip.registration.processor.stages.utils.StatusMessage;
 import io.mosip.registration.processor.status.code.RegistrationStatusCode;
+import io.mosip.registration.processor.status.code.RegistrationType;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
@@ -134,8 +135,8 @@ public class PacketValidateProcessor {
 						PacketMetaInfo.class);
 				List<FieldValue> metadataList=packetMetaInfo.getIdentity().getMetaData();
 				object.setReg_type(identityIteratorUtil.getFieldValue(metadataList, JsonConstant.REGISTRATIONTYPE));
-				regTypeCheck = (object.getReg_type().equalsIgnoreCase("ACTIVATE")
-						|| object.getReg_type().equalsIgnoreCase("DEACTIVATE"));
+				regTypeCheck = (object.getReg_type().equalsIgnoreCase(RegistrationType.ACTIVATED.toString())
+						|| object.getReg_type().equalsIgnoreCase(RegistrationType.DEACTIVATED.toString()));
 				FilesValidation filesValidation = new FilesValidation(adapter, registrationStatusDto);
 				boolean isFilesValidated = filesValidation.filesValidation(registrationId,
 						packetMetaInfo.getIdentity());
