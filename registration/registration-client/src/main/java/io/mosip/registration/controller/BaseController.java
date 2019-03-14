@@ -584,12 +584,13 @@ public class BaseController {
 			if (SessionContext.map().get(RegistrationConstants.REGISTRATION_DATA) != null) {
 				((RegistrationDTO) SessionContext.map().get(RegistrationConstants.REGISTRATION_DATA)).getBiometricDTO()
 						.setApplicantBiometricDTO(createBiometricInfoDTO());
+				biometricExceptionController.clearSession();
+				fingerPrintCaptureController.clearFingerPrintDTO();
+				irisCaptureController.clearIrisData();
+				faceCaptureController.clearPhoto(RegistrationConstants.APPLICANT_IMAGE);
+				faceCaptureController.clearPhoto(RegistrationConstants.EXCEPTION_IMAGE);
 			}
-			biometricExceptionController.clearSession();
-			fingerPrintCaptureController.clearFingerPrintDTO();
-			irisCaptureController.clearIrisData();
-			faceCaptureController.clearPhoto(RegistrationConstants.APPLICANT_IMAGE);
-			faceCaptureController.clearPhoto(RegistrationConstants.EXCEPTION_IMAGE);
+			
 		}
 	}
 
@@ -883,6 +884,35 @@ public class BaseController {
 		alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
 
 		return alert;
+	}
+	
+	protected void updateUINMethodFlow() {
+		if ((Boolean) SessionContext.userContext().getUserMap().get(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION)
+				|| getRegistrationDTOFromSession().getSelectionListDTO().isBiometricException()
+						&& (Boolean) SessionContext.userContext().getUserMap()
+								.get(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION)) {
+			SessionContext.map().put("biometricException", true);
+		} else if ((getRegistrationDTOFromSession().getSelectionListDTO().isBiometricFingerprint()
+				&& !getRegistrationDTOFromSession().getSelectionListDTO().isBiometricException())
+				|| (getRegistrationDTOFromSession().getSelectionListDTO().isBiometricFingerprint()
+						&& getRegistrationDTOFromSession().getSelectionListDTO().isBiometricException()
+						&& !(Boolean) SessionContext.userContext().getUserMap()
+								.get(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION))) {
+			SessionContext.map().put("fingerPrintCapture", true);
+		} else if ((getRegistrationDTOFromSession().getSelectionListDTO().isBiometricIris()
+				&& !getRegistrationDTOFromSession().getSelectionListDTO().isBiometricException())
+				|| (getRegistrationDTOFromSession().getSelectionListDTO().isBiometricIris()
+						&& getRegistrationDTOFromSession().getSelectionListDTO().isBiometricException()
+						&& !(Boolean) SessionContext.userContext().getUserMap()
+								.get(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION))) {
+			SessionContext.map().put("irisCapture", true);
+		} else if(!RegistrationConstants.DISABLE.equalsIgnoreCase(String.valueOf(
+				ApplicationContext.map().get(RegistrationConstants.FACE_DISABLE_FLAG)))){
+			SessionContext.map().put("faceCapture", true);
+		}else {
+			SessionContext.map().put("registrationPreview", true);
+			registrationPreviewController.setUpPreviewContent();
+		}
 	}
 
 }

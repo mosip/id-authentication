@@ -51,13 +51,14 @@ public class UpdateUINController extends BaseController implements Initializable
 
 	private static final List<String> UIN_UPDATE_CONFIGURED_DEMOGRAPHIC_FIELDS_LIST = Arrays.asList(
 			RegistrationConstants.UIN_UPDATE_NAME, RegistrationConstants.UIN_UPDATE_AGE,
-			RegistrationConstants.UIN_UPDATE_GENDER, RegistrationConstants.UIN_UPDATE_ADDRESS,
-			RegistrationConstants.UIN_UPDATE_CONTACT_DETAILS, RegistrationConstants.UIN_UPDATE_PARENT_DETAILS,
-			RegistrationConstants.UIN_UPDATE_FOREIGNER);
+			RegistrationConstants.UIN_UPDATE_FOREIGNER, RegistrationConstants.UIN_UPDATE_GENDER,
+			RegistrationConstants.UIN_UPDATE_ADDRESS, RegistrationConstants.UIN_UPDATE_PHONE,
+			RegistrationConstants.UIN_UPDATE_EMAIL);
 
 	private static final List<String> UIN_UPDATE_CONFIGURED_BIO_FIELDS_LIST = Arrays.asList(
+			RegistrationConstants.UIN_UPDATE_CNIE_NUMBER, RegistrationConstants.UIN_UPDATE_PARENT_DETAILS,
 			RegistrationConstants.UIN_UPDATE_BIO_EXCEPTION, RegistrationConstants.UIN_UPDATE_BIO_FP,
-			RegistrationConstants.UIN_UPDATE_BIO_IRIS, RegistrationConstants.UIN_UPDATE_CNIE_NUMBER);
+			RegistrationConstants.UIN_UPDATE_BIO_IRIS);
 
 	private static final Logger LOGGER = AppConfig.getLogger(UpdateUINController.class);
 
@@ -75,7 +76,9 @@ public class UpdateUINController extends BaseController implements Initializable
 	@FXML
 	private CheckBox address;
 	@FXML
-	private CheckBox contactDetails;
+	private CheckBox phone;
+	@FXML
+	private CheckBox email;
 	@FXML
 	private CheckBox biometricException;
 	@FXML
@@ -206,7 +209,7 @@ public class UpdateUINController extends BaseController implements Initializable
 				});
 			}
 		}
-		
+
 		for (String configureField : UIN_UPDATE_CONFIGURED_DEMOGRAPHIC_FIELDS_LIST) {
 			if (!configvalues.contains(configureField)) {
 				demographicHBox.getChildren().forEach(demographicNode -> {
@@ -217,8 +220,7 @@ public class UpdateUINController extends BaseController implements Initializable
 				});
 			} else {
 				demographicHBox.getChildren().forEach(demographicNode -> {
-					if (demographicNode.getId().equalsIgnoreCase(configureField)
-							&& configvalues.size() == 1) {
+					if (demographicNode.getId().equalsIgnoreCase(configureField) && configvalues.size() == 1) {
 						demographicNode.setDisable(true);
 						((CheckBox) demographicNode).setSelected(true);
 					}
@@ -234,7 +236,8 @@ public class UpdateUINController extends BaseController implements Initializable
 		fxUtils.listenOnSelectedCheckBox(age);
 		fxUtils.listenOnSelectedCheckBox(gender);
 		fxUtils.listenOnSelectedCheckBox(address);
-		fxUtils.listenOnSelectedCheckBox(contactDetails);
+		fxUtils.listenOnSelectedCheckBox(phone);
+		fxUtils.listenOnSelectedCheckBox(email);
 		fxUtils.listenOnSelectedCheckBox(biometricException);
 		fxUtils.listenOnSelectedCheckBox(biometricIris);
 		fxUtils.listenOnSelectedCheckBox(biometricFingerprint);
@@ -308,7 +311,8 @@ public class UpdateUINController extends BaseController implements Initializable
 					selectionListDTO.setAge(age.isSelected());
 					selectionListDTO.setGender(gender.isSelected());
 					selectionListDTO.setAddress(address.isSelected());
-					selectionListDTO.setContactDetails(contactDetails.isSelected());
+					selectionListDTO.setPhone(phone.isSelected());
+					selectionListDTO.setEmail(email.isSelected());
 					selectionListDTO.setBiometricException(biometricException.isSelected());
 					selectionListDTO.setBiometricIris(biometricIris.isSelected());
 					selectionListDTO.setBiometricFingerprint(biometricFingerprint.isSelected());
@@ -320,7 +324,7 @@ public class UpdateUINController extends BaseController implements Initializable
 					selectionListDTO.setUinId(uinId.getText());
 
 					if (name.isSelected() || age.isSelected() || gender.isSelected() || address.isSelected()
-							|| contactDetails.isSelected() || biometricException.isSelected()
+							|| phone.isSelected() || email.isSelected() || biometricException.isSelected()
 							|| biometricIris.isSelected() || biometricFingerprint.isSelected()
 							|| cnieNumber.isSelected() || parentOrGuardianDetails.isSelected()
 							|| foreigner.isSelected()) {

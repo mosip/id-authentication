@@ -207,7 +207,8 @@ public class RegistrationConstants {
 	public static final String UIN_UPDATE_NAME = "name";
 	public static final String UIN_UPDATE_AGE = "age";
 	public static final String UIN_UPDATE_ADDRESS = "address";
-	public static final String UIN_UPDATE_CONTACT_DETAILS = "contactDetails";
+	public static final String UIN_UPDATE_PHONE = "phone";
+	public static final String UIN_UPDATE_EMAIL = "email";
 	public static final String UIN_UPDATE_FOREIGNER = "foreigner";
 	public static final String UIN_UPDATE_GENDER = "gender";
 	public static final String UIN_UPDATE_PARENT_DETAILS = "parentOrGuardianDetails";

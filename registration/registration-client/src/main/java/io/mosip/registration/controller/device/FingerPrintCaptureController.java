@@ -26,6 +26,7 @@ import io.mosip.registration.constants.AuditReferenceIdTypes;
 import io.mosip.registration.constants.Components;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.constants.RegistrationUIConstants;
+import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.controller.reg.RegistrationController;
@@ -146,7 +147,10 @@ public class FingerPrintCaptureController extends BaseController implements Init
 	/** The scan btn. */
 	@FXML
 	private Button scanBtn;
-
+	
+	@FXML
+	private Label registrationNavlabel;
+	
 	private int leftSlapCount;
 	private int rightSlapCount;
 	private int thumbCount;
@@ -162,6 +166,9 @@ public class FingerPrintCaptureController extends BaseController implements Init
 		LOGGER.info(LOG_REG_FINGERPRINT_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 				"Loading of FingerprintCapture screen started");
 		try {
+			if (getRegistrationDTOFromSession().getSelectionListDTO() != null) {
+				registrationNavlabel.setText(RegistrationConstants.UIN_NAV_LABEL);
+			}
 
 			scanBtn.setDisable(true);
 
@@ -529,7 +536,7 @@ public class FingerPrintCaptureController extends BaseController implements Init
 
 						RegistrationConstants.LEFTHAND_SEGMNTD_FILE_PATHS, leftHandPalmImageview,
 
-						leftSlapQualityScore, popupStage,leftHandPalmPane);
+						leftSlapQualityScore, popupStage, leftHandPalmPane);
 
 			} else if (selectedPane.getId() == rightHandPalmPane.getId()) {
 
@@ -553,8 +560,8 @@ public class FingerPrintCaptureController extends BaseController implements Init
 
 				scanFingers(detailsDTO, fingerprintDetailsDTOs, RegistrationConstants.THUMBS,
 
-						RegistrationConstants.THUMBS_SEGMNTD_FILE_PATHS, thumbImageview, thumbsQualityScore,
-						popupStage, thumbPane);
+						RegistrationConstants.THUMBS_SEGMNTD_FILE_PATHS, thumbImageview, thumbsQualityScore, popupStage,
+						thumbPane);
 
 			}
 
@@ -634,7 +641,7 @@ public class FingerPrintCaptureController extends BaseController implements Init
 		try {
 			auditFactory.audit(AuditEvent.REG_BIO_FINGERPRINT_NEXT, Components.REG_BIOMETRICS, SessionContext.userId(),
 					AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
-			
+
 			LOGGER.info(LOG_REG_FINGERPRINT_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 					"Navigating to Iris capture page for user registration started");
 
@@ -656,13 +663,16 @@ public class FingerPrintCaptureController extends BaseController implements Init
 								.filter(bio -> bio.getBiometricType().equalsIgnoreCase(RegistrationConstants.IRIS))
 								.count();
 
+						SessionContext.map().put("fingerPrintCapture", false);
 						if (getRegistrationDTOFromSession().getSelectionListDTO().isBiometricIris() || irisCount > 0) {
 							irisCaptureController.clearIrisBasedOnExceptions();
-							SessionContext.map().put("fingerPrintCapture", false);
 							SessionContext.map().put("irisCapture", true);
-						} else {
-							SessionContext.map().put("fingerPrintCapture", false);
+						} else if (!RegistrationConstants.DISABLE.equalsIgnoreCase(String
+								.valueOf(ApplicationContext.map().get(RegistrationConstants.FACE_DISABLE_FLAG)))) {
 							SessionContext.map().put("faceCapture", true);
+						} else {
+							SessionContext.map().put("registrationPreview", true);
+							registrationPreviewController.setUpPreviewContent();
 						}
 						registrationController.showUINUpdateCurrentPage();
 					}
@@ -697,7 +707,7 @@ public class FingerPrintCaptureController extends BaseController implements Init
 		try {
 			auditFactory.audit(AuditEvent.REG_BIO_FINGERPRINT_BACK, Components.REG_BIOMETRICS, SessionContext.userId(),
 					AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
-			
+
 			LOGGER.info(LOG_REG_FINGERPRINT_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 					"Navigating to Demographic capture page for user registration started");
 
@@ -712,16 +722,20 @@ public class FingerPrintCaptureController extends BaseController implements Init
 				if (validateFingerPrints()) {
 					SessionContext.getInstance().getMapObject().remove(RegistrationConstants.DUPLICATE_FINGER);
 					if (getRegistrationDTOFromSession().getSelectionListDTO() != null) {
+						SessionContext.map().put("fingerPrintCapture", false);
+
 						if ((boolean) SessionContext.getInstance().getUserContext().getUserMap()
 								.get(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION)) {
-							SessionContext.getInstance().getMapObject().put("fingerPrintCapture", false);
-							SessionContext.getInstance().getMapObject().put("biometricException", true);
+							SessionContext.map().put("biometricException", true);
 							registrationController.showUINUpdateCurrentPage();
-						} else {
-							SessionContext.getInstance().getMapObject().put("fingerPrintCapture", false);
-							SessionContext.getInstance().getMapObject().put("documentScan", true);
-							registrationController.showUINUpdateCurrentPage();
+						} else if(!RegistrationConstants.DISABLE.equalsIgnoreCase(
+								String.valueOf(ApplicationContext.map().get(RegistrationConstants.DOC_DISABLE_FLAG)))){
+							SessionContext.map().put("documentScan", true);
+						}else {
+							SessionContext.map().put("demographicDetail", true);
 						}
+						registrationController.showUINUpdateCurrentPage();
+
 					} else {
 						registrationController.showCurrentPage(RegistrationConstants.FINGERPRINT_CAPTURE,
 								getPageDetails(RegistrationConstants.FINGERPRINT_CAPTURE,

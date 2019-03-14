@@ -2,6 +2,7 @@ package io.mosip.registration.controller.reg;
 
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
+import java.io.IOException;
 import java.math.BigInteger;
 import java.text.ParseException;
 import java.time.LocalDate;
@@ -11,6 +12,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.stream.IntStream;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -73,6 +75,7 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
@@ -392,6 +395,9 @@ public class DemographicDetailController extends BaseController {
 	private MasterSyncService masterSyncService;
 
 	@FXML
+	private Label registrationNavlabel;
+
+	@FXML
 	private void initialize() {
 		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Entering the LOGIN_CONTROLLER");
@@ -607,7 +613,6 @@ public class DemographicDetailController extends BaseController {
 
 	/**
 	 * Listening on the fields for any operation
-	 * 
 	 */
 
 	private void listenerOnFields() {
@@ -791,8 +796,7 @@ public class DemographicDetailController extends BaseController {
 	}
 
 	/**
-	 * To load the localAdminAuthorities selection list based on the language
-	 * code
+	 * To load the localAdminAuthorities selection list based on the language code
 	 */
 	@FXML
 	private void addlocalAdminAuthority() {
@@ -1049,6 +1053,7 @@ public class DemographicDetailController extends BaseController {
 			}
 			keyboardNode.setDisable(false);
 
+			registrationNavlabel.setText(RegistrationConstants.UIN_NAV_LABEL);
 			applicationLanguagePane.setDisable(false);
 			localLanguagePane.setDisable(false);
 			fetchBtn.setVisible(false);
@@ -1082,11 +1087,11 @@ public class DemographicDetailController extends BaseController {
 					.setDisable(getRegistrationDTOFromSession().getSelectionListDTO().isAddress());
 			postalCodeLocalLanguage.setDisable(getRegistrationDTOFromSession().getSelectionListDTO().isAddress());
 
-			mobileNo.setDisable(!getRegistrationDTOFromSession().getSelectionListDTO().isContactDetails());
-			mobileNoLabel.setDisable(!getRegistrationDTOFromSession().getSelectionListDTO().isContactDetails());
+			mobileNo.setDisable(!getRegistrationDTOFromSession().getSelectionListDTO().isPhone());
+			mobileNoLabel.setDisable(!getRegistrationDTOFromSession().getSelectionListDTO().isPhone());
 
-			emailId.setDisable(!getRegistrationDTOFromSession().getSelectionListDTO().isContactDetails());
-			emailIdLabel.setDisable(!getRegistrationDTOFromSession().getSelectionListDTO().isContactDetails());
+			emailId.setDisable(!getRegistrationDTOFromSession().getSelectionListDTO().isEmail());
+			emailIdLabel.setDisable(!getRegistrationDTOFromSession().getSelectionListDTO().isEmail());
 
 			residentStatus.setDisable(!getRegistrationDTOFromSession().getSelectionListDTO().isForeigner());
 			residentStatusLocalLanguage
@@ -1372,7 +1377,22 @@ public class DemographicDetailController extends BaseController {
 
 	@FXML
 	private void back() {
-		goToHomePageFromRegistration();
+		try {
+			if (getRegistrationDTOFromSession().getSelectionListDTO() != null) {
+				Parent root = BaseController.load(getClass().getResource(RegistrationConstants.UIN_UPDATE));
+				ObservableList<Node> nodes = demographicDetail.getChildren();
+				IntStream.range(1, nodes.size()).forEach(index -> {
+					nodes.get(index).setVisible(false);
+					nodes.get(index).setManaged(false);
+				});
+				nodes.add(root);
+			} else {
+				goToHomePageFromRegistration();
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	@FXML
@@ -1388,17 +1408,29 @@ public class DemographicDetailController extends BaseController {
 				}
 			}
 			saveDetail();
-			SessionContext.map().put("demographicDetail", false);
-			SessionContext.map().put("documentScan", true);
+			/*
+			 * SessionContext.map().put("demographicDetail", false);
+			 * SessionContext.map().put("documentScan", true);
+			 */
 			documentScanController.populateDocumentCategories();
 
 			auditFactory.audit(AuditEvent.REG_DEMO_NEXT, Components.REG_DEMO_DETAILS, SessionContext.userId(),
 					AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
 
+			if (getRegistrationDTOFromSession().getSelectionListDTO() != null) {
+				SessionContext.map().put("demographicDetail", false);
+				if (!RegistrationConstants.DISABLE.equalsIgnoreCase(
+						String.valueOf(ApplicationContext.map().get(RegistrationConstants.DOC_DISABLE_FLAG)))) {
+					SessionContext.map().put("documentScan", true);
+				} else {
+					updateUINMethodFlow();
+				}
+				registrationController.showUINUpdateCurrentPage();
+			}
+		} else {
 			registrationController.showCurrentPage(RegistrationConstants.DEMOGRAPHIC_DETAIL,
 					getPageDetails(RegistrationConstants.DEMOGRAPHIC_DETAIL, RegistrationConstants.NEXT));
 		}
-
 	}
 
 	public boolean validateThisPane() {
