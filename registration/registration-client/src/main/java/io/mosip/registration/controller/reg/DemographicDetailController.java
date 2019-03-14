@@ -380,12 +380,14 @@ public class DemographicDetailController extends BaseController {
 	private Transliteration<String> transliteration;
 	@Autowired
 	private JsonValidator jsonValidator;
-	
+
 	private FXUtils fxUtils;
 	private Date dateOfBirth;
 	ResourceBundle applicationLabelBundle;
 	ResourceBundle localLabelBundle;
-	
+	private int minAge;
+	private int maxAge;
+
 	@Autowired
 	private MasterSyncService masterSyncService;
 
@@ -410,7 +412,8 @@ public class DemographicDetailController extends BaseController {
 			renderComboBoxes();
 			addRegions();
 			populateGender();
-
+			minAge = Integer.parseInt(String.valueOf(ApplicationContext.map().get(RegistrationConstants.MIN_AGE)));
+			maxAge = Integer.parseInt(String.valueOf(ApplicationContext.map().get(RegistrationConstants.MAX_AGE)));
 			applicationLabelBundle = ApplicationContext.getInstance().getApplicationLanguageBundle();
 			localLabelBundle = ApplicationContext.getInstance().getLocalLanguageProperty();
 			List<IndividualTypeDto> applicantType = masterSyncService.getIndividualType(
@@ -501,15 +504,15 @@ public class DemographicDetailController extends BaseController {
 					runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
 		}
 	}
-	
+
 	@FXML
-	private void national(ActionEvent event){
-		List<IndividualTypeDto> applicantType = masterSyncService.getIndividualType(
-				RegistrationConstants.ATTR_NON_FORINGER, ApplicationContext.applicationLanguage());
+	private void national(ActionEvent event) {
+		List<IndividualTypeDto> applicantType = masterSyncService
+				.getIndividualType(RegistrationConstants.ATTR_NON_FORINGER, ApplicationContext.applicationLanguage());
 		residence.setText(applicantType.get(0).getName());
 		residence.setId(applicantType.get(0).getCode());
-		List<IndividualTypeDto> applicantTypeLocal = masterSyncService.getIndividualType(
-				RegistrationConstants.ATTR_NON_FORINGER, ApplicationContext.localLanguage());
+		List<IndividualTypeDto> applicantTypeLocal = masterSyncService
+				.getIndividualType(RegistrationConstants.ATTR_NON_FORINGER, ApplicationContext.localLanguage());
 		residenceLocalLanguage.setText(applicantTypeLocal.get(0).getName());
 		national.getStyleClass().clear();
 		foreigner.getStyleClass().clear();
@@ -520,15 +523,15 @@ public class DemographicDetailController extends BaseController {
 		national.getStyleClass().addAll("selectedResidence", "button");
 		foreigner.getStyleClass().addAll("residence", "button");
 	}
-	
+
 	@FXML
-	private void foreigner(ActionEvent event){
+	private void foreigner(ActionEvent event) {
 		List<IndividualTypeDto> applicantType = masterSyncService.getIndividualType(RegistrationConstants.ATTR_FORINGER,
 				ApplicationContext.applicationLanguage());
 		residence.setText(applicantType.get(0).getName());
 		residence.setId(applicantType.get(0).getCode());
-		List<IndividualTypeDto> applicantTypeLocal = masterSyncService.getIndividualType(
-				RegistrationConstants.ATTR_FORINGER, ApplicationContext.localLanguage());
+		List<IndividualTypeDto> applicantTypeLocal = masterSyncService
+				.getIndividualType(RegistrationConstants.ATTR_FORINGER, ApplicationContext.localLanguage());
 		residenceLocalLanguage.setText(applicantTypeLocal.get(0).getName());
 		national.getStyleClass().clear();
 		foreigner.getStyleClass().clear();
@@ -540,11 +543,10 @@ public class DemographicDetailController extends BaseController {
 		national.getStyleClass().addAll("residence", "button");
 	}
 
-	
-
 	/**
 	 * To restrict the user not to enter any values other than integer values.
 	 */
+
 	private void ageFieldValidations() {
 		try {
 			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
@@ -557,28 +559,16 @@ public class DemographicDetailController extends BaseController {
 					ageField.setText(oldValue);
 				}
 				int age = 0;
-				int minAge = Integer
-						.parseInt(String.valueOf(ApplicationContext.map().get(RegistrationConstants.MIN_AGE)));
-				int maxAge = Integer
-						.parseInt(String.valueOf(ApplicationContext.map().get(RegistrationConstants.MAX_AGE)));
 				if (newValue.matches("\\d{1,3}")) {
 					if (getRegistrationDTOFromSession().getSelectionListDTO() != null
 							&& getRegistrationDTOFromSession().getSelectionListDTO().isChild())
-						maxAge = 5;
+						maxAge = minAge;
 					if (Integer.parseInt(ageField.getText()) >= maxAge) {
 						ageField.setText(oldValue);
 						generateAlert(RegistrationConstants.ERROR,
 								RegistrationUIConstants.MAX_AGE_WARNING + " " + maxAge);
 					} else {
 						age = Integer.parseInt(ageField.getText());
-						if (getRegistrationDTOFromSession().getSelectionListDTO() != null
-								&& !getRegistrationDTOFromSession().getSelectionListDTO().isChild()) {
-							if (age < 5) {
-								ageField.setText(oldValue);
-								generateAlert(RegistrationConstants.ERROR,
-										RegistrationUIConstants.MIN_AGE_WARNING + " " + minAge);
-							}
-						}
 						LocalDate currentYear = LocalDate.of(LocalDate.now().getYear(), 1, 1);
 						dateOfBirth = Date
 								.from(currentYear.minusYears(age).atStartOfDay(ZoneId.systemDefault()).toInstant());
@@ -617,6 +607,7 @@ public class DemographicDetailController extends BaseController {
 
 	/**
 	 * Listening on the fields for any operation
+	 * 
 	 */
 
 	private void listenerOnFields() {
@@ -897,8 +888,10 @@ public class DemographicDetailController extends BaseController {
 												.with(value -> value.setLanguage(localLanguageCode))
 												.with(value -> value.setValue(fullNameLocalLanguage.getText())).get()))
 										.get()))
-						.with(identity -> identity.setDateOfBirth( dateAnchorPane.isDisabled() ? null : DateUtils.formatDate(dateOfBirth, "yyyy/MM/dd")))
-						.with(identity -> identity.setAge(dateAnchorPane.isDisabled() ? null : Integer.parseInt(ageField.getText())))
+						.with(identity -> identity.setDateOfBirth(
+								dateAnchorPane.isDisabled() ? null : DateUtils.formatDate(dateOfBirth, "yyyy/MM/dd")))
+						.with(identity -> identity
+								.setAge(dateAnchorPane.isDisabled() ? null : Integer.parseInt(ageField.getText())))
 						.with(identity -> identity.setGender(gender.isDisabled() ? null
 								: (List<ValuesDTO>) Builder.build(LinkedList.class).with(values -> values.add(Builder
 										.build(ValuesDTO.class).with(value -> value.setLanguage(platformLanguageCode))
@@ -1091,7 +1084,7 @@ public class DemographicDetailController extends BaseController {
 
 			mobileNo.setDisable(!getRegistrationDTOFromSession().getSelectionListDTO().isContactDetails());
 			mobileNoLabel.setDisable(!getRegistrationDTOFromSession().getSelectionListDTO().isContactDetails());
-			
+
 			emailId.setDisable(!getRegistrationDTOFromSession().getSelectionListDTO().isContactDetails());
 			emailIdLabel.setDisable(!getRegistrationDTOFromSession().getSelectionListDTO().isContactDetails());
 
@@ -1101,7 +1094,7 @@ public class DemographicDetailController extends BaseController {
 
 			cniOrPinNumber.setDisable(!getRegistrationDTOFromSession().getSelectionListDTO().isCnieNumber());
 			cniOrPinNumberLabel.setDisable(!getRegistrationDTOFromSession().getSelectionListDTO().isCnieNumber());
-			
+
 			switchedOn.set(true);
 			if (!isChild)
 				isChild = getRegistrationDTOFromSession().getSelectionListDTO().isChild()
@@ -1412,6 +1405,17 @@ public class DemographicDetailController extends BaseController {
 		boolean isValid = true;
 		isValid = registrationController.validateDemographicPane(demoGraphicPane);
 		if (isValid)
+			if (getRegistrationDTOFromSession().getSelectionListDTO() != null
+					&& !getRegistrationDTOFromSession().getSelectionListDTO().isChild()) {
+				if (ageField.getText().matches("\\d+")) {
+					int age = Integer.parseInt(ageField.getText());
+					if (age < minAge) {
+						ageField.setText("");
+						isValid = false;
+					}
+				}
+			}
+		if (isValid)
 			isValid = validation.validateUinOrRid(uinId, isChild, uinValidator, ridValidator);
 		registrationController.displayValidationMessage(validation.getValidationMessage().toString());
 
@@ -1486,7 +1490,7 @@ public class DemographicDetailController extends BaseController {
 		LOGGER.info("REGISTRATION - INDIVIDUAL_REGISTRATION - POPULATE_GENDER", RegistrationConstants.APPLICATION_ID,
 				RegistrationConstants.APPLICATION_NAME, "Fetching Gender based on Application Language ended");
 	}
-	
+
 	protected String getSelectedGenderCode() {
 		return gender.getValue() != null ? gender.getValue().getCode() : null;
 
