@@ -143,7 +143,7 @@ public class AuthController {
 		else
 		{
 			authNResponse = new AuthNResponse();
-			authNResponse.setMessage(authResponseDto.getMessage());
+			authNResponse.setMessage(authResponseDto.getMessage()!=null?authResponseDto.getMessage():"Otp validation failed");
 		}
 		return new ResponseEntity<>(authNResponse, HttpStatus.OK);
 	}
