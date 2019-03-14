@@ -20,8 +20,8 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseWrapper;
+import io.mosip.kernel.core.util.EmptyCheckUtils;
 import io.mosip.kernel.lkeymanager.constant.LicenseKeyManagerErrorCodes;
-import io.mosip.kernel.lkeymanager.util.EmptyCheckUtils;
 
 /**
  * Controller Advice class to handle {@link LicenseKeyServiceException},

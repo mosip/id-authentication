@@ -6,21 +6,25 @@ import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+
 /**
- * Configuration class for request-response filter.
+ * Config class with beans for modelmapper and request logging
  * 
- * @author Sagar Mahapatra
+ * @author Dharmesh Khandelwal
+ * @author Bal Vikash Sharma
  * @since 1.0.0
  *
  */
 @Configuration
 public class Config {
+
+
 	@Bean
 	public FilterRegistrationBean<Filter> registerReqResFilter() {
-		FilterRegistrationBean<Filter> filterRegistrationBean = new FilterRegistrationBean<>();
-		filterRegistrationBean.setFilter(getReqResFilter());
-		filterRegistrationBean.setOrder(1);
-		return filterRegistrationBean;
+		FilterRegistrationBean<Filter> corsBean = new FilterRegistrationBean<>();
+		corsBean.setFilter(getReqResFilter());
+		corsBean.setOrder(1);
+		return corsBean;
 	}
 
 	@Bean

@@ -1,10 +1,10 @@
 package io.mosip.kernel.lkeymanager.test.service;
 
 import static org.hamcrest.CoreMatchers.isA;
-import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.time.LocalDateTime;
@@ -23,13 +23,11 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.lkeymanager.LicenseKeyManagerBootApplication;
-import io.mosip.kernel.lkeymanager.dto.LicenseKeyFetchResponseDto;
 import io.mosip.kernel.lkeymanager.dto.LicenseKeyGenerationDto;
 import io.mosip.kernel.lkeymanager.dto.LicenseKeyMappingDto;
 import io.mosip.kernel.lkeymanager.entity.LicenseKeyList;
@@ -200,10 +198,8 @@ public class LicenseKeyManagerServiceTest {
 				.thenReturn(licenseKeyTspMap);
 		when(licenseKeyListRepository.findByLicenseKey(Mockito.anyString())).thenReturn(licensekeyList);
 		when(licenseKeyPermissionRepository.findByLKey(Mockito.any())).thenReturn(licenseKeyPermission);
-		MvcResult result = mockMvc.perform(get("/license/permission?licenseKey=tEsTlIcEnSe&tspId=TSP_ID_TEST")
-				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk()).andReturn();
-		LicenseKeyFetchResponseDto returnResponse = objectMapper.readValue(result.getResponse().getContentAsString(),
-				LicenseKeyFetchResponseDto.class);
-		assertThat(returnResponse.getPermissions().get(0), isA(String.class));
+		mockMvc.perform(get("/license/permission?licenseKey=tEsTlIcEnSe&tspId=TSP_ID_TEST")
+				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
+				.andExpect(jsonPath("$.response.permissions[0]", isA(String.class)));
 	}
 }
