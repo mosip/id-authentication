@@ -1,4 +1,4 @@
-package io.mosip.kernel.masterdata.test.utils;
+package io.mosip.kernel.core.test.util;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -17,7 +17,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import io.mosip.kernel.masterdata.utils.EmptyCheckUtils;
+import io.mosip.kernel.core.util.EmptyCheckUtils;
+
 
 /**
  * 

@@ -1,4 +1,4 @@
-package io.mosip.kernel.masterdata.utils;
+package io.mosip.kernel.core.util;
 
 import java.util.Collection;
 import java.util.Map;
