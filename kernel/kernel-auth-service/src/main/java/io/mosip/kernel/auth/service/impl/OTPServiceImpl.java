@@ -206,6 +206,11 @@ public class OTPServiceImpl implements OTPService {
 				mosipUserDtoToken = new MosipUserDtoToken(mosipUser, basicToken.getAuthToken(),
 						basicToken.getRefreshToken(), basicToken.getExpiryTime(), null,null);
 
+				
+			}
+			else
+			{
+				mosipUserDtoToken = new MosipUserDtoToken();
 				mosipUserDtoToken.setMessage(otpValidatorDto.getMessage());
 				mosipUserDtoToken.setStatus(otpValidatorDto.getStatus());
 			}
