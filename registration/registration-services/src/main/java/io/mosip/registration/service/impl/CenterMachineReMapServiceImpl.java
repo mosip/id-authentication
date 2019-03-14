@@ -80,7 +80,7 @@ public class CenterMachineReMapServiceImpl implements CenterMachineReMapService 
 					"handleReMapProcess called and machine has been remaped");
 
 			/* (TODO-has to check whether to delete or disable) 1.disable all sync jobs */
-			disableAllSyncJobs();
+			updateAllSyncJobs(false);
 			if (isPacketsPendingForProcessing()) {
 				if (RegistrationAppHealthCheckUtil.isNetworkAvailable()) {
 					try {
@@ -102,7 +102,13 @@ public class CenterMachineReMapServiceImpl implements CenterMachineReMapService 
 
 			if (!isPacketsPendingForProcessing()) {
 				/* TODO-all packets/pre reg and master data can be deleted- */
-				deletePreRegPackets();
+				cleanUpRemappedMachineData();
+
+				/*
+				 * enabling all the jobs after all the clean up activities for the previous
+				 * center
+				 */
+				updateAllSyncJobs(true);
 			}
 
 			/* 4.deletions of packets */
@@ -142,11 +148,11 @@ public class CenterMachineReMapServiceImpl implements CenterMachineReMapService 
 	/**
 	 * disables all the sync jobs
 	 */
-	private void disableAllSyncJobs() {
+	private void updateAllSyncJobs(boolean isJobActive) {
 		List<SyncJobDef> jobDefs = jobConfigDAO.getActiveJobs();
 		if (isNotNullNotEmpty(jobDefs)) {
 			jobDefs.forEach(job -> {
-				job.setIsActive(false);
+				job.setIsActive(isJobActive);
 			});
 			jobConfigDAO.updateAll(jobDefs);
 		}
@@ -171,9 +177,12 @@ public class CenterMachineReMapServiceImpl implements CenterMachineReMapService 
 		return collection != null && !collection.isEmpty();
 	}
 
-	private void deletePreRegPackets() {
+	/**
+	 * clean up all the data which is specific to the previous center
+	 */
+	private void cleanUpRemappedMachineData() {
 		LOGGER.info("REGISTRATION CENTER MACHINE REMAP : ", APPLICATION_NAME, APPLICATION_ID,
-				"delete preRegPackets() method is called");
+				"delete cleanUpRemappedMachineData() method is called");
 		try {
 			Resource resource = new ClassPathResource("script.sql");
 			Connection connection = jdbcTemplate.getDataSource().getConnection();
