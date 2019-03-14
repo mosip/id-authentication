@@ -27,6 +27,7 @@ export class FileUploadComponent implements OnInit {
     fullname: 'none',
     preRegistrationId: ''
   };
+  applicantType;
   sameAsselected = false;
   isModify: any;
   fileName = '';
@@ -40,72 +41,7 @@ export class FileUploadComponent implements OnInit {
   documentType;
   loginId;
   documentIndex;
-  LOD = [
-    {
-      document_name: 'POA',
-      valid_docs: [
-        {
-          name: 'Passport',
-          value: 'passport'
-        },
-        {
-          name: 'CNIE Card',
-          value: 'Electricity Bill'
-        }
-        // {
-        //   name: 'Passbook',
-        //   value: 'Passbook'
-        // }
-      ]
-    },
-    {
-      document_name: 'POI',
-      valid_docs: [
-        {
-          name: 'Passport',
-          value: 'passport'
-        },
-        {
-          name: 'CNIE Card',
-          value: 'Bank Account'
-        }
-      ]
-    },
-    {
-      document_name: 'POB',
-      valid_docs: [
-        {
-          name: 'Passport',
-          value: 'passport'
-        },
-        {
-          name: 'CNIE Card',
-          value: 'Bank Account'
-        },
-        {
-          name: 'Birth Certificate',
-          value: 'Birth Certificate'
-        }
-        // {
-        //   name: 'Voter ID Card',
-        //   value: 'Voter ID Card'
-        // }
-      ]
-    },
-    {
-      document_name: 'POR',
-      valid_docs: [
-        {
-          name: 'Passport',
-          value: 'passport'
-        },
-        {
-          name: 'CNIE Card',
-          value: 'CNIE Card'
-        }
-      ]
-    }
-  ];
+  LOD: DocumentCategory[];
   fileIndex = -1;
 
   sameAs;
@@ -128,63 +64,92 @@ export class FileUploadComponent implements OnInit {
     private sharedService: SharedService,
     private translate: TranslateService
   ) {
+    console.log('CALIING FILE UPLOAD');
+
     this.translate.use(localStorage.getItem('langCode'));
     this.isModify = localStorage.getItem('modifyDocument');
   }
 
   ngOnInit() {
-    const arr = this.router.url.split('/');
-    this.loginId = arr[2];
+    // const arr = this.router.url.split('/');
+    // this.loginId = arr[2];
+    this.getApplicantTypeID();
+    // this.getDocumentCategories();
+    this.loginId = this.registration.getLoginId();
+    this.getAllApplicants();
+    this.allApplicants = [];
+    this.sameAs = this.registration.getSameAs();
+    this.allApplicants = this.sharedService.getAllApplicants();
 
-    this.dataStroage.getUsers(this.loginId).subscribe(
+    console.log('applicants', this.allApplicants);
+
+    let i = 0;
+
+    // this.allApplicants.splice(-1, 1);
+    if (this.registration.getUsers().length > 0) {
+      this.users[0] = this.registration.getUser(this.registration.getUsers().length - 1);
+      if (!this.users[0].files[0]) {
+        this.users[0].files[0] = [];
+      } else {
+        // this.sortUserFiles();
+      }
+    }
+
+    for (let applicant of this.allApplicants) {
+      if (applicant.preRegistrationId == this.users[0].preRegId) {
+        this.allApplicants.splice(i, 1);
+        this.allApplicants.push(this.noneApplicant);
+      } else {
+        i++;
+      }
+    }
+    if (this.registration.getUsers().length > 1) {
+      this.multipleApplicants = true;
+    }
+    // this.route.params.subscribe((params: Params) => {
+    //   this.loginId = params['id'];
+    //   console.log('id', this.loginId);
+    // });
+
+    console.log('users', this.users);
+
+    if (this.users[0].files[0].length != 0) {
+      // this.sortUserFiles();
+      this.viewFirstFile();
+    }
+  }
+
+  async getApplicantTypeID() {
+    await this.dataStroage.getApplicantType(appConstants.DOCUMENT_CATEGORY_DTO).subscribe(response => {
+      console.log('response from applicant type', response);
+      this.getDocumentCategories(response['response'].applicationtypecode);
+      this.setApplicantType(response);
+    });
+  }
+
+  async setApplicantType(response) {
+    console.log(response);
+    this.applicantType = await response['response'].applicationtypecode;
+    console.log(this.applicantType);
+  }
+
+  async getDocumentCategories(applicantcode) {
+    await this.dataStroage.getDocumentCategories(applicantcode).subscribe(res => {
+      console.log('response form  document categories', res['documentCategories']);
+      console.log(this.LOD);
+      this.LOD = res['documentCategories'];
+      console.log(this.applicantType);
+      this.registration.setDocumentCategories(res['documentCategories']);
+    });
+  }
+
+  async getAllApplicants() {
+    await this.dataStroage.getUsers(this.loginId).subscribe(
       applicants => {
-        console.log('applicants check', applicants);
-
         this.sharedService.addApplicants(applicants);
       },
       err => {},
-      () => {
-        this.allApplicants = [];
-        this.sameAs = this.registration.getSameAs();
-        this.allApplicants = this.sharedService.getAllApplicants();
-
-        console.log('applicants', this.allApplicants);
-
-        let i = 0;
-
-        // this.allApplicants.splice(-1, 1);
-        if (this.registration.getUsers().length > 0) {
-          this.users[0] = this.registration.getUser(this.registration.getUsers().length - 1);
-          if (!this.users[0].files[0]) {
-            this.users[0].files[0] = [];
-          } else {
-            // this.sortUserFiles();
-          }
-        }
-
-        for (let applicant of this.allApplicants) {
-          if (applicant.preRegistrationId == this.users[0].preRegId) {
-            this.allApplicants.splice(i, 1);
-            this.allApplicants.push(this.noneApplicant);
-          } else {
-            i++;
-          }
-        }
-        if (this.registration.getUsers().length > 1) {
-          this.multipleApplicants = true;
-        }
-        // this.route.params.subscribe((params: Params) => {
-        //   this.loginId = params['id'];
-        //   console.log('id', this.loginId);
-        // });
-
-        console.log('users', this.users);
-
-        if (this.users[0].files[0].length != 0) {
-          // this.sortUserFiles();
-          this.viewFirstFile();
-        }
-      }
+      () => {}
     );
   }
 
@@ -192,7 +157,7 @@ export class FileUploadComponent implements OnInit {
     let sortedUserFiles;
     for (let document of this.LOD) {
       for (let file of this.users[0].files[0]) {
-        if (document.document_name === file.doc_cat_code) {
+        if (document.code === file.doc_cat_code) {
           sortedUserFiles.push(file);
           break;
         }
@@ -273,7 +238,7 @@ export class FileUploadComponent implements OnInit {
   }
 
   openedChange(event, index: number) {
-    this.documentType = this.LOD[index].document_name;
+    this.documentType = this.LOD[index].code;
     this.documentIndex = index;
   }
 
@@ -306,8 +271,6 @@ export class FileUploadComponent implements OnInit {
   setJsonString(event) {
     this.JsonString.request.doc_cat_code = this.documentType;
     this.JsonString.request.pre_registartion_id = this.users[0].preRegId;
-    this.JsonString.request.doc_file_format = event.target.files[0].type;
-    this.JsonString.request.upload_by = this.loginId;
   }
 
   sendFile(event) {
@@ -370,10 +333,26 @@ export class FileUploadComponent implements OnInit {
       this.sameAsselected = false;
     } else {
       this.registration.setSameAs(event.value);
-      this.dataStroage.copyDocument('POA', event.value, this.users[0].preRegId).subscribe(response => {
-        console.log('copy document', response);
-      });
+      this.dataStroage.copyDocument('POA', event.value, this.users[0].preRegId).subscribe(
+        response => {
+          console.log('copy document', response);
+          this.removePOADocument();
+        },
+        err => {
+          console.log('error in copy document', err);
+        }
+      );
       this.sameAsselected = true;
+    }
+  }
+  removePOADocument() {
+    this.userFiles = new FileModel();
+    for (let file of this.users[0].files[0]) {
+      let i = 0;
+      if (file.doc_cat_code == 'POA') {
+        this.users[0].files[0][i] = this.userFiles;
+        i++;
+      }
     }
   }
 
@@ -414,3 +393,20 @@ export class FileUploadComponent implements OnInit {
     this.viewFileByIndex(this.fileIndex);
   }
 }
+
+export interface DocumentCategory {
+  code: string;
+  description: string;
+  isActive: string;
+  langCode: string;
+  name: string;
+  documentTypes: {
+    code: string;
+    description: string;
+    isActive: string;
+    langCode: string;
+    name: string;
+  };
+}
+// console.log(ts.toJSON());
+// # 2019-03-06T05:24:10.264Z

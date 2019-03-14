@@ -32,7 +32,9 @@ public enum ErrorCodes {
 	PRG_TRL_APP_006("PRG_TRL_APP_006"),
 	
 	
-	PRG_TRL_APP_007("PRG_TRL_APP_007");
+	PRG_TRL_APP_007("PRG_TRL_APP_007"),
+	
+	PRG_TRL_APP_008("PRG_TRL_APP_008");
 
 	/**
 	 * @param code

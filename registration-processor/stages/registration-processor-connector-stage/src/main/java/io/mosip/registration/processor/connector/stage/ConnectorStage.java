@@ -25,7 +25,7 @@ public class ConnectorStage extends MosipVerticleAPIManager{
 	/**
 	 * vertx Cluster Manager Url
 	 */
-	@Value("${vertx.ignite.configuration}")
+	@Value("${vertx.cluster.configuration}")
 	private String clusterManagerUrl;
 
 	/**
@@ -65,13 +65,13 @@ public class ConnectorStage extends MosipVerticleAPIManager{
 	 * @param router
 	 */
 	private void routes(Router router) {
-		router.post("/registration-connector/registration-processor/connector/v1.0").handler(ctx -> {
+		router.post("/registrationconnector/registration-processor/connector/v1.0").handler(ctx -> {
 			processURL(ctx);
 		}).failureHandler(failureHandler -> {
 			this.setResponse(failureHandler, failureHandler.failure().getMessage());	
 		});
 		
-		router.get("/registration-connector/health").handler(ctx -> {
+		router.get("/registrationconnector/health").handler(ctx -> {
 			this.setResponse(ctx, "Server is up and running");
 		}).failureHandler(context->{
 			this.setResponse(context, context.failure().getMessage());

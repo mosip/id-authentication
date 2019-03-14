@@ -26,9 +26,8 @@ import lombok.Setter;
 /**
  * This entity class defines the database table details for Document.
  * 
- * @author Rajath KR
  * @author Kishan Rathore
- * @author Sanober Noor
+ * @author Rajath KR
  * @author Tapaswini Behera
  * @author Jagadishwari S
  * @since 1.0.0

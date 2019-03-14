@@ -12,12 +12,13 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.preregistration.batchjobservices.entity.DemographicEntity;
 import io.mosip.preregistration.batchjobservices.entity.RegistrationBookingEntity;
-import io.mosip.preregistration.batchjobservices.exceptions.util.BatchServiceExceptionCatcher;
+import io.mosip.preregistration.batchjobservices.exception.util.BatchServiceExceptionCatcher;
 import io.mosip.preregistration.batchjobservices.repository.dao.BatchServiceDAO;
 import io.mosip.preregistration.core.code.StatusCodes;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
@@ -35,6 +36,9 @@ public class ExpiredStatusService {
 
 	/** The Constant LOGDISPLAY. */
 	private static final String LOGDISPLAY = "{} - {}";
+	
+	@Value("${mosip.utc-datetime-pattern}")
+	private String utcDateTimePattern;
 
 	@Autowired
 	private BatchServiceDAO batchServiceDAO;
@@ -51,22 +55,20 @@ public class ExpiredStatusService {
 			bookedPreIdList = batchServiceDAO.getAllOldDateBooking(currentDate);
 
 			bookedPreIdList.forEach(iterate -> {
-				String status = iterate.getStatusCode();
 				String preRegId = iterate.getBookingPK().getPreregistrationId();
-				if (status.equals(StatusCodes.BOOKED.getCode()) || status.equals(StatusCodes.CANCELED.getCode())) {
+				DemographicEntity demographicEntity = batchServiceDAO.getApplicantDemographicDetails(preRegId);
+				if (demographicEntity != null) {
 
-					iterate.setStatusCode(StatusCodes.EXPIRED.getCode());
-					
-					DemographicEntity demographicEntity = batchServiceDAO.getApplicantDemographicDetails(preRegId);
-					demographicEntity.setStatusCode(StatusCodes.EXPIRED.getCode());
-					batchServiceDAO.updateBooking(iterate);
-					batchServiceDAO.updateApplicantDemographic(demographicEntity);
-
+					if (demographicEntity.getStatusCode().equals(StatusCodes.BOOKED.getCode())) {
+						demographicEntity.setStatusCode(StatusCodes.EXPIRED.getCode());
+						batchServiceDAO.updateApplicantDemographic(demographicEntity);
+					}
 					LOGGER.info(LOGDISPLAY,
 							"Update the status successfully into Registration Appointment table and Demographic table");
+
 				}
 			});
-			
+
 		} catch (Exception e) {
 			new BatchServiceExceptionCatcher().handle(e);
 		}
@@ -77,7 +79,7 @@ public class ExpiredStatusService {
 	}
 
 	public String getCurrentResponseTime() {
-		return DateUtils.formatDate(new Date(System.currentTimeMillis()), "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+		return DateUtils.formatDate(new Date(System.currentTimeMillis()), utcDateTimePattern);
 	}
 
 }

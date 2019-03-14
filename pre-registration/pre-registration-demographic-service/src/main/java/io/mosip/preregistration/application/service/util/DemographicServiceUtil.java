@@ -4,12 +4,10 @@
  */
 package io.mosip.preregistration.application.service.util;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -20,15 +18,8 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestClientException;
-import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
@@ -37,31 +28,31 @@ import io.mosip.preregistration.application.dto.DemographicRequestDTO;
 import io.mosip.preregistration.application.entity.DemographicEntity;
 import io.mosip.preregistration.application.errorcodes.ErrorCodes;
 import io.mosip.preregistration.application.errorcodes.ErrorMessages;
-import io.mosip.preregistration.application.exception.DocumentFailedToDeleteException;
 import io.mosip.preregistration.application.exception.MissingRequestParameterException;
 import io.mosip.preregistration.application.exception.OperationNotAllowedException;
 import io.mosip.preregistration.application.exception.system.DateParseException;
 import io.mosip.preregistration.application.exception.system.JsonParseException;
-import io.mosip.preregistration.application.exception.system.SystemUnsupportedEncodingException;
 import io.mosip.preregistration.core.code.StatusCodes;
 import io.mosip.preregistration.core.common.dto.DemographicResponseDTO;
-import io.mosip.preregistration.core.common.dto.DocumentDeleteResponseDTO;
-import io.mosip.preregistration.core.common.dto.MainListResponseDTO;
 import io.mosip.preregistration.core.common.dto.MainRequestDTO;
 import io.mosip.preregistration.core.config.LoggerConfiguration;
 import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
 import io.mosip.preregistration.core.util.CryptoUtil;
+import io.mosip.preregistration.core.util.HashUtill;
 
 /**
  * This class provides the utility methods for DemographicService
  * 
  * @author Ravi C Balaji
+ * @author Sanober Noor
  * @since 1.0.0
  */
 @Component
 public class DemographicServiceUtil {
-
-	private String dateTimeFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
+	
+	@Value("${mosip.utc-datetime-pattern}")
+	private String utcDateTimePattern ;
+	
 
 	/**
 	 * Logger instance
@@ -70,6 +61,8 @@ public class DemographicServiceUtil {
 
 	@Autowired
 	CryptoUtil cryptoUtil;
+	
+
 
 	/**
 	 * This setter method is used to assign the initial demographic entity values to
@@ -120,24 +113,26 @@ public class DemographicServiceUtil {
 		DemographicEntity demographicEntity = new DemographicEntity();
 		demographicEntity.setPreRegistrationId(demographicRequest.getPreRegistrationId());
 		LocalDateTime encryptionDateTime = DateUtils.getUTCCurrentDateTime();
+		log.info("sessionId", "idType", "id", "Encryption start time : "+DateUtils.getUTCCurrentDateTimeString());
 		byte[] encryptedDemographicDetails = cryptoUtil
 				.encrypt(demographicRequest.getDemographicDetails().toJSONString().getBytes(), encryptionDateTime);
+		log.info("sessionId", "idType", "id", "Encryption end time : "+DateUtils.getUTCCurrentDateTimeString());
 		demographicEntity.setApplicantDetailJson(encryptedDemographicDetails);
 		demographicEntity.setLangCode(demographicRequest.getLangCode());
 		demographicEntity.setCrAppuserId(requestId);
 		demographicEntity.setCreatedBy(demographicRequest.getCreatedBy());
-		demographicEntity.setCreateDateTime(DateUtils
-				.parseDateToLocalDateTime(getDateFromString(demographicRequest.getCreatedDateTime())));
+		demographicEntity.setCreateDateTime(LocalDateTime.now(ZoneId.of("UTC")));
 		demographicEntity.setStatusCode(statuscode);
-		demographicEntity.setDemogDetailHash("");
+		log.info("sessionId", "idType", "id", "Hashing start time : "+DateUtils.getUTCCurrentDateTimeString());
+		demographicEntity.setDemogDetailHash(new String(HashUtill.hashUtill(demographicEntity.getApplicantDetailJson())));
+		log.info("sessionId", "idType", "id", "Hashing end time : "+DateUtils.getUTCCurrentDateTimeString());
 		try {
 			if (entityType.equals(RequestCodes.SAVE.getCode())) {
 				if (!isNull(demographicRequest.getCreatedBy()) && !isNull(demographicRequest.getCreatedDateTime())
 						&& isNull(demographicRequest.getUpdatedBy()) && isNull(demographicEntity.getUpdateDateTime())) {
 					
 					demographicEntity.setUpdatedBy(null);
-					demographicEntity.setUpdateDateTime(DateUtils
-							.parseDateToLocalDateTime(getDateFromString(demographicRequest.getCreatedDateTime())));
+					demographicEntity.setUpdateDateTime(LocalDateTime.now(ZoneId.of("UTC")));
 					demographicEntity.setEncryptedDateTime(encryptionDateTime);
 					
 				} else {
@@ -149,8 +144,7 @@ public class DemographicServiceUtil {
 						&& !isNull(demographicRequest.getUpdatedBy())
 						&& !isNull(demographicRequest.getUpdatedDateTime())) {
 					demographicEntity.setUpdatedBy(demographicRequest.getUpdatedBy());
-					demographicEntity.setUpdateDateTime(DateUtils
-							.parseDateToLocalDateTime(getDateFromString(demographicRequest.getUpdatedDateTime())));
+					demographicEntity.setUpdateDateTime(LocalDateTime.now(ZoneId.of("UTC")));
 					demographicEntity.setEncryptedDateTime(encryptionDateTime);
 					
 					
@@ -182,7 +176,7 @@ public class DemographicServiceUtil {
 		inputValidation.put(RequestCodes.ID.getCode(), demographicRequestDTO.getId());
 		inputValidation.put(RequestCodes.VER.getCode(), demographicRequestDTO.getVer());
 		inputValidation.put(RequestCodes.REQ_TIME.getCode(),
-				new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").format(demographicRequestDTO.getReqTime()));
+				new SimpleDateFormat(utcDateTimePattern).format(demographicRequestDTO.getReqTime()));
 		inputValidation.put(RequestCodes.REQUEST.getCode(), demographicRequestDTO.getRequest().toString());
 		return inputValidation;
 	}
@@ -194,21 +188,39 @@ public class DemographicServiceUtil {
 	 *            pass demographicData
 	 * @param identityKey
 	 *            pass identityKey
+	 * @return values from JSON based on key
+	 * 
+	 * @throws ParseException
+	 *             On json Parsing Failed
+	 * 
+	 */
+	public JSONArray getValueFromIdentity(byte[] demographicData, String identityKey) throws ParseException {
+		log.info("sessionId", "idType", "id", "In getValueFromIdentity method of pre-registration service util ");
+		JSONParser jsonParser = new JSONParser();
+		JSONObject jsonObj = (JSONObject) jsonParser.parse(new String(demographicData));
+		JSONObject identityObj = (JSONObject) jsonObj.get(RequestCodes.IDENTITY.getCode());
+		return (JSONArray) identityObj.get(identityKey);
+	}
+	
+	/**
+	 * This method is used to set the JSON values to RequestCodes constants.
+	 * 
+	 * @param demographicData
+	 *            pass demographicData
+	 * @param identityKey
+	 *            pass postalcode
 	 * @return values from JSON
 	 * 
 	 * @throws ParseException
 	 *             On json Parsing Failed
 	 * 
 	 */
-	public String getValueFromIdentity(byte[] demographicData, String identityKey) throws ParseException {
-		log.info("sessionId", "idType", "id", "In getValueFromIdentity method of pre-registration service util ");
+	public String getPostalCode(byte[] demographicData, String postalcode) throws ParseException {
+		log.info("sessionId", "idType", "id", "In getValueFromIdentity method of pre-registration service util to get postalcode ");
 		JSONParser jsonParser = new JSONParser();
-		byte[] decryptedString = cryptoUtil.decrypt(demographicData, DateUtils.getUTCCurrentDateTime());
-		JSONObject jsonObj = (JSONObject) jsonParser.parse(new String(decryptedString));
+		JSONObject jsonObj = (JSONObject) jsonParser.parse(new String(demographicData));
 		JSONObject identityObj = (JSONObject) jsonObj.get(RequestCodes.IDENTITY.getCode());
-		JSONArray keyArr = (JSONArray) identityObj.get(identityKey);
-		JSONObject valueObj = (JSONObject) keyArr.get(0);
-		return valueObj.get(RequestCodes.VALUE.getCode()).toString();
+		return  (String) identityObj.get(postalcode);
 	}
 
 	/**
@@ -260,53 +272,53 @@ public class DemographicServiceUtil {
 	 *            pass Date format
 	 * @return map with formatted fromDate and toDate
 	 */
-	public Map<String, LocalDateTime> dateSetter(Map<String, String> dateMap, String format) {
-		log.info("sessionId", "idType", "id", "In dateSetter method of pre-registration service util ");
-		Map<String, LocalDateTime> localDateTimeMap = new HashMap<>();
-		try {
-			  
-			Date fromDate = DateUtils
-					.parseToDate(URLDecoder.decode(dateMap.get(RequestCodes.FROM_DATE.getCode()), "UTF-8"), format);
-          
-			Date toDate;
-			if (dateMap.get(RequestCodes.TO_DATE.getCode()) == null
-					|| isNull(dateMap.get(RequestCodes.TO_DATE.getCode()))) {
-				toDate = fromDate;
-				Calendar cal = Calendar.getInstance();
-				cal.setTime(toDate);
-				cal.set(Calendar.HOUR_OF_DAY, 23);
-				cal.set(Calendar.MINUTE, 59);
-				cal.set(Calendar.SECOND, 59);
-				toDate = cal.getTime();
-			} else {
-				toDate = DateUtils.parseToDate(URLDecoder.decode(dateMap.get(RequestCodes.TO_DATE.getCode()), "UTF-8"),
-						format);
-			}
-			localDateTimeMap.put(RequestCodes.FROM_DATE.getCode(), DateUtils.parseDateToLocalDateTime(fromDate));
-			localDateTimeMap.put(RequestCodes.TO_DATE.getCode(), DateUtils.parseDateToLocalDateTime(toDate));
-
-		} catch (java.text.ParseException | io.mosip.kernel.core.exception.ParseException ex) {
-			log.error("sessionId", "idType", "id",
-					"In dateSetter method of pre-registration service- " + ex.getCause());
-			throw new DateParseException(ErrorCodes.PRG_PAM_APP_011.toString(),
-					ErrorMessages.UNSUPPORTED_DATE_FORMAT.toString(), ex.getCause());
-		} catch (UnsupportedEncodingException ex) {
-			log.error("sessionId", "idType", "id",
-					"In dateSetter method of pre-registration service- " + ex.getCause());
-			throw new SystemUnsupportedEncodingException(ErrorCodes.PRG_PAM_APP_009.toString(),
-					ErrorMessages.UNSUPPORTED_ENCODING_CHARSET.toString(), ex.getCause());
-		}
-		return localDateTimeMap;
-	}
+//	public Map<String, LocalDateTime> dateSetter(Map<String, String> dateMap, String format) {
+//		log.info("sessionId", "idType", "id", "In dateSetter method of pre-registration service util ");
+//		Map<String, LocalDateTime> localDateTimeMap = new HashMap<>();
+//		try {
+//			  
+//			Date fromDate = DateUtils
+//					.parseToDate(URLDecoder.decode(dateMap.get(RequestCodes.FROM_DATE.getCode()), "UTF-8"), format);
+//          
+//			Date toDate;
+//			if (dateMap.get(RequestCodes.TO_DATE.getCode()) == null
+//					|| isNull(dateMap.get(RequestCodes.TO_DATE.getCode()))) {
+//				toDate = fromDate;
+//				Calendar cal = Calendar.getInstance();
+//				cal.setTime(toDate);
+//				cal.set(Calendar.HOUR_OF_DAY, 23);
+//				cal.set(Calendar.MINUTE, 59);
+//				cal.set(Calendar.SECOND, 59);
+//				toDate = cal.getTime();
+//			} else {
+//				toDate = DateUtils.parseToDate(URLDecoder.decode(dateMap.get(RequestCodes.TO_DATE.getCode()), "UTF-8"),
+//						format);
+//			}
+//			localDateTimeMap.put(RequestCodes.FROM_DATE.getCode(), DateUtils.parseDateToLocalDateTime(fromDate));
+//			localDateTimeMap.put(RequestCodes.TO_DATE.getCode(), DateUtils.parseDateToLocalDateTime(toDate));
+//
+//		} catch (java.text.ParseException | io.mosip.kernel.core.exception.ParseException ex) {
+//			log.error("sessionId", "idType", "id",
+//					"In dateSetter method of pre-registration service- " + ex.getCause());
+//			throw new DateParseException(ErrorCodes.PRG_PAM_APP_011.toString(),
+//					ErrorMessages.UNSUPPORTED_DATE_FORMAT.toString(), ex.getCause());
+//		} catch (UnsupportedEncodingException ex) {
+//			log.error("sessionId", "idType", "id",
+//					"In dateSetter method of pre-registration service- " + ex.getCause());
+//			throw new SystemUnsupportedEncodingException(ErrorCodes.PRG_PAM_APP_009.toString(),
+//					ErrorMessages.UNSUPPORTED_ENCODING_CHARSET.toString(), ex.getCause());
+//		}
+//		return localDateTimeMap;
+//	}
 
 	public String getCurrentResponseTime() {
-		return DateUtils.formatDate(new Date(System.currentTimeMillis()), dateTimeFormat);
+		return DateUtils.formatDate(new Date(System.currentTimeMillis()), utcDateTimePattern);
 	}
 
 	public Date getDateFromString(String date) {
 		log.info("sessionId", "idType", "id", "In getDateFromString method of pre-registration service util ");
 		try {
-			return new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").parse(date);
+			return new SimpleDateFormat(utcDateTimePattern).parse(date);
 		} catch (java.text.ParseException ex) {
 			log.error("sessionId", "idType", "id",
 					"In getDateFromString method of pre-registration service- " + ex.getCause());
@@ -316,7 +328,7 @@ public class DemographicServiceUtil {
 	}
 
 	public String getLocalDateString(LocalDateTime date) {
-		DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(dateTimeFormat);
+		DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(utcDateTimePattern);
 		return date.format(dateTimeFormatter);
 	}
 

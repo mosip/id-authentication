@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>io.mosip</groupId>
 		<artifactId>mosip-parent</artifactId>
-		<version>0.9.2</version>
+		<version>0.9.5</version>
 	</parent>
 	
 	<groupId>io.mosip.authentication</groupId>
@@ -97,11 +97,6 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-webflux</artifactId>
 			<version>${spring.boot.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.bitbucket.b_c</groupId>
-			<artifactId>jose4j</artifactId>
-		<version>0.6.4</version>
 		</dependency>
 	</dependencies>
 	

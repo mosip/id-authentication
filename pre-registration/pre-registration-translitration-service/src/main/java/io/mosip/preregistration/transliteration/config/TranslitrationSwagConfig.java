@@ -12,6 +12,8 @@ import java.util.Set;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 
+import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.preregistration.core.config.LoggerConfiguration;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.spi.DocumentationType;
@@ -29,6 +31,8 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @Configuration
 @EnableSwagger2
 public class TranslitrationSwagConfig {
+	
+	private Logger log = LoggerConfiguration.logConfig(TranslitrationSwagConfig.class);
 
 	/**
 	 * Reference for ${application.env.local:false} from property file.
@@ -87,6 +91,7 @@ public class TranslitrationSwagConfig {
 				} 
 				swaggerBaseUrlSet = true;
 			} catch (MalformedURLException e) {
+				log.error("sessionId", "idType", "id", "In registrationStatusBean method of Transliteration Service- " + e.getMessage());
 				System.err.println("SwaggerUrlException: " + e);
 			}
 		}
@@ -97,7 +102,6 @@ public class TranslitrationSwagConfig {
 		
 		if (swaggerBaseUrlSet) {
 			docket.protocols(protocols()).host(hostWithPort);
-			System.out.println("\nSwagger Base URL: " + proto + "://" + hostWithPort + "\n");
 		}
 		return docket;
 	}

@@ -39,6 +39,7 @@ Rules of UIN generation:
 14. UIN should not contain ADMIN defined restricted number
 
 
+ [kernel-uin-ack-service.md](kernel-uin-ack-service.md)
 
 - Request for GET **/uin**
 
