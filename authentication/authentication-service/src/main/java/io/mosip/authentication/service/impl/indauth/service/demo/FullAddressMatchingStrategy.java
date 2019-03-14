@@ -76,15 +76,26 @@ public enum FullAddressMatchingStrategy implements TextMatchingStrategy {
 			LanguageType langType = ((LanguageType) object);
 			if (langType.equals(LanguageType.PRIMARY_LANG)) {
 				logError(IdAuthenticationErrorConstants.DEMO_DATA_MISMATCH);
-				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.DEMO_DATA_MISMATCH);
+				throw new IdAuthenticationBusinessException(
+						IdAuthenticationErrorConstants.DEMO_DATA_MISMATCH.getErrorCode(),
+						String.format(IdAuthenticationErrorConstants.DEMOGRAPHIC_DATA_MISMATCH.getErrorMessage(),
+								getLanguagecode(LanguageType.PRIMARY_LANG), DemoAuthType.FULL_ADDRESS.getType()));
 			} else {
 				logError(IdAuthenticationErrorConstants.DEMO_DATA_MISMATCH);
-				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.DEMO_DATA_MISMATCH);
+				throw new IdAuthenticationBusinessException(
+						IdAuthenticationErrorConstants.DEMO_DATA_MISMATCH.getErrorCode(),
+						String.format(IdAuthenticationErrorConstants.DEMOGRAPHIC_DATA_MISMATCH.getErrorMessage(),
+								getLanguagecode(LanguageType.PRIMARY_LANG), DemoAuthType.FULL_ADDRESS.getType()));
 			}
 		} else {
 			logError(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS);
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS);
 		}
+	}
+
+	private static Object getLanguagecode(LanguageType primaryLang) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	private static void logError(IdAuthenticationErrorConstants idAuthenticationErrorConstants) {

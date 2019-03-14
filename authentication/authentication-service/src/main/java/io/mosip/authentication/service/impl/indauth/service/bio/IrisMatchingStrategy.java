@@ -29,7 +29,9 @@ public enum IrisMatchingStrategy implements MatchingStrategy {
 				reqInfoMap.put(getIdvid(), (String) props.get(getIdvid())); // FIXME will be removed when iris sdk is
 				return (int) func.apply(reqInfoMap, (Map<String, String>) entityInfo).doubleValue();
 			} else {
-				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS);
+				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.BIO_MISMATCH.getErrorCode(),
+						String.format(IdAuthenticationErrorConstants.BIO_MISMATCH.getErrorMessage(),
+								BioAuthType.IRIS_IMG.getType()));
 			}
 		}
 		return 0;

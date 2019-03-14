@@ -1,18 +1,22 @@
 package io.mosip.authentication.service.policy;
 
-import java.util.List;
-
 import lombok.Data;
 
 /**
- * This class consolidates the authentication type attributes and KYC Attributes
+ * The Class AuthTypeAttribute which has attributes for  authType(authentication type) allowed.
+ * @author Arun Bose S 
  */
-@Data
-public class AuthPolicy {
 
-	/** The list of auth type attributes. */
-	private List<AuthTypeAttribute> listAuthTypeAttributes;
+
+@Data
+public class AuthPolicy{
+
+	/**  authentication type used. */
+	private String authType;
 	
-	/** The list of KYC attributes. */
-	private List<KYCAttributes> listKYCAttributes;
+	/**  authentication subType used. */
+	private String authSubType;
+	
+	/**  mandatory attribute value */
+	private boolean mandatory;
 }

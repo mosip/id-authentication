@@ -9,6 +9,7 @@ import io.mosip.authentication.core.spi.indauth.match.MatchFunction;
 import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
 import io.mosip.authentication.core.spi.indauth.match.TextMatchingStrategy;
 import io.mosip.authentication.core.util.DemoMatcherUtil;
+import io.mosip.authentication.service.impl.indauth.service.bio.BioAuthType;
 
 /**
  * The Enum AddressMatchingStrategy.
@@ -28,9 +29,15 @@ public enum AddressMatchingStrategy implements TextMatchingStrategy {
 			if (object instanceof LanguageType) {
 				LanguageType langType = ((LanguageType) object);
 				if (langType.equals(LanguageType.PRIMARY_LANG)) {
-					throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.DEMO_DATA_MISMATCH);
+					throw new IdAuthenticationBusinessException(
+							IdAuthenticationErrorConstants.DEMO_DATA_MISMATCH.getErrorCode(),
+							String.format(IdAuthenticationErrorConstants.DEMOGRAPHIC_DATA_MISMATCH.getErrorMessage(),
+									getLanguagecode(LanguageType.PRIMARY_LANG), DemoAuthType.ADDRESS.getType()));
 				} else {
-					throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.DEMO_DATA_MISMATCH);
+					throw new IdAuthenticationBusinessException(
+							IdAuthenticationErrorConstants.DEMO_DATA_MISMATCH.getErrorCode(),
+							String.format(IdAuthenticationErrorConstants.DEMOGRAPHIC_DATA_MISMATCH.getErrorMessage(),
+									getLanguagecode(LanguageType.PRIMARY_LANG), DemoAuthType.ADDRESS.getType()));
 				}
 			} else {
 				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS);
@@ -53,6 +60,10 @@ public enum AddressMatchingStrategy implements TextMatchingStrategy {
 	AddressMatchingStrategy(MatchingStrategyType matchStrategyType, MatchFunction matchFunction) {
 		this.matchFunction = matchFunction;
 		this.matchStrategyType = matchStrategyType;
+	}
+
+	private static String getLanguagecode(LanguageType primaryLang) {
+		return primaryLang.PRIMARY_LANG.toString();
 	}
 
 	/*

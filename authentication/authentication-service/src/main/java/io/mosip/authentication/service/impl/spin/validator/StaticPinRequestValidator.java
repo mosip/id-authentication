@@ -27,8 +27,7 @@ public class StaticPinRequestValidator extends IdAuthValidator {
 
 	/** The Constant ID_AUTH_VALIDATOR2. */
 	private static final String ID_AUTH_VALIDATOR2 = "IdAuthValidator";
-	
-	
+
 	/** The Constant IDV_ID_TYPE. */
 	private static final String IDV_ID_TYPE = "individualIdType";
 
@@ -60,6 +59,7 @@ public class StaticPinRequestValidator extends IdAuthValidator {
 	public boolean supports(Class<?> clazz) {
 		return StaticPinRequestDTO.class.equals(clazz);
 	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -87,13 +87,12 @@ public class StaticPinRequestValidator extends IdAuthValidator {
 	 */
 	private void validateStaticPin(String pinValue, Errors errors) {
 		if (Objects.isNull(pinValue) || pinValue.isEmpty()) {
-
-			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), "validateStaticPin", MISSING_INPUT_PARAMETER + PINVALUE);
-			errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
-					new Object[] { PINVALUE },
-					IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
+			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), "validateStaticPin",
+					MISSING_INPUT_PARAMETER + PINVALUE);
+			errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.MISSING_AUTHTYPE.getErrorCode(),
+					new Object[] { PINVALUE }, IdAuthenticationErrorConstants.MISSING_AUTHTYPE.getErrorMessage());
 		} else if (!STATIC_PIN_PATTERN.matcher(pinValue).matches()) {
-			mosipLogger.error(SESSION_ID,  this.getClass().getSimpleName(), "validateStaticPin",
+			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), "validateStaticPin",
 					"INVALID_INPUT_PARAMETER - pinValue - value -> " + pinValue);
 			errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
 					new Object[] { PINVALUE },
@@ -115,10 +114,11 @@ public class StaticPinRequestValidator extends IdAuthValidator {
 		} else if (idType.equals(IdType.VID.getType())) {
 			validateIdvId(value, IdType.VID.getType(), errors, INDIVIDUAL_ID);
 		} else {
-			mosipLogger.error(SESSION_ID,  this.getClass().getSimpleName(), "validateUinVidValue",MISSING_INPUT_PARAMETER + UIN_VID);
-			errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
+			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), "validateUinVidValue",
+					MISSING_INPUT_PARAMETER + UIN_VID);
+			errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
 					new Object[] { IDV_ID_TYPE },
-					IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
+					IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
 		}
 	}
 }

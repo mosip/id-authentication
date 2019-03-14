@@ -60,8 +60,5 @@ public class IdentityDTO {
 
 	/** List of identity info to hold fullAddress */
 	List<IdentityInfoDTO> fullAddress;
-	
-	/** List of biometric identity info */
-	List<BioIdentityInfoDTO> biometrics;
 
 }

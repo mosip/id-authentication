@@ -104,17 +104,15 @@ public class KycAuthRequestValidatorTest {
 		assertFalse(KycAuthRequestValidator.supports(KycAuthRequestValidator.class));
 	}
 
-	@Ignore
 	@Test
 	public void testValidateAuthRequest() {
 		KycAuthRequestDTO kycAuthRequestDTO = new KycAuthRequestDTO();
-//		dto.setConsentRequired(Boolean.TRUE);
-//		dto.setSecondaryLangCode("fra");
-		kycAuthRequestDTO.setId("id");
+		kycAuthRequestDTO.setConsentObtained(Boolean.TRUE);
+		kycAuthRequestDTO.setSecondaryLangCode("fra");
 		kycAuthRequestDTO.setRequestTime(ZonedDateTime.now()
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
 		kycAuthRequestDTO.setId("id");
-		// authRequestDTO.setVer("1.1");
+		kycAuthRequestDTO.setVersion("1.1");
 		kycAuthRequestDTO.setTransactionID("1234567890");
 		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
 		authTypeDTO.setDemo(false);
@@ -131,6 +129,15 @@ public class KycAuthRequestValidatorTest {
 
 		IdentityDTO idDTO = new IdentityDTO();
 		idDTO.setName(idInfoList);
+		idDTO.setDob("25/11/1990");
+		idDTO.setAge("25");
+		IdentityInfoDTO idInfoDTOs = new IdentityInfoDTO();
+		idInfoDTOs.setLanguage(env.getProperty("mosip.secondary.lang-code"));
+		idInfoDTOs.setValue("V");
+		List<IdentityInfoDTO> idInfoLists = new ArrayList<>();
+		idInfoLists.add(idInfoDTOs);
+		idDTO.setDobType(idInfoLists);
+		kycAuthRequestDTO.setIndividualIdType("D");
 		RequestDTO request = new RequestDTO();
 		String otp = "123456";
 		request.setOtp(otp);
@@ -158,8 +165,8 @@ public class KycAuthRequestValidatorTest {
 	@Test
 	public void testInvalidAuthRequest() {
 		KycAuthRequestDTO kycAuthRequestDTO = new KycAuthRequestDTO();
-//		dto.setConsentRequired(Boolean.TRUE);
-//		dto.setSecondaryLangCode("fra");
+		kycAuthRequestDTO.setConsentObtained(Boolean.TRUE);
+		kycAuthRequestDTO.setSecondaryLangCode("fra");
 		kycAuthRequestDTO.setRequestTime(ZonedDateTime.now()
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
 		kycAuthRequestDTO.setId("id");
@@ -180,6 +187,15 @@ public class KycAuthRequestValidatorTest {
 
 		IdentityDTO idDTO = new IdentityDTO();
 		idDTO.setName(idInfoList);
+		idDTO.setDob("25/11/1990");
+		idDTO.setAge("25");
+		IdentityInfoDTO idInfoDTOs = new IdentityInfoDTO();
+		idInfoDTOs.setLanguage(env.getProperty("mosip.secondary.lang-code"));
+		idInfoDTOs.setValue("V");
+		List<IdentityInfoDTO> idInfoLists = new ArrayList<>();
+		idInfoLists.add(idInfoDTOs);
+		idDTO.setDobType(idInfoLists);
+		kycAuthRequestDTO.setIndividualIdType("D");
 		RequestDTO request = new RequestDTO();
 		String otp = "123456";
 		request.setOtp(otp);
@@ -203,8 +219,7 @@ public class KycAuthRequestValidatorTest {
 		mockenv.setProperty("ekyc.allowed.auth.type", "otp,bio,pin");
 		ReflectionTestUtils.setField(KycAuthRequestValidator, "environment", mockenv);
 		KycAuthRequestDTO kycAuthRequestDTO = new KycAuthRequestDTO();
-//		dto.setConsentRequired(Boolean.TRUE);
-//		dto.setSecondaryLangCode("fra");
+
 		kycAuthRequestDTO.setRequestTime(ZonedDateTime.now()
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
 		kycAuthRequestDTO.setId("id");
@@ -238,12 +253,9 @@ public class KycAuthRequestValidatorTest {
 		assertTrue(errors.hasErrors());
 	}
 
-	@Ignore
 	@Test
 	public void TestInvalidAuthType() {
 		KycAuthRequestDTO kycAuthRequestDTO = new KycAuthRequestDTO();
-//		dto.setConsentRequired(Boolean.FALSE);
-//		dto.setSecondaryLangCode("fra");
 		kycAuthRequestDTO.setId("id");
 		kycAuthRequestDTO.setVersion("1.1");
 		kycAuthRequestDTO.setRequestTime(ZonedDateTime.now()
@@ -264,6 +276,18 @@ public class KycAuthRequestValidatorTest {
 		idInfoList.add(idInfoDTO1);
 		IdentityDTO idDTO = new IdentityDTO();
 		idDTO.setName(idInfoList);
+		idDTO.setName(idInfoList);
+		idDTO.setDob("25/11/1990");
+		idDTO.setAge("25");
+		IdentityInfoDTO idInfoDTOs = new IdentityInfoDTO();
+		idInfoDTOs.setLanguage(env.getProperty("mosip.secondary.lang-code"));
+		idInfoDTOs.setValue("V");
+		List<IdentityInfoDTO> idInfoLists = new ArrayList<>();
+		idInfoLists.add(idInfoDTOs);
+		idDTO.setDobType(idInfoLists);
+		kycAuthRequestDTO.setIndividualIdType("D");
+		kycAuthRequestDTO.setConsentObtained(Boolean.FALSE);
+		kycAuthRequestDTO.setSecondaryLangCode("fra");
 		RequestDTO reqDTO = new RequestDTO();
 		String otp = "123456";
 		reqDTO.setOtp(otp);
@@ -286,12 +310,9 @@ public class KycAuthRequestValidatorTest {
 		assertTrue(errors.hasErrors());
 	}
 
-	@Ignore
 	@Test
 	public void TestkycvalidateAuthType() {
 		KycAuthRequestDTO kycAuthRequestDTO = new KycAuthRequestDTO();
-//		dto.setConsentRequired(Boolean.TRUE);
-//		dto.setSecondaryLangCode("fra");
 		kycAuthRequestDTO.setId("id");
 		kycAuthRequestDTO.setVersion("1.1");
 		kycAuthRequestDTO.setRequestTime(ZonedDateTime.now()
@@ -312,6 +333,18 @@ public class KycAuthRequestValidatorTest {
 		idInfoList.add(idInfoDTO1);
 		IdentityDTO idDTO = new IdentityDTO();
 		idDTO.setName(idInfoList);
+		idDTO.setName(idInfoList);
+		idDTO.setDob("25/11/1990");
+		idDTO.setAge("25");
+		IdentityInfoDTO idInfoDTOs = new IdentityInfoDTO();
+		idInfoDTOs.setLanguage(env.getProperty("mosip.secondary.lang-code"));
+		idInfoDTOs.setValue("V");
+		List<IdentityInfoDTO> idInfoLists = new ArrayList<>();
+		idInfoLists.add(idInfoDTOs);
+		idDTO.setDobType(idInfoLists);
+		kycAuthRequestDTO.setIndividualIdType("D");
+		kycAuthRequestDTO.setConsentObtained(Boolean.TRUE);
+		kycAuthRequestDTO.setSecondaryLangCode("fra");
 		RequestDTO reqDTO = new RequestDTO();
 		reqDTO.setDemographics(idDTO);
 		kycAuthRequestDTO.setRequestedAuth(authTypeDTO);
@@ -332,12 +365,9 @@ public class KycAuthRequestValidatorTest {
 		assertTrue(errors.hasErrors());
 	}
 
-	@Ignore
 	@Test
 	public void TestInvalidConsentReq() {
 		KycAuthRequestDTO kycAuthRequestDTO = new KycAuthRequestDTO();
-//		dto.setConsentRequired(Boolean.FALSE);
-//		dto.setSecondaryLangCode("fra");
 		kycAuthRequestDTO.setId("id");
 		kycAuthRequestDTO.setVersion("1.1");
 		kycAuthRequestDTO.setRequestTime(ZonedDateTime.now()
@@ -358,6 +388,18 @@ public class KycAuthRequestValidatorTest {
 		idInfoList.add(idInfoDTO1);
 		IdentityDTO idDTO = new IdentityDTO();
 		idDTO.setName(idInfoList);
+		idDTO.setName(idInfoList);
+		idDTO.setDob("25/11/1990");
+		idDTO.setAge("25");
+		IdentityInfoDTO idInfoDTOs = new IdentityInfoDTO();
+		idInfoDTOs.setLanguage(env.getProperty("mosip.secondary.lang-code"));
+		idInfoDTOs.setValue("V");
+		List<IdentityInfoDTO> idInfoLists = new ArrayList<>();
+		idInfoLists.add(idInfoDTOs);
+		idDTO.setDobType(idInfoLists);
+		kycAuthRequestDTO.setIndividualIdType("D");
+		kycAuthRequestDTO.setConsentObtained(Boolean.TRUE);
+		kycAuthRequestDTO.setSecondaryLangCode("fra");
 		RequestDTO request = new RequestDTO();
 		request.setDemographics(idDTO);
 		kycAuthRequestDTO.setRequestedAuth(authTypeDTO);

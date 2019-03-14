@@ -20,8 +20,10 @@ public enum NameMatchingStrategy implements TextMatchingStrategy {
 
 	EXACT(MatchingStrategyType.EXACT, (Object reqInfo, Object entityInfo, Map<String, Object> props) -> {
 		if (reqInfo instanceof String && entityInfo instanceof String) {
-			String refInfoName = DemoNormalizer.normalizeName((String) reqInfo, (String) props.get("langCode"), (MasterDataFetcher) props.get("titlesFetcher"));
-			String entityInfoName = DemoNormalizer.normalizeName((String) entityInfo, (String) props.get("langCode"), (MasterDataFetcher) props.get("titlesFetcher"));
+			String refInfoName = DemoNormalizer.normalizeName((String) reqInfo, (String) props.get("langCode"),
+					(MasterDataFetcher) props.get("titlesFetcher"));
+			String entityInfoName = DemoNormalizer.normalizeName((String) entityInfo, (String) props.get("langCode"),
+					(MasterDataFetcher) props.get("titlesFetcher"));
 			return DemoMatcherUtil.doExactMatch(refInfoName, entityInfoName);
 		} else {
 			return throwError(props);
@@ -29,16 +31,20 @@ public enum NameMatchingStrategy implements TextMatchingStrategy {
 
 	}), PARTIAL(MatchingStrategyType.PARTIAL, (Object reqInfo, Object entityInfo, Map<String, Object> props) -> {
 		if (reqInfo instanceof String && entityInfo instanceof String) {
-			String refInfoName = DemoNormalizer.normalizeName((String) reqInfo, (String) props.get("langCode"), (MasterDataFetcher) props.get("titlesFetcher"));
-			String entityInfoName = DemoNormalizer.normalizeName((String) entityInfo, (String) props.get("langCode"), (MasterDataFetcher) props.get("titlesFetcher"));
+			String refInfoName = DemoNormalizer.normalizeName((String) reqInfo, (String) props.get("langCode"),
+					(MasterDataFetcher) props.get("titlesFetcher"));
+			String entityInfoName = DemoNormalizer.normalizeName((String) entityInfo, (String) props.get("langCode"),
+					(MasterDataFetcher) props.get("titlesFetcher"));
 			return DemoMatcherUtil.doPartialMatch(refInfoName, entityInfoName);
 		} else {
 			return throwError(props);
 		}
 	}), PHONETICS(MatchingStrategyType.PHONETICS, (Object reqInfo, Object entityInfo, Map<String, Object> props) -> {
 		if (reqInfo instanceof String && entityInfo instanceof String) {
-			String refInfoName = DemoNormalizer.normalizeName((String) reqInfo, (String) props.get("langCode"), (MasterDataFetcher) props.get("titlesFetcher"));
-			String entityInfoName = DemoNormalizer.normalizeName((String) entityInfo, (String) props.get("langCode"), (MasterDataFetcher) props.get("titlesFetcher"));
+			String refInfoName = DemoNormalizer.normalizeName((String) reqInfo, (String) props.get("langCode"),
+					(MasterDataFetcher) props.get("titlesFetcher"));
+			String entityInfoName = DemoNormalizer.normalizeName((String) entityInfo, (String) props.get("langCode"),
+					(MasterDataFetcher) props.get("titlesFetcher"));
 			String language = (String) props.get("language");
 			return DemoMatcherUtil.doPhoneticsMatch(refInfoName, entityInfoName, language);
 		} else {
@@ -66,13 +72,26 @@ public enum NameMatchingStrategy implements TextMatchingStrategy {
 		if (object instanceof LanguageType) {
 			final LanguageType langType = ((LanguageType) object);
 			if (langType.equals(LanguageType.PRIMARY_LANG)) {
-				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.DEMO_DATA_MISMATCH);
+				throw new IdAuthenticationBusinessException(
+						IdAuthenticationErrorConstants.DEMO_DATA_MISMATCH.getErrorCode(),
+						String.format(IdAuthenticationErrorConstants.DEMOGRAPHIC_DATA_MISMATCH.getErrorMessage(),
+								getLanguagecode(LanguageType.PRIMARY_LANG),
+								DemoMatchType.NAME.getIdMapping().getIdname()));
 			} else {
-				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.DEMO_DATA_MISMATCH);
+				throw new IdAuthenticationBusinessException(
+						IdAuthenticationErrorConstants.DEMO_DATA_MISMATCH.getErrorCode(),
+						String.format(IdAuthenticationErrorConstants.DEMOGRAPHIC_DATA_MISMATCH.getErrorMessage(),
+								getLanguagecode(LanguageType.SECONDARY_LANG),
+								DemoMatchType.NAME.getIdMapping().getIdname()));
 			}
 		} else {
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS);
 		}
+	}
+
+	private static Object getLanguagecode(LanguageType primaryLang) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	@Override

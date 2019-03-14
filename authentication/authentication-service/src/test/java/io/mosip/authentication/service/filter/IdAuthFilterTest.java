@@ -27,6 +27,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
+import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.service.integration.KeyManager;
 
 @RunWith(SpringRunner.class)
@@ -76,27 +77,30 @@ public class IdAuthFilterTest {
 				Map.class));
 		assertEquals(responseBody.toString(), filter.decipherRequest(requestBody).toString());
 	}
-	
-	@Test(expected=IdAuthenticationAppException.class)
-	public void testInValidDecodedRequest() throws IdAuthenticationAppException, JsonParseException, JsonMappingException, IOException {
+
+	@Test(expected = IdAuthenticationAppException.class)
+	public void testInValidDecodedRequest()
+			throws IdAuthenticationAppException, JsonParseException, JsonMappingException, IOException {
 		KeyManager keyManager = Mockito.mock(KeyManager.class);
 		ReflectionTestUtils.setField(filter, "keyManager", keyManager);
-		requestBody.put("request",
-				123214214);
+		requestBody.put("request", 123214214);
 		filter.decipherRequest(requestBody);
 	}
 
 	@Test
 	public void testEncodedResponse() throws IdAuthenticationAppException, ServletException {
-		/*requestBody.put("request",
-				"e2F1dGhUeXBlPXthZGRyZXNzPXRydWUsIGJpbz10cnVlLCBmYWNlPXRydWUsIGZpbmdlcnByaW50PXRydWUsIGZ1bGxBZGRyZXNzPXRydWUsIGlyaXM9dHJ1ZSwgb3RwPXRydWUsIHBlcnNvbmFsSWRlbnRpdHk9dHJ1ZSwgcGluPXRydWV9fQ==");*/
+		/*
+		 * requestBody.put("request",
+		 * "e2F1dGhUeXBlPXthZGRyZXNzPXRydWUsIGJpbz10cnVlLCBmYWNlPXRydWUsIGZpbmdlcnByaW50PXRydWUsIGZ1bGxBZGRyZXNzPXRydWUsIGlyaXM9dHJ1ZSwgb3RwPXRydWUsIHBlcnNvbmFsSWRlbnRpdHk9dHJ1ZSwgcGluPXRydWV9fQ=="
+		 * );
+		 */
 		requestBody.put("request",
 				"{authType={address=true, bio=true, face=true, fingerprint=true, fullAddress=true, iris=true, otp=true, personalIdentity=true, pin=true}}");
 		responseBody.put("request",
 				"{authType={address=true, bio=true, face=true, fingerprint=true, fullAddress=true, iris=true, otp=true, personalIdentity=true, pin=true}}");
 		assertEquals(requestBody.toString(), filter.encipherResponse(responseBody).toString());
 	}
-	
+
 	@Test
 	public void testSign() throws IdAuthenticationAppException {
 		assertEquals(true, filter.validateSignature("something", "something".getBytes()));

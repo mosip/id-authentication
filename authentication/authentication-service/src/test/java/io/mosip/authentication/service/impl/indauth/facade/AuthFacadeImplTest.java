@@ -230,11 +230,10 @@ public class AuthFacadeImplTest {
 		fingerIdentityInfoDtoList.add(faceValue);
 
 		IdentityDTO identitydto = new IdentityDTO();
-		identitydto.setBiometrics(fingerIdentityInfoDtoList);
 
 		RequestDTO requestDTO = new RequestDTO();
 		requestDTO.setDemographics(identitydto);
-
+		requestDTO.setBiometrics(fingerIdentityInfoDtoList);
 		authRequestDTO.setRequest(requestDTO);
 
 		BioInfo bioinfo = new BioInfo();
@@ -387,9 +386,9 @@ public class AuthFacadeImplTest {
 		fingerIdentityInfoDtoList.add(fingerValue);
 		fingerIdentityInfoDtoList.add(fingerValue2);
 
-		idDTO.setBiometrics(fingerIdentityInfoDtoList);
 		RequestDTO reqDTO = new RequestDTO();
 		reqDTO.setDemographics(idDTO);
+		reqDTO.setBiometrics(fingerIdentityInfoDtoList);
 		reqDTO.setOtp("456789");
 		authRequestDTO.setRequest(reqDTO);
 		authRequestDTO.setId("1234567");
@@ -448,9 +447,6 @@ public class AuthFacadeImplTest {
 	@Test
 	public void processKycAuthValid() throws IdAuthenticationBusinessException {
 		KycAuthRequestDTO kycAuthRequestDTO = new KycAuthRequestDTO();
-//		dto.setConsentRequired(Boolean.TRUE);
-//		dto.setSecondaryLangCode("fra");
-//		kycAuthRequestDTO.setKycMetadata(dto);
 		kycAuthRequestDTO.setId("id");
 		kycAuthRequestDTO.setVersion("1.1");
 		kycAuthRequestDTO.setRequestTime(ZonedDateTime.now()
@@ -521,9 +517,6 @@ public class AuthFacadeImplTest {
 	@Test
 	public void processKycAuthInValid() throws IdAuthenticationBusinessException {
 		KycAuthRequestDTO kycAuthRequestDTO = new KycAuthRequestDTO();
-//		dto.setConsentRequired(Boolean.TRUE);
-//		dto.setSecondaryLangCode("fra");
-//		kycAuthRequestDTO.setKycMetadata(dto);
 		kycAuthRequestDTO.setId("id");
 		kycAuthRequestDTO.setVersion("1.1");
 		kycAuthRequestDTO.setRequestTime(ZonedDateTime.now()
@@ -596,9 +589,6 @@ public class AuthFacadeImplTest {
 	@Test
 	public void processKycAuthRequestNull() throws IdAuthenticationBusinessException {
 	KycAuthRequestDTO kycAuthRequestDTO = new KycAuthRequestDTO();
-//		dto.setConsentRequired(Boolean.TRUE);
-//		dto.setSecondaryLangCode("fra");
-//		kycAuthRequestDTO.setKycMetadata(dto);
 		kycAuthRequestDTO.setId("id");
 		kycAuthRequestDTO.setVersion("1.1");
 		kycAuthRequestDTO.setRequestTime(ZonedDateTime.now()
@@ -707,11 +697,10 @@ public class AuthFacadeImplTest {
 		fingerIdentityInfoDtoList.add(faceValue);
 
 		IdentityDTO identitydto = new IdentityDTO();
-		identitydto.setBiometrics(fingerIdentityInfoDtoList);
 
 		RequestDTO requestDTO = new RequestDTO();
 		requestDTO.setDemographics(identitydto);
-
+		requestDTO.setBiometrics(fingerIdentityInfoDtoList);
 		authRequestDTO.setRequest(requestDTO);
 
 		BioInfo bioinfo = new BioInfo();
@@ -794,11 +783,10 @@ public class AuthFacadeImplTest {
 		fingerIdentityInfoDtoList.add(faceValue);
 
 		IdentityDTO identitydto = new IdentityDTO();
-		identitydto.setBiometrics(fingerIdentityInfoDtoList);
 
 		RequestDTO requestDTO = new RequestDTO();
 		requestDTO.setDemographics(identitydto);
-
+		requestDTO.setBiometrics(fingerIdentityInfoDtoList);
 		authRequestDTO.setRequest(requestDTO);
 
 		BioInfo bioinfo = new BioInfo();

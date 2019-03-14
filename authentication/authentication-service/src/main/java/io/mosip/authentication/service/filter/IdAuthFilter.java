@@ -1,12 +1,23 @@
 package io.mosip.authentication.service.filter;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
+
+import javax.servlet.http.HttpServletRequestWrapper;
 
 import org.springframework.stereotype.Component;
 
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
+import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
+import io.mosip.authentication.core.dto.indauth.AuthTypeDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
+import io.mosip.authentication.core.spi.indauth.match.MatchType;
+import io.mosip.authentication.service.policy.AuthPolicy;
+import io.mosip.authentication.service.policy.Policy;
 import io.mosip.kernel.core.util.DateUtils;
 
 // TODO: Auto-generated Javadoc
@@ -18,6 +29,12 @@ import io.mosip.kernel.core.util.DateUtils;
 @Component
 public class IdAuthFilter extends BaseAuthFilter {
 	
+	private static final String MISP_ID = "mispId";
+
+	private static final String MISP_LK = "mispLk";
+
+	private static final String PATRNER_ID = "partnerId";
+
 	/** The Constant POLICY_ID. */
 	private static final String POLICY_ID = "policyId";
 
@@ -32,20 +49,6 @@ public class IdAuthFilter extends BaseAuthFilter {
 	
 	/** The Constant REQUEST. */
 	private static final String REQUEST = "request";
-	
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * io.mosip.authentication.service.filter.BaseAuthFilter#setTxnId(java.util.Map,
-	 * java.util.Map)
-	 */
-	@Override
-	protected Map<String, Object> setResponseParams(Map<String, Object> requestBody, Map<String, Object> responseBody)
-			throws IdAuthenticationAppException {
-		Map<String, Object> responseParams = super.setResponseParams(requestBody, responseBody);
-		return setAuthResponseParam(requestBody, responseParams);
-	}
 
 	/*
 	 * (non-Javadoc)
@@ -57,6 +60,12 @@ public class IdAuthFilter extends BaseAuthFilter {
 	@Override
 	protected Map<String, Object> decipherRequest(Map<String, Object> requestBody) throws IdAuthenticationAppException {
 		try {
+			/* String partnerId=(String)requestBody.get(PATRNER_ID);
+			 String licenseKey=(String)requestBody.get(MISP_LK);
+			 String mispId= licenseKeyMISPMapping(licenseKey);
+			 validPartnerId(partnerId);
+			 String policyId=validMISPPartnerMapping(partnerId, mispId);*/
+			 //checkAllowedAuthTypebasedOnPolicy(policyId, authRequestDTO);
 			requestBody.replace(REQUEST, decode((String) requestBody.get(REQUEST)));
 			if (null != requestBody.get(REQUEST)) {
 				Map<String, Object> request = keyManager.requestData(requestBody, mapper);
@@ -88,12 +97,14 @@ public class IdAuthFilter extends BaseAuthFilter {
 	 * @param mispId the misp id
 	 * @throws IdAuthenticationAppException the id authentication app exception
 	 */
-	private void licenseKeyMISPMapping(String licenseKey, String mispId) throws IdAuthenticationAppException {
-		String licensekeyMappingJson = env.getProperty("licensekey.mispmapping." + licenseKey + "." + mispId);
+	private String licenseKeyMISPMapping(String licenseKey) throws IdAuthenticationAppException {
+		String mispId=null;
 		Map<String, String> licenseKeyMap = null;
+		String licensekeyMappingJson = env.getProperty("licensekey." + licenseKey);
 		if (null != licensekeyMappingJson) {
 			try {
 				licenseKeyMap = mapper.readValue(mapper.writeValueAsBytes(licensekeyMappingJson), Map.class);
+				mispId=licenseKeyMap.get(MISP_ID);
 			} catch (IOException e) {
 				throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS);
 			}
@@ -108,7 +119,7 @@ public class IdAuthFilter extends BaseAuthFilter {
 		} else {
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.INVALID_LICENSEKEY);
 		}
-
+      return mispId;
 	}
 
 	/**
@@ -162,7 +173,56 @@ public class IdAuthFilter extends BaseAuthFilter {
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS);
 		}
 		 return policyId;
+	}	
+	
+	public void checkAllowedAuthTypebasedOnPolicy(String policyId ,AuthRequestDTO authRequestDTO) throws IdAuthenticationAppException {
+		String policyJson = env.getProperty("policy." +policyId);
+		Policy policy=null;
+		try {
+			policy = mapper.readValue(mapper.writeValueAsBytes(policyJson), Policy.class);
+			List<AuthPolicy> authPolicy=policy.getListAuthPolicy();
+			List<String> allowedauthType=authPolicy.stream().filter(s->s.isMandatory()).map(s->s.getAuthType()).collect(Collectors.toList());
+			List<String> allowedsubAuthType=authPolicy.stream().filter(s->s.isMandatory()).map(s->s.getAuthType()).collect(Collectors.toList());
+			AuthTypeDTO authType=authRequestDTO.getRequestedAuth();
+			if(authType.isDemo()&& !allowedauthType.contains(MatchType.Category.DEMO.name())) {
+				throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED);
+				}
+			
+			if(authType.isBio()&& !allowedauthType.contains(MatchType.Category.BIO.name())) {
+				throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED);
+			}
+			if(authType.isBio()&& allowedauthType.contains(MatchType.Category.BIO.name())) {
+				List<String> bioInfoList=authRequestDTO.getBioMetadata().stream().map(s->s.getBioType()).collect(Collectors.toList());
+	              for(String bioInfo :bioInfoList) {
+	            	  if(!bioInfoList.contains(bioInfo)) {
+	            		  throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED);
+	            	  }
+	              }
+				}
+			if(authType.isPin()&& !allowedauthType.contains(MatchType.Category.SPIN.name())) {
+				throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED);
+			}
+			if(authType.isOtp()&& !allowedauthType.contains(MatchType.Category.OTP.name())) {
+				throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.OTPREQUEST_NOT_ALLOWED);
+			}
+			
+		} catch (IOException e) {
+			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS);
+		}
 	}
 	
+	/*protected String[] getAuthPart(ResettableStreamHttpServletRequest requestWrapper) {
+		String[] ver = null;
+		if (requestWrapper instanceof HttpServletRequestWrapper) {
+			String url = requestWrapper.getRequestURL().toString();
+			String contextPath = requestWrapper.getContextPath();
+
+			if ((Objects.nonNull(url) && !url.isEmpty()) && (Objects.nonNull(contextPath) && !contextPath.isEmpty())) {
+				String[] splitedUrlByContext = url.split(contextPath);
+				ver = splitedUrlByContext[1].split("/");
+			}
+		}
+		return ver;
+	}*/
 	
 }

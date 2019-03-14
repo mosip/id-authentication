@@ -96,7 +96,6 @@ public class AuthController {
 
 		try {
 			DataValidationUtil.validate(errors);
-
 			authResponsedto = authFacade.authenticateApplicant(authrequestdto, true,partnerId,mispLK);
 		} catch (IDDataValidationException e) {
 			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), "authenticateApplication",

@@ -8,7 +8,6 @@ import java.security.PublicKey;
 import java.security.SignatureException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
-import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -29,7 +28,6 @@ import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.service.integration.KeyManager;
-import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.core.util.HMACUtils;
@@ -66,30 +64,6 @@ public abstract class BaseAuthFilter extends BaseIDAFilter {
 
 	/** The public key. */
 	protected PublicKey publicKey;
-
-	/** The Constant FULL_ADDRESS. */
-	private static final String FULL_ADDRESS = "fullAddress";
-
-	/** The Constant PERSONAL_IDENTITY. */
-	private static final String PERSONAL_IDENTITY = "personalIdentity";
-
-	/** The Constant ADDRESS. */
-	private static final String ADDRESS = "address";
-
-	/** The Constant BIO_INFOS. */
-	private static final String BIO_INFOS = "bioInfos";
-
-	/** The Constant BIO. */
-	private static final String BIO = "bio";
-
-	/** The Constant AUTH_TYPE. */
-	private static final String AUTH_TYPE = "authType";
-
-	/** The Constant INFO. */
-	private static final String INFO = "info";
-
-	/** The Constant MATCH_INFOS. */
-	private static final String MATCH_INFOS = "matchInfos";
 
 	/** The encryptor. */
 	protected EncryptorImpl encryptor;
@@ -223,48 +197,6 @@ public abstract class BaseAuthFilter extends BaseIDAFilter {
 				.anyMatch(ar -> ar[1].trim().equals(env.getProperty(MOSIP_TSP_ORGANIZATION)));
 	}
 
-	/**
-	 * Sets the auth response param.
-	 *
-	 * @param requestBody  the request body
-	 * @param responseBody the response body
-	 * @return the map
-	 */
-	@SuppressWarnings("unchecked")
-	protected Map<String, Object> setAuthResponseParam(Map<String, Object> requestBody,
-			Map<String, Object> responseBody) {
-		try {
-			if (null != responseBody.get(INFO)) {
-				Map<String, Object> authType = (Map<String, Object>) requestBody.get(AUTH_TYPE);
-				if (!checkDemoEnabledAuthType(authType)) {
-					Map<String, Object> info = (Map<String, Object>) responseBody.get(INFO);
-					info.remove(MATCH_INFOS);
-					responseBody.replace(INFO, info);
-				}
-				if (!(authType.get(BIO) instanceof Boolean) || !(boolean) authType.get(BIO)) {
-					Map<String, Object> info = (Map<String, Object>) responseBody.get(INFO);
-					info.remove(BIO_INFOS);
-					responseBody.replace(INFO, info);
-				}
-			}
-			return responseBody;
-		} catch (DateTimeParseException e) {
-			mosipLogger.error("sessionId", "IdAuthFilter", "setResponseParam", "\n" + ExceptionUtils.getStackTrace(e));
-			return responseBody;
-		}
-	}
-
-	/**
-	 * Check demo enabled auth type.
-	 *
-	 * @param authType the auth type
-	 * @return true, if successful
-	 */
-	protected boolean checkDemoEnabledAuthType(Map<String, Object> authType) {
-		return (authType.get(PERSONAL_IDENTITY) instanceof Boolean && (boolean) authType.get(PERSONAL_IDENTITY))
-				|| (authType.get(FULL_ADDRESS) instanceof Boolean && (boolean) authType.get(FULL_ADDRESS))
-				|| (authType.get(ADDRESS) instanceof Boolean && (boolean) authType.get(ADDRESS));
-	}
 
 	/**
 	 * Decode.

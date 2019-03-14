@@ -15,6 +15,7 @@ import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.constant.RequestType;
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.AuthStatusInfo;
+import io.mosip.authentication.core.dto.indauth.IdType;
 import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
 import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
@@ -26,6 +27,7 @@ import io.mosip.authentication.core.spi.indauth.service.OTPAuthService;
 import io.mosip.authentication.core.util.OTPUtil;
 import io.mosip.authentication.service.helper.IdInfoHelper;
 import io.mosip.authentication.service.impl.indauth.service.pin.PinAuthType;
+import io.mosip.authentication.service.impl.indauth.service.pin.PinMatchType;
 import io.mosip.authentication.service.repository.AutnTxnRepository;
 import io.mosip.authentication.service.repository.VIDRepository;
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -79,15 +81,15 @@ public class OTPAuthServiceImpl implements OTPAuthService {
 		Optional<String> otp = getOtpValue(authRequestDTO);
 		if (otp.isPresent()) {
 			String vid = "";
-//			if (IdType.VID.getType().equalsIgnoreCase(authRequestDTO.getIdvIdType())) {
-//				vid = authRequestDTO.getIdvId();
-//			} else {
-//				Optional<String> findVidByUin = vidrepository.findVIDByUIN(uin, PageRequest.of(0, 1)).stream()
-//						.findFirst();
-//				if (findVidByUin.isPresent()) {
-//					vid = findVidByUin.get().trim();
-//				}
-//			}
+			if (IdType.VID.getType().equalsIgnoreCase(authRequestDTO.getIndividualIdType())) {
+				vid = authRequestDTO.getIndividualId();
+			} else {
+				Optional<String> findVidByUin = vidrepository.findVIDByUIN(uin, PageRequest.of(0, 1)).stream()
+						.findFirst();
+				if (findVidByUin.isPresent()) {
+					vid = findVidByUin.get().trim();
+				}
+			}
 
 			boolean isValidRequest = validateTxnId(txnId, uin, vid, authRequestDTO.getRequestTime());
 			if (isValidRequest) {
@@ -106,9 +108,8 @@ public class OTPAuthServiceImpl implements OTPAuthService {
 			}
 		} else {
 			IDDataValidationException idDataValidationException = new IDDataValidationException(
-					IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER,
-					String.format(IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(), "OTP"),
-					null);
+					IdAuthenticationErrorConstants.MISSING_AUTHTYPE,
+					String.format(IdAuthenticationErrorConstants.MISSING_AUTHTYPE.getErrorMessage(), "OTP"), null);
 			throw idDataValidationException;
 		}
 	}
@@ -127,8 +128,8 @@ public class OTPAuthServiceImpl implements OTPAuthService {
 		String txnID = authReq.getTransactionID();
 		String tspID = partnerId;
 		String otpKey = OTPUtil.generateKey(env.getProperty("application.id"), uin, txnID, tspID);
-		String key = Optional.ofNullable(otpKey)
-				.orElseThrow(() -> new IdValidationFailedException(IdAuthenticationErrorConstants.INVALID_OTP));
+		String key = Optional.ofNullable(otpKey).orElseThrow(
+				() -> new IdValidationFailedException(IdAuthenticationErrorConstants.OTP_GENERATION_FAILED));
 		map.put("value", key);
 		return map;
 	}
@@ -140,8 +141,7 @@ public class OTPAuthServiceImpl implements OTPAuthService {
 	 * @return the list
 	 */
 	private List<MatchInput> constructMatchInput(AuthRequestDTO authRequestDTO) {
-//		return idInfoHelper.constructMatchInput(authRequestDTO, PinAuthType.values(), PinMatchType.values());
-		return null;
+		return idInfoHelper.constructMatchInput(authRequestDTO, PinAuthType.values(), PinMatchType.values());
 	}
 
 //	
@@ -162,13 +162,7 @@ public class OTPAuthServiceImpl implements OTPAuthService {
 	}
 
 	private Optional<String> getOtpValue(AuthRequestDTO authreqdto) {
-//		return Optional.ofNullable(authreqdto.getPinInfo())
-//				.flatMap(pinInfos -> pinInfos.stream()
-//						.filter(pinInfo -> pinInfo.getType() != null
-//								&& pinInfo.getType().equalsIgnoreCase(PinType.OTP.getType()))
-//						.findAny())
-//				.map(PinInfo::getValue);
-		return null;
+		return Optional.ofNullable(authreqdto.getRequest().getOtp());
 	}
 
 	/**
