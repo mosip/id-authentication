@@ -9,5 +9,6 @@ package io.mosip.preregistration.auth.errorcodes;
 public enum ErrorCodes {
 
 	PRG_AUTH_001,
-	PRG_AUTH_002;
+	PRG_AUTH_002,
+	PRG_AUTH_003;
 }

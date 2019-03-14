@@ -102,7 +102,8 @@ public class PreRegistrationDataSyncServiceTest {
 	public void initiate() {
 		Map<String, Object> applicationMap = new HashMap<>();
 		applicationMap.put(RegistrationConstants.PRE_REG_DELETION_CONFIGURED_DAYS, "45");
-
+		applicationMap.put(RegistrationConstants.PRE_REG_DAYS_LIMIT, "5");
+		
 		PowerMockito.mockStatic(io.mosip.registration.context.ApplicationContext.class);
 		when(io.mosip.registration.context.ApplicationContext.map()).thenReturn(applicationMap);
 	}

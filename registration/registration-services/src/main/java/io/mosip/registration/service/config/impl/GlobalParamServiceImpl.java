@@ -127,7 +127,7 @@ public class GlobalParamServiceImpl extends BaseService implements GlobalParamSe
 					
 					GlobalParamId globalParamId = new GlobalParamId();
 					globalParamId.setCode(key.getKey());
-
+					globalParamId.setLangCode("eng");
 					GlobalParam globalParam = globalParamDAO.get(globalParamId);		
 					
 					if (globalParam != null) {

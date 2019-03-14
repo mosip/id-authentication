@@ -24,20 +24,16 @@ import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.auth.config.MosipEnvironment;
 import io.mosip.kernel.auth.constant.AuthConstant;
-import io.mosip.kernel.auth.entities.AuthZResponseDto;
 import io.mosip.kernel.auth.entities.ClientSecret;
 import io.mosip.kernel.auth.entities.LoginUser;
 import io.mosip.kernel.auth.entities.MosipUserDto;
-import io.mosip.kernel.auth.entities.MosipUserDtoToken;
 import io.mosip.kernel.auth.entities.MosipUserListDto;
 import io.mosip.kernel.auth.entities.RoleDto;
 import io.mosip.kernel.auth.entities.RolesListDto;
 import io.mosip.kernel.auth.entities.UserOtp;
 import io.mosip.kernel.auth.entities.otp.OtpUser;
-import io.mosip.kernel.auth.entities.otp.OtpValidateRequestDto;
 import io.mosip.kernel.auth.jwtBuilder.TokenGenerator;
 import io.mosip.kernel.auth.jwtBuilder.TokenValidator;
-import io.mosip.kernel.auth.service.CustomTokenServices;
 
 /**
  * @author Ramadurai Pandian
@@ -67,6 +63,7 @@ public class ILdapDataStore implements IDataStore {
 	 MosipEnvironment environment;
 	
 	private LdapConnection createAnonymousConnection() throws Exception {
+		//LdapNetworkConnection network = new LdapNetworkConnection(dataBaseConfig.getUrl(),Integer.valueOf(dataBaseConfig.getPort()));
 		LdapConnection connection = new LdapNetworkConnection(dataBaseConfig.getUrl(),Integer.valueOf(dataBaseConfig.getPort()));
 		return connection;
 	}
@@ -239,14 +236,15 @@ public class ILdapDataStore implements IDataStore {
 		return new Dn("uid=" + userName + ",ou=people,c=morocco");
 	}
 
+	@Override
 	public RolesListDto getAllRoles() {
 		RolesListDto rolesListDto = new RolesListDto();
 
 		try {
 			LdapConnection connection = createAnonymousConnection();
 			List<RoleDto> roleDtos = new ArrayList<>();
-			Dn searchBase = new Dn(environment.getRolesSearchBase());
-			String searchFilter = environment.getLdapRolesClass();
+			Dn searchBase = new Dn("ou=roles,c=morocco");
+			String searchFilter = "(objectClass=organizationalRole)";
 
 			EntryCursor rolesData = connection.search(searchBase, searchFilter, SearchScope.ONELEVEL);
 
@@ -267,6 +265,7 @@ public class ILdapDataStore implements IDataStore {
 		}
 	}
 
+	@Override
 	public MosipUserListDto getListOfUsersDetails(List<String> users) throws Exception {
 		try {
 			MosipUserListDto userResponseDto = new MosipUserListDto();

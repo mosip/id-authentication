@@ -4,6 +4,8 @@ import static org.mockito.Mockito.when;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -24,6 +26,8 @@ import io.mosip.kernel.core.auditmanager.spi.AuditHandler;
 import io.mosip.registration.audit.AuditFactoryImpl;
 import io.mosip.registration.constants.AuditEvent;
 import io.mosip.registration.constants.Components;
+import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
 
 @RunWith(PowerMockRunner.class)
@@ -39,10 +43,12 @@ public class AuditFactoryTest {
 
 	@Before
 	public void initialize() {
-		ReflectionTestUtils.setField(auditFactory, "applicationId", "REG");
-		ReflectionTestUtils.setField(auditFactory, "applicationName", "REGISTRATION");
-		ReflectionTestUtils.setField(auditFactory, "defaultHostIP", "127.0.0.0");
-		ReflectionTestUtils.setField(auditFactory, "defaultHostName", "LOCALHOST");
+		Map<String,Object> appMap = new HashMap<>();
+		appMap.put(RegistrationConstants.DEFAULT_HOST_IP, "127.0.0.0");
+		appMap.put(RegistrationConstants.DEFAULT_HOST_NAME, "LOCALHOST");
+		appMap.put(RegistrationConstants.APP_NAME, "REGISTRATION");
+		appMap.put(RegistrationConstants.APP_ID, "REG");
+		ApplicationContext.getInstance().setApplicationMap(appMap);
 	}
 
 	@Test

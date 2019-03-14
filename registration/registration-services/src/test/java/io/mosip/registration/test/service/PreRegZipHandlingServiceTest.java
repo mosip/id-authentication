@@ -8,6 +8,7 @@ import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.HashMap;
+import java.util.Map;
 
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
@@ -33,6 +34,7 @@ import io.mosip.kernel.core.security.constants.MosipSecurityMethod;
 import io.mosip.kernel.core.util.FileUtils;
 import io.mosip.kernel.keygenerator.bouncycastle.KeyGenerator;
 import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dto.OSIDataDTO;
 import io.mosip.registration.dto.PreRegistrationDTO;
@@ -84,8 +86,11 @@ public class PreRegZipHandlingServiceTest {
 			JsonValidationProcessingException, JsonIOException, JsonSchemaIOException, FileIOException {
 		Mockito.when(jsonValidator.validateJson(Mockito.anyString(), Mockito.anyString()))
 				.thenReturn(new ValidationReport());
-		ReflectionTestUtils.setField(preRegZipHandlingServiceImpl, "identityClassName",
-				"io.mosip.registration.dto.demographic.MoroccoIdentity");
+		
+		Map<String,Object> appMap = new HashMap<>();
+		appMap.put(RegistrationConstants.IDENTITY_CLASS_NAME, "io.mosip.registration.dto.demographic.MoroccoIdentity");
+		ApplicationContext.getInstance().setApplicationMap(appMap);
+		
 		RegistrationDTO registrationDTO = preRegZipHandlingServiceImpl.extractPreRegZipFile(preRegPacket);
 
 		assertNotNull(registrationDTO);

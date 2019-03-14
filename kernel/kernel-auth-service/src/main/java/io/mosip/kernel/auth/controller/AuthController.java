@@ -10,12 +10,13 @@ import io.mosip.kernel.auth.service.AuthService;
 import io.mosip.kernel.auth.service.CustomTokenServices;
 import io.swagger.annotations.Api;
 
-import java.security.SignatureException;
+import java.util.List;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.web.authentication.www.NonceExpiredException;
@@ -34,21 +35,21 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/v1.0")
 @Api(value = "Operation related to Authentication and Authorization", tags = { "authmanager" })
 public class AuthController {
-	
+
 	/**
 	 * Autowired reference for {@link MosipEnvironment}
 	 */
 
 	@Autowired
 	private MosipEnvironment mosipEnvironment;
-	
+
 	/**
 	 * Autowired reference for {@link AuthService}
 	 */
 
 	@Autowired
 	private AuthService authService;
-	
+
 	/**
 	 * Autowired reference for {@link CustomTokenServices}
 	 */
@@ -75,8 +76,6 @@ public class AuthController {
 			res.addCookie(cookie);
 			authNResponse.setMessage(authResponseDto.getMessage());
 			AuthToken token = getAuthToken(authResponseDto);
-			//Cookie refreshCookie = createRefreshCookie(authResponseDto.getRefreshToken(), mosipEnvironment.getTokenExpiry());
-			//res.addCookie(refreshCookie);
 			customTokenServices.StoreToken(token);
 		}
 		return new ResponseEntity<>(authNResponse, HttpStatus.OK);
@@ -159,8 +158,10 @@ public class AuthController {
 			res.addCookie(cookie);
 			authNResponse.setMessage(authResponseDto.getMessage());
 			AuthToken token = getAuthToken(authResponseDto);
-			//Cookie refreshCookie = createRefreshCookie(authResponseDto.getRefreshToken(), mosipEnvironment.getTokenExpiry());
-			//res.addCookie(refreshCookie);
+			// Cookie refreshCookie =
+			// createRefreshCookie(authResponseDto.getRefreshToken(),
+			// mosipEnvironment.getTokenExpiry());
+			// res.addCookie(refreshCookie);
 			customTokenServices.StoreToken(token);
 		}
 		return new ResponseEntity<>(authNResponse, HttpStatus.OK);
@@ -175,30 +176,27 @@ public class AuthController {
 
 	@PostMapping(value = "/authorize/validateToken")
 	public ResponseEntity<MosipUserDto> validateToken(HttpServletRequest request, HttpServletResponse res)
-			throws AuthManagerException,Exception {
+			throws AuthManagerException, Exception {
 		String authToken = null;
 		Cookie[] cookies = request.getCookies();
 		MosipUserDtoToken mosipUserDtoToken = null;
-		try
-		{
-		for (Cookie cookie : cookies) {
-			if (cookie.getName().contains(AuthConstant.AUTH_COOOKIE_HEADER)) {
-				authToken = cookie.getValue();
+		try {
+			for (Cookie cookie : cookies) {
+				if (cookie.getName().contains(AuthConstant.AUTH_COOOKIE_HEADER)) {
+					authToken = cookie.getValue();
+				}
 			}
-		}
-		mosipUserDtoToken = authService.validateToken(authToken);
-		if (mosipUserDtoToken != null) {
-			mosipUserDtoToken.setMessage(AuthConstant.TOKEN_SUCCESS_MESSAGE);
-		}
-		Cookie cookie = createCookie(mosipUserDtoToken.getToken(), mosipEnvironment.getTokenExpiry());
-		res.addCookie(cookie);
-		}catch(NonceExpiredException exp)
-		{
-			throw new AuthManagerException(AuthConstant.UNAUTHORIZED_CODE,exp.getMessage());
-		}
-		catch(AuthManagerException e){
-			
-			throw new AuthManagerException(AuthConstant.UNAUTHORIZED_CODE,e.getMessage());
+			mosipUserDtoToken = authService.validateToken(authToken);
+			if (mosipUserDtoToken != null) {
+				mosipUserDtoToken.setMessage(AuthConstant.TOKEN_SUCCESS_MESSAGE);
+			}
+			Cookie cookie = createCookie(mosipUserDtoToken.getToken(), mosipEnvironment.getTokenExpiry());
+			res.addCookie(cookie);
+		} catch (NonceExpiredException exp) {
+			throw new AuthManagerException(AuthConstant.UNAUTHORIZED_CODE, exp.getMessage());
+		} catch (AuthManagerException e) {
+
+			throw new AuthManagerException(AuthConstant.UNAUTHORIZED_CODE, e.getMessage());
 		}
 		return new ResponseEntity<>(mosipUserDtoToken.getMosipUserDto(), HttpStatus.OK);
 	}
@@ -245,6 +243,21 @@ public class AuthController {
 		}
 		AuthNResponse authNResponse = authService.invalidateToken(authToken);
 		return new ResponseEntity<>(authNResponse, HttpStatus.OK);
+	}
+
+	@GetMapping(value = "/roles/{appid}")
+	public ResponseEntity<RolesListDto> getAllRoles(@PathVariable("appid") String appId) throws Exception {
+		HttpHeaders responseHeaders = new HttpHeaders();
+		RolesListDto rolesListDto = authService.getAllRoles(appId);
+		return new ResponseEntity(rolesListDto, responseHeaders, HttpStatus.OK);
+	}
+
+	@PostMapping(value = "/userdetails/{appid}")
+	public ResponseEntity<MosipUserListDto> getListOfUsersDetails(@RequestBody List<String> userDetails,
+			@PathVariable("appid") String appId) throws Exception {
+		HttpHeaders responseHeaders = new HttpHeaders();
+		MosipUserListDto mosipUsers = authService.getListOfUsersDetails(userDetails,appId);
+		return new ResponseEntity(mosipUsers, responseHeaders, HttpStatus.OK);
 	}
 
 }

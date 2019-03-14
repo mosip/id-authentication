@@ -152,6 +152,7 @@ public class CenterMachineReMapServiceImpl implements CenterMachineReMapService 
 	public Boolean isMachineRemapped() {
 		GlobalParamId globalParamId = new GlobalParamId();
 		globalParamId.setCode(RegistrationConstants.MACHINE_CENTER_REMAP_FLAG);
+		globalParamId.setLangCode("eng");
 		GlobalParam globalParam = globalParamDAO.get(globalParamId);
 		return globalParam != null ? Boolean.valueOf(globalParam.getVal()) : false;
 	}

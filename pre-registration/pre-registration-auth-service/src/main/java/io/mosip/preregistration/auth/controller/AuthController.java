@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.coyote.http2.Stream;
@@ -89,6 +90,23 @@ public class AuthController {
 		return ResponseEntity.status(HttpStatus.OK).body(responseBody);
 	}
 	
+	/**
+	 * Post api to invalidate the token for logout.
+	 * @param req
+	 * @return AuthNResponse
+	 */
+	@PostMapping(value="/invalidatetoken",produces=MediaType.APPLICATION_JSON_VALUE)
+	@ApiOperation(value = "Inavlidate the token")
+	@ResponseStatus(value=HttpStatus.OK)
+	public ResponseEntity<AuthNResponse> invalidateToken(HttpServletRequest req){
+		log.info("sessionId", "idType", "id",
+				"In invalidateToken method of Auth controller for invalidating access token ");
+		String authHeader=req.getHeader("Cookie");
+		System.out.println(authHeader);
+		//List<HttpCookie> authCookie=HttpCookie.parse(authHeader);
+		return ResponseEntity.status(HttpStatus.OK).body(authService.invalidateToken(authHeader));
+		
+	}
 	/**
 	 * This method is used to create a cookie
 	 * @param cookie

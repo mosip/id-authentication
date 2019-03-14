@@ -12,20 +12,24 @@ fdescribe('ConfigService', () => {
 
   it('should set value', () => {
     const config = {
-      'name': 'agnitra'
+      response: {
+        'name': 'agnitra'
+      }
     };
     const service: ConfigService = TestBed.get(ConfigService);
     service.setConfig(config);
-    expect(service.configs).toEqual(config);
+    expect(service.configs).toEqual(config.response);
   });
 
   it('should get expected value', () => {
     const config = {
-      'name': 'agnitra'
+      response: {
+        'name': 'agnitra'
+      }
     };
     const service: ConfigService = TestBed.get(ConfigService);
     service.setConfig(config);
     const x = service.getConfigByKey('name');
-    expect(x).toEqual(config.name);
+    expect(x).toEqual(config.response.name);
   })
 });

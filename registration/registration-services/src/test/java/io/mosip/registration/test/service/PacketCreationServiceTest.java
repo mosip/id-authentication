@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import org.junit.AfterClass;
@@ -96,9 +97,9 @@ public class PacketCreationServiceTest {
 			}
 		};
 		
-		ReflectionTestUtils.setField(packetCreationServiceImpl, "onlyUniqueRequiredInCBEFF",
-				RegistrationConstants.GLOBAL_CONFIG_TRUE_VALUE);
-		ApplicationContext.getInstance().setApplicationMap(new HashMap<>());
+		Map<String,Object> appMap = new HashMap<>();
+		appMap.put(RegistrationConstants.CBEFF_UNQ_TAG, RegistrationConstants.GLOBAL_CONFIG_TRUE_VALUE);
+		ApplicationContext.getInstance().setApplicationMap(appMap);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -183,7 +184,9 @@ public class PacketCreationServiceTest {
 		when(auditLogControlDAO.getLatestRegistrationAuditDates()).thenReturn(registrationAuditDates);
 		when(auditDAO.getAudits(Mockito.any(RegistrationAuditDates.class))).thenReturn(getAudits());
 		when(machineMappingDAO.getDevicesMappedToRegCenter(Mockito.anyString())).thenReturn(new ArrayList<>());
-		ReflectionTestUtils.setField(packetCreationServiceImpl, "onlyUniqueRequiredInCBEFF", "N");
+		Map<String,Object> appMap = new HashMap<>();
+		appMap.put(RegistrationConstants.CBEFF_UNQ_TAG, "N");
+		ApplicationContext.getInstance().setApplicationMap(appMap);
 
 		Assert.assertNotNull(packetCreationServiceImpl.create(registrationDTO));
 	}

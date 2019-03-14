@@ -41,11 +41,12 @@
     margin: 20px 0 0 20px;
 }
 
-.time-seelection__slot-groups-div p{
+.time-seelection__slot-groups-div a{
     margin: 0 40px 5px 20px;
     font-weight: 500;
     color: #ccc;
     cursor: pointer;
+    text-decoration: none;
 }
 
 .time-seelection__slot-groups-div-selected {
@@ -72,7 +73,7 @@
 .time-selection__name-list-header {
     height: 55px;
     width: 100%;
-    background-color: rgb(94, 169, 240);
+    background-color: #3973ac;
     padding: 5px 0 5px 20px;
     word-wrap: break-word;
     color: white;
