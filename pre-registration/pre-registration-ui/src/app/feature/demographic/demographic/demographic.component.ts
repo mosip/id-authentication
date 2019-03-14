@@ -51,6 +51,7 @@ export class DemographicComponent implements OnInit, OnDestroy {
   ADDRESS_LENGTH: string;
   defaultDay: string;
   defaultMonth: string;
+  FULLNAME_LENGTH: string;
 
   ageOrDobPref = '';
   showDate = false;
@@ -145,21 +146,22 @@ export class DemographicComponent implements OnInit, OnDestroy {
     private dialog: MatDialog
   ) {
     this.translate.use(localStorage.getItem('langCode'));
+    this.regService.currentMessage.subscribe(message => (this.message = message));
     this.initialization();
   }
 
   async ngOnInit() {
     this.config = this.configService.getConfig();
     console.log(this.config);
+    this.regService.currentMessage.subscribe(message => (this.message = message));
     this.setConfig();
-
     this.initForm();
     await this.getPrimaryLabels();
     this.dataStorageService.getSecondaryLanguageLabels(this.secondaryLang).subscribe(response => {
       this.secondaryLanguagelabels = response['demographic'];
     });
-    this.regService.currentMessage.subscribe(message => (this.message = message));
     if (!this.dataModification) this.consentDeclaration();
+    // this.regService.currentMessage.subscribe(message => (this.message = message));
     // console.log(this.primaryLanguagelabels);
   }
 
@@ -176,6 +178,7 @@ export class DemographicComponent implements OnInit, OnDestroy {
     this.EMAIL_LENGTH = this.config['mosip.email.length'];
     this.MOBILE_LENGTH = this.config['mosip.mobile.length'];
     this.ADDRESS_LENGTH = this.config['preregistration.address.length'];
+    this.FULLNAME_LENGTH = this.config['preregistration.fullname.length'];
 
     console.log(
       'this.MOBILE_PATTERN, this.CNIE_PATTERN, this.EMAIL_PATTERN, this.POSTALCODE_PATTERN, this.DOB_PATTERN, this.defaultDay,this.defaultMonth',
@@ -202,6 +205,7 @@ export class DemographicComponent implements OnInit, OnDestroy {
     if (localStorage.getItem('newApplicant') === 'true') {
       this.isNewApplicant = true;
     }
+    // this.regService.currentMessage.subscribe(message => (this.message = message));
     // this.message$ = this.regService.currentMessage;
     // this.message$.subscribe(message => (this.message = message));
     if (this.message['modifyUser'] === 'true' || this.message['modifyUserFromPreview'] === 'true') {
@@ -674,6 +678,8 @@ export class DemographicComponent implements OnInit, OnDestroy {
   onSubmit() {
     this.markFormGroupTouched(this.userForm);
     this.markFormGroupTouched(this.transUserForm);
+    console.log('CODE VALUE', this.codeValue);
+
     if (this.userForm.valid && this.transUserForm.valid) {
       const request = this.createRequestJSON();
       this.dataUploadComplete = false;
