@@ -14,6 +14,8 @@ import com.google.gson.Gson;
 
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.idgenerator.spi.RidGenerator;
+import io.mosip.kernel.core.idvalidator.exception.InvalidIDException;
+import io.mosip.kernel.core.idvalidator.spi.UinValidator;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.processor.core.code.ApiName;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
@@ -23,6 +25,7 @@ import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.packet.service.PacketCreationService;
 import io.mosip.registration.processor.packet.service.PacketGeneratorService;
+import io.mosip.registration.processor.packet.service.constants.RegistrationType;
 import io.mosip.registration.processor.packet.service.dto.ErrorDTO;
 import io.mosip.registration.processor.packet.service.dto.MachineResponseDto;
 import io.mosip.registration.processor.packet.service.dto.PackerGeneratorFailureDto;
@@ -68,6 +71,9 @@ public class PacketGeneratorServiceImpl implements PacketGeneratorService {
 	@Value("${primary.language}")
 	private String primaryLanguagecode;
 
+	@Autowired
+	private UinValidator<String> uinValidatorImpl;
+
 	private static Logger regProcLogger = RegProcessorLogger.getLogger(PacketCreationServiceImpl.class);
 
 	/*
@@ -86,7 +92,8 @@ public class PacketGeneratorServiceImpl implements PacketGeneratorService {
 		RegistrationDTO registrationDTO = createRegistrationDTOObject(request.getUin(), request.getRegistrationType(),
 				request.getCenterId(), request.getMachineId());
 		byte[] packetZipBytes = null;
-		if (isValidCenter(request.getCenterId(), dto) && isValidMachine(request.getMachineId(), dto)) {
+		if (isValidCenter(request.getCenterId(), dto) && isValidMachine(request.getMachineId(), dto)
+				&& isValidUin(request.getUin(), dto) && isValidRegistrationType(request.getRegistrationType(), dto)) {
 			try {
 				packetZipBytes = packetCreationService.create(registrationDTO);
 				String creationTime = packetCreationService.getCreationTime();
@@ -99,7 +106,7 @@ public class PacketGeneratorServiceImpl implements PacketGeneratorService {
 						registrationDTO.getRegistrationId(), creationTime);
 				return packerGeneratorResDto;
 			} catch (RegBaseCheckedException e) {
-				dto.setErrorCode(e.getErrorCode());
+				dto.setErrorCode(PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION.getCode());
 				dto.setMessage(ExceptionUtils.getStackTrace(e));
 				return dto;
 			} catch (Exception e) {
@@ -107,12 +114,35 @@ public class PacketGeneratorServiceImpl implements PacketGeneratorService {
 						LoggerFileConstant.REGISTRATIONID.toString(), registrationDTO.getRegistrationId(),
 						PlatformErrorMessages.RPR_PGS_JSON_PROCESSING_EXCEPTION.getMessage()
 								+ ExceptionUtils.getStackTrace(e));
+				dto.setErrorCode(PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION.getCode());
 				dto.setMessage(ExceptionUtils.getStackTrace(e));
 				return dto;
 			}
 		} else {
 			return dto;
 		}
+	}
+
+	private boolean isValidRegistrationType(String registrationType, PackerGeneratorFailureDto dto) {
+		if (registrationType.equals(RegistrationType.ACTIVATED)
+				|| registrationType.equals(RegistrationType.DEACTIVATED)) {
+			return true;
+		} else {
+			dto.setMessage("Invalid RegistrationType:Enter ACTIVATED or DEACTIVATED");
+			return false;
+		}
+
+	}
+
+	private boolean isValidUin(String uin, PackerGeneratorFailureDto dto) {
+		boolean isValidUIN = false;
+		try {
+			isValidUIN = uinValidatorImpl.validateId(uin);
+		} catch (InvalidIDException ex) {
+			dto.setErrorCode(PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION.getCode());
+			dto.setMessage(ex.getErrorText());
+		}
+		return isValidUIN;
 	}
 
 	/**
@@ -212,7 +242,7 @@ public class PacketGeneratorServiceImpl implements PacketGeneratorService {
 				isValidCenter = true;
 			} else {
 				ErrorDTO error = rcpdto.getErrors().get(0);
-				dto.setErrorCode(error.getErrorCode());
+				dto.setErrorCode(PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION.getCode());
 				dto.setMessage(error.getErrorMessage());
 			}
 
@@ -223,7 +253,7 @@ public class PacketGeneratorServiceImpl implements PacketGeneratorService {
 				Gson gsonObj = new Gson();
 				rcpdto = gsonObj.fromJson(result, RegistrationCenterResponseDto.class);
 				ErrorDTO error = rcpdto.getErrors().get(0);
-				dto.setErrorCode(error.getErrorCode());
+				dto.setErrorCode(PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION.getCode());
 				dto.setMessage(error.getErrorMessage());
 
 			}
