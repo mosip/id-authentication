@@ -89,6 +89,11 @@
 			<artifactId>packet-info-storage-service</artifactId>
 			<version>${packet.info.storage.service.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>io.mosip.kernel</groupId>
+			<artifactId>kernel-jsonvalidator</artifactId>
+			<version>${kernel.core.version}</version>
+		</dependency>
 	</dependencies>
 	<build>
 		<plugins>

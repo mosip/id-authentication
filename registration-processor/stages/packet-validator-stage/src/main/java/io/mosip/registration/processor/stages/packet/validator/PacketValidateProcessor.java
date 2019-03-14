@@ -19,7 +19,9 @@ import org.springframework.web.client.HttpServerErrorException;
 
 import io.mosip.kernel.core.fsadapter.exception.FSAdapterException;
 import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
+import io.mosip.kernel.core.jsonvalidator.model.ValidationReport;
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.jsonvalidator.impl.JsonValidatorImpl;
 import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.code.ApiName;
@@ -106,6 +108,9 @@ public class PacketValidateProcessor {
 	@Autowired
 	private RegistrationProcessorRestClientService<Object> restClientService;
 
+	@Autowired
+	JsonValidatorImpl jsonValidatorImpl;
+
 	/** The registration id. */
 	private String registrationId = "";
 
@@ -135,6 +140,10 @@ public class PacketValidateProcessor {
 			description = "";
 			isTransactionSuccessful = false;
 			InternalRegistrationStatusDto registrationStatusDto = new InternalRegistrationStatusDto();
+			boolean isCheckSumValidated = false;
+			boolean isApplicantDocumentValidation = false;
+			boolean isFilesValidated = false;
+			boolean isMasterDataValidated = false;
 			try {
 				registrationStatusDto = registrationStatusService.getRegistrationStatus(registrationId);
 				InputStream packetMetaInfoStream = adapter.getFile(registrationId, PacketFiles.PACKET_META_INFO.name());
@@ -143,49 +152,54 @@ public class PacketValidateProcessor {
 
 				InputStream idJsonStream = adapter.getFile(registrationId,
 						PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR + PacketFiles.ID.name());
-				RegistrationProcessorIdentity registrationProcessorIdentity = (RegistrationProcessorIdentity) JsonUtil
-						.inputStreamtoJavaObject(idJsonStream, RegistrationProcessorIdentity.class);
+				String jsonString = IOUtils.toString(idJsonStream);
 
-				FilesValidation filesValidation = new FilesValidation(adapter, registrationStatusDto);
-				boolean isFilesValidated = filesValidation.filesValidation(registrationId,
-						packetMetaInfo.getIdentity());
-				boolean isCheckSumValidated = false;
-				boolean isApplicantDocumentValidation = false;
-				boolean isMasterDataValidated = false;
+				ValidationReport isSchemaValidated = jsonValidatorImpl.validateJson(jsonString,
+						"mosip-identity-json-schema.json");
+
 				InputStream documentInfoStream = null;
 				InputStream demographicInfoStream = null;
 				byte[] bytesArray = null;
 				List<Document> documentList = null;
-				byte[] bytes = null;
-				if (isFilesValidated) {
-					documentInfoStream = adapter.getFile(registrationId,
-							PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR + PacketFiles.ID.name());
-					bytes = IOUtils.toByteArray(documentInfoStream);
-					documentList = documentUtility.getDocumentList(bytes);
+				if (isSchemaValidated.isValid()) {
 
-					CheckSumValidation checkSumValidation = new CheckSumValidation(adapter, registrationStatusDto);
+					RegistrationProcessorIdentity registrationProcessorIdentity = (RegistrationProcessorIdentity) JsonUtil
+							.inputStreamtoJavaObject(idJsonStream, RegistrationProcessorIdentity.class);
 
-					isCheckSumValidated = checkSumValidation.checksumvalidation(registrationId,
-							packetMetaInfo.getIdentity());
+					FilesValidation filesValidation = new FilesValidation(adapter, registrationStatusDto);
+					isFilesValidated = filesValidation.filesValidation(registrationId, packetMetaInfo.getIdentity());
 
-					if (isCheckSumValidated) {
-						ApplicantDocumentValidation applicantDocumentValidation = new ApplicantDocumentValidation(
-								registrationStatusDto);
-						isApplicantDocumentValidation = applicantDocumentValidation
-								.validateDocument(packetMetaInfo.getIdentity(), documentList, registrationId);
+					byte[] bytes = null;
+					if (isFilesValidated) {
+						documentInfoStream = adapter.getFile(registrationId,
+								PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR + PacketFiles.ID.name());
+						bytes = IOUtils.toByteArray(documentInfoStream);
+						documentList = documentUtility.getDocumentList(bytes);
 
-						if (isApplicantDocumentValidation) {
-							MasterDataValidation masterDataValidation = new MasterDataValidation(registrationStatusDto,
-									env, registrationProcessorRestService);
-							isMasterDataValidated = masterDataValidation
-									.validateMasterData(registrationProcessorIdentity);
+						CheckSumValidation checkSumValidation = new CheckSumValidation(adapter, registrationStatusDto);
+
+						isCheckSumValidated = checkSumValidation.checksumvalidation(registrationId,
+								packetMetaInfo.getIdentity());
+
+						if (isCheckSumValidated) {
+							ApplicantDocumentValidation applicantDocumentValidation = new ApplicantDocumentValidation(
+									registrationStatusDto);
+							isApplicantDocumentValidation = applicantDocumentValidation
+									.validateDocument(packetMetaInfo.getIdentity(), documentList, registrationId);
+
+							if (isApplicantDocumentValidation) {
+								MasterDataValidation masterDataValidation = new MasterDataValidation(
+										registrationStatusDto, env, registrationProcessorRestService);
+								isMasterDataValidated = masterDataValidation
+										.validateMasterData(registrationProcessorIdentity);
+							}
+
 						}
 
 					}
-
 				}
-
-				if (isFilesValidated && isCheckSumValidated && isApplicantDocumentValidation && isMasterDataValidated) {
+				if (!isSchemaValidated.isValid() && isFilesValidated && isCheckSumValidated
+						&& isApplicantDocumentValidation && isMasterDataValidated) {
 					object.setIsValid(Boolean.TRUE);
 					registrationStatusDto.setStatusComment(StatusMessage.PACKET_STRUCTURAL_VALIDATION_SUCCESS);
 					registrationStatusDto.setStatusCode(RegistrationStatusCode.STRUCTURE_VALIDATION_SUCCESS.toString());

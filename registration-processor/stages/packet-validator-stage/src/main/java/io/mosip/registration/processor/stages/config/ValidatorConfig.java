@@ -15,15 +15,17 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.core.io.support.ResourcePropertySource;
 
+import io.mosip.kernel.jsonvalidator.impl.JsonValidatorImpl;
 import io.mosip.registration.processor.stages.packet.validator.PacketValidateProcessor;
 import io.mosip.registration.processor.stages.packet.validator.PacketValidatorStage;
 import io.mosip.registration.processor.stages.utils.DocumentUtility;
 
 @Configuration
-public class ValidatorConfig{
-	
+public class ValidatorConfig {
+
 	@Bean
-	public PropertySourcesPlaceholderConfigurer getPropertySourcesPlaceholderConfigurer(Environment env) throws IOException, JSONException {
+	public PropertySourcesPlaceholderConfigurer getPropertySourcesPlaceholderConfigurer(Environment env)
+			throws IOException, JSONException {
 
 		PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
 		PropertySourcesPlaceholderConfigurer pspc = new PropertySourcesPlaceholderConfigurer();
@@ -35,7 +37,7 @@ public class ValidatorConfig{
 					+ "/" + applicationNames.get(i) + "-" + env.getProperty("spring.profiles.active") + ".properties";
 			appResources[i] = resolver.getResources(loc)[0];
 			((AbstractEnvironment) env).getPropertySources()
-            .addLast(new ResourcePropertySource(applicationNames.get(i), loc));
+					.addLast(new ResourcePropertySource(applicationNames.get(i), loc));
 		}
 		pspc.setLocations(appResources);
 		return pspc;
@@ -45,20 +47,24 @@ public class ValidatorConfig{
 		String names = env.getProperty("spring.application.name");
 		return Stream.of(names.split(",")).collect(Collectors.toList());
 	}
-	
-	@Bean 
+
+	@Bean
 	public PacketValidatorStage getPacketValidatorStage() {
 		return new PacketValidatorStage();
 	}
-	
+
 	@Bean
 	public DocumentUtility getDocumentUtility() {
 		return new DocumentUtility();
 	}
+
 	@Bean
-	public PacketValidateProcessor getPacketValidateProcessor()
-	{
+	public PacketValidateProcessor getPacketValidateProcessor() {
 		return new PacketValidateProcessor();
 	}
 
+	@Bean
+	public JsonValidatorImpl getJsonValidator() {
+		return new JsonValidatorImpl();
+	}
 }
