@@ -23,6 +23,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.core.http.ResponseWrapper;
+import io.mosip.kernel.core.util.EmptyCheckUtils;
 
 /**
  * @author Bal Vikash Sharma
@@ -76,7 +77,7 @@ public class ResponseBodyAdviceConfig implements ResponseBodyAdvice<Object> {
 								.getContentAsByteArray());
 			}
 			objectMapper.registerModule(new JavaTimeModule());
-			if (requestBody != null && requestBody.trim().length() > 0) {
+			if (!EmptyCheckUtils.isNullEmpty(requestBody)) {
 				requestWrapper = objectMapper.readValue(requestBody, RequestWrapper.class);
 				responseWrapper.setId(requestWrapper.getId());
 				responseWrapper.setVersion(requestWrapper.getVersion());
