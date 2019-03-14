@@ -1,1 +1,1 @@
-{"status":"N","err":[{"errorCode":"IDA-BIA-013","errorMessage":"Invalid bioType - irisImggg"}],"txnID":"7404012866","resTime":"2019-02-17T21:36:28.732+05:30","ver":"1.0"}
+{"status":"N","err":[{"errorCode":"IDA-IDV-003","errorMessage":"Missing Input Parameter - biotype"}],"resTime":"2019-03-12T12:16:54.773+05:30","ver":"0.8"}
