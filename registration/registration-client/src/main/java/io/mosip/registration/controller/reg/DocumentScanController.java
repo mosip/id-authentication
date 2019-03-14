@@ -189,23 +189,22 @@ public class DocumentScanController extends BaseController {
 			gender = demographicDetailController.getSelectedGenderCode();
 		}
 		String dateOfBirth = identityDto.getDateOfBirth();
-		SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy/MM/dd");
-		SimpleDateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
-		Date date = inputFormat.parse(dateOfBirth);
-		String formattedDob = outputFormat.format(date);
 		String individualType = null;
 		if (demographicDetailController.getSelectedNationalityCode() != null) {
 			individualType = demographicDetailController.getSelectedNationalityCode();
 		}
 		if (gender != null && dateOfBirth != null && individualType != null) {
+			SimpleDateFormat inputFormat = new SimpleDateFormat(RegistrationConstants.ATTR_FORINGER_DOB_PARSING);
+			SimpleDateFormat outputFormat = new SimpleDateFormat(RegistrationConstants.ATTR_FORINGER_DOB_FORMAT);
+			Date date = inputFormat.parse(dateOfBirth);
+			String formattedDob = outputFormat.format(date);
 			Map<String, Object> applicantTypeMap = new HashMap<>();
 			applicantTypeMap.put(RegistrationConstants.ATTR_INDIVIDUAL_TYPE, individualType);
 			applicantTypeMap.put(RegistrationConstants.ATTR_DATE_OF_BIRTH, formattedDob);
 			applicantTypeMap.put(RegistrationConstants.ATTR_GENDER_TYPE, gender);
 			applicantType = applicantTypeService.getApplicantType(applicantTypeMap);
 			getRegistrationDTOFromSession().getRegistrationMetaDataDTO().setApplicantTypeCode(applicantType);
-		}
-		else {
+		}		else {
 			/* TODO - to be removed after the clarification of UIN update */
 			applicantType = "007";
 			getRegistrationDTOFromSession().getRegistrationMetaDataDTO().setApplicantTypeCode(null);
