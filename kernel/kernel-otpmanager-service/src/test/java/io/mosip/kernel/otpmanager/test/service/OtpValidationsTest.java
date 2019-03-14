@@ -1,9 +1,9 @@
 package io.mosip.kernel.otpmanager.test.service;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.time.LocalDateTime;
@@ -22,12 +22,8 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.core.exception.ServiceError;
-import io.mosip.kernel.otpmanager.dto.OtpValidatorResponseDto;
 import io.mosip.kernel.otpmanager.entity.OtpEntity;
 import io.mosip.kernel.otpmanager.exception.OtpInvalidArgumentException;
 import io.mosip.kernel.otpmanager.repository.OtpRepository;
@@ -64,13 +60,9 @@ public class OtpValidationsTest {
 		entity.setStatusCode("OTP_UNUSED");
 		entity.setGeneratedDtimes(LocalDateTime.now(ZoneId.of("UTC")).minusMinutes(3));
 		when(otpRepository.findById(OtpEntity.class, "testKey")).thenReturn(entity);
-		MvcResult result = mockMvc
-				.perform(get("/otp/validate?key=testKey&otp=1234").contentType(MediaType.APPLICATION_JSON))
-				.andExpect(status().isNotAcceptable()).andReturn();
-		ObjectMapper mapper = new ObjectMapper();
-		OtpValidatorResponseDto returnResponse = mapper.readValue(result.getResponse().getContentAsString(),
-				OtpValidatorResponseDto.class);
-		assertThat(returnResponse.getStatus(), is("failure"));
+		mockMvc.perform(get("/otp/validate?key=testKey&otp=1234").contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk()).andExpect(jsonPath("$.response.status", is("failure")));
+
 	}
 
 	@Test
@@ -102,8 +94,9 @@ public class OtpValidationsTest {
 		validationErrorsList.add(serviceError);
 		when(otpRepository.findById(OtpEntity.class, "testKey"))
 				.thenThrow(new OtpInvalidArgumentException(validationErrorsList));
-		mockMvc.perform(get("/otp/validate").param("key", "sa").param("otp", "123456")
-				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk()).andReturn();
+		mockMvc.perform(
+				get("/otp/validate").param("key", "sa").param("otp", "123456").contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk()).andReturn();
 	}
 
 	@Test
