@@ -5,10 +5,6 @@ package io.mosip.registration.processor.core.exception.util;
  *
  * @author M1047487
  */
-/**
- * @author M1048399
- *
- */
 public enum PlatformErrorMessages {
 
 	/** The rpr pkr packet not yet sync. */
@@ -103,6 +99,8 @@ public enum PlatformErrorMessages {
 
 	RPR_RGS_MISSING_INPUT_PARAMETER_VERSION(PlatformConstants.RPR_REGISTRATION_STATUS_MODULE + "019", "Missing Input Parameter - version"),
 
+	/** The rpr rgs missing input parameter timestamp. */
+	RPR_RGS_MISSING_INPUT_PARAMETER_TIMESTAMP(PlatformConstants.RPR_REGISTRATION_STATUS_MODULE + "020", "Missing Input Parameter - requestTimestamp"),
 
 	RPR_RGS_MISSING_INPUT_PARAMETER_TIMESTAMP(PlatformConstants.RPR_REGISTRATION_STATUS_MODULE + "020", "Missing Input Parameter - requesttime"),
 
@@ -190,7 +188,7 @@ public enum PlatformErrorMessages {
 	/** The structural validation failed. */
 	// Stages - Packet validator Exception error code and message
 	STRUCTURAL_VALIDATION_FAILED("", "Structural Validation Failed"),
-	
+
 
 	/** The unsupported encoding. */
 	// UIN check - JSON file encoding failed.
@@ -216,11 +214,11 @@ public enum PlatformErrorMessages {
 
 	/** The reverse data sync failed. */
 	PACKET_BDD_PACKET_STORE_NOT_ACCESSIBLE(PlatformConstants.RPR_BIO_DEDUPE_SERVICE_MODULE+"002","The Packet store set by the System is not accessible"),
-	
+
 	RPR_BIO_BIOMETRIC_INSERTION_TO_ABIS(PlatformConstants.RPR_BIO_DEDUPE_SERVICE_MODULE+"003","Packet biometric insertion to ABIS is failed"),
 
 	RPR_ABIS_INTERNAL_ERROR(PlatformConstants.RPR_BIO_DEDUPE_SERVICE_MODULE+"004","ABIS Internal error occured"),
-	
+
 	/** The reverse data sync failed. */
 	// Stages - Packet-Validator error message
 	REVERSE_DATA_SYNC_FAILED("", "Reverse data sync failed"),
@@ -380,6 +378,7 @@ public enum PlatformErrorMessages {
 	/** The rpr mqi invalid connection. */
 	RPR_MQI_INVALID_CONNECTION(PlatformConstants.RPR_MOSIP_QUEUE_MODULE + "002",
 			"Connection not obtained from ConnectionFactory"),
+
 	/** The missing input parameter. */
 	RPR_BDD_MISSING_INPUT_PARAMETER(PlatformConstants.RPR_BIO_DEDUPE_SERVICE_MODULE + "005", "Missing Input Parameter - %s"),
 
@@ -455,6 +454,21 @@ public enum PlatformErrorMessages {
 
 	/** The rpr prt qrcode not generated. */
 	RPR_PRT_QRCODE_NOT_GENERATED(PlatformConstants.RPR_PRINTING_MODULE + "005", "Error while generating QR Code"),
+
+	/** The rpr prt applicant photo not set. */
+	RPR_PRT_APPLICANT_PHOTO_NOT_SET(PlatformConstants.RPR_PRINTING_MODULE + "006", "Error while setting applicant photo"),
+
+	/** The rpr prt qrcode not set. */
+	RPR_PRT_QRCODE_NOT_SET(PlatformConstants.RPR_PRINTING_MODULE + "007", "Error while setting qrCode for uin card"),
+
+	/** The rpr prt idrepo response null. */
+	RPR_PRT_IDREPO_RESPONSE_NULL(PlatformConstants.RPR_PRINTING_MODULE + "008", "ID Repo response is null"),
+
+	/** The rpr prt idrepo documents absent*/
+	RPR_PRT_IDREPO_DOCUMENT_ABSENT(PlatformConstants.RPR_PRINTING_MODULE + "009", "ID Repo response has no documents"),
+
+	/** The print and postal acknowledment generation failed. */
+	RPR_PRT_PRINT_POST_ACK_FAILED(PlatformConstants.RPR_PRINTING_MODULE + "010", "Error while getting response from Print and Postal Service Provider"),
 
 	/** The rpr rgs registration connector not accessible. */
 	RPR_RGS_REGISTRATION_CONNECTOR_NOT_ACCESSIBLE("", "Registration connector stage is not accessible "),

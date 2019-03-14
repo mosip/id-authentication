@@ -1,7 +1,7 @@
 export const NUMBER_PATTERN = '^[0-9]+[0-9]*$';
-export const MOBILE_PATTERN = '^([6-9]{1})([0-9]{9})$';
+// export const MOBILE_PATTERN = '^([6-9]{1})([0-9]{9})$';
 export const TEXT_PATTERN = '^[a-zA-Z ]*$';
-export const CNIE_PATTERN = '^([0-9]{10,30})$';
+// export const CNIE_PATTERN = '^([0-9]{10,30})$';
 export const COUNTRY_NAME = 'Morroco';
 export const COUNTRY_HIERARCHY = 'Country';
 export const VERSION = '1.0';
@@ -27,12 +27,14 @@ export const LANGUAGE_CODE = {
 export const APPEND_URL = {
   location_metadata: 'v1.0/locations/locationhierarchy/',
   location_immediate_children: 'v1.0/locations/immediatechildren/',
-  get_applicant: 'demographic/applicationData',
+  get_applicant: 'demographic/applications/details',
   applicants: 'demographic/applications',
   location: 'masterdata/',
   gender: 'masterdata/v1.0/gendertypes',
-  resident: 'masterdata/v1.0/residenttypes',
-  transliteration: 'translitration/translitrate'
+  transliteration: 'transliteration/transliterate',
+  applicantType: 'applicanttype/v1.0/applicanttype/',
+  validDocument: 'v1.0/applicanttype/',
+  getApplicantType: 'getApplicantType'
 };
 
 export const PARAMS_KEYS = {
@@ -56,7 +58,8 @@ export const DASHBOARD_RESPONSE_KEYS = {
   applicant: {
     preId: 'preRegistrationId',
     fullname: 'fullname',
-    statusCode: 'statusCode'
+    statusCode: 'statusCode',
+    postalCode: 'postalCode'
   }
 };
 
@@ -81,12 +84,32 @@ export const DOCUMENT_UPLOAD_REQUEST_DTO = {
     pre_registartion_id: '86710482195706',
     doc_cat_code: 'POA',
     doc_typ_code: 'address',
-    lang_code: 'ENG',
-    doc_file_format: 'pdf',
-    status_code: 'Pending-Appoinment',
-    upload_by: '9900806086',
-    upload_date_time: '2018-12-28T05:23:08.019Z'
+    lang_code: 'ENG'
   }
+};
+
+export const DOCUMENT_CATEGORY_DTO = {
+  attributes: [
+    {
+      attribute: 'individualTypeCode',
+      value: 'FR'
+    },
+    {
+      attribute: 'dateofbirth',
+      value: '2012-03-08T11:46:12.640Z'
+    },
+    {
+      attribute: 'genderCode',
+      value: 'MLE'
+    },
+    {
+      attribute: 'biometricAvailable',
+      value: false
+    }
+  ],
+  id: 'mosip.applicanttype.fetch',
+  requestTime: '2012-03-08T11:46:12.640Z',
+  ver: 'V1.0'
 };
 
 export const virtual_keyboard_languages = {
@@ -95,8 +118,22 @@ export const virtual_keyboard_languages = {
   ara: 'ar'
 };
 
+export const languageMapping = {
+  eng: {
+    langName: 'English'
+  },
+  ara: {
+    langName: 'Arabic'
+  },
+  fra: {
+    langName: 'French'
+  }
+};
+
 export const DOCUMENT_UPLOAD_REQUEST_DOCUMENT_KEY = 'file';
 export const DOCUMENT_UPLOAD_REQUEST_DTO_KEY = 'Document request';
 
 export const PREVIEW_DATA_APPEND_URL = 'demographic/v0.1/applicationData';
-// "BASE_URL": "https://dev.mosip.io/"
+
+export const MONTHS = ['', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+export const DAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];

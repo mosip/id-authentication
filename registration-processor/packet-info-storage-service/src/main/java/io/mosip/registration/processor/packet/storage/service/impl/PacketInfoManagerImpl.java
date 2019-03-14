@@ -24,6 +24,7 @@ import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.core.util.HMACUtils;
+import io.mosip.registration.processor.core.code.ApiName;
 import io.mosip.registration.processor.core.code.AuditLogConstant;
 import io.mosip.registration.processor.core.code.EventId;
 import io.mosip.registration.processor.core.code.EventName;
@@ -51,6 +52,7 @@ import io.mosip.registration.processor.core.packet.dto.demographicinfo.JsonValue
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.identify.RegistrationProcessorIdentity;
 import io.mosip.registration.processor.core.packet.dto.idjson.Document;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
+import io.mosip.registration.processor.core.util.JsonUtil;
 import io.mosip.registration.processor.packet.storage.dao.PacketInfoDao;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.packet.storage.entity.ApplicantDemographicInfoJsonEntity;
@@ -255,7 +257,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 					: EventType.SYSTEM.toString();
 
 			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
-					AuditLogConstant.NO_ID.toString());
+					AuditLogConstant.NO_ID.toString(), ApiName.AUDIT);
 		}
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), "",
 				"PacketInfoManagerImpl::savePacketData()::exit");
@@ -315,7 +317,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 					: EventType.SYSTEM.toString();
 
 			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
-					AuditLogConstant.NO_ID.toString());
+					AuditLogConstant.NO_ID.toString(), ApiName.AUDIT);
 			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					qcUserId, "PacketInfoManagerImpl::getPacketsforQCUser()::exit");
 		}
@@ -433,7 +435,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 			eventType = eventId.equalsIgnoreCase(EventId.RPR_407.toString()) ? EventType.BUSINESS.toString()
 					: EventType.SYSTEM.toString();
 			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
-					AuditLogConstant.NO_ID.toString());
+					AuditLogConstant.NO_ID.toString(), ApiName.AUDIT);
 			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					"", "PacketInfoManagerImpl::saveDocument()::exit");
 
@@ -532,7 +534,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 
 				T jsonNodeElement = (T) genericType.newInstance();
 
-				JSONObject objects = (JSONObject) demographicJsonNode.get(i);
+				JSONObject objects = JsonUtil.getJSONObjectFromArray(demographicJsonNode, i);
 				language = (String) objects.get(LANGUAGE);
 				value = (String) objects.get(VALUE);
 
@@ -572,7 +574,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 		JSONArray demographicJsonNode = null;
 
 		if (demographicIdentity != null)
-			demographicJsonNode = (JSONArray) demographicIdentity.get(identityKey);
+			demographicJsonNode = JsonUtil.getJSONArray(demographicIdentity, identityKey);
 		return (demographicJsonNode != null)
 				? (JsonValue[]) mapJsonNodeToJavaObject(JsonValue.class, demographicJsonNode)
 				: null;
@@ -597,16 +599,16 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 			ObjectMapper mapIdentityJsonStringToObject = new ObjectMapper();
 			regProcessorIdentityJson = mapIdentityJsonStringToObject.readValue(getIdentityJsonString,
 					RegistrationProcessorIdentity.class);
-			JSONParser parser = new JSONParser();
-			JSONObject demographicJson = (JSONObject) parser.parse(demographicJsonString);
-			demographicIdentity = (JSONObject) demographicJson.get(utility.getGetRegProcessorDemographicIdentity());
+			JSONObject demographicJson = (JSONObject) JsonUtil.objectMapperReadValue(demographicJsonString,
+					JSONObject.class);
+			demographicIdentity = JsonUtil.getJSONObject(demographicJson,
+					utility.getGetRegProcessorDemographicIdentity());
 			if (demographicIdentity == null)
 				throw new IdentityNotFoundException(PlatformErrorMessages.RPR_PIS_IDENTITY_NOT_FOUND.getMessage());
-			
-			
+
 			demographicData.setName(getJsonValues(regProcessorIdentityJson.getIdentity().getName().getValue()));
-			demographicData.setDateOfBirth(
-					(String) (demographicIdentity.get(regProcessorIdentityJson.getIdentity().getDob().getValue())));
+			demographicData.setDateOfBirth((String) JsonUtil.getJSONValue(demographicIdentity,
+					regProcessorIdentityJson.getIdentity().getDob().getValue()));
 			demographicData.setGender(getJsonValues(regProcessorIdentityJson.getIdentity().getGender().getValue()));
 		} catch (IOException e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
@@ -615,7 +617,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 			throw new MappingJsonException(PlatformErrorMessages.RPR_SYS_IDENTITY_JSON_MAPPING_EXCEPTION.getMessage(),
 					e);
 
-		} catch (ParseException e) {
+		} catch (Exception e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					"", e.getMessage() + ExceptionUtils.getStackTrace(e));
 
@@ -682,7 +684,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 			eventType = eventId.equalsIgnoreCase(EventId.RPR_407.toString()) ? EventType.BUSINESS.toString()
 					: EventType.SYSTEM.toString();
 			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
-					AuditLogConstant.NO_ID.toString());
+					AuditLogConstant.NO_ID.toString(), ApiName.AUDIT);
 
 		}
 
@@ -737,7 +739,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 			eventType = eventId.equalsIgnoreCase(EventId.RPR_407.toString()) ? EventType.BUSINESS.toString()
 					: EventType.SYSTEM.toString();
 			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
-					AuditLogConstant.NO_ID.toString());
+					AuditLogConstant.NO_ID.toString(), ApiName.AUDIT);
 
 		}
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
@@ -872,7 +874,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 					: EventType.SYSTEM.toString();
 
 			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
-					AuditLogConstant.NO_ID.toString());
+					AuditLogConstant.NO_ID.toString(), ApiName.AUDIT);
 
 		}
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
@@ -938,7 +940,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 					: EventType.SYSTEM.toString();
 
 			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
-					AuditLogConstant.NO_ID.toString());
+					AuditLogConstant.NO_ID.toString(), ApiName.AUDIT);
 
 		}
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),

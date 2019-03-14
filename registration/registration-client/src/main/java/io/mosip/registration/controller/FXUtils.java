@@ -133,7 +133,8 @@ public class FXUtils {
 	}
 
 	private void focusAction(AnchorPane parentPane, TextField field) {
-		field.focusedProperty().addListener((obsValue, oldValue, newValue) -> {
+		if(field!=null) {
+			field.focusedProperty().addListener((obsValue, oldValue, newValue) -> {
 			if (newValue) {
 				try {
 					((Label) parentPane.lookup(RegistrationConstants.HASH + field.getId() + RegistrationConstants.LABEL)).setVisible(true);
@@ -161,7 +162,7 @@ public class FXUtils {
 			}
 
 		});
-	}
+	}}
 
 	/**
 	 * Populate the local field value based on the application field.
@@ -181,17 +182,18 @@ public class FXUtils {
 			}
 			field.requestFocus();
 		});
-
-		localField.textProperty().addListener((obsValue, oldValue, newValue) -> {
-			try {
-				((Label) parentPane.lookup(RegistrationConstants.HASH + localField.getId() + RegistrationConstants.LABEL)).setVisible(true);
-				promptText = ((TextField) parentPane.lookup(RegistrationConstants.HASH + localField.getId())).getPromptText();
-				((TextField) parentPane.lookup(RegistrationConstants.HASH + localField.getId())).setPromptText(null);
-			}  catch (RuntimeException runtimeException) {
-				LOGGER.info("ID NOT FOUND", APPLICATION_NAME,
-						RegistrationConstants.APPLICATION_ID, runtimeException.getMessage());
-			}
-		});
+			
+			if(localField!=null)
+			localField.textProperty().addListener((obsValue, oldValue, newValue) -> {
+				try {
+					((Label) parentPane.lookup(RegistrationConstants.HASH + localField.getId() + RegistrationConstants.LABEL)).setVisible(true);
+					promptText = ((TextField) parentPane.lookup(RegistrationConstants.HASH + localField.getId())).getPromptText();
+					((TextField) parentPane.lookup(RegistrationConstants.HASH + localField.getId())).setPromptText(null);
+				}  catch (RuntimeException runtimeException) {
+					LOGGER.info("ID NOT FOUND", APPLICATION_NAME,
+							RegistrationConstants.APPLICATION_ID, runtimeException.getMessage());
+				}
+			});
 
 	}
 

@@ -18,6 +18,7 @@ import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
+import io.mosip.registration.processor.core.code.ApiName;
 import io.mosip.registration.processor.core.code.EventId;
 import io.mosip.registration.processor.core.code.EventName;
 import io.mosip.registration.processor.core.code.EventType;
@@ -50,7 +51,7 @@ public class DemodedupeProcessor {
 	private static Logger regProcLogger = RegProcessorLogger.getLogger(DemodedupeProcessor.class);
 
 	public static final String FILE_SEPARATOR = "\\";
-	
+
 	/** The Constant USER. */
 	private static final String USER = "MOSIP_SYSTEM";
 
@@ -72,23 +73,23 @@ public class DemodedupeProcessor {
 
 	@Autowired
 	private PacketInfoManager<Identity, ApplicantInfoDto> packetInfoManager;
-	
+
 	/** The adapter. */
 	@Autowired
 	private FileSystemAdapter adapter;
 
 	InputStream demographicInfoStream = null;
-	
+
 	byte[] bytesArray = null;
 	private String description = "";
-	
+
 	private String code="";
-	
+
 	public MessageDTO process(MessageDTO object) {
 
 		object.setMessageBusAddress(MessageBusAddress.DEMO_DEDUPE_BUS_IN);
 		object.setInternalError(Boolean.FALSE);
-		
+
 		boolean isTransactionSuccessful = false;
 
 		String registrationId = object.getRid();
@@ -97,8 +98,8 @@ public class DemodedupeProcessor {
 			InternalRegistrationStatusDto registrationStatusDto = registrationStatusService
 					.getRegistrationStatus(registrationId);
 
-			
-			// Persist Demographic packet Data if packet Registration type is NEW 
+
+			// Persist Demographic packet Data if packet Registration type is NEW
 			if(registrationStatusDto.getRegistrationType().equals(RegistrationType.NEW.name())) {
 				InputStream packetMetaInfoStream = adapter.getFile(registrationId,PacketFiles.PACKET_META_INFO.name());
 				PacketMetaInfo packetMetaInfo = (PacketMetaInfo) JsonUtil.inputStreamtoJavaObject(packetMetaInfoStream, PacketMetaInfo.class);
@@ -106,8 +107,8 @@ public class DemodedupeProcessor {
 				bytesArray = IOUtils.toByteArray(demographicInfoStream);
 				packetInfoManager.saveDemographicInfoJson(bytesArray,packetMetaInfo.getIdentity().getMetaData());
 			}
-			
-			
+
+
 			// Potential Duplicate Ids after performing demo dedupe
 			List<DemographicInfoDto> duplicateDtos = demoDedupe.performDedupe(registrationId);
 			Set<String> uniqueUins = new HashSet<>();
@@ -122,6 +123,9 @@ public class DemodedupeProcessor {
 
 			if (!duplicateDtos.isEmpty()) {
 
+				registrationStatusDto.setStatusCode(RegistrationStatusCode.POTENTIAL_MATCH_FOUND.toString());
+				registrationStatusDto.setStatusComment(StatusMessage.POTENTIAL_MATCH_FOUND);
+				registrationStatusService.updateRegistrationStatus(registrationStatusDto);
 				// authenticating duplicateIds with provided packet biometrics
 				boolean isDuplicateAfterAuth = demoDedupe.authenticateDuplicates(registrationId, duplicateUINList);
 
@@ -166,7 +170,7 @@ public class DemodedupeProcessor {
 			description = PlatformErrorMessages.PACKET_DEMO_DEDUPE_FAILED.getMessage();
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), code,registrationId,description + ExceptionUtils.getStackTrace(e));
 			object.setInternalError(Boolean.TRUE);
-			
+
 		}
 		catch (FSAdapterException e) {
 			code =  PlatformErrorMessages.PACKET_DEMO_PACKET_STORE_NOT_ACCESSIBLE.getCode();
@@ -176,11 +180,11 @@ public class DemodedupeProcessor {
 		} catch (Exception ex) {
 			code =  PlatformErrorMessages.PACKET_DEMO_DEDUPE_FAILED.getCode();
 			description = PlatformErrorMessages.PACKET_DEMO_DEDUPE_FAILED.getMessage();
-			
+
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), code,registrationId, description + ExceptionUtils.getStackTrace(ex));
 			object.setInternalError(Boolean.TRUE);
 		} finally {
-			
+
 			description = isTransactionSuccessful?PlatformSuccessMessages.RPR_PKR_DEMO_DE_DUP.getMessage():description;
 			String eventId = isTransactionSuccessful?EventId.RPR_402.toString():EventId.RPR_405.toString();
 			String eventName = isTransactionSuccessful?EventName.UPDATE.toString():EventName.EXCEPTION.toString();

@@ -32,6 +32,7 @@ import io.mosip.registration.processor.core.exception.ApisResourceAccessExceptio
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.exception.util.PlatformSuccessMessages;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
+
 import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.packet.dto.PacketMetaInfo;
 import io.mosip.registration.processor.core.packet.dto.idjson.Document;
@@ -42,6 +43,8 @@ import io.mosip.registration.processor.core.packet.dto.packetvalidator.ReverseDa
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.core.util.IdentityIteratorUtil;
 import io.mosip.registration.processor.core.util.JsonUtil;
+
+import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
 import io.mosip.registration.processor.stages.utils.ApplicantDocumentValidation;
 import io.mosip.registration.processor.stages.utils.CheckSumValidation;
@@ -94,7 +97,7 @@ public class PacketValidateProcessor {
 
 	/** The description. */
 	private String description;
-	
+
 	/** the Error Code */
 	private String code;
 
@@ -116,7 +119,7 @@ public class PacketValidateProcessor {
 					this.registrationId = object.getRid();
 					description = "";
 					isTransactionSuccessful = false;
-					
+
 					try {
 						registrationStatusDto = registrationStatusService.getRegistrationStatus(registrationId);
 						InputStream packetMetaInfoStream = adapter.getFile(registrationId,PacketFiles.PACKET_META_INFO.name());
@@ -168,7 +171,7 @@ public class PacketValidateProcessor {
 							registrationStatusDto.setRetryCount(retryCount);
 							registrationStatusDto.setStatusCode(RegistrationStatusCode.STRUCTURE_VALIDATION_FAILED.toString());
 							registrationStatusDto.setStatusComment(description);
-							
+
 							description = PlatformErrorMessages.STRUCTURAL_VALIDATION_FAILED.getMessage()+" -- " + description;
 							code = PlatformErrorMessages.STRUCTURAL_VALIDATION_FAILED.getCode();
 							regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),code +" -- "+ registrationId,"PacketValidatorStage::process()::exit");
@@ -302,7 +305,7 @@ public class PacketValidateProcessor {
 			String eventId = isTransactionSuccessful?EventId.RPR_402.toString():EventId.RPR_405.toString();
 			String eventName = isTransactionSuccessful?EventName.UPDATE.toString():EventName.EXCEPTION.toString();
 			String eventType = isTransactionSuccessful?EventType.BUSINESS.toString():EventType.SYSTEM.toString();
-			
+
 			/** Module-Id can be Both Succes/Error code */
 			String moduleId = isTransactionSuccessful? PlatformSuccessMessages.RPR_PKR_PACKET_VALIDATE.getCode():code;
 			String moduleName= ModuleName.PACKET_VALIDATOR.toString();

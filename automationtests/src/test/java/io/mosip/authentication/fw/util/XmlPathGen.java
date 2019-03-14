@@ -1,4 +1,4 @@
-package io.mosip.authentication.fw.util;
+package io.mosip.authentication.fw.util; 
 
 import java.io.IOException;
 
@@ -26,7 +26,7 @@ public class XmlPathGen
     
     public void xml() throws ParserConfigurationException, SAXException, IOException, XPathExpressionException
     {
-    	String xmlFile = "C:\\Users\\M1049813\\git\\mosip-test\\Dev-ida-qa\\mosip-qa\\src\\test\\resources\\ida\\TestData\\UINData\\CreateTestData\\input\\cbeff-bio-data.xml";
+    	String xmlFile = "C:/Users/M1049813/git/mosip-test/Dev-ida-qa/mosip-qa/src/test/resources/ida/TestData/UINData/CreateTestData/input/cbeff-bio-data.xml";
         
         //Get DOM
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
@@ -50,4 +50,5 @@ public class XmlPathGen
         //    System.out.println(nodes.item(i).getNodeValue());   //1 2
         //}
     }
+
 } 

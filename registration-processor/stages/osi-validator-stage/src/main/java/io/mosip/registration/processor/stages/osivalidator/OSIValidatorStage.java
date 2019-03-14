@@ -16,6 +16,7 @@ import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.abstractverticle.MosipEventBus;
 import io.mosip.registration.processor.core.abstractverticle.MosipVerticleManager;
+import io.mosip.registration.processor.core.code.ApiName;
 import io.mosip.registration.processor.core.code.EventId;
 import io.mosip.registration.processor.core.code.EventName;
 import io.mosip.registration.processor.core.code.EventType;
@@ -59,13 +60,13 @@ public class OSIValidatorStage extends MosipVerticleManager {
 	@Autowired
 	UMCValidator umcValidator;
 
-	@Value("${vertx.ignite.configuration}")
+	@Value("${vertx.cluster.configuration}")
 	private String clusterManagerUrl;
-	
-	private String description = ""; 
-	
+
+	private String description = "";
+
 	private String code;
-	
+
 	private static final String OSI_VALIDATOR_FAILED = "OSI validation failed for registrationId ";
 
 	/**
@@ -109,7 +110,7 @@ public class OSIValidatorStage extends MosipVerticleManager {
 				registrationStatusDto.setStatusCode(RegistrationStatusCode.PACKET_OSI_VALIDATION_SUCCESS.toString());
 				isTransactionSuccessful = true;
 				code =  PlatformSuccessMessages.RPR_PKR_OSI_VALIDATE.getCode();
-				description =  PlatformSuccessMessages.RPR_PKR_OSI_VALIDATE.getMessage(); 
+				description =  PlatformSuccessMessages.RPR_PKR_OSI_VALIDATE.getMessage();
 			} else {
 				object.setIsValid(Boolean.FALSE);
 				int retryCount = registrationStatusDto.getRetryCount() != null? registrationStatusDto.getRetryCount() + 1: 1;
@@ -140,7 +141,7 @@ public class OSIValidatorStage extends MosipVerticleManager {
 			object.setInternalError(Boolean.TRUE);
 			code =  PlatformErrorMessages.OSI_VALIDATION_FAILED.getCode();
 			description = PlatformErrorMessages.OSI_VALIDATION_FAILED.getMessage();
-			
+
 			if (e.getCause() instanceof HttpClientErrorException) {
 				HttpClientErrorException httpClientException = (HttpClientErrorException) e.getCause();
 				description = PlatformErrorMessages.OSI_VALIDATION_FAILED.getMessage()+ "::"+ httpClientException.getResponseBodyAsString();
@@ -162,7 +163,7 @@ public class OSIValidatorStage extends MosipVerticleManager {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),code,registrationId,description + ex.getMessage()+ ExceptionUtils.getStackTrace(ex));
 			object.setInternalError(Boolean.TRUE);
 		} finally {
-			
+
 			description = isTransactionSuccessful?PlatformSuccessMessages.RPR_PKR_OSI_VALIDATE.getMessage():description;
 			String eventId = isTransactionSuccessful?EventId.RPR_402.toString():EventId.RPR_405.toString();
 			String eventName = isTransactionSuccessful?EventName.UPDATE.toString():EventName.EXCEPTION.toString();

@@ -63,7 +63,7 @@ public class PDFGeneratorTest {
 		ByteArrayOutputStream bos = (ByteArrayOutputStream) pdfGenerator.generate(is);
 		String outputPath = System.getProperty("user.dir");
 		String fileSepetator = System.getProperty("file.separator");
-		File OutPutPdfFile = new File(outputPath + fileSepetator + "csshtml.pdf");
+		File OutPutPdfFile = new File("csshtml.pdf");
 		FileOutputStream op = new FileOutputStream(OutPutPdfFile);
 		op.write(bos.toByteArray());
 		op.flush();
@@ -97,7 +97,7 @@ public class PDFGeneratorTest {
 		ByteArrayOutputStream bos = (ByteArrayOutputStream) pdfGenerator.generate(sb.toString());
 		String outputPath = System.getProperty("user.dir");
 		String fileSepetator = System.getProperty("file.separator");
-		File OutPutPdfFile = new File(outputPath + fileSepetator + "test.pdf");
+		File OutPutPdfFile = new File("test.pdf");
 		FileOutputStream op = new FileOutputStream(OutPutPdfFile);
 		op.write(bos.toByteArray());
 		op.flush();
@@ -129,8 +129,8 @@ public class PDFGeneratorTest {
 		ClassLoader classLoader = getClass().getClassLoader();
 		String inputFile = classLoader.getResource("textcontant.txt").getFile();
 		String generatedPdfFileName = "textcontant";
-		pdfGenerator.generate(inputFile, outputPath, generatedPdfFileName);
-		File tempoutFile = new File(outputPath + fileSepetator + generatedPdfFileName + outputFileExtension);
+		pdfGenerator.generate(inputFile, "", generatedPdfFileName);
+		File tempoutFile = new File( generatedPdfFileName + outputFileExtension);
 		assertTrue(tempoutFile.exists());
 	}
 
@@ -140,7 +140,7 @@ public class PDFGeneratorTest {
 		ClassLoader classLoader = getClass().getClassLoader();
 		String inputFile = classLoader.getResource("").getFile();
 		String generatedPdfFileName = "Wiki";
-		pdfGenerator.generate(inputFile, outputPath, generatedPdfFileName);
+		pdfGenerator.generate(inputFile, "", generatedPdfFileName);
 
 	}
 
@@ -157,7 +157,7 @@ public class PDFGeneratorTest {
 		ByteArrayOutputStream bos = (ByteArrayOutputStream) pdfGenerator.generate(is, resourceLoc);
 		String outputPath = System.getProperty("user.dir");
 		String fileSepetator = System.getProperty("file.separator");
-		File OutPutPdfFile = new File(outputPath + fileSepetator + "responsive.pdf");
+		File OutPutPdfFile = new File("responsive.pdf");
 		FileOutputStream op = new FileOutputStream(OutPutPdfFile);
 		op.write(bos.toByteArray());
 		op.flush();
@@ -186,7 +186,7 @@ public class PDFGeneratorTest {
 		byte[] data = pdfGenerator.asPDF(bufferedImages);
 		String outputPath = System.getProperty("user.dir");
 		String fileSeperator = System.getProperty("file.separator");
-		File OutPutPdfFile = new File(outputPath + fileSeperator + "merge.pdf");
+		File OutPutPdfFile = new File("merge.pdf");
 		FileOutputStream op = new FileOutputStream(OutPutPdfFile);
 		op.write(data);
 		op.flush();
@@ -205,7 +205,7 @@ public class PDFGeneratorTest {
 
 		String outputPath = System.getProperty("user.dir");
 		String fileSeperator = System.getProperty("file.separator");
-		File OutPutPdfFile = new File(outputPath + fileSeperator + "new_merged.pdf");
+		File OutPutPdfFile = new File("new_merged.pdf");
 		FileOutputStream op = new FileOutputStream(OutPutPdfFile);
 		op.write(byteArray);
 		op.flush();
@@ -220,35 +220,35 @@ public class PDFGeneratorTest {
 		String outputFilePath = System.getProperty("user.dir");
 		String outputFileExtension = ".pdf";
 		String fileSeperator = System.getProperty("file.separator");
-		File temp2 = new File(outputFilePath + fileSeperator + "test" + outputFileExtension);
+		File temp2 = new File("test" + outputFileExtension);
 		if (temp2.exists()) {
 			temp2.delete();
 		}
-		File temp3 = new File(outputFilePath + fileSeperator + "textcontant" + outputFileExtension);
+		File temp3 = new File("textcontant" + outputFileExtension);
 		if (temp3.exists()) {
 			temp3.delete();
 		}
-		File temp4 = new File(outputFilePath + fileSeperator + "Wiki" + outputFileExtension);
+		File temp4 = new File("Wiki" + outputFileExtension);
 		if (temp4.exists()) {
 			temp4.delete();
 		}
-		File temp5 = new File(outputFilePath + fileSeperator + "csshtml" + outputFileExtension);
+		File temp5 = new File("csshtml" + outputFileExtension);
 		if (temp5.exists()) {
 			temp5.delete();
 		}
-		File temp1 = new File(outputFilePath + fileSeperator + "emptyFile" + outputFileExtension);
+		File temp1 = new File("emptyFile" + outputFileExtension);
 		if (temp1.exists()) {
 			temp1.delete();
 		}
-		File temp6 = new File(outputFilePath + fileSeperator + "responsive" + outputFileExtension);
+		File temp6 = new File("responsive" + outputFileExtension);
 		if (temp6.exists()) {
 			temp6.delete();
 		}
-		File OutPutPdfFile = new File(outputFilePath + fileSeperator + "merge" + outputFileExtension);
+		File OutPutPdfFile = new File("merge" + outputFileExtension);
 		if (OutPutPdfFile.exists()) {
 			OutPutPdfFile.delete();
 		}
-		File OutPutPdfFile2 = new File(outputFilePath + fileSeperator + "new_merged.pdf");
+		File OutPutPdfFile2 = new File("new_merged.pdf");
 		if (OutPutPdfFile2.exists()) {
 			OutPutPdfFile2.delete();
 		}

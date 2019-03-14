@@ -32,4 +32,4 @@ This application can be used to generate symmetric secret key and asymmetric pub
 ## Implementation
 
 
-**kernel-keygenerator-bouncycastle** [README](../../kernel/kernel-keygenerator-bouncycastle/README.md)
+**kernel-keygenerator-bouncycastle** [README](../../../kernel/kernel-keygenerator-bouncycastle/README.md)

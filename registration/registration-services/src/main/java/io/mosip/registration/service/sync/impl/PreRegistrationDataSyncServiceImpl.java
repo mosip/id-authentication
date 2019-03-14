@@ -19,7 +19,6 @@ import java.util.WeakHashMap;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
@@ -56,7 +55,6 @@ import io.mosip.registration.service.sync.PreRegistrationDataSyncService;
 import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
 
 @Service
-@PropertySource(value = "classpath:spring.properties")
 public class PreRegistrationDataSyncServiceImpl extends BaseService implements PreRegistrationDataSyncService {
 
 	@Autowired
@@ -125,9 +123,6 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 
 					getPreRegistration(responseDTO, preRegDetail.getKey(), syncJobId,
 							Timestamp.from(Instant.parse(preRegDetail.getValue())));
-				/*	if (responseDTO.getErrorResponseDTOs() != null) {
-						break;
-					}*/
 				}
 			} else {
 				String errMsg = RegistrationConstants.PRE_REG_TO_GET_ID_ERROR;
@@ -211,7 +206,7 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 		}
 
 		byte[] decryptedPacket = null;
-		
+
 		boolean isFetchFromUi = false;
 		if (syncJobId == null) {
 			isFetchFromUi = true;
@@ -394,8 +389,12 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 
 		PreRegistrationDataSyncRequestDTO preRegistrationDataSyncRequestDTO = new PreRegistrationDataSyncRequestDTO();
 		preRegistrationDataSyncRequestDTO.setFromDate(getFromDate(reqTime));
-		preRegistrationDataSyncRequestDTO.setRegClientId(
-				SessionContext.userContext().getRegistrationCenterDetailDTO().getRegistrationCenterId());
+		if (SessionContext.isSessionContextAvailable()) {
+			preRegistrationDataSyncRequestDTO.setRegClientId(
+					SessionContext.userContext().getRegistrationCenterDetailDTO().getRegistrationCenterId());
+		} else {
+			preRegistrationDataSyncRequestDTO.setRegClientId(getCenterId());
+		}
 		preRegistrationDataSyncRequestDTO.setToDate(getToDate(reqTime));
 		preRegistrationDataSyncRequestDTO.setUserId(getUserIdFromSession());
 

@@ -40,7 +40,7 @@ public class AuditLogRequestBuilder {
 	 * @return the audit response dto
 	 */
 	public AuditResponseDto createAuditRequestBuilder(String description, String eventId, String eventName, String eventType,
-			String registrationId) {
+			String registrationId, ApiName apiname) {
 
 		AuditRequestDto auditRequestDto=null;
 		AuditResponseDto auditResponseDto=null;
@@ -64,7 +64,7 @@ public class AuditLogRequestBuilder {
 			auditRequestDto.setModuleName(null);
 			auditRequestDto.setSessionUserId(AuditLogConstant.SYSTEM.toString());
 			auditRequestDto.setSessionUserName(null);
-			auditResponseDto=(AuditResponseDto)registrationProcessorRestService.postApi(ApiName.AUDIT, "", "", auditRequestDto, AuditResponseDto.class);
+			auditResponseDto=(AuditResponseDto)registrationProcessorRestService.postApi(apiname, "", "", auditRequestDto, AuditResponseDto.class);
 
 		} catch (ApisResourceAccessException arae) {
 
@@ -74,7 +74,7 @@ public class AuditLogRequestBuilder {
 
 		return auditResponseDto;
 	}
-	
+
 	public AuditResponseDto createAuditRequestBuilder(String description, String eventId, String eventName, String eventType,String moduleId,String moduleName,
 			String registrationId) {
 
@@ -82,7 +82,7 @@ public class AuditLogRequestBuilder {
 		AuditResponseDto auditResponseDto=null;
 
 		try {
-			
+
 			auditRequestDto= new AuditRequestDto();
 			auditRequestDto.setDescription(description);
 			auditRequestDto.setActionTimeStamp(DateUtils.getUTCCurrentDateTimeString());
@@ -105,7 +105,7 @@ public class AuditLogRequestBuilder {
 		} catch (ApisResourceAccessException arae) {
 
 			LOGGER.error(arae.getMessage());
-			
+
 		}
 
 		return auditResponseDto;

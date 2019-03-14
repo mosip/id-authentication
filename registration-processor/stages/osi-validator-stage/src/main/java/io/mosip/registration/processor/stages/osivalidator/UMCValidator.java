@@ -70,7 +70,7 @@ public class UMCValidator {
 	PacketInfoManager<Identity, ApplicantInfoDto> packetInfoManager;
 
 	/** The umc client. */
-	
+
 	@Value("${mosip.workinghour.validation.required}")
 	private Boolean isWorkingHourValidationRequired;
 
@@ -79,7 +79,7 @@ public class UMCValidator {
 
 	@Autowired
 	private OSIUtils osiUtils;
-	
+
 	/** The registration status dto. */
 	private InternalRegistrationStatusDto registrationStatusDto = new InternalRegistrationStatusDto();
 
@@ -339,19 +339,19 @@ public class UMCValidator {
 			this.registrationStatusDto.setStatusComment(StatusMessage.GPS_DATA_NOT_PRESENT);
 		}
 
-		else if (isWorkingHourValidationRequired 
+		else if (isWorkingHourValidationRequired
 				&& isValidRegistrationCenter(rcmDto.getRegcntrId(), primaryLanguagecode, rcmDto.getPacketCreationDate())
 				&& isValidMachine(rcmDto.getMachineId(), primaryLanguagecode, rcmDto.getPacketCreationDate())
 				&& isValidUMCmapping(rcmDto.getPacketCreationDate(), rcmDto.getRegcntrId(), rcmDto.getMachineId(),regOsi.getSupervisorId(), regOsi.getOfficerId())
-				&& validateCenterIdAndTimestamp(rcmDto) 
-				&& isValidDevice(rcmDto)) 
+				&& validateCenterIdAndTimestamp(rcmDto)
+				&& isValidDevice(rcmDto))
 				 umc =true;
 		else if(isValidRegistrationCenter(rcmDto.getRegcntrId(), primaryLanguagecode, rcmDto.getPacketCreationDate())
 				&& isValidMachine(rcmDto.getMachineId(), primaryLanguagecode, rcmDto.getPacketCreationDate())
 				&& isValidUMCmapping(rcmDto.getPacketCreationDate(), rcmDto.getRegcntrId(), rcmDto.getMachineId(),regOsi.getSupervisorId(), regOsi.getOfficerId())
-				&& isValidDevice(rcmDto)) 
+				&& isValidDevice(rcmDto))
 			umc = true;
-		
+
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 				registrationId, "UMCValidator::isValidUMC()::exit");
 		return umc;
@@ -415,7 +415,7 @@ public class UMCValidator {
 		return dto;
 	}
 
-	
+
 
 	/**
 	 * Checks if is valid device.
@@ -446,7 +446,7 @@ public class UMCValidator {
 	private boolean isDeviceMappedWithCenter(RegistrationCenterMachineDto rcmDto) throws ApisResourceAccessException {
 		boolean isDeviceMappedWithCenter = false;
 		List<FieldValue> registreredDeviceIds = identity.getCapturedRegisteredDevices();
-
+		if(registreredDeviceIds!=null && !registreredDeviceIds.isEmpty()) {
 		for (FieldValue fieldValue : registreredDeviceIds) {
 			String deviceId = null;
 			deviceId = fieldValue.getValue();
@@ -493,7 +493,9 @@ public class UMCValidator {
 				break;
 			}
 		}
-
+	}else {
+		isDeviceMappedWithCenter=true;
+	}
 		return isDeviceMappedWithCenter;
 	}
 
@@ -536,6 +538,7 @@ public class UMCValidator {
 		boolean isDeviceActive = false;
 
 		List<FieldValue> registreredDeviceIds = identity.getCapturedRegisteredDevices();
+		if(registreredDeviceIds!=null && !registreredDeviceIds.isEmpty()) {
 		for (FieldValue fieldValue : registreredDeviceIds) {
 			String deviceId = null;
 			deviceId = fieldValue.getValue();
@@ -583,6 +586,10 @@ public class UMCValidator {
 			}
 
 		}
+
+	}else {
+		isDeviceActive=true;
+	}
 		return isDeviceActive;
 	}
 

@@ -21,12 +21,12 @@ export class HeaderComponent implements OnInit {
 
   onHome() {
     let homeURL = '';
-    const route_parts = this.router.url.split('/');
-    if (route_parts[2]) {
-      homeURL = 'dashboard/' + route_parts[2];
-    } else {
-      homeURL = '/';
-    }
+    // const route_parts = this.router.url.split('/');
+    // if (route_parts[2]) {
+    homeURL = 'dashboard';
+    // } else {
+    // homeURL = '/';
+    // }
     this.router.navigate([homeURL]);
   }
 
@@ -37,6 +37,9 @@ export class HeaderComponent implements OnInit {
   doLogout() {
     localStorage.setItem('loggedIn', 'false');
     localStorage.setItem('loggedOut', 'true');
+    localStorage.setItem('loggedOutLang', localStorage.getItem('langCode'));
+    this.authService.removeToken();
+    console.log('logout', localStorage.getItem('loggedOutLang'));
     this.router.navigate(['/']);
   }
 }
