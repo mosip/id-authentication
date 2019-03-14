@@ -2,7 +2,7 @@
 # Add HTTP stage 
 
 **Background**
-Technical stack used in Registration Processor gives ability to add or change order/sequence of stages/route in the flow. Most of the stages works in isolation, can be deployed independently and does not depend on the previous or next stage in the flow. This design helps support team with the steps to create and add or remove HTTP apache camel route/stage.
+Technical stack used in Registration Processor gives ability to add or change order/sequence of stages/route in the flow. Most of the stages works in isolation, can be deployed independently and does not depend on the previous or next stage in the flow. This design document will helps support team to understand steps to integrate MOSIP with external system using http end point.
 
 **The target users are -**
 Product technical support team.
@@ -104,6 +104,8 @@ Apache DSL camel file "registration-processor-camel-routes.xml" need to be updat
 ```
 
 **Logical Architecture Diagram**
+
+
 
 ------------
 - Without http end point:

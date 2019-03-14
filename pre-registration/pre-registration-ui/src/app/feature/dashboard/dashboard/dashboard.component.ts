@@ -65,7 +65,7 @@ export class DashBoardComponent implements OnInit {
     this.getUsers();
   }
 
-  private getUsers() {
+  getUsers() {
     this.dataStorageService.getUsers(this.loginId).subscribe(
       (applicants: Applicant[]) => {
         console.log('applicants', applicants);
@@ -110,7 +110,7 @@ export class DashBoardComponent implements OnInit {
     return appointmentDateTime;
   }
 
-  private createApplicant(applicants: Applicant[], index: number) {
+  createApplicant(applicants: any, index: number) {
     const applicantResponse = applicants[appConstants.RESPONSE][index];
 
     let primaryIndex = 0;
@@ -133,6 +133,7 @@ export class DashBoardComponent implements OnInit {
         applicantResponse[appConstants.DASHBOARD_RESPONSE_KEYS.applicant.fullname][secondaryIndex]['value'],
       postalCode: applicantResponse[appConstants.DASHBOARD_RESPONSE_KEYS.applicant.postalCode]
     };
+
     return applicant;
   }
 
@@ -308,21 +309,21 @@ export class DashBoardComponent implements OnInit {
   onModifyMultipleAppointment() {
     for (let index = 0; index < this.selectedUsers.length; index++) {
       this.addtoNameList(this.selectedUsers[index]);
+      console.log('index', index);
     }
     let url = '';
     url = Utils.getURL(this.router.url, 'pre-registration/booking/pick-center');
     this.router.navigateByUrl(url);
   }
 
-  onAcknowledgementView(user: any) {
-    console.log(user);
+  onAcknowledgementView(user: Applicant) {
     this.addtoNameList(user);
     let url = '';
     url = Utils.getURL(this.router.url, 'pre-registration/summary/acknowledgement');
     this.router.navigateByUrl(url);
   }
 
-  private addtoNameList(user: Applicant) {
+  addtoNameList(user: Applicant) {
     const preId = user.applicationID;
     const fullName = user.name;
     const regDto = user.regDto;

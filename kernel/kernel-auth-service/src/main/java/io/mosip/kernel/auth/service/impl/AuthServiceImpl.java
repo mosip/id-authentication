@@ -2,6 +2,7 @@ package io.mosip.kernel.auth.service.impl;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,6 +18,8 @@ import io.mosip.kernel.auth.entities.ClientSecret;
 import io.mosip.kernel.auth.entities.LoginUser;
 import io.mosip.kernel.auth.entities.MosipUserDto;
 import io.mosip.kernel.auth.entities.MosipUserDtoToken;
+import io.mosip.kernel.auth.entities.MosipUserListDto;
+import io.mosip.kernel.auth.entities.RolesListDto;
 import io.mosip.kernel.auth.entities.TimeToken;
 import io.mosip.kernel.auth.entities.UserOtp;
 import io.mosip.kernel.auth.entities.otp.OtpUser;
@@ -279,6 +282,18 @@ public class AuthServiceImpl implements AuthService {
 		authNResponse = new AuthNResponse();
 		authNResponse.setMessage(AuthConstant.TOKEN_INVALID_MESSAGE);
 		return authNResponse;
+	}
+
+	@Override
+	public RolesListDto getAllRoles(String appId) {
+		RolesListDto rolesListDto =  userStoreFactory.getDataStoreBasedOnApp(appId).getAllRoles();
+		return rolesListDto;
+	}
+
+	@Override
+	public MosipUserListDto getListOfUsersDetails(List<String> userDetails,String appId) throws Exception {
+		MosipUserListDto mosipUserListDto = userStoreFactory.getDataStoreBasedOnApp(appId).getListOfUsersDetails(userDetails);
+		return mosipUserListDto;
 	}
 
 }
