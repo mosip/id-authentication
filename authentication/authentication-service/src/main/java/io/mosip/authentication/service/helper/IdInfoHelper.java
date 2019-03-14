@@ -33,7 +33,6 @@ import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.AuthStatusInfo;
 import io.mosip.authentication.core.dto.indauth.BioInfo;
 import io.mosip.authentication.core.dto.indauth.IdType;
-import io.mosip.authentication.core.dto.indauth.IdentityDTO;
 import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
 import io.mosip.authentication.core.dto.indauth.LanguageType;
 import io.mosip.authentication.core.dto.indauth.RequestDTO;
@@ -63,7 +62,6 @@ import io.mosip.authentication.service.impl.indauth.service.pin.PinAuthType;
 import io.mosip.authentication.service.integration.MasterDataManager;
 import io.mosip.authentication.service.integration.OTPManager;
 import io.mosip.kernel.core.cbeffutil.spi.CbeffUtil;
-import io.mosip.kernel.core.exception.ParseException;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.core.util.DateUtils;
@@ -169,7 +167,7 @@ public class IdInfoHelper implements IdInfoFetcher {
 	 * 
 	 * @return Map
 	 */
-	public Map<String, String> getIdentityRequestInfo(MatchType matchType, IdentityDTO identity, String language) {
+	public Map<String, String> getIdentityRequestInfo(MatchType matchType, RequestDTO identity, String language) {
 		return getInfo(matchType.getIdentityInfoFunction().apply(identity), language);
 	}
 
@@ -469,7 +467,7 @@ public class IdInfoHelper implements IdInfoFetcher {
 				Map<String, String> reqInfo = null;
 				reqInfo = getAuthReqestInfo(matchType, authRequestDTO);
 				if (null == reqInfo || reqInfo.isEmpty()) {
-					reqInfo = getIdentityRequestInfo(matchType, authRequestDTO.getRequest().getDemographics(),
+					reqInfo = getIdentityRequestInfo(matchType, authRequestDTO.getRequest(),
 							input.getLanguage());
 				}
 				if (null != reqInfo && reqInfo.size() > 0) {
@@ -567,10 +565,9 @@ public class IdInfoHelper implements IdInfoFetcher {
 		AuthType authType = authTypeOpt.get();
 		if (infoFromAuthRequest.isEmpty()) {
 			// For Identity
-			Optional<IdentityDTO> identityOpt = Optional.ofNullable(authRequestDTO.getRequest())
-					.map(RequestDTO::getDemographics);
+			Optional<RequestDTO> identityOpt = Optional.ofNullable(authRequestDTO.getRequest());
 			if (identityOpt.isPresent()) {
-				IdentityDTO identity = identityOpt.get();
+				RequestDTO identity = identityOpt.get();
 				if (authType.isAuthTypeEnabled(authRequestDTO, this)
 						&& getIdentityRequestInfo(matchType, identity, language).size() > 0) {
 					return contstructMatchInput(authRequestDTO, matchType, authType, language);
@@ -874,7 +871,7 @@ public class IdInfoHelper implements IdInfoFetcher {
 				.findAny().orElse("");
 	}
 
-	public String getUTCTime(String reqTime) throws ParseException, java.text.ParseException {
+	public String getUTCTime(String reqTime) {
 		Date reqDate = DateUtils.parseToDate(reqTime, environment.getProperty(DATETIME_PATTERN));
 		SimpleDateFormat dateFormatter = new SimpleDateFormat(environment.getProperty(DATETIME_PATTERN));
 		dateFormatter.setTimeZone(TimeZone.getTimeZone(ZoneId.of(UTC)));

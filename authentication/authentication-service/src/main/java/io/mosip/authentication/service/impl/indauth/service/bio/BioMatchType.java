@@ -17,6 +17,7 @@ import io.mosip.authentication.core.dto.indauth.AuthUsageDataBit;
 import io.mosip.authentication.core.dto.indauth.BioIdentityInfoDTO;
 import io.mosip.authentication.core.dto.indauth.IdentityDTO;
 import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
+import io.mosip.authentication.core.dto.indauth.RequestDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.spi.bioauth.CbeffDocType;
 import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
@@ -115,7 +116,7 @@ public enum BioMatchType implements MatchType {
 	/** The matched bit. */
 	private AuthUsageDataBit matchedBit;
 
-	private Function<IdentityDTO, Map<String, List<IdentityInfoDTO>>> identityInfoFunction;
+	private Function<RequestDTO, Map<String, List<IdentityInfoDTO>>> identityInfoFunction;
 
 	private IdMapping idMapping;
 
@@ -130,9 +131,9 @@ public enum BioMatchType implements MatchType {
 		this(idMapping, allowedMatchingStrategy, cbeffDocType, subType, singleAnySubtype, null);
 		Set<IdMapping> subIdMappings = idMapping.getSubIdMappings();
 		if(subIdMappings.isEmpty()) {
-			this.identityInfoFunction = this::getIdInfoFromBioIdInfo;
+			this.identityInfoFunction = requestDto -> getIdInfoFromBioIdInfo(requestDto.getBiometrics());
 		} else {
-			this.identityInfoFunction = identityDto -> getIdInfoFromSubIdMappings(identityDto, subIdMappings);
+			this.identityInfoFunction = requestDto -> getIdInfoFromSubIdMappings(requestDto, subIdMappings);
 		}
 	}
 
@@ -142,12 +143,12 @@ public enum BioMatchType implements MatchType {
 		this.cbeffDocType = cbeffDocType;
 		this.subType = subType;
 		this.singleAnySubtype = singleAnySubtype;
-		this.identityInfoFunction = identityInfoFunction;
+		this.identityInfoFunction = requestDto -> identityInfoFunction.apply(requestDto.getDemographics());
 		this.allowedMatchingStrategy = Collections.unmodifiableSet(allowedMatchingStrategy);
 	}
 	
-	private Map<String, List<IdentityInfoDTO>> getIdInfoFromBioIdInfo(IdentityDTO identityDTO) {
-		Optional<String> valueOpt = identityDTO.getBiometrics().stream().filter(bioId -> {
+	private Map<String, List<IdentityInfoDTO>> getIdInfoFromBioIdInfo(List<BioIdentityInfoDTO> biometrics) {
+		Optional<String> valueOpt = biometrics.stream().filter(bioId -> {
 			if (bioId.getType().equalsIgnoreCase(cbeffDocType.getName())) {
 				return bioId.getSubType().equalsIgnoreCase(getIdMapping().getIdname());
 			}
@@ -162,7 +163,7 @@ public enum BioMatchType implements MatchType {
 		return Collections.emptyMap();
 	}
 	
-	private Map<String, List<IdentityInfoDTO>> getIdInfoFromSubIdMappings(IdentityDTO identityDto, Set<IdMapping> subIdMappings) {
+	private Map<String, List<IdentityInfoDTO>> getIdInfoFromSubIdMappings(RequestDTO identityDto, Set<IdMapping> subIdMappings) {
 		BioMatchType[] subMatchTypes = getMatchTypesForSubIdMappings(subIdMappings);
 		return getIdValuesMap(identityDto, subMatchTypes);
 	}
@@ -216,7 +217,7 @@ public enum BioMatchType implements MatchType {
 	}
 
 	@Override
-	public Function<IdentityDTO, Map<String, List<IdentityInfoDTO>>> getIdentityInfoFunction() {
+	public Function<RequestDTO, Map<String, List<IdentityInfoDTO>>> getIdentityInfoFunction() {
 		return identityInfoFunction;
 	}
 
@@ -235,7 +236,7 @@ public enum BioMatchType implements MatchType {
 		return cbeffDocType;
 	}
 	
-	public static Map<String, List<IdentityInfoDTO>> getIdValuesMap(IdentityDTO identityDto, BioMatchType... bioMatchTypes) {
+	public static Map<String, List<IdentityInfoDTO>> getIdValuesMap(RequestDTO identityDto, BioMatchType... bioMatchTypes) {
 	  return Stream.of(bioMatchTypes)
 			  		.flatMap(bioMatchType -> 
 			  						bioMatchType.getIdentityInfoFunction()

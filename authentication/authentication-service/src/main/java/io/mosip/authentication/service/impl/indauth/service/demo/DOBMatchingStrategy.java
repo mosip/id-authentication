@@ -33,7 +33,7 @@ public enum DOBMatchingStrategy implements TextMatchingStrategy {
 				Date reqInfoDate = DateUtils.parseToDate((String) reqInfo, dateFormatReq);
 				Date entityInfoDate = DateUtils.parseToDate((String) entityInfo, dateFormatEntity);
 				return DemoMatcherUtil.doExactMatch(reqInfoDate, entityInfoDate);
-			} catch (ParseException | java.text.ParseException e) {
+			} catch (ParseException e) {
 				logError(IdAuthenticationErrorConstants.DEMO_DATA_MISMATCH);
 				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.DEMO_DATA_MISMATCH, e);
 			}

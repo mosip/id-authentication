@@ -5,7 +5,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.text.ParseException;
 import java.time.Instant;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
@@ -231,11 +230,10 @@ public class AuthFacadeImplTest {
 		fingerIdentityInfoDtoList.add(faceValue);
 
 		IdentityDTO identitydto = new IdentityDTO();
-		identitydto.setBiometrics(fingerIdentityInfoDtoList);
 
 		RequestDTO requestDTO = new RequestDTO();
 		requestDTO.setDemographics(identitydto);
-
+		requestDTO.setBiometrics(fingerIdentityInfoDtoList);
 		authRequestDTO.setRequest(requestDTO);
 
 		BioInfo bioinfo = new BioInfo();
@@ -284,12 +282,7 @@ public class AuthFacadeImplTest {
 		Mockito.when(idInfoHelper.getUinOrVidType(authRequestDTO)).thenReturn(values);
 		Mockito.when(bioAuthService.authenticate(authRequestDTO, uin, idInfo,"123456")).thenReturn(authStatusInfo);
 		Mockito.when(idTemplateManager.applyTemplate(Mockito.anyString(), Mockito.any())).thenReturn("test");
-		try {
-			Mockito.when(idInfoHelper.getUTCTime(Mockito.anyString())).thenReturn("2019-02-18T12:28:17.078");
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		Mockito.when(idInfoHelper.getUTCTime(Mockito.anyString())).thenReturn("2019-02-18T12:28:17.078");
 		authFacadeImpl.authenticateApplicant(authRequestDTO, true,"123456","123456");
 
 	}
@@ -393,9 +386,9 @@ public class AuthFacadeImplTest {
 		fingerIdentityInfoDtoList.add(fingerValue);
 		fingerIdentityInfoDtoList.add(fingerValue2);
 
-		idDTO.setBiometrics(fingerIdentityInfoDtoList);
 		RequestDTO reqDTO = new RequestDTO();
 		reqDTO.setDemographics(idDTO);
+		reqDTO.setBiometrics(fingerIdentityInfoDtoList);
 		reqDTO.setOtp("456789");
 		authRequestDTO.setRequest(reqDTO);
 		authRequestDTO.setId("1234567");
@@ -412,12 +405,7 @@ public class AuthFacadeImplTest {
 		idInfo.put("name", list);
 		idInfo.put("email", list);
 		idInfo.put("phone", list);
-		try {
-			Mockito.when(idInfoHelper.getUTCTime(Mockito.anyString())).thenReturn("2019-02-18T12:28:17.078");
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		Mockito.when(idInfoHelper.getUTCTime(Mockito.anyString())).thenReturn("2019-02-18T12:28:17.078");
 		List<AuthStatusInfo> authStatusList = ReflectionTestUtils.invokeMethod(authFacadeImpl, "processAuthType",
 				authRequestDTO, idInfo, "1242", true, "247334310780728918141754192454591343","123456");
 		assertTrue(authStatusList.stream().anyMatch(status -> status.isStatus()));
@@ -450,12 +438,7 @@ public class AuthFacadeImplTest {
 		idInfo.put("name", list);
 		idInfo.put("email", list);
 		idInfo.put("phone", list);
-		try {
-			Mockito.when(idInfoHelper.getUTCTime(Mockito.anyString())).thenReturn("2019-02-18T12:28:17.078");
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		Mockito.when(idInfoHelper.getUTCTime(Mockito.anyString())).thenReturn("2019-02-18T12:28:17.078");
 		List<AuthStatusInfo> authStatusList = ReflectionTestUtils.invokeMethod(authFacadeImpl, "processAuthType",
 				authRequestDTO, idInfo, "1242", false, "247334310780728918141754192454591343","123456");
 		assertTrue(authStatusList.stream().anyMatch(status -> status.isStatus()));
@@ -723,11 +706,10 @@ public class AuthFacadeImplTest {
 		fingerIdentityInfoDtoList.add(faceValue);
 
 		IdentityDTO identitydto = new IdentityDTO();
-		identitydto.setBiometrics(fingerIdentityInfoDtoList);
 
 		RequestDTO requestDTO = new RequestDTO();
 		requestDTO.setDemographics(identitydto);
-
+		requestDTO.setBiometrics(fingerIdentityInfoDtoList);
 		authRequestDTO.setRequest(requestDTO);
 
 		BioInfo bioinfo = new BioInfo();
@@ -770,12 +752,7 @@ public class AuthFacadeImplTest {
 		Mockito.when(idInfoHelper.getEntityInfoAsString(DemoMatchType.PHONE, idInfo)).thenReturn("mosip");
 		Mockito.when(tokenIdGenerator.generateId(Mockito.anyString(), Mockito.anyString()))
 				.thenReturn("247334310780728918141754192454591343");
-		try {
-			Mockito.when(idInfoHelper.getUTCTime(Mockito.anyString())).thenReturn("2019-02-18T12:28:17.078");
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		Mockito.when(idInfoHelper.getUTCTime(Mockito.anyString())).thenReturn("2019-02-18T12:28:17.078");
 		Optional<String> value = Optional.of("12345678");
 		Mockito.when(idInfoHelper.getUinOrVid(authRequestDTO)).thenReturn(value);
 		IdType values = IdType.UIN;
@@ -815,11 +792,10 @@ public class AuthFacadeImplTest {
 		fingerIdentityInfoDtoList.add(faceValue);
 
 		IdentityDTO identitydto = new IdentityDTO();
-		identitydto.setBiometrics(fingerIdentityInfoDtoList);
 
 		RequestDTO requestDTO = new RequestDTO();
 		requestDTO.setDemographics(identitydto);
-
+		requestDTO.setBiometrics(fingerIdentityInfoDtoList);
 		authRequestDTO.setRequest(requestDTO);
 
 		BioInfo bioinfo = new BioInfo();
@@ -867,12 +843,7 @@ public class AuthFacadeImplTest {
 		Mockito.when(idInfoHelper.getEntityInfoAsString(DemoMatchType.PHONE, idInfo)).thenReturn("mosip");
 		Mockito.when(tokenIdGenerator.generateId(Mockito.anyString(), Mockito.anyString()))
 				.thenReturn("247334310780728918141754192454591343");
-		try {
-			Mockito.when(idInfoHelper.getUTCTime(Mockito.anyString())).thenReturn("2019-02-18T12:28:17.078");
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		Mockito.when(idInfoHelper.getUTCTime(Mockito.anyString())).thenReturn("2019-02-18T12:28:17.078");
 		Optional<String> value = Optional.of("12345678");
 		Mockito.when(idInfoHelper.getUinOrVid(authRequestDTO)).thenReturn(value);
 		IdType values = IdType.UIN;
@@ -903,12 +874,7 @@ public class AuthFacadeImplTest {
 		Map<String, Object> idRepo = new HashMap<>();
 		idRepo.put("uin", uin);
 		idRepo.put("registrationId", "1234567890");
-		try {
-			Mockito.when(idInfoHelper.getUTCTime(Mockito.anyString())).thenReturn("2019-02-18T12:28:17.078");
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		Mockito.when(idInfoHelper.getUTCTime(Mockito.anyString())).thenReturn("2019-02-18T12:28:17.078");
 		List<IdentityInfoDTO> list = new ArrayList<IdentityInfoDTO>();
 		list.add(new IdentityInfoDTO("en", "mosip"));
 		Map<String, List<IdentityInfoDTO>> idInfo = new HashMap<>();
@@ -955,12 +921,7 @@ public class AuthFacadeImplTest {
 		Map<String, Object> idRepo = new HashMap<>();
 		idRepo.put("uin", uin);
 		idRepo.put("registrationId", "1234567890");
-		try {
-			Mockito.when(idInfoHelper.getUTCTime(Mockito.anyString())).thenReturn("2019-02-18T12:28:17.078");
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		Mockito.when(idInfoHelper.getUTCTime(Mockito.anyString())).thenReturn("2019-02-18T12:28:17.078");
 		List<IdentityInfoDTO> list = new ArrayList<IdentityInfoDTO>();
 		list.add(new IdentityInfoDTO("en", "mosip"));
 		Map<String, List<IdentityInfoDTO>> idInfo = new HashMap<>();
@@ -1007,12 +968,7 @@ public class AuthFacadeImplTest {
 		Map<String, Object> idRepo = new HashMap<>();
 		idRepo.put("uin", uin);
 		idRepo.put("registrationId", "1234567890");
-		try {
-			Mockito.when(idInfoHelper.getUTCTime(Mockito.anyString())).thenReturn("2019-02-18T12:28:17.078");
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		Mockito.when(idInfoHelper.getUTCTime(Mockito.anyString())).thenReturn("2019-02-18T12:28:17.078");
 		List<IdentityInfoDTO> list = new ArrayList<IdentityInfoDTO>();
 		list.add(new IdentityInfoDTO("en", "mosip"));
 		Map<String, List<IdentityInfoDTO>> idInfo = new HashMap<>();

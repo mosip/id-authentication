@@ -19,6 +19,7 @@ import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.AuthUsageDataBit;
 import io.mosip.authentication.core.dto.indauth.IdentityDTO;
 import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
+import io.mosip.authentication.core.dto.indauth.RequestDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 
 public class MatchTest {
@@ -97,7 +98,7 @@ public class MatchTest {
 			}
 
 			@Override
-			public Function<IdentityDTO, Map<String, List<IdentityInfoDTO>>> getIdentityInfoFunction() {
+			public Function<RequestDTO, Map<String, List<IdentityInfoDTO>>> getIdentityInfoFunction() {
 				return any -> {
 					Map<String, List<IdentityInfoDTO>> valuemap = new HashMap<String, List<IdentityInfoDTO>>();
 					valuemap.put("name", nameList);
@@ -161,7 +162,7 @@ public class MatchTest {
 			}
 
 			@Override
-			public Function<IdentityDTO, Map<String, List<IdentityInfoDTO>>> getIdentityInfoFunction() {
+			public Function<RequestDTO, Map<String, List<IdentityInfoDTO>>> getIdentityInfoFunction() {
 				return any -> {
 					Map<String, List<IdentityInfoDTO>> valuemap = new HashMap<String, List<IdentityInfoDTO>>();
 					valuemap.put("name", nameList);
@@ -192,8 +193,9 @@ public class MatchTest {
 				return null;
 			}
 		};
-
-		List<IdentityInfoDTO> identityInfoList = matchType.getIdentityInfoList(identity);
+		RequestDTO requestDTO = new RequestDTO();
+		requestDTO.setDemographics(identity);
+		List<IdentityInfoDTO> identityInfoList = matchType.getIdentityInfoList(requestDTO);
 		matchType.getAllowedMatchingStrategy(MatchingStrategyType.EXACT);
 		matchType.getAllowedMatchingStrategy(MatchingStrategyType.PARTIAL);
 		matchType.getAllowedMatchingStrategy(MatchingStrategyType.PHONETICS);

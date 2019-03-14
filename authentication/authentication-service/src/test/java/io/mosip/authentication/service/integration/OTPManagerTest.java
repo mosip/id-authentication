@@ -134,7 +134,7 @@ public class OTPManagerTest {
 				OTPValidateResponseDTO.class)).thenReturn(restRequestDTO);
 
 		Mockito.when(restHelper.requestSync(Mockito.any())).thenThrow(new RestServiceException(
-				IdAuthenticationErrorConstants.BLOCKED_OTP_TO_GENERATE, "failure", otpGeneratorResponsetDto));
+				IdAuthenticationErrorConstants.BLOCKED_OTP_VALIDATE, "failure", otpGeneratorResponsetDto));
 		otpManager.generateOTP("123456");
 	}
 

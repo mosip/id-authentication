@@ -173,7 +173,7 @@ public abstract class IdAuthValidator implements Validator {
 		Date reqDateAndTime = null;
 		try {
 			reqDateAndTime = DateUtils.parseToDate(reqTime, env.getProperty(DATETIME_PATTERN));
-		} catch (ParseException | java.text.ParseException e) {
+		} catch (ParseException e) {
 			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE,
 					"ParseException : Invalid Date\n" + ExceptionUtils.getStackTrace(e));
 			errors.rejectValue(REQ_TIME, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
@@ -183,9 +183,9 @@ public abstract class IdAuthValidator implements Validator {
 
 		if (reqDateAndTime != null && DateUtils.after(reqDateAndTime, new Date())) {
 			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE, "Invalid Date");
-			errors.rejectValue(REQ_TIME, IdAuthenticationErrorConstants.INVALID_OTP_REQUEST_TIMESTAMP.getErrorCode(),
+			errors.rejectValue(REQ_TIME, IdAuthenticationErrorConstants.INVALID_TIMESTAMP.getErrorCode(),
 					new Object[] { env.getProperty(REQUESTDATE_RECEIVED_IN_MAX_TIME_MINS, Integer.class) },
-					IdAuthenticationErrorConstants.INVALID_OTP_REQUEST_TIMESTAMP.getErrorMessage());
+					IdAuthenticationErrorConstants.INVALID_TIMESTAMP.getErrorMessage());
 		}
 	}
 
@@ -201,7 +201,7 @@ public abstract class IdAuthValidator implements Validator {
 			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE,
 					MISSING_INPUT_PARAMETER + IDV_ID_TYPE);
 			errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
-					new Object[] { REQUEST }, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
+					new Object[] { IDV_ID_TYPE }, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
 		} else if (idType.equals(IdType.UIN.getType())) {
 			try {
 				uinValidator.validateId(id);

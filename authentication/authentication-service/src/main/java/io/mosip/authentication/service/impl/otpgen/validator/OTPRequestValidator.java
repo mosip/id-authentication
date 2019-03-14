@@ -4,13 +4,11 @@ import java.time.Duration;
 import java.time.Instant;
 import java.time.format.DateTimeParseException;
 import java.util.Objects;
-import java.util.Optional;
 
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
-import io.mosip.authentication.core.dto.indauth.IdType;
 import io.mosip.authentication.core.dto.otpgen.OtpRequestDTO;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.service.validator.IdAuthValidator;
@@ -114,7 +112,7 @@ public class OTPRequestValidator extends IdAuthValidator {
 						new Object[] { Duration.between(reqTimeInstance, now).toMinutes() },
 						IdAuthenticationErrorConstants.INVALID_OTP_REQUEST_TIMESTAMP.getErrorMessage());
 			}
-		} catch (DateTimeParseException | ParseException | java.text.ParseException e) {
+		} catch (DateTimeParseException | ParseException e) {
 			mosipLogger.error(SESSION_ID, OTP_VALIDATOR, VALIDATE_REQUEST_TIMED_OUT,
 					"INVALID_INPUT_PARAMETER -- " + REQ_TIME);
 			errors.rejectValue(REQ_TIME, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),

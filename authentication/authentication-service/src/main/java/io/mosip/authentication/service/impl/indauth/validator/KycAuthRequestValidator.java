@@ -31,6 +31,8 @@ import io.mosip.kernel.core.logger.spi.Logger;
 @Component
 public class KycAuthRequestValidator extends BaseAuthRequestValidator {
 
+	private static final String CONSENT_OBTAINED = "consentObtained";
+
 	private static final String EKYC_ALLOWED_AUTH_TYPE = "ekyc.allowed.auth.type";
 
 	/** The auth request validator. */
@@ -52,11 +54,7 @@ public class KycAuthRequestValidator extends BaseAuthRequestValidator {
 	/** The Constant SESSION_ID. */
 	private static final String SESSION_ID = "SESSION_ID";
 
-	/** The Constant Consent Request. */
-	private static final String KYCMETADATA = "kycMetadata";
 
-	/** The Constant Access Level. */
-	private static final String ACCESS_LEVEL = "ekyc.mua.accesslevel.";
 
 	/** The Constant eKycAuthType. */
 	private static final String REQUESTEDAUTH = "requestedAuth";
@@ -98,10 +96,6 @@ public class KycAuthRequestValidator extends BaseAuthRequestValidator {
 
 			if (!errors.hasErrors()) {
 				validateAuthType(errors, kycAuthRequestDTO);
-			}
-
-			if (!errors.hasErrors()) {
-				// validateMUAPermission(errors, kycAuthRequestDTO);
 			}
 
 		} else {
@@ -149,8 +143,8 @@ public class KycAuthRequestValidator extends BaseAuthRequestValidator {
 	 */
 	private void validateConsentReq(KycAuthRequestDTO kycAuthRequestDTO, Errors errors) {
 		if (!kycAuthRequestDTO.isConsentObtained()) {
-			errors.rejectValue(KYCMETADATA, IdAuthenticationErrorConstants.CONSENT_NOT_AVAILABLE.getErrorCode(),
-					String.format(IdAuthenticationErrorConstants.CONSENT_NOT_AVAILABLE.getErrorMessage(), KYCMETADATA));
+			errors.rejectValue(CONSENT_OBTAINED, IdAuthenticationErrorConstants.CONSENT_NOT_AVAILABLE.getErrorCode(),
+					String.format(IdAuthenticationErrorConstants.CONSENT_NOT_AVAILABLE.getErrorMessage(), CONSENT_OBTAINED));
 		}
 	}
 

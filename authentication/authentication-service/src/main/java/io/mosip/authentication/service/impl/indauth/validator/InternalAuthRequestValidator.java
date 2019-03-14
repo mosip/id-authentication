@@ -87,7 +87,7 @@ public class InternalAuthRequestValidator extends BaseAuthRequestValidator {
 							IdAuthenticationErrorConstants.INVALID_OTP_REQUEST_TIMESTAMP.getErrorMessage());
 				}
 
-			} catch (ParseException | java.text.ParseException e) {
+			} catch (ParseException e) {
 				errors.rejectValue(REQ_TIME, IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(),
 						new Object[] { REQ_TIME }, IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorMessage());
 			}

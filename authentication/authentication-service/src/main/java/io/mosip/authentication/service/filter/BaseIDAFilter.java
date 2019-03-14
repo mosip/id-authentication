@@ -19,6 +19,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.TimeZone;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import javax.servlet.Filter;
@@ -56,6 +57,12 @@ import io.mosip.kernel.core.util.DateUtils;
  * @author Sanjay Murali
  */
 public abstract class BaseIDAFilter implements Filter {
+
+	/** The Constant ID. */
+	private static final String ID = "id";
+
+	/** The Constant VERSION. */
+	private static final String VERSION = "version";
 
 	/** The Constant VER_REX. */
 	private static final String VER_REX = "[\\s+a-zA-Z]";
@@ -292,7 +299,7 @@ public abstract class BaseIDAFilter implements Filter {
 	 */
 	protected void validateRequest(ResettableStreamHttpServletRequest requestWrapper, Map<String, Object> requestBody)
 			throws IdAuthenticationAppException {
-		String idFromRequest = (String) requestBody.get("id");
+
 		String id = null;
 		if (requestWrapper instanceof HttpServletRequestWrapper) {
 			String url = requestWrapper.getRequestURL().toString();
@@ -301,17 +308,31 @@ public abstract class BaseIDAFilter implements Filter {
 			if ((Objects.nonNull(url) && !url.isEmpty()) && (Objects.nonNull(contextPath) && !contextPath.isEmpty())) {
 				String[] splitedUrlByContext = url.split(contextPath);
 				id = "mosip.ida.api.ids." + splitedUrlByContext[1].split("/")[1];
-				if (!env.getProperty(id).equals(idFromRequest)) {
-					mosipLogger.error(SESSION_ID, EVENT_FILTER, BASE_IDA_FILTER,
-							IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
-					throw new IdAuthenticationAppException(
-							IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(), String.format(
-									IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), "id"));
+				String verFromUrl = splitedUrlByContext[1].split("/")[2];
+				String verFromRequest = (String) requestBody.get(VERSION);
+				if (requestBody != null && !requestBody.isEmpty() && requestBody.containsKey(ID)) {
+					String idFromRequest = (String) requestBody.get(ID);
+					if (!env.getProperty(id).equals(idFromRequest)) {
+						exceptionhandling(ID);
+					}
+					String versionRegex = "\\d\\.\\d(\\.\\d)?";
+					Pattern versionPattern = Pattern.compile(versionRegex);
+					if (!versionPattern.matcher(verFromRequest).matches() || !verFromRequest.equals(verFromUrl)) {
+						exceptionhandling(VERSION);
+					}
 				}
-
 			}
 		}
+	}
 
+	
+
+	private void exceptionhandling(String type) throws IdAuthenticationAppException {
+		mosipLogger.error(SESSION_ID, EVENT_FILTER, BASE_IDA_FILTER,
+				IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
+		throw new IdAuthenticationAppException(
+				IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+				String.format(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), type));
 	}
 
 	/**
@@ -326,9 +347,18 @@ public abstract class BaseIDAFilter implements Filter {
 			throws IdAuthenticationAppException {
 		try {
 			requestWrapper.resetInputStream();
-			Map<String, Object> responseMap = setResponseParams(getRequestBody(requestWrapper.getInputStream()),
+			Map<String, Object> requestBody = getRequestBody(requestWrapper.getInputStream());
+			Map<String, Object> responseMap = setResponseParams(requestBody,
 					getResponseBody(responseWrapper.toString()));
-			responseMap.put("version", getVersionFromUrl(requestWrapper));
+			responseMap.put(VERSION, getVersionFromUrl(requestWrapper));
+			String version;
+			if (Objects.nonNull(requestBody) && requestBody.get(VERSION) instanceof String) {
+				version = (String) requestBody.get(VERSION);
+			} else {
+				version = getVersionFromUrl(requestWrapper);
+			}
+			responseMap.replace(VERSION, version);
+
 			Map<String, Object> resultMap = constructResponse(responseMap);
 			String responseAsString = mapper.writeValueAsString(transformResponse(resultMap));
 			logTime((String) getResponseBody(responseAsString).get(RES_TIME), RESPONSE);
@@ -347,7 +377,7 @@ public abstract class BaseIDAFilter implements Filter {
 
 			if ((Objects.nonNull(url) && !url.isEmpty()) && (Objects.nonNull(contextPath) && !contextPath.isEmpty())) {
 				String[] splitedUrlByContext = url.split(contextPath);
-				ver = Arrays.stream(splitedUrlByContext[1].split("/")).filter(s -> !s.isEmpty()).findFirst()
+				ver = Arrays.stream(splitedUrlByContext[1].split("/")).filter(s -> !s.isEmpty()).skip(1).findFirst()
 						.orElse(DEFAULT_VERSION).replaceAll(VER_REX, "");
 			}
 		}
@@ -367,6 +397,7 @@ public abstract class BaseIDAFilter implements Filter {
 		if (Objects.nonNull(requestBody) && Objects.nonNull(requestBody.get(TRANSACTION_ID))) {
 			responseBody.replace(TRANSACTION_ID, requestBody.get(TRANSACTION_ID));
 		}
+
 		if (Objects.nonNull(requestBody) && Objects.nonNull(requestBody.get(REQ_TIME))
 				&& isDate((String) requestBody.get(REQ_TIME))) {
 			ZoneId zone = ZonedDateTime.parse((CharSequence) requestBody.get(REQ_TIME)).getZone();
@@ -414,7 +445,7 @@ public abstract class BaseIDAFilter implements Filter {
 		try {
 			DateUtils.parseToDate(date, env.getProperty(DATETIME_PATTERN));
 			return true;
-		} catch (ParseException | java.text.ParseException e) {
+		} catch (ParseException e) {
 			mosipLogger.error("sessionId", BASE_IDA_FILTER, "validateDate", "\n" + ExceptionUtils.getStackTrace(e));
 		}
 		return false;

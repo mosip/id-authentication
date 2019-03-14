@@ -1,4 +1,4 @@
-package io.mosip.demo.authentication.service.controller;
+package io.mosip.authentication.demo.service.controller;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -47,10 +47,11 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.mosip.demo.authentication.service.dto.CryptomanagerRequestDto;
-import io.mosip.demo.authentication.service.dto.CryptomanagerResponseDto;
-import io.mosip.demo.authentication.service.dto.EncryptionRequestDto;
-import io.mosip.demo.authentication.service.dto.EncryptionResponseDto;
+
+import io.mosip.authentication.demo.service.dto.CryptomanagerRequestDto;
+import io.mosip.authentication.demo.service.dto.CryptomanagerResponseDto;
+import io.mosip.authentication.demo.service.dto.EncryptionRequestDto;
+import io.mosip.authentication.demo.service.dto.EncryptionResponseDto;
 import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.core.util.DateUtils;
 import io.swagger.annotations.ApiOperation;

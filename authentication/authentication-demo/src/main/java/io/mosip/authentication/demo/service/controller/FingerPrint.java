@@ -1,4 +1,4 @@
-package io.mosip.demo.authentication.service.controller;
+package io.mosip.authentication.demo.service.controller;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Base64;

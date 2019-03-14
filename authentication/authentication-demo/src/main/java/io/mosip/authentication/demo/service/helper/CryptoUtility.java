@@ -1,4 +1,4 @@
-package io.mosip.demo.authentication.service.helper;
+package io.mosip.authentication.demo.service.helper;
 
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;

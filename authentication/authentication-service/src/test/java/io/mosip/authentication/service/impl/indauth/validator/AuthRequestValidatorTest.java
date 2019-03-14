@@ -15,7 +15,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -35,6 +34,7 @@ import org.springframework.web.context.WebApplicationContext;
 
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.AuthTypeDTO;
+import io.mosip.authentication.core.dto.indauth.IdType;
 import io.mosip.authentication.core.dto.indauth.IdentityDTO;
 import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
 import io.mosip.authentication.core.dto.indauth.RequestDTO;
@@ -114,7 +114,7 @@ public class AuthRequestValidatorTest {
 	public void testSupportFalse() {
 		assertFalse(authRequestValidator.supports(OTPRequestValidator.class));
 	}
-	@Ignore
+
 	@Test
 	public void testValidUin() {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
@@ -137,6 +137,15 @@ public class AuthRequestValidatorTest {
 		idInfoList.add(idInfoDTO1);
 		IdentityDTO idDTO = new IdentityDTO();
 		idDTO.setName(idInfoList);
+		idDTO.setDob("25/11/1990");
+		idDTO.setAge("25");
+		IdentityInfoDTO idInfoDTOs = new IdentityInfoDTO();
+		idInfoDTOs.setLanguage(env.getProperty("mosip.secondary.lang-code"));
+		idInfoDTOs.setValue("V");
+		List<IdentityInfoDTO> idInfoLists = new ArrayList<>();
+		idInfoLists.add(idInfoDTOs);
+		idDTO.setDobType(idInfoLists);
+		authRequestDTO.setIndividualIdType("D");
 		authRequestDTO.setIndividualId("274390482564");
 		RequestDTO reqDTO = new RequestDTO();
 		reqDTO.setDemographics(idDTO);
@@ -149,7 +158,7 @@ public class AuthRequestValidatorTest {
 		System.err.println(errors);
 		assertFalse(errors.hasErrors());
 	}
-	@Ignore
+
 	@Test
 	public void testInvalidUin() {
 		Mockito.when(uinValidator.validateId(Mockito.anyString())).thenThrow(new InvalidIDException("id", "code"));
@@ -173,7 +182,16 @@ public class AuthRequestValidatorTest {
 		idInfoList.add(idInfoDTO1);
 		IdentityDTO idDTO = new IdentityDTO();
 		idDTO.setName(idInfoList);
+		idDTO.setDob("25/11/1990");
+		idDTO.setAge("25");
+		IdentityInfoDTO idInfoDTOs = new IdentityInfoDTO();
+		idInfoDTOs.setLanguage(env.getProperty("mosip.secondary.lang-code"));
+		idInfoDTOs.setValue("V");
+		List<IdentityInfoDTO> idInfoLists = new ArrayList<>();
+		idInfoLists.add(idInfoDTOs);
+		idDTO.setDobType(idInfoLists);
 		authRequestDTO.setIndividualId("274390482564");
+		authRequestDTO.setIndividualIdType(IdType.UIN.getType());
 		RequestDTO reqDTO = new RequestDTO();
 		reqDTO.setDemographics(idDTO);
 		authRequestDTO.setRequestedAuth(authTypeDTO);
@@ -182,7 +200,7 @@ public class AuthRequestValidatorTest {
 		authRequestValidator.validate(authRequestDTO, errors);
 		assertTrue(errors.hasErrors());
 	}
-	@Ignore
+
 	@Test
 	public void testValidVid() {
 		Mockito.when(uinValidator.validateId(Mockito.anyString())).thenThrow(new InvalidIDException("id", "code"));
@@ -207,6 +225,14 @@ public class AuthRequestValidatorTest {
 		idInfoList.add(idInfoDTO1);
 		IdentityDTO idDTO = new IdentityDTO();
 		idDTO.setName(idInfoList);
+		idDTO.setDob("25/11/1990");
+		idDTO.setAge("25");
+		IdentityInfoDTO idInfoDTOs = new IdentityInfoDTO();
+		idInfoDTOs.setLanguage(env.getProperty("mosip.secondary.lang-code"));
+		idInfoDTOs.setValue("V");
+		List<IdentityInfoDTO> idInfoLists = new ArrayList<>();
+		idInfoLists.add(idInfoDTOs);
+		idDTO.setDobType(idInfoLists);
 		authRequestDTO.setIndividualId("274390482564");
 		authRequestDTO.setIndividualIdType("V");
 		RequestDTO reqDTO = new RequestDTO();
@@ -217,7 +243,7 @@ public class AuthRequestValidatorTest {
 		authRequestValidator.validate(authRequestDTO, errors);
 		assertFalse(errors.hasErrors());
 	}
-	@Ignore
+
 	@Test
 	public void testInvalidVid() {
 		Mockito.when(vidValidator.validateId(Mockito.anyString())).thenThrow(new InvalidIDException("id", "code"));
@@ -241,6 +267,14 @@ public class AuthRequestValidatorTest {
 		idInfoList.add(idInfoDTO1);
 		IdentityDTO idDTO = new IdentityDTO();
 		idDTO.setName(idInfoList);
+		idDTO.setDob("25/11/1990");
+		idDTO.setAge("25");
+		IdentityInfoDTO idInfoDTOs = new IdentityInfoDTO();
+		idInfoDTOs.setLanguage(env.getProperty("mosip.secondary.lang-code"));
+		idInfoDTOs.setValue("V");
+		List<IdentityInfoDTO> idInfoLists = new ArrayList<>();
+		idInfoLists.add(idInfoDTOs);
+		idDTO.setDobType(idInfoLists);
 		authRequestDTO.setIndividualId("274390482564");
 		authRequestDTO.setIndividualIdType("V");
 		RequestDTO reqDTO = new RequestDTO();

@@ -47,8 +47,6 @@ import io.mosip.kernel.core.util.DateUtils;
 @Service
 public class IdAuthServiceImpl implements IdAuthService<AutnTxn> {
 
-
-
 	/** The Constant DEFAULT_SESSION_ID. */
 	private static final String DEFAULT_SESSION_ID = "SESSION_ID";
 
@@ -111,11 +109,9 @@ public class IdAuthServiceImpl implements IdAuthService<AutnTxn> {
 	/**
 	 * Do validate VID entity and checks for the expiry date.
 	 *
-	 * @param vid
-	 *            the vid
+	 * @param vid the vid
 	 * @return the string
-	 * @throws IdValidationFailedException
-	 *             the id validation failed exception
+	 * @throws IdValidationFailedException the id validation failed exception
 	 */
 	Map<String, Object> getIdRepoByVidAsRequest(String vid, boolean isBio) throws IdAuthenticationBusinessException {
 		Map<String, Object> idRepo = null;
@@ -148,14 +144,12 @@ public class IdAuthServiceImpl implements IdAuthService<AutnTxn> {
 	 * Process the IdType and validates the Idtype and upon validation reference Id
 	 * is returned in AuthRequestDTO.
 	 *
-	 * @param idvIdType
-	 *            idType
-	 * @param idvId
-	 *            id-number
+	 * @param idvIdType idType
+	 * @param idvId     id-number
 	 * @param isBio
 	 * @return map map
-	 * @throws IdAuthenticationBusinessException
-	 *             the id authentication business exception
+	 * @throws IdAuthenticationBusinessException the id authentication business
+	 *                                           exception
 	 */
 	@Override
 	public Map<String, Object> processIdType(String idvIdType, String idvId, boolean isBio)
@@ -166,7 +160,7 @@ public class IdAuthServiceImpl implements IdAuthService<AutnTxn> {
 				idResDTO = getIdRepoByUIN(idvId, isBio);
 			} catch (IdAuthenticationBusinessException e) {
 				logger.error(DEFAULT_SESSION_ID, this.getClass().getSimpleName(), e.getErrorCode(), e.getErrorText());
-				throw new IdAuthenticationBusinessException(e.getErrorCode(), e.getErrorText());
+				throw e;
 			}
 		} else {
 			try {
@@ -183,22 +177,15 @@ public class IdAuthServiceImpl implements IdAuthService<AutnTxn> {
 	/**
 	 * Store entry in Auth_txn table for all authentications.
 	 *
-	 * @param idvId
-	 *            idvId
-	 * @param idvIdType
-	 *            idvIdType(D/V)
-	 * @param reqTime
-	 *            reqTime
-	 * @param txnId
-	 *            txnId
-	 * @param status
-	 *            status('Y'/'N')
-	 * @param comment
-	 *            comment
-	 * @param requestType
-	 *            requestType(OTP_REQUEST,OTP_AUTH,DEMO_AUTH,BIO_AUTH)
-	 * @throws IdAuthenticationBusinessException
-	 *             the id authentication business exception
+	 * @param idvId       idvId
+	 * @param idvIdType   idvIdType(D/V)
+	 * @param reqTime     reqTime
+	 * @param txnId       txnId
+	 * @param status      status('Y'/'N')
+	 * @param comment     comment
+	 * @param requestType requestType(OTP_REQUEST,OTP_AUTH,DEMO_AUTH,BIO_AUTH)
+	 * @throws IdAuthenticationBusinessException the id authentication business
+	 *                                           exception
 	 */
 	public void saveAutnTxn(AutnTxn authTxn) throws IdAuthenticationBusinessException {
 		autntxnrepository.saveAndFlush(authTxn);
@@ -207,8 +194,8 @@ public class IdAuthServiceImpl implements IdAuthService<AutnTxn> {
 	/**
 	 * Audit data.
 	 *
-	 * @throws IdAuthenticationBusinessException
-	 *             the id authentication business exception
+	 * @throws IdAuthenticationBusinessException the id authentication business
+	 *                                           exception
 	 */
 	private void auditData() throws IdAuthenticationBusinessException {
 		AuditRequestDto auditRequest = auditFactory.buildRequest(AuditModules.OTP_AUTH,
@@ -219,7 +206,7 @@ public class IdAuthServiceImpl implements IdAuthService<AutnTxn> {
 			restRequest = restFactory.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditRequest,
 					AuditResponseDto.class);
 		} catch (IDDataValidationException e) {
-			logger.error(DEFAULT_SESSION_ID,this.getClass().getSimpleName(), e.getErrorCode(), e.getErrorText());
+			logger.error(DEFAULT_SESSION_ID, this.getClass().getSimpleName(), e.getErrorCode(), e.getErrorText());
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_UIN, e);
 		}
 

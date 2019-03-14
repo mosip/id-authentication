@@ -1,4 +1,4 @@
-package io.mosip.demo.authentication.service.controller;
+package io.mosip.authentication.demo.service.controller;
 
 import java.io.File;
 import java.io.IOException;
@@ -25,9 +25,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import io.mosip.demo.authentication.service.dto.EncryptionRequestDto;
-import io.mosip.demo.authentication.service.dto.EncryptionResponseDto;
-import io.mosip.demo.authentication.service.helper.CryptoUtility;
+import io.mosip.authentication.demo.service.dto.EncryptionRequestDto;
+import io.mosip.authentication.demo.service.dto.EncryptionResponseDto;
+import io.mosip.authentication.demo.service.helper.CryptoUtility;
 import io.mosip.kernel.core.util.FileUtils;
 import io.swagger.annotations.ApiOperation;
 
