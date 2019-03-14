@@ -10,7 +10,7 @@ export const ERROR = 'error';
 export const NESTED_ERROR = 'err';
 export const ERROR_CODE = 'errorCode';
 export const PRE_REGISTRATION_ID = 'pre_registration_id';
-export const ALLOWED_BOOKING_TIME = 24;
+// export const ALLOWED_BOOKING_TIME = 24;
 
 export const IDS = {
   newUser: 'mosip.pre-registration.demographic.create',
