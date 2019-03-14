@@ -304,10 +304,9 @@ public abstract class BaseIDAFilter implements Filter {
 				if (!env.getProperty(id).equals(idFromRequest)) {
 					mosipLogger.error(SESSION_ID, EVENT_FILTER, BASE_IDA_FILTER,
 							IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
-					IdAuthenticationAppException idAuthenticationAppException = new IdAuthenticationAppException(
+					throw new IdAuthenticationAppException(
 							IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(), String.format(
 									IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), "id"));
-					throw idAuthenticationAppException;
 				}
 
 			}

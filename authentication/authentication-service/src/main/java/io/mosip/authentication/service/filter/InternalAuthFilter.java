@@ -37,20 +37,6 @@ public class InternalAuthFilter extends BaseAuthFilter {
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * io.mosip.authentication.service.filter.BaseAuthFilter#setTxnId(java.util.Map,
-	 * java.util.Map)
-	 */
-	@Override
-	protected Map<String, Object> setResponseParams(Map<String, Object> requestBody, Map<String, Object> responseBody)
-			throws IdAuthenticationAppException {
-		Map<String, Object> responseParams = super.setResponseParams(requestBody, responseBody);
-		return setAuthResponseParam(requestBody, responseParams);
-	}
-
 	@Override
 	protected boolean validateSignature(String signature, byte[] requestAsByte) throws IdAuthenticationAppException {
 		return true;
