@@ -82,7 +82,7 @@ public class AuthServiceImpl implements AuthService {
 			throw new AuthManagerException(AuthConstant.UNAUTHORIZED_CODE,"Auth token has been changed,Please try with new login");
 		}
 		long tenMinsExp = getExpiryTime(authToken.getExpirationTime());
-		if(currentTime>tenMinsExp)
+		if(currentTime>tenMinsExp && currentTime<authToken.getExpirationTime())
 		{
 			TimeToken newToken = tokenGenerator.generateNewToken(token);
 			mosipUserDtoToken.setToken(newToken.getToken());
