@@ -31,7 +31,7 @@ export const APPEND_URL = {
   applicants: 'demographic/applications',
   location: 'masterdata/',
   gender: 'masterdata/v1.0/gendertypes',
-  transliteration: 'translitration/translitrate',
+  transliteration: 'transliteration/transliterate',
   applicantType: 'applicanttype/v1.0/applicanttype/',
   validDocument: 'v1.0/applicanttype/',
   getApplicantType: 'getApplicantType'

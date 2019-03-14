@@ -1,8 +1,8 @@
 testdata:
-  Valid_MockRequest_Auth_StaticPin_Smoke_For_UIN_Pos:
+  Valid_Request_Auth_StaticPin_Smoke_For_UIN_1_Pos_01:
     input.staticpin-auth-request:
-      StaticPinAuthReq.idvId: 5762350368
-      StaticPinAuthReq.valuepinInfo: 234568
+      StaticPinAuthReq.idvId: $UIN-PIN$
+      StaticPinAuthReq.valuepinInfo: $staticPin~$StaticPinAuthReq.idvId$
       StaticPinAuthReq.tspID: TSP0001
       StaticPinAuthReq.txnID: $RANDOM:N:10$
       StaticPinAuthReq.reqTime: $TIMESTAMP$
@@ -11,13 +11,111 @@ testdata:
       output.1.response.y.resTime: $IGNORE$
       output.1.response.y.reqTime: $IGNORE$
       output.1.response.y.txnID: $input.staticpin-auth-request:StaticPinAuthReq.txnID$
-       
-      
-  Invalid_ReqTimeGreaterThan24Hr_For_UIN_Neg:
+    audit.auth_transaction:
+      refId: $input.staticpin-auth-request:StaticPinAuthReq.idvId$
+      txnId: $input.staticpin-auth-request:StaticPinAuthReq.txnID$
+      authTypeCode: STATIC-PIN-AUTH
+      statusCode: $output.output-1-expected-y-res:output.1.response.y.status$
+      statusComment: $REGEXP:.*Pin.*Authentication.*Success.*$
+      idType: D
+    audit.audit_log:
+      refId: $input.staticpin-auth-request:StaticPinAuthReq.idvId$
+      eventId: $REGEXP:.*IDA-EVT.*$
+      eventName: AUTH_REQUEST_RESPONSE
+      appId: IDA
+      refIdType: UIN
+      appName: ID-Authentication
+      moduleName: PIN_AUTH 
+  
+  Valid_Request_Auth_StaticPin_Smoke_For_UIN_2_Pos_02:
     input.staticpin-auth-request:
-      StaticPinAuthReq.idvId: 5762350368
+      StaticPinAuthReq.idvId: $UIN-PIN$
+      StaticPinAuthReq.valuepinInfo: $staticPin~$StaticPinAuthReq.idvId$
       StaticPinAuthReq.tspID: TSP0001
-      StaticPinAuthReq.valuepinInfo: 234568
+      StaticPinAuthReq.txnID: $RANDOM:N:10$
+      StaticPinAuthReq.reqTime: $TIMESTAMP$
+    output.output-1-expected-y-res:
+      output.1.response.y.status: Y
+      output.1.response.y.resTime: $IGNORE$
+      output.1.response.y.reqTime: $IGNORE$
+      output.1.response.y.txnID: $input.staticpin-auth-request:StaticPinAuthReq.txnID$
+    audit.auth_transaction:
+      refId: $input.staticpin-auth-request:StaticPinAuthReq.idvId$
+      txnId: $input.staticpin-auth-request:StaticPinAuthReq.txnID$
+      authTypeCode: STATIC-PIN-AUTH
+      statusCode: $output.output-1-expected-y-res:output.1.response.y.status$
+      statusComment: $REGEXP:.*Pin.*Authentication.*Success.*$
+      idType: D
+    audit.audit_log:
+      refId: $input.staticpin-auth-request:StaticPinAuthReq.idvId$
+      eventId: $REGEXP:.*IDA-EVT.*$
+      eventName: AUTH_REQUEST_RESPONSE
+      appId: IDA
+      refIdType: UIN
+      appName: ID-Authentication
+      moduleName: PIN_AUTH 
+       
+  Valid_Request_Auth_StaticPin_Smoke_For_UIN_3_Pos_03:
+    input.staticpin-auth-request:
+      StaticPinAuthReq.idvId: $UIN-PIN$
+      StaticPinAuthReq.valuepinInfo: $staticPin~$StaticPinAuthReq.idvId$
+      StaticPinAuthReq.tspID: TSP0001
+      StaticPinAuthReq.txnID: $RANDOM:N:10$
+      StaticPinAuthReq.reqTime: $TIMESTAMP$
+    output.output-1-expected-y-res:
+      output.1.response.y.status: Y
+      output.1.response.y.resTime: $IGNORE$
+      output.1.response.y.reqTime: $IGNORE$
+      output.1.response.y.txnID: $input.staticpin-auth-request:StaticPinAuthReq.txnID$
+    audit.auth_transaction:
+      refId: $input.staticpin-auth-request:StaticPinAuthReq.idvId$
+      txnId: $input.staticpin-auth-request:StaticPinAuthReq.txnID$
+      authTypeCode: STATIC-PIN-AUTH
+      statusCode: $output.output-1-expected-y-res:output.1.response.y.status$
+      statusComment: $REGEXP:.*Pin.*Authentication.*Success.*$
+      idType: D
+    audit.audit_log:
+      refId: $input.staticpin-auth-request:StaticPinAuthReq.idvId$
+      eventId: $REGEXP:.*IDA-EVT.*$
+      eventName: AUTH_REQUEST_RESPONSE
+      appId: IDA
+      refIdType: UIN
+      appName: ID-Authentication
+      moduleName: PIN_AUTH 
+        
+  Valid_Request_Auth_StaticPin_Smoke_For_UIN_4_Pos_04:
+    input.staticpin-auth-request:
+      StaticPinAuthReq.idvId: $UIN-PIN$
+      StaticPinAuthReq.valuepinInfo: $staticPin~$StaticPinAuthReq.idvId$
+      StaticPinAuthReq.tspID: TSP0001
+      StaticPinAuthReq.txnID: $RANDOM:N:10$
+      StaticPinAuthReq.reqTime: $TIMESTAMP$
+    output.output-1-expected-y-res:
+      output.1.response.y.status: Y
+      output.1.response.y.resTime: $IGNORE$
+      output.1.response.y.reqTime: $IGNORE$
+      output.1.response.y.txnID: $input.staticpin-auth-request:StaticPinAuthReq.txnID$
+    audit.auth_transaction:
+      refId: $input.staticpin-auth-request:StaticPinAuthReq.idvId$
+      txnId: $input.staticpin-auth-request:StaticPinAuthReq.txnID$
+      authTypeCode: STATIC-PIN-AUTH
+      statusCode: $output.output-1-expected-y-res:output.1.response.y.status$
+      statusComment: $REGEXP:.*Pin.*Authentication.*Success.*$
+      idType: D
+    audit.audit_log:
+      refId: $input.staticpin-auth-request:StaticPinAuthReq.idvId$
+      eventId: $REGEXP:.*IDA-EVT.*$
+      eventName: AUTH_REQUEST_RESPONSE
+      appId: IDA
+      refIdType: UIN
+      appName: ID-Authentication
+      moduleName: PIN_AUTH 
+          
+  Invalid_ReqTimeGreaterThan24Hr_For_UIN_Neg_05:
+    input.staticpin-auth-request:
+      StaticPinAuthReq.idvId: $UIN-PIN$
+      StaticPinAuthReq.tspID: TSP0001
+      StaticPinAuthReq.valuepinInfo: $staticPin~$StaticPinAuthReq.idvId$
       StaticPinAuthReq.txnID: $RANDOM:N:10$
       StaticPinAuthReq.reqTime: $TIMESTAMP$HOUR+25
     output.output-1-expected-n-error-res:
@@ -25,13 +123,13 @@ testdata:
       output.1.response.n.resTime: $IGNORE$
       output.1.response.n.errorMessage: Request to be received at MOSIP within 24 hrs/min
       output.1.response.n.errorCode: IDA-MLC-001
-      output.1.response.n.txnID: $input.staticpin-auth-request:StaticPinAuthReq.txnID$
-     
-  Invalid_ReqTimeLesserThan24Hr_For_UIN_Neg:
+
+      
+  Invalid_ReqTimeLesserThan24Hr_For_UIN_Neg_06:
     input.staticpin-auth-request:
-      StaticPinAuthReq.idvId: 5762350368
+      StaticPinAuthReq.idvId: $UIN-PIN$
       StaticPinAuthReq.tspID: TSP0001
-      StaticPinAuthReq.valuepinInfo: 234568
+      StaticPinAuthReq.valuepinInfo: $staticPin~$StaticPinAuthReq.idvId$
       StaticPinAuthReq.txnID: $RANDOM:N:10$
       StaticPinAuthReq.reqTime: $TIMESTAMP$HOUR-25
     output.output-1-expected-n-error-res:
@@ -39,12 +137,12 @@ testdata:
       output.1.response.n.resTime: $IGNORE$
       output.1.response.n.errorMessage: Request to be received at MOSIP within 24 hrs/min
       output.1.response.n.errorCode: IDA-MLC-001
-      output.1.response.n.txnID: $input.staticpin-auth-request:StaticPinAuthReq.txnID$
-      
-  Invalid_ReqTimeEqualTo24Hr_For_UIN_Neg:
+   
+  
+  Invalid_ReqTimeEqualTo24Hr_For_UIN_Neg_07:
     input.staticpin-auth-request:
-      StaticPinAuthReq.idvId: 5762350368
-      StaticPinAuthReq.valuepinInfo: 234568
+      StaticPinAuthReq.idvId: $UIN-PIN$
+      StaticPinAuthReq.valuepinInfo: $staticPin~$StaticPinAuthReq.idvId$
       StaticPinAuthReq.tspID: TSP0001
       StaticPinAuthReq.txnID: $RANDOM:N:10$
       StaticPinAuthReq.reqTime: $TIMESTAMP$
@@ -54,10 +152,10 @@ testdata:
       output.1.response.y.reqTime: $IGNORE$
       output.1.response.y.txnID: $input.staticpin-auth-request:StaticPinAuthReq.txnID$
       
-  Invalid_Missing_ReqTime_For_UIN_Neg:
+  Invalid_Missing_ReqTime_For_UIN_Neg_08:
     input.staticpin-auth-request:
-      StaticPinAuthReq.idvId: 5762350368
-      StaticPinAuthReq.valuepinInfo: 234568
+      StaticPinAuthReq.idvId: $UIN-PIN$
+      StaticPinAuthReq.valuepinInfo: $staticPin~$StaticPinAuthReq.idvId$
       StaticPinAuthReq.tspID: TSP0001
       StaticPinAuthReq.txnID: $RANDOM:N:10$
       StaticPinAuthReq.reqTime: $REMOVE$
@@ -66,13 +164,13 @@ testdata:
       output.1.response.n.resTime: $IGNORE$
       output.1.response.n.errorMessage: Missing Input Parameter - reqTime
       output.1.response.n.errorCode: IDA-IDV-003
-      output.1.response.n.txnID: $input.staticpin-auth-request:StaticPinAuthReq.txnID$
-      
-  Invalid_Invalid_UIN_Neg:
+   
+  
+  Invalid_UIN_Neg_09:
     input.staticpin-auth-request:
-      StaticPinAuthReq.idvId: 5762350368
+      StaticPinAuthReq.idvId: 59452086023
       StaticPinAuthReq.tspID: TSP0001
-      StaticPinAuthReq.valuepinInfo: 234568
+      StaticPinAuthReq.valuepinInfo: 123456
       StaticPinAuthReq.txnID: $RANDOM:N:10$
       StaticPinAuthReq.reqTime: $TIMESTAMP$
     output.output-1-expected-n-error-res:
@@ -80,11 +178,12 @@ testdata:
       output.1.response.n.resTime: $IGNORE$
       output.1.response.n.errorMessage: Invalid UIN
       output.1.response.n.errorCode: IDA-MLC-002
-      output.1.response.n.txnID: $input.staticpin-auth-request:StaticPinAuthReq.txnID$
+
        
-  Invalid_Missing_UIN_regression_Neg:
+  Invalid_Missing_UIN_regression_Neg_10:
     input.staticpin-auth-request:
       StaticPinAuthReq.idvId: $REMOVE$
+      StaticPinAuthReq.valuepinInfo: 123456
       StaticPinAuthReq.tspID: TSP0001
       StaticPinAuthReq.txnID: $RANDOM:N:10$
       StaticPinAuthReq.reqTime: $TIMESTAMP$
@@ -92,13 +191,13 @@ testdata:
       output.1.response.n.status: N
       output.1.response.n.resTime: $IGNORE$
       output.1.response.n.errorMessage: Missing Input Parameter - idvId
-      output.1.response.n.errorCode: $IGNORE$
-      output.1.response.n.txnID: $input.staticpin-auth-request:StaticPinAuthReq.txnID$
+      output.1.response.n.errorCode: IDA-IDV-003
+
       
-  Invalid_Invalid_idvidType_Neg:
+  Invalid_idvidType_Neg_11:
     input.staticpin-auth-request:
-      StaticPinAuthReq.idvId: 5762350368
-      StaticPinAuthReq.valuepinInfo: 234568
+      StaticPinAuthReq.idvId: $UIN-PIN$
+      StaticPinAuthReq.valuepinInfo: $staticPin~$StaticPinAuthReq.idvId$
       StaticPinAuthReq.idvIdType: A
       StaticPinAuthReq.tspID: TSP0001  
       StaticPinAuthReq.txnID: $RANDOM:N:10$
@@ -108,12 +207,12 @@ testdata:
       output.1.response.n.resTime: $IGNORE$
       output.1.response.n.errorMessage: Invalid Input Parameter - idvIdType
       output.1.response.n.errorCode: IDA-IDV-002
-      output.1.response.n.txnID: $input.staticpin-auth-request:StaticPinAuthReq.txnID$
+
       
-  Invalid_Missing_idvidType_Neg:
+  Invalid_Missing_idvidType_Neg_12:
     input.staticpin-auth-request:
-      StaticPinAuthReq.idvId: 5762350368
-      StaticPinAuthReq.valuepinInfo: 234568
+      StaticPinAuthReq.idvId: $UIN-PIN$
+      StaticPinAuthReq.valuepinInfo: $staticPin~$StaticPinAuthReq.idvId$
       StaticPinAuthReq.idvIdType: $REMOVE$ 
       StaticPinAuthReq.tspID: TSP0001
       StaticPinAuthReq.txnID: $RANDOM:N:10$
@@ -123,13 +222,13 @@ testdata:
       output.1.response.n.resTime: $IGNORE$
       output.1.response.n.errorMessage: Missing Input Parameter - idvIdType
       output.1.response.n.errorCode: IDA-IDV-003
-      output.1.response.n.txnID: $input.staticpin-auth-request:StaticPinAuthReq.txnID$
+
       
-  Valid_MockRequest_Auth_StaticPin_Smoke_For_VID_Pos:
+  Valid_Request_Auth_StaticPin_Smoke_For_VID_Pos_13:
     input.staticpin-auth-request:
-      StaticPinAuthReq.idvId: 5371843613598206 
+      StaticPinAuthReq.idvId: $VID-PIN$ 
       StaticPinAuthReq.idvIdType: V
-      StaticPinAuthReq.valuepinInfo: 241312
+      StaticPinAuthReq.valuepinInfo: $staticPin~$StaticPinAuthReq.idvId$
       StaticPinAuthReq.tspID: TSP0001
       StaticPinAuthReq.txnID: $RANDOM:N:10$
       StaticPinAuthReq.reqTime: $TIMESTAMP$
@@ -139,14 +238,28 @@ testdata:
       output.1.response.y.resTime: $IGNORE$
       output.1.response.y.reqTime: $IGNORE$
       output.1.response.y.txnID: $input.staticpin-auth-request:StaticPinAuthReq.txnID$
-       
-      
-  Invalid_ReqTimeGreaterThan24Hr_For_VID_Neg:
+    audit.auth_transaction:
+      refId: $input.staticpin-auth-request:StaticPinAuthReq.idvId$
+      txnId: $input.staticpin-auth-request:StaticPinAuthReq.txnID$
+      authTypeCode: STATIC-PIN-AUTH
+      statusCode: $output.output-1-expected-y-res:output.1.response.y.status$
+      statusComment: $REGEXP:.*Pin.*Authentication.*Success.*$
+      idType: V
+    audit.audit_log:
+      refId: $input.staticpin-auth-request:StaticPinAuthReq.idvId$
+      eventId: $REGEXP:.*IDA-EVT.*$
+      eventName: AUTH_REQUEST_RESPONSE
+      appId: IDA
+      refIdType: VID
+      appName: ID-Authentication
+      moduleName: PIN_AUTH 
+        
+  Invalid_ReqTimeGreaterThan24Hr_For_VID_Neg_14:
     input.staticpin-auth-request:
-      StaticPinAuthReq.idvId: 5371843613598206
+      StaticPinAuthReq.idvId: $VID-PIN$
       StaticPinAuthReq.idvIdType: V
       StaticPinAuthReq.tspID: TSP0001
-      StaticPinAuthReq.valuepinInfo: 241306
+      StaticPinAuthReq.valuepinInfo: $staticPin~$StaticPinAuthReq.idvId$
       StaticPinAuthReq.txnID: $RANDOM:N:10$
       StaticPinAuthReq.reqTime: $TIMESTAMP$HOUR+25
     output.output-1-expected-n-error-res:
@@ -154,14 +267,15 @@ testdata:
       output.1.response.n.resTime: $IGNORE$
       output.1.response.n.errorMessage: Request to be received at MOSIP within 24 hrs/min
       output.1.response.n.errorCode: IDA-MLC-001
-      output.1.response.n.txnID: $input.staticpin-auth-request:StaticPinAuthReq.txnID$
+
      
-  Invalid_ReqTimeLesserThan24Hr_For_VID_Neg:
+  
+  Invalid_ReqTimeLesserThan24Hr_For_VID_Neg_15:
     input.staticpin-auth-request:
-      StaticPinAuthReq.idvId: 5371843613598206
+      StaticPinAuthReq.idvId: $VID-PIN$
       StaticPinAuthReq.idvIdType: V
       StaticPinAuthReq.tspID: TSP0001
-      StaticPinAuthReq.valuepinInfo: 241312
+      StaticPinAuthReq.valuepinInfo: $staticPin~$StaticPinAuthReq.idvId$
       StaticPinAuthReq.txnID: $RANDOM:N:10$
       StaticPinAuthReq.reqTime: $TIMESTAMP$HOUR-25
     output.output-1-expected-n-error-res:
@@ -169,13 +283,13 @@ testdata:
       output.1.response.n.resTime: $IGNORE$
       output.1.response.n.errorMessage: Request to be received at MOSIP within 24 hrs/min
       output.1.response.n.errorCode: IDA-MLC-001
-      output.1.response.n.txnID: $input.staticpin-auth-request:StaticPinAuthReq.txnID$
+
       
-  Invalid_ReqTimeEqualTo24Hr_For_VID_Neg:
+  Invalid_ReqTimeEqualTo24Hr_For_VID_Neg_16:
     input.staticpin-auth-request:
-      StaticPinAuthReq.idvId: 5371843613598206
+      StaticPinAuthReq.idvId: $VID-PIN$
       StaticPinAuthReq.idvIdType: V
-      StaticPinAuthReq.valuepinInfo: 241312
+      StaticPinAuthReq.valuepinInfo: $staticPin~$StaticPinAuthReq.idvId$
       StaticPinAuthReq.tspID: TSP0001
       StaticPinAuthReq.txnID: $RANDOM:N:10$
       StaticPinAuthReq.reqTime: $TIMESTAMP$
@@ -186,11 +300,11 @@ testdata:
       output.1.response.y.reqTime: $IGNORE$
       output.1.response.y.txnID: $input.staticpin-auth-request:StaticPinAuthReq.txnID$
       
-  Invalid_Missing_ReqTime_For_VID_Neg:
+  Invalid_Missing_ReqTime_For_VID_Neg_17:
     input.staticpin-auth-request:
-      StaticPinAuthReq.idvId: 5371843613598206
+      StaticPinAuthReq.idvId: $VID-PIN$
       StaticPinAuthReq.idvIdType: V
-      StaticPinAuthReq.valuepinInfo: 241312
+      StaticPinAuthReq.valuepinInfo: $staticPin~$StaticPinAuthReq.idvId$
       StaticPinAuthReq.tspID: TSP0001
       StaticPinAuthReq.txnID: $RANDOM:N:10$
       StaticPinAuthReq.reqTime: $REMOVE$
@@ -199,14 +313,14 @@ testdata:
       output.1.response.n.resTime: $IGNORE$
       output.1.response.n.errorMessage: Missing Input Parameter - reqTime
       output.1.response.n.errorCode: IDA-IDV-003
-      output.1.response.n.txnID: $input.staticpin-auth-request:StaticPinAuthReq.txnID$
-      
-  Invalid_Invalid_VID_Neg:
+
+  
+  Invalid_VID_Neg_18:
     input.staticpin-auth-request:
-      StaticPinAuthReq.idvId: 5371843613598207
+      StaticPinAuthReq.idvId: $RANDOM:N:16$
       StaticPinAuthReq.idvIdType: V
       StaticPinAuthReq.tspID: TSP0001
-      StaticPinAuthReq.valuepinInfo: 241312
+      StaticPinAuthReq.valuepinInfo: 123456
       StaticPinAuthReq.txnID: $RANDOM:N:10$
       StaticPinAuthReq.reqTime: $TIMESTAMP$
     output.output-1-expected-n-error-res:
@@ -214,11 +328,12 @@ testdata:
       output.1.response.n.resTime: $IGNORE$
       output.1.response.n.errorMessage: Invalid VID
       output.1.response.n.errorCode: IDA-MLC-004
-      output.1.response.n.txnID: $input.staticpin-auth-request:StaticPinAuthReq.txnID$
+
        
-  Invalid_Missing_VID_regression_Neg:
+  Invalid_Missing_VID_regression_Neg_19:
     input.staticpin-auth-request:
       StaticPinAuthReq.idvId: $REMOVE$
+      StaticPinAuthReq.valuepinInfo: 123456
       StaticPinAuthReq.tspID: TSP0001
       StaticPinAuthReq.txnID: $RANDOM:N:10$
       StaticPinAuthReq.reqTime: $TIMESTAMP$
@@ -226,13 +341,13 @@ testdata:
       output.1.response.n.status: N
       output.1.response.n.resTime: $IGNORE$
       output.1.response.n.errorMessage: Missing Input Parameter - idvId
-      output.1.response.n.errorCode: $IGNORE$
-      output.1.response.n.txnID: $input.staticpin-auth-request:StaticPinAuthReq.txnID$
+      output.1.response.n.errorCode: IDA-IDV-003
+ 
       
-  Invalid_idvidType_FOR_VID_Neg:
+  Invalid_idvidType_FOR_VID_Neg_20:
     input.staticpin-auth-request:
-      StaticPinAuthReq.idvId: 5371843613598206
-      StaticPinAuthReq.valuepinInfo: 241312
+      StaticPinAuthReq.idvId: $VID-PIN$
+      StaticPinAuthReq.valuepinInfo: $staticPin~$StaticPinAuthReq.idvId$
       StaticPinAuthReq.idvIdType: A
       StaticPinAuthReq.tspID: TSP0001
       StaticPinAuthReq.txnID: $RANDOM:N:10$
@@ -242,14 +357,13 @@ testdata:
       output.1.response.n.resTime: $IGNORE$
       output.1.response.n.errorMessage: Invalid Input Parameter - idvIdType
       output.1.response.n.errorCode: IDA-IDV-002
-      output.1.response.n.txnID: $input.staticpin-auth-request:StaticPinAuthReq.txnID$
+
       
-  Invalid_Missing_idvidType_VID_Neg:
+  Invalid_Missing_idvidType_VID_Neg_21:
     input.staticpin-auth-request:
-      StaticPinAuthReq.idvId: 5371843613598206
+      StaticPinAuthReq.idvId: $VID-PIN$
       StaticPinAuthReq.idvIdType: $REMOVE$
-      StaticPinAuthReq.valuepinInfo: 241312
-      StaticPinAuthReq.idvIdType: $REMOVE$ 
+      StaticPinAuthReq.valuepinInfo: $staticPin~$StaticPinAuthReq.idvId$
       StaticPinAuthReq.tspID: TSP0001
       StaticPinAuthReq.txnID: $RANDOM:N:10$
       StaticPinAuthReq.reqTime: $TIMESTAMP$
@@ -258,14 +372,14 @@ testdata:
       output.1.response.n.resTime: $IGNORE$
       output.1.response.n.errorMessage: Missing Input Parameter - idvIdType
       output.1.response.n.errorCode: IDA-IDV-003
-      output.1.response.n.txnID: $input.staticpin-auth-request:StaticPinAuthReq.txnID$
+
       
-  Invalid_All the AuthType set to false_For_UIN_Neg:
+  Invalid_All the AuthType set to false_For_UIN_Neg_22:
     input.staticpin-auth-request:
-      StaticPinAuthReq.idvId: 5762350368
+      StaticPinAuthReq.idvId: $UIN-PIN$
       StaticPinAuthReq.pin: false
       StaticPinAuthReq.tspID: TSP0001
-      StaticPinAuthReq.valuepinInfo: 234568
+      StaticPinAuthReq.valuepinInfo: $staticPin~$StaticPinAuthReq.idvId$
       StaticPinAuthReq.txnID: $RANDOM:N:10$
       StaticPinAuthReq.reqTime: $TIMESTAMP$
     output.output-1-expected-n-error-res:
@@ -273,15 +387,15 @@ testdata:
       output.1.response.n.resTime: $IGNORE$
       output.1.response.n.errorMessage: No authentication type selected
       output.1.response.n.errorCode: IDA-MLC-008
-      output.1.response.n.txnID: $input.staticpin-auth-request:StaticPinAuthReq.txnID$
+
       
-  Invalid_All the AuthType set to false_For_VID_Neg:
+  Invalid_All the AuthType set to false_For_VID_Neg_23:
     input.staticpin-auth-request:
-      StaticPinAuthReq.idvId: 5371843613598206
+      StaticPinAuthReq.idvId: $VID-PIN$
       StaticPinAuthReq.idvIdType: V
       StaticPinAuthReq.pin: false
       StaticPinAuthReq.tspID: TSP0001
-      StaticPinAuthReq.valuepinInfo: 241312
+      StaticPinAuthReq.valuepinInfo: $staticPin~$StaticPinAuthReq.idvId$
       StaticPinAuthReq.txnID: $RANDOM:N:10$
       StaticPinAuthReq.reqTime: $TIMESTAMP$
     output.output-1-expected-n-error-res:
@@ -289,5 +403,136 @@ testdata:
       output.1.response.n.resTime: $IGNORE$
       output.1.response.n.errorMessage: No authentication type selected
       output.1.response.n.errorCode: IDA-MLC-008
+
+      
+  Invalid_idvidType_with invalid format_For UIN_Neg_24:
+    input.staticpin-auth-request:
+      StaticPinAuthReq.idvId: $UIN-PIN$
+      StaticPinAuthReq.valuepinInfo: $staticPin~$StaticPinAuthReq.idvId$
+      StaticPinAuthReq.idvIdType: 2
+      StaticPinAuthReq.tspID: TSP0001
+      StaticPinAuthReq.txnID: $RANDOM:N:10$
+      StaticPinAuthReq.reqTime: $TIMESTAMP$
+    output.output-1-expected-n-error-res:
+      output.1.response.n.status: N
+      output.1.response.n.resTime: $IGNORE$
+      output.1.response.n.errorMessage: Invalid Input Parameter - idvIdType
+      output.1.response.n.errorCode: IDA-IDV-002
+
+      
+  Invalid_idvidType_with invalid format_For VID_Neg_25:
+    input.staticpin-auth-request:
+      StaticPinAuthReq.idvId: $VID-PIN$
+      StaticPinAuthReq.valuepinInfo: $staticPin~$StaticPinAuthReq.idvId$
+      StaticPinAuthReq.idvIdType: 2
+      StaticPinAuthReq.tspID: TSP0001
+      StaticPinAuthReq.txnID: $RANDOM:N:10$
+      StaticPinAuthReq.reqTime: $TIMESTAMP$
+    output.output-1-expected-n-error-res:
+      output.1.response.n.status: N
+      output.1.response.n.resTime: $IGNORE$
+      output.1.response.n.errorMessage: Invalid Input Parameter - idvIdType
+      output.1.response.n.errorCode: IDA-IDV-002
+
+  
+  Invalid_Missing Pin value_For UIN_Neg_26:
+    input.staticpin-auth-request:
+      StaticPinAuthReq.idvId: $UIN-PIN$
+      StaticPinAuthReq.valuepinInfo: $REMOVE$
+      StaticPinAuthReq.idvIdType: D
+      StaticPinAuthReq.tspID: TSP0001
+      StaticPinAuthReq.txnID: $RANDOM:N:10$
+      StaticPinAuthReq.reqTime: $TIMESTAMP$
+    output.output-1-expected-n-error-res:
+      output.1.response.n.status: N
+      output.1.response.n.resTime: $IGNORE$
+      output.1.response.n.errorMessage: Missing Input Parameter - pinValue
+      output.1.response.n.errorCode: IDA-IDV-003
+
+      
+  Invalid_Missing Pin value_For VID_Neg_27:
+    input.staticpin-auth-request:
+      StaticPinAuthReq.idvId: $VID-PIN$
+      StaticPinAuthReq.valuepinInfo: $REMOVE$
+      StaticPinAuthReq.idvIdType: V
+      StaticPinAuthReq.tspID: TSP0001
+      StaticPinAuthReq.txnID: $RANDOM:N:10$
+      StaticPinAuthReq.reqTime: $TIMESTAMP$
+    output.output-1-expected-n-error-res:
+      output.1.response.n.status: N
+      output.1.response.n.resTime: $IGNORE$
+      output.1.response.n.errorMessage: Missing Input Parameter - pinValue
+      output.1.response.n.errorCode: IDA-IDV-003
+   
+  Invalid_Mismatch Pin value_For UIN_Neg_28:
+    input.staticpin-auth-request:
+      StaticPinAuthReq.idvId: $UIN-PIN$
+      StaticPinAuthReq.valuepinInfo: 123456
+      StaticPinAuthReq.idvIdType: D
+      StaticPinAuthReq.tspID: TSP0001
+      StaticPinAuthReq.txnID: $RANDOM:N:10$
+      StaticPinAuthReq.reqTime: $TIMESTAMP$
+    output.output-1-expected-n-error-res:
+      output.1.response.n.status: N
+      output.1.response.n.resTime: $IGNORE$
+      output.1.response.n.errorMessage: Pin value did not match
+      output.1.response.n.errorCode: IDA-SPA-001
+    audit.auth_transaction:
+      refId: $input.staticpin-auth-request:StaticPinAuthReq.idvId$
+      txnId: $input.staticpin-auth-request:StaticPinAuthReq.txnID$
+      authTypeCode: STATIC-PIN-AUTH
+      statusCode: $output.output-1-expected-y-res:output.1.response.y.status$
+      statusComment: $REGEXP:.*Pin.*Authentication.*Success.*$
+      idType: D
+    audit.audit_log:
+      refId: $input.staticpin-auth-request:StaticPinAuthReq.idvId$
+      eventId: $REGEXP:.*IDA-EVT.*$
+      eventName: AUTH_REQUEST_RESPONSE
+      appId: IDA
+      refIdType: UIN
+      appName: ID-Authentication
+      moduleName: PIN_AUTH 
+      
+  Invalid_Mismatch Pin value_For VID_Neg_29:
+    input.staticpin-auth-request:
+      StaticPinAuthReq.idvId: $VID-PIN$
+      StaticPinAuthReq.valuepinInfo: $RANDOM:N:6$
+      StaticPinAuthReq.idvIdType: V
+      StaticPinAuthReq.tspID: TSP0001
+      StaticPinAuthReq.txnID: $RANDOM:N:10$
+      StaticPinAuthReq.reqTime: $TIMESTAMP$
+    output.output-1-expected-n-error-res:
+      output.1.response.n.status: N
+      output.1.response.n.resTime: $IGNORE$
+      output.1.response.n.errorMessage: Pin value did not match
+      output.1.response.n.errorCode: IDA-SPA-001
       output.1.response.n.txnID: $input.staticpin-auth-request:StaticPinAuthReq.txnID$
-     
+    audit.auth_transaction:
+      refId: $input.staticpin-auth-request:StaticPinAuthReq.idvId$
+      txnId: $input.staticpin-auth-request:StaticPinAuthReq.txnID$
+      authTypeCode: STATIC-PIN-AUTH
+      statusCode: $output.output-1-expected-y-res:output.1.response.y.status$
+      statusComment: $REGEXP:.*Pin.*Authentication.*Success.*$
+      idType: V
+    audit.audit_log:
+      refId: $input.staticpin-auth-request:StaticPinAuthReq.idvId$
+      eventId: $REGEXP:.*IDA-EVT.*$
+      eventName: AUTH_REQUEST_RESPONSE
+      appId: IDA
+      refIdType: VID
+      appName: ID-Authentication
+      moduleName: PIN_AUTH 
+  
+  Invalid_Deactivated_UIN_Neg_30:
+    input.staticpin-auth-request:
+      StaticPinAuthReq.idvId: $UIN:WITH:Deactivated$
+      StaticPinAuthReq.tspID: TSP0001
+      StaticPinAuthReq.valuepinInfo: 123456
+      StaticPinAuthReq.txnID: $RANDOM:N:10$
+      StaticPinAuthReq.reqTime: $TIMESTAMP$
+    output.output-1-expected-n-error-res:
+      output.1.response.n.status: N
+      output.1.response.n.resTime: $IGNORE$
+      output.1.response.n.errorMessage: Invalid UIN
+      output.1.response.n.errorCode: IDA-MLC-002
+ 
