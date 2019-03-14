@@ -24,8 +24,8 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseWrapper;
+import io.mosip.kernel.core.util.EmptyCheckUtils;
 import io.mosip.kernel.otpmanager.constant.OtpErrorConstants;
-import io.mosip.kernel.otpmanager.util.EmptyCheckUtils;
 
 /**
  * Central class for handling exceptions.
