@@ -130,6 +130,12 @@ export const languageMapping = {
   }
 };
 
+export const notificationDtoKeys = {
+  notificationDto: 'NotificationDTO',
+  langCode: 'langCode',
+  file: 'file'
+}
+
 export const DOCUMENT_UPLOAD_REQUEST_DOCUMENT_KEY = 'file';
 export const DOCUMENT_UPLOAD_REQUEST_DTO_KEY = 'Document request';
 
