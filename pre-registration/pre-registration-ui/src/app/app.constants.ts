@@ -32,7 +32,11 @@ export const APPEND_URL = {
   location: 'masterdata/',
   gender: 'masterdata/v1.0/gendertypes',
   transliteration: 'transliteration/transliterate',
+<<<<<<< Updated upstream
   applicantType: 'applicanttype/v1.0/applicanttype/',
+=======
+  applicantType: 'applicanttype/',
+>>>>>>> Stashed changes
   validDocument: 'v1.0/applicanttype/',
   getApplicantType: 'getApplicantType'
 };
