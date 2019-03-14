@@ -6,6 +6,7 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -128,18 +129,22 @@ public class UpdateUINController extends BaseController implements Initializable
 			SessionContext.map().put(RegistrationConstants.IS_CONSOLIDATED, RegistrationConstants.DISABLE);
 			fxUtils.validateOnType(uinUpdateRoot, uinId, validation);
 			biometricBox.getChildren().forEach(bio -> {
-				if (RegistrationConstants.DISABLE.equalsIgnoreCase(String.valueOf(ApplicationContext.map().get(RegistrationConstants.FINGERPRINT_DISABLE_FLAG)))
+				if (RegistrationConstants.DISABLE.equalsIgnoreCase(
+						String.valueOf(ApplicationContext.map().get(RegistrationConstants.FINGERPRINT_DISABLE_FLAG)))
 						&& RegistrationConstants.UIN_UPDATE_BIO_FP.equalsIgnoreCase(bio.getId())) {
 					bio.setVisible(false);
 					bio.setManaged(false);
 				}
-				if (RegistrationConstants.DISABLE.equalsIgnoreCase(String.valueOf(ApplicationContext.map().get(RegistrationConstants.IRIS_DISABLE_FLAG)))
+				if (RegistrationConstants.DISABLE.equalsIgnoreCase(
+						String.valueOf(ApplicationContext.map().get(RegistrationConstants.IRIS_DISABLE_FLAG)))
 						&& RegistrationConstants.UIN_UPDATE_BIO_IRIS.equalsIgnoreCase(bio.getId())) {
 					bio.setVisible(false);
 					bio.setManaged(false);
 				}
-				if (RegistrationConstants.DISABLE.equalsIgnoreCase(String.valueOf(ApplicationContext.map().get(RegistrationConstants.FINGERPRINT_DISABLE_FLAG)))
-						&& RegistrationConstants.DISABLE.equalsIgnoreCase(String.valueOf(ApplicationContext.map().get(RegistrationConstants.IRIS_DISABLE_FLAG)))
+				if (RegistrationConstants.DISABLE.equalsIgnoreCase(
+						String.valueOf(ApplicationContext.map().get(RegistrationConstants.FINGERPRINT_DISABLE_FLAG)))
+						&& RegistrationConstants.DISABLE.equalsIgnoreCase(
+								String.valueOf(ApplicationContext.map().get(RegistrationConstants.IRIS_DISABLE_FLAG)))
 						&& RegistrationConstants.UIN_UPDATE_BIO_EXCEPTION.equalsIgnoreCase(bio.getId())) {
 					bio.setVisible(false);
 					bio.setManaged(false);
@@ -157,24 +162,16 @@ public class UpdateUINController extends BaseController implements Initializable
 	 * Update UIN fields configuration.
 	 */
 	private void updateUINFieldsConfiguration() {
+
 		List<String> configuredFieldsfromDB = Arrays.asList(
 				String.valueOf(ApplicationContext.map().get(RegistrationConstants.UIN_UPDATE_CONFIG_FIELDS_FROM_DB))
 						.split(","));
 
-		for (String configureField : UIN_UPDATE_CONFIGURED_DEMOGRAPHIC_FIELDS_LIST) {
-			if (!configuredFieldsfromDB.contains(configureField)) {
-				demographicHBox.getChildren().forEach(demographicNode -> {
-					if (demographicNode.getId().equalsIgnoreCase(configureField)) {
-						demographicNode.setVisible(false);
-						demographicNode.setManaged(false);
-					}
-				});
-			}
-
-		}
+		List<String> configvalues = new ArrayList<>();
+		configvalues.addAll(configuredFieldsfromDB);
 
 		for (String configureField : UIN_UPDATE_CONFIGURED_BIO_FIELDS_LIST) {
-			if (!configuredFieldsfromDB.contains(configureField)) {
+			if (!configvalues.contains(configureField)) {
 				biometricBox.getChildren().forEach(demographicNode -> {
 					if (demographicNode.getId().equalsIgnoreCase(configureField)) {
 						demographicNode.setVisible(false);
@@ -184,17 +181,51 @@ public class UpdateUINController extends BaseController implements Initializable
 			} else {
 				biometricBox.getChildren().forEach(demographicNode -> {
 					if (demographicNode.getId().equalsIgnoreCase(RegistrationConstants.UIN_UPDATE_BIO_FP)
-							&& RegistrationConstants.DISABLE.equalsIgnoreCase(String.valueOf(ApplicationContext.map().get(RegistrationConstants.FINGERPRINT_DISABLE_FLAG)))
+							&& RegistrationConstants.DISABLE.equalsIgnoreCase(String.valueOf(
+									ApplicationContext.map().get(RegistrationConstants.FINGERPRINT_DISABLE_FLAG)))
 							|| demographicNode.getId().equalsIgnoreCase(RegistrationConstants.UIN_UPDATE_BIO_IRIS)
-									&& RegistrationConstants.DISABLE.equalsIgnoreCase(String.valueOf(ApplicationContext.map().get(RegistrationConstants.IRIS_DISABLE_FLAG)))
+									&& RegistrationConstants.DISABLE.equalsIgnoreCase(String.valueOf(
+											ApplicationContext.map().get(RegistrationConstants.IRIS_DISABLE_FLAG)))
 							|| demographicNode.getId().equalsIgnoreCase(RegistrationConstants.UIN_UPDATE_BIO_EXCEPTION)
-									&& RegistrationConstants.DISABLE.equalsIgnoreCase(String.valueOf(ApplicationContext.map().get(RegistrationConstants.FINGERPRINT_DISABLE_FLAG)))
-									&& RegistrationConstants.DISABLE.equalsIgnoreCase(String.valueOf(ApplicationContext.map().get(RegistrationConstants.IRIS_DISABLE_FLAG)))) {
+									&& RegistrationConstants.DISABLE.equalsIgnoreCase(String.valueOf(ApplicationContext
+											.map().get(RegistrationConstants.FINGERPRINT_DISABLE_FLAG)))
+									&& RegistrationConstants.DISABLE.equalsIgnoreCase(String.valueOf(
+											ApplicationContext.map().get(RegistrationConstants.IRIS_DISABLE_FLAG)))) {
+						demographicNode.setVisible(false);
+						demographicNode.setManaged(false);
+						configvalues.remove(demographicNode.getId());
+					}
+
+				});
+				biometricBox.getChildren().forEach(demographicNode -> {
+
+					if (demographicNode.getId().equalsIgnoreCase(configureField) && configvalues.size() == 1) {
+						demographicNode.setDisable(true);
+						((CheckBox) demographicNode).setSelected(true);
+					}
+				});
+			}
+		}
+		
+		for (String configureField : UIN_UPDATE_CONFIGURED_DEMOGRAPHIC_FIELDS_LIST) {
+			if (!configvalues.contains(configureField)) {
+				demographicHBox.getChildren().forEach(demographicNode -> {
+					if (demographicNode.getId().equalsIgnoreCase(configureField)) {
 						demographicNode.setVisible(false);
 						demographicNode.setManaged(false);
 					}
 				});
+			} else {
+				demographicHBox.getChildren().forEach(demographicNode -> {
+					if (demographicNode.getId().equalsIgnoreCase(configureField)
+							&& configvalues.size() == 1) {
+						demographicNode.setDisable(true);
+						((CheckBox) demographicNode).setSelected(true);
+					}
+				});
+
 			}
+
 		}
 	}
 
