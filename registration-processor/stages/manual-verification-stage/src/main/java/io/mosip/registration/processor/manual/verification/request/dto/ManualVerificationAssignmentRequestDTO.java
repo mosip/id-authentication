@@ -1,6 +1,5 @@
 package io.mosip.registration.processor.manual.verification.request.dto;
 
-import io.mosip.registration.processor.core.code.DedupeSourceName;
 import io.mosip.registration.processor.core.common.rest.dto.BaseRestRequestDTO;
 import io.mosip.registration.processor.manual.verification.dto.UserDto;
 import lombok.Data;
@@ -22,11 +21,9 @@ public class ManualVerificationAssignmentRequestDTO extends BaseRestRequestDTO {
 	private static final long serialVersionUID = -40776199886412084L;
 	/** The request. */
 	private UserDto request;
-<<<<<<< Updated upstream
-	private DedupeSourceName matchType;
-=======
+
 	/** The source name. */
 	private String matchType;
->>>>>>> Stashed changes
+
 		
 }
