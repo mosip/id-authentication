@@ -24,7 +24,6 @@ import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.core.http.ResponseWrapper;
 
-
 /**
  * @author Bal Vikash Sharma
  *
@@ -35,16 +34,27 @@ public class ResponseBodyAdviceConfig implements ResponseBodyAdvice<Object> {
 	@Autowired
 	private ObjectMapper objectMapper;
 
-	/* (non-Javadoc)
-	 * @see org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice#supports(org.springframework.core.MethodParameter, java.lang.Class)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice#
+	 * supports(org.springframework.core.MethodParameter, java.lang.Class)
 	 */
 	@Override
 	public boolean supports(MethodParameter returnType, Class<? extends HttpMessageConverter<?>> converterType) {
 		return returnType.hasMethodAnnotation(ResponseFilter.class);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice#beforeBodyWrite(java.lang.Object, org.springframework.core.MethodParameter, org.springframework.http.MediaType, java.lang.Class, org.springframework.http.server.ServerHttpRequest, org.springframework.http.server.ServerHttpResponse)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice#
+	 * beforeBodyWrite(java.lang.Object, org.springframework.core.MethodParameter,
+	 * org.springframework.http.MediaType, java.lang.Class,
+	 * org.springframework.http.server.ServerHttpRequest,
+	 * org.springframework.http.server.ServerHttpResponse)
 	 */
 	@Override
 	public Object beforeBodyWrite(Object body, MethodParameter returnType, MediaType selectedContentType,
@@ -66,11 +76,16 @@ public class ResponseBodyAdviceConfig implements ResponseBodyAdvice<Object> {
 								.getContentAsByteArray());
 			}
 			objectMapper.registerModule(new JavaTimeModule());
-			requestWrapper = objectMapper.readValue(requestBody, RequestWrapper.class);
-			responseWrapper.setResponse(body);
-			responseWrapper.setId(requestWrapper.getId());
-			responseWrapper.setVersion(requestWrapper.getVersion());
+			if (requestBody != null && requestBody.trim().length() > 0) {
+				requestWrapper = objectMapper.readValue(requestBody, RequestWrapper.class);
+				responseWrapper.setId(requestWrapper.getId());
+				responseWrapper.setVersion(requestWrapper.getVersion());
+			} else {
+				responseWrapper.setId(null);
+				responseWrapper.setVersion(null);
+			}
 			responseWrapper.setResponsetime(LocalDateTime.now(ZoneId.of("UTC")));
+			responseWrapper.setResponse(body);
 			return responseWrapper;
 		} catch (Exception e) {
 			System.err.println(e.getMessage());

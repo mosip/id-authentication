@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.core.otpmanager.spi.OtpValidator;
 import io.mosip.kernel.otpmanager.dto.OtpValidatorResponseDto;
 
@@ -35,6 +36,7 @@ public class OtpValidatorController {
 	 *            the OTP to be validated.
 	 * @return the validation status as DTO response.
 	 */
+	@ResponseFilter
 	@GetMapping(value = "/otp/validate")
 	public ResponseEntity<OtpValidatorResponseDto> validateOtp(@RequestParam String key, @RequestParam String otp) {
 		return otpValidatorService.validateOtp(key, otp);
