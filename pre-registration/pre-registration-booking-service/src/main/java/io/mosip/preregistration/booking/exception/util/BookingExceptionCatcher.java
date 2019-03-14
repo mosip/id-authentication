@@ -126,7 +126,7 @@ public class BookingExceptionCatcher {
 					((AppointmentReBookException) ex).getErrorText());
 		}
 		else if (ex instanceof TimeSpanException) {
-			throw new AppointmentReBookException(((TimeSpanException) ex).getErrorCode(),
+			throw new TimeSpanException(((TimeSpanException) ex).getErrorCode(),
 					((TimeSpanException) ex).getErrorText());
 		}
 		else if (ex instanceof RecordFailedToDeleteException) {
