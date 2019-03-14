@@ -2,12 +2,20 @@
 
 [Background & Design]( https://github.com/mosip/mosip/wiki/MOSIP-Configuration-Server )
 
+Default Port and Context Path
+
+```
+server.port=51000
+server.servlet.path=/config
+
+```
+
 **For Encryption Decryption of properties** <br/>
 <br/>
 Create keystore with following command: <br/>
 `keytool -genkeypair -alias <your-alias> -keyalg RSA -keystore server.keystore -storepass <store-password> --dname "CN=<your-CN>,OU=<OU>,O=<O>,L=<L>,S=<S>,C=<C>"`
 
-When you run the above command it will ask you for password for <your-alias> , choose your password or press enter for same password as < store-password >
+When you run the above command it will ask you for password for < your-alias > , choose your password or press enter for same password as < store-password >
 
 The JKS keystore uses a proprietary format. It is recommended to migrate to PKCS12 which is an industry standard format, migrate it using following command:
 `keytool -importkeystore -srckeystore server.keystore -destkeystore server.keystore -deststoretype pkcs12` <br/>
@@ -16,7 +24,8 @@ For more information look [here]( https://cloud.spring.io/spring-cloud-config/si
 **How To Run**
 <br/>
 To run the application: <br/>
-Make sure you have configured ssh keys to connect to git, because it will take ssh keys from default location, and give following command: <br/>
+Make sure you have configured ssh keys to connect to git, because it will take ssh keys from default location (${user.home}/.ssh) . 
+Now run the jar using the following command: <br/>
 <br/>
 `java -jar -Dspring.cloud.config.server.git.uri=< git-repo-ssh-url > -Dspring.cloud.config.server.git.search-paths=< config-folder-location-in-git-repo > -Dencrypt.keyStore.location=file:///< file-location-of-keystore > -Dencrypt.keyStore.password=< keystore-passowrd > -Dencrypt.keyStore.alias=< keystore-alias > -Dencrypt.keyStore.secret=< keystore-secret > < jar-name >`
 <br/>
@@ -47,16 +56,16 @@ The final docker run command should look like:
 <br/>
 **To Encrypt any property:** <br/>
 Run the following command : <br/>
-`curl http://<your-config-server-hostname>:<your-config-server-port>/encrypt -d <value-to-encrypt>`
+`curl http://<your-config-server-address>/<application-context-path-if-any>/encrypt -d <value-to-encrypt>`
 
 And place the encrypted value in client application properties file with the format: <br/>
 `password={cipher}<encrypted-value>`
 
 **To Decrypt any property manually:** <br/>
 
-`curl http://<your-config-server-hostname>:<your-config-server-port>/decrypt -d <encrypted-value-to-decrypt>`
+`curl http://<your-config-server-address>/<application-context-path-if-any>/decrypt -d <encrypted-value-to-decrypt>`
 
-**NOTE** There is no need to write decryption mechanism in client applications for encrypted values. They will be automatically decrypted.
+**NOTE** There is no need to write decryption mechanism in client applications for encrypted values. They will be automatically decrypted by config server. 
 
 
 
@@ -116,7 +125,7 @@ spring.cloud.config.server.git.cloneOnStart=true
 
 **Config hierarchy**
 
-![Confif Properties](../../docs/design/kernel/_images/GlobalProperties_1.jpg)
+![Config Properties](../../docs/design/kernel/_images/GlobalProperties_1.jpg)
 
 
 

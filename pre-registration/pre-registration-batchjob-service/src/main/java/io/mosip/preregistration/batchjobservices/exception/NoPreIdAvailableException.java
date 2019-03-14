@@ -2,7 +2,7 @@
  * Copyright
  * 
  */
-package io.mosip.preregistration.batchjobservices.exceptions;
+package io.mosip.preregistration.batchjobservices.exception;
 
 import io.mosip.kernel.core.exception.BaseUncheckedException;
 
