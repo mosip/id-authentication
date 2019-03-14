@@ -134,7 +134,7 @@ public class Precondtion {
 	 * @param object
 	 * @return
 	 */
-	private String removeObject(JSONObject object) {
+	public String removeObject(JSONObject object) {
 		Iterator<String> keysItr = object.keys();
 		while (keysItr.hasNext()) {
 			String key = keysItr.next();
