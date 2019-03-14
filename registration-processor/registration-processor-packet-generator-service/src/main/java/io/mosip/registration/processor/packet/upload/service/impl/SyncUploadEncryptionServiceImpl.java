@@ -38,6 +38,9 @@ import io.mosip.registration.processor.packet.service.dto.RegSyncResponseDTO;
 import io.mosip.registration.processor.packet.service.dto.RegistrationSyncRequestDTO;
 import io.mosip.registration.processor.packet.service.dto.SyncRegistrationDTO;
 import io.mosip.registration.processor.packet.service.dto.SyncResponseDto;
+import io.mosip.registration.processor.packet.service.exception.ApisresourceAccessException;
+import io.mosip.registration.processor.packet.service.exception.FileNotAccessibleException;
+import io.mosip.registration.processor.packet.service.exception.InvalidKeyNoArgJsonException;
 import io.mosip.registration.processor.packet.service.exception.RegBaseCheckedException;
 import io.mosip.registration.processor.packet.service.exception.RegBaseUncheckedException;
 import io.mosip.registration.processor.packet.service.util.encryptor.EncryptorUtil;
@@ -121,26 +124,25 @@ public class SyncUploadEncryptionServiceImpl implements SyncUploadEncryptionServ
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registartionId,
 					PlatformErrorMessages.RPR_PGS_FILE_NOT_PRESENT.getMessage() + ExceptionUtils.getStackTrace(e));
-			// throw new
-			// FileNotAccessibleException(PlatformErrorMessages.RPR_PGS_FILE_NOT_PRESENT.getCode(),e);
+			throw new FileNotAccessibleException(PlatformErrorMessages.RPR_PGS_FILE_NOT_PRESENT.getCode(), e);
 
 		} catch (InvalidKeySpecException | NoSuchAlgorithmException | JSONException | IOException e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registartionId, PlatformErrorMessages.RPR_PGS_INVALID_KEY_ILLEGAL_ARGUMENT.getMessage()
 							+ ExceptionUtils.getStackTrace(e));
-			// throw new
-			// InvalidKeyNoArgJsonException(PlatformErrorMessages.RPR_PGS_INVALID_KEY_ILLEGAL_ARGUMENT.getCode());
+			throw new InvalidKeyNoArgJsonException(
+					PlatformErrorMessages.RPR_PGS_INVALID_KEY_ILLEGAL_ARGUMENT.getCode());
 		} catch (ApisResourceAccessException e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registartionId, PlatformErrorMessages.RPR_PGS_API_RESOURCE_NOT_AVAILABLE.getMessage()
 							+ ExceptionUtils.getStackTrace(e));
-			// throw new
-			// ApisresourceAccessException(PlatformErrorMessages.RPR_PGS_API_RESOURCE_NOT_AVAILABLE.getCode());
+			throw new ApisresourceAccessException(PlatformErrorMessages.RPR_PGS_API_RESOURCE_NOT_AVAILABLE.getCode());
 		} catch (RegBaseCheckedException e) {
-					regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
-					LoggerFileConstant.REGISTRATIONID.toString(),registartionId,
-					PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION.getMessage()+ ExceptionUtils.getStackTrace(e));
-			throw new RegBaseUncheckedException(PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION.getCode(),PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION.getMessage());
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					registartionId,
+					PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION.getMessage() + ExceptionUtils.getStackTrace(e));
+			throw new RegBaseUncheckedException(PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION.getCode(),
+					PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION.getMessage());
 		} finally {
 
 		}
