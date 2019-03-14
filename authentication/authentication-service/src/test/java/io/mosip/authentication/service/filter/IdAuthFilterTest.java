@@ -62,7 +62,7 @@ public class IdAuthFilterTest {
 	}
 
 	@SuppressWarnings("unchecked")
-	@Test(expected = IdAuthenticationAppException.class)
+	@Test
 	public void testDecodedRequest() throws IdAuthenticationAppException, ServletException, JsonParseException,
 			JsonMappingException, IOException {
 		KeyManager keyManager = Mockito.mock(KeyManager.class);

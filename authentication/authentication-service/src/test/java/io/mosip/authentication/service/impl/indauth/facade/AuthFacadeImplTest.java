@@ -447,9 +447,6 @@ public class AuthFacadeImplTest {
 	@Test
 	public void processKycAuthValid() throws IdAuthenticationBusinessException {
 		KycAuthRequestDTO kycAuthRequestDTO = new KycAuthRequestDTO();
-//		dto.setConsentRequired(Boolean.TRUE);
-//		dto.setSecondaryLangCode("fra");
-//		kycAuthRequestDTO.setKycMetadata(dto);
 		kycAuthRequestDTO.setId("id");
 		kycAuthRequestDTO.setVersion("1.1");
 		kycAuthRequestDTO.setRequestTime(ZonedDateTime.now()
@@ -520,9 +517,6 @@ public class AuthFacadeImplTest {
 	@Test
 	public void processKycAuthInValid() throws IdAuthenticationBusinessException {
 		KycAuthRequestDTO kycAuthRequestDTO = new KycAuthRequestDTO();
-//		dto.setConsentRequired(Boolean.TRUE);
-//		dto.setSecondaryLangCode("fra");
-//		kycAuthRequestDTO.setKycMetadata(dto);
 		kycAuthRequestDTO.setId("id");
 		kycAuthRequestDTO.setVersion("1.1");
 		kycAuthRequestDTO.setRequestTime(ZonedDateTime.now()
@@ -595,9 +589,6 @@ public class AuthFacadeImplTest {
 	@Test
 	public void processKycAuthRequestNull() throws IdAuthenticationBusinessException {
 	KycAuthRequestDTO kycAuthRequestDTO = new KycAuthRequestDTO();
-//		dto.setConsentRequired(Boolean.TRUE);
-//		dto.setSecondaryLangCode("fra");
-//		kycAuthRequestDTO.setKycMetadata(dto);
 		kycAuthRequestDTO.setId("id");
 		kycAuthRequestDTO.setVersion("1.1");
 		kycAuthRequestDTO.setRequestTime(ZonedDateTime.now()
