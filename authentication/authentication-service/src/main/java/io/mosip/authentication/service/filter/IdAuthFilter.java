@@ -29,11 +29,11 @@ import io.mosip.kernel.core.util.DateUtils;
 @Component
 public class IdAuthFilter extends BaseAuthFilter {
 	
-	private static final String MISP_ID = "mispID";
+	private static final String MISP_ID = "mispId";
 
 	private static final String MISP_LK = "mispLk";
 
-	private static final String PATRNER_ID = "patrnerId";
+	private static final String PATRNER_ID = "partnerId";
 
 	/** The Constant POLICY_ID. */
 	private static final String POLICY_ID = "policyId";
@@ -74,12 +74,11 @@ public class IdAuthFilter extends BaseAuthFilter {
 	@Override
 	protected Map<String, Object> decipherRequest(Map<String, Object> requestBody) throws IdAuthenticationAppException {
 		try {
-			 String partnerId=(String)requestBody.get(PATRNER_ID);
+			/* String partnerId=(String)requestBody.get(PATRNER_ID);
 			 String licenseKey=(String)requestBody.get(MISP_LK);
-			 String mispId=(String)requestBody.get(MISP_ID);
-			 licenseKeyMISPMapping(licenseKey, mispId);
+			 String mispId= licenseKeyMISPMapping(licenseKey);
 			 validPartnerId(partnerId);
-			 String policyId=validMISPPartnerMapping(partnerId, mispId);
+			 String policyId=validMISPPartnerMapping(partnerId, mispId);*/
 			 //checkAllowedAuthTypebasedOnPolicy(policyId, authRequestDTO);
 			requestBody.replace(REQUEST, decode((String) requestBody.get(REQUEST)));
 			if (null != requestBody.get(REQUEST)) {
@@ -112,12 +111,14 @@ public class IdAuthFilter extends BaseAuthFilter {
 	 * @param mispId the misp id
 	 * @throws IdAuthenticationAppException the id authentication app exception
 	 */
-	private void licenseKeyMISPMapping(String licenseKey, String mispId) throws IdAuthenticationAppException {
-		String licensekeyMappingJson = env.getProperty("licensekey.mispmapping." + licenseKey + "." + mispId);
+	private String licenseKeyMISPMapping(String licenseKey) throws IdAuthenticationAppException {
+		String mispId=null;
 		Map<String, String> licenseKeyMap = null;
+		String licensekeyMappingJson = env.getProperty("licensekey." + licenseKey);
 		if (null != licensekeyMappingJson) {
 			try {
 				licenseKeyMap = mapper.readValue(mapper.writeValueAsBytes(licensekeyMappingJson), Map.class);
+				mispId=licenseKeyMap.get(MISP_ID);
 			} catch (IOException e) {
 				throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS);
 			}
@@ -132,7 +133,7 @@ public class IdAuthFilter extends BaseAuthFilter {
 		} else {
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.INVALID_LICENSEKEY);
 		}
-
+      return mispId;
 	}
 
 	/**
