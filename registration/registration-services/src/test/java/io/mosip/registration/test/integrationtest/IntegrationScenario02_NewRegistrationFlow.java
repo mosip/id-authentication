@@ -39,6 +39,7 @@ import io.mosip.registration.service.LoginService;
 import io.mosip.registration.service.UserOnboardService;
 import io.mosip.registration.service.config.GlobalParamService;
 import io.mosip.registration.service.packet.PacketHandlerService;
+import io.mosip.registration.service.packet.PacketUploadService;
 
 
 @SuppressWarnings("deprecation")
@@ -55,6 +56,8 @@ public class IntegrationScenario02_NewRegistrationFlow extends BaseIntegrationTe
 	private RidGenerator<String> ridGeneratorImpl;
 	@Autowired
 	UserOnboardService userOBservice;
+	@Autowired
+	PacketUploadService PacketUploadservice;
 	
 	//////////////////////////////////////////login
 	public void login() {
@@ -95,7 +98,7 @@ public class IntegrationScenario02_NewRegistrationFlow extends BaseIntegrationTe
 
 	}
 
-	public void testHandelPacket() throws JsonParseException, JsonMappingException, IOException {
+	public String testHandelPacket() throws JsonParseException, JsonMappingException, IOException {
 		ObjectMapper mapper = new ObjectMapper();
 		mapper.registerModule(new JSR310Module());
 		mapper.addMixInAnnotations(DemographicInfoDTO.class, DemographicInfoDTOMix.class);
@@ -169,6 +172,7 @@ public class IntegrationScenario02_NewRegistrationFlow extends BaseIntegrationTe
 		System.out.println(jsonInString);
 		Assert.assertEquals(response.getSuccessResponseDTO().getCode().toString(), "0000");
 		Assert.assertEquals(response.getSuccessResponseDTO().getMessage().toString(), "Success");
+		return RandomID;
 	}
 
 	
@@ -179,6 +183,9 @@ public class IntegrationScenario02_NewRegistrationFlow extends BaseIntegrationTe
 	@Test
 	public void testNewRegistrationFlow() throws InterruptedException, ParseException, JsonParseException, JsonMappingException, IOException {
 		login();
-		testHandelPacket();
+		String packetId=testHandelPacket();
+		System.out.println(packetId);
+		//PacketUploadservice.uploadPacket(packetId);
+		
 	}
 }

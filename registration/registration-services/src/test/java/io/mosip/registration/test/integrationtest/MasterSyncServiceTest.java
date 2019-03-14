@@ -1,6 +1,7 @@
 package io.mosip.registration.test.integrationtest;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -35,23 +36,19 @@ public class MasterSyncServiceTest extends BaseIntegrationTest {
 		ResponseDTO result = mastersyncservice
 				.getMasterSync(testdataparsejson.getDataFromJsonViaKey("masterSyncDetails"), "System");
 		System.out.println(RegistrationConstants.MASTER_SYNC_OFFLINE_FAILURE_MSG);
-		System.out.println(result.getErrorResponseDTOs().get(0).getMessage());
-		assertEquals(RegistrationConstants.MASTER_SYNC_FAILURE_MSG_INFO,
-				result.getErrorResponseDTOs().get(0).getMessage());
+		assertNull(result.getErrorResponseDTOs());
 
 	}
 
-	@Ignore
+	@Test
 	public void masterSync_verify_getMasterSync_getSuccessResponseDTOs() {
 		// defect MOS-15831
 //this test validates the message when sync is success
 		// mastersyncservice.getMasterSync(masterSyncDetails);
 		ResponseDTO result = mastersyncservice
 				.getMasterSync(testdataparsejson.getDataFromJsonViaKey("masterSyncDetails"), "System");
-		System.out.println(RegistrationConstants.MASTER_SYNC_SUCCESS);
 
-		System.out.println(result.getSuccessResponseDTO().getMessage());
-		assertEquals(RegistrationConstants.MASTER_SYNC_SUCCESS, result.getSuccessResponseDTO().getMessage());
+		assertEquals(RegistrationConstants.SUCCESS, result.getSuccessResponseDTO().getMessage());
 
 		System.out.println("********" + RegistrationAppHealthCheckUtil.isNetworkAvailable());
 
