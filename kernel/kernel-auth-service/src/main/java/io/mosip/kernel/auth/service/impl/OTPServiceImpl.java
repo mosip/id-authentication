@@ -199,12 +199,17 @@ public class OTPServiceImpl implements OTPService {
 			throw new AuthManagerException(String.valueOf(HttpStatus.UNAUTHORIZED.value()),message);
 		}
 		if (response.getStatusCode().equals(HttpStatus.OK)) {
-			BasicTokenDto basicToken = tokenGenerator.basicGenerateOTPToken(mosipUser, true);
-			mosipUserDtoToken = new MosipUserDtoToken(mosipUser, basicToken.getAuthToken(),
-					basicToken.getRefreshToken(), basicToken.getExpiryTime(), null,null);
 			OtpValidatorResponseDto otpValidatorDto = response.getBody();
-			mosipUserDtoToken.setMessage(otpValidatorDto.getMessage());
-			mosipUserDtoToken.setStatus(otpValidatorDto.getStatus());
+			if(otpValidatorDto.getStatus()!=null && otpValidatorDto.getStatus().equals("success"))
+			{
+				BasicTokenDto basicToken = tokenGenerator.basicGenerateOTPToken(mosipUser, true);
+				mosipUserDtoToken = new MosipUserDtoToken(mosipUser, basicToken.getAuthToken(),
+						basicToken.getRefreshToken(), basicToken.getExpiryTime(), null,null);
+
+				mosipUserDtoToken.setMessage(otpValidatorDto.getMessage());
+				mosipUserDtoToken.setStatus(otpValidatorDto.getStatus());
+			}
+			
 		}
 		return mosipUserDtoToken;
 	}

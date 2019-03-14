@@ -149,12 +149,16 @@ public class DBDataStore implements IDataStore {
 		if(mosipUserDto==null)
 		{
 			String userId =createUser(otpUser);
-			roleId = getRole("individual");
+			roleId = getRole(AuthConstant.INDIVIDUAL);
 			if(roleId==null)
 			{
 				roleId=createRole(userId,otpUser);
 			}
 			createMapping(userId,roleId);
+		}
+		else
+		{
+			throw new RuntimeException("Please login to get the details");
 		}
 		return getUser(otpUser.getUserId());
 	}
@@ -168,10 +172,10 @@ public class DBDataStore implements IDataStore {
 	private String createRole(String userId, OtpUser otpUser) {
 		jdbcTemplate.update(NEW_ROLE_OTP, 
 				new MapSqlParameterSource()
-				.addValue("role", "individual")
+				.addValue("role", AuthConstant.INDIVIDUAL)
 				.addValue("description", "Individual User")
 				.addValue("langCode", otpUser.getLangCode()));
-		return "individual";
+		return AuthConstant.INDIVIDUAL;
 		
 	}
 
