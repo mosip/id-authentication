@@ -1,0 +1,14 @@
+testdata:
+  Otp_generate_for_valid_uin_verify_mask_email_smoke_Pos:
+    input.otp-generate-request:
+      otpReq.idvId: $UIN$
+      otpReq.muaCode: 7404012868
+      otpReq.reqTime: $TIMESTAMP$
+      otpReq.txnID: $RANDOM:N:10$
+      otpReq.tspID: TSP00001
+    output.output-1-expected-y-res:
+      output.1.y.res.status: Y
+      output.1.y.res.resTime: $TIMESTAMP$
+      output.1.y.res.txnID: $input.otp-generate-request:otpReq.txnID$
+      output.1.y.res.maskedEmail: $REGEXP:XX.*$
+      output.1.y.res.maskedMobile: $REGEXP:XX.*XX.*$
