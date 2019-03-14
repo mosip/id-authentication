@@ -154,9 +154,9 @@ export class DashBoardComponent implements OnInit {
     return dialogRef;
   }
 
-  onDelete(element) {
+  radioButtonsStatus(status: string) {
     let data = {};
-    if (element.status.toLowerCase() === 'booked') {
+    if (status.toLowerCase() === 'booked') {
       data = {
         case: 'DISCARD',
         disabled: {
@@ -173,99 +173,101 @@ export class DashBoardComponent implements OnInit {
         }
       };
     }
+    return data;
+  }
+
+  confirmationDialog() {
+    const body = {
+      case: 'CONFIRMATION',
+      title: this.secondaryLanguagelabels.title_confirm,
+      message: this.secondaryLanguagelabels.msg_confirm,
+      yesButtonText: this.secondaryLanguagelabels.button_confirm,
+      noButtonText: this.secondaryLanguagelabels.button_cancel
+    };
+    const dialogRef = this.openDialog(body, '250px');
+    return dialogRef;
+  }
+
+  deletePreregistration(element: any) {
+    this.dataStorageService.deleteRegistration(element.applicationID).subscribe(
+      response => {
+        if(!response['errors']) {
+          this.displayMessage(this.secondaryLanguagelabels.title_success,
+            this.secondaryLanguagelabels.msg_deleted);
+          const index = this.users.indexOf(element);
+          this.users.splice(index, 1);
+        } else {
+          this.displayMessage(this.secondaryLanguagelabels.title_error,
+            this.secondaryLanguagelabels.msg_could_not_deleted);
+        }
+      },
+      error => {
+        console.log(error);
+        this.displayMessage(this.secondaryLanguagelabels.title_error,
+          this.secondaryLanguagelabels.msg_could_not_deleted);
+      });
+  }
+
+  cancelAppointment(element: any) {
+    element.regDto.pre_registration_id = element.applicationID;
+            this.dataStorageService.cancelAppointment(new BookingModelRequest(element.regDto)).subscribe(
+              response => {
+                if(!response['errors']) {
+                  this.displayMessage(this.secondaryLanguagelabels.title_success,
+                    this.secondaryLanguagelabels.msg_deleted);
+                  const index = this.users.indexOf(element);
+                  this.users[index].status = 'Pending Appointment';
+                  this.users[index].appointmentDateTime = '-';
+                } else {
+                  this.displayMessage(this.secondaryLanguagelabels.title_error,
+                    this.secondaryLanguagelabels.msg_could_not_deleted);
+                }
+              },
+              error => {
+                console.log(error);
+                this.displayMessage(this.secondaryLanguagelabels.title_error,
+                  this.secondaryLanguagelabels.msg_could_not_deleted);
+              }
+            );
+  }
+
+  onDelete(element) {
+    let data = this.radioButtonsStatus(element.status);
     let dialogRef = this.openDialog(data, `400px`);
     dialogRef.afterClosed().subscribe(selectedOption => {
       if (selectedOption && Number(selectedOption) === 1) {
-        const body = {
-          case: 'CONFIRMATION',
-          title: this.secondaryLanguagelabels.title_confirm,
-          message: this.secondaryLanguagelabels.msg_confirm,
-          yesButtonText: this.secondaryLanguagelabels.button_confirm,
-          noButtonText: this.secondaryLanguagelabels.button_cancel
-        };
-        dialogRef = this.openDialog(body, '250px');
+        dialogRef = this.confirmationDialog();
         dialogRef.afterClosed().subscribe(confirm => {
           if (confirm) {
-            this.dataStorageService.deleteRegistration(element.applicationID).subscribe(
-              response => {
-                const message = {
-                  case: 'MESSAGE',
-                  title: this.secondaryLanguagelabels.title_success,
-                  message: this.secondaryLanguagelabels.msg_deleted
-                };
-                dialogRef = this.openDialog(message, '250px');
-                const index = this.users.indexOf(element);
-                this.users.splice(index, 1);
-              },
-              error => {
-                console.log(error);
-                const message = {
-                  case: 'MESSAGE',
-                  title: this.secondaryLanguagelabels.title_error,
-                  message: this.secondaryLanguagelabels.msg_could_not_deleted
-                };
-                dialogRef = this.openDialog(message, '250px');
-              }
-            );
+            this.deletePreregistration(element);
           } else {
-            const message = {
-              case: 'MESSAGE',
-              title: this.secondaryLanguagelabels.title_error,
-              message: this.secondaryLanguagelabels.msg_could_not_deleted
-            };
-            dialogRef = this.openDialog(message, '250px');
+            this.displayMessage(this.secondaryLanguagelabels.title_error,
+              this.secondaryLanguagelabels.msg_could_not_deleted);
           }
         });
       } else if (selectedOption && Number(selectedOption) === 2) {
-        const body = {
-          case: 'CONFIRMATION',
-          title: this.secondaryLanguagelabels.title_confirm,
-          message: this.secondaryLanguagelabels.msg_confirm,
-          yesButtonText: this.secondaryLanguagelabels.button_confirm,
-          noButtonText: this.secondaryLanguagelabels.button_cancel
-        };
-        dialogRef = this.openDialog(body, '250px');
+        dialogRef = this.confirmationDialog();
         dialogRef.afterClosed().subscribe(confirm => {
           if (confirm) {
-            element.regDto.pre_registration_id = element.applicationID;
-            this.dataStorageService.cancelAppointment(new BookingModelRequest(element.regDto)).subscribe(
-              response => {
-                const message = {
-                  case: 'MESSAGE',
-                  title: this.secondaryLanguagelabels.title_success,
-                  message: this.secondaryLanguagelabels.msg_deleted
-                };
-                dialogRef = this.openDialog(message, '250px');
-                const index = this.users.indexOf(element);
-                this.users[index].status = 'Pending Appointment';
-                this.users[index].appointmentDateTime = '-';
-                // this.dataSource.data[index].status = 'Pending_Appointment';
-                // this.dataSource.data[index].appointmentDateTime = '-';
-                // this.dataSource._updateChangeSubscription();
-              },
-              error => {
-                console.log(error);
-                const message = {
-                  case: 'MESSAGE',
-                  title: this.secondaryLanguagelabels.title_error,
-                  message: this.secondaryLanguagelabels.msg_could_not_deleted
-                };
-                dialogRef = this.openDialog(message, '250px');
-              }
-            );
+            this.cancelAppointment(element);
           } else {
-            const message = {
-              case: 'MESSAGE',
-              title: this.secondaryLanguagelabels.title_error,
-              message: this.secondaryLanguagelabels.msg_could_not_deleted
-            };
-            dialogRef = this.openDialog(message, '250px');
+            this.displayMessage(this.secondaryLanguagelabels.title_error,
+              this.secondaryLanguagelabels.msg_could_not_deleted);
           }
         });
       }
     });
   }
 
+  displayMessage(title: string, message: string) {
+    const messageObj = {
+      case: 'MESSAGE',
+      title: title,
+      message: message
+    };
+    this.openDialog(messageObj, '250px');
+  }
+ 
   onModifyInformation(user: Applicant) {
     const preId = user.applicationID;
     this.regService.changeMessage({ modifyUser: 'true' });

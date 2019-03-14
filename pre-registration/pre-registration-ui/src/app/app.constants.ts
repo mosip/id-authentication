@@ -136,6 +136,10 @@ export const notificationDtoKeys = {
   file: 'file'
 }
 
+export const previewFields = [
+  'region', 'province', 'city', 'localAdministrativeAuthority', 'gender'
+]
+
 export const DOCUMENT_UPLOAD_REQUEST_DOCUMENT_KEY = 'file';
 export const DOCUMENT_UPLOAD_REQUEST_DTO_KEY = 'Document request';
 

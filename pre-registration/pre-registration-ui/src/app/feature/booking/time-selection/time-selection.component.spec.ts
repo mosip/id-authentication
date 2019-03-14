@@ -79,7 +79,7 @@ let service3: ConfigService, mockConfig = {
   getConfigByKey: jasmine.createSpy('getConfigByKey').and.returnValue(7)
 }
 
-fdescribe('TimeSelectionComponent', () => {
+describe('TimeSelectionComponent', () => {
   let component: TimeSelectionComponent;
   let fixture: ComponentFixture<TimeSelectionComponent>;
 

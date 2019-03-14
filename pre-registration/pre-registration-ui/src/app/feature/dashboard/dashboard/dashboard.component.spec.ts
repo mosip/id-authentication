@@ -71,7 +71,7 @@ class MockService {
   }
 }
 
-fdescribe('Dashboard Component', () => {
+describe('Dashboard Component', () => {
   let component: DashBoardComponent;
   let fixture: ComponentFixture<DashBoardComponent>;
   // let location: Location;
