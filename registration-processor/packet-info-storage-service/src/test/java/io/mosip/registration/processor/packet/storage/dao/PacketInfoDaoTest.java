@@ -83,7 +83,6 @@ public class PacketInfoDaoTest {
 		dedupeEntity.setId(dedupePKEntity);
 		dedupeEntity.setDob(date.toString());
 		dedupeEntity.setName("Ibrahim");
-		dedupeEntity.setPhoneticName("I165");
 		dedupeEntity.setGender("mâle");
 		dedupeEntity.setIsActive(true);
 

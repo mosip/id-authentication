@@ -737,7 +737,7 @@ public class PacketInfoManagerImplTest {
 		uinDto.setLangCode("fr");
 		uinDto.setName("IbrahimAli");
 		uinDto.setUin("1234567");
-		uinDto.setDob(date);
+		uinDto.setDob(date.toString());
 
 		DemographicInfoDto uinDto1 = new DemographicInfoDto();
 		uinDto1.setRegId("2018782130000103122018105604");
@@ -745,7 +745,7 @@ public class PacketInfoManagerImplTest {
 		uinDto1.setLangCode("ar");
 		uinDto1.setName("ابراهيمعلي");
 		uinDto1.setUin("1234567");
-		uinDto1.setDob(date);
+		uinDto1.setDob(date.toString());
 
 		depdupeList.add(uinDto);
 		depdupeList.add(uinDto1);

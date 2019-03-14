@@ -36,9 +36,6 @@ public class IndividualDemographicDedupeEntity extends BasePacketEntity<Individu
 	@Column(name = "gender", nullable = false)
 	private String gender;
 
-	@Column(name = "phonetic_name")
-	private String phoneticName;
-
 	@Column(name = "is_active")
 	private Boolean isActive;
 
@@ -147,13 +144,6 @@ public class IndividualDemographicDedupeEntity extends BasePacketEntity<Individu
 		this.delDtimes = delDtimes;
 	}
 
-	public String getPhoneticName() {
-		return phoneticName;
-	}
-
-	public void setPhoneticName(String pheoniticName) {
-		this.phoneticName = pheoniticName;
-	}
 
 	public String getUin() {
 		return uin;

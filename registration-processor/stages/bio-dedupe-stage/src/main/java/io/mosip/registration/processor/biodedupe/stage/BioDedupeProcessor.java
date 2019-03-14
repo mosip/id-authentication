@@ -23,10 +23,12 @@ import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.code.EventId;
 import io.mosip.registration.processor.core.code.EventName;
 import io.mosip.registration.processor.core.code.EventType;
+import io.mosip.registration.processor.core.code.ModuleName;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.constant.ResponseStatusCode;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
+import io.mosip.registration.processor.core.exception.util.PlatformSuccessMessages;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.spi.biodedupe.BioDedupeService;
@@ -42,8 +44,9 @@ import io.mosip.registration.processor.status.service.RegistrationStatusService;
  * @author Sowmya
  *
  */
-/* @Transactional removed temporarily since the refid is not getting saved
-	immediately in abisref table. TODO : need to fix this.
+/*
+ * @Transactional removed temporarily since the refid is not getting saved
+ * immediately in abisref table. TODO : need to fix this.
  */
 @Service
 public class BioDedupeProcessor {
@@ -72,6 +75,8 @@ public class BioDedupeProcessor {
 
 	String description = "";
 
+	private String code = "";
+
 	public MessageDTO process(MessageDTO object) {
 		object.setMessageBusAddress(MessageBusAddress.BIO_DEDUPE_BUS_IN);
 		object.setInternalError(Boolean.FALSE);
@@ -89,86 +94,89 @@ public class BioDedupeProcessor {
 				checkBiometricPotentialMatch(matchedRegIds, registrationStatusDto, registrationId, object);
 			} else {
 				object.setIsValid(Boolean.FALSE);
-				registrationStatusDto.setStatusComment(StatusMessage.PACKET_BIOMETRIC_INSERTION_TO_ABIS);
-				registrationStatusDto.setStatusCode(RegistrationStatusCode.PACKET_BIO_DEDUPE_FAILED.toString());
+				code = PlatformErrorMessages.RPR_BIO_BIOMETRIC_INSERTION_TO_ABIS.getCode();
 				description = registrationStatusDto.getStatusComment() + registrationId;
+				registrationStatusDto
+						.setStatusComment(PlatformErrorMessages.RPR_BIO_BIOMETRIC_INSERTION_TO_ABIS.name());
+				registrationStatusDto.setStatusCode(RegistrationStatusCode.PACKET_BIO_DEDUPE_FAILED.toString());
+
 			}
 			registrationStatusDto.setUpdatedBy(USER);
 			registrationStatusService.updateRegistrationStatus(registrationStatusDto);
 			isTransactionSuccessful = true;
 
-			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					registrationId, description);
+			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
+					code + " - " + LoggerFileConstant.REGISTRATIONID.toString(), registrationId, description);
 		} catch (ABISInternalError e) {
-			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					registrationId,
-					PlatformErrorMessages.PACKET_BIO_DEDUPE_FAILED.getMessage() + ExceptionUtils.getStackTrace(e));
+			code = PlatformErrorMessages.RPR_ABIS_INTERNAL_ERROR.getCode();
+			description = PlatformErrorMessages.RPR_ABIS_INTERNAL_ERROR.getMessage();
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
+					code + " -- " + LoggerFileConstant.REGISTRATIONID.toString(), registrationId,
+					description + "\n" + ExceptionUtils.getStackTrace(e));
 			object.setInternalError(Boolean.TRUE);
-			description = "ABIS Internal error occured while processing registration  id  : " + registrationId;
-
-		}
-
-		catch (ABISAbortException e) {
-			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					registrationId,
-					PlatformErrorMessages.PACKET_BIO_DEDUPE_FAILED.getMessage() + ExceptionUtils.getStackTrace(e));
+		} catch (ABISAbortException e) {
+			code = PlatformErrorMessages.RPR_ABIS_INTERNAL_ERROR.getCode();
+			description = PlatformErrorMessages.RPR_ABIS_INTERNAL_ERROR.getMessage();
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
+					code + " -- " + LoggerFileConstant.REGISTRATIONID.toString(), registrationId,
+					description + "\n" + ExceptionUtils.getStackTrace(e));
 			object.setInternalError(Boolean.TRUE);
-			description = "ABIS Abort Exception occured while processing registration  id : " + registrationId;
 
 		} catch (UnexceptedError e) {
-			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					registrationId,
-					PlatformErrorMessages.PACKET_BIO_DEDUPE_FAILED.getMessage() + ExceptionUtils.getStackTrace(e));
+			code = PlatformErrorMessages.PACKET_BIO_DEDUPE_FAILED.getCode();
+			description = PlatformErrorMessages.PACKET_BIO_DEDUPE_FAILED.getMessage();
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
+					code + " -- " + LoggerFileConstant.REGISTRATIONID.toString(), registrationId,
+					description + "\n" + ExceptionUtils.getStackTrace(e));
 			object.setInternalError(Boolean.TRUE);
-			description = "Unexcepted Error occured while processing registration  id : " + registrationId;
 
 		} catch (UnableToServeRequestABISException e) {
-			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					registrationId,
-					PlatformErrorMessages.PACKET_BIO_DEDUPE_FAILED.getMessage() + ExceptionUtils.getStackTrace(e));
+			code = PlatformErrorMessages.PACKET_BIO_DEDUPE_FAILED.getCode();
+			description = PlatformErrorMessages.PACKET_BIO_DEDUPE_FAILED.getMessage() + " -- " + registrationId;
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
+					code + " -- " + LoggerFileConstant.REGISTRATIONID.toString(), registrationId,
+					description + "\n" + ExceptionUtils.getStackTrace(e));
 			object.setInternalError(Boolean.TRUE);
-			description = "Unable To Serve Request ABIS Exception occured while processing registration  id : "
-					+ registrationId;
 
 		} catch (FSAdapterException e) {
-			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					registrationId, PlatformErrorMessages.PACKET_BDD_PACKET_STORE_NOT_ACCESSIBLE.getMessage()
-							+ ExceptionUtils.getStackTrace(e));
+			code = PlatformErrorMessages.PACKET_BDD_PACKET_STORE_NOT_ACCESSIBLE.getCode();
+			description = PlatformErrorMessages.PACKET_BDD_PACKET_STORE_NOT_ACCESSIBLE.getMessage();
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
+					code + " -- " + LoggerFileConstant.REGISTRATIONID.toString(), registrationId,
+					description + "\n" + ExceptionUtils.getStackTrace(e));
 			object.setInternalError(Boolean.TRUE);
-			description = "The Packet store set by the System is not accessible for registration  id : "
-					+ registrationId;
-		}catch (DataAccessException e) {
-			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					registrationId,
-					PlatformErrorMessages.PACKET_BIO_DEDUPE_FAILED.getMessage() + ExceptionUtils.getStackTrace(e));
-			object.setInternalError(Boolean.TRUE);
-			description = "Data voilation in reg packet : " + registrationId;
 
-		}
-
-		catch (ApisResourceAccessException e) {
-			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					registrationId,
-					PlatformErrorMessages.PACKET_BIO_DEDUPE_FAILED.getMessage() + ExceptionUtils.getStackTrace(e));
+		} catch (DataAccessException e) {
+			code = PlatformErrorMessages.PACKET_BIO_DEDUPE_FAILED.getCode();
+			description = PlatformErrorMessages.PACKET_BIO_DEDUPE_FAILED.getMessage();
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
+					code + " -- " + LoggerFileConstant.REGISTRATIONID.toString(), registrationId,
+					description + "\n" + ExceptionUtils.getStackTrace(e));
 			object.setInternalError(Boolean.TRUE);
-			description = "Internal error occured while processing registration  id : " + registrationId;
+		} catch (ApisResourceAccessException e) {
+			code = PlatformErrorMessages.PACKET_BIO_DEDUPE_FAILED.getCode();
+			description = PlatformErrorMessages.PACKET_BIO_DEDUPE_FAILED.getMessage();
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
+					code + " -- " + LoggerFileConstant.REGISTRATIONID.toString(), registrationId,
+					description + "\n" + ExceptionUtils.getStackTrace(e));
+			object.setInternalError(Boolean.TRUE);
 
 		} catch (Exception ex) {
-			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					registrationId,
-					PlatformErrorMessages.PACKET_BIO_DEDUPE_FAILED.getMessage() + ExceptionUtils.getStackTrace(ex));
+			code = PlatformErrorMessages.PACKET_BIO_DEDUPE_FAILED.getCode();
+			description = PlatformErrorMessages.PACKET_BIO_DEDUPE_FAILED.getMessage();
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
+					code + " -- " + LoggerFileConstant.REGISTRATIONID.toString(), registrationId,
+					description + "\n" + ExceptionUtils.getStackTrace(ex));
 			object.setInternalError(Boolean.TRUE);
-			description = "Internal error occured while processing registration  id : " + registrationId;
 		} finally {
 			String eventId = isTransactionSuccessful ? EventId.RPR_402.toString() : EventId.RPR_405.toString();
-			String eventName = eventId.equalsIgnoreCase(EventId.RPR_402.toString()) ? EventName.UPDATE.toString()
-					: EventName.EXCEPTION.toString();
-			String eventType = eventId.equalsIgnoreCase(EventId.RPR_402.toString()) ? EventType.BUSINESS.toString()
-					: EventType.SYSTEM.toString();
+			String eventName = isTransactionSuccessful ? EventName.UPDATE.toString() : EventName.EXCEPTION.toString();
+			String eventType = isTransactionSuccessful ? EventType.BUSINESS.toString() : EventType.SYSTEM.toString();
 
-			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
-					registrationId);
+			String moduleId = isTransactionSuccessful ? PlatformSuccessMessages.RPR_BIO_DEDUPE_SUCCESS.getCode() : code;
+			String moduleName =  ModuleName.BIO_DEDUPE.name();
 
+			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType, moduleId,moduleName, registrationId);
 		}
 		return object;
 	}
@@ -179,13 +187,15 @@ public class BioDedupeProcessor {
 			object.setIsValid(Boolean.FALSE);
 			registrationStatusDto.setStatusComment(StatusMessage.PACKET_BIOMETRIC_POTENTIAL_MATCH);
 			registrationStatusDto.setStatusCode(RegistrationStatusCode.PACKET_BIO_POTENTIAL_MATCH.toString());
-			description = registrationStatusDto.getStatusComment() + registrationId;
+			code= PlatformSuccessMessages.RPR_BIO_METRIC_POTENTIAL_MATCH.getCode();
+			description =PlatformSuccessMessages.RPR_BIO_METRIC_POTENTIAL_MATCH.getMessage();
 			packetInfoManager.saveManualAdjudicationData(matchedRegIds, registrationId);
 		} else {
 			object.setIsValid(Boolean.TRUE);
 			registrationStatusDto.setStatusComment(StatusMessage.PACKET_BIODEDUPE_SUCCESS);
 			registrationStatusDto.setStatusCode(RegistrationStatusCode.PACKET_BIO_DEDUPE_SUCCESS.toString());
-			description = registrationStatusDto.getStatusComment() + registrationId;
+			code= PlatformSuccessMessages.RPR_BIO_DEDUPE_SUCCESS.getCode();
+			description =PlatformSuccessMessages.RPR_BIO_DEDUPE_SUCCESS.getMessage();
 		}
 	}
 
