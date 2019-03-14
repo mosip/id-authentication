@@ -22,6 +22,11 @@ public class ManualVerificationAssignmentRequestDTO extends BaseRestRequestDTO {
 	private static final long serialVersionUID = -40776199886412084L;
 	/** The request. */
 	private UserDto request;
+<<<<<<< Updated upstream
 	private DedupeSourceName matchType;
+=======
+	/** The source name. */
+	private String matchType;
+>>>>>>> Stashed changes
 		
 }

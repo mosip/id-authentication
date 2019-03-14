@@ -9,7 +9,6 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
-import io.mosip.registration.processor.core.code.DedupeSourceName;
 import io.mosip.registration.processor.packet.storage.entity.BasePacketEntity;
 import io.mosip.registration.processor.packet.storage.entity.ManualVerificationEntity;
 
@@ -94,10 +93,22 @@ public interface BasePacketRepository<E extends BasePacketEntity<?>, T> extends 
 	 *            The statusCode
 	 * @return {@link ManualVerificationEntity}
 	 */
-	@Query(value = "SELECT mve FROM ManualVerificationEntity mve WHERE mve.sourceName=:source_name AND mve.crDtimes in "
-			+ "(SELECT min(mve2.crDtimes) FROM ManualVerificationEntity mve2 where mve2.statusCode=:statusCode) and mve.statusCode=:statusCode")
-	public List<E> getFirstApplicantDetails(@Param("statusCode") String statusCode,@Param("source_name")DedupeSourceName matchType);
+	@Query(value = "SELECT mve FROM ManualVerificationEntity mve WHERE mve.crDtimes in "
+			+ "(SELECT min(mve2.crDtimes) FROM ManualVerificationEntity mve2 where mve2.statusCode=:statusCode AND mve2.sourceName=:source_name) and mve.statusCode=:statusCode")
+	public List<E> getFirstApplicantDetails(@Param("statusCode") String statusCode, @Param("source_name") String matchType);
 
+	/**
+	 * This method gets the first created registration record for source name as ALL
+	 * {@link ManualVerificationEntity} with the specified status.
+	 *
+	 * @param statusCode
+	 *            The statusCode
+	 * @return {@link ManualVerificationEntity}
+	 */
+	@Query(value = "SELECT mve FROM ManualVerificationEntity mve WHERE mve.crDtimes in "
+			+ "(SELECT min(mve2.crDtimes) FROM ManualVerificationEntity mve2 where mve2.statusCode=:statusCode) and mve.statusCode=:statusCode")
+	public List<E> getFirstApplicantDetailsForAll(@Param("statusCode") String statusCode);
+	
 	/**
 	 * This method returns {@link ManualVerificationEntity} corresponding to
 	 * specified registration Id and manual verifier user Id.

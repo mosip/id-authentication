@@ -22,9 +22,12 @@ public interface ManualVerificationService {
 	 * This method assigns earliest created Reg Id to a manual verification user.
 	 *
 	 * @param dto            The {@link UserDto} to whom a regId needs to be assigned
+	 * @param string 
 	 * @return {@link ManualVerificationDTO}
 	 */
-	public ManualVerificationDTO assignApplicant(UserDto dto,DedupeSourceName dedupeSourceName);
+
+	public ManualVerificationDTO assignApplicant(UserDto dto, String matchType);
+
 
 	/**
 	 * This method returns a file related to a regId.

@@ -85,8 +85,8 @@ public class ManualVerificationServiceImpl implements ManualVerificationService 
 	 * ManualAdjudicationService#assignStatus(io.mosip.registration.processor.manual
 	 * .adjudication.dto.UserDto)
 	 */
-	@Override
-	public ManualVerificationDTO assignApplicant(UserDto dto,DedupeSourceName matchType) {
+
+	public ManualVerificationDTO assignApplicant(UserDto dto,String matchType) {
 		ManualVerificationDTO manualVerificationDTO = new ManualVerificationDTO();
 		List<ManualVerificationEntity> entities;
 		entities = basePacketRepository.getAssignedApplicantDetails(dto.getUserId(),
@@ -103,7 +103,14 @@ public class ManualVerificationServiceImpl implements ManualVerificationService 
 			manualVerificationDTO.setStatusCode(manualVerificationEntity.getStatusCode());
 			manualVerificationDTO.setReasonCode(manualVerificationEntity.getReasonCode());
 		} else {
-			entities = basePacketRepository.getFirstApplicantDetails(ManualVerificationStatus.PENDING.name(),matchType);
+			if(matchType.equals("ALL")) {
+				entities = basePacketRepository.getFirstApplicantDetailsForAll(ManualVerificationStatus.PENDING.name());
+
+			}
+			else {
+				entities = basePacketRepository.getFirstApplicantDetails(ManualVerificationStatus.PENDING.name(),matchType);
+
+			}
 			if (entities.isEmpty()) {
 				throw new NoRecordAssignedException(PlatformErrorMessages.RPR_MVS_NO_ASSIGNED_RECORD.getCode(),
 						PlatformErrorMessages.RPR_MVS_NO_ASSIGNED_RECORD.getMessage());
