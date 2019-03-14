@@ -342,7 +342,7 @@ public class UMCValidator {
 		else if (isWorkingHourValidationRequired 
 				&& isValidRegistrationCenter(rcmDto.getRegcntrId(), primaryLanguagecode, rcmDto.getPacketCreationDate())
 				&& isValidMachine(rcmDto.getMachineId(), primaryLanguagecode, rcmDto.getPacketCreationDate())
-				/*&& isValidUMCmapping(rcmDto.getPacketCreationDate(), rcmDto.getRegcntrId(), rcmDto.getMachineId(),regOsi.getSupervisorId(), regOsi.getOfficerId())*/
+				&& isValidUMCmapping(rcmDto.getPacketCreationDate(), rcmDto.getRegcntrId(), rcmDto.getMachineId(),regOsi.getSupervisorId(), regOsi.getOfficerId())
 				&& validateCenterIdAndTimestamp(rcmDto) 
 				&& isValidDevice(rcmDto)) 
 				 umc =true;

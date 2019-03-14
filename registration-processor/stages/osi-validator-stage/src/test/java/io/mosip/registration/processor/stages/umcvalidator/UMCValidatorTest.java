@@ -28,6 +28,7 @@ import io.mosip.kernel.core.exception.IOException;
 import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
 import io.mosip.kernel.core.util.exception.JsonMappingException;
 import io.mosip.kernel.core.util.exception.JsonParseException;
+import io.mosip.registration.processor.core.code.ApiName;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.packet.dto.FieldValue;
 import io.mosip.registration.processor.core.packet.dto.Identity;
@@ -77,8 +78,10 @@ public class UMCValidatorTest {
 	/** The osi utils. */
 	@Mock
 	private OSIUtils osiUtils;
-	
+
 	Identity identity;
+	
+	
 
 	/** The rcm dto. */
 	RegistrationCenterMachineDto rcmDto = new RegistrationCenterMachineDto();
@@ -166,11 +169,33 @@ public class UMCValidatorTest {
 	@Test
 	public void isValidUMCSuccessTest() throws ApisResourceAccessException, JsonParseException, JsonMappingException,
 			IOException, java.io.IOException {
+		identity = new Identity();
 		RegistrationCenterDto rcdto = new RegistrationCenterDto();
 		rcdto.setIsActive(true);
 		rcdto.setLongitude("80.24492");
 		rcdto.setLatitude("13.0049");
 		rcdto.setId("12245");
+	   
+		
+	    List<FieldValue> capturedRegisteredDevices = new ArrayList<FieldValue>();
+	    FieldValue fv1 = new FieldValue();
+		fv1.setLabel("Printer");
+		fv1.setValue("3000111");
+		capturedRegisteredDevices.add(fv1);
+//		fv1 = new FieldValue();
+//		fv1.setLabel("Document Scanner");
+//		fv1.setValue("3000091");
+//		capturedRegisteredDevices.add(fv1);
+//		fv1 = new FieldValue();
+//		fv1.setLabel("Camera");
+//		fv1.setValue("3000071");
+//		capturedRegisteredDevices.add(fv1);
+//		fv1 = new FieldValue();
+//		fv1.setLabel("Finger Print Scanner");
+//		fv1.setValue("3000092");
+//		capturedRegisteredDevices.add(fv1);
+		identity.setCapturedRegisteredDevices(capturedRegisteredDevices);
+	
 		
 		
 		metaData = new ArrayList<>();
@@ -204,7 +229,7 @@ public class UMCValidatorTest {
 		fv.setValue("2018-11-28T15:34:20.122");
 		metaData.add(fv);
 		
-		identity = new Identity();
+		
 		identity.setMetaData(metaData);
 		Mockito.when(osiUtils.getIdentity(any())).thenReturn(identity);
 		List<RegistrationCenterDto> rcdtos = new ArrayList<>();
@@ -212,9 +237,11 @@ public class UMCValidatorTest {
 		RegistrationCenterResponseDto regrepdto = new RegistrationCenterResponseDto();
 		regrepdto.setRegistrationCentersHistory(rcdtos);
 
+//		RegistrationCenterResponseDto regrepdto1 = new RegistrationCenterResponseDto();
+//		regrepdto1.setRegistrationCentersHistory(rcdtos);
 		MachineHistoryDto mcdto = new MachineHistoryDto();
 		mcdto.setIsActive(true);
-		mcdto.setId("12334");
+		mcdto.setId("yyeqy26356");
 
 		List<MachineHistoryDto> mcdtos = new ArrayList<>();
 		mcdtos.add(mcdto);
@@ -251,11 +278,48 @@ public class UMCValidatorTest {
 		registrationCenterDeviceHistoryDetails.setIsActive(true);
 		registrationCenterDeviceHistoryResponseDto
 				.setRegistrationCenterDeviceHistoryDetails(registrationCenterDeviceHistoryDetails);
+		List<String> pathsegments = new ArrayList<>();
+		pathsegments.add("12245");
+		pathsegments.add(null);
+		pathsegments.add("2018-11-28T15:34:20.122");
+		List<String> pathsegments1 = new ArrayList<>();
+		pathsegments1.add("yyeqy26356");
+		pathsegments1.add(null);
+		pathsegments1.add("2018-11-28T15:34:20.122");
+		List<String> pathsegments2 = new ArrayList<>();
+		pathsegments2.add("2018-11-28T15:34:20.122");
+		pathsegments2.add("12245");
+		pathsegments2.add("yyeqy26356");
+		pathsegments2.add("S1234");
+		List<String> pathsegments3 = new ArrayList<>();
+		pathsegments3.add("12245");
+		pathsegments3.add(null);
+		pathsegments3.add("2018-11-28T15:34:20.122");
+		List<String> pathsegments4 = new ArrayList<>();
+		pathsegments4.add("3000111");
+		pathsegments4.add(null);
+		pathsegments4.add("2018-11-28T15:34:20.122");
+		List<String> pathsegments5 = new ArrayList<>();
+		pathsegments5.add("12245");
+		pathsegments5.add("3000111");
+		pathsegments5.add("2018-11-28T15:34:20.122");
+		List<String> pathsegments6 = new ArrayList<>();
+		pathsegments6.add("2018-11-28T15:34:20.122");
+		pathsegments6.add("12245");
+		pathsegments6.add("yyeqy26356");
+		pathsegments6.add("O1234");
+
+		Mockito.when(osiUtils.getOSIDetailsFromMetaInfo(any(), any())).thenReturn(regOsi);
+		Mockito.when(registrationProcessorRestService.getApi(ApiName.CENTERHISTORY,pathsegments,"","",RegistrationCenterResponseDto.class)).thenReturn(regrepdto);
+		Mockito.when(registrationProcessorRestService.getApi(ApiName.MACHINEHISTORY,pathsegments1,"","",MachineHistoryResponseDto.class)).thenReturn(mhrepdto);
+		Mockito.when(registrationProcessorRestService.getApi(ApiName.CENTERUSERMACHINEHISTORY,pathsegments2,"","",RegistrationCenterUserMachineMappingHistoryResponseDto.class)).thenReturn(offrepdto);
+		Mockito.when(registrationProcessorRestService.getApi(ApiName.CENTERUSERMACHINEHISTORY,pathsegments6,"","",RegistrationCenterUserMachineMappingHistoryResponseDto.class)).thenReturn(offrepdto);
+		Mockito.when(registrationProcessorRestService.getApi(ApiName.REGISTRATIONCENTERTIMESTAMP,pathsegments3,"","",RegistartionCenterTimestampResponseDto.class)).thenReturn(test);
+		Mockito.when(registrationProcessorRestService.getApi(ApiName.DEVICESHISTORIES,pathsegments4,"","",DeviceHistoryResponseDto.class)).thenReturn(deviceHistoryResponsedto);
+		Mockito.when(registrationProcessorRestService.getApi(ApiName.REGISTRATIONCENTERDEVICEHISTORY,pathsegments5,"","",RegistrationCenterDeviceHistoryResponseDto.class)).thenReturn(registrationCenterDeviceHistoryResponseDto);
 		
-		
-		Mockito.when(registrationProcessorRestService.getApi(any(), any(), any(), any(), any())).thenReturn(regrepdto)
-				.thenReturn(mhrepdto).thenReturn(offrepdto).thenReturn(offrepdto).thenReturn(test)
-				.thenReturn(deviceHistoryResponsedto).thenReturn(registrationCenterDeviceHistoryResponseDto);
+//		Mockito.when(registrationProcessorRestService.getApi(any(), any(), any(), any(), any())).thenReturn(offrepdto).thenReturn(test)
+//				.thenReturn(deviceHistoryResponsedto).thenReturn(registrationCenterDeviceHistoryResponseDto);
 		// UMC validation successfull;
 		assertTrue(umcValidator.isValidUMC("2018782130000121112018103016"));
 	}
