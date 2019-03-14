@@ -12,6 +12,7 @@ import java.util.List;
 
 import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -48,6 +49,7 @@ import io.mosip.registration.processor.packet.upload.service.SyncUploadEncryptio
 
 /**
  * The Class SyncUploadEncryptionServiceImpl.
+ * @author Rishabh Keshari
  */
 @Service
 public class SyncUploadEncryptionServiceImpl implements SyncUploadEncryptionService {
@@ -65,7 +67,17 @@ public class SyncUploadEncryptionServiceImpl implements SyncUploadEncryptionServ
 
 	/** The gson. */
 	Gson gson = new GsonBuilder().create();
+	
+	@Autowired
+	private Environment env;
+	
 
+	private static final String REG_SYNC_SERVICE_ID = "mosip.registration.processor.registration.sync.id";
+	private static final String REG_SYNC_APPLICATION_VERSION = "mosip.registration.processor.application.version";
+	private static final String DATETIME_PATTERN = "mosip.registration.processor.datetime.pattern";
+	private static final String SYNCSTATUSCOMMENT = "UIN Reactivation and Deactivation By External Resources";
+	
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -124,21 +136,19 @@ public class SyncUploadEncryptionServiceImpl implements SyncUploadEncryptionServ
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registartionId,
 					PlatformErrorMessages.RPR_PGS_FILE_NOT_PRESENT.getMessage() + ExceptionUtils.getStackTrace(e));
-			 throw new
-			 FileNotAccessibleException(PlatformErrorMessages.RPR_PGS_FILE_NOT_PRESENT.getCode(),e);
+			throw new FileNotAccessibleException(PlatformErrorMessages.RPR_PGS_FILE_NOT_PRESENT.getCode(), e);
 
 		} catch (InvalidKeySpecException | NoSuchAlgorithmException | JSONException | IOException e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registartionId, PlatformErrorMessages.RPR_PGS_INVALID_KEY_ILLEGAL_ARGUMENT.getMessage()
 							+ ExceptionUtils.getStackTrace(e));
-			 throw new
-			 InvalidKeyNoArgJsonException(PlatformErrorMessages.RPR_PGS_INVALID_KEY_ILLEGAL_ARGUMENT.getCode());
+			throw new InvalidKeyNoArgJsonException(
+					PlatformErrorMessages.RPR_PGS_INVALID_KEY_ILLEGAL_ARGUMENT.getCode());
 		} catch (ApisResourceAccessException e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registartionId, PlatformErrorMessages.RPR_PGS_API_RESOURCE_NOT_AVAILABLE.getMessage()
 							+ ExceptionUtils.getStackTrace(e));
-			 throw new
-			 ApisresourceAccessException(PlatformErrorMessages.RPR_PGS_API_RESOURCE_NOT_AVAILABLE.getCode());
+			throw new ApisresourceAccessException(PlatformErrorMessages.RPR_PGS_API_RESOURCE_NOT_AVAILABLE.getCode());
 		} catch (RegBaseCheckedException e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registartionId,
@@ -167,13 +177,13 @@ public class SyncUploadEncryptionServiceImpl implements SyncUploadEncryptionServ
 		List<SyncRegistrationDTO> syncDtoList = new ArrayList<>();
 		String response = null;
 		RegistrationSyncRequestDTO registrationSyncRequestDTO = new RegistrationSyncRequestDTO();
-		registrationSyncRequestDTO.setId("mosip.registration.sync");
-		registrationSyncRequestDTO.setVersion("1.0");
+		registrationSyncRequestDTO.setId(env.getProperty(REG_SYNC_SERVICE_ID));
+		registrationSyncRequestDTO.setVersion(env.getProperty(REG_SYNC_APPLICATION_VERSION));
 		registrationSyncRequestDTO
-				.setRequesttime(DateUtils.getUTCCurrentDateTimeString("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"));
+				.setRequesttime(DateUtils.getUTCCurrentDateTimeString(env.getProperty(DATETIME_PATTERN)));
 		SyncRegistrationDTO syncDto = new SyncRegistrationDTO();
 		syncDto.setLangCode("ENG");
-		syncDto.setStatusComment("update UIN status");
+		syncDto.setStatusComment(SYNCSTATUSCOMMENT);
 		syncDto.setRegistrationId(regId);
 		syncDto.setSyncStatus(RegistrationConstants.PACKET_STATUS_PRE_SYNC);
 		syncDto.setSyncType(RegistrationConstants.PACKET_STATUS_SYNC_TYPE);
