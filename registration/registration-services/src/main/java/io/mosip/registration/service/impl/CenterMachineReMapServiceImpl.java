@@ -3,10 +3,17 @@ package io.mosip.registration.service.impl;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.Collection;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.datasource.init.ScriptException;
+import org.springframework.jdbc.datasource.init.ScriptUtils;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.exception.ExceptionUtils;
@@ -53,6 +60,8 @@ public class CenterMachineReMapServiceImpl implements CenterMachineReMapService 
 
 	@Autowired
 	private SyncJobConfigDAO jobConfigDAO;
+	@Autowired
+	private JdbcTemplate jdbcTemplate;
 
 	private static final Logger LOGGER = AppConfig.getLogger(CenterMachineReMapServiceImpl.class);
 
@@ -93,6 +102,7 @@ public class CenterMachineReMapServiceImpl implements CenterMachineReMapService 
 
 			if (!isPacketsPendingForProcessing()) {
 				/* TODO-all packets/pre reg and master data can be deleted- */
+				deletePreRegPackets();
 			}
 
 			/* 4.deletions of packets */
@@ -159,6 +169,22 @@ public class CenterMachineReMapServiceImpl implements CenterMachineReMapService 
 
 	private boolean isNotNullNotEmpty(Collection<?> collection) {
 		return collection != null && !collection.isEmpty();
+	}
+
+	private void deletePreRegPackets() {
+		LOGGER.info("REGISTRATION CENTER MACHINE REMAP : ", APPLICATION_NAME, APPLICATION_ID,
+				"delete preRegPackets() method is called");
+		try {
+			Resource resource = new ClassPathResource("script.sql");
+			Connection connection = jdbcTemplate.getDataSource().getConnection();
+			ScriptUtils.executeSqlScript(connection, resource);
+
+		} catch (ScriptException | SQLException exception) {
+			LOGGER.error("REGISTRATION CENTER MACHINE REMAP : ", APPLICATION_NAME, APPLICATION_ID,
+					exception.getMessage() + ExceptionUtils.getStackTrace(exception));
+
+		}
+
 	}
 
 }
