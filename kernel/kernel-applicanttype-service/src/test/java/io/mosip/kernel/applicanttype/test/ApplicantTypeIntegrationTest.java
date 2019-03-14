@@ -14,12 +14,12 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import io.mosip.kernel.applicanttype.exception.DataNotFoundException;
 
-@SpringBootTest
+/*@SpringBootTest
 @RunWith(SpringRunner.class)
-@AutoConfigureMockMvc
+@AutoConfigureMockMvc*/
 public class ApplicantTypeIntegrationTest {
 
-	@Autowired
+	/*@Autowired
 	private MockMvc mockMvc;
 
 	@Before
@@ -48,6 +48,6 @@ public class ApplicantTypeIntegrationTest {
 				"/v1.0/applicanttype/getApplicantType?biometricAvailable=false&dateofbirth=1933-01-27T05%23400:00.000Z&genderCode=MLERTE&individualTypeCode=FR&languagecode=eng"))
 		.andExpect(status().isOk());
 		
-	}
+	}*/
 
 }
