@@ -2,6 +2,8 @@ package io.mosip.registration.test.service;
 
 import java.io.File;
 import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -19,6 +21,8 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import io.mosip.kernel.core.exception.IOException;
 import io.mosip.kernel.core.util.FileUtils;
+import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.service.external.impl.StorageServiceImpl;
@@ -33,9 +37,11 @@ public class StorageServiceTest {
 
 	@Before
 	public void initialize() {
-		ReflectionTestUtils.setField(storageService, "packetStoreLocation", "..//PacketStore");
-		ReflectionTestUtils.setField(storageService, "storeDateFormat", "dd-MMM-yyyy");
-
+		
+		Map<String,Object> appMap = new HashMap<>();
+		appMap.put(RegistrationConstants.PKT_STORE_LOC, "..//PacketStore");
+		appMap.put(RegistrationConstants.PACKET_STORE_DATE_FORMAT, "dd-MMM-yyyy");
+		ApplicationContext.getInstance().setApplicationMap(appMap);
 		PowerMockito.spy(FileUtils.class);
 	}
 

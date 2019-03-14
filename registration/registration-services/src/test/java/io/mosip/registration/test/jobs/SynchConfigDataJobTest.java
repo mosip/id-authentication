@@ -20,7 +20,6 @@ import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.context.ApplicationContext;
 
 import io.mosip.registration.dao.SyncJobConfigDAO;
-import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.SuccessResponseDTO;
 import io.mosip.registration.entity.SyncJobDef;
@@ -28,13 +27,8 @@ import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.jobs.BaseJob;
 import io.mosip.registration.jobs.JobManager;
 import io.mosip.registration.jobs.SyncManager;
-import io.mosip.registration.jobs.impl.MasterSyncJob;
 import io.mosip.registration.jobs.impl.SynchConfigDataJob;
-import io.mosip.registration.service.MasterSyncService;
 import io.mosip.registration.service.config.GlobalParamService;
-import io.mosip.registration.service.config.impl.GlobalParamServiceImpl;
-import io.mosip.registration.service.impl.MasterSyncServiceImpl;
-import io.mosip.registration.service.sync.PreRegistrationDataSyncService;
 
 
 /**

@@ -1,10 +1,15 @@
 package io.mosip.registration.test.service.packet.encryption.rsa;
 
+import static org.mockito.Mockito.when;
+
 import java.security.PrivateKey;
 import java.security.PublicKey;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.crypto.SecretKey;
 
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -12,16 +17,15 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
-import org.springframework.test.util.ReflectionTestUtils;
 
 import io.mosip.kernel.core.crypto.spi.Encryptor;
+import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.dao.PolicySyncDAO;
 import io.mosip.registration.entity.KeyStore;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.service.impl.RSAEncryptionServiceImpl;
-
-import static org.mockito.Mockito.when;
 
 public class RSAEncryptionServiceTest {
 
@@ -33,6 +37,13 @@ public class RSAEncryptionServiceTest {
 	public MockitoRule mockitoRule = MockitoJUnit.rule();
 	@Mock
 	private Encryptor<PrivateKey, PublicKey, SecretKey> encryptor;
+	
+	@Before
+	public void init() {
+		Map<String,Object> appMap = new HashMap<>();
+		appMap.put(RegistrationConstants.ASYMMETRIC_ALG_NAME, "RSA");
+		ApplicationContext.getInstance().setApplicationMap(appMap);
+	}
 
 	@Test
 	public void rsaPacketCreation() throws RegBaseCheckedException {
@@ -43,7 +54,6 @@ public class RSAEncryptionServiceTest {
 		byte[] decodedbytes = "e".getBytes();
 		byte[] sessionbytes = "sesseion".getBytes();
 		Mockito.when(policySyncDAO.findByMaxExpireTime()).thenReturn(keyStore);
-		ReflectionTestUtils.setField(rsaEncryptionServiceImpl, "asymmetricAlgorithmName", "RSA");
 		when(encryptor.asymmetricPublicEncrypt(Mockito.any(PublicKey.class), Mockito.anyString().getBytes()))
 				.thenReturn(decodedbytes);
 
@@ -68,8 +78,7 @@ public class RSAEncryptionServiceTest {
 		Mockito.when(policySyncDAO.findByMaxExpireTime()).thenReturn(keyStore);
 		when(encryptor.asymmetricPublicEncrypt(Mockito.any(PublicKey.class), Mockito.anyString().getBytes()))
 				.thenReturn(decodedbytes);
-		ReflectionTestUtils.setField(rsaEncryptionServiceImpl, "asymmetricAlgorithmName", "RSA");
-
+		
 		rsaEncryptionServiceImpl.encrypt(sessionbytes);
 	}
 
@@ -82,7 +91,9 @@ public class RSAEncryptionServiceTest {
 		byte[] decodedbytes = "e".getBytes();
 		byte[] sessionbytes = "sesseion".getBytes();
 		Mockito.when(policySyncDAO.findByMaxExpireTime()).thenReturn(keyStore);
-		ReflectionTestUtils.setField(rsaEncryptionServiceImpl, "asymmetricAlgorithmName", "AES");
+		Map<String,Object> appMap = new HashMap<>();
+		appMap.put(RegistrationConstants.ASYMMETRIC_ALG_NAME, "AES");
+		ApplicationContext.getInstance().setApplicationMap(appMap);
 		when(encryptor.asymmetricPublicEncrypt(Mockito.any(PublicKey.class), Mockito.anyString().getBytes()))
 				.thenReturn(decodedbytes);
 

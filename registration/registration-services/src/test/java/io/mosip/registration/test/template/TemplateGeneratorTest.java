@@ -10,7 +10,9 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
 
 import javax.imageio.ImageIO;
@@ -63,10 +65,12 @@ public class TemplateGeneratorTest {
 	
 	@Before
 	public void initialize() {
-		ReflectionTestUtils.setField(templateGenerator, "documentDisableFlag","Y");
-		ReflectionTestUtils.setField(templateGenerator, "fingerprintDisableFlag","Y");
-		ReflectionTestUtils.setField(templateGenerator, "irisDisableFlag","Y");
-		ReflectionTestUtils.setField(templateGenerator, "faceDisableFlag","Y");
+		Map<String,Object> appMap = new HashMap<>();
+		appMap.put(RegistrationConstants.DOC_DISABLE_FLAG, "Y");
+		appMap.put(RegistrationConstants.FINGERPRINT_DISABLE_FLAG, "Y");
+		appMap.put(RegistrationConstants.IRIS_DISABLE_FLAG, "Y");
+		appMap.put(RegistrationConstants.FACE_DISABLE_FLAG, "Y");
+		ApplicationContext.getInstance().setApplicationMap(appMap);
 	}
 	
 	ResourceBundle dummyResourceBundle = new ResourceBundle() {

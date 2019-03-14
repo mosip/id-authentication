@@ -50,13 +50,12 @@ public class GlobalParamDAOTest {
 		globalContextParamDAOImpl.saveAll(params);
 	}
 	@Test
-	public void get()
-	{  
+	public void get() {  
 		GlobalParam globalParam=new GlobalParam();
 		globalParam.setName("name");
 		GlobalParamId globalParamId = new GlobalParamId();
 		globalParamId.setCode("code");
-		Mockito.when(globalParamRepository.findById(Mockito.any(),globalParamId)).thenReturn(globalParam);
+		Mockito.when(globalParamRepository.findById(Mockito.any(),Mockito.any())).thenReturn(globalParam);
 		//globalContextParamDAOImpl.get("name");
 		assertEquals(globalParam.getName(), globalContextParamDAOImpl.get(globalParamId).getName());
 	}  

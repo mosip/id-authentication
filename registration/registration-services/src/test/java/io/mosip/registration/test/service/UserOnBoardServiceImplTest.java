@@ -55,10 +55,9 @@ public class UserOnBoardServiceImplTest {
 	
 	@Before
 	public void init() {
-		PowerMockito.mockStatic(ApplicationContext.class);
-		Map<String, Object> globalParams = new HashMap<>();
-		globalParams.put("USER_ON_BOARD_THRESHOLD_LIMIT", "10");
-		PowerMockito.when(ApplicationContext.map().get("USER_ON_BOARD_THRESHOLD_LIMIT")).thenReturn(globalParams);
+		Map<String,Object> appMap = new HashMap<>();
+		appMap.put(RegistrationConstants.USER_ON_BOARD_THRESHOLD_LIMIT, "10");
+		ApplicationContext.getInstance().setApplicationMap(appMap);
 	}
 	
 	@Test

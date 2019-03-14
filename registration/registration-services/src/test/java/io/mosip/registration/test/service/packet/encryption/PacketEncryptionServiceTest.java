@@ -1,7 +1,12 @@
 package io.mosip.registration.test.service.packet.encryption;
 
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.when;
+
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -17,11 +22,11 @@ import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
-import org.springframework.test.util.ReflectionTestUtils;
 
 import io.mosip.registration.audit.AuditFactoryImpl;
 import io.mosip.registration.constants.AuditEvent;
 import io.mosip.registration.constants.Components;
+import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dao.AuditLogControlDAO;
@@ -35,9 +40,6 @@ import io.mosip.registration.service.AESEncryptionService;
 import io.mosip.registration.service.external.StorageService;
 import io.mosip.registration.service.packet.impl.PacketEncryptionServiceImpl;
 import io.mosip.registration.test.util.datastub.DataProvider;
-
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.when;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ ApplicationContext.class })
@@ -77,8 +79,10 @@ public class PacketEncryptionServiceTest {
 		doNothing().when(auditFactory).audit(Mockito.any(AuditEvent.class), Mockito.any(Components.class),
 				Mockito.anyString(), Mockito.anyString());
 		doNothing().when(auditLogControlDAO).save(Mockito.any(AuditLogControl.class));
-
-		ReflectionTestUtils.setField(packetEncryptionServiceImpl, "maxPacketSize", 1);
+		
+		Map<String,Object> appMap = new HashMap<>();
+		appMap.put(RegistrationConstants.REG_PKT_SIZE, "1");
+		ApplicationContext.getInstance().setApplicationMap(appMap);
 	}
 
 	@Test
