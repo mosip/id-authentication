@@ -23,6 +23,7 @@ public interface ApplicationRepository extends BaseRepository<Application, Strin
 	 *            of type {@link Application}
 	 * @return list of {@link Application}
 	 */
+	@Query("FROM Application where (isDeleted is null OR isDeleted = false) AND isActive = true")
 	List<Application> findAllByIsDeletedFalseOrIsDeletedNull(Class<Application> entityClass);
 
 	/**

@@ -24,6 +24,7 @@ public interface BiometricTypeRepository extends BaseRepository<BiometricType, S
 	 *            class of type {@link BiometricType}
 	 * @return list of {@link BiometricType}
 	 */
+	@Query("FROM BiometricType where (isDeleted is null OR isDeleted = false) AND isActive = true" )
 	List<BiometricType> findAllByIsDeletedFalseOrIsDeletedIsNull(Class<BiometricType> entityClass);
 
 	/**

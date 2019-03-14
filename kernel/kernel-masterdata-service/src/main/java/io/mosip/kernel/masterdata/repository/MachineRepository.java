@@ -24,6 +24,7 @@ public interface MachineRepository extends BaseRepository<Machine, String> {
 	 * @return List MachineDetail fetched from database
 	 * 
 	 */
+	@Query("FROM Machine where (isDeleted is null OR isDeleted = false) AND isActive = true")
 	List<Machine> findAllByIsDeletedFalseOrIsDeletedIsNull();
 
 	/**

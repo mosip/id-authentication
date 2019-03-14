@@ -82,7 +82,7 @@ public interface RegistrationCenterRepository extends BaseRepository<Registratio
 	 *            languageCode provided by user
 	 * @return list of {@link RegistrationCenter} fetched from database
 	 */
-	@Query("FROM RegistrationCenter WHERE locationCode= ?1 and  langCode =?2 and (isDeleted is null or isDeleted =false)")
+	@Query("FROM RegistrationCenter WHERE locationCode= ?1 and  langCode =?2 and (isDeleted is null or isDeleted =false) and isActive = true")
 	List<RegistrationCenter> findByLocationCodeAndLangCode(String locationCode, String langCode);
 
 	/**
@@ -91,6 +91,7 @@ public interface RegistrationCenterRepository extends BaseRepository<Registratio
 	 * 
 	 * @return the list of list of {@link RegistrationCenter}.
 	 */
+	@Query("FROM RegistrationCenter WHERE (isDeleted is null or isDeleted =false) and isActive = true")
 	List<RegistrationCenter> findAllByIsDeletedFalseOrIsDeletedIsNull();
 
 	/**
@@ -101,7 +102,7 @@ public interface RegistrationCenterRepository extends BaseRepository<Registratio
 	 *            the code against which registration centers need to be found.
 	 * @return the list of registration centers.
 	 */
-	@Query("FROM RegistrationCenter WHERE centerTypeCode= ?1 and (isDeleted is null or isDeleted =false)")
+	@Query("FROM RegistrationCenter WHERE centerTypeCode= ?1 and (isDeleted is null or isDeleted =false) and isActive = true")
 	List<RegistrationCenter> findByCenterTypeCode(String code);
 
 	@Query(value = "select EXISTS(select * from  master.loc_holiday hol where hol.is_active=true and (hol.is_deleted is null or hol.is_deleted=false) and hol.holiday_date=?1 and hol.location_code=?2)", nativeQuery = true)
@@ -114,7 +115,7 @@ public interface RegistrationCenterRepository extends BaseRepository<Registratio
 	 *            - id of the registration center.
 	 * @return - the fetched registration center entity.
 	 */
-	@Query("FROM RegistrationCenter WHERE id= ?1 and (isDeleted is null or isDeleted =false)")
+	@Query("FROM RegistrationCenter WHERE id= ?1 and (isDeleted is null or isDeleted =false) and isActive = true")
 	RegistrationCenter findByIdAndIsDeletedFalseOrNull(String id);
 
 	/**

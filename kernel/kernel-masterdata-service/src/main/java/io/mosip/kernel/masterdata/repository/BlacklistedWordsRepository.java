@@ -34,6 +34,7 @@ public interface BlacklistedWordsRepository extends BaseRepository<BlacklistedWo
 	 * 
 	 * @return {@link List of BlacklistedWords }
 	 */
+	@Query("FROM BlacklistedWords where (isDeleted is null OR isDeleted = false) AND isActive = true")
 	List<BlacklistedWords> findAllByIsDeletedFalseOrIsDeletedNull();
 
 	/**

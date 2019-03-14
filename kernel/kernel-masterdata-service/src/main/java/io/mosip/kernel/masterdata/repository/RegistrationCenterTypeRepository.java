@@ -46,6 +46,7 @@ public interface RegistrationCenterTypeRepository
 	 *            fetched.
 	 * @return the list of registration center types.
 	 */
+	
 	List<RegistrationCenterType> findByCode(String code);
 
 	/**

@@ -25,6 +25,7 @@ public interface TemplateRepository extends BaseRepository<Template, String> {
 	 *            the entity class type
 	 * @return All the {@link Template}
 	 */
+	@Query("FROM Template WHERE (isDeleted is null or isDeleted =false) and isActive = true")
 	List<Template> findAllByIsDeletedFalseOrIsDeletedIsNull(Class<Template> entityClass);
 
 	/**

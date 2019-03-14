@@ -27,6 +27,7 @@ public interface DocumentCategoryRepository extends BaseRepository<DocumentCateg
 	 *            is class of type DocumentCategory
 	 * @return list of {@link DocumentCategory}
 	 */
+	@Query("FROM DocumentCategory where (isDeleted is null OR isDeleted = false) AND isActive = true")
 	List<DocumentCategory> findAllByIsDeletedFalseOrIsDeletedIsNull(Class<DocumentCategory> entityClass);
 
 	/**
