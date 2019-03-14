@@ -130,30 +130,29 @@ public class IdRepoPostiveScenerio extends BaseTestCase implements ITest {
 		object.put("Jira ID", jiraID);
 
 		/**
-		 *  calling the uin generator rest api and storing as JSON object
+		 * calling the uin generator rest api and storing as JSON object
 		 */
 		JSONObject uin = (JSONObject) new JSONParser()
 				.parse(applicationLibrary.GetRequestNoParameter(service_URI_uin).asString());
 		logger.info("Uin generated:" + uin);
 
 		/**
-		 *  reading the master request Json
+		 * reading the master request Json
 		 */
 		Object requestJsonStruct = new TestCaseReader().readRequestJson(moduleName, apiName, requestJsonStructure);
 
 		/**
-		 *  getting all the keys of the master json
+		 * getting all the keys of the master json
 		 */
 		Set<Object> propertyFileKeys = prop.keySet();
 		String testDataProperty = "valid";
 		String testDataValue = "";
-		JSONObject inputJson=null;
+		JSONObject inputJson = null;
 		inputJson = (JSONObject) new JSONParser().parse(requestJsonStruct.toString());
 		/**
-		 *  generating test data for each key 
+		 * generating test data for each key
 		 */
 		for (Object key : propertyFileKeys) {
-			org.json.XML.toJSONObject("").toString();
 			/**
 			 * calling registration id
 			 */
@@ -163,7 +162,7 @@ public class IdRepoPostiveScenerio extends BaseTestCase implements ITest {
 			else if ((key.toString().equalsIgnoreCase("individualBiometrics.format")))
 				testDataValue = new TestDataGenerator().getYamlData(moduleName, apiName, testDataFileName,
 						"BiometricsFormat" + "_" + testDataProperty);
-				
+
 			else if ((key.toString().equalsIgnoreCase("IDSchemaVersion"))
 					|| (key.toString().equalsIgnoreCase("version"))
 					|| (key.toString().split(Pattern.quote("."))[(key.toString().split(Pattern.quote(".")).length - 1)]
@@ -196,75 +195,69 @@ public class IdRepoPostiveScenerio extends BaseTestCase implements ITest {
 			else
 				testDataValue = new TestDataGenerator().getYamlData(moduleName, apiName, testDataFileName,
 						key.toString() + "_" + testDataProperty);
-			
-            if(!testDataValue.isEmpty()) {
-			if (testDataValue.contains("BOOLEAN"))
-				PropertyUtils.setProperty(inputJson, prop.get(key.toString()).toString(),
-						Boolean.parseBoolean(testDataValue.split(":")[1]));
-			else if (testDataValue.contains("DOUBLE"))
-				PropertyUtils.setProperty(inputJson, prop.get(key.toString()).toString(),
-						Double.parseDouble(testDataValue.split(":")[1]));
-			else if (testDataValue.contains("INTEGER"))
-				PropertyUtils.setProperty(inputJson, prop.get(key.toString()).toString(),
-						Integer.parseInt(testDataValue.split(":")[1]));
-			else if (testDataValue.contains("LONG"))
-				PropertyUtils.setProperty(inputJson, prop.get(key.toString()).toString(),
-						Long.parseLong(testDataValue.split(":")[1]));
-			else
-				PropertyUtils.setProperty(inputJson, prop.get(key.toString()).toString(), testDataValue);
-            }
+
+			if (!testDataValue.isEmpty()) {
+				if (testDataValue.contains("BOOLEAN"))
+					PropertyUtils.setProperty(inputJson, prop.get(key.toString()).toString(),
+							Boolean.parseBoolean(testDataValue.split(":")[1]));
+				else if (testDataValue.contains("DOUBLE"))
+					PropertyUtils.setProperty(inputJson, prop.get(key.toString()).toString(),
+							Double.parseDouble(testDataValue.split(":")[1]));
+				else if (testDataValue.contains("INTEGER"))
+					PropertyUtils.setProperty(inputJson, prop.get(key.toString()).toString(),
+							Integer.parseInt(testDataValue.split(":")[1]));
+				else if (testDataValue.contains("LONG"))
+					PropertyUtils.setProperty(inputJson, prop.get(key.toString()).toString(),
+							Long.parseLong(testDataValue.split(":")[1]));
+				else
+					PropertyUtils.setProperty(inputJson, prop.get(key.toString()).toString(), testDataValue);
+			}
 
 		}
-
-		response = applicationLibrary.postRequest(inputJson.toString(), service_base_URI + uin.get("uin"));
-		logger.info("Input Json:" + inputJson.toString());
-		
-		
-		
-		
-		
-		JSONObject expectedResponseBody = (JSONObject) new JSONParser().parse(response.asString());
-		
-		
-		PropertyUtils.setProperty(inputJson, "request.(documents)[0].value","");
-		
-		
-		ObjectMapper mapper = new ObjectMapper();
-			JsonNode requestJsonToCompare = mapper.readTree(inputJson.toString());
-			
-			System.err.println("request :"+requestJsonToCompare.get("request"));
-			
-			//System.err.println("request :"+requestJsonToCompare.);
-		
-			HashMap<String, String> inputParameters = new HashMap<>();
-			inputParameters.put("type", "all");
-			responseObject = (JSONObject) new JSONParser().parse(applicationLibrary
-					.getRequestAsQueryParam(service_base_URI + uin.get("uin"), inputParameters).asString());
-			
-			
-			
-			
-			
-			
-			logger.info("Output of get Request" + responseObject.toString());
-			ArrayList<String> listOfElementToRemove = new ArrayList<String>();
-			//PropertyUtils.setProperty(requestJsonToCompare, "request.(documents)[0].value","Java");
-			
-			
-			
-			PropertyUtils.setProperty(responseObject, "response.(documents)[0].value", "");
-			
-			JsonNode reaponseJsonToCompare = mapper.readTree(responseObject.toString());
-			System.err.println("Response :"+reaponseJsonToCompare.get("response"));
-			
-			status = assertions.assertIdRepo(requestJsonToCompare.get("request"), reaponseJsonToCompare.get("response"), listOfElementToRemove);
-
-	
-		
 		/**
-		 *  add parameters to remove in response before comparison like time stamp
+		 * sending request to the post method
 		 */
 		
+		
+		//inputJson.remove("documents.1.category");
+		response = applicationLibrary.postRequest(inputJson.toString(), service_base_URI + uin.get("uin"));
+		logger.info("Input Json:" + inputJson.toString());
+
+
+		PropertyUtils.setProperty(inputJson, "request.(documents)[0].value",new TestDataGenerator().getYamlData(moduleName, apiName, testDataFileName,
+				"individualBiometrics-updated-value" + "_" + "valid"));
+
+		ObjectMapper mapper = new ObjectMapper();
+		JsonNode requestJsonToCompare = mapper.readTree(inputJson.toString());
+
+		System.err.println("request :" + requestJsonToCompare.get("request"));
+
+		// System.err.println("request :"+requestJsonToCompare.);
+
+		HashMap<String, String> inputParameters = new HashMap<>();
+		inputParameters.put("type", "all");
+		responseObject = (JSONObject) new JSONParser().parse(applicationLibrary
+				.getRequestAsQueryParam(service_base_URI + uin.get("uin"), inputParameters).asString());
+
+		logger.info("Output of get Request" + responseObject.toString());
+		ArrayList<String> listOfElementToRemove = new ArrayList<String>();
+		// PropertyUtils.setProperty(requestJsonToCompare,
+		// "request.(documents)[0].value","Java");
+
+		/**
+		 * PropertyUtils.setProperty(responseObject, "response.(documents)[0].value", "");
+		 */
+
+		JsonNode reaponseJsonToCompare = mapper.readTree(responseObject.toString());
+		System.err.println("Response :" + reaponseJsonToCompare.get("response"));
+
+		
+		status = assertions.assertIdRepo(requestJsonToCompare.get("request"), reaponseJsonToCompare.get("response"),
+				listOfElementToRemove);
+
+		/**
+		 * add parameters to remove in response before comparison like time stamp
+		 */
 
 		int statusCode = response.statusCode();
 		logger.info("Status Code is : " + statusCode);
@@ -319,4 +312,3 @@ public class IdRepoPostiveScenerio extends BaseTestCase implements ITest {
 		}
 	}
 }
-
