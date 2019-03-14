@@ -28,7 +28,7 @@ import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.constant.RegistrationCenterUserMappingHistoryErrorCode;
 import io.mosip.kernel.masterdata.constant.RequestErrorCode;
-import io.mosip.kernel.masterdata.utils.EmptyCheckUtils;
+import io.mosip.kernel.core.util.EmptyCheckUtils;
 
 /**
  * Rest Controller Advice for Master Data

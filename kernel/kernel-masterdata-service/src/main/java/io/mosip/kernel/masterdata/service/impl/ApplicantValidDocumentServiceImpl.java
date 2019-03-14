@@ -19,7 +19,7 @@ import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.repository.ApplicantValidDocumentRepository;
 import io.mosip.kernel.masterdata.service.ApplicantValidDocumentService;
-import io.mosip.kernel.masterdata.utils.EmptyCheckUtils;
+import io.mosip.kernel.core.util.EmptyCheckUtils;
 
 @Service
 public class ApplicantValidDocumentServiceImpl implements ApplicantValidDocumentService {
