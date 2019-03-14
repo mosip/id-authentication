@@ -5,6 +5,7 @@ package io.mosip.kernel.auth.factory;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 
 import org.bouncycastle.util.Arrays;
 import org.springframework.dao.DataAccessException;
@@ -20,6 +21,8 @@ import io.mosip.kernel.auth.constant.AuthConstant;
 import io.mosip.kernel.auth.entities.ClientSecret;
 import io.mosip.kernel.auth.entities.LoginUser;
 import io.mosip.kernel.auth.entities.MosipUserDto;
+import io.mosip.kernel.auth.entities.MosipUserListDto;
+import io.mosip.kernel.auth.entities.RolesListDto;
 import io.mosip.kernel.auth.entities.UserOtp;
 import io.mosip.kernel.auth.entities.otp.OtpUser;
 
@@ -42,7 +45,7 @@ public class DBDataStore implements IDataStore {
 	
 	private static final String NEW_ROLE_OTP="insert into iam.role_list(code,descr,lang_code,cr_dtimes,is_active,cr_by) values(:role,:description,:langCode,NOW(),true,'Admin')";
 	
-	private static final String USER_ROLE_MAPPING="insert into iam.user_role(role_code,usr_id,lang_code,cr_dtimes,is_active,cr_by) values(:roleId,':userId,'eng',NOW(),true,'Admin');";
+	private static final String USER_ROLE_MAPPING="insert into iam.user_role(role_code,usr_id,lang_code,cr_dtimes,is_active,cr_by) values(:roleId,:userId,'eng',NOW(),true,'Admin');";
 	
 	
 	public DBDataStore()
@@ -146,12 +149,16 @@ public class DBDataStore implements IDataStore {
 		if(mosipUserDto==null)
 		{
 			String userId =createUser(otpUser);
-			roleId = getRole("individual");
-			if(roleId!=null)
+			roleId = getRole(AuthConstant.INDIVIDUAL);
+			if(roleId==null)
 			{
 				roleId=createRole(userId,otpUser);
 			}
 			createMapping(userId,roleId);
+		}
+		else
+		{
+			throw new RuntimeException("Please login to get the details");
 		}
 		return getUser(otpUser.getUserId());
 	}
@@ -165,10 +172,10 @@ public class DBDataStore implements IDataStore {
 	private String createRole(String userId, OtpUser otpUser) {
 		jdbcTemplate.update(NEW_ROLE_OTP, 
 				new MapSqlParameterSource()
-				.addValue("role", "individual")
+				.addValue("role", AuthConstant.INDIVIDUAL)
 				.addValue("description", "Individual User")
 				.addValue("langCode", otpUser.getLangCode()));
-		return "individual";
+		return AuthConstant.INDIVIDUAL;
 		
 	}
 
@@ -177,8 +184,8 @@ public class DBDataStore implements IDataStore {
 				new MapSqlParameterSource().addValue("userName", otpUser.getUserId())
 				.addValue("name", otpUser.getUserId())
 				.addValue("langcode", otpUser.getLangCode())
-				.addValue("email", AuthConstant.EMAIL.equals(otpUser.getOtpChannel())?otpUser.getUserId():"")
-				.addValue("phone", AuthConstant.PHONE.equals(otpUser.getOtpChannel())?otpUser.getUserId():""));
+				.addValue("email", AuthConstant.EMAIL.equals(otpUser.getOtpChannel().get(0))?otpUser.getUserId():"")
+				.addValue("phone", AuthConstant.PHONE.equals(otpUser.getOtpChannel().get(0))?otpUser.getUserId():""));
 		return otpUser.getUserId();
 	}
 
@@ -198,6 +205,18 @@ public class DBDataStore implements IDataStore {
 	public MosipUserDto authenticateWithSecretKey(ClientSecret clientSecret) throws Exception {
 		MosipUserDto mosipUserDto = getUser(clientSecret.getClientId());
 		return mosipUserDto;
+	}
+
+	@Override
+	public RolesListDto getAllRoles() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public MosipUserListDto getListOfUsersDetails(List<String> userDetails) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

@@ -12,8 +12,14 @@ ARG active_profile
 # can be passed during Docker build as build time environment for config server URL
 ARG spring_config_url
 
+# can be passed during Docker build as build time environment for zone
+ARG zone
+
 # environment variable to pass active profile such as DEV, QA etc at docker runtime
 ENV active_profile_env=${active_profile}
+
+# environment variable to pass zone i.e dmz or secure at docker runtime
+ENV zone_env=${zone}
 
 # environment variable to pass github branch to pickup configuration from, at docker runtime
 ENV spring_config_label_env=${spring_config_label}
@@ -29,4 +35,4 @@ COPY ./target/registration-processor-camel-bridge-*.jar registration-processor-c
 
 
 # running java jar
-CMD java -jar -Dspring.cloud.config.label=${spring_config_label_env} -Dspring.profiles.active=${active_profile_env} -Dspring.cloud.config.uri=${spring_config_url_env} registration-processor-camel-bridge.jar
+CMD java -jar -Dspring.cloud.config.label=${spring_config_label_env} -Dspring.profiles.active=${active_profile_env} -Dspring.cloud.config.uri=${spring_config_url_env} -Dregistration.processor.zone=${zone_env} registration-processor-camel-bridge.jar

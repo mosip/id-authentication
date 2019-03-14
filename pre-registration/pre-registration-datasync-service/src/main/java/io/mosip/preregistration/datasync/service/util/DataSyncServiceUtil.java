@@ -68,6 +68,7 @@ import io.mosip.preregistration.datasync.repository.ProcessedDataSyncRepo;
 
 /**
  * @author Ravi C Balaji
+ * @author Sanober Noor
  * @since 1.0.0
  */
 @Component
@@ -141,23 +142,23 @@ public class DataSyncServiceUtil {
 		String userId = dataSyncRequest.getUserId();
 		String format = "dd-MM-yyyy HH:mm:ss";
 
-		if (regId == null || isNull(regId)) {
+		if (isNull(regId)) {
 			throw new InvalidRequestParameterException(ErrorCodes.PRG_DATA_SYNC_009.toString(),
 					ErrorMessages.INVALID_REGISTRATION_CENTER_ID.toString());
 		}
 
-		if (fromDate == null || isNull(fromDate) || !parseDate(fromDate, format)) {
+		if (isNull(fromDate) || !parseDate(fromDate, format)) {
 
 			throw new InvalidRequestParameterException(ErrorCodes.PRG_DATA_SYNC_010.toString(),
 					ErrorMessages.INVALID_REQUESTED_DATE.toString());
 		}
 
-		if (toDate != null && !isNull(toDate) && !parseDate(toDate, format)) {
+		if (!isNull(toDate) && !parseDate(toDate, format)) {
 			throw new InvalidRequestParameterException(ErrorCodes.PRG_DATA_SYNC_010.toString(),
 					ErrorMessages.INVALID_REQUESTED_DATE.toString());
 		}
 
-		if (userId == null || isNull(userId)) {
+		if (isNull(userId)) {
 			throw new InvalidRequestParameterException(ErrorCodes.PRG_DATA_SYNC_003.toString(),
 					ErrorMessages.INVALID_USER_ID.toString());
 		}
@@ -235,7 +236,7 @@ public class DataSyncServiceUtil {
 			}
 			RestTemplate restTemplate = restTemplateBuilder.build();
 			UriComponentsBuilder builder = UriComponentsBuilder
-					.fromHttpUrl(demographicResourceUrl + "/applicationDataByDateTime")
+					.fromHttpUrl(demographicResourceUrl + "/applications/byDateTime")
 					.queryParam("from_date", fromDate).queryParam("to_date", toDate);
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
@@ -276,7 +277,7 @@ public class DataSyncServiceUtil {
 			cal.set(Calendar.SECOND, 59);
 			date = cal.getTime();
 			toDate = DateUtils.formatDate(date, "yyyy-MM-dd HH:mm:ss");
-		} catch (ParseException ex) {
+		} catch (Exception ex) {
 			log.error("sessionId", "idType", "id", "In assignDate method of datasync service util" + ex.getMessage());
 			throw new InvalidRequestParameterException(ErrorCodes.PRG_DATA_SYNC_010.toString(),
 					ErrorMessages.INVALID_REQUESTED_DATE.toString());
@@ -292,7 +293,7 @@ public class DataSyncServiceUtil {
 		try {
 			RestTemplate restTemplate = restTemplateBuilder.build();
 			UriComponentsBuilder builder = UriComponentsBuilder
-					.fromHttpUrl(bookingResourceUrl + "/bookedPreIdsByRegId");
+					.fromHttpUrl(bookingResourceUrl + "/appointment/preIdsByRegId");
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
 			PreRegIdsByRegCenterIdDTO preRegIdsByRegCenterIdDTO = new PreRegIdsByRegCenterIdDTO();
@@ -339,7 +340,7 @@ public class DataSyncServiceUtil {
 		List<DocumentMultipartResponseDTO> responsestatusDto = new ArrayList<>();
 		try {
 			RestTemplate restTemplate = restTemplateBuilder.build();
-			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(documentResourceUrl + "/getDocument")
+			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(documentResourceUrl + "/documents")
 					.queryParam("pre_registration_id", preId);
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
@@ -349,8 +350,8 @@ public class DataSyncServiceUtil {
 			ResponseEntity<MainListResponseDTO> respEntity = restTemplate.exchange(uriBuilder, HttpMethod.GET,
 					httpEntity, MainListResponseDTO.class);
 			if (!respEntity.getBody().isStatus()) {
-				throw new DocumentGetDetailsException(respEntity.getBody().getErr().getErrorCode(),
-						respEntity.getBody().getErr().getMessage());
+				log.info("sessionId", "idType", "id",
+						"In callGetDocRestService method of datasync service util - Document not found for the pre_registration_id");
 			} else {
 				for (Object obj : respEntity.getBody().getResponse()) {
 					responsestatusDto.add(mapper.convertValue(obj, DocumentMultipartResponseDTO.class));
@@ -372,7 +373,7 @@ public class DataSyncServiceUtil {
 		try {
 
 			RestTemplate restTemplate = restTemplateBuilder.build();
-			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(demographicResourceUrl + "/applicationData")
+			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(demographicResourceUrl + "/applications/details")
 					.queryParam("pre_registration_id", preId);
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
@@ -411,7 +412,7 @@ public class DataSyncServiceUtil {
 		BookingRegistrationDTO bookingRegistrationDTO = null;
 		try {
 			RestTemplate restTemplate = restTemplateBuilder.build();
-			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(bookingResourceUrl + "/appointmentDetails")
+			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(bookingResourceUrl + "/appointment")
 					.queryParam("pre_registration_id", preId);
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON_UTF8);

@@ -1,0 +1,10 @@
+{
+		"id": "mosip.pre-registration.auth.sendOtp",
+		"version" : "1.0",
+		"requesttime" : "2018-12-06T07:22:57.086+0000",
+		"request" :
+		{
+			"userId":"9538895320",
+			"langCode":"eng"
+		}
+}

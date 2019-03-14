@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>io.mosip</groupId>
 		<artifactId>mosip-parent</artifactId>
-		<version>0.9.2</version>
+		<version>0.9.5</version>
 	</parent>
 
 	<groupId>io.mosip.preregistration</groupId>
@@ -58,7 +58,7 @@
 		<commons-lang3>3.7</commons-lang3>
 		<commons.beanutils.version>1.9.2</commons.beanutils.version>
 		<commons.configuration2.version>2.2</commons.configuration2.version>
-		<kernel.core.version>0.8.10</kernel.core.version>
+		<kernel.core.version>0.9.2</kernel.core.version>
 
 		<!-- Test & Logging -->
 		<junit.version>4.12</junit.version>
@@ -78,16 +78,13 @@
 		<java.interceptor.version>1.2</java.interceptor.version>
 		<icu.version>63.1</icu.version>
 		
-		<!-- Other module dependency -->
-	
-		<registration.processor.version>0.7.0</registration.processor.version>
 
 		<sonar.coverage.exclusions>**/code/**,**/config/**,**/dao/**,**/dto/**,**/entity/**,**/errorcodes/**,**/exception/**,**/exception/system/**,**/exception/util/**,**/repository/**,**/*Config.java,**/*Application.java,**/batchjob/**,**/auth/**,**/util/**,**/stateUtil/**</sonar.coverage.exclusions>
 		<sonar.cpd.exclusions>**/dto/**,**/entity/**,**/config/**</sonar.cpd.exclusions>
 	</properties>
 	<modules>
 		<module>pre-registration-core</module>
-		<!-- <module>pre-registration-auth-service</module> -->
+		<module>pre-registration-auth-service</module>
 		<module>pre-registration-demographic-service</module>
 		<module>pre-registration-document-service</module>
 		<module>pre-registration-booking-service</module>

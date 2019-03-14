@@ -25,5 +25,7 @@ public class AuthNResponseDto {
 	private long expiryTime;
 	
 	private String userId;
+	
+	private String status;
 
 }

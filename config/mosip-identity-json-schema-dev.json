@@ -24,7 +24,7 @@
 					"$ref": "#/definitions/simpleType"
 				},
 				"dateOfBirth": {
-					"$ref": "#/definitions/dateOfBirthType"
+					"type": "string"
 				},
 				"age": {
 					"type": "integer",
@@ -52,19 +52,19 @@
 					"$ref": "#/definitions/simpleType"
 				},
 				"postalCode": {
-					"$ref": "#/definitions/postalCodeType"
+					"type": "string"
 				},
 				"phone": {
-					"$ref": "#/definitions/phoneType"
+					"type": "string"
 				},
 				"email": {
-					"$ref": "#/definitions/emailType"
+					"type": "string"
 				},
 				"residenceStatus": {
 					"$ref": "#/definitions/simpleType"
 				},
 				"CNIENumber": {
-					"$ref": "#/definitions/CNIENumberType"
+					"type": "string"
 				},
 				"localAdministrativeAuthority": {
 					"$ref": "#/definitions/simpleType"
@@ -120,26 +120,6 @@
 				}
 			}
 		},
-		"dateOfBirthType": {
-			"type": "string",
-			"pattern": "^\\d{4}/([0]\\d|1[0-2])/([0-2]\\d|3[01])$"
-		},
-		"phoneType": {		
-			"type": "string",
-			"pattern": "^([6-9]{1})([0-9]{9})$"
-		},
-		"postalCodeType": {		
-			"type": "string",
-			"pattern": "^[(?i)A-Z0-9]{6}$"
-		},
-		"emailType": {
-			"type": "string",
-			"pattern": "^[\\w-\\+]+(\\.[\\w]+)*@[\\w-]+(\\.[\\w]+)*(\\.[a-z]{2,})$"
-		},
-		"CNIENumberType": {
-			"type": "string",
-			"pattern": "^([0-9]{10,30})$"
-		},
 		"documentType": {
 			"type": "object",
 			"properties": {
@@ -162,7 +142,8 @@
 					"type": "string"
 				},
 				"version": {
-					"type": "number"
+					"type": "number",
+					"minimum": 0
 				},
 				"value": {
 					"type": "string"

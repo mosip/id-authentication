@@ -1,1 +1,1 @@
-{"resTime":"$TIMESTAMP$","ver":"1.0","err":[{"errorMessage":"Invalid Input Parameter - reqTime","errorCode":"IDA-IDV-002"}],"status":"N","txnID":"7404012866"}
+{"status":"N","err":[{"errorCode":"IDA-IDV-002","errorMessage":"Invalid Input Parameter - reqTime"}],"resTime":"$TIMESTAMPZ$","ver":"0.8"}

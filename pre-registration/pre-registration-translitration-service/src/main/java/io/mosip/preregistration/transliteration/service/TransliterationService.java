@@ -20,6 +20,7 @@ import io.mosip.preregistration.transliteration.dto.TransliterationDTO;
 import io.mosip.preregistration.transliteration.errorcode.ErrorCodes;
 import io.mosip.preregistration.transliteration.errorcode.ErrorMessage;
 import io.mosip.preregistration.transliteration.exception.MandatoryFieldRequiredException;
+import io.mosip.preregistration.transliteration.exception.UnSupportedLanguageException;
 import io.mosip.preregistration.transliteration.exception.util.TransliterationExceptionCatcher;
 import io.mosip.preregistration.transliteration.repository.LanguageIdRepository;
 import io.mosip.preregistration.transliteration.service.util.TransliterationServiceUtil;
@@ -97,19 +98,26 @@ public class TransliterationService {
 			if (ValidationUtil.requestValidator(serviceUtil.prepareRequestParamMap(requestDTO), requiredRequestMap)) {
 				TransliterationDTO transliterationRequestDTO = requestDTO.getRequest();
 				if (serviceUtil.isEntryFieldsNull(transliterationRequestDTO)) {
+					if(serviceUtil.supportedLanguageCheck(transliterationRequestDTO)) {
+						String languageId = idRepository
+								.findByFromLangAndToLang(transliterationRequestDTO.getFromFieldLang(),
+										transliterationRequestDTO.getToFieldLang())
+								.getLanguageId();
+						String toFieldValue = translitrator.translitrator(languageId,
+								transliterationRequestDTO.getFromFieldValue());
+						responseDTO.setResponse(serviceUtil.responseSetter(toFieldValue, transliterationRequestDTO));
+						responseDTO.setResTime(serviceUtil.getCurrentResponseTime());
+						responseDTO.setStatus(trueStatus);
+					}
+					else {
+						throw new UnSupportedLanguageException(ErrorCodes.PRG_TRL_APP_008.getCode(), 
+								ErrorMessage.UNSUPPORTED_LANGUAGE.getMessage());
+					}
 
-					String languageId = idRepository
-							.findByFromLangAndToLang(transliterationRequestDTO.getFromFieldLang(),
-									transliterationRequestDTO.getToFieldLang())
-							.getLanguageId();
-					String toFieldValue = translitrator.translitrator(languageId,
-							transliterationRequestDTO.getFromFieldValue());
-					responseDTO.setResponse(serviceUtil.responseSetter(toFieldValue, transliterationRequestDTO));
-					responseDTO.setResTime(serviceUtil.getCurrentResponseTime());
-					responseDTO.setStatus(trueStatus);
+					
 				} else {
 					throw new MandatoryFieldRequiredException(ErrorCodes.PRG_TRL_APP_002.getCode(),
-							ErrorMessage.INCORRECT_MANDATORY_FIELDS.getCode());
+							ErrorMessage.INCORRECT_MANDATORY_FIELDS.getMessage());
 				}
 			}
 		} catch (Exception e) {
