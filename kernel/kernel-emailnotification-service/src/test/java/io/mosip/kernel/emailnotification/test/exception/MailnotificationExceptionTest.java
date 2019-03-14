@@ -16,7 +16,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
 import io.mosip.kernel.emailnotification.NotificationEmailBootApplication;
-import io.mosip.kernel.emailnotification.service.impl.EmailNotificationServiceImpl;
 import io.mosip.kernel.emailnotification.util.EmailNotificationUtils;
 
 @RunWith(SpringRunner.class)
@@ -26,31 +25,28 @@ public class MailnotificationExceptionTest {
 	@Autowired
 	MockMvc mockMvc;
 
-	@Autowired
-	EmailNotificationServiceImpl service;
-
 	@MockBean
 	EmailNotificationUtils utils;
 
 	@Test
 	public void testToRaiseExceptionForNullContent() throws Exception {
 		mockMvc.perform(post("/email/send").contentType(MediaType.MULTIPART_FORM_DATA)
-				.param("mailTo", "testmail@gmail.com").param("mailSubject", "testsubject"))
-				.andExpect(status().isOk()).andExpect(jsonPath("$.errors[0].errorCode", isA(String.class)));
+				.param("mailTo", "testmail@gmail.com").param("mailSubject", "testsubject")).andExpect(status().isOk())
+				.andExpect(jsonPath("$.errors[0].errorCode", isA(String.class)));
 	}
 
 	@Test
 	public void testToRaiseExceptionForNullSubject() throws Exception {
 		mockMvc.perform(post("/email/send").contentType(MediaType.MULTIPART_FORM_DATA)
-				.param("mailTo", "testmail@gmail.com").param("mailContent", "testsubject"))
-				.andExpect(status().isOk()).andExpect(jsonPath("$.errors[0].errorCode", isA(String.class)));
+				.param("mailTo", "testmail@gmail.com").param("mailContent", "testsubject")).andExpect(status().isOk())
+				.andExpect(jsonPath("$.errors[0].errorCode", isA(String.class)));
 	}
 
 	@Test
 	public void testToRaiseExceptionForNullTo() throws Exception {
 		mockMvc.perform(post("/email/send").contentType(MediaType.MULTIPART_FORM_DATA)
-				.param("mailSubject", "testsubject").param("mailContent", "testsubject"))
-				.andExpect(status().isOk()).andExpect(jsonPath("$.errors[0].errorCode", isA(String.class)));
+				.param("mailSubject", "testsubject").param("mailContent", "testsubject")).andExpect(status().isOk())
+				.andExpect(jsonPath("$.errors[0].errorCode", isA(String.class)));
 	}
 
 	@Test
