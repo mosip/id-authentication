@@ -150,21 +150,21 @@ public class AuthService {
 		log.info("sessionId", "idType", "id",
 				"In calluserIdOtp method of kernel service ");
 		ResponseEntity<AuthNResponse> responseEntity = null;
-
+		AuthNResponse authNResponse = null;
 		try {
 			Map<String,String> headersMap=new HashMap<>();
 			headersMap.put("Cookie",authHeader);
 		String url=sendOtpResourceUrl+"/v1.0/authorize/invalidateToken";
 		responseEntity=(ResponseEntity<AuthNResponse>) authCommonUtil.getResponseEntity(url,HttpMethod.POST,MediaType.APPLICATION_JSON,null,headersMap,AuthNResponse.class);
+		authNResponse = responseEntity.getBody();
 		}
-		catch(Exception ex) {
-			
+		catch(Exception ex) {	
 			log.error("sessionId", "idType", "id",
 					"In call invalidateToken method of kernel service- " + ex.getMessage());
 			new AuthExceptionCatcher().handle(ex,"invalidateToken");	
 		}
 		
-		return responseEntity.getBody();
+		return authNResponse;
 	}
 	
 }

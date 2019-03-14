@@ -127,7 +127,7 @@ public class SynchConfigDataJobTest {
 	
 		Mockito.when(applicationContext.getBean(GlobalParamService.class)).thenReturn(globalParamService);
 		
-		Mockito.when(globalParamService.synchConfigData(false)).thenReturn(responseDTO);
+		Mockito.when(globalParamService.synchConfigData(Mockito.anyBoolean())).thenReturn(responseDTO);
 
 	
 		syncConfigDataJob.executeInternal(context);

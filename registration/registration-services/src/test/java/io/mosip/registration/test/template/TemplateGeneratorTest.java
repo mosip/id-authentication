@@ -70,6 +70,8 @@ public class TemplateGeneratorTest {
 		appMap.put(RegistrationConstants.FINGERPRINT_DISABLE_FLAG, "Y");
 		appMap.put(RegistrationConstants.IRIS_DISABLE_FLAG, "Y");
 		appMap.put(RegistrationConstants.FACE_DISABLE_FLAG, "Y");
+		appMap.put(RegistrationConstants.PRIMARY_LANGUAGE, "ara");
+		appMap.put(RegistrationConstants.SECONDARY_LANGUAGE, "fra");
 		ApplicationContext.getInstance().setApplicationMap(appMap);
 	}
 	
