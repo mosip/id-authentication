@@ -563,7 +563,20 @@ public enum PlatformErrorMessages {
 
 	/** The rpr pgs packet meta convertor exception. */
 	RPR_PGS_PACKET_META_CONVERTOR_EXCEPTION(PlatformErrorConstants.RPR_PACKET_GENERATOR_MODULE + "009",
-			"Packet meta info converter error");
+			"Packet meta info converter error"),
+	
+	/** The missing input parameter. */
+	RPR_PGS_MISSING_INPUT_PARAMETER(PlatformErrorConstants.RPR_PACKET_GENERATOR_MODULE + "010",
+			"Missing Input Parameter - %s"),
+
+	/** The invalid input parameter. */
+	RPR_PGS_INVALID_INPUT_PARAMETER(PlatformErrorConstants.RPR_PACKET_GENERATOR_MODULE + "011",
+			"Invalid Input Parameter - %s"),
+	/** The data validation failed. */
+	RPR_PGS_DATA_VALIDATION_FAILED(PlatformErrorConstants.RPR_PACKET_GENERATOR_MODULE + "012",
+			"Input Data Validation Failed");
+
+
 	/** The error message. */
 	private final String errorMessage;
 

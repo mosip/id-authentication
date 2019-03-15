@@ -1,7 +1,6 @@
 package io.mosip.registration.processor.packet.service.controller;
 
 import java.util.Objects;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.core.env.Environment;
@@ -9,20 +8,24 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.Errors;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-
 import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.packet.service.PacketGeneratorService;
 import io.mosip.registration.processor.packet.service.dto.PacketGeneratorRequestDto;
 import io.mosip.registration.processor.packet.service.dto.PacketGeneratorResDto;
 import io.mosip.registration.processor.packet.service.dto.PacketGeneratorResponseDto;
+import io.mosip.registration.processor.packet.service.exception.PacketGeneratorValidationException;
 import io.mosip.registration.processor.packet.service.exception.RegBaseCheckedException;
+import io.mosip.registration.processor.packet.upload.service.request.validator.PacketGeneratorRequestValidator;
+import io.mosip.registration.processor.packet.upload.service.vlaidator.util.PacketGeneratorValidationUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -55,6 +58,14 @@ public class PacketGeneratorController {
 	/** The Constant DATETIME_PATTERN. */
 	private static final String DATETIME_PATTERN = "mosip.registration.processor.datetime.pattern";
 
+	/** The validator. */
+	@Autowired
+	private PacketGeneratorRequestValidator validator;
+
+	@InitBinder
+	public void initBinder(WebDataBinder binder) {
+		binder.addValidators(validator);
+	}
 	/**
 	 * Gets the status.
 	 *
@@ -70,15 +81,18 @@ public class PacketGeneratorController {
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Get the status of packet "),
 			@ApiResponse(code = 400, message = "Unable to fetch the status "),
 			@ApiResponse(code = 500, message = "Internal Server Error") })
-	public ResponseEntity<Object> getStatus(
-			@Validated @RequestBody(required = true) PacketGeneratorRequestDto packerGeneratorRequestDto,
+	public ResponseEntity<Object> getStatus(@Validated @RequestBody(required = true) PacketGeneratorRequestDto packerGeneratorRequestDto,
 			@ApiIgnore Errors errors) throws RegBaseCheckedException {
-		PacketGeneratorResDto packerGeneratorResDto;
 
-		packerGeneratorResDto = packetGeneratorService.createPacket(packerGeneratorRequestDto.getRequest());
-
-		return ResponseEntity.ok().body(buildPacketGeneratorResponse(packerGeneratorResDto));
-
+		try {
+			PacketGeneratorValidationUtil.validate(errors);
+			PacketGeneratorResDto packerGeneratorResDto;
+			packerGeneratorResDto = packetGeneratorService.createPacket(packerGeneratorRequestDto.getRequest());
+			return ResponseEntity.ok().body(buildPacketGeneratorResponse(packerGeneratorResDto));
+		} catch (PacketGeneratorValidationException e) {
+			throw new RegBaseCheckedException(PlatformErrorMessages.RPR_RGS_DATA_VALIDATION_FAILED, e);
+		
+		}
 	}
 
 	/**
