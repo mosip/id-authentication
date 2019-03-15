@@ -5,20 +5,24 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * Response dto for uin generator
+ * Response dto for update the uin status
  * 
- * @author Dharmesh Khandelwal
+ * @author Megha Tanga
  * @since 1.0.0
  *
  */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UinResponseDto {
+public class UinStatusUpdateReponseDto {
 
 	/**
 	 * The uin
 	 */
 	private String uin;
+	/**
+	 * The uin status
+	 */
+	private String status;
 
 }

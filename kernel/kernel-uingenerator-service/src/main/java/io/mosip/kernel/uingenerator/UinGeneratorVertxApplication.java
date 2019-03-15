@@ -10,6 +10,7 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import io.mosip.kernel.uingenerator.config.UinGeneratorConfiguration;
 import io.mosip.kernel.uingenerator.verticle.UinGeneratorServerVerticle;
 import io.mosip.kernel.uingenerator.verticle.UinGeneratorVerticle;
+import io.mosip.kernel.uingenerator.verticle.UinStatusUpdateVerticle;
 import io.vertx.core.Verticle;
 import io.vertx.core.Vertx;
 import io.vertx.core.VertxOptions;
@@ -18,6 +19,7 @@ import io.vertx.core.VertxOptions;
  * Uin Generator vertx application
  * 
  * @author Dharmesh Khandelwal
+ * @author Megha Tanga
  * @since 1.0.0
  *
  */
@@ -38,7 +40,8 @@ public class UinGeneratorVertxApplication {
 		ApplicationContext context = new AnnotationConfigApplicationContext(UinGeneratorConfiguration.class);
 		VertxOptions options = new VertxOptions();
 		Vertx vertx = Vertx.vertx(options);
-		Verticle[] verticles = { new UinGeneratorVerticle(context), new UinGeneratorServerVerticle(context) };
+		Verticle[] verticles = { new UinGeneratorVerticle(context), new UinGeneratorServerVerticle(context),
+				new UinStatusUpdateVerticle(context) };
 		Stream.of(verticles).forEach(verticle -> vertx.deployVerticle(verticle, stringAsyncResult -> {
 			if (stringAsyncResult.succeeded()) {
 				LOGGER.info("Succesfully deployed {}", verticle.getClass().getSimpleName());

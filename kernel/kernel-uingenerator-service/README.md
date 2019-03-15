@@ -70,7 +70,7 @@ Table : uin
 OkHttpClient client = new OkHttpClient();
 
 Request request = new Request.Builder()
-  .url("http://localhost:8080/uingenerator/v1.0/uin")
+  .url("http://localhost:8080/uin")
   .get()
   .build();
 

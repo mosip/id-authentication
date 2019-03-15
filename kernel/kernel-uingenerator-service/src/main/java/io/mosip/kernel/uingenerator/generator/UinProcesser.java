@@ -37,19 +37,27 @@ public class UinProcesser {
 	private long thresholdUinCount;
 
 	/**
+	 * String field for uin status unused
+	 */
+	@Value("${mosip.kernel.uin.status.unused}")
+	private String unused;
+
+	/**
 	 * Check whether to generate uin or not
 	 * 
 	 * @return true, if needs to generate uin
 	 */
 	public boolean shouldGenerateUins() {
 		LOGGER.info("Uin threshold is {}", thresholdUinCount);
-		long freeUinsCount = uinRepository.countByUsedIsFalse();
+		long freeUinsCount = uinRepository.countByStatus(unused);
 		LOGGER.info("Number of free UINs in database is {}", freeUinsCount);
 		return freeUinsCount < thresholdUinCount;
 	}
 
 	/**
 	 * Create list of uins
+	 * 
+	 * @return List of uins
 	 */
 	public List<UinEntity> generateUins() {
 		return new ArrayList<>(uinGeneratorImpl.generateId());
