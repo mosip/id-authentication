@@ -463,7 +463,7 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	 * @param errors         the errors
 	 */
 	private void checkAtleastOneIrisRequestAvailable(AuthRequestDTO authRequestDTO, Errors errors) {
-		boolean isIrisRequestAvailable = checkAnyBioIdAvailable(authRequestDTO, "IRIS");
+		boolean isIrisRequestAvailable = checkAnyBioIdAvailable(authRequestDTO, BioAuthType.IRIS_IMG.getType());
 		if (!isIrisRequestAvailable) {
 			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE, "iris request is not available");
 			errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.MISSING_AUTHTYPE.getErrorCode(),
@@ -478,7 +478,7 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	 * @param errors         the errors
 	 */
 	private void checkAtleastOneFaceRequestAvailable(AuthRequestDTO authRequestDTO, Errors errors) {
-		boolean isFaceRequestAvailable = checkAnyBioIdAvailable(authRequestDTO, "FACE");
+		boolean isFaceRequestAvailable = checkAnyBioIdAvailable(authRequestDTO, BioAuthType.FACE_IMG.getType());
 		if (!isFaceRequestAvailable) {
 			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE, "face request is not available");
 			errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.MISSING_AUTHTYPE.getErrorCode(),
