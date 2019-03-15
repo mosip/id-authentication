@@ -67,6 +67,7 @@ public class ApplicationContext {
 	public static ApplicationContext getInstance() {
 		if (applicationContext == null) {
 			applicationContext = new ApplicationContext();
+			applicationContext.authTokenDTO = new AuthTokenDTO();
 			return applicationContext;
 		} else {
 			return applicationContext;

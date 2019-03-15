@@ -2,9 +2,11 @@ package io.mosip.registration.test.integrationtest;
 
 import static org.junit.Assert.assertEquals;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -55,6 +57,7 @@ import io.mosip.registration.service.UserOnboardService;
 import io.mosip.registration.service.config.GlobalParamService;
 import io.mosip.registration.service.packet.PacketHandlerService;
 import io.mosip.registration.service.sync.PacketSynchService;
+import javafx.beans.property.BooleanProperty;
 /**
  * @author Leona Mary S
  *
@@ -105,15 +108,12 @@ public class PacketSynchServiceTest extends BaseIntegrationTest{
 		@Test
 		public void validate_fetchPacketsToBeSynched_1()
 		{
-			
 			System.out.println("Test case 1");
 			List<String> actualres=a;
 			List<String> expectedres=new ArrayList<String>(100);
  			//Fetching Data from database through JAVA API
 			List<PacketStatusDTO> details=PsyncService.fetchPacketsToBeSynched();
-			//System.out.println("==== "+details.size());
 			for (int i = 0; i < details.size(); i++) {
-				//System.out.println("==== "+details.get(i).getId());
 				expectedres.add(details.get(i).getFileName());
 			}
 			 for (String i: actualres) {
@@ -121,7 +121,6 @@ public class PacketSynchServiceTest extends BaseIntegrationTest{
 		                System.out.println("Packet ID fetched from Local database through API is equal");
 		                break;
 		            }
-		
 			 }}
 
 
@@ -129,22 +128,29 @@ public class PacketSynchServiceTest extends BaseIntegrationTest{
 		public void validate_packetSync_2() {
 			System.out.println("Test case 2");
 			try {
-				String res=PsyncService.packetSync("10031100110016920190225130805");
+				String RID=testHandelPacket(RegistrationClientStatusCode.APPROVED.getCode());
+				String res=PsyncService.packetSync(RID);
 				if (res.isEmpty()) {
-					System.out.println("Error while packet sync");
+					System.out.println("Packet is synched successfully");
 				}
-				System.out.println("packetSync== "+res);
-			} catch (RegBaseCheckedException e) {
+				else {
+					
+					System.out.println("packetSync is failed due to "+res);
+					
+				}
+			} catch (RegBaseCheckedException | IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			
 		}
 		
-		@Test public void validate_updateStatus_4() {
+		@Test 
+			public void validate_updateStatus_4() {
 			System.out.println("Test case 4");
 			Boolean expectedval=true;
 			List<PacketStatusDTO> details = PsyncService.fetchPacketsToBeSynched();
+			
 			Boolean actualval=PsyncService.updateSyncStatus(details);
 			System.out.println("validate_updateStatus== "+actualval);
 			assertEquals(expectedval, actualval);
@@ -155,21 +161,42 @@ public class PacketSynchServiceTest extends BaseIntegrationTest{
 		
 			@Test
 			public void validate_syncEODPackets_3()
-			{
-				System.out.println("Test case 3");
-				List<String> regIds = null;
-				try {
+			{	System.out.println("Test case 3");
+				List<String> regIds = new ArrayList<>();
+				for (int i = 0; i < 6; i++) {
+					try {
+						String RID=testHandelPacket(RegistrationClientStatusCode.APPROVED.getCode());
+						regIds.add(RID);
+					} catch (JsonParseException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (JsonMappingException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				
+				}
+				System.out.println("regIds== "+regIds.size());
+			/*	try {
 					regIds = PacketSynchServiceTest.gettestData("src/test/resources/testData/PacketSynchServiceData/PacketSynchService_syncEODPackets_regIds.json");
 				} catch (IOException | ParseException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
-				}
+				}*/
+				
 				try {
 					String res=PsyncService.syncEODPackets(regIds);
 					if (res.isEmpty()) {
-						System.out.println("Error while packet sync");
+						System.out.println("Packet is synched successfully");
 					}
-					System.out.println("packetSync== "+res);
+					else {
+						
+						System.out.println("packetSync is failed due to "+res);
+						
+					}
 				} catch (RegBaseCheckedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -270,9 +297,9 @@ public class PacketSynchServiceTest extends BaseIntegrationTest{
 			        //Read JSON file
 			        Object obj = jsonParser.parse(reader);
 
-			        JSONArray jArray = (JSONArray) obj;
+			        //JSONArray jArray = (JSONArray) obj;
 			      
-			        String s=jArray.toString();
+			        String s=obj.toString();
 			        
 			        List<SyncRegistrationDTO> SyncRegData = mapper.readValue(
 			                s,mapper.getTypeFactory().constructCollectionType(
@@ -388,6 +415,14 @@ public class PacketSynchServiceTest extends BaseIntegrationTest{
 						regi.setClientStatusCode(Status_code);
 						
 						PacketStatusDTO packetStatusDTO=new PacketStatusDTO();
+						
+						/*private String sourcePath;
+						private String fileName;
+						private String packetClientStatus;
+						private String packetServerStatus;
+						private BooleanProperty status;
+						private String packetPath;*/
+						
 						packetStatusDTO.setFileName(regi.getId());
 						packetStatusDTO.setPacketClientStatus(Status_code);
 						regDAO.updatePacketSyncStatus(packetStatusDTO);

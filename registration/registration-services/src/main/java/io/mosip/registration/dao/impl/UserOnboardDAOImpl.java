@@ -262,9 +262,7 @@ public class UserOnboardDAOImpl implements UserOnboardDAO {
 				return regCenterMachineDtls.getCenterMachineId().getCentreId();
 
 			} else {
-
-				throw new RegBaseCheckedException(REG_USER_MACHINE_MAP_CENTER_MACHINE_CODE.getErrorCode(),
-						REG_USER_MACHINE_MAP_CENTER_MACHINE_CODE.getErrorMessage());
+				return null;
 			}
 
 		} catch (RuntimeException runtimeException) {

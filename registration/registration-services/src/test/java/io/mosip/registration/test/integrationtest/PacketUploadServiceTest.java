@@ -25,6 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import io.mosip.registration.dto.PacketStatusDTO;
 import io.mosip.registration.entity.Registration;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.service.packet.PacketUploadService;
@@ -119,9 +120,9 @@ public class PacketUploadServiceTest extends BaseIntegrationTest {
 	@Test 
 	public void validate_updateStatus_3() {
 		  System.out.println("Test case 3");
-	List<Registration> details = PUploadservice.getSynchedPackets();
-	Boolean res=PUploadservice.updateStatus(details);
-	System.out.println("validate_updateStatus== "+res);
+//	List<PacketStatusDTO> details = PUploadservice.getSynchedPackets();
+	//Boolean res=PUploadservice.updateStatus(details);
+//	System.out.println("validate_updateStatus== "+res);
 	
 	
 	}

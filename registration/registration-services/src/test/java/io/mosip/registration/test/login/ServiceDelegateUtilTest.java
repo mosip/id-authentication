@@ -59,7 +59,9 @@ public class ServiceDelegateUtilTest {
 	@Before
 	public void initialize() throws IOException, URISyntaxException {
 
-		ReflectionTestUtils.setField(delegateUtil, "urlPath", "https://integ.mosip.io/authmanager/authenticate/unpwd");
+		ReflectionTestUtils.setField(delegateUtil, "urlPath", "https://integ.mosip.io/authmanager/v1.0/authorize/validateToken");
+		ReflectionTestUtils.setField(delegateUtil, "clientId", "clientId");
+		ReflectionTestUtils.setField(delegateUtil, "secretKey", "secretKey");
 
 		LoginUserDTO loginDto = new LoginUserDTO();
 		loginDto.setUserId("super_admin");
