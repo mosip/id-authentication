@@ -95,14 +95,14 @@ public class KeyManagerTest {
 	 * @throws IDDataValidationException    the ID data validation exception
 	 * @throws JsonProcessingException      the json processing exception
 	 */
-	@Ignore
+	
 	@Test
 	public void requestDataTest()
 			throws IdAuthenticationAppException, IDDataValidationException, JsonProcessingException {
 		Map<String, Object> reqMap = createRequest();
 		RestRequestDTO restRequestDTO = getRestRequestDTO();
 		CryptomanagerResponseDto cryptoResponse = new CryptomanagerResponseDto(
-				Base64.encodeBase64URLSafeString(("{\"data\":\"value\"}").getBytes()));
+				Base64.encodeBase64URLSafeString(("{\"request\":\"TAYl52pSVnojUJaNSfZ7f4ItGcC71r_qj9ZxCZQfSO8ELfIohJSFZB_wlwVqkZgK9A1AIBtG-xni5f5WJrOXth_tRGZJTIRbM9Nxcs_tb9yfspTloMstYnzsQXdwyqKGraJHjpfDn6NIhpZpZ5QJ1g\"}").getBytes()));
 		Mockito.when(restRequestFactory.buildRequest(Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenReturn(restRequestDTO);
 		Mockito.when(restHelper.requestSync(Mockito.any())).thenReturn(cryptoResponse);
@@ -118,7 +118,7 @@ public class KeyManagerTest {
 	 * @throws IDDataValidationException    the ID data validation exception
 	 * @throws JsonProcessingException      the json processing exception
 	 */
-	@Ignore
+	
 	@Test(expected = IdAuthenticationAppException.class)
 	public void requestDataMapperTest()
 			throws IdAuthenticationAppException, IDDataValidationException, JsonProcessingException {
@@ -139,12 +139,12 @@ public class KeyManagerTest {
 	 * @throws IDDataValidationException    the ID data validation exception
 	 * @throws IdAuthenticationAppException the id authentication app exception
 	 */
-	@Ignore
+	
 	@Test(expected = IdAuthenticationAppException.class)
 	public void requestInvalidDataTest1() throws IDDataValidationException, IdAuthenticationAppException {
 		Map<String, Object> reqMap = createRequest();
 		Mockito.when(restRequestFactory.buildRequest(Mockito.any(), Mockito.any(), Mockito.any()))
-				.thenThrow(new IDDataValidationException());
+				.thenThrow(new IDDataValidationException(IdAuthenticationErrorConstants.PUBLICKEY_EXPIRED,"publickey expired"));
 		keyManager.requestData(reqMap, mapper);
 	} 
 
@@ -158,7 +158,7 @@ public class KeyManagerTest {
 	 *                                      occurred.
 	 * @throws IDDataValidationException    the ID data validation exception
 	 */
-	@Ignore
+	
 	@Test(expected = IdAuthenticationAppException.class)
 	public void requestInvalidDataTest2() throws IdAuthenticationAppException, IOException, IDDataValidationException {
 		Map<String, Object> reqMap = createRequest();
@@ -169,26 +169,27 @@ public class KeyManagerTest {
 				.thenThrow(new RestServiceException(IdAuthenticationErrorConstants.INVALID_REST_SERVICE));
 		keyManager.requestData(reqMap, mapper);
 	}
-	@Ignore
-	@Test(expected = IdAuthenticationAppException.class)
+	
+	/*@Test(expected = IdAuthenticationAppException.class)
 	public void TestTspIdisNullorEmpty() throws IdAuthenticationAppException {
 		Map<String, Object> requestBody = new HashMap<>();
 		keyManager.requestData(requestBody, mapper);
 	}
+	
 	@Ignore
 	@Test(expected = IdAuthenticationAppException.class)
 	public void TestTspIdisNull() throws IdAuthenticationAppException {
 		Map<String, Object> requestBody = new HashMap<>();
 		requestBody.put("tspID", null);
 		keyManager.requestData(requestBody, mapper);
-	}
-	@Ignore
-	@Test(expected = IdAuthenticationAppException.class)
+	}*/
+	
+	/*@Test(expected = IdAuthenticationAppException.class)
 	public void TestTspIdisEmpty() throws IdAuthenticationAppException {
 		Map<String, Object> requestBody = new HashMap<>();
 		requestBody.put("tspID", "");
 		keyManager.requestData(requestBody, mapper);
-	}
+	}*/
 
 	// ====================================================================
 	// ********************** Helper Method *******************************
@@ -200,16 +201,25 @@ public class KeyManagerTest {
 	 * @return the map
 	 */
 	private Map<String, Object> createRequest() {
-		String data = "{\r\n" + "  \"authType\": {\r\n" + "    \"address\": false,\r\n" + "    \"bio\": false,\r\n"
-				+ "    \"fullAddress\": false,\r\n" + "    \"otp\": false,\r\n" + "    \"personalIdentity\": true,\r\n"
-				+ "    \"pin\": false\r\n" + "  },\r\n" + "  \r\n" + "  \"id\": \"mosip.identity.auth\",\r\n"
-				+ "  \"idvId\": \"927463875317\",\r\n" + "  \"idvIdType\": \"D\",\r\n" + "\"tspID\":\"REF01\",\r\n"
-				+ "   \"key\": {\r\n"
-				+ "    \"sessionKey\": \"D5jp00eDp5UzS4WDRuXuOAwpKFefHxR-oef60z81qdYKyvIRScIKL7ohjp3vlz-Z2BUQ050sLvZGdMOsVfANAyFaM9MXk3tw9ZZIrx2X14aeWzsWNgn9w8RObvcEcJBHktFAy9kKqHKwgisnQ0E5zMUAeREx46rYMHOmH_Av4mlJa5HewDBGGmlRsdFMIXWK7lCPwd78ivkf48_07mGHkMJ5SlwiCXD3XHz7ZyHAuP6vGV5K5k1S_fpgCh-vdWSDExHRSgQkxPP5Lvr6hdok4MQgJQL-Yu-Kc7ISnZSpYBVe6m8Qzdc2VkfBuEMlNleyRjcBw_L6q4rAubfec3P9bw\"\r\n"
-				+ "  },\r\n" + "  \"muaCode\": \"1234567890\",\r\n" + " \r\n" + "  \"reqHmac\": \"string\",\r\n"
-				+ "  \"reqTime\": \"2018-12-26T12:13:49.105+05:30\",\r\n"
-				+ "  \"request\": \"4wbb7RnXJTtqdrjy6ckYilLJkiX_BPokPdzIBR4S7uBAC1bkIa71DbKIiiIPc3Cyi9-06VNwGTBMYpHcPaAKTZQ3218pKHuC7T6_9iRQ1pEJBeKYkIHl9bODY1oFMY6o\",\r\n"
-				+ "  \"txnID\": \"1234567890\",\r\n" + "  \"ver\": \"1.0\"\r\n" + "}";
+		String data = "{\r\n" + 
+				"	\"id\": \"mosip.identity.auth\",\r\n" + 
+				"	\"individualId\": \"2410478395\",\r\n" + 
+				"	\"individualIdType\": \"D\",\r\n" + 
+				"	\"request\": \"TAYl52pSVnojUJaNSfZ7f4ItGcC71r_qj9ZxCZQfSO8ELfIohJSFZB_wlwVqkZgK9A1AIBtG-xni5f5WJrOXth_tRGZJTIRbM9Nxcs_tb9yfspTloMstYnzsQXdwyqKGraJHjpfDn6NIhpZpZ5QJ1g\",\r\n" + 
+				"	\"requestTime\": \"2019-03-13T10:01:57.086+05:30\",\r\n" + 
+				"	\"requestedAuth\": {\r\n" + 
+				"		\"bio\": false,\r\n" + 
+				"		\"demo\": true,\r\n" + 
+				"		\"otp\": false,\r\n" + 
+				"		\"pin\": false\r\n" + 
+				"	},\r\n" + 
+				"	\"requestSessionKey\": \"cCsi1_ImvFMkLKfAhq13DYDOx6Ibri78JJnp3ktd4ZdJRTuIdWKv31wb3Ys7WHBfRzyBVwmBe5ybb-zIgdTOCKIZrMc1xKY9TORdKFJHLWwvDHP94UZVa-TIHDJPKxWNzk0sVJeOpPAbe6tmTbm8TsLs7WPBxCxCBhuBoArwSAIZ9Sll9qoNR3-YwgBIMAsDMXDiP3kSI_89YOyZxSb3ZPCGaU8HWkgv1FUMvD67u2lv75sWJ_v55jQJYUOng94_6P8iElnLvUeR8Y9AEJk3txmj47FWos4Nd90vBXW79qvpON5pIuTjiyP_rMZZAhH1jPkAhYXJLjwpAQUrvGRQDA\",\r\n" + 
+				"	\"transactionID\": \"1234567890\",\r\n" + 
+				"	\"version\": \"1.0\",\r\n" + 
+				"	\"partnerId\": \"1873299273\",\r\n" + 
+				"	\"licenseKey\": \"1873299273\"\r\n" + 
+				"}" + 
+				"}";
 		Map<String, Object> readValue = null;
 		try {
 			readValue = mapper.readValue(data, new TypeReference<Map<String, Object>>() {
