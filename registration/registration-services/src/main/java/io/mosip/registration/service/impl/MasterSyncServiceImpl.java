@@ -123,7 +123,8 @@ public class MasterSyncServiceImpl implements MasterSyncService {
 			// Getting machineID from data base
 			Map<String, String> machineIdMap = UserOnboardService.getMachineCenterId();
 
-			if (null != machineIdMap && !machineIdMap.isEmpty()) {
+			if (null != machineIdMap && !machineIdMap.isEmpty()
+					&& null!=machineIdMap.get(RegistrationConstants.USER_STATION_ID)) {
 				machineId = machineIdMap.get(RegistrationConstants.USER_STATION_ID);
 			}
 
