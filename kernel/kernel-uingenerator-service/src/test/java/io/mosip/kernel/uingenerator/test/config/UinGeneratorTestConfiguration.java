@@ -138,7 +138,7 @@ public class UinGeneratorTestConfiguration implements EnvironmentAware {
 		factory.setDataSource(dataSource);
 		HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
 		vendorAdapter.setGenerateDdl(Boolean.TRUE);
-		vendorAdapter.setShowSql(Boolean.TRUE);
+		vendorAdapter.setShowSql(Boolean.FALSE);
 		factory.setDataSource(dataSource);
 		factory.setJpaVendorAdapter(vendorAdapter);
 		factory.setPackagesToScan("io.mosip.kernel.uingenerator.entity");

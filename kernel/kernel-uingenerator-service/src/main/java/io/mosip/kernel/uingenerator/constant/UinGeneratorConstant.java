@@ -137,18 +137,5 @@ public final class UinGeneratorConstant {
 	 */
 	public static final String NINE = "9";
 
-	/**
-	 * The string field hold the default status of UIN
-	 */
-	public static final String UNUSED = "UNUSED";
-
-	/**
-	 * The string field hold the status of the UIN post issuing
-	 */
-	public static final String ISSUED = "ISSUED";
-
-	/**
-	 * The string field hold the status of the UIN post assigned
-	 */
-	public static final String ASSIGNED = "ASSIGNED";
+	
 }
