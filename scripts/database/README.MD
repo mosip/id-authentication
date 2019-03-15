@@ -66,6 +66,8 @@ The database objects related to MOSIP modules is stored under <mosip_home>/scrip
 
 **To deploy the scripts on postgresql database(except registration client, mosip_reg, as this will be executed as part of registration client software installation on derby database), follow the below instructions, the below commands are sample commands for pre-registration module.**
 
+**The databases deployment can be executed in any order, there is no cross database dependencies.**
+
 * Copy the scripts (entire folder) to the machine where postgresql client software is available.
 
 * **Navigate to the database's main folder(mosip_prereg)** and logon to postgresql client (psql) using postgres default credential (make sure the connected user has role creation privilege)
