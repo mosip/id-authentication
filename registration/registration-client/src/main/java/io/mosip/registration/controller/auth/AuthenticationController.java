@@ -822,11 +822,7 @@ public class AuthenticationController extends BaseController implements Initiali
 		boolean irisMatchStatus = authService.authValidator(RegistrationConstants.IRIS, authenticationValidatorDTO);
 
 		if (irisMatchStatus) {
-			if (isSupervisor) {
-				irisDetailsDTO.setIrisImageName("supervisor".concat(irisDetailsDTO.getIrisType()).concat(".jpg"));
-			} else {
-				irisDetailsDTO.setIrisImageName("officer".concat(irisDetailsDTO.getIrisType()).concat(".jpg"));
-			}
+			irisDetailsDTO.setIrisImageName(isSupervisor ? "supervisor".concat(irisDetailsDTO.getIrisType()).concat(".jpg") : "officer".concat(irisDetailsDTO.getIrisType()).concat(".jpg"));
 		}
 		return irisMatchStatus;
 	}

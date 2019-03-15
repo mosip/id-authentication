@@ -34,6 +34,7 @@ import io.mosip.registration.controller.device.FingerPrintCaptureController;
 import io.mosip.registration.controller.device.IrisCaptureController;
 import io.mosip.registration.controller.reg.BiometricExceptionController;
 import io.mosip.registration.controller.reg.DemographicDetailController;
+import io.mosip.registration.controller.reg.PacketHandlerController;
 import io.mosip.registration.controller.reg.RegistrationPreviewController;
 import io.mosip.registration.device.fp.FingerprintFacade;
 import io.mosip.registration.dto.AuthenticationValidatorDTO;
@@ -54,6 +55,9 @@ import io.mosip.registration.service.sync.SyncStatusValidatorService;
 import io.mosip.registration.service.template.TemplateService;
 import io.mosip.registration.util.acktemplate.TemplateGenerator;
 import javafx.animation.PauseTransition;
+import javafx.concurrent.Service;
+import javafx.concurrent.Task;
+import javafx.concurrent.WorkerStateEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.event.EventType;
@@ -128,6 +132,9 @@ public class BaseController {
 	@Autowired
 	private CenterMachineReMapService centerMachineReMapService;
 
+	@Autowired
+	private PacketHandlerController packetHandlerController;
+	
 	protected ApplicationContext applicationContext = ApplicationContext.getInstance();
 
 	protected Scene scene;
@@ -809,18 +816,53 @@ public class BaseController {
 		Boolean isRemapped = centerMachineReMapService.isMachineRemapped();
 		if (isRemapped) {
 
-			String message = "You can not perform this operation as this Machine has been remapped to another center\n";
+			String message = RegistrationUIConstants.REMAP_NO_ACCESS_MESSAGE;
 
 			if (isPacketsPendingForEOD()) {
-				message += " Please Complete the EOD process for all the packets\n";
+				message += "\n" + RegistrationUIConstants.REMAP_EOD_PROCESS_MESSAGE;
 			}
+			message += "\n" + RegistrationUIConstants.REMAP_CLICK_OK;
 			generateAlert(RegistrationConstants.INFO, message);
-			System.out.println("Remap calledddddd");
-			/* TODO - loading msg to be added */
-			/* centerMachineReMapService.handleReMapProcess(); */
+
+			packetHandlerController.reMapProgressIndicator.progressProperty().bind(service.progressProperty());
+
+			if (!service.isRunning())
+				service.start();
+
+			service.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+				@Override
+				public void handle(WorkerStateEvent t) {
+					service.reset();
+					packetHandlerController.reMapProgressIndicator.setVisible(false);
+					generateAlert(RegistrationConstants.INFO, RegistrationUIConstants.REMAP_PROCESS_SUCCESS);
+
+				}
+			});
+
 		}
 		return isRemapped;
 	}
+	
+	Service<String> service = new Service<String>() {
+		@Override
+		protected Task<String> createTask() {
+			return new Task<String>() {
+
+				@Override
+				protected String call() {
+
+					packetHandlerController.reMapProgressIndicator.setVisible(true);
+					for (int i = 1; i <= 4; i++) {
+						/* starts the remap process */
+						centerMachineReMapService.handleReMapProcess(i);
+						this.updateProgress(i, 4);
+					}
+
+					return null;
+				}
+			};
+		}
+	};
 
 	protected boolean isPacketsPendingForEOD() {
 			

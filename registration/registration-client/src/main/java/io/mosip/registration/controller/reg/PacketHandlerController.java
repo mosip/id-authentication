@@ -67,6 +67,7 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ProgressIndicator;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
@@ -110,6 +111,9 @@ public class PacketHandlerController extends BaseController implements Initializ
 
 	@FXML
 	private AnchorPane eodProcessAnchorPane;
+	
+	@FXML
+	public ProgressIndicator reMapProgressIndicator;
 
 	@Autowired
 	private AckReceiptController ackReceiptController;

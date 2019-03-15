@@ -84,6 +84,7 @@ public class IntegrationScenario02_NewRegistrationFlow extends BaseIntegrationTe
 					passwordCheck=RegistrationConstants.PWD_MISMATCH;
 				}
 				assertEquals(RegistrationConstants.PWD_MATCH, passwordCheck);
+				System.out.println("login completed successfully");
 	}
 	
 	////////////////////////////////////////////////////PacketHandler
@@ -172,6 +173,7 @@ public class IntegrationScenario02_NewRegistrationFlow extends BaseIntegrationTe
 		System.out.println(jsonInString);
 		Assert.assertEquals(response.getSuccessResponseDTO().getCode().toString(), "0000");
 		Assert.assertEquals(response.getSuccessResponseDTO().getMessage().toString(), "Success");
+		System.out.println("packet created successfully");
 		return RandomID;
 	}
 

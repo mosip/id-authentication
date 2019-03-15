@@ -39,6 +39,12 @@ public class RegistrationUIConstants {
 	public static final String ROLES_EMPTY_ERROR = bundle.getString("ROLES_EMPTY_ERROR");
 	public static final String MACHINE_MAPPING_ERROR = bundle.getString("MACHINE_MAPPING_ERROR");
 	public static final String AUTHORIZATION_ERROR = bundle.getString("AUTHORIZATION_ERROR");
+	
+	//MACHINE CENTER REMAP
+	public static final String REMAP_NO_ACCESS_MESSAGE = bundle.getString("REMAP_NO_ACCESS_MESSAGE");
+	public static final String REMAP_EOD_PROCESS_MESSAGE = bundle.getString("REMAP_EOD_PROCESS_MESSAGE");
+	public static final String REMAP_CLICK_OK = bundle.getString("REMAP_CLICK_OK");
+	public static final String REMAP_PROCESS_SUCCESS = bundle.getString("REMAP_PROCESS_SUCCESS");
 
 	// DEVICE
 	public static final String DEVICE_FP_NOT_FOUND = bundle.getString("DEVICE_FP_NOT_FOUND");
@@ -231,4 +237,7 @@ public class RegistrationUIConstants {
 
 	// PRE-REG DELETE JOB
 	public static final String SYNC_CONFIG_DATA_FAILURE = bundle.getString("SYNC_CONFIG_DATA_FAILURE");
+	
+	//Packet Upload
+	public static final String PACKET_UPLOAD_EMPTY_ERROR = bundle.getString("PACKET_UPLOAD_EMPTY_ERROR");
 }

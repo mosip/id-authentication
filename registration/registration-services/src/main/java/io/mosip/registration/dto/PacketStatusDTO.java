@@ -4,20 +4,13 @@ import javafx.beans.property.BooleanProperty;
 
 public class PacketStatusDTO {
 
-	private String sourcePath;
 	private String fileName;
 	private String packetClientStatus;
 	private String packetServerStatus;
 	private BooleanProperty status;
 	private String packetPath;
-
-	public String getSourcePath() {
-		return sourcePath;
-	}
-
-	public void setSourcePath(String sourcePath) {
-		this.sourcePath = sourcePath;
-	}
+	private String uploadStatus;
+	private String clientStatusComments;
 
 	public String getFileName() {
 		return fileName;
@@ -59,6 +52,20 @@ public class PacketStatusDTO {
 		this.status = status;
 	}
 
+	public String getUploadStatus() {
+		return uploadStatus;
+	}
 
+	public void setUploadStatus(String uploadStatus) {
+		this.uploadStatus = uploadStatus;
+	}
 
+	public String getClientStatusComments() {
+		return clientStatusComments;
+	}
+
+	public void setClientStatusComments(String clientStatusComments) {
+		this.clientStatusComments = clientStatusComments;
+	}
+	
 }

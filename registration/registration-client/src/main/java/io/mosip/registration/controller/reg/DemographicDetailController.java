@@ -303,13 +303,22 @@ public class DemographicDetailController extends BaseController {
 
 	@FXML
 	private TextField ddLocalLanguage;
-
+	
+	@FXML
+	private Label ddLocalLanguageLabel;
+	
 	@FXML
 	private TextField mmLocalLanguage;
+	
+	@FXML
+	private Label mmLocalLanguageLabel;
 
 	@FXML
 	private TextField yyyyLocalLanguage;
-
+	
+	@FXML
+	private Label yyyyLocalLanguageLabel;
+	
 	@FXML
 	private Label residenceLblLocalLanguage;
 
@@ -701,6 +710,10 @@ public class DemographicDetailController extends BaseController {
 			mmLocalLanguage.setPromptText(localProperties.getString("mm"));
 			yyyyLocalLanguage.setPromptText(localProperties.getString("yyyy"));
 			languageLabelLocalLanguage.setText(localProperties.getString("language"));
+			ddLocalLanguageLabel.setText(localProperties.getString("dd"));
+			mmLocalLanguageLabel.setText(localProperties.getString("mm"));
+			yyyyLocalLanguageLabel.setText(localProperties.getString("yyyy"));
+			
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error("REGISTRATION - LOADING LOCAL LANGUAGE FIELDS FAILED ", APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID,
