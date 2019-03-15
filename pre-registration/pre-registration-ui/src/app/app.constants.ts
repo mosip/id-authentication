@@ -32,11 +32,7 @@ export const APPEND_URL = {
   location: 'masterdata/',
   gender: 'masterdata/v1.0/gendertypes',
   transliteration: 'transliteration/transliterate',
-<<<<<<< Updated upstream
-  applicantType: 'applicanttype/v1.0/applicanttype/',
-=======
   applicantType: 'applicanttype/',
->>>>>>> Stashed changes
   validDocument: 'v1.0/applicanttype/',
   getApplicantType: 'getApplicantType'
 };
@@ -138,11 +134,9 @@ export const notificationDtoKeys = {
   notificationDto: 'NotificationDTO',
   langCode: 'langCode',
   file: 'file'
-}
+};
 
-export const previewFields = [
-  'region', 'province', 'city', 'localAdministrativeAuthority', 'gender'
-]
+export const previewFields = ['region', 'province', 'city', 'localAdministrativeAuthority', 'gender'];
 
 export const DOCUMENT_UPLOAD_REQUEST_DOCUMENT_KEY = 'file';
 export const DOCUMENT_UPLOAD_REQUEST_DTO_KEY = 'Document request';
