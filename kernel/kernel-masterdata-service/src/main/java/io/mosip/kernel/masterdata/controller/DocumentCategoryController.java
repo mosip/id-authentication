@@ -46,6 +46,7 @@ public class DocumentCategoryController {
 	 * 
 	 * @return All Document categories
 	 */
+	@ResponseFilter
 	@GetMapping("/documentcategories")
 	public DocumentCategoryResponseDto getAllDocumentCategory() {
 		return documentCategoryService.getAllDocumentCategory();
@@ -59,6 +60,7 @@ public class DocumentCategoryController {
 	 * 
 	 * @return {@link DocumentCategoryResponseDto}
 	 */
+	@ResponseFilter
 	@GetMapping("/documentcategories/{langcode}")
 	public DocumentCategoryResponseDto getAllDocumentCategoryByLaguageCode(@PathVariable("langcode") String langCode) {
 		return documentCategoryService.getAllDocumentCategoryByLaguageCode(langCode);
@@ -73,6 +75,7 @@ public class DocumentCategoryController {
 	 *            the language code
 	 * @return {@link DocumentCategoryResponseDto}
 	 */
+	@ResponseFilter
 	@GetMapping("/documentcategories/{code}/{langcode}")
 	public DocumentCategoryResponseDto getDocumentCategoryByCodeAndLangCode(@PathVariable("code") String code,
 			@PathVariable("langcode") String langCode) {
@@ -117,6 +120,7 @@ public class DocumentCategoryController {
 	 *            the document category code.
 	 * @return the code.
 	 */
+	@ResponseFilter
 	@DeleteMapping("/documentcategories/{code}")
 	@ApiOperation(value = "Service to delete document category", notes = "Delete document category and return composite id", response = CodeAndLanguageCodeID.class)
 	public ResponseEntity<CodeResponseDto> deleteDocumentCategory(@PathVariable("code") String code) {

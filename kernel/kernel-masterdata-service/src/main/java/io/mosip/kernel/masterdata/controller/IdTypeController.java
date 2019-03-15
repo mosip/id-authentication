@@ -47,6 +47,7 @@ public class IdTypeController {
 	 *            the language code against which id types are to be fetched.
 	 * @return the list of id types.
 	 */
+	@ResponseFilter
 	@GetMapping("/idtypes/{langcode}")
 	@ApiOperation(value = "Service to fetch id types based on language code.", notes = "Fetch IdTypes based on Language Code.", response = IdTypeResponseDto.class)
 	@ApiResponses({

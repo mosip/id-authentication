@@ -46,6 +46,7 @@ public class GenderTypeController {
 	 * 
 	 * @return list of all gender types
 	 */
+	@ResponseFilter
 	@GetMapping("/gendertypes")
 	public GenderTypeResponseDto getAllGenderType() {
 		return genderTypeService.getAllGenderTypes();
@@ -58,6 +59,7 @@ public class GenderTypeController {
 	 *            the language code whose gender is to be returned
 	 * @return list of all gender types for the given language code
 	 */
+	@ResponseFilter
 	@GetMapping(value = "/gendertypes/{langcode}")
 	public GenderTypeResponseDto getGenderBylangCode(@PathVariable("langcode") String langCode) {
 		return genderTypeService.getGenderTypeByLangCode(langCode);
@@ -100,6 +102,7 @@ public class GenderTypeController {
 	 *            the code whose gender is to be deleted
 	 * @return code of deleted rows
 	 */
+	@ResponseFilter
 	@ApiOperation(value = "Delete Gender Type", response = CodeAndLanguageCodeID.class)
 	@DeleteMapping("/gendertypes/{code}")
 	public ResponseEntity<CodeResponseDto> deleteGenderType(
@@ -112,6 +115,7 @@ public class GenderTypeController {
 	 * @param genderName
 	 * @return StatusResponseDto
 	 */
+	@ResponseFilter
 	@ApiOperation(value="validate gender name")
 	@GetMapping("/gendertypes/validate/{gendername}")
 	public StatusResponseDto valdiateGenderName(@PathVariable("gendername") String genderName) {

@@ -61,6 +61,7 @@ public class ValidDocumentController {
 	 *            the document type code.
 	 * @return the PostValidDocumentResponseDto.
 	 */
+	@ResponseFilter
 	@DeleteMapping("/validdocuments/{doccategorycode}/{doctypecode}")
 	@ApiOperation(value = "Service to delete valid document", notes = "Delete valid document and return composite id", response = DocCategoryAndTypeResponseDto.class)
 	public ResponseEntity<DocCategoryAndTypeResponseDto> deleteValidDocuemnt(

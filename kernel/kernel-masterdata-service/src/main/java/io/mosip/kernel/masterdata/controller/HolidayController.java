@@ -46,6 +46,7 @@ public class HolidayController {
 	 * 
 	 * @return list of all holidays
 	 */
+	@ResponseFilter
 	@GetMapping
 	public HolidayResponseDto getAllHolidays() {
 		return holidayService.getAllHolidays();
@@ -58,6 +59,7 @@ public class HolidayController {
 	 *            input parameter holiday id
 	 * @return list of holidays for a particular holiday id
 	 */
+	@ResponseFilter
 	@GetMapping("/{holidayid}")
 	public HolidayResponseDto getAllHolidayById(@PathVariable("holidayid") int holidayId) {
 		return holidayService.getHolidayById(holidayId);
@@ -73,6 +75,7 @@ public class HolidayController {
 	 *            input parameter language code
 	 * @return {@link HolidayResponseDto}
 	 */
+	@ResponseFilter
 	@GetMapping("/{holidayid}/{langcode}")
 	public HolidayResponseDto getAllHolidayByIdAndLangCode(@PathVariable("holidayid") int holidayId,
 			@PathVariable("langcode") String langCode) {
@@ -114,6 +117,7 @@ public class HolidayController {
 	 *            input values to delete 
 	 * @return id of the deleted Holiday data
 	 */
+	@ResponseFilter
 	@DeleteMapping
 	@ApiOperation(value = "to delete a holiday", response = HolidayIdDeleteDto.class)
 	public HolidayIdDeleteDto deleteHoliday(@Valid @RequestBody RequestWrapper<HolidayIdDeleteDto> request) {
