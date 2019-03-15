@@ -17,18 +17,30 @@ import org.springframework.web.util.ContentCachingResponseWrapper;
 import io.mosip.kernel.core.logger.spi.Logger;
 
 /**
- * This class is for input logging of all parameters in HTTP requests
+ * Request Response Filter class that implements {@link Filter}.
  * 
- * @author Bal Vikash Sharma
+ * @author Sagar Mahapatra
+ * @since 1.0.0
  *
  */
 public class ReqResFilter implements Filter {
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see javax.servlet.Filter#init(javax.servlet.FilterConfig)
+	 */
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException {
-		// init method overriding
+		// over-ridden method
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see javax.servlet.Filter#doFilter(javax.servlet.ServletRequest,
+	 * javax.servlet.ServletResponse, javax.servlet.FilterChain)
+	 */
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
@@ -48,12 +60,18 @@ public class ReqResFilter implements Filter {
 			responseWrapper.copyBodyToResponse();
 
 		} catch (Exception e) {
-			Logger mosipLogger = LoggerConfiguration.logConfig(ReqResFilter.class); mosipLogger.error("", "", "", e.getMessage());
+			Logger mosipLogger = LoggerConfiguration.logConfig(ReqResFilter.class);
+			mosipLogger.error("", "", "", e.getMessage());
 		}
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see javax.servlet.Filter#destroy()
+	 */
 	@Override
 	public void destroy() {
-		// Auto-generated method stub
+		// over-ridden method
 	}
 }

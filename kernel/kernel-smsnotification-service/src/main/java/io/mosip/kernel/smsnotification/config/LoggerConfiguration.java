@@ -7,7 +7,7 @@ import io.mosip.kernel.logger.logback.factory.Logfactory;
 /**
  * Console Logger Configuration.
  * 
- * @author Bal Vikash Sharma
+ * @author Sagar Mahapatra
  * @since 1.0.0
  *
  */
