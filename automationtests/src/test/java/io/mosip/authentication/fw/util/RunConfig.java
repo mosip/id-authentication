@@ -387,3 +387,4 @@ public class RunConfig extends IdaScriptsUtil{
 	}
 
 }
+

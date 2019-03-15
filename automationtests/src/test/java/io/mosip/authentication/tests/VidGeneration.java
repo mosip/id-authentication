@@ -47,12 +47,14 @@ public class VidGeneration extends IdaScriptsUtil implements ITest{
 	private FileUtil objFileUtil = new FileUtil();
 	protected static String testCaseName = "";
 	private TestDataProcessor objTestDataProcessor = new TestDataProcessor();
-	
-	@Parameters({ "testDatPath" , "testDataFileName" ,"testType"})
+	private String TESTDATA_PATH="ida/TestData/VIDGeneration/";
+	private String TESTDATA_FILENAME="testdata.ida.VIDGeneration.mapping.yml";
+
+	@Parameters({"testType"})
 	@BeforeClass
-	public void setConfigurations(String testDatPath,String testDataFileName,String testType) {
-		objRunConfig.setConfig(testDatPath,testDataFileName,testType);
-		objTestDataProcessor.initateTestDataProcess(testDataFileName,testDatPath,"ida");	
+	public void setConfigurations(String testType) {
+		objRunConfig.setConfig(TESTDATA_PATH,TESTDATA_FILENAME,testType);
+		objTestDataProcessor.initateTestDataProcess(TESTDATA_FILENAME,TESTDATA_PATH,"ida");	
 	}
 	
 	@BeforeMethod
@@ -127,5 +129,4 @@ public class VidGeneration extends IdaScriptsUtil implements ITest{
 		Verify.verify(objOpValiUtil.publishOutputResult(ouputValid));
 	}
 }
-
 

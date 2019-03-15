@@ -154,7 +154,7 @@ public class JsonPrecondtion {
 			prop.load(input);
 			return prop;
 		} catch (Exception e) {
-			System.out.println(e);
+			logger.error("Exception: "+e.getMessage());
 			return null;
 		}
 	}

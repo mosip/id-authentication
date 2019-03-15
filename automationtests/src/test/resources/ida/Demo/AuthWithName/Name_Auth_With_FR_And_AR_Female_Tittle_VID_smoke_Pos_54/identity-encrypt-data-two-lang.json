@@ -1,1 +1,1 @@
-{"identityRequest":{"identity":{"name":[{"language":"ara","value":"ست. َتهِفَ َلمَس"},{"language":"fra","value":"Madame. Mohamed Zhaeer"}]}},"tspID":"TSP00001"}
+{"identityRequest":{"identity":{"name":[{"value":"ست. $REMOVE$"},{"value":"Madame. $REMOVE$"}]}},"tspID":"TSP00001"}

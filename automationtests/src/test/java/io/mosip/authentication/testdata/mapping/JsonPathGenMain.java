@@ -14,6 +14,6 @@ public class JsonPathGenMain {
 		//obj.generateJSONPath(new String(Files.readAllBytes(Paths.get(inputFilePath))));
 		JsonPathGen o = new JsonPathGen(new String(Files.readAllBytes(Paths.get(inputFilePath))));
 		o.generateJsonMappingDic("D:\\Git\\dev-ida-qa\\automation\\mosip-qa\\src\\test\\resources\\ida\\TestData\\Demo\\Name\\tittle\\nameTittle.properties");
-		//logger.info(o.getPathList());
+		//System.out.println(o.getPathList());
 	}
 }
