@@ -1,1 +1,1 @@
-{"identityRequest":{"identity":{"name":[{"language":"ara","value":"أستاذ. َسِف سَلمَن"}]}},"tspID":"TSP00001"}
+{"identityRequest":{"identity":{"name":[{"value":"أستاذ. $REMOVE$"}]}},"tspID":"TSP00001"}

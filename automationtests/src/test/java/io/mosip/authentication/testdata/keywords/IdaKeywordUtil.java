@@ -229,7 +229,6 @@ public class IdaKeywordUtil extends KeywordUtil{
 				String value = entry.getValue().replace("$", "");
 				String[] actVal=value.split(":");
 				String file=TestDataConfig.getUserDirectory()+TestDataConfig.getSrcPath()+TestDataConfig.getTestDataPath()+actVal[1];
-				System.out.println(file);
 				returnMap.put(entry.getKey(),objEncrypDecrptUtils.getEncodeFile(new File(file)));
 			}
 			else

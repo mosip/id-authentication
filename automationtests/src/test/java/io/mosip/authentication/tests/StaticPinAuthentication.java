@@ -153,3 +153,4 @@ public class StaticPinAuthentication extends IdaScriptsUtil implements ITest{
 	}
 
 }
+
