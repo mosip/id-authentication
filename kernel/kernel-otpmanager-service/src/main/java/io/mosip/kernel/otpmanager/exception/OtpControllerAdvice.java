@@ -100,7 +100,7 @@ public class OtpControllerAdvice {
 	public ResponseEntity<ResponseWrapper<ServiceError>> onHttpMessageNotReadable(
 			final HttpMessageNotReadableException e) {
 		ResponseWrapper<ServiceError> responseWrapper = new ResponseWrapper<>();
-		ServiceError error = new ServiceError(OtpErrorConstants.OTP_VAL_INVALID_OTP_INPUT.getErrorCode(),
+		ServiceError error = new ServiceError(OtpErrorConstants.HTTP_MESSAGE_NOT_READABLE.getErrorCode(),
 				e.getMessage());
 		responseWrapper.getErrors().add(error);
 		return new ResponseEntity<>(responseWrapper, HttpStatus.OK);
