@@ -34,6 +34,7 @@ public class SessionContext {
 			sessionContext.setId(UUID.randomUUID());
 			sessionContext.setMapObject(new HashMap<>());
 			userContext = sessionContext.new UserContext();
+			sessionContext.authTokenDTO = new AuthTokenDTO();
 			return sessionContext;
 		} else {
 			return sessionContext;

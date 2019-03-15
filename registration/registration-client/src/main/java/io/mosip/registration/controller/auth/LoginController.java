@@ -3,7 +3,6 @@ package io.mosip.registration.controller.auth;
 
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
-import static io.mosip.registration.constants.RegistrationConstants.URL;
 
 import java.io.IOException;
 import java.net.URL;
@@ -20,12 +19,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.client.RestClientException;
-import org.springframework.web.client.RestTemplate;
 
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -67,6 +61,7 @@ import io.mosip.registration.service.UserDetailService;
 import io.mosip.registration.service.UserOnboardService;
 import io.mosip.registration.util.common.OTPManager;
 import io.mosip.registration.util.common.PageFlow;
+import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
 import io.mosip.registration.util.healthcheck.RegistrationSystemPropertiesChecker;
 import io.mosip.registration.util.restclient.ServiceDelegateUtil;
 
@@ -420,33 +415,23 @@ public class LoginController extends BaseController implements Initializable {
 
 		UserDetail userDetail = loginService.getUserDetail(userId.getText());
 
-		LoginUserDTO userDTO = new LoginUserDTO();
-		userDTO.setUserId(userId.getText().toLowerCase());
-		userDTO.setPassword(password.getText());
-
-		// TODO for temporary fix , but later userDto should be getting from session
-		userDTO = new LoginUserDTO();
-		userDTO.setPassword("110011");
-		userDTO.setUserId("110011");
-		ApplicationContext.map().put("userDTO", userDTO);
-		
-		serviceDelegateUtil.getAuthToken(LoginMode.PASSWORD);
-
-		boolean serverStatus = getConnectionCheck(userDTO);
-		boolean offlineStatus = false;
-
-		if (!serverStatus) {
-
-			String status = validatePwd(userId.getText().toLowerCase(), password.getText());
-
-			if (RegistrationConstants.SUCCESS.equals(status)) {
-				offlineStatus = validateInvalidLogin(userDetail, "");
-			} else if (RegistrationConstants.FAILURE.equals(status)) {
-				offlineStatus = validateInvalidLogin(userDetail, RegistrationUIConstants.INCORRECT_PWORD);
-			}
+		// TODO: Since AuthN web-service not accepting Hash Password and SHA is not
+		// implemented, getting AuthZ Token by Client ID and Secret Key
+		ApplicationContext.map().put(RegistrationConstants.USER_DTO, new LoginUserDTO());
+		if (RegistrationAppHealthCheckUtil.isNetworkAvailable()) {
+			serviceDelegateUtil.getAuthToken(LoginMode.CLIENTID);
 		}
 
-		if (serverStatus || offlineStatus) {
+		boolean offlineStatus = false;
+		String status = validatePwd(userId.getText().toLowerCase(), password.getText());
+
+		if (RegistrationConstants.SUCCESS.equals(status)) {
+			offlineStatus = validateInvalidLogin(userDetail, "");
+		} else if (RegistrationConstants.FAILURE.equals(status)) {
+			offlineStatus = validateInvalidLogin(userDetail, RegistrationUIConstants.INCORRECT_PWORD);
+		}
+
+		if (offlineStatus) {
 
 			LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID, "Loading next login screen");
 			credentialsPane.setVisible(false);
@@ -623,32 +608,6 @@ public class LoginController extends BaseController implements Initializable {
 		}
 
 		LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID, "Face validation done");
-	}
-
-	/**
-	 * Checking server status
-	 * 
-	 * @param LoginUserDTO
-	 *            the UserDTO object
-	 * @return boolean
-	 */
-	private boolean getConnectionCheck(LoginUserDTO userObj) {
-
-		HttpEntity<LoginUserDTO> loginEntity = new HttpEntity<>(userObj);
-		ResponseEntity<String> tokenId = null;
-		boolean serverStatus = false;
-
-		try {
-			tokenId = new RestTemplate().exchange(URL, HttpMethod.POST, loginEntity, String.class);
-			if (tokenId.getStatusCode().is2xxSuccessful()) {
-				serverStatus = true;
-			}
-		} catch (RestClientException resourceAccessException) {
-
-			LOGGER.error(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
-					resourceAccessException.getMessage() + ExceptionUtils.getStackTrace(resourceAccessException));
-		}
-		return serverStatus;
 	}
 
 	/**
