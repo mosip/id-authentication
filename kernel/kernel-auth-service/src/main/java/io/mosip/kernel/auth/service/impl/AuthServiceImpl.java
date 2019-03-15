@@ -82,7 +82,7 @@ public class AuthServiceImpl implements AuthService {
 			throw new AuthManagerException(AuthConstant.UNAUTHORIZED_CODE,"Auth token has been changed,Please try with new login");
 		}
 		long tenMinsExp = getExpiryTime(authToken.getExpirationTime());
-		if(currentTime>tenMinsExp)
+		if(currentTime>tenMinsExp && currentTime<authToken.getExpirationTime())
 		{
 			TimeToken newToken = tokenGenerator.generateNewToken(token);
 			mosipUserDtoToken.setToken(newToken.getToken());
@@ -189,7 +189,7 @@ public class AuthServiceImpl implements AuthService {
 		MosipUserDto mosipUser = userStoreFactory.getDataStoreBasedOnApp(userOtp.getAppId())
 				.authenticateUserWithOtp(userOtp);
 		MosipUserDtoToken mosipToken = oTPService.validateOTP(mosipUser, userOtp.getOtp());
-		if(mosipToken!=null)
+		if(mosipToken!=null && mosipToken.getMosipUserDto()!=null)
 		{
 		authNResponseDto.setMessage(mosipToken.getMessage());
 		authNResponseDto.setStatus(mosipToken.getStatus());
@@ -197,6 +197,11 @@ public class AuthServiceImpl implements AuthService {
 		authNResponseDto.setExpiryTime(mosipToken.getExpTime());
 		authNResponseDto.setRefreshToken(mosipToken.getRefreshToken());
 		authNResponseDto.setUserId(mosipToken.getMosipUserDto().getUserId());
+		}
+		else
+		{
+			authNResponseDto.setMessage(mosipToken.getMessage());
+			authNResponseDto.setStatus(mosipToken.getStatus());
 		}
 		return authNResponseDto;
 	}

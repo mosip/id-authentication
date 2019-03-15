@@ -16,11 +16,11 @@ import { FormControlModal } from 'src/app/shared/models/demographic-model/form.c
 import { IdentityModel } from 'src/app/shared/models/demographic-model/identity.modal';
 import { DemoIdentityModel } from 'src/app/shared/models/demographic-model/demo.identity.modal';
 import { RequestModel } from 'src/app/shared/models/demographic-model/request.modal';
-import AttributeModel from 'src/app/shared/models/demographic-model';
 import * as appConstants from '../../../app.constants';
 import Utils from 'src/app/app.util';
 import { DialougComponent } from 'src/app/shared/dialoug/dialoug.component';
 import { ConfigService } from 'src/app/core/services/config.service';
+import { AttributeModel } from 'src/app/shared/models/demographic-model/attribute.modal';
 
 @Component({
   selector: 'app-demographic',
@@ -40,10 +40,18 @@ export class DemographicComponent implements OnInit, OnDestroy {
   numberPattern = appConstants.NUMBER_PATTERN;
   textPattern = appConstants.TEXT_PATTERN;
   MOBILE_PATTERN: string;
+  MOBILE_LENGTH: string;
   CNIE_PATTERN: string;
+  CNIE_LENGTH: string;
   EMAIL_PATTERN: string;
+  EMAIL_LENGTH: string;
   DOB_PATTERN: string;
   POSTALCODE_PATTERN: string;
+  POSTALCODE_LENGTH: string;
+  ADDRESS_LENGTH: string;
+  defaultDay: string;
+  defaultMonth: string;
+  FULLNAME_LENGTH: string;
 
   ageOrDobPref = '';
   showDate = false;
@@ -138,19 +146,23 @@ export class DemographicComponent implements OnInit, OnDestroy {
     private dialog: MatDialog
   ) {
     this.translate.use(localStorage.getItem('langCode'));
-    this.setConfig();
+    this.regService.currentMessage.subscribe(message => (this.message = message));
     this.initialization();
   }
 
   async ngOnInit() {
     this.config = this.configService.getConfig();
+    console.log(this.config);
+    this.regService.currentMessage.subscribe(message => (this.message = message));
+    this.setConfig();
     this.initForm();
     await this.getPrimaryLabels();
     this.dataStorageService.getSecondaryLanguageLabels(this.secondaryLang).subscribe(response => {
       this.secondaryLanguagelabels = response['demographic'];
     });
     if (!this.dataModification) this.consentDeclaration();
-    console.log(this.primaryLanguagelabels);
+    // this.regService.currentMessage.subscribe(message => (this.message = message));
+    // console.log(this.primaryLanguagelabels);
   }
 
   setConfig() {
@@ -159,6 +171,25 @@ export class DemographicComponent implements OnInit, OnDestroy {
     this.EMAIL_PATTERN = this.config['mosip.regex.email'];
     this.POSTALCODE_PATTERN = this.config['mosip.regex.postalCode'];
     this.DOB_PATTERN = this.config['mosip.regex.DOB'];
+    this.defaultDay = this.config['mosip.default.dob.day'];
+    this.defaultMonth = this.config['mosip.default.dob.month'];
+    this.POSTALCODE_LENGTH = this.config['mosip.postal.code.length'];
+    this.CNIE_LENGTH = this.config['mosip.CINE.length'];
+    this.EMAIL_LENGTH = this.config['mosip.email.length'];
+    this.MOBILE_LENGTH = this.config['mosip.mobile.length'];
+    this.ADDRESS_LENGTH = this.config['preregistration.address.length'];
+    this.FULLNAME_LENGTH = this.config['preregistration.fullname.length'];
+
+    console.log(
+      'this.MOBILE_PATTERN, this.CNIE_PATTERN, this.EMAIL_PATTERN, this.POSTALCODE_PATTERN, this.DOB_PATTERN, this.defaultDay,this.defaultMonth',
+      this.MOBILE_PATTERN,
+      this.CNIE_PATTERN,
+      this.EMAIL_PATTERN,
+      this.POSTALCODE_PATTERN,
+      this.DOB_PATTERN,
+      this.defaultDay,
+      this.defaultMonth
+    );
   }
 
   private getPrimaryLabels() {
@@ -174,8 +205,7 @@ export class DemographicComponent implements OnInit, OnDestroy {
     if (localStorage.getItem('newApplicant') === 'true') {
       this.isNewApplicant = true;
     }
-    this.regService.currentMessage.subscribe(message => (this.message = message));
-
+    // this.regService.currentMessage.subscribe(message => (this.message = message));
     // this.message$ = this.regService.currentMessage;
     // this.message$.subscribe(message => (this.message = message));
     if (this.message['modifyUser'] === 'true' || this.message['modifyUserFromPreview'] === 'true') {
@@ -555,10 +585,12 @@ export class DemographicComponent implements OnInit, OnDestroy {
     if (age) {
       const now = new Date();
       const calulatedYear = now.getFullYear() - age;
-      this.userForm.controls[this.formControlNames.date].patchValue('01');
-      this.userForm.controls[this.formControlNames.month].patchValue('01');
+      this.userForm.controls[this.formControlNames.date].patchValue(this.defaultDay);
+      this.userForm.controls[this.formControlNames.month].patchValue(this.defaultMonth);
       this.userForm.controls[this.formControlNames.year].patchValue(calulatedYear);
-      this.userForm.controls[this.formControlNames.dateOfBirth].patchValue(calulatedYear + '/01/01');
+      this.userForm.controls[this.formControlNames.dateOfBirth].patchValue(
+        calulatedYear + '/' + this.defaultMonth + '/' + this.defaultDay
+      );
       this.userForm.controls[this.formControlNames.dateOfBirth].setErrors(null);
     }
   }
@@ -646,12 +678,18 @@ export class DemographicComponent implements OnInit, OnDestroy {
   onSubmit() {
     this.markFormGroupTouched(this.userForm);
     this.markFormGroupTouched(this.transUserForm);
+    console.log('CODE VALUE', this.codeValue);
+
     if (this.userForm.valid && this.transUserForm.valid) {
       const request = this.createRequestJSON();
       this.dataUploadComplete = false;
       this.dataStorageService.addUser(request).subscribe(
         response => {
           console.log(response);
+          if (response[appConstants.NESTED_ERROR] === null && response[appConstants.RESPONSE] === null) {
+            this.router.navigate(['error']);
+            return;
+          }
           if (response[appConstants.NESTED_ERROR] !== null) {
             this.router.navigate(['error']);
             return;

@@ -60,7 +60,7 @@ public class ConnectorStageTest {
 		}
 		
 		@Override
-		public MosipEventBus getEventBus(Object verticleName, String clusterManagerUrl) {
+		public MosipEventBus getEventBus(Object verticleName, String url, int instanceNumber) {
 			return null;
 		}
 	};
