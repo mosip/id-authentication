@@ -49,8 +49,8 @@ public class ApplicationContext {
 		}
 
 		
-		Locale applicationLanguageLocale = new Locale(applicationLanguge.substring(0, 2));
-		Locale secondaryLanguageLocale = new Locale(localLanguage.substring(0, 2));
+		Locale applicationLanguageLocale = new Locale(applicationLanguge != null ? applicationLanguge.substring(0, 2) : null);
+		Locale secondaryLanguageLocale = new Locale(localLanguage != null ? localLanguage.substring(0, 2): null);
 
 		applicationLanguageBundle = ResourceBundle.getBundle("labels", applicationLanguageLocale);
 		localLanguageBundle = ResourceBundle.getBundle("labels", secondaryLanguageLocale);
