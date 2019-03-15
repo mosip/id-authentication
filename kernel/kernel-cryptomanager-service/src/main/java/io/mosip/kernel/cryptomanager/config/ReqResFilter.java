@@ -14,6 +14,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.web.util.ContentCachingRequestWrapper;
 import org.springframework.web.util.ContentCachingResponseWrapper;
 
+import io.mosip.kernel.core.logger.spi.Logger;
+
 /**
  * This class is for input logging of all parameters in HTTP requests
  * 
@@ -46,7 +48,7 @@ public class ReqResFilter implements Filter {
 			responseWrapper.copyBodyToResponse();
 
 		} catch (Exception e) {
-			System.err.println(e);
+			Logger mosipLogger = LoggerConfiguration.logConfig(ReqResFilter.class); mosipLogger.error("", "", "", e.getMessage());
 		}
 	}
 

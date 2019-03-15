@@ -23,6 +23,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.core.http.ResponseWrapper;
+import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.EmptyCheckUtils;
 
 /**
@@ -89,7 +90,8 @@ public class ResponseBodyAdviceConfig implements ResponseBodyAdvice<Object> {
 			responseWrapper.setResponsetime(LocalDateTime.now(ZoneId.of("UTC")));
 			return responseWrapper;
 		} catch (Exception e) {
-			System.err.println(e.getMessage());
+			Logger mosipLogger = LoggerConfiguration.logConfig(ResponseBodyAdviceConfig.class);
+			mosipLogger.error("", "", "", e.getMessage());
 		}
 
 		return body;

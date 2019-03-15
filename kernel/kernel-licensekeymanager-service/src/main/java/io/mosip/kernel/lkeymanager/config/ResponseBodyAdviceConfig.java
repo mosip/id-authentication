@@ -89,7 +89,7 @@ public class ResponseBodyAdviceConfig implements ResponseBodyAdvice<Object> {
 			responseWrapper.setResponse(body);
 			return responseWrapper;
 		} catch (Exception e) {
-			System.err.println(e.getMessage());
+			Logger mosipLogger = LoggerConfiguration.logConfig(ResponseBodyAdviceConfig.class); mosipLogger.error("", "", "", e.getMessage());
 		}
 
 		return body;
