@@ -94,7 +94,7 @@ public class CenterMachineReMapServiceImpl implements CenterMachineReMapService 
 	public void handleReMapProcess(int step) {
 
 		Boolean isMachineReMapped = isMachineRemapped();
-		if (!isMachineReMapped) {
+		if (isMachineReMapped) {
 			LOGGER.info("REGISTRATION CENTER MACHINE REMAP : ", APPLICATION_NAME, APPLICATION_ID,
 					"handleReMapProcess called and machine has been remaped");
 
