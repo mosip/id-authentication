@@ -113,7 +113,6 @@ public class RegistrationConstants {
 	// Authentication Methods
 	public static final String PWORD = "PWD";
 	public static final String OTP = "OTP";
-	public static final String BIO = "BIO";
 	public static final String FACE = "FACE";
 	public static final String IRIS = "IRIS";
 

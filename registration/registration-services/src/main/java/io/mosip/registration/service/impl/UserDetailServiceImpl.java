@@ -41,7 +41,7 @@ public class UserDetailServiceImpl extends BaseService implements UserDetailServ
 	 * 
 	 * @see io.mosip.registration.service.UserDetailService#save()
 	 */
-	public ResponseDTO save(String triggerPoint) {
+	public synchronized ResponseDTO save(String triggerPoint) {
 
 		ResponseDTO responseDTO = new ResponseDTO();
 

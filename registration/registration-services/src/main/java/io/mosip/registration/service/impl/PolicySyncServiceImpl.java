@@ -140,22 +140,26 @@ public class PolicySyncServiceImpl extends BaseService implements PolicySyncServ
 		try {
 
 			KeyStore keyStore = policySyncDAO.findByMaxExpireTime();
+			
+			if(keyStore != null) {
+				String val = getGlobalConfigValueOf(RegistrationConstants.KEY_NAME);
+				if (val != null) {
 
-			String val = getGlobalConfigValueOf(RegistrationConstants.KEY_NAME);
-			if (val != null) {
+					/* Get Calendar instance */
+					Calendar cal = Calendar.getInstance();
+					cal.setTime(new Timestamp(System.currentTimeMillis()));
+					cal.add(Calendar.DATE, +Integer.parseInt(val));
 
-				/* Get Calendar instance */
-				Calendar cal = Calendar.getInstance();
-				cal.setTime(new Timestamp(System.currentTimeMillis()));
-				cal.add(Calendar.DATE, +Integer.parseInt(val));
+					/* Compare Key Validity Date with currentDate+configuredDays */
+					if (keyStore.getValidTillDtimes().after(new Timestamp(cal.getTimeInMillis()))) {
+						setSuccessResponse(responseDTO, RegistrationConstants.VALID_KEY, null);
+					} else {
+						setErrorResponse(responseDTO, RegistrationConstants.INVALID_KEY, null);
+					}
 
-				/* Compare Key Validity Date with currentDate+configuredDays */
-				if (keyStore.getValidTillDtimes().after(new Timestamp(cal.getTimeInMillis()))) {
-					setSuccessResponse(responseDTO, RegistrationConstants.VALID_KEY, null);
-				} else {
-					setErrorResponse(responseDTO, RegistrationConstants.INVALID_KEY, null);
 				}
-
+			} else {
+				fetchPolicy();
 			}
 		} catch (RuntimeException runtimeException) {
 
