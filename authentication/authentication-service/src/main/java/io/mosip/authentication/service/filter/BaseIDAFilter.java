@@ -399,6 +399,8 @@ public abstract class BaseIDAFilter implements Filter {
 		}
 		return ver;
 	}
+	
+	
 
 	/**
 	 * Sets the response params.

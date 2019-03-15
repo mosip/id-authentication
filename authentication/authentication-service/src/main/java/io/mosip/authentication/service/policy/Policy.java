@@ -11,8 +11,8 @@ import lombok.Data;
 public class Policy {
 
 	/** The list of auth type attributes. */
-	private List<AuthPolicy> listAuthPolicy;
+	private List<AuthPolicy> authPolicies;
 	
 	/** The list of KYC attributes. */
-	private List<KYCAttributes> listKYCAttributes;
+	private List<KYCAttributes> allowedKycAttributes;
 }

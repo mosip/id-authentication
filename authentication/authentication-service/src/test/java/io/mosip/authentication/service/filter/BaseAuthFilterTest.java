@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.UndeclaredThrowableException;
 import java.security.PublicKey;
+import java.util.Map;
 
 import javax.servlet.FilterConfig;
 import javax.servlet.ReadListener;
@@ -46,7 +47,14 @@ public class BaseAuthFilterTest {
 	@Mock
 	ResettableStreamHttpServletRequest requestWrapper;
 	
-	BaseAuthFilter baseAuthFilter = new BaseAuthFilter() {};
+	BaseAuthFilter baseAuthFilter = new BaseAuthFilter() {
+
+		@Override
+		protected void validateDecipheredRequest(ResettableStreamHttpServletRequest requestWrapper,
+				Map<String, Object> decipherRequest) throws IdAuthenticationAppException {
+			// TODO Auto-generated method stub
+			
+		}};
 	
 	ObjectMapper mapper = new ObjectMapper();
 	

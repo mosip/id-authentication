@@ -15,6 +15,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
+import io.mosip.authentication.core.spi.indauth.match.MatchType;
+import io.mosip.authentication.service.policy.AuthPolicy;
 
 /**
  * The Class KycAuthFilter.
@@ -23,6 +25,8 @@ import io.mosip.authentication.core.exception.IdAuthenticationAppException;
  */
 @Component
 public class KycAuthFilter extends IdAuthFilter {
+
+	private static final String KYC = "kyc";
 
 	/** The Constant IDENTITY. */
 	private static final String IDENTITY = "identity";
@@ -126,6 +130,15 @@ public class KycAuthFilter extends IdAuthFilter {
 	@Override
 	protected boolean validateSignature(String signature, byte[] requestAsByte) throws IdAuthenticationAppException {
 		return true;
+	}
+	
+	@Override
+	protected void checkAllowedAuthTypeBasedOnPolicy(Map<String, Object> requestBody, List<AuthPolicy> authPolicies)
+			throws IdAuthenticationAppException {
+		if(!isAllowedAuthType(KYC, authPolicies)) {
+			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED);
+		}
+		super.checkAllowedAuthTypeBasedOnPolicy(requestBody, authPolicies);
 	}
 
 }
