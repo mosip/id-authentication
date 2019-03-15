@@ -62,6 +62,8 @@ import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.scheduler.SchedulerUtil;
 import io.mosip.registration.service.AuthenticationService;
 import io.mosip.registration.service.LoginService;
+import io.mosip.registration.service.MasterSyncService;
+import io.mosip.registration.service.UserDetailService;
 import io.mosip.registration.service.UserOnboardService;
 import io.mosip.registration.util.common.OTPManager;
 import io.mosip.registration.util.common.PageFlow;
@@ -183,6 +185,12 @@ public class LoginController extends BaseController implements Initializable {
 
 	@Autowired
 	private ServiceDelegateUtil serviceDelegateUtil;
+	
+	@Autowired
+	private MasterSyncService masterSyncService;
+	
+	@Autowired
+	private UserDetailService userDetailService; 
 
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
@@ -207,8 +215,12 @@ public class LoginController extends BaseController implements Initializable {
 	public void loadInitialScreen(Stage primaryStage) {
 
 		ResponseDTO responseDTO = getSyncConfigData();
+		
+		ResponseDTO masterResponseDTO = masterSyncService.getMasterSync(RegistrationConstants.OPT_TO_REG_MDS_J00001, RegistrationConstants.JOB_TRIGGER_POINT_USER);
 
-		if (responseDTO.getSuccessResponseDTO() == null) {
+		ResponseDTO userResponseDTO = userDetailService.save(RegistrationConstants.JOB_TRIGGER_POINT_USER);
+
+		if (responseDTO.getSuccessResponseDTO() == null || masterResponseDTO.getSuccessResponseDTO() == null || userResponseDTO.getSuccessResponseDTO()== null) {
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.SYNC_CONFIG_DATA_FAILURE);
 		} else {
 
@@ -328,7 +340,7 @@ public class LoginController extends BaseController implements Initializable {
 
 							if (loginList.size() > 1
 									&& RegistrationConstants.DISABLE.equalsIgnoreCase(fingerprintDisableFlag)) {
-								loginList.removeIf(login -> login.equalsIgnoreCase(RegistrationConstants.BIO));
+								loginList.removeIf(login -> login.equalsIgnoreCase(RegistrationConstants.FINGERPRINT));
 							}
 
 							LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
@@ -359,7 +371,7 @@ public class LoginController extends BaseController implements Initializable {
 							} else {
 
 								if ((RegistrationConstants.DISABLE.equalsIgnoreCase(fingerprintDisableFlag)
-										&& RegistrationConstants.BIO.equalsIgnoreCase(loginMode))
+										&& RegistrationConstants.FINGERPRINT.equalsIgnoreCase(loginMode))
 										|| (RegistrationConstants.DISABLE.equalsIgnoreCase(irisDisableFlag)
 												&& RegistrationConstants.IRIS.equalsIgnoreCase(loginMode))
 										|| (RegistrationConstants.DISABLE.equalsIgnoreCase(faceDisableFlag)
@@ -539,7 +551,7 @@ public class LoginController extends BaseController implements Initializable {
 
 		if (bioLoginStatus) {
 			fingerprintPane.setVisible(false);
-			loadNextScreen(detail, RegistrationConstants.BIO);
+			loadNextScreen(detail, RegistrationConstants.FINGERPRINT);
 		}
 
 		LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID, "Fingerprint validation done");
@@ -656,14 +668,14 @@ public class LoginController extends BaseController implements Initializable {
 	 */
 	public void loadLoginScreen(String loginMode) {
 
-		switch (loginMode) {
+		switch (loginMode.toUpperCase()) {
 		case RegistrationConstants.OTP:
 			otpPane.setVisible(true);
 			break;
 		case RegistrationConstants.PWORD:
 			credentialsPane.setVisible(true);
 			break;
-		case RegistrationConstants.BIO:
+		case RegistrationConstants.FINGERPRINT:
 			fingerprintPane.setVisible(true);
 			break;
 		case RegistrationConstants.IRIS:

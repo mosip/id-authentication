@@ -62,7 +62,11 @@ public enum Components {
 	DEVICE_UN_MAPPING("REG-MOD-139","device un mapping"),
 	
 	//Registration Controller
-	REGISTRATION_CONTROLLER("REG-MOD-140","Registration initialization");
+	REGISTRATION_CONTROLLER("REG-MOD-140","Registration initialization"),
+	CENTER_MACHINE_REMAP("REG-MOD-141","Center Machine is Remapped"),
+	PACKET_SYNCHED("REG-MOD-142","packet statuses are synched from server to client"),
+	PACKET_STATUS_SYNCHED("REG-MOD-143","packet are synched from client to server"),
+	CLEAN_UP("REG-MOD-144","all the data is cleaned up");
 
 	/**
 	 * The constructor

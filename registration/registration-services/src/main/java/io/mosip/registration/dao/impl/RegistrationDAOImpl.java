@@ -196,16 +196,16 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 	 * @see
 	 * org.mosip.registration.dao.RegistrationDAO#updateRegStatus(java.lang.String)
 	 */
-	public Registration updateRegStatus(Registration registrationPacket) {
+	public Registration updateRegStatus(PacketStatusDTO registrationPacket) {
 		LOGGER.info("REGISTRATION - UPDATE_THE_PACKET_STATUS - REGISTRATION_DAO", APPLICATION_NAME, APPLICATION_ID,
 				"Updating the packet details in the Registation table");
 
 		Timestamp timestamp = Timestamp.valueOf(DateUtils.getUTCCurrentDateTime());
 
-		Registration reg = registrationRepository.getOne(registrationPacket.getId());
-		reg.setClientStatusCode(registrationPacket.getClientStatusCode());
-		if (registrationPacket.getFileUploadStatus() != null) {
-			reg.setFileUploadStatus(registrationPacket.getFileUploadStatus());
+		Registration reg = registrationRepository.getOne(registrationPacket.getFileName());
+		reg.setClientStatusCode(registrationPacket.getPacketClientStatus());
+		if (registrationPacket.getUploadStatus() != null) {
+			reg.setFileUploadStatus(registrationPacket.getUploadStatus());
 		}
 		reg.setIsActive(true);
 		reg.setUploadTimestamp(timestamp);
@@ -213,7 +213,9 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 		reg.setRegistrationTransaction(buildRegistrationTransaction(reg));
 		reg.setClientStatusComments(registrationPacket.getClientStatusComments());
 		reg.setUpdDtimes(timestamp);
+		reg.setUploadCount((short)(reg.getUploadCount()+1));
 		reg.setUpdBy(SessionContext.userContext().getUserId());
+		reg.setServerStatusCode(registrationPacket.getPacketServerStatus());
 		return registrationRepository.update(reg);
 	}
 

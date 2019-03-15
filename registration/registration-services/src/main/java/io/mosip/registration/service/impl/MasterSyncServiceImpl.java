@@ -84,11 +84,11 @@ public class MasterSyncServiceImpl implements MasterSyncService {
 	 * String)
 	 */
 	@Override
-	public ResponseDTO getMasterSync(String masterSyncDtls,String triggerPoint) {
+	public synchronized ResponseDTO getMasterSync(String masterSyncDtls,String triggerPoint) {
 
 		ResponseDTO responseDTO = null;
 		String resoponse = RegistrationConstants.EMPTY;
-		String machineId = RegistrationConstants.EMPTY;
+		String machineId = "10011";
 
 		SuccessResponseDTO sucessResponse = new SuccessResponseDTO();
 

@@ -4,6 +4,7 @@ import java.io.File;
 import java.net.URISyntaxException;
 import java.util.List;
 
+import io.mosip.registration.dto.PacketStatusDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.entity.Registration;
 import io.mosip.registration.exception.RegBaseCheckedException;
@@ -31,7 +32,7 @@ public interface PacketUploadService {
 	 * @param packetStatus
 	 * @return
 	 */
-	 Boolean updateStatus(List<Registration> packetUploadStatus);
+	 Boolean updateStatus(List<PacketStatusDTO> packetUploadStatus);
 	 
 	 /**
  	 * Upload packet.

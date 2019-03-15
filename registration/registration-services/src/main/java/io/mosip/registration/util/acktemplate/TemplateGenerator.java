@@ -960,7 +960,7 @@ public class TemplateGenerator extends BaseService {
 			values.put(RegistrationConstants.TEMPLATE_RESIDENT_NAME,
 					getValue(moroccoIdentity.getFullName(), applicationLanguageCode));
 			values.put(RegistrationConstants.TEMPLATE_RID,
-					getValue(registration.getRegistrationId(), applicationLanguageCode));
+					getValue(registration.getRegistrationId()));
 
 			SimpleDateFormat sdf = new SimpleDateFormat(RegistrationConstants.TEMPLATE_DATE_FORMAT);
 			String currentDate = sdf.format(new Date());

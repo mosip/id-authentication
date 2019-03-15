@@ -125,7 +125,7 @@ public class UserDetailDAOImpl implements UserDetailDAO {
 				UserDetail userDtls = new UserDetail();
 				UserPassword usrPwd = new UserPassword();
 				// password details
-				usrPwd.setUsrId(userDtals.getUserName());
+				usrPwd.setUsrId(userDtals.getName());
 				usrPwd.setPwd(new String(userDtals.getUserPassword(), StandardCharsets.UTF_8));
 				usrPwd.setStatusCode("00");
 				usrPwd.setIsActive(true);
@@ -138,7 +138,7 @@ public class UserDetailDAOImpl implements UserDetailDAO {
 				usrPwd.setCrDtime(Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()));
 				userPassword.add(usrPwd);
 
-				userDtls.setId(userDtals.getUserName());
+				userDtls.setId(userDtals.getName());
 				userDtls.setUserPassword(usrPwd);
 				userDtls.setEmail(userDtals.getMail());
 				userDtls.setMobile(userDtals.getMobile());
@@ -168,7 +168,7 @@ public class UserDetailDAOImpl implements UserDetailDAO {
 					roles.setCrBy(RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM);
 				}
 				roles.setCrDtime(Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()));
-				String uName = role.getUserName();
+				String uName = role.getName();
 				role.getRoles().forEach(rol -> {
 					UserRoleID roleId = new UserRoleID();
 					roleId.setRoleCode(rol);

@@ -432,18 +432,18 @@ public class AuthenticationController extends BaseController implements Initiali
 			String irisDisableFlag = String.valueOf(ApplicationContext.map().get(RegistrationConstants.IRIS_DISABLE_FLAG));
 			String faceDisableFlag = String.valueOf(ApplicationContext.map().get(RegistrationConstants.FACE_DISABLE_FLAG));
 
-			removeAuthModes(userAuthenticationTypeList, fingerprintDisableFlag, RegistrationConstants.BIO);
+			removeAuthModes(userAuthenticationTypeList, fingerprintDisableFlag, RegistrationConstants.FINGERPRINT);
 			removeAuthModes(userAuthenticationTypeList, irisDisableFlag, RegistrationConstants.IRIS);
 			removeAuthModes(userAuthenticationTypeList, faceDisableFlag, RegistrationConstants.FACE);
 			
 			LOGGER.info(LoggerConstants.LOG_REG_AUTH, APPLICATION_NAME, APPLICATION_ID,
 					"Ignoring FingerPrint, Iris, Face Supervisror Authentication if the configuration is off");
 			
-			removeAuthModes(userAuthenticationTypeListValidation, fingerprintDisableFlag, RegistrationConstants.BIO);
+			removeAuthModes(userAuthenticationTypeListValidation, fingerprintDisableFlag, RegistrationConstants.FINGERPRINT);
 			removeAuthModes(userAuthenticationTypeListValidation, irisDisableFlag, RegistrationConstants.IRIS);
 			removeAuthModes(userAuthenticationTypeListValidation, faceDisableFlag, RegistrationConstants.FACE);
 			
-			removeAuthModes(userAuthenticationTypeListSupervisorValidation, fingerprintDisableFlag, RegistrationConstants.BIO);
+			removeAuthModes(userAuthenticationTypeListSupervisorValidation, fingerprintDisableFlag, RegistrationConstants.FINGERPRINT);
 			removeAuthModes(userAuthenticationTypeListSupervisorValidation, irisDisableFlag, RegistrationConstants.IRIS);
 			removeAuthModes(userAuthenticationTypeListSupervisorValidation, faceDisableFlag, RegistrationConstants.FACE);
 
@@ -468,7 +468,7 @@ public class AuthenticationController extends BaseController implements Initiali
 						.valueOf(userAuthenticationTypeList.get(RegistrationConstants.PARAM_ZERO));
 
 				if ((RegistrationConstants.DISABLE.equalsIgnoreCase(String.valueOf(ApplicationContext.map().get(RegistrationConstants.FINGERPRINT_DISABLE_FLAG)))
-						&& authenticationType.equalsIgnoreCase(RegistrationConstants.BIO))
+						&& authenticationType.equalsIgnoreCase(RegistrationConstants.FINGERPRINT))
 						|| (RegistrationConstants.DISABLE.equalsIgnoreCase(String.valueOf(ApplicationContext.map().get(RegistrationConstants.IRIS_DISABLE_FLAG)))
 								&& authenticationType.equalsIgnoreCase(RegistrationConstants.IRIS))
 						|| (RegistrationConstants.DISABLE.equalsIgnoreCase(String.valueOf(ApplicationContext.map().get(RegistrationConstants.FACE_DISABLE_FLAG)))
@@ -522,14 +522,14 @@ public class AuthenticationController extends BaseController implements Initiali
 		LOGGER.info("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
 				"Loading the respective authentication screen in UI");
 
-		switch (loginMode) {
+		switch (loginMode.toUpperCase()) {
 		case RegistrationConstants.OTP:
 			enableOTP();
 			break;
 		case RegistrationConstants.PWORD:
 			enablePWD();
 			break;
-		case RegistrationConstants.BIO:
+		case RegistrationConstants.FINGERPRINT:
 			enableFingerPrint();
 			break;
 		case RegistrationConstants.IRIS:
@@ -822,11 +822,7 @@ public class AuthenticationController extends BaseController implements Initiali
 		boolean irisMatchStatus = authService.authValidator(RegistrationConstants.IRIS, authenticationValidatorDTO);
 
 		if (irisMatchStatus) {
-			if (isSupervisor) {
-				irisDetailsDTO.setIrisImageName("supervisor".concat(irisDetailsDTO.getIrisType()).concat(".jpg"));
-			} else {
-				irisDetailsDTO.setIrisImageName("officer".concat(irisDetailsDTO.getIrisType()).concat(".jpg"));
-			}
+			irisDetailsDTO.setIrisImageName(isSupervisor ? "supervisor".concat(irisDetailsDTO.getIrisType()).concat(".jpg") : "officer".concat(irisDetailsDTO.getIrisType()).concat(".jpg"));
 		}
 		return irisMatchStatus;
 	}
@@ -930,7 +926,7 @@ public class AuthenticationController extends BaseController implements Initiali
 			userAuthenticationTypeListValidation=userAuthenticationTypeListSupervisorValidation;
 		}
 	
-		switch (userAuthenticationTypeListValidation.get(0)) {
+		switch (userAuthenticationTypeListValidation.get(0).toUpperCase()) {
 		case RegistrationConstants.OTP:
 			validateOTP();
 			userAuthenticationTypeListValidation.remove(0);
@@ -939,7 +935,7 @@ public class AuthenticationController extends BaseController implements Initiali
 			validatePwd();
 			userAuthenticationTypeListValidation.remove(0);
 			break;
-		case RegistrationConstants.BIO:
+		case RegistrationConstants.FINGERPRINT:
 			validateFingerprint();
 			break;
 		case RegistrationConstants.IRIS:
