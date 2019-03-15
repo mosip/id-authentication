@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
+import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.syncdata.constant.MasterDataErrorCode;
 import io.mosip.kernel.syncdata.dto.ApplicantValidDocumentDto;
 import io.mosip.kernel.syncdata.dto.ApplicationDto;
@@ -49,11 +50,14 @@ import io.mosip.kernel.syncdata.dto.TemplateTypeDto;
 import io.mosip.kernel.syncdata.dto.TitleDto;
 import io.mosip.kernel.syncdata.dto.ValidDocumentDto;
 import io.mosip.kernel.syncdata.dto.response.MasterDataResponseDto;
-import io.mosip.kernel.syncdata.entity.Machine;
-import io.mosip.kernel.syncdata.exception.DataNotFoundException;
+import io.mosip.kernel.syncdata.entity.RegistrationCenter;
+import io.mosip.kernel.syncdata.entity.RegistrationCenterMachine;
+import io.mosip.kernel.syncdata.exception.RequestException;
 import io.mosip.kernel.syncdata.exception.SyncDataServiceException;
-import io.mosip.kernel.syncdata.repository.MachineRepository;
+import io.mosip.kernel.syncdata.repository.RegistrationCenterMachineRepository;
+import io.mosip.kernel.syncdata.repository.RegistrationCenterRepository;
 import io.mosip.kernel.syncdata.service.SyncMasterDataService;
+import io.mosip.kernel.syncdata.utils.MapperUtils;
 import io.mosip.kernel.syncdata.utils.SyncMasterDataServiceHelper;
 
 /**
@@ -70,7 +74,10 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 	SyncMasterDataServiceHelper serviceHelper;
 
 	@Autowired
-	MachineRepository machineRepository;
+	RegistrationCenterMachineRepository registrationCenterMachineRepository;
+
+	@Autowired
+	RegistrationCenterRepository registrationCenterRepository;
 
 	/*
 	 * (non-Javadoc)
@@ -81,19 +88,19 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 	 */
 
 	@Override
-	public MasterDataResponseDto syncData(String machineId, LocalDateTime lastUpdated, LocalDateTime currentTimeStamp)
-			throws InterruptedException, ExecutionException {
-		List<Machine> machines = null;
-		try {
-			machines = machineRepository.findByMachineIdAndIsActive(machineId);
-		} catch (DataAccessException ex) {
-			throw new SyncDataServiceException(MasterDataErrorCode.MACHINE_DETAIL_FETCH_EXCEPTION.getErrorCode(),
-					ex.getMessage());
+	public MasterDataResponseDto syncData(String regCenterId, String macAddress, String serialNum,
+			LocalDateTime lastUpdated, LocalDateTime currentTimeStamp) throws InterruptedException, ExecutionException {
+		String machineId = null;
+		RegistrationCenterMachineDto regCenterMachineDto = null;
+		if (regCenterId == null) {
+			regCenterMachineDto = getRegistationMachineMapping(macAddress, serialNum);
+		} else {
+
+			regCenterMachineDto = getRegCenterMachineMappingWithRegCenterId(regCenterId, macAddress, serialNum);
 		}
-		if (machines.isEmpty()) {
-			throw new DataNotFoundException(MasterDataErrorCode.MACHINE_ID_NOT_FOUND_EXCEPTION.getErrorCode(),
-					MasterDataErrorCode.MACHINE_ID_NOT_FOUND_EXCEPTION.getErrorMessage());
-		}
+
+		machineId = regCenterMachineDto.getMachineId();
+		regCenterId = regCenterMachineDto.getRegCenterId();
 		MasterDataResponseDto response = new MasterDataResponseDto();
 		CompletableFuture<List<MachineDto>> machineDetails = null;
 		CompletableFuture<List<ApplicationDto>> applications = null;
@@ -136,7 +143,7 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 		CompletableFuture<List<RegistrationCenterMachineHistoryDto>> registrationCenterMachineHistoryList = null;
 
 		applications = serviceHelper.getApplications(lastUpdated, currentTimeStamp);
-		machineDetails = serviceHelper.getMachines(machineId, lastUpdated, currentTimeStamp);
+		machineDetails = serviceHelper.getMachines(regCenterId, lastUpdated, currentTimeStamp);
 		registrationCenters = serviceHelper.getRegistrationCenter(machineId, lastUpdated, currentTimeStamp);
 		registrationCenterTypes = serviceHelper.getRegistrationCenterType(machineId, lastUpdated, currentTimeStamp);
 		templates = serviceHelper.getTemplates(lastUpdated, currentTimeStamp);
@@ -149,42 +156,39 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 		titles = serviceHelper.getTitles(lastUpdated, currentTimeStamp);
 		languages = serviceHelper.getLanguages(lastUpdated, currentTimeStamp);
 		genders = serviceHelper.getGenders(lastUpdated, currentTimeStamp);
-		devices = serviceHelper.getDevices(machineId, lastUpdated, currentTimeStamp);
+		devices = serviceHelper.getDevices(regCenterId, lastUpdated, currentTimeStamp);
 		documentCategories = serviceHelper.getDocumentCategories(lastUpdated, currentTimeStamp);
 		documentTypes = serviceHelper.getDocumentTypes(lastUpdated, currentTimeStamp);
 		idTypes = serviceHelper.getIdTypes(lastUpdated, currentTimeStamp);
-		deviceSpecifications = serviceHelper.getDeviceSpecifications(machineId, lastUpdated, currentTimeStamp);
+		deviceSpecifications = serviceHelper.getDeviceSpecifications(regCenterId, lastUpdated, currentTimeStamp);
 		locationHierarchy = serviceHelper.getLocationHierarchy(lastUpdated, currentTimeStamp);
-		machineSpecification = serviceHelper.getMachineSpecification(machineId, lastUpdated, currentTimeStamp);
-		machineType = serviceHelper.getMachineType(machineId, lastUpdated, currentTimeStamp);
+		machineSpecification = serviceHelper.getMachineSpecification(regCenterId, lastUpdated, currentTimeStamp);
+		machineType = serviceHelper.getMachineType(regCenterId, lastUpdated, currentTimeStamp);
 		templateTypes = serviceHelper.getTemplateTypes(lastUpdated, currentTimeStamp);
-		deviceTypes = serviceHelper.getDeviceType(machineId, lastUpdated, currentTimeStamp);
-		validDocumentsMapping = serviceHelper.getValidDocuments(lastUpdated, currentTimeStamp);
+		deviceTypes = serviceHelper.getDeviceType(regCenterId, lastUpdated, currentTimeStamp);
 		reasonList = serviceHelper.getReasonList(lastUpdated, currentTimeStamp);
 		applicantValidDocumentList = serviceHelper.getApplicantValidDocument(lastUpdated, currentTimeStamp);
 		individualTypeList = serviceHelper.getIndividualType(lastUpdated, currentTimeStamp);
+		validDocumentsMapping = serviceHelper.getValidDocuments(lastUpdated, currentTimeStamp);
 
-		
-		//List<RegistrationCenterMachineDto> registrationCenterMachineDto = registrationCenterMachines.get();
-
-		String regId = getRegistrationCenterId(registrationCenters.get());
-		registrationCenterMachines = serviceHelper.getRegistrationCenterMachines(regId, lastUpdated,
+		registrationCenterMachines = serviceHelper.getRegistrationCenterMachines(regCenterId, lastUpdated,
 				currentTimeStamp);
-		registrationCenterDevices = serviceHelper.getRegistrationCenterDevices(regId, lastUpdated, currentTimeStamp);
-		registrationCenterMachineDevices = serviceHelper.getRegistrationCenterMachineDevices(regId, lastUpdated,
+		registrationCenterDevices = serviceHelper.getRegistrationCenterDevices(regCenterId, lastUpdated,
 				currentTimeStamp);
-		registrationCenterUserMachines = serviceHelper.getRegistrationCenterUserMachines(regId, lastUpdated,
+		registrationCenterMachineDevices = serviceHelper.getRegistrationCenterMachineDevices(regCenterId, lastUpdated,
 				currentTimeStamp);
-		registrationCenterUsers = serviceHelper.getRegistrationCenterUsers(regId, lastUpdated, currentTimeStamp);
-		registrationCenterUserHistoryList = serviceHelper.getRegistrationCenterUserHistory(regId, lastUpdated,
+		registrationCenterUserMachines = serviceHelper.getRegistrationCenterUserMachines(regCenterId, lastUpdated,
 				currentTimeStamp);
-		registrationCenterUserMachineMappingHistoryList = serviceHelper.getRegistrationCenterUserMachineMapping(regId,
-				lastUpdated, currentTimeStamp);
+		registrationCenterUsers = serviceHelper.getRegistrationCenterUsers(regCenterId, lastUpdated, currentTimeStamp);
+		registrationCenterUserHistoryList = serviceHelper.getRegistrationCenterUserHistory(regCenterId, lastUpdated,
+				currentTimeStamp);
+		registrationCenterUserMachineMappingHistoryList = serviceHelper
+				.getRegistrationCenterUserMachineMapping(regCenterId, lastUpdated, currentTimeStamp);
 		registrationCenterMachineDeviceHistoryList = serviceHelper
-				.getRegistrationCenterMachineDeviceHistoryDetails(regId, lastUpdated, currentTimeStamp);
-		registrationCenterDeviceHistoryList = serviceHelper.getRegistrationCenterDeviceHistoryDetails(regId,
+				.getRegistrationCenterMachineDeviceHistoryDetails(regCenterId, lastUpdated, currentTimeStamp);
+		registrationCenterDeviceHistoryList = serviceHelper.getRegistrationCenterDeviceHistoryDetails(regCenterId,
 				lastUpdated, currentTimeStamp);
-		registrationCenterMachineHistoryList = serviceHelper.getRegistrationCenterMachineHistoryDetails(regId,
+		registrationCenterMachineHistoryList = serviceHelper.getRegistrationCenterMachineHistoryDetails(regCenterId,
 				lastUpdated, currentTimeStamp);
 
 		CompletableFuture.allOf(machineDetails, applications, registrationCenterTypes, registrationCenters, templates,
@@ -195,7 +199,7 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 				registrationCenterMachineDevices, registrationCenterUserMachines, registrationCenterUsers,
 				registrationCenterUserHistoryList, registrationCenterUserMachineMappingHistoryList,
 				registrationCenterMachineDeviceHistoryList, registrationCenterDeviceHistoryList,
-				registrationCenterMachineHistoryList,applicantValidDocumentList,individualTypeList).join();
+				registrationCenterMachineHistoryList, applicantValidDocumentList, individualTypeList).join();
 
 		response.setMachineDetails(machineDetails.get());
 		response.setApplications(applications.get());
@@ -240,11 +244,82 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 		return response;
 	}
 
-	private static String getRegistrationCenterId(List<RegistrationCenterDto> registrationCenterDto) {
-		String regId = null;
-		if (registrationCenterDto != null && !registrationCenterDto.isEmpty()) {
-			regId = registrationCenterDto.get(0).getId();
+	/**
+	 * This method would return RegistrationCenterMachine mapping based on macaddress/serial number 
+	 * @param macId - mac address
+	 * @param serialNum - serial number
+	 * @return - {@link RegistrationCenterMachineDto}
+	 */
+	private RegistrationCenterMachineDto getRegistationMachineMapping(String macId, String serialNum) {
+		List<Object[]> machineList = null;
+		RegistrationCenterMachineDto regMachineDto = null;
+
+		try {
+			if (macId != null && serialNum != null) {
+				machineList = registrationCenterMachineRepository
+						.getRegistrationCenterMachineWithMacAddressAndSerialNum(macId, serialNum);
+			} else if (macId != null) {
+				machineList = registrationCenterMachineRepository.getRegistrationCenterMachineWithMacAddress(macId);
+			} else if (serialNum != null) {
+				machineList = registrationCenterMachineRepository
+						.getRegistrationCenterMachineWithSerialNumber(serialNum);
+			} else {
+				throw new RequestException(MasterDataErrorCode.EMPTY_MAC_OR_SERIAL_NUMBER.getErrorCode(),
+						MasterDataErrorCode.EMPTY_MAC_OR_SERIAL_NUMBER.getErrorMessage());
+			}
+
+		} catch (DataAccessException | DataAccessLayerException e) {
+			throw new SyncDataServiceException(MasterDataErrorCode.REG_CENTER_MACHINE_FETCH_EXCEPTION.getErrorCode(),
+					MasterDataErrorCode.REG_CENTER_MACHINE_FETCH_EXCEPTION.getErrorMessage());
 		}
-		return regId;
+
+		if (machineList.isEmpty()) {
+			throw new RequestException(MasterDataErrorCode.INVALID_MAC_OR_SERIAL_NUMBER.getErrorCode(),
+					MasterDataErrorCode.INVALID_MAC_OR_SERIAL_NUMBER.getErrorMessage());
+		}
+		for (Object[] objects : machineList) {
+			regMachineDto = new RegistrationCenterMachineDto();
+			regMachineDto.setMachineId((String) objects[1]);
+			regMachineDto.setRegCenterId((String) objects[0]);
+		}
+		return regMachineDto;
+	}
+
+	/**
+	 * This method would fetch RegistrationMachine mapping based on machine id if regCenterid is not available 
+	 * if regCenterId is present it would check for the mapping. If the mapping is not present and is not active 
+	 * it will throw error.
+	 * @param regCenterId - registration center id
+	 * @param macId - mac address
+	 * @param serialNum - serial address
+	 * @return {@link RegistrationCenterMachineDto}
+	 */
+	private RegistrationCenterMachineDto getRegCenterMachineMappingWithRegCenterId(String regCenterId, String macId,
+			String serialNum) {
+		RegistrationCenterMachineDto regCenterMachine = getRegistationMachineMapping(macId, serialNum);
+		RegistrationCenterMachine registrationCenterMachine = null;
+
+		try {
+			List<RegistrationCenter> regCenterList = registrationCenterRepository
+					.findRegistrationCenterByIdAndIsActiveIsTrue(regCenterId);
+			if (regCenterList.isEmpty()) {
+				throw new RequestException(MasterDataErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorCode(),
+						MasterDataErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorMessage());
+			}
+			registrationCenterMachine = registrationCenterMachineRepository
+					.getRegCenterIdWithRegIdAndMachineId(regCenterId, regCenterMachine.getMachineId());
+		} catch (DataAccessException | DataAccessLayerException e) {
+			throw new SyncDataServiceException(MasterDataErrorCode.REG_CENTER_MACHINE_FETCH_EXCEPTION.getErrorCode(),
+					MasterDataErrorCode.REG_CENTER_MACHINE_FETCH_EXCEPTION.getErrorMessage());
+		}
+
+		if (registrationCenterMachine == null) {
+			throw new RequestException(MasterDataErrorCode.REG_CENTER_UPDATED.getErrorCode(),
+					MasterDataErrorCode.REG_CENTER_UPDATED.getErrorMessage());
+		}
+
+		MapperUtils.map(registrationCenterMachine, regCenterMachine);
+
+		return regCenterMachine;
 	}
 }

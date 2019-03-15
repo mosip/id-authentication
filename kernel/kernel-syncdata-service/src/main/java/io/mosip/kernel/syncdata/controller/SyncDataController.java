@@ -2,7 +2,6 @@ package io.mosip.kernel.syncdata.controller;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
-import java.time.format.DateTimeParseException;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 
@@ -16,19 +15,16 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.kernel.core.util.DateUtils;
-import io.mosip.kernel.syncdata.constant.MasterDataErrorCode;
 import io.mosip.kernel.syncdata.dto.ConfigDto;
 import io.mosip.kernel.syncdata.dto.PublicKeyResponse;
 import io.mosip.kernel.syncdata.dto.SyncUserDetailDto;
 import io.mosip.kernel.syncdata.dto.response.MasterDataResponseDto;
 import io.mosip.kernel.syncdata.dto.response.RolesResponseDto;
-import io.mosip.kernel.syncdata.exception.DataNotFoundException;
-import io.mosip.kernel.syncdata.exception.DateParsingException;
 import io.mosip.kernel.syncdata.service.SyncConfigDetailsService;
 import io.mosip.kernel.syncdata.service.SyncMasterDataService;
 import io.mosip.kernel.syncdata.service.SyncRolesService;
 import io.mosip.kernel.syncdata.service.SyncUserDetailsService;
-import io.mosip.kernel.syncdata.utils.MapperUtils;
+import io.mosip.kernel.syncdata.utils.LocalDateTimeUtil;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import net.minidev.json.JSONObject;
@@ -66,6 +62,9 @@ public class SyncDataController {
 
 	@Autowired
 	SyncUserDetailsService syncUserDetailsService;
+	
+	@Autowired
+	LocalDateTimeUtil localDateTimeUtil;
 
 	/**
 	 * This API method would fetch all synced global config details from server
@@ -116,42 +115,62 @@ public class SyncDataController {
 	}
 
 	/**
-	 * Api to sync masterdata
 	 * 
-	 * @param machineId
-	 *            id of the machine from the request is received to sync masterdata
+	 * @param macAddress
+	 *            - MAC address of the machine
+	 * @param serialNumber
+	 *            - Serial number of the machine
 	 * @param lastUpdated
-	 *            last updated timestamp -optional if last updated timestamp is null
-	 *            then fetch all the masterdata
+	 *            - last updated time stamp
 	 * @return {@link MasterDataResponseDto}
 	 * @throws InterruptedException
-	 *             this API will throw interrupted exception
+	 *             - this method will throw interrupted Exception
 	 * @throws ExecutionException
-	 *             this API will throw Execution exception
+	 *             - this method will throw exeution exception
 	 */
 	@ApiOperation(value = "Api to sync the masterdata", response = MasterDataResponseDto.class)
-	@GetMapping("/masterdata/{machineId}")
-	public MasterDataResponseDto syncMasterData(@PathVariable("machineId") String machineId,
-			@RequestParam(value = "lastUpdated", required = false) String lastUpdated)
+	@GetMapping("/masterdata")
+	public MasterDataResponseDto syncMasterData(@RequestParam(value = "macaddress", required = false) String macId,
+			@RequestParam(value = "serialnumber", required = false) String serialNumber,
+			@RequestParam(value = "lastupdated", required = false) String lastUpdated)
 			throws InterruptedException, ExecutionException {
-		LocalDateTime timestamp = null;
 
 		LocalDateTime currentTimeStamp = LocalDateTime.now(ZoneOffset.UTC);
+		LocalDateTime timestamp = localDateTimeUtil.getLocalDateTimeFromTimeStamp(currentTimeStamp, lastUpdated);
+		String regCenterId = null;
+		MasterDataResponseDto masterDataResponseDto = masterDataService.syncData(regCenterId, macId, serialNumber,
+				timestamp, currentTimeStamp);
 
-		if (lastUpdated != null) {
-			try {
-				timestamp = MapperUtils.parseToLocalDateTime(lastUpdated);
-				if (timestamp.isAfter(currentTimeStamp)) {
-					throw new DataNotFoundException(MasterDataErrorCode.INVALID_TIMESTAMP_EXCEPTION.getErrorCode(),
-							MasterDataErrorCode.INVALID_TIMESTAMP_EXCEPTION.getErrorMessage());
-				}
-			} catch (DateTimeParseException e) {
-				throw new DateParsingException(MasterDataErrorCode.LAST_UPDATED_PARSE_EXCEPTION.getErrorCode(),
-						e.getMessage());
-			}
-		}
-		MasterDataResponseDto masterDataResponseDto = masterDataService.syncData(machineId, timestamp,
-				currentTimeStamp);
+		masterDataResponseDto.setLastSyncTime(DateUtils.formatToISOString(currentTimeStamp));
+		return masterDataResponseDto;
+	}
+
+	/**
+	 * 
+	 * @param macAddress
+	 *            - MAC address of the machine
+	 * @param serialNumber
+	 *            - Serial number of the machine
+	 * @param lastUpdated
+	 *            - last updated time stamp
+	 * @return {@link MasterDataResponseDto}
+	 * @throws InterruptedException
+	 *             - this method will throw interrupted Exception
+	 * @throws ExecutionException
+	 *             - this method will throw exeution exception
+	 */
+	@ApiOperation(value = "Api to sync the masterdata", response = MasterDataResponseDto.class)
+	@GetMapping("/masterdata/{regcenterId}")
+	public MasterDataResponseDto syncMasterDataWithRegCenterId(@PathVariable("regcenterId") String regCenterId,
+			@RequestParam(value = "macaddress", required = false) String macId,
+			@RequestParam(value = "serialnumber", required = false) String serialNumber,
+			@RequestParam(value = "lastupdated", required = false) String lastUpdated)
+			throws InterruptedException, ExecutionException {
+
+		LocalDateTime currentTimeStamp = LocalDateTime.now(ZoneOffset.UTC);
+		LocalDateTime timestamp = localDateTimeUtil.getLocalDateTimeFromTimeStamp(currentTimeStamp, lastUpdated);
+		MasterDataResponseDto masterDataResponseDto = masterDataService.syncData(regCenterId, macId, serialNumber,
+				timestamp, currentTimeStamp);
 
 		masterDataResponseDto.setLastSyncTime(DateUtils.formatToISOString(currentTimeStamp));
 		return masterDataResponseDto;
@@ -209,4 +228,6 @@ public class SyncDataController {
 		publicKeyResponse.setLastSyncTime(currentTimeStamp);
 		return new ResponseEntity<>(publicKeyResponse, HttpStatus.OK);
 	}
+
+	
 }

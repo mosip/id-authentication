@@ -45,7 +45,12 @@ public enum MasterDataErrorCode {
 	REG_CENTER_MACHINE_HISTORY_FETCH_EXCEPTION("KER-SYNC-139","Error occurred while fetching Registration Center Machine History"),
 	REG_CENTER_MACHINE_DEVICE_HISTORY_FETCH_EXCEPTION("KER-SYNC-140","Error occurred while fetching Registration Center Machine Device History"),
 	APPLICANT_VALID_DOCUMENT_FETCH_EXCEPTION("KER-SNC-136","Error occurred while fetching ApplicantValidDocument"),
-	INDIVIDUAL_TYPE_FETCH_EXCEPTION("KER-SNC-137","Error occurred while fetching Individual types");
+	INDIVIDUAL_TYPE_FETCH_EXCEPTION("KER-SNC-137","Error occurred while fetching Individual types"),
+	INVALID_MAC_OR_SERIAL_NUMBER("KER-SNC-138","Mac-Address and/or Serial Number does not exist	"),
+	REG_CENTER_UPDATED("KER-SNC-139","Registration Center has been updated for the received Machine ID"),
+	EMPTY_MAC_OR_SERIAL_NUMBER("KER-SNC-140","Mac-Address and Serial Number cannot be empty"),
+	REGISTRATION_CENTER_NOT_FOUND("KER-SNC-141","Registration center not found");
+	
 	private final String errorCode;
 	private final String errorMessage;
 

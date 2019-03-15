@@ -39,6 +39,6 @@ public interface DeviceTypeRepository extends BaseRepository<DeviceType, String>
 	 *            timeStamp
 	 * @return list of {@link DeviceType}
 	 */
-	@Query(value = "SELECT dt.code, dt.name, dt.descr, dt.lang_code, dt.is_active, dt.cr_by, dt.cr_dtimes, dt.upd_by, dt.upd_dtimes, dt.is_deleted, dt.del_dtimes from master.device_type dt where dt.code in (select distinct ds.dtyp_code from master.device_spec ds where ds.id in (select distinct md.dspec_id from master.device_master md where md.id in(select distinct rcd.device_id from master.reg_center_device rcd where rcd.regcntr_id in (select distinct rcm.regcntr_id  from master.reg_center_machine rcm where rcm.machine_id=?1)))) and ((dt.cr_dtimes > ?2 and dt.cr_dtimes <=?3) or (dt.upd_dtimes > ?2 and dt.upd_dtimes<=?3)  or (dt.del_dtimes > ?2 and dt.del_dtimes<=?3 )) ", nativeQuery = true)
-	List<DeviceType> findLatestDeviceTypeByMachineId(String machineId, LocalDateTime lastUpdated,LocalDateTime currentTimeStamp);
+	@Query(value = "SELECT dt.code, dt.name, dt.descr, dt.lang_code, dt.is_active, dt.cr_by, dt.cr_dtimes, dt.upd_by, dt.upd_dtimes, dt.is_deleted, dt.del_dtimes from master.device_type dt where dt.code in (select distinct ds.dtyp_code from master.device_spec ds where ds.id in (select distinct md.dspec_id from master.device_master md where md.id in(select distinct rcd.device_id from master.reg_center_device rcd where rcd.regcntr_id=?1))) and ((dt.cr_dtimes > ?2 and dt.cr_dtimes <=?3) or (dt.upd_dtimes > ?2 and dt.upd_dtimes<=?3)  or (dt.del_dtimes > ?2 and dt.del_dtimes<=?3 )) ", nativeQuery = true)
+	List<DeviceType> findLatestDeviceTypeByRegCenterId(String regCenterId, LocalDateTime lastUpdated,LocalDateTime currentTimeStamp);
 }

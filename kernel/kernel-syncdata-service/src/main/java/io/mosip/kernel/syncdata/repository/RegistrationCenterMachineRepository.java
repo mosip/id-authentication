@@ -28,5 +28,18 @@ public interface RegistrationCenterMachineRepository
 
 	@Query("From RegistrationCenterMachine rcm WHERE rcm.registrationCenterMachinePk.regCenterId =?1 AND ((rcm.createdDateTime > ?2 AND rcm.createdDateTime<=?3) OR (rcm.updatedDateTime > ?2 AND rcm.updatedDateTime<=?3) OR (rcm.deletedDateTime > ?2 AND rcm.deletedDateTime<=?3))")
 	List<RegistrationCenterMachine> findAllLatestCreatedUpdatedDeleted(String regCenterId, LocalDateTime lastUpdated,LocalDateTime currentTimeStamp);
+	
+	@Query(value = "select distinct rcm.regcntr_id , rcm.machine_id from master.reg_center_machine rcm, master.machine_master mm where rcm.machine_id=mm.id and mm.serial_num=?1 and rcm.is_active=true", nativeQuery = true)
+	List<Object[]> getRegistrationCenterMachineWithSerialNumber(String serialNumber);
+
+	@Query(value = "select distinct rcm.regcntr_id , rcm.machine_id from master.reg_center_machine rcm, master.machine_master mm where rcm.machine_id=mm.id and mm.mac_address=?1 and rcm.is_active=true", nativeQuery = true)
+	List<Object[]> getRegistrationCenterMachineWithMacAddress(String macAddress);
+
+	@Query(value = "select distinct rcm.regcntr_id , rcm.machine_id from master.reg_center_machine rcm, master.machine_master mm where rcm.machine_id=mm.id and (mm.mac_address=?1 and mm.serial_num=?2) and rcm.is_active=true", nativeQuery = true)
+	List<Object[]> getRegistrationCenterMachineWithMacAddressAndSerialNum(String macAddress,
+			String serialNum);
+
+	@Query(value = "select * from reg_center_machine where regcntr_id=?1 and machine_id=?2 and is_active=true", nativeQuery = true)
+	RegistrationCenterMachine getRegCenterIdWithRegIdAndMachineId(String regId, String machineId);
 
 }
