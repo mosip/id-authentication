@@ -24,6 +24,7 @@ public class RegistrationConstants {
 
 	/*********** UI Constants **********/
 	// paths of FXML pages to be loaded
+	
 	public static final String ERROR_PAGE = "/fxml/ErrorPage.fxml";
 	public static final String INITIAL_PAGE = "/fxml/RegistrationLogin.fxml";
 	public static final String HOME_PAGE = "/fxml/RegistrationOfficerLayout.fxml";
@@ -94,7 +95,7 @@ public class RegistrationConstants {
 	public static final String RIGHT_IRIS_IMG_PATH = "/images/Eye.png";
 	public static final String LEFT_IRIS_IMG_PATH = "/images/Eye.png";
 	public static final String VIEW = "/images/View.png";
-	public static final String SCAN = "/images/Scan.png";
+	public static final String SCAN = "/images/scan.png";
 
 	// Authentication
 	public static final String SUPERVISOR_VERIFICATION = "Supervisor Login";
@@ -723,9 +724,9 @@ public class RegistrationConstants {
 	public static final String PRE_REGISTRATION_DUMMY_ID = "mosip.pre-registration.datasync";
 	public static final String VER = "1.0";
 	public static final String PRE_REG_TO_GET_ID_ERROR = "Unable to get Pre registartion id's";
-	public static final String PRE_REG_TO_GET_PACKET_ERROR = "The Pre-registration ID entered does not exist in the database. Please enter the correct Pre-registration ID.";
-	public static final String PRE_REG_PACKET_NETWORK_ERROR = "You must be connected to the internet to sync data.";
-	public static final String PRE_REG_SUCCESS_MESSAGE = "Pre-Registartion Data Synced successfully ";
+	public static final String PRE_REG_TO_GET_PACKET_ERROR ="The Pre-registration ID entered does not exist in the database. Please enter the correct Pre-registration ID.";
+	public static final String PRE_REG_PACKET_NETWORK_ERROR = "You must be connected to the internet to sync data";
+	public static final String PRE_REG_SUCCESS_MESSAGE = "Pre-Registartion Data Synced successfully";
 	public static final String IS_PRE_REG_SYNC = "PreRegSync";
 	public static final String PRE_REG_FILE_NAME = "fileName";
 	public static final String PRE_REG_FILE_CONTENT = "fileContent";
@@ -1099,5 +1100,6 @@ public class RegistrationConstants {
 	public static final String MM = "mm";
 	public static final String YYYY = "yyyy";
 	public static final String DOB = "dob";
+	public static final String ERRORS = "errors";
 
 }

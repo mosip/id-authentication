@@ -201,60 +201,7 @@ public class SyncDataServiceTest {
 
 	}
 
-	@Test(expected = SyncDataServiceException.class)
-	public void syncDataFailure() throws InterruptedException, ExecutionException {
-		Machine machine = new Machine();
-		machine.setId("10001");
-		machine.setLangCode("eng");
-		List<Machine> machines = new ArrayList<>();
-		machines.add(machine);
-		when(machineRespository.findByMachineIdAndIsActive(Mockito.anyString())).thenReturn(machines);
-		when(masterDataServiceHelper.getMachines(Mockito.anyString(), Mockito.any(), Mockito.any()))
-				.thenThrow(SyncDataServiceException.class);
-		masterDataService.syncData("1001", null, null);
-
-	}
-
-	// @Test
-	public void globalConfigsyncSuccess() {
-
-		MockRestServiceServer server = MockRestServiceServer.bindTo(restTemplate).build();
-		server.expect(requestTo(uriBuilder.append(globalConfigFileName).toString())).andRespond(withSuccess());
-		syncConfigDetailsService.getGlobalConfigDetails();
-
-	}
-
-	// @Test
-	public void registrationConfigsyncSuccess() {
-		MockRestServiceServer server = MockRestServiceServer.bindTo(restTemplate).build();
-		server.expect(requestTo(uriBuilder.append(regCenterfileName).toString())).andRespond(withSuccess());
-		syncConfigDetailsService.getRegistrationCenterConfigDetails("1");
-		// Assert.assertEquals(120, jsonObject.get("fingerprintQualityThreshold"));
-	}
-
-	@Test(expected = SyncDataServiceException.class)
-	public void registrationConfigsyncFailure() {
-
-		MockRestServiceServer server = MockRestServiceServer.bindTo(restTemplate).build();
-		server.expect(requestTo(uriBuilder.append(regCenterfileName).toString())).andRespond(withBadRequest());
-		syncConfigDetailsService.getRegistrationCenterConfigDetails("1");
-	}
-
-	@Test(expected = SyncDataServiceException.class)
-	public void globalConfigsyncFailure() {
-
-		MockRestServiceServer server = MockRestServiceServer.bindTo(restTemplate).build();
-		server.expect(requestTo(uriBuilder.append(globalConfigFileName).toString())).andRespond(withBadRequest());
-		syncConfigDetailsService.getGlobalConfigDetails();
-	}
-
-	@Test(expected = SyncDataServiceException.class)
-	public void globalConfigsyncFileNameNullFailure() {
-
-		MockRestServiceServer server = MockRestServiceServer.bindTo(restTemplate).build();
-		server.expect(requestTo(uriBuilder.append(globalConfigFileName).toString())).andRespond(withBadRequest());
-		syncConfigDetailsService.getGlobalConfigDetails();
-	}
+	
 
 	// @Test
 	public void getConfigurationSuccess() {
@@ -285,7 +232,7 @@ public class SyncDataServiceTest {
 				.thenReturn(registrationCenterUserResponseDto);
 
 		MockRestServiceServer mockRestServiceServer = MockRestServiceServer.bindTo(restTemplate).build();
-		mockRestServiceServer.expect(requestTo(userDetailsUri.toString()))
+		mockRestServiceServer.expect(requestTo(userDetailsUri.toString()+"/registrationclient"))
 				.andRespond(withSuccess().body(response).contentType(MediaType.APPLICATION_JSON));
 		syncUserDetailsService.getAllUserDetail(regId);
 	}
@@ -307,7 +254,7 @@ public class SyncDataServiceTest {
 				.thenReturn(registrationCenterUserResponseDto);
 
 		MockRestServiceServer mockRestServiceServer = MockRestServiceServer.bindTo(restTemplate).build();
-		mockRestServiceServer.expect(requestTo(userDetailsUri.toString()))
+		mockRestServiceServer.expect(requestTo(userDetailsUri.toString()+"/registrationclient"))
 				.andRespond(withServerError().body(response).contentType(MediaType.APPLICATION_JSON));
 		syncUserDetailsService.getAllUserDetail(regId);
 	}
@@ -329,7 +276,7 @@ public class SyncDataServiceTest {
 				.thenReturn(registrationCenterUserResponseDto);
 
 		MockRestServiceServer mockRestServiceServer = MockRestServiceServer.bindTo(restTemplate).build();
-		mockRestServiceServer.expect(requestTo(userDetailsUri.toString())).andRespond(withSuccess());
+		mockRestServiceServer.expect(requestTo(userDetailsUri.toString()+"/registrationclient")).andRespond(withSuccess());
 		assertNull(syncUserDetailsService.getAllUserDetail(regId));
 	}
 
@@ -340,7 +287,7 @@ public class SyncDataServiceTest {
 
 		MockRestServiceServer mockRestServer = MockRestServiceServer.bindTo(restTemplate).build();
 
-		mockRestServer.expect(requestTo(builder.toString())).andRespond(withSuccess());
+		mockRestServer.expect(requestTo(builder.toString()+"/registrationclient")).andRespond(withSuccess());
 		syncRolesService.getAllRoles();
 	}
 
@@ -348,7 +295,7 @@ public class SyncDataServiceTest {
 	public void getAllRolesException() {
 
 		MockRestServiceServer mockRestServer = MockRestServiceServer.bindTo(restTemplate).build();
-		mockRestServer.expect(requestTo(builder.toString())).andRespond(withServerError());
+		mockRestServer.expect(requestTo(builder.toString()+"/registrationclient")).andRespond(withServerError());
 		syncRolesService.getAllRoles();
 	}
 

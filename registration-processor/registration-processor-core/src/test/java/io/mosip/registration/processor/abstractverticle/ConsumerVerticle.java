@@ -36,14 +36,19 @@ public class ConsumerVerticle extends MosipVerticleManager {
 	}
 
 	public MosipEventBus deployVerticle() {
-		MosipEventBus mosipEventBus = this.getEventBus(this.getClass(),this.findUrl().toString());
+		MosipEventBus mosipEventBus = this.getEventBus(this,this.findUrl().toString());
 		return mosipEventBus;
 	}
 	public URL findUrl()
 	{
 		ClassLoader loader=getClass().getClassLoader();
-		URL url=loader.getResource("ignite-dev.xml");
+		URL url=loader.getResource("cluster.xml");
 		return url;
+	}
+	
+	@Override
+	public Integer getEventBusPort() {
+		return 5711;
 	}
 
 }

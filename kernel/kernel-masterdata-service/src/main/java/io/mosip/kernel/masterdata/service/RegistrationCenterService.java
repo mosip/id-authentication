@@ -110,7 +110,7 @@ public interface RegistrationCenterService {
 	 *             when data not found
 	 */
 	public RegistrationCenterResponseDto findRegistrationCenterByHierarchyLevelandTextAndLanguageCode(
-			String languageCode, Integer hierarchyLevel, String name);
+			String languageCode, Short hierarchyLevel, String name);
 
 	/**
 	 * This service method can be used to create registration center.
@@ -170,6 +170,6 @@ public interface RegistrationCenterService {
 	 *             when data not found
 	 */
 	public RegistrationCenterResponseDto findRegistrationCenterByHierarchyLevelAndListTextAndlangCode(
-			String languageCode, Integer hierarchyLevel, List<String> names);
+			String languageCode, Short hierarchyLevel, List<String> names);
 
 }

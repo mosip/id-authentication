@@ -4,16 +4,7 @@
  */
 package io.mosip.preregistration.booking.service.util;
 
-/**
- * This class provides the utility methods for Booking application.
- * 
- * @author Kishan Rathore
- * @author Ravi C. Balaji
- * @since 1.0.0
- *
- */
 import java.text.SimpleDateFormat;
-import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -71,7 +62,6 @@ import io.mosip.preregistration.booking.exception.BookingTimeSlotNotSeletectedEx
 import io.mosip.preregistration.booking.exception.DemographicGetStatusException;
 import io.mosip.preregistration.booking.exception.DemographicStatusUpdationException;
 import io.mosip.preregistration.booking.exception.MasterDataNotAvailableException;
-import io.mosip.preregistration.booking.exception.OperationNotAllowedException;
 import io.mosip.preregistration.booking.exception.RestCallException;
 import io.mosip.preregistration.booking.exception.TimeSpanException;
 import io.mosip.preregistration.booking.repository.impl.BookingDAO;
@@ -91,6 +81,7 @@ import io.mosip.preregistration.core.util.UUIDGeneratorUtil;
  * @author Kishan Rathore
  * @author Jagadishwari
  * @author Ravi C. Balaji
+ * @since 1.0.0
  *
  */
 @Component
@@ -119,9 +110,15 @@ public class BookingServiceUtil {
 	 */
 	@Value("${demographic.resource.url}")
 	private String preRegResourceUrl;
+
+	@Value("${preregistration.timespan.cancel}")
+	private long timeSpanCheckForCancel;
+
+	@Value("${preregistration.timespan.rebook}")
+	private long timeSpanCheckForRebook;
 	
-	@Value("${timeSpanCheck}")
-	private long timeSpanCheck;
+	@Value("${mosip.utc-datetime-pattern}")
+	private String utcDateTimePattern;
 
 	private Logger log = LoggerConfiguration.logConfig(BookingServiceUtil.class);
 
@@ -140,6 +137,7 @@ public class BookingServiceUtil {
 			headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
 			HttpEntity<RegistrationCenterResponseDto> entity = new HttpEntity<>(headers);
 			String uriBuilder = regbuilder.build().encode().toUriString();
+			log.info("sessionId", "idType", "id", "In callRegCenterDateRestService method of Booking Service URL- "+uriBuilder);
 			ResponseEntity<RegistrationCenterResponseDto> responseEntity = restTemplate.exchange(uriBuilder,
 					HttpMethod.GET, entity, RegistrationCenterResponseDto.class);
 			regCenter = responseEntity.getBody().getRegistrationCenters();
@@ -161,8 +159,7 @@ public class BookingServiceUtil {
 				log.error("sessionId", "idType", "id",
 						"In callRegCenterDateRestService method of Booking Service Util for JsonParseException- "
 								+ e1.getMessage());
-				throw new RestCallException(e1.getErrorCode(),
-						e1.getErrorText());
+				throw new RestCallException(e1.getErrorCode(), e1.getErrorText());
 			}
 
 		}
@@ -180,13 +177,14 @@ public class BookingServiceUtil {
 		List<String> holidaylist = null;
 		try {
 			RestTemplate restTemplate = restTemplateBuilder.build();
-			String holidayUrl = holidayListUrl + regDto.getLanguageCode() + "/" + regDto.getId() + "/"
+			String holidayUrl = holidayListUrl + regDto.getLangCode() + "/" + regDto.getId() + "/"
 					+ LocalDate.now().getYear();
 			UriComponentsBuilder builder2 = UriComponentsBuilder.fromHttpUrl(holidayUrl);
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
 			HttpEntity<RegistrationCenterHolidayDto> httpHolidayEntity = new HttpEntity<>(headers);
 			String uriBuilder = builder2.build().encode().toUriString();
+			log.info("sessionId", "idType", "id", "In callGetHolidayListRestService method of Booking Service URL- "+uriBuilder);
 			ResponseEntity<RegistrationCenterHolidayDto> responseEntity2 = restTemplate.exchange(uriBuilder,
 					HttpMethod.GET, httpHolidayEntity, RegistrationCenterHolidayDto.class);
 			holidaylist = new ArrayList<>();
@@ -235,6 +233,7 @@ public class BookingServiceUtil {
 			headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
 			HttpEntity<MainResponseDTO<String>> httpEntity = new HttpEntity<>(headers);
 			String uriBuilder = builder.build().encode().toUriString();
+			log.info("sessionId", "idType", "id", "Call Update Status in demographic URL : "+uriBuilder);
 			@SuppressWarnings("rawtypes")
 			ResponseEntity<MainResponseDTO> bookingResponse = restTemplate.exchange(uriBuilder, HttpMethod.PUT,
 					httpEntity, MainResponseDTO.class);
@@ -266,12 +265,13 @@ public class BookingServiceUtil {
 		String statusCode = "";
 		try {
 			RestTemplate restTemplate = restTemplateBuilder.build();
-			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(preRegResourceUrl + "/applicationStatus")
+			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(preRegResourceUrl + "/applications/status")
 					.queryParam("pre_registration_id", preId);
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
 			HttpEntity<MainListResponseDTO<PreRegistartionStatusDTO>> httpEntity = new HttpEntity<>(headers);
 			String uriBuilder = builder.build().encode().toUriString();
+			log.info("sessionId", "idType", "id", "Call Get Status from demographic URL : "+uriBuilder);
 			@SuppressWarnings({ "rawtypes" })
 			ResponseEntity<MainListResponseDTO> respEntity = restTemplate.exchange(uriBuilder, HttpMethod.GET,
 					httpEntity, MainListResponseDTO.class);
@@ -303,44 +303,17 @@ public class BookingServiceUtil {
 	 * @param preId
 	 * @return status code
 	 */
-	/**
-	 * @param preId
-	 * @return
-	 */
-	/**
-	 * @param preId
-	 * @return
-	 */
-	/**
-	 * @param preId
-	 * @return
-	 */
-	/**
-	 * @param preId
-	 * @return
-	 */
-	/**
-	 * @param preId
-	 * @return
-	 */
-	/**
-	 * @param preId
-	 * @return
-	 */
-	/**
-	 * @param preId
-	 * @return
-	 */
 	public boolean callGetStatusForCancelRestService(String preId) {
 		log.info("sessionId", "idType", "id", "In callGetStatusForCancelRestService method of Booking Service Util");
 		try {
 			RestTemplate restTemplate = restTemplateBuilder.build();
-			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(preRegResourceUrl + "/applicationStatus")
+			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(preRegResourceUrl + "/applications/status")
 					.queryParam("pre_registration_id", preId);
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
 			HttpEntity<MainListResponseDTO<?>> httpEntity = new HttpEntity<>(headers);
 			String uriBuilder = builder.build().encode().toUriString();
+			log.info("sessionId", "idType", "id", "In callGetStatusForCancelRestService method of Booking Service URL- "+uriBuilder);
 
 			@SuppressWarnings({ "rawtypes" })
 			ResponseEntity<MainListResponseDTO> respEntity = restTemplate.exchange(uriBuilder, HttpMethod.GET,
@@ -352,7 +325,9 @@ public class BookingServiceUtil {
 						.convertValue(respEntity.getBody().getResponse().get(0), PreRegistartionStatusDTO.class);
 
 				String statusCode = preRegResponsestatusDto.getStatusCode().trim();
-				if (!statusCode.equals(StatusCodes.BOOKED.getCode())&&!statusCode.equals(StatusCodes.EXPIRED.getCode())) {
+
+				if (!statusCode.equals(StatusCodes.BOOKED.getCode())) {
+
 					throw new AppointmentCannotBeCanceledException(ErrorCodes.PRG_BOOK_RCI_018.getCode(),
 							ErrorMessages.APPOINTMENT_CANNOT_BE_CANCELED.getMessage());
 				}
@@ -369,11 +344,26 @@ public class BookingServiceUtil {
 		}
 		return true;
 	}
-	public boolean timeSpanCheck(LocalDateTime bookedDateTime) {
+
+	public boolean timeSpanCheckForCancle(LocalDateTime bookedDateTime) {
 		LocalDateTime current = LocalDateTime.now();
-        long hours=ChronoUnit.MINUTES.between(current, bookedDateTime);
-		if(Math.abs(hours)>=timeSpanCheck) return true;
-		else return false;
+		log.info("sessionId", "idType", "id", "In timeSpanCheckForCancle method of Booking Service for current Date Time- "+current);
+		long hours = ChronoUnit.HOURS.between(current, bookedDateTime);
+		if (Math.abs(hours) >= timeSpanCheckForCancel)
+			return true;
+		else
+			throw new TimeSpanException(ErrorCodes.PRG_BOOK_RCI_026.getCode(),ErrorMessages.BOOKING_STATUS_CANNOT_BE_ALTERED.getMessage());
+	}
+
+	public boolean timeSpanCheckForRebook(LocalDateTime bookedDateTime) {
+		LocalDateTime current = LocalDateTime.now();
+		log.info("sessionId", "idType", "id", "In timeSpanCheckForRebook method of Booking Service for current Date Time- "+current);
+		long hours = ChronoUnit.HOURS.between(current, bookedDateTime);
+		if (Math.abs(hours) >= timeSpanCheckForRebook)
+			return true;
+		else
+			throw new TimeSpanException(ErrorCodes.PRG_BOOK_RCI_026.getCode(),ErrorMessages.BOOKING_STATUS_CANNOT_BE_ALTERED.getMessage());
+
 	}
 
 	/**
@@ -555,9 +545,12 @@ public class BookingServiceUtil {
 		} else {
 			dateTime.setHoliday(false);
 		}
-		dateTime.setTimeSlots(slotList);
-		dateTime.setDate(dateList.get(i).toString());
-		dateTimeList.add(dateTime);
+		if (!slotList.isEmpty()) {
+			dateTime.setTimeSlots(slotList);
+			dateTime.setDate(dateList.get(i).toString());
+			dateTimeList.add(dateTime);
+		}
+
 	}
 
 	/**
@@ -622,7 +615,7 @@ public class BookingServiceUtil {
 		Map<String, String> requestMap = new HashMap<>();
 		requestMap.put("id", requestDto.getId());
 		requestMap.put("ver", requestDto.getVer());
-		requestMap.put("reqTime", new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").format(requestDto.getReqTime()));
+		requestMap.put("reqTime", new SimpleDateFormat(utcDateTimePattern).format(requestDto.getReqTime()));
 		requestMap.put("request", requestDto.getRequest().toString());
 		return requestMap;
 	}
@@ -640,7 +633,7 @@ public class BookingServiceUtil {
 		Map<String, String> requestMap = new HashMap<>();
 		requestMap.put("id", requestDto.getId());
 		requestMap.put("ver", requestDto.getVer());
-		requestMap.put("reqTime", new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").format(requestDto.getReqTime()));
+		requestMap.put("reqTime", new SimpleDateFormat(utcDateTimePattern).format(requestDto.getReqTime()));
 		requestMap.put("request", requestDto.getRequest().toString());
 		return requestMap;
 	}
@@ -666,7 +659,7 @@ public class BookingServiceUtil {
 
 	public String getCurrentResponseTime() {
 		log.info("sessionId", "idType", "id", "In getCurrentResponseTime method of Booking Service Util");
-		return DateUtils.formatDate(new Date(System.currentTimeMillis()), "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+		return DateUtils.formatDate(new Date(System.currentTimeMillis()), utcDateTimePattern);
 	}
 
 	/**
@@ -701,7 +694,6 @@ public class BookingServiceUtil {
 				new RegistrationBookingPK(preRegistrationId, DateUtils.parseDateToLocalDateTime(new Date())));
 		entity.setRegistrationCenterId(bookingRegistrationDTO.getRegistrationCenterId());
 		entity.setId(UUIDGeneratorUtil.generateId());
-		entity.setStatusCode(StatusCodes.BOOKED.getCode());
 		entity.setLangCode("12L");
 		entity.setCrBy("987654321");
 		entity.setCrDate(DateUtils.parseDateToLocalDateTime(new Date()));
@@ -710,4 +702,5 @@ public class BookingServiceUtil {
 		entity.setSlotToTime(LocalTime.parse(bookingRegistrationDTO.getSlotToTime()));
 		return entity;
 	}
+
 }

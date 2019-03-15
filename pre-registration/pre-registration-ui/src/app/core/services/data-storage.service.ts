@@ -6,28 +6,37 @@ import * as appConstants from '../../app.constants';
 import Utils from '../../app.util';
 import { AppConfigService } from '../../app-config.service';
 import { Applicant } from '../../shared/models/dashboard-model/dashboard.modal';
+import { ConfigService } from './config.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class DataStorageService {
-  constructor(private httpClient: HttpClient, private appConfigService: AppConfigService) {}
+  constructor(
+    private httpClient: HttpClient,
+    private appConfigService: AppConfigService,
+    private configService: ConfigService
+  ) {}
 
   // BASE_URL = environment.BASE_URL;
+  BASE_URL2 = 'https://integ.mosip.io/';
   BASE_URL = this.appConfigService.getConfig()['BASE_URL'];
   PRE_REG_URL = this.appConfigService.getConfig()['PRE_REG_URL'];
   SEND_FILE_URL = this.BASE_URL + this.PRE_REG_URL + 'document/documents';
-  DELETE_FILE_URL = this.BASE_URL + this.PRE_REG_URL + 'document/deleteDocument';
-  GET_FILE_URL = this.BASE_URL + this.PRE_REG_URL + 'document/getDocument';
-  MASTER_DATA_URL = this.BASE_URL + 'masterdata/v1.0/';
-  AVAILABILITY_URL = this.BASE_URL + this.PRE_REG_URL + 'booking/availability';
-  BOOKING_URL = this.BASE_URL + this.PRE_REG_URL + 'booking/book';
+  DELETE_FILE_URL = this.BASE_URL + this.PRE_REG_URL + 'document/documents';
+  GET_FILE_URL = this.BASE_URL + this.PRE_REG_URL + 'document/documents';
+  MASTER_DATA_URL = this.BASE_URL2 + 'masterdata/v1.0/';
+  AVAILABILITY_URL = this.BASE_URL + this.PRE_REG_URL + 'booking/appointment/availability';
+  BOOKING_URL = this.BASE_URL + this.PRE_REG_URL + 'booking/appointment';
   DELETE_REGISTRATION_URL = this.BASE_URL + this.PRE_REG_URL + 'demographic/applications';
-  COPY_DOCUMENT_URL = this.BASE_URL + this.PRE_REG_URL + 'document/copyDocuments';
+  COPY_DOCUMENT_URL = this.BASE_URL + this.PRE_REG_URL + 'document/copy';
   QR_CODE_URL = this.BASE_URL + this.PRE_REG_URL + 'notification/generateQRCode';
-  NOTIFICATION_URL = this.BASE_URL + this.PRE_REG_URL + 'notification/notify';
-  LANGUAGE_CODE = localStorage.getItem('langCode');
-  DISTANCE = 2000;
+  NOTIFICATION_URL = this.BASE_URL + this.PRE_REG_URL + 'notification/';
+  APPLICANNT_TYPE_URL =
+    this.BASE_URL2 + appConstants.APPEND_URL.applicantType + appConstants.APPEND_URL.getApplicantType;
+  APPLICANT_VALID_DOCUMENTS_URL =
+    this.BASE_URL2 + appConstants.APPEND_URL.location + appConstants.APPEND_URL.validDocument;
+  AUTH_URL = this.BASE_URL + this.PRE_REG_URL + 'auth/';
 
   getUsers(value: string) {
     return this.httpClient.get<Applicant[]>(this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.applicants, {
@@ -46,11 +55,8 @@ export class DataStorageService {
   }
 
   getGenderDetails() {
-    return this.httpClient.get(this.BASE_URL + appConstants.APPEND_URL.gender);
-  }
-
-  getResidenceDetails() {
-    return this.httpClient.get(this.BASE_URL + appConstants.APPEND_URL.resident);
+    return this.httpClient.get(this.BASE_URL2 + appConstants.APPEND_URL.gender);
+    // return this.httpClient.get(this.BASE_URL + appConstants.APPEND_URL.gender);
   }
 
   getTransliteration(request: any) {
@@ -110,24 +116,24 @@ export class DataStorageService {
     return this.httpClient.get(
       this.MASTER_DATA_URL +
         'getcoordinatespecificregistrationcenters/' +
-        this.LANGUAGE_CODE +
+        localStorage.getItem('langCode') +
         '/' +
         coords.longitude +
         '/' +
         coords.latitude +
         '/' +
-        this.DISTANCE
+        this.configService.getConfigByKey('preregistration.nearby.centers')
     );
   }
 
   getRegistrationCentersByName(locType: string, text: string) {
     return this.httpClient.get(
-      this.MASTER_DATA_URL + 'registrationcenters/' + this.LANGUAGE_CODE + '/' + locType + '/' + text
+      this.MASTER_DATA_URL + 'registrationcenters/' + localStorage.getItem('langCode') + '/' + locType + '/' + text
     );
   }
 
   getLocationTypeData() {
-    return this.httpClient.get(this.MASTER_DATA_URL + 'locations/' + this.LANGUAGE_CODE);
+    return this.httpClient.get(this.MASTER_DATA_URL + 'locations/' + localStorage.getItem('langCode'));
   }
 
   getAvailabilityData(registrationCenterId) {
@@ -145,7 +151,8 @@ export class DataStorageService {
 
   getLocationMetadataHirearchy(value: string) {
     return this.httpClient.get(
-      this.BASE_URL + appConstants.APPEND_URL.location + appConstants.APPEND_URL.location_metadata + value,
+      // this.BASE_URL + appConstants.APPEND_URL.location + appConstants.APPEND_URL.location_metadata + value,
+      this.BASE_URL2 + appConstants.APPEND_URL.location + appConstants.APPEND_URL.location_metadata + value,
       {
         params: new HttpParams().append(appConstants.PARAMS_KEYS.locationHierarchyName, value)
       }
@@ -154,7 +161,8 @@ export class DataStorageService {
 
   getLocationImmediateHierearchy(lang: string, location: string) {
     return this.httpClient.get(
-      this.BASE_URL +
+      this.BASE_URL2 +
+        // this.BASE_URL +
         appConstants.APPEND_URL.location +
         appConstants.APPEND_URL.location_immediate_children +
         location +
@@ -171,35 +179,12 @@ export class DataStorageService {
     });
   }
 
-  getPreviewData(preRegId: string) {
-    return this.httpClient.get(this.BASE_URL + appConstants.PREVIEW_DATA_APPEND_URL, {
-      observe: 'body',
-      responseType: 'json',
-      params: new HttpParams().append(appConstants.PARAMS_KEYS.getUser, preRegId)
-    });
-  }
-
   getSecondaryLanguageLabels(langCode: string) {
     return this.httpClient.get(`./assets/i18n/${langCode}.json`);
   }
 
   copyDocument(catCode: string, sourceId: string, destinationId: string) {
-    // return this.httpClient.post(this.COPY_DOCUMENT_URL, {
-    //   params: new HttpParams()
-    //     .append('catCode', catCode)
-    //     .append('destinationPreId', destinationId)
-    //     .append('sourcePrId', sourceId)
-    // });
-    // const params = new URLSearchParams();
-    //   params.set('catCode',catCode);
-    //   params.append('destinationPreId',destinationId);
-    //   params.append('sourcePrId',sourceId);
-
-    //   const options = new RequestOptions({
-    //     params: params,
-    //   });
-    const url =
-      this.COPY_DOCUMENT_URL + '?catCode=POA&destinationPreId=' + destinationId + '&sourcePrId=' + sourceId;
+    const url = this.COPY_DOCUMENT_URL + '?catCode=POA&destinationPreId=' + destinationId + '&sourcePrId=' + sourceId;
     console.log('copy document URL', url);
     return this.httpClient.post(url, '');
   }
@@ -209,7 +194,7 @@ export class DataStorageService {
   }
 
   sendNotification(data: FormData) {
-    return this.httpClient.post(this.NOTIFICATION_URL, data);
+    return this.httpClient.post(this.NOTIFICATION_URL + 'notify', data);
   }
 
   recommendedCenters(langCode: string, locationHierarchyCode: number, data: string[]) {
@@ -222,5 +207,66 @@ export class DataStorageService {
     });
     console.log(url);
     return this.httpClient.get(url);
+  }
+
+  getRegistrationCenterByIdAndLangCode(id: string, langCode: string) {
+    const url = this.MASTER_DATA_URL + 'registrationcenters/' + id + '/' + langCode;
+    return this.httpClient.get(url);
+  }
+
+  getGuidelineTemplate() {
+    const url =
+      this.MASTER_DATA_URL + 'templates/' + localStorage.getItem('langCode') + '/' + 'Onscreen-Acknowledgement';
+    return this.httpClient.get(url);
+  }
+
+  getApplicantType(docuemntCategoryDto) {
+    return this.httpClient.post(this.APPLICANNT_TYPE_URL, docuemntCategoryDto);
+  }
+
+  getDocumentCategories(applicantCode) {
+    this.APPLICANT_VALID_DOCUMENTS_URL = this.APPLICANT_VALID_DOCUMENTS_URL + applicantCode + '/languages';
+    return this.httpClient.get(this.APPLICANT_VALID_DOCUMENTS_URL, {
+      params: new HttpParams().append('languages', localStorage.getItem('langCode'))
+    });
+  }
+
+  getConfig() {
+    //    return this.httpClient.get('./assets/configs.json');
+    return this.httpClient.get(this.NOTIFICATION_URL + 'config');
+  }
+
+  sendOtp(userId: string) {
+    console.log(userId);
+
+    const req = {
+      langCode: localStorage.getItem('langCode'),
+      userId: userId
+    };
+
+    const obj = {
+      id: appConstants.IDS.newUser,
+      version: appConstants.VERSION,
+      requesttime: Utils.getCurrentDate(),
+      request: req
+    };
+
+    return this.httpClient.post(this.AUTH_URL + 'sendotp', obj);
+  }
+
+  verifyOtp(userId: string, otp: string) {
+    const request = {
+      otp: otp,
+      userId: userId
+    };
+
+    const requestObj = {
+      id: appConstants.IDS.newUser,
+      version: appConstants.VERSION,
+      requesttime: Utils.getCurrentDate(),
+      request: request
+    };
+
+    return this.httpClient.post(this.AUTH_URL + 'useridotp', requestObj);
   }
 }

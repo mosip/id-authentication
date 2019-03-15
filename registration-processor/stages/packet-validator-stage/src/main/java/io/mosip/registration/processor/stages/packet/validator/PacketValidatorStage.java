@@ -29,7 +29,7 @@ public class PacketValidatorStage extends MosipVerticleManager {
 	@Autowired
 	PacketValidateProcessor packetvalidateprocessor;
 
-	@Value("${vertx.ignite.configuration}")
+	@Value("${vertx.cluster.configuration}")
 	private String clusterManagerUrl;
 	/** The secs. */
 
@@ -42,7 +42,7 @@ public class PacketValidatorStage extends MosipVerticleManager {
 	 * Deploy verticle.
 	 */
 	public void deployVerticle() {
-		mosipEventBus = this.getEventBus(this.getClass(), clusterManagerUrl);
+		mosipEventBus = this.getEventBus(this, clusterManagerUrl, 50);
 		this.consumeAndSend(mosipEventBus ,MessageBusAddress.PACKET_VALIDATOR_BUS_IN,MessageBusAddress.PACKET_VALIDATOR_BUS_OUT);
 	}
 

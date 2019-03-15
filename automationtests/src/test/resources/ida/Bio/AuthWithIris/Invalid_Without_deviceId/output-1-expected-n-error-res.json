@@ -1,1 +1,1 @@
-{"resTime":"$TIMESTAMP$","ver":"1.0","err":[{"errorMessage":"Missing Input Parameter - Device Id","errorCode":"IDA-IDV-003"}],"status":"N","txnID":"1822678251"}
+{"status":"N","err":[{"errorCode":"IDA-IDV-003","errorMessage":"Missing Input Parameter - Device Id"}],"resTime":"$TIMESTAMP$","ver":"0.8"}

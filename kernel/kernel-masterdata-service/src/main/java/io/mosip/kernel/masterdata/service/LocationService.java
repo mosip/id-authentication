@@ -90,7 +90,7 @@ public interface LocationService {
 	 * @return map contain key as parentCode and value as List of Location
 	 * 
 	 */
-	public Map<Integer, List<Location>> getLocationByLangCodeAndHierarchyLevel(String langCode, Integer hierarchyLevel);
+	public Map<Short, List<Location>> getLocationByLangCodeAndHierarchyLevel(String langCode, Short hierarchyLevel);
 	
 	/**
 	 * checks whether the given location name is valid or not

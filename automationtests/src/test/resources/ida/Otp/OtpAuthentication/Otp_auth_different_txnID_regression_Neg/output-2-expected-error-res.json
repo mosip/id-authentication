@@ -1,0 +1,1 @@
+{"status":"N","err":[{"errorCode":"IDA-OTA-007","errorMessage":"Input txnID does not match txnID of OTP Request"}],"resTime":"$TIMESTAMP$","ver":"0.8"}

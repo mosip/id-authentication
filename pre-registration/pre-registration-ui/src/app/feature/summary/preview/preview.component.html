@@ -93,7 +93,7 @@
             <div class="preview__modify-div">
               <span>{{ secondaryLanguagelabels.language }}</span>
               <span (click)="modifyDemographic()" class="preview__modify-div-span"
-                    matTooltip="Info about the action"
+                    matTooltip="{{ 'helpText.modify_at_DemoPreview' | translate}}"
                 ><img src="assets/edit.png" /> {{ 'preview.action_modify' | translate }}</span
               >
             </div>
@@ -180,7 +180,7 @@
       <div class="preview__footer">
         <span>{{ 'preview.title_document' | translate }}</span>
         <span (click)="modifyDocument()" class="preview__modify-file"
-              matTooltip="Info about the action"
+              matTooltip="{{ 'helpText.modify_at_DocumentPreview' | translate}}"
           ><img src="assets/edit.png" /> {{ 'preview.action_modify' | translate }}</span
         >
         <hr />
@@ -198,22 +198,21 @@
   <mat-card class="center-selection__button-container">
     <button mat-button (click)="navigateBack()" class="user-back-btn">{{ 'preview.action_back' | translate }}</button>
     <span class="spacer"></span>
-    <button matTooltip="Info about the action" mat-button (click)="navigateDashboard()" class="user-book_later-btn">
+    <button matTooltip="{{ 'helpText.add_applicant' | translate}}" mat-button (click)="navigateDashboard()" class="user-book_later-btn">
       {{ 'preview.action_add_applicant' | translate }}
     </button>
     <span
-      matTooltip="Info about the action"
+      matTooltip="{{ 'helpText.preview_continue' | translate }}"
       [matTooltipDisabled]="enableContinue()"
     >
-      <button mat-button 
-            [disabled]="!enableContinue()" 
-            (click)="navigateNext()" 
+      <button mat-button
+            [disabled]="!enableContinue()"
+            (click)="navigateNext()"
             class="user-continue-btn"
-            matTooltip="Info about the action"
             >
       {{ 'preview.action_continue' | translate }}
     </button>
     </span>
-    
+
   </mat-card>
 </div>

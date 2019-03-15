@@ -106,8 +106,8 @@ public class CommonLibrary {
 		String configPaths = "src/test/resources/" + module;
 
 		File folder = new File(configPaths);
-		System.out.println("Config Path is : " + configPaths);
-		System.out.println("Folder exists  : " + folder.exists());
+		logger.info("Config Path is : " + configPaths);
+		logger.info("Folder exists  : " + folder.exists());
 		File[] listOfFolders = folder.listFiles();
 		Map<String, String> jiraID = new HashMap<String, String>();
 		int id = 1000;
@@ -142,7 +142,7 @@ public class CommonLibrary {
 				input += data;
 			}
 			List<String> validInvalid = permutation.pack.Permutation.permutation(input);
-			System.out.println("--------------------------------->" + validInvalid);
+			logger.info("--------------------------------->" + validInvalid);
 			input = "";
 			for (String validInv : validInvalid) {
 				input += "{";
@@ -170,7 +170,7 @@ public class CommonLibrary {
 				input = "";
 			}
 		} else if (testType.toLowerCase().equals("smokeandregression")) {
-			System.out.println(
+			logger.info(
 					"in Smoke---------------------------------------------------------------------------------------------->");
 			input += "{";
 			input += "\"testType\":" + "\"smoke\",";
@@ -190,7 +190,7 @@ public class CommonLibrary {
 					input += "\"testType\":" + "\"smoke\",";
 				}
 			}
-			System.out.println(
+			logger.info(
 					"Scenario is ---------------------------------------------------------------------->" + scenario);
 			input = "";
 			int[] permutationValidInvalid = new int[requestKeys.size()];
@@ -199,7 +199,7 @@ public class CommonLibrary {
 				input += data;
 			}
 			List<String> validInvalid = permutation.pack.Permutation.permutation(input);
-			System.out.println("--------------------------------->" + validInvalid);
+			logger.info("--------------------------------->" + validInvalid);
 			input = "";
 			for (String validInv : validInvalid) {
 				input += "{";
@@ -236,7 +236,7 @@ public class CommonLibrary {
 			}
 		}
 
-		// System.out.println(scenario);
+
 
 		String configpath = "src/test/resources/" + module + "/" + ouputFile;
 
@@ -299,6 +299,27 @@ public class CommonLibrary {
 		return putResponse;
 	} // end PUT_REQUEST
 
+	
+	/**
+	 * @author Arjun
+	 * for id repo
+	 * @param url
+	 * @param body
+	 * @param contentHeader
+	 * @param acceptHeader
+	 * @return
+	 */
+	public Response patch_Request(String url, Object body, String contentHeader, String acceptHeader) {
+
+		Response putResponse = given().relaxedHTTPSValidation().body(body).contentType(contentHeader)
+				.accept(acceptHeader).log().all().when().patch(url).then().log().all().extract().response();
+		// log then response
+		logger.info("REST-ASSURED: The response from the request is: " + putResponse.asString());
+		logger.info("REST-ASSURED: The response Time is: " + putResponse.time());
+		return putResponse;
+	} 
+
+
 	/**
 	 * REST ASSURED GET request method
 	 *
@@ -332,6 +353,7 @@ public class CommonLibrary {
 		logger.info("REST-ASSURED: The response Time is: " + getResponse.time());
 		return getResponse;
 	} // end GET_REQUEST
+	
 
 	public Response GET_REQUEST_withoutParameters(String url) {
 		logger.info("REST-ASSURED: Sending a GET request to " + url);
@@ -421,7 +443,7 @@ public class CommonLibrary {
 		cal.setTime(Date.from(Instant.now()));
 
 		String result = String.format("%1$tY-%1$tm-%1$td-%1$tk-%1$tS-%1$tp", cal);
-		// System.out.println(System.getProperty("APPDATA"));
+		// logger.info(System.getProperty("APPDATA"));
 		String filePath = "src/test/resources/APPDATA/MosipUtil/UtilFiles/" + destination + "/" + result;
 		File sourceFolder = new File(source);
 		File dest = new File(filePath);
@@ -469,6 +491,17 @@ public class CommonLibrary {
 		return postResponse;
 	} // end POST_REQUEST
 
+	
+	
+	public Response get_RequestWithoutBody(String url,String contentHeader,String acceptHeader) {
+		  logger.info("REST-ASSURED: Sending a Get request to " + url);
+		    	  
+		    	  Response getResponse= given().relaxedHTTPSValidation().contentType(MediaType.APPLICATION_JSON).log().all().when().get(url).then().log().all().extract().response();
+		    	  logger.info("REST-ASSURED: The response from the request is: "+getResponse.asString());
+		    	  logger.info("REST-ASSURED: the response Time is: "+  getResponse.time());
+		    	  return getResponse;
+			}
+	
 	// GLOBAL CLASS VARIABLES
 	private Properties prop;
 
@@ -682,5 +715,27 @@ public class CommonLibrary {
 		logger.info("REST-ASSURED: the response Time is: " + getResponse.time());
 		return getResponse;
 	}
+	
+	
+	//Notify
+    public Response Post_JSONwithFileParam(Object body,File file,String url,String contentHeader) {
+    	logger.info("REST:ASSURED:Sending a data packet to"+url);
+    	logger.info("Request DTO for document upload is"+ body);
+    	logger.info("Name of the file is"+file.getName());
+    	Response getResponse = null;
+		/*
+    	 * Fetch to get the param name to be passed in the request
+    	 */
+    	//String Document_request=fetch_IDRepo("req.Documentrequest");
+    	String Document_request="NotificationDTO";
+    	String paramLangcode="langCode";
+    	 //getResponse=given().relaxedHTTPSValidation().multiPart("file",file).formParam(Document_request, body,paramLangcode,param).contentType(contentHeader).expect().when().post(url);
+    	getResponse=given().relaxedHTTPSValidation().multiPart("file",file).formParam(Document_request, body).formParam("langCode ", "eng").contentType(contentHeader).expect().when().post(url);
+    	
+    	logger.info("REST:ASSURED: The response from request is:"+getResponse.asString());
+    	logger.info("REST-ASSURED: the response time is: "+ getResponse.time());
+    	return getResponse;
+    }
+	
 
 }

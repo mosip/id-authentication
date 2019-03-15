@@ -135,4 +135,16 @@ public class TemplateController {
 	public ResponseEntity<IdResponseDto> deleteTemplate(@PathVariable("id") String id) {
 		return new ResponseEntity<>(templateService.deleteTemplates(id), HttpStatus.OK);
 	}
+
+	/**
+	 * Method to fetch all Template details based on template type code
+	 * 
+	 * @param templateTypeCode
+	 *            the template type code
+	 * @return All {@link TemplateDto}
+	 */
+	@GetMapping("/templatetypecodes/{code}")
+	public TemplateResponseDto getAllTemplateByTemplateTypeCode(@PathVariable("code") String templateTypeCode) {
+		return templateService.getAllTemplateByTemplateTypeCode(templateTypeCode);
+	}
 }

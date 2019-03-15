@@ -154,7 +154,7 @@ public class RegistrationCenterController {
 	@ResponseFilter
 	@GetMapping("/registrationcenters/{langcode}/{hierarchylevel}/{name}")
 	public RegistrationCenterResponseDto getRegistrationCenterByHierarchyLevelAndTextAndlangCode(
-			@PathVariable("langcode") String langCode, @PathVariable("hierarchylevel") Integer hierarchyLevel,
+			@PathVariable("langcode") String langCode, @PathVariable("hierarchylevel") Short hierarchyLevel,
 			@PathVariable("name") String name) {
 		return registrationCenterService.findRegistrationCenterByHierarchyLevelandTextAndLanguageCode(langCode,
 				hierarchyLevel, name);
@@ -234,7 +234,7 @@ public class RegistrationCenterController {
 	@ResponseFilter
 	@GetMapping("/registrationcenters/{langcode}/{hierarchylevel}/names")
 	public RegistrationCenterResponseDto getRegistrationCenterByHierarchyLevelAndListTextAndlangCode(
-			@PathVariable("langcode") String langCode, @PathVariable("hierarchylevel") Integer hierarchyLevel,
+			@PathVariable("langcode") String langCode, @PathVariable("hierarchylevel") Short hierarchyLevel,
 			@RequestParam("name") List<String> names) {
 		return registrationCenterService.findRegistrationCenterByHierarchyLevelAndListTextAndlangCode(langCode,
 				hierarchyLevel, names);

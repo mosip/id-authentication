@@ -1,45 +1,99 @@
 testdata:
-  Valid_MockRequest_LeftAndRightIndex_With_ValidCompositeScoreMatch_smoke:
+  Finger_Auth_Request_LeftAndRightIndex_With_ValidCompositeScoreMatch_smoke_Pos_01:
     input.bio-auth-request:
       bioAuthReq.idvId: $UIN$
       bioAuthReq.tspID: 7404012867
       bioAuthReq.reqTime: $TIMESTAMP$    
+      bioAuthReq.txnID: $RANDOM:N:10$
     input.identity-encrypt-data:
-      identityReq.valuerightIndex: Rk1SACAyMAAAAAFcAAABPAFiAMUAxQEAAAAoNUCtAMvlZICRAOlXXYDBAPBqZECkAKPWXYDZAN9oZEBzAMXRSYC6AJNcV4DMAJdZXUDpAO9zZIByAQJmZECDAJC7ZIDfAQ56XUBeAPZgV0BhAJwyV0DVASsBXUEEAJ/RZEBZAIq6UEC+AVV7SUCjAOheXUCHANncV0DFAK5cXUDZANJfXUB3ANBRSUCdAJrKXUCJAJvEXUCxAQ91XUCjARj7XYCuAIXeV4CUAIC4ZIDRARr3XUDFAH5jV0BoAJG1ZEDcASWCUEDWAHFfZEBnASp4SUDhAVd1FECMALzWV0DKALxYXUCwAKbfV0DSAOpsZECAAK89V4CSAQdpZICpAJPWV0DoAORiXUCmAIazV0CxARt7XUCDARp0ZED9ANNTZIDhAIzSZICSAHSjZIBXAQpxUECgAGaIXYCBAUJ/ZAAA
+      identityReq.valuerightIndex: $idrepo~$input.bio-auth-request:bioAuthReq.idvId$~DECODEFILE:valuedocuments0~//BIR/BDBInfo[Type='Finger'][Subtype='Right IndexFinger']//following::BDB$
       identityReq.tspID: $input.bio-auth-request:bioAuthReq.tspID$
-      identityReq.valueleftIndex: Rk1SACAyMAAAAAFcAAABPAFiAMUAxQEAAAAoNUB9AMF0V4CBAKBBPEC0AL68ZIC4AKjNZEBiAJvWXUBPANPWNUDSAK7RUIC2AQIfZEDJAPMxPEByAGwPXYCpARYPZECfAFjoZECGAEv9ZEBEAFmtV0BpAUGNXUC/AUEESUCUAVIEPEC2AVNxPICcALWuZICuALm3ZECNAJqxQ0CUAI3GQ0CXAPghV0BVAKDOZEBfAPqHXUBDAKe/ZIB9AG3xXUDPAIbZUEBcAGYhZECIASgHXYBJAGAnV0DjAR4jG0DKATqJIUCGADGSZEDSAUYGIUAxAD+nV0CXAK+oSUBoALr6Q4CSAOuKXUCiAIvNZEC9AJzQZIBNALbTXUBBAL68V0CeAHDZZECwAHPaZEBRAPwHUIBHAHW2XUDXARAUDUC4AS4HZEDXAS0CQ0CYADL4ZECsAUzuPEBkACgRZAAA
+      identityReq.valueleftIndex: $idrepo~$input.bio-auth-request:bioAuthReq.idvId$~DECODEFILE:valuedocuments0~//BIR/BDBInfo[Type='Finger'][Subtype='Left IndexFinger']//following::BDB$
     output.output-1-expected-y-res:
       output.1.response.y.status: Y
-      output.1.response.y.usageData: '0x0000800000008000'
       output.1.response.y.resTime: $TIMESTAMP$
+      output.1.response.y.txnID: $input.bio-auth-request:bioAuthReq.txnID$
       output.1.response.y.reqTime: $input.bio-auth-request:bioAuthReq.reqTime$
+    audit.auth_transaction:
+      refId: $input.bio-auth-request:bioAuthReq.idvId$
+      txnId: $input.bio-auth-request:bioAuthReq.txnID$
+      authTypeCode: FINGERPRINT-AUTH
+      statusCode: $output.output-1-expected-y-res:output.1.response.y.status$
+      reqTime: $FETCH$
+      resTime: $FETCH$
+      statusComment: $REGEXP:.*Finger.*Authentication.*Success.*$
+      idType: D
+    audit.audit_log:
+      refId: $input.bio-auth-request:bioAuthReq.idvId$
+      eventId: $REGEXP:.*IDA-EVT.*$
+      eventName: AUTH_REQUEST_RESPONSE
+      appId: IDA
+      appName: ID-Authentication
+      moduleName: FINGERPRINT_AUTH
+      refIdType: UIN   
       
-  Valid_MockRequest_LeftIndex_With_ValidScoreMatch_smoke:
+  Finger_Auth_Request_LeftIndex_With_ValidScoreMatch_smoke_Pos_02:
     input.bio-auth-request:
       bioAuthReq.idvId: $UIN$
       bioAuthReq.tspID: 7404012867
       bioAuthReq.reqTime: $TIMESTAMP$   
+      bioAuthReq.txnID: $RANDOM:N:10$
     input.identity-encrypt-data:
       identityReq.rightIndex: $REMOVE$
       identityReq.tspID: $input.bio-auth-request:bioAuthReq.tspID$
-      identityReq.valueleftIndex: Rk1SACAyMAAAAAFcAAABPAFiAMUAxQEAAAAoNUB9AMF0V4CBAKBBPEC0AL68ZIC4AKjNZEBiAJvWXUBPANPWNUDSAK7RUIC2AQIfZEDJAPMxPEByAGwPXYCpARYPZECfAFjoZECGAEv9ZEBEAFmtV0BpAUGNXUC/AUEESUCUAVIEPEC2AVNxPICcALWuZICuALm3ZECNAJqxQ0CUAI3GQ0CXAPghV0BVAKDOZEBfAPqHXUBDAKe/ZIB9AG3xXUDPAIbZUEBcAGYhZECIASgHXYBJAGAnV0DjAR4jG0DKATqJIUCGADGSZEDSAUYGIUAxAD+nV0CXAK+oSUBoALr6Q4CSAOuKXUCiAIvNZEC9AJzQZIBNALbTXUBBAL68V0CeAHDZZECwAHPaZEBRAPwHUIBHAHW2XUDXARAUDUC4AS4HZEDXAS0CQ0CYADL4ZECsAUzuPEBkACgRZAAA 
+      identityReq.valueleftIndex: $idrepo~$input.bio-auth-request:bioAuthReq.idvId$~DECODEFILE:valuedocuments0~//BIR/BDBInfo[Type='Finger'][Subtype='Left IndexFinger']//following::BDB$ 
     output.output-1-expected-y-res:
       output.1.response.y.status: Y
-      output.1.response.y.usageData: '0x0000800000008000'
       output.1.response.y.resTime: $TIMESTAMP$
+      output.1.response.y.txnID: $input.bio-auth-request:bioAuthReq.txnID$
       output.1.response.y.reqTime: $input.bio-auth-request:bioAuthReq.reqTime$
+    audit.auth_transaction:
+      refId: $input.bio-auth-request:bioAuthReq.idvId$
+      txnId: $input.bio-auth-request:bioAuthReq.txnID$
+      authTypeCode: FINGERPRINT-AUTH
+      statusCode: $output.output-1-expected-y-res:output.1.response.y.status$
+      reqTime: $FETCH$
+      resTime: $FETCH$
+      statusComment: $REGEXP:.*Finger.*Authentication.*Success.*$
+      idType: D
+    audit.audit_log:
+      refId: $input.bio-auth-request:bioAuthReq.idvId$
+      eventId: $REGEXP:.*IDA-EVT.*$
+      eventName: AUTH_REQUEST_RESPONSE
+      appId: IDA
+      appName: ID-Authentication
+      moduleName: FINGERPRINT_AUTH
+      refIdType: UIN  
       
-  Valid_MockRequest_RightIndex_With_ValidScoreMatch_smoke:
+  Finger_Auth_Request_RightIndex_With_ValidScoreMatch_smoke_Pos_03:
     input.bio-auth-request:
       bioAuthReq.idvId: $UIN$
       bioAuthReq.tspID: 7404012867
       bioAuthReq.reqTime: $TIMESTAMP$ 
+      bioAuthReq.txnID: $RANDOM:N:10$
     input.identity-encrypt-data:
-      identityReq.valuerightIndex: Rk1SACAyMAAAAAFcAAABPAFiAMUAxQEAAAAoNUCtAMvlZICRAOlXXYDBAPBqZECkAKPWXYDZAN9oZEBzAMXRSYC6AJNcV4DMAJdZXUDpAO9zZIByAQJmZECDAJC7ZIDfAQ56XUBeAPZgV0BhAJwyV0DVASsBXUEEAJ/RZEBZAIq6UEC+AVV7SUCjAOheXUCHANncV0DFAK5cXUDZANJfXUB3ANBRSUCdAJrKXUCJAJvEXUCxAQ91XUCjARj7XYCuAIXeV4CUAIC4ZIDRARr3XUDFAH5jV0BoAJG1ZEDcASWCUEDWAHFfZEBnASp4SUDhAVd1FECMALzWV0DKALxYXUCwAKbfV0DSAOpsZECAAK89V4CSAQdpZICpAJPWV0DoAORiXUCmAIazV0CxARt7XUCDARp0ZED9ANNTZIDhAIzSZICSAHSjZIBXAQpxUECgAGaIXYCBAUJ/ZAAA
+      identityReq.valuerightIndex: $idrepo~$input.bio-auth-request:bioAuthReq.idvId$~DECODEFILE:valuedocuments0~//BIR/BDBInfo[Type='Finger'][Subtype='Right IndexFinger']//following::BDB$
       identityReq.tspID: $input.bio-auth-request:bioAuthReq.tspID$
       identityReq.leftIndex: $REMOVE$   
     output.output-1-expected-y-res:
       output.1.response.y.status: Y
-      output.1.response.y.usageData: '0x0000800000008000'
       output.1.response.y.resTime: $TIMESTAMP$
+      output.1.response.y.txnID: $input.bio-auth-request:bioAuthReq.txnID$
       output.1.response.y.reqTime: $input.bio-auth-request:bioAuthReq.reqTime$
+    audit.auth_transaction:
+      refId: $input.bio-auth-request:bioAuthReq.idvId$
+      txnId: $input.bio-auth-request:bioAuthReq.txnID$
+      authTypeCode: FINGERPRINT-AUTH
+      statusCode: $output.output-1-expected-y-res:output.1.response.y.status$
+      reqTime: $FETCH$
+      resTime: $FETCH$
+      statusComment: $REGEXP:.*Finger.*Authentication.*Success.*$
+      idType: D
+    audit.audit_log:
+      refId: $input.bio-auth-request:bioAuthReq.idvId$
+      eventId: $REGEXP:.*IDA-EVT.*$
+      eventName: AUTH_REQUEST_RESPONSE
+      appId: IDA
+      appName: ID-Authentication
+      moduleName: FINGERPRINT_AUTH
+      refIdType: UIN  

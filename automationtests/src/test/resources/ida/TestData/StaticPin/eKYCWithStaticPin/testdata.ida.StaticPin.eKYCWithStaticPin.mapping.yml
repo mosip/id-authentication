@@ -1,8 +1,8 @@
 testdata:  
-  Valid_Request_Auth_StaticPin_For_UIN_Smoke_Pos:
+  Valid_Request_Auth_StaticPin_For_UIN_Smoke_Pos_01:
     input.staticPin-auth-data:
-      StaticPinAuthReq.idvId: 8546157947
-      StaticPinAuthReq.valuepinInfo: 234567
+      StaticPinAuthReq.idvId: $UIN-PIN$
+      StaticPinAuthReq.valuepinInfo: $staticPin~$StaticPinAuthReq.idvId$
       StaticPinAuthReq.tspID: TSP0001
       StaticPinAuthReq.txnID: $RANDOM:N:10$
       StaticPinAuthReq.reqTime: $TIMESTAMP$
@@ -12,18 +12,33 @@ testdata:
       output.1.response.y.status: Y
       output.1.response.y.resTime: $TIMESTAMP$
       output.1.response.y.txnID: $input.staticPin-auth-data:StaticPinAuthReq.txnID$  
-      output.1.response.y.response: $IGNORE$
-          
-  Valid_Request_UsingStaticPin_SecLang_Y_Check_LimitedKyc_smoke_Pos:
+      output.1.response.y.response: $IGNORE$ 
+    audit.auth_transaction:
+      refId: $input.staticPin-auth-data:StaticPinAuthReq.idvId$
+      txnId: $input.staticPin-auth-data:StaticPinAuthReq.txnID$
+      authTypeCode: STATIC-PIN-AUTH
+      statusCode: $output.output-1-expected-y-res:output.1.response.y.status$
+      statusComment: $REGEXP:.*Pin.*Authentication.*Success.*$
+      idType: D
+    audit.audit_log:
+      refId: $input.staticPin-auth-data:StaticPinAuthReq.idvId$
+      eventId: $REGEXP:.*IDA-EVT.*$
+      eventName: AUTH_REQUEST_RESPONSE
+      appId: IDA
+      refIdType: UIN
+      appName: ID-Authentication
+      moduleName: PIN_AUTH      
+  
+  Valid_Request_UsingStaticPin_SecLang_Y_Check_LimitedKyc_smoke_Pos_02:
     input.staticPin-auth-data:
-      StaticPinAuthReq.idvId: 8546157947
-      StaticPinAuthReq.valuepinInfo: 234567
+      StaticPinAuthReq.idvId: $UIN-PIN$
+      StaticPinAuthReq.valuepinInfo: $staticPin~$StaticPinAuthReq.idvId$
       StaticPinAuthReq.tspID: TSP0001
       StaticPinAuthReq.txnID: $RANDOM:N:10$
       StaticPinAuthReq.reqTime: $TIMESTAMP$
     input.ekyc-request:
       eKycReq.ekycAuthType: P
-      ekycReq.secLangReq: BOOLEAN:true
+     #ekycReq.secLangReq: BOOLEAN:true
     output.output-1-expected-y-res:
       output.1.response.y.status: Y
       output.1.response.y.txnID: $input.staticPin-auth-data:StaticPinAuthReq.txnID$
@@ -81,11 +96,26 @@ testdata:
       output.4.res.kyc.languageaddressLine21: $idrepo~$input.staticPin-auth-data:StaticPinAuthReq.idvId$~languageaddressLine21$
       output.4.res.kyc.languagefullName0: $idrepo~$input.staticPin-auth-data:StaticPinAuthReq.idvId$~languagefullName0$
       output.4.res.kyc.languageaddressLine20: $idrepo~$input.staticPin-auth-data:StaticPinAuthReq.idvId$~languageaddressLine20$
-      
-  Valid_Request_UsingStaticPin_SecLang_Y_Check_FullKyc_smoke_Pos:
+    audit.auth_transaction:
+      refId: $input.staticPin-auth-data:StaticPinAuthReq.idvId$
+      txnId: $input.staticPin-auth-data:StaticPinAuthReq.txnID$
+      authTypeCode: STATIC-PIN-AUTH
+      statusCode: $output.output-1-expected-y-res:output.1.response.y.status$
+      statusComment: $REGEXP:.*Pin.*Authentication.*Success.*$
+      idType: D
+    audit.audit_log:
+      refId: $input.staticPin-auth-data:StaticPinAuthReq.idvId$
+      eventId: $REGEXP:.*IDA-EVT.*$
+      eventName: AUTH_REQUEST_RESPONSE
+      appId: IDA
+      refIdType: UIN
+      appName: ID-Authentication
+      moduleName: PIN_AUTH      
+  
+  Valid_Request_UsingStaticPin_SecLang_Y_Check_FullKyc_smoke_Pos_03:
     input.staticPin-auth-data:
-      StaticPinAuthReq.idvId: 8546157947
-      StaticPinAuthReq.valuepinInfo: 234567
+      StaticPinAuthReq.idvId: $UIN-PIN$
+      StaticPinAuthReq.valuepinInfo: $staticPin~$StaticPinAuthReq.idvId$
       StaticPinAuthReq.tspID: TSP0001
       StaticPinAuthReq.txnID: $RANDOM:N:10$
       StaticPinAuthReq.reqTime: $TIMESTAMP$
@@ -147,12 +177,27 @@ testdata:
       output.4.res.kyc.languagefullName1: $idrepo~$input.staticPin-auth-data:StaticPinAuthReq.idvId$~languagefullName1$
       output.4.res.kyc.languageaddressLine21: $idrepo~$input.staticPin-auth-data:StaticPinAuthReq.idvId$~languageaddressLine21$
       output.4.res.kyc.languagefullName0: $idrepo~$input.staticPin-auth-data:StaticPinAuthReq.idvId$~languagefullName0$
-      output.4.res.kyc.languageaddressLine20: $idrepo~$input.staticPin-auth-data:StaticPinAuthReq.idvId$~languageaddressLine20$
-   
-  Valid_Request_StaticPin_SecLang_N_Check_LimitedKyc_smoke_Pos:
+      output.4.res.kyc.languageaddressLine20: $idrepo~$input.staticPin-auth-data:StaticPinAuthReq.idvId$~languageaddressLine20$ 
+    audit.auth_transaction:
+      refId: $input.staticPin-auth-data:StaticPinAuthReq.idvId$
+      txnId: $input.staticPin-auth-data:StaticPinAuthReq.txnID$
+      authTypeCode: STATIC-PIN-AUTH
+      statusCode: $output.output-1-expected-y-res:output.1.response.y.status$
+      statusComment: $REGEXP:.*Pin.*Authentication.*Success.*$
+      idType: D
+    audit.audit_log:
+      refId: $input.staticPin-auth-data:StaticPinAuthReq.idvId$
+      eventId: $REGEXP:.*IDA-EVT.*$
+      eventName: AUTH_REQUEST_RESPONSE
+      appId: IDA
+      refIdType: UIN
+      appName: ID-Authentication
+      moduleName: PIN_AUTH  
+      
+  Valid_Request_StaticPin_SecLang_N_Check_LimitedKyc_smoke_Pos_04:
     input.staticPin-auth-data:
-      StaticPinAuthReq.idvId: 8546157947
-      StaticPinAuthReq.valuepinInfo: 234567
+      StaticPinAuthReq.idvId: $UIN-PIN$
+      StaticPinAuthReq.valuepinInfo: $staticPin~$StaticPinAuthReq.idvId$
       StaticPinAuthReq.tspID: TSP0001
       StaticPinAuthReq.txnID: $RANDOM:N:10$
       StaticPinAuthReq.reqTime: $TIMESTAMP$
@@ -200,11 +245,26 @@ testdata:
       output.4.res.kyc.valueaddressLine20: $idrepo~$input.staticPin-auth-data:StaticPinAuthReq.idvId$~valueaddressLine21$
       output.4.res.kyc.languagefullName0: $idrepo~$input.staticPin-auth-data:StaticPinAuthReq.idvId$~languagefullName1$
       output.4.res.kyc.languageaddressLine20: $idrepo~$input.staticPin-auth-data:StaticPinAuthReq.idvId$~languageaddressLine21$ 
+    audit.auth_transaction:
+      refId: $input.staticPin-auth-data:StaticPinAuthReq.idvId$
+      txnId: $input.staticPin-auth-data:StaticPinAuthReq.txnID$
+      authTypeCode: STATIC-PIN-AUTH
+      statusCode: $output.output-1-expected-y-res:output.1.response.y.status$
+      statusComment: $REGEXP:.*Pin.*Authentication.*Success.*$
+      idType: D
+    audit.audit_log:
+      refId: $input.staticPin-auth-data:StaticPinAuthReq.idvId$
+      eventId: $REGEXP:.*IDA-EVT.*$
+      eventName: AUTH_REQUEST_RESPONSE
+      appId: IDA
+      refIdType: UIN
+      appName: ID-Authentication
+      moduleName: PIN_AUTH  
       
-  Valid_Request_UsingStaticPin_SecLang_N_Check_FullKyc_smoke_Pos:
+  Valid_Request_UsingStaticPin_SecLang_N_Check_FullKyc_smoke_Pos_05:
     input.staticPin-auth-data:
-      StaticPinAuthReq.idvId: 8546157947
-      StaticPinAuthReq.valuepinInfo: 234567
+      StaticPinAuthReq.idvId: $UIN-PIN$
+      StaticPinAuthReq.valuepinInfo: $staticPin~$StaticPinAuthReq.idvId$
       StaticPinAuthReq.tspID: TSP0001
       StaticPinAuthReq.txnID: $RANDOM:N:10$
       StaticPinAuthReq.reqTime: $TIMESTAMP$
@@ -252,5 +312,186 @@ testdata:
       output.4.res.kyc.valueaddressLine20: $idrepo~$input.staticPin-auth-data:StaticPinAuthReq.idvId$~valueaddressLine21$
       output.4.res.kyc.languagefullName0: $idrepo~$input.staticPin-auth-data:StaticPinAuthReq.idvId$~languagefullName1$
       output.4.res.kyc.languageaddressLine20: $idrepo~$input.staticPin-auth-data:StaticPinAuthReq.idvId$~languageaddressLine21$
-      
+    audit.auth_transaction:
+      refId: $input.staticPin-auth-data:StaticPinAuthReq.idvId$
+      txnId: $input.staticPin-auth-data:StaticPinAuthReq.txnID$
+      authTypeCode: STATIC-PIN-AUTH
+      statusCode: $output.output-1-expected-y-res:output.1.response.y.status$
+      statusComment: $REGEXP:.*Pin.*Authentication.*Success.*$
+      idType: D
+    audit.audit_log:
+      refId: $input.staticPin-auth-data:StaticPinAuthReq.idvId$
+      eventId: $REGEXP:.*IDA-EVT.*$
+      eventName: AUTH_REQUEST_RESPONSE
+      appId: IDA
+      refIdType: UIN
+      appName: ID-Authentication
+      moduleName: PIN_AUTH   
   
+  Invalid_econsreq_06:
+    input.staticPin-auth-data:
+      StaticPinAuthReq.personalIdentity: BOOLEAN:true
+      StaticPinAuthReq.pin: BOOLEAN:false
+      StaticPinAuthReq.idvId: 8546157947
+      StaticPinAuthReq.valuepinInfo: 234567
+      StaticPinAuthReq.tspID: TSP0001
+      StaticPinAuthReq.txnID: $RANDOM:N:10$
+      StaticPinAuthReq.reqTime: $TIMESTAMP$
+    input.ekyc-request:
+      eKycReq.ekycAuthType: P
+      eKycReq.consentReq: tree
+    output.output-1-expected-n-error-res:
+      output.1.response.n.err.status: N
+      output.1.response.n.err.resTime: $TIMESTAMP$
+      output.1.response.n.err.errorMessage: Invalid resident eKYC consent
+      output.1.response.n.err.errorCode: IDA-DEA-030
+      output.1.response.y.response: $IGNORE$      
+  
+  Invalid_econsreq_false_07:
+    input.staticPin-auth-data:
+      StaticPinAuthReq.idvId: $UIN-PIN$
+      StaticPinAuthReq.valuepinInfo: 234567
+      StaticPinAuthReq.tspID: TSP0001
+      StaticPinAuthReq.txnID: $RANDOM:N:10$
+      StaticPinAuthReq.reqTime: $TIMESTAMP$
+    input.ekyc-request:
+      eKycReq.ekycAuthType: P
+      eKycReq.consentReq: BOOLEAN:false
+    output.output-1-expected-n-error-res:
+      output.1.response.n.err.status: N
+      output.1.response.n.err.resTime: $TIMESTAMP$
+      output.1.response.n.err.errorMessage: Invalid resident eKYC consent
+      output.1.response.n.err.errorCode: IDA-DEA-030
+      output.1.response.y.response: $IGNORE$       
+  
+  Invalid_SecondaryLang_08:
+    input.staticPin-auth-data:
+      StaticPinAuthReq.idvId: $UIN-PIN$
+      StaticPinAuthReq.valuepinInfo: $staticPin~$StaticPinAuthReq.idvId$
+      StaticPinAuthReq.tspID: TSP0001
+      StaticPinAuthReq.txnID: $RANDOM:N:10$
+      StaticPinAuthReq.reqTime: $TIMESTAMP$
+    input.ekyc-request:
+      eKycReq.ekycAuthType: P
+      eKycReq.secLangReq: trree
+    output.output-1-expected-n-error-res:
+      output.1.response.n.err.status: N
+      output.1.response.n.err.resTime: $TIMESTAMP$
+      output.1.response.n.err.errorMessage: Invalid Auth Request
+      output.1.response.n.err.errorCode: IDA-RQV-101
+      output.1.response.y.response: $IGNORE$      
+  
+  Invalid_ekycAuthType_09:
+    input.staticPin-auth-data:
+      StaticPinAuthReq.idvId: $UIN-PIN$
+      StaticPinAuthReq.valuepinInfo: 234567
+      StaticPinAuthReq.tspID: TSP0001
+      StaticPinAuthReq.txnID: $RANDOM:N:10$
+      StaticPinAuthReq.reqTime: $TIMESTAMP$
+    input.ekyc-request:
+      eKycReq.ekycAuthType: I
+      eKycReq.consentReq: BOOLEAN:true
+    output.output-1-expected-n-error-res:
+      output.1.response.n.err.status: N
+      output.1.response.n.err.resTime: $TIMESTAMP$
+      output.1.response.n.err.errorMessage: Invalid resident auth type ("kycAuthType " does not match with data in PID block)
+      output.1.response.n.err.errorCode: IDA-DEA-035
+      output.1.response.y.response: $IGNORE$ 
+      
+  Invalid_NUll_authRequest_10:
+    input.staticPin-auth-data:
+      StaticPinAuthReq.idvId: $UIN-PIN$
+      StaticPinAuthReq.valuepinInfo: $staticPin~$StaticPinAuthReq.idvId$
+      StaticPinAuthReq.tspID: TSP0001
+      StaticPinAuthReq.txnID: $RANDOM:N:10$
+      StaticPinAuthReq.reqTime: $TIMESTAMP$
+    input.ekyc-request:
+      eKycReq.authRequest: '    '
+      eKycReq.ekycAuthType: P
+      eKycReq.consentReq: BOOLEAN:true
+    output.output-1-expected-n-error-res:
+      output.1.response.n.err.status: N
+      output.1.response.n.err.resTime: $TIMESTAMP$
+      output.1.response.n.err.errorMessage: Invalid Auth Request
+      output.1.response.n.err.errorCode: IDA-RQV-101
+      output.1.response.y.response: $IGNORE$ 
+      
+  Invalid_authRequest_11:
+    input.staticPin-auth-data:
+      StaticPinAuthReq.idvId: $UIN-PIN$
+      StaticPinAuthReq.valuepinInfo: $staticPin~$StaticPinAuthReq.idvId$
+      StaticPinAuthReq.tspID: TSP0001
+      StaticPinAuthReq.txnID: $RANDOM:N:10$
+      StaticPinAuthReq.reqTime: $TIMESTAMP$
+    input.ekyc-request:
+      eKycReq.authRequest: " jdjkdfnijfokprogrogrovnkjvvokfpgogo "
+    output.output-1-expected-n-error-res:
+      output.1.response.n.err.status: N
+      output.1.response.n.err.resTime: $TIMESTAMP$
+      output.1.response.n.err.errorMessage: Invalid Auth Request
+      output.1.response.n.err.errorCode: IDA-RQV-101
+      output.1.response.y.response: $IGNORE$ 
+     
+  Invalid_eprintReq_false_12:
+    input.staticPin-auth-data:
+      StaticPinAuthReq.idvId: $UIN-PIN$
+      StaticPinAuthReq.valuepinInfo: $staticPin~$StaticPinAuthReq.idvId$
+      StaticPinAuthReq.tspID: TSP0001
+      StaticPinAuthReq.txnID: $RANDOM:N:10$
+      StaticPinAuthReq.reqTime: $TIMESTAMP$
+    input.ekyc-request:
+      eKycReq.eprintReq: BOOLEAN:false
+    output.output-1-expected-y-res:
+      output.1.response.y.status: Y
+      output.1.response.y.resTime: $TIMESTAMP$
+      output.1.response.y.txnID: $input.staticPin-auth-data:StaticPinAuthReq.txnID$  
+      output.1.response.y.response: $IGNORE$
+      
+  Invalid_Missing_ver_13:
+    input.staticPin-auth-data:
+      StaticPinAuthReq.idvId: $UIN-PIN$
+      StaticPinAuthReq.valuepinInfo: $staticPin~$StaticPinAuthReq.idvId$
+      StaticPinAuthReq.tspID: TSP0001
+      StaticPinAuthReq.txnID: $RANDOM:N:10$
+      StaticPinAuthReq.reqTime: $TIMESTAMP$
+    input.ekyc-request:
+      eKycReq.ver: $REMOVE$
+    output.output-1-expected-n-error-res:
+      output.1.response.n.err.status: N
+      output.1.response.n.err.resTime: $TIMESTAMP$
+      output.1.response.n.err.errorMessage: "Missing input parameter-ver"
+      output.1.response.n.err.errorCode: $IGNORE$
+      output.1.response.y.response: $IGNORE$   
+      
+  Invalid_eprintReq_14:
+    input.staticPin-auth-data:
+      StaticPinAuthReq.idvId: $UIN-PIN$
+      StaticPinAuthReq.valuepinInfo: $staticPin~$StaticPinAuthReq.idvId$
+      StaticPinAuthReq.tspID: TSP0001
+      StaticPinAuthReq.txnID: $RANDOM:N:10$
+      StaticPinAuthReq.reqTime: $TIMESTAMP$
+    input.ekyc-request:
+      eKycReq.eprintReq: tree
+    output.output-1-expected-n-error-res:
+      output.1.response.n.err.status: N
+      output.1.response.n.err.resTime: $TIMESTAMP$
+      output.1.response.n.err.errorMessage: Invalid value in print format request
+      output.1.response.n.err.errorCode: IDA-DEA-031
+      output.1.response.y.response: $IGNORE$ 
+      
+  Invalid_AuthType_for_e-Kyc not matching with_AuthType in auth request_15:
+    input.staticPin-auth-data:
+      StaticPinAuthReq.idvId: $UIN-PIN$
+      StaticPinAuthReq.valuepinInfo: $staticPin~$StaticPinAuthReq.idvId$
+      StaticPinAuthReq.tspID: TSP0001
+      StaticPinAuthReq.txnID: $RANDOM:N:10$
+      StaticPinAuthReq.reqTime: $TIMESTAMP$
+    input.ekyc-request:
+      eKycReq.ekycAuthType: I
+      eKycReq.consentReq: BOOLEAN:true
+    output.output-1-expected-n-error-res:
+      output.1.response.n.err.status: N
+      output.1.response.n.err.resTime: $TIMESTAMP$
+      output.1.response.n.err.errorMessage: Invalid resident auth type ("kycAuthType " does not match with data in PID block)
+      output.1.response.n.err.errorCode: IDA-DEA-035
+      output.1.response.y.response: $IGNORE$  

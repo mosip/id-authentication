@@ -21,7 +21,7 @@ import io.mosip.registration.processor.core.abstractverticle.MosipVerticleManage
 public class BioDedupeStage extends MosipVerticleManager {
 
 	/** The cluster manager url. */
-	@Value("${vertx.ignite.configuration}")
+	@Value("${vertx.cluster.configuration}")
 	private String clusterManagerUrl;
 
 	@Autowired
@@ -34,7 +34,7 @@ public class BioDedupeStage extends MosipVerticleManager {
 	 * Deploy verticle.
 	 */
 	public void deployVerticle() {
-		MosipEventBus mosipEventBus = this.getEventBus(this.getClass(), clusterManagerUrl);
+		MosipEventBus mosipEventBus = this.getEventBus(this, clusterManagerUrl, 50);
 		this.consumeAndSend(mosipEventBus, MessageBusAddress.BIO_DEDUPE_BUS_IN, MessageBusAddress.BIO_DEDUPE_BUS_OUT);
 	}
 

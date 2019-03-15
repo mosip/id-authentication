@@ -1,1 +1,1 @@
-{"resTime":"$TIMESTAMP$","ver":"1.0","err":[{"errorMessage":"No authentication type selected","errorCode":"IDA-MLC-008"}],"status":"N","txnID":"7404012866"}
+{"status":"N","err":[{"errorCode":"IDA-MLC-008","errorMessage":"No authentication type selected"}],"resTime":"$TIMESTAMP$","ver":"0.8"}

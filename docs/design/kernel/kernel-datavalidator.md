@@ -39,4 +39,4 @@ This application can be used to validate several data such as Email,Phone etc ba
 ## Implementation
 
 
-**kernel-datavalidator** [README](../../kernel/kernel-datavalidator/README.md)
+**kernel-datavalidator** [README](../../../kernel/kernel-datavalidator/README.md)

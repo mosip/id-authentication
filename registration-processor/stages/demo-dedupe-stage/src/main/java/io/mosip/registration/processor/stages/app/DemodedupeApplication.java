@@ -22,6 +22,5 @@ public class DemodedupeApplication {
 
 		DemodedupeStage demodedupeStage = configApplicationContext.getBean(DemodedupeStage.class);
 		demodedupeStage.deployVerticle();
-
 	}
 }

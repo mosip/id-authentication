@@ -34,7 +34,7 @@ import io.restassured.RestAssured;
  */
 
 public class BaseTestCase {
-	private static Logger logger = Logger.getLogger(BaseTestCase.class);
+	protected static Logger logger = Logger.getLogger(BaseTestCase.class);
 	
 	public static List<String> preIds=new ArrayList<String> ();
 		
@@ -88,7 +88,7 @@ public class BaseTestCase {
 			if (environment.equalsIgnoreCase("integration"))
 				ApplnURI="https://integ.mosip.io";
 			if (environment.equalsIgnoreCase("qa"))
-				ApplnURI="https://integ.mosip.io";
+				ApplnURI="https://qa.mosip.io";
 			else
 				ApplnURI="https://integ.mosip.io";
 			/*environment ="integration";
@@ -131,9 +131,9 @@ public class BaseTestCase {
 			/*Calling up PreReg DB clean Up step*/
 			if(preIds.size()>=1)
 			{
-            System.out.println("Elements from PreId List are========");
+            logger.info("Elements from PreId List are========");
             for(String elem : preIds) {
-            	System.out.println(elem.toString());
+            	logger.info(elem.toString());
             }
             boolean status=false;
            status=PreRegDbread.prereg_db_CleanUp(preIds);
@@ -184,8 +184,8 @@ public class BaseTestCase {
 				Path currentPathWithFileName = Paths.get("src/test/resources/Reports/current-build-reports/"+ currentModule+"-emailable-report.html");
 				Path backupPathWithFileName = Paths.get("src/test/resources/Reports/backup-build-reports/"+ currentModule+"-emailable-report-"+date+".html");
 				
-				System.out.println("createCurrentPathStatus---->"+createCurrentPathStatus);
-				System.out.println("backupPathWithFileName---->"+backupPathWithFileName);
+				logger.info("createCurrentPathStatus---->"+createCurrentPathStatus);
+				logger.info("backupPathWithFileName---->"+backupPathWithFileName);
 				
 				temp = Files.copy(sourcePath,currentPathWithFileName,java.nio.file.StandardCopyOption.REPLACE_EXISTING);
 				temp = Files.copy(sourcePath,backupPathWithFileName);
@@ -197,11 +197,11 @@ public class BaseTestCase {
 			
 			        if(temp != null) 
 			        { 
-			            System.out.println("File renamed and moved successfully"); 
+			            logger.info("File renamed and moved successfully"); 
 			        } 
 			        else
 			        { 
-			            System.out.println("Failed to move the file"); 
+			            logger.info("Failed to move the file"); 
 			        } 
 		}
 

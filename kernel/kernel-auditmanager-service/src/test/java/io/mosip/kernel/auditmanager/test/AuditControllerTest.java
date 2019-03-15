@@ -41,7 +41,7 @@ public class AuditControllerTest {
 	private ObjectMapper objectMapper;
 
 	@Test
-	public void generateOtpTest() throws Exception {
+	public void auditTest() throws Exception {
 
 		AuditRequestDto auditRequestDto = new AuditRequestDto();
 		auditRequestDto.setActionTimeStamp(LocalDateTime.now());

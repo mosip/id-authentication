@@ -1,5 +1,6 @@
 package io.mosip.registration.processor.packet.uploader.stage.test;
 
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doNothing;
@@ -30,6 +31,7 @@ import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
 import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.abstractverticle.MosipEventBus;
+import io.mosip.registration.processor.core.code.ApiName;
 import io.mosip.registration.processor.core.constant.EventId;
 import io.mosip.registration.processor.core.constant.EventName;
 import io.mosip.registration.processor.core.constant.EventType;
@@ -54,6 +56,9 @@ import io.mosip.registration.processor.status.service.RegistrationStatusService;
 @RunWith(MockitoJUnitRunner.class)
 public class PacketUploaderJobTest {
 
+	/* max retry count */
+	private static final int maxRetryCount = 5;
+
 	/** The Constant stream. */
 	private static final InputStream stream = Mockito.mock(InputStream.class);
 
@@ -61,12 +66,17 @@ public class PacketUploaderJobTest {
 	@InjectMocks
 	PacketUploaderStage packetUploaderStage = new PacketUploaderStage() {
 		@Override
-		public MosipEventBus getEventBus(Class<?> verticleName, String url) {
+		public int getMaxRetryCount() {
+			return maxRetryCount;
+		}
+		@Override
+		public MosipEventBus getEventBus(Object verticleName, String url, int instanceNumber) {
 			return null;
 		}
 
 		@Override
-		public void consumeAndSend(MosipEventBus mosipEventBus, MessageBusAddress fromAddress,MessageBusAddress toAddress) {
+		public void consumeAndSend(MosipEventBus mosipEventBus, MessageBusAddress fromAddress,
+				MessageBusAddress toAddress) {
 		}
 	};
 	@Mock
@@ -135,7 +145,7 @@ public class PacketUploaderJobTest {
 		AuditResponseDto auditResponseDto = new AuditResponseDto();
 		Mockito.doReturn(auditResponseDto).when(auditLogRequestBuilder).createAuditRequestBuilder(
 				"test case description", EventId.RPR_401.toString(), EventName.ADD.toString(),
-				EventType.BUSINESS.toString(), "1234testcase");
+				EventType.BUSINESS.toString(), "1234testcase", ApiName.DMZAUDIT);
 	}
 
 	/**
@@ -208,7 +218,6 @@ public class PacketUploaderJobTest {
 		Mockito.when(adapter.storePacket("1001", file)).thenReturn(Boolean.TRUE);
 		Mockito.when(adapter.isPacketPresent("1001")).thenReturn(Boolean.TRUE);
 		Mockito.doNothing().when(adapter).unpackPacket("1001");
-
 		packetUploaderStage.process(dto);
 		Assertions.assertThat(listAppender.list).extracting(ILoggingEvent::getLevel, ILoggingEvent::getFormattedMessage)
 				.contains(Tuple.tuple(Level.ERROR,
@@ -264,7 +273,7 @@ public class PacketUploaderJobTest {
 		Mockito.when(adapter.isPacketPresent("1001")).thenReturn(Boolean.FALSE);
 		Mockito.doThrow(FSAdapterException.class).when(adapter).storePacket(anyString(), any(InputStream.class));
 		packetUploaderStage.process(dto);
-		
+
 		Assertions.assertThatExceptionOfType(FSAdapterException.class);
 		Assertions.assertThat(listAppender.list).extracting(ILoggingEvent::getLevel, ILoggingEvent::getFormattedMessage)
 				.contains(Tuple.tuple(Level.ERROR,
@@ -277,8 +286,27 @@ public class PacketUploaderJobTest {
 		fooLogger.addAppender(listAppender);
 		Mockito.doThrow(IOException.class).when(packetArchiver).archivePacket(any());
 		packetUploaderStage.process(dto);
-		
+
 		Assertions.assertThatIOException();
 	}
 
+	@Test
+	public void retryFailure() {
+
+		listAppender.start();
+		fooLogger.addAppender(listAppender);
+		Mockito.doNothing().when(registrationStatusService)
+				.updateRegistrationStatus(any(InternalRegistrationStatusDto.class));
+		dto.setRid("1001");
+		entry.setRegistrationId("1001");
+		entry.setRetryCount(5);
+		entry.setStatusComment("virus scan");
+		when(registrationStatusService.getRegistrationStatus(anyString())).thenReturn(entry);
+		Mockito.doNothing().when(registrationStatusService)
+				.updateRegistrationStatus(any(InternalRegistrationStatusDto.class));
+
+		MessageDTO object = packetUploaderStage.process(dto);
+		assertTrue("Expecting Internal error to be true if Retry count is greater than Max Retry count",
+				object.getInternalError());
+	}
 }

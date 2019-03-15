@@ -909,6 +909,16 @@ public class MasterdataControllerTest {
 		mockMvc.perform(MockMvcRequestBuilders.get("/templates/HIN/EMAIL")).andExpect(status().isOk());
 	}
 
+	@Test
+	public void getAllTemplateByTemplateTypeCodeTest() throws Exception {
+		TemplateResponseDto templateResponseDto = new TemplateResponseDto();
+		templateResponseDto.setTemplates(templateDtoList);
+		Mockito.when(templateService.getAllTemplateByTemplateTypeCode(Mockito.anyString()))
+				.thenReturn(templateResponseDto);
+		mockMvc.perform(MockMvcRequestBuilders.get("/v1.0/templates/templatetypecodes/EMAIL"))
+				.andExpect(status().isOk());
+	}
+
 	// -----------------------------TemplateFileFormatControllerTest------------------------
 
 	@Test

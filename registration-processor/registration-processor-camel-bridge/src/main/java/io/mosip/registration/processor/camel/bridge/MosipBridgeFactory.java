@@ -1,7 +1,8 @@
 package io.mosip.registration.processor.camel.bridge;
 
-import java.net.MalformedURLException;
-import java.net.URL;
+import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 
 import org.apache.camel.CamelContext;
 import org.apache.camel.component.vertx.VertxComponent;
@@ -11,6 +12,9 @@ import org.springframework.core.io.Resource;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
+
+import com.hazelcast.config.Config;
+import com.hazelcast.config.UrlXmlConfig;
 
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.processor.camel.bridge.util.BridgeUtil;
@@ -23,13 +27,16 @@ import io.vertx.core.AbstractVerticle;
 import io.vertx.core.DeploymentOptions;
 import io.vertx.core.Vertx;
 import io.vertx.core.VertxOptions;
+import io.vertx.core.eventbus.EventBusOptions;
 import io.vertx.core.spi.cluster.ClusterManager;
-import io.vertx.spi.cluster.ignite.IgniteClusterManager;
+import io.vertx.spi.cluster.hazelcast.HazelcastClusterManager;
 
 /**
- * This class provides.
+ * This class starts Vertx camel bridge.
  *
  * @author Mukul Puspam
+ * @author Pranav kumar
+ * @since 0.0.1
  */
 public class MosipBridgeFactory extends AbstractVerticle {
 
@@ -42,19 +49,34 @@ public class MosipBridgeFactory extends AbstractVerticle {
 	 * @return the event bus
 	 */
 	public static void getEventBus() {
-		String igniteFileName = BridgeUtil.getPropertyFromConfigServer("ignite.cluster.manager.file.name");
-		String igniteUrl = BridgeUtil.getCloudConfigUri();
-		igniteUrl = igniteUrl + "/*/" + BridgeUtil.getActiveProfile() + "/" + BridgeUtil.getCloudConfigLabel() + "/"
-				+ igniteFileName;
-		URL url = null;
-		try {
-			url = new URL(igniteUrl);
-		} catch (MalformedURLException e1) {
-			regProcLogger.error("", "", "", e1.getMessage());
+		String clusterFileName;
+		String zone = BridgeUtil.getZone();
+		if(zone.equalsIgnoreCase("dmz")) {
+			clusterFileName=BridgeUtil.getPropertyFromConfigServer("dmz.cluster.manager.file.name");
 		}
-		ClusterManager clusterManager = new IgniteClusterManager(url);
+		else {
+			clusterFileName=BridgeUtil.getPropertyFromConfigServer("cluster.manager.file.name");
+		}
+		String clusterUrl = BridgeUtil.getCloudConfigUri();
+		String eventBusPort = PropertyFileUtil.getProperty(MosipBridgeFactory.class,"bootstrap.properties","eventbus.port");
+		clusterUrl = clusterUrl + "/*/" + BridgeUtil.getActiveProfile() + "/" + BridgeUtil.getCloudConfigLabel() + "/"
+				+ clusterFileName;
+		Config config = null;
+		try {
+			config = new UrlXmlConfig(clusterUrl);
+		} catch (IOException e) {
+			regProcLogger.error("", "", "", e.getMessage());
+		}
+		String address = null;
+		try {
+			address = InetAddress.getLocalHost().getHostAddress();
+		} catch (UnknownHostException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		ClusterManager clusterManager = new HazelcastClusterManager(config);
 		VertxOptions options = new VertxOptions().setClusterManager(clusterManager).setHAEnabled(true)
-				.setClustered(true);
+				.setClustered(true).setEventBusOptions(new EventBusOptions().setHost(address).setPort(Integer.parseInt(eventBusPort)));
 
 		Vertx.clusteredVertx(options, vertx -> {
 			if (vertx.succeeded()) {

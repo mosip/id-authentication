@@ -1,1 +1,1 @@
-{"status":"N","err":[{"errorCode":"IDA-BIA-016","errorMessage":"Duplicate Irises in request"}],"txnID":"7404012866","resTime":"2019-02-17T21:36:41.985+05:30","ver":"1.0"}
+{"status":"N","err":[{"errorCode":"IDA-RST-007","errorMessage":"5XX - Server Error occured"}],"resTime":"2019-03-15T14:52:58.070+05:30","txnID":"8307514725","ver":"0.8"}

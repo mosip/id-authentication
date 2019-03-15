@@ -14,6 +14,7 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import io.mosip.kernel.uingenerator.test.config.UinGeneratorTestConfiguration;
 import io.mosip.kernel.uingenerator.verticle.UinGeneratorServerVerticle;
 import io.mosip.kernel.uingenerator.verticle.UinGeneratorVerticle;
+import io.mosip.kernel.uingenerator.verticle.UinStatusUpdateVerticle;
 import io.vertx.core.DeploymentOptions;
 import io.vertx.core.Verticle;
 import io.vertx.core.Vertx;
@@ -41,7 +42,8 @@ public class UinGeneratorVerticleTest {
 
 		ApplicationContext context = new AnnotationConfigApplicationContext(UinGeneratorTestConfiguration.class);
 		vertx = Vertx.vertx();
-		Verticle[] verticles = { new UinGeneratorVerticle(context), new UinGeneratorServerVerticle(context) };
+		Verticle[] verticles = { new UinGeneratorVerticle(context), new UinGeneratorServerVerticle(context),
+				new UinStatusUpdateVerticle(context) };
 		Stream.of(verticles)
 				.forEach(verticle -> vertx.deployVerticle(verticle, options, testContext.asyncAssertSuccess()));
 	}
@@ -55,7 +57,7 @@ public class UinGeneratorVerticleTest {
 	public void getUinTest(TestContext context) {
 		Async async = context.async();
 		WebClient client = WebClient.create(vertx);
-		client.get(port, "localhost", "/uingenerator/uin").send(ar -> {
+		client.get(port, "localhost", "/uin").send(ar -> {
 			if (ar.succeeded()) {
 				HttpResponse<Buffer> response = ar.result();
 				context.assertEquals(200, response.statusCode());

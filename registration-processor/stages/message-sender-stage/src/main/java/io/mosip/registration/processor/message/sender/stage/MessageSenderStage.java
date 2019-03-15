@@ -73,7 +73,7 @@ public class MessageSenderStage extends MosipVerticleManager {
 	private TransactionService<TransactionDto> transcationStatusService;
 
 	/** The cluster manager url. */
-	@Value("${vertx.ignite.configuration}")
+	@Value("${vertx.cluster.configuration}")
 	private String clusterManagerUrl;
 
 	/** The core audit request builder. */
@@ -138,7 +138,7 @@ public class MessageSenderStage extends MosipVerticleManager {
 	 * Deploy verticle.
 	 */
 	public void deployVerticle() {
-		MosipEventBus mosipEventBus = this.getEventBus(this.getClass(), clusterManagerUrl);
+		MosipEventBus mosipEventBus = this.getEventBus(this, clusterManagerUrl);
 		this.consume(mosipEventBus, MessageBusAddress.MESSAGE_SENDER_BUS);
 	}
 
@@ -228,7 +228,7 @@ public class MessageSenderStage extends MosipVerticleManager {
 			String eventType = eventId.equalsIgnoreCase(EventId.RPR_402.toString()) ? EventType.BUSINESS.toString()
 					: EventType.SYSTEM.toString();
 
-			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType, id);
+			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType, id, ApiName.AUDIT);
 
 		}
 

@@ -2,10 +2,10 @@ package io.mosip.preregistration.notification.error;
 
 /**
  * @author Sanober Noor
- *@since 1.0.0
+ * @since 1.0.0
  */
 public enum ErrorCodes {
-	
+
 	/**
 	 * MOBILE_NUMBER_OR_EMAIL_ADDRESS_NOT_FILLED
 	 */
@@ -25,13 +25,18 @@ public enum ErrorCodes {
 	/**
 	 * INPUT_OUTPUT_EXCEPTION
 	 */
-	PRG_ACK_005("PRG_ACK_005"), 
+	PRG_ACK_005("PRG_ACK_005"),
 
 	/**
 	 * QRCODE_FAILED_TO_GENERATE
 	 */
-  PRG_ACK_006("PRG_ACK_006");
+	PRG_ACK_006("PRG_ACK_006"),
 	
+	/**
+	 * CONFIG_FILE_NOT_FOUND_EXCEPTION
+	 */
+	PRG_ACK_007("PRG_ACK_007");
+
 	/**
 	 * @param code
 	 */

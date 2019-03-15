@@ -49,6 +49,11 @@ public class SyncHandlerControllerAdvice {
 			final HttpServletRequest httpServletRequest) throws IOException {
 		return getServiceErrorResponseEntity(e, HttpStatus.OK, httpServletRequest);
 	}
+	
+	@ExceptionHandler(RequestException.class)
+	public ResponseEntity<ErrorResponse<Error>> controlRequestException(final RequestException e) {
+		return new ResponseEntity<>(getErrorResponse(e,HttpStatus.OK),HttpStatus.OK);
+	}
 
 	@ExceptionHandler(DataNotFoundException.class)
 	public ResponseEntity<ResponseWrapper<ServiceError>> controlDataNotFoundException(final DataNotFoundException e,
