@@ -14,17 +14,20 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.web.util.ContentCachingRequestWrapper;
 import org.springframework.web.util.ContentCachingResponseWrapper;
 
+import io.mosip.kernel.core.logger.spi.Logger;
+
 /**
- * This class is for input logging of all parameters in HTTP requests
+ * Request Response Filter class that implements {@link Filter}.
  * 
- * @author Bal Vikash Sharma
+ * @author Sagar Mahapatra
+ * @since 1.0.0
  *
  */
 public class ReqResFilter implements Filter {
 
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException {
-		// init method overriding
+		// over-ridden method
 	}
 
 	@Override
@@ -46,7 +49,8 @@ public class ReqResFilter implements Filter {
 			responseWrapper.copyBodyToResponse();
 
 		} catch (Exception e) {
-			System.err.println(e);
+			Logger mosipLogger = LoggerConfiguration.logConfig(ReqResFilter.class);
+			mosipLogger.error("", "", "", e.getMessage());
 		}
 	}
 
