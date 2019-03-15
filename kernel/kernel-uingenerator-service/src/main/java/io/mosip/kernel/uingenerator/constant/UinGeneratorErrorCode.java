@@ -8,8 +8,8 @@ package io.mosip.kernel.uingenerator.constant;
  *
  */
 public enum UinGeneratorErrorCode {
-	UIN_NOT_FOUND("KER-UIG-001", "Uin could not be found"), UIN_STATUS_NOT_FOUND("xxxx",
-			"Given Uin status not found"), UIN_NOT_ISSUED("XXX", "Given UIN is not in Issued status");
+	UIN_NOT_FOUND("KER-UIG-001", "UIN could not be found"), UIN_STATUS_NOT_FOUND("KER-UIG-003",
+			"Given UIN status not found"), UIN_NOT_ISSUED("KER-UIG-004", "Given UIN is not in ISSUED status");
 
 	/**
 	 * The error code

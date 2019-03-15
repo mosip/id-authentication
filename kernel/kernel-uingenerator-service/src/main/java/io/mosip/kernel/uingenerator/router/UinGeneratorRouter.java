@@ -59,11 +59,11 @@ public class UinGeneratorRouter {
 	public Router createRouter(Vertx vertx) {
 		Router router = Router.router(vertx);
 
-		router.get(environment.getProperty(UinGeneratorConstant.UIN))
-				.handler(this::getRouter);
+		router.get(environment.getProperty(UinGeneratorConstant.UIN_PATH)).handler(this::getRouter);
 
 		router.route().handler(BodyHandler.create());
-		router.put(environment.getProperty(UinGeneratorConstant.UIN)).handler(this::updateRouter);
+		router.put(environment.getProperty(UinGeneratorConstant.UIN_PATH)).consumes("*/json")
+				.handler(this::updateRouter);
 
 		checkAndGenerateUins(vertx);
 		return router;

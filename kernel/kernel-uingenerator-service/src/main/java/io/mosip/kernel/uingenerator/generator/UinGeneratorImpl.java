@@ -96,7 +96,6 @@ public class UinGeneratorImpl implements UinGenerator<Set<UinEntity>> {
 			String generatedUIN = generateSingleId(generatedIdLength, lowerBound, upperBound);
 			if (uinFilterUtils.isValidId(generatedUIN)) {
 				UinEntity uinBean = new UinEntity(generatedUIN, uinDefaultStatus);
-				System.out.println("====uinBean===" + uinBean);
 				uins.add(metaDataUtil.setMetaData(uinBean));
 			}
 		}

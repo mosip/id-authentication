@@ -27,21 +27,11 @@ public final class UinGeneratorConstant {
 	 * The string field DEFAULTADMIN_MOSIP_IO
 	 */
 	public static final String DEFAULTADMIN_MOSIP_IO = "defaultadmin@mosip.io";
-	
-	/**
-	 * The string field SERVER_SERVLET_PATH
-	 */
-	public static final String UIN = "uin";
 
 	/**
 	 * The string field SERVER_SERVLET_PATH
 	 */
-	public static final String ISSUE_UIN_PATH = "issue.uin.path";
-
-	/**
-	 * The string field SERVER_SERVLET_PATH
-	 */
-	public static final String UPDATE_UIN_STATUS_PATH = "update.uin.status.path";
+	public static final String UIN_PATH = "uin.path";
 
 	/**
 	 * The string field HIBERNATE_CURRENT_SESSION_CONTEXT_CLASS

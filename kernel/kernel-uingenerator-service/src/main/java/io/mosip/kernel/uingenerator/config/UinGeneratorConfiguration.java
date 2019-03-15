@@ -65,7 +65,7 @@ public class UinGeneratorConfiguration implements EnvironmentAware {
 	 * @return PropertySourcesPlaceholderConfigurer
 	 * 
 	 * @throws IOException
-	 *          throw IOException
+	 *             throw IOException
 	 */
 	@Bean
 	@Autowired
