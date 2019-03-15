@@ -22,7 +22,11 @@ import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.exception.IOException;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.FileUtils;
+import io.mosip.registration.audit.AuditFactory;
 import io.mosip.registration.config.AppConfig;
+import io.mosip.registration.constants.AuditEvent;
+import io.mosip.registration.constants.AuditReferenceIdTypes;
+import io.mosip.registration.constants.Components;
 import io.mosip.registration.constants.RegistrationClientStatusCode;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dao.GlobalParamDAO;
@@ -70,6 +74,8 @@ public class CenterMachineReMapServiceImpl implements CenterMachineReMapService 
 
 	@Value("${PRE_REG_PACKET_LOCATION}")
 	private String preRegPacketLocation;
+	@Autowired
+	private AuditFactory auditFactory;
 
 	private static final Logger LOGGER = AppConfig.getLogger(CenterMachineReMapServiceImpl.class);
 
@@ -83,11 +89,15 @@ public class CenterMachineReMapServiceImpl implements CenterMachineReMapService 
 	public void handleReMapProcess() {
 
 		Boolean isMachineReMapped = isMachineRemapped();
-		if (isMachineReMapped) {
+		if (!isMachineReMapped) {
 			LOGGER.info("REGISTRATION CENTER MACHINE REMAP : ", APPLICATION_NAME, APPLICATION_ID,
 					"handleReMapProcess called and machine has been remaped");
 
 			/* 1.disable all sync jobs */
+
+			auditFactory.audit(AuditEvent.MACHINE_REMAPPED, Components.CENTER_MACHINE_REMAP, "REGISTRATION",
+					AuditReferenceIdTypes.APPLICATION_ID.getReferenceTypeId());
+
 			updateAllSyncJobs(false);
 
 			if (isPacketsPendingForProcessing()) {
@@ -97,9 +107,13 @@ public class CenterMachineReMapServiceImpl implements CenterMachineReMapService 
 
 						/* 2. sync packet status from server to Reg client */
 						packetStatusService.packetSyncStatus(RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM);
+						auditFactory.audit(AuditEvent.MACHINE_REMAPPED, Components.PACKET_STATUS_SYNCHED,
+								"REGISTRATION", AuditReferenceIdTypes.APPLICATION_ID.getReferenceTypeId());
 
 						/* 3.sync and upload the reg packets to server */
 						packetSynchService.packetSync(RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM);
+						auditFactory.audit(AuditEvent.MACHINE_REMAPPED, Components.PACKET_SYNCHED, "REGISTRATION",
+								AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
 
 						packetUploadService.uploadAllSyncedPackets();
 
@@ -116,7 +130,8 @@ public class CenterMachineReMapServiceImpl implements CenterMachineReMapService 
 			if (!isPacketsPendingForProcessing()) {
 				/* clean up all the pre reg data and previous center data */
 				cleanUpRemappedMachineData();
-
+				auditFactory.audit(AuditEvent.MACHINE_REMAPPED, Components.CLEAN_UP, "REGISTRATION",
+						AuditReferenceIdTypes.APPLICATION_ID.getReferenceTypeId());
 				deleteAllPreRegPackets();
 				/*
 				 * enabling all the jobs after all the clean up activities for the previous
