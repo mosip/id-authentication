@@ -46,9 +46,11 @@ import io.mosip.registration.processor.packet.service.exception.RegBaseCheckedEx
 import io.mosip.registration.processor.packet.service.exception.RegBaseUncheckedException;
 import io.mosip.registration.processor.packet.service.util.encryptor.EncryptorUtil;
 import io.mosip.registration.processor.packet.upload.service.SyncUploadEncryptionService;
+import io.mosip.registration.processor.status.code.RegistrationStatusCode;
 
 /**
  * The Class SyncUploadEncryptionServiceImpl.
+ * 
  * @author Rishabh Keshari
  */
 @Service
@@ -67,17 +69,16 @@ public class SyncUploadEncryptionServiceImpl implements SyncUploadEncryptionServ
 
 	/** The gson. */
 	Gson gson = new GsonBuilder().create();
-	
+
 	@Autowired
 	private Environment env;
-	
 
 	private static final String REG_SYNC_SERVICE_ID = "mosip.registration.processor.registration.sync.id";
 	private static final String REG_SYNC_APPLICATION_VERSION = "mosip.registration.processor.application.version";
 	private static final String DATETIME_PATTERN = "mosip.registration.processor.datetime.pattern";
 	private static final String SYNCSTATUSCOMMENT = "UIN Reactivation and Deactivation By External Resources";
-	
-	
+	private static final String UPLOADSTATUSCOMMENT = "RECEIVED";
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -125,7 +126,12 @@ public class SyncUploadEncryptionServiceImpl implements SyncUploadEncryptionServ
 					packetReceiverResponseDTO = gson.fromJson(result, PacketReceiverResponseDTO.class);
 					uploadStatus = packetReceiverResponseDTO.getResponse().getStatus();
 					packerGeneratorResDto.setRegistrationId(registartionId);
-					packerGeneratorResDto.setStatus(uploadStatus);
+					if (uploadStatus
+							.equalsIgnoreCase(RegistrationStatusCode.PACKET_UPLOADED_TO_VIRUS_SCAN.toString())) {
+						packerGeneratorResDto.setStatus(UPLOADSTATUSCOMMENT);
+					} else {
+						packerGeneratorResDto.setStatus(uploadStatus);
+					}
 					packerGeneratorResDto.setMessage("Packet created and uploaded");
 					return packerGeneratorResDto;
 				}

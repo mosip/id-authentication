@@ -25,7 +25,6 @@ import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.packet.service.PacketCreationService;
 import io.mosip.registration.processor.packet.service.PacketGeneratorService;
-import io.mosip.registration.processor.packet.service.constants.RegistrationType;
 import io.mosip.registration.processor.packet.service.dto.ErrorDTO;
 import io.mosip.registration.processor.packet.service.dto.MachineResponseDto;
 import io.mosip.registration.processor.packet.service.dto.PackerGeneratorFailureDto;
@@ -40,6 +39,7 @@ import io.mosip.registration.processor.packet.service.dto.demographic.MoroccoIde
 import io.mosip.registration.processor.packet.service.exception.RegBaseCheckedException;
 import io.mosip.registration.processor.packet.service.external.StorageService;
 import io.mosip.registration.processor.packet.upload.service.SyncUploadEncryptionService;
+import io.mosip.registration.processor.status.code.RegistrationType;
 
 /**
  * The Class PacketGeneratorServiceImpl.
@@ -124,8 +124,8 @@ public class PacketGeneratorServiceImpl implements PacketGeneratorService {
 	}
 
 	private boolean isValidRegistrationType(String registrationType, PackerGeneratorFailureDto dto) {
-		if (registrationType.equals(RegistrationType.ACTIVATED)
-				|| registrationType.equals(RegistrationType.DEACTIVATED)) {
+		if (registrationType.equals(RegistrationType.ACTIVATED.toString())
+				|| registrationType.equals(RegistrationType.DEACTIVATED.toString())) {
 			return true;
 		} else {
 			dto.setMessage("Invalid RegistrationType:Enter ACTIVATED or DEACTIVATED");
