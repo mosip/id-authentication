@@ -74,7 +74,7 @@ public class MessageSenderStageTest {
 	@InjectMocks
 	private MessageSenderStage stage = new MessageSenderStage() {
 		@Override
-		public MosipEventBus getEventBus(Class<?> verticleName, String url) {
+		public MosipEventBus getEventBus(Object verticleName, String url, int instanceNumber) {
 			vertx = Vertx.vertx();
 
 			return new MosipEventBus(vertx) {
