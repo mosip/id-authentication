@@ -242,4 +242,17 @@ public class OTPRequestValidatorTest {
 		assertTrue(errors.hasErrors());
 	}
 
+	@Test
+	public void TestInvalidTime() {
+		OtpRequestDTO otpRequestDTO = new OtpRequestDTO();
+		otpRequestDTO.setTransactionID("TXN0000001");
+		otpRequestDTO.setRequestTime("2019-03-15T09:23:50.635");
+		otpRequestDTO.setIndividualId("5371843613598211");
+		otpRequestDTO.setPartnerID("1234567890");
+		System.err.println(Instant.now() + toString());
+		Errors errors = new BeanPropertyBindingResult(otpRequestDTO, "OtpRequestDTO");
+		otpRequestValidator.validate(otpRequestDTO, errors);
+		System.err.println(errors);
+
+	}
 }
