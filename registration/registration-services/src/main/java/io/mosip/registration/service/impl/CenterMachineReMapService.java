@@ -7,7 +7,7 @@ public interface CenterMachineReMapService {
 	 * mapped to another center
 	 * 
 	 */
-	void handleReMapProcess();
+	void handleReMapProcess(int step);
 
 	/**
 	 * checks if there is any Registration packets are not yet been processed by the
@@ -30,5 +30,4 @@ public interface CenterMachineReMapService {
 	 * @return
 	 */
 	Boolean isMachineRemapped();
-
 }

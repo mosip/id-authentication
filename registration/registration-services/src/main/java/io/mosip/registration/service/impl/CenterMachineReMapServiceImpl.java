@@ -30,9 +30,11 @@ import io.mosip.registration.constants.Components;
 import io.mosip.registration.constants.RegistrationClientStatusCode;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dao.GlobalParamDAO;
+import io.mosip.registration.dao.PreRegistrationDataSyncDAO;
 import io.mosip.registration.dao.RegistrationDAO;
 import io.mosip.registration.dao.SyncJobConfigDAO;
 import io.mosip.registration.entity.GlobalParam;
+import io.mosip.registration.entity.PreRegistrationList;
 import io.mosip.registration.entity.Registration;
 import io.mosip.registration.entity.SyncJobDef;
 import io.mosip.registration.entity.id.GlobalParamId;
@@ -70,6 +72,9 @@ public class CenterMachineReMapServiceImpl implements CenterMachineReMapService 
 	private SyncJobConfigDAO jobConfigDAO;
 
 	@Autowired
+	private PreRegistrationDataSyncDAO preRegistrationDataSyncDAO;
+
+	@Autowired
 	private JdbcTemplate jdbcTemplate;
 
 	@Value("${PRE_REG_PACKET_LOCATION}")
@@ -86,63 +91,106 @@ public class CenterMachineReMapServiceImpl implements CenterMachineReMapService 
 	 * handleReMapProcess()
 	 */
 	@Override
-	public void handleReMapProcess() {
+	public void handleReMapProcess(int step) {
 
 		Boolean isMachineReMapped = isMachineRemapped();
 		if (!isMachineReMapped) {
 			LOGGER.info("REGISTRATION CENTER MACHINE REMAP : ", APPLICATION_NAME, APPLICATION_ID,
 					"handleReMapProcess called and machine has been remaped");
 
-			/* 1.disable all sync jobs */
-
 			auditFactory.audit(AuditEvent.MACHINE_REMAPPED, Components.CENTER_MACHINE_REMAP, "REGISTRATION",
 					AuditReferenceIdTypes.APPLICATION_ID.getReferenceTypeId());
 
-			updateAllSyncJobs(false);
-
-			if (isPacketsPendingForProcessing()) {
-
-				if (RegistrationAppHealthCheckUtil.isNetworkAvailable()) {
-					try {
-
-						/* 2. sync packet status from server to Reg client */
-						packetStatusService.packetSyncStatus(RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM);
-						auditFactory.audit(AuditEvent.MACHINE_REMAPPED, Components.PACKET_STATUS_SYNCHED,
-								"REGISTRATION", AuditReferenceIdTypes.APPLICATION_ID.getReferenceTypeId());
-
-						/* 3.sync and upload the reg packets to server */
-						packetSynchService.packetSync(RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM);
-						auditFactory.audit(AuditEvent.MACHINE_REMAPPED, Components.PACKET_SYNCHED, "REGISTRATION",
-								AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
-
-						packetUploadService.uploadAllSyncedPackets();
-
-					} catch (RegBaseCheckedException exception) {
-						LOGGER.error("REGISTRATION CENTER MACHINE REMAP : ", APPLICATION_NAME, APPLICATION_ID,
-								exception.getMessage() + ExceptionUtils.getStackTrace(exception));
-					}
-				}
-			}
-
-			/* 4.deletions of packets */
-			packetStatusService.deleteAllProcessedRegPackets();
-
-			if (!isPacketsPendingForProcessing()) {
-				/* clean up all the pre reg data and previous center data */
-				cleanUpRemappedMachineData();
-				auditFactory.audit(AuditEvent.MACHINE_REMAPPED, Components.CLEAN_UP, "REGISTRATION",
-						AuditReferenceIdTypes.APPLICATION_ID.getReferenceTypeId());
-				deleteAllPreRegPackets();
-				/*
-				 * enabling all the jobs after all the clean up activities for the previous
-				 * center
-				 */
-				if (!isPacketsPendingForProcessing())
-					updateAllSyncJobs(true);
+			switch (step) {
+			case 1:
+				disableAllSyncJobs();
+				break;
+			case 2:
+				syncAndUploadAllPendingPackets();
+				break;
+			case 3:
+				deleteRegAndPreRegPackets();
+				break;
+			case 4:
+				cleanUpCenterSpecificData();
+				break;
+			default:
+				break;
 			}
 
 		}
 
+	}
+
+	/**
+	 * disable all sync jobs
+	 */
+	private void disableAllSyncJobs() {
+
+		updateAllSyncJobs(false);
+	}
+
+	/**
+	 * sync and upload process for Reg packets
+	 */
+	private void syncAndUploadAllPendingPackets() {
+		if (isPacketsPendingForProcessing()) {
+
+			if (RegistrationAppHealthCheckUtil.isNetworkAvailable()) {
+				try {
+
+					/* sync packet status from server to Reg client */
+					packetStatusService.packetSyncStatus(RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM);
+					auditFactory.audit(AuditEvent.MACHINE_REMAPPED, Components.PACKET_STATUS_SYNCHED, "REGISTRATION",
+							AuditReferenceIdTypes.APPLICATION_ID.getReferenceTypeId());
+
+					/* sync and upload the reg packets to server */
+					packetSynchService.packetSync(RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM);
+
+					auditFactory.audit(AuditEvent.MACHINE_REMAPPED, Components.PACKET_SYNCHED, "REGISTRATION",
+							AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
+
+					packetUploadService.uploadAllSyncedPackets();
+
+					System.out.println("packet sync completed");
+				} catch (RegBaseCheckedException exception) {
+					LOGGER.error("REGISTRATION CENTER MACHINE REMAP : ", APPLICATION_NAME, APPLICATION_ID,
+							exception.getMessage() + ExceptionUtils.getStackTrace(exception));
+				}
+			}
+		}
+	}
+
+	/**
+	 * Reg and pre reg packet deletion
+	 */
+	private void deleteRegAndPreRegPackets() {
+		/* deletions of packets */
+		packetStatusService.deleteAllProcessedRegPackets();
+		deleteAllPreRegPackets();
+	}
+
+	/**
+	 * clean up of all center specific data
+	 */
+	private void cleanUpCenterSpecificData() {
+		/*
+		 * final clean up if no packets are pending to be sent and processed by reg
+		 * processor
+		 */
+		if (!isPacketsPendingForProcessing()) {
+			/* clean up all the pre reg data and previous center data */
+			cleanUpRemappedMachineData();
+
+			auditFactory.audit(AuditEvent.MACHINE_REMAPPED, Components.CLEAN_UP, "REGISTRATION",
+					AuditReferenceIdTypes.APPLICATION_ID.getReferenceTypeId());
+			/*
+			 * enabling all the jobs after all the clean up activities for the previous
+			 * center
+			 */
+			if (!isPacketsPendingForProcessing())
+				updateAllSyncJobs(true);
+		}
 	}
 
 	/*
@@ -204,8 +252,15 @@ public class CenterMachineReMapServiceImpl implements CenterMachineReMapService 
 		return collection != null && !collection.isEmpty();
 	}
 
+	/**
+	 * delete all the pre reg packets and table records
+	 */
 	private void deleteAllPreRegPackets() {
 		try {
+			List<PreRegistrationList> preRegistrationLists = preRegistrationDataSyncDAO.getAllPreRegPackets();
+			if (isNotNullNotEmpty(preRegistrationLists)) {
+				preRegistrationDataSyncDAO.deleteAll(preRegistrationLists);
+			}
 			FileUtils.deleteDirectory(new File(preRegPacketLocation));
 		} catch (IOException exception) {
 
