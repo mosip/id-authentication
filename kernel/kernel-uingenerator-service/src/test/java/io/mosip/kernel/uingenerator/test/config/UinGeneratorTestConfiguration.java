@@ -20,6 +20,8 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.core.io.support.ResourcePropertySource;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
@@ -78,10 +80,12 @@ public class UinGeneratorTestConfiguration implements EnvironmentAware {
 		try {
 			for (int i = 0; i < applicationNames.size(); i++) {
 				String loc = env.getProperty(UinGeneratorConstant.SPRING_CLOUD_CONFIG_URI) + UinGeneratorConstant.KERNEL
-						+ env.getProperty(UinGeneratorConstant.SPRING_PROFILES_ACTIVE) + UinGeneratorConstant.FORWARD_SLASH
+						+ env.getProperty(UinGeneratorConstant.SPRING_PROFILES_ACTIVE)
+						+ UinGeneratorConstant.FORWARD_SLASH
 						+ env.getProperty(UinGeneratorConstant.SPRING_CLOUD_CONFIG_LABEL)
 						+ UinGeneratorConstant.FORWARD_SLASH + applicationNames.get(i) + UinGeneratorConstant.DASH
-						+ env.getProperty(UinGeneratorConstant.SPRING_PROFILES_ACTIVE) + UinGeneratorConstant.PROPERTIES;
+						+ env.getProperty(UinGeneratorConstant.SPRING_PROFILES_ACTIVE)
+						+ UinGeneratorConstant.PROPERTIES;
 				appResources[i] = resolver.getResources(loc)[0];
 				((AbstractEnvironment) env).getPropertySources()
 						.addLast(new ResourcePropertySource(applicationNames.get(i), loc));
@@ -136,7 +140,7 @@ public class UinGeneratorTestConfiguration implements EnvironmentAware {
 		factory.setDataSource(dataSource);
 		HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
 		vendorAdapter.setGenerateDdl(Boolean.TRUE);
-		vendorAdapter.setShowSql(Boolean.FALSE);
+		vendorAdapter.setShowSql(Boolean.TRUE);
 		factory.setDataSource(dataSource);
 		factory.setJpaVendorAdapter(vendorAdapter);
 		factory.setPackagesToScan("io.mosip.kernel.uingenerator.entity");
@@ -159,4 +163,5 @@ public class UinGeneratorTestConfiguration implements EnvironmentAware {
 	public PlatformTransactionManager transactionManager(LocalContainerEntityManagerFactoryBean entityManagerFactory) {
 		return new JpaTransactionManager(entityManagerFactory.getObject());
 	}
+
 }
