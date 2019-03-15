@@ -396,6 +396,19 @@ public class OTPManagerTest {
 		valueMap.put("status", 12343);
 		valueMap.put("message", 12343);
 		Mockito.when(restHelper.requestSync(Mockito.any())).thenThrow(new RestServiceException(
+				IdAuthenticationErrorConstants.OTP_GENERATION_FAILED, valueMap.toString(), (Object) valueMap));
+		otpManager.validateOtp("Test123", "123456");
+	}
+
+	@Test(expected = IdAuthenticationBusinessException.class)
+	public void TestthrowKeyNotFoundException() throws IdAuthenticationBusinessException, RestServiceException {
+		RestRequestDTO restRequestDTO = getRestRequestvalidDTO();
+		Mockito.when(restRequestFactory.buildRequest(RestServicesConstants.OTP_VALIDATE_SERVICE, null, Map.class))
+				.thenReturn(restRequestDTO);
+		Map<String, Object> valueMap = new HashMap<>();
+		valueMap.put("status", "failure");
+		valueMap.put("message", OTP_EXPIRED);
+		Mockito.when(restHelper.requestSync(Mockito.any())).thenThrow(new RestServiceException(
 				IdAuthenticationErrorConstants.INVALID_REST_SERVICE, valueMap.toString(), (Object) valueMap));
 		otpManager.validateOtp("Test123", "123456");
 	}

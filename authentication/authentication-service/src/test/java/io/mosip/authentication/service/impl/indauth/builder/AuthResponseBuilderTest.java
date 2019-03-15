@@ -281,7 +281,7 @@ public class AuthResponseBuilderTest {
 							.setStatus(true)
 							.build())
 					.build()
-					.getStatus().equalsIgnoreCase(STATUS_SUCCESS));
+					.isStatus());
 		assertFalse(AuthResponseBuilder
 				.newInstance(dateTimePattern )
 				.addAuthStatusInfo(AuthStatusInfoBuilder
@@ -289,7 +289,7 @@ public class AuthResponseBuilderTest {
 						.setStatus(false)
 						.build())
 				.build()
-				.getStatus().equalsIgnoreCase(STATUS_SUCCESS));
+				.isStatus());
 		
 		assertEquals(AuthResponseBuilder
 				.newInstance(dateTimePattern )

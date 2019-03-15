@@ -172,7 +172,7 @@ public class AuthFacadeImpl implements AuthFacade {
 		} finally {
 			authResponseDTO = authResponseBuilder.build();
 			logger.info(DEFAULT_SESSION_ID, IDA, AUTH_FACADE,
-					"authenticateApplicant status : " + authResponseDTO.getStatus());
+					"authenticateApplicant status : " + authResponseDTO.isStatus());
 		}
 
 		if (idInfo != null && uin != null) {
@@ -501,7 +501,7 @@ public class AuthFacadeImpl implements AuthFacade {
 		}
 		Map<String, List<IdentityInfoDTO>> idInfo = idInfoService.getIdInfo(idResDTO);
 		KycResponseDTO response = null;
-		if (idResDTO != null && authResponseDTO.getStatus().equals(SUCCESS_STATUS)) {
+		if (idResDTO != null && authResponseDTO.isStatus()) {
 			response = kycService.retrieveKycInfo(String.valueOf(idResDTO.get("uin")),
 					KycType.getEkycAuthType(env.getProperty(key)),
 					kycAuthRequestDTO.getSecondaryLangCode(), idInfo);
@@ -515,7 +515,7 @@ public class AuthFacadeImpl implements AuthFacade {
 		kycAuthResponseDTO.setTransactionID(authResponseDTO.getTransactionID());
 		kycAuthResponseDTO.setVersion(authResponseDTO.getVersion());
 		kycAuthResponseDTO.setErrors(authResponseDTO.getErrors());
-		kycAuthResponseDTO.setStatus(authResponseDTO.getStatus());
+		kycAuthResponseDTO.setStatus(authResponseDTO.isStatus());
 		kycAuthResponseDTO.setResponseTime(resTime);
 		return kycAuthResponseDTO;
 	}

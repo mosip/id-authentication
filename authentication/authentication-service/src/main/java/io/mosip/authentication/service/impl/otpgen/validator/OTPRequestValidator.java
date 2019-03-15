@@ -37,6 +37,10 @@ public class OTPRequestValidator extends IdAuthValidator {
 	private static final String REQ_TIME = "requestTime";
 
 	private static final String INDIVIDUAL_ID = "individualId";
+	
+	private static final String TRANSACTION_ID = "transactionID";
+
+
 
 	/** The mosip logger. */
 	private static Logger mosipLogger = IdaLogger.getLogger(OTPRequestValidator.class);
@@ -63,9 +67,9 @@ public class OTPRequestValidator extends IdAuthValidator {
 		if (Objects.nonNull(target)) {
 			OtpRequestDTO otpRequestDto = (OtpRequestDTO) target;
 
-			validateReqTime(otpRequestDto.getRequestTime(), errors);
+			validateReqTime(otpRequestDto.getRequestTime(), errors,REQ_TIME);
 
-			validateTxnId(otpRequestDto.getTransactionID(), errors);
+			validateTxnId(otpRequestDto.getTransactionID(), errors,TRANSACTION_ID);
 
 			if (!errors.hasErrors()) {
 				validateRequestTimedOut(otpRequestDto.getRequestTime(), errors);

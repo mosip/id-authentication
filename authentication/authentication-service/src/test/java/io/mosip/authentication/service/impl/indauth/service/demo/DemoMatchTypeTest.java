@@ -31,6 +31,7 @@ import io.mosip.authentication.service.config.IDAMappingConfig;
  * DemoMatchTypeTest
  *
  * @author Rakesh Roshan
+ * @author Dinesh Karuppiah.T
  */
 public class DemoMatchTypeTest {
 

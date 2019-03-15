@@ -20,7 +20,6 @@ import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
  * 
  * @author Dinesh Karuppiah
  */
-@Ignore
 public class AddressMatchingStrategyTest {
 
 	/**
@@ -69,15 +68,15 @@ public class AddressMatchingStrategyTest {
 		assertEquals(100, value);
 	}
 
-	@Test(expected = IdAuthenticationBusinessException.class)
+	@Test
 	public void TestInValidExactMatchingStrategyFunction() throws IdAuthenticationBusinessException {
 		MatchFunction matchFunction = AddressMatchingStrategy.EXACT.getMatchFunction();
 		Map<String, Object> matchProperties = new HashMap<>();
 		int value = matchFunction.match("no 1 second street chennai", 2, matchProperties);
-		assertEquals(100, value);
+		assertEquals(0, value);
 	}
 
-	@Test(expected = IdAuthenticationBusinessException.class)
+	@Test
 	public void TestInvalidPrimaryLang() throws IdAuthenticationBusinessException {
 		MatchFunction matchFunction = AddressMatchingStrategy.EXACT.getMatchFunction();
 		Map<String, Object> matchProperties = new HashMap<>();
@@ -94,7 +93,7 @@ public class AddressMatchingStrategyTest {
 	 * 
 	 * @throws IdAuthenticationBusinessException
 	 */
-	@Test(expected = IdAuthenticationBusinessException.class)
+	@Test
 	public void TestInvalidExactMatchingStrategyFunction() throws IdAuthenticationBusinessException {
 
 		MatchFunction matchFunction = AddressMatchingStrategy.EXACT.getMatchFunction();
@@ -116,13 +115,14 @@ public class AddressMatchingStrategyTest {
 		assertEquals(0, value2);
 	}
 
-	@Test(expected = IdAuthenticationBusinessException.class)
+	@Test
 	public void TestInvalidAddressmatchingStrategy() throws IdAuthenticationBusinessException {
 		MatchFunction matchFunction = AddressMatchingStrategy.EXACT.getMatchFunction();
 		Map<String, Object> matchProperties = new HashMap<>();
 		matchProperties = new HashMap<>();
 		matchProperties.put("languageType", DemoAuthType.ADDRESS);
 		int value2 = matchFunction.match(2, "no 1 second street chennai", matchProperties);
+		System.out.println(value2);
 		assertEquals(0, value2);
 	}
 

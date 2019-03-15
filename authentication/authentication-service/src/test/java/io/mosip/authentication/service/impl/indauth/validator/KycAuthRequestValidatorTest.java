@@ -3,6 +3,8 @@ package io.mosip.authentication.service.impl.indauth.validator;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.time.Instant;
+import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -31,6 +33,7 @@ import org.springframework.web.context.WebApplicationContext;
 
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.AuthTypeDTO;
+import io.mosip.authentication.core.dto.indauth.IdType;
 import io.mosip.authentication.core.dto.indauth.IdentityDTO;
 import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
 import io.mosip.authentication.core.dto.indauth.KycAuthRequestDTO;
@@ -137,12 +140,16 @@ public class KycAuthRequestValidatorTest {
 		List<IdentityInfoDTO> idInfoLists = new ArrayList<>();
 		idInfoLists.add(idInfoDTOs);
 		idDTO.setDobType(idInfoLists);
-		kycAuthRequestDTO.setIndividualIdType("D");
+		kycAuthRequestDTO.setIndividualIdType(IdType.UIN.getType());
 		RequestDTO request = new RequestDTO();
 		String otp = "123456";
 		request.setOtp(otp);
 		kycAuthRequestDTO.setIndividualId("5134256294");
 		request.setDemographics(idDTO);
+		request.setTransactionID("1234567890");
+		request.setTimestamp(Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
+				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
+		kycAuthRequestDTO.setConsentObtained(true);
 		kycAuthRequestDTO.setRequest(request);
 		kycAuthRequestDTO.setRequestedAuth(authTypeDTO);
 		kycAuthRequestDTO.setRequest(request);
@@ -398,7 +405,7 @@ public class KycAuthRequestValidatorTest {
 		idInfoLists.add(idInfoDTOs);
 		idDTO.setDobType(idInfoLists);
 		kycAuthRequestDTO.setIndividualIdType("D");
-		kycAuthRequestDTO.setConsentObtained(Boolean.TRUE);
+		kycAuthRequestDTO.setConsentObtained(Boolean.FALSE);
 		kycAuthRequestDTO.setSecondaryLangCode("fra");
 		RequestDTO request = new RequestDTO();
 		request.setDemographics(idDTO);

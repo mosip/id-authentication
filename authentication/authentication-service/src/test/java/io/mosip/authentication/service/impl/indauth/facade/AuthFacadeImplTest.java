@@ -86,7 +86,6 @@ import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderIm
 
 public class AuthFacadeImplTest {
 
-	private static final String STATUS_SUCCESS = "Y";
 	/** The auth facade impl. */
 	@InjectMocks
 	private AuthFacadeImpl authFacadeImpl;
@@ -265,7 +264,7 @@ public class AuthFacadeImplTest {
 		Mockito.when(idAuthService.getIdRepoByUIN(Mockito.anyString(), Mockito.anyBoolean())).thenReturn(repoDetails());
 		Mockito.when(idInfoService.getIdInfo(Mockito.any())).thenReturn(idInfo);
 		AuthResponseDTO authResponseDTO = new AuthResponseDTO();
-		authResponseDTO.setStatus("Y");
+		authResponseDTO.setStatus(Boolean.TRUE);
 
 		authResponseDTO.setResponseTime(ZonedDateTime.now()
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
@@ -484,7 +483,7 @@ public class AuthFacadeImplTest {
 		kycAuthResponseDTO.setErrors(null);
 		kycResponseDTO.setTtl(env.getProperty("ekyc.ttl.hours"));
 		Map<String, ? extends Object> identity = null;
-		kycAuthResponseDTO.setStatus(STATUS_SUCCESS);
+		kycAuthResponseDTO.setStatus(Boolean.TRUE);
 
 		kycAuthResponseDTO.setResponseTime(ZonedDateTime.now()
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
@@ -497,7 +496,7 @@ public class AuthFacadeImplTest {
 		kycResponseDTO.setIdentity(idInfo);
 		kycAuthResponseDTO.setResponse(kycResponseDTO);
 		AuthResponseDTO authResponseDTO = new AuthResponseDTO();
-		authResponseDTO.setStatus(STATUS_SUCCESS);
+		authResponseDTO.setStatus(Boolean.TRUE);
 		authResponseDTO.setResponseTime(ZonedDateTime.now()
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
 		authResponseDTO.setStaticToken("234567890");
@@ -554,7 +553,7 @@ public class AuthFacadeImplTest {
 		kycAuthResponseDTO.setErrors(null);
 		kycResponseDTO.setTtl(env.getProperty("ekyc.ttl.hours"));
 		Map<String, ? extends Object> identity = null;
-		kycAuthResponseDTO.setStatus(STATUS_SUCCESS);
+		kycAuthResponseDTO.setStatus(Boolean.TRUE);
 
 		kycAuthResponseDTO.setResponseTime(ZonedDateTime.now()
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
@@ -567,7 +566,7 @@ public class AuthFacadeImplTest {
 		kycResponseDTO.setIdentity(idInfo);
 		kycAuthResponseDTO.setResponse(kycResponseDTO);
 		AuthResponseDTO authResponseDTO = new AuthResponseDTO();
-		authResponseDTO.setStatus(STATUS_SUCCESS);
+		authResponseDTO.setStatus(Boolean.TRUE);
 		authResponseDTO.setResponseTime(ZonedDateTime.now()
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
 		authResponseDTO.setStaticToken("234567890");
@@ -626,7 +625,7 @@ public class AuthFacadeImplTest {
 		kycAuthResponseDTO.setErrors(null);
 		kycResponseDTO.setTtl(env.getProperty("ekyc.ttl.hours"));
 		Map<String, ? extends Object> identity = null;
-		kycAuthResponseDTO.setStatus(STATUS_SUCCESS);
+		kycAuthResponseDTO.setStatus(Boolean.TRUE);
 
 		kycAuthResponseDTO.setResponseTime(ZonedDateTime.now()
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
@@ -639,7 +638,7 @@ public class AuthFacadeImplTest {
 		kycResponseDTO.setIdentity(idInfo);
 		kycAuthResponseDTO.setResponse(kycResponseDTO);
 		AuthResponseDTO authResponseDTO = new AuthResponseDTO();
-		authResponseDTO.setStatus(STATUS_SUCCESS);
+		authResponseDTO.setStatus(Boolean.TRUE);
 		authResponseDTO.setResponseTime(ZonedDateTime.now()
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
 		authResponseDTO.setStaticToken("234567890");
@@ -732,7 +731,7 @@ public class AuthFacadeImplTest {
 		Mockito.when(idAuthService.getIdRepoByUIN(Mockito.anyString(), Mockito.anyBoolean())).thenReturn(repoDetails());
 		Mockito.when(idInfoService.getIdInfo(Mockito.any())).thenReturn(idInfo);
 		AuthResponseDTO authResponseDTO = new AuthResponseDTO();
-		authResponseDTO.setStatus("Y");
+		authResponseDTO.setStatus(Boolean.TRUE);
 
 		authResponseDTO.setResponseTime(ZonedDateTime.now()
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
@@ -823,7 +822,7 @@ public class AuthFacadeImplTest {
 		Mockito.when(idAuthService.getIdRepoByUIN(Mockito.anyString(), Mockito.anyBoolean())).thenReturn(repoDetails());
 		Mockito.when(idInfoService.getIdInfo(Mockito.any())).thenReturn(idInfo);
 		AuthResponseDTO authResponseDTO = new AuthResponseDTO();
-		authResponseDTO.setStatus("Y");
+		authResponseDTO.setStatus(Boolean.TRUE);
 
 		authResponseDTO.setResponseTime(ZonedDateTime.now()
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());

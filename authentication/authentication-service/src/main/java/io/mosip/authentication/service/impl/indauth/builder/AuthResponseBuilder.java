@@ -144,9 +144,9 @@ public class AuthResponseBuilder {
 		assertNotBuilt();
 		boolean status = !authStatusInfos.isEmpty() && authStatusInfos.stream().allMatch(AuthStatusInfo::isStatus);
 		if(status) {
-			responseDTO.setStatus("Y");
+			responseDTO.setStatus(Boolean.TRUE);
 		} else {
-			responseDTO.setStatus("N");
+			responseDTO.setStatus(Boolean.FALSE);
 		}
 
 		responseDTO.setResponseTime(dateFormat.format(new Date()));

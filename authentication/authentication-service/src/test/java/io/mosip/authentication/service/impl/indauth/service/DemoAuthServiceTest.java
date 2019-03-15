@@ -15,7 +15,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -92,7 +91,6 @@ public class DemoAuthServiceTest {
 		System.err.println(environment.getProperty("mosip.secondary.lang-code"));
 	}
 
-	@Ignore
 	@Test
 	public void fadMatchInputtest() throws NoSuchMethodException, SecurityException, IllegalAccessException,
 			IllegalArgumentException, InvocationTargetException {
@@ -147,12 +145,13 @@ public class DemoAuthServiceTest {
 		List<MatchInput> listMatchInputsActual = (List<MatchInput>) demoImplMethod.invoke(demoAuthServiceImpl,
 				authRequestDTO);
 		assertNotNull(listMatchInputsActual);
+		System.err.println(listMatchInputsExp);
+		System.err.println(listMatchInputsActual);
 //		assertEquals(listMatchInputsExp, listMatchInputsActual);
 //		assertTrue(listMatchInputsExp.containsAll(listMatchInputsActual));
 
 	}
 
-	@Ignore
 	@Test
 	public void adMatchInputtest() throws NoSuchMethodException, SecurityException, IllegalAccessException,
 			IllegalArgumentException, InvocationTargetException {
@@ -262,7 +261,6 @@ public class DemoAuthServiceTest {
 
 	}
 
-	@Ignore
 	@Test
 	public void pidMatchInputtest() throws NoSuchMethodException, SecurityException, IllegalAccessException,
 			IllegalArgumentException, InvocationTargetException {
@@ -451,7 +449,6 @@ public class DemoAuthServiceTest {
 		demoAuthServiceImpl.authenticate(authRequestDTO, uin, demoEntity, "123456");
 	}
 
-	@Ignore
 	@Test
 	public void TestDemoAuthStatus() throws IdAuthenticationBusinessException {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
@@ -464,7 +461,7 @@ public class DemoAuthServiceTest {
 		authRequestDTO.setId("mosip.identity.auth");
 		BioInfo bioinfo = new BioInfo();
 		bioinfo.setBioType(BioAuthType.FGR_IMG.getType());
-		
+
 		ZoneOffset offset = ZoneOffset.MAX;
 		authRequestDTO.setRequestTime(Instant.now().atOffset(offset)
 				.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
@@ -517,7 +514,6 @@ public class DemoAuthServiceTest {
 		demoAuthServiceImpl.authenticate(authRequestDTO, uin, demoEntity, "123456");
 	}
 
-	@Ignore
 	@Test
 	public void TestgetDemoStatus() throws IdAuthenticationBusinessException {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();

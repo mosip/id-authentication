@@ -104,7 +104,7 @@ public class VIDServiceImpl implements VIDService {
 				ResponseDTO responseDTO = new ResponseDTO();
 				responseDTO.setVid(vidEntityObj.getId());
 				vidResponseDTO.setResponse(responseDTO);
-				vidResponseDTO.setError(Collections.emptyList());
+				vidResponseDTO.setErrors(Collections.emptyList());
 			} else {
 				vidEntityObj = vidEntityList.get(0);
 				if (vidEntityObj.isActive()
@@ -117,7 +117,7 @@ public class VIDServiceImpl implements VIDService {
 					authError.setErrorCode(IdAuthenticationErrorConstants.VID_REGENERATION_FAILED.getErrorCode());
 					authError.setErrorMessage(IdAuthenticationErrorConstants.VID_REGENERATION_FAILED.getErrorMessage());
 					listAuthError.add(authError);
-					vidResponseDTO.setError(listAuthError);
+					vidResponseDTO.setErrors(listAuthError);
 				} else if (!vidEntityObj.isActive()
 						|| vidEntityObj.getExpiryDate().isBefore(DateUtils.getUTCCurrentDateTime())) {
 					try {
@@ -132,7 +132,7 @@ public class VIDServiceImpl implements VIDService {
 					ResponseDTO responseDTO = new ResponseDTO();
 					responseDTO.setVid(vidEntityObj.getId());
 					vidResponseDTO.setResponse(responseDTO);
-					vidResponseDTO.setError(Collections.emptyList());
+					vidResponseDTO.setErrors(Collections.emptyList());
 				}
 			}
 		}

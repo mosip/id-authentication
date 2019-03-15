@@ -135,6 +135,7 @@ public class OTPServiceImpl implements OTPService {
 			otpKey = OTPUtil.generateKey(productid, uin, txnId, tspID);
 			try {
 				otp = generateOtp(otpKey);
+				System.err.println("otpKey >>>" + otpKey);
 			} catch (IdAuthenticationBusinessException e) {
 				mosipLogger.error(SESSION_ID, this.getClass().getName(), e.getClass().getName(), e.getMessage());
 			}
@@ -167,7 +168,7 @@ public class OTPServiceImpl implements OTPService {
 			}
 			if (checkIsEmptyorNull(mobileNumber) && otpRequestDto.getOtpChannel().isPhone()) {
 				responseDTO.setMaskedMobile(MaskUtil.maskMobile(mobileNumber));
-				
+
 			}
 			otpResponseDTO.setResponse(responseDTO);
 			notificationService.sendOtpNotification(otpRequestDto, otp, uin, email, mobileNumber, idInfo);

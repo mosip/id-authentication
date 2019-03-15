@@ -147,7 +147,7 @@ public class NotificationServiceImpl implements NotificationService {
 				.flatMap(Function.identity()).filter(authType -> authType.isAuthTypeEnabled(authRequestDTO, infoHelper))
 				.map(AuthType::getDisplayName).distinct().collect(Collectors.joining(","));
 		values.put(AUTH_TYPE, authTypeStr);
-		if (authResponseDTO.getStatus().equalsIgnoreCase(STATUS_SUCCESS)) {
+		if (authResponseDTO.isStatus()) {
 			values.put(STATUS, "Passed");
 		} else {
 			values.put(STATUS, "Failed");

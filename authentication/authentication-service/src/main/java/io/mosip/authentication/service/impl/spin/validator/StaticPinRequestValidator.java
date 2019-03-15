@@ -52,6 +52,9 @@ public class StaticPinRequestValidator extends IdAuthValidator {
 	/** The Constant PINVALUE. */
 	private static final String PINVALUE = "pinValue";
 
+	/** The Constant REQ_TIME. */
+	private static final String REQ_TIME = "requestTime";
+
 	/** The mosip logger. */
 	private static Logger mosipLogger = IdaLogger.getLogger(StaticPinRequestValidator.class);
 
@@ -73,7 +76,7 @@ public class StaticPinRequestValidator extends IdAuthValidator {
 		if (Objects.nonNull(target)) {
 			StaticPinRequestDTO staticPinRequestDTO = (StaticPinRequestDTO) target;
 			validateId(staticPinRequestDTO.getId(), errors);
-			validateReqTime(staticPinRequestDTO.getRequestTime(), errors);
+			validateReqTime(staticPinRequestDTO.getRequestTime(), errors,REQ_TIME);
 			validateUinVidValue(staticPinRequestDTO, errors);
 			validateStaticPin(staticPinRequestDTO.getRequest().getStaticPin(), errors);
 		}

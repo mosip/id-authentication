@@ -12,8 +12,8 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 public class ActionableAuthError extends AuthError {
 
-	/** variable holds Action code */
-	private String actnCode;
+	/** variable holds Action message */
+	private String actionMessage;
 
 	public ActionableAuthError() {
 		super();
@@ -25,9 +25,9 @@ public class ActionableAuthError extends AuthError {
 	 * @param errorMessage - error message
 	 * @param actnCode     - action code
 	 */
-	public ActionableAuthError(String errorCode, String errorMessage, String actnCode) {
+	public ActionableAuthError(String errorCode, String errorMessage, String actionMessage) {
 		super(errorCode, errorMessage);
-		this.actnCode = actnCode;
+		this.actionMessage = actionMessage;
 	}
 
 }

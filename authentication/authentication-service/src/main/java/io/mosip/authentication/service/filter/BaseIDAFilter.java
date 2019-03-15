@@ -182,7 +182,7 @@ public abstract class BaseIDAFilter implements Filter {
 				DateUtils.parseToDate(DateUtils.getUTCCurrentDateTimeString(), env.getProperty(DATETIME_PATTERN),
 						TimeZone.getTimeZone(ZoneOffset.UTC)),
 				env.getProperty(DATETIME_PATTERN), TimeZone.getTimeZone(ZoneOffset.UTC));
-		authResponseDTO.setStatus("N");
+		authResponseDTO.setStatus(Boolean.FALSE);
 		if (Objects.nonNull(requestMap) && Objects.nonNull(requestMap.get(REQ_TIME))
 				&& isDate((String) requestMap.get(REQ_TIME))) {
 			ZoneId zone = ZonedDateTime
