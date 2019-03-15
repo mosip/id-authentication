@@ -38,7 +38,6 @@ export class SharedService {
 
   addApplicants(applicants) {
     this.allApplicants = applicants.response;
-    console.log('applicants from bopokking', applicants);
   }
 
   addNameList(nameList: NameList) {

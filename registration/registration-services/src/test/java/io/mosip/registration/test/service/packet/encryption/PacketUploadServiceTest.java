@@ -104,9 +104,11 @@ public class PacketUploadServiceTest {
 		LinkedMultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
 		LinkedHashMap<String, Object> respObj1 = new LinkedHashMap<>();
 		LinkedHashMap<String, String> msg = new LinkedHashMap<>();
+		List<LinkedHashMap<String, String>> lis=new ArrayList<>();
 		msg.put("message", "error");
+		lis.add(msg);
 		respObj1.put("response", null);
-		respObj1.put("error", msg);
+		respObj1.put("errors", lis);
 		File f = new File("");
 		map.add("file", new FileSystemResource(f));
 		HttpHeaders headers = new HttpHeaders();
@@ -303,21 +305,23 @@ public class PacketUploadServiceTest {
 		registration.setUploadCount((short) 0);
 		regList.add(registration);
 
-		LinkedHashMap<String, Object> respObj = new LinkedHashMap<>();
+		LinkedMultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
+		LinkedHashMap<String, Object> respObj1 = new LinkedHashMap<>();
 		LinkedHashMap<String, String> msg = new LinkedHashMap<>();
-		msg.put("message", "duplicate");
-		respObj.put("response", null);
-		respObj.put("error", msg);
+		List<LinkedHashMap<String, String>> lis=new ArrayList<>();
+		msg.put("message", "error");
+		lis.add(msg);
+		respObj1.put("response", null);
+		respObj1.put("errors", lis);
 		//respObj = "PACKET_UPLOADED_TO_VIRUS_SCAN";
-		Mockito.when(serviceDelegateUtil.post(Mockito.anyString(), Mockito.anyMap())).thenReturn(respObj);
+		Mockito.when(serviceDelegateUtil.post(Mockito.anyString(), Mockito.anyMap())).thenReturn(respObj1);
 		Mockito.when(registrationDAO.get(Mockito.anyList())).thenReturn(regList);
 		List<Registration> packetList = new ArrayList<>();
 		Registration registration1 = new Registration();
 		packetList.add(registration);
 		Mockito.when(registrationDAO.updateRegStatus(Mockito.anyObject())).thenReturn(registration1);
 		packetUploadServiceImpl.uploadEODPackets(regIds);
-		assertEquals("PUSHED", registration.getClientStatusCode());
-		assertEquals("S", registration.getFileUploadStatus());
+		assertEquals("E", registration.getFileUploadStatus());
 
 	}
 	

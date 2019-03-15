@@ -29,5 +29,7 @@ public class MatchOutput {
 	/** The demo match type. */
 	private MatchType matchType;
 	
+	private String language;
+	
 	
 }	

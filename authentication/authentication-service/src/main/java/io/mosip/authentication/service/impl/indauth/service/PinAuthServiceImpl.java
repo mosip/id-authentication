@@ -1,6 +1,5 @@
 package io.mosip.authentication.service.impl.indauth.service;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -49,7 +48,7 @@ public class PinAuthServiceImpl implements PinAuthService {
 	public AuthStatusInfo authenticate(AuthRequestDTO authRequestDTO, String uin,
 			Map<String, List<IdentityInfoDTO>> idInfo, String partnerId) throws IdAuthenticationBusinessException {
 		List<MatchInput> listMatchInputs = constructMatchInput(authRequestDTO);
-		List<MatchOutput> listMatchOutputs = constructMatchOutput(authRequestDTO, listMatchInputs, uin);
+		List<MatchOutput> listMatchOutputs = constructMatchOutput(authRequestDTO, listMatchInputs, uin, partnerId);
 		boolean isPinMatched = listMatchOutputs.stream().anyMatch(MatchOutput::isMatched);
 		return idInfoHelper.buildStatusInfo(isPinMatched, listMatchInputs, listMatchOutputs, PinAuthType.values());
 	}
@@ -74,12 +73,9 @@ public class PinAuthServiceImpl implements PinAuthService {
 	 * @throws IdAuthenticationBusinessException the id authentication business
 	 *                                           exception
 	 */
-	@SuppressWarnings("unchecked")
 	private List<MatchOutput> constructMatchOutput(AuthRequestDTO authRequestDTO, List<MatchInput> listMatchInputs,
-			String uin) throws IdAuthenticationBusinessException {
-		//return idInfoHelper.matchIdentityData(authRequestDTO, uin, listMatchInputs, this::getSPin);
-		return Collections.emptyList();
-		
+			String uin, String partnerId) throws IdAuthenticationBusinessException {
+		return idInfoHelper.matchIdentityData(authRequestDTO, uin, listMatchInputs, this::getSPin, partnerId);
 	}
 
 	/**
@@ -89,7 +85,7 @@ public class PinAuthServiceImpl implements PinAuthService {
 	 * @param authReq  the match type
 	 * @return the s pin
 	 */
-	public Map<String, String> getSPin(String uinValue, AuthRequestDTO authReq) {
+	public Map<String, String> getSPin(String uinValue, AuthRequestDTO authReq, String partnerId) {
 		Map<String, String> map = new HashMap<>();
 		String pin = null;
 		Optional<StaticPin> entityValues = staticPinRepo.findById(uinValue);

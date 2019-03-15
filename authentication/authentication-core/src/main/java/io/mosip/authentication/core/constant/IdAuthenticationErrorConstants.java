@@ -11,7 +11,7 @@ package io.mosip.authentication.core.constant;
  */
 public enum IdAuthenticationErrorConstants {
 
-	INVALID_UIN("IDA-MLC-002", "Invalid UIN", "A0101"),
+	INVALID_UIN("IDA-MLC-002", "Invalid UIN", "A0102"),
 	UIN_DEACTIVATED("IDA-MLC-003", "UIN has been deactivated", "A0102"),
 	INVALID_VID("IDA-MLC-004", "Invalid VID", "A0103"), 
 	EXPIRED_VID("IDA-MLC-005", "Expired VID", "A0104"),
@@ -35,7 +35,7 @@ public enum IdAuthenticationErrorConstants {
 	UNSUPPORTED_LANGUAGE("IDA-DEA-002", "Unsupported Language Code - %s", "A0111"),
 	DEMO_DATA_MISMATCH("IDA-DEA-003", "Demographic data - %s did not match", "A0112"),
 	MISSING_AUTHTYPE("IDA-MLC-015", "Missing  %s auth attribute"),
-	BIO_MISMATCH("IDA-BIA-001", "Biometric data - %s did not match", "A0113"),
+	BIO_MISMATCH("IDA-BIA-001", "Biometric data – FMR did not match", "A0113"),
 	DUPLICATE_FINGER("IDA-BIA-003", "Duplicate fingers in request", "A0114"),
 	FMR_INVALID("IDA-BIA-005", "Single FMR record contains more than one finger", "A0115"),
 	FINGER_EXCEEDING("IDA-BIA-006", "Number of FMR should not exceed 2"), 
@@ -83,7 +83,8 @@ public enum IdAuthenticationErrorConstants {
 	INVALID_REST_SERVICE("IDA-RST-004", "Rest service name is empty or invalid"),
 	INVALID_TIMEOUT("IDA-RST-005", "Timeout is invalid"), CLIENT_ERROR("IDA-RST-006", "4XX - Client Error occured"),
 	SERVER_ERROR("IDA-RST-007", "5XX - Server Error occured"),
-	CONNECTION_TIMED_OUT("IDA-RST-008", "Connection timed out")
+	CONNECTION_TIMED_OUT("IDA-RST-008", "Connection timed out"),
+	HMAC_VALIDATION_FAILED("IDA-MPA-016" , "HMAC Validation failed")
 
 	;
 

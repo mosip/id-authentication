@@ -30,6 +30,8 @@ import io.mosip.kernel.idvalidator.vid.impl.VidValidatorImpl;
 @RunWith(MockitoJUnitRunner.class)
 public class IdAuthValidatorTest {
 
+	private static final String TRANSACTION_ID = "transactionId";
+
 	/** The uin validator. */
 	@Mock
 	UinValidatorImpl uinValidator;
@@ -208,7 +210,7 @@ public class IdAuthValidatorTest {
 	@Ignore
 	@Test
 	public void testNullTxnId() {
-		validator.validateTxnId(null, errors);
+		validator.validateTxnId(null, errors,TRANSACTION_ID);
 		errors.getAllErrors().forEach(error -> {
 			assertEquals(IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(), error.getCode());
 			assertEquals(IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(),
@@ -223,7 +225,7 @@ public class IdAuthValidatorTest {
 	@Ignore
 	@Test
 	public void testInvalidTxnId() {
-		validator.validateTxnId("1234", errors);
+		validator.validateTxnId("1234", errors,TRANSACTION_ID);
 		errors.getAllErrors().forEach(error -> {
 			assertEquals(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(), error.getCode());
 			assertEquals(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(),
@@ -238,7 +240,7 @@ public class IdAuthValidatorTest {
 	@Ignore
 	@Test
 	public void testNullReqTime() {
-		validator.validateReqTime(null, errors);
+		validator.validateReqTime(null, errors,"requestTime");
 		errors.getAllErrors().forEach(error -> {
 			assertEquals(IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(), error.getCode());
 			assertEquals(IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(),

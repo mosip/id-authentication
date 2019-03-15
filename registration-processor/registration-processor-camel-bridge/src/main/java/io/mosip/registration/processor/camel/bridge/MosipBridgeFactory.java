@@ -49,7 +49,14 @@ public class MosipBridgeFactory extends AbstractVerticle {
 	 * @return the event bus
 	 */
 	public static void getEventBus() {
-		String clusterFileName = BridgeUtil.getPropertyFromConfigServer("cluster.manager.file.name");
+		String clusterFileName;
+		String zone = BridgeUtil.getZone();
+		if(zone.equalsIgnoreCase("dmz")) {
+			clusterFileName=BridgeUtil.getPropertyFromConfigServer("dmz.cluster.manager.file.name");
+		}
+		else {
+			clusterFileName=BridgeUtil.getPropertyFromConfigServer("cluster.manager.file.name");
+		}
 		String clusterUrl = BridgeUtil.getCloudConfigUri();
 		String eventBusPort = PropertyFileUtil.getProperty(MosipBridgeFactory.class,"bootstrap.properties","eventbus.port");
 		clusterUrl = clusterUrl + "/*/" + BridgeUtil.getActiveProfile() + "/" + BridgeUtil.getCloudConfigLabel() + "/"

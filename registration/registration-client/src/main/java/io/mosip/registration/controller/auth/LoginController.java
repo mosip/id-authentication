@@ -705,12 +705,12 @@ public class LoginController extends BaseController implements Initializable {
 		LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
 				"Validating roles and machine and center mapping");
 		// Checking roles
-		if (!(roleList.contains(RegistrationConstants.SUPERVISOR)
+		if (roleList.contains(RegistrationConstants.ADMIN_ROLE)) {
+			authInfo = RegistrationConstants.SUCCESS;
+		} else if (!(roleList.contains(RegistrationConstants.SUPERVISOR)
 				|| roleList.contains(RegistrationConstants.OFFICER))) {
 			authInfo = RegistrationConstants.ROLES_EMPTY;
-		} else if (roleList.contains(RegistrationConstants.ADMIN_ROLE)) {
-			authInfo = RegistrationConstants.SUCCESS;
-		}
+		} 
 		return setSessionContext(authInfo, userDetail, roleList);
 	}
 

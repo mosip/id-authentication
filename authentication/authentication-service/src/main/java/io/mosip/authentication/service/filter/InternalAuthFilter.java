@@ -3,6 +3,8 @@ package io.mosip.authentication.service.filter;
 import java.util.Map;
 import java.util.Objects;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 
@@ -29,9 +31,10 @@ public class InternalAuthFilter extends BaseAuthFilter {
 			if (Objects.nonNull(requestBody.get(REQUEST))) {
 				Map<String, Object> request = keyManager.requestData(requestBody, mapper);
 				requestBody.replace(REQUEST, request);
+				validateRequestHMAC((String) requestBody.get("requestHMAC"), mapper.writeValueAsString(request));
 			}
 			return requestBody;
-		} catch (ClassCastException e) {
+		} catch (ClassCastException | JsonProcessingException e) {
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(),
 					IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorMessage());
 		}

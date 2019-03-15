@@ -125,8 +125,6 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	/** The Constant AUTH_TYPE. */
 	private static final String AUTH_TYPE = "requestedAuth";
 
-	/** The Final Constant For allowed Internal auth type */
-	private static final String INTERNAL_ALLOWED_AUTH_TYPE = "internal.allowed.auth.type";
 
 	/** email Validator */
 	@Autowired
@@ -166,6 +164,8 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 		if (baseAuthRequestDTO != null) {
 			validateId(baseAuthRequestDTO.getId(), errors);
 		}
+		
+		
 	}
 
 	/**
@@ -462,7 +462,8 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	 * @param errors         the errors
 	 */
 	private void checkAtleastOneFaceRequestAvailable(AuthRequestDTO authRequestDTO, Errors errors) {
-		boolean isFaceRequestAvailable = checkAnyBioIdAvailable(authRequestDTO, BioAuthType.IRIS_IMG.getType());
+
+		boolean isFaceRequestAvailable = checkAnyBioIdAvailable(authRequestDTO, BioAuthType.FACE_IMG.getType());
 		if (!isFaceRequestAvailable) {
 			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE, "face request is not available");
 			errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.MISSING_AUTHTYPE.getErrorCode(),
@@ -945,10 +946,6 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 					IdAuthenticationErrorConstants.NO_AUTHENTICATION_TYPE_SELECTED_IN_REQUEST.getErrorCode(),
 					IdAuthenticationErrorConstants.NO_AUTHENTICATION_TYPE_SELECTED_IN_REQUEST.getErrorMessage());
 		}
-	}
-
-	protected void validateRequest(AuthRequestDTO requestDTO, Errors errors) {
-		validateAllowedAuthTypes(requestDTO, errors, INTERNAL_ALLOWED_AUTH_TYPE);
 	}
 
 	/**

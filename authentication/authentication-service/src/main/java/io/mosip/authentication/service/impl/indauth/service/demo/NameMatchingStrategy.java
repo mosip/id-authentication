@@ -2,9 +2,6 @@ package io.mosip.authentication.service.impl.indauth.service.demo;
 
 import java.util.Map;
 
-import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
-import io.mosip.authentication.core.dto.indauth.LanguageType;
-import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.spi.indauth.match.MasterDataFetcher;
 import io.mosip.authentication.core.spi.indauth.match.MatchFunction;
 import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
@@ -26,7 +23,7 @@ public enum NameMatchingStrategy implements TextMatchingStrategy {
 					(MasterDataFetcher) props.get("titlesFetcher"));
 			return DemoMatcherUtil.doExactMatch(refInfoName, entityInfoName);
 		} else {
-			return throwError(props);
+			return 0;
 		}
 
 	}), PARTIAL(MatchingStrategyType.PARTIAL, (Object reqInfo, Object entityInfo, Map<String, Object> props) -> {
@@ -37,7 +34,7 @@ public enum NameMatchingStrategy implements TextMatchingStrategy {
 					(MasterDataFetcher) props.get("titlesFetcher"));
 			return DemoMatcherUtil.doPartialMatch(refInfoName, entityInfoName);
 		} else {
-			return throwError(props);
+			return 0;
 		}
 	}), PHONETICS(MatchingStrategyType.PHONETICS, (Object reqInfo, Object entityInfo, Map<String, Object> props) -> {
 		if (reqInfo instanceof String && entityInfo instanceof String) {
@@ -48,7 +45,7 @@ public enum NameMatchingStrategy implements TextMatchingStrategy {
 			String language = (String) props.get("language");
 			return DemoMatcherUtil.doPhoneticsMatch(refInfoName, entityInfoName, language);
 		} else {
-			return throwError(props);
+			return 0;
 		}
 	});
 
@@ -65,33 +62,6 @@ public enum NameMatchingStrategy implements TextMatchingStrategy {
 	NameMatchingStrategy(MatchingStrategyType matchStrategyType, MatchFunction matchFunction) {
 		this.matchFunction = matchFunction;
 		this.matchStrategyType = matchStrategyType;
-	}
-
-	private static int throwError(Map<String, Object> props) throws IdAuthenticationBusinessException {
-		final Object object = props.get("languageType");
-		if (object instanceof LanguageType) {
-			final LanguageType langType = ((LanguageType) object);
-			if (langType.equals(LanguageType.PRIMARY_LANG)) {
-				throw new IdAuthenticationBusinessException(
-						IdAuthenticationErrorConstants.DEMO_DATA_MISMATCH.getErrorCode(),
-						String.format(IdAuthenticationErrorConstants.DEMOGRAPHIC_DATA_MISMATCH.getErrorMessage(),
-								getLanguagecode(LanguageType.PRIMARY_LANG),
-								DemoMatchType.NAME.getIdMapping().getIdname()));
-			} else {
-				throw new IdAuthenticationBusinessException(
-						IdAuthenticationErrorConstants.DEMO_DATA_MISMATCH.getErrorCode(),
-						String.format(IdAuthenticationErrorConstants.DEMOGRAPHIC_DATA_MISMATCH.getErrorMessage(),
-								getLanguagecode(LanguageType.SECONDARY_LANG),
-								DemoMatchType.NAME.getIdMapping().getIdname()));
-			}
-		} else {
-			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS);
-		}
-	}
-
-	private static Object getLanguagecode(LanguageType primaryLang) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	@Override

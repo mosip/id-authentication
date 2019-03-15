@@ -1,5 +1,6 @@
 package io.mosip.authentication.service.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,6 +18,9 @@ import io.mosip.authentication.service.filter.OTPFilter;
  */
 @Configuration
 public class FilterConfig {
+	
+	@Value("${ida.api.version}")
+	private String apiVersion;
 
     /**
      * Gets the otp filter.
@@ -27,10 +31,11 @@ public class FilterConfig {
     public FilterRegistrationBean<OTPFilter> getOtpFilter() {
 	FilterRegistrationBean<OTPFilter> registrationBean = new FilterRegistrationBean<>();
 	registrationBean.setFilter(new OTPFilter());
-	registrationBean.addUrlPatterns("/0.8/otp");
+	registrationBean.addUrlPatterns("/otp/" + apiVersion + "/*");
 
 	return registrationBean;
     }
+
 
     /**
      * Gets the auth filter.
@@ -41,7 +46,7 @@ public class FilterConfig {
     public FilterRegistrationBean<IdAuthFilter> getIdAuthFilter() {
 	FilterRegistrationBean<IdAuthFilter> registrationBean = new FilterRegistrationBean<>();
 	registrationBean.setFilter(new IdAuthFilter());
-	registrationBean.addUrlPatterns("/auth/0.8/*");
+	registrationBean.addUrlPatterns("/auth/" + apiVersion + "/*");
 
 	return registrationBean;
     }
@@ -55,7 +60,7 @@ public class FilterConfig {
     public FilterRegistrationBean<KycAuthFilter> getEkycFilter() {
 	FilterRegistrationBean<KycAuthFilter> registrationBean = new FilterRegistrationBean<>();
 	registrationBean.setFilter(new KycAuthFilter());
-	registrationBean.addUrlPatterns("/ekyc/0.8/*");
+	registrationBean.addUrlPatterns("/kyc/" + apiVersion + "/*");
 
 	return registrationBean;
     }
@@ -70,7 +75,7 @@ public class FilterConfig {
     public FilterRegistrationBean<InternalAuthFilter> getInternalAuthFilter() {
 	FilterRegistrationBean<InternalAuthFilter> registrationBean = new FilterRegistrationBean<>();
 	registrationBean.setFilter(new InternalAuthFilter());
-	registrationBean.addUrlPatterns("/auth/internal/0.8/*");
+	registrationBean.addUrlPatterns("/auth/internal/" + apiVersion + "/*");
 
 	return registrationBean;
     }
@@ -84,7 +89,7 @@ public class FilterConfig {
     public FilterRegistrationBean<DefaultIDAFilter> getStaticPinStoreFilter() {
 	FilterRegistrationBean<DefaultIDAFilter> registrationBean = new FilterRegistrationBean<>();
 	registrationBean.setFilter(new DefaultIDAFilter());
-	registrationBean.addUrlPatterns("/staticpin/0.8","/vid/0.8/*");
+	registrationBean.addUrlPatterns("/staticpin/" + apiVersion,"/vid/" + apiVersion + "/*");
 
 	return registrationBean;
     }

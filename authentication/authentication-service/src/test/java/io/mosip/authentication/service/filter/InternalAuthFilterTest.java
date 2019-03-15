@@ -58,13 +58,16 @@ public class InternalAuthFilterTest {
 		ReflectionTestUtils.setField(internalAuthFilter, "keyManager", keyManager);
 		requestBody.put("request",
 				"ew0KCSJhdXRoVHlwZSI6IHsNCgkJImFkZHJlc3MiOiAidHJ1ZSIsDQoJCSJiaW8iOiAidHJ1ZSIsDQoJCSJmYWNlIjogInRydWUiLA0KCQkiZmluZ2VycHJpbnQiOiAidHJ1ZSIsDQoJCSJmdWxsQWRkcmVzcyI6ICJ0cnVlIiwNCgkJImlyaXMiOiAidHJ1ZSIsDQoJCSJvdHAiOiAidHJ1ZSIsDQoJCSJwZXJzb25hbElkZW50aXR5IjogInRydWUiLA0KCQkicGluIjogInRydWUiDQoJfQ0KfQ==");
+		requestBody.put("requestHMAC","B93ACCB8D7A0B005864F684FB1F53A833BAF547ED4D610C5057DE6B55A4EF76C");
 		responseBody.put("request",
 				"{authType={address=true, bio=true, face=true, fingerprint=true, fullAddress=true, iris=true, otp=true, personalIdentity=true, pin=true}}");
 		Mockito.when(keyManager.requestData(Mockito.any(), Mockito.any())).thenReturn(new ObjectMapper().readValue(
 				"{\"authType\":{\"address\":\"true\",\"bio\":\"true\",\"face\":\"true\",\"fingerprint\":\"true\",\"fullAddress\":\"true\",\"iris\":\"true\",\"otp\":\"true\",\"personalIdentity\":\"true\",\"pin\":\"true\"}}"
 						.getBytes(),
 				Map.class));
-		assertEquals(responseBody.toString(), internalAuthFilter.decipherRequest(requestBody).toString());
+		Map<String, Object> decipherRequest = internalAuthFilter.decipherRequest(requestBody);
+		decipherRequest.remove("requestHMAC");
+		assertEquals(responseBody.toString(), decipherRequest.toString());
 
 	}
 

@@ -26,6 +26,7 @@ import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.Errors;
 import org.springframework.web.context.WebApplicationContext;
 
+import io.mosip.authentication.core.dto.indauth.IdType;
 import io.mosip.authentication.core.dto.otpgen.ChannelDTO;
 import io.mosip.authentication.core.dto.otpgen.OtpRequestDTO;
 import io.mosip.authentication.service.impl.indauth.service.OTPAuthServiceImpl;
@@ -93,7 +94,7 @@ public class OTPRequestValidatorTest {
 		OtpRequestDTO.setRequestTime(Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
 		OtpRequestDTO.setIndividualId("5076204698");
-		OtpRequestDTO.setIndividualIdType("D");
+		OtpRequestDTO.setIndividualIdType(IdType.UIN.getType());
 		ChannelDTO channel = new ChannelDTO();
 		channel.setPhone(true);
 		OtpRequestDTO.setOtpChannel(channel);
@@ -130,7 +131,7 @@ public class OTPRequestValidatorTest {
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
 		Errors errors = new BeanPropertyBindingResult(OtpRequestDTO, "OtpRequestDTO");
 		OtpRequestDTO.setIndividualId("5371843613598206");
-		OtpRequestDTO.setIndividualIdType("V");
+		OtpRequestDTO.setIndividualIdType(IdType.VID.getType());
 		ChannelDTO channel = new ChannelDTO();
 		channel.setPhone(true);
 		OtpRequestDTO.setOtpChannel(channel);
@@ -241,4 +242,17 @@ public class OTPRequestValidatorTest {
 		assertTrue(errors.hasErrors());
 	}
 
+	@Test
+	public void TestInvalidTime() {
+		OtpRequestDTO otpRequestDTO = new OtpRequestDTO();
+		otpRequestDTO.setTransactionID("TXN0000001");
+		otpRequestDTO.setRequestTime("2019-03-15T09:23:50.635");
+		otpRequestDTO.setIndividualId("5371843613598211");
+		otpRequestDTO.setPartnerID("1234567890");
+		System.err.println(Instant.now() + toString());
+		Errors errors = new BeanPropertyBindingResult(otpRequestDTO, "OtpRequestDTO");
+		otpRequestValidator.validate(otpRequestDTO, errors);
+		System.err.println(errors);
+
+	}
 }

@@ -19,6 +19,15 @@ public class AuthManagerException extends RuntimeException{
 	 */
 	
 	private String errorCode;
+	
+	public String getErrorCode() {
+		return errorCode;
+	}
+
+	public void setErrorCode(String errorCode) {
+		this.errorCode = errorCode;
+	}
+
 	private static final long serialVersionUID = 4060346018688709387L;
 	
 	/**
@@ -32,27 +41,5 @@ public class AuthManagerException extends RuntimeException{
 	public AuthManagerException(String errorCode, String errorMessage) {
 		super(errorMessage);
 		this.errorCode = errorCode;
-	}
-
-	/**
-	 * This variable holds the MosipErrors list.
-	 */
-	private List<ServiceError> list = new ArrayList<>();
-
-	/**
-	 * @param list
-	 *            The error list.
-	 */
-	public AuthManagerException(List<ServiceError> list) {
-		this.list = list;
-	}
-
-	/**
-	 * Getter for error list.
-	 * 
-	 * @return The error list.
-	 */
-	public List<ServiceError> getList() {
-		return list;
 	}
 }

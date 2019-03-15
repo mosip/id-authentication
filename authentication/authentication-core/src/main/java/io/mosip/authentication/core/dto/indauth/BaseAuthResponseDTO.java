@@ -14,8 +14,8 @@ import lombok.Data;
 @Data
 public class BaseAuthResponseDTO {
 	
-	/** The Status value */
-	private String status;
+	/** The boolean value for status */
+	private boolean status;
 	
 	/** The error List */
 	private List<AuthError> errors;

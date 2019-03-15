@@ -87,7 +87,7 @@ public class PinAuthServiceImplTest {
 		ReflectionTestUtils.setField(otpManager, "restRequestFactory", restRequestFactory);
 
 	}
-	@Ignore
+
 	@Test
 	public void validPinTest() throws IdAuthenticationBusinessException {
 		StaticPin stat = new StaticPin();

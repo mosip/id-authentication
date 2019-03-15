@@ -86,19 +86,16 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 	/**
 	 * Handle all exceptions.
 	 *
-	 * @param ex
-	 *            the ex
-	 * @param request
-	 *            the request
+	 * @param ex      the ex
+	 * @param request the request
 	 * @return the response entity
 	 */
 	@ExceptionHandler(Exception.class)
 	protected ResponseEntity<Object> handleAllExceptions(Exception ex, WebRequest request) {
 		mosipLogger.debug(DEFAULT_SESSION_ID, EVENT_EXCEPTION, "Entered handleAllExceptions",
 				PREFIX_HANDLING_EXCEPTION + ex.getClass().toString());
-		mosipLogger.error(DEFAULT_SESSION_ID, EVENT_EXCEPTION, ex.getClass().getName(),
-				ex.toString() + "\n Request : " + request + "\n Status returned : " + HttpStatus.OK
-						+ "\n" + ExceptionUtils.getStackTrace(ex));
+		mosipLogger.error(DEFAULT_SESSION_ID, EVENT_EXCEPTION, ex.getClass().getName(), ex.toString() + "\n Request : "
+				+ request + "\n Status returned : " + HttpStatus.OK + "\n" + ExceptionUtils.getStackTrace(ex));
 		IDAuthenticationUnknownException unknownException = new IDAuthenticationUnknownException(
 				IdAuthenticationErrorConstants.UNABLE_TO_PROCESS);
 		mosipLogger.debug(DEFAULT_SESSION_ID, EVENT_EXCEPTION, "Changing exception",
@@ -109,16 +106,11 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 	/**
 	 * Method to handle all exception and return as customized response object.
 	 * 
-	 * @param ex
-	 *            Exception
-	 * @param errorMessage
-	 *            List of error messages
-	 * @param headers
-	 *            Http headers
-	 * @param status
-	 *            Http status
-	 * @param request
-	 *            Web request
+	 * @param ex           Exception
+	 * @param errorMessage List of error messages
+	 * @param headers      Http headers
+	 * @param status       Http status
+	 * @param request      Web request
 	 * @return Customized response object
 	 * 
 	 * @see org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler#handleExceptionInternal(java.lang.Exception,
@@ -136,8 +128,8 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 		mosipLogger.error(DEFAULT_SESSION_ID, "Spring MVC Exception", ex.getClass().getName(),
 				ex.toString() + "Error message Object : "
 						+ Optional.ofNullable(errorMessage).orElseGet(() -> "null").toString() + "\nStatus returned: "
-						+ Optional.ofNullable(status).orElseGet(() -> HttpStatus.OK).toString()
-						+ "\n" + ExceptionUtils.getStackTrace(ex));
+						+ Optional.ofNullable(status).orElseGet(() -> HttpStatus.OK).toString() + "\n"
+						+ ExceptionUtils.getStackTrace(ex));
 
 		if (ex instanceof ServletException || ex instanceof BeansException
 				|| ex instanceof HttpMessageConversionException) {
@@ -158,10 +150,8 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 	/**
 	 * Method to handle and customize the response.
 	 *
-	 * @param ex
-	 *            Exception
-	 * @param request
-	 *            Web request
+	 * @param ex      Exception
+	 * @param request Web request
 	 * @return ResponseEntity containing error response object and http status.
 	 */
 	@ExceptionHandler(IdAuthenticationAppException.class)
@@ -170,8 +160,8 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 		mosipLogger.debug(DEFAULT_SESSION_ID, ID_AUTHENTICATION_APP_EXCEPTION, "Entered handleIdUsageException",
 				PREFIX_HANDLING_EXCEPTION + ex.getClass().toString());
 
-		mosipLogger.error(DEFAULT_SESSION_ID, ID_AUTHENTICATION_APP_EXCEPTION, ex.getErrorCode(), ex.toString()
-				+ "\n Status returned: " + HttpStatus.OK + ExceptionUtils.getStackTrace(ex));
+		mosipLogger.error(DEFAULT_SESSION_ID, ID_AUTHENTICATION_APP_EXCEPTION, ex.getErrorCode(),
+				ex.toString() + "\n Status returned: " + HttpStatus.OK + ExceptionUtils.getStackTrace(ex));
 
 		Throwable e = ex;
 		while (e.getCause() != null) {
@@ -182,26 +172,23 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 			}
 		}
 		if (e instanceof IDDataValidationException) {
-			return new ResponseEntity<>(buildExceptionResponse((BaseCheckedException) e),
-					HttpStatus.OK);
+			return new ResponseEntity<>(buildExceptionResponse((BaseCheckedException) e), HttpStatus.OK);
 		} else {
-			return new ResponseEntity<>(buildExceptionResponse((BaseCheckedException) e),
-					HttpStatus.OK);
+			return new ResponseEntity<>(buildExceptionResponse((BaseCheckedException) e), HttpStatus.OK);
 		}
 	}
 
 	/**
 	 * Constructs exception response body for all exceptions.
 	 *
-	 * @param ex
-	 *            the exception occurred
+	 * @param ex the exception occurred
 	 * @return Object .
 	 */
 	private Object buildExceptionResponse(Exception ex) {
 		mosipLogger.debug(DEFAULT_SESSION_ID, "Building exception response", "Entered buildExceptionResponse",
 				PREFIX_HANDLING_EXCEPTION + ex.getClass().toString());
 		BaseAuthResponseDTO authResp = new BaseAuthResponseDTO();
-		authResp.setStatus("N");
+		authResp.setStatus(Boolean.FALSE);
 		if (ex instanceof IdAuthenticationBaseException) {
 			IdAuthenticationBaseException baseException = (IdAuthenticationBaseException) ex;
 			Locale locale = LocaleContextHolder.getLocale();
@@ -240,22 +227,25 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 	/**
 	 * Creates the auth error based on ActionItem
 	 *
-	 * @param authException
-	 *            the auth exception
-	 * @param errorCode
-	 *            the error code
-	 * @param errorMessage
-	 *            the error message
+	 * @param authException the auth exception
+	 * @param errorCode     the error code
+	 * @param errorMessage  the error message
 	 * @return the auth error
 	 */
 	private AuthError createAuthError(IdAuthenticationBaseException authException, String errorCode,
 			String errorMessage) {
 		String actionCode = authException.getActionCode();
 		AuthError err;
-		if (actionCode == null) {
+		if (actionCode == null || actionCode.isEmpty()) {
 			err = new AuthError(errorCode, errorMessage);
 		} else {
-			err = new ActionableAuthError(errorCode, errorMessage, actionCode);
+			String actionMessage = "";
+			Optional<String> optionalActionMessage = Optional
+					.ofNullable(messageSource.getMessage(actionCode, null, LocaleContextHolder.getLocale()));
+			if (optionalActionMessage.isPresent()) {
+				actionMessage = optionalActionMessage.get();
+			}
+			err = new ActionableAuthError(errorCode, errorMessage, actionMessage);
 		}
 
 		return err;

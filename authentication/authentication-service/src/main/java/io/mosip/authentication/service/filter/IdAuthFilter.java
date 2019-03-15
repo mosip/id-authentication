@@ -7,17 +7,17 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Component;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.AuthTypeDTO;
-import io.mosip.authentication.core.dto.indauth.BioIdentityInfoDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.authentication.core.spi.indauth.match.MatchType;
 import io.mosip.authentication.service.policy.AuthPolicy;
 import io.mosip.authentication.service.policy.Policy;
 import io.mosip.kernel.core.util.DateUtils;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class IdAuthFilter.
  *
@@ -68,9 +68,10 @@ public class IdAuthFilter extends BaseAuthFilter {
 			if (null != requestBody.get(REQUEST)) {
 				Map<String, Object> request = keyManager.requestData(requestBody, mapper);
 				requestBody.replace(REQUEST, request);
+				validateRequestHMAC((String) requestBody.get("requestHMAC"), mapper.writeValueAsString(request));
 			}
 			return requestBody;
-		} catch (ClassCastException e) {
+		} catch (ClassCastException | JsonProcessingException e) {
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(),
 					IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorMessage());
 		}
@@ -187,15 +188,18 @@ public class IdAuthFilter extends BaseAuthFilter {
 					.collect(Collectors.toList());
 			AuthTypeDTO authType = authRequestDTO.getRequestedAuth();
 			if (authType.isDemo() && !allowedauthType.contains(MatchType.Category.DEMO.name())) {
-				throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED);
+				throw new IdAuthenticationAppException(
+						IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorCode(),
+						String.format(IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorMessage(),
+								MatchType.Category.DEMO.name()));
 			}
 
 			if (authType.isBio() && !allowedauthType.contains(MatchType.Category.BIO.name())) {
 				throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED);
 			}
 			if (authType.isBio() && allowedauthType.contains(MatchType.Category.BIO.name())) {
-				List<String> bioInfoList = authRequestDTO.getRequest().getBiometrics().stream()
-						.map(BioIdentityInfoDTO::getData).map(s -> s.getBioType()).collect(Collectors.toList());
+				List<String> bioInfoList = authRequestDTO.getRequest().getBiometrics().stream().map(s -> s.getData().getBioType())
+						.collect(Collectors.toList());
 				for (String bioInfo : bioInfoList) {
 					if (!bioInfoList.contains(bioInfo)) {
 						throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED);

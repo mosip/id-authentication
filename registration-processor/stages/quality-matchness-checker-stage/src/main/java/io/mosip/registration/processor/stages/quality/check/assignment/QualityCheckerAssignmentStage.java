@@ -36,7 +36,7 @@ public class QualityCheckerAssignmentStage extends MosipVerticleManager {
 	@Autowired
 	QualityCheckManager<String, QCUserDto> qualityCheckManager;
 
-	@Value("${vertx.ignite.configuration}")
+	@Value("${vertx.cluster.configuration}")
 	private String clusterManagerUrl;
 
 	/**

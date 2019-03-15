@@ -111,8 +111,13 @@ public class OTPServiceImpl implements OTPService {
 		String tspID = otpRequestDto.getPartnerID();
 		Map<String, Object> idResDTO = idAuthService.processIdType(idvIdType, idvId, false);
 		Map<String, List<IdentityInfoDTO>> idInfo = idAuthService.getIdInfo(idResDTO);
-		mobileNumber = getMobileNumber(idInfo);
-		email = getEmail(idInfo);
+		if (otpRequestDto.getOtpChannel().isPhone()) {
+			mobileNumber = getMobileNumber(idInfo);
+		}
+		if (otpRequestDto.getOtpChannel().isEmail()) {
+			email = getEmail(idInfo);
+		}
+
 		String uin = String.valueOf(idResDTO.get("uin"));
 
 		if (!checkIsEmptyorNull(email) && otpRequestDto.getOtpChannel().isEmail()) {
@@ -130,6 +135,7 @@ public class OTPServiceImpl implements OTPService {
 			otpKey = OTPUtil.generateKey(productid, uin, txnId, tspID);
 			try {
 				otp = generateOtp(otpKey);
+				System.err.println("otpKey >>>" + otpKey);
 			} catch (IdAuthenticationBusinessException e) {
 				mosipLogger.error(SESSION_ID, this.getClass().getName(), e.getClass().getName(), e.getMessage());
 			}
@@ -156,14 +162,15 @@ public class OTPServiceImpl implements OTPService {
 			String responseTime = formatDate(new Date(), env.getProperty(DATETIME_PATTERN));
 			otpResponseDTO.setResponseTime(responseTime);
 			MaskedResponseDTO responseDTO = new MaskedResponseDTO();
-			if (checkIsEmptyorNull(email)) {
+			if (checkIsEmptyorNull(email) && otpRequestDto.getOtpChannel().isEmail()) {
 				responseDTO.setMaskedEmail(MaskUtil.maskEmail(email));
 				otpResponseDTO.setResponse(responseDTO);
 			}
-			if (checkIsEmptyorNull(mobileNumber)) {
+			if (checkIsEmptyorNull(mobileNumber) && otpRequestDto.getOtpChannel().isPhone()) {
 				responseDTO.setMaskedMobile(MaskUtil.maskMobile(mobileNumber));
-				otpResponseDTO.setResponse(responseDTO);
+
 			}
+			otpResponseDTO.setResponse(responseDTO);
 			notificationService.sendOtpNotification(otpRequestDto, otp, uin, email, mobileNumber, idInfo);
 			AutnTxn authTxn = createAuthTxn(idvId, idvIdType, uin, reqTime, txnId, status, comment,
 					RequestType.OTP_REQUEST);

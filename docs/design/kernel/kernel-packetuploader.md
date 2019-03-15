@@ -39,4 +39,4 @@ This application can be used as a SFTP client to upload files/packets to SFTP se
 ## Implementation
 
 
-**kernel-packetuploader-sftp** [README](../../kernel/kernel-packetuploader-sftp/README.md)
+**kernel-packetuploader-sftp** [README](../../../kernel/kernel-packetuploader-sftp/README.md)

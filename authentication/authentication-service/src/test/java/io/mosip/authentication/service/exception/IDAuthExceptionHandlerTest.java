@@ -132,7 +132,7 @@ public class IDAuthExceptionHandlerTest {
 	@Test
 	public void testHandleDataException() {
 		BaseAuthResponseDTO expectedResponse = new BaseAuthResponseDTO();
-		expectedResponse.setStatus("N");
+		expectedResponse.setStatus(Boolean.FALSE);
 		expectedResponse.setErrors(
 				Collections.singletonList(new AuthError(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(),
 						IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorMessage())));
@@ -154,7 +154,7 @@ public class IDAuthExceptionHandlerTest {
 	@Test
 	public void testAsyncRequestTimeoutException() {
 		BaseAuthResponseDTO expectedResponse = new BaseAuthResponseDTO();
-		expectedResponse.setStatus("N");
+		expectedResponse.setStatus(Boolean.FALSE);
 		expectedResponse.setErrors(Collections
 				.singletonList(new AuthError(IdAuthenticationErrorConstants.CONNECTION_TIMED_OUT.getErrorCode(),
 						IdAuthenticationErrorConstants.CONNECTION_TIMED_OUT.getErrorMessage())));
@@ -168,7 +168,7 @@ public class IDAuthExceptionHandlerTest {
 	@Test
 	public void testNoSuchMessageException() {
 		BaseAuthResponseDTO expectedResponse = new BaseAuthResponseDTO();
-		expectedResponse.setStatus("N");
+		expectedResponse.setStatus(Boolean.FALSE);
 		expectedResponse.setErrors(
 				Collections.singletonList(new AuthError(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(),
 						IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorMessage())));
@@ -182,7 +182,7 @@ public class IDAuthExceptionHandlerTest {
 	@Test
 	public void testhandleAllExceptionsUnknownError() {
 		BaseAuthResponseDTO expectedResponse = new BaseAuthResponseDTO();
-		expectedResponse.setStatus("N");
+		expectedResponse.setStatus(Boolean.FALSE);
 		expectedResponse.setErrors(
 				Collections.singletonList(new AuthError(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(),
 						IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorMessage())));
@@ -205,7 +205,7 @@ public class IDAuthExceptionHandlerTest {
 	@Test
 	public void testCreateAuthError() {
 		BaseAuthResponseDTO expectedResponse = new BaseAuthResponseDTO();
-		expectedResponse.setStatus("N");
+		expectedResponse.setStatus(Boolean.FALSE);
 		expectedResponse.setErrors(Collections
 				.singletonList(new ActionableAuthError(IdAuthenticationErrorConstants.INVALID_TXN_ID.getErrorCode(),
 						IdAuthenticationErrorConstants.INVALID_TXN_ID.getErrorMessage(),

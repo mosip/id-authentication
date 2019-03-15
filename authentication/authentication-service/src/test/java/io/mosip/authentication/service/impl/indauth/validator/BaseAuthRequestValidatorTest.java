@@ -368,7 +368,6 @@ public class BaseAuthRequestValidatorTest {
 		dataDTO.setBioType("FID");
 		dataDTO.setDeviceProviderID("provider001");
 		faceValue.setData(dataDTO);
-		
 		List<BioIdentityInfoDTO> fingerIdentityInfoDtoList = new ArrayList<BioIdentityInfoDTO>();
 		fingerIdentityInfoDtoList.add(fingerValue);
 		fingerIdentityInfoDtoList.add(irisValue);
@@ -415,7 +414,6 @@ public class BaseAuthRequestValidatorTest {
 		dataDTO.setBioType("FID");
 		dataDTO.setDeviceProviderID("provider001");
 		faceValue.setData(dataDTO);
-		
 		List<BioIdentityInfoDTO> fingerIdentityInfoDtoList = new ArrayList<BioIdentityInfoDTO>();
 		fingerIdentityInfoDtoList.add(fingerValue);
 		fingerIdentityInfoDtoList.add(irisValue);
@@ -463,7 +461,6 @@ public class BaseAuthRequestValidatorTest {
 		faceData.setBioType("FID");
 		faceData.setDeviceProviderID("provider001");
 		faceValue.setData(faceData);
-		
 		List<BioIdentityInfoDTO> fingerIdentityInfoDtoList = new ArrayList<BioIdentityInfoDTO>();
 		fingerIdentityInfoDtoList.add(fingerValue);
 		fingerIdentityInfoDtoList.add(irisValue);

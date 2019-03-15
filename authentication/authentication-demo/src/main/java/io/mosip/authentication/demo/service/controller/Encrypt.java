@@ -1,35 +1,16 @@
 package io.mosip.authentication.demo.service.controller;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
-import java.security.KeyFactory;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
-import java.security.Provider;
-import java.security.PublicKey;
 import java.security.cert.CertificateException;
-import java.security.cert.CertificateFactory;
-import java.security.cert.X509Certificate;
 import java.security.spec.InvalidKeySpecException;
-import java.security.spec.X509EncodedKeySpec;
-import java.time.LocalDateTime;
-import javax.crypto.BadPaddingException;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
-import javax.crypto.SecretKey;
+
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
+
 import org.apache.commons.codec.binary.Base64;
 import org.bouncycastle.util.Arrays;
 import org.json.JSONException;
@@ -45,6 +26,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -54,6 +36,7 @@ import io.mosip.authentication.demo.service.dto.EncryptionRequestDto;
 import io.mosip.authentication.demo.service.dto.EncryptionResponseDto;
 import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.kernel.core.util.HMACUtils;
 import io.swagger.annotations.ApiOperation;
 
 /**
@@ -112,7 +95,7 @@ public class Encrypt {
 	@ApiOperation(value = "Encrypt Identity with sessionKey and Encrypt Session Key with Public Key", response = EncryptionResponseDto.class)
 	public EncryptionResponseDto encrypt(@RequestBody EncryptionRequestDto encryptionRequestDto)
 			throws NoSuchAlgorithmException, InvalidKeySpecException, IOException, KeyManagementException,
-			RestClientException, JSONException {
+			JSONException {
 		return kernelEncrypt(encryptionRequestDto);
 	}
 
@@ -136,11 +119,11 @@ public class Encrypt {
 	 *             the JSON exception
 	 */
 	private EncryptionResponseDto kernelEncrypt(EncryptionRequestDto encryptionRequestDto)
-			throws KeyManagementException, RestClientException, NoSuchAlgorithmException, JsonProcessingException,
-			IOException, JSONException {
-		String encryptedResponse = getEncryptedValue(
-				objMapper.writeValueAsString(encryptionRequestDto.getIdentityRequest()));
+			throws KeyManagementException, NoSuchAlgorithmException, IOException, JSONException {
+		String identityBlock = objMapper.writeValueAsString(encryptionRequestDto.getIdentityRequest());
+		String encryptedResponse = getEncryptedValue(identityBlock);
 		EncryptionResponseDto encryptionResponseDto = split(encryptedResponse);
+		encryptionResponseDto.setRequestHMAC(HMACUtils.digestAsPlainText(HMACUtils.generateHash(identityBlock.getBytes())));
 		return encryptionResponseDto;
 	}
 
