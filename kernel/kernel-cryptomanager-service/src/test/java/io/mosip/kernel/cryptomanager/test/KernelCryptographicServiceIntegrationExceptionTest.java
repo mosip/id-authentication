@@ -159,7 +159,15 @@ public class KernelCryptographicServiceIntegrationExceptionTest {
 
 	@Test
 	public void testIllegalArgumentException() throws Exception {
-		String requestBody = "{\"applicationId\": \"REGISTRATION\",\"data\": \"dXJ2aWw\",\"referenceId\": \"ref123\",\"timeStamp\": \"2018-12-06T12:07:44.403Z\"}";
+		requestDto = new CryptomanagerRequestDto();
+		requestWrapper.setRequest(requestDto);
+
+		/* Set value in CryptomanagerRequestDto */
+		requestDto.setApplicationId("REGISTRATION");
+		requestDto.setData("dXJ2aWw");
+		requestDto.setReferenceId("ref123");
+		requestDto.setTimeStamp(DateUtils.parseToLocalDateTime("2018-12-06T12:07:44.403Z"));
+		String requestBody = objectMapper.writeValueAsString(requestWrapper);
 		mockMvc.perform(post("/decrypt").contentType(MediaType.APPLICATION_JSON).content(requestBody))
 				.andExpect(status().isOk());
 	}
@@ -173,7 +181,15 @@ public class KernelCryptographicServiceIntegrationExceptionTest {
 		errorResponse.setErrors(errors);
 		server.expect(requestTo(builder.buildAndExpand(uriParams).toUriString()))
 				.andRespond(withSuccess(objectMapper.writeValueAsString(errorResponse), MediaType.APPLICATION_JSON));
-		String requestBody = "{\"applicationId\": \"REGISTRATION\",\"data\": \"dXJ2aWw\",\"referenceId\": \"ref123\",\"timeStamp\": \"2018-12-06T12:07:44.403Z\"}";
+		requestDto = new CryptomanagerRequestDto();
+		requestWrapper.setRequest(requestDto);
+
+		/* Set value in CryptomanagerRequestDto */
+		requestDto.setApplicationId("REGISTRATION");
+		requestDto.setData("dXJ2aWw");
+		requestDto.setReferenceId("ref123");
+		requestDto.setTimeStamp(DateUtils.parseToLocalDateTime("2018-12-06T12:07:44.403Z"));
+		String requestBody = objectMapper.writeValueAsString(requestWrapper);
 		mockMvc.perform(post("/encrypt").contentType(MediaType.APPLICATION_JSON).content(requestBody))
 				.andExpect(status().isInternalServerError()).andReturn();
 
@@ -189,9 +205,16 @@ public class KernelCryptographicServiceIntegrationExceptionTest {
 		server.expect(requestTo(symmetricKeyUrl))
 				.andRespond(withSuccess(objectMapper.writeValueAsString(errorResponse), MediaType.APPLICATION_JSON));
 		when(decryptor.symmetricDecrypt(Mockito.any(), Mockito.any())).thenReturn("dXJ2aWw".getBytes());
-		String requestBody = "{\"applicationId\": \"uoiuoi\",\"data\": \"dXJ2aWwjS0VZX1NQTElUVEVSI3Vydmls\",\"referenceId\": \"ref123\",\"timeStamp\": \"2018-12-06T12:07:44.403Z\"}";
-		MvcResult result = mockMvc
-				.perform(post("/decrypt").contentType(MediaType.APPLICATION_JSON).content(requestBody))
+		requestDto = new CryptomanagerRequestDto();
+		requestWrapper.setRequest(requestDto);
+
+		/* Set value in CryptomanagerRequestDto */
+		requestDto.setApplicationId("uoiuoi");
+		requestDto.setData("dXJ2aWwjS0VZX1NQTElUVEVSI3Vydmls");
+		requestDto.setReferenceId("ref123");
+		requestDto.setTimeStamp(DateUtils.parseToLocalDateTime("2018-12-06T12:07:44.403Z"));
+		String requestBody = objectMapper.writeValueAsString(requestWrapper);
+		mockMvc.perform(post("/decrypt").contentType(MediaType.APPLICATION_JSON).content(requestBody))
 				.andExpect(status().isInternalServerError()).andReturn();
 	}
 

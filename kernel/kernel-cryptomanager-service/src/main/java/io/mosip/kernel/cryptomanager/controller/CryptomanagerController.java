@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.kernel.core.http.RequestWrapper;
+import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.cryptomanager.dto.CryptomanagerRequestDto;
 import io.mosip.kernel.cryptomanager.dto.CryptomanagerResponseDto;
 import io.mosip.kernel.cryptomanager.service.CryptomanagerService;
@@ -47,6 +48,7 @@ public class CryptomanagerController {
 	 *            {@link CryptomanagerRequestDto} request
 	 * @return {@link CryptomanagerResponseDto} encrypted Data
 	 */
+	@ResponseFilter
 	@ApiOperation(value = "Encrypt the data", response = CryptomanagerResponseDto.class)
 	@PostMapping(value = "/encrypt", produces = "application/json")
 	public CryptomanagerResponseDto encrypt(
@@ -61,6 +63,7 @@ public class CryptomanagerController {
 	 *            {@link CryptomanagerRequestDto} request
 	 * @return {@link CryptomanagerResponseDto} decrypted Data
 	 */
+	@ResponseFilter
 	@ApiOperation(value = "Decrypt the data", response = CryptomanagerResponseDto.class)
 	@PostMapping(value = "/decrypt", produces = "application/json")
 	public CryptomanagerResponseDto decrypt(
