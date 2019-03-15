@@ -37,6 +37,9 @@ import io.mosip.kernel.core.util.EmptyCheckUtils;
 @RestControllerAdvice
 public class ResponseBodyAdviceConfig implements ResponseBodyAdvice<Object> {
 
+	/**
+	 * Autowired reference for {@link ObjectMapper}.
+	 */
 	@Autowired
 	private ObjectMapper objectMapper;
 

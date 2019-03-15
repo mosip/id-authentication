@@ -32,14 +32,22 @@ import io.mosip.kernel.emailnotification.constant.MailNotifierArgumentErrorConst
 @RestControllerAdvice
 public class ApiExceptionHandler {
 
+	/**
+	 * Autowired reference for {@link ObjectMapper}.
+	 */
 	@Autowired
 	private ObjectMapper objectMapper;
 
 	/**
+	 * This method handles {@link InvalidArgumentsException}.
+	 * 
+	 * @param httpServletRequest
+	 *            the servlet request.
 	 * @param exception
-	 *            the exception to be handled.
-	 * @return the error map.
+	 *            the exception.
+	 * @return the error response.
 	 * @throws IOException
+	 *             when the response is not mapped.
 	 */
 	@ExceptionHandler(InvalidArgumentsException.class)
 	public ResponseEntity<ResponseWrapper<ServiceError>> mailNotifierArgumentsValidation(
@@ -49,26 +57,54 @@ public class ApiExceptionHandler {
 		return new ResponseEntity<>(responseWrapper, HttpStatus.OK);
 	}
 
+	/**
+	 * @param httpServletRequest
+	 *            the servlet request.
+	 * @param exception
+	 *            the exception.
+	 * @return the error response.
+	 * @throws IOException
+	 *             when the response is not mapped.
+	 */
 	@ExceptionHandler(HttpMessageNotReadableException.class)
 	public ResponseEntity<ResponseWrapper<ServiceError>> onHttpMessageNotReadable(
-			final HttpServletRequest httpServletRequest, final HttpMessageNotReadableException e) throws IOException {
+			final HttpServletRequest httpServletRequest, final HttpMessageNotReadableException exception)
+			throws IOException {
 		ResponseWrapper<ServiceError> responseWrapper = setErrors(httpServletRequest);
 		ServiceError error = new ServiceError(MailNotifierArgumentErrorConstants.REQUEST_DATA_NOT_VALID.getErrorCode(),
-				e.getMessage());
+				exception.getMessage());
 		responseWrapper.getErrors().add(error);
 		return new ResponseEntity<>(responseWrapper, HttpStatus.OK);
 	}
 
+	/**
+	 * @param httpServletRequest
+	 *            the servlet request.
+	 * @param exception
+	 *            the exception.
+	 * @return the error response.
+	 * @throws IOException
+	 *             when the response is not mapped.
+	 */
 	@ExceptionHandler(value = { Exception.class, RuntimeException.class })
 	public ResponseEntity<ResponseWrapper<ServiceError>> defaultErrorHandler(
-			final HttpServletRequest httpServletRequest, Exception e) throws IOException {
+			final HttpServletRequest httpServletRequest, Exception exception) throws IOException {
 		ResponseWrapper<ServiceError> responseWrapper = setErrors(httpServletRequest);
 		ServiceError error = new ServiceError(MailNotifierArgumentErrorConstants.INTERNAL_SERVER_ERROR.getErrorCode(),
-				e.getMessage());
+				exception.getMessage());
 		responseWrapper.getErrors().add(error);
 		return new ResponseEntity<>(responseWrapper, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
+	/**
+	 * This method sets the error response.
+	 * 
+	 * @param httpServletRequest
+	 *            the servlet request.
+	 * @return the error response wrapped in {@link ResponseWrapper}.
+	 * @throws IOException
+	 *             when the response is not mapped.
+	 */
 	private ResponseWrapper<ServiceError> setErrors(HttpServletRequest httpServletRequest) throws IOException {
 		RequestWrapper<?> requestWrapper = null;
 		ResponseWrapper<ServiceError> responseWrapper = new ResponseWrapper<>();

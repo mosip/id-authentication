@@ -38,16 +38,23 @@ public class AsyncConfiguration implements AsyncConfigurer {
 		return mailNotifierAsyncHandler;
 	}
 
+	/**
+	 * Bean to register RequestResponse Filter.
+	 * 
+	 * @return reqResFilter.
+	 */
 	@Bean
 	public FilterRegistrationBean<Filter> registerReqResFilter() {
-		FilterRegistrationBean<Filter> corsBean = new FilterRegistrationBean<>();
-		corsBean.setFilter(getReqResFilter());
-		corsBean.setOrder(1);
-		return corsBean;
+		FilterRegistrationBean<Filter> reqResFilter = new FilterRegistrationBean<>();
+		reqResFilter.setFilter(getReqResFilter());
+		reqResFilter.setOrder(1);
+		return reqResFilter;
 	}
 
 	/**
-	 * @return a new {@link ReqResFilter} object.
+	 * Bean for RequestResponseFilter.
+	 * 
+	 * @return reqResFilter object.
 	 */
 	@Bean
 	public Filter getReqResFilter() {

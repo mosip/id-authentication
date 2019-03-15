@@ -56,6 +56,6 @@ public class ReqResFilter implements Filter {
 
 	@Override
 	public void destroy() {
-		// Auto-generated method stub
+		// over-ridden method
 	}
 }
