@@ -83,7 +83,8 @@ public enum IdAuthenticationErrorConstants {
 	INVALID_REST_SERVICE("IDA-RST-004", "Rest service name is empty or invalid"),
 	INVALID_TIMEOUT("IDA-RST-005", "Timeout is invalid"), CLIENT_ERROR("IDA-RST-006", "4XX - Client Error occured"),
 	SERVER_ERROR("IDA-RST-007", "5XX - Server Error occured"),
-	CONNECTION_TIMED_OUT("IDA-RST-008", "Connection timed out")
+	CONNECTION_TIMED_OUT("IDA-RST-008", "Connection timed out"),
+	HMAC_VALIDATION_FAILED("IDA-MPA-016" , "HMAC Validation failed")
 
 	;
 

@@ -1,15 +1,12 @@
 package io.mosip.authentication.service.filter;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.stream.Collectors;
-
-import javax.servlet.http.HttpServletRequestWrapper;
-
 import org.springframework.stereotype.Component;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
 
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
@@ -19,6 +16,7 @@ import io.mosip.authentication.core.spi.indauth.match.MatchType;
 import io.mosip.authentication.service.policy.AuthPolicy;
 import io.mosip.authentication.service.policy.Policy;
 import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.kernel.core.util.HMACUtils;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -71,9 +69,10 @@ public class IdAuthFilter extends BaseAuthFilter {
 			if (null != requestBody.get(REQUEST)) {
 				Map<String, Object> request = keyManager.requestData(requestBody, mapper);
 				requestBody.replace(REQUEST, request);
+				validateRequestHMAC((String) requestBody.get("requestHMAC"), mapper.writeValueAsString(request));
 			}
 			return requestBody;
-		} catch (ClassCastException e) {
+		} catch (ClassCastException | JsonProcessingException e) {
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(),
 					IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorMessage());
 		}

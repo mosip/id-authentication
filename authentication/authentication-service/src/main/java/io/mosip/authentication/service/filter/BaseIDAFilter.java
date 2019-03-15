@@ -78,7 +78,7 @@ public abstract class BaseIDAFilter implements Filter {
 	private static final String DATETIME_PATTERN = "datetime.pattern";
 
 	/** The Constant REQ_TIME. */
-	private static final String REQ_TIME = "reqTime";
+	private static final String REQ_TIME = "requestTime";
 
 	/** The Constant BASE_IDA_FILTER. */
 	private static final String BASE_IDA_FILTER = "BaseIDAFilter";

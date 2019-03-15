@@ -6,5 +6,5 @@ import lombok.Data;
 public class EncryptionResponseDto {
 	String encryptedSessionKey;
 	String encryptedIdentity;
-
+	String requestHMAC;
 }
