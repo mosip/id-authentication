@@ -166,7 +166,7 @@ public class DocumentScanController extends BaseController {
 		LOGGER.info(RegistrationConstants.DOCUMNET_SCAN_CONTROLLER, APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Entering the LOGIN_CONTROLLER");
 		try {
-			if (getRegistrationDTOFromSession().getSelectionListDTO() != null) {
+			if (getRegistrationDTOFromSession()!=null && getRegistrationDTOFromSession().getSelectionListDTO() != null) {
 				registrationNavlabel.setText(RegistrationConstants.UIN_NAV_LABEL);
 			}
 			switchedOnForBiometricException = new SimpleBooleanProperty(false);

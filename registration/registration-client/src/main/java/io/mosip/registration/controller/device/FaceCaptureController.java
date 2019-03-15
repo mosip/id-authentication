@@ -113,7 +113,7 @@ public class FaceCaptureController extends BaseController implements Initializab
 		LOGGER.info("REGISTRATION - UI - FACE_CAPTURE_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
 				"Loading of FaceCapture screen started");
 
-		if (getRegistrationDTOFromSession().getSelectionListDTO() != null) {
+		if (getRegistrationDTOFromSession()!=null && getRegistrationDTOFromSession().getSelectionListDTO() != null) {
 			registrationNavlabel.setText(RegistrationConstants.UIN_NAV_LABEL);
 		}
 

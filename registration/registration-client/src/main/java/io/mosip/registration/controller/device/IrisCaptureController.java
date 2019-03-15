@@ -100,7 +100,7 @@ public class IrisCaptureController extends BaseController {
 		try {
 			LOGGER.info(LOG_REG_IRIS_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 					"Initializing Iris Capture page for user registration");
-			if (getRegistrationDTOFromSession().getSelectionListDTO() != null) {
+			if (getRegistrationDTOFromSession()!=null && getRegistrationDTOFromSession().getSelectionListDTO() != null) {
 				registrationNavlabel.setText(RegistrationConstants.UIN_NAV_LABEL);
 			}
 			// Set Threshold

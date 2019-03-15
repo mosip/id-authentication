@@ -67,7 +67,7 @@ public class RegistrationPreviewController extends BaseController implements Ini
 
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
-		if (getRegistrationDTOFromSession().getSelectionListDTO() != null) {
+		if (getRegistrationDTOFromSession()!=null && getRegistrationDTOFromSession().getSelectionListDTO() != null) {
 			registrationNavlabel.setText(RegistrationConstants.UIN_NAV_LABEL);
 		}		
 	}

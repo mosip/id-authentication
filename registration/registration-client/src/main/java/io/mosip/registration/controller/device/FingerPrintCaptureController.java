@@ -166,7 +166,7 @@ public class FingerPrintCaptureController extends BaseController implements Init
 		LOGGER.info(LOG_REG_FINGERPRINT_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 				"Loading of FingerprintCapture screen started");
 		try {
-			if (getRegistrationDTOFromSession().getSelectionListDTO() != null) {
+			if (getRegistrationDTOFromSession()!=null && getRegistrationDTOFromSession().getSelectionListDTO() != null) {
 				registrationNavlabel.setText(RegistrationConstants.UIN_NAV_LABEL);
 			}
 
