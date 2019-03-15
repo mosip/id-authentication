@@ -1,5 +1,7 @@
 package io.mosip.authentication.service.filter;
 
+import java.util.Map;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
@@ -16,6 +18,13 @@ import io.mosip.kernel.core.util.CryptoUtil;
 public class BaseAuthFilterStaticTest {
 
 	BaseAuthFilter baseAuthFilter = new BaseAuthFilter() {
+
+		@Override
+		protected void validateDecipheredRequest(ResettableStreamHttpServletRequest requestWrapper,
+				Map<String, Object> decipherRequest) throws IdAuthenticationAppException {
+			// TODO Auto-generated method stub
+			
+		}
 	};
 	
 	@SuppressWarnings("static-access")

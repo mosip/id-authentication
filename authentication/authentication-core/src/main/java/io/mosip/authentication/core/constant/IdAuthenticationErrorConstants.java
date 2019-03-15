@@ -72,6 +72,8 @@ public enum IdAuthenticationErrorConstants {
 	PARTNER_NOT_MAPPED("IDA-MPA-010", "MISP and Partner not mapped"),
 	LICENSEKEY_SUSPENDED("IDA-MPA-011", "License key of MISP is suspended"),
 	PARTNER_DEACTIVATED("IDA-MPA-012", "Partner is deactivated"),
+	PARTNER_POLICY_NOTMAPPED("IDA-MPA-014","Partner is not assigned with any policy"),
+	AUTHTYPE_MANDATORY("IDA-MPA-015", "%s - Authentiation Usage is mandatory as per policy"),
 	CONSENT_NOT_AVAILABLE("IDA-MLC-014", "Individual's Consent is not available"),
 	PIN_NOT_STORED("IDA-SPA-002", "Could not store the static pin of the individual"),
 	DATA_VALIDATION_FAILED("IDA-IDV-001", "Input Data Validation Failed"),

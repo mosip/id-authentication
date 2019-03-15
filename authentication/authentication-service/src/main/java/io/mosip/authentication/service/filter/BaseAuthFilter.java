@@ -97,6 +97,7 @@ public abstract class BaseAuthFilter extends BaseIDAFilter {
 			requestWrapper.resetInputStream();
 			Map<String, Object> requestBody = getRequestBody(requestWrapper.getInputStream());
 			Map<String, Object> decipherRequest = decipherRequest(requestBody);
+			validateDecipheredRequest(requestWrapper, decipherRequest);
 			String requestAsString = mapper.writeValueAsString(decipherRequest);
 			mosipLogger.info(SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER, "Input Request: \n" + requestAsString);
 			requestWrapper.replaceData(requestAsString.getBytes());
@@ -106,6 +107,9 @@ public abstract class BaseAuthFilter extends BaseIDAFilter {
 		}
 
 	}
+
+	protected abstract void validateDecipheredRequest(ResettableStreamHttpServletRequest requestWrapper,
+			Map<String, Object> decipherRequest) throws IdAuthenticationAppException;
 
 	/*
 	 * (non-Javadoc)
