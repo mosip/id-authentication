@@ -7,13 +7,17 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.when;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.io.IOUtils;
+import org.json.simple.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -32,10 +36,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
 import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
+import io.mosip.kernel.core.jsonvalidator.model.ValidationReport;
 import io.mosip.kernel.core.util.HMACUtils;
+import io.mosip.kernel.jsonvalidator.impl.JsonValidatorImpl;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.code.ApiName;
 import io.mosip.registration.processor.core.code.EventId;
@@ -47,7 +55,6 @@ import io.mosip.registration.processor.core.packet.dto.FieldValue;
 import io.mosip.registration.processor.core.packet.dto.FieldValueArray;
 import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.packet.dto.PacketMetaInfo;
-import io.mosip.registration.processor.core.packet.dto.demographicinfo.identify.IdentityJsonValues;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.identify.RegistrationProcessorIdentity;
 import io.mosip.registration.processor.core.packet.dto.idjson.Document;
 import io.mosip.registration.processor.core.packet.dto.masterdata.StatusResponseDto;
@@ -58,10 +65,12 @@ import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.core.util.JsonUtil;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
+import io.mosip.registration.processor.packet.storage.utils.Utilities;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
 import io.mosip.registration.processor.rest.client.audit.dto.AuditResponseDto;
 import io.mosip.registration.processor.stages.utils.CheckSumValidation;
 import io.mosip.registration.processor.stages.utils.DocumentUtility;
+import io.mosip.registration.processor.stages.utils.MasterDataValidation;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
@@ -70,7 +79,7 @@ import io.mosip.registration.processor.status.service.RegistrationStatusService;
  * The Class PacketValidatorStageTest.
  */
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ JsonUtil.class, IOUtils.class, HMACUtils.class })
+@PrepareForTest({ JsonUtil.class, IOUtils.class, HMACUtils.class, Utilities.class, MasterDataValidation.class })
 @PowerMockIgnore({ "javax.management.*", "javax.net.ssl.*" })
 public class PacketValidateProcessorTest {
 
@@ -135,10 +144,30 @@ public class PacketValidateProcessorTest {
 	@Mock
 	DocumentUtility documentUtility;
 
+	// @Mock
+	// MasterDataValidation masterDataValidation;
+
 	@Mock
 	private RegistrationProcessorRestClientService<Object> registrationProcessorRestService;
 
+	@Mock
+	JsonValidatorImpl jsonValidatorImpl;
+
+	@Mock
+	private Utilities utility;
+
+	@Mock
+	ObjectMapper mapIdentityJsonStringToObject;
+
+	@Mock
+	private RegistrationProcessorIdentity regProcessorIdentityJson;
+
 	StatusResponseDto statusResponseDto;
+
+	ValidationReport validationReport;
+
+	private static final String CONFIG_SERVER_URL = "url";
+	private String identityMappingjsonString;
 
 	/**
 	 * Sets the up.
@@ -149,11 +178,17 @@ public class PacketValidateProcessorTest {
 	@Before
 	public void setUp() throws Exception {
 
-		statusDto = new InternalRegistrationStatusDto();
-		statusDto.setRegistrationId("2018701130000410092018110735");
-		statusDto.setStatusCode("PACKET_UPLOADED_TO_FILESYSTEM");
-		registrationStatusService.addRegistrationStatus(statusDto);
 		list = new ArrayList<InternalRegistrationStatusDto>();
+
+		ClassLoader classLoader = getClass().getClassLoader();
+		File identityMappingjson = new File(classLoader.getResource("RegistrationProcessorIdentity.json").getFile());
+		InputStream identityMappingjsonStream = new FileInputStream(identityMappingjson);
+
+		try {
+			identityMappingjsonString = IOUtils.toString(identityMappingjsonStream, StandardCharsets.UTF_8);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 
 		listAppender = new ListAppender<>();
 
@@ -232,9 +267,9 @@ public class PacketValidateProcessorTest {
 
 		String test = "1234567890";
 		byte[] data = "1234567890".getBytes();
-		Mockito.when(filesystemCephAdapterImpl.getFile(anyString(), anyString())).thenReturn(inputStream);
+		// Mockito.when(filesystemCephAdapterImpl.getFile(anyString(),
+		// anyString())).thenReturn(inputStream);
 		PowerMockito.mockStatic(JsonUtil.class);
-
 		PowerMockito.when(JsonUtil.class, "inputStreamtoJavaObject", inputStream, PacketMetaInfo.class)
 				.thenReturn(packetMetaInfo);
 
@@ -249,6 +284,7 @@ public class PacketValidateProcessorTest {
 		Mockito.doNothing().when(registrationStatusService).updateRegistrationStatus(registrationStatusDto);
 		Mockito.when(filesystemCephAdapterImpl.checkFileExistence(anyString(), anyString())).thenReturn(Boolean.TRUE);
 
+		Mockito.when(filesystemCephAdapterImpl.getFile(any(), any())).thenReturn(inputStream);
 		PowerMockito.mockStatic(IOUtils.class);
 		PowerMockito.when(IOUtils.class, "toByteArray", inputStream).thenReturn(data);
 
@@ -273,36 +309,30 @@ public class PacketValidateProcessorTest {
 		Mockito.when(restClientService.postApi(Matchers.any(), Matchers.any(), Matchers.any(), Matchers.any(),
 				Matchers.any())).thenReturn(mainResponseDTO);
 
-		IdentityJsonValues gender = new IdentityJsonValues();
-		IdentityJsonValues region = new IdentityJsonValues();
-		IdentityJsonValues province = new IdentityJsonValues();
-		IdentityJsonValues city = new IdentityJsonValues();
-		IdentityJsonValues postalcode = new IdentityJsonValues();
+		validationReport = new ValidationReport();
+		validationReport.setValid(true);
 
-		gender.setValue("female");
-		region.setValue("Rabat-Salé-Kénitra");
-		province.setValue("Rabat");
-		city.setValue("bng-south");
-		postalcode.setValue("10000");
+		MasterDataValidation masterDataValidation = Mockito.mock(MasterDataValidation.class);
+
+		PowerMockito.whenNew(MasterDataValidation.class).withArguments(any(), any(), any(), any(), any())
+				.thenReturn(masterDataValidation);
+		Mockito.when(masterDataValidation.validateMasterData(any())).thenReturn(true);
+		Mockito.when(jsonValidatorImpl.validateJson(any(), any())).thenReturn(validationReport);
+
+		JSONObject demographicIdentity = new JSONObject();
+		PowerMockito.when(JsonUtil.getJSONObject(any(), any())).thenReturn(demographicIdentity);
+
+		PowerMockito.mockStatic(Utilities.class);
+		PowerMockito.when(Utilities.class, "getJson", CONFIG_SERVER_URL, "RegistrationProcessorIdentity.json")
+				.thenReturn(identityMappingjsonString);
+		Mockito.when(utility.getConfigServerFileStorageURL()).thenReturn(CONFIG_SERVER_URL);
+		Mockito.when(utility.getGetRegProcessorDemographicIdentity()).thenReturn("identity");
+		Mockito.when(utility.getGetRegProcessorIdentityJson()).thenReturn("RegistrationProcessorIdentity.json");
 
 		registrationProcessorIdentity = new RegistrationProcessorIdentity();
-
-		identityDemo.setGender(gender);
-		identityDemo.setRegion(region);
-		identityDemo.setProvince(province);
-		identityDemo.setCity(city);
-		identityDemo.setPostalCode(postalcode);
-		registrationProcessorIdentity.setIdentity(identityDemo);
-
-		statusResponseDto = new StatusResponseDto();
-		statusResponseDto.setStatus("valid");
-
 		when(env.getProperty("registration.processor.idjson.attributes"))
 				.thenReturn("gender,region,province,city,postalcode");
-		Mockito.when(registrationProcessorRestService.getApi(any(), any(), any(), any(), any()))
-				.thenReturn(statusResponseDto);
-
-		PowerMockito.when(JsonUtil.class, "inputStreamtoJavaObject", inputStream, RegistrationProcessorIdentity.class)
+		Mockito.when(mapIdentityJsonStringToObject.readValue(anyString(), Mockito.any(Class.class)))
 				.thenReturn(registrationProcessorIdentity);
 
 	}
@@ -319,126 +349,6 @@ public class PacketValidateProcessorTest {
 		MessageDTO messageDto = packetValidateProcessor.process(dto);
 		assertTrue("Test for successful Structural Validation", messageDto.getIsValid());
 
-	}
-
-	@Test
-	public void testMasterDataValidationGenderFailure() throws Exception {
-		statusResponseDto = new StatusResponseDto();
-		statusResponseDto.setStatus("invalid");
-
-		Mockito.when(registrationProcessorRestService.getApi(any(), any(), any(), any(), any()))
-				.thenReturn(statusResponseDto);
-
-		MessageDTO messageDto = packetValidateProcessor.process(dto);
-		assertFalse("Test for Gender name failure", messageDto.getIsValid());
-	}
-
-	@Test
-	public void testMasterDataValidationRegionFailure() throws Exception {
-
-		statusResponseDto = new StatusResponseDto();
-		statusResponseDto.setStatus("invalid");
-		when(env.getProperty("registration.processor.idjson.attributes")).thenReturn("region,province,city,postalcode");
-		Mockito.when(registrationProcessorRestService.getApi(any(), any(), any(), any(), any()))
-				.thenReturn(statusResponseDto);
-
-		MessageDTO messageDto = packetValidateProcessor.process(dto);
-		assertFalse("Test for Region name failure", messageDto.getIsValid());
-	}
-
-	@Test
-	public void testMasterDataValidationProvinceFailure() throws Exception {
-
-		IdentityJsonValues gender = new IdentityJsonValues();
-		IdentityJsonValues region = new IdentityJsonValues();
-		IdentityJsonValues province = new IdentityJsonValues();
-		IdentityJsonValues city = new IdentityJsonValues();
-		IdentityJsonValues postalcode = new IdentityJsonValues();
-
-		gender.setValue(null);
-		region.setValue(null);
-		province.setValue("Rabat");
-		city.setValue("bng-south");
-		postalcode.setValue("10000");
-
-		registrationProcessorIdentity = new RegistrationProcessorIdentity();
-
-		identityDemo.setGender(gender);
-		identityDemo.setRegion(region);
-		identityDemo.setProvince(province);
-		identityDemo.setCity(city);
-		identityDemo.setPostalCode(postalcode);
-		registrationProcessorIdentity.setIdentity(identityDemo);
-
-		statusResponseDto = new StatusResponseDto();
-		statusResponseDto.setStatus("invalid");
-		PowerMockito.when(JsonUtil.class, "inputStreamtoJavaObject", inputStream, RegistrationProcessorIdentity.class)
-				.thenReturn(registrationProcessorIdentity);
-
-		Mockito.when(registrationProcessorRestService.getApi(any(), any(), any(), any(), any()))
-				.thenReturn(statusResponseDto);
-
-		MessageDTO messageDto = packetValidateProcessor.process(dto);
-		assertFalse("Test for Province name failure", messageDto.getIsValid());
-	}
-
-	@Test
-	public void testMasterDataValidationCityFailure() throws Exception {
-		statusResponseDto = new StatusResponseDto();
-		statusResponseDto.setStatus("invalid");
-		when(env.getProperty("registration.processor.idjson.attributes")).thenReturn("city,postalcode");
-		Mockito.when(registrationProcessorRestService.getApi(any(), any(), any(), any(), any()))
-				.thenReturn(statusResponseDto);
-
-		MessageDTO messageDto = packetValidateProcessor.process(dto);
-		assertFalse("Test for City name failure", messageDto.getIsValid());
-	}
-
-	@Test
-	public void testMasterDataValidationPostalCodeFailure() throws Exception {
-		statusResponseDto = new StatusResponseDto();
-		statusResponseDto.setStatus("invalid");
-		when(env.getProperty("registration.processor.idjson.attributes")).thenReturn("postalcode");
-		Mockito.when(registrationProcessorRestService.getApi(any(), any(), any(), any(), any()))
-				.thenReturn(statusResponseDto);
-
-		MessageDTO messageDto = packetValidateProcessor.process(dto);
-		assertFalse("Test for Postal code failure", messageDto.getIsValid());
-	}
-
-	@Test
-	public void testMasterDataValidationGenderApiException() throws Exception {
-
-		when(env.getProperty("registration.processor.idjson.attributes"))
-				.thenReturn("gender,region,province,city,postalcode");
-		byte[] responseBody = "{\"timestamp\":1548931133376,\"status\":400,\"errors\":[{\"errorCode\":\"KER\",\"errorMessage\":\"Invalid \"}]}"
-				.getBytes();
-		ApisResourceAccessException apisResourceAccessException = Mockito.mock(ApisResourceAccessException.class);
-		HttpClientErrorException httpClientErrorException = new HttpClientErrorException(HttpStatus.BAD_REQUEST,
-				"Invalid request", null, responseBody, null);
-		Mockito.when(apisResourceAccessException.getCause()).thenReturn(httpClientErrorException);
-
-		Mockito.when(registrationProcessorRestService.getApi(any(), any(), any(), any(), any()))
-				.thenThrow(apisResourceAccessException);
-		MessageDTO messageDto = packetValidateProcessor.process(dto);
-		assertFalse("Test for Api resource Access Exception in Gender Name Api", messageDto.getIsValid());
-	}
-
-	@Test
-	public void testMasterDataValidationLocationApiException() throws Exception {
-
-		when(env.getProperty("registration.processor.idjson.attributes")).thenReturn("region,province,city,postalcode");
-		byte[] responseBody = "{\"timestamp\":1548931133376,\"status\":400,\"errors\":[{\"errorCode\":\"KER\",\"errorMessage\":\"Invalid \"}]}"
-				.getBytes();
-		ApisResourceAccessException apisResourceAccessException = Mockito.mock(ApisResourceAccessException.class);
-		HttpClientErrorException httpClientErrorException = new HttpClientErrorException(HttpStatus.BAD_REQUEST,
-				"Invalid request", null, responseBody, null);
-		Mockito.when(apisResourceAccessException.getCause()).thenReturn(httpClientErrorException);
-
-		Mockito.when(registrationProcessorRestService.getApi(any(), any(), any(), any(), any()))
-				.thenThrow(apisResourceAccessException);
-		MessageDTO messageDto = packetValidateProcessor.process(dto);
-		assertFalse("Test for Api resource Access Exception in Location Name Api", messageDto.getIsValid());
 	}
 
 	/**
@@ -512,6 +422,7 @@ public class PacketValidateProcessorTest {
 		PowerMockito.mockStatic(JsonUtil.class);
 		PowerMockito.when(JsonUtil.class, "inputStreamtoJavaObject", inputStream, PacketMetaInfo.class)
 				.thenReturn(packetMetaInfo);
+
 		MessageDTO messageDto = packetValidateProcessor.process(dto);
 
 		assertFalse(messageDto.getIsValid());
