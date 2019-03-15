@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
- * Configuration class for request-response filter.
+ * Configuration class for RequestResponseFilter Bean.
  * 
  * @author Sagar Mahapatra
  * @since 1.0.0
@@ -15,6 +15,11 @@ import org.springframework.context.annotation.Configuration;
  */
 @Configuration
 public class Config {
+	/**
+	 * Bean to register RequestResponse Filter.
+	 * 
+	 * @return the bean.
+	 */
 	@Bean
 	public FilterRegistrationBean<Filter> registerReqResFilter() {
 		FilterRegistrationBean<Filter> filterRegistrationBean = new FilterRegistrationBean<>();
@@ -23,6 +28,11 @@ public class Config {
 		return filterRegistrationBean;
 	}
 
+	/**
+	 * Bean for RequestResponseFilter.
+	 * 
+	 * @return the bean.
+	 */
 	@Bean
 	public Filter getReqResFilter() {
 		return new ReqResFilter();
