@@ -160,7 +160,6 @@ public class JsonValidatorImpl implements JsonValidator {
 				// creating a JsonSchema node against which the JSON object will be validated.
 				jsonSchemaNode = JsonLoader.fromURL(new URL(configServerFileStorageURL + schemaName));
 			} catch (Exception e) {
-				System.err.println(e);
 				throw new JsonSchemaIOException(JsonValidatorErrorConstant.JSON_SCHEMA_IO_EXCEPTION.getErrorCode(),
 						JsonValidatorErrorConstant.JSON_SCHEMA_IO_EXCEPTION.getMessage(), e.getCause());
 			}

@@ -296,48 +296,40 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, Uin> {
 	 */
 	private void addBiometricDocuments(String uin, String uinRefId, List<UinBiometric> bioList, Documents doc,
 			JsonNode docType) throws IdRepoAppException {
-		try {
-			byte[] data = null;
-			String fileRefId = UUIDUtils
-					.getUUID(UUIDUtils.NAMESPACE_OID,
-							docType.get(IdRepoConstants.FILE_NAME_ATTRIBUTE.getValue()).asText() + "_" + DateUtils
-									.getUTCCurrentDateTime()
-									.atZone(ZoneId.of(env.getProperty(IdRepoConstants.DATETIME_TIMEZONE.getValue())))
-									.toInstant().toEpochMilli())
-					.toString() + DOT + docType.get(IdRepoConstants.FILE_FORMAT_ATTRIBUTE.getValue()).asText();
+		byte[] data = null;
+		String fileRefId = UUIDUtils
+				.getUUID(UUIDUtils.NAMESPACE_OID, docType.get(IdRepoConstants.FILE_NAME_ATTRIBUTE.getValue()).asText()
+						+ "_"
+						+ DateUtils.getUTCCurrentDateTime()
+								.atZone(ZoneId.of(env.getProperty(IdRepoConstants.DATETIME_TIMEZONE.getValue())))
+								.toInstant().toEpochMilli())
+				.toString() + DOT + docType.get(IdRepoConstants.FILE_FORMAT_ATTRIBUTE.getValue()).asText();
 
-			if (StringUtils.equalsIgnoreCase(docType.get(IdRepoConstants.FILE_FORMAT_ATTRIBUTE.getValue()).asText(),
-					IdRepoConstants.CBEFF_FORMAT.getValue())) {
-				data = convertToFMR(doc.getCategory(), doc.getValue());
-			} else {
-				data = CryptoUtil.decodeBase64(doc.getValue());
-			}
-
-			LocalDateTime startTime = DateUtils.getUTCCurrentDateTime();
-			fsAdapter.storeFile(uin, BIOMETRICS + SLASH + fileRefId,
-					new ByteArrayInputStream(CryptoUtil.decodeBase64(new String(securityManager.encrypt(data)))));
-			mosipLogger.debug(IdRepoLogger.getUin(), ID_REPO_SERVICE_IMPL, "storeFiles",
-					"time taken to store file in millis: " + fileRefId + "  - "
-							+ Duration.between(startTime, DateUtils.getUTCCurrentDateTime()).toMillis() + "  "
-							+ "Start time : " + startTime + "  " + "end time : " + DateUtils.getUTCCurrentDateTime());
-
-			bioList.add(new UinBiometric(uinRefId, fileRefId, doc.getCategory(),
-					docType.get(IdRepoConstants.FILE_NAME_ATTRIBUTE.getValue()).asText(), securityManager.hash(data),
-					env.getProperty(IdRepoConstants.MOSIP_PRIMARY_LANGUAGE.getValue()), CREATED_BY, now(), UPDATED_BY,
-					now(), false, now()));
-
-			uinBioHRepo.save(new UinBiometricHistory(uinRefId, now(), fileRefId, doc.getCategory(),
-					docType.get(IdRepoConstants.FILE_NAME_ATTRIBUTE.getValue()).asText(),
-					securityManager.hash(CryptoUtil.decodeBase64(doc.getValue())),
-					env.getProperty(IdRepoConstants.MOSIP_PRIMARY_LANGUAGE.getValue()), CREATED_BY, now(), UPDATED_BY,
-					now(), false, now()));
-		} catch (NullPointerException e) {
-			mosipLogger.error(IdRepoLogger.getUin(), ID_REPO_SERVICE_IMPL, ADD_IDENTITY,
-					"\n" + ExceptionUtils.getStackTrace(e));
-			throw new IdRepoAppException(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
-					String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(),
-							IDENTITY + " - " + doc.getCategory()));
+		if (StringUtils.equalsIgnoreCase(docType.get(IdRepoConstants.FILE_FORMAT_ATTRIBUTE.getValue()).asText(),
+				IdRepoConstants.CBEFF_FORMAT.getValue())) {
+			data = convertToFMR(doc.getCategory(), doc.getValue());
+		} else {
+			data = CryptoUtil.decodeBase64(doc.getValue());
 		}
+
+		LocalDateTime startTime = DateUtils.getUTCCurrentDateTime();
+		fsAdapter.storeFile(uin, BIOMETRICS + SLASH + fileRefId,
+				new ByteArrayInputStream(CryptoUtil.decodeBase64(new String(securityManager.encrypt(data)))));
+		mosipLogger.debug(IdRepoLogger.getUin(), ID_REPO_SERVICE_IMPL, "storeFiles",
+				"time taken to store file in millis: " + fileRefId + "  - "
+						+ Duration.between(startTime, DateUtils.getUTCCurrentDateTime()).toMillis() + "  "
+						+ "Start time : " + startTime + "  " + "end time : " + DateUtils.getUTCCurrentDateTime());
+
+		bioList.add(new UinBiometric(uinRefId, fileRefId, doc.getCategory(),
+				docType.get(IdRepoConstants.FILE_NAME_ATTRIBUTE.getValue()).asText(), securityManager.hash(data),
+				env.getProperty(IdRepoConstants.MOSIP_PRIMARY_LANGUAGE.getValue()), CREATED_BY, now(), UPDATED_BY,
+				now(), false, now()));
+
+		uinBioHRepo.save(new UinBiometricHistory(uinRefId, now(), fileRefId, doc.getCategory(),
+				docType.get(IdRepoConstants.FILE_NAME_ATTRIBUTE.getValue()).asText(),
+				securityManager.hash(CryptoUtil.decodeBase64(doc.getValue())),
+				env.getProperty(IdRepoConstants.MOSIP_PRIMARY_LANGUAGE.getValue()), CREATED_BY, now(), UPDATED_BY,
+				now(), false, now()));
 	}
 	
 	/**
