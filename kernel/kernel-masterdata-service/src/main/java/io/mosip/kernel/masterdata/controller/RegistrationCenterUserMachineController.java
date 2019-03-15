@@ -72,6 +72,7 @@ public class RegistrationCenterUserMachineController {
 	 *            input from user
 	 * @return {@link RegistrationCenterMachineUserID} as response
 	 */
+	@ResponseFilter
 	@ApiOperation(value = "Delete the mapping of registration center and user and machine", response = RegistrationCenterMachineUserID.class)
 	@DeleteMapping("/registrationmachineusermappings/{regCenterId}/{machineId}/{userId}")
 	public ResponseEntity<RegistrationCenterMachineUserID> deleteRegistrationCenterUserMachineMapping(

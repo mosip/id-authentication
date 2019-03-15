@@ -78,6 +78,7 @@ public class RegistrationCenterTypeController {
 	 *            the code of the registration center type that needs to be deleted.
 	 * @return the response.
 	 */
+	@ResponseFilter
 	@DeleteMapping("/registrationcentertypes/{code}")
 	public ResponseEntity<CodeResponseDto> deleteRegistrationCenterType(@PathVariable("code") String code) {
 		return new ResponseEntity<>(registrationCenterTypeService.deleteRegistrationCenterType(code), HttpStatus.OK);

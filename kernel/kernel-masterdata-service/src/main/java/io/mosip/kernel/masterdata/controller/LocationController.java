@@ -53,6 +53,7 @@ public class LocationController {
 	 *            language code
 	 * @return list of location hierarchies
 	 */
+	@ResponseFilter
 	@GetMapping(value = "/{langcode}")
 	public LocationHierarchyResponseDto getLocationHierarchyDetails(@PathVariable String langcode) {
 		return locationHierarchyService.getLocationDetails(langcode);
@@ -76,6 +77,7 @@ public class LocationController {
 	 *            language code
 	 * @return list of location hierarchies
 	 */
+	@ResponseFilter
 	@GetMapping(value = "/{locationcode}/{langcode}")
 	public LocationResponseDto getLocationHierarchyByLangCode(@PathVariable("locationcode") String locationCode,
 			@PathVariable("langcode") String langCode) {
@@ -89,6 +91,7 @@ public class LocationController {
 	 *            hierarchy Name
 	 * @return list of location hierarchies
 	 */
+	@ResponseFilter
 	@GetMapping(value = "/locationhierarchy/{hierarchyname}")
 	public LocationResponseDto getLocationDataByHierarchyName(
 			@PathVariable(value = "hierarchyname") String hierarchyName) {
@@ -118,6 +121,7 @@ public class LocationController {
 	 * @param locationCode -location code
 	 * @return CodeResponseDto
 	 */
+	@ResponseFilter
 	@DeleteMapping(value = "/{locationcode}")
 	public CodeResponseDto deleteLocationHierarchyDetails(@PathVariable(value = "locationcode") String locationCode) {
 		return locationHierarchyService.deleteLocationDetials(locationCode);
@@ -131,6 +135,7 @@ public class LocationController {
 	 *            language code
 	 * @return list of location hierarchies
 	 */
+	@ResponseFilter
 	@GetMapping(value = "immediatechildren/{locationcode}/{langcode}")
 	public LocationResponseDto getImmediateChildrenByLocCodeAndLangCode(@PathVariable("locationcode") String locationCode,
 			@PathVariable("langcode") String langCode) {
@@ -144,6 +149,7 @@ public class LocationController {
 	 * @param locationName
 	 * @return StatusResponseCode
 	 */
+	@ResponseFilter
 	@GetMapping(value="/validate/{locationname}")
 	public StatusResponseDto validateLocationName(@PathVariable("locationname") String locationName) {
 		return locationHierarchyService.validateLocationName(locationName);

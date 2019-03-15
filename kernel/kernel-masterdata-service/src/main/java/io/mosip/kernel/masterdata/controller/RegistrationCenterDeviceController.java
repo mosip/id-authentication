@@ -60,6 +60,7 @@ public class RegistrationCenterDeviceController {
 	 *            DeviceId id to be deleted
 	 * @return {@link RegistrationCenterDeviceID}
 	 */
+	@ResponseFilter
 	@ApiOperation(value = "Delete the mapping of registration center and device", response = RegistrationCenterDeviceID.class)
 	@DeleteMapping("/{regCenterId}/{deviceId}")
 	public ResponseEntity<RegistrationCenterDeviceID> deleteRegistrationCenterDeviceMapping(

@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterDeviceHistoryDto;
 import io.mosip.kernel.masterdata.dto.getresponse.RegistrationCenterDeviceHistoryResponseDto;
 import io.mosip.kernel.masterdata.service.RegistrationCenterDeviceHistoryService;
@@ -46,6 +47,7 @@ public class RegistrationCenterDeviceHistoryController {
 	 *         center device history based on given regCenterId, deviceId and
 	 *         effective date time
 	 */
+	@ResponseFilter
 	@GetMapping(value = "/{regcenterid}/{deviceid}/{effdatetimes}")
 	@ApiOperation(value = "Retrieve Registration Center Device History Details for the given Registration Center Id, Device Id and Effective date time", response = RegistrationCenterDeviceHistoryDto.class)
 	@ApiResponses({

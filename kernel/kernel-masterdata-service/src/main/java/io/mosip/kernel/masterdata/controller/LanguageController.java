@@ -42,6 +42,7 @@ public class LanguageController {
 	@Autowired
 	private LanguageService languageService;
 
+	@ResponseFilter
 	@GetMapping
 	@ApiOperation(value = "Retrieve all Languages", notes = "Retrieve all Languages", response = LanguageResponseDto.class)
 	@ApiResponses({
@@ -75,6 +76,7 @@ public class LanguageController {
 		return new ResponseEntity<>(languageService.updateLanguage(language.getRequest()), HttpStatus.OK);
 	}
 
+	@ResponseFilter
 	@DeleteMapping("/{code}")
 	@ApiOperation(value = "Service to delete Language", notes = "Delete Language and return Language code", response = CodeResponseDto.class)
 	@ApiResponses({

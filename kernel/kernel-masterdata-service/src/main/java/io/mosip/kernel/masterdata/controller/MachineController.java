@@ -55,6 +55,7 @@ public class MachineController {
 	 * @return MachineResponseDto machine detail based on given Machine ID and
 	 *         Language code {@link MachineResponseDto}
 	 */
+	@ResponseFilter
 	@GetMapping(value = "/machines/{id}/{langcode}")
 	@ApiOperation(value = "Retrieve all Machine Details for given Languge Code", notes = "Retrieve all Machine Detail for given Languge Code and ID", response = MachineResponseDto.class)
 	@ApiResponses({
@@ -77,7 +78,7 @@ public class MachineController {
 	 * @return MachineResponseDto machine detail based on given Language code
 	 *         {@link MachineResponseDto}
 	 */
-
+	@ResponseFilter
 	@GetMapping(value = "/machines/{langcode}")
 	@ApiOperation(value = "Retrieve all Machine Details for given Languge Code", notes = "Retrieve all Machine Detail for given Languge Code", response = MachineResponseDto.class)
 	@ApiResponses({
@@ -94,6 +95,7 @@ public class MachineController {
 	 * 
 	 * @return MachineResponseDto all machines details {@link MachineResponseDto}
 	 */
+	@ResponseFilter
 	@GetMapping(value = "/machines")
 	@ApiOperation(value = "Retrieve all Machine Details", notes = "Retrieve all Machine Detail", response = MachineResponseDto.class)
 	@ApiResponses({
@@ -156,6 +158,7 @@ public class MachineController {
 	 * @return ResponseEntity Machine Id which is deleted successfully
 	 *         {@link ResponseEntity}
 	 */
+	@ResponseFilter
 	@DeleteMapping("/machines/{id}")
 	@ApiOperation(value = "Service to delete Machine ", notes = "Delete Machine  and return Machine  Id ", response = IdResponseDto.class)
 	@ApiResponses({

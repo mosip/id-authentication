@@ -58,6 +58,7 @@ public class DeviceSpecificationController {
 	 *         on given language code
 	 * 
 	 */
+	@ResponseFilter
 	@GetMapping("/devicespecifications/{langcode}")
 	@ApiOperation(value = "Retrieve all Device Specification for given Languge Code", notes = "Retrieve all DeviceSpecification for the given Languge Code", response = DeviceSpecificationResponseDto.class)
 	@ApiResponses({
@@ -82,7 +83,7 @@ public class DeviceSpecificationController {
 	 * @return {@link DeviceSpecificationResponseDto}
 	 * 
 	 */
-
+	@ResponseFilter
 	@GetMapping("/devicespecifications/{langcode}/{devicetypecode}")
 	@ApiOperation(value = "Retrieve all Device Specification for specific langCode and DeviceTypeCode", notes = "Retrieve all DeviceSpecification for specific langCode and DeviceTypeCode", response = DeviceSpecificationResponseDto.class)
 	@ApiResponses({
@@ -133,6 +134,7 @@ public class DeviceSpecificationController {
 				HttpStatus.OK);
 	}
 
+	@ResponseFilter
 	@DeleteMapping("/devicespecifications/{id}")
 	@ApiOperation(value = "Service to delete device specifications", notes = "Delete device specifications and return device specification id", response = IdResponseDto.class)
 	@ApiResponses({

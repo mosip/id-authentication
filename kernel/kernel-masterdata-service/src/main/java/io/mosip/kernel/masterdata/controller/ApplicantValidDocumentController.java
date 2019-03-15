@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.masterdata.dto.ApplicantValidDocumentDto;
 import io.mosip.kernel.masterdata.service.ApplicantValidDocumentService;
 import io.swagger.annotations.Api;
@@ -24,6 +25,7 @@ public class ApplicantValidDocumentController {
 	@Autowired
 	private ApplicantValidDocumentService applicantValidDocumentService;
 
+	@ResponseFilter
 	@GetMapping(value = "/{applicantId}/languages")
 	@ApiOperation(value = "get value from Caretory for the given id", notes = "get value from Category for the given id", response = ApplicantValidDocumentDto.class)
 	public ResponseEntity<ApplicantValidDocumentDto> getApplicantValidDocument(@PathVariable String applicantId,

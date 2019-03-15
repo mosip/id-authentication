@@ -45,6 +45,7 @@ public class TitleController {
 	 * 
 	 * @return list of all titles present in master DB
 	 */
+	@ResponseFilter
 	@GetMapping(value = "/title")
 	public TitleResponseDto getAllTitles() {
 		return titleService.getAllTitles();
@@ -58,6 +59,7 @@ public class TitleController {
 	 *            code
 	 * @return list of all titles for the particular language code
 	 */
+	@ResponseFilter
 	@GetMapping(value = "/title/{langcode}")
 	public TitleResponseDto getTitlesBylangCode(@PathVariable("langcode") String langCode) {
 		return titleService.getByLanguageCode(langCode);
@@ -104,6 +106,7 @@ public class TitleController {
 	 *            input from user
 	 * @return composite key of deleted row of data
 	 */
+	@ResponseFilter
 	@DeleteMapping("/title/{code}")
 	@ApiOperation(value = "Service to delete title", notes = "Delete title and return composite id", response = CodeResponseDto.class)
 	@ApiResponses({

@@ -92,6 +92,7 @@ public class MachineSpecificationController {
 	 *            input Machine specification id
 	 * @return ResponseEntity Machine Specification ID which is successfully deleted
 	 */
+	@ResponseFilter
 	@DeleteMapping("/machinespecifications/{id}")
 	@ApiOperation(value = "Service to delete Machine Specification", notes = "Delete Machine Spacification and return Machine Spacification ID ", response = IdResponseDto.class)
 	@ApiResponses({

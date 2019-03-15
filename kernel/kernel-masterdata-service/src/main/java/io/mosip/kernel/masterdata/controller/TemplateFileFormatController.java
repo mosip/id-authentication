@@ -88,6 +88,7 @@ public class TemplateFileFormatController {
 	 *            the TemplateFileFormat code
 	 * @return the code of templatefileformat
 	 */
+	@ResponseFilter
 	@DeleteMapping("/{code}")
 	@ApiOperation(value = "Service to delete TemplateFileFormat", notes = "Delete TemplateFileFormat and return code", response = CodeResponseDto.class)
 	@ApiResponses({
