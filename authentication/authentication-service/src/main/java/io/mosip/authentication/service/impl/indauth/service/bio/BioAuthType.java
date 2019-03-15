@@ -12,14 +12,14 @@ import java.util.stream.Stream;
 import org.springframework.core.env.Environment;
 
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
-import io.mosip.authentication.core.dto.indauth.BioInfo;
+import io.mosip.authentication.core.dto.indauth.BioIdentityInfoDTO;
+import io.mosip.authentication.core.dto.indauth.DataDTO;
 import io.mosip.authentication.core.spi.fingerprintauth.provider.FingerprintProvider;
 import io.mosip.authentication.core.spi.indauth.match.AuthType;
 import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
 import io.mosip.authentication.core.spi.indauth.match.MatchType;
 import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
 import io.mosip.authentication.core.spi.irisauth.provider.IrisProvider;
-import io.mosip.authentication.service.helper.IdInfoHelper;
 
 /**
  * The Enum BioAuthType.
@@ -37,10 +37,11 @@ public enum BioAuthType implements AuthType {
 			getFingerprint(), 1) {
 
 		@Override
-		public Map<String, Object> getMatchProperties(AuthRequestDTO authRequestDTO, IdInfoFetcher idInfoFetcher, String language) {
+		public Map<String, Object> getMatchProperties(AuthRequestDTO authRequestDTO, IdInfoFetcher idInfoFetcher,
+				String language) {
 			Map<String, Object> valueMap = new HashMap<>();
-			authRequestDTO.getBioMetadata().stream().filter(bioinfo -> bioinfo.getBioType().equals(this.getType()))
-					.forEach((BioInfo bioinfovalue) -> {
+			authRequestDTO.getRequest().getBiometrics().stream().map(BioIdentityInfoDTO::getData)
+					.filter(bioinfo -> bioinfo.getBioType().equals(this.getType())).forEach((DataDTO bioinfovalue) -> {
 						BiFunction<String, String, Double> func = idInfoFetcher
 								.getFingerPrintProvider(bioinfovalue)::matchMinutiae;
 						valueMap.put(FingerprintProvider.class.getSimpleName(), func);
@@ -62,10 +63,11 @@ public enum BioAuthType implements AuthType {
 			getFingerprint(), 1) {
 
 		@Override
-		public Map<String, Object> getMatchProperties(AuthRequestDTO authRequestDTO, IdInfoFetcher idInfoFetcher, String language) {
+		public Map<String, Object> getMatchProperties(AuthRequestDTO authRequestDTO, IdInfoFetcher idInfoFetcher,
+				String language) {
 			Map<String, Object> valueMap = new HashMap<>();
-			authRequestDTO.getBioMetadata().stream().filter(bioinfo -> bioinfo.getBioType().equals(this.getType()))
-					.forEach((BioInfo bioinfovalue) -> {
+			authRequestDTO.getRequest().getBiometrics().stream().map(BioIdentityInfoDTO::getData)
+					.filter(bioinfo -> bioinfo.getBioType().equals(this.getType())).forEach((DataDTO bioinfovalue) -> {
 						BiFunction<String, String, Double> func = idInfoFetcher
 								.getFingerPrintProvider(bioinfovalue)::matchImage;
 						valueMap.put(FingerprintProvider.class.getSimpleName(), func);
@@ -82,10 +84,11 @@ public enum BioAuthType implements AuthType {
 	FGR_MIN_MULTI("FMR", setOf(BioMatchType.FGRMIN_MULTI), getFingerprint(), 2) {
 
 		@Override
-		public Map<String, Object> getMatchProperties(AuthRequestDTO authRequestDTO, IdInfoFetcher idInfoFetcher, String language) {
+		public Map<String, Object> getMatchProperties(AuthRequestDTO authRequestDTO, IdInfoFetcher idInfoFetcher,
+				String language) {
 			Map<String, Object> valueMap = new HashMap<>();
-			authRequestDTO.getBioMetadata().stream().filter(bioinfo -> bioinfo.getBioType().equals(this.getType()))
-					.forEach((BioInfo bioinfovalue) -> {
+			authRequestDTO.getRequest().getBiometrics().stream().map(BioIdentityInfoDTO::getData)
+					.filter(bioinfo -> bioinfo.getBioType().equals(this.getType())).forEach((DataDTO bioinfovalue) -> {
 						BiFunction<Map<String, String>, Map<String, String>, Double> func = idInfoFetcher
 								.getFingerPrintProvider(bioinfovalue)::matchMultiMinutae;
 						valueMap.put(FingerprintProvider.class.getSimpleName(), func);
@@ -94,8 +97,8 @@ public enum BioAuthType implements AuthType {
 		}
 
 		@Override
-		public Optional<Integer> getMatchingThreshold(AuthRequestDTO authReq,
-				String languageInfoFetcher, Environment environment) {
+		public Optional<Integer> getMatchingThreshold(AuthRequestDTO authReq, String languageInfoFetcher,
+				Environment environment) {
 
 			String bioType = getType();
 			Integer threshold = null;
@@ -115,21 +118,22 @@ public enum BioAuthType implements AuthType {
 	IRIS_COMP_IMG("IIR", setOf(BioMatchType.IRIS_COMP), "Iris", 2) {
 
 		@Override
-		public Map<String, Object> getMatchProperties(AuthRequestDTO authRequestDTO, IdInfoFetcher idInfoFetcher, String language) {
-			Map<String, Object> valueMap = new HashMap<>(); 
-			authRequestDTO.getBioMetadata().stream().filter(bioinfo -> bioinfo.getBioType().equals(this.getType()))
-					.forEach((BioInfo bioinfovalue) -> {
+		public Map<String, Object> getMatchProperties(AuthRequestDTO authRequestDTO, IdInfoFetcher idInfoFetcher,
+				String language) {
+			Map<String, Object> valueMap = new HashMap<>();
+			authRequestDTO.getRequest().getBiometrics().stream().map(BioIdentityInfoDTO::getData)
+					.filter(bioinfo -> bioinfo.getBioType().equals(this.getType())).forEach((DataDTO bioinfovalue) -> {
 						BiFunction<Map<String, String>, Map<String, String>, Double> func = idInfoFetcher
 								.getIrisProvider(bioinfovalue)::matchMultiImage;// TODO add provider
 						valueMap.put(IrisProvider.class.getSimpleName(), func);
 					});
-			valueMap.put("idvid",idInfoFetcher.getUinOrVid(authRequestDTO));
+			valueMap.put("idvid", idInfoFetcher.getUinOrVid(authRequestDTO));
 			return valueMap;
 		}
 
 		@Override
-		public Optional<Integer> getMatchingThreshold(AuthRequestDTO authReq,
-				String languageInfoFetcher, Environment environment) {
+		public Optional<Integer> getMatchingThreshold(AuthRequestDTO authReq, String languageInfoFetcher,
+				Environment environment) {
 
 			String bioType = getType();
 			Integer threshold = null;
@@ -150,10 +154,11 @@ public enum BioAuthType implements AuthType {
 	IRIS_IMG("IIR", setOf(BioMatchType.RIGHT_IRIS, BioMatchType.LEFT_IRIS), "Iris", 1) {
 
 		@Override
-		public Map<String, Object> getMatchProperties(AuthRequestDTO authRequestDTO, IdInfoFetcher idInfoFetcher, String language) {
+		public Map<String, Object> getMatchProperties(AuthRequestDTO authRequestDTO, IdInfoFetcher idInfoFetcher,
+				String language) {
 			Map<String, Object> valueMap = new HashMap<>();
-			authRequestDTO.getBioMetadata().stream().filter(bioinfo -> bioinfo.getBioType().equals(this.getType()))
-					.forEach((BioInfo bioinfovalue) -> {
+			authRequestDTO.getRequest().getBiometrics().stream().map(BioIdentityInfoDTO::getData)
+					.filter(bioinfo -> bioinfo.getBioType().equals(this.getType())).forEach((DataDTO bioinfovalue) -> {
 						BiFunction<Map<String, String>, Map<String, String>, Double> func = idInfoFetcher
 								.getIrisProvider(bioinfovalue)::matchImage;// TODO add provider
 						valueMap.put(IrisProvider.class.getSimpleName(), func);
@@ -268,8 +273,7 @@ public enum BioAuthType implements AuthType {
 	 * To Get Matching Strategy
 	 */
 	@Override
-	public Optional<String> getMatchingStrategy(AuthRequestDTO authReq,
-			String languageInfoFetcher) {
+	public Optional<String> getMatchingStrategy(AuthRequestDTO authReq, String languageInfoFetcher) {
 		return Optional.of(MatchingStrategyType.PARTIAL.getType());
 	}
 
@@ -277,8 +281,8 @@ public enum BioAuthType implements AuthType {
 	 * Get Matching Threshold
 	 */
 	@Override
-	public Optional<Integer> getMatchingThreshold(AuthRequestDTO authReq,
-			String languageInfoFetcher, Environment environment) {
+	public Optional<Integer> getMatchingThreshold(AuthRequestDTO authReq, String languageInfoFetcher,
+			Environment environment) {
 
 		String bioType = getType();
 		Integer threshold = null;
@@ -303,8 +307,9 @@ public enum BioAuthType implements AuthType {
 	 */
 	@Override
 	public boolean isAuthTypeInfoAvailable(AuthRequestDTO authRequestDTO) {
-		return Optional.ofNullable(authRequestDTO.getBioMetadata()).flatMap(
-				list -> list.stream().filter(bioInfo -> bioInfo.getBioType().equalsIgnoreCase(getType())).findAny())
+		return Optional.ofNullable(authRequestDTO.getRequest().getBiometrics())
+				.flatMap(list -> list.stream().map(BioIdentityInfoDTO::getData)
+						.filter(bioInfo -> bioInfo.getBioType().equalsIgnoreCase(getType())).findAny())
 				.isPresent();
 	}
 

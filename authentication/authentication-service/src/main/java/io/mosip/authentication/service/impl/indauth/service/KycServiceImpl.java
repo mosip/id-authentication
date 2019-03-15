@@ -13,6 +13,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
 import io.mosip.authentication.core.dto.indauth.BioIdentityInfoDTO;
+import io.mosip.authentication.core.dto.indauth.DataDTO;
 import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
 import io.mosip.authentication.core.dto.indauth.KycResponseDTO;
 import io.mosip.authentication.core.dto.indauth.KycType;
@@ -85,10 +86,12 @@ public class KycServiceImpl implements KycService {
 			List<BioIdentityInfoDTO> bioValue = new ArrayList<>();
 			if(Objects.nonNull(faceValue)) {
 				BioIdentityInfoDTO bioIdentityInfoDTO = null;
-				for(IdentityInfoDTO identityInfoDTO : faceValue) {				
+				for(IdentityInfoDTO identityInfoDTO : faceValue) {		
+					DataDTO dataDTO=new DataDTO();
 					bioIdentityInfoDTO = new BioIdentityInfoDTO();
-					bioIdentityInfoDTO.setType("face");
-					bioIdentityInfoDTO.setValue(identityInfoDTO.getValue());
+					dataDTO.setBioType("face");
+					dataDTO.setBioValue(identityInfoDTO.getValue());
+					bioIdentityInfoDTO.setData(dataDTO);;
 					bioValue.add(bioIdentityInfoDTO);
 				}
 			}

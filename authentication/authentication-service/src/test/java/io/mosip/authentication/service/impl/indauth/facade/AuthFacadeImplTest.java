@@ -36,7 +36,7 @@ import io.mosip.authentication.core.dto.indauth.AuthResponseDTO;
 import io.mosip.authentication.core.dto.indauth.AuthStatusInfo;
 import io.mosip.authentication.core.dto.indauth.AuthTypeDTO;
 import io.mosip.authentication.core.dto.indauth.BioIdentityInfoDTO;
-import io.mosip.authentication.core.dto.indauth.BioInfo;
+import io.mosip.authentication.core.dto.indauth.DataDTO;
 import io.mosip.authentication.core.dto.indauth.IdType;
 import io.mosip.authentication.core.dto.indauth.IdentityDTO;
 import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
@@ -213,17 +213,25 @@ public class AuthFacadeImplTest {
 		authRequestDTO.setRequestedAuth(authType);
 
 		BioIdentityInfoDTO fingerValue = new BioIdentityInfoDTO();
-		fingerValue.setValue("finger");
-		fingerValue.setSubType("Thumb");
-		fingerValue.setType("finger");
+		DataDTO dataDTOFinger=new DataDTO();
+		dataDTOFinger.setBioValue("finger");
+		dataDTOFinger.setBioSubType("Thumb");
+		dataDTOFinger.setBioType(BioAuthType.FGR_IMG.getType());
+		dataDTOFinger.setDeviceProviderID("1234567890");
+		fingerValue.setData(dataDTOFinger);
 		BioIdentityInfoDTO irisValue = new BioIdentityInfoDTO();
-		irisValue.setValue("iris img");
-		irisValue.setSubType("left");
-		irisValue.setType("iris");
+		DataDTO dataDTOIris=new DataDTO();
+		dataDTOIris.setBioValue("iris img");
+		dataDTOIris.setBioSubType("left");
+		dataDTOIris.setBioType(BioAuthType.IRIS_IMG.getType());
+		irisValue.setData(dataDTOIris);
 		BioIdentityInfoDTO faceValue = new BioIdentityInfoDTO();
-		faceValue.setValue("face img");
-		faceValue.setSubType("Thumb");
-		faceValue.setType("face");
+		DataDTO dataDTOFace=new DataDTO();
+		dataDTOFace.setBioValue("face img");
+		dataDTOFace.setBioSubType("Thumb");
+		dataDTOFace.setBioType(BioAuthType.FACE_IMG.getType());
+		faceValue.setData(dataDTOFace);
+		
 		List<BioIdentityInfoDTO> fingerIdentityInfoDtoList = new ArrayList<BioIdentityInfoDTO>();
 		fingerIdentityInfoDtoList.add(fingerValue);
 		fingerIdentityInfoDtoList.add(irisValue);
@@ -235,15 +243,6 @@ public class AuthFacadeImplTest {
 		requestDTO.setDemographics(identitydto);
 		requestDTO.setBiometrics(fingerIdentityInfoDtoList);
 		authRequestDTO.setRequest(requestDTO);
-
-		BioInfo bioinfo = new BioInfo();
-		bioinfo.setBioType(BioAuthType.FGR_IMG.getType());
-		bioinfo.setDeviceId("123456789");
-		bioinfo.setDeviceProviderID("1234567890");
-
-		List<BioInfo> bioInfoList = new ArrayList<BioInfo>();
-		bioInfoList.add(bioinfo);
-		authRequestDTO.setBioMetadata(bioInfoList);
 		Map<String, Object> idRepo = new HashMap<>();
 		String uin = "274390482564";
 		idRepo.put("uin", uin);
@@ -370,18 +369,19 @@ public class AuthFacadeImplTest {
 		IdentityDTO idDTO = new IdentityDTO();
 		idDTO.setName(idInfoList);
 		BioIdentityInfoDTO fingerValue = new BioIdentityInfoDTO();
-		fingerValue.setValue("finger");
-		fingerValue.setSubType("Thumb");
-		fingerValue.setType("finger");
+		DataDTO dataDTOFinger=new DataDTO();
+		dataDTOFinger.setBioValue("finger");
+		dataDTOFinger.setBioSubType("Thumb");
+		dataDTOFinger.setBioType(BioAuthType.FGR_IMG.getType());
+		dataDTOFinger.setDeviceProviderID("1234567890");
+		fingerValue.setData(dataDTOFinger);
 		BioIdentityInfoDTO fingerValue2 = new BioIdentityInfoDTO();
-		fingerValue2.setValue("");
-		fingerValue2.setSubType("Thumb");
-		fingerValue2.setType("finger");
-		BioInfo bioinfo = new BioInfo();
-		bioinfo.setBioType(BioAuthType.FACE_IMG.getType());
-		List<BioInfo> bioInfoList = new ArrayList<BioInfo>();
-		bioInfoList.add(bioinfo);
-		authRequestDTO.setBioMetadata(bioInfoList);
+		DataDTO dataDTOFinger2=new DataDTO();
+		dataDTOFinger2.setBioValue("");
+		dataDTOFinger2.setBioSubType("Thumb");
+		dataDTOFinger2.setBioType(BioAuthType.FGR_IMG.getType());
+		dataDTOFinger2.setDeviceProviderID("1234567890");
+		fingerValue2.setData(dataDTOFinger2);
 		List<BioIdentityInfoDTO> fingerIdentityInfoDtoList = new ArrayList<BioIdentityInfoDTO>();
 		fingerIdentityInfoDtoList.add(fingerValue);
 		fingerIdentityInfoDtoList.add(fingerValue2);
@@ -680,17 +680,25 @@ public class AuthFacadeImplTest {
 		authRequestDTO.setRequestedAuth(authType);
 
 		BioIdentityInfoDTO fingerValue = new BioIdentityInfoDTO();
-		fingerValue.setValue("finger");
-		fingerValue.setSubType("Thumb");
-		fingerValue.setType("finger");
+		DataDTO dataDTOFinger=new DataDTO();
+		dataDTOFinger.setBioValue("finger");
+		dataDTOFinger.setBioSubType("Thumb");
+		dataDTOFinger.setBioType(BioAuthType.FGR_IMG.getType());
+		dataDTOFinger.setDeviceProviderID("1234567890");
+		fingerValue.setData(dataDTOFinger);
 		BioIdentityInfoDTO irisValue = new BioIdentityInfoDTO();
-		irisValue.setValue("iris img");
-		irisValue.setSubType("left");
-		irisValue.setType("iris");
+		DataDTO dataDTOIris=new DataDTO();
+		dataDTOIris.setBioValue("iris img");
+		dataDTOIris.setBioSubType("left");
+		dataDTOIris.setBioType(BioAuthType.IRIS_IMG.getType());
+		irisValue.setData(dataDTOIris);
 		BioIdentityInfoDTO faceValue = new BioIdentityInfoDTO();
-		faceValue.setValue("face img");
-		faceValue.setSubType("Thumb");
-		faceValue.setType("face");
+		DataDTO dataDTOFace=new DataDTO();
+		dataDTOFace.setBioValue("face img");
+		dataDTOFace.setBioSubType("Thumb");
+		dataDTOFace.setBioType(BioAuthType.FACE_IMG.getType());
+		faceValue.setData(dataDTOFace);
+		
 		List<BioIdentityInfoDTO> fingerIdentityInfoDtoList = new ArrayList<BioIdentityInfoDTO>();
 		fingerIdentityInfoDtoList.add(fingerValue);
 		fingerIdentityInfoDtoList.add(irisValue);
@@ -702,15 +710,6 @@ public class AuthFacadeImplTest {
 		requestDTO.setDemographics(identitydto);
 		requestDTO.setBiometrics(fingerIdentityInfoDtoList);
 		authRequestDTO.setRequest(requestDTO);
-
-		BioInfo bioinfo = new BioInfo();
-		bioinfo.setBioType(BioAuthType.FGR_IMG.getType());
-		bioinfo.setDeviceId("123456789");
-		bioinfo.setDeviceProviderID("1234567890");
-
-		List<BioInfo> bioInfoList = new ArrayList<BioInfo>();
-		bioInfoList.add(bioinfo);
-		authRequestDTO.setBioMetadata(bioInfoList);
 		Map<String, Object> idRepo = new HashMap<>();
 		String uin = "274390482564";
 		idRepo.put("uin", uin);
@@ -766,17 +765,25 @@ public class AuthFacadeImplTest {
 		authRequestDTO.setRequestedAuth(authType);
 
 		BioIdentityInfoDTO fingerValue = new BioIdentityInfoDTO();
-		fingerValue.setValue("finger");
-		fingerValue.setSubType("Thumb");
-		fingerValue.setType("finger");
+		DataDTO dataDTOFinger=new DataDTO();
+		dataDTOFinger.setBioValue("finger");
+		dataDTOFinger.setBioSubType("Thumb");
+		dataDTOFinger.setBioType(BioAuthType.FGR_IMG.getType());
+		dataDTOFinger.setDeviceProviderID("1234567890");
+		fingerValue.setData(dataDTOFinger);
 		BioIdentityInfoDTO irisValue = new BioIdentityInfoDTO();
-		irisValue.setValue("iris img");
-		irisValue.setSubType("left");
-		irisValue.setType("iris");
+		DataDTO dataDTOIris=new DataDTO();
+		dataDTOIris.setBioValue("iris img");
+		dataDTOIris.setBioSubType("left");
+		dataDTOIris.setBioType(BioAuthType.IRIS_IMG.getType());
+		irisValue.setData(dataDTOIris);
 		BioIdentityInfoDTO faceValue = new BioIdentityInfoDTO();
-		faceValue.setValue("face img");
-		faceValue.setSubType("Thumb");
-		faceValue.setType("face");
+		DataDTO dataDTOFace=new DataDTO();
+		dataDTOFace.setBioValue("face img");
+		dataDTOFace.setBioSubType("Thumb");
+		dataDTOFace.setBioType(BioAuthType.FACE_IMG.getType());
+		faceValue.setData(dataDTOFace);
+		
 		List<BioIdentityInfoDTO> fingerIdentityInfoDtoList = new ArrayList<BioIdentityInfoDTO>();
 		fingerIdentityInfoDtoList.add(fingerValue);
 		fingerIdentityInfoDtoList.add(irisValue);
@@ -788,20 +795,6 @@ public class AuthFacadeImplTest {
 		requestDTO.setDemographics(identitydto);
 		requestDTO.setBiometrics(fingerIdentityInfoDtoList);
 		authRequestDTO.setRequest(requestDTO);
-
-		BioInfo bioinfo = new BioInfo();
-		bioinfo.setBioType(BioAuthType.FGR_IMG.getType());
-		bioinfo.setDeviceId("123456789");
-		bioinfo.setDeviceProviderID("1234567890");
-		BioInfo bioinfo1 = new BioInfo();
-		bioinfo1.setBioType(BioAuthType.IRIS_IMG.getType());
-		bioinfo1.setDeviceId("123456789");
-		bioinfo1.setDeviceProviderID("1234567890");
-
-		List<BioInfo> bioInfoList = new ArrayList<BioInfo>();
-		bioInfoList.add(bioinfo);
-		bioInfoList.add(bioinfo1);
-		authRequestDTO.setBioMetadata(bioInfoList);
 		Map<String, Object> idRepo = new HashMap<>();
 		String uin = "274390482564";
 		idRepo.put("uin", uin);

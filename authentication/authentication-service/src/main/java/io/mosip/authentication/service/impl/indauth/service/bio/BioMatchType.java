@@ -15,6 +15,7 @@ import java.util.stream.Stream;
 
 import io.mosip.authentication.core.dto.indauth.AuthUsageDataBit;
 import io.mosip.authentication.core.dto.indauth.BioIdentityInfoDTO;
+import io.mosip.authentication.core.dto.indauth.DataDTO;
 import io.mosip.authentication.core.dto.indauth.IdentityDTO;
 import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
 import io.mosip.authentication.core.dto.indauth.RequestDTO;
@@ -149,11 +150,11 @@ public enum BioMatchType implements MatchType {
 	
 	private Map<String, List<IdentityInfoDTO>> getIdInfoFromBioIdInfo(List<BioIdentityInfoDTO> biometrics) {
 		Optional<String> valueOpt = biometrics.stream().filter(bioId -> {
-			if (bioId.getType().equalsIgnoreCase(cbeffDocType.getName())) {
-				return bioId.getSubType().equalsIgnoreCase(getIdMapping().getIdname());
+			if (bioId.getData().getBioType().equalsIgnoreCase(cbeffDocType.getName())) {
+				return bioId.getData().getBioSubType().equalsIgnoreCase(getIdMapping().getIdname());
 			}
 			return false;
-		}).map(BioIdentityInfoDTO::getValue).findAny();
+		}).map(BioIdentityInfoDTO::getData).map(DataDTO::getBioValue).findAny();
 		if (valueOpt.isPresent()) {
 			Map<String, List<IdentityInfoDTO>> valuesMap = new HashMap<>();
 			List<IdentityInfoDTO> values = Arrays.asList(new IdentityInfoDTO(null, valueOpt.get()));

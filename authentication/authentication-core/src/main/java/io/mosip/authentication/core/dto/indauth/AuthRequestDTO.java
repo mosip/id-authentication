@@ -25,9 +25,6 @@ public class AuthRequestDTO extends BaseAuthRequestDTO {
 	/** The value for requestTime*/
 	private String requestTime;
 	
-	/** The value for bioMetadata*/
-	private List<BioInfo> bioMetadata;
-
 	/** The value for request*/
 	private RequestDTO request;
 

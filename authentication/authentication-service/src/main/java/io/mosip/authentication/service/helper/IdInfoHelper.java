@@ -31,7 +31,7 @@ import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.dto.indauth.AuthError;
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.AuthStatusInfo;
-import io.mosip.authentication.core.dto.indauth.BioInfo;
+import io.mosip.authentication.core.dto.indauth.DataDTO;
 import io.mosip.authentication.core.dto.indauth.IdType;
 import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
 import io.mosip.authentication.core.dto.indauth.LanguageType;
@@ -789,7 +789,7 @@ public class IdInfoHelper implements IdInfoFetcher {
 	 * @param bioinfovalue the bioinfovalue
 	 * @return the finger print provider
 	 */
-	public MosipBiometricProvider getFingerPrintProvider(BioInfo bioinfovalue) {
+	public MosipBiometricProvider getFingerPrintProvider(DataDTO bioinfovalue) {
 		return biometricProviderFactory.getBiometricProvider(bioinfovalue);
 	}
 
@@ -800,7 +800,7 @@ public class IdInfoHelper implements IdInfoFetcher {
 	 * io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher#getIrisProvider(
 	 * io.mosip.authentication.core.dto.indauth.BioInfo)
 	 */
-	public MosipBiometricProvider getIrisProvider(BioInfo bioinfovalue) {
+	public MosipBiometricProvider getIrisProvider(DataDTO bioinfovalue) {
 		return biometricProviderFactory.getBiometricProvider(bioinfovalue);
 	}
 

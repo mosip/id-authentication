@@ -29,7 +29,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.AuthTypeDTO;
-import io.mosip.authentication.core.dto.indauth.BioInfo;
+import io.mosip.authentication.core.dto.indauth.BioIdentityInfoDTO;
+import io.mosip.authentication.core.dto.indauth.DataDTO;
 import io.mosip.authentication.core.dto.indauth.IdentityDTO;
 import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
 import io.mosip.authentication.core.dto.indauth.RequestDTO;
@@ -39,7 +40,6 @@ import io.mosip.authentication.service.config.IDAMappingConfig;
 import io.mosip.authentication.service.factory.RestRequestFactory;
 import io.mosip.authentication.service.helper.IdInfoHelper;
 import io.mosip.authentication.service.helper.RestHelper;
-import io.mosip.authentication.service.impl.indauth.service.bio.BioAuthType;
 import io.mosip.authentication.service.impl.indauth.service.demo.DOBType;
 import io.mosip.authentication.service.integration.MasterDataManager;
 import io.mosip.kernel.datavalidator.email.impl.EmailValidatorImpl;
@@ -204,6 +204,7 @@ public class IdMappingValidationTest {
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		Mockito.when(idinfoHelper.isMatchtypeEnabled(Mockito.any())).thenReturn(true);
 		ReflectionTestUtils.invokeMethod(authRequestValidator, "validateBioMetadataDetails", authRequestDTO, errors);
+		System.err.println(errors);
 		assertTrue(errors.hasErrors());
 	}
 
@@ -231,13 +232,18 @@ public class IdMappingValidationTest {
 		AuthTypeDTO requestedAuth = new AuthTypeDTO();
 		requestedAuth.setBio(true);
 		authRequestDTO.setRequestedAuth(requestedAuth);
-		List<BioInfo> bioMetadata = new ArrayList<>();
-		BioInfo bioInfo = new BioInfo();
-		bioInfo.setBioType(BioAuthType.FACE_IMG.getType());
-		bioInfo.setDeviceId("123456");
-		bioInfo.setDeviceProviderID("Mosip");
-		bioMetadata.add(bioInfo);
-		authRequestDTO.setBioMetadata(bioMetadata);
+		BioIdentityInfoDTO faceValue = new BioIdentityInfoDTO();
+		DataDTO dataDTO=new DataDTO();
+		dataDTO.setBioValue("face img");
+		dataDTO.setBioSubType("Thumb");
+		dataDTO.setBioType("FID");
+		dataDTO.setDeviceProviderID("provider001");
+		faceValue.setData(dataDTO);
+		
+		List<BioIdentityInfoDTO> fingerIdentityInfoDtoList = new ArrayList<BioIdentityInfoDTO>();
+		fingerIdentityInfoDtoList.add(faceValue);
+		RequestDTO reqDTO = new RequestDTO();
+		authRequestDTO.setRequest(reqDTO);
 		return authRequestDTO;
 	}
 
@@ -246,13 +252,18 @@ public class IdMappingValidationTest {
 		AuthTypeDTO requestedAuth = new AuthTypeDTO();
 		requestedAuth.setBio(true);
 		authRequestDTO.setRequestedAuth(requestedAuth);
-		List<BioInfo> bioMetadata = new ArrayList<>();
-		BioInfo bioInfo = new BioInfo();
-		bioInfo.setBioType(BioAuthType.IRIS_COMP_IMG.getType());
-		bioInfo.setDeviceId("123456");
-		bioInfo.setDeviceProviderID("Mosip");
-		bioMetadata.add(bioInfo);
-		authRequestDTO.setBioMetadata(bioMetadata);
+		DataDTO dataDTO=new DataDTO();
+		BioIdentityInfoDTO irisValue = new BioIdentityInfoDTO();
+		dataDTO.setBioValue("iris img");
+		dataDTO.setBioSubType("left");
+		dataDTO.setBioType("IIR");
+		dataDTO.setDeviceProviderID("provider001");
+		irisValue.setData(dataDTO);
+		
+		List<BioIdentityInfoDTO> fingerIdentityInfoDtoList = new ArrayList<BioIdentityInfoDTO>();
+		fingerIdentityInfoDtoList.add(irisValue);
+		RequestDTO reqDTO = new RequestDTO();
+		authRequestDTO.setRequest(reqDTO);
 		return authRequestDTO;
 	}
 
@@ -260,15 +271,43 @@ public class IdMappingValidationTest {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		AuthTypeDTO requestedAuth = new AuthTypeDTO();
 		requestedAuth.setBio(true);
-		RequestDTO request = new RequestDTO();
 		authRequestDTO.setRequestedAuth(requestedAuth);
-		List<BioInfo> bioMetadata = new ArrayList<>();
-		BioInfo bioInfo = new BioInfo();
-		bioInfo.setBioType(BioAuthType.FGR_MIN.getType());
-		bioInfo.setDeviceId("123456");
-		bioInfo.setDeviceProviderID("Mosip");
-		bioMetadata.add(bioInfo);
-		authRequestDTO.setBioMetadata(bioMetadata);
+		BioIdentityInfoDTO fingerValue = new BioIdentityInfoDTO();
+		DataDTO dataDTO=new DataDTO();
+		dataDTO.setBioValue("finger");
+		dataDTO.setBioSubType("Thumb");
+		dataDTO.setBioType("test");
+		dataDTO.setDeviceProviderID("test01");
+		fingerValue.setData(dataDTO);
+		BioIdentityInfoDTO fingerValue1 = new BioIdentityInfoDTO();
+		DataDTO dataDTO1=new DataDTO();
+		dataDTO1.setBioValue("finger");
+		dataDTO1.setBioSubType("Thumb");
+		dataDTO1.setBioType("FIR");
+		dataDTO1.setDeviceProviderID("test01");
+		fingerValue1.setData(dataDTO1);
+		BioIdentityInfoDTO irisValue = new BioIdentityInfoDTO();
+		dataDTO.setBioValue("iris img");
+		dataDTO.setBioSubType("left");
+		dataDTO.setBioType("IIR");
+		dataDTO.setDeviceProviderID("provider001");
+		irisValue.setData(dataDTO);
+		BioIdentityInfoDTO faceValue = new BioIdentityInfoDTO();
+		DataDTO dataDTOFace=new DataDTO();
+		dataDTOFace.setBioValue("face img");
+		dataDTOFace.setBioSubType("Thumb");
+		dataDTOFace.setBioType("FID");
+		dataDTOFace.setDeviceProviderID("provider001");
+		faceValue.setData(dataDTOFace);
+		
+		List<BioIdentityInfoDTO> fingerIdentityInfoDtoList = new ArrayList<BioIdentityInfoDTO>();
+		fingerIdentityInfoDtoList.add(fingerValue);
+		fingerIdentityInfoDtoList.add(fingerValue1);
+		fingerIdentityInfoDtoList.add(irisValue);
+		fingerIdentityInfoDtoList.add(faceValue);
+		RequestDTO reqDTO = new RequestDTO();
+		reqDTO.setBiometrics(fingerIdentityInfoDtoList);
+		authRequestDTO.setRequest(reqDTO);
 		return authRequestDTO;
 	}
 

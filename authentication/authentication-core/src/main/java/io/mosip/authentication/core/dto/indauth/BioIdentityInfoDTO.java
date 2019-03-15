@@ -12,12 +12,16 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class BioIdentityInfoDTO {
-	/** The Value for type */
-	private String type; 
 	
-	/** The Value for subType*/
-	private String subType;
+	/** The Value for data */
+	private DataDTO data;
 	
-	/** The Value for value*/
-	private String value; 
+	/** The Value for hash */
+	private String hash;
+	
+	/** The Value for sessionKey */
+	private String sessionKey;
+	
+	/** The Value for signature */
+	private String signature;
 }

@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
-import io.mosip.authentication.core.dto.indauth.BioInfo;
+import io.mosip.authentication.core.dto.indauth.DataDTO;
 import io.mosip.authentication.core.spi.bioauth.provider.MosipBiometricProvider;
 import io.mosip.authentication.service.impl.fingerauth.provider.impl.CogentFingerprintProvider;
 import io.mosip.authentication.service.impl.fingerauth.provider.impl.MantraFingerprintProvider;
@@ -77,7 +77,7 @@ public class BiometricProviderFactory {
 	 *            the bio info
 	 * @return the biometric provider
 	 */
-	public MosipBiometricProvider getBiometricProvider(BioInfo bioInfo) {
+	public MosipBiometricProvider getBiometricProvider(DataDTO bioInfo) {
 
 		if (bioInfo.getBioType().equalsIgnoreCase(BioAuthType.IRIS_IMG.getType())) {
 			/*if (bioInfo.getDeviceInfo().getMake().equalsIgnoreCase(environment.getProperty(BiometricProviderFactory.COGENT_IRIS_PROVIDER))) {

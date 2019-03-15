@@ -36,7 +36,8 @@ import org.springframework.web.context.WebApplicationContext;
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.AuthStatusInfo;
 import io.mosip.authentication.core.dto.indauth.AuthTypeDTO;
-import io.mosip.authentication.core.dto.indauth.BioInfo;
+import io.mosip.authentication.core.dto.indauth.BioIdentityInfoDTO;
+import io.mosip.authentication.core.dto.indauth.DataDTO;
 import io.mosip.authentication.core.dto.indauth.IdentityDTO;
 import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
 import io.mosip.authentication.core.dto.indauth.RequestDTO;
@@ -157,8 +158,15 @@ public class DemoAuthServiceTest {
 	public void adMatchInputtest() throws NoSuchMethodException, SecurityException, IllegalAccessException,
 			IllegalArgumentException, InvocationTargetException {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
-		BioInfo bioinfo = new BioInfo();
-		bioinfo.setBioType(BioAuthType.FGR_IMG.getType());
+		BioIdentityInfoDTO fingerValue = new BioIdentityInfoDTO();
+		DataDTO dataDTOFinger=new DataDTO();
+		dataDTOFinger.setBioValue("finger");
+		dataDTOFinger.setBioSubType("Thumb");
+		dataDTOFinger.setBioType(BioAuthType.FGR_IMG.getType());
+		dataDTOFinger.setDeviceProviderID("1234567890");
+		fingerValue.setData(dataDTOFinger);
+		List<BioIdentityInfoDTO> fingerIdentityInfoDtoList = new ArrayList<BioIdentityInfoDTO>();
+		fingerIdentityInfoDtoList.add(fingerValue);
 		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
 		authTypeDTO.setBio(false);
 		authTypeDTO.setDemo(true);
@@ -168,6 +176,7 @@ public class DemoAuthServiceTest {
 		authRequestDTO.setId("IDA");
 
 		RequestDTO requestDTO = new RequestDTO();
+		requestDTO.setBiometrics(fingerIdentityInfoDtoList);
 		IdentityDTO identityDTO = new IdentityDTO();
 		List<IdentityInfoDTO> infoList = new ArrayList<>();
 		IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
@@ -268,8 +277,15 @@ public class DemoAuthServiceTest {
 			IllegalArgumentException, InvocationTargetException {
 
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
-		BioInfo bioinfo = new BioInfo();
-		bioinfo.setBioType(BioAuthType.FGR_IMG.getType());
+		BioIdentityInfoDTO fingerValue = new BioIdentityInfoDTO();
+		DataDTO dataDTOFinger=new DataDTO();
+		dataDTOFinger.setBioValue("finger");
+		dataDTOFinger.setBioSubType("Thumb");
+		dataDTOFinger.setBioType(BioAuthType.FGR_IMG.getType());
+		dataDTOFinger.setDeviceProviderID("1234567890");
+		fingerValue.setData(dataDTOFinger);
+		List<BioIdentityInfoDTO> fingerIdentityInfoDtoList = new ArrayList<BioIdentityInfoDTO>();
+		fingerIdentityInfoDtoList.add(fingerValue);
 		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
 		authTypeDTO.setBio(false);
 		authTypeDTO.setDemo(true);
@@ -291,6 +307,7 @@ public class DemoAuthServiceTest {
 		authRequestDTO.setRequestTime("2018-10-30T11:02:22.778+0000");
 		RequestDTO request = new RequestDTO();
 		request.setDemographics(identityDTO);
+		requestDTO.setBiometrics(fingerIdentityInfoDtoList);
 		authRequestDTO.setRequest(request);
 		authRequestDTO.setIndividualId("426789089018");
 		authRequestDTO.setTransactionID("1234567890");
@@ -462,9 +479,15 @@ public class DemoAuthServiceTest {
 		authTypeDTO.setPin(false);
 		authRequestDTO.setRequestedAuth(authTypeDTO);
 		authRequestDTO.setId("mosip.identity.auth");
-		BioInfo bioinfo = new BioInfo();
-		bioinfo.setBioType(BioAuthType.FGR_IMG.getType());
-		
+		BioIdentityInfoDTO fingerValue = new BioIdentityInfoDTO();
+		DataDTO dataDTOFinger=new DataDTO();
+		dataDTOFinger.setBioValue("finger");
+		dataDTOFinger.setBioSubType("Thumb");
+		dataDTOFinger.setBioType(BioAuthType.FGR_IMG.getType());
+		dataDTOFinger.setDeviceProviderID("1234567890");
+		fingerValue.setData(dataDTOFinger);
+		List<BioIdentityInfoDTO> fingerIdentityInfoDtoList = new ArrayList<BioIdentityInfoDTO>();
+		fingerIdentityInfoDtoList.add(fingerValue);
 		ZoneOffset offset = ZoneOffset.MAX;
 		authRequestDTO.setRequestTime(Instant.now().atOffset(offset)
 				.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
@@ -479,6 +502,7 @@ public class DemoAuthServiceTest {
 		nameList.add(identityInfoDTO);
 		identity.setName(nameList);
 		requestDTO.setDemographics(identity);
+		requestDTO.setBiometrics(fingerIdentityInfoDtoList);
 		authRequestDTO.setRequest(requestDTO);
 		authRequestDTO.setIndividualId("426789089018");
 		Map<String, List<IdentityInfoDTO>> demoIdentity = new HashMap<>();

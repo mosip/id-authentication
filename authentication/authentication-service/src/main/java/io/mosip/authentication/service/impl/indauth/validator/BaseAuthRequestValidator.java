@@ -22,7 +22,7 @@ import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.AuthTypeDTO;
 import io.mosip.authentication.core.dto.indauth.BaseAuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.BioIdentityInfoDTO;
-import io.mosip.authentication.core.dto.indauth.BioInfo;
+import io.mosip.authentication.core.dto.indauth.DataDTO;
 import io.mosip.authentication.core.dto.indauth.IdentityDTO;
 import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
 import io.mosip.authentication.core.dto.indauth.InternalAuthType;
@@ -232,28 +232,30 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 
 		if ((authTypeDTO != null && authTypeDTO.isBio())) {
 
-			List<BioInfo> bioInfo = authRequestDTO.getBioMetadata();
+			List<BioIdentityInfoDTO> bioInfo = authRequestDTO.getRequest().getBiometrics();
 
-			if (bioInfo != null && !bioInfo.isEmpty()) {
-
-				validateDeviceInfo(bioInfo, errors);
-
-				validateBioType(bioInfo, errors);
-
-				if (isAuthtypeEnabled(BioAuthType.FGR_MIN, BioAuthType.FGR_IMG, BioAuthType.FGR_MIN_MULTI)) {
-					validateFinger(authRequestDTO, bioInfo, errors);
-				}
-				if (isAuthtypeEnabled(BioAuthType.IRIS_IMG, BioAuthType.IRIS_COMP_IMG)) {
-					validateIris(authRequestDTO, bioInfo, errors);
-				}
-				if (isMatchtypeEnabled(BioMatchType.FACE)) {
-					validateFace(authRequestDTO, bioInfo, errors);
-				}
-
-			} else if (bioInfo == null || bioInfo.isEmpty()) {
+			if (bioInfo == null || bioInfo.isEmpty() || bioInfo.stream().anyMatch(bioDto -> bioDto.getData() == null)) {
 				mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE, "missing biometric request");
 				errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.MISSING_BIOMETRICDATA.getErrorCode(),
 						String.format(IdAuthenticationErrorConstants.MISSING_BIOMETRICDATA.getErrorMessage(), REQUEST));
+			} else {
+				
+				List<DataDTO> bioData = bioInfo.stream().map(BioIdentityInfoDTO::getData).collect(Collectors.toList());
+
+				validateDeviceInfo(bioData, errors);
+
+				validateBioType(bioData, errors);
+
+				if (isAuthtypeEnabled(BioAuthType.FGR_MIN, BioAuthType.FGR_IMG, BioAuthType.FGR_MIN_MULTI)) {
+					validateFinger(authRequestDTO, bioData, errors);
+				}
+				if (isAuthtypeEnabled(BioAuthType.IRIS_IMG, BioAuthType.IRIS_COMP_IMG)) {
+					validateIris(authRequestDTO, bioData, errors);
+				}
+				if (isMatchtypeEnabled(BioMatchType.FACE)) {
+					validateFace(authRequestDTO, bioData, errors);
+				}
+
 			}
 		}
 
@@ -265,13 +267,13 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	 * @param bioInfo
 	 * @param errors
 	 */
-	private void validateBioType(List<BioInfo> bioInfo, Errors errors) {
+	private void validateBioType(List<DataDTO> bioInfo, Errors errors) {
 		AuthType[] authTypes = BioAuthType.values();
 		Set<String> availableAuthTypeInfos = new HashSet<>();
 		for (AuthType authType : authTypes) {
 			availableAuthTypeInfos.add(authType.getType());
 		}
-		for (BioInfo bioInfos : bioInfo) {
+		for (DataDTO bioInfos : bioInfo) {
 			if (bioInfos.getBioType() == null || bioInfos.getBioType().isEmpty()) {
 				errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
 						new Object[] { BIO_TYPE },
@@ -292,14 +294,7 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	 * @param bioInfos
 	 * @param errors
 	 */
-	private void validateDeviceInfo(List<BioInfo> bioInfos, Errors errors) {
-		if (!isContainDeviceId(bioInfos)) {
-			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE,
-					"missing biometric Device id Info request");
-			errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
-					new Object[] { DEVICE_ID },
-					IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
-		}
+	private void validateDeviceInfo(List<DataDTO> bioInfos, Errors errors) {
 		if (!isContaindeviceProviderID(bioInfos)) {
 			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE,
 					"missing biometric deviceProviderID Info request");
@@ -315,20 +310,9 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	 * @param bioInfos
 	 * @return
 	 */
-	private boolean isContaindeviceProviderID(List<BioInfo> bioInfos) {
+	private boolean isContaindeviceProviderID(List<DataDTO> bioInfos) {
 		return bioInfos.parallelStream().allMatch(
 				deviceInfo -> deviceInfo.getDeviceProviderID() != null && !deviceInfo.getDeviceProviderID().isEmpty());
-	}
-
-	/**
-	 * check the deviceId value present in the request is null or empty
-	 * 
-	 * @param deviceInfoList
-	 * @return
-	 */
-	private boolean isContainDeviceId(List<BioInfo> bioInfo) {
-		return bioInfo.parallelStream()
-				.allMatch(deviceInfo -> deviceInfo.getDeviceId() != null && !deviceInfo.getDeviceId().isEmpty());
 	}
 
 	/**
@@ -338,7 +322,7 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	 * @param bioInfo        the bio info
 	 * @param errors         the errors
 	 */
-	private void validateFinger(AuthRequestDTO authRequestDTO, List<BioInfo> bioInfo, Errors errors) {
+	private void validateFinger(AuthRequestDTO authRequestDTO, List<DataDTO> bioInfo, Errors errors) {
 		if ((isAvailableBioType(bioInfo, BioAuthType.FGR_MIN)
 				&& isDuplicateBioType(authRequestDTO, BioAuthType.FGR_MIN))) {
 			checkAtleastOneFingerRequestAvailable(authRequestDTO, errors, BioAuthType.FGR_MIN.getType());
@@ -362,7 +346,7 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	 * @param bioInfo        the bio info
 	 * @param errors         the errors
 	 */
-	private void validateIris(AuthRequestDTO authRequestDTO, List<BioInfo> bioInfo, Errors errors) {
+	private void validateIris(AuthRequestDTO authRequestDTO, List<DataDTO> bioInfo, Errors errors) {
 		if (isAvailableBioType(bioInfo, BioAuthType.IRIS_IMG)
 				&& isDuplicateBioType(authRequestDTO, BioAuthType.IRIS_IMG)) {
 
@@ -382,7 +366,7 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	 * @param errors
 	 */
 	private void validateMultiIrisValue(AuthRequestDTO authRequestDTO, Errors errors) {
-		if (isDuplicateBioValue(authRequestDTO, "IRIS")) {
+		if (isDuplicateBioValue(authRequestDTO, BioAuthType.IRIS_IMG.getType())) {
 			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE, "Duplicate IRIS in request");
 			errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.DUPLICATE_IRIS.getErrorCode(),
 					String.format(IdAuthenticationErrorConstants.DUPLICATE_IRIS.getErrorMessage(), REQUEST));
@@ -411,7 +395,7 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 				.map(RequestDTO::getBiometrics).orElseGet(Collections::emptyList);
 		if (!identity.isEmpty()) {
 			List<BioIdentityInfoDTO> idendityInfoList = identity.stream().filter(Objects::nonNull)
-					.filter(bioId -> bioId.getType().equalsIgnoreCase(type)).collect(Collectors.toList());
+					.filter(bioId -> bioId.getData().getBioType().equalsIgnoreCase(type)).collect(Collectors.toList());
 			return idendityInfoList;
 		}
 		return Collections.emptyList();
@@ -424,7 +408,7 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	 * @param bioInfo        the bio info
 	 * @param errors         the errors
 	 */
-	private void validateFace(AuthRequestDTO authRequestDTO, List<BioInfo> bioInfo, Errors errors) {
+	private void validateFace(AuthRequestDTO authRequestDTO, List<DataDTO> bioInfo, Errors errors) {
 
 		if (isAvailableBioType(bioInfo, BioAuthType.FACE_IMG)
 				&& isDuplicateBioType(authRequestDTO, BioAuthType.FACE_IMG)) {
@@ -453,7 +437,7 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 
 	private boolean checkAnyBioIdAvailable(AuthRequestDTO authRequestDTO, String type) {
 		return Optional.ofNullable(authRequestDTO.getRequest()).map(RequestDTO::getBiometrics)
-				.filter(list -> list.stream().anyMatch(bioId -> bioId.getType().equalsIgnoreCase(type))).isPresent();
+				.filter(list -> list.stream().anyMatch(bioId -> bioId.getData().getBioType().equalsIgnoreCase(type))).isPresent();
 	}
 
 	/**
@@ -463,7 +447,7 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	 * @param errors         the errors
 	 */
 	private void checkAtleastOneIrisRequestAvailable(AuthRequestDTO authRequestDTO, Errors errors) {
-		boolean isIrisRequestAvailable = checkAnyBioIdAvailable(authRequestDTO, "IRIS");
+		boolean isIrisRequestAvailable = checkAnyBioIdAvailable(authRequestDTO, BioAuthType.IRIS_IMG.getType());
 		if (!isIrisRequestAvailable) {
 			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE, "iris request is not available");
 			errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.MISSING_AUTHTYPE.getErrorCode(),
@@ -478,7 +462,7 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	 * @param errors         the errors
 	 */
 	private void checkAtleastOneFaceRequestAvailable(AuthRequestDTO authRequestDTO, Errors errors) {
-		boolean isFaceRequestAvailable = checkAnyBioIdAvailable(authRequestDTO, "FACE");
+		boolean isFaceRequestAvailable = checkAnyBioIdAvailable(authRequestDTO, BioAuthType.IRIS_IMG.getType());
 		if (!isFaceRequestAvailable) {
 			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE, "face request is not available");
 			errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.MISSING_AUTHTYPE.getErrorCode(),
@@ -510,7 +494,7 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	 * @param bioType     the bio type
 	 * @return true, if is available bio type
 	 */
-	private boolean isAvailableBioType(List<BioInfo> bioInfoList, BioAuthType bioType) {
+	private boolean isAvailableBioType(List<DataDTO> bioInfoList, BioAuthType bioType) {
 		return bioInfoList.parallelStream().filter(bio -> bio.getBioType() != null && !bio.getBioType().isEmpty())
 				.anyMatch(bio -> bio.getBioType().equals(bioType.getType()));
 	}
@@ -524,8 +508,9 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	 * @return true, if is duplicate bio type
 	 */
 	private boolean isDuplicateBioType(AuthRequestDTO authRequestDTO, BioAuthType bioType) {
-		List<BioInfo> bioInfo = authRequestDTO.getBioMetadata();
-		Long bioTypeCount = Optional.ofNullable(bioInfo).map(List::parallelStream)
+		List<BioIdentityInfoDTO> bioInfo = authRequestDTO.getRequest().getBiometrics();
+		List<DataDTO> bioData = bioInfo.stream().map(BioIdentityInfoDTO::getData).collect(Collectors.toList());;
+		Long bioTypeCount = Optional.ofNullable(bioData).map(List::parallelStream)
 				.map(stream -> stream
 						.filter(bio -> bio.getBioType().isEmpty() && bio.getBioType().equals(bioType.getType()))
 						.count())
@@ -564,14 +549,16 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 
 	private Map<String, Long> getBioSubtypeCount(List<BioIdentityInfoDTO> idendityInfoList) {
 		Map<String, Long> countsMap = idendityInfoList.stream()
-				.collect(Collectors.groupingBy(BioIdentityInfoDTO::getSubType, Collectors.counting()));
+				.map(BioIdentityInfoDTO :: getData)
+				.collect(Collectors.groupingBy(DataDTO::getBioSubType, Collectors.counting()));
 		return countsMap;
 
 	}
 
 	private Map<String, Long> getBioValuesCount(List<BioIdentityInfoDTO> idendityInfoList) {
 		Map<String, Long> countsMap = idendityInfoList.stream()
-				.collect(Collectors.groupingBy(BioIdentityInfoDTO::getValue, Collectors.counting()));
+				.map(BioIdentityInfoDTO :: getData)
+				.collect(Collectors.groupingBy(DataDTO::getBioValue, Collectors.counting()));
 		return countsMap;
 
 	}
@@ -584,7 +571,7 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	 * @param errors         the errors
 	 */
 	private void validateIrisRequestCount(AuthRequestDTO authRequestDTO, Errors errors) {
-		Map<String, Long> irisSubtypeCounts = getBioSubtypeCounts(authRequestDTO, "IRIS");
+		Map<String, Long> irisSubtypeCounts = getBioSubtypeCounts(authRequestDTO,BioAuthType.IRIS_IMG.getType());
 		if (irisSubtypeCounts.values().stream().anyMatch(count -> count > 1)) {
 			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE,
 					"Iris : either left eye or right eye count is more than 1.");
