@@ -299,6 +299,7 @@ public class InternalAuthRequestValidatorTest {
 		authRequestDTO.setRequestTime(Instant.now().atOffset(ZoneOffset.of("+0530"))
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
 		authRequestDTO.setId("id");
+		authRequestDTO.setConsentObtained(true);
 		authRequestDTO.setTransactionID("1234567890");
 		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
 		authTypeDTO.setDemo(false);
@@ -325,6 +326,9 @@ public class InternalAuthRequestValidatorTest {
 		RequestDTO requestDTO = new RequestDTO();
 		requestDTO.setDemographics(identitydto);
 		requestDTO.setBiometrics(fingerIdentityInfoDtoList);
+		requestDTO.setTransactionID("1234567890");
+		requestDTO.setTimestamp(Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
+				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
 		BioInfo bioinfo = new BioInfo();
 		bioinfo.setBioType(BioAuthType.FGR_IMG.getType());
 		bioinfo.setDeviceId("123456789");

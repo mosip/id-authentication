@@ -132,16 +132,16 @@ public abstract class IdAuthValidator implements Validator {
 	 * @param txnID  the txn ID
 	 * @param errors the errors
 	 */
-	protected void validateTxnId(String txnID, Errors errors) {
+	protected void validateTxnId(String txnID, Errors errors,String paramName ) {
 		if (Objects.isNull(txnID)) {
-			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE, MISSING_INPUT_PARAMETER + TXN_ID);
+			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE, MISSING_INPUT_PARAMETER + TXN_ID + paramName);
 			errors.rejectValue(TXN_ID, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
-					new Object[] { TXN_ID }, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
+					new Object[] { paramName }, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
 		} else if (!A_Z0_9_10.matcher(txnID).matches()) {
 			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE,
-					"INVALID_INPUT_PARAMETER - txnID - value -> " + txnID);
+					"INVALID_INPUT_PARAMETER - txnID - value -> " + txnID + paramName);
 			errors.rejectValue(TXN_ID, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
-					new Object[] { TXN_ID }, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
+					new Object[] { paramName }, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
 		}
 	}
 
@@ -151,13 +151,13 @@ public abstract class IdAuthValidator implements Validator {
 	 * @param reqTime the req time
 	 * @param errors  the errors
 	 */
-	protected void validateReqTime(String reqTime, Errors errors) {
+	protected void validateReqTime(String reqTime, Errors errors, String paramName) {
 
 		if (Objects.isNull(reqTime)) {
 			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE,
-					MISSING_INPUT_PARAMETER + REQ_TIME);
+					MISSING_INPUT_PARAMETER + paramName);
 			errors.rejectValue(REQ_TIME, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
-					new Object[] { REQ_TIME },
+					new Object[] { paramName },
 					IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
 		} else {
 			checkFutureReqTime(reqTime, errors);

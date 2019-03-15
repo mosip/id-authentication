@@ -30,6 +30,14 @@ import io.mosip.kernel.core.util.DateUtils;
 @Component
 public class AuthRequestValidator extends BaseAuthRequestValidator {
 
+	private static final String REQUEST_TRANSACTION_ID = "request/transactionID";
+
+	private static final String TRANSACTION_ID = "transactionID";
+
+	private static final String REQUEST_REQUEST_TIME = "request/requestTime";
+
+	private static final String REQUEST_TIME = "requestTime";
+
 	private static final String ALLOWED_AUTH_TYPE = "allowed.auth.type";
 
 	/** The Constant AUTH_REQUEST. */
@@ -51,7 +59,7 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 	private static final String SESSION_ID = "SESSION_ID";
 
 	/** The Constant REQ_TIME. */
-	private static final String REQ_TIME = "requestTime";
+	private static final String REQ_TIME = REQUEST_TIME;
 
 	/** The Constant VALIDATE_REQUEST_TIMED_OUT. */
 	private static final String VALIDATE_REQUEST_TIMED_OUT = "validateRequestTimedOut";
@@ -90,18 +98,18 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 
 		if (authRequestDto != null) {
 			if (!errors.hasErrors()) {
-				validateAllowedAuthTypes(authRequestDto, errors, ALLOWED_AUTH_TYPE);
 				validateConsentReq(authRequestDto, errors);
+				validateAllowedAuthTypes(authRequestDto, errors, ALLOWED_AUTH_TYPE);
 			}
 			if (!errors.hasErrors()) {
-			validateReqTime(authRequestDto.getRequestTime(), errors);
+			validateReqTime(authRequestDto.getRequestTime(), errors, REQUEST_TIME);
 			//Validation for Time Stamp in the RequestDTO.
-			validateReqTime(authRequestDto.getRequest().getTimestamp(),errors);
+			validateReqTime(authRequestDto.getRequest().getTimestamp(),errors,REQUEST_REQUEST_TIME );
 			}
 			if (!errors.hasErrors()) {
-			validateTxnId(authRequestDto.getTransactionID(), errors);
+			validateTxnId(authRequestDto.getTransactionID(), errors,TRANSACTION_ID);
 			//Validation for TransaactionId in the RequestDTO.
-			validateTxnId(authRequestDto.getRequest().getTransactionID(),errors);
+			validateTxnId(authRequestDto.getRequest().getTransactionID(),errors,REQUEST_TRANSACTION_ID);
 			}
 			if (!errors.hasErrors()) {
 				validateAuthType(authRequestDto.getRequestedAuth(), errors);

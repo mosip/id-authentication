@@ -21,8 +21,18 @@ import io.mosip.kernel.core.util.DateUtils;
 @Component
 public class InternalAuthRequestValidator extends BaseAuthRequestValidator {
 
+
+	/** The Final Constant For allowed Internal auth type */
+	private static final String INTERNAL_ALLOWED_AUTH_TYPE = "internal.allowed.auth.type";
+	
 	/** The Constant REQ_TIME. */
 	private static final String REQ_TIME = "requestTime";
+	
+	private static final String REQUEST_TRANSACTION_ID = "request/transactionID";
+
+	private static final String TRANSACTION_ID = "transactionID";
+
+	private static final String REQUEST_REQUEST_TIME = "request/requestTime";
 
 	/** The Constant REQUESTDATE_RECEIVED_IN_MAX_TIME_MINS. */
 	private static final String REQUESTDATE_RECEIVED_IN_MAX_TIME_MINS = "authrequest.received-time-allowed.in-hours";
@@ -49,6 +59,8 @@ public class InternalAuthRequestValidator extends BaseAuthRequestValidator {
 	public void validate(Object authRequestDTO, Errors errors) {
 		if (authRequestDTO instanceof AuthRequestDTO) {
 			AuthRequestDTO requestDTO = (AuthRequestDTO) authRequestDTO;
+			validateConsentReq(requestDTO, errors);
+			if(!errors.hasErrors()) {
 			validateId(requestDTO.getId(), errors);
 			String individualId = requestDTO.getIndividualId();
 			String individualIdType = requestDTO.getIndividualIdType();
@@ -59,10 +71,13 @@ public class InternalAuthRequestValidator extends BaseAuthRequestValidator {
 				// TODO Missing UIN/VID
 			}
 			// validateVer(requestDTO.getVer(), errors);
-			validateTxnId(requestDTO.getTransactionID(), errors);
+			validateTxnId(requestDTO.getTransactionID(), errors,TRANSACTION_ID );
+			validateTxnId(requestDTO.getRequest().getTransactionID(),errors,REQUEST_TRANSACTION_ID);
+			validateReqTime(requestDTO.getRequest().getTimestamp(),errors,REQUEST_REQUEST_TIME );
 			validateDate(requestDTO, errors);
 			validateAuthType(requestDTO.getRequestedAuth(), errors);
-			validateRequest(requestDTO, errors);
+			validateAllowedAuthTypes(requestDTO, errors, INTERNAL_ALLOWED_AUTH_TYPE);
+			}
 		}
 	}
 
