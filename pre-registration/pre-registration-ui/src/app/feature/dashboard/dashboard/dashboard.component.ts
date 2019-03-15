@@ -137,7 +137,7 @@ export class DashBoardComponent implements OnInit {
     return applicant;
   }
 
-  private onNewApplication() {
+  onNewApplication() {
     if (this.loginId) {
       this.router.navigate(['pre-registration', 'demographic']);
       this.isNewApplication = true;
