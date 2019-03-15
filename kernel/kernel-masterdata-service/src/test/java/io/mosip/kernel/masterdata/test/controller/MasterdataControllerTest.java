@@ -30,19 +30,21 @@ import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
+import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.masterdata.constant.BlacklistedWordsErrorCode;
 import io.mosip.kernel.masterdata.constant.LocationErrorCode;
 import io.mosip.kernel.masterdata.dto.ApplicationDto;
 import io.mosip.kernel.masterdata.dto.BiometricAttributeDto;
 import io.mosip.kernel.masterdata.dto.BiometricTypeDto;
 import io.mosip.kernel.masterdata.dto.BlackListedWordsRequest;
+import io.mosip.kernel.masterdata.dto.BlacklistedWordListRequestDto;
 import io.mosip.kernel.masterdata.dto.BlacklistedWordsDto;
 import io.mosip.kernel.masterdata.dto.DocumentCategoryDto;
 import io.mosip.kernel.masterdata.dto.DocumentTypeDto;
 import io.mosip.kernel.masterdata.dto.LanguageDto;
 import io.mosip.kernel.masterdata.dto.LocationDto;
-import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.masterdata.dto.TemplateDto;
 import io.mosip.kernel.masterdata.dto.getresponse.ApplicationResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.BiometricAttributeResponseDto;
@@ -127,7 +129,10 @@ public class MasterdataControllerTest {
 	@MockBean
 	private BiometricAttributeService biometricAttributeService;
 
-	private final String BIOMETRIC_ATTRIBUTE_EXPECTED = "{ \"biometricattributes\": [ { \"code\": \"iric_black\", \"name\": \"black\", \"description\": null, \"isActive\": true},{\"code\": \"iric_brown\", \"name\": \"brown\", \"description\": null,\"isActive\": true } ] }";
+	// private final String BIOMETRIC_ATTRIBUTE_EXPECTED = "{
+	// \"biometricattributes\": [ { \"code\": \"iric_black\", \"name\": \"black\",
+	// \"description\": null, \"isActive\": true},{\"code\": \"iric_brown\",
+	// \"name\": \"brown\", \"description\": null,\"isActive\": true } ] }";
 
 	private List<BiometricAttributeDto> biometricattributes;
 
@@ -143,7 +148,11 @@ public class MasterdataControllerTest {
 	@MockBean
 	private DocumentTypeService documentTypeService;
 
-	private final String DOCUMENT_TYPE_EXPECTED = "{ \"documents\": [ { \"code\": \"addhar\", \"name\": \"adhar card\", \"description\": \"Uid\", \"langCode\": \"eng\"}, { \"code\": \"residensial\", \"name\": \"residensial_prof\", \"description\": \"document for residential prof\", \"langCode\": \"eng\" } ] }";
+	// private final String DOCUMENT_TYPE_EXPECTED = "{ \"documents\": [ { \"code\":
+	// \"addhar\", \"name\": \"adhar card\", \"description\": \"Uid\", \"langCode\":
+	// \"eng\"}, { \"code\": \"residensial\", \"name\": \"residensial_prof\",
+	// \"description\": \"document for residential prof\", \"langCode\": \"eng\" } ]
+	// }";
 
 	ValidDocumentTypeResponseDto validDocumentTypeResponseDto = null;
 
@@ -161,7 +170,9 @@ public class MasterdataControllerTest {
 	@MockBean
 	private LanguageService languageService;
 
-	private static final String LANGUAGE_JSON_STRING = "{ \"languages\": [   {      \"code\": \"hin\", \"name\": \"hindi\",      \"family\": \"hindi\",   \"nativeName\": \"hindi\" } ]}";
+	// private static final String LANGUAGE_JSON_STRING = "{ \"languages\": [ {
+	// \"code\": \"hin\", \"name\": \"hindi\", \"family\": \"hindi\",
+	// \"nativeName\": \"hindi\" } ]}";
 
 	private LanguageResponseDto respDto;
 	private List<LanguageDto> languages;
@@ -209,6 +220,8 @@ public class MasterdataControllerTest {
 	@Before
 	public void setUp() {
 		mapper = new ObjectMapper();
+		mapper.registerModule(new JavaTimeModule());
+		
 		Mockito.when(restTemplate.getForObject(Mockito.anyString(), Mockito.any())).thenReturn(JSON_STRING_RESPONSE);
 		biometricTypeSetup();
 
@@ -543,9 +556,10 @@ public class MasterdataControllerTest {
 
 		Mockito.when(biometricAttributeService.getBiometricAttribute(Mockito.anyString(), Mockito.anyString()))
 				.thenReturn((biometricattributes));
+
 		mockMvc.perform(MockMvcRequestBuilders.get("/getbiometricattributesbyauthtype/eng/iric"))
-				.andExpect(MockMvcResultMatchers.content().json(BIOMETRIC_ATTRIBUTE_EXPECTED))
-				.andExpect(MockMvcResultMatchers.status().isOk());
+				.andExpect(MockMvcResultMatchers.status().isOk())
+				.andExpect(jsonPath("$.response.biometricattributes[0].name", is("black")));
 
 	}
 
@@ -604,8 +618,8 @@ public class MasterdataControllerTest {
 		Mockito.when(documentTypeService.getAllValidDocumentType(Mockito.anyString(), Mockito.anyString()))
 				.thenReturn((documentTypeDtos));
 		mockMvc.perform(MockMvcRequestBuilders.get("/documenttypes/poa/eng"))
-				.andExpect(MockMvcResultMatchers.content().json(DOCUMENT_TYPE_EXPECTED))
-				.andExpect(MockMvcResultMatchers.status().isOk());
+				.andExpect(MockMvcResultMatchers.status().isOk())
+				.andExpect(jsonPath("$.response.documents[0].code", is("addhar")));
 
 	}
 
@@ -641,9 +655,8 @@ public class MasterdataControllerTest {
 		loadSuccessData();
 		Mockito.when(languageService.getAllLaguages()).thenReturn(respDto);
 
-		mockMvc.perform(MockMvcRequestBuilders.get("/languages"))
-				.andExpect(MockMvcResultMatchers.content().json(LANGUAGE_JSON_STRING))
-				.andExpect(MockMvcResultMatchers.status().isOk());
+		mockMvc.perform(MockMvcRequestBuilders.get("/languages")).andExpect(MockMvcResultMatchers.status().isOk())
+				.andExpect(jsonPath("$.response.languages[0].code", is("hin")));
 
 	}
 
@@ -928,46 +941,59 @@ public class MasterdataControllerTest {
 	public void validateWordsTest() throws Exception {
 		List<String> words = new ArrayList<>();
 		words.add("test");
-		String str = "[\"string\"]";
+		
+		BlacklistedWordListRequestDto blacklistedWordListRequestDto = new BlacklistedWordListRequestDto();
+		blacklistedWordListRequestDto.setBlacklistedwords(words);
+		RequestWrapper<BlacklistedWordListRequestDto> requestWrapper = new RequestWrapper<>();
+		requestWrapper.setRequest(blacklistedWordListRequestDto);
+				
 		Mockito.when(blacklistedWordsService.validateWord(words)).thenReturn(true);
 
 		RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/blacklistedwords/words")
 				.characterEncoding("UTF-8").accept(MediaType.APPLICATION_JSON_VALUE)
-				.contentType(MediaType.APPLICATION_JSON).content(str);
+				.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(requestWrapper));
 
-		mockMvc.perform(requestBuilder).andExpect(status().isOk());
+		mockMvc.perform(requestBuilder).andExpect(status().isOk()).andExpect(jsonPath("$.response.code", is("Valid")));
 	}
 
 	@Test
 	public void validateWordsFalseTest() throws Exception {
 		List<String> words = new ArrayList<>();
 		words.add("test");
-		String str = "[\"string\"]";
+		
+		BlacklistedWordListRequestDto blacklistedWordListRequestDto = new BlacklistedWordListRequestDto();
+		blacklistedWordListRequestDto.setBlacklistedwords(words);
+		RequestWrapper<BlacklistedWordListRequestDto> requestWrapper = new RequestWrapper<>();
+		requestWrapper.setRequest(blacklistedWordListRequestDto);
+		
 		Mockito.when(blacklistedWordsService.validateWord(words)).thenReturn(false);
 
 		RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/blacklistedwords/words")
 				.characterEncoding("UTF-8").accept(MediaType.APPLICATION_JSON_VALUE)
-				.contentType(MediaType.APPLICATION_JSON).content(str);
-		mockMvc.perform(requestBuilder).andExpect(status().isOk()).andExpect(jsonPath("$", is("Invalid")));
+				.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(requestWrapper));
+		mockMvc.perform(requestBuilder).andExpect(status().isOk()).andExpect(jsonPath("$.response.code", is("Invalid")));
 	}
 
-	/*
-	 * @Test public void validateWordsExceptionTest() throws Exception {
-	 * List<String> words = new ArrayList<>(); words.add("test"); String str =
-	 * "[\"string\"]";
-	 * Mockito.when(blacklistedWordsService.validateWord(Mockito.any()))
-	 * .thenThrow(new MasterDataServiceException(
-	 * BlacklistedWordsErrorCode.BLACKLISTED_WORDS_FETCH_EXCEPTION.getErrorCode(),
-	 * BlacklistedWordsErrorCode.BLACKLISTED_WORDS_FETCH_EXCEPTION.getErrorMessage()
-	 * ));
-	 * 
-	 * RequestBuilder requestBuilder =
-	 * MockMvcRequestBuilders.post("/blacklistedwords/words")
-	 * .characterEncoding("UTF-8").accept(MediaType.APPLICATION_JSON_VALUE)
-	 * .contentType(MediaType.APPLICATION_JSON).content(str);
-	 * mockMvc.perform(requestBuilder).andExpect(status().isInternalServerError());
-	 * }
-	 */
+	@Test
+	public void validateWordsExceptionTest() throws Exception {
+		List<String> words = new ArrayList<>();
+		words.add("test");
+		
+		BlacklistedWordListRequestDto blacklistedWordListRequestDto = new BlacklistedWordListRequestDto();
+		blacklistedWordListRequestDto.setBlacklistedwords(words);
+		RequestWrapper<BlacklistedWordListRequestDto> requestWrapper = new RequestWrapper<>();
+		requestWrapper.setRequest(blacklistedWordListRequestDto);
+		
+		Mockito.when(blacklistedWordsService.validateWord(Mockito.any()))
+				.thenThrow(new MasterDataServiceException(
+						BlacklistedWordsErrorCode.BLACKLISTED_WORDS_FETCH_EXCEPTION.getErrorCode(),
+						BlacklistedWordsErrorCode.BLACKLISTED_WORDS_FETCH_EXCEPTION.getErrorMessage()));
+
+		RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/blacklistedwords/words")
+				.characterEncoding("UTF-8").accept(MediaType.APPLICATION_JSON_VALUE)
+				.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(requestWrapper));
+		mockMvc.perform(requestBuilder).andExpect(status().isInternalServerError());
+	}
 
 	// --------------------------Registration
 	// center-validatetimeStamp------------------//

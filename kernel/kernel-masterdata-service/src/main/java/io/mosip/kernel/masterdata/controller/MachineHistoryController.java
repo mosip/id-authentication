@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.masterdata.dto.getresponse.MachineHistoryResponseDto;
 import io.mosip.kernel.masterdata.service.MachineHistoryService;
 import io.swagger.annotations.Api;
@@ -47,6 +48,7 @@ public class MachineHistoryController {
 	 * @return MachineHistoryResponseDto returning machine history detail based on
 	 *         given Machine ID, Language code and effective date time
 	 */
+	@ResponseFilter
 	@GetMapping(value = "/{id}/{langcode}/{effdatetimes}")
 	@ApiOperation(value = "Retrieve all Machine History Details for the given Languge Code, ID and Effective date time", notes = "Retrieve all Machine Detail for given Languge Code and ID", response = MachineHistoryResponseDto.class)
 	@ApiResponses({

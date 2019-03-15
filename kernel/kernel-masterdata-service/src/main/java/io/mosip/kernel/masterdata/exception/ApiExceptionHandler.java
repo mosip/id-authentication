@@ -112,6 +112,7 @@ public class ApiExceptionHandler {
 	private ResponseWrapper<ServiceError> setErrors(HttpServletRequest httpServletRequest) throws IOException {
 		RequestWrapper<?> requestWrapper = null;
 		ResponseWrapper<ServiceError> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponsetime(LocalDateTime.now(ZoneId.of("UTC")));
 		String requestBody = null;
 		if (httpServletRequest instanceof ContentCachingRequestWrapper) {
 			requestBody = new String(((ContentCachingRequestWrapper) httpServletRequest).getContentAsByteArray());
@@ -123,7 +124,6 @@ public class ApiExceptionHandler {
 		requestWrapper = objectMapper.readValue(requestBody, RequestWrapper.class);
 		responseWrapper.setId(requestWrapper.getId());
 		responseWrapper.setVersion(requestWrapper.getVersion());
-		responseWrapper.setResponsetime(LocalDateTime.now(ZoneId.of("UTC")));
 		return responseWrapper;
 	}
 

@@ -51,6 +51,7 @@ public class RegistrationCenterMachineDeviceController {
 				HttpStatus.OK);
 	}
 
+	@ResponseFilter
 	@DeleteMapping(value="/{regcenterid}/{machineid}/{deviceid}")
 	@ApiOperation(value="delete mapping if this service is called.")
 	@ApiResponses({

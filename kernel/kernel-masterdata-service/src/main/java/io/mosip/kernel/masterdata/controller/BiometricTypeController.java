@@ -41,6 +41,7 @@ public class BiometricTypeController {
 	 * 
 	 * @return All Biometric types
 	 */
+	@ResponseFilter
 	@GetMapping
 	public BiometricTypeResponseDto getAllBiometricTypes() {
 		return biometricTypeService.getAllBiometricTypes();
@@ -54,6 +55,7 @@ public class BiometricTypeController {
 	 * 
 	 * @return All Biometric type details
 	 */
+	@ResponseFilter
 	@GetMapping("/{langcode}")
 	public BiometricTypeResponseDto getAllBiometricTypesByLanguageCode(@PathVariable("langcode") String langCode) {
 		return biometricTypeService.getAllBiometricTypesByLanguageCode(langCode);
@@ -68,6 +70,7 @@ public class BiometricTypeController {
 	 *            the language code
 	 * @return Biometric type
 	 */
+	@ResponseFilter
 	@GetMapping("/{code}/{langcode}")
 	public BiometricTypeResponseDto getBiometricTypeByCodeAndLangCode(@PathVariable("code") String code,
 			@PathVariable("langcode") String langCode) {

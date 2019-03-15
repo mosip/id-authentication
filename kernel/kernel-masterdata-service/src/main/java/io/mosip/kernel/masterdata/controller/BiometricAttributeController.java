@@ -48,6 +48,7 @@ public class BiometricAttributeController {
 	@Autowired
 	BiometricAttributeService biometricAttributeService;
 
+	@ResponseFilter
 	@ApiOperation(value = "Fetch all the biometric attributes avialbale for specific BiometricType")
 	@GetMapping("/getbiometricattributesbyauthtype/{langcode}/{biometrictypecode}")
 	public BiometricAttributeResponseDto getBiometricAttributesByBiometricType(

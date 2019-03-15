@@ -57,6 +57,7 @@ public class DeviceController {
 	 * @return DeviceResponseDto all device details based on given language code
 	 *         {@link DeviceResponseDto}
 	 */
+	@ResponseFilter
 	@GetMapping(value = "/{languagecode}")
 	@ApiOperation(value = "Retrieve all Device for the given Languge Code", notes = "Retrieve all Device for the given Languge Code", response = DeviceResponseDto.class)
 	@ApiResponses({
@@ -79,6 +80,7 @@ public class DeviceController {
 	 * @return DeviceLangCodeResponseDto all device details based on given device
 	 *         type and language code {@link DeviceLangCodeResponseDto}
 	 */
+	@ResponseFilter
 	@GetMapping(value = "/{languagecode}/{deviceType}")
 	@ApiOperation(value = "Retrieve all Device for the given Languge Code and Device Type", notes = "Retrieve all Device for the given Languge Code and Device Type", response = DeviceLangCodeResponseDto.class)
 	@ApiResponses({
@@ -100,6 +102,7 @@ public class DeviceController {
 	 * @return ResponseEntity Device Id which is inserted successfully
 	 *         {@link ResponseEntity}
 	 */
+	@ResponseFilter
 	@PostMapping
 	@ApiOperation(value = "Service to save Device", notes = "Saves Device and return Device id", response = IdResponseDto.class)
 	@ApiResponses({
@@ -141,6 +144,7 @@ public class DeviceController {
 	 * 
 	 * @return {@link ResponseEntity} The id of the Device which is deleted
 	 */
+	@ResponseFilter
 	@DeleteMapping("/{id}")
 	@ApiOperation(value = "Service to delete device", notes = "Delete Device and return Device Id", response = IdResponseDto.class)
 	@ApiResponses({

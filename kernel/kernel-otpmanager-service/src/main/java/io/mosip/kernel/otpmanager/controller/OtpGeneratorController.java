@@ -28,7 +28,7 @@ import io.mosip.kernel.otpmanager.dto.OtpGeneratorResponseDto;
 @CrossOrigin
 public class OtpGeneratorController {
 	/**
-	 * The reference that autowires the OtpGeneratorService class.
+	 * Autowired reference of {@link OtpGenerator}.
 	 */
 	@Autowired
 	OtpGenerator<OtpGeneratorRequestDto, OtpGeneratorResponseDto> otpGeneratorService;

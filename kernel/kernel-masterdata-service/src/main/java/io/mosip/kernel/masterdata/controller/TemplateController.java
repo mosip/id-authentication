@@ -47,6 +47,7 @@ public class TemplateController {
 	 * 
 	 * @return All {@link TemplateDto}
 	 */
+	@ResponseFilter
 	@GetMapping
 	public TemplateResponseDto getAllTemplate() {
 		return templateService.getAllTemplate();
@@ -59,6 +60,7 @@ public class TemplateController {
 	 *            the language code
 	 * @return All {@link TemplateDto}
 	 */
+	@ResponseFilter
 	@GetMapping("/{langcode}")
 	public TemplateResponseDto getAllTemplateBylangCode(@PathVariable("langcode") String langCode) {
 		return templateService.getAllTemplateByLanguageCode(langCode);
@@ -74,6 +76,7 @@ public class TemplateController {
 	 *            the template type code
 	 * @return All {@link TemplateDto}
 	 */
+	@ResponseFilter
 	@GetMapping("/{langcode}/{templatetypecode}")
 	public TemplateResponseDto getAllTemplateBylangCodeAndTemplateTypeCode(@PathVariable("langcode") String langCode,
 			@PathVariable("templatetypecode") String templateTypeCode) {
@@ -121,7 +124,7 @@ public class TemplateController {
 	 *            the template id
 	 * @return {@link IdResponseDto}
 	 */
-
+	@ResponseFilter
 	@DeleteMapping("/{id}")
 	@ApiOperation(value = "Service to delete template", notes = "Delete template and return template id", response = IdResponseDto.class)
 	@ApiResponses({

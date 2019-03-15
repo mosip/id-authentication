@@ -45,7 +45,6 @@ public class DeviceTypeController {
 	 * 
 	 * @return {@link CodeAndLanguageCodeID}
 	 */
-
 	@ResponseFilter
 	@PostMapping("/devicetypes")
 	@ApiOperation(value = "Service to save Device Type", notes = "Saves Device Type and return Device Code and Languge Code", response = CodeAndLanguageCodeID.class)

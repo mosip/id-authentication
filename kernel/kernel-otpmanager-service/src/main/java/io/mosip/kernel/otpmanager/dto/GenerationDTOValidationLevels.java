@@ -5,6 +5,7 @@ import javax.validation.GroupSequence;
 /**
  * This class contains group sequence levels for validation of key.
  * 
+ * @author Sagar Mahapatra
  * @author Ritesh Sinha
  * @since 1.0.0
  */

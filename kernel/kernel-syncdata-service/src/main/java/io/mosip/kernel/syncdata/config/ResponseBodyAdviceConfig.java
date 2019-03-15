@@ -23,6 +23,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.core.http.ResponseWrapper;
+import io.mosip.kernel.core.util.EmptyCheckUtils;
 
 @RestControllerAdvice
 public class ResponseBodyAdviceConfig implements ResponseBodyAdvice<Object> {
@@ -58,10 +59,15 @@ public class ResponseBodyAdviceConfig implements ResponseBodyAdvice<Object> {
 			}
 
 			objectMapper.registerModule(new JavaTimeModule());
-			requestWrapper = objectMapper.readValue(requestBody, RequestWrapper.class);
+			if (!EmptyCheckUtils.isNullEmpty(requestBody)) {
+				requestWrapper = objectMapper.readValue(requestBody, RequestWrapper.class);
+				responseWrapper.setId(requestWrapper.getId());
+				responseWrapper.setVersion(requestWrapper.getVersion());
+			} else {
+				responseWrapper.setId(null);
+				responseWrapper.setVersion(null);
+			}
 			responseWrapper.setResponse(body);
-			responseWrapper.setId(requestWrapper.getId());
-			responseWrapper.setVersion(requestWrapper.getVersion());
 			responseWrapper.setResponsetime(LocalDateTime.now(ZoneId.of("UTC")));
 			return responseWrapper;
 		} catch (Exception e) {

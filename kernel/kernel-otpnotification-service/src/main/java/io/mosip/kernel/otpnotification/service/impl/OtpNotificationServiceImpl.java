@@ -39,51 +39,34 @@ public class OtpNotificationServiceImpl
 	 */
 	@Override
 	public OtpNotificationResponseDto sendOtpNotification(OtpNotificationRequestDto requestDto) {
-
 		OtpNotificationResponseDto responseDto = new OtpNotificationResponseDto();
-
 		OtpRequestDto request = new OtpRequestDto();
-
 		requestDto.getNotificationTypes().replaceAll(String::toLowerCase);
-
 		requestDto.getNotificationTypes().forEach(notificationUtil::containsNotificationTypes);
-
 		List<ServiceError> validationListError = notificationUtil.validationRequestArguments(requestDto);
-
 		if (!validationListError.isEmpty()) {
 			throw new OtpNotificationInvalidArgumentException(validationListError);
 		}
-
 		request.setKey(notificationUtil.getKey(requestDto.getNotificationTypes(), requestDto.getMobileNumber(),
 				requestDto.getEmailId()));
-
 		String otp = notificationUtil.generateOtp(request);
-
 		for (int type = 0; type < requestDto.getNotificationTypes().size(); type++) {
-
 			if (requestDto.getNotificationTypes().get(type)
 					.equalsIgnoreCase(OtpNotificationPropertyConstant.NOTIFICATION_TYPE_SMS.getProperty())) {
-
 				String smsTemplate = notificationUtil.templateMerger(otp, requestDto.getSmsTemplate(),
 						OtpNotificationPropertyConstant.NOTIFICATION_TYPE_SMS.getProperty());
 				notificationUtil.sendSmsNotification(requestDto.getMobileNumber(), smsTemplate);
-
 			}
 			if (requestDto.getNotificationTypes().get(type)
 					.equalsIgnoreCase(OtpNotificationPropertyConstant.NOTIFICATION_TYPE_EMAIL.getProperty())) {
-
 				String emailBodyTemplate = notificationUtil.templateMerger(otp, requestDto.getEmailBodyTemplate(),
 						OtpNotificationPropertyConstant.NOTIFICATION_TYPE_EMAIL.getProperty());
 				notificationUtil.sendEmailNotification(requestDto.getEmailId(), emailBodyTemplate,
 						requestDto.getEmailSubjectTemplate());
-
 			}
-
 		}
-
 		responseDto.setStatus(OtpNotificationPropertyConstant.NOTIFICATION_RESPONSE_STATUS.getProperty());
 		responseDto.setMessage(OtpNotificationPropertyConstant.NOTIFICATION_RESPONSE_MESSAGE.getProperty());
 		return responseDto;
 	}
-
 }
