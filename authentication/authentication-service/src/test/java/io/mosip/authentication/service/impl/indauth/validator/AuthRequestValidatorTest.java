@@ -41,6 +41,7 @@ import io.mosip.authentication.core.dto.indauth.RequestDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.service.config.IDAMappingConfig;
 import io.mosip.authentication.service.helper.IdInfoHelper;
+import io.mosip.authentication.service.impl.indauth.service.demo.DOBType;
 import io.mosip.authentication.service.impl.otpgen.validator.OTPRequestValidator;
 import io.mosip.authentication.service.integration.MasterDataManager;
 import io.mosip.kernel.core.idvalidator.exception.InvalidIDException;
@@ -145,10 +146,14 @@ public class AuthRequestValidatorTest {
 		List<IdentityInfoDTO> idInfoLists = new ArrayList<>();
 		idInfoLists.add(idInfoDTOs);
 		idDTO.setDobType(idInfoLists);
-		authRequestDTO.setIndividualIdType("D");
+		authRequestDTO.setIndividualIdType(IdType.UIN.getType());
 		authRequestDTO.setIndividualId("274390482564");
 		RequestDTO reqDTO = new RequestDTO();
 		reqDTO.setDemographics(idDTO);
+		reqDTO.setTransactionID("1234567890");
+		reqDTO.setTimestamp(Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
+				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
+		authRequestDTO.setConsentObtained(true);
 		authRequestDTO.setRequestedAuth(authTypeDTO);
 		authRequestDTO.setRequest(reqDTO);
 		authRequestDTO.setTransactionID("1234567890");
@@ -194,6 +199,9 @@ public class AuthRequestValidatorTest {
 		authRequestDTO.setIndividualIdType(IdType.UIN.getType());
 		RequestDTO reqDTO = new RequestDTO();
 		reqDTO.setDemographics(idDTO);
+		reqDTO.setTransactionID("1234567890");
+		reqDTO.setTimestamp(Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
+				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
 		authRequestDTO.setRequestedAuth(authTypeDTO);
 		authRequestDTO.setRequest(reqDTO);
 		Mockito.when(idinfoHelper.isMatchtypeEnabled(Mockito.any())).thenReturn(Boolean.TRUE);
@@ -234,9 +242,13 @@ public class AuthRequestValidatorTest {
 		idInfoLists.add(idInfoDTOs);
 		idDTO.setDobType(idInfoLists);
 		authRequestDTO.setIndividualId("274390482564");
-		authRequestDTO.setIndividualIdType("V");
+		authRequestDTO.setIndividualIdType(IdType.VID.getType());
 		RequestDTO reqDTO = new RequestDTO();
 		reqDTO.setDemographics(idDTO);
+		reqDTO.setTransactionID("1234567890");
+		reqDTO.setTimestamp(Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
+				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
+		authRequestDTO.setConsentObtained(true);
 		authRequestDTO.setRequestedAuth(authTypeDTO);
 		authRequestDTO.setRequest(reqDTO);
 		Mockito.when(idinfoHelper.isMatchtypeEnabled(Mockito.any())).thenReturn(Boolean.TRUE);
@@ -276,7 +288,7 @@ public class AuthRequestValidatorTest {
 		idInfoLists.add(idInfoDTOs);
 		idDTO.setDobType(idInfoLists);
 		authRequestDTO.setIndividualId("274390482564");
-		authRequestDTO.setIndividualIdType("V");
+		authRequestDTO.setIndividualIdType(IdType.VID.getType());
 		RequestDTO reqDTO = new RequestDTO();
 		reqDTO.setDemographics(idDTO);
 		authRequestDTO.setRequestedAuth(authTypeDTO);
@@ -369,7 +381,7 @@ public class AuthRequestValidatorTest {
 		IdentityDTO idDTO = new IdentityDTO();
 		idDTO.setName(idInfoList);
 		authRequestDTO.setIndividualId("274390482564");
-		authRequestDTO.setIndividualIdType("D");
+		authRequestDTO.setIndividualIdType(IdType.UIN.getType());
 		RequestDTO reqDTO = new RequestDTO();
 		reqDTO.setDemographics(idDTO);
 		authRequestDTO.setRequestedAuth(authTypeDTO);
@@ -403,7 +415,7 @@ public class AuthRequestValidatorTest {
 		IdentityDTO idDTO = new IdentityDTO();
 		idDTO.setName(idInfoList);
 		authRequestDTO.setIndividualId("274390482564");
-		authRequestDTO.setIndividualIdType("D");
+		authRequestDTO.setIndividualIdType(IdType.UIN.getType());
 		RequestDTO reqDTO = new RequestDTO();
 		reqDTO.setDemographics(idDTO);
 		authRequestDTO.setRequestedAuth(authTypeDTO);
@@ -469,9 +481,13 @@ public class AuthRequestValidatorTest {
 		idDTO.setGender(idInfoList4);
 		idDTO.setAge("25");
 		authRequestDTO.setIndividualId("274390482564");
-		authRequestDTO.setIndividualIdType("D");
+		authRequestDTO.setIndividualIdType(IdType.UIN.getType());
 		RequestDTO reqDTO = new RequestDTO();
 		reqDTO.setDemographics(idDTO);
+		reqDTO.setTransactionID("1234567890");
+		reqDTO.setTimestamp(Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
+				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
+		authRequestDTO.setConsentObtained(true);
 		authRequestDTO.setRequestedAuth(authTypeDTO);
 		authRequestDTO.setRequest(reqDTO);
 		Mockito.when(idinfoHelper.isMatchtypeEnabled(Mockito.any())).thenReturn(Boolean.TRUE);
