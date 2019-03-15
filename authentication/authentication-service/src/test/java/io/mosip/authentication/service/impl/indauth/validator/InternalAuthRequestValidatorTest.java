@@ -11,7 +11,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -103,9 +102,7 @@ public class InternalAuthRequestValidatorTest {
 	@Test
 	public void testinValidInternalAuthRequestValidator() {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
-		ZoneOffset offset = ZoneOffset.MAX;
-		authRequestDTO.setRequestTime(Instant.now().plus(2, ChronoUnit.DAYS).atOffset(offset)
-				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
+		authRequestDTO.setRequestTime(null);
 		authRequestDTO.setId("id");
 		// authRequestDTO.setVer("1.1");
 		authRequestDTO.setTransactionID("1234567890");
@@ -138,6 +135,7 @@ public class InternalAuthRequestValidatorTest {
 		reqDTO.setDemographics(idDTO);
 		authRequestDTO.setRequestedAuth(authTypeDTO);
 		authRequestDTO.setRequest(reqDTO);
+		authRequestDTO.setConsentObtained(true);
 		MockEnvironment mockenv = new MockEnvironment();
 		mockenv.merge(((AbstractEnvironment) mockenv));
 		mockenv.setProperty("internal.allowed.auth.type", "fulladdress");
@@ -205,7 +203,6 @@ public class InternalAuthRequestValidatorTest {
 	@Test
 	public void testValidInternalAuthRequestValidator2() {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
-		ZoneOffset offset = ZoneOffset.MAX;
 		authRequestDTO.setRequestTime(Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
 		authRequestDTO.setId("id");
@@ -295,7 +292,6 @@ public class InternalAuthRequestValidatorTest {
 	@Test
 	public void testValidInternalAuthRequestValidator() {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
-		ZoneOffset offset = ZoneOffset.MAX;
 		authRequestDTO.setRequestTime(Instant.now().atOffset(ZoneOffset.of("+0530"))
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
 		authRequestDTO.setId("id");
@@ -471,6 +467,51 @@ public class InternalAuthRequestValidatorTest {
 		Mockito.when(idinfoHelper.isMatchtypeEnabled(Mockito.any())).thenReturn(Boolean.TRUE);
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		internalAuthRequestValidator.validateDate(authRequestDTO, errors);
+		assertTrue(errors.hasErrors());
+	}
+	
+	@Test
+	public void testInValidInternalAuthRequestValidator2() {
+		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+		authRequestDTO.setRequestTime(Instant.now().plus(2, ChronoUnit.DAYS).atOffset(ZoneOffset.of("+0530")) // offset
+				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
+		authRequestDTO.setId("id");
+		// authRequestDTO.setVer("1.1");
+		authRequestDTO.setTransactionID("1234567890");
+		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
+		authTypeDTO.setDemo(true);
+		IdentityInfoDTO idInfoDTO = new IdentityInfoDTO();
+		idInfoDTO.setLanguage(env.getProperty("mosip.primary.lang-code"));
+		idInfoDTO.setValue("John");
+		IdentityInfoDTO idInfoDTO1 = new IdentityInfoDTO();
+		idInfoDTO1.setLanguage(env.getProperty("mosip.secondary.lang-code"));
+		idInfoDTO1.setValue("Mike");
+		List<IdentityInfoDTO> idInfoList = new ArrayList<>();
+		idInfoList.add(idInfoDTO);
+		idInfoList.add(idInfoDTO1);
+		IdentityDTO idDTO = new IdentityDTO();
+		idDTO.setName(idInfoList);
+		idDTO.setDob("25/11/1990");
+		idDTO.setAge("25");
+		IdentityInfoDTO idInfoDTOs = new IdentityInfoDTO();
+		idInfoDTOs.setLanguage(env.getProperty("mosip.secondary.lang-code"));
+		idInfoDTOs.setValue("V");
+		List<IdentityInfoDTO> idInfoLists = new ArrayList<>();
+		idInfoLists.add(idInfoDTOs);
+		idDTO.setDobType(idInfoLists);
+		authRequestDTO.setIndividualIdType(IdType.UIN.getType());
+		authRequestDTO.setIndividualId("274390482564");
+		RequestDTO reqDTO = new RequestDTO();
+		reqDTO.setDemographics(idDTO);
+		reqDTO.setTransactionID("1234567890");
+		reqDTO.setTimestamp(Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
+				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
+		authRequestDTO.setConsentObtained(true);
+		authRequestDTO.setRequestedAuth(authTypeDTO);
+		authRequestDTO.setRequest(reqDTO);
+		Mockito.when(idinfoHelper.isMatchtypeEnabled(Mockito.any())).thenReturn(Boolean.TRUE);
+		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
+		internalAuthRequestValidator.validate(authRequestDTO, errors);
 		assertTrue(errors.hasErrors());
 	}
 
