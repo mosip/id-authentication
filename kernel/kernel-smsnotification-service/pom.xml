@@ -65,7 +65,7 @@
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-logger-logback</artifactId>
-			<version>0.9.1</version>
+			<version>${project.version}</version>
 		</dependency>
 	</dependencies>
 	<build>

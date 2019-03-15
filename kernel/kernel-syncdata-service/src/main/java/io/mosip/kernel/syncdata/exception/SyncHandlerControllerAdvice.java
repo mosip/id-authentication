@@ -51,8 +51,9 @@ public class SyncHandlerControllerAdvice {
 	}
 	
 	@ExceptionHandler(RequestException.class)
-	public ResponseEntity<ErrorResponse<Error>> controlRequestException(final RequestException e) {
-		return new ResponseEntity<>(getErrorResponse(e,HttpStatus.OK),HttpStatus.OK);
+	public ResponseEntity<ResponseWrapper<ServiceError>> controlRequestException(final RequestException e,
+			final HttpServletRequest httpServletRequest) throws IOException {
+		return getServiceErrorResponseEntity(e, HttpStatus.OK, httpServletRequest);
 	}
 
 	@ExceptionHandler(DataNotFoundException.class)

@@ -140,20 +140,6 @@ public class SyncDataControllerTest {
 		masterDataResponseDto.setMachineType(machineTypes);
 	}
 
-	@Test
-	public void syncMasterDataSuccess() throws Exception {
-		when(masterDataService.syncData(Mockito.anyString(), Mockito.isNull(), Mockito.any()))
-				.thenReturn(masterDataResponseDto);
-		mockMvc.perform(get("/masterdata/{machineId}", "1001")).andExpect(status().isOk());
-	}
-
-	@Test
-	public void syncMasterDataWithlastUpdatedTimestampSuccess() throws Exception {
-		when(masterDataService.syncData(Mockito.anyString(), Mockito.any(), Mockito.any()))
-				.thenReturn(masterDataResponseDto);
-		mockMvc.perform(get("/masterdata/{machineId}?lastUpdated=2018-01-01T01:01:01.021Z", "1001"))
-				.andExpect(status().isOk());
-	}
 
 	@Test
 	public void syncMasterDataWithlastUpdatedTimestampfailure() throws Exception {
