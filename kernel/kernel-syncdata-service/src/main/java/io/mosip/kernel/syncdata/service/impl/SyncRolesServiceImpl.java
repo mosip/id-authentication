@@ -51,7 +51,7 @@ public class SyncRolesServiceImpl implements SyncRolesService {
 			
 			StringBuilder uriBuilder=new StringBuilder();
 			uriBuilder.append(authBaseUrl).append(authServiceName);
-			rolesDtos = restTemplate.getForObject(uriBuilder.toString()+"/registrationclient",
+			rolesDtos = restTemplate.getForObject(uriBuilder.toString(),
 					RolesResponseDto.class);
 		} catch (RestClientException ex) {
 			throw new SyncDataServiceException(

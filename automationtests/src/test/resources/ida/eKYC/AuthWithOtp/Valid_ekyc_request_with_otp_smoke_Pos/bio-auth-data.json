@@ -1,1 +1,0 @@
-{"authType":{"address":false,"bio":false,"fullAddress":false,"otp":true,"personalIdentity":false,"pin":false},"id":"mosip.identity.auth","idvId":"4385715861","idvIdType":"D","tspID":"TSP00001","pinInfo":[{"type":"OTP","value":"279001"}],"reqHmac":"string","reqTime":"2019-03-12T12:32:43.043+05:30","txnID":"2168580861","ver":"0.8"}

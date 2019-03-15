@@ -6,37 +6,32 @@ import * as appConstants from '../../app.constants';
 import Utils from '../../app.util';
 import { AppConfigService } from '../../app-config.service';
 import { Applicant } from '../../shared/models/dashboard-model/dashboard.modal';
-import { ConfigService } from './config.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class DataStorageService {
-  constructor(
-    private httpClient: HttpClient,
-    private appConfigService: AppConfigService,
-    private configService: ConfigService
-  ) {}
+  constructor(private httpClient: HttpClient, private appConfigService: AppConfigService) {}
 
   // BASE_URL = environment.BASE_URL;
-  BASE_URL2 = 'https://integ.mosip.io/';
   BASE_URL = this.appConfigService.getConfig()['BASE_URL'];
   PRE_REG_URL = this.appConfigService.getConfig()['PRE_REG_URL'];
   SEND_FILE_URL = this.BASE_URL + this.PRE_REG_URL + 'document/documents';
   DELETE_FILE_URL = this.BASE_URL + this.PRE_REG_URL + 'document/documents';
   GET_FILE_URL = this.BASE_URL + this.PRE_REG_URL + 'document/documents';
-  MASTER_DATA_URL = this.BASE_URL2 + 'masterdata/v1.0/';
+  MASTER_DATA_URL = this.BASE_URL + 'masterdata/v1.0/';
   AVAILABILITY_URL = this.BASE_URL + this.PRE_REG_URL + 'booking/appointment/availability';
   BOOKING_URL = this.BASE_URL + this.PRE_REG_URL + 'booking/appointment';
   DELETE_REGISTRATION_URL = this.BASE_URL + this.PRE_REG_URL + 'demographic/applications';
   COPY_DOCUMENT_URL = this.BASE_URL + this.PRE_REG_URL + 'document/copy';
   QR_CODE_URL = this.BASE_URL + this.PRE_REG_URL + 'notification/generateQRCode';
-  NOTIFICATION_URL = this.BASE_URL + this.PRE_REG_URL + 'notification/';
+  NOTIFICATION_URL = this.BASE_URL + this.PRE_REG_URL + 'notification/notify';
   APPLICANNT_TYPE_URL =
-    this.BASE_URL2 + appConstants.APPEND_URL.applicantType + appConstants.APPEND_URL.getApplicantType;
-  APPLICANT_VALID_DOCUMENTS_URL =
-    this.BASE_URL2 + appConstants.APPEND_URL.location + appConstants.APPEND_URL.validDocument;
-  AUTH_URL = this.BASE_URL + this.PRE_REG_URL + 'auth/';
+      this.BASE_URL + appConstants.APPEND_URL.applicantType + appConstants.APPEND_URL.getApplicantType;
+    APPLICANT_VALID_DOCUMENTS_URL =
+      this.BASE_URL + appConstants.APPEND_URL.location + appConstants.APPEND_URL.validDocument;
+    DISTANCE = 2000;
+    AUTH_URL = this.BASE_URL + this.PRE_REG_URL + 'auth/';
 
   getUsers(value: string) {
     return this.httpClient.get<Applicant[]>(this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.applicants, {
@@ -55,9 +50,12 @@ export class DataStorageService {
   }
 
   getGenderDetails() {
-    return this.httpClient.get(this.BASE_URL2 + appConstants.APPEND_URL.gender);
-    // return this.httpClient.get(this.BASE_URL + appConstants.APPEND_URL.gender);
+    return this.httpClient.get(this.BASE_URL + appConstants.APPEND_URL.gender);
   }
+
+  // getResidenceDetails() {
+  //   return this.httpClient.get(this.BASE_URL + appConstants.APPEND_URL.resident);
+  // }
 
   getTransliteration(request: any) {
     const obj = {
@@ -122,7 +120,7 @@ export class DataStorageService {
         '/' +
         coords.latitude +
         '/' +
-        this.configService.getConfigByKey('preregistration.nearby.centers')
+        this.DISTANCE
     );
   }
 
@@ -151,8 +149,7 @@ export class DataStorageService {
 
   getLocationMetadataHirearchy(value: string) {
     return this.httpClient.get(
-      // this.BASE_URL + appConstants.APPEND_URL.location + appConstants.APPEND_URL.location_metadata + value,
-      this.BASE_URL2 + appConstants.APPEND_URL.location + appConstants.APPEND_URL.location_metadata + value,
+      this.BASE_URL + appConstants.APPEND_URL.location + appConstants.APPEND_URL.location_metadata + value,
       {
         params: new HttpParams().append(appConstants.PARAMS_KEYS.locationHierarchyName, value)
       }
@@ -161,8 +158,7 @@ export class DataStorageService {
 
   getLocationImmediateHierearchy(lang: string, location: string) {
     return this.httpClient.get(
-      this.BASE_URL2 +
-        // this.BASE_URL +
+      this.BASE_URL +
         appConstants.APPEND_URL.location +
         appConstants.APPEND_URL.location_immediate_children +
         location +
@@ -179,11 +175,33 @@ export class DataStorageService {
     });
   }
 
+  getPreviewData(preRegId: string) {
+    return this.httpClient.get(this.BASE_URL + appConstants.PREVIEW_DATA_APPEND_URL, {
+      observe: 'body',
+      responseType: 'json',
+      params: new HttpParams().append(appConstants.PARAMS_KEYS.getUser, preRegId)
+    });
+  }
+
   getSecondaryLanguageLabels(langCode: string) {
     return this.httpClient.get(`./assets/i18n/${langCode}.json`);
   }
 
   copyDocument(catCode: string, sourceId: string, destinationId: string) {
+    // return this.httpClient.post(this.COPY_DOCUMENT_URL, {
+    //   params: new HttpParams()
+    //     .append('catCode', catCode)
+    //     .append('destinationPreId', destinationId)
+    //     .append('sourcePrId', sourceId)
+    // });
+    // const params = new URLSearchParams();
+    //   params.set('catCode',catCode);
+    //   params.append('destinationPreId',destinationId);
+    //   params.append('sourcePrId',sourceId);
+
+    //   const options = new RequestOptions({
+    //     params: params,
+    //   });
     const url = this.COPY_DOCUMENT_URL + '?catCode=POA&destinationPreId=' + destinationId + '&sourcePrId=' + sourceId;
     console.log('copy document URL', url);
     return this.httpClient.post(url, '');
@@ -194,7 +212,7 @@ export class DataStorageService {
   }
 
   sendNotification(data: FormData) {
-    return this.httpClient.post(this.NOTIFICATION_URL + 'notify', data);
+    return this.httpClient.post(this.NOTIFICATION_URL, data);
   }
 
   recommendedCenters(langCode: string, locationHierarchyCode: number, data: string[]) {
@@ -210,66 +228,71 @@ export class DataStorageService {
   }
 
   getRegistrationCenterByIdAndLangCode(id: string, langCode: string) {
-    const url = this.MASTER_DATA_URL + 'registrationcenters/' + id + '/' + langCode;
-    return this.httpClient.get(url);
-  }
-
-  getGuidelineTemplate() {
-    const url =
-      this.MASTER_DATA_URL + 'templates/' + localStorage.getItem('langCode') + '/' + 'Onscreen-Acknowledgement';
-    return this.httpClient.get(url);
-  }
-
-  getApplicantType(docuemntCategoryDto) {
-    return this.httpClient.get(this.APPLICANNT_TYPE_URL, {
-      params: new HttpParams().append('dto', docuemntCategoryDto)
-    });
-  }
-
-  getDocumentCategories(applicantCode) {
-    this.APPLICANT_VALID_DOCUMENTS_URL = this.APPLICANT_VALID_DOCUMENTS_URL + applicantCode + '/languages';
-    return this.httpClient.post(this.APPLICANT_VALID_DOCUMENTS_URL, {
-      params: new HttpParams().append('languages', localStorage.getItem('langCode'))
-      // params: new HttpParams().append('languages', 'eng')
-    });
-  }
-
-  getConfig() {
-    //    return this.httpClient.get('./assets/configs.json');
-    return this.httpClient.get(this.NOTIFICATION_URL + 'config');
-  }
-
-  sendOtp(userId: string) {
-    console.log(userId);
-
-    const req = {
-      langCode: localStorage.getItem('langCode'),
-      userId: userId
-    };
-
-    const obj = {
-      id: appConstants.IDS.newUser,
-      version: appConstants.VERSION,
-      requesttime: Utils.getCurrentDate(),
-      request: req
-    };
-
-    return this.httpClient.post(this.AUTH_URL + 'sendotp', obj);
-  }
-
-  verifyOtp(userId: string, otp: string) {
-    const request = {
-      otp: otp,
-      userId: userId
-    };
-
-    const requestObj = {
-      id: appConstants.IDS.newUser,
-      version: appConstants.VERSION,
-      requesttime: Utils.getCurrentDate(),
-      request: request
-    };
-
-    return this.httpClient.post(this.AUTH_URL + 'useridotp', requestObj);
-  }
+        const url = this.MASTER_DATA_URL + 'registrationcenters/' + id + '/' + langCode;
+        return this.httpClient.get(url);
+      }
+    
+      getGuidelineTemplate() {
+        const url =
+          this.MASTER_DATA_URL + 'templates/' + localStorage.getItem('langCode') + '/' + 'Onscreen-Acknowledgement';
+        return this.httpClient.get(url);
+      }
+    
+      getApplicantType() {
+        return this.httpClient.get(this.APPLICANNT_TYPE_URL, {
+          params: new HttpParams()
+            .append('dateofbirth', '1990-12-09T00:00:00.683Z')
+            .append('genderCode', 'FLE')
+            .append('individualTypeCode', 'NFR')
+        });
+      }
+    
+      getDocumentCategories(applicantCode) {
+        this.APPLICANT_VALID_DOCUMENTS_URL = this.APPLICANT_VALID_DOCUMENTS_URL + applicantCode + '/languages';
+        return this.httpClient.get(this.APPLICANT_VALID_DOCUMENTS_URL, {
+          params: new HttpParams().append('languages', localStorage.getItem('langCode'))
+          // params: new HttpParams().append('languages', 'eng')
+        });
+      }
+    
+      getConfig() {
+            return this.httpClient.get('./assets/configs.json');
+        //  return this.httpClient.get(this.NOTIFICATION_URL + 'config');
+      }
+    
+      sendOtp(userId: string) {
+        console.log(userId);
+    
+        const req = {
+          langCode: localStorage.getItem('langCode'),
+          userId: userId,
+        };
+    
+        const obj = {
+          id: appConstants.IDS.newUser,
+          version: appConstants.VERSION,
+          requesttime: Utils.getCurrentDate(),
+          request: req
+        };
+    
+        return this.httpClient.post(this.AUTH_URL + 'sendotp', obj);
+      }
+    
+      verifyOtp(userId: string, otp: string) {
+    
+        const request = {
+          otp: otp,
+          userId: userId
+        }
+    
+        const requestObj = {
+          id: appConstants.IDS.newUser,
+          version: appConstants.VERSION,
+          requesttime: Utils.getCurrentDate(),
+          request: request
+        }
+    
+        return this.httpClient.post(this.AUTH_URL + 'useridotp', requestObj);
+    
+      }
 }

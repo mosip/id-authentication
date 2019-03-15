@@ -1,14 +1,14 @@
 testdata:
-  Finger_Auth_Request_LeftAndRightIndex_With_ValidCompositeScoreMatch_smoke_Pos_01:
+  Valid_MockRequest_LeftAndRightIndex_With_ValidCompositeScoreMatch_smoke:
+    input.identity-encrypt-data:
+      identityReq.valuerightIndex: Rk1SACAyMAAAAAFcAAABPAFiAMUAxQEAAAAoNUCtAMvlZICRAOlXXYDBAPBqZECkAKPWXYDZAN9oZEBzAMXRSYC6AJNcV4DMAJdZXUDpAO9zZIByAQJmZECDAJC7ZIDfAQ56XUBeAPZgV0BhAJwyV0DVASsBXUEEAJ/RZEBZAIq6UEC+AVV7SUCjAOheXUCHANncV0DFAK5cXUDZANJfXUB3ANBRSUCdAJrKXUCJAJvEXUCxAQ91XUCjARj7XYCuAIXeV4CUAIC4ZIDRARr3XUDFAH5jV0BoAJG1ZEDcASWCUEDWAHFfZEBnASp4SUDhAVd1FECMALzWV0DKALxYXUCwAKbfV0DSAOpsZECAAK89V4CSAQdpZICpAJPWV0DoAORiXUCmAIazV0CxARt7XUCDARp0ZED9ANNTZIDhAIzSZICSAHSjZIBXAQpxUECgAGaIXYCBAUJ/ZAAA
+      identityReq.valueleftIndex: Rk1SACAyMAAAAAFcAAABPAFiAMUAxQEAAAAoNUB9AMF0V4CBAKBBPEC0AL68ZIC4AKjNZEBiAJvWXUBPANPWNUDSAK7RUIC2AQIfZEDJAPMxPEByAGwPXYCpARYPZECfAFjoZECGAEv9ZEBEAFmtV0BpAUGNXUC/AUEESUCUAVIEPEC2AVNxPICcALWuZICuALm3ZECNAJqxQ0CUAI3GQ0CXAPghV0BVAKDOZEBfAPqHXUBDAKe/ZIB9AG3xXUDPAIbZUEBcAGYhZECIASgHXYBJAGAnV0DjAR4jG0DKATqJIUCGADGSZEDSAUYGIUAxAD+nV0CXAK+oSUBoALr6Q4CSAOuKXUCiAIvNZEC9AJzQZIBNALbTXUBBAL68V0CeAHDZZECwAHPaZEBRAPwHUIBHAHW2XUDXARAUDUC4AS4HZEDXAS0CQ0CYADL4ZECsAUzuPEBkACgRZAAA
+      identityReq.tspID: 7404012867
     input.bio-auth-data: 
       bioAuthReq.idvId: $UIN$
-      bioAuthReq.tspID: 7404012867
+      bioAuthReq.tspID: $input.identity-encrypt-data:identityReq.tspID$
       bioAuthReq.reqTime: $TIMESTAMP$  
-      bioAuthReq.txnID: $RANDOM:N:10$ 
-    input.identity-encrypt-data:
-      identityReq.valuerightIndex: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~DECODEFILE:valuedocuments0~//BIR/BDBInfo[Type='Finger'][Subtype='Right IndexFinger']//following::BDB$
-      identityReq.valueleftIndex: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~DECODEFILE:valuedocuments0~//BIR/BDBInfo[Type='Finger'][Subtype='Left IndexFinger']//following::BDB$
-      identityReq.tspID: 7404012867
+      bioAuthReq.txnID: 1234567890 
     input.ekyc-request:
       ekycReq.ekycAuthType: I 
     output.output-1-expected-y-res:
@@ -16,105 +16,16 @@ testdata:
       output.1.response.y.resTime: $TIMESTAMP$
       output.1.response.y.response: $IGNORE$
       output.1.response.y.txnID: $input.bio-auth-data:bioAuthReq.txnID$
-    audit.auth_transaction:
-      refId: $input.bio-auth-data:bioAuthReq.idvId$
-      txnId: $input.bio-auth-data:bioAuthReq.txnID$
-      authTypeCode: FINGERPRINT-AUTH
-      statusCode: $output.output-1-expected-y-res:output.1.response.y.status$
-      reqTime: $FETCH$
-      resTime: $FETCH$
-      statusComment: $REGEXP:.*Finger.*Authentication.*Success.*$
-      idType: D
-    audit.audit_log:
-      refId: $input.bio-auth-data:bioAuthReq.idvId$
-      eventId: $REGEXP:.*IDA-EVT.*$
-      eventName: AUTH_REQUEST_RESPONSE
-      appId: IDA
-      appName: ID-Authentication
-      moduleName: EKYC_AUTH
-      refIdType: UIN   
-      
-  Finger_Auth_Request_LeftIndex_With_ValidCompositeScoreMatch_smoke_Pos_02:
-    input.bio-auth-data: 
-      bioAuthReq.idvId: $UIN$
-      bioAuthReq.tspID: 7404012867
-      bioAuthReq.reqTime: $TIMESTAMP$  
-      bioAuthReq.txnID: $RANDOM:N:10$ 
+  Valid_MockRequest_LeftIndex_With_ValidCompositeScoreMatch_smoke:
     input.identity-encrypt-data:
       identityReq.rightIndex: $REMOVE$
-      identityReq.valueleftIndex: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~DECODEFILE:valuedocuments0~//BIR/BDBInfo[Type='Finger'][Subtype='Left IndexFinger']//following::BDB$
-      identityReq.tspID: $input.bio-auth-data:bioAuthReq.tspID$
-    input.ekyc-request:
-      ekycReq.ekycAuthType: I 
-    output.output-1-expected-y-res:
-      output.1.response.y.status: Y
-      output.1.response.y.resTime: $TIMESTAMP$
-      output.1.response.y.response: $IGNORE$
-      output.1.response.y.txnID: $input.bio-auth-data:bioAuthReq.txnID$
-    audit.auth_transaction:
-      refId: $input.bio-auth-data:bioAuthReq.idvId$
-      txnId: $input.bio-auth-data:bioAuthReq.txnID$
-      authTypeCode: FINGERPRINT-AUTH
-      statusCode: $output.output-1-expected-y-res:output.1.response.y.status$
-      reqTime: $FETCH$
-      resTime: $FETCH$
-      statusComment: $REGEXP:.*Finger.*Authentication.*Success.*$
-      idType: D
-    audit.audit_log:
-      refId: $input.bio-auth-data:bioAuthReq.idvId$
-      eventId: $REGEXP:.*IDA-EVT.*$
-      eventName: AUTH_REQUEST_RESPONSE
-      appId: IDA
-      appName: ID-Authentication
-      moduleName: EKYC_AUTH
-      refIdType: UIN   
-      
-  Finger_Auth_Request_RightIndex_With_ValidCompositeScoreMatch_smoke_Pos_03:
-    input.bio-auth-data: 
-      bioAuthReq.idvId: $UIN$
-      bioAuthReq.tspID: 7404012867
-      bioAuthReq.reqTime: $TIMESTAMP$  
-      bioAuthReq.txnID: $RANDOM:N:10$ 
-    input.identity-encrypt-data:
-      identityReq.leftIndex: $REMOVE$
-      identityReq.valuerightIndex: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~DECODEFILE:valuedocuments0~//BIR/BDBInfo[Type='Finger'][Subtype='Right IndexFinger']//following::BDB$
-      identityReq.tspID: $input.bio-auth-data:bioAuthReq.tspID$
-    input.ekyc-request:
-      ekycReq.ekycAuthType: I 
-    output.output-1-expected-y-res:
-      output.1.response.y.status: Y
-      output.1.response.y.resTime: $TIMESTAMP$
-      output.1.response.y.response: $IGNORE$
-      output.1.response.y.txnID: $input.bio-auth-data:bioAuthReq.txnID$
-    audit.auth_transaction:
-      refId: $input.bio-auth-data:bioAuthReq.idvId$
-      txnId: $input.bio-auth-data:bioAuthReq.txnID$
-      authTypeCode: FINGERPRINT-AUTH
-      statusCode: $output.output-1-expected-y-res:output.1.response.y.status$
-      reqTime: $FETCH$
-      resTime: $FETCH$
-      statusComment: $REGEXP:.*Finger.*Authentication.*Success.*$
-      idType: D
-    audit.audit_log:
-      refId: $input.bio-auth-data:bioAuthReq.idvId$
-      eventId: $REGEXP:.*IDA-EVT.*$
-      eventName: AUTH_REQUEST_RESPONSE
-      appId: IDA
-      appName: ID-Authentication
-      moduleName: EKYC_AUTH
-      refIdType: UIN   
-      
-  Finger_Auth_Request_LeftAndRightIndex_With_ValidCompositeScoreMatch_VID_smoke_Pos_04:
-    input.bio-auth-data: 
-      bioAuthReq.idvId: $VID$
-      bioAuthReq.tspID: 7404012867
-      bioAuthReq.reqTime: $TIMESTAMP$  
-      bioAuthReq.txnID: $RANDOM:N:10$ 
-      bioAuthReq.idvIdType: V
-    input.identity-encrypt-data:
-      identityReq.valuerightIndex: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~DECODEFILE:valuedocuments0~//BIR/BDBInfo[Type='Finger'][Subtype='Right IndexFinger']//following::BDB$
-      identityReq.valueleftIndex: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~DECODEFILE:valuedocuments0~//BIR/BDBInfo[Type='Finger'][Subtype='Left IndexFinger']//following::BDB$
+      identityReq.valueleftIndex: Rk1SACAyMAAAAAFcAAABPAFiAMUAxQEAAAAoNUB9AMF0V4CBAKBBPEC0AL68ZIC4AKjNZEBiAJvWXUBPANPWNUDSAK7RUIC2AQIfZEDJAPMxPEByAGwPXYCpARYPZECfAFjoZECGAEv9ZEBEAFmtV0BpAUGNXUC/AUEESUCUAVIEPEC2AVNxPICcALWuZICuALm3ZECNAJqxQ0CUAI3GQ0CXAPghV0BVAKDOZEBfAPqHXUBDAKe/ZIB9AG3xXUDPAIbZUEBcAGYhZECIASgHXYBJAGAnV0DjAR4jG0DKATqJIUCGADGSZEDSAUYGIUAxAD+nV0CXAK+oSUBoALr6Q4CSAOuKXUCiAIvNZEC9AJzQZIBNALbTXUBBAL68V0CeAHDZZECwAHPaZEBRAPwHUIBHAHW2XUDXARAUDUC4AS4HZEDXAS0CQ0CYADL4ZECsAUzuPEBkACgRZAAA
       identityReq.tspID: 7404012867
+    input.bio-auth-data:
+      bioAuthReq.idvId: $UIN$
+      bioAuthReq.tspID: $input.identity-encrypt-data:identityReq.tspID$
+      bioAuthReq.reqTime: $TIMESTAMP$  
+      bioAuthReq.txnID: 1234567890 
     input.ekyc-request:
       ekycReq.ekycAuthType: I 
     output.output-1-expected-y-res:
@@ -122,71 +33,16 @@ testdata:
       output.1.response.y.resTime: $TIMESTAMP$
       output.1.response.y.response: $IGNORE$
       output.1.response.y.txnID: $input.bio-auth-data:bioAuthReq.txnID$
-    audit.auth_transaction:
-      refId: $input.bio-auth-data:bioAuthReq.idvId$
-      txnId: $input.bio-auth-data:bioAuthReq.txnID$
-      authTypeCode: FINGERPRINT-AUTH
-      statusCode: $output.output-1-expected-y-res:output.1.response.y.status$
-      reqTime: $FETCH$
-      resTime: $FETCH$
-      statusComment: $REGEXP:.*Finger.*Authentication.*Success.*$
-      idType: V
-    audit.audit_log:
-      refId: $input.bio-auth-data:bioAuthReq.idvId$
-      eventId: $REGEXP:.*IDA-EVT.*$
-      eventName: AUTH_REQUEST_RESPONSE
-      appId: IDA
-      appName: ID-Authentication
-      moduleName: EKYC_AUTH
-      refIdType: VID   
-      
-  Finger_Auth_Request_LeftIndex_With_ValidCompositeScoreMatch_VID_smoke_Pos_05:
-    input.bio-auth-data: 
-      bioAuthReq.idvId: $VID$
-      bioAuthReq.tspID: 7404012867
-      bioAuthReq.reqTime: $TIMESTAMP$  
-      bioAuthReq.txnID: $RANDOM:N:10$ 
-      bioAuthReq.idvIdType: V
-    input.identity-encrypt-data:
-      identityReq.rightIndex: $REMOVE$
-      identityReq.valueleftIndex: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~DECODEFILE:valuedocuments0~//BIR/BDBInfo[Type='Finger'][Subtype='Left IndexFinger']//following::BDB$
-      identityReq.tspID: $input.bio-auth-data:bioAuthReq.tspID$
-    input.ekyc-request:
-      ekycReq.ekycAuthType: I 
-    output.output-1-expected-y-res:
-      output.1.response.y.status: Y
-      output.1.response.y.resTime: $TIMESTAMP$
-      output.1.response.y.response: $IGNORE$
-      output.1.response.y.txnID: $input.bio-auth-data:bioAuthReq.txnID$
-    audit.auth_transaction:
-      refId: $input.bio-auth-data:bioAuthReq.idvId$
-      txnId: $input.bio-auth-data:bioAuthReq.txnID$
-      authTypeCode: FINGERPRINT-AUTH
-      statusCode: $output.output-1-expected-y-res:output.1.response.y.status$
-      reqTime: $FETCH$
-      resTime: $FETCH$
-      statusComment: $REGEXP:.*Finger.*Authentication.*Success.*$
-      idType: V
-    audit.audit_log:
-      refId: $input.bio-auth-data:bioAuthReq.idvId$
-      eventId: $REGEXP:.*IDA-EVT.*$
-      eventName: AUTH_REQUEST_RESPONSE
-      appId: IDA
-      appName: ID-Authentication
-      moduleName: EKYC_AUTH
-      refIdType: VID   
-      
-  Finger_Auth_Request_RightIndex_With_ValidCompositeScoreMatch_VID_smoke_Pos_06:
-    input.bio-auth-data: 
-      bioAuthReq.idvId: $VID$
-      bioAuthReq.tspID: 7404012867
-      bioAuthReq.reqTime: $TIMESTAMP$  
-      bioAuthReq.txnID: $RANDOM:N:10$ 
-      bioAuthReq.idvIdType: V
+  Valid_MockRequest_RightIndex_With_ValidCompositeScoreMatch:
     input.identity-encrypt-data:
       identityReq.leftIndex: $REMOVE$
-      identityReq.valuerightIndex: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~DECODEFILE:valuedocuments0~//BIR/BDBInfo[Type='Finger'][Subtype='Right IndexFinger']//following::BDB$
-      identityReq.tspID: $input.bio-auth-data:bioAuthReq.tspID$
+      identityReq.valuerightIndex: Rk1SACAyMAAAAAFcAAABPAFiAMUAxQEAAAAoNUCtAMvlZICRAOlXXYDBAPBqZECkAKPWXYDZAN9oZEBzAMXRSYC6AJNcV4DMAJdZXUDpAO9zZIByAQJmZECDAJC7ZIDfAQ56XUBeAPZgV0BhAJwyV0DVASsBXUEEAJ/RZEBZAIq6UEC+AVV7SUCjAOheXUCHANncV0DFAK5cXUDZANJfXUB3ANBRSUCdAJrKXUCJAJvEXUCxAQ91XUCjARj7XYCuAIXeV4CUAIC4ZIDRARr3XUDFAH5jV0BoAJG1ZEDcASWCUEDWAHFfZEBnASp4SUDhAVd1FECMALzWV0DKALxYXUCwAKbfV0DSAOpsZECAAK89V4CSAQdpZICpAJPWV0DoAORiXUCmAIazV0CxARt7XUCDARp0ZED9ANNTZIDhAIzSZICSAHSjZIBXAQpxUECgAGaIXYCBAUJ/ZAAA
+      identityReq.tspID: 7404012867
+    input.bio-auth-data:
+      bioAuthReq.idvId: $UIN$
+      bioAuthReq.tspID: $input.identity-encrypt-data:identityReq.tspID$
+      bioAuthReq.reqTime: $TIMESTAMP$  
+      bioAuthReq.txnID: 1234567890 
     input.ekyc-request:
       ekycReq.ekycAuthType: I 
     output.output-1-expected-y-res:
@@ -194,20 +50,3 @@ testdata:
       output.1.response.y.resTime: $TIMESTAMP$
       output.1.response.y.response: $IGNORE$
       output.1.response.y.txnID: $input.bio-auth-data:bioAuthReq.txnID$
-    audit.auth_transaction:
-      refId: $input.bio-auth-data:bioAuthReq.idvId$
-      txnId: $input.bio-auth-data:bioAuthReq.txnID$
-      authTypeCode: FINGERPRINT-AUTH
-      statusCode: $output.output-1-expected-y-res:output.1.response.y.status$
-      reqTime: $FETCH$
-      resTime: $FETCH$
-      statusComment: $REGEXP:.*Finger.*Authentication.*Success.*$
-      idType: V
-    audit.audit_log:
-      refId: $input.bio-auth-data:bioAuthReq.idvId$
-      eventId: $REGEXP:.*IDA-EVT.*$
-      eventName: AUTH_REQUEST_RESPONSE
-      appId: IDA
-      appName: ID-Authentication
-      moduleName: EKYC_AUTH
-      refIdType: VID  

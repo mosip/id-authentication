@@ -36,7 +36,6 @@ import io.mosip.registration.processor.status.code.RegistrationExternalStatusCod
 import io.mosip.registration.processor.status.code.RegistrationStatusCode;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
-import io.mosip.registration.processor.status.dto.RegistrationStatusSubRequestDto;
 import io.mosip.registration.processor.status.dto.SyncRegistrationDto;
 import io.mosip.registration.processor.status.dto.SyncResponseDto;
 import io.mosip.registration.processor.status.entity.SyncRegistrationEntity;
@@ -244,10 +243,8 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 	}
 
 	public Boolean isExternalStatusResend(String registrationId) {
-		List<RegistrationStatusSubRequestDto> regIds=new ArrayList<RegistrationStatusSubRequestDto>();
-		RegistrationStatusSubRequestDto registrationStatusSubRequestDto = new RegistrationStatusSubRequestDto();
-		registrationStatusSubRequestDto.setRegistrationId(registrationId);
-		regIds.add(registrationStatusSubRequestDto);
+		List regIds=new ArrayList<String>();
+		regIds.add(registrationId);
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 				registrationId, "PacketReceiverServiceImpl::isExternalStatusResend()::entry");
 

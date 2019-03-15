@@ -1,4 +1,4 @@
-package io.mosip.authentication.fw.util; 
+package io.mosip.authentication.fw.util;
 
 import java.io.IOException;
 
@@ -26,7 +26,7 @@ public class XmlPathGen
     
     public void xml() throws ParserConfigurationException, SAXException, IOException, XPathExpressionException
     {
-    	String xmlFile = "C:/Users/M1049813/git/mosip-test/Dev-ida-qa/mosip-qa/src/test/resources/ida/TestData/UINData/CreateTestData/input/cbeff-bio-data.xml";
+    	String xmlFile = "C:\\Users\\M1049813\\git\\mosip-test\\Dev-ida-qa\\mosip-qa\\src\\test\\resources\\ida\\TestData\\UINData\\CreateTestData\\input\\cbeff-bio-data.xml";
         
         //Get DOM
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
@@ -36,19 +36,18 @@ public class XmlPathGen
         //Get XPath
         XPathFactory xpf = XPathFactory.newInstance();
         XPath xpath = xpf.newXPath();
-        System.out.println(xpath);
+       // logger.info(xpath);
          
         //Get first match
        // String name = (String) xpath.evaluate("/employees/employee/firstName", xml, XPathConstants.STRING);
          
-        //System.out.println(name);   //Lokesh
+        //logger.info(name);   //Lokesh
          
         //Get all matches
         //NodeList nodes = (NodeList) xpath.evaluate("/employees/employee/@id", xml, XPathConstants.NODESET);
          
        // for (int i = 0; i < nodes.getLength(); i++) {
-        //    System.out.println(nodes.item(i).getNodeValue());   //1 2
+        //    logger.info(nodes.item(i).getNodeValue());   //1 2
         //}
     }
-
 } 

@@ -5,7 +5,6 @@ package io.mosip.kernel.auth.factory;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.List;
 
 import org.bouncycastle.util.Arrays;
 import org.springframework.dao.DataAccessException;
@@ -21,8 +20,6 @@ import io.mosip.kernel.auth.constant.AuthConstant;
 import io.mosip.kernel.auth.entities.ClientSecret;
 import io.mosip.kernel.auth.entities.LoginUser;
 import io.mosip.kernel.auth.entities.MosipUserDto;
-import io.mosip.kernel.auth.entities.MosipUserListDto;
-import io.mosip.kernel.auth.entities.RolesListDto;
 import io.mosip.kernel.auth.entities.UserOtp;
 import io.mosip.kernel.auth.entities.otp.OtpUser;
 
@@ -201,18 +198,6 @@ public class DBDataStore implements IDataStore {
 	public MosipUserDto authenticateWithSecretKey(ClientSecret clientSecret) throws Exception {
 		MosipUserDto mosipUserDto = getUser(clientSecret.getClientId());
 		return mosipUserDto;
-	}
-
-	@Override
-	public RolesListDto getAllRoles() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public MosipUserListDto getListOfUsersDetails(List<String> userDetails) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 }

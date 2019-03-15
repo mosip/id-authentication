@@ -57,11 +57,11 @@ public class ValidationUtilTest {
 		assertThat(ValidationUtil.phoneValidator(loginId), is(false));
 	}
 
-	//@Test
+	@Test
 	public void requestValidatorSuccessTest() {
 		requestMap.put(RequestCodes.ID, "mosip.pre-registration");
 		requestMap.put(RequestCodes.VER, "1.0");
-		requestMap.put(RequestCodes.REQ_TIME, "2019-03-12T11:27:17.697Z");
+		requestMap.put(RequestCodes.REQ_TIME, "2018-12-19T18:52:16.239Z");
 		requestMap.put(RequestCodes.REQUEST, "{request}");
 
 		requiredRequestMap.put(RequestCodes.ID, "mosip.pre-registration");

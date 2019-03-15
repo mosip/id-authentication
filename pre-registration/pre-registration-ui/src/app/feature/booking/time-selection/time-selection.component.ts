@@ -13,7 +13,6 @@ import { RegistrationService } from 'src/app/core/services/registration.service'
 import { TranslateService } from '@ngx-translate/core';
 import Utils from 'src/app/app.util';
 import * as appConstants from '../../../app.constants';
-import { ConfigService } from 'src/app/core/services/config.service';
 
 @Component({
   selector: 'app-time-selection',
@@ -31,8 +30,8 @@ export class TimeSelectionComponent implements OnInit {
   names: NameList[];
   deletedNames = [];
   availabilityData = [];
- // cutoff = 1;
-  days: number;
+  cutoff = 1;
+  days = 7;
   enableBookButton = false;
   activeTab = 'morning';
   bookingDataList = [];
@@ -40,8 +39,6 @@ export class TimeSelectionComponent implements OnInit {
   registrationCenterLunchTime = [];
   secondaryLang = localStorage.getItem('secondaryLangCode');
   secondaryLanguagelabels: any;
-  showMorning: boolean;
-  showAfternoon: boolean;
 
   constructor(
     private sharedService: SharedService,
@@ -50,8 +47,7 @@ export class TimeSelectionComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private registrationService: RegistrationService,
-    private translate: TranslateService,
-    private configService: ConfigService
+    private translate: TranslateService
   ) {
     this.translate.use(localStorage.getItem('langCode'));
   }
@@ -60,7 +56,6 @@ export class TimeSelectionComponent implements OnInit {
     this.names = this.sharedService.getNameList();
     this.temp = this.sharedService.getNameList();
     console.log(this.temp);
-    this.days = this.configService.getConfigByKey('preregistration.availability.noOfDays');
     this.registrationCenterLunchTime = this.temp[0].registrationCenter.lunchEndTime.split(':');
     this.sharedService.resetNameList();
     this.registrationCenter = this.registrationService.getRegCenterId();
@@ -120,10 +115,8 @@ export class TimeSelectionComponent implements OnInit {
         let toTime = slot.toTime.split(':');
         if (fromTime[0] < this.registrationCenterLunchTime[0]) {
           slot.tag = 'morning';
-          element.showMorning = true;
         } else {
           slot.tag = 'afternoon';
-          element.showAfternoon = true;
         }
         slot.displayTime = Number(fromTime[0]) > 12 ? Number(fromTime[0]) - 12 : fromTime[0];
         slot.displayTime += ':' + fromTime[1] + ' - ';
@@ -131,14 +124,13 @@ export class TimeSelectionComponent implements OnInit {
         slot.displayTime += ':' + toTime[1];
       });
       element.TotalAvailable = sumAvailability;
-      // const cutOffDate = new Date();
-      // cutOffDate.setDate(cutOffDate.getDate() + this.cutoff);
-      // if (new Date(Date.parse(element.date)) < cutOffDate) {
-      //   element.inActive = true;
-      // } else {
-      //   element.inActive = false;
-      // }
-      element.inActive = false;
+      const cutOffDate = new Date();
+      cutOffDate.setDate(cutOffDate.getDate() + this.cutoff);
+      if (new Date(Date.parse(element.date)) < cutOffDate) {
+        element.inActive = true;
+      } else {
+        element.inActive = false;
+      }
       element.displayDate =
         element.date.split('-')[2] +
         ' ' +
@@ -164,19 +156,7 @@ export class TimeSelectionComponent implements OnInit {
         }
       }
     });
-    this.enableBucketTabs();
     console.log(this.availabilityData[this.selectedTile]);
-  }
-
-  enableBucketTabs() {
-    const element = this.availabilityData[this.selectedTile];
-    if (element.showMorning && element.showAfternoon) {
-      this.tabSelected('morning');
-    } else if (element.showMorning) {
-      this.tabSelected('morning');
-    } else {
-      this.tabSelected('afternoon');
-    }
   }
 
   getSlotsforCenter(id) {
@@ -193,11 +173,8 @@ export class TimeSelectionComponent implements OnInit {
     );
   }
 
-  tabSelected(selection: string) {
-    if ((selection === 'morning' && this.availabilityData[this.selectedTile].showMorning) ||
-        (selection === 'afternoon' && this.availabilityData[this.selectedTile].showAfternoon)) {
-      this.activeTab = selection;
-    }    
+  tabSelected(selection) {
+    this.activeTab = selection;
     console.log(this.activeTab);
   }
 
@@ -286,9 +263,6 @@ export class TimeSelectionComponent implements OnInit {
   }
 
   navigateBack() {
-    this.temp.forEach(name => {
-      this.sharedService.addNameList(name);
-    })
     const url = Utils.getURL(this.router.url, 'pick-center');
     // const routeParams = this.router.url.split('/');
     // this.router.navigate([routeParams[1], routeParams[2], 'booking', 'pick-center']);

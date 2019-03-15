@@ -1,5 +1,4 @@
 package io.mosip.authentication.fw.util;
-
 import java.util.Map;
 
 /**

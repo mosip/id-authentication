@@ -135,12 +135,12 @@ public class PacketReceiverServiceTest {
 		regEntity.setStatusComment("registration begins");
 
 		registrationStatusDto.setStatusCode(RegistrationStatusCode.VIRUS_SCAN_FAILED.toString());
-		registrationStatusDto.setRetryCount(4);
+		registrationStatusDto.setRetryCount(2);
 		registrationStatusDto.setRegistrationId("12345");
 		registrations.add(registrationStatusDto);
 		Mockito.when(registrationStatusService.getByIds(anyList())).thenReturn(registrations);
 		Mockito.when(registrationStatusMapUtil.getExternalStatus(anyString(), anyInt()))
-				.thenReturn(RegistrationExternalStatusCode.REREGISTER);
+				.thenReturn(RegistrationExternalStatusCode.RESEND);
 
 		try {
 			ClassLoader classLoader = getClass().getClassLoader();

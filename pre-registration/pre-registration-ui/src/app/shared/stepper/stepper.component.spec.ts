@@ -63,7 +63,7 @@ fdescribe('StepperComponent', () => {
     component.componentName = 'AcknowledgementComponent';
     component.ngOnChanges();
     fixture.detectChanges();
-    expect(component.classes.step4.p[0]).toBe('complete');
+    expect(component.classes.step4.p[0]).toBe('active');
   });
 
 });

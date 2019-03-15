@@ -1,1 +1,1 @@
-{"status":"N","err":[{"errorCode":"IDA-MLC-008","errorMessage":"No authentication type selected"}],"resTime":"2019-03-12T12:18:27.464+05:30","ver":"0.8"}
+{"status":"N","err":[],"txnID":"7404012866","resTime":"2019-02-17T21:36:41.543+05:30","info":{"idType":"D","reqTime":"2019-02-17T21:34:22.022+05:30","usageData":"0x0000000000000000"},"ver":"1.0"}

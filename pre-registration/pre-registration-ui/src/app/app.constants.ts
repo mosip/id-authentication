@@ -1,7 +1,7 @@
 export const NUMBER_PATTERN = '^[0-9]+[0-9]*$';
-// export const MOBILE_PATTERN = '^([6-9]{1})([0-9]{9})$';
+export const MOBILE_PATTERN = '^([6-9]{1})([0-9]{9})$';
 export const TEXT_PATTERN = '^[a-zA-Z ]*$';
-// export const CNIE_PATTERN = '^([0-9]{10,30})$';
+export const CNIE_PATTERN = '^([0-9]{10,30})$';
 export const COUNTRY_NAME = 'Morroco';
 export const COUNTRY_HIERARCHY = 'Country';
 export const VERSION = '1.0';
@@ -24,19 +24,19 @@ export const LANGUAGE_CODE = {
   secondaryKeyboardLang: 'ar'
 };
 
-export const APPEND_URL = {
-  location_metadata: 'v1.0/locations/locationhierarchy/',
-  location_immediate_children: 'v1.0/locations/immediatechildren/',
-  get_applicant: 'demographic/applications/details',
-  applicants: 'demographic/applications',
-  location: 'masterdata/',
-  gender: 'masterdata/v1.0/gendertypes',
-  transliteration: 'transliteration/transliterate',
-  applicantType: 'applicanttype/v1.0/applicanttype/',
-  validDocument: 'v1.0/applicanttype/',
-  getApplicantType: 'getApplicantType'
-};
-
+export const APPEND_URL = {
+  location_metadata: 'v1.0/locations/locationhierarchy/',
+  location_immediate_children: 'v1.0/locations/immediatechildren/',
+  get_applicant: 'demographic/applications/details',
+  applicants: 'demographic/applications',
+  location: 'masterdata/',
+  gender: 'masterdata/v1.0/gendertypes',
+  transliteration: 'translitration/translitrate',
+  applicantType: 'applicanttype/v1.0/applicanttype/',
+  validDocument: 'v1.0/applicanttype/',
+  getApplicantType: 'getApplicantType'
+  }; 
+   
 export const PARAMS_KEYS = {
   getUsers: 'user_id',
   getUser: PRE_REGISTRATION_ID,
@@ -84,50 +84,18 @@ export const DOCUMENT_UPLOAD_REQUEST_DTO = {
     pre_registartion_id: '86710482195706',
     doc_cat_code: 'POA',
     doc_typ_code: 'address',
-    lang_code: 'ENG'
+    lang_code: 'ENG',
+    doc_file_format: 'pdf',
+    status_code: 'Pending-Appoinment',
+    upload_by: '9900806086',
+    upload_date_time: '2018-12-28T05:23:08.019Z'
   }
-};
-
-export const DOCUMENT_CATEGORY_DTO = {
-  attributes: [
-    {
-      attribute: 'individualTypeCode',
-      value: 'FR'
-    },
-    {
-      attribute: 'dateofbirth',
-      value: '2012-03-08T11:46:12.640Z'
-    },
-    {
-      attribute: 'genderCode',
-      value: 'MLE'
-    },
-    {
-      attribute: 'biometricAvailable',
-      value: false
-    }
-  ],
-  id: 'mosip.applicanttype.fetch',
-  requestTime: '2012-03-08T11:46:12.640Z',
-  ver: 'V1.0'
 };
 
 export const virtual_keyboard_languages = {
   eng: 'en',
   fra: 'fr',
   ara: 'ar'
-};
-
-export const languageMapping = {
-  eng: {
-    langName: 'English'
-  },
-  ara: {
-    langName: 'Arabic'
-  },
-  fra: {
-    langName: 'French'
-  }
 };
 
 export const DOCUMENT_UPLOAD_REQUEST_DOCUMENT_KEY = 'file';

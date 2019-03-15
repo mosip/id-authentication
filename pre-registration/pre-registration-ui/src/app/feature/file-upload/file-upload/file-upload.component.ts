@@ -41,6 +41,72 @@ export class FileUploadComponent implements OnInit {
   documentType;
   loginId;
   documentIndex;
+  // LOD = [
+  //   {
+  //     document_name: 'POA',
+  //     valid_docs: [
+  //       {
+  //         name: 'Passport',
+  //         value: 'passport'
+  //       },
+  //       {
+  //         name: 'CNIE Card',
+  //         value: 'Electricity Bill'
+  //       }
+  //       // {
+  //       //   name: 'Passbook',
+  //       //   value: 'Passbook'
+  //       // }
+  //     ]
+  //   },
+  //   {
+  //     document_name: 'POI',
+  //     valid_docs: [
+  //       {
+  //         name: 'Passport',
+  //         value: 'passport'
+  //       },
+  //       {
+  //         name: 'CNIE Card',
+  //         value: 'Bank Account'
+  //       }
+  //     ]
+  //   },
+  //   {
+  //     document_name: 'POB',
+  //     valid_docs: [
+  //       {
+  //         name: 'Passport',
+  //         value: 'passport'
+  //       },
+  //       {
+  //         name: 'CNIE Card',
+  //         value: 'Bank Account'
+  //       },
+  //       {
+  //         name: 'Birth Certificate',
+  //         value: 'Birth Certificate'
+  //       }
+  //       // {
+  //       //   name: 'Voter ID Card',
+  //       //   value: 'Voter ID Card'
+  //       // }
+  //     ]
+  //   },
+  //   {
+  //     document_name: 'POR',
+  //     valid_docs: [
+  //       {
+  //         name: 'Passport',
+  //         value: 'passport'
+  //       },
+  //       {
+  //         name: 'CNIE Card',
+  //         value: 'CNIE Card'
+  //       }
+  //     ]
+  //   }
+  // ];
   LOD: DocumentCategory[];
   fileIndex = -1;
 
@@ -120,7 +186,7 @@ export class FileUploadComponent implements OnInit {
   }
 
   async getApplicantTypeID() {
-    await this.dataStroage.getApplicantType(appConstants.DOCUMENT_CATEGORY_DTO).subscribe(response => {
+    await this.dataStroage.getApplicantType().subscribe(response => {
       console.log('response from applicant type', response);
       this.getDocumentCategories(response['response'].applicationtypecode);
       this.setApplicantType(response);
@@ -139,7 +205,6 @@ export class FileUploadComponent implements OnInit {
       console.log(this.LOD);
       this.LOD = res['documentCategories'];
       console.log(this.applicantType);
-      this.registration.setDocumentCategories(res['documentCategories']);
     });
   }
 
@@ -271,6 +336,8 @@ export class FileUploadComponent implements OnInit {
   setJsonString(event) {
     this.JsonString.request.doc_cat_code = this.documentType;
     this.JsonString.request.pre_registartion_id = this.users[0].preRegId;
+    this.JsonString.request.doc_file_format = event.target.files[0].type;
+    this.JsonString.request.upload_by = this.loginId;
   }
 
   sendFile(event) {
@@ -408,5 +475,3 @@ export interface DocumentCategory {
     name: string;
   };
 }
-// console.log(ts.toJSON());
-// # 2019-03-06T05:24:10.264Z

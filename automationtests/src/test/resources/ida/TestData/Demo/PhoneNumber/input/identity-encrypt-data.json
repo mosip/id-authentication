@@ -1,12 +1,14 @@
 {
 	"identityRequest": {
 		"identity": {
-			"phoneNumber": [
-				{
-					"value": "9994909747"
-				}
-			]
+		
+    "phoneNumber": [
+             {
+         
+               "value": "9994909747"
+             }
+                ]   
 		}
 	},
-	"tspID": "TSP00001"
+  "tspID": "TSP00001"
 }

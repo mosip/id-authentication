@@ -20,7 +20,6 @@ import AttributeModel from 'src/app/shared/models/demographic-model';
 import * as appConstants from '../../../app.constants';
 import Utils from 'src/app/app.util';
 import { DialougComponent } from 'src/app/shared/dialoug/dialoug.component';
-import { ConfigService } from 'src/app/core/services/config.service';
 
 @Component({
   selector: 'app-demographic',
@@ -39,11 +38,6 @@ export class DemographicComponent implements OnInit, OnDestroy {
   keyboardSecondaryLang = appConstants.virtual_keyboard_languages[this.secondaryLang];
   numberPattern = appConstants.NUMBER_PATTERN;
   textPattern = appConstants.TEXT_PATTERN;
-  MOBILE_PATTERN: string;
-  CNIE_PATTERN: string;
-  EMAIL_PATTERN: string;
-  DOB_PATTERN: string;
-  POSTALCODE_PATTERN: string;
 
   ageOrDobPref = '';
   showDate = false;
@@ -74,7 +68,6 @@ export class DemographicComponent implements OnInit, OnDestroy {
   genders: any;
   residenceStatus: any;
   message = {};
-  config = {};
 
   @ViewChild('dd') dd: ElementRef;
   @ViewChild('mm') mm: ElementRef;
@@ -133,17 +126,14 @@ export class DemographicComponent implements OnInit, OnDestroy {
     private regService: RegistrationService,
     private dataStorageService: DataStorageService,
     private sharedService: SharedService,
-    private configService: ConfigService,
     private translate: TranslateService,
     private dialog: MatDialog
   ) {
     this.translate.use(localStorage.getItem('langCode'));
-    this.setConfig();
     this.initialization();
   }
 
   async ngOnInit() {
-    this.config = this.configService.getConfig();
     this.initForm();
     await this.getPrimaryLabels();
     this.dataStorageService.getSecondaryLanguageLabels(this.secondaryLang).subscribe(response => {
@@ -151,14 +141,6 @@ export class DemographicComponent implements OnInit, OnDestroy {
     });
     if (!this.dataModification) this.consentDeclaration();
     console.log(this.primaryLanguagelabels);
-  }
-
-  setConfig() {
-    this.MOBILE_PATTERN = this.config['mosip.regex.phone'];
-    this.CNIE_PATTERN = this.config['mosip.regex.CNIE'];
-    this.EMAIL_PATTERN = this.config['mosip.regex.email'];
-    this.POSTALCODE_PATTERN = this.config['mosip.regex.postalCode'];
-    this.DOB_PATTERN = this.config['mosip.regex.DOB'];
   }
 
   private getPrimaryLabels() {
@@ -273,25 +255,22 @@ export class DemographicComponent implements OnInit, OnDestroy {
         this.formControlValues.localAdministrativeAuthority,
         Validators.required
       ),
-      [this.formControlNames.email]: new FormControl(
-        this.formControlValues.email,
-        Validators.pattern(this.EMAIL_PATTERN)
-      ),
+      [this.formControlNames.email]: new FormControl(this.formControlValues.email, Validators.email),
       [this.formControlNames.postalCode]: new FormControl(this.formControlValues.postalCode, [
         Validators.required,
         Validators.maxLength(6),
         Validators.minLength(6),
-        Validators.pattern(this.POSTALCODE_PATTERN)
+        Validators.pattern(this.numberPattern)
       ]),
       [this.formControlNames.phone]: new FormControl(this.formControlValues.phone, [
         Validators.maxLength(10),
         Validators.minLength(10),
-        Validators.pattern(this.MOBILE_PATTERN)
+        Validators.pattern(appConstants.MOBILE_PATTERN)
       ]),
       [this.formControlNames.CNIENumber]: new FormControl(this.formControlValues.CNIENumber, [
         Validators.required,
         Validators.maxLength(30),
-        Validators.pattern(this.CNIE_PATTERN)
+        Validators.pattern(appConstants.CNIE_PATTERN)
       ])
     });
 

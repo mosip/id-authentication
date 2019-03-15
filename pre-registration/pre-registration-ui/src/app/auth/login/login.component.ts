@@ -1,21 +1,20 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
+import { FormControl, Validators } from '@angular/forms';
 import { DialougComponent } from 'src/app/shared/dialoug/dialoug.component';
 import { MatDialog } from '@angular/material';
 import { AuthService } from '../auth.service';
 import { DataStorageService } from 'src/app/core/services/data-storage.service';
 import { RegistrationService } from 'src/app/core/services/registration.service';
 import { ConfigService } from 'src/app/core/services/config.service';
-import * as appConstants from '../../app.constants';
-
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent implements OnInit {
-  languages: string[] = [];
+  languages: string[] = ['French', 'Arabic'];
 
   inputPlaceholderContact = 'Email ID or Phone Number';
   inputPlaceholderOTP = 'Enter OTP';
@@ -34,11 +33,16 @@ export class LoginComponent implements OnInit {
   showContactDetails = true;
   showOTP = false;
   secondaryLanguagelabels: any;
+  email = new FormControl('', [Validators.required, Validators.email]);
   loggedOutLang: string;
-  errorMessage: string;
-  minutes: string;
-  seconds: string;
-  showSpinner = true;
+
+  getErrorMessage() {
+    return this.email.hasError('required')
+      ? 'You must enter a value'
+      : this.email.hasError('email')
+      ? 'Not a valid email'
+      : '';
+  }
 
   constructor(
     private authService: AuthService,
@@ -47,18 +51,22 @@ export class LoginComponent implements OnInit {
     private dialog: MatDialog,
     private dataService: DataStorageService,
     private regService: RegistrationService,
-    private configService: ConfigService
+    private configService: ConfigService,
   ) {
     const loggedOut = localStorage.getItem('loggedOut');
     this.loggedOutLang = localStorage.getItem('loggedOutLang');
     localStorage.clear();
+    translate.addLangs(['eng', 'fra', 'ara']);
+
+    // const browserLang = translate.getBrowserLang();
+    // translate.use(browserLang.match(/eng|fra|ara/) ? browserLang : 'ara');
     localStorage.setItem('loggedOut', loggedOut);
     localStorage.setItem('langCode', this.langCode);
+
     this.showMessage();
   }
 
   ngOnInit() {
-    this.showSpinner = true;
     if (localStorage.getItem('langCode')) {
       this.langCode = localStorage.getItem('langCode');
       if (this.loggedOutLang) {
@@ -71,68 +79,12 @@ export class LoginComponent implements OnInit {
     this.loadConfigs();
   }
 
-  loginIdValidator() {
-    this.errorMessage = undefined;
-    const modes = this.configService.getConfigByKey('mosip.login.mode');
-    const emailRegex = new RegExp(this.configService.getConfigByKey('mosip.regex.email'));
-    const phoneRegex = new RegExp(this.configService.getConfigByKey('mosip.regex.phone'));
-    if (modes === 'email,mobile') {
-      if (!(emailRegex.test(this.inputContactDetails) || phoneRegex.test(this.inputContactDetails))) {
-        this.errorMessage = 'Invalid Email or Mobile Number entered';
-      }
-    } else if (modes === 'email') {
-      if (!emailRegex.test(this.inputContactDetails)) {
-        this.errorMessage = 'Invalid email Entered';
-      }
-    } else if (modes === 'mobile') {
-      if (!phoneRegex.test(this.inputContactDetails)) {
-        this.errorMessage = 'Invalid email Entered';
-      }
-    }
-    console.log('errorMessage', this.errorMessage);
-  }
-
   loadConfigs() {
-    this.dataService.getConfig().subscribe(
-      response => {
-        console.log(response);
-
-        this.configService.setConfig(response);
-        this.setTimer();
-        this.loadLanguagesWithConfig();
-      },
-      error => {
-        this.router.navigate(['error']);
-      }
-    );
-  }
-
-  loadLanguagesWithConfig() {
-    const primaryLang = this.configService.getConfigByKey('mosip.primary-language');
-    const secondaryLang = this.configService.getConfigByKey('mosip.secondary-language');
-    if (appConstants.languageMapping[primaryLang] && appConstants.languageMapping[secondaryLang]) {
-      this.languages.push(appConstants.languageMapping[primaryLang].langName);
-      this.languages.push(appConstants.languageMapping[secondaryLang].langName);
-    }
-    this.translate.addLangs([primaryLang, secondaryLang]);
-    this.showSpinner = false;
-  }
-
-  setTimer() {
-    const time = Number(this.configService.getConfigByKey('mosip.kernel.otp.expiry-time'));
-    console.log('time', this.configService.getConfigByKey('mosip.kernel.otp.expiry-time'));
-    const minutes = time / 60;
-    const seconds = time % 60;
-    if (minutes < 10) {
-      this.minutes = '0' + minutes;
-    } else {
-      this.minutes = String(minutes);
-    }
-    if (seconds < 10) {
-      this.seconds = '0' + seconds;
-    } else {
-      this.seconds = String(seconds);
-    }
+    this.dataService.getConfig().subscribe(response => {
+      this.configService.setConfig(response);
+    }, error => {
+      this.router.navigate(['error']);
+    });
   }
 
   showMessage() {
@@ -178,7 +130,7 @@ export class LoginComponent implements OnInit {
   }
 
   showVerifyBtn() {
-    if (this.inputOTP.length === Number(this.configService.getConfigByKey('mosip.kernel.otp.default-length'))) {
+    if (this.inputOTP.length === 6) {
       this.showVerify = true;
       this.showResend = false;
     } else {
@@ -188,8 +140,7 @@ export class LoginComponent implements OnInit {
   }
 
   submit(): void {
-    this.loginIdValidator();
-    if ((this.showSendOTP || this.showResend) && this.errorMessage === undefined) {
+    if (this.showSendOTP || this.showResend) {
       this.showResend = true;
       this.showOTP = true;
       this.showSendOTP = false;
@@ -208,7 +159,7 @@ export class LoginComponent implements OnInit {
             this.showResend = false;
             this.showOTP = false;
             this.showVerify = false;
-            document.getElementById('minutesSpan').innerText = this.minutes;
+            document.getElementById('minutesSpan').innerText = '02';
 
             document.getElementById('timer').style.visibility = 'hidden';
             clearInterval(this.timer);
@@ -227,8 +178,8 @@ export class LoginComponent implements OnInit {
 
       // update of timer value on click of resend
       if (document.getElementById('timer').style.visibility === 'visible') {
-        document.getElementById('secondsSpan').innerText = this.seconds;
-        document.getElementById('minutesSpan').innerText = this.minutes;
+        document.getElementById('secondsSpan').innerText = '00';
+        document.getElementById('minutesSpan').innerText = '02';
       } else {
         // initial set up for timer
         document.getElementById('timer').style.visibility = 'visible';
@@ -237,29 +188,24 @@ export class LoginComponent implements OnInit {
 
       this.dataService.sendOtp(this.inputContactDetails).subscribe(response => {
         console.log(response);
-      });
+      })
 
       // dynamic update of button text for Resend and Verify
-    } else if (this.showVerify && this.errorMessage === undefined) {
-      this.dataService.verifyOtp(this.inputContactDetails, this.inputOTP).subscribe(
-        response => {
-          console.log(response);
-          if (!response['errors']) {
-            clearInterval(this.timer);
-            localStorage.setItem('loggedIn', 'true');
-            this.authService.setToken();
+    } else if (this.showVerify) {
+      this.dataService.verifyOtp(this.inputContactDetails, this.inputOTP).subscribe(response => {
+        console.log(response);
+        if (!response['errors']) {
+          clearInterval(this.timer);
+          localStorage.setItem('loggedIn', 'true');
+          this.authService.setToken();
 
-            this.regService.setLoginId(this.inputContactDetails);
-            this.router.navigate(['dashboard']);
-          } else {
-            console.log(response['error']);
-            this.showOtpMessage();
-          }
-        },
-        error => {
+          this.regService.setLoginId(this.inputContactDetails);
+          this.router.navigate(['dashboard']);
+        } else {
+          console.log(response['error']);
           this.showOtpMessage();
         }
-      );
+      });
     }
   }
 

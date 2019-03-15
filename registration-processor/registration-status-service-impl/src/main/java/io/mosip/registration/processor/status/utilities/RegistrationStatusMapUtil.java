@@ -27,6 +27,7 @@ public class RegistrationStatusMapUtil {
 	@Value("${registration.processor.threshold}")
 	private int threshold;
 
+
 	/**
 	 * Instantiates a new registration status map util.
 	 */
@@ -68,8 +69,6 @@ public class RegistrationStatusMapUtil {
 		statusMap.put(RegistrationStatusCode.PACKET_BIO_DEDUPE_FAILED, RegistrationExternalStatusCode.PROCESSING);
 
 		statusMap.put(RegistrationStatusCode.PACKET_UIN_GENERATION_SUCCESS, RegistrationExternalStatusCode.PROCESSED);
-		statusMap.put(RegistrationStatusCode.PRINT_AND_POST_COMPLETED, RegistrationExternalStatusCode.PROCESSED);
-		statusMap.put(RegistrationStatusCode.NOTIFICATION_SENT_TO_RESIDENT, RegistrationExternalStatusCode.PROCESSED);
 
 		return unmodifiableMap;
 
@@ -77,11 +76,13 @@ public class RegistrationStatusMapUtil {
 
 	public RegistrationExternalStatusCode getExternalStatus(String statusCode, Integer retryCount) {
 		RegistrationExternalStatusCode mappedValue;
-		Map<RegistrationStatusCode, RegistrationExternalStatusCode> mapStatus = RegistrationStatusMapUtil
-				.statusMapper();
-		mappedValue = mapStatus.get(RegistrationStatusCode.valueOf(statusCode));
-		if ((retryCount < threshold) && (mappedValue.equals(RegistrationExternalStatusCode.REREGISTER))) {
+		if (retryCount < threshold) {
 			mappedValue = RegistrationExternalStatusCode.RESEND;
+		} else {
+			Map<RegistrationStatusCode, RegistrationExternalStatusCode> statusMap = RegistrationStatusMapUtil
+					.statusMapper();
+			mappedValue = statusMap.get(RegistrationStatusCode.valueOf(statusCode));
+
 		}
 		return mappedValue;
 	}

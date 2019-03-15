@@ -11,8 +11,6 @@ public class AuthConstant {
 	
 	public final static String APPTYPE_UIN = "UIN"; 
 	
-	public final static String APPTYPE_USERID = "USERID"; 
-	
 	public final static String APPTYPE_USER = "USERIDTYPE"; 
 	
 	public final static String USERPWD_SUCCESS_MESSAGE = "Username and password combination had been validated successfully";

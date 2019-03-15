@@ -8,16 +8,6 @@
    align-items: center;
 }
 
-.spacing {
-    margin-top: 20%;
-}
-
-.error {
-    font-size: 13px;
-    color: red;
-    margin-top: -10px;
-}
-
 .form_wrapper{
     margin: 5% 0%;
 }

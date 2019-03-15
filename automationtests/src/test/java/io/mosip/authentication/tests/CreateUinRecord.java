@@ -1,6 +1,6 @@
 package io.mosip.authentication.tests;
 
-import java.io.File;  
+import java.io.File; 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.HashMap;
@@ -27,18 +27,18 @@ import org.testng.internal.TestResult;
 
 import com.google.common.base.Verify;
 
+import io.mosip.authentication.fw.idrepo.IdRepoUtil;
+import io.mosip.authentication.fw.idrepo.UinDto;
 import io.mosip.authentication.fw.util.DataProviderClass;
 import io.mosip.authentication.fw.util.FileUtil;
-import io.mosip.authentication.fw.util.IdRepoUtil;
 import io.mosip.authentication.fw.util.IdaScriptsUtil;
-import io.mosip.authentication.fw.dto.OutputValidationDto;
-import io.mosip.authentication.fw.dto.UinDto;
+import io.mosip.authentication.fw.util.OutputValidationDto;
 import io.mosip.authentication.fw.util.OutputValidationUtil;
 import io.mosip.authentication.fw.util.ReportUtil;
 import io.mosip.authentication.fw.util.RunConfig;
 import io.mosip.authentication.fw.util.TestParameters;
-import io.mosip.authentication.testdata.TestDataProcessor;
-import io.mosip.authentication.testdata.TestDataUtil;
+import io.mosip.testdata.TestDataProcessor;
+import io.mosip.testdata.TestDataUtil;
 
 import org.testng.Reporter;
 
@@ -151,10 +151,9 @@ public class CreateUinRecord extends IdaScriptsUtil implements ITest{
 	@AfterClass
 	public void storeUinData() {
 		UinDto.setUinData(storeUinData);
-		logger.info("Genereated UIN: " + UinDto.getUinData());
-		generateMappingDic(
-				RunConfig.getUserDirectory() + RunConfig.getSrcPath() + "ida/"+RunConfig.getTestDataFolderName()+"/RunConfig/uin.properties",
-				UinDto.getUinData());
+		logger.info("Genereated UIN: "+UinDto.getUinData());
+		objIdRepoUtil.generateUinMappingDic(
+				RunConfig.getUserDirectory() + RunConfig.getSrcPath() + "ida\\TestData\\RunConfig\\uin.properties");
 	}
 
 }

@@ -1,79 +1,17 @@
 testdata:
-  Valid_MockRequest_Store_StaticPin_For_UIN_1_smoke_Pos_01:
+  Valid_MockRequest_Store_StaticPin_For UIN_smoke_Pos:
     input.staticpin-store-request:
-      StaticPinStoreReq.UIN: $UIN$
+      StaticPinStoreReq.UIN: 4084132079
       StaticPinStoreReq.tspID: TSP0001
       StaticPinStoreReq.staticPin: $RANDOM:N:6$
       StaticPinStoreReq.reqTime: $TIMESTAMP$
     output.output-1-expected-y-res:
       output.1.response.y.status: Y
       output.1.response.y.resTime: $IGNORE$
-    audit.audit_log:
-      refId: $input.staticpin-store-request:StaticPinStoreReq.UIN$
-      eventId: $REGEXP:.*IDA-EVT.*$
-      eventName: STATIC_PIN_STORAGE_REQUEST_RESPONSE
-      appId: IDA
-      refIdType: UIN
-      appName: ID-Authentication
-      moduleName: STATIC_PIN_STORAGE
-  
-  Valid_MockRequest_Store_StaticPin_For_UIN_2_smoke_Pos_02:
+       
+  Invalid_reqTime_regression_Neg:
     input.staticpin-store-request:
-      StaticPinStoreReq.UIN: $UIN$
-      StaticPinStoreReq.tspID: TSP0001
-      StaticPinStoreReq.staticPin: $RANDOM:N:6$
-      StaticPinStoreReq.reqTime: $TIMESTAMP$
-    output.output-1-expected-y-res:
-      output.1.response.y.status: Y
-      output.1.response.y.resTime: $IGNORE$
-    audit.audit_log:
-      refId: $input.staticpin-store-request:StaticPinStoreReq.UIN$
-      eventId: $REGEXP:.*IDA-EVT.*$
-      eventName: STATIC_PIN_STORAGE_REQUEST_RESPONSE
-      appId: IDA
-      refIdType: UIN
-      appName: ID-Authentication
-      moduleName: STATIC_PIN_STORAGE
-      
-  Valid_MockRequest_Store_StaticPin_For_UIN_3_smoke_Pos_03:
-    input.staticpin-store-request:
-      StaticPinStoreReq.UIN: $UIN$
-      StaticPinStoreReq.tspID: TSP0001
-      StaticPinStoreReq.staticPin: $RANDOM:N:6$
-      StaticPinStoreReq.reqTime: $TIMESTAMP$
-    output.output-1-expected-y-res:
-      output.1.response.y.status: Y
-      output.1.response.y.resTime: $IGNORE$
-    audit.audit_log:
-      refId: $input.staticpin-store-request:StaticPinStoreReq.UIN$
-      eventId: $REGEXP:.*IDA-EVT.*$
-      eventName: STATIC_PIN_STORAGE_REQUEST_RESPONSE
-      appId: IDA
-      refIdType: UIN
-      appName: ID-Authentication
-      moduleName: STATIC_PIN_STORAGE
-      
-  Valid_MockRequest_Store_StaticPin_For_UIN_4_smoke_Pos_04:
-    input.staticpin-store-request:
-      StaticPinStoreReq.UIN: $UIN$
-      StaticPinStoreReq.tspID: TSP0001
-      StaticPinStoreReq.staticPin: $RANDOM:N:6$
-      StaticPinStoreReq.reqTime: $TIMESTAMP$
-    output.output-1-expected-y-res:
-      output.1.response.y.status: Y
-      output.1.response.y.resTime: $IGNORE$
-    audit.audit_log:
-      refId: $input.staticpin-store-request:StaticPinStoreReq.UIN$
-      eventId: $REGEXP:.*IDA-EVT.*$
-      eventName: STATIC_PIN_STORAGE_REQUEST_RESPONSE
-      appId: IDA
-      refIdType: UIN
-      appName: ID-Authentication
-      moduleName: STATIC_PIN_STORAGE
-      
-  Invalid_reqTime_regression_Neg_05:
-    input.staticpin-store-request:
-      StaticPinStoreReq.UIN: $UIN$
+      StaticPinStoreReq.UIN: 4084132079
       StaticPinStoreReq.tspID: TSP0001
       StaticPinStoreReq.staticPin: $RANDOM:N:6$
       StaticPinStoreReq.reqTime: $TIMESTAMP$HOUR+25
@@ -83,7 +21,7 @@ testdata:
       output.1.response.n.err.errorMessage: Request to be received at MOSIP within 24 hrs/min
       output.1.response.n.err.errorCode: IDA-MLC-001
       
-  Invalid_UIN_regression_Neg_06:
+  Invalid_UIN_regression_Neg:
     input.staticpin-store-request:
       StaticPinStoreReq.UIN: 1234567890
       StaticPinStoreReq.tspID: TSP0001
@@ -95,7 +33,7 @@ testdata:
       output.1.response.n.err.errorMessage: Invalid UIN
       output.1.response.n.err.errorCode: IDA-MLC-002
       
-  Invalid_Missing_UIN_regression_Neg_07:
+  Invalid_Missing_UIN_regression_Neg:
     input.staticpin-store-request:
       StaticPinStoreReq.UIN: $REMOVE$
       StaticPinStoreReq.tspID: TSP0001
@@ -104,12 +42,12 @@ testdata:
     output.output-1-expected-n-error-res:
       output.1.response.y.status: N
       output.1.response.y.resTime: $IGNORE$
-      output.1.response.n.err.errorMessage: Missing Input Parameter - UIN/VID
-      output.1.response.n.err.errorCode: IDA-IDV-003
+      output.1.response.n.err.errorMessage: Missing Input parameter - UIN
+      output.1.response.n.err.errorCode: $IGNORE$
       
-  Invalid_Missing_reqTime_regression_Neg_08:
+  Invalid_Missing_reqTime_regression_Neg:
     input.staticpin-store-request:
-      StaticPinStoreReq.UIN: $UIN$
+      StaticPinStoreReq.UIN: 4084132079
       StaticPinStoreReq.tspID: TSP0001
       StaticPinStoreReq.staticPin: $RANDOM:N:6$
       StaticPinStoreReq.reqTime: $REMOVE$
@@ -119,9 +57,9 @@ testdata:
       output.1.response.n.err.errorMessage: Missing Input Parameter - reqTime
       output.1.response.n.err.errorCode: IDA-IDV-003
   
-  Invalid_Missing_StaticPin_regression_Neg_09:
+  Invalid_Missing_StaticPin_regression_Neg:
     input.staticpin-store-request:
-      StaticPinStoreReq.UIN: $UIN$
+      StaticPinStoreReq.UIN: 4084132079
       StaticPinStoreReq.tspID: TSP0001
       StaticPinStoreReq.staticPin: $REMOVE$
       StaticPinStoreReq.reqTime: $TIMESTAMP$
@@ -130,31 +68,20 @@ testdata:
       output.1.response.n.err.resTime: $IGNORE$
       output.1.response.n.err.errorMessage: Missing Input Parameter - pinValue
       output.1.response.n.err.errorCode: IDA-IDV-003
-    
-  
-  Valid_MockRequest_Store_StaticPin_For_VID_smoke_Pos_10:
+      
+  Valid_MockRequest_Store_StaticPin_For VID_smoke_Pos:
     input.staticpin_ForVID-store-request:
-      StaticPinStoreReq.UIN: $REMOVE$
-      StaticPinStoreReq.VID: $VID$ 
+      StaticPinStoreReq.VID: 5371843613598206 
       StaticPinStoreReq.tspID: TSP0001
       StaticPinStoreReq.staticPin: $RANDOM:N:6$
       StaticPinStoreReq.reqTime: $TIMESTAMP$
     output.output-1-expected-y-res:
       output.1.response.y.status: Y
       output.1.response.y.resTime: $IGNORE$
-    audit.audit_log:
-      refId: $input.staticpin-store-request:StaticPinStoreReq.UIN$
-      eventId: $REGEXP:.*IDA-EVT.*$
-      eventName: STATIC_PIN_STORAGE_REQUEST_RESPONSE
-      appId: IDA
-      refIdType: UIN
-      appName: ID-Authentication
-      moduleName: STATIC_PIN_STORAGE  
       
-  Invalid_reqTime_for_VID_regression_Neg_11:
+  Invalid_reqTime_for_VID_regression_Neg:
     input.staticpin-store-request:
-      StaticPinStoreReq.UIN: $REMOVE$
-      StaticPinStoreReq.VID: $VID$ 
+      StaticPinStoreReq.VID: 5371843613598206 
       StaticPinStoreReq.tspID: TSP0001
       StaticPinStoreReq.staticPin: $RANDOM:N:6$
       StaticPinStoreReq.reqTime: $TIMESTAMP$HOUR+25
@@ -164,10 +91,9 @@ testdata:
       output.1.response.n.err.errorMessage: Request to be received at MOSIP within 24 hrs/min
       output.1.response.n.err.errorCode: IDA-MLC-001
       
-  Invalid_VID_regression_Neg_12:
+  Invalid_VID_regression_Neg:
     input.staticpin_ForVID-store-request:
-      StaticPinStoreReq.UIN: $REMOVE$
-      StaticPinStoreReq.VID: 725346098479564212 
+      StaticPinStoreReq.VID: 53718436135982123 
       StaticPinStoreReq.tspID: TSP0001
       StaticPinStoreReq.staticPin: $RANDOM:N:6$
       StaticPinStoreReq.reqTime: $TIMESTAMP$
@@ -175,11 +101,10 @@ testdata:
       output.1.response.y.status: N
       output.1.response.y.resTime: $IGNORE$
       output.1.response.n.err.errorMessage: Invalid VID
-      output.1.response.n.err.errorCode: IDA-MLC-004
+      output.1.response.n.err.errorCode: IDA-MLC-002
       
-  Invalid_Missing_VID_regression_Neg_13:
-    input.staticpin_ForVID-store-request:
-      StaticPinStoreReq.UIN: $REMOVE$
+  Invalid_Missing_VID_regression_Neg:
+    input.staticpin-store-request:
       StaticPinStoreReq.VID: $REMOVE$
       StaticPinStoreReq.tspID: TSP0001
       StaticPinStoreReq.staticPin: $RANDOM:N:6$
@@ -187,13 +112,12 @@ testdata:
     output.output-1-expected-n-error-res:
       output.1.response.y.status: N
       output.1.response.y.resTime: $IGNORE$
-      output.1.response.n.err.errorMessage: Missing Input Parameter - UIN/VID
-      output.1.response.n.err.errorCode: IDA-IDV-003
+      output.1.response.n.err.errorMessage: Missing Input parameter - VID
+      output.1.response.n.err.errorCode: $IGNORE$
       
-  Invalid_Missing_reqTime_For_VID_regression_Neg_14:
+  Invalid_Missing_reqTime_For_VID_regression_Neg:
     input.staticpin-store-request:
-      StaticPinStoreReq.UIN: $REMOVE$
-      StaticPinStoreReq.VID: $VID$
+      StaticPinStoreReq.VID: 53718436135982
       StaticPinStoreReq.tspID: TSP0001
       StaticPinStoreReq.staticPin: $RANDOM:N:6$
       StaticPinStoreReq.reqTime: $REMOVE$
@@ -202,11 +126,10 @@ testdata:
       output.1.response.n.err.resTime: $IGNORE$
       output.1.response.n.err.errorMessage: Missing Input Parameter - reqTime
       output.1.response.n.err.errorCode: IDA-IDV-003
-      
-  Invalid_Missing_StaticPin_For_VID_regression_Neg_15:
+  
+  Invalid_Missing_StaticPin_For_VID_regression_Neg:
     input.staticpin-store-request:
-      StaticPinStoreReq.UIN: $REMOVE$
-      StaticPinStoreReq.VID: $VID$
+      StaticPinStoreReq.VID: 53718436135982
       StaticPinStoreReq.tspID: TSP0001
       StaticPinStoreReq.staticPin: $REMOVE$
       StaticPinStoreReq.reqTime: $TIMESTAMP$
@@ -216,79 +139,4 @@ testdata:
       output.1.response.n.err.errorMessage: Missing Input Parameter - pinValue
       output.1.response.n.err.errorCode: IDA-IDV-003
       
-  Valid_MockRequest_Store_StaticPin_For_VID_smoke_Pos_16:
-    input.staticpin_ForVID-store-request:
-      StaticPinStoreReq.UIN: $REMOVE$
-      StaticPinStoreReq.VID: $VID$ 
-      StaticPinStoreReq.tspID: TSP0001
-      StaticPinStoreReq.staticPin: $RANDOM:N:6$
-      StaticPinStoreReq.reqTime: $TIMESTAMP$
-    output.output-1-expected-y-res:
-      output.1.response.y.status: Y
-      output.1.response.y.resTime: $IGNORE$
-    audit.audit_log:
-      refId: $input.staticpin-store-request:StaticPinStoreReq.UIN$
-      eventId: $REGEXP:.*IDA-EVT.*$
-      eventName: STATIC_PIN_STORAGE_REQUEST_RESPONSE
-      appId: IDA
-      refIdType: UIN
-      appName: ID-Authentication
-      moduleName: STATIC_PIN_STORAGE 
       
-  Valid_MockRequest_Store_StaticPin_For_VID_smoke_Pos_17:
-    input.staticpin_ForVID-store-request:
-      StaticPinStoreReq.UIN: $REMOVE$
-      StaticPinStoreReq.VID: $VID$ 
-      StaticPinStoreReq.tspID: TSP0001
-      StaticPinStoreReq.staticPin: $RANDOM:N:6$
-      StaticPinStoreReq.reqTime: $TIMESTAMP$
-    output.output-1-expected-y-res:
-      output.1.response.y.status: Y
-      output.1.response.y.resTime: $IGNORE$
-    audit.audit_log:
-      refId: $input.staticpin-store-request:StaticPinStoreReq.UIN$
-      eventId: $REGEXP:.*IDA-EVT.*$
-      eventName: STATIC_PIN_STORAGE_REQUEST_RESPONSE
-      appId: IDA
-      refIdType: UIN
-      appName: ID-Authentication
-      moduleName: STATIC_PIN_STORAGE 
-      
-  Valid_MockRequest_Store_StaticPin_For_VID_smoke_Pos_18:
-    input.staticpin_ForVID-store-request:
-      StaticPinStoreReq.UIN: $REMOVE$
-      StaticPinStoreReq.VID: $VID$ 
-      StaticPinStoreReq.tspID: TSP0001
-      StaticPinStoreReq.staticPin: $RANDOM:N:6$
-      StaticPinStoreReq.reqTime: $TIMESTAMP$
-    output.output-1-expected-y-res:
-      output.1.response.y.status: Y
-      output.1.response.y.resTime: $IGNORE$
-    audit.audit_log:
-      refId: $input.staticpin-store-request:StaticPinStoreReq.UIN$
-      eventId: $REGEXP:.*IDA-EVT.*$
-      eventName: STATIC_PIN_STORAGE_REQUEST_RESPONSE
-      appId: IDA
-      refIdType: UIN
-      appName: ID-Authentication
-      moduleName: STATIC_PIN_STORAGE 
-      
-  Valid_MockRequest_Store_StaticPin_For_VID_smoke_Pos_19:
-    input.staticpin_ForVID-store-request:
-      StaticPinStoreReq.UIN: $REMOVE$
-      StaticPinStoreReq.VID: $VID$ 
-      StaticPinStoreReq.tspID: TSP0001
-      StaticPinStoreReq.staticPin: $RANDOM:N:6$
-      StaticPinStoreReq.reqTime: $TIMESTAMP$
-    output.output-1-expected-y-res:
-      output.1.response.y.status: Y
-      output.1.response.y.resTime: $IGNORE$
-    audit.audit_log:
-      refId: $input.staticpin-store-request:StaticPinStoreReq.UIN$
-      eventId: $REGEXP:.*IDA-EVT.*$
-      eventName: STATIC_PIN_STORAGE_REQUEST_RESPONSE
-      appId: IDA
-      refIdType: UIN
-      appName: ID-Authentication
-      moduleName: STATIC_PIN_STORAGE 
-   

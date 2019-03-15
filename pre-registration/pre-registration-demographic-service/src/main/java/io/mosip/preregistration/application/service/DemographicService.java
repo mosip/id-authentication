@@ -200,20 +200,16 @@ public class DemographicService {
 	public MainListResponseDTO<DemographicResponseDTO> addPreRegistration(
 			MainRequestDTO<DemographicRequestDTO> demographicRequest) {
 		log.info("sessionId", "idType", "id", "In addPreRegistration method of pre-registration service ");
-		log.info("sessionId", "idType", "id", "Pre Registration start time : "+DateUtils.getUTCCurrentDateTimeString());
 		MainListResponseDTO<DemographicResponseDTO> mainListResponseDTO = new MainListResponseDTO<>();
 		boolean isSuccess = false;
 		try {
 			if (ValidationUtil.requestValidator(serviceUtil.prepareRequestParamMap(demographicRequest),
 					requiredRequestMap)) {
-				log.info("sessionId", "idType", "id", "JSON validator start time : "+DateUtils.getUTCCurrentDateTimeString());
 				jsonValidator.validateJson(demographicRequest.getRequest().getDemographicDetails().toJSONString(),
 						schemaName);
-				log.info("sessionId", "idType", "id", "JSON validator end time : "+DateUtils.getUTCCurrentDateTimeString());
 				mainListResponseDTO = createOrUpdate(demographicRequest.getRequest(), demographicRequest.getId());
 			}
 			isSuccess = true;
-			log.info("sessionId", "idType", "id", "Pre Registration end time : "+DateUtils.getUTCCurrentDateTimeString());
 		} catch (Exception ex) {
 			log.error("sessionId", "idType", "id",
 					"In pre-registration service of addPreRegistration- " + ex.getMessage());
@@ -525,6 +521,9 @@ public class DemographicService {
 		log.info("sessionId", "idType", "id", "In getPreRegistrationByDate method of pre-registration service ");
 		MainListResponseDTO<String> response = new MainListResponseDTO<>();
 		
+           
+		
+		
 		try {
 			LocalDateTime fromLocaldate=fromDate.atStartOfDay();
 			
@@ -626,9 +625,7 @@ public class DemographicService {
 		List<DemographicResponseDTO> saveList = new ArrayList<>();
 		DemographicEntity demographicEntity;
 		if (serviceUtil.isNull(demographicRequest.getPreRegistrationId())) {
-			log.info("sessionId", "idType", "id", "Pre ID generation start time : "+DateUtils.getUTCCurrentDateTimeString());
 			demographicRequest.setPreRegistrationId(pridGenerator.generateId());
-			log.info("sessionId", "idType", "id", "Pre ID generation end time : "+DateUtils.getUTCCurrentDateTimeString());
 			demographicEntity = demographicRepository.save(serviceUtil.prepareDemographicEntity(demographicRequest,
 					requestId, RequestCodes.SAVE.getCode(), StatusCodes.PENDING_APPOINTMENT.getCode()));
 			setAuditValues(EventId.PRE_407.toString(), EventName.PERSIST.toString(), EventType.BUSINESS.toString(),

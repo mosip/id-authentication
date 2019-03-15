@@ -1,15 +1,22 @@
 package io.mosip.authentication.fw.dbUtil;
 
-import java.sql.Connection;  
+import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.Statement;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
 import org.apache.log4j.Logger;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
+//import org.hibernate.cfg.AnnotationConfiguration;
+import org.hibernate.cfg.Configuration;
 
 import io.mosip.authentication.fw.util.RunConfig;
 
@@ -32,7 +39,7 @@ public class DbConnection {
 		try {
 			Class.forName("org.postgresql.Driver");
 			Connection connection = DriverManager.getConnection(
-					RunConfig.getDbKernelUrl() + "/" + RunConfig.getDbKernelTableName(), RunConfig.getDbKernelUserName(),
+					RunConfig.getDbUrl() + "/" + RunConfig.getDbKernelTableName(), RunConfig.getDbKernelUserName(),
 					RunConfig.getDbKernelPwd());
 			return connection;
 		} catch (Exception e) {
@@ -50,7 +57,7 @@ public class DbConnection {
 		try {
 			Class.forName("org.postgresql.Driver");
 			Connection connection = DriverManager.getConnection(
-					RunConfig.getDbIdaUrl() + "/" + RunConfig.getDbIdaTableName(), RunConfig.getDbIdaUserName(),
+					RunConfig.getDbUrl() + "/" + RunConfig.getDbIdaTableName(), RunConfig.getDbIdaUserName(),
 					RunConfig.getDbIdaPwd());
 			return connection;
 		} catch (Exception e) {
@@ -68,7 +75,7 @@ public class DbConnection {
 		try {
 			Class.forName("org.postgresql.Driver");
 			Connection connection = DriverManager.getConnection(
-					RunConfig.getDbAuditUrl() + "/" + RunConfig.getDbAuditTableName(), RunConfig.getDbAuditUserName(),
+					RunConfig.getDbUrl() + "/" + RunConfig.getDbAuditTableName(), RunConfig.getDbAuditUserName(),
 					RunConfig.getDbAuditPwd());
 			return connection;
 		} catch (Exception e) {

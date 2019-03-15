@@ -7,7 +7,8 @@
     "idType": "D",
     "reqTime": "2019-01-31T10:00:23.027+05:30",
     "matchInfos": [],
-    "bioInfos": []
+    "bioInfos": [],
+    "usageData": "0x0100000000000000"
   },
-  "ver": "$version$"
+  "ver": "1.0"
 }

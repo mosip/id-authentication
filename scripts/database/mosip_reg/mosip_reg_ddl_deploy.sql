@@ -13,7 +13,6 @@ run ddl/reg-device_type.sql
 run ddl/reg-doc_category.sql
 run ddl/reg-doc_type.sql
 run ddl/reg-gender.sql
-run ddl/reg-global_param.sql
 run ddl/reg-id_type.sql
 run ddl/reg-individual_type.sql
 run ddl/reg-key_store_DRBY.sql

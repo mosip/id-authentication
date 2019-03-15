@@ -285,7 +285,7 @@ public class SyncDataServiceTest {
 				.thenReturn(registrationCenterUserResponseDto);
 
 		MockRestServiceServer mockRestServiceServer = MockRestServiceServer.bindTo(restTemplate).build();
-		mockRestServiceServer.expect(requestTo(userDetailsUri.toString()+"/registrationclient"))
+		mockRestServiceServer.expect(requestTo(userDetailsUri.toString()))
 				.andRespond(withSuccess().body(response).contentType(MediaType.APPLICATION_JSON));
 		syncUserDetailsService.getAllUserDetail(regId);
 	}
@@ -307,7 +307,7 @@ public class SyncDataServiceTest {
 				.thenReturn(registrationCenterUserResponseDto);
 
 		MockRestServiceServer mockRestServiceServer = MockRestServiceServer.bindTo(restTemplate).build();
-		mockRestServiceServer.expect(requestTo(userDetailsUri.toString()+"/registrationclient"))
+		mockRestServiceServer.expect(requestTo(userDetailsUri.toString()))
 				.andRespond(withServerError().body(response).contentType(MediaType.APPLICATION_JSON));
 		syncUserDetailsService.getAllUserDetail(regId);
 	}
@@ -329,7 +329,7 @@ public class SyncDataServiceTest {
 				.thenReturn(registrationCenterUserResponseDto);
 
 		MockRestServiceServer mockRestServiceServer = MockRestServiceServer.bindTo(restTemplate).build();
-		mockRestServiceServer.expect(requestTo(userDetailsUri.toString()+"/registrationclient")).andRespond(withSuccess());
+		mockRestServiceServer.expect(requestTo(userDetailsUri.toString())).andRespond(withSuccess());
 		assertNull(syncUserDetailsService.getAllUserDetail(regId));
 	}
 
@@ -340,7 +340,7 @@ public class SyncDataServiceTest {
 
 		MockRestServiceServer mockRestServer = MockRestServiceServer.bindTo(restTemplate).build();
 
-		mockRestServer.expect(requestTo(builder.toString()+"/registrationclient")).andRespond(withSuccess());
+		mockRestServer.expect(requestTo(builder.toString())).andRespond(withSuccess());
 		syncRolesService.getAllRoles();
 	}
 
@@ -348,7 +348,7 @@ public class SyncDataServiceTest {
 	public void getAllRolesException() {
 
 		MockRestServiceServer mockRestServer = MockRestServiceServer.bindTo(restTemplate).build();
-		mockRestServer.expect(requestTo(builder.toString()+"/registrationclient")).andRespond(withServerError());
+		mockRestServer.expect(requestTo(builder.toString())).andRespond(withServerError());
 		syncRolesService.getAllRoles();
 	}
 
