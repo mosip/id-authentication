@@ -456,7 +456,7 @@ public class UMCValidator {
 	private boolean isDeviceMappedWithCenter(RegistrationCenterMachineDto rcmDto) throws ApisResourceAccessException {
 		boolean isDeviceMappedWithCenter = false;
 		List<FieldValue> registreredDeviceIds = identity.getCapturedRegisteredDevices();
-		if(registreredDeviceIds!=null && !registreredDeviceIds.isEmpty()) {
+
 		for (FieldValue fieldValue : registreredDeviceIds) {
 			String deviceId = null;
 			deviceId = fieldValue.getValue();
@@ -503,9 +503,7 @@ public class UMCValidator {
 				break;
 			}
 		}
-	}else {
-		isDeviceMappedWithCenter=true;
-	}
+
 		return isDeviceMappedWithCenter;
 	}
 
@@ -548,7 +546,6 @@ public class UMCValidator {
 		boolean isDeviceActive = false;
 
 		List<FieldValue> registreredDeviceIds = identity.getCapturedRegisteredDevices();
-		if(registreredDeviceIds!=null && !registreredDeviceIds.isEmpty()) {
 		for (FieldValue fieldValue : registreredDeviceIds) {
 			String deviceId = null;
 			deviceId = fieldValue.getValue();
@@ -596,10 +593,6 @@ public class UMCValidator {
 			}
 
 		}
-		
-	}else {
-		isDeviceActive=true;
-	}
 		return isDeviceActive;
 	}
 

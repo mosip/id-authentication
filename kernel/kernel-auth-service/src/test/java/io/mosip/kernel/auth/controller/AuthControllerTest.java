@@ -38,18 +38,6 @@ public class AuthControllerTest {
 	
 	//@InjectMocks
 	AuthController controller;
-	
-	private LoginUser loginUser;
-	
-	//@Before
-	public void setUp() throws Exception {
-		loginUser= new LoginUser();
-		loginUser.setUserName("individual");
-		loginUser.setPassword( "individual");
-		loginUser.setAppId("preregistration");
-		
-		
-	}
 	/**
 	 * Test method for {//@link io.mosip.kernel.auth.controller.AuthController#authenticateUseridPwd(io.mosip.kernel.auth.entities.LoginUser, javax.servlet.http.HttpServletResponse)}.
 	 * //@throws Exception 
@@ -57,8 +45,12 @@ public class AuthControllerTest {
 	//@Test
 	public void testAuthenticateUseridPwd() throws Exception {
 		AuthNResponseDto authNResponseDto = new AuthNResponseDto();
+		LoginUser loginUser= new LoginUser();
+		loginUser.setUserName("individual");
+		loginUser.setPassword( "individual");
+		loginUser.setAppId("PREREGISTRATION");
 		when(authService.authenticateUser(loginUser)).thenReturn(authNResponseDto);
-		String token = authNResponseDto.getToken();		
+		
 	}
 
 	/**
@@ -66,7 +58,7 @@ public class AuthControllerTest {
 	 */
 	//@Test
 	public void testSendOTP() {
-		
+		fail("Not yet implemented"); // TODO
 	}
 
 	/**
@@ -74,7 +66,7 @@ public class AuthControllerTest {
 	 */
 	//@Test
 	public void testUserIdOTP() {
-		
+		fail("Not yet implemented"); // TODO
 	}
 
 	/**
@@ -82,7 +74,7 @@ public class AuthControllerTest {
 	 */
 	//@Test
 	public void testClientIdSecretKey() {
-		
+		fail("Not yet implemented"); // TODO
 	}
 
 	/**
@@ -90,7 +82,7 @@ public class AuthControllerTest {
 	 */
 	//@Test
 	public void testValidateToken() {
-		
+		fail("Not yet implemented"); // TODO
 	}
 
 	/**
@@ -98,7 +90,7 @@ public class AuthControllerTest {
 	 */
 	//@Test
 	public void testRetryToken() {
-		
+		fail("Not yet implemented"); // TODO
 	}
 
 	/**
@@ -106,7 +98,7 @@ public class AuthControllerTest {
 	 */
 	//@Test
 	public void testInvalidateToken() {
-		
+		fail("Not yet implemented"); // TODO
 	}
 
 }

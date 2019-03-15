@@ -1,65 +1,13 @@
 testdata:
-  Demo_With_DateOfBirth_Authentication_Pos:
+  Valid_MockRequest_DateOfBirth_Authendication_smoke:
     input.demo-auth-request:
       demoAuthReq.idvId: $UIN$
       demoAuthReq.tspID: TSP00001
       demoAuthReq.reqTime: $TIMESTAMP$
-      demoAuthReq.txnID: $RANDOM:N:10$
     input.identity-encrypt-data:
-      identityReq.valuedob: $idrepo~$input.demo-auth-request:demoAuthReq.idvId$~inputdateOfBirth$
+      identityReq.valuedob: 15/04/1955
       identityReq.tspID: $input.demo-auth-request:demoAuthReq.tspID$
-    output.output-1-expected-y-res:
-      output.1.response.y.status: Y
-      output.1.response.y.txnID: $input.demo-auth-request:demoAuthReq.txnID$
-      output.1.response.y.resTime: $TIMESTAMP$
-      output.1.response.y.reqTime: $TIMESTAMP$
-    audit.auth_transaction:
-      txnId: $input.demo-auth-request:demoAuthReq.txnID$
-      refId: $input.demo-auth-request:demoAuthReq.idvId$
-      authTypeCode: DEMO-AUTH
-      statusCode: $output.output-1-expected-y-res:output.1.response.y.status$
-      reqTime: $FETCH$
-      resTime: $FETCH$
-      statusComment: $REGEXP:.*Demo.*Authentication.*Success.*$
-      idType: D
-    audit.audit_log:
-      refId: $input.demo-auth-request:demoAuthReq.idvId$
-      eventId: $REGEXP:.*IDA-EVT.*$
-      eventName: AUTH_REQUEST_RESPONSE
-      appId: IDA
-      appName: ID-Authentication
-      moduleName: DEMO_AUTH
-      refIdType: UIN     
-     
-  Demo_With_Invalid_DateOfBirth_Authentication_Neg:
-    input.demo-auth-request:
-      demoAuthReq.idvId: $UIN$
-      demoAuthReq.tspID: TSP00001
-      demoAuthReq.reqTime: $TIMESTAMP$
-      demoAuthReq.txnID: $RANDOM:N:10$
-    input.identity-encrypt-data:
-      identityReq.valuedob: 12/12/2012
-      identityReq.tspID: $input.demo-auth-request:demoAuthReq.tspID$
-    output.output-1-expected-n-res:
+    output.output-1-expected-n-error-res:
       output.1.response.y.status: N
-      output.1.response.y.txnID: $input.demo-auth-request:demoAuthReq.txnID$
-      output.1.response.y.resTime: $TIMESTAMP$
-      output.1.response.y.reqTime: $TIMESTAMP$
-      output.1.response.y.usageData: '0x2000000000000000'
-    audit.auth_transaction:
-      txnId: $input.demo-auth-request:demoAuthReq.txnID$
-      refId: $input.demo-auth-request:demoAuthReq.idvId$
-      authTypeCode: DEMO-AUTH
-      statusCode: $output.output-1-expected-n-res:output.1.response.y.status$
-      reqTime: $FETCH$
-      resTime: $FETCH$
-      statusComment: $REGEXP:.*Demo.*Authentication.*Failed.*$
-      idType: D
-    audit.audit_log:
-      refId: $input.demo-auth-request:demoAuthReq.idvId$
-      eventId: $REGEXP:.*IDA-EVT.*$
-      eventName: AUTH_REQUEST_RESPONSE
-      appId: IDA
-      appName: ID-Authentication
-      moduleName: DEMO_AUTH
-      refIdType: UIN
+      output.1.response.y.resTime: $IGNORE$
+     

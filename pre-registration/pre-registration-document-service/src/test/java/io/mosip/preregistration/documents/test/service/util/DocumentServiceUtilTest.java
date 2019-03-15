@@ -26,10 +26,6 @@ import io.mosip.preregistration.documents.exception.InvalidDocumnetIdExcepion;
 import io.mosip.preregistration.documents.service.util.DocumentServiceUtil;
 
 
-/**
- * @author Sanober Noor
- *@since 1.0.0
- */
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class DocumentServiceUtilTest {
@@ -44,7 +40,8 @@ public class DocumentServiceUtilTest {
 	
 	private MockMultipartFile mockMultipartFile;
 	
-	DocumentRequestDTO documentDto = new DocumentRequestDTO("48690172097498", "address", "POA", "ENG");
+	DocumentRequestDTO documentDto = new DocumentRequestDTO("48690172097498", "address", "POA", "PDF",
+			"Pending_Appointment", new Date(), "ENG", "Jagadishwari");
 	File file;
 	
 	@Before
@@ -81,6 +78,11 @@ public class DocumentServiceUtilTest {
 		serviceUtil.isValidRequest(documentDto);
 	}
 	
+	@Test(expected=InvalidRequestParameterException.class)
+	public void inValidFileFormatTest() throws Exception {
+		documentDto.setDocFileFormat(null);
+		serviceUtil.isValidRequest(documentDto);
+	}
 	
 	@Test(expected=InvalidRequestParameterException.class)
 	public void inValidDocTypeTest() throws Exception {
@@ -91,6 +93,24 @@ public class DocumentServiceUtilTest {
 	@Test(expected=InvalidRequestParameterException.class)
 	public void inValidLangCodeTest() throws Exception {
 		documentDto.setLangCode(null);
+		serviceUtil.isValidRequest(documentDto);
+	}
+	
+	@Test(expected=InvalidRequestParameterException.class)
+	public void inValidStatusCodeTest() throws Exception {
+		documentDto.setStatusCode(null);
+		serviceUtil.isValidRequest(documentDto);
+	}
+	
+	@Test(expected=InvalidRequestParameterException.class)
+	public void inValidUploadByTest() throws Exception {
+		documentDto.setUploadBy(null);
+		serviceUtil.isValidRequest(documentDto);
+	}
+	
+	@Test(expected=InvalidRequestParameterException.class)
+	public void inValidUploadDateTest() throws Exception {
+		documentDto.setUploadDateTime(null);
 		serviceUtil.isValidRequest(documentDto);
 	}
 	

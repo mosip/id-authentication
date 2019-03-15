@@ -138,7 +138,7 @@ public class MessageSenderStage extends MosipVerticleManager {
 	 * Deploy verticle.
 	 */
 	public void deployVerticle() {
-		MosipEventBus mosipEventBus = this.getEventBus(this, clusterManagerUrl);
+		MosipEventBus mosipEventBus = this.getEventBus(this.getClass(), clusterManagerUrl);
 		this.consume(mosipEventBus, MessageBusAddress.MESSAGE_SENDER_BUS);
 	}
 

@@ -51,6 +51,7 @@ public class UinServiceImpl implements UinService {
 				UriComponentsBuilder.fromHttpUrl(env.getUinGetDetailsUrl()).buildAndExpand(uriParams).toUriString(),
 				String.class);
 		String responseBody = response.getBody();
+		System.out.println(responseBody);
 		JSONObject json = new JSONObject(responseBody);
 		JSONObject res = (JSONObject) json.get("response");
 		JSONObject identity = (JSONObject) res.get("identity");

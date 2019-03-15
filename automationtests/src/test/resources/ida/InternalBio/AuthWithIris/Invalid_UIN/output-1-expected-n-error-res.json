@@ -1,1 +1,1 @@
-{"status":"N","err":[{"errorCode":"IDA-MLC-002","errorMessage":"Invalid UIN"}],"resTime":"$TIMESTAMP$","ver":"0.8"}
+{"resTime":"$TIMESTAMP$","ver":"1.0","err":[{"errorMessage":"Invalid UIN","errorCode":"IDA-MLC-002"}],"status":"N","txnID":"7404012866"}

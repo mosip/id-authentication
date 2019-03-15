@@ -27,6 +27,7 @@ public class AuthFailureHandler extends SimpleUrlAuthenticationFailureHandler  {
 	public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
 			AuthenticationException exception) throws IOException, ServletException {
 		response.sendError(401, exception.getMessage());
+
 	}
 
 }

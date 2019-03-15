@@ -27,6 +27,7 @@ public class RegistrationStatusMapUtil {
 	@Value("${registration.processor.threshold}")
 	private int threshold;
 
+
 	/**
 	 * Instantiates a new registration status map util.
 	 */
@@ -41,39 +42,33 @@ public class RegistrationStatusMapUtil {
 	 */
 	private static Map<RegistrationStatusCode, RegistrationExternalStatusCode> statusMapper() {
 
-		statusMap.put(RegistrationStatusCode.PACKET_UPLOADED_TO_VIRUS_SCAN, RegistrationExternalStatusCode.RECEIVED);
+		statusMap.put(RegistrationStatusCode.PACKET_UPLOADED_TO_VIRUS_SCAN, RegistrationExternalStatusCode.PROCESSING);
 
 		statusMap.put(RegistrationStatusCode.VIRUS_SCAN_FAILED, RegistrationExternalStatusCode.REREGISTER);
 		statusMap.put(RegistrationStatusCode.VIRUS_SCAN_SUCCESSFUL, RegistrationExternalStatusCode.PROCESSING);
 
 		statusMap.put(RegistrationStatusCode.PACKET_UPLOADED_TO_FILESYSTEM, RegistrationExternalStatusCode.PROCESSING);
-		statusMap.put(RegistrationStatusCode.PACKET_UPLOAD_TO_PACKET_STORE_FAILED,
-				RegistrationExternalStatusCode.REREGISTER);
+
+		statusMap.put(RegistrationStatusCode.PACKET_DECRYPTION_SUCCESS, RegistrationExternalStatusCode.PROCESSING);
+		statusMap.put(RegistrationStatusCode.PACKET_DECRYPTION_FAILED, RegistrationExternalStatusCode.REREGISTER);
 
 		statusMap.put(RegistrationStatusCode.STRUCTURE_VALIDATION_SUCCESS, RegistrationExternalStatusCode.PROCESSING);
 		statusMap.put(RegistrationStatusCode.STRUCTURE_VALIDATION_FAILED, RegistrationExternalStatusCode.REREGISTER);
 
+		statusMap.put(RegistrationStatusCode.PACKET_DATA_STORE_SUCCESS, RegistrationExternalStatusCode.PROCESSING);
+		statusMap.put(RegistrationStatusCode.PACKET_DATA_STORE_FAILED, RegistrationExternalStatusCode.REREGISTER);
+
 		statusMap.put(RegistrationStatusCode.PACKET_OSI_VALIDATION_SUCCESS, RegistrationExternalStatusCode.PROCESSING);
-		statusMap.put(RegistrationStatusCode.PACKET_OSI_VALIDATION_FAILED, RegistrationExternalStatusCode.REREGISTER);
+		statusMap.put(RegistrationStatusCode.PACKET_OSI_VALIDATION_FAILED, RegistrationExternalStatusCode.PROCESSING);
 
 		statusMap.put(RegistrationStatusCode.DEMO_DEDUPE_SUCCESS, RegistrationExternalStatusCode.PROCESSING);
-		statusMap.put(RegistrationStatusCode.DEMO_DEDUPE_FAILED, RegistrationExternalStatusCode.REREGISTER);
-		statusMap.put(RegistrationStatusCode.DEMO_DEDUPE_POTENTIAL_MATCH_FOUND,
-				RegistrationExternalStatusCode.PROCESSING);
+		statusMap.put(RegistrationStatusCode.DEMO_DEDUPE_FAILED, RegistrationExternalStatusCode.PROCESSING);
 
 		statusMap.put(RegistrationStatusCode.PACKET_BIO_DEDUPE_SUCCESS, RegistrationExternalStatusCode.PROCESSING);
+		statusMap.put(RegistrationStatusCode.PACKET_BIO_POTENTIAL_MATCH, RegistrationExternalStatusCode.PROCESSING);
 		statusMap.put(RegistrationStatusCode.PACKET_BIO_DEDUPE_FAILED, RegistrationExternalStatusCode.PROCESSING);
 
-		statusMap.put(RegistrationStatusCode.MANUAL_ADJUDICATION_SUCCESS, RegistrationExternalStatusCode.PROCESSING);
-		statusMap.put(RegistrationStatusCode.MANUAL_ADJUDICATION_FAILED, RegistrationExternalStatusCode.REREGISTER);
-
-		statusMap.put(RegistrationStatusCode.PACKET_UIN_UPDATION_SUCCESS, RegistrationExternalStatusCode.PROCESSED);
-		statusMap.put(RegistrationStatusCode.PACKET_UIN_UPDATION_FAILURE, RegistrationExternalStatusCode.REREGISTER);
-
-		statusMap.put(RegistrationStatusCode.PRINT_AND_POST_COMPLETED, RegistrationExternalStatusCode.PROCESSED);
-		statusMap.put(RegistrationStatusCode.NOTIFICATION_SENT_TO_RESIDENT, RegistrationExternalStatusCode.PROCESSED);
-		statusMap.put(RegistrationStatusCode.PACKET_SENT_FOR_PRINTING, RegistrationExternalStatusCode.PROCESSED);
-		statusMap.put(RegistrationStatusCode.UNABLE_TO_SENT_FOR_PRINTING, RegistrationExternalStatusCode.PROCESSED);
+		statusMap.put(RegistrationStatusCode.PACKET_UIN_GENERATION_SUCCESS, RegistrationExternalStatusCode.PROCESSED);
 
 		return unmodifiableMap;
 
@@ -81,11 +76,13 @@ public class RegistrationStatusMapUtil {
 
 	public RegistrationExternalStatusCode getExternalStatus(String statusCode, Integer retryCount) {
 		RegistrationExternalStatusCode mappedValue;
-		Map<RegistrationStatusCode, RegistrationExternalStatusCode> mapStatus = RegistrationStatusMapUtil
-				.statusMapper();
-		mappedValue = mapStatus.get(RegistrationStatusCode.valueOf(statusCode));
-		if ((retryCount < threshold) && (mappedValue.equals(RegistrationExternalStatusCode.REREGISTER))) {
+		if (retryCount < threshold) {
 			mappedValue = RegistrationExternalStatusCode.RESEND;
+		} else {
+			Map<RegistrationStatusCode, RegistrationExternalStatusCode> statusMap = RegistrationStatusMapUtil
+					.statusMapper();
+			mappedValue = statusMap.get(RegistrationStatusCode.valueOf(statusCode));
+
 		}
 		return mappedValue;
 	}

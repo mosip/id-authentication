@@ -38,7 +38,6 @@ export class HeaderComponent implements OnInit {
     localStorage.setItem('loggedIn', 'false');
     localStorage.setItem('loggedOut', 'true');
     localStorage.setItem('loggedOutLang', localStorage.getItem('langCode'));
-    this.authService.removeToken();
     console.log('logout', localStorage.getItem('loggedOutLang'));
     this.router.navigate(['/']);
   }

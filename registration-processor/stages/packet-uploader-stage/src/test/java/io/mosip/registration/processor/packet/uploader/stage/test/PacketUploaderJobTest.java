@@ -70,7 +70,7 @@ public class PacketUploaderJobTest {
 			return maxRetryCount;
 		}
 		@Override
-		public MosipEventBus getEventBus(Object verticleName, String url, int instanceNumber) {
+		public MosipEventBus getEventBus(Class<?> verticleName, String url) {
 			return null;
 		}
 

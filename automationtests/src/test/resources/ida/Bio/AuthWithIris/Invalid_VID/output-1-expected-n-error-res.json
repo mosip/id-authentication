@@ -1,1 +1,1 @@
-{"status":"N","err":[{"errorCode":"IDA-MLC-004","errorMessage":"Invalid VID"}],"resTime":"$TIMESTAMP$","ver":"0.8"}
+{"resTime":"$TIMESTAMP$","ver":"1.0","err":[{"errorMessage":"Invalid VID","errorCode":"IDA-MLC-004"}],"status":"N","txnID":"4565801633"}

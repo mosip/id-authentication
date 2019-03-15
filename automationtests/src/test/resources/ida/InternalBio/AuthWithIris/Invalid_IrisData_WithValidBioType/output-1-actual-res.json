@@ -1,1 +1,1 @@
-{"status":"N","err":[{"errorCode":"IDA-RST-007","errorMessage":"5XX - Server Error occured"}],"resTime":"2019-03-15T14:52:05.491+05:30","txnID":"0722432671","ver":"0.8"}
+{"status":"N","err":[{"errorCode":"IDA-BIA-013","errorMessage":"Invalid bioType - fgerImg"}],"txnID":"7404012866","resTime":"2019-02-17T21:36:31.530+05:30","ver":"1.0"}

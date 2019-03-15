@@ -82,7 +82,7 @@ public class VirusScannerStageTest {
 	@InjectMocks
 	private VirusScannerStage virusScannerStage = new VirusScannerStage() {
 		@Override
-		public MosipEventBus getEventBus(Object verticleName, String url, int instanceNumber) {
+		public MosipEventBus getEventBus(Class<?> verticleName, String url) {
 			return null;
 		}
 

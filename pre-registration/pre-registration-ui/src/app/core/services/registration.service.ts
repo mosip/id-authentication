@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Subject, BehaviorSubject } from 'rxjs';
 import { UserModel } from '../../shared/models/demographic-model/user.modal';
-import { DocumentTypeModel } from '../../shared/models/document-type.modal';
 
 @Injectable({
   providedIn: 'root'
@@ -14,7 +13,6 @@ export class RegistrationService {
   private users: UserModel[] = [];
   private regCenterId: string;
   sameAs = '';
-  documentCategories: DocumentTypeModel[];
 
   changeMessage(message: Object) {
     this.messageSource.next(message);
@@ -78,14 +76,5 @@ export class RegistrationService {
 
   getSameAs() {
     return this.sameAs;
-  }
-
-  setDocumentCategories(documentCategories) {
-    this.documentCategories = documentCategories;
-    // console.log('document categories', this.documentCategories);
-  }
-
-  getDocumentCategories() {
-    return this.documentCategories;
   }
 }

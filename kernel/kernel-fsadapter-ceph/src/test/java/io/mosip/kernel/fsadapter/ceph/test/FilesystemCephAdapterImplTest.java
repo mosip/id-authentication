@@ -82,9 +82,10 @@ public class FilesystemCephAdapterImplTest {
 
 		this.checkEnrolmentId = env.getProperty("mosip.kernel.fsadapter.ceph.test.check.enrolment.id");
 		this.fileExtension = env.getProperty("mosip.kernel.fsadapter.ceph.test.file.extension");
-		api = new S3Mock.Builder().withPort(6001).withInMemoryBackend().build();
+
+		api = new S3Mock.Builder().withPort(8001).withInMemoryBackend().build();
 		api.start();
-		EndpointConfiguration endpoint = new EndpointConfiguration("http://localhost:6001", "us-west-2");
+		EndpointConfiguration endpoint = new EndpointConfiguration("http://localhost:8001", "us-west-2");
 		client = AmazonS3ClientBuilder.standard().withPathStyleAccessEnabled(true).withEndpointConfiguration(endpoint)
 				.withCredentials(new AWSStaticCredentialsProvider(new AnonymousAWSCredentials())).build();
 
@@ -211,7 +212,7 @@ public class FilesystemCephAdapterImplTest {
 	 */
 	@Test(expected = FSAdapterException.class)
 	public void testStorePacketConnectionUnavailableException() {
-		EndpointConfiguration endpoint = new EndpointConfiguration("http://localhost:6001", "us-west-2");
+		EndpointConfiguration endpoint = new EndpointConfiguration("http://localhost:8001", "us-west-2");
 		AmazonS3 client1 = AmazonS3ClientBuilder.standard().withPathStyleAccessEnabled(true)
 				.withEndpointConfiguration(endpoint).withCredentials(null).build();
 

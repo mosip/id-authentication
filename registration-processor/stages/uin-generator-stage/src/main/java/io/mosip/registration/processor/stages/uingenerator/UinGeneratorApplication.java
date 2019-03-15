@@ -24,7 +24,6 @@ public class UinGeneratorApplication {
 				"io.mosip.registration.processor.stages.config",
 				"io.mosip.registration.processor.core.kernel.beans");
 
-
 		configApplicationContext.refresh();
 
 		UinGeneratorStage uinGeneratorStage = configApplicationContext.getBean(UinGeneratorStage.class);

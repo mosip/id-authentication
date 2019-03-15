@@ -1,7 +1,7 @@
 {
 	"identityRequest": {
 		"identity": {
-			"name": [
+			"fullName": [
 				{
 					"language": "fre",
 					"value": "Ibrahim Bin Ali"

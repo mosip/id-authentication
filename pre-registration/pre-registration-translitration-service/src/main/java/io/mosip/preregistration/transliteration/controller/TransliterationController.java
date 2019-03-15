@@ -47,7 +47,7 @@ public class TransliterationController {
 	 * @param requestDTO
 	 * @return responseDto with transliterated toFieldValue. 
 	 */
-	@PostMapping(path = "/transliterate", consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
+	@PostMapping(path = "/translitrate", consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Get Pre-Registartion-Translitration data")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Given key is translitrated successfully"),
 			@ApiResponse(code = 400, message = "Unable to get the translitration") })

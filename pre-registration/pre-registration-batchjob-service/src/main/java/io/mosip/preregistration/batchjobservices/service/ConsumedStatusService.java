@@ -10,7 +10,6 @@ import java.util.List;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,7 +24,7 @@ import io.mosip.preregistration.batchjobservices.entity.ProcessedPreRegEntity;
 import io.mosip.preregistration.batchjobservices.entity.RegistrationBookingEntity;
 import io.mosip.preregistration.batchjobservices.entity.RegistrationBookingEntityConsumed;
 import io.mosip.preregistration.batchjobservices.entity.RegistrationBookingPKConsumed;
-import io.mosip.preregistration.batchjobservices.exception.util.BatchServiceExceptionCatcher;
+import io.mosip.preregistration.batchjobservices.exceptions.util.BatchServiceExceptionCatcher;
 import io.mosip.preregistration.batchjobservices.repository.dao.BatchServiceDAO;
 import io.mosip.preregistration.core.code.StatusCodes;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
@@ -49,9 +48,6 @@ public class ConsumedStatusService {
 
 	/** The Constant Status comments. */
 	private static final String NEW_STATUS_COMMENTS = "Application consumed";
-	
-	@Value("${mosip.utc-datetime-pattern}")
-	private String utcDateTimePattern;
 
 	/**
 	 * Autowired reference for {@link #batchServiceDAO}
@@ -122,7 +118,7 @@ public class ConsumedStatusService {
 	}
 
 	public String getCurrentResponseTime() {
-		return DateUtils.formatDate(new Date(System.currentTimeMillis()), utcDateTimePattern);
+		return DateUtils.formatDate(new Date(System.currentTimeMillis()), "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
 	}
 
 }

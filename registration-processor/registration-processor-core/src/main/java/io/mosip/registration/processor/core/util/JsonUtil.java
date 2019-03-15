@@ -1,18 +1,9 @@
 package io.mosip.registration.processor.core.util;
 	
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
 
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.gson.JsonIOException;
 import com.google.gson.JsonObject;
@@ -56,74 +47,6 @@ public class JsonUtil {
 		} catch (Exception e) {
 			throw new UnsupportedEncodingException(PlatformErrorMessages.RPR_CMB_UNSUPPORTED_ENCODING.getMessage());
 		}
-	}
-
-	/**
-	 * Gets the JSON object.
-	 *
-	 * @param jsonObject
-	 *            the json object
-	 * @param key
-	 *            the key
-	 * @return the JSON object
-	 */
-	public static JSONObject getJSONObject(JSONObject jsonObject, Object key) {
-		LinkedHashMap identity = (LinkedHashMap) jsonObject.get(key);
-		return identity != null ? new JSONObject(identity) : null;
-	}
-
-	/**
-	 * Gets the JSON array.
-	 *
-	 * @param jsonObject
-	 *            the json object
-	 * @param key
-	 *            the key
-	 * @return the JSON array
-	 */
-	public static JSONArray getJSONArray(JSONObject jsonObject, Object key) {
-		ArrayList value = (ArrayList) jsonObject.get(key);
-		JSONArray jsonArray = new JSONArray();
-		jsonArray.addAll(value);
-
-		return jsonArray;
-
-	}
-
-	/**
-	 * Gets the JSON value.
-	 *
-	 * @param <T>
-	 *            the generic type
-	 * @param jsonObject
-	 *            the json object
-	 * @param key
-	 *            the key
-	 * @return the JSON value
-	 */
-	public static <T> T getJSONValue(JSONObject jsonObject, String key) {
-		T value = (T) jsonObject.get(key);
-		return value;
-	}
-
-	/**
-	 * Gets the JSON object.
-	 *
-	 * @param jsonObject
-	 *            the json object
-	 * @param key
-	 *            the key
-	 * @return the JSON object
-	 */
-	public static JSONObject getJSONObjectFromArray(JSONArray jsonObject, int key) {
-		LinkedHashMap identity = (LinkedHashMap) jsonObject.get(key);
-		return identity != null ? new JSONObject(identity) : null;
-	}
-
-	public static <T> T objectMapperReadValue(String jsonString, Class<?> clazz)
-			throws JsonParseException, JsonMappingException, IOException {
-		ObjectMapper objectMapper = new ObjectMapper();
-		return (T) objectMapper.readValue(jsonString, clazz);
 	}
 
 }

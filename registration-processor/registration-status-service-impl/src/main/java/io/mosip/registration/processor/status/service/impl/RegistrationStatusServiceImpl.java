@@ -10,8 +10,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Component;
 
-import com.itextpdf.text.log.SysoCounter;
-
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.registration.processor.core.code.ApiName;
@@ -280,7 +278,6 @@ public class RegistrationStatusServiceImpl
 				"", "RegistrationStatusServiceImpl::getByIds()::entry");
 		try {
 			List<String> registrationIds =new ArrayList<>();
-
 			for (RegistrationStatusSubRequestDto registrationStatusSubRequestDto : requestIds) {
 				registrationIds.add(registrationStatusSubRequestDto.getRegistrationId());
 			}
@@ -344,8 +341,11 @@ public class RegistrationStatusServiceImpl
 		registrationStatusDto.setRegistrationId(entity.getId());
 		String statusCode = entity.getStatusCode();
 		Integer retryCount = entity.getRetryCount() != null ? entity.getRetryCount() : 0;
+		// get the mapped value for the entity StatusCode
+		RegistrationExternalStatusCode mappedValue = registrationStatusMapUtil.getExternalStatus(statusCode,
+				retryCount);
 		registrationStatusDto.setRetryCount(retryCount);
-		registrationStatusDto.setStatusCode(statusCode);
+		registrationStatusDto.setStatusCode(mappedValue.toString());
 		return registrationStatusDto;
 	}
 

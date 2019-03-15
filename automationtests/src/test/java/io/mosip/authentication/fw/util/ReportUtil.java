@@ -1,23 +1,11 @@
 package io.mosip.authentication.fw.util;
 
-import java.io.File;
-import java.io.IOException;
 import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.apache.log4j.Logger;
 import org.testng.Reporter;
-
-import io.mosip.authentication.fw.dto.OutputValidationDto;
-import io.mosip.authentication.fw.precon.JsonPrecondtion;
 
 /**
  * Class to show the result in table and text area format in testng report
@@ -30,7 +18,6 @@ public class ReportUtil {
 	private static JsonPrecondtion objJsonPrecondtion = new JsonPrecondtion();
 	private static final Charset UTF_8 = Charset.forName("UTF-8");
 	private static final Charset ISO = Charset.forName("ISO-8859-1");
-	private static Logger logger = Logger.getLogger(ReportUtil.class);
 
 	/**
 	 * Method to show the output validation result in table format in testng report
@@ -80,36 +67,4 @@ public class ReportUtil {
 		sb.append("</textarea>");
 		return sb.toString();
 	}
-	
-	public void moveReport(String currentModule) {
-		Path temp = null;
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd-HHmmssSSS");
-		Calendar c = Calendar.getInstance();
-		c.setTime(new Date()); // Now use today date.
-		String date = sdf.format(c.getTime());
-		try {
-			Path sourcePath = Paths.get("test-output/" + "emailable-report.html");
-			Path DesPath = Paths.get(
-					"src/test/resources/" + "Reports" + "/" + currentModule + "-emailable-report-" + date + ".html");
-			boolean createCurrentPathStatus = new File("src/test/resources/Reports/current-build-reports").mkdirs();
-			boolean createBackupPathStatus = new File("src/test/resources/Reports/backup-build-reports").mkdirs();
-			Path currentPathWithFileName = Paths.get(
-					"src/test/resources/Reports/current-build-reports/" + currentModule + "-emailable-report.html");
-			Path backupPathWithFileName = Paths.get("src/test/resources/Reports/backup-build-reports/" + currentModule
-					+ "-emailable-report-" + date + ".html");
-			logger.info("createCurrentPathStatus---->" + createCurrentPathStatus);
-			logger.info("backupPathWithFileName---->" + backupPathWithFileName);
-			temp = Files.copy(sourcePath, currentPathWithFileName, java.nio.file.StandardCopyOption.REPLACE_EXISTING);
-			temp = Files.copy(sourcePath, backupPathWithFileName);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		if (temp != null) {
-			logger.error("File renamed and moved successfully");
-		} else {
-			logger.error("Failed to move the file");
-		}
-	}
 }
-

@@ -1,1 +1,1 @@
-{"status":"N","err":[{"errorCode":"IDA-RST-007","errorMessage":"5XX - Server Error occured"}],"resTime":"2019-03-15T14:53:06.647+05:30","txnID":"5373628220","ver":"0.8"}
+{"status":"N","err":[{"errorCode":"IDA-MLC-002","errorMessage":"Invalid UIN"}],"txnID":"7404012866","resTime":"2019-02-17T21:36:47.516+05:30","ver":"1.0"}
