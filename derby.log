@@ -1,0 +1,13 @@
+----------------------------------------------------------------
+Thu Mar 14 12:28:43 IST 2019:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.11.1.2 - (1629631): instance a816c00e-0169-7afe-f42c-000007177678 
+on database directory C:\Harsha\mosip\registration\registration-services\reg with class loader sun.misc.Launcher$AppClassLoader@66d3c617 
+Loaded from file:/C:/db/lib/derby.jar
+java.vendor=Oracle Corporation
+java.runtime.version=1.8.0_181-b13
+user.dir=C:\Harsha\mosip
+os.name=Windows 10
+os.arch=amd64
+os.version=10.0
+derby.system.home=null
+Database Class Loader started - derby.database.classpath=''
