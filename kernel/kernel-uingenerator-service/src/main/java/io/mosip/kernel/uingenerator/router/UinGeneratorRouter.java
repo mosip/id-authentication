@@ -5,10 +5,10 @@ package io.mosip.kernel.uingenerator.router;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.core.exception.ServiceError;
+import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.uingenerator.constant.UinGeneratorConstant;
 import io.mosip.kernel.uingenerator.constant.UinGeneratorErrorCode;
 import io.mosip.kernel.uingenerator.dto.UinResponseDto;
@@ -83,9 +83,9 @@ public class UinGeneratorRouter {
 		} catch (UinNotFoundException e) {
 			ServiceError error = new ServiceError(UinGeneratorErrorCode.UIN_NOT_FOUND.getErrorCode(),
 					UinGeneratorErrorCode.UIN_NOT_FOUND.getErrorMessage());
-			ErrorResponse<ServiceError> errorResponse = new ErrorResponse<>();
+			ResponseWrapper<ServiceError> errorResponse = new ResponseWrapper<>();
 			errorResponse.getErrors().add(error);
-			errorResponse.setStatus(HttpStatus.NOT_FOUND.value());
+			//errorResponse.setStatus(HttpStatus.NOT_FOUND.value());
 			routingContext.response().setStatusCode(200).end(Json.encode(errorResponse));
 		}
 	}
@@ -117,23 +117,23 @@ public class UinGeneratorRouter {
 		} catch (UinNotFoundException e) {
 			ServiceError error = new ServiceError(UinGeneratorErrorCode.UIN_NOT_FOUND.getErrorCode(),
 					UinGeneratorErrorCode.UIN_NOT_FOUND.getErrorMessage());
-			ErrorResponse<ServiceError> errorResponse = new ErrorResponse<>();
+			ResponseWrapper<ServiceError> errorResponse = new ResponseWrapper<>();
 			errorResponse.getErrors().add(error);
-			errorResponse.setStatus(HttpStatus.NOT_FOUND.value());
+			//errorResponse.setStatus(HttpStatus.NOT_FOUND.value());
 			routingContext.response().setStatusCode(200).end(Json.encode(errorResponse));
 		} catch (UinStatusNotFoundException e) {
 			ServiceError error = new ServiceError(UinGeneratorErrorCode.UIN_STATUS_NOT_FOUND.getErrorCode(),
 					UinGeneratorErrorCode.UIN_STATUS_NOT_FOUND.getErrorMessage());
-			ErrorResponse<ServiceError> errorResponse = new ErrorResponse<>();
+			ResponseWrapper<ServiceError> errorResponse = new ResponseWrapper<>();
 			errorResponse.getErrors().add(error);
-			errorResponse.setStatus(HttpStatus.NOT_FOUND.value());
+			//errorResponse.setStatus(HttpStatus.NOT_FOUND.value());
 			routingContext.response().setStatusCode(200).end(Json.encode(errorResponse));
 		} catch (UinNotIssuedException e) {
 			ServiceError error = new ServiceError(UinGeneratorErrorCode.UIN_NOT_ISSUED.getErrorCode(),
 					UinGeneratorErrorCode.UIN_NOT_ISSUED.getErrorMessage());
-			ErrorResponse<ServiceError> errorResponse = new ErrorResponse<>();
+			ResponseWrapper<ServiceError> errorResponse = new ResponseWrapper<>();
 			errorResponse.getErrors().add(error);
-			errorResponse.setStatus(HttpStatus.NOT_FOUND.value());
+			//errorResponse.setStatus(HttpStatus.NOT_FOUND.value());
 			routingContext.response().setStatusCode(200).end(Json.encode(errorResponse));
 		}
 
