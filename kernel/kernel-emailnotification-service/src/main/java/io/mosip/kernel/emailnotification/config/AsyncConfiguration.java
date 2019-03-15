@@ -12,8 +12,8 @@ import org.springframework.scheduling.annotation.AsyncConfigurer;
 import io.mosip.kernel.emailnotification.exception.EmailNotificationAsyncHandler;
 
 /**
- * Configuration class for using @Async, which allows asynchronous e-mail
- * notification.
+ * Configuration class for Request Response Filter Bean, using @Async which
+ * allows asynchronous e-mail notification.
  * 
  * @author Sagar Mahapatra
  * @author Urvil Joshi

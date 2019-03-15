@@ -18,20 +18,20 @@ public class Config {
 	/**
 	 * Bean to register RequestResponse Filter.
 	 * 
-	 * @return the bean.
+	 * @return reqResFilter.
 	 */
 	@Bean
 	public FilterRegistrationBean<Filter> registerReqResFilter() {
-		FilterRegistrationBean<Filter> filterRegistrationBean = new FilterRegistrationBean<>();
-		filterRegistrationBean.setFilter(getReqResFilter());
-		filterRegistrationBean.setOrder(1);
-		return filterRegistrationBean;
+		FilterRegistrationBean<Filter> reqResFilter = new FilterRegistrationBean<>();
+		reqResFilter.setFilter(getReqResFilter());
+		reqResFilter.setOrder(1);
+		return reqResFilter;
 	}
 
 	/**
 	 * Bean for RequestResponseFilter.
 	 * 
-	 * @return the bean.
+	 * @return reqResFilter object.
 	 */
 	@Bean
 	public Filter getReqResFilter() {
