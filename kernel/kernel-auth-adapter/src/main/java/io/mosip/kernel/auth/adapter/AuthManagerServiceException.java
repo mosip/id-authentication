@@ -1,7 +1,7 @@
 /**
  * 
  */
-package io.mosip.kernel.auth.exception;
+package io.mosip.kernel.auth.adapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +12,7 @@ import io.mosip.kernel.core.exception.ServiceError;
  * @author M1049825
  *
  */
-public class AuthManagerErrorListException extends RuntimeException{
+public class AuthManagerServiceException extends RuntimeException{
 	/**
 	 * 
 	 */
@@ -26,7 +26,7 @@ public class AuthManagerErrorListException extends RuntimeException{
 	 * @param list
 	 *            The error list.
 	 */
-	public AuthManagerErrorListException(List<ServiceError> list) {
+	public AuthManagerServiceException(List<ServiceError> list) {
 		this.list = list;
 	}
 
