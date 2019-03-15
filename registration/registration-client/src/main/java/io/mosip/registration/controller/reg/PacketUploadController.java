@@ -197,6 +197,7 @@ public class PacketUploadController extends BaseController implements Initializa
 												RegistrationClientStatusCode.UPLOADED_SUCCESSFULLY.getCode());
 										synchedPacket.setPacketServerStatus(
 												RegistrationClientStatusCode.UPLOAD_SUCCESS_STATUS.getCode());
+										synchedPacket.setPacketServerStatus(response.getSuccessResponseDTO().getMessage());
 										packetUploadList.add(synchedPacket);
 										tableMap.put(synchedPacket.getFileName(),
 												RegistrationConstants.PACKET_UPLOAD_SUCCESS);
@@ -373,6 +374,7 @@ public class PacketUploadController extends BaseController implements Initializa
 		loadInitialPage();
 	}
 
+	@SuppressWarnings("unchecked")
 	private void displayStatus(List<PacketStatusDTO> filesToDisplay) {
 		Platform.runLater(() -> {
 

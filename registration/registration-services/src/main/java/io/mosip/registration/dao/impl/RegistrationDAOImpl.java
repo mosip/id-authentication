@@ -213,7 +213,9 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 		reg.setRegistrationTransaction(buildRegistrationTransaction(reg));
 		reg.setClientStatusComments(registrationPacket.getClientStatusComments());
 		reg.setUpdDtimes(timestamp);
+		reg.setUploadCount((short)(reg.getUploadCount()+1));
 		reg.setUpdBy(SessionContext.userContext().getUserId());
+		reg.setServerStatusCode(registrationPacket.getPacketServerStatus());
 		return registrationRepository.update(reg);
 	}
 
