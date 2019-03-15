@@ -32,7 +32,7 @@ import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.packet.service.constants.RegistrationConstants;
-import io.mosip.registration.processor.packet.service.dto.PackerGeneratorResDto;
+import io.mosip.registration.processor.packet.service.dto.PacketGeneratorResDto;
 import io.mosip.registration.processor.packet.service.dto.PacketReceiverResponseDTO;
 import io.mosip.registration.processor.packet.service.dto.RegSyncResponseDTO;
 import io.mosip.registration.processor.packet.service.dto.RegistrationSyncRequestDTO;
@@ -81,9 +81,9 @@ public class SyncUploadEncryptionServiceImpl implements SyncUploadEncryptionServ
 	 * SyncUploadEncryptionService#uploadUinPacket(java.io.File, java.lang.String,
 	 * java.lang.String)
 	 */
-	public PackerGeneratorResDto uploadUinPacket(File decryptedUinZipFile, String registartionId, String creationTime)
+	public PacketGeneratorResDto uploadUinPacket(File decryptedUinZipFile, String registartionId, String creationTime)
 			throws RegBaseCheckedException {
-		PackerGeneratorResDto packerGeneratorResDto = new PackerGeneratorResDto();
+		PacketGeneratorResDto packerGeneratorResDto = new PacketGeneratorResDto();
 
 		String syncStatus = "";
 		String encryptedFilePath = "";

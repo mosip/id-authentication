@@ -1,6 +1,6 @@
 package io.mosip.registration.processor.packet.service.dto;
 
-public class PackerGeneratorFailureDto extends PackerGeneratorResDto {
+public class PackerGeneratorFailureDto extends PacketGeneratorResDto {
 
 	/**
 	 * 

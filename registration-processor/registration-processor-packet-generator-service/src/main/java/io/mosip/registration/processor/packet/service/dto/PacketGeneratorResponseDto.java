@@ -12,7 +12,7 @@ import lombok.EqualsAndHashCode;
 public class PacketGeneratorResponseDto extends BaseRestResponseDTO {
 
 	/** The response. */
-	private PackerGeneratorResDto response;
+	private PacketGeneratorResDto response;
 
 	/** The error. */
 	private List<ErrorDTO> errors;

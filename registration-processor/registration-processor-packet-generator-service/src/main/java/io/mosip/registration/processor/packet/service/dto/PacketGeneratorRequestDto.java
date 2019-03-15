@@ -12,7 +12,7 @@ import lombok.EqualsAndHashCode;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class PackerGeneratorRequestDto extends BaseRestRequestDTO {
+public class PacketGeneratorRequestDto extends BaseRestRequestDTO {
 
 	/**
 	 * 

@@ -2,7 +2,7 @@ package io.mosip.registration.processor.packet.service.dto;
 
 import java.io.Serializable;
 
-public class PackerGeneratorResDto implements Serializable {
+public class PacketGeneratorResDto implements Serializable {
 
 	/**
 	 * 
@@ -18,7 +18,7 @@ public class PackerGeneratorResDto implements Serializable {
 	/** The message. */
 	private String message;
 
-	public PackerGeneratorResDto() {
+	public PacketGeneratorResDto() {
 		super();
 	}
 

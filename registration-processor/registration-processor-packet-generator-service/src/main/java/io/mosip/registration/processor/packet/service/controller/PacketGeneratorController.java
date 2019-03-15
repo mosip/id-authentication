@@ -19,8 +19,8 @@ import com.google.gson.GsonBuilder;
 
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.registration.processor.packet.service.PacketGeneratorService;
-import io.mosip.registration.processor.packet.service.dto.PackerGeneratorRequestDto;
-import io.mosip.registration.processor.packet.service.dto.PackerGeneratorResDto;
+import io.mosip.registration.processor.packet.service.dto.PacketGeneratorRequestDto;
+import io.mosip.registration.processor.packet.service.dto.PacketGeneratorResDto;
 import io.mosip.registration.processor.packet.service.dto.PacketGeneratorResponseDto;
 import io.mosip.registration.processor.packet.service.exception.RegBaseCheckedException;
 import io.swagger.annotations.Api;
@@ -34,7 +34,7 @@ import springfox.documentation.annotations.ApiIgnore;
  */
 @RefreshScope
 @RestController
-@RequestMapping("/v0.1/registration-processor/packet-generator")
+@RequestMapping("/registration-processor")
 @Api(tags = "PacketGenerator")
 public class PacketGeneratorController {
 
@@ -65,15 +65,15 @@ public class PacketGeneratorController {
 	 * @return the status
 	 * @throws RegBaseCheckedException
 	 */
-	@PostMapping(path = "/generatePacketAndUpload", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@PostMapping(path = "/packetgenerator/v0.1", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Get the status of packet", response = String.class)
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Get the status of packet "),
 			@ApiResponse(code = 400, message = "Unable to fetch the status "),
 			@ApiResponse(code = 500, message = "Internal Server Error") })
 	public ResponseEntity<Object> getStatus(
-			@Validated @RequestBody(required = true) PackerGeneratorRequestDto packerGeneratorRequestDto,
+			@Validated @RequestBody(required = true) PacketGeneratorRequestDto packerGeneratorRequestDto,
 			@ApiIgnore Errors errors) throws RegBaseCheckedException {
-		PackerGeneratorResDto packerGeneratorResDto;
+		PacketGeneratorResDto packerGeneratorResDto;
 
 		packerGeneratorResDto = packetGeneratorService.createPacket(packerGeneratorRequestDto.getRequest());
 
@@ -88,7 +88,7 @@ public class PacketGeneratorController {
 	 *            the packer generator res dto
 	 * @return the string
 	 */
-	public String buildPacketGeneratorResponse(PackerGeneratorResDto packerGeneratorResDto) {
+	public String buildPacketGeneratorResponse(PacketGeneratorResDto packerGeneratorResDto) {
 
 		PacketGeneratorResponseDto response = new PacketGeneratorResponseDto();
 		if (Objects.isNull(response.getId())) {

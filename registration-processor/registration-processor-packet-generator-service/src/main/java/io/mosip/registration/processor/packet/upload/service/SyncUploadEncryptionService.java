@@ -2,7 +2,7 @@ package io.mosip.registration.processor.packet.upload.service;
 
 import java.io.File;
 
-import io.mosip.registration.processor.packet.service.dto.PackerGeneratorResDto;
+import io.mosip.registration.processor.packet.service.dto.PacketGeneratorResDto;
 import io.mosip.registration.processor.packet.service.exception.RegBaseCheckedException;
 
 /**
@@ -21,7 +21,7 @@ public interface SyncUploadEncryptionService {
 	 *            the creation time
 	 * @return the packer generator res dto
 	 */
-	PackerGeneratorResDto uploadUinPacket(File uinZipFile, String registrationId, String creationTime)
+	PacketGeneratorResDto uploadUinPacket(File uinZipFile, String registrationId, String creationTime)
 			throws RegBaseCheckedException;
 
 }

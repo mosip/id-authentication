@@ -28,7 +28,7 @@ import io.mosip.registration.processor.packet.service.PacketGeneratorService;
 import io.mosip.registration.processor.packet.service.dto.ErrorDTO;
 import io.mosip.registration.processor.packet.service.dto.MachineResponseDto;
 import io.mosip.registration.processor.packet.service.dto.PackerGeneratorFailureDto;
-import io.mosip.registration.processor.packet.service.dto.PackerGeneratorResDto;
+import io.mosip.registration.processor.packet.service.dto.PacketGeneratorResDto;
 import io.mosip.registration.processor.packet.service.dto.PacketGeneratorDto;
 import io.mosip.registration.processor.packet.service.dto.RegistrationCenterResponseDto;
 import io.mosip.registration.processor.packet.service.dto.RegistrationDTO;
@@ -84,9 +84,9 @@ public class PacketGeneratorServiceImpl implements PacketGeneratorService {
 	 * PacketGeneratorDto)
 	 */
 	@Override
-	public PackerGeneratorResDto createPacket(PacketGeneratorDto request) throws RegBaseCheckedException {
+	public PacketGeneratorResDto createPacket(PacketGeneratorDto request) throws RegBaseCheckedException {
 
-		PackerGeneratorResDto packerGeneratorResDto = null;
+		PacketGeneratorResDto packerGeneratorResDto = null;
 		PackerGeneratorFailureDto dto = new PackerGeneratorFailureDto();
 
 		byte[] packetZipBytes = null;
