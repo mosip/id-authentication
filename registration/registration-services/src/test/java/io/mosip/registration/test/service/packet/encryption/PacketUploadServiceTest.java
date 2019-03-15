@@ -165,6 +165,8 @@ public class PacketUploadServiceTest {
 		registration.setId("123456789");
 		registration.setAckFilename("..//registration-services/src/test/resources/123456789_Ack.png");
 		registration.setUploadCount((short) 0);
+		registration.setClientStatusCode("PUSHED");
+		registration.setFileUploadStatus("S");
 		regList.add(registration);
 
 		LinkedHashMap<String, Object> respObj = new LinkedHashMap<>();
@@ -192,8 +194,9 @@ public class PacketUploadServiceTest {
 		registration.setId("123456789");
 		registration.setAckFilename("..//registration-services/src/test/resources/123456789_Ack.png");
 		registration.setUploadCount((short) 0);
+		registration.setFileUploadStatus("E");
 		regList.add(registration);
-
+		
 		Object respObj = new Object();
 		respObj = "PACKET_FAILED_TO_UPLOAD";
 		Mockito.when(serviceDelegateUtil.post(Mockito.anyString(), Mockito.anyMap(),Mockito.anyString())).thenReturn(respObj);
@@ -276,8 +279,10 @@ public class PacketUploadServiceTest {
 		registration.setId("123456789");
 		registration.setAckFilename("..//registration-services/src/test/resources/123456789_Ack.png");
 		registration.setUploadCount((short) 0);
+		registration.setClientStatusCode("PUSHED");
+		registration.setFileUploadStatus("S");
 		regList.add(registration);
-
+		
 		LinkedHashMap<String, Object> respObj = new LinkedHashMap<>();
 		respObj.put("response", "Success");
 		respObj.put("error", null);
@@ -294,7 +299,6 @@ public class PacketUploadServiceTest {
 
 	}
 	
-	@Ignore
 	@Test
 	public void testuploadEODPackets1()
 			throws HttpClientErrorException, ResourceAccessException, SocketTimeoutException, RegBaseCheckedException {
@@ -307,6 +311,8 @@ public class PacketUploadServiceTest {
 		registration.setId("123456789");
 		registration.setAckFilename("..//registration-services/src/test/resources/123456789_Ack.png");
 		registration.setUploadCount((short) 0);
+		registration.setClientStatusCode("PUSHED");
+		registration.setFileUploadStatus("S");
 		regList.add(registration);
 
 		LinkedHashMap<String, Object> respObj = new LinkedHashMap<>();
@@ -339,6 +345,7 @@ public class PacketUploadServiceTest {
 		registration.setId("123456789");
 		registration.setAckFilename("..//registration-services/src/test/resources/123456789_Ack.png");
 		registration.setUploadCount((short) 0);
+		registration.setFileUploadStatus("E");
 		regList.add(registration);
 
 		LinkedHashMap<String, Object> respObj = new LinkedHashMap<>();

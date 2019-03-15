@@ -1086,6 +1086,10 @@ public class RegistrationConstants {
 	public static final String AUTH_EXPIRES = "Expires";
 	public static final String AUTH_MAX_AGE = "Max-Age";
 	public static final String REGISTRATION_CLIENT = "REGISTRATIONCLIENT";
+	public static final String COOKIE ="Cookie";
+	public static final String ENGLISH_LANG_CODE = "eng";
+	public static final String USER_ID_CODE = "USERID";
+	public static final String OTP_CHANNELS = "mosip.registration.otp_channels";
 
 	// Packet Sync
 	public static final String PACKET_SYNC = "packet_sync";
