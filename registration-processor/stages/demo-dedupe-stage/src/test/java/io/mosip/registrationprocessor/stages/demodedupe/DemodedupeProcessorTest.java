@@ -146,7 +146,7 @@ public class DemodedupeProcessorTest {
 		Mockito.when(manualVerficationRepository.save(any())).thenReturn(manualVerificationEntity);
 		Mockito.when(demoDedupe.performDedupe(anyString())).thenReturn(duplicateDtos);
 
-		Mockito.when(demoDedupe.authenticateDuplicates(anyString(), anyList())).thenReturn(false);
+		Mockito.when(demoDedupe.authenticateDuplicates(anyString(), anyList())).thenReturn(true);
 
 		MessageDTO messageDto = demodedupeProcessor.process(dto);
 		verify(packetInfoManager, times(1)).saveManualAdjudicationData(anyList(), anyString());
