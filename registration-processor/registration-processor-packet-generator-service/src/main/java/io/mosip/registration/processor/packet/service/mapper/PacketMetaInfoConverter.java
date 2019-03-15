@@ -5,13 +5,13 @@ import java.util.LinkedList;
 import java.util.List;
 
 import io.mosip.kernel.core.util.DateUtils;
-import io.mosip.registration.processor.packet.service.constants.RegistrationConstants;
+import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.packet.service.dto.RegistrationDTO;
 import io.mosip.registration.processor.packet.service.dto.RegistrationMetaDataDTO;
 import io.mosip.registration.processor.packet.service.dto.json.metadata.FieldValue;
 import io.mosip.registration.processor.packet.service.dto.json.metadata.Identity;
 import io.mosip.registration.processor.packet.service.dto.json.metadata.PacketMetaInfo;
-import io.mosip.registration.processor.packet.service.exception.RegBaseUncheckedException;
+import io.mosip.registration.processor.packet.service.exception.RegBaseUnCheckedException;
 import ma.glasnost.orika.CustomConverter;
 import ma.glasnost.orika.metadata.Type;
 
@@ -43,8 +43,9 @@ public class PacketMetaInfoConverter extends CustomConverter<RegistrationDTO, Pa
 			identity.setMetaData(getMetaData(source));
 
 		} catch (RuntimeException runtimeException) {
-			throw new RegBaseUncheckedException(RegistrationConstants.PACKET_META_CONVERTOR,
-					runtimeException.toString());
+			throw new RegBaseUnCheckedException(PlatformErrorMessages.RPR_PGS_PACKET_META_CONVERTOR_EXCEPTION.getCode(),
+					PlatformErrorMessages.RPR_PGS_PACKET_META_CONVERTOR_EXCEPTION.getMessage(), runtimeException);
+
 		}
 		return packetMetaInfo;
 	}

@@ -22,6 +22,7 @@ import io.mosip.registration.processor.packet.service.PacketGeneratorService;
 import io.mosip.registration.processor.packet.service.dto.PackerGeneratorRequestDto;
 import io.mosip.registration.processor.packet.service.dto.PackerGeneratorResDto;
 import io.mosip.registration.processor.packet.service.dto.PacketGeneratorResponseDto;
+import io.mosip.registration.processor.packet.service.exception.RegBaseCheckedException;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -62,6 +63,7 @@ public class PacketGeneratorController {
 	 * @param errors
 	 *            the errors
 	 * @return the status
+	 * @throws RegBaseCheckedException
 	 */
 	@PostMapping(path = "/generatePacketAndUpload", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Get the status of packet", response = String.class)
@@ -70,9 +72,11 @@ public class PacketGeneratorController {
 			@ApiResponse(code = 500, message = "Internal Server Error") })
 	public ResponseEntity<Object> getStatus(
 			@Validated @RequestBody(required = true) PackerGeneratorRequestDto packerGeneratorRequestDto,
-			@ApiIgnore Errors errors) {
-		PackerGeneratorResDto packerGeneratorResDto = packetGeneratorService
-				.createPacket(packerGeneratorRequestDto.getRequest());
+			@ApiIgnore Errors errors) throws RegBaseCheckedException {
+		PackerGeneratorResDto packerGeneratorResDto;
+
+		packerGeneratorResDto = packetGeneratorService.createPacket(packerGeneratorRequestDto.getRequest());
+
 		return ResponseEntity.ok().body(buildPacketGeneratorResponse(packerGeneratorResDto));
 
 	}

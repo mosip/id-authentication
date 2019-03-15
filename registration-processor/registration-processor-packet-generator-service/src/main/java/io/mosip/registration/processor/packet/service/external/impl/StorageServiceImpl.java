@@ -20,7 +20,6 @@ import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.packet.service.constants.RegistrationConstants;
 import io.mosip.registration.processor.packet.service.exception.RegBaseCheckedException;
-import io.mosip.registration.processor.packet.service.exception.RegBaseUncheckedException;
 import io.mosip.registration.processor.packet.service.external.StorageService;
 
 /**
@@ -84,14 +83,13 @@ public class StorageServiceImpl implements StorageService {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationId, PlatformErrorMessages.RPR_SYS_IO_EXCEPTION.getMessage()
 							+ ExceptionUtils.getStackTrace(ioException));
-			throw new RegBaseCheckedException(PlatformErrorMessages.RPR_SYS_IO_EXCEPTION.getCode(),
-					PlatformErrorMessages.RPR_SYS_IO_EXCEPTION.getMessage());
+			throw new RegBaseCheckedException(PlatformErrorMessages.RPR_SYS_IO_EXCEPTION, ioException);
 		} catch (RuntimeException runtimeException) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationId, PlatformErrorMessages.RPR_SYS_SERVER_ERROR.getMessage()
 							+ ExceptionUtils.getStackTrace(runtimeException));
-			throw new RegBaseUncheckedException(PlatformErrorMessages.RPR_SYS_SERVER_ERROR.getCode(),
-					PlatformErrorMessages.RPR_SYS_SERVER_ERROR.getMessage());
+			throw new RegBaseCheckedException(PlatformErrorMessages.RPR_SYS_SERVER_ERROR, runtimeException);
+
 		}
 
 	}

@@ -10,7 +10,6 @@ import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.FileSystemResource;
@@ -39,11 +38,7 @@ import io.mosip.registration.processor.packet.service.dto.RegSyncResponseDTO;
 import io.mosip.registration.processor.packet.service.dto.RegistrationSyncRequestDTO;
 import io.mosip.registration.processor.packet.service.dto.SyncRegistrationDTO;
 import io.mosip.registration.processor.packet.service.dto.SyncResponseDto;
-import io.mosip.registration.processor.packet.service.exception.ApisresourceAccessException;
-import io.mosip.registration.processor.packet.service.exception.FileNotAccessibleException;
-import io.mosip.registration.processor.packet.service.exception.InvalidKeyNoArgJsonException;
 import io.mosip.registration.processor.packet.service.exception.RegBaseCheckedException;
-import io.mosip.registration.processor.packet.service.exception.RegBaseUncheckedException;
 import io.mosip.registration.processor.packet.service.util.encryptor.EncryptorUtil;
 import io.mosip.registration.processor.packet.upload.service.SyncUploadEncryptionService;
 import io.mosip.registration.processor.status.code.RegistrationStatusCode;
@@ -86,7 +81,8 @@ public class SyncUploadEncryptionServiceImpl implements SyncUploadEncryptionServ
 	 * SyncUploadEncryptionService#uploadUinPacket(java.io.File, java.lang.String,
 	 * java.lang.String)
 	 */
-	public PackerGeneratorResDto uploadUinPacket(File decryptedUinZipFile, String registartionId, String creationTime) {
+	public PackerGeneratorResDto uploadUinPacket(File decryptedUinZipFile, String registartionId, String creationTime)
+			throws RegBaseCheckedException {
 		PackerGeneratorResDto packerGeneratorResDto = new PackerGeneratorResDto();
 
 		String syncStatus = "";
@@ -142,25 +138,28 @@ public class SyncUploadEncryptionServiceImpl implements SyncUploadEncryptionServ
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registartionId,
 					PlatformErrorMessages.RPR_PGS_FILE_NOT_PRESENT.getMessage() + ExceptionUtils.getStackTrace(e));
-			throw new FileNotAccessibleException(PlatformErrorMessages.RPR_PGS_FILE_NOT_PRESENT.getCode(), e);
+			throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_FILE_NOT_PRESENT, e);
 
-		} catch (InvalidKeySpecException | NoSuchAlgorithmException | JSONException | IOException e) {
+		} catch (InvalidKeySpecException | NoSuchAlgorithmException e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registartionId, PlatformErrorMessages.RPR_PGS_INVALID_KEY_ILLEGAL_ARGUMENT.getMessage()
 							+ ExceptionUtils.getStackTrace(e));
-			throw new InvalidKeyNoArgJsonException(
-					PlatformErrorMessages.RPR_PGS_INVALID_KEY_ILLEGAL_ARGUMENT.getCode());
+			throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_INVALID_KEY_ILLEGAL_ARGUMENT, e);
+		} catch (IOException e) {
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					registartionId,
+					PlatformErrorMessages.RPR_SYS_IO_EXCEPTION.getMessage() + ExceptionUtils.getStackTrace(e));
+			throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_API_RESOURCE_NOT_AVAILABLE, e);
 		} catch (ApisResourceAccessException e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registartionId, PlatformErrorMessages.RPR_PGS_API_RESOURCE_NOT_AVAILABLE.getMessage()
 							+ ExceptionUtils.getStackTrace(e));
-			throw new ApisresourceAccessException(PlatformErrorMessages.RPR_PGS_API_RESOURCE_NOT_AVAILABLE.getCode());
+			throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_API_RESOURCE_NOT_AVAILABLE, e);
 		} catch (RegBaseCheckedException e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registartionId,
 					PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION.getMessage() + ExceptionUtils.getStackTrace(e));
-			throw new RegBaseUncheckedException(PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION.getCode(),
-					PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION.getMessage());
+			throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION, e);
 		} finally {
 
 		}

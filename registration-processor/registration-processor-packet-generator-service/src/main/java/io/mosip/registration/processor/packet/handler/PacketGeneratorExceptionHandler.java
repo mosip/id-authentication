@@ -18,17 +18,14 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.registration.processor.core.common.rest.dto.ErrorDTO;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
-import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.packet.service.dto.PacketGeneratorResponseDto;
-import io.mosip.registration.processor.packet.service.exception.ApisresourceAccessException;
-import io.mosip.registration.processor.packet.service.exception.EncryptorBaseCheckedException;
-import io.mosip.registration.processor.packet.service.exception.FileNotAccessibleException;
-import io.mosip.registration.processor.packet.service.exception.InvalidKeyNoArgJsonException;
+import io.mosip.registration.processor.packet.service.exception.RegBaseCheckedException;
+import io.mosip.registration.processor.packet.service.exception.RegBaseUnCheckedException;
 
 @RestControllerAdvice
 public class PacketGeneratorExceptionHandler {
-	
+
 	@Autowired
 	private Environment env;
 
@@ -40,39 +37,28 @@ public class PacketGeneratorExceptionHandler {
 
 	/** The Constant DATETIME_PATTERN. */
 	private static final String DATETIME_PATTERN = "mosip.registration.processor.datetime.pattern";
-	
+
 	private static Logger regProcLogger = RegProcessorLogger.getLogger(PacketGeneratorExceptionHandler.class);
-	
-	@ExceptionHandler(EncryptorBaseCheckedException.class)
-        public String badrequest(EncryptorBaseCheckedException e)
-        {
-		regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),LoggerFileConstant.APPLICATIONID.toString(),PlatformErrorMessages.RPR_PGS_ENCRYPTOR_EXCEPTION.getCode(),"The exception occured while encrypting");
-		return packetGenExceptionResponse(e);
-        }	
-	@ExceptionHandler(FileNotAccessibleException.class)
-		public String badRequest(FileNotAccessibleException e)
-		{ 
-		regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),LoggerFileConstant.APPLICATIONID.toString(),PlatformErrorMessages.RPR_PGS_FILE_NOT_PRESENT.getCode(),"The required file is not present");
-		  return  packetGenExceptionResponse(e);
-		}
-	@ExceptionHandler(ApisresourceAccessException.class)
-	public String badRequest(ApisresourceAccessException e)
-	{
-		regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),LoggerFileConstant.APPLICATIONID.toString(),PlatformErrorMessages.RPR_PGS_API_RESOURCE_NOT_AVAILABLE.getCode(),"API Resource is not available");	
+
+	@ExceptionHandler(RegBaseCheckedException.class)
+	public String badrequest(RegBaseCheckedException e) {
+		regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
+				e.getErrorCode(), e.getCause().toString());
+
 		return packetGenExceptionResponse(e);
 	}
-	
-	@ExceptionHandler(InvalidKeyNoArgJsonException.class)
-	public String badRequest(InvalidKeyNoArgJsonException e)
-	{
-		regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),LoggerFileConstant.APPLICATIONID.toString(),PlatformErrorMessages.RPR_PGS_INVALID_KEY_ILLEGAL_ARGUMENT.getCode(),"The key is not valid or the argument passed is illegal");
+
+	@ExceptionHandler(RegBaseUnCheckedException.class)
+	public String badrequest(RegBaseUnCheckedException e) {
+		regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
+				e.getErrorCode(), e.getCause().toString());
+
 		return packetGenExceptionResponse(e);
 	}
-	
-	public String packetGenExceptionResponse(Exception ex) 
-	{
-		PacketGeneratorResponseDto response=new PacketGeneratorResponseDto();
-		//PackerGeneratorFailureDto dto = new PackerGeneratorFailureDto();
+
+	public String packetGenExceptionResponse(Exception ex) {
+		PacketGeneratorResponseDto response = new PacketGeneratorResponseDto();
+
 		if (Objects.isNull(response.getId())) {
 			response.setId(env.getProperty(REG_PACKET_GENERATOR_SERVICE_ID));
 		}
@@ -82,7 +68,9 @@ public class PacketGeneratorExceptionHandler {
 			List<String> errorCodes = ((BaseCheckedException) ex).getCodes();
 			List<String> errorTexts = ((BaseCheckedException) ex).getErrorTexts();
 
-			List<ErrorDTO> errors = errorTexts.parallelStream().map(errMsg -> new ErrorDTO(errorCodes.get(errorTexts.indexOf(errMsg)), errMsg)).distinct().collect(Collectors.toList());
+			List<ErrorDTO> errors = errorTexts.parallelStream()
+					.map(errMsg -> new ErrorDTO(errorCodes.get(errorTexts.indexOf(errMsg)), errMsg)).distinct()
+					.collect(Collectors.toList());
 
 			response.setErrors(errors);
 		}
@@ -102,5 +90,5 @@ public class PacketGeneratorExceptionHandler {
 		Gson gson = new GsonBuilder().create();
 		return gson.toJson(response);
 	}
-    
+
 }

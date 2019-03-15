@@ -84,17 +84,17 @@ public class PacketGeneratorServiceImpl implements PacketGeneratorService {
 	 * PacketGeneratorDto)
 	 */
 	@Override
-	public PackerGeneratorResDto createPacket(PacketGeneratorDto request) {
+	public PackerGeneratorResDto createPacket(PacketGeneratorDto request) throws RegBaseCheckedException {
 
 		PackerGeneratorResDto packerGeneratorResDto = null;
 		PackerGeneratorFailureDto dto = new PackerGeneratorFailureDto();
 
-		RegistrationDTO registrationDTO = createRegistrationDTOObject(request.getUin(), request.getRegistrationType(),
-				request.getCenterId(), request.getMachineId());
 		byte[] packetZipBytes = null;
 		if (isValidCenter(request.getCenterId(), dto) && isValidMachine(request.getMachineId(), dto)
 				&& isValidUin(request.getUin(), dto) && isValidRegistrationType(request.getRegistrationType(), dto)) {
 			try {
+				RegistrationDTO registrationDTO = createRegistrationDTOObject(request.getUin(),
+						request.getRegistrationType(), request.getCenterId(), request.getMachineId());
 				packetZipBytes = packetCreationService.create(registrationDTO);
 				String creationTime = packetCreationService.getCreationTime();
 				String filePath = storageService.storeToDisk(registrationDTO.getRegistrationId(), packetZipBytes,
@@ -105,42 +105,41 @@ public class PacketGeneratorServiceImpl implements PacketGeneratorService {
 				packerGeneratorResDto = syncUploadEncryptionService.uploadUinPacket(decryptedFile,
 						registrationDTO.getRegistrationId(), creationTime);
 				return packerGeneratorResDto;
-			} catch (RegBaseCheckedException e) {
-				dto.setErrorCode(PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION.getCode());
-				dto.setMessage(ExceptionUtils.getStackTrace(e));
-				return dto;
 			} catch (Exception e) {
 				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
-						LoggerFileConstant.REGISTRATIONID.toString(), registrationDTO.getRegistrationId(),
-						PlatformErrorMessages.RPR_PGS_JSON_PROCESSING_EXCEPTION.getMessage()
-								+ ExceptionUtils.getStackTrace(e));
-				dto.setErrorCode(PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION.getCode());
-				dto.setMessage(ExceptionUtils.getStackTrace(e));
-				return dto;
+						LoggerFileConstant.REGISTRATIONID.toString(),
+						PlatformErrorMessages.RPR_PGS_JSON_PROCESSING_EXCEPTION.getMessage(),
+						ExceptionUtils.getStackTrace(e));
+				throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION,
+						ExceptionUtils.getStackTrace(e), e);
+
 			}
 		} else {
 			return dto;
 		}
 	}
 
-	private boolean isValidRegistrationType(String registrationType, PackerGeneratorFailureDto dto) {
+	private boolean isValidRegistrationType(String registrationType, PackerGeneratorFailureDto dto)
+			throws RegBaseCheckedException {
 		if (registrationType.equals(RegistrationType.ACTIVATED.toString())
 				|| registrationType.equals(RegistrationType.DEACTIVATED.toString())) {
 			return true;
 		} else {
-			dto.setMessage("Invalid RegistrationType:Enter ACTIVATED or DEACTIVATED");
-			return false;
+
+			throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION,
+					"Invalid RegistrationType:Enter ACTIVATED or DEACTIVATED", new Throwable());
+
 		}
 
 	}
 
-	private boolean isValidUin(String uin, PackerGeneratorFailureDto dto) {
+	private boolean isValidUin(String uin, PackerGeneratorFailureDto dto) throws RegBaseCheckedException {
 		boolean isValidUIN = false;
 		try {
 			isValidUIN = uinValidatorImpl.validateId(uin);
 		} catch (InvalidIDException ex) {
-			dto.setErrorCode(PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION.getCode());
-			dto.setMessage(ex.getErrorText());
+			throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION, ex.getErrorText(), ex);
+
 		}
 		return isValidUIN;
 	}
@@ -227,8 +226,9 @@ public class PacketGeneratorServiceImpl implements PacketGeneratorService {
 	 * @param dto
 	 *            the dto
 	 * @return true, if is valid center
+	 * @throws RegBaseCheckedException
 	 */
-	private boolean isValidCenter(String centerId, PackerGeneratorFailureDto dto) {
+	private boolean isValidCenter(String centerId, PackerGeneratorFailureDto dto) throws RegBaseCheckedException {
 		boolean isValidCenter = false;
 		List<String> pathsegments = new ArrayList<>();
 		pathsegments.add(centerId);
@@ -242,8 +242,9 @@ public class PacketGeneratorServiceImpl implements PacketGeneratorService {
 				isValidCenter = true;
 			} else {
 				ErrorDTO error = rcpdto.getErrors().get(0);
-				dto.setErrorCode(PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION.getCode());
-				dto.setMessage(error.getErrorMessage());
+
+				throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION,
+						error.getErrorMessage(), new Throwable());
 			}
 
 		} catch (ApisResourceAccessException e) {
@@ -253,8 +254,8 @@ public class PacketGeneratorServiceImpl implements PacketGeneratorService {
 				Gson gsonObj = new Gson();
 				rcpdto = gsonObj.fromJson(result, RegistrationCenterResponseDto.class);
 				ErrorDTO error = rcpdto.getErrors().get(0);
-				dto.setErrorCode(PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION.getCode());
-				dto.setMessage(error.getErrorMessage());
+				throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION,
+						error.getErrorMessage(), e);
 
 			}
 
@@ -271,8 +272,9 @@ public class PacketGeneratorServiceImpl implements PacketGeneratorService {
 	 * @param dto
 	 *            the dto
 	 * @return true, if is valid machine
+	 * @throws RegBaseCheckedException
 	 */
-	private boolean isValidMachine(String machine, PackerGeneratorFailureDto dto) {
+	private boolean isValidMachine(String machine, PackerGeneratorFailureDto dto) throws RegBaseCheckedException {
 		boolean isValidMachine = false;
 		List<String> pathsegments = new ArrayList<>();
 		pathsegments.add(machine);
@@ -286,8 +288,8 @@ public class PacketGeneratorServiceImpl implements PacketGeneratorService {
 				isValidMachine = true;
 			} else {
 				ErrorDTO error = machinedto.getErrors().get(0);
-				dto.setErrorCode(error.getErrorCode());
-				dto.setMessage(error.getErrorMessage());
+				throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION,
+						error.getErrorMessage(), new Throwable());
 			}
 
 		} catch (ApisResourceAccessException e) {
@@ -297,8 +299,8 @@ public class PacketGeneratorServiceImpl implements PacketGeneratorService {
 				Gson gsonObj = new Gson();
 				machinedto = gsonObj.fromJson(result, MachineResponseDto.class);
 				ErrorDTO error = machinedto.getErrors().get(0);
-				dto.setErrorCode(error.getErrorCode());
-				dto.setMessage(error.getErrorMessage());
+				throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION,
+						error.getErrorMessage(), e);
 
 			}
 

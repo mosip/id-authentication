@@ -13,7 +13,6 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
@@ -43,7 +42,6 @@ import io.mosip.registration.processor.packet.service.dto.json.metadata.FieldVal
 import io.mosip.registration.processor.packet.service.dto.json.metadata.HashSequence;
 import io.mosip.registration.processor.packet.service.dto.json.metadata.PacketMetaInfo;
 import io.mosip.registration.processor.packet.service.exception.RegBaseCheckedException;
-import io.mosip.registration.processor.packet.service.exception.RegBaseUncheckedException;
 import io.mosip.registration.processor.packet.service.external.ZipCreationService;
 import io.mosip.registration.processor.packet.service.util.hmac.HMACGeneration;
 
@@ -65,8 +63,6 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 
 	@Autowired
 	private Environment environment;
-
-	private static Random random = new Random(5000);
 
 	private String creationTime = null;
 
@@ -175,22 +171,24 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					rid, PlatformErrorMessages.RPR_PGS_JSON_PROCESSING_EXCEPTION.getMessage()
 							+ ExceptionUtils.getStackTrace(mosipJsonProcessingException));
-			throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_JSON_PROCESSING_EXCEPTION.getCode(),
-					PlatformErrorMessages.RPR_PGS_JSON_PROCESSING_EXCEPTION.getMessage());
+			throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_JSON_PROCESSING_EXCEPTION,
+					mosipJsonProcessingException);
+
 		} catch (JsonValidationProcessingException | JsonIOException | JsonSchemaIOException
 				| FileIOException jsonValidationException) {
 
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					rid, PlatformErrorMessages.RPR_PGS_JSON_VALIDATOR_ERROR_CODE.getMessage()
 							+ ExceptionUtils.getStackTrace(jsonValidationException));
-			throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_JSON_VALIDATOR_ERROR_CODE.getCode(),
-					PlatformErrorMessages.RPR_PGS_JSON_VALIDATOR_ERROR_CODE.getMessage(), jsonValidationException);
+			throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_JSON_PROCESSING_EXCEPTION,
+					jsonValidationException);
+
 		} catch (RuntimeException runtimeException) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					rid, PlatformErrorMessages.RPR_SYS_SERVER_ERROR.getMessage()
 							+ ExceptionUtils.getStackTrace(runtimeException));
-			throw new RegBaseUncheckedException(RegistrationConstants.PACKET_CREATION_EXCEPTION,
-					runtimeException.toString());
+			throw new RegBaseCheckedException(PlatformErrorMessages.RPR_SYS_SERVER_ERROR, runtimeException);
+
 		}
 	}
 
