@@ -199,7 +199,9 @@ public enum AuditEvent {
 	// Registration Audits
 	GET_REGISTRATION_CONTROLLER("REG-EVT-138", USER_EVENT.getCode(),"GET_REGISTRATION_CONTROLLER", "Initializing the registration controller"),
 	SAVE_DETAIL_TO_DTO("REG-EVT-139", USER_EVENT.getCode(), "SAVE_DETAIL_TO_DTO", "Saving the details to DTO"),
-	MACHINE_REMAPPED("REG-EVT-139", USER_EVENT.getCode(),"CENTER_MACHINE_REMAP_SERVICE","machine is remapped to another center");
+	MACHINE_REMAPPED("REG-EVT-140", USER_EVENT.getCode(),"CENTER_MACHINE_REMAP_SERVICE","machine is remapped to another center");
+	
+	
 	
 	
 	/**
