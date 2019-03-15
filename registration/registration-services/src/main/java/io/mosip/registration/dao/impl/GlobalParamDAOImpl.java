@@ -96,4 +96,9 @@ public class GlobalParamDAOImpl implements GlobalParamDAO {
 
 		return globalParamRepository.findByNameIn(names);
 	}
+	
+	@Override
+	public List<GlobalParam> getAllEntries() {
+		return globalParamRepository.findAll();
+	}
 }
