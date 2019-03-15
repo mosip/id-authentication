@@ -805,7 +805,7 @@ public class BookingServiceTest {
 				Mockito.any(), Mockito.any())).thenThrow(new DataAccessLayerException("","",new Throwable()));
 		service.cancelBooking(cancelbookingDto);
 	}
-	@Test(expected=AppointmentReBookException.class)
+	@Test(expected=TimeSpanException.class)
 	public void cancelTimeSpanFailureTest() throws java.text.ParseException {
 		AppointmentReBookException exception=new AppointmentReBookException(ErrorCodes.PRG_BOOK_RCI_026.getCode(),ErrorMessages.BOOKING_STATUS_CANNOT_BE_ALTERED.getMessage());
 		

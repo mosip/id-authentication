@@ -59,9 +59,11 @@ export class TimeSelectionComponent implements OnInit {
   ngOnInit() {
     this.names = this.sharedService.getNameList();
     this.temp = this.sharedService.getNameList();
-    console.log(this.temp);
+    console.log('ngOninit temp', this.temp);
     this.days = this.configService.getConfigByKey('preregistration.availability.noOfDays');
-    this.registrationCenterLunchTime = this.temp[0].registrationCenter.lunchEndTime.split(':');
+    if (this.temp[0]) {
+      this.registrationCenterLunchTime = this.temp[0].registrationCenter.lunchEndTime.split(':');
+    }
     this.sharedService.resetNameList();
     this.registrationCenter = this.registrationService.getRegCenterId();
     console.log(this.registrationCenter);

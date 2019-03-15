@@ -498,7 +498,7 @@ public class UinGeneratorStage extends MosipVerticleManager {
 	 */
 	public void deployVerticle() {
 		//
-		mosipEventBus = this.getEventBus(this.getClass(), clusterManagerUrl);
+		mosipEventBus = this.getEventBus(this, clusterManagerUrl, 50);
 		this.consumeAndSend(mosipEventBus, MessageBusAddress.UIN_GENERATION_BUS_IN,
 				MessageBusAddress.UIN_GENERATION_BUS_OUT);
 

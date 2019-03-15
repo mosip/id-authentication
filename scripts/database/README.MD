@@ -1,6 +1,8 @@
-## MOSIP Database scripts execution guidelines  
+## MOSIP Database scripts execution guidelines on postgresql database. 
 
 The database objects related to MOSIP modules is stored under <mosip_home>/scripts/database/mosip_<module abbreviation> folder on git. for example, the pre-registration module script folder is <mosip_home>/scripts/database/mosip_prereg where all the scripts related to pre-registration are managed. 
+
+**Note: Please don't execute registration client scripts on postgresql database. Registration client scripts will be executed on derby database as part of registration client installation process.**
 
 ### Each database folder has the following files / folders
 
@@ -62,7 +64,9 @@ The database objects related to MOSIP modules is stored under <mosip_home>/scrip
 	-- <database_name>_dml_deploy.sql
 
 
-**To deploy the scripts on postgresql database, follow the below instructions, the below commands are sample commands for pre-registration module.**
+**To deploy the scripts on postgresql database(except registration client, mosip_reg, as this will be executed as part of registration client software installation on derby database), follow the below instructions, the below commands are sample commands for pre-registration module.**
+
+**The databases deployment can be executed in any order, there is no cross database dependencies.**
 
 * Copy the scripts (entire folder) to the machine where postgresql client software is available.
 

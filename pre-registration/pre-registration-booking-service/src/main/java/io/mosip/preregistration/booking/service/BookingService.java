@@ -226,6 +226,7 @@ public class BookingService {
 							DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 							LocalDateTime bookedDateTime = LocalDateTime.parse(str, formatter);
 
+							log.info("sessionId", "idType", "id", "In bookAppointment method of Booking Service for booking Date Time- "+bookedDateTime);
 							/* Time span check for re-book */
 							serviceUtil.timeSpanCheckForRebook(bookedDateTime);
 

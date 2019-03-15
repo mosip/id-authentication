@@ -7,6 +7,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { DataStorageService } from 'src/app/core/services/data-storage.service';
 import { NotificationDtoModel } from 'src/app/shared/models/notification-model/notification-dto.model';
 import Utils from 'src/app/app.util';
+import * as appConstants from '../../../app.constants';
 
 @Component({
   selector: 'app-acknowledgement',
@@ -173,9 +174,9 @@ export class AcknowledgementComponent implements OnInit {
         applicantNumber[0] === undefined ? null : applicantNumber[0]
         );
       console.log(notificationDto);
-      this.notificationRequest.append('NotificationDTO', JSON.stringify(notificationDto));
-      this.notificationRequest.append('langCode', localStorage.getItem('langCode'));
-      this.notificationRequest.append('file', this.fileBlob, `${user.preRegId}.pdf`);
+      this.notificationRequest.append(appConstants.notificationDtoKeys.notificationDto, JSON.stringify(notificationDto));
+      this.notificationRequest.append(appConstants.notificationDtoKeys.langCode, localStorage.getItem('langCode'));
+      this.notificationRequest.append(appConstants.notificationDtoKeys.langCode, this.fileBlob, `${user.preRegId}.pdf`);
       this.dataStorageService.sendNotification(this.notificationRequest).subscribe(response => {
         console.log(response);
         this.notificationRequest = new FormData();
