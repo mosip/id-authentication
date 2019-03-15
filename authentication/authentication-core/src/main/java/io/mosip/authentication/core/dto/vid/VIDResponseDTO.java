@@ -27,7 +27,7 @@ public class VIDResponseDTO {
 	private String responseTime;
 
 	/** The error. */
-	private List<AuthError> error;
+	private List<AuthError> errors;
 
 	private ResponseDTO response;
 
