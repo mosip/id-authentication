@@ -11,7 +11,7 @@ package io.mosip.authentication.core.constant;
  */
 public enum IdAuthenticationErrorConstants {
 
-	INVALID_UIN("IDA-MLC-002", "Invalid UIN", "A0101"),
+	INVALID_UIN("IDA-MLC-002", "Invalid UIN", "A0102"),
 	UIN_DEACTIVATED("IDA-MLC-003", "UIN has been deactivated", "A0102"),
 	INVALID_VID("IDA-MLC-004", "Invalid VID", "A0103"), 
 	EXPIRED_VID("IDA-MLC-005", "Expired VID", "A0104"),
