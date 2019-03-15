@@ -10,10 +10,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.mosip.kernel.core.http.RequestWrapper;
+import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.keymanagerservice.dto.PublicKeyResponse;
 import io.mosip.kernel.keymanagerservice.dto.SymmetricKeyRequestDto;
 import io.mosip.kernel.keymanagerservice.dto.SymmetricKeyResponseDto;
@@ -31,7 +32,6 @@ import io.swagger.annotations.ApiParam;
  */
 @CrossOrigin
 @RestController
-@RequestMapping("/v1.0")
 @Api(tags = { "keymanager" }, value = "Operation related to Keymanagement")
 public class KeymanagerController {
 
@@ -52,11 +52,13 @@ public class KeymanagerController {
 	 *            Reference id of the application requesting publicKey
 	 * @return {@link PublicKeyResponse} instance
 	 */
-	@ApiOperation(value = "Get the public key of a particular application",response = PublicKeyResponse.class)
+	@ResponseFilter
+	@ApiOperation(value = "Get the public key of a particular application", response = PublicKeyResponse.class)
 	@GetMapping(value = "/publickey/{applicationId}")
-	public ResponseEntity<PublicKeyResponse<String>> getPublicKey(@ApiParam("Id of application")@PathVariable("applicationId") String applicationId,
-			@ApiParam("Timestamp as metadata")	@RequestParam("timeStamp") String timeStamp,
-			@ApiParam("Refrence Id as metadata")@RequestParam("referenceId") Optional<String> referenceId) {
+	public ResponseEntity<PublicKeyResponse<String>> getPublicKey(
+			@ApiParam("Id of application") @PathVariable("applicationId") String applicationId,
+			@ApiParam("Timestamp as metadata") @RequestParam("timeStamp") String timeStamp,
+			@ApiParam("Refrence Id as metadata") @RequestParam("referenceId") Optional<String> referenceId) {
 
 		return new ResponseEntity<>(keymanagerService.getPublicKey(applicationId, timeStamp, referenceId),
 				HttpStatus.OK);
@@ -70,11 +72,13 @@ public class KeymanagerController {
 	 * 
 	 * @return {@link SymmetricKeyResponseDto} symmetricKeyResponseDto
 	 */
-	@ApiOperation(value = "Decrypt the encrypted Data",response = SymmetricKeyResponseDto.class)
+	@ResponseFilter
+	@ApiOperation(value = "Decrypt the encrypted Data", response = SymmetricKeyResponseDto.class)
 	@PostMapping(value = "/decrypt")
-	public ResponseEntity<SymmetricKeyResponseDto> decryptSymmetricKey(@ApiParam("Data to decrypt in BASE64 encoding with meta-data")
-			@RequestBody SymmetricKeyRequestDto symmetricKeyRequestDto) {
+	public ResponseEntity<SymmetricKeyResponseDto> decryptSymmetricKey(
+			@ApiParam("Data to decrypt in BASE64 encoding with meta-data") @RequestBody RequestWrapper<SymmetricKeyRequestDto> symmetricKeyRequestDto) {
 
-		return new ResponseEntity<>(keymanagerService.decryptSymmetricKey(symmetricKeyRequestDto), HttpStatus.OK);
+		return new ResponseEntity<>(keymanagerService.decryptSymmetricKey(symmetricKeyRequestDto.getRequest()),
+				HttpStatus.OK);
 	}
 }
