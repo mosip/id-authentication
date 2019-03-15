@@ -17,8 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import io.mosip.kernel.core.fsadapter.exception.FSAdapterException;
 import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
 import io.mosip.kernel.core.jsonvalidator.model.ValidationReport;
@@ -170,12 +168,6 @@ public class PacketValidateProcessor {
 				List<Document> documentList = null;
 				if (isSchemaValidated.isValid()) {
 
-					String getIdentityJsonString = Utilities.getJson(utility.getConfigServerFileStorageURL(),
-							utility.getGetRegProcessorIdentityJson());
-					ObjectMapper mapIdentityJsonStringToObject = new ObjectMapper();
-					regProcessorIdentityJson = mapIdentityJsonStringToObject.readValue(getIdentityJsonString,
-							RegistrationProcessorIdentity.class);
-
 					FilesValidation filesValidation = new FilesValidation(adapter, registrationStatusDto);
 					isFilesValidated = filesValidation.filesValidation(registrationId, packetMetaInfo.getIdentity());
 
@@ -208,7 +200,7 @@ public class PacketValidateProcessor {
 
 					}
 				}
-				if (!isSchemaValidated.isValid() && isFilesValidated && isCheckSumValidated
+				if (isSchemaValidated.isValid() && isFilesValidated && isCheckSumValidated
 						&& isApplicantDocumentValidation && isMasterDataValidated) {
 					object.setIsValid(Boolean.TRUE);
 					registrationStatusDto.setStatusComment(StatusMessage.PACKET_STRUCTURAL_VALIDATION_SUCCESS);
