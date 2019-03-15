@@ -95,12 +95,10 @@ public class KeyManager {
 					.map(String::valueOf);
 			if (encryptedSessionKey.isPresent()) {
 				byte[] encyptedSessionkey = Base64.decodeBase64(encryptedSessionKey.get());// remove key attribute from
-																							// auth request
 				RestRequestDTO restRequestDTO = null;
 				CryptomanagerRequestDto cryptoManagerRequestDto = new CryptomanagerRequestDto();
 				CryptomanagerResponseDto cryptomanagerResponseDto = null;
 				String decryptedData = null;
-
 				try {
 					cryptoManagerRequestDto.setApplicationId(appId);
 					cryptoManagerRequestDto.setReferenceId(environment.getProperty("mosip.ida.publickey"));
@@ -144,8 +142,7 @@ public class KeyManager {
 					throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
 				}
 
-				request = mapper.readValue(decryptedData, new TypeReference<Map<String, Object>>() {
-				});
+				request = mapper.readValue(decryptedData.getBytes("UTF-8"),Map.class);
 			}
 		} catch (IOException e) {
 			logger.error(SESSION_ID, this.getClass().getSimpleName(), "requestData", e.getMessage());
