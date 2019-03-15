@@ -1408,10 +1408,10 @@ public class DemographicDetailController extends BaseController {
 				}
 			}
 			saveDetail();
-			/*
-			 * SessionContext.map().put("demographicDetail", false);
-			 * SessionContext.map().put("documentScan", true);
-			 */
+
+			/*SessionContext.map().put("demographicDetail", false);
+			SessionContext.map().put("documentScan", true);*/
+
 			documentScanController.populateDocumentCategories();
 
 			auditFactory.audit(AuditEvent.REG_DEMO_NEXT, Components.REG_DEMO_DETAILS, SessionContext.userId(),
@@ -1426,10 +1426,10 @@ public class DemographicDetailController extends BaseController {
 					updateUINMethodFlow();
 				}
 				registrationController.showUINUpdateCurrentPage();
+			} else {
+				registrationController.showCurrentPage(RegistrationConstants.DEMOGRAPHIC_DETAIL,
+						getPageDetails(RegistrationConstants.DEMOGRAPHIC_DETAIL, RegistrationConstants.NEXT));
 			}
-		} else {
-			registrationController.showCurrentPage(RegistrationConstants.DEMOGRAPHIC_DETAIL,
-					getPageDetails(RegistrationConstants.DEMOGRAPHIC_DETAIL, RegistrationConstants.NEXT));
 		}
 	}
 
