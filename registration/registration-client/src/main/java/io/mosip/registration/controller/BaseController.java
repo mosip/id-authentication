@@ -816,16 +816,16 @@ public class BaseController {
 		Boolean isRemapped = centerMachineReMapService.isMachineRemapped();
 		if (isRemapped) {
 
-			String message = "You can not perform this operation as this Machine has been remapped to another center\n";
+			String message = RegistrationUIConstants.REMAP_NO_ACCESS_MESSAGE;
 
 			if (isPacketsPendingForEOD()) {
-				message += "Please Complete the EOD process for all the packets\n";
+				message += "\n" + RegistrationUIConstants.REMAP_EOD_PROCESS_MESSAGE;
 			}
-			message += "Click OK to continue the Remap process";
+			message += "\n" + RegistrationUIConstants.REMAP_CLICK_OK;
 			generateAlert(RegistrationConstants.INFO, message);
 
 			packetHandlerController.reMapProgressIndicator.progressProperty().bind(service.progressProperty());
-			
+
 			if (!service.isRunning())
 				service.start();
 
@@ -834,7 +834,7 @@ public class BaseController {
 				public void handle(WorkerStateEvent t) {
 					service.reset();
 					packetHandlerController.reMapProgressIndicator.setVisible(false);
-					generateAlert(RegistrationConstants.INFO, "Remap Process Completed");
+					generateAlert(RegistrationConstants.INFO, RegistrationUIConstants.REMAP_PROCESS_SUCCESS);
 
 				}
 			});
