@@ -22,7 +22,7 @@ import io.mosip.kernel.otpmanager.dto.OtpValidatorResponseDto;
 @CrossOrigin
 public class OtpValidatorController {
 	/**
-	 * The reference that autowires the OtpValidatorService class.
+	 * Autowired reference for {@link OtpValidator}.
 	 */
 	@Autowired
 	OtpValidator<ResponseEntity<OtpValidatorResponseDto>> otpValidatorService;

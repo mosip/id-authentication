@@ -1,4 +1,4 @@
-package io.mosip.kernel.lkeymanager.config;
+package io.mosip.kernel.cryptomanager.config;
 
 import javax.servlet.Filter;
 
@@ -6,11 +6,9 @@ import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-
 /**
- * Config class with beans for modelmapper and request logging
+ * Config class with beans for keymanager service and request logging
  * 
- * @author Dharmesh Khandelwal
  * @author Bal Vikash Sharma
  * @since 1.0.0
  *
@@ -32,3 +30,4 @@ public class Config {
 		return new ReqResFilter();
 	}
 }
+

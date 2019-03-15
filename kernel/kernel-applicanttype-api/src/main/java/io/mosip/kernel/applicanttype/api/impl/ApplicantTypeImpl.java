@@ -81,7 +81,7 @@ public class ApplicantTypeImpl implements ApplicantType {
 		Integer age = null;
 		try {
 			age = calculateAge(dob);
-			if (age == null || age <= 0) {
+			if (age == null || age < 0) {
 				throw new InvalidApplicantArgumentException(
 						ApplicantTypeErrorCode.INVALID_QUERY_EXCEPTION.getErrorCode(),
 						ApplicantTypeErrorCode.INVALID_QUERY_EXCEPTION.getErrorMessage());
@@ -93,11 +93,14 @@ public class ApplicantTypeImpl implements ApplicantType {
 					ApplicantTypeErrorCode.INVALID_DATE_STRING_EXCEPTION.getErrorMessage());
 		}
 
-		String ageCode = CHILD;
+		String ageCode = null;
 
 		try {
 			if (age >= Integer.parseInt(ageLimit)) {
 				ageCode = ADULT;
+			}
+			if (age >= 0 && age < Integer.parseInt(ageLimit)) {
+				ageCode = CHILD;
 			}
 		} catch (NumberFormatException e) {
 			LOGGER.error("Error while setting age code");
@@ -106,15 +109,14 @@ public class ApplicantTypeImpl implements ApplicantType {
 		}
 
 		// check and return the applicant id
-		return validateAndReturnApplicantType(itc, genderType, isBioExPresent, ageCode);
+		return findApplicantType(itc, genderType, isBioExPresent, ageCode);
 	}
 
 	private boolean isNullEmpty(String str) {
 		return str == null || str.trim().length() <= 0;
 	}
 
-	private String validateAndReturnApplicantType(String itc, String genderType, boolean isBioExPresent,
-			String ageCode) {
+	private String findApplicantType(String itc, String genderType, boolean isBioExPresent, String ageCode) {
 		if (itc.equals(FOREIGNER) && genderType.equals(MALE) && ageCode.equals(CHILD) && !isBioExPresent) {
 			// 1
 			return "001";
@@ -183,10 +185,10 @@ public class ApplicantTypeImpl implements ApplicantType {
 	}
 
 	private int calculateAge(String dob) {
-		int age = 0;
+		int age = -1;
 		LocalDate birthDate = LocalDateTime.parse(dob, DateTimeFormatter.ofPattern(UTC_DATETIME_PATTERN)).toLocalDate();
 		LocalDate currentDate = LocalDate.now();
-		if (birthDate != null && currentDate != null) {
+		if (!birthDate.isAfter(currentDate) && birthDate != null && currentDate != null) {
 			age = Period.between(birthDate, currentDate).getYears();
 		}
 		return age;

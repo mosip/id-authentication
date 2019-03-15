@@ -1,7 +1,7 @@
 package io.mosip.kernel.applicanttype.dto.request;
 
-import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.List;
 
 import javax.validation.constraints.NotNull;
 
@@ -16,15 +16,12 @@ import lombok.Data;
  *
  */
 @Data
-public class RequestDTO implements Serializable {
-
-	private static final long serialVersionUID = -7906333665452736312L;
-
+public class RequestDTO {
 	private String id;
 	private String ver;
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
-	private LocalDateTime timestamp;
+	private LocalDateTime requestTime;
 	@NotNull
-	private KeyValues request;
+	private List<KeyValues<String, Object>> attributes;
 
 }

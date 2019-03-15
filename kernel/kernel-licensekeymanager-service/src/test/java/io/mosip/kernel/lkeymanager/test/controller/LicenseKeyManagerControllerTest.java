@@ -87,6 +87,6 @@ public class LicenseKeyManagerControllerTest {
 		given(service.fetchLicenseKeyPermissions(Mockito.any(), Mockito.any())).willReturn(listPermissions);
 		mockMvc.perform(get("/license/permission?licenseKey=fqELcNGoaEeuuJAs&tspId=TSPID")
 				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
-				.andExpect(jsonPath("$.permissions[0]", is("PERMISSION1")));
+				.andExpect(jsonPath("$.response.permissions[0]", is("PERMISSION1")));
 	}
 }

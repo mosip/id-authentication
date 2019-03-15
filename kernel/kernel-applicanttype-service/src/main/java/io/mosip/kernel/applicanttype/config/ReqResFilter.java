@@ -1,4 +1,4 @@
-package io.mosip.kernel.otpmanager.config;
+package io.mosip.kernel.applicanttype.config;
 
 import java.io.IOException;
 
@@ -14,20 +14,17 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.web.util.ContentCachingRequestWrapper;
 import org.springframework.web.util.ContentCachingResponseWrapper;
 
-import io.mosip.kernel.core.logger.spi.Logger;
-
 /**
- * Request Response Filter class that implements {@link Filter}.
+ * This class is for input logging of all parameters in HTTP requests
  * 
- * @author Sagar Mahapatra
- * @since 1.0.0
+ * @author Bal Vikash Sharma
  *
  */
 public class ReqResFilter implements Filter {
 
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException {
-		// over-ridden method
+		// init method overriding
 	}
 
 	@Override
@@ -49,8 +46,7 @@ public class ReqResFilter implements Filter {
 			responseWrapper.copyBodyToResponse();
 
 		} catch (Exception e) {
-			Logger mosipLogger = LoggerConfiguration.logConfig(ReqResFilter.class);
-			mosipLogger.error("", "", "", e.getMessage());
+			System.err.println(e);
 		}
 	}
 

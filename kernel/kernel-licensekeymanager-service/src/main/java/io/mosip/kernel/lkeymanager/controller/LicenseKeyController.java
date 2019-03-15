@@ -40,8 +40,8 @@ public class LicenseKeyController {
 	 * This method will generate license key against a certain TSP ID.
 	 * 
 	 * @param licenseKeyGenerationDto
-	 *            the LicenseKeyGenerationResponseDto request object wrapped
-	 *            in {@link RequestWrapper}.
+	 *            the LicenseKeyGenerationResponseDto request object wrapped in
+	 *            {@link RequestWrapper}.
 	 * @return the response entity.
 	 */
 	@ResponseFilter
@@ -78,6 +78,7 @@ public class LicenseKeyController {
 	 *            the license key of which the permissions need to be fetched.
 	 * @return the permissions fetched.
 	 */
+	@ResponseFilter
 	@GetMapping(value = "/license/permission")
 	public ResponseEntity<LicenseKeyFetchResponseDto> fetchLicenseKeyPermissions(@RequestParam("tspId") String tspId,
 			@RequestParam("licenseKey") String licenseKey) {

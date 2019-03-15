@@ -16,11 +16,10 @@ import lombok.Data;
 @Data
 public class ResponseDTO {
 
-
-	/*private String id;
+	private String id;
 	private String ver;
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
-	private LocalDateTime timestamp;*/
+	private LocalDateTime responseTime;
 	@NotNull
 	private ApplicantTypeCodeDTO response;
 
