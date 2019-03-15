@@ -81,8 +81,8 @@ public class DocumentServiceUtil {
 	/**
 	 * Reference for ${file.extension} from property file
 	 */
-	@Value("${file.extension}")
-	private String fileExtension;
+	@Value("${preregistration.document.extention}")
+	private List<String> fileExtension;
 	
 	@Value("${mosip.utc-datetime-pattern}")
 	private String utcDateTimePattern;
@@ -218,11 +218,11 @@ public class DocumentServiceUtil {
 
 	/**
 	 * @return defined document extension.
-	 */
+	 *//*
 	public String getFileExtension() {
 		log.info("sessionId", "idType", "id", "In getFileExtension method of document service util");
 		return this.fileExtension;
-	}
+	}*/
 
 	public String getCurrentResponseTime() {
 		log.info("sessionId", "idType", "id", "In getCurrentResponseTime method of document service util");
@@ -315,7 +315,7 @@ public class DocumentServiceUtil {
 	 */
 	public boolean fileExtensionCheck(MultipartFile file) {
 		log.info("sessionId", "idType", "id", "In fileExtensionCheck method of document service util");
-		if (file.getOriginalFilename().toUpperCase().endsWith(getFileExtension())) {
+		if (fileExtension.contains(FilenameUtils.getExtension(file.getOriginalFilename()).toUpperCase())) {
 			return true;
 		} else {
 			throw new DocumentNotValidException(ErrorCodes.PRG_PAM_DOC_004.toString(),

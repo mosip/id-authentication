@@ -13,7 +13,7 @@ import { AuthService } from 'src/app/auth/auth.service';
 import { RegistrationService } from 'src/app/core/services/registration.service';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
-fdescribe('DialougComponent', () => {
+describe('DialougComponent', () => {
   let component: DialougComponent;
   let fixture: ComponentFixture<DialougComponent>;
   let data = {case: "MESSAGE"};

@@ -11,27 +11,27 @@ export default class Utils {
   }
 
   static getURL(currentURL: string, nextRoute: string, numberofPop = 1) {
-    const urlSegments = currentURL.split('/');
-    for (let index = 0; index < numberofPop; index++) {
-      urlSegments.pop();
+    if (currentURL) {
+      const urlSegments = currentURL.split('/');
+      for (let index = 0; index < numberofPop; index++) {
+        urlSegments.pop();
+      }
+      urlSegments.push(nextRoute);
+      const url = urlSegments.join('/');
+      return url;
     }
-    urlSegments.push(nextRoute);
-    const url = urlSegments.join('/');
-    console.log(url);
-
-    return url;
   }
 
   static getBookingDateTime(appointment_date: string, time_slot_from: string) {
     const date = appointment_date.split('-');
-              let appointmentDateTime = date[2] + ' ' + appConstants.MONTHS[Number(date[1])] + ', ' + date[0];
-              const time = time_slot_from.split(':');
-              appointmentDateTime +=
-                ', ' +
-                (Number(time[0]) > 12 ? Number(time[0]) - 12 : Number(time[0])) +
-                ':' +
-                time[1] +
-                (Number(time[0]) > 12 ? ' PM' : ' AM');
-                return appointmentDateTime;
+    let appointmentDateTime = date[2] + ' ' + appConstants.MONTHS[Number(date[1])] + ', ' + date[0];
+    const time = time_slot_from.split(':');
+    appointmentDateTime +=
+      ', ' +
+      (Number(time[0]) > 12 ? Number(time[0]) - 12 : Number(time[0])) +
+      ':' +
+      time[1] +
+      (Number(time[0]) > 12 ? ' PM' : ' AM');
+    return appointmentDateTime;
   }
 }

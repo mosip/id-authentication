@@ -221,16 +221,13 @@ export class DataStorageService {
   }
 
   getApplicantType(docuemntCategoryDto) {
-    return this.httpClient.get(this.APPLICANNT_TYPE_URL, {
-      params: new HttpParams().append('dto', docuemntCategoryDto)
-    });
+    return this.httpClient.post(this.APPLICANNT_TYPE_URL, docuemntCategoryDto);
   }
 
   getDocumentCategories(applicantCode) {
     this.APPLICANT_VALID_DOCUMENTS_URL = this.APPLICANT_VALID_DOCUMENTS_URL + applicantCode + '/languages';
-    return this.httpClient.post(this.APPLICANT_VALID_DOCUMENTS_URL, {
+    return this.httpClient.get(this.APPLICANT_VALID_DOCUMENTS_URL, {
       params: new HttpParams().append('languages', localStorage.getItem('langCode'))
-      // params: new HttpParams().append('languages', 'eng')
     });
   }
 

@@ -73,7 +73,6 @@ export class FileUploadComponent implements OnInit {
   ngOnInit() {
     // const arr = this.router.url.split('/');
     // this.loginId = arr[2];
-    this.getApplicantTypeID();
     // this.getDocumentCategories();
     this.loginId = this.registration.getLoginId();
     this.getAllApplicants();
@@ -113,6 +112,7 @@ export class FileUploadComponent implements OnInit {
 
     console.log('users', this.users);
 
+    this.getApplicantTypeID();
     if (this.users[0].files[0].length != 0) {
       // this.sortUserFiles();
       this.viewFirstFile();
@@ -120,9 +120,22 @@ export class FileUploadComponent implements OnInit {
   }
 
   async getApplicantTypeID() {
-    await this.dataStroage.getApplicantType(appConstants.DOCUMENT_CATEGORY_DTO).subscribe(response => {
+    let DOCUMENT_CATEGORY_DTO = appConstants.DOCUMENT_CATEGORY_DTO;
+    let re = /\//g;
+    let DOB = this.users[0].request.demographicDetails.identity.dateOfBirth;
+    if (this.users[0].request.demographicDetails.identity.residenceStatus[0].value === 'national') {
+      DOCUMENT_CATEGORY_DTO.attributes[0].value = 'NFR';
+    }
+    DOCUMENT_CATEGORY_DTO.attributes[2].value = this.users[0].request.demographicDetails.identity.gender[0].value;
+    // DOB = DOB + 'T11:46:12.640Z';
+    // DOB.replace('1', '-');
+
+    DOCUMENT_CATEGORY_DTO.attributes[1].value = DOB.replace(/\//g, '-') + 'T11:46:12.640Z';
+    console.log('document catergory dto', DOCUMENT_CATEGORY_DTO);
+
+    await this.dataStroage.getApplicantType(DOCUMENT_CATEGORY_DTO).subscribe(response => {
       console.log('response from applicant type', response);
-      this.getDocumentCategories(response['response'].applicationtypecode);
+      this.getDocumentCategories(response['response'].applicantTypeCode);
       this.setApplicantType(response);
     });
   }

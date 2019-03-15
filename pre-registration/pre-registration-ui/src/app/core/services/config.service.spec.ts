@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 
 import { ConfigService } from './config.service';
 
-fdescribe('ConfigService', () => {
+describe('ConfigService', () => {
   beforeEach(() => TestBed.configureTestingModule({}));
 
   it('should be created', () => {
