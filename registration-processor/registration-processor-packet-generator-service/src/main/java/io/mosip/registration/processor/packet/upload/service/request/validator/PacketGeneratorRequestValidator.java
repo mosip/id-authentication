@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.TimeZone;
 import java.util.regex.Pattern;
+
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
@@ -13,6 +14,7 @@ import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
+
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
@@ -21,6 +23,7 @@ import io.mosip.registration.processor.packet.service.dto.PacketGeneratorRequest
 
 /**
  * The Class PacketGeneratorRequestValidator.
+ * 
  * @author Rishabh Keshari
  */
 @Component
@@ -55,35 +58,37 @@ public class PacketGeneratorRequestValidator implements Validator {
 	private Environment env;
 
 	/** The id. */
-	private Map<String, String> id=new HashMap<>();
+	private Map<String, String> id = new HashMap<>();
 
-	
-
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.springframework.validation.Validator#supports(java.lang.Class)
 	 */
 	@Override
 	public boolean supports(Class<?> clazz) {
-			id.put("status", "mosip.registration.status");
-			return clazz.isAssignableFrom(PacketGeneratorRequestDto.class);
-		
+		id.put("status", "mosip.registration.processor.registration.packetgenerator.id");
+		return clazz.isAssignableFrom(PacketGeneratorRequestDto.class);
+
 	}
 
-	
-	/* (non-Javadoc)
-	 * @see org.springframework.validation.Validator#validate(java.lang.Object, org.springframework.validation.Errors)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.springframework.validation.Validator#validate(java.lang.Object,
+	 * org.springframework.validation.Errors)
 	 */
 	@Override
 	public void validate(@NonNull Object target, Errors errors) {
 		PacketGeneratorRequestDto request = (PacketGeneratorRequestDto) target;
-		
+
 		validateReqTime(request.getRequesttime(), errors);
 
 		if (!errors.hasErrors()) {
 			validateId(request.getId(), errors);
 			validateVersion(request.getVersion(), errors);
 		}
-		
+
 	}
 
 	/**
@@ -122,7 +127,6 @@ public class PacketGeneratorRequestValidator implements Validator {
 		}
 	}
 
-	
 	/**
 	 * Validate req time.
 	 *
@@ -156,6 +160,5 @@ public class PacketGeneratorRequestValidator implements Validator {
 			}
 		}
 	}
-
 
 }
