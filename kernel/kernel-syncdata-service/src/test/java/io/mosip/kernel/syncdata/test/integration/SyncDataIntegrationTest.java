@@ -23,7 +23,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.dao.DataRetrievalFailureException;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import io.mosip.kernel.syncdata.entity.ApplicantValidDocument;
@@ -113,6 +115,7 @@ import io.mosip.kernel.syncdata.repository.TemplateRepository;
 import io.mosip.kernel.syncdata.repository.TemplateTypeRepository;
 import io.mosip.kernel.syncdata.repository.TitleRepository;
 import io.mosip.kernel.syncdata.repository.ValidDocumentRepository;
+import io.mosip.kernel.syncdata.service.SyncConfigDetailsService;
 
 @SpringBootTest
 @RunWith(SpringRunner.class)
@@ -235,6 +238,10 @@ public class SyncDataIntegrationTest {
 	private RegistrationCenterDeviceHistoryRepository registrationCenterDeviceHistoryRepository;
 	@MockBean
 	private RegistrationCenterMachineHistoryRepository registrationCenterMachineHistoryRepository;
+	
+	@Autowired
+	private SyncConfigDetailsService syncConfigDetailsService;
+	
 
 	/*
 	 * @MockBean private RestTemplate restTemplateM;
@@ -618,6 +625,7 @@ public class SyncDataIntegrationTest {
 
 	@Test
 	public void testGetConfig() throws Exception {
+		ReflectionTestUtils.setField(syncConfigDetailsService, "globalConfigFileName", "mosip.kernel.syncdata.global-config-file");
 		when(restTemplate.getForObject(Mockito.anyString(), Mockito.any()))
 				.thenReturn(JSON_REGISTRATION_CONFIG_RESPONSE);
 		when(restTemplate.getForObject(Mockito.anyString(), Mockito.any())).thenReturn(JSON_GLOBAL_CONFIG_RESPONSE);
@@ -626,14 +634,35 @@ public class SyncDataIntegrationTest {
 
 	@Test
 	public void testGlobalConfig() throws Exception {
+		ReflectionTestUtils.setField(syncConfigDetailsService, "globalConfigFileName", "mosip.kernel.syncdata.global-config-file");
 		when(restTemplate.getForObject(Mockito.anyString(), Mockito.any()))
 				.thenReturn(JSON_REGISTRATION_CONFIG_RESPONSE);
 		when(restTemplate.getForObject(Mockito.anyString(), Mockito.any())).thenReturn(JSON_GLOBAL_CONFIG_RESPONSE);
 		mockMvc.perform(get("/v1.0/globalconfigs")).andExpect(status().isOk());
 	}
+	
+	@Test
+	public void testGlobalConfigExceptionTest() throws Exception {
+		ReflectionTestUtils.setField(syncConfigDetailsService, "globalConfigFileName", null);
+		when(restTemplate.getForObject(Mockito.anyString(), Mockito.any()))
+				.thenReturn(JSON_REGISTRATION_CONFIG_RESPONSE);
+
+		when(restTemplate.getForObject(Mockito.anyString(), Mockito.any())).thenReturn(JSON_GLOBAL_CONFIG_RESPONSE);
+		mockMvc.perform(get("/v1.0/globalconfigs")).andExpect(status().isInternalServerError());
+	}
+	@Test
+	public void testGlobalConfigServiceExceptionTest() throws Exception {
+		ReflectionTestUtils.setField(syncConfigDetailsService, "globalConfigFileName",  "mosip.kernel.syncdata.global-config-file");
+		when(restTemplate.getForObject(Mockito.anyString(), Mockito.any()))
+				.thenThrow(HttpServerErrorException.class);
+
+		
+		mockMvc.perform(get("/v1.0/globalconfigs")).andExpect(status().isInternalServerError());
+	}
 
 	@Test
 	public void testRegistrationConfig() throws Exception {
+		
 		when(restTemplate.getForObject(Mockito.anyString(), Mockito.any()))
 				.thenReturn(JSON_REGISTRATION_CONFIG_RESPONSE);
 		when(restTemplate.getForObject(Mockito.anyString(), Mockito.any()))

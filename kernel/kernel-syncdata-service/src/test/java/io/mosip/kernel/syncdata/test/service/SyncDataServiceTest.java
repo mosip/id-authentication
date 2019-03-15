@@ -201,60 +201,7 @@ public class SyncDataServiceTest {
 
 	}
 
-	//@Test(expected = SyncDataServiceException.class)
-	public void syncDataFailure() throws InterruptedException, ExecutionException {
-		Machine machine = new Machine();
-		machine.setId("10001");
-		machine.setLangCode("eng");
-		List<Machine> machines = new ArrayList<>();
-		machines.add(machine);
-		
-		when(masterDataServiceHelper.getMachines(Mockito.anyString(), Mockito.any(), Mockito.any()))
-				.thenThrow(SyncDataServiceException.class);
-		masterDataService.syncData("1001", null, null,null,null);
-
-	}
-
-	// @Test
-	public void globalConfigsyncSuccess() {
-
-		MockRestServiceServer server = MockRestServiceServer.bindTo(restTemplate).build();
-		server.expect(requestTo(uriBuilder.append(globalConfigFileName).toString())).andRespond(withSuccess());
-		syncConfigDetailsService.getGlobalConfigDetails();
-
-	}
-
-	// @Test
-	public void registrationConfigsyncSuccess() {
-		MockRestServiceServer server = MockRestServiceServer.bindTo(restTemplate).build();
-		server.expect(requestTo(uriBuilder.append(regCenterfileName).toString())).andRespond(withSuccess());
-		syncConfigDetailsService.getRegistrationCenterConfigDetails("1");
-		// Assert.assertEquals(120, jsonObject.get("fingerprintQualityThreshold"));
-	}
-
-	@Test(expected = SyncDataServiceException.class)
-	public void registrationConfigsyncFailure() {
-
-		MockRestServiceServer server = MockRestServiceServer.bindTo(restTemplate).build();
-		server.expect(requestTo(uriBuilder.append(regCenterfileName).toString())).andRespond(withBadRequest());
-		syncConfigDetailsService.getRegistrationCenterConfigDetails("1");
-	}
-
-	@Test(expected = SyncDataServiceException.class)
-	public void globalConfigsyncFailure() {
-
-		MockRestServiceServer server = MockRestServiceServer.bindTo(restTemplate).build();
-		server.expect(requestTo(uriBuilder.append(globalConfigFileName).toString())).andRespond(withBadRequest());
-		syncConfigDetailsService.getGlobalConfigDetails();
-	}
-
-	@Test(expected = SyncDataServiceException.class)
-	public void globalConfigsyncFileNameNullFailure() {
-
-		MockRestServiceServer server = MockRestServiceServer.bindTo(restTemplate).build();
-		server.expect(requestTo(uriBuilder.append(globalConfigFileName).toString())).andRespond(withBadRequest());
-		syncConfigDetailsService.getGlobalConfigDetails();
-	}
+	
 
 	// @Test
 	public void getConfigurationSuccess() {
