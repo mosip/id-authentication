@@ -157,12 +157,18 @@ public class DocumentScanController extends BaseController {
 	
 	@Autowired
 	private ApplicantType applicantTypeService;
+	
+	@FXML
+	private Label registrationNavlabel;
 
 	@FXML
 	private void initialize() {
 		LOGGER.info(RegistrationConstants.DOCUMNET_SCAN_CONTROLLER, APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Entering the LOGIN_CONTROLLER");
 		try {
+			if (getRegistrationDTOFromSession()!=null && getRegistrationDTOFromSession().getSelectionListDTO() != null) {
+				registrationNavlabel.setText(RegistrationConstants.UIN_NAV_LABEL);
+			}
 			switchedOnForBiometricException = new SimpleBooleanProperty(false);
 			toggleFunctionForBiometricException();
 
@@ -189,23 +195,22 @@ public class DocumentScanController extends BaseController {
 			gender = demographicDetailController.getSelectedGenderCode();
 		}
 		String dateOfBirth = identityDto.getDateOfBirth();
-		SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy/MM/dd");
-		SimpleDateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
-		Date date = inputFormat.parse(dateOfBirth);
-		String formattedDob = outputFormat.format(date);
 		String individualType = null;
 		if (demographicDetailController.getSelectedNationalityCode() != null) {
 			individualType = demographicDetailController.getSelectedNationalityCode();
 		}
 		if (gender != null && dateOfBirth != null && individualType != null) {
+			SimpleDateFormat inputFormat = new SimpleDateFormat(RegistrationConstants.ATTR_FORINGER_DOB_PARSING);
+			SimpleDateFormat outputFormat = new SimpleDateFormat(RegistrationConstants.ATTR_FORINGER_DOB_FORMAT);
+			Date date = inputFormat.parse(dateOfBirth);
+			String formattedDob = outputFormat.format(date);
 			Map<String, Object> applicantTypeMap = new HashMap<>();
 			applicantTypeMap.put(RegistrationConstants.ATTR_INDIVIDUAL_TYPE, individualType);
 			applicantTypeMap.put(RegistrationConstants.ATTR_DATE_OF_BIRTH, formattedDob);
 			applicantTypeMap.put(RegistrationConstants.ATTR_GENDER_TYPE, gender);
 			applicantType = applicantTypeService.getApplicantType(applicantTypeMap);
 			getRegistrationDTOFromSession().getRegistrationMetaDataDTO().setApplicantTypeCode(applicantType);
-		}
-		else {
+		}		else {
 			/* TODO - to be removed after the clarification of UIN update */
 			applicantType = "007";
 			getRegistrationDTOFromSession().getRegistrationMetaDataDTO().setApplicantTypeCode(null);
@@ -893,13 +898,11 @@ public class DocumentScanController extends BaseController {
 		}
 
 		if (getRegistrationDTOFromSession().getSelectionListDTO().isBiometricException()) {
-			bioExceptionToggleLabel1.setId(RegistrationConstants.SECOND_TOGGLE_LABEL);
-			bioExceptionToggleLabel2.setId(RegistrationConstants.FIRST_TOGGLE_LABEL);
+			switchedOnForBiometricException.setValue(true);
 			toggleBiometricException = true;
 			SessionContext.userMap().put(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION, toggleBiometricException);
 		} else {
-			bioExceptionToggleLabel1.setId(RegistrationConstants.FIRST_TOGGLE_LABEL);
-			bioExceptionToggleLabel2.setId(RegistrationConstants.SECOND_TOGGLE_LABEL);
+			switchedOnForBiometricException.setValue(false);
 			toggleBiometricException = false;
 			SessionContext.userMap().put(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION, toggleBiometricException);
 			faceCaptureController.clearExceptionImage();
@@ -920,7 +923,7 @@ public class DocumentScanController extends BaseController {
 
 		if (getRegistrationDTOFromSession().getSelectionListDTO() != null) {
 			SessionContext.map().put("documentScan", false);
-			updateUINMethod();
+			updateUINMethodFlow();
 			registrationController.showUINUpdateCurrentPage();
 		} else {
 			registrationController.showCurrentPage(RegistrationConstants.DOCUMENT_SCAN,
@@ -938,7 +941,7 @@ public class DocumentScanController extends BaseController {
 		if (getRegistrationDTOFromSession().getSelectionListDTO() != null) {
 			if (registrationController.validateDemographicPane(documentScanPane)) {
 				SessionContext.map().put("documentScan", false);
-				updateUINMethod();
+				updateUINMethodFlow();
 
 				registrationController.showUINUpdateCurrentPage();
 
@@ -956,31 +959,6 @@ public class DocumentScanController extends BaseController {
 			}
 		}
 
-	}
-
-	private void updateUINMethod() {
-		if ((Boolean) SessionContext.userContext().getUserMap().get(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION)
-				|| getRegistrationDTOFromSession().getSelectionListDTO().isBiometricException()
-						&& (Boolean) SessionContext.userContext().getUserMap()
-								.get(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION)) {
-			SessionContext.map().put("biometricException", true);
-		} else if (getRegistrationDTOFromSession().getSelectionListDTO().isBiometricFingerprint()
-				&& !getRegistrationDTOFromSession().getSelectionListDTO().isBiometricException()
-				|| getRegistrationDTOFromSession().getSelectionListDTO().isBiometricFingerprint()
-						&& getRegistrationDTOFromSession().getSelectionListDTO().isBiometricException()
-						&& !(Boolean) SessionContext.userContext().getUserMap()
-								.get(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION)) {
-			SessionContext.map().put("fingerPrintCapture", true);
-		} else if (getRegistrationDTOFromSession().getSelectionListDTO().isBiometricIris()
-				&& !getRegistrationDTOFromSession().getSelectionListDTO().isBiometricException()
-				|| getRegistrationDTOFromSession().getSelectionListDTO().isBiometricIris()
-						&& getRegistrationDTOFromSession().getSelectionListDTO().isBiometricException()
-						&& !(Boolean) SessionContext.userContext().getUserMap()
-								.get(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION)) {
-			SessionContext.map().put("irisCapture", true);
-		} else {
-			SessionContext.map().put("faceCapture", true);
-		}
 	}
 
 }

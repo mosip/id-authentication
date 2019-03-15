@@ -115,7 +115,7 @@ public class RegPacketStatusServiceImpl extends BaseService implements RegPacket
 	}
 
 	@Override
-	public void deletePacketsWhenMachineRemapped() {
+	public void deleteAllProcessedRegPackets() {
 
 		LOGGER.info("REGISTRATION - DELETE-PACKETS-WHEN-MACHINE-REMAPPED - REG_PACKET_STATUS_SERVICE", APPLICATION_NAME,
 				APPLICATION_ID, "packet deletion when the machine ios remapped is started");

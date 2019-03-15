@@ -207,7 +207,8 @@ public class RegistrationConstants {
 	public static final String UIN_UPDATE_NAME = "name";
 	public static final String UIN_UPDATE_AGE = "age";
 	public static final String UIN_UPDATE_ADDRESS = "address";
-	public static final String UIN_UPDATE_CONTACT_DETAILS = "contactDetails";
+	public static final String UIN_UPDATE_PHONE = "phone";
+	public static final String UIN_UPDATE_EMAIL = "email";
 	public static final String UIN_UPDATE_FOREIGNER = "foreigner";
 	public static final String UIN_UPDATE_GENDER = "gender";
 	public static final String UIN_UPDATE_PARENT_DETAILS = "parentOrGuardianDetails";
@@ -1146,5 +1147,7 @@ public class RegistrationConstants {
 	public static final String ATTR_GENDER_TYPE = "genderCode";
 	public static final String ATTR_NON_FORINGER = "NFR";
 	public static final String ATTR_FORINGER = "FR";
+	public static final String ATTR_FORINGER_DOB_PARSING="yyyy/MM/dd";
+	public static final String ATTR_FORINGER_DOB_FORMAT="yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
 
 }

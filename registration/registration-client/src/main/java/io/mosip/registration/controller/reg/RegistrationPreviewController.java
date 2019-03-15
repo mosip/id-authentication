@@ -7,8 +7,10 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
 import java.io.Writer;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ResourceBundle;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -32,11 +34,13 @@ import io.mosip.registration.service.template.TemplateService;
 import io.mosip.registration.util.acktemplate.TemplateGenerator;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.control.CheckBox;
+import javafx.scene.text.Text;
 import javafx.scene.web.WebView;
 
 @Controller
-public class RegistrationPreviewController extends BaseController {
+public class RegistrationPreviewController extends BaseController implements Initializable {
 
 	private static final Logger LOGGER = AppConfig.getLogger(RegistrationPreviewController.class);
 
@@ -57,14 +61,58 @@ public class RegistrationPreviewController extends BaseController {
 
 	@Autowired
 	private RegistrationController registrationController;
+	
+	@FXML
+	private Text registrationNavlabel;
 
+	@Override
+	public void initialize(URL arg0, ResourceBundle arg1) {
+		if (getRegistrationDTOFromSession()!=null && getRegistrationDTOFromSession().getSelectionListDTO() != null) {
+			registrationNavlabel.setText(RegistrationConstants.UIN_NAV_LABEL);
+		}		
+	}
+	
 	@FXML
 	public void goToPrevPage(ActionEvent event) {
 		auditFactory.audit(AuditEvent.REG_PREVIEW_BACK, Components.REG_PREVIEW, SessionContext.userId(),
 				AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
+		if (getRegistrationDTOFromSession().getSelectionListDTO() != null) {
+			SessionContext.map().put("registrationPreview", false);
 
-		registrationController.showCurrentPage(RegistrationConstants.REGISTRATION_PREVIEW,
-				getPageDetails(RegistrationConstants.REGISTRATION_PREVIEW, RegistrationConstants.PREVIOUS));
+			updateUINFlowMethod();
+
+			registrationController.showUINUpdateCurrentPage();
+		} else {
+			registrationController.showCurrentPage(RegistrationConstants.REGISTRATION_PREVIEW,
+					getPageDetails(RegistrationConstants.REGISTRATION_PREVIEW, RegistrationConstants.PREVIOUS));
+		}
+	}
+
+	private void updateUINFlowMethod() {
+	
+		long fingerPrintCount = getRegistrationDTOFromSession().getBiometricDTO().getApplicantBiometricDTO()
+				.getBiometricExceptionDTO().stream()
+				.filter(bio -> bio.getBiometricType().equalsIgnoreCase("fingerprint")).count();
+
+		long irisCount = getRegistrationDTOFromSession().getBiometricDTO().getApplicantBiometricDTO()
+				.getBiometricExceptionDTO().stream()
+				.filter(bio -> bio.getBiometricType().equalsIgnoreCase(RegistrationConstants.IRIS)).count();
+
+		if (!RegistrationConstants.DISABLE.equalsIgnoreCase(
+				String.valueOf(ApplicationContext.map().get(RegistrationConstants.FACE_DISABLE_FLAG)))) {
+			SessionContext.getInstance().getMapObject().put("faceCapture", true);
+		} else if (getRegistrationDTOFromSession().getSelectionListDTO().isBiometricIris()
+				|| fingerPrintCount > 0 ) {
+			SessionContext.map().put("irisCapture", true);
+		} else if (getRegistrationDTOFromSession().getSelectionListDTO().isBiometricFingerprint()
+				|| irisCount > 0 ) {
+			SessionContext.map().put("fingerPrintCapture", true);
+		} else if (!RegistrationConstants.DISABLE.equalsIgnoreCase(
+				String.valueOf(ApplicationContext.map().get(RegistrationConstants.DOC_DISABLE_FLAG)))) {
+			SessionContext.map().put("documentScan", true);
+		} else {
+			SessionContext.map().put("demographicDetail", true);
+		}
 	}
 
 	@FXML
@@ -101,7 +149,7 @@ public class RegistrationPreviewController extends BaseController {
 		templateContent.append(templateService.getHtmlTemplate(ACKNOWLEDGEMENT_TEMPLATE_PART_2, platformLanguageCode));
 		templateContent.append(templateService.getHtmlTemplate(ACKNOWLEDGEMENT_TEMPLATE_PART_3, platformLanguageCode));
 		String ackTemplateText = templateContent.toString();
-		
+
 		if (ackTemplateText != null && !ackTemplateText.isEmpty()) {
 			ResponseDTO templateResponse = templateGenerator.generateTemplate(ackTemplateText,
 					getRegistrationDTOFromSession(), templateManagerBuilder, RegistrationConstants.TEMPLATE_PREVIEW);
@@ -163,8 +211,14 @@ public class RegistrationPreviewController extends BaseController {
 				AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
 
 		SessionContext.map().put(RegistrationConstants.REGISTRATION_ISEDIT, true);
-		registrationController.showCurrentPage(RegistrationConstants.REGISTRATION_PREVIEW,
-				RegistrationConstants.DEMOGRAPHIC_DETAIL);
+		if (getRegistrationDTOFromSession().getSelectionListDTO() != null) {
+			SessionContext.map().put("registrationPreview", false);
+			SessionContext.map().put("demographicDetail", true);
+			registrationController.showUINUpdateCurrentPage();
+		} else {
+			registrationController.showCurrentPage(RegistrationConstants.REGISTRATION_PREVIEW,
+					RegistrationConstants.DEMOGRAPHIC_DETAIL);
+		}
 	}
 
 	public void modifyDocuments() {
@@ -175,8 +229,19 @@ public class RegistrationPreviewController extends BaseController {
 				AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
 
 		SessionContext.map().put(RegistrationConstants.REGISTRATION_ISEDIT, true);
-		registrationController.showCurrentPage(RegistrationConstants.REGISTRATION_PREVIEW,
-				RegistrationConstants.DOCUMENT_SCAN);
+		if (getRegistrationDTOFromSession().getSelectionListDTO() != null) {
+			SessionContext.map().put("registrationPreview", false);
+			if (!RegistrationConstants.DISABLE.equalsIgnoreCase(
+					String.valueOf(ApplicationContext.map().get(RegistrationConstants.DOC_DISABLE_FLAG)))) {
+				SessionContext.map().put("documentScan", true);
+			} else {
+				SessionContext.map().put("registrationPreview", true);
+			}
+			registrationController.showUINUpdateCurrentPage();
+		} else {
+			registrationController.showCurrentPage(RegistrationConstants.REGISTRATION_PREVIEW,
+					RegistrationConstants.DOCUMENT_SCAN);
+		}
 	}
 
 	public void modifyBiometrics() {
@@ -187,7 +252,34 @@ public class RegistrationPreviewController extends BaseController {
 				AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
 
 		SessionContext.map().put(RegistrationConstants.REGISTRATION_ISEDIT, true);
-		registrationController.showCurrentPage(RegistrationConstants.REGISTRATION_PREVIEW,
-				RegistrationConstants.FINGERPRINT_CAPTURE);
+		if (getRegistrationDTOFromSession().getSelectionListDTO() != null) {
+			SessionContext.map().put("registrationPreview", false);
+
+			long fingerPrintCount = getRegistrationDTOFromSession().getBiometricDTO().getApplicantBiometricDTO()
+					.getBiometricExceptionDTO().stream()
+					.filter(bio -> bio.getBiometricType().equalsIgnoreCase("fingerprint")).count();
+
+			long irisCount = getRegistrationDTOFromSession().getBiometricDTO().getApplicantBiometricDTO()
+					.getBiometricExceptionDTO().stream()
+					.filter(bio -> bio.getBiometricType().equalsIgnoreCase(RegistrationConstants.IRIS)).count();
+
+			if (getRegistrationDTOFromSession().getSelectionListDTO().isBiometricFingerprint()
+					|| fingerPrintCount > 0) {
+				SessionContext.map().put("fingerPrintCapture", true);
+			} else if (!getRegistrationDTOFromSession().getSelectionListDTO().isBiometricFingerprint()
+					&& getRegistrationDTOFromSession().getSelectionListDTO().isBiometricIris() || irisCount>0) {
+				SessionContext.map().put("irisCapture", true);
+			} else if (!RegistrationConstants.DISABLE.equalsIgnoreCase(
+					String.valueOf(ApplicationContext.map().get(RegistrationConstants.FACE_DISABLE_FLAG)))) {
+				SessionContext.map().put("faceCapture", true);
+			} else {
+				SessionContext.map().put("registrationPreview", true);
+			}
+			registrationController.showUINUpdateCurrentPage();
+		} else {
+			registrationController.showCurrentPage(RegistrationConstants.REGISTRATION_PREVIEW,
+					RegistrationConstants.FINGERPRINT_CAPTURE);
+		}
+
 	}
 }

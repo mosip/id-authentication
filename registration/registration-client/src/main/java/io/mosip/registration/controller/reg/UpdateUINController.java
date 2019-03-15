@@ -6,6 +6,7 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -50,13 +51,14 @@ public class UpdateUINController extends BaseController implements Initializable
 
 	private static final List<String> UIN_UPDATE_CONFIGURED_DEMOGRAPHIC_FIELDS_LIST = Arrays.asList(
 			RegistrationConstants.UIN_UPDATE_NAME, RegistrationConstants.UIN_UPDATE_AGE,
-			RegistrationConstants.UIN_UPDATE_GENDER, RegistrationConstants.UIN_UPDATE_ADDRESS,
-			RegistrationConstants.UIN_UPDATE_CONTACT_DETAILS, RegistrationConstants.UIN_UPDATE_PARENT_DETAILS,
-			RegistrationConstants.UIN_UPDATE_FOREIGNER);
+			RegistrationConstants.UIN_UPDATE_FOREIGNER, RegistrationConstants.UIN_UPDATE_GENDER,
+			RegistrationConstants.UIN_UPDATE_ADDRESS, RegistrationConstants.UIN_UPDATE_PHONE,
+			RegistrationConstants.UIN_UPDATE_EMAIL);
 
 	private static final List<String> UIN_UPDATE_CONFIGURED_BIO_FIELDS_LIST = Arrays.asList(
+			RegistrationConstants.UIN_UPDATE_CNIE_NUMBER, RegistrationConstants.UIN_UPDATE_PARENT_DETAILS,
 			RegistrationConstants.UIN_UPDATE_BIO_EXCEPTION, RegistrationConstants.UIN_UPDATE_BIO_FP,
-			RegistrationConstants.UIN_UPDATE_BIO_IRIS, RegistrationConstants.UIN_UPDATE_CNIE_NUMBER);
+			RegistrationConstants.UIN_UPDATE_BIO_IRIS);
 
 	private static final Logger LOGGER = AppConfig.getLogger(UpdateUINController.class);
 
@@ -74,7 +76,9 @@ public class UpdateUINController extends BaseController implements Initializable
 	@FXML
 	private CheckBox address;
 	@FXML
-	private CheckBox contactDetails;
+	private CheckBox phone;
+	@FXML
+	private CheckBox email;
 	@FXML
 	private CheckBox biometricException;
 	@FXML
@@ -128,18 +132,22 @@ public class UpdateUINController extends BaseController implements Initializable
 			SessionContext.map().put(RegistrationConstants.IS_CONSOLIDATED, RegistrationConstants.DISABLE);
 			fxUtils.validateOnType(uinUpdateRoot, uinId, validation);
 			biometricBox.getChildren().forEach(bio -> {
-				if (RegistrationConstants.DISABLE.equalsIgnoreCase(String.valueOf(ApplicationContext.map().get(RegistrationConstants.FINGERPRINT_DISABLE_FLAG)))
+				if (RegistrationConstants.DISABLE.equalsIgnoreCase(
+						String.valueOf(ApplicationContext.map().get(RegistrationConstants.FINGERPRINT_DISABLE_FLAG)))
 						&& RegistrationConstants.UIN_UPDATE_BIO_FP.equalsIgnoreCase(bio.getId())) {
 					bio.setVisible(false);
 					bio.setManaged(false);
 				}
-				if (RegistrationConstants.DISABLE.equalsIgnoreCase(String.valueOf(ApplicationContext.map().get(RegistrationConstants.IRIS_DISABLE_FLAG)))
+				if (RegistrationConstants.DISABLE.equalsIgnoreCase(
+						String.valueOf(ApplicationContext.map().get(RegistrationConstants.IRIS_DISABLE_FLAG)))
 						&& RegistrationConstants.UIN_UPDATE_BIO_IRIS.equalsIgnoreCase(bio.getId())) {
 					bio.setVisible(false);
 					bio.setManaged(false);
 				}
-				if (RegistrationConstants.DISABLE.equalsIgnoreCase(String.valueOf(ApplicationContext.map().get(RegistrationConstants.FINGERPRINT_DISABLE_FLAG)))
-						&& RegistrationConstants.DISABLE.equalsIgnoreCase(String.valueOf(ApplicationContext.map().get(RegistrationConstants.IRIS_DISABLE_FLAG)))
+				if (RegistrationConstants.DISABLE.equalsIgnoreCase(
+						String.valueOf(ApplicationContext.map().get(RegistrationConstants.FINGERPRINT_DISABLE_FLAG)))
+						&& RegistrationConstants.DISABLE.equalsIgnoreCase(
+								String.valueOf(ApplicationContext.map().get(RegistrationConstants.IRIS_DISABLE_FLAG)))
 						&& RegistrationConstants.UIN_UPDATE_BIO_EXCEPTION.equalsIgnoreCase(bio.getId())) {
 					bio.setVisible(false);
 					bio.setManaged(false);
@@ -157,24 +165,16 @@ public class UpdateUINController extends BaseController implements Initializable
 	 * Update UIN fields configuration.
 	 */
 	private void updateUINFieldsConfiguration() {
+
 		List<String> configuredFieldsfromDB = Arrays.asList(
 				String.valueOf(ApplicationContext.map().get(RegistrationConstants.UIN_UPDATE_CONFIG_FIELDS_FROM_DB))
 						.split(","));
 
-		for (String configureField : UIN_UPDATE_CONFIGURED_DEMOGRAPHIC_FIELDS_LIST) {
-			if (!configuredFieldsfromDB.contains(configureField)) {
-				demographicHBox.getChildren().forEach(demographicNode -> {
-					if (demographicNode.getId().equalsIgnoreCase(configureField)) {
-						demographicNode.setVisible(false);
-						demographicNode.setManaged(false);
-					}
-				});
-			}
-
-		}
+		List<String> configvalues = new ArrayList<>();
+		configvalues.addAll(configuredFieldsfromDB);
 
 		for (String configureField : UIN_UPDATE_CONFIGURED_BIO_FIELDS_LIST) {
-			if (!configuredFieldsfromDB.contains(configureField)) {
+			if (!configvalues.contains(configureField)) {
 				biometricBox.getChildren().forEach(demographicNode -> {
 					if (demographicNode.getId().equalsIgnoreCase(configureField)) {
 						demographicNode.setVisible(false);
@@ -184,17 +184,50 @@ public class UpdateUINController extends BaseController implements Initializable
 			} else {
 				biometricBox.getChildren().forEach(demographicNode -> {
 					if (demographicNode.getId().equalsIgnoreCase(RegistrationConstants.UIN_UPDATE_BIO_FP)
-							&& RegistrationConstants.DISABLE.equalsIgnoreCase(String.valueOf(ApplicationContext.map().get(RegistrationConstants.FINGERPRINT_DISABLE_FLAG)))
+							&& RegistrationConstants.DISABLE.equalsIgnoreCase(String.valueOf(
+									ApplicationContext.map().get(RegistrationConstants.FINGERPRINT_DISABLE_FLAG)))
 							|| demographicNode.getId().equalsIgnoreCase(RegistrationConstants.UIN_UPDATE_BIO_IRIS)
-									&& RegistrationConstants.DISABLE.equalsIgnoreCase(String.valueOf(ApplicationContext.map().get(RegistrationConstants.IRIS_DISABLE_FLAG)))
+									&& RegistrationConstants.DISABLE.equalsIgnoreCase(String.valueOf(
+											ApplicationContext.map().get(RegistrationConstants.IRIS_DISABLE_FLAG)))
 							|| demographicNode.getId().equalsIgnoreCase(RegistrationConstants.UIN_UPDATE_BIO_EXCEPTION)
-									&& RegistrationConstants.DISABLE.equalsIgnoreCase(String.valueOf(ApplicationContext.map().get(RegistrationConstants.FINGERPRINT_DISABLE_FLAG)))
-									&& RegistrationConstants.DISABLE.equalsIgnoreCase(String.valueOf(ApplicationContext.map().get(RegistrationConstants.IRIS_DISABLE_FLAG)))) {
+									&& RegistrationConstants.DISABLE.equalsIgnoreCase(String.valueOf(ApplicationContext
+											.map().get(RegistrationConstants.FINGERPRINT_DISABLE_FLAG)))
+									&& RegistrationConstants.DISABLE.equalsIgnoreCase(String.valueOf(
+											ApplicationContext.map().get(RegistrationConstants.IRIS_DISABLE_FLAG)))) {
+						demographicNode.setVisible(false);
+						demographicNode.setManaged(false);
+						configvalues.remove(demographicNode.getId());
+					}
+
+				});
+				biometricBox.getChildren().forEach(demographicNode -> {
+
+					if (demographicNode.getId().equalsIgnoreCase(configureField) && configvalues.size() == 1) {
+						demographicNode.setDisable(true);
+						((CheckBox) demographicNode).setSelected(true);
+					}
+				});
+			}
+		}
+
+		for (String configureField : UIN_UPDATE_CONFIGURED_DEMOGRAPHIC_FIELDS_LIST) {
+			if (!configvalues.contains(configureField)) {
+				demographicHBox.getChildren().forEach(demographicNode -> {
+					if (demographicNode.getId().equalsIgnoreCase(configureField)) {
 						demographicNode.setVisible(false);
 						demographicNode.setManaged(false);
 					}
 				});
+			} else {
+				demographicHBox.getChildren().forEach(demographicNode -> {
+					if (demographicNode.getId().equalsIgnoreCase(configureField) && configvalues.size() == 1) {
+						demographicNode.setDisable(true);
+						((CheckBox) demographicNode).setSelected(true);
+					}
+				});
+
 			}
+
 		}
 	}
 
@@ -203,7 +236,8 @@ public class UpdateUINController extends BaseController implements Initializable
 		fxUtils.listenOnSelectedCheckBox(age);
 		fxUtils.listenOnSelectedCheckBox(gender);
 		fxUtils.listenOnSelectedCheckBox(address);
-		fxUtils.listenOnSelectedCheckBox(contactDetails);
+		fxUtils.listenOnSelectedCheckBox(phone);
+		fxUtils.listenOnSelectedCheckBox(email);
 		fxUtils.listenOnSelectedCheckBox(biometricException);
 		fxUtils.listenOnSelectedCheckBox(biometricIris);
 		fxUtils.listenOnSelectedCheckBox(biometricFingerprint);
@@ -277,7 +311,8 @@ public class UpdateUINController extends BaseController implements Initializable
 					selectionListDTO.setAge(age.isSelected());
 					selectionListDTO.setGender(gender.isSelected());
 					selectionListDTO.setAddress(address.isSelected());
-					selectionListDTO.setContactDetails(contactDetails.isSelected());
+					selectionListDTO.setPhone(phone.isSelected());
+					selectionListDTO.setEmail(email.isSelected());
 					selectionListDTO.setBiometricException(biometricException.isSelected());
 					selectionListDTO.setBiometricIris(biometricIris.isSelected());
 					selectionListDTO.setBiometricFingerprint(biometricFingerprint.isSelected());
@@ -289,7 +324,7 @@ public class UpdateUINController extends BaseController implements Initializable
 					selectionListDTO.setUinId(uinId.getText());
 
 					if (name.isSelected() || age.isSelected() || gender.isSelected() || address.isSelected()
-							|| contactDetails.isSelected() || biometricException.isSelected()
+							|| phone.isSelected() || email.isSelected() || biometricException.isSelected()
 							|| biometricIris.isSelected() || biometricFingerprint.isSelected()
 							|| cnieNumber.isSelected() || parentOrGuardianDetails.isSelected()
 							|| foreigner.isSelected()) {

@@ -3,14 +3,25 @@ package io.mosip.registration.service.impl;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
+import java.io.File;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.Collection;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.datasource.init.ScriptException;
+import org.springframework.jdbc.datasource.init.ScriptUtils;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.exception.ExceptionUtils;
+import io.mosip.kernel.core.exception.IOException;
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.util.FileUtils;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationClientStatusCode;
 import io.mosip.registration.constants.RegistrationConstants;
@@ -54,6 +65,12 @@ public class CenterMachineReMapServiceImpl implements CenterMachineReMapService 
 	@Autowired
 	private SyncJobConfigDAO jobConfigDAO;
 
+	@Autowired
+	private JdbcTemplate jdbcTemplate;
+
+	@Value("${PRE_REG_PACKET_LOCATION}")
+	private String preRegPacketLocation;
+
 	private static final Logger LOGGER = AppConfig.getLogger(CenterMachineReMapServiceImpl.class);
 
 	/*
@@ -70,9 +87,11 @@ public class CenterMachineReMapServiceImpl implements CenterMachineReMapService 
 			LOGGER.info("REGISTRATION CENTER MACHINE REMAP : ", APPLICATION_NAME, APPLICATION_ID,
 					"handleReMapProcess called and machine has been remaped");
 
-			/* (TODO-has to check whether to delete or disable) 1.disable all sync jobs */
-			disableAllSyncJobs();
+			/* 1.disable all sync jobs */
+			updateAllSyncJobs(false);
+
 			if (isPacketsPendingForProcessing()) {
+
 				if (RegistrationAppHealthCheckUtil.isNetworkAvailable()) {
 					try {
 
@@ -91,12 +110,21 @@ public class CenterMachineReMapServiceImpl implements CenterMachineReMapService 
 				}
 			}
 
-			if (!isPacketsPendingForProcessing()) {
-				/* TODO-all packets/pre reg and master data can be deleted- */
-			}
-
 			/* 4.deletions of packets */
-			packetStatusService.deletePacketsWhenMachineRemapped();
+			packetStatusService.deleteAllProcessedRegPackets();
+
+			if (!isPacketsPendingForProcessing()) {
+				/* clean up all the pre reg data and previous center data */
+				cleanUpRemappedMachineData();
+
+				deleteAllPreRegPackets();
+				/*
+				 * enabling all the jobs after all the clean up activities for the previous
+				 * center
+				 */
+				if (!isPacketsPendingForProcessing())
+					updateAllSyncJobs(true);
+			}
 
 		}
 
@@ -132,11 +160,11 @@ public class CenterMachineReMapServiceImpl implements CenterMachineReMapService 
 	/**
 	 * disables all the sync jobs
 	 */
-	private void disableAllSyncJobs() {
+	private void updateAllSyncJobs(boolean isJobActive) {
 		List<SyncJobDef> jobDefs = jobConfigDAO.getActiveJobs();
 		if (isNotNullNotEmpty(jobDefs)) {
 			jobDefs.forEach(job -> {
-				job.setIsActive(false);
+				job.setIsActive(isJobActive);
 			});
 			jobConfigDAO.updateAll(jobDefs);
 		}
@@ -159,6 +187,36 @@ public class CenterMachineReMapServiceImpl implements CenterMachineReMapService 
 
 	private boolean isNotNullNotEmpty(Collection<?> collection) {
 		return collection != null && !collection.isEmpty();
+	}
+
+	private void deleteAllPreRegPackets() {
+		try {
+			FileUtils.deleteDirectory(new File(preRegPacketLocation));
+		} catch (IOException exception) {
+
+			LOGGER.error("REGISTRATION CENTER MACHINE REMAP : ", APPLICATION_NAME, APPLICATION_ID,
+					exception.getMessage() + ExceptionUtils.getStackTrace(exception));
+		}
+
+	}
+
+	/**
+	 * clean up all the data which is specific to the previous center
+	 */
+	private void cleanUpRemappedMachineData() {
+		LOGGER.info("REGISTRATION CENTER MACHINE REMAP : ", APPLICATION_NAME, APPLICATION_ID,
+				"delete cleanUpRemappedMachineData() method is called");
+		try {
+			Resource resource = new ClassPathResource("script.sql");
+			Connection connection = jdbcTemplate.getDataSource().getConnection();
+			ScriptUtils.executeSqlScript(connection, resource);
+
+		} catch (ScriptException | SQLException exception) {
+			LOGGER.error("REGISTRATION CENTER MACHINE REMAP : ", APPLICATION_NAME, APPLICATION_ID,
+					exception.getMessage() + ExceptionUtils.getStackTrace(exception));
+
+		}
+
 	}
 
 }

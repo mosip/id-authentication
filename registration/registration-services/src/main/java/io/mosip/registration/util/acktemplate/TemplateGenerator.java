@@ -102,10 +102,14 @@ public class TemplateGenerator extends BaseService {
 
 			String platformLanguageCode = ApplicationContext.applicationLanguage();
 			String localLanguageCode = ApplicationContext.localLanguage();
-			String documentDisableFlag = String.valueOf(ApplicationContext.map().get(RegistrationConstants.DOC_DISABLE_FLAG));
-			String fingerPrintDisableFlag = String.valueOf(ApplicationContext.map().get(RegistrationConstants.FINGERPRINT_DISABLE_FLAG));
-			String irisDisableFlag = String.valueOf(ApplicationContext.map().get(RegistrationConstants.IRIS_DISABLE_FLAG));
-			String faceDisableFlag = String.valueOf(ApplicationContext.map().get(RegistrationConstants.FACE_DISABLE_FLAG));
+			String documentDisableFlag = String
+					.valueOf(ApplicationContext.map().get(RegistrationConstants.DOC_DISABLE_FLAG));
+			String fingerPrintDisableFlag = String
+					.valueOf(ApplicationContext.map().get(RegistrationConstants.FINGERPRINT_DISABLE_FLAG));
+			String irisDisableFlag = String
+					.valueOf(ApplicationContext.map().get(RegistrationConstants.IRIS_DISABLE_FLAG));
+			String faceDisableFlag = String
+					.valueOf(ApplicationContext.map().get(RegistrationConstants.FACE_DISABLE_FLAG));
 			MoroccoIdentity moroccoIdentity = (MoroccoIdentity) registration.getDemographicDTO().getDemographicInfoDTO()
 					.getIdentity();
 
@@ -396,7 +400,21 @@ public class TemplateGenerator extends BaseService {
 				}
 			}
 
-			templateValues = countMissingIrises(templateValues, registration, templateType);
+			if (registration.getSelectionListDTO() != null) {
+				if (registration.getSelectionListDTO().isBiometricIris()) {
+					templateValues = countMissingIrises(templateValues, registration, templateType);
+				} else {
+					if (!RegistrationConstants.ENABLE.equalsIgnoreCase(faceDisableFlag)
+							|| registration.getDemographicDTO().getApplicantDocumentDTO().getExceptionPhoto() == null) {
+						templateValues.put(RegistrationConstants.TEMPLATE_IRIS_DISABLED,
+								RegistrationConstants.TEMPLATE_STYLE_HIDE_PROPERTY);
+					}
+					templateValues.put(RegistrationConstants.TEMPLATE_IRIS_ENABLED,
+							RegistrationConstants.TEMPLATE_STYLE_HIDE_PROPERTY);
+				}
+			} else {
+				templateValues = countMissingIrises(templateValues, registration, templateType);
+			}
 
 			templateValues.put(RegistrationConstants.TEMPLATE_DEMO_INFO,
 					applicationLanguageProperties.getString("demographicInformation"));
@@ -567,25 +585,30 @@ public class TemplateGenerator extends BaseService {
 			StringBuilder biometricsCapturedLocalLang = new StringBuilder();
 
 			if (RegistrationConstants.ENABLE.equalsIgnoreCase(fingerPrintDisableFlag)) {
-				biometricsCaptured
-						.append(MessageFormat.format((String) applicationLanguageProperties.getString("fingersCount"),
-								String.valueOf(fingersAndIrises[0])));
-				biometricsCapturedLocalLang.append(MessageFormat.format(localProperties.getString("fingersCount"),
-						String.valueOf(fingersAndIrises[0])));
+
+				if (registration.getSelectionListDTO() != null) {
+					if (registration.getSelectionListDTO().isBiometricFingerprint()) {
+						addToCapturedBiometrics(biometricsCaptured, biometricsCapturedLocalLang,
+								applicationLanguageProperties, localProperties, "fingersCount", fingersAndIrises[0]);
+					}
+				} else {
+					addToCapturedBiometrics(biometricsCaptured, biometricsCapturedLocalLang,
+							applicationLanguageProperties, localProperties, "fingersCount", fingersAndIrises[0]);
+				}
 			}
 			if (RegistrationConstants.ENABLE.equalsIgnoreCase(irisDisableFlag)) {
-				if (biometricsCaptured.length() > 0) {
-					biometricsCaptured.append(applicationLanguageProperties.getString("comma"));
-					biometricsCapturedLocalLang.append(localProperties.getString("comma"));
+				if (registration.getSelectionListDTO() != null) {
+					if (registration.getSelectionListDTO().isBiometricIris()) {
+						addToCapturedBiometrics(biometricsCaptured, biometricsCapturedLocalLang,
+								applicationLanguageProperties, localProperties, "irisCount", fingersAndIrises[1]);
+					}
+				} else {
+					addToCapturedBiometrics(biometricsCaptured, biometricsCapturedLocalLang,
+							applicationLanguageProperties, localProperties, "irisCount", fingersAndIrises[1]);
 				}
-				biometricsCaptured
-						.append(MessageFormat.format((String) applicationLanguageProperties.getString("irisCount"),
-								String.valueOf(fingersAndIrises[1])));
-				biometricsCapturedLocalLang.append(MessageFormat.format(localProperties.getString("irisCount"),
-						String.valueOf(fingersAndIrises[1])));
 			}
 			if (RegistrationConstants.ENABLE.equalsIgnoreCase(faceDisableFlag)) {
-				if (biometricsCaptured.length() > 0) {
+				if (biometricsCaptured.length() > 1) {
 					biometricsCaptured.append(applicationLanguageProperties.getString("comma"));
 					biometricsCapturedLocalLang.append(localProperties.getString("comma"));
 				}
@@ -762,9 +785,23 @@ public class TemplateGenerator extends BaseService {
 		return response;
 	}
 
+	private void addToCapturedBiometrics(StringBuilder biometricsCaptured, StringBuilder biometricsCapturedLocalLang,
+			ResourceBundle applicationLanguageProperties, ResourceBundle localProperties, String biometricType,
+			int count) {
+		if (biometricsCaptured.length() > 1) {
+			biometricsCaptured.append(applicationLanguageProperties.getString("comma"));
+			biometricsCapturedLocalLang.append(localProperties.getString("comma"));
+		}
+		biometricsCaptured.append(MessageFormat.format((String) applicationLanguageProperties.getString(biometricType),
+				String.valueOf(count)));
+		biometricsCapturedLocalLang
+				.append(MessageFormat.format(localProperties.getString(biometricType), String.valueOf(count)));
+	}
+
 	private Map<String, Object> countMissingIrises(Map<String, Object> templateValues, RegistrationDTO registration,
 			String templateType) {
-		if (RegistrationConstants.ENABLE.equalsIgnoreCase(String.valueOf(ApplicationContext.map().get(RegistrationConstants.IRIS_DISABLE_FLAG)))) {
+		if (RegistrationConstants.ENABLE.equalsIgnoreCase(
+				String.valueOf(ApplicationContext.map().get(RegistrationConstants.IRIS_DISABLE_FLAG)))) {
 			List<IrisDetailsDTO> irisDetailsDTOs = registration.getBiometricDTO().getApplicantBiometricDTO()
 					.getIrisDetailsDTO();
 			if (irisDetailsDTOs.size() == 2) {

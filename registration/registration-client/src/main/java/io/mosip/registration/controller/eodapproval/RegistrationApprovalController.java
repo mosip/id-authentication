@@ -29,7 +29,6 @@ import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.constants.RegistrationUIConstants;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.controller.auth.AuthenticationController;
-import io.mosip.registration.controller.reg.ViewAckController;
 import io.mosip.registration.dto.RegistrationApprovalDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
@@ -75,10 +74,6 @@ public class RegistrationApprovalController extends BaseController implements In
 
 	@Autowired
 	private RegistrationApprovalService registration;
-
-	/** The view ack controller. */
-	@Autowired
-	private ViewAckController viewAckController;
 
 	@Autowired
 	private PacketSynchService packetSynchService;
@@ -217,25 +212,9 @@ public class RegistrationApprovalController extends BaseController implements In
 
 			webView.getEngine().loadContent("");
 
-			approvalBtn.setSelected(false);
-			rejectionBtn.setSelected(false);
-
 			approvalBtn.setVisible(true);
 			rejectionBtn.setVisible(true);
 			imageAnchorPane.setVisible(true);
-
-			for (Map<String, String> map : approvalmapList) {
-
-				if (map.get(RegistrationConstants.REGISTRATIONID) == table.getSelectionModel().getSelectedItem()
-						.getId()) {
-					if (map.get(RegistrationConstants.STATUSCODE) == RegistrationClientStatusCode.APPROVED.getCode()) {
-						approvalBtn.setSelected(true);
-					} else if (map.get(RegistrationConstants.STATUSCODE) == RegistrationClientStatusCode.REJECTED
-							.getCode()) {
-						rejectionBtn.setSelected(true);
-					}
-				}
-			}
 
 			try (FileInputStream file = new FileInputStream(
 					new File(table.getSelectionModel().getSelectedItem().getAcknowledgementFormPath()))) {
@@ -256,15 +235,6 @@ public class RegistrationApprovalController extends BaseController implements In
 		}
 		LOGGER.info(LOG_REG_PENDING_APPROVAL, APPLICATION_NAME, APPLICATION_ID,
 				"Displaying the Acknowledgement form completed");
-	}
-
-	/**
-	 * Opening registration acknowledgement form on clicking on image.
-	 */
-	public void openAckForm() {
-		LOGGER.info(LOG_REG_PENDING_APPROVAL, APPLICATION_NAME, APPLICATION_ID, "Opening the Acknowledgement Form");
-		viewAckController.viewAck(table.getSelectionModel().getSelectedItem().getAcknowledgementFormPath(),
-				fXComponents.getStage());
 	}
 
 	/**
@@ -324,8 +294,6 @@ public class RegistrationApprovalController extends BaseController implements In
 			approvalmapList.add(map);
 
 			authenticateBtn.setDisable(false);
-			approvalBtn.setSelected(true);
-			rejectionBtn.setSelected(false);
 
 			int rowNum = table.getSelectionModel().getFocusedIndex();
 			RegistrationApprovalDTO approvalDTO = new RegistrationApprovalDTO(
@@ -347,13 +315,10 @@ public class RegistrationApprovalController extends BaseController implements In
 
 					loadStage(primarystage, RegistrationConstants.REJECTION_PAGE);
 
-					rejectionBtn.setSelected(true);
-					approvalBtn.setSelected(false);
 					authenticateBtn.setDisable(false);
 
 				} else if (tBtn.getId().equals(authenticateBtn.getId())) {
 
-					authenticateBtn.setSelected(false);
 					loadStage(primarystage, RegistrationConstants.USER_AUTHENTICATION);
 					authenticationController.init(this, ProcessNames.EOD.getType());
 
@@ -387,7 +352,8 @@ public class RegistrationApprovalController extends BaseController implements In
 
 			AnchorPane authRoot = BaseController.load(getClass().getResource(fxmlPath));
 			Scene scene = new Scene(authRoot);
-			scene.getStylesheets().add(ClassLoader.getSystemClassLoader().getResource(RegistrationConstants.CSS_FILE_PATH).toExternalForm());
+			scene.getStylesheets().add(ClassLoader.getSystemClassLoader()
+					.getResource(RegistrationConstants.CSS_FILE_PATH).toExternalForm());
 			primarystage.initStyle(StageStyle.UNDECORATED);
 			primarystage.setScene(scene);
 			primarystage.initModality(Modality.WINDOW_MODAL);

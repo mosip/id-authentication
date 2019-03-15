@@ -35,4 +35,6 @@ public interface GlobalParamDAO {
 	 */
 	List<GlobalParam> getAll(List<String> names);
 
+	List<GlobalParam> getAllEntries();
+
 }

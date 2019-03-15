@@ -28,9 +28,6 @@ public class ApplicantDocumentDTO extends BaseDTO {
 	/** The has exception photo. */
 	private boolean hasExceptionPhoto;
 
-	/** The reason for exception. */
-	private String reasonForException;
-
 	/** The exception photo. */
 	private byte[] exceptionPhoto;
 
@@ -122,22 +119,6 @@ public class ApplicantDocumentDTO extends BaseDTO {
 	 */
 	public void setHasExceptionPhoto(boolean hasExceptionPhoto) {
 		this.hasExceptionPhoto = hasExceptionPhoto;
-	}
-
-	/**
-	 * @return reasonForException 
-	 * 			the reason for exception
-	 */
-	public String getReasonForException() {
-		return reasonForException;
-	}
-
-	/**
-	 * @param reasonForException
-	 *            the reason for exception
-	 */
-	public void setReasonForException(String reasonForException) {
-		this.reasonForException = reasonForException;
 	}
 
 	/**

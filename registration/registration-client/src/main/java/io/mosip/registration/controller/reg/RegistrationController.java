@@ -275,9 +275,15 @@ public class RegistrationController extends BaseController {
 						LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER,
 								RegistrationConstants.APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
 								"showing demographic preview");
+						if (getRegistrationDTOFromSession().getSelectionListDTO() != null) {
+							SessionContext.map().put("faceCapture", false);
+							SessionContext.map().put("registrationPreview", true);	
+							registrationPreviewController.setUpPreviewContent();
+							showUINUpdateCurrentPage();
+						} else {
+							showCurrentPage(RegistrationConstants.FACE_CAPTURE, getPageDetails(RegistrationConstants.FACE_CAPTURE,RegistrationConstants.NEXT));
+						}
 						
-						showCurrentPage(RegistrationConstants.FACE_CAPTURE, getPageDetails(RegistrationConstants.FACE_CAPTURE,RegistrationConstants.NEXT));
-
 					} else {
 						((BiometricDTO) SessionContext.map().get(RegistrationConstants.USER_ONBOARD_DATA))
 								.getOperatorBiometricDTO().getFaceDetailsDTO().setFace(photoInBytes);

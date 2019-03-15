@@ -168,8 +168,8 @@
                               <AnchorPane fx:id="residentStatus" layoutX="14.0" layoutY="225.0">
                                  <children>
                                     <Label layoutX="1.0" layoutY="2.0" styleClass="demographicMiscTexts" text="%residence" />
-                                    <Button id="National" fx:id="national" layoutX="174.0" layoutY="-3.0" mnemonicParsing="false" styleClass="selectedResidence" text="%national" />
-                                    <Button id="Foreigner" fx:id="foreigner" layoutX="256.0" layoutY="-3.0" mnemonicParsing="false" styleClass="residence" text="%foreigner" />
+                                    <Button id="National" fx:id="national" layoutX="174.0" layoutY="-3.0" mnemonicParsing="false" onAction="#national" styleClass="selectedResidence" text="%national" />
+                                    <Button id="Foreigner" fx:id="foreigner" layoutX="256.0" layoutY="-3.0" mnemonicParsing="false" onAction="#foreigner" styleClass="residence" text="%foreigner" />
                                     <TextField fx:id="residence" layoutX="14.0" layoutY="10.0" styleClass="demographicMiscTexts" visible="false" />
                                  </children>
                               </AnchorPane>
@@ -350,8 +350,8 @@
                               <AnchorPane fx:id="residentStatusLocalLanguage" layoutX="113.0" layoutY="225.0">
                                  <children>
                                     <Label fx:id="residenceLblLocalLanguage" layoutX="1.0" layoutY="2.0" text="%residence" />
-                                    <Button fx:id="nationalLocalLanguage" layoutX="124.0" layoutY="-3.0" mnemonicParsing="false" styleClass="selectedResidence" text="%national" />
-                                    <Button fx:id="foreignerLocalLanguage" layoutX="236.0" layoutY="-3.0" mnemonicParsing="false" styleClass="residence" text="%foreigner" />
+                                    <Button fx:id="nationalLocalLanguage" layoutX="124.0" layoutY="-3.0" mnemonicParsing="false" onAction="#national" styleClass="selectedResidence" text="%national" />
+                                    <Button fx:id="foreignerLocalLanguage" layoutX="236.0" layoutY="-3.0" mnemonicParsing="false" onAction="#foreigner" styleClass="residence" text="%foreigner" />
                                     <TextField fx:id="residenceLocalLanguage" layoutX="37.0" layoutY="10.0" visible="false" />
                                  </children>
                               </AnchorPane>
@@ -406,7 +406,7 @@
                         <Button layoutX="10.0" layoutY="2.0" mnemonicParsing="false" onAction="#goToHomePageFromRegistration" styleClass="homeButton" text="%home" />
                      </children>
                   </AnchorPane>
-                  <Label layoutX="80.0" layoutY="10.0" text="%/registration" />
+                  <Label fx:id="registrationNavlabel" layoutX="80.0" layoutY="10.0" text="%/registration" />
                </children>
             </AnchorPane>
             <AnchorPane layoutX="200.0" layoutY="11.0" styleClass="registrationHeaderBorder">

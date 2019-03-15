@@ -40,6 +40,6 @@ public interface RegPacketStatusService {
 	/**
 	 * deletes all the packets which is no more needed for the remapped machine
 	 */
-	void deletePacketsWhenMachineRemapped();
+	void deleteAllProcessedRegPackets();
 	
 }
