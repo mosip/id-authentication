@@ -142,7 +142,7 @@ public class IdAuthServiceImplTest {
 
 	@Test
 	public void testProcessIdType_IdTypeIsD() throws IdAuthenticationBusinessException {
-		String idvIdType = "D";
+		String idvIdType = "UIN";
 		String idvId = "875948796";
 		Map<String, Object> idRepo = new HashMap<>();
 		idRepo.put("uin", "476567");

@@ -91,12 +91,17 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 		if (authRequestDto != null) {
 			if (!errors.hasErrors()) {
 				validateAllowedAuthTypes(authRequestDto, errors, ALLOWED_AUTH_TYPE);
+				validateConsentReq(authRequestDto, errors);
 			}
 			if (!errors.hasErrors()) {
 			validateReqTime(authRequestDto.getRequestTime(), errors);
+			//Validation for Time Stamp in the RequestDTO.
+			validateReqTime(authRequestDto.getRequest().getTimestamp(),errors);
 			}
 			if (!errors.hasErrors()) {
 			validateTxnId(authRequestDto.getTransactionID(), errors);
+			//Validation for TransaactionId in the RequestDTO.
+			validateTxnId(authRequestDto.getRequest().getTransactionID(),errors);
 			}
 			if (!errors.hasErrors()) {
 				validateAuthType(authRequestDto.getRequestedAuth(), errors);

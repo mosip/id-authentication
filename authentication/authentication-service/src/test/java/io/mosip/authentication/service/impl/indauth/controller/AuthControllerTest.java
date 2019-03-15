@@ -199,7 +199,7 @@ public class AuthControllerTest {
 		kycAuthResponseDTO.setErrors(null);
 		kycResponseDTO.setTtl(env.getProperty("ekyc.ttl.hours"));
 		Map<String, ? extends Object> identity = null;
-		kycAuthResponseDTO.setStatus("Y");
+		kycAuthResponseDTO.setStatus(Boolean.TRUE);
 
 		kycAuthResponseDTO.setResponseTime(ZonedDateTime.now()
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
@@ -212,7 +212,7 @@ public class AuthControllerTest {
 		kycResponseDTO.setIdentity(idInfo);
 		kycAuthResponseDTO.setResponse(kycResponseDTO);
 		AuthResponseDTO authResponseDTO = new AuthResponseDTO();
-		authResponseDTO.setStatus("Y");
+		authResponseDTO.setStatus(Boolean.TRUE);
 		authResponseDTO.setResponseTime(ZonedDateTime.now()
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
 		authResponseDTO.setStaticToken("234567890");
@@ -267,7 +267,7 @@ public class AuthControllerTest {
 		kycAuthResponseDTO.setErrors(null);
 		kycResponseDTO.setTtl(env.getProperty("ekyc.ttl.hours"));
 		Map<String, ? extends Object> identity = null;
-		kycAuthResponseDTO.setStatus("Y");
+		kycAuthResponseDTO.setStatus(Boolean.TRUE);
 
 		kycAuthResponseDTO.setResponseTime(ZonedDateTime.now()
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
@@ -280,7 +280,7 @@ public class AuthControllerTest {
 		kycResponseDTO.setIdentity(idInfo);
 		kycAuthResponseDTO.setResponse(kycResponseDTO);
 		AuthResponseDTO authResponseDTO = new AuthResponseDTO();
-		authResponseDTO.setStatus("Y");
+		authResponseDTO.setStatus(Boolean.TRUE);
 		authResponseDTO.setResponseTime(ZonedDateTime.now()
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
 		authResponseDTO.setStaticToken("234567890");

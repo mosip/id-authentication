@@ -31,7 +31,6 @@ import io.mosip.kernel.core.logger.spi.Logger;
 @Component
 public class KycAuthRequestValidator extends BaseAuthRequestValidator {
 
-	private static final String CONSENT_OBTAINED = "consentObtained";
 
 	private static final String EKYC_ALLOWED_AUTH_TYPE = "ekyc.allowed.auth.type";
 
@@ -133,19 +132,6 @@ public class KycAuthRequestValidator extends BaseAuthRequestValidator {
 					.format(IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorMessage(), REQUESTEDAUTH));
 		}
 
-	}
-
-	/**
-	 * Validates the ConsentRequest on KycAuthrequest.
-	 *
-	 * @param kycAuthRequestDTO the kyc auth request DTO
-	 * @param errors            the errors
-	 */
-	private void validateConsentReq(KycAuthRequestDTO kycAuthRequestDTO, Errors errors) {
-		if (!kycAuthRequestDTO.isConsentObtained()) {
-			errors.rejectValue(CONSENT_OBTAINED, IdAuthenticationErrorConstants.CONSENT_NOT_AVAILABLE.getErrorCode(),
-					String.format(IdAuthenticationErrorConstants.CONSENT_NOT_AVAILABLE.getErrorMessage(), CONSENT_OBTAINED));
-		}
 	}
 
 }

@@ -118,7 +118,7 @@ public class NotificationServiceImplTest {
 
 		// authRequestDTO.setReqTime(Instant.now().atOffset(offset)
 		// .format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
-		authResponseDTO.setStatus("N");
+		authResponseDTO.setStatus(Boolean.FALSE);
 		authResponseDTO.setResponseTime(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX").format(new Date()));
 		Supplier<Object> Supplier = () -> new String("Success");
 		Mockito.when(restHelper.requestAsync(Mockito.any())).thenReturn(Supplier);
@@ -165,7 +165,7 @@ public class NotificationServiceImplTest {
 		AuthTypeDTO authType = new AuthTypeDTO();
 		authType.setDemo(true);
 		authRequestDTO.setRequestedAuth(authType);
-		authResponseDTO.setStatus("y");
+		authResponseDTO.setStatus(Boolean.TRUE);
 		authResponseDTO.setResponseTime(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX").format(new Date()));
 		Supplier<Object> Supplier = () -> new String("Success");
 		Mockito.when(restHelper.requestAsync(Mockito.any())).thenReturn(Supplier);

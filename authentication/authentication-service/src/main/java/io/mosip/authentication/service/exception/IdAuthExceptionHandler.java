@@ -201,7 +201,7 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 		mosipLogger.debug(DEFAULT_SESSION_ID, "Building exception response", "Entered buildExceptionResponse",
 				PREFIX_HANDLING_EXCEPTION + ex.getClass().toString());
 		BaseAuthResponseDTO authResp = new BaseAuthResponseDTO();
-		authResp.setStatus("N");
+		authResp.setStatus(Boolean.FALSE);
 		if (ex instanceof IdAuthenticationBaseException) {
 			IdAuthenticationBaseException baseException = (IdAuthenticationBaseException) ex;
 			Locale locale = LocaleContextHolder.getLocale();
