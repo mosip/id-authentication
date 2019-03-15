@@ -231,4 +231,7 @@ public class RegistrationUIConstants {
 
 	// PRE-REG DELETE JOB
 	public static final String SYNC_CONFIG_DATA_FAILURE = bundle.getString("SYNC_CONFIG_DATA_FAILURE");
+	
+	//Packet Upload
+	public static final String PACKET_UPLOAD_EMPTY_ERROR = bundle.getString("PACKET_UPLOAD_EMPTY_ERROR");
 }

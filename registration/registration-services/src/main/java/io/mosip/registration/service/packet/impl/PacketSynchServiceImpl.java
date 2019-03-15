@@ -42,6 +42,7 @@ import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.exception.RegistrationExceptionConstants;
 import io.mosip.registration.service.sync.PacketSynchService;
 import io.mosip.registration.util.restclient.ServiceDelegateUtil;
+import javafx.beans.property.SimpleBooleanProperty;
 
 @Service
 public class PacketSynchServiceImpl implements PacketSynchService {
@@ -91,7 +92,8 @@ public class PacketSynchServiceImpl implements PacketSynchService {
 				for (PacketStatusDTO packetToBeSynch : packetsToBeSynched) {
 					SyncRegistrationDTO syncDto = new SyncRegistrationDTO();
 					syncDto.setLangCode("ENG");
-					syncDto.setStatusComment(packetToBeSynch.getPacketClientStatus());
+					syncDto.setStatusComment(packetToBeSynch.getPacketClientStatus() + " " + "-" + " "
+							+ packetToBeSynch.getClientStatusComments());
 					syncDto.setRegistrationId(packetToBeSynch.getFileName());
 					syncDto.setSyncStatus(RegistrationConstants.PACKET_STATUS_PRE_SYNC);
 					syncDto.setSyncType(RegistrationConstants.PACKET_STATUS_SYNC_TYPE);
@@ -152,8 +154,13 @@ public class PacketSynchServiceImpl implements PacketSynchService {
 		packetsToBeSynched.forEach(reg -> {
 			PacketStatusDTO packetStatusDTO=new PacketStatusDTO();
 			packetStatusDTO.setFileName(reg.getId());
-			packetStatusDTO.setPacketClientStatus(reg.getClientStatusCode() + " " + "-" + " "
-					+ reg.getClientStatusComments());
+			packetStatusDTO.setPacketClientStatus(reg.getClientStatusCode());
+			packetStatusDTO.setClientStatusComments(reg.getClientStatusComments());
+			packetStatusDTO.setClientStatusComments(reg.getClientStatusComments());
+			packetStatusDTO.setPacketServerStatus(reg.getServerStatusCode());
+			packetStatusDTO.setPacketPath(reg.getAckFilename());
+			packetStatusDTO.setUploadStatus(reg.getFileUploadStatus());
+			packetStatusDTO.setStatus(new SimpleBooleanProperty());
 			idsToBeSynched.add(packetStatusDTO);
 		});
 		return idsToBeSynched;

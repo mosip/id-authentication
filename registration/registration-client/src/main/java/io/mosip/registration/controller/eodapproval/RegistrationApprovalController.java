@@ -263,8 +263,10 @@ public class RegistrationApprovalController extends BaseController implements In
 	/**
 	 * {@code updateStatus} is to update the status of registration.
 	 *
-	 * @param event the event
-	 * @throws RegBaseCheckedException the reg base checked exception
+	 * @param event
+	 *            the event
+	 * @throws RegBaseCheckedException
+	 *             the reg base checked exception
 	 */
 	public void updateStatus(ActionEvent event) throws RegBaseCheckedException {
 
@@ -341,10 +343,13 @@ public class RegistrationApprovalController extends BaseController implements In
 	/**
 	 * Loading stage.
 	 *
-	 * @param primarystage the stage
-	 * @param fxmlPath     the fxml path
+	 * @param primarystage
+	 *            the stage
+	 * @param fxmlPath
+	 *            the fxml path
 	 * @return the stage
-	 * @throws RegBaseCheckedException the reg base checked exception
+	 * @throws RegBaseCheckedException
+	 *             the reg base checked exception
 	 */
 	private Stage loadStage(Stage primarystage, String fxmlPath) throws RegBaseCheckedException {
 
@@ -401,17 +406,9 @@ public class RegistrationApprovalController extends BaseController implements In
 
 			if (RegistrationAppHealthCheckUtil.isNetworkAvailable() && !regIds.isEmpty()) {
 
-				String response = packetSynchService.syncEODPackets(regIds);
-				if (response.equals(RegistrationConstants.EMPTY)) {
-					packetUploadService.uploadEODPackets(regIds);
-				}
-			}
-		} catch (RegBaseCheckedException checkedException) {
-			LOGGER.error(LOG_REG_PENDING_APPROVAL, APPLICATION_NAME, APPLICATION_ID,
-					"Error in sync and upload of packets" + checkedException.getMessage()
-							+ ExceptionUtils.getStackTrace(checkedException));
+				uploadPacketsInBackground(regIds);
 
-			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.ERROR_IN_SYNC_AND_UPLOAD);
+			}
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error(LOG_REG_PENDING_APPROVAL, APPLICATION_NAME, APPLICATION_ID,
 					"unable to sync and upload of packets" + runtimeException.getMessage()
@@ -421,5 +418,25 @@ public class RegistrationApprovalController extends BaseController implements In
 		}
 		LOGGER.info(LOG_REG_PENDING_APPROVAL, APPLICATION_NAME, APPLICATION_ID,
 				"Updation of registration according to status ended");
+	}
+
+	private void uploadPacketsInBackground(List<String> regIds) {
+		Runnable upload = new Runnable() {
+			public void run() {
+				String response;
+				try {
+					response = packetSynchService.syncEODPackets(regIds);
+					if (response.equals(RegistrationConstants.EMPTY)) {
+						packetUploadService.uploadEODPackets(regIds);
+					}
+				} catch (RegBaseCheckedException checkedException) {
+					LOGGER.error(LOG_REG_PENDING_APPROVAL, APPLICATION_NAME, APPLICATION_ID,
+							"Error in sync and upload of packets" + checkedException.getMessage()
+									+ ExceptionUtils.getStackTrace(checkedException));
+				}
+			}
+		};
+
+		new Thread(upload).start();
 	}
 }

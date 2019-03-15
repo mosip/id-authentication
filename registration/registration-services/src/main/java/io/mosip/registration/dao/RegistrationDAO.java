@@ -68,7 +68,7 @@ public interface RegistrationDAO {
 	 * @param regId
 	 * @return
 	 */
-	Registration updateRegStatus(Registration packetStatus);
+	Registration updateRegStatus(PacketStatusDTO packetStatus);
 	
 	/**Fetch the packets that needs to be Synched with the server.
 	 * @param statusCodes

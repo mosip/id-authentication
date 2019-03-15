@@ -26,6 +26,7 @@ import io.mosip.registration.constants.RegistrationClientStatusCode;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dao.RegistrationDAO;
 import io.mosip.registration.dto.ErrorResponseDTO;
+import io.mosip.registration.dto.PacketStatusDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.SuccessResponseDTO;
 import io.mosip.registration.entity.Registration;
@@ -77,6 +78,7 @@ public class PacketUploadServiceImpl implements PacketUploadService {
 	 */
 	@SuppressWarnings("unchecked")
 	public ResponseDTO pushPacket(File packet) throws URISyntaxException, RegBaseCheckedException {
+		
 		LOGGER.info("REGISTRATION - PUSH_PACKET - PACKET_UPLOAD_SERVICE", APPLICATION_NAME, APPLICATION_ID,
 				"Push packets to the server");
 
@@ -85,16 +87,19 @@ public class PacketUploadServiceImpl implements PacketUploadService {
 		ResponseDTO responseDTO = new ResponseDTO();
 		List<ErrorResponseDTO> erResponseDTOs = new ArrayList<>();
 		try {
-			LinkedHashMap<String, Object> response = (LinkedHashMap<String, Object>) serviceDelegateUtil.post(RegistrationConstants.PACKET_UPLOAD,
-					map,RegistrationConstants.JOB_TRIGGER_POINT_USER);
-			if (response.get("response") != null && response.get("error") == null) {
+			LinkedHashMap<String, Object> response = (LinkedHashMap<String, Object>) serviceDelegateUtil
+					.post(RegistrationConstants.PACKET_UPLOAD, map, RegistrationConstants.JOB_TRIGGER_POINT_USER);
+			if (response.get(RegistrationConstants.PACKET_STATUS_READER_RESPONSE) != null
+					&& response.get(RegistrationConstants.ERRORS) == null) {
 				SuccessResponseDTO successResponseDTO = new SuccessResponseDTO();
 				successResponseDTO.setCode(RegistrationConstants.SUCCESS);
 				responseDTO.setSuccessResponseDTO(successResponseDTO);
-			} else if (response.get("error") != null) {
+			} else if (response.get(RegistrationConstants.ERRORS) != null) {
 				ErrorResponseDTO errorResponseDTO = new ErrorResponseDTO();
 				errorResponseDTO.setCode(RegistrationConstants.ERROR);
-				errorResponseDTO.setMessage(((LinkedHashMap<String, String>) response.get("error")).get("message"));
+				errorResponseDTO
+						.setMessage(((List<LinkedHashMap<String, String>>) response.get(RegistrationConstants.ERRORS))
+								.get(0).get(RegistrationConstants.PACKET_STATUS_READER_RESPONSE));
 				erResponseDTOs.add(errorResponseDTO);
 				responseDTO.setErrorResponseDTOs(erResponseDTOs);
 			}
@@ -127,7 +132,6 @@ public class PacketUploadServiceImpl implements PacketUploadService {
 					socketTimeoutException.getLocalizedMessage());
 		}
 		return responseDTO;
-
 	}
 
 	/*
@@ -137,10 +141,10 @@ public class PacketUploadServiceImpl implements PacketUploadService {
 	 * io.mosip.registration.service.PacketUploadService#updateStatus(java.util.
 	 * List)
 	 */
-	public Boolean updateStatus(List<Registration> packetsUploadStatus) {
+	public Boolean updateStatus(List<PacketStatusDTO> packetsUploadStatus) {
 		LOGGER.info("REGISTRATION - UPDATE_STATUS - PACKET_UPLOAD_SERVICE", APPLICATION_NAME, APPLICATION_ID,
 				"Update the status of the uploaded packet");
-		for (Registration registrationPacket : packetsUploadStatus) {
+		for (PacketStatusDTO registrationPacket : packetsUploadStatus) {
 			registrationDAO.updateRegStatus(registrationPacket);
 		}
 		return true;
@@ -167,7 +171,8 @@ public class PacketUploadServiceImpl implements PacketUploadService {
 	/**
 	 * Upload synced packets.
 	 *
-	 * @param syncedPackets the synced packets
+	 * @param syncedPackets
+	 *            the synced packets
 	 */
 	private void uploadSyncedPacket(List<Registration> syncedPackets) {
 
@@ -227,7 +232,7 @@ public class PacketUploadServiceImpl implements PacketUploadService {
 				}
 			}
 		}
-		updateStatus(packetUploadList);
+		// updateStatus(packetUploadList);
 	}
 
 	/*
@@ -242,7 +247,7 @@ public class PacketUploadServiceImpl implements PacketUploadService {
 		List<Registration> registrations = registrationDAO.get(regIds);
 		uploadSyncedPacket(registrations);
 	}
-	
+
 	@Override
 	public void uploadAllSyncedPackets() {
 

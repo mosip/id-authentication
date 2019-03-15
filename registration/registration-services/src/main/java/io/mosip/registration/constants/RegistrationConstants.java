@@ -56,6 +56,7 @@ public class RegistrationConstants {
 	public static final String USER_ONBOARD_WEBCAM = "/fxml/UserOnboardWebCamera.fxml";
 	public static final String BIO_EXCEPTION_PAGE = "/fxml/BiometricException.fxml";
 	public static final String SEND_NOTIFICATION_PAGE = "/fxml/SendNotification.fxml";
+	public static final String PACKET_UPLOAD_STATUS_UI = "/fxml/PacketUploadStatus.fxml";
 
 	// FXML Id
 	public static final String DEMOGRAPHIC_DETAIL = "demographicDetail";

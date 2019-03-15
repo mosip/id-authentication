@@ -17,8 +17,6 @@ import org.springframework.stereotype.Controller;
 
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
-import io.mosip.kernel.core.util.DateUtils;
-import io.mosip.kernel.core.util.exception.JsonProcessingException;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.AuditEvent;
 import io.mosip.registration.constants.AuditReferenceIdTypes;
@@ -29,16 +27,12 @@ import io.mosip.registration.constants.RegistrationUIConstants;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.dto.PacketStatusDTO;
-import io.mosip.registration.dto.RegistrationPacketSyncDTO;
 import io.mosip.registration.dto.ResponseDTO;
-import io.mosip.registration.dto.SyncRegistrationDTO;
-import io.mosip.registration.entity.Registration;
 import io.mosip.registration.exception.RegBaseCheckedException;
-import io.mosip.registration.exception.RegBaseUncheckedException;
-import io.mosip.registration.exception.RegistrationExceptionConstants;
 import io.mosip.registration.service.packet.PacketUploadService;
 import io.mosip.registration.service.sync.PacketSynchService;
 import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
+import javafx.application.Platform;
 import javafx.beans.Observable;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ObservableValue;
@@ -51,11 +45,16 @@ import javafx.concurrent.WorkerStateEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.StackPane;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 import javafx.util.Callback;
 
 @Controller
@@ -75,6 +74,15 @@ public class PacketUploadController extends BaseController implements Initializa
 
 	@FXML
 	private TableColumn<PacketStatusDTO, Boolean> checkBoxColumn;
+
+	@FXML
+	private Button saveToDevice;
+
+	@FXML
+	private TableColumn<PacketStatusDTO, String> fileColumn;
+
+	@FXML
+	private TableColumn<PacketStatusDTO, String> statusColumn;
 
 	@Autowired
 	private PacketSynchService packetSynchService;
@@ -100,34 +108,38 @@ public class PacketUploadController extends BaseController implements Initializa
 		table.refresh();
 		service.reset();
 		try {
-			if (RegistrationAppHealthCheckUtil.isNetworkAvailable() && !selectedPackets.isEmpty()) {
-				String packetSyncStatus = packetSynchService.packetSync(selectedPackets);
+			if (RegistrationAppHealthCheckUtil.isNetworkAvailable()) {
+				if (!selectedPackets.isEmpty()) {
+					String packetSyncStatus = packetSynchService.packetSync(selectedPackets);
 
+					auditFactory.audit(AuditEvent.UPLOAD_PACKET, Components.UPLOAD_PACKET,
+							SessionContext.userContext().getUserId(),
+							AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
 
-				auditFactory.audit(AuditEvent.UPLOAD_PACKET, Components.UPLOAD_PACKET,
-						SessionContext.userContext().getUserId(), AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
-
-				progressIndicator.progressProperty().bind(service.progressProperty());
-				service.start();
-				service.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
-					@Override
-					public void handle(WorkerStateEvent t) {
-						String status = service.getValue();
-						if (!status.equals(RegistrationConstants.EMPTY)) {
-							String[] displayStatus = status.split("-");
-							if (RegistrationConstants.PACKET_SYNC_ERROR.equals(displayStatus[0])) {
-								if (!RegistrationConstants.EMPTY.equals(packetSyncStatus)) {
-									generateAlert(displayStatus[0], displayStatus[1] + " " + packetSyncStatus);
+					progressIndicator.progressProperty().bind(service.progressProperty());
+					service.start();
+					service.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+						@Override
+						public void handle(WorkerStateEvent t) {
+							String status = service.getValue();
+							if (!status.equals(RegistrationConstants.EMPTY)) {
+								String[] displayStatus = status.split("-");
+								if (RegistrationConstants.PACKET_SYNC_ERROR.equals(displayStatus[0])) {
+									if (!RegistrationConstants.EMPTY.equals(packetSyncStatus)) {
+										generateAlert(displayStatus[0], displayStatus[1] + " " + packetSyncStatus);
+									} else {
+										generateAlert(displayStatus[0], displayStatus[1]);
+									}
 								} else {
 									generateAlert(displayStatus[0], displayStatus[1]);
 								}
-							} else {
-								generateAlert(displayStatus[0], displayStatus[1]);
-							}
 
+							}
 						}
-					}
-				});
+					});
+				} else {
+					generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.PACKET_UPLOAD_EMPTY_ERROR);
+				}
 			} else {
 				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.NETWORK_ERROR);
 			}
@@ -138,7 +150,6 @@ public class PacketUploadController extends BaseController implements Initializa
 		}
 
 	}
-
 
 	/**
 	 * This anonymous service class will do the packet upload as well as the upload
@@ -163,66 +174,54 @@ public class PacketUploadController extends BaseController implements Initializa
 
 					LOGGER.info("REGISTRATION - HANDLE_PACKET_UPLOAD_START - PACKET_UPLOAD_CONTROLLER",
 							APPLICATION_NAME, APPLICATION_ID, "Handling all the packet upload activities");
-					List<Registration> synchedPackets = packetUploadService.getSynchedPackets();
-					List<Registration> packetUploadList = new ArrayList<>();
+					List<PacketStatusDTO> packetUploadList = new ArrayList<>();
 					String status = "";
 					Map<String, String> tableMap = new HashMap<>();
-					if (!synchedPackets.isEmpty()) {
+					if (!selectedPackets.isEmpty()) {
 						auditFactory.audit(AuditEvent.PACKET_UPLOAD, Components.PACKET_UPLOAD,
 								SessionContext.userContext().getUserId(), RegistrationConstants.PACKET_UPLOAD_REF_ID);
 
 						progressIndicator.setVisible(true);
-						for (int i = 0; i < synchedPackets.size(); i++) {
-							Registration synchedPacket = synchedPackets.get(i);
-							synchedPacket.setUploadCount((short) (synchedPacket.getUploadCount() + 1));
-							String ackFileName = synchedPacket.getAckFilename();
+						for (int i = 0; i < selectedPackets.size(); i++) {
+							PacketStatusDTO synchedPacket = selectedPackets.get(i);
+							String ackFileName = synchedPacket.getPacketPath();
 							int lastIndex = ackFileName.indexOf(RegistrationConstants.ACKNOWLEDGEMENT_FILE);
 							String packetPath = ackFileName.substring(0, lastIndex);
 							File packet = new File(packetPath + RegistrationConstants.ZIP_FILE_EXTENSION);
 							try {
 								if (packet.exists()) {
-									if ((("RESEND".equals(synchedPacket.getServerStatusCode())
-											&& synchedPacket.getServerStatusTimestamp()
-													.compareTo(synchedPacket.getUploadTimestamp()) == 1)
-											|| RegistrationClientStatusCode.META_INFO_SYN_SERVER.getCode()
-													.equals(synchedPacket.getClientStatusCode())
-											|| RegistrationClientStatusCode.EXPORT.getCode()
-													.equals(synchedPacket.getClientStatusCode())
-											|| "E".equals(synchedPacket.getFileUploadStatus())) && packet.exists()) {
+									ResponseDTO response = packetUploadService.pushPacket(packet);
+									if (response.getSuccessResponseDTO() != null) {
 
-										ResponseDTO response = packetUploadService.pushPacket(packet);
-										if (response.getSuccessResponseDTO() != null) {
+										synchedPacket.setPacketClientStatus(
+												RegistrationClientStatusCode.UPLOADED_SUCCESSFULLY.getCode());
+										synchedPacket.setPacketServerStatus(
+												RegistrationClientStatusCode.UPLOAD_SUCCESS_STATUS.getCode());
+										packetUploadList.add(synchedPacket);
+										tableMap.put(synchedPacket.getFileName(),
+												RegistrationConstants.PACKET_UPLOAD_SUCCESS);
 
-											synchedPacket.setClientStatusCode(
+									} else if (response.getErrorResponseDTOs() != null) {
+										String errMessage = response.getErrorResponseDTOs().get(0).getMessage();
+										if (errMessage.contains(RegistrationConstants.PACKET_DUPLICATE)) {
+
+											tableMap.put(synchedPacket.getFileName(), "Error(Duplicate Packet)");
+											synchedPacket.setPacketClientStatus(
 													RegistrationClientStatusCode.UPLOADED_SUCCESSFULLY.getCode());
-											synchedPacket.setFileUploadStatus(
+											synchedPacket.setUploadStatus(
 													RegistrationClientStatusCode.UPLOAD_SUCCESS_STATUS.getCode());
 											packetUploadList.add(synchedPacket);
-											tableMap.put(synchedPacket.getId(),
-													RegistrationConstants.PACKET_UPLOAD_SUCCESS);
 
-										} else if (response.getErrorResponseDTOs() != null) {
-											String errMessage = response.getErrorResponseDTOs().get(0).getMessage();
-											if (errMessage.contains(RegistrationConstants.PACKET_DUPLICATE)) {
-
-												tableMap.put(synchedPacket.getId(), "Error(Duplicate Packet)");
-												synchedPacket.setClientStatusCode(
-														RegistrationClientStatusCode.UPLOADED_SUCCESSFULLY.getCode());
-												synchedPacket.setFileUploadStatus(
-														RegistrationClientStatusCode.UPLOAD_SUCCESS_STATUS.getCode());
-												packetUploadList.add(synchedPacket);
-
-											} else {
-												synchedPacket.setFileUploadStatus(
-														RegistrationClientStatusCode.UPLOAD_ERROR_STATUS.getCode());
-												packetUploadList.add(synchedPacket);
-												tableMap.put(synchedPacket.getId(), "Error");
-											}
+										} else {
+											synchedPacket.setUploadStatus(
+													RegistrationClientStatusCode.UPLOAD_ERROR_STATUS.getCode());
+											packetUploadList.add(synchedPacket);
+											tableMap.put(synchedPacket.getFileName(), "Error");
 										}
-
 									}
+
 								} else {
-									tableMap.put(synchedPacket.getId(), "Error(Packet not available)");
+									tableMap.put(synchedPacket.getFileName(), "Error(Packet not available)");
 								}
 
 							} catch (URISyntaxException uriSyntaxException) {
@@ -236,11 +235,10 @@ public class PacketUploadController extends BaseController implements Initializa
 										APPLICATION_NAME, APPLICATION_ID, "Error while pushing packets to the server"
 												+ ExceptionUtils.getStackTrace(regBaseCheckedException));
 
-								synchedPacket.setFileUploadStatus(
-										RegistrationClientStatusCode.UPLOAD_ERROR_STATUS.getCode());
-								tableMap.put(synchedPacket.getId(), "Error(Service Error)");
+								synchedPacket
+										.setUploadStatus(RegistrationClientStatusCode.UPLOAD_ERROR_STATUS.getCode());
+								tableMap.put(synchedPacket.getFileName(), "Error(Service Error)");
 								packetUploadList.add(synchedPacket);
-								synchedPacket.setUploadCount((short) (synchedPacket.getUploadCount() + 1));
 
 							} catch (RuntimeException runtimeException) {
 								LOGGER.error(
@@ -253,26 +251,25 @@ public class PacketUploadController extends BaseController implements Initializa
 								} else if (i > 0) {
 									status = "Error-Unable to push some packets to the server.";
 								}
-								for (int count = i; count < synchedPackets.size(); count++) {
-									synchedPacket = synchedPackets.get(count);
-									synchedPacket.setFileUploadStatus(
+								for (int count = i; count < selectedPackets.size(); count++) {
+									synchedPacket = selectedPackets.get(count);
+									synchedPacket.setUploadStatus(
 											RegistrationClientStatusCode.UPLOAD_ERROR_STATUS.getCode());
-									synchedPacket.setUploadCount((short) (synchedPacket.getUploadCount() + 1));
 									packetUploadList.add(synchedPacket);
-									tableMap.put(synchedPacket.getId(), "Error");
+									tableMap.put(synchedPacket.getFileName(), "Error");
 								}
 								break;
 							}
 
-							this.updateProgress(i, synchedPackets.size());
+							this.updateProgress(i, selectedPackets.size());
 						}
 						packetUploadService.updateStatus(packetUploadList);
 						progressIndicator.setVisible(false);
-						displayData(populateTableData(tableMap));
+						displayStatus(populateTableData(tableMap));
 					} else {
 						status = "Info-No packets to upload.";
 					}
-
+					selectedPackets.clear();
 					return status;
 				}
 			};
@@ -287,12 +284,12 @@ public class PacketUploadController extends BaseController implements Initializa
 		LOGGER.info("REGISTRATION - PACKET_EXPORT_START - PACKET_UPLOAD_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
 				"Exporting the Synched the packets");
 
-		List<Registration> exportedPackets = packetExportController.packetExport();
+		List<PacketStatusDTO> exportedPackets = packetExportController.packetExport();
 		Map<String, String> exportedPacketMap = new HashMap<>();
 		exportedPackets.forEach(regPacket -> {
-			exportedPacketMap.put(regPacket.getId(), RegistrationClientStatusCode.EXPORT.getCode());
+			exportedPacketMap.put(regPacket.getFileName(), RegistrationClientStatusCode.EXPORT.getCode());
 		});
-		displayData(populateTableData(exportedPacketMap));
+		displayStatus(populateTableData(exportedPacketMap));
 	}
 
 	/**
@@ -304,21 +301,10 @@ public class PacketUploadController extends BaseController implements Initializa
 
 		LOGGER.info("REGISTRATION - DISPLAY_DATA - PACKET_UPLOAD_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
 				"To display all the ui data");
-
-		checkBoxColumn.setCellValueFactory(new PropertyValueFactory<>("status"));
+		checkBoxColumn.setCellValueFactory(cellData -> cellData.getValue().getStatus());
 		fileNameColumn.setCellValueFactory(new PropertyValueFactory<>("fileName"));
 
-		checkBoxColumn
-				.setCellFactory(CheckBoxTableCell.forTableColumn(new Callback<Integer, ObservableValue<Boolean>>() {
-
-					@Override
-					public ObservableValue<Boolean> call(Integer param) {
-						System.out.println("Cours " + tableData.get(param).getStatus());
-						return list.get(param).getStatus();
-					}
-				}));
-
-		list = FXCollections.observableArrayList(new Callback<PacketStatusDTO, Observable[]>() {
+		this.list = FXCollections.observableArrayList(new Callback<PacketStatusDTO, Observable[]>() {
 
 			@Override
 			public Observable[] call(PacketStatusDTO param) {
@@ -326,20 +312,25 @@ public class PacketUploadController extends BaseController implements Initializa
 			}
 		});
 		list.addAll(tableData);
+		checkBoxColumn
+				.setCellFactory(CheckBoxTableCell.forTableColumn(new Callback<Integer, ObservableValue<Boolean>>() {
 
+					@Override
+					public ObservableValue<Boolean> call(Integer param) {
+						return list.get(param).getStatus();
+					}
+				}));
 		list.addListener(new ListChangeListener<PacketStatusDTO>() {
 			@Override
 			public void onChanged(Change<? extends PacketStatusDTO> c) {
 				while (c.next()) {
 					if (c.wasUpdated()) {
-						if ((list.get(c.getFrom()).getStatus()).getValue()) {
+						if (!selectedPackets.contains(list.get(c.getFrom()))) {
 							selectedPackets.add(list.get(c.getFrom()));
-						} else if (!(list.get(c.getFrom()).getStatus()).getValue()
-								&& selectedPackets.contains(list.get(c.getFrom()))) {
-								selectedPackets.remove(list.get(c.getFrom()));
+						} else {
+							selectedPackets.remove(list.get(c.getFrom()));
 						}
-						System.out.println("Cours " + list.get(c.getFrom()).getFileName() + " changed value to "
-								+ list.get(c.getFrom()).getStatus());
+						saveToDevice.setDisable(!selectedPackets.isEmpty());
 					}
 				}
 			}
@@ -361,9 +352,9 @@ public class PacketUploadController extends BaseController implements Initializa
 		List<PacketStatusDTO> listUploadStatus = new ArrayList<>();
 		packetStatus.forEach((id, status) -> {
 			PacketStatusDTO packetUploadStatusDTO = new PacketStatusDTO();
-		//	packetUploadStatusDTO.setUploadStatus(status);
 			packetUploadStatusDTO.setFileName(id);
 			packetUploadStatusDTO.setStatus(new SimpleBooleanProperty());
+			packetUploadStatusDTO.setClientStatusComments(status);
 			listUploadStatus.add(packetUploadStatusDTO);
 
 		});
@@ -371,13 +362,45 @@ public class PacketUploadController extends BaseController implements Initializa
 	}
 
 	private void loadInitialPage() {
-		
+
 		List<PacketStatusDTO> synchedPackets = packetSynchService.fetchPacketsToBeSynched();
 		displayData(synchedPackets);
 	}
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
+		selectedPackets.clear();
 		loadInitialPage();
+	}
+
+	private void displayStatus(List<PacketStatusDTO> filesToDisplay) {
+		Platform.runLater(() -> {
+
+			Stage stage = new Stage();
+
+			stage.setTitle("File Status");
+			stage.setWidth(380);
+			stage.setHeight(500);
+
+			TableView<PacketStatusDTO> statusTable = new TableView<PacketStatusDTO>();
+			TableColumn<PacketStatusDTO, String> fileNameCol = new TableColumn<PacketStatusDTO, String>("Files");
+			TableColumn<PacketStatusDTO, String> statusCol = new TableColumn<PacketStatusDTO, String>("Status");
+			ObservableList<PacketStatusDTO> displayList = FXCollections.observableArrayList(filesToDisplay);
+			statusTable.setItems(displayList);
+			fileNameCol.setCellValueFactory(new PropertyValueFactory<>("fileName"));
+			statusCol.setCellValueFactory(new PropertyValueFactory<>("clientStatusComments"));
+			statusTable.getColumns().addAll(fileNameCol, statusCol);
+			Scene scene = new Scene(new StackPane(statusTable), 500, 400);
+			stage.initModality(Modality.WINDOW_MODAL);
+			stage.initOwner(fXComponents.getStage());
+			stage.setResizable(false);
+			stage.setScene(scene);
+			stage.show();
+			stage.setOnCloseRequest((e) -> {
+				saveToDevice.setDisable(false);
+				loadInitialPage();
+			});
+		});
+
 	}
 }
