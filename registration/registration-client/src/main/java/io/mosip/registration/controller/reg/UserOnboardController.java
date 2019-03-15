@@ -9,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.dto.biometric.BiometricDTO;
@@ -42,8 +43,10 @@ public class UserOnboardController extends BaseController implements Initializab
 	
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
+		ResourceBundle applicationLabelBundle = ApplicationContext.getInstance().getApplicationLanguageBundle();
+		
 		operatorName
-		.setText("Hi " + SessionContext.userContext().getName() +", you are not onboarded into the system.");
+		.setText(applicationLabelBundle.getString("hi") +" " + SessionContext.userContext().getName() +", "+applicationLabelBundle.getString("notOnboarded"));
 	}
 
 	@FXML
