@@ -32,7 +32,7 @@ public class BioDedupeStageTest {
 	@InjectMocks
 	private BioDedupeStage bioDedupeStage = new BioDedupeStage() {
 		@Override
-		public MosipEventBus getEventBus(Object verticleName, String url, int instanceNumber) {
+		public MosipEventBus getEventBus(Class<?> verticleName, String url) {
 			vertx = Vertx.vertx();
 
 			return new MosipEventBus(vertx) {

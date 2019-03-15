@@ -1,5 +1,4 @@
 package io.mosip.authentication.fw.util;
-
 import java.io.File;
 
 /**
@@ -66,4 +65,3 @@ public class TestParameters {
     
 
 }
-

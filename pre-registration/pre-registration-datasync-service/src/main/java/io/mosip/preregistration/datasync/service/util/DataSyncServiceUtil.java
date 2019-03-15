@@ -68,7 +68,6 @@ import io.mosip.preregistration.datasync.repository.ProcessedDataSyncRepo;
 
 /**
  * @author Ravi C Balaji
- * @author Sanober Noor
  * @since 1.0.0
  */
 @Component
@@ -242,8 +241,6 @@ public class DataSyncServiceUtil {
 			headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
 			HttpEntity<MainListResponseDTO<?>> httpEntity = new HttpEntity<>(headers);
 			String uriBuilder = builder.build().encode(StandardCharsets.UTF_8).toUriString();
-			log.info("sessionId", "idType", "id",
-					"In callGetPreIdsRestService method URL- " + uriBuilder);
 			@SuppressWarnings("rawtypes")
 			ResponseEntity<MainListResponseDTO> respEntity = restTemplate.exchange(uriBuilder, HttpMethod.GET,
 					httpEntity, MainListResponseDTO.class);
@@ -312,8 +309,6 @@ public class DataSyncServiceUtil {
 			@SuppressWarnings({ "rawtypes", "unchecked" })
 			HttpEntity<MainResponseDTO<?>> httpEntity = new HttpEntity(requestDto, headers);
 			String uriBuilder = builder.build().encode().toUriString();
-			log.info("sessionId", "idType", "id",
-					"In callGetPreIdsByRegCenterIdRestService method URL- " + uriBuilder);
 			@SuppressWarnings("rawtypes")
 			ResponseEntity<MainListResponseDTO> respEntity = restTemplate.exchange(uriBuilder, HttpMethod.POST,
 					httpEntity, MainListResponseDTO.class);
@@ -350,8 +345,6 @@ public class DataSyncServiceUtil {
 			headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
 			HttpEntity<MainListResponseDTO<?>> httpEntity = new HttpEntity<>(headers);
 			String uriBuilder = builder.build().encode().toUriString();
-			log.info("sessionId", "idType", "id",
-					"In callGetDocRestService method URL- " + uriBuilder);
 			@SuppressWarnings("rawtypes")
 			ResponseEntity<MainListResponseDTO> respEntity = restTemplate.exchange(uriBuilder, HttpMethod.GET,
 					httpEntity, MainListResponseDTO.class);
@@ -385,8 +378,6 @@ public class DataSyncServiceUtil {
 			headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
 			HttpEntity<MainListResponseDTO<?>> httpEntity = new HttpEntity<>(headers);
 			String uriBuilder = builder.build().encode().toUriString();
-			log.info("sessionId", "idType", "id",
-					"In callGetPreRegInfoRestService method URL- " + uriBuilder);
 			@SuppressWarnings("rawtypes")
 			ResponseEntity<MainListResponseDTO> respEntity = restTemplate.exchange(uriBuilder, HttpMethod.GET,
 					httpEntity, MainListResponseDTO.class);
@@ -427,8 +418,6 @@ public class DataSyncServiceUtil {
 			@SuppressWarnings("rawtypes")
 			HttpEntity<MainResponseDTO> httpEntity = new HttpEntity<>(headers);
 			String uriBuilder = builder.build().encode().toUriString();
-			log.info("sessionId", "idType", "id",
-					"In callGetAppointmentDetailsRestService method URL- " + uriBuilder);
 			@SuppressWarnings("rawtypes")
 			ResponseEntity<MainResponseDTO> respEntity = restTemplate.exchange(uriBuilder, HttpMethod.GET, httpEntity,
 					MainResponseDTO.class);

@@ -95,7 +95,7 @@ public class ManualVerificationStage extends MosipVerticleAPIManager{
 	}
 
 	private void routes(Router router) {
-		router.post("/manual-verification/applicantBiometric/v1.0").blockingHandler(ctx -> {
+		router.post("/manual-verification/applicantBiometric/v1.0").handler(ctx -> {
 			processBiometric(ctx);
 		}).failureHandler(handlerObj -> {
 			manualVerificationExceptionHandler.setId(env.getProperty(BIOMETRIC_SERVICE_ID));
@@ -103,35 +103,35 @@ public class ManualVerificationStage extends MosipVerticleAPIManager{
 			this.setResponse(handlerObj, manualVerificationExceptionHandler.handler(handlerObj.failure()),APPLICATION_JSON); 
 		});
 
-		router.post("/manual-verification/applicantDemographic/v1.0").blockingHandler(ctx -> { 
+		router.post("/manual-verification/applicantDemographic/v1.0").handler(ctx -> { 
 			processDemographic(ctx);
-		}, false).failureHandler(handlerObj -> {
+		}).failureHandler(handlerObj -> {
 			manualVerificationExceptionHandler.setId(env.getProperty(DEMOGRAPHIC_SERVICE_ID));
 			manualVerificationExceptionHandler.setResponseDtoType(new ManualVerificationBioDemoResponseDTO());
 			this.setResponse(handlerObj, manualVerificationExceptionHandler.handler(handlerObj.failure()),APPLICATION_JSON); 
 		
 		});
 		
-		router.post("/manual-verification/assignment/v1.0").blockingHandler(ctx -> {
+		router.post("/manual-verification/assignment/v1.0").handler(ctx -> {
 			processAssignment(ctx);
-		}, false).failureHandler(handlerObj -> {
+		}).failureHandler(handlerObj -> {
 			manualVerificationExceptionHandler.setId(env.getProperty(ASSIGNMENT_SERVICE_ID));
 			manualVerificationExceptionHandler.setResponseDtoType(new ManualVerificationAssignResponseDTO());
 			this.setResponse(handlerObj, manualVerificationExceptionHandler.handler(handlerObj.failure()),APPLICATION_JSON); 
 		 
 		});
 
-		router.post("/manual-verification/decision/v1.0").blockingHandler(ctx -> {
+		router.post("/manual-verification/decision/v1.0").handler(ctx -> {
 			processDecision(ctx);
-		}, false).failureHandler(handlerObj -> {
+		}).failureHandler(handlerObj -> {
 			manualVerificationExceptionHandler.setId(env.getProperty(DECISION_SERVICE_ID));
 			manualVerificationExceptionHandler.setResponseDtoType(new ManualVerificationAssignResponseDTO());
 			this.setResponse(handlerObj, manualVerificationExceptionHandler.handler(handlerObj.failure()),APPLICATION_JSON);  
 		});
 
-		router.post("/manual-verification/packetInfo/v1.0").blockingHandler(ctx -> {
+		router.post("/manual-verification/packetInfo/v1.0").handler(ctx -> {
 			processPacketInfo(ctx);
-		}, false).failureHandler(handlerObj -> {
+		}).failureHandler(handlerObj -> {
 			manualVerificationExceptionHandler.setId(env.getProperty(PACKETINFO_SERVICE_ID));
 			manualVerificationExceptionHandler.setResponseDtoType(new ManualVerificationAssignResponseDTO());
 			this.setResponse(handlerObj, manualVerificationExceptionHandler.handler(handlerObj.failure()),APPLICATION_JSON);  

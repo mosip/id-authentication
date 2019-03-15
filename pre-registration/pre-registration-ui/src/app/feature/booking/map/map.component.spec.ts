@@ -2,7 +2,7 @@ import { async, ComponentFixture, TestBed, inject } from '@angular/core/testing'
 import { MapComponent } from './map.component';
 import { SharedService } from '../booking.service';
 
-describe('MapComponent', () => {
+fdescribe('MapComponent', () => {
   let component: MapComponent;
   let fixture: ComponentFixture<MapComponent>;
 

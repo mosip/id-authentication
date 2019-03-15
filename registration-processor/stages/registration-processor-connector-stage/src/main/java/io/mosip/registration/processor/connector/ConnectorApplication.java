@@ -21,8 +21,7 @@ public class ConnectorApplication
     	AnnotationConfigApplicationContext configApplicationContext = new AnnotationConfigApplicationContext();
 		configApplicationContext.scan(
 				  "io.mosip.registration.processor.connector.config",
-				  "io.mosip.registration.processor.connector.stage",
-				  "io.mosip.registration.processor.core.config");
+				  "io.mosip.registration.processor.connector.stage");
 		configApplicationContext.refresh();
 		ConnectorStage connectorStage = (ConnectorStage) configApplicationContext.getBean(ConnectorStage.class);
 		connectorStage.deployVerticle();

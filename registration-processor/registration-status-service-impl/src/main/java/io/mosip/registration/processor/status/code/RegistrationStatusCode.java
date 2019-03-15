@@ -7,10 +7,10 @@ package io.mosip.registration.processor.status.code;
  *
  */
 public enum RegistrationStatusCode {
-//If any new status is being added here then add it in RegistrationStatusMapUtil also.
+
 	/** Potential Match found in data base. */
 
-	DEMO_DEDUPE_POTENTIAL_MATCH_FOUND,
+	POTENTIAL_MATCH_FOUND,
 
 	/** The packet uploaded to virus scan. */
 	PACKET_UPLOADED_TO_VIRUS_SCAN,

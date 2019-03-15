@@ -16,8 +16,7 @@
     "action_send": "Envoyer OTP",
     "action_resend": "Renvoyer",
     "action_verify": "Vérifier",
-    "logout_msg": "Le demandeur doit se connecter avec le même téléphone portable / courriel pour accéder aux applications créées.",
-    "otp_valid_label": "valable"
+    "logout_msg": "Le demandeur doit se connecter avec le même téléphone portable / courriel pour accéder aux applications créées."
   },
   "stepper": {
     "link_demographic": "Détails démographiques",

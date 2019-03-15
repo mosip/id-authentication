@@ -36,7 +36,6 @@ import io.mosip.preregistration.transliteration.errorcode.ErrorCodes;
 import io.mosip.preregistration.transliteration.errorcode.ErrorMessage;
 import io.mosip.preregistration.transliteration.exception.IllegalParamException;
 import io.mosip.preregistration.transliteration.exception.MandatoryFieldRequiredException;
-import io.mosip.preregistration.transliteration.exception.UnSupportedLanguageException;
 import io.mosip.preregistration.transliteration.repository.LanguageIdRepository;
 import io.mosip.preregistration.transliteration.service.TransliterationService;
 import io.mosip.preregistration.transliteration.service.util.TransliterationServiceUtil;
@@ -170,27 +169,6 @@ public class TransliterationServiceTest {
 		responseDTO.setResponse(transliterationRequest2);
 		MainResponseDTO<TransliterationDTO> result=transliterationServiceImpl.translitratorService(requestDto);
 		
-	}
-	@Test(expected=UnSupportedLanguageException.class)
-	public void unSupportedLangTest() {
-		UnSupportedLanguageException exception=new UnSupportedLanguageException(ErrorCodes.PRG_TRL_APP_008.getCode(), 
-				ErrorMessage.UNSUPPORTED_LANGUAGE.getMessage());
-		Mockito.when(idRepository.findByFromLangAndToLang(Mockito.any(), Mockito.any())).thenReturn(idEntity);
-		TransliterationDTO transliterationRequest=new TransliterationDTO();
-		transliterationRequest=new TransliterationDTO();
-		transliterationRequest.setFromFieldLang("enl");
-		transliterationRequest.setFromFieldName("Name1");
-		transliterationRequest.setFromFieldValue("Kishan");
-		transliterationRequest.setToFieldLang("ara");
-		transliterationRequest.setToFieldName("Name2");
-		transliterationRequest.setToFieldValue("");
-		requestDto=new MainRequestDTO<TransliterationDTO>();
-		requestDto.setId("mosip.pre-registration.transliteration.transliterate");
-		requestDto.setReqTime(new Timestamp(System.currentTimeMillis()));
-		requestDto.setVer("1.0");
-		requestDto.setRequest(transliterationRequest);
-		
-		MainResponseDTO<TransliterationDTO> result=transliterationServiceImpl.translitratorService(requestDto);
 	}
 
 	

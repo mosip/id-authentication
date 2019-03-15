@@ -6,7 +6,7 @@ import { of } from 'rxjs';
 import { BookingModel } from 'src/app/feature/booking/center-selection/booking.model';
 import { BookingModelRequest } from 'src/app/shared/booking-request.model';
 
-describe('DataStorageService', () => {
+fdescribe('DataStorageService', () => {
 
   let service: DataStorageService = null;
 

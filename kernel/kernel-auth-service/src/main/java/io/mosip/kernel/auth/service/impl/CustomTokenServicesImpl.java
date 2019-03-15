@@ -11,7 +11,6 @@ import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
-import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -21,7 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import io.mosip.kernel.auth.entities.AuthToken;
 import io.mosip.kernel.auth.entities.TimeToken;
-import io.mosip.kernel.auth.exception.AuthManagerException;
 import io.mosip.kernel.auth.service.CustomTokenServices;
 
 /**
@@ -46,7 +44,7 @@ public class CustomTokenServicesImpl implements CustomTokenServices {
 	
 	public static final String SELECT_TOKEN_NAME="select user_id,auth_token,refresh_token,expiration_time from iam.oauth_access_token where user_id like :userName ";
 	
-	public static final String DELETE_ACCESS_TOKEN="delete from iam.oauth_access_token where user_id like :userName";
+	public static final String DELETE_ACCESS_TOKEN="delete auth_token from iam.oauth_access_token where user_id like :userName";
 	
 	public static final String DELETE_REFRESH_TOKEN="delete from iam.oauth_access_token where user_id like :userName";
 	
@@ -166,19 +164,20 @@ public class CustomTokenServicesImpl implements CustomTokenServices {
 	@Override
 	public void revokeToken(String token) {
 		AuthToken authToken = getTokenDetails(token);
-		if(authToken!=null)
+		if(authToken.getRefreshToken()!=null)
 		{
+			removeRefreshToken(authToken.getUserId());
+		}
 		removeAccessToken(authToken.getUserId());
-		}
-		else
-		{
-			throw new AuthManagerException(String.valueOf(HttpStatus.UNAUTHORIZED.value()),"Token is not present in datastore,Please try with new token");
-		}
 	}
 
 	private void removeAccessToken(String userId) {
 		jdbcTemplate.update(deleteAccessToken, new MapSqlParameterSource().addValue("userName", userId));
 		
+	}
+
+	private void removeRefreshToken(String userId) {
+		jdbcTemplate.update(deleteRefreshToken, new MapSqlParameterSource().addValue("userName", userId));		
 	}
 
 }

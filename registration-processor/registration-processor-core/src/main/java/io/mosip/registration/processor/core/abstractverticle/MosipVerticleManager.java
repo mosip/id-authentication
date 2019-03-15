@@ -25,6 +25,7 @@ import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import io.vertx.core.spi.cluster.ClusterManager;
 import io.vertx.spi.cluster.hazelcast.HazelcastClusterManager;
+	
 
 /**
  * This abstract class is Vert.x implementation for MOSIP.
@@ -41,17 +42,10 @@ public abstract class MosipVerticleManager extends AbstractVerticle
 
 	/** The logger. */
 	private Logger logger = LoggerFactory.getLogger(MosipVerticleManager.class);
-
+	
 	@Value("${eventbus.port}")
 	private String eventBusPort;
-	
-	/* (non-Javadoc)
-	 * @see io.mosip.registration.processor.core.spi.eventbus.EventBusManager#getEventBus(java.lang.Class, java.lang.String)
-	 */
-	@Override
-	public MosipEventBus getEventBus(Object verticleName, String clusterManagerUrl) {
-		return getEventBus(verticleName, clusterManagerUrl, 1);
-	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -60,7 +54,7 @@ public abstract class MosipVerticleManager extends AbstractVerticle
 	 * (java.lang.Class)
 	 */
 	@Override
-	public MosipEventBus getEventBus(Object verticleName, String clusterManagerUrl, int instanceNumber) {
+	public MosipEventBus getEventBus(Class<?> verticleName, String clusterManagerUrl) {
 		CompletableFuture<Vertx> eventBus = new CompletableFuture<>();
 		MosipEventBus mosipEventBus = null;
 		Config config;
@@ -74,15 +68,15 @@ public abstract class MosipVerticleManager extends AbstractVerticle
 		try {
 			address = InetAddress.getLocalHost().getHostAddress();
 		} catch (UnknownHostException e1) {
-			throw new DeploymentFailureException(PlatformErrorMessages.RPR_CMB_MALFORMED_URL_EXCEPTION.getMessage());
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
 		}
 		VertxOptions options = new VertxOptions().setClustered(true).setClusterManager(clusterManager)
-				.setHAEnabled(false).setWorkerPoolSize(instanceNumber)
-				.setEventBusOptions(new EventBusOptions().setPort(getEventBusPort()).setHost(address));
+				.setHAEnabled(false).setEventBusOptions(new EventBusOptions().setPort(getEventBusPort()).setHost(address));
 		Vertx.clusteredVertx(options, result -> {
 			if (result.succeeded()) {
-				result.result().deployVerticle((Verticle) verticleName,
-						new DeploymentOptions().setHa(false).setWorker(true).setWorkerPoolSize(instanceNumber));
+				result.result().deployVerticle(verticleName.getName(),
+						new DeploymentOptions().setHa(false).setWorker(true));
 				eventBus.complete(result.result());
 				logger.debug(verticleName + " deployed successfully");
 			} else {
@@ -99,6 +93,48 @@ public abstract class MosipVerticleManager extends AbstractVerticle
 		}
 		return mosipEventBus;
 	}
+	
+	
+	public MosipEventBus getEventBus(Object verticleName, String clusterManagerUrl) {
+		CompletableFuture<Vertx> eventBus = new CompletableFuture<>();
+		MosipEventBus mosipEventBus = null;
+		Config config;
+		try {
+			config = new UrlXmlConfig(clusterManagerUrl);
+		} catch (IOException e1) {
+			throw new DeploymentFailureException(PlatformErrorMessages.RPR_CMB_MALFORMED_URL_EXCEPTION.getMessage());
+		}
+		ClusterManager clusterManager = new HazelcastClusterManager(config);
+		String address = null;
+		try {
+			address = InetAddress.getLocalHost().getHostAddress();
+		} catch (UnknownHostException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		VertxOptions options = new VertxOptions().setClustered(true).setClusterManager(clusterManager)
+				.setHAEnabled(false).setEventBusOptions(new EventBusOptions().setPort(getEventBusPort()).setHost(address));
+		Vertx.clusteredVertx(options, result -> {
+			if (result.succeeded()) {
+				result.result().deployVerticle((Verticle)verticleName,
+						new DeploymentOptions().setHa(false).setWorker(true));
+				eventBus.complete(result.result());
+				logger.debug(verticleName + " deployed successfully");
+			} else {
+				throw new DeploymentFailureException(PlatformErrorMessages.RPR_CMB_DEPLOYMENT_FAILURE.getMessage());
+			}
+		});
+
+		try {
+			mosipEventBus = new MosipEventBus(eventBus.get());
+		} catch (InterruptedException | ExecutionException e) {
+			Thread.currentThread().interrupt();
+			throw new DeploymentFailureException(PlatformErrorMessages.RPR_CMB_DEPLOYMENT_FAILURE.getMessage(), e);
+
+		}
+		return mosipEventBus;
+	}
+	
 
 	/*
 	 * (non-Javadoc)
@@ -118,7 +154,7 @@ public abstract class MosipVerticleManager extends AbstractVerticle
 				MessageDTO result = process(messageDTO);
 				future.complete();
 				send(mosipEventBus, toAddress, result);
-			}, false, res -> {
+			}, res -> {
 				if (!res.succeeded()) {
 					logger.error("failure " + res.cause());
 				}
@@ -160,14 +196,14 @@ public abstract class MosipVerticleManager extends AbstractVerticle
 				MessageDTO messageDTO = jsonObject.mapTo(MessageDTO.class);
 				process(messageDTO);
 				future.complete();
-			}, false, res -> {
+			}, res -> {
 				if (!res.succeeded()) {
 					logger.error("failure " + res.cause());
 				}
 			});
 		});
 	}
-
+	
 	public Integer getEventBusPort() {
 		return Integer.parseInt(eventBusPort);
 	}

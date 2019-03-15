@@ -104,7 +104,7 @@ public class TokenValidator {
 	public MosipUserDtoToken validateToken(String token) throws Exception{
 		Claims claims = getClaims(token);	
 		MosipUserDto mosipUserDto = buildDto(claims);
-		return new MosipUserDtoToken(mosipUserDto,token,null,0,null,null);
+		return new MosipUserDtoToken(mosipUserDto,token,null,0,null);
 	}
 
 	private MosipUserDto buildDto(Claims claims) {
@@ -122,7 +122,7 @@ public class TokenValidator {
         Boolean isOtpRequired = (Boolean) claims.get("isOtpRequired");
         if (isOtpRequired) {
         	MosipUserDto mosipUserDto = buildDto(claims);
-            return new MosipUserDtoToken(mosipUserDto, otp,null,0,null,null);
+            return new MosipUserDtoToken(mosipUserDto, otp,null,0,null);
         } else {
             throw new RuntimeException("Invalid Token");
         }

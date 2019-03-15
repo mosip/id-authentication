@@ -101,7 +101,8 @@ public class DocumentControllerTest {
 	@Before
 	public void setUp() throws IOException {
 
-		documentDto = new DocumentRequestDTO("59276903416082", "POA", "address", "ENG");
+		documentDto = new DocumentRequestDTO("59276903416082", "POA", "address", "pdf", "Pending-Appoinment",
+				new Date(), "ENG", "sanober");
 
 		json = "{\r\n" + "	\"id\": \"osip.pre-registration.document.upload\",\r\n" + "	\"ver\": \"1.0\",\r\n"
 				+ "	\"reqTime\": \"2018-10-17T07:22:57.086Z\",\r\n" + "	\"request\": {\r\n"

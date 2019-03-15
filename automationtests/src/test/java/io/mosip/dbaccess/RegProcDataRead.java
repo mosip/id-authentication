@@ -36,7 +36,7 @@ public class RegProcDataRead {
 				else
 				{
 					if(BaseTestCase.environment.equalsIgnoreCase("qa"))	
-						factory = new Configuration().configure("regprocqa.cfg.xml")
+						factory = new Configuration().configure("regprocinteg.cfg.xml")
 								.addAnnotatedClass(OtpEntity.class).buildSessionFactory();	
 				}
 			session = factory.getCurrentSession();
@@ -68,15 +68,8 @@ public class RegProcDataRead {
 	{
 		boolean flag=false;
 
-		if(BaseTestCase.environment.equalsIgnoreCase("integration"))	
-			factory = new Configuration().configure("regprocinteg.cfg.xml")
-					.addAnnotatedClass(OtpEntity.class).buildSessionFactory();	
-			else
-			{
-				if(BaseTestCase.environment.equalsIgnoreCase("qa"))	
-					factory = new Configuration().configure("regprocqa.cfg.xml")
-							.addAnnotatedClass(OtpEntity.class).buildSessionFactory();	
-			}
+		factory = new Configuration().configure("regprocinteg.cfg.xml")
+				.addAnnotatedClass(OtpEntity.class).buildSessionFactory();	
 		session = factory.getCurrentSession();
 		session.beginTransaction();
 
@@ -99,15 +92,8 @@ public class RegProcDataRead {
 	{
 		boolean flag=false;
 
-		if(BaseTestCase.environment.equalsIgnoreCase("integration"))	
-			factory = new Configuration().configure("regprocinteg.cfg.xml")
-					.addAnnotatedClass(OtpEntity.class).buildSessionFactory();	
-			else
-			{
-				if(BaseTestCase.environment.equalsIgnoreCase("qa"))	
-					factory = new Configuration().configure("regprocqa.cfg.xml")
-							.addAnnotatedClass(OtpEntity.class).buildSessionFactory();	
-			}
+		factory = new Configuration().configure("regprocinteg.cfg.xml")
+				.addAnnotatedClass(OtpEntity.class).buildSessionFactory();	
 		session = factory.getCurrentSession();
 		session.beginTransaction();
 
@@ -274,15 +260,8 @@ public class RegProcDataRead {
     {
           boolean flag=false;
 
-          if(BaseTestCase.environment.equalsIgnoreCase("integration"))	
-				factory = new Configuration().configure("regprocinteg.cfg.xml")
-						.addAnnotatedClass(OtpEntity.class).buildSessionFactory();	
-				else
-				{
-					if(BaseTestCase.environment.equalsIgnoreCase("qa"))	
-						factory = new Configuration().configure("regprocqa.cfg.xml")
-								.addAnnotatedClass(OtpEntity.class).buildSessionFactory();	
-				}    
+          factory = new Configuration().configure("regproc.cfg.xml")
+                .addAnnotatedClass(OtpEntity.class).buildSessionFactory();      
           session = factory.getCurrentSession();
           session.beginTransaction();
 
@@ -305,15 +284,8 @@ public class RegProcDataRead {
     {
           boolean flag=false;
 
-          if(BaseTestCase.environment.equalsIgnoreCase("integration"))	
-				factory = new Configuration().configure("regprocinteg.cfg.xml")
-						.addAnnotatedClass(OtpEntity.class).buildSessionFactory();	
-				else
-				{
-					if(BaseTestCase.environment.equalsIgnoreCase("qa"))	
-						factory = new Configuration().configure("regprocqa.cfg.xml")
-								.addAnnotatedClass(OtpEntity.class).buildSessionFactory();	
-				}     
+          factory = new Configuration().configure("regprocinteg.cfg.xml")
+                .addAnnotatedClass(OtpEntity.class).buildSessionFactory();      
           session = factory.getCurrentSession();
           session.beginTransaction();
 

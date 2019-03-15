@@ -15,8 +15,7 @@
     "action_send": "Send OTP",
     "action_resend": "Resend",
     "action_verify": "Verify",
-    "logout_msg":"Applicant has to login with same Mobile/Email to access the created applications",
-    "otp_valid_label": "Valid for"
+    "logout_msg":"Applicant has to login with same Mobile/Email to access the created applications"
   },
 
   "stepper": {

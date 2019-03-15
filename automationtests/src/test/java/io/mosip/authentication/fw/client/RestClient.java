@@ -1,6 +1,6 @@
 package io.mosip.authentication.fw.client;
 
-import static io.restassured.RestAssured.given; 
+import static io.restassured.RestAssured.given;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -17,14 +17,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import javax.ws.rs.core.MediaType;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-
 
 import io.restassured.response.Response;
 
@@ -39,6 +36,7 @@ public class RestClient {
 	
 	/**
 	 * REST ASSURED POST request method
+	 * 
 	 * @param url
 	 * @param body
 	 * @param contentHeader
@@ -80,66 +78,13 @@ public class RestClient {
 	 * @param urls
 	 * @return response
 	 */
-	public Response getRequest(String url, String contentHeader, String acceptHeader) {
-		logger.info("RESSURED: Sending a GET request to " + url);
-		Response getResponse = given().relaxedHTTPSValidation().log().all().when().get(url).then().log().all().extract()
-				.response();
-		logger.info("REST-ASSURED: The response from the request is: " + getResponse.asString());
-		logger.info("REST-ASSURED: The response Time is: " + getResponse.time());
-		return getResponse;
-	}
-    /**
-	 * REST ASSURED POST request method
-	 * 
-	 * @param url
-	 * @param File
-	 * @param contentHeader
-	 * @param acceptHeader
-	 * @return response
-	 */
-	public Response postRequest(String url, File file, String contentHeader, String acceptHeader) {
-		logger.info("REST-ASSURED: Sending a POST request to " + url);
-		Response postResponse = given().relaxedHTTPSValidation().multiPart(file).contentType(contentHeader)
-				.accept(acceptHeader).log().all().when().post(url).then().log().all().extract().response();
-		logger.info("REST-ASSURED: The response from the request is: " + postResponse.asString());
-		logger.info("REST-ASSURED: The response Time is: " + postResponse.time());
-		return postResponse;
-	}
-	
-	/**
-	 * REST ASSURED POST request method
-	 * 
-	 * @param url
-	 * @param string
-	 * @param contentHeader
-	 * @param acceptHeader
-	 * @return response
-	 */
-	public Response postRequest(String url, String content, String contentHeader, MediaType acceptHeader) {
-		logger.info("REST-ASSURED: Sending a POST request to " + url);
-		Response postResponse = given().relaxedHTTPSValidation().body(content).contentType(contentHeader)
-				.accept(acceptHeader.toString()).log().all().when().post(url).then().log().all().extract().response();
-		logger.info("REST-ASSURED: The response from the request is: " + postResponse.asString());
-		logger.info("REST-ASSURED: The response Time is: " + postResponse.time());
-		return postResponse;
-	}
-	/**
-	 * REST ASSURED PATCH request method
-	 * @param url
-	 * @param body
-	 * @param contentHeader
-	 * @param acceptHeader
-	 * @return response
-	 */
-	public Response patchRequest(String url, String body, String contentHeader, String acceptHeader) {
-		logger.info("REST-ASSURED: Sending a POST request to " + url);
-		Response postResponse = given().relaxedHTTPSValidation().body(body).contentType(contentHeader)
-				.accept(acceptHeader).log().all().when().patch(url).then().log().all().extract().response();
-		logger.info("REST-ASSURED: The response from the request is: " + postResponse.asString());
-		logger.info("REST-ASSURED: The response Time is: " + postResponse.time());
-		return postResponse;
-	}
-	
-	
+    public Response getRequest(String url, String contentHeader, String acceptHeader) {
+        logger.info("RESSURED: Sending a GET request to " + url);
+        Response getResponse= given().relaxedHTTPSValidation()
+                    .log().all().when().get(url).then().log().all().extract().response();
+        logger.info("REST-ASSURED: The response from the request is: " + getResponse.asString());
+        logger.info("REST-ASSURED: The response Time is: " + getResponse.time());
+        return getResponse;
+  }
 }
 

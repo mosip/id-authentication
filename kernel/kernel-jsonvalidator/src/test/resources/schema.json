@@ -1,8 +1,8 @@
 {
-	
+	"$id": "http://mosip.io/id_object/1.0/id_object.json",
 	"$schema": "http://json-schema.org/draft-07/schema#",
 	"title": "MOSIP ID schema",
-	"description": "Sample ID schema to refer to",
+	"description": "Test ID schema to refer to",
 	"type": "object",
 	"additionalProperties": false,
 	"properties": {

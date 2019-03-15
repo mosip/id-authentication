@@ -7,7 +7,7 @@ import { HttpLoaderFactory } from 'src/app/i18n.module';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { Router } from '@angular/router';
 
-describe('ParentComponent', () => {
+fdescribe('ParentComponent', () => {
   let component: ParentComponent;
   let fixture: ComponentFixture<ParentComponent>;
 

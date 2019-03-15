@@ -9,16 +9,12 @@ import java.util.Properties;
 import java.util.Map.Entry;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
-import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
-import io.mosip.preregistration.core.config.LoggerConfiguration;
-import io.mosip.preregistration.notification.service.NotificationService;
 
 /**
  * The util class.
@@ -29,17 +25,14 @@ import io.mosip.preregistration.notification.service.NotificationService;
  */
 @Component
 public class NotificationServiceUtil {
-	
-	@Value("${mosip.utc-datetime-pattern}")
-	private String utcDateTimePattern;
 
+	private String dateTimeFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
+	
 	/**
 	 * Environment instance
 	 */
 	@Autowired
 	private Environment env;
-	
-	private Logger log = LoggerConfiguration.logConfig(NotificationServiceUtil.class);
 
 	/**
 	 * Autowired reference for {@link #RestTemplateBuilder}
@@ -54,7 +47,7 @@ public class NotificationServiceUtil {
 	 * @return the string.
 	 */
 	public String getCurrentResponseTime() {
-		return DateUtils.formatDate(new Date(System.currentTimeMillis()), utcDateTimePattern);
+		return DateUtils.formatDate(new Date(System.currentTimeMillis()), dateTimeFormat);
 	}
 	
 	public Properties parsePropertiesString(String s) throws IOException {
@@ -72,8 +65,6 @@ public class NotificationServiceUtil {
 		RestTemplate restTemplate = restTemplateBuilder.build();
 		uriBuilder.append(configServerUri + "/").append(configAppName + "/").append(configProfile + "/")
 				.append(configLabel + "/").append(filname);
-		log.info("sessionId", "idType", "id",
-				" URL in notification service util of configRestCall"+uriBuilder);
 		return restTemplate.getForObject(uriBuilder.toString(), String.class);
 		
 	}
@@ -81,6 +72,7 @@ public class NotificationServiceUtil {
 	public void getConfigParams(Properties prop,Map<String, String> configParamMap,List<String> reqParams){
 		for (Entry<Object, Object> e : prop.entrySet()) {
 			if (reqParams.contains(String.valueOf(e.getKey()))) {
+				System.out.println(String.valueOf(e.getKey()) + " ----value--- " + e.getValue());
 				configParamMap.put(String.valueOf(e.getKey()), e.getValue().toString());
 			}
 
