@@ -61,7 +61,8 @@ public class DocumentNotValidExceptionTest {
 
 		DocumentNotValidException documentNotValidException = new DocumentNotValidException(DOCUMENT_INVALID_FORMAT);
 
-		DocumentRequestDTO documentDto = new DocumentRequestDTO("48690172097498", "address", "POA", "ENG");
+		DocumentRequestDTO documentDto = new DocumentRequestDTO("48690172097498", "address", "POA", "pdf", "Pending-Appoinment",
+				new Date(),"ENG", "9217148168");
 
 		ClassLoader classLoader = getClass().getClassLoader();
 

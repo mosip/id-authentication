@@ -88,7 +88,7 @@ public class BaseTestCase {
 			if (environment.equalsIgnoreCase("integration"))
 				ApplnURI="https://integ.mosip.io";
 			if (environment.equalsIgnoreCase("qa"))
-				ApplnURI="https://qa.mosip.io";
+				ApplnURI="https://integ.mosip.io";
 			else
 				ApplnURI="https://integ.mosip.io";
 			/*environment ="integration";

@@ -19,11 +19,6 @@ import io.mosip.preregistration.documents.exception.DocumentNotFoundException;
 import io.mosip.preregistration.documents.repository.DocumentRepository;
 import io.mosip.preregistration.documents.service.util.DocumentServiceUtil;
 
-/**
- * @author Kishan Rathore
- * @since 1.0.0
- *
- */
 @Component
 public class DocumentDAO {
 

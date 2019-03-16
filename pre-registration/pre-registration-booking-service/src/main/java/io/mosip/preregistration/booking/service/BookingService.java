@@ -226,7 +226,6 @@ public class BookingService {
 							DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 							LocalDateTime bookedDateTime = LocalDateTime.parse(str, formatter);
 
-							log.info("sessionId", "idType", "id", "In bookAppointment method of Booking Service for booking Date Time- "+bookedDateTime);
 							/* Time span check for re-book */
 							serviceUtil.timeSpanCheckForRebook(bookedDateTime);
 
@@ -526,8 +525,8 @@ public class BookingService {
 					newBookingRegistrationDTO.getRegistrationCenterId());
 			log.info("sessionId", "idType", "id", "In checkSlotAvailability method of Booking Service");
 			if (entity.getAvailableKiosks() < 1) {
-				throw new AvailablityNotFoundException(ErrorCodes.PRG_BOOK_RCI_002.getCode(),
-						ErrorMessages.AVAILABILITY_NOT_FOUND_FOR_THE_SELECTED_TIME.getMessage());
+				throw new AvailablityNotFoundException(ErrorCodes.PRG_BOOK_RCI_002.toString(),
+						ErrorMessages.AVAILABILITY_NOT_FOUND_FOR_THE_SELECTED_TIME.toString());
 			}
 
 		} catch (Exception ex) {

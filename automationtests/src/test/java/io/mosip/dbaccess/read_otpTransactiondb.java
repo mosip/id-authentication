@@ -30,7 +30,7 @@ public class read_otpTransactiondb {
 			else
 			{
 				if(BaseTestCase.environment.equalsIgnoreCase("qa"))		
-					factory = new Configuration().configure("kernelqa.cfg.xml")                      
+					factory = new Configuration().configure("kernelinteg.cfg.xml")                      
 				.addAnnotatedClass(OtpEntity.class).buildSessionFactory();	
 			}
 		session = factory.getCurrentSession();
@@ -83,17 +83,7 @@ public class read_otpTransactiondb {
 	{
 		boolean flag=false;
 		
-		if(BaseTestCase.environment.equalsIgnoreCase("integration"))		
-			factory = new Configuration().configure("masterdatainteg.cfg.xml")                      
-		.addAnnotatedClass(OtpEntity.class).buildSessionFactory();	
-			else
-			{
-				if(BaseTestCase.environment.equalsIgnoreCase("qa"))		
-					factory = new Configuration().configure("masterdataqa.cfg.xml")                      
-				.addAnnotatedClass(OtpEntity.class).buildSessionFactory();	
-			}
-		
-		
+		factory = new Configuration().configure("masterdatainteg.cfg.xml").addAnnotatedClass(Gender.class).buildSessionFactory();	
 		session = factory.getCurrentSession();
 		session.beginTransaction();
 		flag=validateGenderCode(session, code);

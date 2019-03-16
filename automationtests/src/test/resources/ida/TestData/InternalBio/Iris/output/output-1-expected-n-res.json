@@ -21,7 +21,8 @@
 					"model": "steel"
 				}
 			}
-		]
+		],
+		"usageData": "0x0000001000000010"
 	},
-	"ver": "$version$"
+	"ver": "1.0"
 }

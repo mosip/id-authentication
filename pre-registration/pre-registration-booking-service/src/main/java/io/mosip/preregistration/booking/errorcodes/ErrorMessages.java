@@ -159,11 +159,7 @@ public enum ErrorMessages {
 	/**
 	 * ErrorMessage for PRG_TRL_APP_030
 	 */
-	CANNOT_GET_DETAILS_FOR("CANNOT_GET_DETAILS_FOR"),
-	/**
-	 * ErrorMessage for PRG_TRL_APP_031
-	 */
-	INVALID_BOOKING_DATE_TIME("Invalid Booking Date Time");
+	CANNOT_GET_DETAILS_FOR("CANNOT_GET_DETAILS_FOR");
 	/**
 	 * @param code
 	 */

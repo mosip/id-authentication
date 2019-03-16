@@ -13,7 +13,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -61,13 +60,13 @@ public class CryptoUtil {
 			headers.setContentType(MediaType.APPLICATION_JSON);
 
 			HttpEntity<CryptoManagerRequestDTO> request = new HttpEntity<>(dto, headers);
-			log.info("sessionId", "idType", "id", "In encrypt method of CryptoUtil service cryptoResourceUrl: "+cryptoResourceUrl+"/encrypt");
+
 			response = restTemplate.exchange(cryptoResourceUrl + "/encrypt", HttpMethod.POST, request,
 					CryptoManagerResponseDTO.class);
 			encryptedBytes = response.getBody().getData().getBytes();
-		} catch (Exception ex) {
-			log.error("sessionId", "idType", "id", "In encrypt method of CryptoUtil Util for Exception- "
-					+ ex.getMessage());
+		} catch (HttpClientErrorException ex) {
+			log.error("sessionId", "idType", "id", "In encrypt method of CryptoUtil Util for HttpClientErrorException- "
+					+ ex.getResponseBodyAsString());
 			throw new EncryptionFailedException(ErrorCodes.PRG_CORE_REQ_011.getCode(),ErrorMessages.FAILED_TO_ENCRYPT.getMessage());
 		}
 		return encryptedBytes;
@@ -90,14 +89,14 @@ public class CryptoUtil {
 			headers.setContentType(MediaType.APPLICATION_JSON);
 
 			HttpEntity<CryptoManagerRequestDTO> request = new HttpEntity<>(dto, headers);
-			log.info("sessionId", "idType", "id", "In decrypt method of CryptoUtil service cryptoResourceUrl: "+cryptoResourceUrl+"/decrypt");
+
 			response = restTemplate.exchange(cryptoResourceUrl + "/decrypt", HttpMethod.POST, request,
 					CryptoManagerResponseDTO.class);
 			decodedBytes = Base64.decodeBase64(response.getBody().getData().getBytes());
 
-		} catch (Exception ex) {
-			log.error("sessionId", "idType", "id", "In decrypt method of CryptoUtil Util for Exception- "
-					+ ex.getMessage());
+		} catch (HttpClientErrorException ex) {
+			log.error("sessionId", "idType", "id", "In decrypt method of CryptoUtil Util for HttpClientErrorException- "
+					+ ex.getResponseBodyAsString());
 			throw new DecryptionFailedException(ErrorCodes.PRG_CORE_REQ_012.getCode(),ErrorMessages.FAILED_TO_DECRYPT.getMessage());
 		}
 		return decodedBytes;

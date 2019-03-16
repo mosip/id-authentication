@@ -74,7 +74,7 @@ public class UinGeneratorStageTest {
 	@InjectMocks
 	private UinGeneratorStage uinGeneratorStage = new UinGeneratorStage() {
 		@Override
-		public MosipEventBus getEventBus(Object verticleName, String url, int instanceNumber) {
+		public MosipEventBus getEventBus(Class<?> verticleName, String url) {
 			vertx = Vertx.vertx();
 
 			return new MosipEventBus(vertx) {

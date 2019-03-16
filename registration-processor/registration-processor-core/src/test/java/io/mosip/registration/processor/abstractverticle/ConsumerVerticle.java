@@ -36,7 +36,7 @@ public class ConsumerVerticle extends MosipVerticleManager {
 	}
 
 	public MosipEventBus deployVerticle() {
-		MosipEventBus mosipEventBus = this.getEventBus(this,this.findUrl().toString());
+		MosipEventBus mosipEventBus = this.getEventBus(this.getClass(),this.findUrl().toString());
 		return mosipEventBus;
 	}
 	public URL findUrl()

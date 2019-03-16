@@ -20,12 +20,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
-import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.templatemanager.spi.TemplateManager;
 import io.mosip.preregistration.core.common.dto.NotificationDTO;
 import io.mosip.preregistration.core.common.dto.TemplateResponseDTO;
 import io.mosip.preregistration.core.common.dto.TemplateResponseListDTO;
-import io.mosip.preregistration.core.config.LoggerConfiguration;
 
 
 
@@ -40,8 +38,6 @@ import io.mosip.preregistration.core.config.LoggerConfiguration;
  */
 @Component
 public class TemplateUtil {
-	
-	private Logger log = LoggerConfiguration.logConfig(TemplateUtil.class);
 	/**
 	 * Reference for ${resource.template.url} from property file
 	 */
@@ -67,7 +63,7 @@ public class TemplateUtil {
 		
 		
 		String url = resourceUrl + "/" + langCode + "/" + templatetypecode;
-		log.info("sessionId", "idType", "id", "In getTemplate method of TemplateUtil service url: "+url);
+
 		ResponseEntity<TemplateResponseListDTO> respEntity = restTemplate.getForEntity(url, TemplateResponseListDTO.class);
 
 		List<TemplateResponseDTO> response = respEntity.getBody().getTemplates();
@@ -85,7 +81,7 @@ public class TemplateUtil {
 	 * @throws IOException 
 	 */
 	public String templateMerge(String fileText, NotificationDTO acknowledgementDTO) throws IOException {
-		log.info("sessionId", "idType", "id", "In templateMerge method of TemplateUtil service ");
+
 		String mergeTemplate = null;
 		Map<String, Object> map = mapSetting(acknowledgementDTO);
 			InputStream templateInputStream = new ByteArrayInputStream(fileText.getBytes(Charset.forName("UTF-8")));
@@ -105,7 +101,7 @@ public class TemplateUtil {
 	 */
 	public Map<String, Object> mapSetting(NotificationDTO acknowledgementDTO) {
 		Map<String, Object> responseMap = new HashMap<>();
-		log.info("sessionId", "idType", "id", "In mapSetting method of TemplateUtil service ");
+
 		DateTimeFormatter dateFormate = DateTimeFormatter.ofPattern("yyyy/MM/dd");
 
 		LocalDateTime now = LocalDateTime.now();

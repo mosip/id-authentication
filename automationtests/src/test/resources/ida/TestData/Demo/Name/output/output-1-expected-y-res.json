@@ -1,6 +1,7 @@
 {
 	"status": "Y",
-	"err": [],
+	"err": [
+	],
 	"txnID": "1234567890",
 	"resTime": "2019-01-31T12:36:16.576+05:30",
 	"info": {
@@ -14,7 +15,9 @@
 				"matchingThreshold": 100
 			}
 		],
-		"bioInfos": []
+		"bioInfos": [
+		],
+		"usageData": "0x4000000040000000"
 	},
-	"ver": "$version$"
+	"ver": "1.0"
 }

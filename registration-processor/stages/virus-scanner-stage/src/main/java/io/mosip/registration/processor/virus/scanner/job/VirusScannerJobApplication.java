@@ -11,8 +11,7 @@ public class VirusScannerJobApplication {
 		configApplicationContext.scan("io.mosip.registration.processor.virus.scanner.job",
 									  "io.mosip.registration.processor.packet.manager.config",
 									  "io.mosip.registration.processor.status.config",
-									  "io.mosip.registration.processor.core.kernel.beans",
-									  "io.mosip.registration.processor.core.config");
+									  "io.mosip.registration.processor.core.kernel.beans");
 
 		configApplicationContext.refresh();
 

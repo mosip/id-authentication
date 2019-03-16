@@ -1,6 +1,6 @@
 package io.mosip.authentication.tests;
 
-import java.io.File;  
+import java.io.File; 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.HashMap;
@@ -30,13 +30,13 @@ import io.mosip.authentication.fw.util.AuditValidUtil;
 import io.mosip.authentication.fw.util.DataProviderClass;
 import io.mosip.authentication.fw.util.FileUtil;
 import io.mosip.authentication.fw.util.IdaScriptsUtil;
-import io.mosip.authentication.fw.dto.OutputValidationDto;
+import io.mosip.authentication.fw.util.OutputValidationDto;
 import io.mosip.authentication.fw.util.OutputValidationUtil;
 import io.mosip.authentication.fw.util.ReportUtil;
 import io.mosip.authentication.fw.util.RunConfig;
 import io.mosip.authentication.fw.util.TestParameters;
-import io.mosip.authentication.testdata.TestDataProcessor;
-import io.mosip.authentication.testdata.TestDataUtil;
+import io.mosip.testdata.TestDataProcessor;
+import io.mosip.testdata.TestDataUtil;
 
 import org.testng.Reporter;
 
@@ -153,4 +153,3 @@ public class StaticPinAuthentication extends IdaScriptsUtil implements ITest{
 	}
 
 }
-

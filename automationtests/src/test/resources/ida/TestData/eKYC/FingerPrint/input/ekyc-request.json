@@ -5,5 +5,5 @@
 	"eprintReq": true,
 	"id": "mosip.identity.kyc",
 	"secLangReq": false,
-	"ver": "$version$"
+	"ver": "1.0"
 }

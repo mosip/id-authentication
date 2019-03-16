@@ -119,7 +119,6 @@ public class AuditLogUtil {
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON);
 			String uriBuilder = builder.build().encode(StandardCharsets.UTF_8).toUriString();
-			log.info("sessionId", "idType", "id", "In callAuditManager method of AugitLogUtil service auditUrl: "+uriBuilder);
 			ResponseEntity<AuditResponseDto> respEntity = restTemplate.postForEntity(uriBuilder, auditRequestDto,
 					AuditResponseDto.class);
 			auditFlag = respEntity.getBody().isStatus();

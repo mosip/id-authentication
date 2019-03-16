@@ -1,69 +1,62 @@
 testdata:
   Valid_MockRequest_LeftAndRightEye_With_ValidCompositeScoreMatch_smoke:
+    input.identity-encrypt-data:
+      identityReq.valuerightEye: Rk1SACAyMAAAAAEIAAABPAFiAMUAxQEAAAAoJ4CeAK9OV4CrAK49ZICRAIvOV4DCAL+vZIBkAMfTZIBoAHGtZIDmAMu8ZIBKAGywZICAAEOOZEDJARUUZIAiAIKqUIClATAIZEAyADiXXYChALhSZICIAJnMXYCFAIy3V4DOAKFBZIBPAKI2ZIC+APaVZIDWAG7GZICuAQ4ZZIA3AHeuZIEIAM/JUEECAPStV0D2AQotV0DMAUn8V4ClAKBLV4C5AK6sZEB1AI0kZECSAHaaXYCLAGGQZEDrAKTFZIDiAG/KZIB1AQxjZIBjARNlZIDqA
+      identityReq.valueleftEye: Rk1SACA9OV4CrAK49ZICRAIvOV4DCAL+vZIBkAMfTZIBoAHGtZIDmAMu8ZIBKAGywZICAAEOOZEDJARUUZIAiAIKqUIClATAIZEAyADiXXYChALhSZICIAJnMXYCFAIy3V4DOAKFBZIBPAKI2ZIC+APaVZIDWAG7GZICuAQ4ZZIA3AHeuZIEIAM/JUEECAPStV0D2AQotV0DMAUn8V4ClAKBLV4C5AK6sZEB1AI0kZECSAHaaXYCLAGGQZEDrAKTFZIDiAG/KZIB1AQxjZIBjARNlZIDqAFfRZEBMARxtUEAoAFucXUBFABUQSQAA
+      identityReq.tspID: REF01
     input.bio-auth-data:
       bioAuthReq.idvId: $UIN:WITH:EVEN$
-      bioAuthReq.tspID: REF01
+      bioAuthReq.tspID: $input.identity-encrypt-data:identityReq.tspID$
       bioAuthReq.reqTime: $TIMESTAMP$   
-      bioAuthReq.txnID: $RANDOM:N:10$
-    input.identity-encrypt-data:
-      identityReq.valuerightEye: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~DECODEFILE:valuedocuments0~//BIR/BDBInfo[Type='Iris'][Subtype='Right']//following::BDB$
-      identityReq.valueleftEye: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~DECODEFILE:valuedocuments0~//BIR/BDBInfo[Type='Iris'][Subtype='Left']//following::BDB$
-      identityReq.tspID: $input.bio-auth-data:bioAuthReq.tspID$
     input.ekyc-request:
       ekycReq.ekycAuthType: I 
     output.output-1-expected-y-res:
       output.1.response.y.status: Y
       output.1.response.y.resTime: $TIMESTAMP$
       output.1.response.y.response: $IGNORE$
-      output.1.response.y.txnID: $input.bio-auth-data:bioAuthReq.txnID$
       
   Valid_MockRequest_LeftEye_With_MatchingScore_Exceed_ThresholdValue_smoke:
-    input.bio-auth-data:
-      bioAuthReq.idvId: $UIN:WITH:EVEN$
-      bioAuthReq.tspID: REF01
-      bioAuthReq.reqTime: $TIMESTAMP$ 
-      bioAuthReq.txnID: $RANDOM:N:10$
     input.identity-encrypt-data:
       identityReq.rightEye: $REMOVE$
-      identityReq.valueleftEye: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~DECODEFILE:valuedocuments0~//BIR/BDBInfo[Type='Iris'][Subtype='Left']//following::BDB$
-      identityReq.tspID: $input.bio-auth-data:bioAuthReq.tspID$
-    input.ekyc-request:
-      ekycReq.ekycAuthType: I    
-    output.output-1-expected-y-res:
-      output.1.response.y.status: Y
-      output.1.response.y.resTime: $TIMESTAMP$
-      output.1.response.y.response: $IGNORE$
-      output.1.response.y.txnID: $input.bio-auth-data:bioAuthReq.txnID$
-      
-  Valid_MockRequest_RightEye_With_MatchingScore_Exceed_ThresholdValue_regression:
-    input.bio-auth-data:
-      bioAuthReq.idvId: $UIN:WITH:ODD$
-      bioAuthReq.tspID: $RANDOM:N:10$
-      bioAuthReq.reqTime: $TIMESTAMP$ 
-      bioAuthReq.txnID: $RANDOM:N:10$
-    input.identity-encrypt-data:
-      identityReq.valuerightEye: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~DECODEFILE:valuedocuments0~//BIR/BDBInfo[Type='Iris'][Subtype='Right']//following::BDB$
-      identityReq.leftEye: $REMOVE$
-      identityReq.tspID: $input.bio-auth-data:bioAuthReq.tspID$
-    input.ekyc-request:
-      ekycReq.ekycAuthType: I    
-    output.output-1-expected-y-res:
-      output.1.response.y.status: Y
-      output.1.response.y.resTime: $TIMESTAMP$
-      output.1.response.y.response: $IGNORE$
-      output.1.response.y.txnID: $input.bio-auth-data:bioAuthReq.txnID$
-      
-  Invalid_Without_Model:
+      identityReq.valueleftEye: Rk1SACA9OV4CrAK49ZICRAIvOV4DCAL+vZIBkAMfTZIBoAHGtZIDmAMu8ZIBKAGywZICAAEOOZEDJARUUZIAiAIKqUIClATAIZEAyADiXXYChALhSZICIAJnMXYCFAIy3V4DOAKFBZIBPAKI2ZIC+APaVZIDWAG7GZICuAQ4ZZIA3AHeuZIEIAM/JUEECAPStV0D2AQotV0DMAUn8V4ClAKBLV4C5AK6sZEB1AI0kZECSAHaaXYCLAGGQZEDrAKTFZIDiAG/KZIB1AQxjZIBjARNlZIDqAFfRZEBMARxtUEAoAFucXUBFABUQSQAA
+      identityReq.tspID: REF01
     input.bio-auth-data:
       bioAuthReq.idvId: $UIN:WITH:EVEN$
-      bioAuthReq.tspID: $RANDOM:N:10$
+      bioAuthReq.tspID: $input.identity-encrypt-data:identityReq.tspID$
+      bioAuthReq.reqTime: $TIMESTAMP$ 
+    input.ekyc-request:
+      ekycReq.ekycAuthType: I    
+    output.output-1-expected-y-res:
+      output.1.response.y.status: Y
+      output.1.response.y.resTime: $TIMESTAMP$
+      output.1.response.y.response: $IGNORE$
+      
+  Valid_MockRequest_RightEye_With_MatchingScore_Exceed_ThresholdValue_regression:
+    input.identity-encrypt-data:
+      identityReq.leftEye: $REMOVE$
+      identityReq.valuerightEye: Rk1SACAyMAAAAAEIAAABPAFiAMUAxQEAAAAoJ4CeAK9OV4CrAK49ZICRAIvOV4DCAL+vZIBkAMfTZIBoAHGtZIDmAMu8ZIBKAGywZICAAEOOZEDJARUUZIAiAIKqUIClATAIZEAyADiXXYChALhSZICIAJnMXYCFAIy3V4DOAKFBZIBPAKI2ZIC+APaVZIDWAG7GZICuAQ4ZZIA3AHeuZIEIAM/JUEECAPStV0D2AQotV0DMAUn8V4ClAKBLV4C5AK6sZEB1AI0kZECSAHaaXYCLAGGQZEDrAKTFZIDiAG/KZIB1AQxjZIBjARNlZIDqA
+      identityReq.tspID: REF01
+    input.bio-auth-data:
+      bioAuthReq.idvId: $UIN:WITH:ODD$
+      bioAuthReq.tspID: $input.identity-encrypt-data:identityReq.tspID$
+      bioAuthReq.reqTime: $TIMESTAMP$ 
+    input.ekyc-request:
+      ekycReq.ekycAuthType: I    
+    output.output-1-expected-y-res:
+      output.1.response.y.status: Y
+      output.1.response.y.resTime: $TIMESTAMP$
+      output.1.response.y.response: $IGNORE$
+      
+  Invalid_Without_Model:
+    input.identity-encrypt-data:
+      identityReq.rightEye: $REMOVE$
+      identityReq.valueleftEye: Rk1SACA9OV4CrAK49ZICRAIvOV4DCAL+vZIBkAMfTZIBoAHGtZIDmAMu8ZIBKAGywZICAAEOOZEDJARUUZIAiAIKqUIClATAIZEAyADiXXYChALhSZICIAJnMXYCFAIy3V4DOAKFBZIBPAKI2ZIC+APaVZIDWAG7GZICuAQ4ZZIA3AHeuZIEIAM/JUEECAPStV0D2AQotV0DMAUn8V4ClAKBLV4C5AK6sZEB1AI0kZECSAHaaXYCLAGGQZEDrAKTFZIDiAG/KZIB1AQxjZIBjARNlZIDqAFfRZEBMARxtUEAoAFucXUBFABUQSQAA
+      identityReq.tspID: REF01
+    input.bio-auth-data:
+      bioAuthReq.idvId: $UIN:WITH:EVEN$
+      bioAuthReq.tspID: $input.identity-encrypt-data:identityReq.tspID$
       bioAuthReq.reqTime: $TIMESTAMP$
       bioAuthReq.model: $REMOVE$
-      bioAuthReq.txnID: $RANDOM:N:10$
-    input.identity-encrypt-data:
-      identityReq.valuerightEye: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~DECODEFILE:valuedocuments0~//BIR/BDBInfo[Type='Iris'][Subtype='Right']//following::BDB$
-      identityReq.valueleftEye: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~DECODEFILE:valuedocuments0~//BIR/BDBInfo[Type='Iris'][Subtype='Left']//following::BDB$
-      identityReq.tspID: $input.bio-auth-data:bioAuthReq.tspID$
     input.ekyc-request:
       ekycReq.ekycAuthType: I
     output.output-1-expected-n-error-res:
@@ -73,16 +66,15 @@ testdata:
       output.1.response.n.err.errorCode: IDA-IDV-003
    
   Invalid_NullValue_Model:
+    input.identity-encrypt-data:
+      identityReq.rightEye: $REMOVE$
+      identityReq.valueleftEye: Rk1SACA9OV4CrAK49ZICRAIvOV4DCAL+vZIBkAMfTZIBoAHGtZIDmAMu8ZIBKAGywZICAAEOOZEDJARUUZIAiAIKqUIClATAIZEAyADiXXYChALhSZICIAJnMXYCFAIy3V4DOAKFBZIBPAKI2ZIC+APaVZIDWAG7GZICuAQ4ZZIA3AHeuZIEIAM/JUEECAPStV0D2AQotV0DMAUn8V4ClAKBLV4C5AK6sZEB1AI0kZECSAHaaXYCLAGGQZEDrAKTFZIDiAG/KZIB1AQxjZIBjARNlZIDqAFfRZEBMARxtUEAoAFucXUBFABUQSQAA
+      identityReq.tspID: REF01
     input.bio-auth-data:
       bioAuthReq.idvId: $UIN:WITH:EVEN$
-      bioAuthReq.tspID: $RANDOM:N:10$
+      bioAuthReq.tspID: $input.identity-encrypt-data:identityReq.tspID$
       bioAuthReq.reqTime: $TIMESTAMP$
-      bioAuthReq.txnID: $RANDOM:N:10$
       bioAuthReq.model: ''
-    input.identity-encrypt-data:
-      identityReq.valuerightEye: $REMOVE$
-      identityReq.valueleftEye: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~DECODEFILE:valuedocuments0~//BIR/BDBInfo[Type='Iris'][Subtype='Left']//following::BDB$
-      identityReq.tspID: $input.bio-auth-data:bioAuthReq.tspID$
     input.ekyc-request:
       ekycReq.ekycAuthType: I 
     output.output-1-expected-n-error-res:
@@ -92,16 +84,15 @@ testdata:
       output.1.response.n.err.errorCode: IDA-IDV-003
       
   Invalid_Without_Make:
+    input.identity-encrypt-data:
+      identityReq.rightEye: $REMOVE$
+      identityReq.valueleftEye: Rk1SACA9OV4CrAK49ZICRAIvOV4DCAL+vZIBkAMfTZIBoAHGtZIDmAMu8ZIBKAGywZICAAEOOZEDJARUUZIAiAIKqUIClATAIZEAyADiXXYChALhSZICIAJnMXYCFAIy3V4DOAKFBZIBPAKI2ZIC+APaVZIDWAG7GZICuAQ4ZZIA3AHeuZIEIAM/JUEECAPStV0D2AQotV0DMAUn8V4ClAKBLV4C5AK6sZEB1AI0kZECSAHaaXYCLAGGQZEDrAKTFZIDiAG/KZIB1AQxjZIBjARNlZIDqAFfRZEBMARxtUEAoAFucXUBFABUQSQAA
+      identityReq.tspID: REF01
     input.bio-auth-data:
       bioAuthReq.idvId: $UIN:WITH:EVEN$
-      bioAuthReq.tspID: $RANDOM:N:10$
+      bioAuthReq.tspID: $input.identity-encrypt-data:identityReq.tspID$
       bioAuthReq.reqTime: $TIMESTAMP$
-      bioAuthReq.txnID: $RANDOM:N:10$
       bioAuthReq.make: $REMOVE$
-    input.identity-encrypt-data:
-      identityReq.valuerightEye: $REMOVE$
-      identityReq.valueleftEye: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~DECODEFILE:valuedocuments0~//BIR/BDBInfo[Type='Iris'][Subtype='Left']//following::BDB$
-      identityReq.tspID: $input.bio-auth-data:bioAuthReq.tspID$
     input.ekyc-request:
       ekycReq.ekycAuthType: I 
     output.output-1-expected-n-error-res:
@@ -111,16 +102,15 @@ testdata:
       output.1.response.n.err.errorCode: IDA-IDV-003
       
   Invalid_NullValue_Make:
+    input.identity-encrypt-data:
+      identityReq.rightEye: $REMOVE$
+      identityReq.valueleftEye: Rk1SACA9OV4CrAK49ZICRAIvOV4DCAL+vZIBkAMfTZIBoAHGtZIDmAMu8ZIBKAGywZICAAEOOZEDJARUUZIAiAIKqUIClATAIZEAyADiXXYChALhSZICIAJnMXYCFAIy3V4DOAKFBZIBPAKI2ZIC+APaVZIDWAG7GZICuAQ4ZZIA3AHeuZIEIAM/JUEECAPStV0D2AQotV0DMAUn8V4ClAKBLV4C5AK6sZEB1AI0kZECSAHaaXYCLAGGQZEDrAKTFZIDiAG/KZIB1AQxjZIBjARNlZIDqAFfRZEBMARxtUEAoAFucXUBFABUQSQAA
+      identityReq.tspID: REF01
     input.bio-auth-data:
       bioAuthReq.idvId: $UIN:WITH:EVEN$
-      bioAuthReq.tspID: $RANDOM:N:10$
+      bioAuthReq.tspID: $input.identity-encrypt-data:identityReq.tspID$
       bioAuthReq.reqTime: $TIMESTAMP$
-      bioAuthReq.txnID: $RANDOM:N:10$
       bioAuthReq.make: ''
-    input.identity-encrypt-data:
-      identityReq.valuerightEye: $REMOVE$
-      identityReq.valueleftEye: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~DECODEFILE:valuedocuments0~//BIR/BDBInfo[Type='Iris'][Subtype='Left']//following::BDB$
-      identityReq.tspID: $input.bio-auth-data:bioAuthReq.tspID$
     input.ekyc-request:
       ekycReq.ekycAuthType: I 
     output.output-1-expected-n-error-res:
@@ -130,16 +120,15 @@ testdata:
       output.1.response.n.err.errorCode: IDA-IDV-003
       
   Invalid_Make_Value:
+    input.identity-encrypt-data:
+      identityReq.rightEye: $REMOVE$
+      identityReq.valueleftEye: Rk1SACA9OV4CrAK49ZICRAIvOV4DCAL+vZIBkAMfTZIBoAHGtZIDmAMu8ZIBKAGywZICAAEOOZEDJARUUZIAiAIKqUIClATAIZEAyADiXXYChALhSZICIAJnMXYCFAIy3V4DOAKFBZIBPAKI2ZIC+APaVZIDWAG7GZICuAQ4ZZIA3AHeuZIEIAM/JUEECAPStV0D2AQotV0DMAUn8V4ClAKBLV4C5AK6sZEB1AI0kZECSAHaaXYCLAGGQZEDrAKTFZIDiAG/KZIB1AQxjZIBjARNlZIDqAFfRZEBMARxtUEAoAFucXUBFABUQSQAA
+      identityReq.tspID: REF01
     input.bio-auth-data:
       bioAuthReq.idvId: $UIN:WITH:EVEN$
-      bioAuthReq.tspID: $RANDOM:N:10$
+      bioAuthReq.tspID: $input.identity-encrypt-data:identityReq.tspID$
       bioAuthReq.reqTime: $TIMESTAMP$
-      bioAuthReq.txnID: $RANDOM:N:10$
       bioAuthReq.make: ''
-    input.identity-encrypt-data:
-      identityReq.valuerightEye: $REMOVE$
-      identityReq.valueleftEye: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~DECODEFILE:valuedocuments0~//BIR/BDBInfo[Type='Iris'][Subtype='Left']//following::BDB$
-      identityReq.tspID: $input.bio-auth-data:bioAuthReq.tspID$
     input.ekyc-request:
       ekycReq.ekycAuthType: I 
     output.output-1-expected-n-error-res:
@@ -149,16 +138,15 @@ testdata:
       output.1.response.n.err.errorCode: IDA-IDV-003
       
   Invalid_Without_deviceId:
+    input.identity-encrypt-data:
+      identityReq.rightEye: $REMOVE$
+      identityReq.valueleftEye: Rk1SACA9OV4CrAK49ZICRAIvOV4DCAL+vZIBkAMfTZIBoAHGtZIDmAMu8ZIBKAGywZICAAEOOZEDJARUUZIAiAIKqUIClATAIZEAyADiXXYChALhSZICIAJnMXYCFAIy3V4DOAKFBZIBPAKI2ZIC+APaVZIDWAG7GZICuAQ4ZZIA3AHeuZIEIAM/JUEECAPStV0D2AQotV0DMAUn8V4ClAKBLV4C5AK6sZEB1AI0kZECSAHaaXYCLAGGQZEDrAKTFZIDiAG/KZIB1AQxjZIBjARNlZIDqAFfRZEBMARxtUEAoAFucXUBFABUQSQAA
+      identityReq.tspID: REF01
     input.bio-auth-data:
       bioAuthReq.idvId: $UIN:WITH:EVEN$
-      bioAuthReq.tspID: $RANDOM:N:10$
+      bioAuthReq.tspID: $input.identity-encrypt-data:identityReq.tspID$
       bioAuthReq.reqTime: $TIMESTAMP$
-      bioAuthReq.txnID: $RANDOM:N:10$
       bioAuthReq.deviceId: $REMOVE$
-    input.identity-encrypt-data:
-      identityReq.valuerightEye: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~DECODEFILE:valuedocuments0~//BIR/BDBInfo[Type='Iris'][Subtype='Right']//following::BDB$
-      identityReq.valueleftEye: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~DECODEFILE:valuedocuments0~//BIR/BDBInfo[Type='Iris'][Subtype='Left']//following::BDB$
-      identityReq.tspID: $input.bio-auth-data:bioAuthReq.tspID$
     input.ekyc-request:
       ekycReq.ekycAuthType: I 
     output.output-1-expected-n-error-res:
@@ -168,16 +156,15 @@ testdata:
       output.1.response.n.err.errorCode: IDA-IDV-003
       
   Invalid_Null_deviceId:
+    input.identity-encrypt-data:
+      identityReq.rightEye: $REMOVE$
+      identityReq.valueleftEye: Rk1SACA9OV4CrAK49ZICRAIvOV4DCAL+vZIBkAMfTZIBoAHGtZIDmAMu8ZIBKAGywZICAAEOOZEDJARUUZIAiAIKqUIClATAIZEAyADiXXYChALhSZICIAJnMXYCFAIy3V4DOAKFBZIBPAKI2ZIC+APaVZIDWAG7GZICuAQ4ZZIA3AHeuZIEIAM/JUEECAPStV0D2AQotV0DMAUn8V4ClAKBLV4C5AK6sZEB1AI0kZECSAHaaXYCLAGGQZEDrAKTFZIDiAG/KZIB1AQxjZIBjARNlZIDqAFfRZEBMARxtUEAoAFucXUBFABUQSQAA
+      identityReq.tspID: REF01
     input.bio-auth-data:
       bioAuthReq.idvId: $UIN:WITH:EVEN$
-      bioAuthReq.tspID: $RANDOM:N:10$
-      bioAuthReq.txnID: $RANDOM:N:10$
+      bioAuthReq.tspID: $input.identity-encrypt-data:identityReq.tspID$
       bioAuthReq.reqTime: $TIMESTAMP$
       bioAuthReq.deviceId: ''
-    input.identity-encrypt-data:
-      identityReq.valuerightEye: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~DECODEFILE:valuedocuments0~//BIR/BDBInfo[Type='Iris'][Subtype='Right']//following::BDB$
-      identityReq.valueleftEye: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~DECODEFILE:valuedocuments0~//BIR/BDBInfo[Type='Iris'][Subtype='Left']//following::BDB$
-      identityReq.tspID: $input.bio-auth-data:bioAuthReq.tspID$
     input.ekyc-request:
       ekycReq.ekycAuthType: I 
     output.output-1-expected-n-error-res:
@@ -187,16 +174,15 @@ testdata:
       output.1.response.n.err.errorCode: IDA-IDV-003
       
   Invalid_Without_BioType:
+    input.identity-encrypt-data:
+      identityReq.rightEye: $REMOVE$
+      identityReq.valueleftEye: Rk1SACA9OV4CrAK49ZICRAIvOV4DCAL+vZIBkAMfTZIBoAHGtZIDmAMu8ZIBKAGywZICAAEOOZEDJARUUZIAiAIKqUIClATAIZEAyADiXXYChALhSZICIAJnMXYCFAIy3V4DOAKFBZIBPAKI2ZIC+APaVZIDWAG7GZICuAQ4ZZIA3AHeuZIEIAM/JUEECAPStV0D2AQotV0DMAUn8V4ClAKBLV4C5AK6sZEB1AI0kZECSAHaaXYCLAGGQZEDrAKTFZIDiAG/KZIB1AQxjZIBjARNlZIDqAFfRZEBMARxtUEAoAFucXUBFABUQSQAA
+      identityReq.tspID: REF01
     input.bio-auth-data:
       bioAuthReq.idvId: $UIN:WITH:EVEN$
-      bioAuthReq.tspID: $RANDOM:N:10$
+      bioAuthReq.tspID: $input.identity-encrypt-data:identityReq.tspID$
       bioAuthReq.reqTime: $TIMESTAMP$
-      bioAuthReq.txnID: $RANDOM:N:10$
       bioAuthReq.bioType: $REMOVE$
-    input.identity-encrypt-data:
-      identityReq.valuerightEye: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~DECODEFILE:valuedocuments0~//BIR/BDBInfo[Type='Iris'][Subtype='Right']//following::BDB$
-      identityReq.valueleftEye: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~DECODEFILE:valuedocuments0~//BIR/BDBInfo[Type='Iris'][Subtype='Left']//following::BDB$
-      identityReq.tspID: $input.bio-auth-data:bioAuthReq.tspID$
     input.ekyc-request:
       ekycReq.ekycAuthType: I 
     output.output-1-expected-n-error-res:
@@ -206,16 +192,15 @@ testdata:
       output.1.response.n.err.errorCode: IDA-BIA-013
       
   Invalid_Null_BioType:
+    input.identity-encrypt-data:
+      identityReq.rightEye: $REMOVE$
+      identityReq.valueleftEye: Rk1SACA9OV4CrAK49ZICRAIvOV4DCAL+vZIBkAMfTZIBoAHGtZIDmAMu8ZIBKAGywZICAAEOOZEDJARUUZIAiAIKqUIClATAIZEAyADiXXYChALhSZICIAJnMXYCFAIy3V4DOAKFBZIBPAKI2ZIC+APaVZIDWAG7GZICuAQ4ZZIA3AHeuZIEIAM/JUEECAPStV0D2AQotV0DMAUn8V4ClAKBLV4C5AK6sZEB1AI0kZECSAHaaXYCLAGGQZEDrAKTFZIDiAG/KZIB1AQxjZIBjARNlZIDqAFfRZEBMARxtUEAoAFucXUBFABUQSQAA
+      identityReq.tspID: REF01
     input.bio-auth-data:
       bioAuthReq.idvId: $UIN:WITH:EVEN$
-      bioAuthReq.txnID: $RANDOM:N:10$
-      bioAuthReq.tspID: $RANDOM:N:10$
+      bioAuthReq.tspID: $input.identity-encrypt-data:identityReq.tspID$
       bioAuthReq.reqTime: $TIMESTAMP$
       bioAuthReq.bioType: ''
-    input.identity-encrypt-data:
-      identityReq.valuerightEye: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~DECODEFILE:valuedocuments0~//BIR/BDBInfo[Type='Iris'][Subtype='Right']//following::BDB$
-      identityReq.valueleftEye: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~DECODEFILE:valuedocuments0~//BIR/BDBInfo[Type='Iris'][Subtype='Left']//following::BDB$
-      identityReq.tspID: $input.bio-auth-data:bioAuthReq.tspID$
     input.ekyc-request:
       ekycReq.ekycAuthType: I 
     output.output-1-expected-n-error-res:
@@ -225,16 +210,15 @@ testdata:
       output.1.response.n.err.errorCode: IDA-BIA-013
       
   Invalid_BioType:
+    input.identity-encrypt-data:
+      identityReq.rightEye: $REMOVE$
+      identityReq.valueleftEye: Rk1SACA9OV4CrAK49ZICRAIvOV4DCAL+vZIBkAMfTZIBoAHGtZIDmAMu8ZIBKAGywZICAAEOOZEDJARUUZIAiAIKqUIClATAIZEAyADiXXYChALhSZICIAJnMXYCFAIy3V4DOAKFBZIBPAKI2ZIC+APaVZIDWAG7GZICuAQ4ZZIA3AHeuZIEIAM/JUEECAPStV0D2AQotV0DMAUn8V4ClAKBLV4C5AK6sZEB1AI0kZECSAHaaXYCLAGGQZEDrAKTFZIDiAG/KZIB1AQxjZIBjARNlZIDqAFfRZEBMARxtUEAoAFucXUBFABUQSQAA
+      identityReq.tspID: REF01
     input.bio-auth-data:
       bioAuthReq.idvId: $UIN:WITH:EVEN$
-      bioAuthReq.txnID: $RANDOM:N:10$
-      bioAuthReq.tspID: $RANDOM:N:10$
+      bioAuthReq.tspID: $input.identity-encrypt-data:identityReq.tspID$
       bioAuthReq.reqTime: $TIMESTAMP$
       bioAuthReq.bioType: irisImggg
-    input.identity-encrypt-data:
-      identityReq.valuerightEye: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~DECODEFILE:valuedocuments0~//BIR/BDBInfo[Type='Iris'][Subtype='Right']//following::BDB$
-      identityReq.valueleftEye: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~DECODEFILE:valuedocuments0~//BIR/BDBInfo[Type='Iris'][Subtype='Left']//following::BDB$
-      identityReq.tspID: $input.bio-auth-data:bioAuthReq.tspID$
     input.ekyc-request:
       ekycReq.ekycAuthType: I 
     output.output-1-expected-n-error-res:
@@ -244,16 +228,15 @@ testdata:
       output.1.response.n.err.errorCode: IDA-BIA-013
       
   Invalid_VID:
+    input.identity-encrypt-data:
+      identityReq.rightEye: $REMOVE$
+      identityReq.valueleftEye: Rk1SACA9OV4CrAK49ZICRAIvOV4DCAL+vZIBkAMfTZIBoAHGtZIDmAMu8ZIBKAGywZICAAEOOZEDJARUUZIAiAIKqUIClATAIZEAyADiXXYChALhSZICIAJnMXYCFAIy3V4DOAKFBZIBPAKI2ZIC+APaVZIDWAG7GZICuAQ4ZZIA3AHeuZIEIAM/JUEECAPStV0D2AQotV0DMAUn8V4ClAKBLV4C5AK6sZEB1AI0kZECSAHaaXYCLAGGQZEDrAKTFZIDiAG/KZIB1AQxjZIBjARNlZIDqAFfRZEBMARxtUEAoAFucXUBFABUQSQAA
+      identityReq.tspID: REF01
     input.bio-auth-data:
       bioAuthReq.idvId: 739041980179
       bioAuthReq.idvIdType: V
-      bioAuthReq.tspID: $RANDOM:N:10$
+      bioAuthReq.tspID: $input.identity-encrypt-data:identityReq.tspID$
       bioAuthReq.reqTime: $TIMESTAMP$
-      bioAuthReq.txnID: $RANDOM:N:10$
-    input.identity-encrypt-data:
-      identityReq.valuerightEye: $REMOVE$
-      identityReq.valueleftEye: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~DECODEFILE:valuedocuments0~//BIR/BDBInfo[Type='Iris'][Subtype='Left']//following::BDB$
-      identityReq.tspID: $input.bio-auth-data:bioAuthReq.tspID$
     input.ekyc-request:
       ekycReq.ekycAuthType: I 
     output.output-1-expected-n-error-res:
@@ -263,16 +246,15 @@ testdata:
       output.1.response.n.err.errorCode: IDA-MLC-004
       
   Invalid_UIN:
+    input.identity-encrypt-data:
+      identityReq.rightEye: $REMOVE$
+      identityReq.valueleftEye: Rk1SACA9OV4CrAK49ZICRAIvOV4DCAL+vZIBkAMfTZIBoAHGtZIDmAMu8ZIBKAGywZICAAEOOZEDJARUUZIAiAIKqUIClATAIZEAyADiXXYChALhSZICIAJnMXYCFAIy3V4DOAKFBZIBPAKI2ZIC+APaVZIDWAG7GZICuAQ4ZZIA3AHeuZIEIAM/JUEECAPStV0D2AQotV0DMAUn8V4ClAKBLV4C5AK6sZEB1AI0kZECSAHaaXYCLAGGQZEDrAKTFZIDiAG/KZIB1AQxjZIBjARNlZIDqAFfRZEBMARxtUEAoAFucXUBFABUQSQAA
+      identityReq.tspID: REF01
     input.bio-auth-data:
       bioAuthReq.idvId: 7390419800
       bioAuthReq.idvIdType: D
-      bioAuthReq.tspID: $RANDOM:N:10$
+      bioAuthReq.tspID: $input.identity-encrypt-data:identityReq.tspID$
       bioAuthReq.reqTime: $TIMESTAMP$
-      bioAuthReq.txnID: $RANDOM:N:10$
-    input.identity-encrypt-data:
-      identityReq.valuerightEye: $REMOVE$
-      identityReq.valueleftEye: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~DECODEFILE:valuedocuments0~//BIR/BDBInfo[Type='Iris'][Subtype='Left']//following::BDB$
-      identityReq.tspID: $input.bio-auth-data:bioAuthReq.tspID$
     input.ekyc-request:
       ekycReq.ekycAuthType: I 
     output.output-1-expected-n-error-res:
@@ -282,15 +264,14 @@ testdata:
       output.1.response.n.err.errorCode: IDA-MLC-002
     
   Invalid_TimestampRequest:
+    input.identity-encrypt-data:
+      identityReq.rightEye: $REMOVE$
+      identityReq.valueleftEye: Rk1SACA9OV4CrAK49ZICRAIvOV4DCAL+vZIBkAMfTZIBoAHGtZIDmAMu8ZIBKAGywZICAAEOOZEDJARUUZIAiAIKqUIClATAIZEAyADiXXYChALhSZICIAJnMXYCFAIy3V4DOAKFBZIBPAKI2ZIC+APaVZIDWAG7GZICuAQ4ZZIA3AHeuZIEIAM/JUEECAPStV0D2AQotV0DMAUn8V4ClAKBLV4C5AK6sZEB1AI0kZECSAHaaXYCLAGGQZEDrAKTFZIDiAG/KZIB1AQxjZIBjARNlZIDqAFfRZEBMARxtUEAoAFucXUBFABUQSQAA
+      identityReq.tspID: REF01
     input.bio-auth-data:
       bioAuthReq.idvId: $UIN:WITH:EVEN$
-      bioAuthReq.tspID: $RANDOM:N:10$
+      bioAuthReq.tspID: $input.identity-encrypt-data:identityReq.tspID$
       bioAuthReq.reqTime: 2019-01-2512:50:13.013+05:30
-      bioAuthReq.txnID: $RANDOM:N:10$
-    input.identity-encrypt-data:
-      identityReq.valuerightEye: $REMOVE$
-      identityReq.valueleftEye: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~DECODEFILE:valuedocuments0~//BIR/BDBInfo[Type='Iris'][Subtype='Left']//following::BDB$
-      identityReq.tspID: $input.bio-auth-data:bioAuthReq.tspID$
     input.ekyc-request:
       ekycReq.ekycAuthType: I 
     output.output-1-expected-n-error-res:
@@ -300,15 +281,14 @@ testdata:
       output.1.response.n.err.errorCode: IDA-IDV-002
       
   Invalid_Timestamp_LessThan24HR:
+    input.identity-encrypt-data:
+      identityReq.rightEye: $REMOVE$
+      identityReq.valueleftEye: Rk1SACA9OV4CrAK49ZICRAIvOV4DCAL+vZIBkAMfTZIBoAHGtZIDmAMu8ZIBKAGywZICAAEOOZEDJARUUZIAiAIKqUIClATAIZEAyADiXXYChALhSZICIAJnMXYCFAIy3V4DOAKFBZIBPAKI2ZIC+APaVZIDWAG7GZICuAQ4ZZIA3AHeuZIEIAM/JUEECAPStV0D2AQotV0DMAUn8V4ClAKBLV4C5AK6sZEB1AI0kZECSAHaaXYCLAGGQZEDrAKTFZIDiAG/KZIB1AQxjZIBjARNlZIDqAFfRZEBMARxtUEAoAFucXUBFABUQSQAA
+      identityReq.tspID: REF01
     input.bio-auth-data:
       bioAuthReq.idvId: $UIN:WITH:EVEN$
-      bioAuthReq.tspID: $RANDOM:N:10$
+      bioAuthReq.tspID: $input.identity-encrypt-data:identityReq.tspID$
       bioAuthReq.reqTime: $TIMESTAMP$HOUR-25
-      bioAuthReq.txnID: $RANDOM:N:10$
-    input.identity-encrypt-data:
-      identityReq.valuerightEye: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~DECODEFILE:valuedocuments0~//BIR/BDBInfo[Type='Iris'][Subtype='Right']//following::BDB$
-      identityReq.valueleftEye: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~DECODEFILE:valuedocuments0~//BIR/BDBInfo[Type='Iris'][Subtype='Left']//following::BDB$
-      identityReq.tspID: $input.bio-auth-data:bioAuthReq.tspID$
     input.ekyc-request:
       ekycReq.ekycAuthType: I 
     output.output-1-expected-n-error-res:
@@ -318,15 +298,14 @@ testdata:
       output.1.response.n.err.errorCode: IDA-MLC-001
       
   Invalid_Timestamp_GreaterThan24HR:
+    input.identity-encrypt-data:
+      identityReq.rightEye: $REMOVE$
+      identityReq.valueleftEye: Rk1SACA9OV4CrAK49ZICRAIvOV4DCAL+vZIBkAMfTZIBoAHGtZIDmAMu8ZIBKAGywZICAAEOOZEDJARUUZIAiAIKqUIClATAIZEAyADiXXYChALhSZICIAJnMXYCFAIy3V4DOAKFBZIBPAKI2ZIC+APaVZIDWAG7GZICuAQ4ZZIA3AHeuZIEIAM/JUEECAPStV0D2AQotV0DMAUn8V4ClAKBLV4C5AK6sZEB1AI0kZECSAHaaXYCLAGGQZEDrAKTFZIDiAG/KZIB1AQxjZIBjARNlZIDqAFfRZEBMARxtUEAoAFucXUBFABUQSQAA
+      identityReq.tspID: REF01
     input.bio-auth-data:
       bioAuthReq.idvId: $UIN:WITH:EVEN$
-      bioAuthReq.tspID: $RANDOM:N:10$
+      bioAuthReq.tspID: $input.identity-encrypt-data:identityReq.tspID$
       bioAuthReq.reqTime: '$TIMESTAMP$HOUR+25'
-      bioAuthReq.txnID: $RANDOM:N:10$
-    input.identity-encrypt-data:
-      identityReq.valuerightEye: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~DECODEFILE:valuedocuments0~//BIR/BDBInfo[Type='Iris'][Subtype='Right']//following::BDB$
-      identityReq.valueleftEye: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~DECODEFILE:valuedocuments0~//BIR/BDBInfo[Type='Iris'][Subtype='Left']//following::BDB$
-      identityReq.tspID: $input.bio-auth-data:bioAuthReq.tspID$
     input.ekyc-request:
       ekycReq.ekycAuthType: I 
     output.output-1-expected-n-error-res:
@@ -336,15 +315,14 @@ testdata:
       output.1.response.n.err.errorCode: IDA-MLC-001
           
   Invalid_SameValue_In_TwoIris:
+    input.identity-encrypt-data:
+      identityReq.valuerightEye: Rk1SACAyMAAAAAEIAAABPAFiAMUAxQEAAAAoJ4CeAK9OV4CrAK49ZICRAIvOV4DCAL+vZIBkAMfTZIBoAHGtZIDmAMu8ZIBKAGywZICAAEOOZEDJARUUZIAiAIKqUIClATAIZEAyADiXXYChALhSZICIAJnMXYCFAIy3V4DOAKFBZIBPAKI2ZIC+APaVZIDWAG7GZICuAQ4ZZIA3AHeuZIEIAM/JUEECAPStV0D2AQotV0DMAUn8V4ClAKBLV4C5AK6sZEB1AI0kZECSAHaaXYCLAGGQZEDrAKTFZIDiAG/KZIB1AQxjZIBjARNlZIDqA
+      identityReq.valueleftEye: Rk1SACAyMAAAAAEIAAABPAFiAMUAxQEAAAAoJ4CeAK9OV4CrAK49ZICRAIvOV4DCAL+vZIBkAMfTZIBoAHGtZIDmAMu8ZIBKAGywZICAAEOOZEDJARUUZIAiAIKqUIClATAIZEAyADiXXYChALhSZICIAJnMXYCFAIy3V4DOAKFBZIBPAKI2ZIC+APaVZIDWAG7GZICuAQ4ZZIA3AHeuZIEIAM/JUEECAPStV0D2AQotV0DMAUn8V4ClAKBLV4C5AK6sZEB1AI0kZECSAHaaXYCLAGGQZEDrAKTFZIDiAG/KZIB1AQxjZIBjARNlZIDqA
+      identityReq.tspID: REF01
     input.bio-auth-data:
       bioAuthReq.idvId: $UIN:WITH:EVEN$
-      bioAuthReq.tspID: $RANDOM:N:10$
-      bioAuthReq.reqTime: $TIMESTAMP$  
-      bioAuthReq.txnID: $RANDOM:N:10$ 
-    input.identity-encrypt-data:
-      identityReq.valuerightEye: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~DECODEFILE:valuedocuments0~//BIR/BDBInfo[Type='Iris'][Subtype='Right']//following::BDB$
-      identityReq.valueleftEye: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~DECODEFILE:valuedocuments0~//BIR/BDBInfo[Type='Iris'][Subtype='Right']//following::BDB$
-      identityReq.tspID: $input.bio-auth-data:bioAuthReq.tspID$ 
+      bioAuthReq.tspID: $input.identity-encrypt-data:identityReq.tspID$
+      bioAuthReq.reqTime: $TIMESTAMP$    
     input.ekyc-request:
       ekycReq.ekycAuthType: I 
     output.output-1-expected-n-error-res:
@@ -354,16 +332,15 @@ testdata:
       output.1.response.n.err.errorCode: IDA-BIA-016
       
   Invalid_Remove_Bio_AuthType:
+    input.identity-encrypt-data:
+      identityReq.rightEye: $REMOVE$
+      identityReq.valueleftEye: Rk1SACA9OV4CrAK49ZICRAIvOV4DCAL+vZIBkAMfTZIBoAHGtZIDmAMu8ZIBKAGywZICAAEOOZEDJARUUZIAiAIKqUIClATAIZEAyADiXXYChALhSZICIAJnMXYCFAIy3V4DOAKFBZIBPAKI2ZIC+APaVZIDWAG7GZICuAQ4ZZIA3AHeuZIEIAM/JUEECAPStV0D2AQotV0DMAUn8V4ClAKBLV4C5AK6sZEB1AI0kZECSAHaaXYCLAGGQZEDrAKTFZIDiAG/KZIB1AQxjZIBjARNlZIDqAFfRZEBMARxtUEAoAFucXUBFABUQSQAA
+      identityReq.tspID: REF01
     input.bio-auth-data:
       bioAuthReq.idvId: $UIN:WITH:EVEN$
-      bioAuthReq.tspID: $RANDOM:N:10$
+      bioAuthReq.tspID: $input.identity-encrypt-data:identityReq.tspID$
       bioAuthReq.reqTime: $TIMESTAMP$
-      bioAuthReq.txnID: $RANDOM:N:10$
       bioAuthReq.bio: $REMOVE$
-    input.identity-encrypt-data:
-      identityReq.valuerightEye: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~DECODEFILE:valuedocuments0~//BIR/BDBInfo[Type='Iris'][Subtype='Right']//following::BDB$
-      identityReq.valueleftEye: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~DECODEFILE:valuedocuments0~//BIR/BDBInfo[Type='Iris'][Subtype='Left']//following::BDB$
-      identityReq.tspID: $input.bio-auth-data:bioAuthReq.tspID$
     input.ekyc-request:
       ekycReq.ekycAuthType: I 
     output.output-1-expected-n-error-res:
@@ -373,16 +350,15 @@ testdata:
       output.1.response.n.err.errorCode: IDA-MLC-008
       
   Invalid_Null_Bio_AuthType:
+    input.identity-encrypt-data:
+      identityReq.rightEye: $REMOVE$
+      identityReq.valueleftEye: Rk1SACA9OV4CrAK49ZICRAIvOV4DCAL+vZIBkAMfTZIBoAHGtZIDmAMu8ZIBKAGywZICAAEOOZEDJARUUZIAiAIKqUIClATAIZEAyADiXXYChALhSZICIAJnMXYCFAIy3V4DOAKFBZIBPAKI2ZIC+APaVZIDWAG7GZICuAQ4ZZIA3AHeuZIEIAM/JUEECAPStV0D2AQotV0DMAUn8V4ClAKBLV4C5AK6sZEB1AI0kZECSAHaaXYCLAGGQZEDrAKTFZIDiAG/KZIB1AQxjZIBjARNlZIDqAFfRZEBMARxtUEAoAFucXUBFABUQSQAA
+      identityReq.tspID: REF01
     input.bio-auth-data:
       bioAuthReq.idvId: $UIN:WITH:EVEN$
-      bioAuthReq.tspID: $RANDOM:N:10$
+      bioAuthReq.tspID: $input.identity-encrypt-data:identityReq.tspID$
       bioAuthReq.reqTime: $TIMESTAMP$
-      bioAuthReq.txnID: $RANDOM:N:10$
       bioAuthReq.bio: ''
-    input.identity-encrypt-data:
-      identityReq.valuerightEye: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~DECODEFILE:valuedocuments0~//BIR/BDBInfo[Type='Iris'][Subtype='Right']//following::BDB$
-      identityReq.valueleftEye: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~DECODEFILE:valuedocuments0~//BIR/BDBInfo[Type='Iris'][Subtype='Left']//following::BDB$
-      identityReq.tspID: $input.bio-auth-data:bioAuthReq.tspID$
     input.ekyc-request:
       ekycReq.ekycAuthType: I 
     output.output-1-expected-n-error-res:
@@ -392,16 +368,15 @@ testdata:
       output.1.response.n.err.errorCode: IDA-MLC-008
       
   Invalid_Bio_AuthType_NeitherTrueNorFalse:
+    input.identity-encrypt-data:
+      identityReq.rightEye: $REMOVE$
+      identityReq.valueleftEye: Rk1SACA9OV4CrAK49ZICRAIvOV4DCAL+vZIBkAMfTZIBoAHGtZIDmAMu8ZIBKAGywZICAAEOOZEDJARUUZIAiAIKqUIClATAIZEAyADiXXYChALhSZICIAJnMXYCFAIy3V4DOAKFBZIBPAKI2ZIC+APaVZIDWAG7GZICuAQ4ZZIA3AHeuZIEIAM/JUEECAPStV0D2AQotV0DMAUn8V4ClAKBLV4C5AK6sZEB1AI0kZECSAHaaXYCLAGGQZEDrAKTFZIDiAG/KZIB1AQxjZIBjARNlZIDqAFfRZEBMARxtUEAoAFucXUBFABUQSQAA
+      identityReq.tspID: REF01
     input.bio-auth-data:
       bioAuthReq.idvId: $UIN:WITH:EVEN$
-      bioAuthReq.tspID: $RANDOM:N:10$
+      bioAuthReq.tspID: $input.identity-encrypt-data:identityReq.tspID$
       bioAuthReq.reqTime: $TIMESTAMP$
-      bioAuthReq.txnID: $RANDOM:N:10$
       bioAuthReq.bio: tre
-    input.identity-encrypt-data:
-      identityReq.valuerightEye: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~DECODEFILE:valuedocuments0~//BIR/BDBInfo[Type='Iris'][Subtype='Right']//following::BDB$
-      identityReq.valueleftEye: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~DECODEFILE:valuedocuments0~//BIR/BDBInfo[Type='Iris'][Subtype='Left']//following::BDB$
-      identityReq.tspID: $input.bio-auth-data:bioAuthReq.tspID$
     input.ekyc-request:
       ekycReq.ekycAuthType: I 
     output.output-1-expected-n-error-res:
@@ -411,16 +386,15 @@ testdata:
       output.1.response.n.err.errorCode: IDA-RQV-101
       
   Invalid_Bio_AuthType_False:
+    input.identity-encrypt-data:
+      identityReq.rightEye: $REMOVE$
+      identityReq.valueleftEye: Rk1SACA9OV4CrAK49ZICRAIvOV4DCAL+vZIBkAMfTZIBoAHGtZIDmAMu8ZIBKAGywZICAAEOOZEDJARUUZIAiAIKqUIClATAIZEAyADiXXYChALhSZICIAJnMXYCFAIy3V4DOAKFBZIBPAKI2ZIC+APaVZIDWAG7GZICuAQ4ZZIA3AHeuZIEIAM/JUEECAPStV0D2AQotV0DMAUn8V4ClAKBLV4C5AK6sZEB1AI0kZECSAHaaXYCLAGGQZEDrAKTFZIDiAG/KZIB1AQxjZIBjARNlZIDqAFfRZEBMARxtUEAoAFucXUBFABUQSQAA
+      identityReq.tspID: REF01
     input.bio-auth-data:
       bioAuthReq.idvId: $UIN:WITH:EVEN$
-      bioAuthReq.tspID: $RANDOM:N:10$
+      bioAuthReq.tspID: $input.identity-encrypt-data:identityReq.tspID$
       bioAuthReq.reqTime: $TIMESTAMP$
-      bioAuthReq.txnID: $RANDOM:N:10$
       bioAuthReq.bio: BOOLEAN:false
-    input.identity-encrypt-data:
-      identityReq.valuerightEye: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~DECODEFILE:valuedocuments0~//BIR/BDBInfo[Type='Iris'][Subtype='Right']//following::BDB$
-      identityReq.valueleftEye: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~DECODEFILE:valuedocuments0~//BIR/BDBInfo[Type='Iris'][Subtype='Left']//following::BDB$
-      identityReq.tspID: $input.bio-auth-data:bioAuthReq.tspID$
     input.ekyc-request:
       ekycReq.ekycAuthType: I 
     output.output-1-expected-n-error-res:
@@ -429,16 +403,15 @@ testdata:
       output.1.response.n.err.errorMessage: No authentication type selected
       output.1.response.n.err.errorCode: IDA-MLC-008
       
-  Invalid_NullValue_leftEye:   
-    input.bio-auth-data:
-      bioAuthReq.idvId: $UIN:WITH:EVEN$
-      bioAuthReq.reqTime: $TIMESTAMP$
-      bioAuthReq.tspID: $RANDOM:N:10$
-      bioAuthReq.txnID: $RANDOM:N:10$
+  Invalid_NullValue_leftEye:
     input.identity-encrypt-data:
       identityReq.rightEye: $REMOVE$
       identityReq.valueleftEye: ''
-      identityReq.tspID: $input.bio-auth-data:bioAuthReq.tspID$
+      identityReq.tspID: REF01
+    input.bio-auth-data:
+      bioAuthReq.idvId: $UIN:WITH:EVEN$
+      bioAuthReq.tspID: $input.identity-encrypt-data:identityReq.tspID$
+      bioAuthReq.reqTime: $TIMESTAMP$
     input.ekyc-request:
       ekycReq.ekycAuthType: I 
     output.output-1-expected-n-error-res:
@@ -447,16 +420,15 @@ testdata:
       output.1.response.n.err.errorMessage: Missing Input Parameter - iris
       output.1.response.n.err.errorCode: IDA-IDV-003 
       
-  Invalid_NullValue_rightEye:   
-    input.bio-auth-data:
-      bioAuthReq.idvId: $UIN:WITH:ODD$
-      bioAuthReq.reqTime: $TIMESTAMP$ 
-      bioAuthReq.tspID: $RANDOM:N:10$
-      bioAuthReq.txnID: $RANDOM:N:10$
+  Invalid_NullValue_rightEye:
     input.identity-encrypt-data:
       identityReq.leftEye: $REMOVE$
       identityReq.valuerightEye: ''
-      identityReq.tspID: $input.bio-auth-data:bioAuthReq.tspID$
+      identityReq.tspID: REF01
+    input.bio-auth-data:
+      bioAuthReq.idvId: $UIN:WITH:ODD$
+      bioAuthReq.tspID: $input.identity-encrypt-data:identityReq.tspID$
+      bioAuthReq.reqTime: $TIMESTAMP$ 
     input.ekyc-request:
       ekycReq.ekycAuthType: I  
     output.output-1-expected-n-error-res:
@@ -466,15 +438,14 @@ testdata:
       output.1.response.n.err.errorCode: IDA-IDV-003
       
   Invalid_NullIdentity:
-    input.bio-auth-data:
-      bioAuthReq.idvId: $UIN:WITH:EVEN$
-      bioAuthReq.reqTime: $TIMESTAMP$
-      bioAuthReq.tspID: $RANDOM:N:10$
-      bioAuthReq.txnID: $RANDOM:N:10$
     input.identity-encrypt-data:
       identityReq.rightEye: $REMOVE$
       identityReq.leftEye: $REMOVE$
-      identityReq.tspID: $input.bio-auth-data:bioAuthReq.tspID$
+      identityReq.tspID: REF01
+    input.bio-auth-data:
+      bioAuthReq.idvId: $UIN:WITH:EVEN$
+      bioAuthReq.tspID: $input.identity-encrypt-data:identityReq.tspID$
+      bioAuthReq.reqTime: $TIMESTAMP$
     input.ekyc-request:
       ekycReq.ekycAuthType: I 
     output.output-1-expected-n-error-res:
@@ -484,15 +455,14 @@ testdata:
       output.1.response.n.err.errorCode: IDA-IDV-003
       
   Invalid_Missing_Biometric_data_In_Mosip_DB:
-    input.bio-auth-data:
-      bioAuthReq.idvId: $UIN:WITH:NoBio$
-      bioAuthReq.reqTime: $TIMESTAMP$    
-      bioAuthReq.tspID: $RANDOM:N:10$
-      bioAuthReq.txnID: $RANDOM:N:10$
     input.identity-encrypt-data:
       identityReq.rightEye: $REMOVE$
       identityReq.valueleftEye: Rk1SACA9OV4CrAK49ZICRAIvOV4DCAL+vZIBkAMfTZIBoAHGtZIDmAMu8ZIBKAGywZICAAEOOZEDJARUUZIAiAIKqUIClATAIZEAyADiXXYChALhSZICIAJnMXYCFAIy3V4DOAKFBZIBPAKI2ZIC+APaVZIDWAG7GZICuAQ4ZZIA3AHeuZIEIAM/JUEECAPStV0D2AQotV0DMAUn8V4ClAKBLV4C5AK6sZEB1AI0kZECSAHaaXYCLAGGQZEDrAKTFZIDiAG/KZIB1AQxjZIBjARNlZIDqAFfRZEBMARxtUEAoAFucXUBFABUQSQAA
-      identityReq.tspID: $input.bio-auth-data:bioAuthReq.tspID$
+      identityReq.tspID: REF01
+    input.bio-auth-data:
+      bioAuthReq.idvId: $UIN:WITH:NoBio$
+      bioAuthReq.tspID: $input.identity-encrypt-data:identityReq.tspID$
+      bioAuthReq.reqTime: $TIMESTAMP$    
     input.ekyc-request:
       ekycReq.ekycAuthType: I 
     output.output-1-expected-n-res:
@@ -502,15 +472,14 @@ testdata:
       output.1.response.n.err.errorCode: IDA-BIA-011
       
   Invalid_MatchingScore_NotExceed_ThresholdValue_UsingRightEye:
+    input.identity-encrypt-data:
+      identityReq.valuerightEye: Rk1SACAyMAAAAAEIAAABPAFiAMUAxQEAAAAoJ4CeAK9OV4CrAK49ZICRAIvOV4DCAL+vZIBkAMfTZIBoAHGtZIDmAMu8ZIBKAGywZICAAEOOZEDJARUUZIAiAIKqUIClATAIZEAyADiXXYChALhSZICIAJnMXYCFAIy3V4DOAKFBZIBPAKI2ZIC+APaVZIDWAG7GZICuAQ4ZZIA3AHeuZIEIAM/JUEECAPStV0D2AQotV0DMAUn8V4ClAKBLV4C5AK6sZEB1AI0kZECSAHaaXYCLAGGQZEDrAKTFZIDiAG/KZIB1AQxjZIBjARNlZIDqA
+      identityReq.leftEye: $REMOVE$
+      identityReq.tspID: REF01
     input.bio-auth-data:
       bioAuthReq.idvId: $UIN:WITH:EVEN$
-      bioAuthReq.tspID: $RANDOM:N:10$
-      bioAuthReq.reqTime: $TIMESTAMP$ 
-      bioAuthReq.txnID: $RANDOM:N:10$  
-    input.identity-encrypt-data:
-      identityReq.valuerightEye: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~DECODEFILE:valuedocuments0~//BIR/BDBInfo[Type='Iris'][Subtype='Right']//following::BDB$
-      identityReq.valueleftEye: $REMOVE$
-      identityReq.tspID: $input.bio-auth-data:bioAuthReq.tspID$
+      bioAuthReq.tspID: $input.identity-encrypt-data:identityReq.tspID$
+      bioAuthReq.reqTime: $TIMESTAMP$   
     input.ekyc-request:
       ekycReq.ekycAuthType: I  
     output.output-1-expected-y-res:
@@ -521,22 +490,21 @@ testdata:
       output.2.res.kyc: $IGNORE$
     output.output-3-expected-decoded-auth-n-res:
       output.3.res.y.auth.status: N
-      #output.3.res.y.auth.usageData: '0x0000200000000000'
+      output.3.res.y.auth.usageData: '0x0000200000000000'
       output.3.res.y.auth.resTime: $TIMESTAMP$
       output.3.res.y.auth.reqTime: $input.bio-auth-data:bioAuthReq.reqTime$
       output.3.res.y.auth.err.errorMessage: Biometric data - IrisImg did not match
       output.3.res.y.auth.err.errorCode: IDA-BIA-015
       
   Invalid_MatchingScore_NotExceed_ThresholdValue_UsingLeftEye:
+    input.identity-encrypt-data:
+      identityReq.valueleftEye: Rk1SACAyMAAAAAEIAAABPAFiAMUAxQEAAAAoJ4CeAK9OV4CrAK49ZICRAIvOV4DCAL+vZIBkAMfTZIBoAHGtZIDmAMu8ZIBKAGywZICAAEOOZEDJARUUZIAiAIKqUIClATAIZEAyADiXXYChALhSZICIAJnMXYCFAIy3V4DOAKFBZIBPAKI2ZIC+APaVZIDWAG7GZICuAQ4ZZIA3AHeuZIEIAM/JUEECAPStV0D2AQotV0DMAUn8V4ClAKBLV4C5AK6sZEB1AI0kZECSAHaaXYCLAGGQZEDrAKTFZIDiAG/KZIB1AQxjZIBjARNlZIDqA
+      identityReq.rightEye: $REMOVE$
+      identityReq.tspID: REF01
     input.bio-auth-data:
       bioAuthReq.idvId: $UIN:WITH:ODD$
-      bioAuthReq.tspID: $RANDOM:N:10$
-      bioAuthReq.reqTime: $TIMESTAMP$  
-      bioAuthReq.txnID: $RANDOM:N:10$ 
-    input.identity-encrypt-data:
-      identityReq.valuerightEye: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~DECODEFILE:valuedocuments0~//BIR/BDBInfo[Type='Iris'][Subtype='Right']//following::BDB$
-      identityReq.valueleftEye: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~DECODEFILE:valuedocuments0~//BIR/BDBInfo[Type='Iris'][Subtype='Left']//following::BDB$
-      identityReq.tspID: $input.bio-auth-data:bioAuthReq.tspID$
+      bioAuthReq.tspID: $input.identity-encrypt-data:identityReq.tspID$
+      bioAuthReq.reqTime: $TIMESTAMP$   
     input.ekyc-request:
       ekycReq.ekycAuthType: I  
     output.output-1-expected-y-res:
@@ -547,23 +515,22 @@ testdata:
       output.2.res.kyc: $IGNORE$
     output.output-3-expected-decoded-auth-n-res:
       output.3.res.y.auth.status: N
-      #output.3.res.y.auth.usageData: '0x0000200000000000'
+      output.3.res.y.auth.usageData: '0x0000200000000000'
       output.3.res.y.auth.resTime: $TIMESTAMP$
       output.3.res.y.auth.reqTime: $input.bio-auth-data:bioAuthReq.reqTime$
       output.3.res.y.auth.err.errorMessage: Biometric data - IrisImg did not match
       output.3.res.y.auth.err.errorCode: IDA-BIA-015
       
   Invalid_IrisData_WithValidBioType:
+    input.identity-encrypt-data:
+      identityReq.rightEye: $REMOVE$
+      identityReq.valueleftEye: Rk1SACA9OV4CrAK49ZICRAIvOV4DCAL+vZIBkAMfTZIBoAHGtZIDmAMu8ZIBKAGywZICAAEOOZEDJARUUZIAiAIKqUIClATAIZEAyADiXXYChALhSZICIAJnMXYCFAIy3V4DOAKFBZIBPAKI2ZIC+APaVZIDWAG7GZICuAQ4ZZIA3AHeuZIEIAM/JUEECAPStV0D2AQotV0DMAUn8V4ClAKBLV4C5AK6sZEB1AI0kZECSAHaaXYCLAGGQZEDrAKTFZIDiAG/KZIB1AQxjZIBjARNlZIDqAFfRZEBMARxtUEAoAFucXUBFABUQSQAA
+      identityReq.tspID: REF01
     input.bio-auth-data:
       bioAuthReq.idvId: $UIN:WITH:EVEN$
-      bioAuthReq.tspID: $RANDOM:N:10$
+      bioAuthReq.tspID: $input.identity-encrypt-data:identityReq.tspID$
       bioAuthReq.reqTime: $TIMESTAMP$   
-      bioAuthReq.txnID: $RANDOM:N:10$
       bioAuthReq.bioType: fgerImg
-    input.identity-encrypt-data:
-      identityReq.valuerightEye: $REMOVE$
-      identityReq.valueleftEye: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~DECODEFILE:valuedocuments0~//BIR/BDBInfo[Type='Iris'][Subtype='Left']//following::BDB$
-      identityReq.tspID: $input.bio-auth-data:bioAuthReq.tspID$
     input.ekyc-request:
       ekycReq.ekycAuthType: I 
     output.output-1-expected-n-error-res:
@@ -572,16 +539,15 @@ testdata:
       output.1.response.n.err.errorMessage: Invalid bioType - fgerImg
       output.1.response.n.err.errorCode: IDA-BIA-013
       
-  Invalid_Identity_Json:    
+  Invalid_Identity_Json:
+    input.identity-encrypt-data:
+      identityReq.rightEye: {"value":"Rk1SACA9OV4CrAK49ZICRAIvOV4DCAL+vZIBkAMfTZIBoAHGtZIDmAMu8ZIBKAGywZICAAEOOZEDJARUUZIAiAIKqUIClATAIZEAyADiXXYChALhSZICIAJnMXYCFAIy3V4DOAKFBZIBPAKI2ZIC+APaVZIDWAG7GZICuAQ4ZZIA3AHeuZIEIAM/JUEECAPStV0D2AQotV0DMAUn8V4ClAKBLV4C5AK6sZEB1AI0kZECSAHaaXYCLAGGQZEDrAKTFZIDiAG/KZIB1AQxjZIBjARNlZIDqAFfRZEBMARxtUEAoAFucXUBFABUQSQAA"}
+      identityReq.leftEye: {"value":"Rk1SACAyMAAAAAEIAAABPAFiAMUAxQEAAAAoJ4CeAK9OV4CrAK49ZICRAIvOV4DCAL+vZIBkAMfTZIBoAHGtZIDmAMu8ZIBKAGywZICAAEOOZEDJARUUZIAiAIKqUIClATAIZEAyADiXXYChALhSZICIAJnMXYCFAIy3V4DOAKFBZIBPAKI2ZIC+APaVZIDWAG7GZICuAQ4ZZIA3AHeuZIEIAM/JUEECAPStV0D2AQotV0DMAUn8V4ClAKBLV4C5AK6sZEB1AI0kZECSAHaaXYCLAGGQZEDrAKTFZIDiAG/KZIB1AQxjZIBjARNlZIDqAFfRZEBMARxtUEAoAFucXUBFABUQSQAA"}
+      identityReq.tspID: REF01
     input.bio-auth-data:
       bioAuthReq.idvId: $UIN:WITH:EVEN$
       bioAuthReq.tspID: $input.identity-encrypt-data:identityReq.tspID$
-      bioAuthReq.reqTime: $TIMESTAMP$  
-      bioAuthReq.txnID: $RANDOM:N:10$ 
-    input.identity-encrypt-data:
-      identityReq.rightEye: {"value":"+$idrepo~$input.bio-auth-data:bioAuthReq.idvId$~DECODEFILE:valuedocuments0~//BIR/BDBInfo[Type='Iris'][Subtype='Right']//following::BDB$+"}
-      identityReq.leftEye: {"value":"+$idrepo~$input.bio-auth-data:bioAuthReq.idvId$~DECODEFILE:valuedocuments0~//BIR/BDBInfo[Type='Iris'][Subtype='Left']//following::BDB$+"}
-      identityReq.tspID: $input.bio-auth-data:bioAuthReq.tspID$
+      bioAuthReq.reqTime: $TIMESTAMP$   
     input.ekyc-request:
       ekycReq.ekycAuthType: I 
     output.output-1-expected-n-error-res:
@@ -591,15 +557,14 @@ testdata:
       output.1.response.n.err.errorCode: IDA-RQV-101
       
   Invalid_CompisiteMatchingScore_NotExceed_ThresholdValue:
+    input.identity-encrypt-data:
+      identityReq.valuerightEye: Rk1SACAyMAAAAAEIAAABPAFiAMUAxQEAAAAoJ4CeAK9OV4CrAK49ZICRAIvOV4DCAL+vZIBkAMfTZIBoAHGtZIDmAMu8ZIBKAGywZICAAEOOZEDJARUUZIAiAIKqUIClATAIZEAyADiXXYChALhSZICIAJnMXYCFAIy3V4DOAKFBZIBPAKI2ZIC+APaVZIDWAG7GZICuAQ4ZZIA3AHeuZIEIAM/JUEECAPStV0D2AQotV0DMAUn8V4ClAKBLV4C5AK6sZEB1AI0kZECSAHaaXYCLAGGQZEDrAKTFZIDiAG/KZIB1AQxjZIBjARNlZIDqA
+      identityReq.valueleftEye: Rk1SACA9OV4CrAK49ZICRAIvOV4DCAL+vZIBkAMfTZIBoAHGtZIDmAMu8ZIBKAGywZICAAEOOZEDJARUUZIAiAIKqUIClATAIZEAyADiXXYChALhSZICIAJnMXYCFAIy3V4DOAKFBZIBPAKI2ZIC+APaVZIDWAG7GZICuAQ4ZZIA3AHeuZIEIAM/JUEECAPStV0D2AQotV0DMAUn8V4ClAKBLV4C5AK6sZEB1AI0kZECSAHaaXYCLAGGQZEDrAKTFZIDiAG/KZIB1AQxjZIBjARNlZIDqAFfRZEBMARxtUEAoAFucXUBFABUQSQAA
+      identityReq.tspID: REF01
     input.bio-auth-data:
       bioAuthReq.idvId: $UIN:WITH:ODD$
-      bioAuthReq.tspID: $RANDOM:N:10$
-      bioAuthReq.reqTime: $TIMESTAMP$   
-      bioAuthReq.txnID: $RANDOM:N:10$ 
-    input.identity-encrypt-data:
-      identityReq.valuerightEye: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~DECODEFILE:valuedocuments0~//BIR/BDBInfo[Type='Iris'][Subtype='Right']//following::BDB$
-      identityReq.valueleftEye: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~DECODEFILE:valuedocuments0~//BIR/BDBInfo[Type='Iris'][Subtype='Left']//following::BDB$
-      identityReq.tspID: $input.bio-auth-data:bioAuthReq.tspID$
+      bioAuthReq.tspID: $input.identity-encrypt-data:identityReq.tspID$
+      bioAuthReq.reqTime: $TIMESTAMP$    
     input.ekyc-request:
       ekycReq.ekycAuthType: I 
     output.output-1-expected-n-error-res:
@@ -611,14 +576,13 @@ testdata:
       output.1.response.y.err.errorCode: IDA-BIA-015
       
   Invalid_Attribute_In_Identity:
+    input.identity-encrypt-dummy-data:
+      identityReq.valueDummy: Rk1SACA9OV4CrAK49ZICRAIvOV4DCAL+vZIBkAMfTZIBoAHGtZIDmAMu8ZIBKAGywZICAAEOOZEDJARUUZIAiAIKqUIClATAIZEAyADiXXYChALhSZICIAJnMXYCFAIy3V4DOAKFBZIBPAKI2ZIC+APaVZIDWAG7GZICuAQ4ZZIA3AHeuZIEIAM/JUEECAPStV0D2AQotV0DMAUn8V4ClAKBLV4C5AK6sZEB1AI0kZECSAHaaXYCLAGGQZEDrAKTFZIDiAG/KZIB1AQxjZIBjARNlZIDqAFfRZEBMARxtUEAoAFucXUBFABUQSQAA
+      identityReq.tspID: REF01
     input.bio-auth-data:
       bioAuthReq.idvId: $UIN:WITH:EVEN$
-      bioAuthReq.tspID: $RANDOM:N:10$
+      bioAuthReq.tspID: $input.identity-encrypt-dummy-data:identityReq.tspID$
       bioAuthReq.reqTime: $TIMESTAMP$
-      bioAuthReq.txnID: $RANDOM:N:10$
-    input.identity-encrypt-dummy-data:
-      identityReq.valueDummy: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~DECODEFILE:valuedocuments0~//BIR/BDBInfo[Type='Iris'][Subtype='Left']//following::BDB$
-      identityReq.tspID: $input.bio-auth-data:bioAuthReq.tspID$  
     input.ekyc-request:
       ekycReq.ekycAuthType: I 
     output.output-1-expected-n-error-res:
@@ -628,15 +592,14 @@ testdata:
       output.1.response.n.err.errorCode: IDA-IDV-003
       
   Invalid_econsreq:
+    input.identity-encrypt-data:
+      identityReq.valuerightEye: Rk1SACAyMAAAAAEIAAABPAFiAMUAxQEAAAAoJ4CeAK9OV4CrAK49ZICRAIvOV4DCAL+vZIBkAMfTZIBoAHGtZIDmAMu8ZIBKAGywZICAAEOOZEDJARUUZIAiAIKqUIClATAIZEAyADiXXYChALhSZICIAJnMXYCFAIy3V4DOAKFBZIBPAKI2ZIC+APaVZIDWAG7GZICuAQ4ZZIA3AHeuZIEIAM/JUEECAPStV0D2AQotV0DMAUn8V4ClAKBLV4C5AK6sZEB1AI0kZECSAHaaXYCLAGGQZEDrAKTFZIDiAG/KZIB1AQxjZIBjARNlZIDqA
+      identityReq.valueleftEye: Rk1SACA9OV4CrAK49ZICRAIvOV4DCAL+vZIBkAMfTZIBoAHGtZIDmAMu8ZIBKAGywZICAAEOOZEDJARUUZIAiAIKqUIClATAIZEAyADiXXYChALhSZICIAJnMXYCFAIy3V4DOAKFBZIBPAKI2ZIC+APaVZIDWAG7GZICuAQ4ZZIA3AHeuZIEIAM/JUEECAPStV0D2AQotV0DMAUn8V4ClAKBLV4C5AK6sZEB1AI0kZECSAHaaXYCLAGGQZEDrAKTFZIDiAG/KZIB1AQxjZIBjARNlZIDqAFfRZEBMARxtUEAoAFucXUBFABUQSQAA
+      identityReq.tspID: REF01
     input.bio-auth-data:
       bioAuthReq.idvId: $UIN:WITH:EVEN$
-      bioAuthReq.tspID: $RANDOM:N:10$
-      bioAuthReq.reqTime: $TIMESTAMP$   
-      bioAuthReq.txnID: $RANDOM:N:10$
-    input.identity-encrypt-data:
-      identityReq.valuerightEye: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~DECODEFILE:valuedocuments0~//BIR/BDBInfo[Type='Iris'][Subtype='Right']//following::BDB$
-      identityReq.valueleftEye: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~DECODEFILE:valuedocuments0~//BIR/BDBInfo[Type='Iris'][Subtype='Left']//following::BDB$
-      bioAuthReq.tspID: $input.bio-auth-data:bioAuthReq.tspID$  
+      bioAuthReq.tspID: $input.identity-encrypt-data:identityReq.tspID$
+      bioAuthReq.reqTime: $TIMESTAMP$    
     input.ekyc-request:
       ekycReq.ekycAuthType: I 
       ekycReq.consentReq: tree
@@ -647,15 +610,14 @@ testdata:
       output.1.response.n.err.errorCode: IDA-RQV-101
       
   Invalid_econsreq_false:
+    input.identity-encrypt-data:
+      identityReq.valuerightEye: Rk1SACAyMAAAAAEIAAABPAFiAMUAxQEAAAAoJ4CeAK9OV4CrAK49ZICRAIvOV4DCAL+vZIBkAMfTZIBoAHGtZIDmAMu8ZIBKAGywZICAAEOOZEDJARUUZIAiAIKqUIClATAIZEAyADiXXYChALhSZICIAJnMXYCFAIy3V4DOAKFBZIBPAKI2ZIC+APaVZIDWAG7GZICuAQ4ZZIA3AHeuZIEIAM/JUEECAPStV0D2AQotV0DMAUn8V4ClAKBLV4C5AK6sZEB1AI0kZECSAHaaXYCLAGGQZEDrAKTFZIDiAG/KZIB1AQxjZIBjARNlZIDqA
+      identityReq.valueleftEye: Rk1SACA9OV4CrAK49ZICRAIvOV4DCAL+vZIBkAMfTZIBoAHGtZIDmAMu8ZIBKAGywZICAAEOOZEDJARUUZIAiAIKqUIClATAIZEAyADiXXYChALhSZICIAJnMXYCFAIy3V4DOAKFBZIBPAKI2ZIC+APaVZIDWAG7GZICuAQ4ZZIA3AHeuZIEIAM/JUEECAPStV0D2AQotV0DMAUn8V4ClAKBLV4C5AK6sZEB1AI0kZECSAHaaXYCLAGGQZEDrAKTFZIDiAG/KZIB1AQxjZIBjARNlZIDqAFfRZEBMARxtUEAoAFucXUBFABUQSQAA
+      identityReq.tspID: REF01
     input.bio-auth-data:
       bioAuthReq.idvId: $UIN:WITH:EVEN$
-      bioAuthReq.tspID: $RANDOM:N:10$
-      bioAuthReq.reqTime: $TIMESTAMP$  
-      bioAuthReq.txnID: $RANDOM:N:10$
-    input.identity-encrypt-data:
-      identityReq.valuerightEye: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~DECODEFILE:valuedocuments0~//BIR/BDBInfo[Type='Iris'][Subtype='Right']//following::BDB$
-      identityReq.valueleftEye: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~DECODEFILE:valuedocuments0~//BIR/BDBInfo[Type='Iris'][Subtype='Left']//following::BDB$
-      identityReq.tspID: $input.bio-auth-data:bioAuthReq.tspID$  
+      bioAuthReq.tspID: $input.identity-encrypt-data:identityReq.tspID$
+      bioAuthReq.reqTime: $TIMESTAMP$    
     input.ekyc-request:
       ekycReq.ekycAuthType: I 
       ekycReq.consentReq: BOOLEAN:false
@@ -666,15 +628,14 @@ testdata:
       output.1.response.n.err.errorCode: IDA-DEA-030
       
   Invalid_SecondaryLang:
+    input.identity-encrypt-data:
+      identityReq.valuerightEye: Rk1SACAyMAAAAAEIAAABPAFiAMUAxQEAAAAoJ4CeAK9OV4CrAK49ZICRAIvOV4DCAL+vZIBkAMfTZIBoAHGtZIDmAMu8ZIBKAGywZICAAEOOZEDJARUUZIAiAIKqUIClATAIZEAyADiXXYChALhSZICIAJnMXYCFAIy3V4DOAKFBZIBPAKI2ZIC+APaVZIDWAG7GZICuAQ4ZZIA3AHeuZIEIAM/JUEECAPStV0D2AQotV0DMAUn8V4ClAKBLV4C5AK6sZEB1AI0kZECSAHaaXYCLAGGQZEDrAKTFZIDiAG/KZIB1AQxjZIBjARNlZIDqA
+      identityReq.valueleftEye: Rk1SACA9OV4CrAK49ZICRAIvOV4DCAL+vZIBkAMfTZIBoAHGtZIDmAMu8ZIBKAGywZICAAEOOZEDJARUUZIAiAIKqUIClATAIZEAyADiXXYChALhSZICIAJnMXYCFAIy3V4DOAKFBZIBPAKI2ZIC+APaVZIDWAG7GZICuAQ4ZZIA3AHeuZIEIAM/JUEECAPStV0D2AQotV0DMAUn8V4ClAKBLV4C5AK6sZEB1AI0kZECSAHaaXYCLAGGQZEDrAKTFZIDiAG/KZIB1AQxjZIBjARNlZIDqAFfRZEBMARxtUEAoAFucXUBFABUQSQAA
+      identityReq.tspID: REF01
     input.bio-auth-data:
       bioAuthReq.idvId: $UIN:WITH:EVEN$
-      bioAuthReq.tspID: $RANDOM:N:10$
-      bioAuthReq.reqTime: $TIMESTAMP$ 
-      bioAuthReq.txnID: $RANDOM:N:10$
-    input.identity-encrypt-data:
-      identityReq.valuerightEye: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~DECODEFILE:valuedocuments0~//BIR/BDBInfo[Type='Iris'][Subtype='Right']//following::BDB$
-      identityReq.valueleftEye: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~DECODEFILE:valuedocuments0~//BIR/BDBInfo[Type='Iris'][Subtype='Left']//following::BDB$
-      identityReq.tspID: $input.bio-auth-data:bioAuthReq.tspID$   
+      bioAuthReq.tspID: $input.identity-encrypt-data:identityReq.tspID$
+      bioAuthReq.reqTime: $TIMESTAMP$    
     input.ekyc-request:
       ekycReq.ekycAuthType: I 
       ekycReq.secLangReq: fal
@@ -685,15 +646,14 @@ testdata:
       output.1.response.n.err.errorCode: IDA-RQV-101
       
   Invalid_ekycAuthType:
+    input.identity-encrypt-data:
+      identityReq.valuerightEye: Rk1SACAyMAAAAAEIAAABPAFiAMUAxQEAAAAoJ4CeAK9OV4CrAK49ZICRAIvOV4DCAL+vZIBkAMfTZIBoAHGtZIDmAMu8ZIBKAGywZICAAEOOZEDJARUUZIAiAIKqUIClATAIZEAyADiXXYChALhSZICIAJnMXYCFAIy3V4DOAKFBZIBPAKI2ZIC+APaVZIDWAG7GZICuAQ4ZZIA3AHeuZIEIAM/JUEECAPStV0D2AQotV0DMAUn8V4ClAKBLV4C5AK6sZEB1AI0kZECSAHaaXYCLAGGQZEDrAKTFZIDiAG/KZIB1AQxjZIBjARNlZIDqA
+      identityReq.valueleftEye: Rk1SACA9OV4CrAK49ZICRAIvOV4DCAL+vZIBkAMfTZIBoAHGtZIDmAMu8ZIBKAGywZICAAEOOZEDJARUUZIAiAIKqUIClATAIZEAyADiXXYChALhSZICIAJnMXYCFAIy3V4DOAKFBZIBPAKI2ZIC+APaVZIDWAG7GZICuAQ4ZZIA3AHeuZIEIAM/JUEECAPStV0D2AQotV0DMAUn8V4ClAKBLV4C5AK6sZEB1AI0kZECSAHaaXYCLAGGQZEDrAKTFZIDiAG/KZIB1AQxjZIBjARNlZIDqAFfRZEBMARxtUEAoAFucXUBFABUQSQAA
+      identityReq.tspID: REF01
     input.bio-auth-data:
       bioAuthReq.idvId: $UIN:WITH:EVEN$
-      bioAuthReq.tspID: $RANDOM:N:10$
-      bioAuthReq.reqTime: $TIMESTAMP$  
-      bioAuthReq.txnID: $RANDOM:N:10$ 
-    input.identity-encrypt-data:
-      identityReq.valuerightEye: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~DECODEFILE:valuedocuments0~//BIR/BDBInfo[Type='Iris'][Subtype='Right']//following::BDB$
-      identityReq.valueleftEye: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~DECODEFILE:valuedocuments0~//BIR/BDBInfo[Type='Iris'][Subtype='Left']//following::BDB$
-      identityReq.tspID: $input.bio-auth-data:bioAuthReq.tspID$ 
+      bioAuthReq.tspID: $input.identity-encrypt-data:identityReq.tspID$
+      bioAuthReq.reqTime: $TIMESTAMP$    
     input.ekyc-request:
       ekycReq.ekycAuthType: A 
     output.output-1-expected-n-error-res:
@@ -703,15 +663,14 @@ testdata:
       output.1.response.n.err.errorCode: IDA-IDV-003
       
   Invalid_ekycAuthType_With_Iris_And_With_valid_fingerprint_in_identity:
+    input.identity-encrypt-fingerPrintData-data:
+      identityReq.valuerightIndex: Rk1SACAyMAAAAAEIAAABPAFiAMUAxQEAAAAoJ4CeAK9OV4CrAK49ZICRAIvOV4DCAL+vZIBkAMfTZIBoAHGtZIDmAMu8ZIBKAGywZICAAEOOZEDJARUUZIAiAIKqUIClATAIZEAyADiXXYChALhSZICIAJnMXYCFAIy3V4DOAKFBZIBPAKI2ZIC+APaVZIDWAG7GZICuAQ4ZZIA3AHeuZIEIAM/JUEECAPStV0D2AQotV0DMAUn8V4ClAKBLV4C5AK6sZEB1AI0kZECSAHaaXYCLAGGQZEDrAKTFZIDiAG/KZIB1AQxjZIBjARNlZIDqA
+      identityReq.valueleftIndex: Rk1SACA9OV4CrAK49ZICRAIvOV4DCAL+vZIBkAMfTZIBoAHGtZIDmAMu8ZIBKAGywZICAAEOOZEDJARUUZIAiAIKqUIClATAIZEAyADiXXYChALhSZICIAJnMXYCFAIy3V4DOAKFBZIBPAKI2ZIC+APaVZIDWAG7GZICuAQ4ZZIA3AHeuZIEIAM/JUEECAPStV0D2AQotV0DMAUn8V4ClAKBLV4C5AK6sZEB1AI0kZECSAHaaXYCLAGGQZEDrAKTFZIDiAG/KZIB1AQxjZIBjARNlZIDqAFfRZEBMARxtUEAoAFucXUBFABUQSQAA
+      identityReq.tspID: REF01
     input.bio-auth-data:
       bioAuthReq.idvId: $UIN:WITH:EVEN$
-      bioAuthReq.tspID: $RANDOM:N:10$
-      bioAuthReq.reqTime: $TIMESTAMP$   
-      bioAuthReq.txnID: $RANDOM:N:10$ 
-    input.identity-encrypt-fingerPrintData-data:
-      identityReq.valuerightIndex: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~DECODEFILE:valuedocuments0~//BIR/BDBInfo[Type='Finger'][Subtype='Right IndexFinger']//following::BDB$
-      identityReq.valueleftIndex: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~DECODEFILE:valuedocuments0~//BIR/BDBInfo[Type='Finger'][Subtype='Left IndexFinger']//following::BDB$
-      identityReq.tspID: $input.bio-auth-data:bioAuthReq.tspID$
+      bioAuthReq.tspID: $input.identity-encrypt-fingerPrintData-data:identityReq.tspID$
+      bioAuthReq.reqTime: $TIMESTAMP$    
     input.ekyc-request:
       ekycReq.ekycAuthType: I
     output.output-1-expected-n-error-res:
@@ -721,172 +680,15 @@ testdata:
       output.1.response.n.err.errorCode: IDA-IDV-003
       
   Valid_MockRequest_UsingLeftEye_SecLang_Y_Check_LimitedKyc:
-    input.bio-auth-data:
-      bioAuthReq.idvId: $UIN:WITH:EVEN$
-      bioAuthReq.tspID: 7404012866
-      bioAuthReq.reqTime: $TIMESTAMP$
-      bioAuthReq.txnID: $RANDOM:N:10$
     input.identity-encrypt-data:
       identityReq.rightEye: $REMOVE$
-      identityReq.valueleftEye: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~DECODEFILE:valuedocuments0~//BIR/BDBInfo[Type='Iris'][Subtype='Left']//following::BDB$
-      identityReq.tspID: $input.bio-auth-data:bioAuthReq.tspID$ 
-    input.ekyc-request:
-      ekycReq.ekycAuthType: I 
-      ekycReq.secLangReq: BOOLEAN:true
-    output.output-1-expected-y-res:
-      output.1.response.y.status: Y
-      output.1.response.y.resTime: $TIMESTAMP$
-      output.1.response.y.response: '$DECODE$->output-2-expected-decoded-res.json'
-      output.1.response.y.txnID: $input.bio-auth-data:bioAuthReq.txnID$
-    output.output-2-expected-decoded-res:
-      output.2.res.auth: '$DECODE$->output-3-expected-decoded-auth-res.json'
-      output.2.res.kyc: '$DECODE$->output-4-expected-decoded-kyc-res.json'
-    output.output-3-expected-decoded-auth-res:
-      output.3.res.y.auth.status: Y
-      #output.3.res.y.auth.usageData: '0x0000200000002000'
-      output.3.res.y.auth.resTime: $IGNORE$
-      output.3.res.y.auth.reqTime: $input.bio-auth-data:bioAuthReq.reqTime$
-      output.3.res.y.auth.txnID: $input.bio-auth-data:bioAuthReq.txnID$
-    output.output-4-expected-decoded-kyc-res:
-      output.4.res.kyc.phone: $REMOVE$
-      output.4.res.kyc.email: $REMOVE$
-      output.4.res.kyc.valuegender1: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~valuegender1$
-      output.4.res.kyc.valuegender0: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~valuegender0$
-      #output.4.res.kyc.languagedateOfBirth0: ''
-      output.4.res.kyc.valuepostalCode0: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~postalCode$
-      output.4.res.kyc.valueaddressLine11: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~valueaddressLine11$
-      output.4.res.kyc.valueaddressLine10: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~valueaddressLine10$
-      #output.4.res.kyc.languageemail0: ''
-      output.4.res.kyc.valueregion1: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~valueregion1$
-      output.4.res.kyc.valueregion0: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~valueregion0$
-      output.4.res.kyc.valuecity1: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~valuecity1$
-      output.4.res.kyc.valuecity0: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~valuecity0$
-      output.4.res.kyc.languageprovince1: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~languageprovince1$
-      output.4.res.kyc.languageprovince0: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~languageprovince0$
-      output.4.res.kyc.languageaddressLine11: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~languageaddressLine11$
-      output.4.res.kyc.valuefullName1: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~valuefullName1$
-      output.4.res.kyc.languageaddressLine10: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~languageaddressLine10$
-      output.4.res.kyc.valuefullName0: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~valuefullName0$
-      output.4.res.kyc.languagegender1: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~languagegender1$
-      output.4.res.kyc.languagegender0: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~languagegender0$
-      output.4.res.kyc.valueaddressLine31: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~valueaddressLine31$
-      output.4.res.kyc.valuedateOfBirth0: $REMOVE$
-      output.4.res.kyc.valueaddressLine30: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~valueaddressLine30$
-      output.4.res.kyc.languageregion1: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~languageregion1$
-      output.4.res.kyc.languageregion0: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~languageregion0$
-      #output.4.res.kyc.languagepostalCode0: ''
-      output.4.res.kyc.valueprovince1: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~valueprovince1$
-      output.4.res.kyc.valueprovince0: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~valueprovince0$
-      output.4.res.kyc.languageaddressLine31: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~languageaddressLine31$
-      output.4.res.kyc.languageaddressLine30: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~languageaddressLine30$
-      output.4.res.kyc.idvId: $REGEXP:XXXX.*$
-      output.4.res.kyc.languagecity1: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~languagecity1$
-      output.4.res.kyc.languagecity0: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~languagecity0$
-      output.4.res.kyc.valueaddressLine21: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~valueaddressLine21$
-      output.4.res.kyc.valueaddressLine20: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~valueaddressLine20$
-      output.4.res.kyc.languagefullName1: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~languagefullName1$
-      output.4.res.kyc.languageaddressLine21: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~languageaddressLine21$
-      output.4.res.kyc.languagefullName0: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~languagefullName0$
-      output.4.res.kyc.languageaddressLine20: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~languageaddressLine20$
-    audit.auth_transaction:
-      refId: $input.bio-auth-data:bioAuthReq.idvId$
-      txnId: $input.bio-auth-data:bioAuthReq.txnID$
-      authTypeCode: IRIS-AUTH
-      statusCode: $output.output-1-expected-y-res:output.1.response.y.status$
-      reqTime: $FETCH$
-      resTime: $FETCH$
-      statusComment: $REGEXP:.*Iris.*Authentication.*Success.*$
-      idType: D
-    audit.audit_log:
-      refId:  $input.bio-auth-data:bioAuthReq.idvId$
-      eventId: $REGEXP:.*IDA-EVT.*$
-      eventName: AUTH_REQUEST_RESPONSE
-      appId: IDA
-      appName: ID-Authentication
-      moduleName: EKYC_AUTH
-      refIdType: UIN 
-      
-  Valid_MockRequest_UsingLeftEye_SecLang_N_Check_LimitedKyc:
-    input.bio-auth-data:
-      bioAuthReq.idvId: $UIN:WITH:EVEN$
-      bioAuthReq.tspID: 7404012866
-      bioAuthReq.reqTime: $TIMESTAMP$
-      bioAuthReq.txnID: $RANDOM:N:10$
-    input.identity-encrypt-data:
-      identityReq.rightEye: $REMOVE$
-      identityReq.valueleftEye: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~DECODEFILE:valuedocuments0~//BIR/BDBInfo[Type='Iris'][Subtype='Left']//following::BDB$
-      identityReq.tspID: $input.bio-auth-data:bioAuthReq.tspID$ 
-    input.ekyc-request:
-      ekycReq.ekycAuthType: I 
-      ekycReq.secLangReq: BOOLEAN:false
-    output.output-1-expected-y-res:
-      output.1.response.y.status: Y
-      output.1.response.y.resTime: $TIMESTAMP$
-      output.1.response.y.response: '$DECODE$->output-2-expected-decoded-res.json'
-      output.1.response.y.txnID: $input.bio-auth-data:bioAuthReq.txnID$
-    output.output-2-expected-decoded-res:
-      output.2.res.auth: '$DECODE$->output-3-expected-decoded-auth-res.json'
-      output.2.res.kyc: '$DECODE$->output-4-expected-decoded-kyc-one-lang-res.json'
-    output.output-3-expected-decoded-auth-res:
-      output.3.res.y.auth.status: Y
-      #output.3.res.y.auth.usageData: '0x0000200000002000'
-      output.3.res.y.auth.resTime: $IGNORE$
-      output.3.res.y.auth.reqTime: $input.bio-auth-data:bioAuthReq.reqTime$
-      output.3.res.y.auth.txnID: $input.bio-auth-data:bioAuthReq.txnID$
-    output.output-4-expected-decoded-kyc-one-lang-res:
-      output.4.res.kyc.phone: $REMOVE$
-      output.4.res.kyc.email: $REMOVE$
-      output.4.res.kyc.valuepostalCode0: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~postalCode$
-      output.4.res.kyc.valuegender0: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~valuegender1$
-      #output.4.res.kyc.languagedateOfBirth0: ''
-      output.4.res.kyc.valueaddressLine10: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~valueaddressLine11$
-      #output.4.res.kyc.languageemail0: ''
-      output.4.res.kyc.valueregion0: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~valueregion1$
-      output.4.res.kyc.valuecity0: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~valuecity1$
-      output.4.res.kyc.languageprovince0: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~languageprovince1$
-      output.4.res.kyc.languageaddressLine10: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~languageaddressLine11$
-      output.4.res.kyc.valuefullName0: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~valuefullName1$
-      output.4.res.kyc.languagegender0: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~languagegender1$
-      output.4.res.kyc.valueaddressLine30: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~valueaddressLine31$
-      output.4.res.kyc.dateOfBirth: $REMOVE$
-      output.4.res.kyc.valueaddressLine30: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~valueaddressLine31$
-      output.4.res.kyc.languageregion0: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~languageregion1$
-      #output.4.res.kyc.languagepostalCode0: ''
-      output.4.res.kyc.valueprovince0: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~valueprovince1$
-      output.4.res.kyc.languageaddressLine30: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~languageaddressLine31$
-      output.4.res.kyc.idvId: $REGEXP:XXXX.*$
-      output.4.res.kyc.languagecity0: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~languagecity1$
-      output.4.res.kyc.valueaddressLine20: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~valueaddressLine21$
-      output.4.res.kyc.languagefullName0: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~languagefullName1$
-      output.4.res.kyc.languageaddressLine20: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~languageaddressLine21$
-    audit.auth_transaction:
-      refId: $input.bio-auth-data:bioAuthReq.idvId$
-      txnId: $input.bio-auth-data:bioAuthReq.txnID$
-      authTypeCode: IRIS-AUTH
-      statusCode: $output.output-1-expected-y-res:output.1.response.y.status$
-      reqTime: $FETCH$
-      resTime: $FETCH$
-      statusComment: $REGEXP:.*Iris.*Authentication.*Success.*$
-      idType: D
-    audit.audit_log:
-      refId:  $input.bio-auth-data:bioAuthReq.idvId$
-      eventId: $REGEXP:.*IDA-EVT.*$
-      eventName: AUTH_REQUEST_RESPONSE
-      appId: IDA
-      appName: ID-Authentication
-      moduleName: EKYC_AUTH
-      refIdType: UIN 
-      
-  Valid_MockRequest_UsingLeftEye_SecLang_Y_Check_FullKyc:    
+      identityReq.valueleftEye: Rk1SACA9OV4CrAK49ZICRAIvOV4DCAL+vZIBkAMfTZIBoAHGtZIDmAMu8ZIBKAGywZICAAEOOZEDJARUUZIAiAIKqUIClATAIZEAyADiXXYChALhSZICIAJnMXYCFAIy3V4DOAKFBZIBPAKI2ZIC+APaVZIDWAG7GZICuAQ4ZZIA3AHeuZIEIAM/JUEECAPStV0D2AQotV0DMAUn8V4ClAKBLV4C5AK6sZEB1AI0kZECSAHaaXYCLAGGQZEDrAKTFZIDiAG/KZIB1AQxjZIBjARNlZIDqAFfRZEBMARxtUEAoAFucXUBFABUQSQAA
+      identityReq.tspID: 7404012866
     input.bio-auth-data:
       bioAuthReq.idvId: $UIN:WITH:EVEN$
       bioAuthReq.tspID: $input.identity-encrypt-data:identityReq.tspID$
       bioAuthReq.reqTime: $TIMESTAMP$
-      bioAuthReq.txnID: 7404012867
-    input.identity-encrypt-data:
-      identityReq.rightEye: $REMOVE$
-      identityReq.valueleftEye: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~DECODEFILE:valuedocuments0~//BIR/BDBInfo[Type='Iris'][Subtype='Left']//following::BDB$
-      identityReq.tspID: $input.bio-auth-data:bioAuthReq.tspID$ 
+      bioAuthReq.muaCode: 7404012866   
     input.ekyc-request:
       ekycReq.ekycAuthType: I 
       ekycReq.secLangReq: BOOLEAN:true
@@ -894,16 +696,133 @@ testdata:
       output.1.response.y.status: Y
       output.1.response.y.resTime: $TIMESTAMP$
       output.1.response.y.response: '$DECODE$->output-2-expected-decoded-res.json'
-      output.1.response.y.txnID: $input.bio-auth-data:bioAuthReq.txnID$
     output.output-2-expected-decoded-res:
       output.2.res.auth: '$DECODE$->output-3-expected-decoded-auth-res.json'
       output.2.res.kyc: '$DECODE$->output-4-expected-decoded-kyc-res.json'
     output.output-3-expected-decoded-auth-res:
       output.3.res.y.auth.status: Y
-      #output.3.res.y.auth.usageData: '0x0000200000002000'
+      output.3.res.y.auth.usageData: '0x0000200000002000'
       output.3.res.y.auth.resTime: $IGNORE$
       output.3.res.y.auth.reqTime: $input.bio-auth-data:bioAuthReq.reqTime$
-      output.3.res.y.auth.txnID: $input.bio-auth-data:bioAuthReq.txnID$
+    output.output-4-expected-decoded-kyc-res:
+      output.4.res.kyc.phone: $REMOVE$
+      output.4.res.kyc.email: $REMOVE$
+      output.4.res.kyc.valuegender1: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~valuegender1$
+      output.4.res.kyc.valuegender0: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~valuegender0$
+      #output.4.res.kyc.languagedateOfBirth0: ''
+      output.4.res.kyc.valuepostalCode0: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~postalCode$
+      output.4.res.kyc.valueaddressLine11: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~valueaddressLine11$
+      output.4.res.kyc.valueaddressLine10: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~valueaddressLine10$
+      #output.4.res.kyc.languageemail0: ''
+      output.4.res.kyc.valueregion1: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~valueregion1$
+      output.4.res.kyc.valueregion0: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~valueregion0$
+      output.4.res.kyc.valuecity1: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~valuecity1$
+      output.4.res.kyc.valuecity0: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~valuecity0$
+      output.4.res.kyc.languageprovince1: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~languageprovince1$
+      output.4.res.kyc.languageprovince0: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~languageprovince0$
+      output.4.res.kyc.languageaddressLine11: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~languageaddressLine11$
+      output.4.res.kyc.valuefullName1: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~valuefullName1$
+      output.4.res.kyc.languageaddressLine10: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~languageaddressLine10$
+      output.4.res.kyc.valuefullName0: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~valuefullName0$
+      output.4.res.kyc.languagegender1: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~languagegender1$
+      output.4.res.kyc.languagegender0: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~languagegender0$
+      output.4.res.kyc.valueaddressLine31: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~valueaddressLine31$
+      output.4.res.kyc.valuedateOfBirth0: $REMOVE$
+      output.4.res.kyc.valueaddressLine30: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~valueaddressLine30$
+      output.4.res.kyc.languageregion1: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~languageregion1$
+      output.4.res.kyc.languageregion0: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~languageregion0$
+      #output.4.res.kyc.languagepostalCode0: ''
+      output.4.res.kyc.valueprovince1: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~valueprovince1$
+      output.4.res.kyc.valueprovince0: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~valueprovince0$
+      output.4.res.kyc.languageaddressLine31: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~languageaddressLine31$
+      output.4.res.kyc.languageaddressLine30: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~languageaddressLine30$
+      output.4.res.kyc.idvId: $REGEXP:XXXX.*$
+      output.4.res.kyc.languagecity1: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~languagecity1$
+      output.4.res.kyc.languagecity0: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~languagecity0$
+      output.4.res.kyc.valueaddressLine21: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~valueaddressLine21$
+      output.4.res.kyc.valueaddressLine20: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~valueaddressLine20$
+      output.4.res.kyc.languagefullName1: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~languagefullName1$
+      output.4.res.kyc.languageaddressLine21: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~languageaddressLine21$
+      output.4.res.kyc.languagefullName0: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~languagefullName0$
+      output.4.res.kyc.languageaddressLine20: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~languageaddressLine20$
+      
+  Valid_MockRequest_UsingLeftEye_SecLang_N_Check_LimitedKyc:
+    input.identity-encrypt-data:
+      identityReq.rightEye: $REMOVE$
+      identityReq.valueleftEye: Rk1SACA9OV4CrAK49ZICRAIvOV4DCAL+vZIBkAMfTZIBoAHGtZIDmAMu8ZIBKAGywZICAAEOOZEDJARUUZIAiAIKqUIClATAIZEAyADiXXYChALhSZICIAJnMXYCFAIy3V4DOAKFBZIBPAKI2ZIC+APaVZIDWAG7GZICuAQ4ZZIA3AHeuZIEIAM/JUEECAPStV0D2AQotV0DMAUn8V4ClAKBLV4C5AK6sZEB1AI0kZECSAHaaXYCLAGGQZEDrAKTFZIDiAG/KZIB1AQxjZIBjARNlZIDqAFfRZEBMARxtUEAoAFucXUBFABUQSQAA
+      identityReq.tspID: 7404012866
+    input.bio-auth-data:
+      bioAuthReq.idvId: $UIN:WITH:EVEN$
+      bioAuthReq.tspID: $input.identity-encrypt-data:identityReq.tspID$
+      bioAuthReq.reqTime: $TIMESTAMP$
+      bioAuthReq.muaCode: 7404012866   
+    input.ekyc-request:
+      ekycReq.ekycAuthType: I 
+      ekycReq.secLangReq: BOOLEAN:false
+    output.output-1-expected-y-res:
+      output.1.response.y.status: Y
+      output.1.response.y.resTime: $TIMESTAMP$
+      output.1.response.y.response: '$DECODE$->output-2-expected-decoded-res.json'
+    output.output-2-expected-decoded-res:
+      output.2.res.auth: '$DECODE$->output-3-expected-decoded-auth-res.json'
+      output.2.res.kyc: '$DECODE$->output-4-expected-decoded-kyc-one-lang-res.json'
+    output.output-3-expected-decoded-auth-res:
+      output.3.res.y.auth.status: Y
+      output.3.res.y.auth.usageData: '0x0000200000002000'
+      output.3.res.y.auth.resTime: $IGNORE$
+      output.3.res.y.auth.reqTime: $input.bio-auth-data:bioAuthReq.reqTime$
+    output.output-4-expected-decoded-kyc-one-lang-res:
+      output.4.res.kyc.phone: $REMOVE$
+      output.4.res.kyc.email: $REMOVE$
+      output.4.res.kyc.valuepostalCode0: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~postalCode$
+      output.4.res.kyc.valuegender0: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~valuegender1$
+      #output.4.res.kyc.languagedateOfBirth0: ''
+      output.4.res.kyc.valueaddressLine10: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~valueaddressLine11$
+      #output.4.res.kyc.languageemail0: ''
+      output.4.res.kyc.valueregion0: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~valueregion1$
+      output.4.res.kyc.valuecity0: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~valuecity1$
+      output.4.res.kyc.languageprovince0: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~languageprovince1$
+      output.4.res.kyc.languageaddressLine10: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~languageaddressLine11$
+      output.4.res.kyc.valuefullName0: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~valuefullName1$
+      output.4.res.kyc.languagegender0: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~languagegender1$
+      output.4.res.kyc.valueaddressLine30: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~valueaddressLine31$
+      output.4.res.kyc.dateOfBirth: $REMOVE$
+      output.4.res.kyc.valueaddressLine30: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~valueaddressLine31$
+      output.4.res.kyc.languageregion0: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~languageregion1$
+      #output.4.res.kyc.languagepostalCode0: ''
+      output.4.res.kyc.valueprovince0: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~valueprovince1$
+      output.4.res.kyc.languageaddressLine30: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~languageaddressLine31$
+      output.4.res.kyc.idvId: $REGEXP:XXXX.*$
+      output.4.res.kyc.languagecity0: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~languagecity1$
+      output.4.res.kyc.valueaddressLine20: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~valueaddressLine21$
+      output.4.res.kyc.languagefullName0: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~languagefullName1$
+      output.4.res.kyc.languageaddressLine20: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~languageaddressLine21$
+      
+  Valid_MockRequest_UsingLeftEye_SecLang_Y_Check_FullKyc:
+    input.identity-encrypt-data:
+      identityReq.rightEye: $REMOVE$
+      identityReq.valueleftEye: Rk1SACA9OV4CrAK49ZICRAIvOV4DCAL+vZIBkAMfTZIBoAHGtZIDmAMu8ZIBKAGywZICAAEOOZEDJARUUZIAiAIKqUIClATAIZEAyADiXXYChALhSZICIAJnMXYCFAIy3V4DOAKFBZIBPAKI2ZIC+APaVZIDWAG7GZICuAQ4ZZIA3AHeuZIEIAM/JUEECAPStV0D2AQotV0DMAUn8V4ClAKBLV4C5AK6sZEB1AI0kZECSAHaaXYCLAGGQZEDrAKTFZIDiAG/KZIB1AQxjZIBjARNlZIDqAFfRZEBMARxtUEAoAFucXUBFABUQSQAA
+      identityReq.tspID: 7404012867
+    input.bio-auth-data:
+      bioAuthReq.idvId: $UIN:WITH:EVEN$
+      bioAuthReq.tspID: $input.identity-encrypt-data:identityReq.tspID$
+      bioAuthReq.reqTime: $TIMESTAMP$
+      bioAuthReq.muaCode: 7404012867 
+    input.ekyc-request:
+      ekycReq.ekycAuthType: I 
+      ekycReq.secLangReq: BOOLEAN:true
+    output.output-1-expected-y-res:
+      output.1.response.y.status: Y
+      output.1.response.y.resTime: $TIMESTAMP$
+      output.1.response.y.response: '$DECODE$->output-2-expected-decoded-res.json'
+    output.output-2-expected-decoded-res:
+      output.2.res.auth: '$DECODE$->output-3-expected-decoded-auth-res.json'
+      output.2.res.kyc: '$DECODE$->output-4-expected-decoded-kyc-res.json'
+    output.output-3-expected-decoded-auth-res:
+      output.3.res.y.auth.status: Y
+      output.3.res.y.auth.usageData: '0x0000200000002000'
+      output.3.res.y.auth.resTime: $IGNORE$
+      output.3.res.y.auth.reqTime: $input.bio-auth-data:bioAuthReq.reqTime$
     output.output-4-expected-decoded-kyc-res:
       output.4.res.kyc.valuephone0: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~phone$
       output.4.res.kyc.valueemail0: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~email$
@@ -945,34 +864,17 @@ testdata:
       output.4.res.kyc.languageaddressLine21: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~languageaddressLine21$
       output.4.res.kyc.languagefullName0: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~languagefullName0$
       output.4.res.kyc.languageaddressLine20: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~languageaddressLine20$
-    audit.auth_transaction:
-      refId: $input.bio-auth-data:bioAuthReq.idvId$
-      txnId: $input.bio-auth-data:bioAuthReq.txnID$
-      authTypeCode: IRIS-AUTH
-      statusCode: $output.output-1-expected-y-res:output.1.response.y.status$
-      reqTime: $FETCH$
-      resTime: $FETCH$
-      statusComment: $REGEXP:.*Iris.*Authentication.*Success.*$
-      idType: D
-    audit.audit_log:
-      refId:  $input.bio-auth-data:bioAuthReq.idvId$
-      eventId: $REGEXP:.*IDA-EVT.*$
-      eventName: AUTH_REQUEST_RESPONSE
-      appId: IDA
-      appName: ID-Authentication
-      moduleName: EKYC_AUTH
-      refIdType: UIN 
       
   Valid_MockRequest_UsingLeftEye_SecLang_N_Check_FullKyc:
-    input.bio-auth-data:
-      bioAuthReq.idvId: $UIN:WITH:EVEN$
-      bioAuthReq.tspID: 7404012867
-      bioAuthReq.reqTime: $TIMESTAMP$
-      bioAuthReq.txnID: $RANDOM:N:10$ 
     input.identity-encrypt-data:
       identityReq.rightEye: $REMOVE$
-      identityReq.valueleftEye: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~DECODEFILE:valuedocuments0~//BIR/BDBInfo[Type='Iris'][Subtype='Left']//following::BDB$
-      identityReq.tspID: $input.bio-auth-data:bioAuthReq.tspID$ 
+      identityReq.valueleftEye: Rk1SACA9OV4CrAK49ZICRAIvOV4DCAL+vZIBkAMfTZIBoAHGtZIDmAMu8ZIBKAGywZICAAEOOZEDJARUUZIAiAIKqUIClATAIZEAyADiXXYChALhSZICIAJnMXYCFAIy3V4DOAKFBZIBPAKI2ZIC+APaVZIDWAG7GZICuAQ4ZZIA3AHeuZIEIAM/JUEECAPStV0D2AQotV0DMAUn8V4ClAKBLV4C5AK6sZEB1AI0kZECSAHaaXYCLAGGQZEDrAKTFZIDiAG/KZIB1AQxjZIBjARNlZIDqAFfRZEBMARxtUEAoAFucXUBFABUQSQAA
+      identityReq.tspID: 7404012867
+    input.bio-auth-data:
+      bioAuthReq.idvId: $UIN:WITH:EVEN$
+      bioAuthReq.tspID: $input.identity-encrypt-data:identityReq.tspID$
+      bioAuthReq.reqTime: $TIMESTAMP$
+      bioAuthReq.muaCode: 7404012866   
     input.ekyc-request:
       ekycReq.ekycAuthType: I 
       ekycReq.secLangReq: BOOLEAN:false
@@ -980,16 +882,14 @@ testdata:
       output.1.response.y.status: Y
       output.1.response.y.resTime: $TIMESTAMP$
       output.1.response.y.response: '$DECODE$->output-2-expected-decoded-res.json'
-      output.1.response.y.txnID: $input.bio-auth-data:bioAuthReq.txnID$
     output.output-2-expected-decoded-res:
       output.2.res.auth: '$DECODE$->output-3-expected-decoded-auth-res.json'
       output.2.res.kyc: '$DECODE$->output-4-expected-decoded-kyc-one-lang-res.json'
     output.output-3-expected-decoded-auth-res:
       output.3.res.y.auth.status: Y
-      #output.3.res.y.auth.usageData: '0x0000200000002000'
+      output.3.res.y.auth.usageData: '0x0000200000002000'
       output.3.res.y.auth.resTime: $IGNORE$
       output.3.res.y.auth.reqTime: $input.bio-auth-data:bioAuthReq.reqTime$
-      output.3.res.y.auth.txnID: $input.bio-auth-data:bioAuthReq.txnID$
     output.output-4-expected-decoded-kyc-one-lang-res:
       output.4.res.kyc.valuephone0: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~phone$
       output.4.res.kyc.valueemail0: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~email$
@@ -1016,34 +916,17 @@ testdata:
       output.4.res.kyc.valueaddressLine20: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~valueaddressLine21$
       output.4.res.kyc.languagefullName0: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~languagefullName1$
       output.4.res.kyc.languageaddressLine20: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~languageaddressLine21$
-    audit.auth_transaction:
-      refId: $input.bio-auth-data:bioAuthReq.idvId$
-      txnId: $input.bio-auth-data:bioAuthReq.txnID$
-      authTypeCode: IRIS-AUTH
-      statusCode: $output.output-1-expected-y-res:output.1.response.y.status$
-      reqTime: $FETCH$
-      resTime: $FETCH$
-      statusComment: $REGEXP:.*Iris.*Authentication.*Success.*$
-      idType: D
-    audit.audit_log:
-      refId:  $input.bio-auth-data:bioAuthReq.idvId$
-      eventId: $REGEXP:.*IDA-EVT.*$
-      eventName: AUTH_REQUEST_RESPONSE
-      appId: IDA
-      appName: ID-Authentication
-      moduleName: EKYC_AUTH
-      refIdType: UIN 
       
-  Valid_MockRequest_UsingRightEye_SecLang_Y_Check_LimitedKyc:    
-    input.bio-auth-data:
-      bioAuthReq.idvId: $UIN:WITH:ODD$
-      bioAuthReq.tspID: 7404012866
-      bioAuthReq.reqTime: $TIMESTAMP$
-      bioAuthReq.txnID: $RANDOM:N:10$
+  Valid_MockRequest_UsingRightEye_SecLang_Y_Check_LimitedKyc:
     input.identity-encrypt-data:
      identityReq.leftEye: $REMOVE$
-     identityReq.valuerightEye: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~DECODEFILE:valuedocuments0~//BIR/BDBInfo[Type='Iris'][Subtype='Right']//following::BDB$
-     identityReq.tspID: $input.bio-auth-data:bioAuthReq.tspID$
+     identityReq.valuerightEye: Rk1SACAyMAAAAAEIAAABPAFiAMUAxQEAAAAoJ4CeAK9OV4CrAK49ZICRAIvOV4DCAL+vZIBkAMfTZIBoAHGtZIDmAMu8ZIBKAGywZICAAEOOZEDJARUUZIAiAIKqUIClATAIZEAyADiXXYChALhSZICIAJnMXYCFAIy3V4DOAKFBZIBPAKI2ZIC+APaVZIDWAG7GZICuAQ4ZZIA3AHeuZIEIAM/JUEECAPStV0D2AQotV0DMAUn8V4ClAKBLV4C5AK6sZEB1AI0kZECSAHaaXYCLAGGQZEDrAKTFZIDiAG/KZIB1AQxjZIBjARNlZIDqA
+     identityReq.tspID: 7404012866
+    input.bio-auth-data:
+      bioAuthReq.idvId: $UIN:WITH:ODD$
+      bioAuthReq.tspID: $input.identity-encrypt-data:identityReq.tspID$
+      bioAuthReq.reqTime: $TIMESTAMP$
+      bioAuthReq.muaCode: 7404012866   
     input.ekyc-request:
       ekycReq.ekycAuthType: I 
       ekycReq.secLangReq: BOOLEAN:true
@@ -1051,16 +934,14 @@ testdata:
       output.1.response.y.status: Y
       output.1.response.y.resTime: $TIMESTAMP$
       output.1.response.y.response: '$DECODE$->output-2-expected-decoded-res.json'
-      output.1.response.y.txnID: $input.bio-auth-data:bioAuthReq.txnID$
     output.output-2-expected-decoded-res:
       output.2.res.auth: '$DECODE$->output-3-expected-decoded-auth-res.json'
       output.2.res.kyc: '$DECODE$->output-4-expected-decoded-kyc-res.json'
     output.output-3-expected-decoded-auth-res:
       output.3.res.y.auth.status: Y
-      #output.3.res.y.auth.usageData: '0x0000200000002000'
+      output.3.res.y.auth.usageData: '0x0000200000002000'
       output.3.res.y.auth.resTime: $IGNORE$
       output.3.res.y.auth.reqTime: $input.bio-auth-data:bioAuthReq.reqTime$
-      output.3.res.y.auth.txnID: $input.bio-auth-data:bioAuthReq.txnID$
     output.output-4-expected-decoded-kyc-res:
       output.4.res.kyc.phone: $REMOVE$
       output.4.res.kyc.email: $REMOVE$
@@ -1103,34 +984,17 @@ testdata:
       output.4.res.kyc.languageaddressLine21: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~languageaddressLine21$
       output.4.res.kyc.languagefullName0: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~languagefullName0$
       output.4.res.kyc.languageaddressLine20: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~languageaddressLine20$
-    audit.auth_transaction:
-      refId: $input.bio-auth-data:bioAuthReq.idvId$
-      txnId: $input.bio-auth-data:bioAuthReq.txnID$
-      authTypeCode: IRIS-AUTH
-      statusCode: $output.output-1-expected-y-res:output.1.response.y.status$
-      reqTime: $FETCH$
-      resTime: $FETCH$
-      statusComment: $REGEXP:.*Iris.*Authentication.*Success.*$
-      idType: D
-    audit.audit_log:
-      refId:  $input.bio-auth-data:bioAuthReq.idvId$
-      eventId: $REGEXP:.*IDA-EVT.*$
-      eventName: AUTH_REQUEST_RESPONSE
-      appId: IDA
-      appName: ID-Authentication
-      moduleName: EKYC_AUTH
-      refIdType: UIN 
       
-  Valid_MockRequest_UsingRightEye_SecLang_N_Check_LimitedKyc:    
-    input.bio-auth-data:
-      bioAuthReq.idvId: $UIN:WITH:ODD$
-      bioAuthReq.tspID: 7404012866
-      bioAuthReq.reqTime: $TIMESTAMP$
-      bioAuthReq.txnID: $RANDOM:N:10$ 
+  Valid_MockRequest_UsingRightEye_SecLang_N_Check_LimitedKyc:
     input.identity-encrypt-data:
       identityReq.leftEye: $REMOVE$
-      identityReq.valuerightEye: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~DECODEFILE:valuedocuments0~//BIR/BDBInfo[Type='Iris'][Subtype='Right']//following::BDB$
-      identityReq.tspID: $input.bio-auth-data:bioAuthReq.tspID$
+      identityReq.valuerightEye: Rk1SACAyMAAAAAEIAAABPAFiAMUAxQEAAAAoJ4CeAK9OV4CrAK49ZICRAIvOV4DCAL+vZIBkAMfTZIBoAHGtZIDmAMu8ZIBKAGywZICAAEOOZEDJARUUZIAiAIKqUIClATAIZEAyADiXXYChALhSZICIAJnMXYCFAIy3V4DOAKFBZIBPAKI2ZIC+APaVZIDWAG7GZICuAQ4ZZIA3AHeuZIEIAM/JUEECAPStV0D2AQotV0DMAUn8V4ClAKBLV4C5AK6sZEB1AI0kZECSAHaaXYCLAGGQZEDrAKTFZIDiAG/KZIB1AQxjZIBjARNlZIDqA
+      identityReq.tspID: 7404012866
+    input.bio-auth-data:
+      bioAuthReq.idvId: $UIN:WITH:ODD$
+      bioAuthReq.tspID: $input.identity-encrypt-data:identityReq.tspID$
+      bioAuthReq.reqTime: $TIMESTAMP$
+      bioAuthReq.muaCode: 7404012866   
     input.ekyc-request:
       ekycReq.ekycAuthType: I 
       ekycReq.secLangReq: BOOLEAN:false
@@ -1138,16 +1002,14 @@ testdata:
       output.1.response.y.status: Y
       output.1.response.y.resTime: $TIMESTAMP$
       output.1.response.y.response: '$DECODE$->output-2-expected-decoded-res.json'
-      output.1.response.y.txnID: $input.bio-auth-data:bioAuthReq.txnID$
     output.output-2-expected-decoded-res:
       output.2.res.auth: '$DECODE$->output-3-expected-decoded-auth-res.json'
       output.2.res.kyc: '$DECODE$->output-4-expected-decoded-kyc-one-lang-res.json'
     output.output-3-expected-decoded-auth-res:
       output.3.res.y.auth.status: Y
-      #output.3.res.y.auth.usageData: '0x0000200000002000'
+      output.3.res.y.auth.usageData: '0x0000200000002000'
       output.3.res.y.auth.resTime: $IGNORE$
       output.3.res.y.auth.reqTime: $input.bio-auth-data:bioAuthReq.reqTime$
-      output.3.res.y.auth.txnID: $input.bio-auth-data:bioAuthReq.txnID$
     output.output-4-expected-decoded-kyc-one-lang-res:
       output.4.res.kyc.phone: $REMOVE$
       output.4.res.kyc.email: $REMOVE$
@@ -1174,34 +1036,17 @@ testdata:
       output.4.res.kyc.valueaddressLine20: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~valueaddressLine21$
       output.4.res.kyc.languagefullName0: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~languagefullName1$
       output.4.res.kyc.languageaddressLine20: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~languageaddressLine21$
-    audit.auth_transaction:
-      refId: $input.bio-auth-data:bioAuthReq.idvId$
-      txnId: $input.bio-auth-data:bioAuthReq.txnID$
-      authTypeCode: IRIS-AUTH
-      statusCode: $output.output-1-expected-y-res:output.1.response.y.status$
-      reqTime: $FETCH$
-      resTime: $FETCH$
-      statusComment: $REGEXP:.*Iris.*Authentication.*Success.*$
-      idType: D
-    audit.audit_log:
-      refId:  $input.bio-auth-data:bioAuthReq.idvId$
-      eventId: $REGEXP:.*IDA-EVT.*$
-      eventName: AUTH_REQUEST_RESPONSE
-      appId: IDA
-      appName: ID-Authentication
-      moduleName: EKYC_AUTH
-      refIdType: UIN 
       
-  Valid_MockRequest_UsingRightEye_SecLang_Y_Check_FullKyc:    
-    input.bio-auth-data:
-      bioAuthReq.idvId: $UIN:WITH:ODD$
-      bioAuthReq.tspID: 7404012867
-      bioAuthReq.reqTime: $TIMESTAMP$
-      bioAuthReq.txnID: $RANDOM:N:10$
+  Valid_MockRequest_UsingRightEye_SecLang_Y_Check_FullKyc:
     input.identity-encrypt-data:
       identityReq.leftEye: $REMOVE$
-      identityReq.valuerightEye: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~DECODEFILE:valuedocuments0~//BIR/BDBInfo[Type='Iris'][Subtype='Right']//following::BDB$
-      identityReq.tspID: $input.bio-auth-data:bioAuthReq.tspID$
+      identityReq.valuerightEye: Rk1SACAyMAAAAAEIAAABPAFiAMUAxQEAAAAoJ4CeAK9OV4CrAK49ZICRAIvOV4DCAL+vZIBkAMfTZIBoAHGtZIDmAMu8ZIBKAGywZICAAEOOZEDJARUUZIAiAIKqUIClATAIZEAyADiXXYChALhSZICIAJnMXYCFAIy3V4DOAKFBZIBPAKI2ZIC+APaVZIDWAG7GZICuAQ4ZZIA3AHeuZIEIAM/JUEECAPStV0D2AQotV0DMAUn8V4ClAKBLV4C5AK6sZEB1AI0kZECSAHaaXYCLAGGQZEDrAKTFZIDiAG/KZIB1AQxjZIBjARNlZIDqA
+      identityReq.tspID: 7404012867
+    input.bio-auth-data:
+      bioAuthReq.idvId: $UIN:WITH:ODD$
+      bioAuthReq.tspID: $input.identity-encrypt-data:identityReq.tspID$
+      bioAuthReq.reqTime: $TIMESTAMP$
+      bioAuthReq.muaCode: 7404012867 
     input.ekyc-request:
       ekycReq.ekycAuthType: I 
       ekycReq.secLangReq: BOOLEAN:true
@@ -1209,16 +1054,14 @@ testdata:
       output.1.response.y.status: Y
       output.1.response.y.resTime: $TIMESTAMP$
       output.1.response.y.response: '$DECODE$->output-2-expected-decoded-res.json'
-      output.1.response.y.txnID: $input.bio-auth-data:bioAuthReq.txnID$
     output.output-2-expected-decoded-res:
       output.2.res.auth: '$DECODE$->output-3-expected-decoded-auth-res.json'
       output.2.res.kyc: '$DECODE$->output-4-expected-decoded-kyc-res.json'
     output.output-3-expected-decoded-auth-res:
       output.3.res.y.auth.status: Y
-      #output.3.res.y.auth.usageData: '0x0000200000002000'
+      output.3.res.y.auth.usageData: '0x0000200000002000'
       output.3.res.y.auth.resTime: $IGNORE$
       output.3.res.y.auth.reqTime: $input.bio-auth-data:bioAuthReq.reqTime$
-      output.3.res.y.auth.txnID: $input.bio-auth-data:bioAuthReq.txnID$
     output.output-4-expected-decoded-kyc-res:
       output.4.res.kyc.valuephone0: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~phone$
       output.4.res.kyc.valueemail0: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~email$
@@ -1260,34 +1103,17 @@ testdata:
       output.4.res.kyc.languageaddressLine21: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~languageaddressLine21$
       output.4.res.kyc.languagefullName0: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~languagefullName0$
       output.4.res.kyc.languageaddressLine20: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~languageaddressLine20$
-    audit.auth_transaction:
-      refId: $input.bio-auth-data:bioAuthReq.idvId$
-      txnId: $input.bio-auth-data:bioAuthReq.txnID$
-      authTypeCode: IRIS-AUTH
-      statusCode: $output.output-1-expected-y-res:output.1.response.y.status$
-      reqTime: $FETCH$
-      resTime: $FETCH$
-      statusComment: $REGEXP:.*Iris.*Authentication.*Success.*$
-      idType: D
-    audit.audit_log:
-      refId:  $input.bio-auth-data:bioAuthReq.idvId$
-      eventId: $REGEXP:.*IDA-EVT.*$
-      eventName: AUTH_REQUEST_RESPONSE
-      appId: IDA
-      appName: ID-Authentication
-      moduleName: EKYC_AUTH
-      refIdType: UIN 
       
-  Valid_MockRequest_UsingRightEye_SecLang_N_Check_FullKyc_smoke:    
-    input.bio-auth-data:
-      bioAuthReq.idvId: $UIN:WITH:ODD$
-      bioAuthReq.tspID: 7404012867
-      bioAuthReq.reqTime: $TIMESTAMP$
-      bioAuthReq.txnID: $RANDOM:N:10$
+  Valid_MockRequest_UsingRightEye_SecLang_N_Check_FullKyc_smoke:
     input.identity-encrypt-data:
       identityReq.leftEye: $REMOVE$
-      identityReq.valuerightEye: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~DECODEFILE:valuedocuments0~//BIR/BDBInfo[Type='Iris'][Subtype='Right']//following::BDB$
-      identityReq.tspID: $input.bio-auth-data:bioAuthReq.tspID$
+      identityReq.valuerightEye: Rk1SACAyMAAAAAEIAAABPAFiAMUAxQEAAAAoJ4CeAK9OV4CrAK49ZICRAIvOV4DCAL+vZIBkAMfTZIBoAHGtZIDmAMu8ZIBKAGywZICAAEOOZEDJARUUZIAiAIKqUIClATAIZEAyADiXXYChALhSZICIAJnMXYCFAIy3V4DOAKFBZIBPAKI2ZIC+APaVZIDWAG7GZICuAQ4ZZIA3AHeuZIEIAM/JUEECAPStV0D2AQotV0DMAUn8V4ClAKBLV4C5AK6sZEB1AI0kZECSAHaaXYCLAGGQZEDrAKTFZIDiAG/KZIB1AQxjZIBjARNlZIDqA
+      identityReq.tspID: 7404012867
+    input.bio-auth-data:
+      bioAuthReq.idvId: $UIN:WITH:ODD$
+      bioAuthReq.tspID: $input.identity-encrypt-data:identityReq.tspID$
+      bioAuthReq.reqTime: $TIMESTAMP$
+      bioAuthReq.muaCode: 7404012866   
     input.ekyc-request:
       ekycReq.ekycAuthType: I 
       ekycReq.secLangReq: BOOLEAN:false
@@ -1295,16 +1121,14 @@ testdata:
       output.1.response.y.status: Y
       output.1.response.y.resTime: $TIMESTAMP$
       output.1.response.y.response: '$DECODE$->output-2-expected-decoded-res.json'
-      output.1.response.y.txnID: $input.bio-auth-data:bioAuthReq.txnID$
     output.output-2-expected-decoded-res:
       output.2.res.auth: '$DECODE$->output-3-expected-decoded-auth-res.json'
       output.2.res.kyc: '$DECODE$->output-4-expected-decoded-kyc-one-lang-res.json'
     output.output-3-expected-decoded-auth-res:
       output.3.res.y.auth.status: Y
-      #output.3.res.y.auth.usageData: '0x0000200000002000'
+      output.3.res.y.auth.usageData: '0x0000200000002000'
       output.3.res.y.auth.resTime: $IGNORE$
       output.3.res.y.auth.reqTime: $input.bio-auth-data:bioAuthReq.reqTime$
-      output.3.res.y.auth.txnID: $input.bio-auth-data:bioAuthReq.txnID$
     output.output-4-expected-decoded-kyc-one-lang-res:
       output.4.res.kyc.valuephone0: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~phone$
       output.4.res.kyc.valueemail0: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~email$
@@ -1331,34 +1155,17 @@ testdata:
       output.4.res.kyc.valueaddressLine20: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~valueaddressLine21$
       output.4.res.kyc.languagefullName0: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~languagefullName1$
       output.4.res.kyc.languageaddressLine20: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~languageaddressLine21$
-    audit.auth_transaction:
-      refId: $input.bio-auth-data:bioAuthReq.idvId$
-      txnId: $input.bio-auth-data:bioAuthReq.txnID$
-      authTypeCode: IRIS-AUTH
-      statusCode: $output.output-1-expected-y-res:output.1.response.y.status$
-      reqTime: $FETCH$
-      resTime: $FETCH$
-      statusComment: $REGEXP:.*Iris.*Authentication.*Success.*$
-      idType: D
-    audit.audit_log:
-      refId:  $input.bio-auth-data:bioAuthReq.idvId$
-      eventId: $REGEXP:.*IDA-EVT.*$
-      eventName: AUTH_REQUEST_RESPONSE
-      appId: IDA
-      appName: ID-Authentication
-      moduleName: EKYC_AUTH
-      refIdType: UIN 
       
-  Valid_MockRequest_UsingLeftAndRightEye_SecLang_Y_Check_LimitedKyc:    
+  Valid_MockRequest_UsingLeftAndRightEye_SecLang_Y_Check_LimitedKyc:
+    input.identity-encrypt-data:
+      identityReq.valuerightEye: Rk1SACAyMAAAAAEIAAABPAFiAMUAxQEAAAAoJ4CeAK9OV4CrAK49ZICRAIvOV4DCAL+vZIBkAMfTZIBoAHGtZIDmAMu8ZIBKAGywZICAAEOOZEDJARUUZIAiAIKqUIClATAIZEAyADiXXYChALhSZICIAJnMXYCFAIy3V4DOAKFBZIBPAKI2ZIC+APaVZIDWAG7GZICuAQ4ZZIA3AHeuZIEIAM/JUEECAPStV0D2AQotV0DMAUn8V4ClAKBLV4C5AK6sZEB1AI0kZECSAHaaXYCLAGGQZEDrAKTFZIDiAG/KZIB1AQxjZIBjARNlZIDqA
+      identityReq.valueleftEye: Rk1SACA9OV4CrAK49ZICRAIvOV4DCAL+vZIBkAMfTZIBoAHGtZIDmAMu8ZIBKAGywZICAAEOOZEDJARUUZIAiAIKqUIClATAIZEAyADiXXYChALhSZICIAJnMXYCFAIy3V4DOAKFBZIBPAKI2ZIC+APaVZIDWAG7GZICuAQ4ZZIA3AHeuZIEIAM/JUEECAPStV0D2AQotV0DMAUn8V4ClAKBLV4C5AK6sZEB1AI0kZECSAHaaXYCLAGGQZEDrAKTFZIDiAG/KZIB1AQxjZIBjARNlZIDqAFfRZEBMARxtUEAoAFucXUBFABUQSQAA
+      identityReq.tspID: 7404012866
     input.bio-auth-data:
       bioAuthReq.idvId: $UIN:WITH:EVEN$
-      bioAuthReq.tspID: 7404012866
+      bioAuthReq.tspID: $input.identity-encrypt-data:identityReq.tspID$
       bioAuthReq.reqTime: $TIMESTAMP$
-      bioAuthReq.txnID: $RANDOM:N:10$
-    input.identity-encrypt-data:
-      identityReq.valuerightEye: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~DECODEFILE:valuedocuments0~//BIR/BDBInfo[Type='Iris'][Subtype='Right']//following::BDB$
-      identityReq.valueleftEye: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~DECODEFILE:valuedocuments0~//BIR/BDBInfo[Type='Iris'][Subtype='Left']//following::BDB$
-      identityReq.tspID: $input.bio-auth-data:bioAuthReq.tspID$
+      bioAuthReq.muaCode: 7404012866   
     input.ekyc-request:
       ekycReq.ekycAuthType: I 
       ekycReq.secLangReq: BOOLEAN:true
@@ -1366,16 +1173,14 @@ testdata:
       output.1.response.y.status: Y
       output.1.response.y.resTime: $TIMESTAMP$
       output.1.response.y.response: '$DECODE$->output-2-expected-decoded-res.json'
-      output.1.response.y.txnID: $input.bio-auth-data:bioAuthReq.txnID$
     output.output-2-expected-decoded-res:
       output.2.res.auth: '$DECODE$->output-3-expected-decoded-auth-res.json'
       output.2.res.kyc: '$DECODE$->output-4-expected-decoded-kyc-res.json'
     output.output-3-expected-decoded-auth-res:
       output.3.res.y.auth.status: Y
-      #output.3.res.y.auth.usageData: '0x0000200000002000'
+      output.3.res.y.auth.usageData: '0x0000200000002000'
       output.3.res.y.auth.resTime: $IGNORE$
       output.3.res.y.auth.reqTime: $input.bio-auth-data:bioAuthReq.reqTime$
-      output.3.res.y.auth.txnID: $input.bio-auth-data:bioAuthReq.txnID$
     output.output-4-expected-decoded-kyc-res:
       output.4.res.kyc.phone: $REMOVE$
       output.4.res.kyc.email: $REMOVE$
@@ -1417,34 +1222,17 @@ testdata:
       output.4.res.kyc.languageaddressLine21: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~languageaddressLine21$
       output.4.res.kyc.languagefullName0: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~languagefullName0$
       output.4.res.kyc.languageaddressLine20: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~languageaddressLine20$
-    audit.auth_transaction:
-      refId: $input.bio-auth-data:bioAuthReq.idvId$
-      txnId: $input.bio-auth-data:bioAuthReq.txnID$
-      authTypeCode: IRIS-AUTH
-      statusCode: $output.output-1-expected-y-res:output.1.response.y.status$
-      reqTime: $FETCH$
-      resTime: $FETCH$
-      statusComment: $REGEXP:.*Iris.*Authentication.*Success.*$
-      idType: D
-    audit.audit_log:
-      refId:  $input.bio-auth-data:bioAuthReq.idvId$
-      eventId: $REGEXP:.*IDA-EVT.*$
-      eventName: AUTH_REQUEST_RESPONSE
-      appId: IDA
-      appName: ID-Authentication
-      moduleName: EKYC_AUTH
-      refIdType: UIN 
       
-  Valid_MockRequest_UsingLeftAndRightEye_SecLang_N_Check_LimitedKyc:    
+  Valid_MockRequest_UsingLeftAndRightEye_SecLang_N_Check_LimitedKyc:
+    input.identity-encrypt-data:
+      identityReq.valuerightEye: Rk1SACAyMAAAAAEIAAABPAFiAMUAxQEAAAAoJ4CeAK9OV4CrAK49ZICRAIvOV4DCAL+vZIBkAMfTZIBoAHGtZIDmAMu8ZIBKAGywZICAAEOOZEDJARUUZIAiAIKqUIClATAIZEAyADiXXYChALhSZICIAJnMXYCFAIy3V4DOAKFBZIBPAKI2ZIC+APaVZIDWAG7GZICuAQ4ZZIA3AHeuZIEIAM/JUEECAPStV0D2AQotV0DMAUn8V4ClAKBLV4C5AK6sZEB1AI0kZECSAHaaXYCLAGGQZEDrAKTFZIDiAG/KZIB1AQxjZIBjARNlZIDqA
+      identityReq.valueleftEye: Rk1SACA9OV4CrAK49ZICRAIvOV4DCAL+vZIBkAMfTZIBoAHGtZIDmAMu8ZIBKAGywZICAAEOOZEDJARUUZIAiAIKqUIClATAIZEAyADiXXYChALhSZICIAJnMXYCFAIy3V4DOAKFBZIBPAKI2ZIC+APaVZIDWAG7GZICuAQ4ZZIA3AHeuZIEIAM/JUEECAPStV0D2AQotV0DMAUn8V4ClAKBLV4C5AK6sZEB1AI0kZECSAHaaXYCLAGGQZEDrAKTFZIDiAG/KZIB1AQxjZIBjARNlZIDqAFfRZEBMARxtUEAoAFucXUBFABUQSQAA
+      identityReq.tspID: 7404012866
     input.bio-auth-data:
       bioAuthReq.idvId: $UIN:WITH:EVEN$
-      bioAuthReq.tspID: 7404012866
+      bioAuthReq.tspID: $input.identity-encrypt-data:identityReq.tspID$
       bioAuthReq.reqTime: $TIMESTAMP$
-      bioAuthReq.txnID: $RANDOM:N:10$  
-    input.identity-encrypt-data:
-      identityReq.valuerightEye: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~DECODEFILE:valuedocuments0~//BIR/BDBInfo[Type='Iris'][Subtype='Right']//following::BDB$
-      identityReq.valueleftEye: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~DECODEFILE:valuedocuments0~//BIR/BDBInfo[Type='Iris'][Subtype='Left']//following::BDB$
-      identityReq.tspID: $input.bio-auth-data:bioAuthReq.tspID$
+      bioAuthReq.muaCode: 7404012866   
     input.ekyc-request:
       ekycReq.ekycAuthType: I 
       ekycReq.secLangReq: BOOLEAN:false
@@ -1452,16 +1240,14 @@ testdata:
       output.1.response.y.status: Y
       output.1.response.y.resTime: $TIMESTAMP$
       output.1.response.y.response: '$DECODE$->output-2-expected-decoded-res.json'
-      output.1.response.y.txnID: $input.bio-auth-data:bioAuthReq.txnID$
     output.output-2-expected-decoded-res:
       output.2.res.auth: '$DECODE$->output-3-expected-decoded-auth-res.json'
       output.2.res.kyc: '$DECODE$->output-4-expected-decoded-kyc-one-lang-res.json'
     output.output-3-expected-decoded-auth-res:
       output.3.res.y.auth.status: Y
-      #output.3.res.y.auth.usageData: '0x0000200000002000'
+      output.3.res.y.auth.usageData: '0x0000200000002000'
       output.3.res.y.auth.resTime: $IGNORE$
       output.3.res.y.auth.reqTime: $input.bio-auth-data:bioAuthReq.reqTime$
-      output.3.res.y.auth.txnID: $input.bio-auth-data:bioAuthReq.txnID$
     output.output-4-expected-decoded-kyc-one-lang-res:
       output.4.res.kyc.phone: $REMOVE$
       output.4.res.kyc.email: $REMOVE$
@@ -1488,34 +1274,17 @@ testdata:
       output.4.res.kyc.valueaddressLine20: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~valueaddressLine21$
       output.4.res.kyc.languagefullName0: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~languagefullName1$
       output.4.res.kyc.languageaddressLine20: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~languageaddressLine21$
-    audit.auth_transaction:
-      refId: $input.bio-auth-data:bioAuthReq.idvId$
-      txnId: $input.bio-auth-data:bioAuthReq.txnID$
-      authTypeCode: IRIS-AUTH
-      statusCode: $output.output-1-expected-y-res:output.1.response.y.status$
-      reqTime: $FETCH$
-      resTime: $FETCH$
-      statusComment: $REGEXP:.*Iris.*Authentication.*Success.*$
-      idType: D
-    audit.audit_log:
-      refId:  $input.bio-auth-data:bioAuthReq.idvId$
-      eventId: $REGEXP:.*IDA-EVT.*$
-      eventName: AUTH_REQUEST_RESPONSE
-      appId: IDA
-      appName: ID-Authentication
-      moduleName: EKYC_AUTH
-      refIdType: UIN 
       
   Valid_MockRequest_UsingLeftAndRightEye_SecLang_Y_Check_FullKyc:
+    input.identity-encrypt-data:
+      identityReq.valuerightEye: Rk1SACAyMAAAAAEIAAABPAFiAMUAxQEAAAAoJ4CeAK9OV4CrAK49ZICRAIvOV4DCAL+vZIBkAMfTZIBoAHGtZIDmAMu8ZIBKAGywZICAAEOOZEDJARUUZIAiAIKqUIClATAIZEAyADiXXYChALhSZICIAJnMXYCFAIy3V4DOAKFBZIBPAKI2ZIC+APaVZIDWAG7GZICuAQ4ZZIA3AHeuZIEIAM/JUEECAPStV0D2AQotV0DMAUn8V4ClAKBLV4C5AK6sZEB1AI0kZECSAHaaXYCLAGGQZEDrAKTFZIDiAG/KZIB1AQxjZIBjARNlZIDqA
+      identityReq.valueleftEye: Rk1SACA9OV4CrAK49ZICRAIvOV4DCAL+vZIBkAMfTZIBoAHGtZIDmAMu8ZIBKAGywZICAAEOOZEDJARUUZIAiAIKqUIClATAIZEAyADiXXYChALhSZICIAJnMXYCFAIy3V4DOAKFBZIBPAKI2ZIC+APaVZIDWAG7GZICuAQ4ZZIA3AHeuZIEIAM/JUEECAPStV0D2AQotV0DMAUn8V4ClAKBLV4C5AK6sZEB1AI0kZECSAHaaXYCLAGGQZEDrAKTFZIDiAG/KZIB1AQxjZIBjARNlZIDqAFfRZEBMARxtUEAoAFucXUBFABUQSQAA
+      identityReq.tspID: 7404012867
     input.bio-auth-data:
       bioAuthReq.idvId: $UIN:WITH:EVEN$
-      bioAuthReq.tspID: 7404012867
+      bioAuthReq.tspID: $input.identity-encrypt-data:identityReq.tspID$
       bioAuthReq.reqTime: $TIMESTAMP$
-      bioAuthReq.txnID: $RANDOM:N:10$
-    input.identity-encrypt-data:
-      identityReq.valuerightEye: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~DECODEFILE:valuedocuments0~//BIR/BDBInfo[Type='Iris'][Subtype='Right']//following::BDB$
-      identityReq.valueleftEye: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~DECODEFILE:valuedocuments0~//BIR/BDBInfo[Type='Iris'][Subtype='Left']//following::BDB$
-      identityReq.tspID: $input.bio-auth-data:bioAuthReq.tspID$
+      bioAuthReq.muaCode: 7404012867 
     input.ekyc-request:
       ekycReq.ekycAuthType: I 
       ekycReq.secLangReq: BOOLEAN:true
@@ -1523,16 +1292,14 @@ testdata:
       output.1.response.y.status: Y
       output.1.response.y.resTime: $TIMESTAMP$
       output.1.response.y.response: '$DECODE$->output-2-expected-decoded-res.json'
-      output.1.response.y.txnID: $input.bio-auth-data:bioAuthReq.txnID$
     output.output-2-expected-decoded-res:
       output.2.res.auth: '$DECODE$->output-3-expected-decoded-auth-res.json'
       output.2.res.kyc: '$DECODE$->output-4-expected-decoded-kyc-res.json'
     output.output-3-expected-decoded-auth-res:
       output.3.res.y.auth.status: Y
-      #output.3.res.y.auth.usageData: '0x0000200000002000'
+      output.3.res.y.auth.usageData: '0x0000200000002000'
       output.3.res.y.auth.resTime: $IGNORE$
       output.3.res.y.auth.reqTime: $input.bio-auth-data:bioAuthReq.reqTime$
-      output.3.res.y.auth.txnID: $input.bio-auth-data:bioAuthReq.txnID$
     output.output-4-expected-decoded-kyc-res:
       output.4.res.kyc.valuephone0: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~phone$
       output.4.res.kyc.valueemail0: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~email$
@@ -1574,34 +1341,17 @@ testdata:
       output.4.res.kyc.languageaddressLine21: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~languageaddressLine21$
       output.4.res.kyc.languagefullName0: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~languagefullName0$
       output.4.res.kyc.languageaddressLine20: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~languageaddressLine20$
-    audit.auth_transaction:
-      refId: $input.bio-auth-data:bioAuthReq.idvId$
-      txnId: $input.bio-auth-data:bioAuthReq.txnID$
-      authTypeCode: IRIS-AUTH
-      statusCode: $output.output-1-expected-y-res:output.1.response.y.status$
-      reqTime: $FETCH$
-      resTime: $FETCH$
-      statusComment: $REGEXP:.*Iris.*Authentication.*Success.*$
-      idType: D
-    audit.audit_log:
-      refId:  $input.bio-auth-data:bioAuthReq.idvId$
-      eventId: $REGEXP:.*IDA-EVT.*$
-      eventName: AUTH_REQUEST_RESPONSE
-      appId: IDA
-      appName: ID-Authentication
-      moduleName: EKYC_AUTH
-      refIdType: UIN 
       
   Valid_MockRequest_UsingLeftAndRightEye_SecLang_N_Check_FullKyc:
+    input.identity-encrypt-data:
+      identityReq.valuerightEye: Rk1SACAyMAAAAAEIAAABPAFiAMUAxQEAAAAoJ4CeAK9OV4CrAK49ZICRAIvOV4DCAL+vZIBkAMfTZIBoAHGtZIDmAMu8ZIBKAGywZICAAEOOZEDJARUUZIAiAIKqUIClATAIZEAyADiXXYChALhSZICIAJnMXYCFAIy3V4DOAKFBZIBPAKI2ZIC+APaVZIDWAG7GZICuAQ4ZZIA3AHeuZIEIAM/JUEECAPStV0D2AQotV0DMAUn8V4ClAKBLV4C5AK6sZEB1AI0kZECSAHaaXYCLAGGQZEDrAKTFZIDiAG/KZIB1AQxjZIBjARNlZIDqA
+      identityReq.valueleftEye: Rk1SACA9OV4CrAK49ZICRAIvOV4DCAL+vZIBkAMfTZIBoAHGtZIDmAMu8ZIBKAGywZICAAEOOZEDJARUUZIAiAIKqUIClATAIZEAyADiXXYChALhSZICIAJnMXYCFAIy3V4DOAKFBZIBPAKI2ZIC+APaVZIDWAG7GZICuAQ4ZZIA3AHeuZIEIAM/JUEECAPStV0D2AQotV0DMAUn8V4ClAKBLV4C5AK6sZEB1AI0kZECSAHaaXYCLAGGQZEDrAKTFZIDiAG/KZIB1AQxjZIBjARNlZIDqAFfRZEBMARxtUEAoAFucXUBFABUQSQAA
+      identityReq.tspID: 7404012867
     input.bio-auth-data:
       bioAuthReq.idvId: $UIN:WITH:EVEN$
-      bioAuthReq.tspID: 7404012867
+      bioAuthReq.tspID: $input.identity-encrypt-data:identityReq.tspID$
       bioAuthReq.reqTime: $TIMESTAMP$
-      bioAuthReq.txnID: $RANDOM:N:10$
-    input.identity-encrypt-data:
-      identityReq.valuerightEye: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~DECODEFILE:valuedocuments0~//BIR/BDBInfo[Type='Iris'][Subtype='Right']//following::BDB$
-      identityReq.valueleftEye: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~DECODEFILE:valuedocuments0~//BIR/BDBInfo[Type='Iris'][Subtype='Left']//following::BDB$
-      identityReq.tspID: $input.bio-auth-data:bioAuthReq.tspID$
+      bioAuthReq.muaCode: 7404012866   
     input.ekyc-request:
       ekycReq.ekycAuthType: I 
       ekycReq.secLangReq: BOOLEAN:false
@@ -1609,16 +1359,14 @@ testdata:
       output.1.response.y.status: Y
       output.1.response.y.resTime: $TIMESTAMP$
       output.1.response.y.response: '$DECODE$->output-2-expected-decoded-res.json'
-      output.1.response.y.txnID: $input.bio-auth-data:bioAuthReq.txnID$
     output.output-2-expected-decoded-res:
       output.2.res.auth: '$DECODE$->output-3-expected-decoded-auth-res.json'
       output.2.res.kyc: '$DECODE$->output-4-expected-decoded-kyc-one-lang-res.json'
     output.output-3-expected-decoded-auth-res:
       output.3.res.y.auth.status: Y
-      #output.3.res.y.auth.usageData: '0x0000200000002000'
+      output.3.res.y.auth.usageData: '0x0000200000002000'
       output.3.res.y.auth.resTime: $IGNORE$
       output.3.res.y.auth.reqTime: $input.bio-auth-data:bioAuthReq.reqTime$
-      output.3.res.y.auth.txnID: $input.bio-auth-data:bioAuthReq.txnID$
     output.output-4-expected-decoded-kyc-one-lang-res:
       output.4.res.kyc.valuephone0: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~phone$
       output.4.res.kyc.valueemail0: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~email$
@@ -1645,21 +1393,4 @@ testdata:
       output.4.res.kyc.valueaddressLine20: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~valueaddressLine21$
       output.4.res.kyc.languagefullName0: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~languagefullName1$
       output.4.res.kyc.languageaddressLine20: $idrepo~$input.bio-auth-data:bioAuthReq.idvId$~languageaddressLine21$
-    audit.auth_transaction:
-      refId: $input.bio-auth-data:bioAuthReq.idvId$
-      txnId: $input.bio-auth-data:bioAuthReq.txnID$
-      authTypeCode: IRIS-AUTH
-      statusCode: $output.output-1-expected-y-res:output.1.response.y.status$
-      reqTime: $FETCH$
-      resTime: $FETCH$
-      statusComment: $REGEXP:.*Iris.*Authentication.*Success.*$
-      idType: D
-    audit.audit_log:
-      refId:  $input.bio-auth-data:bioAuthReq.idvId$
-      eventId: $REGEXP:.*IDA-EVT.*$
-      eventName: AUTH_REQUEST_RESPONSE
-      appId: IDA
-      appName: ID-Authentication
-      moduleName: EKYC_AUTH
-      refIdType: UIN 
       

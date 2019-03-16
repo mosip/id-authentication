@@ -1,8 +1,10 @@
 {
 	"resTime": "2019-01-30T09:41:47.369+05:30",
-	"ver": "$version$",
+	"ver": "1.0",
 	"err": [],
 	"maskedMobile": null,
 	"maskedEmail": "XXvXXnXXhX@gmail.com",
-	"status": "Y"
+	"status": "Y",
+	"txnID": "7404012868",
+	"txnId": "7404012868"
 }

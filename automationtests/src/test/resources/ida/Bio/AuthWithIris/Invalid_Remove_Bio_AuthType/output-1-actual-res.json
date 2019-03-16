@@ -1,1 +1,1 @@
-{"status":"N","err":[{"errorCode":"IDA-RST-007","errorMessage":"5XX - Server Error occured"}],"resTime":"2019-03-15T14:51:42.125+05:30","txnID":"5638748453","ver":"0.8"}
+{"status":"N","err":[{"errorCode":"IDA-MLC-008","errorMessage":"No authentication type selected"}],"txnID":"1712425271","resTime":"2019-02-15T18:50:21.687+05:30","ver":"1.0"}

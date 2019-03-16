@@ -15,7 +15,6 @@ import { Applicant } from 'src/app/shared/models/dashboard-model/dashboard.modal
 import { UserModel } from 'src/app/shared/models/demographic-model/user.modal';
 import * as appConstants from '../../../app.constants';
 import Utils from 'src/app/app.util';
-import { ConfigService } from 'src/app/core/services/config.service';
 
 @Component({
   selector: 'app-registration',
@@ -45,7 +44,6 @@ export class DashBoardComponent implements OnInit {
     private dataStorageService: DataStorageService,
     private regService: RegistrationService,
     private sharedService: SharedService,
-    private configService: ConfigService,
     private translate: TranslateService
   ) {
     this.translate.use(localStorage.getItem('langCode'));
@@ -67,7 +65,7 @@ export class DashBoardComponent implements OnInit {
     this.getUsers();
   }
 
-  getUsers() {
+  private getUsers() {
     this.dataStorageService.getUsers(this.loginId).subscribe(
       (applicants: Applicant[]) => {
         console.log('applicants', applicants);
@@ -80,7 +78,7 @@ export class DashBoardComponent implements OnInit {
           this.onNewApplication();
         }
 
-        if (applicants[appConstants.RESPONSE] && applicants[appConstants.RESPONSE] !== null) {
+        if (applicants[appConstants.RESPONSE] !== null) {
           localStorage.setItem('newApplicant', 'false');
           this.sharedService.addApplicants(applicants);
           for (let index = 0; index < applicants[appConstants.RESPONSE].length; index++) {
@@ -112,8 +110,9 @@ export class DashBoardComponent implements OnInit {
     return appointmentDateTime;
   }
 
-  createApplicant(applicants: any, index: number) {
+  private createApplicant(applicants: Applicant[], index: number) {
     const applicantResponse = applicants[appConstants.RESPONSE][index];
+
     let primaryIndex = 0;
     let secondaryIndex = 1;
     let lang = applicantResponse[appConstants.DASHBOARD_RESPONSE_KEYS.applicant.fullname][0]['language'];
@@ -121,6 +120,7 @@ export class DashBoardComponent implements OnInit {
       primaryIndex = 1;
       secondaryIndex = 0;
     }
+
     const applicant: Applicant = {
       applicationID: applicantResponse[appConstants.DASHBOARD_RESPONSE_KEYS.applicant.preId],
       name: applicantResponse[appConstants.DASHBOARD_RESPONSE_KEYS.applicant.fullname][primaryIndex]['value'],
@@ -133,7 +133,6 @@ export class DashBoardComponent implements OnInit {
         applicantResponse[appConstants.DASHBOARD_RESPONSE_KEYS.applicant.fullname][secondaryIndex]['value'],
       postalCode: applicantResponse[appConstants.DASHBOARD_RESPONSE_KEYS.applicant.postalCode]
     };
-
     return applicant;
   }
 
@@ -154,9 +153,9 @@ export class DashBoardComponent implements OnInit {
     return dialogRef;
   }
 
-  radioButtonsStatus(status: string) {
+  onDelete(element) {
     let data = {};
-    if (status.toLowerCase() === 'booked') {
+    if (element.status.toLowerCase() === 'booked') {
       data = {
         case: 'DISCARD',
         disabled: {
@@ -173,110 +172,97 @@ export class DashBoardComponent implements OnInit {
         }
       };
     }
-    return data;
-  }
-
-  confirmationDialog() {
-    const body = {
-      case: 'CONFIRMATION',
-      title: this.secondaryLanguagelabels.title_confirm,
-      message: this.secondaryLanguagelabels.msg_confirm,
-      yesButtonText: this.secondaryLanguagelabels.button_confirm,
-      noButtonText: this.secondaryLanguagelabels.button_cancel
-    };
-    const dialogRef = this.openDialog(body, '250px');
-    return dialogRef;
-  }
-
-  deletePreregistration(element: any) {
-    this.dataStorageService.deleteRegistration(element.applicationID).subscribe(
-      response => {
-        if (!response['err']) {
-          this.displayMessage(this.secondaryLanguagelabels.title_success, this.secondaryLanguagelabels.msg_deleted);
-          const index = this.users.indexOf(element);
-          this.users.splice(index, 1);
-        } else {
-          this.displayMessage(
-            this.secondaryLanguagelabels.title_error,
-            this.secondaryLanguagelabels.msg_could_not_deleted
-          );
-        }
-      },
-      error => {
-        console.log(error);
-        this.displayMessage(
-          this.secondaryLanguagelabels.title_error,
-          this.secondaryLanguagelabels.msg_could_not_deleted
-        );
-      }
-    );
-  }
-
-  cancelAppointment(element: any) {
-    element.regDto.pre_registration_id = element.applicationID;
-    this.dataStorageService.cancelAppointment(new BookingModelRequest(element.regDto)).subscribe(
-      response => {
-        if (!response['err']) {
-          this.displayMessage(this.secondaryLanguagelabels.title_success, this.secondaryLanguagelabels.msg_deleted);
-          const index = this.users.indexOf(element);
-          this.users[index].status = 'Pending Appointment';
-          this.users[index].appointmentDateTime = '-';
-        } else {
-          this.displayMessage(
-            this.secondaryLanguagelabels.title_error,
-            this.secondaryLanguagelabels.msg_could_not_deleted
-          );
-        }
-      },
-      error => {
-        console.log(error);
-        this.displayMessage(
-          this.secondaryLanguagelabels.title_error,
-          this.secondaryLanguagelabels.msg_could_not_deleted
-        );
-      }
-    );
-  }
-
-  onDelete(element) {
-    let data = this.radioButtonsStatus(element.status);
     let dialogRef = this.openDialog(data, `400px`);
     dialogRef.afterClosed().subscribe(selectedOption => {
       if (selectedOption && Number(selectedOption) === 1) {
-        dialogRef = this.confirmationDialog();
+        const body = {
+          case: 'CONFIRMATION',
+          title: this.secondaryLanguagelabels.title_confirm,
+          message: this.secondaryLanguagelabels.msg_confirm,
+          yesButtonText: this.secondaryLanguagelabels.button_confirm,
+          noButtonText: this.secondaryLanguagelabels.button_cancel
+        };
+        dialogRef = this.openDialog(body, '250px');
         dialogRef.afterClosed().subscribe(confirm => {
           if (confirm) {
-            this.deletePreregistration(element);
-          } else {
-            this.displayMessage(
-              this.secondaryLanguagelabels.title_error,
-              this.secondaryLanguagelabels.msg_could_not_deleted
+            this.dataStorageService.deleteRegistration(element.applicationID).subscribe(
+              response => {
+                const message = {
+                  case: 'MESSAGE',
+                  title: this.secondaryLanguagelabels.title_success,
+                  message: this.secondaryLanguagelabels.msg_deleted
+                };
+                dialogRef = this.openDialog(message, '250px');
+                const index = this.users.indexOf(element);
+                this.users.splice(index, 1);
+              },
+              error => {
+                console.log(error);
+                const message = {
+                  case: 'MESSAGE',
+                  title: this.secondaryLanguagelabels.title_error,
+                  message: this.secondaryLanguagelabels.msg_could_not_deleted
+                };
+                dialogRef = this.openDialog(message, '250px');
+              }
             );
+          } else {
+            const message = {
+              case: 'MESSAGE',
+              title: this.secondaryLanguagelabels.title_error,
+              message: this.secondaryLanguagelabels.msg_could_not_deleted
+            };
+            dialogRef = this.openDialog(message, '250px');
           }
         });
       } else if (selectedOption && Number(selectedOption) === 2) {
-        dialogRef = this.confirmationDialog();
+        const body = {
+          case: 'CONFIRMATION',
+          title: this.secondaryLanguagelabels.title_confirm,
+          message: this.secondaryLanguagelabels.msg_confirm,
+          yesButtonText: this.secondaryLanguagelabels.button_confirm,
+          noButtonText: this.secondaryLanguagelabels.button_cancel
+        };
+        dialogRef = this.openDialog(body, '250px');
         dialogRef.afterClosed().subscribe(confirm => {
           if (confirm) {
-            this.cancelAppointment(element);
-          } else {
-            this.displayMessage(
-              this.secondaryLanguagelabels.title_error,
-              this.secondaryLanguagelabels.msg_could_not_deleted
+            element.regDto.pre_registration_id = element.applicationID;
+            this.dataStorageService.cancelAppointment(new BookingModelRequest(element.regDto)).subscribe(
+              response => {
+                const message = {
+                  case: 'MESSAGE',
+                  title: this.secondaryLanguagelabels.title_success,
+                  message: this.secondaryLanguagelabels.msg_deleted
+                };
+                dialogRef = this.openDialog(message, '250px');
+                const index = this.users.indexOf(element);
+                this.users[index].status = 'Pending Appointment';
+                this.users[index].appointmentDateTime = '-';
+                // this.dataSource.data[index].status = 'Pending_Appointment';
+                // this.dataSource.data[index].appointmentDateTime = '-';
+                // this.dataSource._updateChangeSubscription();
+              },
+              error => {
+                console.log(error);
+                const message = {
+                  case: 'MESSAGE',
+                  title: this.secondaryLanguagelabels.title_error,
+                  message: this.secondaryLanguagelabels.msg_could_not_deleted
+                };
+                dialogRef = this.openDialog(message, '250px');
+              }
             );
+          } else {
+            const message = {
+              case: 'MESSAGE',
+              title: this.secondaryLanguagelabels.title_error,
+              message: this.secondaryLanguagelabels.msg_could_not_deleted
+            };
+            dialogRef = this.openDialog(message, '250px');
           }
         });
       }
     });
-  }
-
-  displayMessage(title: string, message: string) {
-    const messageObj = {
-      case: 'MESSAGE',
-      title: title,
-      message: message
-    };
-    this.openDialog(messageObj, '250px');
   }
 
   onModifyInformation(user: Applicant) {
@@ -322,21 +308,21 @@ export class DashBoardComponent implements OnInit {
   onModifyMultipleAppointment() {
     for (let index = 0; index < this.selectedUsers.length; index++) {
       this.addtoNameList(this.selectedUsers[index]);
-      console.log('index', index);
     }
     let url = '';
     url = Utils.getURL(this.router.url, 'pre-registration/booking/pick-center');
     this.router.navigateByUrl(url);
   }
 
-  onAcknowledgementView(user: Applicant) {
+  onAcknowledgementView(user: any) {
+    console.log(user);
     this.addtoNameList(user);
     let url = '';
     url = Utils.getURL(this.router.url, 'pre-registration/summary/acknowledgement');
     this.router.navigateByUrl(url);
   }
 
-  addtoNameList(user: Applicant) {
+  private addtoNameList(user: Applicant) {
     const preId = user.applicationID;
     const fullName = user.name;
     const regDto = user.regDto;
@@ -376,7 +362,7 @@ export class DashBoardComponent implements OnInit {
       let date2: string = new Date(Date.now()).toString();
       let diffInMs: number = Date.parse(date1) - Date.parse(date2);
       let diffInHours: number = diffInMs / 1000 / 60 / 60;
-      if (diffInHours < this.configService.getConfigByKey('preregistration.timespan.rebook')) return true;
+      if (diffInHours < appConstants.ALLOWED_BOOKING_TIME) return true;
       else return false;
     }
     return false;
