@@ -273,11 +273,11 @@ public class SyncDataIntegrationTest {
 	@Value("${mosip.kernel.syncdata.auth-manager-roles}")
 	private String authAllRolesUri;
 
-	private String syncDataUrlMacAdress = "/v1.0/masterdata?macaddress=e1:01:2b:c2:1d:b0";
-	private String syncDataUrlSerialNum = "/v1.0/masterdata?serialnumber=NM5328114630";
-	private String syncDataUrl = "/v1.0/masterdata?lastupdated=ssserialnumber=NM5328114630&macAddress=e1:01:2b:c2:1d:b0";
-	private String syncDataUrlWithRegId = "/v1.0/masterdata/{regcenterId}?serialnumber=NM532811463";
-	private String syncDataUrlWithoutMacAddressAndSno = "/v1.0/masterdata";
+	private String syncDataUrlMacAdress = "/masterdata?macaddress=e1:01:2b:c2:1d:b0";
+	private String syncDataUrlSerialNum = "/masterdata?serialnumber=NM5328114630";
+	private String syncDataUrl = "/masterdata?lastupdated=ssserialnumber=NM5328114630&macAddress=e1:01:2b:c2:1d:b0";
+	private String syncDataUrlWithRegId = "/masterdata/{regcenterId}?serialnumber=NM532811463";
+	private String syncDataUrlWithoutMacAddressAndSno = "/masterdata";
 
 	@Before
 	public void setup() {
@@ -648,7 +648,7 @@ public class SyncDataIntegrationTest {
 				.thenReturn(JSON_REGISTRATION_CONFIG_RESPONSE);
 
 		when(restTemplate.getForObject(Mockito.anyString(), Mockito.any())).thenReturn(JSON_GLOBAL_CONFIG_RESPONSE);
-		mockMvc.perform(get("/v1.0/globalconfigs")).andExpect(status().isInternalServerError());
+		mockMvc.perform(get("/globalconfigs")).andExpect(status().isInternalServerError());
 	}
 	@Test
 	public void testGlobalConfigServiceExceptionTest() throws Exception {
@@ -657,7 +657,7 @@ public class SyncDataIntegrationTest {
 				.thenThrow(HttpServerErrorException.class);
 
 		
-		mockMvc.perform(get("/v1.0/globalconfigs")).andExpect(status().isInternalServerError());
+		mockMvc.perform(get("/globalconfigs")).andExpect(status().isInternalServerError());
 	}
 
 	@Test
@@ -704,7 +704,7 @@ public class SyncDataIntegrationTest {
 	public void syncMasterDataInvalidTimeStampException() throws Exception {
 		mockSuccess();
 		mockMvc.perform(get(
-				"/v1.0/masterdata/{regcenterId}?lastupdated=2018-11-01T12:101:01.021Z&macaddress=00:11:22:33", "1001"))
+				"/masterdata/{regcenterId}?lastupdated=2018-11-01T12:101:01.021Z&macaddress=00:11:22:33", "1001"))
 				.andExpect(status().isOk());
 	}
 
@@ -937,7 +937,7 @@ public class SyncDataIntegrationTest {
 		mockSuccess();
 		when(registrationCenterDeviceRepository.findAllLatestByRegistrationCenterCreatedUpdatedDeleted(
 				Mockito.anyString(), Mockito.any(), Mockito.any())).thenThrow(DataRetrievalFailureException.class);
-		mockMvc.perform(get("/v1.0/masterdata/{machineId}?lastupdated=2018-11-01T12:10:01.021Z&macaddress=11:a1:b0:i87&serialnumber=NM123456BT", "111"))
+		mockMvc.perform(get("/masterdata/{machineId}?lastupdated=2018-11-01T12:10:01.021Z&macaddress=11:a1:b0:i87&serialnumber=NM123456BT", "111"))
 				.andExpect(status().isInternalServerError());
 	}
 

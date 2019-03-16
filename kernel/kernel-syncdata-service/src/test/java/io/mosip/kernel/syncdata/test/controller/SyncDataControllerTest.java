@@ -140,13 +140,6 @@ public class SyncDataControllerTest {
 		masterDataResponseDto.setMachineType(machineTypes);
 	}
 
-
-	@Test
-	public void syncMasterDataWithlastUpdatedTimestampfailure() throws Exception {
-		mockMvc.perform(get("/masterdata/{machineId}?lastUpdated=2018-01-016501:01:01", "1001"))
-				.andExpect(status().isOk());
-	}
-
 	@Test
 	public void syncGlobalConfigDetailsSuccess() throws Exception {
 		when(syncConfigDetailsService.getGlobalConfigDetails()).thenReturn(globalConfigMap);
