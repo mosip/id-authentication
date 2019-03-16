@@ -82,12 +82,9 @@ public class ResponseBodyAdviceConfig implements ResponseBodyAdvice<Object> {
 				requestWrapper = objectMapper.readValue(requestBody, RequestWrapper.class);
 				responseWrapper.setId(requestWrapper.getId());
 				responseWrapper.setVersion(requestWrapper.getVersion());
-			} else {
-				responseWrapper.setId(null);
-				responseWrapper.setVersion(null);
 			}
-			responseWrapper.setResponsetime(LocalDateTime.now(ZoneId.of("UTC")));
 			responseWrapper.setResponse(body);
+			responseWrapper.setErrors(null);
 			return responseWrapper;
 		} catch (Exception e) {
 			Logger mosipLogger = LoggerConfiguration.logConfig(ResponseBodyAdviceConfig.class);

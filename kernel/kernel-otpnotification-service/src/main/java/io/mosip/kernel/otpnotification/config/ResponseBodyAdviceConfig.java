@@ -24,6 +24,7 @@ import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.util.EmptyCheckUtils;
 
 /**
  * Configuration class for {@link ResponseBodyAdvice}.
@@ -84,13 +85,15 @@ public class ResponseBodyAdviceConfig implements ResponseBodyAdvice<Object> {
 						((ContentCachingRequestWrapper) ((HttpServletRequestWrapper) httpServletRequest).getRequest())
 								.getContentAsByteArray());
 			}
-
+			
 			objectMapper.registerModule(new JavaTimeModule());
-			requestWrapper = objectMapper.readValue(requestBody, RequestWrapper.class);
+			if (!EmptyCheckUtils.isNullEmpty(requestBody)) {
+				requestWrapper = objectMapper.readValue(requestBody, RequestWrapper.class);
+				responseWrapper.setId(requestWrapper.getId());
+				responseWrapper.setVersion(requestWrapper.getVersion());
+			}
 			responseWrapper.setResponse(body);
-			responseWrapper.setId(requestWrapper.getId());
-			responseWrapper.setVersion(requestWrapper.getVersion());
-			responseWrapper.setResponsetime(LocalDateTime.now(ZoneId.of("UTC")));
+			responseWrapper.setErrors(null);
 			return responseWrapper;
 		} catch (Exception e) {
 			Logger mosipLogger = LoggerConfiguration.logConfig(ResponseBodyAdviceConfig.class);
