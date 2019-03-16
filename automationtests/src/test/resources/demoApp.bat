@@ -1,0 +1,1 @@
+"C:\Program Files\Java\jdk1.8.0_66/bin/java" -Dspring.profiles.active=local -Djava.net.useSystemProxies=true -agentlib:jdwp=transport=dt_socket,server=y,address=4000,suspend=n -jar "C:/Users/M1013977/.m2/repository/io/mosip/Testing/demoApp/testing-demoApp.jar"

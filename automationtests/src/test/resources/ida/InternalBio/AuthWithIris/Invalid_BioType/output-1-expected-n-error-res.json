@@ -1,1 +1,1 @@
-{"resTime":"$TIMESTAMP$","ver":"1.0","err":[{"errorMessage":"Invalid bioType - irisImggg","errorCode":"IDA-BIA-013"}],"status":"N","txnID":"7404012866"}
+{"status":"N","err":[{"errorCode":"IDA-BIA-013","errorMessage":"Invalid bioType - irisImggg"}],"resTime":"$TIMESTAMP$","ver":"0.8"}

@@ -20,9 +20,6 @@ import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import io.mosip.kernel.auth.config.MosipEnvironment;
 import io.mosip.kernel.auth.constant.AuthConstant;
 import io.mosip.kernel.auth.entities.AuthNResponseDto;
@@ -39,8 +36,8 @@ import io.mosip.kernel.auth.entities.otp.OtpTemplateDto;
 import io.mosip.kernel.auth.entities.otp.OtpTemplateResponseDto;
 import io.mosip.kernel.auth.entities.otp.OtpValidatorResponseDto;
 import io.mosip.kernel.auth.entities.otp.SmsResponseDto;
+import io.mosip.kernel.auth.exception.AuthManagerErrorListException;
 import io.mosip.kernel.auth.exception.AuthManagerException;
-import io.mosip.kernel.auth.exception.AuthManagerServiceException;
 import io.mosip.kernel.auth.jwtBuilder.TokenGenerator;
 import io.mosip.kernel.auth.service.OTPGenerateService;
 import io.mosip.kernel.auth.service.OTPService;
@@ -73,9 +70,6 @@ public class OTPServiceImpl implements OTPService {
 
 	@Autowired
 	OTPGenerateService oTPGenerateService;
-	
-	@Autowired
-	private ObjectMapper mapper;
 
 	@Override
 	public AuthNResponseDto sendOTP(MosipUserDto mosipUserDto, List<String> channel, String appId) {
@@ -83,12 +77,6 @@ public class OTPServiceImpl implements OTPService {
 		OtpEmailSendResponseDto otpEmailSendResponseDto = null;
 		SmsResponseDto otpSmsSendResponseDto = null;
 		OtpGenerateResponseDto otpGenerateResponseDto = oTPGenerateService.generateOTP(mosipUserDto);
-		if(otpGenerateResponseDto!=null && otpGenerateResponseDto.getStatus().equals("USER_BLOCKED"))
-		{
-			authNResponseDto = new AuthNResponseDto();
-			authNResponseDto.setMessage(otpGenerateResponseDto.getStatus());
-			return authNResponseDto;
-		}
 		if (channel.contains(AuthConstant.EMAIL)) {
 			String message = getOtpEmailMessage(otpGenerateResponseDto, appId);
 			otpEmailSendResponseDto = sendOtpByEmail(message, mosipUserDto.getMail());
@@ -108,25 +96,13 @@ public class OTPServiceImpl implements OTPService {
 	}
 
 	private String getOtpEmailMessage(OtpGenerateResponseDto otpGenerateResponseDto, String appId) {
+		try {
 			String template = null;
-			OtpTemplateResponseDto otpTemplateResponseDto = null;
 			final String url = mosipEnvironment.getMasterDataTemplateApi()
 					+"/"+ mosipEnvironment.getPrimaryLanguage() + mosipEnvironment.getMasterDataOtpTemplate();
-			ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
-			if (response.getStatusCode().equals(HttpStatus.OK)) {
-				String responseBody = response.getBody();
-				List<ServiceError> validationErrorsList = null;
-					validationErrorsList = ExceptionUtils.getServiceErrorList(responseBody);  
-				if (!validationErrorsList.isEmpty()) {
-					throw new AuthManagerServiceException(validationErrorsList);
-				}
-				try {
-					otpTemplateResponseDto = mapper.readValue(responseBody, OtpTemplateResponseDto.class);
-				}catch(Exception e)
-				{
-					throw new AuthManagerException(String.valueOf(HttpStatus.UNAUTHORIZED.value()),e.getMessage());
-				}
-			}
+
+			OtpTemplateResponseDto otpTemplateResponseDto = restTemplate.getForObject(url,
+					OtpTemplateResponseDto.class);
 			List<OtpTemplateDto> otpTemplateList = otpTemplateResponseDto.getTemplates();
 			for (OtpTemplateDto otpTemplateDto : otpTemplateList) {
 				if (otpTemplateDto.getId().toLowerCase().equals(appId.toLowerCase())) {
@@ -137,28 +113,19 @@ public class OTPServiceImpl implements OTPService {
 			String otp = otpGenerateResponseDto.getOtp();
 			template = template.replace("$otp", otp);
 			return template;
+		} catch (HttpClientErrorException | HttpServerErrorException e) {
+			String message = e.getResponseBodyAsString();
+			throw new AuthManagerException(String.valueOf(HttpStatus.UNAUTHORIZED.value()),message);
+		}
 	}
 
 	private String getOtpSmsMessage(OtpGenerateResponseDto otpGenerateResponseDto, String appId) {
 		try {
 			final String url = mosipEnvironment.getMasterDataTemplateApi()
 					+"/"+ mosipEnvironment.getPrimaryLanguage() + mosipEnvironment.getMasterDataOtpTemplate();
-			OtpTemplateResponseDto otpTemplateResponseDto = null;	
-			ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
-			if (response.getStatusCode().equals(HttpStatus.OK)) {
-				String responseBody = response.getBody();
-				List<ServiceError> validationErrorsList = null;
-					validationErrorsList = ExceptionUtils.getServiceErrorList(responseBody);  
-				if (!validationErrorsList.isEmpty()) {
-					throw new AuthManagerServiceException(validationErrorsList);
-				}
-				try {
-					otpTemplateResponseDto = mapper.readValue(responseBody, OtpTemplateResponseDto.class);
-				}catch(Exception e)
-				{
-					throw new AuthManagerException(String.valueOf(HttpStatus.UNAUTHORIZED.value()),e.getMessage());
-				}
-			}
+
+			OtpTemplateResponseDto otpTemplateResponseDto = restTemplate.getForObject(url,
+					OtpTemplateResponseDto.class);
 			String template = null;
 			List<OtpTemplateDto> otpTemplateList = otpTemplateResponseDto.getTemplates();
 			for (OtpTemplateDto otpTemplateDto : otpTemplateList) {
@@ -177,10 +144,10 @@ public class OTPServiceImpl implements OTPService {
 	}
 
 	private OtpEmailSendResponseDto sendOtpByEmail(String message, String email) {
+		try {
 			String url = mosipEnvironment.getOtpSenderEmailApi();
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.MULTIPART_FORM_DATA);
-			OtpEmailSendResponseDto otpEmailSendResponseDto = null;
 
 			MultiValueMap<String, String> map= new LinkedMultiValueMap<String, String>();
 			map.add("mailTo", email);
@@ -190,41 +157,25 @@ public class OTPServiceImpl implements OTPService {
 			HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<MultiValueMap<String, String>>(map, headers);
 
 			ResponseEntity<String> response = restTemplate.postForEntity( url, request , String.class );
-			if (response.getStatusCode().equals(HttpStatus.OK)) {
-				String responseBody = response.getBody();
-				List<ServiceError> validationErrorsList = null;
-					validationErrorsList = ExceptionUtils.getServiceErrorList(responseBody);  
-				if (!validationErrorsList.isEmpty()) {
-					throw new AuthManagerServiceException(validationErrorsList);
-				}
-				try {
-					otpEmailSendResponseDto = mapper.readValue(responseBody, OtpEmailSendResponseDto.class);
-				}catch(Exception e)
-				{
-					throw new AuthManagerException(String.valueOf(HttpStatus.UNAUTHORIZED.value()),e.getMessage());
-				}
-			}
+			OtpEmailSendRequestDto otpEmailSendRequestDto = new OtpEmailSendRequestDto(email, message);
+			
+			OtpEmailSendResponseDto otpEmailSendResponseDto = restTemplate.postForObject(url, otpEmailSendRequestDto,
+					OtpEmailSendResponseDto.class);
 			return otpEmailSendResponseDto;
+		}catch (HttpClientErrorException | HttpServerErrorException e) {
+			String errmessage = e.getResponseBodyAsString();
+			throw new AuthManagerException(String.valueOf(HttpStatus.UNAUTHORIZED.value()),errmessage);
+		}
 	}
 
 	private SmsResponseDto sendOtpBySms(String message, String mobile) {
 		try {
-			List<ServiceError> validationErrorsList = null;
 			OtpSmsSendRequestDto otpSmsSendRequestDto = new OtpSmsSendRequestDto(mobile, message);
-			SmsResponseDto otpSmsSendResponseDto=null;
 			String url = mosipEnvironment.getOtpSenderSmsApi();
-			String response = restTemplate.postForObject(url, otpSmsSendRequestDto,
-					String.class);	
-			validationErrorsList = ExceptionUtils.getServiceErrorList(response);  
-			if (!validationErrorsList.isEmpty()) {
-				throw new AuthManagerServiceException(validationErrorsList);
-			}
-			try {
-				otpSmsSendResponseDto= mapper.readValue(response, SmsResponseDto.class);
-			}catch(Exception e)
-			{
-				throw new AuthManagerException(String.valueOf(HttpStatus.UNAUTHORIZED.value()),e.getMessage());
-			}
+		/*	ResponseEntity<String> res = restTemplate.exchange(url, HttpMethod.POST, new HttpEntity(otpSmsSendRequestDto,null), String.class);
+			System.out.println(res.getBody());*/
+			SmsResponseDto otpSmsSendResponseDto = restTemplate.postForObject(url, otpSmsSendRequestDto,
+					SmsResponseDto.class);
 			return otpSmsSendResponseDto;
 		} catch (HttpClientErrorException | HttpServerErrorException e) {
 			String errmessage = e.getResponseBodyAsString();
@@ -236,37 +187,32 @@ public class OTPServiceImpl implements OTPService {
 	public MosipUserDtoToken validateOTP(MosipUserDto mosipUser, String otp) {
 		String key = new OtpGenerateRequestDto(mosipUser).getKey();
 		MosipUserDtoToken mosipUserDtoToken = null;
-		ResponseEntity<String> response = null;
+		ResponseEntity<OtpValidatorResponseDto> response = null;
 		final String url = mosipEnvironment.getVerifyOtpUserApi();
 		UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url).queryParam("key", key).queryParam("otp",
 				otp);
-		response = restTemplate.getForEntity(builder.toUriString(), String.class);
+		try
+		{
+		response = restTemplate.getForEntity(builder.toUriString(), OtpValidatorResponseDto.class);
+		}catch (HttpClientErrorException | HttpServerErrorException e) {
+			String message = e.getResponseBodyAsString();
+			throw new AuthManagerException(String.valueOf(HttpStatus.UNAUTHORIZED.value()),message);
+		}
 		if (response.getStatusCode().equals(HttpStatus.OK)) {
-			String responseBody = response.getBody();
-			List<ServiceError> validationErrorsList = null;
-				validationErrorsList = ExceptionUtils.getServiceErrorList(responseBody);
-	        
-			if (!validationErrorsList.isEmpty()) {
-				throw new AuthManagerServiceException(validationErrorsList);
-			}
-			OtpValidatorResponseDto otpResponse = null;
-			try {
-				otpResponse = mapper.readValue(responseBody, OtpValidatorResponseDto.class);
-			}catch(Exception e)
-			{
-				throw new AuthManagerException(String.valueOf(HttpStatus.UNAUTHORIZED.value()),e.getMessage());
-			}
-			if(otpResponse.getStatus()!=null && otpResponse.getStatus().equals("success"))
+			OtpValidatorResponseDto otpValidatorDto = response.getBody();
+			if(otpValidatorDto.getStatus()!=null && otpValidatorDto.getStatus().equals("success"))
 			{
 				BasicTokenDto basicToken = tokenGenerator.basicGenerateOTPToken(mosipUser, true);
 				mosipUserDtoToken = new MosipUserDtoToken(mosipUser, basicToken.getAuthToken(),
 						basicToken.getRefreshToken(), basicToken.getExpiryTime(), null,null);
+
+				
 			}
 			else
 			{
 				mosipUserDtoToken = new MosipUserDtoToken();
-				mosipUserDtoToken.setMessage(otpResponse.getMessage());
-				mosipUserDtoToken.setStatus(otpResponse.getMessage());
+				mosipUserDtoToken.setMessage(otpValidatorDto.getMessage());
+				mosipUserDtoToken.setStatus(otpValidatorDto.getStatus());
 			}
 			
 		}

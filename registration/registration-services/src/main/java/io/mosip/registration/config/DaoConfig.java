@@ -4,10 +4,7 @@ import java.util.Properties;
 
 import javax.sql.DataSource;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.core.io.ClassPathResource;
@@ -36,12 +33,6 @@ public class DaoConfig extends HibernateDaoConfig {
 		dataSource = driverManagerDataSource;
 	}
 
-	@Autowired
-	private ApplicationContext applicationContext;
-
-	@Value("${IRIS_THRESHOLD}")
-	private String irisThreshold;
-
 	@Override
 	@Bean(name = "dataSource")
 	public DataSource dataSource() {
@@ -61,29 +52,22 @@ public class DaoConfig extends HibernateDaoConfig {
 	@Bean
 	@Lazy(false)
 	public static PropertyPlaceholderConfigurer properties() {
+		String profile = System.getProperty("spring.profiles.active") != null ? 
+				System.getProperty("spring.profiles.active") :
+			"integ";
+				
+		System.out.println("--------------------- Spring - " + profile + "---------------- properties loaded");
 		PropertyPlaceholderConfigurer ppc = new PropertyPlaceholderConfigurer();
-
-		Resource[] resources = new ClassPathResource[] { new ClassPathResource("spring.properties") };
+		Resource[] resources = new ClassPathResource[] { new ClassPathResource("spring.properties") , 
+				new ClassPathResource("spring-"+ profile + ".properties")};
 		ppc.setLocations(resources);
 
 		Properties properties = new Properties();
 		properties.putAll(propertiesConfig().getDBProps());
 
 		ppc.setProperties(properties);
+		ppc.setTrimValues(true);
 
 		return ppc;
 	}
-
-	public void reload() {
-		PropertyPlaceholderConfigurer propertyPlaceholderConfigurer = applicationContext
-				.getBean(PropertyPlaceholderConfigurer.class);
-		PropertiesConfig propertiesConfig = applicationContext.getBean("propertiesConfig", PropertiesConfig.class);
-
-		Properties properties = new Properties();
-		properties.putAll(propertiesConfig.getDBProps());
-
-		propertyPlaceholderConfigurer.setProperties(properties);
-		System.out.println("Refresh called");
-	}
-
 }

@@ -11,7 +11,6 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -45,6 +44,7 @@ import io.mosip.registration.processor.core.packet.dto.demographicinfo.identify.
 import io.mosip.registration.processor.core.spi.message.sender.MessageNotificationService;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
+import io.mosip.registration.processor.core.util.JsonUtil;
 import io.mosip.registration.processor.message.sender.exception.EmailIdNotFoundException;
 import io.mosip.registration.processor.message.sender.exception.PhoneNumberNotFoundException;
 import io.mosip.registration.processor.message.sender.exception.TemplateGenerationFailedException;
@@ -364,7 +364,6 @@ public class MessageNotificationServiceImpl
 	private NotificationTemplate getKeysandValues(String demographicJsonString) throws IOException {
 		NotificationTemplate template = new NotificationTemplate();
 
-		try {
 			// Get Identity Json from config server and map keys to Java Object
 			String templateJsonString = Utilities.getJson(utility.getConfigServerFileStorageURL(),
 					utility.getGetRegProcessorIdentityJson());
@@ -374,10 +373,9 @@ public class MessageNotificationServiceImpl
 			regProcessorTemplateJson = mapTemplateJsonStringToObject.readValue(templateJsonString,
 					RegistrationProcessorIdentity.class);
 
-			JSONParser parser = new JSONParser();
-			JSONObject demographicJson = (JSONObject) parser.parse(demographicJsonString);
+			JSONObject demographicJson = (JSONObject) JsonUtil.objectMapperReadValue(demographicJsonString, JSONObject.class);
 
-			demographicIdentity = (JSONObject) demographicJson.get(utility.getGetRegProcessorDemographicIdentity());
+			demographicIdentity = JsonUtil.getJSONObject(demographicJson, utility.getGetRegProcessorDemographicIdentity());
 			if (demographicIdentity == null)
 				throw new IdentityNotFoundException(PlatformErrorMessages.RPR_PIS_IDENTITY_NOT_FOUND.getMessage());
 
@@ -385,12 +383,13 @@ public class MessageNotificationServiceImpl
 			template.setGender(getJsonValues(regProcessorTemplateJson.getIdentity().getGender().getValue()));
 
 			template.setEmailID(
-					(String) demographicIdentity.get(regProcessorTemplateJson.getIdentity().getEmail().getValue()));
+					(String) JsonUtil.getJSONValue(demographicIdentity,regProcessorTemplateJson.getIdentity().getEmail().getValue()));
 			template.setPhoneNumber(
-					(String) demographicIdentity.get(regProcessorTemplateJson.getIdentity().getPhone().getValue()));
+					(String) JsonUtil.getJSONValue(demographicIdentity,regProcessorTemplateJson.getIdentity().getPhone().getValue()));
 			template.setDateOfBirth(
-					(String) demographicIdentity.get(regProcessorTemplateJson.getIdentity().getDob().getValue()));
-			template.setAge((Long) demographicIdentity.get(regProcessorTemplateJson.getIdentity().getAge().getValue()));
+					(String) JsonUtil.getJSONValue(demographicIdentity,regProcessorTemplateJson.getIdentity().getDob().getValue()));
+			Number ageString =JsonUtil.getJSONValue(demographicIdentity,regProcessorTemplateJson.getIdentity().getAge().getValue());
+			template.setAge(Long.valueOf(ageString.toString()));
 			template.setAddressLine1(
 					getJsonValues(regProcessorTemplateJson.getIdentity().getAddressLine1().getValue()));
 			template.setAddressLine2(
@@ -400,8 +399,7 @@ public class MessageNotificationServiceImpl
 			template.setRegion(getJsonValues(regProcessorTemplateJson.getIdentity().getRegion().getValue()));
 			template.setProvince(getJsonValues(regProcessorTemplateJson.getIdentity().getProvince().getValue()));
 			template.setCity(getJsonValues(regProcessorTemplateJson.getIdentity().getCity().getValue()));
-			template.setPostalCode((String) demographicIdentity
-					.get(regProcessorTemplateJson.getIdentity().getPostalCode().getValue()));
+			template.setPostalCode((String) JsonUtil.getJSONValue(demographicIdentity,regProcessorTemplateJson.getIdentity().getPostalCode().getValue()));
 
 			template.setProofOfRelationship((String) (regProcessorTemplateJson.getIdentity().getPor().getValue()));
 
@@ -412,15 +410,10 @@ public class MessageNotificationServiceImpl
 					(String) (regProcessorTemplateJson.getIdentity().getIndividualBiometrics().getValue()));
 			template.setLocalAdministrativeAuthority(
 					(String) regProcessorTemplateJson.getIdentity().getLocalAdministrativeAuthority().getValue());
-			template.setIdSchemaVersion((Double) demographicIdentity
-					.get(regProcessorTemplateJson.getIdentity().getIdschemaversion().getValue()));
-			template.setCnieNumber((String)demographicIdentity.get(regProcessorTemplateJson.getIdentity().getCnienumber().getValue()));
+			template.setIdSchemaVersion((Double) JsonUtil.getJSONValue(demographicIdentity,regProcessorTemplateJson.getIdentity().getIdschemaversion().getValue()));
+			template.setCnieNumber((String)JsonUtil.getJSONValue(demographicIdentity,regProcessorTemplateJson.getIdentity().getCnienumber().getValue()));
 
-		} catch (ParseException e) {
-			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					null, "Error while parsing Json file" + ExceptionUtils.getStackTrace(e));
-			throw new ParsingException(PlatformErrorMessages.RPR_SYS_JSON_PARSING_EXCEPTION.getMessage(), e);
-		}
+
 
 		return template;
 	}
@@ -435,7 +428,8 @@ public class MessageNotificationServiceImpl
 	private JsonValue[] getJsonValues(Object identityKey) {
 		JSONArray demographicJsonNode = null;
 		if (demographicIdentity != null)
-			demographicJsonNode = (JSONArray) demographicIdentity.get(identityKey);
+			demographicJsonNode = JsonUtil.getJSONArray(demographicIdentity, identityKey);
+		
 
 		return (demographicJsonNode != null) ? mapJsonNodeToJavaObject(JsonValue.class, demographicJsonNode) : null;
 	}
@@ -461,7 +455,7 @@ public class MessageNotificationServiceImpl
 
 				T jsonNodeElement = (T) genericType.newInstance();
 
-				JSONObject objects = (JSONObject) demographicJsonNode.get(i);
+				JSONObject objects =  JsonUtil.getJSONObjectFromArray(demographicJsonNode, i);
 				language = (String) objects.get(LANGUAGE);
 				value = (String) objects.get(VALUE);
 

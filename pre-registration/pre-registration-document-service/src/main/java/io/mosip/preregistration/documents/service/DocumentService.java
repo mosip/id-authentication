@@ -58,14 +58,13 @@ import io.mosip.preregistration.documents.exception.util.DocumentExceptionCatche
 import io.mosip.preregistration.documents.repository.util.DocumentDAO;
 import io.mosip.preregistration.documents.service.util.DocumentServiceUtil;
 
-
 /**
  * This class provides the service implementation for Document
  * 
+ * @author Kishan Rathore
  * @author Rajath KR
  * @author Tapaswini Behera
  * @author Jagadishwari S
- * @author Kishan Rathore
  * @since 1.0.0
  */
 @Component
@@ -200,7 +199,7 @@ public class DocumentService {
 		List<DocumentResponseDTO> docResponseDtos = new LinkedList<>();
 		if (serviceUtil.callGetPreRegInfoRestService(document.getPreregId())) {
 			DocumentEntity getentity = documnetDAO.findSingleDocument(document.getPreregId(), document.getDocCatCode());
-			DocumentEntity documentEntity = serviceUtil.dtoToEntity(document);
+			DocumentEntity documentEntity = serviceUtil.dtoToEntity(file, document);
 			if (getentity != null) {
 				documentEntity.setDocumentId(String.valueOf(getentity.getDocumentId()));
 			}
@@ -210,10 +209,10 @@ public class DocumentService {
 			documentEntity = documnetDAO.saveDocument(documentEntity);
 			if (documentEntity != null) {
 				String key = documentEntity.getDocCatCode() + "_" + documentEntity.getDocumentId();
-				
+
 				boolean isStoreSuccess = fs.storeFile(documentEntity.getPreregId(), key,
 						new ByteArrayInputStream(encryptedDocument));
-				
+
 				if (!isStoreSuccess) {
 					throw new FSServerException(ErrorCodes.PRG_PAM_DOC_009.toString(),
 							ErrorMessages.DOCUMENT_FAILED_TO_UPLOAD.toString());
@@ -257,14 +256,14 @@ public class DocumentService {
 		try {
 			if (ValidationUtil.isvalidPreRegId(sourcePreId) && ValidationUtil.isvalidPreRegId(destinationPreId)
 					&& serviceUtil.isValidCatCode(catCode)) {
-				boolean sourceStatus=serviceUtil.callGetPreRegInfoRestService(sourcePreId);
-				boolean destinationStatus=serviceUtil.callGetPreRegInfoRestService(destinationPreId);		
-				
+				boolean sourceStatus = serviceUtil.callGetPreRegInfoRestService(sourcePreId);
+				boolean destinationStatus = serviceUtil.callGetPreRegInfoRestService(destinationPreId);
+
 				DocumentEntity documentEntity = documnetDAO.findSingleDocument(sourcePreId, catCode);
 				DocumentEntity destEntity = documnetDAO.findSingleDocument(destinationPreId, catCode);
 				if (documentEntity != null && sourceStatus && destinationStatus) {
-					DocumentEntity copyDocumentEntity = documnetDAO
-							.saveDocument(serviceUtil.documentEntitySetter(destinationPreId, documentEntity,destEntity));
+					DocumentEntity copyDocumentEntity = documnetDAO.saveDocument(
+							serviceUtil.documentEntitySetter(destinationPreId, documentEntity, destEntity));
 					sourceKey = documentEntity.getDocCatCode() + "_" + documentEntity.getDocumentId();
 					sourceBucketName = documentEntity.getPreregId();
 					copyFile(copyDocumentEntity, sourceBucketName, sourceKey);
@@ -378,25 +377,24 @@ public class DocumentService {
 				allDocDto.setDoc_id(doc.getDocumentId());
 				allDocDto.setDoc_typ_code(doc.getDocTypeCode());
 				String key = doc.getDocCatCode() + "_" + doc.getDocumentId();
-				InputStream file=fs.getFile(doc.getPreregId(), key);
+				InputStream file = fs.getFile(doc.getPreregId(), key);
 				if (file == null) {
 					throw new FSServerException(ErrorCodes.PRG_PAM_DOC_005.toString(),
 							ErrorMessages.DOCUMENT_FAILED_TO_FETCH.toString());
 				}
 				byte[] cephBytes = IOUtils.toByteArray(file);
-				if(doc.getDocHash().equals(new String(HashUtill.hashUtill(cephBytes)))) {
-					
-				
-				LocalDateTime decryptionDateTime = DateUtils.getUTCCurrentDateTime();
+				if (doc.getDocHash().equals(new String(HashUtill.hashUtill(cephBytes)))) {
 
-				allDocDto.setMultipartFile(cryptoUtil.decrypt(cephBytes, decryptionDateTime));
-				allDocDto.setPrereg_id(doc.getPreregId());
-				allDocRes.add(allDocDto);
-				}
-				else {
-					log.error("sessionId", "idType", "id", "In dtoSetter method of document service - " +
-				io.mosip.preregistration.core.errorcodes.ErrorMessages.HASHING_FAILED.name());
-					throw new HashingException(io.mosip.preregistration.core.errorcodes.ErrorCodes.PRG_CORE_REQ_010.name(),
+					LocalDateTime decryptionDateTime = DateUtils.getUTCCurrentDateTime();
+
+					allDocDto.setMultipartFile(cryptoUtil.decrypt(cephBytes, decryptionDateTime));
+					allDocDto.setPrereg_id(doc.getPreregId());
+					allDocRes.add(allDocDto);
+				} else {
+					log.error("sessionId", "idType", "id", "In dtoSetter method of document service - "
+							+ io.mosip.preregistration.core.errorcodes.ErrorMessages.HASHING_FAILED.name());
+					throw new HashingException(
+							io.mosip.preregistration.core.errorcodes.ErrorCodes.PRG_CORE_REQ_010.name(),
 							io.mosip.preregistration.core.errorcodes.ErrorMessages.HASHING_FAILED.name());
 				}
 			}
@@ -458,7 +456,7 @@ public class DocumentService {
 		try {
 			if (ValidationUtil.isvalidPreRegId(preregId)) {
 				List<DocumentEntity> documentEntityList = documnetDAO.findBypreregId(preregId);
-				deleteRes=deleteFile(documentEntityList, preregId);
+				deleteRes = deleteFile(documentEntityList, preregId);
 			}
 			isDeleteSuccess = true;
 		} catch (Exception ex) {
@@ -483,21 +481,15 @@ public class DocumentService {
 		List<DocumentDeleteResponseDTO> deleteAllList = new ArrayList<>();
 		MainListResponseDTO<DocumentDeleteResponseDTO> delResponseDto = new MainListResponseDTO<>();
 		if (documnetDAO.deleteAllBypreregId(preregId) >= 0) {
-			if(documentEntityList==null || documentEntityList.isEmpty()) {
+			for (DocumentEntity documentEntity : documentEntityList) {
 				DocumentDeleteResponseDTO deleteDTO = new DocumentDeleteResponseDTO();
-				deleteDTO.setResMsg(DocumentStatusMessages.DOCUMENT_NOT_AVAILABLE.toString());
+				String key = documentEntity.getDocCatCode() + "_" + documentEntity.getDocumentId();
+				fs.deleteFile(documentEntity.getPreregId(), key);
+				deleteDTO.setDocumnet_Id(String.valueOf(documentEntity.getDocumentId()));
+				deleteDTO.setResMsg(DocumentStatusMessages.DOCUMENT_DELETE_SUCCESSFUL.toString());
 				deleteAllList.add(deleteDTO);
-			}else {
-				for (DocumentEntity documentEntity : documentEntityList) {
-					DocumentDeleteResponseDTO deleteDTO = new DocumentDeleteResponseDTO();
-					String key = documentEntity.getDocCatCode() + "_" + documentEntity.getDocumentId();
-					fs.deleteFile(documentEntity.getPreregId(), key);
-					deleteDTO.setDocumnet_Id(String.valueOf(documentEntity.getDocumentId()));
-					deleteDTO.setResMsg(DocumentStatusMessages.DOCUMENT_DELETE_SUCCESSFUL.toString());
-					deleteAllList.add(deleteDTO);
-				}
 			}
-			
+
 			delResponseDto.setResponse(deleteAllList);
 			delResponseDto.setStatus(responseStatus);
 			delResponseDto.setResTime(serviceUtil.getCurrentResponseTime());

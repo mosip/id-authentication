@@ -1,1 +1,1 @@
-{"status":"N","err":[{"errorCode":"IDA-BIA-011","errorMessage":"Missing biometric data in MOSIP database for the given UIN/Virtual ID"}],"txnID":"8658031604","resTime":"2019-02-15T18:50:07.407+05:30","ver":"1.0"}
+{"status":"N","err":[{"errorCode":"IDA-RST-007","errorMessage":"5XX - Server Error occured"}],"resTime":"2019-03-15T14:51:27.841+05:30","txnID":"7260151045","ver":"0.8"}

@@ -1,1 +1,1 @@
-{"status":"N","err":[{"errorCode":"IDA-OTA-002","errorMessage":"Request received at MOSIP is 49 min post the initiation at TSP"}],"resTime":"2019-03-15T15:45:26.446+05:30","ver":"0.8"}
+{"status":"N","err":[{"errorCode":"IDA-MLC-007","errorMessage":"Request could not be processed. Please try again"}],"resTime":"2019-03-15T15:03:08.511+05:30","ver":"0.8"}
