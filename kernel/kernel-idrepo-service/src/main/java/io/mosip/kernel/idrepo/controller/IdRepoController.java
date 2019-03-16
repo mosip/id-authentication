@@ -128,7 +128,7 @@ public class IdRepoController {
 			validateId(request.getId(), errors, CREATE);
 			DataValidationUtil.validate(errors);
 			uinValidatorImpl.validateId(uin);
-			return new ResponseEntity<>(idRepoService.addIdentity(request, uin), HttpStatus.OK);
+			return new ResponseEntity<>(idRepoService.addIdentity(request, uin), HttpStatus.CREATED);
 		} catch (InvalidIDException e) {
 			mosipLogger.error(uin, ID_REPO_CONTROLLER, ADD_IDENTITY,
 					e.getMessage());
@@ -153,7 +153,6 @@ public class IdRepoController {
 	 * @return the response entity
 	 * @throws IdRepoAppException             the id repo app exception
 	 */
-//	@PreAuthorize("hasAnyRole('MISP')") 
 	@GetMapping(path = "/identity/v1.0/{uin}", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<IdResponseDTO> retrieveIdentity(@PathVariable String uin,
 			@RequestParam(name = TYPE, required = false) @Nullable String type) throws IdRepoAppException {

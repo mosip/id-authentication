@@ -7,6 +7,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { DataStorageService } from 'src/app/core/services/data-storage.service';
 import { NotificationDtoModel } from 'src/app/shared/models/notification-model/notification-dto.model';
 import Utils from 'src/app/app.util';
+import * as appConstants from '../../../app.constants';
 
 @Component({
   selector: 'app-acknowledgement',
@@ -18,12 +19,18 @@ export class AcknowledgementComponent implements OnInit {
   //   fullName: 'Agnitra Banerjee',
   //   preRegId: '1234',
   //   registrationCenter: {
+  //     id: '10001',
   //     addressLine1: 'Mindtree Limited',
   //     addressLine2: 'Global Village',
   //     contactPhone: '1234567890'
   //   },
   //   bookingData: '7 Jan 2019, 2:30pm',
-  //   qrCodeBlob: Blob
+  //   qrCodeBlob: Blob,
+  //   regDto: {
+  //     registration_center_id: '10001',
+  //     appointment_date: '2019-03-18',
+  //     time_slot_from: '09:00'
+  //   }
   // }];
   secondaryLanguagelabels: any;
   secondaryLang = localStorage.getItem('secondaryLangCode');
@@ -89,7 +96,7 @@ export class AcknowledgementComponent implements OnInit {
 
   getTemplate() {
     this.dataStorageService.getGuidelineTemplate().subscribe(response => {
-      this.guidelines = response['templates'][0].fileText.split('$');
+      this.guidelines = response['templates'][0].fileText.split('\n');
     })
   }
 
@@ -167,9 +174,9 @@ export class AcknowledgementComponent implements OnInit {
         applicantNumber[0] === undefined ? null : applicantNumber[0]
         );
       console.log(notificationDto);
-      this.notificationRequest.append('NotificationDTO', JSON.stringify(notificationDto));
-      this.notificationRequest.append('langCode', localStorage.getItem('langCode'));
-      this.notificationRequest.append('file', this.fileBlob, `${user.preRegId}.pdf`);
+      this.notificationRequest.append(appConstants.notificationDtoKeys.notificationDto, JSON.stringify(notificationDto));
+      this.notificationRequest.append(appConstants.notificationDtoKeys.langCode, localStorage.getItem('langCode'));
+      this.notificationRequest.append(appConstants.notificationDtoKeys.langCode, this.fileBlob, `${user.preRegId}.pdf`);
       this.dataStorageService.sendNotification(this.notificationRequest).subscribe(response => {
         console.log(response);
         this.notificationRequest = new FormData();

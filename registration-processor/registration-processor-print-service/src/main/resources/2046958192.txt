@@ -1,0 +1,24 @@
+{
+  "id" : "mosip.registration.print.send",
+  "version" : "1.0",
+  "requestTime" : "2019-03-15T09:50:29.045Z",
+  "metadata" : null,
+  "request" : {
+    "nameEng" : "Alok",
+    "nameAra" : "Alok",
+    "phoneNumber" : "9967878787",
+    "addressLine1Ara" : "Alok",
+    "addressLine1Eng" : "Alok",
+    "addressLine2Ara" : "Alok",
+    "addressLine2Eng" : "Alok",
+    "addressLine3Ara" : "Alok",
+    "addressLine3Eng" : "Alok",
+    "regionAra" : "Alok",
+    "regionEng" : "Alok",
+    "provinceAra" : "Alok",
+    "provinceEng" : "Alok",
+    "postalCode" : "900900",
+    "cityAra" : "Alok",
+    "cityEng" : "Alok"
+  }
+}

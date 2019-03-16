@@ -1,6 +1,7 @@
 package io.mosip.kernel.idgenerator.rid.impl;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -143,8 +144,12 @@ public class RidGeneratorImpl implements RidGenerator<String> {
 				entity = new Rid();
 				sequenceId = sequenceInitialValue;
 				entity.setCurrentSequenceNo(sequenceInitialValue);
+				entity.setCreatedBy("SYSTEM"); // Can be changed to log in user
+				entity.setCreatedDateTime(LocalDateTime.now(ZoneId.of("UTC")));
 				ridRepository.save(entity);
 			} else {
+				entity.setUpdatedBy("SYSTEM"); // Can be changed to log in user
+				entity.setUpdatedDateTime(LocalDateTime.now(ZoneId.of("UTC")));
 				if (entity.getCurrentSequenceNo() == sequenceEndvalue) {
 					sequenceId = sequenceInitialValue;
 					ridRepository.updateRid(sequenceInitialValue, entity.getCurrentSequenceNo());
@@ -183,7 +188,7 @@ public class RidGeneratorImpl implements RidGenerator<String> {
 	private String getcurrentTimeStamp() {
 		DateTimeFormatter format = DateTimeFormatter
 				.ofPattern(RidGeneratorPropertyConstant.TIMESTAMP_FORMAT.getProperty());
-		return LocalDateTime.now().format(format);
+		return LocalDateTime.now(ZoneId.of("UTC")).format(format);
 	}
 
 }

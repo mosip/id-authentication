@@ -12,7 +12,6 @@ testdata:
       output.1.y.res.txnID: $input.otp-generate-request:otpReq.txnID$
       output.1.y.res.maskedEmail: $REGEXP:XX.*XX.*$
       output.1.y.res.maskedMobile: $IGNORE$
-      output.1.n.res.ver: 1.0
       
   Otp_generate_for_valid_uin_verify_mask_mob_num_smoke_Pos:
     input.otp-generate-request:
@@ -28,19 +27,19 @@ testdata:
       output.1.y.res.maskedMobile: $REGEXP:XX.*XX.*$
       output.1.y.res.maskedEmail: $IGNORE$
       
-  #Otp_generate_for_valid_vid_Pos:
-  #  input.otp-generate-request:
-  #    otpReq.idvId: 5371843613598206
-  #    otpReq.idvIdType: V
-  #    otpReq.muaCode: 7404012868
-  #    otpReq.reqTime: $TIMESTAMP$
-  #    otpReq.txnID: $RANDOM:N:10$
-  #    otpReq.tspID: TSP00001
-  #  output.output-1-expected-y-res:
-  #    output.1.y.res.status: Y
-  #    output.1.y.res.resTime: $TIMESTAMP$
-  #    output.1.y.res.txnID: $input.otp-generate-request:otpReq.txnID$
-  #    output.1.y.res.maskedEmail: $REGEXP:XX.*XX.*$
+  Otp_generate_for_valid_vid_Pos:
+    input.otp-generate-request:
+      otpReq.idvId: $VID$
+      otpReq.idvIdType: V
+      otpReq.muaCode: 7404012868
+      otpReq.reqTime: $TIMESTAMP$
+      otpReq.txnID: $RANDOM:N:10$
+      otpReq.tspID: TSP00001
+    output.output-1-expected-y-res:
+      output.1.y.res.status: Y
+      output.1.y.res.resTime: $TIMESTAMP$
+      output.1.y.res.txnID: $input.otp-generate-request:otpReq.txnID$
+      output.1.y.res.maskedEmail: $REGEXP:XX.*XX.*$
   
   Otp_generate_with_time_greater_than_20min_Neg:
     input.otp-generate-request:
@@ -52,7 +51,7 @@ testdata:
     output.output-1-expected-n-res:
       output.1.n.res.status: N
       output.1.n.res.resTime: $TIMESTAMP$
-      output.1.n.res.txnID: $input.otp-generate-request:otpReq.txnID$
+      #output.1.n.res.txnID: $input.otp-generate-request:otpReq.txnID$
       output.1.n.res.errorMessage: $REGEXP:Request received at MOSIP is.*post the initiation at TSP$
       output.1.n.res.errorCode: IDA-OTA-002
    
@@ -66,7 +65,7 @@ testdata:
     output.output-1-expected-n-res:
       output.1.n.res.status: N
       output.1.n.res.resTime: $TIMESTAMP$
-      output.1.n.res.txnID: $input.otp-generate-request:otpReq.txnID$
+      #output.1.n.res.txnID: $input.otp-generate-request:otpReq.txnID$
       output.1.n.res.errorMessage: Missing Input Parameter - idvId
       output.1.n.res.errorCode: IDA-IDV-003
       
@@ -80,7 +79,7 @@ testdata:
     output.output-1-expected-n-res:
       output.1.n.res.status: N
       output.1.n.res.resTime: $TIMESTAMP$
-      output.1.n.res.txnID: $input.otp-generate-request:otpReq.txnID$
+      #output.1.n.res.txnID: $input.otp-generate-request:otpReq.txnID$
       output.1.n.res.errorMessage: Missing Input Parameter - idvId
       output.1.n.res.errorCode: IDA-IDV-003
       
@@ -94,7 +93,7 @@ testdata:
     output.output-1-expected-n-res:
       output.1.n.res.status: N
       output.1.n.res.resTime: $TIMESTAMP$
-      output.1.n.res.txnID: $input.otp-generate-request:otpReq.txnID$
+      #output.1.n.res.txnID: $input.otp-generate-request:otpReq.txnID$
       output.1.n.res.errorMessage: Invalid UIN
       output.1.n.res.errorCode: IDA-MLC-002
       
@@ -109,7 +108,7 @@ testdata:
     output.output-1-expected-n-res:
       output.1.n.res.status: N
       output.1.n.res.resTime: $TIMESTAMP$
-      output.1.n.res.txnID: $input.otp-generate-request:otpReq.txnID$
+      #output.1.n.res.txnID: $input.otp-generate-request:otpReq.txnID$
       output.1.n.res.errorMessage: Invalid VID
       output.1.n.res.errorCode: IDA-MLC-004
       
@@ -124,7 +123,7 @@ testdata:
     output.output-1-expected-n-res:
       output.1.n.res.status: N
       output.1.n.res.resTime: $TIMESTAMP$
-      output.1.n.res.txnID: $input.otp-generate-request:otpReq.txnID$
+      #output.1.n.res.txnID: $input.otp-generate-request:otpReq.txnID$
       output.1.n.res.errorMessage: Missing Input Parameter - idvId
       output.1.n.res.errorCode: IDA-IDV-003
       
@@ -139,7 +138,7 @@ testdata:
     output.output-1-expected-n-res:
       output.1.n.res.status: N
       output.1.n.res.resTime: $TIMESTAMP$
-      output.1.n.res.txnID: $input.otp-generate-request:otpReq.txnID$
+      #output.1.n.res.txnID: $input.otp-generate-request:otpReq.txnID$
       output.1.n.res.errorMessage: Missing Input Parameter - idvId
       output.1.n.res.errorCode: IDA-IDV-003
       
@@ -154,7 +153,7 @@ testdata:
   #  output.output-1-expected-n-res:
   #    output.1.n.res.status: N
   #    output.1.n.res.resTime: $TIMESTAMP$
-  #    output.1.n.res.txnID: $input.otp-generate-request:otpReq.txnID$
+  #    #output.1.n.res.txnID: $input.otp-generate-request:otpReq.txnID$
   #    output.1.n.res.errorMessage: Missing Input Parameter - ver
   #    output.1.n.res.errorCode: IDA-IDV-003
       
@@ -169,7 +168,7 @@ testdata:
   #  output.output-1-expected-n-res:
   #    output.1.n.res.status: N
   #    output.1.n.res.resTime: $TIMESTAMP$
-  #    output.1.n.res.txnID: $input.otp-generate-request:otpReq.txnID$
+  #    #output.1.n.res.txnID: $input.otp-generate-request:otpReq.txnID$
   #    output.1.n.res.errorMessage: Invalid Input Parameter - ver
   #   output.1.n.res.errorCode: IDA-IDV-002
       
@@ -184,7 +183,7 @@ testdata:
   #  output.output-1-expected-n-res:
   #    output.1.n.res.status: N
   #    output.1.n.res.resTime: $TIMESTAMP$
-  #    output.1.n.res.txnID: $input.otp-generate-request:otpReq.txnID$
+  #    #output.1.n.res.txnID: $input.otp-generate-request:otpReq.txnID$
   #    output.1.n.res.errorMessage: Invalid Input Parameter - ver
   #    output.1.n.res.errorCode: IDA-IDV-002
       
@@ -197,8 +196,8 @@ testdata:
       otpReq.tspID: TSP00001
     output.output-1-expected-n-res:
       output.1.n.res.status: N
-      output.1.n.res.resTime: $TIMESTAMP$
-      output.1.n.res.txnID: $input.otp-generate-request:otpReq.txnID$
+      output.1.n.res.resTime: $TIMESTAMPZ$
+      #output.1.n.res.txnID: $input.otp-generate-request:otpReq.txnID$
       output.1.n.res.errorMessage: Missing Input Parameter - reqTime
       output.1.n.res.errorCode: IDA-IDV-003
       
@@ -211,8 +210,8 @@ testdata:
       otpReq.tspID: TSP00001
     output.output-1-expected-n-res:
       output.1.n.res.status: N
-      output.1.n.res.resTime: $TIMESTAMP$
-      output.1.n.res.txnID: $input.otp-generate-request:otpReq.txnID$
+      output.1.n.res.resTime: $TIMESTAMPZ$
+      #output.1.n.res.txnID: $input.otp-generate-request:otpReq.txnID$
       output.1.n.res.errorMessage: Invalid Input Parameter - reqTime
       output.1.n.res.errorCode: IDA-IDV-002
       
@@ -225,8 +224,8 @@ testdata:
       otpReq.tspID: TSP00001
     output.output-1-expected-n-res:
       output.1.n.res.status: N
-      output.1.n.res.resTime: $TIMESTAMP$
-      output.1.n.res.txnID: $input.otp-generate-request:otpReq.txnID$
+      output.1.n.res.resTime: $TIMESTAMPZ$
+      #output.1.n.res.txnID: $input.otp-generate-request:otpReq.txnID$
       output.1.n.res.errorMessage: Invalid Input Parameter - reqTime
       output.1.n.res.errorCode: IDA-IDV-002
       
@@ -240,7 +239,7 @@ testdata:
     output.output-1-expected-n-res:
       output.1.n.res.status: N
       output.1.n.res.resTime: $TIMESTAMP$
-      output.1.n.res.txnID: $input.otp-generate-request:otpReq.txnID$
+      #output.1.n.res.txnID: $input.otp-generate-request:otpReq.txnID$
       output.1.n.res.errorMessage: Missing Input Parameter - txnID
       output.1.n.res.errorCode: IDA-IDV-003
       
@@ -254,7 +253,7 @@ testdata:
     output.output-1-expected-n-res:
       output.1.n.res.status: N
       output.1.n.res.resTime: $TIMESTAMP$
-      output.1.n.res.txnID: $input.otp-generate-request:otpReq.txnID$
+      #output.1.n.res.txnID: $input.otp-generate-request:otpReq.txnID$
       output.1.n.res.errorMessage: Invalid Input Parameter - txnID
       output.1.n.res.errorCode: IDA-IDV-002
       
@@ -268,7 +267,7 @@ testdata:
     output.output-1-expected-n-res:
       output.1.n.res.status: N
       output.1.n.res.resTime: $TIMESTAMP$
-      output.1.n.res.txnID: $input.otp-generate-request:otpReq.txnID$
+      #output.1.n.res.txnID: $input.otp-generate-request:otpReq.txnID$
       output.1.n.res.errorMessage: Invalid Input Parameter - txnID
       output.1.n.res.errorCode: IDA-IDV-002
       
@@ -282,7 +281,7 @@ testdata:
     output.output-1-expected-n-res:
       output.1.n.res.status: N
       output.1.n.res.resTime: $TIMESTAMP$
-      output.1.n.res.txnID: $input.otp-generate-request:otpReq.txnID$
+      #output.1.n.res.txnID: $input.otp-generate-request:otpReq.txnID$
       output.1.n.res.errorMessage: Invalid Input Parameter - txnID
       output.1.n.res.errorCode: IDA-IDV-002
       
@@ -297,7 +296,7 @@ testdata:
     output.output-1-expected-n-res:
       output.1.n.res.status: N
       output.1.n.res.resTime: $TIMESTAMP$
-      output.1.n.res.txnID: $input.otp-generate-request:otpReq.txnID$
+      #output.1.n.res.txnID: $input.otp-generate-request:otpReq.txnID$
       output.1.n.res.errorMessage: Invalid Input Parameter - idvIdType
       output.1.n.res.errorCode: IDA-IDV-002
       
@@ -312,7 +311,7 @@ testdata:
     output.output-1-expected-n-res:
       output.1.n.res.status: N
       output.1.n.res.resTime: $TIMESTAMP$
-      output.1.n.res.txnID: $input.otp-generate-request:otpReq.txnID$
+      #output.1.n.res.txnID: $input.otp-generate-request:otpReq.txnID$
       output.1.n.res.errorMessage: Invalid Input Parameter - idvIdType
       output.1.n.res.errorCode: IDA-IDV-002
       
@@ -327,7 +326,7 @@ testdata:
     output.output-1-expected-n-res:
       output.1.n.res.status: N
       output.1.n.res.resTime: $TIMESTAMP$
-      output.1.n.res.txnID: $input.otp-generate-request:otpReq.txnID$
+      #output.1.n.res.txnID: $input.otp-generate-request:otpReq.txnID$
       output.1.n.res.errorMessage: Missing Input Parameter - idvIdType
       output.1.n.res.errorCode: IDA-IDV-003
       

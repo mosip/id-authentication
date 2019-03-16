@@ -5,6 +5,7 @@
 package io.mosip.preregistration.booking.exception.util;
 
 import java.time.DateTimeException;
+import java.time.format.DateTimeParseException;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.preregistration.booking.errorcodes.ErrorCodes;
@@ -126,7 +127,7 @@ public class BookingExceptionCatcher {
 					((AppointmentReBookException) ex).getErrorText());
 		}
 		else if (ex instanceof TimeSpanException) {
-			throw new AppointmentReBookException(((TimeSpanException) ex).getErrorCode(),
+			throw new TimeSpanException(((TimeSpanException) ex).getErrorCode(),
 					((TimeSpanException) ex).getErrorText());
 		}
 		else if (ex instanceof RecordFailedToDeleteException) {
@@ -140,6 +141,17 @@ public class BookingExceptionCatcher {
 		else if (ex instanceof DemographicStatusUpdationException) {
 			throw new DemographicStatusUpdationException(((DemographicStatusUpdationException) ex).getErrorCode(),
 					((DemographicStatusUpdationException) ex).getErrorText());
+		}
+		else if (ex instanceof DateTimeParseException) {
+			throw new InvalidDateTimeFormatException(ErrorCodes.PRG_BOOK_RCI_031.getCode(),ErrorMessages.INVALID_BOOKING_DATE_TIME.getMessage());
+		}
+		else if (ex instanceof InvalidDateTimeFormatException) {
+			throw new InvalidDateTimeFormatException(((InvalidDateTimeFormatException) ex).getErrorCode(),
+					((InvalidDateTimeFormatException) ex).getErrorText());
+		}
+		else if (ex instanceof TableNotAccessibleException) {
+			throw new TableNotAccessibleException(((TableNotAccessibleException) ex).getErrorCode(),
+					((TableNotAccessibleException) ex).getErrorText());
 		}
 		
 	}

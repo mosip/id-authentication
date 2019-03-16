@@ -9,7 +9,6 @@ import java.util.List;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -128,6 +127,9 @@ public class UinGeneratorStage extends MosipVerticleManager {
 	/** The id response DTO. */
 	/** The Constant FILE_SEPARATOR. */
 	public static final String FILE_SEPARATOR = "\\";
+	
+	private static final String UIN = "UIN";
+
 
 	/** The id response DTO. */
 	IdResponseDTO idResponseDTO = new IdResponseDTO();
@@ -190,10 +192,9 @@ public class UinGeneratorStage extends MosipVerticleManager {
 					PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR + PacketFiles.ID.name());
 			byte[] idJsonBytes = IOUtils.toByteArray(idJsonStream);
 			String getJsonStringFromBytes = new String(idJsonBytes);
-			JSONParser parser = new JSONParser();
-			identityJson = (JSONObject) parser.parse(getJsonStringFromBytes);
-			demographicIdentity = (JSONObject) identityJson.get("identity");
-			String uinFieldCheck = (String) demographicIdentity.get("UIN");
+			identityJson = (JSONObject) JsonUtil.objectMapperReadValue(getJsonStringFromBytes, JSONObject.class);
+			demographicIdentity = JsonUtil.getJSONObject(identityJson, utility.getGetRegProcessorDemographicIdentity());
+			String uinFieldCheck = (String) JsonUtil.getJSONValue(demographicIdentity, UIN);
 			boolean isUinCreate = false;
 			if (uinFieldCheck == null || uinFieldCheck.isEmpty()) {
 				String test = (String) registrationProcessorRestClientService.getApi(ApiName.UINGENERATOR, null, "", "",
@@ -497,7 +498,7 @@ public class UinGeneratorStage extends MosipVerticleManager {
 	 */
 	public void deployVerticle() {
 		//
-		mosipEventBus = this.getEventBus(this.getClass(), clusterManagerUrl);
+		mosipEventBus = this.getEventBus(this, clusterManagerUrl, 50);
 		this.consumeAndSend(mosipEventBus, MessageBusAddress.UIN_GENERATION_BUS_IN,
 				MessageBusAddress.UIN_GENERATION_BUS_OUT);
 
