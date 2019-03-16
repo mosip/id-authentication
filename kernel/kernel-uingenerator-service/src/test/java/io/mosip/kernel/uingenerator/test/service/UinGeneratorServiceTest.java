@@ -81,7 +81,7 @@ public class UinGeneratorServiceTest {
 		UinEntity givEntity = new UinEntity("9723157067", "ASSIGNED");
 		Mockito.when(uinRepository.findByUin(Mockito.any())).thenReturn(entity);
 		Mockito.when(uinRepository.save(Mockito.any())).thenReturn(givEntity);
-		ReflectionTestUtils.setField(uinGeneratorServiceImpl, "assigned", "ASSIGNED");
+		//ReflectionTestUtils.setField(uinGeneratorServiceImpl, "assigned", "ASSIGNED");
 		uinGeneratorServiceImpl.updateUinStatus(uin);
 	}
 
@@ -93,7 +93,7 @@ public class UinGeneratorServiceTest {
 		UinEntity givEntity = new UinEntity("9723157067", "UNASSIGNED");
 		Mockito.when(uinRepository.findByUin(Mockito.any())).thenReturn(entity);
 		Mockito.when(uinRepository.save(Mockito.any())).thenReturn(givEntity);
-		ReflectionTestUtils.setField(uinGeneratorServiceImpl, "unassigned", "UNASSIGNED");
+		//ReflectionTestUtils.setField(uinGeneratorServiceImpl, "unassigned", "UNASSIGNED");
 		uinGeneratorServiceImpl.updateUinStatus(uin);
 	}
 }

@@ -26,7 +26,7 @@ public class MetaDataUtil {
 	 *            entity
 	 * @return <T> Entity with metadata
 	 */
-	public <T extends BaseEntity> T setMetaData(T entity) {
+	public <T extends BaseEntity> T setCreateMetaData(T entity) {
 		String contextUser = UinGeneratorConstant.DEFAULTADMIN_MOSIP_IO;
 		LocalDateTime time = LocalDateTime.now(ZoneId.of(UinGeneratorConstant.UTC));
 		entity.setCreatedBy(contextUser);
@@ -42,7 +42,7 @@ public class MetaDataUtil {
 	 *            entity
 	 * @return <T> Entity with metadata
 	 */
-	public <T extends BaseEntity> T setMetaDataUpdate(T entity) {
+	public <T extends BaseEntity> T setUpdateMetaData(T entity) {
 		String contextUser = UinGeneratorConstant.DEFAULTADMIN_MOSIP_IO;
 		LocalDateTime time = LocalDateTime.now(ZoneId.of(UinGeneratorConstant.UTC));
 		entity.setUpdatedBy(contextUser);
