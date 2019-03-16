@@ -58,12 +58,12 @@ public class UinGeneratorRouter {
 
 	public Router createRouter(Vertx vertx) {
 		Router router = Router.router(vertx);
-		router.get(environment.getProperty(UinGeneratorConstant.SERVER_SERVLET_PATH) + UinGeneratorConstant.V1_0_UIN)
+		router.get(environment.getProperty(UinGeneratorConstant.SERVER_SERVLET_PATH) + "/uin")
 				.handler(routingContext -> {
 					getRouter(vertx, routingContext);
 				});
 		router.route().handler(BodyHandler.create());
-		router.put(environment.getProperty(UinGeneratorConstant.SERVER_SERVLET_PATH) + UinGeneratorConstant.V1_0_UIN)
+		router.put(environment.getProperty(UinGeneratorConstant.SERVER_SERVLET_PATH) + "/uin")
 				.consumes("*/json").handler(this::updateRouter);
 		return router;
 	}
@@ -78,7 +78,6 @@ public class UinGeneratorRouter {
 					UinGeneratorErrorCode.UIN_NOT_FOUND.getErrorMessage());
 			ResponseWrapper<ServiceError> errorResponse = new ResponseWrapper<>();
 			errorResponse.getErrors().add(error);
-			//errorResponse.setStatus(HttpStatus.NOT_FOUND.value());
 			routingContext.response().setStatusCode(200).end(Json.encode(errorResponse));
 		} finally {
 			checkAndGenerateUins(vertx);
@@ -114,21 +113,18 @@ public class UinGeneratorRouter {
 					UinGeneratorErrorCode.UIN_NOT_FOUND.getErrorMessage());
 			ResponseWrapper<ServiceError> errorResponse = new ResponseWrapper<>();
 			errorResponse.getErrors().add(error);
-			//errorResponse.setStatus(HttpStatus.NOT_FOUND.value());
 			routingContext.response().setStatusCode(200).end(Json.encode(errorResponse));
 		} catch (UinStatusNotFoundException e) {
 			ServiceError error = new ServiceError(UinGeneratorErrorCode.UIN_STATUS_NOT_FOUND.getErrorCode(),
 					UinGeneratorErrorCode.UIN_STATUS_NOT_FOUND.getErrorMessage());
 			ResponseWrapper<ServiceError> errorResponse = new ResponseWrapper<>();
 			errorResponse.getErrors().add(error);
-			//errorResponse.setStatus(HttpStatus.NOT_FOUND.value());
 			routingContext.response().setStatusCode(200).end(Json.encode(errorResponse));
 		} catch (UinNotIssuedException e) {
 			ServiceError error = new ServiceError(UinGeneratorErrorCode.UIN_NOT_ISSUED.getErrorCode(),
 					UinGeneratorErrorCode.UIN_NOT_ISSUED.getErrorMessage());
 			ResponseWrapper<ServiceError> errorResponse = new ResponseWrapper<>();
 			errorResponse.getErrors().add(error);
-			//errorResponse.setStatus(HttpStatus.NOT_FOUND.value());
 			routingContext.response().setStatusCode(200).end(Json.encode(errorResponse));
 		}
 

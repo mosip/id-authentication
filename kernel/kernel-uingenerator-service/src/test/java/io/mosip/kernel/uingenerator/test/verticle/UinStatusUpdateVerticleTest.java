@@ -67,14 +67,14 @@ public class UinStatusUpdateVerticleTest {
 		RestTemplate restTemplate = new RestTemplateBuilder().defaultMessageConverters()
 				.additionalMessageConverters(converter).build();
 
-		UinResponseDto uinResp = restTemplate.getForObject("http://localhost:" + port + "/uingenerator/v1.0/uin",
+		UinResponseDto uinResp = restTemplate.getForObject("http://localhost:" + port + "/uingenerator/uin",
 				UinResponseDto.class);
 
 		System.out.println(uinResp.getUin());
 
 		final String json = Json.encodePrettily(new UinEntity(uinResp.getUin(), "ASSIGNED"));
 		final String length = Integer.toString(json.length());
-		vertx.createHttpClient().put(port, "localhost", "/uingenerator/v1.0/uin")
+		vertx.createHttpClient().put(port, "localhost", "/uingenerator/uin")
 				.putHeader("content-type", "application/json").putHeader("content-length", length).handler(response -> {
 					context.assertEquals(response.statusCode(), 200);
 					response.bodyHandler(body -> {
