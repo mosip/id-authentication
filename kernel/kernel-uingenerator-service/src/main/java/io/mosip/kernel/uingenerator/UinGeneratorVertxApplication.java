@@ -44,7 +44,7 @@ public class UinGeneratorVertxApplication {
 				new UinStatusUpdateVerticle(context) };
 		Stream.of(verticles).forEach(verticle -> vertx.deployVerticle(verticle, stringAsyncResult -> {
 			if (stringAsyncResult.succeeded()) {
-				LOGGER.info("Succesfully deployed {}", verticle.getClass().getSimpleName());
+				LOGGER.info("Succesfully deployed :  {}", verticle.getClass().getSimpleName());
 			} else {
 				LOGGER.info("Failed to deploy {} \\nCause: {}", verticle.getClass().getSimpleName(),
 						stringAsyncResult.cause());

@@ -28,10 +28,23 @@ public final class UinGeneratorConstant {
 	 */
 	public static final String DEFAULTADMIN_MOSIP_IO = "defaultadmin@mosip.io";
 
+	
+	
+
+	/**
+	 * The string field for http port
+	 */
+	public static final String SERVER_PORT = "server.port";
+
 	/**
 	 * The string field SERVER_SERVLET_PATH
 	 */
-	public static final String UIN_PATH = "uin.path";
+	public static final String SERVER_SERVLET_PATH = "server.servlet.path";
+	
+	/**
+	 * The string field V1_0_UIN
+	 */
+	public static final String V1_0_UIN = "/v1.0/uin";
 
 	/**
 	 * The string field HIBERNATE_CURRENT_SESSION_CONTEXT_CLASS

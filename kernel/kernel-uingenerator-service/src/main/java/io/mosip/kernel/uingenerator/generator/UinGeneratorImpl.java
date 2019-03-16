@@ -91,7 +91,7 @@ public class UinGeneratorImpl implements UinGenerator<Set<UinEntity>> {
 		Set<UinEntity> uins = new HashSet<>();
 		long upperBound = Long.parseLong(StringUtils.repeat(UinGeneratorConstant.NINE, generatedIdLength));
 		long lowerBound = Long.parseLong(StringUtils.repeat(UinGeneratorConstant.ZERO, generatedIdLength));
-		LOGGER.info("Generating {} uins ", uinsCount);
+		//LOGGER.info("Generating {} uins ", uinsCount);
 		while (uins.size() < uinsCount) {
 			String generatedUIN = generateSingleId(generatedIdLength, lowerBound, upperBound);
 			if (uinFilterUtils.isValidId(generatedUIN)) {
@@ -99,7 +99,7 @@ public class UinGeneratorImpl implements UinGenerator<Set<UinEntity>> {
 				uins.add(metaDataUtil.setMetaData(uinBean));
 			}
 		}
-		LOGGER.info("Generated {} uins ", uinsCount);
+		//LOGGER.info("Generated {} uins ", uinsCount);
 		return uins;
 	}
 

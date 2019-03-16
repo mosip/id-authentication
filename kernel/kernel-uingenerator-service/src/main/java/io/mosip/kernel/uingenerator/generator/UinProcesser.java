@@ -48,9 +48,9 @@ public class UinProcesser {
 	 * @return true, if needs to generate uin
 	 */
 	public boolean shouldGenerateUins() {
-		LOGGER.info("Uin threshold is {}", thresholdUinCount);
+		//LOGGER.info("Uin threshold is {}", thresholdUinCount);
 		long freeUinsCount = uinRepository.countByStatus(unused);
-		LOGGER.info("Number of free UINs in database is {}", freeUinsCount);
+		//LOGGER.info("Number of free UINs in database is {}", freeUinsCount);
 		return freeUinsCount < thresholdUinCount;
 	}
 
