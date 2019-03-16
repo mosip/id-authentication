@@ -21,7 +21,6 @@ import io.mosip.kernel.uingenerator.entity.UinEntity;
 import io.mosip.kernel.uingenerator.test.config.UinGeneratorTestConfiguration;
 import io.mosip.kernel.uingenerator.verticle.UinGeneratorServerVerticle;
 import io.mosip.kernel.uingenerator.verticle.UinGeneratorVerticle;
-import io.mosip.kernel.uingenerator.verticle.UinStatusUpdateVerticle;
 import io.vertx.core.DeploymentOptions;
 import io.vertx.core.Verticle;
 import io.vertx.core.Vertx;
@@ -47,8 +46,7 @@ public class UinStatusUpdateVerticleTest {
 
 		ApplicationContext context = new AnnotationConfigApplicationContext(UinGeneratorTestConfiguration.class);
 		vertx = Vertx.vertx();
-		Verticle[] verticles = { new UinGeneratorVerticle(context), new UinGeneratorServerVerticle(context),
-				new UinStatusUpdateVerticle(context) };
+		Verticle[] verticles = { new UinGeneratorVerticle(context), new UinGeneratorServerVerticle(context) };
 		Stream.of(verticles)
 				.forEach(verticle -> vertx.deployVerticle(verticle, options, testContext.asyncAssertSuccess()));
 	}
@@ -69,14 +67,15 @@ public class UinStatusUpdateVerticleTest {
 		RestTemplate restTemplate = new RestTemplateBuilder().defaultMessageConverters()
 				.additionalMessageConverters(converter).build();
 
-		UinResponseDto uinResp = restTemplate.getForObject("http://localhost:" + port + "/uingenerator/v1.0/uin", UinResponseDto.class);
+		UinResponseDto uinResp = restTemplate.getForObject("http://localhost:" + port + "/uingenerator/v1.0/uin",
+				UinResponseDto.class);
 
 		System.out.println(uinResp.getUin());
 
 		final String json = Json.encodePrettily(new UinEntity(uinResp.getUin(), "ASSIGNED"));
 		final String length = Integer.toString(json.length());
-		vertx.createHttpClient().put(port, "localhost", "/uingenerator/v1.0/uin").putHeader("content-type", "application/json")
-				.putHeader("content-length", length).handler(response -> {
+		vertx.createHttpClient().put(port, "localhost", "/uingenerator/v1.0/uin")
+				.putHeader("content-type", "application/json").putHeader("content-length", length).handler(response -> {
 					context.assertEquals(response.statusCode(), 200);
 					response.bodyHandler(body -> {
 						final UinEntity UinEntity = Json.decodeValue(body.toString(), UinEntity.class);
