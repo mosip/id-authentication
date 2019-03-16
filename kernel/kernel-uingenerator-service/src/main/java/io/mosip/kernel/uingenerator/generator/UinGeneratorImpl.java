@@ -5,8 +5,6 @@ import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.math3.random.RandomDataGenerator;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -42,7 +40,7 @@ public class UinGeneratorImpl implements UinGenerator<Set<UinEntity>> {
 	/**
 	 * The logger instance
 	 */
-	private static final Logger LOGGER = LoggerFactory.getLogger(UinGeneratorImpl.class);
+	//private static final Logger LOGGER = LoggerFactory.getLogger(UinGeneratorImpl.class);
 
 	/**
 	 * Field for number of uins to generate
@@ -70,11 +68,10 @@ public class UinGeneratorImpl implements UinGenerator<Set<UinEntity>> {
 	 *            The Default value of the uin
 	 */
 	public UinGeneratorImpl(@Value("${mosip.kernel.uin.uins-to-generate}") long uinsCount,
-			@Value("${mosip.kernel.uin.length}") int uinLength,
-			@Value("${mosip.kernel.uin.status.unused}") String uinDefaultStatus) {
+			@Value("${mosip.kernel.uin.length}") int uinLength) {
 		this.uinsCount = uinsCount;
 		this.uinLength = uinLength;
-		this.uinDefaultStatus = uinDefaultStatus;
+		this.uinDefaultStatus = UinGeneratorConstant.UNUSED;
 	}
 
 	private static final RandomDataGenerator RANDOM_DATA_GENERATOR = new RandomDataGenerator();
@@ -91,15 +88,15 @@ public class UinGeneratorImpl implements UinGenerator<Set<UinEntity>> {
 		Set<UinEntity> uins = new HashSet<>();
 		long upperBound = Long.parseLong(StringUtils.repeat(UinGeneratorConstant.NINE, generatedIdLength));
 		long lowerBound = Long.parseLong(StringUtils.repeat(UinGeneratorConstant.ZERO, generatedIdLength));
-		//LOGGER.info("Generating {} uins ", uinsCount);
+		// LOGGER.info("Generating {} uins ", uinsCount);
 		while (uins.size() < uinsCount) {
 			String generatedUIN = generateSingleId(generatedIdLength, lowerBound, upperBound);
 			if (uinFilterUtils.isValidId(generatedUIN)) {
 				UinEntity uinBean = new UinEntity(generatedUIN, uinDefaultStatus);
-				uins.add(metaDataUtil.setMetaData(uinBean));
+				uins.add(metaDataUtil.setCreateMetaData(uinBean));
 			}
 		}
-		//LOGGER.info("Generated {} uins ", uinsCount);
+		// LOGGER.info("Generated {} uins ", uinsCount);
 		return uins;
 	}
 

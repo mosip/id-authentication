@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.core.idgenerator.spi.UinGenerator;
+import io.mosip.kernel.uingenerator.constant.UinGeneratorConstant;
 import io.mosip.kernel.uingenerator.entity.UinEntity;
 import io.mosip.kernel.uingenerator.repository.UinRepository;
 
@@ -36,11 +37,6 @@ public class UinProcesser {
 	@Value("${mosip.kernel.uin.min-unused-threshold}")
 	private long thresholdUinCount;
 
-	/**
-	 * String field for uin status unused
-	 */
-	@Value("${mosip.kernel.uin.status.unused}")
-	private String unused;
 
 	/**
 	 * Check whether to generate uin or not
@@ -49,7 +45,7 @@ public class UinProcesser {
 	 */
 	public boolean shouldGenerateUins() {
 		//LOGGER.info("Uin threshold is {}", thresholdUinCount);
-		long freeUinsCount = uinRepository.countByStatus(unused);
+		long freeUinsCount = uinRepository.countByStatus(UinGeneratorConstant.UNUSED);
 		//LOGGER.info("Number of free UINs in database is {}", freeUinsCount);
 		return freeUinsCount < thresholdUinCount;
 	}

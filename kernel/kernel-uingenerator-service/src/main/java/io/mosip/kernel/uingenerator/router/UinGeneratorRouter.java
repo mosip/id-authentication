@@ -60,25 +60,29 @@ public class UinGeneratorRouter {
 		Router router = Router.router(vertx);
 		router.get(environment.getProperty(UinGeneratorConstant.SERVER_SERVLET_PATH) + UinGeneratorConstant.V1_0_UIN)
 				.handler(routingContext -> {
-					UinResponseDto uin = new UinResponseDto();
-					try {
-						uin = uinGeneratorService.getUin();
-						routingContext.response().setStatusCode(200).end(Json.encode(uin));
-					} catch (UinNotFoundException e) {
-						ServiceError error = new ServiceError(UinGeneratorErrorCode.UIN_NOT_FOUND.getErrorCode(),
-								UinGeneratorErrorCode.UIN_NOT_FOUND.getErrorMessage());
-						ErrorResponse<ServiceError> errorResponse = new ErrorResponse<>();
-						errorResponse.getErrors().add(error);
-						errorResponse.setStatus(HttpStatus.NOT_FOUND.value());
-						routingContext.response().setStatusCode(200).end(Json.encode(errorResponse));
-					} finally {
-						checkAndGenerateUins(vertx);
-					}
+					getRouter(vertx, routingContext);
 				});
 		router.route().handler(BodyHandler.create());
 		router.put(environment.getProperty(UinGeneratorConstant.SERVER_SERVLET_PATH) + UinGeneratorConstant.V1_0_UIN)
 				.consumes("*/json").handler(this::updateRouter);
 		return router;
+	}
+
+	private void getRouter(Vertx vertx, RoutingContext routingContext) {
+		UinResponseDto uin = new UinResponseDto();
+		try {
+			uin = uinGeneratorService.getUin();
+			routingContext.response().setStatusCode(200).end(Json.encode(uin));
+		} catch (UinNotFoundException e) {
+			ServiceError error = new ServiceError(UinGeneratorErrorCode.UIN_NOT_FOUND.getErrorCode(),
+					UinGeneratorErrorCode.UIN_NOT_FOUND.getErrorMessage());
+			ErrorResponse<ServiceError> errorResponse = new ErrorResponse<>();
+			errorResponse.getErrors().add(error);
+			errorResponse.setStatus(HttpStatus.NOT_FOUND.value());
+			routingContext.response().setStatusCode(200).end(Json.encode(errorResponse));
+		} finally {
+			checkAndGenerateUins(vertx);
+		}
 	}
 
 	/**

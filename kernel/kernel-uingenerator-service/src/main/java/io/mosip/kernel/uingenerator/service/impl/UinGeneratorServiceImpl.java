@@ -6,6 +6,7 @@ package io.mosip.kernel.uingenerator.service.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import io.mosip.kernel.uingenerator.constant.UinGeneratorConstant;
 import io.mosip.kernel.uingenerator.constant.UinGeneratorErrorCode;
 import io.mosip.kernel.uingenerator.dto.UinResponseDto;
 import io.mosip.kernel.uingenerator.dto.UinStatusUpdateReponseDto;
@@ -18,7 +19,6 @@ import io.mosip.kernel.uingenerator.service.UinGeneratorService;
 import io.mosip.kernel.uingenerator.util.MetaDataUtil;
 import io.vertx.core.json.Json;
 import io.vertx.core.json.JsonObject;
-import org.springframework.beans.factory.annotation.Value;
 
 /**
  * @author Dharmesh Khandelwal
@@ -41,18 +41,6 @@ public class UinGeneratorServiceImpl implements UinGeneratorService {
 	@Autowired
 	private MetaDataUtil metaDataUtil;
 
-	@Value("${mosip.kernel.uin.status.unused}")
-	private String unused;
-
-	@Value("${mosip.kernel.uin.status.issued}")
-	private String issued;
-
-	@Value("${mosip.kernel.uin.status.assigned}")
-	private String assigned;
-
-	@Value("${mosip.kernel.uin.status.unassigned}")
-	private String unassigned;
-
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -61,10 +49,10 @@ public class UinGeneratorServiceImpl implements UinGeneratorService {
 	@Override
 	public UinResponseDto getUin() {
 		UinResponseDto uinResponseDto = new UinResponseDto();
-		UinEntity uinBean = uinRepository.findFirstByStatus(unused);
+		UinEntity uinBean = uinRepository.findFirstByStatus(UinGeneratorConstant.UNUSED);
 		if (uinBean != null) {
-			uinBean.setStatus(issued);
-			metaDataUtil.setMetaDataUpdate(uinBean);
+			uinBean.setStatus(UinGeneratorConstant.ISSUED);
+			metaDataUtil.setUpdateMetaData(uinBean);
 			uinRepository.save(uinBean);
 			uinResponseDto.setUin(uinBean.getUin());
 		} else {
@@ -84,17 +72,17 @@ public class UinGeneratorServiceImpl implements UinGeneratorService {
 	@Override
 	public UinStatusUpdateReponseDto updateUinStatus(JsonObject uin) {
 		UinStatusUpdateReponseDto uinResponseDto = new UinStatusUpdateReponseDto();
-		final UinEntity uinEntity = Json.decodeValue(uin.toString(), UinEntity.class);
-		UinEntity uinBean = uinRepository.findByUin(uinEntity.getUin());
-		if (uinBean != null) {
-			if (uinBean.getStatus().equals(issued)) {
-				metaDataUtil.setMetaDataUpdate(uinBean);
-				if (assigned.equals(uinEntity.getStatus())) {
-					uinBean.setStatus(assigned);
-					uinRepository.save(uinBean);
-				} else if (unassigned.equals(uinEntity.getStatus())) {
-					uinBean.setStatus(unused);
-					uinRepository.save(uinBean);
+		final UinEntity uinAck = Json.decodeValue(uin.toString(), UinEntity.class);
+		UinEntity existingUin = uinRepository.findByUin(uinAck.getUin());
+		if (existingUin != null) {
+			if (UinGeneratorConstant.ISSUED.equals(existingUin.getStatus())) {
+				metaDataUtil.setUpdateMetaData(existingUin);
+				if (UinGeneratorConstant.ASSIGNED.equals(uinAck.getStatus())) {
+					existingUin.setStatus(UinGeneratorConstant.ASSIGNED);
+					uinRepository.save(existingUin);
+				} else if (UinGeneratorConstant.UNASSIGNED.equals(uinAck.getStatus())) {
+					existingUin.setStatus(UinGeneratorConstant.UNUSED);
+					uinRepository.save(existingUin);
 				} else {
 					throw new UinStatusNotFoundException(UinGeneratorErrorCode.UIN_STATUS_NOT_FOUND.getErrorCode(),
 							UinGeneratorErrorCode.UIN_STATUS_NOT_FOUND.getErrorMessage());
@@ -107,9 +95,8 @@ public class UinGeneratorServiceImpl implements UinGeneratorService {
 			throw new UinNotFoundException(UinGeneratorErrorCode.UIN_NOT_FOUND.getErrorCode(),
 					UinGeneratorErrorCode.UIN_NOT_FOUND.getErrorMessage());
 		}
-
-		uinResponseDto.setUin(uinBean.getUin());
-		uinResponseDto.setStatus(uinBean.getStatus());
+		uinResponseDto.setUin(existingUin.getUin());
+		uinResponseDto.setStatus(existingUin.getStatus());
 		return uinResponseDto;
 	}
 

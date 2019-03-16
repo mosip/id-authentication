@@ -1,9 +1,7 @@
 package io.mosip.kernel.uingenerator.verticle;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.env.Environment;
-import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.uingenerator.constant.UinGeneratorConstant;
 import io.mosip.kernel.uingenerator.router.UinGeneratorRouter;
