@@ -1,8 +1,5 @@
 package io.mosip.kernel.masterdata.config;
 
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 
@@ -23,6 +20,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.core.http.ResponseWrapper;
+import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.EmptyCheckUtils;
 
 @RestControllerAdvice
@@ -68,7 +66,8 @@ public class ResponseBodyAdviceConfig implements ResponseBodyAdvice<Object> {
 			responseWrapper.setErrors(null);
 			return responseWrapper;
 		} catch (Exception e) {
-			System.err.println(e.getMessage());
+			Logger mosipLogger = LoggerConfiguration.logConfig(ResponseBodyAdviceConfig.class);
+			mosipLogger.error("", "", "", e.getMessage());
 		}
 		return body;
 	}

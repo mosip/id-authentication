@@ -915,7 +915,7 @@ public class MasterdataControllerTest {
 		templateResponseDto.setTemplates(templateDtoList);
 		Mockito.when(templateService.getAllTemplateByTemplateTypeCode(Mockito.anyString()))
 				.thenReturn(templateResponseDto);
-		mockMvc.perform(MockMvcRequestBuilders.get("/v1.0/templates/templatetypecodes/EMAIL"))
+		mockMvc.perform(MockMvcRequestBuilders.get("/templates/templatetypecodes/EMAIL"))
 				.andExpect(status().isOk());
 	}
 

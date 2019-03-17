@@ -14,6 +14,9 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.web.util.ContentCachingRequestWrapper;
 import org.springframework.web.util.ContentCachingResponseWrapper;
 
+import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.masterdata.config.LoggerConfiguration;
+
 public class ReqResFilter implements Filter {
 
 	@Override
@@ -40,7 +43,8 @@ public class ReqResFilter implements Filter {
 			chain.doFilter(requestWrapper, responseWrapper);
 			responseWrapper.copyBodyToResponse();
 		} catch (Exception e) {
-			System.err.println(e.getMessage());
+			Logger mosipLogger = LoggerConfiguration.logConfig(ReqResFilter.class);
+			mosipLogger.error("", "", "", e.getMessage());
 		}
 	}
 	
