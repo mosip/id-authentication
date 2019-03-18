@@ -5,10 +5,6 @@ package io.mosip.kernel.auth.service.impl;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZoneOffset;
 import java.util.Date;
 
 import javax.sql.DataSource;
@@ -16,7 +12,6 @@ import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -88,7 +83,7 @@ public class CustomTokenServicesImpl implements CustomTokenServices {
 					.addValue("userName", token.getUserId())
 					.addValue("token",token.getAccessToken() ).addValue("refreshToken", token.getRefreshToken())
 					.addValue("expTime", new Date(token.getExpirationTime()))
-					.addValue("crdTimes", LocalDateTime.ofInstant(Instant.ofEpochMilli(new Date().getTime()), ZoneId.of("UTC"))));
+					.addValue("crdTimes", new Date()));
 			
 		}
 		else
@@ -97,7 +92,7 @@ public class CustomTokenServicesImpl implements CustomTokenServices {
 					.addValue("userName", token.getUserId())
 					.addValue("token",token.getAccessToken() ).addValue("refreshToken", token.getRefreshToken())
 					.addValue("expTime", new Date(token.getExpirationTime()))
-					.addValue("crdTimes", LocalDateTime.ofInstant(Instant.ofEpochMilli(new Date().getTime()), ZoneId.of("UTC"))));
+					.addValue("crdTimes", new Date()));
 		}
 	}
 

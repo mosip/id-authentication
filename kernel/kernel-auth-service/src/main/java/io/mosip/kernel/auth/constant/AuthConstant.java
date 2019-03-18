@@ -48,4 +48,6 @@ public class AuthConstant {
 	public static final String PREREGISTRATION = "preregistration";
 	
 	public static final int RETURN_EXP_TIME= -10;
+
+	public static final String ALL_CHANNELS_MESSAGE = "OTP message sent across all the channels";
 }
