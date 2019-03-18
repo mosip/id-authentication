@@ -6,8 +6,6 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Array;
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -17,7 +15,6 @@ import java.util.Map;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,9 +57,7 @@ import io.mosip.registration.processor.core.util.JsonUtil;
 import io.mosip.registration.processor.message.sender.exception.TemplateProcessingFailureException;
 import io.mosip.registration.processor.message.sender.template.generator.TemplateGenerator;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
-import io.mosip.registration.processor.packet.storage.exception.FieldNotFoundException;
 import io.mosip.registration.processor.packet.storage.exception.IdentityNotFoundException;
-import io.mosip.registration.processor.packet.storage.exception.InstantanceCreationException;
 import io.mosip.registration.processor.packet.storage.utils.Utilities;
 import io.mosip.registration.processor.print.service.dto.JsonFileDTO;
 import io.mosip.registration.processor.print.service.dto.JsonRequestDTO;
@@ -539,22 +534,30 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 		if (demographicIdentity == null)
 			throw new IdentityNotFoundException(PlatformErrorMessages.RPR_PIS_IDENTITY_NOT_FOUND.getMessage());
 
-		template.setFirstName(JsonUtil.getJsonValues(demographicIdentity,regProcessorIdentityJson.getIdentity().getName().getValue()));
-		template.setGender(JsonUtil.getJsonValues(demographicIdentity,regProcessorIdentityJson.getIdentity().getGender().getValue()));
-		template.setEmailID(
-				(String) JsonUtil.getJSONValue(demographicIdentity,regProcessorIdentityJson.getIdentity().getEmail().getValue()));
-		template.setPhoneNumber(
-				(String) JsonUtil.getJSONValue(demographicIdentity,regProcessorIdentityJson.getIdentity().getPhone().getValue()));
-		template.setDateOfBirth(
-				(String) JsonUtil.getJSONValue(demographicIdentity,regProcessorIdentityJson.getIdentity().getDob().getValue()));
-		template.setAddressLine1(JsonUtil.getJsonValues(demographicIdentity,regProcessorIdentityJson.getIdentity().getAddressLine1().getValue()));
-		template.setAddressLine2(JsonUtil.getJsonValues(demographicIdentity,regProcessorIdentityJson.getIdentity().getAddressLine2().getValue()));
-		template.setAddressLine3(JsonUtil.getJsonValues(demographicIdentity,regProcessorIdentityJson.getIdentity().getAddressLine3().getValue()));
-		template.setRegion(JsonUtil.getJsonValues(demographicIdentity,regProcessorIdentityJson.getIdentity().getRegion().getValue()));
-		template.setProvince(JsonUtil.getJsonValues(demographicIdentity,regProcessorIdentityJson.getIdentity().getProvince().getValue()));
-		template.setCity(JsonUtil.getJsonValues(demographicIdentity,regProcessorIdentityJson.getIdentity().getCity().getValue()));
-		template.setPostalCode(
-				(String) JsonUtil.getJSONValue(demographicIdentity,regProcessorIdentityJson.getIdentity().getPostalCode().getValue()));
+		template.setFirstName(JsonUtil.getJsonValues(demographicIdentity,
+				regProcessorIdentityJson.getIdentity().getName().getValue()));
+		template.setGender(JsonUtil.getJsonValues(demographicIdentity,
+				regProcessorIdentityJson.getIdentity().getGender().getValue()));
+		template.setEmailID((String) JsonUtil.getJSONValue(demographicIdentity,
+				regProcessorIdentityJson.getIdentity().getEmail().getValue()));
+		template.setPhoneNumber((String) JsonUtil.getJSONValue(demographicIdentity,
+				regProcessorIdentityJson.getIdentity().getPhone().getValue()));
+		template.setDateOfBirth((String) JsonUtil.getJSONValue(demographicIdentity,
+				regProcessorIdentityJson.getIdentity().getDob().getValue()));
+		template.setAddressLine1(JsonUtil.getJsonValues(demographicIdentity,
+				regProcessorIdentityJson.getIdentity().getAddressLine1().getValue()));
+		template.setAddressLine2(JsonUtil.getJsonValues(demographicIdentity,
+				regProcessorIdentityJson.getIdentity().getAddressLine2().getValue()));
+		template.setAddressLine3(JsonUtil.getJsonValues(demographicIdentity,
+				regProcessorIdentityJson.getIdentity().getAddressLine3().getValue()));
+		template.setRegion(JsonUtil.getJsonValues(demographicIdentity,
+				regProcessorIdentityJson.getIdentity().getRegion().getValue()));
+		template.setProvince(JsonUtil.getJsonValues(demographicIdentity,
+				regProcessorIdentityJson.getIdentity().getProvince().getValue()));
+		template.setCity(JsonUtil.getJsonValues(demographicIdentity,
+				regProcessorIdentityJson.getIdentity().getCity().getValue()));
+		template.setPostalCode((String) JsonUtil.getJSONValue(demographicIdentity,
+				regProcessorIdentityJson.getIdentity().getPostalCode().getValue()));
 
 		setAtrributes(template);
 	}
@@ -615,6 +618,5 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 		}
 		return parameter;
 	}
-
 
 }
