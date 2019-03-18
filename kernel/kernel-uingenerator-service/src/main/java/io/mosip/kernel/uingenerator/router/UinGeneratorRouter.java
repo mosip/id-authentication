@@ -64,7 +64,7 @@ public class UinGeneratorRouter {
 				});
 		router.route().handler(BodyHandler.create());
 		router.put(environment.getProperty(UinGeneratorConstant.SERVER_SERVLET_PATH) + UinGeneratorConstant.V1_0_UIN)
-				.consumes("*/json").handler(this::updateRouter);
+				.consumes("application/json").handler(this::updateRouter);
 		return router;
 	}
 
@@ -72,14 +72,14 @@ public class UinGeneratorRouter {
 		UinResponseDto uin = new UinResponseDto();
 		try {
 			uin = uinGeneratorService.getUin();
-			routingContext.response().setStatusCode(200).end(Json.encode(uin));
+			routingContext.response().putHeader("content-type", "application/json").setStatusCode(200).end(Json.encode(uin));
 		} catch (UinNotFoundException e) {
 			ServiceError error = new ServiceError(UinGeneratorErrorCode.UIN_NOT_FOUND.getErrorCode(),
 					UinGeneratorErrorCode.UIN_NOT_FOUND.getErrorMessage());
 			ErrorResponse<ServiceError> errorResponse = new ErrorResponse<>();
 			errorResponse.getErrors().add(error);
 			errorResponse.setStatus(HttpStatus.NOT_FOUND.value());
-			routingContext.response().setStatusCode(200).end(Json.encode(errorResponse));
+			routingContext.response().putHeader("content-type", "application/json").setStatusCode(200).end(Json.encode(errorResponse));
 		} finally {
 			checkAndGenerateUins(vertx);
 		}
@@ -108,28 +108,28 @@ public class UinGeneratorRouter {
 		}
 		try {
 			uinresponse = uinGeneratorService.updateUinStatus(uin);
-			routingContext.response().setStatusCode(200).end(Json.encode(uinresponse));
+			routingContext.response().putHeader("content-type", "application/json").setStatusCode(200).end(Json.encode(uinresponse));
 		} catch (UinNotFoundException e) {
 			ServiceError error = new ServiceError(UinGeneratorErrorCode.UIN_NOT_FOUND.getErrorCode(),
 					UinGeneratorErrorCode.UIN_NOT_FOUND.getErrorMessage());
 			ErrorResponse<ServiceError> errorResponse = new ErrorResponse<>();
 			errorResponse.getErrors().add(error);
 			errorResponse.setStatus(HttpStatus.NOT_FOUND.value());
-			routingContext.response().setStatusCode(200).end(Json.encode(errorResponse));
+			routingContext.response().putHeader("content-type", "application/json").setStatusCode(200).end(Json.encode(errorResponse));
 		} catch (UinStatusNotFoundException e) {
 			ServiceError error = new ServiceError(UinGeneratorErrorCode.UIN_STATUS_NOT_FOUND.getErrorCode(),
 					UinGeneratorErrorCode.UIN_STATUS_NOT_FOUND.getErrorMessage());
 			ErrorResponse<ServiceError> errorResponse = new ErrorResponse<>();
 			errorResponse.getErrors().add(error);
 			errorResponse.setStatus(HttpStatus.NOT_FOUND.value());
-			routingContext.response().setStatusCode(200).end(Json.encode(errorResponse));
+			routingContext.response().putHeader("content-type", "application/json").setStatusCode(200).end(Json.encode(errorResponse));
 		} catch (UinNotIssuedException e) {
 			ServiceError error = new ServiceError(UinGeneratorErrorCode.UIN_NOT_ISSUED.getErrorCode(),
 					UinGeneratorErrorCode.UIN_NOT_ISSUED.getErrorMessage());
 			ErrorResponse<ServiceError> errorResponse = new ErrorResponse<>();
 			errorResponse.getErrors().add(error);
 			errorResponse.setStatus(HttpStatus.NOT_FOUND.value());
-			routingContext.response().setStatusCode(200).end(Json.encode(errorResponse));
+			routingContext.response().putHeader("content-type", "application/json").setStatusCode(200).end(Json.encode(errorResponse));
 		}
 
 	}
