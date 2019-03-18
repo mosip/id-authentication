@@ -23,7 +23,7 @@ public class MainListRequestDTO<T> implements Serializable {
 	 */
 	private static final long serialVersionUID = -6489834223858096784L;
 	/**
-	 * id
+	 * Id
 	 */
 	@ApiModelProperty(value = "request id", position = 1)
 	private String id;
@@ -31,12 +31,12 @@ public class MainListRequestDTO<T> implements Serializable {
 	 * version
 	 */
 	@ApiModelProperty(value = "request version", position = 2)
-	private String ver;
+	private String version;
 	/**
-	 * reqTime
+	 * Request Date Time
 	 */
 	@ApiModelProperty(value = "request time", position = 3)
-	private Date reqTime;
+	private Date requesttime;
 	/**
 	 * To accept preregid, regcenterid, timeslot and booked date time
 	 */

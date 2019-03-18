@@ -56,9 +56,10 @@ export class DashBoardComponent implements OnInit {
     this.loginId = this.regService.getLoginId();
     this.initUsers();
     this.dataStorageService.getSecondaryLanguageLabels(localStorage.getItem('langCode')).subscribe(response => {
-      this.secondaryLanguagelabels = response['dashboard'].discard;
+      if (response['dashboard']) this.secondaryLanguagelabels = response['dashboard'].discard;
       console.log(this.secondaryLanguagelabels);
     });
+    this.regService.setSameAs('');
   }
 
   initUsers() {
@@ -313,8 +314,11 @@ export class DashBoardComponent implements OnInit {
       this.selectedUsers.splice(this.selectedUsers.indexOf(user));
     }
     if (this.selectedUsers.length > 0) {
+      console.log('idhar hai');
+
       this.disableModifyAppointmentButton = false;
     } else {
+      console.log('else idhar hai');
       this.disableModifyAppointmentButton = true;
     }
   }
@@ -376,7 +380,8 @@ export class DashBoardComponent implements OnInit {
       let date2: string = new Date(Date.now()).toString();
       let diffInMs: number = Date.parse(date1) - Date.parse(date2);
       let diffInHours: number = diffInMs / 1000 / 60 / 60;
-      if (diffInHours < this.configService.getConfigByKey('preregistration.timespan.rebook')) return true;
+      if (diffInHours < this.configService.getConfigByKey(appConstants.CONFIG_KEYS.preregistration_timespan_rebook))
+        return true;
       else return false;
     }
     return false;

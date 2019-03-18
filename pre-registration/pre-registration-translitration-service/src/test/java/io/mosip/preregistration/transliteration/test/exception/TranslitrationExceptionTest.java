@@ -14,8 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import io.mosip.preregistration.core.common.dto.MainRequestDTO;
 import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
-import io.mosip.preregistration.transliteration.dto.MainRequestDTO;
 import io.mosip.preregistration.transliteration.dto.TransliterationDTO;
 import io.mosip.preregistration.transliteration.entity.LanguageIdEntity;
 import io.mosip.preregistration.transliteration.exception.MandatoryFieldRequiredException;
@@ -67,7 +67,7 @@ public class TranslitrationExceptionTest {
 
 		MainRequestDTO<TransliterationDTO> mandatoryFieldRequest = new MainRequestDTO<>();
 		mandatoryFieldRequest.setId("mosip.pre-registration.transliteration.transliterate");
-		mandatoryFieldRequest.setReqTime(new Timestamp(System.currentTimeMillis()));
+		mandatoryFieldRequest.setRequesttime(new Timestamp(System.currentTimeMillis()));
 		mandatoryFieldRequest.setRequest(mandatoryFielddto);
 		Mockito.when(serviceImpl.translitratorService(mandatoryFieldRequest))
 				.thenThrow(InvalidRequestParameterException.class);
@@ -91,8 +91,8 @@ public class TranslitrationExceptionTest {
 
 		MainRequestDTO<TransliterationDTO> mandatoryFieldRequest = new MainRequestDTO<>();
 		mandatoryFieldRequest.setId("mosip.pre-registration.transliteration.transliterate");
-		mandatoryFieldRequest.setVer("1.0");
-		mandatoryFieldRequest.setReqTime(new Timestamp(System.currentTimeMillis()));
+		mandatoryFieldRequest.setVersion("1.0");
+		mandatoryFieldRequest.setRequesttime(new Timestamp(System.currentTimeMillis()));
 		mandatoryFieldRequest.setRequest(mandatoryFielddto);
 
 		Mockito.when(serviceImpl2.translitratorService(mandatoryFieldRequest)).thenThrow(ex);
