@@ -121,7 +121,11 @@ public class OTPServiceImpl implements OTPService {
 
 		String uin = String.valueOf(idResDTO.get("uin"));
 
-		if (!checkIsEmptyorNull(email) && otpRequestDto.getOtpChannel().isEmail()) {
+		if (!otpRequestDto.getOtpChannel().isEmail() && !otpRequestDto.getOtpChannel().isPhone()) {
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.OTP_CHANNEL_NOT_PROVIDED);
+		}
+
+		if (otpRequestDto.getOtpChannel().isEmail() && !checkIsEmptyorNull(email)) {
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.PHONE_EMAIL_NOT_REGISTERED);
 		}
 
@@ -225,8 +229,7 @@ public class OTPServiceImpl implements OTPService {
 			return autnTxn;
 		} catch (ParseException | DateTimeParseException e) {
 			mosipLogger.error(SESSION_ID, this.getClass().getName(), e.getClass().getName(), e.getMessage());
-			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_OTP_REQUEST_TIMESTAMP,
-					e);
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
 		}
 	}
 

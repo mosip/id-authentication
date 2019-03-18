@@ -27,6 +27,7 @@ public enum IdAuthenticationErrorConstants {
 	INVALID_TXN_ID("IDA-OTA-007", "Input transactionID does not match transactionID of OTP Request"),
 	BLOCKED_OTP_GENERATE("IDA-OTA-008", "UIN is locked for OTP generation. Please try again later"),
 	BLOCKED_OTP_VALIDATE("IDA-OTA-009", "UIN is locked for OTP validation due to exceeding no of invalid OTP trials"),
+	OTP_CHANNEL_NOT_PROVIDED("IDA-OTA-010", "OTP Notification Channel not provided"),
 
 	MISSING_INPUT_PARAMETER("IDA-MLC-006", "Missing Input Parameter - %s"),
 	UNABLE_TO_PROCESS("IDA-MLC-007", "Request could not be processed. Please try again"),

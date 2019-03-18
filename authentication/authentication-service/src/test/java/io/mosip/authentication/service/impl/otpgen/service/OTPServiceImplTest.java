@@ -114,7 +114,6 @@ public class OTPServiceImplTest {
 	public void before() {
 		otpRequestDto = getOtpRequestDTO();
 		otpResponseDTO = getOtpResponseDTO();
-
 		ReflectionTestUtils.setField(otpServiceImpl, "env", env);
 		ReflectionTestUtils.setField(otpServiceImpl, "idInfoHelper", idInfoHelper);
 		ReflectionTestUtils.setField(notificationService, "env", env);
@@ -138,6 +137,62 @@ public class OTPServiceImplTest {
 		otpRequestDto.setIndividualIdType(IdType.UIN.getType());
 		otpRequestDto.setRequestTime("2019-02-18T18:17:48.923+05:30");
 		return otpRequestDto;
+	}
+
+	@Test(expected = IdAuthenticationBusinessException.class)
+	public void TestOtpChannelnotprovided() throws IdAuthenticationBusinessException {
+		Map<String, Object> value = new HashMap<>();
+		Map<String, List<IdentityInfoDTO>> idInfo = getIdInfo();
+		value.put("response", idInfo);
+		value.put("uin", "74834738743");
+		Mockito.when(idAuthService.processIdType(Mockito.any(), Mockito.any(), Mockito.anyBoolean())).thenReturn(value);
+		Mockito.when(idAuthService.getIdInfo(Mockito.any())).thenReturn(idInfo);
+		Mockito.when(autntxnrepository.countRequestDTime(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(1);
+		Mockito.when(idInfoHelper.getEntityInfoAsString(Mockito.any(), Mockito.any())).thenReturn("9999999999");
+		Mockito.when(idInfoHelper.getUTCTime(Mockito.anyString())).thenReturn(Instant.now().toString());
+		OtpRequestDTO otpRequestDTO = getOtpRequestDTO();
+		ChannelDTO otpChannel = new ChannelDTO();
+		otpChannel.setEmail(false);
+		otpChannel.setPhone(false);
+		otpRequestDTO.setOtpChannel(otpChannel);
+		Mockito.when(otpManager.generateOTP(Mockito.anyString())).thenReturn("123456");
+		otpServiceImpl.generateOtp(otpRequestDTO, "TEST0000001");
+	}
+
+	@Test(expected = IdAuthenticationBusinessException.class)
+	public void TestPhonenotRegistered() throws IdAuthenticationBusinessException {
+		Map<String, Object> value = new HashMap<>();
+		Map<String, List<IdentityInfoDTO>> idInfo = getIdInfo();
+		value.put("response", idInfo);
+		value.put("uin", "74834738743");
+		Mockito.when(idAuthService.processIdType(Mockito.any(), Mockito.any(), Mockito.anyBoolean())).thenReturn(value);
+		Mockito.when(idAuthService.getIdInfo(Mockito.any())).thenReturn(idInfo);
+		Mockito.when(autntxnrepository.countRequestDTime(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(1);
+		Mockito.when(idInfoHelper.getEntityInfoAsString(Mockito.any(), Mockito.any())).thenReturn("");
+		Mockito.when(idInfoHelper.getUTCTime(Mockito.anyString())).thenReturn(Instant.now().toString());
+		OtpRequestDTO otpRequestDTO = getOtpRequestDTO();
+		ChannelDTO otpChannel = new ChannelDTO();
+		otpChannel.setEmail(false);
+		otpChannel.setPhone(true);
+		otpRequestDTO.setOtpChannel(otpChannel);
+		Mockito.when(otpManager.generateOTP(Mockito.anyString())).thenReturn("123456");
+		otpServiceImpl.generateOtp(otpRequestDTO, "TEST0000001");
+	}
+
+	@Test(expected = IdAuthenticationBusinessException.class)
+	public void TestParseException() throws IdAuthenticationBusinessException {
+		Map<String, Object> value = new HashMap<>();
+		Map<String, List<IdentityInfoDTO>> idInfo = getIdInfo();
+		value.put("response", idInfo);
+		value.put("uin", "74834738743");
+		Mockito.when(idAuthService.processIdType(Mockito.any(), Mockito.any(), Mockito.anyBoolean())).thenReturn(value);
+		Mockito.when(idAuthService.getIdInfo(Mockito.any())).thenReturn(idInfo);
+		Mockito.when(autntxnrepository.countRequestDTime(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(1);
+		Mockito.when(idInfoHelper.getEntityInfoAsString(Mockito.any(), Mockito.any())).thenReturn("9999999999");
+		Mockito.when(idInfoHelper.getUTCTime(Mockito.anyString())).thenReturn("");
+		OtpRequestDTO otpRequestDTO = getOtpRequestDTO();
+		Mockito.when(otpManager.generateOTP(Mockito.anyString())).thenReturn("123456");
+		otpServiceImpl.generateOtp(otpRequestDTO, "TEST0000001");
 	}
 
 	@Test
