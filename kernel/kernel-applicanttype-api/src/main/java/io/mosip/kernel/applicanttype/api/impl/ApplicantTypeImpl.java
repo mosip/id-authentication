@@ -188,7 +188,7 @@ public class ApplicantTypeImpl implements ApplicantType {
 		int age = -1;
 		LocalDate birthDate = LocalDateTime.parse(dob, DateTimeFormatter.ofPattern(UTC_DATETIME_PATTERN)).toLocalDate();
 		LocalDate currentDate = LocalDate.now();
-		if (!birthDate.isAfter(currentDate) && birthDate != null && currentDate != null) {
+		if (birthDate != null && currentDate != null && !birthDate.isAfter(currentDate)) {
 			age = Period.between(birthDate, currentDate).getYears();
 		}
 		return age;
