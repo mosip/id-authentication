@@ -354,11 +354,16 @@ public class RegistrationController extends BaseController {
 
 		RegistrationCenterDetailDTO registrationCenter = SessionContext.userContext().getRegistrationCenterDetailDTO();
 
-		registrationMetaDataDTO
-				.setGeoLatitudeLoc(Double.parseDouble(registrationCenter.getRegistrationCenterLatitude()));
-		registrationMetaDataDTO
-				.setGeoLongitudeLoc(Double.parseDouble(registrationCenter.getRegistrationCenterLongitude()));
-
+		if (RegistrationConstants.ENABLE
+				.equalsIgnoreCase(getGlobalConfigValueOf(RegistrationConstants.GPS_DEVICE_DISABLE_FLAG))) {
+			registrationMetaDataDTO
+					.setGeoLatitudeLoc(Double.parseDouble(registrationCenter.getRegistrationCenterLatitude()));
+			registrationMetaDataDTO
+					.setGeoLongitudeLoc(Double.parseDouble(registrationCenter.getRegistrationCenterLongitude()));
+		} else {
+			registrationMetaDataDTO.setGeoLatitudeLoc(0.0);
+			registrationMetaDataDTO.setGeoLongitudeLoc(0.0);
+		}
 		Map<String, Object> applicationContextMap = ApplicationContext.map();
 
 		registrationMetaDataDTO

@@ -94,7 +94,7 @@ public class CenterMachineReMapServiceImpl implements CenterMachineReMapService 
 	public void handleReMapProcess(int step) {
 
 		Boolean isMachineReMapped = isMachineRemapped();
-		if (!isMachineReMapped) {
+		if (isMachineReMapped) {
 			LOGGER.info("REGISTRATION CENTER MACHINE REMAP : ", APPLICATION_NAME, APPLICATION_ID,
 					"handleReMapProcess called and machine has been remaped");
 
@@ -151,8 +151,9 @@ public class CenterMachineReMapServiceImpl implements CenterMachineReMapService 
 							AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
 
 					packetUploadService.uploadAllSyncedPackets();
+					auditFactory.audit(AuditEvent.MACHINE_REMAPPED, Components.PACKETS_UPLOADED, "REGISTRATION",
+							AuditReferenceIdTypes.APPLICATION_ID.getReferenceTypeId());
 
-					System.out.println("packet sync completed");
 				} catch (RegBaseCheckedException exception) {
 					LOGGER.error("REGISTRATION CENTER MACHINE REMAP : ", APPLICATION_NAME, APPLICATION_ID,
 							exception.getMessage() + ExceptionUtils.getStackTrace(exception));

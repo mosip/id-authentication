@@ -47,6 +47,7 @@ import io.mosip.registration.entity.UserDetail;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.scheduler.SchedulerUtil;
+import io.mosip.registration.service.BaseService;
 import io.mosip.registration.service.LoginService;
 import io.mosip.registration.service.UserOnboardService;
 import io.mosip.registration.service.config.GlobalParamService;
@@ -89,7 +90,7 @@ import javafx.util.Duration;
  */
 
 @Component
-public class BaseController {
+public class BaseController extends BaseService{
 
 	@Autowired
 	private SyncStatusValidatorService syncStatusValidatorService;
@@ -816,16 +817,16 @@ public class BaseController {
 		Boolean isRemapped = centerMachineReMapService.isMachineRemapped();
 		if (isRemapped) {
 
-			String message = "You can not perform this operation as this Machine has been remapped to another center\n";
+			String message = RegistrationUIConstants.REMAP_NO_ACCESS_MESSAGE;
 
 			if (isPacketsPendingForEOD()) {
-				message += "Please Complete the EOD process for all the packets\n";
+				message += "\n" + RegistrationUIConstants.REMAP_EOD_PROCESS_MESSAGE;
 			}
-			message += "Click OK to continue the Remap process";
+			message += "\n" + RegistrationUIConstants.REMAP_CLICK_OK;
 			generateAlert(RegistrationConstants.INFO, message);
 
 			packetHandlerController.reMapProgressIndicator.progressProperty().bind(service.progressProperty());
-			
+
 			if (!service.isRunning())
 				service.start();
 
@@ -834,7 +835,7 @@ public class BaseController {
 				public void handle(WorkerStateEvent t) {
 					service.reset();
 					packetHandlerController.reMapProgressIndicator.setVisible(false);
-					generateAlert(RegistrationConstants.INFO, "Remap Process Completed");
+					generateAlert(RegistrationConstants.INFO, RegistrationUIConstants.REMAP_PROCESS_SUCCESS);
 
 				}
 			});
