@@ -79,13 +79,13 @@ public class IdRepoServiceImpl implements IdRepoService {
 					if (!idRepoerrorList.isEmpty()
 							&& idRepoerrorList.stream().anyMatch(map -> map.containsKey("errCode")
 									&& ID_REPO_ERRORS_INVALID_UIN.contains(map.get("errCode")))) {
-						throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_UIN);
+						throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_UIN, e);
 					} else {
-						throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS);
+						throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
 					}
 				}
 			}
-			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS);
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
 		} catch (IDDataValidationException e) {
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.DATA_VALIDATION_FAILED, e);
 		}

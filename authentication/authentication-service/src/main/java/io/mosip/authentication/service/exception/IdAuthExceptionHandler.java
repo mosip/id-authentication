@@ -171,11 +171,7 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 				break;
 			}
 		}
-		if (e instanceof IDDataValidationException) {
-			return new ResponseEntity<>(buildExceptionResponse((BaseCheckedException) e), HttpStatus.OK);
-		} else {
-			return new ResponseEntity<>(buildExceptionResponse((BaseCheckedException) e), HttpStatus.OK);
-		}
+		return new ResponseEntity<>(buildExceptionResponse((BaseCheckedException) e), HttpStatus.OK);
 	}
 
 	/**
