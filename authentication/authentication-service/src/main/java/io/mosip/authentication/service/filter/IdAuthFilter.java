@@ -39,9 +39,6 @@ public class IdAuthFilter extends BaseAuthFilter {
 
 	private static final String MISP_ID = "mispId";
 
-	private static final String MISP_LK = "mispLk";
-
-
 
 	/** The Constant POLICY_ID. */
 	private static final String POLICY_ID = "policyId";

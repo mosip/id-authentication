@@ -10,7 +10,6 @@ import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.AbstractMap.SimpleEntry;
 import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedHashMap;
@@ -216,17 +215,9 @@ public abstract class BaseIDAFilter implements Filter {
 	 * @param responseMap the response map
 	 * @return the map
 	 */
-	private Map<String, Object> removeNullOrEmptyFieldsInResponse(Map<String, Object> responseMap) {
+	protected Map<String, Object> removeNullOrEmptyFieldsInResponse(Map<String, Object> responseMap) {
 		return responseMap.entrySet().stream().filter(map -> Objects.nonNull(map.getValue()))
 				.filter(entry -> !(entry.getValue() instanceof List) || !((List<?>) entry.getValue()).isEmpty())
-				.map(entry -> {
-					if((entry.getValue() instanceof Map)) {
-						Map<String, Object> innerMap = (Map<String, Object>) entry.getValue();
-						Map<String, Object>  changedMap = removeNullOrEmptyFieldsInResponse(innerMap);
-						return new SimpleEntry<String, Object>(entry.getKey(), changedMap);
-					}
-					return entry;
-				})
 				.collect(Collectors.toMap(Entry<String, Object>::getKey, Entry<String, Object>::getValue,
 						(map1, map2) -> map1, LinkedHashMap<String, Object>::new));
 	}
