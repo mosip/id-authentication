@@ -34,6 +34,8 @@ import io.mosip.kernel.core.util.DateUtils;
 @Component
 public class IdAuthFilter extends BaseAuthFilter {
 
+	private static final String LICENSE_KEY = "licenseKey.";
+
 	private static final String MISPLICENSE_KEY = "misplicenseKey";
 
 	private static final String PARTNER_ID = "partnerId";
@@ -117,7 +119,7 @@ public class IdAuthFilter extends BaseAuthFilter {
 	private String licenseKeyMISPMapping(String licenseKey) throws IdAuthenticationAppException {
 		String mispId = null;
 		Map<String, Object> licenseKeyMap = null;
-		String licensekeyMappingJson = env.getProperty("licensekey." + licenseKey);
+		String licensekeyMappingJson = env.getProperty(LICENSE_KEY + licenseKey);
 		if (null != licensekeyMappingJson) {
 			try {
 				licenseKeyMap = mapper.readValue(licensekeyMappingJson.getBytes("UTF-8"), HashMap.class);

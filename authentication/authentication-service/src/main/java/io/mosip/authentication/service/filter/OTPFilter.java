@@ -28,15 +28,16 @@ public class OTPFilter extends IdAuthFilter {
 	protected boolean validateSignature(String signature, byte[] requestAsByte) throws IdAuthenticationAppException {
 		return true;
 	}
-	
+
 	@Override
 	protected void checkAllowedAuthTypeBasedOnPolicy(Map<String, Object> requestBody, List<AuthPolicy> authPolicies)
 			throws IdAuthenticationAppException {
-		if(!isAllowedAuthType(OTP_REQUEST, authPolicies)) {
-			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED);
+		if (!isAllowedAuthType(OTP_REQUEST, authPolicies)) {
+			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorCode(),
+					String.format(IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorCode(), OTP_REQUEST));
 		}
 	}
-	
+
 	/**
 	 * Construct response.
 	 *
@@ -48,15 +49,20 @@ public class OTPFilter extends IdAuthFilter {
 		return responseMap.entrySet().stream().filter(map -> Objects.nonNull(map.getValue()))
 				.filter(entry -> !(entry.getValue() instanceof List) || !((List<?>) entry.getValue()).isEmpty())
 				.map(entry -> {
-					if((entry.getValue() instanceof Map)) {
+					if ((entry.getValue() instanceof Map)) {
 						Map<String, Object> innerMap = (Map<String, Object>) entry.getValue();
-						Map<String, Object>  changedMap = removeNullOrEmptyFieldsInResponse(innerMap);
+						Map<String, Object> changedMap = removeNullOrEmptyFieldsInResponse(innerMap);
 						return new SimpleEntry<String, Object>(entry.getKey(), changedMap);
 					}
 					return entry;
-				})
-				.collect(Collectors.toMap(Entry<String, Object>::getKey, Entry<String, Object>::getValue,
+				}).collect(Collectors.toMap(Entry<String, Object>::getKey, Entry<String, Object>::getValue,
 						(map1, map2) -> map1, LinkedHashMap<String, Object>::new));
+	}
+	
+	@Override
+	protected void checkMandatoryAuthTypeBasedOnPolicy(Map<String, Object> requestBody,
+			List<AuthPolicy> mandatoryAuthPolicies) throws IdAuthenticationAppException {
+		// Nothing to do
 	}
 
 }

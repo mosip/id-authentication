@@ -1,6 +1,5 @@
 package io.mosip.authentication.service.impl.otpgen.service;
 
-//
 import static org.junit.Assert.assertNotNull;
 
 import java.io.File;
@@ -14,7 +13,6 @@ import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -169,11 +167,13 @@ public class KycServiceImplTest {
 		}
 	}
 
-	@Ignore
 	@Test
 	public void validUIN6() throws IdAuthenticationDaoException, IOException, IdAuthenticationBusinessException {
 		MockEnvironment environment = new MockEnvironment();
+		environment.setProperty("uin.masking.required", "true");
+		environment.setProperty("uin.masking.charcount", "2");
 		ReflectionTestUtils.setField(kycServiceImpl, "env", environment);
+		
 		kycServiceImpl.retrieveKycInfo("12232323121", fullKycList(), "ara", idInfo);
 	}
 
