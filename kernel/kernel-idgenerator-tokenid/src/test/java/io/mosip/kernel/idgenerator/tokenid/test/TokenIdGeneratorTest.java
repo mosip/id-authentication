@@ -1,6 +1,7 @@
 package io.mosip.kernel.idgenerator.tokenid.test;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.isA;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.when;
@@ -20,9 +21,11 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.idgenerator.spi.TokenIdGenerator;
-import io.mosip.kernel.idgenerator.tokenid.entity.TokenId;
+import io.mosip.kernel.idgenerator.tokenid.entity.TokenIdSeed;
+import io.mosip.kernel.idgenerator.tokenid.entity.TokenIdSequence;
 import io.mosip.kernel.idgenerator.tokenid.exception.TokenIdGeneratorException;
-import io.mosip.kernel.idgenerator.tokenid.repository.TokenIdRepository;
+import io.mosip.kernel.idgenerator.tokenid.repository.TokenIdSeedRepository;
+import io.mosip.kernel.idgenerator.tokenid.repository.TokenIdSequenceRepository;
 
 /**
  * Test class for tokenid.
@@ -42,7 +45,10 @@ public class TokenIdGeneratorTest {
 	private Integer tokenIdLength;
 
 	@MockBean
-	private TokenIdRepository repository;
+	private TokenIdSeedRepository seedRepository;
+
+	@MockBean
+	private TokenIdSequenceRepository counterRepository;
 
 	@Value("${mosip.kernel.vid.test.random-value-number}")
 	private String random;
@@ -50,44 +56,62 @@ public class TokenIdGeneratorTest {
 	@Value("${mosip.kernel.vid.test.random-counter-number}")
 	private String key;
 
-	List<TokenId> listOfEntity = null;
+	List<TokenIdSeed> listOfSeed = null;
+	TokenIdSequence sequenceEntity = null;
+	List<TokenIdSeed> listOfEmptySeed = null;
 
 	@Before
 	public void setUp() {
 
-		listOfEntity = new ArrayList<>();
-		TokenId entity = new TokenId();
-		entity.setRandomValue(random);
-		entity.setSequenceCounter(key);
-		listOfEntity.add(entity);
+		listOfSeed = new ArrayList<>();
+		TokenIdSeed entity = new TokenIdSeed();
+		entity.setSeedNumber(random);
+		listOfSeed.add(entity);
+		sequenceEntity = new TokenIdSequence();
+		sequenceEntity.setSequenceNumber(key);
+		listOfEmptySeed = new ArrayList<>();
 	}
 
 	@Test
 	public void notNullTest() {
-		when(repository.findRandomValues()).thenReturn(listOfEntity);
-
+		when(seedRepository.findAll()).thenReturn(listOfSeed);
+		when(counterRepository.findMaxSequence()).thenReturn(sequenceEntity);
 		assertNotNull(tokenIdGenerator.generateId());
 	}
 
 	@Test
 	public void tokenIdLengthTest() {
-		when(repository.findRandomValues()).thenReturn(listOfEntity);
+		when(seedRepository.findAll()).thenReturn(listOfSeed);
+		when(counterRepository.findMaxSequence()).thenReturn(sequenceEntity);
 		int tokenLength = tokenIdGenerator.generateId().length();
 		assertThat(tokenLength, is(tokenIdLength));
 	}
 
 	@Test(expected = TokenIdGeneratorException.class)
-	public void tokenIdApiExceptionTestWhenTSPIsEmpty() {
-		when(repository.findRandomValues()).thenThrow(new DataAccessLayerException("errorCode", "errorMessage", null));
+	public void tokenIdSeedFetchExceptionTest() {
+		when(seedRepository.findAll()).thenThrow(new DataAccessLayerException("errorCode", "errorMessage", null));
 		tokenIdGenerator.generateId();
 	}
 
 	@Test(expected = TokenIdGeneratorException.class)
-	public void tokenIdApiExceptionTestWhenUINIsEmpty() {
-		when(repository.findRandomValues()).thenReturn(listOfEntity);
-		when(repository.updateCounterValue(Mockito.any(), Mockito.any()))
+	public void tokenIdSequnceFetchExceptionTest() {
+		when(counterRepository.findMaxSequence())
 				.thenThrow(new DataAccessLayerException("errorCode", "errorMessage", null));
 		tokenIdGenerator.generateId();
+	}
+
+	@Test(expected = TokenIdGeneratorException.class)
+	public void tokenIdSequenceAdditionExceptionTest() {
+		when(counterRepository.saveAndFlush(Mockito.any()))
+				.thenThrow(new DataAccessLayerException("errorCode", "errorMessage", null));
+		tokenIdGenerator.generateId();
+	}
+
+	@Test
+	public void tokenIdEmptySeedListTest() {
+		when(seedRepository.findAll()).thenReturn(listOfEmptySeed);
+		when(counterRepository.findMaxSequence()).thenReturn(sequenceEntity);
+		assertThat(tokenIdGenerator.generateId(), isA(String.class));
 	}
 
 }
