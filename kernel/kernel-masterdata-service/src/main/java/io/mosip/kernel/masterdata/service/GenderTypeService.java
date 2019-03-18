@@ -70,9 +70,11 @@ public interface GenderTypeService {
 	public CodeResponseDto deleteGenderType(String code);
 
 	/**
-	 *  Method to validate gender name
+	 * Method to validate gender name
+	 * 
 	 * @param genderName
-	 * @return StatusResponseCode
+	 *            gender name
+	 * @return {@link StatusResponseDto} StatusResponseCode
 	 */
 	public StatusResponseDto validateGender(String genderName);
 

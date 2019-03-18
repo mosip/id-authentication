@@ -16,9 +16,9 @@ public class LocalDateTimeUtil {
 	 * It will parse string timestamp to localdatetime. It also validates if the
 	 * lastupdatedtime is not future date.
 	 * 
-	 * @param currentTimeStamp
-	 * @param lastUpdated
-	 * @return
+	 * @param currentTimeStamp - current time stamp
+	 * @param lastUpdated - last updated time stamp
+	 * @return {@link LocalDateTime}
 	 */
 	public LocalDateTime getLocalDateTimeFromTimeStamp(LocalDateTime currentTimeStamp, String lastUpdated) {
 		LocalDateTime timeStamp = null;

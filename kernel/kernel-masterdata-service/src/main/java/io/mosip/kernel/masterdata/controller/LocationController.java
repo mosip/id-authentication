@@ -96,11 +96,9 @@ public class LocationController {
 	public LocationResponseDto getLocationDataByHierarchyName(
 			@PathVariable(value = "hierarchyname") String hierarchyName) {
 
-
 		return locationHierarchyService.getLocationDataByHierarchyName(hierarchyName);
 
 	}
-
 
 	/**
 	 * 
@@ -118,7 +116,9 @@ public class LocationController {
 
 	/**
 	 * This API call would update isDeleted to true when called.
-	 * @param locationCode -location code
+	 * 
+	 * @param locationCode
+	 *            -location code
 	 * @return CodeResponseDto
 	 */
 	@ResponseFilter
@@ -126,7 +126,7 @@ public class LocationController {
 	public CodeResponseDto deleteLocationHierarchyDetails(@PathVariable(value = "locationcode") String locationCode) {
 		return locationHierarchyService.deleteLocationDetials(locationCode);
 	}
-	
+
 	/**
 	 * 
 	 * @param locationCode
@@ -137,23 +137,26 @@ public class LocationController {
 	 */
 	@ResponseFilter
 	@GetMapping(value = "immediatechildren/{locationcode}/{langcode}")
-	public LocationResponseDto getImmediateChildrenByLocCodeAndLangCode(@PathVariable("locationcode") String locationCode,
-			@PathVariable("langcode") String langCode) {
+	public LocationResponseDto getImmediateChildrenByLocCodeAndLangCode(
+			@PathVariable("locationcode") String locationCode, @PathVariable("langcode") String langCode) {
 
 		return locationHierarchyService.getImmediateChildrenByLocCodeAndLangCode(locationCode, langCode);
 
 	}
-	
+
 	/**
 	 * checks whether the given location name is valid or not
+	 * 
 	 * @param locationName
-	 * @return StatusResponseCode
+	 *            location name
+	 * @return {@link StatusResponseDto} StatusResponseDto
 	 */
 	@ResponseFilter
 	@GetMapping(value="/validate/{locationname}")
 	public StatusResponseDto validateLocationName(@PathVariable("locationname") String locationName) {
 		return locationHierarchyService.validateLocationName(locationName);
-		
-	}
 
+	}
+	
 }
+
