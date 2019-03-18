@@ -13,6 +13,6 @@ import lombok.Data;
 public class ResponseDTO {
 
 	@NotNull
-	private ApplicantTypeCodeDTO response;
+	private ApplicantTypeCodeDTO applicantType;
 
 }
