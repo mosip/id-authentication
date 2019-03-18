@@ -145,6 +145,7 @@ public class KycServiceImplTest {
 		}
 	}
 
+
 	@Test
 	public void validUIN4() {
 		try {
@@ -232,17 +233,13 @@ public class KycServiceImplTest {
 	}
 
 	private List<String> limitedList() {
-		List<String> allowedKycList = new ArrayList<>();
-		allowedKycList = Arrays.asList(
-				"fullName,firstName,middleName,lastName,gender,addressLine1,addressLine2,addressLine3,city,province,region,postalCode,face,documents.individualBiometrics");
+		String s = "fullName,firstName,middleName,lastName,gender,addressLine1,addressLine2,addressLine3,city,province,region,postalCode,face,documents.individualBiometrics";
+		List<String> allowedKycList = Arrays.asList(s.split(","));
 		return allowedKycList;
 	}
-
+	
 	private List<String> fullKycList() {
-		List<String> fullkycList = new ArrayList<>();
-		fullkycList = Arrays.asList(
-				"fullName,firstName,middleName,lastName,dateOfBirth,gender,phone,email,addressLine1,addressLine2,addressLine3,city,province,region,postalCode,face,documents.individualBiometrics");
-		return fullkycList;
+		String s = "fullName,firstName,middleName,lastName,dateOfBirth,gender,phone,email,addressLine1,addressLine2,addressLine3,city,province,region,postalCode,face,documents.individualBiometrics";
+		return Arrays.asList(s.split(","));
 	}
-
 }

@@ -41,11 +41,6 @@ public class KycServiceImpl implements KycService {
 	/** The Constant MOSIP_PRIMARY_LANG_CODE. */
 	private static final String MOSIP_PRIMARY_LANG_CODE = "mosip.primary.lang-code";
 
-	/** The Constant EKYC_TYPE_FULLKYC. */
-	private static final String EKYC_TYPE_FULLKYC = "ekyc.type.fullkyc";
-
-	/** The Constant EKYC_TYPE_LIMITEDKYC. */
-	private static final String EKYC_TYPE_LIMITEDKYC = "ekyc.type.limitedkyc";
 	/** The env. */
 	@Autowired
 	Environment env;
@@ -115,7 +110,8 @@ public class KycServiceImpl implements KycService {
 		Map<String, List<IdentityInfoDTO>> identityInfo = null;
 		Map<String, Object> identityInfos = null;
 		if (Objects.nonNull(allowedKycType)) {
-			identityInfo = identity.entrySet().stream().filter(id -> allowedKycType.contains(id.getKey()))
+			identityInfo = identity.entrySet().stream()
+					.filter(id -> allowedKycType.contains(id.getKey()))
 					.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 		}
 		if (Objects.nonNull(identityInfo)) {
