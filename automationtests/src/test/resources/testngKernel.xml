@@ -122,10 +122,10 @@
 		</classes>
 	</test>
 	
-	<test name="FetchMachineByIdLang">
+	<test name="FetchMachine">
 			<parameter name="testType" value="smokeandregression" />
 			<classes>
-				<class name="io.mosip.kernel.tests.FetchMachineByIdLang" />
+				<class name="io.mosip.kernel.tests.FetchMachine" />
 			</classes>
 		</test> 
 		

@@ -8,12 +8,12 @@
             "addressLine2": "Ben Mansour",
             "addressLine3": "Morroco",
             "latitude": "34.52117",
-            "longitude": " -6.453275",
+            "longitude": "-6.453275",
             "locationCode": "14022",
             "holidayLocationCode": "KTA",
             "contactPhone": "779517433",
             "workingHours": "8:00:00",
-            "languageCode": "eng",
+            "langCode": "eng",
             "numberOfKiosks": 1,
             "perKioskProcessTime": "00:15:00",
             "centerStartTime": "09:00:00",
@@ -23,7 +23,7 @@
             "lunchStartTime": "13:00:00",
             "lunchEndTime": "14:00:00",
             "isActive": true,
-            "effectivetimes": "2019-01-21T10:46:35.914Z"
+            "effectivetimes": "2019-02-28T10:24:38.523Z"
         }
     ]
 }

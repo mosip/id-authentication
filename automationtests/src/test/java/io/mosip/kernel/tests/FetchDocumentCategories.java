@@ -8,6 +8,8 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
@@ -31,6 +33,7 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.google.common.base.Verify;
 
+import io.mosip.dbaccess.MasterDataGetRequests;
 import io.mosip.service.ApplicationLibrary;
 import io.mosip.service.AssertKernel;
 import io.mosip.service.BaseTestCase;
@@ -132,10 +135,11 @@ public class FetchDocumentCategories extends BaseTestCase implements ITest {
 		String configPath = "src/test/resources/" + moduleName + "/" + apiName + "/" + testcaseName;
 		File folder = new File(configPath);
 		File[] listofFiles = folder.listFiles();
+		JSONObject objectData = null;
 		for (int k = 0; k < listofFiles.length; k++) {
 
 			if (listofFiles[k].getName().toLowerCase().contains("request")) {
-				JSONObject objectData = (JSONObject) new JSONParser().parse(new FileReader(listofFiles[k].getPath()));
+				objectData = (JSONObject) new JSONParser().parse(new FileReader(listofFiles[k].getPath()));
 				logger.info("Json Request Is : " + objectData.toJSONString());
 		
 				if(objectData.containsKey("code"))
@@ -144,25 +148,72 @@ public class FetchDocumentCategories extends BaseTestCase implements ITest {
 				response = applicationLibrary.getRequestPathPara(service_URI,objectData);
 
 
-			} else if (listofFiles[k].getName().toLowerCase().contains("response"))
+			} else if (listofFiles[k].getName().toLowerCase().contains("response")
+					&& !testcaseName.toLowerCase().contains("smoke")) {
 				responseObject = (JSONObject) new JSONParser().parse(new FileReader(listofFiles[k].getPath()));
+				logger.info("Expected Response:" + responseObject.toJSONString());
+			}
 		}
 
-		logger.info("Expected Response:" + responseObject.toJSONString());
+		int statusCode = response.statusCode();
+		logger.info("Status Code is : " + statusCode);
 
-		// add parameters to remove in response before comparison like time stamp
-		ArrayList<String> listOfElementToRemove = new ArrayList<String>();
-		listOfElementToRemove.add("timestamp");
+		if (testcaseName.toLowerCase().contains("smoke")) {
 
-		status = assertions.assertKernel(response, responseObject, listOfElementToRemove);
-		if (status) {
-			int statusCode = response.statusCode();
-			logger.info("Status Code is : " + statusCode);
+			String queryPart = "select count(*) from master.doc_category";
+			String query = queryPart;
+			if (objectData != null) {
+				if (objectData.containsKey("code"))
+					query = query + " where code = '"
+							+ objectData.get("code") + "' and lang_code = '" + objectData.get("langcode")
+							+ "'";
+				else
+					query = queryPart + " where lang_code = '" + objectData.get("langcode") + "'";
+			}
+			long obtainedObjectsCount = MasterDataGetRequests.validateDB(query);
 
-			finalStatus = "Pass";
+			// fetching json object from response
+			JSONObject responseJson = (JSONObject) new JSONParser().parse(response.asString());
+			// fetching json array of objects from response
+			JSONArray devicesFromGet = (JSONArray) responseJson.get("documentcategories");
+			logger.info("===Dbcount===" + obtainedObjectsCount + "===Get-count===" + devicesFromGet.size());
+
+			// validating number of objects obtained form db and from get request
+			if (devicesFromGet.size() == obtainedObjectsCount) {
+
+				// list to validate existance of attributes in response objects
+				List<String> attributesToValidateExistance = new ArrayList();
+				attributesToValidateExistance.add("code");
+				attributesToValidateExistance.add("name");
+				attributesToValidateExistance.add("isActive");
+
+				// key value of the attributes passed to fetch the data, should be same in all
+				// obtained objects
+				HashMap<String, String> passedAttributesToFetch = new HashMap();
+				if (objectData != null) {
+					if (objectData.containsKey("code")) {
+						passedAttributesToFetch.put("code", objectData.get("code").toString());
+						passedAttributesToFetch.put("langCode", objectData.get("langcode").toString());
+					} else
+						passedAttributesToFetch.put("langCode", objectData.get("langcode").toString());
+				}
+
+				status = AssertKernel.validator(devicesFromGet, attributesToValidateExistance, passedAttributesToFetch);
+			} else
+				status = false;
+
 		}
 
 		else {
+			// add parameters to remove in response before comparison like time stamp
+			ArrayList<String> listOfElementToRemove = new ArrayList<String>();
+			listOfElementToRemove.add("timestamp");
+			status = assertions.assertKernel(response, responseObject, listOfElementToRemove);
+		}
+
+		if (status) {
+			finalStatus = "Pass";
+		} else {
 			finalStatus = "Fail";
 		}
 

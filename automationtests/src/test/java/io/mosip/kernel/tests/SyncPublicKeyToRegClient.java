@@ -31,9 +31,9 @@ package io.mosip.kernel.tests;
 	import com.fasterxml.jackson.databind.JsonMappingException;
 	import com.google.common.base.Verify;
 	import com.google.common.io.BaseEncoding;
-
-import io.mosip.dbaccess.KernelTables;
-import io.mosip.dbentity.PublicKeyResponse;
+	
+	import io.mosip.dbaccess.KernelTables;
+import io.mosip.dbdto.PublicKeyResponse;
 import io.mosip.service.ApplicationLibrary;
 	import io.mosip.service.AssertKernel;
 	import io.mosip.service.BaseTestCase;
@@ -166,11 +166,8 @@ import io.mosip.service.ApplicationLibrary;
 	              ArrayList<String> listOfElementToRemove = new ArrayList<String>();
 	              listOfElementToRemove.add("timestamp");
 	              
-	              JSONObject respo = (JSONObject) new JSONParser().parse(response.asString());
-	              
-	              if (respo.containsKey("publicKey"))
+	              if (testcaseName.toLowerCase().contains("smoke"))
 	              {
-	                     System.err.println((response.jsonPath().get("publicKey")).toString());
 	                     String referenceId=(objectData.get("referenceId")).toString();
 	                     String queryStr = "select public_key from kernel.key_store where id = (select id from kernel.key_alias where ref_id = '"+referenceId+"' and app_id='"+applicationId+"')";
 	                     boolean valid = KernelTables.validateDB(queryStr,PublicKeyResponse.class);
@@ -185,12 +182,11 @@ import io.mosip.service.ApplicationLibrary;
 	                           s=s.replace('/', '_');
 	                           s=s.replace('+', '-');
 	                     }
-	                     System.out.println();
-	                     System.err.println("obtained key from db : "+s);
+	                     
+	                     logger.info("obtained key from db : "+s);
 	                     valid = (response.jsonPath().get("publicKey")).toString().equals(s);
 	                     if(valid) {
 	                           finalStatus = "Pass";
-	                           System.out.println("equal");
 	                     }
 	                     else {
 	                           
