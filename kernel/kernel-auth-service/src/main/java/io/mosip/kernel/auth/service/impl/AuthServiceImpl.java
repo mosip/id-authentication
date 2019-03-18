@@ -1,7 +1,10 @@
 package io.mosip.kernel.auth.service.impl;
 
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,6 +20,8 @@ import io.mosip.kernel.auth.entities.ClientSecret;
 import io.mosip.kernel.auth.entities.LoginUser;
 import io.mosip.kernel.auth.entities.MosipUserDto;
 import io.mosip.kernel.auth.entities.MosipUserDtoToken;
+import io.mosip.kernel.auth.entities.MosipUserListDto;
+import io.mosip.kernel.auth.entities.RolesListDto;
 import io.mosip.kernel.auth.entities.TimeToken;
 import io.mosip.kernel.auth.entities.UserOtp;
 import io.mosip.kernel.auth.entities.otp.OtpUser;
@@ -71,7 +76,7 @@ public class AuthServiceImpl implements AuthService {
 
 	@Override
 	public MosipUserDtoToken validateToken(String token) throws Exception {
-		long currentTime = new Date().getTime();
+		long currentTime = LocalDateTime.now().atOffset(ZoneOffset.UTC).toLocalDateTime().toEpochSecond(ZoneOffset.UTC);
 		MosipUserDtoToken mosipUserDtoToken = tokenValidator.validateToken(token);
 		AuthToken authToken = customTokenServices.getTokenDetails(token);
 		if(authToken==null)
@@ -79,7 +84,7 @@ public class AuthServiceImpl implements AuthService {
 			throw new AuthManagerException(AuthConstant.UNAUTHORIZED_CODE,"Auth token has been changed,Please try with new login");
 		}
 		long tenMinsExp = getExpiryTime(authToken.getExpirationTime());
-		if(currentTime>tenMinsExp)
+		if(currentTime>tenMinsExp && currentTime<authToken.getExpirationTime())
 		{
 			TimeToken newToken = tokenGenerator.generateNewToken(token);
 			mosipUserDtoToken.setToken(newToken.getToken());
@@ -186,7 +191,7 @@ public class AuthServiceImpl implements AuthService {
 		MosipUserDto mosipUser = userStoreFactory.getDataStoreBasedOnApp(userOtp.getAppId())
 				.authenticateUserWithOtp(userOtp);
 		MosipUserDtoToken mosipToken = oTPService.validateOTP(mosipUser, userOtp.getOtp());
-		if(mosipToken!=null)
+		if(mosipToken!=null && mosipToken.getMosipUserDto()!=null)
 		{
 		authNResponseDto.setMessage(mosipToken.getMessage());
 		authNResponseDto.setStatus(mosipToken.getStatus());
@@ -194,6 +199,11 @@ public class AuthServiceImpl implements AuthService {
 		authNResponseDto.setExpiryTime(mosipToken.getExpTime());
 		authNResponseDto.setRefreshToken(mosipToken.getRefreshToken());
 		authNResponseDto.setUserId(mosipToken.getMosipUserDto().getUserId());
+		}
+		else
+		{
+			authNResponseDto.setMessage(mosipToken.getMessage());
+			authNResponseDto.setStatus(mosipToken.getStatus());
 		}
 		return authNResponseDto;
 	}
@@ -279,6 +289,18 @@ public class AuthServiceImpl implements AuthService {
 		authNResponse = new AuthNResponse();
 		authNResponse.setMessage(AuthConstant.TOKEN_INVALID_MESSAGE);
 		return authNResponse;
+	}
+
+	@Override
+	public RolesListDto getAllRoles(String appId) {
+		RolesListDto rolesListDto =  userStoreFactory.getDataStoreBasedOnApp(appId).getAllRoles();
+		return rolesListDto;
+	}
+
+	@Override
+	public MosipUserListDto getListOfUsersDetails(List<String> userDetails,String appId) throws Exception {
+		MosipUserListDto mosipUserListDto = userStoreFactory.getDataStoreBasedOnApp(appId).getListOfUsersDetails(userDetails);
+		return mosipUserListDto;
 	}
 
 }

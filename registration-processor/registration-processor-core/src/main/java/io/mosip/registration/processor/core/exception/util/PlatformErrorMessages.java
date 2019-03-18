@@ -178,6 +178,9 @@ public enum PlatformErrorMessages {
 	RPR_CMB_MALFORMED_URL_EXCEPTION(PlatformErrorConstants.RPR_CAMEL_BRIDGE_MODULE + "004",
 			"Malformed Cluster Manager Url Exception"),
 
+	RPR_CMB_UNKNOWN_HOST_EXCEPTION(PlatformErrorConstants.RPR_CAMEL_BRIDGE_MODULE + "005",
+			"Unknown Host Exception"),
+
 	/** The rpr qcr registration table not accessible. */
 	// Quality Checker Exception error code and message
 	RPR_QCR_REGISTRATION_TABLE_NOT_ACCESSIBLE(PlatformErrorConstants.RPR_QUALITY_CHECKER_MODULE + "001",

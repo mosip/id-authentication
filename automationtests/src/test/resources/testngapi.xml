@@ -1,14 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
-<suite name="Mosip Kernel API Suite">
 
-<!--   Passing Group as parmeter unsing "testType"
-  Possible Groups are:
-  						smoke
-  						regression
-  						smokeAndRegression -->
- 
-  		   <test name="Kernel Tests">
+<suite name="Mosip API Suite">
+	<!-- Passing Group as parmeter unsing "testType" Possible Groups are: smoke 
+		regression smokeAndRegression -->
+
+   		   <test name="Kernel Tests">
 			<parameter name="testType" value="smokeandregression" />
 			<classes>
 				<class name="io.mosip.kernel.tests.AuditLog" />
@@ -54,28 +51,25 @@
 			<class name="io.mosip.kernel.tests.ValidateGenderByName"/>
 
 			<class name="io.mosip.kernel.tests.ValidateLocationByName"/>
+			<class name="io.mosip.kernel.tests.GetDeviceHistory" />
+			<class name="io.mosip.kernel.tests.FetchGenderType" />
 			</classes>
-		</test>  
+			</test> 
 		
-			
-	
-	<!-- 	<test name="GetDeviceHistory">
-			<parameter name="testType" value="smoke" />
-			<classes>
-				<class name="io.mosip.kernel.tests.GetDeviceHistory" />
-			</classes>
-		</test> 
 		
-            <test name="GetImmediateChildrenByLocCodeAndLangCode">
-			<parameter name="testType" value="smoke" />
+          		
+			<test name="RegistrationProcessor Tests">
+		<parameter name="testType" value="smokeAndregression" />
+		<classes>
+			<class name="io.mosip.regProc.tests.PacketStatus" />
+			<class name="io.mosip.regProc.tests.Sync" />
+			<class name="io.mosip.regProc.tests.PacketReceiver" />
+			<class name="io.mosip.regProc.tests.IntegrationScenarios" />
+		</classes>
+	</test> 
 
-			<classes>
-				<class name="io.mosip.kernel.tests.FetchGenderType" />
-			</classes>
-		</test> 
-		
- -->		
-	 <test name="PreRegistration Tests">
+	
+	<test name="PreRegistration Tests">
 
 		<parameter name="testType" value="smokeandregression" />
 
@@ -104,26 +98,80 @@
                            <class name="io.mosip.preregistration.tests.RetrivePreRegistration" />
                            <class name="io.mosip.preregistration.tests.UpdatePreRegistrationStatus" />
                            
+                           <class name="io.mosip.preregistration.tests.SyncMasterData" />
 			
 		</classes>
 
 	</test>
 
-	 <test name="RegistrationProcessor Tests">    						
-   <parameter name="testType" value="smokeAndregression"/>
-    <classes>
-     <class name="io.mosip.regProc.tests.PacketStatus"/>     
-	<class name="io.mosip.regProc.tests.Sync"/> 
-	<class name="io.mosip.regProc.tests.PacketReceiver"/>    
-	<class name="io.mosip.regProc.tests.IntegrationScenarios"/>          
-    </classes>
-  </test>  
-		
-
 	
 
-		
 
 	
-</suite> <!-- Suite -->
+<!-- 	<test name="Authentication Tests">
+		<parameter name="testType" value="smokeandregression" />
+		<classes>
+		
+			<class name="io.mosip.authentication.tests.CreateUinRecord" />
+		 	<class name="io.mosip.authentication.tests.UpdateUinRecord" />
+			<class name="io.mosip.authentication.tests.CreateVID" />
+			<class
+				name="io.mosip.authentication.tests.BioIrisAuthentication" />
+			<class
+				name="io.mosip.authentication.tests.InternalBioIrisAuthentication" />
+			<class
+				name="io.mosip.authentication.tests.EkycWithBioIrisAuthentication" />
+			<class name="io.mosip.authentication.tests.OtpGeneration" />
+			<class name="io.mosip.authentication.tests.OtpAuthentication" />
+			<class name="io.mosip.authentication.tests.OtpGeneration" />
+			<class
+				name="io.mosip.authentication.tests.EkycWithOtpAuthentication" />
+			<class
+				name="io.mosip.authentication.tests.BioFingerAuthentication" />
+			<class
+				name="io.mosip.authentication.tests.InternalBioFingerAuthentication" />
+			<class
+				name="io.mosip.authentication.tests.EkycWithBioFingerAuthentication" />
+			<class
+				name="io.mosip.authentication.tests.DemoNameAuthentication" />
+			<class
+				name="io.mosip.authentication.tests.DemoEmailAuthentication" />
+			<class
+				name="io.mosip.authentication.tests.DemoPhoneNumberAuthentication" />
+			<class
+				name="io.mosip.authentication.tests.DemoDOBAuthentication" />
+			<class
+				name="io.mosip.authentication.tests.DemoGenderAuthentication" />
+			<class
+				name="io.mosip.authentication.tests.DemoAddressAuthentication" />
+			<class
+				name="io.mosip.authentication.tests.StaticTokenIdGenerationForDemoAuth" />
+			<class
+				name="io.mosip.authentication.tests.StaticTokenIdGenerationForBioFingerAuth" />
+			<class
+				name="io.mosip.authentication.tests.StaticTokenIdGenerationForBioIrisAuth" />
+			<class
+				name="io.mosip.authentication.tests.StaticTokenIdGenerationForOTPAuth" />
+			<class name="io.mosip.authentication.tests.VidGeneration" /> 
+		</classes>
+	</test>  
+	
+	<test name="ID Repo Tests">
+		<parameter name="testType" value="smoke" />
+		<classes>
+			<class
+				name="io.mosip.authentication.idrepo.tests.IdRepoPostiveScenerio" />
+				<class
+				name="io.mosip.authentication.idrepo.tests.StoreIdentityDetailIDRepoNegativeScenario" />
+				<class
+				name="io.mosip.authentication.idrepo.tests.UpdateIdentityDetailIDRepoNegativeScenario" />
+		</classes>
+	</test>  -->
 
+	
+	
+	
+	
+	
+</suite>
+	

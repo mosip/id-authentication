@@ -99,7 +99,7 @@ public class DemodedupeProcessor {
 
 			if (!duplicateDtos.isEmpty()) {
 				
-				registrationStatusDto.setStatusCode(RegistrationStatusCode.POTENTIAL_MATCH_FOUND.toString());
+				registrationStatusDto.setStatusCode(RegistrationStatusCode.DEMO_DEDUPE_POTENTIAL_MATCH_FOUND.toString());
 				registrationStatusDto.setStatusComment(StatusMessage.POTENTIAL_MATCH_FOUND);
 				registrationStatusService.updateRegistrationStatus(registrationStatusDto);
 				// authenticating duplicateIds with provided packet biometrics

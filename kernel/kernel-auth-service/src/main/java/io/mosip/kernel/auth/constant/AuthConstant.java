@@ -43,5 +43,9 @@ public class AuthConstant {
 	
 	public static final String UNAUTHORIZED_CODE = "401";
 	
+	public static final String INDIVIDUAL = "individual";
+	
+	public static final String PREREGISTRATION = "preregistration";
+	
 	public static final int RETURN_EXP_TIME= -10;
 }

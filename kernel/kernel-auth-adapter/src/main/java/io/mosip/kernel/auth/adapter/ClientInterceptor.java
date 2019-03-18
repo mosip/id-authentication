@@ -39,17 +39,17 @@ public class ClientInterceptor implements ClientHttpRequestInterceptor {
         headers.set(AuthAdapterConstant.AUTH_HEADER_COOKIE, AuthAdapterConstant.AUTH_COOOKIE_HEADER+getAuthUserDetails().getToken());
     }
 
-    private void getHeadersFromResponse(ClientHttpResponse clientHttpResponse) {
+   /* private void getHeadersFromResponse(ClientHttpResponse clientHttpResponse) {
         HttpHeaders headers = clientHttpResponse.getHeaders();
         String responseToken = headers.get(AuthAdapterConstant.AUTH_HEADER_SET_COOKIE).get(0).replaceAll(AuthAdapterConstant.AUTH_COOOKIE_HEADER, "");
         getAuthUserDetails().setToken(responseToken);
-    }
+    }*/
 
     @Override
     public ClientHttpResponse intercept(HttpRequest httpRequest, byte[] bytes, ClientHttpRequestExecution clientHttpRequestExecution) throws IOException {
         addHeadersToRequest(httpRequest, bytes);
         ClientHttpResponse response = clientHttpRequestExecution.execute(httpRequest, bytes);
-        getHeadersFromResponse(response);
+        //getHeadersFromResponse(response);
         return response;
     }
 }

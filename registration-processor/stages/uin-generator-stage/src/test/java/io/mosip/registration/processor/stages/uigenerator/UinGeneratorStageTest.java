@@ -72,7 +72,7 @@ public class UinGeneratorStageTest {
 	@InjectMocks
 	private UinGeneratorStage uinGeneratorStage = new UinGeneratorStage() {
 		@Override
-		public MosipEventBus getEventBus(Class<?> verticleName, String url) {
+		public MosipEventBus getEventBus(Object verticleName, String url, int instanceNumber) {
 			vertx = Vertx.vertx();
 
 			return new MosipEventBus(vertx) {
@@ -124,6 +124,7 @@ public class UinGeneratorStageTest {
 
 	/** The registration status dto. */
 	private InternalRegistrationStatusDto registrationStatusDto = new InternalRegistrationStatusDto();
+
 
 	@Mock
 	private Utilities utility;

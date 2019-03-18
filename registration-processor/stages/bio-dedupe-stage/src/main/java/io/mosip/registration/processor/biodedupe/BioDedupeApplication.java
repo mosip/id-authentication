@@ -26,7 +26,6 @@ public class BioDedupeApplication {
 		BioDedupeStage bioDedupeStage = configApplicationContext.getBean(BioDedupeStage.class);
 
 		bioDedupeStage.deployVerticle();
-		
 	}
 
 }

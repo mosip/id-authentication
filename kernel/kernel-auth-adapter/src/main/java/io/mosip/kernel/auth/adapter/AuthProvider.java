@@ -12,12 +12,12 @@ import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.conn.ssl.TrustStrategy;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
-import org.json.JSONException;
-import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -27,10 +27,13 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import io.mosip.kernel.core.exception.ExceptionUtils;
+import io.mosip.kernel.core.exception.ServiceError;
 
 /***********************************************************************************************************************
  * Contacts auth server to verify token validity.
@@ -50,6 +53,9 @@ public class AuthProvider extends AbstractUserDetailsAuthenticationProvider {
 	@Value("${auth.server.validate.url}")
 	private String validateUrl;
 
+	@Autowired
+	private ObjectMapper objectMapper;
+
 	@Override
 	protected void additionalAuthenticationChecks(UserDetails userDetails,
 			UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken) throws AuthenticationException {
@@ -67,46 +73,41 @@ public class AuthProvider extends AbstractUserDetailsAuthenticationProvider {
 		return restTemplate;
 	}
 
-	private ResponseEntity<MosipUserDto> getResponseEntity(
-			UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken, String newToken)
+	private ResponseEntity<String> getResponseEntity(
+			UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken)
 			throws RestClientException, KeyManagementException, NoSuchAlgorithmException, KeyStoreException {
 		String token = null;
 		AuthToken authToken = (AuthToken) usernamePasswordAuthenticationToken;
-		if (newToken != null) {
-			token = newToken;
-		} else {
-			token = authToken.getToken();
-		}
+		token = authToken.getToken();
 		HttpHeaders headers = new HttpHeaders();
 		headers.set(AuthAdapterConstant.AUTH_HEADER_COOKIE, AuthAdapterConstant.AUTH_COOOKIE_HEADER + token);
 		HttpEntity<String> entity = new HttpEntity<String>("parameters", headers);
-		ResponseEntity<MosipUserDto> response = getRestTemplate().exchange(validateUrl, HttpMethod.POST, entity,
-				MosipUserDto.class);
+		ResponseEntity<String> response = getRestTemplate().exchange(validateUrl, HttpMethod.POST, entity,
+				String.class);
 		return response;
 	}
 
 	@Override
 	protected UserDetails retrieveUser(String userName,
 			UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken) throws AuthenticationException {
-		ResponseEntity<MosipUserDto> response = null;
-		String message = null;
+		ResponseEntity<String> response = null;
+		MosipUserDto mosipUserDto = null;
 		try {
-			response = getResponseEntity(usernamePasswordAuthenticationToken, null);
-		} catch (HttpClientErrorException | HttpServerErrorException e) {
-			message = getMessage(e.getResponseBodyAsString());
-			if (message.contains(AuthAdapterConstant.AUTH_TOKEN_EXPIRED)) {
-				throw new AuthException(AuthAdapterConstant.AUTH_SIGNATURE_MESSAGE);
-			} else if (message.contains(AuthAdapterConstant.AUTH_SIGNATURE_TEXT)) {
-				throw new AuthException(AuthAdapterConstant.AUTH_SIGNATURE_MESSAGE);
-			} else {
-				throw new AuthException(message);
-			}
-		} catch (KeyManagementException | KeyStoreException | NoSuchAlgorithmException exp) {
-			throw new AuthException(exp.getMessage());
+			response = getResponseEntity(usernamePasswordAuthenticationToken);
+			List<ServiceError> validationErrorsList = null;
+			validationErrorsList = ExceptionUtils.getServiceErrorList(response.getBody());
+        
+		if (!validationErrorsList.isEmpty()) {
+			throw new AuthManagerException(String.valueOf(HttpStatus.UNAUTHORIZED.value()),"Exception Occured");
 		}
-		MosipUserDto mosipUserDto = response.getBody();
-		if (mosipUserDto.getUserId() == null) {
-			throw new AuthException(AuthAdapterConstant.AUTH_INVALID_TOKEN);
+		}
+		catch (KeyManagementException | KeyStoreException | NoSuchAlgorithmException exp) {
+			throw new AuthManagerException(String.valueOf(HttpStatus.UNAUTHORIZED.value()), exp.getMessage());
+		}
+		try {
+			mosipUserDto = objectMapper.readValue(response.getBody(), MosipUserDto.class);
+		} catch (Exception e) {
+			throw new AuthManagerException(String.valueOf(HttpStatus.UNAUTHORIZED.value()), e.getMessage());
 		}
 		List<GrantedAuthority> grantedAuthorities = AuthorityUtils
 				.commaSeparatedStringToAuthorityList(mosipUserDto.getRole());
@@ -116,14 +117,4 @@ public class AuthProvider extends AbstractUserDetailsAuthenticationProvider {
 		authUserDetails.setAuthorities(grantedAuthorities);
 		return authUserDetails;
 	}
-
-	private String getMessage(String responseBodyAsString) {
-		JSONObject json = null;
-		try {
-			json = new JSONObject(responseBodyAsString);
-		} catch (JSONException e1) {
-		}
-		return (String) json.get("message");
-	}
-
 }
