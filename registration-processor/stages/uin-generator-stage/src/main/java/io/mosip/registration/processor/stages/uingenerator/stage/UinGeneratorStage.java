@@ -545,6 +545,7 @@ public class UinGeneratorStage extends MosipVerticleManager {
 				registrationStatusDto.setStatusCode(RegistrationStatusCode.PACKET_UIN_UPDATION_FAILURE.toString());
 				registrationStatusDto.setStatusComment(UinStatusMessage.UIN_DEACTIVATE_FAILURE + regId);
 				description = UinStatusMessage.UIN_DEACTIVATE_FAILURE + regId;
+				object.setIsValid(Boolean.FALSE);
 				return idResponseDto;
 
 			} else {

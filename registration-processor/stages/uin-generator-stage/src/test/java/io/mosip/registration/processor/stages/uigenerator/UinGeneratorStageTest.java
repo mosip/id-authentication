@@ -30,6 +30,9 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
 
 import io.mosip.kernel.core.fsadapter.exception.FSAdapterException;
 import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
@@ -528,6 +531,142 @@ public class UinGeneratorStageTest {
 		MessageDTO messageDTO = new MessageDTO();
 		messageDTO.setRid("27847657360002520181210094052");
 		uinGeneratorStage.process(messageDTO);
+	}
+	
+	@Test
+	public void deactivateTestSuccess() throws ApisResourceAccessException {
+		MessageDTO messageDTO = new MessageDTO();
+		messageDTO.setRid("10031100110005020190313110030");
+		messageDTO.setReg_type("DEACTIVATED");
+
+		IdResponseDTO responsedto = new IdResponseDTO();
+		responsedto.setStatus("ACTIVATED");
+		
+		String idJson = "{\"identity\":{\"IDSchemaVersion\":1.0,\"UIN\":4215839851}}";
+		InputStream idJsonStream1 = new ByteArrayInputStream(idJson.getBytes(StandardCharsets.UTF_8));
+
+		IdResponseDTO idResponseDTO = new IdResponseDTO();
+		ResponseDTO responseDTO = new ResponseDTO();
+		responseDTO.setEntity("https://dev.mosip.io/idrepo/v1.0/identity/203560486746");
+		idResponseDTO.setErrors(null);
+		idResponseDTO.setId("mosip.id.update");
+		idResponseDTO.setStatus("DEACTIVATED");
+		idResponseDTO.setResponse(responseDTO);
+		idResponseDTO.setTimestamp("2019-03-12T06:49:30.779Z");
+		idResponseDTO.setVersion("1.0");
+		
+		Mockito.when(adapter.getFile("10031100110005020190313110030",
+				PacketFiles.DEMOGRAPHIC.name() + "\\" + PacketFiles.ID.name())).thenReturn(idJsonStream1);
+		Mockito.when(registrationProcessorRestClientService.getApi(any(), any(), any(), any(), any()))
+				.thenReturn(responsedto);
+		Mockito.when(registrationProcessorRestClientService.patchApi(any(), any(), any(), any(), any(), any()))
+				.thenReturn(idResponseDTO);
+		
+		MessageDTO result = uinGeneratorStage.process(messageDTO);
+		assertTrue(result.getIsValid());
+	}
+
+	@Test
+	public void checkIsUinDeactivatedSuccess() throws ApisResourceAccessException {
+		MessageDTO messageDTO = new MessageDTO();
+		messageDTO.setRid("10031100110005020190313110030");
+		messageDTO.setReg_type("DEACTIVATED");
+
+		String idJson = "{\"identity\":{\"IDSchemaVersion\":1.0,\"UIN\":4215839851}}";
+		ResponseDTO responseDTO = new ResponseDTO();
+		responseDTO.setEntity("https://dev.mosip.io/idrepo/v1.0/identity/203560486746");
+		InputStream idJsonStream1 = new ByteArrayInputStream(idJson.getBytes(StandardCharsets.UTF_8));
+
+		IdResponseDTO responsedto = new IdResponseDTO();
+		responsedto.setResponse(responseDTO);
+		responsedto.setStatus("DEACTIVATED");
+
+		Mockito.when(adapter.getFile("10031100110005020190313110030",
+				PacketFiles.DEMOGRAPHIC.name() + "\\" + PacketFiles.ID.name())).thenReturn(idJsonStream1);
+		Mockito.when(registrationProcessorRestClientService.getApi(any(), any(), any(), any(), any()))
+				.thenReturn(responsedto);
+
+		MessageDTO result = uinGeneratorStage.process(messageDTO);
+		assertFalse(result.getIsValid());
+	}
+
+	@Test
+	public void deactivateTestForExistingUinTestSuccess() throws ApisResourceAccessException {
+		MessageDTO messageDTO = new MessageDTO();
+		messageDTO.setRid("10031100110005020190313110030");
+		messageDTO.setReg_type("DEACTIVATED");
+
+		String idJson = "{\"identity\":{\"IDSchemaVersion\":1.0,\"UIN\":4215839851}}";
+		InputStream idJsonStream1 = new ByteArrayInputStream(idJson.getBytes(StandardCharsets.UTF_8));
+
+		ErrorDTO errorDto = new ErrorDTO();
+		errorDto.setErrorCode("KER-IDR-001");
+		errorDto.setErrorMessage("Record already Exists in DB");
+
+		List<ErrorDTO> errors = new ArrayList<>();
+		errors.add(errorDto);
+
+		IdResponseDTO idResponseDTO = new IdResponseDTO();
+		ResponseDTO responseDTO = new ResponseDTO();
+		responseDTO.setEntity("https://dev.mosip.io/idrepo/v1.0/identity/203560486746");
+		idResponseDTO.setErrors(errors);
+		idResponseDTO.setId("mosip.id.update");
+		idResponseDTO.setStatus("DEACTIVATED");
+		idResponseDTO.setResponse(null);
+		idResponseDTO.setTimestamp("2019-03-12T06:49:30.779Z");
+		idResponseDTO.setVersion("1.0");
+
+		Mockito.when(adapter.getFile("10031100110005020190313110030",
+				PacketFiles.DEMOGRAPHIC.name() + "\\" + PacketFiles.ID.name())).thenReturn(idJsonStream1);
+		Mockito.when(registrationProcessorRestClientService.patchApi(any(), any(), any(), any(), any(), any()))
+				.thenReturn(idResponseDTO);
+		Mockito.when(registrationProcessorRestClientService.getApi(any(), any(), any(), any(), any()))
+				.thenReturn(idResponseDTO);
+
+		MessageDTO result = uinGeneratorStage.process(messageDTO);
+		assertFalse(result.getIsValid());
+	}
+	
+	@Test
+	public void deactivateTestFailure() throws ApisResourceAccessException {
+		
+		ApisResourceAccessException exp = new ApisResourceAccessException(
+				HibernateErrorCode.ERR_DATABASE.getErrorCode());
+				
+		MessageDTO messageDTO = new MessageDTO();
+		messageDTO.setRid("10031100110005020190313110030");
+		messageDTO.setReg_type("DEACTIVATED");
+
+		String idJson = "{\"identity\":{\"IDSchemaVersion\":1.0,\"UIN\":4215839851}}";
+		InputStream idJsonStream1 = new ByteArrayInputStream(idJson.getBytes(StandardCharsets.UTF_8));
+
+		ErrorDTO errorDto = new ErrorDTO();
+		errorDto.setErrorCode("KER-IDR-001");
+		errorDto.setErrorMessage("Record already Exists in DB");
+
+		List<ErrorDTO> errors = new ArrayList<>();
+		errors.add(errorDto);
+
+		IdResponseDTO idResponseDTO = new IdResponseDTO();
+		ResponseDTO responseDTO = new ResponseDTO();
+		responseDTO.setEntity("https://dev.mosip.io/idrepo/v1.0/identity/203560486746");
+		idResponseDTO.setErrors(errors);
+		idResponseDTO.setId("mosip.id.update");
+		idResponseDTO.setStatus("DEACTIVATED");
+		idResponseDTO.setResponse(null);
+		idResponseDTO.setTimestamp("2019-03-12T06:49:30.779Z");
+		idResponseDTO.setVersion("1.0");
+
+		Mockito.when(adapter.getFile("10031100110005020190313110030",
+				PacketFiles.DEMOGRAPHIC.name() + "\\" + PacketFiles.ID.name())).thenReturn(idJsonStream1);
+
+		Mockito.when(registrationProcessorRestClientService.getApi(any(), any(), any(), any(), any()))
+				.thenReturn(idResponseDTO);
+		
+		Mockito.when(registrationProcessorRestClientService.patchApi(any(), any(), any(), any(), any(), any())).thenThrow(exp);
+
+
+		MessageDTO result = uinGeneratorStage.process(messageDTO);
 	}
 
 	@Test
