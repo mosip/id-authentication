@@ -1,6 +1,7 @@
 package io.mosip.registration.test.integrationtest;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -108,7 +109,8 @@ public class PreRegistrationDataSyncServiceImplTest {
 	public void getPreRegistrationIds_ValidRegistrationCenterId() throws JsonProcessingException {
 		ResponseDTO responseDTO = preRegistrationDataSyncService.getPreRegistrationIds(RegistrationConstants.JOB_TRIGGER_POINT_USER);
 		ObjectMapper mapper = new ObjectMapper();
-		System.out.println(mapper.writer().writeValueAsString(responseDTO));		
+		System.out.println(mapper.writer().writeValueAsString(responseDTO));
+		assertNotNull(responseDTO.getSuccessResponseDTO());
 	}
 	
 	
