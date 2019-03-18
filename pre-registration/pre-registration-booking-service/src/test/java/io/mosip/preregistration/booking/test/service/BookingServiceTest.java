@@ -58,7 +58,9 @@ import io.mosip.preregistration.booking.entity.RegistrationBookingEntity;
 import io.mosip.preregistration.booking.entity.RegistrationBookingPK;
 import io.mosip.preregistration.booking.errorcodes.ErrorCodes;
 import io.mosip.preregistration.booking.errorcodes.ErrorMessages;
+import io.mosip.preregistration.booking.exception.AvailablityNotFoundException;
 import io.mosip.preregistration.booking.exception.BookingDataNotFoundException;
+import io.mosip.preregistration.booking.exception.RecordFailedToDeleteException;
 import io.mosip.preregistration.booking.exception.TimeSpanException;
 import io.mosip.preregistration.booking.repository.BookingAvailabilityRepository;
 import io.mosip.preregistration.booking.repository.RegistrationBookingRepository;
@@ -75,6 +77,7 @@ import io.mosip.preregistration.core.common.dto.MainResponseDTO;
 import io.mosip.preregistration.core.common.dto.PreRegIdsByRegCenterIdDTO;
 import io.mosip.preregistration.core.common.dto.PreRegIdsByRegCenterIdResponseDTO;
 import io.mosip.preregistration.core.common.dto.PreRegistartionStatusDTO;
+import io.mosip.preregistration.core.exception.AppointmentReBookException;
 import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
 import io.mosip.preregistration.core.exception.TableNotAccessibleException;
 import io.mosip.preregistration.core.util.ValidationUtil;
@@ -802,10 +805,23 @@ public class BookingServiceTest {
 				Mockito.any(), Mockito.any())).thenThrow(new DataAccessLayerException("","",new Throwable()));
 		service.cancelBooking(cancelbookingDto);
 	}
-	//@Test(expected=TimeSpanException.class)
+	@Test(expected=TimeSpanException.class)
 	public void cancelTimeSpanFailureTest() throws java.text.ParseException {
-		TimeSpanException exception=new TimeSpanException(ErrorCodes.PRG_BOOK_RCI_026.getCode(),ErrorMessages.BOOKING_STATUS_CANNOT_BE_ALTERED.getMessage());
+		AppointmentReBookException exception=new AppointmentReBookException(ErrorCodes.PRG_BOOK_RCI_026.getCode(),ErrorMessages.BOOKING_STATUS_CANNOT_BE_ALTERED.getMessage());
 		
+		List<RegistrationBookingEntity> registrationEntityList=new ArrayList<>();
+		RegistrationBookingEntity bookingEntity =new RegistrationBookingEntity();
+		bookingEntity
+		.setBookingPK(new RegistrationBookingPK("23587986034785", DateUtils.parseDateToLocalDateTime(new Date())));
+		bookingEntity.setRegistrationCenterId(oldBooking.getRegistrationCenterId());
+		bookingEntity.setLangCode("12L");
+		bookingEntity.setCrBy("987654321");
+		bookingEntity.setCrDate(DateUtils.parseDateToLocalDateTime(new Date()));
+		System.out.println(LocalDate.now());
+		bookingEntity.setRegDate(LocalDate.now());
+		bookingEntity.setSlotFromTime(LocalTime.parse(oldBooking.getSlotFromTime()));
+		bookingEntity.setSlotToTime(LocalTime.parse(oldBooking.getSlotToTime()));
+		registrationEntityList.add(bookingEntity);
 		MainRequestDTO<CancelBookingDTO> cancelRequestdto2 = new MainRequestDTO<>();
 		cancelRequestdto2.setReqTime(new Date());
 		cancelRequestdto2.setRequest(cancelbookingDto);
@@ -870,5 +886,35 @@ public class BookingServiceTest {
 		
 		assertEquals(response.getResponse().get(0).getPreRegistrationId(), service.deleteBooking("12345678909876").getResponse().get(0).getPreRegistrationId());
 		
+	}
+	@Test(expected=AvailablityNotFoundException.class)
+	public void checkSlotAvailabilityTest(){
+		AvailablityNotFoundException exception=new AvailablityNotFoundException(ErrorCodes.PRG_BOOK_RCI_002.getCode(),
+						ErrorMessages.AVAILABILITY_NOT_FOUND_FOR_THE_SELECTED_TIME.getMessage());
+		AvailibityEntity availableEntityNull = new AvailibityEntity();
+		availableEntityNull.setAvailableKiosks(0);
+		availableEntityNull.setRegcntrId("1");
+		availableEntityNull.setRegDate(LocalDate.parse("2018-12-04"));
+		availableEntityNull.setCrBy("987654321");
+		availableEntityNull.setCrDate(DateUtils.parseDateToLocalDateTime(new Date()));
+		availableEntityNull.setDeleted(false);
+		Mockito.when(bookingDAO.findByFromTimeAndToTimeAndRegDateAndRegcntrId(Mockito.any(),Mockito.any(),Mockito.any(),Mockito.anyString())).thenReturn(availableEntityNull);
+		service.checkSlotAvailability(newBooking);
+	}
+	
+	@Test(expected=RecordFailedToDeleteException.class)
+	public void deleteOldBookingTest() {
+		RecordFailedToDeleteException exception=new RecordFailedToDeleteException(ErrorCodes.PRG_BOOK_RCI_028.getCode(),
+				ErrorMessages.FAILED_TO_DELETE_THE_PRE_REGISTRATION_RECORD.getMessage());
+		Mockito.when(service.deleteOldBooking("12345678909876")).thenThrow(exception);
+		service.deleteOldBooking("12345678909876");
+	}
+	@Test(expected=AvailablityNotFoundException.class)
+	public void increaseAvailabilityTest(){
+		AvailablityNotFoundException exception=new AvailablityNotFoundException(ErrorCodes.PRG_BOOK_RCI_002.toString(),
+				ErrorMessages.AVAILABILITY_NOT_FOUND_FOR_THE_SELECTED_TIME.toString());
+		AvailibityEntity available = new AvailibityEntity();
+		Mockito.when(bookingDAO.findByFromTimeAndToTimeAndRegDateAndRegcntrId(Mockito.any(),Mockito.any(),Mockito.any(),Mockito.anyString())).thenThrow(exception);
+		service.increaseAvailability(newBooking);
 	}
 }

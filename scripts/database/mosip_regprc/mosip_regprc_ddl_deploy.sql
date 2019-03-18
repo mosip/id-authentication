@@ -18,5 +18,6 @@
 \ir ddl/regprc-reg_osi.sql
 \ir ddl/regprc-reg_uin.sql
 \ir ddl/regprc-transaction_type.sql
+\ir ddl/regprc-rid_seq.sql
 
 \ir ddl/AlterFK_regprc_schema.sql

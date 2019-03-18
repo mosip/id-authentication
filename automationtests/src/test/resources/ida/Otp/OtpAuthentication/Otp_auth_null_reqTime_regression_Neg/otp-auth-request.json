@@ -1,0 +1,1 @@
+{"idvId":"5761025178","idvIdType":"D","ver":"0.8","tspID":"TSP00001","pinInfo":[{"type":"OTP","value":"select otp from kernel.otp_transaction where id like '%5521755117_TSP00001%':30"}],"id":"mosip.identity.auth","reqTime":"","authType":{"address":false,"pin":false,"fullAddress":false,"bio":false,"otp":true,"personalIdentity":false},"reqHmac":"string","txnID":"5521755117"}

@@ -1,6 +1,6 @@
 package io.mosip.authentication.tests;
 
-import java.io.File; 
+import java.io.File;  
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.HashMap;
@@ -30,13 +30,13 @@ import io.mosip.authentication.fw.util.AuditValidUtil;
 import io.mosip.authentication.fw.util.DataProviderClass;
 import io.mosip.authentication.fw.util.FileUtil;
 import io.mosip.authentication.fw.util.IdaScriptsUtil;
-import io.mosip.authentication.fw.util.OutputValidationDto;
+import io.mosip.authentication.fw.dto.OutputValidationDto;
 import io.mosip.authentication.fw.util.OutputValidationUtil;
 import io.mosip.authentication.fw.util.ReportUtil;
 import io.mosip.authentication.fw.util.RunConfig;
 import io.mosip.authentication.fw.util.TestParameters;
-import io.mosip.testdata.TestDataProcessor;
-import io.mosip.testdata.TestDataUtil;
+import io.mosip.authentication.testdata.TestDataProcessor;
+import io.mosip.authentication.testdata.TestDataUtil;
 
 import org.testng.Reporter;
 
@@ -57,12 +57,14 @@ public class OtpAuthentication extends IdaScriptsUtil implements ITest{
 	protected static String testCaseName = "";
 	private TestDataProcessor objTestDataProcessor = new TestDataProcessor();
 	private AuditValidUtil objAuditValidUtil = new AuditValidUtil();
+	private String TESTDATA_PATH="ida/TestData/Otp/OtpAuthentication/";
+	private String TESTDATA_FILENAME="testdata.ida.Otp.OtpAuthentication.mapping.yml";
 
-	@Parameters({ "testDatPath" , "testDataFileName" ,"testType"})
+	@Parameters({"testType"})
 	@BeforeClass
-	public void setConfigurations(String testDatPath,String testDataFileName,String testType) {
-		objRunConfig.setConfig(testDatPath,testDataFileName,testType);
-		objTestDataProcessor.initateTestDataProcess(testDataFileName,testDatPath,"ida");	
+	public void setConfigurations(String testType) {
+		objRunConfig.setConfig(TESTDATA_PATH,TESTDATA_FILENAME,testType);
+		objTestDataProcessor.initateTestDataProcess(TESTDATA_FILENAME,TESTDATA_PATH,"ida");	
 	}
 	
 	@BeforeMethod
@@ -166,3 +168,4 @@ public class OtpAuthentication extends IdaScriptsUtil implements ITest{
 	}
 
 }
+

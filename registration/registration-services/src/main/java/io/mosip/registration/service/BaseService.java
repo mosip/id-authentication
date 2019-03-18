@@ -143,12 +143,15 @@ public class BaseService {
 	 * @return user id
 	 */
 	protected String getUserIdFromSession() {
-
-		String userId = SessionContext.userId();
-		if (userId.equals(RegistrationConstants.AUDIT_DEFAULT_USER)) {
+		String userId = null;
+		if (SessionContext.isSessionContextAvailable()) {
+			userId = SessionContext.userId();
+			if (userId.equals(RegistrationConstants.AUDIT_DEFAULT_USER)) {
+				userId = RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM;
+			}
+		} else {
 			userId = RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM;
 		}
-
 		return userId;
 	}
 

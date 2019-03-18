@@ -14,12 +14,19 @@ public interface EventBusManager<T, U, V> {
 	/**
 	 * This method returns the EventBus instance for the provided class.
 	 *
-	 * @param clazz the clazz
-	 * @param clusterAddress the cluster address
-	 * @param localhost the localhost
+	 * @param clazz the Object of class
+	 * @param clusterManagerUrl the cluster address
 	 * @return The EventBus instance
 	 */
-	public T getEventBus(Class<?> clazz, String clusterManagerUrl);
+	public T getEventBus(Object clazz, String clusterManagerUrl);
+	
+	/**
+	 * @param clazz
+	 * @param clusterManagerUrl
+	 * @param instanceNumber
+	 * @return The EventBus instance
+	 */
+	public T getEventBus(Object clazz, String clusterManagerUrl, int instanceNumber);
 
 	/**
 	 * This method consumes a message from an address, processes it and forwards the
