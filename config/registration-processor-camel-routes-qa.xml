@@ -139,6 +139,10 @@
 				<to uri="vertx:manual-verification-bus"/>
 			</when>
 			<when>
+				<simple>${bodyAs(String)} contains '"isValid":false'</simple>
+				<to uri="vertx:manual-verification-bus"/>
+			</when>
+			<when>
 				<simple>${bodyAs(String)} contains '"isValid":true'</simple>
 				<to uri="vertx:bio-dedupe-bus-in" />
 			</when>
