@@ -1,1 +1,1 @@
-{"status":"N","err":[{"errorCode":"IDA-IDV-003","errorMessage":"Missing Input Parameter - Make"},{"errorCode":"IDA-IDV-002","errorMessage":"Invalid Input Parameter - make for irisImg bioType"}],"resTime":"2019-03-12T12:15:12.485+05:30","ver":"0.8"}
+{"status":"N","err":[{"errorCode":"IDA-RST-007","errorMessage":"5XX - Server Error occured"}],"resTime":"2019-03-15T14:51:33.782+05:30","txnID":"0567208165","ver":"0.8"}

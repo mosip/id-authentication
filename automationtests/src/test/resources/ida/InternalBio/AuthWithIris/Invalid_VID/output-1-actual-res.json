@@ -1,1 +1,1 @@
-{"status":"N","err":[{"errorCode":"IDA-MLC-004","errorMessage":"Invalid VID"}],"resTime":"2019-03-12T12:19:15.804+05:30","ver":"0.8"}
+{"status":"N","err":[{"errorCode":"IDA-RST-007","errorMessage":"5XX - Server Error occured"}],"resTime":"2019-03-15T14:53:07.229+05:30","txnID":"0678012886","ver":"0.8"}

@@ -1,1 +1,1 @@
-{"status":"N","err":[{"errorCode":"IDA-RQV-101","errorMessage":"Invalid Auth Request"}],"resTime":"2019-03-12T12:16:59.045+05:30","ver":"0.8"}
+{"status":"N","err":[{"errorCode":"IDA-RST-007","errorMessage":"5XX - Server Error occured"}],"resTime":"2019-03-15T14:52:03.567+05:30","txnID":"4865212767","ver":"0.8"}

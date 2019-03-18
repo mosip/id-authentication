@@ -3,12 +3,13 @@
  */
 package io.mosip.kernel.auth.adapter;
 
+import org.springframework.security.core.AuthenticationException;
 
 /**
  * @author M1049825
  *
  */
-public class AuthManagerException extends Exception{
+public class AuthManagerException extends AuthenticationException{
 
 	/**
 	 * 
@@ -28,18 +29,5 @@ public class AuthManagerException extends Exception{
 	public AuthManagerException(String errorCode, String errorMessage) {
 		super(errorMessage);
 		this.errorCode = errorCode;
-	}
-
-	/**
-	 * Constructor the initialize Handler exception
-	 * 
-	 * @param errorCode
-	 *            The error code for this exception
-	 * @param errorMessage
-	 *            The error message for this exception
-	 * @param rootCause
-	 *            the specified cause
-	 */
-	public AuthManagerException(String errorCode, String errorMessage, Throwable rootCause) {
 	}
 }

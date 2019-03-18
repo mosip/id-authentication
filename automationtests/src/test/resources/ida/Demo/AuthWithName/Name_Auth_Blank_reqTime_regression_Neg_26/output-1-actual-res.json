@@ -1,1 +1,1 @@
-{"status":"N","err":[{"errorCode":"IDA-IDV-002","errorMessage":"Invalid Input Parameter - reqTime"}],"resTime":"2019-03-12T07:07:59.416Z","ver":"0.8"}
+{"status":"N","err":[{"errorCode":"IDA-RST-007","errorMessage":"5XX - Server Error occured"}],"resTime":"2019-03-15T09:25:21.375Z","txnID":"1065164106","ver":"0.8"}

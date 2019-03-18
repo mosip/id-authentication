@@ -11,8 +11,11 @@ import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.regex.Pattern;
 
+import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
+
+import io.mosip.authentication.testdata.keywords.KernelKeywordUtil;
 
 /**
  * This class is to generate jsonpath/object mapper from json file in a properties file
@@ -22,6 +25,7 @@ import org.json.JSONObject;
  */
 public class JsonPathGen {
 
+	private static Logger logger = Logger.getLogger(KernelKeywordUtil.class);
 	private List<String> pathList;
     private String json;
 
@@ -112,7 +116,7 @@ public class JsonPathGen {
 			}
 			prop.store(output, null);
 		} catch (Exception e) {
-			System.out.println(e);
+			logger.error(e.getMessage());
 		}
 	}
 
