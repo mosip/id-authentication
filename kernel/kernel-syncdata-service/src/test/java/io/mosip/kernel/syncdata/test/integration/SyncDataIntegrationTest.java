@@ -1156,7 +1156,7 @@ public class SyncDataIntegrationTest {
 		when(appAuthenticationMethodRepository.findByLastUpdatedAndCurrentTimeStamp(Mockito.any(), Mockito.any()))
 				.thenThrow(DataRetrievalFailureException.class);
 
-		mockMvc.perform(get("/v1.0/masterdata/{machineId}?lastUpdated=2018-11-01T12:10:01.021Z", "1001"))
+		mockMvc.perform(get(syncDataUrlMacAdress, "10001"))
 				.andExpect(status().isInternalServerError());
 
 	}
@@ -1168,7 +1168,7 @@ public class SyncDataIntegrationTest {
 		when(appDetailRepository.findByLastUpdatedTimeAndCurrentTimeStamp(Mockito.any(), Mockito.any()))
 				.thenThrow(DataRetrievalFailureException.class);
 
-		mockMvc.perform(get("/v1.0/masterdata/{machineId}?lastUpdated=2018-11-01T12:10:01.021Z", "1001"))
+		mockMvc.perform(get(syncDataUrlMacAdress, "10001"))
 				.andExpect(status().isInternalServerError());
 
 	}
@@ -1180,7 +1180,7 @@ public class SyncDataIntegrationTest {
 		when(appRolePriorityRepository.findByLastUpdatedAndCurrentTimeStamp(Mockito.any(), Mockito.any()))
 				.thenThrow(DataRetrievalFailureException.class);
 
-		mockMvc.perform(get("/v1.0/masterdata/{machineId}?lastUpdated=2018-11-01T12:10:01.021Z", "1001"))
+		mockMvc.perform(get(syncDataUrlMacAdress, "10001"))
 				.andExpect(status().isInternalServerError());
 
 	}
@@ -1192,7 +1192,7 @@ public class SyncDataIntegrationTest {
 		when(screenAuthorizationRepository.findByLastUpdatedAndCurrentTimeStamp(Mockito.any(), Mockito.any()))
 				.thenThrow(DataRetrievalFailureException.class);
 
-		mockMvc.perform(get("/v1.0/masterdata/{machineId}?lastUpdated=2018-11-01T12:10:01.021Z", "1001"))
+		mockMvc.perform(get(syncDataUrlMacAdress, "10001"))
 				.andExpect(status().isInternalServerError());
 
 	}
@@ -1204,7 +1204,7 @@ public class SyncDataIntegrationTest {
 		when(processListRepository.findByLastUpdatedTimeAndCurrentTimeStamp(Mockito.any(), Mockito.any()))
 				.thenThrow(DataRetrievalFailureException.class);
 
-		mockMvc.perform(get("/v1.0/masterdata/{machineId}?lastUpdated=2018-11-01T12:10:01.021Z", "1001"))
+		mockMvc.perform(get(syncDataUrlMacAdress, "10001"))
 				.andExpect(status().isInternalServerError());
 
 	}
