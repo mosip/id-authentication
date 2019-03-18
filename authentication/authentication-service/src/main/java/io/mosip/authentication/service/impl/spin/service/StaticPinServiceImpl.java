@@ -12,15 +12,12 @@ import java.util.TimeZone;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
-import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import io.mosip.authentication.core.constant.AuditEvents;
 import io.mosip.authentication.core.constant.AuditModules;
-import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.dto.indauth.IdType;
-import io.mosip.authentication.core.dto.spinstore.StaticPinIdentityDTO;
 import io.mosip.authentication.core.dto.spinstore.StaticPinRequestDTO;
 import io.mosip.authentication.core.dto.spinstore.StaticPinResponseDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
@@ -51,9 +48,6 @@ public class StaticPinServiceImpl implements StaticPinService {
 
 	/** The Constant UIN_Key */
 	private static final String UIN_KEY = "uin";
-
-	/** The Constant SUCCESS. */
-	private static final String SUCCESS = "Y";
 
 	/** The Constant DATETIME_PATTERN. */
 	private static final String DATETIME_PATTERN = "datetime.pattern";
@@ -96,11 +90,10 @@ public class StaticPinServiceImpl implements StaticPinService {
 	@Override
 	public StaticPinResponseDTO storeSpin(StaticPinRequestDTO staticPinRequestDTO)
 			throws IdAuthenticationBusinessException {
-		try {
 			String idvId = staticPinRequestDTO.getIndividualId();
 			String idTypedto = staticPinRequestDTO.getIndividualIdType();
 			String idTypeStr = null;
-			IdType idType = null;
+			IdType idType = IdType.UIN;
 			if (idTypedto.equals(IdType.UIN.getType())) {
 				idType = IdType.UIN;
 				idTypeStr = idType.getType();
@@ -128,10 +121,7 @@ public class StaticPinServiceImpl implements StaticPinService {
 			staticPinResponseDTO.setVersion(staticPinRequestDTO.getVersion());
 			staticPinResponseDTO.setResponseTime(resTime);
 			return staticPinResponseDTO;
-		} catch (DataAccessException e) {
-			logger.error(SESSION_ID, this.getClass().getName(), e.getClass().getName(), e.getMessage());
-			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.PIN_NOT_STORED, e);
-		}
+		
 	}
 
 	private Optional<String> getUINValue(Map<String, Object> idResDTO) {

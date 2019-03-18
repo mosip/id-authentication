@@ -472,7 +472,6 @@ public class AuthFacadeImpl implements AuthFacade {
 	public KycAuthResponseDTO processKycAuth(KycAuthRequestDTO kycAuthRequestDTO, AuthResponseDTO authResponseDTO,
 			String partnerId) throws IdAuthenticationBusinessException {
 		Map<String, Object> idResDTO = null;
-		String key = null;
 		String resTime = null;
 		IdType idType = null;
 		if (kycAuthRequestDTO != null) {
@@ -483,7 +482,6 @@ public class AuthFacadeImpl implements AuthFacade {
 			}
 			String idvIdtype = idInfoHelper.getUinOrVidType(kycAuthRequestDTO).getType();
 			idResDTO = idAuthService.processIdType(idvIdtype, idvId, true);
-			key = "ekyc.mua.accesslevel." + partnerId;
 
 			if (idvIdtype.equals(IdType.UIN.getType())) {
 				idType = IdType.UIN;
