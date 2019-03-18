@@ -104,18 +104,7 @@ public class MasterDataValidation {
 
 		try {
 
-			String getIdentityJsonString = Utilities.getJson(utility.getConfigServerFileStorageURL(),
-					utility.getGetRegProcessorIdentityJson());
-			ObjectMapper mapIdentityJsonStringToObject = new ObjectMapper();
-			regProcessorIdentityJson = mapIdentityJsonStringToObject.readValue(getIdentityJsonString,
-					RegistrationProcessorIdentity.class);
-
-			JSONObject demographicJson = JsonUtil.objectMapperReadValue(jsonString, JSONObject.class);
-			demographicIdentity = JsonUtil.getJSONObject(demographicJson,
-					utility.getGetRegProcessorDemographicIdentity());
-
-			if (demographicIdentity == null)
-				throw new IdentityNotFoundException(PlatformErrorMessages.RPR_PIS_IDENTITY_NOT_FOUND.getMessage());
+			demographicIdentity = getDemographicJson(jsonString);
 
 			genderEngName = getParameter(JsonUtil.getJsonValues(demographicIdentity,
 					regProcessorIdentityJson.getIdentity().getGender().getValue()), LANGUAGE_ENG);
@@ -185,6 +174,22 @@ public class MasterDataValidation {
 				"MasterDataValidation::validateMasterData::exit");
 		return isValid;
 
+	}
+
+	private JSONObject getDemographicJson(String jsonString) throws IOException {
+		String getIdentityJsonString = Utilities.getJson(utility.getConfigServerFileStorageURL(),
+				utility.getGetRegProcessorIdentityJson());
+		ObjectMapper mapIdentityJsonStringToObject = new ObjectMapper();
+		regProcessorIdentityJson = mapIdentityJsonStringToObject.readValue(getIdentityJsonString,
+				RegistrationProcessorIdentity.class);
+
+		JSONObject demographicJson = JsonUtil.objectMapperReadValue(jsonString, JSONObject.class);
+		demographicIdentity = JsonUtil.getJSONObject(demographicJson, utility.getGetRegProcessorDemographicIdentity());
+
+		if (demographicIdentity == null)
+			throw new IdentityNotFoundException(PlatformErrorMessages.RPR_PIS_IDENTITY_NOT_FOUND.getMessage());
+		else
+			return demographicIdentity;
 	}
 
 	/**
