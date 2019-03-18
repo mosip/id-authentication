@@ -159,6 +159,12 @@ public class FetchGenderType extends BaseTestCase implements ITest{
 			}
 		}
 
+		// sending request to get request without param
+				if (response == null) {
+					objectData = new JSONObject();
+					response = applicationLibrary.getRequestPathPara(service_URI, objectData);
+					objectData = null;
+				}
 		int statusCode = response.statusCode();
 		logger.info("Status Code is : " + statusCode);
 
