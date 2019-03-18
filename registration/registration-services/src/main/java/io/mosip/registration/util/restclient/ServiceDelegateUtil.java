@@ -76,28 +76,25 @@ public class ServiceDelegateUtil {
 	@Value("${validate_auth_token.service.url:}")
 	private String urlPath;
 
+	@Value("${invalidate_auth_token.service.url:}")
+	private String invalidateUrlPath;
+
 	private static final Logger LOGGER = AppConfig.getLogger(ServiceDelegateUtil.class);
 
 	/**
 	 * Prepare GET request.
 	 *
-	 * @param serviceName
-	 *            service to be invoked
-	 * @param requestParams
-	 *            parameters along with url
-	 * @param hasPathParams
-	 *            the has path params
+	 * @param serviceName   service to be invoked
+	 * @param requestParams parameters along with url
+	 * @param hasPathParams the has path params
 	 * @return Object requiredType of object response Body
-	 * @throws RegBaseCheckedException
-	 *             generalised exception with errorCode and errorMessage
-	 * @throws HttpClientErrorException
-	 *             when client error exception from server
-	 * @throws SocketTimeoutException
-	 *             the socket timeout exception
-	 * @throws HttpServerErrorException
-	 *             when server exception from server
+	 * @throws RegBaseCheckedException  generalised exception with errorCode and
+	 *                                  errorMessage
+	 * @throws HttpClientErrorException when client error exception from server
+	 * @throws SocketTimeoutException   the socket timeout exception
+	 * @throws HttpServerErrorException when server exception from server
 	 */
-	public Object get(String serviceName, Map<String, String> requestParams, boolean hasPathParams,String triggerPoint)
+	public Object get(String serviceName, Map<String, String> requestParams, boolean hasPathParams, String triggerPoint)
 			throws RegBaseCheckedException, HttpClientErrorException, SocketTimeoutException {
 
 		LOGGER.debug(LoggerConstants.LOG_SERVICE_DELEGATE_UTIL_GET, APPLICATION_NAME, APPLICATION_ID,
@@ -112,7 +109,8 @@ public class ServiceDelegateUtil {
 			requestHTTPDTO = prepareGETRequest(requestHTTPDTO, serviceName, requestParams);
 			requestHTTPDTO.setAuthRequired(
 					Boolean.valueOf(environment.getProperty(serviceName + "." + RegistrationConstants.AUTH_REQUIRED)));
-			requestHTTPDTO.setAuthZHeader(environment.getProperty(serviceName + "." + RegistrationConstants.AUTH_HEADER));
+			requestHTTPDTO
+					.setAuthZHeader(environment.getProperty(serviceName + "." + RegistrationConstants.AUTH_HEADER));
 			requestHTTPDTO.setTriggerPoint(triggerPoint);
 
 			// URI creation
@@ -150,23 +148,17 @@ public class ServiceDelegateUtil {
 	/**
 	 * prepare POST request.
 	 *
-	 * @param serviceName
-	 *            service to be invoked
-	 * @param object
-	 *            request type
+	 * @param serviceName service to be invoked
+	 * @param object      request type
 	 * @return Object requiredType of object response Body
-	 * @throws RegBaseCheckedException
-	 *             generalised exception with errorCode and errorMessage
-	 * @throws HttpClientErrorException
-	 *             when client error exception from server
-	 * @throws SocketTimeoutException
-	 *             the socket timeout exception
-	 * @throws ResourceAccessException
-	 *             the resource access exception
-	 * @throws HttpServerErrorException
-	 *             when server exception from server
+	 * @throws RegBaseCheckedException  generalised exception with errorCode and
+	 *                                  errorMessage
+	 * @throws HttpClientErrorException when client error exception from server
+	 * @throws SocketTimeoutException   the socket timeout exception
+	 * @throws ResourceAccessException  the resource access exception
+	 * @throws HttpServerErrorException when server exception from server
 	 */
-	public Object post(String serviceName, Object object,String triggerPoint)
+	public Object post(String serviceName, Object object, String triggerPoint)
 			throws RegBaseCheckedException, HttpClientErrorException, SocketTimeoutException, ResourceAccessException {
 		LOGGER.debug(LoggerConstants.LOG_SERVICE_DELEGATE_UTIL_POST, APPLICATION_NAME, APPLICATION_ID,
 				" post method called");
@@ -202,17 +194,12 @@ public class ServiceDelegateUtil {
 	/**
 	 * Prepare GET request.
 	 *
-	 * @param requestHTTPDTO
-	 *            the request HTTPDTO
-	 * @param serviceName
-	 *            service to be invoked
-	 * @param requestParams
-	 *            params need to add along with url
-	 * @param authHeader
-	 *            the auth header
+	 * @param requestHTTPDTO the request HTTPDTO
+	 * @param serviceName    service to be invoked
+	 * @param requestParams  params need to add along with url
+	 * @param authHeader     the auth header
 	 * @return RequestHTTPDTO requestHTTPDTO with required data
-	 * @throws RegBaseCheckedException
-	 *             the reg base checked exception
+	 * @throws RegBaseCheckedException the reg base checked exception
 	 */
 	private RequestHTTPDTO prepareGETRequest(RequestHTTPDTO requestHTTPDTO, final String serviceName,
 			final Map<String, String> requestParams) throws RegBaseCheckedException {
@@ -229,7 +216,7 @@ public class ServiceDelegateUtil {
 		} catch (ClassNotFoundException classNotFoundException) {
 			LOGGER.error(LoggerConstants.LOG_SERVICE_DELEGATE_UTIL_PREPARE_GET, APPLICATION_NAME, APPLICATION_ID,
 					classNotFoundException.getMessage() + ExceptionUtils.getStackTrace(classNotFoundException));
-		
+
 			throw new RegBaseCheckedException(
 					RegistrationExceptionConstants.REG_CLASS_NOT_FOUND_ERROR_CODE.getErrorCode(),
 					RegistrationExceptionConstants.REG_CLASS_NOT_FOUND_ERROR_CODE.getErrorMessage());
@@ -245,15 +232,11 @@ public class ServiceDelegateUtil {
 	/**
 	 * Prepare POST request.
 	 *
-	 * @param serviceName
-	 *            service to be invoked
-	 * @param object
-	 *            request type
-	 * @param authHeader
-	 *            the auth header
+	 * @param serviceName service to be invoked
+	 * @param object      request type
+	 * @param authHeader  the auth header
 	 * @return RequestHTTPDTO requestHTTPDTO with required data
-	 * @throws RegBaseCheckedException
-	 *             the reg base checked exception
+	 * @throws RegBaseCheckedException the reg base checked exception
 	 */
 	private RequestHTTPDTO preparePOSTRequest(final String serviceName, final Object object)
 			throws RegBaseCheckedException {
@@ -283,12 +266,9 @@ public class ServiceDelegateUtil {
 	/**
 	 * Sets the URI.
 	 *
-	 * @param requestHTTPDTO
-	 *            the request HTTPDTO
-	 * @param requestParams
-	 *            the request params
-	 * @param url
-	 *            the url
+	 * @param requestHTTPDTO the request HTTPDTO
+	 * @param requestParams  the request params
+	 * @param url            the url
 	 */
 	private void setURI(RequestHTTPDTO requestHTTPDTO, Map<String, String> requestParams, String url) {
 		// BuildURIComponent
@@ -310,10 +290,8 @@ public class ServiceDelegateUtil {
 	/**
 	 * Setup of headers
 	 * 
-	 * @param httpHeaders
-	 *            http headers
-	 * @param headers
-	 *            headers
+	 * @param httpHeaders http headers
+	 * @param headers     headers
 	 */
 	private void setHeaders(HttpHeaders httpHeaders, String headers) {
 
@@ -330,12 +308,9 @@ public class ServiceDelegateUtil {
 	}
 
 	/**
-	 * @param requestHTTPDTO
-	 *            create requestedHTTPDTO
-	 * @param serviceName
-	 *            service name to be called
-	 * @param object
-	 *            object to be included in HTTP entities
+	 * @param requestHTTPDTO create requestedHTTPDTO
+	 * @param serviceName    service name to be called
+	 * @param object         object to be included in HTTP entities
 	 * @return
 	 */
 	private RequestHTTPDTO prepareRequest(RequestHTTPDTO requestHTTPDTO, String serviceName, Object object) {
@@ -385,8 +360,8 @@ public class ServiceDelegateUtil {
 	}
 
 	private AuthNRequestDTO prepareAuthNRequestDTO(LoginMode loginMode) {
-		LOGGER.info(LoggerConstants.LOG_SERVICE_DELEGATE_AUTH_DTO, APPLICATION_NAME,
-				APPLICATION_ID, "Preparing AuthNRequestDTO Based on Login Mode");
+		LOGGER.info(LoggerConstants.LOG_SERVICE_DELEGATE_AUTH_DTO, APPLICATION_NAME, APPLICATION_ID,
+				"Preparing AuthNRequestDTO Based on Login Mode");
 
 		AuthNRequestDTO authNRequestDTO = new AuthNRequestDTO();
 		LoginUserDTO loginUserDTO = (LoginUserDTO) ApplicationContext.map().get(RegistrationConstants.USER_DTO);
@@ -415,9 +390,9 @@ public class ServiceDelegateUtil {
 			break;
 		}
 
-		LOGGER.info(LoggerConstants.LOG_SERVICE_DELEGATE_AUTH_DTO, APPLICATION_NAME,
-				APPLICATION_ID, "Completed preparing AuthNRequestDTO Based on Login Mode");
-		
+		LOGGER.info(LoggerConstants.LOG_SERVICE_DELEGATE_AUTH_DTO, APPLICATION_NAME, APPLICATION_ID,
+				"Completed preparing AuthNRequestDTO Based on Login Mode");
+
 		return authNRequestDTO;
 	}
 
@@ -441,15 +416,15 @@ public class ServiceDelegateUtil {
 		requestHTTPDTO.setAuthRequired(false);
 
 		try {
-			String authNURL = environment
-					.getProperty("auth_by_" + loginMode.getCode().toLowerCase() + "." + RegistrationConstants.SERVICE_URL);
-			
+			String authNURL = environment.getProperty(
+					"auth_by_" + loginMode.getCode().toLowerCase() + "." + RegistrationConstants.SERVICE_URL);
+
 			if (loginMode.compareTo(LoginMode.CLIENTID) == 0) {
 				AuthNClientIDDTO authNClientIDDTO = (AuthNClientIDDTO) authNRequestDTO.getRequest();
 				authNURL = authNURL.concat(String.format("?request.appId=%s&request.clientId=%s&request.secretKey=%s",
 						authNClientIDDTO.getAppId(), authNClientIDDTO.getClientId(), authNClientIDDTO.getSecretKey()));
 			}
-			
+
 			requestHTTPDTO.setUri(new URI(authNURL));
 		} catch (URISyntaxException uriSyntaxException) {
 			throw new RegBaseCheckedException(RegistrationConstants.REST_OAUTH_ERROR_CODE,
@@ -472,14 +447,14 @@ public class ServiceDelegateUtil {
 		if (null != responseMap && responseMap.size() > 0) {
 
 			responseHeader = (HttpHeaders) responseMap.get(RegistrationConstants.REST_RESPONSE_HEADERS);
-			
+
 			LinkedHashMap<String, String> responseBody = (LinkedHashMap<String, String>) responseMap
 					.get(RegistrationConstants.REST_RESPONSE_BODY);
 
-			if (loginMode.equals(LoginMode.OTP) && !"Valdiation_Successful".equalsIgnoreCase(responseBody.get("message"))) {
+			if (loginMode.equals(LoginMode.OTP)
+					&& !"Validation_Successful".equalsIgnoreCase(responseBody.get("message"))) {
 				throw new RegBaseUncheckedException("OTP expired", "OTP expired");
 			}
-				
 
 			if (null != responseHeader.get(RegistrationConstants.AUTH_SET_COOKIE)
 					&& null != responseHeader.get(RegistrationConstants.AUTH_SET_COOKIE).get(0)) {
@@ -524,19 +499,12 @@ public class ServiceDelegateUtil {
 				Map<String, Object> responseMap = null;
 				RequestHTTPDTO requestHTTPDTO = new RequestHTTPDTO();
 
-				// setting headers
-				HttpHeaders headers = new HttpHeaders();
-				headers.setContentType(MediaType.APPLICATION_JSON);
-				headers.add("Cookie", cookie);
-				HttpEntity<?> requestEntity = new HttpEntity<>(headers);
-				requestHTTPDTO.setHttpEntity(requestEntity);
-				requestHTTPDTO.setClazz(Object.class);
+				addAuthZToken(cookie, requestHTTPDTO);
 
 				try {
 					requestHTTPDTO.setUri(new URI(urlPath));
 				} catch (URISyntaxException uriSyntaxException) {
-					LOGGER.error(LoggerConstants.LOG_SERVICE_DELEGATE_VALIDATE_TOKEN, APPLICATION_NAME,
-							APPLICATION_ID,
+					LOGGER.error(LoggerConstants.LOG_SERVICE_DELEGATE_VALIDATE_TOKEN, APPLICATION_NAME, APPLICATION_ID,
 							uriSyntaxException.getMessage() + ExceptionUtils.getStackTrace(uriSyntaxException));
 					throw new RegBaseCheckedException(RegistrationConstants.REST_OAUTH_ERROR_CODE,
 							RegistrationConstants.REST_OAUTH_ERROR_MSG);
@@ -551,8 +519,8 @@ public class ServiceDelegateUtil {
 					responseMap = restClientUtil.invoke(requestHTTPDTO);
 				} catch (HttpClientErrorException | HttpServerErrorException | ResourceAccessException
 						| SocketTimeoutException restException) {
-					LOGGER.error(LoggerConstants.LOG_SERVICE_DELEGATE_VALIDATE_TOKEN, APPLICATION_NAME,
-							APPLICATION_ID, restException.getMessage() + ExceptionUtils.getStackTrace(restException));
+					LOGGER.error(LoggerConstants.LOG_SERVICE_DELEGATE_VALIDATE_TOKEN, APPLICATION_NAME, APPLICATION_ID,
+							restException.getMessage() + ExceptionUtils.getStackTrace(restException));
 				}
 
 				if (null != responseMap && responseMap.size() > 0) {
@@ -560,7 +528,8 @@ public class ServiceDelegateUtil {
 				}
 			}
 		} catch (RuntimeException runtimeException) {
-			LOGGER.error(LoggerConstants.LOG_SERVICE_DELEGATE_VALIDATE_TOKEN, APPLICATION_NAME, APPLICATION_ID, "Invalid Token for validation");
+			LOGGER.error(LoggerConstants.LOG_SERVICE_DELEGATE_VALIDATE_TOKEN, APPLICATION_NAME, APPLICATION_ID,
+					"Invalid Token for validation");
 		}
 
 		LOGGER.info(LoggerConstants.LOG_SERVICE_DELEGATE_VALIDATE_TOKEN, APPLICATION_NAME, APPLICATION_ID,
@@ -570,4 +539,60 @@ public class ServiceDelegateUtil {
 
 	}
 
+	/**
+	 * Invalidate token.
+	 *
+	 * @param cookie the cookie
+	 */
+	public void invalidateToken(String cookie) {
+		LOGGER.info(LoggerConstants.LOG_SERVICE_DELEGATE_VALIDATE_TOKEN, APPLICATION_NAME, APPLICATION_ID,
+				" invalidate auth token method calling starts");
+		try {
+			if (cookie != null) {
+				Map<String, Object> responseMap = null;
+				RequestHTTPDTO requestHTTPDTO = new RequestHTTPDTO();
+
+				addAuthZToken(cookie, requestHTTPDTO);
+
+				requestHTTPDTO.setUri(new URI(invalidateUrlPath));
+
+				requestHTTPDTO.setHttpMethod(HttpMethod.POST);
+
+				// set simple client http request
+				setTimeout(requestHTTPDTO);
+
+				responseMap = restClientUtil.invoke(requestHTTPDTO);
+
+				if (null != responseMap && !responseMap.isEmpty()) {
+					LOGGER.info(LoggerConstants.LOG_SERVICE_DELEGATE_VALIDATE_TOKEN, APPLICATION_NAME, APPLICATION_ID,
+							"Token invalidated successfully");
+				}
+			}
+		} catch (HttpClientErrorException | HttpServerErrorException | ResourceAccessException | SocketTimeoutException
+				| URISyntaxException restException) {
+			LOGGER.error(LoggerConstants.LOG_SERVICE_DELEGATE_VALIDATE_TOKEN, APPLICATION_NAME, APPLICATION_ID,
+					restException.getMessage() + ExceptionUtils.getStackTrace(restException));
+		} catch (RuntimeException runtimeException) {
+			LOGGER.error(LoggerConstants.LOG_SERVICE_DELEGATE_VALIDATE_TOKEN, APPLICATION_NAME, APPLICATION_ID,
+					"Invalid Token for validation");
+		}
+		LOGGER.info(LoggerConstants.LOG_SERVICE_DELEGATE_VALIDATE_TOKEN, APPLICATION_NAME, APPLICATION_ID,
+				" invalidate auth token method calling ends");
+	}
+
+	/**
+	 * Add AuthZ Token to the HTTP Header.
+	 *
+	 * @param cookie the cookie
+	 * @param requestHTTPDTO the request HTTPDTO
+	 */
+	private void addAuthZToken(String cookie, RequestHTTPDTO requestHTTPDTO) {
+		// setting headers
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON);
+		headers.add("Cookie", cookie);
+		HttpEntity<?> requestEntity = new HttpEntity<>(headers);
+		requestHTTPDTO.setHttpEntity(requestEntity);
+		requestHTTPDTO.setClazz(Object.class);
+	}
 }
