@@ -75,11 +75,6 @@
 		</dependency>
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
-			<artifactId>kernel-crypto-jce</artifactId>
-			<version>${kernel.core.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-cryptomanager-service</artifactId>
 			<version>${kernel.core.version}</version>
 		</dependency>
@@ -165,7 +160,11 @@
 			<version>${powermock.version}</version>
 			<scope>test</scope>
 		</dependency>
-
+		<dependency>
+			<groupId>org.bitbucket.b_c</groupId>
+			<artifactId>jose4j</artifactId>
+			<version>0.6.4</version>
+		</dependency>
 	</dependencies>
 
 	<repositories>

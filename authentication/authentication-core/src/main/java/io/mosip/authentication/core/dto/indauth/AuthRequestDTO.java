@@ -1,7 +1,5 @@
 package io.mosip.authentication.core.dto.indauth;
 
-import java.util.List;
-
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -16,26 +14,38 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 public class AuthRequestDTO extends BaseAuthRequestDTO {
 
-	private String idvId;
+	/** The value for requestedAuth*/
+	private AuthTypeDTO requestedAuth;
 
-	private String idvIdType;
+	/** The value for transactionID*/
+	private String transactionID;
 
-	private AuthTypeDTO authType;
-
-	private String tspID;
-
-	private String txnID;
-
-	private String reqTime;
-
-	private AuthSecureDTO key;
-
-	private List<MatchInfo> matchInfo;
-
-	private List<PinInfo> pinInfo;
-
-	private List<BioInfo> bioInfo;
-
+	/** The value for requestTime*/
+	private String requestTime;
+	
+	/** The value for request*/
 	private RequestDTO request;
+
+	/** The value for consentObtained*/
+	private boolean consentObtained;
+	
+
+	/** The value for individualId*/
+	private String individualId;
+	
+
+	/** The value for individualIdType*/
+	private String individualIdType;
+	
+	/** The value for requestHMAC*/
+	private String requestHMAC;
+	
+	/** The value for keyIndex*/
+	private String keyIndex;
+	
+	/** The value for requestSessionKey*/
+	private String requestSessionKey;
+	
+	
 
 }

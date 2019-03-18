@@ -14,12 +14,12 @@ public class TSPAuthenticationFailedExceptionTest {
 	
 	@Test(expected=TSPAuthenticationFailedException.class)
 	public void TSPAuthenticationFailedExceptionEnum() throws TSPAuthenticationFailedException {
-		throw new TSPAuthenticationFailedException(IdAuthenticationErrorConstants.OTP_NOT_PRESENT);
+		throw new TSPAuthenticationFailedException(IdAuthenticationErrorConstants.OTP_GENERATION_FAILED);
 	}
 	
 	@Test(expected=TSPAuthenticationFailedException.class)
 	public void TSPAuthenticationFailedExceptionEnumThrowable() throws TSPAuthenticationFailedException {
-		throw new TSPAuthenticationFailedException(IdAuthenticationErrorConstants.OTP_NOT_PRESENT, null);
+		throw new TSPAuthenticationFailedException(IdAuthenticationErrorConstants.OTP_GENERATION_FAILED, null);
 	}
 
 }

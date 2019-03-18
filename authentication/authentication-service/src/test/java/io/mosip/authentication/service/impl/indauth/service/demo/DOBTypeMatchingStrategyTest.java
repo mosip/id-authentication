@@ -69,7 +69,7 @@ public class DOBTypeMatchingStrategyTest {
 	 * 
 	 * @throws IdAuthenticationBusinessException
 	 */
-	@Test(expected = IdAuthenticationBusinessException.class)
+	@Test
 	public void TestInvalidExactMatchingStrategyFunction() throws IdAuthenticationBusinessException {
 
 		MatchFunction matchFunction = DOBTypeMatchingStrategy.EXACT.getMatchFunction();
