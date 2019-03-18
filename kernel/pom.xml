@@ -30,6 +30,7 @@
 		<maven.javadoc.version>3.0.1</maven.javadoc.version>
 		<maven-shade-plugin.version>2.3</maven-shade-plugin.version>
 		<javax.interceptor.version>1.2</javax.interceptor.version>
+		<jackson.datatype.version>2.9.8</jackson.datatype.version>
 
 		<!-- Core -->
 		<spring.version>5.0.4.RELEASE</spring.version>
