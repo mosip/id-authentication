@@ -19,7 +19,7 @@ public interface EventBusManager<T, U, V> {
 	 * @return The EventBus instance
 	 */
 	public T getEventBus(Object clazz, String clusterManagerUrl);
-	
+
 	/**
 	 * @param clazz
 	 * @param clusterManagerUrl
