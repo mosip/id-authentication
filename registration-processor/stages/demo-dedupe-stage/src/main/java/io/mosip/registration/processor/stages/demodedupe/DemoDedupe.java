@@ -8,7 +8,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.Iterator;
 import java.util.List;
 
@@ -184,7 +186,7 @@ public class DemoDedupe {
 			}
 		}
 		// change to return validateBiometric(duplicateUin); once the auth is fixed
-		return biometricValidation.validateBiometric(duplicateUin);
+		return biometricValidation.validateBiometric(duplicateUin,regId);
 	}
 
 	/**

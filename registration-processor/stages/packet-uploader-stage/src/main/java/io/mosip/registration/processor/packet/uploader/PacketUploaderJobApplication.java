@@ -20,7 +20,8 @@ public class PacketUploaderJobApplication {
 		configApplicationContext.scan("io.mosip.registration.processor.packet.uploader.config",
 				"io.mosip.registration.processor.packet.manager.config",
 				"io.mosip.registration.processor.status.config", "io.mosip.registration.processor.rest.client.config",
-				"io.mosip.registration.processor.core.kernel.beans");
+				"io.mosip.registration.processor.core.kernel.beans",
+				"io.mosip.registration.processor.core.config");
 		configApplicationContext.refresh();
 
 		PacketUploaderStage packetUploaderStage = configApplicationContext.getBean(PacketUploaderStage.class);

@@ -38,7 +38,10 @@ public enum IdRepoConstants {
 	APPLICATION_ID("mosip.kernel.idrepo.application.id"),
 	
 	/** The mosip primary language. */
-	MOSIP_PRIMARY_LANGUAGE("mosip.primary-language");
+	MOSIP_PRIMARY_LANGUAGE("mosip.primary-language"),
+	
+	/** The json schema file name. */
+	JSON_SCHEMA_FILE_NAME("mosip.kernel.idrepo.json-schema-fileName");
 	
 	/** The value. */
 	private final String value;

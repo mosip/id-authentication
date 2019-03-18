@@ -15,6 +15,7 @@ import org.springframework.web.context.request.WebRequest;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.preregistration.core.common.dto.ExceptionJSONInfoDTO;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
+import io.mosip.preregistration.notification.exception.ConfigFileNotFoundException;
 import io.mosip.preregistration.notification.exception.IllegalParamException;
 import io.mosip.preregistration.notification.exception.MandatoryFieldException;
 /**
@@ -72,7 +73,25 @@ public class NotificationExceptionHandler {
 	 */
 	@ExceptionHandler(IllegalParamException.class)
 	public ResponseEntity<MainResponseDTO<?>> recException(final IllegalParamException e, WebRequest request) {
-		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getMessage());
+		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getErrorText());
+		MainResponseDTO<?> errorRes = new MainResponseDTO<>();
+		errorRes.setErr(errorDetails);
+		errorRes.setStatus(falseStatus);
+		errorRes.setResTime(DateUtils.formatDate(new Date(), dateTimeFormat));
+		return new ResponseEntity<>(errorRes, HttpStatus.OK);
+	}
+	
+	
+	/**
+	 * @param e
+	 *            pass the exception
+	 * @param request
+	 *            pass the request
+	 * @return response for ConfigFileNotFoundException
+	 */
+	@ExceptionHandler(ConfigFileNotFoundException.class)
+	public ResponseEntity<MainResponseDTO<?>> configFileNotFoundException(final ConfigFileNotFoundException e, WebRequest request) {
+		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getErrorText());
 		MainResponseDTO<?> errorRes = new MainResponseDTO<>();
 		errorRes.setErr(errorDetails);
 		errorRes.setStatus(falseStatus);

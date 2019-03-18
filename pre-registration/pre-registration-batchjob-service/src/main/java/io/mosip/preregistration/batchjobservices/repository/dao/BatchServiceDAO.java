@@ -23,7 +23,7 @@ import io.mosip.preregistration.batchjobservices.entity.DocumentEntityConsumed;
 import io.mosip.preregistration.batchjobservices.entity.ProcessedPreRegEntity;
 import io.mosip.preregistration.batchjobservices.entity.RegistrationBookingEntity;
 import io.mosip.preregistration.batchjobservices.entity.RegistrationBookingEntityConsumed;
-import io.mosip.preregistration.batchjobservices.exceptions.NoPreIdAvailableException;
+import io.mosip.preregistration.batchjobservices.exception.NoPreIdAvailableException;
 import io.mosip.preregistration.batchjobservices.repository.DemographicConsumedRepository;
 import io.mosip.preregistration.batchjobservices.repository.DemographicRepository;
 import io.mosip.preregistration.batchjobservices.repository.DocumentConsumedRepository;

@@ -1,7 +1,6 @@
 package io.mosip.registration.processor.print.service.dto;
 
 import java.io.Serializable;
-import java.util.Date;
 
 import lombok.Data;
 
