@@ -1,5 +1,5 @@
 package io.mosip.registration.processor.core.util;
-	
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -33,13 +33,13 @@ import io.mosip.registration.processor.core.util.exception.InstantanceCreationEx
  * @since 0.0.1
  */
 public class JsonUtil {
-	
+
 	/** The Constant LANGUAGE. */
 	private static final String LANGUAGE = "language";
 
 	/** The Constant VALUE. */
 	private static final String VALUE = "value";
-	
+
 	/**
 	 * Instantiates a new json util.
 	 */
@@ -50,12 +50,17 @@ public class JsonUtil {
 	/**
 	 * This method converts InputStream to JavaObject.
 	 *
-	 * @param stream            The stream that needs to be converted
-	 * @param clazz            The class to which conversion is required
+	 * @param stream
+	 *            The stream that needs to be converted
+	 * @param clazz
+	 *            The class to which conversion is required
 	 * @return The converted Java object
-	 * @throws UnsupportedEncodingException the unsupported encoding exception
-	 * @throws JsonSyntaxException the json syntax exception
-	 * @throws JsonIOException the json IO exception
+	 * @throws UnsupportedEncodingException
+	 *             the unsupported encoding exception
+	 * @throws JsonSyntaxException
+	 *             the json syntax exception
+	 * @throws JsonIOException
+	 *             the json IO exception
 	 */
 	public static Object inputStreamtoJavaObject(InputStream stream, Class<?> clazz)
 			throws UnsupportedEncodingException {
@@ -70,8 +75,24 @@ public class JsonUtil {
 	}
 
 	/**
-	 * Gets the JSON object.
-	 *
+	 * This method returns the Json Object as value from identity.json
+	 * object(JSONObject).
+	 *  jsonObject -> then identity demographic json object
+	 *   key -> demographic json label name 
+	 *   EX:- 
+	 *   demographicIdentity : 
+	 *   { 
+	 *   "identity" : {
+	 *        "fullName" : [ {
+	 *                        "language" : "eng", "value" : "Taleev Aalam" 
+	 *                        }, 
+	 *                        { "language": "ara", "value" : "Taleev Aalam"
+	 *                         } 
+	 *                      ]
+	 *  }
+	 * 
+	 * method call :- getJSONObject(demographicIdentity,identity)
+	 * 
 	 * @param jsonObject
 	 *            the json object
 	 * @param key
@@ -84,8 +105,19 @@ public class JsonUtil {
 	}
 
 	/**
-	 * Gets the JSON array.
-	 *
+	 * This method returns JSONArray from JSONObject.
+	 * argument 'jsonObject' -> demographic identity json as JSONObject.
+	 * argument key -> label name of demographic identity json.
+	 * Ex:- 
+	 * "identity" : { 
+	 *               "fullName" : [
+	 *                { "language" : "eng", "value" : "Taleev
+	 *                     Aalam" 
+	 *                 },
+	 *                 { "language" : "ara", "value" : "Taleev Aalam" 
+	 *                 } ] 
+	 *              }
+	 * 
 	 * @param jsonObject
 	 *            the json object
 	 * @param key
@@ -118,7 +150,7 @@ public class JsonUtil {
 	}
 
 	/**
-	 * Gets the JSON object.
+	 * Iterates the JSONArray and returns JSONObject for given index.
 	 *
 	 * @param jsonObject
 	 *            the json object
@@ -126,20 +158,31 @@ public class JsonUtil {
 	 *            the key
 	 * @return the JSON object
 	 */
-	public static JSONObject getJSONObjectFromArray(JSONArray jsonObject, int key) {
+	private static JSONObject getJSONObjectFromArray(JSONArray jsonObject, int key) {
 		LinkedHashMap identity = (LinkedHashMap) jsonObject.get(key);
 		return identity != null ? new JSONObject(identity) : null;
 	}
 
+	/**
+	 * Object mapper read value.
+	 *This method maps the jsonString to particular type
+	 * @param <T> the generic type
+	 * @param jsonString the json string
+	 * @param clazz the clazz
+	 * @return the t
+	 * @throws JsonParseException the json parse exception
+	 * @throws JsonMappingException the json mapping exception
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
 	public static <T> T objectMapperReadValue(String jsonString, Class<?> clazz)
 			throws JsonParseException, JsonMappingException, IOException {
 		ObjectMapper objectMapper = new ObjectMapper();
 		return (T) objectMapper.readValue(jsonString, clazz);
 	}
-	
+
 	/**
 	 * Gets the json values.
-	 *
+	 *Returns JsonValue[] java array for the particular key in demographic json.
 	 * @param identityKey
 	 *            the identity key
 	 * @return the json values
@@ -154,7 +197,6 @@ public class JsonUtil {
 				: null;
 
 	}
-	
 
 	/**
 	 * Map json node to java object.
