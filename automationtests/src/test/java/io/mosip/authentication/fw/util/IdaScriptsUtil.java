@@ -164,7 +164,6 @@ public class IdaScriptsUtil {
 					if (responseJson.contains("Invalid UIN")) {
 						fos.flush();
 						fos.close();
-						System.out.println("******************Check********************");
 						return false;
 					} else {
 						Reporter.log("<b><u>Actual Response Content: </u></b>(EndPointUrl: " + urlPath + ") <pre>"
@@ -551,7 +550,7 @@ public class IdaScriptsUtil {
 		 * Saving TestNG reports to be published
 		 */
 		String currentModule = ctx.getCurrentXmlTest().getClasses().get(0).getName().split("\\.")[2];
-		objReportUtil.moveReport(currentModule);
+		//objReportUtil.moveReport(currentModule);
 		exitDemoAppRunner();
 	}
 	

@@ -36,10 +36,32 @@ public class AssertKernel {
 			ArrayList<String> listOfElementToRemove) throws JsonProcessingException, IOException, ParseException {
 		JSONObject expectedResponseBody = (JSONObject) new JSONParser().parse(expectedResponse.asString());
 		JSONObject actualResponseBody = actualResponse;
-		
-			expectedResponseBody = AssertKernel.removeElementFromBody(expectedResponseBody, listOfElementToRemove);
-			actualResponseBody = AssertKernel.removeElementFromBody(actualResponse, listOfElementToRemove);
-		
+
+		expectedResponseBody = AssertKernel.removeElementFromBody(expectedResponseBody, listOfElementToRemove);
+		actualResponseBody = AssertKernel.removeElementFromBody(actualResponse, listOfElementToRemove);
+
+		return jsonComparison(expectedResponseBody, actualResponseBody);
+
+	}
+/**
+ * @author Arjun chandramohan
+ * Created for id repo assertion
+ * @param expectedResponse
+ * @param actualResponse
+ * @param listOfElementToRemove
+ * @return
+ * @throws JsonProcessingException
+ * @throws IOException
+ * @throws ParseException
+ */
+	public boolean assertIdRepo(Object expectedResponse, Object actualResponse, ArrayList<String> listOfElementToRemove)
+			throws JsonProcessingException, IOException, ParseException {
+		JSONObject expectedResponseBody = (JSONObject) new JSONParser().parse(expectedResponse.toString());
+		JSONObject actualResponseBody = (JSONObject) new JSONParser().parse(actualResponse.toString());
+
+		expectedResponseBody = AssertKernel.removeElementFromBody(expectedResponseBody, listOfElementToRemove);
+		actualResponseBody = AssertKernel.removeElementFromBody(actualResponseBody, listOfElementToRemove);
+
 		return jsonComparison(expectedResponseBody, actualResponseBody);
 
 	}
@@ -91,11 +113,12 @@ public class AssertKernel {
 	 * @return
 	 * @throws ParseException
 	 */
-	public static JSONObject removeElementFromBody(JSONObject responce, ArrayList<String> listOfElementToRemove) throws ParseException {
+	public static JSONObject removeElementFromBody(JSONObject responce, ArrayList<String> listOfElementToRemove)
+			throws ParseException {
 		for (String elementToRemove : listOfElementToRemove) {
 			responce.remove(elementToRemove);
 		}
-		
+
 		return responce;
 	}
 

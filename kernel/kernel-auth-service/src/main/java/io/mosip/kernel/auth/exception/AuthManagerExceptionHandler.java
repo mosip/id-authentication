@@ -17,10 +17,10 @@ import io.mosip.kernel.core.exception.ServiceError;
  * @author M1049825
  *
  */
-//@RestControllerAdvice
+@RestControllerAdvice
 public class AuthManagerExceptionHandler {
 	
-	//@ExceptionHandler(value = { Exception.class, RuntimeException.class })
+	@ExceptionHandler(value = { Exception.class, RuntimeException.class })
 	public ResponseEntity<ErrorResponse<ServiceError>> defaultErrorHandler(HttpServletRequest request, Exception e) {
 		ErrorResponse<ServiceError> errorResponse = new ErrorResponse<>();
 		ServiceError error = new ServiceError("500", e.getMessage());
@@ -29,17 +29,17 @@ public class AuthManagerExceptionHandler {
 		return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 	
-	//@ExceptionHandler(value = { AuthManagerException.class })
+	@ExceptionHandler(value = { AuthManagerException.class })
 	public ResponseEntity<ErrorResponse<ServiceError>> customErrorMessage(HttpServletRequest request, AuthManagerException e) {
 		ErrorResponse<ServiceError> errorResponse = new ErrorResponse<>();
 		ServiceError error = new ServiceError(e.getErrorCode(), e.getMessage());
 		errorResponse.getErrors().add(error);
 		errorResponse.setStatus(HttpStatus.OK.value());
-		return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+		return new ResponseEntity<>(errorResponse, HttpStatus.OK);
 	}
 	
-	//@ExceptionHandler(value = { AuthManagerErrorListException.class })
-	public ResponseEntity<ErrorResponse<ServiceError>> customErrorMessageList(HttpServletRequest request, AuthManagerErrorListException e) {
+	@ExceptionHandler(value = { AuthManagerServiceException.class })
+	public ResponseEntity<ErrorResponse<ServiceError>> customErrorMessageList(HttpServletRequest request, AuthManagerServiceException e) {
 		ErrorResponse<ServiceError> errorResponse = new ErrorResponse<>();
 		errorResponse.getErrors().addAll(e.getList());
 		errorResponse.setStatus(HttpStatus.OK.value());

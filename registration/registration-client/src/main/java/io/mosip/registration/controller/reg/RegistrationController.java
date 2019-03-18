@@ -360,10 +360,8 @@ public class RegistrationController extends BaseController {
 					.setGeoLatitudeLoc(Double.parseDouble(registrationCenter.getRegistrationCenterLatitude()));
 			registrationMetaDataDTO
 					.setGeoLongitudeLoc(Double.parseDouble(registrationCenter.getRegistrationCenterLongitude()));
-		} else {
-			registrationMetaDataDTO.setGeoLatitudeLoc(0.0);
-			registrationMetaDataDTO.setGeoLongitudeLoc(0.0);
-		}
+		} 
+		
 		Map<String, Object> applicationContextMap = ApplicationContext.map();
 
 		registrationMetaDataDTO

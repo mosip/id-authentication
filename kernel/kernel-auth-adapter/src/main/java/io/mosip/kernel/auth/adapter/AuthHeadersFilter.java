@@ -21,12 +21,11 @@ import java.io.IOException;
  * @since 1.0.0
  **********************************************************************************************************************/
 
-@Component
 public class AuthHeadersFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-		String origin = request.getHeader("Origin");
+        String origin = request.getHeader("Origin");
 		if (origin != null && !origin.isEmpty()) {
 			response.setHeader("Access-Control-Allow-Origin", origin);
 		}
@@ -39,5 +38,5 @@ public class AuthHeadersFilter extends OncePerRequestFilter {
 		if (!"OPTIONS".equalsIgnoreCase(request.getMethod())) {
 			filterChain.doFilter(request, response);
 		}
-}
+    }
 }

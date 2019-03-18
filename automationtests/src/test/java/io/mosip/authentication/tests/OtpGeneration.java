@@ -57,12 +57,14 @@ public class OtpGeneration extends IdaScriptsUtil implements ITest{
 	protected static String testCaseName = "";
 	private TestDataProcessor objTestDataProcessor = new TestDataProcessor();
 	private AuditValidUtil objAuditValidUtil = new AuditValidUtil();
+	private String TESTDATA_PATH="ida/TestData/Otp/OtpGeneration/";
+	private String TESTDATA_FILENAME="testdata.ida.Otp.OtpGeneration.mapping.yml";
 
-	@Parameters({ "testDatPath" , "testDataFileName" ,"testType"})
+	@Parameters({"testType"})
 	@BeforeClass
-	public void setConfigurations(String testDatPath,String testDataFileName,String testType) {
-		objRunConfig.setConfig(testDatPath,testDataFileName,testType);
-		objTestDataProcessor.initateTestDataProcess(testDataFileName,testDatPath,"ida");	
+	public void setConfigurations(String testType) {
+		objRunConfig.setConfig(TESTDATA_PATH,TESTDATA_FILENAME,testType);
+		objTestDataProcessor.initateTestDataProcess(TESTDATA_FILENAME,TESTDATA_PATH,"ida");	
 	}
 	
 	@BeforeMethod

@@ -56,5 +56,10 @@
 			<version>${lombok.version}</version>
 			<scope>compile</scope>
 		</dependency>
+		<dependency>
+			<groupId>io.mosip.kernel</groupId>
+			<artifactId>kernel-core</artifactId>
+			<version>${project.version}</version>
+		</dependency>
 	</dependencies>
 </project>

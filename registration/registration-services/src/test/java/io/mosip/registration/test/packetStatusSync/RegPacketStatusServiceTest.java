@@ -181,19 +181,18 @@ public class RegPacketStatusServiceTest {
 	public void syncPacketTest() throws HttpClientErrorException, ResourceAccessException, SocketTimeoutException, RegBaseCheckedException, JsonProcessingException, URISyntaxException {
 		List<Registration> packetsToBeSynched=new ArrayList<>();
 		Registration reg=new Registration();
+		reg.setId("123456");
 		packetsToBeSynched.add(reg);
 		Mockito.when(registrationDAO.getPacketsToBeSynched(Mockito.anyList())).thenReturn(packetsToBeSynched);
-		Mockito.when(packetSynchService.syncPacketsToServer(Mockito.anyObject(),Mockito.anyString())).thenReturn(new ResponseDTO());
+		ResponseDTO responseDTO = new ResponseDTO();
+		SuccessResponseDTO successResponseDTO=new SuccessResponseDTO();
+		Map<String, Object> otherAttributes = new HashMap<>();
+		otherAttributes.put("123456", "Success");
+		successResponseDTO.setOtherAttributes(otherAttributes);
+		responseDTO.setSuccessResponseDTO(successResponseDTO);
+		Mockito.when(packetSynchService.syncPacketsToServer(Mockito.anyObject(),Mockito.anyString())).thenReturn(responseDTO);
 		Mockito.when(packetSynchService.updateSyncStatus(Mockito.anyList())).thenReturn(true);
 		assertEquals("Success", packetStatusService.syncPacket("System").getSuccessResponseDTO().getMessage());
 	}
 	
-	@SuppressWarnings("unchecked")
-	@Test
-	public void syncPacketNegativeTest() {
-		List<Registration> packetsToBeSynched=new ArrayList<>();
-		Mockito.when(registrationDAO.getPacketsToBeSynched(Mockito.anyList())).thenReturn(packetsToBeSynched);
-		assertEquals("Success", packetStatusService.syncPacket("System").getSuccessResponseDTO().getMessage());
-	}
-
 }

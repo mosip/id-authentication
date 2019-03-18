@@ -49,9 +49,16 @@ public class MosipEnvironment implements EnvironmentAware {
 	
 	private String uinGetDetailsUrl = "idrepo.api.getuindetails";
 	
+	private String authSlidingWindowExp = "auth.token.sliding.window.exp";
+	
 	public String getUinGetDetailsUrl()
 	{
 		return environment.getProperty(uinGetDetailsUrl);
+	}
+	
+	public Integer getAuthSlidingWindowExp()
+	{
+		return Integer.valueOf(environment.getProperty(authSlidingWindowExp));
 	}
 	
 	public String getPrimaryLanguage() {

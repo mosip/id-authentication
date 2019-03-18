@@ -14,7 +14,7 @@ public class BiometricException {
 
 	private String type;
 	private String missingBiometric;
-	private String exceptionDescription;
+	private String reason;
 	private String exceptionType;
 
 }

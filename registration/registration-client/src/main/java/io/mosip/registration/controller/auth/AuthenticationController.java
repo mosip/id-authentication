@@ -535,7 +535,7 @@ public class AuthenticationController extends BaseController implements Initiali
 		case RegistrationConstants.PWORD:
 			enablePWD();
 			break;
-		case RegistrationConstants.FINGERPRINT:
+		case RegistrationConstants.FINGERPRINT_UPPERCASE:
 			enableFingerPrint();
 			break;
 		case RegistrationConstants.IRIS:
@@ -912,7 +912,7 @@ public class AuthenticationController extends BaseController implements Initiali
 			validatePwd();
 			userAuthenticationTypeListValidation.remove(0);
 			break;
-		case RegistrationConstants.FINGERPRINT:
+		case RegistrationConstants.FINGERPRINT_UPPERCASE:
 			validateFingerprint();
 			break;
 		case RegistrationConstants.IRIS:

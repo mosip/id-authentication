@@ -173,11 +173,11 @@ public class DataProvider {
 	}
 
 	private static BiometricExceptionDTO buildBiometricExceptionDTO(String biometricType, String missingBiometric,
-			String exceptionDescription, String exceptionType) {
+			String reason, String exceptionType) {
 		BiometricExceptionDTO biometricExceptionDTO = new BiometricExceptionDTO();
 		biometricExceptionDTO.setBiometricType(biometricType);
 		biometricExceptionDTO.setMissingBiometric(missingBiometric);
-		biometricExceptionDTO.setExceptionDescription(exceptionDescription);
+		biometricExceptionDTO.setReason(reason);
 		biometricExceptionDTO.setExceptionType(exceptionType);
 		return biometricExceptionDTO;
 	}

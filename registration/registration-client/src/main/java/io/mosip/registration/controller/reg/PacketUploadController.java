@@ -42,11 +42,13 @@ import javafx.collections.ObservableList;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.concurrent.WorkerStateEvent;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -89,6 +91,9 @@ public class PacketUploadController extends BaseController implements Initializa
 
 	@Autowired
 	private PacketExportController packetExportController;
+
+	@FXML
+	private CheckBox selectAllCheckBox;
 
 	private ObservableList<PacketStatusDTO> list;
 
@@ -197,7 +202,8 @@ public class PacketUploadController extends BaseController implements Initializa
 												RegistrationClientStatusCode.UPLOADED_SUCCESSFULLY.getCode());
 										synchedPacket.setPacketServerStatus(
 												RegistrationClientStatusCode.UPLOAD_SUCCESS_STATUS.getCode());
-										synchedPacket.setPacketServerStatus(response.getSuccessResponseDTO().getMessage());
+										synchedPacket
+												.setPacketServerStatus(response.getSuccessResponseDTO().getMessage());
 										packetUploadList.add(synchedPacket);
 										tableMap.put(synchedPacket.getFileName(),
 												RegistrationConstants.PACKET_UPLOAD_SUCCESS);
@@ -405,4 +411,11 @@ public class PacketUploadController extends BaseController implements Initializa
 		});
 
 	}
+
+	public void selectAllCheckBox(ActionEvent e) {
+		selectedPackets.clear();
+			list.forEach(checkedPacket -> {
+				checkedPacket.setStatus(new SimpleBooleanProperty(((CheckBox) e.getSource()).isSelected()));
+			});
+		}
 }
