@@ -36,9 +36,12 @@ public interface DeviceRepository extends BaseRepository<Device, String> {
 	 * @param machineId
 	 *            id of machine
 	 * @param lastUpdated
-	 *            timeStamp
+	 *            timeStamp - last updated time
+	 * @param currentTimeStamp
+	 *            - currentTimestamp
 	 * @return list of {@link Device}
 	 */
 	@Query(value = "SELECT dm.id, dm.name, dm.mac_address, dm.serial_num, dm.ip_address, dm.dspec_id, dm.lang_code, dm.is_active, dm.cr_by, dm.cr_dtimes, dm.upd_by, dm.upd_dtimes, dm.is_deleted, dm.del_dtimes, dm.validity_end_dtimes from master.device_master dm where dm.id in(select distinct rcd.device_id from master.reg_center_device rcd where rcd.regcntr_id =?1) and ((dm.cr_dtimes > ?2 and dm.cr_dtimes <=?3 )or (dm.upd_dtimes > ?2 and dm.upd_dtimes <=?3) or (dm.del_dtimes > ?2 and dm.del_dtimes <=?3))", nativeQuery = true)
-	List<Device> findLatestDevicesByRegCenterId(String regCenterId, LocalDateTime lastUpdated,LocalDateTime currentTimeStamp);
+	List<Device> findLatestDevicesByRegCenterId(String regCenterId, LocalDateTime lastUpdated,
+			LocalDateTime currentTimeStamp);
 }
