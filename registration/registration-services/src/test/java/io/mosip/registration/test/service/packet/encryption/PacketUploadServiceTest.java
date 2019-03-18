@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -31,6 +32,7 @@ import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.ResourceAccessException;
 
 import io.mosip.registration.dao.RegistrationDAO;
+import io.mosip.registration.dto.PacketStatusDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.entity.Registration;
 import io.mosip.registration.exception.RegBaseCheckedException;
@@ -93,7 +95,7 @@ public class PacketUploadServiceTest {
 		requestHTTPDTO.setUri(
 				new URI("http://104.211.209.102:8080/v0.1/registration-processor/packet-receiver/registrationpackets"));
 		requestHTTPDTO.setHttpMethod(HttpMethod.POST);
-		Mockito.when(serviceDelegateUtil.post(Mockito.anyString(), Mockito.anyMap())).thenReturn(respObj);
+		Mockito.when(serviceDelegateUtil.post(Mockito.anyString(), Mockito.anyMap(),Mockito.anyString())).thenReturn(respObj);
 
 		assertEquals("Success", packetUploadServiceImpl.pushPacket(f).getSuccessResponseDTO().getCode());
 	}
@@ -104,11 +106,11 @@ public class PacketUploadServiceTest {
 		LinkedMultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
 		LinkedHashMap<String, Object> respObj1 = new LinkedHashMap<>();
 		LinkedHashMap<String, String> msg = new LinkedHashMap<>();
-		List<LinkedHashMap<String, String>> lis=new ArrayList<>();
+		List<LinkedHashMap<String, String>> errList = new ArrayList<>();
 		msg.put("message", "error");
-		lis.add(msg);
+		errList.add(msg);
 		respObj1.put("response", null);
-		respObj1.put("errors", lis);
+		respObj1.put("errors", errList);
 		File f = new File("");
 		map.add("file", new FileSystemResource(f));
 		HttpHeaders headers = new HttpHeaders();
@@ -121,16 +123,17 @@ public class PacketUploadServiceTest {
 		requestHTTPDTO.setUri(
 				new URI("http://104.211.209.102:8080/v0.1/registration-processor/packet-receiver/registrationpackets"));
 		requestHTTPDTO.setHttpMethod(HttpMethod.POST);
-		Mockito.when(serviceDelegateUtil.post(Mockito.anyString(), Mockito.anyMap())).thenReturn(respObj1);
+		Mockito.when(serviceDelegateUtil.post(Mockito.anyString(), Mockito.anyMap(),Mockito.anyString())).thenReturn(respObj1);
 
 		assertEquals("ERROR", packetUploadServiceImpl.pushPacket(f).getErrorResponseDTOs().get(0).getCode());
 	}
 
 	@Test
 	public void testUpdateStatus() {
-		List<Registration> packetList = new ArrayList<>();
+		List<PacketStatusDTO> packetList = new ArrayList<>();
 		Registration registration = new Registration();
-		packetList.add(registration);
+		PacketStatusDTO dto= new PacketStatusDTO();
+		packetList.add(dto);
 		Mockito.when(registrationDAO.updateRegStatus(Mockito.anyObject())).thenReturn(registration);
 		assertTrue(packetUploadServiceImpl.updateStatus(packetList));
 	}
@@ -140,7 +143,7 @@ public class PacketUploadServiceTest {
 			HttpServerErrorException, ResourceAccessException, SocketTimeoutException {
 		File f = new File("");
 		Object respObj = new Object();
-		Mockito.when(serviceDelegateUtil.post(Mockito.anyString(), Mockito.anyMap()))
+		Mockito.when(serviceDelegateUtil.post(Mockito.anyString(), Mockito.anyMap(),Mockito.anyString()))
 				.thenThrow(new HttpClientErrorException(HttpStatus.ACCEPTED));
 		assertEquals(respObj, packetUploadServiceImpl.pushPacket(f));
 	}
@@ -150,7 +153,7 @@ public class PacketUploadServiceTest {
 			HttpServerErrorException, ResourceAccessException, SocketTimeoutException {
 		File f = new File("");
 		Object respObj = new Object();
-		Mockito.when(serviceDelegateUtil.post(Mockito.anyString(), Mockito.anyMap())).thenThrow(new RuntimeException());
+		Mockito.when(serviceDelegateUtil.post(Mockito.anyString(), Mockito.anyMap(),Mockito.anyString())).thenThrow(new RuntimeException());
 		assertEquals(respObj, packetUploadServiceImpl.pushPacket(f));
 	}
 
@@ -162,13 +165,15 @@ public class PacketUploadServiceTest {
 		registration.setId("123456789");
 		registration.setAckFilename("..//registration-services/src/test/resources/123456789_Ack.png");
 		registration.setUploadCount((short) 0);
+		registration.setClientStatusCode("PUSHED");
+		registration.setFileUploadStatus("S");
 		regList.add(registration);
 
 		LinkedHashMap<String, Object> respObj = new LinkedHashMap<>();
 		respObj.put("response", "Success");
 		respObj.put("error", null);
 		//respObj = "PACKET_UPLOADED_TO_VIRUS_SCAN";
-		Mockito.when(serviceDelegateUtil.post(Mockito.anyString(), Mockito.anyMap())).thenReturn(respObj);
+		Mockito.when(serviceDelegateUtil.post(Mockito.anyString(), Mockito.anyMap(),Mockito.anyString())).thenReturn(respObj);
 		Mockito.when(registrationDAO.getRegistrationById(Mockito.anyString(), Mockito.anyString()))
 				.thenReturn(registration);
 		List<Registration> packetList = new ArrayList<>();
@@ -189,11 +194,12 @@ public class PacketUploadServiceTest {
 		registration.setId("123456789");
 		registration.setAckFilename("..//registration-services/src/test/resources/123456789_Ack.png");
 		registration.setUploadCount((short) 0);
+		registration.setFileUploadStatus("E");
 		regList.add(registration);
-
+		
 		Object respObj = new Object();
 		respObj = "PACKET_FAILED_TO_UPLOAD";
-		Mockito.when(serviceDelegateUtil.post(Mockito.anyString(), Mockito.anyMap())).thenReturn(respObj);
+		Mockito.when(serviceDelegateUtil.post(Mockito.anyString(), Mockito.anyMap(),Mockito.anyString())).thenReturn(respObj);
 		Mockito.when(registrationDAO.getRegistrationById(Mockito.anyString(), Mockito.anyString()))
 				.thenReturn(registration);
 		List<Registration> packetList = new ArrayList<>();
@@ -233,7 +239,7 @@ public class PacketUploadServiceTest {
 
 		File f = new File("");
 		Object respObj = new Object();
-		Mockito.when(serviceDelegateUtil.post(Mockito.anyString(), Mockito.anyMap())).thenThrow(new RuntimeException());
+		Mockito.when(serviceDelegateUtil.post(Mockito.anyString(), Mockito.anyMap(),Mockito.anyString())).thenThrow(new RuntimeException());
 		packetUploadServiceImpl.uploadPacket("12345");
 		assertEquals(respObj, packetUploadServiceImpl.pushPacket(f));
 		assertEquals("E", registration.getFileUploadStatus());
@@ -254,7 +260,7 @@ public class PacketUploadServiceTest {
 
 		File f = new File("");
 		Object respObj = new Object();
-		Mockito.when(serviceDelegateUtil.post(Mockito.anyString(), Mockito.anyMap()))
+		Mockito.when(serviceDelegateUtil.post(Mockito.anyString(), Mockito.anyMap(),Mockito.anyString()))
 				.thenThrow(new HttpClientErrorException(HttpStatus.ACCEPTED));
 		packetUploadServiceImpl.uploadPacket("12345");
 		assertEquals(respObj, packetUploadServiceImpl.pushPacket(f));
@@ -273,13 +279,15 @@ public class PacketUploadServiceTest {
 		registration.setId("123456789");
 		registration.setAckFilename("..//registration-services/src/test/resources/123456789_Ack.png");
 		registration.setUploadCount((short) 0);
+		registration.setClientStatusCode("PUSHED");
+		registration.setFileUploadStatus("S");
 		regList.add(registration);
-
+		
 		LinkedHashMap<String, Object> respObj = new LinkedHashMap<>();
 		respObj.put("response", "Success");
 		respObj.put("error", null);
 		//respObj = "PACKET_UPLOADED_TO_VIRUS_SCAN";
-		Mockito.when(serviceDelegateUtil.post(Mockito.anyString(), Mockito.anyMap())).thenReturn(respObj);
+		Mockito.when(serviceDelegateUtil.post(Mockito.anyString(), Mockito.anyMap(),Mockito.anyString())).thenReturn(respObj);
 		Mockito.when(registrationDAO.get(Mockito.anyList())).thenReturn(regList);
 		List<Registration> packetList = new ArrayList<>();
 		Registration registration1 = new Registration();
@@ -303,25 +311,25 @@ public class PacketUploadServiceTest {
 		registration.setId("123456789");
 		registration.setAckFilename("..//registration-services/src/test/resources/123456789_Ack.png");
 		registration.setUploadCount((short) 0);
+		registration.setClientStatusCode("PUSHED");
+		registration.setFileUploadStatus("S");
 		regList.add(registration);
 
-		LinkedMultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
-		LinkedHashMap<String, Object> respObj1 = new LinkedHashMap<>();
+		LinkedHashMap<String, Object> respObj = new LinkedHashMap<>();
 		LinkedHashMap<String, String> msg = new LinkedHashMap<>();
-		List<LinkedHashMap<String, String>> lis=new ArrayList<>();
-		msg.put("message", "error");
-		lis.add(msg);
-		respObj1.put("response", null);
-		respObj1.put("errors", lis);
+		msg.put("message", "duplicate");
+		respObj.put("response", null);
+		respObj.put("error", msg);
 		//respObj = "PACKET_UPLOADED_TO_VIRUS_SCAN";
-		Mockito.when(serviceDelegateUtil.post(Mockito.anyString(), Mockito.anyMap())).thenReturn(respObj1);
+		Mockito.when(serviceDelegateUtil.post(Mockito.anyString(), Mockito.anyMap(),Mockito.anyString())).thenReturn(respObj);
 		Mockito.when(registrationDAO.get(Mockito.anyList())).thenReturn(regList);
 		List<Registration> packetList = new ArrayList<>();
 		Registration registration1 = new Registration();
 		packetList.add(registration);
 		Mockito.when(registrationDAO.updateRegStatus(Mockito.anyObject())).thenReturn(registration1);
 		packetUploadServiceImpl.uploadEODPackets(regIds);
-		assertEquals("E", registration.getFileUploadStatus());
+		assertEquals("PUSHED", registration.getClientStatusCode());
+		assertEquals("S", registration.getFileUploadStatus());
 
 	}
 	
@@ -337,11 +345,12 @@ public class PacketUploadServiceTest {
 		registration.setId("123456789");
 		registration.setAckFilename("..//registration-services/src/test/resources/123456789_Ack.png");
 		registration.setUploadCount((short) 0);
+		registration.setFileUploadStatus("E");
 		regList.add(registration);
 
 		LinkedHashMap<String, Object> respObj = new LinkedHashMap<>();
 		respObj.put("response", null);
-		Mockito.when(serviceDelegateUtil.post(Mockito.anyString(), Mockito.anyMap())).thenReturn(respObj);
+		Mockito.when(serviceDelegateUtil.post(Mockito.anyString(), Mockito.anyMap(),Mockito.anyString())).thenReturn(respObj);
 		Mockito.when(registrationDAO.get(Mockito.anyList())).thenReturn(regList);
 		List<Registration> packetList = new ArrayList<>();
 		Registration registration1 = new Registration();
@@ -357,7 +366,7 @@ public class PacketUploadServiceTest {
 			HttpServerErrorException, ResourceAccessException, SocketTimeoutException {
 		File f = new File("");
 		Object respObj = new Object();
-		Mockito.when(serviceDelegateUtil.post(Mockito.anyString(), Mockito.anyMap()))
+		Mockito.when(serviceDelegateUtil.post(Mockito.anyString(), Mockito.anyMap(),Mockito.anyString()))
 				.thenThrow(new HttpServerErrorException(HttpStatus.ACCEPTED));
 		assertEquals(respObj, packetUploadServiceImpl.pushPacket(f));
 	}

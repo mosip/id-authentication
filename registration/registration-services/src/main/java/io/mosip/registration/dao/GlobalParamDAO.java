@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import io.mosip.registration.entity.GlobalParam;
+import io.mosip.registration.entity.id.GlobalParamId;
 
 /**
  * DAO class for GlobalParam
@@ -23,7 +24,7 @@ public interface GlobalParamDAO {
 
 	void saveAll(List<GlobalParam> list);
 
-	GlobalParam get(String name);
+	GlobalParam get(GlobalParamId globalParamId);
 
 	/**
 	 * Get All Global params
@@ -33,5 +34,7 @@ public interface GlobalParamDAO {
 	 * @return list of global params
 	 */
 	List<GlobalParam> getAll(List<String> names);
+
+	List<GlobalParam> getAllEntries();
 
 }

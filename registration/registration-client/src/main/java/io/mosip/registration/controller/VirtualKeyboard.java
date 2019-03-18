@@ -275,7 +275,7 @@ public class VirtualKeyboard {
 					targetNode = target.get();
 				} else {
 					targetNode = view().getScene().getFocusOwner();
-					if(!targetNode.getId().contains("Local"))
+					if(target!=null && !targetNode.getId().contains("Local"))
 						targetNode=null;
 				}
 

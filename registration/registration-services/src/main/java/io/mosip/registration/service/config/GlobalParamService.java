@@ -23,8 +23,10 @@ public interface GlobalParamService {
 	/**
 	 * Get Global params details from server
 	 * 
+	 * @param is
+	 *            job
 	 * @return response
 	 */
-	ResponseDTO synchConfigData();
+	ResponseDTO synchConfigData(boolean isJob);
 
 }

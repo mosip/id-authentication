@@ -45,7 +45,7 @@ public class ReRegistrationServiceImpl implements ReRegistrationService {
 		for (Registration reRegisterPacket : reRegisterPackets) {
 			PacketStatusDTO packetStatusDTO = new PacketStatusDTO();
 			packetStatusDTO.setFileName(reRegisterPacket.getId());
-			packetStatusDTO.setSourcePath(reRegisterPacket.getAckFilename());
+			packetStatusDTO.setPacketPath(reRegisterPacket.getAckFilename());
 			uiPacketDto.add(packetStatusDTO);
 		}
 		LOGGER.info("RE_REGISTRATION_SERVICE_IMPL", APPLICATION_NAME, APPLICATION_ID,
@@ -61,9 +61,9 @@ public class ReRegistrationServiceImpl implements ReRegistrationService {
 		LOGGER.info("RE_REGISTRATION_SERVICE_IMPL", APPLICATION_NAME, APPLICATION_ID,
 				"Update the registration status of the packet in the table");
 		for (Map.Entry<String, String> reRegistration : reRegistrationStatus.entrySet()) {
-			Registration registration = new Registration();
-			registration.setId(reRegistration.getKey());
-			registration.setClientStatusCode(RegistrationClientStatusCode.RE_REGISTER.getCode());
+			PacketStatusDTO registration = new PacketStatusDTO();
+			registration.setFileName(reRegistration.getKey());
+			registration.setPacketClientStatus(RegistrationClientStatusCode.RE_REGISTER.getCode());
 			registration.setClientStatusComments("Re-Register-" + reRegistration.getValue());
 			registrationDAO.updateRegStatus(registration);
 		}

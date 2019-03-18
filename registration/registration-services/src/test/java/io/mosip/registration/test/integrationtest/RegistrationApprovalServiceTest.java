@@ -134,7 +134,7 @@ public class RegistrationApprovalServiceTest {
 	 * 
 	 * 
 	 */
-	@Test
+	/*@Test
 	public void getEnrollmentByStatusAckEmptyInputTest() {
 
 		List<String> roles = new ArrayList<>();
@@ -148,7 +148,7 @@ public class RegistrationApprovalServiceTest {
 		list = registrationApprovalServiceImpl.getEnrollmentByStatus(status);
 		assertFalse(list.size() > 0);
 
-	}
+	}*/
 
 	/**
 	 * 

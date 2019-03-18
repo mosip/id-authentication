@@ -91,4 +91,22 @@ public interface RegistrationRepository extends BaseRepository<Registration, Str
 	 * @return list of registrations
 	 */
 	List<Registration> findByCrDtimeBeforeAndClientStatusCode(Timestamp crDtimes, String clientStatus);
+	
+	/**
+	 * fetches all the Registration records which is having the given server status
+	 * codes
+	 * 
+	 * @param statusCodes
+	 * @return
+	 */
+	List<Registration> findByServerStatusCodeIn(List<String> statusCodes);
+
+	/**
+	 * fetches all the Registration records which is not having the given server
+	 * status codes
+	 * 
+	 * @param statusCodes
+	 * @return
+	 */
+	List<Registration> findByServerStatusCodeNotIn(List<String> statusCodes);
 }

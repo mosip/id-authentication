@@ -5,7 +5,9 @@ import static org.junit.Assert.assertNotNull;
 import java.awt.image.BufferedImage;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.imageio.ImageIO;
 
@@ -19,6 +21,8 @@ import org.mockito.junit.MockitoRule;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import io.mosip.kernel.core.exception.IOException;
+import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.context.ApplicationContext;
 
 public class DocumentScannerServiceTest {
 
@@ -93,7 +97,10 @@ public class DocumentScannerServiceTest {
 	}
 
 	private void intializeValues() {
-		ReflectionTestUtils.setField(documentScannerServiceImpl, "scannerDpi", 300);
+		Map<String,Object> appMap = new HashMap<>();
+		appMap.put(RegistrationConstants.DOC_SCAN_DPI, 300);
+		ApplicationContext.getInstance().setApplicationMap(appMap);
+		
 		ReflectionTestUtils.setField(documentScannerServiceImpl, "scannerhost", "192.168.43.253");
 		ReflectionTestUtils.setField(documentScannerServiceImpl, "scannerPort", 6566);
 		ReflectionTestUtils.setField(documentScannerServiceImpl, "scannerImgType", "jpg");

@@ -22,7 +22,8 @@ public interface RegistrationCenterTypeRepository extends BaseRepository<Registr
 	 * 
 	 * @param machineId
 	 *            id of the machine
-	 * @return list of {@link RegistrationCenterType}
+	 * @return list of {@link RegistrationCenterType} - list of registration center
+	 *         type
 	 */
 	@Query(value = "SELECT distinct regtype.code, regtype.name, regtype.descr, regtype.lang_code, regtype.is_active, regtype.cr_by, regtype.cr_dtimes, regtype.upd_by, regtype.upd_dtimes, regtype.is_deleted, regtype.del_dtimes FROM master.reg_center_type regtype , master.registration_center rc,master.reg_center_machine_device rcmd where regtype.code= rc.cntrtyp_code and rc.id=rcmd.regcntr_id and rcmd.machine_id= ?1", nativeQuery = true)
 	List<RegistrationCenterType> findRegistrationCenterTypeByMachineId(String machineId);
@@ -34,10 +35,12 @@ public interface RegistrationCenterTypeRepository extends BaseRepository<Registr
 	 * @param machineId
 	 *            id of the machine
 	 * @param lastUpdated
-	 *            timeStamp
-	 * @return list of {@link RegistrationCenterType}
+	 *            timeStamp - last updated timestamp
+	 * @param currentTimeStamp
+	 *            - current timestamp
+	 * @return list of {@link RegistrationCenterType} - list of registration center type
 	 */
 	@Query(value = "SELECT distinct regtype.code, regtype.name, regtype.descr, regtype.lang_code, regtype.is_active, regtype.cr_by, regtype.cr_dtimes, regtype.upd_by, regtype.upd_dtimes, regtype.is_deleted, regtype.del_dtimes FROM master.reg_center_type regtype , master.registration_center rc,master.reg_center_machine_device rcmd where regtype.code= rc.cntrtyp_code and rc.id=rcmd.regcntr_id and rcmd.machine_id= ?1 and ((regtype.cr_dtimes > ?2 and regtype.cr_dtimes <=?3) or (regtype.upd_dtimes > ?2 and regtype.upd_dtimes<=?3) or (regtype.del_dtimes > ?2 and regtype.del_dtimes <=?3)) ", nativeQuery = true)
 	List<RegistrationCenterType> findLatestRegistrationCenterTypeByMachineId(String machineId,
-			LocalDateTime lastUpdated,LocalDateTime currentTimeStamp);
+			LocalDateTime lastUpdated, LocalDateTime currentTimeStamp);
 }

@@ -287,6 +287,14 @@
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-transliteration-icu4j</artifactId>
 		</dependency>
+		<dependency>
+				<groupId>io.mosip.kernel</groupId>
+				<artifactId>kernel-applicanttype-api</artifactId>
+			</dependency>
+		<dependency>
+			<groupId>io.mosip.kernel</groupId>
+			<artifactId>kernel-cbeffutil-api</artifactId>
+		</dependency>
 	</dependencies>
 
 	<repositories>
