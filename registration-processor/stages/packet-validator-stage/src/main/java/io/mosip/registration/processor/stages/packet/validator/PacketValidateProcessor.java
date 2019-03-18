@@ -20,8 +20,8 @@ import org.springframework.web.client.HttpServerErrorException;
 import io.mosip.kernel.core.fsadapter.exception.FSAdapterException;
 import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
 import io.mosip.kernel.core.jsonvalidator.model.ValidationReport;
+import io.mosip.kernel.core.jsonvalidator.spi.JsonValidator;
 import io.mosip.kernel.core.logger.spi.Logger;
-import io.mosip.kernel.jsonvalidator.impl.JsonValidatorImpl;
 import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.code.ApiName;
@@ -110,7 +110,7 @@ public class PacketValidateProcessor {
 	private RegistrationProcessorRestClientService<Object> restClientService;
 
 	@Autowired
-	JsonValidatorImpl jsonValidatorImpl;
+	JsonValidator jsonValidator;
 
 	@Autowired
 	private Utilities utility;
@@ -159,7 +159,7 @@ public class PacketValidateProcessor {
 				byte[] bytearray = IOUtils.toByteArray(idJsonStream);
 				String jsonString = new String(bytearray);
 
-				ValidationReport isSchemaValidated = jsonValidatorImpl.validateJson(jsonString,
+				ValidationReport isSchemaValidated = jsonValidator.validateJson(jsonString,
 						"mosip-identity-json-schema.json");
 
 				InputStream documentInfoStream = null;

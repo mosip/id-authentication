@@ -34,4 +34,6 @@ public final class StatusMessage {
 
 	public static final String POSTALCODE_NOT_AVAILABLE = "Postal Code is not available in Master DB";
 
+	public static final String MASTERDATA_VALIDATION_FAILED = "Master data validation failed";
+
 }

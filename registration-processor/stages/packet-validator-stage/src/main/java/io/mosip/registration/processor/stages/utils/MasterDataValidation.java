@@ -14,8 +14,6 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 
@@ -126,15 +124,10 @@ public class MasterDataValidation {
 			postalcode = JsonUtil.getJSONValue(demographicIdentity,
 					regProcessorIdentityJson.getIdentity().getPostalCode().getValue());
 
-		} catch (JsonParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (JsonMappingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					"", PlatformErrorMessages.STRUCTURAL_VALIDATION_FAILED.getMessage() + e.getMessage());
+			this.registrationStatusDto.setStatusComment(StatusMessage.MASTERDATA_VALIDATION_FAILED);
 		}
 
 		String[] elements = env.getProperty("registration.processor.idjson.attributes").split(",");
