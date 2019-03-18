@@ -27,6 +27,7 @@ public interface DocumentCategoryRepository extends BaseRepository<DocumentCateg
 	 *            is class of type DocumentCategory
 	 * @return list of {@link DocumentCategory}
 	 */
+	@Query("FROM DocumentCategory where (isDeleted is null OR isDeleted = false) AND isActive = true")
 	List<DocumentCategory> findAllByIsDeletedFalseOrIsDeletedIsNull(Class<DocumentCategory> entityClass);
 
 	/**
@@ -36,7 +37,7 @@ public interface DocumentCategoryRepository extends BaseRepository<DocumentCateg
 	 *            is the language code present in database
 	 * @return list of {@link DocumentCategory}
 	 */
-	@Query("FROM DocumentCategory WHERE langCode =?1 AND (isDeleted is null OR isDeleted = false)")
+	@Query("FROM DocumentCategory WHERE langCode =?1 AND (isDeleted is null OR isDeleted = false) AND isActive = true")
 	List<DocumentCategory> findAllByLangCodeAndIsDeletedFalseOrIsDeletedIsNull(String langCode);
 
 	/**
@@ -48,7 +49,7 @@ public interface DocumentCategoryRepository extends BaseRepository<DocumentCateg
 	 *            is the language code present in database
 	 * @return object of {@link DocumentCategory}
 	 */
-	@Query("FROM DocumentCategory WHERE code =?1 AND langCode =?2 AND (isDeleted is null OR isDeleted = false)")
+	@Query("FROM DocumentCategory WHERE code =?1 AND langCode =?2 AND (isDeleted is null OR isDeleted = false) and isActive = true")
 	DocumentCategory findByCodeAndLangCodeAndIsDeletedFalseOrIsDeletedIsNull(String code, String langCode);
 
 	/**
