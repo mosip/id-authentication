@@ -461,6 +461,8 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 				"Fetching the records started");
 
 		ResponseDTO responseDTO = new ResponseDTO();
+		if(getGlobalConfigValueOf(RegistrationConstants.PRE_REG_DELETION_CONFIGURED_DAYS)!=null) {
+		
 		// Set the Date 15 days before the current date
 		Calendar startCal = Calendar.getInstance();
 		startCal.add(Calendar.DATE,
@@ -470,6 +472,7 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 
 		// fetch the records that needs to be deleted
 		List<PreRegistrationList> preRegList = preRegistrationDAO.fetchRecordsToBeDeleted(startDate);
+		
 
 		LOGGER.info(
 				"REGISTRATION - PRE_REGISTRATION_DATA_DELETION_RECORD_FETCH_ENDED - PRE_REGISTRATION_DATA_SYNC_SERVICE_IMPL",
@@ -477,6 +480,7 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 				"Fetching the records ended");
 
 		deletePreRegRecords(responseDTO, preRegList);
+		}
 
 		return responseDTO;
 	}

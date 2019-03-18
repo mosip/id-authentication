@@ -751,6 +751,8 @@ public class RegistrationConstants {
 	public static final String DOB_DOCUMENT = "POB";
 
 	public static final List<String> PACKET_STATUS = Arrays.asList("APPROVED", "REJECTED", "RE_REGISTER_APPROVED");
+	
+	public static final List<String> PACKET_STATUS_UPLOAD = Arrays.asList("APPROVED", "REJECTED", "RESEND","SYNCED");
 
 	public static final List<String> PACKET_EXPORT_STATUS = Arrays.asList("EXPORTED", "SYNCED");
 
@@ -1064,7 +1066,7 @@ public class RegistrationConstants {
 	public static final String AUDIT_LOG_DELETION_CONFIGURED_DAYS = "mosip.registration.AUDIT_LOG_DELETION_CONFIGURED_DAYS";
 	public static final String SYNC_TRANSACTION_NO_OF_DAYS_LIMIT = "mosip.registration.SYNC_TRANSACTION_NO_OF_DAYS_LIMIT";
 	public static final String REG_DELETION_CONFIGURED_DAYS = "mosip.registration.REG_DELETION_CONFIGURED_DAYS";
-	public static final String PRE_REG_DELETION_CONFIGURED_DAYS = "mosip.registration.PRE_REG_DELETION_CONFIGURED_DAYS";
+	public static final String PRE_REG_DELETION_CONFIGURED_DAYS = "mosip.registration.pre_reg_deletion_configured_days";
 
 	// Audit Constants
 	public static final String AUDIT_LOGS_DELETION_SUCESS_MSG = "Audit Logs Deleted Successfully";

@@ -152,7 +152,7 @@ public class PacketSynchServiceImpl extends BaseService implements PacketSynchSe
 				APPLICATION_ID, "Fetch the packets that needs to be synched to the server");
 		List<PacketStatusDTO> idsToBeSynched = new ArrayList<>();
 		List<Registration> packetsToBeSynched = syncRegistrationDAO
-				.getPacketsToBeSynched(RegistrationConstants.PACKET_STATUS);
+				.getPacketsToBeSynched(RegistrationConstants.PACKET_EXPORT_STATUS);
 		packetsToBeSynched.forEach(reg -> {
 			PacketStatusDTO packetStatusDTO = new PacketStatusDTO();
 			packetStatusDTO.setFileName(reg.getId());

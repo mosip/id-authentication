@@ -22,12 +22,13 @@
             <Label layoutX="530.0" layoutY="2.0" styleClass="mainHeader" text="%uploadpacket" />
          </children>
       </AnchorPane>
-      <TableView fx:id="table" layoutX="52.0" layoutY="66.0" prefHeight="400.0" prefWidth="162.0" styleClass="packetUploadTable">
+      <TableView fx:id="table" layoutX="58.0" layoutY="75.0" prefHeight="400.0" prefWidth="162.0" styleClass="packetUploadTable">
         <columns>
             <TableColumn fx:id="checkBoxColumn" prefWidth="50.0" />
           <TableColumn fx:id="fileNameColumn" prefWidth="105.0" styleClass="fileNameColumn" text="%files" />
         </columns>
       </TableView>
-      <ProgressIndicator fx:id="progressIndicator" layoutX="400.0" layoutY="20.0" prefHeight="109.0" prefWidth="90.0" progress="0.0" visible="false" />	
+      <ProgressIndicator fx:id="progressIndicator" layoutX="400.0" layoutY="20.0" prefHeight="109.0" prefWidth="90.0" progress="0.0" visible="false" />
+      <CheckBox fx:id="selectAllCheckBox" layoutX="86.0" layoutY="80.0" mnemonicParsing="false" onAction="#selectAllCheckBox" />	
    </children>
 </AnchorPane>
