@@ -707,24 +707,22 @@ public class SyncDataIntegrationTest {
 		mockMvc.perform(get("/globalconfigs")).andExpect(status().isOk());
 	}
 	
-	@Test
-	public void testGlobalConfigExceptionTest() throws Exception {
-		ReflectionTestUtils.setField(syncConfigDetailsService, "globalConfigFileName", null);
-		when(restTemplate.getForObject(Mockito.anyString(), Mockito.any()))
-				.thenReturn(JSON_REGISTRATION_CONFIG_RESPONSE);
-
-		when(restTemplate.getForObject(Mockito.anyString(), Mockito.any())).thenReturn(JSON_GLOBAL_CONFIG_RESPONSE);
-		mockMvc.perform(get("/globalconfigs")).andExpect(status().isInternalServerError());
-	}
-	@Test
-	public void testGlobalConfigServiceExceptionTest() throws Exception {
-		ReflectionTestUtils.setField(syncConfigDetailsService, "globalConfigFileName",  "mosip.kernel.syncdata.global-config-file");
-		when(restTemplate.getForObject(Mockito.anyString(), Mockito.any()))
-				.thenThrow(HttpServerErrorException.class);
-
-		
-		mockMvc.perform(get("/globalconfigs")).andExpect(status().isInternalServerError());
-	}
+//	@Test
+//	public void testGlobalConfigExceptionTest() throws Exception {
+//		ReflectionTestUtils.setField(syncConfigDetailsService, "globalConfigFileName", null);
+//		when(restTemplate.getForObject(Mockito.anyString(), Mockito.any()))
+//				.thenReturn(JSON_REGISTRATION_CONFIG_RESPONSE);
+//
+//		when(restTemplate.getForObject(Mockito.anyString(), Mockito.any())).thenReturn(JSON_GLOBAL_CONFIG_RESPONSE);
+//		mockMvc.perform(get("/globalconfigs")).andExpect(status().isInternalServerError());
+//	}
+//	@Test
+//	public void testGlobalConfigServiceExceptionTest() throws Exception {
+//		ReflectionTestUtils.setField(syncConfigDetailsService, "globalConfigFileName",  "mosip.kernel.syncdata.global-config-file");
+//		when(restTemplate.getForObject(Mockito.anyString(), Mockito.any()))
+//				.thenThrow(HttpServerErrorException.class);
+//		mockMvc.perform(get("/globalconfigs")).andExpect(status().isInternalServerError());
+//	}
 
 	@Test
 	public void testRegistrationConfig() throws Exception {
