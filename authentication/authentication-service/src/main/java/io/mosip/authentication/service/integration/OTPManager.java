@@ -32,6 +32,7 @@ import io.mosip.kernel.core.logger.spi.Logger;
  * OTPManager handling with OTP-Generation and OTP-Validation.
  * 
  * @author Rakesh Roshan
+ * @author Dinesh Karuppiah.T
  */
 @Component
 public class OTPManager {
@@ -76,7 +77,8 @@ public class OTPManager {
 					otpGeneratorRequestDto, OtpGeneratorResponseDto.class);
 			otpGeneratorResponsetDto = restHelper.requestSync(restRequestDTO);
 			response = otpGeneratorResponsetDto.getOtp();
-			logger.info(SESSION_ID, this.getClass().getSimpleName(), "generateOTP", "otpGeneratorResponsetDto " + response);
+			logger.info(SESSION_ID, this.getClass().getSimpleName(), "generateOTP",
+					"otpGeneratorResponsetDto " + response);
 
 		} catch (RestServiceException e) {
 
@@ -99,8 +101,7 @@ public class OTPManager {
 			logger.error(SESSION_ID, this.getClass().getSimpleName(), e.getErrorCode(), e.getErrorText());
 
 		} catch (IDDataValidationException e) {
-			throw new IdAuthenticationBusinessException(
-					IdAuthenticationErrorConstants.OTP_GENERATION_FAILED, e);
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.OTP_GENERATION_FAILED, e);
 		}
 		return response;
 	}
@@ -128,7 +129,8 @@ public class OTPManager {
 					.map(res -> String.valueOf(res.get("status")))
 					.filter(status -> status.equalsIgnoreCase(STATUS_SUCCESS)).isPresent();
 		} catch (RestServiceException e) {
-			logger.error(SESSION_ID, this.getClass().getSimpleName(), e.getErrorCode() + e.getErrorText(), e.getResponseBodyAsString().orElse(""));
+			logger.error(SESSION_ID, this.getClass().getSimpleName(), e.getErrorCode() + e.getErrorText(),
+					e.getResponseBodyAsString().orElse(""));
 
 			Optional<Object> responseBody = e.getResponseBody();
 			if (responseBody.isPresent()) {
@@ -145,8 +147,7 @@ public class OTPManager {
 			}
 		} catch (IDDataValidationException e) {
 			logger.error(SESSION_ID, this.getClass().getSimpleName(), "Inside validateOtp", null);
-			throw new IdAuthenticationBusinessException(
-					IdAuthenticationErrorConstants.DATA_VALIDATION_FAILED, e);
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.DATA_VALIDATION_FAILED, e);
 		}
 		return isValidOtp;
 	}
@@ -155,9 +156,8 @@ public class OTPManager {
 		Optional<String> errorCode = e.getResponseBodyAsString().flatMap(this::getErrorCode);
 		// Do not throw server error for OTP not generated, throw invalid OTP error
 		// instead
-		//FIXME change errorcode
-		if (errorCode.filter(
-				code -> code.equals(IdAuthenticationErrorConstants.OTP_GENERATION_FAILED.getErrorCode()))
+		// FIXME change errorcode
+		if (errorCode.filter(code -> code.equals(IdAuthenticationErrorConstants.OTP_GENERATION_FAILED.getErrorCode()))
 				.isPresent()) {
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_OTP);
 		}

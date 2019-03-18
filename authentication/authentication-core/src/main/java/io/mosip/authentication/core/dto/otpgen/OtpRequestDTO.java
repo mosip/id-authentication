@@ -34,8 +34,4 @@ public class OtpRequestDTO {
 
 	private ChannelDTO otpChannel;
 
-	private String partnerID;
-
-	private String mispLicenseKey;
-
 }

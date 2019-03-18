@@ -101,10 +101,10 @@ public class OTPControllerTest {
 		assertTrue(violations.isEmpty());
 
 		Mockito.when(result.hasErrors()).thenReturn(hasError);
-		Mockito.when(otpService.generateOtp(otpRequestDto)).thenReturn(otpResponseDTO);
-		OtpResponseDTO expactedresponse = otpController.generateOTP(otpRequestDto, result);
+		Mockito.when(otpService.generateOtp(Mockito.any(), Mockito.any())).thenReturn(otpResponseDTO);
+		OtpResponseDTO expactedresponse = otpController.generateOTP(otpRequestDto, result, "TEST0000001",
+				"TEST0000001");
 
-//		assertEquals(otpResponseDTO.getStatus(), expactedresponse.getStatus());
 	}
 
 	@Ignore
@@ -119,7 +119,7 @@ public class OTPControllerTest {
 		Set<ConstraintViolation<OtpRequestDTO>> violations = validator.validate(otpRequestDto);
 		assertTrue(violations.isEmpty());
 		Mockito.when(result.hasErrors()).thenReturn(hasError);
-		otpController.generateOTP(otpRequestDto, result);
+		otpController.generateOTP(otpRequestDto, result, "TEST0000001", "TEST0000001");
 		assertEquals(true, result.hasErrors());
 	}
 
@@ -133,7 +133,7 @@ public class OTPControllerTest {
 		Set<ConstraintViolation<OtpRequestDTO>> violations = validator.validate(otpRequestDto);
 		assertEquals(violations.size(), 1);
 		Mockito.when(result.hasErrors()).thenReturn(hasError);
-		otpController.generateOTP(otpRequestDto, result);
+		otpController.generateOTP(otpRequestDto, result, "TEST0000001", "TEST0000001");
 		assertEquals(true, result.hasErrors());
 	}
 
@@ -155,9 +155,10 @@ public class OTPControllerTest {
 		assertTrue(violations.isEmpty());
 
 		Mockito.when(result.hasErrors()).thenReturn(hasError);
-		Mockito.when(otpService.generateOtp(otpRequestDto)).thenThrow(idAuthenticationBusinessException);
-		Mockito.when(otpController.generateOTP(otpRequestDto, result)).thenThrow(idAuthenticationAppException);
-		otpController.generateOTP(otpRequestDto, result);
+		Mockito.when(otpService.generateOtp(otpRequestDto, "TEST0000001")).thenThrow(idAuthenticationBusinessException);
+		Mockito.when(otpController.generateOTP(otpRequestDto, result, "TEST0000001", "TEST0000001"))
+				.thenThrow(idAuthenticationAppException);
+		otpController.generateOTP(otpRequestDto, result, "TEST0000001", "TEST0000001");
 	}
 
 	@Test(expected = IdAuthenticationAppException.class)
@@ -178,8 +179,9 @@ public class OTPControllerTest {
 		assertTrue(violations.isEmpty());
 
 		Mockito.when(result.hasErrors()).thenReturn(hasError);
-		Mockito.when(otpService.generateOtp(otpRequestDto)).thenThrow(idAuthenticationBusinessException);
-		Mockito.when(otpController.generateOTP(otpRequestDto, result)).thenThrow(idAuthenticationAppException);
+		Mockito.when(otpService.generateOtp(otpRequestDto, "TEST0000001")).thenThrow(idAuthenticationBusinessException);
+		Mockito.when(otpController.generateOTP(otpRequestDto, result, "TEST0000001", "TEST0000001"))
+				.thenThrow(idAuthenticationAppException);
 
 	}
 
@@ -187,7 +189,7 @@ public class OTPControllerTest {
 	public void testGenerateOtpDataValidationException() throws IdAuthenticationAppException {
 		Errors errors = new BeanPropertyBindingResult(OtpRequestDTO.class, "OtpRequestDTO");
 		errors.reject("errorCode");
-		otpController.generateOTP(new OtpRequestDTO(), errors);
+		otpController.generateOTP(new OtpRequestDTO(), errors, "TEST0000001", "TEST0000001");
 	}
 
 	// =========================================================
@@ -196,7 +198,6 @@ public class OTPControllerTest {
 
 	private OtpRequestDTO getOtpRequestDTO() {
 		OtpRequestDTO otpRequestDto = new OtpRequestDTO();
-		otpRequestDto.setPartnerID("1234567890");
 		// otpRequestDto.setRequestTime(new Date());
 		otpRequestDto.setTransactionID("1234567890");
 		// otpRequestDto.setVer("1.0");

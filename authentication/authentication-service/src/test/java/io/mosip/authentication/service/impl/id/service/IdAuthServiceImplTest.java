@@ -93,16 +93,6 @@ public class IdAuthServiceImplTest {
 		ReflectionTestUtils.setField(idAuthServiceImpl, "restFactory", restFactory);
 		ReflectionTestUtils.setField(idAuthServiceImpl, "vidRepository", vidRepository);
 
-		/*
-		 * ReflectionTestUtils.setField(idAuthServiceImplMock, "idRepoService",
-		 * idRepoService); ReflectionTestUtils.setField(idAuthServiceImplMock,
-		 * "auditFactory", auditFactory);
-		 * ReflectionTestUtils.setField(idAuthServiceImplMock, "restFactory",
-		 * restFactory); ReflectionTestUtils.setField(idAuthServiceImplMock,
-		 * "uinRepository", uinRepository);
-		 * ReflectionTestUtils.setField(idAuthServiceImplMock, "vidRepository",
-		 * vidRepository);testProcessIdType_IdTypeIsD
-		 */
 	}
 
 	@Ignore
@@ -226,7 +216,6 @@ public class IdAuthServiceImplTest {
 	private OtpRequestDTO getOtpRequestDTO() {
 		OtpRequestDTO otpRequestDto = new OtpRequestDTO();
 		otpRequestDto.setId("id");
-		otpRequestDto.setPartnerID("2345678901234");
 		otpRequestDto.setRequestTime(new SimpleDateFormat(env.getProperty("datetime.pattern")).format(new Date()));
 		otpRequestDto.setTransactionID("2345678901234");
 //		otpRequestDto.get("2345678901234");

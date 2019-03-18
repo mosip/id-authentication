@@ -4,8 +4,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 
-import java.util.AbstractMap.SimpleEntry;
 import java.time.Instant;
+import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -28,18 +28,16 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.context.WebApplicationContext;
 
-import com.fasterxml.jackson.databind.deser.DataFormatReaders.Match;
-
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.IdType;
 import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
 import io.mosip.authentication.core.dto.indauth.LanguageType;
-import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
-import io.mosip.authentication.core.spi.indauth.match.IdMapping;
-import io.mosip.authentication.core.spi.indauth.match.MatchType;
-import io.mosip.authentication.service.impl.indauth.service.bio.BioMatchType;
+import io.mosip.authentication.service.config.IDAMappingConfig;
+import io.mosip.authentication.service.factory.IDAMappingFactory;
+import io.mosip.authentication.service.impl.otpgen.service.OTPServiceImpl;
 
-@ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
+@ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class, IDAMappingFactory.class,
+		IDAMappingConfig.class })
 @RunWith(SpringRunner.class)
 @WebMvcTest
 public class IdInfoHelperTest {
@@ -50,9 +48,17 @@ public class IdInfoHelperTest {
 	@Autowired
 	private Environment environment;
 
+	@InjectMocks
+	private OTPServiceImpl otpServiceImpl;
+
+	@Autowired
+	private IDAMappingConfig idMappingConfig;
+
 	@Before
 	public void before() {
 		ReflectionTestUtils.setField(idInfoHelper, "environment", environment);
+		ReflectionTestUtils.setField(otpServiceImpl, "idInfoHelper", idInfoHelper);
+		ReflectionTestUtils.setField(idInfoHelper, "idMappingConfig", idMappingConfig);
 	}
 
 	@Test
@@ -116,7 +122,7 @@ public class IdInfoHelperTest {
 	@Test
 	public void TestInvalidIdentityValue() {
 		String key = "FINGER_Left IndexFinger_2";
-		List<IdentityInfoDTO> identityInfoList = getValueList();
+		List<IdentityInfoDTO> identityInfoList = null;
 		Map<String, List<IdentityInfoDTO>> demoInfo = new HashMap<>();
 		demoInfo.put(key, identityInfoList);
 		ReflectionTestUtils.invokeMethod(idInfoHelper, "getIdentityValue", key, "ara", demoInfo);
@@ -125,6 +131,16 @@ public class IdInfoHelperTest {
 	@Test
 	public void checkLanguageType() {
 		ReflectionTestUtils.invokeMethod(idInfoHelper, "checkLanguageType", null, null);
+	}
+
+	@Test
+	public void checkLanguageTypeEmpty() {
+		ReflectionTestUtils.invokeMethod(idInfoHelper, "checkLanguageType", "", "");
+	}
+
+	@Test
+	public void checkLanguageTypenull() {
+		ReflectionTestUtils.invokeMethod(idInfoHelper, "checkLanguageType", "null", "null");
 	}
 
 	@Test
@@ -155,6 +171,17 @@ public class IdInfoHelperTest {
 	public void TestgetUtcTime() {
 		String utcTime = idInfoHelper.getUTCTime(Instant.now().toString());
 		assertNotNull(utcTime);
+	}
+
+	@Test
+	public void TestEmail() {
+		Map<String, List<IdentityInfoDTO>> idInfo = new HashMap<>();
+		List<IdentityInfoDTO> identityInfoList = new ArrayList<>();
+		IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
+		identityInfoDTO.setValue("test@test.com");
+		identityInfoList.add(identityInfoDTO);
+		idInfo.put("phoneNumber", identityInfoList);
+		ReflectionTestUtils.invokeMethod(otpServiceImpl, "getEmail", idInfo);
 	}
 
 	private List<IdentityInfoDTO> getValueList() {

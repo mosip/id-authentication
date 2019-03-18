@@ -1,7 +1,6 @@
 package io.mosip.authentication.service.impl.indauth.service;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -16,7 +15,6 @@ import io.mosip.authentication.core.dto.indauth.BioIdentityInfoDTO;
 import io.mosip.authentication.core.dto.indauth.DataDTO;
 import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
 import io.mosip.authentication.core.dto.indauth.KycResponseDTO;
-import io.mosip.authentication.core.dto.indauth.KycType;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.spi.indauth.service.KycService;
 import io.mosip.authentication.core.util.MaskUtil;
@@ -45,7 +43,7 @@ public class KycServiceImpl implements KycService {
 
 	/** The Constant EKYC_TYPE_FULLKYC. */
 	private static final String EKYC_TYPE_FULLKYC = "ekyc.type.fullkyc";
-	
+
 	/** The Constant EKYC_TYPE_LIMITEDKYC. */
 	private static final String EKYC_TYPE_LIMITEDKYC = "ekyc.type.limitedkyc";
 	/** The env. */
@@ -58,40 +56,34 @@ public class KycServiceImpl implements KycService {
 	/**
 	 * This method will return the KYC info of the individual.
 	 *
-	 * @param uin                   the uin
-	 * @param eKycType              the ekyctype full or limited
-	 * @param secLangCode the sec lang code
-	 * @param identityInfo          the identity info
+	 * @param uin                  the uin
+	 * @param allowedkycAttributes the ekyctype full or limited
+	 * @param secLangCode          the sec lang code
+	 * @param identityInfo         the identity info
 	 * @return the map
 	 * @throws IdAuthenticationBusinessException the id authentication business
 	 *                                           exception
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public KycResponseDTO retrieveKycInfo(String uin, KycType eKycType, String secLangCode,
+	public KycResponseDTO retrieveKycInfo(String uin, List<String> allowedkycAttributes, String secLangCode,
 			Map<String, List<IdentityInfoDTO>> identityInfo) throws IdAuthenticationBusinessException {
 		KycResponseDTO kycResponseDTO = new KycResponseDTO();
-		String kycTypeKey;
-		if (eKycType == KycType.LIMITED) {
-			kycTypeKey = EKYC_TYPE_LIMITEDKYC;
-		} else {
-			kycTypeKey = EKYC_TYPE_FULLKYC;
-		}
 
-		String kycType = env.getProperty(kycTypeKey);
-		Map<String, Object> filteredIdentityInfo = constructIdentityInfo(kycType, identityInfo,
+		Map<String, Object> filteredIdentityInfo = constructIdentityInfo(allowedkycAttributes, identityInfo,
 				secLangCode);
-		if(Objects.nonNull(filteredIdentityInfo) && filteredIdentityInfo.get("face") instanceof List) {			
+		if (Objects.nonNull(filteredIdentityInfo) && filteredIdentityInfo.get("face") instanceof List) {
 			List<IdentityInfoDTO> faceValue = (List<IdentityInfoDTO>) filteredIdentityInfo.get("face");
 			List<BioIdentityInfoDTO> bioValue = new ArrayList<>();
-			if(Objects.nonNull(faceValue)) {
+			if (Objects.nonNull(faceValue)) {
 				BioIdentityInfoDTO bioIdentityInfoDTO = null;
-				for(IdentityInfoDTO identityInfoDTO : faceValue) {		
-					DataDTO dataDTO=new DataDTO();
+				for (IdentityInfoDTO identityInfoDTO : faceValue) {
+					DataDTO dataDTO = new DataDTO();
 					bioIdentityInfoDTO = new BioIdentityInfoDTO();
 					dataDTO.setBioType("face");
 					dataDTO.setBioValue(identityInfoDTO.getValue());
-					bioIdentityInfoDTO.setData(dataDTO);;
+					bioIdentityInfoDTO.setData(dataDTO);
+					;
 					bioValue.add(bioIdentityInfoDTO);
 				}
 			}
@@ -113,32 +105,31 @@ public class KycServiceImpl implements KycService {
 	/**
 	 * Construct identity info - Method to filter the details to be printed.
 	 *
-	 * @param kycType               the kyc type
-	 * @param identity              the identity
-	 * @param secLangCode the sec lang code
+	 * @param allowedKycType the kyc type
+	 * @param identity       the identity
+	 * @param secLangCode    the sec lang code
 	 * @return the map
 	 */
-	private Map<String, Object> constructIdentityInfo(String kycType,
+	private Map<String, Object> constructIdentityInfo(List<String> allowedKycType,
 			Map<String, List<IdentityInfoDTO>> identity, String secLangCode) {
 		Map<String, List<IdentityInfoDTO>> identityInfo = null;
 		Map<String, Object> identityInfos = null;
-		if (Objects.nonNull(kycType)) {
-			List<String> limitedKycDetail = Arrays.asList(kycType.split(","));
-			identityInfo = identity.entrySet().stream().filter(id -> limitedKycDetail.contains(id.getKey()))
+		if (Objects.nonNull(allowedKycType)) {
+			identityInfo = identity.entrySet().stream().filter(id -> allowedKycType.contains(id.getKey()))
 					.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 		}
 		if (Objects.nonNull(identityInfo)) {
 			Set<String> allowedLang = idInfoHelper.extractAllowedLang();
-			String secondayLangCode = allowedLang.contains(secLangCode) ? env.getProperty(MOSIP_SECONDARY_LANG_CODE) : null;
+			String secondayLangCode = allowedLang.contains(secLangCode) ? env.getProperty(MOSIP_SECONDARY_LANG_CODE)
+					: null;
 			String primaryLanguage = env.getProperty(MOSIP_PRIMARY_LANG_CODE);
-			identityInfos = identityInfo.entrySet().stream()
-					.collect(Collectors.toMap(Map.Entry::getKey,
-							entry -> entry.getValue().stream()
-									.filter((IdentityInfoDTO info) -> Objects.isNull(info.getLanguage())
-											|| info.getLanguage().equalsIgnoreCase("null")
-											|| info.getLanguage().equalsIgnoreCase(primaryLanguage)
-											|| (secondayLangCode != null && info.getLanguage().equalsIgnoreCase(secondayLangCode)))
-									.collect(Collectors.toList())));
+			identityInfos = identityInfo.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, entry -> entry
+					.getValue().stream()
+					.filter((IdentityInfoDTO info) -> Objects.isNull(info.getLanguage())
+							|| info.getLanguage().equalsIgnoreCase("null")
+							|| info.getLanguage().equalsIgnoreCase(primaryLanguage)
+							|| (secondayLangCode != null && info.getLanguage().equalsIgnoreCase(secondayLangCode)))
+					.collect(Collectors.toList())));
 		}
 		return identityInfos;
 	}

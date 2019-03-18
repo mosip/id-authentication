@@ -32,12 +32,6 @@ public abstract class IdAuthValidator implements Validator {
 
 	private static final String REQUEST = "request";
 
-	/** The Constant TSP_ID. */
-	private static final String PARTNER_ID = "partnerID";
-
-	/** The Constant TSP_ID. */
-	private static final String MISP_LICENSE_KEY = "MISP License Key";
-
 	/** The Constant IDV_ID_TYPE. */
 	private static final String IDV_ID_TYPE = "individualIdType";
 
@@ -132,16 +126,19 @@ public abstract class IdAuthValidator implements Validator {
 	 * @param txnID  the txn ID
 	 * @param errors the errors
 	 */
-	protected void validateTxnId(String txnID, Errors errors,String paramName ) {
+	protected void validateTxnId(String txnID, Errors errors, String paramName) {
 		if (Objects.isNull(txnID)) {
-			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE, MISSING_INPUT_PARAMETER + TXN_ID + paramName);
+			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE,
+					MISSING_INPUT_PARAMETER + TXN_ID + paramName);
 			errors.rejectValue(TXN_ID, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
-					new Object[] { paramName }, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
+					new Object[] { paramName },
+					IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
 		} else if (!A_Z0_9_10.matcher(txnID).matches()) {
 			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE,
 					"INVALID_INPUT_PARAMETER - txnID - value -> " + txnID + paramName);
 			errors.rejectValue(TXN_ID, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
-					new Object[] { paramName }, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
+					new Object[] { paramName },
+					IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
 		}
 	}
 
@@ -203,7 +200,8 @@ public abstract class IdAuthValidator implements Validator {
 			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE,
 					MISSING_INPUT_PARAMETER + IDV_ID_TYPE);
 			errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
-					new Object[] { IDV_ID_TYPE }, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
+					new Object[] { IDV_ID_TYPE },
+					IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
 		} else if (idType.equals(IdType.UIN.getType())) {
 			try {
 				uinValidator.validateId(id);
@@ -235,38 +233,20 @@ public abstract class IdAuthValidator implements Validator {
 	 * @param tspID  the tsp ID
 	 * @param errors the errors
 	 */
-	protected void validateTspId(String tspID, Errors errors) {
-		if (Objects.isNull(tspID) || tspID.isEmpty()) {
-			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE,
-					MISSING_INPUT_PARAMETER + PARTNER_ID);
-			errors.rejectValue(PARTNER_ID, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
-					new Object[] { PARTNER_ID },
-					IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
-		}
 
-	}
-
-	protected void validateLicenseKey(String misPlicenseKey, Errors errors) {
-		if (Objects.isNull(misPlicenseKey) || misPlicenseKey.isEmpty()) {
-			mosipLogger.error(SESSION_ID, ID_AUTH_VALIDATOR, VALIDATE, MISSING_INPUT_PARAMETER + MISP_LICENSE_KEY);
-			errors.rejectValue(PARTNER_ID, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
-					new Object[] { MISP_LICENSE_KEY },
-					IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
-		}
-
-	}
-	
 	/**
 	 * Validates the ConsentRequest on request.
 	 *
 	 * @param authRequestDTO the auth request DTO
-	 * @param errors            the errors
+	 * @param errors         the errors
 	 */
 	protected void validateConsentReq(AuthRequestDTO authRequestDTO, Errors errors) {
 		if (!authRequestDTO.isConsentObtained()) {
-			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE, "consentObtained - " + authRequestDTO.isConsentObtained());
+			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE,
+					"consentObtained - " + authRequestDTO.isConsentObtained());
 			errors.rejectValue(CONSENT_OBTAINED, IdAuthenticationErrorConstants.CONSENT_NOT_AVAILABLE.getErrorCode(),
-					String.format(IdAuthenticationErrorConstants.CONSENT_NOT_AVAILABLE.getErrorMessage(), CONSENT_OBTAINED));
+					String.format(IdAuthenticationErrorConstants.CONSENT_NOT_AVAILABLE.getErrorMessage(),
+							CONSENT_OBTAINED));
 		}
 	}
 
