@@ -25,7 +25,7 @@ public interface IdTypeRepository extends BaseRepository<IdType, String> {
 	 *            timeStamp - last updated time stamp
 	 * @param currentTimeStamp
 	 *            - currentTimestamp
-	 * @return list of {@link IdType}
+	 * @return list of {@link IdType} - list of id type
 	 */
 	@Query("FROM IdType WHERE (createdDateTime > ?1 AND createdDateTime <=?2) OR (updatedDateTime > ?1 AND updatedDateTime <=?2)  OR (deletedDateTime > ?1 AND deletedDateTime <=?2)")
 	List<IdType> findAllLatestCreatedUpdateDeleted(LocalDateTime lastUpdated, LocalDateTime currentTimeStamp);

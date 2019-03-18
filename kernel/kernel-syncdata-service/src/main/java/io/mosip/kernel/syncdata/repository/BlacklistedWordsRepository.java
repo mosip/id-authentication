@@ -21,10 +21,10 @@ public interface BlacklistedWordsRepository extends BaseRepository<BlacklistedWo
 	 * greater than lastUpdated timeStamp.
 	 * 
 	 * @param lastUpdated
-	 *            timeStamp - last updated time
+	 *            timeStamp - last updated time stamp
 	 * @param currentTimeStamp
 	 *            - currentTimestamp
-	 * @return list of {@link BlacklistedWords}
+	 * @return list of {@link BlacklistedWords} - list of blacklisted words
 	 */
 	@Query("FROM BlacklistedWords WHERE (createdDateTime > ?1 AND createdDateTime <=?2) OR (updatedDateTime > ?1 AND updatedDateTime <=?2)  OR (deletedDateTime > ?1 AND deletedDateTime <=?2)")
 	List<BlacklistedWords> findAllLatestCreatedUpdateDeleted(LocalDateTime lastUpdated, LocalDateTime currentTimeStamp);

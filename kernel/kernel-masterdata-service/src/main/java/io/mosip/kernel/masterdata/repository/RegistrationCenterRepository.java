@@ -52,7 +52,7 @@ public interface RegistrationCenterRepository extends BaseRepository<Registratio
 	 * 
 	 * @param id
 	 *            the centerId
-	 * @param languageCode
+	 * @param langCode
 	 *            the languageCode
 	 * @return the RegistrationCenter
 	 */
@@ -65,7 +65,7 @@ public interface RegistrationCenterRepository extends BaseRepository<Registratio
 	 * 
 	 * @param id
 	 *            the id against which the holiday location code needs to be found.
-	 * @param languageCode
+	 * @param langCode
 	 *            the language code against which the holiday location code needs to
 	 *            be found.
 	 * @return the holiday location code fetched.
@@ -78,7 +78,7 @@ public interface RegistrationCenterRepository extends BaseRepository<Registratio
 	 * 
 	 * @param locationCode
 	 *            locationCode provided by user
-	 * @param languageCode
+	 * @param langCode
 	 *            languageCode provided by user
 	 * @return list of {@link RegistrationCenter} fetched from database
 	 */
@@ -140,6 +140,8 @@ public interface RegistrationCenterRepository extends BaseRepository<Registratio
 	 * 
 	 * @param codes
 	 *            provided by user
+	 * @param langCode
+	 *            language code
 	 * @return list of {@link RegistrationCenter} fetched from database
 	 */
 

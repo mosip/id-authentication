@@ -22,7 +22,17 @@ import io.mosip.kernel.syncdata.entity.id.RegistrationCenterMachineID;
 @Repository
 public interface RegistrationCenterMachineHistoryRepository
 		extends BaseRepository<RegistrationCenterMachineHistory, RegistrationCenterMachineID> {
-	
+	/**
+	 * 
+	 * @param regId
+	 *            - registration center id
+	 * @param lastUpdated
+	 *            - last updated time
+	 * @param currentTimeStamp
+	 *            - current timestamp
+	 * @return list of {@link RegistrationCenterMachineHistory} - list of registration center machine history
+	 */
 	@Query("FROM RegistrationCenterMachineHistory rcmh WHERE rcmh.registrationCenterMachineHistoryPk.regCenterId=?1 AND ((rcmh.createdDateTime > ?2 AND rcmh.createdDateTime<=?3) OR (rcmh.updatedDateTime > ?2 AND rcmh.updatedDateTime <=?3) OR (rcmh.deletedDateTime > ?2 AND rcmh.deletedDateTime<=?3))")
-	List<RegistrationCenterMachineHistory> findLatestRegistrationCenterMachineHistory(String regId,LocalDateTime lastUpdated,LocalDateTime currentTimeStamp);
+	List<RegistrationCenterMachineHistory> findLatestRegistrationCenterMachineHistory(String regId,
+			LocalDateTime lastUpdated, LocalDateTime currentTimeStamp);
 }

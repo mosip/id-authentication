@@ -22,7 +22,7 @@ public interface ReasonListRepository extends BaseRepository<ReasonList, String>
 	 *            timeStamp - last updated timestamp
 	 * @param currentTimeStamp
 	 *            - currentTimestamp
-	 * @return list of {@link ReasonList}
+	 * @return list of {@link ReasonList} -list of reason list
 	 */
 	@Query("FROM ReasonList WHERE (createdDateTime > ?1 AND createdDateTime <=?2) OR (updatedDateTime > ?1 AND updatedDateTime <=?2)  OR (deletedDateTime > ?1 AND deletedDateTime <=?2)")
 	List<ReasonList> findAllLatestCreatedUpdateDeleted(LocalDateTime lastUpdated, LocalDateTime currentTimeStamp);

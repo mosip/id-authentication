@@ -78,7 +78,7 @@ public interface LocationService {
 	 *            - location code
 	 * @param langCode
 	 *            - language code
-	 * @return location response dto
+	 * @return {@link LocationResponseDto}
 	 */
 	public LocationResponseDto getImmediateChildrenByLocCodeAndLangCode(String locCode, String langCode);
 
@@ -92,11 +92,13 @@ public interface LocationService {
 	 * 
 	 */
 	public Map<Short, List<Location>> getLocationByLangCodeAndHierarchyLevel(String langCode, Short hierarchyLevel);
-	
+
 	/**
 	 * checks whether the given location name is valid or not
+	 * 
 	 * @param locationName
-	 * @return StatusResponseDto
+	 *            -location name
+	 * @return {@link StatusResponseDto}
 	 */
 	public StatusResponseDto validateLocationName(String locationName);
 

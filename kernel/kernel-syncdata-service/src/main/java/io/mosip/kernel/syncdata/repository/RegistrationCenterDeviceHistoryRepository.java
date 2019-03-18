@@ -29,7 +29,7 @@ public interface RegistrationCenterDeviceHistoryRepository
 	 * @param regId - registration center id
 	 * @param lastUpdated - last updated time
 	 * @param currentTimeStamp - current time stamp
-	 * @return List<RegistrationCenterDeviceHistory>
+	 * @return list of {@link RegistrationCenterDeviceHistory} -list of registration center device history
 	 */
 	@Query("FROM RegistrationCenterDeviceHistory rcdh WHERE rcdh.registrationCenterDeviceHistoryPk.regCenterId=?1 AND ((rcdh.createdDateTime > ?2 AND rcdh.createdDateTime<=?3) OR (rcdh.updatedDateTime > ?2 AND rcdh.updatedDateTime <=?3) OR (rcdh.deletedDateTime > ?2 AND rcdh.deletedDateTime<=?3))")
 	List<RegistrationCenterDeviceHistory> findLatestRegistrationCenterDeviceHistory(String regId,

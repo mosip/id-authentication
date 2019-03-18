@@ -26,7 +26,7 @@ public interface DocumentTypeRepository extends BaseRepository<DocumentType, Str
 	 *            timeStamp - last updated timestamp
 	 * @param currentTimeStamp
 	 *            - currentTimestamp
-	 * @return list of {@link DocumentType}
+	 * @return list of {@link DocumentType} - list of document type
 	 */
 	@Query("FROM DocumentType WHERE (createdDateTime > ?1 AND createdDateTime <=?2) OR (updatedDateTime > ?1 AND updatedDateTime <=?2)  OR (deletedDateTime > ?1 AND deletedDateTime<=?2)")
 	List<DocumentType> findAllLatestCreatedUpdateDeleted(LocalDateTime lastUpdated, LocalDateTime currentTimeStamp);
