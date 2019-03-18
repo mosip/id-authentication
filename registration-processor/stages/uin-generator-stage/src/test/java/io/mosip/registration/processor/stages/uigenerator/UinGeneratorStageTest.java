@@ -666,6 +666,72 @@ public class UinGeneratorStageTest {
 		Mockito.when(registrationProcessorRestClientService.patchApi(any(), any(), any(), any(), any(), any())).thenThrow(exp);
 		uinGeneratorStage.process(messageDTO);
 	}
+	
+	@Test
+	public void apisResourceAccessExceptionTest() throws ApisResourceAccessException {
+		
+		ApisResourceAccessException apisResourceAccessException = Mockito.mock(ApisResourceAccessException.class);
+		HttpServerErrorException httpServerErrorException = new HttpServerErrorException(
+				HttpStatus.INTERNAL_SERVER_ERROR, "KER-FSE-004:encrypted data is corrupted or not base64 encoded");
+		Mockito.when(apisResourceAccessException.getCause()).thenReturn(httpServerErrorException);
+
+		MessageDTO messageDTO = new MessageDTO();
+		messageDTO.setRid("10031100110005020190313110030");
+		messageDTO.setReg_type("DEACTIVATED");
+
+		String idJson = "{\"identity\":{\"IDSchemaVersion\":1.0,\"UIN\":4215839851}}";
+		InputStream idJsonStream1 = new ByteArrayInputStream(idJson.getBytes(StandardCharsets.UTF_8));
+
+
+		Mockito.when(adapter.getFile("10031100110005020190313110030",
+				PacketFiles.DEMOGRAPHIC.name() + "\\" + PacketFiles.ID.name())).thenReturn(idJsonStream1);
+
+		Mockito.when(registrationProcessorRestClientService.getApi(any(), any(), any(), any(), any())).thenThrow(apisResourceAccessException);
+		uinGeneratorStage.process(messageDTO);
+	}
+	
+	@Test
+	public void clientErrorExceptionTest() throws ApisResourceAccessException {
+		
+		ApisResourceAccessException apisResourceAccessException = Mockito.mock(ApisResourceAccessException.class);
+		HttpClientErrorException httpErrorErrorException = new HttpClientErrorException(
+				HttpStatus.INTERNAL_SERVER_ERROR, "KER-FSE-004:encrypted data is corrupted or not base64 encoded");
+		Mockito.when(apisResourceAccessException.getCause()).thenReturn(httpErrorErrorException);
+
+		MessageDTO messageDTO = new MessageDTO();
+		messageDTO.setRid("10031100110005020190313110030");
+		messageDTO.setReg_type("DEACTIVATED");
+
+		String idJson = "{\"identity\":{\"IDSchemaVersion\":1.0,\"UIN\":4215839851}}";
+		InputStream idJsonStream1 = new ByteArrayInputStream(idJson.getBytes(StandardCharsets.UTF_8));
+
+
+		Mockito.when(adapter.getFile("10031100110005020190313110030",
+				PacketFiles.DEMOGRAPHIC.name() + "\\" + PacketFiles.ID.name())).thenReturn(idJsonStream1);
+
+		Mockito.when(registrationProcessorRestClientService.getApi(any(), any(), any(), any(), any())).thenThrow(apisResourceAccessException);
+		uinGeneratorStage.process(messageDTO);
+	}
+	
+	@Test
+	public void getApiExceptionTest() throws ApisResourceAccessException {
+		
+		ApisResourceAccessException apisResourceAccessException = Mockito.mock(ApisResourceAccessException.class);
+
+		MessageDTO messageDTO = new MessageDTO();
+		messageDTO.setRid("10031100110005020190313110030");
+		messageDTO.setReg_type("DEACTIVATED");
+
+		String idJson = "{\"identity\":{\"IDSchemaVersion\":1.0,\"UIN\":4215839851}}";
+		InputStream idJsonStream1 = new ByteArrayInputStream(idJson.getBytes(StandardCharsets.UTF_8));
+
+
+		Mockito.when(adapter.getFile("10031100110005020190313110030",
+				PacketFiles.DEMOGRAPHIC.name() + "\\" + PacketFiles.ID.name())).thenReturn(idJsonStream1);
+
+		Mockito.when(registrationProcessorRestClientService.getApi(any(), any(), any(), any(), any())).thenThrow(apisResourceAccessException);
+		uinGeneratorStage.process(messageDTO);
+	}
 
 	@Test
 	public void testFSAdapterException() throws FileNotFoundException, ApisResourceAccessException {
