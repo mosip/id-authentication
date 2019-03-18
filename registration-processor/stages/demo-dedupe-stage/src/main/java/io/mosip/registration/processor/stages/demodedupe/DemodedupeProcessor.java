@@ -137,14 +137,14 @@ public class DemodedupeProcessor {
 					description = registrationStatusDto.getStatusComment() + registrationId;
 					registrationStatusDto.setRetryCount(retryCount);
 
-					registrationStatusDto.setStatusComment(StatusMessage.PACKET_DEMO_DEDUPE_FAILED);
-					registrationStatusDto.setStatusCode(RegistrationStatusCode.PACKET_DEMO_DEDUPE_FAILED.toString());
+					registrationStatusDto.setStatusComment(StatusMessage.DEMO_DEDUPE_FAILED);
+					registrationStatusDto.setStatusCode(RegistrationStatusCode.DEMO_DEDUPE_FAILED.toString());
 					demographicDedupeRepository.updateIsActiveIfDuplicateFound(registrationId);
 
 				} else {
 					object.setIsValid(Boolean.FALSE);
-					registrationStatusDto.setStatusComment(StatusMessage.PACKET_DEMO_POTENTIAL_MATCH);
-					registrationStatusDto.setStatusCode(RegistrationStatusCode.PACKET_DEMO_POTENTIAL_MATCH.toString());
+					registrationStatusDto.setStatusComment(StatusMessage.DEMO_POTENTIAL_MATCH);
+					registrationStatusDto.setStatusCode(RegistrationStatusCode.DEMO_POTENTIAL_MATCH.toString());
 					code=  PlatformSuccessMessages.RPR_PKR_DEMO_DE_DUP_POTENTIAL_DUPLICATION_FOUND.getCode();
 					description = PlatformSuccessMessages.RPR_PKR_DEMO_DE_DUP_POTENTIAL_DUPLICATION_FOUND.getMessage()+" -- " + registrationId;
 
@@ -154,8 +154,8 @@ public class DemodedupeProcessor {
 
 			} else {
 				object.setIsValid(Boolean.TRUE);
-				registrationStatusDto.setStatusComment(StatusMessage.PACKET_DEMO_DEDUPE_SUCCESS);
-				registrationStatusDto.setStatusCode(RegistrationStatusCode.PACKET_DEMO_DEDUPE_SUCCESS.toString());
+				registrationStatusDto.setStatusComment(StatusMessage.DEMO_DEDUPE_SUCCESS);
+				registrationStatusDto.setStatusCode(RegistrationStatusCode.DEMO_DEDUPE_SUCCESS.toString());
 				code=  PlatformSuccessMessages.RPR_PKR_DEMO_DE_DUP.getCode();
 				description = PlatformSuccessMessages.RPR_PKR_DEMO_DE_DUP.getMessage() + registrationId;
 			}
