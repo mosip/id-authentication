@@ -61,10 +61,11 @@ public class RestClientAuthAdvice {
 
 				String authZToken = getAuthZToken(requestHTTPDTO, haveToAuthZByClientId);
 
-				requestHTTPDTO.setHttpEntity(
-						setAuthHeaders(requestHTTPDTO.getHttpEntity(), requestHTTPDTO.getAuthZHeader(), authZToken));
+				setAuthHeaders(requestHTTPDTO.getHttpHeaders(), requestHTTPDTO.getAuthZHeader(), authZToken);
 			}
 
+			requestHTTPDTO
+					.setHttpEntity(new HttpEntity<>(requestHTTPDTO.getRequestBody(), requestHTTPDTO.getHttpHeaders()));
 			Object response = joinPoint.proceed(joinPoint.getArgs());
 
 			LOGGER.info(LoggerConstants.AUTHZ_ADVICE, APPLICATION_ID, APPLICATION_NAME,
@@ -116,36 +117,30 @@ public class RestClientAuthAdvice {
 	/**
 	 * Setup of Auth Headers.
 	 *
-	 * @param httpEntity
+	 * @param httpHeaders
 	 *            http headers
 	 * @param authHeader
 	 *            auth header
 	 * @param authZCookie
 	 *            the Authorization Token or Cookie
 	 */
-	private HttpEntity<?> setAuthHeaders(HttpEntity<?> httpEntity, String authHeader, String authZCookie) {
+	private void setAuthHeaders(HttpHeaders httpHeaders, String authHeader, String authZCookie) {
 		LOGGER.info(LoggerConstants.AUTHZ_ADVICE, APPLICATION_ID, APPLICATION_NAME,
 				"Adding authZ token to request header");
 
 		String[] arrayAuthHeaders = null;
-
-		HttpHeaders httpHeaderWithAuth = new HttpHeaders();
-		
-		httpEntity.getHeaders().forEach((key, value) -> httpHeaderWithAuth.put(key, value));
 		
 		if (authHeader != null) {
 			arrayAuthHeaders = authHeader.split(":");
 			if (arrayAuthHeaders[1].equalsIgnoreCase(RegistrationConstants.REST_OAUTH)) {
-				httpHeaderWithAuth.add(RegistrationConstants.COOKIE, authZCookie);
+				httpHeaders.add(RegistrationConstants.COOKIE, authZCookie);
 			} else if (arrayAuthHeaders[1].equalsIgnoreCase(RegistrationConstants.AUTH_TYPE)) {
-				httpHeaderWithAuth.add(arrayAuthHeaders[0], arrayAuthHeaders[1]);
+				httpHeaders.add(arrayAuthHeaders[0], arrayAuthHeaders[1]);
 			}
 		}
 
 		LOGGER.info(LoggerConstants.AUTHZ_ADVICE, APPLICATION_ID, APPLICATION_NAME,
 				"Adding of authZ token to request header completed");
-		
-		return new HttpEntity<>(httpEntity.getBody(), httpHeaderWithAuth);
 	}
 
 }
