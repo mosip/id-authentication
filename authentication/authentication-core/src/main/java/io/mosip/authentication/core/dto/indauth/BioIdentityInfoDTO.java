@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 /**
+ * This Class Holds the values for Bio Related data
  * 
  * @author Prem Kumar
  *

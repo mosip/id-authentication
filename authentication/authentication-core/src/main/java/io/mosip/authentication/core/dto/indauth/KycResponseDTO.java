@@ -5,10 +5,11 @@ import java.util.Map;
 import lombok.Data;
 
 /**
+ * The class for KycResponseDTO Holds the values for ttl and Identity.
  * 
  * @author Prem Kumar
  *
- *The class for KycResponseDTO
+ *
  */
 
 @Data

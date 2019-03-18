@@ -3,6 +3,7 @@ package io.mosip.authentication.core.dto.indauth;
 import lombok.Data;
 
 /**
+ * This Class Holds the Values for Bio Info and DeviceInfo details.
  * 
  * @author Premkumar
  *

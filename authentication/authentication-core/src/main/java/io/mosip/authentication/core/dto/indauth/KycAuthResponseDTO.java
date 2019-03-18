@@ -4,10 +4,11 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 /**
+ * The Class For KycAuthResponseDTO extending BaseAuthResponseDTO
  * 
  * @author Prem Kumar
  *
- *The Class For KycAuthResponseDTO extending BaseAuthResponseDTO
+ *
  */
 
 @Data

@@ -3,6 +3,7 @@ package io.mosip.authentication.core.dto.otpgen;
 import lombok.Data;
 
 /**
+ * This Class Holds values for Email and Phone.
  * 
  * @author Prem Kumar
  *

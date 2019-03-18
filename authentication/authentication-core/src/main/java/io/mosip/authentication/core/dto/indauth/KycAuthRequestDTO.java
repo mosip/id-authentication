@@ -5,10 +5,10 @@ import java.util.List;
 import lombok.Data;
 
 /**
+ * The Class For KycAuthRequestDTO extending BaseAuthRequestDTO
  * 
  * @author Prem Kumar
- *
- *         The Class For KycAuthRequestDTO extending BaseAuthRequestDTO
+ * 
  */
 @Data
 public class KycAuthRequestDTO extends AuthRequestDTO {
