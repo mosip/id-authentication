@@ -176,41 +176,12 @@ public class IdAuthValidatorTest {
 //    }
 
 	/**
-	 * Test null mua code.
-	 */
-	@Ignore
-	@Test
-	public void testNullMuaCode() {
-		validator.validateTspId(null, errors);
-		errors.getAllErrors().forEach(error -> {
-			assertEquals(IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(), error.getCode());
-			assertEquals(IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(),
-					error.getDefaultMessage());
-			assertEquals("tspID", ((FieldError) error).getField());
-		});
-	}
-
-	/**
-	 * Test invalid mua code.
-	 */
-	@Test
-	public void testInvalidMuaCode() {
-		validator.validateTspId("1234", errors);
-		errors.getAllErrors().forEach(error -> {
-			assertEquals(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(), error.getCode());
-			assertEquals(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(),
-					error.getDefaultMessage());
-			assertEquals("tspID", ((FieldError) error).getField());
-		});
-	}
-
-	/**
 	 * Test null txn id.
 	 */
 	@Ignore
 	@Test
 	public void testNullTxnId() {
-		validator.validateTxnId(null, errors,TRANSACTION_ID);
+		validator.validateTxnId(null, errors, TRANSACTION_ID);
 		errors.getAllErrors().forEach(error -> {
 			assertEquals(IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(), error.getCode());
 			assertEquals(IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(),
@@ -225,7 +196,7 @@ public class IdAuthValidatorTest {
 	@Ignore
 	@Test
 	public void testInvalidTxnId() {
-		validator.validateTxnId("1234", errors,TRANSACTION_ID);
+		validator.validateTxnId("1234", errors, TRANSACTION_ID);
 		errors.getAllErrors().forEach(error -> {
 			assertEquals(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(), error.getCode());
 			assertEquals(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(),
@@ -240,7 +211,7 @@ public class IdAuthValidatorTest {
 	@Ignore
 	@Test
 	public void testNullReqTime() {
-		validator.validateReqTime(null, errors,"requestTime");
+		validator.validateReqTime(null, errors, "requestTime");
 		errors.getAllErrors().forEach(error -> {
 			assertEquals(IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(), error.getCode());
 			assertEquals(IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(),

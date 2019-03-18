@@ -7,6 +7,7 @@ import org.springframework.http.MediaType;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -58,13 +59,14 @@ public class OTPController {
 	 * @return otpResponseDTO
 	 * @throws IdAuthenticationAppException the id authentication app exception
 	 */
-	@PostMapping(path = "/otp/${ida.api.version}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public OtpResponseDTO generateOTP(@Valid @RequestBody OtpRequestDTO otpRequestDto, @ApiIgnore Errors errors)
+	@PostMapping(path = "/otp/${ida.api.version}/{Auth-Partner-ID}/{MISP-LK}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	public OtpResponseDTO generateOTP(@Valid @RequestBody OtpRequestDTO otpRequestDto, @ApiIgnore Errors errors,
+			@PathVariable("Auth-Partner-ID") String partnerId, @PathVariable("MISP-LK") String mispLK)
 			throws IdAuthenticationAppException {
 
 		try {
 			DataValidationUtil.validate(errors);
-			OtpResponseDTO otpResponseDTO = otpService.generateOtp(otpRequestDto);
+			OtpResponseDTO otpResponseDTO = otpService.generateOtp(otpRequestDto,partnerId);
 			logger.info(DEAFULT_SESSION_ID, this.getClass().getSimpleName(), GENERATE_OTP,
 					otpResponseDTO.getResponseTime());
 			return otpResponseDTO;
