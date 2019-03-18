@@ -127,7 +127,7 @@ public enum BioAuthType implements AuthType {
 								.getIrisProvider(bioinfovalue)::matchMultiImage;// TODO add provider
 						valueMap.put(IrisProvider.class.getSimpleName(), func);
 					});
-			valueMap.put("idvid", idInfoFetcher.getUinOrVid(authRequestDTO));
+			valueMap.put("idvid", idInfoFetcher.getUinOrVid(authRequestDTO).orElse(""));
 			return valueMap;
 		}
 
@@ -163,7 +163,7 @@ public enum BioAuthType implements AuthType {
 								.getIrisProvider(bioinfovalue)::matchImage;// TODO add provider
 						valueMap.put(IrisProvider.class.getSimpleName(), func);
 					});
-			valueMap.put("idvid", idInfoFetcher.getUinOrVid(authRequestDTO));
+			valueMap.put("idvid", idInfoFetcher.getUinOrVid(authRequestDTO).orElse(""));
 			return valueMap;
 		}
 

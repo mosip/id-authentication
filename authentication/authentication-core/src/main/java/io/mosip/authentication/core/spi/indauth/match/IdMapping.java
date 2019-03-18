@@ -40,8 +40,6 @@ public interface IdMapping {
 		return Stream.of(values).filter(m -> m.getIdname().equals(name)).findAny();
 	}
 	
-	public default Set<IdMapping> getSubIdMappings() {
-		return Collections.emptySet();
-	}
+	public Set<IdMapping> getSubIdMappings();
 
 }

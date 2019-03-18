@@ -5,6 +5,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -245,6 +246,12 @@ public class MatchTest {
 			public BiFunction<MappingConfig, MatchType, List<String>> getMappingFunction() {
 				// TODO Auto-generated method stub
 				return null;
+			}
+
+			@Override
+			public Set<IdMapping> getSubIdMappings() {
+				// TODO Auto-generated method stub
+				return Collections.emptySet();
 			}
 		};
 		String name = "name";

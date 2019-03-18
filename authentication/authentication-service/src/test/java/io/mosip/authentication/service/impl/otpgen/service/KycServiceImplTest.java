@@ -100,6 +100,49 @@ public class KycServiceImplTest {
 			e.printStackTrace();
 		}
 	}
+	
+	@Test
+	public void validdata() throws IOException {
+		try {
+			deleteBootStrapFile();
+			prepareMap(idInfo);
+			List<String> allowedKycList = limitedList();
+			Map<String, List<IdentityInfoDTO>> idInfo1 = idInfo;
+			idInfo1.remove("face");
+			KycResponseDTO k = kycServiceImpl.retrieveKycInfo("12232323121", allowedKycList, "abc", idInfo1);
+			assertNotNull(k);
+		} catch (IdAuthenticationBusinessException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	@Test
+	public void validdata2() throws IOException {
+		try {
+			deleteBootStrapFile();
+			prepareMap(idInfo);
+			Map<String, List<IdentityInfoDTO>> idInfo1 = idInfo;
+			idInfo1.remove("face");
+			KycResponseDTO k = kycServiceImpl.retrieveKycInfo("12232323121", Collections.emptyList(), "ara", idInfo1);
+			assertNotNull(k);
+		} catch (IdAuthenticationBusinessException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	@Test
+	public void validdata3() throws IOException {
+		try {
+			deleteBootStrapFile();
+			prepareMap(idInfo);
+			Map<String, List<IdentityInfoDTO>> idInfo1 = idInfo;
+			idInfo1.remove("face");
+			KycResponseDTO k = kycServiceImpl.retrieveKycInfo("12232323121", null, "ara", null);
+			assertNotNull(k);
+		} catch (IdAuthenticationBusinessException e) {
+			e.printStackTrace();
+		}
+	}
 
 	@Test
 	public void validUIN1() {

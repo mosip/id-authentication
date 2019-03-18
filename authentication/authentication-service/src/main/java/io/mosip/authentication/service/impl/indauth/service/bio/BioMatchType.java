@@ -21,6 +21,7 @@ import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
 import io.mosip.authentication.core.dto.indauth.RequestDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.spi.bioauth.CbeffDocType;
+import io.mosip.authentication.core.spi.indauth.match.AuthType;
 import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
 import io.mosip.authentication.core.spi.indauth.match.IdMapping;
 import io.mosip.authentication.core.spi.indauth.match.MatchType;
@@ -153,7 +154,8 @@ public enum BioMatchType implements MatchType {
 	
 	private Map<String, List<IdentityInfoDTO>> getIdInfoFromBioIdInfo(List<BioIdentityInfoDTO> biometrics) {
 		Optional<String> valueOpt = biometrics.stream().filter(bioId -> {
-			if (bioId.getData().getBioType().equalsIgnoreCase(cbeffDocType.getName())) {
+			Optional<AuthType> authType = AuthType.getAuthTypeForMatchType(this, BioAuthType.values());
+			if (authType.isPresent() && bioId.getData().getBioType().equalsIgnoreCase(authType.get().getType())) {
 				return bioId.getData().getBioSubType().equalsIgnoreCase(getIdMapping().getIdname());
 			}
 			return false;

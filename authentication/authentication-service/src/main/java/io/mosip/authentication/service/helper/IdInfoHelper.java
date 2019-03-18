@@ -862,7 +862,10 @@ public class IdInfoHelper implements IdInfoFetcher {
 	}
 
 	private String getNameForCbeffName(String cbeffName, MatchType matchType) {
-		return Stream.of(IdaIdMapping.values()).map(cfg -> {
+		return Stream.of(IdaIdMapping.values())
+				.filter(cfg -> matchType.getIdMapping().equals(cfg) 
+						|| matchType.getIdMapping().getSubIdMappings().contains(cfg))
+				.map(cfg -> {
 			String idname;
 			Set<IdMapping> subIdMappings = matchType.getIdMapping().getSubIdMappings();
 			if (!subIdMappings.isEmpty() && matchType instanceof BioMatchType) {

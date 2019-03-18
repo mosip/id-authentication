@@ -66,8 +66,8 @@ public enum IdaIdMapping implements IdMapping {
 			RIGHTTHUMB,
 			UNKNOWN_FINGER
 			)),
-	LEFTEYE("LEFT_IRIS"), 
-	RIGHTIRIS("RIGHT_IRIS"), 
+	LEFTEYE("LEFT"), 
+	RIGHTIRIS("RIGHT"), 
 	UNKNOWN_IRIS("UNKNOWN"),
 	IRIS("iris", setOf(
 			RIGHTIRIS,

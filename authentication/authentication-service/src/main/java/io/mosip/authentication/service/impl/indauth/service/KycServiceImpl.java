@@ -78,7 +78,6 @@ public class KycServiceImpl implements KycService {
 					dataDTO.setBioType("face");
 					dataDTO.setBioValue(identityInfoDTO.getValue());
 					bioIdentityInfoDTO.setData(dataDTO);
-					;
 					bioValue.add(bioIdentityInfoDTO);
 				}
 			}
