@@ -664,9 +664,7 @@ public class UinGeneratorStageTest {
 				.thenReturn(idResponseDTO);
 		
 		Mockito.when(registrationProcessorRestClientService.patchApi(any(), any(), any(), any(), any(), any())).thenThrow(exp);
-
-
-		MessageDTO result = uinGeneratorStage.process(messageDTO);
+		uinGeneratorStage.process(messageDTO);
 	}
 
 	@Test
