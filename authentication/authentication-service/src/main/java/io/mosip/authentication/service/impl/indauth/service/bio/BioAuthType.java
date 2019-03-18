@@ -52,7 +52,7 @@ public enum BioAuthType implements AuthType {
 
 		@Override
 		protected Long getBioIdentityValuesCount(AuthRequestDTO reqDTO, IdInfoFetcher helper) {
-			return BioAuthType.getFPValuesCountInIdentity(reqDTO, helper);
+			return BioAuthType.getFPValuesCountInIdentity(reqDTO, helper, BioMatchType.FGRMIN_MULTI);
 		}
 	},
 	FGR_IMG("FIR",
@@ -78,7 +78,7 @@ public enum BioAuthType implements AuthType {
 
 		@Override
 		protected Long getBioIdentityValuesCount(AuthRequestDTO reqDTO, IdInfoFetcher helper) {
-			return BioAuthType.getFPValuesCountInIdentity(reqDTO, helper);
+			return BioAuthType.getFPValuesCountInIdentity(reqDTO, helper, BioMatchType.FGRIMG_MULTI);
 		}
 	},
 	FGR_MIN_MULTI("FMR", setOf(BioMatchType.FGRMIN_MULTI), getFingerprint(), 2) {
@@ -112,7 +112,7 @@ public enum BioAuthType implements AuthType {
 
 		@Override
 		protected Long getBioIdentityValuesCount(AuthRequestDTO reqDTO, IdInfoFetcher helper) {
-			return BioAuthType.getFPValuesCountInIdentity(reqDTO, helper);
+			return BioAuthType.getFPValuesCountInIdentity(reqDTO, helper, BioMatchType.FGRMIN_MULTI);
 		}
 	},
 	IRIS_COMP_IMG("IIR", setOf(BioMatchType.IRIS_COMP), "Iris", 2) {
@@ -221,10 +221,11 @@ public enum BioAuthType implements AuthType {
 	 *
 	 * @param reqDTO the req DTO
 	 * @param helper the helper
+	 * @param fpMultiMatchType 
 	 * @return the FP values count in identity
 	 */
-	private static Long getFPValuesCountInIdentity(AuthRequestDTO reqDTO, IdInfoFetcher helper) {
-		return (long) helper.getIdentityRequestInfo(BioMatchType.FGRMIN_MULTI, reqDTO.getRequest(), null).size();
+	private static Long getFPValuesCountInIdentity(AuthRequestDTO reqDTO, IdInfoFetcher helper, MatchType fpMultiMatchType) {
+		return (long) helper.getIdentityRequestInfo(fpMultiMatchType, reqDTO.getRequest(), null).size();
 	}
 
 	private static Long getIrisValuesCountInIdentity(AuthRequestDTO reqDTO, IdInfoFetcher helper) {

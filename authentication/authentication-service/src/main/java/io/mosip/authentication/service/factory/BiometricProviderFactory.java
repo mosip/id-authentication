@@ -80,24 +80,23 @@ public class BiometricProviderFactory {
 	public MosipBiometricProvider getBiometricProvider(DataDTO bioInfo) {
 
 		if (bioInfo.getBioType().equalsIgnoreCase(BioAuthType.IRIS_IMG.getType())) {
-			/*if (bioInfo.getDeviceInfo().getMake().equalsIgnoreCase(environment.getProperty(BiometricProviderFactory.COGENT_IRIS_PROVIDER))) {
-				return getCogentIrisProvider();
-			} else if(bioInfo.getDeviceInfo().getMake().equalsIgnoreCase(environment.getProperty(BiometricProviderFactory.MORPHO_IRIS_PROVIDER))) {
-				return getMorphoIrisProvider();
-			}*/
 			//TODO FIXME as dynamically provider has to be changed based on the request
+			if (bioInfo.getDeviceProviderID().equalsIgnoreCase(environment.getProperty(BiometricProviderFactory.COGENT_IRIS_PROVIDER))) {
+				return getCogentIrisProvider();
+			} else if(bioInfo.getDeviceProviderID().equalsIgnoreCase(environment.getProperty(BiometricProviderFactory.MORPHO_IRIS_PROVIDER))) {
+				return getMorphoIrisProvider();
+			}
 			return getCogentIrisProvider();
 			
 		}
 
 		else if (bioInfo.getBioType().equalsIgnoreCase(BioAuthType.FGR_MIN.getType()) || bioInfo.getBioType().equalsIgnoreCase(BioAuthType.FGR_IMG.getType())) {
-			/*if (bioInfo.getDeviceInfo().getMake().equalsIgnoreCase(environment.getProperty(BiometricProviderFactory.COGENT_FP_PROVIDER))) {
+			//TODO FIXME as dynamically provider has to be changed based on the request
+			if (bioInfo.getDeviceProviderID().equalsIgnoreCase(environment.getProperty(BiometricProviderFactory.COGENT_FP_PROVIDER))) {
 				return getCogentFingerProvider();
-			} else if (bioInfo.getDeviceInfo().getMake().equalsIgnoreCase(environment.getProperty(BiometricProviderFactory.MANTRA_FP_PROVIDER))) {
+			} else if (bioInfo.getDeviceProviderID().equalsIgnoreCase(environment.getProperty(BiometricProviderFactory.MANTRA_FP_PROVIDER))) {
 				return getMantraFingerprintProvider();
 			}
-		}*/
-		//TODO FIXME as dynamically provider has to be changed based on the request
 		return getMantraFingerprintProvider();
 
 	}

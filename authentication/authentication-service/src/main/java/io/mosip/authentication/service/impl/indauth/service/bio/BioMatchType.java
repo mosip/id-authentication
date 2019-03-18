@@ -96,6 +96,9 @@ public enum BioMatchType implements MatchType {
 	//FIXME get Bio ID info of all fingers and return the map
 	FGRMIN_MULTI(IdaIdMapping.FINGERPRINT, setOf(MultiFingerprintMatchingStrategy.PARTIAL),
 			CbeffDocType.FMR, null, null),
+	
+	FGRIMG_MULTI(IdaIdMapping.FINGERPRINT, setOf(MultiFingerprintMatchingStrategy.PARTIAL),
+			CbeffDocType.FIR, null, null),
 
 	RIGHT_IRIS(IdaIdMapping.RIGHTIRIS, setOf(IrisMatchingStrategy.PARTIAL),
 			CbeffDocType.IRIS, SingleAnySubtypeType.RIGHT,null),
