@@ -42,7 +42,7 @@ public enum IdaIdMapping implements IdMapping {
 	OTP("otp", MappingConfig::getOtp), 
 	PIN("pin", MappingConfig::getPin), 
 	LEFTINDEX("LEFT_INDEX"),
-	LEFTLITTLE("LEFT_LEFT"), 
+	LEFTLITTLE("LEFT_LITTLE"), 
 	LEFTMIDDLE("LEFT_MIDDLE"), 
 	LEFTRING("LEFT_RING"), 
 	LEFTTHUMB("LEFT_THUMB"),
