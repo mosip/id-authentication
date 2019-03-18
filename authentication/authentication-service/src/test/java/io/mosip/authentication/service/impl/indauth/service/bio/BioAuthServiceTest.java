@@ -1014,10 +1014,11 @@ public class BioAuthServiceTest {
 		List<BioIdentityInfoDTO> biometricsList = new ArrayList<>();
 		BioIdentityInfoDTO bioIdentityInfoDTO = new BioIdentityInfoDTO();
 		DataDTO datadto = new DataDTO();
-		datadto.setBioType(SingleType.FINGER.name());
+		datadto.setBioType("FMR");
 		datadto.setDeviceServiceID("1234");
 		datadto.setDeviceProviderID("mantra");
 		datadto.setBioValue(value);
+		datadto.setBioSubType("LEFT_INDEX");
 		bioIdentityInfoDTO.setData(datadto);
 		biometricsList.add(bioIdentityInfoDTO);
 		request.setBiometrics(biometricsList);
