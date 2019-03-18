@@ -48,6 +48,7 @@ import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
  * Class to handles all the operations when the machine is rempaped
  * 
  * @author balamurugan.ramamoorthy
+ * @author Brahmananda Reddy
  *
  */
 @Service
