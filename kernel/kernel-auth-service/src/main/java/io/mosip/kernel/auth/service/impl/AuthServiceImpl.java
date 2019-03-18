@@ -1,9 +1,7 @@
 package io.mosip.kernel.auth.service.impl;
 
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
-import java.util.Calendar;
-import java.util.Date;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.web.authentication.www.NonceExpiredException;
 import org.springframework.stereotype.Component;
 
+import io.mosip.kernel.auth.config.MosipEnvironment;
 import io.mosip.kernel.auth.constant.AuthConstant;
 import io.mosip.kernel.auth.entities.AuthNResponse;
 import io.mosip.kernel.auth.entities.AuthNResponseDto;
@@ -62,6 +61,9 @@ public class AuthServiceImpl implements AuthService {
 	
 	@Autowired
 	UinService uinService;
+	
+	@Autowired
+	MosipEnvironment mosipEnvironment;
 
 	/**
 	 * Method used for validating Auth token
@@ -76,7 +78,7 @@ public class AuthServiceImpl implements AuthService {
 
 	@Override
 	public MosipUserDtoToken validateToken(String token) throws Exception {
-		long currentTime = LocalDateTime.now().atOffset(ZoneOffset.UTC).toLocalDateTime().toEpochSecond(ZoneOffset.UTC);
+		long currentTime = Instant.now().toEpochMilli();
 		MosipUserDtoToken mosipUserDtoToken = tokenValidator.validateToken(token);
 		AuthToken authToken = customTokenServices.getTokenDetails(token);
 		if(authToken==null)
@@ -106,11 +108,9 @@ public class AuthServiceImpl implements AuthService {
 	}
 
 	private long getExpiryTime(long expirationTime) {
-		Calendar calendar = Calendar.getInstance();
-	    calendar.setTime(new Date(expirationTime));
-	    calendar.add(Calendar.MINUTE, AuthConstant.RETURN_EXP_TIME);
-	    Date result = calendar.getTime();
-		return result.getTime();
+	    Instant ins = Instant.ofEpochMilli(expirationTime);
+	    ins = ins.plus(mosipEnvironment.getAuthSlidingWindowExp(), ChronoUnit.MINUTES);
+		return ins.toEpochMilli();
 	}
 
 	/**

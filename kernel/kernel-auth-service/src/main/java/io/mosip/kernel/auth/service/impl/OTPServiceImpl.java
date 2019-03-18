@@ -8,7 +8,6 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +19,6 @@ import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.auth.config.MosipEnvironment;
@@ -29,12 +27,10 @@ import io.mosip.kernel.auth.entities.AuthNResponseDto;
 import io.mosip.kernel.auth.entities.BasicTokenDto;
 import io.mosip.kernel.auth.entities.MosipUserDto;
 import io.mosip.kernel.auth.entities.MosipUserDtoToken;
-import io.mosip.kernel.auth.entities.otp.OtpEmailSendRequestDto;
 import io.mosip.kernel.auth.entities.otp.OtpEmailSendResponseDto;
 import io.mosip.kernel.auth.entities.otp.OtpGenerateRequestDto;
 import io.mosip.kernel.auth.entities.otp.OtpGenerateResponseDto;
 import io.mosip.kernel.auth.entities.otp.OtpSmsSendRequestDto;
-import io.mosip.kernel.auth.entities.otp.OtpSmsSendResponseDto;
 import io.mosip.kernel.auth.entities.otp.OtpTemplateDto;
 import io.mosip.kernel.auth.entities.otp.OtpTemplateResponseDto;
 import io.mosip.kernel.auth.entities.otp.OtpValidatorResponseDto;
@@ -78,10 +74,11 @@ public class OTPServiceImpl implements OTPService {
 	private ObjectMapper mapper;
 
 	@Override
-	public AuthNResponseDto sendOTP(MosipUserDto mosipUserDto, List<String> channel, String appId) {
+	public AuthNResponseDto sendOTP(MosipUserDto mosipUserDto, List<String> otpChannel, String appId) {
 		AuthNResponseDto authNResponseDto = null;
 		OtpEmailSendResponseDto otpEmailSendResponseDto = null;
 		SmsResponseDto otpSmsSendResponseDto = null;
+		String emailMessage = null,mobileMessage = null;
 		OtpGenerateResponseDto otpGenerateResponseDto = oTPGenerateService.generateOTP(mosipUserDto);
 		if(otpGenerateResponseDto!=null && otpGenerateResponseDto.getStatus().equals("USER_BLOCKED"))
 		{
@@ -89,12 +86,17 @@ public class OTPServiceImpl implements OTPService {
 			authNResponseDto.setMessage(otpGenerateResponseDto.getStatus());
 			return authNResponseDto;
 		}
-		if (channel.contains(AuthConstant.EMAIL)) {
-			String message = getOtpEmailMessage(otpGenerateResponseDto, appId);
-			otpEmailSendResponseDto = sendOtpByEmail(message, mosipUserDto.getMail());
-		} else {
-			String message = getOtpSmsMessage(otpGenerateResponseDto, appId);
-			otpSmsSendResponseDto = sendOtpBySms(message, mosipUserDto.getMobile());
+		for(String channel:otpChannel)
+		{
+			switch(channel)
+			{
+			case AuthConstant.EMAIL:
+				emailMessage = getOtpEmailMessage(otpGenerateResponseDto, appId);
+				otpEmailSendResponseDto = sendOtpByEmail(emailMessage, mosipUserDto.getMail());
+			case AuthConstant.PHONE:
+				mobileMessage = getOtpSmsMessage(otpGenerateResponseDto, appId);
+				otpSmsSendResponseDto = sendOtpBySms(mobileMessage, mosipUserDto.getMobile());
+			}		
 		}
 		if (otpEmailSendResponseDto != null) {
 			authNResponseDto = new AuthNResponseDto();
@@ -261,6 +263,8 @@ public class OTPServiceImpl implements OTPService {
 				BasicTokenDto basicToken = tokenGenerator.basicGenerateOTPToken(mosipUser, true);
 				mosipUserDtoToken = new MosipUserDtoToken(mosipUser, basicToken.getAuthToken(),
 						basicToken.getRefreshToken(), basicToken.getExpiryTime(), null,null);
+				mosipUserDtoToken.setMessage(otpResponse.getMessage());
+				mosipUserDtoToken.setStatus(otpResponse.getMessage());
 			}
 			else
 			{
