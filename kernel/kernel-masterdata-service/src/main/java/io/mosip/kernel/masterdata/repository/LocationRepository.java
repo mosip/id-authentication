@@ -20,6 +20,7 @@ import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 @Repository
 public interface LocationRepository extends BaseRepository<Location, CodeAndLanguageCodeID> {
 
+	@Query("FROM Location WHERE (isDeleted is null OR isDeleted = false) AND isActive = true")
 	List<Location> findLocationHierarchyByIsDeletedIsNullOrIsDeletedFalse();
 
 	@Query(value = "FROM Location l where l.code=?1 and l.langCode=?2 and (l.isDeleted is null or l.isDeleted=false)")
@@ -52,7 +53,7 @@ public interface LocationRepository extends BaseRepository<Location, CodeAndLang
 	 * @return List of Locations
 	 * 
 	 */
-	@Query(value = "FROM Location l where l.langCode=?1 and l.hierarchyLevel >=?2 and (l.isDeleted is null or l.isDeleted=false)")
+	@Query(value = "FROM Location l where l.langCode=?1 and l.hierarchyLevel >=?2 and (l.isDeleted is null or l.isDeleted=false) and l.isActive = true")
 	List<Location> getAllLocationsByLangCodeAndLevel(String langCode, Short level);
 
 	/**
