@@ -6,6 +6,7 @@ import java.security.spec.InvalidKeySpecException;
 import java.util.Map;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -28,6 +29,7 @@ import io.mosip.authentication.demo.service.dto.EncryptionRequestDto;
  * @author Arun Bose S
  * The Class OldEncryptTest.
  */
+@Ignore
 @RunWith(SpringRunner.class)
 @WebMvcTest
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
