@@ -16,7 +16,6 @@ import org.apache.log4j.Logger;
 import org.yaml.snakeyaml.Yaml;
 
 import io.mosip.authentication.fw.util.FileUtil;
-import io.mosip.authentication.testdata.precondtion.Precondtion;
 
 /**
  * TestDataUtil will generate the request and response file for all the test

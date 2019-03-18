@@ -3,6 +3,9 @@
 <suite name="Mosip API Suite">
 	<!-- Passing Group as parmeter unsing "testType" Possible Groups are: smoke 
 		regression smokeAndRegression -->
+	<listeners>
+		<listener class-name="io.mosip.util.CustomTestNGReporter" />
+	</listeners>
 	<test name="Kernel Tests">
 		<parameter name="testType" value="smokeandregression" />
 		<classes>

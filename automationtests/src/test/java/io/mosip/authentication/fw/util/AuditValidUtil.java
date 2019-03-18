@@ -16,8 +16,8 @@ import org.testng.Reporter;
 import io.mosip.authentication.fw.dbUtil.DbConnection;
 import io.mosip.authentication.fw.dto.OutputValidationDto;
 import io.mosip.authentication.fw.dto.UinDto;
+import io.mosip.authentication.testdata.Precondtion;
 import io.mosip.authentication.testdata.keywords.IdaKeywordUtil;
-import io.mosip.authentication.testdata.precondtion.Precondtion;
 
 public class AuditValidUtil {
 	

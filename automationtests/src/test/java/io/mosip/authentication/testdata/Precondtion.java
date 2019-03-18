@@ -1,4 +1,4 @@
-package io.mosip.authentication.testdata.precondtion;
+package io.mosip.authentication.testdata;
 
 import java.io.BufferedWriter; 
 import java.io.FileInputStream; 
@@ -30,7 +30,6 @@ import com.google.gson.JsonParser;
 
 import io.mosip.authentication.fw.precon.JsonPrecondtion;
 import io.mosip.authentication.fw.util.RunConfig;
-import io.mosip.authentication.testdata.TestDataConfig;
 import io.mosip.authentication.testdata.keywords.IdaKeywordUtil;
 import io.mosip.authentication.testdata.keywords.KernelKeywordUtil;
 import io.mosip.authentication.testdata.keywords.KeywordUtil;
@@ -141,12 +140,13 @@ public class Precondtion {
 			Object value = object.get(key);
 			if (value instanceof JSONArray) {
 				JSONArray array = (JSONArray) value;
-				String finalarrayContent="";
+				String finalarrayContent = "";
 				for (int i = 0; i < array.length(); ++i) {
-					String arrayContent = removeObject(new JSONObject(array.get(i).toString()),finalarrayContent);
-					finalarrayContent=finalarrayContent+","+arrayContent;					
+					String arrayContent = removeObject(new JSONObject(array.get(i).toString()), finalarrayContent);
+					if (!arrayContent.equals("{}"))
+						finalarrayContent = finalarrayContent + "," + arrayContent;
 				}
-				finalarrayContent=finalarrayContent.substring(1,finalarrayContent.length());
+				finalarrayContent = finalarrayContent.substring(1, finalarrayContent.length());
 				object.put(key, new JSONArray("[" + finalarrayContent + "]"));
 			} else if (value instanceof JSONObject) {
 				String objectContent = removeObject(new JSONObject(value.toString()));
