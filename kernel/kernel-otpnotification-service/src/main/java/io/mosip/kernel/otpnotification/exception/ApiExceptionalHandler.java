@@ -22,6 +22,7 @@ import org.springframework.web.util.ContentCachingRequestWrapper;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
+import io.mosip.kernel.core.exception.ErrorResponse;
 import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseWrapper;
@@ -111,8 +112,7 @@ public class ApiExceptionalHandler {
 	public ResponseEntity<ResponseWrapper<ServiceError>> controlDataServiceException(
 			final HttpServletRequest httpServletRequest, final OtpNotifierServiceException e) throws IOException {
 		ResponseWrapper<ServiceError> responseWrapper = setErrors(httpServletRequest);
-		ServiceError error = new ServiceError(e.getErrorCode(),
-				e.getErrorText());
+		ServiceError error = new ServiceError(e.getErrorCode(), e.getErrorText());
 		responseWrapper.getErrors().add(error);
 		return new ResponseEntity<>(responseWrapper, HttpStatus.OK);
 	}
@@ -150,11 +150,11 @@ public class ApiExceptionalHandler {
 	@ExceptionHandler(value = { Exception.class, RuntimeException.class })
 	public ResponseEntity<ResponseWrapper<ServiceError>> defaultErrorHandler(
 			final HttpServletRequest httpServletRequest, Exception exception) throws IOException {
-		ResponseWrapper<ServiceError> errorResponse = setErrors(httpServletRequest);
+		ResponseWrapper<ServiceError> responseWrapper = setErrors(httpServletRequest);
 		ServiceError error = new ServiceError(OtpNotificationErrorConstant.RUNTIME_EXCEPTION.getErrorCode(),
 				exception.getMessage());
-		errorResponse.getErrors().add(error);
-		return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+		responseWrapper.getErrors().add(error);
+		return new ResponseEntity<>(responseWrapper, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
 	private ResponseWrapper<ServiceError> setErrors(HttpServletRequest httpServletRequest) throws IOException {

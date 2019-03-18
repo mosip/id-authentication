@@ -1,11 +1,14 @@
 package io.mosip.kernel.otpnotification.service.impl;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.exception.ServiceError;
+import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.otpnotification.spi.OtpNotification;
 import io.mosip.kernel.otpnotification.constant.OtpNotificationPropertyConstant;
 import io.mosip.kernel.otpnotification.dto.OtpNotificationRequestDto;
@@ -24,6 +27,11 @@ import io.mosip.kernel.otpnotification.utils.OtpNotificationUtil;
 public class OtpNotificationServiceImpl
 		implements OtpNotification<OtpNotificationResponseDto, OtpNotificationRequestDto> {
 
+	@Value("${mosip.kernel.otpnotification.request_id}")
+	private String wrapperRequestID;
+
+	@Value("${mosip.kernel.otpnotification.request_version}")
+	private String wrapperRequestVersion;
 	/**
 	 * Reference to {@link OtpNotificationUtil}.
 	 */
@@ -40,6 +48,11 @@ public class OtpNotificationServiceImpl
 	@Override
 	public OtpNotificationResponseDto sendOtpNotification(OtpNotificationRequestDto requestDto) {
 		OtpNotificationResponseDto responseDto = new OtpNotificationResponseDto();
+		RequestWrapper<OtpRequestDto> reqWrapper = new RequestWrapper<>();
+		reqWrapper.setId(wrapperRequestID);
+		reqWrapper.setMetadata(null);
+		reqWrapper.setRequesttime(LocalDateTime.now());
+		reqWrapper.setVersion(wrapperRequestVersion);
 		OtpRequestDto request = new OtpRequestDto();
 		requestDto.getNotificationTypes().replaceAll(String::toLowerCase);
 		requestDto.getNotificationTypes().forEach(notificationUtil::containsNotificationTypes);
@@ -49,7 +62,8 @@ public class OtpNotificationServiceImpl
 		}
 		request.setKey(notificationUtil.getKey(requestDto.getNotificationTypes(), requestDto.getMobileNumber(),
 				requestDto.getEmailId()));
-		String otp = notificationUtil.generateOtp(request);
+		reqWrapper.setRequest(request);
+		String otp = notificationUtil.generateOtp(reqWrapper);
 		for (int type = 0; type < requestDto.getNotificationTypes().size(); type++) {
 			if (requestDto.getNotificationTypes().get(type)
 					.equalsIgnoreCase(OtpNotificationPropertyConstant.NOTIFICATION_TYPE_SMS.getProperty())) {

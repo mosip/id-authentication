@@ -87,9 +87,12 @@ public final class ExceptionUtils {
 
 				while (iter.hasNext()) {
 					JsonNode parameterNode = iter.next();
-					ServiceError serviceError = new ServiceError(getJsonValue(parameterNode, "errorCode"),
-							getJsonValue(parameterNode, "errorMessage"));
-					validationErrorsList.add(serviceError);
+					if (!(getJsonValue(parameterNode, "errorCode") == null
+							|| getJsonValue(parameterNode, "errorMessage") == null)) {
+						ServiceError serviceError = new ServiceError(getJsonValue(parameterNode, "errorCode"),
+								getJsonValue(parameterNode, "errorMessage"));
+						validationErrorsList.add(serviceError);
+					}
 				}
 			}
 		} catch (IOException e) {
