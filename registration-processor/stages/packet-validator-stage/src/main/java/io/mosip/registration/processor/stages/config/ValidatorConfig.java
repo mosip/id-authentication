@@ -15,6 +15,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.core.io.support.ResourcePropertySource;
 
+import io.mosip.kernel.core.jsonvalidator.spi.JsonValidator;
 import io.mosip.kernel.jsonvalidator.impl.JsonValidatorImpl;
 import io.mosip.registration.processor.stages.packet.validator.PacketValidateProcessor;
 import io.mosip.registration.processor.stages.packet.validator.PacketValidatorStage;
@@ -64,7 +65,7 @@ public class ValidatorConfig {
 	}
 
 	@Bean
-	public JsonValidatorImpl getJsonValidator() {
+	public JsonValidator getJsonValidator() {
 		return new JsonValidatorImpl();
 	}
 }

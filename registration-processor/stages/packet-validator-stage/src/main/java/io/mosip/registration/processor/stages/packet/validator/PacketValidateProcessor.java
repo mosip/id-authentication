@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 
+import io.mosip.kernel.core.exception.BaseUncheckedException;
 import io.mosip.kernel.core.fsadapter.exception.FSAdapterException;
 import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
 import io.mosip.kernel.core.jsonvalidator.model.ValidationReport;
@@ -391,7 +392,15 @@ public class PacketValidateProcessor {
 
 			}
 
+		} catch (BaseUncheckedException e) {
+			object.setInternalError(Boolean.TRUE);
+
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), registrationId,
+					PlatformErrorMessages.STRUCTURAL_VALIDATION_FAILED.getMessage(), e.toString());
+
+			description = "Schema Validation Failed";
 		} finally {
+
 			String eventId = "";
 			String eventName = "";
 			String eventType = "";
@@ -412,6 +421,7 @@ public class PacketValidateProcessor {
 		}
 
 		return object;
+
 	}
 
 	private void setApplicant(Identity identity, InternalRegistrationStatusDto registrationStatusDto) {
