@@ -21,7 +21,6 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.constants.RegistrationUIConstants;
-import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.exception.RegBaseUncheckedException;
@@ -89,8 +88,9 @@ public class SendNotificationController extends BaseController implements Initia
 	}
 
 	@Override
-	public void initialize(URL location, ResourceBundle resources) {
-		String modeOfCommunication = String.valueOf(ApplicationContext.map().get(RegistrationConstants.MODE_OF_COMM));
+	public void initialize(URL location, ResourceBundle resources) {		
+		String modeOfCommunication = String
+				.valueOf(applicationContext.getApplicationMap().get(RegistrationConstants.MODE_OF_COMMUNICATION));
 		if (!modeOfCommunication.contains(RegistrationConstants.EMAIL_SERVICE.toUpperCase())) {
 			email.setVisible(false);
 			emailIcon.setVisible(false);
@@ -137,8 +137,6 @@ public class SendNotificationController extends BaseController implements Initia
 						notifications.add(RegistrationConstants.CONTENT_TYPE_EMAIL);
 
 					}
-				} else {
-					generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.NO_VALID_EMAIL);
 				}
 			}
 			if (mobile.getText() != null && !mobile.getText().isEmpty()) {
@@ -162,8 +160,6 @@ public class SendNotificationController extends BaseController implements Initia
 					} else {
 						notifications.add(RegistrationConstants.CONTENT_TYPE_MOBILE);
 					}
-				} else {
-					generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.NO_VALID_MOBILE);
 				}
 			}
 			if (notifications.size() > 1) {
@@ -221,6 +217,13 @@ public class SendNotificationController extends BaseController implements Initia
 				if (RegistrationConstants.CONTENT_TYPE_EMAIL.equalsIgnoreCase(contentType) ? validateMail(content)
 						: validateMobile(content)) {
 					contentsList.add(content);
+				}
+			}
+			if (contentsList.size() == 0) {
+				if (RegistrationConstants.CONTENT_TYPE_EMAIL.equalsIgnoreCase(contentType)) {
+					generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.NO_VALID_EMAIL);
+				} else {
+					generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.NO_VALID_MOBILE);
 				}
 			}
 		}
