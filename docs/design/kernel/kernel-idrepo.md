@@ -25,9 +25,6 @@ Identity Repository service can be used internally by products to create, read a
 #### 1.2.2. Functional Flow Diagram - Retrieve ID - 
 ![Functional Flow Diagram - Retrieve ID](_images/kernel-idrepo-getidentity-fd.PNG) 
 
-#### 1.2.3. Functional Flow Diagram - Update ID - 
-![Functional Flow Diagram - Update ID](_images/kernel-idrepo-updateid-fd.PNG) 
-
 
 ***1.3. Key Non-Functional Requirements -***   
 
@@ -83,7 +80,10 @@ Below sequence diagram for Update Identity service shows sequence of operations 
 ![Update Identity Sequence Diagram](_images/kernel-idrepo-updateid-sd.PNG)   
 
 When UIN status is updated using Update ID API, the status is first validated against the configured status for the country. Once input UIN status matches the one among all the configured UIN status, it is updated in the database. 
-Default configuration of UIN status has ACTIVATES, BLOCKED and DEACTIVATED. This can be changed based on country's requirements.       
+Default configuration of UIN status has REGISTERED, BLOCKED and DEACTIVATED. This can be changed based on countryâ€™s requirements.   
+
+Below sequence diagram shows sequence of operations to update UIN status.   
+![Update Status Sequence Diagram](_images/kernel-idrepo-updatestatus-sd.PNG)       
 
 
 ***2.2.3.	Get Identity***   
