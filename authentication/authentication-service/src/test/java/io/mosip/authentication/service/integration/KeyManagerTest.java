@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.el.stream.Optional;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -170,9 +171,52 @@ public class KeyManagerTest {
 		keyManager.requestData(reqMap, mapper);
 	}
 	
+	
+	@Test(expected = IdAuthenticationAppException.class)
+	public void invalidKernelKeyManagerErrorRequest() throws IdAuthenticationAppException, IOException, IDDataValidationException {
+		Map<String, Object> reqMap = createRequest();
+		RestRequestDTO restRequestDTO = getRestRequestDTO();
+		Mockito.when(restRequestFactory.buildRequest(Mockito.any(), Mockito.any(), Mockito.any()))
+				.thenReturn(restRequestDTO);
+		String kernelErrorMapStr="{\r\n" + 
+				"	\"errors\": [{\r\n" + 
+				"			\"errCode\": \"KER-KMS-003\"\r\n" + 
+				"		}\r\n" + 
+				"\r\n" + 
+				"	]\r\n" + 
+				"\r\n" + 
+				"}";
+		RestServiceException restException=new RestServiceException(IdAuthenticationErrorConstants.CLIENT_ERROR,kernelErrorMapStr,new ObjectMapper().readValue(kernelErrorMapStr.getBytes("UTF-8"), Map.class));
+		Mockito.when(restHelper.requestSync(Mockito.any()))
+				.thenThrow(restException);
+		keyManager.requestData(reqMap, mapper);
+	}
+	
+	
+	@Test(expected = IdAuthenticationAppException.class)
+	public void invalidKernelErrorRequest() throws IdAuthenticationAppException, IOException, IDDataValidationException {
+		Map<String, Object> reqMap = createRequest();
+		RestRequestDTO restRequestDTO = getRestRequestDTO();
+		Mockito.when(restRequestFactory.buildRequest(Mockito.any(), Mockito.any(), Mockito.any()))
+				.thenReturn(restRequestDTO);
+		String kernelErrorMapStr="{\r\n" + 
+				"	\"errors\": [{\r\n" + 
+				"			\"errCode\": \"KER-KMS-004\"\r\n" + 
+				"		}\r\n" + 
+				"\r\n" + 
+				"	]\r\n" + 
+				"\r\n" + 
+				"}";
+		RestServiceException restException=new RestServiceException(IdAuthenticationErrorConstants.CLIENT_ERROR,kernelErrorMapStr,new ObjectMapper().readValue(kernelErrorMapStr.getBytes("UTF-8"), Map.class));
+		Mockito.when(restHelper.requestSync(Mockito.any()))
+				.thenThrow(restException);
+		keyManager.requestData(reqMap, mapper);
+	}
+	
 	/*@Test(expected = IdAuthenticationAppException.class)
 	public void TestTspIdisNullorEmpty() throws IdAuthenticationAppException {
-		Map<String, Object> requestBody = new HashMap<>();
+		Map<String, Object> requestBody =
+		 new HashMap<>();
 		keyManager.requestData(requestBody, mapper);
 	}
 	
@@ -239,7 +283,6 @@ public class KeyManagerTest {
 	 */
 	private Map<String, Object> createResponse() {
 		String data = "{\\r\\n\\tidentity = {\\r\\n\\t\\tleftIndex = [{\\r\\n\\t\\t\\tvalue = Rk1SACAyMAAAAAEIAAABPAFiAMUAxQEAAAAoJ4CEAOs8UICiAQGXUIBzANXIV4CmARiXUEC6AObFZIB3ALUSZEBlATPYZICIAKUCZEBmAJ4YZEAnAOvBZIDOAKTjZEBCAUbQQ0ARANu0ZECRAOC4NYBnAPDUXYCtANzIXUBhAQ7bZIBTAQvQZICtASqWZEDSAPnMZICaAUAVZEDNAS63Q0CEAVZiSUDUAT + oNYBhAVprSUAmAJyvZICiAOeyQ0CLANDSPECgAMzXQ0CKAR8OV0DEAN \\/ QZEBNAMy9ZECaAKfwZEC9ATieUEDaAMfWUEDJAUA2NYB5AVttSUBKAI + oZECLAG0FZAAA\\r\\n\\t\\t}]\\r\\n\\t}\\r\\n}";
-
 		Map<String, Object> readValue = null;
 		try {
 			readValue = mapper.readValue(data, new TypeReference<Map<String, Object>>() {

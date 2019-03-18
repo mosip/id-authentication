@@ -97,7 +97,8 @@ public class OTPServiceImpl implements OTPService {
 	 *                                           exception
 	 */
 	@Override
-	public OtpResponseDTO generateOtp(OtpRequestDTO otpRequestDto) throws IdAuthenticationBusinessException {
+	public OtpResponseDTO generateOtp(OtpRequestDTO otpRequestDto, String partnerId)
+			throws IdAuthenticationBusinessException {
 		String otpKey = null;
 		String otp = null;
 		String mobileNumber = null;
@@ -109,7 +110,6 @@ public class OTPServiceImpl implements OTPService {
 		String idvIdType = otpRequestDto.getIndividualIdType();
 		String reqTime = otpRequestDto.getRequestTime();
 		String txnId = otpRequestDto.getTransactionID();
-		String tspID = otpRequestDto.getPartnerID();
 		Map<String, Object> idResDTO = idAuthService.processIdType(idvIdType, idvId, false);
 		Map<String, List<IdentityInfoDTO>> idInfo = idAuthService.getIdInfo(idResDTO);
 		if (otpRequestDto.getOtpChannel().isPhone()) {
@@ -133,7 +133,7 @@ public class OTPServiceImpl implements OTPService {
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.OTP_REQUEST_FLOODED);
 		} else {
 			String productid = env.getProperty("application.id");
-			otpKey = OTPUtil.generateKey(productid, uin, txnId, tspID);
+			otpKey = OTPUtil.generateKey(productid, uin, txnId, partnerId);
 			try {
 				otp = generateOtp(otpKey);
 			} catch (IdAuthenticationBusinessException e) {
@@ -164,7 +164,6 @@ public class OTPServiceImpl implements OTPService {
 			MaskedResponseDTO responseDTO = new MaskedResponseDTO();
 			if (checkIsEmptyorNull(email) && otpRequestDto.getOtpChannel().isEmail()) {
 				responseDTO.setMaskedEmail(MaskUtil.maskEmail(email));
-				otpResponseDTO.setResponse(responseDTO);
 			}
 			if (checkIsEmptyorNull(mobileNumber) && otpRequestDto.getOtpChannel().isPhone()) {
 				responseDTO.setMaskedMobile(MaskUtil.maskMobile(mobileNumber));

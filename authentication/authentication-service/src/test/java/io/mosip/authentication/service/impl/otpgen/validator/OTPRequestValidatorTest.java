@@ -87,8 +87,6 @@ public class OTPRequestValidatorTest {
 		OtpRequestDTO OtpRequestDTO = new OtpRequestDTO();
 		Errors errors = new BeanPropertyBindingResult(OtpRequestDTO, "OtpRequestDTO");
 		OtpRequestDTO.setId("id");
-		// OtpRequestDTO.setVer("1.1");
-		OtpRequestDTO.setPartnerID("1234567890");
 		OtpRequestDTO.setTransactionID("1234567890");
 		ZoneOffset offset = ZoneOffset.MAX;
 		OtpRequestDTO.setRequestTime(Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
@@ -98,7 +96,6 @@ public class OTPRequestValidatorTest {
 		ChannelDTO channel = new ChannelDTO();
 		channel.setPhone(true);
 		OtpRequestDTO.setOtpChannel(channel);
-		OtpRequestDTO.setMispLicenseKey("TEst");
 		otpRequestValidator.validate(OtpRequestDTO, errors);
 		assertFalse(errors.hasErrors());
 	}
@@ -110,7 +107,6 @@ public class OTPRequestValidatorTest {
 		Errors errors = new BeanPropertyBindingResult(OtpRequestDTO, "OtpRequestDTO");
 		OtpRequestDTO.setId("id");
 		OtpRequestDTO.setIndividualId("5076204698");
-		OtpRequestDTO.setPartnerID("1234567890");
 		ChannelDTO channel = new ChannelDTO();
 		channel.setPhone(true);
 		OtpRequestDTO.setOtpChannel(channel);
@@ -124,8 +120,6 @@ public class OTPRequestValidatorTest {
 		Mockito.when(uinValidator.validateId(Mockito.anyString())).thenThrow(new InvalidIDException("id", "code"));
 		OtpRequestDTO OtpRequestDTO = new OtpRequestDTO();
 		OtpRequestDTO.setId("id");
-		// OtpRequestDTO.setVer("1.1");
-		OtpRequestDTO.setPartnerID("1234567890");
 		OtpRequestDTO.setTransactionID("1234567890");
 		OtpRequestDTO.setRequestTime(Instant.now().atOffset(ZoneOffset.of("+0530"))
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
@@ -135,7 +129,6 @@ public class OTPRequestValidatorTest {
 		ChannelDTO channel = new ChannelDTO();
 		channel.setPhone(true);
 		OtpRequestDTO.setOtpChannel(channel);
-		OtpRequestDTO.setMispLicenseKey("test");
 		otpRequestValidator.validate(OtpRequestDTO, errors);
 		assertFalse(errors.hasErrors());
 	}
@@ -146,7 +139,6 @@ public class OTPRequestValidatorTest {
 		OtpRequestDTO OtpRequestDTO = new OtpRequestDTO();
 		Errors errors = new BeanPropertyBindingResult(OtpRequestDTO, "OtpRequestDTO");
 		OtpRequestDTO.setId("id");
-		OtpRequestDTO.setPartnerID("1234567890");
 		OtpRequestDTO.setIndividualId("5371843613598211");
 		ChannelDTO channel = new ChannelDTO();
 		channel.setPhone(true);
@@ -164,7 +156,6 @@ public class OTPRequestValidatorTest {
 		OtpRequestDTO.setRequestTime(new Date("1/1/2017").toInstant().atOffset(ZoneOffset.of("+0530"))
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
 		OtpRequestDTO.setIndividualId("5371843613598211");
-		OtpRequestDTO.setPartnerID("1234567890");
 		OtpRequestDTO.setId("id");
 		ChannelDTO channel = new ChannelDTO();
 		channel.setPhone(true);
@@ -181,7 +172,6 @@ public class OTPRequestValidatorTest {
 		Errors errors = new BeanPropertyBindingResult(OtpRequestDTO, "OtpRequestDTO");
 		OtpRequestDTO.setRequestTime("123-123-45-32");
 		OtpRequestDTO.setId("id");
-		OtpRequestDTO.setPartnerID("1234567890");
 		OtpRequestDTO.setIndividualId("5371843613598211");
 		ChannelDTO channel = new ChannelDTO();
 		channel.setPhone(true);
@@ -198,7 +188,6 @@ public class OTPRequestValidatorTest {
 		Errors errors = new BeanPropertyBindingResult(otpRequestDTO, "OtpRequestDTO");
 		otpRequestDTO.setRequestTime(Instant.now().toString());
 		otpRequestDTO.setId("id");
-		otpRequestDTO.setPartnerID("1234567890");
 		otpRequestDTO.setIndividualId("5371843613598211");
 		ChannelDTO channel = new ChannelDTO();
 		channel.setPhone(true);
@@ -216,7 +205,6 @@ public class OTPRequestValidatorTest {
 		otpRequestDTO.setId("id");
 		otpRequestDTO.setVersion("1.1");
 		otpRequestDTO.setTransactionID("");
-		otpRequestDTO.setPartnerID("1234567890");
 		otpRequestDTO.setIndividualId("5371843613598211");
 		ChannelDTO channel = new ChannelDTO();
 		channel.setPhone(true);
@@ -233,7 +221,6 @@ public class OTPRequestValidatorTest {
 		otpRequestDTO.setVersion("1.1");
 		otpRequestDTO.setId("id");
 		otpRequestDTO.setIndividualId("");
-		otpRequestDTO.setPartnerID("1234567890");
 		ChannelDTO channel = new ChannelDTO();
 		channel.setPhone(true);
 		otpRequestDTO.setOtpChannel(channel);
@@ -248,7 +235,6 @@ public class OTPRequestValidatorTest {
 		otpRequestDTO.setTransactionID("TXN0000001");
 		otpRequestDTO.setRequestTime("2019-03-15T09:23:50.635");
 		otpRequestDTO.setIndividualId("5371843613598211");
-		otpRequestDTO.setPartnerID("1234567890");
 		System.err.println(Instant.now() + toString());
 		Errors errors = new BeanPropertyBindingResult(otpRequestDTO, "OtpRequestDTO");
 		otpRequestValidator.validate(otpRequestDTO, errors);

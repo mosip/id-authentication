@@ -17,7 +17,6 @@ import org.junit.Test;
 import org.springframework.core.env.Environment;
 
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
-import io.mosip.authentication.core.dto.indauth.AuthUsageDataBit;
 import io.mosip.authentication.core.dto.indauth.IdentityDTO;
 import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
 import io.mosip.authentication.core.dto.indauth.RequestDTO;
@@ -69,7 +68,7 @@ public class MatchTest {
 				return null;
 			}
 		};
-		
+
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		boolean authTypeInfoAvailable = authType.isAuthTypeInfoAvailable(authRequestDTO);
 		assertFalse(authTypeInfoAvailable);
@@ -86,18 +85,6 @@ public class MatchTest {
 		nameList.add(identityInfoDTO);
 		identity.setName(nameList);
 		MatchType matchType = new MatchType() {
-
-			@Override
-			public AuthUsageDataBit getUsedBit() {
-				// TODO Auto-generated method stub
-				return null;
-			}
-
-			@Override
-			public AuthUsageDataBit getMatchedBit() {
-				// TODO Auto-generated method stub
-				return null;
-			}
 
 			@Override
 			public Function<RequestDTO, Map<String, List<IdentityInfoDTO>>> getIdentityInfoFunction() {
@@ -184,18 +171,6 @@ public class MatchTest {
 		nameList.add(identityInfoDTO);
 		identity.setName(nameList);
 		MatchType matchType = new MatchType() {
-
-			@Override
-			public AuthUsageDataBit getUsedBit() {
-				// TODO Auto-generated method stub
-				return null;
-			}
-
-			@Override
-			public AuthUsageDataBit getMatchedBit() {
-				// TODO Auto-generated method stub
-				return null;
-			}
 
 			@Override
 			public Function<RequestDTO, Map<String, List<IdentityInfoDTO>>> getIdentityInfoFunction() {

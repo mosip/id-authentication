@@ -104,24 +104,6 @@ public class IdMappingValidationTest {
 	}
 
 	@Test
-	public void TestInvalidOTPAuth() {
-		AuthRequestDTO authRequestDTO = getOtpRequest();
-		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
-		Mockito.when(idinfoHelper.isMatchtypeEnabled(Mockito.any())).thenReturn(false);
-		ReflectionTestUtils.invokeMethod(authRequestValidator, "checkOTPAuth", authRequestDTO, errors);
-		assertFalse(errors.hasErrors());
-	}
-
-	@Test
-	public void TestValidOTPAuth() {
-		AuthRequestDTO authRequestDTO = getOtpRequest();
-		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
-		Mockito.when(idinfoHelper.isMatchtypeEnabled(Mockito.any())).thenReturn(true);
-		ReflectionTestUtils.invokeMethod(authRequestValidator, "checkOTPAuth", authRequestDTO, errors);
-		assertFalse(errors.hasErrors());
-	}
-
-	@Test
 	public void checkValidDemoAuth() throws IdAuthenticationBusinessException {
 		AuthRequestDTO authRequestDTO = getAuthRequestDtoValue();
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");

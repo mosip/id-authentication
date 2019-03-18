@@ -3,25 +3,21 @@ package io.mosip.authentication.service.impl.indauth.service.demo;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import io.mosip.authentication.core.dto.indauth.AuthUsageDataBit;
 import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
 import io.mosip.authentication.core.dto.indauth.LanguageType;
 import io.mosip.authentication.core.spi.indauth.match.MatchingStrategy;
@@ -45,8 +41,6 @@ public class DemoMatchTypeTest {
 	@Test
 	public void TestPriAddressisNotNull() {
 		assertNotNull(DemoMatchType.ADDR.getAllowedMatchingStrategy(FullAddressMatchingStrategy.EXACT.getType()));
-		assertNotNull(DemoMatchType.ADDR.getMatchedBit());
-		assertNotNull(DemoMatchType.ADDR.getMatchedBit());
 	}
 
 	@Test
@@ -54,24 +48,6 @@ public class DemoMatchTypeTest {
 		Optional<MatchingStrategy> matchStrategy = DemoMatchType.ADDR
 				.getAllowedMatchingStrategy(FullAddressMatchingStrategy.EXACT.getType());
 		assertEquals(matchStrategy.get(), FullAddressMatchingStrategy.EXACT);
-	}
-
-	@Ignore
-	@Test
-	public void TestAuthUsageDataBit() {
-		Map<AuthUsageDataBit, Long> bitsCountMap = Arrays.stream(DemoMatchType.values()).map(dmt -> dmt.getUsedBit())
-				.collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
-
-		assertEquals(AuthUsageDataBit.values().length, bitsCountMap.size());
-		assertTrue(bitsCountMap.values().stream().allMatch(c -> c == 1));
-	}
-
-	@Test
-	public void TestAuthUsageMatchedBit() {
-		Map<AuthUsageDataBit, Long> bitsCountMap = Arrays.stream(DemoMatchType.values()).map(dmt -> dmt.getMatchedBit())
-				.collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
-		// assertEquals(AuthUsageDataBit.values().length, bitsCountMap.size());
-		assertTrue(bitsCountMap.values().stream().allMatch(c -> c == 1));
 	}
 
 	@Test

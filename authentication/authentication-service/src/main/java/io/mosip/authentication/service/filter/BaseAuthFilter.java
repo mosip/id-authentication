@@ -201,7 +201,6 @@ public abstract class BaseAuthFilter extends BaseIDAFilter {
 				.anyMatch(ar -> ar[1].trim().equals(env.getProperty(MOSIP_TSP_ORGANIZATION)));
 	}
 
-
 	/**
 	 * Decode.
 	 *
@@ -265,17 +264,21 @@ public abstract class BaseAuthFilter extends BaseIDAFilter {
 		return responseBody;
 	}
 
-	/* (non-Javadoc)
-	 * @see io.mosip.authentication.service.filter.BaseIDAFilter#transformResponse(java.util.Map)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.authentication.service.filter.BaseIDAFilter#transformResponse(java.
+	 * util.Map)
 	 */
 	@Override
 	protected Map<String, Object> transformResponse(Map<String, Object> responseMap)
 			throws IdAuthenticationAppException {
 		return encipherResponse(responseMap);
 	}
-	
+
 	protected void validateRequestHMAC(String requestHMAC, String generatedHMAC) throws IdAuthenticationAppException {
-		if(!requestHMAC.equals(HMACUtils.digestAsPlainText(HMACUtils.generateHash(generatedHMAC.getBytes())))) {
+		if (!requestHMAC.equals(HMACUtils.digestAsPlainText(HMACUtils.generateHash(generatedHMAC.getBytes())))) {
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.HMAC_VALIDATION_FAILED);
 		}
 	}

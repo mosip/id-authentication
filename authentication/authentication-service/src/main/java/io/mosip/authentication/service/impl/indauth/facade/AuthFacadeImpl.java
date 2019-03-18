@@ -31,7 +31,6 @@ import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
 import io.mosip.authentication.core.dto.indauth.KycAuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.KycAuthResponseDTO;
 import io.mosip.authentication.core.dto.indauth.KycResponseDTO;
-import io.mosip.authentication.core.dto.indauth.KycType;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.id.service.IdAuthService;
@@ -505,7 +504,7 @@ public class AuthFacadeImpl implements AuthFacade {
 		KycResponseDTO response = null;
 		if (idResDTO != null && authResponseDTO.isStatus()) {
 			response = kycService.retrieveKycInfo(String.valueOf(idResDTO.get("uin")),
-					KycType.getEkycAuthType(env.getProperty(key)), kycAuthRequestDTO.getSecondaryLangCode(), idInfo);
+					 kycAuthRequestDTO.getAllowedKycAttributes(), kycAuthRequestDTO.getSecondaryLangCode(), idInfo);
 			response.setTtl(env.getProperty("ekyc.ttl.hours"));
 		}
 

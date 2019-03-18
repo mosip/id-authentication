@@ -201,7 +201,7 @@ public abstract class BaseIDAFilter implements Filter {
 		Map<String, Object> responseMap = mapper.convertValue(authResponseDTO,
 				new TypeReference<Map<String, Object>>() {
 				});
-		Map<String, Object> resultMap = constructResponse(responseMap);
+		Map<String, Object> resultMap = removeNullOrEmptyFieldsInResponse(responseMap);
 		response.getWriter().write(mapper.writeValueAsString(resultMap));
 		responseWrapper.setResponse(response);
 		responseWrapper.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
@@ -215,9 +215,9 @@ public abstract class BaseIDAFilter implements Filter {
 	 * @param responseMap the response map
 	 * @return the map
 	 */
-	private Map<String, Object> constructResponse(Map<String, Object> responseMap) {
+	protected Map<String, Object> removeNullOrEmptyFieldsInResponse(Map<String, Object> responseMap) {
 		return responseMap.entrySet().stream().filter(map -> Objects.nonNull(map.getValue()))
-				.filter(map -> !(map.getValue() instanceof List) || !((List<?>) map.getValue()).isEmpty())
+				.filter(entry -> !(entry.getValue() instanceof List) || !((List<?>) entry.getValue()).isEmpty())
 				.collect(Collectors.toMap(Entry<String, Object>::getKey, Entry<String, Object>::getValue,
 						(map1, map2) -> map1, LinkedHashMap<String, Object>::new));
 	}
@@ -371,7 +371,7 @@ public abstract class BaseIDAFilter implements Filter {
 			}
 			responseMap.replace(VERSION, version);
 
-			Map<String, Object> resultMap = constructResponse(responseMap);
+			Map<String, Object> resultMap = removeNullOrEmptyFieldsInResponse(responseMap);
 			String responseAsString = mapper.writeValueAsString(transformResponse(resultMap));
 			logTime((String) getResponseBody(responseAsString).get(RES_TIME), RESPONSE);
 			return responseAsString;
