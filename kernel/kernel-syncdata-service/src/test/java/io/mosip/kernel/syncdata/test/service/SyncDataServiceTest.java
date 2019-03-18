@@ -246,7 +246,7 @@ public class SyncDataServiceTest {
 		RegistrationCenterUserDto registrationCenterUserDto = new RegistrationCenterUserDto();
 		registrationCenterUserDto.setIsActive(true);
 		registrationCenterUserDto.setRegCenterId(regId);
-		registrationCenterUserDto.setUserId("M10411022");
+		registrationCenterUserDto.setUserId("M10411022");   
 		registrationCenterUserDtos.add(registrationCenterUserDto);
 		registrationCenterUserResponseDto.setRegistrationCenterUsers(registrationCenterUserDtos);
 
@@ -385,3 +385,4 @@ public class SyncDataServiceTest {
 	}
 
 }
+

@@ -25,9 +25,11 @@ import org.springframework.dao.DataRetrievalFailureException;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 
+import io.mosip.kernel.syncdata.entity.AppAuthenticationMethod;
+import io.mosip.kernel.syncdata.entity.AppDetail;
+import io.mosip.kernel.syncdata.entity.AppRolePriority;
 import io.mosip.kernel.syncdata.entity.ApplicantValidDocument;
 import io.mosip.kernel.syncdata.entity.Application;
 import io.mosip.kernel.syncdata.entity.BiometricAttribute;
@@ -47,6 +49,7 @@ import io.mosip.kernel.syncdata.entity.Location;
 import io.mosip.kernel.syncdata.entity.Machine;
 import io.mosip.kernel.syncdata.entity.MachineSpecification;
 import io.mosip.kernel.syncdata.entity.MachineType;
+import io.mosip.kernel.syncdata.entity.ProcessList;
 import io.mosip.kernel.syncdata.entity.ReasonCategory;
 import io.mosip.kernel.syncdata.entity.ReasonList;
 import io.mosip.kernel.syncdata.entity.RegistrationCenter;
@@ -62,6 +65,7 @@ import io.mosip.kernel.syncdata.entity.RegistrationCenterUser;
 import io.mosip.kernel.syncdata.entity.RegistrationCenterUserHistory;
 import io.mosip.kernel.syncdata.entity.RegistrationCenterUserMachine;
 import io.mosip.kernel.syncdata.entity.RegistrationCenterUserMachineHistory;
+import io.mosip.kernel.syncdata.entity.ScreenAuthorization;
 import io.mosip.kernel.syncdata.entity.Template;
 import io.mosip.kernel.syncdata.entity.TemplateFileFormat;
 import io.mosip.kernel.syncdata.entity.TemplateType;
@@ -77,6 +81,9 @@ import io.mosip.kernel.syncdata.entity.id.RegistrationCenterMachineHistoryID;
 import io.mosip.kernel.syncdata.entity.id.RegistrationCenterMachineID;
 import io.mosip.kernel.syncdata.entity.id.RegistrationCenterMachineUserID;
 import io.mosip.kernel.syncdata.entity.id.RegistrationCenterUserID;
+import io.mosip.kernel.syncdata.repository.AppAuthenticationMethodRepository;
+import io.mosip.kernel.syncdata.repository.AppDetailRepository;
+import io.mosip.kernel.syncdata.repository.AppRolePriorityRepository;
 import io.mosip.kernel.syncdata.repository.ApplicantValidDocumentRespository;
 import io.mosip.kernel.syncdata.repository.ApplicationRepository;
 import io.mosip.kernel.syncdata.repository.BiometricAttributeRepository;
@@ -96,6 +103,7 @@ import io.mosip.kernel.syncdata.repository.LocationRepository;
 import io.mosip.kernel.syncdata.repository.MachineRepository;
 import io.mosip.kernel.syncdata.repository.MachineSpecificationRepository;
 import io.mosip.kernel.syncdata.repository.MachineTypeRepository;
+import io.mosip.kernel.syncdata.repository.ProcessListRepository;
 import io.mosip.kernel.syncdata.repository.ReasonCategoryRepository;
 import io.mosip.kernel.syncdata.repository.ReasonListRepository;
 import io.mosip.kernel.syncdata.repository.RegistrationCenterDeviceHistoryRepository;
@@ -110,6 +118,7 @@ import io.mosip.kernel.syncdata.repository.RegistrationCenterUserHistoryReposito
 import io.mosip.kernel.syncdata.repository.RegistrationCenterUserMachineHistoryRepository;
 import io.mosip.kernel.syncdata.repository.RegistrationCenterUserMachineRepository;
 import io.mosip.kernel.syncdata.repository.RegistrationCenterUserRepository;
+import io.mosip.kernel.syncdata.repository.ScreenAuthorizationRepository;
 import io.mosip.kernel.syncdata.repository.TemplateFileFormatRepository;
 import io.mosip.kernel.syncdata.repository.TemplateRepository;
 import io.mosip.kernel.syncdata.repository.TemplateTypeRepository;
@@ -167,7 +176,11 @@ public class SyncDataIntegrationTest {
 	private List<ApplicantValidDocument> applicantValidDocumentList;
 	private List<IndividualType> individualTypeList;
 	private List<Object[]> objectArrayList;
-
+	private List<AppAuthenticationMethod> appAuthenticationMethods = null;
+	private List<AppDetail> appDetails = null;
+	private List<AppRolePriority> appRolePriorities = null;
+	private List<ScreenAuthorization> screenAuthorizations = null;
+	private List<ProcessList> processList = null;
 	@MockBean
 	private ApplicationRepository applicationRepository;
 	@MockBean
@@ -238,11 +251,19 @@ public class SyncDataIntegrationTest {
 	private RegistrationCenterDeviceHistoryRepository registrationCenterDeviceHistoryRepository;
 	@MockBean
 	private RegistrationCenterMachineHistoryRepository registrationCenterMachineHistoryRepository;
-	
+
+	@MockBean
+	private AppAuthenticationMethodRepository appAuthenticationMethodRepository;
+	@MockBean
+	private AppDetailRepository appDetailRepository;
+	@MockBean
+	private AppRolePriorityRepository appRolePriorityRepository;
+	@MockBean
+	private ScreenAuthorizationRepository screenAuthorizationRepository;
+	@MockBean
+	private ProcessListRepository processListRepository;
 	@Autowired
 	private SyncConfigDetailsService syncConfigDetailsService;
-	
-
 	/*
 	 * @MockBean private RestTemplate restTemplateM;
 	 */
@@ -497,12 +518,45 @@ public class SyncDataIntegrationTest {
 		Object[] objects = { "10001", "10001" };
 		objectArrayList = new ArrayList<>();
 		objectArrayList.add(objects);
-
+		AppAuthenticationMethod appAuthenticationMethod = new AppAuthenticationMethod();
+		appAuthenticationMethod.setAppId("REGISTRATION");
+		appAuthenticationMethod.setAuthMethodCode("sddd");
+		appAuthenticationMethod.setMethodSequence(1000);
+		appAuthenticationMethods = new ArrayList<>();
+		appAuthenticationMethods.add(appAuthenticationMethod);
+		AppDetail appDetail = new AppDetail();
+		appDetail.setDescr("reg");
+		appDetail.setId("1");
+		appDetail.setLangCode("eng");
+		appDetail.setName("reg");
+		appDetails = new ArrayList<>();
+		appDetails.add(appDetail);
+		AppRolePriority appRolePriority = new AppRolePriority();
+		appRolePriority.setAppId("10001");
+		appRolePriority.setLangCode("eng");
+		appRolePriority.setPriority(1);
+		appRolePriority.setProcessId("login_auth");
+		appRolePriority.setRoleCode("OFFICER");
+		appRolePriorities = new ArrayList<>();
+		appRolePriorities.add(appRolePriority);
+		ScreenAuthorization screenAuthorization = new ScreenAuthorization();
+		screenAuthorization.setIsPermitted(true);
+		screenAuthorization.setRoleCode("OFFICER");
+		screenAuthorization.setScreenId("loginroot");
+		screenAuthorizations = new ArrayList<>();
+		screenAuthorizations.add(screenAuthorization);
+		ProcessList processListObj = new ProcessList();
+		processListObj.setDescr("Packet authentication");
+		processListObj.setName("packet authentication");
+		processListObj.setLangCode("eng");
+		processList = new ArrayList<>();
+		processList.add(processListObj);
 	}
 
 	private void mockSuccess() {
 
-		when(registrationCenterRepository.findRegistrationCenterByIdAndIsActiveIsTrue(Mockito.anyString())).thenReturn(registrationCenters);
+		when(registrationCenterRepository.findRegistrationCenterByIdAndIsActiveIsTrue(Mockito.anyString()))
+				.thenReturn(registrationCenters);
 		when(registrationCenterMachineRepository.getRegCenterIdWithRegIdAndMachineId(Mockito.anyString(),
 				Mockito.anyString())).thenReturn(registrationCenterMachines.get(0));
 		when(registrationCenterMachineRepository.getRegistrationCenterMachineWithMacAddress(Mockito.anyString()))
@@ -621,11 +675,22 @@ public class SyncDataIntegrationTest {
 				.thenReturn(applicantValidDocumentList);
 		when(individualTypeRepository.findAllIndvidualTypeByTimeStamp(Mockito.any(), Mockito.any()))
 				.thenReturn(individualTypeList);
+		when(appAuthenticationMethodRepository.findByLastUpdatedAndCurrentTimeStamp(Mockito.any(), Mockito.any()))
+				.thenReturn(appAuthenticationMethods);
+		when(appDetailRepository.findByLastUpdatedTimeAndCurrentTimeStamp(Mockito.any(), Mockito.any()))
+				.thenReturn(appDetails);
+		when(appRolePriorityRepository.findByLastUpdatedAndCurrentTimeStamp(Mockito.any(), Mockito.any()))
+				.thenReturn(appRolePriorities);
+		when(screenAuthorizationRepository.findByLastUpdatedAndCurrentTimeStamp(Mockito.any(), Mockito.any()))
+				.thenReturn(screenAuthorizations);
+		when(processListRepository.findByLastUpdatedTimeAndCurrentTimeStamp(Mockito.any(), Mockito.any()))
+				.thenReturn(processList);
 	}
 
 	@Test
 	public void testGetConfig() throws Exception {
-		ReflectionTestUtils.setField(syncConfigDetailsService, "globalConfigFileName", "mosip.kernel.syncdata.global-config-file");
+		ReflectionTestUtils.setField(syncConfigDetailsService, "globalConfigFileName",
+				"mosip.kernel.syncdata.global-config-file");
 		when(restTemplate.getForObject(Mockito.anyString(), Mockito.any()))
 				.thenReturn(JSON_REGISTRATION_CONFIG_RESPONSE);
 		when(restTemplate.getForObject(Mockito.anyString(), Mockito.any())).thenReturn(JSON_GLOBAL_CONFIG_RESPONSE);
@@ -634,35 +699,16 @@ public class SyncDataIntegrationTest {
 
 	@Test
 	public void testGlobalConfig() throws Exception {
-		ReflectionTestUtils.setField(syncConfigDetailsService, "globalConfigFileName", "mosip.kernel.syncdata.global-config-file");
+		ReflectionTestUtils.setField(syncConfigDetailsService, "globalConfigFileName",
+				"mosip.kernel.syncdata.global-config-file");
 		when(restTemplate.getForObject(Mockito.anyString(), Mockito.any()))
 				.thenReturn(JSON_REGISTRATION_CONFIG_RESPONSE);
 		when(restTemplate.getForObject(Mockito.anyString(), Mockito.any())).thenReturn(JSON_GLOBAL_CONFIG_RESPONSE);
 		mockMvc.perform(get("/v1.0/globalconfigs")).andExpect(status().isOk());
 	}
-	
-	@Test
-	public void testGlobalConfigExceptionTest() throws Exception {
-		ReflectionTestUtils.setField(syncConfigDetailsService, "globalConfigFileName", null);
-		when(restTemplate.getForObject(Mockito.anyString(), Mockito.any()))
-				.thenReturn(JSON_REGISTRATION_CONFIG_RESPONSE);
-
-		when(restTemplate.getForObject(Mockito.anyString(), Mockito.any())).thenReturn(JSON_GLOBAL_CONFIG_RESPONSE);
-		mockMvc.perform(get("/v1.0/globalconfigs")).andExpect(status().isInternalServerError());
-	}
-	@Test
-	public void testGlobalConfigServiceExceptionTest() throws Exception {
-		ReflectionTestUtils.setField(syncConfigDetailsService, "globalConfigFileName",  "mosip.kernel.syncdata.global-config-file");
-		when(restTemplate.getForObject(Mockito.anyString(), Mockito.any()))
-				.thenThrow(HttpServerErrorException.class);
-
-		
-		mockMvc.perform(get("/v1.0/globalconfigs")).andExpect(status().isInternalServerError());
-	}
 
 	@Test
 	public void testRegistrationConfig() throws Exception {
-		
 		when(restTemplate.getForObject(Mockito.anyString(), Mockito.any()))
 				.thenReturn(JSON_REGISTRATION_CONFIG_RESPONSE);
 		when(restTemplate.getForObject(Mockito.anyString(), Mockito.any()))
@@ -937,8 +983,9 @@ public class SyncDataIntegrationTest {
 		mockSuccess();
 		when(registrationCenterDeviceRepository.findAllLatestByRegistrationCenterCreatedUpdatedDeleted(
 				Mockito.anyString(), Mockito.any(), Mockito.any())).thenThrow(DataRetrievalFailureException.class);
-		mockMvc.perform(get("/v1.0/masterdata/{machineId}?lastupdated=2018-11-01T12:10:01.021Z&macaddress=11:a1:b0:i87&serialnumber=NM123456BT", "111"))
-				.andExpect(status().isInternalServerError());
+		mockMvc.perform(get(
+				"/v1.0/masterdata/{machineId}?lastupdated=2018-11-01T12:10:01.021Z&macaddress=11:a1:b0:i87&serialnumber=NM123456BT",
+				"111")).andExpect(status().isInternalServerError());
 	}
 
 	@Test
@@ -1017,14 +1064,14 @@ public class SyncDataIntegrationTest {
 		mockMvc.perform(get("/v1.0/registrationcenteruser/1")).andExpect(status().isNotFound());
 	}
 
-	/*@Test
-	public void IsMachineIdPresentServiceExceptionTest() throws Exception {
-		when(machineRepository.findByMachineIdAndIsActive(Mockito.anyString()))
-				.thenThrow(DataRetrievalFailureException.class);
-
-		mockMvc.perform(get(syncDataUrlWithRegId, "1001")).andExpect(status().isInternalServerError());
-	}
-*/
+	/*
+	 * @Test public void IsMachineIdPresentServiceExceptionTest() throws Exception {
+	 * when(machineRepository.findByMachineIdAndIsActive(Mockito.anyString()))
+	 * .thenThrow(DataRetrievalFailureException.class);
+	 * 
+	 * mockMvc.perform(get(syncDataUrlWithRegId,
+	 * "1001")).andExpect(status().isInternalServerError()); }
+	 */
 	@Test
 	public void findApplicantValidDocServiceExceptionTest() throws Exception {
 		mockSuccess();
@@ -1042,26 +1089,27 @@ public class SyncDataIntegrationTest {
 		mockMvc.perform(get(syncDataUrlWithRegId, "1001")).andExpect(status().isInternalServerError());
 
 	}
-	
+
 	@Test
 	public void registrationCetnerDevicesServiceExceptionTest() throws Exception {
 
 		mockSuccess();
-		when(registrationCenterDeviceRepository.findAllLatestByRegistrationCenterCreatedUpdatedDeleted(Mockito.anyString(),Mockito.any(), Mockito.any()))
-				.thenThrow(DataRetrievalFailureException.class);
+		when(registrationCenterDeviceRepository.findAllLatestByRegistrationCenterCreatedUpdatedDeleted(
+				Mockito.anyString(), Mockito.any(), Mockito.any())).thenThrow(DataRetrievalFailureException.class);
 		mockMvc.perform(get(syncDataUrlWithRegId, "1001")).andExpect(status().isInternalServerError());
 
 	}
-	
+
 	@Test
 	public void registrationCenterTest() throws Exception {
-	
+
 		mockSuccess();
-		when(registrationCenterRepository.findRegistrationCenterByIdAndIsActiveIsTrue(Mockito.anyString())).thenReturn(new ArrayList<RegistrationCenter>());
+		when(registrationCenterRepository.findRegistrationCenterByIdAndIsActiveIsTrue(Mockito.anyString()))
+				.thenReturn(new ArrayList<RegistrationCenter>());
 		mockMvc.perform(get(syncDataUrlWithRegId, "1001")).andExpect(status().isOk());
-		
+
 	}
-	
+
 	@Test
 	public void registrationCenterMachineExceptionTest() throws Exception {
 		mockSuccess();
@@ -1069,7 +1117,7 @@ public class SyncDataIntegrationTest {
 				Mockito.anyString())).thenThrow(DataRetrievalFailureException.class);
 		mockMvc.perform(get(syncDataUrlWithRegId, "1001")).andExpect(status().isInternalServerError());
 	}
-	
+
 	@Test
 	public void registrationCenterMachineNullTest() throws Exception {
 		mockSuccess();
@@ -1077,28 +1125,88 @@ public class SyncDataIntegrationTest {
 				Mockito.anyString())).thenReturn(null);
 		mockMvc.perform(get(syncDataUrlWithRegId, "1001")).andExpect(status().isOk());
 	}
-	
+
 	@Test
 	public void noMacAddressAndNoSNoNumTest() throws Exception {
 		mockSuccess();
-		
+
 		mockMvc.perform(get(syncDataUrlWithoutMacAddressAndSno)).andExpect(status().isOk());
 	}
-	
+
 	@Test
 	public void syncMasterdataWithServiceException() throws Exception {
 		mockSuccess();
 		when(registrationCenterMachineRepository.getRegistrationCenterMachineWithMacAddress(Mockito.anyString()))
-		.thenThrow(DataRetrievalFailureException.class);
-		mockMvc.perform(get(syncDataUrlMacAdress,"10001")).andExpect(status().isInternalServerError());
+				.thenThrow(DataRetrievalFailureException.class);
+		mockMvc.perform(get(syncDataUrlMacAdress, "10001")).andExpect(status().isInternalServerError());
 	}
-	
+
 	@Test
 	public void syncMasterdataWithMachineListEmptyException() throws Exception {
 		mockSuccess();
 		when(registrationCenterMachineRepository.getRegistrationCenterMachineWithMacAddress(Mockito.anyString()))
-		.thenReturn(new ArrayList<Object[]>());
-		mockMvc.perform(get(syncDataUrlMacAdress,"10001")).andExpect(status().isOk());
+				.thenReturn(new ArrayList<Object[]>());
+		mockMvc.perform(get(syncDataUrlMacAdress, "10001")).andExpect(status().isOk());
+	}
+
+	@Test
+	public void appAuthMethodExceptionTest() throws Exception {
+
+		mockSuccess();
+		when(appAuthenticationMethodRepository.findByLastUpdatedAndCurrentTimeStamp(Mockito.any(), Mockito.any()))
+				.thenThrow(DataRetrievalFailureException.class);
+
+		mockMvc.perform(get("/v1.0/masterdata/{machineId}?lastUpdated=2018-11-01T12:10:01.021Z", "1001"))
+				.andExpect(status().isInternalServerError());
+
+	}
+
+	@Test
+	public void appDetailExceptionTest() throws Exception {
+
+		mockSuccess();
+		when(appDetailRepository.findByLastUpdatedTimeAndCurrentTimeStamp(Mockito.any(), Mockito.any()))
+				.thenThrow(DataRetrievalFailureException.class);
+
+		mockMvc.perform(get("/v1.0/masterdata/{machineId}?lastUpdated=2018-11-01T12:10:01.021Z", "1001"))
+				.andExpect(status().isInternalServerError());
+
+	}
+
+	@Test
+	public void appPriorityExceptionTest() throws Exception {
+
+		mockSuccess();
+		when(appRolePriorityRepository.findByLastUpdatedAndCurrentTimeStamp(Mockito.any(), Mockito.any()))
+				.thenThrow(DataRetrievalFailureException.class);
+
+		mockMvc.perform(get("/v1.0/masterdata/{machineId}?lastUpdated=2018-11-01T12:10:01.021Z", "1001"))
+				.andExpect(status().isInternalServerError());
+
+	}
+
+	@Test
+	public void screenAuthExceptionTest() throws Exception {
+
+		mockSuccess();
+		when(screenAuthorizationRepository.findByLastUpdatedAndCurrentTimeStamp(Mockito.any(), Mockito.any()))
+				.thenThrow(DataRetrievalFailureException.class);
+
+		mockMvc.perform(get("/v1.0/masterdata/{machineId}?lastUpdated=2018-11-01T12:10:01.021Z", "1001"))
+				.andExpect(status().isInternalServerError());
+
+	}
+
+	@Test
+	public void processListExceptionTest() throws Exception {
+
+		mockSuccess();
+		when(processListRepository.findByLastUpdatedTimeAndCurrentTimeStamp(Mockito.any(), Mockito.any()))
+				.thenThrow(DataRetrievalFailureException.class);
+
+		mockMvc.perform(get("/v1.0/masterdata/{machineId}?lastUpdated=2018-11-01T12:10:01.021Z", "1001"))
+				.andExpect(status().isInternalServerError());
+
 	}
 
 }

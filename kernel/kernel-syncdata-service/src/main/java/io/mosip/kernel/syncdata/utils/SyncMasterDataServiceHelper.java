@@ -12,6 +12,9 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.syncdata.constant.MasterDataErrorCode;
+import io.mosip.kernel.syncdata.dto.AppAuthenticationMethodDto;
+import io.mosip.kernel.syncdata.dto.AppDetailDto;
+import io.mosip.kernel.syncdata.dto.AppRolePriorityDto;
 import io.mosip.kernel.syncdata.dto.ApplicantValidDocumentDto;
 import io.mosip.kernel.syncdata.dto.ApplicationDto;
 import io.mosip.kernel.syncdata.dto.BiometricAttributeDto;
@@ -32,6 +35,7 @@ import io.mosip.kernel.syncdata.dto.MachineDto;
 import io.mosip.kernel.syncdata.dto.MachineSpecificationDto;
 import io.mosip.kernel.syncdata.dto.MachineTypeDto;
 import io.mosip.kernel.syncdata.dto.PostReasonCategoryDto;
+import io.mosip.kernel.syncdata.dto.ProcessListDto;
 import io.mosip.kernel.syncdata.dto.ReasonListDto;
 import io.mosip.kernel.syncdata.dto.RegistrationCenterDeviceDto;
 import io.mosip.kernel.syncdata.dto.RegistrationCenterDeviceHistoryDto;
@@ -45,11 +49,15 @@ import io.mosip.kernel.syncdata.dto.RegistrationCenterUserDto;
 import io.mosip.kernel.syncdata.dto.RegistrationCenterUserHistoryDto;
 import io.mosip.kernel.syncdata.dto.RegistrationCenterUserMachineMappingDto;
 import io.mosip.kernel.syncdata.dto.RegistrationCenterUserMachineMappingHistoryDto;
+import io.mosip.kernel.syncdata.dto.ScreenAuthorizationDto;
 import io.mosip.kernel.syncdata.dto.TemplateDto;
 import io.mosip.kernel.syncdata.dto.TemplateFileFormatDto;
 import io.mosip.kernel.syncdata.dto.TemplateTypeDto;
 import io.mosip.kernel.syncdata.dto.TitleDto;
 import io.mosip.kernel.syncdata.dto.ValidDocumentDto;
+import io.mosip.kernel.syncdata.entity.AppAuthenticationMethod;
+import io.mosip.kernel.syncdata.entity.AppDetail;
+import io.mosip.kernel.syncdata.entity.AppRolePriority;
 import io.mosip.kernel.syncdata.entity.ApplicantValidDocument;
 import io.mosip.kernel.syncdata.entity.Application;
 import io.mosip.kernel.syncdata.entity.BiometricAttribute;
@@ -69,6 +77,7 @@ import io.mosip.kernel.syncdata.entity.Location;
 import io.mosip.kernel.syncdata.entity.Machine;
 import io.mosip.kernel.syncdata.entity.MachineSpecification;
 import io.mosip.kernel.syncdata.entity.MachineType;
+import io.mosip.kernel.syncdata.entity.ProcessList;
 import io.mosip.kernel.syncdata.entity.ReasonCategory;
 import io.mosip.kernel.syncdata.entity.ReasonList;
 import io.mosip.kernel.syncdata.entity.RegistrationCenter;
@@ -83,12 +92,16 @@ import io.mosip.kernel.syncdata.entity.RegistrationCenterUser;
 import io.mosip.kernel.syncdata.entity.RegistrationCenterUserHistory;
 import io.mosip.kernel.syncdata.entity.RegistrationCenterUserMachine;
 import io.mosip.kernel.syncdata.entity.RegistrationCenterUserMachineHistory;
+import io.mosip.kernel.syncdata.entity.ScreenAuthorization;
 import io.mosip.kernel.syncdata.entity.Template;
 import io.mosip.kernel.syncdata.entity.TemplateFileFormat;
 import io.mosip.kernel.syncdata.entity.TemplateType;
 import io.mosip.kernel.syncdata.entity.Title;
 import io.mosip.kernel.syncdata.entity.ValidDocument;
 import io.mosip.kernel.syncdata.exception.SyncDataServiceException;
+import io.mosip.kernel.syncdata.repository.AppAuthenticationMethodRepository;
+import io.mosip.kernel.syncdata.repository.AppDetailRepository;
+import io.mosip.kernel.syncdata.repository.AppRolePriorityRepository;
 import io.mosip.kernel.syncdata.repository.ApplicantValidDocumentRespository;
 import io.mosip.kernel.syncdata.repository.ApplicationRepository;
 import io.mosip.kernel.syncdata.repository.BiometricAttributeRepository;
@@ -108,6 +121,7 @@ import io.mosip.kernel.syncdata.repository.LocationRepository;
 import io.mosip.kernel.syncdata.repository.MachineRepository;
 import io.mosip.kernel.syncdata.repository.MachineSpecificationRepository;
 import io.mosip.kernel.syncdata.repository.MachineTypeRepository;
+import io.mosip.kernel.syncdata.repository.ProcessListRepository;
 import io.mosip.kernel.syncdata.repository.ReasonCategoryRepository;
 import io.mosip.kernel.syncdata.repository.ReasonListRepository;
 import io.mosip.kernel.syncdata.repository.RegistrationCenterDeviceHistoryRepository;
@@ -122,6 +136,7 @@ import io.mosip.kernel.syncdata.repository.RegistrationCenterUserHistoryReposito
 import io.mosip.kernel.syncdata.repository.RegistrationCenterUserMachineHistoryRepository;
 import io.mosip.kernel.syncdata.repository.RegistrationCenterUserMachineRepository;
 import io.mosip.kernel.syncdata.repository.RegistrationCenterUserRepository;
+import io.mosip.kernel.syncdata.repository.ScreenAuthorizationRepository;
 import io.mosip.kernel.syncdata.repository.TemplateFileFormatRepository;
 import io.mosip.kernel.syncdata.repository.TemplateRepository;
 import io.mosip.kernel.syncdata.repository.TemplateTypeRepository;
@@ -215,6 +230,17 @@ public class SyncMasterDataServiceHelper {
 	private ApplicantValidDocumentRespository applicantValidDocumentRepository;
 	@Autowired
 	private IndividualTypeRepository individualTypeRepository;
+	@Autowired
+	private AppAuthenticationMethodRepository appAuthenticationMethodRepository;
+	@Autowired
+	private AppDetailRepository appDetailRepository;
+	@Autowired
+	private AppRolePriorityRepository appRolePriorityRepository;
+	@Autowired
+	private ScreenAuthorizationRepository screenAuthorizationRepository;
+	@Autowired
+	private ProcessListRepository processListRepository;
+	
 
 	/**
 	 * Method to fetch machine details by regCenter id
@@ -1278,8 +1304,8 @@ public class SyncMasterDataServiceHelper {
 			individualTypes = individualTypeRepository.findAllIndvidualTypeByTimeStamp(lastUpdatedTime,
 					currentTimeStamp);
 		} catch (DataAccessException ex) {
-			throw new SyncDataServiceException(MasterDataErrorCode.VALID_DOCUMENT_FETCH_EXCEPTION.getErrorCode(),
-					MasterDataErrorCode.VALID_DOCUMENT_FETCH_EXCEPTION.getErrorMessage());
+			throw new SyncDataServiceException(MasterDataErrorCode.INDIVIDUAL_TYPE_FETCH_EXCEPTION.getErrorCode(),
+					MasterDataErrorCode.INDIVIDUAL_TYPE_FETCH_EXCEPTION.getErrorMessage());
 		}
 		if (individualTypes != null && !individualTypes.isEmpty()) {
 			individualTypeDtos = MapperUtils.mapAll(individualTypes, IndividualTypeDto.class);
@@ -1287,5 +1313,117 @@ public class SyncMasterDataServiceHelper {
 		return CompletableFuture.completedFuture(individualTypeDtos);
 
 	}
+
+	@Async
+	public CompletableFuture<List<AppAuthenticationMethodDto>> getAppAuthenticationMethodDetails(
+			LocalDateTime lastUpdatedTime, LocalDateTime currentTimeStamp) {
+		List<AppAuthenticationMethod> appAuthenticationMethods = null;
+		List<AppAuthenticationMethodDto> appAuthenticationMethodDtos = null;
+		try {
+			if (lastUpdatedTime == null) {
+				lastUpdatedTime = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
+			}
+			appAuthenticationMethods = appAuthenticationMethodRepository
+					.findByLastUpdatedAndCurrentTimeStamp(lastUpdatedTime, currentTimeStamp);
+		} catch (DataAccessException ex) {
+			throw new SyncDataServiceException(MasterDataErrorCode.APP_AUTHORIZATION_METHOD_FETCH_EXCEPTION.getErrorCode(),
+					MasterDataErrorCode.APP_AUTHORIZATION_METHOD_FETCH_EXCEPTION.getErrorMessage());
+		}
+		if (appAuthenticationMethods != null && !appAuthenticationMethods.isEmpty()) {
+			appAuthenticationMethodDtos = MapperUtils.mapAll(appAuthenticationMethods,
+					AppAuthenticationMethodDto.class);
+		}
+		return CompletableFuture.completedFuture(appAuthenticationMethodDtos);
+
+	}
+
+	@Async
+	public CompletableFuture<List<AppDetailDto>> getAppDetails(LocalDateTime lastUpdatedTime,
+			LocalDateTime currentTimeStamp) {
+		List<AppDetail> appDetails = null;
+		List<AppDetailDto> appDetailDtos = null;
+		try {
+			if (lastUpdatedTime == null) {
+				lastUpdatedTime = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
+			}
+			appDetails = appDetailRepository.findByLastUpdatedTimeAndCurrentTimeStamp(lastUpdatedTime,
+					currentTimeStamp);
+		} catch (DataAccessException ex) {
+			throw new SyncDataServiceException(MasterDataErrorCode.APP_DETAIL_FETCH_EXCEPTION.getErrorCode(),
+					MasterDataErrorCode.APP_DETAIL_FETCH_EXCEPTION.getErrorMessage());
+		}
+		if (appDetails != null && !appDetails.isEmpty()) {
+			appDetailDtos = MapperUtils.mapAll(appDetails, AppDetailDto.class);
+		}
+		return CompletableFuture.completedFuture(appDetailDtos);
+	}
+
+	@Async
+	public CompletableFuture<List<AppRolePriorityDto>> getAppRolePriorityDetails(LocalDateTime lastUpdatedTime,
+			LocalDateTime currentTimeStamp) {
+		List<AppRolePriority> appRolePriorities = null;
+		List<AppRolePriorityDto> appRolePriorityDtos = null;
+		try {
+			if (lastUpdatedTime == null) {
+				lastUpdatedTime = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
+			}
+			appRolePriorities = appRolePriorityRepository.findByLastUpdatedAndCurrentTimeStamp(lastUpdatedTime,
+					currentTimeStamp);
+		} catch (DataAccessException ex) {
+			throw new SyncDataServiceException(MasterDataErrorCode.APP_ROLE_PRIORITY_FETCH_EXCEPTION.getErrorCode(),
+					MasterDataErrorCode.APP_ROLE_PRIORITY_FETCH_EXCEPTION.getErrorMessage());
+		}
+		if (appRolePriorities != null && !appRolePriorities.isEmpty()) {
+			appRolePriorityDtos = MapperUtils.mapAll(appRolePriorities, AppRolePriorityDto.class);
+		}
+		return CompletableFuture.completedFuture(appRolePriorityDtos);
+	}
+	
+	@Async
+	public CompletableFuture<List<ScreenAuthorizationDto>> getScreenAuthorizationDetails(LocalDateTime lastUpdatedTime,
+			LocalDateTime currentTimeStamp) {
+		List<ScreenAuthorization> screenAuthorizationList = null;
+		List<ScreenAuthorizationDto> screenAuthorizationDtos = null;
+		try {
+			if (lastUpdatedTime == null) {
+				lastUpdatedTime = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
+			}
+			screenAuthorizationList = screenAuthorizationRepository.findByLastUpdatedAndCurrentTimeStamp(lastUpdatedTime,
+					currentTimeStamp);
+		} catch (DataAccessException ex) {
+			throw new SyncDataServiceException(MasterDataErrorCode.SCREEN_AUTHORIZATION_FETCH_EXCEPTION.getErrorCode(),
+					MasterDataErrorCode.SCREEN_AUTHORIZATION_FETCH_EXCEPTION.getErrorMessage());
+		}
+		if (screenAuthorizationList != null && !screenAuthorizationList.isEmpty()) {
+			screenAuthorizationDtos = MapperUtils.mapAll(screenAuthorizationList, ScreenAuthorizationDto.class);
+		}
+		return CompletableFuture.completedFuture(screenAuthorizationDtos);
+	}
+	
+	@Async
+	public CompletableFuture<List<ProcessListDto>> getProcessList(LocalDateTime lastUpdatedTime,
+			LocalDateTime currentTimeStamp) {
+		List<ProcessList> processList = null;
+		List<ProcessListDto> processListDtos = null;
+		try {
+			if (lastUpdatedTime == null) {
+				lastUpdatedTime = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
+			}
+			processList = processListRepository.findByLastUpdatedTimeAndCurrentTimeStamp(lastUpdatedTime,
+					currentTimeStamp);
+		} catch (DataAccessException ex) {
+			throw new SyncDataServiceException(MasterDataErrorCode.PROCESS_LIST_FETCH_EXCEPTION.getErrorCode(),
+					MasterDataErrorCode.PROCESS_LIST_FETCH_EXCEPTION.getErrorMessage());
+		}
+		if (processList != null && !processList.isEmpty()) {
+			processListDtos = MapperUtils.mapAll(processList, ProcessListDto.class);
+		}
+		return CompletableFuture.completedFuture(processListDtos);
+	}
+	
+	
+	
+	
+	
 
 }

@@ -11,6 +11,9 @@ import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.syncdata.constant.MasterDataErrorCode;
+import io.mosip.kernel.syncdata.dto.AppAuthenticationMethodDto;
+import io.mosip.kernel.syncdata.dto.AppDetailDto;
+import io.mosip.kernel.syncdata.dto.AppRolePriorityDto;
 import io.mosip.kernel.syncdata.dto.ApplicantValidDocumentDto;
 import io.mosip.kernel.syncdata.dto.ApplicationDto;
 import io.mosip.kernel.syncdata.dto.BiometricAttributeDto;
@@ -31,6 +34,7 @@ import io.mosip.kernel.syncdata.dto.MachineDto;
 import io.mosip.kernel.syncdata.dto.MachineSpecificationDto;
 import io.mosip.kernel.syncdata.dto.MachineTypeDto;
 import io.mosip.kernel.syncdata.dto.PostReasonCategoryDto;
+import io.mosip.kernel.syncdata.dto.ProcessListDto;
 import io.mosip.kernel.syncdata.dto.ReasonListDto;
 import io.mosip.kernel.syncdata.dto.RegistrationCenterDeviceDto;
 import io.mosip.kernel.syncdata.dto.RegistrationCenterDeviceHistoryDto;
@@ -44,6 +48,7 @@ import io.mosip.kernel.syncdata.dto.RegistrationCenterUserDto;
 import io.mosip.kernel.syncdata.dto.RegistrationCenterUserHistoryDto;
 import io.mosip.kernel.syncdata.dto.RegistrationCenterUserMachineMappingDto;
 import io.mosip.kernel.syncdata.dto.RegistrationCenterUserMachineMappingHistoryDto;
+import io.mosip.kernel.syncdata.dto.ScreenAuthorizationDto;
 import io.mosip.kernel.syncdata.dto.TemplateDto;
 import io.mosip.kernel.syncdata.dto.TemplateFileFormatDto;
 import io.mosip.kernel.syncdata.dto.TemplateTypeDto;
@@ -130,6 +135,11 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 		CompletableFuture<List<ReasonListDto>> reasonList = null;
 		CompletableFuture<List<ApplicantValidDocumentDto>> applicantValidDocumentList = null;
 		CompletableFuture<List<IndividualTypeDto>> individualTypeList = null;
+		CompletableFuture<List<AppAuthenticationMethodDto>> appAuthenticationMethods = null;
+		CompletableFuture<List<AppDetailDto>> appDetails = null;
+		CompletableFuture<List<AppRolePriorityDto>> appRolePriorities = null;
+		CompletableFuture<List<ScreenAuthorizationDto>> screenAuthorizations = null;
+		CompletableFuture<List<ProcessListDto>> processList = null;
 
 		CompletableFuture<List<RegistrationCenterMachineDto>> registrationCenterMachines = null;
 		CompletableFuture<List<RegistrationCenterDeviceDto>> registrationCenterDevices = null;
@@ -170,7 +180,11 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 		applicantValidDocumentList = serviceHelper.getApplicantValidDocument(lastUpdated, currentTimeStamp);
 		individualTypeList = serviceHelper.getIndividualType(lastUpdated, currentTimeStamp);
 		validDocumentsMapping = serviceHelper.getValidDocuments(lastUpdated, currentTimeStamp);
-
+		appAuthenticationMethods = serviceHelper.getAppAuthenticationMethodDetails(lastUpdated, currentTimeStamp);
+		appDetails = serviceHelper.getAppDetails(lastUpdated, currentTimeStamp);
+		appRolePriorities = serviceHelper.getAppRolePriorityDetails(lastUpdated, currentTimeStamp);
+		processList = serviceHelper.getProcessList(lastUpdated, currentTimeStamp);
+		screenAuthorizations = serviceHelper.getScreenAuthorizationDetails(lastUpdated, currentTimeStamp);
 		registrationCenterMachines = serviceHelper.getRegistrationCenterMachines(regCenterId, lastUpdated,
 				currentTimeStamp);
 		registrationCenterDevices = serviceHelper.getRegistrationCenterDevices(regCenterId, lastUpdated,
@@ -191,15 +205,18 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 		registrationCenterMachineHistoryList = serviceHelper.getRegistrationCenterMachineHistoryDetails(regCenterId,
 				lastUpdated, currentTimeStamp);
 
-		CompletableFuture.allOf(machineDetails, applications, registrationCenterTypes, registrationCenters, templates,
-				templateFileFormats, reasonCategory, reasonList, holidays, blacklistedWords, biometricTypes,
-				biometricAttributes, titles, languages, devices, documentCategories, documentTypes, idTypes,
-				deviceSpecifications, locationHierarchy, machineSpecification, machineType, templateTypes, deviceTypes,
-				validDocumentsMapping, registrationCenterMachines, registrationCenterDevices,
-				registrationCenterMachineDevices, registrationCenterUserMachines, registrationCenterUsers,
-				registrationCenterUserHistoryList, registrationCenterUserMachineMappingHistoryList,
-				registrationCenterMachineDeviceHistoryList, registrationCenterDeviceHistoryList,
-				registrationCenterMachineHistoryList, applicantValidDocumentList, individualTypeList).join();
+		CompletableFuture
+				.allOf(machineDetails, applications, registrationCenterTypes, registrationCenters, templates,
+						templateFileFormats, reasonCategory, reasonList, holidays, blacklistedWords, biometricTypes,
+						biometricAttributes, titles, languages, devices, documentCategories, documentTypes, idTypes,
+						deviceSpecifications, locationHierarchy, machineSpecification, machineType, templateTypes,
+						deviceTypes, validDocumentsMapping, registrationCenterMachines, registrationCenterDevices,
+						registrationCenterMachineDevices, registrationCenterUserMachines, registrationCenterUsers,
+						registrationCenterUserHistoryList, registrationCenterUserMachineMappingHistoryList,
+						registrationCenterMachineDeviceHistoryList, registrationCenterDeviceHistoryList,
+						registrationCenterMachineHistoryList, applicantValidDocumentList, individualTypeList,
+						appAuthenticationMethods, appDetails, appRolePriorities, processList, screenAuthorizations)
+				.join();
 
 		response.setMachineDetails(machineDetails.get());
 		response.setApplications(applications.get());
@@ -229,6 +246,11 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 		response.setValidDocumentMapping(validDocumentsMapping.get());
 		response.setApplicantValidDocuments(applicantValidDocumentList.get());
 		response.setIndividualTypes(individualTypeList.get());
+		response.setAppAuthenticationMethods(appAuthenticationMethods.get());
+		response.setAppDetails(appDetails.get());
+		response.setAppRolePriorities(appRolePriorities.get());
+		response.setProcessList(processList.get());
+		response.setScreenAuthorizations(screenAuthorizations.get());
 
 		response.setRegistrationCenterMachines(registrationCenterMachines.get());
 		response.setRegistrationCenterDevices(registrationCenterDevices.get());
@@ -245,9 +267,13 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 	}
 
 	/**
-	 * This method would return RegistrationCenterMachine mapping based on macaddress/serial number 
-	 * @param macId - mac address
-	 * @param serialNum - serial number
+	 * This method would return RegistrationCenterMachine mapping based on
+	 * macaddress/serial number
+	 * 
+	 * @param macId
+	 *            - mac address
+	 * @param serialNum
+	 *            - serial number
 	 * @return - {@link RegistrationCenterMachineDto}
 	 */
 	private RegistrationCenterMachineDto getRegistationMachineMapping(String macId, String serialNum) {
@@ -286,12 +312,16 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 	}
 
 	/**
-	 * This method would fetch RegistrationMachine mapping based on machine id if regCenterid is not available 
-	 * if regCenterId is present it would check for the mapping. If the mapping is not present and is not active 
-	 * it will throw error.
-	 * @param regCenterId - registration center id
-	 * @param macId - mac address
-	 * @param serialNum - serial address
+	 * This method would fetch RegistrationMachine mapping based on machine id if
+	 * regCenterid is not available if regCenterId is present it would check for the
+	 * mapping. If the mapping is not present and is not active it will throw error.
+	 * 
+	 * @param regCenterId
+	 *            - registration center id
+	 * @param macId
+	 *            - mac address
+	 * @param serialNum
+	 *            - serial address
 	 * @return {@link RegistrationCenterMachineDto}
 	 */
 	private RegistrationCenterMachineDto getRegCenterMachineMappingWithRegCenterId(String regCenterId, String macId,
