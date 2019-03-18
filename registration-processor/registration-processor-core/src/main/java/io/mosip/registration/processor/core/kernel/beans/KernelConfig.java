@@ -32,7 +32,7 @@ public class KernelConfig {
 	public ConnectionUtil getConnectionUtil() {
 		return new ConnectionUtil();
 	}
-	
+
 	@Bean
 	@Primary
 	public CbeffUtil getCbeffUtil() {
