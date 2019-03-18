@@ -88,7 +88,7 @@ public class FileUtil extends IdaScriptsUtil {
 	
 	public boolean createAndWriteFileForIdRepo(String fileName, String content) {
 		try {
-			Path path = Paths.get(RunConfig.getUserDirectory()+RunConfig.getSrcPath()+RunConfig.getStoreUINDataPath()+ "/"+fileName);
+			Path path = Paths.get(new File("./"+RunConfig.getSrcPath()+RunConfig.getStoreUINDataPath()+ "/"+fileName).getAbsolutePath());
 			if(!path.toFile().exists()) { 
 			Charset charset = Charset.forName("UTF-8");
 			createFile(path.toFile(),"");
@@ -105,8 +105,8 @@ public class FileUtil extends IdaScriptsUtil {
 	}
 	
 	public boolean checkFileExistForIdRepo(String fileName) {
-		Path path = Paths.get(RunConfig.getUserDirectory() + RunConfig.getSrcPath() + RunConfig.getStoreUINDataPath()
-				+ "/" + fileName);
+		Path path = Paths.get(new File("./"+RunConfig.getSrcPath() + RunConfig.getStoreUINDataPath()
+				+ "/" + fileName).getAbsolutePath());
 		return path.toFile().exists();
 	}
 
