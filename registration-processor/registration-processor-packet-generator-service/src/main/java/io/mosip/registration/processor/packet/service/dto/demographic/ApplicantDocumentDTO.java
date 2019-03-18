@@ -8,7 +8,7 @@ import io.mosip.registration.processor.packet.service.dto.BaseDTO;
  * This class used to capture the documents, photograph, exceptional photograph
  * and Acknowledgement Receipt of the Individual.
  *
- * @author Dinesh Asokan
+ * @author Sowmya
  * @since 1.0.0
  */
 public class ApplicantDocumentDTO extends BaseDTO {
@@ -21,7 +21,7 @@ public class ApplicantDocumentDTO extends BaseDTO {
 
 	/** The photo. */
 	private byte[] photo;
-	
+
 	/** The compressed photo for QR Code. */
 	private byte[] compressedFacePhoto;
 
@@ -54,7 +54,8 @@ public class ApplicantDocumentDTO extends BaseDTO {
 	}
 
 	/**
-	 * @param documents the documents to set
+	 * @param documents
+	 *            the documents to set
 	 */
 	public void setDocuments(Map<String, DocumentDetailsDTO> documents) {
 		this.documents = documents;
@@ -89,7 +90,7 @@ public class ApplicantDocumentDTO extends BaseDTO {
 	public void setPhoto(byte[] photo) {
 		this.photo = photo;
 	}
-	
+
 	/**
 	 * @return the compressedFacePhoto
 	 */

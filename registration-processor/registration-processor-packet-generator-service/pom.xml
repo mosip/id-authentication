@@ -113,6 +113,11 @@
 			<artifactId>kernel-idvalidator-uin</artifactId>
 			<version>${kernel.core.version}</version>
 		</dependency>
+			<dependency>
+			<groupId>io.mosip.registrationprocessor</groupId>
+			<artifactId>registration-status-service-impl</artifactId>
+			<version>${registration.status.service.version}</version>
+		</dependency>
 	</dependencies>
 	<build>
 		<plugins>

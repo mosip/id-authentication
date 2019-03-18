@@ -5,7 +5,7 @@ import io.mosip.registration.processor.packet.service.dto.BaseDTO;
 /**
  * This class used to capture the demographic details of the Individual
  * 
- * @author Dinesh Asokan
+ * @author Sowmya
  * @since 1.0.0
  */
 public class DemographicDTO extends BaseDTO {

@@ -6,7 +6,7 @@ package io.mosip.registration.processor.packet.service.dto;
 import lombok.Data;
 
 /**
- * @author M1022006
+ * @author Sowmya
  *
  */
 @Data

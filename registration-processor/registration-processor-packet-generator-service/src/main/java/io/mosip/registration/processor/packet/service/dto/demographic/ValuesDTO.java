@@ -3,7 +3,7 @@ package io.mosip.registration.processor.packet.service.dto.demographic;
 /**
  * This class will contains the language code and value for the field
  *
- * @author Balaji Sridharan
+ * @author Sowmya
  * @since 1.0.0
  */
 public class ValuesDTO {

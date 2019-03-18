@@ -1,7 +1,8 @@
 package io.mosip.registration.processor.packet.service;
 
-import io.mosip.registration.processor.packet.service.dto.PackerGeneratorResDto;
+import io.mosip.registration.processor.packet.service.dto.PacketGeneratorResDto;
 import io.mosip.registration.processor.packet.service.dto.PacketGeneratorDto;
+import io.mosip.registration.processor.packet.service.exception.RegBaseCheckedException;
 
 /**
  * The Interface PacketGeneratorService.
@@ -17,6 +18,6 @@ public interface PacketGeneratorService {
 	 *            the request
 	 * @return the packer generator res dto
 	 */
-	public PackerGeneratorResDto createPacket(PacketGeneratorDto request);
+	public PacketGeneratorResDto createPacket(PacketGeneratorDto request) throws RegBaseCheckedException;
 
 }

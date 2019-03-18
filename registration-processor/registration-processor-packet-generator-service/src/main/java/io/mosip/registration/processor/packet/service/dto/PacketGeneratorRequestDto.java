@@ -9,10 +9,11 @@ import lombok.EqualsAndHashCode;
  * 
  * @see io.mosip.registration.processor.core.common.rest.dto.BaseRestRequestDTO#
  * hashCode()
+ * @author Sowmya
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class PackerGeneratorRequestDto extends BaseRestRequestDTO {
+public class PacketGeneratorRequestDto extends BaseRestRequestDTO {
 
 	/**
 	 * 

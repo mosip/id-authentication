@@ -18,8 +18,7 @@ import ma.glasnost.orika.impl.ConfigurableMapper;
 /**
  * Class for Orika Object Mapper
  * 
- * @author YASWANTH S
- * @author Balaji Sridharan
+ * @author Sowmya
  * @since 1.0.0
  */
 public class CustomObjectMapper extends ConfigurableMapper {
@@ -32,7 +31,8 @@ public class CustomObjectMapper extends ConfigurableMapper {
 	/**
 	 * Method to configure the Orika Mapper for object conversions
 	 * 
-	 * @param mapperFactory the Orika MapperFactory
+	 * @param mapperFactory
+	 *            the Orika MapperFactory
 	 */
 	@Override
 	public void configure(MapperFactory mapperFactory) {

@@ -5,7 +5,7 @@ import io.mosip.registration.processor.packet.service.dto.demographic.AddressDTO
 /**
  * This the class for JSON object for Address
  * 
- * @author Balaji Sridharan
+ * @author Sowmya
  * @since 1.0.0
  */
 public class Address extends AddressDTO {

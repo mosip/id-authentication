@@ -4,7 +4,7 @@ package io.mosip.registration.processor.packet.service.dto.json.metadata;
  * This class contains the attributes to be displayed for flat value object in
  * PacketMetaInfo JSON
  * 
- * @author Balaji Sridharan
+ * @author Sowmya
  * @since 1.0.0
  */
 public class FieldValue {

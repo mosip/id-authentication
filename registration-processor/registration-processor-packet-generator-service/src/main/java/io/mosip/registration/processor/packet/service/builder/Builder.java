@@ -2,19 +2,14 @@ package io.mosip.registration.processor.packet.service.builder;
 
 import java.util.function.Consumer;
 
-import io.mosip.kernel.core.logger.spi.Logger;
-
-import io.mosip.registration.processor.packet.service.constants.RegistrationConstants;
-
 /**
  * Generic Builder Pattern
  * 
- * @author M1045980
+ * @author Sowmya
  *
  * @param <T>
  */
 public class Builder<T> {
-	
 
 	private T instance;
 
@@ -29,7 +24,7 @@ public class Builder<T> {
 		try {
 			instance = clazz.newInstance();
 		} catch (InstantiationException | IllegalAccessException exception) {
-			
+
 		}
 	}
 

@@ -5,7 +5,7 @@ import io.mosip.registration.processor.packet.service.dto.demographic.Demographi
 /**
  * This class is used in JSON Parsing of Registration Packet
  * 
- * @author Dinesh Asokan
+ * @author Sowmya
  * @since 1.0.0
  */
 public class DemographicInfo extends DemographicInfoDTO {

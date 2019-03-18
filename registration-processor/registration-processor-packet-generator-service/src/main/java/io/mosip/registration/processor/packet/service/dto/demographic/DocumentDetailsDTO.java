@@ -9,7 +9,7 @@ import lombok.Setter;
 /**
  * This class used to capture the Documents' details of the Individual
  * 
- * @author Dinesh Asokan
+ * @author Sowmya
  * @since 1.0.0
  */
 @Getter

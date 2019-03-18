@@ -1,12 +1,10 @@
 package io.mosip.registration.processor.packet.service.external.impl;
 
-import static io.mosip.registration.processor.packet.service.exception.RegistrationExceptionConstants.REG_IO_EXCEPTION;
 import static java.io.File.separator;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -19,17 +17,15 @@ import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.packet.service.constants.RegistrationConstants;
 import io.mosip.registration.processor.packet.service.dto.RegistrationDTO;
-import io.mosip.registration.processor.packet.service.dto.demographic.DemographicDTO;
 import io.mosip.registration.processor.packet.service.dto.demographic.DocumentDetailsDTO;
 import io.mosip.registration.processor.packet.service.exception.RegBaseCheckedException;
-import io.mosip.registration.processor.packet.service.exception.RegBaseUncheckedException;
 import io.mosip.registration.processor.packet.service.external.ZipCreationService;
 import io.mosip.registration.processor.packet.service.impl.PacketCreationServiceImpl;
 
 /**
  * API Class to generate the in-memory zip file for Registration Packet.
  *
- * @author Balaji Sridharan
+ * @author Sowmya
  * @since 1.0.0
  */
 @Service
@@ -102,65 +98,12 @@ public class ZipCreationServiceImpl implements ZipCreationService {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationDTO.getRegistrationId(),
 					PlatformErrorMessages.RPR_SYS_IO_EXCEPTION.getMessage() + ExceptionUtils.getStackTrace(exception));
-			throw new RegBaseCheckedException(PlatformErrorMessages.RPR_SYS_IO_EXCEPTION.getCode(),
-					PlatformErrorMessages.RPR_SYS_IO_EXCEPTION.getMessage());
+			throw new RegBaseCheckedException(PlatformErrorMessages.RPR_SYS_IO_EXCEPTION, exception);
 		} catch (RuntimeException runtimeException) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationDTO.getRegistrationId(), PlatformErrorMessages.RPR_SYS_SERVER_ERROR.getMessage()
 							+ ExceptionUtils.getStackTrace(runtimeException));
-			throw new RegBaseUncheckedException(PlatformErrorMessages.RPR_SYS_SERVER_ERROR.getCode(),
-					PlatformErrorMessages.RPR_SYS_SERVER_ERROR.getMessage());
-		}
-	}
-
-	/**
-	 * Adds the demogrpahic data.
-	 *
-	 * @param demographicDTO
-	 *            the applicant document DTO
-	 * @param folderName
-	 *            the folder name
-	 * @param zipOutputStream
-	 *            the zip output stream
-	 * @throws RegBaseCheckedException
-	 *             the reg base checked exception
-	 */
-	private static void addDemogrpahicData(final DemographicDTO demographicDTO, final String folderName,
-			final ZipOutputStream zipOutputStream) throws RegBaseCheckedException {
-		// Add Proofs
-		Map<String, DocumentDetailsDTO> documents = demographicDTO.getApplicantDocumentDTO().getDocuments();
-
-		for (Entry<String, DocumentDetailsDTO> documentCategory : documents.entrySet()) {
-			writeFileToZip(folderName + getFileNameWithExt(documentCategory.getValue()),
-					documentCategory.getValue().getDocument(), zipOutputStream);
-		}
-
-		addToZip(demographicDTO.getApplicantDocumentDTO().getPhoto(),
-				folderName + demographicDTO.getApplicantDocumentDTO().getPhotographName(), zipOutputStream);
-		addToZip(demographicDTO.getApplicantDocumentDTO().getExceptionPhoto(),
-				folderName + demographicDTO.getApplicantDocumentDTO().getExceptionPhotoName(), zipOutputStream);
-		if (demographicDTO.getApplicantDocumentDTO().getAcknowledgeReceipt() != null) {
-			addToZip(demographicDTO.getApplicantDocumentDTO().getAcknowledgeReceipt(),
-					folderName + demographicDTO.getApplicantDocumentDTO().getAcknowledgeReceiptName(), zipOutputStream);
-		}
-	}
-
-	/**
-	 * Adds the to zip.
-	 *
-	 * @param content
-	 *            the content
-	 * @param fileNameWithPath
-	 *            the file name with path
-	 * @param zipOutputStream
-	 *            the zip output stream
-	 * @throws RegBaseCheckedException
-	 *             the reg base checked exception
-	 */
-	private static void addToZip(final byte[] content, final String fileNameWithPath,
-			final ZipOutputStream zipOutputStream) throws RegBaseCheckedException {
-		if (checkNotNull(content)) {
-			writeFileToZip(fileNameWithPath, content, zipOutputStream);
+			throw new RegBaseCheckedException(PlatformErrorMessages.RPR_SYS_SERVER_ERROR, runtimeException);
 		}
 	}
 
@@ -195,7 +138,7 @@ public class ZipCreationServiceImpl implements ZipCreationService {
 			zipOutputStream.write(file);
 			zipOutputStream.flush();
 		} catch (IOException ioException) {
-			throw new RegBaseCheckedException(REG_IO_EXCEPTION.getErrorCode(), REG_IO_EXCEPTION.getErrorMessage());
+			throw new RegBaseCheckedException(PlatformErrorMessages.RPR_SYS_IO_EXCEPTION, ioException);
 		}
 	}
 

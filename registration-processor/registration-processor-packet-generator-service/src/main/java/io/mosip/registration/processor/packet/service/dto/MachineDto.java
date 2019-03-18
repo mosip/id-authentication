@@ -8,8 +8,8 @@ import lombok.Data;
 /**
  * Response dto for Machine Detail
  * 
- * @author Megha Tanga
- * @since 1.0.0
+ * @author Sowmya
+ * 
  *
  */
 

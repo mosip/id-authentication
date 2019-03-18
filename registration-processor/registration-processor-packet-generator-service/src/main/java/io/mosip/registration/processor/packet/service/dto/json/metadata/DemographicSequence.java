@@ -5,12 +5,12 @@ import java.util.List;
 /**
  * This class is to capture the json parsing demographic sequence data
  * 
- * @author Dinesh Asokan
+ * @author Sowmya
  * @since 1.0.0
  *
  */
 public class DemographicSequence {
-	
+
 	private List<String> applicant;
 
 	public DemographicSequence(List<String> applicant) {
@@ -25,5 +25,5 @@ public class DemographicSequence {
 	public void setApplicant(List<String> applicant) {
 		this.applicant = applicant;
 	}
-	
+
 }

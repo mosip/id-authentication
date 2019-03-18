@@ -5,8 +5,7 @@ import io.mosip.registration.processor.packet.service.dto.BaseDTO;
 /**
  * This class used to capture the Address of the Individual
  * 
- * @author Dinesh Asokan
- * @author Balaji Sridharan
+ * @author Sowmya
  * @since 1.0.0
  */
 public class AddressDTO extends BaseDTO {

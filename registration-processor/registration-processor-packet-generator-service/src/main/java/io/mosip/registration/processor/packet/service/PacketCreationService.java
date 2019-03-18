@@ -6,8 +6,8 @@ import io.mosip.registration.processor.packet.service.exception.RegBaseCheckedEx
 /**
  * Class for creating the Resident Registration
  * 
- * @author Balaji Sridharan
- * @since 1.0.0
+ * @author Sowmya
+ * 
  *
  */
 public interface PacketCreationService {
