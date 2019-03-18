@@ -38,6 +38,14 @@ mosip.kernel.crypto.symmetric-algorithm-name=AES
 [application-dev.properties](../../config/application-dev.properties)
 
 
+** Database Properties **
+
+```
+Schema : ida
+
+Tables : token_seed , token_seq
+
+```
 
 
 **Sample**
