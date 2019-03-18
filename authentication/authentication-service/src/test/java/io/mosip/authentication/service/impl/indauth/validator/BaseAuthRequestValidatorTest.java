@@ -1102,62 +1102,62 @@ public class BaseAuthRequestValidatorTest {
 
 	}
 
-	/**
-	 * Test check OTP auth has no error.
-	 */
-	@Test
-	public void testCheckOTPAuth_HasNoError() {
-		String otp = "456789";
-		AuthRequestDTO authRequestDTO = getAuthRequestDTO();
-		RequestDTO request = new RequestDTO();
-		request.setOtp(otp);
-		authRequestDTO.setRequest(request);
+//	/**
+//	 * Test check OTP auth has no error.
+//	 */
+//	@Test
+//	public void testCheckOTPAuth_HasNoError() {
+//		String otp = "456789";
+//		AuthRequestDTO authRequestDTO = getAuthRequestDTO();
+//		RequestDTO request = new RequestDTO();
+//		request.setOtp(otp);
+//		authRequestDTO.setRequest(request);
+//
+//		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "checkOTPAuth", authRequestDTO, error);
+//		assertFalse(error.hasErrors());
+//	}
+//
+//	/**
+//	 * Test check OTP auth has null value has error.
+//	 */
+//	@Test
+//	public void testCheckOTPAuth_HasNullValue_HasError() {
+//		AuthRequestDTO authRequestDTO = getAuthRequestDTO();
+//
+//		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "checkOTPAuth", authRequestDTO, error);
+//		assertTrue(error.hasErrors());
+//	}
 
-		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "checkOTPAuth", authRequestDTO, error);
-		assertFalse(error.hasErrors());
-	}
+//	/**
+//	 * Test check OTP auth has empty OT P has error.
+//	 */
+//	@Test
+//	public void testCheckOTPAuth_HasEmptyOTP_HasError() {
+//		String otp = "";
+//		AuthRequestDTO authRequestDTO = getAuthRequestDTO();
+//		RequestDTO request = new RequestDTO();
+//		request.setOtp(otp);
+//		authRequestDTO.setRequest(request);
+//		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "checkOTPAuth", authRequestDTO, error);
+//		assertTrue(error.hasErrors());
+//	}
 
-	/**
-	 * Test check OTP auth has null value has error.
-	 */
-	@Test
-	public void testCheckOTPAuth_HasNullValue_HasError() {
-		AuthRequestDTO authRequestDTO = getAuthRequestDTO();
-
-		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "checkOTPAuth", authRequestDTO, error);
-		assertTrue(error.hasErrors());
-	}
-
-	/**
-	 * Test check OTP auth has empty OT P has error.
-	 */
-	@Test
-	public void testCheckOTPAuth_HasEmptyOTP_HasError() {
-		String otp = "";
-		AuthRequestDTO authRequestDTO = getAuthRequestDTO();
-		RequestDTO request = new RequestDTO();
-		request.setOtp(otp);
-		authRequestDTO.setRequest(request);
-		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "checkOTPAuth", authRequestDTO, error);
-		assertTrue(error.hasErrors());
-	}
-
-	/**
-	 * Test get otp value.
-	 */
-	@Test
-	public void testGetOtpValue() {
-
-		String otp = "456789";
-		AuthRequestDTO authRequestDTO = getAuthRequestDTO();
-		RequestDTO request = new RequestDTO();
-		request.setOtp(otp);
-		authRequestDTO.setRequest(request);
-
-		Optional<String> isOtp = ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "getOtpValue",
-				authRequestDTO);
-		assertTrue(isOtp.isPresent());
-	}
+//	/**
+//	 * Test get otp value.
+//	 */
+//	@Test
+//	public void testGetOtpValue() {
+//
+//		String otp = "456789";
+//		AuthRequestDTO authRequestDTO = getAuthRequestDTO();
+//		RequestDTO request = new RequestDTO();
+//		request.setOtp(otp);
+//		authRequestDTO.setRequest(request);
+//
+//		Optional<String> isOtp = ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "getOtpValue",
+//				authRequestDTO);
+//		assertTrue(isOtp.isPresent());
+//	}
 
 	/**
 	 * Test validate email validate email is true.

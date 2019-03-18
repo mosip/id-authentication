@@ -80,8 +80,6 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 //	/** The Final Constant For IRIS_PROVIDER_ALL */
 //	private static final String IRIS_PROVIDER_ALL = "iris.provider.all";
 
-	/** The Final Constant For deviceId */
-	private static final String DEVICE_ID = "Device Id";
 
 	/** The mosip logger. */
 	private static Logger mosipLogger = IdaLogger.getLogger(BaseAuthRequestValidator.class);
@@ -106,6 +104,8 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 
 	/** The Constant OTP_LENGTH. */
 	private static final Integer OTP_LENGTH = 6;
+	
+	private static final Integer STATIC_PIN_LENGTH = 6;
 
 	/** The Constant finger. */
 	private static final String FINGER = "finger";
@@ -120,7 +120,9 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	private static final String IDENTITY_INFO_DTO = "IdentityInfoDTO";
 
 	/** The Constant PATTERN. */
-	private static final Pattern STATIC_PIN_PATTERN = Pattern.compile("^[0-9]{6}");
+	private static final Pattern STATIC_PIN_PATTERN = Pattern.compile("^[0-9]{" + STATIC_PIN_LENGTH + "}");
+	
+	private static final Pattern OTP_PIN_PATTERN = Pattern.compile("^[0-9]{" + OTP_LENGTH + "}");
 
 	/** The Constant AUTH_TYPE. */
 	private static final String AUTH_TYPE = "requestedAuth";
@@ -188,7 +190,7 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 						new Object[] { REQUEST_ADDITIONAL_FACTORS_STATIC_PIN },
 						IdAuthenticationErrorConstants.MISSING_AUTHTYPE.getErrorMessage());
 			} else {
-				checkAdditionalFactorsValue(pinOpt, PIN_VALUE, errors);
+				checkAdditionalFactorsValue(pinOpt, PIN_VALUE, errors, STATIC_PIN_PATTERN);
 			}
 		} else if ((authTypeDTO != null && authTypeDTO.isOtp() && isMatchtypeEnabled(PinMatchType.OTP))) {
 			Optional<String> otp = Optional.ofNullable(authRequestDTO.getRequest()).map(RequestDTO::getOtp);
@@ -200,7 +202,7 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 						new Object[] { REQUEST_ADDITIONAL_FACTORS_TOTP },
 						IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
 			} else {
-				checkAdditionalFactorsValue(otp, OTP2, errors);
+				checkAdditionalFactorsValue(otp, OTP2, errors, OTP_PIN_PATTERN);
 			}
 		}
 	}
@@ -210,10 +212,11 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	 * 
 	 * @param pinInfo
 	 * @param errors
+	 * @param pattern 
 	 */
-	private void checkAdditionalFactorsValue(Optional<String> info, String type, Errors errors) {
-		if (!STATIC_PIN_PATTERN.matcher(info.get()).matches()) {
-			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE, "Invalid Input Static pin Value");
+	private void checkAdditionalFactorsValue(Optional<String> info, String type, Errors errors, Pattern pattern) {
+		if (!pattern.matcher(info.get()).matches()) {
+			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE, "Invalid Input " + type + " pin Value");
 			errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
 					new Object[] { type }, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
 		}
@@ -854,40 +857,6 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	}
 
 	/**
-	 * Check OTP auth.
-	 *
-	 * @param authRequest the auth request
-	 * @param errors      the errors
-	 */
-	protected void checkOTPAuth(AuthRequestDTO authRequest, Errors errors) {
-		if (isMatchtypeEnabled(PinMatchType.OTP)) {
-			Optional<String> otp = getOtpValue(authRequest);
-			if (!otp.isPresent()) {
-				mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE_CHECK_OTP_AUTH,
-						"INVALID_OTP - pinType is not OTP");
-				errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.MISSING_AUTHTYPE.getErrorCode(),
-						new Object[] { "OTP" }, IdAuthenticationErrorConstants.MISSING_AUTHTYPE.getErrorMessage());
-			} else if (OTP_LENGTH != otp.orElse("").length()) {
-				mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE_CHECK_OTP_AUTH,
-						"INVALID_OTP - pinType is not OTP");
-				errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.INVALID_OTP.getErrorCode(),
-						IdAuthenticationErrorConstants.INVALID_OTP.getErrorMessage());
-			}
-		}
-	}
-
-	/**
-	 * Gets the otp value.
-	 *
-	 * @param authreqdto the authreqdto
-	 * @return the otp value
-	 */
-	private Optional<String> getOtpValue(AuthRequestDTO authreqdto) {
-		return Optional.ofNullable(authreqdto.getRequest()).map(RequestDTO::getOtp);
-
-	}
-
-	/**
 	 * validate email id.
 	 *
 	 * @param authRequest authRequest
@@ -1010,21 +979,11 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 			}
 		}
 
-		if (authTypeDTO.isOtp()) {
-			if (allowedAuthType.contains(InternalAuthType.OTP.getType())) {
-				checkOTPAuth(requestDTO, errors);
-			} else {
-				errors.rejectValue(AUTH_TYPE, IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorCode(),
-						new Object[] { InternalAuthType.OTP.getType() },
-						IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorMessage());
-			}
-		}
-
-		if (authTypeDTO.isPin()) {
+		if (authTypeDTO.isPin() || authTypeDTO.isOtp()) {
 			if (allowedAuthType.contains(InternalAuthType.SPIN.getType())) {
 				validateAdditionalFactorsDetails(requestDTO, errors);
 			} else {
-				errors.rejectValue(InternalAuthType.SPIN.getType(),
+				errors.rejectValue(REQUEST,
 						IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorCode(),
 						new Object[] { InternalAuthType.SPIN.getType() },
 						IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorMessage());

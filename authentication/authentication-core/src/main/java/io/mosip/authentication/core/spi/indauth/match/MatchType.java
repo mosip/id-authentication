@@ -117,20 +117,6 @@ public interface MatchType {
 	}
 
 	/**
-	 * Gets the used bit
-	 *
-	 * @return the used bit
-	 */
-	public AuthUsageDataBit getUsedBit();
-
-	/**
-	 * Gets the matched bit
-	 *
-	 * @return the matched bit
-	 */
-	public AuthUsageDataBit getMatchedBit();
-
-	/**
 	 * Gets the Entity info mapper function
 	 *
 	 * @return the Entity info mapper function

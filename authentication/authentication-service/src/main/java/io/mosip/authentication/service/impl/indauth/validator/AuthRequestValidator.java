@@ -201,12 +201,8 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 						new Object[] { AUTH_TYPE },
 						IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
 
-			} else if (authType.isOtp()) {
-				checkOTPAuth(authRequest, errors);
 			} else if (authType.isDemo()) {
 				checkDemoAuth(authRequest, errors);
-			} else if (authType.isPin() || authType.isOtp()) {
-				validateAdditionalFactorsDetails(authRequest, errors);
 			} else if (authType.isBio()) {
 				validateBioMetadataDetails(authRequest, errors);
 			}

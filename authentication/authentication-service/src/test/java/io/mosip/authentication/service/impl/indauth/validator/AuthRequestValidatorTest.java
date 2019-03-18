@@ -127,6 +127,8 @@ public class AuthRequestValidatorTest {
 		authRequestDTO.setVersion("1.1");
 		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
 		authTypeDTO.setDemo(true);
+		authTypeDTO.setOtp(true);
+		authTypeDTO.setPin(true);
 		IdentityInfoDTO idInfoDTO = new IdentityInfoDTO();
 		idInfoDTO.setLanguage(env.getProperty("mosip.primary.lang-code"));
 		idInfoDTO.setValue("John");
@@ -150,6 +152,8 @@ public class AuthRequestValidatorTest {
 		authRequestDTO.setIndividualId("274390482564");
 		RequestDTO reqDTO = new RequestDTO();
 		reqDTO.setDemographics(idDTO);
+		reqDTO.setOtp("123456");
+		reqDTO.setStaticPin("123456");
 		reqDTO.setTransactionID("1234567890");
 		reqDTO.setTimestamp(Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
@@ -176,6 +180,8 @@ public class AuthRequestValidatorTest {
 		authRequestDTO.setVersion("1.1");
 		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
 		authTypeDTO.setDemo(true);
+		authTypeDTO.setOtp(true);
+		authTypeDTO.setPin(true);
 		IdentityInfoDTO idInfoDTO = new IdentityInfoDTO();
 		idInfoDTO.setLanguage(env.getProperty("mosip.primary.lang-code"));
 		idInfoDTO.setValue("John");
@@ -199,6 +205,8 @@ public class AuthRequestValidatorTest {
 		authRequestDTO.setIndividualIdType(IdType.UIN.getType());
 		RequestDTO reqDTO = new RequestDTO();
 		reqDTO.setDemographics(idDTO);
+		reqDTO.setOtp("123456");
+		reqDTO.setStaticPin("123456");
 		reqDTO.setTransactionID("1234567890");
 		reqDTO.setTimestamp(Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
@@ -1246,6 +1254,18 @@ public class AuthRequestValidatorTest {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		declaredMethod.invoke(authRequestValidator, "2019-01-28", errors);
+	}
+	
+	@Test
+	public void testOTPNotPresent()	{
+		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+		AuthTypeDTO authType = new AuthTypeDTO();
+		authType.setOtp(true);
+		RequestDTO request=new RequestDTO();
+		request.setOtp("");
+		authRequestDTO.setRequest(request);
+		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
+		authRequestValidator.validate(authRequestDTO, errors);
 	}
 
 }
