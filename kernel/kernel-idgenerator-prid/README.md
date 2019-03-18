@@ -56,6 +56,15 @@ mosip.kernel.prid.restricted-numbers=786,666
 	</dependency>
 
 ```
+** Database Properties **
+
+```
+Schema : prereg
+
+Tables : prid_seed , prid_seq
+
+```
+
  
 **Description**
 Logic behind generating prid

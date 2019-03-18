@@ -3,6 +3,8 @@ package io.mosip.kernel.idgenerator.prid.exception;
 import io.mosip.kernel.core.exception.BaseUncheckedException;
 
 /**
+ * Exception class for prid.
+ * 
  * @author Ritesh Sinha
  * @since 1.0.0
  *

@@ -3,17 +3,21 @@ package io.mosip.kernel.idgenerator.prid.impl;
 import java.math.BigInteger;
 import java.security.PrivateKey;
 import java.security.PublicKey;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
-import javax.transaction.Transactional;
+import javax.persistence.PersistenceException;
 
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 
 import io.mosip.kernel.core.crypto.spi.Encryptor;
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
@@ -21,9 +25,11 @@ import io.mosip.kernel.core.idgenerator.spi.PridGenerator;
 import io.mosip.kernel.core.util.ChecksumUtils;
 import io.mosip.kernel.idgenerator.prid.constant.PridExceptionConstant;
 import io.mosip.kernel.idgenerator.prid.constant.PridPropertyConstant;
-import io.mosip.kernel.idgenerator.prid.entity.Prid;
+import io.mosip.kernel.idgenerator.prid.entity.PridSeed;
+import io.mosip.kernel.idgenerator.prid.entity.PridSequence;
 import io.mosip.kernel.idgenerator.prid.exception.PridException;
-import io.mosip.kernel.idgenerator.prid.repository.PridRepository;
+import io.mosip.kernel.idgenerator.prid.repository.PridSeedRepository;
+import io.mosip.kernel.idgenerator.prid.repository.PridSequenceRepository;
 import io.mosip.kernel.idgenerator.prid.util.PridFilterUtils;
 
 /**
@@ -37,7 +43,6 @@ import io.mosip.kernel.idgenerator.prid.util.PridFilterUtils;
  *
  */
 @Component
-@Transactional
 public class PridGeneratorImpl implements PridGenerator<String> {
 
 	/**
@@ -47,10 +52,16 @@ public class PridGeneratorImpl implements PridGenerator<String> {
 	Encryptor<PrivateKey, PublicKey, SecretKey> encryptor;
 
 	/**
-	 * Reference to repository.
+	 * Reference to {@link PridSeedRepository}.
 	 */
 	@Autowired
-	private PridRepository repository;
+	private PridSeedRepository seedRepository;
+
+	/**
+	 * Reference to {@link PridSequenceRepository}.
+	 */
+	@Autowired
+	private PridSequenceRepository sequenceRepository;
 
 	/**
 	 * Field to hold PridFilterUtils object
@@ -70,6 +81,8 @@ public class PridGeneratorImpl implements PridGenerator<String> {
 	 *
 	 * @return return the generated PRID
 	 */
+
+	@Transactional(isolation = Isolation.READ_COMMITTED)
 	@Override
 	public String generateId() {
 		return generatePrid();
@@ -96,57 +109,70 @@ public class PridGeneratorImpl implements PridGenerator<String> {
 	private String generateRandomId() {
 
 		String counterSecureRandom = null;
-
-		String random = RandomStringUtils.random(
-				Integer.parseInt(PridPropertyConstant.RANDOM_NUMBER_SIZE.getProperty()),
-				PridPropertyConstant.ZERO_TO_NINE.getProperty());
-
+		String randomSeed = null;
 		String prid = null;
 
-		List<Prid> listOfEntity = null;
+		List<PridSeed> listOfSeed = null;
+		PridSequence sequenceEntity = null;
 
 		try {
-			listOfEntity = repository.findRandomValues();
+			listOfSeed = seedRepository.findAll();
+			sequenceEntity = sequenceRepository.findMaxSequence();
 
 		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new PridException(PridExceptionConstant.PRID_FETCH_EXCEPTION.getErrorCode(),
 					PridExceptionConstant.PRID_FETCH_EXCEPTION.getErrorMessage(), e);
 		}
 		try {
-			Prid entity = new Prid();
+			PridSequence counterEntity = new PridSequence();
+			counterEntity.setCreatedBy("SYSTEM");
+			counterEntity.setCreatedDateTime(LocalDateTime.now(ZoneId.of("UTC")));
+			counterEntity.setDeletedDateTime(null);
+			counterEntity.setIsDeleted(false);
 
-			if (listOfEntity.isEmpty()) {
+			if (sequenceEntity == null) {
 				do {
 					counterSecureRandom = RandomStringUtils.random(
 							Integer.parseInt(PridPropertyConstant.RANDOM_NUMBER_SIZE.getProperty()),
 							PridPropertyConstant.ZERO_TO_NINE.getProperty());
 				} while (counterSecureRandom.charAt(0) == '0');
-
-				entity.setRandomValue(random);
-
-				entity.setSequenceCounter(counterSecureRandom);
-
-				repository.save(entity);
-
+				counterEntity.setSequenceNumber(counterSecureRandom);
 			} else {
-
-				counterSecureRandom = listOfEntity.get(0).getSequenceCounter();
+				counterSecureRandom = sequenceEntity.getSequenceNumber();
 				counterSecureRandom = new BigInteger(counterSecureRandom).add(BigInteger.ONE).toString();
-				random = listOfEntity.get(0).getRandomValue();
+				counterEntity.setSequenceNumber(counterSecureRandom);
+			}
 
-				repository.updateCounterValue(counterSecureRandom, random);
+			sequenceRepository.saveAndFlush(counterEntity);
 
+			if (listOfSeed.isEmpty()) {
+				randomSeed = RandomStringUtils.random(
+						Integer.parseInt(PridPropertyConstant.RANDOM_NUMBER_SIZE.getProperty()),
+						PridPropertyConstant.ZERO_TO_NINE.getProperty());
+				PridSeed seedEntity = new PridSeed();
+				seedEntity.setCreatedBy("SYSTEM");
+				seedEntity.setCreatedDateTime(LocalDateTime.now(ZoneId.of("UTC")));
+				seedEntity.setDeletedDateTime(null);
+				seedEntity.setIsDeleted(false);
+				seedEntity.setSeedNumber(randomSeed);
+				seedRepository.saveAndFlush(seedEntity);
+			} else {
+				randomSeed = listOfSeed.get(0).getSeedNumber();
 			}
 
 		} catch (DataAccessLayerException | DataAccessException e) {
-			throw new PridException(PridExceptionConstant.PRID_INSERTION_EXCEPTION.getErrorCode(),
-					PridExceptionConstant.PRID_INSERTION_EXCEPTION.getErrorMessage(), e);
+			if (e.getCause().getClass() == PersistenceException.class) {
+				return generateId();
+			} else {
+				throw new PridException(PridExceptionConstant.PRID_INSERTION_EXCEPTION.getErrorCode(),
+						PridExceptionConstant.PRID_INSERTION_EXCEPTION.getErrorMessage(), e);
+			}
 		}
 
 		SecretKey secretKey = new SecretKeySpec(counterSecureRandom.getBytes(),
 				PridPropertyConstant.ENCRYPTION_ALGORITHM.getProperty());
 
-		byte[] encryptedData = encryptor.symmetricEncrypt(secretKey, random.getBytes());
+		byte[] encryptedData = encryptor.symmetricEncrypt(secretKey, randomSeed.getBytes());
 
 		BigInteger bigInteger = new BigInteger(encryptedData);
 

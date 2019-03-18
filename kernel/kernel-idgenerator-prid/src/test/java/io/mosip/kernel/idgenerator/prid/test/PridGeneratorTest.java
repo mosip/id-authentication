@@ -1,7 +1,9 @@
 package io.mosip.kernel.idgenerator.prid.test;
 
-import static org.junit.Assert.assertEquals;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.isA;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 
@@ -26,9 +28,11 @@ import io.mosip.kernel.core.crypto.spi.Encryptor;
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.idgenerator.spi.PridGenerator;
 import io.mosip.kernel.core.idvalidator.spi.PridValidator;
-import io.mosip.kernel.idgenerator.prid.entity.Prid;
+import io.mosip.kernel.idgenerator.prid.entity.PridSeed;
+import io.mosip.kernel.idgenerator.prid.entity.PridSequence;
 import io.mosip.kernel.idgenerator.prid.exception.PridException;
-import io.mosip.kernel.idgenerator.prid.repository.PridRepository;
+import io.mosip.kernel.idgenerator.prid.repository.PridSeedRepository;
+import io.mosip.kernel.idgenerator.prid.repository.PridSequenceRepository;
 
 /**
  * Test class for PridGenerator class
@@ -38,7 +42,7 @@ import io.mosip.kernel.idgenerator.prid.repository.PridRepository;
  *
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest
+@SpringBootTest(classes = PridGeneratorBootApplication.class)
 public class PridGeneratorTest {
 
 	@Value("${mosip.kernel.prid.length}")
@@ -57,76 +61,80 @@ public class PridGeneratorTest {
 	private PridGenerator<String> pridGenerator;
 
 	@MockBean
-	private PridRepository repository;
+	private PridSeedRepository seedRepository;
+
+	@MockBean
+	private PridSequenceRepository counterRepository;
 
 	@Autowired
 	private PridValidator<String> pridValidator;
 
-	List<Prid> listOfEntity = null;
+	List<PridSeed> listOfSeed = null;
+	PridSequence sequenceEntity = null;
+	List<PridSeed> listOfEmptySeed = null;
+	PridSequence nullSequenceEntity = null;
 
 	@Before
 	public void setUp() {
+		listOfSeed = new ArrayList<>();
+		PridSeed entity = new PridSeed();
+		entity.setSeedNumber(random);
+		listOfSeed.add(entity);
+		sequenceEntity = new PridSequence();
+		sequenceEntity.setSequenceNumber(key);
+		listOfEmptySeed = new ArrayList<>();
 
-		listOfEntity = new ArrayList<>();
-		Prid entity = new Prid();
-		entity.setRandomValue(random);
-		entity.setSequenceCounter(key);
-		listOfEntity.add(entity);
 	}
 
 	@Test
 	public void notNullTest() {
-
-		when(repository.findRandomValues()).thenReturn(listOfEntity);
-
+		when(seedRepository.findAll()).thenReturn(listOfSeed);
+		when(counterRepository.findMaxSequence()).thenReturn(sequenceEntity);
 		assertNotNull(pridGenerator.generateId());
 	}
 
 	@Test
 	public void pridLengthTest() {
-
-		when(repository.findRandomValues()).thenReturn(listOfEntity);
-
-		assertEquals(pridLength, pridGenerator.generateId().length());
+		when(seedRepository.findAll()).thenReturn(listOfSeed);
+		when(counterRepository.findMaxSequence()).thenReturn(sequenceEntity);
+		int tokenLength = pridGenerator.generateId().length();
+		assertThat(tokenLength, is(pridLength));
 	}
 
 	@Test
 	public void pridValidationTest() {
-
-		when(repository.findRandomValues()).thenReturn(listOfEntity);
-
+		when(seedRepository.findAll()).thenReturn(listOfSeed);
+		when(counterRepository.findMaxSequence()).thenReturn(sequenceEntity);
 		assertTrue(pridValidator.validateId(pridGenerator.generateId()));
 	}
 
 	@Test(expected = PridException.class)
-	public void randomValueFetchExceptionTest() {
-
-		when(repository.findRandomValues()).thenThrow(new DataAccessLayerException("errorCode", "errorMessage", null));
-
+	public void seedFetchExceptionTest() {
+		when(seedRepository.findAll()).thenThrow(new DataAccessLayerException("errorCode", "errorMessage", null));
 		pridGenerator.generateId();
 	}
 
 	@Test(expected = PridException.class)
-	public void randomValuesUpdateExceptionTest() {
-
-		when(repository.findRandomValues()).thenReturn(listOfEntity);
-
-		when(repository.updateCounterValue(Mockito.any(), Mockito.any()))
-				.thenThrow(new DataAccessLayerException("errorCode", "errorMessage", null));
-
+	public void seedCreationExceptionTest() {
+		when(seedRepository.findAll()).thenReturn(listOfEmptySeed);
+		when(counterRepository.findMaxSequence()).thenReturn(sequenceEntity);
+		when(seedRepository.saveAndFlush(Mockito.any()))
+				.thenThrow(new DataAccessLayerException("errorCode", "errorMessage", new RuntimeException()));
 		pridGenerator.generateId();
 	}
 
-	@Test(expected = PridException.class)
-	public void firstRandomNumberGenerationExceptionTest() {
-		listOfEntity.clear();
+	@Test
+	public void pridEmptySeedListTest() {
+		when(seedRepository.findAll()).thenReturn(listOfEmptySeed);
+		when(counterRepository.findMaxSequence()).thenReturn(sequenceEntity);
+		assertThat(pridGenerator.generateId(), isA(String.class));
+	}
 
-		when(repository.findRandomValues()).thenReturn(listOfEntity);
-
-		when(repository.save(Mockito.any())).thenThrow(new DataAccessLayerException("errorCode", "errorMessage", null));
-
-		pridGenerator.generateId();
-
+	@Test
+	public void pridNullSequenceTest() {
+		when(seedRepository.findAll()).thenReturn(listOfSeed);
+		when(counterRepository.findMaxSequence()).thenReturn(nullSequenceEntity);
+		assertThat(pridGenerator.generateId(), isA(String.class));
 	}
 
 }
