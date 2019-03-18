@@ -6,7 +6,7 @@ import java.util.List;
  * This contains the attributes which have to be displayed in PacketMetaInfo
  * JSON
  * 
- * @author Balaji Sridharan
+ * @author Sowmya
  * @since 1.0.0
  */
 public class Identity {

@@ -6,7 +6,7 @@ import io.mosip.registration.processor.packet.service.exception.RegBaseCheckedEx
  * Interface to store the encrypted packet and acknowledgement receipt of the
  * Registration in local disk
  * 
- * @author Balaji Sridharan
+ * @author Sowmya
  * @since 1.0.0
  *
  */

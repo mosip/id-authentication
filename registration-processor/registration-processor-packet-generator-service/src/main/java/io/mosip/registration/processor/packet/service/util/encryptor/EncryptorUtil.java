@@ -17,7 +17,6 @@ import java.util.List;
 import javax.crypto.SecretKey;
 
 import org.apache.commons.io.IOUtils;
-import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -37,6 +36,12 @@ import io.mosip.registration.processor.packet.service.dto.PublicKeyResponseDto;
 import io.mosip.registration.processor.packet.service.exception.RegBaseCheckedException;
 import io.mosip.registration.processor.packet.service.external.StorageService;
 
+/**
+ * 
+ * The Class EncryptorUtil.
+ * 
+ * @author Sowmya
+ */
 @Component
 public class EncryptorUtil {
 
@@ -61,12 +66,35 @@ public class EncryptorUtil {
 	@Autowired
 	RegistrationProcessorRestClientService<Object> registrationProcessorRestClientService;
 
+	/** The storage service. */
 	@Autowired
 	private StorageService storageService;
 
+	/** The center id length. */
 	@Value("${mosip.kernel.rid.centerid-length}")
 	private int centerIdLength;
 
+	/**
+	 * Encrypt uin update packet.
+	 *
+	 * @param decryptedFile
+	 *            the decrypted file
+	 * @param regId
+	 *            the reg id
+	 * @param creationTime
+	 *            the creation time
+	 * @return the string
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
+	 * @throws ApisResourceAccessException
+	 *             the apis resource access exception
+	 * @throws InvalidKeySpecException
+	 *             the invalid key spec exception
+	 * @throws NoSuchAlgorithmException
+	 *             the no such algorithm exception
+	 * @throws RegBaseCheckedException
+	 *             the reg base checked exception
+	 */
 	public String encryptUinUpdatePacket(InputStream decryptedFile, String regId, String creationTime)
 			throws IOException, ApisResourceAccessException, InvalidKeySpecException, NoSuchAlgorithmException,
 			RegBaseCheckedException {
@@ -85,13 +113,13 @@ public class EncryptorUtil {
 	 *
 	 * @param streamToEncrypt
 	 *            the stream to encrypt
+	 * @param regId
+	 *            the reg id
+	 * @param creationTime
+	 *            the creation time
 	 * @return the input stream
-	 * @throws EncryptorBaseCheckedException
-	 *             the encryptor base checked exception
 	 * @throws ApisResourceAccessException
 	 *             the apis resource access exception
-	 * @throws JSONException
-	 *             the JSON exception
 	 * @throws InvalidKeySpecException
 	 *             the invalid key spec exception
 	 * @throws NoSuchAlgorithmException
@@ -99,6 +127,7 @@ public class EncryptorUtil {
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
 	 * @throws RegBaseCheckedException
+	 *             the reg base checked exception
 	 */
 	public InputStream encrypt(final InputStream streamToEncrypt, String regId, String creationTime)
 			throws ApisResourceAccessException, InvalidKeySpecException, java.security.NoSuchAlgorithmException,
@@ -144,6 +173,10 @@ public class EncryptorUtil {
 	 *
 	 * @param sessionKey
 	 *            the session key
+	 * @param centerId
+	 *            the center id
+	 * @param creationTime
+	 *            the creation time
 	 * @return the byte[]
 	 * @throws ApisResourceAccessException
 	 *             the apis resource access exception

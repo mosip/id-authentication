@@ -28,8 +28,8 @@ import io.mosip.registration.processor.packet.service.PacketGeneratorService;
 import io.mosip.registration.processor.packet.service.dto.ErrorDTO;
 import io.mosip.registration.processor.packet.service.dto.MachineResponseDto;
 import io.mosip.registration.processor.packet.service.dto.PackerGeneratorFailureDto;
-import io.mosip.registration.processor.packet.service.dto.PacketGeneratorResDto;
 import io.mosip.registration.processor.packet.service.dto.PacketGeneratorDto;
+import io.mosip.registration.processor.packet.service.dto.PacketGeneratorResDto;
 import io.mosip.registration.processor.packet.service.dto.RegistrationCenterResponseDto;
 import io.mosip.registration.processor.packet.service.dto.RegistrationDTO;
 import io.mosip.registration.processor.packet.service.dto.RegistrationMetaDataDTO;
@@ -42,7 +42,7 @@ import io.mosip.registration.processor.packet.upload.service.SyncUploadEncryptio
 import io.mosip.registration.processor.status.code.RegistrationType;
 
 /**
- * The Class PacketGeneratorServiceImpl.
+ * @author Sowmya The Class PacketGeneratorServiceImpl.
  */
 @Service
 public class PacketGeneratorServiceImpl implements PacketGeneratorService {

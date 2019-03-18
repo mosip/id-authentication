@@ -9,7 +9,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * This class contains the applicant demographic, biometric, proofs and parent
  * or guardian biometric details.
  *
- * @author Balaji Sridharan
+ * @author Sowmya
  * @since 1.0.0
  */
 public class MoroccoIdentity extends Identity {

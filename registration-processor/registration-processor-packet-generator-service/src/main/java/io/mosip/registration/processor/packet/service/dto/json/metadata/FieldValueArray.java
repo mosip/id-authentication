@@ -6,7 +6,7 @@ import java.util.List;
  * This class contains the attributes to be displayed for flat array object in
  * PacketMetaInfo JSON
  * 
- * @author Balaji Sridharan
+ * @author Sowmya
  * @since 1.0.0
  */
 public class FieldValueArray {

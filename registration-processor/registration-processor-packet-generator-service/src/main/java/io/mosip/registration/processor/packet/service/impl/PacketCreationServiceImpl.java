@@ -48,7 +48,7 @@ import io.mosip.registration.processor.packet.service.util.hmac.HMACGeneration;
 /**
  * Class for creating the Resident Registration
  * 
- * @author Balaji Sridharan
+ * @author Sowmya
  * @since 1.0.0
  *
  */

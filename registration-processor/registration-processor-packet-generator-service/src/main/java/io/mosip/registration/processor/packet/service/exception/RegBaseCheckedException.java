@@ -6,7 +6,7 @@ import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages
 /**
  * The class to handle all the checked exception in REG
  * 
- * @author Balaji Sridharan
+ * @author Sowmya
  * @since 1.0.0
  *
  */
@@ -31,24 +31,23 @@ public class RegBaseCheckedException extends BaseCheckedException {
 	public RegBaseCheckedException(PlatformErrorMessages exceptionConstant, Throwable rootCause) {
 		super(exceptionConstant.getCode(), exceptionConstant.getMessage(), rootCause);
 	}
-	
+
 	public RegBaseCheckedException(String errorCode, String errorMessage) {
 		super(errorCode, errorMessage);
 	}
+
 	public RegBaseCheckedException(PlatformErrorMessages exceptionConstant, String message, Throwable rootCause) {
 		super(exceptionConstant.getCode(), message, rootCause);
 	}
-	
+
 	public RegBaseCheckedException(String errorCode, String errorMessage, Throwable rootCause) {
 		super(errorCode, errorMessage, rootCause);
 	}
-	
-	
+
 	public RegBaseCheckedException(String errorCode, String errorMessage, Throwable rootCause, String id) {
 		super(errorCode, errorMessage, rootCause);
 	}
 
-	
 	public RegBaseCheckedException(PlatformErrorMessages exceptionConstant) {
 		this(exceptionConstant.getCode(), exceptionConstant.getMessage());
 	}

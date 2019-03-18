@@ -2,22 +2,24 @@ package io.mosip.registration.processor.packet.service.exception;
 
 import io.mosip.kernel.core.exception.BaseUncheckedException;
 
+/**
+ * @author Sowmya The Class RegBaseUnCheckedException.
+ */
 public class RegBaseUnCheckedException extends BaseUncheckedException {
-	/**
-	 * 
-	 */
+
+	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 3422834488678859452L;
 
 	/**
-	 * Constructs a new unchecked exception
+	 * Constructs a new unchecked exception.
 	 */
 	public RegBaseUnCheckedException() {
 		super();
 	}
 
 	/**
-	 * Constructor
-	 * 
+	 * Constructor.
+	 *
 	 * @param errorCode
 	 *            the Error Code Corresponds to Particular Exception
 	 * @param errorMessage
@@ -29,8 +31,8 @@ public class RegBaseUnCheckedException extends BaseUncheckedException {
 	}
 
 	/**
-	 * Constructor
-	 * 
+	 * Constructor.
+	 *
 	 * @param errorCode
 	 *            the Error Code Corresponds to Particular Exception
 	 * @param errorMessage

@@ -3,7 +3,7 @@ package io.mosip.registration.processor.packet.service.dto.json.metadata;
 /**
  * The class to represent the flat JSON structure of PacketMetaInfo
  * 
- * @author Balaji Sridharan
+ * @author Sowmya
  * @since 1.0.0
  */
 public class PacketMetaInfo {

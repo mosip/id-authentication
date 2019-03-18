@@ -25,7 +25,7 @@ import io.mosip.registration.processor.packet.service.impl.PacketCreationService
 /**
  * API Class to generate the in-memory zip file for Registration Packet.
  *
- * @author Balaji Sridharan
+ * @author Sowmya
  * @since 1.0.0
  */
 @Service

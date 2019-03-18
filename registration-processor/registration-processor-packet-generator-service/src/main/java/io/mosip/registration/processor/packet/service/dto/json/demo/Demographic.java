@@ -1,12 +1,13 @@
 package io.mosip.registration.processor.packet.service.dto.json.demo;
+
 /**
  * This class is used in JSON Parsing of Registration Packet
  * 
- * @author Dinesh Asokan
+ * @author Sowmya
  * @since 1.0.0
  */
 public class Demographic {
-	
+
 	private DemographicInfo demoInLocalLang;
 	private DemographicInfo demoInUserLang;
 
