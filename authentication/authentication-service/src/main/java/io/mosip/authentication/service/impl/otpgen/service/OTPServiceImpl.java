@@ -2,6 +2,7 @@ package io.mosip.authentication.service.impl.otpgen.service;
 
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeParseException;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -40,7 +41,7 @@ import io.mosip.kernel.core.util.UUIDUtils;
  * Service implementation of OtpTriggerService.
  * 
  * @author Rakesh Roshan
- * @author Dineshkaruppiah Thiagarajan
+ * @author Dinesh Karuppiah.T
  */
 @Service
 public class OTPServiceImpl implements OTPService {
@@ -124,7 +125,7 @@ public class OTPServiceImpl implements OTPService {
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.PHONE_EMAIL_NOT_REGISTERED);
 		}
 
-		if (!checkIsEmptyorNull(mobileNumber) && otpRequestDto.getOtpChannel().isPhone()) {
+		if (otpRequestDto.getOtpChannel().isPhone() && !checkIsEmptyorNull(mobileNumber)) {
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.PHONE_EMAIL_NOT_REGISTERED);
 		}
 
@@ -135,7 +136,6 @@ public class OTPServiceImpl implements OTPService {
 			otpKey = OTPUtil.generateKey(productid, uin, txnId, tspID);
 			try {
 				otp = generateOtp(otpKey);
-				System.err.println("otpKey >>>" + otpKey);
 			} catch (IdAuthenticationBusinessException e) {
 				mosipLogger.error(SESSION_ID, this.getClass().getName(), e.getClass().getName(), e.getMessage());
 			}
@@ -224,7 +224,7 @@ public class OTPServiceImpl implements OTPService {
 			// FIXME
 			autnTxn.setLangCode(env.getProperty("mosip.primary.lang-code"));
 			return autnTxn;
-		} catch (ParseException e) {
+		} catch (ParseException | DateTimeParseException e) {
 			mosipLogger.error(SESSION_ID, this.getClass().getName(), e.getClass().getName(), e.getMessage());
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_OTP_REQUEST_TIMESTAMP,
 					e);

@@ -70,12 +70,6 @@ public enum FullAddressMatchingStrategy implements TextMatchingStrategy {
 		this.matchStrategyType = matchStrategyType;
 	}
 
-	private static void logError(IdAuthenticationErrorConstants idAuthenticationErrorConstants) {
-		mosipLogger.error(DEFAULT_SESSION_ID, TYPE,
-				"Inside FullAddressMatchingStrategy Strategy" + idAuthenticationErrorConstants.getErrorCode(),
-				idAuthenticationErrorConstants.getErrorMessage());
-	}
-
 	@Override
 	public MatchingStrategyType getType() {
 		return matchStrategyType;

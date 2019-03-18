@@ -2,8 +2,6 @@ package io.mosip.authentication.core.dto.indauth;
 
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import lombok.Data;
 
 /**
@@ -16,26 +14,24 @@ public class IdentityDTO {
 
 	/** variable to hold age value */
 	private String age;
-	
+
 	/** variable to hold dob value */
 	private String dob;
-	
+
 	/** List of identity info to hold name */
 	List<IdentityInfoDTO> name;
 
-
 	/** List of identity info to hold dateOfBirthType */
 	List<IdentityInfoDTO> dobType;
-
 
 	/** List of identity info to hold gender */
 	List<IdentityInfoDTO> gender;
 
 	/** List of identity info to hold phoneNumber */
-	List<IdentityInfoDTO> phoneNumber;
+	String phoneNumber;
 
 	/** List of identity info to hold emailId */
-	List<IdentityInfoDTO> emailId;
+	String emailId;
 
 	/** List of identity info to hold addressLine1 */
 	List<IdentityInfoDTO> addressLine1;

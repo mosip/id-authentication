@@ -1139,15 +1139,7 @@ public class AuthRequestValidatorTest {
 
 		RequestDTO request = new RequestDTO();
 		IdentityDTO identity = new IdentityDTO();
-
-		List<IdentityInfoDTO> emailId = new ArrayList<>();
-		IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
-		identityInfoDTO.setLanguage("fre");
-		identityInfoDTO.setValue("sample@sample.com");
-		emailId.add(identityInfoDTO);
-		identity.setEmailId(emailId);
-
-		identity.setEmailId(emailId);
+		identity.setEmailId("sample@sample.com");
 		request.setDemographics(identity);
 		authRequestDTO.setRequest(request);
 
@@ -1164,12 +1156,7 @@ public class AuthRequestValidatorTest {
 		RequestDTO request = new RequestDTO();
 		IdentityDTO identity = new IdentityDTO();
 
-		List<IdentityInfoDTO> phone = new ArrayList<>();
-		IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
-		identityInfoDTO.setLanguage("fre");
-		identityInfoDTO.setValue("76598749689");
-		phone.add(identityInfoDTO);
-		identity.setEmailId(phone);
+		identity.setPhoneNumber("76598749689");
 
 		request.setDemographics(identity);
 		authRequestDTO.setRequest(request);

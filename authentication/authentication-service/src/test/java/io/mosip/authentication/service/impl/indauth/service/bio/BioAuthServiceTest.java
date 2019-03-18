@@ -33,6 +33,7 @@ import io.mosip.authentication.core.dto.indauth.AuthStatusInfo;
 import io.mosip.authentication.core.dto.indauth.AuthTypeDTO;
 import io.mosip.authentication.core.dto.indauth.BioIdentityInfoDTO;
 import io.mosip.authentication.core.dto.indauth.DataDTO;
+import io.mosip.authentication.core.dto.indauth.IdType;
 import io.mosip.authentication.core.dto.indauth.IdentityDTO;
 import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
 import io.mosip.authentication.core.dto.indauth.RequestDTO;
@@ -46,6 +47,7 @@ import io.mosip.authentication.service.impl.fingerauth.provider.impl.MantraFinge
 import io.mosip.authentication.service.impl.indauth.service.BioAuthServiceImpl;
 import io.mosip.authentication.service.impl.iris.CogentIrisProvider;
 import io.mosip.authentication.service.impl.iris.MorphoIrisProvider;
+import io.mosip.kernel.core.cbeffutil.jaxbclasses.SingleType;
 import io.mosip.kernel.core.cbeffutil.spi.CbeffUtil;
 
 @RunWith(SpringRunner.class)
@@ -103,14 +105,14 @@ public class BioAuthServiceTest {
 	public void TestInvalidateBioDetails() throws IdAuthenticationBusinessException {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		Map<String, List<IdentityInfoDTO>> bioIdentity = null;
-		bioAuthServiceImpl.authenticate(authRequestDTO,"",bioIdentity,"");
+		bioAuthServiceImpl.authenticate(authRequestDTO, "", bioIdentity, "");
 	}
 
 	@Test
 	public void TestvalidateBioDetails() throws Exception {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
-		IdentityDTO identity=new IdentityDTO();
-		RequestDTO request=new RequestDTO();
+		IdentityDTO identity = new IdentityDTO();
+		RequestDTO request = new RequestDTO();
 		request.setDemographics(identity);
 		authRequestDTO.setIndividualId("274390482564");
 		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
@@ -120,13 +122,13 @@ public class BioAuthServiceTest {
 		ZoneOffset offset = ZoneOffset.MAX;
 		authRequestDTO.setRequestTime(Instant.now().atOffset(offset)
 				.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
-		// authRequestDTO.setReqHmac("1234567890");
+		authRequestDTO.setRequestHMAC("1234567890");
 		authRequestDTO.setTransactionID("1234567890");
 		// authRequestDTO.setVer("1.0");
-		
+
 		List<BioIdentityInfoDTO> leftIndexList = new ArrayList<>();
 		BioIdentityInfoDTO bioIdentityInfoDTO = new BioIdentityInfoDTO();
-		DataDTO dataDTO=new DataDTO();
+		DataDTO dataDTO = new DataDTO();
 		String value = "Rk1SACAyMAAAAAEIAAABPAFiAMUAxQEAAAAoJ4CEAOs8UICiAQGXUIBzANXIV4CmARiXUEC6AObFZIB3ALUSZEBlATPYZICIAKUCZEBmAJ4YZEAnAOvBZIDOAKTjZEBCAUbQQ0ARANu0ZECRAOC4NYBnAPDUXYCtANzIXUBhAQ7bZIBTAQvQZICtASqWZEDSAPnMZICaAUAVZEDNAS63Q0CEAVZiSUDUAT+oNYBhAVprSUAmAJyvZICiAOeyQ0CLANDSPECgAMzXQ0CKAR8OV0DEAN/QZEBNAMy9ZECaAKfwZEC9ATieUEDaAMfWUEDJAUA2NYB5AVttSUBKAI+oZECLAG0FZAAA";
 		dataDTO.setBioType(CbeffDocType.FMR.getType().name());
 		dataDTO.setBioSubType("Left IndexFinger");
@@ -153,24 +155,24 @@ public class BioAuthServiceTest {
 		cbeffValueMap.put("FINGER_Left IndexFinger_2", value);
 		Mockito.when(cbeffUtil.getBDBBasedOnType(Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenReturn(cbeffValueMap);
-		AuthStatusInfo validateBioDetails = bioAuthServiceImpl.authenticate(authRequestDTO,"",bioIdentity,"");
-		//assertTrue(validateBioDetails.isStatus());
+		AuthStatusInfo validateBioDetails = bioAuthServiceImpl.authenticate(authRequestDTO, "", bioIdentity, "");
+//		assertTrue(validateBioDetails.isStatus());
 	}
 
 	@Test
 	public void TestValidateBioAuthDetails() throws Exception {
-		/*AuthRequestDTO authRequestDTO = new AuthRequestDTO();
-		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
-		authTypeDTO.setBio(true);
-		authRequestDTO.setAuthType(authTypeDTO);
-		authRequestDTO.setId("mosip.identity.auth");
-		authRequestDTO.setIdvId("274390482564");
-		authRequestDTO.setIdvIdType("D");
-		authRequestDTO.setTspID("1234567890");*/
-		
+		/*
+		 * AuthRequestDTO authRequestDTO = new AuthRequestDTO(); AuthTypeDTO authTypeDTO
+		 * = new AuthTypeDTO(); authTypeDTO.setBio(true);
+		 * authRequestDTO.setAuthType(authTypeDTO);
+		 * authRequestDTO.setId("mosip.identity.auth");
+		 * authRequestDTO.setIdvId("274390482564"); authRequestDTO.setIdvIdType("D");
+		 * authRequestDTO.setTspID("1234567890");
+		 */
+
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
-		IdentityDTO identity=new IdentityDTO();
-		RequestDTO request=new RequestDTO();
+		IdentityDTO identity = new IdentityDTO();
+		RequestDTO request = new RequestDTO();
 		request.setDemographics(identity);
 		authRequestDTO.setIndividualId("274390482564");
 		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
@@ -183,41 +185,36 @@ public class BioAuthServiceTest {
 		// authRequestDTO.setReqHmac("1234567890");
 		authRequestDTO.setTransactionID("1234567890");
 		// authRequestDTO.setVer("1.0");
-	/*	List<BioInfo> bioInfoList = new ArrayList<>();
-		BioInfo bioInfo = new BioInfo();
-		bioInfo.setBioType("fgrMin");
-		DeviceInfo deviceInfo = new DeviceInfo();
-		deviceInfo.setDeviceId("Test1");
-		deviceInfo.setMake("mantra");
-		deviceInfo.setModel("1.0");
-		bioInfo.setDeviceInfo(deviceInfo);
-		bioInfoList.add(bioInfo);
-		authRequestDTO.setBioInfo(bioInfoList);*/
+		/*
+		 * List<BioInfo> bioInfoList = new ArrayList<>(); BioInfo bioInfo = new
+		 * BioInfo(); bioInfo.setBioType("fgrMin"); DeviceInfo deviceInfo = new
+		 * DeviceInfo(); deviceInfo.setDeviceId("Test1"); deviceInfo.setMake("mantra");
+		 * deviceInfo.setModel("1.0"); bioInfo.setDeviceInfo(deviceInfo);
+		 * bioInfoList.add(bioInfo); authRequestDTO.setBioInfo(bioInfoList);
+		 */
 		BioIdentityInfoDTO fingerValue = new BioIdentityInfoDTO();
-		DataDTO dataDTOFinger=new DataDTO();
+		DataDTO dataDTOFinger = new DataDTO();
 		dataDTOFinger.setBioValue("finger");
 		dataDTOFinger.setBioSubType("Thumb");
 		dataDTOFinger.setBioType(BioAuthType.FGR_IMG.getType());
 		dataDTOFinger.setDeviceProviderID("provider001");
 		fingerValue.setData(dataDTOFinger);
-		//bioInfo.setDeviceInfo(deviceInfo);
-		
-		/*RequestDTO requestDTO = new RequestDTO();
-		IdentityDTO identity = new IdentityDTO();
-		List<IdentityInfoDTO> leftIndexList = new ArrayList<>();
-		IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
-		String value = "Rk1SACAyMAAAAAEIAAABPAFiAMUAxQEAAAAoJ4CEAOs8UICiAQGXUIBzANXIV4CmARiXUEC6AObFZIB3ALUSZEBlATPYZICIAKUCZEBmAJ4YZEAnAOvBZIDOAKTjZEBCAUbQQ0ARANu0ZECRAOC4NYBnAPDUXYCtANzIXUBhAQ7bZIBTAQvQZICtASqWZEDSAPnMZICaAUAVZEDNAS63Q0CEAVZiSUDUAT+oNYBhAVprSUAmAJyvZICiAOeyQ0CLANDSPECgAMzXQ0CKAR8OV0DEAN/QZEBNAMy9ZECaAKfwZEC9ATieUEDaAMfWUEDJAUA2NYB5AVttSUBKAI+oZECLAG0FZAAA";
-		identityInfoDTO.setLanguage("ara");
-		identityInfoDTO.setValue(value);
-		leftIndexList.add(identityInfoDTO);
-		identity.setLeftIndex(leftIndexList);
-		requestDTO.setIdentity(identity);
-		authRequestDTO.setRequest(requestDTO);*/
-		
+		// bioInfo.setDeviceInfo(deviceInfo);
+
+		/*
+		 * RequestDTO requestDTO = new RequestDTO(); IdentityDTO identity = new
+		 * IdentityDTO(); List<IdentityInfoDTO> leftIndexList = new ArrayList<>();
+		 * IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO(); String value =
+		 * "Rk1SACAyMAAAAAEIAAABPAFiAMUAxQEAAAAoJ4CEAOs8UICiAQGXUIBzANXIV4CmARiXUEC6AObFZIB3ALUSZEBlATPYZICIAKUCZEBmAJ4YZEAnAOvBZIDOAKTjZEBCAUbQQ0ARANu0ZECRAOC4NYBnAPDUXYCtANzIXUBhAQ7bZIBTAQvQZICtASqWZEDSAPnMZICaAUAVZEDNAS63Q0CEAVZiSUDUAT+oNYBhAVprSUAmAJyvZICiAOeyQ0CLANDSPECgAMzXQ0CKAR8OV0DEAN/QZEBNAMy9ZECaAKfwZEC9ATieUEDaAMfWUEDJAUA2NYB5AVttSUBKAI+oZECLAG0FZAAA";
+		 * identityInfoDTO.setLanguage("ara"); identityInfoDTO.setValue(value);
+		 * leftIndexList.add(identityInfoDTO); identity.setLeftIndex(leftIndexList);
+		 * requestDTO.setIdentity(identity); authRequestDTO.setRequest(requestDTO);
+		 */
+
 		List<BioIdentityInfoDTO> leftIndexList = new ArrayList<>();
 		BioIdentityInfoDTO bioIdentityInfoDTO = new BioIdentityInfoDTO();
 		String value = "Rk1SACAyMAAAAAEIAAABPAFiAMUAxQEAAAAoJ4CEAOs8UICiAQGXUIBzANXIV4CmARiXUEC6AObFZIB3ALUSZEBlATPYZICIAKUCZEBmAJ4YZEAnAOvBZIDOAKTjZEBCAUbQQ0ARANu0ZECRAOC4NYBnAPDUXYCtANzIXUBhAQ7bZIBTAQvQZICtASqWZEDSAPnMZICaAUAVZEDNAS63Q0CEAVZiSUDUAT+oNYBhAVprSUAmAJyvZICiAOeyQ0CLANDSPECgAMzXQ0CKAR8OV0DEAN/QZEBNAMy9ZECaAKfwZEC9ATieUEDaAMfWUEDJAUA2NYB5AVttSUBKAI+oZECLAG0FZAAA";
-		DataDTO dataDTOFinger2=new DataDTO();
+		DataDTO dataDTOFinger2 = new DataDTO();
 		dataDTOFinger2.setBioValue(value);
 		dataDTOFinger2.setBioSubType("LEFT_INDEX");
 		dataDTOFinger2.setBioType(CbeffDocType.FMR.getType().name());
@@ -228,8 +225,7 @@ public class BioAuthServiceTest {
 		request.setDemographics(identity);
 		request.setBiometrics(leftIndexList);
 		authRequestDTO.setRequest(request);
-		
-		
+
 //		Map<String, List<IdentityInfoDTO>> bioIdentity = new HashMap<>();
 		IdentityInfoDTO identityInfoDTO1 = new IdentityInfoDTO();
 		identityInfoDTO1.setLanguage("ara");
@@ -244,31 +240,31 @@ public class BioAuthServiceTest {
 		cbeffValueMap.put("FINGER_Left IndexFinger_2", value);
 		Mockito.when(cbeffUtil.getBDBBasedOnType(Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenReturn(cbeffValueMap);
-		AuthStatusInfo validateBioDetails = bioAuthServiceImpl.authenticate(authRequestDTO,"", bioIdentity,"");
+		AuthStatusInfo validateBioDetails = bioAuthServiceImpl.authenticate(authRequestDTO, "", bioIdentity, "");
 		System.err.println(validateBioDetails.isStatus());
 		System.err.println(validateBioDetails.getErr());
 	}
 
 	@Test
 	public void TestMatchImage() throws Exception {
-		/*AuthRequestDTO authRequestDTO = new AuthRequestDTO();
-		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
-		authTypeDTO.setBio(true);
-		authRequestDTO.setAuthType(authTypeDTO);
-		authRequestDTO.setId("mosip.identity.auth");
-		authRequestDTO.setIdvId("274390482564");
-		authRequestDTO.setIdvIdType("D");
-		authRequestDTO.setKey(new AuthSecureDTO());
-		authRequestDTO.setTspID("1234567890");
-		ZoneOffset offset = ZoneOffset.MAX;
-		authRequestDTO.setReqTime(Instant.now().atOffset(offset)
-				.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
-		// authRequestDTO.setReqHmac("1234567890");
-		authRequestDTO.setTxnID("1234567890");*/
-		
+		/*
+		 * AuthRequestDTO authRequestDTO = new AuthRequestDTO(); AuthTypeDTO authTypeDTO
+		 * = new AuthTypeDTO(); authTypeDTO.setBio(true);
+		 * authRequestDTO.setAuthType(authTypeDTO);
+		 * authRequestDTO.setId("mosip.identity.auth");
+		 * authRequestDTO.setIdvId("274390482564"); authRequestDTO.setIdvIdType("D");
+		 * authRequestDTO.setKey(new AuthSecureDTO());
+		 * authRequestDTO.setTspID("1234567890"); ZoneOffset offset = ZoneOffset.MAX;
+		 * authRequestDTO.setReqTime(Instant.now().atOffset(offset)
+		 * .format(DateTimeFormatter.ofPattern(environment.getProperty(
+		 * "datetime.pattern"))).toString()); //
+		 * authRequestDTO.setReqHmac("1234567890");
+		 * authRequestDTO.setTxnID("1234567890");
+		 */
+
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
-		IdentityDTO identity=new IdentityDTO();
-		RequestDTO request=new RequestDTO();
+		IdentityDTO identity = new IdentityDTO();
+		RequestDTO request = new RequestDTO();
 		request.setDemographics(identity);
 		authRequestDTO.setIndividualId("274390482564");
 		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
@@ -283,10 +279,10 @@ public class BioAuthServiceTest {
 		authRequestDTO.setVersion("1.0");
 		List<BioIdentityInfoDTO> bioIdentityInfoDTOList = new ArrayList<>();
 		BioIdentityInfoDTO bioIdentityInfoDTO = new BioIdentityInfoDTO();
-		DataDTO bioInfo=new DataDTO();
+		DataDTO bioInfo = new DataDTO();
 		bioInfo.setBioType(CbeffDocType.FMR.getType().name());
 		bioInfo.setDeviceProviderID("provider001");
-		//bioInfo.setDeviceInfo(deviceInfo);
+		// bioInfo.setDeviceInfo(deviceInfo);
 		bioIdentityInfoDTO.setData(bioInfo);
 		bioIdentityInfoDTOList.add(bioIdentityInfoDTO);
 		String value = "Rk1SACAyMAAAAAEIAAABPAFiAMUAxQEAAAAoJ4CEAOs8UICiAQGXUIBzANXIV4CmARiXUEC6AObFZIB3ALUSZEBlATPYZICIAKUCZEBmAJ4YZEAnAOvBZIDOAKTjZEBCAUbQQ0ARANu0ZECRAOC4NYBnAPDUXYCtANzIXUBhAQ7bZIBTAQvQZICtASqWZEDSAPnMZICaAUAVZEDNAS63Q0CEAVZiSUDUAT+oNYBhAVprSUAmAJyvZICiAOeyQ0CLANDSPECgAMzXQ0CKAR8OV0DEAN/QZEBNAMy9ZECaAKfwZEC9ATieUEDaAMfWUEDJAUA2NYB5AVttSUBKAI+oZECLAG0FZAAA";
@@ -296,44 +292,34 @@ public class BioAuthServiceTest {
 		request.setDemographics(identity);
 		request.setBiometrics(bioIdentityInfoDTOList);
 		authRequestDTO.setRequest(request);
-		
-		/*List<MatchInfo> matchInfoList = new ArrayList<>();
-		MatchInfo matchInfo = new MatchInfo();
-		matchInfo.setAuthType("bio");
-		matchInfo.setMatchingStrategy(MatchingStrategyType.PARTIAL.getType());
-		matchInfo.setMatchingThreshold(60);
-		matchInfoList.add(matchInfo);
-		authRequestDTO.setMatchInfo(matchInfoList);*/
+
+		/*
+		 * List<MatchInfo> matchInfoList = new ArrayList<>(); MatchInfo matchInfo = new
+		 * MatchInfo(); matchInfo.setAuthType("bio");
+		 * matchInfo.setMatchingStrategy(MatchingStrategyType.PARTIAL.getType());
+		 * matchInfo.setMatchingThreshold(60); matchInfoList.add(matchInfo);
+		 * authRequestDTO.setMatchInfo(matchInfoList);
+		 */
 		// authRequestDTO.setVer("1.0");
-		
-		/*List<BioInfo> bioInfoList = new ArrayList<>();
-		BioInfo bioInfo = new BioInfo();
-		bioInfo.setBioType("fgrImg");
-		DeviceInfo deviceInfo = new DeviceInfo();
-		deviceInfo.setDeviceId("Test1");
-		deviceInfo.setMake("mantra");
-		deviceInfo.setModel("1.0");
-		bioInfo.setDeviceInfo(deviceInfo);
-		bioInfoList.add(bioInfo);*/
-		
-		
-		
-		
-		
-		
-/*		authRequestDTO.setBioInfo(bioInfoList);
-		RequestDTO requestDTO = new RequestDTO();
-		IdentityDTO identity = new IdentityDTO();
-		List<IdentityInfoDTO> leftIndexList = new ArrayList<>();
-		IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
-		String value = "Rk1SACAyMAAAAAEIAAABPAFiAMUAxQEAAAAoJ4CEAOs8UICiAQGXUIBzANXIV4CmARiXUEC6AObFZIB3ALUSZEBlATPYZICIAKUCZEBmAJ4YZEAnAOvBZIDOAKTjZEBCAUbQQ0ARANu0ZECRAOC4NYBnAPDUXYCtANzIXUBhAQ7bZIBTAQvQZICtASqWZEDSAPnMZICaAUAVZEDNAS63Q0CEAVZiSUDUAT+oNYBhAVprSUAmAJyvZICiAOeyQ0CLANDSPECgAMzXQ0CKAR8OV0DEAN/QZEBNAMy9ZECaAKfwZEC9ATieUEDaAMfWUEDJAUA2NYB5AVttSUBKAI+oZECLAG0FZAAA";
-		identityInfoDTO.setLanguage("ara");
-		identityInfoDTO.setValue(value);
-		leftIndexList.add(identityInfoDTO);
-		identity.setLeftIndex(leftIndexList);
-		requestDTO.setIdentity(identity);
-		authRequestDTO.setRequest(requestDTO);
-*///		Map<String, List<IdentityInfoDTO>> bioIdentity = new HashMap<>();
+
+		/*
+		 * List<BioInfo> bioInfoList = new ArrayList<>(); BioInfo bioInfo = new
+		 * BioInfo(); bioInfo.setBioType("fgrImg"); DeviceInfo deviceInfo = new
+		 * DeviceInfo(); deviceInfo.setDeviceId("Test1"); deviceInfo.setMake("mantra");
+		 * deviceInfo.setModel("1.0"); bioInfo.setDeviceInfo(deviceInfo);
+		 * bioInfoList.add(bioInfo);
+		 */
+
+		/*
+		 * authRequestDTO.setBioInfo(bioInfoList); RequestDTO requestDTO = new
+		 * RequestDTO(); IdentityDTO identity = new IdentityDTO(); List<IdentityInfoDTO>
+		 * leftIndexList = new ArrayList<>(); IdentityInfoDTO identityInfoDTO = new
+		 * IdentityInfoDTO(); String value =
+		 * "Rk1SACAyMAAAAAEIAAABPAFiAMUAxQEAAAAoJ4CEAOs8UICiAQGXUIBzANXIV4CmARiXUEC6AObFZIB3ALUSZEBlATPYZICIAKUCZEBmAJ4YZEAnAOvBZIDOAKTjZEBCAUbQQ0ARANu0ZECRAOC4NYBnAPDUXYCtANzIXUBhAQ7bZIBTAQvQZICtASqWZEDSAPnMZICaAUAVZEDNAS63Q0CEAVZiSUDUAT+oNYBhAVprSUAmAJyvZICiAOeyQ0CLANDSPECgAMzXQ0CKAR8OV0DEAN/QZEBNAMy9ZECaAKfwZEC9ATieUEDaAMfWUEDJAUA2NYB5AVttSUBKAI+oZECLAG0FZAAA";
+		 * identityInfoDTO.setLanguage("ara"); identityInfoDTO.setValue(value);
+		 * leftIndexList.add(identityInfoDTO); identity.setLeftIndex(leftIndexList);
+		 * requestDTO.setIdentity(identity); authRequestDTO.setRequest(requestDTO);
+		 */// Map<String, List<IdentityInfoDTO>> bioIdentity = new HashMap<>();
 		IdentityInfoDTO identityInfoDTO1 = new IdentityInfoDTO();
 		identityInfoDTO1.setLanguage("ara");
 		identityInfoDTO1.setValue(value);
@@ -349,74 +335,60 @@ public class BioAuthServiceTest {
 		Mockito.when(cbeffUtil.getBDBBasedOnType(Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenReturn(cbeffValueMap);
 
-		AuthStatusInfo validateBioDetails = bioAuthServiceImpl.authenticate(authRequestDTO,"", bioIdentity,"");
+		AuthStatusInfo validateBioDetails = bioAuthServiceImpl.authenticate(authRequestDTO, "", bioIdentity, "");
 		System.err.println(validateBioDetails.isStatus());
 		System.err.println(validateBioDetails.getErr());
 	}
 
 	@Test
 	public void TestMatchFingerPrintMantra() throws Exception {
-		/*AuthRequestDTO authRequestDTO = new AuthRequestDTO();
-		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
-		authTypeDTO.setBio(true);
-		authRequestDTO.setAuthType(authTypeDTO);
-		authRequestDTO.setId("mosip.identity.auth");
-		authRequestDTO.setIdvId("516283648960");
-		authRequestDTO.setIdvIdType("D");
-		authRequestDTO.setKey(new AuthSecureDTO());
-		List<MatchInfo> matchInfoList = new ArrayList<>();
-		MatchInfo matchInfo = new MatchInfo();
-		matchInfo.setAuthType("bio");
-		matchInfo.setMatchingStrategy(MatchingStrategyType.PARTIAL.getType());
-		matchInfoList.add(matchInfo);
-		authRequestDTO.setMatchInfo(matchInfoList);
-		authRequestDTO.setTspID("1234567890");
-		ZoneOffset offset = ZoneOffset.MAX;
-		authRequestDTO.setReqTime(Instant.now().atOffset(offset)
-				.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
-		// authRequestDTO.setReqHmac("1234567890");
-		authRequestDTO.setTxnID("1234567890");
-		// authRequestDTO.setVer("1.0");
-		List<BioInfo> bioInfoList = new ArrayList<>();
-		BioInfo bioInfo = new BioInfo();
-		bioInfo.setBioType("fgrMin");
-		DeviceInfo deviceInfo = new DeviceInfo();
-		deviceInfo.setDeviceId("Test1");
-		deviceInfo.setMake("mantra");
-		deviceInfo.setModel("1.0");
-		bioInfo.setDeviceInfo(deviceInfo);
-		bioInfoList.add(bioInfo);
-		authRequestDTO.setBioInfo(bioInfoList);
-		RequestDTO requestDTO = new RequestDTO();
-		IdentityDTO identity = new IdentityDTO();
-		List<IdentityInfoDTO> leftIndexList = new ArrayList<>();
-		IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
-		String value = "Rk1SACAyMAAAAAEIAAABPAFiAMUAxQEAAAAoJ4CEAOs8UICiAQGXUIBzANXIV4CmARiXUEC6AObFZIB3ALUSZEBlATPYZICIAKUCZEBmAJ4YZEAnAOvBZIDOAKTjZEBCAUbQQ0ARANu0ZECRAOC4NYBnAPDUXYCtANzIXUBhAQ7bZIBTAQvQZICtASqWZEDSAPnMZICaAUAVZEDNAS63Q0CEAVZiSUDUAT+oNYBhAVprSUAmAJyvZICiAOeyQ0CLANDSPECgAMzXQ0CKAR8OV0DEAN/QZEBNAMy9ZECaAKfwZEC9ATieUEDaAMfWUEDJAUA2NYB5AVttSUBKAI+oZECLAG0FZAAA";
-		identityInfoDTO.setLanguage("ara");
-		identityInfoDTO.setValue(value);
-		leftIndexList.add(identityInfoDTO);
-		identity.setLeftIndex(leftIndexList);
-		requestDTO.setIdentity(identity);
-		authRequestDTO.setRequest(requestDTO);*/
-		
+		/*
+		 * AuthRequestDTO authRequestDTO = new AuthRequestDTO(); AuthTypeDTO authTypeDTO
+		 * = new AuthTypeDTO(); authTypeDTO.setBio(true);
+		 * authRequestDTO.setAuthType(authTypeDTO);
+		 * authRequestDTO.setId("mosip.identity.auth");
+		 * authRequestDTO.setIdvId("516283648960"); authRequestDTO.setIdvIdType("D");
+		 * authRequestDTO.setKey(new AuthSecureDTO()); List<MatchInfo> matchInfoList =
+		 * new ArrayList<>(); MatchInfo matchInfo = new MatchInfo();
+		 * matchInfo.setAuthType("bio");
+		 * matchInfo.setMatchingStrategy(MatchingStrategyType.PARTIAL.getType());
+		 * matchInfoList.add(matchInfo); authRequestDTO.setMatchInfo(matchInfoList);
+		 * authRequestDTO.setTspID("1234567890"); ZoneOffset offset = ZoneOffset.MAX;
+		 * authRequestDTO.setReqTime(Instant.now().atOffset(offset)
+		 * .format(DateTimeFormatter.ofPattern(environment.getProperty(
+		 * "datetime.pattern"))).toString()); //
+		 * authRequestDTO.setReqHmac("1234567890");
+		 * authRequestDTO.setTxnID("1234567890"); // authRequestDTO.setVer("1.0");
+		 * List<BioInfo> bioInfoList = new ArrayList<>(); BioInfo bioInfo = new
+		 * BioInfo(); bioInfo.setBioType("fgrMin"); DeviceInfo deviceInfo = new
+		 * DeviceInfo(); deviceInfo.setDeviceId("Test1"); deviceInfo.setMake("mantra");
+		 * deviceInfo.setModel("1.0"); bioInfo.setDeviceInfo(deviceInfo);
+		 * bioInfoList.add(bioInfo); authRequestDTO.setBioInfo(bioInfoList); RequestDTO
+		 * requestDTO = new RequestDTO(); IdentityDTO identity = new IdentityDTO();
+		 * List<IdentityInfoDTO> leftIndexList = new ArrayList<>(); IdentityInfoDTO
+		 * identityInfoDTO = new IdentityInfoDTO(); String value =
+		 * "Rk1SACAyMAAAAAEIAAABPAFiAMUAxQEAAAAoJ4CEAOs8UICiAQGXUIBzANXIV4CmARiXUEC6AObFZIB3ALUSZEBlATPYZICIAKUCZEBmAJ4YZEAnAOvBZIDOAKTjZEBCAUbQQ0ARANu0ZECRAOC4NYBnAPDUXYCtANzIXUBhAQ7bZIBTAQvQZICtASqWZEDSAPnMZICaAUAVZEDNAS63Q0CEAVZiSUDUAT+oNYBhAVprSUAmAJyvZICiAOeyQ0CLANDSPECgAMzXQ0CKAR8OV0DEAN/QZEBNAMy9ZECaAKfwZEC9ATieUEDaAMfWUEDJAUA2NYB5AVttSUBKAI+oZECLAG0FZAAA";
+		 * identityInfoDTO.setLanguage("ara"); identityInfoDTO.setValue(value);
+		 * leftIndexList.add(identityInfoDTO); identity.setLeftIndex(leftIndexList);
+		 * requestDTO.setIdentity(identity); authRequestDTO.setRequest(requestDTO);
+		 */
+
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
-		IdentityDTO identity=new IdentityDTO();
-		RequestDTO request=new RequestDTO();
-		request.setDemographics(identity);
+		authRequestDTO.setId("mosip.identity.auth");
 		authRequestDTO.setIndividualId("274390482564");
+		authRequestDTO.setIndividualIdType(IdType.UIN.getType());
 		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
 		authTypeDTO.setBio(true);
 		authRequestDTO.setRequestedAuth(authTypeDTO);
-		authRequestDTO.setId("mosip.identity.auth");
 		ZoneOffset offset = ZoneOffset.MAX;
 		authRequestDTO.setRequestTime(Instant.now().atOffset(offset)
 				.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
-		// authRequestDTO.setReqHmac("1234567890");
+		authRequestDTO.setRequestHMAC("1234567890");
 		authRequestDTO.setTransactionID("1234567890");
 		authRequestDTO.setVersion("1.0");
 		List<BioIdentityInfoDTO> bioIdentityInfoDTOList = new ArrayList<>();
 		BioIdentityInfoDTO bioIdentityInfoDTO = new BioIdentityInfoDTO();
-		DataDTO bioInfo=new DataDTO();
+		DataDTO bioInfo = new DataDTO();
 		bioInfo.setBioType(CbeffDocType.FMR.getType().name());
 		bioInfo.setDeviceProviderID("provider001");
 		bioIdentityInfoDTO.setData(bioInfo);
@@ -425,9 +397,9 @@ public class BioAuthServiceTest {
 		bioInfo.setBioSubType("LEFT_INDEX");
 		bioInfo.setBioValue(value);
 		bioIdentityInfoDTOList.add(bioIdentityInfoDTO);
+		RequestDTO request = new RequestDTO();
 		request.setBiometrics(bioIdentityInfoDTOList);
 		authRequestDTO.setRequest(request);
-//		Map<String, List<IdentityInfoDTO>> bioIdentity = new HashMap<>();
 		IdentityInfoDTO identityInfoDTO1 = new IdentityInfoDTO();
 		identityInfoDTO1.setLanguage("ara");
 		identityInfoDTO1.setValue(value);
@@ -443,58 +415,46 @@ public class BioAuthServiceTest {
 		cbeffValueMap.put("FINGER_Left IndexFinger_2", value);
 		Mockito.when(cbeffUtil.getBDBBasedOnType(Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenReturn(cbeffValueMap);
-		AuthStatusInfo validateBioDetails = bioAuthServiceImpl.authenticate(authRequestDTO,"", bioIdentity,"");
+		AuthStatusInfo validateBioDetails = bioAuthServiceImpl.authenticate(authRequestDTO, "", bioIdentity, "");
 		System.err.println(validateBioDetails.isStatus());
 		System.err.println(validateBioDetails.getErr());
 	}
 
 	@Test
 	public void TestMatchFingerPrintCogent() throws Exception {
-	/*	AuthRequestDTO authRequestDTO = new AuthRequestDTO();
-		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
-		authTypeDTO.setBio(true);
-		authRequestDTO.setAuthType(authTypeDTO);
-		authRequestDTO.setId("mosip.identity.auth");
-		authRequestDTO.setIdvId("516283648960");
-		authRequestDTO.setIdvIdType("D");
-		authRequestDTO.setKey(new AuthSecureDTO());
-		List<MatchInfo> matchInfoList = new ArrayList<>();
-		MatchInfo matchInfo = new MatchInfo();
-		matchInfo.setAuthType("bio");
-		matchInfo.setMatchingStrategy(MatchingStrategyType.PARTIAL.getType());
-		matchInfoList.add(matchInfo);
-		authRequestDTO.setMatchInfo(matchInfoList);
-		authRequestDTO.setTspID("1234567890");
-		ZoneOffset offset = ZoneOffset.MAX;
-		authRequestDTO.setReqTime(Instant.now().atOffset(offset)
-				.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
-		// authRequestDTO.setReqHmac("1234567890");
-		authRequestDTO.setTxnID("1234567890");
-		// authRequestDTO.setVer("1.0");
-		List<BioInfo> bioInfoList = new ArrayList<>();
-		BioInfo bioInfo = new BioInfo();
-		bioInfo.setBioType("fgrMin");
-		DeviceInfo deviceInfo = new DeviceInfo();
-		deviceInfo.setDeviceId("Test1");
-		deviceInfo.setMake("cogent");
-		deviceInfo.setModel("1.0");
-		bioInfo.setDeviceInfo(deviceInfo);
-		bioInfoList.add(bioInfo);
-		authRequestDTO.setBioInfo(bioInfoList);
-		RequestDTO requestDTO = new RequestDTO();
-		IdentityDTO identity = new IdentityDTO();
-		List<IdentityInfoDTO> leftIndexList = new ArrayList<>();
-		IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
-		String value = "Rk1SACAyMAAAAAEIAAABPAFiAMUAxQEAAAAoJ4CEAOs8UICiAQGXUIBzANXIV4CmARiXUEC6AObFZIB3ALUSZEBlATPYZICIAKUCZEBmAJ4YZEAnAOvBZIDOAKTjZEBCAUbQQ0ARANu0ZECRAOC4NYBnAPDUXYCtANzIXUBhAQ7bZIBTAQvQZICtASqWZEDSAPnMZICaAUAVZEDNAS63Q0CEAVZiSUDUAT+oNYBhAVprSUAmAJyvZICiAOeyQ0CLANDSPECgAMzXQ0CKAR8OV0DEAN/QZEBNAMy9ZECaAKfwZEC9ATieUEDaAMfWUEDJAUA2NYB5AVttSUBKAI+oZECLAG0FZAAA";
-		identityInfoDTO.setLanguage("ara");
-		identityInfoDTO.setValue(value);
-		leftIndexList.add(identityInfoDTO);
-		identity.setLeftIndex(leftIndexList);
-		requestDTO.setIdentity(identity);
-		authRequestDTO.setRequest(requestDTO);*/
+		/*
+		 * AuthRequestDTO authRequestDTO = new AuthRequestDTO(); AuthTypeDTO authTypeDTO
+		 * = new AuthTypeDTO(); authTypeDTO.setBio(true);
+		 * authRequestDTO.setAuthType(authTypeDTO);
+		 * authRequestDTO.setId("mosip.identity.auth");
+		 * authRequestDTO.setIdvId("516283648960"); authRequestDTO.setIdvIdType("D");
+		 * authRequestDTO.setKey(new AuthSecureDTO()); List<MatchInfo> matchInfoList =
+		 * new ArrayList<>(); MatchInfo matchInfo = new MatchInfo();
+		 * matchInfo.setAuthType("bio");
+		 * matchInfo.setMatchingStrategy(MatchingStrategyType.PARTIAL.getType());
+		 * matchInfoList.add(matchInfo); authRequestDTO.setMatchInfo(matchInfoList);
+		 * authRequestDTO.setTspID("1234567890"); ZoneOffset offset = ZoneOffset.MAX;
+		 * authRequestDTO.setReqTime(Instant.now().atOffset(offset)
+		 * .format(DateTimeFormatter.ofPattern(environment.getProperty(
+		 * "datetime.pattern"))).toString()); //
+		 * authRequestDTO.setReqHmac("1234567890");
+		 * authRequestDTO.setTxnID("1234567890"); // authRequestDTO.setVer("1.0");
+		 * List<BioInfo> bioInfoList = new ArrayList<>(); BioInfo bioInfo = new
+		 * BioInfo(); bioInfo.setBioType("fgrMin"); DeviceInfo deviceInfo = new
+		 * DeviceInfo(); deviceInfo.setDeviceId("Test1"); deviceInfo.setMake("cogent");
+		 * deviceInfo.setModel("1.0"); bioInfo.setDeviceInfo(deviceInfo);
+		 * bioInfoList.add(bioInfo); authRequestDTO.setBioInfo(bioInfoList); RequestDTO
+		 * requestDTO = new RequestDTO(); IdentityDTO identity = new IdentityDTO();
+		 * List<IdentityInfoDTO> leftIndexList = new ArrayList<>(); IdentityInfoDTO
+		 * identityInfoDTO = new IdentityInfoDTO(); String value =
+		 * "Rk1SACAyMAAAAAEIAAABPAFiAMUAxQEAAAAoJ4CEAOs8UICiAQGXUIBzANXIV4CmARiXUEC6AObFZIB3ALUSZEBlATPYZICIAKUCZEBmAJ4YZEAnAOvBZIDOAKTjZEBCAUbQQ0ARANu0ZECRAOC4NYBnAPDUXYCtANzIXUBhAQ7bZIBTAQvQZICtASqWZEDSAPnMZICaAUAVZEDNAS63Q0CEAVZiSUDUAT+oNYBhAVprSUAmAJyvZICiAOeyQ0CLANDSPECgAMzXQ0CKAR8OV0DEAN/QZEBNAMy9ZECaAKfwZEC9ATieUEDaAMfWUEDJAUA2NYB5AVttSUBKAI+oZECLAG0FZAAA";
+		 * identityInfoDTO.setLanguage("ara"); identityInfoDTO.setValue(value);
+		 * leftIndexList.add(identityInfoDTO); identity.setLeftIndex(leftIndexList);
+		 * requestDTO.setIdentity(identity); authRequestDTO.setRequest(requestDTO);
+		 */
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
-		IdentityDTO identity=new IdentityDTO();
-		RequestDTO request=new RequestDTO();
+		IdentityDTO identity = new IdentityDTO();
+		RequestDTO request = new RequestDTO();
 		request.setDemographics(identity);
 		authRequestDTO.setIndividualId("274390482564");
 		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
@@ -509,7 +469,7 @@ public class BioAuthServiceTest {
 		authRequestDTO.setVersion("1.0");
 		List<BioIdentityInfoDTO> bioIdentityInfoDTOList = new ArrayList<>();
 		BioIdentityInfoDTO bioIdentityInfoDTO = new BioIdentityInfoDTO();
-		DataDTO bioInfo=new DataDTO();
+		DataDTO bioInfo = new DataDTO();
 		bioInfo.setBioType(CbeffDocType.FMR.getType().name());
 		bioInfo.setDeviceProviderID("provider001");
 		bioIdentityInfoDTO.setData(bioInfo);
@@ -537,7 +497,7 @@ public class BioAuthServiceTest {
 		cbeffValueMap.put("FINGER_Left IndexFinger_2", value);
 		Mockito.when(cbeffUtil.getBDBBasedOnType(Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenReturn(cbeffValueMap);
-		AuthStatusInfo validateBioDetails = bioAuthServiceImpl.authenticate(authRequestDTO,"",bioIdentity,"");
+		AuthStatusInfo validateBioDetails = bioAuthServiceImpl.authenticate(authRequestDTO, "", bioIdentity, "");
 		System.err.println(validateBioDetails.isStatus());
 		System.err.println(validateBioDetails.getErr());
 	}
@@ -545,8 +505,8 @@ public class BioAuthServiceTest {
 	@Test
 	public void TestvalidateBioDetailsMulti() throws IdAuthenticationBusinessException {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
-		IdentityDTO identity=new IdentityDTO();
-		RequestDTO request=new RequestDTO();
+		IdentityDTO identity = new IdentityDTO();
+		RequestDTO request = new RequestDTO();
 		request.setDemographics(identity);
 		authRequestDTO.setIndividualId("274390482564");
 		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
@@ -561,7 +521,7 @@ public class BioAuthServiceTest {
 		authRequestDTO.setVersion("1.0");
 		List<BioIdentityInfoDTO> bioIdentityInfoDTOList = new ArrayList<>();
 		BioIdentityInfoDTO bioIdentityInfoDTO = new BioIdentityInfoDTO();
-		DataDTO bioInfo=new DataDTO();
+		DataDTO bioInfo = new DataDTO();
 		bioInfo.setBioType(CbeffDocType.FMR.getType().name());
 		bioInfo.setDeviceProviderID("provider001");
 		bioIdentityInfoDTO.setData(bioInfo);
@@ -570,32 +530,32 @@ public class BioAuthServiceTest {
 		bioInfo.setBioSubType("LEFT_INDEX");
 		bioInfo.setBioValue(value);
 		bioIdentityInfoDTOList.add(bioIdentityInfoDTO);
-	/*	List<IdentityInfoDTO> fingerPrintList = new ArrayList<>();
-		List<IdentityInfoDTO> fingerPrintLists = new ArrayList<>();
-		IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
-		IdentityInfoDTO identityInfoDTOList = new IdentityInfoDTO();
-		String value = "Rk1SACAyMAAAAAEIAAABPAFiAMUAxQEAAAAoJ4CEAOs8UICiAQGXUIBzANXIV4CmARiXUEC6AObFZIB3ALUSZEBlATPYZICIAKUCZEBmAJ4YZEAnAOvBZIDOAKTjZEBCAUbQQ0ARANu0ZECRAOC4NYBnAPDUXYCtANzIXUBhAQ7bZIBTAQvQZICtASqWZEDSAPnMZICaAUAVZEDNAS63Q0CEAVZiSUDUAT+oNYBhAVprSUAmAJyvZICiAOeyQ0CLANDSPECgAMzXQ0CKAR8OV0DEAN/QZEBNAMy9ZECaAKfwZEC9ATieUEDaAMfWUEDJAUA2NYB5AVttSUBKAI+oZECLAG0FZAAA";
-		String value1 = "Rk1SACAyMAAAAAEIAAABPAFiAMUAxQEAAAAoJ4CEAOs8UICiAQGXUIBzANXIV4CmARiXUEC6AObFZIB3ALUSZEBlATPYZICIAKUCZEBmAJ4YZEAnAOvBZIDOAKTjZEBCAUbQQ0ARANu0ZECRAOC4NYBnAPDUXYCtANzIXUBhAQ7bZIBTAQvQZICtASqWZEDSAPnMZICaAUAVZEDNAS63Q0CEAVZiSUDUAT+oNYBhAVprSUAmAJyvZICiAOeyQ0CLANDSPECgAMzXQ0CKAR8OV0DEAN/QZEBNAMy9ZECaAKfwZEC9ATieUEDaAMfWUEDJAUA2NYB5AVttSUBKAI+oZECLAG0FZAAA";
-		identityInfoDTO.setLanguage("ara");
-		identityInfoDTO.setValue(value);
-		identityInfoDTOList.setLanguage("ara");
-		identityInfoDTOList.setValue(value1);
-		fingerPrintList.add(identityInfoDTO);
-		fingerPrintLists.add(identityInfoDTOList);
-		identity.setLeftIndex(fingerPrintList);
-		identity.setRightIndex(fingerPrintLists);
-		identity.setLeftLittle(fingerPrintLists);
-		identity.setRightRing(fingerPrintLists);
-		identity.setRightMiddle(fingerPrintLists);
-		identity.setLeftMiddle(fingerPrintLists);
-		identity.setLeftRing(fingerPrintList);
-		identity.setRightLittle(fingerPrintLists);
-		identity.setRightThumb(fingerPrintList);
-		identity.setLeftThumb(fingerPrintList);
-		requestDTO.setIdentity(identity);
-		authRequestDTO.setRequest(requestDTO);*/
+		/*
+		 * List<IdentityInfoDTO> fingerPrintList = new ArrayList<>();
+		 * List<IdentityInfoDTO> fingerPrintLists = new ArrayList<>(); IdentityInfoDTO
+		 * identityInfoDTO = new IdentityInfoDTO(); IdentityInfoDTO identityInfoDTOList
+		 * = new IdentityInfoDTO(); String value =
+		 * "Rk1SACAyMAAAAAEIAAABPAFiAMUAxQEAAAAoJ4CEAOs8UICiAQGXUIBzANXIV4CmARiXUEC6AObFZIB3ALUSZEBlATPYZICIAKUCZEBmAJ4YZEAnAOvBZIDOAKTjZEBCAUbQQ0ARANu0ZECRAOC4NYBnAPDUXYCtANzIXUBhAQ7bZIBTAQvQZICtASqWZEDSAPnMZICaAUAVZEDNAS63Q0CEAVZiSUDUAT+oNYBhAVprSUAmAJyvZICiAOeyQ0CLANDSPECgAMzXQ0CKAR8OV0DEAN/QZEBNAMy9ZECaAKfwZEC9ATieUEDaAMfWUEDJAUA2NYB5AVttSUBKAI+oZECLAG0FZAAA";
+		 * String value1 =
+		 * "Rk1SACAyMAAAAAEIAAABPAFiAMUAxQEAAAAoJ4CEAOs8UICiAQGXUIBzANXIV4CmARiXUEC6AObFZIB3ALUSZEBlATPYZICIAKUCZEBmAJ4YZEAnAOvBZIDOAKTjZEBCAUbQQ0ARANu0ZECRAOC4NYBnAPDUXYCtANzIXUBhAQ7bZIBTAQvQZICtASqWZEDSAPnMZICaAUAVZEDNAS63Q0CEAVZiSUDUAT+oNYBhAVprSUAmAJyvZICiAOeyQ0CLANDSPECgAMzXQ0CKAR8OV0DEAN/QZEBNAMy9ZECaAKfwZEC9ATieUEDaAMfWUEDJAUA2NYB5AVttSUBKAI+oZECLAG0FZAAA";
+		 * identityInfoDTO.setLanguage("ara"); identityInfoDTO.setValue(value);
+		 * identityInfoDTOList.setLanguage("ara"); identityInfoDTOList.setValue(value1);
+		 * fingerPrintList.add(identityInfoDTO);
+		 * fingerPrintLists.add(identityInfoDTOList);
+		 * identity.setLeftIndex(fingerPrintList);
+		 * identity.setRightIndex(fingerPrintLists);
+		 * identity.setLeftLittle(fingerPrintLists);
+		 * identity.setRightRing(fingerPrintLists);
+		 * identity.setRightMiddle(fingerPrintLists);
+		 * identity.setLeftMiddle(fingerPrintLists);
+		 * identity.setLeftRing(fingerPrintList);
+		 * identity.setRightLittle(fingerPrintLists);
+		 * identity.setRightThumb(fingerPrintList);
+		 * identity.setLeftThumb(fingerPrintList); requestDTO.setIdentity(identity);
+		 * authRequestDTO.setRequest(requestDTO);
+		 */
 		value = "Rk1SACAyMAAAAAEIAAABPAFiAMUAxQEAAAAoJ4CEAOs8UICiAQGXUIBzANXIV4CmARiXUEC6AObFZIB3ALUSZEBlATPYZICIAKUCZEBmAJ4YZEAnAOvBZIDOAKTjZEBCAUbQQ0ARANu0ZECRAOC4NYBnAPDUXYCtANzIXUBhAQ7bZIBTAQvQZICtASqWZEDSAPnMZICaAUAVZEDNAS63Q0CEAVZiSUDUAT+oNYBhAVprSUAmAJyvZICiAOeyQ0CLANDSPECgAMzXQ0CKAR8OV0DEAN/QZEBNAMy9ZECaAKfwZEC9ATieUEDaAMfWUEDJAUA2NYB5AVttSUBKAI+oZECLAG0FZAAA";
-		DataDTO dataDTO=new DataDTO();
+		DataDTO dataDTO = new DataDTO();
 		dataDTO.setBioType(CbeffDocType.FMR.getType().name());
 		dataDTO.setBioSubType("LEFT_INDEX");
 		dataDTO.setBioValue(value);
@@ -670,61 +630,51 @@ public class BioAuthServiceTest {
 		bioIdentity.put("leftTumb", identityList);
 		bioIdentity.put("rightRing", identityList);
 		bioIdentity.put("ringThumb", identityList);
-		AuthStatusInfo validateBioDetails = bioAuthServiceImpl.authenticate(authRequestDTO,"", bioIdentity,"");
+		AuthStatusInfo validateBioDetails = bioAuthServiceImpl.authenticate(authRequestDTO, "", bioIdentity, "");
 		assertFalse(validateBioDetails.isStatus());
 	}
 
 	@Test
 	public void TestvalidateBioMultiImage() throws Exception {
-	/*	AuthRequestDTO authRequestDTO = new AuthRequestDTO();
-		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
-		authTypeDTO.setBio(true);
-		authRequestDTO.setAuthType(authTypeDTO);
-		authRequestDTO.setId("mosip.identity.auth");
-		authRequestDTO.setIdvId("274390482564");
-		authRequestDTO.setIdvIdType("D");
-		authRequestDTO.setKey(new AuthSecureDTO());
-		List<MatchInfo> matchInfoList = new ArrayList<>();
-		authRequestDTO.setMatchInfo(matchInfoList);
-		authRequestDTO.setTspID("1234567890");
-		ZoneOffset offset = ZoneOffset.MAX;
-		authRequestDTO.setReqTime(Instant.now().atOffset(offset)
-				.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
-		// authRequestDTO.setReqHmac("1234567890");
-		authRequestDTO.setTxnID("1234567890");
-		// authRequestDTO.setVer("1.0");
-		List<BioInfo> bioInfoList = new ArrayList<>();
-		BioInfo bioInfo = new BioInfo();
-		bioInfo.setBioType("fgrMin");
-		DeviceInfo deviceInfo = new DeviceInfo();
-		deviceInfo.setDeviceId("Test1");
-		deviceInfo.setMake("mantra");
-		deviceInfo.setModel("1.0");
-		bioInfo.setDeviceInfo(deviceInfo);
-		bioInfoList.add(bioInfo);
-		authRequestDTO.setBioInfo(bioInfoList);
-		RequestDTO requestDTO = new RequestDTO();
-		IdentityDTO identity = new IdentityDTO();
-		List<IdentityInfoDTO> fingerPrintList = new ArrayList<>();
-		List<IdentityInfoDTO> fingerPrintLists = new ArrayList<>();
-		IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
-		IdentityInfoDTO identityInfoDTOList = new IdentityInfoDTO();
-		String value = "Rk1SACAyMAAAAAEIAAABPAFiAMUAxQEAAAAoJ4CEAOs8UICiAQGXUIBzANXIV4CmARiXUEC6AObFZIB3ALUSZEBlATPYZICIAKUCZEBmAJ4YZEAnAOvBZIDOAKTjZEBCAUbQQ0ARANu0ZECRAOC4NYBnAPDUXYCtANzIXUBhAQ7bZIBTAQvQZICtASqWZEDSAPnMZICaAUAVZEDNAS63Q0CEAVZiSUDUAT+oNYBhAVprSUAmAJyvZICiAOeyQ0CLANDSPECgAMzXQ0CKAR8OV0DEAN/QZEBNAMy9ZECaAKfwZEC9ATieUEDaAMfWUEDJAUA2NYB5AVttSUBKAI+oZECLAG0FZAAA";
-		String value1 = "Rk1SACAyMAAAAAEIAAABPAFiAMUAxQEAAAAoJ4CEAOs8UICiAQGXUIBzANXIV4CmARiXUEC6AObFZIB3ALUSZEBlATPYZICIAKUCZEBmAJ4YZEAnAOvBZIDOAKTjZEBCAUbQQ0ARANu0ZECRAOC4NYBnAPDUXYCtANzIXUBhAQ7bZIBTAQvQZICtASqWZEDSAPnMZICaAUAVZEDNAS63Q0CEAVZiSUDUAT+oNYBhAVprSUAmAJyvZICiAOeyQ0CLANDSPECgAMzXQ0CKAR8OV0DEAN/QZEBNAMy9ZECaAKfwZEC9ATieUEDaAMfWUEDJAUA2NYB5AVttSUBKAI+oZECLAG0FZAAA";
-		identityInfoDTO.setLanguage("ara");
-		identityInfoDTO.setValue(value);
-		identityInfoDTOList.setLanguage("ara");
-		identityInfoDTOList.setValue(value1);
-		fingerPrintList.add(identityInfoDTO);
-		fingerPrintLists.add(identityInfoDTOList);
-		identity.setLeftIndex(fingerPrintList);
-		identity.setRightIndex(fingerPrintLists);
-		requestDTO.setIdentity(identity);
-		authRequestDTO.setRequest(requestDTO);*/
-		
+		/*
+		 * AuthRequestDTO authRequestDTO = new AuthRequestDTO(); AuthTypeDTO authTypeDTO
+		 * = new AuthTypeDTO(); authTypeDTO.setBio(true);
+		 * authRequestDTO.setAuthType(authTypeDTO);
+		 * authRequestDTO.setId("mosip.identity.auth");
+		 * authRequestDTO.setIdvId("274390482564"); authRequestDTO.setIdvIdType("D");
+		 * authRequestDTO.setKey(new AuthSecureDTO()); List<MatchInfo> matchInfoList =
+		 * new ArrayList<>(); authRequestDTO.setMatchInfo(matchInfoList);
+		 * authRequestDTO.setTspID("1234567890"); ZoneOffset offset = ZoneOffset.MAX;
+		 * authRequestDTO.setReqTime(Instant.now().atOffset(offset)
+		 * .format(DateTimeFormatter.ofPattern(environment.getProperty(
+		 * "datetime.pattern"))).toString()); //
+		 * authRequestDTO.setReqHmac("1234567890");
+		 * authRequestDTO.setTxnID("1234567890"); // authRequestDTO.setVer("1.0");
+		 * List<BioInfo> bioInfoList = new ArrayList<>(); BioInfo bioInfo = new
+		 * BioInfo(); bioInfo.setBioType("fgrMin"); DeviceInfo deviceInfo = new
+		 * DeviceInfo(); deviceInfo.setDeviceId("Test1"); deviceInfo.setMake("mantra");
+		 * deviceInfo.setModel("1.0"); bioInfo.setDeviceInfo(deviceInfo);
+		 * bioInfoList.add(bioInfo); authRequestDTO.setBioInfo(bioInfoList); RequestDTO
+		 * requestDTO = new RequestDTO(); IdentityDTO identity = new IdentityDTO();
+		 * List<IdentityInfoDTO> fingerPrintList = new ArrayList<>();
+		 * List<IdentityInfoDTO> fingerPrintLists = new ArrayList<>(); IdentityInfoDTO
+		 * identityInfoDTO = new IdentityInfoDTO(); IdentityInfoDTO identityInfoDTOList
+		 * = new IdentityInfoDTO(); String value =
+		 * "Rk1SACAyMAAAAAEIAAABPAFiAMUAxQEAAAAoJ4CEAOs8UICiAQGXUIBzANXIV4CmARiXUEC6AObFZIB3ALUSZEBlATPYZICIAKUCZEBmAJ4YZEAnAOvBZIDOAKTjZEBCAUbQQ0ARANu0ZECRAOC4NYBnAPDUXYCtANzIXUBhAQ7bZIBTAQvQZICtASqWZEDSAPnMZICaAUAVZEDNAS63Q0CEAVZiSUDUAT+oNYBhAVprSUAmAJyvZICiAOeyQ0CLANDSPECgAMzXQ0CKAR8OV0DEAN/QZEBNAMy9ZECaAKfwZEC9ATieUEDaAMfWUEDJAUA2NYB5AVttSUBKAI+oZECLAG0FZAAA";
+		 * String value1 =
+		 * "Rk1SACAyMAAAAAEIAAABPAFiAMUAxQEAAAAoJ4CEAOs8UICiAQGXUIBzANXIV4CmARiXUEC6AObFZIB3ALUSZEBlATPYZICIAKUCZEBmAJ4YZEAnAOvBZIDOAKTjZEBCAUbQQ0ARANu0ZECRAOC4NYBnAPDUXYCtANzIXUBhAQ7bZIBTAQvQZICtASqWZEDSAPnMZICaAUAVZEDNAS63Q0CEAVZiSUDUAT+oNYBhAVprSUAmAJyvZICiAOeyQ0CLANDSPECgAMzXQ0CKAR8OV0DEAN/QZEBNAMy9ZECaAKfwZEC9ATieUEDaAMfWUEDJAUA2NYB5AVttSUBKAI+oZECLAG0FZAAA";
+		 * identityInfoDTO.setLanguage("ara"); identityInfoDTO.setValue(value);
+		 * identityInfoDTOList.setLanguage("ara"); identityInfoDTOList.setValue(value1);
+		 * fingerPrintList.add(identityInfoDTO);
+		 * fingerPrintLists.add(identityInfoDTOList);
+		 * identity.setLeftIndex(fingerPrintList);
+		 * identity.setRightIndex(fingerPrintLists); requestDTO.setIdentity(identity);
+		 * authRequestDTO.setRequest(requestDTO);
+		 */
+
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
-		IdentityDTO identity=new IdentityDTO();
-		RequestDTO request=new RequestDTO();
+		IdentityDTO identity = new IdentityDTO();
+		RequestDTO request = new RequestDTO();
 		request.setDemographics(identity);
 		authRequestDTO.setIndividualId("274390482564");
 		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
@@ -739,7 +689,7 @@ public class BioAuthServiceTest {
 		authRequestDTO.setVersion("1.0");
 		List<BioIdentityInfoDTO> bioIdentityInfoDTOList = new ArrayList<>();
 		BioIdentityInfoDTO bioIdentityInfoDTO = new BioIdentityInfoDTO();
-		DataDTO bioInfo=new DataDTO();
+		DataDTO bioInfo = new DataDTO();
 		bioInfo.setBioType(CbeffDocType.FMR.getType().name());
 		bioInfo.setDeviceProviderID("provider001");
 		bioIdentityInfoDTO.setData(bioInfo);
@@ -748,33 +698,33 @@ public class BioAuthServiceTest {
 		bioInfo.setBioSubType("LEFT_INDEX");
 		bioInfo.setBioValue(value);
 		bioIdentityInfoDTOList.add(bioIdentityInfoDTO);
-	/*	List<IdentityInfoDTO> fingerPrintList = new ArrayList<>();
-		List<IdentityInfoDTO> fingerPrintLists = new ArrayList<>();
-		IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
-		IdentityInfoDTO identityInfoDTOList = new IdentityInfoDTO();
-		String value = "Rk1SACAyMAAAAAEIAAABPAFiAMUAxQEAAAAoJ4CEAOs8UICiAQGXUIBzANXIV4CmARiXUEC6AObFZIB3ALUSZEBlATPYZICIAKUCZEBmAJ4YZEAnAOvBZIDOAKTjZEBCAUbQQ0ARANu0ZECRAOC4NYBnAPDUXYCtANzIXUBhAQ7bZIBTAQvQZICtASqWZEDSAPnMZICaAUAVZEDNAS63Q0CEAVZiSUDUAT+oNYBhAVprSUAmAJyvZICiAOeyQ0CLANDSPECgAMzXQ0CKAR8OV0DEAN/QZEBNAMy9ZECaAKfwZEC9ATieUEDaAMfWUEDJAUA2NYB5AVttSUBKAI+oZECLAG0FZAAA";
+		/*
+		 * List<IdentityInfoDTO> fingerPrintList = new ArrayList<>();
+		 * List<IdentityInfoDTO> fingerPrintLists = new ArrayList<>(); IdentityInfoDTO
+		 * identityInfoDTO = new IdentityInfoDTO(); IdentityInfoDTO identityInfoDTOList
+		 * = new IdentityInfoDTO(); String value =
+		 * "Rk1SACAyMAAAAAEIAAABPAFiAMUAxQEAAAAoJ4CEAOs8UICiAQGXUIBzANXIV4CmARiXUEC6AObFZIB3ALUSZEBlATPYZICIAKUCZEBmAJ4YZEAnAOvBZIDOAKTjZEBCAUbQQ0ARANu0ZECRAOC4NYBnAPDUXYCtANzIXUBhAQ7bZIBTAQvQZICtASqWZEDSAPnMZICaAUAVZEDNAS63Q0CEAVZiSUDUAT+oNYBhAVprSUAmAJyvZICiAOeyQ0CLANDSPECgAMzXQ0CKAR8OV0DEAN/QZEBNAMy9ZECaAKfwZEC9ATieUEDaAMfWUEDJAUA2NYB5AVttSUBKAI+oZECLAG0FZAAA";
+		 * String value1 =
+		 * "Rk1SACAyMAAAAAEIAAABPAFiAMUAxQEAAAAoJ4CEAOs8UICiAQGXUIBzANXIV4CmARiXUEC6AObFZIB3ALUSZEBlATPYZICIAKUCZEBmAJ4YZEAnAOvBZIDOAKTjZEBCAUbQQ0ARANu0ZECRAOC4NYBnAPDUXYCtANzIXUBhAQ7bZIBTAQvQZICtASqWZEDSAPnMZICaAUAVZEDNAS63Q0CEAVZiSUDUAT+oNYBhAVprSUAmAJyvZICiAOeyQ0CLANDSPECgAMzXQ0CKAR8OV0DEAN/QZEBNAMy9ZECaAKfwZEC9ATieUEDaAMfWUEDJAUA2NYB5AVttSUBKAI+oZECLAG0FZAAA";
+		 * identityInfoDTO.setLanguage("ara"); identityInfoDTO.setValue(value);
+		 * identityInfoDTOList.setLanguage("ara"); identityInfoDTOList.setValue(value1);
+		 * fingerPrintList.add(identityInfoDTO);
+		 * fingerPrintLists.add(identityInfoDTOList);
+		 * identity.setLeftIndex(fingerPrintList);
+		 * identity.setRightIndex(fingerPrintLists);
+		 * identity.setLeftLittle(fingerPrintLists);
+		 * identity.setRightRing(fingerPrintLists);
+		 * identity.setRightMiddle(fingerPrintLists);
+		 * identity.setLeftMiddle(fingerPrintLists);
+		 * identity.setLeftRing(fingerPrintList);
+		 * identity.setRightLittle(fingerPrintLists);
+		 * identity.setRightThumb(fingerPrintList);
+		 * identity.setLeftThumb(fingerPrintList); requestDTO.setIdentity(identity);
+		 * authRequestDTO.setRequest(requestDTO);
+		 */
+		value = "Rk1SACAyMAAAAAEIAAABPAFiAMUAxQEAAAAoJ4CEAOs8UICiAQGXUIBzANXIV4CmARiXUEC6AObFZIB3ALUSZEBlATPYZICIAKUCZEBmAJ4YZEAnAOvBZIDOAKTjZEBCAUbQQ0ARANu0ZECRAOC4NYBnAPDUXYCtANzIXUBhAQ7bZIBTAQvQZICtASqWZEDSAPnMZICaAUAVZEDNAS63Q0CEAVZiSUDUAT+oNYBhAVprSUAmAJyvZICiAOeyQ0CLANDSPECgAMzXQ0CKAR8OV0DEAN/QZEBNAMy9ZECaAKfwZEC9ATieUEDaAMfWUEDJAUA2NYB5AVttSUBKAI+oZECLAG0FZAAA";
 		String value1 = "Rk1SACAyMAAAAAEIAAABPAFiAMUAxQEAAAAoJ4CEAOs8UICiAQGXUIBzANXIV4CmARiXUEC6AObFZIB3ALUSZEBlATPYZICIAKUCZEBmAJ4YZEAnAOvBZIDOAKTjZEBCAUbQQ0ARANu0ZECRAOC4NYBnAPDUXYCtANzIXUBhAQ7bZIBTAQvQZICtASqWZEDSAPnMZICaAUAVZEDNAS63Q0CEAVZiSUDUAT+oNYBhAVprSUAmAJyvZICiAOeyQ0CLANDSPECgAMzXQ0CKAR8OV0DEAN/QZEBNAMy9ZECaAKfwZEC9ATieUEDaAMfWUEDJAUA2NYB5AVttSUBKAI+oZECLAG0FZAAA";
-		identityInfoDTO.setLanguage("ara");
-		identityInfoDTO.setValue(value);
-		identityInfoDTOList.setLanguage("ara");
-		identityInfoDTOList.setValue(value1);
-		fingerPrintList.add(identityInfoDTO);
-		fingerPrintLists.add(identityInfoDTOList);
-		identity.setLeftIndex(fingerPrintList);
-		identity.setRightIndex(fingerPrintLists);
-		identity.setLeftLittle(fingerPrintLists);
-		identity.setRightRing(fingerPrintLists);
-		identity.setRightMiddle(fingerPrintLists);
-		identity.setLeftMiddle(fingerPrintLists);
-		identity.setLeftRing(fingerPrintList);
-		identity.setRightLittle(fingerPrintLists);
-		identity.setRightThumb(fingerPrintList);
-		identity.setLeftThumb(fingerPrintList);
-		requestDTO.setIdentity(identity);
-		authRequestDTO.setRequest(requestDTO);*/
-		 value = "Rk1SACAyMAAAAAEIAAABPAFiAMUAxQEAAAAoJ4CEAOs8UICiAQGXUIBzANXIV4CmARiXUEC6AObFZIB3ALUSZEBlATPYZICIAKUCZEBmAJ4YZEAnAOvBZIDOAKTjZEBCAUbQQ0ARANu0ZECRAOC4NYBnAPDUXYCtANzIXUBhAQ7bZIBTAQvQZICtASqWZEDSAPnMZICaAUAVZEDNAS63Q0CEAVZiSUDUAT+oNYBhAVprSUAmAJyvZICiAOeyQ0CLANDSPECgAMzXQ0CKAR8OV0DEAN/QZEBNAMy9ZECaAKfwZEC9ATieUEDaAMfWUEDJAUA2NYB5AVttSUBKAI+oZECLAG0FZAAA";
-		String value1="Rk1SACAyMAAAAAEIAAABPAFiAMUAxQEAAAAoJ4CEAOs8UICiAQGXUIBzANXIV4CmARiXUEC6AObFZIB3ALUSZEBlATPYZICIAKUCZEBmAJ4YZEAnAOvBZIDOAKTjZEBCAUbQQ0ARANu0ZECRAOC4NYBnAPDUXYCtANzIXUBhAQ7bZIBTAQvQZICtASqWZEDSAPnMZICaAUAVZEDNAS63Q0CEAVZiSUDUAT+oNYBhAVprSUAmAJyvZICiAOeyQ0CLANDSPECgAMzXQ0CKAR8OV0DEAN/QZEBNAMy9ZECaAKfwZEC9ATieUEDaAMfWUEDJAUA2NYB5AVttSUBKAI+oZECLAG0FZAAA";
-		DataDTO dataDTO=new DataDTO();
+		DataDTO dataDTO = new DataDTO();
 		dataDTO.setBioType(CbeffDocType.FMR.getType().name());
 		dataDTO.setBioSubType("LEFT_INDEX");
 		dataDTO.setBioValue(value);
@@ -810,59 +760,47 @@ public class BioAuthServiceTest {
 		cbeffValueMap.put("FINGER_Right IndexFinger_2", value1);
 		Mockito.when(cbeffUtil.getBDBBasedOnType(Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenReturn(cbeffValueMap);
-		AuthStatusInfo validateBioDetails = bioAuthServiceImpl.authenticate(authRequestDTO,"", bioIdentity,"");
-		//assertTrue(validateBioDetails.isStatus());
+		AuthStatusInfo validateBioDetails = bioAuthServiceImpl.authenticate(authRequestDTO, "", bioIdentity, "");
+		// assertTrue(validateBioDetails.isStatus());
 
 	}
 
 	@Test
 	public void TestIrisMatchCogent() throws Exception {
-	/*	AuthRequestDTO authRequestDTO = new AuthRequestDTO();
-		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
-		authTypeDTO.setBio(true);
-		authRequestDTO.setAuthType(authTypeDTO);
-		authRequestDTO.setId("mosip.identity.auth");
-		authRequestDTO.setIdvId("516283648960");
-		authRequestDTO.setIdvIdType("D");
-		authRequestDTO.setKey(new AuthSecureDTO());
-		List<MatchInfo> matchInfoList = new ArrayList<>();
-		MatchInfo matchInfo = new MatchInfo();
-		matchInfo.setAuthType("bio");
-		matchInfo.setMatchingStrategy(MatchingStrategyType.PARTIAL.getType());
-		matchInfoList.add(matchInfo);
-		authRequestDTO.setMatchInfo(matchInfoList);
-		authRequestDTO.setTspID("1234567890");
-		ZoneOffset offset = ZoneOffset.MAX;
-		authRequestDTO.setReqTime(Instant.now().atOffset(offset)
-				.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
-		// authRequestDTO.setReqHmac("1234567890");
-		authRequestDTO.setTxnID("1234567890");
-		// authRequestDTO.setVer("1.0");
-		List<BioInfo> bioInfoList = new ArrayList<>();
-		BioInfo bioInfo = new BioInfo();
-		bioInfo.setBioType("irisImg");
-		DeviceInfo deviceInfo = new DeviceInfo();
-		deviceInfo.setDeviceId("Test1");
-		deviceInfo.setMake("morpho");
-		deviceInfo.setModel("1.0");
-		bioInfo.setDeviceInfo(deviceInfo);
-		bioInfoList.add(bioInfo);
-		authRequestDTO.setBioInfo(bioInfoList);
-		RequestDTO requestDTO = new RequestDTO();
-		IdentityDTO identity = new IdentityDTO();
-		List<IdentityInfoDTO> leftEyeList = new ArrayList<>();
-		IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
-		String value = "Rk1SACAyMAAAAAEIAAABPAFiAMUAxQEAAAAoJ4CEAOs8UICiAQGXUIBzANXIV4CmARiXUEC6AObFZIB3ALUSZEBlATPYZICIAKUCZEBmAJ4YZEAnAOvBZIDOAKTjZEBCAUbQQ0ARANu0ZECRAOC4NYBnAPDUXYCtANzIXUBhAQ7bZIBTAQvQZICtASqWZEDSAPnMZICaAUAVZEDNAS63Q0CEAVZiSUDUAT+oNYBhAVprSUAmAJyvZICiAOeyQ0CLANDSPECgAMzXQ0CKAR8OV0DEAN/QZEBNAMy9ZECaAKfwZEC9ATieUEDaAMfWUEDJAUA2NYB5AVttSUBKAI+oZECLAG0FZAAA";
-		identityInfoDTO.setLanguage("ara");
-		identityInfoDTO.setValue(value);
-		leftEyeList.add(identityInfoDTO);
-		identity.setLeftEye(leftEyeList);
-		requestDTO.setIdentity(identity);
-		authRequestDTO.setRequest(requestDTO);*/
-		
+		/*
+		 * AuthRequestDTO authRequestDTO = new AuthRequestDTO(); AuthTypeDTO authTypeDTO
+		 * = new AuthTypeDTO(); authTypeDTO.setBio(true);
+		 * authRequestDTO.setAuthType(authTypeDTO);
+		 * authRequestDTO.setId("mosip.identity.auth");
+		 * authRequestDTO.setIdvId("516283648960"); authRequestDTO.setIdvIdType("D");
+		 * authRequestDTO.setKey(new AuthSecureDTO()); List<MatchInfo> matchInfoList =
+		 * new ArrayList<>(); MatchInfo matchInfo = new MatchInfo();
+		 * matchInfo.setAuthType("bio");
+		 * matchInfo.setMatchingStrategy(MatchingStrategyType.PARTIAL.getType());
+		 * matchInfoList.add(matchInfo); authRequestDTO.setMatchInfo(matchInfoList);
+		 * authRequestDTO.setTspID("1234567890"); ZoneOffset offset = ZoneOffset.MAX;
+		 * authRequestDTO.setReqTime(Instant.now().atOffset(offset)
+		 * .format(DateTimeFormatter.ofPattern(environment.getProperty(
+		 * "datetime.pattern"))).toString()); //
+		 * authRequestDTO.setReqHmac("1234567890");
+		 * authRequestDTO.setTxnID("1234567890"); // authRequestDTO.setVer("1.0");
+		 * List<BioInfo> bioInfoList = new ArrayList<>(); BioInfo bioInfo = new
+		 * BioInfo(); bioInfo.setBioType("irisImg"); DeviceInfo deviceInfo = new
+		 * DeviceInfo(); deviceInfo.setDeviceId("Test1"); deviceInfo.setMake("morpho");
+		 * deviceInfo.setModel("1.0"); bioInfo.setDeviceInfo(deviceInfo);
+		 * bioInfoList.add(bioInfo); authRequestDTO.setBioInfo(bioInfoList); RequestDTO
+		 * requestDTO = new RequestDTO(); IdentityDTO identity = new IdentityDTO();
+		 * List<IdentityInfoDTO> leftEyeList = new ArrayList<>(); IdentityInfoDTO
+		 * identityInfoDTO = new IdentityInfoDTO(); String value =
+		 * "Rk1SACAyMAAAAAEIAAABPAFiAMUAxQEAAAAoJ4CEAOs8UICiAQGXUIBzANXIV4CmARiXUEC6AObFZIB3ALUSZEBlATPYZICIAKUCZEBmAJ4YZEAnAOvBZIDOAKTjZEBCAUbQQ0ARANu0ZECRAOC4NYBnAPDUXYCtANzIXUBhAQ7bZIBTAQvQZICtASqWZEDSAPnMZICaAUAVZEDNAS63Q0CEAVZiSUDUAT+oNYBhAVprSUAmAJyvZICiAOeyQ0CLANDSPECgAMzXQ0CKAR8OV0DEAN/QZEBNAMy9ZECaAKfwZEC9ATieUEDaAMfWUEDJAUA2NYB5AVttSUBKAI+oZECLAG0FZAAA";
+		 * identityInfoDTO.setLanguage("ara"); identityInfoDTO.setValue(value);
+		 * leftEyeList.add(identityInfoDTO); identity.setLeftEye(leftEyeList);
+		 * requestDTO.setIdentity(identity); authRequestDTO.setRequest(requestDTO);
+		 */
+
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
-		IdentityDTO identity=new IdentityDTO();
-		RequestDTO request=new RequestDTO();
+		IdentityDTO identity = new IdentityDTO();
+		RequestDTO request = new RequestDTO();
 		request.setDemographics(identity);
 		authRequestDTO.setIndividualId("274390482564");
 		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
@@ -875,10 +813,10 @@ public class BioAuthServiceTest {
 		// authRequestDTO.setReqHmac("1234567890");
 		authRequestDTO.setTransactionID("1234567890");
 		authRequestDTO.setVersion("1.0");
-		
+
 		List<BioIdentityInfoDTO> bioIdentityInfoDTOList = new ArrayList<>();
 		BioIdentityInfoDTO bioIdentityInfoDTO = new BioIdentityInfoDTO();
-		DataDTO bioInfo=new DataDTO();
+		DataDTO bioInfo = new DataDTO();
 		bioInfo.setBioType(CbeffDocType.FMR.getType().name());
 		bioInfo.setDeviceProviderID("provider001");
 		bioIdentityInfoDTO.setData(bioInfo);
@@ -887,9 +825,9 @@ public class BioAuthServiceTest {
 		bioInfo.setBioSubType("LEFT_INDEX");
 		bioInfo.setBioValue(value);
 		bioIdentityInfoDTOList.add(bioIdentityInfoDTO);
-		 value = "Rk1SACAyMAAAAAEIAAABPAFiAMUAxQEAAAAoJ4CEAOs8UICiAQGXUIBzANXIV4CmARiXUEC6AObFZIB3ALUSZEBlATPYZICIAKUCZEBmAJ4YZEAnAOvBZIDOAKTjZEBCAUbQQ0ARANu0ZECRAOC4NYBnAPDUXYCtANzIXUBhAQ7bZIBTAQvQZICtASqWZEDSAPnMZICaAUAVZEDNAS63Q0CEAVZiSUDUAT+oNYBhAVprSUAmAJyvZICiAOeyQ0CLANDSPECgAMzXQ0CKAR8OV0DEAN/QZEBNAMy9ZECaAKfwZEC9ATieUEDaAMfWUEDJAUA2NYB5AVttSUBKAI+oZECLAG0FZAAA";
-		String value1="Rk1SACAyMAAAAAEIAAABPAFiAMUAxQEAAAAoJ4CEAOs8UICiAQGXUIBzANXIV4CmARiXUEC6AObFZIB3ALUSZEBlATPYZICIAKUCZEBmAJ4YZEAnAOvBZIDOAKTjZEBCAUbQQ0ARANu0ZECRAOC4NYBnAPDUXYCtANzIXUBhAQ7bZIBTAQvQZICtASqWZEDSAPnMZICaAUAVZEDNAS63Q0CEAVZiSUDUAT+oNYBhAVprSUAmAJyvZICiAOeyQ0CLANDSPECgAMzXQ0CKAR8OV0DEAN/QZEBNAMy9ZECaAKfwZEC9ATieUEDaAMfWUEDJAUA2NYB5AVttSUBKAI+oZECLAG0FZAAA";
-		DataDTO dataDTO=new DataDTO();
+		value = "Rk1SACAyMAAAAAEIAAABPAFiAMUAxQEAAAAoJ4CEAOs8UICiAQGXUIBzANXIV4CmARiXUEC6AObFZIB3ALUSZEBlATPYZICIAKUCZEBmAJ4YZEAnAOvBZIDOAKTjZEBCAUbQQ0ARANu0ZECRAOC4NYBnAPDUXYCtANzIXUBhAQ7bZIBTAQvQZICtASqWZEDSAPnMZICaAUAVZEDNAS63Q0CEAVZiSUDUAT+oNYBhAVprSUAmAJyvZICiAOeyQ0CLANDSPECgAMzXQ0CKAR8OV0DEAN/QZEBNAMy9ZECaAKfwZEC9ATieUEDaAMfWUEDJAUA2NYB5AVttSUBKAI+oZECLAG0FZAAA";
+		String value1 = "Rk1SACAyMAAAAAEIAAABPAFiAMUAxQEAAAAoJ4CEAOs8UICiAQGXUIBzANXIV4CmARiXUEC6AObFZIB3ALUSZEBlATPYZICIAKUCZEBmAJ4YZEAnAOvBZIDOAKTjZEBCAUbQQ0ARANu0ZECRAOC4NYBnAPDUXYCtANzIXUBhAQ7bZIBTAQvQZICtASqWZEDSAPnMZICaAUAVZEDNAS63Q0CEAVZiSUDUAT+oNYBhAVprSUAmAJyvZICiAOeyQ0CLANDSPECgAMzXQ0CKAR8OV0DEAN/QZEBNAMy9ZECaAKfwZEC9ATieUEDaAMfWUEDJAUA2NYB5AVttSUBKAI+oZECLAG0FZAAA";
+		DataDTO dataDTO = new DataDTO();
 		dataDTO.setBioType(CbeffDocType.FMR.getType().name());
 		dataDTO.setBioSubType("LEFT_INDEX");
 		dataDTO.setBioValue(value);
@@ -917,123 +855,93 @@ public class BioAuthServiceTest {
 		Mockito.when(cbeffUtil.getBDBBasedOnType(Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenReturn(cbeffValueMap);
 
-		AuthStatusInfo validateBioDetails = bioAuthServiceImpl.authenticate(authRequestDTO,"", bioIdentity,"");
+		AuthStatusInfo validateBioDetails = bioAuthServiceImpl.authenticate(authRequestDTO, "", bioIdentity, "");
 		System.err.println(validateBioDetails.isStatus());
 		System.err.println(validateBioDetails.getErr());
 	}
 
-/*	@Test
-	public void TestIrisMatchMorpho() throws Exception {
-		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
-		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
-		authTypeDTO.setBio(true);
-		authRequestDTO.setAuthType(authTypeDTO);
-		authRequestDTO.setId("mosip.identity.auth");
-		authRequestDTO.setIdvId("516283648960");
-		authRequestDTO.setIdvIdType("D");
-		authRequestDTO.setKey(new AuthSecureDTO());
-		List<MatchInfo> matchInfoList = new ArrayList<>();
-		MatchInfo matchInfo = new MatchInfo();
-		matchInfo.setAuthType("bio");
-		matchInfo.setMatchingStrategy(MatchingStrategyType.PARTIAL.getType());
-		matchInfoList.add(matchInfo);
-		authRequestDTO.setMatchInfo(matchInfoList);
-		authRequestDTO.setTspID("1234567890");
-		ZoneOffset offset = ZoneOffset.MAX;
-		authRequestDTO.setReqTime(Instant.now().atOffset(offset)
-				.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
-		// authRequestDTO.setReqHmac("1234567890");
-		authRequestDTO.setTxnID("1234567890");
-		// authRequestDTO.setVer("1.0");
-		List<BioInfo> bioInfoList = new ArrayList<>();
-		BioInfo bioInfo = new BioInfo();
-		bioInfo.setBioType("irisImg");
-		DeviceInfo deviceInfo = new DeviceInfo();
-		deviceInfo.setDeviceId("Test1");
-		deviceInfo.setMake("morpho");
-		deviceInfo.setModel("1.0");
-		bioInfo.setDeviceInfo(deviceInfo);
-		bioInfoList.add(bioInfo);
-		authRequestDTO.setBioInfo(bioInfoList);
-		RequestDTO requestDTO = new RequestDTO();
-		IdentityDTO identity = new IdentityDTO();
-		List<IdentityInfoDTO> leftEyeList = new ArrayList<>();
-		IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
-		String value = "Rk1SACAyMAAAAAEIAAABPAFiAMUAxQEAAAAoJ4CEAOs8UICiAQGXUIBzANXIV4CmARiXUEC6AObFZIB3ALUSZEBlATPYZICIAKUCZEBmAJ4YZEAnAOvBZIDOAKTjZEBCAUbQQ0ARANu0ZECRAOC4NYBnAPDUXYCtANzIXUBhAQ7bZIBTAQvQZICtASqWZEDSAPnMZICaAUAVZEDNAS63Q0CEAVZiSUDUAT+oNYBhAVprSUAmAJyvZICiAOeyQ0CLANDSPECgAMzXQ0CKAR8OV0DEAN/QZEBNAMy9ZECaAKfwZEC9ATieUEDaAMfWUEDJAUA2NYB5AVttSUBKAI+oZECLAG0FZAAA";
-		identityInfoDTO.setLanguage("ara");
-		identityInfoDTO.setValue(value);
-		leftEyeList.add(identityInfoDTO);
-		identity.setLeftEye(leftEyeList);
-		requestDTO.setIdentity(identity);
-		authRequestDTO.setRequest(requestDTO);
-		Map<String, List<IdentityInfoDTO>> bioIdentity = new HashMap<>();
-		IdentityInfoDTO identityInfoDTO1 = new IdentityInfoDTO();
-		identityInfoDTO1.setLanguage("ara");
-		identityInfoDTO1.setValue(value);
-		List<IdentityInfoDTO> identityList = new ArrayList<>();
-		identityList.add(identityInfoDTO1);
-		bioIdentity.put("leftEye", identityList);
-		bioIdentity.put("documents.individualBiometrics", identityList);
-		String refId = "274390482564";
-		Map<String, String> cbeffValueMap = new HashMap<>();
-		cbeffValueMap.put("IRIS_Left_9", value);
-		Mockito.when(cbeffUtil.getBDBBasedOnType(Mockito.any(), Mockito.any(), Mockito.any()))
-				.thenReturn(cbeffValueMap);
-		AuthStatusInfo validateBioDetails = bioAuthServiceImpl.authenticate(authRequestDTO,"", bioIdentity);
-		System.err.println(validateBioDetails.isStatus());
-		System.err.println(validateBioDetails.getErr());
-	}*/
+	/*
+	 * @Test public void TestIrisMatchMorpho() throws Exception { AuthRequestDTO
+	 * authRequestDTO = new AuthRequestDTO(); AuthTypeDTO authTypeDTO = new
+	 * AuthTypeDTO(); authTypeDTO.setBio(true);
+	 * authRequestDTO.setAuthType(authTypeDTO);
+	 * authRequestDTO.setId("mosip.identity.auth");
+	 * authRequestDTO.setIdvId("516283648960"); authRequestDTO.setIdvIdType("D");
+	 * authRequestDTO.setKey(new AuthSecureDTO()); List<MatchInfo> matchInfoList =
+	 * new ArrayList<>(); MatchInfo matchInfo = new MatchInfo();
+	 * matchInfo.setAuthType("bio");
+	 * matchInfo.setMatchingStrategy(MatchingStrategyType.PARTIAL.getType());
+	 * matchInfoList.add(matchInfo); authRequestDTO.setMatchInfo(matchInfoList);
+	 * authRequestDTO.setTspID("1234567890"); ZoneOffset offset = ZoneOffset.MAX;
+	 * authRequestDTO.setReqTime(Instant.now().atOffset(offset)
+	 * .format(DateTimeFormatter.ofPattern(environment.getProperty(
+	 * "datetime.pattern"))).toString()); //
+	 * authRequestDTO.setReqHmac("1234567890");
+	 * authRequestDTO.setTxnID("1234567890"); // authRequestDTO.setVer("1.0");
+	 * List<BioInfo> bioInfoList = new ArrayList<>(); BioInfo bioInfo = new
+	 * BioInfo(); bioInfo.setBioType("irisImg"); DeviceInfo deviceInfo = new
+	 * DeviceInfo(); deviceInfo.setDeviceId("Test1"); deviceInfo.setMake("morpho");
+	 * deviceInfo.setModel("1.0"); bioInfo.setDeviceInfo(deviceInfo);
+	 * bioInfoList.add(bioInfo); authRequestDTO.setBioInfo(bioInfoList); RequestDTO
+	 * requestDTO = new RequestDTO(); IdentityDTO identity = new IdentityDTO();
+	 * List<IdentityInfoDTO> leftEyeList = new ArrayList<>(); IdentityInfoDTO
+	 * identityInfoDTO = new IdentityInfoDTO(); String value =
+	 * "Rk1SACAyMAAAAAEIAAABPAFiAMUAxQEAAAAoJ4CEAOs8UICiAQGXUIBzANXIV4CmARiXUEC6AObFZIB3ALUSZEBlATPYZICIAKUCZEBmAJ4YZEAnAOvBZIDOAKTjZEBCAUbQQ0ARANu0ZECRAOC4NYBnAPDUXYCtANzIXUBhAQ7bZIBTAQvQZICtASqWZEDSAPnMZICaAUAVZEDNAS63Q0CEAVZiSUDUAT+oNYBhAVprSUAmAJyvZICiAOeyQ0CLANDSPECgAMzXQ0CKAR8OV0DEAN/QZEBNAMy9ZECaAKfwZEC9ATieUEDaAMfWUEDJAUA2NYB5AVttSUBKAI+oZECLAG0FZAAA";
+	 * identityInfoDTO.setLanguage("ara"); identityInfoDTO.setValue(value);
+	 * leftEyeList.add(identityInfoDTO); identity.setLeftEye(leftEyeList);
+	 * requestDTO.setIdentity(identity); authRequestDTO.setRequest(requestDTO);
+	 * Map<String, List<IdentityInfoDTO>> bioIdentity = new HashMap<>();
+	 * IdentityInfoDTO identityInfoDTO1 = new IdentityInfoDTO();
+	 * identityInfoDTO1.setLanguage("ara"); identityInfoDTO1.setValue(value);
+	 * List<IdentityInfoDTO> identityList = new ArrayList<>();
+	 * identityList.add(identityInfoDTO1); bioIdentity.put("leftEye", identityList);
+	 * bioIdentity.put("documents.individualBiometrics", identityList); String refId
+	 * = "274390482564"; Map<String, String> cbeffValueMap = new HashMap<>();
+	 * cbeffValueMap.put("IRIS_Left_9", value);
+	 * Mockito.when(cbeffUtil.getBDBBasedOnType(Mockito.any(), Mockito.any(),
+	 * Mockito.any())) .thenReturn(cbeffValueMap); AuthStatusInfo validateBioDetails
+	 * = bioAuthServiceImpl.authenticate(authRequestDTO,"", bioIdentity);
+	 * System.err.println(validateBioDetails.isStatus());
+	 * System.err.println(validateBioDetails.getErr()); }
+	 */
 
 	@Test
 	public void TestIrisMultiMatch() throws Exception {
-	/*	AuthRequestDTO authRequestDTO = new AuthRequestDTO();
-		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
-		authTypeDTO.setBio(true);
-		authRequestDTO.setAuthType(authTypeDTO);
-		authRequestDTO.setId("mosip.identity.auth");
-		authRequestDTO.setIdvId("516283648960");
-		authRequestDTO.setIdvIdType("D");
-		authRequestDTO.setKey(new AuthSecureDTO());
-		List<MatchInfo> matchInfoList = new ArrayList<>();
-		MatchInfo matchInfo = new MatchInfo();
-		matchInfo.setAuthType("bio");
-		matchInfo.setMatchingStrategy(MatchingStrategyType.PARTIAL.getType());
-		matchInfoList.add(matchInfo);
-		authRequestDTO.setMatchInfo(matchInfoList);
-		authRequestDTO.setTspID("1234567890");
-		ZoneOffset offset = ZoneOffset.MAX;
-		authRequestDTO.setReqTime(Instant.now().atOffset(offset)
-				.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
-		// authRequestDTO.setReqHmac("1234567890");
-		authRequestDTO.setTxnID("1234567890");
-		// authRequestDTO.setVer("1.0");
-		List<BioInfo> bioInfoList = new ArrayList<>();
-		BioInfo bioInfo = new BioInfo();
-		bioInfo.setBioType("irisImg");
-		DeviceInfo deviceInfo = new DeviceInfo();
-		deviceInfo.setDeviceId("Test1");
-		deviceInfo.setMake("cogent");
-		deviceInfo.setModel("1.0");
-		bioInfo.setDeviceInfo(deviceInfo);
-		bioInfoList.add(bioInfo);
-		authRequestDTO.setBioInfo(bioInfoList);
-		RequestDTO requestDTO = new RequestDTO();
-		IdentityDTO identity = new IdentityDTO();
-		List<IdentityInfoDTO> leftEyeList = new ArrayList<>();
-		IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
-		String value = "Rk1SACAyMAAAAAEIAAABPAFiAMUAxQEAAAAoJ4CEAOs8UICiAQGXUIBzANXIV4CmARiXUEC6AObFZIB3ALUSZEBlATPYZICIAKUCZEBmAJ4YZEAnAOvBZIDOAKTjZEBCAUbQQ0ARANu0ZECRAOC4NYBnAPDUXYCtANzIXUBhAQ7bZIBTAQvQZICtASqWZEDSAPnMZICaAUAVZEDNAS63Q0CEAVZiSUDUAT+oNYBhAVprSUAmAJyvZICiAOeyQ0CLANDSPECgAMzXQ0CKAR8OV0DEAN/QZEBNAMy9ZECaAKfwZEC9ATieUEDaAMfWUEDJAUA2NYB5AVttSUBKAI+oZECLAG0FZAAA";
-		identityInfoDTO.setLanguage("ara");
-		identityInfoDTO.setValue(value);
-		leftEyeList.add(identityInfoDTO);
-		List<IdentityInfoDTO> rightEyeList = new ArrayList<>();
-		rightEyeList.add(identityInfoDTO);
-		identity.setLeftEye(leftEyeList);
-		identity.setRightEye(rightEyeList);
-		requestDTO.setIdentity(identity);
-		authRequestDTO.setRequest(requestDTO);*/
+		/*
+		 * AuthRequestDTO authRequestDTO = new AuthRequestDTO(); AuthTypeDTO authTypeDTO
+		 * = new AuthTypeDTO(); authTypeDTO.setBio(true);
+		 * authRequestDTO.setAuthType(authTypeDTO);
+		 * authRequestDTO.setId("mosip.identity.auth");
+		 * authRequestDTO.setIdvId("516283648960"); authRequestDTO.setIdvIdType("D");
+		 * authRequestDTO.setKey(new AuthSecureDTO()); List<MatchInfo> matchInfoList =
+		 * new ArrayList<>(); MatchInfo matchInfo = new MatchInfo();
+		 * matchInfo.setAuthType("bio");
+		 * matchInfo.setMatchingStrategy(MatchingStrategyType.PARTIAL.getType());
+		 * matchInfoList.add(matchInfo); authRequestDTO.setMatchInfo(matchInfoList);
+		 * authRequestDTO.setTspID("1234567890"); ZoneOffset offset = ZoneOffset.MAX;
+		 * authRequestDTO.setReqTime(Instant.now().atOffset(offset)
+		 * .format(DateTimeFormatter.ofPattern(environment.getProperty(
+		 * "datetime.pattern"))).toString()); //
+		 * authRequestDTO.setReqHmac("1234567890");
+		 * authRequestDTO.setTxnID("1234567890"); // authRequestDTO.setVer("1.0");
+		 * List<BioInfo> bioInfoList = new ArrayList<>(); BioInfo bioInfo = new
+		 * BioInfo(); bioInfo.setBioType("irisImg"); DeviceInfo deviceInfo = new
+		 * DeviceInfo(); deviceInfo.setDeviceId("Test1"); deviceInfo.setMake("cogent");
+		 * deviceInfo.setModel("1.0"); bioInfo.setDeviceInfo(deviceInfo);
+		 * bioInfoList.add(bioInfo); authRequestDTO.setBioInfo(bioInfoList); RequestDTO
+		 * requestDTO = new RequestDTO(); IdentityDTO identity = new IdentityDTO();
+		 * List<IdentityInfoDTO> leftEyeList = new ArrayList<>(); IdentityInfoDTO
+		 * identityInfoDTO = new IdentityInfoDTO(); String value =
+		 * "Rk1SACAyMAAAAAEIAAABPAFiAMUAxQEAAAAoJ4CEAOs8UICiAQGXUIBzANXIV4CmARiXUEC6AObFZIB3ALUSZEBlATPYZICIAKUCZEBmAJ4YZEAnAOvBZIDOAKTjZEBCAUbQQ0ARANu0ZECRAOC4NYBnAPDUXYCtANzIXUBhAQ7bZIBTAQvQZICtASqWZEDSAPnMZICaAUAVZEDNAS63Q0CEAVZiSUDUAT+oNYBhAVprSUAmAJyvZICiAOeyQ0CLANDSPECgAMzXQ0CKAR8OV0DEAN/QZEBNAMy9ZECaAKfwZEC9ATieUEDaAMfWUEDJAUA2NYB5AVttSUBKAI+oZECLAG0FZAAA";
+		 * identityInfoDTO.setLanguage("ara"); identityInfoDTO.setValue(value);
+		 * leftEyeList.add(identityInfoDTO); List<IdentityInfoDTO> rightEyeList = new
+		 * ArrayList<>(); rightEyeList.add(identityInfoDTO);
+		 * identity.setLeftEye(leftEyeList); identity.setRightEye(rightEyeList);
+		 * requestDTO.setIdentity(identity); authRequestDTO.setRequest(requestDTO);
+		 */
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
-		IdentityDTO identity=new IdentityDTO();
-		RequestDTO request=new RequestDTO();
+		IdentityDTO identity = new IdentityDTO();
+		RequestDTO request = new RequestDTO();
 		request.setDemographics(identity);
 		authRequestDTO.setIndividualId("274390482564");
 		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
@@ -1048,7 +956,7 @@ public class BioAuthServiceTest {
 		authRequestDTO.setVersion("1.0");
 		List<BioIdentityInfoDTO> bioIdentityInfoDTOList = new ArrayList<>();
 		BioIdentityInfoDTO bioIdentityInfoDTO = new BioIdentityInfoDTO();
-		DataDTO bioInfo=new DataDTO();
+		DataDTO bioInfo = new DataDTO();
 		bioInfo.setBioType(CbeffDocType.FMR.getType().name());
 		bioInfo.setDeviceProviderID("provider001");
 		bioIdentityInfoDTO.setData(bioInfo);
@@ -1057,9 +965,9 @@ public class BioAuthServiceTest {
 		bioInfo.setBioSubType("LEFT_INDEX");
 		bioInfo.setBioValue(value);
 		bioIdentityInfoDTOList.add(bioIdentityInfoDTO);
-		 value = "Rk1SACAyMAAAAAEIAAABPAFiAMUAxQEAAAAoJ4CEAOs8UICiAQGXUIBzANXIV4CmARiXUEC6AObFZIB3ALUSZEBlATPYZICIAKUCZEBmAJ4YZEAnAOvBZIDOAKTjZEBCAUbQQ0ARANu0ZECRAOC4NYBnAPDUXYCtANzIXUBhAQ7bZIBTAQvQZICtASqWZEDSAPnMZICaAUAVZEDNAS63Q0CEAVZiSUDUAT+oNYBhAVprSUAmAJyvZICiAOeyQ0CLANDSPECgAMzXQ0CKAR8OV0DEAN/QZEBNAMy9ZECaAKfwZEC9ATieUEDaAMfWUEDJAUA2NYB5AVttSUBKAI+oZECLAG0FZAAA";
-		String value1="Rk1SACAyMAAAAAEIAAABPAFiAMUAxQEAAAAoJ4CEAOs8UICiAQGXUIBzANXIV4CmARiXUEC6AObFZIB3ALUSZEBlATPYZICIAKUCZEBmAJ4YZEAnAOvBZIDOAKTjZEBCAUbQQ0ARANu0ZECRAOC4NYBnAPDUXYCtANzIXUBhAQ7bZIBTAQvQZICtASqWZEDSAPnMZICaAUAVZEDNAS63Q0CEAVZiSUDUAT+oNYBhAVprSUAmAJyvZICiAOeyQ0CLANDSPECgAMzXQ0CKAR8OV0DEAN/QZEBNAMy9ZECaAKfwZEC9ATieUEDaAMfWUEDJAUA2NYB5AVttSUBKAI+oZECLAG0FZAAA";
-		DataDTO dataDTO=new DataDTO();
+		value = "Rk1SACAyMAAAAAEIAAABPAFiAMUAxQEAAAAoJ4CEAOs8UICiAQGXUIBzANXIV4CmARiXUEC6AObFZIB3ALUSZEBlATPYZICIAKUCZEBmAJ4YZEAnAOvBZIDOAKTjZEBCAUbQQ0ARANu0ZECRAOC4NYBnAPDUXYCtANzIXUBhAQ7bZIBTAQvQZICtASqWZEDSAPnMZICaAUAVZEDNAS63Q0CEAVZiSUDUAT+oNYBhAVprSUAmAJyvZICiAOeyQ0CLANDSPECgAMzXQ0CKAR8OV0DEAN/QZEBNAMy9ZECaAKfwZEC9ATieUEDaAMfWUEDJAUA2NYB5AVttSUBKAI+oZECLAG0FZAAA";
+		String value1 = "Rk1SACAyMAAAAAEIAAABPAFiAMUAxQEAAAAoJ4CEAOs8UICiAQGXUIBzANXIV4CmARiXUEC6AObFZIB3ALUSZEBlATPYZICIAKUCZEBmAJ4YZEAnAOvBZIDOAKTjZEBCAUbQQ0ARANu0ZECRAOC4NYBnAPDUXYCtANzIXUBhAQ7bZIBTAQvQZICtASqWZEDSAPnMZICaAUAVZEDNAS63Q0CEAVZiSUDUAT+oNYBhAVprSUAmAJyvZICiAOeyQ0CLANDSPECgAMzXQ0CKAR8OV0DEAN/QZEBNAMy9ZECaAKfwZEC9ATieUEDaAMfWUEDJAUA2NYB5AVttSUBKAI+oZECLAG0FZAAA";
+		DataDTO dataDTO = new DataDTO();
 		dataDTO.setBioType(CbeffDocType.FMR.getType().name());
 		dataDTO.setBioSubType("LEFT_INDEX");
 		dataDTO.setBioValue(value);
@@ -1072,7 +980,7 @@ public class BioAuthServiceTest {
 		bioIdentityInfoDTOList.add(bioIdentityInfoDTO);
 		request.setDemographics(identity);
 		request.setBiometrics(bioIdentityInfoDTOList);
-		
+
 		Map<String, List<IdentityInfoDTO>> bioIdentity = new HashMap<>();
 		IdentityInfoDTO identityInfoDTO1 = new IdentityInfoDTO();
 		identityInfoDTO1.setLanguage("ara");
@@ -1088,9 +996,58 @@ public class BioAuthServiceTest {
 		cbeffValueMap.put("IRIS_Right_9", value);
 		Mockito.when(cbeffUtil.getBDBBasedOnType(Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenReturn(cbeffValueMap);
-		AuthStatusInfo validateBioDetails = bioAuthServiceImpl.authenticate(authRequestDTO,"", bioIdentity,"");
+		AuthStatusInfo validateBioDetails = bioAuthServiceImpl.authenticate(authRequestDTO, "", bioIdentity, "");
 		System.err.println(validateBioDetails.isStatus());
 		System.err.println(validateBioDetails.getErr());
+	}
+
+	@Test
+	public void TestValidBioAuth() throws Exception {
+		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+		String individualId = "274390482564";
+		authRequestDTO.setIndividualId(individualId);
+		String value = "Rk1SACAyMAAAAAEIAAABPAFiAMUAxQEAAAAoJ4CEAOs8UICiAQGXUIBzANXIV4CmARiXUEC6AObFZIB3ALUSZEBlATPYZICIAKUCZEBmAJ4YZEAnAOvBZIDOAKTjZEBCAUbQQ0ARANu0ZECRAOC4NYBnAPDUXYCtANzIXUBhAQ7bZIBTAQvQZICtASqWZEDSAPnMZICaAUAVZEDNAS63Q0CEAVZiSUDUAT+oNYBhAVprSUAmAJyvZICiAOeyQ0CLANDSPECgAMzXQ0CKAR8OV0DEAN/QZEBNAMy9ZECaAKfwZEC9ATieUEDaAMfWUEDJAUA2NYB5AVttSUBKAI+oZECLAG0FZAAA";
+		authRequestDTO.setIndividualIdType(IdType.UIN.getType());
+		AuthTypeDTO requestedAuth = new AuthTypeDTO();
+		requestedAuth.setBio(true);
+		authRequestDTO.setRequestedAuth(requestedAuth);
+		RequestDTO request = new RequestDTO();
+		List<BioIdentityInfoDTO> biometricsList = new ArrayList<>();
+		BioIdentityInfoDTO bioIdentityInfoDTO = new BioIdentityInfoDTO();
+		DataDTO datadto = new DataDTO();
+		datadto.setBioType(SingleType.FINGER.name());
+		datadto.setDeviceServiceID("1234");
+		datadto.setDeviceProviderID("mantra");
+		datadto.setBioValue(value);
+		bioIdentityInfoDTO.setData(datadto);
+		biometricsList.add(bioIdentityInfoDTO);
+		request.setBiometrics(biometricsList);
+		authRequestDTO.setRequest(request);
+		Map<String, List<IdentityInfoDTO>> bioIdentity = new HashMap<>();
+		IdentityInfoDTO identityInfoDTO1 = new IdentityInfoDTO();
+		IdentityInfoDTO identityInfoDTOList1 = new IdentityInfoDTO();
+		identityInfoDTO1.setLanguage("ara");
+		identityInfoDTO1.setValue(value);
+		identityInfoDTOList1.setLanguage("ara");
+		String value1 = "Rk1SACAyMAAAAAEIAAABPAFiAMUAxQEAAAAoJ4CEAOs8UICiAQGXUIBzANXIV4CmARiXUEC6AObFZIB3ALUSZEBlATPYZICIAKUCZEBmAJ4YZEAnAOvBZIDOAKTjZEBCAUbQQ0ARANu0ZECRAOC4NYBnAPDUXYCtANzIXUBhAQ7bZIBTAQvQZICtASqWZEDSAPnMZICaAUAVZEDNAS63Q0CEAVZiSUDUAT+oNYBhAVprSUAmAJyvZICiAOeyQ0CLANDSPECgAMzXQ0CKAR8OV0DEAN/QZEBNAMy9ZECaAKfwZEC9ATieUEDaAMfWUEDJAUA2NYB5AVttSUBKAI+oZECLAG0FZAAA";
+		identityInfoDTOList1.setValue(value1);
+		List<IdentityInfoDTO> identityList = new ArrayList<>();
+		List<IdentityInfoDTO> identityLists = new ArrayList<>();
+		identityList.add(identityInfoDTO1);
+		identityLists.add(identityInfoDTOList1);
+		bioIdentity.put("leftIndex", identityList);
+		bioIdentity.put("rightIndex", identityLists);
+		bioIdentity.put("documents.individualBiometrics", identityList);
+		Map<String, Entry<String, List<IdentityInfoDTO>>> map = new HashMap<>();
+		map.put("FINGER_Left IndexFinger_2", new SimpleEntry<>("leftIndex", identityList));
+		Map<String, String> cbeffValueMap = new HashMap<String, String>();
+		cbeffValueMap.put("FINGER_Left IndexFinger_2", value);
+		cbeffValueMap.put("FINGER_Right IndexFinger_2", value1);
+		Mockito.when(cbeffUtil.getBDBBasedOnType(Mockito.any(), Mockito.any(), Mockito.any()))
+				.thenReturn(cbeffValueMap);
+		AuthStatusInfo authenticate = bioAuthServiceImpl.authenticate(authRequestDTO, individualId, bioIdentity,
+				"1234567890");
+		System.err.println(authenticate);
 	}
 
 }

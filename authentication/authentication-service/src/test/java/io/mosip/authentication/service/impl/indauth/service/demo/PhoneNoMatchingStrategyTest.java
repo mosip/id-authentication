@@ -75,7 +75,7 @@ public class PhoneNoMatchingStrategyTest {
 	 * 
 	 * @throws IdAuthenticationBusinessException
 	 */
-	@Test(expected = IdAuthenticationBusinessException.class)
+	@Test
 	public void TestInvalidExactMatchingStrategyFunction() throws IdAuthenticationBusinessException {
 
 		MatchFunction matchFunction = PhoneNoMatchingStrategy.EXACT.getMatchFunction();

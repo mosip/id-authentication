@@ -233,13 +233,13 @@ public class IdMappingValidationTest {
 		requestedAuth.setBio(true);
 		authRequestDTO.setRequestedAuth(requestedAuth);
 		BioIdentityInfoDTO faceValue = new BioIdentityInfoDTO();
-		DataDTO dataDTO=new DataDTO();
+		DataDTO dataDTO = new DataDTO();
 		dataDTO.setBioValue("face img");
 		dataDTO.setBioSubType("Thumb");
 		dataDTO.setBioType("FID");
 		dataDTO.setDeviceProviderID("provider001");
 		faceValue.setData(dataDTO);
-		
+
 		List<BioIdentityInfoDTO> fingerIdentityInfoDtoList = new ArrayList<BioIdentityInfoDTO>();
 		fingerIdentityInfoDtoList.add(faceValue);
 		RequestDTO reqDTO = new RequestDTO();
@@ -252,14 +252,14 @@ public class IdMappingValidationTest {
 		AuthTypeDTO requestedAuth = new AuthTypeDTO();
 		requestedAuth.setBio(true);
 		authRequestDTO.setRequestedAuth(requestedAuth);
-		DataDTO dataDTO=new DataDTO();
+		DataDTO dataDTO = new DataDTO();
 		BioIdentityInfoDTO irisValue = new BioIdentityInfoDTO();
 		dataDTO.setBioValue("iris img");
 		dataDTO.setBioSubType("left");
 		dataDTO.setBioType("IIR");
 		dataDTO.setDeviceProviderID("provider001");
 		irisValue.setData(dataDTO);
-		
+
 		List<BioIdentityInfoDTO> fingerIdentityInfoDtoList = new ArrayList<BioIdentityInfoDTO>();
 		fingerIdentityInfoDtoList.add(irisValue);
 		RequestDTO reqDTO = new RequestDTO();
@@ -273,14 +273,14 @@ public class IdMappingValidationTest {
 		requestedAuth.setBio(true);
 		authRequestDTO.setRequestedAuth(requestedAuth);
 		BioIdentityInfoDTO fingerValue = new BioIdentityInfoDTO();
-		DataDTO dataDTO=new DataDTO();
+		DataDTO dataDTO = new DataDTO();
 		dataDTO.setBioValue("finger");
 		dataDTO.setBioSubType("Thumb");
 		dataDTO.setBioType("test");
 		dataDTO.setDeviceProviderID("test01");
 		fingerValue.setData(dataDTO);
 		BioIdentityInfoDTO fingerValue1 = new BioIdentityInfoDTO();
-		DataDTO dataDTO1=new DataDTO();
+		DataDTO dataDTO1 = new DataDTO();
 		dataDTO1.setBioValue("finger");
 		dataDTO1.setBioSubType("Thumb");
 		dataDTO1.setBioType("FIR");
@@ -293,13 +293,13 @@ public class IdMappingValidationTest {
 		dataDTO.setDeviceProviderID("provider001");
 		irisValue.setData(dataDTO);
 		BioIdentityInfoDTO faceValue = new BioIdentityInfoDTO();
-		DataDTO dataDTOFace=new DataDTO();
+		DataDTO dataDTOFace = new DataDTO();
 		dataDTOFace.setBioValue("face img");
 		dataDTOFace.setBioSubType("Thumb");
 		dataDTOFace.setBioType("FID");
 		dataDTOFace.setDeviceProviderID("provider001");
 		faceValue.setData(dataDTOFace);
-		
+
 		List<BioIdentityInfoDTO> fingerIdentityInfoDtoList = new ArrayList<BioIdentityInfoDTO>();
 		fingerIdentityInfoDtoList.add(fingerValue);
 		fingerIdentityInfoDtoList.add(fingerValue1);
@@ -380,12 +380,7 @@ public class IdMappingValidationTest {
 		dobtypeList.add(dob1);
 		identity.setDobType(dobtypeList);
 		/* E-mail */
-		List<IdentityInfoDTO> emailList = new ArrayList<>();
-		IdentityInfoDTO email = new IdentityInfoDTO();
-		email.setLanguage("ara");
-		email.setValue("testemailvalue@testmail.com");
-		emailList.add(email);
-		identity.setEmailId(emailList);
+		identity.setEmailId("testemailvalue@testmail.com");
 		/* Full Address */
 		List<IdentityInfoDTO> fadList = new ArrayList<>();
 //		IdentityInfoDTO fad = new IdentityInfoDTO();
@@ -401,12 +396,7 @@ public class IdMappingValidationTest {
 		genderList.add(gender);
 		identity.setGender(genderList);
 		/* Phone Number */
-		List<IdentityInfoDTO> PhoneNumberList = new ArrayList<>();
-		IdentityInfoDTO phoneNumber = new IdentityInfoDTO();
-		phoneNumber.setLanguage("ara");
-		phoneNumber.setValue("2002020012");
-		PhoneNumberList.add(phoneNumber);
-		identity.setPhoneNumber(PhoneNumberList);
+		identity.setPhoneNumber("2002020012");
 		/* Pin code */
 		List<IdentityInfoDTO> pincodeList = new ArrayList<>();
 		IdentityInfoDTO pincode = new IdentityInfoDTO();
