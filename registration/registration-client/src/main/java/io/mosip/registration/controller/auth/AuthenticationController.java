@@ -521,6 +521,12 @@ public class AuthenticationController extends BaseController implements Initiali
 	public void loadAuthenticationScreen(String loginMode) {
 		LOGGER.info("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
 				"Loading the respective authentication screen in UI");
+		errorPane.setVisible(false);
+		pwdBasedLogin.setVisible(false);
+		otpBasedLogin.setVisible(false);
+		fingerprintBasedLogin.setVisible(false);
+		faceBasedLogin.setVisible(false);
+		irisBasedLogin.setVisible(false);
 
 		switch (loginMode.toUpperCase()) {
 		case RegistrationConstants.OTP:
@@ -552,11 +558,6 @@ public class AuthenticationController extends BaseController implements Initiali
 		LOGGER.info("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
 				"Enabling OTP based Authentication Screen in UI");
 
-		pwdBasedLogin.setVisible(false);
-		otpBasedLogin.setVisible(false);
-		fingerprintBasedLogin.setVisible(false);
-		faceBasedLogin.setVisible(false);
-		irisBasedLogin.setVisible(false);
 		errorPane.setVisible(true);
 		errorText1.setText(RegistrationUIConstants.BIOMETRIC_DISABLE_SCREEN_1);
 		errorText2.setText(RegistrationUIConstants.BIOMETRIC_DISABLE_SCREEN_2);
@@ -572,12 +573,7 @@ public class AuthenticationController extends BaseController implements Initiali
 		LOGGER.info("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
 				"Enabling OTP based Authentication Screen in UI");
 
-		errorPane.setVisible(false);
-		pwdBasedLogin.setVisible(false);
 		otpBasedLogin.setVisible(true);
-		fingerprintBasedLogin.setVisible(false);
-		faceBasedLogin.setVisible(false);
-		irisBasedLogin.setVisible(false);
 		otp.clear();
 		otpUserId.clear();
 		otpUserId.setEditable(false);
@@ -600,12 +596,7 @@ public class AuthenticationController extends BaseController implements Initiali
 		LOGGER.info("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
 				"Enabling Password based Authentication Screen in UI");
 
-		errorPane.setVisible(false);
 		pwdBasedLogin.setVisible(true);
-		otpBasedLogin.setVisible(false);
-		fingerprintBasedLogin.setVisible(false);
-		irisBasedLogin.setVisible(false);
-		faceBasedLogin.setVisible(false);
 		username.clear();
 		password.clear();
 		username.setEditable(false);
@@ -628,12 +619,7 @@ public class AuthenticationController extends BaseController implements Initiali
 		LOGGER.info("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
 				"Enabling Fingerprint based Authentication Screen in UI");
 
-		errorPane.setVisible(false);
 		fingerprintBasedLogin.setVisible(true);
-		faceBasedLogin.setVisible(false);
-		irisBasedLogin.setVisible(false);
-		otpBasedLogin.setVisible(false);
-		pwdBasedLogin.setVisible(false);
 		fpUserId.clear();
 		fpUserId.setEditable(false);
 		if (isSupervisor) {
@@ -655,11 +641,7 @@ public class AuthenticationController extends BaseController implements Initiali
 		LOGGER.info("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
 				"Enabling Iris based Authentication Screen in UI");
 
-		errorPane.setVisible(false);
 		irisBasedLogin.setVisible(true);
-		fingerprintBasedLogin.setVisible(false);
-		otpBasedLogin.setVisible(false);
-		pwdBasedLogin.setVisible(false);
 		fpUserId.clear();
 		fpUserId.setEditable(false);
 		if (isSupervisor) {
@@ -681,12 +663,7 @@ public class AuthenticationController extends BaseController implements Initiali
 		LOGGER.info("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
 				"Enabling Face based Authentication Screen in UI");
 
-		errorPane.setVisible(false);
 		faceBasedLogin.setVisible(true);
-		irisBasedLogin.setVisible(false);
-		fingerprintBasedLogin.setVisible(false);
-		otpBasedLogin.setVisible(false);
-		pwdBasedLogin.setVisible(false);
 		fpUserId.clear();
 		fpUserId.setEditable(false);
 		if (isSupervisor) {
