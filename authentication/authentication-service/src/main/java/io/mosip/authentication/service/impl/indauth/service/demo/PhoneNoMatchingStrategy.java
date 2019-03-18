@@ -19,7 +19,7 @@ public enum PhoneNoMatchingStrategy implements TextMatchingStrategy {
 		if (reqInfo instanceof String && entityInfo instanceof String) {
 			return DemoMatcherUtil.doExactMatch((String) reqInfo, (String) entityInfo);
 		} else {
-			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.DEMO_DATA_MISMATCH);
+			return 0;
 		}
 	});
 

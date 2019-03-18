@@ -683,9 +683,21 @@ public class IdInfoHelper implements IdInfoFetcher {
 					matchOutput.getMatchType());
 			IdMapping idMapping = matchOutput.getMatchType().getIdMapping();
 			String name = mappings.contains(idMapping.getIdname()) ? "address line item(s)" : idMapping.getIdname();
-			errors = new AuthError(IdAuthenticationErrorConstants.DEMO_DATA_MISMATCH.getErrorCode(),
-					String.format(IdAuthenticationErrorConstants.DEMO_DATA_MISMATCH.getErrorMessage(),
-							name, matchOutput.getLanguage()));
+
+			if (name.equalsIgnoreCase(IdaIdMapping.PHONE.getIdname())
+					|| name.equalsIgnoreCase(IdaIdMapping.EMAIL.getIdname())
+					|| name.equalsIgnoreCase(IdaIdMapping.DOB.getIdname())
+					|| name.equalsIgnoreCase(IdaIdMapping.DOBTYPE.getIdname())
+					|| name.equalsIgnoreCase(IdaIdMapping.AGE.getIdname())) {
+				errors = new AuthError(IdAuthenticationErrorConstants.DEMO_DATA_MISMATCH.getErrorCode(),
+						String.format(IdAuthenticationErrorConstants.DEMO_DATA_MISMATCH.getErrorMessage(), name,
+								matchOutput.getLanguage()));
+			} else {
+				errors = new AuthError(IdAuthenticationErrorConstants.DEMOGRAPHIC_DATA_MISMATCH.getErrorCode(),
+						String.format(IdAuthenticationErrorConstants.DEMOGRAPHIC_DATA_MISMATCH.getErrorMessage(), name,
+								matchOutput.getLanguage()));
+			}
+
 			statusInfoBuilder.addErrors(errors);
 		}
 	}

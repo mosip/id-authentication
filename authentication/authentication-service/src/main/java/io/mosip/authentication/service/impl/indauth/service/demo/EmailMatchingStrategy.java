@@ -2,8 +2,6 @@ package io.mosip.authentication.service.impl.indauth.service.demo;
 
 import java.util.Map;
 
-import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
-import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.spi.indauth.match.MatchFunction;
 import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
 import io.mosip.authentication.core.spi.indauth.match.TextMatchingStrategy;
@@ -19,10 +17,7 @@ public enum EmailMatchingStrategy implements TextMatchingStrategy {
 		if (reqInfo instanceof String && entityInfo instanceof String) {
 			return DemoMatcherUtil.doExactMatch((String) reqInfo, (String) entityInfo);
 		} else {
-			throw new IdAuthenticationBusinessException(
-					IdAuthenticationErrorConstants.DEMO_DATA_MISMATCH.getErrorCode(),
-					String.format(IdAuthenticationErrorConstants.DEMO_DATA_MISMATCH.getErrorMessage(),
-							DemoMatchType.EMAIL.getIdMapping().getIdname()));
+			return 0;
 		}
 	});
 

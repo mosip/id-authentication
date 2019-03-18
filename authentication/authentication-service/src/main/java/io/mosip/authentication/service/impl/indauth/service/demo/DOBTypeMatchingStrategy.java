@@ -1,12 +1,8 @@
 package io.mosip.authentication.service.impl.indauth.service.demo;
 
 import java.util.Map;
-import java.util.function.ToIntBiFunction;
 
-import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
-import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.spi.indauth.match.MatchFunction;
-import io.mosip.authentication.core.spi.indauth.match.MatchingStrategy;
 import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
 import io.mosip.authentication.core.spi.indauth.match.TextMatchingStrategy;
 import io.mosip.authentication.core.util.DemoMatcherUtil;
@@ -21,10 +17,7 @@ public enum DOBTypeMatchingStrategy implements TextMatchingStrategy {
 		if (reqInfo instanceof String) {
 			return DemoMatcherUtil.doExactMatch((String) reqInfo, (String) entityInfo);
 		} else {
-			throw new IdAuthenticationBusinessException(
-					IdAuthenticationErrorConstants.DEMOGRAPHIC_DATA_MISMATCH.getErrorCode(),
-					String.format(IdAuthenticationErrorConstants.DEMO_DATA_MISMATCH.getErrorMessage(),
-							DemoMatchType.DOBTYPE.getIdMapping().getIdname()));
+			return 0;
 		}
 	});
 

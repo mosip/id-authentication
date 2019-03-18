@@ -2,7 +2,6 @@ package io.mosip.authentication.service.impl.indauth.service.demo;
 
 import static io.mosip.authentication.core.spi.indauth.match.MatchType.setOf;
 
-import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.ZoneId;
@@ -43,8 +42,7 @@ public enum DemoMatchType implements MatchType {
 	/** Primary Name Match Type. */
 	NAME(IdaIdMapping.NAME,
 			setOf(NameMatchingStrategy.EXACT, NameMatchingStrategy.PARTIAL, NameMatchingStrategy.PHONETICS),
-			IdentityDTO::getName, AuthUsageDataBit.USED_PI_NAME,
-			AuthUsageDataBit.MATCHED_PI_NAME),
+			IdentityDTO::getName, AuthUsageDataBit.USED_PI_NAME, AuthUsageDataBit.MATCHED_PI_NAME),
 
 	/** Secondary Date of Birth Match Type. */
 	DOB(IdaIdMapping.DOB, setOf(DOBMatchingStrategy.EXACT), identityDTO -> getIdInfoList(identityDTO.getDob()),
@@ -60,7 +58,7 @@ public enum DemoMatchType implements MatchType {
 				String value = entityInfoMap.values().stream().findFirst().orElse("");
 				int age = Period.between(DateUtils.parseToDate(value, getDatePattern()).toInstant()
 						.atZone(ZoneId.systemDefault()).toLocalDate(), LocalDate.now()).getYears();
-				
+
 				Map<String, String> map = new LinkedHashMap<>();
 				map.put(IdaIdMapping.AGE.getIdname(), String.valueOf(age));
 				return map;
@@ -71,12 +69,14 @@ public enum DemoMatchType implements MatchType {
 			AuthUsageDataBit.USED_PI_GENDER, AuthUsageDataBit.MATCHED_PI_GENDER, false),
 
 	/** Phone Match Type. */
-	PHONE(IdaIdMapping.PHONE, setOf(PhoneNoMatchingStrategy.EXACT), IdentityDTO::getPhoneNumber,
-			AuthUsageDataBit.USED_PI_PHONE, AuthUsageDataBit.MATCHED_PI_PHONE, false),
+	PHONE(IdaIdMapping.PHONE, setOf(PhoneNoMatchingStrategy.EXACT),
+			identityDTO -> getIdInfoList(identityDTO.getPhoneNumber()), AuthUsageDataBit.USED_PI_PHONE,
+			AuthUsageDataBit.MATCHED_PI_PHONE, false),
 
 	/** E-mail Match Type. */
-	EMAIL(IdaIdMapping.EMAIL, setOf(EmailMatchingStrategy.EXACT), IdentityDTO::getEmailId,
-			AuthUsageDataBit.USED_PI_EMAIL, AuthUsageDataBit.MATCHED_PI_EMAIL, false),
+	EMAIL(IdaIdMapping.EMAIL, setOf(EmailMatchingStrategy.EXACT),
+			identityDTO -> getIdInfoList(identityDTO.getEmailId()), AuthUsageDataBit.USED_PI_EMAIL,
+			AuthUsageDataBit.MATCHED_PI_EMAIL, false),
 
 	/**  */
 	ADDR_LINE1(IdaIdMapping.ADDRESSLINE1, setOf(AddressMatchingStrategy.EXACT), IdentityDTO::getAddressLine1,
@@ -88,35 +88,29 @@ public enum DemoMatchType implements MatchType {
 
 	/** The addr line3 pri. */
 	ADDR_LINE3(IdaIdMapping.ADDRESSLINE3, setOf(AddressMatchingStrategy.EXACT), IdentityDTO::getAddressLine3,
-			AuthUsageDataBit.USED_AD_ADDR_LINE3,
-			AuthUsageDataBit.MATCHED_AD_ADDR_LINE3),
+			AuthUsageDataBit.USED_AD_ADDR_LINE3, AuthUsageDataBit.MATCHED_AD_ADDR_LINE3),
 
 	/** Location1 Match Type primary. */
 	LOCATION1(IdaIdMapping.LOCATION1, setOf(AddressMatchingStrategy.EXACT), IdentityDTO::getLocation1,
-			AuthUsageDataBit.USED_AD_LOCATION1,
-			AuthUsageDataBit.MATCHED_AD_LOCATION1),
+			AuthUsageDataBit.USED_AD_LOCATION1, AuthUsageDataBit.MATCHED_AD_LOCATION1),
 
 	/** Location2 Match Type primary. */
 	LOCATION2(IdaIdMapping.LOCATION2, setOf(AddressMatchingStrategy.EXACT), IdentityDTO::getLocation2,
-			AuthUsageDataBit.USED_AD_LOCATION2,
-			AuthUsageDataBit.MATCHED_AD_LOCATION2),
+			AuthUsageDataBit.USED_AD_LOCATION2, AuthUsageDataBit.MATCHED_AD_LOCATION2),
 
 	/** Location3 Match Type primary. */
 	LOCATION3(IdaIdMapping.LOCATION3, setOf(AddressMatchingStrategy.EXACT), IdentityDTO::getLocation3,
-			AuthUsageDataBit.USED_AD_LOCATION3,
-			AuthUsageDataBit.MATCHED_AD_LOCATION3),
+			AuthUsageDataBit.USED_AD_LOCATION3, AuthUsageDataBit.MATCHED_AD_LOCATION3),
 
 	/** The pincode pri. */
 	PINCODE(IdaIdMapping.PINCODE, setOf(AddressMatchingStrategy.EXACT), IdentityDTO::getPinCode,
-			AuthUsageDataBit.USED_AD_ADDR_PINCODE,
-			AuthUsageDataBit.MATCHED_AD_ADDR_PINCODE, false),
+			AuthUsageDataBit.USED_AD_ADDR_PINCODE, AuthUsageDataBit.MATCHED_AD_ADDR_PINCODE, false),
 
 	/** Primary Address MatchType. */
 	ADDR(IdaIdMapping.FULLADDRESS,
 			setOf(FullAddressMatchingStrategy.EXACT, FullAddressMatchingStrategy.PARTIAL,
 					FullAddressMatchingStrategy.PHONETICS),
-			IdentityDTO::getFullAddress, AuthUsageDataBit.USED_FAD_ADDR,
-			AuthUsageDataBit.MATCHED_FAD_ADDR),
+			IdentityDTO::getFullAddress, AuthUsageDataBit.USED_FAD_ADDR, AuthUsageDataBit.MATCHED_FAD_ADDR),
 
 	/**  */
 	// @formatter:on
@@ -147,7 +141,7 @@ public enum DemoMatchType implements MatchType {
 
 	/**  */
 	private IdMapping idMapping;
-	
+
 	private boolean multiLanguage;
 
 	/**
@@ -162,8 +156,8 @@ public enum DemoMatchType implements MatchType {
 	 * @param entityInfoFetcher
 	 */
 	private DemoMatchType(IdMapping idMapping, Set<MatchingStrategy> allowedMatchingStrategy,
-			Function<IdentityDTO, List<IdentityInfoDTO>> identityInfoFunction,
-			AuthUsageDataBit usedBit, AuthUsageDataBit matchedBit, boolean multiLanguage,
+			Function<IdentityDTO, List<IdentityInfoDTO>> identityInfoFunction, AuthUsageDataBit usedBit,
+			AuthUsageDataBit matchedBit, boolean multiLanguage,
 			Function<Map<String, String>, Map<String, String>> entityInfoFetcher) {
 		this.idMapping = idMapping;
 		this.identityInfoFunction = (RequestDTO identityDTO) -> {
@@ -179,15 +173,15 @@ public enum DemoMatchType implements MatchType {
 	}
 
 	private static String getDatePattern() {
-		//FIXME get from env.
+		// FIXME get from env.
 		return DATE_PATTERN;
 	}
-	
+
 	private static List<IdentityInfoDTO> getIdInfoList(String value) {
-		if(value != null) {
-			IdentityInfoDTO identityDTOs=new IdentityInfoDTO();
+		if (value != null) {
+			IdentityInfoDTO identityDTOs = new IdentityInfoDTO();
 			identityDTOs.setValue(value);
-			List<IdentityInfoDTO> list=new ArrayList<>();
+			List<IdentityInfoDTO> list = new ArrayList<>();
 			list.add(identityDTOs);
 			return list;
 		} else {
@@ -206,15 +200,15 @@ public enum DemoMatchType implements MatchType {
 	 * @param matchedBit
 	 */
 	private DemoMatchType(IdMapping idMapping, Set<MatchingStrategy> allowedMatchingStrategy,
-			Function<IdentityDTO, List<IdentityInfoDTO>> identityInfoFunction,
-			AuthUsageDataBit usedBit, AuthUsageDataBit matchedBit) {
+			Function<IdentityDTO, List<IdentityInfoDTO>> identityInfoFunction, AuthUsageDataBit usedBit,
+			AuthUsageDataBit matchedBit) {
 		this(idMapping, allowedMatchingStrategy, identityInfoFunction, usedBit, matchedBit, true);
 	}
-	
+
 	private DemoMatchType(IdMapping idMapping, Set<MatchingStrategy> allowedMatchingStrategy,
-			Function<IdentityDTO, List<IdentityInfoDTO>> identityInfoFunction,
-			AuthUsageDataBit usedBit, AuthUsageDataBit matchedBit, boolean multiLanguage) {
-		this(idMapping, allowedMatchingStrategy, identityInfoFunction, usedBit, matchedBit,multiLanguage,
+			Function<IdentityDTO, List<IdentityInfoDTO>> identityInfoFunction, AuthUsageDataBit usedBit,
+			AuthUsageDataBit matchedBit, boolean multiLanguage) {
+		this(idMapping, allowedMatchingStrategy, identityInfoFunction, usedBit, matchedBit, multiLanguage,
 				Function.identity());
 	}
 
@@ -304,7 +298,7 @@ public enum DemoMatchType implements MatchType {
 	public Category getCategory() {
 		return Category.DEMO;
 	}
-	
+
 	@Override
 	public boolean isMultiLanguage() {
 		return multiLanguage;
