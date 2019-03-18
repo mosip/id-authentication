@@ -42,8 +42,8 @@ import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
 import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
 import io.mosip.kernel.core.jsonvalidator.model.ValidationReport;
+import io.mosip.kernel.core.jsonvalidator.spi.JsonValidator;
 import io.mosip.kernel.core.util.HMACUtils;
-import io.mosip.kernel.jsonvalidator.impl.JsonValidatorImpl;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.code.ApiName;
 import io.mosip.registration.processor.core.code.EventId;
@@ -151,7 +151,7 @@ public class PacketValidateProcessorTest {
 	private RegistrationProcessorRestClientService<Object> registrationProcessorRestService;
 
 	@Mock
-	JsonValidatorImpl jsonValidatorImpl;
+	JsonValidator jsonValidatorImpl;
 
 	@Mock
 	private Utilities utility;
