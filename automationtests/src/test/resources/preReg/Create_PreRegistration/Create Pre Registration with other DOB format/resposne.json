@@ -1,9 +1,0 @@
-{
-  "err": {
-    "errorCode": "KER-JVL-003",
-    "message": "ECMA 262 regex \"^\\d{4}/([0]\\d|1[0-2])/([0-2]\\d|3[01])$\" does not match input string \"19/09/1999\" at \"/identity/dateOfBirth\""
-  },
-  "status": false,
-  "resTime": "2019-02-24T10:33:14.327Z",
-  "response": null
-}

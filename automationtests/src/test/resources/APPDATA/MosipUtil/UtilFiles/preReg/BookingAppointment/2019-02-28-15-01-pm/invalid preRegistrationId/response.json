@@ -1,9 +1,0 @@
-{
-  "err": {
-    "errorCode": "PRG_BOOK_RCI_006",
-    "message": "PREREGISTRATION_ID_NOT_ENTERED"
-  },
-  "status": false,
-  "resTime": "2019-02-02T12:45:11.817Z",
-  "response": null
-}

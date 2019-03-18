@@ -1,9 +1,0 @@
-{
-  "err": {
-    "errorCode": "KER-JVL-003",
-    "message": "ECMA 262 regex \"^([0-9]{10,30})$\" does not match input string \"1234567890098765432112345678901\" at \"/identity/CNIENumber\""
-  },
-  "status": false,
-  "resTime": "2019-02-21T11:41:35.641Z",
-  "response": null
-}
