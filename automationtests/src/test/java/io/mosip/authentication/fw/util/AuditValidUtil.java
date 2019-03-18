@@ -122,7 +122,6 @@ public class AuditValidUtil {
 	private String getAuditLogQuery(String app_name, String module_name, String ref_id) {
 		return "select * from audit.app_audit_log where app_name ='" + app_name + "' and module_name='" + module_name
 				+ "' and ref_id ='" + ref_id + "' order by log_dtimes limit 1";
-	}
-	
+	}	
 
 }

@@ -39,6 +39,12 @@ import org.testng.internal.Utils;
 import org.testng.log4testng.Logger;
 import org.testng.xml.XmlSuite;
 
+/**
+ * Customised Testng Report
+ * 
+ * @author Vignesh
+ *
+ */
 public class CustomTestNGReporter implements IReporter {
 	
 	//This is the customize emailable report template file path.
