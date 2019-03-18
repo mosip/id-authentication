@@ -1,4 +1,4 @@
-package io.mosip.registration.processor.message.sender.template.generator;
+package io.mosip.registration.processor.core.template.generator;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -24,10 +24,10 @@ import io.mosip.kernel.core.templatemanager.spi.TemplateManager;
 import io.mosip.kernel.templatemanager.velocity.impl.TemplateManagerImpl;
 import io.mosip.registration.processor.core.code.ApiName;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
+import io.mosip.registration.processor.core.exception.TemplateProcessingFailureException;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.notification.template.generator.dto.TemplateResponseDto;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
-import io.mosip.registration.processor.message.sender.exception.TemplateProcessingFailureException;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 
@@ -86,10 +86,10 @@ public class TemplateGenerator {
 			pathSegments.add(templateTypeCode);
 			TemplateResponseDto template = (TemplateResponseDto) restClientService.getApi(ApiName.MASTER, pathSegments,
 					"", "", TemplateResponseDto.class);
-			InputStream stream = null;
+			
 			InputStream fileTextStream = null;
 			if(template != null) {
-				stream = new ByteArrayInputStream(
+				InputStream stream = new ByteArrayInputStream(
 					template.getTemplates().iterator().next().getFileText().getBytes());
 				fileTextStream = getTemplateManager().merge(stream, attributes);
 			}
