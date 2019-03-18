@@ -47,6 +47,7 @@ import io.mosip.registration.entity.UserDetail;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.scheduler.SchedulerUtil;
+import io.mosip.registration.service.BaseService;
 import io.mosip.registration.service.LoginService;
 import io.mosip.registration.service.UserOnboardService;
 import io.mosip.registration.service.config.GlobalParamService;
@@ -89,7 +90,7 @@ import javafx.util.Duration;
  */
 
 @Component
-public class BaseController {
+public class BaseController extends BaseService{
 
 	@Autowired
 	private SyncStatusValidatorService syncStatusValidatorService;
