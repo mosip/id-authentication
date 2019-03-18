@@ -76,25 +76,21 @@ public class UinGeneratorServiceTest {
 
 	@Test
 	public void updateUinStatusASSIGNEDTest() {
-		String content = "{ \"uin\" : \"9723157067\", \"status\" : \"ASSIGNED\" }";
-		JsonObject uin = new JsonObject(content);
-		UinEntity entity = new UinEntity("9723157067", "ISSUED");
+		UinEntity extEntity = new UinEntity("9723157067", "ISSUED");
 		UinEntity givEntity = new UinEntity("9723157067", "ASSIGNED");
-		Mockito.when(uinRepository.findByUin(Mockito.any())).thenReturn(entity);
+		Mockito.when(uinRepository.findByUin(Mockito.any())).thenReturn(extEntity);
 		Mockito.when(uinRepository.save(Mockito.any())).thenReturn(givEntity);
 		//ReflectionTestUtils.setField(uinGeneratorServiceImpl, "assigned", "ASSIGNED");
-		uinGeneratorServiceImpl.updateUinStatus(entity);
+		uinGeneratorServiceImpl.updateUinStatus(givEntity);
 	}
 
 	@Test
 	public void updateUinStatusUNASSIGNEDTest() {
-		String content = "{ \"uin\" : \"9723157067\", \"status\" : \"UNASSIGNED\" }";
-		JsonObject uin = new JsonObject(content);
 		UinEntity entity = new UinEntity("9723157067", "ISSUED");
 		UinEntity givEntity = new UinEntity("9723157067", "UNASSIGNED");
 		Mockito.when(uinRepository.findByUin(Mockito.any())).thenReturn(entity);
 		Mockito.when(uinRepository.save(Mockito.any())).thenReturn(givEntity);
 		//ReflectionTestUtils.setField(uinGeneratorServiceImpl, "unassigned", "UNASSIGNED");
-		uinGeneratorServiceImpl.updateUinStatus(entity);
+		uinGeneratorServiceImpl.updateUinStatus(givEntity);
 	}
 }
