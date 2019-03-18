@@ -10,6 +10,8 @@ import io.mosip.registration.processor.rest.client.config.RestConfigBean;
 
 /**
  * The Class PacketGeneratorServiceApp.
+ * 
+ * @author Sowmya
  */
 @SpringBootApplication
 @ComponentScan(basePackages = {

@@ -5,8 +5,8 @@ package io.mosip.registration.processor.packet.service.dto;
  * <p>
  * This DTO will be used in Device On-boarding
  * 
- * @author Balaji Sridharan
- * @since 1.0.0
+ * @author Sowmya
+ * 
  */
 public class DeviceDTO {
 

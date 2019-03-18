@@ -23,9 +23,13 @@ import io.mosip.registration.processor.packet.service.dto.PacketGeneratorRespons
 import io.mosip.registration.processor.packet.service.exception.RegBaseCheckedException;
 import io.mosip.registration.processor.packet.service.exception.RegBaseUnCheckedException;
 
+/**
+ * The Class PacketGeneratorExceptionHandler.
+ */
 @RestControllerAdvice
 public class PacketGeneratorExceptionHandler {
 
+	/** The env. */
 	@Autowired
 	private Environment env;
 
@@ -38,8 +42,16 @@ public class PacketGeneratorExceptionHandler {
 	/** The Constant DATETIME_PATTERN. */
 	private static final String DATETIME_PATTERN = "mosip.registration.processor.datetime.pattern";
 
+	/** The reg proc logger. */
 	private static Logger regProcLogger = RegProcessorLogger.getLogger(PacketGeneratorExceptionHandler.class);
 
+	/**
+	 * Badrequest.
+	 *
+	 * @param e
+	 *            the e
+	 * @return the string
+	 */
 	@ExceptionHandler(RegBaseCheckedException.class)
 	public String badrequest(RegBaseCheckedException e) {
 		regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
@@ -48,6 +60,13 @@ public class PacketGeneratorExceptionHandler {
 		return packetGenExceptionResponse(e);
 	}
 
+	/**
+	 * Badrequest.
+	 *
+	 * @param e
+	 *            the e
+	 * @return the string
+	 */
 	@ExceptionHandler(RegBaseUnCheckedException.class)
 	public String badrequest(RegBaseUnCheckedException e) {
 		regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
@@ -56,6 +75,13 @@ public class PacketGeneratorExceptionHandler {
 		return packetGenExceptionResponse(e);
 	}
 
+	/**
+	 * Packet gen exception response.
+	 *
+	 * @param ex
+	 *            the ex
+	 * @return the string
+	 */
 	public String packetGenExceptionResponse(Exception ex) {
 		PacketGeneratorResponseDto response = new PacketGeneratorResponseDto();
 

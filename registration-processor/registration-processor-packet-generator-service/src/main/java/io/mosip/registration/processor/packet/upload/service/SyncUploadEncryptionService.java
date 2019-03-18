@@ -7,6 +7,8 @@ import io.mosip.registration.processor.packet.service.exception.RegBaseCheckedEx
 
 /**
  * The Interface SyncUploadEncryptionService.
+ * 
+ * @author Sowmya
  */
 public interface SyncUploadEncryptionService {
 

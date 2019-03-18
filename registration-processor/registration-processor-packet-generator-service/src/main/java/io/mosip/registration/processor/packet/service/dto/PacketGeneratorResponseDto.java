@@ -7,6 +7,11 @@ import io.mosip.registration.processor.core.common.rest.dto.ErrorDTO;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+/**
+ * Instantiates a new packet generator response dto.
+ * 
+ * @author Sowmya
+ */
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class PacketGeneratorResponseDto extends BaseRestResponseDTO {

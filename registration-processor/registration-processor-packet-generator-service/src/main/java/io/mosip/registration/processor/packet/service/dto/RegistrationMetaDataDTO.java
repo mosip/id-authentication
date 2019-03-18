@@ -3,8 +3,8 @@ package io.mosip.registration.processor.packet.service.dto;
 /**
  * This class contains the meta-information of the Registration
  * 
- * @author Dinesh Asokan
- * @since 1.0.0
+ * @author Sowmya
+ * 
  *
  */
 public class RegistrationMetaDataDTO extends BaseDTO {
@@ -32,11 +32,13 @@ public class RegistrationMetaDataDTO extends BaseDTO {
 	}
 
 	/**
-	 * @param consentOfApplicant the consentOfApplicant to set
+	 * @param consentOfApplicant
+	 *            the consentOfApplicant to set
 	 */
 	public void setConsentOfApplicant(String consentOfApplicant) {
 		this.consentOfApplicant = consentOfApplicant;
 	}
+
 	/**
 	 * @return the geoLatitudeLoc
 	 */
@@ -195,11 +197,11 @@ public class RegistrationMetaDataDTO extends BaseDTO {
 	}
 
 	/**
-	 * @param applicantTypeCode the applicantTypeCode to set
+	 * @param applicantTypeCode
+	 *            the applicantTypeCode to set
 	 */
 	public void setApplicantTypeCode(String applicantTypeCode) {
 		this.applicantTypeCode = applicantTypeCode;
 	}
 
-	
 }
