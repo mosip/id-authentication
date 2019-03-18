@@ -1,20 +1,16 @@
 package io.mosip.kernel.idrepo.validator;
 
 import java.io.IOException;
-import java.time.Duration;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 import javax.annotation.Resource;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.core.env.Environment;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
@@ -23,9 +19,6 @@ import org.springframework.validation.Validator;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.jayway.jsonpath.Configuration;
-import com.jayway.jsonpath.JsonPath;
-import com.jayway.jsonpath.Option;
 
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.idrepo.constant.IdRepoConstants;
@@ -48,7 +41,6 @@ import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.core.util.StringUtils;
 import io.mosip.kernel.idrepo.config.IdRepoLogger;
 import io.mosip.kernel.idrepo.dto.IdRequestDTO;
-import net.minidev.json.JSONArray;
 
 /**
  * The Class IdRequestValidator.
@@ -56,16 +48,13 @@ import net.minidev.json.JSONArray;
  * @author Manoj SP
  */
 @Component
-@ConfigurationProperties("mosip.id")
 public class IdRequestValidator implements Validator {
 
-	/** The Constant DOC_VALUE. */
 	private static final String DOC_VALUE = "value";
 
 	/** The Constant VER. */
 	private static final String VER = "version";
 
-	/** The Constant verPattern. */
 	private static final Pattern verPattern = Pattern.compile(IdRepoConstants.VERSION_PATTERN.getValue());
 
 	/** The Constant DOC_TYPE. */
@@ -95,7 +84,6 @@ public class IdRequestValidator implements Validator {
 	/** The mosip logger. */
 	Logger mosipLogger = IdRepoLogger.getLogger(IdRequestValidator.class);
 
-	/** The Constant ID_REPO_SERVICE. */
 	private static final String ID_REPO_SERVICE = "IdRepoService";
 
 	/** The Constant TIMESTAMP. */
@@ -117,15 +105,11 @@ public class IdRequestValidator implements Validator {
 	/** The id. */
 	@Resource
 	private Map<String, String> id;
-	
-	/** The validation. */
-	private Map<String, String> validation;
 
 	/** The status. */
 	@Resource
 	private List<String> status;
 
-	/** The rid validator impl. */
 	@Autowired
 	private RidValidator<String> ridValidatorImpl;
 
@@ -136,15 +120,6 @@ public class IdRequestValidator implements Validator {
 	/** The mapper. */
 	@Autowired
 	private ObjectMapper mapper;
-
-	/**
-	 * Sets the validation.
-	 *
-	 * @param validation the validation to set
-	 */
-	public void setValidation(Map<String, String> validation) {
-		this.validation = validation;
-	}
 
 	/*
 	 * (non-Javadoc)
@@ -172,14 +147,10 @@ public class IdRequestValidator implements Validator {
 			validateVersion(request.getVersion(), errors);
 		}
 
-		if (!errors.hasErrors() && Objects.nonNull(request.getId())) {
+		if (!errors.hasErrors()) {
 			if (request.getId().equals(id.get(CREATE))) {
 				validateStatus(request.getStatus(), errors, CREATE);
-				LocalDateTime startTime = DateUtils.getUTCCurrentDateTime();
 				validateRequest(request.getRequest(), errors, CREATE);
-				mosipLogger.debug(IdRepoLogger.getUin(), "IdRequestValidator", "validateRequest",
-						"Time taken for execution - "
-								+ Duration.between(startTime, DateUtils.getUTCCurrentDateTime()).toMillis());
 			} else if (request.getId().equals(id.get(UPDATE))) {
 				validateStatus(request.getStatus(), errors, UPDATE);
 				validateRequest(request.getRequest(), errors, UPDATE);
@@ -210,9 +181,11 @@ public class IdRequestValidator implements Validator {
 	/**
 	 * Validate status.
 	 *
-	 * @param status            the status
-	 * @param errors            the errors
-	 * @param method the method
+	 * @param status
+	 *            the status
+	 * @param errors
+	 *            the errors
+	 * @param method
 	 */
 	private void validateStatus(String status, Errors errors, String method) {
 		if (Objects.nonNull(status) && (method.equals(UPDATE) && !this.status.contains(status))) {
@@ -248,9 +221,11 @@ public class IdRequestValidator implements Validator {
 	/**
 	 * Validate request.
 	 *
-	 * @param request            the request
-	 * @param errors            the errors
-	 * @param method the method
+	 * @param request
+	 *            the request
+	 * @param errors
+	 *            the errors
+	 * @param method
 	 */
 	@SuppressWarnings("rawtypes")
 	private void validateRequest(Object request, Errors errors, String method) {
@@ -272,8 +247,8 @@ public class IdRequestValidator implements Validator {
 					validateDocuments(requestMap, errors);
 					requestMap.remove(DOCUMENTS);
 					if (!errors.hasErrors()) {
-						jsonValidator.validateJson(mapper.writeValueAsString(requestMap));
-						validateJsonAttributes(mapper.writeValueAsString(request), errors);
+						jsonValidator.validateJson(mapper.writeValueAsString(requestMap),
+								env.getProperty(IdRepoConstants.JSON_SCHEMA_FILE_NAME.getValue()));
 					}
 				}
 			} else if (method.equals(CREATE)) {
@@ -306,8 +281,12 @@ public class IdRequestValidator implements Validator {
 	/**
 	 * Validate documents.
 	 *
-	 * @param requestMap the request map
-	 * @param errors            the errors
+	 * @param documents
+	 *            the documents
+	 * @param identity
+	 *            the identity
+	 * @param errors
+	 *            the errors
 	 */
 	@SuppressWarnings("unchecked")
 	private void validateDocuments(Map<String, Object> requestMap, Errors errors) {
@@ -352,46 +331,7 @@ public class IdRequestValidator implements Validator {
 							IdRepoConstants.ROOT_PATH.getValue()));
 		}
 	}
-	
-	/**
-	 * Validate json attributes.
-	 *
-	 * @param request the request
-	 * @param errors the errors
-	 */
-	private void validateJsonAttributes(String request, Errors errors) {
-		validation.entrySet().parallelStream().forEach(entry -> {
-			JsonPath path = JsonPath.compile(entry.getKey());
-			Pattern pattern = Pattern.compile(entry.getValue());
-			Object data = path.read(request,
-					Configuration.defaultConfiguration().addOptions(Option.SUPPRESS_EXCEPTIONS));
-			if (Objects.nonNull(data)) {
-				if (data instanceof String && !pattern.matcher((CharSequence) data).matches()) {
-					mosipLogger.error(IdRepoLogger.getUin(), ID_REPO, ID_REQUEST_VALIDATOR,
-							(VALIDATE_REQUEST + entry.getValue() + " -> " + data));
-					errors.rejectValue(REQUEST, IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(), String
-							.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), entry.getKey()));
-				} else if (data instanceof JSONArray) {
-					IntStream.range(0, ((JSONArray) data).size())
-					.filter(index -> !pattern.matcher((CharSequence) ((JSONArray) data).get(index)).matches())
-					.forEach(index -> {
-								mosipLogger.error(IdRepoLogger.getUin(), ID_REPO, ID_REQUEST_VALIDATOR,
-										(VALIDATE_REQUEST + entry.getValue() + " -> " + data));
-								errors.rejectValue(REQUEST, IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
-										String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(),
-												StringUtils.replace(entry.getKey(), "*", String.valueOf(index))));
-					});
-				}
-			}
-		});
-	}
 
-	/**
-	 * Check for duplicates.
-	 *
-	 * @param requestMap the request map
-	 * @param errors the errors
-	 */
 	@SuppressWarnings("unchecked")
 	private void checkForDuplicates(Map<String, Object> requestMap, Errors errors) {
 		try {

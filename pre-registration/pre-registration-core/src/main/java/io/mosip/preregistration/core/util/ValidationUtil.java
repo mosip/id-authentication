@@ -5,6 +5,9 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.preregistration.core.code.RequestCodes;
 import io.mosip.preregistration.core.config.LoggerConfiguration;
@@ -12,13 +15,20 @@ import io.mosip.preregistration.core.errorcodes.ErrorCodes;
 import io.mosip.preregistration.core.errorcodes.ErrorMessages;
 import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
 
+@Component
 public class ValidationUtil {
+
+	private static String utcDateTimePattern;
 
 	private static Logger log = LoggerConfiguration.logConfig(ValidationUtil.class);
 
 	private ValidationUtil() {
 	}
 
+	@Value("${mosip.utc-datetime-pattern}")
+	public void setDateTime(String value) {
+        this.utcDateTimePattern = value;
+    }
 	public static boolean emailValidator(String loginId) {
 		String emailExpression = "^[\\w\\.-]+@([\\w\\-]+\\.)+[A-Z]{2,4}$";
 		Pattern pattern = Pattern.compile(emailExpression, Pattern.CASE_INSENSITIVE);
@@ -50,7 +60,7 @@ public class ValidationUtil {
 						ErrorMessages.INVALID_REQUEST_DATETIME.toString());
 			} else if (key.equals(RequestCodes.REQ_TIME) && requestMap.get(RequestCodes.REQ_TIME) != null) {
 				try {
-					new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").parse(requestMap.get(RequestCodes.REQ_TIME));
+					new SimpleDateFormat(utcDateTimePattern).parse(requestMap.get(RequestCodes.REQ_TIME));
 				} catch (Exception ex) {
 					throw new InvalidRequestParameterException(ErrorCodes.PRG_CORE_REQ_003.toString(),
 							ErrorMessages.INVALID_REQUEST_DATETIME.toString());

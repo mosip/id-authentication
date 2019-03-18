@@ -15,7 +15,11 @@ import io.mosip.kernel.core.fsadapter.exception.FSAdapterException;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
+
 import io.mosip.registration.processor.core.code.ApiName;
+
+import io.mosip.registration.processor.core.code.DedupeSourceName;
+
 import io.mosip.registration.processor.core.code.EventId;
 import io.mosip.registration.processor.core.code.EventName;
 import io.mosip.registration.processor.core.code.EventType;
@@ -62,6 +66,8 @@ public class DemodedupeProcessor {
 
 	/** The Constant MATCHED_REFERENCE_TYPE. */
 	private static final String MATCHED_REFERENCE_TYPE = "uin";
+	
+	private static final String DEMO = "DEMO";
 
 	@Autowired
 	private PacketInfoManager<Identity, ApplicantInfoDto> packetInfoManager;
@@ -93,15 +99,16 @@ public class DemodedupeProcessor {
 
 			if (!duplicateDtos.isEmpty()) {
 				
-				registrationStatusDto.setStatusCode(RegistrationStatusCode.POTENTIAL_MATCH_FOUND.toString());
+				registrationStatusDto.setStatusCode(RegistrationStatusCode.DEMO_DEDUPE_POTENTIAL_MATCH_FOUND.toString());
 				registrationStatusDto.setStatusComment(StatusMessage.POTENTIAL_MATCH_FOUND);
 				registrationStatusService.updateRegistrationStatus(registrationStatusDto);
 				// authenticating duplicateIds with provided packet biometrics
 				boolean isDuplicateAfterAuth = demoDedupe.authenticateDuplicates(registrationId, duplicateUINList);
-
+				
 				if (isDuplicateAfterAuth) {
-
-					int retryCount = registrationStatusDto.getRetryCount() != null
+					object.setIsValid(Boolean.FALSE);				
+				
+						int retryCount = registrationStatusDto.getRetryCount() != null
 							? registrationStatusDto.getRetryCount() + 1
 							: 1;
 					description = registrationStatusDto.getStatusComment() + registrationId;
@@ -111,6 +118,8 @@ public class DemodedupeProcessor {
 					registrationStatusDto.setStatusCode(RegistrationStatusCode.DEMO_DEDUPE_FAILED.toString());
 					description = "Packet Demo dedupe failed for registration id : " + registrationId;
 					demographicDedupeRepository.updateIsActiveIfDuplicateFound(registrationId);
+					// Saving potential duplicates in reg_manual_verification table
+					packetInfoManager.saveManualAdjudicationData(uniqueMatchedRefIdList, registrationId, DedupeSourceName.DEMO);
 
 				} else {
 					object.setIsValid(Boolean.TRUE);
@@ -118,8 +127,7 @@ public class DemodedupeProcessor {
 					registrationStatusDto.setStatusCode(RegistrationStatusCode.DEMO_DEDUPE_SUCCESS.toString());
 					description = "Potential duplicate packet found for registration id : " + registrationId;
 
-					// Saving potential duplicates in reg_manual_verification table
-					packetInfoManager.saveManualAdjudicationData(uniqueMatchedRefIdList, registrationId);
+					
 				}
 
 			} else {

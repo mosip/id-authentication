@@ -1,1 +1,1 @@
-{"resTime":"$TIMESTAMP$","ver":"1.0","err":[{"errorMessage":"Invalid bioType -","errorCode":"IDA-BIA-013"}],"status":"N","txnID":"2011152468"}
+{"status":"N","err":[{"errorCode":"IDA-IDV-003","errorMessage":"Missing Input Parameter - biotype"}],"resTime":"$TIMESTAMP$","ver":"0.8"}

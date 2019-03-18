@@ -17,6 +17,7 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.code.ApiName;
+import io.mosip.registration.processor.core.code.DedupeSourceName;
 import io.mosip.registration.processor.core.code.EventId;
 import io.mosip.registration.processor.core.code.EventName;
 import io.mosip.registration.processor.core.code.EventType;
@@ -84,8 +85,8 @@ public class ManualVerificationServiceImpl implements ManualVerificationService 
 	 * ManualAdjudicationService#assignStatus(io.mosip.registration.processor.manual
 	 * .adjudication.dto.UserDto)
 	 */
-	@Override
-	public ManualVerificationDTO assignApplicant(UserDto dto) {
+
+	public ManualVerificationDTO assignApplicant(UserDto dto,String matchType) {
 		ManualVerificationDTO manualVerificationDTO = new ManualVerificationDTO();
 		List<ManualVerificationEntity> entities;
 		entities = basePacketRepository.getAssignedApplicantDetails(dto.getUserId(),
@@ -102,7 +103,14 @@ public class ManualVerificationServiceImpl implements ManualVerificationService 
 			manualVerificationDTO.setStatusCode(manualVerificationEntity.getStatusCode());
 			manualVerificationDTO.setReasonCode(manualVerificationEntity.getReasonCode());
 		} else {
-			entities = basePacketRepository.getFirstApplicantDetails(ManualVerificationStatus.PENDING.name());
+			if(matchType.equals("ALL")) {
+				entities = basePacketRepository.getFirstApplicantDetailsForAll(ManualVerificationStatus.PENDING.name());
+
+			}
+			else {
+				entities = basePacketRepository.getFirstApplicantDetails(ManualVerificationStatus.PENDING.name(),matchType);
+
+			}
 			if (entities.isEmpty()) {
 				throw new NoRecordAssignedException(PlatformErrorMessages.RPR_MVS_NO_ASSIGNED_RECORD.getCode(),
 						PlatformErrorMessages.RPR_MVS_NO_ASSIGNED_RECORD.getMessage());
@@ -293,16 +301,7 @@ public class ManualVerificationServiceImpl implements ManualVerificationService 
 
 	}
 
-	private boolean validateManualVerificationDTO(ManualVerificationDTO manualVerificationDTO) {
-		return !(manualVerificationDTO.getMvUsrId() != null || manualVerificationDTO.getMatchedRefId() != null
-				|| manualVerificationDTO.getMatchedRefType() != null || manualVerificationDTO.getReasonCode() != null
-				|| manualVerificationDTO.getRegId() != null || manualVerificationDTO.getStatusCode() != null ||
 
-				!(manualVerificationDTO.getMvUsrId() == "") || !manualVerificationDTO.getMatchedRefId().equals("")
-				|| !manualVerificationDTO.getMatchedRefType().equals("")
-				|| !manualVerificationDTO.getReasonCode().equals("") || !manualVerificationDTO.getRegId().equals("")
-				|| !manualVerificationDTO.getStatusCode().equals(""));
-	}
 
 	/*
 	 * (non-Javadoc)

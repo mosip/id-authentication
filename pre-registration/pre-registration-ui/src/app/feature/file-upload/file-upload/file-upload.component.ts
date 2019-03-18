@@ -41,72 +41,6 @@ export class FileUploadComponent implements OnInit {
   documentType;
   loginId;
   documentIndex;
-  // LOD = [
-  //   {
-  //     document_name: 'POA',
-  //     valid_docs: [
-  //       {
-  //         name: 'Passport',
-  //         value: 'passport'
-  //       },
-  //       {
-  //         name: 'CNIE Card',
-  //         value: 'Electricity Bill'
-  //       }
-  //       // {
-  //       //   name: 'Passbook',
-  //       //   value: 'Passbook'
-  //       // }
-  //     ]
-  //   },
-  //   {
-  //     document_name: 'POI',
-  //     valid_docs: [
-  //       {
-  //         name: 'Passport',
-  //         value: 'passport'
-  //       },
-  //       {
-  //         name: 'CNIE Card',
-  //         value: 'Bank Account'
-  //       }
-  //     ]
-  //   },
-  //   {
-  //     document_name: 'POB',
-  //     valid_docs: [
-  //       {
-  //         name: 'Passport',
-  //         value: 'passport'
-  //       },
-  //       {
-  //         name: 'CNIE Card',
-  //         value: 'Bank Account'
-  //       },
-  //       {
-  //         name: 'Birth Certificate',
-  //         value: 'Birth Certificate'
-  //       }
-  //       // {
-  //       //   name: 'Voter ID Card',
-  //       //   value: 'Voter ID Card'
-  //       // }
-  //     ]
-  //   },
-  //   {
-  //     document_name: 'POR',
-  //     valid_docs: [
-  //       {
-  //         name: 'Passport',
-  //         value: 'passport'
-  //       },
-  //       {
-  //         name: 'CNIE Card',
-  //         value: 'CNIE Card'
-  //       }
-  //     ]
-  //   }
-  // ];
   LOD: DocumentCategory[];
   fileIndex = -1;
 
@@ -139,7 +73,6 @@ export class FileUploadComponent implements OnInit {
   ngOnInit() {
     // const arr = this.router.url.split('/');
     // this.loginId = arr[2];
-    this.getApplicantTypeID();
     // this.getDocumentCategories();
     this.loginId = this.registration.getLoginId();
     this.getAllApplicants();
@@ -179,6 +112,7 @@ export class FileUploadComponent implements OnInit {
 
     console.log('users', this.users);
 
+    this.getApplicantTypeID();
     if (this.users[0].files[0].length != 0) {
       // this.sortUserFiles();
       this.viewFirstFile();
@@ -186,9 +120,22 @@ export class FileUploadComponent implements OnInit {
   }
 
   async getApplicantTypeID() {
-    await this.dataStroage.getApplicantType().subscribe(response => {
+    let DOCUMENT_CATEGORY_DTO = appConstants.DOCUMENT_CATEGORY_DTO;
+    let re = /\//g;
+    let DOB = this.users[0].request.demographicDetails.identity.dateOfBirth;
+    if (this.users[0].request.demographicDetails.identity.residenceStatus[0].value === 'national') {
+      DOCUMENT_CATEGORY_DTO.attributes[0].value = 'NFR';
+    }
+    DOCUMENT_CATEGORY_DTO.attributes[2].value = this.users[0].request.demographicDetails.identity.gender[0].value;
+    // DOB = DOB + 'T11:46:12.640Z';
+    // DOB.replace('1', '-');
+
+    DOCUMENT_CATEGORY_DTO.attributes[1].value = DOB.replace(/\//g, '-') + 'T11:46:12.640Z';
+    console.log('document catergory dto', DOCUMENT_CATEGORY_DTO);
+
+    await this.dataStroage.getApplicantType(DOCUMENT_CATEGORY_DTO).subscribe(response => {
       console.log('response from applicant type', response);
-      this.getDocumentCategories(response['response'].applicationtypecode);
+      this.getDocumentCategories(response['response'].applicantTypeCode);
       this.setApplicantType(response);
     });
   }
@@ -205,6 +152,7 @@ export class FileUploadComponent implements OnInit {
       console.log(this.LOD);
       this.LOD = res['documentCategories'];
       console.log(this.applicantType);
+      this.registration.setDocumentCategories(res['documentCategories']);
     });
   }
 
@@ -336,8 +284,6 @@ export class FileUploadComponent implements OnInit {
   setJsonString(event) {
     this.JsonString.request.doc_cat_code = this.documentType;
     this.JsonString.request.pre_registartion_id = this.users[0].preRegId;
-    this.JsonString.request.doc_file_format = event.target.files[0].type;
-    this.JsonString.request.upload_by = this.loginId;
   }
 
   sendFile(event) {
@@ -475,3 +421,5 @@ export interface DocumentCategory {
     name: string;
   };
 }
+// console.log(ts.toJSON());
+// # 2019-03-06T05:24:10.264Z

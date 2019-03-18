@@ -299,6 +299,27 @@ public class CommonLibrary {
 		return putResponse;
 	} // end PUT_REQUEST
 
+	
+	/**
+	 * @author Arjun
+	 * for id repo
+	 * @param url
+	 * @param body
+	 * @param contentHeader
+	 * @param acceptHeader
+	 * @return
+	 */
+	public Response patch_Request(String url, Object body, String contentHeader, String acceptHeader) {
+
+		Response putResponse = given().relaxedHTTPSValidation().body(body).contentType(contentHeader)
+				.accept(acceptHeader).log().all().when().patch(url).then().log().all().extract().response();
+		// log then response
+		logger.info("REST-ASSURED: The response from the request is: " + putResponse.asString());
+		logger.info("REST-ASSURED: The response Time is: " + putResponse.time());
+		return putResponse;
+	} 
+
+
 	/**
 	 * REST ASSURED GET request method
 	 *

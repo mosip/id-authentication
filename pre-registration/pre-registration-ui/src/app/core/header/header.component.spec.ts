@@ -11,7 +11,7 @@ import { FooterComponent } from '../footer/footer.component';
 import { AuthService } from 'src/app/auth/auth.service';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
-fdescribe('HeaderComponent', () => {
+describe('HeaderComponent', () => {
   let component: HeaderComponent;
   let footerComponent: FooterComponent;
   let fixture: ComponentFixture<HeaderComponent>;

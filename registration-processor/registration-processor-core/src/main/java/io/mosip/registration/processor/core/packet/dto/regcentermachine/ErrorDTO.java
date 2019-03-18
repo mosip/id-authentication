@@ -3,7 +3,6 @@
  */
 package io.mosip.registration.processor.core.packet.dto.regcentermachine;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 
 /**
