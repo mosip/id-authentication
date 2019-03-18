@@ -12,6 +12,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.time.Instant;
 import java.util.Date;
 
 @Component
@@ -125,7 +126,7 @@ public class TokenGenerator {
         String token_base = mosipEnvironment.getTokenBase();
         int token_expiry = mosipEnvironment.getTokenExpiry();
 
-        long currentTimeInMs = System.currentTimeMillis();
+        long currentTimeInMs = Instant.now().toEpochMilli();
         Date currentDate = new Date(currentTimeInMs);
 
         JwtBuilder builder = Jwts.builder()

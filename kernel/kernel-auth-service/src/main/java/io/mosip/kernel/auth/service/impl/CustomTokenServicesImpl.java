@@ -5,6 +5,10 @@ package io.mosip.kernel.auth.service.impl;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.util.Date;
 
 import javax.sql.DataSource;
@@ -33,11 +37,11 @@ import io.mosip.kernel.auth.service.CustomTokenServices;
 @Repository
 public class CustomTokenServicesImpl implements CustomTokenServices {
 	
-	public static final String INSERT_TOKEN="insert into iam.oauth_access_token(user_id,auth_token,refresh_token,expiration_time,cr_dtimes,is_active,cr_by) values(:userName,:token,:refreshToken,:expTime,NOW(),true,'Admin')";
+	public static final String INSERT_TOKEN="insert into iam.oauth_access_token(user_id,auth_token,refresh_token,expiration_time,cr_dtimes,is_active,cr_by) values(:userName,:token,:refreshToken,:expTime,:crdTimes,true,'Admin')";
 	
 	public static final String SELECT_TOKEN="select user_id,auth_token,refresh_token,expiration_time from iam.oauth_access_token where auth_token like :token ";
 	
-	public static final String UPDATE_TOKEN="update iam.oauth_access_token set user_id=:userName,auth_token=:token,refresh_token=:refreshToken,expiration_time=:expTime "
+	public static final String UPDATE_TOKEN="update iam.oauth_access_token set user_id=:userName,auth_token=:token,refresh_token=:refreshToken,expiration_time=:expTime,cr_dtimes=:crdTimes "
 			+ " where user_id = :userName";
 	
 	public static final String CHECK_USER="select user_id from iam.oauth_access_token where user_id like :userName";
@@ -64,8 +68,6 @@ public class CustomTokenServicesImpl implements CustomTokenServices {
 	
 	private final String deleteAccessToken=DELETE_ACCESS_TOKEN;
 	
-	private final String deleteRefreshToken=DELETE_REFRESH_TOKEN;
-	
 	private final NamedParameterJdbcTemplate jdbcTemplate;
 	
 	@Autowired
@@ -85,7 +87,8 @@ public class CustomTokenServicesImpl implements CustomTokenServices {
 			jdbcTemplate.update(updateTokenSQL, new MapSqlParameterSource()
 					.addValue("userName", token.getUserId())
 					.addValue("token",token.getAccessToken() ).addValue("refreshToken", token.getRefreshToken())
-					.addValue("expTime", new Date(token.getExpirationTime())));
+					.addValue("expTime", new Date(token.getExpirationTime()))
+					.addValue("crdTimes", LocalDateTime.ofInstant(Instant.ofEpochMilli(new Date().getTime()), ZoneId.of("UTC"))));
 			
 		}
 		else
@@ -93,7 +96,8 @@ public class CustomTokenServicesImpl implements CustomTokenServices {
 			jdbcTemplate.update(insertTokenSQL, new MapSqlParameterSource()
 					.addValue("userName", token.getUserId())
 					.addValue("token",token.getAccessToken() ).addValue("refreshToken", token.getRefreshToken())
-					.addValue("expTime", new Date(token.getExpirationTime())));
+					.addValue("expTime", new Date(token.getExpirationTime()))
+					.addValue("crdTimes", LocalDateTime.ofInstant(Instant.ofEpochMilli(new Date().getTime()), ZoneId.of("UTC"))));
 		}
 	}
 

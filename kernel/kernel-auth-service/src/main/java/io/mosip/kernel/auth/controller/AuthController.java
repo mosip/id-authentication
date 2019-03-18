@@ -157,7 +157,7 @@ public class AuthController {
 	 */
 
 	@PostMapping(value = "/authenticate/clientidsecretkey")
-	public ResponseEntity<AuthNResponse> clientIdSecretKey(ClientSecretDto clientSecretDto, HttpServletResponse res)
+	public ResponseEntity<AuthNResponse> clientIdSecretKey(@RequestBody ClientSecretDto clientSecretDto, HttpServletResponse res)
 			throws Exception {
 		AuthNResponse authNResponse = null;
 		AuthNResponseDto authResponseDto = authService.authenticateWithSecretKey(clientSecretDto.getRequest());
