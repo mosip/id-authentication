@@ -56,7 +56,7 @@ public interface RegistrationCenterRepository extends BaseRepository<Registratio
 	 *            the languageCode
 	 * @return the RegistrationCenter
 	 */
-	@Query("FROM RegistrationCenter WHERE id= ?1 and  langCode =?2 and (isDeleted is null or isDeleted =false)")
+	@Query("FROM RegistrationCenter WHERE id= ?1 and  langCode =?2 and (isDeleted is null or isDeleted =false) and isActive = true")
 	RegistrationCenter findByIdAndLangCode(String id, String langCode);
 
 	/**

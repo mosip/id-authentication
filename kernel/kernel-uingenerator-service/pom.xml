@@ -127,7 +127,11 @@
 			<artifactId>commons-math3</artifactId>
 			<version>${commons-math3}</version>
 		</dependency>
-
+		<dependency>
+			<groupId>com.fasterxml.jackson.datatype</groupId>
+			<artifactId>jackson-datatype-jsr310</artifactId>
+			<version>${jackson.datatype.version}</version>
+		</dependency>
 	</dependencies>
 	<properties>
 		<sonar.skip>true</sonar.skip>

@@ -52,7 +52,7 @@ public class ApplicantTypeServiceImpl implements ApplicantTypeService {
 			throw new DataNotFoundException(ApplicantTypeErrorCode.NO_APPLICANT_FOUND_EXCEPTION.getErrorCode(),
 					ApplicantTypeErrorCode.NO_APPLICANT_FOUND_EXCEPTION.getErrorMessage());
 		}
-		response.setResponse(appDto);
+		response.setApplicantType(appDto);
 		return response;
 	}
 
