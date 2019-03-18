@@ -371,6 +371,8 @@ public class BiometricExceptionController extends BaseController implements Init
 					biometricExceptionDTO.setBiometricType("fingerprint");
 				}
 				biometricExceptionDTO.setMissingBiometric(bioType);
+				biometricExceptionDTO.setExceptionType(RegistrationConstants.PERMANENT_EXCEPTION);
+				biometricExceptionDTO.setReason(RegistrationConstants.MISSING_BIOMETRICS);
 				biometricExceptionList.add(biometricExceptionDTO);
 			});
 			SessionContext.map().put(RegistrationConstants.NEW_BIOMETRIC_EXCEPTION, biometricExceptionList);
@@ -415,10 +417,10 @@ public class BiometricExceptionController extends BaseController implements Init
 			} else {
 				if (getRegistrationDTOFromSession().getSelectionListDTO() != null) {
 					SessionContext.map().put("biometricException", false);
-					if(!RegistrationConstants.DISABLE.equalsIgnoreCase(
-								String.valueOf(ApplicationContext.map().get(RegistrationConstants.DOC_DISABLE_FLAG)))) {
+					if (!RegistrationConstants.DISABLE.equalsIgnoreCase(
+							String.valueOf(ApplicationContext.map().get(RegistrationConstants.DOC_DISABLE_FLAG)))) {
 						SessionContext.map().put("documentScan", true);
-					}else {
+					} else {
 						SessionContext.map().put("demographicDetail", true);
 					}
 					registrationController.showUINUpdateCurrentPage();

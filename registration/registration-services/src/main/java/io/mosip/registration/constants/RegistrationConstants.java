@@ -193,7 +193,13 @@ public class RegistrationConstants {
 
 	public static final String MACHINE_MAPPING_ACTIVE = "ACTIVE";
 	public static final String MACHINE_MAPPING_IN_ACTIVE = "IN-ACTIVE";
-	public static final String TOGGLE_BIO_METRIC_EXCEPTION = "toggleBiometricException";
+	public static final String TOGGLE_BIO_METRIC_EXCEPTION = "toggleBiometricException";	
+
+	//Reasons for Exception 
+	public static final String MISSING_BIOMETRICS = "Missing biometrics";
+	public static final String LOW_QUALITY_BIOMETRICS = "Low quality of biometrics";
+	public static final String PERMANENT_EXCEPTION = "Permanent";
+	public static final String TEMPORARY_EXCEPTION = "Temporary";
 
 	// update UIN
 	public static final String UIN_NAV_LABEL = "/ UIN Update";
