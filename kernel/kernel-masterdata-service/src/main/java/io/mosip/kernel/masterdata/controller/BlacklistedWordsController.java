@@ -1,12 +1,9 @@
 package io.mosip.kernel.masterdata.controller;
 
-import java.util.List;
-
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -67,7 +64,7 @@ public class BlacklistedWordsController {
 	 *         word belongs to black listed word
 	 */
 	@ResponseFilter
-	@PostMapping(path = "/words", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.ALL_VALUE)
+	@PostMapping(path = "/words")
 	@ApiOperation(value = "Black listed word validation")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Valid Word"),
 			@ApiResponse(code = 200, message = "Invalid Word") })
