@@ -269,7 +269,7 @@ public class UinGeneratorStageTest {
 				.thenReturn(idResponseDTO);
 
 		MessageDTO result = uinGeneratorStage.process(messageDTO);
-		assertTrue(result.getIsValid());
+		assertFalse(result.getIsValid());
 
 	}
 	
