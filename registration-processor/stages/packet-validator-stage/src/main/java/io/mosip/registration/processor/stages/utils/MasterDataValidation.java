@@ -1,14 +1,11 @@
 package io.mosip.registration.processor.stages.utils;
 
 import java.io.IOException;
-import java.lang.reflect.Array;
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
@@ -63,8 +60,9 @@ public class MasterDataValidation {
 	private Utilities utility;
 
 	private RegistrationProcessorIdentity regProcessorIdentityJson;
-	private static final String VALUE = "value";
-	private static final String LANGUAGE = "language";
+
+	private static final String LANGUAGE_ENG = "eng";
+	private static final String LANGUAGE_ARA = "ara";
 
 	/**
 	 * Instantiates a new master data validation.
@@ -94,33 +92,39 @@ public class MasterDataValidation {
 	 * @return the boolean
 	 */
 	public Boolean validateMasterData(String jsonString) {
-		String genderName = null;
-		String regionName = null;
-		String provinceName = null;
-		String cityName = null;
+		String genderEngName = null;
+		String regionEngName = null;
+		String provinceEngName = null;
+		String cityEngName = null;
 		String postalcode = null;
+		String genderAraName = null;
+		String regionAraName = null;
+		String provinceAraName = null;
+		String cityAraName = null;
 
 		try {
 
-			String getIdentityJsonString = Utilities.getJson(utility.getConfigServerFileStorageURL(),
-					utility.getGetRegProcessorIdentityJson());
-			ObjectMapper mapIdentityJsonStringToObject = new ObjectMapper();
-			regProcessorIdentityJson = mapIdentityJsonStringToObject.readValue(getIdentityJsonString,
-					RegistrationProcessorIdentity.class);
+			demographicIdentity = getDemographicJson(jsonString);
 
-			JSONObject demographicJson = JsonUtil.objectMapperReadValue(jsonString, JSONObject.class);
-			demographicIdentity = JsonUtil.getJSONObject(demographicJson,
-					utility.getGetRegProcessorDemographicIdentity());
-
-			if (demographicIdentity == null)
-				throw new IdentityNotFoundException(PlatformErrorMessages.RPR_PIS_IDENTITY_NOT_FOUND.getMessage());
-
-			genderName = getParameter(getJsonValues(regProcessorIdentityJson.getIdentity().getGender().getValue()));
-			regionName = getParameter(getJsonValues(regProcessorIdentityJson.getIdentity().getRegion().getValue()));
-			provinceName = getParameter(getJsonValues(regProcessorIdentityJson.getIdentity().getProvince().getValue()));
-			cityName = getParameter(getJsonValues(regProcessorIdentityJson.getIdentity().getCity().getValue()));
+			genderEngName = getParameter(JsonUtil.getJsonValues(demographicIdentity,
+					regProcessorIdentityJson.getIdentity().getGender().getValue()), LANGUAGE_ENG);
+			regionEngName = getParameter(JsonUtil.getJsonValues(demographicIdentity,
+					regProcessorIdentityJson.getIdentity().getRegion().getValue()), LANGUAGE_ENG);
+			provinceEngName = getParameter(JsonUtil.getJsonValues(demographicIdentity,
+					regProcessorIdentityJson.getIdentity().getProvince().getValue()), LANGUAGE_ENG);
+			cityEngName = getParameter(JsonUtil.getJsonValues(demographicIdentity,
+					regProcessorIdentityJson.getIdentity().getCity().getValue()), LANGUAGE_ENG);
 			postalcode = JsonUtil.getJSONValue(demographicIdentity,
 					regProcessorIdentityJson.getIdentity().getPostalCode().getValue());
+
+			genderAraName = getParameter(JsonUtil.getJsonValues(demographicIdentity,
+					regProcessorIdentityJson.getIdentity().getGender().getValue()), LANGUAGE_ARA);
+			regionAraName = getParameter(JsonUtil.getJsonValues(demographicIdentity,
+					regProcessorIdentityJson.getIdentity().getRegion().getValue()), LANGUAGE_ARA);
+			provinceAraName = getParameter(JsonUtil.getJsonValues(demographicIdentity,
+					regProcessorIdentityJson.getIdentity().getProvince().getValue()), LANGUAGE_ARA);
+			cityAraName = getParameter(JsonUtil.getJsonValues(demographicIdentity,
+					regProcessorIdentityJson.getIdentity().getCity().getValue()), LANGUAGE_ARA);
 
 		} catch (IOException e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
@@ -135,22 +139,26 @@ public class MasterDataValidation {
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), "",
 				"MasterDataValidation::validateMasterData::entry");
 
-		if (getValue(list, IdJSONConstant.GENDER.toString()) && (!validateGenderName(genderName))) {
+		if ((getValue(list, IdJSONConstant.GENDER.toString()))
+				&& ((!validateGenderName(genderEngName)) || (!validateGenderName(genderAraName)))) {
 			registrationStatusDto.setStatusComment(StatusMessage.GENDER_NAME_NOT_AVAILABLE);
 			return false;
 		}
 
-		if (getValue(list, IdJSONConstant.REGION.toString()) && (!validateLocationName(regionName))) {
+		if (getValue(list, IdJSONConstant.REGION.toString())
+				&& ((!validateLocationName(regionEngName)) || (!validateLocationName(regionAraName)))) {
 			registrationStatusDto.setStatusComment(StatusMessage.REGION_NOT_AVAILABLE);
 			return false;
 		}
 
-		if (getValue(list, IdJSONConstant.PROVINCE.toString()) && (!validateLocationName(provinceName))) {
+		if ((getValue(list, IdJSONConstant.PROVINCE.toString()))
+				&& ((!validateLocationName(provinceEngName)) || (!validateLocationName(provinceAraName)))) {
 			registrationStatusDto.setStatusComment(StatusMessage.PROVINCE_NOT_AVAILABLE);
 			return false;
 		}
 
-		if (getValue(list, IdJSONConstant.CITY.toString()) && (!validateLocationName(cityName))) {
+		if (getValue(list, IdJSONConstant.CITY.toString())
+				&& ((!validateLocationName(cityEngName)) || (!validateLocationName(cityAraName)))) {
 			registrationStatusDto.setStatusComment(StatusMessage.CITY_NOT_AVAILABLE);
 			return false;
 		}
@@ -166,6 +174,22 @@ public class MasterDataValidation {
 				"MasterDataValidation::validateMasterData::exit");
 		return isValid;
 
+	}
+
+	private JSONObject getDemographicJson(String jsonString) throws IOException {
+		String getIdentityJsonString = Utilities.getJson(utility.getConfigServerFileStorageURL(),
+				utility.getGetRegProcessorIdentityJson());
+		ObjectMapper mapIdentityJsonStringToObject = new ObjectMapper();
+		regProcessorIdentityJson = mapIdentityJsonStringToObject.readValue(getIdentityJsonString,
+				RegistrationProcessorIdentity.class);
+
+		JSONObject demographicJson = JsonUtil.objectMapperReadValue(jsonString, JSONObject.class);
+		demographicIdentity = JsonUtil.getJSONObject(demographicJson, utility.getGetRegProcessorDemographicIdentity());
+
+		if (demographicIdentity == null)
+			throw new IdentityNotFoundException(PlatformErrorMessages.RPR_PIS_IDENTITY_NOT_FOUND.getMessage());
+		else
+			return demographicIdentity;
 	}
 
 	/**
@@ -267,9 +291,8 @@ public class MasterDataValidation {
 
 	}
 
-	private String getParameter(JsonValue[] jsonValues) {
+	private String getParameter(JsonValue[] jsonValues, String langCode) {
 
-		String langCode = "eng";
 		String parameter = null;
 		if (jsonValues != null) {
 			for (int count = 0; count < jsonValues.length; count++) {
@@ -281,49 +304,6 @@ public class MasterDataValidation {
 			}
 		}
 		return parameter;
-	}
-
-	private JsonValue[] getJsonValues(Object identityKey) {
-		JSONArray demographicJsonNode = null;
-		if (demographicIdentity != null)
-			demographicJsonNode = JsonUtil.getJSONArray(demographicIdentity, identityKey);
-
-		return (demographicJsonNode != null) ? mapJsonNodeToJavaObject(JsonValue.class, demographicJsonNode) : null;
-	}
-
-	@SuppressWarnings("unchecked")
-	private <T> T[] mapJsonNodeToJavaObject(Class<? extends Object> genericType, JSONArray demographicJsonNode) {
-		String language;
-		String value;
-		T[] javaObject = (T[]) Array.newInstance(genericType, demographicJsonNode.size());
-		try {
-			for (int i = 0; i < demographicJsonNode.size(); i++) {
-
-				T jsonNodeElement = (T) genericType.newInstance();
-
-				JSONObject objects = JsonUtil.getJSONObjectFromArray(demographicJsonNode, i);
-				language = (String) objects.get(LANGUAGE);
-				value = (String) objects.get(VALUE);
-
-				Field languageField = jsonNodeElement.getClass().getDeclaredField(LANGUAGE);
-				languageField.setAccessible(true);
-				languageField.set(jsonNodeElement, language);
-
-				Field valueField = jsonNodeElement.getClass().getDeclaredField(VALUE);
-				valueField.setAccessible(true);
-				valueField.set(jsonNodeElement, value);
-
-				javaObject[i] = jsonNodeElement;
-			}
-		} catch (InstantiationException | IllegalAccessException | NoSuchFieldException | SecurityException e) {
-
-			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					"", PlatformErrorMessages.STRUCTURAL_VALIDATION_FAILED.getMessage() + e.getMessage());
-			this.registrationStatusDto.setStatusComment(StatusMessage.MASTERDATA_VALIDATION_FAILED);
-		}
-
-		return javaObject;
-
 	}
 
 }
