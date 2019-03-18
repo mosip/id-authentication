@@ -1,1 +1,1 @@
-{"status":"N","err":[{"errorCode":"IDA-IDV-002","errorMessage":"Invalid Input Parameter - IdentityInfoDTO"}],"resTime":"2019-03-12T12:39:19.437+05:30","ver":"0.8"}
+{"status":"N","err":[{"errorCode":"IDA-RST-007","errorMessage":"5XX - Server Error occured"}],"resTime":"2019-03-15T14:55:31.137+05:30","txnID":"3873224022","ver":"0.8"}

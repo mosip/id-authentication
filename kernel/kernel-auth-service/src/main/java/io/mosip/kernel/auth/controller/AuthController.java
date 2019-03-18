@@ -128,13 +128,22 @@ public class AuthController {
 			throws Exception {
 		AuthNResponse authNResponse = null;
 		AuthNResponseDto authResponseDto = authService.authenticateUserWithOtp(userOtpDto.getRequest());
-		if (authResponseDto != null) {
+		if (authResponseDto != null && authResponseDto.getToken()!=null) {
 			Cookie cookie = createCookie(authResponseDto.getToken(), mosipEnvironment.getTokenExpiry());
 			authNResponse = new AuthNResponse();
 			res.addCookie(cookie);
 			authNResponse.setMessage(authResponseDto.getMessage());
 			AuthToken token = getAuthToken(authResponseDto);
+			if(token!=null && token.getUserId()!=null)
+			{
 			customTokenServices.StoreToken(token);
+			}
+			
+		}
+		else
+		{
+			authNResponse = new AuthNResponse();
+			authNResponse.setMessage(authResponseDto.getMessage()!=null?authResponseDto.getMessage():"Otp validation failed");
 		}
 		return new ResponseEntity<>(authNResponse, HttpStatus.OK);
 	}

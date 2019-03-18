@@ -197,7 +197,7 @@ public class Precondtion {
 			prop.load(input);
 			return prop;
 		} catch (Exception e) {
-			System.out.println(e);
+			logger.error(e.getMessage());
 			return null;
 		}
 	}

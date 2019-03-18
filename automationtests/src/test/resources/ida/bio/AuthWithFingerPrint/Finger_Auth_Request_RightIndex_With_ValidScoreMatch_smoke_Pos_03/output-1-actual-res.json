@@ -1,1 +1,1 @@
-{"status":"Y","err":[],"resTime":"2019-03-12T12:35:59.400+05:30","info":{"idType":"D","reqTime":"2019-03-12T12:33:27.027+05:30","bioInfos":[{"bioType":"fgrMin","deviceInfo":{"deviceId":"123143","make":"mantra","model":"steel"}}],"usageData":"0x0000800000008000"},"txnID":"5755850121","ver":"0.8","staticToken":"549502312896083346105515500794625061"}
+{"status":"N","err":[{"errorCode":"IDA-RST-007","errorMessage":"5XX - Server Error occured"}],"resTime":"2019-03-15T14:55:06.353+05:30","txnID":"5658406687","ver":"0.8"}

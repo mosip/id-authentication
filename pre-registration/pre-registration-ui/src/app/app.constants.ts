@@ -10,7 +10,7 @@ export const ERROR = 'error';
 export const NESTED_ERROR = 'err';
 export const ERROR_CODE = 'errorCode';
 export const PRE_REGISTRATION_ID = 'pre_registration_id';
-export const ALLOWED_BOOKING_TIME = 24;
+// export const ALLOWED_BOOKING_TIME = 24;
 
 export const IDS = {
   newUser: 'mosip.pre-registration.demographic.create',
@@ -32,7 +32,7 @@ export const APPEND_URL = {
   location: 'masterdata/',
   gender: 'masterdata/v1.0/gendertypes',
   transliteration: 'transliteration/transliterate',
-  applicantType: 'applicanttype/v1.0/applicanttype/',
+  applicantType: 'applicanttype/',
   validDocument: 'v1.0/applicanttype/',
   getApplicantType: 'getApplicantType'
 };
@@ -129,6 +129,14 @@ export const languageMapping = {
     langName: 'French'
   }
 };
+
+export const notificationDtoKeys = {
+  notificationDto: 'NotificationDTO',
+  langCode: 'langCode',
+  file: 'file'
+};
+
+export const previewFields = ['region', 'province', 'city', 'localAdministrativeAuthority', 'gender'];
 
 export const DOCUMENT_UPLOAD_REQUEST_DOCUMENT_KEY = 'file';
 export const DOCUMENT_UPLOAD_REQUEST_DTO_KEY = 'Document request';

@@ -110,6 +110,8 @@ export class LoginComponent implements OnInit {
   loadLanguagesWithConfig() {
     const primaryLang = this.configService.getConfigByKey('mosip.primary-language');
     const secondaryLang = this.configService.getConfigByKey('mosip.secondary-language');
+    localStorage.setItem('langCode', primaryLang);
+    localStorage.setItem('secondaryLangCode', secondaryLang);
     if (appConstants.languageMapping[primaryLang] && appConstants.languageMapping[secondaryLang]) {
       this.languages.push(appConstants.languageMapping[primaryLang].langName);
       this.languages.push(appConstants.languageMapping[secondaryLang].langName);

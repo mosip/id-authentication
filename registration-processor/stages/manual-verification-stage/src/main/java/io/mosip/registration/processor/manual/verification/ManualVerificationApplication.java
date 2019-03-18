@@ -25,7 +25,8 @@ public class ManualVerificationApplication {
 				"io.mosip.registration.processor.packet.manager.config",
 				"io.mosip.registration.processor.status.config",
 				"io.mosip.registration.processor.rest.client.config",
-				"io.mosip.registration.processor.core.kernel.beans");
+				"io.mosip.registration.processor.core.kernel.beans",
+				"io.mosip.registration.processor.core.config");
 		configApplicationContext.refresh();
 		ManualVerificationStage manualVerificationStage = configApplicationContext.getBean(ManualVerificationStage.class);
 		manualVerificationStage.deployStage();

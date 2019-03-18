@@ -5,6 +5,8 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import io.mosip.registration.processor.biodedupe.stage.BioDedupeStage;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 
+
+
 public class BioDedupeApplication {
 
 	/**

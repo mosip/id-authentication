@@ -1,1 +1,1 @@
-{"status":"Y","err":[],"resTime":"2019-03-12T12:43:29.774+05:30","info":{"idType":"D","reqTime":"2019-03-12T12:35:21.021+05:30","matchInfos":[{"authType":"personalIdentity","language":"fra","matchingStrategy":"E","matchingThreshold":100}],"usageData":"0x4000000040000000"},"txnID":"7130780318","ver":"0.8","staticToken":"110030242003544608021839482647752219"}
+{"status":"N","err":[{"errorCode":"IDA-RST-007","errorMessage":"5XX - Server Error occured"}],"resTime":"2019-03-15T14:55:55.116+05:30","txnID":"7622554158","ver":"0.8"}

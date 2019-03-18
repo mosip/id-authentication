@@ -198,3 +198,4 @@ public class StaticPinStorage extends IdaScriptsUtil implements ITest{
 	}
 
 }
+

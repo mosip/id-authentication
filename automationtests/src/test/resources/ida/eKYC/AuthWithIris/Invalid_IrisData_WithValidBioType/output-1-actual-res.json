@@ -1,1 +1,1 @@
-{"status":"N","err":[{"errorCode":"IDA-IDV-003","errorMessage":"Missing Input Parameter - biotype"}],"resTime":"2019-03-12T12:21:05.109+05:30","ver":"0.8"}
+{"status":"N","err":[{"errorCode":"IDA-RST-007","errorMessage":"5XX - Server Error occured"}],"resTime":"2019-03-15T09:23:32.182Z","ver":"0.8"}

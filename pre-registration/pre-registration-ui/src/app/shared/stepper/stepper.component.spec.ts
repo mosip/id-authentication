@@ -5,7 +5,7 @@ import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { HttpLoaderFactory } from 'src/app/i18n.module';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 
-fdescribe('StepperComponent', () => {
+describe('StepperComponent', () => {
   let component: StepperComponent;
   let fixture: ComponentFixture<StepperComponent>;
 
