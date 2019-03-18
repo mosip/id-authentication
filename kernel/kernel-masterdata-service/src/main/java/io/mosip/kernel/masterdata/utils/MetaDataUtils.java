@@ -71,6 +71,9 @@ public class MetaDataUtils {
 	/**
 	 * This method is used to set meta data used for delete.
 	 * 
+	 * @param <E>
+	 *            is a type parameter
+	 * 
 	 * @param entity
 	 *            which extends base entity
 	 * @return entity having isDeleted value as true and deleted times

@@ -23,6 +23,7 @@ public interface ApplicationRepository extends BaseRepository<Application, Strin
 	 *            of type {@link Application}
 	 * @return list of {@link Application}
 	 */
+	@Query("FROM Application where (isDeleted is null OR isDeleted = false) AND isActive = true")
 	List<Application> findAllByIsDeletedFalseOrIsDeletedNull(Class<Application> entityClass);
 
 	/**
@@ -33,7 +34,7 @@ public interface ApplicationRepository extends BaseRepository<Application, Strin
 	 *            of type {@link String}
 	 * @return list of {@link Application}
 	 */
-	@Query("FROM Application WHERE langCode =?1 AND (isDeleted is null OR isDeleted = false)")
+	@Query("FROM Application WHERE langCode =?1 AND (isDeleted is null OR isDeleted = false)AND isActive = true")
 	List<Application> findAllByLangCodeAndIsDeletedFalseOrIsDeletedIsNull(String languageCode);
 
 	/**
@@ -45,7 +46,7 @@ public interface ApplicationRepository extends BaseRepository<Application, Strin
 	 *            - language code
 	 * @return {@link Application}
 	 */
-	@Query("FROM Application WHERE code =?1 AND langCode =?2 AND (isDeleted is null OR isDeleted = false)")
+	@Query("FROM Application WHERE code =?1 AND langCode =?2 AND (isDeleted is null OR isDeleted = false) AND isActive = true")
 	Application findByCodeAndLangCodeAndIsDeletedFalseOrIsDeletedIsNull(String code, String languageCode);
 
 }

@@ -30,12 +30,12 @@ public interface GenderTypeRepository extends BaseRepository<Gender, CodeAndLang
 	@Query("FROM Gender WHERE isActive=true AND (isDeleted=false OR isDeleted is null)")
 	List<Gender> findAllByIsActiveAndIsDeleted();
 	
-	@Query("FROM Gender WHERE langCode =?1 and (isDeleted is null or isDeleted =false)")
+	@Query("FROM Gender WHERE langCode =?1 and (isDeleted is null or isDeleted =false) and isActive = true")
 	List<Gender> findGenderByLangCodeAndIsDeletedFalseOrIsDeletedIsNull(String langCode);
 
 	
 	/**
-	 * Update Gender Type by code provided.
+	 * Delete Gender Type by code provided.
 	 * 
 	 * @param code
 	 *            code the gender type code.
