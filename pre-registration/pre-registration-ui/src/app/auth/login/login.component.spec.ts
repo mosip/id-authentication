@@ -14,7 +14,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { ConfigService } from 'src/app/core/services/config.service';
 
-fdescribe('LoginComponent', () => {
+describe('LoginComponent', () => {
 
   let configs = {
     "mosip.default.dob.day": "01",

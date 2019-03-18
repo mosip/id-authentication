@@ -315,7 +315,7 @@ public class PacketUploaderStage extends MosipVerticleManager {
 	 */
 	public void deployVerticle() {
 
-		mosipEventBus = this.getEventBus(this.getClass(), clusterManagerUrl);
+		mosipEventBus = this.getEventBus(this, clusterManagerUrl, 50);
 		this.consumeAndSend(mosipEventBus, MessageBusAddress.PACKET_UPLOADER_IN, MessageBusAddress.PACKET_UPLOADER_OUT);
 
 	}

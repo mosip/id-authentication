@@ -1,0 +1,1 @@
+{"id":"mosip.identity.vid","version":"1.0","responseTime":"$TIMESTAMPZ$","vid":"$IGNORE$","error":[{"errorCode":"IDA-MLC-011","errorMessage":"VID regeneration not allowed. Use existing VID"}]}
