@@ -1,5 +1,8 @@
 package io.mosip.registration.test.service.packet.encryption;
 
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.when;
+
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.HashMap;
@@ -17,13 +20,13 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
-import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import io.mosip.registration.audit.AuditFactoryImpl;
 import io.mosip.registration.constants.AuditEvent;
 import io.mosip.registration.constants.Components;
+import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dao.AuditLogControlDAO;
@@ -37,9 +40,6 @@ import io.mosip.registration.service.AESEncryptionService;
 import io.mosip.registration.service.external.StorageService;
 import io.mosip.registration.service.packet.impl.PacketEncryptionServiceImpl;
 import io.mosip.registration.test.util.datastub.DataProvider;
-
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.when;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ ApplicationContext.class })
@@ -80,13 +80,9 @@ public class PacketEncryptionServiceTest {
 				Mockito.anyString(), Mockito.anyString());
 		doNothing().when(auditLogControlDAO).save(Mockito.any(AuditLogControl.class));
 		
-		ApplicationContext applicationContext = Mockito.mock(ApplicationContext.class);
-		PowerMockito.mockStatic(ApplicationContext.class);
-		
-		Map<String, Object> globalParams = new HashMap<>();
-		globalParams.put("MAX_REG_PACKET_SIZE", "1");
-		PowerMockito.when(applicationContext.map()).thenReturn(globalParams);
-		PowerMockito.when(ApplicationContext.map()).thenReturn(globalParams);
+		Map<String,Object> appMap = new HashMap<>();
+		appMap.put(RegistrationConstants.REG_PKT_SIZE, "1");
+		ApplicationContext.getInstance().setApplicationMap(appMap);
 	}
 
 	@Test

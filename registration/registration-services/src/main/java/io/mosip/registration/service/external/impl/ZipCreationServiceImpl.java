@@ -140,9 +140,10 @@ public class ZipCreationServiceImpl implements ZipCreationService {
 
 			return byteArrayOutputStream.toByteArray();
 		} catch (IOException exception) {
-			throw new RegBaseCheckedException(REG_IO_EXCEPTION.getErrorCode(), exception.getCause().getMessage());
+			throw new RegBaseCheckedException(REG_IO_EXCEPTION.getErrorCode(), exception.getMessage(), exception);
 		} catch (RuntimeException runtimeException) {
-			throw new RegBaseUncheckedException(RegistrationConstants.PACKET_ZIP_CREATION, runtimeException.toString());
+			throw new RegBaseUncheckedException(RegistrationConstants.PACKET_ZIP_CREATION,
+					runtimeException.getMessage(), runtimeException);
 		}
 	}
 
@@ -168,10 +169,6 @@ public class ZipCreationServiceImpl implements ZipCreationService {
 					documentCategory.getValue().getDocument(), zipOutputStream);
 		}
 
-		addToZip(demographicDTO.getApplicantDocumentDTO().getPhoto(),
-				folderName + demographicDTO.getApplicantDocumentDTO().getPhotographName(), zipOutputStream);
-		addToZip(demographicDTO.getApplicantDocumentDTO().getExceptionPhoto(),
-				folderName + demographicDTO.getApplicantDocumentDTO().getExceptionPhotoName(), zipOutputStream);
 		if (demographicDTO.getApplicantDocumentDTO().getAcknowledgeReceipt() != null) {
 			addToZip(demographicDTO.getApplicantDocumentDTO().getAcknowledgeReceipt(),
 					folderName + demographicDTO.getApplicantDocumentDTO().getAcknowledgeReceiptName(), zipOutputStream);

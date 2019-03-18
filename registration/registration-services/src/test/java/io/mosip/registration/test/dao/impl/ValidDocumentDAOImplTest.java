@@ -14,7 +14,8 @@ import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
 import io.mosip.registration.dao.impl.ValidDocumentDAOImpl;
-import io.mosip.registration.entity.ValidDocument;
+import io.mosip.registration.entity.ApplicantValidDocument;
+import io.mosip.registration.entity.id.ApplicantValidDocumentID;
 import io.mosip.registration.entity.id.GenericId;
 import io.mosip.registration.repositories.ValidDocumentRepository;
 
@@ -30,23 +31,21 @@ public class ValidDocumentDAOImplTest {
 	@Test
 	public void test() {
 
-		ValidDocument validDocument = new ValidDocument();
-		//validDocument.setDescription("description");
-		validDocument.setDocTypeCode("name");
-		//validDocument.setCreatedTimesZone(new Timestamp(new Date().getTime()));
+		ApplicantValidDocument validDocument = new ApplicantValidDocument();
+		ApplicantValidDocumentID validDocumentId=new ApplicantValidDocumentID();
+		validDocumentId.setDocCatCode("D101");
+		validDocumentId.setDocTypeCode("DC101");
+		validDocumentId.setAppTypeCode("007");
+		validDocument.setValidDocumentId(validDocumentId);
 		validDocument.setCrBy("createdBy");
-		//validDocument.setDeletedTimesZone(new Timestamp(new Date().getTime()));
-		validDocument.setLangCode("languageCode");
-		GenericId genericId = new GenericId();
-		genericId.setActive(true);
-		genericId.setCode("code");
-		//validDocument.setGenericId(genericId);
-		List<ValidDocument> list = new ArrayList<>();
+		validDocument.setLangCode("langCode");
+		List<ApplicantValidDocument> list = new ArrayList<>();
 		list.add(validDocument);
 
-		Mockito.when(validDocumentRepository.findAll()).thenReturn(list);
+		Mockito.when(validDocumentRepository.findByValidDocumentIdAppTypeCodeAndDocumentCategoryCode(Mockito.anyString(),
+				Mockito.anyString())).thenReturn(list);
 
-		assertEquals(list, validDocumentDAOImpl.getValidDocuments());
+		assertEquals(list, validDocumentDAOImpl.getValidDocuments("NFR", "POA"));
 
 	}
 

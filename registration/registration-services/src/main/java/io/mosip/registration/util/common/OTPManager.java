@@ -1,8 +1,8 @@
 package io.mosip.registration.util.common;
 
 import java.net.SocketTimeoutException;
+import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Map;
 
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
@@ -13,11 +13,17 @@ import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.LoggerConstants;
+import io.mosip.registration.constants.LoginMode;
 import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.context.ApplicationContext;
+import io.mosip.registration.dto.AuthNRequestDTO;
+import io.mosip.registration.dto.AuthNSendOTPDTO;
+import io.mosip.registration.dto.LoginUserDTO;
 import io.mosip.registration.dto.OtpGeneratorRequestDTO;
-import io.mosip.registration.dto.OtpValidatorResponseDTO;
 import io.mosip.registration.dto.ResponseDTO;
+import io.mosip.registration.dto.SuccessResponseDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
+import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.service.BaseService;
 import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
 
@@ -45,6 +51,15 @@ public class OTPManager extends BaseService {
 
 		/* Check Network Connectivity */
 		if (RegistrationAppHealthCheckUtil.isNetworkAvailable()) {
+			AuthNRequestDTO authNRequestDTO = new AuthNRequestDTO();
+			AuthNSendOTPDTO authNSendOTPDTO = new AuthNSendOTPDTO();
+			authNSendOTPDTO.setAppId(RegistrationConstants.REGISTRATION_CLIENT);
+			authNSendOTPDTO.setLangCode(RegistrationConstants.ENGLISH_LANG_CODE);
+			authNSendOTPDTO.setOtpChannel(Arrays
+					.asList(ApplicationContext.map().get(RegistrationConstants.OTP_CHANNELS).toString().split(",")));
+			authNSendOTPDTO.setUserId(key);
+			authNSendOTPDTO.setUseridtype(RegistrationConstants.USER_ID_CODE);
+			authNRequestDTO.setRequest(authNSendOTPDTO);
 			OtpGeneratorRequestDTO otpGeneratorRequestDto = new OtpGeneratorRequestDTO();
 			
 			// prepare otpGeneratorRequestDto with specified key(EO Username) obtained 
@@ -54,12 +69,12 @@ public class OTPManager extends BaseService {
 				// obtain otpGeneratorResponseDto from serviceDelegateUtil
 				@SuppressWarnings("unchecked")
 				HashMap<String, String> responseMap = (HashMap<String, String>) serviceDelegateUtil
-						.post(RegistrationConstants.OTP_GENERATOR_SERVICE_NAME, otpGeneratorRequestDto);
-				if (responseMap != null && responseMap.get("otp") != null) {
+						.post("send_otp", authNRequestDTO,RegistrationConstants.JOB_TRIGGER_POINT_USER);
+				if (responseMap != null && responseMap.get("message") != null) {
 
 					// create Success Response
 					setSuccessResponse(response,
-							RegistrationConstants.OTP_GENERATION_SUCCESS_MESSAGE + responseMap.get("otp"), null);
+							RegistrationConstants.OTP_GENERATION_SUCCESS_MESSAGE + responseMap.get("message"), null);
 				} else {
 					// create Error Response
 					setErrorResponse(response, RegistrationConstants.OTP_GENERATION_ERROR_MESSAGE, null);
@@ -103,27 +118,23 @@ public class OTPManager extends BaseService {
 		/* Check Network Connectivity */
 		if (RegistrationAppHealthCheckUtil.isNetworkAvailable()) {
 
-			OtpValidatorResponseDTO otpValidatorResponseDto = null;
+			if (ApplicationContext.map().get(RegistrationConstants.USER_DTO) == null) {
+				ApplicationContext.map().put(RegistrationConstants.USER_DTO, new LoginUserDTO());
+			}
 
-			Map<String, String> requestParamMap = new HashMap<String, String>();
-			requestParamMap.put(RegistrationConstants.LOGIN_OTP_PARAM, otp);
-			requestParamMap.put(RegistrationConstants.USERNAME_KEY, userId);
+			LoginUserDTO loginUserDTO = (LoginUserDTO) ApplicationContext.map().get(RegistrationConstants.USER_DTO);
+			loginUserDTO.setUserId(userId);
+			loginUserDTO.setOtp(otp);
 
 			try {
 				// Obtain otpValidatorResponseDto from service delegate util
-				otpValidatorResponseDto = (OtpValidatorResponseDTO) serviceDelegateUtil
-						.get(RegistrationConstants.OTP_VALIDATOR_SERVICE_NAME, requestParamMap, false);
-				if (otpValidatorResponseDto != null && otpValidatorResponseDto.getStatus() != null
-						&& RegistrationConstants.SUCCESS.equalsIgnoreCase(otpValidatorResponseDto.getStatus())) {
-
-					setSuccessResponse(responseDTO, null, null);
-
-				} else {
-					setErrorResponse(responseDTO, RegistrationConstants.OTP_VALIDATION_ERROR_MESSAGE, null);
-				}
-
+				serviceDelegateUtil.getAuthToken(LoginMode.OTP);
+				SuccessResponseDTO successResponseDTO = new SuccessResponseDTO();
+				successResponseDTO.setCode("Validation Successful");
+				responseDTO.setSuccessResponseDTO(successResponseDTO);
+				setSuccessResponse(responseDTO, null, null);
 			} catch (RegBaseCheckedException | HttpClientErrorException | HttpServerErrorException
-					| SocketTimeoutException | ResourceAccessException exception) {
+					| ResourceAccessException | RegBaseUncheckedException exception) {
 
 				LOGGER.error(LoggerConstants.OTP_MANAGER_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 						RegistrationConstants.APPLICATION_ID, exception.getMessage() + ExceptionUtils.getStackTrace(exception));

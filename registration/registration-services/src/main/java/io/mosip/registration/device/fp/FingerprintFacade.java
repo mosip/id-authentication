@@ -18,7 +18,6 @@ import javax.imageio.ImageIO;
 
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.machinezoo.sourceafis.FingerprintTemplate;
@@ -26,6 +25,7 @@ import com.machinezoo.sourceafis.FingerprintTemplate;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.biometric.BiometricDTO;
@@ -52,9 +52,6 @@ public class FingerprintFacade {
 
 	@Autowired
 	private MosipFingerprintProvider fingerprintProvider;
-
-	@Value("${FINGER_PRINT_SCORE}")
-	private long fingerPrintScore;
 
 	/**
 	 * provide the minutia of a finger.
@@ -289,6 +286,7 @@ public class FingerprintFacade {
 		FingerprintTemplate fingerprintTemplate = new FingerprintTemplate()
 				.convert(fingerprintDetailsDTO.getFingerPrint());
 		String minutiae = fingerprintTemplate.serialize();
+		int fingerPrintScore = Integer.parseInt(String.valueOf(ApplicationContext.map().get(RegistrationConstants.FINGER_PRINT_SCORE)));
 		userFingerprintDetails.forEach(fingerPrintTemplateEach -> {
 			if (fingerprintProvider.scoreCalculator(minutiae,
 					fingerPrintTemplateEach.getBioMinutia()) > fingerPrintScore) {

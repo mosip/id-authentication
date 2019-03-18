@@ -50,7 +50,7 @@ public class TemplateGeneratorWithoutMockTest {
 	@Test
 	public void generateTemplate_Test() throws RegBaseCheckedException {
 		RegistrationDTO registrationDTO =DataProvider.getPacketDTO();
-		String templateText=templateServiceImpl.getHtmlTemplate(RegistrationConstants.ACKNOWLEDGEMENT_TEMPLATE);
+		String templateText=templateServiceImpl.getHtmlTemplate(RegistrationConstants.ACKNOWLEDGEMENT_TEMPLATE,"eng");
 		ResponseDTO result=templateGenerator.generateTemplate(templateText, registrationDTO,templateManagerBuilder,RegistrationConstants.ACKNOWLEDGEMENT_TEMPLATE);
 		assertEquals(result.getErrorResponseDTOs().get(0).getCode(), "ERROR");
 	}

@@ -27,55 +27,56 @@ public class TemplateDaoImplTest {
 
 	@Mock
 	TemplateRepository<Template> templateRepository;
-	
+
 	@Mock
 	TemplateTypeRepository<TemplateType> typeRepository;
-	
+
 	@Mock
 	TemplateFileFormatRepository<TemplateFileFormat> fileFormatRepository;
-	
+
 	@InjectMocks
 	TemplateDaoImpl templateDao;
-	
+
 	@Rule
 	public MockitoRule mockitoRule = MockitoJUnit.rule();
-	
+
 	@Test
 	public void getTemplateTest() {
 		List<Template> templates = new ArrayList<>();
 		Template template = new Template();
 		template.setId("T01");
 
-		template.setFileTxt(new byte[1024]);
+		template.setFileTxt("sample text");
 
 		template.setLangCode("en");
 		template.setActive(true);
 		templates.add(template);
-		when(templateRepository.findByIsActiveTrue()).thenReturn(templates);
-		assertThat(templateDao.getAllTemplates(), is(templates));
+		when(templateRepository.findByIsActiveTrueAndTemplateTypCode("ackTemplate")).thenReturn(templates);
+		assertThat(templateDao.getAllTemplates("ackTemplate"), is(templates));
 	}
-	
+
 	@Test
 	public void getTemplateTypesTest() {
 		List<TemplateType> templateTypes = new ArrayList<>();
 		TemplateType templateType = new TemplateType();
 		TemplateEmbeddedKeyCommonFields typePrimaryKey = new TemplateEmbeddedKeyCommonFields();
 		typePrimaryKey.setCode("vel");
-		typePrimaryKey.setLangCode("en");
+		typePrimaryKey.setLangCode("eng");
 		templateType.setPkTmpltCode(typePrimaryKey);
 		templateType.setActive(true);
 		templateTypes.add(templateType);
-		when(typeRepository.findByIsActiveTrue()).thenReturn(templateTypes);
-		assertThat(templateDao.getAllTemplateTypes(), is(templateTypes));
+		when(typeRepository.findByIsActiveTrueAndPkTmpltCodeCodeAndPkTmpltCodeLangCode("ackTemplate", "eng"))
+				.thenReturn(templateTypes);
+		assertThat(templateDao.getAllTemplateTypes("ackTemplate", "eng"), is(templateTypes));
 	}
-	
+
 	@Test
 	public void getTemplateFileFormatsTest() {
 		List<TemplateFileFormat> fileFormats = new ArrayList<>();
 		TemplateFileFormat fileFormat = new TemplateFileFormat();
 		TemplateEmbeddedKeyCommonFields fileFormatPK = new TemplateEmbeddedKeyCommonFields();
 		fileFormatPK.setCode("vel");
-		fileFormatPK.setLangCode("en");
+		fileFormatPK.setLangCode("eng");
 		fileFormat.setPkTfftCode(fileFormatPK);
 		fileFormat.setActive(true);
 		fileFormats.add(fileFormat);

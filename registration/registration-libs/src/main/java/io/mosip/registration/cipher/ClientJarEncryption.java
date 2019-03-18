@@ -8,8 +8,9 @@ import java.io.UnsupportedEncodingException;
 import java.nio.file.Files;
 import java.util.Base64;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.jar.Attributes;
+import java.util.jar.Manifest;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -19,6 +20,7 @@ import javax.crypto.spec.SecretKeySpec;
 
 import org.apache.commons.io.FileUtils;
 
+import io.mosip.kernel.core.util.HMACUtils;
 import io.mosip.kernel.crypto.jce.constant.SecurityMethod;
 import io.mosip.kernel.crypto.jce.processor.SymmetricProcessor;
 
@@ -31,29 +33,33 @@ import io.mosip.kernel.crypto.jce.processor.SymmetricProcessor;
 public class ClientJarEncryption {
 	private static final String SLASH = "/";
 	private static final String AES_ALGORITHM = "AES";
-	private static final String REGISTRATION="registration";
-	private static final String MOSIP_CLIENT_JAR_PATH="bin/mosip-client.jar";
-	private static final String MOSIP_APPLICATION_PROPERTIES_PATH="props/mosip-application.properties";
-	private static final String MOSIP_EXE_JAR="bin/mosip-exec.jar";
-	private static final String MOSIP_LIB="lib";
-	private static final String MOSIP_DB="db";
-	private static final String MOSIP_ZIP=".zip";
-	private static final String MOSIP_JAR=".jar";
-	private static final String MOSIP_LOG_PATH="mosip.logpath= ";
-	private static final String MOSIP_DB_PATH="mosip.dbpath= ";
-	private static final String MOSIP_REG_LIBS="registration-libs-";
+	private static final String REGISTRATION = "registration";
+	private static final String MOSIP_CLIENT_JAR_PATH = "bin/mosip-client.jar";
+	private static final String MOSIP_APPLICATION_PROPERTIES_PATH = "props/mosip-application.properties";
+	private static final String MOSIP_EXE_JAR = "bin/mosip-exec.jar";
+	private static final String MOSIP_LIB = "lib";
+	private static final String MOSIP_DB = "db";
+	private static final String MOSIP_ZIP = ".zip";
+	private static final String MOSIP_JAR = ".jar";
+	private static final String MOSIP_LOG_PATH = "mosip.logpath= ";
+	private static final String MOSIP_DB_PATH = "mosip.dbpath= ";
+	private static final String MOSIP_REG_LIBS = "registration-libs-";
+	private static final String MANIFEST_FILE_NAME = "MANIFEST";
+	private static final String MANIFEST_FILE_FORMAT = ".MF";
+
 	/**
 	 * Encrypt the bytes
 	 * 
-	 * @param Jar bytes
+	 * @param Jar
+	 *            bytes
 	 * @throws UnsupportedEncodingException
 	 */
 	public byte[] encyrpt(byte[] data, byte[] encodedString) {
 		// Generate AES Session Key
 		SecretKey symmetricKey = new SecretKeySpec(encodedString, AES_ALGORITHM);
 
-		return SymmetricProcessor.process(SecurityMethod.AES_WITH_CBC_AND_PKCS5PADDING,
-				symmetricKey, data, Cipher.ENCRYPT_MODE);
+		return SymmetricProcessor.process(SecurityMethod.AES_WITH_CBC_AND_PKCS5PADDING, symmetricKey, data,
+				Cipher.ENCRYPT_MODE);
 	}
 
 	/**
@@ -70,47 +76,83 @@ public class ClientJarEncryption {
 			File file = args[1] != null && new File(args[1]).exists() ? new File(args[1])
 					: (args[0] != null && new File(args[0]).exists() ? new File(args[0]) : null);
 
-			System.out.println("Zip Creation started");
+			File clientJar = new File(args[0]);
 
-			if (file != null && file.exists()) {
-				String encryptedFileToSave = MOSIP_CLIENT_JAR_PATH;
-				String propertiesFile = MOSIP_APPLICATION_PROPERTIES_PATH;
-				String runFileName = MOSIP_EXE_JAR;
-				String libraries = MOSIP_LIB+SLASH;
+			try (FileOutputStream fileOutputStream = new FileOutputStream(
+					new File(file.getParent() + SLASH + MANIFEST_FILE_NAME + MANIFEST_FILE_FORMAT))) {
 
-				String zipFilename = file.getParent() + SLASH + "mosip-sw-" + args[3] + MOSIP_ZIP;
+				Manifest manifest = new Manifest();
 
-				byte[] encryptedFileBytes = aes.encyrpt(FileUtils.readFileToByteArray(file),
-						Base64.getDecoder().decode(args[2].getBytes()));
-				byte[] propertiesBytes = (MOSIP_LOG_PATH + "\n" + MOSIP_DB_PATH).getBytes();
-				byte[] runExecutbale = FileUtils
-						.readFileToByteArray(new File(args[4] + MOSIP_REG_LIBS + args[3] + MOSIP_JAR));
-				File listOfJars = new File(file.getParent() + SLASH + MOSIP_LIB).getAbsoluteFile();
+				/* Add Version to Manifest */
+				manifest.getMainAttributes().put(Attributes.Name.MANIFEST_VERSION, args[3]);
 
-				// Add files to be archived into zip file
-				Map<String, byte[]> fileNameByBytes = new HashMap<>();
+				System.out.println("Zip Creation started");
 
-				fileNameByBytes.put(encryptedFileToSave, encryptedFileBytes);
-				fileNameByBytes.put(propertiesFile, propertiesBytes);
-				fileNameByBytes.put(runFileName, runExecutbale);
-				fileNameByBytes.put(MOSIP_DB+SLASH, new byte[] {});
+				if (file != null && file.exists()) {
+					String encryptedFileToSave = MOSIP_CLIENT_JAR_PATH;
+					String propertiesFile = MOSIP_APPLICATION_PROPERTIES_PATH;
+					String runFileName = MOSIP_EXE_JAR;
+					String libraries = MOSIP_LIB + SLASH;
 
-				// Adding lib files into map
-				for (File files : listOfJars.listFiles()) {
+					String zipFilename = file.getParent() + SLASH + "mosip-sw-" + args[3] + MOSIP_ZIP;
 
-					
-					if (files.getName().contains(REGISTRATION)) {
-						byte[] encryptedRegFileBytes = aes.encyrpt(FileUtils.readFileToByteArray(files),
-								Base64.getDecoder().decode(args[2].getBytes()));
-						fileNameByBytes.put(libraries + files.getName(), encryptedRegFileBytes);
-					} else {
-						fileNameByBytes.put(libraries + files.getName(), FileUtils.readFileToByteArray(files));
+					byte[] encryptedFileBytes = aes.encyrpt(FileUtils.readFileToByteArray(file),
+							Base64.getDecoder().decode(args[2].getBytes()));
+					byte[] propertiesBytes = (MOSIP_LOG_PATH + "\n" + MOSIP_DB_PATH).getBytes();
+					byte[] runExecutbale = FileUtils
+							.readFileToByteArray(new File(args[4] + MOSIP_REG_LIBS + args[3] + MOSIP_JAR));
+					File listOfJars = new File(file.getParent() + SLASH + MOSIP_LIB).getAbsoluteFile();
+
+					// Add files to be archived into zip file
+					Map<String, byte[]> fileNameByBytes = new HashMap<>();
+
+					fileNameByBytes.put(encryptedFileToSave, encryptedFileBytes);
+					fileNameByBytes.put(propertiesFile, propertiesBytes);
+					fileNameByBytes.put(runFileName, runExecutbale);
+					fileNameByBytes.put(MOSIP_DB + SLASH, new byte[] {});
+
+					String path = new File(args[4]).getPath();
+
+					File regLibFile = new File(path + SLASH + libraries);
+					regLibFile.mkdir();
+
+					byte[] clientJarEncryptedBytes = aes.getEncryptedBytes(Files.readAllBytes(clientJar.toPath()),
+							Base64.getDecoder().decode(args[2].getBytes()));
+
+					/* Add To Manifest */
+					addToManifest(clientJar.getName(), clientJarEncryptedBytes, manifest);
+
+					/* Save Client jar to registration-libs */
+					saveLibJars(clientJarEncryptedBytes, clientJar.getName(), regLibFile);
+
+					// Adding lib files into map
+					for (File files : listOfJars.listFiles()) {
+
+						if (files.getName().contains(REGISTRATION)) {
+							byte[] encryptedRegFileBytes = aes.encyrpt(FileUtils.readFileToByteArray(files),
+									Base64.getDecoder().decode(args[2].getBytes()));
+							fileNameByBytes.put(libraries + files.getName(), encryptedRegFileBytes);
+
+							/* Add To Manifest */
+							addToManifest(files.getName(), encryptedRegFileBytes, manifest);
+
+							saveLibJars(encryptedRegFileBytes, files.getName(), regLibFile);
+						} else {
+							fileNameByBytes.put(libraries + files.getName(), FileUtils.readFileToByteArray(files));
+
+							/* Add To Manifest */
+							addToManifest(files.getName(), Files.readAllBytes(files.toPath()), manifest);
+
+							saveLibJars(files, regLibFile);
+
+						}
 					}
+
+					aes.writeFileToZip(fileNameByBytes, zipFilename);
+
+					writeManifest(fileOutputStream, manifest);
+					System.out.println("Zip Creation ended with path :::" + zipFilename);
 				}
-
-				aes.writeFileToZip(fileNameByBytes, zipFilename);
-
-				System.out.println("Zip Creation ended with path :::" + zipFilename);
 			}
 		}
 	}
@@ -136,5 +178,58 @@ public class ClientJarEncryption {
 				}
 			});
 		}
+	}
+
+	private static void addToManifest(String fileName, byte[] bytes, Manifest manifest) {
+
+		String hashText = HMACUtils.digestAsPlainText(HMACUtils.generateHash(bytes));
+
+		Attributes attribute = new Attributes();
+		attribute.put(Attributes.Name.CONTENT_TYPE, hashText);
+
+		manifest.getEntries().put(fileName, attribute);
+
+	}
+
+	private static void writeManifest(FileOutputStream fileOutputStream, Manifest manifest) {
+
+		try {
+
+			manifest.write(fileOutputStream);
+
+		} catch (IOException ioException) {
+			ioException.printStackTrace();
+		}
+
+	}
+
+	private static void saveLibJars(File srcFile, File destFile) {
+
+		try {
+
+			String val = srcFile.getName().split("\\.")[srcFile.getName().split("\\.").length - 1];
+			if ("jar".equals(val)) {
+				FileUtils.copyFileToDirectory(srcFile, destFile);
+			}
+		} catch (NullPointerException | IOException exception) {
+			exception.printStackTrace();
+		}
+
+	}
+
+	private static void saveLibJars(byte[] jarBytes, String srcFileName, File destDir) {
+
+		File file = new File(destDir.getAbsolutePath() + SLASH + srcFileName);
+
+		try (FileOutputStream fileOutputStream = new FileOutputStream(file)) {
+			fileOutputStream.write(jarBytes);
+		} catch (NullPointerException | IOException exception) {
+			exception.printStackTrace();
+		}
+
+	}
+
+	private byte[] getEncryptedBytes(byte[] jarBytes, byte[] decodeBytes) {
+		return encyrpt(jarBytes, decodeBytes);
 	}
 }
