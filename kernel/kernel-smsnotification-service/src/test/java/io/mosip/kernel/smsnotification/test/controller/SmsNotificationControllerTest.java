@@ -62,7 +62,7 @@ public class SmsNotificationControllerTest {
 		when(service.sendSmsNotification("8987672341", "hello..your otp is 342891")).thenReturn(responseDto);
 
 		mockMvc.perform(post("/sms/send").contentType(MediaType.APPLICATION_JSON).content(json))
-				.andExpect(status().isOk()).andExpect(jsonPath("$.status", is("success")));
+				.andExpect(status().isOk()).andExpect(jsonPath("$.response.status", is("success")));
 	}
 
 }

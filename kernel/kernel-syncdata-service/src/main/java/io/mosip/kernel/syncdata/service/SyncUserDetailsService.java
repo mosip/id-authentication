@@ -12,10 +12,9 @@ import io.mosip.kernel.syncdata.dto.response.UserDetailResponseDto;
 public interface SyncUserDetailsService {
 
 	/**
-	 * This method will fetch all userdetails
-	 * @param user
-	 * @param timestamp
-	 * @return {@link UserDetailResponseDto}
+	 * This method would fetch all user details for that registration center id
+	 * @param regId - registration center id
+	 * @return {@link SyncUserDetailDto}
 	 */
 	SyncUserDetailDto getAllUserDetail(String regId);
 }

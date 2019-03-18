@@ -62,7 +62,7 @@ public class RegistrationCenterController {
 	 * @param locationCode
 	 *            location code for which the registration center needs to be
 	 *            searched.
-	 * @return {@link RegistrationCenterResponseDto}.
+	 * @return {@link RegistrationCenterResponseDto} RegistrationCenterResponseDto
 	 */
 	@ResponseFilter
 	@GetMapping("/getlocspecificregistrationcenters/{langcode}/{locationcode}")
@@ -81,7 +81,7 @@ public class RegistrationCenterController {
 	 *            centerId of required center
 	 * @param year
 	 *            the year provided by user.
-	 * @return {@link RegistrationCenterHolidayDto}
+	 * @return {@link RegistrationCenterHolidayDto} RegistrationCenterHolidayDto
 	 */
 	@ResponseFilter
 	@GetMapping("/getregistrationcenterholidays/{langcode}/{registrationcenterid}/{year}")
@@ -101,7 +101,7 @@ public class RegistrationCenterController {
 	 *            the latitude provided by user.
 	 * @param proximityDistance
 	 *            the proximity distance provided by user.
-	 * @return {@link RegistrationCenterResponseDto}
+	 * @return {@link RegistrationCenterResponseDto} RegistrationCenterResponseDto
 	 */
 	@ResponseFilter
 	@GetMapping("/getcoordinatespecificregistrationcenters/{langcode}/{longitude}/{latitude}/{proximitydistance}")
@@ -119,7 +119,7 @@ public class RegistrationCenterController {
 	 *            centerId of required center.
 	 * @param langCode
 	 *            langCode of required center.
-	 * @return {@link RegistrationCenterResponseDto}
+	 * @return {@link RegistrationCenterResponseDto} RegistrationCenterResponseDto
 	 */
 	@ResponseFilter
 	@GetMapping("/registrationcenters/{id}/{langcode}")
@@ -131,7 +131,7 @@ public class RegistrationCenterController {
 	/**
 	 * Function to fetch all registration centers.
 	 * 
-	 * @return {@link RegistrationCenterResponseDto}
+	 * @return {@link RegistrationCenterResponseDto} RegistrationCenterResponseDto
 	 */
 	@ResponseFilter
 	@GetMapping("/registrationcenters")
@@ -149,7 +149,7 @@ public class RegistrationCenterController {
 	 *            input from user
 	 * @param name
 	 *            input from user
-	 * @return {@link RegistrationCenterResponseDto}
+	 * @return {@link RegistrationCenterResponseDto} RegistrationCenterResponseDto
 	 */
 	@ResponseFilter
 	@GetMapping("/registrationcenters/{langcode}/{hierarchylevel}/{name}")
@@ -166,10 +166,13 @@ public class RegistrationCenterController {
 	 * a holiday and is in between working hours.
 	 * 
 	 * @param regId
-	 *            - registration id
+	 *            - registration center id
+	 * @param langCode
+	 *            - language code
 	 * @param timeStamp
 	 *            - timestamp based on the format YYYY-MM-ddTHH:mm:ss.SSSZ
-	 * @return RegistrationCenterStatusResponseDto
+	 * @return {@link ResgistrationCenterStatusResponseDto} -
+	 *         RegistrationCenterStatusResponseDto
 	 */
 	@ResponseFilter
 	@GetMapping("/registrationcenters/validate/{id}/{langCode}/{timestamp}")
@@ -229,7 +232,7 @@ public class RegistrationCenterController {
 	 *            input from user
 	 * @param names
 	 *            input from user
-	 * @return {@link RegistrationCenterResponseDto}
+	 * @return {@link RegistrationCenterResponseDto} RegistrationCenterResponseDto
 	 */
 	@ResponseFilter
 	@GetMapping("/registrationcenters/{langcode}/{hierarchylevel}/names")
