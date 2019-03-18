@@ -104,9 +104,11 @@ public class DemodedupeProcessor {
 				registrationStatusService.updateRegistrationStatus(registrationStatusDto);
 				// authenticating duplicateIds with provided packet biometrics
 				boolean isDuplicateAfterAuth = demoDedupe.authenticateDuplicates(registrationId, duplicateUINList);
+				
 				if (isDuplicateAfterAuth) {
-					object.setIsValid(Boolean.FALSE);
-					int retryCount = registrationStatusDto.getRetryCount() != null
+					object.setIsValid(Boolean.FALSE);				
+				
+						int retryCount = registrationStatusDto.getRetryCount() != null
 							? registrationStatusDto.getRetryCount() + 1
 							: 1;
 					description = registrationStatusDto.getStatusComment() + registrationId;
@@ -116,6 +118,8 @@ public class DemodedupeProcessor {
 					registrationStatusDto.setStatusCode(RegistrationStatusCode.DEMO_DEDUPE_FAILED.toString());
 					description = "Packet Demo dedupe failed for registration id : " + registrationId;
 					demographicDedupeRepository.updateIsActiveIfDuplicateFound(registrationId);
+					// Saving potential duplicates in reg_manual_verification table
+					packetInfoManager.saveManualAdjudicationData(uniqueMatchedRefIdList, registrationId, DedupeSourceName.DEMO);
 
 				} else {
 					object.setIsValid(Boolean.TRUE);
@@ -123,10 +127,7 @@ public class DemodedupeProcessor {
 					registrationStatusDto.setStatusCode(RegistrationStatusCode.DEMO_DEDUPE_SUCCESS.toString());
 					description = "Potential duplicate packet found for registration id : " + registrationId;
 
-					// Saving potential duplicates in reg_manual_verification table
-
-					packetInfoManager.saveManualAdjudicationData(uniqueMatchedRefIdList, registrationId, DedupeSourceName.DEMO);
-
+					
 				}
 
 			} else {
