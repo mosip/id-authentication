@@ -368,7 +368,7 @@ public class UinGeneratorStage extends MosipVerticleManager {
 		Documents documentsInfoDto = null;
 		List<ApplicantDocument> applicantDocument = packetInfoManager.getDocumentsByRegId(regId);
 		// mocked adding biometric files to idrepo
-		// applicantDocuments.add(addBiometricDetails(regId));
+		applicantDocuments.add(addBiometricDetails(regId));
 		for (ApplicantDocument entity : applicantDocument) {
 			documentsInfoDto = new Documents();
 			documentsInfoDto.setCategory(entity.getDocName());
@@ -460,6 +460,7 @@ public class UinGeneratorStage extends MosipVerticleManager {
 					registrationStatusDto.setStatusComment(
 							UinStatusMessage.UIN_UPDATION_ALREADY_ACTIVATED + " for registration Id:  " + regId);
 					description = UinStatusMessage.UIN_UPDATION_ALREADY_ACTIVATED + " for registration Id:  " + regId;
+					object.setIsValid(Boolean.FALSE);
 					return result;
 
 				} else {
