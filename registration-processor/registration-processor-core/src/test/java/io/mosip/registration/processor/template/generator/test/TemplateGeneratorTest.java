@@ -1,7 +1,6 @@
-package io.mosip.registration.processor.message.sender.test.service;
+package io.mosip.registration.processor.template.generator.test;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -10,8 +9,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.h2.util.IOUtils;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -19,18 +18,18 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.springframework.test.context.junit4.SpringRunner;
 
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.notification.template.generator.dto.TemplateDto;
 import io.mosip.registration.processor.core.notification.template.generator.dto.TemplateResponseDto;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
-import io.mosip.registration.processor.message.sender.template.generator.TemplateGenerator;
+import io.mosip.registration.processor.core.template.generator.TemplateGenerator;
 
 /**
  * The Class TemplateGeneratorTest.
  */
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(SpringRunner.class)
 public class TemplateGeneratorTest {
 
 	/** The template generator. */
@@ -64,7 +63,6 @@ public class TemplateGeneratorTest {
 		responseDto = new TemplateResponseDto();
 		responseDto.setTemplates(dtoList);
 		Mockito.when(restClientService.getApi(any(), any(), any(), any(), any())).thenReturn(responseDto);
-
 	}
 
 	/**
@@ -81,11 +79,10 @@ public class TemplateGeneratorTest {
 		String langCode = "eng";
 		Map<String, Object> attributes = new HashMap<>();
 		attributes.put("FirstName", "Alok");
-		InputStream expected = IOUtils.getInputStreamFromString("Hi Alok, your UIN is generated");
+		InputStream expected = IOUtils.toInputStream("Hi Alok, your UIN is generated", "UTF-8");
 		InputStream result = templateGenerator.getTemplate(templateTypeCode, attributes, langCode);
-		
-		Assert.assertTrue(EqualsBuilder.reflectionEquals(expected,result));
-		//assertEquals(expected, result);
+
+		Assert.assertTrue(EqualsBuilder.reflectionEquals(expected, result));
 	}
 
 }
