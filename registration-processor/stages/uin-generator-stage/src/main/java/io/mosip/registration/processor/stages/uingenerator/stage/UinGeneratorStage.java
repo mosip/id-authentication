@@ -178,6 +178,8 @@ public class UinGeneratorStage extends MosipVerticleManager {
 	
 	/** The registration status dto. */
 	InternalRegistrationStatusDto registrationStatusDto=null;
+	
+	private static final String UIN = "UIN";
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -203,12 +205,9 @@ public class UinGeneratorStage extends MosipVerticleManager {
 					PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR + PacketFiles.ID.name());
 			byte[] idJsonBytes = IOUtils.toByteArray(idJsonStream);
 			String getJsonStringFromBytes = new String(idJsonBytes);
-			JSONParser parser = new JSONParser();
-			identityJson = (JSONObject) parser.parse(getJsonStringFromBytes);
-			demographicIdentity = (JSONObject) identityJson.get("identity");
-			
-			 
-			Long uinFieldCheck = (Long) demographicIdentity.get("UIN");
+			identityJson = (JSONObject) JsonUtil.objectMapperReadValue(getJsonStringFromBytes, JSONObject.class);
+			demographicIdentity = JsonUtil.getJSONObject(identityJson, utility.getGetRegProcessorDemographicIdentity());
+			Long uinFieldCheck = (Long) JsonUtil.getJSONValue(demographicIdentity, UIN);
 			if (uinFieldCheck == null) {
 				String test = (String) registrationProcessorRestClientService.getApi(ApiName.UINGENERATOR, null, "", "",
 						String.class);
