@@ -8,8 +8,6 @@ import java.util.List;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
-import javax.annotation.PostConstruct;
-
 import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.core.exception.ExceptionUtils;
@@ -25,7 +23,6 @@ import io.mosip.registration.service.MasterSyncService;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
-import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
@@ -73,19 +70,13 @@ public class Validations extends BaseController {
 			noAlert.add("cniOrPinNumber");
 			noAlert.add("uinId");
 			validationMessage = new StringBuilder();
-			validationBundle = ApplicationContext.applicationLanguageValidationBundle();
-			messageBundle = ApplicationContext.applicationMessagesBundle();
-			labelBundle = ApplicationContext.applicationLanguageBundle();
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error(RegistrationConstants.VALIDATION_LOGGER, APPLICATION_NAME, APPLICATION_ID, runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
 		}
 	}
 
 	
-	@PostConstruct
 	public void setResourceBundle() {
-		getGlobalParams();
-		ApplicationContext.loadResources();
 		validationBundle = ApplicationContext.applicationLanguageValidationBundle();
 		messageBundle = ApplicationContext.applicationMessagesBundle();
 		labelBundle = ApplicationContext.applicationLanguageBundle();

@@ -9,24 +9,18 @@ import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import javax.annotation.PostConstruct;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.constant.RestServicesConstants;
-import io.mosip.authentication.core.dto.indauth.LanguageType;
 import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.RestServiceException;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.util.dto.RestRequestDTO;
 import io.mosip.authentication.service.factory.RestRequestFactory;
-import io.mosip.authentication.service.helper.IdInfoHelper;
 import io.mosip.authentication.service.helper.RestHelper;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.templatemanager.spi.TemplateManager;
@@ -35,8 +29,14 @@ import io.mosip.kernel.core.templatemanager.spi.TemplateManagerBuilder;
 @Component
 public class MasterDataManager {
 
+	/**
+	 * Language type
+	 */
 	private static final String LANGUAGE_TYPE_REQUIRED = "secondary";
 
+	/**
+	 * Notification language support
+	 */
 	private static final String NOTIFICATION_LANGUAGE_SUPPORT = "notification.language.support";
 
 	/** The template manager. */
@@ -103,6 +103,14 @@ public class MasterDataManager {
 
 	}
 
+	/**
+	 * To fetch template from master data manager
+	 * 
+	 * @param langCode
+	 * @param templateName
+	 * @return
+	 * @throws IdAuthenticationBusinessException
+	 */
 	public String fetchTemplate(String langCode, String templateName) throws IdAuthenticationBusinessException {
 		Map<String, String> params = new HashMap<>();
 		params.put("langcode", langCode);
@@ -113,20 +121,40 @@ public class MasterDataManager {
 		return Optional.ofNullable(masterData.get(langCode)).map(map -> map.get(templateName)).orElse("");
 	}
 
+	/**
+	 * To fetch titles
+	 * 
+	 * @return
+	 * @throws IdAuthenticationBusinessException
+	 */
 	public Map<String, List<String>> fetchTitles() throws IdAuthenticationBusinessException {
-		return  fetchMasterdataList(RestServicesConstants.TITLE_SERVICE,
-				"titleList", "code", "titleName");
+		return fetchMasterdataList(RestServicesConstants.TITLE_SERVICE, "titleList", "code", "titleName");
 	}
 
+	/**
+	 * To fetch gender type
+	 * 
+	 * @return
+	 * @throws IdAuthenticationBusinessException
+	 */
 	public Map<String, List<String>> fetchGenderType() throws IdAuthenticationBusinessException {
-		return fetchMasterdataList(RestServicesConstants.GENDER_TYPE_SERVICE,
-				"genderType", "code", "genderName");
+		return fetchMasterdataList(RestServicesConstants.GENDER_TYPE_SERVICE, "genderType", "code", "genderName");
 	}
 
+	/**
+	 * To fetch Master Data
+	 * 
+	 * @param type
+	 * @param masterDataName
+	 * @param keyAttribute
+	 * @param valueAttribute
+	 * @return
+	 * @throws IdAuthenticationBusinessException
+	 */
 	private Map<String, List<String>> fetchMasterdataList(RestServicesConstants type, String masterDataName,
 			String keyAttribute, String valueAttribute) throws IdAuthenticationBusinessException {
-		Map<String, Map<String, String>> fetchMasterData = fetchMasterData(type, null,
-				masterDataName, keyAttribute, valueAttribute);
+		Map<String, Map<String, String>> fetchMasterData = fetchMasterData(type, null, masterDataName, keyAttribute,
+				valueAttribute);
 		if (fetchMasterData != null && !fetchMasterData.isEmpty()) {
 			return fetchMasterData.entrySet().stream()
 					.collect(Collectors.toMap(Entry<String, Map<String, String>>::getKey,

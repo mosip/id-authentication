@@ -29,6 +29,7 @@ import io.mosip.registration.constants.RegistrationTransactionType;
 import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dao.impl.RegistrationDAOImpl;
+import io.mosip.registration.dto.PacketStatusDTO;
 import io.mosip.registration.dto.RegistrationCenterDetailDTO;
 import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.demographic.DemographicDTO;
@@ -127,13 +128,16 @@ public class RegistrationDAOTest {
 	@Test
 	public void updateRegStatusTest() {
 		Registration updatedPacket = new Registration();
-		updatedPacket.setClientStatusCode("P");
+		updatedPacket.setUploadCount((short)0);
 		List<RegistrationTransaction> registrationTransactions = new ArrayList<>();
 		registrationTransactions.add(new RegistrationTransaction());
 		updatedPacket.setRegistrationTransaction(registrationTransactions);
 		Mockito.when(registrationRepository.getOne(Mockito.anyString())).thenReturn(updatedPacket);
 		Mockito.when(registrationRepository.update(updatedPacket)).thenReturn(updatedPacket);
-		assertEquals(updatedPacket, registrationDAOImpl.updateRegStatus(updatedPacket));
+		
+		PacketStatusDTO packetStatusDTO=new PacketStatusDTO();
+		packetStatusDTO.setPacketClientStatus("P");
+		assertEquals(updatedPacket, registrationDAOImpl.updateRegStatus(packetStatusDTO));
 	}
 
 	@Test
@@ -236,7 +240,7 @@ public class RegistrationDAOTest {
 		when(registrationRepository.getOne(Mockito.anyString())).thenReturn(registration);
 		when(registrationRepository.update(Mockito.any())).thenReturn(registration);
 
-		registrationDAOImpl.updatePacketSyncStatus(registration);
+		//registrationDAOImpl.updatePacketSyncStatus(registration);
 	}
 
 	@Test

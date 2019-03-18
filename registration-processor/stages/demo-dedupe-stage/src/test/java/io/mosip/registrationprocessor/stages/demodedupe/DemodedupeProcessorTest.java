@@ -31,6 +31,7 @@ import org.springframework.web.client.ResourceAccessException;
 
 import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
 import io.mosip.kernel.core.util.HMACUtils;
+import io.mosip.kernel.core.fsadapter.exception.FSAdapterException;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.code.ApiName;
 import io.mosip.registration.processor.core.code.EventId;
@@ -88,10 +89,10 @@ public class DemodedupeProcessorTest {
 	/** The demo dedupe. */
 	@Mock
 	private DemoDedupe demoDedupe;
-	
+
 	@Mock
 	private InputStream inputStream;
-	
+
 	@Mock
 	private FileSystemAdapter adapter;
 
@@ -109,9 +110,9 @@ public class DemodedupeProcessorTest {
 	private DemodedupeProcessor demodedupeProcessor;
 
 	private InternalRegistrationStatusDto registrationStatusDto;
-	
-	private Identity identity = new Identity(); 
-	
+
+	private Identity identity = new Identity();
+
 	private PacketMetaInfo packetMetaInfo;
 	/**
 	 * Sets the up.
@@ -135,7 +136,7 @@ public class DemodedupeProcessorTest {
 		registrationStatusDto= new InternalRegistrationStatusDto();
 		registrationStatusDto.setRegistrationType("NEW");
 		registrationStatusDto.setRegistrationId("2018701130000410092018110735");
-		
+
 		packetMetaInfo = new PacketMetaInfo();
 
 		FieldValue registrationType = new FieldValue();
@@ -199,15 +200,17 @@ public class DemodedupeProcessorTest {
 		fieldValueArrayListSequence.add(hashsequence2);
 		identity.setHashSequence2(fieldValueArrayListSequence);
 		packetMetaInfo.setIdentity(identity);
-		
-		
-		
+
+
+
 		AuditResponseDto auditResponseDto = new AuditResponseDto();
 		Mockito.doReturn(auditResponseDto).when(auditLogRequestBuilder).createAuditRequestBuilder(
 				"test case description", EventId.RPR_405.toString(), EventName.UPDATE.toString(),
 				EventType.BUSINESS.toString(), "1234testcase", ApiName.AUDIT);
 
 		InternalRegistrationStatusDto registrationStatusDto = new InternalRegistrationStatusDto();
+
+		registrationStatusDto.setRetryCount(null);
 		Mockito.when(registrationStatusService.getRegistrationStatus(anyString())).thenReturn(registrationStatusDto);
 		Mockito.doNothing().when(registrationStatusService).updateRegistrationStatus(registrationStatusDto);
 
@@ -215,7 +218,7 @@ public class DemodedupeProcessorTest {
 
 	/**
 	 * Test demo dedupe success.
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	@Test
 	public void testDemoDedupeSuccess() throws Exception {
@@ -228,15 +231,25 @@ public class DemodedupeProcessorTest {
 		PowerMockito.when(IOUtils.class, "toByteArray", inputStream).thenReturn(b);
 		Mockito.when(registrationStatusService.getRegistrationStatus(any())).thenReturn(registrationStatusDto);
 		Mockito.when(demoDedupe.performDedupe(anyString())).thenReturn(emptyDuplicateDtoSet);
-		
+
 		MessageDTO messageDto = demodedupeProcessor.process(dto);
 		assertTrue(messageDto.getIsValid());
 
 	}
 
+	@Test
+	public void testDemoDedupeSuccessNotDuplicateAfterAuth() throws Exception {
+
+		List<DemographicInfoDto> emptyDuplicateDtoSet = new ArrayList<>();
+		Mockito.when(demoDedupe.performDedupe(anyString())).thenReturn(duplicateDtos);
+		Mockito.when(demoDedupe.authenticateDuplicates(anyString(), anyList())).thenReturn(false);
+		MessageDTO messageDto = demodedupeProcessor.process(dto);
+		assertTrue(messageDto.getIsValid());
+		}
+
 	/**
 	 * Test demo dedupe potential match.
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	@SuppressWarnings("unchecked")
 	@Test
@@ -251,10 +264,11 @@ public class DemodedupeProcessorTest {
 		Mockito.when(manualVerficationRepository.save(any())).thenReturn(manualVerificationEntity);
 		Mockito.when(demoDedupe.performDedupe(anyString())).thenReturn(duplicateDtos);
 
-		Mockito.when(demoDedupe.authenticateDuplicates(anyString(), anyList())).thenReturn(false);
+		Mockito.when(demoDedupe.authenticateDuplicates(anyString(), anyList())).thenReturn(true);
 
 		MessageDTO messageDto = demodedupeProcessor.process(dto);
-		verify(packetInfoManager, times(1)).saveManualAdjudicationData(anyList(), anyString());
+		verify(packetInfoManager, times(1)).saveManualAdjudicationData(anyList(), anyString(), any());
+
 	}
 
 	/**
@@ -268,12 +282,18 @@ public class DemodedupeProcessorTest {
 	@SuppressWarnings("unchecked")
 	@Test
 	public void testDemoDedupeFailure() throws ApisResourceAccessException, IOException {
+		InternalRegistrationStatusDto registrationStatusDto = new InternalRegistrationStatusDto();
 
 		Mockito.when(demoDedupe.performDedupe(anyString())).thenReturn(duplicateDtos);
 
 		Mockito.when(demoDedupe.authenticateDuplicates(anyString(), anyList())).thenReturn(true);
 
+		Mockito.when(registrationStatusService.getRegistrationStatus(anyString())).thenReturn(registrationStatusDto);
+		registrationStatusDto.setRetryCount(3);
+
 		demodedupeProcessor.process(dto);
+
+
 	}
 
 	/**
@@ -310,6 +330,19 @@ public class DemodedupeProcessorTest {
 		Mockito.when(demoDedupe.performDedupe(anyString())).thenReturn(duplicateDtos);
 
 		ResourceAccessException exp = new ResourceAccessException("errorMessage");
+		Mockito.doThrow(exp).when(demoDedupe).authenticateDuplicates(anyString(), anyList());
+
+		MessageDTO messageDto = demodedupeProcessor.process(dto);
+		assertEquals(true, messageDto.getInternalError());
+	}
+
+
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testFSAdapterExceptionException() throws ApisResourceAccessException, IOException {
+		Mockito.when(demoDedupe.performDedupe(anyString())).thenReturn(duplicateDtos);
+
+		FSAdapterException exp = new FSAdapterException("errorMessage","test");
 		Mockito.doThrow(exp).when(demoDedupe).authenticateDuplicates(anyString(), anyList());
 
 		MessageDTO messageDto = demodedupeProcessor.process(dto);

@@ -26,6 +26,7 @@ import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.core.util.HMACUtils;
 import io.mosip.registration.processor.core.code.ApiName;
 import io.mosip.registration.processor.core.code.AuditLogConstant;
+import io.mosip.registration.processor.core.code.DedupeSourceName;
 import io.mosip.registration.processor.core.code.EventId;
 import io.mosip.registration.processor.core.code.EventName;
 import io.mosip.registration.processor.core.code.EventType;
@@ -828,7 +829,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 	 * saveManualAdjudicationData(java.util.Set, java.lang.String)
 	 */
 	@Override
-	public void saveManualAdjudicationData(List<String> uniqueMatchedRefIds, String registrationId) {
+	public void saveManualAdjudicationData(List<String> uniqueMatchedRefIds, String registrationId,DedupeSourceName sourceName) {
 		boolean isTransactionSuccessful = false;
 
 		try {
@@ -851,7 +852,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 				manualVerificationEntity.setIsActive(true);
 				manualVerificationEntity.setIsDeleted(false);
 				manualVerificationEntity.setCrBy("SYSTEM");
-
+				manualVerificationEntity.setSourceName(sourceName.toString());
 				manualVerficationRepository.save(manualVerificationEntity);
 				isTransactionSuccessful = true;
 				description = "Manual Adjudication data saved successfully";

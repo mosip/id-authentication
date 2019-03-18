@@ -1,6 +1,4 @@
-/**
- * 
- */
+
 package io.mosip.registration.processor.biodedupe.stage;
 
 import java.util.List;
@@ -20,7 +18,11 @@ import io.mosip.registration.processor.bio.dedupe.exception.UnexceptedError;
 import io.mosip.registration.processor.biodedupe.stage.utils.StatusMessage;
 import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
+
 import io.mosip.registration.processor.core.code.ApiName;
+
+import io.mosip.registration.processor.core.code.DedupeSourceName;
+
 import io.mosip.registration.processor.core.code.EventId;
 import io.mosip.registration.processor.core.code.EventName;
 import io.mosip.registration.processor.core.code.EventType;
@@ -57,6 +59,8 @@ public class BioDedupeProcessor {
 
 	/** The Constant USER. */
 	private static final String USER = "MOSIP_SYSTEM";
+
+	private static final String BIO = "BIO";
 
 	/** The registration status service. */
 	@Autowired
@@ -190,7 +194,7 @@ public class BioDedupeProcessor {
 			registrationStatusDto.setStatusCode(RegistrationStatusCode.PACKET_BIO_POTENTIAL_MATCH.toString());
 			code= PlatformSuccessMessages.RPR_BIO_METRIC_POTENTIAL_MATCH.getCode();
 			description =PlatformSuccessMessages.RPR_BIO_METRIC_POTENTIAL_MATCH.getMessage();
-			packetInfoManager.saveManualAdjudicationData(matchedRegIds, registrationId);
+            packetInfoManager.saveManualAdjudicationData(matchedRegIds, registrationId, DedupeSourceName.BIO);
 		} else {
 			object.setIsValid(Boolean.TRUE);
 			registrationStatusDto.setStatusComment(StatusMessage.PACKET_BIODEDUPE_SUCCESS);

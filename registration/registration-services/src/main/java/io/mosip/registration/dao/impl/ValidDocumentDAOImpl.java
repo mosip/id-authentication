@@ -1,8 +1,5 @@
 package io.mosip.registration.dao.impl;
 
-import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
-import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
-
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,42 +8,33 @@ import org.springframework.stereotype.Repository;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.dao.ValidDocumentDAO;
-import io.mosip.registration.entity.ValidDocument;
+import io.mosip.registration.entity.ApplicantValidDocument;
 import io.mosip.registration.repositories.ValidDocumentRepository;
 
 /**
- * implementation class of RegistrationValidDocumentDAO
- * 
+ * implementation class of RegistrationValidDocumentDAO.
+ *
  * @author Brahmanada Reddy
  * @since 1.0.0
- *
  */
 @Repository
 public class ValidDocumentDAOImpl implements ValidDocumentDAO {
-	/** instance of {@link ValidDocumentRepository} */
+	
+	/**  instance of {@link ValidDocumentRepository}. */
 	@Autowired
 	private ValidDocumentRepository validDocumentRepository;
-	/** instance of {@link Logger} */
+	
+	/**  instance of {@link Logger}. */
 	private static final Logger LOGGER = AppConfig.getLogger(ValidDocumentDAOImpl.class);
 
-	/**
-	 * (non-javadoc)
-	 * 
-	 * @see io.mosip.registration.dao.ValidDocumentDAO#getValidDocuments()
+	/* (non-Javadoc)
+	 * @see io.mosip.registration.dao.ValidDocumentDAO#getValidDocuments(java.lang.String, java.lang.String, java.lang.String)
 	 */
 	@Override
-	public List<ValidDocument> getValidDocuments() {
-		LOGGER.info("REGISTRATION-PACKET_CREATION-VALIDDOCUMENTDAO", APPLICATION_NAME, APPLICATION_ID,
-				"fetching the validdocuments");
+	public List<ApplicantValidDocument> getValidDocuments(String applicantType, String docCategoryCode) {
 
-		return validDocumentRepository.findAll();
-	}
-
-	@Override
-	public List<ValidDocument> getValidDocuments(String applicantType, String docCategoryCode, String langCode) {
-
-		return validDocumentRepository.findByApplicantTypeAndDocCategoryCodeAndLangCode(applicantType, docCategoryCode,
-				langCode);
+		return validDocumentRepository.findByValidDocumentIdAppTypeCodeAndDocumentCategoryCode(applicantType,
+				docCategoryCode);
 
 	}
 

@@ -107,7 +107,7 @@ public class GlobalParamServiceTest extends BaseIntegrationTest {
 	 */
 	@Test
 	public void synchConfigDataTest() {
-		ResponseDTO response = globalParamService.synchConfigData();
+		ResponseDTO response = globalParamService.synchConfigData(false);
 		if (!RegistrationAppHealthCheckUtil.isNetworkAvailable() && globalParamService.getGlobalParams().isEmpty()) {
 			Assert.assertEquals(response.getErrorResponseDTOs().get(0).getCode(), RegistrationConstants.ERROR);
 			Assert.assertEquals(response.getErrorResponseDTOs().get(0).getMessage(),

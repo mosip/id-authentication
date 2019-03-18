@@ -2,12 +2,9 @@ package io.mosip.authentication.service.impl.indauth.service.demo;
 
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -16,10 +13,10 @@ import org.springframework.core.env.Environment;
 
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.AuthTypeDTO;
-import io.mosip.authentication.core.dto.indauth.MatchInfo;
 import io.mosip.authentication.core.spi.indauth.match.AuthType;
 import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
 import io.mosip.authentication.core.spi.indauth.match.MatchType;
+import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
 
 /**
  * The Enum DemoAuthType.
@@ -33,14 +30,14 @@ public enum DemoAuthType implements AuthType {
 	ADDRESS("address",
 			setOf(DemoMatchType.ADDR_LINE1, DemoMatchType.ADDR_LINE2, DemoMatchType.ADDR_LINE3,
 					DemoMatchType.LOCATION1, DemoMatchType.LOCATION2, DemoMatchType.LOCATION3,
-					DemoMatchType.PINCODE), AuthTypeDTO::isAddress, "Address"),
+					DemoMatchType.PINCODE), AuthTypeDTO::isDemo, "Address"),
 
 	/** The pi pri. */
 	PERSONAL_IDENTITY("personalIdentity",
 			setOf(DemoMatchType.NAME, DemoMatchType.DOB, DemoMatchType.DOBTYPE, DemoMatchType.AGE,
-					DemoMatchType.EMAIL, DemoMatchType.PHONE, DemoMatchType.GENDER), AuthTypeDTO::isPersonalIdentity, "Personal Identity"),
+					DemoMatchType.EMAIL, DemoMatchType.PHONE, DemoMatchType.GENDER), AuthTypeDTO::isDemo, "Personal Identity"),
 	
-	FULL_ADDRESS("fullAddress", setOf(DemoMatchType.ADDR), AuthTypeDTO::isFullAddress,
+	FULL_ADDRESS("fullAddress", setOf(DemoMatchType.ADDR), AuthTypeDTO::isDemo,
 			"Full Address")
 	
 	
@@ -108,7 +105,7 @@ public enum DemoAuthType implements AuthType {
 	 */
 	@Override
 	public boolean isAuthTypeEnabled(AuthRequestDTO authReq, IdInfoFetcher idInfoFetcher) {
-		return Optional.of(authReq).map(AuthRequestDTO::getAuthType).filter(authTypePredicate).isPresent();
+		return Optional.of(authReq).map(AuthRequestDTO::getRequestedAuth).filter(authTypePredicate).isPresent();
 	}
 
 	/*
@@ -120,7 +117,8 @@ public enum DemoAuthType implements AuthType {
 	 */
 	@Override
 	public Optional<String> getMatchingStrategy(AuthRequestDTO authReq, String language) {
-		return getMatchInfo(authReq, language, MatchInfo::getMatchingStrategy);
+//		return getMatchInfo(authReq, language, MatchInfo::getMatchingStrategy);
+		return Optional.of(MatchingStrategyType.EXACT.getType());
 
 	}
 
@@ -134,43 +132,7 @@ public enum DemoAuthType implements AuthType {
 	@Override
 	public Optional<Integer> getMatchingThreshold(AuthRequestDTO authReq,
 			String language, Environment environment) {
-		return getMatchInfo(authReq, language, MatchInfo::getMatchingThreshold);
-	}
-
-	/**
-	 * Gets the match info.
-	 *
-	 * @param <T> the generic type
-	 * @param authReq the auth req
-	 * @param languageInfoFetcher the language info fetcher
-	 * @param infoFunction the info function
-	 * @return the match info
-	 */
-	private <T> Optional<T> getMatchInfo(AuthRequestDTO authReq, String language,
-			Function<? super MatchInfo, ? extends T> infoFunction) {
-		return Optional.of(authReq)
-				.flatMap(authReqDTO -> getMatchInfo(authReqDTO.getMatchInfo(), language, infoFunction));
-	}
-
-	/**
-	 * Gets the match info.
-	 *
-	 * @param <T> the generic type
-	 * @param matchInfos the match infos
-	 * @param languageInfoFetcher the language info fetcher
-	 * @param infoFunction the info function
-	 * @return the match info
-	 */
-	private <T> Optional<T> getMatchInfo(List<MatchInfo> matchInfos, String language,
-			Function<? super MatchInfo, ? extends T> infoFunction) {
-		if (matchInfos != null) {
-			return matchInfos.parallelStream()
-					.filter(id -> id.getLanguage() != null && language.equalsIgnoreCase(id.getLanguage())
-							&& getType().equals(id.getAuthType()))
-					.<T>map(infoFunction).filter(Objects::nonNull).findAny();
-		} else {
-			return Optional.empty();
-		}
+		return Optional.of(AuthType.DEFAULT_MATCHING_THRESHOLD);
 	}
 
 	/*
@@ -203,10 +165,7 @@ public enum DemoAuthType implements AuthType {
 	 */
 	@Override
 	public boolean isAuthTypeInfoAvailable(AuthRequestDTO authRequestDTO) {
-		return Optional
-				.ofNullable(authRequestDTO.getMatchInfo()).flatMap(list -> list.stream()
-						.filter(matchInfo -> matchInfo.getAuthType().equalsIgnoreCase(getType())).findAny())
-				.isPresent();
+		return false;
 	}
 	
 	/**

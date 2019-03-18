@@ -7,10 +7,12 @@ import java.util.Optional;
 
 import org.springframework.core.env.Environment;
 
-import io.mosip.authentication.core.dto.indauth.BioInfo;
-import io.mosip.authentication.core.dto.indauth.IdentityDTO;
+import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
+import io.mosip.authentication.core.dto.indauth.DataDTO;
+import io.mosip.authentication.core.dto.indauth.IdType;
 import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
 import io.mosip.authentication.core.dto.indauth.LanguageType;
+import io.mosip.authentication.core.dto.indauth.RequestDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.spi.bioauth.CbeffDocType;
 import io.mosip.authentication.core.spi.bioauth.provider.MosipBiometricProvider;;
@@ -46,7 +48,7 @@ public interface IdInfoFetcher {
 	 * @param identity  the identity
 	 * @return the identity info
 	 */
-	public Map<String, String> getIdentityRequestInfo(MatchType matchType, IdentityDTO identity, String language);
+	public Map<String, String> getIdentityRequestInfo(MatchType matchType, RequestDTO identity, String language);
 
 	/**
 	 * Gets the iris provider for the BioInfo value.
@@ -54,7 +56,7 @@ public interface IdInfoFetcher {
 	 * @param bioinfovalue the bioinfovalue
 	 * @return the iris provider
 	 */
-	public MosipBiometricProvider getIrisProvider(BioInfo bioinfovalue);
+	public MosipBiometricProvider getIrisProvider(DataDTO bioinfovalue);
 
 	/**
 	 * Gets the finger print provider for the BioInfo value.
@@ -62,15 +64,51 @@ public interface IdInfoFetcher {
 	 * @param bioinfovalue the bioinfovalue
 	 * @return the finger print provider
 	 */
-	public MosipBiometricProvider getFingerPrintProvider(BioInfo bioinfovalue);
+	public MosipBiometricProvider getFingerPrintProvider(DataDTO bioinfovalue);
 
+	/**
+	 * Validate Otp function
+	 * 
+	 * @return
+	 */
 	public ValidateOtpFunction getValidateOTPFunction();
 
+	/**
+	 * To fetch cbeff values
+	 * 
+	 * @param idEntity
+	 * @param cbeffDocType
+	 * @param matchType
+	 * @return
+	 * @throws IdAuthenticationBusinessException
+	 */
 	public Map<String, Entry<String, List<IdentityInfoDTO>>> getCbeffValues(Map<String, List<IdentityInfoDTO>> idEntity,
 			CbeffDocType cbeffDocType, MatchType matchType) throws IdAuthenticationBusinessException;
 
+	/**
+	 * To get Environment
+	 * 
+	 * @return
+	 */
 	public Environment getEnvironment();
 
+	/**
+	 * Title info fetcher from Master data manager
+	 * @return
+	 */
 	public MasterDataFetcher getTitleFetcher();
+	/**
+	 * 
+	 * @param authRequestDTO
+	 * @return
+	 */
+	public  Optional<String> getUinOrVid(AuthRequestDTO authRequestDTO);
+	
+	/**
+	 * 
+	 * @param authRequestDTO
+	 * @return
+	 */
+	public IdType getUinOrVidType(AuthRequestDTO authRequestDTO);
 
 }

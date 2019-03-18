@@ -87,7 +87,7 @@ public class OSIValidator {
 	/** The env. */
 	@Autowired
 	private Environment env;
-	
+
 	/** The osi utils. */
 	@Autowired
 	private OSIUtils osiUtils;
@@ -137,7 +137,7 @@ public class OSIValidator {
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 				registrationId, "OSIValidator::isValidOSI()::entry");
 		boolean isValidOsi = false;
-		
+
 		Identity identity = osiUtils.getIdentity(registrationId);
 		/** Getting data from packet MetadataInfo*/
 		RegOsiDto regOsi = osiUtils.getOSIDetailsFromMetaInfo(registrationId,identity);
@@ -179,8 +179,8 @@ public class OSIValidator {
 			String face = regOsi.getOfficerPhotoName();
 			String pin = regOsi.getOfficerHashedPin();
 			// officer password and otp check
-			String officerPassword =regOsi.getOfficerHashedPwd(); 
-			String officerOTPAuthentication = regOsi.getOfficerOTPAuthentication(); 
+			String officerPassword =regOsi.getOfficerHashedPwd();
+			String officerOTPAuthentication = regOsi.getOfficerOTPAuthentication();
 			if (checkBiometricNull(fingerPrint, iris, face, pin)) {
 				boolean flag = validateOtpAndPwd(officerPassword, officerOTPAuthentication);
 				if (flag) {
@@ -244,7 +244,7 @@ public class OSIValidator {
 			String fingerPrint = regOsi.getSupervisorBiometricFileName();
 			// superVisior otp and password
 			String supervisiorPassword = regOsi.getSupervisorHashedPwd();
-			String supervisorOTPAuthentication = regOsi.getSupervisorOTPAuthentication(); 
+			String supervisorOTPAuthentication = regOsi.getSupervisorOTPAuthentication();
 			String fingerPrintType = regOsi.getSupervisorFingerType();
 			String iris = regOsi.getSupervisorIrisImageName();
 			String irisType = regOsi.getSupervisorIrisType();

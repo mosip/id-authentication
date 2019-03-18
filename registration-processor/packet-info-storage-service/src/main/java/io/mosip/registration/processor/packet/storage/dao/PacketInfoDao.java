@@ -13,7 +13,6 @@ import org.springframework.stereotype.Component;
 
 import io.mosip.registration.processor.core.packet.dto.ApplicantDocument;
 import io.mosip.registration.processor.core.packet.dto.RegOsiDto;
-import io.mosip.registration.processor.core.packet.dto.RegistrationCenterMachineDto;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.DemographicInfoDto;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.packet.storage.dto.PhotographDto;

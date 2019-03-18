@@ -3,7 +3,6 @@ package io.mosip.registration.device.fp;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.powermock.api.mockito.PowerMockito.when;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -28,11 +27,11 @@ import org.mockito.junit.MockitoRule;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
-import org.springframework.test.util.ReflectionTestUtils;
 
 import com.machinezoo.sourceafis.FingerprintTemplate;
 
 import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.biometric.BiometricDTO;
@@ -47,7 +46,7 @@ import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.test.util.datastub.DataProvider;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ ImageIO.class, IOUtils.class, FingerprintTemplate.class })
+@PrepareForTest({ ImageIO.class, IOUtils.class, FingerprintTemplate.class})
 public class FingerprintFacadeTest {
 
 	@Rule
@@ -75,6 +74,10 @@ public class FingerprintFacadeTest {
 		map.put(RegistrationConstants.USER_ONBOARD_DATA, useronboardbiometricDTO);
 		map.put(RegistrationConstants.ONBOARD_USER, false);
 		SessionContext.getInstance().setMapObject(map);
+		
+		Map<String,Object> appMap = new HashMap<>();
+		appMap.put(RegistrationConstants.FINGER_PRINT_SCORE, 100);
+		ApplicationContext.getInstance().setApplicationMap(appMap);
 	}
 	
 	private BiometricInfoDTO createBiometricInfoDTO() {
@@ -118,7 +121,7 @@ public class FingerprintFacadeTest {
 		FingerprintDetailsDTO fingerprintDTO2 = new FingerprintDetailsDTO();
 
 		PowerMockito.mockStatic(ImageIO.class);
-		when(ImageIO.read(Mockito.any(InputStream.class))).thenReturn(Mockito.mock(BufferedImage.class));
+		Mockito.when(ImageIO.read(Mockito.any(InputStream.class))).thenReturn(Mockito.mock(BufferedImage.class));
 
 		fingerprintFacade.getFingerPrintImageAsDTO(fingerprintDTO, "leftSlap");
 
@@ -153,7 +156,7 @@ public class FingerprintFacadeTest {
 		FingerprintDetailsDTO fingerprintDTO = new FingerprintDetailsDTO();
 
 		PowerMockito.mockStatic(IOUtils.class);
-		when(IOUtils.resourceToByteArray(Mockito.anyString())).thenReturn("image".getBytes());
+		Mockito.when(IOUtils.resourceToByteArray(Mockito.anyString())).thenReturn("image".getBytes());
 		String[] LEFTHAND_SEGMNTD_FILE_PATHS = new String[] { "/fingerprints/lefthand/leftIndex/",
 				"/fingerprints/lefthand/leftLittle/" };
 		
@@ -190,7 +193,7 @@ public class FingerprintFacadeTest {
 		FingerprintDetailsDTO fingerprintDTO = new FingerprintDetailsDTO();
 
 		PowerMockito.mockStatic(IOUtils.class);
-		when(IOUtils.resourceToByteArray(Mockito.anyString())).thenReturn("image".getBytes());
+		Mockito.when(IOUtils.resourceToByteArray(Mockito.anyString())).thenReturn("image".getBytes());
 		String[] LEFTHAND_SEGMNTD_FILE_PATHS = new String[] { "/fingerprints/lefthand/leftIndex/",
 				"/fingerprints/lefthand/leftLittle/" };
 		
@@ -227,7 +230,7 @@ public class FingerprintFacadeTest {
 		FingerprintDetailsDTO fingerprintDTO = new FingerprintDetailsDTO();
 
 		PowerMockito.mockStatic(IOUtils.class);
-		when(IOUtils.resourceToByteArray(Mockito.anyString())).thenReturn("image".getBytes());
+		Mockito.when(IOUtils.resourceToByteArray(Mockito.anyString())).thenReturn("image".getBytes());
 		String[] LEFTHAND_SEGMNTD_FILE_PATHS = new String[] { "/fingerprints/lefthand/leftIndex/",
 				"/fingerprints/lefthand/leftLittle/","/fingerprints/lefthand/leftMiddle/","/fingerprints/lefthand/leftRing/" };
 		
@@ -263,7 +266,7 @@ public class FingerprintFacadeTest {
 		String[] LEFTHAND_SEGMNTD_FILE_PATHS = new String[] { "/fingerprints/lefthand/leftIndex/",
 				"/fingerprints/lefthand/leftLittle/" };
 		PowerMockito.mockStatic(IOUtils.class);
-		when(IOUtils.resourceToByteArray(Mockito.anyString())).thenThrow(new IOException("Invalid"));
+		Mockito.when(IOUtils.resourceToByteArray(Mockito.anyString())).thenThrow(new IOException("Invalid"));
 		fingerprintFacade.segmentFingerPrintImage(null, LEFTHAND_SEGMNTD_FILE_PATHS);
 
 	}
@@ -273,7 +276,7 @@ public class FingerprintFacadeTest {
 		String[] LEFTHAND_SEGMNTD_FILE_PATHS = new String[] { "/fingerprints/lefthand/leftIndex/",
 				"/fingerprints/lefthand/leftLittle/" };
 		PowerMockito.mockStatic(IOUtils.class);
-		when(IOUtils.resourceToByteArray(Mockito.anyString())).thenThrow(new RuntimeException("Invalid"));
+		Mockito.when(IOUtils.resourceToByteArray(Mockito.anyString())).thenThrow(new RuntimeException("Invalid"));
 		fingerprintFacade.segmentFingerPrintImage(null, LEFTHAND_SEGMNTD_FILE_PATHS);
 
 	}
@@ -281,14 +284,14 @@ public class FingerprintFacadeTest {
 	@Test(expected = RegBaseCheckedException.class)
 	public void testValidateException3() throws RegBaseCheckedException, IOException {
 		PowerMockito.mockStatic(ImageIO.class);
-		when(ImageIO.read(Mockito.any(InputStream.class))).thenThrow(new IOException("Invalid"));
+		Mockito.when(ImageIO.read(Mockito.any(InputStream.class))).thenThrow(new IOException("Invalid"));
 		fingerprintFacade.getFingerPrintImageAsDTO(null, "leftSlap");
 	}
 
 	@Test(expected = RegBaseUncheckedException.class)
 	public void testValidateException4() throws RegBaseCheckedException, IOException {
 		PowerMockito.mockStatic(ImageIO.class);
-		when(ImageIO.read(Mockito.any(InputStream.class))).thenThrow(new RuntimeException("Invalid"));
+		Mockito.when(ImageIO.read(Mockito.any(InputStream.class))).thenThrow(new RuntimeException("Invalid"));
 		fingerprintFacade.getFingerPrintImageAsDTO(null, "leftSlap");
 	}
 
@@ -328,9 +331,7 @@ public class FingerprintFacadeTest {
 		Mockito.when(fingerprintTemplate.convert(fingerprintDTO.getFingerPrint())).thenReturn(fingerprintTemplate);
 		Mockito.when(fingerprintTemplate.serialize()).thenReturn(minutiae);
 		Mockito.when(fingerprintProvider.scoreCalculator(Mockito.anyString(), Mockito.anyString())).thenReturn(70.0);
-
-		ReflectionTestUtils.setField(fingerprintFacade, "fingerPrintScore", 100);
-
+		
 		Boolean res = fingerprintFacade.validateFP(fingerprintDTO, userBiometrics);
 		assertTrue(!res);
 	}
@@ -371,8 +372,6 @@ public class FingerprintFacadeTest {
 		Mockito.when(fingerprintTemplate.convert(fingerprintDTO.getFingerPrint())).thenReturn(fingerprintTemplate);
 		Mockito.when(fingerprintTemplate.serialize()).thenReturn(minutiae);
 		Mockito.when(fingerprintProvider.scoreCalculator(Mockito.anyString(), Mockito.anyString())).thenReturn(700.0);
-
-		ReflectionTestUtils.setField(fingerprintFacade, "fingerPrintScore", 100);
 
 		Boolean res = fingerprintFacade.validateFP(fingerprintDTO, userBiometrics);
 		assertTrue(res);

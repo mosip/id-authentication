@@ -28,19 +28,26 @@ public interface RegistrationCenterMachineDeviceRepository
 	 * 
 	 * @param registrationCenterId
 	 *            id of the registration center
-	 * @return devices id
+	 * @return devices id - device id
 	 */
 	@Query("FROM RegistrationCenterMachineDevice rcmd where rcmd.registrationCenterMachineDevicePk.regCenterId =?1")
 	List<RegistrationCenterMachineDevice> findAllByRegistrationCenterId(String registrationCenterId);
-	
+
 	/**
-	 * Method to fetch RegistrationCenterMachineDevice data for which registrationCenterId is mapped.
+	 * Method to fetch RegistrationCenterMachineDevice data for which
+	 * registrationCenterId is mapped.
 	 * 
 	 * @param registrationCenterId
 	 *            id of the registration center
-	 * @return  RegistrationCenterMachineDevice list
+	 * @param lastUpdated
+	 *            - last updated time
+	 * @param currentTimeStamp
+	 *            - current timestamp
+	 * @return list of {@link RegistrationCenterMachineDevice} - list of registration center
+	 *         machine device
 	 */
 	@Query("FROM RegistrationCenterMachineDevice rcmd where rcmd.registrationCenterMachineDevicePk.regCenterId =?1 AND ((rcmd.createdDateTime > ?2 AND rcmd.createdDateTime <=?3) OR (rcmd.updatedDateTime > ?2 AND rcmd.updatedDateTime <=?3) OR (rcmd.deletedDateTime > ?2 AND rcmd.deletedDateTime <=?3))")
-	List<RegistrationCenterMachineDevice> findAllByRegistrationCenterIdCreatedUpdatedDeleted(String registrationCenterId, LocalDateTime lastUpdated,LocalDateTime currentTimeStamp);
+	List<RegistrationCenterMachineDevice> findAllByRegistrationCenterIdCreatedUpdatedDeleted(
+			String registrationCenterId, LocalDateTime lastUpdated, LocalDateTime currentTimeStamp);
 
 }
