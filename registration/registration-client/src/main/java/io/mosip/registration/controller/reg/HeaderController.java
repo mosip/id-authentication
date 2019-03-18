@@ -29,7 +29,6 @@ import io.mosip.registration.jobs.BaseJob;
 import io.mosip.registration.scheduler.SchedulerUtil;
 import io.mosip.registration.service.MasterSyncService;
 import io.mosip.registration.service.config.JobConfigurationService;
-import io.mosip.registration.service.packet.RegistrationPacketVirusScanService;
 import io.mosip.registration.service.sync.PreRegistrationDataSyncService;
 import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
 import javafx.event.ActionEvent;
@@ -98,9 +97,6 @@ public class HeaderController extends BaseController {
 	PacketHandlerController packetHandlerController;
 
 	@Autowired
-	private RegistrationPacketVirusScanService registrationPacketVirusScanService;
-
-	@Autowired
 	private RestartController restartController;
 
 	/**
@@ -147,6 +143,14 @@ public class HeaderController extends BaseController {
 
 			LOGGER.info(LoggerConstants.LOG_REG_HEADER, APPLICATION_NAME, APPLICATION_ID, "Clearing Session context");
 
+			if (SessionContext.authTokenDTO().getCookie() != null) {
+
+				serviceDelegateUtil.invalidateToken(SessionContext.authTokenDTO().getCookie());
+
+			}
+
+			ApplicationContext.map().remove(RegistrationConstants.USER_DTO);
+
 			SessionContext.destroySession();
 			SchedulerUtil.stopScheduler();
 
@@ -172,8 +176,7 @@ public class HeaderController extends BaseController {
 	/**
 	 * Sync data through batch jobs.
 	 *
-	 * @param event
-	 *            the event
+	 * @param event the event
 	 */
 	public void syncData(ActionEvent event) {
 
@@ -261,8 +264,7 @@ public class HeaderController extends BaseController {
 	/**
 	 * Redirects to Device On-Boarding UI Page.
 	 * 
-	 * @param actionEvent
-	 *            is an action event
+	 * @param actionEvent is an action event
 	 */
 	public void onBoardDevice(ActionEvent actionEvent) {
 		if (isMachineRemapProcessStarted()) {

@@ -86,7 +86,10 @@ public class AckReceiptController extends BaseController implements Initializabl
 		LOGGER.info("REGISTRATION - UI - ACKRECEIPTCONTROLLER", APPLICATION_NAME, APPLICATION_ID,
 				"Page loading has been started");
 
-		if (RegistrationConstants.ENABLE.equalsIgnoreCase(String.valueOf(ApplicationContext.map().get(RegistrationConstants.NOTIFICATION_DISABLE_FLAG)))) {
+		if (String.valueOf(
+				applicationContext.getApplicationMap().get(RegistrationConstants.MODE_OF_COMMUNICATION)) != null
+				&& RegistrationConstants.ENABLE.equalsIgnoreCase(String
+						.valueOf(ApplicationContext.map().get(RegistrationConstants.NOTIFICATION_DISABLE_FLAG)))) {
 			sendNotification.setVisible(true);
 		} else {
 			sendNotification.setVisible(false);
