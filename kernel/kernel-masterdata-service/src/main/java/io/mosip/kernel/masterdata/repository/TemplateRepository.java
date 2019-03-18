@@ -87,6 +87,8 @@ public interface TemplateRepository extends BaseRepository<Template, String> {
 	 * 
 	 * @param id
 	 *            the id of template
+	 * @param langCode
+	 *            language code
 	 * @return {@link Template}
 	 */
 	@Query("FROM Template WHERE id =?1 AND langCode=?2 AND (isDeleted is null OR isDeleted = false) and isActive = true")

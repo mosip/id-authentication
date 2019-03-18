@@ -70,7 +70,7 @@ public class UinGeneratorRouter {
 					getRouter(vertx, routingContext);
 				});
 		router.route().handler(BodyHandler.create());
-		router.put(environment.getProperty(UinGeneratorConstant.SERVER_SERVLET_PATH) + "/uin").consumes("*/json")
+		router.put(environment.getProperty(UinGeneratorConstant.SERVER_SERVLET_PATH) + "/uin").consumes("application/json")
 				.handler(this::updateRouter);
 		return router;
 	}
@@ -82,7 +82,7 @@ public class UinGeneratorRouter {
 			ResponseWrapper<Object> reswrp = new ResponseWrapper<>();
 			reswrp.setResponse(uin);
 			reswrp.setErrors(null);
-			routingContext.response().setStatusCode(200).end(objectMapper.writeValueAsString(reswrp));
+			routingContext.response().putHeader("content-type", "application/json").setStatusCode(200).end(objectMapper.writeValueAsString(reswrp));
 		} catch (UinNotFoundException e) {
 			ServiceError error = new ServiceError(UinGeneratorErrorCode.UIN_NOT_FOUND.getErrorCode(),
 					UinGeneratorErrorCode.UIN_NOT_FOUND.getErrorMessage());
@@ -130,7 +130,7 @@ public class UinGeneratorRouter {
 			reswrp.setId(reqwrp.getId());
 			reswrp.setVersion(reqwrp.getVersion());
 			reswrp.setErrors(null);
-			routingContext.response().setStatusCode(200).end(objectMapper.writeValueAsString(reswrp));
+			routingContext.response().putHeader("content-type", "application/json").setStatusCode(200).end(objectMapper.writeValueAsString(reswrp));
 		} catch (UinNotFoundException e) {
 			ServiceError error = new ServiceError(UinGeneratorErrorCode.UIN_NOT_FOUND.getErrorCode(),
 					UinGeneratorErrorCode.UIN_NOT_FOUND.getErrorMessage());
@@ -166,7 +166,7 @@ public class UinGeneratorRouter {
 		ResponseWrapper<ServiceError> errorResponse = new ResponseWrapper<>();
 		errorResponse.getErrors().add(error);
 		try {
-			routingContext.response().setStatusCode(200).end(objectMapper.writeValueAsString(errorResponse));
+			routingContext.response().putHeader("content-type", "application/json").setStatusCode(200).end(objectMapper.writeValueAsString(errorResponse));
 		} catch (JsonProcessingException e1) {
 
 		}
@@ -178,7 +178,7 @@ public class UinGeneratorRouter {
 		errorResponse.setId(reqwrp.getId());
 		errorResponse.setVersion(reqwrp.getVersion());
 		try {
-			routingContext.response().setStatusCode(200).end(objectMapper.writeValueAsString(errorResponse));
+			routingContext.response().putHeader("content-type", "application/json").setStatusCode(200).end(objectMapper.writeValueAsString(errorResponse));
 		} catch (JsonProcessingException e1) {
 
 		}
