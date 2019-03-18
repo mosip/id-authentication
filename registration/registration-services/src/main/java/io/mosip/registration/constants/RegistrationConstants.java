@@ -792,6 +792,7 @@ public class RegistrationConstants {
 	public static final String EYE = "Eye";
 	public static final String DOT = ".";
 	public static final String FINGERPRINT = "Fingerprint";
+	public static final String FINGERPRINT_UPPERCASE = "FINGERPRINT";
 	public static final String LEFTPALM = "leftSlap";
 	public static final String RIGHTPALM = "rightSlap";
 	public static final String THUMBS = "thumbs";

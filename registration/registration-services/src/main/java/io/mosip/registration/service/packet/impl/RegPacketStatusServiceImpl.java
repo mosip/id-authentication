@@ -419,7 +419,7 @@ public class RegPacketStatusServiceImpl extends BaseService implements RegPacket
 			}
 			if (response != null && response.getSuccessResponseDTO() != null) {
 				for (PacketStatusDTO registration : packetDto) {
-					String status = (String) responseDTO.getSuccessResponseDTO().getOtherAttributes()
+					String status = (String) response.getSuccessResponseDTO().getOtherAttributes()
 							.get(registration.getFileName());
 					if (status != null && status.equalsIgnoreCase(RegistrationConstants.SUCCESS)) {
 
