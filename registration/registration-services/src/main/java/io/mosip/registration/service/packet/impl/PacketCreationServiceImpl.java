@@ -7,7 +7,7 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 import static io.mosip.registration.constants.RegistrationConstants.DEMOGRPAHIC_JSON_NAME;
 import static io.mosip.registration.mapper.CustomObjectMapper.MAPPER_FACADE;
 
-import java.io.File;
+import java.io.InputStream;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
@@ -42,7 +42,6 @@ import io.mosip.kernel.core.jsonvalidator.exception.JsonSchemaIOException;
 import io.mosip.kernel.core.jsonvalidator.exception.JsonValidationProcessingException;
 import io.mosip.kernel.core.jsonvalidator.spi.JsonValidator;
 import io.mosip.kernel.core.logger.spi.Logger;
-import io.mosip.kernel.core.util.FileUtils;
 import io.mosip.kernel.core.util.StringUtils;
 import io.mosip.kernel.core.util.exception.JsonProcessingException;
 import io.mosip.registration.audit.AuditFactory;
@@ -346,8 +345,11 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 			byte[] cbeffXMLInBytes = null;
 
 			if (!birs.isEmpty()) {
-				cbeffXMLInBytes = cbeffI.createXML(birs,
-						FileUtils.readFileToByteArray(new File(this.getClass().getResource("/cbeff.xsd").toURI())));
+				InputStream file = this.getClass().getResourceAsStream("/cbeff.xsd");
+				byte[] bytesArray = new byte[(int) file.available()];
+				file.read(bytesArray);
+				file.close();
+				cbeffXMLInBytes = cbeffI.createXML(birs, bytesArray);
 			}
 
 			LOGGER.info(LOG_PKT_CREATION, APPLICATION_NAME, APPLICATION_ID,
