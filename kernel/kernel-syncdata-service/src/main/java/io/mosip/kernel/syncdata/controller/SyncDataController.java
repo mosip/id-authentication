@@ -62,7 +62,7 @@ public class SyncDataController {
 
 	@Autowired
 	SyncUserDetailsService syncUserDetailsService;
-	
+
 	@Autowired
 	LocalDateTimeUtil localDateTimeUtil;
 
@@ -116,7 +116,7 @@ public class SyncDataController {
 
 	/**
 	 * 
-	 * @param macAddress
+	 * @param macId
 	 *            - MAC address of the machine
 	 * @param serialNumber
 	 *            - Serial number of the machine
@@ -147,10 +147,12 @@ public class SyncDataController {
 
 	/**
 	 * 
-	 * @param macAddress
+	 * @param macId
 	 *            - MAC address of the machine
 	 * @param serialNumber
 	 *            - Serial number of the machine
+	 * @param regCenterId
+	 *            - reg Center Id
 	 * @param lastUpdated
 	 *            - last updated time stamp
 	 * @return {@link MasterDataResponseDto}
@@ -193,8 +195,9 @@ public class SyncDataController {
 	 * API will all the userDetails from LDAP server
 	 * 
 	 * @param regId
-	 * @param lastUpdatedTime
-	 * @return UserDetailResponseDto
+	 *            - registration center Id
+	 * 
+	 * @return UserDetailResponseDto - user detail response
 	 */
 	@GetMapping("/userdetails/{regid}")
 	public SyncUserDetailDto getUserDetails(@PathVariable("regid") String regId) {
@@ -229,5 +232,4 @@ public class SyncDataController {
 		return new ResponseEntity<>(publicKeyResponse, HttpStatus.OK);
 	}
 
-	
 }
