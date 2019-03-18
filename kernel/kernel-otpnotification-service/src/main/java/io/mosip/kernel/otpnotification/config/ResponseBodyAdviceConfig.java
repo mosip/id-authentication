@@ -1,8 +1,5 @@
 package io.mosip.kernel.otpnotification.config;
 
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 
@@ -85,7 +82,7 @@ public class ResponseBodyAdviceConfig implements ResponseBodyAdvice<Object> {
 						((ContentCachingRequestWrapper) ((HttpServletRequestWrapper) httpServletRequest).getRequest())
 								.getContentAsByteArray());
 			}
-			
+
 			objectMapper.registerModule(new JavaTimeModule());
 			if (!EmptyCheckUtils.isNullEmpty(requestBody)) {
 				requestWrapper = objectMapper.readValue(requestBody, RequestWrapper.class);
