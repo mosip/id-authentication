@@ -11,7 +11,7 @@ package io.mosip.authentication.testdata;
 public class TestDataConfig {
 	
 	private static String srcPath;
-	private static String userDirectory;
+	//private static String userDirectory;
 	private static String moduleName;
 	private static String testDataPath;
 	public static String getTestDataPath() {
@@ -26,12 +26,12 @@ public class TestDataConfig {
 	public static void setSrcPath(String srcPath) {
 		TestDataConfig.srcPath = srcPath;
 	}
-	public static String getUserDirectory() {
+	/*public static String getUserDirectory() {
 		return userDirectory;
 	}
 	public static void setUserDirectory(String userDirectory) {
 		TestDataConfig.userDirectory = userDirectory;
-	}
+	}*/
 	public static String getModuleName() {
 		return moduleName;
 	}
@@ -43,7 +43,7 @@ public class TestDataConfig {
 		setModuleName(moduleName);
 		setTestDataPath(testDataPath);
 		setSrcPath("/src/test/resources/");
-		setUserDirectory(System.getProperty("user.dir"));
+		//setUserDirectory(System.getProperty("user.dir"));
 	}
 
 }

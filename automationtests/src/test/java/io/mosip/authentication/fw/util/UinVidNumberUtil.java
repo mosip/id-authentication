@@ -1,5 +1,6 @@
 package io.mosip.authentication.fw.util;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.HashMap;
@@ -185,8 +186,7 @@ public class UinVidNumberUtil {
 		Properties prop = new Properties();
 		InputStream input = null;
 		try {
-			input = new FileInputStream(
-					RunConfig.getUserDirectory() + RunConfig.getSrcPath() + path);
+			input = new FileInputStream(new File("./"+RunConfig.getSrcPath() + path).getAbsolutePath());
 			prop.load(input);
 			return prop;
 		} catch (Exception e) {
