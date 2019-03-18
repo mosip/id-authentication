@@ -405,7 +405,7 @@ public class LoginController extends BaseController implements Initializable {
 	 * @return String loginMode
 	 * @throws RegBaseCheckedException
 	 */
-	public void validateCredentials(ActionEvent event) throws RegBaseCheckedException {
+	public void validateCredentials(ActionEvent event) {
 
 		auditFactory.audit(AuditEvent.LOGIN_WITH_PASSWORD, Components.LOGIN, userId.getText(),
 				AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
@@ -419,7 +419,12 @@ public class LoginController extends BaseController implements Initializable {
 		// implemented, getting AuthZ Token by Client ID and Secret Key
 		ApplicationContext.map().put(RegistrationConstants.USER_DTO, new LoginUserDTO());
 		if (RegistrationAppHealthCheckUtil.isNetworkAvailable()) {
-			serviceDelegateUtil.getAuthToken(LoginMode.CLIENTID);
+			try {
+				serviceDelegateUtil.getAuthToken(LoginMode.CLIENTID);
+			} catch (Exception exception) {
+				LOGGER.error(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID, String
+						.format("Exception while getting AuthZ Token --> %s", ExceptionUtils.getStackTrace(exception)));
+			}
 		}
 
 		boolean offlineStatus = false;
