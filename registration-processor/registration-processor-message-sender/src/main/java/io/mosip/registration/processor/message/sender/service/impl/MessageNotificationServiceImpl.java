@@ -53,10 +53,7 @@ import io.mosip.registration.processor.message.sender.exception.TemplateProcessi
 import io.mosip.registration.processor.message.sender.template.generator.TemplateGenerator;
 import io.mosip.registration.processor.message.sender.utility.TemplateConstant;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
-import io.mosip.registration.processor.packet.storage.exception.FieldNotFoundException;
 import io.mosip.registration.processor.packet.storage.exception.IdentityNotFoundException;
-import io.mosip.registration.processor.packet.storage.exception.InstantanceCreationException;
-import io.mosip.registration.processor.packet.storage.exception.ParsingException;
 import io.mosip.registration.processor.packet.storage.utils.Utilities;
 import io.mosip.registration.processor.rest.client.utils.RestApiClient;
 
@@ -379,8 +376,8 @@ public class MessageNotificationServiceImpl
 			if (demographicIdentity == null)
 				throw new IdentityNotFoundException(PlatformErrorMessages.RPR_PIS_IDENTITY_NOT_FOUND.getMessage());
 
-			template.setFirstName(getJsonValues(regProcessorTemplateJson.getIdentity().getName().getValue()));
-			template.setGender(getJsonValues(regProcessorTemplateJson.getIdentity().getGender().getValue()));
+			template.setFirstName(JsonUtil.getJsonValues(demographicIdentity,regProcessorTemplateJson.getIdentity().getName().getValue()));
+			template.setGender(JsonUtil.getJsonValues(demographicIdentity,regProcessorTemplateJson.getIdentity().getGender().getValue()));
 
 			template.setEmailID(
 					(String) JsonUtil.getJSONValue(demographicIdentity,regProcessorTemplateJson.getIdentity().getEmail().getValue()));
@@ -391,14 +388,14 @@ public class MessageNotificationServiceImpl
 			Number ageString =JsonUtil.getJSONValue(demographicIdentity,regProcessorTemplateJson.getIdentity().getAge().getValue());
 			template.setAge(Long.valueOf(ageString.toString()));
 			template.setAddressLine1(
-					getJsonValues(regProcessorTemplateJson.getIdentity().getAddressLine1().getValue()));
+					JsonUtil.getJsonValues(demographicIdentity,regProcessorTemplateJson.getIdentity().getAddressLine1().getValue()));
 			template.setAddressLine2(
-					getJsonValues(regProcessorTemplateJson.getIdentity().getAddressLine2().getValue()));
+					JsonUtil.getJsonValues(demographicIdentity,regProcessorTemplateJson.getIdentity().getAddressLine2().getValue()));
 			template.setAddressLine3(
-					getJsonValues(regProcessorTemplateJson.getIdentity().getAddressLine3().getValue()));
-			template.setRegion(getJsonValues(regProcessorTemplateJson.getIdentity().getRegion().getValue()));
-			template.setProvince(getJsonValues(regProcessorTemplateJson.getIdentity().getProvince().getValue()));
-			template.setCity(getJsonValues(regProcessorTemplateJson.getIdentity().getCity().getValue()));
+					JsonUtil.getJsonValues(demographicIdentity,regProcessorTemplateJson.getIdentity().getAddressLine3().getValue()));
+			template.setRegion(JsonUtil.getJsonValues(demographicIdentity,regProcessorTemplateJson.getIdentity().getRegion().getValue()));
+			template.setProvince(JsonUtil.getJsonValues(demographicIdentity,regProcessorTemplateJson.getIdentity().getProvince().getValue()));
+			template.setCity(JsonUtil.getJsonValues(demographicIdentity,regProcessorTemplateJson.getIdentity().getCity().getValue()));
 			template.setPostalCode((String) JsonUtil.getJSONValue(demographicIdentity,regProcessorTemplateJson.getIdentity().getPostalCode().getValue()));
 
 			template.setProofOfRelationship((String) (regProcessorTemplateJson.getIdentity().getPor().getValue()));
@@ -416,74 +413,6 @@ public class MessageNotificationServiceImpl
 
 
 		return template;
-	}
-
-	/**
-	 * Gets the json values.
-	 *
-	 * @param identityKey
-	 *            the identity key
-	 * @return the json values
-	 */
-	private JsonValue[] getJsonValues(Object identityKey) {
-		JSONArray demographicJsonNode = null;
-		if (demographicIdentity != null)
-			demographicJsonNode = JsonUtil.getJSONArray(demographicIdentity, identityKey);
-		
-
-		return (demographicJsonNode != null) ? mapJsonNodeToJavaObject(JsonValue.class, demographicJsonNode) : null;
-	}
-
-	/**
-	 * Map json node to java object.
-	 *
-	 * @param <T>
-	 *            the generic type
-	 * @param genericType
-	 *            the generic type
-	 * @param demographicJsonNode
-	 *            the demographic json node
-	 * @return the t[]
-	 */
-	@SuppressWarnings("unchecked")
-	private <T> T[] mapJsonNodeToJavaObject(Class<? extends Object> genericType, JSONArray demographicJsonNode) {
-		String language;
-		String value;
-		T[] javaObject = (T[]) Array.newInstance(genericType, demographicJsonNode.size());
-		try {
-			for (int i = 0; i < demographicJsonNode.size(); i++) {
-
-				T jsonNodeElement = (T) genericType.newInstance();
-
-				JSONObject objects =  JsonUtil.getJSONObjectFromArray(demographicJsonNode, i);
-				language = (String) objects.get(LANGUAGE);
-				value = (String) objects.get(VALUE);
-
-				Field languageField = jsonNodeElement.getClass().getDeclaredField(LANGUAGE);
-				languageField.setAccessible(true);
-				languageField.set(jsonNodeElement, language);
-
-				Field valueField = jsonNodeElement.getClass().getDeclaredField(VALUE);
-				valueField.setAccessible(true);
-				valueField.set(jsonNodeElement, value);
-
-				javaObject[i] = jsonNodeElement;
-			}
-		} catch (InstantiationException | IllegalAccessException e) {
-			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					null, "Error while Creating Instance of generic type" + ExceptionUtils.getStackTrace(e));
-			throw new InstantanceCreationException(PlatformErrorMessages.RPR_SYS_INSTANTIATION_EXCEPTION.getMessage(),
-					e);
-
-		} catch (NoSuchFieldException | SecurityException e) {
-			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					null, "no such field exception" + ExceptionUtils.getStackTrace(e));
-			throw new FieldNotFoundException(PlatformErrorMessages.RPR_SYS_NO_SUCH_FIELD_EXCEPTION.getMessage(), e);
-
-		}
-
-		return javaObject;
-
 	}
 
 }
