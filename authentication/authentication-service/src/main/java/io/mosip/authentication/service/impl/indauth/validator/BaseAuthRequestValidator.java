@@ -948,11 +948,11 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 		checkAllowedAuthType(requestDTO, errors, authTypeDTO, allowedAuthType);
 
 		if (authTypeDTO.isBio()) {
-			if (allowedAuthType.contains(InternalAuthType.BIO.getType())) {
+			if (allowedAuthType.contains(MatchType.Category.BIO.getType())) {
 				validateBioMetadataDetails(requestDTO, errors);
 			} else {
 				errors.rejectValue(AUTH_TYPE, IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorCode(),
-						new Object[] { InternalAuthType.BIO.getType() },
+						new Object[] { MatchType.Category.BIO.getType() },
 						IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorMessage());
 			}
 
@@ -970,24 +970,33 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	private void checkAllowedAuthType(AuthRequestDTO requestDTO, Errors errors, AuthTypeDTO authTypeDTO,
 			Set<String> allowedAuthType) {
 		if (authTypeDTO.isDemo()) {
-			if (allowedAuthType.contains(InternalAuthType.DEMO.getType())) {
+			if (allowedAuthType.contains(MatchType.Category.DEMO.getType())) {
 				checkDemoAuth(requestDTO, errors);
 			} else {
 				errors.rejectValue(AUTH_TYPE, IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorCode(),
-						new Object[] { InternalAuthType.DEMO.getType() },
+						new Object[] { MatchType.Category.DEMO.getType() },
 						IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorMessage());
 			}
 		}
 
 		if (authTypeDTO.isPin() || authTypeDTO.isOtp()) {
-			if (allowedAuthType.contains(InternalAuthType.SPIN.getType())) {
-				validateAdditionalFactorsDetails(requestDTO, errors);
-			} else {
+			if (!allowedAuthType.contains(MatchType.Category.SPIN.getType())) {
 				errors.rejectValue(REQUEST,
 						IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorCode(),
-						new Object[] { InternalAuthType.SPIN.getType() },
+						new Object[] { MatchType.Category.SPIN.getType() },
+						IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorMessage());
+			} 
+			if (!allowedAuthType.contains(MatchType.Category.OTP.getType())) {
+				errors.rejectValue(REQUEST,
+						IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorCode(),
+						new Object[] { MatchType.Category.OTP.getType() },
 						IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorMessage());
 			}
+			
+			if(!errors.hasErrors()) {
+				validateAdditionalFactorsDetails(requestDTO, errors);
+			}
+
 		}
 	}
 
