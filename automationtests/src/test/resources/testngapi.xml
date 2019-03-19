@@ -1,6 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
-<suite name="Mosip Kernel API Suite">
+
+<suite name="Mosip API Suite">
+	<!-- Passing Group as parmeter unsing "testType" Possible Groups are: smoke 
+		regression smokeAndRegression -->
+	<listeners>
+		<listener class-name="io.mosip.util.CustomTestNGReporter" />
+	</listeners>
+
 
 <!--   Passing Group as parmeter unsing "testType"
   Possible Groups are:
@@ -8,7 +15,7 @@
   						regression
   						smokeAndRegression -->
  
-                 <test name="Kernel Tests">
+               <!--   <test name="Kernel Tests">
                      <parameter name="testType" value="smokeandregression" />
                      <classes>
                            <class name="io.mosip.kernel.tests.AuditLog" />
@@ -57,7 +64,7 @@
                            <class name="io.mosip.kernel.tests.ValidateGenderByName" />
                            <class name="io.mosip.kernel.tests.ValidateLocationByName" />
                      </classes>
-              </test> 
+              </test>  -->
 
 		
 <!-- 
@@ -186,6 +193,12 @@
 			<class
 				name="io.mosip.authentication.tests.StaticTokenIdGenerationForOTPAuth" />
 			<class name="io.mosip.authentication.tests.VidGeneration" /> 
+			<class
+				name="io.mosip.authentication.idrepo.tests.IdRepoPostiveScenerio" />
+				<class
+				name="io.mosip.authentication.idrepo.tests.StoreIdentityDetailIDRepoNegativeScenario" />
+				<class
+				name="io.mosip.authentication.idrepo.tests.UpdateIdentityDetailIDRepoNegativeScenario" />
 		</classes>
 	</test>  
 	
@@ -202,8 +215,15 @@
 	</test>  -->
 
 	
-	
-	
+	<test name="Authentication Tests">
+		<parameter name="testType" value="smokeandregression" />
+		<classes>
+		
+			
+		 	<class name="io.mosip.authentication.tests.UpdateUinRecord" />
+			<class name="io.mosip.authentication.tests.CreateVID" />
+			</classes>
+			</test>
 	
 	
 </suite>

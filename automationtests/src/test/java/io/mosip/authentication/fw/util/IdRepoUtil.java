@@ -1,5 +1,6 @@
 package io.mosip.authentication.fw.util;
 
+import java.io.File;
 import java.io.FileOutputStream;  
 import java.io.OutputStream;
 import java.nio.file.Files;  
@@ -67,10 +68,10 @@ public class IdRepoUtil extends IdaScriptsUtil{
 			}
 			if (retrieveIdRepo(uinNumber)) {
 				String value = objJsonPrecondtion.getValueFromJson(
-						Paths.get(RunConfig.getUserDirectory() + RunConfig.getSrcPath()
-								+ RunConfig.getStoreUINDataPath() + "/" + uinNumber + ".json").toString(),
-						RunConfig.getUserDirectory() + RunConfig.getSrcPath() + RunConfig.getStoreUINDataPath()
-								+ "/mapping.properties",
+						Paths.get(new File("./"+RunConfig.getSrcPath()
+								+ RunConfig.getStoreUINDataPath() + "/" + uinNumber + ".json").getAbsolutePath()).toString(),
+						new File("./"+RunConfig.getSrcPath() + RunConfig.getStoreUINDataPath()
+								+ "/mapping.properties").getAbsolutePath(),
 						mapping);
 				if(mapping.contains("dateOfBirth") && mapping.contains("input"))
 				{
@@ -116,3 +117,4 @@ public class IdRepoUtil extends IdaScriptsUtil{
 	}
 
 }
+
