@@ -130,7 +130,6 @@ Apache DSL camel file "registration-processor-camel-routes.xml" need to be updat
 **Logical Architecture Diagram**
 
 
-
 ------------
 - Without http end point:
 
