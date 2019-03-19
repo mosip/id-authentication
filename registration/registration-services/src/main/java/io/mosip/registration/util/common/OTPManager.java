@@ -66,8 +66,8 @@ public class OTPManager extends BaseService {
 				AuthNSendOTPDTO authNSendOTPDTO = new AuthNSendOTPDTO();
 				authNSendOTPDTO.setAppId(RegistrationConstants.REGISTRATION_CLIENT);
 				authNSendOTPDTO.setLangCode(RegistrationConstants.ENGLISH_LANG_CODE);
-				authNSendOTPDTO.setOtpChannel(Arrays.asList("mobile"));
-					//	ApplicationContext.map().get(RegistrationConstants.OTP_CHANNELS).toString().split(",")));
+				authNSendOTPDTO.setOtpChannel(Arrays.asList(
+						ApplicationContext.map().get(RegistrationConstants.OTP_CHANNELS).toString().split(",")));
 				authNSendOTPDTO.setUserId(userId);
 				authNSendOTPDTO.setUseridtype(RegistrationConstants.USER_ID_CODE);
 				authNRequestDTO.setRequest(authNSendOTPDTO);
