@@ -8,13 +8,13 @@ Technical stack used in Registration Processor gives ability to add or change or
 Product technical support team.
 
 **The key requirements are -**
--	Once MOSIP as a product is released as an open source for anyone to use it, product should have sample code for stages and apache camel DSL xml along with document with the steps to add or remove them.
+-	MOSIP product should have capability to integrate with external system.
 
-**Apache Camel Bridge -**
-All the vertx stages in registration process are arranged in a particular sequence using apache camel bridge. Though technically it is possible to add or remove stages in the camel bridge but in some cases this sequece or order can not be altered due to highly dependent activity. For example Packet Receiver, Virous Scanner and Packet Uploader need to work in sequence. 
+**Apache Camel Bridge Limitation-**
+All the vertx stages in registration process are configured using apache camel brige to execute in a sequence. Though technically it is possible to add or remove stages in the camel bridge but in some cases this sequece or order can not be altered due to highly dependent activity. For example Packet Receiver, Virous Scanner and Packet Uploader need to work in sequence. 
 
 **The key non-functional requirements are**
-1.	Addition of a additional HTTP route should be done without updating any existing stages.
+1.	Introduce vertx stage which can be pluged in between stages in registration processor.
 2.  Auditing of the all the transactions including success and failed scenario.
 3.	Logging of the all the requests
 - 	INFO log message in case print request success or failed
@@ -27,25 +27,27 @@ All the vertx stages in registration process are arranged in a particular sequen
 
 ------------
 
-**Apache Camel HTTP end points: **
+**Add Stage: **
 
-- This will be the simplest approach as apache camel capability will be used to connect to HTTP external system. 
-- An apache converter will be used to fetch details from database which then will be send to HTTP system.
-- Apache camel bridge need to be deployed.
+- Additional stage can be created which is then deployed in line with existing Event Bus.
+This additional stage is responsible to communicate with the external HTTP end points.
 
 **The key solution considerations are -**
-1.	HTTP End point:
-- Create sample HTTP rest service using spring boot, which will be used to post packet details and send response 
+1.	Create Vertx Stage:
+- Create vertx stage (ExternalIntegrationStage) by extending MosipVerticleManager abstract class and provide implementation for abstract method. 
+- Add bussiness logic in process method which includes connecting to HTTP endpoint, send request and process response
+- Once business logic executed successfully, update packet process status (SUCCESS) in registration table as in case of failure reprocesser will process it.
+- In case of exception update status with ERROR
 
 2.	Apache Camel Changes:
 - 	Update apache camel DSL xml file:
-Add additional route in DSL xml file with the apache HTTP end point 
+Add additional route in DSL xml file for created vertx. 
 
-Example: For example let's integrate HTTP end point between existing packet validator and OSI validator stage. To include HTTP endpoint apache camel DSL file from spring configuration "registration-processor-camel-routes.xml" need to be updated.
+Example: For example let's integrate created stage : ExternalIntegrationStage between existing packet validator and OSI validator stage. To include this stage apache camel DSL file - "registration-processor-camel-routes.xml" need to be update in spring configuration.
+	
+Below is the route details from original registration-processor-camel-routes.xml file:
 
-Below is the route details from original registration-processor-camel-routes.xml file file:
-
-```java
+```html
 	<!-- Packet Validator to OSI Validator Route -->
 	<route id="packet-validator-->osi-validator route">
 		<from uri="vertx:packet-validator-bus-out" />
@@ -72,20 +74,41 @@ Below is the route details from original registration-processor-camel-routes.xml
 ```
 Apache DSL camel file "registration-processor-camel-routes.xml" need to be updated with below. Add PacketDetailsRequestHandler.java and PacketDetailsResponseHandler.java spring bean classes which will be added  in apache camel DSL as a processor between end points as shown in above sample DSL file. PacketDetailsRequestHandler will have logic to fetch packet details using request id from database and convert it into http post request to send. PacketDetailsResponseHandler handle response from http endpoint and send vertx event with json message (from MessageDTO) to OSI validator "<to uri="vertx:packet-validator-bus-in" />"
 
+
+
 ```html
-	<route id="packet-validator-->osi-validator route">
+
+	<!-- Packet Validator to External Integration Route -->
+	<route id="packet-validator-->external-integration route">
 		<from uri="vertx:packet-validator-bus-out" />
 		<log
-			message="packet-validator-->osi-validator route ${bodyAs(String)}" />
+			message="packet-validator-->external-integration route ${bodyAs(String)}" />
 		<choice>
 			<when>
 				<simple>${bodyAs(String)} contains '"isValid":true'</simple>
-				<to uri="bean:packetDetailsRequestHandler"/>
-				<setHeader headerName="CamelHttpMethod">
-			      <constant>GET</constant>
-			    </setHeader>
-				<to uri="http://domain.name/registration/packetdetails" />
-				<to uri="bean:packetDetailResponseHandler"/>
+				<to uri="vertx:external-integration-bus-in" />
+			</when>
+			<when>
+				<simple>${bodyAs(String)} contains '"isValid":false'</simple>
+				<to uri="vertx:message-sender-bus" />
+			</when>
+			<when>
+				<simple>${bodyAs(String)} contains '"internalError":true'</simple>
+				<to uri="vertx:retry" />
+			</when>
+			<otherwise>
+				<to uri="vertx:error" />
+			</otherwise>
+		</choice>
+	</route>
+		<!-- External Integration to OSI Validator Route -->
+	<route id="external-integration-->osi-validator route">
+		<from uri="vertx:external-integration-bus-out" />
+		<log
+			message="external-integration-->osi-validator route ${bodyAs(String)}" />
+		<choice>
+			<when>
+				<simple>${bodyAs(String)} contains '"isValid":true'</simple>
 				<to uri="vertx:osi-validator-bus-in" />
 			</when>
 			<when>
@@ -101,6 +124,7 @@ Apache DSL camel file "registration-processor-camel-routes.xml" need to be updat
 			</otherwise>
 		</choice>
 	</route>
+
 ```
 
 **Logical Architecture Diagram**
