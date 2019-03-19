@@ -364,7 +364,7 @@ public class MasterSyncServiceTest extends BaseIntegrationTest {
 		List<ReasonListDto> result = mastersyncservice
 				.getAllReasonsList(testdataparsejson.getDataFromJsonViaKey("langCode"));
 		List<String> list1 = new ArrayList<>();
-		list1.addAll(Arrays.asList("APM", "GPM", "IAD", "DPG", "OTH", "OPM", "SDM", "ADM", "ADD"));
+		list1.addAll(Arrays.asList("APM", "GPM", "IAD", "DPG", "OTH", "ADM", "ADD", "OPM", "SDM"));
 
 		List<String> list2 = new ArrayList<>();
 
@@ -383,9 +383,8 @@ public class MasterSyncServiceTest extends BaseIntegrationTest {
 				.getAllReasonsList(testdataparsejson.getDataFromJsonViaKey("langCode"));
 		List<String> list1 = new ArrayList<>();
 		list1.addAll(Arrays.asList("Age-Photo Mismatch", "Gender-Photo Mismatch", "Invalid Address",
-				"Duplicate Registration", "Others", "Only the Photograph is Matching",
-				"Some of the Demographic Details are Matching", "All the Details are matching",
-				"All the Demographic Details are Matching"));
+				"Duplicate Registration", "Others", "All the Details are matching",
+				"All the Demographic Details are Matching", "Only the Photograph is Matching", "Some of the Demographic Details are Matching"));
 
 		List<String> list2 = new ArrayList<>();
 
@@ -474,8 +473,7 @@ public class MasterSyncServiceTest extends BaseIntegrationTest {
 
 		List<String> list1 = new ArrayList<>();
 		list1.addAll(
-				Arrays.asList("asdf1", "asdf2", "asdf3", "Blacklisted Word", "Blacklisted Word", "Blacklisted Word",
-						"Blacklisted Word", "*%^%^^%&*^^%&^%&*!&%*%&*&&^&&^^", "stri", "string", "string", "string"));
+				Arrays.asList("Blacklisted Word", "Blacklisted Word", "Blacklisted Word", "Blacklisted Word", "fuk word", "Word is bloacklisted", "Word is bloacklisted", "BloackListed"));
 
 		List<String> list2 = new ArrayList<>();
 
@@ -495,7 +493,7 @@ public class MasterSyncServiceTest extends BaseIntegrationTest {
 				.getAllBlackListedWords(testdataparsejson.getDataFromJsonViaKey("langCode"));
 
 		List<String> list1 = new ArrayList<>();
-		list1.addAll(Arrays.asList("eng", "eng", "eng", "eng", "eng", "eng", "eng", "eng", "eng", "eng", "eng", "eng"));
+		list1.addAll(Arrays.asList("eng", "eng", "eng", "eng", "eng", "eng", "eng", "eng"));
 
 		List<String> list2 = new ArrayList<>();
 
@@ -515,8 +513,7 @@ public class MasterSyncServiceTest extends BaseIntegrationTest {
 				.getAllBlackListedWords(testdataparsejson.getDataFromJsonViaKey("langCode"));
 
 		List<String> list1 = new ArrayList<>();
-		list1.addAll(Arrays.asList("1", "2", "3", "shit", "damn", "nigga", "dammit", "elephant", "dra", "mou", "cat",
-				"*shjs"));
+		list1.addAll(Arrays.asList("shit", "damn", "nigga", "dammit", "fuk", "elephantytft", "xxxcheckwordxxx", "bad word"));
 
 		List<String> list2 = new ArrayList<>();
 
@@ -890,7 +887,7 @@ public class MasterSyncServiceTest extends BaseIntegrationTest {
 		List<GenderDto> result = mastersyncservice.getGenderDtls(testdataparsejson.getDataFromJsonViaKey("langCode"));
 
 		List<String> list1 = new ArrayList<>();
-		list1.addAll(Arrays.asList("1", "2", "MLE", "FLE", "OTH", "ABC"));
+		list1.addAll(Arrays.asList("MLE", "OTH", "FLE", "ABC", "GC008", "GC009"));
 
 		List<String> list2 = new ArrayList<>();
 
@@ -909,7 +906,7 @@ public class MasterSyncServiceTest extends BaseIntegrationTest {
 		List<GenderDto> result = mastersyncservice.getGenderDtls(testdataparsejson.getDataFromJsonViaKey("langCode"));
 
 		List<String> list1 = new ArrayList<>();
-		list1.addAll(Arrays.asList("female", "female", "Male", "Female", "Others", "Male"));
+		list1.addAll(Arrays.asList("Male", "Others", "Female", "Male", "XXX", "YYY"));
 
 		List<String> list2 = new ArrayList<>();
 
