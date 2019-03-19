@@ -1070,9 +1070,9 @@ public class RegistrationConstants {
 	public static final String USER_ON_BOARD_THRESHOLD_LIMIT = "mosip.registration.user_on_board_threshold_limit";
 
 	// Configuration Constants
-	public static final String AUDIT_LOG_DELETION_CONFIGURED_DAYS = "mosip.registration.AUDIT_LOG_DELETION_CONFIGURED_DAYS";
-	public static final String SYNC_TRANSACTION_NO_OF_DAYS_LIMIT = "mosip.registration.SYNC_TRANSACTION_NO_OF_DAYS_LIMIT";
-	public static final String REG_DELETION_CONFIGURED_DAYS = "mosip.registration.REG_DELETION_CONFIGURED_DAYS";
+	public static final String AUDIT_LOG_DELETION_CONFIGURED_DAYS = "mosip.registration.audit_log_deletion_configured_days";
+	public static final String SYNC_TRANSACTION_NO_OF_DAYS_LIMIT = "mosip.registration.sync_transaction_no_of_days_limit";
+	public static final String REG_DELETION_CONFIGURED_DAYS = "mosip.registration.reg_deletion_configured_days";
 	public static final String PRE_REG_DELETION_CONFIGURED_DAYS = "mosip.registration.pre_reg_deletion_configured_days";
 
 	// Audit Constants
