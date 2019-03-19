@@ -204,10 +204,10 @@ public class MasterSyncServiceImpl implements MasterSyncService {
 		// Setting uri Variables
 
 		Map<String, String> requestParamMap = new LinkedHashMap<>();
-		if (null != lastSyncTime && null != machineId) {
+		requestParamMap.put(RegistrationConstants.MAC_ADDRESS, machineId);
+		if (null != lastSyncTime) {
 			time = DateUtils.formatToISOString(lastSyncTime);
 			requestParamMap.put(RegistrationConstants.MASTER_DATA_LASTUPDTAE, time);
-			requestParamMap.put(RegistrationConstants.MAC_ADDRESS, machineId);
 		}
 
 		LOGGER.info(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID, RegistrationConstants.MAC_ADDRESS + "===> "
@@ -216,7 +216,7 @@ public class MasterSyncServiceImpl implements MasterSyncService {
 		try {
 
 			response = serviceDelegateUtil.get(RegistrationConstants.MASTER_VALIDATOR_SERVICE_NAME, requestParamMap,
-					true,triggerPoint);
+					false,triggerPoint);
 		} catch (HttpClientErrorException httpClientErrorException) {
 			LOGGER.error(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID,
 					httpClientErrorException.getRawStatusCode() + "Http error while pulling json from server"
