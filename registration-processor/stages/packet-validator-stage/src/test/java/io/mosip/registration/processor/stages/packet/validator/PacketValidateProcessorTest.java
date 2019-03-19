@@ -32,6 +32,7 @@ import org.springframework.web.client.HttpServerErrorException;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
+import io.mosip.kernel.core.fsadapter.exception.FSAdapterException;
 import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
 import io.mosip.kernel.core.util.HMACUtils;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
@@ -59,6 +60,7 @@ import io.mosip.registration.processor.stages.utils.CheckSumValidation;
 import io.mosip.registration.processor.stages.utils.DocumentUtility;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
+import io.mosip.registration.processor.status.exception.TablenotAccessibleException;
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
 
 /**
@@ -75,7 +77,7 @@ public class PacketValidateProcessorTest {
 
 	/** The filesystem ceph adapter impl. */
 	@Mock
-	private FileSystemAdapter  filesystemCephAdapterImpl;
+	private FileSystemAdapter filesystemCephAdapterImpl;
 
 	/** The registration status service. */
 	@Mock
@@ -171,7 +173,7 @@ public class PacketValidateProcessorTest {
 		List<Document> documents = new ArrayList<Document>();
 		documents.add(documentPob);
 		documents.add(document);
-		//identity.setDocuments(documents);
+		// identity.setDocuments(documents);
 		Mockito.when(documentUtility.getDocumentList(any())).thenReturn(documents);
 		List<FieldValueArray> fieldValueArrayList = new ArrayList<FieldValueArray>();
 
@@ -201,7 +203,7 @@ public class PacketValidateProcessorTest {
 		List<String> sequence2 = new ArrayList<>();
 		sequence2.add("audit");
 		List<FieldValueArray> fieldValueArrayListSequence = new ArrayList<FieldValueArray>();
-		FieldValueArray hashsequence2= new FieldValueArray();
+		FieldValueArray hashsequence2 = new FieldValueArray();
 		hashsequence2.setValue(sequence2);
 		fieldValueArrayListSequence.add(hashsequence2);
 		identity.setHashSequence2(fieldValueArrayListSequence);
@@ -305,7 +307,7 @@ public class PacketValidateProcessorTest {
 		List<Document> documents = new ArrayList<Document>();
 		documents.add(documentPob);
 		documents.add(document);
-		//identity.setDocuments(documents);
+		// identity.setDocuments(documents);
 
 		List<FieldValueArray> fieldValueArrayList = new ArrayList<FieldValueArray>();
 
@@ -333,7 +335,7 @@ public class PacketValidateProcessorTest {
 		List<String> sequence2 = new ArrayList<>();
 		sequence2.add("audit");
 		List<FieldValueArray> fieldValueArrayListSequence = new ArrayList<FieldValueArray>();
-		FieldValueArray hashsequence2= new FieldValueArray();
+		FieldValueArray hashsequence2 = new FieldValueArray();
 		hashsequence2.setValue(sequence2);
 		fieldValueArrayListSequence.add(hashsequence2);
 		identity.setHashSequence2(fieldValueArrayListSequence);
@@ -390,7 +392,7 @@ public class PacketValidateProcessorTest {
 		documents.add(documentPob);
 		documents.add(document);
 		documents.add(document2);
-		//identity.setDocuments(documents);
+		// identity.setDocuments(documents);
 		Mockito.when(documentUtility.getDocumentList(any())).thenReturn(documents);
 		List<FieldValueArray> fieldValueArrayList = new ArrayList<FieldValueArray>();
 
@@ -421,7 +423,7 @@ public class PacketValidateProcessorTest {
 		List<String> sequence2 = new ArrayList<>();
 		sequence2.add("audit");
 		List<FieldValueArray> fieldValueArrayListSequence = new ArrayList<FieldValueArray>();
-		FieldValueArray hashsequence2= new FieldValueArray();
+		FieldValueArray hashsequence2 = new FieldValueArray();
 		hashsequence2.setValue(sequence2);
 		fieldValueArrayListSequence.add(hashsequence2);
 		identity.setHashSequence2(fieldValueArrayListSequence);
@@ -486,7 +488,7 @@ public class PacketValidateProcessorTest {
 		Mockito.when(registrationStatusService.getRegistrationStatus(anyString())).thenReturn(registrationStatusDto);
 		Mockito.doNothing().when(registrationStatusService).updateRegistrationStatus(registrationStatusDto);
 		Mockito.when(filesystemCephAdapterImpl.checkFileExistence(anyString(), anyString())).thenReturn(Boolean.FALSE);
-		//regTypeCheck=false;
+		// regTypeCheck=false;
 		MessageDTO messageDto = packetValidateProcessor.process(dto);
 		assertFalse(messageDto.getIsValid());
 	}
@@ -597,11 +599,9 @@ public class PacketValidateProcessorTest {
 
 	}
 
-
-
 	@Test
 	public void testPreRegIdsAreNull() {
-		 //Mockito.when(packetInfoManager.getRegOsiPreRegId(Matchers.any())).thenReturn(null);
+		// Mockito.when(packetInfoManager.getRegOsiPreRegId(Matchers.any())).thenReturn(null);
 		MessageDTO messageDto = packetValidateProcessor.process(dto);
 		assertTrue(messageDto.getIsValid());
 
@@ -666,4 +666,26 @@ public class PacketValidateProcessorTest {
 		assertTrue(messageDto.getIsValid());
 
 	}
+
+	@Test
+	public void fSAdapterExceptionTest() throws Exception {
+		Mockito.when(filesystemCephAdapterImpl.checkFileExistence(anyString(), anyString()))
+				.thenThrow(new FSAdapterException("", ""));
+
+		MessageDTO messageDto = packetValidateProcessor.process(dto);
+		assertEquals(true, messageDto.getInternalError());
+
+	}
+
+	@Test
+	public void TablenotAccessibleExceptionTest() throws Exception {
+		Mockito.when(registrationStatusService.getRegistrationStatus(anyString()))
+				.thenThrow(new TablenotAccessibleException("") {
+				});
+
+		MessageDTO messageDto = packetValidateProcessor.process(dto);
+		assertEquals(true, messageDto.getInternalError());
+
+	}
+
 }
