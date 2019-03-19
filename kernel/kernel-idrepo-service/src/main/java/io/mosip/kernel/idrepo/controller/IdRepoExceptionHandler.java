@@ -229,7 +229,8 @@ public class IdRepoExceptionHandler extends ResponseEntityExceptionHandler {
 	private Throwable getRootCause(Exception ex) {
 		Throwable e = ex;
 		while (e != null) {
-			if (Objects.nonNull(e.getCause()) && (e.getCause() instanceof IdRepoAppException)) {
+			if (Objects.nonNull(e.getCause()) 
+					&& (e.getCause() instanceof IdRepoAppException)) {
 				e = e.getCause();
 			} else {
 				break;
