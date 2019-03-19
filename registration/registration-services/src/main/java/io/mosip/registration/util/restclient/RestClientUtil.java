@@ -17,7 +17,6 @@ import javax.net.ssl.X509TrustManager;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
@@ -65,7 +64,8 @@ public class RestClientUtil {
 		ResponseEntity<?> responseEntity = null;
 		Map<String, Object> responseMap = null;
 		restTemplate.setRequestFactory(requestHTTPDTO.getSimpleClientHttpRequestFactory());
-		try {
+		//To-do need to be removed after checking this properly
+		/*try {
 			if (requestHTTPDTO.getUri().toString().contains("https"))
 				turnOffSslChecking();
 		} catch (KeyManagementException keyManagementException) {
@@ -74,7 +74,7 @@ public class RestClientUtil {
 		} catch (NoSuchAlgorithmException noSuchAlgorithmException) {
 			LOGGER.error("REGISTRATION - REST_CLIENT_UTIL - INVOKE", APPLICATION_NAME, APPLICATION_ID,
 					noSuchAlgorithmException.getMessage() + ExceptionUtils.getStackTrace(noSuchAlgorithmException));
-		}
+		}*/
 		responseEntity = restTemplate.exchange(requestHTTPDTO.getUri(), requestHTTPDTO.getHttpMethod(),
 				requestHTTPDTO.getHttpEntity(), requestHTTPDTO.getClazz());
 
