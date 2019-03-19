@@ -174,8 +174,9 @@ public class JsonUtil {
 	 * @throws JsonMappingException the json mapping exception
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
+	@SuppressWarnings("unchecked")
 	public static <T> T objectMapperReadValue(String jsonString, Class<?> clazz)
-			throws JsonParseException, JsonMappingException, IOException {
+			throws IOException {
 		ObjectMapper objectMapper = new ObjectMapper();
 		return (T) objectMapper.readValue(jsonString, clazz);
 	}
@@ -220,18 +221,20 @@ public class JsonUtil {
 				T jsonNodeElement = (T) genericType.newInstance();
 
 				JSONObject objects = JsonUtil.getJSONObjectFromArray(demographicJsonNode, i);
-				language = (String) objects.get(LANGUAGE);
-				value = (String) objects.get(VALUE);
+				if (objects != null) {
+					language = (String) objects.get(LANGUAGE);
+					value = (String) objects.get(VALUE);
 
-				Field languageField = jsonNodeElement.getClass().getDeclaredField(LANGUAGE);
-				languageField.setAccessible(true);
-				languageField.set(jsonNodeElement, language);
+					Field languageField = jsonNodeElement.getClass().getDeclaredField(LANGUAGE);
+					languageField.setAccessible(true);
+					languageField.set(jsonNodeElement, language);
 
-				Field valueField = jsonNodeElement.getClass().getDeclaredField(VALUE);
-				valueField.setAccessible(true);
-				valueField.set(jsonNodeElement, value);
+					Field valueField = jsonNodeElement.getClass().getDeclaredField(VALUE);
+					valueField.setAccessible(true);
+					valueField.set(jsonNodeElement, value);
 
-				javaObject[i] = jsonNodeElement;
+					javaObject[i] = jsonNodeElement;
+				}
 			}
 		} catch (InstantiationException | IllegalAccessException e) {
 
