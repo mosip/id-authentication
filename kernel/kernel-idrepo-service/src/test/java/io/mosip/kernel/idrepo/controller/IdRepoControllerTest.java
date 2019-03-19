@@ -80,7 +80,7 @@ public class IdRepoControllerTest {
 		ResponseEntity<IdResponseDTO> responseEntity = controller.addIdentity("1234", request,
 				new BeanPropertyBindingResult(request, "IdRequestDTO"));
 		assertEquals(response, responseEntity.getBody());
-		assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode());
+		assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
 	}
 	
 	@Test(expected = IdRepoAppException.class)
@@ -93,7 +93,7 @@ public class IdRepoControllerTest {
 		ResponseEntity<IdResponseDTO> responseEntity = controller.addIdentity("1234", request,
 				new BeanPropertyBindingResult(request, "IdRequestDTO"));
 		assertEquals(response, responseEntity.getBody());
-		assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode());
+		assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
 	}
 
 	/**
@@ -257,7 +257,7 @@ public class IdRepoControllerTest {
 		ResponseEntity<IdResponseDTO> responseEntity = controller.updateIdentity("1234", request,
 				new BeanPropertyBindingResult(request, "IdRequestDTO"));
 		assertEquals(response, responseEntity.getBody());
-		assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode());
+		assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
 	}
 	
 	@Test
