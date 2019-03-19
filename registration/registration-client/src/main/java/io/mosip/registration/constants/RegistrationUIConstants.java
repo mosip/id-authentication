@@ -251,4 +251,10 @@ public class RegistrationUIConstants {
 	
 	//Packet Upload
 	public static final String PACKET_UPLOAD_EMPTY_ERROR = bundle.getString("PACKET_UPLOAD_EMPTY_ERROR");
+	public static final String PACKET_UPLOAD_DUPLICATE = bundle.getString("PACKET_UPLOAD_DUPLICATE");
+	public static final String PACKET_NOT_AVAILABLE = bundle.getString("PACKET_NOT_AVAILABLE");
+	public static final String PACKET_UPLOAD_SERVICE_ERROR = bundle.getString("PACKET_UPLOAD_SERVICE_ERROR");
+	public static final String PACKET_UPLOAD_EMPTY = bundle.getString("PACKET_UPLOAD_EMPTY");
+	public static final String PACKET_UPLOAD_ERROR = bundle.getString("PACKET_UPLOAD_ERROR");
+	public static final String PACKET_PARTIAL_UPLOAD_ERROR = bundle.getString("PACKET_PARTIAL_UPLOAD_ERROR");
 }
