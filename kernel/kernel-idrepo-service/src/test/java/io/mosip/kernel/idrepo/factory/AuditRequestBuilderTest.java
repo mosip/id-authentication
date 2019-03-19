@@ -29,7 +29,7 @@ import io.mosip.kernel.idrepo.dto.AuditRequestDto;
 @RunWith(SpringRunner.class)
 @WebMvcTest
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class AuditRequestFactoryTest {
+public class AuditRequestBuilderTest {
 
 	@InjectMocks
 	AuditRequestBuilder auditBuilder;

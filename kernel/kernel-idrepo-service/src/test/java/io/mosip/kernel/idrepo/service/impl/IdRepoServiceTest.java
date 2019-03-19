@@ -331,26 +331,6 @@ public class IdRepoServiceTest {
 		when(uinRepo.findByUin(Mockito.any())).thenReturn(uinObj);
 		proxyService.addIdentity(request, "1234");
 	}
-	
-	@Test(expected = IdRepoAppException.class)
-	public void testAddIdentityWithBioDocumentsException() throws Exception {
-		when(fpProvider.convertFIRtoFMR(Mockito.any())).thenReturn(Collections.singletonList(rFinger));
-		when(connection.storeFile(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(true);
-		when(cbeffUtil.validateXML(Mockito.any(), Mockito.any())).thenReturn(true);
-		when(cbeffUtil.updateXML(Mockito.any(), Mockito.any())).thenThrow(new NullPointerException());
-		Uin uinObj = new Uin();
-		uinObj.setUin("1234");
-		uinObj.setUinRefId("1234");
-		RequestDTO req = mapper.readValue(
-				"{\"identity\":{\"individualBiometrics\":{\"format\":\"cbeff\",\"version\":1.0,\"fileReference\":\"fileReferenceID\"}},\"documents\":[{\"category\":\"individualBiometrics\",\"value\":\"dGVzdA\"}]}"
-						.getBytes(),
-				RequestDTO.class);
-		request.setRequest(req);
-		when(uinRepo.existsByUin(Mockito.any())).thenReturn(false);
-		when(uinRepo.existsByRegId(Mockito.any())).thenReturn(false);
-		when(uinRepo.findByUin(Mockito.any())).thenReturn(uinObj);
-		proxyService.addIdentity(request, "1234");
-	}
 
 	@Test(expected = IdRepoAppException.class)
 	public void testAddIdentityRecordExists()
@@ -994,35 +974,6 @@ public class IdRepoServiceTest {
 				("{\"identity\":{\"parentOrGuardianBiometrics\":{\"format\":\"cbeff\",\"version\":1.0,\""
 				+ IdRepoConstants.FILE_NAME_ATTRIBUTE.getValue() +
 				"\":\"fileReferenceID\"}},\"documents\":[{\"category\":\"parentOrGuardianBiometrics\",\"value\":\"dGVzdA\"}]}")
-						.getBytes(),
-				RequestDTO.class);
-		request.setRequest(req);
-		UinBiometric biometrics = new UinBiometric();
-		biometrics.setBiometricFileType("individualBiometrics");
-		biometrics.setBiometricFileHash("W3LDtXpyxkl0YSifynsfhl7W-wWWtEb-ofkq-TGl1Lc");
-		biometrics.setBioFileId("1234.cbeff");
-		biometrics.setBiometricFileName("name");
-		uinObj.setBiometrics(Lists.newArrayList(biometrics));
-		uinObj.setUinData(
-				("{\"individualBiometrics\":{\"format\":\"cbeff\",\"version\":1.0,\""
-		+ IdRepoConstants.FILE_NAME_ATTRIBUTE.getValue() + "\":\"fileReferenceID\"}}"
-						).getBytes());
-		when(uinRepo.existsByUin(Mockito.any())).thenReturn(true);
-		when(uinRepo.existsByRegId(Mockito.any())).thenReturn(false);
-		when(uinRepo.findByUin(Mockito.any())).thenReturn(uinObj);
-		when(cbeffUtil.getBIRDataFromXML(Mockito.any())).thenReturn(Collections.singletonList(rFinger.toBIRType(rFinger)));
-		when(cbeffUtil.updateXML(Mockito.any(), Mockito.any())).thenReturn("value".getBytes());
-		proxyService.updateIdentity(request, "1234");
-	}
-	
-	@Test(expected = IdRepoAppException.class)
-	public void testIdentityUpdateNewBioDocumentNPE() throws Exception {
-		when(fpProvider.convertFIRtoFMR(Mockito.any())).thenReturn(Collections.singletonList(rFinger));
-		Uin uinObj = new Uin();
-		uinObj.setUin("1234");
-		uinObj.setUinRefId("1234");
-		RequestDTO req = mapper.readValue(
-				"{\"identity\":{\"parentOrGuardianBiometrics\":{\"format\":\"cbeff\",\"version\":1.0,\"fileReference\":\"fileReferenceID\"}},\"documents\":[{\"category\":\"parentOrGuardianBiometrics\",\"value\":\"dGVzdA\"}]}"
 						.getBytes(),
 				RequestDTO.class);
 		request.setRequest(req);
