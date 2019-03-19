@@ -267,7 +267,7 @@ public class PacketHandlerController extends BaseController implements Initializ
 						for (ErrorResponseDTO errorResponseDTO : errorResponseDTOs) {
 							errorMessage.append(errorResponseDTO.getMessage() + "\n\n");
 						}
-						generateAlert(RegistrationConstants.ERROR, errorMessage.toString().trim());
+						generateAlertLanguageSpecific(RegistrationConstants.ERROR, errorMessage.toString().trim());
 					} else {
 						getScene(createRoot).setRoot(createRoot);
 					}
@@ -280,7 +280,7 @@ public class PacketHandlerController extends BaseController implements Initializ
 				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_LOAD_REG_PAGE);
 			}
 		} else {
-			generateAlert(RegistrationUIConstants.INVALID_KEY);
+			generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.INVALID_KEY);
 		}
 		LOGGER.info(PACKET_HANDLER, APPLICATION_NAME, APPLICATION_ID, "Creating of Registration ended.");
 	}
@@ -450,7 +450,7 @@ public class PacketHandlerController extends BaseController implements Initializ
 						for (ErrorResponseDTO errorResponseDTO : errorResponseDTOs) {
 							errorMessage.append(errorResponseDTO.getMessage() + "\n\n");
 						}
-						generateAlert(RegistrationConstants.ERROR, errorMessage.toString().trim());
+						generateAlertLanguageSpecific(RegistrationConstants.ERROR, errorMessage.toString().trim());
 
 					} else {
 						ObservableList<Node> nodes = homeController.getMainBox().getChildren();
@@ -466,7 +466,7 @@ public class PacketHandlerController extends BaseController implements Initializ
 						ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));
 			}
 		} else {
-			generateAlert(RegistrationUIConstants.INVALID_KEY);
+			generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.INVALID_KEY);
 		}
 		LOGGER.info(PACKET_HANDLER, APPLICATION_NAME, APPLICATION_ID, "Loading Update UIN screen ended.");
 	}
@@ -525,12 +525,12 @@ public class PacketHandlerController extends BaseController implements Initializ
 
 		if (responseDTO.getSuccessResponseDTO() != null) {
 			SuccessResponseDTO successResponseDTO = responseDTO.getSuccessResponseDTO();
-			generateAlert(successResponseDTO.getCode(), successResponseDTO.getMessage());
+			generateAlertLanguageSpecific(successResponseDTO.getCode(), successResponseDTO.getMessage());
 
 		} else if (responseDTO.getErrorResponseDTOs() != null) {
 
 			ErrorResponseDTO errorresponse = responseDTO.getErrorResponseDTOs().get(0);
-			generateAlert(errorresponse.getCode(), errorresponse.getMessage());
+			generateAlertLanguageSpecific(errorresponse.getCode(), errorresponse.getMessage());
 
 		}
 		LOGGER.info(PACKET_HANDLER, APPLICATION_NAME, APPLICATION_ID, "Downloading pre-registration data ended.");
@@ -785,7 +785,7 @@ public class PacketHandlerController extends BaseController implements Initializ
 
 		Optional.ofNullable(notificationResponse).map(ResponseDTO::getErrorResponseDTOs)
 				.flatMap(list -> list.stream().findFirst()).map(ErrorResponseDTO::getMessage)
-				.ifPresent(message -> generateAlert(notificationType, message));
+				.ifPresent(message -> generateAlertLanguageSpecific(notificationType, message));
 
 	}
 }

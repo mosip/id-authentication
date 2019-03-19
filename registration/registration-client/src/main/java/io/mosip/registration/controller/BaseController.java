@@ -233,10 +233,11 @@ public class BaseController extends BaseService{
 	 * @param header    alert header
 	 * @param context   alert context
 	 */
-	protected void generateAlert(String context) {
+	protected void generateAlertLanguageSpecific(String title, String context) {
 		Alert alert = new Alert(AlertType.INFORMATION);
 		alert.setHeaderText(null);
-		alert.setContentText(context);
+		alert.setContentText(RegistrationUIConstants.getMessageLanguageSpecific(context));
+		alert.setTitle(title);
 		alert.setGraphic(null);
 		alert.setResizable(true);
 		alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
@@ -749,7 +750,7 @@ public class BaseController extends BaseService{
 				LOGGER.info(LoggerConstants.LOG_REG_BASE, APPLICATION_NAME, APPLICATION_ID,
 						"Displaying Alert if validation is not success");
 
-				generateAlert(RegistrationConstants.ERROR, response.getErrorResponseDTOs().get(0).getMessage());
+				generateAlertLanguageSpecific(RegistrationConstants.ERROR, response.getErrorResponseDTOs().get(0).getMessage());
 			} else if (response != null && response.getSuccessResponseDTO() != null) {
 
 				LOGGER.info(LoggerConstants.LOG_REG_BASE, APPLICATION_NAME, APPLICATION_ID,

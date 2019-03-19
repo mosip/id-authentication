@@ -13,6 +13,7 @@ import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.constants.RegistrationUIConstants;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.controller.FXUtils;
 import javafx.scene.control.TextField;
@@ -72,7 +73,7 @@ public class DateValidation extends BaseController {
 				if (date.getText().matches("\\d+") && month.getText().matches("\\d+")) {
 					try {
 						if (Integer.parseInt(date.getText()) > Integer.parseInt(dateMapper.get(month.getText()))) {
-							generateAlert("Date", "Please enter the appropriate value");
+							generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.DATE_VALIDATION_MSG);
 							date.setText(oldValue);
 						}
 					} catch (RuntimeException runTimeException) {
@@ -103,7 +104,7 @@ public class DateValidation extends BaseController {
 					if (date.getText().matches("\\d+") && month.getText().matches("\\d+")) {
 						try {
 							if (Integer.parseInt(date.getText()) > Integer.parseInt(dateMapper.get(month.getText()))) {
-								generateAlert("Please enter the appropriate value");
+								generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.DATE_VALIDATION_MSG);
 								date.clear();
 							}
 						} catch (RuntimeException runTimeException) {
@@ -195,7 +196,7 @@ public class DateValidation extends BaseController {
 						try {
 							if (Integer.parseInt(date.getText()) > Integer.parseInt(dateMapper.get(month.getText()))) {
 								date.clear();
-								generateAlert("Please enter the appropriate value");
+								generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.DATE_VALIDATION_MSG);
 							}
 						} catch (RuntimeException runTimeException) {
 							LOGGER.error("DATE VALIDATOINS", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,

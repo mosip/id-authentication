@@ -420,7 +420,7 @@ public class FaceCaptureController extends BaseController implements Initializab
 		if (getBiometricDTOFromSession().getOperatorBiometricDTO().getFaceDetailsDTO().getFace() != null) {
 			return true;
 		} else {
-			generateAlert(RegistrationConstants.ERROR, "Please capture the photo");
+			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.PHOTO_CAPTURE);
 			return false;
 		}
 	}

@@ -187,11 +187,11 @@ public class AuthenticationController extends BaseController implements Initiali
 				// Enable submit button
 				// Generate alert to show OTP
 				SuccessResponseDTO successResponseDTO = responseDTO.getSuccessResponseDTO();
-				generateAlert(RegistrationConstants.ALERT_INFORMATION, successResponseDTO.getMessage());
+				generateAlertLanguageSpecific(RegistrationConstants.ALERT_INFORMATION, successResponseDTO.getMessage());
 			} else if (responseDTO.getErrorResponseDTOs() != null) {
 				// Generate Alert to show INVALID USERNAME
 				ErrorResponseDTO errorResponseDTO = responseDTO.getErrorResponseDTOs().get(0);
-				generateAlert(RegistrationConstants.ERROR, errorResponseDTO.getMessage());
+				generateAlertLanguageSpecific(RegistrationConstants.ERROR, errorResponseDTO.getMessage());
 			}
 
 		} else {

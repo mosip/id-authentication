@@ -160,7 +160,7 @@ public class MasterSyncServiceImpl implements MasterSyncService {
 					LOGGER.info(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID,
 							RegistrationConstants.MASTER_SYNC_FAILURE_MSG_INFO);
 					responseDTO = buildErrorRespone(RegistrationConstants.MASTER_SYNC_FAILURE_MSG_CODE,
-							RegistrationConstants.MASTER_SYNC_FAILURE_MSG_INFO);
+							RegistrationConstants.MASTER_SYNC_FAILURE_MSG);
 				}
 
 			} else {
@@ -168,7 +168,7 @@ public class MasterSyncServiceImpl implements MasterSyncService {
 				LOGGER.info(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID,
 						RegistrationConstants.MASTER_SYNC_FAILURE_MSG_INFO);
 				responseDTO = buildErrorRespone(RegistrationConstants.MASTER_SYNC_FAILURE_MSG_CODE,
-						RegistrationConstants.MASTER_SYNC_FAILURE_MSG_INFO);
+						RegistrationConstants.MASTER_SYNC_FAILURE_MSG);
 			}
 
 		} catch (RegBaseUncheckedException | RegBaseCheckedException regBaseUncheckedException) {
@@ -176,7 +176,7 @@ public class MasterSyncServiceImpl implements MasterSyncService {
 					+ resoponse + ExceptionUtils.getStackTrace(regBaseUncheckedException));
 
 			responseDTO = buildErrorRespone(RegistrationConstants.MASTER_SYNC_FAILURE_MSG_CODE,
-					RegistrationConstants.MASTER_SYNC_FAILURE_MSG_INFO);
+					RegistrationConstants.MASTER_SYNC_FAILURE_MSG);
 
 		} catch (RuntimeException | IOException runtimeException) {
 			runtimeException.printStackTrace();
@@ -184,7 +184,7 @@ public class MasterSyncServiceImpl implements MasterSyncService {
 					runtimeException.getMessage() + resoponse + ExceptionUtils.getStackTrace(runtimeException));
 
 			responseDTO = buildErrorRespone(RegistrationConstants.MASTER_SYNC_FAILURE_MSG_CODE,
-					RegistrationConstants.MASTER_SYNC_FAILURE_MSG_INFO);
+					RegistrationConstants.MASTER_SYNC_FAILURE_MSG);
 
 		}
 

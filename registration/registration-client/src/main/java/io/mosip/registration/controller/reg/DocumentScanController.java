@@ -623,7 +623,7 @@ public class DocumentScanController extends BaseController {
 			} catch (IOException ioException) {
 				LOGGER.error("DOCUMENT_SCAN_CONTROLLER", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
 						ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));
-				generateAlert(RegistrationConstants.ERROR, "Unable to preview the document");
+				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.PREVIEW_DOC);
 				return;
 			}
 		} else {

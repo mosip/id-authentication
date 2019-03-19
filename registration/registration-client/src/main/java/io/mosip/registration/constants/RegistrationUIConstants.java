@@ -9,6 +9,10 @@ public class RegistrationUIConstants {
 	// Key values to read value from messages.properties file
 
 	public static final ResourceBundle bundle = ApplicationContext.applicationMessagesBundle();
+	
+	public static String getMessageLanguageSpecific(String key) {
+		return bundle.getString(key);
+	}
 
 	// LOGIN
 	public static final String UNABLE_LOAD_LOGIN_SCREEN = bundle.getString("UNABLE_LOAD_LOGIN_SCREEN");
@@ -121,9 +125,16 @@ public class RegistrationUIConstants {
 	public static final String SCAN = bundle.getString("SCAN");
 	public static final String PLEASE_SELECT = bundle.getString("PLEASE_SELECT");
 	public static final String DOCUMENT = bundle.getString("DOCUMENT");
+	public static final String DATE_VALIDATION_MSG = bundle.getString("DATE_VALIDATION_MSG");
+	public static final String PHOTO_CAPTURE = bundle.getString("PHOTO_CAPTURE");
+	public static final String PREVIOUS_ADDRESS = bundle.getString("PREVIOUS_ADDRESS");
+	public static final String PREVIEW_DOC= bundle.getString("PREVIEW_DOC");
+
 
 
 	// OPT TO REGISTER
+	public static final String REG_PKT_APPRVL_CNT_EXCEED = bundle.getString("REG_PKT_APPRVL_CNT_EXCEED");
+	public static final String REG_PKT_APPRVL_TIME_EXCEED = bundle.getString("REG_PKT_APPRVL_TIME_EXCEED");
 	public static final String OPT_TO_REG_TIME_SYNC_EXCEED = bundle.getString("OPT_TO_REG_TIME_SYNC_EXCEED");
 	public static final String OPT_TO_REG_TIME_EXPORT_EXCEED = bundle.getString("OPT_TO_REG_TIME_EXPORT_EXCEED");
 	public static final String OPT_TO_REG_REACH_MAX_LIMIT = bundle.getString("OPT_TO_REG_REACH_MAX_LIMIT");

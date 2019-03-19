@@ -127,7 +127,6 @@ public class RegistrationConstants {
 	public static final String ONBOARD_USER_UPDATE = "updateOnboard";
 
 	// FingerPrint
-	public static final String FINGER_PRINT_CAPTURE = "Please place your finger on device.";
 	public static final String FP_DEVICE = "Mantra";
 	public static final String FINGER_TYPE_MINUTIA = "minutia";
 
@@ -723,7 +722,6 @@ public class RegistrationConstants {
 	public static final String JOB_TRIGGER_MIS_FIRED = "Trigger Mis-Fired";
 	public static final String JOB_EXECUTION_REJECTED = "Execution Rejected";
 	public static final String RETRIEVED_PRE_REG_ID = "Retrieved Pre Registration";
-	public static final String UNABLE_TO_RETRIEVE_PRE_REG_ID = "Unable to retrieve pre registration";
 
 	public static final String JOB_TRIGGER_POINT_SYSTEM = "System";
 	public static final String JOB_TRIGGER_POINT_USER = "User";
@@ -769,10 +767,10 @@ public class RegistrationConstants {
 	public static final String REGISTRATION_CLIENT_ID = "10";
 	public static final String PRE_REGISTRATION_DUMMY_ID = "mosip.pre-registration.datasync";
 	public static final String VER = "1.0";
-	public static final String PRE_REG_TO_GET_ID_ERROR = "Unable to get Pre registartion id's";
-	public static final String PRE_REG_TO_GET_PACKET_ERROR = "The Pre-registration ID entered does not exist in the database. Please enter the correct Pre-registration ID.";
-	public static final String PRE_REG_PACKET_NETWORK_ERROR = "You must be connected to the internet to sync data";
-	public static final String PRE_REG_SUCCESS_MESSAGE = "Pre-Registartion Data Synced successfully";
+	public static final String PRE_REG_TO_GET_ID_ERROR = "PRE_REG_TO_GET_ID_ERROR";
+	public static final String PRE_REG_TO_GET_PACKET_ERROR = "PRE_REG_TO_GET_PACKET_ERROR";
+	public static final String PRE_REG_PACKET_NETWORK_ERROR = "PRE_REG_PACKET_NETWORK_ERROR";
+	public static final String PRE_REG_SUCCESS_MESSAGE = "PRE_REG_SUCCESS_MESSAGE";
 	public static final String IS_PRE_REG_SYNC = "PreRegSync";
 	public static final String PRE_REG_FILE_NAME = "fileName";
 	public static final String PRE_REG_FILE_CONTENT = "fileContent";
@@ -959,9 +957,9 @@ public class RegistrationConstants {
 	public static final String MASTER_SYNC_OFFLINE_FAILURE_MSG_CODE = "REG-MDS‌-002";
 	public static final String MASTER_SYNC_FAILURE_MSG_CODE = "REG-MDS‌-003";
 	public static final String MASTER_SYNC_FAILURE_MSG_INFO = "Error in sync";
-	public static final String MASTER_SYNC_FAILURE_MSG = "Sync failure";
+	public static final String MASTER_SYNC_FAILURE_MSG = "SYNC_FAILURE";
 	public static final String MASTER_SYNC_OFFLINE_FAILURE_MSG_INFO = "Client not online";
-	public static final String MASTER_SYNC_OFFLINE_FAILURE_MSG = "You must be connected to the internet to sync data";
+	public static final String MASTER_SYNC_OFFLINE_FAILURE_MSG = "PRE_REG_PACKET_NETWORK_ERROR";
 	public static final String MASTER_SYNC_EXCEPTION = "MASTER_SYNC_EXCEPTION";
 	public static final String MASTER_SYNC_JOD_DETAILS = "MASTER_SYNC_JOB_DETAILS";
 	public static final String MASTER_SYNC_SUCCESS = "Sync successful";
@@ -971,82 +969,82 @@ public class RegistrationConstants {
 	public static final String MASTER_SYNC_LOGGER_INFO="Entering into Master Sync Dao Impl...";
 	// POLICY SYNC
 	public static final String POLICY_SYNC_SUCCESS_CODE = "REG-MDS‌-001 ";
-	public static final String POLICY_SYNC_SUCCESS_MESSAGE = "Sync Successful";
+	public static final String POLICY_SYNC_SUCCESS_MESSAGE = "SYNC_SUCCESS";
 	public static final String POLICY_SYNC_ERROR_CODE = "REG-MDS‌-003 ";
-	public static final String POLICY_SYNC_ERROR_MESSAGE = "Sync failure";
+	public static final String POLICY_SYNC_ERROR_MESSAGE = "SYNC_FAILURE";
 	public static final String POLICY_SYNC_CLIENT_NOT_ONLINE_ERROR_CODE = "REG-MDS‌-002";
-	public static final String POLICY_SYNC_CLIENT_NOT_ONLINE_ERROR_MESSAGE = "You must be connected to the internet to sync data";
+	public static final String POLICY_SYNC_CLIENT_NOT_ONLINE_ERROR_MESSAGE = "POLICY_SYNC_CLIENT_NOT_ONLINE_ERROR_MESSAGE";
 
 	public static final String SYNCH_CONFIG_DATA_JOB_TITLE = "synch config data job";
 	public static final String REG_USER_MAPPING_SYNC_JOB_TITLE = "registration user mapping sync job";
 
 	// PRE-REG DELETE JOB
-	public static final String PRE_REG_DELETE_SUCCESS = "Pre-Registration Records deleted";
-	public static final String PRE_REG_DELETE_FAILURE = "Error While Deleting the records";
+	public static final String PRE_REG_DELETE_SUCCESS = "PRE_REG_DELETE_SUCCESS";
+	public static final String PRE_REG_DELETE_FAILURE = "PRE_REG_DELETE_FAILURE";
 
 	// Connection Error
-	public static final String CONNECTION_ERROR = "Unable to establish the connection";
+	public static final String CONNECTION_ERROR = "CONNECTION_ERROR";
 
 	// Exceptions - Template Generator
 	public static final String TEMPLATE_GENERATOR_ACK_RECEIPT_EXCEPTION = PACKET_CREATION_EXP_CODE + "TGE-002";
 	public static final String TEMPLATE_GENERATOR_SMS_EXCEPTION = PACKET_CREATION_EXP_CODE + "TGE-002";
 
 	// Jobs
-	public static final String BATCH_JOB_START_SUCCESS_MESSAGE = "SYNC-DATA Process started successfully";
-	public static final String START_SCHEDULER_ERROR_MESSAGE = "Unable to start SYNC-DATA process";
-	public static final String BATCH_JOB_STOP_SUCCESS_MESSAGE = "Jobs stopped successfully";
-	public static final String STOP_SCHEDULER_ERROR_MESSAGE = "Unable to stop SYNC-DATA Process";
-	public static final String CURRENT_JOB_DETAILS_ERROR_MESSAGE = "Unable to fetch current running job details";
-	public static final String EXECUTE_JOB_ERROR_MESSAGE = "Unable to execute job";
-	public static final String SYNC_DATA_PROCESS_ALREADY_STARTED = "SYNC-DATA Process already running";
-	public static final String SYNC_DATA_PROCESS_ALREADY_STOPPED = "SYNC-DATA Process not running to stop";
+	public static final String BATCH_JOB_START_SUCCESS_MESSAGE = "BATCH_JOB_START_SUCCESS_MESSAGE";
+	public static final String START_SCHEDULER_ERROR_MESSAGE = "START_SCHEDULER_ERROR_MESSAGE";
+	public static final String BATCH_JOB_STOP_SUCCESS_MESSAGE = "BATCH_JOB_STOP_SUCCESS_MESSAGE";
+	public static final String STOP_SCHEDULER_ERROR_MESSAGE = "STOP_SCHEDULER_ERROR_MESSAGE";
+	public static final String CURRENT_JOB_DETAILS_ERROR_MESSAGE = "CURRENT_JOB_DETAILS_ERROR_MESSAGE";
+	public static final String EXECUTE_JOB_ERROR_MESSAGE = "EXECUTE_JOB_ERROR_MESSAGE";
+	public static final String SYNC_DATA_PROCESS_ALREADY_STARTED = "SYNC_DATA_PROCESS_ALREADY_STARTED";
+	public static final String SYNC_DATA_PROCESS_ALREADY_STOPPED = "SYNC_DATA_PROCESS_ALREADY_STOPPED";
 	public static final String SYNC_DATA_DTO = "SYNC-DATA DTO";
 	public static final String JOB_RUNNING = "RUNNING";
 	public static final String JOB_COMPLETED = "COMPLETED";
-	public static final String NO_JOB_COMPLETED = "NO JOBS COMPLETED";
-	public static final String NO_JOBS_TRANSACTION = "No Transaction History Available";
-	public static final String NO_JOBS_RUNNING = "Currently No Jobs Running";
+	public static final String NO_JOB_COMPLETED = "NO_JOB_COMPLETED";
+	public static final String NO_JOBS_TRANSACTION = "NO_JOBS_TRANSACTION";
+	public static final String NO_JOBS_RUNNING = "NO_JOBS_RUNNING";
 	public static final String JOB_UNKNOWN = "UNKNOWN";
 
 	// Machine Mapping
-	public static final String MACHINE_MAPPING_SUCCESS_MESSAGE = "User Mapped Successfully";
-	public static final String MACHINE_MAPPING_ERROR_MESSAGE = "Unable to map user";
-	public static final String MACHINE_MAPPING_ENTITY_SUCCESS_MESSAGE = "User Data Fetched Successfully";
-	public static final String MACHINE_MAPPING_ENTITY_ERROR_NO_RECORDS = "No Records Found";
-	public static final String DEVICE_MAPPING_SUCCESS_MESSAGE = "On-boarding successful";
-	public static final String DEVICE_MAPPING_ERROR_MESSAGE = "Unable to map the device";
+	public static final String MACHINE_MAPPING_SUCCESS_MESSAGE = "MACHINE_MAPPING_SUCCESS_MESSAGE";
+	public static final String MACHINE_MAPPING_ERROR_MESSAGE = "MACHINE_MAPPING_ERROR_MESSAGE";
+	public static final String MACHINE_MAPPING_ENTITY_SUCCESS_MESSAGE = "MACHINE_MAPPING_ENTITY_SUCCESS_MESSAGE";
+	public static final String MACHINE_MAPPING_ENTITY_ERROR_NO_RECORDS = "MACHINE_MAPPING_ENTITY_ERROR_NO_RECORDS";
+	public static final String DEVICE_MAPPING_SUCCESS_MESSAGE = "DEVICE_MAPPING_SUCCESS_MESSAGE";
+	public static final String DEVICE_MAPPING_ERROR_MESSAGE = "DEVICE_MAPPING_ERROR_MESSAGE";
 
 	// PACKET
-	public static final String PACKET_STATUS_SYNC_ERROR_RESPONSE = "No Status Available";
-	public static final String PACKET_STATUS_SYNC_SUCCESS_MESSAGE = "Packet Status Sync Successful";
+	public static final String PACKET_STATUS_SYNC_ERROR_RESPONSE = "PACKET_STATUS_SYNC_ERROR_RESPONSE";
+	public static final String PACKET_STATUS_SYNC_SUCCESS_MESSAGE = "PACKET_STATUS_SYNC_SUCCESS_MESSAGE";
 
 	// OTP
-	public static final String OTP_GENERATION_SUCCESS_MESSAGE = "Generated OTP is :";
-	public static final String OTP_GENERATION_ERROR_MESSAGE = "Unable Generate OTP for entered username";
-	public static final String OTP_VALIDATION_ERROR_MESSAGE = "Incorrect or expired OTP";
+	public static final String OTP_GENERATION_SUCCESS_MESSAGE = "OTP_GENERATION_SUCCESS_MESSAGE";
+	public static final String OTP_GENERATION_ERROR_MESSAGE = "OTP_GENERATION_ERROR_MESSAGE";
+	public static final String OTP_VALIDATION_ERROR_MESSAGE = "OTP_VALIDATION_ERROR_MESSAGE";
 
 	// Packet Export
 	public static final String FILE_EXPLORER_NAME = "File Explorer";
 	public static final String INFO = "INFO";
 
 	// Sync Status
-	public static final String REG_PKT_APPRVL_CNT_EXCEED = "Maximum number of registration packets pending approval on client reached. Please approve or reject packets before proceeding with this registration";
-	public static final String REG_PKT_APPRVL_TIME_EXCEED = "Maximum duration for registration packets pending approval on client reached.Please approve or reject packets before proceeding with this registration";
-	public static final String OPT_TO_REG_TIME_EXPORT_EXCEED = "Time since last export of registration packets exceeded maximum limit. Please export or upload packets to server before proceeding with this registration";
-	public static final String OPT_TO_REG_TIME_SYNC_EXCEED = "Time since last sync exceeded maximum limit. Please sync from server before proceeding with this registration";
-	public static final String OPT_TO_REG_REACH_MAX_LIMIT = "Maximum limit for registration packets on client reached. Please export or upload packets to server before proceeding with this registration";
-	public static final String OPT_TO_REG_OUTSIDE_LOCATION = "Your client machine location is outside the registration center. Please note that registration can be done only from within the registration centre";
-	public static final String OPT_TO_REG_WEAK_GPS = "Unable to validate machine location due to weak GPS signal. Please try again";
-	public static final String OPT_TO_REG_INSERT_GPS = "Unable to validate machine location. Please insert the GPS device and try again";
-	public static final String OPT_TO_REG_GPS_PORT_MISMATCH = "Unable to validate machine location due to GPS port mismatch. Please insert into specific port and try again";
+	public static final String REG_PKT_APPRVL_CNT_EXCEED = "REG_PKT_APPRVL_CNT_EXCEED";
+	public static final String REG_PKT_APPRVL_TIME_EXCEED = "REG_PKT_APPRVL_TIME_EXCEED";
+	public static final String OPT_TO_REG_TIME_EXPORT_EXCEED = "OPT_TO_REG_TIME_SYNC_EXCEED";
+	public static final String OPT_TO_REG_TIME_SYNC_EXCEED = "OPT_TO_REG_TIME_SYNC_EXCEED";
+	public static final String OPT_TO_REG_REACH_MAX_LIMIT = "OPT_TO_REG_REACH_MAX_LIMIT";
+	public static final String OPT_TO_REG_OUTSIDE_LOCATION = "OPT_TO_REG_OUTSIDE_LOCATION";
+	public static final String OPT_TO_REG_WEAK_GPS = "OPT_TO_REG_WEAK_GPS";
+	public static final String OPT_TO_REG_INSERT_GPS = "OPT_TO_REG_INSERT_GPS";
+	public static final String OPT_TO_REG_GPS_PORT_MISMATCH = "OPT_TO_REG_GPS_PORT_MISMATCH";
 
 	public static final String POLICY_SYNC_SERVICE = "policysync";
 	public static final String KEY_NAME = "mosip.registration.key_policy_sync_threshold_value";
 	public static final String OPT_TO_REG_LAST_EXPORT_REG_PKTS_TIME = "mosip.registration.last_export_registration_config_time";
 
 	// Reg Deletion
-	public static final String REGISTRATION_DELETION_BATCH_JOBS_SUCCESS = "Registartion Packets Deletion Successful ";
-	public static final String REGISTRATION_DELETION_BATCH_JOBS_FAILURE = "Registartion Packets Deletion Failure ";
+	public static final String REGISTRATION_DELETION_BATCH_JOBS_SUCCESS = "REGISTRATION_DELETION_BATCH_JOBS_SUCCESS";
+	public static final String REGISTRATION_DELETION_BATCH_JOBS_FAILURE = "REGISTRATION_DELETION_BATCH_JOBS_FAILURE";
 
 	// Application Language
 	public static final String APPLICATION_LANUAGE = "application_language";
@@ -1061,9 +1059,9 @@ public class RegistrationConstants {
 	public static final String USER_ON_BOARDING_EXCEPTION = "USER_ON_BOARDING_EXCEPTION";
 	public static final String USER_ON_BOARDING_EXCEPTION_MSG_CODE = "REG-URE‌-000";
 	public static final String USER_ON_BOARDING_SUCCESS_CODE = "REG-URE‌-002";
-	public static final String USER_ON_BOARDING_SUCCESS_MSG = "User on-boarded successfully.";
+	public static final String USER_ON_BOARDING_SUCCESS_MSG = "USER_ONBOARD_SUCCESS";
 	public static final String USER_ON_BOARDING_THRESHOLD_NOT_MET_CODE = "REG-URE‌-008";
-	public static final String USER_ON_BOARDING_THRESHOLD_NOT_MET_MSG = "Threshold for number of successful authentications not met.";
+	public static final String USER_ON_BOARDING_THRESHOLD_NOT_MET_MSG = "USER_ON_BOARDING_THRESHOLD_NOT_MET_MSG";
 	public static final String USER_STATION_ID = "stationId";
 	public static final String USER_CENTER_ID = "centerId";
 	public static final String USER_MACHINE_VALIDATION_CODE = "REG-URE‌-009";
@@ -1077,9 +1075,9 @@ public class RegistrationConstants {
 	public static final String PRE_REG_DELETION_CONFIGURED_DAYS = "mosip.registration.pre_reg_deletion_configured_days";
 
 	// Audit Constants
-	public static final String AUDIT_LOGS_DELETION_SUCESS_MSG = "Audit Logs Deleted Successfully";
+	public static final String AUDIT_LOGS_DELETION_SUCESS_MSG = "AUDIT_LOGS_DELETION_SUCESS_MSG";
 	public static final String AUDIT_LOGS_DELETION_FLR_MSG = "Audit Logs Deleted Failed";
-	public static final String AUDIT_LOGS_DELETION_EMPTY_MSG = "No Audit Logs Found to be deleted";
+	public static final String AUDIT_LOGS_DELETION_EMPTY_MSG = "AUDIT_LOGS_DELETION_EMPTY_MSG";
 
 	// Rest Authentication Constants
 	public static final String USER_DTO = "userDTO";
@@ -1124,7 +1122,7 @@ public class RegistrationConstants {
 	// Virus Scan
 	public static final String VIRUS_SCAN_PACKET_NOT_FOUND = "FILE_NOT_PRESENT_FOR_SCAN";
 	public static final String VIRUS_SCAN_INFECTED_FILES = "Infected Files";
-	public static final String ANTIVIRUS_SERVICE_NOT_ACCESSIBLE = "Unable to access antivirus service";
+	public static final String ANTIVIRUS_SERVICE_NOT_ACCESSIBLE = "ANTIVIRUS_SERVICE_NOT_ACCESSIBLE";
 
 	// concent of applicant
 	public static final String CONCENT_OF_APPLICANT_SELECTED = "Yes";
@@ -1140,7 +1138,7 @@ public class RegistrationConstants {
 
 	// Key-Policy Key validation
 	public static final String VALID_KEY = "VALID KEY";
-	public static final String INVALID_KEY = "Please sync to get latest key from the server before proceeding with this registration.";
+	public static final String INVALID_KEY = "INVALID_KEY";
 
 	public static final String JOB_ID = "JOB_ID";
 

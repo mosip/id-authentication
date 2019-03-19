@@ -470,12 +470,12 @@ public class LoginController extends BaseController implements Initializable {
 
 				// Generate alert to show OTP
 				SuccessResponseDTO successResponseDTO = responseDTO.getSuccessResponseDTO();
-				generateAlert(RegistrationConstants.ERROR, successResponseDTO.getMessage());
+				generateAlertLanguageSpecific(RegistrationConstants.ERROR, successResponseDTO.getMessage());
 
 			} else if (responseDTO.getErrorResponseDTOs() != null) {
 				// Generate Alert to show INVALID USERNAME
 				ErrorResponseDTO errorResponseDTO = responseDTO.getErrorResponseDTOs().get(0);
-				generateAlert(RegistrationConstants.ERROR, errorResponseDTO.getMessage());
+				generateAlertLanguageSpecific(RegistrationConstants.ERROR, errorResponseDTO.getMessage());
 
 			}
 		}

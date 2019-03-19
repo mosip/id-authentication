@@ -1266,7 +1266,7 @@ public class DemographicDetailController extends BaseController {
 			prepareEditPageContent();
 
 		} else if (errorResponseDTOList != null && !errorResponseDTOList.isEmpty()) {
-			generateAlert(RegistrationConstants.ERROR, errorResponseDTOList.get(0).getMessage());
+			generateAlertLanguageSpecific(RegistrationConstants.ERROR, errorResponseDTOList.get(0).getMessage());
 		}
 	}
 
@@ -1282,7 +1282,7 @@ public class DemographicDetailController extends BaseController {
 					RegistrationConstants.APPLICATION_ID, "Loading address from previous entry");
 
 			if (SessionContext.map().get(RegistrationConstants.ADDRESS_KEY) == null) {
-				generateAlert(RegistrationConstants.ERROR, "Previous registration details not available.");
+				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.PREVIOUS_ADDRESS);
 				LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 						RegistrationConstants.APPLICATION_ID, "Previous registration details not available.");
 
