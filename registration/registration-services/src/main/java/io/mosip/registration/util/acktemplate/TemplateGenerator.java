@@ -684,10 +684,7 @@ public class TemplateGenerator extends BaseService {
 						RegistrationConstants.TEMPLATE_STYLE_HIDE_PROPERTY);
 			}
 
-			if (registration.getBiometricDTO().getApplicantBiometricDTO().getFingerprintDetailsDTO().isEmpty()) {
-				templateValues.put(RegistrationConstants.TEMPLATE_FINGERPRINTS_CAPTURED,
-						RegistrationConstants.TEMPLATE_STYLE_HIDE_PROPERTY);
-			} else {
+			if (RegistrationConstants.ENABLE.equalsIgnoreCase(fingerPrintDisableFlag)) {
 				templateValues.put(RegistrationConstants.TEMPLATE_FINGERPRINTS_CAPTURED, null);
 				templateValues.put(RegistrationConstants.TEMPLATE_LEFT_PALM_USER_LANG_LABEL,
 						applicationLanguageProperties.getString("lefthandpalm"));
@@ -714,6 +711,9 @@ public class TemplateGenerator extends BaseService {
 				}
 				templateValues = countMissingFingers(registration, templateValues, applicationLanguageProperties,
 						localProperties);
+			} else {
+				templateValues.put(RegistrationConstants.TEMPLATE_FINGERPRINTS_CAPTURED,
+						RegistrationConstants.TEMPLATE_STYLE_HIDE_PROPERTY);
 			}
 
 			templateValues.put(RegistrationConstants.TEMPLATE_RO_IMAGE,
