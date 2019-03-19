@@ -3,20 +3,21 @@
 
 **Background**
 
-Registration process is assembled using number of stages, which communicate with each other by event bus. Each stage is isolated from each other and does not know about the sequence of stages in registration process. Each stage will be independently managed and deployed and will run in sequence, which will be manage by camel bridge. In case of failure or crash, system should recover back to eariler state and should process packets in case if not processed.
+Registration process is assembled using number of stages, which communicate with each other by event bus. Each stage is isolated from each other and does not know about the sequence of stages in registration process. Each stage will be independently managed and deployed and will run in sequence, which will be manage by camel bridge. In case of failure, crash, system, or stages goes down packet might not process successfully. Once system or stages are up and run successfully, then system should process packets, which are not in submitted successfully.
 
 **The target users are -**
 
-Server application which will process packets.
-Administrator who may want to keep track of packet process.
+- Application support team
+- System Administrator Team
 
 **The key requirements are -**
--	In case of system crash or non-availability of any external system or any end point in registration processor, all stages should have capability to re process packets in case if any packet not processed successfully whenever system is back.
+-	In case of system crash or non-availability of any external system or any end point in registration processor, all stages should have capability to re process packets in case if any packet not processed successfully whenever system is back up and running.
 
 **Below is the behavior of the system in case of issue:**
-- In case if, there is temporary issue like time out exception on REST endpoint or data base connection timed out then system should be try to resend packet. Systems maximum resend attempt are configure in configuration server.  
-- In case if system crash while processing requests, system should rebuild its state and re process packets
-- Due to bottleneck which could be due to any technical reason, packets will not be processed. System should have capability to reprocess them once issue is resolved. 
+- In case if, there is temporary issue like time out exception or REST endpoint or data base connection timed out then system should try to resend packet. Systems maximum resend attempt are configure in configuration server.  
+- In case if system crash while processing requests, system should be in a position to reprocess them one it is up and running
+- In case packets is not be processed which might be due to bottleneck or due to any technical reason, system should have capability to reprocess them once issue is resolved.
+
 
 **The key non-functional requirements are**
 1.	Auditing of the all the transactions including success and failed scenario.
