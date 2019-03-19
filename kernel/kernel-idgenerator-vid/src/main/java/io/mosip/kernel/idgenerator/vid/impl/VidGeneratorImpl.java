@@ -9,6 +9,7 @@ import java.util.List;
 
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
+import javax.persistence.PersistenceException;
 
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -159,8 +160,12 @@ public class VidGeneratorImpl implements VidGenerator<String> {
 			}
 
 		} catch (DataAccessLayerException | DataAccessException e) {
-			throw new VidException(VidExceptionConstant.VID_INSERTION_EXCEPTION.getErrorCode(),
-					VidExceptionConstant.VID_INSERTION_EXCEPTION.getErrorMessage(), e);
+			if (e.getCause().getClass() == PersistenceException.class) {
+				return generateId();
+			} else {
+				throw new VidException(VidExceptionConstant.VID_INSERTION_EXCEPTION.getErrorCode(),
+						VidExceptionConstant.VID_INSERTION_EXCEPTION.getErrorMessage(), e);
+			}
 		}
 
 		SecretKey secretKey = new SecretKeySpec(counterSecureRandom.getBytes(),

@@ -103,7 +103,7 @@ public class TokenIdGeneratorTest {
 	@Test(expected = TokenIdGeneratorException.class)
 	public void tokenIdSequenceAdditionExceptionTest() {
 		when(counterRepository.saveAndFlush(Mockito.any()))
-				.thenThrow(new DataAccessLayerException("errorCode", "errorMessage", null));
+				.thenThrow(new DataAccessLayerException("errorCode", "errorMessage", new RuntimeException()));
 		tokenIdGenerator.generateId();
 	}
 
