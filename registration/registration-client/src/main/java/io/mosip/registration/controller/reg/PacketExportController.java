@@ -64,15 +64,13 @@ public class PacketExportController extends BaseController {
 			File destinationPath = destinationSelector.showDialog(primaryStage);
 			Long packetSize = 0L;
 			if (destinationPath != null) {
-				Long freeSpace = destinationPath.getUsableSpace();
 				// Iterate through the synched packets and copy to the Destination folder
 				for (PacketStatusDTO packetToCopy : synchedRecords) {
 					String ackFileName = packetToCopy.getPacketPath();
 					int lastIndex = ackFileName.indexOf(RegistrationConstants.ACKNOWLEDGEMENT_FILE);
 					String packetPath = ackFileName.substring(0, lastIndex);
 					File packet = new File(packetPath + RegistrationConstants.ZIP_FILE_EXTENSION);
-					packetSize = packetSize + packet.length();
-					if (packet.length() < freeSpace) {
+					if (packet.length() < destinationPath.getUsableSpace()) {
 						try {
 							FileUtils.copyFileToDirectory(packet, destinationPath);
 							packetToCopy.setPacketClientStatus(RegistrationClientStatusCode.EXPORT.getCode());
