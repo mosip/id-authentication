@@ -97,7 +97,7 @@ public class PacketUploadController extends BaseController implements Initializa
 	private ObservableList<PacketStatusDTO> list;
 
 	private List<PacketStatusDTO> selectedPackets = new ArrayList<>();
-	
+
 	private static final Logger LOGGER = AppConfig.getLogger(PacketUploadController.class);
 
 	/**
@@ -126,18 +126,10 @@ public class PacketUploadController extends BaseController implements Initializa
 						@Override
 						public void handle(WorkerStateEvent t) {
 							String status = service.getValue();
-							if (!status.equals(RegistrationConstants.EMPTY)) {
-								String[] displayStatus = status.split("-");
-								if (RegistrationConstants.PACKET_SYNC_ERROR.equals(displayStatus[0])) {
-									if (!RegistrationConstants.EMPTY.equals(packetSyncStatus)) {
-										generateAlert(displayStatus[0], displayStatus[1] + " " + packetSyncStatus);
-									} else {
-										generateAlert(displayStatus[0], displayStatus[1]);
-									}
-								} else {
-									generateAlert(displayStatus[0], displayStatus[1]);
-								}
-
+							if (!RegistrationConstants.EMPTY.equals(packetSyncStatus)) {
+								generateAlert(RegistrationConstants.ERROR, status + " " + packetSyncStatus);
+							} else if (!status.equals(RegistrationConstants.EMPTY)) {
+								generateAlert(RegistrationConstants.ERROR, status);
 							}
 						}
 					});
@@ -211,7 +203,8 @@ public class PacketUploadController extends BaseController implements Initializa
 										String errMessage = response.getErrorResponseDTOs().get(0).getMessage();
 										if (errMessage.contains(RegistrationConstants.PACKET_DUPLICATE)) {
 
-											tableMap.put(synchedPacket.getFileName(), "Error(Duplicate Packet)");
+											tableMap.put(synchedPacket.getFileName(),
+													RegistrationUIConstants.PACKET_UPLOAD_DUPLICATE);
 											synchedPacket.setPacketClientStatus(
 													RegistrationClientStatusCode.UPLOADED_SUCCESSFULLY.getCode());
 											synchedPacket.setUploadStatus(
@@ -222,12 +215,13 @@ public class PacketUploadController extends BaseController implements Initializa
 											synchedPacket.setUploadStatus(
 													RegistrationClientStatusCode.UPLOAD_ERROR_STATUS.getCode());
 											packetUploadList.add(synchedPacket);
-											tableMap.put(synchedPacket.getFileName(), "Error");
+											tableMap.put(synchedPacket.getFileName(), RegistrationConstants.ERROR);
 										}
 									}
 
 								} else {
-									tableMap.put(synchedPacket.getFileName(), "Error(Packet not available)");
+									tableMap.put(synchedPacket.getFileName(),
+											RegistrationUIConstants.PACKET_NOT_AVAILABLE);
 								}
 
 							} catch (URISyntaxException uriSyntaxException) {
@@ -235,7 +229,7 @@ public class PacketUploadController extends BaseController implements Initializa
 								LOGGER.error("REGISTRATION - HANDLE_PACKET_UPLOAD_URI_ERROR - PACKET_UPLOAD_CONTROLLER",
 										APPLICATION_NAME, APPLICATION_ID,
 										"Error in uri syntax" + ExceptionUtils.getStackTrace(uriSyntaxException));
-								status = "Error-Unable to push packets to the server.";
+								status = RegistrationUIConstants.PACKET_UPLOAD_ERROR;
 							} catch (RegBaseCheckedException regBaseCheckedException) {
 								LOGGER.error("REGISTRATION - HANDLE_PACKET_UPLOAD_ERROR - PACKET_UPLOAD_CONTROLLER",
 										APPLICATION_NAME, APPLICATION_ID, "Error while pushing packets to the server"
@@ -243,7 +237,8 @@ public class PacketUploadController extends BaseController implements Initializa
 
 								synchedPacket
 										.setUploadStatus(RegistrationClientStatusCode.UPLOAD_ERROR_STATUS.getCode());
-								tableMap.put(synchedPacket.getFileName(), "Error(Service Error)");
+								tableMap.put(synchedPacket.getFileName(),
+										RegistrationUIConstants.PACKET_UPLOAD_SERVICE_ERROR);
 								packetUploadList.add(synchedPacket);
 
 							} catch (RuntimeException runtimeException) {
@@ -253,16 +248,16 @@ public class PacketUploadController extends BaseController implements Initializa
 										"Run time error while connecting to the server"
 												+ ExceptionUtils.getStackTrace(runtimeException));
 								if (i == 0) {
-									status = "Error-Unable to push packets to the server.";
+									status = RegistrationUIConstants.PACKET_UPLOAD_ERROR;
 								} else if (i > 0) {
-									status = "Error-Unable to push some packets to the server.";
+									status = RegistrationUIConstants.PACKET_PARTIAL_UPLOAD_ERROR;
 								}
 								for (int count = i; count < selectedPackets.size(); count++) {
 									synchedPacket = selectedPackets.get(count);
 									synchedPacket.setUploadStatus(
 											RegistrationClientStatusCode.UPLOAD_ERROR_STATUS.getCode());
 									packetUploadList.add(synchedPacket);
-									tableMap.put(synchedPacket.getFileName(), "Error");
+									tableMap.put(synchedPacket.getFileName(), RegistrationConstants.ERROR);
 								}
 								break;
 							}
@@ -273,7 +268,7 @@ public class PacketUploadController extends BaseController implements Initializa
 						progressIndicator.setVisible(false);
 						displayStatus(populateTableData(tableMap));
 					} else {
-						status = "Info-No packets to upload.";
+						generateAlert(RegistrationConstants.INFO, RegistrationUIConstants.PACKET_UPLOAD_EMPTY);
 					}
 					selectedPackets.clear();
 					return status;
@@ -330,7 +325,7 @@ public class PacketUploadController extends BaseController implements Initializa
 			@Override
 			public void onChanged(Change<? extends PacketStatusDTO> c) {
 				while (c.next()) {
-					if (c.wasUpdated() ) {
+					if (c.wasUpdated()) {
 						if (!selectedPackets.contains(list.get(c.getFrom()))) {
 							selectedPackets.add(list.get(c.getFrom()));
 						} else {

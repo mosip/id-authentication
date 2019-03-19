@@ -52,6 +52,7 @@ import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.service.MasterSyncService;
 import io.mosip.registration.service.UserOnboardService;
 import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
+import io.mosip.registration.util.healthcheck.RegistrationSystemPropertiesChecker;
 import io.mosip.registration.util.restclient.ServiceDelegateUtil;
 
 /**
@@ -88,7 +89,7 @@ public class MasterSyncServiceImpl implements MasterSyncService {
 
 		ResponseDTO responseDTO = null;
 		String resoponse = RegistrationConstants.EMPTY;
-		String machineId = "10011";
+		String machineId = RegistrationSystemPropertiesChecker.getMachineId();
 
 		SuccessResponseDTO sucessResponse = new SuccessResponseDTO();
 
@@ -121,12 +122,6 @@ public class MasterSyncServiceImpl implements MasterSyncService {
 			}
 
 			// Getting machineID from data base
-			Map<String, String> machineIdMap = UserOnboardService.getMachineCenterId();
-
-			if (null != machineIdMap && !machineIdMap.isEmpty()
-					&& null!=machineIdMap.get(RegistrationConstants.USER_STATION_ID)) {
-				machineId = machineIdMap.get(RegistrationConstants.USER_STATION_ID);
-			}
 
 			LOGGER.info(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID,
 					"Fetching the last sync and machine Id details from databse Ends");
@@ -209,13 +204,13 @@ public class MasterSyncServiceImpl implements MasterSyncService {
 		// Setting uri Variables
 
 		Map<String, String> requestParamMap = new LinkedHashMap<>();
-		requestParamMap.put(RegistrationConstants.MACHINE_ID, machineId);
-		if (null != lastSyncTime) {
+		if (null != lastSyncTime && null != machineId) {
 			time = DateUtils.formatToISOString(lastSyncTime);
 			requestParamMap.put(RegistrationConstants.MASTER_DATA_LASTUPDTAE, time);
+			requestParamMap.put(RegistrationConstants.MAC_ADDRESS, machineId);
 		}
 
-		LOGGER.info(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID, RegistrationConstants.MACHINE_ID + "===> "
+		LOGGER.info(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID, RegistrationConstants.MAC_ADDRESS + "===> "
 				+ machineId + " " + RegistrationConstants.MASTER_DATA_LASTUPDTAE + "==> " + time);
 
 		try {

@@ -22,7 +22,6 @@ import org.apache.commons.io.IOUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -61,9 +60,6 @@ import io.mosip.registration.service.external.PreRegZipHandlingService;
  */
 @Service
 public class PreRegZipHandlingServiceImpl implements PreRegZipHandlingService {
-
-	@Value("${PRE_REG_PACKET_LOCATION}")
-	private String preRegPacketLocation;
 
 	@Autowired
 	private JsonValidator jsonValidator;
@@ -226,7 +222,7 @@ public class PreRegZipHandlingServiceImpl implements PreRegZipHandlingService {
 			throws RegBaseCheckedException {
 		try {
 			// Generate the file path for storing the Encrypted Packet
-			String filePath = preRegPacketLocation.concat(separator).concat(PreRegistrationId)
+			String filePath = String.valueOf(ApplicationContext.map().get(RegistrationConstants.PRE_REG_PACKET_LOCATION)).concat(separator).concat(PreRegistrationId)
 					.concat(ZIP_FILE_EXTENSION);
 			// Storing the Encrypted Registration Packet as zip
 			FileUtils.copyToFile(new ByteArrayInputStream(encryptedPacket), new File(filePath));

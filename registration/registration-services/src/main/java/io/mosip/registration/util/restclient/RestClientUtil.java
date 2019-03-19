@@ -28,6 +28,7 @@ import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.exception.RegBaseCheckedException;
 
 /**
  * This is a general method which gives the response for all httpmethod
@@ -57,7 +58,7 @@ public class RestClientUtil {
 	 * @throws HttpServerErrorException when server exception from server
 	 */
 	public Map<String, Object> invoke(RequestHTTPDTO requestHTTPDTO)
-			throws HttpClientErrorException, HttpServerErrorException, SocketTimeoutException, ResourceAccessException {
+			throws RegBaseCheckedException, HttpClientErrorException, HttpServerErrorException, SocketTimeoutException, ResourceAccessException {
 		LOGGER.debug("REGISTRATION - REST_CLIENT_UTIL - INVOKE", APPLICATION_NAME, APPLICATION_ID,
 				"invoke method called");
 

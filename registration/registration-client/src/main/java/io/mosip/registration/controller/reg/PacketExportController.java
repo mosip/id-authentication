@@ -62,17 +62,14 @@ public class PacketExportController extends BaseController {
 			File defaultDirectory = new File(currentRelativePath.toAbsolutePath().toString());
 			destinationSelector.setInitialDirectory(defaultDirectory);
 			File destinationPath = destinationSelector.showDialog(primaryStage);
-			Long packetSize = 0L;
 			if (destinationPath != null) {
-				Long freeSpace = destinationPath.getUsableSpace();
 				// Iterate through the synched packets and copy to the Destination folder
 				for (PacketStatusDTO packetToCopy : synchedRecords) {
 					String ackFileName = packetToCopy.getPacketPath();
 					int lastIndex = ackFileName.indexOf(RegistrationConstants.ACKNOWLEDGEMENT_FILE);
 					String packetPath = ackFileName.substring(0, lastIndex);
 					File packet = new File(packetPath + RegistrationConstants.ZIP_FILE_EXTENSION);
-					packetSize = packetSize + packet.length();
-					if (packet.length() < freeSpace) {
+					if (packet.length() < destinationPath.getUsableSpace()) {
 						try {
 							FileUtils.copyFileToDirectory(packet, destinationPath);
 							packetToCopy.setPacketClientStatus(RegistrationClientStatusCode.EXPORT.getCode());
@@ -94,7 +91,7 @@ public class PacketExportController extends BaseController {
 						generateAlert(RegistrationConstants.INFO,
 								exportedPackets.size() + " " + RegistrationUIConstants.PACKET_EXPORT_SUCCESS_MESSAGE);
 					}
-				} 
+				}
 			}
 		} else {
 			generateAlert(RegistrationConstants.INFO, RegistrationUIConstants.PACKET_EXPORT_MESSAGE);
