@@ -7,6 +7,7 @@ package io.mosip.kernel.uingenerator.constant;
  * Constants for Uin generator
  * 
  * @author Dharmesh Khandelwal
+ * @author Megha Tanga
  * @since 1.0.0
  *
  */
@@ -27,15 +28,24 @@ public final class UinGeneratorConstant {
 	 */
 	public static final String DEFAULTADMIN_MOSIP_IO = "defaultadmin@mosip.io";
 
+	public static final String UNUSED = "UNUSED";
+	public static final String ISSUED = "ISSUED";
+	public static final String ASSIGNED = "ASSIGNED";
+	public static final String UNASSIGNED = "UNASSIGNED";
 	/**
-	 * The string field V1_0_UIN
+	 * The string field for http port
 	 */
-	public static final String V1_0_UIN = "/v1.0/uin";
+	public static final String SERVER_PORT = "server.port";
 
 	/**
 	 * The string field SERVER_SERVLET_PATH
 	 */
 	public static final String SERVER_SERVLET_PATH = "server.servlet.path";
+
+	/**
+	 * The string field V1_0_UIN
+	 */
+	public static final String V1_0_UIN = "/v1.0/uin";
 
 	/**
 	 * The string field HIBERNATE_CURRENT_SESSION_CONTEXT_CLASS
@@ -140,4 +150,5 @@ public final class UinGeneratorConstant {
 	 * The string field 9
 	 */
 	public static final String NINE = "9";
+
 }

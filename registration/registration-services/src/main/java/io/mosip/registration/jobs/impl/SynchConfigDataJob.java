@@ -28,7 +28,7 @@ public class SynchConfigDataJob extends BaseJob {
 		LOGGER.info(RegistrationConstants.SYNCH_CONFIG_DATA_JOB_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "execute Job started");
 		
-		this.responseDTO = globalParamService.synchConfigData();
+		this.responseDTO = globalParamService.synchConfigData(true);
 		syncTransactionUpdate(responseDTO, triggerPoint, jobId);
 
 		LOGGER.info(RegistrationConstants.SYNCH_CONFIG_DATA_JOB_TITLE, RegistrationConstants.APPLICATION_NAME,
@@ -50,7 +50,7 @@ public class SynchConfigDataJob extends BaseJob {
 
 			
 			// Run the Parent JOB always first
-			this.responseDTO = globalParamService.synchConfigData();
+			this.responseDTO = globalParamService.synchConfigData(true);
 
 			// To run the child jobs after the parent job Success
 			if (responseDTO.getSuccessResponseDTO() != null) {

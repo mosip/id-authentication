@@ -11,6 +11,8 @@ public class AuthConstant {
 	
 	public final static String APPTYPE_UIN = "UIN"; 
 	
+	public final static String APPTYPE_USERID = "USERID"; 
+	
 	public final static String APPTYPE_USER = "USERIDTYPE"; 
 	
 	public final static String USERPWD_SUCCESS_MESSAGE = "Username and password combination had been validated successfully";
@@ -41,5 +43,11 @@ public class AuthConstant {
 	
 	public static final String UNAUTHORIZED_CODE = "401";
 	
+	public static final String INDIVIDUAL = "individual";
+	
+	public static final String PREREGISTRATION = "preregistration";
+	
 	public static final int RETURN_EXP_TIME= -10;
+
+	public static final String ALL_CHANNELS_MESSAGE = "OTP message sent across all the channels";
 }

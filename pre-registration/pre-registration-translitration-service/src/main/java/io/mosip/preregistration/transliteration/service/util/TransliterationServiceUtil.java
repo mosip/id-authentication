@@ -13,8 +13,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.preregistration.core.common.dto.MainRequestDTO;
 import io.mosip.preregistration.transliteration.code.RequestCodes;
-import io.mosip.preregistration.transliteration.dto.MainRequestDTO;
 import io.mosip.preregistration.transliteration.dto.TransliterationDTO;
 
 /**
@@ -27,7 +27,9 @@ import io.mosip.preregistration.transliteration.dto.TransliterationDTO;
 @Component
 public class TransliterationServiceUtil {
 	
-	private String dateTimeFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
+	
+	@Value("${mosip.utc-datetime-pattern}")
+	private String utcDateTimePattern;
 	
 	@Value("#{'${mosip.supported-languages}'.split(',')}")
 	private List<String> supportedLang;
@@ -44,9 +46,9 @@ public class TransliterationServiceUtil {
 			MainRequestDTO<TransliterationDTO> requestDTO) {
 		Map<String, String> inputValidation = new HashMap<>();
 		inputValidation.put(RequestCodes.ID.getCode(), requestDTO.getId());
-		inputValidation.put(RequestCodes.VER.getCode(), requestDTO.getVer());
+		inputValidation.put(RequestCodes.VER.getCode(), requestDTO.getVersion());
 		inputValidation.put(RequestCodes.REQ_TIME.getCode(),
-				getDateString(requestDTO.getReqTime()));
+				getDateString(requestDTO.getRequesttime()));
 		inputValidation.put(RequestCodes.REQUEST.getCode(), requestDTO.getRequest().toString());
 		return inputValidation;
 	}
@@ -61,7 +63,7 @@ public class TransliterationServiceUtil {
 	 * @return date.
 	 */
 	public String getCurrentResponseTime() {
-		return DateUtils.formatDate(new Date(System.currentTimeMillis()), dateTimeFormat);
+		return DateUtils.formatDate(new Date(System.currentTimeMillis()), utcDateTimePattern);
 	}
 
 	/**
@@ -69,7 +71,7 @@ public class TransliterationServiceUtil {
 	 * @return date in string.
 	 */
 	public String getDateString(Date date) {
-		return DateUtils.formatDate(date, dateTimeFormat);
+		return DateUtils.formatDate(date, utcDateTimePattern);
 	}
 
 	/**

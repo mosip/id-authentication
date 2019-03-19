@@ -10,6 +10,7 @@ import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
 import org.junit.Assert;
@@ -23,10 +24,10 @@ import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
 import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dao.MachineMappingDAO;
 import io.mosip.registration.dao.impl.UserOnboardDAOImpl;
-import io.mosip.registration.dto.RegistrationCenterDetailDTO;
 import io.mosip.registration.dto.biometric.BiometricDTO;
 import io.mosip.registration.dto.biometric.BiometricInfoDTO;
 import io.mosip.registration.dto.biometric.FaceDetailsDTO;
@@ -72,13 +73,11 @@ public class UserOnBoardDAOImlpTest {
 	@BeforeClass
 	public static void beforeClass() throws URISyntaxException {
 		
-		SessionContext.getInstance().setMapObject(new HashMap<String, Object>());
 		SessionContext.getInstance().getUserContext().setUserId("mosip");
-		SessionContext.getInstance().getMapObject().put(RegistrationConstants.USER_STATION_ID, "1947");
-		RegistrationCenterDetailDTO centerDetailDTO = new RegistrationCenterDetailDTO();
-		centerDetailDTO.setRegistrationCenterId("abc123");
-		SessionContext.getInstance().getUserContext().setRegistrationCenterDetailDTO(centerDetailDTO);
-
+		Map<String,Object> appMap = new HashMap<>();
+		appMap.put(RegistrationConstants.USER_STATION_ID, "1947");
+		appMap.put(RegistrationConstants.USER_CENTER_ID, "1947");
+		ApplicationContext.getInstance().setApplicationMap(appMap);
 	}
 
 	@Test
@@ -198,8 +197,6 @@ public class UserOnBoardDAOImlpTest {
 	@SuppressWarnings("serial")
 	@Test
 	public void UserOnBoardException() {
-
-		List<UserBiometric> bioMetricsList = new ArrayList<>();
 
 		BiometricDTO biometricDTO = new BiometricDTO();
 

@@ -2,7 +2,7 @@ import { TestBed, inject } from '@angular/core/testing';
 
 import { RegistrationService } from './registration.service';
 
-fdescribe('RegistrationService', () => {
+describe('RegistrationService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [RegistrationService]
@@ -21,11 +21,11 @@ fdescribe('RegistrationService', () => {
   it('changes the message', inject([RegistrationService], (service: RegistrationService) => {
     const x = {
       name: 'Agnitra'
-    }
+    };
     service.changeMessage(x);
     service.currentMessage.subscribe(message => {
       expect(message).toBe(x);
-    })
+    });
   }));
 
   it('Sets and gets the login ID', inject([RegistrationService], (service: RegistrationService) => {
@@ -51,7 +51,7 @@ fdescribe('RegistrationService', () => {
     service.addUser(x);
     const updatedX = {
       preRegId: '12345'
-    }
+    };
     service.updateUser(0, updatedX);
     expect(service.getUser(0)).toBe(updatedX);
   }));
@@ -65,9 +65,7 @@ fdescribe('RegistrationService', () => {
 
   it('gets the list of files of the user', inject([RegistrationService], (service: RegistrationService) => {
     const x = {
-      files: [
-        'hello.txt'
-      ]
+      files: ['hello.txt']
     };
     service.addUser(x);
     const files = service.getUserFiles(0);
@@ -76,20 +74,19 @@ fdescribe('RegistrationService', () => {
 
   it('sets and gets registration center ID', inject([RegistrationService], (service: RegistrationService) => {
     const x = '12345';
-    service.setRegCenterId(x)
+    service.setRegCenterId(x);
     expect(service.getRegCenterId()).toBe(x);
   }));
 
   it('sets sameAs', inject([RegistrationService], (service: RegistrationService) => {
     const x = 'aaaa';
-    service.setSameAs(x)
+    service.setSameAs(x);
     expect(service.sameAs).toBe(x);
   }));
 
   it('get sameAs', inject([RegistrationService], (service: RegistrationService) => {
     const x = 'aaaa';
-    service.setSameAs(x)
+    service.setSameAs(x);
     expect(service.getSameAs()).toBe(x);
   }));
-  
 });

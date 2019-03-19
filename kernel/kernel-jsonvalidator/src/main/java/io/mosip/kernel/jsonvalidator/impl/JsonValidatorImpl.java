@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -23,6 +22,7 @@ import io.mosip.kernel.core.jsonvalidator.exception.JsonIOException;
 import io.mosip.kernel.core.jsonvalidator.exception.JsonSchemaIOException;
 import io.mosip.kernel.core.jsonvalidator.exception.JsonValidationProcessingException;
 import io.mosip.kernel.core.jsonvalidator.exception.NullJsonNodeException;
+import io.mosip.kernel.core.jsonvalidator.exception.NullJsonSchemaException;
 import io.mosip.kernel.core.jsonvalidator.exception.UnidentifiedJsonException;
 import io.mosip.kernel.core.jsonvalidator.model.ValidationReport;
 import io.mosip.kernel.core.jsonvalidator.spi.JsonValidator;
@@ -46,9 +46,6 @@ public class JsonValidatorImpl implements JsonValidator {
 	 */
 	@Value("${mosip.kernel.jsonvalidator.file-storage-uri}")
 	private String configServerFileStorageURL;
-	
-	@Value("${mosip.kernel.jsonvalidator.schema-name}")
-	private String schemaName;
 
 	/*
 	 * Property source from which schema file has to be taken, can be either
@@ -56,15 +53,16 @@ public class JsonValidatorImpl implements JsonValidator {
 	 */
 	@Value("${mosip.kernel.jsonvalidator.property-source}")
 	private String propertySource;
-	
-	@Autowired
-	private JsonSchemaLoader schemaLoader;
 
 	/**
 	 * Validates a JSON object passed as string with the schema provided
 	 * 
 	 * @param jsonString
 	 *            JSON as string that has to be Validated against the schema.
+	 * @param schemaName
+	 *            name of the schema file against which JSON needs to be validated,
+	 *            the schema file should be present in your config server storage or
+	 *            local storage, which ever option is selected in properties file.
 	 * @return JsonValidationResponseDto containing 'valid' variable as boolean and
 	 *         'warnings' arraylist
 	 * @throws HttpRequestException
@@ -85,7 +83,7 @@ public class JsonValidatorImpl implements JsonValidator {
 	 *             FileIOException
 	 */
 
-	public ValidationReport validateJson(String jsonString)
+	public ValidationReport validateJson(String jsonString, String schemaName)
 			throws JsonValidationProcessingException, JsonIOException, JsonSchemaIOException, FileIOException {
 		ObjectMapper mapper = new ObjectMapper();
 		JsonNode jsonObjectNode = null;
@@ -104,7 +102,7 @@ public class JsonValidatorImpl implements JsonValidator {
 					JsonValidatorErrorConstant.NULL_JSON_NODE_EXCEPTION.getMessage());
 		}
 		// getting a JsonSchema node from json schema Name provided.
-		jsonSchemaNode = getJsonSchemaNode();
+		jsonSchemaNode = getJsonSchemaNode(schemaName);
 
 		final JsonSchemaFactory factory = JsonSchemaFactory.byDefault();
 		try {
@@ -148,7 +146,7 @@ public class JsonValidatorImpl implements JsonValidator {
 		return validationResponse;
 	}
 
-	private JsonNode getJsonSchemaNode() throws JsonSchemaIOException, FileIOException {
+	private JsonNode getJsonSchemaNode(String schemaName) throws JsonSchemaIOException, FileIOException {
 		JsonNode jsonSchemaNode = null;
 		/*
 		 * If the property source selected is CONFIG_SERVER. In this scenario schema is
@@ -174,8 +172,6 @@ public class JsonValidatorImpl implements JsonValidator {
 				throw new FileIOException(JsonValidatorErrorConstant.FILE_IO_EXCEPTION.getErrorCode(),
 						JsonValidatorErrorConstant.FILE_IO_EXCEPTION.getMessage(), e.getCause());
 			}
-		} else if (JsonValidatorPropertySourceConstant.APPLICATION_CONTEXT.getPropertySource().equals(propertySource)) {
-			jsonSchemaNode = schemaLoader.getSchema();
 		}
 		return jsonSchemaNode;
 	}

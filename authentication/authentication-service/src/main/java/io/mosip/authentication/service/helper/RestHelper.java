@@ -50,7 +50,7 @@ public class RestHelper {
 	/** The mapper. */
 	@Autowired
 	private ObjectMapper mapper;
-	
+
 	/** The Constant METHOD_REQUEST_SYNC. */
 	private static final String METHOD_REQUEST_SYNC = "requestSync";
 
@@ -77,7 +77,7 @@ public class RestHelper {
 
 	/** The Constant REQUEST_SYNC_RUNTIME_EXCEPTION. */
 	private static final String REQUEST_SYNC_RUNTIME_EXCEPTION = "requestSync-RuntimeException";
-	
+
 	private LocalDateTime requestTime;
 
 	/** The mosipLogger. */
@@ -96,7 +96,8 @@ public class RestHelper {
 		Object response;
 		try {
 			requestTime = DateUtils.getUTCCurrentDateTime();
-			mosipLogger.debug(DEFAULT_SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_SYNC, "Request received at : " + requestTime);
+			mosipLogger.debug(DEFAULT_SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_SYNC,
+					"Request received at : " + requestTime);
 			mosipLogger.debug(DEFAULT_SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_SYNC, PREFIX_REQUEST + request);
 			if (request.getTimeout() != null) {
 				response = request(request, getSslContext()).timeout(Duration.ofSeconds(request.getTimeout())).block();
@@ -125,7 +126,7 @@ public class RestHelper {
 			} else {
 				mosipLogger.error(DEFAULT_SESSION_ID, CLASS_REST_HELPER, REQUEST_SYNC_RUNTIME_EXCEPTION,
 						THROWING_REST_SERVICE_EXCEPTION + "- UNKNOWN_ERROR - " + e);
-				throw new RestServiceException(IdAuthenticationErrorConstants.UNKNOWN_ERROR, e);
+				throw new RestServiceException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
 			}
 		} finally {
 			LocalDateTime responseTime = DateUtils.getUTCCurrentDateTime();
@@ -134,7 +135,8 @@ public class RestHelper {
 			long duration = Duration.between(requestTime, responseTime).toMillis();
 			mosipLogger.debug(DEFAULT_SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_SYNC,
 					"Time difference between request and response in millis:" + duration
-							+ ".  Time difference between request and response in Seconds: " + ((double) duration / 1000));
+							+ ".  Time difference between request and response in Seconds: "
+							+ ((double) duration / 1000));
 		}
 	}
 
@@ -154,7 +156,7 @@ public class RestHelper {
 		} catch (RestServiceException e) {
 			mosipLogger.error(DEFAULT_SESSION_ID, CLASS_REST_HELPER, REQUEST_SYNC_RUNTIME_EXCEPTION,
 					"Throwing RestServiceException - UNKNOWN_ERROR - " + e);
-			return () -> new RestServiceException(IdAuthenticationErrorConstants.UNKNOWN_ERROR, e);
+			return () -> new RestServiceException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
 		}
 	}
 
@@ -170,7 +172,7 @@ public class RestHelper {
 		} catch (SSLException e) {
 			mosipLogger.error(DEFAULT_SESSION_ID, CLASS_REST_HELPER, REQUEST_SYNC_RUNTIME_EXCEPTION,
 					"Throwing RestServiceException - UNKNOWN_ERROR - " + e);
-			throw new RestServiceException(IdAuthenticationErrorConstants.UNKNOWN_ERROR, e);
+			throw new RestServiceException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
 		}
 	}
 
@@ -218,11 +220,11 @@ public class RestHelper {
 
 		return monoResponse;
 	}
-	
+
 	/**
 	 * Check error response.
 	 *
-	 * @param response the response
+	 * @param response     the response
 	 * @param responseType the response type
 	 * @throws RestServiceException the rest service exception
 	 */
@@ -231,14 +233,13 @@ public class RestHelper {
 			ObjectNode responseNode = mapper.readValue(mapper.writeValueAsBytes(response), ObjectNode.class);
 			if (responseNode.has(ERRORS) && !responseNode.get(ERRORS).isNull() && responseNode.get(ERRORS).isArray()
 					&& responseNode.get(ERRORS).size() > 0) {
-				throw new RestServiceException(IdAuthenticationErrorConstants.CLIENT_ERROR,
-						responseNode.toString(),
+				throw new RestServiceException(IdAuthenticationErrorConstants.CLIENT_ERROR, responseNode.toString(),
 						mapper.readValue(responseNode.toString().getBytes(), responseType));
 			}
 		} catch (IOException e) {
 			mosipLogger.error(DEFAULT_SESSION_ID, CLASS_REST_HELPER, REQUEST_SYNC_RUNTIME_EXCEPTION,
 					THROWING_REST_SERVICE_EXCEPTION + "- UNKNOWN_ERROR - " + e);
-			throw new RestServiceException(IdAuthenticationErrorConstants.UNKNOWN_ERROR, e);
+			throw new RestServiceException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
 		}
 	}
 
@@ -267,7 +268,7 @@ public class RestHelper {
 						mapper.readValue(e.getResponseBodyAsString().getBytes(), responseType));
 			}
 		} catch (IOException ex) {
-			return new RestServiceException(IdAuthenticationErrorConstants.UNKNOWN_ERROR, ex);
+			return new RestServiceException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, ex);
 		}
 
 	}

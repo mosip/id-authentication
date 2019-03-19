@@ -37,6 +37,11 @@
                 <td> : </td>
                 <td>{{ previewData.gender[0].name }}</td>
               </tr>
+              <tr>
+                <td>{{ 'preview.text_resident_status' | translate }}</td>
+                <td> : </td>
+                <td>{{previewData.residenceStatus[0].name}}</td>
+              </tr>
             </table>
           </div>
           <div>
@@ -122,6 +127,11 @@
                 <td> : </td>
                 <td>{{ previewData.gender[1].name }}</td>
               </tr>
+              <tr>
+                <td>{{ secondaryLanguagelabels.text_resident_status }}</td>
+                <td> : </td>
+                <td>{{previewData.residenceStatus[1].name}}</td>
+              </tr>
             </table>
           </div>
           <div>
@@ -185,9 +195,20 @@
         >
         <hr />
         <div class="preview__file-container">
-          <span class="preview__file-span" *ngFor="let file of files">
+          <!-- <span class="preview__file-span" *ngFor="let file of files">
             <img src="assets/pdf.png" />&nbsp;&nbsp;{{ file.doc_name }}
-          </span>
+          </span> -->
+          <table *ngIf="documentMapObject">
+            <tr class="preview__file__table__header">
+              <td *ngFor="let object of documentMapObject">{{object.name}}</td>
+            </tr>
+            <tr class="preview__file__table__data">
+              <td *ngFor="let object of documentMapObject">
+                <p *ngIf="object.fileName !== undefined">{{object.fileName}}</p>
+                <p class="error" *ngIf="object.fileName === undefined">{{ 'preview.text_not_uploaded' | translate }}</p>
+              </td>
+            </tr>
+          </table>
         </div>
       </div>
     </mat-card-footer>
@@ -201,18 +222,12 @@
     <button matTooltip="{{ 'helpText.add_applicant' | translate}}" mat-button (click)="navigateDashboard()" class="user-book_later-btn">
       {{ 'preview.action_add_applicant' | translate }}
     </button>
-    <span
-      matTooltip="{{ 'helpText.preview_continue' | translate }}"
-      [matTooltipDisabled]="enableContinue()"
-    >
       <button mat-button
-            [disabled]="!enableContinue()"
             (click)="navigateNext()"
             class="user-continue-btn"
+            [disabled]="!enableContinue()"
             >
       {{ 'preview.action_continue' | translate }}
     </button>
-    </span>
-
   </mat-card>
 </div>

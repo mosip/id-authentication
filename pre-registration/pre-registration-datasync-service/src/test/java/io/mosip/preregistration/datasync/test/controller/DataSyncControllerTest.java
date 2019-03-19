@@ -95,8 +95,8 @@ public class DataSyncControllerTest {
 		dataSyncRequestDTO.setToDate("2019-01-31 00:00:00");
 		dataSyncRequestDTO.setUserId("User1");
 		mainDataSyncRequestDTO.setId("mosip.pre-registration.datasync");
-		mainDataSyncRequestDTO.setVer("1.0");
-		mainDataSyncRequestDTO.setReqTime(new Timestamp(System.currentTimeMillis()));
+		mainDataSyncRequestDTO.setVersion("1.0");
+		mainDataSyncRequestDTO.setRequesttime(new Timestamp(System.currentTimeMillis()));
 		mainDataSyncRequestDTO.setRequest(dataSyncRequestDTO);
 
 		List<String> pre_registration_ids = new ArrayList<>();
@@ -134,9 +134,9 @@ public class DataSyncControllerTest {
 		list.put("63470164572136", "2019-01-17T13:24:52.203Z");
 		list.put("25368956035901", "2019-01-17T13:24:52.753Z");
 		preRegistrationIdsDTO.setPreRegistrationIds(list);
-		mainDataSyncResponseDTO.setErr(null);
-		mainDataSyncResponseDTO.setStatus(true);
-		mainDataSyncResponseDTO.setResTime(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").format(new Date()));
+		mainDataSyncResponseDTO.setErrors(null);
+		mainDataSyncResponseDTO
+				.setResponsetime(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").format(new Date()));
 		mainDataSyncResponseDTO.setResponse(preRegistrationIdsDTO);
 
 		Mockito.when(dataSyncService.retrieveAllPreRegIds(mainDataSyncRequestDTO)).thenReturn(mainDataSyncResponseDTO);
@@ -155,10 +155,9 @@ public class DataSyncControllerTest {
 		reverseDatasyncReponseDTO.setTransactionId("26fde349-0e56-11e9-99e1-f7683fbbce99");
 		List<String> responseList = new ArrayList<>();
 		responseList.add(ErrorMessages.PRE_REGISTRATION_IDS_STORED_SUCESSFULLY.toString());
-		mainReverseDataSyncResponseDTO.setErr(null);
-		mainReverseDataSyncResponseDTO.setStatus(true);
+		mainReverseDataSyncResponseDTO.setErrors(null);
 		mainReverseDataSyncResponseDTO
-				.setResTime(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").format(new Date()));
+				.setResponsetime(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").format(new Date()));
 		mainReverseDataSyncResponseDTO.setResponse(reverseDatasyncReponseDTO);
 		Mockito.when(dataSyncService.storeConsumedPreRegistrations(mainReverseDataSyncRequestDTO))
 				.thenReturn(mainReverseDataSyncResponseDTO);

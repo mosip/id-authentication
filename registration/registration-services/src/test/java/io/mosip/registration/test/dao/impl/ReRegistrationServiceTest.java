@@ -19,6 +19,7 @@ import org.mockito.junit.MockitoRule;
 import io.mosip.registration.constants.RegistrationClientStatusCode;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dao.RegistrationDAO;
+import io.mosip.registration.dto.PacketStatusDTO;
 import io.mosip.registration.entity.Registration;
 import io.mosip.registration.service.packet.impl.ReRegistrationServiceImpl;
 
@@ -50,8 +51,9 @@ public class ReRegistrationServiceTest {
 	public void testUpdateReRegistrationStatus() {
 		Map<String, String> reRegistrationStatus=new HashMap<>();
 		reRegistrationStatus.put("11111", "confirmed");
-		Registration reg=new Registration();
-		Mockito.when(registrationDAO.updateRegStatus(reg)).thenReturn(reg);
+		PacketStatusDTO reg=new PacketStatusDTO();
+		Registration packet = new Registration();
+		Mockito.when(registrationDAO.updateRegStatus(reg)).thenReturn(packet);
 		assertEquals(true, reRegistrationServiceImpl.updateReRegistrationStatus(reRegistrationStatus));
 	}
 }

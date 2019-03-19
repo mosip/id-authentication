@@ -12,10 +12,13 @@ import io.mosip.registration.entity.Template;
  */
 public interface TemplateRepository<P> extends BaseRepository<Template, String>{
 	/**
-	 * This method returns the list of {@link Template} which are active
+	 * This method returns the list of {@link Template} which are active have specified
+	 * templateTypeCode
 	 * 
+	 * @param templateTypeCode
+	 *            the required template type code
 	 * @return the list of {@link Template}
 	 */
-	List<Template> findByIsActiveTrue();
+	List<Template> findByIsActiveTrueAndTemplateTypCode(String templateTypeCode);
 	
 }

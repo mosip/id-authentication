@@ -17,8 +17,10 @@ public class RequestHTTPDTO {
 	private Class<?> clazz;
 	private URI uri;
 	private SimpleClientHttpRequestFactory simpleClientHttpRequestFactory;
-	
 	private boolean isPregRegSync;
+	private boolean isAuthRequired;
+	private String authZHeader;
+	private String triggerPoint;
 
 	public HttpMethod getHttpMethod() {
 		return httpMethod;
@@ -66,6 +68,30 @@ public class RequestHTTPDTO {
 
 	public void setPregRegSync(boolean isPregRegSync) {
 		this.isPregRegSync = isPregRegSync;
-	}	
+	}
+
+	public boolean isAuthRequired() {
+		return isAuthRequired;
+	}
+
+	public void setAuthRequired(boolean isAuthRequired) {
+		this.isAuthRequired = isAuthRequired;
+	}
+
+	public String getAuthZHeader() {
+		return authZHeader;
+	}
+
+	public void setAuthZHeader(String authZHeader) {
+		this.authZHeader = authZHeader;
+	}
+
+	public String getTriggerPoint() {
+		return triggerPoint;
+	}
+
+	public void setTriggerPoint(String triggerPoint) {
+		this.triggerPoint = triggerPoint;
+	}
 
 }

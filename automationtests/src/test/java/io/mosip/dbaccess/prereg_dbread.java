@@ -172,6 +172,9 @@ public class prereg_dbread {
 						factory = new Configuration().configure("preregqa.cfg.xml")
 					.addAnnotatedClass(OtpEntity.class).buildSessionFactory();	
 				}	
+
+			
+
 		
 		
 		for(String preId : preIds)

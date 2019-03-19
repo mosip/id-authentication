@@ -45,7 +45,6 @@ import io.mosip.registration.processor.core.constant.PacketFiles;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.packet.dto.ApplicantDocument;
 import io.mosip.registration.processor.core.packet.dto.Identity;
-import io.mosip.registration.processor.core.packet.dto.PacketMetaInfo;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.identify.RegistrationProcessorIdentity;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
@@ -57,7 +56,6 @@ import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequest
 import io.mosip.registration.processor.rest.client.audit.dto.AuditResponseDto;
 import io.mosip.registration.processor.stages.uingenerator.idrepo.dto.Documents;
 import io.mosip.registration.processor.stages.uingenerator.idrepo.dto.ErrorDTO;
-import io.mosip.registration.processor.stages.uingenerator.idrepo.dto.IdRequestDto;
 import io.mosip.registration.processor.stages.uingenerator.idrepo.dto.IdResponseDTO;
 import io.mosip.registration.processor.stages.uingenerator.idrepo.dto.ResponseDTO;
 import io.mosip.registration.processor.stages.uingenerator.stage.UinGeneratorStage;
@@ -74,7 +72,7 @@ public class UinGeneratorStageTest {
 	@InjectMocks
 	private UinGeneratorStage uinGeneratorStage = new UinGeneratorStage() {
 		@Override
-		public MosipEventBus getEventBus(Class<?> verticleName, String url) {
+		public MosipEventBus getEventBus(Object verticleName, String url, int instanceNumber) {
 			vertx = Vertx.vertx();
 
 			return new MosipEventBus(vertx) {
@@ -127,10 +125,6 @@ public class UinGeneratorStageTest {
 	/** The registration status dto. */
 	private InternalRegistrationStatusDto registrationStatusDto = new InternalRegistrationStatusDto();
 
-	/** The id request DTO. */
-	private IdRequestDto idRequestDTO = new IdRequestDto();
-
-	private IdResponseDTO idResponseDTO = new IdResponseDTO();
 
 	@Mock
 	private Utilities utility;
@@ -143,8 +137,6 @@ public class UinGeneratorStageTest {
 
 	/** The Constant CONFIG_SERVER_URL. */
 	private static final String CONFIG_SERVER_URL = "url";
-
-	private PacketMetaInfo packetMetaInfo;
 
 	private String identityMappingjsonString;
 
@@ -290,8 +282,6 @@ public class UinGeneratorStageTest {
 		idResponseDTO.setTimestamp("2019-01-17T06:29:01.940Z");
 		idResponseDTO.setVersion("1.0");
 
-		// String response = new String(
-		// "{\"id\":\"mosip.id.create\",\"version\":\"1.0\",\"timestamp\":\"2019-01-17T06:29:01.940Z\",\"status\":\"ACTIVATED\",\"response\":{\"entity\":\"https://dev.mosip.io/idrepo/v1.0/identity/203560486746\"}}");
 
 		Mockito.when(registrationProcessorRestClientService.postApi(any(), any(), any(), any(), any(), any()))
 				.thenReturn(idResponseDTO);

@@ -1,23 +1,21 @@
 package io.mosip.authentication.core.dto.indauth;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
+ * The Class For KycAuthResponseDTO extending BaseAuthResponseDTO
  * 
  * @author Prem Kumar
  *
- *The Class For KycAuthResponseDTO extending BaseAuthResponseDTO
+ *
  */
 
 @Data
-public class KycAuthResponseDTO extends BaseAuthResponseDTO {
+@EqualsAndHashCode(callSuper=true	)
+public class KycAuthResponseDTO extends AuthResponseDTO {
 	
 	/** The KycResponseDTO */
 	private KycResponseDTO response;
-	
-	/** The txnID value*/
-	private String txnID;
-	
-	/** The String value for ttl */
-	private String ttl;
+
 }

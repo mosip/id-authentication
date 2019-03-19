@@ -51,8 +51,8 @@ public class RegistrationAppHealthCheckUtil {
 	 * Checks the Internet connectivity
 	 * 
 	 * @return
-	 * @throws KeyManagementException 
-	 * @throws NoSuchAlgorithmException 
+	 * @throws KeyManagementException
+	 * @throws NoSuchAlgorithmException
 	 * @throws URISyntaxException
 	 */
 	public static boolean isNetworkAvailable() {
@@ -60,25 +60,26 @@ public class RegistrationAppHealthCheckUtil {
 				APPLICATION_ID, "Registration Network Checker had been called.");
 		boolean isNWAvailable = false;
 		try {
-			HttpURLConnection connection = null;
+			RestClientUtil.turnOffSslChecking();
+
 			System.setProperty("java.net.useSystemProxies", "true");
 			URL url = new URL("https://www.mosip.io/");
 			List<Proxy> proxyList = ProxySelector.getDefault().select(new URI(url.toString()));
 			Proxy proxy = proxyList.get(0);
-			connection = (HttpURLConnection) url.openConnection(proxy);
+			HttpURLConnection connection = (HttpURLConnection) url.openConnection(proxy);
 			connection.setConnectTimeout(10000);
-			RestClientUtil.turnOffSslChecking();
-			//connection.connect();
-			isNWAvailable = true;
-			/*if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
-				//isNWAvailable = true;
+			connection.connect();
+
+			if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
+				isNWAvailable = true;
 				LOGGER.info("REGISTRATION - REGISTRATION APP HEALTHCHECKUTIL - ISNETWORKAVAILABLE", APPLICATION_NAME,
 						APPLICATION_ID, "Internet Access Available.");
-			}else {
-			LOGGER.info("REGISTRATION - REGISTRATIONAPPHEALTHCHECKUTIL - ISNETWORKAVAILABLE", APPLICATION_NAME,
-					APPLICATION_ID, "Internet Access Not Available.");
-			}*/
-		} catch (IOException | URISyntaxException| KeyManagementException | NoSuchAlgorithmException ioException) {
+			} else {
+				isNWAvailable = false;
+				LOGGER.info("REGISTRATION - REGISTRATIONAPPHEALTHCHECKUTIL - ISNETWORKAVAILABLE", APPLICATION_NAME,
+						APPLICATION_ID, "Internet Access Not Available.");
+			}
+		} catch (IOException | URISyntaxException | KeyManagementException | NoSuchAlgorithmException ioException) {
 			LOGGER.error("REGISTRATION - REGISTRATIONAPPHEALTHCHECKUTIL - ISNETWORKAVAILABLE", APPLICATION_NAME,
 					APPLICATION_ID, "No Internet Access." + ExceptionUtils.getStackTrace(ioException));
 		}

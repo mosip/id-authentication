@@ -23,8 +23,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
-import io.mosip.demo.authentication.service.controller.FingerPrint;
-import io.mosip.demo.authentication.service.controller.IdRepo;
+import io.mosip.authentication.demo.service.controller.FingerPrint;
+import io.mosip.authentication.demo.service.controller.IdRepo;
 import io.mosip.kernel.core.jsonvalidator.exception.FileIOException;
 import io.mosip.kernel.core.jsonvalidator.exception.JsonIOException;
 import io.mosip.kernel.core.jsonvalidator.exception.JsonSchemaIOException;

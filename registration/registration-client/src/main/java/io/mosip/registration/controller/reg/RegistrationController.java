@@ -43,6 +43,7 @@ import io.mosip.registration.dto.RegistrationMetaDataDTO;
 import io.mosip.registration.dto.SelectionListDTO;
 import io.mosip.registration.dto.biometric.BiometricDTO;
 import io.mosip.registration.dto.biometric.BiometricInfoDTO;
+import io.mosip.registration.dto.biometric.FaceDetailsDTO;
 import io.mosip.registration.dto.demographic.ApplicantDocumentDTO;
 import io.mosip.registration.dto.demographic.DemographicDTO;
 import io.mosip.registration.dto.demographic.DemographicInfoDTO;
@@ -239,7 +240,7 @@ public class RegistrationController extends BaseController {
 		boolean isValid = true;
 		if (!(boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
 			isValid = demographicDetailController.validateThisPane();
-			if (isValid && RegistrationConstants.ENABLE.equalsIgnoreCase(documentDisableFlag)) {
+			if (isValid && RegistrationConstants.ENABLE.equalsIgnoreCase(String.valueOf(ApplicationContext.map().get(RegistrationConstants.DOC_DISABLE_FLAG)))) {
 				isValid = validateDemographicPane(documentScanController.documentScanPane);
 			}
 		}
@@ -274,9 +275,15 @@ public class RegistrationController extends BaseController {
 						LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER,
 								RegistrationConstants.APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
 								"showing demographic preview");
+						if (getRegistrationDTOFromSession().getSelectionListDTO() != null) {
+							SessionContext.map().put("faceCapture", false);
+							SessionContext.map().put("registrationPreview", true);	
+							registrationPreviewController.setUpPreviewContent();
+							showUINUpdateCurrentPage();
+						} else {
+							showCurrentPage(RegistrationConstants.FACE_CAPTURE, getPageDetails(RegistrationConstants.FACE_CAPTURE,RegistrationConstants.NEXT));
+						}
 						
-						showCurrentPage(RegistrationConstants.FACE_CAPTURE, getPageDetails(RegistrationConstants.FACE_CAPTURE,RegistrationConstants.NEXT));
-
 					} else {
 						((BiometricDTO) SessionContext.map().get(RegistrationConstants.USER_ONBOARD_DATA))
 								.getOperatorBiometricDTO().getFaceDetailsDTO().setFace(photoInBytes);
@@ -347,16 +354,19 @@ public class RegistrationController extends BaseController {
 
 		RegistrationCenterDetailDTO registrationCenter = SessionContext.userContext().getRegistrationCenterDetailDTO();
 
-		registrationMetaDataDTO
-				.setGeoLatitudeLoc(Double.parseDouble(registrationCenter.getRegistrationCenterLatitude()));
-		registrationMetaDataDTO
-				.setGeoLongitudeLoc(Double.parseDouble(registrationCenter.getRegistrationCenterLongitude()));
-
+		if (RegistrationConstants.ENABLE
+				.equalsIgnoreCase(getGlobalConfigValueOf(RegistrationConstants.GPS_DEVICE_DISABLE_FLAG))) {
+			registrationMetaDataDTO
+					.setGeoLatitudeLoc(Double.parseDouble(registrationCenter.getRegistrationCenterLatitude()));
+			registrationMetaDataDTO
+					.setGeoLongitudeLoc(Double.parseDouble(registrationCenter.getRegistrationCenterLongitude()));
+		} 
+		
 		Map<String, Object> applicationContextMap = ApplicationContext.map();
 
 		registrationMetaDataDTO
-				.setCenterId((String) applicationContextMap.get(RegistrationConstants.REGISTARTION_CENTER));
-		registrationMetaDataDTO.setMachineId((String) applicationContextMap.get(RegistrationConstants.MACHINE_ID));
+				.setCenterId((String) applicationContextMap.get(RegistrationConstants.USER_CENTER_ID));
+		registrationMetaDataDTO.setMachineId((String) applicationContextMap.get(RegistrationConstants.USER_STATION_ID));
 		registrationMetaDataDTO
 				.setDeviceId((String) applicationContextMap.get(RegistrationConstants.DONGLE_SERIAL_NUMBER));
 
@@ -379,6 +389,7 @@ public class RegistrationController extends BaseController {
 		biometricInfoDTO.setBiometricExceptionDTO(new ArrayList<>());
 		biometricInfoDTO.setFingerprintDetailsDTO(new ArrayList<>());
 		biometricInfoDTO.setIrisDetailsDTO(new ArrayList<>());
+		biometricInfoDTO.setFaceDetailsDTO(new FaceDetailsDTO());
 		return biometricInfoDTO;
 	}
 	

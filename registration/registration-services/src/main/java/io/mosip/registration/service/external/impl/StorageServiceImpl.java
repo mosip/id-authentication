@@ -11,9 +11,6 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.util.Date;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.exception.IOException;
@@ -22,6 +19,7 @@ import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.core.util.FileUtils;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.service.external.StorageService;
@@ -38,12 +36,6 @@ import io.mosip.registration.service.external.StorageService;
 public class StorageServiceImpl implements StorageService {
 
 	private static final Logger LOGGER = AppConfig.getLogger(StorageServiceImpl.class);
-	
-	@Value("${PACKET_STORE_LOCATION}")
-	private String packetStoreLocation;
-
-	@Autowired
-	private Environment environment;
 
 	/* (non-Javadoc)
 	 * @see io.mosip.registration.service.StorageService#storeToDisk(java.lang.String, byte[], byte[])
@@ -54,9 +46,8 @@ public class StorageServiceImpl implements StorageService {
 			// Generate the file path for storing the Encrypted Packet and Acknowledgement
 			// Receipt
 			String seperator="/";
-			String filePath = packetStoreLocation + seperator
-					+ formatDate(new Date(), environment.getProperty(RegistrationConstants.PACKET_STORE_DATE_FORMAT))
-							.concat(seperator).concat(registrationId);
+			String filePath = String.valueOf(ApplicationContext.map().get(RegistrationConstants.PACKET_STORE_LOCATION)).concat(seperator).concat(formatDate(new Date(), String.valueOf(ApplicationContext.map().get(RegistrationConstants.PACKET_STORE_DATE_FORMAT))))
+					.concat(seperator).concat(registrationId);
 			// Storing the Encrypted Registration Packet as zip
 			FileUtils.copyToFile(new ByteArrayInputStream(CryptoUtil.encodeBase64(packet).getBytes()), new File(filePath.concat(ZIP_FILE_EXTENSION)));
 

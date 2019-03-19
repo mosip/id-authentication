@@ -19,6 +19,7 @@ import org.mockito.junit.MockitoRule;
 import io.mosip.registration.dao.GlobalParamName;
 import io.mosip.registration.dao.impl.GlobalParamDAOImpl;
 import io.mosip.registration.entity.GlobalParam;
+import io.mosip.registration.entity.id.GlobalParamId;
 import io.mosip.registration.repositories.GlobalParamRepository;
 
 public class GlobalParamDAOTest {
@@ -49,13 +50,14 @@ public class GlobalParamDAOTest {
 		globalContextParamDAOImpl.saveAll(params);
 	}
 	@Test
-	public void get()
-	{  
+	public void get() {  
 		GlobalParam globalParam=new GlobalParam();
 		globalParam.setName("name");
-		Mockito.when(globalParamRepository.findByName(Mockito.anyString())).thenReturn(globalParam);
+		GlobalParamId globalParamId = new GlobalParamId();
+		globalParamId.setCode("code");
+		Mockito.when(globalParamRepository.findById(Mockito.any(),Mockito.any())).thenReturn(globalParam);
 		//globalContextParamDAOImpl.get("name");
-		assertEquals(globalParam.getName(), globalContextParamDAOImpl.get("name").getName());
+		assertEquals(globalParam.getName(), globalContextParamDAOImpl.get(globalParamId).getName());
 	}  
 	
 	@Test
