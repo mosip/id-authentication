@@ -1,6 +1,7 @@
 package io.mosip.kernel.uingenerator.verticle;
 
 import org.springframework.context.ApplicationContext;
+import org.springframework.core.env.Environment;
 
 import io.mosip.kernel.uingenerator.constant.UinGeneratorConstant;
 import io.mosip.kernel.uingenerator.router.UinGeneratorRouter;
@@ -14,7 +15,10 @@ import io.vertx.core.Future;
  * @since 1.0.0
  *
  */
+
 public class UinGeneratorServerVerticle extends AbstractVerticle {
+
+	Environment environment;
 
 	/**
 	 * Field for UinGeneratorRouter
@@ -29,6 +33,7 @@ public class UinGeneratorServerVerticle extends AbstractVerticle {
 	 */
 	public UinGeneratorServerVerticle(final ApplicationContext context) {
 		uinGeneratorRouter = (UinGeneratorRouter) context.getBean("uinGeneratorRouter");
+		environment = context.getEnvironment();
 	}
 
 	/*
@@ -39,13 +44,14 @@ public class UinGeneratorServerVerticle extends AbstractVerticle {
 	@Override
 	public void start(Future<Void> future) {
 		vertx.createHttpServer().requestHandler(uinGeneratorRouter.createRouter(vertx))
-				.listen(config().getInteger(UinGeneratorConstant.HTTP_PORT, 8080), result -> {
-					if (result.succeeded()) {
-						uinGeneratorRouter.checkAndGenerateUins(vertx);
-						future.complete();
-					} else {
-						future.fail(result.cause());
-					}
-				});
+				.listen(config().getInteger(UinGeneratorConstant.HTTP_PORT,
+						Integer.parseInt(environment.getProperty(UinGeneratorConstant.SERVER_PORT))), result -> {
+							if (result.succeeded()) {
+								uinGeneratorRouter.checkAndGenerateUins(vertx);
+								future.complete();
+							} else {
+								future.fail(result.cause());
+							}
+						});
 	}
 }

@@ -24,12 +24,12 @@ public class IdAuthenticationAppExceptionTest {
 	
 	@Test(expected=IdAuthenticationAppException.class)
 	public void IdAuthenticationAppExceptionConstant() throws IdAuthenticationAppException {
-		throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.OTP_NOT_PRESENT);
+		throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.OTP_GENERATION_FAILED);
 	}
 	
 	@Test(expected=IdAuthenticationAppException.class)
 	public void IdAuthenticationAppExceptionConstantThrowable() throws IdAuthenticationAppException {
-		throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.OTP_NOT_PRESENT, null);
+		throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.OTP_GENERATION_FAILED, null);
 	}
 
 }

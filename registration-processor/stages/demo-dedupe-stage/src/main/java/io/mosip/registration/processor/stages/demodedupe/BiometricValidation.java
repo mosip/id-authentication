@@ -32,8 +32,8 @@ public class BiometricValidation {
 		 * authResponseDTO.getStatus().equalsIgnoreCase("y");
 		 */
 		
-		boolean isValid= false;	
-		List<DemographicInfoDto> applicantDemoDto = packetInfoDao.findDemoById(regId);
+		boolean isValid= true;
+		/*List<DemographicInfoDto> applicantDemoDto = packetInfoDao.findDemoById(regId);
 		for (DemographicInfoDto demoDto : applicantDemoDto) {
 			Calendar calendar = new GregorianCalendar();
 			calendar.setTime(demoDto.getDob());
@@ -42,7 +42,7 @@ public class BiometricValidation {
 				isValid=true;
 			}
 			
-		}				
+		}*/
 		return isValid;
 	}
 }

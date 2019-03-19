@@ -41,12 +41,13 @@ public class DemoAuthServiceImpl implements DemoAuthService {
 	 * @param listMatchInputs the list match inputs
 	 * @param authRequestDTO    the demo DTO
 	 * @param demoEntity     the demo entity
+	 * @param partnerId 
 	 * @return the match output
 	 * @throws IdAuthenticationBusinessException the id authentication business exception
 	 */
 	public List<MatchOutput> getMatchOutput(List<MatchInput> listMatchInputs, AuthRequestDTO authRequestDTO,
-			Map<String, List<IdentityInfoDTO>> demoEntity) throws IdAuthenticationBusinessException {
-		return idInfoHelper.matchIdentityData(authRequestDTO, demoEntity, listMatchInputs);
+			Map<String, List<IdentityInfoDTO>> demoEntity, String partnerId) throws IdAuthenticationBusinessException {
+		return idInfoHelper.matchIdentityData(authRequestDTO, demoEntity, listMatchInputs, partnerId);
 	}
 
 	/*
@@ -56,7 +57,7 @@ public class DemoAuthServiceImpl implements DemoAuthService {
 	 * getDemoStatus(io.mosip.authentication.core.dto.indauth.AuthRequestDTO)
 	 */
 	public AuthStatusInfo authenticate(AuthRequestDTO authRequestDTO, String uin,
-			Map<String, List<IdentityInfoDTO>> demoEntity) throws IdAuthenticationBusinessException {
+			Map<String, List<IdentityInfoDTO>> demoEntity,String partnerId) throws IdAuthenticationBusinessException {
 
 		if (demoEntity == null || demoEntity.isEmpty()) {
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.SERVER_ERROR);
@@ -65,7 +66,7 @@ public class DemoAuthServiceImpl implements DemoAuthService {
 		List<MatchInput> listMatchInputs = constructMatchInput(authRequestDTO);
 
 		List<MatchOutput> listMatchOutputs = getMatchOutput(listMatchInputs, authRequestDTO,
-				demoEntity);
+				demoEntity, partnerId);
 		// Using AND condition on the match output for Bio auth.
 		boolean demoMatched = !listMatchOutputs.isEmpty() && listMatchOutputs.stream().allMatch(MatchOutput::isMatched);
 

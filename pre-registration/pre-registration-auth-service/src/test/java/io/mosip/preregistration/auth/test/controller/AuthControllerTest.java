@@ -57,9 +57,9 @@ public class AuthControllerTest {
 	private AuthNResponse authNResposne;
 	
 	
-	private MainResponseDTO<ResponseEntity<AuthNResponse>> serviceResponse;
+	private MainResponseDTO<ResponseEntity<String>> serviceResponse;
 	
-	private ResponseEntity<AuthNResponse> responseEntity;
+	private ResponseEntity<String> responseEntity;
 	
 	private Object jsonObject = null;
 	
@@ -101,7 +101,7 @@ public class AuthControllerTest {
 		HttpHeaders headers=new HttpHeaders();
 		headers.add("Set-Cookie","AuthToken=MOSIP");
 		authNResposne=new AuthNResponse("success");
-		responseEntity=new ResponseEntity<AuthNResponse>(authNResposne, headers, HttpStatus.OK);
+		responseEntity=new ResponseEntity<String>("Validation Successful", headers, HttpStatus.OK);
 		serviceResponse=new MainResponseDTO<>();
 		serviceResponse.setId("id");
 		serviceResponse.setResponse(responseEntity);

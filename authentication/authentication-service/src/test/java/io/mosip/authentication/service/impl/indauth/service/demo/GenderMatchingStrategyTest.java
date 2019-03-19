@@ -79,7 +79,7 @@ public class GenderMatchingStrategyTest {
 	 * 
 	 * @throws IdAuthenticationBusinessException
 	 */
-	@Test(expected = IdAuthenticationBusinessException.class)
+	@Test
 	public void TestInvalidExactMatchingStrategyFunction() throws IdAuthenticationBusinessException {
 		Map<String, Object> matchProperties = new HashMap<>();
 		MatchFunction matchFunction = GenderMatchingStrategy.EXACT.getMatchFunction();

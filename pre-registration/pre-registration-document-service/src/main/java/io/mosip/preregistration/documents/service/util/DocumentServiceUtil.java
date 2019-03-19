@@ -10,9 +10,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
@@ -21,6 +19,7 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -42,13 +41,14 @@ import io.mosip.kernel.core.util.exception.JsonParseException;
 import io.mosip.kernel.core.virusscanner.exception.VirusScannerException;
 import io.mosip.kernel.core.virusscanner.spi.VirusScanner;
 import io.mosip.preregistration.core.code.StatusCodes;
+import io.mosip.preregistration.core.common.dto.DemographicResponseDTO;
 import io.mosip.preregistration.core.common.dto.MainListResponseDTO;
 import io.mosip.preregistration.core.common.dto.MainRequestDTO;
+import io.mosip.preregistration.core.common.dto.MainResponseDTO;
 import io.mosip.preregistration.core.config.LoggerConfiguration;
 import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
 import io.mosip.preregistration.core.util.HashUtill;
 import io.mosip.preregistration.core.util.UUIDGeneratorUtil;
-import io.mosip.preregistration.documents.code.RequestCodes;
 import io.mosip.preregistration.documents.dto.DocumentRequestDTO;
 import io.mosip.preregistration.documents.entity.DocumentEntity;
 import io.mosip.preregistration.documents.errorcodes.ErrorCodes;
@@ -107,23 +107,7 @@ public class DocumentServiceUtil {
 	 */
 	private static Logger log = LoggerConfiguration.logConfig(DocumentServiceUtil.class);
 
-	/**
-	 * This method adds the initial request values to inputValidation map
-	 * 
-	 * @param docReqDto
-	 *            pass the document Request
-	 * @return inputValidation map
-	 */
-	public Map<String, String> prepareRequestParamMap(MainRequestDTO<DocumentRequestDTO> docReqDto) {
-		log.info("sessionId", "idType", "id", "In prepareRequestParamMap method of document service util");
-		Map<String, String> inputValidation = new HashMap<>();
-		inputValidation.put(RequestCodes.id.toString(), docReqDto.getId());
-		inputValidation.put(RequestCodes.ver.toString(), docReqDto.getVer());
-		inputValidation.put(RequestCodes.reqTime.toString(),
-				new SimpleDateFormat(utcDateTimePattern).format(docReqDto.getReqTime()));
-		inputValidation.put(RequestCodes.request.toString(), docReqDto.getRequest().toString());
-		return inputValidation;
-	}
+
 
 	/**
 	 * This method is used to assign the input JSON values to DTO
@@ -151,8 +135,8 @@ public class DocumentServiceUtil {
 		DocumentRequestDTO documentDto = (DocumentRequestDTO) JsonUtils.jsonStringToJavaObject(DocumentRequestDTO.class,
 				docDTOData.toString());
 		uploadReqDto.setId(documentData.get("id").toString());
-		uploadReqDto.setVer(documentData.get("ver").toString());
-		uploadReqDto.setReqTime(new SimpleDateFormat(utcDateTimePattern).parse(documentData.get("reqTime").toString()));
+		uploadReqDto.setVersion(documentData.get("ver").toString());
+		uploadReqDto.setRequesttime(new SimpleDateFormat(utcDateTimePattern).parse(documentData.get("reqTime").toString()));
 		uploadReqDto.setRequest(documentDto);
 		return uploadReqDto;
 	}
@@ -364,7 +348,6 @@ public class DocumentServiceUtil {
 	}
 
 	public boolean callGetPreRegInfoRestService(String preId) {
-		boolean flag = false;
 		log.info("sessionId", "idType", "id", "In callGetPreRegInfoRestService method of document service util");
 		try {
 			RestTemplate restTemplate = restTemplateBuilder.build();
@@ -372,18 +355,16 @@ public class DocumentServiceUtil {
 					.queryParam("pre_registration_id", preId);
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
-			HttpEntity<MainListResponseDTO<?>> httpEntity = new HttpEntity<>(headers);
+			HttpEntity<MainListResponseDTO<DemographicResponseDTO>> httpEntity = new HttpEntity<>(headers);
 			String uriBuilder = builder.build().encode().toUriString();
 			log.info("sessionId", "idType", "id", "In callGetPreRegInfoRestService method of document service util url "+uriBuilder);
-			@SuppressWarnings("rawtypes")
-			ResponseEntity<MainListResponseDTO> respEntity = restTemplate.exchange(uriBuilder, HttpMethod.GET,
-					httpEntity, MainListResponseDTO.class);
-			if (respEntity.getBody().isStatus()) {
-				flag = true;
-			} else {
-				throw new DemographicGetDetailsException(respEntity.getBody().getErr().getErrorCode(),
-						respEntity.getBody().getErr().getMessage());
-			}
+			ResponseEntity<MainResponseDTO<DemographicResponseDTO>> respEntity = restTemplate.exchange(uriBuilder, HttpMethod.GET,httpEntity
+					,new ParameterizedTypeReference<MainResponseDTO<DemographicResponseDTO>>() {});
+			if (respEntity.getBody().getErrors()!=null) {
+				throw new DemographicGetDetailsException(respEntity.getBody().getErrors().get(0).getErrorCode(),
+						respEntity.getBody().getErrors().get(0).getMessage());
+			} 
+			
 		} catch (RestClientException ex) {
 			log.error("sessionId", "idType", "id",
 					"In callGetPreRegInfoRestService method of document service util- " + ex.getMessage());
@@ -391,7 +372,7 @@ public class DocumentServiceUtil {
 			throw new DemographicGetDetailsException(ErrorCodes.PRG_PAM_DOC_020.toString(),
 					ErrorMessages.DEMOGRAPHIC_GET_RECORD_FAILED.toString(), ex.getCause());
 		}
-		return flag;
+		return true;
 	}
 
 }

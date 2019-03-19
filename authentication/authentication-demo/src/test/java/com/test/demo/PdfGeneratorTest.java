@@ -11,7 +11,7 @@ import org.springframework.test.context.TestContext;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.context.WebApplicationContext;
 
-import io.mosip.demo.authentication.service.controller.PDFGenerator;
+import io.mosip.authentication.demo.service.controller.PDFGenerator;
 
 
 /**

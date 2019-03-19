@@ -2,12 +2,14 @@ package io.mosip.authentication.service.impl.indauth.service.demo;
 
 import java.util.Map;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
+import io.mosip.authentication.core.dto.indauth.LanguageType;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.indauth.match.MatchFunction;
 import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
 import io.mosip.authentication.core.spi.indauth.match.TextMatchingStrategy;
 import io.mosip.authentication.core.spi.indauth.match.ValidateOtpFunction;
+import io.mosip.authentication.service.impl.indauth.service.pin.PinAuthType;
 import io.mosip.kernel.core.logger.spi.Logger;
 
 /**
@@ -24,8 +26,11 @@ public enum OtpMatchingStrategy implements TextMatchingStrategy {
 				boolean otpValid = func.validateOtp((String) reqInfo, (String) entityInfo);
 				return otpValid ? 100 : 0;
 			} else {
-				logError(IdAuthenticationErrorConstants.UNKNOWN_ERROR);
-				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNKNOWN_ERROR);
+				logError(IdAuthenticationErrorConstants.INVALID_OTP);
+				throw new IdAuthenticationBusinessException(
+						IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+						String.format(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(),
+								PinAuthType.OTP.getType()));
 			}
 		} else {
 			logError(IdAuthenticationErrorConstants.INVALID_OTP);

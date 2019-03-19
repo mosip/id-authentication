@@ -18,7 +18,6 @@ import io.mosip.authentication.core.dto.indauth.AuthError;
 import io.mosip.authentication.core.dto.indauth.AuthResponseDTO;
 import io.mosip.authentication.core.dto.indauth.AuthStatusInfo;
 import io.mosip.authentication.core.dto.indauth.AuthUsageDataBit;
-import io.mosip.authentication.service.impl.indauth.service.demo.DemoAuthType;
 
 /**
  * {@code AuthResponseBuilderTest} - Test class for {@link AuthResponseBuilder}
@@ -269,8 +268,8 @@ public class AuthResponseBuilderTest {
 		AuthStatusInfoBuilder statusInfoBuilder = AuthStatusInfoBuilder.newInstance();
 		statusInfoBuilder.setStatus(true);
 		statusInfoBuilder.build();
-
-		statusInfoBuilder.addAuthUsageDataBits(AuthUsageDataBit.USED_PI_DOB);
+		statusInfoBuilder.setStatus(false);
+		//statusInfoBuilder.addAuthUsageDataBits(AuthUsageDataBit.USED_PI_DOB);
 	}
 
 	@Test
@@ -282,7 +281,7 @@ public class AuthResponseBuilderTest {
 							.setStatus(true)
 							.build())
 					.build()
-					.getStatus().equalsIgnoreCase(STATUS_SUCCESS));
+					.isStatus());
 		assertFalse(AuthResponseBuilder
 				.newInstance(dateTimePattern )
 				.addAuthStatusInfo(AuthStatusInfoBuilder
@@ -290,13 +289,13 @@ public class AuthResponseBuilderTest {
 						.setStatus(false)
 						.build())
 				.build()
-				.getStatus().equalsIgnoreCase(STATUS_SUCCESS));
+				.isStatus());
 		
 		assertEquals(AuthResponseBuilder
 				.newInstance(dateTimePattern )
 				.setTxnID("1234567890")
 				.build()
-				.getTxnID(), "1234567890");
+				.getTransactionID(), "1234567890");
 		
 		AuthResponseDTO authResponseDTO = AuthResponseBuilder
 				.newInstance(dateTimePattern)
@@ -304,7 +303,7 @@ public class AuthResponseBuilderTest {
 					.addErrors(new AuthError("102", "Error2"), new AuthError("103", "Error3"))
 					.build();
 		
-		assertTrue(authResponseDTO.getErr().size() == 3 && authResponseDTO.getErr()
+		assertTrue(authResponseDTO.getErrors().size() == 3 && authResponseDTO.getErrors()
 				.stream()
 				.map(AuthError::getErrorCode)
 				.collect(Collectors.toList())
@@ -313,16 +312,16 @@ public class AuthResponseBuilderTest {
 		
 		
 		AuthStatusInfo authStatusInfo1 = AuthStatusInfoBuilder.newInstance()
-				.addMatchInfo(DemoAuthType.PERSONAL_IDENTITY.getType(), "P", 60, PRIMARY_LANG_CODE)
-				.addAuthUsageDataBits(AuthUsageDataBit.USED_OTP, AuthUsageDataBit.MATCHED_OTP)
+				//.addMatchInfo(DemoAuthType.PERSONAL_IDENTITY.getType(), "P", 60, PRIMARY_LANG_CODE)
+				//.addAuthUsageDataBits(AuthUsageDataBit.USED_OTP, AuthUsageDataBit.MATCHED_OTP)
 				.addErrors(new AuthError("101", "Error1"))
 				.build();
 		
 		AuthStatusInfo authStatusInfo2 = AuthStatusInfoBuilder
 				.newInstance()
-				.addMatchInfo(DemoAuthType.FULL_ADDRESS.getType(), "E", 100, PRIMARY_LANG_CODE)
-				.addAuthUsageDataBits(AuthUsageDataBit.USED_PI_NAME, AuthUsageDataBit.MATCHED_PI_NAME)
-				.addAuthUsageDataBits(AuthUsageDataBit.USED_PI_EMAIL, AuthUsageDataBit.MATCHED_PI_EMAIL)
+				//.addMatchInfo(DemoAuthType.FULL_ADDRESS.getType(), "E", 100, PRIMARY_LANG_CODE)
+				//.addAuthUsageDataBits(AuthUsageDataBit.USED_PI_NAME, AuthUsageDataBit.MATCHED_PI_NAME)
+				//.addAuthUsageDataBits(AuthUsageDataBit.USED_PI_EMAIL, AuthUsageDataBit.MATCHED_PI_EMAIL)
 				.addErrors(new AuthError("102", "Error2"), new AuthError("103", "Error3"))
 				.build();
 		
@@ -333,13 +332,13 @@ public class AuthResponseBuilderTest {
 				.addAuthStatusInfo(authStatusInfo2)
 				.build();
 		
-		assertEquals(authResponseDTO2.getInfo().getMatchInfos().get(0).getAuthType(), DemoAuthType.PERSONAL_IDENTITY.getType());
+	/*	assertEquals(authResponseDTO2.getInfo().getMatchInfos().get(0).getAuthType(), DemoAuthType.PERSONAL_IDENTITY.getType());
 		assertEquals(authResponseDTO2.getInfo().getMatchInfos().get(1).getAuthType(), DemoAuthType.FULL_ADDRESS.getType());
-		assertEquals("0xc2000000c2000000", authResponseDTO2.getInfo().getUsageData());
+		assertEquals("0xc2000000c2000000", authResponseDTO2.getInfo().getUsageData());*/
 		
-		assertEquals(3, authResponseDTO2.getErr().size());
+		assertEquals(3, authResponseDTO2.getErrors().size());
 
-		assertTrue(authResponseDTO2.getErr().stream().map(AuthError::getErrorCode).collect(Collectors.toList())
+		assertTrue(authResponseDTO2.getErrors().stream().map(AuthError::getErrorCode).collect(Collectors.toList())
 				.containsAll(Arrays.asList("101", "102", "103")));
 
 	}

@@ -77,7 +77,7 @@ public class IdAuthServiceImplTest {
 
 	@Mock
 	IdAuthService idAuthService;
-	
+
 	@Mock
 	AutnTxnRepository autntxnrepository;
 	@Mock
@@ -92,35 +92,17 @@ public class IdAuthServiceImplTest {
 		ReflectionTestUtils.setField(idAuthServiceImpl, "auditFactory", auditFactory);
 		ReflectionTestUtils.setField(idAuthServiceImpl, "restFactory", restFactory);
 		ReflectionTestUtils.setField(idAuthServiceImpl, "vidRepository", vidRepository);
-		ReflectionTestUtils.setField(idAuthServiceImpl, "env", env);
-
-		/*
-		 * ReflectionTestUtils.setField(idAuthServiceImplMock, "idRepoService",
-		 * idRepoService); ReflectionTestUtils.setField(idAuthServiceImplMock,
-		 * "auditFactory", auditFactory);
-		 * ReflectionTestUtils.setField(idAuthServiceImplMock, "restFactory",
-		 * restFactory); ReflectionTestUtils.setField(idAuthServiceImplMock,
-		 * "uinRepository", uinRepository);
-		 * ReflectionTestUtils.setField(idAuthServiceImplMock, "vidRepository",
-		 * vidRepository);testProcessIdType_IdTypeIsD
-		 */
-	}
-
-	@Ignore
-	@Test
-	public void testGetIdRepoByUinNumber() throws IdAuthenticationBusinessException {
-
-		ReflectionTestUtils.invokeMethod(idAuthServiceImpl, "getIdRepoByUinNumber", Mockito.anyString(),
-				Mockito.anyBoolean());
 
 	}
+
+
 
 	@Test
 	public void testAuditData() {
 		ReflectionTestUtils.invokeMethod(idAuthServiceImpl, "auditData");
 	}
 
-	@Test(expected=IdAuthenticationBusinessException.class)
+	@Test(expected = IdAuthenticationBusinessException.class)
 	public void testGetIdRepoByVidNumberVIDExpired() throws Throwable {
 		try {
 			ReflectionTestUtils.invokeMethod(idAuthServiceImpl, "getIdRepoByVID", "232343234", false);
@@ -129,24 +111,35 @@ public class IdAuthServiceImplTest {
 		}
 	}
 
-	@Ignore
 	@Test
 	public void testGetIdRepoByVidAsRequest_IsNotNull() throws IdAuthenticationBusinessException {
 		Map<String, Object> idRepo = new HashMap<>();
 		idRepo.put("uin", "476567");
+		idRepo.put("vid", "476567");
+		VIDEntity vidEntity = new VIDEntity();
+		vidEntity.setExpiryDate(LocalDateTime.of(2100, 12, 31, 6, 45));
+		vidEntity.setActive(true);
+		vidEntity.setUin("476567");
+		Optional<VIDEntity> optVID = Optional.of(vidEntity);
+		Mockito.when(vidRepository.findUinByVid(Mockito.any())).thenReturn(optVID);
 		Mockito.when(idRepoService.getIdenity(Mockito.anyString(), Mockito.anyBoolean())).thenReturn(idRepo);
 		Object invokeMethod = ReflectionTestUtils.invokeMethod(idAuthServiceImpl, "getIdRepoByVidAsRequest",
-				Mockito.anyString());
+				Mockito.anyString(),false);
 		assertNotNull(invokeMethod);
 	}
 
 	@Test
 	public void testProcessIdType_IdTypeIsD() throws IdAuthenticationBusinessException {
-		String idvIdType = "D";
+		String idvIdType = "UIN";
 		String idvId = "875948796";
 		Map<String, Object> idRepo = new HashMap<>();
 		idRepo.put("uin", "476567");
-
+		VIDEntity vidEntity = new VIDEntity();
+		vidEntity.setExpiryDate(LocalDateTime.of(2100, 12, 31, 6, 45));
+		vidEntity.setActive(true);
+		vidEntity.setUin("476567");
+		Optional<VIDEntity> optVID = Optional.of(vidEntity);
+		Mockito.when(vidRepository.findUinByVid(Mockito.any())).thenReturn(optVID);
 		ReflectionTestUtils.invokeMethod(idAuthServiceImpl, "processIdType", idvIdType, idvId, false);
 	}
 
@@ -156,21 +149,21 @@ public class IdAuthServiceImplTest {
 		String idvId = "875948796";
 		Map<String, Object> idRepo = new HashMap<>();
 		idRepo.put("uin", "476567");
-		VIDEntity vidEntity =new VIDEntity(); 
+		VIDEntity vidEntity = new VIDEntity();
 		vidEntity.setExpiryDate(LocalDateTime.of(2100, 12, 31, 6, 45));
 		vidEntity.setActive(true);
 		vidEntity.setUin("476567");
-		Optional<VIDEntity> optVID=Optional.of(vidEntity);
+		Optional<VIDEntity> optVID = Optional.of(vidEntity);
 		Mockito.when(vidRepository.findUinByVid(Mockito.any())).thenReturn(optVID);
-		Mockito.when(idRepoService.getIdenity(Mockito.any(),Mockito.anyBoolean())).thenReturn(idRepo);
-		Map<String,Object> idResponseMap=	(Map<String,Object>)ReflectionTestUtils.invokeMethod(idAuthServiceImpl, "processIdType", idvIdType, idvId, false);
+		Mockito.when(idRepoService.getIdenity(Mockito.any(), Mockito.anyBoolean())).thenReturn(idRepo);
+		Map<String, Object> idResponseMap = (Map<String, Object>) ReflectionTestUtils.invokeMethod(idAuthServiceImpl,
+				"processIdType", idvIdType, idvId, false);
 		assertEquals("476567", idResponseMap.get("uin"));
 	}
 
-	@Ignore
 	@Test(expected = IdAuthenticationBusinessException.class)
 	public void processIdtypeVIDFailed() throws IdAuthenticationBusinessException {
-		String idvIdType = "V";
+		String idvIdType = "VID";
 		String idvId = "875948796";
 
 		IdAuthenticationBusinessException idBusinessException = new IdAuthenticationBusinessException(
@@ -187,7 +180,7 @@ public class IdAuthServiceImplTest {
 
 	@Test(expected = IdAuthenticationBusinessException.class)
 	public void processIdtypeUINFailed() throws IdAuthenticationBusinessException {
-		String idvIdType = "D";
+		String idvIdType = "UIN";
 		String idvId = "875948796";
 
 		IdAuthenticationBusinessException idBusinessException = new IdAuthenticationBusinessException(
@@ -205,10 +198,8 @@ public class IdAuthServiceImplTest {
 	@Test
 	public void testSaveAutnTxn() {
 		OtpRequestDTO otpRequestDto = getOtpRequestDTO();
-		String idvId = otpRequestDto.getIdvId();
-		String idvIdType = otpRequestDto.getIdvIdType();
-		String reqTime = otpRequestDto.getReqTime();
-		String txnId = otpRequestDto.getTxnID();
+		String reqTime = otpRequestDto.getRequestTime();
+		String txnId = otpRequestDto.getTransactionID();
 
 		RequestType requestType = RequestType.OTP_AUTH;
 
@@ -225,17 +216,13 @@ public class IdAuthServiceImplTest {
 	private OtpRequestDTO getOtpRequestDTO() {
 		OtpRequestDTO otpRequestDto = new OtpRequestDTO();
 		otpRequestDto.setId("id");
-		otpRequestDto.setTspID("2345678901234");
-		otpRequestDto.setIdvIdType(IdType.UIN.getType());
-		otpRequestDto.setReqTime(new SimpleDateFormat(env.getProperty("datetime.pattern")).format(new Date()));
-		otpRequestDto.setTxnID("2345678901234");
-		otpRequestDto.setIdvId("2345678901234");
-		// otpRequestDto.setVer("1.0");
+		otpRequestDto.setRequestTime(new SimpleDateFormat(env.getProperty("datetime.pattern")).format(new Date()));
+		otpRequestDto.setTransactionID("2345678901234");
+//		otpRequestDto.get("2345678901234");
 
 		return otpRequestDto;
 	}
-	
-	
+
 	@Test
 	public void testGetIdInfo()
 			throws IdAuthenticationBusinessException, JsonParseException, JsonMappingException, IOException {
@@ -372,5 +359,54 @@ public class IdAuthServiceImplTest {
 		@SuppressWarnings("unchecked")
 		Map<String, Object> idResponseDTO = mapper.readValue(value, Map.class);
 		ReflectionTestUtils.invokeMethod(idAuthServiceImpl, "getIdInfo", idResponseDTO);
+	}
+	
+	@Test(expected = IdAuthenticationBusinessException.class)
+	public void  testIdRepoServiceException_UINDeActivated() throws Throwable {
+		try {
+		String idvIdType = "UIN";
+		String idvId = "875948796";
+		Map<String, Object> idRepo = new HashMap<>();
+		idRepo.put("uin", "476567");
+		VIDEntity vidEntity = new VIDEntity();
+		vidEntity.setExpiryDate(LocalDateTime.of(2100, 12, 31, 6, 45));
+		vidEntity.setActive(true);
+		vidEntity.setUin("476567");
+		Optional<VIDEntity> optVID = Optional.of(vidEntity);
+		IdAuthenticationBusinessException idBusinessException = new IdAuthenticationBusinessException(
+				IdAuthenticationErrorConstants.UIN_DEACTIVATED);
+
+		Mockito.when(idRepoService.getIdenity(Mockito.anyString(), Mockito.anyBoolean()))
+				.thenThrow(idBusinessException);
+		Mockito.when(vidRepository.findUinByVid(Mockito.any())).thenReturn(optVID);
+		Object invokeMethod = ReflectionTestUtils.invokeMethod(idAuthServiceImpl, "getIdRepoByVidAsRequest",
+				Mockito.anyString(),false);
+		
+		} catch (UndeclaredThrowableException e) {
+			throw e.getCause();
+		}
+	}
+	@Test(expected = IdAuthenticationBusinessException.class)
+	public void  testIdRepoServiceException_InvalidUIN() throws Throwable {
+		try {
+			Map<String, Object> idRepo = new HashMap<>();
+			idRepo.put("uin", "476567");
+			VIDEntity vidEntity = new VIDEntity();
+			vidEntity.setExpiryDate(LocalDateTime.of(2100, 12, 31, 6, 45));
+			vidEntity.setActive(true);
+			vidEntity.setUin("476567");
+			Optional<VIDEntity> optVID = Optional.of(vidEntity);
+			IdAuthenticationBusinessException idBusinessException = new IdAuthenticationBusinessException(
+					IdAuthenticationErrorConstants.INVALID_UIN);
+			
+			Mockito.when(idRepoService.getIdenity(Mockito.anyString(), Mockito.anyBoolean()))
+			.thenThrow(idBusinessException);
+			Mockito.when(vidRepository.findUinByVid(Mockito.any())).thenReturn(optVID);
+			Object invokeMethod = ReflectionTestUtils.invokeMethod(idAuthServiceImpl, "getIdRepoByVidAsRequest",
+					Mockito.anyString(),false);
+			
+		} catch (UndeclaredThrowableException e) {
+			throw e.getCause();
+		}
 	}
 }

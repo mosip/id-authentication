@@ -14,8 +14,8 @@ import java.util.stream.Stream;
 
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.AuthUsageDataBit;
-import io.mosip.authentication.core.dto.indauth.IdentityDTO;
 import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
+import io.mosip.authentication.core.dto.indauth.RequestDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 
 /**
@@ -94,7 +94,7 @@ public interface MatchType {
 	 *
 	 * @return
 	 */
-	public Function<IdentityDTO, Map<String, List<IdentityInfoDTO>>> getIdentityInfoFunction();
+	public Function<RequestDTO, Map<String, List<IdentityInfoDTO>>> getIdentityInfoFunction();
 
 	/**
 	 * Get the Identity Info Function.
@@ -111,24 +111,10 @@ public interface MatchType {
 	 * @param identity the IdentityDTO
 	 * @return the list of IdentityInfoDTO
 	 */
-	public default List<IdentityInfoDTO> getIdentityInfoList(IdentityDTO identity) {
+	public default List<IdentityInfoDTO> getIdentityInfoList(RequestDTO identity) {
 		return getIdentityInfoFunction().apply(identity).values().stream().filter(Objects::nonNull)
 				.flatMap(List::stream).collect(Collectors.toList());
 	}
-
-	/**
-	 * Gets the used bit
-	 *
-	 * @return the used bit
-	 */
-	public AuthUsageDataBit getUsedBit();
-
-	/**
-	 * Gets the matched bit
-	 *
-	 * @return the matched bit
-	 */
-	public AuthUsageDataBit getMatchedBit();
 
 	/**
 	 * Gets the Entity info mapper function

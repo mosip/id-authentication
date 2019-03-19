@@ -1,0 +1,11 @@
+{
+  "id": "string",
+  "ver": "string",
+  "reqTime": "2019-03-15T09:17:53.200Z",
+  "request": {
+    "registartion_center_id": "string",
+    "pre_registration_ids": [
+      "98746563542672"
+    ]
+  }
+}

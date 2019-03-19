@@ -60,7 +60,13 @@ public class UinGeneratorVerticle extends AbstractVerticle {
 					List<UinEntity> uins = uinProcesser.generateUins();
 					uinWriter.write(uins);
 					future.complete();
-				}, res -> LOGGER.info("Generated and persisted uins"));
+				}, result -> {
+					if (result.succeeded()) {
+						//LOGGER.info("Generated and persisted uins");
+					} else {
+						//LOGGER.info("Uin Genaration failed", result.cause());
+					}
+				});
 			}
 		});
 	}

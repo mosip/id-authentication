@@ -29,7 +29,7 @@ public interface MachineHistoryRepository extends BaseRepository<MachineHistory,
 	 * @param effectDtimes
 	 *            effective Date and time provided by user in the format
 	 *            "yyyy-mm-ddThh:mm:ss"
-	 * @return list of {@link MachineHistory}
+	 * @return list of {@link MachineHistory} - list of machine history
 	 */
 	List<MachineHistory> findByIdAndLangCodeAndEffectDateTimeLessThanEqualAndIsDeletedFalse(String id, String langCode,
 			LocalDateTime effectDtimes);

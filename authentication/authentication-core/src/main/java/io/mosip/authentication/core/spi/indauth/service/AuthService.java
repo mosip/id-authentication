@@ -23,5 +23,5 @@ public interface AuthService {
 	 * @param idInfo the id info
 	 * @return the auth status info
 	 */
-	public AuthStatusInfo authenticate(AuthRequestDTO authRequestDTO,String uin,Map<String,List<IdentityInfoDTO>> idInfo)throws IdAuthenticationBusinessException;
+	public AuthStatusInfo authenticate(AuthRequestDTO authRequestDTO,String uin,Map<String,List<IdentityInfoDTO>> idInfo,String partnerId)throws IdAuthenticationBusinessException;
 }

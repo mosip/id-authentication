@@ -8,7 +8,7 @@ import lombok.Data;
 
 
 /**
- * The Class MatchOutput.
+ * The Class MatchOutput is used to get the status of the authentication.
  *
  * @author Arun Bose
  * Instantiates a new match output.
@@ -28,6 +28,8 @@ public class MatchOutput {
 	
 	/** The demo match type. */
 	private MatchType matchType;
+	
+	private String language;
 	
 	
 }	

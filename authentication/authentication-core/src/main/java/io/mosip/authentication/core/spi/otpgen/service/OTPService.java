@@ -19,7 +19,8 @@ public interface OTPService {
 	 * @return OtpResponseDTO object return.
 	 * @throws IdAuthenticationBusinessException exception
 	 */
-	
-	public OtpResponseDTO generateOtp(OtpRequestDTO otpRequest) throws IdAuthenticationBusinessException;
+
+	public OtpResponseDTO generateOtp(OtpRequestDTO otpRequest, String partnerID)
+			throws IdAuthenticationBusinessException;
 
 }
