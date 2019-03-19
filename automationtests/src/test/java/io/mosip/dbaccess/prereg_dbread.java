@@ -109,7 +109,6 @@ public class prereg_dbread {
 		
 		/*String queryString=
                 "  SELECT * FROM prereg.applicant_demographic where prereg_id='74157648721735' ";
-
 	*/	
 																																						
 		Query query = session.createSQLQuery(queryString);

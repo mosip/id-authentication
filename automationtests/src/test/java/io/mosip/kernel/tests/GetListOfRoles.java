@@ -24,13 +24,18 @@ import org.testng.asserts.SoftAssert;
 import org.testng.internal.BaseTestMethod;
 import org.testng.internal.TestResult;
 
+import com.google.common.base.Verify;
+
 import io.mosip.service.ApplicationLibrary;
 import io.mosip.service.AssertKernel;
 import io.mosip.service.BaseTestCase;
 import io.mosip.util.ReadFolder;
 import io.mosip.util.ResponseRequestMapper;
 import io.restassured.response.Response;
-
+/**
+ * @author Arunakumar Rati
+ *
+ */
 public class GetListOfRoles extends BaseTestCase implements ITest{
 
 	public GetListOfRoles() {
@@ -109,7 +114,7 @@ public class GetListOfRoles extends BaseTestCase implements ITest{
 		 * Removing the unstable attributes from response	
 		 */
 		ArrayList<String> listOfElementToRemove=new ArrayList<String>();
-		listOfElementToRemove.add("timestamp");
+		listOfElementToRemove.add("lastSyncTime");
 		/*
 		 * Comparing expected and actual response
 		 */
@@ -133,8 +138,8 @@ public class GetListOfRoles extends BaseTestCase implements ITest{
 			setFinalStatus=false;
 		else if(finalStatus.equals("Pass"))
 			setFinalStatus=true;
-		//Verify.verify(setFinalStatus);
-		//softAssert.assertAll();
+		Verify.verify(setFinalStatus);
+		softAssert.assertAll();
 
 }
 		@Override

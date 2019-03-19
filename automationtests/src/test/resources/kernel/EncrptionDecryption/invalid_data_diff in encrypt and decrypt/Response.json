@@ -1,0 +1,10 @@
+{
+  "timestamp": 1550474597814,
+  "status": 200,
+  "errors": [
+    {
+      "errorCode": "KER-CRY-003",
+      "errorMessage": "data sent to decrypt is without key splitter or invalid"
+    }
+  ]
+}

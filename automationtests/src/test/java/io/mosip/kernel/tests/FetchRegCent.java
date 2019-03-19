@@ -50,7 +50,7 @@ public class FetchRegCent extends BaseTestCase implements ITest{
 	}
 
 	private static Logger logger = Logger.getLogger(FetchRegCent.class);
-	private static final String jiraID = "MOS-8220/8236";
+	private static final String jiraID = "MOS-8220/8236/8244";
 	private static final String moduleName = "kernel";
 	private static final String apiName = "FetchRegCent";
 	private static final String requestJsonName = "fetchRegCentRequest";

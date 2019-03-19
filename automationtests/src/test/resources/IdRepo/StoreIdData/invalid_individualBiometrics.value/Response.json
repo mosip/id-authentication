@@ -1,11 +1,12 @@
 {
 	"id": "mosip.id.create",
 	"version": "1.0",
-	"timestamp": "2019-03-07T09:42:05.593Z",
+	"timestamp": "2019-02-26T12:16:11.939Z",
 	"errors": [
 		{
-			"errorCode": "KER-IDR-002",
-			"errorMessage": "Invalid Input Parameter - identity - /identity/individualBiometrics/value"
+			"errCode": "KER-IDR-002",
+			"errMessage": "Invalid Input Parameter - identity - /identity/individualBiometrics/value"
+
 		}
 	]
 }
