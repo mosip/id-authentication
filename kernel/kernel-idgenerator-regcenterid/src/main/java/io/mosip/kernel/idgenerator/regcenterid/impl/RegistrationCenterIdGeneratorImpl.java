@@ -3,7 +3,7 @@ package io.mosip.kernel.idgenerator.regcenterid.impl;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 
-import javax.transaction.Transactional;
+import javax.persistence.EntityExistsException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -25,7 +25,6 @@ import io.mosip.kernel.idgenerator.regcenterid.repository.RegistrationCenterIdRe
  *
  */
 @Component
-@Transactional
 public class RegistrationCenterIdGeneratorImpl implements RegistrationCenterIdGenerator<String> {
 
 	/**
@@ -48,7 +47,7 @@ public class RegistrationCenterIdGeneratorImpl implements RegistrationCenterIdGe
 	 */
 	@Override
 	public String generateRegistrationCenterId() {
-		int generatedRCID;
+		int generatedRCID = 0;
 
 		final int initialValue = MathUtils.getPow(RegistrationCenterIdConstant.ID_BASE.getValue(),
 				registrationCenterIdLength - 1);
@@ -63,21 +62,33 @@ public class RegistrationCenterIdGeneratorImpl implements RegistrationCenterIdGe
 					RegistrationCenterIdConstant.REG_CEN_ID_FETCH_EXCEPTION.getErrorMessage(),
 					dataAccessLayerException.getCause());
 		}
-		if (registrationCenterId == null) {
-			registrationCenterId = new RegistrationCenterId();
-			registrationCenterId.setRcid(initialValue);
-			generatedRCID = initialValue;
-			registrationCenterId.setCreatedBy("default@user");
-			registrationCenterId.setCreatedDateTime(LocalDateTime.now(ZoneId.of("UTC")));
-			registrationCenterId.setUpdatedBy("default@user");
-			registrationCenterId.setUpdatedDateTime(null);
-			registrationCenterIdRepository.save(registrationCenterId);
-		} else {
-			try {
-				registrationCenterIdRepository.updateRCID(registrationCenterId.getRcid() + 1,
-						registrationCenterId.getRcid(), LocalDateTime.now(ZoneId.of("UTC")));
+		try {
+			if (registrationCenterId == null) {
+				registrationCenterId = new RegistrationCenterId();
+				registrationCenterId.setRcid(initialValue);
+				generatedRCID = initialValue;
+				registrationCenterId.setCreatedBy("default@user");
+				registrationCenterId.setCreatedDateTime(LocalDateTime.now(ZoneId.of("UTC")));
+				registrationCenterId.setUpdatedBy("default@user");
+				registrationCenterId.setUpdatedDateTime(null);
+				registrationCenterIdRepository.create(registrationCenterId);
+
+			} else {
 				generatedRCID = registrationCenterId.getRcid() + 1;
-			} catch (DataAccessLayerException e) {
+				RegistrationCenterId entity = new RegistrationCenterId();
+				entity.setRcid(generatedRCID);
+				entity.setCreatedDateTime(LocalDateTime.now(ZoneId.of("UTC")));
+				entity.setUpdatedDateTime(LocalDateTime.now(ZoneId.of("UTC")));
+				entity.setUpdatedBy("default@user");
+				entity.setCreatedBy("default@user");
+				registrationCenterIdRepository.create(entity);
+
+			}
+
+		} catch (DataAccessLayerException e) {
+			if (e.getCause().getClass() == EntityExistsException.class) {
+				generateRegistrationCenterId();
+			} else {
 				throw new RegistrationCenterIdServiceException(
 						RegistrationCenterIdConstant.REG_CEN_ID_INSERT_EXCEPTION.getErrorCode(),
 						RegistrationCenterIdConstant.REG_CEN_ID_INSERT_EXCEPTION.getErrorMessage(), e);

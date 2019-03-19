@@ -98,20 +98,25 @@ public class AuditLogUtil {
 		auditRequestDto.setActionTimeStamp(LocalDateTime.now(ZoneId.of("UTC")));
 		auditRequestDto.setApplicationId(AuditLogVariables.MOSIP_1.toString());
 		auditRequestDto.setApplicationName(AuditLogVariables.PREREGISTRATION.toString());
-		auditRequestDto.setCreatedBy(AuditLogVariables.SYSTEM.toString());
 		auditRequestDto.setHostIp(hostIP);
 		auditRequestDto.setHostName(hostName);
-		if (AuditLogVariables.NO_ID.toString() == null || AuditLogVariables.NO_ID.toString().isEmpty()) {
+		auditRequestDto.setCreatedBy(AuditLogVariables.SYSTEM.toString());
+		if (auditRequestDto.getId() == null || auditRequestDto.getId().toString().isEmpty()) {
 			auditRequestDto.setId(AuditLogVariables.NO_ID.toString());
 		}
+		if (auditRequestDto.getSessionUserId() == null || auditRequestDto.getSessionUserId().isEmpty()) {
+			auditRequestDto.setSessionUserId(AuditLogVariables.SYSTEM.toString());
+		}
+		if (auditRequestDto.getSessionUserName() == null ||	 auditRequestDto.getSessionUserName().isEmpty()) {
+			auditRequestDto.setSessionUserName(AuditLogVariables.SYSTEM.toString());
+		}
 		auditRequestDto.setIdType(AuditLogVariables.PRE_REGISTRATION_ID.toString());
-		auditRequestDto.setSessionUserId(AuditLogVariables.SYSTEM.toString());
-		auditRequestDto.setSessionUserName(AuditLogVariables.SYSTEM.toString());
 		callAuditManager(auditRequestDto);
 	}
 
 	public boolean callAuditManager(AuditRequestDto auditRequestDto) {
-		log.info("sessionId", "idType", "id", "In callAuditManager method of AugitLogUtil service - "+auditRequestDto);
+		log.info("sessionId", "idType", "id",
+				"In callAuditManager method of AugitLogUtil service - " + auditRequestDto);
 
 		boolean auditFlag = false;
 		try {
@@ -119,7 +124,8 @@ public class AuditLogUtil {
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON);
 			String uriBuilder = builder.build().encode(StandardCharsets.UTF_8).toUriString();
-			log.info("sessionId", "idType", "id", "In callAuditManager method of AugitLogUtil service auditUrl: "+uriBuilder);
+			log.info("sessionId", "idType", "id",
+					"In callAuditManager method of AugitLogUtil service auditUrl: " + uriBuilder);
 			ResponseEntity<AuditResponseDto> respEntity = restTemplate.postForEntity(uriBuilder, auditRequestDto,
 					AuditResponseDto.class);
 			auditFlag = respEntity.getBody().isStatus();

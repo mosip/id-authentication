@@ -22,7 +22,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.abstractverticle.MosipEventBus;
-import io.mosip.registration.processor.core.dto.config.GlobalConfig;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.notification.template.generator.dto.ResponseDto;
 import io.mosip.registration.processor.core.notification.template.generator.dto.SmsResponseDto;
@@ -52,9 +51,6 @@ public class MessageSenderStageTest {
 
 	@Mock
 	private ObjectMapper mapper;
-
-	@Mock
-	private GlobalConfig jsonObject;
 
 	@Mock
 	private RegistrationProcessorRestClientService<Object> restClientService;
@@ -92,7 +88,6 @@ public class MessageSenderStageTest {
 		stage.deployVerticle();
 	}
 
-	@SuppressWarnings("unchecked")
 	@Before
 	public void setup() throws Exception {
 		System.setProperty("registration.processor.notification.emails", "alokranjan1106@gmail.com");
@@ -101,7 +96,6 @@ public class MessageSenderStageTest {
 		System.setProperty("registration.processor.reregister.subject", "Re-Register");
 		ReflectionTestUtils.setField(stage, "notificationTypes", "SMS|EMAIL");
 
-		Mockito.when(mapper.readValue(Mockito.anyString(), Mockito.any(Class.class))).thenReturn(jsonObject);
 		Mockito.doNothing().when(registrationStatusDto).setStatusCode(any());
 		Mockito.doNothing().when(registrationStatusDto).setStatusComment(any());
 		Mockito.doNothing().when(registrationStatusService).updateRegistrationStatus(any());
@@ -234,6 +228,4 @@ public class MessageSenderStageTest {
 		stage.process(dto);
 	}
 	
-	
-
 }

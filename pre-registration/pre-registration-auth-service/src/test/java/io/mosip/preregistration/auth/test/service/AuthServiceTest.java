@@ -31,6 +31,7 @@ import io.mosip.preregistration.auth.exceptions.UserIdOtpFaliedException;
 import io.mosip.preregistration.auth.service.AuthService;
 import io.mosip.preregistration.auth.util.AuthCommonUtil;
 import io.mosip.preregistration.core.common.dto.AuthNResponse;
+import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
 import junit.framework.Assert;
 
 import static org.junit.Assert.*;
@@ -56,59 +57,77 @@ public class AuthServiceTest {
 	@Mock
 	private OtpUserDTO otpUserDto;
 	@Mock
-	private ResponseEntity<AuthNResponse> responseEntity;
+	private ResponseEntity<String> responseEntity;
 	@Mock
 	private AuthNResponse authNResposne;
 	@Autowired
+	@InjectMocks
 	private AuthService authService;
 	private List<String> list;
 	@Before
 	public void setUp() {
 		 list=new ArrayList<>();
+		 //responseEntity=new ResponseEntity<AuthNResponse>(authNResposne, HttpStatus.OK);
 		 
 	}
 	@Test
 	public void sendOtpTest() throws Exception {
 		list.add("mobile");
+		Mockito.when(authCommonUtil.validateRequest(otpRequest)).thenReturn(true);
 		Mockito.when(otpRequest.getRequest()).thenReturn(otp);
 		Mockito.when(authCommonUtil.validateUserIdAndLangCode(Mockito.any(),Mockito.any())).thenReturn(list);
 		Mockito.doNothing().when(otpUserDto).setRequest(otpUser);
 		Mockito.doReturn(responseEntity).when(authCommonUtil).getResponseEntity(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(),Mockito.any(), Mockito.any());
 		Mockito.doReturn(mainResponseDTO).when(authCommonUtil).getMainResponseDto(Mockito.any());
-		Mockito.when(responseEntity.getBody()).thenReturn(authNResposne);
+		Mockito.when(responseEntity.getBody()).thenReturn("authNResposne");
 		authNResposne.setMessage("success");
 		Mockito.doNothing().when(mainResponseDTO).setResponse(Mockito.any());
 		assertNotNull(authService.sendOTP(otpRequest));
 	}
 	
-	@Test(expected=SendOtpFailedException.class)
+	@Test(expected=InvalidRequestParameterException.class)
 	public void sendOtpTest_Exception() throws Exception {
 		Mockito.when(otpRequest.getRequest()).thenReturn(otp);
+		Mockito.when(authCommonUtil.validateRequest(otpRequest)).thenReturn(true);
 		Mockito.when(authCommonUtil.validateUserIdAndLangCode(Mockito.any(),Mockito.any())).thenReturn(list);
 		Mockito.doNothing().when(otpUserDto).setRequest(otpUser);
-		Mockito.doReturn(responseEntity).when(authCommonUtil).getResponseEntity(Mockito.any(), Mockito.any(), Mockito.any(),Mockito.any(), Mockito.any(), Mockito.any());
+		Mockito.doThrow(new InvalidRequestParameterException("errorCode", "errorMessage")).when(authCommonUtil).getResponseEntity(Mockito.any(), Mockito.any(), Mockito.any(),Mockito.any(), Mockito.any(), Mockito.any());
 		Mockito.doReturn(mainResponseDTO).when(authCommonUtil).getMainResponseDto(Mockito.any());
-		Mockito.when(responseEntity.getBody()).thenReturn(authNResposne);
+		Mockito.when(responseEntity.getBody()).thenReturn("authNResposne");
 		authNResposne.setMessage("success");
 		Mockito.doNothing().when(mainResponseDTO).setResponse(Mockito.any());
 		authService.sendOTP(otpRequest);
 	}
 	
+	@Test(expected=InvalidRequestParameterException.class)
+	public void sendOtpTest_AuthException() throws Exception {
+		Mockito.when(otpRequest.getRequest()).thenReturn(otp);
+		Mockito.when(authCommonUtil.validateRequest(otpRequest)).thenReturn(true);
+		Mockito.when(authCommonUtil.validateUserIdAndLangCode(Mockito.any(),Mockito.any())).thenReturn(list);
+		Mockito.doNothing().when(otpUserDto).setRequest(otpUser);
+		Mockito.doThrow(new InvalidRequestParameterException("errorCode","errorMessage")).when(authCommonUtil).getResponseEntity(Mockito.any(), Mockito.any(), Mockito.any(),Mockito.any(), Mockito.any(), Mockito.any());
+		Mockito.doReturn(mainResponseDTO).when(authCommonUtil).getMainResponseDto(Mockito.any());
+		Mockito.when(responseEntity.getBody()).thenReturn("authNResposne");
+		authNResposne.setMessage("success");
+		Mockito.doNothing().when(mainResponseDTO).setResponse(Mockito.any());
+		authService.sendOTP(otpRequest);
+	}
 	@Test
 	public void validateWithUserIdOtp() {
-		
+		Mockito.when(authCommonUtil.validateRequest(userRequest)).thenReturn(true);
 		Mockito.when(userRequest.getRequest()).thenReturn(user);
 		Mockito.doReturn(mainResponseDTO).when(authCommonUtil).getMainResponseDto(userRequest);
 		Mockito.doReturn(responseEntity).when(authCommonUtil).getResponseEntity(Mockito.any(),Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any());
+		Mockito.when(responseEntity.getBody()).thenReturn("authNResposne");
 		assertNotNull(authService.validateWithUserIdOtp(userRequest));
 	}
 	
-	@Test(expected=UserIdOtpFaliedException.class)
+	@Test(expected=InvalidRequestParameterException.class)
 	public void validateWithUserIdOtp_Exception()  {
-		
+		Mockito.when(authCommonUtil.validateRequest(userRequest)).thenReturn(true);
 		Mockito.when(userRequest.getRequest()).thenReturn(user);
 		Mockito.doReturn(mainResponseDTO).when(authCommonUtil).getMainResponseDto(userRequest);
-		Mockito.doThrow(new NullPointerException()).when(authCommonUtil).getResponseEntity(Mockito.any(),Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any());
+		Mockito.doThrow(new InvalidRequestParameterException("errorCode","errorMessage")).when(authCommonUtil).getResponseEntity(Mockito.any(),Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any());
 		authService.validateWithUserIdOtp(userRequest);
 	}
 	
@@ -117,7 +136,8 @@ public class AuthServiceTest {
 		String authHeader="Authorization=Mosip-TokeneyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI5NzQ4MTA3Mzg2IiwibW9iaWxlIjoiOTc0ODEwNzM4NiIsIm1haWwiOiIiLCJuYW1lIjoiOTc0ODEwNzM4NiIsImlzT3RwUmVxdWlyZWQiOnRydWUsImlzT3RwVmVyaWZpZWQiOnRydWUsImlhdCI6MTU1MjM4NDk1NCwiZXhwIjoxNTUyMzkwOTU0fQ.burEVnDRF4YVyRGMdx0vYP2DkZbiCKnUdl-7YDlBgcy3u40W5iE9_P8q9kdrlt2xjk4NuXnjPkb7uaFbzYcHog; Max-Age=6000000; Expires=Mon, 20-May-2019 20:42:34 GMT; Path=/; Secure; HttpOnly";
 		Mockito.doReturn(responseEntity).when(authCommonUtil).getResponseEntity(Mockito.any(),Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any());
 		authNResposne.setMessage("Success");
-		Mockito.when(responseEntity.getBody()).thenReturn(authNResposne);
+		Mockito.when(responseEntity.getBody()).thenReturn("authNResposne");
+		Mockito.when(authCommonUtil.requestBodyExchange(Mockito.any())).thenReturn(authNResposne);
 		assertNotNull(authService.invalidateToken(authHeader));
 	}
 	
@@ -126,7 +146,7 @@ public class AuthServiceTest {
 		String authHeader="Authorization=Mosip-TokeneyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI5NzQ4MTA3Mzg2IiwibW9iaWxlIjoiOTc0ODEwNzM4NiIsIm1haWwiOiIiLCJuYW1lIjoiOTc0ODEwNzM4NiIsImlzT3RwUmVxdWlyZWQiOnRydWUsImlzT3RwVmVyaWZpZWQiOnRydWUsImlhdCI6MTU1MjM4NDk1NCwiZXhwIjoxNTUyMzkwOTU0fQ.burEVnDRF4YVyRGMdx0vYP2DkZbiCKnUdl-7YDlBgcy3u40W5iE9_P8q9kdrlt2xjk4NuXnjPkb7uaFbzYcHog; Max-Age=6000000; Expires=Mon, 20-May-2019 20:42:34 GMT; Path=/; Secure; HttpOnly";
 		Mockito.doThrow(new RestClientException("Rest Client exception Occurred")).when(authCommonUtil).getResponseEntity(Mockito.any(),Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any());
 		authNResposne.setMessage("Success");
-		Mockito.when(responseEntity.getBody()).thenReturn(authNResposne);
+		Mockito.when(responseEntity.getBody()).thenReturn("authNResposne");
 		assertNotNull(authService.invalidateToken(authHeader));
 	}
 }

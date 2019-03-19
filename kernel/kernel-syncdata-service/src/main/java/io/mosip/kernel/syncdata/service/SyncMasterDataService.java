@@ -13,20 +13,25 @@ import io.mosip.kernel.syncdata.dto.response.MasterDataResponseDto;
  *
  */
 public interface SyncMasterDataService {
+
 	/**
-	 * Method to get updated masterData
 	 * 
-	 * @param machineId
-	 *            machine id
+	 * @param regCenterId
+	 *            - registration center id
+	 * @param macAddress
+	 *            - MAC address of the machine
+	 * @param serialNumber
+	 *            - serial number for either desktop or dongle
 	 * @param lastUpdated
-	 *            lastupdated timestamp if lastupdated timestamp is null fetch all
-	 *            the masterdata
+	 *            - last updated time stamp
+	 * @param currentTimestamp
+	 *            - current time stamp
 	 * @return {@link MasterDataResponseDto}
-	 * @throws ExecutionException
-	 *             - this method will throw execution exception
 	 * @throws InterruptedException
-	 *             - this method will throw interrupted exception
+	 *             - this method will throw execution exception
+	 * @throws ExecutionException
+	 *             -this method will throw interrupted exception
 	 */
-	MasterDataResponseDto syncData(String machineId, LocalDateTime lastUpdated,LocalDateTime localDateTimeOfnow)
-			throws InterruptedException, ExecutionException;
+	MasterDataResponseDto syncData(String regCenterId, String macAddress, String serialNumber,
+			LocalDateTime lastUpdated, LocalDateTime currentTimestamp) throws InterruptedException, ExecutionException;
 }

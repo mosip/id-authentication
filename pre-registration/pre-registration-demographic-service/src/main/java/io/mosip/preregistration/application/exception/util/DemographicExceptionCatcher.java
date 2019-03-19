@@ -7,6 +7,7 @@ package io.mosip.preregistration.application.exception.util;
 
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
+import io.mosip.kernel.core.exception.IOException;
 import io.mosip.kernel.core.exception.ParseException;
 import io.mosip.kernel.core.jsonvalidator.exception.FileIOException;
 import io.mosip.kernel.core.jsonvalidator.exception.HttpRequestException;
@@ -14,6 +15,7 @@ import io.mosip.kernel.core.jsonvalidator.exception.JsonIOException;
 import io.mosip.kernel.core.jsonvalidator.exception.JsonSchemaIOException;
 import io.mosip.kernel.core.jsonvalidator.exception.JsonValidationProcessingException;
 import io.mosip.kernel.core.jsonvalidator.exception.UnidentifiedJsonException;
+import io.mosip.kernel.core.util.exception.JsonMappingException;
 import io.mosip.preregistration.application.errorcodes.ErrorCodes;
 import io.mosip.preregistration.application.errorcodes.ErrorMessages;
 import io.mosip.preregistration.application.exception.BookingDeletionFailedException;
@@ -104,6 +106,10 @@ public class DemographicExceptionCatcher {
 			throw new EncryptionFailedException(((EncryptionFailedException) ex).getErrorCode(),((EncryptionFailedException) ex).getErrorText());
 		}else if (ex instanceof DecryptionFailedException) {
 			throw new DecryptionFailedException(((DecryptionFailedException) ex).getErrorCode(),((DecryptionFailedException) ex).getErrorText());
+		}else if (ex instanceof JsonMappingException) {
+			throw new JsonValidationException(((JsonMappingException) ex).getErrorCode(),((JsonMappingException) ex).getErrorText());
+		}else if (ex instanceof IOException) {
+			throw new JsonValidationException(((IOException) ex).getErrorCode(),((IOException) ex).getErrorText());
 		}
 	}
 

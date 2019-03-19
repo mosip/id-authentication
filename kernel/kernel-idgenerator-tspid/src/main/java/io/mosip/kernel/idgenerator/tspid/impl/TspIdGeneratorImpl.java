@@ -3,7 +3,7 @@ package io.mosip.kernel.idgenerator.tspid.impl;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 
-import javax.transaction.Transactional;
+import javax.persistence.EntityExistsException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -26,7 +26,6 @@ import io.mosip.kernel.idgenerator.tspid.repository.TspRepository;
  *
  */
 @Component
-@Transactional
 public class TspIdGeneratorImpl implements TspIdGenerator<String> {
 
 	/**
@@ -48,7 +47,7 @@ public class TspIdGeneratorImpl implements TspIdGenerator<String> {
 	@Override
 	public String generateId() {
 
-		int generatedId;
+		int generatedId = 0;
 
 		final int initialValue = MathUtils.getPow(Integer.parseInt(TspIdPropertyConstant.ID_BASE.getProperty()),
 				tspIdLength - 1);
@@ -64,29 +63,36 @@ public class TspIdGeneratorImpl implements TspIdGenerator<String> {
 					TspIdExceptionConstant.TSPID_FETCH_EXCEPTION.getErrorMessage(), e);
 		}
 
-		if (entity != null) {
-
-			try {
-				tspRepository.updateTspId(entity.getTspId() + 1, entity.getTspId(),
-						LocalDateTime.now(ZoneId.of("UTC")));
+		try {
+			if (entity != null) {
 				generatedId = entity.getTspId() + 1;
-			} catch (DataAccessLayerException e) {
+				Tsp tspId = new Tsp();
+				tspId.setTspId(generatedId);
+				tspId.setCreatedBy("default@user");
+				tspId.setUpdatedBy("default@user");
+				tspId.setCreatedDateTime(LocalDateTime.now(ZoneId.of("UTC")));
+				tspId.setUpdatedDateTime(LocalDateTime.now(ZoneId.of("UTC")));
+				tspRepository.create(tspId);
+
+			} else {
+				entity = new Tsp();
+				entity.setTspId(initialValue);
+				entity.setCreatedBy("default@user");
+				entity.setUpdatedBy("default@user");
+				LocalDateTime createdTime = LocalDateTime.now(ZoneId.of("UTC"));
+				entity.setCreatedDateTime(createdTime);
+				entity.setUpdatedDateTime(null);
+				generatedId = initialValue;
+				tspRepository.create(entity);
+			}
+
+		} catch (DataAccessLayerException e) {
+			if (e.getCause().getClass() == EntityExistsException.class) {
+				generateId();
+			} else {
 				throw new TspIdException(TspIdExceptionConstant.TSPID_INSERTION_EXCEPTION.getErrorCode(),
 						TspIdExceptionConstant.TSPID_INSERTION_EXCEPTION.getErrorMessage(), e);
 			}
-
-		} else {
-
-			entity = new Tsp();
-			entity.setTspId(initialValue);
-			entity.setCreatedBy("default@user");
-			entity.setUpdatedBy("default@user");
-			LocalDateTime createdTime = LocalDateTime.now(ZoneId.of("UTC"));
-			entity.setCreatedDateTime(createdTime);
-			entity.setUpdatedDateTime(null);
-			generatedId = initialValue;
-			tspRepository.save(entity);
-
 		}
 
 		return String.valueOf(generatedId);

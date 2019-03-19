@@ -4,8 +4,11 @@
  */
 package io.mosip.preregistration.transliteration.exception.util;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -13,9 +16,9 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 
 import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.preregistration.core.common.dto.ExceptionJSONInfoDTO;
+import io.mosip.preregistration.core.common.dto.MainResponseDTO;
 import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
-import io.mosip.preregistration.transliteration.dto.ExceptionJSONInfoDTO;
-import io.mosip.preregistration.transliteration.dto.MainResponseDTO;
 import io.mosip.preregistration.transliteration.exception.IllegalParamException;
 import io.mosip.preregistration.transliteration.exception.JsonValidationException;
 import io.mosip.preregistration.transliteration.exception.MandatoryFieldRequiredException;
@@ -31,8 +34,14 @@ import io.mosip.preregistration.transliteration.exception.UnSupportedLanguageExc
 @RestControllerAdvice
 public class TransliterationExceptionHandler {
 	
-	private String dateTimeFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
-	protected boolean falseStatus = false;
+	@Value("${mosip.utc-datetime-pattern}")
+	private String utcDateTimepattern;
+	
+	@Value("${ver}")
+	String versionUrl;
+
+	@Value("${id}")
+	String idUrl;
 	
 	/**
 	 * @param e
@@ -44,9 +53,12 @@ public class TransliterationExceptionHandler {
 		
 		ExceptionJSONInfoDTO errorDetails=new ExceptionJSONInfoDTO(e.getErrorCode(),e.getErrorText());
 		MainResponseDTO<?> errorRes=new MainResponseDTO<>();
-		errorRes.setErr(errorDetails);
-		errorRes.setResTime(DateUtils.formatDate(new Date(), dateTimeFormat));
-		errorRes.setStatus(falseStatus);
+		List<ExceptionJSONInfoDTO> errorList = new ArrayList<>();
+		errorList.add(errorDetails);
+		errorRes.setErrors(errorList);
+		errorRes.setId(idUrl);
+		errorRes.setVersion(versionUrl);
+		errorRes.setResponsetime(DateUtils.formatDate(new Date(), utcDateTimepattern));
 		
 		return new ResponseEntity<>(errorRes,HttpStatus.OK);
 	}
@@ -60,9 +72,11 @@ public class TransliterationExceptionHandler {
 	public ResponseEntity<MainResponseDTO<?>> translitrationFailed(final JsonValidationException e,WebRequest request){
 		ExceptionJSONInfoDTO errorDetails=new ExceptionJSONInfoDTO(e.getErrorCode(),e.getErrorText());
 		MainResponseDTO<?> errorRes=new MainResponseDTO<>();
-		errorRes.setErr(errorDetails);
-		errorRes.setResTime(DateUtils.formatDate(new Date(), dateTimeFormat));
-		errorRes.setStatus(falseStatus);
+		List<ExceptionJSONInfoDTO> errorList = new ArrayList<>();
+		errorRes.setErrors(errorList);
+		errorRes.setId(idUrl);
+		errorRes.setVersion(versionUrl);
+		errorRes.setResponsetime(DateUtils.formatDate(new Date(), utcDateTimepattern));
 		return new ResponseEntity<>(errorRes,HttpStatus.OK);
 	}
 	
@@ -76,10 +90,12 @@ public class TransliterationExceptionHandler {
 	@ExceptionHandler(IllegalParamException.class)
 	public ResponseEntity<MainResponseDTO<?>> recException(final IllegalParamException e, WebRequest request) {
 		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getMessage());
-		MainResponseDTO<?> errorRes = new MainResponseDTO<>();
-		errorRes.setErr(errorDetails);
-		errorRes.setStatus(falseStatus);
-		errorRes.setResTime(DateUtils.formatDate(new Date(), dateTimeFormat));
+		MainResponseDTO<?> errorRes=new MainResponseDTO<>();
+		List<ExceptionJSONInfoDTO> errorList = new ArrayList<>();
+		errorRes.setErrors(errorList);
+		errorRes.setId(idUrl);
+		errorRes.setVersion(versionUrl);
+		errorRes.setResponsetime(DateUtils.formatDate(new Date(), utcDateTimepattern));
 		return new ResponseEntity<>(errorRes, HttpStatus.OK);
 	}
 	/**
@@ -92,10 +108,12 @@ public class TransliterationExceptionHandler {
 	@ExceptionHandler(UnSupportedLanguageException.class)
 	public ResponseEntity<MainResponseDTO<?>> recException(final UnSupportedLanguageException e, WebRequest request) {
 		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getMessage());
-		MainResponseDTO<?> errorRes = new MainResponseDTO<>();
-		errorRes.setErr(errorDetails);
-		errorRes.setStatus(falseStatus);
-		errorRes.setResTime(DateUtils.formatDate(new Date(), dateTimeFormat));
+		MainResponseDTO<?> errorRes=new MainResponseDTO<>();
+		List<ExceptionJSONInfoDTO> errorList = new ArrayList<>();
+		errorRes.setErrors(errorList);
+		errorRes.setId(idUrl);
+		errorRes.setVersion(versionUrl);
+		errorRes.setResponsetime(DateUtils.formatDate(new Date(), utcDateTimepattern));
 		return new ResponseEntity<>(errorRes, HttpStatus.OK);
 	}
 	
@@ -109,10 +127,12 @@ public class TransliterationExceptionHandler {
 	@ExceptionHandler(InvalidRequestParameterException.class)
 	public ResponseEntity<MainResponseDTO<?>> recException(final InvalidRequestParameterException e, WebRequest request) {
 		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getMessage());
-		MainResponseDTO<?> errorRes = new MainResponseDTO<>();
-		errorRes.setErr(errorDetails);
-		errorRes.setStatus(falseStatus);
-		errorRes.setResTime(DateUtils.formatDate(new Date(), dateTimeFormat));
+		MainResponseDTO<?> errorRes=new MainResponseDTO<>();
+		List<ExceptionJSONInfoDTO> errorList = new ArrayList<>();
+		errorRes.setErrors(errorList);
+		errorRes.setId(idUrl);
+		errorRes.setVersion(versionUrl);
+		errorRes.setResponsetime(DateUtils.formatDate(new Date(), utcDateTimepattern));
 		return new ResponseEntity<>(errorRes, HttpStatus.OK);
 	}
 	

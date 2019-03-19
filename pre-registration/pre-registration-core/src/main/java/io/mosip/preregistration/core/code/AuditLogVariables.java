@@ -28,17 +28,19 @@ public enum AuditLogVariables {
 	DEMOGRAPHY_SERVICE,
 
 	DEM,
-	
+
 	DOCUMENT_SERVICE,
-	
+
 	DOC,
-	
+
 	DATASYNC_SERVICE,
-	
+
 	DAT,
 
 	REVERSE_DATASYNC_SERVICE,
-	
-	REV
+
+	REV,
+
+	BOOKING_SERVICE, BOOK
 
 }

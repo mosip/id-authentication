@@ -28,8 +28,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import io.mosip.kernel.core.jsonvalidator.spi.JsonValidator;
 import io.mosip.kernel.core.util.DateUtils;
-import io.mosip.preregistration.transliteration.dto.MainRequestDTO;
-import io.mosip.preregistration.transliteration.dto.MainResponseDTO;
+import io.mosip.preregistration.core.common.dto.MainRequestDTO;
+import io.mosip.preregistration.core.common.dto.MainResponseDTO;
 import io.mosip.preregistration.transliteration.dto.TransliterationDTO;
 import io.mosip.preregistration.transliteration.entity.LanguageIdEntity;
 import io.mosip.preregistration.transliteration.errorcode.ErrorCodes;
@@ -102,9 +102,8 @@ public class TransliterationServiceTest {
 		transliterationRequest.setToFieldValue("");
 		
 		responseDTO = new MainResponseDTO<TransliterationDTO>();
-		responseDTO.setStatus(true);
-		responseDTO.setResTime(times);
-		responseDTO.setErr(null);
+		responseDTO.setResponsetime(times);
+		responseDTO.setErrors(null);
 	}
 	
 	@Test
@@ -119,8 +118,8 @@ public class TransliterationServiceTest {
 		transliterationRequest2.setToFieldValue("كِسهَن");
 		requestDto=new MainRequestDTO<TransliterationDTO>();
 		requestDto.setId("mosip.pre-registration.transliteration.transliterate");
-		requestDto.setReqTime(new Timestamp(System.currentTimeMillis()));
-		requestDto.setVer("1.0");
+		requestDto.setRequesttime(new Timestamp(System.currentTimeMillis()));
+		requestDto.setVersion("1.0");
 		requestDto.setRequest(transliterationRequest);
 		responseDTO.setResponse(transliterationRequest2);
 		
@@ -164,8 +163,8 @@ public class TransliterationServiceTest {
 		request.setToFieldValue("");
 		requestDto=new MainRequestDTO<TransliterationDTO>();
 		requestDto.setId("mosip.pre-registration.transliteration.transliterate");
-		requestDto.setReqTime(new Timestamp(System.currentTimeMillis()));
-		requestDto.setVer("1.0");
+		requestDto.setRequesttime(new Timestamp(System.currentTimeMillis()));
+		requestDto.setVersion("1.0");
 		requestDto.setRequest(request);
 		responseDTO.setResponse(transliterationRequest2);
 		MainResponseDTO<TransliterationDTO> result=transliterationServiceImpl.translitratorService(requestDto);
@@ -186,8 +185,8 @@ public class TransliterationServiceTest {
 		transliterationRequest.setToFieldValue("");
 		requestDto=new MainRequestDTO<TransliterationDTO>();
 		requestDto.setId("mosip.pre-registration.transliteration.transliterate");
-		requestDto.setReqTime(new Timestamp(System.currentTimeMillis()));
-		requestDto.setVer("1.0");
+		requestDto.setRequesttime(new Timestamp(System.currentTimeMillis()));
+		requestDto.setVersion("1.0");
 		requestDto.setRequest(transliterationRequest);
 		
 		MainResponseDTO<TransliterationDTO> result=transliterationServiceImpl.translitratorService(requestDto);

@@ -4,6 +4,9 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import io.mosip.registration.dto.ApplicantValidDocumentDto;
+import io.mosip.registration.dto.IndividualTypeDto;
+
 /**
  * @author Sreekar Chukka
  *
@@ -11,7 +14,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class MasterDataResponseDto {
-	
+
 	private List<RegistrationCenterDto> registrationCenter;
 	private List<RegistrationCenterTypeDto> registrationCenterTypes;
 	private List<MachineDto> machineDetails;
@@ -23,7 +26,6 @@ public class MasterDataResponseDto {
 	private List<HolidayDto> holidays;
 	private List<DocumentCategoryDto> documentCategories;
 	private List<DocumentTypeDto> documentTypes;
-	private List<ValidDocumentDto> validDocumentMapping;
 	private List<TemplateDto> templates;
 	private List<TemplateTypeDto> templatesTypes;
 	private List<TemplateFileFormatDto> templateFileFormat;
@@ -43,7 +45,36 @@ public class MasterDataResponseDto {
 	private List<RegistrationCenterMachineDeviceDto> registrationCenterMachineDevices;
 	private List<RegistrationCenterUserMachineMappingDto> registrationCenterUserMachines;
 	private List<RegistrationCenterUserDto> registrationCenterUsers;
-	
+	private List<ApplicantValidDocumentDto> applicantValidDocuments;
+	private List<IndividualTypeDto> individualTypes;
+
+	/**
+	 * @return the applicantValidDocuments
+	 */
+	public List<ApplicantValidDocumentDto> getApplicantValidDocuments() {
+		return applicantValidDocuments;
+	}
+
+	/**
+	 * @param applicantValidDocuments the applicantValidDocuments to set
+	 */
+	public void setApplicantValidDocuments(List<ApplicantValidDocumentDto> applicantValidDocuments) {
+		this.applicantValidDocuments = applicantValidDocuments;
+	}
+
+	/**
+	 * @return the individualTypes
+	 */
+	public List<IndividualTypeDto> getIndividualTypes() {
+		return individualTypes;
+	}
+
+	/**
+	 * @param individualTypes the individualTypes to set
+	 */
+	public void setIndividualTypes(List<IndividualTypeDto> individualTypes) {
+		this.individualTypes = individualTypes;
+	}
 
 	/**
 	 * @return the registrationCenterMachines
@@ -81,7 +112,8 @@ public class MasterDataResponseDto {
 	}
 
 	/**
-	 * @param registrationCenterMachineDevices the registrationCenterMachineDevices to set
+	 * @param registrationCenterMachineDevices the registrationCenterMachineDevices
+	 *                                         to set
 	 */
 	public void setRegistrationCenterMachineDevices(
 			List<RegistrationCenterMachineDeviceDto> registrationCenterMachineDevices) {
@@ -96,7 +128,8 @@ public class MasterDataResponseDto {
 	}
 
 	/**
-	 * @param registrationCenterUserMachines the registrationCenterUserMachines to set
+	 * @param registrationCenterUserMachines the registrationCenterUserMachines to
+	 *                                       set
 	 */
 	public void setRegistrationCenterUserMachines(
 			List<RegistrationCenterUserMachineMappingDto> registrationCenterUserMachines) {
@@ -269,20 +302,6 @@ public class MasterDataResponseDto {
 	 */
 	public void setDocumentTypes(List<DocumentTypeDto> documentTypes) {
 		this.documentTypes = documentTypes;
-	}
-
-	/**
-	 * @return the validDocumentMapping
-	 */
-	public List<ValidDocumentDto> getValidDocumentMapping() {
-		return validDocumentMapping;
-	}
-
-	/**
-	 * @param validDocumentMapping the validDocumentMapping to set
-	 */
-	public void setValidDocumentMapping(List<ValidDocumentDto> validDocumentMapping) {
-		this.validDocumentMapping = validDocumentMapping;
 	}
 
 	/**

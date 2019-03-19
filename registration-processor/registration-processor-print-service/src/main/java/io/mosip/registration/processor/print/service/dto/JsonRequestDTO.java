@@ -1,40 +1,43 @@
 package io.mosip.registration.processor.print.service.dto;
 
+import java.io.Serializable;
 import lombok.Data;
 
 @Data
-public class JsonRequestDTO {
+public class JsonRequestDTO implements Serializable{
 
-	private String nameEng;
+	private static final long serialVersionUID = 1L;
 
-	private String nameAra;
+	private String nameLang1;
+	
+	private String addressLine1Lang1;
+	
+	private String addressLine2Lang1;
+	
+	private String addressLine3Lang1;
+	
+	private String regionLang1;
+	
+	private String provinceLang1;
+	
+	private String cityLang2;
 
-	private String phoneNumber;
+	private String nameLang2;
 
-	private String addressLine1Ara;
+	private String addressLine1Lang2;
 
-	private String addressLine1Eng;
+	private String addressLine2Lang2;
 
-	private String addressLine2Ara;
+	private String addressLine3Lang2;
 
-	private String addressLine2Eng;
+	private String regionLang2;
 
-	private String addressLine3Ara;
+	private String provinceLang2;
 
-	private String addressLine3Eng;
-
-	private String regionAra;
-
-	private String regionEng;
-
-	private String provinceAra;
-
-	private String provinceEng;
-
+	private String cityLang1;
+	
 	private String postalCode;
-
-	private String cityAra;
-
-	private String cityEng;
+	
+	private String phoneNumber;
 
 }

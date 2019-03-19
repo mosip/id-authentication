@@ -55,4 +55,4 @@ Applications will be using the batch framework to execute the jobs in specific p
 ## Implementation
 
 
-**kernel-batch-framework** [README](../../kernel/kernel-batch-framework/README.md)
+**kernel-batch-framework** [README](../../../kernel/kernel-batch-framework/README.md)

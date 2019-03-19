@@ -1,5 +1,5 @@
 import { RequestModel } from './request.modal';
 
 export class DemographicModel {
-  constructor(public id: string, public ver: string, public reqTime: string, public request: RequestModel) {}
+  constructor(public id: string, public version: string, public requesttime: string, public request: RequestModel) {}
 }

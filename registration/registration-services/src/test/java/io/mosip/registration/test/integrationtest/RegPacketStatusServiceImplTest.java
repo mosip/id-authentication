@@ -5,6 +5,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.List;
@@ -18,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.registration.config.AppConfig;
@@ -47,6 +52,7 @@ public class RegPacketStatusServiceImplTest {
 	private AuditLogControlRepository auditLogControlRepository;
 	@Autowired
 	private RegTransactionRepository regTransactionRepository;
+	ResponseDTO responseDTO = null;
 	
 	@Before
 	public void setup() {
@@ -64,7 +70,7 @@ public class RegPacketStatusServiceImplTest {
 	@Test
 	public void packetSyncStatusTest() {
 		assertEquals(RegistrationConstants.PACKET_STATUS_SYNC_SUCCESS_MESSAGE, 
-				regPacketStatusServiceImpl.packetSyncStatus().getSuccessResponseDTO().getMessage());
+				regPacketStatusServiceImpl.packetSyncStatus("System").getSuccessResponseDTO().getMessage());
 	}
 	/**
 	 * Test Case for verifying the deletion of RegPacket.
@@ -99,14 +105,11 @@ public class RegPacketStatusServiceImplTest {
 		auditLogControlRepository.save(sampleAuditLog);
 		regTransactionRepository.save(sampleRegTransaction);
 		
-		ResponseDTO responseDTO = regPacketStatusServiceImpl.deleteRegistrationPackets();
+		responseDTO = regPacketStatusServiceImpl.deleteRegistrationPackets();
 		ObjectMapper mapper = new ObjectMapper();
-		
 		System.out.println(mapper.writer().writeValueAsString(responseDTO));
+		assertEquals(responseDTO.getSuccessResponseDTO().getMessage(),"Registartion Packets Deletion Successful ");
 		
-		assertEquals(regPacketStatusServiceImpl.deleteRegistrationPackets().getSuccessResponseDTO().getMessage(),"Registartion Packets Deletion Successful ");
-		assertEquals(RegistrationConstants.PACKET_STATUS_SYNC_ERROR_RESPONSE, 
-				regPacketStatusServiceImpl.packetSyncStatus().getErrorResponseDTOs().get(0).getMessage());
 		registrationRepository.saveAll(listRegistration);
 		auditLogControlRepository.deleteAll();
 		regTransactionRepository.deleteAll();
@@ -114,5 +117,65 @@ public class RegPacketStatusServiceImplTest {
 		auditLogControlRepository.saveAll(listAuditLog);
 		Files.delete(samplePacket);
 		}
+	
+	@Test
+	public void syncPacketTest() throws JsonProcessingException {
+		responseDTO = regPacketStatusServiceImpl.syncPacket("System");
+		ObjectMapper mapper = new ObjectMapper();
+		System.out.println(mapper.writer().writeValueAsString(responseDTO));
+		assertEquals(RegistrationConstants.SUCCESS, 
+				responseDTO.getSuccessResponseDTO().getMessage());
+	}
+	
+	@Test
+	public void packetSyncStatusTestRegIdLessThanTwentyNineChars() throws JsonProcessingException {
+		setupDBWithRegId();
+		responseDTO = regPacketStatusServiceImpl.packetSyncStatus("System");
+		deleteTestData();
+		ObjectMapper mapper = new ObjectMapper();
+		System.out.println(mapper.writer().writeValueAsString(responseDTO));
+		assertEquals(RegistrationConstants.PACKET_STATUS_SYNC_ERROR_RESPONSE, 
+				responseDTO.getErrorResponseDTOs().get(0).getMessage());
+	}
+	
+	public void setupDBWithRegId() {
+		String insertQuery = "insert into reg.registration (id, reg_type, ref_reg_id, status_code, client_Status_code, reg_usr_id, lang_code, regcntr_id, approver_usr_id, is_active, cr_by, cr_dtimes) " + 
+				"values ('10011100110018820190311171', 'N', '12345', 'REGISTERED', 'PUSHED', 'mosip', 'ENG', '20916', 'mosip', 'true', 'mosip', '2019-03-11 11:45:01.406')";
+		executeQuery(insertQuery);
+	}
+	
+	public void deleteTestData() {
+		String deleteQuery = "delete from reg.registration where id = '10011100110018820190311171'";
+		executeQuery(deleteQuery);
+	}
+	
+	public void executeQuery(String query) {
+		int count = 0;
+		Connection con = null;
+		PreparedStatement pre = null;
+		try {
+			Class.forName("org.apache.derby.jdbc.EmbeddedDriver");
+
+			con = DriverManager.getConnection("jdbc:derby:D:/Mosip_QA_080_build/mosip/registration/registration-services/reg;bootPassword=mosip12345", "", "");
+			pre = con.prepareStatement(query);
+			count = pre.executeUpdate();
+
+			con.commit();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				pre.close();
+				con.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}			
+		}
+		if (count == 1) {
+			System.out.println("Query executed successfully");
+		}else {
+			System.out.println("Unable to execute query");
+		}
+	}
 	
 }

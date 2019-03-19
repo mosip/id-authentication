@@ -119,9 +119,9 @@ public class NotificationServiceImpl implements NotificationService {
 
 		Map<String, Object> values = new HashMap<>();
 		values.put(NAME, infoHelper.getEntityInfoAsString(DemoMatchType.NAME, idInfo));
-		String resTime = authResponseDTO.getResTime();
+		String resTime = authResponseDTO.getResponseTime();
 
-		ZonedDateTime zonedDateTime2 = ZonedDateTime.parse(authRequestDTO.getReqTime());
+		ZonedDateTime zonedDateTime2 = ZonedDateTime.parse(authRequestDTO.getRequestTime());
 		ZoneId zone = zonedDateTime2.getZone();
 
 		ZonedDateTime dateTimeReq = ZonedDateTime.parse(resTime);
@@ -147,7 +147,7 @@ public class NotificationServiceImpl implements NotificationService {
 				.flatMap(Function.identity()).filter(authType -> authType.isAuthTypeEnabled(authRequestDTO, infoHelper))
 				.map(AuthType::getDisplayName).distinct().collect(Collectors.joining(","));
 		values.put(AUTH_TYPE, authTypeStr);
-		if (authResponseDTO.getStatus().equalsIgnoreCase(STATUS_SUCCESS)) {
+		if (authResponseDTO.isStatus()) {
 			values.put(STATUS, "Passed");
 		} else {
 			values.put(STATUS, "Failed");
@@ -170,7 +170,7 @@ public class NotificationServiceImpl implements NotificationService {
 	public void sendOtpNotification(OtpRequestDTO otpRequestDto, String otp, String uin, String email,
 			String mobileNumber, Map<String, List<IdentityInfoDTO>> idInfo) {
 
-		Entry<String, String> dateAndTime = getDateAndTime(otpRequestDto.getReqTime(),
+		Entry<String, String> dateAndTime = getDateAndTime(otpRequestDto.getRequestTime(),
 				env.getProperty(DATETIME_PATTERN));
 		String date = dateAndTime.getKey();
 		String time = dateAndTime.getValue();
@@ -292,7 +292,8 @@ public class NotificationServiceImpl implements NotificationService {
 			Objects.requireNonNull(templateName);
 			return idTemplateManager.applyTemplate(templateName, values);
 		} catch (IOException e) {
-			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.NOTIFICATION_FAILED, e);
+			//FIXME change the error code
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
 		}
 	}
 

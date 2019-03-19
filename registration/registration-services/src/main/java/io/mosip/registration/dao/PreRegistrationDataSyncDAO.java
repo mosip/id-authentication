@@ -48,4 +48,7 @@ public interface PreRegistrationDataSyncDAO {
 	 * @param preRegistrationList registation list
 	 */
 	public void deleteAll(List<PreRegistrationList> preRegistrationList);
+
+
+	List<PreRegistrationList> getAllPreRegPackets();
 }

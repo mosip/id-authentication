@@ -40,13 +40,13 @@ import io.mosip.kernel.core.util.FileUtils;
 import io.mosip.kernel.qrcode.generator.zxing.constant.QrVersion;
 import io.mosip.registration.processor.core.constant.IdType;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
+import io.mosip.registration.processor.core.exception.TemplateProcessingFailureException;
 import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.spi.print.service.PrintService;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.core.spi.uincardgenerator.UinCardGenerator;
-import io.mosip.registration.processor.message.sender.exception.TemplateProcessingFailureException;
-import io.mosip.registration.processor.message.sender.template.generator.TemplateGenerator;
+import io.mosip.registration.processor.message.sender.template.TemplateGenerator;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.packet.storage.utils.Utilities;
 import io.mosip.registration.processor.print.service.impl.PrintServiceImpl;
@@ -111,7 +111,6 @@ public class PrintServiceImplTest {
 	@SuppressWarnings("unchecked")
 	@Before
 	public void setup() throws Exception {
-		ReflectionTestUtils.setField(printService, "langCode", "eng");
 		ReflectionTestUtils.setField(printService, "primaryLang", "eng");
 		ReflectionTestUtils.setField(printService, "secondaryLang", "ara");
 		
@@ -144,7 +143,8 @@ public class PrintServiceImplTest {
 		identityMap.put("phone", "9967878787");
 		identityMap.put("email", "raghavdce@gmail.com");
 		identityMap.put("postalCode", "900900");
-
+		identityMap.put("proofOfAddress", j2);
+		
 		Object identity = identityMap;
 		response.setIdentity(identity);
 		
@@ -168,9 +168,6 @@ public class PrintServiceImplTest {
 		List<BIRType> birtypeList = new ArrayList<>();
 		birtypeList.add(type);
 		Mockito.when(cbeffutil.getBIRDataFromXML(any())).thenReturn(birtypeList);
-		
-		PowerMockito.mockStatic(FileUtils.class);
-		PowerMockito.doNothing().when(FileUtils.class, "writeByteArrayToFile", any(),any());
 		
 		response.setDocuments(docList);
 		idResponse.setResponse(response);
@@ -228,7 +225,7 @@ public class PrintServiceImplTest {
 	public void testPdfGeneratedwithUINSuccess() {
 		String uin = "2046958192";
 		byte[] expected = outputStream.toByteArray();
-		byte[] result = printService.getPdf(IdType.UIN, uin ).get("uinPdf");
+		byte[] result = printService.getDocuments(IdType.UIN, uin ).get("uinPdf");
 		assertArrayEquals(expected, result);
 	}
 	
@@ -239,7 +236,7 @@ public class PrintServiceImplTest {
 		Mockito.when(packetInfoManager.getUINByRid(anyString())).thenReturn(uinList);
 		
 		byte[] expected = outputStream.toByteArray();
-		byte[] result = printService.getPdf(IdType.UIN, uinList.get(0) ).get("uinPdf");
+		byte[] result = printService.getDocuments(IdType.UIN, uinList.get(0) ).get("uinPdf");
 		assertArrayEquals(expected, result);
 	}
 	
@@ -252,7 +249,7 @@ public class PrintServiceImplTest {
 		uinList.add(null);
 		Mockito.when(packetInfoManager.getUINByRid(anyString())).thenReturn(uinList);
 
-		printService.getPdf(IdType.RID, "2046958192");
+		printService.getDocuments(IdType.RID, "2046958192");
 	}
 	
 	/**
@@ -272,7 +269,7 @@ public class PrintServiceImplTest {
 		uinList.add("2046958192");
 		Mockito.when(packetInfoManager.getUINByRid(anyString())).thenReturn(uinList);
 		
-		printService.getPdf(IdType.UIN, uinList.get(0) );
+		printService.getDocuments(IdType.UIN, uinList.get(0) );
 	}
 	
 	/**
@@ -287,7 +284,7 @@ public class PrintServiceImplTest {
 		uinList.add("2046958192");
 		Mockito.when(packetInfoManager.getUINByRid(anyString())).thenReturn(uinList);
 		
-		printService.getPdf(IdType.UIN, uinList.get(0) );
+		printService.getDocuments(IdType.UIN, uinList.get(0) );
 	}
 	
 	/**
@@ -305,7 +302,7 @@ public class PrintServiceImplTest {
 		uinList.add("2046958192");
 		Mockito.when(packetInfoManager.getUINByRid(anyString())).thenReturn(uinList);
 		
-		printService.getPdf(IdType.UIN, uinList.get(0) );
+		printService.getDocuments(IdType.UIN, uinList.get(0) );
 	}
 	
 	@Test(expected = PDFGeneratorException.class)
@@ -317,7 +314,7 @@ public class PrintServiceImplTest {
 		uinList.add("2046958192");
 		Mockito.when(packetInfoManager.getUINByRid(anyString())).thenReturn(uinList);
 		
-		printService.getPdf(IdType.UIN, uinList.get(0) );
+		printService.getDocuments(IdType.UIN, uinList.get(0) );
 		
 	}
 	
@@ -346,7 +343,7 @@ public class PrintServiceImplTest {
 		
 		String uin = "2046958192";
 		byte[] expected = outputStream.toByteArray();
-		byte[] result = printService.getPdf(IdType.UIN, uin ).get("uinPdf");
+		byte[] result = printService.getDocuments(IdType.UIN, uin ).get("uinPdf");
 		assertArrayEquals(expected, result);
 	}
 	
@@ -356,7 +353,7 @@ public class PrintServiceImplTest {
 		Mockito.doThrow(e).when(qrCodeGenerator).generateQrCode(any(), any());
 		
 		String uin = "2046958192";
-		printService.getPdf(IdType.UIN, uin ).get("uinPdf");
+		printService.getDocuments(IdType.UIN, uin ).get("uinPdf");
 	}
 	
 	@Test
@@ -365,7 +362,7 @@ public class PrintServiceImplTest {
 		
 		String uin = "2046958192";
 		byte[] expected = outputStream.toByteArray();
-		byte[] result = printService.getPdf(IdType.UIN, uin ).get("uinPdf");
+		byte[] result = printService.getDocuments(IdType.UIN, uin ).get("uinPdf");
 		assertArrayEquals(expected, result);
 	}
 	
@@ -374,7 +371,7 @@ public class PrintServiceImplTest {
 		Mockito.when(restClientService.getApi(any(), any(), any(), any(), any())).thenReturn(null);
 		
 		String uin = "2046958192";
-		printService.getPdf(IdType.UIN, uin ).get("uinPdf");
+		printService.getDocuments(IdType.UIN, uin ).get("uinPdf");
 	}
 	
 	@Test(expected = TemplateProcessingFailureException.class)
@@ -382,7 +379,7 @@ public class PrintServiceImplTest {
 		Mockito.when(templateGenerator.getTemplate(any(), any(), anyString())).thenReturn(null);
 		
 		String uin = "2046958192";
-		printService.getPdf(IdType.UIN, uin ).get("uinPdf");
+		printService.getDocuments(IdType.UIN, uin ).get("uinPdf");
 	}
 	
 }
