@@ -73,6 +73,7 @@ public class KernelMasterDataR {
 	public static boolean validateDB(String queryStr, Class dtoClass)
 	{
 		boolean flag=false;
+
 		if(BaseTestCase.environment.equalsIgnoreCase("integration"))
 			factory = new Configuration().configure("masterdatainteg.cfg.xml")
 		.addAnnotatedClass(OtpEntity.class).buildSessionFactory();	
@@ -119,6 +120,7 @@ public class KernelMasterDataR {
 		public static boolean masterDataDBConnection(Class dtoClass,String query)
 		{
 			boolean flag=false;
+
 			if(BaseTestCase.environment.equalsIgnoreCase("integration"))
 				factory = new Configuration().configure("masterdatainteg.cfg.xml")
 			.addAnnotatedClass(OtpEntity.class).buildSessionFactory();	
@@ -232,4 +234,3 @@ public class KernelMasterDataR {
 			
 		} 
 }
-

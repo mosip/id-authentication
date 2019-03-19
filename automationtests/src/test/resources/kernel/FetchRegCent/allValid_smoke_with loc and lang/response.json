@@ -13,7 +13,7 @@
             "holidayLocationCode": "KTA",
             "contactPhone": "779517433",
             "workingHours": "8:00:00",
-            "languageCode": "eng",
+            "langCode": "eng",
             "numberOfKiosks": 1,
             "perKioskProcessTime": "00:15:00",
             "centerStartTime": "09:00:00",

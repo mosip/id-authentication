@@ -1,0 +1,15 @@
+{
+  "machines": [
+    {
+      "id": "10001",
+      "name": "Machine 1",
+      "serialNum": "NM5328114630",
+      "macAddress": "e1:01:2b:c2:1d:b0",
+      "ipAddress": "192.168.0.150",
+      "machineSpecId": "1001",
+      "langCode": "eng",
+      "isActive": true,
+      "validityDateTime": null
+    }
+  ]
+}

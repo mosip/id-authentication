@@ -1,0 +1,10 @@
+{
+  "timestamp": 1550473656429,
+  "status": 500,
+  "errors": [
+    {
+      "errorCode": "KER-KMS-003",
+      "errorMessage": "No unique alias is found"
+    }
+  ]
+}

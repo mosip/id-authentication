@@ -93,7 +93,7 @@ public class read_otpTransactiondb {
 				.addAnnotatedClass(OtpEntity.class).buildSessionFactory();	
 			}
 		
-		
+
 		session = factory.getCurrentSession();
 		session.beginTransaction();
 		flag=validateGenderCode(session, code);

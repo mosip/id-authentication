@@ -6,6 +6,7 @@
       {
       "cntrId": "string",
       "isActive": true,
+      "langCode": "string",
       "machineId": "string",
       "usrId": "string"
     }

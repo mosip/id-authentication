@@ -162,7 +162,8 @@
 					"type": "string"
 				},
 				"version": {
-					"type": "number"
+					"type": "number",
+					"minimum": 0
 				},
 				"value": {
 					"type": "string"

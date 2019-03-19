@@ -80,7 +80,7 @@ public class OtpNotificationController extends BaseTestCase implements ITest{
 	 */
 	@DataProvider(name = "OtpNotificationController")
 	public static Object[][] readData1(ITestContext context) throws Exception {
-		//CommonLibrary.configFileWriter(folderPath,requestKeyFile,"DemographicCreate","smokePreReg");
+	
 		String testParam = context.getCurrentXmlTest().getParameter("testType");
 		switch (testParam) {
 		case "smoke":
@@ -130,21 +130,7 @@ public class OtpNotificationController extends BaseTestCase implements ITest{
 		listOfElementToRemove.add("timestamp");
 		status = AssertResponses.assertResponses(res, Expectedresponse, outerKeys, innerKeys);
       if (status) {
-//	             String id= (actualRequest.get("id").toString());
-//	             System.out.println("id------------>"+id);
-//	             String queryStr = "SELECT * FROM master.registration_center WHERE id='"+id+"'";
-//					boolean valid = KernelMasterDataR.masterDataDBConnection(RegistrationCenterDto.class,queryStr);
-//					System.out.println("status------>"+valid);
-			if(status)
-					{
-						finalStatus ="Pass";
-					}
-					else
-					{
-		 				finalStatus ="Fail";
-						//break;
-					}
-	            
+            
 				finalStatus = "Pass";
 			}	
 		
