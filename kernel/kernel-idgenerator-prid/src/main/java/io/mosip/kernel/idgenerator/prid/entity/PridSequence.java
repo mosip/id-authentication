@@ -9,6 +9,12 @@ import javax.persistence.Table;
 
 import lombok.Data;
 
+/**
+ * Entity class for sequence number in PRID generation algorithm.
+ * 
+ * @author Ritesh Sinha
+ * @since 1.0.0
+ */
 @Data
 @Entity
 @Table(name = "prid_seq", schema = "prereg")
