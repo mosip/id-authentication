@@ -27,7 +27,6 @@ import io.mosip.registration.processor.core.packet.dto.masterdata.StatusResponse
 import io.mosip.registration.processor.core.packet.dto.regcentermachine.ErrorDTO;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.core.util.JsonUtil;
-import io.mosip.registration.processor.packet.storage.exception.IdentityNotFoundException;
 import io.mosip.registration.processor.packet.storage.utils.Utilities;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 
@@ -105,6 +104,9 @@ public class MasterDataValidation {
 		try {
 
 			demographicIdentity = getDemographicJson(jsonString);
+
+			if (demographicIdentity == null)
+				return false;
 
 			genderEngName = getParameter(JsonUtil.getJsonValues(demographicIdentity,
 					regProcessorIdentityJson.getIdentity().getGender().getValue()), LANGUAGE_ENG);
@@ -186,10 +188,7 @@ public class MasterDataValidation {
 		JSONObject demographicJson = JsonUtil.objectMapperReadValue(jsonString, JSONObject.class);
 		demographicIdentity = JsonUtil.getJSONObject(demographicJson, utility.getGetRegProcessorDemographicIdentity());
 
-		if (demographicIdentity == null)
-			throw new IdentityNotFoundException(PlatformErrorMessages.RPR_PIS_IDENTITY_NOT_FOUND.getMessage());
-		else
-			return demographicIdentity;
+		return demographicIdentity;
 	}
 
 	/**
