@@ -1,33 +1,10 @@
 {
-  "registrationCenter": null,
-  "registrationCenterTypes": null,
-  "machineDetails": null,
-  "machineSpecification": null,
-  "machineType": null,
-  "devices": null,
-  "deviceTypes": null,
-  "deviceSpecifications": null,
-  "holidays": null,
-  "documentCategories": null,
-  "documentTypes": null,
-  "validDocumentMapping": null,
-  "templates": null,
-  "templatesTypes": null,
-  "templateFileFormat": [],
-  "reasonCategory": null,
-  "reasonList": null,
-  "blackListedWords": null,
-  "locationHierarchy": null,
-  "biometricattributes": null,
-  "biometricTypes": null,
-  "applications": null,
-  "idTypes": null,
-  "titles": null,
-  "genders": null,
-  "languages": null,
-  "registrationCenterMachines": null,
-  "registrationCenterDevices": null,
-  "registrationCenterMachineDevices": null,
-  "registrationCenterUserMachines": null,
-  "registrationCenterUsers": null
+  "timestamp": 1551938927125,
+  "status": 200,
+  "errors": [
+    {
+      "errorCode": "KER-SNC-135",
+      "errorMessage": "Timestamp cannot be future date"
+    }
+  ]
 }

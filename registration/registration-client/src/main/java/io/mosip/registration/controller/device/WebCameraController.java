@@ -47,6 +47,9 @@ public class WebCameraController extends BaseController implements Initializable
 
 	@FXML
 	private SwingNode webcamera;
+	
+	@FXML
+	protected Button capture;
 
 	@FXML
 	private Button clear;
@@ -105,6 +108,8 @@ public class WebCameraController extends BaseController implements Initializable
 		}
 		capturedImage = photoProvider.captureImage();
 		parentController.saveApplicantPhoto(capturedImage, imageType);
+		parentController.calculateRecaptureTime(imageType);
+		capture.setDisable(true);
 
 		clear.setDisable(false);
 	}
@@ -124,7 +129,6 @@ public class WebCameraController extends BaseController implements Initializable
 				"closing the webcam window");
 
 		photoProvider.close();
-		parentController.calculateRecaptureTime(imageType);
 		Stage stage = (Stage) ((Node) event.getSource()).getParent().getScene().getWindow();
 		stage.close();
 	}

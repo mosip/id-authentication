@@ -12,11 +12,11 @@ import io.mosip.kernel.syncdata.exception.SyncDataServiceException;
 import io.mosip.kernel.syncdata.service.SyncRolesService;
 
 /**
+ * This class handles fetching of everey roles that is in the server. The flow
+ * is given as follows SYNC - AUTH SERVICE - AUTH SERVER
  * 
  * @author Srinivasan
- * This class handles fetching of everey roles that is in the server.
- * The flow is given as follows
- * SYNC -> AUTH SERVICE -> AUTH SERVER
+ * @since 1.0.0
  * 
  */
 @Service
@@ -33,32 +33,32 @@ public class SyncRolesServiceImpl implements SyncRolesService {
 	 */
 	@Value("${mosip.kernel.syncdata.auth-manager-base-uri}")
 	private String authBaseUrl;
-	
+
 	/**
 	 * all roles end-point read from properties file
 	 */
 	@Value("${mosip.kernel.syncdata.auth-manager-roles}")
 	private String authServiceName;
-	
+
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see io.mosip.kernel.syncdata.service.SyncRolesService#getAllRoles()
 	 */
 	@Override
 	public RolesResponseDto getAllRoles() {
 		RolesResponseDto rolesDtos = null;
 		try {
-			
-			StringBuilder uriBuilder=new StringBuilder();
+
+			StringBuilder uriBuilder = new StringBuilder();
 			uriBuilder.append(authBaseUrl).append(authServiceName);
-			rolesDtos = restTemplate.getForObject(uriBuilder.toString()+"/registrationclient",
+			rolesDtos = restTemplate.getForObject(uriBuilder.toString() + "/registrationclient",
 					RolesResponseDto.class);
 		} catch (RestClientException ex) {
-			throw new SyncDataServiceException(
-					RolesErrorCode.ROLES_FETCH_EXCEPTION.getErrorCode(),
+			throw new SyncDataServiceException(RolesErrorCode.ROLES_FETCH_EXCEPTION.getErrorCode(),
 					RolesErrorCode.ROLES_FETCH_EXCEPTION.getErrorMessage());
 		}
-       
+
 		return rolesDtos;
 
 	}

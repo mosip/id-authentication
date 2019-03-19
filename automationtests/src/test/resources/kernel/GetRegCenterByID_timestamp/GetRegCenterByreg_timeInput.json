@@ -7,5 +7,6 @@
   "invalid_TimeStamp_onHoliday":"string",
   "invalid_timestamp_openeningTime":"string",
   "invalid_timestamp2":"string",
-  "invalid_timestamp3":"string"
+  "invalid_timestamp3":"string",
+  "langCode":"string"
 }

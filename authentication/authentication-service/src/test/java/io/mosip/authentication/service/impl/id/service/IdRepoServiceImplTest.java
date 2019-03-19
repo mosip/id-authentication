@@ -254,7 +254,7 @@ public class IdRepoServiceImplTest {
 		Map<String, Object> responseBody = new HashMap<>();
 		List<Map<String, Object>> valuelist = new ArrayList<>();
 		Map<String, Object> errorcode = new HashMap<>();
-		errorcode.put("errCode", IdAuthenticationErrorConstants.ADDR_PRI_MISMATCH.getErrorCode());
+		errorcode.put("errCode", IdAuthenticationErrorConstants.DEMO_DATA_MISMATCH.getErrorCode());
 		valuelist.add(errorcode);
 		responseBody.put("errors", valuelist);
 		Mockito.when(restHelper.requestSync(Mockito.any())).thenThrow(new RestServiceException(

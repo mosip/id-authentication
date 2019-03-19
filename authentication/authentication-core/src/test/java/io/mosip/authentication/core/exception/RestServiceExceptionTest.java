@@ -18,25 +18,25 @@ public class RestServiceExceptionTest {
 
     @Test(expected = RestServiceException.class)
     public void testRestServiceException() throws RestServiceException {
-	throw new RestServiceException(IdAuthenticationErrorConstants.OTP_NOT_PRESENT);
+	throw new RestServiceException(IdAuthenticationErrorConstants.OTP_GENERATION_FAILED);
     }
 
     @Test(expected = RestServiceException.class)
     public void testRestServiceExceptionThrowable() throws RestServiceException {
-	throw new RestServiceException(IdAuthenticationErrorConstants.OTP_NOT_PRESENT, new RestServiceException());
+	throw new RestServiceException(IdAuthenticationErrorConstants.OTP_GENERATION_FAILED, new RestServiceException());
     }
 
     @Test(expected = RestServiceException.class)
     public void testRestServiceExceptionObject() throws RestServiceException {
 	AuthRequestDTO authRequestDTO = new AuthRequestDTO();
-	throw new RestServiceException(IdAuthenticationErrorConstants.OTP_NOT_PRESENT, authRequestDTO.toString(),
+	throw new RestServiceException(IdAuthenticationErrorConstants.OTP_GENERATION_FAILED, authRequestDTO.toString(),
 		Optional.of(authRequestDTO));
     }
 
     @Test
     public void testGetResponseBody() {
 	AuthRequestDTO authRequestDTO = new AuthRequestDTO();
-	RestServiceException ex = new RestServiceException(IdAuthenticationErrorConstants.OTP_NOT_PRESENT,
+	RestServiceException ex = new RestServiceException(IdAuthenticationErrorConstants.OTP_GENERATION_FAILED,
 		authRequestDTO.toString(), authRequestDTO);
 	assertEquals(authRequestDTO, (AuthRequestDTO) ex.getResponseBody().get());
 	assertEquals(authRequestDTO.toString(), ex.getResponseBodyAsString().get());

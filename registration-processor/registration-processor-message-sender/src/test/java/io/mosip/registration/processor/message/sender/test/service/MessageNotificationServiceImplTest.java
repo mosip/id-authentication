@@ -46,7 +46,7 @@ import io.mosip.registration.processor.message.sender.exception.PhoneNumberNotFo
 import io.mosip.registration.processor.message.sender.exception.TemplateGenerationFailedException;
 import io.mosip.registration.processor.message.sender.exception.TemplateNotFoundException;
 import io.mosip.registration.processor.message.sender.service.impl.MessageNotificationServiceImpl;
-import io.mosip.registration.processor.message.sender.template.generator.TemplateGenerator;
+import io.mosip.registration.processor.message.sender.template.TemplateGenerator;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.packet.storage.utils.Utilities;
 import io.mosip.registration.processor.rest.client.utils.RestApiClient;
@@ -93,7 +93,7 @@ public class MessageNotificationServiceImplTest {
 	
 	@Mock
 	private StringWriter writer;
-
+	
 	/** The attributes. */
 	private Map<String, Object> attributes = new HashMap<>();
 
@@ -132,15 +132,8 @@ public class MessageNotificationServiceImplTest {
 	 */
 	@Before
 	public void setup() throws Exception {
-		String RegId = "27847657360002520181208094056";
-
-		List<String> RegIdList = new ArrayList<>();
-		RegIdList.add(RegId);
-
 		ReflectionTestUtils.setField(messageNotificationServiceImpl, "langCode", "eng");
 		Mockito.when(env.getProperty(ApiName.EMAILNOTIFIER.name())).thenReturn("https://mosip.com");
-
-		Mockito.when(packetInfoManager.getRegIdByUIN(Mockito.any())).thenReturn(RegIdList);
 
 		ClassLoader classLoader = getClass().getClassLoader();
 		File demographicJsonFile = new File(classLoader.getResource("ID.json").getFile());
@@ -204,6 +197,26 @@ public class MessageNotificationServiceImplTest {
 
 		SmsResponseDto resultResponse = messageNotificationServiceImpl.sendSmsNotification("RPR_UIN_GEN_SMS", "12345",
 				IdType.RID, attributes);
+		assertEquals("Test for SMS Notification Success", "Success", resultResponse.getMessage());
+	}
+	
+	@Test
+	public void testUINTypeMessage() throws ApisResourceAccessException, IOException {
+		smsResponseDto = new SmsResponseDto();
+		smsResponseDto.setMessage("Success");
+		
+		String uin = "1234567";
+		List<String> uinList = new ArrayList<>();
+		uinList.add(uin);
+		
+		Mockito.when(packetInfoManager.getUINByRid(anyString())).thenReturn(uinList);
+
+		Mockito.when(restClientService.postApi(any(), anyString(), anyString(), anyString(), any()))
+				.thenReturn(smsResponseDto);
+
+		SmsResponseDto resultResponse = messageNotificationServiceImpl.sendSmsNotification("RPR_UIN_GEN_SMS", "27847657360002520181208094056",
+				IdType.UIN, attributes);
+		
 		assertEquals("Test for SMS Notification Success", "Success", resultResponse.getMessage());
 	}
 

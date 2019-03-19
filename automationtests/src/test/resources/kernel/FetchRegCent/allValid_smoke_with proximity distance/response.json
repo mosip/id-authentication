@@ -1,7 +1,7 @@
 {
     "registrationCenters": [
         {
-            "id": "10040",
+            "id": "10014",
             "name": "Center Medina",
             "centerTypeCode": "REG",
             "addressLine1": "Street of the Consuls",
@@ -13,7 +13,7 @@
             "holidayLocationCode": "RBT",
             "contactPhone": "965639376",
             "workingHours": "8:00:00",
-            "languageCode": "eng",
+            "langCode": "eng",
             "numberOfKiosks": 1,
             "perKioskProcessTime": "00:15:00",
             "centerStartTime": "09:00:00",
@@ -25,7 +25,7 @@
             "isActive": true
         },
         {
-            "id": "10028",
+            "id": "10010",
             "name": "Center Hassan",
             "centerTypeCode": "REG",
             "addressLine1": "Avenue Amir Moulay Abdellah",
@@ -37,7 +37,7 @@
             "holidayLocationCode": "RBT",
             "contactPhone": "766074745",
             "workingHours": "8:00:00",
-            "languageCode": "eng",
+            "langCode": "eng",
             "numberOfKiosks": 1,
             "perKioskProcessTime": "00:15:00",
             "centerStartTime": "09:00:00",

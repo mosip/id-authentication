@@ -156,10 +156,6 @@ public class DBDataStore implements IDataStore {
 			}
 			createMapping(userId,roleId);
 		}
-		else
-		{
-			throw new RuntimeException("Please login to get the details");
-		}
 		return getUser(otpUser.getUserId());
 	}
 

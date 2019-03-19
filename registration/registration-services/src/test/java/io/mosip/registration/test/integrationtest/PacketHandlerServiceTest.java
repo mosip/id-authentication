@@ -4,6 +4,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 import org.apache.poi.util.IOUtils;
 import org.junit.Assert;
@@ -40,6 +43,8 @@ public class PacketHandlerServiceTest extends BaseIntegrationTest {
 	private GlobalParamService globalParamService;
 	@Autowired
 	private RidGenerator<String> ridGeneratorImpl;
+	@Autowired
+	UserOnboardService userOBservice;
 	@Before
 	public void setUp() {
 		ApplicationContext applicationContext = ApplicationContext.getInstance();
@@ -103,9 +108,23 @@ public class PacketHandlerServiceTest extends BaseIntegrationTest {
 		SessionContext.getInstance().getUserContext().setRegistrationCenterDetailDTO(registrationCenter);
 		SessionContext.getInstance().getUserContext().setUserId("mosip");
 		SessionContext.getInstance().setMapObject(new HashMap<String, Object>());
-		obj.setRegistrationId(ridGeneratorImpl.generateId(
-				ApplicationContext.getInstance().map().get(RegistrationConstants.REGISTARTION_CENTER).toString(),
-				"10011"));
+		String CenterID=null;
+		String StatinID=null;
+		Map<String,String> getres=userOBservice.getMachineCenterId();
+		Set<Entry<String,String>> hashSet=getres.entrySet();
+        for(Entry entry:hashSet ) {
+
+        	if(entry.getKey().equals(IntegrationTestConstants.centerID))
+        	{
+        		CenterID=entry.getValue().toString();
+        	}
+        	else {
+				StatinID=entry.getValue().toString();
+			}
+    
+        	}
+        String RandomID=ridGeneratorImpl.generateId(CenterID,StatinID);
+		obj.setRegistrationId(RandomID);
 		ResponseDTO response = packetHandlerService.handle(obj);
 
 		String jsonInString = mapper.writeValueAsString(response);

@@ -19,6 +19,7 @@
   font-size:14px;
   margin:0px;
 }
+/* consent story desgin css */
 .consent-popup-subtitle{
 font-size:10px;
 margin:0px;
@@ -52,6 +53,7 @@ margin:0px;
 .consent-popup-parent{
   position: relative;
 }
+
 .consent-popup-cross{
   position: absolute;
   top: -8%;
@@ -64,3 +66,5 @@ margin:0px;
   outline: none;
   cursor: pointer;
 }
+
+/* consent story desgin css  */

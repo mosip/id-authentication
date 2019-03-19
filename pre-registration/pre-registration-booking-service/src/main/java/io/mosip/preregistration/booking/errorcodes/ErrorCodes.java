@@ -30,23 +30,24 @@ public enum ErrorCodes {
 	PRG_BOOK_RCI_014("PRG_BOOK_RCI_014"), // no slots available for that date
 	PRG_BOOK_RCI_015("PRG_BOOK_RCI_015"), // No time slots are assigned to that registration center
 	PRG_BOOK_RCI_013("PRG_BOOK_RCI_013"), // Booking data not found
-	PRG_BOOK_RCI_016("PRG_BOOK_RCI_016"),//  availability table is not accessable
+	PRG_BOOK_RCI_016("PRG_BOOK_RCI_016"), // availability table is not accessable
 	PRG_BOOK_RCI_017("PRG_BOOK_RCI_017"), // Appointment time slot is already canceled.
 	PRG_BOOK_RCI_018("PRG_BOOK_RCI_018"), // Appointment can not be canceled.
-	PRG_BOOK_RCI_019("PRG_BOOK_RCI_019"), // Cancel Appointmenct  failed
+	PRG_BOOK_RCI_019("PRG_BOOK_RCI_019"), // Cancel Appointmenct failed
 	PRG_BOOK_RCI_020("PRG_BOOK_RCI_020"), // Master service not available
-	PRG_BOOK_RCI_021("PRG_BOOK_RCI_021"), //Rebooking failed
-	PRG_BOOK_RCI_022("PRG_BOOK_RCI_022"),//Invalid request parameter
+	PRG_BOOK_RCI_021("PRG_BOOK_RCI_021"), // Rebooking failed
+	PRG_BOOK_RCI_022("PRG_BOOK_RCI_022"), // Invalid request parameter
 	PRG_BOOK_RCI_023("PRG_BOOK_RCI_023"), // DOCUMENTS_NOT_FOUND_EXCEPTION
-	PRG_BOOK_RCI_024("PRG_BOOK_RCI_024"), //AVAILABILITY_UPDATE_FAILED
-	PRG_BOOK_RCI_025("PRG_BOOK_RCI_025"),//HTTP_CLIENT_EXCEPTION
-	PRG_BOOK_RCI_026("PRG_BOOK_RCI_026"),// Booking status cannot be done altered before.
-	PRG_BOOK_RCI_027("PRG_BOOK_RCI_027"),//Delete Booking not allowed
-	PRG_BOOK_RCI_028("PRG_BOOK_RCI_028"),//FAILED_TO_DELETE_THE_PRE_REGISTRATION_RECORD
-	PRG_BOOK_RCI_029("PRG_BOOK_RCI_029"),//APPONIMENT_CANNOT_BE_CANCELED
-	PRG_BOOK_RCI_030("PRG_BOOK_RCI_030");// CANNOT_GET_DEATILS_FOR	
+	PRG_BOOK_RCI_024("PRG_BOOK_RCI_024"), // AVAILABILITY_UPDATE_FAILED
+	PRG_BOOK_RCI_025("PRG_BOOK_RCI_025"), // HTTP_CLIENT_EXCEPTION
+	PRG_BOOK_RCI_026("PRG_BOOK_RCI_026"), // Booking status cannot be done altered before.
+	PRG_BOOK_RCI_027("PRG_BOOK_RCI_027"), // Delete Booking not allowed
+	PRG_BOOK_RCI_028("PRG_BOOK_RCI_028"), // FAILED_TO_DELETE_THE_PRE_REGISTRATION_RECORD
+	PRG_BOOK_RCI_029("PRG_BOOK_RCI_029"), // APPONIMENT_CANNOT_BE_CANCELED
+	PRG_BOOK_RCI_030("PRG_BOOK_RCI_030"), 
+	PRG_BOOK_RCI_031("PRG_BOOK_RCI_031"), // Invalid Booking Date Time
+	PRG_BOOK_RCI_032("PRG_BOOK_RCI_032");// BOOKING_NOT_FOUND_FOR_THE_DATE_RANGE
 
-	
 	/**
 	 * @param code
 	 */
@@ -65,5 +66,5 @@ public enum ErrorCodes {
 	public String getCode() {
 		return code;
 	}
-	
+
 }

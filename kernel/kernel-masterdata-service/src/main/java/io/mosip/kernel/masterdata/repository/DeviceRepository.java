@@ -26,7 +26,7 @@ public interface DeviceRepository extends BaseRepository<Device, String> {
 	 *            the id of device
 	 * @return the device detail
 	 */
-	@Query("FROM Device d where d.id = ?1 AND (d.isDeleted is null or d.isDeleted = false)")
+	@Query("FROM Device d where d.id = ?1 AND (d.isDeleted is null or d.isDeleted = false) AND d.isActive = true")
 	List<Device> findByIdAndIsDeletedFalseOrIsDeletedIsNull(String id);
 
 	/**
@@ -40,7 +40,7 @@ public interface DeviceRepository extends BaseRepository<Device, String> {
 	 * @return List Device Details fetched from database
 	 */
 
-	@Query("FROM Device d where d.langCode = ?1 and (d.isDeleted is null or d.isDeleted = false)")
+	@Query("FROM Device d where d.langCode = ?1 and (d.isDeleted is null or d.isDeleted = false) AND d.isActive = true")
 	List<Device> findByLangCodeAndIsDeletedFalseOrIsDeletedIsNull(String langCode);
 
 	/**
@@ -55,7 +55,7 @@ public interface DeviceRepository extends BaseRepository<Device, String> {
 	 * @return List Device Details fetched from database
 	 * 
 	 */
-	@Query(value = "select d.id, d.name, d.mac_address, d.serial_num, d.ip_address, d.dspec_id, d.lang_code, d.is_active, d.validity_end_dtimes, s.dtyp_code from master.device_master  d, master.device_spec s where  d.dspec_id = s.id  and d.lang_code = s.lang_code and d.lang_code = ?1 and s.dtyp_code = ?2 and (d.is_deleted is null or d.is_deleted = false)", nativeQuery = true)
+	@Query(value = "select d.id, d.name, d.mac_address, d.serial_num, d.ip_address, d.dspec_id, d.lang_code, d.is_active, d.validity_end_dtimes, s.dtyp_code from master.device_master  d, master.device_spec s where  d.dspec_id = s.id  and d.lang_code = s.lang_code and d.lang_code = ?1 and s.dtyp_code = ?2 and (d.is_deleted is null or d.is_deleted = false) and d.is_active = true", nativeQuery = true)
 	List<Object[]> findByLangCodeAndDtypeCode(String langCode, String deviceTypeCode);
 
 	/**
@@ -67,7 +67,7 @@ public interface DeviceRepository extends BaseRepository<Device, String> {
 	 * @return MachineDetail fetched from database
 	 */
 
-	@Query("FROM Device d where d.deviceSpecId = ?1 and (d.isDeleted is null or d.isDeleted = false)")
+	@Query("FROM Device d where d.deviceSpecId = ?1 and (d.isDeleted is null or d.isDeleted = false) and d.isActive = true")
 	List<Device> findDeviceByDeviceSpecIdAndIsDeletedFalseorIsDeletedIsNull(String deviceSpecId);
 	
 	/**
@@ -79,7 +79,7 @@ public interface DeviceRepository extends BaseRepository<Device, String> {
 	 *            language code from user
 	 * @return the device detail
 	 */
-	@Query("FROM Device d where d.id = ?1 and d.langCode = ?2 AND (d.isDeleted is null or d.isDeleted = false)")
+	@Query("FROM Device d where d.id = ?1 and d.langCode = ?2 AND (d.isDeleted is null or d.isDeleted = false) and d.isActive = true")
 	Device findByIdAndLangCodeAndIsDeletedFalseOrIsDeletedIsNull(String id, String langCode);
 	
 

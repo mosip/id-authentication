@@ -1,5 +1,6 @@
 package io.mosip.registration.test.integrationtest;
 
+import static io.mosip.registration.constants.RegistrationConstants.ACKNOWLEDGEMENT_TEMPLATE_PART_1;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNull;
@@ -57,7 +58,7 @@ public class TemplateServiceImplTest {
 	 */
 	@Test
 	public void getTemplateValidTest(){
-		Template result= templateServiceImpl.getTemplate(RegistrationConstants.NOTIFICATION_TEMPLATE);
+		Template result= templateServiceImpl.getTemplate(RegistrationConstants.EMAIL_TEMPLATE,"eng");
 		System.out.println(result.getFileTxt());
 		assertEquals(result.getDescr(),"Email and SMS Notification Template");		
 	}
@@ -69,7 +70,7 @@ public class TemplateServiceImplTest {
 	 */
 	@Test
 	public void getTemplateInvalidTest() {
-		Template result=templateServiceImpl.getTemplate("Invalid Template");
+		Template result=templateServiceImpl.getTemplate("Invalid Template","eng");
 		assertNull(result.getDescr());
 	}
 	
@@ -80,7 +81,7 @@ public class TemplateServiceImplTest {
 	 */
 	@Test
 	public void getTemplateNegativeTest(){
-		Template result= templateServiceImpl.getTemplate(RegistrationConstants.ACKNOWLEDGEMENT_TEMPLATE);
+		Template result= templateServiceImpl.getTemplate(RegistrationConstants.ACKNOWLEDGEMENT_TEMPLATE_PART_1,"eng");
 		System.out.println(result.getFileTxt());
 		assertNotEquals(result.getDescr(),"Email and SMS Notification Template");
 		
@@ -94,11 +95,11 @@ public class TemplateServiceImplTest {
 	 */
 	@Test
 	public void getHTMLTemplateTest() throws RegBaseCheckedException {
-		String dataActual = templateServiceImpl.getHtmlTemplate(RegistrationConstants.NOTIFICATION_TEMPLATE);
+		String dataActual = templateServiceImpl.getHtmlTemplate(RegistrationConstants.EMAIL_TEMPLATE,"eng");
 		List<Template> list = templateRepo.findAll(Template.class);
 		for(Template template: list) {
 			if(template.getDescr().compareTo("Email and SMS Notification Template")==0) {
-				assertEquals(dataActual, new String(template.getFileTxt(), StandardCharsets.UTF_8));
+				assertEquals(dataActual, new String(template.getFileTxt()));
 			}
 		}
 		
@@ -110,7 +111,7 @@ public class TemplateServiceImplTest {
 	 */
 	@Test
 	public void getHTMLTemplateInvalidInputTest() throws RegBaseCheckedException {
-		String dataActual = templateServiceImpl.getHtmlTemplate("invalid input");
+		String dataActual = templateServiceImpl.getHtmlTemplate("invalid input","");
 		assertEquals(dataActual, "");		
 	}
 	
@@ -122,7 +123,7 @@ public class TemplateServiceImplTest {
 	@Ignore
 	@Test
 	public void getHTMLTemplateNullInputTest() throws RegBaseCheckedException {
-		String dataActual = templateServiceImpl.getHtmlTemplate(null);
+		String dataActual = templateServiceImpl.getHtmlTemplate(null,null);
 		assertNull(dataActual);	
 	}
 	
@@ -134,7 +135,7 @@ public class TemplateServiceImplTest {
 	@Ignore
 	@Test
 	public void getHTMLTemplateEmptyInputTest() throws RegBaseCheckedException {
-		String dataActual = templateServiceImpl.getHtmlTemplate("");
+		String dataActual = templateServiceImpl.getHtmlTemplate("","");
 		assertNull(dataActual, "");		
 	}
 	

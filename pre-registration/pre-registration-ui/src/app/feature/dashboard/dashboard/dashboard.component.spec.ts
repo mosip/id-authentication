@@ -21,19 +21,13 @@ import { NameList } from 'src/app/shared/models/demographic-model/name-list.moda
 class DummyComponent {}
 const routes: Routes = [{ path: 'pre-registration/summary/acknowledgement', component: DummyComponent }];
 
-class RouterStub {
-  url = 'pre-registration/summary/acknowledgement';
+// class RouterStub {
+//   url = 'pre-registration/summary/acknowledgement';
 
-  navigateByUrl(url: string) {
-    return url;
-  }
-}
-
-class UtilStub {
-  getURL(url: string, url2: string) {
-    return url + url2;
-  }
-}
+//   navigateByUrl(url: string) {
+//     return url;
+//   }
+// }
 
 class SharedServiceStub {
   addNameList(applicant: NameList) {
@@ -49,17 +43,61 @@ class SharedServiceStub {
   }
 }
 
+let router = {
+  navigate: jasmine.createSpy('navigate'),
+  navigateByUrl: jasmine.createSpy('navigateByUrl')
+  // navigateByUrl: 'abc'
+};
+
+// const router = {
+//   navigateByUrl: 'gkjhk'
+// };
+
 // let sharedService: SharedService,
 //     mockUsers = {
 //       getNameList: jasmine.createSpy('getNameList').and.returnValue(of([{ fullName: 'Agn', preId: '1234' }])),
 //       addNameList: jasmine.createSpy('addtoNameList').and.callThrough()
 //     };
+class UtilStub implements Utils {
+  static getURL(currentURL: string, nextRoute: string, numberofPop = 1) {
+    return currentURL;
+  }
+}
 
 class MockService {
   use() {}
   url = 'some/url/here';
   getUsers(preId: string) {
-    return of([{ fullName: 'Agn', preId: preId }]);
+    let applicant = {
+      err: null,
+      status: true,
+      resTime: '2019-03-12T13:17:28.276Z',
+      response: [
+        {
+          preRegistrationId: '29564951460821',
+          fullname: [
+            {
+              language: 'fra',
+              value: 'test1'
+            },
+            {
+              language: 'ara',
+              value: 'تِست١'
+            }
+          ],
+          statusCode: 'Booked',
+          bookingRegistrationDTO: {
+            registrationCenterId: '123',
+            appointment_date: '12/12/1993',
+            time_slot_from: '09:30',
+            time_slot_to: '09:45'
+          },
+          postalCode: '212332'
+        }
+      ]
+    };
+
+    return of([applicant]);
   }
 
   getSecondaryLanguageLabels() {
@@ -71,12 +109,13 @@ class MockService {
   }
 }
 
-fdescribe('Dashboard Component', () => {
+describe('Dashboard Component', () => {
   let component: DashBoardComponent;
   let fixture: ComponentFixture<DashBoardComponent>;
+  let utilsqwe;
   // let location: Location;
   // let router: Router;
-  let util: Utils;
+  // let util: Utils;
 
   // let dashboard: DashBoardComponent,
   //   mockUDashboard = {
@@ -103,9 +142,10 @@ fdescribe('Dashboard Component', () => {
       ],
       providers: [
         { provide: DataStorageService, useClass: MockService },
-        { provide: Router, useClass: RouterStub },
+        // { provide: Router, useClass: RouterStub },
         { provide: Utils, useClass: UtilStub },
-        { provide: SharedService, useClass: SharedServiceStub }
+        { provide: SharedService, useClass: SharedServiceStub },
+        { provide: Router, useValue: router }
         // { provide: DashBoardComponent, useValue: mockUDashboard }
       ]
     }).compileComponents();
@@ -200,7 +240,8 @@ fdescribe('Dashboard Component', () => {
       status: 'true'
     };
     component.selectedUsers = [applicant, applicant];
-    component.onModifyMultipleAppointment();
+    // UtilStub.getURL('qbc', 'gh');
+    expect(router.navigateByUrl).toBeDefined();
     expect(component.selectedUsers.length).toBe(2);
   });
 
@@ -215,6 +256,8 @@ fdescribe('Dashboard Component', () => {
       status: 'true'
     };
     component.addtoNameList(applicant);
+    console.log('component.selectedUsers.length', component.selectedUsers.length);
+
     expect(component.selectedUsers.length).toBe(0);
   });
 
@@ -249,42 +292,76 @@ fdescribe('Dashboard Component', () => {
   });
 
   it('should create applicant with booked status', () => {
+    let applicant = {
+      preRegistrationId: '29564951460821',
+      fullname: [
+        {
+          language: 'fra',
+          value: 'test1'
+        },
+        {
+          language: 'ara',
+          value: 'تِست١'
+        }
+      ],
+      statusCode: 'Booked',
+      bookingRegistrationDTO: {
+        registrationCenterId: '123',
+        appointment_date: '12/12/1993',
+        time_slot_from: '09:30',
+        time_slot_to: '09:45'
+      },
+      postalCode: '212332'
+    };
     localStorage.setItem('langCode', 'ara');
     let applicants = {
       err: null,
       status: true,
       resTime: '2019-03-12T13:17:28.276Z',
-      response: [
-        {
-          preRegistrationId: '29564951460821',
-          fullname: [
-            {
-              language: 'fra',
-              value: 'test1'
-            },
-            {
-              language: 'ara',
-              value: 'تِست١'
-            }
-          ],
-          statusCode: 'Booked',
-          bookingRegistrationDTO: {
-            registrationCenterId: '123',
-            regDate: '12/12/1993',
-            slotFromTime: '09:30',
-            slotToTime: '09:45'
-          },
-          postalCode: '212332'
-        }
-      ]
+      response: [applicant, applicant]
     };
 
+    component.loginId = '1243';
+
     // component.createApplicant([applicant], 0);
+    expect(router.navigate).toHaveBeenCalledWith(['/']);
     expect(component.createApplicant(applicants, 0).applicationID).toBe('29564951460821');
   });
 
+  it('ON Select User', () => {
+    const applicant: Applicant = {
+      applicationID: '123',
+      appointmentDateTime: '1234',
+      name: 'shahsnak',
+      nameInSecondaryLanguage: 'asdf',
+      postalCode: '123',
+      regDto: 'regDTO',
+      status: 'true'
+    };
+    let event = {} as MatCheckboxChange;
+    event.checked = true;
+    component.onSelectUser(applicant, event);
+    expect(component.disableModifyAppointmentButton).toBe(false);
+  });
+
+  it('ON Acknowledgment view', () => {
+    const applicant: Applicant = {
+      applicationID: '123',
+      appointmentDateTime: '1234',
+      name: 'shahsnak',
+      nameInSecondaryLanguage: 'asdf',
+      postalCode: '123',
+      regDto: 'regDTO',
+      status: 'true'
+    };
+    component.onAcknowledgementView(applicant);
+    expect(router.navigateByUrl).toHaveBeenCalled();
+  });
+
   // it('get user', () => {
-  //   expect(component.getUsers())
+  //   component.getUsers();
+  //   component.loginId = null;
+  //   expect(component.users.length).toBe(0);
   // });
 
   // it('add to Name List', () => {

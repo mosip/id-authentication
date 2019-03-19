@@ -70,11 +70,11 @@ public class NotificationManagerTest {
 		Set<NotificationType> notificationtype = new HashSet<>();
 		notificationtype.add(NotificationType.SMS);
 		Map<String, Object> values = new HashMap<>();
-		IDDataValidationException e = new IDDataValidationException(IdAuthenticationErrorConstants.NOTIFICATION_FAILED);
-		
-		IDDataValidationException idDataValidationException  = new IDDataValidationException(
-				IdAuthenticationErrorConstants.NOTIFICATION_FAILED, e);
-		
+		IDDataValidationException e = new IDDataValidationException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS);
+
+		IDDataValidationException idDataValidationException = new IDDataValidationException(
+				IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
+
 		Mockito.when(restRequestFactory.buildRequest(Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenThrow(idDataValidationException);
 
@@ -86,9 +86,9 @@ public class NotificationManagerTest {
 		Set<NotificationType> notificationtype = new HashSet<>();
 		notificationtype.add(NotificationType.EMAIL);
 		Map<String, Object> values = new HashMap<>();
-		IDDataValidationException e = new IDDataValidationException(IdAuthenticationErrorConstants.NOTIFICATION_FAILED);
-		IDDataValidationException idDataValidationException  = new IDDataValidationException(
-				IdAuthenticationErrorConstants.NOTIFICATION_FAILED, e);
+		IDDataValidationException e = new IDDataValidationException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS);
+		IDDataValidationException idDataValidationException = new IDDataValidationException(
+				IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
 		Mockito.when(restRequestFactory.buildRequest(Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenThrow(idDataValidationException);
 		notificationManager.sendEmailNotification("test@gmail.com", "test", "test");
@@ -99,20 +99,20 @@ public class NotificationManagerTest {
 		Set<NotificationType> notificationtype = new HashSet<>();
 		notificationtype.add(NotificationType.EMAIL);
 		Map<String, Object> values = new HashMap<>();
-		IDDataValidationException e = new IDDataValidationException(IdAuthenticationErrorConstants.NOTIFICATION_FAILED);
-		IDDataValidationException idDataValidationException  = new IDDataValidationException(
-				IdAuthenticationErrorConstants.NOTIFICATION_FAILED, e);
+		IDDataValidationException e = new IDDataValidationException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS);
+		IDDataValidationException idDataValidationException = new IDDataValidationException(
+				IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
 		Mockito.when(idTemplateManager.applyTemplate(Mockito.anyString(), Mockito.any()))
 				.thenThrow(idDataValidationException);
 		notificationManager.sendSmsNotification("1234567890", "test");
 	}
-	
+
 	@Test
 	public void TestInvalidNotificationConfig() throws IdAuthenticationBusinessException {
 		MailRequestDto mailRequestDto = new MailRequestDto();
 		Mockito.when(restRequestFactory.buildRequest(RestServicesConstants.MAIL_NOTIFICATION_SERVICE, mailRequestDto,
 				String.class))
-				.thenThrow(new IDDataValidationException(IdAuthenticationErrorConstants.NOTIFICATION_FAILED));
+				.thenThrow(new IDDataValidationException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS));
 		MockEnvironment mockenv = new MockEnvironment();
 		mockenv.merge(((AbstractEnvironment) mockenv));
 		mockenv.setProperty("mosip.notification.type", "");

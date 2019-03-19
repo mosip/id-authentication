@@ -1,1 +1,1 @@
-{"status":"Y","err":[],"resTime":"2019-03-12T12:19:33.472+05:30","info":{"idType":"D","reqTime":"2019-03-12T12:14:26.026+05:30","bioInfos":[{"bioType":"irisImg","deviceInfo":{"deviceId":"123143","make":"morpho","model":"steel"}}],"usageData":"0x0000200000002000"},"txnID":"5036436061","ver":"0.8","staticToken":"091033834261939302792405892537024312"}
+{"status":"N","err":[{"errorCode":"IDA-RST-007","errorMessage":"5XX - Server Error occured"}],"resTime":"2019-03-15T14:53:09.962+05:30","txnID":"3280718382","ver":"0.8"}

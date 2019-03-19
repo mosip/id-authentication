@@ -5,6 +5,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -18,6 +20,8 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import io.mosip.kernel.core.virusscanner.exception.VirusScannerException;
 import io.mosip.kernel.core.virusscanner.spi.VirusScanner;
+import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.service.packet.impl.RegistrationPacketVirusScanServiceImpl;
 
 public class RegistrationPacketVirusScanTest {
@@ -33,11 +37,15 @@ public class RegistrationPacketVirusScanTest {
 	
 	@Before
 	public void Initialize() {
-		ReflectionTestUtils.setField(registrationPacketVirusScanServiceImpl, "packetStoreLocation", "..//PacketStore");
+		
+		Map<String,Object> appMap = new HashMap<>();
+		appMap.put(RegistrationConstants.PKT_STORE_LOC, "..//PacketStore");
+		appMap.put(RegistrationConstants.CLIENT_PATH, "..//PreRegPacketStore");
+		appMap.put(RegistrationConstants.DB_PATH, "..//PreRegPacketStore");
+		appMap.put(RegistrationConstants.LOGS_PATH, "..//PreRegPacketStore");
+		ApplicationContext.getInstance().setApplicationMap(appMap);
+		
 		ReflectionTestUtils.setField(registrationPacketVirusScanServiceImpl, "preRegPacketLocation", "..//PreRegPacketStore");
-		ReflectionTestUtils.setField(registrationPacketVirusScanServiceImpl, "logPath", "..//PreRegPacketStore");
-		ReflectionTestUtils.setField(registrationPacketVirusScanServiceImpl, "dbPath", "..//PreRegPacketStore");
-		ReflectionTestUtils.setField(registrationPacketVirusScanServiceImpl, "clientPath", "..//PreRegPacketStore");
 	}
 	
 	@Test

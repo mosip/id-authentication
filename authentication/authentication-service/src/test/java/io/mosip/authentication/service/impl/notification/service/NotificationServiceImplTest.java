@@ -107,19 +107,19 @@ public class NotificationServiceImplTest {
 			throws IdAuthenticationBusinessException, IdAuthenticationDaoException, IOException {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		AuthTypeDTO authType = new AuthTypeDTO();
-		authType.setPersonalIdentity(true);
-		authRequestDTO.setAuthType(authType);
+		authType.setDemo(true);
+		authRequestDTO.setRequestedAuth(authType);
 
 		AuthResponseDTO authResponseDTO = new AuthResponseDTO();
 		ZoneOffset offset = ZoneOffset.MAX;
 
-		authRequestDTO.setReqTime(Instant.now().atOffset(ZoneOffset.of("+0530"))
+		authRequestDTO.setRequestTime(Instant.now().atOffset(ZoneOffset.of("+0530"))
 				.format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSXXX")).toString());
 
 		// authRequestDTO.setReqTime(Instant.now().atOffset(offset)
 		// .format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
-		authResponseDTO.setStatus("N");
-		authResponseDTO.setResTime(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX").format(new Date()));
+		authResponseDTO.setStatus(Boolean.FALSE);
+		authResponseDTO.setResponseTime(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX").format(new Date()));
 		Supplier<Object> Supplier = () -> new String("Success");
 		Mockito.when(restHelper.requestAsync(Mockito.any())).thenReturn(Supplier);
 		String uin = "274390482564";
@@ -154,20 +154,19 @@ public class NotificationServiceImplTest {
 		notificationService.sendAuthNotification(authRequestDTO, uin, authResponseDTO, idInfo, false);
 	}
 
-
 	@Test(expected = IdAuthenticationBusinessException.class)
 	public void TestInValidAuthSmsNotification()
 			throws IdAuthenticationBusinessException, IdAuthenticationDaoException, IOException {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		AuthResponseDTO authResponseDTO = new AuthResponseDTO();
 
-		authRequestDTO.setReqTime(Instant.now().atOffset(ZoneOffset.of("+0530"))
+		authRequestDTO.setRequestTime(Instant.now().atOffset(ZoneOffset.of("+0530"))
 				.format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSXXX")).toString());
 		AuthTypeDTO authType = new AuthTypeDTO();
-		authType.setPersonalIdentity(true);
-		authRequestDTO.setAuthType(authType);
-		authResponseDTO.setStatus("y");
-		authResponseDTO.setResTime(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX").format(new Date()));
+		authType.setDemo(true);
+		authRequestDTO.setRequestedAuth(authType);
+		authResponseDTO.setStatus(Boolean.TRUE);
+		authResponseDTO.setResponseTime(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX").format(new Date()));
 		Supplier<Object> Supplier = () -> new String("Success");
 		Mockito.when(restHelper.requestAsync(Mockito.any())).thenReturn(Supplier);
 		String uin = "4667732";
@@ -186,9 +185,9 @@ public class NotificationServiceImplTest {
 		Set<NotificationType> notificationtype = new HashSet<>();
 		notificationtype.add(NotificationType.EMAIL);
 		Map<String, Object> values = new HashMap<>();
-		IDDataValidationException e = new IDDataValidationException(IdAuthenticationErrorConstants.NOTIFICATION_FAILED);
+		IDDataValidationException e = new IDDataValidationException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS);
 		IdAuthenticationBusinessException idAuthenticationBusinessException = new IdAuthenticationBusinessException(
-				IdAuthenticationErrorConstants.NOTIFICATION_FAILED, e);
+				IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
 		Mockito.when(idTemplateManager.applyTemplate(Mockito.anyString(), Mockito.any()))
 				.thenThrow(idAuthenticationBusinessException.getCause());
 		MockEnvironment mockenv = new MockEnvironment();
@@ -217,7 +216,7 @@ public class NotificationServiceImplTest {
 	public void testSendOtpNotification()
 			throws IdAuthenticationBusinessException, IdAuthenticationDaoException, IOException {
 		OtpRequestDTO otpRequestDto = new OtpRequestDTO();
-		otpRequestDto.setIdvId("8765");
+//		otpRequestDto.getIdentity().setUin("8765");
 		String otp = "987654";
 		String uin = "274390482564";
 		String date = "";
@@ -225,7 +224,7 @@ public class NotificationServiceImplTest {
 		String email = "abc@gmail.cpm";
 		String mobileNumber = "";
 
-		otpRequestDto.setReqTime(Instant.now().atOffset(ZoneOffset.of("+0530"))
+		otpRequestDto.setRequestTime(Instant.now().atOffset(ZoneOffset.of("+0530"))
 				.format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSZ")).toString());
 		// otpRequestDto.setReqTime(ZonedDateTime.now()
 		// .format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
@@ -240,9 +239,9 @@ public class NotificationServiceImplTest {
 
 		Mockito.when(idInfoService.getIdInfo(repoDetails())).thenReturn(idInfo);
 		Optional<String> uinOpt = Optional.of("426789089018");
-		IDDataValidationException e = new IDDataValidationException(IdAuthenticationErrorConstants.NOTIFICATION_FAILED);
+		IDDataValidationException e = new IDDataValidationException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS);
 		IdAuthenticationBusinessException idAuthenticationBusinessException = new IdAuthenticationBusinessException(
-				IdAuthenticationErrorConstants.NOTIFICATION_FAILED, e);
+				IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
 		Mockito.when(idTemplateManager.applyTemplate(Mockito.anyString(), Mockito.any()))
 				.thenThrow(idAuthenticationBusinessException.getCause());
 		MockEnvironment mockenv = new MockEnvironment();

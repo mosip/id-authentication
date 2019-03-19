@@ -1,0 +1,224 @@
+{
+  "machines": [
+    {
+      "id": "10001",
+      "name": "Machine 1",
+      "serialNum": "NM5328114630",
+      "macAddress": "e1:01:2b:c2:1d:b0",
+      "ipAddress": "192.168.0.150",
+      "machineSpecId": "1001",
+      "langCode": "eng",
+      "isActive": true,
+      "validityDateTime": null
+    },
+    {
+      "id": "10002",
+      "name": "Machine 2",
+      "serialNum": "WY2132605316",
+      "macAddress": "e9:0e:a3:05:d5:8d",
+      "ipAddress": "192.168.0.133",
+      "machineSpecId": "1001",
+      "langCode": "eng",
+      "isActive": true,
+      "validityDateTime": null
+    },
+    {
+      "id": "10003",
+      "name": "Machine 3",
+      "serialNum": "CM6384145127",
+      "macAddress": "f9:87:3f:16:65:92",
+      "ipAddress": "192.168.0.161",
+      "machineSpecId": "1001",
+      "langCode": "eng",
+      "isActive": true,
+      "validityDateTime": null
+    },
+    {
+      "id": "10004",
+      "name": "Machine 4",
+      "serialNum": "NT894252578",
+      "macAddress": "cc:11:b1:fd:1b:a6",
+      "ipAddress": "192.168.0.259",
+      "machineSpecId": "1001",
+      "langCode": "eng",
+      "isActive": true,
+      "validityDateTime": null
+    },
+    {
+      "id": "10005",
+      "name": "Machine 5",
+      "serialNum": "YM866672706",
+      "macAddress": "bf:91:79:24:23:85",
+      "ipAddress": "192.168.0.119",
+      "machineSpecId": "1001",
+      "langCode": "eng",
+      "isActive": true,
+      "validityDateTime": null
+    },
+    {
+      "id": "10006",
+      "name": "Machine 6",
+      "serialNum": "WT6501645780",
+      "macAddress": "6e:ee:fe:f7:50:24",
+      "ipAddress": "192.168.0.177",
+      "machineSpecId": "1001",
+      "langCode": "eng",
+      "isActive": true,
+      "validityDateTime": null
+    },
+    {
+      "id": "10007",
+      "name": "Machine 7",
+      "serialNum": "LK8186452621",
+      "macAddress": "6d:a6:30:56:66:9f",
+      "ipAddress": "192.168.0.227",
+      "machineSpecId": "1001",
+      "langCode": "eng",
+      "isActive": true,
+      "validityDateTime": null
+    },
+    {
+      "id": "10008",
+      "name": "Machine 8",
+      "serialNum": "NR3264783870",
+      "macAddress": "2b:9f:5c:a1:d6:d3",
+      "ipAddress": "192.168.0.207",
+      "machineSpecId": "1001",
+      "langCode": "eng",
+      "isActive": true,
+      "validityDateTime": null
+    },
+    {
+      "id": "10009",
+      "name": "Machine 9",
+      "serialNum": "RW437027336",
+      "macAddress": "ee:9e:95:a6:cb:14",
+      "ipAddress": "192.168.0.220",
+      "machineSpecId": "1001",
+      "langCode": "eng",
+      "isActive": true,
+      "validityDateTime": null
+    },
+    {
+      "id": "10010",
+      "name": "Machine 10",
+      "serialNum": "SI158158531",
+      "macAddress": "17:dd:46:75:ae:0d",
+      "ipAddress": "192.168.0.242",
+      "machineSpecId": "1001",
+      "langCode": "eng",
+      "isActive": true,
+      "validityDateTime": null
+    },
+    {
+      "id": "10011",
+      "name": "Machine 11",
+      "serialNum": "XF3416823469",
+      "macAddress": "26:e0:5a:44:b4:f2",
+      "ipAddress": "192.168.0.173",
+      "machineSpecId": "1001",
+      "langCode": "eng",
+      "isActive": true,
+      "validityDateTime": null
+    },
+    {
+      "id": "10012",
+      "name": "Machine 12",
+      "serialNum": "BW4524978011",
+      "macAddress": "1f:ce:cf:7a:e4:c8",
+      "ipAddress": "192.168.0.203",
+      "machineSpecId": "1001",
+      "langCode": "eng",
+      "isActive": true,
+      "validityDateTime": null
+    },
+    {
+      "id": "10013",
+      "name": "Machine 13",
+      "serialNum": "DB289579153",
+      "macAddress": "c8:5f:95:d9:16:d0",
+      "ipAddress": "192.168.0.112",
+      "machineSpecId": "1001",
+      "langCode": "eng",
+      "isActive": true,
+      "validityDateTime": null
+    },
+    {
+      "id": "10014",
+      "name": "Machine 14",
+      "serialNum": "SI4597903231",
+      "macAddress": "e0:be:be:a8:77:10",
+      "ipAddress": "192.168.0.178",
+      "machineSpecId": "1001",
+      "langCode": "eng",
+      "isActive": true,
+      "validityDateTime": null
+    },
+    {
+      "id": "10015",
+      "name": "Machine 15",
+      "serialNum": "TJ7809002958",
+      "macAddress": "12:80:c6:7c:95:d3",
+      "ipAddress": "192.168.0.267",
+      "machineSpecId": "1001",
+      "langCode": "eng",
+      "isActive": true,
+      "validityDateTime": null
+    },
+    {
+      "id": "10016",
+      "name": "Machine 16",
+      "serialNum": "JR6082789079",
+      "macAddress": "43:71:17:27:9b:65",
+      "ipAddress": "192.168.0.149",
+      "machineSpecId": "1001",
+      "langCode": "eng",
+      "isActive": true,
+      "validityDateTime": null
+    },
+    {
+      "id": "10017",
+      "name": "Machine 17",
+      "serialNum": "SA3722889241",
+      "macAddress": "c2:f2:53:92:df:04",
+      "ipAddress": "192.168.0.127",
+      "machineSpecId": "1001",
+      "langCode": "eng",
+      "isActive": true,
+      "validityDateTime": null
+    },
+    {
+      "id": "10018",
+      "name": "Machine 18",
+      "serialNum": "RR2683722548",
+      "macAddress": "bf:8e:1d:4e:75:00",
+      "ipAddress": "192.168.0.248",
+      "machineSpecId": "1001",
+      "langCode": "eng",
+      "isActive": true,
+      "validityDateTime": null
+    },
+    {
+      "id": "10019",
+      "name": "Machine 19",
+      "serialNum": "PO6528391346",
+      "macAddress": "36:bf:1e:3a:2d:b0",
+      "ipAddress": "192.168.0.121",
+      "machineSpecId": "1001",
+      "langCode": "eng",
+      "isActive": true,
+      "validityDateTime": null
+    },
+    {
+      "id": "10020",
+      "name": "Machine 20",
+      "serialNum": "FB5962911652",
+      "macAddress": "21:43:ab:46:59:21",
+      "ipAddress": "192.168.0.215",
+      "machineSpecId": "1001",
+      "langCode": "eng",
+      "isActive": true,
+      "validityDateTime": null
+    }
+  ]
+}

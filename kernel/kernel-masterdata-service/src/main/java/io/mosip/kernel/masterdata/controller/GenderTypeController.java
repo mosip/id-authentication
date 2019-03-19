@@ -103,13 +103,15 @@ public class GenderTypeController {
 			@ApiParam("Gender type Code of gender to be deleted") @PathVariable("code") String code) {
 		return new ResponseEntity<>(genderTypeService.deleteGenderType(code), HttpStatus.OK);
 	}
-	
+
 	/**
 	 * Validate Gender name
+	 * 
 	 * @param genderName
-	 * @return StatusResponseDto
+	 *            gender Name
+	 * @return {@link StatusResponseDto } StatusResponseDto
 	 */
-	@ApiOperation(value="validate gender name")
+	@ApiOperation(value = "validate gender name")
 	@GetMapping("/v1.0/gendertypes/validate/{gendername}")
 	public StatusResponseDto valdiateGenderName(@PathVariable("gendername") String genderName) {
 		return genderTypeService.validateGender(genderName);

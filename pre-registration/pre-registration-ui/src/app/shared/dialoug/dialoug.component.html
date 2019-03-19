@@ -65,8 +65,9 @@
 </div>
 
 <div class="consent-popup-parent" *ngIf="input.case === 'CONSENTPOPUP'">
+  <!-- based upon the matching condition the popup appears for consent -->
   <button class="consent-popup-cross" mat-dialog-actions  (click)="onNoClick(); userRedirection()" cdkFocusInitial>x</button>
-
+ <!-- user redirection button for moving out -->
   <h3 class="consent-popup-title" mat-dialog-title>{{ input.title }}</h3>
   <h3 class="consent-popup-subtitle" mat-dialog-title>{{ input.subtitle}}</h3>
   <div mat-dialog-content class="consentpopup-content">

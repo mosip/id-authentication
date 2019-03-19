@@ -14,7 +14,11 @@ export class RegistrationService {
   private users: UserModel[] = [];
   private regCenterId: string;
   sameAs = '';
-  documentCategories : DocumentTypeModel[];
+  documentCategories: DocumentTypeModel[];
+
+  getMessage() {
+    return this.messageSource.asObservable();
+  }
 
   changeMessage(message: Object) {
     this.messageSource.next(message);
@@ -80,11 +84,12 @@ export class RegistrationService {
     return this.sameAs;
   }
 
-  setDocumentCategories(documentCategories){
+  setDocumentCategories(documentCategories) {
     this.documentCategories = documentCategories;
+    // console.log('document categories', this.documentCategories);
   }
 
-  getDocumentCategories(){
+  getDocumentCategories() {
     return this.documentCategories;
   }
 }

@@ -2,14 +2,14 @@ package io.mosip.preregistration.core.util;
 
 import java.text.SimpleDateFormat;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.preregistration.core.code.RequestCodes;
+import io.mosip.preregistration.core.common.dto.MainListRequestDTO;
+import io.mosip.preregistration.core.common.dto.MainRequestDTO;
 import io.mosip.preregistration.core.config.LoggerConfiguration;
 import io.mosip.preregistration.core.errorcodes.ErrorCodes;
 import io.mosip.preregistration.core.errorcodes.ErrorMessages;
@@ -19,6 +19,14 @@ import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
 public class ValidationUtil {
 
 	private static String utcDateTimePattern;
+	
+	private static String preIdRegex;
+	
+	private static String preIdLength;
+	
+	private static  String emailRegex;
+	
+	private static String phoneRegex;
 
 	private static Logger log = LoggerConfiguration.logConfig(ValidationUtil.class);
 
@@ -29,47 +37,67 @@ public class ValidationUtil {
 	public void setDateTime(String value) {
         this.utcDateTimePattern = value;
     }
-	public static boolean emailValidator(String loginId) {
-		String emailExpression = "^[\\w\\.-]+@([\\w\\-]+\\.)+[A-Z]{2,4}$";
-		Pattern pattern = Pattern.compile(emailExpression, Pattern.CASE_INSENSITIVE);
-		Matcher matcher = pattern.matcher(loginId);
-		return matcher.matches();
+	
+	@Value("${preregistration.preid.regex}")
+	public void setRegex(String value) {
+        this.preIdRegex = value;
+    }
+	
+	@Value("${mosip.kernel.prid.length}")
+	public void setLength(String value) {
+        this.preIdLength = value;
+    }
+	
+	@Value("${mosip.id.validation.identity.email}")
+	public void setEmailRegex(String value) {
+        this.emailRegex = value;
+    }
+	
+	@Value("${mosip.id.validation.identity.phone}")
+	public void setPhoneRegex(String value) {
+        this.phoneRegex = value;
+    }  
+	
+	public static boolean emailValidator(String email) {
+		return email.matches(emailRegex);
 	}
 
-	public static boolean phoneValidator(String loginId) {
-		String phoneExpression = "^\\(?(\\d{3})\\)?[- ]?(\\d{3})[- ]?(\\d{4})$";
-		Pattern pattern = Pattern.compile(phoneExpression);
-		Matcher matcher = pattern.matcher(loginId);
-		return matcher.matches();
+	public static boolean phoneValidator(String phone) {
+		return phone.matches(phoneRegex);
 	}
 
-	public static boolean requestValidator(Map<String, String> requestMap, Map<String, String> requiredRequestMap) {
-		log.info("sessionId", "idType", "id", "In requestValidator method of pre-registration core with requestMap "
-				+ requestMap + " againt requiredRequestMap " + requiredRequestMap);
-		for (String key : requestMap.keySet()) {
-			if (key.equals(RequestCodes.ID) && (requestMap.get(RequestCodes.ID) == null
-					|| !requestMap.get(RequestCodes.ID).equals(requiredRequestMap.get(RequestCodes.ID)))) {
-				throw new InvalidRequestParameterException(ErrorCodes.PRG_CORE_REQ_001.toString(),
-						ErrorMessages.INVALID_REQUEST_ID.toString());
-			} else if (key.equals(RequestCodes.VER) && (requestMap.get(RequestCodes.VER) == null
-					|| !requestMap.get(RequestCodes.VER).equals(requiredRequestMap.get(RequestCodes.VER)))) {
-				throw new InvalidRequestParameterException(ErrorCodes.PRG_CORE_REQ_002.toString(),
-						ErrorMessages.INVALID_REQUEST_VERSION.toString());
-			} else if (key.equals(RequestCodes.REQ_TIME) && requestMap.get(RequestCodes.REQ_TIME) == null) {
-				throw new InvalidRequestParameterException(ErrorCodes.PRG_CORE_REQ_003.toString(),
-						ErrorMessages.INVALID_REQUEST_DATETIME.toString());
-			} else if (key.equals(RequestCodes.REQ_TIME) && requestMap.get(RequestCodes.REQ_TIME) != null) {
-				try {
-					new SimpleDateFormat(utcDateTimePattern).parse(requestMap.get(RequestCodes.REQ_TIME));
-				} catch (Exception ex) {
-					throw new InvalidRequestParameterException(ErrorCodes.PRG_CORE_REQ_003.toString(),
-							ErrorMessages.INVALID_REQUEST_DATETIME.toString());
-				}
-			} else if (key.equals(RequestCodes.REQUEST) && (requestMap.get(RequestCodes.REQUEST) == null
-					|| requestMap.get(RequestCodes.REQUEST).equals(""))) {
-				throw new InvalidRequestParameterException(ErrorCodes.PRG_CORE_REQ_004.toString(),
-						ErrorMessages.INVALID_REQUEST_BODY.toString());
-			}
+	public static boolean requestValidator(MainRequestDTO<?> mainRequest) {
+		log.info("sessionId", "idType", "id", "In requestValidator method of pre-registration core with mainRequest "
+				+ mainRequest );
+		if(mainRequest.getId() == null  ) {
+			throw new InvalidRequestParameterException(ErrorCodes.PRG_CORE_REQ_001.getCode(), ErrorMessages.INVALID_REQUEST_ID.getMessage());
+		}
+		else if (mainRequest.getRequest() == null) {
+			throw new InvalidRequestParameterException(ErrorCodes.PRG_CORE_REQ_004.getCode(), ErrorMessages.INVALID_REQUEST_BODY.getMessage());
+		}
+		else if (mainRequest.getRequesttime() == null) {
+			throw new InvalidRequestParameterException(ErrorCodes.PRG_CORE_REQ_003.getCode(), ErrorMessages.INVALID_REQUEST_DATETIME.getMessage());
+		}
+		else if (mainRequest.getVersion() == null) {
+			throw new InvalidRequestParameterException(ErrorCodes.PRG_CORE_REQ_002.getCode(), ErrorMessages.INVALID_REQUEST_VERSION.getMessage());
+		}
+		return true;
+	}
+	
+	public static boolean requestValidator(MainListRequestDTO<?> mainRequest) {
+		log.info("sessionId", "idType", "id", "In requestValidator method of pre-registration core with mainRequest "
+				+ mainRequest );
+		if(mainRequest.getId() == null  ) {
+			throw new InvalidRequestParameterException(ErrorCodes.PRG_CORE_REQ_001.getCode(), ErrorMessages.INVALID_REQUEST_ID.getMessage());
+		}
+		else if (mainRequest.getRequest() == null) {
+			throw new InvalidRequestParameterException(ErrorCodes.PRG_CORE_REQ_004.getCode(), ErrorMessages.INVALID_REQUEST_BODY.getMessage());
+		}
+		else if (mainRequest.getRequesttime() == null) {
+			throw new InvalidRequestParameterException(ErrorCodes.PRG_CORE_REQ_003.getCode(), ErrorMessages.INVALID_REQUEST_DATETIME.getMessage());
+		}
+		else if (mainRequest.getVersion() == null) {
+			throw new InvalidRequestParameterException(ErrorCodes.PRG_CORE_REQ_002.getCode(), ErrorMessages.INVALID_REQUEST_VERSION.getMessage());
 		}
 		return true;
 	}
@@ -120,7 +148,7 @@ public class ValidationUtil {
 	}
 
 	public static boolean isvalidPreRegId(String preRegId) {
-		if (preRegId.matches("[0-9]+") && preRegId.length() == 14) {
+		if (preRegId.matches(preIdRegex) && preRegId.length() == Integer.parseInt(preIdLength)) {
 			return true;
 		} else {
 			throw new InvalidRequestParameterException(ErrorCodes.PRG_CORE_REQ_001.toString(),

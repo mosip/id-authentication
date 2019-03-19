@@ -1,7 +1,6 @@
 package io.mosip.registration.processor.manual.verification.service;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 
@@ -10,10 +9,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
-import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 import java.sql.Timestamp;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -21,23 +18,14 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParser;
 import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.constant.PacketFiles;
-import io.mosip.registration.processor.core.packet.dto.Identity;
-import io.mosip.registration.processor.core.packet.dto.PacketMetaInfo;
 import io.mosip.registration.processor.core.util.JsonUtil;
 import io.mosip.registration.processor.manual.verification.dto.ManualVerificationDTO;
 import io.mosip.registration.processor.manual.verification.dto.ManualVerificationStatus;
@@ -45,7 +33,6 @@ import io.mosip.registration.processor.manual.verification.dto.UserDto;
 import io.mosip.registration.processor.manual.verification.exception.InvalidFileNameException;
 import io.mosip.registration.processor.manual.verification.exception.InvalidUpdateException;
 import io.mosip.registration.processor.manual.verification.exception.NoRecordAssignedException;
-import io.mosip.registration.processor.manual.verification.service.ManualVerificationService;
 import io.mosip.registration.processor.manual.verification.service.impl.ManualVerificationServiceImpl;
 import io.mosip.registration.processor.manual.verification.stage.ManualVerificationStage;
 import io.mosip.registration.processor.packet.storage.entity.ManualVerificationEntity;
@@ -120,7 +107,7 @@ public class ManualVerificationServiceTest {
 		manualVerificationDTO.setMatchedRefType("Type");
 		manualVerificationDTO.setStatusCode("PENDING");
 		entities.add(manualVerificationEntity);
-		Mockito.when(basePacketRepository.getFirstApplicantDetails(ManualVerificationStatus.PENDING.name()))
+		Mockito.when(basePacketRepository.getFirstApplicantDetails(ManualVerificationStatus.PENDING.name(), "DEMO"))
 				.thenReturn(entities);
 		Mockito.when(basePacketRepository.getAssignedApplicantDetails(anyString(), anyString()))
 				.thenReturn(entities);
@@ -130,7 +117,7 @@ public class ManualVerificationServiceTest {
 	public void assignStatusMethodCheck() {
 		Mockito.when(basePacketRepository.getAssignedApplicantDetails(anyString(), anyString()))
 				.thenReturn(entities);
-		ManualVerificationDTO manualVerificationDTO1 = manualAdjudicationService.assignApplicant(dto);
+		ManualVerificationDTO manualVerificationDTO1 = manualAdjudicationService.assignApplicant(dto, "DEMO");
 		assertEquals(manualVerificationDTO, manualVerificationDTO1);
 
 	}
@@ -140,16 +127,16 @@ public class ManualVerificationServiceTest {
 		Mockito.when(basePacketRepository.getAssignedApplicantDetails(anyString(), anyString()))
 				.thenReturn(entitiesTemp);
 		Mockito.when(basePacketRepository.update(manualVerificationEntity)).thenReturn(manualVerificationEntity);
-		manualAdjudicationService.assignApplicant(dto);
+		manualAdjudicationService.assignApplicant(dto, "DEMO");
 	}
 
 	@Test(expected = NoRecordAssignedException.class)
 	public void noRecordAssignedExceptionAssignStatus() {
 		Mockito.when(basePacketRepository.getAssignedApplicantDetails(anyString(), anyString()))
 				.thenReturn(entitiesTemp);
-		Mockito.when(basePacketRepository.getFirstApplicantDetails(ManualVerificationStatus.PENDING.name()))
+		Mockito.when(basePacketRepository.getFirstApplicantDetails(ManualVerificationStatus.PENDING.name(), "DEMO"))
 				.thenReturn(entitiesTemp);
-		manualAdjudicationService.assignApplicant(dto);
+		manualAdjudicationService.assignApplicant(dto, "DEMO");
 	}
 
 	@Test

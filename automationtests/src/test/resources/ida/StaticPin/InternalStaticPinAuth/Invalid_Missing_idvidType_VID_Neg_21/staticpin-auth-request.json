@@ -1,1 +1,0 @@
-{"idvId":"4791692897810627","ver":"1.0","tspID":"TSP0001","pinInfo":[{"type":"pin","value":"781843"}],"id":"mosip.identity.auth","reqTime":"2019-03-12T12:46:02.002+05:30","authType":{"address":false,"pin":true,"bio":false,"otp":false,"personalIdentity":false},"txnID":"5862318247"}
