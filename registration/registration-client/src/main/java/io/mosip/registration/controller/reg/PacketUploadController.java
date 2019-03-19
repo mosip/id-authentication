@@ -34,7 +34,6 @@ import io.mosip.registration.service.sync.PacketSynchService;
 import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
 import javafx.application.Platform;
 import javafx.beans.Observable;
-import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
@@ -98,7 +97,7 @@ public class PacketUploadController extends BaseController implements Initializa
 	private ObservableList<PacketStatusDTO> list;
 
 	private List<PacketStatusDTO> selectedPackets = new ArrayList<>();
-
+	
 	private static final Logger LOGGER = AppConfig.getLogger(PacketUploadController.class);
 
 	/**
@@ -308,14 +307,14 @@ public class PacketUploadController extends BaseController implements Initializa
 
 		LOGGER.info("REGISTRATION - DISPLAY_DATA - PACKET_UPLOAD_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
 				"To display all the ui data");
-		checkBoxColumn.setCellValueFactory(cellData -> cellData.getValue().getStatus());
+		checkBoxColumn.setCellValueFactory(cellData -> cellData.getValue().selectedProperty());
 		fileNameColumn.setCellValueFactory(new PropertyValueFactory<>("fileName"));
 
 		this.list = FXCollections.observableArrayList(new Callback<PacketStatusDTO, Observable[]>() {
 
 			@Override
 			public Observable[] call(PacketStatusDTO param) {
-				return new Observable[] { param.getStatus() };
+				return new Observable[] { param.selectedProperty() };
 			}
 		});
 		list.addAll(tableData);
@@ -324,14 +323,14 @@ public class PacketUploadController extends BaseController implements Initializa
 
 					@Override
 					public ObservableValue<Boolean> call(Integer param) {
-						return list.get(param).getStatus();
+						return list.get(param).selectedProperty();
 					}
 				}));
 		list.addListener(new ListChangeListener<PacketStatusDTO>() {
 			@Override
 			public void onChanged(Change<? extends PacketStatusDTO> c) {
 				while (c.next()) {
-					if (c.wasUpdated()) {
+					if (c.wasUpdated() ) {
 						if (!selectedPackets.contains(list.get(c.getFrom()))) {
 							selectedPackets.add(list.get(c.getFrom()));
 						} else {
@@ -360,7 +359,6 @@ public class PacketUploadController extends BaseController implements Initializa
 		packetStatus.forEach((id, status) -> {
 			PacketStatusDTO packetUploadStatusDTO = new PacketStatusDTO();
 			packetUploadStatusDTO.setFileName(id);
-			packetUploadStatusDTO.setStatus(new SimpleBooleanProperty());
 			packetUploadStatusDTO.setClientStatusComments(status);
 			listUploadStatus.add(packetUploadStatusDTO);
 
@@ -413,9 +411,9 @@ public class PacketUploadController extends BaseController implements Initializa
 	}
 
 	public void selectAllCheckBox(ActionEvent e) {
-		selectedPackets.clear();
-			list.forEach(checkedPacket -> {
-				checkedPacket.setStatus(new SimpleBooleanProperty(((CheckBox) e.getSource()).isSelected()));
-			});
-		}
+		saveToDevice.setDisable(((CheckBox) e.getSource()).isSelected());
+		list.forEach(item -> {
+			item.setStatus(((CheckBox) e.getSource()).isSelected());
+		});
+	}
 }
