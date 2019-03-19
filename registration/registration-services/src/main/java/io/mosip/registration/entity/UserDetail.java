@@ -32,7 +32,7 @@ public class UserDetail extends RegistrationCommonFields implements Serializable
 	@Column(name = "id")
 	private String id;
 	
-	@Column(name = "uin_ref_id")
+	@Column(name = "uin")
 	private String uinRefId;
 	
 	@Column(name = "name")

@@ -2,13 +2,15 @@ package io.mosip.authentication.service.impl.indauth.controller;
 
 import static org.junit.Assert.assertFalse;
 
-import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 import org.junit.Before;
 import org.junit.Ignore;
@@ -39,7 +41,6 @@ import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
 import io.mosip.authentication.core.dto.indauth.KycAuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.KycAuthResponseDTO;
 import io.mosip.authentication.core.dto.indauth.KycResponseDTO;
-import io.mosip.authentication.core.dto.indauth.PinInfo;
 import io.mosip.authentication.core.dto.indauth.RequestDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
@@ -123,7 +124,7 @@ public class AuthControllerTest {
 		AuthRequestDTO authReqDTO = new AuthRequestDTO();
 		Errors error = new BindException(authReqDTO, "authReqDTO");
 		error.rejectValue("id", "errorCode", "defaultMessage");
-		authController.authenticateApplication(authReqDTO, error);
+		authController.authenticateApplication(authReqDTO, error,"123456","123456");
 
 	}
 
@@ -131,9 +132,9 @@ public class AuthControllerTest {
 	public void authenticationFailed()
 			throws IdAuthenticationAppException, IdAuthenticationBusinessException, IdAuthenticationDaoException {
 		AuthRequestDTO authReqDTO = new AuthRequestDTO();
-		Mockito.when(authFacade.authenticateApplicant(authReqDTO, true))
+		Mockito.when(authFacade.authenticateApplicant(authReqDTO, true,"123456","123456"))
 				.thenThrow(new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UIN_DEACTIVATED));
-		authController.authenticateApplication(authReqDTO, error);
+		authController.authenticateApplication(authReqDTO, error,"123456","123456");
 
 	}
 
@@ -141,8 +142,8 @@ public class AuthControllerTest {
 	public void authenticationSuccess()
 			throws IdAuthenticationAppException, IdAuthenticationBusinessException, IdAuthenticationDaoException {
 		AuthRequestDTO authReqDTO = new AuthRequestDTO();
-		Mockito.when(authFacade.authenticateApplicant(authReqDTO, true)).thenReturn(new AuthResponseDTO());
-		authController.authenticateApplication(authReqDTO, error);
+		Mockito.when(authFacade.authenticateApplicant(authReqDTO, true,"123456","123456")).thenReturn(new AuthResponseDTO());
+		authController.authenticateApplication(authReqDTO, error,"123456","123456");
 
 	}
 
@@ -152,32 +153,23 @@ public class AuthControllerTest {
 		KycAuthRequestDTO kycAuthReqDTO = new KycAuthRequestDTO();
 		Errors errors = new BindException(kycAuthReqDTO, "kycAuthReqDTO");
 		errors.rejectValue("id", "errorCode", "defaultMessage");
-		authFacade.authenticateApplicant(kycAuthReqDTO.getAuthRequest(), true);
-		authController.processKyc(kycAuthReqDTO, errors);
+		authFacade.authenticateApplicant(kycAuthReqDTO, true,"123456789","123456789");
+		authController.processKyc(kycAuthReqDTO, errors,"123456","123456");
 	}
 
 	@Test
 	public void processKycSuccess()
 			throws IdAuthenticationBusinessException, IdAuthenticationAppException, IdAuthenticationDaoException {
 
-		KycAuthRequestDTO kycAuthRequestDTO = new KycAuthRequestDTO();
-		kycAuthRequestDTO.setConsentReq(true);
-		kycAuthRequestDTO.setEPrintReq(true);
-		kycAuthRequestDTO.setId("id");
-		// kycAuthRequestDTO.setVer("1.1");
-		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
-		authRequestDTO.setIdvIdType(IdType.UIN.getType());
-		authRequestDTO.setIdvId("234567890123");
-		ZoneOffset offset = ZoneOffset.MAX;
-		authRequestDTO.setReqTime(Instant.now().atOffset(offset)
+		KycAuthRequestDTO kycAuthReqDTO = new KycAuthRequestDTO();
+		kycAuthReqDTO.setId("id");
+		kycAuthReqDTO.setVersion("1.1");
+		kycAuthReqDTO.setRequestTime(ZonedDateTime.now()
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
-		authRequestDTO.setId("id");
-		// authRequestDTO.setVer("1.1");
-		authRequestDTO.setTspID("1234567890");
-		authRequestDTO.setTxnID("1234567890");
-		// authRequestDTO.setReqHmac("zdskfkdsnj");
+		kycAuthReqDTO.setId("id");
+		kycAuthReqDTO.setTransactionID("1234567890");
 		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
-		authTypeDTO.setPersonalIdentity(true);
+		authTypeDTO.setDemo(false);
 		authTypeDTO.setOtp(true);
 		IdentityInfoDTO idInfoDTO = new IdentityInfoDTO();
 		idInfoDTO.setLanguage("EN");
@@ -188,48 +180,49 @@ public class AuthControllerTest {
 		List<IdentityInfoDTO> idInfoList = new ArrayList<>();
 		idInfoList.add(idInfoDTO);
 		idInfoList.add(idInfoDTO1);
+
 		IdentityDTO idDTO = new IdentityDTO();
 		idDTO.setName(idInfoList);
-		RequestDTO reqDTO = new RequestDTO();
-		reqDTO.setIdentity(idDTO);
-		authRequestDTO.setAuthType(authTypeDTO);
-		authRequestDTO.setRequest(reqDTO);
-		kycAuthRequestDTO.setAuthRequest(authRequestDTO);
-		kycAuthRequestDTO.setEKycAuthType("O");
-		PinInfo pinInfo = new PinInfo();
-		pinInfo.setType("OTP");
-		pinInfo.setValue("123456");
-		List<PinInfo> otplist = new ArrayList<>();
-		otplist.add(pinInfo);
-		authRequestDTO.setPinInfo(otplist);
-		AuthResponseDTO authResponseDTO = new AuthResponseDTO();
-		authResponseDTO.setErr(null);
-		authResponseDTO.setInfo(null);
-		authResponseDTO.setResTime("");
-		authResponseDTO.setStatus("Y");
-		authResponseDTO.setTxnID("34567");
-		AuthRequestDTO authRequestDTOs = new AuthRequestDTO();
-		authRequestDTOs.setIdvIdType(IdType.UIN.getType());
-		authRequestDTOs.setId("1234567");
-		AuthTypeDTO authTypeDTOs = new AuthTypeDTO();
-		authTypeDTOs.setOtp(true);
-		authRequestDTOs.setAuthType(authTypeDTO);
-		kycAuthRequestDTO.setAuthRequest(authRequestDTO);
-		Mockito.when(authFacade.authenticateApplicant(kycAuthRequestDTO.getAuthRequest(), true))
-				.thenReturn(authResponseDTO);
+		RequestDTO request = new RequestDTO();
+		kycAuthReqDTO.setIndividualId("5134256294");
+		request.setOtp("456789");	
+		request.setDemographics(idDTO);
+		kycAuthReqDTO.setRequest(request);
+		kycAuthReqDTO.setRequestedAuth(authTypeDTO);
+		kycAuthReqDTO.setRequest(request);
+		kycAuthReqDTO.setSecondaryLangCode("fra");
+		KycResponseDTO kycResponseDTO = new KycResponseDTO();
 		KycAuthResponseDTO kycAuthResponseDTO = new KycAuthResponseDTO();
-		kycAuthResponseDTO.setResTime(Instant.now().atOffset(offset)
+		kycAuthResponseDTO.setResponseTime(ZonedDateTime.now()
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
-		kycAuthResponseDTO.setStatus("Y");
-		kycAuthResponseDTO.setTxnID("34567");
-		kycAuthResponseDTO.setErr(null);
-		KycResponseDTO response = new KycResponseDTO();
-		response.setAuth(null);
-		response.setKyc(null);
-		kycAuthResponseDTO.setResponse(response);
-		kycAuthResponseDTO.setTtl("2");
-		Mockito.when(authFacade.processKycAuth(kycAuthRequestDTO, authResponseDTO)).thenReturn(kycAuthResponseDTO);
-		authController.processKyc(kycAuthRequestDTO, errors);
+		kycAuthResponseDTO.setTransactionID("34567");
+		kycAuthResponseDTO.setErrors(null);
+		kycResponseDTO.setTtl(env.getProperty("ekyc.ttl.hours"));
+		Map<String, ? extends Object> identity = null;
+		kycAuthResponseDTO.setStatus(Boolean.TRUE);
+
+		kycAuthResponseDTO.setResponseTime(ZonedDateTime.now()
+				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
+		Map<String, List<IdentityInfoDTO>> idInfo = new HashMap<>();
+		List<IdentityInfoDTO> list = new ArrayList<IdentityInfoDTO>();
+		list.add(new IdentityInfoDTO("en", "mosip"));
+		idInfo.put("name", list);
+		idInfo.put("email", list);
+		idInfo.put("phone", list);
+		kycResponseDTO.setIdentity(idInfo);
+		kycAuthResponseDTO.setResponse(kycResponseDTO);
+		AuthResponseDTO authResponseDTO = new AuthResponseDTO();
+		authResponseDTO.setStatus(Boolean.TRUE);
+		authResponseDTO.setResponseTime(ZonedDateTime.now()
+				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
+		authResponseDTO.setStaticToken("234567890");
+		authResponseDTO.setErrors(null);
+		authResponseDTO.setTransactionID("123456789");
+		authResponseDTO.setVersion("1.0");
+		Mockito.when(authFacade.authenticateApplicant(Mockito.any(), Mockito.anyBoolean(),Mockito.anyString(),Mockito.anyString()))
+				.thenReturn(authResponseDTO);
+		Mockito.when(authFacade.processKycAuth(kycAuthReqDTO, authResponseDTO, "123456789")).thenReturn(kycAuthResponseDTO);
+		authController.processKyc(kycAuthReqDTO, errors, "123456789", "12345689");
 		assertFalse(error.hasErrors());
 	}
 
@@ -237,41 +230,68 @@ public class AuthControllerTest {
 	public void processKycFailure()
 			throws IdAuthenticationBusinessException, IdAuthenticationAppException, IdAuthenticationDaoException {
 		KycAuthRequestDTO kycAuthRequestDTO = new KycAuthRequestDTO();
-
-		AuthResponseDTO authResponseDTO = new AuthResponseDTO();
-		authResponseDTO.setStatus("Y");
-		authResponseDTO.setResTime(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").format(new Date()));
-		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
-		authRequestDTO.setIdvIdType(IdType.UIN.getType());
-		authRequestDTO.setId("1234567");
+		kycAuthRequestDTO.setId("id");
+		kycAuthRequestDTO.setVersion("1.1");
+		kycAuthRequestDTO.setRequestTime(ZonedDateTime.now()
+				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
+		kycAuthRequestDTO.setId("id");
+		kycAuthRequestDTO.setTransactionID("1234567890");
 		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
+		authTypeDTO.setDemo(false);
 		authTypeDTO.setOtp(true);
-		authRequestDTO.setAuthType(authTypeDTO);
-		kycAuthRequestDTO.setAuthRequest(authRequestDTO);
-		Mockito.when(authFacade.authenticateApplicant(kycAuthRequestDTO.getAuthRequest(), true))
-				.thenReturn(authResponseDTO);
+		IdentityInfoDTO idInfoDTO = new IdentityInfoDTO();
+		idInfoDTO.setLanguage("EN");
+		idInfoDTO.setValue("John");
+		IdentityInfoDTO idInfoDTO1 = new IdentityInfoDTO();
+		idInfoDTO1.setLanguage("fre");
+		idInfoDTO1.setValue("Mike");
+		List<IdentityInfoDTO> idInfoList = new ArrayList<>();
+		idInfoList.add(idInfoDTO);
+		idInfoList.add(idInfoDTO1);
+
+		IdentityDTO idDTO = new IdentityDTO();
+		idDTO.setName(idInfoList);
+		RequestDTO request = new RequestDTO();
+		kycAuthRequestDTO.setIndividualId("5134256294");
+		request.setOtp("456789");	
+		request.setDemographics(idDTO);
+		kycAuthRequestDTO.setRequest(request);
+		kycAuthRequestDTO.setRequestedAuth(authTypeDTO);
+		kycAuthRequestDTO.setRequest(request);
+
+		KycResponseDTO kycResponseDTO = new KycResponseDTO();
 		KycAuthResponseDTO kycAuthResponseDTO = new KycAuthResponseDTO();
-		kycAuthResponseDTO.setStatus("Y");
-		kycAuthResponseDTO.setTxnID("34567");
-		kycAuthResponseDTO.setErr(null);
-		KycResponseDTO response = new KycResponseDTO();
-		response.setAuth(null);
-		response.setKyc(null);
-		kycAuthResponseDTO.setResponse(response);
-		kycAuthResponseDTO.setTtl("2");
-		Mockito.when(authFacade.processKycAuth(kycAuthRequestDTO, authResponseDTO))
-				.thenThrow(new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.AUTHENTICATION_FAILED));
-		authController.processKyc(kycAuthRequestDTO, errors);
-	}
+		kycAuthResponseDTO.setResponseTime(ZonedDateTime.now()
+				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
+		kycAuthResponseDTO.setTransactionID("34567");
+		kycAuthResponseDTO.setErrors(null);
+		kycResponseDTO.setTtl(env.getProperty("ekyc.ttl.hours"));
+		Map<String, ? extends Object> identity = null;
+		kycAuthResponseDTO.setStatus(Boolean.TRUE);
 
-	@Ignore
-	@Test(expected = IdAuthenticationAppException.class)
-	public void showAuthenticateTspValidator() throws IdAuthenticationAppException, IdAuthenticationDaoException {
-
-		AuthRequestDTO authReqestsDTO = new AuthRequestDTO();
-		Errors error = new BindException(authReqestsDTO, "authReqDTO");
-		error.rejectValue("id", "errorCode", "defaultMessage");
-		// authController.authenticateTsp(authReqestsDTO, error);
+		kycAuthResponseDTO.setResponseTime(ZonedDateTime.now()
+				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
+		Map<String, List<IdentityInfoDTO>> idInfo = new HashMap<>();
+		List<IdentityInfoDTO> list = new ArrayList<IdentityInfoDTO>();
+		list.add(new IdentityInfoDTO("en", "mosip"));
+		idInfo.put("name", list);
+		idInfo.put("email", list);
+		idInfo.put("phone", list);
+		kycResponseDTO.setIdentity(idInfo);
+		kycAuthResponseDTO.setResponse(kycResponseDTO);
+		AuthResponseDTO authResponseDTO = new AuthResponseDTO();
+		authResponseDTO.setStatus(Boolean.TRUE);
+		authResponseDTO.setResponseTime(ZonedDateTime.now()
+				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
+		authResponseDTO.setStaticToken("234567890");
+		authResponseDTO.setErrors(null);
+		authResponseDTO.setTransactionID("123456789");
+		authResponseDTO.setVersion("1.0");
+		Mockito.when(authFacade.authenticateApplicant(Mockito.any(), Mockito.anyBoolean(),Mockito.anyString(),Mockito.anyString()))
+		.thenReturn(authResponseDTO);
+		Mockito.when(authFacade.processKycAuth(kycAuthRequestDTO, authResponseDTO, "12346789"))
+				.thenThrow(new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS));
+		authController.processKyc(kycAuthRequestDTO, errors, "12346789", "1234567");
 	}
 
 }

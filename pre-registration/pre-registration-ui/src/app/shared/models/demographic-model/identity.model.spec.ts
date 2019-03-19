@@ -23,6 +23,6 @@ describe('FileModel check', () => {
       'string',
       'string'
     );
-    expect(typeof identity.fullName).toEqual('string');
+    expect(typeof identity.fullName).toEqual('object');
   });
 });

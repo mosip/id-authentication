@@ -64,7 +64,7 @@ Table : uin
 
 **Usage Sample:**
 
-  *Request:*
+  *GET Request:*
   
 ```
 OkHttpClient client = new OkHttpClient();
@@ -89,10 +89,31 @@ Response response = client.newCall(request).execute();
 ```
 
 
+ *PUT Request:*
 
 
+```
+OkHttpClient client = new OkHttpClient();
 
+MediaType mediaType = MediaType.parse("application/json");
+RequestBody body = RequestBody.create(mediaType, "{\"uin\" : \"8251728314\",\"status\" : \"ASSIGNED\ "}");
+Request request = new Request.Builder()
+  .url("http://localhost:8080/uingenerator/v1.0/uin")
+  .put(body)
+  .addHeader("content-type", "application/json")
+  .build();
 
+Response response = client.newCall(request).execute();
+```
 
-
+*Response:*
+  
+  HttpStatus: 200 OK
+  
+```
+{
+ "uin":"8251728314",
+ "status":"ASSIGNED"
+}
+```
 

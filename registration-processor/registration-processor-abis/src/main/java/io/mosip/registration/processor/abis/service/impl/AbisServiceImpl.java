@@ -203,7 +203,7 @@ public class AbisServiceImpl implements AbisService {
 
 		try {
 			Document doc = getCbeffDocument(referenceId);
-
+if(doc != null) {
 			NodeList fingerNodeList = doc.getElementsByTagName(testFingerPrint);
 			if(fingerNodeList != null) {
 				duplicate = checkDuplicate(duplicate, fingerNodeList);
@@ -236,6 +236,13 @@ public class AbisServiceImpl implements AbisService {
 				cd.setCandidates(candidatesDto);
 				response.setCandidateList(cd);
 			}
+}else {
+	response.setId(IDENTIFY);
+	response.setRequestId(identifyRequest.getRequestId());
+	response.setTimestamp(identifyRequest.getTimestamp());
+	response.setReturnValue(3);
+
+}
 		} catch (Exception e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					referenceId, "Due to some internal error, abis failed" + ExceptionUtils.getStackTrace(e));

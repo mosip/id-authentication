@@ -130,7 +130,7 @@ public class MasterSyncJobTest {
 	
 		Mockito.when(applicationContext.getBean(MasterSyncService.class)).thenReturn(masterSyncService);
 		
-		Mockito.when(masterSyncService.getMasterSync(Mockito.anyString())).thenReturn(responseDTO);
+		Mockito.when(masterSyncService.getMasterSync(Mockito.anyString(),Mockito.anyString())).thenReturn(responseDTO);
 
 	
 		masterSyncJob.executeInternal(context);

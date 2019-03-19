@@ -10,13 +10,13 @@ import java.util.WeakHashMap;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.device.gps.impl.GPSBU343Connector;
 import io.mosip.registration.exception.RegBaseCheckedException;
 
@@ -39,22 +39,6 @@ public class GPSFacade extends GPSBU343Connector {
 	@Autowired
 	private MosipGPSProvider mosipGPSProvider;
 
-	/** Object forserialPortConnected. */
-	@Value("${GPS_SERIAL_PORT_WINDOWS}")
-	private String serialPortConnected;
-
-	/** Object forserialPortConnected. */
-	@Value("${GPS_DEVICE_ENABLE_FLAG}")
-	private String gpsEnableFlag;
-
-	/** Object forserialPortConnected. */
-	@Value("${GPS_SERIAL_PORT_LINUX}")
-	private String serialPortLinuxConnected;
-
-	/** Object for portThreadTime. */
-	@Value("${GPS_PORT_TIMEOUT}")
-	private int portThreadTime;
-
 	/** Object for Logger. */
 
 	private static final Logger LOGGER = AppConfig.getLogger(GPSFacade.class);
@@ -68,10 +52,12 @@ public class GPSFacade extends GPSBU343Connector {
 
 		LOGGER.info(RegistrationConstants.GPS_LOGGER, APPLICATION_NAME, APPLICATION_ID,
 				"Entering GPS fetch details methos");
+		
+		String serialPortConnected = String.valueOf(ApplicationContext.map().get(RegistrationConstants.GPS_SERIAL_PORT_WINDOWS));
 
 		if (System.getProperty("os.name").equals("Linux")) {
 
-			serialPortConnected = serialPortLinuxConnected;
+			serialPortConnected = String.valueOf(ApplicationContext.map().get(RegistrationConstants.GPS_PORT_LINUX));
 		}
 
 		Map<String, Object> gpsResponseMap = new WeakHashMap<>();
@@ -81,7 +67,9 @@ public class GPSFacade extends GPSBU343Connector {
 			MosipGPSProvider gpsConnector = getConnectorFactory(gpsConnectionDevice);
 
 			String gpsRawData = gpsConnector != null
-					? gpsConnector.getComPortGPSData(serialPortConnected, portThreadTime)
+					? gpsConnector.getComPortGPSData(serialPortConnected,
+							Integer.parseInt(String
+									.valueOf(ApplicationContext.map().get(RegistrationConstants.GPS_PORT_TIMEOUT))))
 					: RegistrationConstants.GPS_CAPTURE_FAILURE;
 
 			LOGGER.info(RegistrationConstants.GPS_LOGGER, APPLICATION_NAME, APPLICATION_ID,

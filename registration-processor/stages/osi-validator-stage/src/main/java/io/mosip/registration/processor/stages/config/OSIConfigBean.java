@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Configuration;
 import io.mosip.registration.processor.stages.osivalidator.OSIValidator;
 import io.mosip.registration.processor.stages.osivalidator.OSIValidatorStage;
 import io.mosip.registration.processor.stages.osivalidator.UMCValidator;
+import io.mosip.registration.processor.stages.osivalidator.utils.OSIUtils;
 
 @Configuration
 public class OSIConfigBean{
@@ -21,5 +22,10 @@ public class OSIConfigBean{
 	@Bean
 	public OSIValidatorStage getOSIValidatorStage() {
 		return new OSIValidatorStage();
+	}
+	
+	@Bean
+	public OSIUtils getOSIUtils() {
+		return new OSIUtils();
 	}
 }

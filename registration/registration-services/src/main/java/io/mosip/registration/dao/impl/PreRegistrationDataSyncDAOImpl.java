@@ -91,4 +91,10 @@ public class PreRegistrationDataSyncDAOImpl implements PreRegistrationDataSyncDA
 				RegistrationConstants.APPLICATION_ID, "delete records ended");
 		
 	}
+	
+	@Override
+	public List<PreRegistrationList> getAllPreRegPackets() {
+
+		return preRegistrationRepository.findAll();
+	}
 }

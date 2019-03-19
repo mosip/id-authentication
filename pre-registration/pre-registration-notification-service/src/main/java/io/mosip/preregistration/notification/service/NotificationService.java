@@ -94,8 +94,7 @@ public class NotificationService {
 						ErrorMessages.MOBILE_NUMBER_OR_EMAIL_ADDRESS_NOT_FILLED.getCode());
 			}
 			response.setResponse(acknowledgementDTO);
-			response.setResTime(serviceUtil.getCurrentResponseTime());
-			response.setStatus(Boolean.TRUE);
+			response.setResponsetime(serviceUtil.getCurrentResponseTime());
 		} catch (Exception ex) {
 			log.error("sessionId", "idType", "id",
 					"In notification service of sendNotification "+ex.getMessage());
@@ -127,8 +126,8 @@ public class NotificationService {
 			new NotificationExceptionCatcher().handle(ex);
 		}
 		response.setResponse(responsedto);
-		response.setResTime(serviceUtil.getCurrentResponseTime());
-		response.setStatus(Boolean.TRUE);
+		response.setResponsetime(serviceUtil.getCurrentResponseTime());
+		
 
 		return response;
 	}
@@ -166,8 +165,7 @@ public class NotificationService {
 			new NotificationExceptionCatcher().handle(ex);
 		}
 		res.setResponse(configParams);
-		res.setResTime(serviceUtil.getCurrentResponseTime());
-		res.setStatus(Boolean.TRUE);
+		res.setResponsetime(serviceUtil.getCurrentResponseTime());
 		return res;
 	}
 

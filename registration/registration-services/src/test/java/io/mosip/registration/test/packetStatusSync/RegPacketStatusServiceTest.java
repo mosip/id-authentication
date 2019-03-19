@@ -104,12 +104,12 @@ public class RegPacketStatusServiceTest {
 
 		when(packetStatusDao.getPacketIdsByStatusUploaded()).thenReturn(list);
 
-		when(serviceDelegateUtil.get(Mockito.anyString(), Mockito.anyMap(), Mockito.anyBoolean()))
+		when(serviceDelegateUtil.get(Mockito.anyString(), Mockito.anyMap(), Mockito.anyBoolean(),Mockito.anyString()))
 				.thenReturn(response);
-		Assert.assertNotNull(packetStatusService.packetSyncStatus().getSuccessResponseDTO());
+		Assert.assertNotNull(packetStatusService.packetSyncStatus("System").getSuccessResponseDTO());
 
 		when(packetStatusDao.update(Mockito.any())).thenThrow(RuntimeException.class);
-		packetStatusService.packetSyncStatus();
+		packetStatusService.packetSyncStatus("System");
 
 	}
 
@@ -130,13 +130,13 @@ public class RegPacketStatusServiceTest {
 		LinkedHashMap<String, Object> response = new LinkedHashMap<>();
 		response.put(RegistrationConstants.PACKET_STATUS_READER_RESPONSE, registrations);
 		
-		when(serviceDelegateUtil.get(Mockito.anyString(), Mockito.anyMap(), Mockito.anyBoolean()))
+		when(serviceDelegateUtil.get(Mockito.anyString(), Mockito.anyMap(), Mockito.anyBoolean(),Mockito.anyString()))
 				.thenReturn(response);
-		Assert.assertNotNull(packetStatusService.packetSyncStatus().getErrorResponseDTOs());
+		Assert.assertNotNull(packetStatusService.packetSyncStatus("System").getErrorResponseDTOs());
 
-		when(serviceDelegateUtil.get(Mockito.anyString(), Mockito.anyMap(), Mockito.anyBoolean()))
+		when(serviceDelegateUtil.get(Mockito.anyString(), Mockito.anyMap(), Mockito.anyBoolean(),Mockito.anyString()))
 				.thenThrow(HttpClientErrorException.class);
-		packetStatusService.packetSyncStatus();
+		packetStatusService.packetSyncStatus("System");
 	}
 
 	@Test
@@ -181,19 +181,18 @@ public class RegPacketStatusServiceTest {
 	public void syncPacketTest() throws HttpClientErrorException, ResourceAccessException, SocketTimeoutException, RegBaseCheckedException, JsonProcessingException, URISyntaxException {
 		List<Registration> packetsToBeSynched=new ArrayList<>();
 		Registration reg=new Registration();
+		reg.setId("123456");
 		packetsToBeSynched.add(reg);
 		Mockito.when(registrationDAO.getPacketsToBeSynched(Mockito.anyList())).thenReturn(packetsToBeSynched);
-		Mockito.when(packetSynchService.syncPacketsToServer(Mockito.anyObject())).thenReturn(new ResponseDTO());
+		ResponseDTO responseDTO = new ResponseDTO();
+		SuccessResponseDTO successResponseDTO=new SuccessResponseDTO();
+		Map<String, Object> otherAttributes = new HashMap<>();
+		otherAttributes.put("123456", "Success");
+		successResponseDTO.setOtherAttributes(otherAttributes);
+		responseDTO.setSuccessResponseDTO(successResponseDTO);
+		Mockito.when(packetSynchService.syncPacketsToServer(Mockito.anyObject(),Mockito.anyString())).thenReturn(responseDTO);
 		Mockito.when(packetSynchService.updateSyncStatus(Mockito.anyList())).thenReturn(true);
-		assertEquals("Success", packetStatusService.syncPacket().getSuccessResponseDTO().getMessage());
+		assertEquals("Success", packetStatusService.syncPacket("System").getSuccessResponseDTO().getMessage());
 	}
 	
-	@SuppressWarnings("unchecked")
-	@Test
-	public void syncPacketNegativeTest() {
-		List<Registration> packetsToBeSynched=new ArrayList<>();
-		Mockito.when(registrationDAO.getPacketsToBeSynched(Mockito.anyList())).thenReturn(packetsToBeSynched);
-		assertEquals("Success", packetStatusService.syncPacket().getSuccessResponseDTO().getMessage());
-	}
-
 }

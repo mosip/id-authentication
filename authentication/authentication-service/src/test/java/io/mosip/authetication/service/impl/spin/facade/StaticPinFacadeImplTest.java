@@ -112,7 +112,7 @@ public class StaticPinFacadeImplTest {
 
 	@Mock
 	private VidGeneratorImpl vidGenerator;
-	
+
 	@InjectMocks
 	private VIDServiceImpl vidService;
 
@@ -120,7 +120,6 @@ public class StaticPinFacadeImplTest {
 	private static final String IDA = "IDA";
 
 	private static final String DATETIME_PATTERN = "datetime.pattern";
-
 
 	@Before
 	public void before() {
@@ -137,16 +136,16 @@ public class StaticPinFacadeImplTest {
 	@Test
 	public void testStorePin_Success_uin() throws IdAuthenticationBusinessException {
 		StaticPinRequestDTO staticPinRequestDTO = new StaticPinRequestDTO();
-		String uin = "794138547620";
+		String uin = "4950679436";
 		staticPinRequestDTO.setId("mosip.identity.static-pin");
+		staticPinRequestDTO.setIndividualIdType(IdType.VID.getType());
 		String reqTime = ZonedDateTime.now().format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern")))
 				.toString();
-		staticPinRequestDTO.setReqTime(reqTime);
-		staticPinRequestDTO.setVer("1.0");
+		staticPinRequestDTO.setRequestTime(reqTime);
+		staticPinRequestDTO.setVersion("1.0");
 		StaticPinIdentityDTO dto = new StaticPinIdentityDTO();
 		dto.setUin(uin);
 		PinRequestDTO pinRequestDTO = new PinRequestDTO();
-		pinRequestDTO.setIdentity(dto);
 		String pin = "123454";
 		pinRequestDTO.setStaticPin(pin);
 		staticPinRequestDTO.setRequest(pinRequestDTO);
@@ -191,15 +190,15 @@ public class StaticPinFacadeImplTest {
 	public void testStorePin_Success_vid() throws IdAuthenticationBusinessException {
 		StaticPinRequestDTO staticPinRequestDTO = new StaticPinRequestDTO();
 		String vid = "5371843613598206";
+		staticPinRequestDTO.setIndividualIdType(IdType.VID.getType());
 		staticPinRequestDTO.setId("mosip.identity.static-pin");
 		String reqTime = ZonedDateTime.now().format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern")))
 				.toString();
-		staticPinRequestDTO.setReqTime(reqTime);
-		staticPinRequestDTO.setVer("1.0");
+		staticPinRequestDTO.setRequestTime(reqTime);
+		staticPinRequestDTO.setVersion("1.0");
 		StaticPinIdentityDTO dto = new StaticPinIdentityDTO();
 		dto.setVid(vid);
 		PinRequestDTO pinRequestDTO = new PinRequestDTO();
-		pinRequestDTO.setIdentity(dto);
 		String pin = "123454";
 		pinRequestDTO.setStaticPin(pin);
 		staticPinRequestDTO.setRequest(pinRequestDTO);
@@ -245,14 +244,14 @@ public class StaticPinFacadeImplTest {
 		StaticPinRequestDTO staticPinRequestDTO = new StaticPinRequestDTO();
 		String vid = "5371843613598206";
 		staticPinRequestDTO.setId("mosip.identity.static-pin");
+		staticPinRequestDTO.setIndividualIdType(IdType.VID.getType());
 		String reqTime = ZonedDateTime.now().format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern")))
 				.toString();
-		staticPinRequestDTO.setReqTime(reqTime);
-		staticPinRequestDTO.setVer("1.0");
+		staticPinRequestDTO.setRequestTime(reqTime);
+		staticPinRequestDTO.setVersion("1.0");
 		StaticPinIdentityDTO dto = new StaticPinIdentityDTO();
 		dto.setVid(vid);
 		PinRequestDTO pinRequestDTO = new PinRequestDTO();
-		pinRequestDTO.setIdentity(dto);
 		String pin = "123454";
 		pinRequestDTO.setStaticPin(pin);
 		staticPinRequestDTO.setRequest(pinRequestDTO);
@@ -319,7 +318,7 @@ public class StaticPinFacadeImplTest {
 		uinMap.put("uin", "2342342344");
 		Mockito.when(idAuthService.processIdType(Mockito.any(), Mockito.any(), Mockito.anyBoolean()))
 				.thenReturn(uinMap);
-		Mockito.when(vidRepository.findByUIN(Mockito.anyString(),Mockito.any())).thenReturn(Collections.EMPTY_LIST);
+		Mockito.when(vidRepository.findByUIN(Mockito.anyString(), Mockito.any())).thenReturn(Collections.EMPTY_LIST);
 		VIDResponseDTO vidResponseDTO = vidService.generateVID("2342342344");
 		assertEquals("mosip.identity.vid", vidResponseDTO.getId());
 	}

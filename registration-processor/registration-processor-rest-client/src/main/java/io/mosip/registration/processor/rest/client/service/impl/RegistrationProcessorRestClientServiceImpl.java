@@ -202,7 +202,7 @@ public class RegistrationProcessorRestClientServiceImpl implements RegistrationP
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see io.mosip.registration.processor.core.spi.restclient.
 	 * RegistrationProcessorRestClientService#patchApi(io.mosip.registration.
 	 * processor.core.code.ApiName, java.util.List, java.lang.String,

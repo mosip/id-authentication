@@ -6,6 +6,7 @@ import java.sql.Timestamp;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
@@ -27,12 +28,12 @@ public class UserMachineMapping extends RegistrationCommonFields implements Seri
 	private UserMachineMappingID userMachineMappingId;
 
 	/** The user detail. */
-	@ManyToOne
+	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name = "usr_id", nullable = false, insertable = false, updatable = false)
 	private UserDetail userDetail;
 
 	/** The machine master. */
-	@ManyToOne
+	@ManyToOne(fetch=FetchType.EAGER)
 	@JoinColumns({
 			@JoinColumn(name = "machine_id", referencedColumnName = "id", insertable = false, updatable = false),
 			@JoinColumn(name = "lang_code", referencedColumnName = "lang_code", insertable = false, updatable = false) })

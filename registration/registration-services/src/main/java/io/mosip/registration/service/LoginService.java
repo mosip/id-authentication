@@ -39,7 +39,7 @@ public interface LoginService {
 	 *            centerId corresponding to entered userId
 	 * @return RegistrationCenterDetailDTO center details
 	 */
-	RegistrationCenterDetailDTO getRegistrationCenterDetails(String centerId);
+	RegistrationCenterDetailDTO getRegistrationCenterDetails(String centerId,String langCode);
 
 	/**
 	 * fetching registration screen authorization details

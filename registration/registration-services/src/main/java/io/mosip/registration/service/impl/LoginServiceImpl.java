@@ -114,7 +114,7 @@ public class LoginServiceImpl implements LoginService {
 	 * getRegistrationCenterDetails(java.lang.String)
 	 */
 	@Override
-	public RegistrationCenterDetailDTO getRegistrationCenterDetails(String centerId) {
+	public RegistrationCenterDetailDTO getRegistrationCenterDetails(String centerId,String langCode) {
 		// Retrieving Registration Center details
 
 		LOGGER.info("REGISTRATION - CENTERDETAILS - LOGINSERVICE", APPLICATION_NAME, APPLICATION_ID,
@@ -123,7 +123,7 @@ public class LoginServiceImpl implements LoginService {
 		auditFactory.audit(AuditEvent.FETCH_CNTR_DET, Components.CENTER_DETAIL, RegistrationConstants.APPLICATION_NAME,
 				AuditReferenceIdTypes.APPLICATION_ID.getReferenceTypeId());
 
-		return registrationCenterDAO.getRegistrationCenterDetails(centerId);
+		return registrationCenterDAO.getRegistrationCenterDetails(centerId,langCode);
 	}
 
 	/*

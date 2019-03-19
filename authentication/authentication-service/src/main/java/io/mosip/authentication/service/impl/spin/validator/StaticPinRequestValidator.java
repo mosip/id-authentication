@@ -28,6 +28,9 @@ public class StaticPinRequestValidator extends IdAuthValidator {
 	/** The Constant ID_AUTH_VALIDATOR2. */
 	private static final String ID_AUTH_VALIDATOR2 = "IdAuthValidator";
 
+	/** The Constant IDV_ID_TYPE. */
+	private static final String IDV_ID_TYPE = "individualIdType";
+
 	/** The Constant STATIC_PIN_PATTERN. */
 	private static final Pattern STATIC_PIN_PATTERN = Pattern.compile("^[0-9]{6}");
 
@@ -43,8 +46,14 @@ public class StaticPinRequestValidator extends IdAuthValidator {
 	/** The Constant REQUEST. */
 	private static final String REQUEST = "request";
 
+	/** The Constant REQUEST. */
+	private static final String INDIVIDUAL_ID = "individualId";
+
 	/** The Constant PINVALUE. */
 	private static final String PINVALUE = "pinValue";
+
+	/** The Constant REQ_TIME. */
+	private static final String REQ_TIME = "requestTime";
 
 	/** The mosip logger. */
 	private static Logger mosipLogger = IdaLogger.getLogger(StaticPinRequestValidator.class);
@@ -53,6 +62,7 @@ public class StaticPinRequestValidator extends IdAuthValidator {
 	public boolean supports(Class<?> clazz) {
 		return StaticPinRequestDTO.class.equals(clazz);
 	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -66,7 +76,7 @@ public class StaticPinRequestValidator extends IdAuthValidator {
 		if (Objects.nonNull(target)) {
 			StaticPinRequestDTO staticPinRequestDTO = (StaticPinRequestDTO) target;
 			validateId(staticPinRequestDTO.getId(), errors);
-			validateReqTime(staticPinRequestDTO.getReqTime(), errors);
+			validateReqTime(staticPinRequestDTO.getRequestTime(), errors,REQ_TIME);
 			validateUinVidValue(staticPinRequestDTO, errors);
 			validateStaticPin(staticPinRequestDTO.getRequest().getStaticPin(), errors);
 		}
@@ -80,13 +90,12 @@ public class StaticPinRequestValidator extends IdAuthValidator {
 	 */
 	private void validateStaticPin(String pinValue, Errors errors) {
 		if (Objects.isNull(pinValue) || pinValue.isEmpty()) {
-
-			mosipLogger.error(SESSION_ID, SPIN_VALIDATE, ID_AUTH_VALIDATOR2, MISSING_INPUT_PARAMETER + PINVALUE);
-			errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
-					new Object[] { PINVALUE },
-					IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
+			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), "validateStaticPin",
+					MISSING_INPUT_PARAMETER + PINVALUE);
+			errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.MISSING_AUTHTYPE.getErrorCode(),
+					new Object[] { PINVALUE }, IdAuthenticationErrorConstants.MISSING_AUTHTYPE.getErrorMessage());
 		} else if (!STATIC_PIN_PATTERN.matcher(pinValue).matches()) {
-			mosipLogger.error(SESSION_ID, SPIN_VALIDATE, ID_AUTH_VALIDATOR2,
+			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), "validateStaticPin",
 					"INVALID_INPUT_PARAMETER - pinValue - value -> " + pinValue);
 			errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
 					new Object[] { PINVALUE },
@@ -101,17 +110,18 @@ public class StaticPinRequestValidator extends IdAuthValidator {
 	 * @param errors
 	 */
 	private void validateUinVidValue(StaticPinRequestDTO staticPinRequestDTO, Errors errors) {
-		String uin = staticPinRequestDTO.getRequest().getIdentity().getUin();
-		String vid = staticPinRequestDTO.getRequest().getIdentity().getVid();
-		if (uin != null) {
-			validateIdvId(uin, IdType.UIN.getType(), errors, REQUEST);
-		} else if (vid != null) {
-			validateIdvId(vid, IdType.VID.getType(), errors, REQUEST);
+		String idType = staticPinRequestDTO.getIndividualIdType();
+		String value = staticPinRequestDTO.getIndividualId();
+		if (idType.equals(IdType.UIN.getType())) {
+			validateIdvId(value, IdType.UIN.getType(), errors, INDIVIDUAL_ID);
+		} else if (idType.equals(IdType.VID.getType())) {
+			validateIdvId(value, IdType.VID.getType(), errors, INDIVIDUAL_ID);
 		} else {
-			mosipLogger.error(SESSION_ID, SPIN_VALIDATE, ID_AUTH_VALIDATOR2, MISSING_INPUT_PARAMETER + UIN_VID);
-			errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
-					new Object[] { UIN_VID },
-					IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
+			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), "validateUinVidValue",
+					MISSING_INPUT_PARAMETER + UIN_VID);
+			errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+					new Object[] { IDV_ID_TYPE },
+					IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
 		}
 	}
 }
