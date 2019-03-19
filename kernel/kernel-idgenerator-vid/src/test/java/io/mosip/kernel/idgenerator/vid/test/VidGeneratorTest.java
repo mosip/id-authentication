@@ -1,7 +1,9 @@
 package io.mosip.kernel.idgenerator.vid.test;
 
+import static org.hamcrest.CoreMatchers.isA;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 
@@ -21,9 +23,11 @@ import org.springframework.test.context.junit4.SpringRunner;
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.idgenerator.spi.VidGenerator;
 import io.mosip.kernel.core.idvalidator.spi.VidValidator;
-import io.mosip.kernel.idgenerator.vid.entity.Vid;
+import io.mosip.kernel.idgenerator.vid.entity.VidSeed;
+import io.mosip.kernel.idgenerator.vid.entity.VidSequence;
 import io.mosip.kernel.idgenerator.vid.exception.VidException;
-import io.mosip.kernel.idgenerator.vid.repository.VidRepository;
+import io.mosip.kernel.idgenerator.vid.repository.VidSeedRepository;
+import io.mosip.kernel.idgenerator.vid.repository.VidSequenceRepository;
 
 /**
  * Test class for vid generator.
@@ -33,7 +37,7 @@ import io.mosip.kernel.idgenerator.vid.repository.VidRepository;
  *
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest
+@SpringBootTest(classes = VidGeneratorBootApplication.class)
 public class VidGeneratorTest {
 
 	@Value("${mosip.kernel.vid.length}")
@@ -52,73 +56,78 @@ public class VidGeneratorTest {
 	private VidValidator<String> vidValidator;
 
 	@MockBean
-	private VidRepository repository;
+	private VidSeedRepository seedRepository;
 
-	List<Vid> listOfEntity = null;
+	@MockBean
+	private VidSequenceRepository sequenceRepository;
+
+	List<VidSeed> listOfSeed = null;
+	VidSequence sequenceEntity = null;
+	List<VidSeed> listOfEmptySeed = null;
+	VidSequence nullSequenceEntity = null;
 
 	@Before
 	public void setUp() {
+		listOfSeed = new ArrayList<>();
+		VidSeed entity = new VidSeed();
+		entity.setSeedNumber(random);
+		listOfSeed.add(entity);
+		sequenceEntity = new VidSequence();
+		sequenceEntity.setSequenceNumber(key);
+		listOfEmptySeed = new ArrayList<>();
 
-		listOfEntity = new ArrayList<>();
-		Vid entity = new Vid();
-		entity.setRandomValue(random);
-		entity.setSequenceCounter(key);
-		listOfEntity.add(entity);
 	}
 
 	@Test
 	public void notNullTest() {
-
-		when(repository.findRandomValues()).thenReturn(listOfEntity);
-
+		when(seedRepository.findAll()).thenReturn(listOfSeed);
+		when(sequenceRepository.findMaxSequence()).thenReturn(sequenceEntity);
 		assertNotNull(vidGenerator.generateId());
 	}
 
 	@Test
 	public void vidLengthTest() {
 
-		when(repository.findRandomValues()).thenReturn(listOfEntity);
-
+		when(seedRepository.findAll()).thenReturn(listOfSeed);
+		when(sequenceRepository.findMaxSequence()).thenReturn(sequenceEntity);
+		int vidLength = vidGenerator.generateId().length();
 		assertEquals(vidLength, vidGenerator.generateId().length());
 	}
 
 	@Test
 	public void vidValidationTest() {
-
-		when(repository.findRandomValues()).thenReturn(listOfEntity);
-
+		when(seedRepository.findAll()).thenReturn(listOfSeed);
+		when(sequenceRepository.findMaxSequence()).thenReturn(sequenceEntity);
 		assertTrue(vidValidator.validateId(vidGenerator.generateId()));
 	}
 
 	@Test(expected = VidException.class)
-	public void randomValueFetchExceptionTest() {
-
-		when(repository.findRandomValues()).thenThrow(new DataAccessLayerException("errorCode", "errorMessage", null));
-
+	public void seedFetchExceptionTest() {
+		when(seedRepository.findAll()).thenThrow(new DataAccessLayerException("errorCode", "errorMessage", null));
 		vidGenerator.generateId();
 	}
 
 	@Test(expected = VidException.class)
-	public void randomValuesUpdateExceptionTest() {
-
-		when(repository.findRandomValues()).thenReturn(listOfEntity);
-
-		when(repository.updateCounterValue(Mockito.any(), Mockito.any()))
-				.thenThrow(new DataAccessLayerException("errorCode", "errorMessage", null));
-
+	public void seedCreationExceptionTest() {
+		when(seedRepository.findAll()).thenReturn(listOfEmptySeed);
+		when(sequenceRepository.findMaxSequence()).thenReturn(sequenceEntity);
+		when(seedRepository.saveAndFlush(Mockito.any()))
+				.thenThrow(new DataAccessLayerException("errorCode", "errorMessage", new RuntimeException()));
 		vidGenerator.generateId();
 	}
 
-	@Test(expected = VidException.class)
-	public void firstRandomNumberGenerationExceptionTest() {
-		listOfEntity.clear();
+	@Test
+	public void vidEmptySeedListTest() {
+		when(seedRepository.findAll()).thenReturn(listOfEmptySeed);
+		when(sequenceRepository.findMaxSequence()).thenReturn(sequenceEntity);
+		assertThat(vidGenerator.generateId(), isA(String.class));
+	}
 
-		when(repository.findRandomValues()).thenReturn(listOfEntity);
-
-		when(repository.save(Mockito.any())).thenThrow(new DataAccessLayerException("errorCode", "errorMessage", null));
-
-		vidGenerator.generateId();
-
+	@Test
+	public void vidNullSequenceTest() {
+		when(seedRepository.findAll()).thenReturn(listOfSeed);
+		when(sequenceRepository.findMaxSequence()).thenReturn(nullSequenceEntity);
+		assertThat(vidGenerator.generateId(), isA(String.class));
 	}
 
 }
