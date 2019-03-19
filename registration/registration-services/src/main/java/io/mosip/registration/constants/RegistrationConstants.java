@@ -644,7 +644,7 @@ public class RegistrationConstants {
 	public static final String ONBOARD_MAPPED_DEVICES = "mappedDevices";
 	public static final String ONBOARD_DEVICES_MAP = "onBoardDevicesMap";
 	public static final String ONBOARD_DEVICES_REF_ID_TYPE = "UserID";
-	public static final String MACHINE_ID = "machineId";
+	public static final String MAC_ADDRESS = "macaddress";
 	public static final String ONBOARD_DEVICES_MAP_UPDATED = "updatedDevicesMap";
 	public static final String DEVICE_TYPES_ALL_OPTION = "All";
 	public static final String DEVICE_TYPE = "deviceType";
