@@ -27,6 +27,7 @@ import io.mosip.registration.processor.core.packet.dto.masterdata.StatusResponse
 import io.mosip.registration.processor.core.packet.dto.regcentermachine.ErrorDTO;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.core.util.JsonUtil;
+import io.mosip.registration.processor.packet.storage.exception.IdentityNotFoundException;
 import io.mosip.registration.processor.packet.storage.utils.Utilities;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 
@@ -100,13 +101,10 @@ public class MasterDataValidation {
 		String regionAraName = null;
 		String provinceAraName = null;
 		String cityAraName = null;
-
+		boolean isValid = false;
 		try {
 
 			demographicIdentity = getDemographicJson(jsonString);
-
-			if (demographicIdentity == null)
-				return false;
 
 			genderEngName = getParameter(JsonUtil.getJsonValues(demographicIdentity,
 					regProcessorIdentityJson.getIdentity().getGender().getValue()), LANGUAGE_ENG);
@@ -128,49 +126,49 @@ public class MasterDataValidation {
 			cityAraName = getParameter(JsonUtil.getJsonValues(demographicIdentity,
 					regProcessorIdentityJson.getIdentity().getCity().getValue()), LANGUAGE_ARA);
 
+			String[] elements = env.getProperty("registration.processor.idjson.attributes").split(",");
+			List<String> list = new ArrayList<>(Arrays.asList(elements));
+
+			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					"", "MasterDataValidation::validateMasterData::entry");
+
+			if ((getValue(list, IdJSONConstant.GENDER.toString()))
+					&& ((!validateGenderName(genderEngName)) || (!validateGenderName(genderAraName)))) {
+				registrationStatusDto.setStatusComment(StatusMessage.GENDER_NAME_NOT_AVAILABLE);
+				return false;
+			}
+
+			if (getValue(list, IdJSONConstant.REGION.toString())
+					&& ((!validateLocationName(regionEngName)) || (!validateLocationName(regionAraName)))) {
+				registrationStatusDto.setStatusComment(StatusMessage.REGION_NOT_AVAILABLE);
+				return false;
+			}
+
+			if ((getValue(list, IdJSONConstant.PROVINCE.toString()))
+					&& ((!validateLocationName(provinceEngName)) || (!validateLocationName(provinceAraName)))) {
+				registrationStatusDto.setStatusComment(StatusMessage.PROVINCE_NOT_AVAILABLE);
+				return false;
+			}
+
+			if (getValue(list, IdJSONConstant.CITY.toString())
+					&& ((!validateLocationName(cityEngName)) || (!validateLocationName(cityAraName)))) {
+				registrationStatusDto.setStatusComment(StatusMessage.CITY_NOT_AVAILABLE);
+				return false;
+			}
+
+			if (getValue(list, IdJSONConstant.POSTALCODE.toString()) && (!validateLocationName(postalcode))) {
+				registrationStatusDto.setStatusComment(StatusMessage.POSTALCODE_NOT_AVAILABLE);
+				return false;
+			}
+
+			isValid = true;
+
 		} catch (IOException e) {
+			isValid = false;
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					"", PlatformErrorMessages.STRUCTURAL_VALIDATION_FAILED.getMessage() + e.getMessage());
 			this.registrationStatusDto.setStatusComment(StatusMessage.MASTERDATA_VALIDATION_FAILED);
 		}
-
-		String[] elements = env.getProperty("registration.processor.idjson.attributes").split(",");
-		List<String> list = new ArrayList<>(Arrays.asList(elements));
-		boolean isValid = false;
-
-		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), "",
-				"MasterDataValidation::validateMasterData::entry");
-
-		if ((getValue(list, IdJSONConstant.GENDER.toString()))
-				&& ((!validateGenderName(genderEngName)) || (!validateGenderName(genderAraName)))) {
-			registrationStatusDto.setStatusComment(StatusMessage.GENDER_NAME_NOT_AVAILABLE);
-			return false;
-		}
-
-		if (getValue(list, IdJSONConstant.REGION.toString())
-				&& ((!validateLocationName(regionEngName)) || (!validateLocationName(regionAraName)))) {
-			registrationStatusDto.setStatusComment(StatusMessage.REGION_NOT_AVAILABLE);
-			return false;
-		}
-
-		if ((getValue(list, IdJSONConstant.PROVINCE.toString()))
-				&& ((!validateLocationName(provinceEngName)) || (!validateLocationName(provinceAraName)))) {
-			registrationStatusDto.setStatusComment(StatusMessage.PROVINCE_NOT_AVAILABLE);
-			return false;
-		}
-
-		if (getValue(list, IdJSONConstant.CITY.toString())
-				&& ((!validateLocationName(cityEngName)) || (!validateLocationName(cityAraName)))) {
-			registrationStatusDto.setStatusComment(StatusMessage.CITY_NOT_AVAILABLE);
-			return false;
-		}
-
-		if (getValue(list, IdJSONConstant.POSTALCODE.toString()) && (!validateLocationName(postalcode))) {
-			registrationStatusDto.setStatusComment(StatusMessage.POSTALCODE_NOT_AVAILABLE);
-			return false;
-		}
-
-		isValid = true;
 
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), "",
 				"MasterDataValidation::validateMasterData::exit");
@@ -187,6 +185,9 @@ public class MasterDataValidation {
 
 		JSONObject demographicJson = JsonUtil.objectMapperReadValue(jsonString, JSONObject.class);
 		demographicIdentity = JsonUtil.getJSONObject(demographicJson, utility.getGetRegProcessorDemographicIdentity());
+
+		if (demographicIdentity == null)
+			throw new IdentityNotFoundException(PlatformErrorMessages.RPR_PVM_IDENTITY_NOT_FOUND.getMessage());
 
 		return demographicIdentity;
 	}
