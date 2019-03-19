@@ -35,6 +35,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
 import io.mosip.kernel.dataaccess.hibernate.constant.HibernateErrorCode;
+import io.mosip.registration.processor.core.code.DedupeSourceName;
 import io.mosip.registration.processor.core.constant.PacketFiles;
 import io.mosip.registration.processor.core.packet.dto.Applicant;
 import io.mosip.registration.processor.core.packet.dto.Biometric;
@@ -738,7 +739,7 @@ public class PacketInfoManagerImplTest {
 		uinDto.setLangCode("fr");
 		uinDto.setName("IbrahimAli");
 		uinDto.setUin("1234567");
-		uinDto.setDob(date);
+		uinDto.setDob(date.toString());
 
 		DemographicInfoDto uinDto1 = new DemographicInfoDto();
 		uinDto1.setRegId("2018782130000103122018105604");
@@ -746,7 +747,7 @@ public class PacketInfoManagerImplTest {
 		uinDto1.setLangCode("ar");
 		uinDto1.setName("ابراهيمعلي");
 		uinDto1.setUin("1234567");
-		uinDto1.setDob(date);
+		uinDto1.setDob(date.toString());
 
 		depdupeList.add(uinDto);
 		depdupeList.add(uinDto1);
@@ -889,7 +890,9 @@ public class PacketInfoManagerImplTest {
 	public void testSaveManualAdjudicationDataSuccess() {
 		String registrationId = "1234";
 		List<String> uniqueMatchedRefIds = Arrays.asList("123av", "124abc", "125abcd");
-		packetInfoManagerImpl.saveManualAdjudicationData(uniqueMatchedRefIds, registrationId);
+
+		packetInfoManagerImpl.saveManualAdjudicationData(uniqueMatchedRefIds, registrationId, DedupeSourceName.DEMO);
+
 	}
 
 	/**
@@ -900,7 +903,9 @@ public class PacketInfoManagerImplTest {
 		Mockito.when(manualVerficationRepository.save(any())).thenThrow(exp);
 		String registrationId = "1234";
 		List<String> uniqueMatchedRefIds = Arrays.asList("123av", "124abc", "125abcd");
-		packetInfoManagerImpl.saveManualAdjudicationData(uniqueMatchedRefIds, registrationId);
+
+		packetInfoManagerImpl.saveManualAdjudicationData(uniqueMatchedRefIds, registrationId, DedupeSourceName.DEMO);
+
 	}
 
 	/**

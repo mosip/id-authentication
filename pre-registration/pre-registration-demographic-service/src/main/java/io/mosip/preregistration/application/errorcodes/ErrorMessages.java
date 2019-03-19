@@ -103,7 +103,7 @@ public enum ErrorMessages {
 	 * ErrorMessage for PRG_PAM_DOC_016
 	 */
 	BOOKING_FAILED_TO_DELETE,
-	
+
 	/**
 	 * ErrorMessage for PRG_PAM_APP_011
 	 */
@@ -123,10 +123,15 @@ public enum ErrorMessages {
 	 * ErrorMessage for PRG_PAM_APP_005
 	 */
 	INVALID_STATUS_CODE,
-	
+
 	/**
 	 * PRG_PAM_APP_005
 	 */
-	RECORD_NOT_FOUND_FOR_DATE_RANGE;
+	RECORD_NOT_FOUND_FOR_DATE_RANGE,
+
+	/**
+	 * PRG_PAM_APP_013
+	 */
+	RECORD_NOT_FOUND;
 	;
 }

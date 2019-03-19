@@ -71,8 +71,8 @@ public class NotificationControllerTest {
 		notificationDTO.setAppointmentTime("22:57");
 
 		responseDTO.setResponse(notificationDTO);
-		responseDTO.setResTime(serviceUtil.getCurrentResponseTime());
-		responseDTO.setStatus(Boolean.TRUE);
+		responseDTO.setResponsetime(serviceUtil.getCurrentResponseTime());
+		
 	}
 
 	/**

@@ -31,7 +31,7 @@ export class TimeSelectionComponent implements OnInit {
   names: NameList[];
   deletedNames = [];
   availabilityData = [];
- // cutoff = 1;
+  // cutoff = 1;
   days: number;
   enableBookButton = false;
   activeTab = 'morning';
@@ -59,9 +59,11 @@ export class TimeSelectionComponent implements OnInit {
   ngOnInit() {
     this.names = this.sharedService.getNameList();
     this.temp = this.sharedService.getNameList();
-    console.log(this.temp);
-    this.days = this.configService.getConfigByKey('preregistration.availability.noOfDays');
-    this.registrationCenterLunchTime = this.temp[0].registrationCenter.lunchEndTime.split(':');
+    console.log('ngOninit temp', this.temp);
+    this.days = this.configService.getConfigByKey(appConstants.CONFIG_KEYS.preregistration_availability_noOfDays);
+    if (this.temp[0]) {
+      this.registrationCenterLunchTime = this.temp[0].registrationCenter.lunchEndTime.split(':');
+    }
     this.sharedService.resetNameList();
     this.registrationCenter = this.registrationService.getRegCenterId();
     console.log(this.registrationCenter);
@@ -194,10 +196,12 @@ export class TimeSelectionComponent implements OnInit {
   }
 
   tabSelected(selection: string) {
-    if ((selection === 'morning' && this.availabilityData[this.selectedTile].showMorning) ||
-        (selection === 'afternoon' && this.availabilityData[this.selectedTile].showAfternoon)) {
+    if (
+      (selection === 'morning' && this.availabilityData[this.selectedTile].showMorning) ||
+      (selection === 'afternoon' && this.availabilityData[this.selectedTile].showAfternoon)
+    ) {
       this.activeTab = selection;
-    }    
+    }
     console.log(this.activeTab);
   }
 
@@ -245,7 +249,10 @@ export class TimeSelectionComponent implements OnInit {
               this.temp.forEach(name => {
                 this.sharedService.addNameList(name);
                 const booking = this.bookingDataList.filter(element => element.preRegistrationId === name.preRegId);
-                const appointmentDateTime = Utils.getBookingDateTime(booking[0].newBookingDetails.appointment_date, booking[0].newBookingDetails.time_slot_from);
+                const appointmentDateTime = Utils.getBookingDateTime(
+                  booking[0].newBookingDetails.appointment_date,
+                  booking[0].newBookingDetails.time_slot_from
+                );
                 this.sharedService.updateBookingDetails(name.preRegId, appointmentDateTime);
               });
               const arr = this.router.url.split('/');
@@ -258,7 +265,7 @@ export class TimeSelectionComponent implements OnInit {
               // this.router.navigate(['../acknowledgement'], { relativeTo: this.route });
             });
         } else {
-          this.showError()
+          this.showError();
         }
       },
       error => {
@@ -288,7 +295,7 @@ export class TimeSelectionComponent implements OnInit {
   navigateBack() {
     this.temp.forEach(name => {
       this.sharedService.addNameList(name);
-    })
+    });
     const url = Utils.getURL(this.router.url, 'pick-center');
     // const routeParams = this.router.url.split('/');
     // this.router.navigate([routeParams[1], routeParams[2], 'booking', 'pick-center']);

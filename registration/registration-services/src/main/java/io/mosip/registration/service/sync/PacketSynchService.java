@@ -4,6 +4,7 @@ import java.net.URISyntaxException;
 import java.util.List;
 
 import io.mosip.kernel.core.util.exception.JsonProcessingException;
+import io.mosip.registration.dto.PacketStatusDTO;
 import io.mosip.registration.dto.RegistrationPacketSyncDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.entity.Registration;
@@ -17,7 +18,7 @@ public interface PacketSynchService {
 	 * 
 	 * @return
 	 */
-	List<Registration> fetchPacketsToBeSynched();
+	List<PacketStatusDTO> fetchPacketsToBeSynched();
 
 	/**
 	 * This method is used to synch the packets to the server
@@ -28,7 +29,7 @@ public interface PacketSynchService {
 	 * @throws URISyntaxException
 	 * @throws MosipJsonProcessingException
 	 */
-	ResponseDTO syncPacketsToServer(RegistrationPacketSyncDTO syncDtoList)
+	ResponseDTO syncPacketsToServer(RegistrationPacketSyncDTO syncDtoList,String triggerPoint)
 			throws RegBaseCheckedException, URISyntaxException, JsonProcessingException;
 
 	/**
@@ -37,7 +38,7 @@ public interface PacketSynchService {
 	 * @param synchedPackets
 	 * @return
 	 */
-	Boolean updateSyncStatus(List<Registration> synchedPackets);
+	Boolean updateSyncStatus(List<PacketStatusDTO> synchedPackets);
 
 	/**
 	 * Gets the packet to sync.
@@ -55,4 +56,8 @@ public interface PacketSynchService {
 	 * @throws RegBaseCheckedException
 	 */
 	String syncEODPackets(List<String> regIds) throws RegBaseCheckedException;
+
+	String packetSync(List<PacketStatusDTO> packetsToBeSynched) throws RegBaseCheckedException;
+
+	void syncAllPackets() throws RegBaseCheckedException;
 }

@@ -32,7 +32,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.google.common.base.Verify;
 
 import io.mosip.dbaccess.KernelMasterDataR;
-import io.mosip.dbdto.MachineSpecificationDto;
+import io.mosip.dbdto.DeviceDto;
 import io.mosip.service.ApplicationLibrary;
 import io.mosip.service.AssertKernel;
 import io.mosip.service.BaseTestCase;
@@ -163,7 +163,7 @@ public class AuditLog extends BaseTestCase implements ITest {
 				String id = (response.jsonPath().get("id")).toString();
 				logger.info("id is : " + id);
 				String queryStr = "SELECT * FROM master.machine_spec WHERE id='" + id + "'";
-				boolean valid = KernelMasterDataR.validateDB(queryStr, MachineSpecificationDto.class);
+				boolean valid = KernelMasterDataR.validateDB(queryStr, DeviceDto.class);
 				if (valid) {
 					finalStatus = "Pass";
 				} else {

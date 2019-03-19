@@ -1,1 +1,1 @@
-{"status":"Y","err":[],"txnID":"4471006475","resTime":"2019-03-12T12:25:11.554+05:30","maskedMobile":"XXXXXX6458","maskedEmail":"XXhXXbXXu@gmail.com","ver":"0.8"}
+{"status":"N","err":[{"errorCode":"IDA-MLC-007","errorMessage":"Request could not be processed. Please try again"}],"resTime":"2019-03-15T15:45:24.420+05:30","ver":"0.8"}

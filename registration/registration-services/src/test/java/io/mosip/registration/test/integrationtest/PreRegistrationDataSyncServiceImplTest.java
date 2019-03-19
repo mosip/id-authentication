@@ -20,9 +20,14 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.ApplicationContext;
+import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.entity.PreRegistrationList;
 import io.mosip.registration.repositories.PreRegistrationDataSyncRepository;
 import io.mosip.registration.service.config.GlobalParamService;
@@ -97,6 +102,13 @@ public class PreRegistrationDataSyncServiceImplTest {
 		System.setProperty("http.proxyPort", "8085");
 		assertEquals(preRegistrationDataSyncService.getPreRegistrationIds("User").getErrorResponseDTOs().get(0).getMessage(),"Unable to get Pre registartion id's");
 		
+	}
+	
+	@Test
+	public void getPreRegistrationIds_ValidRegistrationCenterId() throws JsonProcessingException {
+		ResponseDTO responseDTO = preRegistrationDataSyncService.getPreRegistrationIds(RegistrationConstants.JOB_TRIGGER_POINT_USER);
+		ObjectMapper mapper = new ObjectMapper();
+		System.out.println(mapper.writer().writeValueAsString(responseDTO));		
 	}
 	
 	

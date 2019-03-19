@@ -30,11 +30,21 @@ import io.mosip.kernel.core.util.DateUtils;
 @Component
 public class AuthRequestValidator extends BaseAuthRequestValidator {
 
+	private static final String REQUEST_TRANSACTION_ID = "request/transactionID";
+
+	private static final String TRANSACTION_ID = "transactionID";
+
+	private static final String REQUEST_REQUEST_TIME = "request/requestTime";
+
+	private static final String REQUEST_TIME = "requestTime";
+
+	private static final String ALLOWED_AUTH_TYPE = "allowed.auth.type";
+
 	/** The Constant AUTH_REQUEST. */
 	private static final String AUTH_REQUEST = "authRequest";
 
 	/** The Constant AUTH_TYPE. */
-	private static final String AUTH_TYPE = "authType";
+	private static final String AUTH_TYPE = "requestedAuth";
 
 	/** The Constant MISSING_INPUT_PARAMETER. */
 	private static final String MISSING_INPUT_PARAMETER = "MISSING_INPUT_PARAMETER - ";
@@ -45,14 +55,11 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 	/** The Constant VALIDATE. */
 	private static final String VALIDATE = "VALIDATE";
 
-	/** The Constant ID_AUTH_VALIDATOR. */
-	private static final String AUTH_REQUEST_VALIDATOR = "AUTH_REQUEST_VALIDATOR";
-
 	/** The Constant SESSION_ID. */
 	private static final String SESSION_ID = "SESSION_ID";
 
 	/** The Constant REQ_TIME. */
-	private static final String REQ_TIME = "reqTime";
+	private static final String REQ_TIME = REQUEST_TIME;
 
 	/** The Constant VALIDATE_REQUEST_TIMED_OUT. */
 	private static final String VALIDATE_REQUEST_TIMED_OUT = "validateRequestTimedOut";
@@ -90,34 +97,46 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 		AuthRequestDTO authRequestDto = (AuthRequestDTO) target;
 
 		if (authRequestDto != null) {
-			
-			validateReqTime(authRequestDto.getReqTime(), errors);
-			validateTxnId(authRequestDto.getTxnID(), errors);
 			if (!errors.hasErrors()) {
-				validateAuthType(authRequestDto.getAuthType(), errors);
+				validateConsentReq(authRequestDto, errors);
+				validateAllowedAuthTypes(authRequestDto, errors, ALLOWED_AUTH_TYPE);
 			}
 			if (!errors.hasErrors()) {
-				validateRequestTimedOut(authRequestDto.getReqTime(), errors);
+			validateReqTime(authRequestDto.getRequestTime(), errors, REQUEST_TIME);
+			//Validation for Time Stamp in the RequestDTO.
+			validateReqTime(authRequestDto.getRequest().getTimestamp(),errors,REQUEST_REQUEST_TIME );
+			}
+			if (!errors.hasErrors()) {
+			validateTxnId(authRequestDto.getTransactionID(), errors,TRANSACTION_ID);
+			//Validation for TransaactionId in the RequestDTO.
+			validateTxnId(authRequestDto.getRequest().getTransactionID(),errors,REQUEST_TRANSACTION_ID);
+			}
+			if (!errors.hasErrors()) {
+				validateAuthType(authRequestDto.getRequestedAuth(), errors);
+			}
+			if (!errors.hasErrors()) {
+				validateRequestTimedOut(authRequestDto.getRequestTime(), errors);
 			}
 
 			if (!errors.hasErrors()) {
 				super.validate(target, errors);
-
-				validateIdvId(authRequestDto.getIdvId(), authRequestDto.getIdvIdType(), errors);
-
-				// validateTspId(authRequestDto.getTspID(),errors);
-
-				validateBioDetails(authRequestDto, errors);
-
-				validatePinDetails(authRequestDto,errors);
+				String individualId = authRequestDto.getIndividualId();
+				String individualIdType = authRequestDto.getIndividualIdType();
+				
+				if(!individualId.isEmpty()) {
+					validateIdvId(individualId, individualIdType, errors);
+				}
+				 else {
+					// TODO Missing UIN/VID
+				}
 				if (!errors.hasErrors()) {
 					checkAuthRequest(authRequestDto, errors);
 				}
 			}
 		} else {
-			mosipLogger.error(SESSION_ID, AUTH_REQUEST_VALIDATOR, VALIDATE, INVALID_INPUT_PARAMETER + AUTH_REQUEST);
-			errors.rejectValue(AUTH_REQUEST, IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorCode(),
-					IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorMessage());
+			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE, INVALID_INPUT_PARAMETER + AUTH_REQUEST);
+			errors.rejectValue(AUTH_REQUEST, IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(),
+					IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorMessage());
 		}
 	}
 
@@ -133,25 +152,25 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 		try {
 			Instant reqTimeInstance = DateUtils.parseToDate(reqTime,env.getProperty("datetime.pattern")).toInstant();
 			Instant now = Instant.now();
-			mosipLogger.debug(SESSION_ID, AUTH_REQUEST_VALIDATOR, VALIDATE_REQUEST_TIMED_OUT,
+			mosipLogger.debug(SESSION_ID, this.getClass().getSimpleName(), VALIDATE_REQUEST_TIMED_OUT,
 					"reqTimeInstance" + reqTimeInstance.toString() + " -- current time : " + now.toString());
 			Integer reqDateMaxTimeInt = env.getProperty(REQUESTDATE_RECEIVED_IN_MAX_TIME_MINS, Integer.class);
 			Long reqDateMaxTimeLong = env.getProperty(REQUESTDATE_RECEIVED_IN_MAX_TIME_MINS, Long.class);
 			if (null != reqDateMaxTimeInt && null != reqDateMaxTimeLong
 					&& Duration.between(reqTimeInstance, now).toHours() > reqDateMaxTimeInt) {
-				mosipLogger.debug(SESSION_ID, AUTH_REQUEST_VALIDATOR, VALIDATE_REQUEST_TIMED_OUT,
+				mosipLogger.debug(SESSION_ID, this.getClass().getSimpleName(), VALIDATE_REQUEST_TIMED_OUT,
 						"Time difference in min : " + Duration.between(reqTimeInstance, now).toMinutes());
-				mosipLogger.error(SESSION_ID, AUTH_REQUEST_VALIDATOR, VALIDATE_REQUEST_TIMED_OUT,
+				mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE_REQUEST_TIMED_OUT,
 						"INVALID_AUTH_REQUEST_TIMESTAMP -- " + String.format(
-								IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST_TIMESTAMP.getErrorMessage(),
+								IdAuthenticationErrorConstants.INVALID_OTP_REQUEST_TIMESTAMP.getErrorMessage(),
 								Duration.between(reqTimeInstance, now).toMinutes() - reqDateMaxTimeLong));
 				errors.rejectValue(REQ_TIME,
-						IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST_TIMESTAMP.getErrorCode(),
+						IdAuthenticationErrorConstants.INVALID_OTP_REQUEST_TIMESTAMP.getErrorCode(),
 						new Object[] { env.getProperty(REQUESTDATE_RECEIVED_IN_MAX_TIME_MINS, Integer.class) },
-						IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST_TIMESTAMP.getErrorMessage());
+						IdAuthenticationErrorConstants.INVALID_OTP_REQUEST_TIMESTAMP.getErrorMessage());
 			}
-		} catch (DateTimeParseException | ParseException | java.text.ParseException e) {
-			mosipLogger.error(SESSION_ID, AUTH_REQUEST_VALIDATOR, VALIDATE_REQUEST_TIMED_OUT,
+		} catch (DateTimeParseException | ParseException e) {
+			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE_REQUEST_TIMED_OUT,
 					INVALID_INPUT_PARAMETER + REQ_TIME);
 			errors.rejectValue(REQ_TIME, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
 					new Object[] { REQ_TIME },
@@ -169,26 +188,26 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 	 *            the errors
 	 */
 	private void checkAuthRequest(AuthRequestDTO authRequest, Errors errors) {
-		AuthTypeDTO authType = authRequest.getAuthType();
+		AuthTypeDTO authType = authRequest.getRequestedAuth();
 		if (!Objects.isNull(authType)) {
 			boolean anyAuthType = Stream
-					.<Supplier<Boolean>>of(authType::isOtp, authType::isBio, authType::isAddress,
-							authType::isFullAddress, authType::isPin, authType::isPersonalIdentity)
+					.<Supplier<Boolean>>of(authType::isOtp, authType::isBio, 
+							authType::isDemo, authType::isPin)
 					.anyMatch(Supplier<Boolean>::get);
 
 			if (!anyAuthType) {
-				mosipLogger.error(SESSION_ID, AUTH_REQUEST_VALIDATOR, VALIDATE, INVALID_AUTH_REQUEST);
+				mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE, INVALID_AUTH_REQUEST);
 				errors.rejectValue(AUTH_TYPE, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
 						new Object[] { AUTH_TYPE },
 						IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
 
-			} else if (authType.isOtp()) {
-				checkOTPAuth(authRequest, errors);
-			} else if (authType.isPersonalIdentity() || authType.isAddress() || authType.isFullAddress()) {
+			} else if (authType.isDemo()) {
 				checkDemoAuth(authRequest, errors);
+			} else if (authType.isBio()) {
+				validateBioMetadataDetails(authRequest, errors);
 			}
 		} else {
-			mosipLogger.error(SESSION_ID, AUTH_REQUEST_VALIDATOR, VALIDATE, MISSING_INPUT_PARAMETER + AUTH_TYPE);
+			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE, MISSING_INPUT_PARAMETER + AUTH_TYPE);
 			errors.rejectValue(AUTH_TYPE, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
 					new Object[] { AUTH_TYPE },
 					IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());

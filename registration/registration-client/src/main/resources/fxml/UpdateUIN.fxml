@@ -18,13 +18,15 @@
             </Label>
                   <HBox fx:id="biometricBox" layoutY="203.0" spacing="30" styleClass="updateUinCheckBoxCommon">
                      <children>
+                        <CheckBox fx:id="cnieNumber" mnemonicParsing="false" styleClass="updateUinCheckBox" text="%cnie/pin/residencecardnumber">
+                  </CheckBox>
+                        <CheckBox fx:id="parentOrGuardianDetails" mnemonicParsing="false" styleClass="updateUinCheckBox" text="%parent/guardiandetails">
+                  </CheckBox>
                         <CheckBox fx:id="biometricException" mnemonicParsing="false" styleClass="updateUinCheckBox" text="%biometrics-exception">
                   </CheckBox>
                         <CheckBox fx:id="biometricFingerprint" mnemonicParsing="false" styleClass="updateUinCheckBox" text="%biometrics-fingerprint">
                   </CheckBox>
                         <CheckBox fx:id="biometricIris" mnemonicParsing="false" styleClass="updateUinCheckBox" text="%biometrics-iris">
-                  </CheckBox>
-                        <CheckBox fx:id="cnieNumber" mnemonicParsing="false" styleClass="updateUinCheckBox" text="%cnie/pin/residencecardnumber">
                   </CheckBox>
                      </children>
                   </HBox>
@@ -46,16 +48,15 @@
                   </CheckBox>
                         <CheckBox fx:id="age" mnemonicParsing="false" styleClass="updateUinCheckBox" text="%age/dob">
                   </CheckBox>
+                   		<CheckBox fx:id="foreigner" mnemonicParsing="false" styleClass="updateUinCheckBox" text="%Foreigner/National">
+           		 </CheckBox>
                         <CheckBox fx:id="gender" mnemonicParsing="false" styleClass="updateUinCheckBox" text="%gender">
                   </CheckBox>
                         <CheckBox fx:id="address" mnemonicParsing="false" styleClass="updateUinCheckBox" text="%address">
                   </CheckBox>
-                        <CheckBox fx:id="contactDetails" mnemonicParsing="false" styleClass="updateUinCheckBox" text="%contactdetails">
+                        <CheckBox fx:id="phone" mnemonicParsing="false" styleClass="updateUinCheckBox" text="%Phone">
                   </CheckBox>
-                        <CheckBox fx:id="parentOrGuardianDetails" mnemonicParsing="false" styleClass="updateUinCheckBox" text="%parent/guardiandetails">
-                  </CheckBox>
-                   		<CheckBox fx:id="foreigner" mnemonicParsing="false" styleClass="updateUinCheckBox" text="%Foreigner/National">
-           		 </CheckBox>
+                        <CheckBox fx:id="email" mnemonicParsing="false" styleClass="updateUinCheckBox" text="%Email" />
                      </children>
                   </HBox>
                   <Label layoutX="5.0" layoutY="64.0" styleClass="uinUpdateLabelsTypeTwo" text="%isadult">

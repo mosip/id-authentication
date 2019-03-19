@@ -10,33 +10,41 @@ import { Router } from '@angular/router';
 import { FooterComponent } from '../footer/footer.component';
 import { AuthService } from 'src/app/auth/auth.service';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { DataStorageService } from '../services/data-storage.service';
+import { of } from 'rxjs/internal/observable/of';
 
-fdescribe('HeaderComponent', () => {
+class MockService {
+  use() {}
+  url = 'some/url/here';
+
+  onLogout() {
+    return of({});
+  }
+}
+
+describe('HeaderComponent', () => {
   let component: HeaderComponent;
   let footerComponent: FooterComponent;
   let fixture: ComponentFixture<HeaderComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ HeaderComponent, FooterComponent ],
+      declarations: [HeaderComponent, FooterComponent],
       imports: [
         TranslateModule.forRoot({
           loader: {
-              provide: TranslateLoader,
-              useFactory: HttpLoaderFactory,
-              deps: [HttpClient]
+            provide: TranslateLoader,
+            useFactory: HttpLoaderFactory,
+            deps: [HttpClient]
           }
-      }),
-      HttpClientModule,
-      MaterialModule,
-      RouterTestingModule,
-      BrowserAnimationsModule
+        }),
+        HttpClientModule,
+        MaterialModule,
+        RouterTestingModule,
+        BrowserAnimationsModule
       ],
-      providers: [
-         AuthService
-        ]
-    })
-    .compileComponents();
+      providers: [AuthService, { provide: DataStorageService, useClass: MockService }]
+    }).compileComponents();
   }));
 
   beforeEach(() => {
@@ -59,5 +67,5 @@ fdescribe('HeaderComponent', () => {
     component.doLogout();
     fixture.detectChanges();
     expect(localStorage.getItem('loggedOut')).toBe('true');
-  })
+  });
 });

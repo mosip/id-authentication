@@ -22,13 +22,13 @@ import io.mosip.kernel.idgenerator.machineid.repository.MachineIdRepository;
 @SpringBootTest
 @RunWith(SpringRunner.class)
 public class MachineIdServiceTest {
-	
+
 	@Value("${mosip.kernel.mid.test.valid-initial-mid}")
 	private int initialMid;
-	
+
 	@Value("${mosip.kernel.mid.test.valid-new-mid}")
 	private int newMid;
-	
+
 	@Autowired
 	MachineIdGenerator<String> service;
 
@@ -40,7 +40,7 @@ public class MachineIdServiceTest {
 		MachineId entity = new MachineId();
 		entity.setMId(initialMid);
 		when(repository.findLastMID()).thenReturn(null);
-		when(repository.save(Mockito.any())).thenReturn(entity);
+		when(repository.create(Mockito.any())).thenReturn(entity);
 		assertThat(service.generateMachineId(), is(Integer.toString(initialMid)));
 	}
 
@@ -51,7 +51,7 @@ public class MachineIdServiceTest {
 		MachineId entityResponse = new MachineId();
 		entityResponse.setMId(newMid);
 		when(repository.findLastMID()).thenReturn(entity);
-		when(repository.save(Mockito.any())).thenReturn(entityResponse);
+		when(repository.create(Mockito.any())).thenReturn(entityResponse);
 		assertThat(service.generateMachineId(), is(Integer.toString(newMid)));
 	}
 
@@ -64,22 +64,23 @@ public class MachineIdServiceTest {
 	@Test(expected = MachineIdServiceException.class)
 	public void generateIdInsertExceptionTest() {
 		when(repository.findLastMID()).thenReturn(null);
-		when(repository.save(Mockito.any()))
-				.thenThrow(new MachineIdServiceException("", "cannot execute statement", null));
+		when(repository.create(Mockito.any()))
+				.thenThrow(new MachineIdServiceException("", "cannot execute statement", new RuntimeException()));
 		service.generateMachineId();
 	}
 
 	@Test(expected = MachineIdServiceException.class)
 	public void idServiceFetchExceptionTest() throws Exception {
 
-		when(repository.findLastMID()).thenThrow(new DataAccessLayerException("", "cannot execute statement", null));
+		when(repository.findLastMID())
+				.thenThrow(new DataAccessLayerException("", "cannot execute statement", new RuntimeException()));
 		service.generateMachineId();
 	}
 
 	@Test(expected = MachineIdServiceException.class)
 	public void idServiceInsertExceptionTest() throws Exception {
-		when(repository.save(Mockito.any()))
-				.thenThrow(new MachineIdServiceException("", "cannot execute statement", null));
+		when(repository.create(Mockito.any()))
+				.thenThrow(new MachineIdServiceException("", "cannot execute statement", new RuntimeException()));
 		service.generateMachineId();
 	}
 
@@ -88,8 +89,8 @@ public class MachineIdServiceTest {
 		MachineId entity = new MachineId();
 		entity.setMId(1000);
 		when(repository.findLastMID()).thenReturn(entity);
-		when(repository.updateMID(Mockito.anyInt(), Mockito.anyInt(), Mockito.any()))
-				.thenThrow(new DataAccessLayerException("", "cannot execute statement", null));
+		when(repository.create(Mockito.any()))
+				.thenThrow(new DataAccessLayerException("", "cannot execute statement", new RuntimeException()));
 		service.generateMachineId();
 	}
 

@@ -1,26 +1,45 @@
 package io.mosip.kernel.auth.controller;
 
+import java.util.List;
+
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.web.authentication.www.NonceExpiredException;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
+
 import io.mosip.kernel.auth.config.MosipEnvironment;
 import io.mosip.kernel.auth.constant.AuthConstant;
-import io.mosip.kernel.auth.entities.*;
+import io.mosip.kernel.auth.entities.AuthNResponse;
+import io.mosip.kernel.auth.entities.AuthNResponseDto;
+import io.mosip.kernel.auth.entities.AuthToken;
+import io.mosip.kernel.auth.entities.ClientSecretDto;
+import io.mosip.kernel.auth.entities.LoginUser;
+import io.mosip.kernel.auth.entities.LoginUserDTO;
+import io.mosip.kernel.auth.entities.MosipUserDto;
+import io.mosip.kernel.auth.entities.MosipUserDtoToken;
+import io.mosip.kernel.auth.entities.MosipUserListDto;
+import io.mosip.kernel.auth.entities.RolesListDto;
+import io.mosip.kernel.auth.entities.UserOtp;
+import io.mosip.kernel.auth.entities.UserOtpDto;
 import io.mosip.kernel.auth.entities.otp.OtpUser;
 import io.mosip.kernel.auth.entities.otp.OtpUserDto;
 import io.mosip.kernel.auth.exception.AuthManagerException;
 import io.mosip.kernel.auth.service.AuthService;
 import io.mosip.kernel.auth.service.CustomTokenServices;
 import io.swagger.annotations.Api;
-
-import java.util.List;
-
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.web.authentication.www.NonceExpiredException;
-import org.springframework.web.bind.annotation.*;
 
 /**
  * Controller APIs for Authentication and Authorization
@@ -128,13 +147,22 @@ public class AuthController {
 			throws Exception {
 		AuthNResponse authNResponse = null;
 		AuthNResponseDto authResponseDto = authService.authenticateUserWithOtp(userOtpDto.getRequest());
-		if (authResponseDto != null) {
+		if (authResponseDto != null && authResponseDto.getToken()!=null) {
 			Cookie cookie = createCookie(authResponseDto.getToken(), mosipEnvironment.getTokenExpiry());
 			authNResponse = new AuthNResponse();
 			res.addCookie(cookie);
 			authNResponse.setMessage(authResponseDto.getMessage());
 			AuthToken token = getAuthToken(authResponseDto);
+			if(token!=null && token.getUserId()!=null)
+			{
 			customTokenServices.StoreToken(token);
+			}
+			
+		}
+		else
+		{
+			authNResponse = new AuthNResponse();
+			authNResponse.setMessage(authResponseDto.getMessage()!=null?authResponseDto.getMessage():"Otp validation failed");
 		}
 		return new ResponseEntity<>(authNResponse, HttpStatus.OK);
 	}
@@ -148,7 +176,7 @@ public class AuthController {
 	 */
 
 	@PostMapping(value = "/authenticate/clientidsecretkey")
-	public ResponseEntity<AuthNResponse> clientIdSecretKey(ClientSecretDto clientSecretDto, HttpServletResponse res)
+	public ResponseEntity<AuthNResponse> clientIdSecretKey(@RequestBody ClientSecretDto clientSecretDto, HttpServletResponse res)
 			throws Exception {
 		AuthNResponse authNResponse = null;
 		AuthNResponseDto authResponseDto = authService.authenticateWithSecretKey(clientSecretDto.getRequest());
@@ -249,7 +277,7 @@ public class AuthController {
 	public ResponseEntity<RolesListDto> getAllRoles(@PathVariable("appid") String appId) throws Exception {
 		HttpHeaders responseHeaders = new HttpHeaders();
 		RolesListDto rolesListDto = authService.getAllRoles(appId);
-		return new ResponseEntity(rolesListDto, responseHeaders, HttpStatus.OK);
+		return new ResponseEntity<>(rolesListDto, responseHeaders, HttpStatus.OK);
 	}
 
 	@PostMapping(value = "/userdetails/{appid}")
@@ -257,7 +285,7 @@ public class AuthController {
 			@PathVariable("appid") String appId) throws Exception {
 		HttpHeaders responseHeaders = new HttpHeaders();
 		MosipUserListDto mosipUsers = authService.getListOfUsersDetails(userDetails,appId);
-		return new ResponseEntity(mosipUsers, responseHeaders, HttpStatus.OK);
+		return new ResponseEntity<>(mosipUsers, responseHeaders, HttpStatus.OK);
 	}
 
 }

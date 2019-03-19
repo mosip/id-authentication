@@ -1,33 +1,21 @@
 package io.mosip.authentication.core.dto.indauth;
 
+import java.util.List;
+
 import lombok.Data;
 
 /**
+ * The Class For KycAuthRequestDTO extending BaseAuthRequestDTO
  * 
  * @author Prem Kumar
- *
- *The Class For KycAuthRequestDTO extending BaseAuthRequestDTO
+ * 
  */
 @Data
-public class KycAuthRequestDTO extends BaseAuthRequestDTO {
-	
-	/**
-	 * Boolean for consentReq
-	 */
-	private boolean consentReq;
-	/**
-	 * Boolean for ePrintReq
-	 */
-	private boolean ePrintReq;
-	/**
-	 * Boolean for secLangReq
-	 */
-	private boolean secLangReq;
-	
-	/** String for  eKycAuthType*/
-	private String eKycAuthType;
-	
-	/** The AuthRequestDTO */
-	private AuthRequestDTO authRequest;
+public class KycAuthRequestDTO extends AuthRequestDTO {
+
+	/** The value for secondary language code. */
+	private String secondaryLangCode;
+
+	private List<String> allowedKycAttributes;
 
 }

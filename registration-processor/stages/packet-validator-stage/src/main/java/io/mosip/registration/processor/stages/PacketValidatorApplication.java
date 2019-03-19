@@ -2,6 +2,7 @@ package io.mosip.registration.processor.stages;
 
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
+import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.stages.packet.validator.PacketValidatorStage;
 
 /**

@@ -84,8 +84,7 @@ public class NotificationServiceTest {
 		notificationDTO.setAppointmentTime("22:57");
 		responseDTO = new MainResponseDTO<>();
 		responseDTO.setResponse(notificationDTO);
-		responseDTO.setResTime(serviceUtil.getCurrentResponseTime());
-		responseDTO.setStatus(Boolean.TRUE);
+		responseDTO.setResponsetime(serviceUtil.getCurrentResponseTime());
 		templateResponseDTO.setFileText("Email message");
 		tepmlateList.add(templateResponseDTO);
 
@@ -139,8 +138,7 @@ public class NotificationServiceTest {
 		notificationDTO.setAppointmentTime("22:57");
 		responseDTO = new MainResponseDTO<>();
 		responseDTO.setResponse(notificationDTO);
-		responseDTO.setResTime(serviceUtil.getCurrentResponseTime());
-		responseDTO.setStatus(Boolean.TRUE);
+		responseDTO.setResponsetime(serviceUtil.getCurrentResponseTime());
 		String stringjson = mapper.writeValueAsString(notificationDTO);
 		MultipartFile file = new MockMultipartFile("test.txt", "test.txt", null, new byte[1100]);
 		MainResponseDTO<NotificationDTO> response = service.sendNotification(stringjson, "eng", file);
@@ -164,8 +162,7 @@ public class NotificationServiceTest {
 		notificationDTO.setAppointmentTime("22:57");
 		responseDTO = new MainResponseDTO<>();
 		responseDTO.setResponse(notificationDTO);
-		responseDTO.setResTime(serviceUtil.getCurrentResponseTime());
-		responseDTO.setStatus(Boolean.TRUE);
+		responseDTO.setResponsetime(serviceUtil.getCurrentResponseTime());
 		String stringjson = mapper.writeValueAsString(notificationDTO);
 		MultipartFile file = new MockMultipartFile("test.txt", "test.txt", null, new byte[1100]);
 		MainResponseDTO<NotificationDTO> response = service.sendNotification(stringjson, "eng", file);
@@ -186,8 +183,7 @@ public class NotificationServiceTest {
 		QRCodeResponseDTO responsedto = new QRCodeResponseDTO();
 		responsedto.setQrcode(qrCode);
 		qrCodeResponseDTO.setResponse(responsedto);
-		qrCodeResponseDTO.setResTime(serviceUtil.getCurrentResponseTime());
-		qrCodeResponseDTO.setStatus(Boolean.TRUE);
+		qrCodeResponseDTO.setResponsetime(serviceUtil.getCurrentResponseTime());
 		Mockito.when(qrCodeGenerator.generateQrCode(stringjson, QrVersion.V25)).thenReturn(qrCode);
 		MainResponseDTO<QRCodeResponseDTO> response = service.generateQRCode(stringjson);
 

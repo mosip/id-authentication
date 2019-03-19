@@ -33,16 +33,16 @@ public interface RegistrationCenterMachineUserRepository
 	 *            input from user
 	 * @return {@link RegistrationCenterUserMachine}
 	 */
-	@Query("FROM RegistrationCenterUserMachine a WHERE a.registrationCenterMachineUserID.cntrId=?1 AND a.registrationCenterMachineUserID.machineId=?2 AND a.registrationCenterMachineUserID.usrId=?3 and (a.isDeleted is null or a.isDeleted =false)")
+	@Query("FROM RegistrationCenterUserMachine a WHERE a.registrationCenterMachineUserID.cntrId=?1 AND a.registrationCenterMachineUserID.machineId=?2 AND a.registrationCenterMachineUserID.usrId=?3 and (a.isDeleted is null or a.isDeleted =false) and a.isActive = true")
 	Optional<RegistrationCenterUserMachine> findAllNondeletedMappings(String cntrId, String machineId, String usrId);
 
-	@Query("FROM RegistrationCenterUserMachine rum where rum.registrationCenterMachineUserID.machineId = ?1 AND (rum.isDeleted is null or rum.isDeleted=false)")
+	@Query("FROM RegistrationCenterUserMachine rum where rum.registrationCenterMachineUserID.machineId = ?1 AND (rum.isDeleted is null or rum.isDeleted=false) and rum.isActive = true")
 	List<RegistrationCenterUserMachine> findByMachineIdAndIsDeletedFalseOrIsDeletedIsNull(String machineId);
 
-	@Query("FROM RegistrationCenterUserMachine rum where rum.registrationCenterMachineUserID.usrId = ?1 AND (rum.isDeleted is null or rum.isDeleted=false)")
+	@Query("FROM RegistrationCenterUserMachine rum where rum.registrationCenterMachineUserID.usrId = ?1 AND (rum.isDeleted is null or rum.isDeleted=false) and rum.isActive = true")
 	List<RegistrationCenterUserMachine> findByUsrIdAndIsDeletedFalseOrIsDeletedIsNull(String usrId);
 
-	@Query("FROM RegistrationCenterUserMachine rum where rum.registrationCenterMachineUserID.cntrId = ?1 AND (rum.isDeleted is null or rum.isDeleted=false)")
+	@Query("FROM RegistrationCenterUserMachine rum where rum.registrationCenterMachineUserID.cntrId = ?1 AND (rum.isDeleted is null or rum.isDeleted=false) and rum.isActive = true")
 	List<RegistrationCenterUserMachine> findByCntrIdAndIsDeletedFalseOrIsDeletedIsNull(String cntrId);
 
 }

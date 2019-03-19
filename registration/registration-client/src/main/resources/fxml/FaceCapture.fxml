@@ -107,7 +107,7 @@
                   <AnchorPane layoutX="1.0" layoutY="6.0">
                      <children>
                         <Button layoutY="2.0" mnemonicParsing="false" onAction="#goToHomePageFromRegistration" styleClass="homeButton" text="%home" />
-                        <Label layoutX="76.0" layoutY="5.0" text="%/registration" />
+                        <Label fx:id="registrationNavlabel" layoutX="76.0" layoutY="5.0" text="%/registration" />
                      </children>
                   </AnchorPane>
                </children>

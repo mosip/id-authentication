@@ -129,10 +129,7 @@ public class GetDeviceHistory extends BaseTestCase implements ITest{
     	  {
     		        String id = actualRequest.get("id").toString();
 	                String queryStr = "SELECT master.device_master_h.* FROM master.device_master_h WHERE id='"+id+"'";
-					boolean valid = KernelMasterDataR.masterDataDBConnection(DeviceHistoryDto.class,queryStr);
-					System.out.println("status------>"+valid);
-    	  
-	            
+					boolean valid = KernelMasterDataR.masterDataDBConnection(DeviceHistoryDto.class,queryStr);         
 			if(valid)
 					{
 						finalStatus ="Pass";

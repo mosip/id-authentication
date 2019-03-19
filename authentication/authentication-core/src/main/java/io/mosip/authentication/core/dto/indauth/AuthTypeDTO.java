@@ -12,14 +12,8 @@ import lombok.Data;
 @Data
 public class AuthTypeDTO {
 
-	/** For personal identity Authentication */
-	private boolean personalIdentity;
-
-	/** For address Authentication */
-	private boolean address;
-
-	/** For Full address Authentication */
-	private boolean fullAddress;
+	/** For demo Authentication */
+	private boolean demo;
 
 	/** For biometric Authentication */
 	private boolean bio;
