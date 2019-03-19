@@ -28,7 +28,7 @@ public class UserMachineMapping extends RegistrationCommonFields implements Seri
 	private UserMachineMappingID userMachineMappingId;
 
 	/** The user detail. */
-	@ManyToOne(fetch=FetchType.LAZY)
+	@ManyToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name = "usr_id", nullable = false, insertable = false, updatable = false)
 	private UserDetail userDetail;
 
