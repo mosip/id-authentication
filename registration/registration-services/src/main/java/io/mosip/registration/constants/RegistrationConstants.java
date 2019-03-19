@@ -712,6 +712,7 @@ public class RegistrationConstants {
 	public static final String PRE_REG_DAYS_LIMIT = "mosip.registration.pre_reg_no_of_days_limit";
 	public static final String GPS_DEVICE_MODEL = "mosip.registration.gps_device_model";
 	public static final String GPS_DEVICE_DISABLE_FLAG = "mosip.registration.gps_device_enable_flag";
+	public static final String PRE_REG_PACKET_LOCATION = "mosip.registration.registration_pre_reg_packet_location";
 	// Spring Batch-Jobs
 	public static final String JOB_TRIGGER_STARTED = "Trigger started";
 	public static final String JOB_TRIGGER_COMPLETED = "Trigger completed";
