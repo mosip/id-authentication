@@ -164,6 +164,7 @@ public class SyncDataController {
 	 * @throws ExecutionException
 	 *             - this method will throw exeution exception
 	 */
+	@ResponseFilter
 	@ApiOperation(value = "Api to sync the masterdata", response = MasterDataResponseDto.class)
 	@GetMapping("/masterdata/{regcenterId}")
 	public MasterDataResponseDto syncMasterDataWithRegCenterId(@PathVariable("regcenterId") String regCenterId,
