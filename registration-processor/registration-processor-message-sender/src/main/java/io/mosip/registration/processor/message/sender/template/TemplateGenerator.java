@@ -1,4 +1,4 @@
-package io.mosip.registration.processor.core.template.generator;
+package io.mosip.registration.processor.message.sender.template;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
