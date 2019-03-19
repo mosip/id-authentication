@@ -1,12 +1,17 @@
 package io.mosip.registration.test.integrationtest;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -113,6 +118,48 @@ public class PreRegistrationDataSyncServiceImplTest {
 		assertNotNull(responseDTO.getSuccessResponseDTO());
 	}
 	
+	@Test
+	public void getPreRegistrationIds_ValidPreRegID() throws JsonProcessingException {
+		ResponseDTO responseDTO = preRegistrationDataSyncService.getPreRegistration(getPreRegIdFromDB());
+		ObjectMapper mapper = new ObjectMapper();
+		System.out.println(mapper.writer().writeValueAsString(responseDTO));
+		assertNotNull(responseDTO.getSuccessResponseDTO());
+		assertNull(responseDTO.getErrorResponseDTOs());
+	}
 	
+	@Test
+	public void getPreRegistrationIds_InvalidPreRegID() throws JsonProcessingException {
+		ResponseDTO responseDTO = preRegistrationDataSyncService.getPreRegistration("99999999999999");
+		ObjectMapper mapper = new ObjectMapper();
+		System.out.println(mapper.writer().writeValueAsString(responseDTO));
+		assertNull(responseDTO.getSuccessResponseDTO());
+		assertNotNull(responseDTO.getErrorResponseDTOs());
+	}
+	
+	public String getPreRegIdFromDB() {
+		String preRegID = null;
+		Connection con;
+		PreparedStatement pre;
+		try {
+			Class.forName("org.apache.derby.jdbc.EmbeddedDriver");
+
+			con = DriverManager.getConnection("jdbc:derby:D:/Mosip_QA_080_build/mosip/registration/registration-services/reg;bootPassword=mosip12345", "", "");
+			pre = con.prepareStatement("select prereg_id from reg.pre_registration_list");
+			ResultSet res = pre.executeQuery();
+
+			
+
+			if (res.next()) {
+				System.out.println("Pre-Registration ID fetched from database");
+				preRegID = res.getString("PREREG_ID");
+			}
+
+			pre.close();
+			con.close();
+		} catch (Exception e) {
+			System.out.println("Unable to fetch pre-registration ID from database");
+		}
+		return preRegID;
+	}
 	
 }
