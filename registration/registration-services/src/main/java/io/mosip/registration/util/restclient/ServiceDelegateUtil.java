@@ -405,13 +405,6 @@ public class ServiceDelegateUtil {
 			requestHTTPDTO.setRequestBody(authNRequestDTO);
 			requestHTTPDTO.setHttpHeaders(headers);
 
-			if (loginMode.compareTo(LoginMode.CLIENTID) == 0) {
-				AuthNClientIDDTO authNClientIDDTO = (AuthNClientIDDTO) authNRequestDTO.getRequest();
-				requestParams.put("request.appId", authNClientIDDTO.getAppId());
-				requestParams.put("request.clientId", authNClientIDDTO.getClientId());
-				requestParams.put("request.secretKey", authNClientIDDTO.getSecretKey());
-			}
-
 			setURI(requestHTTPDTO, requestParams, getEnvironmentProperty(
 					"auth_by_".concat(loginMode.getCode().toLowerCase()), RegistrationConstants.SERVICE_URL));
 
@@ -489,7 +482,7 @@ public class ServiceDelegateUtil {
 				isTokenValid = isResponseValid(responseMap, RegistrationConstants.REST_RESPONSE_BODY);
 			}
 		} catch (URISyntaxException | HttpClientErrorException | HttpServerErrorException | ResourceAccessException
-				| SocketTimeoutException restException) {
+				| SocketTimeoutException | RegBaseCheckedException restException) {
 			LOGGER.error(LoggerConstants.LOG_SERVICE_DELEGATE_VALIDATE_TOKEN, APPLICATION_NAME, APPLICATION_ID,
 					restException.getMessage() + ExceptionUtils.getStackTrace(restException));
 		} catch (RuntimeException runtimeException) {
@@ -528,7 +521,7 @@ public class ServiceDelegateUtil {
 				}
 			}
 		} catch (HttpClientErrorException | HttpServerErrorException | ResourceAccessException | SocketTimeoutException
-				| URISyntaxException restException) {
+				| URISyntaxException | RegBaseCheckedException restException) {
 			LOGGER.error(LoggerConstants.LOG_SERVICE_DELEGATE_VALIDATE_TOKEN, APPLICATION_NAME, APPLICATION_ID,
 					restException.getMessage() + ExceptionUtils.getStackTrace(restException));
 		} catch (RuntimeException runtimeException) {

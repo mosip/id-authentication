@@ -488,7 +488,7 @@ public class AuthenticationController extends BaseController implements Initiali
 				if (!isSupervisor) {
 					
 					/* Check whether the biometric exceptions are enabled and supervisor authentication is required */
-					if ((toogleBioException != null && toogleBioException.booleanValue())
+					if (!(toogleBioException != null && toogleBioException.booleanValue())
 							&& RegistrationConstants.ENABLE.equalsIgnoreCase(String.valueOf(
 									ApplicationContext.map().get(RegistrationConstants.SUPERVISOR_AUTH_CONFIG)))) {
 						authCount = 0;

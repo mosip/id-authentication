@@ -24,7 +24,7 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 
 /**
  * The Class RestClientAuthAdvice checks whether the invoking REST service
- * should required authentication. If requried then the auth service is invoked
+ * should required authentication. If required then the auth service is invoked
  * to get the token.
  * 
  * @author Balaji Sridharan

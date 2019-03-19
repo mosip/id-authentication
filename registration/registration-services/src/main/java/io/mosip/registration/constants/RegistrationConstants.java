@@ -644,7 +644,7 @@ public class RegistrationConstants {
 	public static final String ONBOARD_MAPPED_DEVICES = "mappedDevices";
 	public static final String ONBOARD_DEVICES_MAP = "onBoardDevicesMap";
 	public static final String ONBOARD_DEVICES_REF_ID_TYPE = "UserID";
-	public static final String MACHINE_ID = "machineId";
+	public static final String MAC_ADDRESS = "macaddress";
 	public static final String ONBOARD_DEVICES_MAP_UPDATED = "updatedDevicesMap";
 	public static final String DEVICE_TYPES_ALL_OPTION = "All";
 	public static final String DEVICE_TYPE = "deviceType";
@@ -712,6 +712,7 @@ public class RegistrationConstants {
 	public static final String PRE_REG_DAYS_LIMIT = "mosip.registration.pre_reg_no_of_days_limit";
 	public static final String GPS_DEVICE_MODEL = "mosip.registration.gps_device_model";
 	public static final String GPS_DEVICE_DISABLE_FLAG = "mosip.registration.gps_device_enable_flag";
+	public static final String PRE_REG_PACKET_LOCATION = "mosip.registration.registration_pre_reg_packet_location";
 	// Spring Batch-Jobs
 	public static final String JOB_TRIGGER_STARTED = "Trigger started";
 	public static final String JOB_TRIGGER_COMPLETED = "Trigger completed";
@@ -1069,9 +1070,9 @@ public class RegistrationConstants {
 	public static final String USER_ON_BOARD_THRESHOLD_LIMIT = "mosip.registration.user_on_board_threshold_limit";
 
 	// Configuration Constants
-	public static final String AUDIT_LOG_DELETION_CONFIGURED_DAYS = "mosip.registration.AUDIT_LOG_DELETION_CONFIGURED_DAYS";
-	public static final String SYNC_TRANSACTION_NO_OF_DAYS_LIMIT = "mosip.registration.SYNC_TRANSACTION_NO_OF_DAYS_LIMIT";
-	public static final String REG_DELETION_CONFIGURED_DAYS = "mosip.registration.REG_DELETION_CONFIGURED_DAYS";
+	public static final String AUDIT_LOG_DELETION_CONFIGURED_DAYS = "mosip.registration.audit_log_deletion_configured_days";
+	public static final String SYNC_TRANSACTION_NO_OF_DAYS_LIMIT = "mosip.registration.sync_transaction_no_of_days_limit";
+	public static final String REG_DELETION_CONFIGURED_DAYS = "mosip.registration.reg_deletion_configured_days";
 	public static final String PRE_REG_DELETION_CONFIGURED_DAYS = "mosip.registration.pre_reg_deletion_configured_days";
 
 	// Audit Constants

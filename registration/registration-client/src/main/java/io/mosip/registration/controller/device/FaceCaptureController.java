@@ -452,9 +452,11 @@ public class FaceCaptureController extends BaseController implements Initializab
 
 		if (selectedPhoto.getId().equals(RegistrationConstants.EXCEPTION_PHOTO_PANE)
 				&& !(boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
-			// hasBiometricException = (Boolean) SessionContext.userContext().getUserMap()
-			// .get(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION);
-			hasBiometricException = validateBiometrics(hasBiometricException);
+			hasBiometricException = (Boolean) SessionContext.userContext().getUserMap()
+					.get(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION);
+			if (!hasBiometricException) {
+				hasBiometricException = validateBiometrics(hasBiometricException);
+			}
 		}
 
 		takePhoto.setDisable(true);
