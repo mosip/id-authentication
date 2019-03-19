@@ -3,7 +3,7 @@
 
 **Background**
 
-Registration process is assembled using number of stages, which communicate with each other by event bus. Each stage is isolated from each other and does not know about the sequence of stages in registration process. Each stage will be independently managed and deployed and will run in sequence, which will be manage by camel bridge. In case of failure, crash, system, or stages goes down packet might not process successfully. Once system or stages are up and run successfully, then system should process packets, which are not in submitted successfully.
+Registration process is assembled using number of stages, which communicate with each other by event bus. Each stage is isolated from each other and does not know about the sequence of stages in registration process. Each stage will be independently managed and deployed and will run in sequence, which will be manage by camel bridge. In case of failure, crash, system, or stages goes down packet might not process successfully. Once system or stages are up and run successfully, then system should process packets, which are not submitted successfully.
 
 **The target users are -**
 
