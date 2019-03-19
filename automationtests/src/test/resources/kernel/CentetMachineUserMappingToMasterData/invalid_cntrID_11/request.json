@@ -6,6 +6,7 @@
       {
       "cntrId": "abcdefghijk",
       "isActive": true,
+      "langCode": "eng",
       "machineId": "1000",
       "usrId": "110001"
     }

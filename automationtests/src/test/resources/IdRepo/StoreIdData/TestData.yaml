@@ -129,6 +129,7 @@ CNIENumber_valid:
 CNIENumber_invalid:
      - twenty six twenty five six niwe
      - DOUBLE:87838383838.0
+     - LONG:6789545678909
      - ^&^&^^&*(&*(&*(
      
 parentOrGuardianRIDOrUIN_valid:
@@ -164,6 +165,8 @@ version_valid:
 version_invalid:
       - DOUBLE:-1.0
       - DOUBLE:-8.0
+      - wsjdj
+
       
 documents.0.category_valid:
       - individualBiometrics
@@ -182,6 +185,7 @@ category_invalid:
       - ration card
       
       
+
 BiometricsFormat_valid:
       - cbeff
       
@@ -191,7 +195,6 @@ BiometricsFormat_invalid:
       - INTEGER:2000
       - DOUBLE:9.0
       - BOOLEAN:true
-      
       
       
 

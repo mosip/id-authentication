@@ -137,10 +137,14 @@ public class EncrptionDecryption extends BaseTestCase implements ITest {
 		File[] listofFiles = folder.listFiles();
 		JSONObject objectData = null;
 		String requestData = null;
+		String encDecCase="default";
 		for (int k = 0; k < listofFiles.length; k++) {
 
 			if (listofFiles[k].getName().toLowerCase().contains("request")) {
 				objectData = (JSONObject) new JSONParser().parse(new FileReader(listofFiles[k].getPath()));
+				if(objectData.containsKey("case"))
+					encDecCase = objectData.get("case").toString();
+				objectData.remove("case");
 				logger.info("Json Request Is : " + objectData.toJSONString());
 
 				requestData = objectData.get("data").toString();
@@ -164,8 +168,32 @@ public class EncrptionDecryption extends BaseTestCase implements ITest {
 		
 		if (responseJson.containsKey("data")) {
 
+			
 			objectData.put("data", (response.jsonPath().get("data")).toString());
+			
 
+			switch(encDecCase) {
+			
+			case "diffRefToDecrypt":
+				objectData.put("referenceId", "diffFromEncrypt");
+				break;
+			case "diffAppIdToDecrypt":
+				objectData.put("applicationId", "diffFromEncrypt");
+				break;
+			case "diffDataToDecrypt":
+				objectData.put("data", "diffFromEncrypt");
+				break;
+			case "diffTimeStampBefToDecrypt":
+				objectData.put("timeStamp", "2018-12-09T06:12:52.994Z");
+				break;
+			case "diffTimeStampAfToDecrypt":
+				objectData.put("timeStamp", "2018-12-11T06:12:52.994Z");
+				break;
+				
+			}
+			
+			
+			
 			response = applicationLibrary.postRequest(objectData.toJSONString(), decrypt_URI);
 			statusCode = response.statusCode();
 			logger.info("Decryption Status Code is : " + statusCode);
