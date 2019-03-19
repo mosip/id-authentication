@@ -22,23 +22,15 @@ id_invalid:
       - ^^&^&%&%^&%&^%&%*
       - ejedji dejodkokok wokoeokeokeoike okoekoikoe
       - mosip.id.delete
-      
-status_valid:
-      - ACTIVATED
-      - BLOCKED
-      - DEACTIVATED
-      
-status_invalid:
-      - BOOLEAN:true
-      - INTEGER:2000
-      - DOUBLE:9.0
-      - 18/08/1995
-      - JaVA
-      
+
       
       
 UIN_valid:
       - LONG:819431539502
+
+#uin for post request
+uin_valid:
+      - 819431539502
 UIN_invalid:
       - uininvalid
       

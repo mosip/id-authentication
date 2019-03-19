@@ -8,7 +8,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Properties;
 import java.util.Set;
 import java.util.regex.Pattern;
@@ -49,19 +48,18 @@ import io.restassured.response.Response;
  *
  */
 
-public class UpdateIdentityDetailIDRepoNegativeScenario extends BaseTestCase implements ITest {
-	UpdateIdentityDetailIDRepoNegativeScenario() {
+public class UpdateIdDataNagativeScenario extends BaseTestCase implements ITest {
+	UpdateIdDataNagativeScenario() {
 		super();
 	}
 
-	private static Logger logger = Logger.getLogger(UpdateIdentityDetailIDRepoNegativeScenario.class);
+	private static Logger logger = Logger.getLogger(UpdateIdDataNagativeScenario.class);
 	private static final String jiraID = "MOS-1423";
 	private static final String moduleName = "IdRepo";
-	private static final String apiName = "UpdateIdData";
+	private static final String apiName = "update-id-data-negative-scenario";
 	private static final String requestJsonStructure = "RequestMasterJsonStructure";
 	private static final String outputJsonName = "UpdateIdDataOutput";
 	private static final String service_URI = "/idrepo/identity/v1.0/";
-	private static final String service_URI_uin = "/uingenerator/v1.0/uin";
 	private static final String testDataFileName = "TestData";
 
 	protected static String testCaseName = "";
@@ -100,7 +98,7 @@ public class UpdateIdentityDetailIDRepoNegativeScenario extends BaseTestCase imp
 	public Object[][] readData(ITestContext context)
 			throws JsonParseException, JsonMappingException, IOException, ParseException {
 		String testParam = context.getCurrentXmlTest().getParameter("testType");
-		switch ("regression") {
+		switch (testParam) {
 		case "smoke":
 			return TestCaseReader.readTestCases(moduleName + "/" + apiName, "smoke");
 
@@ -134,30 +132,24 @@ public class UpdateIdentityDetailIDRepoNegativeScenario extends BaseTestCase imp
 		object.put("Jira ID", jiraID);
 
 		/**
-		 *  calling the uin generator rest api and storing as JSON object
-		 */
-		JSONObject uin = (JSONObject) new JSONParser()
-				.parse(applicationLibrary.GetRequestNoParameter(service_URI_uin).asString());
-
-		/**
-		 *  reading the master request Json
+		 * reading the master request Json
 		 */
 		Object requestJsonStruct = new TestCaseReader().readRequestJson(moduleName, apiName, requestJsonStructure);
 
 		/**
-		 *  getting all the keys of the master json
+		 * getting all the keys of the master json
 		 */
 		Set<Object> propertyFileKeys = prop.keySet();
 		String testDataProperty = null;
 		String testDataValue = "";
-		JSONObject inputJson=null;
+		JSONObject inputJson = null;
 		inputJson = (JSONObject) new JSONParser().parse(requestJsonStruct.toString());
 		/**
-		 *  generating test data for each key or removing the element if not required
+		 * generating test data for each key or removing the element if not required
 		 */
 
-		if(testcaseName.split("_").length>2) {
-			if( testcaseName.split("_")[2].equalsIgnoreCase("missing"))
+		if (testcaseName.split("_").length > 2) {
+			if (testcaseName.split("_")[2].equalsIgnoreCase("missing"))
 				inputJson.remove(testcaseName.split("_")[1].toString());
 			propertyFileKeys.remove(testcaseName.split("_")[1].toString());
 		}
@@ -166,14 +158,14 @@ public class UpdateIdentityDetailIDRepoNegativeScenario extends BaseTestCase imp
 				testDataProperty = "invalid";
 			else
 				testDataProperty = "valid";
-			
-		 if ((key.toString().equalsIgnoreCase("registrationId")))
+
+			if ((key.toString().equalsIgnoreCase("registrationId")))
 				testDataValue = new RidGenerator().generateRID(testDataProperty);
 
 			else if ((key.toString().equalsIgnoreCase("individualBiometrics.format")))
 				testDataValue = new TestDataGenerator().getYamlData(moduleName, apiName, testDataFileName,
 						"BiometricsFormat" + "_" + testDataProperty);
-				
+
 			else if ((key.toString().equalsIgnoreCase("IDSchemaVersion"))
 					|| (key.toString().equalsIgnoreCase("version"))
 					|| (key.toString().split(Pattern.quote("."))[(key.toString().split(Pattern.quote(".")).length - 1)]
@@ -206,59 +198,53 @@ public class UpdateIdentityDetailIDRepoNegativeScenario extends BaseTestCase imp
 			else
 				testDataValue = new TestDataGenerator().getYamlData(moduleName, apiName, testDataFileName,
 						key.toString() + "_" + testDataProperty);
-			
-            if(!testDataValue.isEmpty()) {
-			if (testDataValue.contains("BOOLEAN"))
-				PropertyUtils.setProperty(inputJson, prop.get(key.toString()).toString(),
-						Boolean.parseBoolean(testDataValue.split(":")[1]));
-			else if (testDataValue.contains("DOUBLE"))
-				PropertyUtils.setProperty(inputJson, prop.get(key.toString()).toString(),
-						Double.parseDouble(testDataValue.split(":")[1]));
-			else if (testDataValue.contains("INTEGER"))
-				PropertyUtils.setProperty(inputJson, prop.get(key.toString()).toString(),
-						Integer.parseInt(testDataValue.split(":")[1]));
-			else if (testDataValue.contains("LONG"))
-				PropertyUtils.setProperty(inputJson, prop.get(key.toString()).toString(),
-						Long.parseLong(testDataValue.split(":")[1]));
-			else
-				PropertyUtils.setProperty(inputJson, prop.get(key.toString()).toString(), testDataValue);
-            }
+
+			if (!testDataValue.isEmpty()) {
+				if (testDataValue.contains("BOOLEAN"))
+					PropertyUtils.setProperty(inputJson, prop.get(key.toString()).toString(),
+							Boolean.parseBoolean(testDataValue.split(":")[1]));
+				else if (testDataValue.contains("DOUBLE"))
+					PropertyUtils.setProperty(inputJson, prop.get(key.toString()).toString(),
+							Double.parseDouble(testDataValue.split(":")[1]));
+				else if (testDataValue.contains("INTEGER"))
+					PropertyUtils.setProperty(inputJson, prop.get(key.toString()).toString(),
+							Integer.parseInt(testDataValue.split(":")[1]));
+				else if (testDataValue.contains("LONG"))
+					PropertyUtils.setProperty(inputJson, prop.get(key.toString()).toString(),
+							Long.parseLong(testDataValue.split(":")[1]));
+				else
+					PropertyUtils.setProperty(inputJson, prop.get(key.toString()).toString(), testDataValue);
+			}
 
 		}
 
-		response = applicationLibrary.patchRequest(inputJson.toString(), service_URI + uin.get("uin"));
+		String uin = new TestDataGenerator().getYamlData(moduleName, apiName, testDataFileName, "uin" + "_" + "valid");
 		logger.info("Input Json:" + inputJson.toString());
 
-		if (testcaseName.toLowerCase().contains("smoke")) {
-			HashMap<String, String> inputParameters = new HashMap<>();
-			inputParameters.put("type", "all");
-			responseObject = (JSONObject) new JSONParser().parse(applicationLibrary
-					.getRequestAsQueryParam(service_URI + uin.get("uin"), inputParameters).asString());
+		/**
+		 * calling patch request
+		 */
+		response = applicationLibrary.patchRequest(inputJson.toString(), service_URI + uin);
+		String configPath = "src/test/resources/" + moduleName + "/" + apiName + "/" + testcaseName;
+		File folder = new File(configPath);
+		File[] listofFiles = folder.listFiles();
 
-		} else {
-			String configPath = "src/test/resources/" + moduleName + "/" + apiName + "/" + testcaseName;
-			File folder = new File(configPath);
-			File[] listofFiles = folder.listFiles();
-
-			for (int k = 0; k < listofFiles.length; k++) {
-				if (listofFiles[k].getName().toLowerCase().contains("response"))
-					responseObject = (JSONObject) new JSONParser().parse(new FileReader(listofFiles[k].getPath()));
-			}
+		for (int k = 0; k < listofFiles.length; k++) {
+			if (listofFiles[k].getName().toLowerCase().contains("response"))
+				responseObject = (JSONObject) new JSONParser().parse(new FileReader(listofFiles[k].getPath()));
 		}
-		JSONObject requestJsonToCompare = (JSONObject) new JSONParser().parse(inputJson.toString());
-
-		JSONObject responseJsonToCompare = (JSONObject) responseObject.get("response");
 
 		logger.info("Actual Response:" + response.asString());
 		logger.info("Expected Response:" + responseObject.toJSONString());
 
 		/**
-		 *  add parameters to remove in response before comparison like time stamp
+		 * add parameters to remove in response before comparison like time stamp
 		 */
 		ArrayList<String> listOfElementToRemove = new ArrayList<String>();
 		listOfElementToRemove.add("timestamp");
 		if (!testcaseName.toLowerCase().contains("smoke"))
-			status = assertions.assertIdRepo((JSONObject) new JSONParser().parse(response.asString()), responseObject, listOfElementToRemove);
+			status = assertions.assertIdRepo((JSONObject) new JSONParser().parse(response.asString()), responseObject,
+					listOfElementToRemove);
 
 		int statusCode = response.statusCode();
 		logger.info("Status Code is : " + statusCode);
