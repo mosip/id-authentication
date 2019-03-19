@@ -92,7 +92,11 @@
 		<choice>
 			<when>
 				<simple>${bodyAs(String)} contains '"isValid":true'</simple>
+				<log
+					message="packet-validator-->osi-validator route ${bodyAs(String)}" />
 				<to uri="vertx:osi-validator-bus-in" />
+				<log
+					message="packet-validator-->osi-validator route ${bodyAs(String)} sent" />
 			</when>
 			<when>
 				<simple>${bodyAs(String)} contains '"isValid":false'</simple>
