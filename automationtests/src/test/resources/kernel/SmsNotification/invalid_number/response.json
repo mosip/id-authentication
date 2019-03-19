@@ -1,6 +1,6 @@
 {
     "timestamp": 1550138184023,
-    "status": 0,
+    "status": 200,
     "errors": [
         {
             "errorCode": "KER-NOS-002",
