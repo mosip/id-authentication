@@ -14,6 +14,14 @@ COMMENT ON TABLE prereg.prid_seed IS 'Pre-Registration ID Seed: Stores a random 
 -- ddl-end --
 COMMENT ON COLUMN prereg.prid_seed.seed_no IS 'Seed Number: Seed number is the random number generated which will be used as seed in the algorithm to generate PRID.';
 -- ddl-end --
+COMMENT ON COLUMN prereg.prid_seed.cr_by IS 'Created By : ID or name of the user who create / insert record.';
+-- ddl-end --
+COMMENT ON COLUMN prereg.prid_seed.cr_dtimes IS 'Created DateTimestamp : Date and Timestamp when the record is created/inserted';
+-- ddl-end --
+COMMENT ON COLUMN prereg.prid_seed.is_deleted IS 'IS_Deleted : Flag to mark whether the record is Soft deleted.';
+-- ddl-end --
+COMMENT ON COLUMN prereg.prid_seed.del_dtimes IS 'Deleted DateTimestamp : Date and Timestamp when the record is soft deleted with is_deleted=TRUE';
+-- ddl-end --
 ALTER TABLE prereg.prid_seed OWNER TO sysadmin;
 -- ddl-end --
 

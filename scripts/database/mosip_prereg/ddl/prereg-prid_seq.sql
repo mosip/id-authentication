@@ -14,5 +14,14 @@ COMMENT ON TABLE prereg.prid_seq IS 'Pre-Registration ID Sequence: Stores sequen
 -- ddl-end --
 COMMENT ON COLUMN prereg.prid_seq.seq_no IS 'Sequence Number: Sequence number is the number generated which is used in the algorithm to generate PRID.';
 -- ddl-end --
+COMMENT ON COLUMN prereg.prid_seq.cr_by IS 'Created By : ID or name of the user who create / insert record';
+-- ddl-end --
+COMMENT ON COLUMN prereg.prid_seq.cr_dtimes IS 'Created DateTimestamp : Date and Timestamp when the record is created/inserted';
+-- ddl-end --
+COMMENT ON COLUMN prereg.prid_seq.is_deleted IS 'IS_Deleted : Flag to mark whether the record is Soft deleted.';
+-- ddl-end --
+COMMENT ON COLUMN prereg.prid_seq.del_dtimes IS 'Deleted DateTimestamp : Date and Timestamp when the record is soft deleted with is_deleted=TRUE';
+-- ddl-end --
 ALTER TABLE prereg.prid_seq OWNER TO sysadmin;
 -- ddl-end --
+

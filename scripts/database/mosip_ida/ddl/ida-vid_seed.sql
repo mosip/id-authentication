@@ -14,6 +14,14 @@ COMMENT ON TABLE ida.vid_seed IS 'Virtual ID Seed: Stores a random number that w
 -- ddl-end --
 COMMENT ON COLUMN ida.vid_seed.seed_no IS 'Seed Number: Seed number is the random number generated which will be used as seed in the algorithm to generate vid.';
 -- ddl-end --
+COMMENT ON COLUMN ida.vid_seed.cr_by IS 'Created By : ID or name of the user who create / insert record.';
+-- ddl-end --
+COMMENT ON COLUMN ida.vid_seed.cr_dtimes IS 'Created DateTimestamp : Date and Timestamp when the record is created/inserted';
+-- ddl-end --
+COMMENT ON COLUMN ida.vid_seed.is_deleted IS 'IS_Deleted : Flag to mark whether the record is Soft deleted.';
+-- ddl-end --
+COMMENT ON COLUMN ida.vid_seed.del_dtimes IS 'Deleted DateTimestamp : Date and Timestamp when the record is soft deleted with is_deleted=TRUE';
+-- ddl-end --
 ALTER TABLE ida.vid_seed OWNER TO sysadmin;
 -- ddl-end --
 

@@ -14,6 +14,14 @@ COMMENT ON TABLE ida.token_seq IS 'Token ID Sequence: Stores sequence numbers th
 -- ddl-end --
 COMMENT ON COLUMN ida.token_seq.seq_no IS 'Sequence Number: Sequence number is the number generated which is used in the algorithm to generate token ID.';
 -- ddl-end --
+COMMENT ON COLUMN ida.token_seq.cr_by IS 'Created By : ID or name of the user who create / insert record';
+-- ddl-end --
+COMMENT ON COLUMN ida.token_seq.cr_dtimes IS 'Created DateTimestamp : Date and Timestamp when the record is created/inserted';
+-- ddl-end --
+COMMENT ON COLUMN ida.token_seq.is_deleted IS 'IS_Deleted : Flag to mark whether the record is Soft deleted.';
+-- ddl-end --
+COMMENT ON COLUMN ida.token_seq.del_dtimes IS 'Deleted DateTimestamp : Date and Timestamp when the record is soft deleted with is_deleted=TRUE';
+-- ddl-end --
 ALTER TABLE ida.token_seq OWNER TO sysadmin;
 -- ddl-end --
 
