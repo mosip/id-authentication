@@ -8,33 +8,34 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
-
+import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.identify.RegistrationProcessorIdentity;
 import io.mosip.registration.processor.core.packet.dto.idjson.Document;
+import io.mosip.registration.processor.core.util.JsonUtil;
 import io.mosip.registration.processor.packet.storage.exception.IdentityNotFoundException;
 import io.mosip.registration.processor.packet.storage.utils.Utilities;
 
 /**
  * @author M1022006
- *
+ *@author Girish Yarru
  */
 @Component
 public class DocumentUtility {
 
+	/** The reg proc logger. */
+	private static Logger regProcLogger = RegProcessorLogger.getLogger(DocumentUtility.class);
+
 	/** The reg processor identity json. */
 	@Autowired
 	private RegistrationProcessorIdentity regProcessorIdentityJson;
-
-	/** The demographic identity. */
-	private JSONObject demographicIdentity = null;
 
 	/** The Constant LANGUAGE. */
 	private static final String FORMAT = "format";
@@ -48,34 +49,35 @@ public class DocumentUtility {
 	@Autowired
 	private Utilities utility;
 
-	public List<Document> getDocumentList(byte[] bytes) throws IOException, ParseException {
-
+	public List<Document> getDocumentList(byte[] bytes) throws IOException {
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), "",
+				"DocumentUtility::getDocumentList()::entry");
 		List<Document> documentList = new ArrayList<>();
-		JSONObject documentPOAnode = null;
-		JSONObject documentPOInode = null;
-		JSONObject documentPORnode = null;
-		JSONObject documentPOBnode = null;
+		JSONObject documentPOAnode;
+		JSONObject documentPOInode;
+		JSONObject documentPORnode;
+		JSONObject documentPOBnode;
 
 		String demographicJsonString = new String(bytes);
 		String getIdentityJsonString = Utilities.getJson(utility.getConfigServerFileStorageURL(),
 				utility.getGetRegProcessorIdentityJson());
 		ObjectMapper mapIdentityJsonStringToObject = new ObjectMapper();
-
 		regProcessorIdentityJson = mapIdentityJsonStringToObject.readValue(getIdentityJsonString,
 				RegistrationProcessorIdentity.class);
-		JSONParser parser = new JSONParser();
-		JSONObject demographicJson = (JSONObject) parser.parse(demographicJsonString);
+		JSONObject demographicJson = (JSONObject) JsonUtil.objectMapperReadValue(demographicJsonString,
+				JSONObject.class);
 		String poAValue = regProcessorIdentityJson.getIdentity().getPoa().getValue();
 		String poIValue = regProcessorIdentityJson.getIdentity().getPoi().getValue();
 		String poRValue = regProcessorIdentityJson.getIdentity().getPor().getValue();
 		String poBValue = regProcessorIdentityJson.getIdentity().getPob().getValue();
-		demographicIdentity = (JSONObject) demographicJson.get(utility.getGetRegProcessorDemographicIdentity());
+		JSONObject demographicIdentity = JsonUtil.getJSONObject(demographicJson,
+				utility.getGetRegProcessorDemographicIdentity());
 		if (demographicIdentity == null)
 			throw new IdentityNotFoundException(PlatformErrorMessages.RPR_PIS_IDENTITY_NOT_FOUND.getMessage());
-		documentPOAnode = getJsonObject(poAValue);
-		documentPOInode = getJsonObject(poIValue);
-		documentPORnode = getJsonObject(poRValue);
-		documentPOBnode = getJsonObject(poBValue);
+		documentPOAnode = JsonUtil.getJSONObject(demographicIdentity, poAValue);
+		documentPOInode = JsonUtil.getJSONObject(demographicIdentity, poIValue);
+		documentPORnode = JsonUtil.getJSONObject(demographicIdentity, poRValue);
+		documentPOBnode = JsonUtil.getJSONObject(demographicIdentity, poBValue);
 
 		if (documentPOAnode != null) {
 			documentList.add(getDocument(documentPOAnode, poAValue));
@@ -89,6 +91,8 @@ public class DocumentUtility {
 		if (documentPOBnode != null) {
 			documentList.add(getDocument(documentPOBnode, poBValue));
 		}
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), "",
+				"DocumentUtility::getDocumentList()::end()");
 		return documentList;
 
 	}
@@ -100,14 +104,6 @@ public class DocumentUtility {
 		document.setFormat((String) jsonNode.get(FORMAT));
 		document.setDocumentName((String) jsonNode.get(VALUE));
 		return document;
-	}
-
-	public JSONObject getJsonObject(Object identityKey) {
-		JSONObject demographicJsonNode = null;
-		if (demographicIdentity != null)
-			demographicJsonNode = (JSONObject) demographicIdentity.get(identityKey);
-		return (demographicJsonNode != null) ? demographicJsonNode : null;
-
 	}
 
 }

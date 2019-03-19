@@ -51,7 +51,8 @@ import io.mosip.preregistration.core.util.HashUtill;
 public class DemographicServiceUtil {
 	
 	@Value("${mosip.utc-datetime-pattern}")
-	private String dateTimeFormat ;
+	private String utcDateTimePattern ;
+	
 
 	/**
 	 * Logger instance
@@ -112,15 +113,19 @@ public class DemographicServiceUtil {
 		DemographicEntity demographicEntity = new DemographicEntity();
 		demographicEntity.setPreRegistrationId(demographicRequest.getPreRegistrationId());
 		LocalDateTime encryptionDateTime = DateUtils.getUTCCurrentDateTime();
+		log.info("sessionId", "idType", "id", "Encryption start time : "+DateUtils.getUTCCurrentDateTimeString());
 		byte[] encryptedDemographicDetails = cryptoUtil
 				.encrypt(demographicRequest.getDemographicDetails().toJSONString().getBytes(), encryptionDateTime);
+		log.info("sessionId", "idType", "id", "Encryption end time : "+DateUtils.getUTCCurrentDateTimeString());
 		demographicEntity.setApplicantDetailJson(encryptedDemographicDetails);
 		demographicEntity.setLangCode(demographicRequest.getLangCode());
 		demographicEntity.setCrAppuserId(requestId);
 		demographicEntity.setCreatedBy(demographicRequest.getCreatedBy());
 		demographicEntity.setCreateDateTime(LocalDateTime.now(ZoneId.of("UTC")));
 		demographicEntity.setStatusCode(statuscode);
+		log.info("sessionId", "idType", "id", "Hashing start time : "+DateUtils.getUTCCurrentDateTimeString());
 		demographicEntity.setDemogDetailHash(new String(HashUtill.hashUtill(demographicEntity.getApplicantDetailJson())));
+		log.info("sessionId", "idType", "id", "Hashing end time : "+DateUtils.getUTCCurrentDateTimeString());
 		try {
 			if (entityType.equals(RequestCodes.SAVE.getCode())) {
 				if (!isNull(demographicRequest.getCreatedBy()) && !isNull(demographicRequest.getCreatedDateTime())
@@ -169,9 +174,9 @@ public class DemographicServiceUtil {
 		log.info("sessionId", "idType", "id", "In prepareRequestParamMap method of pre-registration service util");
 		Map<String, String> inputValidation = new HashMap<>();
 		inputValidation.put(RequestCodes.ID.getCode(), demographicRequestDTO.getId());
-		inputValidation.put(RequestCodes.VER.getCode(), demographicRequestDTO.getVer());
+		inputValidation.put(RequestCodes.VER.getCode(), demographicRequestDTO.getVersion());
 		inputValidation.put(RequestCodes.REQ_TIME.getCode(),
-				new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").format(demographicRequestDTO.getReqTime()));
+				new SimpleDateFormat(utcDateTimePattern).format(demographicRequestDTO.getRequesttime()));
 		inputValidation.put(RequestCodes.REQUEST.getCode(), demographicRequestDTO.getRequest().toString());
 		return inputValidation;
 	}
@@ -187,9 +192,10 @@ public class DemographicServiceUtil {
 	 * 
 	 * @throws ParseException
 	 *             On json Parsing Failed
+	 * @throws org.json.simple.parser.ParseException 
 	 * 
 	 */
-	public JSONArray getValueFromIdentity(byte[] demographicData, String identityKey) throws ParseException {
+	public JSONArray getValueFromIdentity(byte[] demographicData, String identityKey) throws ParseException, org.json.simple.parser.ParseException {
 		log.info("sessionId", "idType", "id", "In getValueFromIdentity method of pre-registration service util ");
 		JSONParser jsonParser = new JSONParser();
 		JSONObject jsonObj = (JSONObject) jsonParser.parse(new String(demographicData));
@@ -208,10 +214,11 @@ public class DemographicServiceUtil {
 	 * 
 	 * @throws ParseException
 	 *             On json Parsing Failed
+	 * @throws org.json.simple.parser.ParseException 
 	 * 
 	 */
-	public String getPostalCode(byte[] demographicData, String postalcode) throws ParseException {
-		log.info("sessionId", "idType", "id", "In getValueFromIdentity method of pre-registration service util to get postalcode ");
+	public String getPostalCode(byte[] demographicData, String postalcode) throws  org.json.simple.parser.ParseException {
+		log.info("sessionId", "idType", "id", "In getValueFromIdentity method of pe-registration service util to get postalcode ");
 		JSONParser jsonParser = new JSONParser();
 		JSONObject jsonObj = (JSONObject) jsonParser.parse(new String(demographicData));
 		JSONObject identityObj = (JSONObject) jsonObj.get(RequestCodes.IDENTITY.getCode());
@@ -307,13 +314,13 @@ public class DemographicServiceUtil {
 //	}
 
 	public String getCurrentResponseTime() {
-		return DateUtils.formatDate(new Date(System.currentTimeMillis()), dateTimeFormat);
+		return DateUtils.formatDate(new Date(System.currentTimeMillis()), utcDateTimePattern);
 	}
 
 	public Date getDateFromString(String date) {
 		log.info("sessionId", "idType", "id", "In getDateFromString method of pre-registration service util ");
 		try {
-			return new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").parse(date);
+			return new SimpleDateFormat(utcDateTimePattern).parse(date);
 		} catch (java.text.ParseException ex) {
 			log.error("sessionId", "idType", "id",
 					"In getDateFromString method of pre-registration service- " + ex.getCause());
@@ -323,7 +330,7 @@ public class DemographicServiceUtil {
 	}
 
 	public String getLocalDateString(LocalDateTime date) {
-		DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(dateTimeFormat);
+		DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(utcDateTimePattern);
 		return date.format(dateTimeFormatter);
 	}
 

@@ -11,11 +11,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.qrcodegenerator.spi.QrCodeGenerator;
 import io.mosip.kernel.core.util.JsonUtils;
 import io.mosip.kernel.qrcode.generator.zxing.constant.QrVersion;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
 import io.mosip.preregistration.core.common.dto.NotificationDTO;
+import io.mosip.preregistration.core.config.LoggerConfiguration;
 import io.mosip.preregistration.core.util.NotificationUtil;
 import io.mosip.preregistration.notification.dto.QRCodeResponseDTO;
 import io.mosip.preregistration.notification.error.ErrorCodes;
@@ -46,6 +48,8 @@ public class NotificationService {
 	 */
 	@Autowired
 	private NotificationServiceUtil serviceUtil;
+	
+	private Logger log = LoggerConfiguration.logConfig(NotificationService.class);
 
 	@Autowired
 	private QrCodeGenerator<QrVersion> qrCodeGenerator;
@@ -72,7 +76,8 @@ public class NotificationService {
 	 */
 	public MainResponseDTO<NotificationDTO> sendNotification(String jsonStirng, String langCode, MultipartFile file) {
 		MainResponseDTO<NotificationDTO> response = new MainResponseDTO<>();
-
+		log.info("sessionId", "idType", "id",
+				"In notification service of sendNotification ");
 		try {
 			NotificationDTO acknowledgementDTO = (NotificationDTO) JsonUtils
 					.jsonStringToJavaObject(NotificationDTO.class, jsonStirng);
@@ -89,9 +94,10 @@ public class NotificationService {
 						ErrorMessages.MOBILE_NUMBER_OR_EMAIL_ADDRESS_NOT_FILLED.getCode());
 			}
 			response.setResponse(acknowledgementDTO);
-			response.setResTime(serviceUtil.getCurrentResponseTime());
-			response.setStatus(Boolean.TRUE);
+			response.setResponsetime(serviceUtil.getCurrentResponseTime());
 		} catch (Exception ex) {
+			log.error("sessionId", "idType", "id",
+					"In notification service of sendNotification "+ex.getMessage());
 			new NotificationExceptionCatcher().handle(ex);
 		}
 		return response;
@@ -105,6 +111,8 @@ public class NotificationService {
 	 */
 	public MainResponseDTO<QRCodeResponseDTO> generateQRCode(String data) {
 		byte[] qrCode = null;
+		log.info("sessionId", "idType", "id",
+				"In notification service of generateQRCode ");
 		QRCodeResponseDTO responsedto = new QRCodeResponseDTO();
 		MainResponseDTO<QRCodeResponseDTO> response = new MainResponseDTO<>();
 		try {
@@ -113,12 +121,13 @@ public class NotificationService {
 			responsedto.setQrcode(qrCode);
 
 		} catch (Exception ex) {
-
+			log.error("sessionId", "idType", "id",
+					"In notification service of generateQRCode "+ex.getMessage());
 			new NotificationExceptionCatcher().handle(ex);
 		}
 		response.setResponse(responsedto);
-		response.setResTime(serviceUtil.getCurrentResponseTime());
-		response.setStatus(Boolean.TRUE);
+		response.setResponsetime(serviceUtil.getCurrentResponseTime());
+		
 
 		return response;
 	}
@@ -127,6 +136,8 @@ public class NotificationService {
 	 * This will return UI related configurations return
 	 */
 	public MainResponseDTO<Map<String, String>> getConfig() {
+		log.info("sessionId", "idType", "id",
+				"In notification service of getConfig ");
 		MainResponseDTO<Map<String, String>> res = new MainResponseDTO<>();
 		List<String> reqParams = new ArrayList<>();
 		Map<String, String> configParams = new HashMap<>();
@@ -148,12 +159,13 @@ public class NotificationService {
 						ErrorMessages.CONFIG_FILE_NOT_FOUND_EXCEPTION.name());
 			}
 			
-		} catch (Exception e) {
-			new NotificationExceptionCatcher().handle(e);
+		} catch (Exception ex) {
+			log.error("sessionId", "idType", "id",
+					"In notification service of getConfig "+ex.getMessage());
+			new NotificationExceptionCatcher().handle(ex);
 		}
 		res.setResponse(configParams);
-		res.setResTime(serviceUtil.getCurrentResponseTime());
-		res.setStatus(Boolean.TRUE);
+		res.setResponsetime(serviceUtil.getCurrentResponseTime());
 		return res;
 	}
 

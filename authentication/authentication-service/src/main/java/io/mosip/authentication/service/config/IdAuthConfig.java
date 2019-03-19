@@ -65,7 +65,7 @@ public class IdAuthConfig implements WebMvcConfigurer {
 	@Bean
 	public MessageSource messageSource() {
 		ResourceBundleMessageSource source = new ResourceBundleMessageSource();
-		source.addBasenames("errormessages", "eKycPDFTemplate");
+		source.addBasenames("errormessages", "eKycPDFTemplate", "actionmessages");
 		return source;
 	}
 

@@ -79,11 +79,13 @@ export class DialougComponent implements OnInit {
   userRedirection() {
     if (localStorage.getItem("newApplicant") === "true") {
       alert(this.input.alertMessageFirst);
+      // this if for first time user, if he does not provide consent he will be logged out.
       this.authService.removeToken();
       this.location.back();
     } else if (localStorage.getItem("newApplicant") === "false") {
       this.regService.currentMessage.subscribe(
         message => (this.message = message)
+        //second case is when an existing applicant enters the application.
       );
       this.checkCondition = this.message["modifyUserFromPreview"];
 

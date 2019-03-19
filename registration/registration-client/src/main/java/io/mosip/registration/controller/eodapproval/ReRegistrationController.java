@@ -155,7 +155,7 @@ public class ReRegistrationController extends BaseController implements Initiali
 				}
 			}
 			try (FileInputStream file = new FileInputStream(
-					new File(table.getSelectionModel().getSelectedItem().getSourcePath()))) {
+					new File(table.getSelectionModel().getSelectedItem().getPacketPath()))) {
 
 				imageView.setImage(new Image(file));
 			} catch (FileNotFoundException fileNotFoundException) {

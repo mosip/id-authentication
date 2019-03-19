@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>io.mosip.registrationprocessor</groupId>
 		<artifactId>stages</artifactId>
-		<version>0.9.3</version>
+		<version>0.9.6</version>
 	</parent>
 	<artifactId>printing-stage</artifactId>
 	<properties>

@@ -16,7 +16,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
+import io.mosip.preregistration.core.config.LoggerConfiguration;
 
 /**
  * @author M1043008
@@ -33,6 +35,8 @@ public class UpdateConsumedStatusTasklet implements Tasklet {
 	@Value("${updateConsumedStatus.url}")
 	String updateConsumedUrl;
 	
+	private Logger log = LoggerConfiguration.logConfig(UpdateConsumedStatusTasklet.class);
+	
 
 	@Override
 	public RepeatStatus execute(StepContribution arg0, ChunkContext arg1) throws Exception {
@@ -45,6 +49,7 @@ public class UpdateConsumedStatusTasklet implements Tasklet {
 
 		String uriBuilder = regbuilder.build().encode().toUriString();
 
+		log.info("sessionId", "idType", "id", "In UpdateConsumedStatusTasklet method of Batch Service URL- "+uriBuilder);
 		ResponseEntity<MainResponseDTO> responseEntity = restTemplate.exchange(uriBuilder,
 				HttpMethod.PUT, entity, MainResponseDTO.class);
 		return RepeatStatus.FINISHED;

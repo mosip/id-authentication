@@ -46,6 +46,7 @@ import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.core.util.IdentityIteratorUtil;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
+import io.mosip.registration.processor.stages.osivalidator.utils.OSIUtils;
 import io.mosip.registration.processor.stages.osivalidator.utils.StatusMessage;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 
@@ -70,8 +71,14 @@ public class UMCValidator {
 
 	/** The umc client. */
 
+	@Value("${mosip.workinghour.validation.required}")
+	private Boolean isWorkingHourValidationRequired;
+
 	@Autowired
 	private RegistrationProcessorRestClientService<Object> registrationProcessorRestService;
+
+	@Autowired
+	private OSIUtils osiUtils;
 
 	/** The registration status dto. */
 	private InternalRegistrationStatusDto registrationStatusDto = new InternalRegistrationStatusDto();
@@ -323,7 +330,8 @@ public class UMCValidator {
 				registrationId, "UMCValidator::isValidUMC()::entry");
 		RegistrationCenterMachineDto rcmDto = getCenterMachineDto(registrationId);
 
-		RegOsiDto regOsi = packetInfoManager.getOsi(registrationId);
+		identity = osiUtils.getIdentity(registrationId);
+		RegOsiDto regOsi = osiUtils.getOSIDetailsFromMetaInfo(registrationId, identity);
 		boolean umc = false;
 
 		if (rcmDto.getLatitude() == null || rcmDto.getLongitude() == null || rcmDto.getLatitude().trim().isEmpty()
@@ -331,13 +339,19 @@ public class UMCValidator {
 			this.registrationStatusDto.setStatusComment(StatusMessage.GPS_DATA_NOT_PRESENT);
 		}
 
-		else if (isValidRegistrationCenter(rcmDto.getRegcntrId(), primaryLanguagecode, rcmDto.getPacketCreationDate())
+		else if (isWorkingHourValidationRequired
+				&& isValidRegistrationCenter(rcmDto.getRegcntrId(), primaryLanguagecode, rcmDto.getPacketCreationDate())
 				&& isValidMachine(rcmDto.getMachineId(), primaryLanguagecode, rcmDto.getPacketCreationDate())
-				&& isValidUMCmapping(rcmDto.getPacketCreationDate(), rcmDto.getRegcntrId(), rcmDto.getMachineId(),
-						regOsi.getSupervisorId(), regOsi.getOfficerId())
-				&& validateCenterIdAndTimestamp(rcmDto) && isValidDevice(rcmDto)) {
+				&& isValidUMCmapping(rcmDto.getPacketCreationDate(), rcmDto.getRegcntrId(), rcmDto.getMachineId(),regOsi.getSupervisorId(), regOsi.getOfficerId())
+				&& validateCenterIdAndTimestamp(rcmDto)
+				&& isValidDevice(rcmDto))
+				 umc =true;
+		else if(isValidRegistrationCenter(rcmDto.getRegcntrId(), primaryLanguagecode, rcmDto.getPacketCreationDate())
+				&& isValidMachine(rcmDto.getMachineId(), primaryLanguagecode, rcmDto.getPacketCreationDate())
+				&& isValidUMCmapping(rcmDto.getPacketCreationDate(), rcmDto.getRegcntrId(), rcmDto.getMachineId(),regOsi.getSupervisorId(), regOsi.getOfficerId())
+				&& isValidDevice(rcmDto))
 			umc = true;
-		}
+
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 				registrationId, "UMCValidator::isValidUMC()::exit");
 		return umc;
@@ -376,7 +390,7 @@ public class UMCValidator {
 	private RegistrationCenterMachineDto getCenterMachineDto(String registrationId)
 			throws JsonParseException, JsonMappingException, io.mosip.kernel.core.exception.IOException, IOException {
 
-		identity = getIdentity(registrationId);
+		identity = osiUtils.getIdentity(registrationId);
 
 		List<FieldValue> metaData = identity.getMetaData();
 		return mapMetaDataToDto(metaData);
@@ -401,31 +415,7 @@ public class UMCValidator {
 		return dto;
 	}
 
-	/**
-	 * Gets the identity.
-	 *
-	 * @param registrationId
-	 *            the registration id
-	 * @return the identity
-	 * @throws IOException
-	 * @throws io.mosip.kernel.core.exception.IOException
-	 * @throws io.mosip.kernel.core.exception.IOException
-	 * @throws JsonMappingException
-	 * @throws JsonParseException
-	 */
-	private Identity getIdentity(String registrationId)
-			throws IOException, JsonParseException, JsonMappingException, io.mosip.kernel.core.exception.IOException {
 
-		InputStream packetMetaInfoStream = adapter.getFile(registrationId, PacketFiles.PACKET_META_INFO.name());
-
-		String packetMetaInfoString = IOUtils.toString(packetMetaInfoStream, StandardCharsets.UTF_8);
-
-		PacketMetaInfo packetMetaInfo = (PacketMetaInfo) JsonUtils.jsonStringToJavaObject(PacketMetaInfo.class,
-				packetMetaInfoString);
-
-		return packetMetaInfo.getIdentity();
-
-	}
 
 	/**
 	 * Checks if is valid device.
@@ -456,7 +446,7 @@ public class UMCValidator {
 	private boolean isDeviceMappedWithCenter(RegistrationCenterMachineDto rcmDto) throws ApisResourceAccessException {
 		boolean isDeviceMappedWithCenter = false;
 		List<FieldValue> registreredDeviceIds = identity.getCapturedRegisteredDevices();
-
+		if(registreredDeviceIds!=null && !registreredDeviceIds.isEmpty()) {
 		for (FieldValue fieldValue : registreredDeviceIds) {
 			String deviceId = null;
 			deviceId = fieldValue.getValue();
@@ -503,7 +493,9 @@ public class UMCValidator {
 				break;
 			}
 		}
-
+	}else {
+		isDeviceMappedWithCenter=true;
+	}
 		return isDeviceMappedWithCenter;
 	}
 
@@ -546,6 +538,7 @@ public class UMCValidator {
 		boolean isDeviceActive = false;
 
 		List<FieldValue> registreredDeviceIds = identity.getCapturedRegisteredDevices();
+		if(registreredDeviceIds!=null && !registreredDeviceIds.isEmpty()) {
 		for (FieldValue fieldValue : registreredDeviceIds) {
 			String deviceId = null;
 			deviceId = fieldValue.getValue();
@@ -593,6 +586,10 @@ public class UMCValidator {
 			}
 
 		}
+
+	}else {
+		isDeviceActive=true;
+	}
 		return isDeviceActive;
 	}
 

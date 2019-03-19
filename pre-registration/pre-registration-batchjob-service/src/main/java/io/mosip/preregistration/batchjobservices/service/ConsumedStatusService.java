@@ -10,6 +10,8 @@ import java.util.List;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,7 +26,7 @@ import io.mosip.preregistration.batchjobservices.entity.ProcessedPreRegEntity;
 import io.mosip.preregistration.batchjobservices.entity.RegistrationBookingEntity;
 import io.mosip.preregistration.batchjobservices.entity.RegistrationBookingEntityConsumed;
 import io.mosip.preregistration.batchjobservices.entity.RegistrationBookingPKConsumed;
-import io.mosip.preregistration.batchjobservices.exceptions.util.BatchServiceExceptionCatcher;
+import io.mosip.preregistration.batchjobservices.exception.util.BatchServiceExceptionCatcher;
 import io.mosip.preregistration.batchjobservices.repository.dao.BatchServiceDAO;
 import io.mosip.preregistration.core.code.StatusCodes;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
@@ -48,6 +50,15 @@ public class ConsumedStatusService {
 
 	/** The Constant Status comments. */
 	private static final String NEW_STATUS_COMMENTS = "Application consumed";
+	
+	@Value("${mosip.utc-datetime-pattern}")
+	private String utcDateTimePattern;
+	
+	@Value("${ver}")
+	String versionUrl;
+
+	@Value("${id}")
+	String idUrl;
 
 	/**
 	 * Autowired reference for {@link #batchServiceDAO}
@@ -61,6 +72,7 @@ public class ConsumedStatusService {
 	 * 
 	 * @return Response DTO
 	 */
+	
 	@Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = Exception.class)
 	public MainResponseDTO<String> demographicConsumedStatus() {
 
@@ -85,9 +97,11 @@ public class ConsumedStatusService {
 					batchServiceDAO.updateConsumedDemographic(demographicEntityConsumed);
 
 					DocumentEntity documentEntity = batchServiceDAO.getDocumentDetails(preRegId);
-					BeanUtils.copyProperties(documentEntity, documentEntityConsumed);
-					batchServiceDAO.updateConsumedDocument(documentEntityConsumed);
-
+					if(documentEntity!=null) {
+						BeanUtils.copyProperties(documentEntity, documentEntityConsumed);
+						batchServiceDAO.updateConsumedDocument(documentEntityConsumed);
+					}
+					
 					RegistrationBookingEntity bookingEntity = batchServiceDAO.getPreRegId(preRegId);
 					BeanUtils.copyProperties(bookingEntity, bookingEntityConsumed);
 					RegistrationBookingPKConsumed consumedPk=new RegistrationBookingPKConsumed();
@@ -96,29 +110,32 @@ public class ConsumedStatusService {
 					bookingEntityConsumed.setBookingPK(consumedPk);
 					batchServiceDAO.updateConsumedBooking(bookingEntityConsumed);
 
+					if(documentEntity!=null) {
+						batchServiceDAO.deleteDocument(documentEntity);
+					}
 					batchServiceDAO.deleteBooking(bookingEntity);
-					batchServiceDAO.deleteDocument(documentEntity);
 					batchServiceDAO.deleteDemographic(demographicEntity);
-					log.info("sessionId", "idType", "id", "Update the status successfully into Consumed tables Pre-Registration");
+					log.info("sessionId", "idType", "id", "Update the status successfully into Consumed tables for Pre-RegistrationId: "+preRegId);
+					
+					iterate.setStatusComments(NEW_STATUS_COMMENTS);
+					batchServiceDAO.updateProcessedList(iterate);
+					log.info("sessionId", "idType", "id", "Update the comment successfully into Processed PreId List table for Pre-RegistrationId: "+preRegId);
 				}
-
-				iterate.setStatusComments(NEW_STATUS_COMMENTS);
-				batchServiceDAO.updateProcessedList(iterate);
-				log.info("sessionId", "idType", "id", "Update the comment successfully into Processed PreId List table");
 
 			});
 
 		} catch (Exception e) {
 			new BatchServiceExceptionCatcher().handle(e);
 		}
-		response.setResTime(getCurrentResponseTime());
-		response.setStatus(true);
+		response.setResponsetime(getCurrentResponseTime());
+		response.setId(idUrl);
+		response.setVersion(versionUrl);
 		response.setResponse("Demographic status to consumed updated successfully");
 		return response;
 	}
 
 	public String getCurrentResponseTime() {
-		return DateUtils.formatDate(new Date(System.currentTimeMillis()), "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+		return DateUtils.formatDate(new Date(System.currentTimeMillis()), utcDateTimePattern);
 	}
 
 }

@@ -131,8 +131,8 @@ public class DemoDedupeTest {
 		DemographicInfoDto dto1 = new DemographicInfoDto();
 		DemographicInfoDto dto2 = new DemographicInfoDto();
 		List<DemographicInfoDto> Dtos = new ArrayList<>();
-		dto1.setDob(new Date());
-		dto2.setDob(new Date());
+//		dto1.setDob(new Date());
+//		dto2.setDob(new Date());
 		Dtos.add(dto1);
 		Dtos.add(dto2);
 
@@ -223,7 +223,7 @@ public class DemoDedupeTest {
 		List<String> duplicateIds = new ArrayList<>();
 		duplicateIds.add("123456789");
 		duplicateIds.add("987654321");
-		Mockito.when(biometricValidation.validateBiometric(anyString())).thenReturn(false);
+		Mockito.when(biometricValidation.validateBiometric(anyString(),anyString())).thenReturn(false);
 		boolean result = demoDedupe.authenticateDuplicates(regId, duplicateIds);
 
 		assertTrue("Test for Demo Dedupe Authetication Success for Iris biometric", result);

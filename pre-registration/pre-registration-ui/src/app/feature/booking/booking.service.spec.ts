@@ -3,7 +3,7 @@ import { TestBed, inject } from '@angular/core/testing';
 import { SharedService } from './booking.service';
 import { NameList } from 'src/app/shared/models/demographic-model/name-list.modal';
 
-fdescribe('SharedService', () => {
+describe('SharedService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [SharedService]

@@ -1,17 +1,15 @@
 package io.mosip.kernel.auth.service.impl;
 
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Calendar;
-import java.util.Date;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.web.authentication.www.NonceExpiredException;
 import org.springframework.stereotype.Component;
 
+import io.mosip.kernel.auth.config.MosipEnvironment;
 import io.mosip.kernel.auth.constant.AuthConstant;
 import io.mosip.kernel.auth.entities.AuthNResponse;
 import io.mosip.kernel.auth.entities.AuthNResponseDto;
@@ -21,6 +19,8 @@ import io.mosip.kernel.auth.entities.ClientSecret;
 import io.mosip.kernel.auth.entities.LoginUser;
 import io.mosip.kernel.auth.entities.MosipUserDto;
 import io.mosip.kernel.auth.entities.MosipUserDtoToken;
+import io.mosip.kernel.auth.entities.MosipUserListDto;
+import io.mosip.kernel.auth.entities.RolesListDto;
 import io.mosip.kernel.auth.entities.TimeToken;
 import io.mosip.kernel.auth.entities.UserOtp;
 import io.mosip.kernel.auth.entities.otp.OtpUser;
@@ -61,6 +61,9 @@ public class AuthServiceImpl implements AuthService {
 	
 	@Autowired
 	UinService uinService;
+	
+	@Autowired
+	MosipEnvironment mosipEnvironment;
 
 	/**
 	 * Method used for validating Auth token
@@ -75,34 +78,39 @@ public class AuthServiceImpl implements AuthService {
 
 	@Override
 	public MosipUserDtoToken validateToken(String token) throws Exception {
-		long currentTime = LocalDateTime.now().atOffset(ZoneOffset.UTC).toLocalDateTime().toEpochSecond(ZoneOffset.UTC);
+		long currentTime = Instant.now().toEpochMilli();
 		MosipUserDtoToken mosipUserDtoToken = tokenValidator.validateToken(token);
 		AuthToken authToken = customTokenServices.getTokenDetails(token);
 		if(authToken==null)
 		{
-			throw new AuthManagerException(AuthConstant.UNAUTHORIZED_CODE,"Auth token is not present");
+			throw new AuthManagerException(AuthConstant.UNAUTHORIZED_CODE,"Auth token has been changed,Please try with new login");
 		}
 		long tenMinsExp = getExpiryTime(authToken.getExpirationTime());
-		/*if(currentTime==tenMinsExp)
+		if(currentTime>tenMinsExp && currentTime<authToken.getExpirationTime())
 		{
 			TimeToken newToken = tokenGenerator.generateNewToken(token);
 			mosipUserDtoToken.setToken(newToken.getToken());
 			mosipUserDtoToken.setExpTime(newToken.getExpTime());
+			AuthToken newAuthToken = getAuthToken(mosipUserDtoToken);
+			customTokenServices.StoreToken(newAuthToken);
 			return mosipUserDtoToken;
-		}*/
+		}
 		if (mosipUserDtoToken != null && (currentTime < authToken.getExpirationTime())) {
 			return mosipUserDtoToken;
 		} else {
 			throw new NonceExpiredException(AuthConstant.AUTH_TOKEN_EXPIRED_MESSAGE);
 		}
 	}
+	
+	private AuthToken getAuthToken(MosipUserDtoToken mosipUserDtoToken) {
+		return new AuthToken(mosipUserDtoToken.getMosipUserDto().getUserId(), mosipUserDtoToken.getToken(), mosipUserDtoToken.getExpTime(),
+				mosipUserDtoToken.getRefreshToken());
+	}
 
 	private long getExpiryTime(long expirationTime) {
-		Calendar calendar = Calendar.getInstance();
-	    calendar.setTime(new Date(expirationTime));
-	    calendar.add(Calendar.MINUTE, AuthConstant.RETURN_EXP_TIME);
-	    Date result = calendar.getTime();
-		return result.getTime();
+	    Instant ins = Instant.ofEpochMilli(expirationTime);
+	    ins = ins.plus(mosipEnvironment.getAuthSlidingWindowExp(), ChronoUnit.MINUTES);
+		return ins.toEpochMilli();
 	}
 
 	/**
@@ -153,10 +161,14 @@ public class AuthServiceImpl implements AuthService {
 		if (AuthConstant.APPTYPE_UIN.equals(otpUser.getUseridtype())) {
 			mosipUser = uinService.getDetailsFromUin(otpUser);
 			authNResponseDto = oTPService.sendOTPForUin(mosipUser, otpUser.getOtpChannel(), otpUser.getAppId());
-		} else {
+		} else if(AuthConstant.APPTYPE_USERID.equals(otpUser.getUseridtype())){
 			mosipUser = userStoreFactory.getDataStoreBasedOnApp(otpUser.getAppId()).authenticateWithOtp(otpUser);
 			authNResponseDto = oTPService.sendOTP(mosipUser, otpUser.getOtpChannel(), otpUser.getAppId());
 			authNResponseDto.setMessage(authNResponseDto.getMessage());
+		}
+		else
+		{
+			throw new AuthManagerException(String.valueOf(HttpStatus.UNAUTHORIZED.value()),"Invalid User Id type");
 		}
 		return authNResponseDto;
 	}
@@ -179,13 +191,19 @@ public class AuthServiceImpl implements AuthService {
 		MosipUserDto mosipUser = userStoreFactory.getDataStoreBasedOnApp(userOtp.getAppId())
 				.authenticateUserWithOtp(userOtp);
 		MosipUserDtoToken mosipToken = oTPService.validateOTP(mosipUser, userOtp.getOtp());
-		if(mosipToken!=null)
+		if(mosipToken!=null && mosipToken.getMosipUserDto()!=null)
 		{
-		authNResponseDto.setMessage(AuthConstant.OTP_VALIDATION_MESSAGE);
+		authNResponseDto.setMessage(mosipToken.getMessage());
+		authNResponseDto.setStatus(mosipToken.getStatus());
 		authNResponseDto.setToken(mosipToken.getToken());
 		authNResponseDto.setExpiryTime(mosipToken.getExpTime());
 		authNResponseDto.setRefreshToken(mosipToken.getRefreshToken());
 		authNResponseDto.setUserId(mosipToken.getMosipUserDto().getUserId());
+		}
+		else
+		{
+			authNResponseDto.setMessage(mosipToken.getMessage());
+			authNResponseDto.setStatus(mosipToken.getStatus());
 		}
 		return authNResponseDto;
 	}
@@ -271,6 +289,18 @@ public class AuthServiceImpl implements AuthService {
 		authNResponse = new AuthNResponse();
 		authNResponse.setMessage(AuthConstant.TOKEN_INVALID_MESSAGE);
 		return authNResponse;
+	}
+
+	@Override
+	public RolesListDto getAllRoles(String appId) {
+		RolesListDto rolesListDto =  userStoreFactory.getDataStoreBasedOnApp(appId).getAllRoles();
+		return rolesListDto;
+	}
+
+	@Override
+	public MosipUserListDto getListOfUsersDetails(List<String> userDetails,String appId) throws Exception {
+		MosipUserListDto mosipUserListDto = userStoreFactory.getDataStoreBasedOnApp(appId).getListOfUsersDetails(userDetails);
+		return mosipUserListDto;
 	}
 
 }

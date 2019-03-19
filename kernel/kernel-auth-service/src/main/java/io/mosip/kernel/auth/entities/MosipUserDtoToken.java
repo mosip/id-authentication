@@ -17,4 +17,5 @@ public class MosipUserDtoToken {
  private String refreshToken;
  private long expTime;
  private String message;
+ private String status;
 }

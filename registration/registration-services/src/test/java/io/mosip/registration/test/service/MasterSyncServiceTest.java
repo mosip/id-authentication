@@ -36,7 +36,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.registration.audit.AuditFactory;
 import io.mosip.registration.constants.RegistrationConstants;
-import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dao.MasterSyncDao;
 import io.mosip.registration.dto.ErrorResponseDTO;
@@ -48,10 +47,12 @@ import io.mosip.registration.dto.mastersync.MasterDataResponseDto;
 import io.mosip.registration.entity.BlacklistedWords;
 import io.mosip.registration.entity.DocumentType;
 import io.mosip.registration.entity.Gender;
+import io.mosip.registration.entity.IndividualType;
 import io.mosip.registration.entity.Location;
 import io.mosip.registration.entity.ReasonCategory;
 import io.mosip.registration.entity.ReasonList;
 import io.mosip.registration.entity.SyncControl;
+import io.mosip.registration.entity.id.IndividualTypeId;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.service.UserOnboardService;
@@ -177,7 +178,7 @@ public class MasterSyncServiceTest {
 
 		responseDTO.setSuccessResponseDTO(sucessResponse);
 
-		ResponseDTO responseDto = masterSyncServiceImpl.getMasterSync("MDS_J00001");
+		ResponseDTO responseDto = masterSyncServiceImpl.getMasterSync("MDS_J00001","System");
 		// assertEquals(RegistrationConstants.MASTER_SYNC_SUCCESS,
 		// responseDto.getSuccessResponseDTO().getMessage());
 	}
@@ -202,7 +203,7 @@ public class MasterSyncServiceTest {
 
 		responseDTO.setErrorResponseDTOs(errorResponses);
 
-		ResponseDTO responseDto = masterSyncServiceImpl.getMasterSync("MDS_J00001");
+		ResponseDTO responseDto = masterSyncServiceImpl.getMasterSync("MDS_J00001","System");
 		assertEquals(RegistrationConstants.MASTER_SYNC_OFFLINE_FAILURE_MSG,
 				responseDto.getErrorResponseDTOs().get(0).getMessage());
 	}
@@ -249,7 +250,7 @@ public class MasterSyncServiceTest {
 		Mockito.when(masterSyncDao.save(Mockito.any(MasterDataResponseDto.class)))
 				.thenReturn(RegistrationConstants.SUCCESS);
 		when(masterSyncDao.syncJobDetails(Mockito.anyString())).thenThrow(IOException.class);
-		masterSyncServiceImpl.getMasterSync("MDS_J00001");
+		masterSyncServiceImpl.getMasterSync("MDS_J00001","System");
 	}
 
 	@SuppressWarnings("unchecked")
@@ -294,7 +295,7 @@ public class MasterSyncServiceTest {
 		Mockito.when(masterSyncDao.save(Mockito.any(MasterDataResponseDto.class)))
 				.thenReturn(RegistrationConstants.SUCCESS);
 		when(masterSyncDao.syncJobDetails(Mockito.anyString())).thenThrow(NullPointerException.class);
-		masterSyncServiceImpl.getMasterSync("MDS_J00001");
+		masterSyncServiceImpl.getMasterSync("MDS_J00001","System");
 	}
 
 	@SuppressWarnings("unchecked")
@@ -338,7 +339,7 @@ public class MasterSyncServiceTest {
 		Mockito.when(masterSyncDao.save(Mockito.any(MasterDataResponseDto.class)))
 				.thenReturn(RegistrationConstants.SUCCESS);
 		when(masterSyncDao.syncJobDetails(Mockito.anyString())).thenThrow(RegBaseUncheckedException.class);
-		masterSyncServiceImpl.getMasterSync("MDS_J00001");
+		masterSyncServiceImpl.getMasterSync("MDS_J00001","System");
 	}
 
 	@SuppressWarnings("unchecked")
@@ -382,7 +383,7 @@ public class MasterSyncServiceTest {
 		Mockito.when(masterSyncDao.save(Mockito.any(MasterDataResponseDto.class)))
 				.thenReturn(RegistrationConstants.SUCCESS);
 		when(masterSyncDao.syncJobDetails(Mockito.anyString())).thenThrow(new RuntimeException().getClass());
-		masterSyncServiceImpl.getMasterSync("MDS_J00001");
+		masterSyncServiceImpl.getMasterSync("MDS_J00001","System");
 	}
 
 	@SuppressWarnings("unchecked")
@@ -414,7 +415,7 @@ public class MasterSyncServiceTest {
 		Mockito.when(masterSyncDao.save(Mockito.any(MasterDataResponseDto.class)))
 				.thenReturn(RegistrationConstants.SUCCESS);
 		when(masterSyncDao.syncJobDetails(Mockito.anyString())).thenThrow(RegBaseCheckedException.class);
-		masterSyncServiceImpl.getMasterSync("MDS_J00001");
+		masterSyncServiceImpl.getMasterSync("MDS_J00001","System");
 	}
 
 	@SuppressWarnings("static-access")
@@ -482,7 +483,7 @@ public class MasterSyncServiceTest {
 
 		Mockito.when(RegistrationAppHealthCheckUtil.isNetworkAvailable()).thenReturn(true);
 
-		Mockito.when(serviceDelegateUtil.get(Mockito.anyString(), Mockito.any(), Mockito.anyBoolean()))
+		Mockito.when(serviceDelegateUtil.get(Mockito.anyString(), Mockito.any(), Mockito.anyBoolean(),Mockito.anyString()))
 				.thenReturn(masterJson);
 
 		Mockito.when(objectMapper.readValue(masterSyncJson.toString(), MasterDataResponseDto.class))
@@ -497,7 +498,7 @@ public class MasterSyncServiceTest {
 
 		responseDTO.setSuccessResponseDTO(sucessResponse);
 
-		ResponseDTO responseDto = masterSyncServiceImpl.getMasterSync("MDS_J00001");
+		ResponseDTO responseDto = masterSyncServiceImpl.getMasterSync("MDS_J00001","System");
 		// assertEquals(RegistrationConstants.MASTER_SYNC_SUCCESS,
 		// responseDto.getSuccessResponseDTO().getMessage());
 	}
@@ -554,7 +555,7 @@ public class MasterSyncServiceTest {
 
 		Mockito.when(RegistrationAppHealthCheckUtil.isNetworkAvailable()).thenReturn(true);
 
-		Mockito.when(serviceDelegateUtil.get(Mockito.anyString(), Mockito.any(), Mockito.anyBoolean()))
+		Mockito.when(serviceDelegateUtil.get(Mockito.anyString(), Mockito.any(), Mockito.anyBoolean(),Mockito.anyString()))
 				.thenThrow(HttpClientErrorException.class);
 
 		Mockito.when(objectMapper.readValue(masterSyncJson.toString(), MasterDataResponseDto.class))
@@ -569,7 +570,7 @@ public class MasterSyncServiceTest {
 
 		responseDTO.setSuccessResponseDTO(sucessResponse);
 
-		ResponseDTO responseDto = masterSyncServiceImpl.getMasterSync("MDS_J00001");
+		ResponseDTO responseDto = masterSyncServiceImpl.getMasterSync("MDS_J00001","System");
 
 	}
 
@@ -625,7 +626,7 @@ public class MasterSyncServiceTest {
 
 		Mockito.when(RegistrationAppHealthCheckUtil.isNetworkAvailable()).thenReturn(true);
 
-		Mockito.when(serviceDelegateUtil.get(Mockito.anyString(), Mockito.any(), Mockito.anyBoolean()))
+		Mockito.when(serviceDelegateUtil.get(Mockito.anyString(), Mockito.any(), Mockito.anyBoolean(),Mockito.anyString()))
 				.thenThrow(SocketTimeoutException.class);
 
 		Mockito.when(objectMapper.readValue(masterSyncJson.toString(), MasterDataResponseDto.class))
@@ -640,7 +641,7 @@ public class MasterSyncServiceTest {
 
 		responseDTO.setSuccessResponseDTO(sucessResponse);
 
-		ResponseDTO responseDto = masterSyncServiceImpl.getMasterSync("MDS_J00001");
+		ResponseDTO responseDto = masterSyncServiceImpl.getMasterSync("MDS_J00001","System");
 
 	}
 
@@ -760,6 +761,25 @@ public class MasterSyncServiceTest {
 
 		masterSyncServiceImpl.getGenderDtls("ENG");
 
+	}
+
+	@Test
+	public void findIndividualType() {
+
+		List<IndividualType> masterIndividualType = new ArrayList<>();
+		IndividualType individualTypeEntity = new IndividualType();
+		IndividualTypeId individualTypeId = new IndividualTypeId();
+		individualTypeId.setCode("NFR");
+		individualTypeId.setLangCode("eng");
+		individualTypeEntity.setIndividualTypeId(individualTypeId);
+		individualTypeEntity.setName("National");
+		individualTypeEntity.setIsActive(true);
+		masterIndividualType.add(individualTypeEntity);
+
+		Mockito.when(masterSyncDao.getIndividulType(Mockito.anyString(), Mockito.anyString()))
+				.thenReturn(masterIndividualType);
+
+		assertEquals("NFR", masterSyncServiceImpl.getIndividualType("NFR", "eng").get(0).getCode());
 	}
 
 }

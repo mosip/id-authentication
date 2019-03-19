@@ -162,7 +162,7 @@ docker build --tag kernel-keymanager-service:1.0 .
 4. Run docker container using command:
 
 ```
-docker run -tid --ulimit memlock=-1  -p 8088:8088 -v softhsm:/softhsm --name kernel-keymanager-service kernel-keymanager-service:1.0
+docker run -tid --ulimit memlock=-1  -p 8088:8088 -e spring_config_url_env=<spring_config_url_env> -e spring_config_label_env=<spring_config_label_env> -e active_profile_env=<active_profile_env> -v softhsm:/softhsm --name kernel-keymanager-service kernel-keymanager-service:1.0
 ```
 #### Note:
 - Remember to use docker volume using `-v softhsm:/softhsm` and do not add bind mount `(-v /softhsm:/softhsm)`.

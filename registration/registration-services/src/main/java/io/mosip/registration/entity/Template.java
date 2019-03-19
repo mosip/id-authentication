@@ -34,7 +34,7 @@ public class Template extends TemplateCommonFields {
 	private String fileFormatCode;
 	private String model;
 	@Column(name = "file_txt")
-	private byte[] fileTxt;
+	private String fileTxt;
 	@Column(name = "module_id")
 	private String moduleId;
 	@Column(name = "module_name")
@@ -74,11 +74,11 @@ public class Template extends TemplateCommonFields {
 		this.model = model;
 	}
 
-	public byte[] getFileTxt() {
+	public String getFileTxt() {
 		return fileTxt;
 	}
 
-	public void setFileTxt(byte[] fileTxt) {
+	public void setFileTxt(String fileTxt) {
 		this.fileTxt = fileTxt;
 	}
 

@@ -145,7 +145,7 @@ public class LoginServiceTest extends BaseIntegrationTest {
 
 			for (int i = 0; i < array.size(); i++) {
 				RegistrationCenterDetailDTO centerDetailDTO = loginServiceImpl
-						.getRegistrationCenterDetails(array.get(i).toString());
+						.getRegistrationCenterDetails(array.get(i).toString(),"eng");
 				assertTrue(centerDetailDTO.getRegistrationCenterLatitude() != null);
 				assertTrue(centerDetailDTO.getRegistrationCenterName() != null);
 			}

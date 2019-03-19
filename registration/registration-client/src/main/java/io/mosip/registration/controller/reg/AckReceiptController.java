@@ -8,13 +8,13 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.constants.RegistrationUIConstants;
+import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.dto.RegistrationDTO;
 import javafx.event.ActionEvent;
@@ -69,9 +69,6 @@ public class AckReceiptController extends BaseController implements Initializabl
 	@Autowired
 	private SendNotificationController sendNotificationController;
 
-	@Value("${mosip.registration.send_notification_disable_flag}")
-	private String sendNotificationFlag;
-
 	public RegistrationDTO getRegistrationData() {
 		return registrationData;
 	}
@@ -89,7 +86,10 @@ public class AckReceiptController extends BaseController implements Initializabl
 		LOGGER.info("REGISTRATION - UI - ACKRECEIPTCONTROLLER", APPLICATION_NAME, APPLICATION_ID,
 				"Page loading has been started");
 
-		if (sendNotificationFlag.equals(RegistrationConstants.ENABLE)) {
+		if (String.valueOf(
+				applicationContext.getApplicationMap().get(RegistrationConstants.MODE_OF_COMMUNICATION)) != null
+				&& RegistrationConstants.ENABLE.equalsIgnoreCase(String
+						.valueOf(ApplicationContext.map().get(RegistrationConstants.NOTIFICATION_DISABLE_FLAG)))) {
 			sendNotification.setVisible(true);
 		} else {
 			sendNotification.setVisible(false);

@@ -12,7 +12,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { of } from 'rxjs';
 import { SharedService } from '../booking.service';
 
-fdescribe('CenterSelectionComponent', () => {
+describe('CenterSelectionComponent', () => {
   let component: CenterSelectionComponent;
   let locationData = [
     {

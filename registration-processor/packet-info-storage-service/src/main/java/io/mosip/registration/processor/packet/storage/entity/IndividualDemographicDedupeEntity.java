@@ -30,14 +30,11 @@ public class IndividualDemographicDedupeEntity extends BasePacketEntity<Individu
 	@Column(name = "name")
 	private String name;
 
-	@Temporal(TemporalType.DATE)
-	private Date dob;
+	@Column(name = "dob")
+	private String dob;
 
 	@Column(name = "gender", nullable = false)
 	private String gender;
-
-	@Column(name = "phonetic_name")
-	private String phoneticName;
 
 	@Column(name = "is_active")
 	private Boolean isActive;
@@ -75,12 +72,12 @@ public class IndividualDemographicDedupeEntity extends BasePacketEntity<Individu
 		this.name = fullName;
 	}
 
-	public Date getDob() {
-		return new Date(dob.getTime());
+	public String getDob() {
+		return dob; //new Date(dob.getTime());
 	}
 
-	public void setDob(Date dob) {
-		this.dob = new Date(dob.getTime());
+	public void setDob(String dob) {
+		this.dob = dob; //new Date(dob.getTime());
 	}
 
 	public String getGender() {
@@ -147,13 +144,6 @@ public class IndividualDemographicDedupeEntity extends BasePacketEntity<Individu
 		this.delDtimes = delDtimes;
 	}
 
-	public String getPhoneticName() {
-		return phoneticName;
-	}
-
-	public void setPhoneticName(String pheoniticName) {
-		this.phoneticName = pheoniticName;
-	}
 
 	public String getUin() {
 		return uin;
