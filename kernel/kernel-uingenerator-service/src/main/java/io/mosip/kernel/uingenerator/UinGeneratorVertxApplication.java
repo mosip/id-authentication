@@ -18,6 +18,7 @@ import io.vertx.core.VertxOptions;
  * Uin Generator vertx application
  * 
  * @author Dharmesh Khandelwal
+ * @author Megha Tanga
  * @since 1.0.0
  *
  */
@@ -41,7 +42,7 @@ public class UinGeneratorVertxApplication {
 		Verticle[] verticles = { new UinGeneratorVerticle(context), new UinGeneratorServerVerticle(context) };
 		Stream.of(verticles).forEach(verticle -> vertx.deployVerticle(verticle, stringAsyncResult -> {
 			if (stringAsyncResult.succeeded()) {
-				LOGGER.info("Succesfully deployed {}", verticle.getClass().getSimpleName());
+				LOGGER.info("Succesfully deployed :  {}", verticle.getClass().getSimpleName());
 			} else {
 				LOGGER.info("Failed to deploy {} \\nCause: {}", verticle.getClass().getSimpleName(),
 						stringAsyncResult.cause());

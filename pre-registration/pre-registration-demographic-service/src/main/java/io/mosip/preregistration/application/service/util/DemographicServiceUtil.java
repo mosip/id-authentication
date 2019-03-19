@@ -174,9 +174,9 @@ public class DemographicServiceUtil {
 		log.info("sessionId", "idType", "id", "In prepareRequestParamMap method of pre-registration service util");
 		Map<String, String> inputValidation = new HashMap<>();
 		inputValidation.put(RequestCodes.ID.getCode(), demographicRequestDTO.getId());
-		inputValidation.put(RequestCodes.VER.getCode(), demographicRequestDTO.getVer());
+		inputValidation.put(RequestCodes.VER.getCode(), demographicRequestDTO.getVersion());
 		inputValidation.put(RequestCodes.REQ_TIME.getCode(),
-				new SimpleDateFormat(utcDateTimePattern).format(demographicRequestDTO.getReqTime()));
+				new SimpleDateFormat(utcDateTimePattern).format(demographicRequestDTO.getRequesttime()));
 		inputValidation.put(RequestCodes.REQUEST.getCode(), demographicRequestDTO.getRequest().toString());
 		return inputValidation;
 	}
@@ -192,9 +192,10 @@ public class DemographicServiceUtil {
 	 * 
 	 * @throws ParseException
 	 *             On json Parsing Failed
+	 * @throws org.json.simple.parser.ParseException 
 	 * 
 	 */
-	public JSONArray getValueFromIdentity(byte[] demographicData, String identityKey) throws ParseException {
+	public JSONArray getValueFromIdentity(byte[] demographicData, String identityKey) throws ParseException, org.json.simple.parser.ParseException {
 		log.info("sessionId", "idType", "id", "In getValueFromIdentity method of pre-registration service util ");
 		JSONParser jsonParser = new JSONParser();
 		JSONObject jsonObj = (JSONObject) jsonParser.parse(new String(demographicData));
@@ -213,10 +214,11 @@ public class DemographicServiceUtil {
 	 * 
 	 * @throws ParseException
 	 *             On json Parsing Failed
+	 * @throws org.json.simple.parser.ParseException 
 	 * 
 	 */
-	public String getPostalCode(byte[] demographicData, String postalcode) throws ParseException {
-		log.info("sessionId", "idType", "id", "In getValueFromIdentity method of pre-registration service util to get postalcode ");
+	public String getPostalCode(byte[] demographicData, String postalcode) throws  org.json.simple.parser.ParseException {
+		log.info("sessionId", "idType", "id", "In getValueFromIdentity method of pe-registration service util to get postalcode ");
 		JSONParser jsonParser = new JSONParser();
 		JSONObject jsonObj = (JSONObject) jsonParser.parse(new String(demographicData));
 		JSONObject identityObj = (JSONObject) jsonObj.get(RequestCodes.IDENTITY.getCode());

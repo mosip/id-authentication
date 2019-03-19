@@ -16,6 +16,10 @@ export class RegistrationService {
   sameAs = '';
   documentCategories: DocumentTypeModel[];
 
+  getMessage() {
+    return this.messageSource.asObservable();
+  }
+
   changeMessage(message: Object) {
     this.messageSource.next(message);
   }

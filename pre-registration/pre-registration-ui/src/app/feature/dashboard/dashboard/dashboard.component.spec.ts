@@ -45,7 +45,8 @@ class SharedServiceStub {
 
 let router = {
   navigate: jasmine.createSpy('navigate'),
-  navigateByUrl: 'abc'
+  navigateByUrl: jasmine.createSpy('navigateByUrl')
+  // navigateByUrl: 'abc'
 };
 
 // const router = {
@@ -325,6 +326,36 @@ describe('Dashboard Component', () => {
     // component.createApplicant([applicant], 0);
     expect(router.navigate).toHaveBeenCalledWith(['/']);
     expect(component.createApplicant(applicants, 0).applicationID).toBe('29564951460821');
+  });
+
+  it('ON Select User', () => {
+    const applicant: Applicant = {
+      applicationID: '123',
+      appointmentDateTime: '1234',
+      name: 'shahsnak',
+      nameInSecondaryLanguage: 'asdf',
+      postalCode: '123',
+      regDto: 'regDTO',
+      status: 'true'
+    };
+    let event = {} as MatCheckboxChange;
+    event.checked = true;
+    component.onSelectUser(applicant, event);
+    expect(component.disableModifyAppointmentButton).toBe(false);
+  });
+
+  it('ON Acknowledgment view', () => {
+    const applicant: Applicant = {
+      applicationID: '123',
+      appointmentDateTime: '1234',
+      name: 'shahsnak',
+      nameInSecondaryLanguage: 'asdf',
+      postalCode: '123',
+      regDto: 'regDTO',
+      status: 'true'
+    };
+    component.onAcknowledgementView(applicant);
+    expect(router.navigateByUrl).toHaveBeenCalled();
   });
 
   // it('get user', () => {

@@ -82,7 +82,7 @@ public class NotificationUtilTest {
 		notificationDTO.setAppointmentTime("22:57");
 		responseDTO = new MainResponseDTO<>();
 		responseDTO.setResponse(notificationDTO);
-		responseDTO.setStatus(Boolean.TRUE);
+		//responseDTO.setStatus(Boolean.TRUE);
 		templateResponseDTO.setFileText("Email message");
 		tepmlateList.add(templateResponseDTO);
 
