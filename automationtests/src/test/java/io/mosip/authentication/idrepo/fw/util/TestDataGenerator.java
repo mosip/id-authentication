@@ -23,7 +23,7 @@ public class TestDataGenerator {
 	 * @param dataParam
 	 * @return
 	 */
-		@SuppressWarnings("unchecked")
+	@SuppressWarnings("unchecked")
 	public String getYamlData(String modulename, String apiname, String testData, String dataParam) {
 		Yaml yaml = new Yaml();
 		String testdata = null;
@@ -40,5 +40,6 @@ public class TestDataGenerator {
 			e.printStackTrace();
 		}
 		return testdata;
+
 	}
 }

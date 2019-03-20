@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 import java.util.Map.Entry;
 
 import org.apache.commons.beanutils.PropertyUtils;
@@ -142,9 +143,11 @@ public class Precondtion {
 				JSONArray array = (JSONArray) value;
 				String finalarrayContent = "";
 				for (int i = 0; i < array.length(); ++i) {
-					String arrayContent = removeObject(new JSONObject(array.get(i).toString()), finalarrayContent);
-					if (!arrayContent.equals("{}"))
-						finalarrayContent = finalarrayContent + "," + arrayContent;
+
+					String arrayContent = removeObject(new JSONObject(array.get(i).toString()),finalarrayContent);
+					if(!arrayContent.equals("{}"))
+							finalarrayContent=finalarrayContent+","+arrayContent;	
+
 				}
 				finalarrayContent = finalarrayContent.substring(1, finalarrayContent.length());
 				object.put(key, new JSONArray("[" + finalarrayContent + "]"));
@@ -155,6 +158,32 @@ public class Precondtion {
 			if (value.toString().equals("$REMOVE$")) {
 				object.remove(key);
 				keysItr = object.keys();
+			}
+		}
+		return object.toString();
+	}
+	public String removeObject2(org.json.simple.JSONObject object) {
+		Set keysItr = object.keySet();
+		while (((Iterator<String>) keysItr).hasNext()) {
+			String key = ((Iterator<String>) keysItr).next();
+			Object value = object.get(key);
+			if (value instanceof org.json.simple.JSONArray) {
+				org.json.simple.JSONArray array = (org.json.simple.JSONArray) value;
+				String finalarrayContent="";
+				for (int i = 0; i < ((CharSequence) array).length(); ++i) {
+					String arrayContent = removeObject(new JSONObject(array.get(i).toString()),finalarrayContent);
+					if(!arrayContent.equals("{}"))
+							finalarrayContent=finalarrayContent+","+arrayContent;	
+				}
+				finalarrayContent=finalarrayContent.substring(1,finalarrayContent.length());
+				object.put(key, new JSONArray("[" + finalarrayContent + "]"));
+			} else if (value instanceof JSONObject) {
+				String objectContent = removeObject(new JSONObject(value.toString()));
+				object.put(key, new JSONObject(objectContent));
+			}
+			if (value.toString().equals("$REMOVE$")) {
+				object.remove(key);
+				keysItr = object.keySet();
 			}
 		}
 		return object.toString();
