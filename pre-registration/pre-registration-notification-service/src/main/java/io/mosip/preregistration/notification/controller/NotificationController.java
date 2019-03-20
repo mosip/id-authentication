@@ -86,7 +86,7 @@ public class NotificationController {
 	 *
 	 * @return the response entity
 	 */
-	@PreAuthorize("hasAnyRole('individual')")
+	//@PreAuthorize("hasAnyRole('individual')")
 	@GetMapping(path="/config" ,produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Get global and Pre-Registration config data")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "global and Pre-Registration config data successfully retrieved"),
