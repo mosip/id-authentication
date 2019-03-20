@@ -69,7 +69,6 @@ import io.mosip.authentication.service.integration.NotificationManager;
 import io.mosip.authentication.service.integration.OTPManager;
 import io.mosip.authentication.service.repository.AutnTxnRepository;
 import io.mosip.kernel.core.idgenerator.spi.TokenIdGenerator;
-import io.mosip.kernel.core.templatemanager.spi.TemplateManagerBuilder;
 import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderImpl;
 
 /**
@@ -112,13 +111,10 @@ public class AuthFacadeImplTest {
 	private IdInfoHelper idInfoHelper;
 	/** The IdRepoService **/
 	@Mock
-	private IdAuthService idInfoService;
+	private IdAuthService<?> idInfoService;
 	/** The DemoAuthService **/
 	@Mock
 	private DemoAuthService demoAuthService;
-
-	@Autowired
-	private TemplateManagerBuilder templateManagerBuilder;
 
 	@Mock
 	private IDAMappingConfig idMappingConfig;
@@ -281,7 +277,7 @@ public class AuthFacadeImplTest {
 		Mockito.when(bioAuthService.authenticate(authRequestDTO, uin, idInfo,"123456")).thenReturn(authStatusInfo);
 		Mockito.when(idTemplateManager.applyTemplate(Mockito.anyString(), Mockito.any())).thenReturn("test");
 		Mockito.when(idInfoHelper.getUTCTime(Mockito.anyString())).thenReturn("2019-02-18T12:28:17.078");
-		authFacadeImpl.authenticateApplicant(authRequestDTO, true,"123456","123456");
+		authFacadeImpl.authenticateApplicant(authRequestDTO, true,"123456");
 
 	}
 
@@ -301,7 +297,6 @@ public class AuthFacadeImplTest {
 		authRequestDTO.setRequestedAuth(authTypeDTO);
 		authRequestDTO.setId("1234567");
 
-		ZoneOffset offset = ZoneOffset.MAX;
 		authRequestDTO.setRequestTime(Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
 		authRequestDTO.setId("id");
@@ -482,7 +477,6 @@ public class AuthFacadeImplTest {
 		kycAuthResponseDTO.setTransactionID("34567");
 		kycAuthResponseDTO.setErrors(null);
 		kycResponseDTO.setTtl(env.getProperty("ekyc.ttl.hours"));
-		Map<String, ? extends Object> identity = null;
 		kycAuthResponseDTO.setStatus(Boolean.TRUE);
 
 		kycAuthResponseDTO.setResponseTime(ZonedDateTime.now()
@@ -552,7 +546,6 @@ public class AuthFacadeImplTest {
 		kycAuthResponseDTO.setTransactionID("34567");
 		kycAuthResponseDTO.setErrors(null);
 		kycResponseDTO.setTtl(env.getProperty("ekyc.ttl.hours"));
-		Map<String, ? extends Object> identity = null;
 		kycAuthResponseDTO.setStatus(Boolean.TRUE);
 
 		kycAuthResponseDTO.setResponseTime(ZonedDateTime.now()
@@ -624,7 +617,6 @@ public class AuthFacadeImplTest {
 		kycAuthResponseDTO.setTransactionID("34567");
 		kycAuthResponseDTO.setErrors(null);
 		kycResponseDTO.setTtl(env.getProperty("ekyc.ttl.hours"));
-		Map<String, ? extends Object> identity = null;
 		kycAuthResponseDTO.setStatus(Boolean.TRUE);
 
 		kycAuthResponseDTO.setResponseTime(ZonedDateTime.now()

@@ -28,7 +28,7 @@ public interface AuthFacade {
 	 *                                           exception
 	 * @throws IdAuthenticationDaoException the Id authentication Dao Exception
 	 */
-	AuthResponseDTO authenticateApplicant(AuthRequestDTO authRequest, boolean request,String partnerId,String mispLK)
+	AuthResponseDTO authenticateApplicant(AuthRequestDTO authRequest, boolean request,String partnerId)
 			throws IdAuthenticationBusinessException, IdAuthenticationDaoException;
 
 

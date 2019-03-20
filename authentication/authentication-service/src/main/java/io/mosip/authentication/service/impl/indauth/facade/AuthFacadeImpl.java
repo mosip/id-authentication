@@ -66,9 +66,6 @@ public class AuthFacadeImpl implements AuthFacade {
 
 	private static final String FAILED = "N";
 
-	/** The Constant UTC. */
-	private static final String UTC = "UTC";
-
 	/** The Constant MOSIP_PRIMARY_LANG_CODE. */
 	private static final String MOSIP_PRIMARY_LANG_CODE = "mosip.primary.lang-code";
 
@@ -144,8 +141,7 @@ public class AuthFacadeImpl implements AuthFacade {
 	 *                                           exception.
 	 */
 	@Override
-	public AuthResponseDTO authenticateApplicant(AuthRequestDTO authRequestDTO, boolean isAuth, String partnerId,
-			String mispLK) throws IdAuthenticationBusinessException {
+	public AuthResponseDTO authenticateApplicant(AuthRequestDTO authRequestDTO, boolean isAuth, String partnerId) throws IdAuthenticationBusinessException {
 
 		IdType idType = idInfoHelper.getUinOrVidType(authRequestDTO);
 		Optional<String> idvid = idInfoHelper.getUinOrVid(authRequestDTO);
