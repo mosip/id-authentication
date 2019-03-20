@@ -634,7 +634,6 @@ public class RegistrationConstants {
 	public static final String RE_REGISTRATION_STATUS = "Re-Register";
 	public static final String PACKET_SYNC_REF_ID = "packetsync";
 	public static final String PACKET_UPLOAD_REF_ID = "packetUpload";
-	public static final String PACKET_UPLOAD_SUCCESS = "Uploaded";
 
 	// Device On-boarding
 	public static final String DEVICE_MANUFACTURER_NAME = "manufacturerName";
@@ -754,10 +753,10 @@ public class RegistrationConstants {
 	public static final String POI_DOCUMENT = "POI";
 	public static final String POR_DOCUMENT = "POR";
 	public static final String DOB_DOCUMENT = "POB";
-
+	public static final String SERVER_STATUS_RESEND = "RESEND";
 	public static final List<String> PACKET_STATUS = Arrays.asList("APPROVED", "REJECTED", "RE_REGISTER_APPROVED");
 	
-	public static final List<String> PACKET_STATUS_UPLOAD = Arrays.asList("APPROVED", "REJECTED", "RESEND","SYNCED");
+	public static final List<String> PACKET_STATUS_UPLOAD = Arrays.asList("APPROVED", "REJECTED", "SYNCED","EXPORTED");
 
 	public static final List<String> PACKET_EXPORT_STATUS = Arrays.asList("EXPORTED", "SYNCED");
 

@@ -115,9 +115,25 @@ public interface RegistrationDAO {
 	 */
 	List<Registration> get(Timestamp crDtimes, String clientStatus);
 
+	/**
+	 * @param serveSstatusCodes
+	 * @return
+	 */
 	List<Registration> findByServerStatusCodeIn(List<String> serveSstatusCodes);
 
+	/**
+	 * @param serverStatusCodes
+	 * @return
+	 */
 	List<Registration> findByServerStatusCodeNotIn(List<String> serverStatusCodes);
+	
+	/**
+	 * This method is used to fetch the records for the packets to Upload.
+	 * @param clientStatus
+	 * @param serverStatus
+	 * @return
+	 */
+	List<Registration> fetchPacketsToUpload(List<String> clientStatus, String serverStatus);
 
 
 }

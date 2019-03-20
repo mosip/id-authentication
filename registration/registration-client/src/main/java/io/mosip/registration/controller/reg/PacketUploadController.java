@@ -197,7 +197,7 @@ public class PacketUploadController extends BaseController implements Initializa
 												.setPacketServerStatus(response.getSuccessResponseDTO().getMessage());
 										packetUploadList.add(synchedPacket);
 										tableMap.put(synchedPacket.getFileName(),
-												RegistrationConstants.PACKET_UPLOAD_SUCCESS);
+												RegistrationUIConstants.PACKET_UPLOAD_SUCCESS);
 
 									} else if (response.getErrorResponseDTOs() != null) {
 										String errMessage = response.getErrorResponseDTOs().get(0).getMessage();
@@ -364,7 +364,11 @@ public class PacketUploadController extends BaseController implements Initializa
 	private void loadInitialPage() {
 
 		List<PacketStatusDTO> synchedPackets = packetSynchService.fetchPacketsToBeSynched();
-		displayData(synchedPackets);
+		if (synchedPackets.isEmpty()) {
+			selectAllCheckBox.setDisable(true);
+		} else {
+			displayData(synchedPackets);
+		}
 	}
 
 	@Override
@@ -379,13 +383,15 @@ public class PacketUploadController extends BaseController implements Initializa
 
 			Stage stage = new Stage();
 
-			stage.setTitle("File Status");
+			stage.setTitle(RegistrationUIConstants.PACKET_UPLOAD_HEADER_NAME);
 			stage.setWidth(380);
 			stage.setHeight(500);
 
-			TableView<PacketStatusDTO> statusTable = new TableView<PacketStatusDTO>();
-			TableColumn<PacketStatusDTO, String> fileNameCol = new TableColumn<PacketStatusDTO, String>("Files");
-			TableColumn<PacketStatusDTO, String> statusCol = new TableColumn<PacketStatusDTO, String>("Status");
+			TableView<PacketStatusDTO> statusTable = new TableView<>();
+			TableColumn<PacketStatusDTO, String> fileNameCol = new TableColumn<>(
+					RegistrationUIConstants.UPLOAD_COLUMN_HEADER_FILE);
+			TableColumn<PacketStatusDTO, String> statusCol = new TableColumn<>(
+					RegistrationUIConstants.UPLOAD_COLUMN_HEADER_STATUS);
 			ObservableList<PacketStatusDTO> displayList = FXCollections.observableArrayList(filesToDisplay);
 			statusTable.setItems(displayList);
 			fileNameCol.setCellValueFactory(new PropertyValueFactory<>("fileName"));

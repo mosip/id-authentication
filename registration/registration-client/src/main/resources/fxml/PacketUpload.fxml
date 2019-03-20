@@ -25,10 +25,10 @@
       <TableView fx:id="table" layoutX="58.0" layoutY="75.0" prefHeight="400.0" prefWidth="162.0" styleClass="packetUploadTable">
         <columns>
             <TableColumn fx:id="checkBoxColumn" prefWidth="50.0" />
-          <TableColumn fx:id="fileNameColumn" prefWidth="105.0" styleClass="fileNameColumn" text="%files" />
+          <TableColumn fx:id="fileNameColumn" prefWidth="205.0" styleClass="fileNameColumn" text="%files" />
         </columns>
       </TableView>
-      <ProgressIndicator fx:id="progressIndicator" layoutX="400.0" layoutY="20.0" prefHeight="109.0" prefWidth="90.0" progress="0.0" visible="false" />
-      <CheckBox fx:id="selectAllCheckBox" layoutX="86.0" layoutY="80.0" mnemonicParsing="false" onAction="#selectAllCheckBox" />	
+      <ProgressIndicator fx:id="progressIndicator" layoutX="400.0" layoutY="60.0" prefHeight="109.0" prefWidth="90.0" progress="0.0" visible="false" />
+      <CheckBox fx:id="selectAllCheckBox" layoutX="75.0" layoutY="79.0" mnemonicParsing="false" onAction="#selectAllCheckBox" />	
    </children>
 </AnchorPane>

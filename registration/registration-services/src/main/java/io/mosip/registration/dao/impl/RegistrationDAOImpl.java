@@ -341,4 +341,12 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 		return registrationRepository.findByServerStatusCodeNotIn(serverStatusCodes);
 
 	}
+	
+	public List<Registration> fetchPacketsToUpload(List<String> clientStatus, String serverStatus){
+		
+		LOGGER.debug("REGISTRATION - BY_STATUS - REGISTRATION_DAO", APPLICATION_NAME, APPLICATION_ID,
+				"Retriving Registrations based on client and server status codes");
+		
+		return registrationRepository.findByClientStatusCodeInOrServerStatusCodeOrderByUpdDtimesDesc(clientStatus, serverStatus);
+	}
 }
