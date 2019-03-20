@@ -1,1 +1,0 @@
-{"status":"N","err":[{"errorCode":"IDA-BIA-015","errorMessage":"Biometric data - IrisImg did not match"}],"txnID":"4227347736","resTime":"2019-02-15T18:49:45.058+05:30","info":{"idType":"D","reqTime":"2019-02-15T18:47:26.026+05:30","bioInfos":[{"bioType":"irisImg","deviceInfo":{"deviceId":"123143","make":"morpho","model":"steel"}}],"usageData":"0x0000200000000000"},"ver":"1.0"}

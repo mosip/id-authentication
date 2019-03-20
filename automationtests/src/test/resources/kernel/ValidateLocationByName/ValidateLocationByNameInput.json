@@ -1,8 +1,0 @@
-{
-	"locationname" : "string",
-	"invalid_city":"string",
-	"invalid_localAuthority":"string",
-	"invalid_province":"String",
-	"invalid_Region":"string",
-	"invalid_responseTime":"string"
-}

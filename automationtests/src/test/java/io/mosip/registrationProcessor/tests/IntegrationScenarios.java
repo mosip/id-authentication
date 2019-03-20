@@ -17,7 +17,7 @@ import io.restassured.response.Response;
 public class IntegrationScenarios extends BaseTestCase {
 	IntegMethods scenario=new IntegMethods();
 	@Test
-	public void syncSmoke_packetUploadSmoke() throws FileNotFoundException, IOException, ParseException {
+	public void syncSmokepacketUploadSmoke() throws FileNotFoundException, IOException, ParseException {
 		Response syncResponse=scenario.syncList("ValidPacket");
 		scenario.UploadPacket(syncResponse,"ValidPacket");
 		scenario.getStatus("ValidPacket");
