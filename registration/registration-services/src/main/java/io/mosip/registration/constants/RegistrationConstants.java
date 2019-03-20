@@ -1142,10 +1142,10 @@ public class RegistrationConstants {
 
 	public static final String JOB_ID = "JOB_ID";
 
-	public static final String SYNC_DATA_FREQ = "mosip.registration.SYNC_DATA_FREQ";
+	public static final String SYNC_DATA_FREQ = "mosip.registration.sync_data_freq";
 
 	public static final String LABEL = "Label";
-	public static final Object UI_SYNC_DATA = "mosip.registration.UI_SYNC_DATA";
+	public static final Object UI_SYNC_DATA = "mosip.registration.ui_sync_data";
 	public static final String MESSAGE = "Message";
 	public static final String HASH = "#";
 	public static final String DOB_MESSAGE = "dobMessage";
