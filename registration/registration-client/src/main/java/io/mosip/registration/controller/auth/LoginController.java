@@ -42,10 +42,8 @@ import io.mosip.registration.device.fp.FingerprintFacade;
 import io.mosip.registration.device.fp.MosipFingerprintProvider;
 import io.mosip.registration.device.iris.IrisFacade;
 import io.mosip.registration.dto.AuthenticationValidatorDTO;
-import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.LoginUserDTO;
 import io.mosip.registration.dto.ResponseDTO;
-import io.mosip.registration.dto.SuccessResponseDTO;
 import io.mosip.registration.dto.biometric.FaceDetailsDTO;
 import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
 import io.mosip.registration.dto.biometric.IrisDetailsDTO;
@@ -469,13 +467,11 @@ public class LoginController extends BaseController implements Initializable {
 				changeToOTPSubmitMode();
 
 				// Generate alert to show OTP
-				SuccessResponseDTO successResponseDTO = responseDTO.getSuccessResponseDTO();
-				generateAlertLanguageSpecific(RegistrationConstants.ERROR, successResponseDTO.getMessage());
+				generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.OTP_GENERATION_SUCCESS_MESSAGE);
 
 			} else if (responseDTO.getErrorResponseDTOs() != null) {
 				// Generate Alert to show INVALID USERNAME
-				ErrorResponseDTO errorResponseDTO = responseDTO.getErrorResponseDTOs().get(0);
-				generateAlertLanguageSpecific(RegistrationConstants.ERROR, errorResponseDTO.getMessage());
+				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.OTP_GENERATION_ERROR_MESSAGE);
 
 			}
 		}
