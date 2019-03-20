@@ -75,6 +75,9 @@ public class PacketSynchServiceTest extends BaseIntegrationTest {
 	private RegistrationRepository registrationRepository;
 	@Autowired
 	PacketSynchService PsyncService;
+
+	@Autowired
+	private RegistrationDAO registrationDAO;
 	@Autowired
 	PacketHandlerService packetHandlerService;
 	@Autowired
@@ -90,12 +93,14 @@ public class PacketSynchServiceTest extends BaseIntegrationTest {
 
 	private static Properties prop = DBUtil.loadPropertiesFile();
 	static List<String> a = new ArrayList<String>(100);
+	static List<String> b = new ArrayList<String>(500);
 
 	@BeforeClass
 	public static void getdbdata() {
 		System.out.println("------- Before Class ----");
 		DBUtil.createConnection();
 		a = DBUtil.get_selectQuery(prop.getProperty("GET_SYNC_PACKETIDs"));
+		//b=DBUtil.get_selectQuery(prop.getProperty("GET_PACKETIDs"));
 	}
 
 	@Before
@@ -124,8 +129,7 @@ public class PacketSynchServiceTest extends BaseIntegrationTest {
 				System.out.println("Packet ID fetched from Local database through API is equal");
 				break;
 			}
-		}
-	}
+		}}
 
 	@Test
 	public void validate_packetSync_2() {
@@ -192,6 +196,7 @@ String actualmsg=null;
 		try {
 			String res = PsyncService.syncEODPackets(regIds);
 			if (res.isEmpty()) {
+				actualmsg="success";
 				assertEquals(expectedmsg,actualmsg);
 				System.out.println("Packet is synched successfully");
 			} else {
@@ -248,7 +253,6 @@ String actualmsg=null;
 		// static data used from Json
 		// (RegistrationPacketSyncDTO)
 		// testData("src/test/resources/testData/PacketSynchServiceData/PacketSyncService__syncPacketsToServer_syncDtoList.json");
-
 		// Implemented dynamic test data creation
 		dtoList = syncdatatoserver_Testdata();
 		try {
@@ -256,11 +260,23 @@ String actualmsg=null;
 			Map<String, Object> m1 = response.getSuccessResponseDTO().getOtherAttributes();
 			System.out.println(m1.size());
 			boolean status = false;
-			for (int i = 0; i < m1.size(); i++) {
-				if (m1.get(a.get(i)).equals("SUCCESS")) {
+			String key="";
+			
+			for(Map.Entry entry: m1.entrySet()){
+	          //  if(value.equals(entry.getValue())){
+	               key = (String) entry.getKey();
+	               b.add(key); 
+	               //    break; //breaking because its one to one map
+	            //}
+	        }
+			System.out.println(b.size());
+		for (int i = 0; i < m1.size(); i++) {
+				if (m1.get(b.get(i)).equals("SUCCESS")) {
 					status = true;
 				}
+				
 			}
+			System.out.println(status);
 			assertEquals(expectedmsg, status);
 		} catch (RegBaseCheckedException e) {
 			// TODO Auto-generated catch block
@@ -275,7 +291,7 @@ String actualmsg=null;
 	}
 
 	public RegistrationPacketSyncDTO syncdatatoserver_Testdata() {
-		for (int i = 0; i < 6; i++) {
+		for (int i = 0; i < 3; i++) {
 			try {
 				String RID = testHandelPacket(RegistrationClientStatusCode.APPROVED.getCode());
 				System.out.println(RID);
@@ -292,11 +308,21 @@ String actualmsg=null;
 			}
 		}
 		
-		List<PacketStatusDTO> packetsToBeSynched = PsyncService.fetchPacketsToBeSynched();
+		List<PacketStatusDTO> packetsToBeSynched =PsyncService.fetchPacketsToBeSynched();
+				//registrationDAO
+				//.getPacketsToBeSynched(RegistrationConstants.PACKET_STATUS);
+		
+	//	List<PacketStatusDTO> packetDto = new ArrayList<>();
+		//List<PacketStatusDTO> synchedPackets = new ArrayList<>();
+		//for (Registration reg : packetsToBeSynched) {
+			//packetDto.add(packetStatusDtoPreperation(reg));
+		//}
 		List<SyncRegistrationDTO> syncDtoList = new ArrayList<>();
 		RegistrationPacketSyncDTO registrationPacketSyncDTO = new RegistrationPacketSyncDTO();
 		if (!packetsToBeSynched.isEmpty()) {
-			for (PacketStatusDTO packetToBeSynch : packetsToBeSynched) {
+			for (PacketStatusDTO packetToBeSynch : packetsToBeSynched //packetDto
+					
+					) {
 				SyncRegistrationDTO syncDto = new SyncRegistrationDTO();
 				syncDto.setLangCode("ENG");
 				syncDto.setStatusComment(packetToBeSynch.getPacketClientStatus() + " " + "-" + " "
@@ -315,10 +341,9 @@ String actualmsg=null;
 	}
 
 	public RegistrationPacketSyncDTO dtoList_negative() {
+		
 		List<SyncRegistrationDTO> syncDtoList = new ArrayList<>();
-
 		RegistrationPacketSyncDTO registrationPacketSyncDTO = new RegistrationPacketSyncDTO();
-
 		SyncRegistrationDTO syncDto = new SyncRegistrationDTO();
 		syncDto.setLangCode("ENG");
 		syncDto.setStatusComment("APPROVED - null");
@@ -326,8 +351,7 @@ String actualmsg=null;
 		syncDto.setSyncStatus(RegistrationConstants.PACKET_STATUS_PRE_SYNC);
 		syncDto.setSyncType(RegistrationConstants.PACKET_STATUS_SYNC_TYPE);
 		syncDtoList.add(syncDto);
-
-		registrationPacketSyncDTO.setRequesttime(DateUtils.getUTCCurrentDateTimeString());
+		//registrationPacketSyncDTO.setRequesttime(DateUtils.getUTCCurrentDateTimeString());
 		registrationPacketSyncDTO.setSyncRegistrationDTOs(syncDtoList);
 		registrationPacketSyncDTO.setId(RegistrationConstants.PACKET_SYNC_STATUS_ID);
 		registrationPacketSyncDTO.setVersion(RegistrationConstants.PACKET_SYNC_VERSION);
@@ -335,6 +359,21 @@ String actualmsg=null;
 		return registrationPacketSyncDTO;
 
 	}
+	/**
+	 * Convertion of Registration to Packet Status DTO
+	 * @param registration
+	 * @return
+	 */
+	public PacketStatusDTO packetStatusDtoPreperation(Registration registration) {
+		PacketStatusDTO statusDTO = new PacketStatusDTO();
+		statusDTO.setFileName(registration.getId());
+		statusDTO.setPacketClientStatus(registration.getClientStatusCode());
+		statusDTO.setPacketPath(registration.getAckFilename());
+		statusDTO.setPacketServerStatus(registration.getServerStatusCode());
+		statusDTO.setUploadStatus(registration.getFileUploadStatus());
+		return statusDTO;
+	}
+
 
 	/*	public static List<SyncRegistrationDTO> testData(String Path) throws IOException, ParseException {
 		ObjectMapper mapper = new ObjectMapper();
