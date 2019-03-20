@@ -37,6 +37,8 @@ import io.mosip.kernel.core.crypto.exception.InvalidKeyException;
 import io.mosip.kernel.core.datamapper.spi.DataMapper;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.exception.ServiceError;
+import io.mosip.kernel.core.http.RequestWrapper;
+import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.cryptomanager.constant.CryptomanagerErrorCode;
 import io.mosip.kernel.cryptomanager.dto.CryptomanagerRequestDto;
@@ -88,7 +90,13 @@ public class CryptomanagerUtil {
 	 */
 	@Value("${mosip.kernel.data-key-splitter}")
 	private String keySplitter;
-
+	
+	
+	@Value("${mosip.kernel.cryptomanager.request_id}")
+	private String cryptomanagerRequestID;
+	
+	@Value("${mosip.kernel.cryptomanager.request_version}")
+	private String cryptomanagerRequestVersion;
 	/**
 	 * {@link DataMapper} instance.
 	 */
@@ -127,11 +135,15 @@ public class CryptomanagerUtil {
 			throw new KeymanagerServiceException(validationErrorsList);
 		}
 		KeymanagerPublicKeyResponseDto keyManagerResponseDto;
+		ResponseWrapper<?> responseObject;
 		try {
-			keyManagerResponseDto = objectMapper.readValue(response.getBody(), KeymanagerPublicKeyResponseDto.class);
-		} catch (IOException e) {
+			responseObject = objectMapper.readValue(response.getBody(), ResponseWrapper.class);
+			keyManagerResponseDto = objectMapper.readValue(
+					objectMapper.writeValueAsString(responseObject.getResponse()),
+					KeymanagerPublicKeyResponseDto.class);
+		} catch (IOException | NullPointerException exception) {
 			throw new ParseResponseException(CryptomanagerErrorCode.RESPONSE_PARSE_ERROR.getErrorCode(),
-					CryptomanagerErrorCode.RESPONSE_PARSE_ERROR.getErrorMessage() + e.getMessage(), e);
+					CryptomanagerErrorCode.RESPONSE_PARSE_ERROR.getErrorMessage() + exception.getMessage(), exception);
 		}
 
 		try {
@@ -156,15 +168,20 @@ public class CryptomanagerUtil {
 	 * @return Decrypted {@link SecretKey} from Key Manager Service
 	 */
 	public SecretKey getDecryptedSymmetricKey(CryptomanagerRequestDto cryptomanagerRequestDto) {
+		RequestWrapper<KeymanagerSymmetricKeyRequestDto> requestWrapper = new RequestWrapper<>();
+		requestWrapper.setId(cryptomanagerRequestID);
+		requestWrapper.setVersion(cryptomanagerRequestVersion);
 		KeymanagerSymmetricKeyRequestDto keyManagerSymmetricKeyRequestDto = new KeymanagerSymmetricKeyRequestDto();
 		dataMapper.map(cryptomanagerRequestDto, keyManagerSymmetricKeyRequestDto,
 				new KeymanagerSymmetricKeyConverter());
+		requestWrapper.setRequest(keyManagerSymmetricKeyRequestDto);
 
 		HttpHeaders keyManagerRequestHeaders = new HttpHeaders();
 		keyManagerRequestHeaders.setContentType(MediaType.APPLICATION_JSON);
 
-		HttpEntity<KeymanagerSymmetricKeyRequestDto> keyManagerRequestEntity = new HttpEntity<>(
-				keyManagerSymmetricKeyRequestDto, keyManagerRequestHeaders);
+		HttpEntity<RequestWrapper<KeymanagerSymmetricKeyRequestDto>> keyManagerRequestEntity = new HttpEntity<>(requestWrapper,
+				keyManagerRequestHeaders);
+
 		ResponseEntity<String> response = restTemplate.exchange(decryptSymmetricKeyUrl, HttpMethod.POST,
 				keyManagerRequestEntity, String.class);
 
@@ -176,12 +193,15 @@ public class CryptomanagerUtil {
 			throw new KeymanagerServiceException(validationErrorsList);
 		}
 		KeymanagerSymmetricKeyResponseDto keyManagerSymmetricKeyResponseDto;
+		ResponseWrapper<?> responseObject=null;
 		try {
-			keyManagerSymmetricKeyResponseDto = objectMapper.readValue(response.getBody(),
+			responseObject = objectMapper.readValue(response.getBody(), ResponseWrapper.class);
+			keyManagerSymmetricKeyResponseDto = objectMapper.readValue(
+					objectMapper.writeValueAsString(responseObject.getResponse()),
 					KeymanagerSymmetricKeyResponseDto.class);
-		} catch (IOException e) {
+		} catch (IOException | NullPointerException exception) {
 			throw new ParseResponseException(CryptomanagerErrorCode.RESPONSE_PARSE_ERROR.getErrorCode(),
-					CryptomanagerErrorCode.RESPONSE_PARSE_ERROR.getErrorMessage() + e.getMessage(), e);
+					CryptomanagerErrorCode.RESPONSE_PARSE_ERROR.getErrorMessage() + exception.getMessage(), exception);
 		}
 		byte[] symmetricKey = CryptoUtil.decodeBase64(keyManagerSymmetricKeyResponseDto.getSymmetricKey());
 		return new SecretKeySpec(symmetricKey, 0, symmetricKey.length, symmetricAlgorithmName);

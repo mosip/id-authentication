@@ -9,6 +9,7 @@ package io.mosip.kernel.cryptomanager.controller;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -48,6 +49,7 @@ public class CryptomanagerController {
 	 *            {@link CryptomanagerRequestDto} request
 	 * @return {@link CryptomanagerResponseDto} encrypted Data
 	 */
+	@PreAuthorize("hasAnyRole('INDIVIDUAL','REGISTRATION_PROCESSOR','ID_AUTHENTICATION','TEST')")
 	@ResponseFilter
 	@ApiOperation(value = "Encrypt the data", response = CryptomanagerResponseDto.class)
 	@PostMapping(value = "/encrypt", produces = "application/json")
@@ -63,6 +65,7 @@ public class CryptomanagerController {
 	 *            {@link CryptomanagerRequestDto} request
 	 * @return {@link CryptomanagerResponseDto} decrypted Data
 	 */
+	@PreAuthorize("hasAnyRole('INDIVIDUAL','REGISTRATION_PROCESSOR','ID_AUTHENTICATION','TEST')")
 	@ResponseFilter
 	@ApiOperation(value = "Decrypt the data", response = CryptomanagerResponseDto.class)
 	@PostMapping(value = "/decrypt", produces = "application/json")

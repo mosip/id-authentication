@@ -120,21 +120,21 @@ public class CryptomanagerExceptionHandler {
 
 	@ExceptionHandler(HttpClientErrorException.class)
 	public ResponseEntity<ResponseWrapper<ServiceError>> httpClientErrorException(HttpServletRequest httpServletRequest,
-			final HttpClientErrorException e) throws IOException {
+			final HttpClientErrorException exception) throws IOException {
 		return new ResponseEntity<>(getErrorResponse(httpServletRequest,
 				CryptomanagerErrorCode.KEYMANAGER_SERVICE_ERROR.getErrorCode(),
 				CryptomanagerErrorCode.KEYMANAGER_SERVICE_ERROR.getErrorMessage() + CryptomanagerConstant.WHITESPACE
-						+ e.getResponseBodyAsString(),
+						+ exception.getResponseBodyAsString(),
 				HttpStatus.INTERNAL_SERVER_ERROR), HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
 	@ExceptionHandler(HttpServerErrorException.class)
 	public ResponseEntity<ResponseWrapper<ServiceError>> httpServerErrorException(HttpServletRequest httpServletRequest,
-			final HttpServerErrorException e) throws IOException {
+			final HttpServerErrorException exception) throws IOException {
 		return new ResponseEntity<>(getErrorResponse(httpServletRequest,
 				CryptomanagerErrorCode.KEYMANAGER_SERVICE_ERROR.getErrorCode(),
 				CryptomanagerErrorCode.KEYMANAGER_SERVICE_ERROR.getErrorMessage() + CryptomanagerConstant.WHITESPACE
-						+ e.getResponseBodyAsString(),
+						+ exception.getResponseBodyAsString(),
 				HttpStatus.INTERNAL_SERVER_ERROR), HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
@@ -170,10 +170,10 @@ public class CryptomanagerExceptionHandler {
 
 	@ExceptionHandler(value = { Exception.class, RuntimeException.class })
 	public ResponseEntity<ResponseWrapper<ServiceError>> defaultErrorHandler(HttpServletRequest httpServletRequest,
-			Exception e) throws IOException {
+			Exception exception) throws IOException {
 		ResponseWrapper<ServiceError> errorResponse = setErrors(httpServletRequest);
 		ServiceError error = new ServiceError(CryptomanagerErrorCode.INTERNAL_SERVER_ERROR.getErrorCode(),
-				e.getMessage());
+				exception.getMessage());
 		errorResponse.getErrors().add(error);
 		return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
 	}

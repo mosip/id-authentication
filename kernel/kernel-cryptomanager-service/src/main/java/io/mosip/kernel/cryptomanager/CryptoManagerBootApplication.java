@@ -16,8 +16,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  *
  * @since 1.0.0
  */
-@SpringBootApplication
-public class KernelCryptomanagerBootApplication {
+@SpringBootApplication(scanBasePackages= {"io.mosip.kernel.cryptomanager.*","io.mosip.kernel.auth.*"})
+public class CryptoManagerBootApplication {
 
 	/**
 	 * Main method for this application
@@ -25,6 +25,6 @@ public class KernelCryptomanagerBootApplication {
 	 * @param args arguments to pass
 	 */
 	public static void main(String[] args) {
-		SpringApplication.run(KernelCryptomanagerBootApplication.class, args);
+		SpringApplication.run(CryptoManagerBootApplication.class, args);
 	}
 }
