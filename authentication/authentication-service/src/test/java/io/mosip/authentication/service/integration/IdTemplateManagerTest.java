@@ -44,8 +44,8 @@ import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.RestServiceException;
 import io.mosip.authentication.core.util.dto.RestRequestDTO;
 import io.mosip.authentication.service.factory.RestRequestFactory;
-import io.mosip.authentication.service.helper.IdInfoHelper;
 import io.mosip.authentication.service.helper.RestHelper;
+import io.mosip.authentication.service.impl.indauth.service.IdInfoFetcherImpl;
 import io.mosip.kernel.core.pdfgenerator.spi.PDFGenerator;
 import io.mosip.kernel.core.templatemanager.spi.TemplateManager;
 import io.mosip.kernel.pdfgenerator.itext.impl.PDFGeneratorImpl;
@@ -77,7 +77,7 @@ public class IdTemplateManagerTest {
 	private Environment environment;
 
 	@InjectMocks
-	private IdInfoHelper idInfoHelper;
+	private IdInfoFetcherImpl idInfoFetcherImpl;
 
 	@Mock
 	private RestRequestFactory restFactory;
@@ -100,8 +100,8 @@ public class IdTemplateManagerTest {
 	public void before() {
 		ReflectionTestUtils.setField(idTemplateManager, "masterDataManager", masterDataManager);
 		ReflectionTestUtils.setField(idTemplateManager, "environment", environment);
-		ReflectionTestUtils.setField(idTemplateManager, "idInfoHelper", idInfoHelper);
-		ReflectionTestUtils.setField(idInfoHelper, "environment", environment);
+		ReflectionTestUtils.setField(idTemplateManager, "idInfoFetcher", idInfoFetcherImpl);
+		ReflectionTestUtils.setField(idInfoFetcherImpl, "environment", environment);
 		ReflectionTestUtils.setField(restFactory, "env", environment);
 		ReflectionTestUtils.setField(idTemplateManager, "templateManagerBuilder", templateManagerBuilder);
 		templateManagerBuilder.encodingType(ENCODE_TYPE).enableCache(false).resourceLoader(CLASSPATH).build();

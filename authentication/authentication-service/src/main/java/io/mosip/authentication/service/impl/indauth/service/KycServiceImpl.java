@@ -114,7 +114,7 @@ public class KycServiceImpl implements KycService {
 					.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 		}
 		if (Objects.nonNull(identityInfo)) {
-			Set<String> allowedLang = idInfoHelper.extractAllowedLang();
+			Set<String> allowedLang = idInfoHelper.getAllowedLang();
 			String secondayLangCode = allowedLang.contains(secLangCode) ? env.getProperty(MOSIP_SECONDARY_LANG_CODE)
 					: null;
 			String primaryLanguage = env.getProperty(MOSIP_PRIMARY_LANG_CODE);

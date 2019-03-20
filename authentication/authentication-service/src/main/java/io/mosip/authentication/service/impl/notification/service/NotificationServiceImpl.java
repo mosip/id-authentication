@@ -30,6 +30,7 @@ import io.mosip.authentication.core.dto.otpgen.OtpRequestDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.indauth.match.AuthType;
+import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
 import io.mosip.authentication.core.spi.notification.service.NotificationService;
 import io.mosip.authentication.core.util.MaskUtil;
 import io.mosip.authentication.service.helper.IdInfoHelper;
@@ -40,6 +41,7 @@ import io.mosip.authentication.service.impl.indauth.service.pin.PinAuthType;
 import io.mosip.authentication.service.integration.IdTemplateManager;
 import io.mosip.authentication.service.integration.NotificationManager;
 import io.mosip.kernel.core.exception.BaseCheckedException;
+import io.mosip.kernel.core.idrepo.spi.IdRepoService;
 import io.mosip.kernel.core.logger.spi.Logger;
 
 /**
@@ -98,8 +100,11 @@ public class NotificationServiceImpl implements NotificationService {
 	@Autowired
 	private IdInfoHelper infoHelper;
 
-//	@Autowired
-//	private IdRepoManager idInfoService;
+	@Autowired
+	private IdInfoFetcher idInfoFetcher;
+
+	@Autowired
+	IdRepoService idInfoService;
 
 	/** ID Template manager */
 	@Autowired
@@ -143,7 +148,8 @@ public class NotificationServiceImpl implements NotificationService {
 		String authTypeStr = Stream
 				.of(Stream.<AuthType>of(DemoAuthType.values()), Stream.<AuthType>of(BioAuthType.values()),
 						Stream.<AuthType>of(PinAuthType.values()))
-				.flatMap(Function.identity()).filter(authType -> authType.isAuthTypeEnabled(authRequestDTO, infoHelper))
+				.flatMap(Function.identity())
+				.filter(authType -> authType.isAuthTypeEnabled(authRequestDTO, idInfoFetcher))
 				.map(AuthType::getDisplayName).distinct().collect(Collectors.joining(","));
 		values.put(AUTH_TYPE, authTypeStr);
 		if (authResponseDTO.isStatus()) {

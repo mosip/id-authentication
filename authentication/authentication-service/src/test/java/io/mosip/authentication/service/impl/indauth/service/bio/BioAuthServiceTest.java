@@ -38,12 +38,15 @@ import io.mosip.authentication.core.dto.indauth.IdentityDTO;
 import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
 import io.mosip.authentication.core.dto.indauth.RequestDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
+import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
 import io.mosip.authentication.service.config.IDAMappingConfig;
 import io.mosip.authentication.service.factory.BiometricProviderFactory;
 import io.mosip.authentication.service.helper.IdInfoHelper;
 import io.mosip.authentication.service.impl.fingerauth.provider.impl.CogentFingerprintProvider;
 import io.mosip.authentication.service.impl.fingerauth.provider.impl.MantraFingerprintProvider;
+import io.mosip.authentication.service.impl.indauth.builder.MatchInputBuilder;
 import io.mosip.authentication.service.impl.indauth.service.BioAuthServiceImpl;
+import io.mosip.authentication.service.impl.indauth.service.IdInfoFetcherImpl;
 import io.mosip.authentication.service.impl.iris.CogentIrisProvider;
 import io.mosip.authentication.service.impl.iris.MorphoIrisProvider;
 import io.mosip.kernel.core.cbeffutil.spi.CbeffUtil;
@@ -59,6 +62,12 @@ public class BioAuthServiceTest {
 
 	@InjectMocks
 	private IdInfoHelper idInfoHelper;
+
+	@InjectMocks
+	private MatchInputBuilder matchInputBuilder;
+
+	@InjectMocks
+	private IdInfoFetcherImpl idInfoFetcherImpl;
 
 	@InjectMocks
 	private BiometricProviderFactory biometricProviderFactory;
@@ -87,9 +96,14 @@ public class BioAuthServiceTest {
 	@Before
 	public void before() {
 		ReflectionTestUtils.setField(bioAuthServiceImpl, "idInfoHelper", idInfoHelper);
+		ReflectionTestUtils.setField(bioAuthServiceImpl, "matchInputBuilder", matchInputBuilder);
+		ReflectionTestUtils.setField(matchInputBuilder, "idInfoHelper", idInfoHelper);
+		ReflectionTestUtils.setField(matchInputBuilder, "idInfoFetcher", idInfoFetcherImpl);
+		ReflectionTestUtils.setField(matchInputBuilder, "environment", environment);
+		ReflectionTestUtils.setField(idInfoHelper, "idInfoFetcher", idInfoFetcherImpl);
 		ReflectionTestUtils.setField(idInfoHelper, "environment", environment);
 		ReflectionTestUtils.setField(idInfoHelper, "idMappingConfig", idMappingConfig);
-		ReflectionTestUtils.setField(idInfoHelper, "biometricProviderFactory", biometricProviderFactory);
+		ReflectionTestUtils.setField(idInfoFetcherImpl, "biometricProviderFactory", biometricProviderFactory);
 		ReflectionTestUtils.setField(biometricProviderFactory, "mantraFingerprintProvider", mantraFingerprintProvider);
 		ReflectionTestUtils.setField(biometricProviderFactory, "cogentFingerProvider", cogentFingerprintProvider);
 		ReflectionTestUtils.setField(biometricProviderFactory, "cogentIrisProvider", cogentIrisProvider);
@@ -154,7 +168,7 @@ public class BioAuthServiceTest {
 		AuthStatusInfo validateBioDetails = bioAuthServiceImpl.authenticate(authRequestDTO, "", bioIdentity, "");
 		assertTrue(validateBioDetails.isStatus());
 	}
-	
+
 	@Test
 	public void TestvalidateBioDetails_Iris() throws Exception {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
@@ -201,7 +215,7 @@ public class BioAuthServiceTest {
 		AuthStatusInfo validateBioDetails = bioAuthServiceImpl.authenticate(authRequestDTO, "", bioIdentity, "");
 		assertTrue(validateBioDetails.isStatus());
 	}
-	
+
 	@Test
 	public void TestvalidateBioDetails_Multi_Iris() throws Exception {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
@@ -230,7 +244,7 @@ public class BioAuthServiceTest {
 		dataDTO.setBioValue(value);
 		bioIdentityInfoDTO.setData(dataDTO);
 		leftIndexList.add(bioIdentityInfoDTO);
-		
+
 		bioIdentityInfoDTO = new BioIdentityInfoDTO();
 		dataDTO = new DataDTO();
 		dataDTO.setBioType("IIR");
@@ -239,7 +253,7 @@ public class BioAuthServiceTest {
 		dataDTO.setBioValue(value);
 		bioIdentityInfoDTO.setData(dataDTO);
 		leftIndexList.add(bioIdentityInfoDTO);
-		
+
 		request.setDemographics(identity);
 		request.setBiometrics(leftIndexList);
 		authRequestDTO.setRequest(request);
@@ -725,7 +739,7 @@ public class BioAuthServiceTest {
 		dataDTO.setBioValue(value);
 		bioIdentityInfoDTO.setData(dataDTO);
 		leftIndexList.add(bioIdentityInfoDTO);
-		request.setDemographics(identity); 
+		request.setDemographics(identity);
 		request.setBiometrics(leftIndexList);
 		authRequestDTO.setRequest(request);
 

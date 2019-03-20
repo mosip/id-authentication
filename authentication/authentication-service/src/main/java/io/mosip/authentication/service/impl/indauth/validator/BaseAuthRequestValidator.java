@@ -29,6 +29,7 @@ import io.mosip.authentication.core.dto.indauth.RequestDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.indauth.match.AuthType;
+import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
 import io.mosip.authentication.core.spi.indauth.match.MatchType;
 import io.mosip.authentication.service.helper.IdInfoHelper;
 import io.mosip.authentication.service.impl.indauth.service.bio.BioAuthType;
@@ -133,6 +134,10 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	/** The id info helper. */
 	@Autowired
 	protected IdInfoHelper idInfoHelper;
+
+	/** The id info helper. */
+	@Autowired
+	protected IdInfoFetcher idInfoFetcher;
 
 	@Autowired
 	private MasterDataManager masterDataManager;
@@ -590,7 +595,7 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 		Set<String> availableAuthTypeInfos = new HashSet<>();
 		boolean hasMatch = false;
 		for (AuthType authType : authTypes) {
-			if (authType.isAuthTypeEnabled(authRequest, idInfoHelper)) {
+			if (authType.isAuthTypeEnabled(authRequest, idInfoFetcher)) {
 				Set<MatchType> associatedMatchTypes = authType.getAssociatedMatchTypes();
 				for (MatchType matchType : associatedMatchTypes) {
 					if (isMatchtypeEnabled(matchType)) {
