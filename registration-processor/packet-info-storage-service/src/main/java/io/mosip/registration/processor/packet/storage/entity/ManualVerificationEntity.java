@@ -80,25 +80,22 @@ public class ManualVerificationEntity extends BasePacketEntity<ManualVerificatio
 	private Timestamp updDtimes;
 	
 	/** The dedupe source name. */
-	@Column(name = "source_name")
-	private String sourceName;
+	@Column(name = "trntyp_code")
+	private String trnTypCode;
 	
 	/**
 	 * Gets the source name.
 	 *
 	 * @return the source name.
 	 */
-	public String getSourceName() {
-		return sourceName;
-	}
 	
-	/**
-	 * Sets the source name.
-	 *
-	 * @param sourceName            the sourceName to set
-	 */
-	public void setSourceName(String sourceName) {
-		this.sourceName = sourceName;
+
+	public String getTrnTypCode() {
+		return trnTypCode;
+	}
+
+	public void setTrnTypCode(String trnTypCode) {
+		this.trnTypCode = trnTypCode;
 	}
 
 	/**

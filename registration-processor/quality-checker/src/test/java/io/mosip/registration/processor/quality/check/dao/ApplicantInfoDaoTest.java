@@ -120,7 +120,6 @@ public class ApplicantInfoDaoTest {
 		dedupeEntity.setId(dedupePKEntity);
 		dedupeEntity.setDob(date);
 		dedupeEntity.setName("Ibrahim");
-		dedupeEntity.setPhoneticName("I165");
 		dedupeEntity.setGender("mâle");
 		dedupeEntity.setIsActive(true);
 		dedupeArray[0] = dedupeEntity;

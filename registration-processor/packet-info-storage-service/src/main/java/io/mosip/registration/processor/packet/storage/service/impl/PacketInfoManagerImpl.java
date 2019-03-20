@@ -849,7 +849,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 				manualVerificationEntity.setIsActive(true);
 				manualVerificationEntity.setIsDeleted(false);
 				manualVerificationEntity.setCrBy("SYSTEM");
-				manualVerificationEntity.setSourceName(sourceName.toString());
+				manualVerificationEntity.setTrnTypCode(sourceName.toString());
 				manualVerficationRepository.save(manualVerificationEntity);
 				isTransactionSuccessful = true;
 				description = "Manual Adjudication data saved successfully";
