@@ -82,44 +82,44 @@ public class InternalAuthControllerTest {
 		AuthRequestDTO authReqestsDTO = new AuthRequestDTO();
 		Errors error = new BindException(authReqestsDTO, "authReqDTO");
 		error.rejectValue("id", "errorCode", "defaultMessage");
-		authController.authenticateTsp(authReqestsDTO, error, "123456", "123456");
+		authController.authenticateTsp(authReqestsDTO, error, "123456");
 	}
 
 	@Test
 	public void auhtenticationTspSuccess()
 			throws IdAuthenticationBusinessException, IdAuthenticationDaoException, IdAuthenticationAppException {
 		AuthRequestDTO authReqestDTO = new AuthRequestDTO();
-		Mockito.when(authfacade.authenticateApplicant(authReqestDTO, false, "123456", "123456"))
+		Mockito.when(authfacade.authenticateApplicant(authReqestDTO, false, "123456"))
 				.thenReturn(new AuthResponseDTO());
 		Errors error = new BindException(authReqestDTO, "authReqDTO");
-		authController.authenticateTsp(authReqestDTO, error, "123456", "123456");
+		authController.authenticateTsp(authReqestDTO, error, "123456");
 	}
 
 	@Test
 	public void auhtenticationTspvalid()
 			throws IdAuthenticationBusinessException, IdAuthenticationDaoException, IdAuthenticationAppException {
 		AuthRequestDTO authReqestDTO = new AuthRequestDTO();
-		Mockito.when(authfacade.authenticateApplicant(authReqestDTO, false, "123456", "123456"))
+		Mockito.when(authfacade.authenticateApplicant(authReqestDTO, false, "123456"))
 				.thenReturn(new AuthResponseDTO());
-		authController.authenticateTsp(authReqestDTO, error, "123456", "123456");
+		authController.authenticateTsp(authReqestDTO, error, "123456");
 	}
 
 	@Test(expected = IdAuthenticationAppException.class)
 	public void TestAuthIdException()
 			throws IdAuthenticationBusinessException, IdAuthenticationDaoException, IdAuthenticationAppException {
 		AuthRequestDTO authReqestDTO = new AuthRequestDTO();
-		Mockito.when(authfacade.authenticateApplicant(authReqestDTO, false, "123456", "123456"))
+		Mockito.when(authfacade.authenticateApplicant(authReqestDTO, false, "123456"))
 				.thenThrow(new IDDataValidationException(IdAuthenticationErrorConstants.DATA_VALIDATION_FAILED));
-		authController.authenticateTsp(authReqestDTO, error, "123456", "123456");
+		authController.authenticateTsp(authReqestDTO, error, "123456");
 	}
 
 	@Test(expected = IdAuthenticationAppException.class)
 	public void TestAuthIdException2()
 			throws IdAuthenticationBusinessException, IdAuthenticationAppException, IdAuthenticationDaoException {
 		AuthRequestDTO authReqestDTO = new AuthRequestDTO();
-		Mockito.when(authfacade.authenticateApplicant(authReqestDTO, false, "123456", "123456"))
+		Mockito.when(authfacade.authenticateApplicant(authReqestDTO, false, "123456"))
 				.thenThrow(new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS));
-		authController.authenticateTsp(authReqestDTO, error, "123456", "123456");
+		authController.authenticateTsp(authReqestDTO, error, "123456");
 	}
 
 }

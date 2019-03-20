@@ -96,14 +96,11 @@ public class IdTemplateManagerTest {
 	/** Class path. */
 	private static final String CLASSPATH = "classpath";
 
-	private final String value = "OTP for UIN  $uin is $otp and is valid for $validTime minutes. (Generated at $datetimestamp)";
-
 	@Before
 	public void before() {
 		ReflectionTestUtils.setField(idTemplateManager, "masterDataManager", masterDataManager);
 		ReflectionTestUtils.setField(idTemplateManager, "environment", environment);
 		ReflectionTestUtils.setField(idTemplateManager, "idInfoHelper", idInfoHelper);
-		ReflectionTestUtils.setField(masterDataManager, "environment", environment);
 		ReflectionTestUtils.setField(idInfoHelper, "environment", environment);
 		ReflectionTestUtils.setField(restFactory, "env", environment);
 		ReflectionTestUtils.setField(idTemplateManager, "templateManagerBuilder", templateManagerBuilder);
@@ -194,6 +191,7 @@ public class IdTemplateManagerTest {
 		while ((line = br.readLine()) != null) {
 			sb.append(line.trim());
 		}
+		br.close();
 		ByteArrayOutputStream bos = (ByteArrayOutputStream) actpdfGenerator.generate(sb.toString());
 		Mockito.when(pdfGenerator.generate(Mockito.any(InputStream.class))).thenReturn(bos);
 		String outputPath = System.getProperty("user.dir");
@@ -259,7 +257,7 @@ public class IdTemplateManagerTest {
 		Mockito.when(restFactory.buildRequest(RestServicesConstants.ID_MASTERDATA_TEMPLATE_SERVICE, null, Map.class))
 				.thenReturn(getRestRequestDTO());
 		Map<String, List<Map<String, Object>>> valuemap = new HashMap<>();
-		List<Map<String, Object>> finalList = new ArrayList();
+		List<Map<String, Object>> finalList = new ArrayList<Map<String, Object>>();
 		Map<String, Object> actualMap = new HashMap<>();
 		actualMap.put("fileText",
 				"OTP pour UIN $uin est $otp et est valide pour $validTime minutes. (Généré le $date à $time Hrs)");
