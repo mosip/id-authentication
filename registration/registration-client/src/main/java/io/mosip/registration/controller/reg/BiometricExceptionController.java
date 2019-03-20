@@ -373,6 +373,7 @@ public class BiometricExceptionController extends BaseController implements Init
 				biometricExceptionDTO.setMissingBiometric(bioType);
 				biometricExceptionDTO.setExceptionType(RegistrationConstants.PERMANENT_EXCEPTION);
 				biometricExceptionDTO.setReason(RegistrationConstants.MISSING_BIOMETRICS);
+				biometricExceptionDTO.setMarkedAsException(true);
 				biometricExceptionList.add(biometricExceptionDTO);
 			});
 			SessionContext.map().put(RegistrationConstants.NEW_BIOMETRIC_EXCEPTION, biometricExceptionList);

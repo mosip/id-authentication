@@ -84,10 +84,10 @@ public class IrisCaptureController extends BaseController {
 
 	@Autowired
 	private UserOnboardParentController userOnboardParentController;
-	
+
 	@FXML
 	private Label registrationNavlabel;
-	
+
 	private Pane selectedIris;
 
 	/**
@@ -100,7 +100,8 @@ public class IrisCaptureController extends BaseController {
 		try {
 			LOGGER.info(LOG_REG_IRIS_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 					"Initializing Iris Capture page for user registration");
-			if (getRegistrationDTOFromSession()!=null && getRegistrationDTOFromSession().getSelectionListDTO() != null) {
+			if (getRegistrationDTOFromSession() != null
+					&& getRegistrationDTOFromSession().getSelectionListDTO() != null) {
 				registrationNavlabel.setText(RegistrationConstants.UIN_NAV_LABEL);
 			}
 			// Set Threshold
@@ -143,7 +144,8 @@ public class IrisCaptureController extends BaseController {
 	 * This event handler will be invoked when left iris or right iris {@link Pane}
 	 * is clicked.
 	 * 
-	 * @param mouseEvent the triggered {@link MouseEvent} object
+	 * @param mouseEvent
+	 *            the triggered {@link MouseEvent} object
 	 */
 	@FXML
 	private void enableScan(MouseEvent mouseEvent) {
@@ -371,9 +373,9 @@ public class IrisCaptureController extends BaseController {
 						long fingerPrintCount = getRegistrationDTOFromSession().getBiometricDTO()
 								.getApplicantBiometricDTO().getBiometricExceptionDTO().stream()
 								.filter(bio -> bio.getBiometricType().equals("fingerprint")).count();
-						
+
 						SessionContext.map().put("irisCapture", false);
-						
+
 						if (getRegistrationDTOFromSession().getSelectionListDTO().isBiometricFingerprint()
 								|| fingerPrintCount > 0) {
 							SessionContext.map().put("fingerPrintCapture", true);
@@ -381,10 +383,10 @@ public class IrisCaptureController extends BaseController {
 								&& fingerPrintCount == 0) {
 							biometricExceptionController.setExceptionImage();
 							SessionContext.map().put("biometricException", true);
-						}else if(!RegistrationConstants.DISABLE.equalsIgnoreCase(
-								String.valueOf(ApplicationContext.map().get(RegistrationConstants.DOC_DISABLE_FLAG)))){
+						} else if (!RegistrationConstants.DISABLE.equalsIgnoreCase(
+								String.valueOf(ApplicationContext.map().get(RegistrationConstants.DOC_DISABLE_FLAG)))) {
 							SessionContext.map().put("documentScan", true);
-						}else {
+						} else {
 							SessionContext.map().put("demographicDetail", true);
 						}
 						registrationController.showUINUpdateCurrentPage();
@@ -543,8 +545,9 @@ public class IrisCaptureController extends BaseController {
 
 	public void clearIrisBasedOnExceptions() {
 		if (getIrisExceptions().stream()
-				.anyMatch(exceptionIris -> StringUtils.containsIgnoreCase(exceptionIris.getMissingBiometric(),
-						(RegistrationConstants.LEFT).concat(RegistrationConstants.EYE)))) {
+				.anyMatch(exceptionIris -> exceptionIris.isMarkedAsException()
+						&& StringUtils.containsIgnoreCase(exceptionIris.getMissingBiometric(),
+								(RegistrationConstants.LEFT).concat(RegistrationConstants.EYE)))) {
 			leftIrisImage.setImage(
 					new Image(getClass().getResource(RegistrationConstants.LEFT_IRIS_IMG_PATH).toExternalForm()));
 			leftIrisQualityScore.setText(RegistrationConstants.EMPTY);
@@ -554,8 +557,9 @@ public class IrisCaptureController extends BaseController {
 		}
 
 		if (getIrisExceptions().stream()
-				.anyMatch(exceptionIris -> StringUtils.containsIgnoreCase(exceptionIris.getMissingBiometric(),
-						(RegistrationConstants.RIGHT).concat(RegistrationConstants.EYE)))) {
+				.anyMatch(exceptionIris -> exceptionIris.isMarkedAsException()
+						&& StringUtils.containsIgnoreCase(exceptionIris.getMissingBiometric(),
+								(RegistrationConstants.RIGHT).concat(RegistrationConstants.EYE)))) {
 			rightIrisImage.setImage(
 					new Image(getClass().getResource(RegistrationConstants.RIGHT_IRIS_IMG_PATH).toExternalForm()));
 			rightIrisQualityScore.setText(RegistrationConstants.EMPTY);
