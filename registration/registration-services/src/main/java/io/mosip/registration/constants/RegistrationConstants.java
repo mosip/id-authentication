@@ -619,7 +619,7 @@ public class RegistrationConstants {
 	public static final String PACKET_STATUS_CODE_REREGISTER = "RE-REGISTER";
 	public static final List<String> PACKET_STATUS_CODES_FOR_REMAPDELETE = Arrays.asList(PACKET_STATUS_CODE_REREGISTER,
 			PACKET_STATUS_CODE_PROCESSING, PACKET_STATUS_CODE_PROCESSED);
-	public static final String MACHINE_CENTER_REMAP_FLAG = "mosip.registrtaion.machinecenterchanged";
+	public static final String MACHINE_CENTER_REMAP_FLAG = "mosip.registration.machinecenterchanged";
 	public static final String MACHINE_CENTER_REMAP_MSG = "Machine Center Remap process started";
 	public static final String PACKET_STATUS_READER_ID = "mosip.registration.status";
 	public static final String PACKET_SYNC_STATUS_ID = "mosip.registration.sync";
