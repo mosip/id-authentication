@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="Mosip Kernel API Suite">
+
+<!--   Passing Group as parmeter unsing "testType"
+  Possible Groups are:
+  						smoke
+  						regression
+  						smokeAndRegression -->
+ 
+  		   <test name="Kernel Tests">
+			<parameter name="testType" value="smokeandregression" />
+			<classes>
+				<class name="io.mosip.kernel.tests.GetApplicantType" />
+				<class name="io.mosip.kernel.tests.GetDocType_DocCatByAppID" />
+				<class name="io.mosip.kernel.tests.GetIndividualType" />
+				<class name="io.mosip.kernel.tests.ValidateGenderByName" />
+				<class name="io.mosip.kernel.tests.ValidateLocationByName" />
+			</classes>
+		</test> 
+			
+</suite> <!-- Suite -->

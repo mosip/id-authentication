@@ -132,7 +132,7 @@ public class RestClient {
 	 * @return response
 	 */
 	public Response patchRequest(String url, String body, String contentHeader, String acceptHeader) {
-		logger.info("REST-ASSURED: Sending a POST request to " + url);
+		logger.info("REST-ASSURED: Sending a PATCH request to " + url);
 		Response postResponse = given().relaxedHTTPSValidation().body(body).contentType(contentHeader)
 				.accept(acceptHeader).log().all().when().patch(url).then().log().all().extract().response();
 		logger.info("REST-ASSURED: The response from the request is: " + postResponse.asString());

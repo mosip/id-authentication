@@ -29,7 +29,6 @@ public enum PlatformErrorMessages {
 	/** The rpr pkr packet not available. */
 	RPR_PKR_PACKET_NOT_AVAILABLE(PlatformConstants.RPR_PACKET_RECEIVER_MODULE + "006", "Packet not avaialble"),
 
-
 	RPR_PKR_UNKNOWN_EXCEPTION(PlatformConstants.RPR_PACKET_RECEIVER_MODULE + "007", "Unknown Exception"),
 
 	/** The rpr rgs registration table not accessible. */
@@ -81,34 +80,44 @@ public enum PlatformErrorMessages {
 	RPR_RGS_INVALID_PRID_LENGTH(PlatformConstants.RPR_REGISTRATION_STATUS_MODULE + "012",
 			"Parent RegistrationId Length Must Be 29"),
 
-
 	/** The missing input parameter. */
-	RPR_RGS_MISSING_INPUT_PARAMETER(PlatformConstants.RPR_REGISTRATION_STATUS_MODULE + "013", "Missing Input Parameter - %s"),
+	RPR_RGS_MISSING_INPUT_PARAMETER(PlatformConstants.RPR_REGISTRATION_STATUS_MODULE + "013",
+			"Missing Input Parameter - %s"),
 
 	/** The invalid input parameter. */
-	RPR_RGS_INVALID_INPUT_PARAMETER(PlatformConstants.RPR_REGISTRATION_STATUS_MODULE + "014", "Invalid Input Parameter - %s"),
+	RPR_RGS_INVALID_INPUT_PARAMETER(PlatformConstants.RPR_REGISTRATION_STATUS_MODULE + "014",
+			"Invalid Input Parameter - %s"),
 
 	/** The data validation failed. */
-	RPR_RGS_DATA_VALIDATION_FAILED(PlatformConstants.RPR_REGISTRATION_STATUS_MODULE + "015", "Input Data Validation Failed"),
+	RPR_RGS_DATA_VALIDATION_FAILED(PlatformConstants.RPR_REGISTRATION_STATUS_MODULE + "015",
+			"Input Data Validation Failed"),
 
-	RPR_RGS_JSON_MAPPING_EXCEPTION(PlatformConstants.RPR_REGISTRATION_STATUS_MODULE + "016", "Json Data Mapping Exception"),
+	RPR_RGS_JSON_MAPPING_EXCEPTION(PlatformConstants.RPR_REGISTRATION_STATUS_MODULE + "016",
+			"Json Data Mapping Exception"),
 
-	RPR_RGS_JSON_PARSING_EXCEPTION(PlatformConstants.RPR_REGISTRATION_STATUS_MODULE + "017", "Json Data Parsing Exception"),
+	RPR_RGS_JSON_PARSING_EXCEPTION(PlatformConstants.RPR_REGISTRATION_STATUS_MODULE + "017",
+			"Json Data Parsing Exception"),
 
 	RPR_RGS_UNKNOWN_EXCEPTION(PlatformConstants.RPR_REGISTRATION_STATUS_MODULE + "018", "Unknown Exception Occurs"),
 
-	RPR_RGS_MISSING_INPUT_PARAMETER_VERSION(PlatformConstants.RPR_REGISTRATION_STATUS_MODULE + "019", "Missing Input Parameter - version"),
+	RPR_RGS_MISSING_INPUT_PARAMETER_VERSION(PlatformConstants.RPR_REGISTRATION_STATUS_MODULE + "019",
+			"Missing Input Parameter - version"),
 
 	/** The rpr rgs missing input parameter timestamp. */
-	RPR_RGS_MISSING_INPUT_PARAMETER_TIMESTAMP(PlatformConstants.RPR_REGISTRATION_STATUS_MODULE + "020", "Missing Input Parameter - requesttime"),
+	RPR_RGS_MISSING_INPUT_PARAMETER_TIMESTAMP(PlatformConstants.RPR_REGISTRATION_STATUS_MODULE + "020",
+			"Missing Input Parameter - requesttime"),
 
-	RPR_RGS_MISSING_INPUT_PARAMETER_ID(PlatformConstants.RPR_REGISTRATION_STATUS_MODULE + "021", "Missing Input Parameter - id"),
+	RPR_RGS_MISSING_INPUT_PARAMETER_ID(PlatformConstants.RPR_REGISTRATION_STATUS_MODULE + "021",
+			"Missing Input Parameter - id"),
 
-	RPR_RGS_INVALID_INPUT_PARAMETER_VERSION(PlatformConstants.RPR_REGISTRATION_STATUS_MODULE + "022", "Invalid Input Parameter - version"),
+	RPR_RGS_INVALID_INPUT_PARAMETER_VERSION(PlatformConstants.RPR_REGISTRATION_STATUS_MODULE + "022",
+			"Invalid Input Parameter - version"),
 
-	RPR_RGS_INVALID_INPUT_PARAMETER_TIMESTAMP(PlatformConstants.RPR_REGISTRATION_STATUS_MODULE + "023", "Invalid Input Parameter - requesttime"),
+	RPR_RGS_INVALID_INPUT_PARAMETER_TIMESTAMP(PlatformConstants.RPR_REGISTRATION_STATUS_MODULE + "023",
+			"Invalid Input Parameter - requesttime"),
 
-	RPR_RGS_INVALID_INPUT_PARAMETER_ID(PlatformConstants.RPR_REGISTRATION_STATUS_MODULE + "024", "Invalid Input Parameter - id"),
+	RPR_RGS_INVALID_INPUT_PARAMETER_ID(PlatformConstants.RPR_REGISTRATION_STATUS_MODULE + "024",
+			"Invalid Input Parameter - id"),
 
 	// Packet Info Storage Exception error code and message
 	RPR_PIS_REGISTRATION_TABLE_NOT_ACCESSIBLE(PlatformConstants.RPR_PACKET_INFO_STORAGE_MODULE + "001",
@@ -165,8 +174,7 @@ public enum PlatformErrorMessages {
 	RPR_CMB_MALFORMED_URL_EXCEPTION(PlatformConstants.RPR_CAMEL_BRIDGE_MODULE + "004",
 			"Malformed Cluster Manager Url Exception"),
 
-	RPR_CMB_UNKNOWN_HOST_EXCEPTION(PlatformErrorConstants.RPR_CAMEL_BRIDGE_MODULE + "005",
-			"Unknown Host Exception"),
+	RPR_CMB_UNKNOWN_HOST_EXCEPTION(PlatformConstants.RPR_CAMEL_BRIDGE_MODULE + "005", "Unknown Host Exception"),
 
 	/** The rpr qcr registration table not accessible. */
 	// Quality Checker Exception error code and message
@@ -180,8 +188,7 @@ public enum PlatformErrorMessages {
 	RPR_QCR_INVALID_QC_USER_ID(PlatformConstants.RPR_QUALITY_CHECKER_MODULE + "003", "QC User is null"),
 
 	/** The rpr qcr invalid registration id. */
-	RPR_QCR_INVALID_REGISTRATION_ID(PlatformConstants.RPR_QUALITY_CHECKER_MODULE + "004",
-			"Registration Id is null"),
+	RPR_QCR_INVALID_REGISTRATION_ID(PlatformConstants.RPR_QUALITY_CHECKER_MODULE + "004", "Registration Id is null"),
 
 	/** The packet upload failed. */
 	PACKET_UPLOAD_FAILED("", "Packet Upload failed"),
@@ -189,7 +196,6 @@ public enum PlatformErrorMessages {
 	/** The structural validation failed. */
 	// Stages - Packet validator Exception error code and message
 	STRUCTURAL_VALIDATION_FAILED("", "Structural Validation Failed"),
-
 
 	/** The unsupported encoding. */
 	// UIN check - JSON file encoding failed.
@@ -200,7 +206,8 @@ public enum PlatformErrorMessages {
 	OSI_VALIDATION_FAILED("", "OSI Validation Failed"),
 
 	/** The osi validation packet store not accessible. */
-	OSI_VALIDATION_PACKET_STORE_NOT_ACCESSIBLE(PlatformConstants.RPR_OSI_VALIDATOR_MODULE+"005", "The Packet store set by the System is not accessible"),
+	OSI_VALIDATION_PACKET_STORE_NOT_ACCESSIBLE(PlatformConstants.RPR_OSI_VALIDATOR_MODULE + "005",
+			"The Packet store set by the System is not accessible"),
 
 	/** The packet demo dedupe failed. */
 	// Stages - Demo-Dedupe error code and message
@@ -214,11 +221,13 @@ public enum PlatformErrorMessages {
 	PACKET_BIO_DEDUPE_FAILED(PlatformConstants.RPR_BIO_DEDUPE_SERVICE_MODULE + "001", "Bio dedupe Failed"),
 
 	/** The reverse data sync failed. */
-	PACKET_BDD_PACKET_STORE_NOT_ACCESSIBLE(PlatformConstants.RPR_BIO_DEDUPE_SERVICE_MODULE+"002","The Packet store set by the System is not accessible"),
+	PACKET_BDD_PACKET_STORE_NOT_ACCESSIBLE(PlatformConstants.RPR_BIO_DEDUPE_SERVICE_MODULE + "002",
+			"The Packet store set by the System is not accessible"),
 
-	RPR_BIO_BIOMETRIC_INSERTION_TO_ABIS(PlatformConstants.RPR_BIO_DEDUPE_SERVICE_MODULE+"003","Packet biometric insertion to ABIS is failed"),
+	RPR_BIO_BIOMETRIC_INSERTION_TO_ABIS(PlatformConstants.RPR_BIO_DEDUPE_SERVICE_MODULE + "003",
+			"Packet biometric insertion to ABIS is failed"),
 
-	RPR_ABIS_INTERNAL_ERROR(PlatformConstants.RPR_BIO_DEDUPE_SERVICE_MODULE+"004","ABIS Internal error occured"),
+	RPR_ABIS_INTERNAL_ERROR(PlatformConstants.RPR_BIO_DEDUPE_SERVICE_MODULE + "004", "ABIS Internal error occured"),
 
 	/** The reverse data sync failed. */
 	// Stages - Packet-Validator error message
@@ -250,8 +259,7 @@ public enum PlatformErrorMessages {
 
 	/** The rpr pdj packet not available. */
 	// packet decryption job Exception error code and message
-	RPR_PDJ_PACKET_NOT_AVAILABLE(PlatformConstants.RPR_PACKET_DECRYPTION_JOB_MODULE + "001",
-			"Packet not available"),
+	RPR_PDJ_PACKET_NOT_AVAILABLE(PlatformConstants.RPR_PACKET_DECRYPTION_JOB_MODULE + "001", "Packet not available"),
 
 	/** The rpr pdj file path not accessible. */
 	RPR_PDJ_FILE_PATH_NOT_ACCESSIBLE(PlatformConstants.RPR_PACKET_DECRYPTION_JOB_MODULE + "002",
@@ -262,46 +270,47 @@ public enum PlatformErrorMessages {
 			"The Decryption for the Packet has failed"),
 
 	/** The rpr rct unknown resource exception. */
-	RPR_RCT_UNKNOWN_RESOURCE_EXCEPTION(PlatformConstants.RPR_REST_CLIENT_MODULE + "001",
-			"Unknown resource provided"),
+	RPR_RCT_UNKNOWN_RESOURCE_EXCEPTION(PlatformConstants.RPR_REST_CLIENT_MODULE + "001", "Unknown resource provided"),
 
 	/** The rpr mvs invalid file request. */
-	RPR_MVS_INVALID_FILE_REQUEST(PlatformConstants.RPR_MANUAL_VERIFICATION_MODULE + "001",
-			"Invalid file requested"),
+	RPR_MVS_INVALID_FILE_REQUEST(PlatformConstants.RPR_MANUAL_VERIFICATION_MODULE + "001", "Invalid file requested"),
 
 	/** The rpr mvs file not present. */
-	RPR_MVS_FILE_NOT_PRESENT(PlatformConstants.RPR_MANUAL_VERIFICATION_MODULE + "002",
-			"Requested file is not present"),
+	RPR_MVS_FILE_NOT_PRESENT(PlatformConstants.RPR_MANUAL_VERIFICATION_MODULE + "002", "Requested file is not present"),
 
 	/** The rpr mvs invalid status update. */
-	RPR_MVS_INVALID_STATUS_UPDATE(PlatformConstants.RPR_MANUAL_VERIFICATION_MODULE + "003",
-			"Invalid status update"),
+	RPR_MVS_INVALID_STATUS_UPDATE(PlatformConstants.RPR_MANUAL_VERIFICATION_MODULE + "003", "Invalid status update"),
 
 	/** The rpr mvs invalid field. */
 	RPR_MVS_INVALID_FIELD(PlatformConstants.RPR_MANUAL_VERIFICATION_MODULE + "005", " fields can not be empty"),
 
 	/** The rpr mvs no assigned record. */
-	RPR_MVS_NO_ASSIGNED_RECORD(PlatformConstants.RPR_MANUAL_VERIFICATION_MODULE + "004",
-			"No Assigned Record Found"),
+	RPR_MVS_NO_ASSIGNED_RECORD(PlatformConstants.RPR_MANUAL_VERIFICATION_MODULE + "004", "No Assigned Record Found"),
 
 	/** The rpr mvs file not found in packet store. */
 	RPR_MVS_FILE_NOT_FOUND_IN_PACKET_STORE(PlatformConstants.RPR_MANUAL_VERIFICATION_MODULE + "005",
 			"Packet Not Found in Packet Store"),
 
-	RPR_MVS_MISSING_INPUT_PARAMETER_VERSION(PlatformConstants.RPR_MANUAL_VERIFICATION_MODULE + "005", "Missing Input Parameter - version"),
+	RPR_MVS_MISSING_INPUT_PARAMETER_VERSION(PlatformConstants.RPR_MANUAL_VERIFICATION_MODULE + "005",
+			"Missing Input Parameter - version"),
 
+	RPR_MVS_MISSING_INPUT_PARAMETER_TIMESTAMP(PlatformConstants.RPR_MANUAL_VERIFICATION_MODULE + "006",
+			"Missing Input Parameter - requesttime"),
 
-	RPR_MVS_MISSING_INPUT_PARAMETER_TIMESTAMP(PlatformConstants.RPR_MANUAL_VERIFICATION_MODULE + "006", "Missing Input Parameter - requesttime"),
+	RPR_MVS_MISSING_INPUT_PARAMETER_ID(PlatformConstants.RPR_MANUAL_VERIFICATION_MODULE + "007",
+			"Missing Input Parameter - id"),
 
-	RPR_MVS_MISSING_INPUT_PARAMETER_ID(PlatformConstants.RPR_MANUAL_VERIFICATION_MODULE + "007", "Missing Input Parameter - id"),
+	RPR_MVS_INVALID_INPUT_PARAMETER_VERSION(PlatformConstants.RPR_MANUAL_VERIFICATION_MODULE + "008",
+			"Invalid Input Parameter - version"),
 
-	RPR_MVS_INVALID_INPUT_PARAMETER_VERSION(PlatformConstants.RPR_MANUAL_VERIFICATION_MODULE + "008", "Invalid Input Parameter - version"),
+	RPR_MVS_INVALID_INPUT_PARAMETER_TIMESTAMP(PlatformConstants.RPR_MANUAL_VERIFICATION_MODULE + "009",
+			"Invalid Input Parameter - requesttime"),
 
-	RPR_MVS_INVALID_INPUT_PARAMETER_TIMESTAMP(PlatformConstants.RPR_MANUAL_VERIFICATION_MODULE + "009", "Invalid Input Parameter - requesttime"),
+	RPR_MVS_INVALID_INPUT_PARAMETER_ID(PlatformConstants.RPR_MANUAL_VERIFICATION_MODULE + "010",
+			"Invalid Input Parameter - id"),
 
-	RPR_MVS_INVALID_INPUT_PARAMETER_ID(PlatformConstants.RPR_MANUAL_VERIFICATION_MODULE + "010", "Invalid Input Parameter - id"),
-
-	RPR_MVS_INVALID_ARGUMENT_EXCEPTION(PlatformConstants.RPR_MANUAL_VERIFICATION_MODULE + "011", "Invalid Argument Exception"),
+	RPR_MVS_INVALID_ARGUMENT_EXCEPTION(PlatformConstants.RPR_MANUAL_VERIFICATION_MODULE + "011",
+			"Invalid Argument Exception"),
 
 	RPR_MVS_UNKNOWN_EXCEPTION(PlatformConstants.RPR_MANUAL_VERIFICATION_MODULE + "012", "Unknown Exception"),
 
@@ -322,8 +331,7 @@ public enum PlatformErrorMessages {
 			"Template Generation failed"),
 
 	/** The rpr sms phone number not found. */
-	RPR_SMS_PHONE_NUMBER_NOT_FOUND(PlatformConstants.RPR_MESSAGE_SENDER_TEMPLATE + "002",
-			"Phone number was not found"),
+	RPR_SMS_PHONE_NUMBER_NOT_FOUND(PlatformConstants.RPR_MESSAGE_SENDER_TEMPLATE + "002", "Phone number was not found"),
 
 	/** The rpr eml emailid not found. */
 	RPR_EML_EMAILID_NOT_FOUND(PlatformConstants.RPR_MESSAGE_SENDER_TEMPLATE + "001", "Email Id was not found"),
@@ -381,23 +389,27 @@ public enum PlatformErrorMessages {
 			"Connection not obtained from ConnectionFactory"),
 
 	/** The missing input parameter. */
-	RPR_BDD_MISSING_INPUT_PARAMETER(PlatformConstants.RPR_BIO_DEDUPE_SERVICE_MODULE + "005", "Missing Input Parameter - %s"),
+	RPR_BDD_MISSING_INPUT_PARAMETER(PlatformConstants.RPR_BIO_DEDUPE_SERVICE_MODULE + "005",
+			"Missing Input Parameter - %s"),
 
 	/** The invalid input parameter. */
-	RPR_BDD_INVALID_INPUT_PARAMETER(PlatformConstants.RPR_BIO_DEDUPE_SERVICE_MODULE + "006", "Invalid Input Parameter - %s"),
+	RPR_BDD_INVALID_INPUT_PARAMETER(PlatformConstants.RPR_BIO_DEDUPE_SERVICE_MODULE + "006",
+			"Invalid Input Parameter - %s"),
 
 	/** The data validation failed. */
-	RPR_BDD_DATA_VALIDATION_FAILED(PlatformConstants.RPR_BIO_DEDUPE_SERVICE_MODULE + "007", "Input Data Validation Failed"),
+	RPR_BDD_DATA_VALIDATION_FAILED(PlatformConstants.RPR_BIO_DEDUPE_SERVICE_MODULE + "007",
+			"Input Data Validation Failed"),
 
-	RPR_BDD_JSON_MAPPING_EXCEPTION(PlatformConstants.RPR_BIO_DEDUPE_SERVICE_MODULE + "008", "Json Data Mapping Exception"),
+	RPR_BDD_JSON_MAPPING_EXCEPTION(PlatformConstants.RPR_BIO_DEDUPE_SERVICE_MODULE + "008",
+			"Json Data Mapping Exception"),
 
-	RPR_BDD_JSON_PARSING_EXCEPTION(PlatformConstants.RPR_BIO_DEDUPE_SERVICE_MODULE + "009", "Json Data Parsing Exception"),
+	RPR_BDD_JSON_PARSING_EXCEPTION(PlatformConstants.RPR_BIO_DEDUPE_SERVICE_MODULE + "009",
+			"Json Data Parsing Exception"),
 
 	RPR_BDD_UNKNOWN_EXCEPTION(PlatformConstants.RPR_BIO_DEDUPE_SERVICE_MODULE + "010", "Unknown Exception Occurs"),
 
 	/** The rpr mvs file not present. */
-	RPR_BDD_FILE_NOT_PRESENT(PlatformConstants.RPR_BIO_DEDUPE_SERVICE_MODULE + "011",
-			"Requested file is not present"),
+	RPR_BDD_FILE_NOT_PRESENT(PlatformConstants.RPR_BIO_DEDUPE_SERVICE_MODULE + "011", "Requested file is not present"),
 
 	/** *** System Exception ****. */
 
@@ -441,8 +453,7 @@ public enum PlatformErrorMessages {
 
 	/** The rpr prt pdf not generated. */
 	// Printing stage exceptions
-	RPR_PRT_PDF_NOT_GENERATED(PlatformConstants.RPR_PRINTING_MODULE + "001",
-			"Error while generating PDF for UIN Card"),
+	RPR_PRT_PDF_NOT_GENERATED(PlatformConstants.RPR_PRINTING_MODULE + "001", "Error while generating PDF for UIN Card"),
 
 	/** The rpr prt uin not found in database. */
 	RPR_PRT_UIN_NOT_FOUND_IN_DATABASE(PlatformConstants.RPR_PRINTING_MODULE + "002", "UIN not found in database"),
@@ -457,7 +468,8 @@ public enum PlatformErrorMessages {
 	RPR_PRT_QRCODE_NOT_GENERATED(PlatformConstants.RPR_PRINTING_MODULE + "005", "Error while generating QR Code"),
 
 	/** The rpr prt applicant photo not set. */
-	RPR_PRT_APPLICANT_PHOTO_NOT_SET(PlatformConstants.RPR_PRINTING_MODULE + "006", "Error while setting applicant photo"),
+	RPR_PRT_APPLICANT_PHOTO_NOT_SET(PlatformConstants.RPR_PRINTING_MODULE + "006",
+			"Error while setting applicant photo"),
 
 	/** The rpr prt qrcode not set. */
 	RPR_PRT_QRCODE_NOT_SET(PlatformConstants.RPR_PRINTING_MODULE + "007", "Error while setting qrCode for uin card"),
@@ -465,11 +477,12 @@ public enum PlatformErrorMessages {
 	/** The rpr prt idrepo response null. */
 	RPR_PRT_IDREPO_RESPONSE_NULL(PlatformConstants.RPR_PRINTING_MODULE + "008", "ID Repo response is null"),
 
-	/** The rpr prt idrepo documents absent*/
+	/** The rpr prt idrepo documents absent */
 	RPR_PRT_IDREPO_DOCUMENT_ABSENT(PlatformConstants.RPR_PRINTING_MODULE + "009", "ID Repo response has no documents"),
 
 	/** The print and postal acknowledment generation failed. */
-	RPR_PRT_PRINT_POST_ACK_FAILED(PlatformConstants.RPR_PRINTING_MODULE + "010", "Error while getting response from Print and Postal Service Provider"),
+	RPR_PRT_PRINT_POST_ACK_FAILED(PlatformConstants.RPR_PRINTING_MODULE + "010",
+			"Error while getting response from Print and Postal Service Provider"),
 
 	/** The rpr rgs registration connector not accessible. */
 	RPR_RGS_REGISTRATION_CONNECTOR_NOT_ACCESSIBLE("", "Registration connector stage is not accessible "),
@@ -480,8 +493,52 @@ public enum PlatformErrorMessages {
 
 	/** The rpr ugs packet store not accessible. */
 	RPR_UGS_PACKET_STORE_NOT_ACCESSIBLE(PlatformConstants.RPR_UIN_GENERATOR_STAGE + "001",
-			"The Packet store set by the System is not accessible");
+			"The Packet store set by the System is not accessible"),
+	/** The rpr pgs file not present. */
+	RPR_PGS_FILE_NOT_PRESENT(PlatformConstants.RPR_PACKET_GENERATOR_MODULE + "001",
+			"The Packet store set by the System is not accessible"),
 
+	/** The rpr pgs invalid key illegal argument. */
+	RPR_PGS_INVALID_KEY_ILLEGAL_ARGUMENT(PlatformConstants.RPR_PACKET_GENERATOR_MODULE + "002",
+			"The key is invalid or illegal argument"),
+
+	/** The rpr pgs api resource not available. */
+	RPR_PGS_API_RESOURCE_NOT_AVAILABLE(PlatformConstants.RPR_PACKET_GENERATOR_MODULE + "003",
+			"The Api resource is not available"),
+
+	/** The rpr pgs reg base exception. */
+	RPR_PGS_REG_BASE_EXCEPTION(PlatformConstants.RPR_PACKET_GENERATOR_MODULE + "004", "reg Based checked exception"),
+
+	/** The rpr pgs json processing exception. */
+	RPR_PGS_JSON_PROCESSING_EXCEPTION(PlatformConstants.RPR_PACKET_GENERATOR_MODULE + "005",
+			"Exception while parsing object to JSON"),
+
+	/** The rpr pgs json validator error code. */
+	RPR_PGS_JSON_VALIDATOR_ERROR_CODE(PlatformConstants.RPR_PACKET_GENERATOR_MODULE + "006",
+			"Exception while validating ID json file"),
+
+	/** The rpr pgs encryptor invlaid data exception. */
+	RPR_PGS_ENCRYPTOR_INVLAID_DATA_EXCEPTION(PlatformConstants.RPR_PACKET_GENERATOR_MODULE + "007",
+			"Exception occured while encryting the packet Invalid data"),
+
+	/** The rpr pgs encryptor invlaid key exception. */
+	RPR_PGS_ENCRYPTOR_INVLAID_KEY_EXCEPTION(PlatformConstants.RPR_PACKET_GENERATOR_MODULE + "008",
+			"Exception occured while encryting the packet Invalid Key"),
+
+	/** The rpr pgs packet meta convertor exception. */
+	RPR_PGS_PACKET_META_CONVERTOR_EXCEPTION(PlatformConstants.RPR_PACKET_GENERATOR_MODULE + "009",
+			"Packet meta info converter error"),
+
+	/** The missing input parameter. */
+	RPR_PGS_MISSING_INPUT_PARAMETER(PlatformConstants.RPR_PACKET_GENERATOR_MODULE + "010",
+			"Missing Input Parameter - %s"),
+
+	/** The invalid input parameter. */
+	RPR_PGS_INVALID_INPUT_PARAMETER(PlatformConstants.RPR_PACKET_GENERATOR_MODULE + "011",
+			"Invalid Input Parameter - %s"),
+	/** The data validation failed. */
+	RPR_PGS_DATA_VALIDATION_FAILED(PlatformConstants.RPR_PACKET_GENERATOR_MODULE + "012",
+			"Input Data Validation Failed");
 	/** The error message. */
 	private final String errorMessage;
 

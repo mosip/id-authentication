@@ -132,7 +132,7 @@ public class DemodedupeProcessor {
 
 			if (!duplicateDtos.isEmpty()) {
 
-				registrationStatusDto.setStatusCode(RegistrationStatusCode.POTENTIAL_MATCH_FOUND.toString());
+				registrationStatusDto.setStatusCode(RegistrationStatusCode.DEMO_DEDUPE_POTENTIAL_MATCH_FOUND.toString());
 				registrationStatusDto.setStatusComment(StatusMessage.POTENTIAL_MATCH_FOUND);
 				registrationStatusService.updateRegistrationStatus(registrationStatusDto);
 				// authenticating duplicateIds with provided packet biometrics
@@ -161,7 +161,7 @@ public class DemodedupeProcessor {
 					description = PlatformSuccessMessages.RPR_PKR_DEMO_DE_DUP_POTENTIAL_DUPLICATION_FOUND.getMessage()+" -- " + registrationId;
 
 					// Saving potential duplicates in reg_manual_verification table
-					packetInfoManager.saveManualAdjudicationData(uniqueMatchedRefIdList, registrationId);
+					packetInfoManager.saveManualAdjudicationData(uniqueMatchedRefIdList, registrationId, DedupeSourceName.DEMO);
 				}
 
 			} else {

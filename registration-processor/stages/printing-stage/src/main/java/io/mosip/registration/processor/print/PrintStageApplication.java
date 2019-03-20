@@ -20,7 +20,8 @@ public class PrintStageApplication {
 				"io.mosip.registration.processor.core.kernel.beans",
 				"io.mosip.registration.processor.message.sender.config",
 				"io.mosip.registration.processor.status.config",
-				"io.mosip.registration.processor.print.service.config");
+				"io.mosip.registration.processor.print.service.config",
+				"io.mosip.registration.processor.message.sender.config");
 		ctx.refresh();
 		
 		PrintStage printStage = ctx.getBean(PrintStage.class);

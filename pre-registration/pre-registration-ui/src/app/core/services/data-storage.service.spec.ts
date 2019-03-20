@@ -7,49 +7,61 @@ import { BookingModel } from 'src/app/feature/booking/center-selection/booking.m
 import { BookingModelRequest } from 'src/app/shared/booking-request.model';
 
 describe('DataStorageService', () => {
-
   let service: DataStorageService = null;
 
-  let dataStorageService: DataStorageService, mockService = {
-    getConfig: jasmine.createSpy('getConfig').and.returnValue(of('hello')),
-    getGuidelineTemplate: jasmine.createSpy('getGuidelineTemplate',).and.returnValue(of('guideline 1')),
-    getRegistrationCenterByIdAndLangCode: jasmine.createSpy('getRegistrationCenterByIdAndLangCode').and.returnValue(of({regCenterID: '12345'})),
-    recommendedCenters: jasmine.createSpy('recommendedCenters').and.returnValue(of({regCenterID: '12345'})),
-    sendNotification: jasmine.createSpy('sendNotification').and.returnValue(of({message: 'success'})),
-    getSecondaryLanguageLabels: jasmine.createSpy('getSecondaryLanguageLabels').and.returnValue(of('hello')),
-    generateQRCode: jasmine.createSpy('generateQRCode').and.returnValue(of(new Blob())),
-    copyDocument: jasmine.createSpy('copyDocument').and.returnValue(of({message: 'success'})),
-    deleteFile: jasmine.createSpy('deleteFile').and.returnValue(of({message: 'success'})),
-    getUsers: jasmine.createSpy('getUsers').and.returnValue(of({users:[{userId: '12345'}]})),
-    getUser: jasmine.createSpy('getUser').and.returnValue(of({user:{userId: '12345'}})),
-    getGenderDetails: jasmine.createSpy('getGenderDetails').and.returnValue(of('male')),
-    getTransliteration: jasmine.createSpy('getTransliteration').and.returnValue(of('bon voyage')),
-    getUserDocuments: jasmine.createSpy('getUserDocuments').and.returnValue(of({documents:['hello.txt']})),
-    getLocationImmediateHierearchy: jasmine.createSpy('getLocationImmediateHierearchy').and.returnValue(of({country: 'morroco'})),
-    getLocationMetadataHirearchy: jasmine.createSpy('getLocationMetadataHirearchy').and.returnValue(of({country: 'morroco'})),
-    makeBooking: jasmine.createSpy('makeBooking').and.returnValue(of('success')),
-    getAvailabilityData: jasmine.createSpy('getAvailabilityData').and.returnValue(of({available: 4})),
-    getLocationTypeData: jasmine.createSpy('getLocationTypeData').and.returnValue(of({country: 'morroco'})),
-    getRegistrationCentersByName: jasmine.createSpy('getRegistrationCentersByName').and.returnValue(of({registrationCenter: {centerId: '1001'}})),
-    getNearbyRegistrationCenters: jasmine.createSpy('getNearbyRegistrationCenters').and.throwError('No registration centers found'),
-    cancelAppointment: jasmine.createSpy('cancelAppointment').and.returnValue(of('success')),
-    addUser: jasmine.createSpy('addUser').and.returnValue(of('successfully inserted')),
-    deleteRegistration: jasmine.createSpy('deleteRegistration').and.returnValue(of('success')),
-    sendFile: jasmine.createSpy('sendFile').and.throwError('HDFS not working')
-  }
+  let dataStorageService: DataStorageService,
+    mockService = {
+      getConfig: jasmine.createSpy('getConfig').and.returnValue(of('hello')),
+      getGuidelineTemplate: jasmine.createSpy('getGuidelineTemplate').and.returnValue(of('guideline 1')),
+      getRegistrationCenterByIdAndLangCode: jasmine
+        .createSpy('getRegistrationCenterByIdAndLangCode')
+        .and.returnValue(of({ regCenterID: '12345' })),
+      recommendedCenters: jasmine.createSpy('recommendedCenters').and.returnValue(of({ regCenterID: '12345' })),
+      sendNotification: jasmine.createSpy('sendNotification').and.returnValue(of({ message: 'success' })),
+      getSecondaryLanguageLabels: jasmine.createSpy('getSecondaryLanguageLabels').and.returnValue(of('hello')),
+      generateQRCode: jasmine.createSpy('generateQRCode').and.returnValue(of(new Blob())),
+      copyDocument: jasmine.createSpy('copyDocument').and.returnValue(of({ message: 'success' })),
+      deleteFile: jasmine.createSpy('deleteFile').and.returnValue(of({ message: 'success' })),
+      getUsers: jasmine.createSpy('getUsers').and.returnValue(of({ users: [{ userId: '12345' }] })),
+      getUser: jasmine.createSpy('getUser').and.returnValue(of({ user: { userId: '12345' } })),
+      getGenderDetails: jasmine.createSpy('getGenderDetails').and.returnValue(of('male')),
+      getTransliteration: jasmine.createSpy('getTransliteration').and.returnValue(of('bon voyage')),
+      getUserDocuments: jasmine.createSpy('getUserDocuments').and.returnValue(of({ documents: ['hello.txt'] })),
+      getLocationImmediateHierearchy: jasmine
+        .createSpy('getLocationImmediateHierearchy')
+        .and.returnValue(of({ country: 'morroco' })),
+      getLocationMetadataHirearchy: jasmine
+        .createSpy('getLocationMetadataHirearchy')
+        .and.returnValue(of({ country: 'morroco' })),
+      makeBooking: jasmine.createSpy('makeBooking').and.returnValue(of('success')),
+      getAvailabilityData: jasmine.createSpy('getAvailabilityData').and.returnValue(of({ available: 4 })),
+      getLocationTypeData: jasmine.createSpy('getLocationTypeData').and.returnValue(of({ country: 'morroco' })),
+      getRegistrationCentersByName: jasmine
+        .createSpy('getRegistrationCentersByName')
+        .and.returnValue(of({ registrationCenter: { centerId: '1001' } })),
+      getNearbyRegistrationCenters: jasmine
+        .createSpy('getNearbyRegistrationCenters')
+        .and.throwError('No registration centers found'),
+      cancelAppointment: jasmine.createSpy('cancelAppointment').and.returnValue(of('success')),
+      addUser: jasmine.createSpy('addUser').and.returnValue(of('successfully inserted')),
+      deleteRegistration: jasmine.createSpy('deleteRegistration').and.returnValue(of('success')),
+      sendFile: jasmine.createSpy('sendFile').and.throwError('HDFS not working')
+    };
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [HttpClientModule],
-      providers: [{
-        provide: DataStorageService,
-        useValue: mockService
-      }]
+      providers: [
+        {
+          provide: DataStorageService,
+          useValue: mockService
+        }
+      ]
     });
   });
 
-  beforeEach(inject([DataStorageService], (dataStorageService) => {
-    service = dataStorageService
+  beforeEach(inject([DataStorageService], dataStorageService => {
+    service = dataStorageService;
   }));
 
   it('should be created', () => {
@@ -110,7 +122,7 @@ describe('DataStorageService', () => {
       response = value;
     });
     expect(response).toBe('hello');
-  });  
+  });
 
   it('generateQRCode', () => {
     let response = null;
@@ -230,7 +242,7 @@ describe('DataStorageService', () => {
 
   it('getNearbyRegistrationCenters throws error', () => {
     expect(() => {
-      service.getNearbyRegistrationCenters({})
+      service.getNearbyRegistrationCenters({});
     }).toThrow(new Error('No registration centers found'));
   });
 
@@ -263,7 +275,7 @@ describe('DataStorageService', () => {
   it('sendFile', () => {
     const formData = new FormData();
     expect(() => {
-      service.sendFile(formData)
+      service.sendFile(formData);
     }).toThrowError('HDFS not working');
-  });  
+  });
 });

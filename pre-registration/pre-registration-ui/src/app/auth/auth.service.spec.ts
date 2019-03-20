@@ -1,36 +1,39 @@
-import { TestBed, inject } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
+import { Router } from '@angular/router';
+import { DataStorageService } from '../core/services/data-storage.service';
 import { AuthService } from './auth.service';
-
-describe('Auth service', () => {
-    beforeEach(() => {
-        TestBed.configureTestingModule({
-          providers: [AuthService]
-        });
-      });
-
-      it('should be created', inject([AuthService], (service: AuthService) => {
-        expect(service).toBeTruthy();
-      }));
-
-      it('token should be created', inject([AuthService], (service: AuthService) => {
-        service.setToken();
-        expect(service.token).toBe('settingToken');
-      }));
-
-      it('token should be deleted', inject([AuthService], (service: AuthService) => {
-        service.setToken();
-        service.removeToken();
-        expect(service.token).toBe(null);
-      }));
-
-      it('Authentication check true', inject([AuthService], (service: AuthService) => {
-        service.setToken();
-        expect(service.isAuthenticated()).toBeTruthy();
-      }));
-
-      it('Authentication check false', inject([AuthService], (service: AuthService) => {
-        service.setToken();
-        service.removeToken();
-        expect(service.isAuthenticated()).toBeFalsy();
-      }));
-})
+describe('AuthService', () => {
+  let service: AuthService;
+  beforeEach(() => {
+    const routerStub = { navigate: () => ({}) };
+    const dataStorageServiceStub = {
+      onLogout: () => ({ subscribe: () => ({}) })
+    };
+    TestBed.configureTestingModule({
+      providers: [
+        AuthService,
+        { provide: Router, useValue: routerStub },
+        { provide: DataStorageService, useValue: dataStorageServiceStub }
+      ]
+    });
+    service = TestBed.get(AuthService);
+  });
+  it('can load instance', () => {
+    expect(service).toBeTruthy();
+  });
+  describe('onLogout', () => {
+    it('makes expected calls', () => {
+      const routerStub: Router = TestBed.get(Router);
+      const dataStorageServiceStub: DataStorageService = TestBed.get(
+        DataStorageService
+      );
+      spyOn(component, 'removeToken');
+      spyOn(routerStub, 'navigate');
+      spyOn(dataStorageServiceStub, 'onLogout');
+      service.onLogout();
+      expect(service.removeToken).toHaveBeenCalled();
+      expect(routerStub.navigate).toHaveBeenCalled();
+      expect(dataStorageServiceStub.onLogout).toHaveBeenCalled();
+    });
+  });
+});

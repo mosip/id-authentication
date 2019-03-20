@@ -19,6 +19,8 @@ export class PreviewComponent implements OnInit {
   secondaryLanguage;
   user: UserModel;
   files = [];
+  documentTypes;
+  documentMapObject = [];
 
   constructor(
     private dataStorageService: DataStorageService,
@@ -35,15 +37,19 @@ export class PreviewComponent implements OnInit {
     this.primaryLanguage = localStorage.getItem('langCode');
     this.secondaryLanguage = localStorage.getItem('secondaryLangCode');
     this.user = { ...this.registrationService.getUser(this.registrationService.getUsers().length - 1) };
+    this.documentTypes = this.registrationService.getDocumentCategories();
+    console.log('document types', this.documentTypes);
     console.log(this.user);
     this.previewData = this.user.request.demographicDetails.identity;
     this.calculateAge();
     this.previewData.primaryAddress = this.combineAddress(0);
     this.previewData.secondaryAddress = this.combineAddress(1);
     this.setFieldValues();
+    this.setResidentStatus();
     console.log(this.previewData);
     this.getSecondaryLanguageLabels();
     this.files = this.user.files[0];
+    this.documentsMapping();
   }
 
   setFieldValues() {
@@ -56,6 +62,32 @@ export class PreviewComponent implements OnInit {
         )
       })
     })
+  }
+
+  setResidentStatus() {
+    this.previewData['residenceStatus'].forEach(element => {
+      element.name = appConstants.residentTypesMapping[element.value][element.language];
+    })
+  }
+
+  documentsMapping() {
+    this.documentMapObject = [];
+    this.documentTypes.forEach(type => {
+      const file = this.files.filter(file => file.doc_cat_code === type.code);
+      if (type.code === 'POA' && file.length === 0 && this.registrationService.getSameAs() !== '') {
+        const obj = {
+          doc_name: appConstants.sameAs[localStorage.getItem('langCode')]
+        }
+        file.push(obj);
+      }
+      const obj = {
+        code: type.code,
+        name: type.description,
+        fileName: file.length > 0 ? file[0].doc_name : undefined
+      };
+      this.documentMapObject.push(obj);
+    });
+    console.log(this.documentMapObject);
   }
 
   combineAddress(index: number) {
@@ -102,19 +134,22 @@ export class PreviewComponent implements OnInit {
   }
 
   enableContinue(): boolean {
-    let flag = false;
-    if (this.files.length === 4) {
-      flag = true;
-    } else if (this.files.length === 3 && this.registrationService.getSameAs() !== '') {
-      flag = true;
-    } else {
-      flag = false;
-    }
+    let flag = true;
+    this.documentMapObject.forEach(object => {      
+      if (object.fileName === undefined) {
+        if (object.code === 'POA' && this.registrationService.getSameAs() !== '') {
+          flag = true;
+        } else {
+          flag = false;
+        }
+      }
+    })
     return flag;
   }
 
   navigateDashboard() {
     localStorage.setItem('newApplicant', 'false');
+    this.registrationService.setSameAs('');
     this.registrationService.changeMessage({ modifyUserFromPreview: 'false' });
     const url = Utils.getURL(this.router.url, 'demographic', 2);
     this.router.navigateByUrl(url);

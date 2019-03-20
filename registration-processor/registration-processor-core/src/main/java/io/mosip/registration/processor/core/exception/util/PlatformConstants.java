@@ -12,6 +12,10 @@ public final class PlatformConstants {
 	 */
 	private static final String RPR_REGISTRATION_PROCESSOR_PREFIX = "RPR-";
 
+	/** The constant RPR_PACKET_GENERATOR_MODULE. */
+
+	public static final String RPR_PACKET_GENERATOR_MODULE =RPR_REGISTRATION_PROCESSOR_PREFIX + "PGS-";
+
 	/** The Constant RPR_PACKET_RECEIVER_MODULE. */
 	public static final String RPR_PACKET_RECEIVER_MODULE = RPR_REGISTRATION_PROCESSOR_PREFIX + "PKR-";
 
@@ -26,10 +30,10 @@ public final class PlatformConstants {
 
 	/** The Constant RPR_PACKET_MANAGER_MODULE. */
 	public static final String RPR_PACKET_MANAGER_MODULE = RPR_REGISTRATION_PROCESSOR_PREFIX + "PKM-";
-	
+
 	/** The Constant RPR_OSI_VALIDATOR_MODULE. */
 	public static final String RPR_OSI_VALIDATOR_MODULE = RPR_REGISTRATION_PROCESSOR_PREFIX + "OSI-";
-	
+
 	/** The Constant RPR_DEMO_DEDUPE_MODULE. */
 	public static final String RPR_DEMO_DEDUPE_MODULE = RPR_REGISTRATION_PROCESSOR_PREFIX + "DDD-";
 

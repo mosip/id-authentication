@@ -70,22 +70,34 @@ public enum ApiName {
 	/** The ReverseDataSync **/
 	REVERSEDATASYNC,
 
-    /** The Device history **/
+	/** The Device history **/
 	DEVICESHISTORIES,
 
-    /** The Reg center device history **/
+	/** The Reg center device history **/
 	REGISTRATIONCENTERDEVICEHISTORY,
 
-    /** The registration center timestamp **/
+	/** The registration center timestamp **/
 	REGISTRATIONCENTERTIMESTAMP,
-	
-	 /** The registration connector**/
+
+	/** The registration connector **/
 	REGISTRATIONCONNECTOR,
-	
-	 /** The decryption api from DMZ**/
+
+	SYNCSERVICE,
+
+	ENCRYPTIONSERVICE,
+
+	PACKETRECEIVER,
+
+	/** The decryption api from DMZ **/
 	DMZCRYPTOMANAGERDECRYPT,
 
-	/** The AUDIT api from DMZ**/
-	DMZAUDIT
+	/** The AUDIT api from DMZ **/
+	DMZAUDIT,
+
+	/** The centerdetails. */
+	CENTERDETAILS,
+
+	/** The machinedetails. */
+	MACHINEDETAILS;
 
 }
