@@ -844,7 +844,7 @@ public class DemographicDetailController extends BaseController {
 
 			try {
 				jsonValidator.validateJson(JsonUtils.javaObjectToJsonString(demographicInfoDTO),
-						"mosip-identity-json-schema.json");
+						RegistrationConstants.IDENTITY_JSON_FILE_NAME);
 			} catch (JsonValidationProcessingException | JsonIOException | JsonSchemaIOException | FileIOException
 					| JsonProcessingException exception) {
 				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.REG_ID_JSON_VALIDATION_FAILED);
@@ -1043,6 +1043,7 @@ public class DemographicDetailController extends BaseController {
 						.with(identity -> identity.setParentOrGuardianBiometrics(introducerBiometric
 								.getFingerprintDetailsDTO().isEmpty()
 								&& introducerBiometric.getIrisDetailsDTO().isEmpty()
+								&& introducerBiometric.getFaceDetailsDTO().getFace() != null
 										? null
 										: (CBEFFFilePropertiesDTO) Builder.build(CBEFFFilePropertiesDTO.class)
 												.with(cbeffProperties -> cbeffProperties

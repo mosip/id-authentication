@@ -112,10 +112,7 @@ public class IrisCaptureController extends BaseController {
 			scanIris.setDisable(true);
 
 			// Display the Captured Iris
-			// Display the Captured Iris
-			if (getBiometricDTOFromSession() != null) {
-				displayCapturedIris();
-			} else if (getRegistrationDTOFromSession() != null) {
+			if (getBiometricDTOFromSession() != null || getRegistrationDTOFromSession() != null) {
 				displayCapturedIris();
 			}
 
@@ -169,14 +166,17 @@ public class IrisCaptureController extends BaseController {
 
 			// Enable the scan button, if any of the following satisfies
 			// 1. If Iris was not scanned
-			// 2. Quality score of the scanned image is less than threshold
+			// 2. Quality score of the scanned image is less than threshold and number of
+			// retries is less than configured
 			// 3. If iris is not forced captured
 			// 4. If iris is an exception iris
 			if (!isExceptionIris
 					&& (irisDetailsDTO == null
 							|| (Double.compare(irisDetailsDTO.getQualityScore(),
 									Double.parseDouble(
-											getValueFromApplicationMap(RegistrationConstants.IRIS_THRESHOLD))) < 0)
+											getValueFromApplicationMap(RegistrationConstants.IRIS_THRESHOLD))) < 0
+									&& irisDetailsDTO.getNumOfIrisRetry() < Integer.parseInt(
+											getValueFromApplicationMap(RegistrationConstants.IRIS_RETRY_COUNT)))
 							|| irisDetailsDTO.isForceCaptured())) {
 				scanIris.setDisable(false);
 			}
