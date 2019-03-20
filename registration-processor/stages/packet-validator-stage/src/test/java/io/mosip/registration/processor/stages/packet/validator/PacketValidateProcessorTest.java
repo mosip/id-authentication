@@ -317,7 +317,7 @@ public class PacketValidateProcessorTest {
 		PowerMockito.whenNew(MasterDataValidation.class).withArguments(any(), any(), any(), any(), any())
 				.thenReturn(masterDataValidation);
 		Mockito.when(masterDataValidation.validateMasterData(any())).thenReturn(true);
-		Mockito.when(jsonValidatorImpl.validateJson(any(), any())).thenReturn(validationReport);
+		Mockito.when(jsonValidatorImpl.validateJson(any())).thenReturn(validationReport);
 
 		JSONObject demographicIdentity = new JSONObject();
 		PowerMockito.when(JsonUtil.getJSONObject(any(), any())).thenReturn(demographicIdentity);
