@@ -188,12 +188,12 @@ public class StaticPinStorage extends IdaScriptsUtil implements ITest{
 		UinStaticPinDto.setUinStaticPin(uinPin);
 		VidStaticPinDto.setVidStaticPin(vidPin);
 		logger.info("Stored Pin: " + UinStaticPinDto.getUinStaticPin());
-		generateMappingDic(RunConfig.getUserDirectory() + RunConfig.getSrcPath() + "ida/"
-				+ RunConfig.getTestDataFolderName() + "/RunConfig/uinStaticPin.properties",
+		generateMappingDic(new File("./"+RunConfig.getSrcPath() + "ida/"
+				+ RunConfig.getTestDataFolderName() + "/RunConfig/uinStaticPin.properties").getAbsolutePath(),
 				UinStaticPinDto.getUinStaticPin());
 		logger.info("Stored Pin: " + VidStaticPinDto.getVidStaticPin());
-		generateMappingDic(RunConfig.getUserDirectory() + RunConfig.getSrcPath() + "ida/"
-				+ RunConfig.getTestDataFolderName() + "/RunConfig/vidStaticPin.properties",
+		generateMappingDic(new File("./"+RunConfig.getSrcPath() + "ida/"
+				+ RunConfig.getTestDataFolderName() + "/RunConfig/vidStaticPin.properties").getAbsolutePath(),
 				VidStaticPinDto.getVidStaticPin());
 	}
 

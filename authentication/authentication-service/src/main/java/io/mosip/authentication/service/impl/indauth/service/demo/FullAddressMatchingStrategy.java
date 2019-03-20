@@ -25,7 +25,7 @@ public enum FullAddressMatchingStrategy implements TextMatchingStrategy {
 			String entityInfoName = DemoNormalizer.normalizeAddress((String) entityInfo);
 			return DemoMatcherUtil.doExactMatch(refInfoName, entityInfoName);
 		} else {
-			return throwError(props);
+			return 0;
 		}
 
 	}), PARTIAL(MatchingStrategyType.PARTIAL, (Object reqInfo, Object entityInfo, Map<String, Object> props) -> {
@@ -34,7 +34,7 @@ public enum FullAddressMatchingStrategy implements TextMatchingStrategy {
 			String entityInfoName = DemoNormalizer.normalizeAddress((String) entityInfo);
 			return DemoMatcherUtil.doPartialMatch(refInfoName, entityInfoName);
 		} else {
-			return throwError(props);
+			return 0;
 		}
 	}), PHONETICS(MatchingStrategyType.PHONETICS, (Object reqInfo, Object entityInfo, Map<String, Object> props) -> {
 		if (reqInfo instanceof String && entityInfo instanceof String) {
@@ -43,7 +43,7 @@ public enum FullAddressMatchingStrategy implements TextMatchingStrategy {
 			String language = (String) props.get("language");
 			return DemoMatcherUtil.doPhoneticsMatch(refInfoName, entityInfoName, language);
 		} else {
-			return throwError(props);
+			return 0;
 		}
 	});
 	private final MatchFunction matchFunction;
@@ -68,29 +68,6 @@ public enum FullAddressMatchingStrategy implements TextMatchingStrategy {
 	FullAddressMatchingStrategy(MatchingStrategyType matchStrategyType, MatchFunction matchFunction) {
 		this.matchFunction = matchFunction;
 		this.matchStrategyType = matchStrategyType;
-	}
-
-	private static int throwError(Map<String, Object> props) throws IdAuthenticationBusinessException {
-		final Object object = props.get("languageType");
-		if (object instanceof LanguageType) {
-			LanguageType langType = ((LanguageType) object);
-			if (langType.equals(LanguageType.PRIMARY_LANG)) {
-				logError(IdAuthenticationErrorConstants.FAD_PRI_MISMATCH);
-				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.FAD_PRI_MISMATCH);
-			} else {
-				logError(IdAuthenticationErrorConstants.FAD_SEC_MISMATCH);
-				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.FAD_SEC_MISMATCH);
-			}
-		} else {
-			logError(IdAuthenticationErrorConstants.UNKNOWN_ERROR);
-			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNKNOWN_ERROR);
-		}
-	}
-
-	private static void logError(IdAuthenticationErrorConstants idAuthenticationErrorConstants) {
-		mosipLogger.error(DEFAULT_SESSION_ID, TYPE,
-				"Inside FullAddressMatchingStrategy Strategy" + idAuthenticationErrorConstants.getErrorCode(),
-				idAuthenticationErrorConstants.getErrorMessage());
 	}
 
 	@Override

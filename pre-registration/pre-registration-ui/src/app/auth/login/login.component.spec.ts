@@ -70,7 +70,7 @@ describe('LoginComponent', () => {
 
   let configService: ConfigService, mockConfigs = {
     setConfig: jasmine.createSpy('setConfig').and.returnValue(of(configs)),
-    getConfigByKey: jasmine.createSpy('getConfigByKey').and.returnValue('120')
+    getConfigByKey: jasmine.createSpy('getConfigByKey').and.returnValue('fra')
   }
 
   beforeEach(async(() => {
@@ -177,4 +177,10 @@ describe('LoginComponent', () => {
     component.showOtpMessage();
     expect(localStorage.getItem('langCode')).toBe('ara');
   });
+
+  it('Should test set language direction', () => {
+    component.setLanguageDirection('ara', 'fra');
+    fixture.detectChanges();
+    expect(component.dir).toBe('rtl');
+  })
 });

@@ -128,7 +128,7 @@ public class IdAuthServiceTest {
 	public void TestAuditData() throws Throwable {
 		RestRequestFactory restfactory = Mockito.mock(RestRequestFactory.class);
 		Mockito.when(restfactory.buildRequest(Mockito.any(RestServicesConstants.class), Mockito.any(), Mockito.any()))
-				.thenThrow(new IDDataValidationException(IdAuthenticationErrorConstants.AUTHENTICATION_FAILED));
+				.thenThrow(new IDDataValidationException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS));
 		ReflectionTestUtils.setField(idAuthServiceImpl, "restFactory", restfactory);
 		try {
 			ReflectionTestUtils.invokeMethod(idAuthServiceImpl, "auditData");

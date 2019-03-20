@@ -19,6 +19,7 @@ import io.mosip.kernel.core.virusscanner.exception.VirusScannerException;
 import io.mosip.kernel.core.virusscanner.spi.VirusScanner;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.SuccessResponseDTO;
@@ -30,20 +31,8 @@ public class RegistrationPacketVirusScanServiceImpl implements RegistrationPacke
 	@Autowired
 	private VirusScanner<Boolean, String> virusScanner;
 
-	@Value("${PACKET_STORE_LOCATION}")
-	private String packetStoreLocation;
-
 	@Value("${PRE_REG_PACKET_LOCATION}")
 	private String preRegPacketLocation;
-	
-	@Value("$(mosip.registration.logs_path)")
-	private String logPath;
-	
-	@Value("${mosip.registration.database_path}")
-	private String dbPath;
-	
-	@Value("${mosip.registration.client_path}")
-	private String clientPath;
 
 	private static final Logger LOGGER = AppConfig.getLogger(RegistrationPacketVirusScanServiceImpl.class);
 
@@ -61,7 +50,11 @@ public class RegistrationPacketVirusScanServiceImpl implements RegistrationPacke
 				"Scanning of Virus Packet start");
 		ResponseDTO responseDTO = new ResponseDTO();
 		SuccessResponseDTO successResponseDTO = new SuccessResponseDTO();
-		List<String> pathList = Arrays.asList(packetStoreLocation, preRegPacketLocation,logPath,dbPath,clientPath);
+		List<String> pathList = Arrays.asList(
+				String.valueOf(ApplicationContext.map().get(RegistrationConstants.PKT_STORE_LOC)), preRegPacketLocation,
+				String.valueOf(ApplicationContext.map().get(RegistrationConstants.LOGS_PATH)),
+				String.valueOf(ApplicationContext.map().get(RegistrationConstants.DB_PATH)),
+				String.valueOf(ApplicationContext.map().get(RegistrationConstants.CLIENT_PATH)));
 		List<File> filesList = new ArrayList<>();
 		List<String> infectedFiles = new ArrayList<>();
 		List<ErrorResponseDTO> errorList = new ArrayList<>();

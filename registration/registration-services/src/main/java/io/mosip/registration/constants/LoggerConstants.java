@@ -36,7 +36,8 @@ public class LoggerConstants {
 	private static final String LOGIN= APP_NAME + "LOGIN - ";
 	private static final String PGE_FLW= APP_NAME + "PAGE_FLOW - ";
 	private static final String AUTH= APP_NAME + "AUTHENTICATION - ";
-	
+	private static final String AUTHZ = APP_NAME + "AUTHORIZATION - ";
+	private static final String SERVICE_DELEGATE_UTIL = APP_NAME + "SERVICE_DELEGATE_UTIL - ";
 	
 
 	// Session IDs' for logging
@@ -111,5 +112,14 @@ public class LoggerConstants {
 	public static final String OTP_MANAGER_LOGGER_TITLE = OTP + "OTP_MANAGER";
 	public static final String REG_PACKET_VIRUS_SCAN = PKT_SCAN + "Registration_packet virus_scan_job";
 	public static final String USER_DETAIL_SERVICE_JOB_TITLE = SYNC + "user_detail_Service_Job";
+	public static final String AUTHZ_ADVICE = AUTHZ + "REST_CLIENT_AUTH_ADVICE";
+	public static final String LOG_SERVICE_DELEGATE_UTIL_GET = SERVICE_DELEGATE_UTIL + "GET";
+	public static final String LOG_SERVICE_DELEGATE_UTIL_POST = SERVICE_DELEGATE_UTIL + "POST";
+	public static final String LOG_SERVICE_DELEGATE_UTIL_PREPARE_GET = SERVICE_DELEGATE_UTIL + "PREPARE_GET_REQUEST";
+	public static final String LOG_SERVICE_DELEGATE_UTIL_PREPARE_POST = SERVICE_DELEGATE_UTIL + "PREPARE_POST_REQUEST";
+	public static final String LOG_SERVICE_DELEGATE_UTIL_PREPARE_REQUEST = SERVICE_DELEGATE_UTIL + "PREPARE_REQUEST";
+	public static final String LOG_SERVICE_DELEGATE_AUTH_DTO = SERVICE_DELEGATE_UTIL + "PREPARE_AUTHN_REQUEST_DTO";
+	public static final String LOG_SERVICE_DELEGATE_GET_TOKEN = SERVICE_DELEGATE_UTIL + "GET_AUTH_TOKEN";
+	public static final String LOG_SERVICE_DELEGATE_VALIDATE_TOKEN = SERVICE_DELEGATE_UTIL + "IS_AUTH_TOKEN_VALID";
 
 }

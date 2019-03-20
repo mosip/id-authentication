@@ -58,7 +58,7 @@ public class DemographicExceptionHandler {
 		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getErrorText());
 		MainListResponseDTO<?> errorRes = new MainListResponseDTO<>();
 		errorRes.setErr(errorDetails);
-		errorRes.setStatus(Boolean.FALSE);
+		//errorRes.setStatus(Boolean.FALSE);
 		errorRes.setResTime(GenericUtil.getCurrentResponseTime());
 		return new ResponseEntity<>(errorRes, HttpStatus.OK);
 	}
@@ -76,7 +76,7 @@ public class DemographicExceptionHandler {
 		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getErrorText());
 		MainListResponseDTO<?> errorRes = new MainListResponseDTO<>();
 		errorRes.setErr(errorDetails);
-		errorRes.setStatus(Boolean.FALSE);
+		//errorRes.setStatus(Boolean.FALSE);
 		errorRes.setResTime(GenericUtil.getCurrentResponseTime());
 		return new ResponseEntity<>(errorRes, HttpStatus.OK);
 	}
@@ -93,7 +93,6 @@ public class DemographicExceptionHandler {
 		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getErrorText());
 		MainListResponseDTO<?> errorRes = new MainListResponseDTO<>();
 		errorRes.setErr(errorDetails);
-		errorRes.setStatus(Boolean.FALSE);
 		errorRes.setResTime(GenericUtil.getCurrentResponseTime());
 		return new ResponseEntity<>(errorRes, HttpStatus.OK);
 	}
@@ -111,7 +110,6 @@ public class DemographicExceptionHandler {
 		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getErrorText());
 		MainListResponseDTO<?> errorRes = new MainListResponseDTO<>();
 		errorRes.setErr(errorDetails);
-		errorRes.setStatus(Boolean.FALSE);
 		errorRes.setResTime(GenericUtil.getCurrentResponseTime());
 		return new ResponseEntity<>(errorRes, HttpStatus.OK);
 	}
@@ -129,7 +127,6 @@ public class DemographicExceptionHandler {
 		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getErrorText());
 		MainListResponseDTO<?> errorRes = new MainListResponseDTO<>();
 		errorRes.setErr(errorDetails);
-		errorRes.setStatus(Boolean.FALSE);
 		errorRes.setResTime(GenericUtil.getCurrentResponseTime());
 		return new ResponseEntity<>(errorRes, HttpStatus.OK);
 	}
@@ -147,7 +144,6 @@ public class DemographicExceptionHandler {
 		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getErrorText());
 		MainListResponseDTO<?> errorRes = new MainListResponseDTO<>();
 		errorRes.setErr(errorDetails);
-		errorRes.setStatus(Boolean.FALSE);
 		errorRes.setResTime(GenericUtil.getCurrentResponseTime());
 		return new ResponseEntity<>(errorRes, HttpStatus.OK);
 	}
@@ -165,7 +161,6 @@ public class DemographicExceptionHandler {
 		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getErrorText());
 		MainListResponseDTO<?> errorRes = new MainListResponseDTO<>();
 		errorRes.setErr(errorDetails);
-		errorRes.setStatus(Boolean.FALSE);
 		errorRes.setResTime(GenericUtil.getCurrentResponseTime());
 		return new ResponseEntity<>(errorRes, HttpStatus.OK);
 	}
@@ -183,7 +178,6 @@ public class DemographicExceptionHandler {
 		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getErrorText());
 		MainListResponseDTO<?> errorRes = new MainListResponseDTO<>();
 		errorRes.setErr(errorDetails);
-		errorRes.setStatus(Boolean.FALSE);
 		errorRes.setResTime(GenericUtil.getCurrentResponseTime());
 		return new ResponseEntity<>(errorRes, HttpStatus.OK);
 	}
@@ -201,7 +195,6 @@ public class DemographicExceptionHandler {
 		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getErrorText());
 		MainListResponseDTO<?> errorRes = new MainListResponseDTO<>();
 		errorRes.setErr(errorDetails);
-		errorRes.setStatus(Boolean.FALSE);
 		errorRes.setResTime(GenericUtil.getCurrentResponseTime());
 		return new ResponseEntity<>(errorRes, HttpStatus.OK);
 	}
@@ -219,7 +212,6 @@ public class DemographicExceptionHandler {
 		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getErrorText());
 		MainListResponseDTO<?> errorRes = new MainListResponseDTO<>();
 		errorRes.setErr(errorDetails);
-		errorRes.setStatus(Boolean.FALSE);
 		errorRes.setResTime(GenericUtil.getCurrentResponseTime());
 		return new ResponseEntity<>(errorRes, HttpStatus.OK);
 	}
@@ -237,7 +229,6 @@ public class DemographicExceptionHandler {
 		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getErrorText());
 		MainListResponseDTO<?> errorRes = new MainListResponseDTO<>();
 		errorRes.setErr(errorDetails);
-		errorRes.setStatus(Boolean.FALSE);
 		errorRes.setResTime(GenericUtil.getCurrentResponseTime());
 		return new ResponseEntity<>(errorRes, HttpStatus.OK);
 	}
@@ -255,7 +246,6 @@ public class DemographicExceptionHandler {
 		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getErrorText());
 		MainListResponseDTO<?> errorRes = new MainListResponseDTO<>();
 		errorRes.setErr(errorDetails);
-		errorRes.setStatus(Boolean.FALSE);
 		errorRes.setResTime(GenericUtil.getCurrentResponseTime());
 		return new ResponseEntity<>(errorRes, HttpStatus.OK);
 	}
@@ -273,7 +263,6 @@ public class DemographicExceptionHandler {
 		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getErrorText());
 		MainListResponseDTO<?> errorRes = new MainListResponseDTO<>();
 		errorRes.setErr(errorDetails);
-		errorRes.setStatus(Boolean.FALSE);
 		errorRes.setResTime(GenericUtil.getCurrentResponseTime());
 		return new ResponseEntity<>(errorRes, HttpStatus.OK);
 	}
@@ -291,7 +280,6 @@ public class DemographicExceptionHandler {
 		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getErrorText());
 		MainListResponseDTO<?> errorRes = new MainListResponseDTO<>();
 		errorRes.setErr(errorDetails);
-		errorRes.setStatus(Boolean.FALSE);
 		errorRes.setResTime(GenericUtil.getCurrentResponseTime());
 		return new ResponseEntity<>(errorRes, HttpStatus.OK);
 	}
@@ -309,7 +297,6 @@ public class DemographicExceptionHandler {
 		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getErrorText());
 		MainListResponseDTO<?> errorRes = new MainListResponseDTO<>();
 		errorRes.setErr(errorDetails);
-		errorRes.setStatus(Boolean.FALSE);
 		errorRes.setResTime(GenericUtil.getCurrentResponseTime());
 		return new ResponseEntity<>(errorRes, HttpStatus.OK);
 	}
@@ -326,7 +313,6 @@ public class DemographicExceptionHandler {
 		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getErrorText());
 		MainListResponseDTO<?> errorRes = new MainListResponseDTO<>();
 		errorRes.setErr(errorDetails);
-		errorRes.setStatus(Boolean.FALSE);
 		errorRes.setResTime(GenericUtil.getCurrentResponseTime());
 		return new ResponseEntity<>(errorRes, HttpStatus.OK);
 	}
@@ -344,7 +330,6 @@ public class DemographicExceptionHandler {
 		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getErrorText());
 		MainListResponseDTO<?> errorRes = new MainListResponseDTO<>();
 		errorRes.setErr(errorDetails);
-		errorRes.setStatus(Boolean.FALSE);
 		errorRes.setResTime(GenericUtil.getCurrentResponseTime());
 		return new ResponseEntity<>(errorRes, HttpStatus.OK);
 	}
@@ -362,8 +347,9 @@ public class DemographicExceptionHandler {
 		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getErrorText());
 		MainListResponseDTO<?> errorRes = new MainListResponseDTO<>();
 		errorRes.setErr(errorDetails);
-		errorRes.setStatus(Boolean.FALSE);
 		errorRes.setResTime(GenericUtil.getCurrentResponseTime());
 		return new ResponseEntity<>(errorRes, HttpStatus.OK);
 	}
+	
+
 }

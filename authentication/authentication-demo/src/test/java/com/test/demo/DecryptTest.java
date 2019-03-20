@@ -24,7 +24,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.context.WebApplicationContext;
 
-import io.mosip.demo.authentication.service.controller.Decrypt;
+import io.mosip.authentication.demo.service.controller.Decrypt;
 import io.mosip.kernel.crypto.jce.impl.DecryptorImpl;
 
 /**

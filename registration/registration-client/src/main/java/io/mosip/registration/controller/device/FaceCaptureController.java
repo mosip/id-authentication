@@ -10,6 +10,8 @@ import java.io.IOException;
 import java.net.URL;
 import java.sql.Timestamp;
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 
 import javax.imageio.ImageIO;
@@ -17,7 +19,6 @@ import javax.imageio.ImageIO;
 import org.joda.time.DateTime;
 import org.joda.time.Seconds;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 
 import io.mosip.kernel.core.exception.ExceptionUtils;
@@ -28,11 +29,16 @@ import io.mosip.registration.constants.AuditReferenceIdTypes;
 import io.mosip.registration.constants.Components;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.constants.RegistrationUIConstants;
+import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.controller.reg.RegistrationController;
 import io.mosip.registration.controller.reg.UserOnboardParentController;
+import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.biometric.BiometricDTO;
+import io.mosip.registration.dto.biometric.BiometricExceptionDTO;
+import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
+import io.mosip.registration.dto.biometric.IrisDetailsDTO;
 import io.mosip.registration.dto.demographic.ApplicantDocumentDTO;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
@@ -91,12 +97,12 @@ public class FaceCaptureController extends BaseController implements Initializab
 	@Autowired
 	private UserOnboardParentController userOnboardParentController;
 
-	@Value("${mosip.registration.face_recapture_time}")
-	private String configuredSecondsForRecapture;
-
 	private Timestamp lastPhotoCaptured;
 
 	private Timestamp lastExceptionPhotoCaptured;
+
+	@FXML
+	private Label registrationNavlabel;
 
 	@FXML
 	private Label photoAlert;
@@ -113,50 +119,51 @@ public class FaceCaptureController extends BaseController implements Initializab
 		LOGGER.info("REGISTRATION - UI - FACE_CAPTURE_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
 				"Loading of FaceCapture screen started");
 
-		takePhoto.setDisable(true);
-		
-		if ((boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
-			// for applicant biometrics
-			if ((boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
+		if (getRegistrationDTOFromSession() != null && getRegistrationDTOFromSession().getSelectionListDTO() != null) {
+			registrationNavlabel.setText(RegistrationConstants.UIN_NAV_LABEL);
+		}
 
-				if (getBiometricDTOFromSession() != null && getBiometricDTOFromSession().getOperatorBiometricDTO()
-						.getFaceDetailsDTO().getFace() != null) {
-					applicantImage.setImage(convertBytesToImage(
-							getBiometricDTOFromSession().getOperatorBiometricDTO().getFaceDetailsDTO().getFace()));
-				} else {
-					defaultImage = applicantImage.getImage();
-					applicantImageCaptured = false;
+		takePhoto.setDisable(true);
+
+		// for applicant biometrics
+		if ((boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
+
+			if (getBiometricDTOFromSession() != null
+					&& getBiometricDTOFromSession().getOperatorBiometricDTO().getFaceDetailsDTO().getFace() != null) {
+				applicantImage.setImage(convertBytesToImage(
+						getBiometricDTOFromSession().getOperatorBiometricDTO().getFaceDetailsDTO().getFace()));
+			} else {
+				defaultImage = applicantImage.getImage();
+				applicantImageCaptured = false;
+			}
+		} else {
+			defaultExceptionImage = new Image(getClass().getResourceAsStream("/images/ExceptionPhoto.png"));
+			exceptionImage.setImage(defaultExceptionImage);
+			if (getRegistrationDTOFromSession() != null
+					&& getRegistrationDTOFromSession().getDemographicDTO().getApplicantDocumentDTO() != null) {
+				if (getRegistrationDTOFromSession().getDemographicDTO().getApplicantDocumentDTO().getPhoto() != null) {
+					byte[] photoInBytes = getRegistrationDTOFromSession().getDemographicDTO().getApplicantDocumentDTO()
+							.getPhoto();
+					if (photoInBytes != null) {
+						ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(photoInBytes);
+						applicantImage.setImage(new Image(byteArrayInputStream));
+					}
+				}
+				if (getRegistrationDTOFromSession().getDemographicDTO().getApplicantDocumentDTO()
+						.getExceptionPhoto() != null) {
+					byte[] exceptionPhotoInBytes = getRegistrationDTOFromSession().getDemographicDTO()
+							.getApplicantDocumentDTO().getExceptionPhoto();
+					if (exceptionPhotoInBytes != null) {
+						ByteArrayInputStream inputStream = new ByteArrayInputStream(exceptionPhotoInBytes);
+						exceptionImage.setImage(new Image(inputStream));
+					}
 				}
 			} else {
-				defaultExceptionImage = new Image(getClass().getResourceAsStream("/images/ExceptionPhoto.png"));
-				exceptionImage.setImage(defaultExceptionImage);
-				if (getRegistrationDTOFromSession() != null
-						&& getRegistrationDTOFromSession().getDemographicDTO().getApplicantDocumentDTO() != null) {
-					if (getRegistrationDTOFromSession().getDemographicDTO().getApplicantDocumentDTO()
-							.getPhoto() != null) {
-						byte[] photoInBytes = getRegistrationDTOFromSession().getDemographicDTO()
-								.getApplicantDocumentDTO().getPhoto();
-						if (photoInBytes != null) {
-							ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(photoInBytes);
-							applicantImage.setImage(new Image(byteArrayInputStream));
-						}
-					}
-					if (getRegistrationDTOFromSession().getDemographicDTO().getApplicantDocumentDTO()
-							.getExceptionPhoto() != null) {
-						byte[] exceptionPhotoInBytes = getRegistrationDTOFromSession().getDemographicDTO()
-								.getApplicantDocumentDTO().getExceptionPhoto();
-						if (exceptionPhotoInBytes != null) {
-							ByteArrayInputStream inputStream = new ByteArrayInputStream(exceptionPhotoInBytes);
-							exceptionImage.setImage(new Image(inputStream));
-						}
-					}
-				} else {
-					defaultImage = applicantImage.getImage();
-					defaultExceptionImage = exceptionImage.getImage();
-					applicantImageCaptured = false;
-					exceptionImageCaptured = false;
-					exceptionBufferedImage = null;
-				}
+				defaultImage = applicantImage.getImage();
+				defaultExceptionImage = exceptionImage.getImage();
+				applicantImageCaptured = false;
+				exceptionImageCaptured = false;
+				exceptionBufferedImage = null;
 			}
 		}
 	}
@@ -171,7 +178,7 @@ public class FaceCaptureController extends BaseController implements Initializab
 	private void openWebCamWindow(String imageType) {
 		auditFactory.audit(AuditEvent.REG_BIO_FACE_CAPTURE, Components.REG_BIOMETRICS, SessionContext.userId(),
 				AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
-		
+
 		LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Opening WebCamera to capture photograph");
 
@@ -248,19 +255,25 @@ public class FaceCaptureController extends BaseController implements Initializab
 				if (getRegistrationDTOFromSession().getSelectionListDTO() != null) {
 					SessionContext.map().put("faceCapture", false);
 
+					long fingerPrintCount = getRegistrationDTOFromSession().getBiometricDTO().getApplicantBiometricDTO()
+							.getBiometricExceptionDTO().stream()
+							.filter(bio -> bio.getBiometricType().equalsIgnoreCase("fingerprint")).count();
+
+					long irisCount = getRegistrationDTOFromSession().getBiometricDTO().getApplicantBiometricDTO()
+							.getBiometricExceptionDTO().stream()
+							.filter(bio -> bio.getBiometricType().equalsIgnoreCase(RegistrationConstants.IRIS)).count();
+
 					if (getRegistrationDTOFromSession().getSelectionListDTO().isBiometricIris()
-							&& getRegistrationDTOFromSession().getSelectionListDTO().isBiometricFingerprint()
-							|| getRegistrationDTOFromSession().getSelectionListDTO().isBiometricIris()
-							|| !getRegistrationDTOFromSession().getBiometricDTO().getApplicantBiometricDTO()
-									.getIrisDetailsDTO().isEmpty()) {
+							|| fingerPrintCount > 0) {
 						SessionContext.map().put("irisCapture", true);
 					} else if (getRegistrationDTOFromSession().getSelectionListDTO().isBiometricFingerprint()
-							|| !getRegistrationDTOFromSession().getBiometricDTO().getApplicantBiometricDTO()
-									.getFingerprintDetailsDTO().isEmpty()) {
+							|| irisCount > 0) {
 						SessionContext.map().put("fingerPrintCapture", true);
-					} else if (!getRegistrationDTOFromSession().getSelectionListDTO().isBiometricFingerprint()
-							&& !getRegistrationDTOFromSession().getSelectionListDTO().isBiometricIris()) {
+					} else if (!RegistrationConstants.DISABLE.equalsIgnoreCase(
+							String.valueOf(ApplicationContext.map().get(RegistrationConstants.DOC_DISABLE_FLAG)))) {
 						SessionContext.map().put("documentScan", true);
+					} else {
+						SessionContext.map().put("demographicDetail", true);
 					}
 					registrationController.showUINUpdateCurrentPage();
 				} else {
@@ -290,7 +303,7 @@ public class FaceCaptureController extends BaseController implements Initializab
 				RegistrationConstants.APPLICATION_ID, "Opening WebCamera to capture photograph");
 
 		if (photoType.equals(RegistrationConstants.APPLICANT_IMAGE)) {
-			
+
 			Image capture = SwingFXUtils.toFXImage(capturedImage, null);
 			applicantImage.setImage(capture);
 			applicantBufferedImage = capturedImage;
@@ -318,10 +331,11 @@ public class FaceCaptureController extends BaseController implements Initializab
 			exceptionImageCaptured = true;
 		}
 	}
-	
+
 	@Override
 	public void calculateRecaptureTime(String photoType) {
-		int configuredSeconds = Integer.parseInt(configuredSecondsForRecapture);
+		int configuredSeconds = Integer
+				.parseInt(String.valueOf(ApplicationContext.map().get(RegistrationConstants.FACE_RECAPTURE_TIME)));
 
 		if (photoType.equals(RegistrationConstants.APPLICANT_IMAGE)) {
 			/* Set Time which last photo was captured */
@@ -431,25 +445,133 @@ public class FaceCaptureController extends BaseController implements Initializab
 				RegistrationConstants.APPLICATION_ID, "Enabling the capture button based on selected pane");
 
 		boolean hasBiometricException = false;
-		if (!(boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
-			hasBiometricException = (Boolean) SessionContext.userContext().getUserMap()
-					.get(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION);
-		}
+
 		Pane sourcePane = (Pane) mouseEvent.getSource();
 		sourcePane.requestFocus();
 		selectedPhoto = sourcePane;
+
+		if (selectedPhoto.getId().equals(RegistrationConstants.EXCEPTION_PHOTO_PANE)
+				&& !(boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
+			hasBiometricException = (Boolean) SessionContext.userContext().getUserMap()
+					.get(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION);
+			if (!hasBiometricException) {
+				hasBiometricException = validateBiometrics(hasBiometricException);
+			}
+		}
+
 		takePhoto.setDisable(true);
 		if (selectedPhoto.getId().equals(RegistrationConstants.APPLICANT_PHOTO_PANE)) {
-			if (validatePhotoTimer(lastPhotoCaptured, Integer.parseInt(configuredSecondsForRecapture), photoAlert)) {
+			if (validatePhotoTimer(lastPhotoCaptured,
+					Integer.parseInt(
+							String.valueOf(ApplicationContext.map().get(RegistrationConstants.FACE_RECAPTURE_TIME))),
+					photoAlert)) {
 				takePhoto.setDisable(false);
 				photoAlert.setVisible(false);
 			}
 		} else if (selectedPhoto.getId().equals(RegistrationConstants.EXCEPTION_PHOTO_PANE) && hasBiometricException
-				&& validatePhotoTimer(lastExceptionPhotoCaptured, Integer.parseInt(configuredSecondsForRecapture),
+				&& validatePhotoTimer(lastExceptionPhotoCaptured,
+						Integer.parseInt(String
+								.valueOf(ApplicationContext.map().get(RegistrationConstants.FACE_RECAPTURE_TIME))),
 						photoAlert)) {
 			takePhoto.setDisable(false);
 			photoAlert.setVisible(false);
 		}
+	}
+
+	private boolean validateBiometrics(boolean hasBiometricException) {
+		RegistrationDTO registration = getRegistrationDTOFromSession();
+		List<FingerprintDetailsDTO> capturedFingers = registration.getBiometricDTO().getApplicantBiometricDTO()
+				.getFingerprintDetailsDTO();
+		hasBiometricException = markReasonForFingerprintException(capturedFingers, hasBiometricException);
+
+		List<IrisDetailsDTO> capturedIrises = registration.getBiometricDTO().getApplicantBiometricDTO()
+				.getIrisDetailsDTO();
+		hasBiometricException = markReasonForIrisException(capturedIrises, hasBiometricException);
+		return hasBiometricException;
+	}
+
+	private boolean markReasonForFingerprintException(List<FingerprintDetailsDTO> capturedFingers,
+			boolean hasBiometricException) {
+		if (capturedFingers != null && !capturedFingers.isEmpty()) {
+			String leftSlapQualityThreshold = String
+					.valueOf(ApplicationContext.map().get(RegistrationConstants.LEFTSLAP_FINGERPRINT_THRESHOLD));
+			String rightSlapQualityThreshold = String
+					.valueOf(ApplicationContext.map().get(RegistrationConstants.RIGHTSLAP_FINGERPRINT_THRESHOLD));
+			String thumbQualityThreshold = String
+					.valueOf(ApplicationContext.map().get(RegistrationConstants.THUMBS_FINGERPRINT_THRESHOLD));
+			String fingerprintRetries = String
+					.valueOf(ApplicationContext.map().get(RegistrationConstants.FINGERPRINT_RETRIES_COUNT));
+			for (FingerprintDetailsDTO capturedFinger : capturedFingers) {
+				List<FingerprintDetailsDTO> segmentedFingers = capturedFinger.getSegmentedFingerprints();
+				for (FingerprintDetailsDTO segmentedFinger : segmentedFingers) {
+					if (validateFingerprint(segmentedFinger, leftSlapQualityThreshold, rightSlapQualityThreshold,
+							thumbQualityThreshold, fingerprintRetries)) {
+						hasBiometricException = true;
+						markReasonForException("fingerprint", segmentedFinger.getFingerType());
+					}
+				}
+			}
+		}
+		return hasBiometricException;
+	}
+
+	private boolean markReasonForIrisException(List<IrisDetailsDTO> capturedIrises, boolean hasBiometricException) {
+		if (capturedIrises != null && !capturedIrises.isEmpty()) {
+			String irisQualityThreshold = String
+					.valueOf(ApplicationContext.map().get(RegistrationConstants.IRIS_THRESHOLD));
+			String irisRetries = String.valueOf(ApplicationContext.map().get(RegistrationConstants.IRIS_RETRY_COUNT));
+			double irisThreshold = Double.parseDouble(irisQualityThreshold);
+			int numOfRetries = Integer.parseInt(irisRetries);
+			for (IrisDetailsDTO capturedIris : capturedIrises) {
+				if (validateIris(capturedIris, irisThreshold, numOfRetries)) {
+					hasBiometricException = true;
+					markReasonForException("iris", capturedIris.getIrisType());
+				}
+			}
+		}
+		return hasBiometricException;
+	}
+
+	private void markReasonForException(String biometricType, String missingBiometric) {
+		List<BiometricExceptionDTO> exceptionBiometrics;
+		if (getRegistrationDTOFromSession().getBiometricDTO().getApplicantBiometricDTO()
+				.getBiometricExceptionDTO() != null) {
+			exceptionBiometrics = getRegistrationDTOFromSession().getBiometricDTO().getApplicantBiometricDTO()
+					.getBiometricExceptionDTO();
+		} else {
+			exceptionBiometrics = new ArrayList<>();
+		}
+
+		BiometricExceptionDTO biometricExceptionDTO = new BiometricExceptionDTO();
+		biometricExceptionDTO.setBiometricType(biometricType);
+		biometricExceptionDTO.setMissingBiometric(missingBiometric);
+		biometricExceptionDTO.setReason(RegistrationConstants.LOW_QUALITY_BIOMETRICS);
+		biometricExceptionDTO.setExceptionType(RegistrationConstants.TEMPORARY_EXCEPTION);
+
+		exceptionBiometrics.add(biometricExceptionDTO);
+
+		getRegistrationDTOFromSession().getBiometricDTO().getApplicantBiometricDTO()
+				.setBiometricExceptionDTO(exceptionBiometrics);
+	}
+
+	private boolean validateIris(IrisDetailsDTO capturedIris, double irisThreshold, int numOfRetries) {
+		return (Double.compare(capturedIris.getQualityScore(), irisThreshold) < 0
+				&& capturedIris.getNumOfIrisRetry() == numOfRetries);
+	}
+
+	private boolean validateFingerprint(FingerprintDetailsDTO capturedFinger, String leftSlapQualityThreshold,
+			String rightSlapQualityThreshold, String thumbQualityThreshold, String fingerprintRetries) {
+		if (capturedFinger.getFingerType().toLowerCase().contains(RegistrationConstants.LEFT.toLowerCase())) {
+			return capturedFinger.getQualityScore() < Double.parseDouble(leftSlapQualityThreshold)
+					&& capturedFinger.getNumRetry() == Integer.parseInt(fingerprintRetries);
+		} else if (capturedFinger.getFingerType().toLowerCase().contains(RegistrationConstants.RIGHT.toLowerCase())) {
+			return capturedFinger.getQualityScore() < Double.parseDouble(rightSlapQualityThreshold)
+					&& capturedFinger.getNumRetry() == Integer.parseInt(fingerprintRetries);
+		} else if (capturedFinger.getFingerType().toLowerCase().contains(RegistrationConstants.THUMBS.toLowerCase())) {
+			return capturedFinger.getQualityScore() < Double.parseDouble(thumbQualityThreshold)
+					&& capturedFinger.getNumRetry() == Integer.parseInt(fingerprintRetries);
+		}
+		return false;
 	}
 
 	/**
@@ -526,6 +648,7 @@ public class FaceCaptureController extends BaseController implements Initializab
 		timeline.setOnFinished(event -> {
 			takePhoto.setDisable(false);
 			photoLabel.setVisible(false);
+			webCameraController.capture.setDisable(false);
 		});
 		timeline.play();
 	}

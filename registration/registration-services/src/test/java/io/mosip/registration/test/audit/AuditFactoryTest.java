@@ -4,7 +4,10 @@ import static org.mockito.Mockito.when;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.HashMap;
+import java.util.Map;
 
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -16,7 +19,7 @@ import org.mockito.junit.MockitoRule;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
-import org.springframework.core.env.Environment;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import io.mosip.kernel.auditmanager.request.AuditRequestDto;
 import io.mosip.kernel.core.auditmanager.spi.AuditHandler;
@@ -24,6 +27,7 @@ import io.mosip.registration.audit.AuditFactoryImpl;
 import io.mosip.registration.constants.AuditEvent;
 import io.mosip.registration.constants.Components;
 import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
 
 @RunWith(PowerMockRunner.class)
@@ -36,15 +40,21 @@ public class AuditFactoryTest {
 	private AuditHandler<AuditRequestDto> auditHandler;
 	@InjectMocks
 	private AuditFactoryImpl auditFactory;
-	@Mock
-	private Environment environment;
+
+	@Before
+	public void initialize() {
+		Map<String,Object> appMap = new HashMap<>();
+		appMap.put(RegistrationConstants.DEFAULT_HOST_IP, "127.0.0.0");
+		appMap.put(RegistrationConstants.DEFAULT_HOST_NAME, "LOCALHOST");
+		appMap.put(RegistrationConstants.APP_NAME, "REGISTRATION");
+		appMap.put(RegistrationConstants.APP_ID, "REG");
+		ApplicationContext.getInstance().setApplicationMap(appMap);
+	}
 
 	@Test
 	public void auditTest() throws UnknownHostException {
 		PowerMockito.mockStatic(InetAddress.class);
 		PowerMockito.when(InetAddress.getLocalHost()).thenCallRealMethod();
-		when(environment.getProperty(RegistrationConstants.AUDIT_APPLICATION_ID)).thenReturn("REG");
-		when(environment.getProperty(RegistrationConstants.AUDIT_APPLICATION_NAME)).thenReturn("REGISTRATION");
 		SessionContext.destroySession();
 
 		SessionContext sessionContext = SessionContext.getInstance();
@@ -58,9 +68,6 @@ public class AuditFactoryTest {
 	public void auditTestWithDefaultValues() throws UnknownHostException {
 		PowerMockito.mockStatic(InetAddress.class);
 		PowerMockito.when(InetAddress.getLocalHost()).thenThrow(new UnknownHostException());
-
-		when(environment.getProperty(RegistrationConstants.AUDIT_APPLICATION_ID)).thenReturn("REG");
-		when(environment.getProperty(RegistrationConstants.AUDIT_APPLICATION_NAME)).thenReturn("REGISTRATION");
 		SessionContext.destroySession();
 		SessionContext.getInstance();
 

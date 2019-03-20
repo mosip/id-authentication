@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 
 import io.mosip.registration.dao.TemplateDao;
 import io.mosip.registration.entity.Template;
+import io.mosip.registration.entity.TemplateEmbeddedKeyCommonFields;
 import io.mosip.registration.entity.TemplateFileFormat;
 import io.mosip.registration.entity.TemplateType;
 import io.mosip.registration.repositories.TemplateFileFormatRepository;
@@ -30,12 +31,12 @@ public class TemplateDaoImpl implements TemplateDao{
 	@Autowired
 	private TemplateFileFormatRepository<TemplateFileFormat> fileFormatRepository;
 	
-	public List<Template> getAllTemplates(){
-		return templateRepository.findByIsActiveTrue();
+	public List<Template> getAllTemplates(String templateTypeCode){
+		return templateRepository.findByIsActiveTrueAndTemplateTypCode(templateTypeCode);
 	}
 	
-	public List<TemplateType> getAllTemplateTypes(){
-		return typeRepository.findByIsActiveTrue();
+	public List<TemplateType> getAllTemplateTypes(String code,String langCode){
+		return typeRepository.findByIsActiveTrueAndPkTmpltCodeCodeAndPkTmpltCodeLangCode( code, langCode);
 	}
 	
 	public List<TemplateFileFormat> getAllTemplateFileFormats(){

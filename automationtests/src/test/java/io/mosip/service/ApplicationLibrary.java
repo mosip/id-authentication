@@ -3,6 +3,7 @@ package io.mosip.service;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.List;
 
 import javax.ws.rs.core.MediaType;
 
@@ -20,6 +21,7 @@ public class ApplicationLibrary extends BaseTestCase {
 				MediaType.APPLICATION_JSON);
 	}
 	
+
 
 
 	public Response getRequest(String Resource_URI, HashMap<String, String> valueMap) {
@@ -115,18 +117,16 @@ public class ApplicationLibrary extends BaseTestCase {
 		return commonLibrary.put_RequestWithoutBody(ApplnURI + Resource_URI, MediaType.APPLICATION_JSON,
 				MediaType.APPLICATION_JSON);
 	}
+	 public Response getRequestPathQueryPara(String Resource_URI, HashMap<String, String> path_value,HashMap<String, List<String>> query_value) {
+	        return commonLibrary.get_Request_Path_queryParam(ApplnURI + Resource_URI , path_value,query_value);
+	    } 
 
-
-	// Notify
-	public Response putFileAndJsonParam(String Resource_Uri, Object body, File file) {
-		// return commonLibrary.Post_JSONwithFile(body, file,
-		// ApplnURI+Resource_Uri,MediaType.MULTIPART_FORM_DATA);
-		logger.info("My lang code body:" + body);
-		// return commonLibrary.Post_JSONwithFileParam(body, file,
-		// ApplnURI+Resource_Uri, MediaType.MULTIPART_FORM_DATA, param);
-		return commonLibrary.Post_JSONwithFileParam(body, file, ApplnURI + Resource_Uri, MediaType.MULTIPART_FORM_DATA);
-
-	}
+	  //Notify
+	    public Response putFileAndJsonParam(String Resource_Uri,Object body,File file,String langCodeKey,String value) {
+	    	
+	    	return commonLibrary.Post_JSONwithFileParam(body, file, ApplnURI+Resource_Uri, MediaType.MULTIPART_FORM_DATA,langCodeKey,value);
+	        
+	    }
 
 
 }

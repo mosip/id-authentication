@@ -18,7 +18,7 @@ public interface RegPacketStatusService {
 	 * @return ResponseDTO which specifies either success response or error response
 	 *         after sync with server
 	 */
-	public ResponseDTO packetSyncStatus();
+	public ResponseDTO packetSyncStatus(String triggerpoint);
 	
 	/**
 	 * @return response DTO
@@ -28,7 +28,7 @@ public interface RegPacketStatusService {
 	 * Packet Sync Status
 	 * @return response DTO
 	 */
-	public ResponseDTO syncPacket();
+	public ResponseDTO syncPacket(String triggerpoint);
 	
 	/**
 	 * Delete Registrations
@@ -36,5 +36,10 @@ public interface RegPacketStatusService {
 	 * @return response
 	 */
 	void deleteRegistrations(List<Registration> registrations);
+
+	/**
+	 * deletes all the packets which is no more needed for the remapped machine
+	 */
+	void deleteAllProcessedRegPackets();
 	
 }

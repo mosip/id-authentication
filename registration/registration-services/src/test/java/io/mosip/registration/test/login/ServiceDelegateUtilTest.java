@@ -59,7 +59,9 @@ public class ServiceDelegateUtilTest {
 	@Before
 	public void initialize() throws IOException, URISyntaxException {
 
-		ReflectionTestUtils.setField(delegateUtil, "urlPath", "https://integ.mosip.io/authmanager/authenticate/unpwd");
+		ReflectionTestUtils.setField(delegateUtil, "urlPath", "https://integ.mosip.io/authmanager/v1.0/authorize/validateToken");
+		ReflectionTestUtils.setField(delegateUtil, "clientId", "clientId");
+		ReflectionTestUtils.setField(delegateUtil, "secretKey", "secretKey");
 
 		LoginUserDTO loginDto = new LoginUserDTO();
 		loginDto.setUserId("super_admin");
@@ -104,7 +106,7 @@ public class ServiceDelegateUtilTest {
 		responseMap.put("responseHeader", header);
 		responseMap.put("responseBody", response);
 		Mockito.when(restClientUtil.invoke((Mockito.anyObject()))).thenReturn(responseMap);
-		assertNotNull(delegateUtil.get("otp_validator", requestParamMap, false));
+		assertNotNull(delegateUtil.get("otp_validator", requestParamMap, false,"System"));
 	}
 
 	@Test
@@ -127,7 +129,7 @@ public class ServiceDelegateUtilTest {
 		when(restClientUtil.invoke(Mockito.any())).thenReturn(responseMap);
 		OtpGeneratorRequestDTO generatorRequestDto = new OtpGeneratorRequestDTO();
 		generatorRequestDto.setKey("yashReddy");
-		assertNotNull(delegateUtil.post("otp_generator", generatorRequestDto));
+		assertNotNull(delegateUtil.post("otp_generator", generatorRequestDto,"System"));
 	}
 	
 	@Test
@@ -150,7 +152,7 @@ public class ServiceDelegateUtilTest {
 		responseMap.put("responseHeader", header);
 		responseMap.put("responseBody", response);
 		Mockito.when(restClientUtil.invoke((Mockito.anyObject()))).thenReturn(responseMap);
-		assertNotNull(delegateUtil.get("otp_validator", requestParamMap, false));
+		assertNotNull(delegateUtil.get("otp_validator", requestParamMap, false,"System"));
 	}
 	
 @Test
@@ -173,7 +175,7 @@ public class ServiceDelegateUtilTest {
 		when(restClientUtil.invoke(Mockito.any())).thenReturn(responseMap);
 		OtpGeneratorRequestDTO generatorRequestDto = new OtpGeneratorRequestDTO();
 		generatorRequestDto.setKey("yashReddy");
-		assertNotNull(delegateUtil.post("otp_generator", generatorRequestDto));
+		assertNotNull(delegateUtil.post("otp_generator", generatorRequestDto,"System"));
 	}
 	
 	

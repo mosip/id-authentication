@@ -11,10 +11,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.core.env.AbstractEnvironment;
@@ -35,9 +37,10 @@ import io.mosip.authentication.core.dto.indauth.IdType;
 import io.mosip.authentication.core.dto.indauth.IdentityDTO;
 import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
 import io.mosip.authentication.core.dto.indauth.KycAuthRequestDTO;
-import io.mosip.authentication.core.dto.indauth.PinInfo;
 import io.mosip.authentication.core.dto.indauth.RequestDTO;
+import io.mosip.authentication.core.spi.indauth.match.MatchType;
 import io.mosip.authentication.service.helper.IdInfoHelper;
+import io.mosip.authentication.service.impl.indauth.service.demo.DemoMatchType;
 import io.mosip.authentication.service.integration.MasterDataManager;
 import io.mosip.kernel.idvalidator.uin.impl.UinValidatorImpl;
 import io.mosip.kernel.idvalidator.vid.impl.VidValidatorImpl;
@@ -65,7 +68,7 @@ public class KycAuthRequestValidatorTest {
 	@InjectMocks
 	KycAuthRequestValidator KycAuthRequestValidator;
 
-	@InjectMocks
+	@Mock
 	IdInfoHelper idInfoHelper;
 
 	@InjectMocks
@@ -79,7 +82,7 @@ public class KycAuthRequestValidatorTest {
 
 	@Autowired
 	Environment env;
-	
+
 	@Mock
 	private MasterDataManager masterDataManager;
 
@@ -107,22 +110,15 @@ public class KycAuthRequestValidatorTest {
 	@Test
 	public void testValidateAuthRequest() {
 		KycAuthRequestDTO kycAuthRequestDTO = new KycAuthRequestDTO();
-		kycAuthRequestDTO.setConsentReq(true);
-		kycAuthRequestDTO.setEPrintReq(true);
-		kycAuthRequestDTO.setId("id");
-		// kycAuthRequestDTO.setVer("1.1");
-		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
-		authRequestDTO.setIdvIdType(IdType.UIN.getType());
-		authRequestDTO.setIdvId("234567890123");
-		authRequestDTO.setReqTime(ZonedDateTime.now()
+		kycAuthRequestDTO.setConsentObtained(Boolean.TRUE);
+		kycAuthRequestDTO.setSecondaryLangCode("fra");
+		kycAuthRequestDTO.setRequestTime(ZonedDateTime.now()
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
-		authRequestDTO.setId("id");
-		// authRequestDTO.setVer("1.1");
-		authRequestDTO.setTspID("1234567890");
-		authRequestDTO.setTxnID("1234567890");
-//		authRequestDTO.setReqHmac("zdskfkdsnj");
+		kycAuthRequestDTO.setId("id");
+		kycAuthRequestDTO.setVersion("1.1");
+		kycAuthRequestDTO.setTransactionID("1234567890");
 		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
-		authTypeDTO.setPersonalIdentity(true);
+		authTypeDTO.setDemo(false);
 		authTypeDTO.setOtp(true);
 		IdentityInfoDTO idInfoDTO = new IdentityInfoDTO();
 		idInfoDTO.setLanguage("EN");
@@ -133,21 +129,32 @@ public class KycAuthRequestValidatorTest {
 		List<IdentityInfoDTO> idInfoList = new ArrayList<>();
 		idInfoList.add(idInfoDTO);
 		idInfoList.add(idInfoDTO1);
+
 		IdentityDTO idDTO = new IdentityDTO();
 		idDTO.setName(idInfoList);
-		RequestDTO reqDTO = new RequestDTO();
-		reqDTO.setIdentity(idDTO);
-		authRequestDTO.setAuthType(authTypeDTO);
-		authRequestDTO.setRequest(reqDTO);
-		kycAuthRequestDTO.setAuthRequest(authRequestDTO);
-		kycAuthRequestDTO.setEKycAuthType("O");
-		PinInfo pinInfo = new PinInfo();
-		pinInfo.setType("OTP");
-		pinInfo.setValue("123456");
-		List<PinInfo> otplist = new ArrayList<>();
-		otplist.add(pinInfo);
-		authRequestDTO.setPinInfo(otplist);
+		idDTO.setDob("25/11/1990");
+		idDTO.setAge("25");
+		IdentityInfoDTO idInfoDTOs = new IdentityInfoDTO();
+		idInfoDTOs.setLanguage(env.getProperty("mosip.secondary.lang-code"));
+		idInfoDTOs.setValue("V");
+		List<IdentityInfoDTO> idInfoLists = new ArrayList<>();
+		idInfoLists.add(idInfoDTOs);
+		idDTO.setDobType(idInfoLists);
+		kycAuthRequestDTO.setIndividualIdType(IdType.UIN.getType());
+		RequestDTO request = new RequestDTO();
+		String otp = "123456";
+		request.setOtp(otp);
+		kycAuthRequestDTO.setIndividualId("5134256294");
+		request.setDemographics(idDTO);
+		request.setTransactionID("1234567890");
+		request.setTimestamp(Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
+				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
+		kycAuthRequestDTO.setConsentObtained(true);
+		kycAuthRequestDTO.setRequest(request);
+		kycAuthRequestDTO.setRequestedAuth(authTypeDTO);
+		kycAuthRequestDTO.setRequest(request);
 		Errors errors = new BeanPropertyBindingResult(kycAuthRequestDTO, "kycAuthRequestDTO");
+		Mockito.when(idInfoHelper.isMatchtypeEnabled(Mockito.any())).thenReturn(Boolean.TRUE);
 		KycAuthRequestValidator.validate(kycAuthRequestDTO, errors);
 		assertFalse(errors.hasErrors());
 	}
@@ -156,8 +163,8 @@ public class KycAuthRequestValidatorTest {
 	public void TestInvalidAuthRequest() {
 		AuthRequestDTO authRequestDTO = null;
 		KycAuthRequestDTO kycAuthRequestDTO = new KycAuthRequestDTO();
-		kycAuthRequestDTO.setAuthRequest(authRequestDTO);
 		Errors errors = new BeanPropertyBindingResult(kycAuthRequestDTO, "kycAuthRequestDTO");
+		Mockito.when(idInfoHelper.isMatchtypeEnabled(Mockito.any())).thenReturn(Boolean.TRUE);
 		KycAuthRequestValidator.validate(kycAuthRequestDTO, errors);
 		assertTrue(errors.hasErrors());
 	}
@@ -165,38 +172,47 @@ public class KycAuthRequestValidatorTest {
 	@Test
 	public void testInvalidAuthRequest() {
 		KycAuthRequestDTO kycAuthRequestDTO = new KycAuthRequestDTO();
-		kycAuthRequestDTO.setConsentReq(true);
-		kycAuthRequestDTO.setEPrintReq(true);
-		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
-		authRequestDTO.setIdvIdType(IdType.UIN.getType());
-		authRequestDTO.setIdvId("23456789012344");
-		ZoneOffset offset = ZoneOffset.MAX;
-		authRequestDTO.setReqTime(Instant.now().atOffset(ZoneOffset.of("+0530"))
+		kycAuthRequestDTO.setConsentObtained(Boolean.TRUE);
+		kycAuthRequestDTO.setSecondaryLangCode("fra");
+		kycAuthRequestDTO.setRequestTime(ZonedDateTime.now()
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
-		authRequestDTO.setId("id");
+		kycAuthRequestDTO.setId("id");
 		// authRequestDTO.setVer("1.1");
-		authRequestDTO.setTspID("1234567890");
-		authRequestDTO.setTxnID("1234567890");
-//		authRequestDTO.setReqHmac("zdskfkdsnj");
+		kycAuthRequestDTO.setTransactionID("1234567890");
 		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
-		authTypeDTO.setPersonalIdentity(true);
+		authTypeDTO.setDemo(true);
+		authTypeDTO.setOtp(true);
 		IdentityInfoDTO idInfoDTO = new IdentityInfoDTO();
-		idInfoDTO.setLanguage("ara");
+		idInfoDTO.setLanguage("EN");
 		idInfoDTO.setValue("John");
 		IdentityInfoDTO idInfoDTO1 = new IdentityInfoDTO();
-		idInfoDTO1.setLanguage("ara");
+		idInfoDTO1.setLanguage("fre");
 		idInfoDTO1.setValue("Mike");
 		List<IdentityInfoDTO> idInfoList = new ArrayList<>();
 		idInfoList.add(idInfoDTO);
 		idInfoList.add(idInfoDTO1);
+
 		IdentityDTO idDTO = new IdentityDTO();
 		idDTO.setName(idInfoList);
-		RequestDTO reqDTO = new RequestDTO();
-		reqDTO.setIdentity(idDTO);
-		authRequestDTO.setAuthType(authTypeDTO);
-		authRequestDTO.setRequest(reqDTO);
-		kycAuthRequestDTO.setAuthRequest(authRequestDTO);
-		kycAuthRequestDTO.setEKycAuthType("O");
+		idDTO.setDob("25/11/1990");
+		idDTO.setAge("25");
+		IdentityInfoDTO idInfoDTOs = new IdentityInfoDTO();
+		idInfoDTOs.setLanguage(env.getProperty("mosip.secondary.lang-code"));
+		idInfoDTOs.setValue("V");
+		List<IdentityInfoDTO> idInfoLists = new ArrayList<>();
+		idInfoLists.add(idInfoDTOs);
+		idDTO.setDobType(idInfoLists);
+		kycAuthRequestDTO.setIndividualIdType("D");
+		RequestDTO request = new RequestDTO();
+		String otp = "123456";
+		request.setOtp(otp);
+		kycAuthRequestDTO.setIndividualId("5134256294");
+		request.setDemographics(idDTO);
+		kycAuthRequestDTO.setRequest(request);
+		kycAuthRequestDTO.setRequestedAuth(authTypeDTO);
+		kycAuthRequestDTO.setRequest(request);
+		MatchType matchType = null;
+		Mockito.when(idInfoHelper.isMatchtypeEnabled(DemoMatchType.NAME)).thenReturn(Boolean.TRUE);
 		Errors errors = new BeanPropertyBindingResult(kycAuthRequestDTO, "baseAuthRequestDTO");
 		KycAuthRequestValidator.validate(kycAuthRequestDTO, errors);
 		assertTrue(errors.hasErrors());
@@ -207,25 +223,16 @@ public class KycAuthRequestValidatorTest {
 		MockEnvironment mockenv = new MockEnvironment();
 		mockenv.merge(((AbstractEnvironment) mockenv));
 		mockenv.setProperty("ekyc.mua.accesslevel.1234567890", "none");
+		mockenv.setProperty("ekyc.allowed.auth.type", "otp,bio,pin");
 		ReflectionTestUtils.setField(KycAuthRequestValidator, "environment", mockenv);
 		KycAuthRequestDTO kycAuthRequestDTO = new KycAuthRequestDTO();
-		kycAuthRequestDTO.setConsentReq(true);
-		kycAuthRequestDTO.setEPrintReq(true);
-		kycAuthRequestDTO.setId("id");
-		// kycAuthRequestDTO.setVer("1.1");
-		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
-		authRequestDTO.setIdvIdType(IdType.UIN.getType());
-		authRequestDTO.setIdvId("234567890123");
-		ZoneOffset offset = ZoneOffset.MAX;
-		authRequestDTO.setReqTime(Instant.now().atOffset(ZoneOffset.of("+0530"))
+
+		kycAuthRequestDTO.setRequestTime(ZonedDateTime.now()
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
-		authRequestDTO.setId("id");
+		kycAuthRequestDTO.setId("id");
 		// authRequestDTO.setVer("1.1");
-		authRequestDTO.setTspID("1234567890");
-		authRequestDTO.setTxnID("1234567890");
-//		authRequestDTO.setReqHmac("zdskfkdsnj");
+		kycAuthRequestDTO.setTransactionID("1234567890");
 		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
-		authTypeDTO.setPersonalIdentity(true);
 		authTypeDTO.setOtp(true);
 		IdentityInfoDTO idInfoDTO = new IdentityInfoDTO();
 		idInfoDTO.setLanguage("EN");
@@ -236,20 +243,18 @@ public class KycAuthRequestValidatorTest {
 		List<IdentityInfoDTO> idInfoList = new ArrayList<>();
 		idInfoList.add(idInfoDTO);
 		idInfoList.add(idInfoDTO1);
+
 		IdentityDTO idDTO = new IdentityDTO();
 		idDTO.setName(idInfoList);
-		RequestDTO reqDTO = new RequestDTO();
-		reqDTO.setIdentity(idDTO);
-		authRequestDTO.setAuthType(authTypeDTO);
-		authRequestDTO.setRequest(reqDTO);
-		kycAuthRequestDTO.setAuthRequest(authRequestDTO);
-		kycAuthRequestDTO.setEKycAuthType("O");
-		PinInfo pinInfo = new PinInfo();
-		pinInfo.setType("OTP");
-		pinInfo.setValue("123456");
-		List<PinInfo> otplist = new ArrayList<>();
-		otplist.add(pinInfo);
-		authRequestDTO.setPinInfo(otplist);
+		RequestDTO request = new RequestDTO();
+		String otp = "123456";
+		request.setOtp(otp);
+		kycAuthRequestDTO.setIndividualId("5134256294");
+		request.setDemographics(idDTO);
+		kycAuthRequestDTO.setRequest(request);
+		kycAuthRequestDTO.setRequestedAuth(authTypeDTO);
+		kycAuthRequestDTO.setRequest(request);
+		Mockito.when(idInfoHelper.isMatchtypeEnabled(Mockito.any())).thenReturn(Boolean.TRUE);
 		Errors errors = new BeanPropertyBindingResult(kycAuthRequestDTO, "kycAuthRequestDTO");
 		KycAuthRequestValidator.validate(kycAuthRequestDTO, errors);
 		assertTrue(errors.hasErrors());
@@ -258,22 +263,14 @@ public class KycAuthRequestValidatorTest {
 	@Test
 	public void TestInvalidAuthType() {
 		KycAuthRequestDTO kycAuthRequestDTO = new KycAuthRequestDTO();
-		kycAuthRequestDTO.setConsentReq(true);
-		kycAuthRequestDTO.setEPrintReq(true);
 		kycAuthRequestDTO.setId("id");
-		// kycAuthRequestDTO.setVer("1.1");
-		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
-		authRequestDTO.setIdvIdType(IdType.UIN.getType());
-		authRequestDTO.setIdvId("234567890123");
-		authRequestDTO.setReqTime(ZonedDateTime.now()
+		kycAuthRequestDTO.setVersion("1.1");
+		kycAuthRequestDTO.setRequestTime(ZonedDateTime.now()
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
-		authRequestDTO.setId("id");
-		// authRequestDTO.setVer("1.1");
-		authRequestDTO.setTspID("1234567890");
-		authRequestDTO.setTxnID("1234567890");
-//		authRequestDTO.setReqHmac("zdskfkdsnj");
+		kycAuthRequestDTO.setId("id");
+		kycAuthRequestDTO.setTransactionID("1234567890");
 		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
-		authTypeDTO.setPersonalIdentity(true);
+		authTypeDTO.setDemo(true);
 		authTypeDTO.setOtp(true);
 		IdentityInfoDTO idInfoDTO = new IdentityInfoDTO();
 		idInfoDTO.setLanguage("EN");
@@ -286,27 +283,26 @@ public class KycAuthRequestValidatorTest {
 		idInfoList.add(idInfoDTO1);
 		IdentityDTO idDTO = new IdentityDTO();
 		idDTO.setName(idInfoList);
+		idDTO.setName(idInfoList);
+		idDTO.setDob("25/11/1990");
+		idDTO.setAge("25");
+		IdentityInfoDTO idInfoDTOs = new IdentityInfoDTO();
+		idInfoDTOs.setLanguage(env.getProperty("mosip.secondary.lang-code"));
+		idInfoDTOs.setValue("V");
+		List<IdentityInfoDTO> idInfoLists = new ArrayList<>();
+		idInfoLists.add(idInfoDTOs);
+		idDTO.setDobType(idInfoLists);
+		kycAuthRequestDTO.setIndividualIdType("D");
+		kycAuthRequestDTO.setConsentObtained(Boolean.FALSE);
+		kycAuthRequestDTO.setSecondaryLangCode("fra");
 		RequestDTO reqDTO = new RequestDTO();
-		reqDTO.setIdentity(idDTO);
-		authRequestDTO.setAuthType(authTypeDTO);
-		authRequestDTO.setRequest(reqDTO);
-		kycAuthRequestDTO.setAuthRequest(authRequestDTO);
-		kycAuthRequestDTO.setEKycAuthType("P");
-		PinInfo pinInfo = new PinInfo();
-		pinInfo.setType("OTP");
-		pinInfo.setValue("123456");
-		List<PinInfo> otplist = new ArrayList<>();
-		otplist.add(pinInfo);
-		authRequestDTO.setPinInfo(otplist);
-		Errors errors = new BeanPropertyBindingResult(kycAuthRequestDTO, "kycAuthRequestDTO");
-		KycAuthRequestValidator.validate(kycAuthRequestDTO, errors);
-		assertTrue(errors.hasErrors());
-	}
-
-	@Test
-	public void TesteKYCAuthTypeisNull() {
-		KycAuthRequestDTO kycAuthRequestDTO = new KycAuthRequestDTO();
-		kycAuthRequestDTO.setEKycAuthType(null);
+		String otp = "123456";
+		reqDTO.setOtp(otp);
+		kycAuthRequestDTO.setIndividualId("5134256294");
+		reqDTO.setDemographics(idDTO);
+		kycAuthRequestDTO.setRequestedAuth(authTypeDTO);
+		kycAuthRequestDTO.setRequest(reqDTO);
+		Mockito.when(idInfoHelper.isMatchtypeEnabled(Mockito.any())).thenReturn(Boolean.TRUE);
 		Errors errors = new BeanPropertyBindingResult(kycAuthRequestDTO, "kycAuthRequestDTO");
 		KycAuthRequestValidator.validate(kycAuthRequestDTO, errors);
 		assertTrue(errors.hasErrors());
@@ -324,22 +320,14 @@ public class KycAuthRequestValidatorTest {
 	@Test
 	public void TestkycvalidateAuthType() {
 		KycAuthRequestDTO kycAuthRequestDTO = new KycAuthRequestDTO();
-		kycAuthRequestDTO.setConsentReq(true);
-		kycAuthRequestDTO.setEPrintReq(true);
 		kycAuthRequestDTO.setId("id");
-		// kycAuthRequestDTO.setVer("1.1");
-		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
-		authRequestDTO.setIdvIdType(IdType.UIN.getType());
-		authRequestDTO.setIdvId("234567890123");
-		authRequestDTO.setReqTime(ZonedDateTime.now()
+		kycAuthRequestDTO.setVersion("1.1");
+		kycAuthRequestDTO.setRequestTime(ZonedDateTime.now()
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
-		authRequestDTO.setId("id");
-		// authRequestDTO.setVer("1.1");
-		authRequestDTO.setTspID("1234567890");
-		authRequestDTO.setTxnID("1234567890");
-//		authRequestDTO.setReqHmac("zdskfkdsnj");
+		kycAuthRequestDTO.setId("id");
+		kycAuthRequestDTO.setTransactionID("1234567890");
 		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
-		authTypeDTO.setPersonalIdentity(true);
+		authTypeDTO.setDemo(true);
 		authTypeDTO.setOtp(true);
 		IdentityInfoDTO idInfoDTO = new IdentityInfoDTO();
 		idInfoDTO.setLanguage("EN");
@@ -352,20 +340,24 @@ public class KycAuthRequestValidatorTest {
 		idInfoList.add(idInfoDTO1);
 		IdentityDTO idDTO = new IdentityDTO();
 		idDTO.setName(idInfoList);
+		idDTO.setName(idInfoList);
+		idDTO.setDob("25/11/1990");
+		idDTO.setAge("25");
+		IdentityInfoDTO idInfoDTOs = new IdentityInfoDTO();
+		idInfoDTOs.setLanguage(env.getProperty("mosip.secondary.lang-code"));
+		idInfoDTOs.setValue("V");
+		List<IdentityInfoDTO> idInfoLists = new ArrayList<>();
+		idInfoLists.add(idInfoDTOs);
+		idDTO.setDobType(idInfoLists);
+		kycAuthRequestDTO.setIndividualIdType("D");
+		kycAuthRequestDTO.setConsentObtained(Boolean.TRUE);
+		kycAuthRequestDTO.setSecondaryLangCode("fra");
 		RequestDTO reqDTO = new RequestDTO();
-		reqDTO.setIdentity(idDTO);
-		authRequestDTO.setAuthType(authTypeDTO);
-		authRequestDTO.setRequest(reqDTO);
-		kycAuthRequestDTO.setAuthRequest(authRequestDTO);
-		kycAuthRequestDTO.setEKycAuthType("O");
-		PinInfo pinInfo = new PinInfo();
-		pinInfo.setType("OTP");
-		pinInfo.setValue("123456");
-		List<PinInfo> otplist = new ArrayList<>();
-		otplist.add(pinInfo);
-		authRequestDTO.setPinInfo(otplist);
+		reqDTO.setDemographics(idDTO);
+		kycAuthRequestDTO.setRequestedAuth(authTypeDTO);
+		kycAuthRequestDTO.setRequest(reqDTO);
+		Mockito.when(idInfoHelper.isMatchtypeEnabled(Mockito.any())).thenReturn(Boolean.TRUE);
 		Errors errors = new BeanPropertyBindingResult(kycAuthRequestDTO, "kycAuthRequestDTO");
-		kycAuthRequestDTO.setEKycAuthType(null);
 		KycAuthRequestValidator.validate(kycAuthRequestDTO, errors);
 		assertTrue(errors.hasErrors());
 		System.out.println(errors);
@@ -375,7 +367,7 @@ public class KycAuthRequestValidatorTest {
 	public void TestkycAuthRequestisNull() {
 		KycAuthRequestDTO kycAuthRequestDTO = new KycAuthRequestDTO();
 		Errors errors = new BeanPropertyBindingResult(kycAuthRequestDTO, "kycAuthRequestDTO");
-		kycAuthRequestDTO.setAuthRequest(null);
+		kycAuthRequestDTO.setRequestedAuth(null);
 		KycAuthRequestValidator.validate(kycAuthRequestDTO, errors);
 		assertTrue(errors.hasErrors());
 	}
@@ -383,22 +375,14 @@ public class KycAuthRequestValidatorTest {
 	@Test
 	public void TestInvalidConsentReq() {
 		KycAuthRequestDTO kycAuthRequestDTO = new KycAuthRequestDTO();
-		kycAuthRequestDTO.setConsentReq(true);
-		kycAuthRequestDTO.setEPrintReq(true);
 		kycAuthRequestDTO.setId("id");
-		// kycAuthRequestDTO.setVer("1.1");
-		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
-		authRequestDTO.setIdvIdType(IdType.UIN.getType());
-		authRequestDTO.setIdvId("234567890123");
-		authRequestDTO.setReqTime(ZonedDateTime.now()
+		kycAuthRequestDTO.setVersion("1.1");
+		kycAuthRequestDTO.setRequestTime(ZonedDateTime.now()
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
-		authRequestDTO.setId("id");
-		// authRequestDTO.setVer("1.1");
-		authRequestDTO.setTspID("1234567890");
-		authRequestDTO.setTxnID("1234567890");
-//		authRequestDTO.setReqHmac("zdskfkdsnj");
+		kycAuthRequestDTO.setId("id");
+		kycAuthRequestDTO.setTransactionID("1234567890");
 		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
-		authTypeDTO.setPersonalIdentity(true);
+		authTypeDTO.setDemo(true);
 		authTypeDTO.setOtp(true);
 		IdentityInfoDTO idInfoDTO = new IdentityInfoDTO();
 		idInfoDTO.setLanguage("EN");
@@ -411,20 +395,86 @@ public class KycAuthRequestValidatorTest {
 		idInfoList.add(idInfoDTO1);
 		IdentityDTO idDTO = new IdentityDTO();
 		idDTO.setName(idInfoList);
-		RequestDTO reqDTO = new RequestDTO();
-		reqDTO.setIdentity(idDTO);
-		authRequestDTO.setAuthType(authTypeDTO);
-		authRequestDTO.setRequest(reqDTO);
-		kycAuthRequestDTO.setAuthRequest(authRequestDTO);
-		kycAuthRequestDTO.setEKycAuthType("O");
-		kycAuthRequestDTO.setConsentReq(false);
-		PinInfo pinInfo = new PinInfo();
-		pinInfo.setType("OTP");
-		pinInfo.setValue("123456");
-		List<PinInfo> otplist = new ArrayList<>();
-		otplist.add(pinInfo);
-		authRequestDTO.setPinInfo(otplist);
+		idDTO.setName(idInfoList);
+		idDTO.setDob("25/11/1990");
+		idDTO.setAge("25");
+		IdentityInfoDTO idInfoDTOs = new IdentityInfoDTO();
+		idInfoDTOs.setLanguage(env.getProperty("mosip.secondary.lang-code"));
+		idInfoDTOs.setValue("V");
+		List<IdentityInfoDTO> idInfoLists = new ArrayList<>();
+		idInfoLists.add(idInfoDTOs);
+		idDTO.setDobType(idInfoLists);
+		kycAuthRequestDTO.setIndividualIdType("D");
+		kycAuthRequestDTO.setConsentObtained(Boolean.FALSE);
+		kycAuthRequestDTO.setSecondaryLangCode("fra");
+		RequestDTO request = new RequestDTO();
+		request.setDemographics(idDTO);
+		kycAuthRequestDTO.setRequestedAuth(authTypeDTO);
+		String otp = "456789";
+		request.setOtp(otp);
+		kycAuthRequestDTO.setIndividualId("5134256294");
+		kycAuthRequestDTO.setRequest(request);
+		Mockito.when(idInfoHelper.isMatchtypeEnabled(Mockito.any())).thenReturn(Boolean.TRUE);
 		Errors errors = new BeanPropertyBindingResult(kycAuthRequestDTO, "kycAuthRequestDTO");
+		KycAuthRequestValidator.validate(kycAuthRequestDTO, errors);
+		System.err.println(errors);
+		assertTrue(errors.hasErrors());
+	}
+	
+	@Test
+	public void testForIsValidAuthtype() {
+		KycAuthRequestDTO kycAuthRequestDTO = new KycAuthRequestDTO();
+		kycAuthRequestDTO.setConsentObtained(Boolean.TRUE);
+		kycAuthRequestDTO.setSecondaryLangCode("fra");
+		kycAuthRequestDTO.setRequestTime(ZonedDateTime.now()
+				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
+		kycAuthRequestDTO.setId("id");
+		kycAuthRequestDTO.setVersion("1.1");
+		kycAuthRequestDTO.setTransactionID("1234567890");
+		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
+		authTypeDTO.setDemo(false);
+		authTypeDTO.setOtp(true);
+		IdentityInfoDTO idInfoDTO = new IdentityInfoDTO();
+		idInfoDTO.setLanguage("EN");
+		idInfoDTO.setValue("John");
+		IdentityInfoDTO idInfoDTO1 = new IdentityInfoDTO();
+		idInfoDTO1.setLanguage("fre");
+		idInfoDTO1.setValue("Mike");
+		List<IdentityInfoDTO> idInfoList = new ArrayList<>();
+		idInfoList.add(idInfoDTO);
+		idInfoList.add(idInfoDTO1);
+
+		IdentityDTO idDTO = new IdentityDTO();
+		idDTO.setName(idInfoList);
+		idDTO.setDob("25/11/1990");
+		idDTO.setAge("25");
+		IdentityInfoDTO idInfoDTOs = new IdentityInfoDTO();
+		idInfoDTOs.setLanguage(env.getProperty("mosip.secondary.lang-code"));
+		idInfoDTOs.setValue("V");
+		List<IdentityInfoDTO> idInfoLists = new ArrayList<>();
+		idInfoLists.add(idInfoDTOs);
+		idDTO.setDobType(idInfoLists);
+		kycAuthRequestDTO.setIndividualIdType(IdType.UIN.getType());
+		RequestDTO request = new RequestDTO();
+		String otp = "123456";
+		request.setOtp(otp);
+		kycAuthRequestDTO.setIndividualId("5134256294");
+		request.setDemographics(idDTO);
+		request.setTransactionID("1234567890");
+		request.setTimestamp(Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
+				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
+		kycAuthRequestDTO.setConsentObtained(true);
+		kycAuthRequestDTO.setRequest(request);
+		kycAuthRequestDTO.setRequestedAuth(authTypeDTO);
+		kycAuthRequestDTO.setRequest(request);
+		
+		MockEnvironment mockenv = new MockEnvironment();
+		ReflectionTestUtils.setField(KycAuthRequestValidator, "environment", mockenv);
+		mockenv.merge(((AbstractEnvironment) mockenv));
+		mockenv.setProperty("ekyc.allowed.auth.type", "");
+		
+		Errors errors = new BeanPropertyBindingResult(kycAuthRequestDTO, "kycAuthRequestDTO");
+		Mockito.when(idInfoHelper.isMatchtypeEnabled(Mockito.any())).thenReturn(Boolean.TRUE);
 		KycAuthRequestValidator.validate(kycAuthRequestDTO, errors);
 		assertTrue(errors.hasErrors());
 	}

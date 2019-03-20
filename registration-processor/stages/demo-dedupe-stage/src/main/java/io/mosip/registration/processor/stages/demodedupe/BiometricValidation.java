@@ -58,7 +58,7 @@ public class BiometricValidation {
 		 * authResponseDTO.getStatus().equalsIgnoreCase("y");
 		 */
 
-		boolean isValid= false;	
+		boolean isValid= false;
 		InputStream demographicInfoStream = null;
 		demographicInfoStream = adapter.getFile(regId,
 				PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR + PacketFiles.ID.name());
@@ -83,6 +83,4 @@ public class BiometricValidation {
 		}				
 		return isValid;
 	}
-
-	
 }

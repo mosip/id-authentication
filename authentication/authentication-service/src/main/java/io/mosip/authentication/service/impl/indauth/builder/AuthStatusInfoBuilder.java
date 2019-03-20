@@ -5,10 +5,6 @@ import java.util.Arrays;
 
 import io.mosip.authentication.core.dto.indauth.AuthError;
 import io.mosip.authentication.core.dto.indauth.AuthStatusInfo;
-import io.mosip.authentication.core.dto.indauth.AuthUsageDataBit;
-import io.mosip.authentication.core.dto.indauth.BioInfo;
-import io.mosip.authentication.core.dto.indauth.DeviceInfo;
-import io.mosip.authentication.core.dto.indauth.MatchInfo;
 
 /**
  * The builder class of AuthStatusInfo.
@@ -61,7 +57,7 @@ public class AuthStatusInfoBuilder {
 	 * @param language the language
 	 * @return the auth status info builder
 	 */
-	public AuthStatusInfoBuilder addMatchInfo(String authType, String matchingStrategy, Integer matchingThreshold,
+	/*public AuthStatusInfoBuilder addMatchInfo(String authType, String matchingStrategy, Integer matchingThreshold,
 			String language) {
 		assertNotBuilt();
 		if (authStatusInfo.getMatchInfos() == null) {
@@ -69,7 +65,7 @@ public class AuthStatusInfoBuilder {
 		}
 		authStatusInfo.getMatchInfos().add(new MatchInfo(authType, language, matchingStrategy, matchingThreshold));
 		return this;
-	}
+	}*/
 	
 	/**
 	 * Adds the bio info to AuthStatusInfo.
@@ -78,14 +74,14 @@ public class AuthStatusInfoBuilder {
 	 * @param deviceInfo the device info
 	 * @return the auth status info builder
 	 */
-	public AuthStatusInfoBuilder addBioInfo(String bioType,DeviceInfo deviceInfo) {
+	/*public AuthStatusInfoBuilder addBioInfo(String bioType,DeviceInfo deviceInfo) {
 		assertNotBuilt();
 		if (authStatusInfo.getBioInfos() == null) {
 			authStatusInfo.setBioInfos(new ArrayList<>());
 		}
 		authStatusInfo.getBioInfos().add(new BioInfo(bioType,deviceInfo));
 		return this;
-	}
+	}*/
 
 	/**
 	 * Adds the auth usage data bits to AuthStatusInfo.
@@ -93,7 +89,7 @@ public class AuthStatusInfoBuilder {
 	 * @param usageDataBits the usage data bits
 	 * @return the auth status info builder
 	 */
-	public AuthStatusInfoBuilder addAuthUsageDataBits(AuthUsageDataBit... usageDataBits) {
+	/*public AuthStatusInfoBuilder addAuthUsageDataBits(AuthUsageDataBit... usageDataBits) {
 		assertNotBuilt();
 		if (authStatusInfo.getUsageDataBits() == null) {
 			authStatusInfo.setUsageDataBits(new ArrayList<>());
@@ -101,7 +97,7 @@ public class AuthStatusInfoBuilder {
 
 		authStatusInfo.getUsageDataBits().addAll(Arrays.asList(usageDataBits));
 		return this;
-	}
+	}*/
 
 	/**
 	 * Adds the errors to the AuthStatusInfo.

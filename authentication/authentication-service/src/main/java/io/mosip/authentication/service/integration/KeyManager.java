@@ -2,11 +2,9 @@ package io.mosip.authentication.service.integration;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
+import java.util.List;
 //import java.util.Base64;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 
 import javax.crypto.SecretKey;
@@ -24,6 +22,7 @@ import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.constant.RestServicesConstants;
 import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
+import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.RestServiceException;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.util.dto.RestRequestDTO;
@@ -34,7 +33,6 @@ import io.mosip.authentication.service.integration.dto.CryptomanagerResponseDto;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.core.util.DateUtils;
-import io.mosip.kernel.crypto.jce.impl.EncryptorImpl;
 import io.mosip.kernel.keygenerator.bouncycastle.KeyGenerator;
 
 /**
@@ -45,20 +43,15 @@ import io.mosip.kernel.keygenerator.bouncycastle.KeyGenerator;
 @Component
 public class KeyManager {
 
-	/** The Constant SESSION_KEY. */
-	private static final String SESSION_KEY = "sessionKey";
+	private static final String SESSION_ID = "SESSION_ID";
 
-	/** The Constant KEY. */
-	private static final String KEY = "key";
+	/** The Constant SESSION_KEY. */
+	private static final String SESSION_KEY = "requestSessionKey";
 
 	/** The Constant REQUEST. */
 	private static final String REQUEST = "request";
 
-	/** The Constant TSP_ID. */
-	private static final String TSP_ID = "tspID";
-
 	/** KeySplitter. */
-
 	@Value("${mosip.kernel.data-key-splitter}")
 	private String keySplitter;
 
@@ -89,37 +82,29 @@ public class KeyManager {
 	 * @param requestBody the request body
 	 * @param mapper      the mapper
 	 * @return the map
-	 * @throws IdAuthenticationAppException the id authentication app exception
+	 * @throws IdAuthenticationAppException      the id authentication app exception
+	 * @throws IdAuthenticationBusinessException
 	 */
+	@SuppressWarnings("unchecked")
 	public Map<String, Object> requestData(Map<String, Object> requestBody, ObjectMapper mapper)
 			throws IdAuthenticationAppException {
 		Map<String, Object> request = null;
 		try {
-			String tspId = (String) requestBody.get(TSP_ID);
-			if (Objects.isNull(tspId) || tspId.isEmpty()) {
-				logger.error("NA", "NA", IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
-						IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
-				throw new IdAuthenticationAppException(
-						IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
-						IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
-			}
 			byte[] encryptedRequest = (byte[]) requestBody.get(REQUEST);
-			Optional<String> encryptedSessionKey = Optional.ofNullable(requestBody.get(KEY))// check if key is null
-					.filter(obj -> obj instanceof Map)
-					.map(obj -> String.valueOf(((Map<String, Object>) obj).get(SESSION_KEY)));
+			Optional<String> encryptedSessionKey = Optional.ofNullable(requestBody.get(SESSION_KEY))
+					.map(String::valueOf);
 			if (encryptedSessionKey.isPresent()) {
 				byte[] encyptedSessionkey = Base64.decodeBase64(encryptedSessionKey.get());// remove key attribute from
-																							// auth request
 				RestRequestDTO restRequestDTO = null;
 				CryptomanagerRequestDto cryptoManagerRequestDto = new CryptomanagerRequestDto();
 				CryptomanagerResponseDto cryptomanagerResponseDto = null;
 				String decryptedData = null;
-
 				try {
 					cryptoManagerRequestDto.setApplicationId(appId);
-					cryptoManagerRequestDto.setReferenceId(tspId);
+					cryptoManagerRequestDto.setReferenceId(environment.getProperty("mosip.ida.publickey"));
 					cryptoManagerRequestDto.setTimeStamp(
 							DateUtils.getUTCCurrentDateTimeString(environment.getProperty("datetime.pattern")));
+					// cryptoManagerRequestDto.setTimeStamp("2031-03-07T12:58:41.762Z");
 					cryptoManagerRequestDto.setData(CryptoUtil.encodeBase64(
 							CryptoUtil.combineByteArray(encryptedRequest, encyptedSessionkey, keySplitter)));
 					restRequestDTO = restRequestFactory.buildRequest(RestServicesConstants.DECRYPTION_SERVICE,
@@ -127,20 +112,42 @@ public class KeyManager {
 					cryptomanagerResponseDto = restHelper.requestSync(restRequestDTO);
 					decryptedData = new String(Base64.decodeBase64(cryptomanagerResponseDto.getData()),
 							StandardCharsets.UTF_8);
-					logger.info("NA", "NA", "NA", "cryptomanagerResponseDto " + decryptedData);
+					logger.info(SESSION_ID, this.getClass().getSimpleName(), "requestData",
+							"cryptomanagerResponseDto " + decryptedData);
 				} catch (RestServiceException e) {
-					logger.error("NA", "NA", e.getErrorCode(), e.getErrorText());
+					logger.error(SESSION_ID, this.getClass().getSimpleName(), e.getErrorCode(), e.getErrorText());
+					Optional<Object> responseBody = e.getResponseBody();
+					if (responseBody.isPresent()) {
+						Map<String, Object> idrepoMap = (Map<String, Object>) responseBody.get();
+						if (idrepoMap.containsKey("errors")) {
+							List<Map<String, Object>> idRepoerrorList = (List<Map<String, Object>>) idrepoMap
+									.get("errors");
+							String keyExpErrorCode = "KER-KMS-003"; // TODO FIXME integrate with kernel error constant
+							if (!idRepoerrorList.isEmpty()
+									&& idRepoerrorList.stream().anyMatch(map -> map.containsKey("errCode")
+											&& ((String) map.get("errCode")).equalsIgnoreCase(keyExpErrorCode))) {
+								throw new IdAuthenticationAppException(
+										IdAuthenticationErrorConstants.PUBLICKEY_EXPIRED);
+							} else {
+								throw new IdAuthenticationAppException(
+										IdAuthenticationErrorConstants.UNABLE_TO_PROCESS);
+							}
+						}
+					}
+
+					logger.error(SESSION_ID, this.getClass().getSimpleName(), e.getErrorCode(), e.getErrorText());
 					throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.SERVER_ERROR);
 				} catch (IDDataValidationException e) {
-					throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST, e);
+					logger.error(SESSION_ID, this.getClass().getSimpleName(), e.getErrorCode(), e.getErrorText());
+					throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
 				}
 
-				request = mapper.readValue(decryptedData, new TypeReference<Map<String, Object>>() {
-				});
+				request = mapper.readValue(decryptedData.getBytes("UTF-8"),Map.class);
 			}
 		} catch (IOException e) {
-			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorCode(),
-					IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorMessage());
+			logger.error(SESSION_ID, this.getClass().getSimpleName(), "requestData", e.getMessage());
+			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(),
+					IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorMessage());
 		}
 		return request;
 	}

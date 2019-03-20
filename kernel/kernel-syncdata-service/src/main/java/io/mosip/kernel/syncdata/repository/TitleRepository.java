@@ -23,9 +23,11 @@ public interface TitleRepository extends BaseRepository<Title, String> {
 	 * than lastUpdated timeStamp.
 	 * 
 	 * @param lastUpdated
-	 *            timeStamp
-	 * @return list of {@link Title}
+	 *            timeStamp - last updated time stamp
+	 * @param currentTimeStamp
+	 *            - current time stamp
+	 * @return list of {@link Title} - list of title
 	 */
 	@Query("FROM Title WHERE (createdDateTime > ?1  AND createdDateTime <=?2) OR (updatedDateTime > ?1 AND updatedDateTime <=?2)  OR (deletedDateTime > ?1 AND deletedDateTime<=?2)")
-	List<Title> findAllLatestCreatedUpdateDeleted(LocalDateTime lastUpdated,LocalDateTime currentTimeStamp);
+	List<Title> findAllLatestCreatedUpdateDeleted(LocalDateTime lastUpdated, LocalDateTime currentTimeStamp);
 }

@@ -15,16 +15,16 @@ import lombok.Data;
 public class StaticPinResponseDTO {
 	/** Variable to hold id */
 	private String id;
-	
+
 	/** The value Version */
-	private String ver;
-	
-	/**variable to hold status */
-	private String status;
+	private String version;
+
+	/** variable to hold status */
+	private boolean status;
 
 	/** Variable to hold Response time */
-	private String resTime;
-	
+	private String responseTime;
+
 	/** The error value */
-	private List<AuthError> err;
+	private List<AuthError> errors;
 }

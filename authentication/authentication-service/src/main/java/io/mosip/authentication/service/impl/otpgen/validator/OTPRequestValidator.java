@@ -20,6 +20,7 @@ import io.mosip.kernel.core.util.DateUtils;
  * {@code OTPRequestValidator} do constraint validate of {@link OtpRequestDTO}
  * and enum atribute "idType" validation.
  * 
+ * @author Dinesh Karuppiah.T
  * @author Rakesh Roshan
  */
 @Component
@@ -33,7 +34,11 @@ public class OTPRequestValidator extends IdAuthValidator {
 
 	private static final String SESSION_ID = "session_id";
 
-	private static final String REQ_TIME = "reqTime";
+	private static final String REQ_TIME = "requestTime";
+
+	private static final String INDIVIDUAL_ID = "individualId";
+
+	private static final String TRANSACTION_ID = "transactionID";
 
 	/** The mosip logger. */
 	private static Logger mosipLogger = IdaLogger.getLogger(OTPRequestValidator.class);
@@ -60,25 +65,23 @@ public class OTPRequestValidator extends IdAuthValidator {
 		if (Objects.nonNull(target)) {
 			OtpRequestDTO otpRequestDto = (OtpRequestDTO) target;
 
-			validateReqTime(otpRequestDto.getReqTime(), errors);
+			validateReqTime(otpRequestDto.getRequestTime(), errors, REQ_TIME);
 
-			validateTxnId(otpRequestDto.getTxnID(), errors);
+			validateTxnId(otpRequestDto.getTransactionID(), errors, TRANSACTION_ID);
 
 			if (!errors.hasErrors()) {
-				validateRequestTimedOut(otpRequestDto.getReqTime(), errors);
+				validateRequestTimedOut(otpRequestDto.getRequestTime(), errors);
 			}
 
 			if (!errors.hasErrors()) {
 				validateId(otpRequestDto.getId(), errors);
 
-				// validateVer(otpRequestDto.getVer(), errors);
-
-				validateIdvId(otpRequestDto.getIdvId(), otpRequestDto.getIdvIdType(), errors);
-
-				validateTspId(otpRequestDto.getTspID(), errors);
+				validateIdvId(otpRequestDto.getIndividualId(), otpRequestDto.getIndividualIdType(), errors,
+						INDIVIDUAL_ID);
 			}
-		}
 
+		}
+		// validateVer(otpRequestDto.getVer(), errors);
 	}
 
 	/**
@@ -91,7 +94,7 @@ public class OTPRequestValidator extends IdAuthValidator {
 		try {
 
 			String maxTimeInMinutes = env.getProperty(REQUESTDATE_RECEIVED_IN_MAX_TIME_MINS);
-			Instant reqTimeInstance = DateUtils.parseToDate(timestamp,env.getProperty(DATETIME_PATTERN)).toInstant();
+			Instant reqTimeInstance = DateUtils.parseToDate(timestamp, env.getProperty(DATETIME_PATTERN)).toInstant();
 			Instant now = Instant.now();
 			mosipLogger.debug(SESSION_ID, OTP_VALIDATOR, VALIDATE_REQUEST_TIMED_OUT,
 					"reqTimeInstance" + reqTimeInstance.toString() + " -- current time : " + now.toString());
@@ -108,7 +111,7 @@ public class OTPRequestValidator extends IdAuthValidator {
 						new Object[] { Duration.between(reqTimeInstance, now).toMinutes() },
 						IdAuthenticationErrorConstants.INVALID_OTP_REQUEST_TIMESTAMP.getErrorMessage());
 			}
-		} catch (DateTimeParseException | ParseException | java.text.ParseException e) {
+		} catch (DateTimeParseException | ParseException e) {
 			mosipLogger.error(SESSION_ID, OTP_VALIDATOR, VALIDATE_REQUEST_TIMED_OUT,
 					"INVALID_INPUT_PARAMETER -- " + REQ_TIME);
 			errors.rejectValue(REQ_TIME, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),

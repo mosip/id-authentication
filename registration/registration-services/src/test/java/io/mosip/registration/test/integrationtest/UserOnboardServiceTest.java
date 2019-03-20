@@ -43,11 +43,11 @@ public class UserOnboardServiceTest  extends BaseIntegrationTest{
 	public void setvalue()
 	{
 	RegistrationCenterDetailDTO registrationCenter = new RegistrationCenterDetailDTO();
-	registrationCenter.setRegistrationCenterId("20916");
+	registrationCenter.setRegistrationCenterId(IntegrationTestConstants.RegistrationCenterId_val);
 	SessionContext.getInstance().getUserContext().setRegistrationCenterDetailDTO(registrationCenter);
-	SessionContext.getInstance().getUserContext().setUserId("mosip");
-	SessionContext.map().put("stationId","10011");
-	ApplicationContext.map().put("USER_ON_BOARD_THRESHOLD_LIMIT","10");
+	SessionContext.getInstance().getUserContext().setUserId(IntegrationTestConstants.userId_val);
+	SessionContext.map().put(IntegrationTestConstants.stationId,IntegrationTestConstants.stationId_val);
+	ApplicationContext.map().put(IntegrationTestConstants.USER_ON_BOARD_THRESHOLD_LIMIT,IntegrationTestConstants.USER_ON_BOARD_THRESHOLD_LIMIT_val);
 	}
 	
 	
@@ -56,37 +56,33 @@ public class UserOnboardServiceTest  extends BaseIntegrationTest{
 	{
 		String expectedCenterID=null;
 		String expectedStatinID=null;
-		String actualCenterID="10031";
-		String actualStationID="10011";
 		Map<String,String> getres=userOBservice.getMachineCenterId();
 		Set<Entry<String,String>> hashSet=getres.entrySet();
         for(Entry entry:hashSet ) {
 
-        	if(entry.getKey().equals("centerId"))
+        	if(entry.getKey().equals(IntegrationTestConstants.centerID))
         	{
         		expectedCenterID=entry.getValue().toString();
         	}
         	else {
 				expectedStatinID=entry.getValue().toString();
 			}
-        /*    System.out.println("Key="+entry.getKey()+", Value="+entry.getValue());
-        System.out.println(expectedCenterID);
-        System.out.println(expectedStatinID);
-        */
+    
         	}
-		
-        assertEquals(expectedCenterID,actualCenterID);
-        assertEquals(expectedStatinID, actualStationID);
+		System.out.println("expectedCenterID"+expectedCenterID);
+		System.out.println("expectedStatinID"+expectedStatinID);
+        assertEquals(expectedCenterID,IntegrationTestConstants.stationId_val);
+        assertEquals(expectedStatinID, IntegrationTestConstants.stationId_val);
 		
 	}
 	
 	@Test
 	public void Validate_userOB_null() {
 		
-		String expectedmsg="Threshold for number of successful authentications not met.";
+		String expectedmsg=IntegrationTestConstants.userOBErrormsg;
 		BiometricDTO biodto = null;
 		try {
-			biodto = testData("src/test/resources/testData/UserOnboardServiceData/Validate_null.json");
+			biodto = testData(IntegrationTestConstants.UOB_Validate_null_path);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -106,10 +102,10 @@ public class UserOnboardServiceTest  extends BaseIntegrationTest{
 	@Test
 	public void Validate_userOB_9() {
 		
-		String expectedmsg="Threshold for number of successful authentications not met.";
+		String expectedmsg=IntegrationTestConstants.userOBErrormsg;
 		BiometricDTO biodto = null;
 		try {
-			biodto = testData("src/test/resources/testData/UserOnboardServiceData/NO_IRIS_NoTHUMB_9.json");
+			biodto = testData(IntegrationTestConstants.UOB_NO_IRIS_NoTHUMB_9);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -130,10 +126,10 @@ public class UserOnboardServiceTest  extends BaseIntegrationTest{
 	@Test
 	public void Validate_userOB_Positive() {
 		
-		String expectedmsg="User on-boarded successfully.";
+		String expectedmsg=IntegrationTestConstants.UOB_success_msg;
 		BiometricDTO biodto = null;
 		try {
-			biodto = testData("src/test/resources/testData/UserOnboardServiceData/IRIS_FP_NoLeftThumbs.json");
+			biodto = testData(IntegrationTestConstants.IRIS_FP_NoLeftThumbs_path);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -151,10 +147,10 @@ public class UserOnboardServiceTest  extends BaseIntegrationTest{
 	@Test
 	public void Validate_userOB_FP() {
 		
-		String expectedmsg="User on-boarded successfully.";
+		String expectedmsg=IntegrationTestConstants.UOB_success_msg;
 		BiometricDTO biodto = null;
 		try {
-			biodto = testData("src/test/resources/testData/UserOnboardServiceData/FP_NoIRIS.json");
+			biodto = testData(IntegrationTestConstants.FP_NoIRIS_path);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -178,7 +174,7 @@ public class UserOnboardServiceTest  extends BaseIntegrationTest{
 	        //Read JSON file
 	        Object obj = jsonParser.parse(reader);
 	       // JSONArray jArray = (JSONArray) obj;
-	       // jArray.get(0);
+	    
 	        String s=obj.toString();
 	        
 	        BiometricDTO biodto = mapper.readValue(s, BiometricDTO.class);

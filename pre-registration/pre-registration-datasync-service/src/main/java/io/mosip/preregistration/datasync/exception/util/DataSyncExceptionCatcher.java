@@ -45,7 +45,8 @@ public class DataSyncExceptionCatcher {
 			throw new DataSyncRecordNotFoundException(((DataSyncRecordNotFoundException) ex).getErrorCode(),
 					((DataSyncRecordNotFoundException) ex).getErrorText());
 		} else if (ex instanceof TableNotAccessibleException) {
-			throw new TableNotAccessibleException(((TableNotAccessibleException) ex).getErrorCode(),((TableNotAccessibleException) ex).getErrorText());
+			throw new TableNotAccessibleException(((TableNotAccessibleException) ex).getErrorCode(),
+					((TableNotAccessibleException) ex).getErrorText());
 		} else if (ex instanceof ZipFileCreationException) {
 			throw new ZipFileCreationException(((ZipFileCreationException) ex).getErrorCode(),
 					((ZipFileCreationException) ex).getErrorText(), ex.getCause());
@@ -55,7 +56,8 @@ public class DataSyncExceptionCatcher {
 		} else if (ex instanceof ReverseDataFailedToStoreException) {
 			throw new ReverseDataFailedToStoreException(((ReverseDataFailedToStoreException) ex).getErrorText());
 		} else if (ex instanceof RecordNotFoundForDateRange) {
-			throw new RecordNotFoundForDateRange(((RecordNotFoundForDateRange) ex).getErrorText());
+			throw new RecordNotFoundForDateRange(((RecordNotFoundForDateRange) ex).getErrorCode(),
+					((RecordNotFoundForDateRange) ex).getErrorText());
 
 		}
 	}

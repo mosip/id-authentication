@@ -102,7 +102,8 @@ public class PreRegistrationDataSyncServiceTest {
 	public void initiate() {
 		Map<String, Object> applicationMap = new HashMap<>();
 		applicationMap.put(RegistrationConstants.PRE_REG_DELETION_CONFIGURED_DAYS, "45");
-
+		applicationMap.put(RegistrationConstants.PRE_REG_DAYS_LIMIT, "5");
+		
 		PowerMockito.mockStatic(io.mosip.registration.context.ApplicationContext.class);
 		when(io.mosip.registration.context.ApplicationContext.map()).thenReturn(applicationMap);
 	}
@@ -125,11 +126,11 @@ public class PreRegistrationDataSyncServiceTest {
 		responseData.put("preRegistrationIds", map);
 
 		postResponse.put("response", responseData);
-		Mockito.when(serviceDelegateUtil.post(Mockito.anyString(), Mockito.any())).thenReturn(postResponse);
+		Mockito.when(serviceDelegateUtil.post(Mockito.anyString(), Mockito.any(),Mockito.anyString())).thenReturn(postResponse);
 		// Mockito.when(preRegistrationResponseDTO.getResponse()).thenReturn(list);
 
 		Mockito.when(preRegistrationDAO.get(Mockito.anyString())).thenReturn(new PreRegistrationList());
-		Mockito.when(serviceDelegateUtil.get(Mockito.anyString(), Mockito.any(), Mockito.anyBoolean()))
+		Mockito.when(serviceDelegateUtil.get(Mockito.anyString(), Mockito.any(), Mockito.anyBoolean(),Mockito.anyString()))
 				.thenReturn(getTestPacketData());
 		Mockito.when(syncManager.createSyncTransaction(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),
 				Mockito.anyString())).thenReturn(syncTransaction);
@@ -156,7 +157,7 @@ public class PreRegistrationDataSyncServiceTest {
 	public void getPreRegistrationTest()
 			throws HttpClientErrorException, ResourceAccessException, SocketTimeoutException, RegBaseCheckedException {
 
-		Mockito.when(serviceDelegateUtil.get(Mockito.anyString(), Mockito.any(), Mockito.anyBoolean()))
+		Mockito.when(serviceDelegateUtil.get(Mockito.anyString(), Mockito.any(), Mockito.anyBoolean(),Mockito.anyString()))
 				.thenReturn(getTestPacketData());
 		Mockito.when(syncManager.createSyncTransaction(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),
 				Mockito.anyString())).thenReturn(syncTransaction);
@@ -178,7 +179,7 @@ public class PreRegistrationDataSyncServiceTest {
 	public void getPreRegistrationNegativeTest()
 			throws HttpClientErrorException, ResourceAccessException, SocketTimeoutException, RegBaseCheckedException {
 
-		Mockito.when(serviceDelegateUtil.get(Mockito.anyString(), Mockito.any(), Mockito.anyBoolean()))
+		Mockito.when(serviceDelegateUtil.get(Mockito.anyString(), Mockito.any(), Mockito.anyBoolean(),Mockito.anyString()))
 				.thenThrow(HttpClientErrorException.class);
 		PowerMockito.mockStatic(RegistrationAppHealthCheckUtil.class);
 		Mockito.when(RegistrationAppHealthCheckUtil.isNetworkAvailable()).thenReturn(true);
@@ -191,7 +192,7 @@ public class PreRegistrationDataSyncServiceTest {
 	@Test
 	public void getPreRegistrationsTestNegative()
 			throws HttpClientErrorException, ResourceAccessException, SocketTimeoutException, RegBaseCheckedException { // Test-2
-		Mockito.when(serviceDelegateUtil.post(Mockito.anyString(), Mockito.any()))
+		Mockito.when(serviceDelegateUtil.post(Mockito.anyString(), Mockito.any(),Mockito.anyString()))
 				.thenThrow(HttpClientErrorException.class);
 		PowerMockito.mockStatic(RegistrationAppHealthCheckUtil.class);
 		Mockito.when(RegistrationAppHealthCheckUtil.isNetworkAvailable()).thenReturn(true);

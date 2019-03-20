@@ -5,19 +5,34 @@ import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.math.BigInteger;
+import java.security.InvalidKeyException;
 import java.security.KeyFactory;
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
+import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
+import java.security.PrivateKey;
+import java.security.SecureRandom;
+import java.security.SignatureException;
 import java.security.UnrecoverableEntryException;
+import java.security.cert.CertificateEncodingException;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
+import java.security.cert.CertificateParsingException;
 import java.security.cert.X509Certificate;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Base64;
+import java.util.Date;
+import java.util.Enumeration;
 import java.util.List;
 
+import org.apache.commons.io.IOUtils;
 import org.jose4j.jws.AlgorithmIdentifiers;
 import org.jose4j.jws.JsonWebSignature;
 import org.jose4j.lang.JoseException;
@@ -28,6 +43,15 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.core.util.HMACUtils;
+import sun.security.x509.AlgorithmId;
+import sun.security.x509.CertificateAlgorithmId;
+import sun.security.x509.CertificateSerialNumber;
+import sun.security.x509.CertificateValidity;
+import sun.security.x509.CertificateVersion;
+import sun.security.x509.CertificateX509Key;
+import sun.security.x509.X500Name;
+import sun.security.x509.X509CertImpl;
+import sun.security.x509.X509CertInfo;
 
 // 
 /**
@@ -52,6 +76,9 @@ public class DigitalSign {
 	 * @throws UnrecoverableEntryException the unrecoverable entry exception
 	 * @throws JoseException the jose exception
 	 * @throws InvalidKeySpecException the invalid key spec exception
+	 * @throws SignatureException 
+	 * @throws NoSuchProviderException 
+	 * @throws InvalidKeyException 
 	 */
 	@PostMapping(path = "/sign")
 	public String sign(@RequestBody String data) throws KeyStoreException, NoSuchAlgorithmException,
@@ -68,7 +95,7 @@ public class DigitalSign {
 		cert = cert.replaceAll("\\s", "");
 		CertificateFactory cf = CertificateFactory.getInstance("X.509");
 		X509Certificate certificate = (X509Certificate) cf.generateCertificate(new ByteArrayInputStream(Base64.getDecoder().decode(cert)));
-		List<X509Certificate> certList = new ArrayList<X509Certificate>();
+		List<X509Certificate> certList = new ArrayList<>();
 		certList.add(certificate);
 		X509Certificate[] certArray = certList.toArray(new X509Certificate[]{});
 		JsonWebSignature jws = new JsonWebSignature();
@@ -96,7 +123,12 @@ public class DigitalSign {
 			jws.setCertificateChainHeaderValue(cert);
 		}*/
 		return jws.getCompactSerialization();
+		
+		 //return dynamicCertificateAndSign(data);
+		 
+		 
 	}
+
 
 	/**
 	 * Gets the file content.
@@ -120,4 +152,76 @@ public class DigitalSign {
 			return sb.toString();
 		}
 	}
+	
+	/*private String dynamicCertificateAndSign(String data) throws IOException, NoSuchAlgorithmException,
+			CertificateException, InvalidKeyException, NoSuchProviderException, SignatureException,
+			CertificateParsingException, CertificateEncodingException, JoseException {
+		String commonName = "sanz";
+		String organizationalUnit = "Mindtree Hi-Tech World";
+		String organization = "Mindtree Limited";
+		String country = "india";
+
+		int keySize = 2048;
+		int validDays = 9999;
+		X500Name distinguishedName = new X500Name(commonName, organizationalUnit, organization, country);
+		KeyPair kp = generateRSAKeyPair(keySize);
+
+		PrivateKey privkey = kp.getPrivate();
+		X509CertInfo info = new X509CertInfo();
+
+		Date since = new Date(); // Since Now
+		Date until = new Date(since.getTime() + validDays * 86400000l); // Until x days (86400000 milliseconds in one
+																		// day)
+
+		CertificateValidity interval = new CertificateValidity(since, until);
+		BigInteger sn = new BigInteger(64, new SecureRandom());
+
+		info.set(X509CertInfo.VALIDITY, interval);
+		info.set(X509CertInfo.SERIAL_NUMBER, new CertificateSerialNumber(sn));
+		info.set(X509CertInfo.SUBJECT, distinguishedName);
+		info.set(X509CertInfo.ISSUER, distinguishedName);
+		info.set(X509CertInfo.KEY, new CertificateX509Key(kp.getPublic()));
+		info.set(X509CertInfo.VERSION, new CertificateVersion(CertificateVersion.V3));
+
+		AlgorithmId algo = new AlgorithmId(AlgorithmId.md5WithRSAEncryption_oid);
+		info.set(X509CertInfo.ALGORITHM_ID, new CertificateAlgorithmId(algo));
+
+		// Sign the cert to identify the algorithm that is used.
+		X509CertImpl cert = new X509CertImpl(info);
+		cert.sign(privkey, "SHA1withRSA");
+
+		// Update the algorithm and sign again
+		algo = (AlgorithmId) cert.get(X509CertImpl.SIG_ALG);
+		info.set(CertificateAlgorithmId.NAME + "." + CertificateAlgorithmId.ALGORITHM, algo);
+
+		cert = new X509CertImpl(info);
+		cert.sign(privkey, "SHA1withRSA");
+		CertificateFactory cf = CertificateFactory.getInstance("X.509");
+		X509Certificate certificate = (X509Certificate) cf
+				.generateCertificate(new ByteArrayInputStream(cert.getEncoded()));
+		List<X509Certificate> certList = new ArrayList<>();
+		certList.add(certificate);
+		X509Certificate[] certArray = certList.toArray(new X509Certificate[] {});
+
+		JsonWebSignature jws = new JsonWebSignature();
+		jws.setCertificateChainHeaderValue(certArray);
+		jws.setAlgorithmHeaderValue(AlgorithmIdentifiers.RSA_USING_SHA256);
+		byte[] emptyArray = new byte[0];
+		jws.setPayload(HMACUtils.digestAsPlainText(HMACUtils.generateHash(emptyArray)));
+		jws.setKey(kp.getPrivate());
+
+		return jws.getCompactSerialization();
+	}
+
+	private static KeyPair generateRSAKeyPair(int keySize) throws NoSuchAlgorithmException {
+
+		KeyPairGenerator kpg;
+
+		kpg = KeyPairGenerator.getInstance("RSA");
+		kpg.initialize(keySize);
+
+		KeyPair kp = kpg.genKeyPair();
+
+		return kp;
+	}*/
 }

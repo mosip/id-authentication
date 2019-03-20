@@ -79,7 +79,7 @@ public class UserMachineMappingServiceImpl implements UserMachineMappingService 
 				}
 				regCenterMachineUserReqDto.setVer("0.08");
 				regCenterMachineUserReqDto.setRequest(list);
-				serviceDelegateUtil.post("user_machine_mapping", regCenterMachineUserReqDto);
+				serviceDelegateUtil.post("user_machine_mapping", regCenterMachineUserReqDto,RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM);
 				successResponseDTO.setCode(RegistrationConstants.POLICY_SYNC_SUCCESS_CODE);
 				successResponseDTO.setMessage(RegistrationConstants.POLICY_SYNC_SUCCESS_MESSAGE);
 				successResponseDTO.setInfoType(RegistrationConstants.ALERT_INFORMATION);
