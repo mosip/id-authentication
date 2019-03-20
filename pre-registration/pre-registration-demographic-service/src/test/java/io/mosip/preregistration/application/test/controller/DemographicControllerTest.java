@@ -20,15 +20,20 @@
 //import org.slf4j.Logger;
 //import org.slf4j.LoggerFactory;
 //import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+//import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+//import org.springframework.boot.test.context.SpringBootTest;
 //import org.springframework.boot.test.mock.mockito.MockBean;
+//import org.springframework.context.annotation.ComponentScan;
 //import org.springframework.http.MediaType;
+//import org.springframework.security.test.context.support.WithMockUser;
+//import org.springframework.security.test.context.support.WithUserDetails;
+//import org.springframework.test.context.ContextConfiguration;
 //import org.springframework.test.context.junit4.SpringRunner;
 //import org.springframework.test.web.servlet.MockMvc;
 //import org.springframework.test.web.servlet.RequestBuilder;
 //import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 //
-//import io.mosip.preregistration.application.controller.DemographicController;
+//import io.mosip.preregistration.application.DemographicTestApplication;
 //import io.mosip.preregistration.application.dto.DeletePreRegistartionDTO;
 //import io.mosip.preregistration.application.dto.DemographicRequestDTO;
 //import io.mosip.preregistration.application.dto.PreRegistrationViewDTO;
@@ -54,8 +59,11 @@
 // * @since 1.0.0
 // * 
 // */
+// @SpringBootTest(classes = { DemographicTestApplication.class })
+////@ContextConfiguration(classes = { DemographicTestApplication.class })
 //@RunWith(SpringRunner.class)
-//@WebMvcTest(DemographicController.class)
+//@AutoConfigureMockMvc
+//
 //public class DemographicControllerTest {
 //
 //	/**
@@ -95,6 +103,7 @@
 //	 * @throws Exception
 //	 *             on error
 //	 */
+//	@WithUserDetails("individual")
 //	@Test
 //	public void successSave() throws Exception {
 //		logger.info("----------Successful save of application-------");
@@ -124,6 +133,7 @@
 //	 * @throws Exception
 //	 *             on error
 //	 */
+//	@WithUserDetails("individual")
 //	@Test
 //	public void failureSave() throws Exception {
 //		logger.info("----------Unsuccessful save of application-------");
@@ -140,7 +150,9 @@
 //	 * @throws Exception
 //	 *             on error
 //	 */
+//	
 //	@Test
+//	@WithUserDetails("individual")
 //	public void successUpdate() throws Exception {
 //		logger.info("----------Successful save of application-------");
 //
@@ -163,6 +175,7 @@
 //	 * @throws Exception
 //	 *             on error
 //	 */
+//	@WithUserDetails("individual")
 //	@Test
 //	public void getAllApplicationTest() throws Exception {
 //
@@ -189,6 +202,7 @@
 //	 * @throws Exception
 //	 *             on error
 //	 */
+//	@WithUserDetails("individual")
 //	@Test
 //	public void getApplicationStatusTest() throws Exception {
 //		String preId = "14532456789";
@@ -212,6 +226,7 @@
 //	 * @throws Exception
 //	 *             on error
 //	 */
+//	@WithUserDetails("individual")
 //	@Test
 //	public void discardIndividualTest() throws Exception {
 //		String preId = "3";
@@ -235,6 +250,7 @@
 //	 * @throws Exception
 //	 *             on error
 //	 */
+//	@WithUserDetails("individual")
 //	@Test
 //	public void getApplicationSuccessTest() throws Exception {
 //		MainListResponseDTO<DemographicResponseDTO> response = new MainListResponseDTO<>();
@@ -259,13 +275,13 @@
 //	 * @throws Exception
 //	 *             on error
 //	 */
+//	@WithUserDetails("individual")
 //	@Test
 //	public void updateApplicationStatusTest() throws Exception {
 //		MainResponseDTO<String> response = new MainResponseDTO<>();
 //		response.setErrors(null);
 //		response.setResponse("Status Updated sucessfully");
 //		// response.setResTime(new Timestamp(System.currentTimeMillis()));
-//	
 //
 //		Mockito.when(preRegistrationService.updatePreRegistrationStatus("1234", "Booked")).thenReturn(response);
 //
@@ -281,6 +297,7 @@
 //	 * @throws Exception
 //	 *             on error
 //	 */
+//	@WithUserDetails("individual")
 //	@Test
 //	public void getAllApplicationByDateTest() throws Exception {
 //
@@ -307,6 +324,7 @@
 //	 * @throws Exception
 //	 *             on error
 //	 */
+//	@WithUserDetails("individual")
 //	@Test
 //	public void getUpdatedDateTimeTest() throws Exception {
 //		MainRequestDTO<PreRegIdsByRegCenterIdDTO> mainRequestDTO = new MainRequestDTO<>();

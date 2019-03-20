@@ -55,6 +55,7 @@ public class NotificationUtil {
 	
 	@Autowired
 	RestTemplate restTemplate;
+	
 	private String dateTimeFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
 	
 	public MainListResponseDTO<NotificationResponseDTO> notify(String notificationType,NotificationDTO acknowledgementDTO,

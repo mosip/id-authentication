@@ -93,9 +93,11 @@ public class OTPServiceImpl implements OTPService {
 			case AuthConstant.EMAIL:
 				emailMessage = getOtpEmailMessage(otpGenerateResponseDto, appId);
 				otpEmailSendResponseDto = sendOtpByEmail(emailMessage, mosipUserDto.getMail());
+				break;
 			case AuthConstant.PHONE:
 				mobileMessage = getOtpSmsMessage(otpGenerateResponseDto, appId);
 				otpSmsSendResponseDto = sendOtpBySms(mobileMessage, mosipUserDto.getMobile());
+				break;
 			}		
 		}
 		if (otpEmailSendResponseDto != null) {

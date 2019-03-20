@@ -1,9 +1,9 @@
 {
-  "timestamp": 1549544577046,
+  "timestamp": 1551938456454,
   "status": 200,
   "errors": [
     {
-      "errorCode": "KER-SYNC-XXX",
+      "errorCode": "KER-SNC-303",
       "errorMessage": "Registration center user not found "
     }
   ]

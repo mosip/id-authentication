@@ -16,11 +16,11 @@
 //import java.util.HashMap;
 //import java.util.List;
 //import java.util.Map;
-//
 //import org.apache.commons.io.IOUtils;
 //import org.junit.Before;
 //import org.junit.Test;
 //import org.junit.runner.RunWith;
+//import org.mockito.Mock;
 //import org.mockito.Mockito;
 //import org.springframework.beans.factory.annotation.Autowired;
 //import org.springframework.boot.test.context.SpringBootTest;
@@ -31,9 +31,13 @@
 //import org.springframework.http.HttpStatus;
 //import org.springframework.http.ResponseEntity;
 //import org.springframework.mock.web.MockMultipartFile;
+//import org.springframework.security.core.Authentication;
+//import org.springframework.security.core.context.SecurityContext;
+//import org.springframework.security.core.context.SecurityContextHolder;
 //import org.springframework.test.context.junit4.SpringRunner;
 //import org.springframework.web.client.RestTemplate;
 //
+//import io.mosip.kernel.auth.adapter.AuthUserDetails;
 //import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 //import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
 //import io.mosip.kernel.core.util.DateUtils;
@@ -80,8 +84,8 @@
 //	@Autowired
 //	private DocumentServiceUtil serviceUtil;
 //
-//	@MockBean
-//	RestTemplateBuilder restTemplateBuilder;
+//	@Mock
+//	RestTemplate restTemplate;
 //
 //	@MockBean
 //	private FileSystemAdapter fs;
@@ -90,6 +94,9 @@
 //
 //	@MockBean
 //	private DocumentRepository documentRepository;
+//	
+//	@MockBean
+//	private SecurityContextHolder context;
 //
 ////	@Autowired
 ////	private DocumentDAO documnetDAO;
@@ -196,17 +203,24 @@
 //		auditRequestDto.setIdType(AuditLogVariables.PRE_REGISTRATION_ID.toString());
 //		auditRequestDto.setSessionUserId(AuditLogVariables.SYSTEM.toString());
 //		auditRequestDto.setSessionUserName(AuditLogVariables.SYSTEM.toString());
+//		
+//		AuthUserDetails applicationUser = Mockito.mock(AuthUserDetails.class);
+//        Authentication authentication = Mockito.mock(Authentication.class);
+//        SecurityContext securityContext = Mockito.mock(SecurityContext.class);
+//        Mockito.when(securityContext.getAuthentication()).thenReturn(authentication);
+//        SecurityContextHolder.setContext(securityContext);
+//        Mockito.when(SecurityContextHolder.getContext().getAuthentication().getPrincipal()).thenReturn(applicationUser);
 //	}
 //
-////	@Test
+//	@Test
 //	public void uploadDocumentSuccessTest() throws IOException {
 //		List<DocumentResponseDTO> responseUploadList = new ArrayList<>();
 //		MainResponseDTO restRes = new MainResponseDTO<>();
 //		docResp.setResMsg(DocumentStatusMessages.DOCUMENT_UPLOAD_SUCCESSFUL.toString());
 //		responseUploadList.add(docResp);
 //		responseUpload.setResponse(responseUploadList);
-//		RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
-//		Mockito.when(restTemplateBuilder.build()).thenReturn(restTemplate);
+////		RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
+////		Mockito.when(restTemplateBuilder.build()).thenReturn(restTemplate);
 //
 //		ResponseEntity<MainResponseDTO<DemographicResponseDTO>> rescenter = new ResponseEntity<>(restRes, HttpStatus.OK);
 //		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
@@ -218,9 +232,9 @@
 //				.thenReturn(entity);
 //		Mockito.when(cryptoUtil.encrypt(Mockito.any(), Mockito.any())).thenReturn(mockMultipartFileSizeCheck.toString().getBytes());
 //		Mockito.when(documentRepository.save(Mockito.any())).thenReturn(entity);
-////		MainListResponseDTO<DocumentResponseDTO> responseDto = documentUploadService.uploaDocument(mockMultipartFile,
-////				docJson);
-////		assertEquals(responseDto.getResponse().get(0).getResMsg(), responseUpload.getResponse().get(0).getResMsg());
+//		MainListResponseDTO<DocumentResponseDTO> responseDto = documentUploadService.uploadDocument(mockMultipartFile,
+//				docJson);
+//		assertEquals(responseDto.getResponse().get(0).getResMsg(), responseUpload.getResponse().get(0).getResMsg());
 //	}
 //
 //	@Test(expected = InvalidRequestParameterException.class)
@@ -546,5 +560,5 @@
 //		Mockito.when(documentRepository.deleteAllBydocumentId(documentId)).thenReturn(1);
 //	    documentUploadService.deleteDocument(documentId);
 //	}
-//	
+//		
 //}

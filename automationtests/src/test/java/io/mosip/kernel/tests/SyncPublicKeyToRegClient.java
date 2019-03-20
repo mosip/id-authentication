@@ -31,9 +31,9 @@ package io.mosip.kernel.tests;
 	import com.fasterxml.jackson.databind.JsonMappingException;
 	import com.google.common.base.Verify;
 	import com.google.common.io.BaseEncoding;
-
-import io.mosip.dbaccess.KernelTables;
-import io.mosip.dbentity.PublicKeyResponse;
+	
+	import io.mosip.dbaccess.KernelTables;
+import io.mosip.dbdto.PublicKeyResponse;
 import io.mosip.service.ApplicationLibrary;
 	import io.mosip.service.AssertKernel;
 	import io.mosip.service.BaseTestCase;
@@ -166,9 +166,7 @@ import io.mosip.service.ApplicationLibrary;
 	              ArrayList<String> listOfElementToRemove = new ArrayList<String>();
 	              listOfElementToRemove.add("timestamp");
 	              
-	              JSONObject respo = (JSONObject) new JSONParser().parse(response.asString());
-	              
-	              if (respo.containsKey("publicKey"))
+	              if (testcaseName.toLowerCase().contains("smoke"))
 	              {
 	                     System.err.println((response.jsonPath().get("publicKey")).toString());
 	                     String referenceId=(objectData.get("referenceId")).toString();

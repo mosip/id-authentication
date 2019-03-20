@@ -24,6 +24,8 @@ import org.testng.asserts.SoftAssert;
 import org.testng.internal.BaseTestMethod;
 import org.testng.internal.TestResult;
 
+import com.google.common.base.Verify;
+
 import io.mosip.service.ApplicationLibrary;
 import io.mosip.service.AssertKernel;
 import io.mosip.service.BaseTestCase;
@@ -94,7 +96,7 @@ public class SyncMasterDataWithTimestamp extends BaseTestCase implements ITest{
 	 * Then Response is expected as 200 and other responses as per inputs passed in the request
 	 */
 	@Test(dataProvider="SyncMasterDataWithTimestamp")
-	public void getAllConfiguration(String testSuite, Integer i, JSONObject object) throws FileNotFoundException, IOException, ParseException
+	public void syncMasterDataWithTimestamp(String testSuite, Integer i, JSONObject object) throws FileNotFoundException, IOException, ParseException
     {
 	
 		JSONObject actualRequest = ResponseRequestMapper.mapRequest(testSuite, object);
@@ -110,6 +112,7 @@ public class SyncMasterDataWithTimestamp extends BaseTestCase implements ITest{
 		 */
 		ArrayList<String> listOfElementToRemove=new ArrayList<String>();
 		listOfElementToRemove.add("timestamp");
+		listOfElementToRemove.add("lastSyncTime");
 		/*
 		 * Comparing expected and actual response
 		 */
@@ -133,8 +136,8 @@ public class SyncMasterDataWithTimestamp extends BaseTestCase implements ITest{
 			setFinalStatus=false;
 		else if(finalStatus.equals("Pass"))
 			setFinalStatus=true;
-		//Verify.verify(setFinalStatus);
-		//softAssert.assertAll();
+		Verify.verify(setFinalStatus);
+		softAssert.assertAll();
 
 }
 		@Override
