@@ -79,12 +79,10 @@ public class RegistrationAppHealthCheckUtil {
 
 			if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
 				isNWAvailable = true;
-				System.out.println("1 :"+connection.getResponseCode() + " : " + isNWAvailable);
 				LOGGER.info("REGISTRATION - REGISTRATION APP HEALTHCHECKUTIL - ISNETWORKAVAILABLE", APPLICATION_NAME,
 						APPLICATION_ID, "Internet Access Available.");
 			} else {
 				isNWAvailable = false;
-				System.out.println("2 :"+connection.getResponseCode() + " : " + isNWAvailable);
 				LOGGER.info("REGISTRATION - REGISTRATIONAPPHEALTHCHECKUTIL - ISNETWORKAVAILABLE", APPLICATION_NAME,
 						APPLICATION_ID, "Internet Access Not Available.");
 			}
