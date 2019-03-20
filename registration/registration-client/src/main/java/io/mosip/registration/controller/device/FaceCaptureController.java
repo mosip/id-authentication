@@ -113,6 +113,8 @@ public class FaceCaptureController extends BaseController implements Initializab
 	private Image defaultExceptionImage;
 	private boolean applicantImageCaptured;
 	private boolean exceptionImageCaptured;
+	
+	private boolean hasBiometricException = false;
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
@@ -384,12 +386,9 @@ public class FaceCaptureController extends BaseController implements Initializab
 		LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "validating applicant biometrics");
 
-		Boolean toggleBiometricException = (Boolean) SessionContext.userContext().getUserMap()
-				.get(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION);
-
 		boolean imageCaptured = false;
 		if (applicantImageCaptured) {
-			if (toggleBiometricException) {
+			if (hasBiometricException) {
 				if (exceptionImageCaptured) {
 					if (getRegistrationDTOFromSession() != null
 							&& getRegistrationDTOFromSession().getDemographicDTO() != null) {
@@ -451,8 +450,6 @@ public class FaceCaptureController extends BaseController implements Initializab
 	private void enableCapture(MouseEvent mouseEvent) {
 		LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Enabling the capture button based on selected pane");
-
-		boolean hasBiometricException = false;
 
 		/* get the selected pane to capture photo */
 		Pane sourcePane = (Pane) mouseEvent.getSource();
