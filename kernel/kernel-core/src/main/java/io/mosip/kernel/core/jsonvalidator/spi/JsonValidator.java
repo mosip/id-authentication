@@ -48,7 +48,7 @@ public interface JsonValidator {
 	 *             FileIOException
 	 */
 
-	public ValidationReport validateJson(String jsonString, String schemaName)
+	public ValidationReport validateJson(String jsonString)
 			throws JsonValidationProcessingException, JsonIOException, JsonSchemaIOException, FileIOException;
 
 }
