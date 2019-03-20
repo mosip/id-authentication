@@ -439,6 +439,14 @@ public class FaceCaptureController extends BaseController implements Initializab
 		}
 	}
 
+	/**
+	 * 
+	 * To enable the capture of applicant/exception image upon validating the
+	 * request
+	 *
+	 * @param mouseEvent
+	 *            the event which occurs on mouse click of 'Take Photo' button
+	 */
 	@FXML
 	private void enableCapture(MouseEvent mouseEvent) {
 		LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
@@ -446,14 +454,20 @@ public class FaceCaptureController extends BaseController implements Initializab
 
 		boolean hasBiometricException = false;
 
+		/* get the selected pane to capture photo */
 		Pane sourcePane = (Pane) mouseEvent.getSource();
 		sourcePane.requestFocus();
 		selectedPhoto = sourcePane;
 
+		/*
+		 * if the selected pane is exception photo, check if the applicant has biometric
+		 * exception
+		 */
 		if (selectedPhoto.getId().equals(RegistrationConstants.EXCEPTION_PHOTO_PANE)
 				&& !(boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
 			hasBiometricException = (Boolean) SessionContext.userContext().getUserMap()
 					.get(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION);
+			/* if there is no missing biometric, check for low quality of biometrics */
 			if (!hasBiometricException) {
 				hasBiometricException = validateBiometrics(hasBiometricException);
 			}
@@ -478,6 +492,16 @@ public class FaceCaptureController extends BaseController implements Initializab
 		}
 	}
 
+	/**
+	 * To validate biometrics to check if the applicant's biometrics are
+	 * force-captured or not
+	 *
+	 * @param hasBiometricException
+	 *            the boolean variable which has to be returned to know whether
+	 *            exception photo should be enabled or not
+	 * @return hasBiometricException - the boolean variable which will be returned
+	 *         to know whether exception photo should be enabled or not
+	 */
 	private boolean validateBiometrics(boolean hasBiometricException) {
 		RegistrationDTO registration = getRegistrationDTOFromSession();
 		List<FingerprintDetailsDTO> capturedFingers = registration.getBiometricDTO().getApplicantBiometricDTO()
@@ -490,6 +514,10 @@ public class FaceCaptureController extends BaseController implements Initializab
 		return hasBiometricException;
 	}
 
+	/**
+	 * To validate fingerprints if the applicant's fingerprints are force-captured
+	 * or not
+	 */
 	private boolean markReasonForFingerprintException(List<FingerprintDetailsDTO> capturedFingers,
 			boolean hasBiometricException) {
 		if (capturedFingers != null && !capturedFingers.isEmpty()) {
@@ -515,6 +543,9 @@ public class FaceCaptureController extends BaseController implements Initializab
 		return hasBiometricException;
 	}
 
+	/**
+	 * To validate irises if the applicant's irises are force-captured or not
+	 */
 	private boolean markReasonForIrisException(List<IrisDetailsDTO> capturedIrises, boolean hasBiometricException) {
 		if (capturedIrises != null && !capturedIrises.isEmpty()) {
 			String irisQualityThreshold = String
@@ -532,6 +563,10 @@ public class FaceCaptureController extends BaseController implements Initializab
 		return hasBiometricException;
 	}
 
+	/**
+	 * To mark reason for exception if there are any biometrics that are
+	 * force-captured
+	 */
 	private void markReasonForException(String biometricType, String missingBiometric) {
 		List<BiometricExceptionDTO> exceptionBiometrics;
 		if (getRegistrationDTOFromSession().getBiometricDTO().getApplicantBiometricDTO()
@@ -554,11 +589,19 @@ public class FaceCaptureController extends BaseController implements Initializab
 				.setBiometricExceptionDTO(exceptionBiometrics);
 	}
 
+	/**
+	 * To validate iris whether its quality threshold is met within configured
+	 * number of retries
+	 */
 	private boolean validateIris(IrisDetailsDTO capturedIris, double irisThreshold, int numOfRetries) {
 		return (Double.compare(capturedIris.getQualityScore(), irisThreshold) < 0
 				&& capturedIris.getNumOfIrisRetry() == numOfRetries);
 	}
 
+	/**
+	 * To validate fingerprint whether its quality threshold is met within
+	 * configured number of retries
+	 */
 	private boolean validateFingerprint(FingerprintDetailsDTO capturedFinger, String leftSlapQualityThreshold,
 			String rightSlapQualityThreshold, String thumbQualityThreshold, String fingerprintRetries) {
 		if (capturedFinger.getFingerType().toLowerCase().contains(RegistrationConstants.LEFT.toLowerCase())) {
