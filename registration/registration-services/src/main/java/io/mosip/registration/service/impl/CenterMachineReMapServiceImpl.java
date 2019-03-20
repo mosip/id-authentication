@@ -10,7 +10,6 @@ import java.util.Collection;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -29,6 +28,7 @@ import io.mosip.registration.constants.AuditReferenceIdTypes;
 import io.mosip.registration.constants.Components;
 import io.mosip.registration.constants.RegistrationClientStatusCode;
 import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.dao.GlobalParamDAO;
 import io.mosip.registration.dao.PreRegistrationDataSyncDAO;
 import io.mosip.registration.dao.RegistrationDAO;
@@ -78,8 +78,6 @@ public class CenterMachineReMapServiceImpl implements CenterMachineReMapService 
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
 
-	@Value("${PRE_REG_PACKET_LOCATION}")
-	private String preRegPacketLocation;
 	@Autowired
 	private AuditFactory auditFactory;
 
@@ -263,7 +261,8 @@ public class CenterMachineReMapServiceImpl implements CenterMachineReMapService 
 			if (isNotNullNotEmpty(preRegistrationLists)) {
 				preRegistrationDataSyncDAO.deleteAll(preRegistrationLists);
 			}
-			FileUtils.deleteDirectory(new File(preRegPacketLocation));
+			FileUtils.deleteDirectory(
+					new File((String) ApplicationContext.map().get(RegistrationConstants.PRE_REG_PACKET_LOCATION)));
 		} catch (IOException exception) {
 
 			LOGGER.error("REGISTRATION CENTER MACHINE REMAP : ", APPLICATION_NAME, APPLICATION_ID,
