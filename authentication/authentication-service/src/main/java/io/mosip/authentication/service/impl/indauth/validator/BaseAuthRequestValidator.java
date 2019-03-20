@@ -25,7 +25,6 @@ import io.mosip.authentication.core.dto.indauth.BioIdentityInfoDTO;
 import io.mosip.authentication.core.dto.indauth.DataDTO;
 import io.mosip.authentication.core.dto.indauth.IdentityDTO;
 import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
-import io.mosip.authentication.core.dto.indauth.InternalAuthType;
 import io.mosip.authentication.core.dto.indauth.RequestDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.logger.IdaLogger;
@@ -94,9 +93,6 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 
 	/** The Constant INVALID_INPUT_PARAMETER. */
 	private static final String INVALID_INPUT_PARAMETER = "INVALID_INPUT_PARAMETER - ";
-
-	/** The Constant VALIDATE_CHECK_OTP_AUTH. */
-	private static final String VALIDATE_CHECK_OTP_AUTH = "validate -> checkOTPAuth";
 
 	/** The Constant REQUEST. */
 	private static final String REQUEST = "request";

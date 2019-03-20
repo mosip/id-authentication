@@ -29,7 +29,6 @@ import io.mosip.authentication.core.dto.indauth.SenderType;
 import io.mosip.authentication.core.dto.otpgen.OtpRequestDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.logger.IdaLogger;
-import io.mosip.authentication.core.spi.id.service.IdRepoService;
 import io.mosip.authentication.core.spi.indauth.match.AuthType;
 import io.mosip.authentication.core.spi.notification.service.NotificationService;
 import io.mosip.authentication.core.util.MaskUtil;
@@ -99,8 +98,8 @@ public class NotificationServiceImpl implements NotificationService {
 	@Autowired
 	private IdInfoHelper infoHelper;
 
-	@Autowired
-	IdRepoService idInfoService;
+//	@Autowired
+//	private IdRepoManager idInfoService;
 
 	/** ID Template manager */
 	@Autowired

@@ -38,7 +38,6 @@ import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.IdAuthenticationDaoException;
 import io.mosip.authentication.core.exception.RestServiceException;
 import io.mosip.authentication.core.spi.id.service.IdAuthService;
-import io.mosip.authentication.core.spi.id.service.IdRepoService;
 import io.mosip.authentication.core.util.OTPUtil;
 import io.mosip.authentication.core.util.dto.RestRequestDTO;
 import io.mosip.authentication.service.entity.AutnTxn;
@@ -83,9 +82,6 @@ public class OTPServiceImplTest {
 	IdTemplateManager idTemplateService;
 
 	@Mock
-	private IdRepoService idInfoService;
-
-	@Mock
 	private IdInfoHelper idInfoHelper;
 
 	@Mock
@@ -121,7 +117,6 @@ public class OTPServiceImplTest {
 		ReflectionTestUtils.setField(idInfoHelper, "environment", env);
 		ReflectionTestUtils.setField(otpServiceImpl, "notificationService", notificationService);
 		ReflectionTestUtils.setField(otpServiceImpl, "idAuthService", idAuthService);
-		ReflectionTestUtils.setField(otpServiceImpl, "idInfoService", idInfoService);
 	}
 
 	private OtpRequestDTO getOtpRequestDTO() {
