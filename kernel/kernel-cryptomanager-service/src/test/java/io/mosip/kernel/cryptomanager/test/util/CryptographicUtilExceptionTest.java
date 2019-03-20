@@ -43,7 +43,7 @@ import io.mosip.kernel.cryptomanager.utils.CryptomanagerUtil;
 @RunWith(SpringRunner.class)
 @AutoConfigureMockMvc
 @DirtiesContext(classMode=ClassMode.AFTER_EACH_TEST_METHOD)
-public class KernelCryptographicUtilExceptionTest {
+public class CryptographicUtilExceptionTest {
 
 	@Value("${mosip.kernel.keymanager-service-publickey-url}")
 	private String publicKeyUrl;

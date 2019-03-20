@@ -44,7 +44,7 @@ import io.mosip.kernel.keygenerator.bouncycastle.KeyGenerator;
 @SpringBootTest(classes = CryptoManagerTestBootApplication.class)
 @RunWith(SpringRunner.class)
 @AutoConfigureMockMvc
-public class KernelCryptographicUtilTest {
+public class CryptographicUtilTest {
 
 	@Value("${mosip.kernel.keymanager-service-publickey-url}")
 	private String publicKeyUrl;
