@@ -21,7 +21,6 @@ import io.mosip.authentication.core.dto.otpgen.OtpResponseDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.id.service.IdAuthService;
-import io.mosip.authentication.core.spi.id.service.IdRepoService;
 import io.mosip.authentication.core.spi.notification.service.NotificationService;
 import io.mosip.authentication.core.spi.otpgen.service.OTPService;
 import io.mosip.authentication.core.util.MaskUtil;
@@ -73,9 +72,6 @@ public class OTPServiceImpl implements OTPService {
 
 	@Autowired
 	private IdInfoHelper idInfoHelper;
-
-	@Autowired
-	IdRepoService idInfoService;
 
 	@Autowired
 	private NotificationService notificationService;

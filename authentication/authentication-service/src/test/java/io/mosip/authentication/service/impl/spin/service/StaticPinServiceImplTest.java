@@ -28,14 +28,13 @@ import io.mosip.authentication.core.dto.spinstore.StaticPinIdentityDTO;
 import io.mosip.authentication.core.dto.spinstore.StaticPinRequestDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.spi.id.service.IdAuthService;
-import io.mosip.authentication.core.spi.id.service.IdRepoService;
 import io.mosip.authentication.service.entity.AutnTxn;
 import io.mosip.authentication.service.entity.StaticPin;
 import io.mosip.authentication.service.entity.StaticPinHistory;
 import io.mosip.authentication.service.factory.RestRequestFactory;
 import io.mosip.authentication.service.helper.AuditHelper;
 import io.mosip.authentication.service.helper.RestHelper;
-import io.mosip.authentication.service.integration.IdTemplateManager;
+import io.mosip.authentication.service.impl.id.service.impl.IdRepoManager;
 import io.mosip.authentication.service.repository.StaticPinHistoryRepository;
 import io.mosip.authentication.service.repository.StaticPinRepository;
 import io.mosip.kernel.core.util.DateUtils;
@@ -79,9 +78,6 @@ public class StaticPinServiceImplTest {
 	@InjectMocks
 	private RestRequestFactory restRequestFactory;
 
-	@Mock
-	private IdRepoService idRepoService;
-
 	@InjectMocks
 	private RestHelper restHelper;
 	/** The Constant for IDA */
@@ -89,7 +85,7 @@ public class StaticPinServiceImplTest {
 
 	/** The IdRepoService **/
 	@Mock
-	private IdRepoService idInfoService;
+	private IdRepoManager idRepoManager;
 	StaticPinRequestDTO staticPinRequestDTO = new StaticPinRequestDTO();
 	private Errors errors = new org.springframework.validation.BindException(staticPinRequestDTO,
 			"staticPinRequestDTO");
