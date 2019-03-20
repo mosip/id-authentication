@@ -11,12 +11,12 @@ Registration process is assembled using number of stages, which communicate with
 - System Administrator Team
 
 **The key requirements are -**
--	In case of system crash or non-availability of any external system or any end point in registration processor, all stages should have capability to re process packets in case if any packet not processed successfully whenever system is back up and running.
+-	In case of system/stage crash or non-availability of any external system or any end point in registration processor, packets will be not processed successfully. MOSIP system should have capability to try to reprocess such valid packets.
 
-**Below is the behavior of the system in case of issue:**
-- In case if, there is temporary issue like time out exception or REST endpoint or data base connection timed out then system should try to resend packet. Systems maximum resend attempt are configure in configuration server.  
-- In case if system crash while processing requests, system should be in a position to reprocess them one it is up and running
-- In case packets is not be processed which might be due to bottleneck or due to any technical reason, system should have capability to reprocess them once issue is resolved.
+**Below are the behavior of the system in case of issue:**
+- In case if, there is temporary issue like database time out exception or REST endpoints not available then system should try to reprocess packets.  
+- In case if system/stage crash while processing requests, system should be in a position to reprocess them one it is up and running
+- In case packets are not be processed which might be due to bottleneck or due to any technical reason, system should have capability to reprocess them once issue is resolved.
 
 
 **The key non-functional requirements are**
@@ -45,7 +45,6 @@ The key solution considerations are -
 - 	Add key registration.processor.reprocess.schedule.trigger.time with value in second is: 86400 (24 hours)
 -   Add key registration.processor.reprocess.fetchsize with value 1000
 -   Add key registration.processor.reprocess.elapse.time with value in second is: 21600
-
 
 3.	Fallow below steps while processing packet in all stages which gives system capability to re-process records in case of crash:
 4.	Transaction management need to be implemented properly to manage multiple data base operations in stages to ensure data integrity and consistency.
