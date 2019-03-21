@@ -17,7 +17,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -53,7 +52,6 @@ import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
 import io.mosip.authentication.service.config.IDAMappingConfig;
 import io.mosip.authentication.service.factory.IDAMappingFactory;
 import io.mosip.authentication.service.helper.IdInfoHelper;
-import io.mosip.authentication.service.impl.indauth.builder.AuthStatusInfoBuilder;
 import io.mosip.authentication.service.impl.indauth.builder.MatchInputBuilder;
 import io.mosip.authentication.service.impl.indauth.service.bio.BioAuthType;
 import io.mosip.authentication.service.impl.indauth.service.demo.DemoMatchType;
@@ -72,17 +70,14 @@ public class DemoAuthServiceTest {
 	@InjectMocks
 	private DemoAuthServiceImpl demoAuthServiceImpl;
 
-	@Autowired
-	private IDAMappingConfig idMappingConfig;
-
 	@InjectMocks
 	private IdInfoHelper idInfoHelper;
 
-	@Mock
-	private MatchInputBuilder matchInputBuilder;
+	@InjectMocks
+	private IdInfoFetcherImpl idInfoFetcherImpl;
 
 	@InjectMocks
-	private IdInfoHelper actualidInfoHelper;
+	private MatchInputBuilder matchInputBuilder;
 
 	@Mock
 	private IdAuthService<?> idInfoService;
@@ -90,20 +85,22 @@ public class DemoAuthServiceTest {
 	@Mock
 	private MasterDataManager masterDataManager;
 
-//	@Mock
-//	private AuthStatusInfoBuilder authStatusInfoBuilder;
-
 	@Autowired
 	private IDAMappingConfig idaMappingConfig;
 
 	@Before
 	public void before() {
-		ReflectionTestUtils.setField(actualidInfoHelper, "environment", environment);
-		ReflectionTestUtils.setField(actualidInfoHelper, "idMappingConfig", idMappingConfig);
+		ReflectionTestUtils.setField(idInfoHelper, "environment", environment);
+		ReflectionTestUtils.setField(idInfoHelper, "idMappingConfig", idaMappingConfig);
 		ReflectionTestUtils.setField(demoAuthServiceImpl, "environment", environment);
-		ReflectionTestUtils.setField(demoAuthServiceImpl, "idInfoHelper", actualidInfoHelper);
+		ReflectionTestUtils.setField(demoAuthServiceImpl, "idInfoHelper", idInfoHelper);
 		ReflectionTestUtils.setField(demoAuthServiceImpl, "idaMappingConfig", idaMappingConfig);
 		ReflectionTestUtils.setField(demoAuthServiceImpl, "matchInputBuilder", matchInputBuilder);
+		ReflectionTestUtils.setField(matchInputBuilder, "idInfoFetcher", idInfoFetcherImpl);
+		ReflectionTestUtils.setField(idInfoFetcherImpl, "environment", environment);
+		ReflectionTestUtils.setField(idInfoHelper, "idInfoFetcher", idInfoFetcherImpl);
+		ReflectionTestUtils.setField(matchInputBuilder, "idInfoHelper", idInfoHelper);
+		ReflectionTestUtils.setField(idInfoHelper, "environment", environment);
 	}
 
 	@Test
@@ -152,8 +149,6 @@ public class DemoAuthServiceTest {
 		Method demoImplMethod = DemoAuthServiceImpl.class.getDeclaredMethod("constructMatchInput",
 				AuthRequestDTO.class);
 		demoImplMethod.setAccessible(true);
-		Mockito.when(matchInputBuilder.buildMatchInput(Mockito.any(), Mockito.any(), Mockito.any()))
-				.thenReturn(listMatchInputsExp);
 		List<MatchInput> listMatchInputsActual = (List<MatchInput>) demoImplMethod.invoke(demoAuthServiceImpl,
 				authRequestDTO);
 		assertNotNull(listMatchInputsActual);
@@ -196,16 +191,6 @@ public class DemoAuthServiceTest {
 		infoList.add(identityInfoDTO);
 		identityDTO.setFullAddress(infoList);
 		requestDTO.setDemographics(identityDTO);
-//		AuthSecureDTO authSecureDTO = new AuthSecureDTO();
-////		authSecureDTO.setPublicKeyCert("1234567890");
-////		authSecureDTO.setSessionKey("1234567890");
-////		authRequestDTO.setKey(authSecureDTO);
-////		MatchInfo matchInfo = new MatchInfo();
-//		matchInfo.setAuthType("address");
-//		matchInfo.setLanguage("fre");
-//		matchInfo.setMatchingStrategy(MatchingStrategyType.EXACT.getType());
-//		matchInfo.setMatchingThreshold(100);
-//		authRequestDTO.setReqHmac("string");
 		authRequestDTO.setRequestTime("2018-10-30T11:02:22.778+0000");
 		RequestDTO request = new RequestDTO();
 		IdentityInfoDTO address1 = new IdentityInfoDTO();
@@ -269,8 +254,6 @@ public class DemoAuthServiceTest {
 		Method demoImplMethod = DemoAuthServiceImpl.class.getDeclaredMethod("constructMatchInput",
 				AuthRequestDTO.class);
 		demoImplMethod.setAccessible(true);
-		Mockito.when(matchInputBuilder.buildMatchInput(Mockito.any(), Mockito.any(), Mockito.any()))
-				.thenReturn(listMatchInputsExp);
 		List<MatchInput> listMatchInputsActual = (List<MatchInput>) demoImplMethod.invoke(demoAuthServiceImpl,
 				authRequestDTO);
 		assertNotNull(listMatchInputsActual);
@@ -339,8 +322,6 @@ public class DemoAuthServiceTest {
 		Method demoImplMethod = DemoAuthServiceImpl.class.getDeclaredMethod("constructMatchInput",
 				AuthRequestDTO.class);
 		demoImplMethod.setAccessible(true);
-		Mockito.when(matchInputBuilder.buildMatchInput(Mockito.any(), Mockito.any(), Mockito.any()))
-				.thenReturn(listMatchInputsExp);
 		List<MatchInput> listMatchInputsActual = (List<MatchInput>) demoImplMethod.invoke(demoAuthServiceImpl,
 				authRequestDTO);
 		assertNotNull(listMatchInputsActual);
@@ -359,8 +340,6 @@ public class DemoAuthServiceTest {
 		authTypeDTO.setPin(false);
 		authRequest.setRequestedAuth(authTypeDTO);
 		List<MatchInput> matchInputs = new ArrayList<>();
-		Mockito.when(matchInputBuilder.buildMatchInput(Mockito.any(), Mockito.any(), Mockito.any()))
-				.thenReturn(matchInputs);
 		Method constructInputMethod = DemoAuthServiceImpl.class.getDeclaredMethod("constructMatchInput",
 				AuthRequestDTO.class);
 		constructInputMethod.setAccessible(true);
@@ -459,14 +438,6 @@ public class DemoAuthServiceTest {
 		AuthStatusInfo authStatusInfo = demoAuthServiceImpl.authenticate(authRequestDTO, "121212", idInfo, "123456");
 	}
 
-//	@Test()
-//	public void TestcontstructMatchInput() {
-//		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
-//		DemoMatchType demoMatchType = DemoMatchType.NAME_PRI;
-//		AuthType demoAuthType = DemoAuthType.PI_PRI;
-//		demoAuthServiceImpl.contstructMatchInput(authRequestDTO, demoMatchType, demoAuthType);
-//	}
-
 	@Test(expected = IdAuthenticationBusinessException.class)
 	public void TestdemoEntityisNull() throws IdAuthenticationBusinessException {
 		AuthRequestDTO authRequestDTO = null;
@@ -525,14 +496,13 @@ public class DemoAuthServiceTest {
 		mockenv.setProperty("mosip.primary.lang-code", "fre");
 		mockenv.setProperty("mosip.secondary.lang-code", "ara");
 		mockenv.setProperty("mosip.supported-languages", "eng,ara,fre");
-		ReflectionTestUtils.setField(actualidInfoHelper, "environment", mockenv);
+		ReflectionTestUtils.setField(idInfoHelper, "environment", mockenv);
 		Mockito.when(masterDataManager.fetchTitles()).thenReturn(createFetcher());
 		AuthStatusInfo validateBioDetails = demoAuthServiceImpl.authenticate(authRequestDTO, uin, demoIdentity,
 				"123456");
 		assertFalse(validateBioDetails.isStatus());
 	}
 
-	@Ignore
 	@Test
 	public void TestValidDemographicData() throws IdAuthenticationBusinessException {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
