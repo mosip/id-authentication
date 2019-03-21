@@ -54,6 +54,7 @@ import io.mosip.preregistration.application.exception.DocumentFailedToDeleteExce
 import io.mosip.preregistration.application.exception.RecordFailedToDeleteException;
 import io.mosip.preregistration.application.exception.RecordFailedToUpdateException;
 import io.mosip.preregistration.application.exception.RecordNotFoundException;
+import io.mosip.preregistration.application.exception.RestCallException;
 import io.mosip.preregistration.application.exception.util.DemographicExceptionCatcher;
 import io.mosip.preregistration.application.repository.DemographicRepository;
 import io.mosip.preregistration.application.service.util.DemographicServiceUtil;
@@ -194,10 +195,9 @@ public class DemographicService {
 	@Autowired
 	CryptoUtil cryptoUtil;
 
-	 public AuthUserDetails  authUserDetails() {
-			return (AuthUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal(); 
+	public AuthUserDetails authUserDetails() {
+		return (AuthUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 	}
-	 
 
 	/*
 	 * This method is used to create the demographic data by generating the unique
@@ -239,7 +239,8 @@ public class DemographicService {
 		} finally {
 			if (!isSuccess) {
 				setAuditValues(EventId.PRE_405.toString(), EventName.EXCEPTION.toString(), EventType.SYSTEM.toString(),
-						"Failed to save the Pre-Registration data", AuditLogVariables.NO_ID.toString(),authUserDetails().getUserId(),authUserDetails().getUsername());
+						"Failed to save the Pre-Registration data", AuditLogVariables.NO_ID.toString(),
+						authUserDetails().getUserId(), authUserDetails().getUsername());
 			}
 		}
 		return mainListResponseDTO;
@@ -288,7 +289,8 @@ public class DemographicService {
 					}
 					response.setResponse(viewList);
 					response.setResTime(serviceUtil.getCurrentResponseTime());
-					//response.setStatus(Boolean.TRUE);
+					response.setId(id);
+					response.setVersion(ver);
 				} else {
 					throw new RecordNotFoundException(ErrorCodes.PRG_PAM_APP_005.name(),
 							ErrorMessages.NO_RECORD_FOUND_FOR_USER_ID.name());
@@ -303,10 +305,12 @@ public class DemographicService {
 			if (isRetrieveSuccess) {
 				setAuditValues(EventId.PRE_401.toString(), EventName.RETRIEVE.toString(), EventType.BUSINESS.toString(),
 						"Retrieve All Pre-Registration id, Full name, Status and Appointment details by user id",
-						AuditLogVariables.MULTIPLE_ID.toString(),authUserDetails().getUserId(),authUserDetails().getUsername());
+						AuditLogVariables.MULTIPLE_ID.toString(), authUserDetails().getUserId(),
+						authUserDetails().getUsername());
 			} else {
 				setAuditValues(EventId.PRE_405.toString(), EventName.EXCEPTION.toString(), EventType.SYSTEM.toString(),
-						"Retrieve All Pre-Registration data failed", AuditLogVariables.NO_ID.toString(),authUserDetails().getUserId(),authUserDetails().getUsername());
+						"Retrieve All Pre-Registration data failed", AuditLogVariables.NO_ID.toString(),
+						authUserDetails().getUserId(), authUserDetails().getUsername());
 			}
 		}
 		return response;
@@ -340,8 +344,9 @@ public class DemographicService {
 						statusdto.setStatusCode(demographicEntity.getStatusCode());
 						statusList.add(statusdto);
 						response.setResponse(statusList);
+						response.setId(id);
+						response.setVersion(ver);
 						response.setResTime(serviceUtil.getCurrentResponseTime());
-						//response.setStatus(Boolean.TRUE);
 					} else {
 						throw new HashingException(
 								io.mosip.preregistration.core.errorcodes.ErrorCodes.PRG_CORE_REQ_010.name(),
@@ -412,13 +417,17 @@ public class DemographicService {
 			if (isDeleteSuccess) {
 				setAuditValues(EventId.PRE_403.toString(), EventName.DELETE.toString(), EventType.BUSINESS.toString(),
 						"Pre-Registration data is successfully deleted from demographic table",
-						AuditLogVariables.NO_ID.toString(),authUserDetails().getUserId(),authUserDetails().getUsername());
+						AuditLogVariables.NO_ID.toString(), authUserDetails().getUserId(),
+						authUserDetails().getUsername());
 			} else {
 				setAuditValues(EventId.PRE_405.toString(), EventName.EXCEPTION.toString(), EventType.SYSTEM.toString(),
-						"Deletion of Pre-Registration data failed", AuditLogVariables.NO_ID.toString(),authUserDetails().getUserId(),authUserDetails().getUsername());
+						"Deletion of Pre-Registration data failed", AuditLogVariables.NO_ID.toString(),
+						authUserDetails().getUserId(), authUserDetails().getUsername());
 			}
 		}
 		response.setResTime(serviceUtil.getCurrentResponseTime());
+		response.setId(id);
+		response.setVersion(ver);
 		response.setResponse(deleteList);
 		return response;
 	}
@@ -464,6 +473,8 @@ public class DemographicService {
 			new DemographicExceptionCatcher().handle(ex);
 		}
 		response.setResTime(serviceUtil.getCurrentResponseTime());
+		response.setId(id);
+		response.setVersion(ver);
 		response.setErr(null);
 		return response;
 	}
@@ -497,6 +508,8 @@ public class DemographicService {
 		}
 		response.setResponse("STATUS_UPDATED_SUCESSFULLY");
 		response.setResponsetime(serviceUtil.getCurrentResponseTime());
+		response.setId(id);
+		response.setVersion(ver);
 		return response;
 	}
 
@@ -553,6 +566,8 @@ public class DemographicService {
 			new DemographicExceptionCatcher().handle(ex);
 		}
 		response.setResTime(serviceUtil.getCurrentResponseTime());
+		response.setId(id);
+		response.setVersion(ver);
 		response.setErr(null);
 		return response;
 	}
@@ -611,15 +626,13 @@ public class DemographicService {
 			HttpEntity<MainResponseDTO<BookingRegistrationDTO>> httpEntity = new HttpEntity<>(headers);
 			String uriBuilder = builder.build().encode().toUriString();
 			log.info("sessionId", "idType", "id", "In callGetAppointmentDetailsRestService method URL- " + uriBuilder);
-			ResponseEntity<String> respEntity = restTemplate.exchange(uriBuilder, HttpMethod.GET, httpEntity,
-					String.class);
-			List<ServiceError> validationErrorList=null;
-			validationErrorList=ExceptionUtils.getServiceErrorList(respEntity.getBody());
-			if(!validationErrorList.isEmpty()) {
-				ObjectMapper mapper = new ObjectMapper();
-				MainResponseDTO mainResponseDTO=mapper.readValue(respEntity.getBody(), MainResponseDTO.class);
-				bookingRegistrationDTO = mapper.convertValue(mainResponseDTO.getResponse(),
-						BookingRegistrationDTO.class);
+			
+			ResponseEntity<MainResponseDTO<BookingRegistrationDTO>> respEntity = restTemplate.exchange(uriBuilder,
+					HttpMethod.GET, httpEntity,
+					new ParameterizedTypeReference<MainResponseDTO<BookingRegistrationDTO>>() {
+					});
+			if(respEntity.getBody().getErrors()==null) {
+				bookingRegistrationDTO=respEntity.getBody().getResponse();
 			}
 		} catch (Exception ex) {
 			log.error("sessionId", "idType", "id",
@@ -653,7 +666,7 @@ public class DemographicService {
 					requestId, RequestCodes.SAVE.getCode(), StatusCodes.PENDING_APPOINTMENT.getCode()));
 			setAuditValues(EventId.PRE_407.toString(), EventName.PERSIST.toString(), EventType.BUSINESS.toString(),
 					"Pre-Registration data is sucessfully saved in the demographic table",
-					AuditLogVariables.NO_ID.toString(),authUserDetails().getUserId(),authUserDetails().getUsername());
+					AuditLogVariables.NO_ID.toString(), authUserDetails().getUserId(), authUserDetails().getUsername());
 		} else {
 			demographicEntity = demographicRepository
 					.findBypreRegistrationId(demographicRequest.getPreRegistrationId());
@@ -662,7 +675,8 @@ public class DemographicService {
 						requestId, RequestCodes.UPDATE.getCode(), demographicEntity.getStatusCode()));
 				setAuditValues(EventId.PRE_402.toString(), EventName.UPDATE.toString(), EventType.BUSINESS.toString(),
 						"Pre-Registration data is sucessfully updated in the demographic table",
-						AuditLogVariables.NO_ID.toString(),authUserDetails().getUserId(),authUserDetails().getUsername());
+						AuditLogVariables.NO_ID.toString(), authUserDetails().getUserId(),
+						authUserDetails().getUsername());
 			} else {
 				throw new RecordNotFoundException(ErrorCodes.PRG_PAM_APP_005.name(),
 						ErrorMessages.UNABLE_TO_FETCH_THE_PRE_REGISTRATION.name());
@@ -672,6 +686,8 @@ public class DemographicService {
 		response.setResTime(serviceUtil.getCurrentResponseTime());
 		saveList.add(res);
 		response.setResponse(saveList);
+		response.setId(id);
+		response.setVersion(ver);
 		return response;
 	}
 
@@ -696,13 +712,14 @@ public class DemographicService {
 			log.info("sessionId", "idType", "id",
 					"In callDocumentServiceToDeleteAllByPreId method URL- " + strUriBuilder);
 			responseEntity = restTemplate.exchange(strUriBuilder, HttpMethod.DELETE, httpEntity,
-					new ParameterizedTypeReference<MainListResponseDTO<DocumentDeleteResponseDTO>>() {});
+					new ParameterizedTypeReference<MainListResponseDTO<DocumentDeleteResponseDTO>>() {
+					});
 
-			if (responseEntity.getBody().getErr()!=null) {
-				
-					throw new DocumentFailedToDeleteException(responseEntity.getBody().getErr().getErrorCode(),
-							responseEntity.getBody().getErr().getMessage());
-				
+			if (responseEntity.getBody().getErr() != null) {
+
+				throw new DocumentFailedToDeleteException(responseEntity.getBody().getErr().getErrorCode(),
+						responseEntity.getBody().getErr().getMessage());
+
 			}
 		} catch (RestClientException ex) {
 			log.error("sessionId", "idType", "id",
@@ -721,7 +738,8 @@ public class DemographicService {
 	 * @param description
 	 * @param idType
 	 */
-	public void setAuditValues(String eventId, String eventName, String eventType, String description, String idType,String userId,String userName) {
+	public void setAuditValues(String eventId, String eventName, String eventType, String description, String idType,
+			String userId, String userName) {
 		AuditRequestDto auditRequestDto = new AuditRequestDto();
 		auditRequestDto.setEventId(eventId);
 		auditRequestDto.setEventName(eventName);
@@ -738,11 +756,11 @@ public class DemographicService {
 	private void callBookingServiceToDeleteAllByPreId(String preregId) {
 		log.info("sessionId", "idType", "id",
 				"In callBookingServiceToDeleteAllByPreId method of pre-registration service ");
-		ResponseEntity<MainListResponseDTO> responseEntity = null;
+		ResponseEntity<MainListResponseDTO<DeleteBookingDTO>> responseEntity = null;
 		try {
-			
+
 			UriComponentsBuilder uriBuilder = UriComponentsBuilder
-					.fromHttpUrl(deleteAppointmentResourseUrl + "/deleteBooking")
+					.fromHttpUrl(deleteAppointmentResourseUrl + "/appointment")
 					.queryParam("pre_registration_id", preregId);
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
@@ -751,10 +769,10 @@ public class DemographicService {
 			log.info("sessionId", "idType", "id",
 					"In callBookingServiceToDeleteAllByPreId method URL- " + strUriBuilder);
 			responseEntity = restTemplate.exchange(strUriBuilder, HttpMethod.DELETE, httpEntity,
-					new ParameterizedTypeReference<MainListResponseDTO>() {});
+					new ParameterizedTypeReference<MainListResponseDTO<DeleteBookingDTO>>() {
+					});
 
-
-			if (responseEntity.getBody().getErr()!=null) {
+			if (responseEntity.getBody().getErr() != null) {
 				throw new BookingDeletionFailedException(ErrorCodes.PRG_PAM_DOC_016.name(),
 						ErrorMessages.BOOKING_FAILED_TO_DELETE.name());
 
@@ -790,6 +808,8 @@ public class DemographicService {
 						ErrorMessages.INVALID_PRE_REGISTRATION_ID.name());
 			}
 			mainResponseDTO.setResponsetime(serviceUtil.getCurrentResponseTime());
+			mainResponseDTO.setId(id);
+			mainResponseDTO.setVersion(ver);
 			mainResponseDTO.setResponse(preIdMap);
 		} catch (Exception ex) {
 			new DemographicExceptionCatcher().handle(ex);

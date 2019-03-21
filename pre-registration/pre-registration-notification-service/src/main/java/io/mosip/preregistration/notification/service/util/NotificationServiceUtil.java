@@ -3,6 +3,7 @@ package io.mosip.preregistration.notification.service.util;
 import java.io.IOException;
 import java.io.StringReader;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -108,7 +109,7 @@ public class NotificationServiceUtil {
 		LocalDateTime localDateTime = DateUtils.parseToLocalDateTime(notificationData.get("requesttime").toString());
 		notificationReqDto.setId(notificationData.get("id").toString());
 		notificationReqDto.setVersion(notificationData.get("version").toString());
-		notificationReqDto.setRequesttime(localDateTime);
+		notificationReqDto.setRequesttime(new SimpleDateFormat(utcDateTimePattern).parse(notificationData.get("requesttime").toString()) );
 		notificationReqDto.setRequest(notififcationDTO);
 		return notificationReqDto;
 
