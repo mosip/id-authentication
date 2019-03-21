@@ -264,8 +264,7 @@ public class OTPServiceImpl implements OTPService {
 			reqTime = DateUtils.parseDateToLocalDateTime(requestTime);
 		} catch (ParseException e) {
 			mosipLogger.error(SESSION_ID, this.getClass().getName(), e.getClass().getName(), e.getMessage());
-			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_OTP_REQUEST_TIMESTAMP,
-					e);
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
 		}
 		// TODO make minutes and value configurable
 		int addMinutes = Integer.parseInt(env.getProperty(OTP_REQUEST_ADD_MINUTES));
