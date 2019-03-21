@@ -100,6 +100,7 @@ public class PreRegistrationLibrary extends BaseTestCase {
 	private static String preReg_ReverseDataSyncURI;
 	 private static String preReg_DiscardBookingURI;
 	 private static String preReg_SyncMasterDataURI;
+	 private static String otpSend_URI;
 	 private static String langCodeKey; 
 
 	/*
@@ -113,7 +114,6 @@ public class PreRegistrationLibrary extends BaseTestCase {
 	 * 
 	 */
 	public static Response CreatePreReg() {
-		// preReg_CreateApplnURI = commonLibrary.fetch_IDRepo("preReg_CreateApplnURI");
 		testSuite = "Create_PreRegistration/createPreRegistration_smoke";
 		String configPath = "src/test/resources/" + folder + "/" + testSuite;
 		File folder = new File(configPath);
@@ -135,12 +135,45 @@ public class PreRegistrationLibrary extends BaseTestCase {
 		Assert.assertTrue(preReg_Id != null);
 		return createPregResponse;
 	}
+	/**
+	 * Generate OTP
+	 * @return
+	 */
+	public static Response generateOTP() {
+		testSuite = "generateOTP/generateOTP_smoke";
+		String configPath = "src/test/resources/" + folder + "/" + testSuite;
+		File folder = new File(configPath);
+		File[] listOfFiles = folder.listFiles();
+		for (File f : listOfFiles) {
+			if (f.getName().contains("request")) {
+				try {
+					request = (JSONObject) new JSONParser().parse(new FileReader(f.getPath()));
+				} catch (IOException | ParseException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+
+			}
+		}
+		String createdBy = new Integer(createdBy()).toString();
+		JSONObject object = null;
+		for (Object key : request.keySet()) {
+			if (key.equals("request")) {
+				object = (JSONObject) request.get(key);
+				object.put("userId", createdBy);
+				request.replace(key, object);
+			}
+		}
+
+		response = applnLib.postRequest(request, otpSend_URI);
+		return createPregResponse;
+	}
 
 	/*
 	 * Function to generate the random created by data
 	 * 
 	 */
-	public int createdBy() {
+	public static int createdBy() {
 		Random rand = new Random();
 		int num = rand.nextInt(9000000) + 1000000000;
 		return num;
@@ -1775,7 +1808,8 @@ public class PreRegistrationLibrary extends BaseTestCase {
 		 preReg_DiscardBookingURI=commonLibrary.fetch_IDRepo("preReg_DiscardBookingURI");
 		 preReg_SyncMasterDataURI=commonLibrary.fetch_IDRepo("preReg_SyncMasterDataURI");
 		 preReg_NotifyURI=commonLibrary.fetch_IDRepo("preReg_NotifyURI");
-		 langCodeKey=commonLibrary.fetch_IDRepo("langCode.key"); 
+		 langCodeKey=commonLibrary.fetch_IDRepo("langCode.key");
+		 otpSend_URI=commonLibrary.fetch_IDRepo("otpSend_URI");
 		
 	}
 

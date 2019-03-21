@@ -528,6 +528,14 @@ public class CommonLibrary {
  	 			
  	 			logger.info("Configs from properties file is fetched for preReg_CreateApplnURI.  " +IDRepo_Element);
  	 			break;
+ 	 			case "otpSend_URI":
+ 	 				
+ 	 				IDRepo_Element=prop.getProperty("otpSend_URI"); 	
+ 	 				
+ 	 				
+ 	 			
+ 	 			logger.info("Configs from properties file is fetched for otpSend_URI.  " +IDRepo_Element);
+ 	 			break;
  	 			case "preReg_BookingAppointmentURI":
  	 				
  	 				IDRepo_Element=prop.getProperty("preReg_BookingAppointmentURI"); 	
