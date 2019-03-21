@@ -139,8 +139,7 @@ public class AuthStatusInfoBuilder {
 					|| name.equalsIgnoreCase(IdaIdMapping.DOBTYPE.getIdname())
 					|| name.equalsIgnoreCase(IdaIdMapping.AGE.getIdname())) {
 				errors = new AuthError(IdAuthenticationErrorConstants.DEMO_DATA_MISMATCH.getErrorCode(),
-						String.format(IdAuthenticationErrorConstants.DEMO_DATA_MISMATCH.getErrorMessage(), name,
-								matchOutput.getLanguage()));
+						String.format(IdAuthenticationErrorConstants.DEMO_DATA_MISMATCH.getErrorMessage(), name));
 			} else {
 				errors = new AuthError(IdAuthenticationErrorConstants.DEMOGRAPHIC_DATA_MISMATCH.getErrorCode(),
 						String.format(IdAuthenticationErrorConstants.DEMOGRAPHIC_DATA_MISMATCH.getErrorMessage(), name,

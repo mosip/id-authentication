@@ -61,7 +61,9 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 
 	private static final String OTP2 = "OTP";
 
-	private static final String REQUEST_ADDITIONAL_FACTORS_STATIC_PIN = "request/additionalFactors/staticPin";
+	private static final String PIN = "PIN";
+
+//	private static final String REQUEST_ADDITIONAL_FACTORS_STATIC_PIN = "request/additionalFactors/staticPin";
 
 	private static final String REQUEST_ADDITIONAL_FACTORS_TOTP = "request/additionalFactors/totp";
 
@@ -185,8 +187,7 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 				mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE,
 						"Missing pinval in the request");
 				errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.MISSING_AUTHTYPE.getErrorCode(),
-						new Object[] { REQUEST_ADDITIONAL_FACTORS_STATIC_PIN },
-						IdAuthenticationErrorConstants.MISSING_AUTHTYPE.getErrorMessage());
+						new Object[] { PIN }, IdAuthenticationErrorConstants.MISSING_AUTHTYPE.getErrorMessage());
 			} else {
 				checkAdditionalFactorsValue(pinOpt, PIN_VALUE, errors, STATIC_PIN_PATTERN);
 			}
@@ -239,7 +240,7 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 			if (bioInfo == null || bioInfo.isEmpty() || bioInfo.stream().anyMatch(bioDto -> bioDto.getData() == null)) {
 				mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE, "missing biometric request");
 				errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.MISSING_BIOMETRICDATA.getErrorCode(),
-						String.format(IdAuthenticationErrorConstants.MISSING_BIOMETRICDATA.getErrorMessage(), REQUEST));
+						IdAuthenticationErrorConstants.MISSING_BIOMETRICDATA.getErrorMessage());
 			} else {
 
 				List<DataDTO> bioData = bioInfo.stream().map(BioIdentityInfoDTO::getData).collect(Collectors.toList());
@@ -539,7 +540,7 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 		boolean anyValueIsMoreThanOne = hasDuplicate(fingerValuesCountsMap);
 
 		if (anyInfoIsMoreThanOne || anyValueIsMoreThanOne) {
-			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE, "Duplicate fingers ");
+			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE, "Duplicate fingers");
 			errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.DUPLICATE_FINGER.getErrorCode(),
 					String.format(IdAuthenticationErrorConstants.DUPLICATE_FINGER.getErrorMessage(), REQUEST));
 		}

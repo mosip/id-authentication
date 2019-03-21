@@ -32,7 +32,7 @@ public enum IdAuthenticationErrorConstants {
 	MISSING_INPUT_PARAMETER("IDA-MLC-006", "Missing Input Parameter - %s"),
 	UNABLE_TO_PROCESS("IDA-MLC-007", "Request could not be processed. Please try again"),
 	DEMOGRAPHIC_DATA_MISMATCH("IDA-DEA-001", "Demographic data  %s  in  %s did not match", "A0109"),
-	INVALID_TIMESTAMP("IDA-MLC-001", "Request to be received at MOSIP within %s hrs/min", "A0110"),
+	INVALID_TIMESTAMP("IDA-MLC-001", "Request to be received at MOSIP within %s hrs", "A0110"),
 	UNSUPPORTED_LANGUAGE("IDA-DEA-002", "Unsupported Language Code - %s", "A0111"),
 	DEMO_DATA_MISMATCH("IDA-DEA-003", "Demographic data - %s did not match", "A0112"),
 	MISSING_AUTHTYPE("IDA-MLC-015", "Missing  %s auth attribute"),
