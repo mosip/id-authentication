@@ -80,20 +80,21 @@ public class BiometricValidation {
 		Object identityJson = demographicJson.get("identity");
 		JSONObject dobJson =new JSONObject((Map) identityJson);
 		Object dob = dobJson.get("dateOfBirth");
-		
-		
-		try {
-			date = new SimpleDateFormat("yyyy/mm/dd").parse(dob.toString());
-			Calendar calendar = new GregorianCalendar();
-			calendar.setTime(date);
-			int year = calendar.get(Calendar.YEAR);
-			if(year%2==0) {
-				isValid=true;
+
+		if(dob != null && dob.toString().trim() != "" ) {
+			try {
+				date = new SimpleDateFormat("yyyy/mm/dd").parse(dob.toString());
+				Calendar calendar = new GregorianCalendar();
+				calendar.setTime(date);
+				int year = calendar.get(Calendar.YEAR);
+				if(year%2==0) {
+					isValid=true;
+				}
+			} catch (ParseException e) {
+				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+						regId, "Date Parse Exception in BiometricValidation" + e.getMessage()
+						+ ExceptionUtils.getStackTrace(e));
 			}
-		} catch (ParseException e) {
-			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					regId, "Date Parse Exception in BiometricValidation" + e.getMessage()
-					+ ExceptionUtils.getStackTrace(e));
 		}
 
 		return isValid;
