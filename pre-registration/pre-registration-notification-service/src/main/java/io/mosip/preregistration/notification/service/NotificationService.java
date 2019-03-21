@@ -13,12 +13,13 @@ import org.springframework.web.multipart.MultipartFile;
 
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.qrcodegenerator.spi.QrCodeGenerator;
-import io.mosip.kernel.core.util.JsonUtils;
 import io.mosip.kernel.qrcode.generator.zxing.constant.QrVersion;
+import io.mosip.preregistration.core.common.dto.MainRequestDTO;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
 import io.mosip.preregistration.core.common.dto.NotificationDTO;
 import io.mosip.preregistration.core.config.LoggerConfiguration;
 import io.mosip.preregistration.core.util.NotificationUtil;
+import io.mosip.preregistration.core.util.ValidationUtil;
 import io.mosip.preregistration.notification.dto.QRCodeResponseDTO;
 import io.mosip.preregistration.notification.error.ErrorCodes;
 import io.mosip.preregistration.notification.error.ErrorMessages;
@@ -66,7 +67,7 @@ public class NotificationService {
 	/**
 	 * Method to send notification.
 	 * 
-	 * @param jsonStirng
+	 * @param jsonString
 	 *            the json string.
 	 * @param langCode
 	 *            the language code.
@@ -74,26 +75,32 @@ public class NotificationService {
 	 *            the file to send.
 	 * @return the response dto.
 	 */
-	public MainResponseDTO<NotificationDTO> sendNotification(String jsonStirng, String langCode, MultipartFile file) {
+	public MainResponseDTO<NotificationDTO> sendNotification(String jsonString, String langCode, MultipartFile file) {
 		MainResponseDTO<NotificationDTO> response = new MainResponseDTO<>();
 		log.info("sessionId", "idType", "id",
 				"In notification service of sendNotification ");
+		
 		try {
-			NotificationDTO acknowledgementDTO = (NotificationDTO) JsonUtils
-					.jsonStringToJavaObject(NotificationDTO.class, jsonStirng);
-
-			if (acknowledgementDTO.getMobNum() != null && !acknowledgementDTO.getMobNum().isEmpty()) {
-				notificationUtil.notify("sms", acknowledgementDTO, langCode, file);
+			MainRequestDTO<NotificationDTO> notificationReqDTO = serviceUtil.createNotificationDetails(jsonString);
+			NotificationDTO notififcationDto=notificationReqDTO.getRequest();
+			if (ValidationUtil.requestValidator(notificationReqDTO)) {
+			
+			
+			if (notififcationDto.getMobNum() != null && !notififcationDto.getMobNum().isEmpty()) {
+				notificationUtil.notify("sms", notififcationDto, langCode, file);
 			}
-			if (acknowledgementDTO.getEmailID() != null && !acknowledgementDTO.getEmailID().isEmpty()) {
-				notificationUtil.notify("email", acknowledgementDTO, langCode, file);
+			if (notififcationDto.getEmailID() != null && !notififcationDto.getEmailID().isEmpty()) {
+				notificationUtil.notify("email", notififcationDto, langCode, file);
 			}
-			if ((acknowledgementDTO.getEmailID() == null || acknowledgementDTO.getEmailID().isEmpty())
-					&& (acknowledgementDTO.getMobNum() == null || acknowledgementDTO.getMobNum().isEmpty())) {
+			if ((notififcationDto.getEmailID() == null || notififcationDto.getEmailID().isEmpty())
+					&& (notififcationDto.getMobNum() == null || notififcationDto.getMobNum().isEmpty())) {
 				throw new MandatoryFieldException(ErrorCodes.PRG_ACK_001.getCode(),
 						ErrorMessages.MOBILE_NUMBER_OR_EMAIL_ADDRESS_NOT_FILLED.getCode());
 			}
-			response.setResponse(acknowledgementDTO);
+			}
+			response.setId(notificationReqDTO.getId());
+			response.setVersion(notificationReqDTO.getVersion());
+			response.setResponse(notififcationDto);
 			response.setResponsetime(serviceUtil.getCurrentResponseTime());
 		} catch (Exception ex) {
 			log.error("sessionId", "idType", "id",

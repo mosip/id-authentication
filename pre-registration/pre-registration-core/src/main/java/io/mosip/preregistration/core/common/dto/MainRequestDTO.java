@@ -5,7 +5,7 @@
 package io.mosip.preregistration.core.common.dto;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
@@ -42,7 +42,7 @@ public class MainRequestDTO<T> implements Serializable {
 	 * Request Date Time
 	 */
 	@ApiModelProperty(value = "request time", position = 3)
-	private Date requesttime;
+	private LocalDateTime requesttime;
 	/**
 	 * Request Object
 	 */
