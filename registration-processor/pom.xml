@@ -180,7 +180,8 @@
 
 			**/registration/processor/abis/**/*.java,
 			**/registration/processor/packet/service/**/*.java,
-			**/registration/processor/packet/upload/**/*.java
+			**/registration/processor/packet/upload/**/*.java,
+			**/registration/processor/packet/handler/**/*.java
 
 		</sonar.coverage.exclusions>
 		<sonar.cpd.exclusions>**/dto/**,**/entity/**,**/config/**</sonar.cpd.exclusions>
