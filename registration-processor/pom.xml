@@ -178,7 +178,9 @@
 			**/registration/processor/biodedupe/*.java,
 			**/registration/processor/biodedupe/stage/utils/*.java,
 
-			**/registration/processor/abis/**/*.java
+			**/registration/processor/abis/**/*.java,
+			**/registration/processor/packet/service/**/*.java,
+			**/registration/processor/packet/upload/**/*.java
 
 		</sonar.coverage.exclusions>
 		<sonar.cpd.exclusions>**/dto/**,**/entity/**,**/config/**</sonar.cpd.exclusions>
