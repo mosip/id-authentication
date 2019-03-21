@@ -4,25 +4,25 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.processor.core.code.ApiName;
-import io.mosip.registration.processor.core.constant.IdJSONConstant;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.JsonValue;
-import io.mosip.registration.processor.core.packet.dto.demographicinfo.identify.RegistrationProcessorIdentity;
 import io.mosip.registration.processor.core.packet.dto.masterdata.StatusResponseDto;
 import io.mosip.registration.processor.core.packet.dto.regcentermachine.ErrorDTO;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
@@ -55,14 +55,22 @@ public class MasterDataValidation {
 	/** The Constant VALID. */
 	private static final String VALID = "Valid";
 
+	/** The demographic identity. */
 	JSONObject demographicIdentity = null;
 
+	/** The utility. */
 	private Utilities utility;
 
-	private RegistrationProcessorIdentity regProcessorIdentityJson;
+	/** The primary language. */
+	@Value("${primary.language}")
+	private String primaryLanguage;
 
-	private static final String LANGUAGE_ENG = "eng";
-	private static final String LANGUAGE_ARA = "ara";
+	/** The secondary language. */
+	@Value("${secondary.language}")
+	private String secondaryLanguage;
+
+	/** The Constant VALUE. */
+	private static final String VALUE = "value";
 
 	/**
 	 * Instantiates a new master data validation.
@@ -73,115 +81,155 @@ public class MasterDataValidation {
 	 *            the env
 	 * @param registrationProcessorRestService
 	 *            the registration processor rest service
+	 * @param utility
+	 *            the utility
 	 */
 	public MasterDataValidation(InternalRegistrationStatusDto registrationStatusDto, Environment env,
-			RegistrationProcessorRestClientService<Object> registrationProcessorRestService, Utilities utility,
-			RegistrationProcessorIdentity regProcessorIdentityJson) {
+			RegistrationProcessorRestClientService<Object> registrationProcessorRestService, Utilities utility) {
 		this.registrationStatusDto = registrationStatusDto;
 		this.env = env;
 		this.registrationProcessorRestService = registrationProcessorRestService;
 		this.utility = utility;
-		this.regProcessorIdentityJson = regProcessorIdentityJson;
+
 	}
 
 	/**
 	 * Validate master data.
 	 *
-	 * @param regProcessorIdentityJson
-	 *            the reg processor identity json
+	 * @param jsonString
+	 *            the json string
 	 * @return the boolean
 	 */
 	public Boolean validateMasterData(String jsonString) {
-		String genderEngName = null;
-		String regionEngName = null;
-		String provinceEngName = null;
-		String cityEngName = null;
-		String postalcode = null;
-		String genderAraName = null;
-		String regionAraName = null;
-		String provinceAraName = null;
-		String cityAraName = null;
 		boolean isValid = false;
 		try {
 
 			demographicIdentity = getDemographicJson(jsonString);
 
-			genderEngName = getParameter(JsonUtil.getJsonValues(demographicIdentity,
-					regProcessorIdentityJson.getIdentity().getGender().getValue()), LANGUAGE_ENG);
-			regionEngName = getParameter(JsonUtil.getJsonValues(demographicIdentity,
-					regProcessorIdentityJson.getIdentity().getRegion().getValue()), LANGUAGE_ENG);
-			provinceEngName = getParameter(JsonUtil.getJsonValues(demographicIdentity,
-					regProcessorIdentityJson.getIdentity().getProvince().getValue()), LANGUAGE_ENG);
-			cityEngName = getParameter(JsonUtil.getJsonValues(demographicIdentity,
-					regProcessorIdentityJson.getIdentity().getCity().getValue()), LANGUAGE_ENG);
-			postalcode = JsonUtil.getJSONValue(demographicIdentity,
-					regProcessorIdentityJson.getIdentity().getPostalCode().getValue());
+			String[] attributes = env.getProperty("registration.processor.idjson.attributes").split(",");
+			List<String> list = new ArrayList<>(Arrays.asList(attributes));
 
-			genderAraName = getParameter(JsonUtil.getJsonValues(demographicIdentity,
-					regProcessorIdentityJson.getIdentity().getGender().getValue()), LANGUAGE_ARA);
-			regionAraName = getParameter(JsonUtil.getJsonValues(demographicIdentity,
-					regProcessorIdentityJson.getIdentity().getRegion().getValue()), LANGUAGE_ARA);
-			provinceAraName = getParameter(JsonUtil.getJsonValues(demographicIdentity,
-					regProcessorIdentityJson.getIdentity().getProvince().getValue()), LANGUAGE_ARA);
-			cityAraName = getParameter(JsonUtil.getJsonValues(demographicIdentity,
-					regProcessorIdentityJson.getIdentity().getCity().getValue()), LANGUAGE_ARA);
+			Iterator<String> it = list.iterator();
 
-			String[] elements = env.getProperty("registration.processor.idjson.attributes").split(",");
-			List<String> list = new ArrayList<>(Arrays.asList(elements));
+			while (it.hasNext()) {
+				String key = it.next().trim();
 
-			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					"", "MasterDataValidation::validateMasterData::entry");
+				if (env.getProperty(ApiName.valueOf(key.toUpperCase()).name()) != null) {
 
-			if ((getValue(list, IdJSONConstant.GENDER.toString()))
-					&& ((!validateGenderName(genderEngName)) || (!validateGenderName(genderAraName)))) {
-				registrationStatusDto.setStatusComment(StatusMessage.GENDER_NAME_NOT_AVAILABLE);
-				return false;
+					String engValue = null;
+					String araValue = null;
+
+					Object object = JsonUtil.getJSONValue(demographicIdentity, key);
+					if (object instanceof ArrayList) {
+						JSONArray node = JsonUtil.getJSONArray(demographicIdentity, key);
+						JsonValue[] jsonValues = JsonUtil.mapJsonNodeToJavaObject(JsonValue.class, node);
+						engValue = getParameter(jsonValues, primaryLanguage);
+						araValue = getParameter(jsonValues, secondaryLanguage);
+					} else if (object instanceof LinkedHashMap) {
+						JSONObject json = JsonUtil.getJSONObject(demographicIdentity, key);
+						engValue = (String) json.get(VALUE);
+					} else {
+						engValue = (String) object;
+					}
+
+					if (validateIdentityValues(key, engValue) && validateIdentityValues(key, araValue)) {
+						isValid = true;
+					} else {
+						isValid = false;
+						regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
+								LoggerFileConstant.REGISTRATIONID.toString(), "",
+								PlatformErrorMessages.RPR_PVM_IDENTITY_INVALID.getMessage());
+						this.registrationStatusDto
+								.setStatusComment(StatusMessage.MASTERDATA_VALIDATION_FAILURE_INVALID_ATTRIBUTES + key);
+						break;
+					}
+				} else {
+					isValid = false;
+					regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
+							LoggerFileConstant.REGISTRATIONID.toString(), "",
+							PlatformErrorMessages.RPR_PVM_RESOURCE_NOT_FOUND.getMessage());
+					this.registrationStatusDto
+							.setStatusComment(StatusMessage.MASTERDATA_VALIDATION_FAILED_RESOURCE_NOT_FOUND + key);
+					break;
+
+				}
 			}
 
-			if (getValue(list, IdJSONConstant.REGION.toString())
-					&& ((!validateLocationName(regionEngName)) || (!validateLocationName(regionAraName)))) {
-				registrationStatusDto.setStatusComment(StatusMessage.REGION_NOT_AVAILABLE);
-				return false;
-			}
+		} catch (IdentityNotFoundException | IOException e) {
+			isValid = false;
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					"", PlatformErrorMessages.RPR_PVM_IDENTITY_NOT_FOUND.getMessage() + e.getMessage());
+			this.registrationStatusDto.setStatusComment(StatusMessage.MASTERDATA_VALIDATION_FAILED);
+		}
 
-			if ((getValue(list, IdJSONConstant.PROVINCE.toString()))
-					&& ((!validateLocationName(provinceEngName)) || (!validateLocationName(provinceAraName)))) {
-				registrationStatusDto.setStatusComment(StatusMessage.PROVINCE_NOT_AVAILABLE);
-				return false;
-			}
-
-			if (getValue(list, IdJSONConstant.CITY.toString())
-					&& ((!validateLocationName(cityEngName)) || (!validateLocationName(cityAraName)))) {
-				registrationStatusDto.setStatusComment(StatusMessage.CITY_NOT_AVAILABLE);
-				return false;
-			}
-
-			if (getValue(list, IdJSONConstant.POSTALCODE.toString()) && (!validateLocationName(postalcode))) {
-				registrationStatusDto.setStatusComment(StatusMessage.POSTALCODE_NOT_AVAILABLE);
-				return false;
-			}
-
-			isValid = true;
-
-		} catch (IOException e) {
+		catch (Exception e) {
 			isValid = false;
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					"", PlatformErrorMessages.STRUCTURAL_VALIDATION_FAILED.getMessage() + e.getMessage());
 			this.registrationStatusDto.setStatusComment(StatusMessage.MASTERDATA_VALIDATION_FAILED);
 		}
-
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), "",
 				"MasterDataValidation::validateMasterData::exit");
 		return isValid;
 
 	}
 
+	/**
+	 * Validate identity values.
+	 *
+	 * @param key
+	 *            the key
+	 * @param value
+	 *            the value
+	 * @return true, if successful
+	 */
+	private boolean validateIdentityValues(String key, String value) {
+		StatusResponseDto statusResponseDto;
+		boolean isvalidateIdentity = false;
+		if (value != null) {
+			try {
+
+				List<String> pathsegmentsEng = new ArrayList<>();
+
+				pathsegmentsEng.add(value);
+
+				statusResponseDto = (StatusResponseDto) registrationProcessorRestService
+						.getApi(ApiName.valueOf(key.toUpperCase()), pathsegmentsEng, "", "", StatusResponseDto.class);
+
+				if (statusResponseDto.getStatus().equalsIgnoreCase(VALID))
+					isvalidateIdentity = true;
+			} catch (ApisResourceAccessException ex) {
+				if (ex.getCause() instanceof HttpClientErrorException) {
+					HttpClientErrorException httpClientException = (HttpClientErrorException) ex.getCause();
+					String result = httpClientException.getResponseBodyAsString();
+					Gson gsonObj = new Gson();
+					statusResponseDto = gsonObj.fromJson(result, StatusResponseDto.class);
+					ErrorDTO error = statusResponseDto.getErrors().get(0);
+					isvalidateIdentity = false;
+					regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
+							LoggerFileConstant.REGISTRATIONID.toString(), "",
+							PlatformErrorMessages.RPR_PVM_API_RESOUCE_ACCESS_FAILED.getMessage() + ex.getMessage());
+					this.registrationStatusDto.setStatusComment(error.getErrorMessage());
+
+				}
+			}
+		} else {
+			isvalidateIdentity = true;
+		}
+		return isvalidateIdentity;
+
+	}
+
+	/**
+	 * Gets the demographic json.
+	 *
+	 * @param jsonString
+	 *            the json string
+	 * @return the demographic json
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
+	 */
 	private JSONObject getDemographicJson(String jsonString) throws IOException {
-		String getIdentityJsonString = Utilities.getJson(utility.getConfigServerFileStorageURL(),
-				utility.getGetRegProcessorIdentityJson());
-		ObjectMapper mapIdentityJsonStringToObject = new ObjectMapper();
-		regProcessorIdentityJson = mapIdentityJsonStringToObject.readValue(getIdentityJsonString,
-				RegistrationProcessorIdentity.class);
 
 		JSONObject demographicJson = JsonUtil.objectMapperReadValue(jsonString, JSONObject.class);
 		demographicIdentity = JsonUtil.getJSONObject(demographicJson, utility.getGetRegProcessorDemographicIdentity());
@@ -193,104 +241,14 @@ public class MasterDataValidation {
 	}
 
 	/**
-	 * Gets the value.
+	 * Gets the parameter.
 	 *
-	 * @param list
-	 *            the list
-	 * @param value
-	 *            the value
-	 * @return the value
+	 * @param jsonValues
+	 *            the json values
+	 * @param langCode
+	 *            the lang code
+	 * @return the parameter
 	 */
-	private Boolean getValue(List<String> list, String value) {
-		Iterator<String> it = list.iterator();
-
-		while (it.hasNext()) {
-			String dataValue = it.next();
-			if (dataValue.equalsIgnoreCase(value))
-				return true;
-		}
-		return false;
-	}
-
-	/**
-	 * Validate gender name.
-	 *
-	 * @param genderName
-	 *            the gender name
-	 * @return true, if successful
-	 */
-	private boolean validateGenderName(String genderName) {
-		boolean isValidGender = false;
-		StatusResponseDto statusResponseDto;
-		if (genderName != null) {
-			try {
-				List<String> pathsegments = new ArrayList<>();
-				pathsegments.add(genderName);
-
-				statusResponseDto = (StatusResponseDto) registrationProcessorRestService.getApi(ApiName.GENDERTYPE,
-						pathsegments, "", "", StatusResponseDto.class);
-
-				if (statusResponseDto.getStatus().equalsIgnoreCase(VALID))
-					isValidGender = true;
-			} catch (ApisResourceAccessException ex) {
-				if (ex.getCause() instanceof HttpClientErrorException) {
-					HttpClientErrorException httpClientException = (HttpClientErrorException) ex.getCause();
-					String result = httpClientException.getResponseBodyAsString();
-					Gson gsonObj = new Gson();
-					statusResponseDto = gsonObj.fromJson(result, StatusResponseDto.class);
-					ErrorDTO error = statusResponseDto.getErrors().get(0);
-					isValidGender = false;
-
-					this.registrationStatusDto.setStatusComment(error.getErrorMessage());
-
-				}
-			}
-		} else {
-			isValidGender = true;
-		}
-		return isValidGender;
-	}
-
-	/**
-	 * Validate location name.
-	 *
-	 * @param locationName
-	 *            the location name
-	 * @return true, if successful
-	 */
-	private boolean validateLocationName(String locationName) {
-		boolean isValidLocation = false;
-		StatusResponseDto statusResponseDto;
-		if (locationName != null) {
-			try {
-				List<String> pathsegments = new ArrayList<>();
-				pathsegments.add(locationName);
-
-				statusResponseDto = (StatusResponseDto) registrationProcessorRestService.getApi(ApiName.LOCATION,
-						pathsegments, "", "", StatusResponseDto.class);
-
-				if (statusResponseDto.getStatus().equalsIgnoreCase(VALID))
-					isValidLocation = true;
-			} catch (ApisResourceAccessException ex) {
-				if (ex.getCause() instanceof HttpClientErrorException) {
-					HttpClientErrorException httpClientException = (HttpClientErrorException) ex.getCause();
-					String result = httpClientException.getResponseBodyAsString();
-					Gson gsonObj = new Gson();
-					statusResponseDto = gsonObj.fromJson(result, StatusResponseDto.class);
-					ErrorDTO error = statusResponseDto.getErrors().get(0);
-					isValidLocation = false;
-
-					this.registrationStatusDto.setStatusComment(error.getErrorMessage());
-
-				}
-			}
-		} else {
-			isValidLocation = true;
-		}
-		return isValidLocation;
-
-	}
-
 	private String getParameter(JsonValue[] jsonValues, String langCode) {
 
 		String parameter = null;

@@ -201,7 +201,16 @@ public enum PlatformErrorMessages {
 			"Data not available in Master DB"),
 
 	RPR_PVM_IDENTITY_NOT_FOUND(PlatformConstants.RPR_PACKET_VALIDATOR_MODULE + "003",
-			"Identity field not found in DemographicInfo Json"),
+			"Attribute unAvailable in DemographicInfo Json for Master Data Validation"),
+
+	RPR_PVM_RESOURCE_NOT_FOUND(PlatformConstants.RPR_PACKET_VALIDATOR_MODULE + "004",
+			"Resource not found for the Attribute specified in Msster Data Validation"),
+
+	RPR_PVM_IDENTITY_INVALID(PlatformConstants.RPR_PACKET_VALIDATOR_MODULE + "005",
+			"Attribute Value Invalid in Master Data Validation"),
+
+	RPR_PVM_API_RESOUCE_ACCESS_FAILED(PlatformConstants.RPR_PACKET_VALIDATOR_MODULE + "005",
+			"Not able to access the API resource"),
 
 	/** The unsupported encoding. */
 	// UIN check - JSON file encoding failed.

@@ -24,16 +24,12 @@ public final class StatusMessage {
 	/** The Constant INPUTSTREAM_NOT_READABLE. */
 	public static final String INPUTSTREAM_NOT_READABLE = "Unable to read inputstream";
 
-	public static final String GENDER_NAME_NOT_AVAILABLE = "Gender name is not available in Master DB";
-
-	public static final String REGION_NOT_AVAILABLE = "Region is not available in Master DB";
-
-	public static final String PROVINCE_NOT_AVAILABLE = "Province is not available in Master DB";
-
-	public static final String CITY_NOT_AVAILABLE = "City is not available in Master DB";
-
-	public static final String POSTALCODE_NOT_AVAILABLE = "Postal Code is not available in Master DB";
-
 	public static final String MASTERDATA_VALIDATION_FAILED = "Master data validation failed";
+
+	public static final String MASTERDATA_VALIDATION_FAILURE_INVALID_ATTRIBUTES = "Master data validation failed since the attribute is not valid for ";
+
+	public static final String MASTERDATA_VALIDATION_API_ACCESS_FAILURE = "Master data validation failed due to API resource access exception";
+
+	public static final String MASTERDATA_VALIDATION_FAILED_RESOURCE_NOT_FOUND = "Master data validation failed due to API resource access exception";
 
 }

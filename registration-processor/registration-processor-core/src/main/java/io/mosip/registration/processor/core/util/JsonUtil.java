@@ -200,7 +200,7 @@ public class JsonUtil {
 	 * @return the t[]
 	 */
 	@SuppressWarnings("unchecked")
-	private static <T> T[] mapJsonNodeToJavaObject(Class<? extends Object> genericType, JSONArray demographicJsonNode) {
+	public static <T> T[] mapJsonNodeToJavaObject(Class<? extends Object> genericType, JSONArray demographicJsonNode) {
 		String language;
 		String value;
 		T[] javaObject = (T[]) Array.newInstance(genericType, demographicJsonNode.size());

@@ -167,8 +167,7 @@ public class PacketValidateProcessor {
 				ValidationReport isSchemaValidated = jsonValidator.validateJson(jsonString);
 
 				InputStream documentInfoStream = null;
-				InputStream demographicInfoStream = null;
-				byte[] bytesArray = null;
+
 				List<Document> documentList = null;
 				if (isSchemaValidated.isValid()) {
 
@@ -195,8 +194,7 @@ public class PacketValidateProcessor {
 
 							if (isApplicantDocumentValidation) {
 								MasterDataValidation masterDataValidation = new MasterDataValidation(
-										registrationStatusDto, env, registrationProcessorRestService, utility,
-										regProcessorIdentityJson);
+										registrationStatusDto, env, registrationProcessorRestService, utility);
 								isMasterDataValidated = masterDataValidation.validateMasterData(jsonString);
 							}
 
