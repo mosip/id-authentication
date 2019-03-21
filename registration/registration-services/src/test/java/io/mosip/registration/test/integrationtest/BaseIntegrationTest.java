@@ -35,6 +35,6 @@ import org.junit.runners.Suite;
 public abstract class BaseIntegrationTest {
 	static
 	{
-		System.setProperty("spring.profiles.active", "integ");
+		System.setProperty("spring.profiles.active", "qa");
 	}
 }

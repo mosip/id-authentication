@@ -43,7 +43,6 @@ import io.mosip.registration.exception.RegistrationExceptionConstants;
 import io.mosip.registration.service.BaseService;
 import io.mosip.registration.service.sync.PacketSynchService;
 import io.mosip.registration.util.restclient.ServiceDelegateUtil;
-import javafx.beans.property.SimpleBooleanProperty;
 
 @Service
 public class PacketSynchServiceImpl extends BaseService implements PacketSynchService {
@@ -152,17 +151,15 @@ public class PacketSynchServiceImpl extends BaseService implements PacketSynchSe
 				APPLICATION_ID, "Fetch the packets that needs to be synched to the server");
 		List<PacketStatusDTO> idsToBeSynched = new ArrayList<>();
 		List<Registration> packetsToBeSynched = syncRegistrationDAO
-				.getPacketsToBeSynched(RegistrationConstants.PACKET_EXPORT_STATUS);
+				.fetchPacketsToUpload(RegistrationConstants.PACKET_STATUS_UPLOAD,RegistrationConstants.SERVER_STATUS_RESEND);
 		packetsToBeSynched.forEach(reg -> {
 			PacketStatusDTO packetStatusDTO = new PacketStatusDTO();
 			packetStatusDTO.setFileName(reg.getId());
 			packetStatusDTO.setPacketClientStatus(reg.getClientStatusCode());
 			packetStatusDTO.setClientStatusComments(reg.getClientStatusComments());
-			packetStatusDTO.setClientStatusComments(reg.getClientStatusComments());
 			packetStatusDTO.setPacketServerStatus(reg.getServerStatusCode());
 			packetStatusDTO.setPacketPath(reg.getAckFilename());
 			packetStatusDTO.setUploadStatus(reg.getFileUploadStatus());
-			packetStatusDTO.setStatus(new SimpleBooleanProperty());
 			idsToBeSynched.add(packetStatusDTO);
 		});
 		return idsToBeSynched;

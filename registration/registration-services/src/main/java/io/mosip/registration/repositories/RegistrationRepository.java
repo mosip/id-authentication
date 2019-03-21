@@ -47,6 +47,14 @@ public interface RegistrationRepository extends BaseRepository<Registration, Str
 	 * @return List of registration packets
 	 */
 	List<Registration> findByClientStatusCodeInOrderByUpdDtimesDesc(List<String> statusCodes);
+	
+	/**
+	 * To fetch the records for Packet Upload
+	 * @param statusCodes
+	 * @param serverStatus
+	 * @return
+	 */
+	List<Registration> findByClientStatusCodeInOrServerStatusCodeOrderByUpdDtimesDesc(List<String> statusCodes,String serverStatus);
 
 	/**
 	 * Fetching all the re registration records

@@ -275,19 +275,20 @@ public class SyncStatusValidatorServiceImpl extends BaseService implements SyncS
 	 */
 	private void captureGeoLocation(List<ErrorResponseDTO> errorResponseDTOList) {
 
-		LOGGER.info(LoggerConstants.OPT_TO_REG_LOGGER_SESSION_ID, APPLICATION_NAME, APPLICATION_ID,
-				"Validating the geo location of machine w.r.t registration center started");
-
-		double centerLatitude = Double.parseDouble(
-				SessionContext.userContext().getRegistrationCenterDetailDTO().getRegistrationCenterLatitude());
-
-		double centerLongitude = Double.parseDouble(
-				SessionContext.userContext().getRegistrationCenterDetailDTO().getRegistrationCenterLongitude());
 
 		LOGGER.info(LoggerConstants.OPT_TO_REG_LOGGER_SESSION_ID, APPLICATION_NAME, APPLICATION_ID,
 				"Getting the center latitude and longitudes from session conext");
 
 		if (RegistrationConstants.ENABLE.equalsIgnoreCase(getGlobalConfigValueOf(RegistrationConstants.GPS_DEVICE_DISABLE_FLAG))) {
+			
+			LOGGER.info(LoggerConstants.OPT_TO_REG_LOGGER_SESSION_ID, APPLICATION_NAME, APPLICATION_ID,
+					"Validating the geo location of machine w.r.t registration center started");
+
+			double centerLatitude = Double.parseDouble(
+					SessionContext.userContext().getRegistrationCenterDetailDTO().getRegistrationCenterLatitude());
+
+			double centerLongitude = Double.parseDouble(
+					SessionContext.userContext().getRegistrationCenterDetailDTO().getRegistrationCenterLongitude());
 
 			Map<String, Object> gpsMapDetails = gpsFacade.getLatLongDtls(centerLatitude, centerLongitude,
 					String.valueOf(ApplicationContext.map().get(RegistrationConstants.GPS_DEVICE_MODEL)));

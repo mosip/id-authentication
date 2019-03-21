@@ -28,6 +28,7 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Pane;
 import javafx.util.StringConverter;
 
 /**
@@ -86,7 +87,7 @@ public class FXUtils {
 	/**
 	 * Validator method for field during onType
 	 */
-	public void validateOnType(AnchorPane parentPane, TextField field, Validations validation) {
+	public void validateOnType(Pane parentPane, TextField field, Validations validation) {
 		field.textProperty().addListener((obsValue, oldValue, newValue) -> {
 			if (!validation.validateTextField(parentPane, field, field.getId() + "_ontype",
 					(String) SessionContext.map().get(RegistrationConstants.IS_CONSOLIDATED))) {
@@ -95,7 +96,7 @@ public class FXUtils {
 		});
 	}
 
-	public void populateLocalComboBox(AnchorPane parentPane, ComboBox<?> applicationField, ComboBox<?> localField) {
+	public void populateLocalComboBox(Pane parentPane, ComboBox<?> applicationField, ComboBox<?> localField) {
 		applicationField.getSelectionModel().selectedItemProperty().addListener((options, oldValue, newValue) -> {
 			selectComboBoxValueByCode(localField, applicationField.getValue());
 			((Label) parentPane.lookup(RegistrationConstants.HASH + applicationField.getId() + RegistrationConstants.LABEL)).setVisible(true);
@@ -108,7 +109,7 @@ public class FXUtils {
 	/**
 	 * Validator method for field during onType and the local field population
 	 */
-	public void validateOnType(AnchorPane parentPane, TextField field, Validations validation, TextField localField) {
+	public void validateOnType(Pane parentPane, TextField field, Validations validation, TextField localField) {
 
 		focusUnfocusListener(parentPane, field, localField);
 
@@ -124,23 +125,52 @@ public class FXUtils {
 			}
 			field.requestFocus();
 		});
+		
+		onTypeFocusUnfocusListener(parentPane, localField);
 
 	}
 
-	public void focusUnfocusListener(AnchorPane parentPane, TextField field, TextField localField) {
+	public void onTypeFocusUnfocusListener(Pane parentPane, TextField field) {
+		if(field!=null) {
+			field.textProperty().addListener((obsValue, oldValue, newValue) -> {
+				
+				if(newValue.length()>0) {
+				
+					try {
+						((Label) parentPane.lookup(RegistrationConstants.HASH + field.getId() + RegistrationConstants.LABEL)).setVisible(true);
+						if (field.getId().matches("dd|mm|yyyy|ddLocalLanguage|mmLocalLanguage|yyyyLocalLanguage")) {
+							((Label) parentPane.lookup(RegistrationConstants.HASH + RegistrationConstants.DOB_MESSAGE)).setVisible(false);
+						} else {
+							((Label) parentPane.lookup(RegistrationConstants.HASH + field.getId() + RegistrationConstants.MESSAGE)).setVisible(false);
+						}
+					} catch (RuntimeException runtimeException) {
+						LOGGER.info("ID NOT FOUND ", APPLICATION_NAME,
+								RegistrationConstants.APPLICATION_ID, runtimeException.getMessage());
+					}
+				}else {
+					((Label) parentPane.lookup(RegistrationConstants.HASH + field.getId() + RegistrationConstants.LABEL)).setVisible(false);
+				}
+
+			});
+
+		}
+	}
+
+	public void focusUnfocusListener(Pane parentPane, TextField field, TextField localField) {
 		focusAction(parentPane, field);
 		focusAction(parentPane, localField);
 	}
 
-	private void focusAction(AnchorPane parentPane, TextField field) {
+	private void focusAction(Pane parentPane, TextField field) {
 		if(field!=null) {
 			field.focusedProperty().addListener((obsValue, oldValue, newValue) -> {
 			if (newValue) {
 				try {
+					System.out.println(field.getId());
 					((Label) parentPane.lookup(RegistrationConstants.HASH + field.getId() + RegistrationConstants.LABEL)).setVisible(true);
 					promptText = ((TextField) parentPane.lookup(RegistrationConstants.HASH + field.getId())).getPromptText();
 					((TextField) parentPane.lookup(RegistrationConstants.HASH + field.getId())).setPromptText(null);
-					if (field.getId().matches("dd|mm|yyyy")) {
+					if (field.getId().matches("dd|mm|yyyy|ddLocalLanguage|mmLocalLanguage|yyyyLocalLanguage")) {
 						((Label) parentPane.lookup(RegistrationConstants.HASH + RegistrationConstants.DOB_MESSAGE)).setVisible(false);
 					} else {
 						((Label) parentPane.lookup(RegistrationConstants.HASH + field.getId() + RegistrationConstants.MESSAGE)).setVisible(false);
@@ -168,7 +198,7 @@ public class FXUtils {
 	 * Populate the local field value based on the application field.
 	 * Transliteration will not done for these fields
 	 */
-	public void populateLocalFieldOnType(AnchorPane parentPane, TextField field, Validations validation,
+	public void populateLocalFieldOnType(Pane parentPane, TextField field, Validations validation,
 			TextField localField) {
 		focusUnfocusListener(parentPane, field, localField);
 		field.textProperty().addListener((obsValue, oldValue, newValue) -> {
@@ -182,18 +212,8 @@ public class FXUtils {
 			}
 			field.requestFocus();
 		});
-			
-			if(localField!=null)
-			localField.textProperty().addListener((obsValue, oldValue, newValue) -> {
-				try {
-					((Label) parentPane.lookup(RegistrationConstants.HASH + localField.getId() + RegistrationConstants.LABEL)).setVisible(true);
-					promptText = ((TextField) parentPane.lookup(RegistrationConstants.HASH + localField.getId())).getPromptText();
-					((TextField) parentPane.lookup(RegistrationConstants.HASH + localField.getId())).setPromptText(null);
-				}  catch (RuntimeException runtimeException) {
-					LOGGER.info("ID NOT FOUND", APPLICATION_NAME,
-							RegistrationConstants.APPLICATION_ID, runtimeException.getMessage());
-				}
-			});
+		
+		onTypeFocusUnfocusListener(parentPane, localField);
 
 	}
 

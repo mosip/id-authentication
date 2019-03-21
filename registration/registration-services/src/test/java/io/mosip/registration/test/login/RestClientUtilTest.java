@@ -20,6 +20,7 @@ import org.springframework.web.client.RestTemplate;
 
 import io.mosip.registration.dto.OtpGeneratorRequestDTO;
 import io.mosip.registration.dto.OtpGeneratorResponseDTO;
+import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.util.restclient.RequestHTTPDTO;
 import io.mosip.registration.util.restclient.RestClientUtil;
 
@@ -38,7 +39,7 @@ public class RestClientUtilTest {
 
 	@Test
 	public void invokeTest() throws URISyntaxException, HttpClientErrorException, HttpServerErrorException,
-			ResourceAccessException, SocketTimeoutException {
+			ResourceAccessException, SocketTimeoutException, RegBaseCheckedException {
 		OtpGeneratorResponseDTO generatorResponseDto = new OtpGeneratorResponseDTO();
 		generatorResponseDto.setOtp("099977");
 		OtpGeneratorRequestDTO otpGeneratorRequestDTO = new OtpGeneratorRequestDTO();
@@ -57,7 +58,7 @@ public class RestClientUtilTest {
 
 	@Test
 	public void invokeHeadersTest() throws URISyntaxException, HttpClientErrorException, HttpServerErrorException,
-			ResourceAccessException, SocketTimeoutException {
+			ResourceAccessException, SocketTimeoutException, RegBaseCheckedException {
 		OtpGeneratorResponseDTO generatorResponseDto = new OtpGeneratorResponseDTO();
 		generatorResponseDto.setOtp("099977");
 		OtpGeneratorRequestDTO otpGeneratorRequestDTO = new OtpGeneratorRequestDTO();
@@ -76,7 +77,7 @@ public class RestClientUtilTest {
 
 	@Test
 	public void invokeHeadersException() throws URISyntaxException, HttpClientErrorException, HttpServerErrorException,
-			ResourceAccessException, SocketTimeoutException {
+			ResourceAccessException, SocketTimeoutException, RegBaseCheckedException {
 
 		OtpGeneratorResponseDTO generatorResponseDto = new OtpGeneratorResponseDTO();
 		generatorResponseDto.setOtp("099977");
@@ -97,7 +98,7 @@ public class RestClientUtilTest {
 
 	@Test
 	public void invokeHeaderException() throws URISyntaxException, HttpClientErrorException, HttpServerErrorException,
-			ResourceAccessException, SocketTimeoutException {
+			ResourceAccessException, SocketTimeoutException, RegBaseCheckedException {
 
 		OtpGeneratorResponseDTO generatorResponseDto = new OtpGeneratorResponseDTO();
 		generatorResponseDto.setOtp("099977");

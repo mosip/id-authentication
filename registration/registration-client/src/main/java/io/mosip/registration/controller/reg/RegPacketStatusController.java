@@ -84,7 +84,7 @@ public class RegPacketStatusController extends BaseController implements Initial
 					.get(RegistrationConstants.PACKET_STATUS_SYNC_RESPONSE_ENTITY);
 
 			if (registrations == null) {
-				generateAlert(RegistrationConstants.ALERT_INFORMATION, response.getSuccessResponseDTO().getMessage());
+				generateAlertLanguageSpecific(RegistrationConstants.ALERT_INFORMATION, response.getSuccessResponseDTO().getMessage());
 			} else {
 				ObservableList<RegPacketStatusDTO> packetStatus = FXCollections.observableArrayList();
 				for (LinkedHashMap<String, String> registration : registrations) {
@@ -101,7 +101,7 @@ public class RegPacketStatusController extends BaseController implements Initial
 		} else if (response.getErrorResponseDTOs() != null) {
 			/** Generate Alert to show No Packets Available. */
 			ErrorResponseDTO errorResponseDTO = response.getErrorResponseDTOs().get(0);
-			generateAlert(RegistrationConstants.ERROR, errorResponseDTO.getMessage());
+			generateAlertLanguageSpecific(RegistrationConstants.ERROR, errorResponseDTO.getMessage());
 
 		}
 

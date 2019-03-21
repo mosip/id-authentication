@@ -1,13 +1,14 @@
 package io.mosip.registration.dto;
 
 import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 
 public class PacketStatusDTO {
 
 	private String fileName;
 	private String packetClientStatus;
 	private String packetServerStatus;
-	private BooleanProperty status;
+	private BooleanProperty status = new SimpleBooleanProperty(false);
 	private String packetPath;
 	private String uploadStatus;
 	private String clientStatusComments;
@@ -44,14 +45,6 @@ public class PacketStatusDTO {
 		this.packetPath = packetPath;
 	}
 
-	public BooleanProperty getStatus() {
-		return status;
-	}
-
-	public void setStatus(BooleanProperty status) {
-		this.status = status;
-	}
-
 	public String getUploadStatus() {
 		return uploadStatus;
 	}
@@ -66,6 +59,18 @@ public class PacketStatusDTO {
 
 	public void setClientStatusComments(String clientStatusComments) {
 		this.clientStatusComments = clientStatusComments;
+	}
+
+	public Boolean getStatus() {
+		return status.get();
+	}
+	
+	 public BooleanProperty selectedProperty() {
+         return status;
+     }
+
+	public void setStatus(Boolean status) {
+		this.status.set(status);
 	}
 	
 }
