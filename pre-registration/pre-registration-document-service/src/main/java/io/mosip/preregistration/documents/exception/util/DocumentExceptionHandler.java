@@ -51,8 +51,6 @@ import io.mosip.preregistration.documents.exception.PrimaryKeyValidationExceptio
 @RestControllerAdvice
 public class DocumentExceptionHandler {
 
-	private boolean responseStatus = false;
-
 	private String dateTimeFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
 	
 	/**

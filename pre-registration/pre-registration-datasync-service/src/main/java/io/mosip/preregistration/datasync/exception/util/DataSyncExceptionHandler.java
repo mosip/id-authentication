@@ -29,7 +29,6 @@ import io.mosip.preregistration.datasync.exception.system.SystemFileIOException;
  */
 @RestControllerAdvice
 public class DataSyncExceptionHandler {
-	private boolean status = Boolean.FALSE;
 	private String dateTimeFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
 
 	/**
