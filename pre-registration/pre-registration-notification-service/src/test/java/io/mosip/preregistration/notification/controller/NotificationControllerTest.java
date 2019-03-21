@@ -113,17 +113,4 @@ String langCode="eng";
 			.content(stringjson)).andExpect(status().isOk());
 
 	}
-	
-	
-	/**
-	 * This test method is for success getConfigTest 
-	 * @throws Exception
-	 */
-	@WithUserDetails("individual")
-	@Test
-	public void getConfigTest() throws Exception {
-		Mockito.when(service.getConfig()).thenReturn(configRes);
-		mockMvc.perform(get("/config").contentType(MediaType.APPLICATION_JSON_VALUE)).andExpect(status().isOk());
-
-	}
 }

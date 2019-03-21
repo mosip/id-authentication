@@ -42,11 +42,7 @@ public class NotificationServiceUtil {
 	@Value("${mosip.utc-datetime-pattern}")
 	private String utcDateTimePattern;
 
-	/**
-	 * Environment instance
-	 */
-	@Autowired
-	private Environment env;
+
 
 	private Logger log = LoggerConfiguration.logConfig(NotificationServiceUtil.class);
 
@@ -56,8 +52,7 @@ public class NotificationServiceUtil {
 	//@Autowired
 	//private RestTemplateBuilder restTemplateBuilder;
 	
-	@Autowired
-	private RestTemplate restTemplate;
+
 
 	/**
 	 * Method to generate currentresponsetime.
@@ -68,35 +63,7 @@ public class NotificationServiceUtil {
 		return LocalDateTime.now(ZoneId.of("UTC")).toString();
 	}
 
-	public Properties parsePropertiesString(String s) throws IOException {
-		final Properties p = new Properties();
-		p.load(new StringReader(s));
-		return p;
-	}
-
-	public String configRestCall(String filname) {
-		String configServerUri = env.getProperty("spring.cloud.config.uri");
-		String configLabel = env.getProperty("spring.cloud.config.label");
-		String configProfile = env.getProperty("spring.profiles.active");
-		String configAppName = env.getProperty("spring.cloud.config.name");
-		StringBuilder uriBuilder= new StringBuilder();
-
-		uriBuilder.append(configServerUri + "/").append(configAppName + "/").append(configProfile + "/")
-				.append(configLabel + "/").append(filname);
-		log.info("sessionId", "idType", "id", " URL in notification service util of configRestCall" + uriBuilder);
-		return restTemplate.getForObject(uriBuilder.toString(), String.class);
-
-	}
-
-	public void getConfigParams(Properties prop, Map<String, String> configParamMap, List<String> reqParams) {
-		for (Entry<Object, Object> e : prop.entrySet()) {
-			if (reqParams.contains(String.valueOf(e.getKey()))) {
-				configParamMap.put(String.valueOf(e.getKey()), e.getValue().toString());
-			}
-
-		}
-	}
-
+	
 	public MainRequestDTO<NotificationDTO> createNotificationDetails(String jsonString) throws JsonParseException,
 			JsonMappingException, io.mosip.kernel.core.exception.IOException, JSONException, ParseException {
 		DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(utcDateTimePattern);

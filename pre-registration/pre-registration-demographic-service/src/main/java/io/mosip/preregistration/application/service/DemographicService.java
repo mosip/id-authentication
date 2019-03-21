@@ -18,7 +18,6 @@ import javax.annotation.PostConstruct;
 import org.json.simple.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -33,11 +32,8 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.auth.adapter.AuthUserDetails;
-import io.mosip.kernel.core.exception.ExceptionUtils;
-import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.idgenerator.spi.PridGenerator;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
@@ -54,7 +50,6 @@ import io.mosip.preregistration.application.exception.DocumentFailedToDeleteExce
 import io.mosip.preregistration.application.exception.RecordFailedToDeleteException;
 import io.mosip.preregistration.application.exception.RecordFailedToUpdateException;
 import io.mosip.preregistration.application.exception.RecordNotFoundException;
-import io.mosip.preregistration.application.exception.RestCallException;
 import io.mosip.preregistration.application.exception.util.DemographicExceptionCatcher;
 import io.mosip.preregistration.application.repository.DemographicRepository;
 import io.mosip.preregistration.application.service.util.DemographicServiceUtil;
@@ -288,7 +283,7 @@ public class DemographicService {
 						viewList.add(viewDto);
 					}
 					response.setResponse(viewList);
-					response.setResTime(serviceUtil.getCurrentResponseTime());
+					response.setResponsetime(serviceUtil.getCurrentResponseTime());
 					response.setId(id);
 					response.setVersion(ver);
 				} else {
@@ -346,7 +341,7 @@ public class DemographicService {
 						response.setResponse(statusList);
 						response.setId(id);
 						response.setVersion(ver);
-						response.setResTime(serviceUtil.getCurrentResponseTime());
+						response.setResponsetime(serviceUtil.getCurrentResponseTime());
 					} else {
 						throw new HashingException(
 								io.mosip.preregistration.core.errorcodes.ErrorCodes.PRG_CORE_REQ_010.name(),
@@ -425,7 +420,7 @@ public class DemographicService {
 						authUserDetails().getUserId(), authUserDetails().getUsername());
 			}
 		}
-		response.setResTime(serviceUtil.getCurrentResponseTime());
+		response.setResponsetime(serviceUtil.getCurrentResponseTime());
 		response.setId(id);
 		response.setVersion(ver);
 		response.setResponse(deleteList);
@@ -472,7 +467,7 @@ public class DemographicService {
 					"In getDemographicData of pre-registration service- " + ex.getMessage());
 			new DemographicExceptionCatcher().handle(ex);
 		}
-		response.setResTime(serviceUtil.getCurrentResponseTime());
+		response.setResponsetime(serviceUtil.getCurrentResponseTime());
 		response.setId(id);
 		response.setVersion(ver);
 		response.setErr(null);
@@ -565,7 +560,7 @@ public class DemographicService {
 					"In getPreRegistrationByDate method of pre-registration service - " + ex.getMessage());
 			new DemographicExceptionCatcher().handle(ex);
 		}
-		response.setResTime(serviceUtil.getCurrentResponseTime());
+		response.setResponsetime(serviceUtil.getCurrentResponseTime());
 		response.setId(id);
 		response.setVersion(ver);
 		response.setErr(null);
@@ -683,7 +678,7 @@ public class DemographicService {
 			}
 		}
 		DemographicResponseDTO res = serviceUtil.setterForCreateDTO(demographicEntity);
-		response.setResTime(serviceUtil.getCurrentResponseTime());
+		response.setResponsetime(serviceUtil.getCurrentResponseTime());
 		saveList.add(res);
 		response.setResponse(saveList);
 		response.setId(id);
