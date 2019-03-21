@@ -23,6 +23,7 @@ public class TweakRegProcPackets {
 	static String filesToBeDestroyed = null;
 	String centerId = "";
 	String machineId = "";
+	String packetName="";
 	EncrypterDecrypter encryptDecrypt = new EncrypterDecrypter();
 
 	public void tweakFile(String testCaseName, String parameterToBeChanged, String parameterValue)
@@ -72,7 +73,6 @@ public class TweakRegProcPackets {
 				}
 			}
 		}
-		String packetName = generateRegID(centerId, machineId);
 		logger.info("packetName :: ======================" + packetName);
 		encryptDecrypt.encryptFile(decryptedFile, configPath, invalidPacketsPath, packetName);
 		encryptDecrypt.revertPacketToValid(filesToBeDestroyed);
@@ -95,8 +95,8 @@ public class TweakRegProcPackets {
 		for (int i = 0; i < metaData.size(); i++) {
 			JSONObject labels = (JSONObject) metaData.get(i);
 			if (labels.get("label").equals("registrationId")) {
-				String regID = generateRegID(centerId, machineId);
-				labels.put("value", regID);
+				packetName = generateRegID(centerId, machineId);
+				labels.put("value", packetName);
 			}
 		}
 		logger.info("Meta Data Updated Is  ::  ===================" + metaData);

@@ -1,0 +1,15 @@
+{
+  "id": "mosip.registration.sync",
+  "version": "1.0",
+  "responseTimestamp": "2019-03-06T09:46:20.320Z",
+  "response": [
+    {
+      "registrationId": "20916100110014920190218154630",
+      "status": "FAILURE",
+      "message": "Language Code must be of three character",
+      "parentRegistrationId": null,
+      "errorCode": "RPR-RGS-004"
+    }
+  ],
+  "error": null
+}
