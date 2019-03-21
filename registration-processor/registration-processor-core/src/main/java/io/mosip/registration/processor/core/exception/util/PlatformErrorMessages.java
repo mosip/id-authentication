@@ -306,6 +306,9 @@ public enum PlatformErrorMessages {
 	RPR_MVS_UNKNOWN_EXCEPTION(PlatformConstants.RPR_MANUAL_VERIFICATION_MODULE + "012", "Unknown Exception"),
 
 	RPR_MVS_DECODE_EXCEPTION(PlatformConstants.RPR_MANUAL_VERIFICATION_MODULE + "013", "Request Decoding Exception"),
+	
+	/** The mv user id is not present. */
+	RPR_MVS_NO_USER_ID_PRESENT(PlatformConstants.RPR_MANUAL_VERIFICATION_MODULE + "014", "User Id can not empty"),
 
 	/** The rpr tem not found. */
 	// Registration processor Message sender Exception error code
