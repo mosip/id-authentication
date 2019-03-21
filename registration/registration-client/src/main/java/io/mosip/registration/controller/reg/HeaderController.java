@@ -195,7 +195,7 @@ public class HeaderController extends BaseController {
 			if (responseDTO.getSuccessResponseDTO() != null) {
 				generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.SYNC_SUCCESS);
 			} else if (responseDTO.getErrorResponseDTOs() != null) {
-				generateAlert(RegistrationUIConstants.SYNC_FAILURE,
+				generateAlert(RegistrationConstants.SYNC_FAILURE,
 						responseDTO.getErrorResponseDTOs().get(0).getMessage());
 			}
 
