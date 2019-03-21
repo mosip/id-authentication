@@ -5,6 +5,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -13,6 +14,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.io.IOUtils;
+import org.json.simple.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -25,15 +27,20 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
+import org.springframework.core.env.Environment;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
 import io.mosip.kernel.core.fsadapter.exception.FSAdapterException;
 import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
+import io.mosip.kernel.core.jsonvalidator.model.ValidationReport;
+import io.mosip.kernel.core.jsonvalidator.spi.JsonValidator;
 import io.mosip.kernel.core.util.HMACUtils;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.code.ApiName;
@@ -46,7 +53,9 @@ import io.mosip.registration.processor.core.packet.dto.FieldValue;
 import io.mosip.registration.processor.core.packet.dto.FieldValueArray;
 import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.packet.dto.PacketMetaInfo;
+import io.mosip.registration.processor.core.packet.dto.demographicinfo.identify.RegistrationProcessorIdentity;
 import io.mosip.registration.processor.core.packet.dto.idjson.Document;
+import io.mosip.registration.processor.core.packet.dto.masterdata.StatusResponseDto;
 import io.mosip.registration.processor.core.packet.dto.packetvalidator.ExceptionJSONInfoDTO;
 import io.mosip.registration.processor.core.packet.dto.packetvalidator.MainResponseDTO;
 import io.mosip.registration.processor.core.packet.dto.packetvalidator.ReverseDatasyncReponseDTO;
@@ -54,10 +63,12 @@ import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.core.util.JsonUtil;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
+import io.mosip.registration.processor.packet.storage.utils.Utilities;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
 import io.mosip.registration.processor.rest.client.audit.dto.AuditResponseDto;
 import io.mosip.registration.processor.stages.utils.CheckSumValidation;
 import io.mosip.registration.processor.stages.utils.DocumentUtility;
+import io.mosip.registration.processor.stages.utils.MasterDataValidation;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
 import io.mosip.registration.processor.status.exception.TablenotAccessibleException;
@@ -67,7 +78,7 @@ import io.mosip.registration.processor.status.service.RegistrationStatusService;
  * The Class PacketValidatorStageTest.
  */
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ JsonUtil.class, IOUtils.class, HMACUtils.class })
+@PrepareForTest({ JsonUtil.class, IOUtils.class, HMACUtils.class, Utilities.class, MasterDataValidation.class })
 @PowerMockIgnore({ "javax.management.*", "javax.net.ssl.*" })
 public class PacketValidateProcessorTest {
 
@@ -107,10 +118,15 @@ public class PacketValidateProcessorTest {
 	@Mock
 	private AuditLogRequestBuilder auditLogRequestBuilder = new AuditLogRequestBuilder();
 
+	@Mock
+	private Environment env;
+
 	/** The packet meta info. */
 	private PacketMetaInfo packetMetaInfo;
 	/** The identity. */
 	Identity identity = new Identity();
+
+	io.mosip.registration.processor.core.packet.dto.demographicinfo.identify.Identity identityDemo = new io.mosip.registration.processor.core.packet.dto.demographicinfo.identify.Identity();
 
 	/** The dto. */
 	InternalRegistrationStatusDto statusDto;
@@ -124,6 +140,31 @@ public class PacketValidateProcessorTest {
 	@Mock
 	DocumentUtility documentUtility;
 
+	// @Mock
+	// MasterDataValidation masterDataValidation;
+
+	@Mock
+	private RegistrationProcessorRestClientService<Object> registrationProcessorRestService;
+
+	@Mock
+	JsonValidator jsonValidatorImpl;
+
+	@Mock
+	private Utilities utility;
+
+	@Mock
+	ObjectMapper mapIdentityJsonStringToObject;
+
+	@Mock
+	private RegistrationProcessorIdentity regProcessorIdentityJson;
+
+	StatusResponseDto statusResponseDto;
+
+	ValidationReport validationReport;
+
+	private static final String CONFIG_SERVER_URL = "url";
+	private String identityMappingjsonString;
+
 	/**
 	 * Sets the up.
 	 *
@@ -133,11 +174,20 @@ public class PacketValidateProcessorTest {
 	@Before
 	public void setUp() throws Exception {
 
-		statusDto = new InternalRegistrationStatusDto();
-		statusDto.setRegistrationId("2018701130000410092018110735");
-		statusDto.setStatusCode("PACKET_UPLOADED_TO_FILESYSTEM");
-		registrationStatusService.addRegistrationStatus(statusDto);
 		list = new ArrayList<InternalRegistrationStatusDto>();
+
+		// ClassLoader classLoader = getClass().getClassLoader();
+		// File identityMappingjson = new
+		// File(classLoader.getResource("RegistrationProcessorIdentity.json").getFile());
+		// InputStream identityMappingjsonStream = new
+		// FileInputStream(identityMappingjson);
+
+		// try {
+		// identityMappingjsonString = IOUtils.toString(identityMappingjsonStream,
+		// StandardCharsets.UTF_8);
+		// } catch (IOException e) {
+		// e.printStackTrace();
+		// }
 
 		listAppender = new ListAppender<>();
 
@@ -216,8 +266,8 @@ public class PacketValidateProcessorTest {
 
 		String test = "1234567890";
 		byte[] data = "1234567890".getBytes();
-
-		Mockito.when(filesystemCephAdapterImpl.getFile(anyString(), anyString())).thenReturn(inputStream);
+		// Mockito.when(filesystemCephAdapterImpl.getFile(anyString(),
+		// anyString())).thenReturn(inputStream);
 		PowerMockito.mockStatic(JsonUtil.class);
 		PowerMockito.when(JsonUtil.class, "inputStreamtoJavaObject", inputStream, PacketMetaInfo.class)
 				.thenReturn(packetMetaInfo);
@@ -233,6 +283,7 @@ public class PacketValidateProcessorTest {
 		Mockito.doNothing().when(registrationStatusService).updateRegistrationStatus(registrationStatusDto);
 		Mockito.when(filesystemCephAdapterImpl.checkFileExistence(anyString(), anyString())).thenReturn(Boolean.TRUE);
 
+		Mockito.when(filesystemCephAdapterImpl.getFile(any(), any())).thenReturn(inputStream);
 		PowerMockito.mockStatic(IOUtils.class);
 		PowerMockito.when(IOUtils.class, "toByteArray", inputStream).thenReturn(data);
 
@@ -257,6 +308,36 @@ public class PacketValidateProcessorTest {
 		Mockito.when(restClientService.postApi(Matchers.any(), Matchers.any(), Matchers.any(), Matchers.any(),
 				Matchers.any())).thenReturn(mainResponseDTO);
 
+		validationReport = new ValidationReport();
+		validationReport.setValid(true);
+
+		// MasterDataValidation masterDataValidation =
+		// Mockito.mock(MasterDataValidation.class);
+
+		// PowerMockito.whenNew(MasterDataValidation.class).withArguments(any(), any(),
+		// any(), any())
+		// .thenReturn(masterDataValidation);
+		// Mockito.when(masterDataValidation.validateMasterData(any())).thenReturn(true);
+		Mockito.when(jsonValidatorImpl.validateJson(any())).thenReturn(validationReport);
+
+		JSONObject demographicIdentity = new JSONObject();
+		PowerMockito.when(JsonUtil.getJSONObject(any(), any())).thenReturn(demographicIdentity);
+
+		// PowerMockito.mockStatic(Utilities.class);
+		// PowerMockito.when(Utilities.class, "getJson", CONFIG_SERVER_URL,
+		// "RegistrationProcessorIdentity.json")
+		// .thenReturn(identityMappingjsonString);
+		// Mockito.when(utility.getConfigServerFileStorageURL()).thenReturn(CONFIG_SERVER_URL);
+		// Mockito.when(utility.getGetRegProcessorDemographicIdentity()).thenReturn("identity");
+		// Mockito.when(utility.getGetRegProcessorIdentityJson()).thenReturn("RegistrationProcessorIdentity.json");
+
+		// registrationProcessorIdentity = new RegistrationProcessorIdentity();
+		when(env.getProperty("registration.processor.idjson.attributes"))
+				.thenReturn("gender,region,province,city,postalcode");
+		// Mockito.when(mapIdentityJsonStringToObject.readValue(anyString(),
+		// Mockito.any(Class.class)))
+		// .thenReturn(registrationProcessorIdentity);
+
 	}
 
 	/**
@@ -269,7 +350,7 @@ public class PacketValidateProcessorTest {
 	public void testStructuralValidationSuccess() throws Exception {
 
 		MessageDTO messageDto = packetValidateProcessor.process(dto);
-		assertTrue(messageDto.getIsValid());
+		assertTrue("Test for successful Structural Validation", messageDto.getIsValid());
 
 	}
 
@@ -428,9 +509,9 @@ public class PacketValidateProcessorTest {
 		fieldValueArrayListSequence.add(hashsequence2);
 		identity.setHashSequence2(fieldValueArrayListSequence);
 		packetMetaInfo.setIdentity(identity);
-		PowerMockito.mockStatic(JsonUtil.class);
 		PowerMockito.when(JsonUtil.class, "inputStreamtoJavaObject", inputStream, PacketMetaInfo.class)
 				.thenReturn(packetMetaInfo);
+
 		MessageDTO messageDto = packetValidateProcessor.process(dto);
 		assertTrue(messageDto.getIsValid());
 
@@ -448,7 +529,7 @@ public class PacketValidateProcessorTest {
 		byte[] data = "1234567890".getBytes();
 
 		Mockito.when(filesystemCephAdapterImpl.getFile(anyString(), anyString())).thenReturn(inputStream);
-		PowerMockito.mockStatic(JsonUtil.class);
+
 		PowerMockito.when(JsonUtil.class, "inputStreamtoJavaObject", inputStream, PacketMetaInfo.class)
 				.thenReturn(packetMetaInfo);
 
@@ -559,7 +640,7 @@ public class PacketValidateProcessorTest {
 		String test = "123456789";
 		byte[] data = "1234567890".getBytes();
 		Mockito.when(filesystemCephAdapterImpl.getFile(anyString(), anyString())).thenReturn(inputStream);
-		PowerMockito.mockStatic(JsonUtil.class);
+
 		PowerMockito.when(JsonUtil.class, "inputStreamtoJavaObject", inputStream, PacketMetaInfo.class)
 				.thenReturn(packetMetaInfo);
 
