@@ -9,9 +9,7 @@ import java.util.List;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
-import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 
 import com.google.gson.Gson;
@@ -37,7 +35,7 @@ import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
  * @author Nagalakshmi
  * 
  */
-@Service
+
 public class MasterDataValidation {
 
 	/** The reg proc logger. */
@@ -60,14 +58,6 @@ public class MasterDataValidation {
 
 	/** The utility. */
 	private Utilities utility;
-
-	/** The primary language. */
-	@Value("${primary.language}")
-	private String primaryLanguage;
-
-	/** The secondary language. */
-	@Value("${secondary.language}")
-	private String secondaryLanguage;
 
 	/** The Constant VALUE. */
 	private static final String VALUE = "value";
@@ -102,6 +92,8 @@ public class MasterDataValidation {
 	 */
 	public Boolean validateMasterData(String jsonString) {
 		boolean isValid = false;
+		String primaryLanguage = env.getProperty("primary.language");
+		String secondaryLanguage = env.getProperty("secondary.language");
 		try {
 
 			demographicIdentity = getDemographicJson(jsonString);

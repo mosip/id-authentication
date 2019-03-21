@@ -83,6 +83,8 @@ public class MasterDataValidationTest {
 				.thenReturn(registrationProcessorIdentity);
 
 		when(env.getProperty(anyString())).thenReturn("gender");
+		when(env.getProperty("primary.language")).thenReturn("eng");
+		when(env.getProperty("secondary.language")).thenReturn("ara");
 		when(env.getProperty("registration.processor.idjson.attributes"))
 				.thenReturn("gender,region,province,city,postalcode");
 		Mockito.when(registrationProcessorRestService.getApi(any(), any(), any(), any(), any()))
@@ -104,6 +106,8 @@ public class MasterDataValidationTest {
 
 		when(env.getProperty(anyString())).thenReturn(null);
 		when(env.getProperty("registration.processor.idjson.attributes")).thenReturn("gender");
+		when(env.getProperty("primary.language")).thenReturn("eng");
+		when(env.getProperty("secondary.language")).thenReturn("ara");
 		boolean isMasterDataValidated = masterDataValidation.validateMasterData(jsonString);
 		assertFalse("Test for resource not found", isMasterDataValidated);
 
