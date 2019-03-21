@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -50,6 +51,7 @@ public class DataSyncController {
 	 * @param DataSyncDTO
 	 * @return responseDto
 	 */
+	@PreAuthorize("hasAnyRole('reg-officer','reg-supervisor')") 
 	@PostMapping(path = "/datasync", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "All PreRegistrationIds fetched successfully"),
 			@ApiResponse(code = 400, message = "Unable to fetch PreRegistrationIds ") })
@@ -65,6 +67,7 @@ public class DataSyncController {
 	 * @param preId
 	 * @return zip file to download
 	 */
+	@PreAuthorize("hasAnyRole('reg-officer','reg-supervisor')") 
 	@GetMapping(path = "/datasync", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Retrieve Pre-Registrations")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Data Sync records fetched"),
@@ -80,6 +83,7 @@ public class DataSyncController {
 	 * @param consumedData
 	 * @return response object
 	 */
+	
 	@PostMapping(path = "/datasync/store", consumes = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Store consumed Pre-Registrations")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Consumed Pre-Registrations saved"),

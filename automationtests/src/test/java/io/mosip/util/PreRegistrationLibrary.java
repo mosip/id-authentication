@@ -1,4 +1,3 @@
-
 package io.mosip.util;
 
 import java.io.ByteArrayInputStream;
@@ -101,6 +100,7 @@ public class PreRegistrationLibrary extends BaseTestCase {
 	private static String preReg_ReverseDataSyncURI;
 	 private static String preReg_DiscardBookingURI;
 	 private static String preReg_SyncMasterDataURI;
+	 private static String langCodeKey; 
 
 	/*
 	 * We configure the jsonProvider using Configuration builder.
@@ -1532,6 +1532,53 @@ public class PreRegistrationLibrary extends BaseTestCase {
 	
 	
 	/*
+	 * Generic method to Upload Document
+	 * 
+	 */
+	
+	
+	@SuppressWarnings("unchecked")
+	public Response TriggerNotification() {
+		testSuite = "TriggerNotification/TriggerNotification_smoke";
+		String configPath = "src/test/resources/" + folder + "/" + testSuite;
+		File file = new File(configPath + "/AadhaarCard_POA.pdf");
+
+		File folder = new File(configPath);
+		File[] listOfFiles = folder.listFiles();
+		for (File f : listOfFiles) {
+			if (f.getName().contains("request")) {
+				try {
+					request = (JSONObject) new JSONParser().parse(new FileReader(f.getPath()));
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+		
+		
+		JSONObject object = null;
+		for (Object key : request.keySet()) {
+			if (key.equals("request")) {
+				object = (JSONObject) request.get(key);
+				//object.put("pre_registartion_id",responseCreate.jsonPath().get("response[0].preRegistrationId").toString());
+				//request.replace(key, object);
+				//object.remove(langCodeKey);
+			}
+		}
+		
+		
+		 String value = (String)request.get(langCodeKey);
+		
+		request.remove(langCodeKey);
+		
+		response =applnLib.putFileAndJsonParam(preReg_NotifyURI, request, file,langCodeKey,value);
+
+		return response;
+	}
+	
+	
+	/*
 	 * Generic method for dynamically change the request values in json file 
 	 * 
 	 */
@@ -1699,44 +1746,6 @@ public class PreRegistrationLibrary extends BaseTestCase {
 	
 
 	
-	/*
-	 * Generic method to Upload Document
-	 * 
-	 */
-	@SuppressWarnings("unchecked")
-	public Response TriggerNotification(Response responseCreate) {
-		testSuite = "TriggerNotification/TriggerNotification_smoke";
-		String configPath = "src/test/resources/" + folder + "/" + testSuite;
-		File file = new File(configPath + "/AadhaarCard_POA.pdf");
-
-		File folder = new File(configPath);
-		File[] listOfFiles = folder.listFiles();
-		for (File f : listOfFiles) {
-			if (f.getName().contains("request")) {
-				try {
-					request = (JSONObject) new JSONParser().parse(new FileReader(f.getPath()));
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-		}
-		JSONObject object = null;
-		for (Object key : request.keySet()) {
-			if (key.equals("request")) {
-				object = (JSONObject) request.get(key);
-				//object.put("pre_registartion_id",responseCreate.jsonPath().get("response[0].preRegistrationId").toString());
-				request.replace(key, object);
-			}
-		}
-		//response =applnLib.putFileAndJsonParam(preReg_NotifyURI, request, file, "eng");
-		response =applnLib.putFileAndJsonParam(preReg_NotifyURI, request, file);
-		//response = applnLib.putFileAndJson(preReg_NotifyURI, request, file);
-
-		return response;
-	}
-	
-	
 	
 	
 	
@@ -1766,6 +1775,7 @@ public class PreRegistrationLibrary extends BaseTestCase {
 		 preReg_DiscardBookingURI=commonLibrary.fetch_IDRepo("preReg_DiscardBookingURI");
 		 preReg_SyncMasterDataURI=commonLibrary.fetch_IDRepo("preReg_SyncMasterDataURI");
 		 preReg_NotifyURI=commonLibrary.fetch_IDRepo("preReg_NotifyURI");
+		 langCodeKey=commonLibrary.fetch_IDRepo("langCode.key"); 
 		
 	}
 

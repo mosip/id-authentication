@@ -78,6 +78,7 @@ public class IdentityIteratorUtil {
 			}
 
 		}
+		
 		return fieldValue;
 	}
 }

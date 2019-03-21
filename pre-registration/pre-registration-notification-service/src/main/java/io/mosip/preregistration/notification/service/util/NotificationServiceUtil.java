@@ -5,12 +5,11 @@ import java.io.StringReader;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 import java.util.Map.Entry;
+import java.util.Properties;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
@@ -18,7 +17,6 @@ import org.springframework.web.client.RestTemplate;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.preregistration.core.config.LoggerConfiguration;
-import io.mosip.preregistration.notification.service.NotificationService;
 
 /**
  * The util class.
@@ -44,8 +42,11 @@ public class NotificationServiceUtil {
 	/**
 	 * Autowired reference for {@link #RestTemplateBuilder}
 	 */
+	//@Autowired
+	//private RestTemplateBuilder restTemplateBuilder;
+	
 	@Autowired
-	private RestTemplateBuilder restTemplateBuilder;
+	private RestTemplate restTemplate;
 
 
 	/**
@@ -69,7 +70,6 @@ public class NotificationServiceUtil {
 		String configProfile = env.getProperty("spring.profiles.active");
 		String configAppName = env.getProperty("spring.cloud.config.name");
 		StringBuilder uriBuilder= new StringBuilder();
-		RestTemplate restTemplate = restTemplateBuilder.build();
 		uriBuilder.append(configServerUri + "/").append(configAppName + "/").append(configProfile + "/")
 				.append(configLabel + "/").append(filname);
 		log.info("sessionId", "idType", "id",

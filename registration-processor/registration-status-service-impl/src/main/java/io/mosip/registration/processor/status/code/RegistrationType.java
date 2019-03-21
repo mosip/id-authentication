@@ -12,5 +12,11 @@ public enum RegistrationType {
 	UPDATE,
 
 	/** The correction. */
-	CORRECTION
+	CORRECTION,
+
+	/** The activated. */
+	ACTIVATED,
+
+	/** The deactivated. */
+	DEACTIVATED;
 }
