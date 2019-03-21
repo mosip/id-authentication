@@ -35,10 +35,6 @@ import io.mosip.kernel.core.util.DateUtils;
 @Component
 public class IdAuthFilter extends BaseAuthFilter {
 
-	private static final String MISP_PARTNER_MAPPING = "misp.partner.mapping.";
-
-	private static final String PARTNER_KEY = "partner.";
-
 	/** The Constant LICENSE_KEY. */
 	private static final String LICENSE_KEY = "licenseKey.";
 
@@ -84,7 +80,8 @@ public class IdAuthFilter extends BaseAuthFilter {
 				Map<String, Object> request = keyManager.requestData(requestBody, mapper);
 				requestBody.replace(REQUEST, request);
 
-				validateRequestHMAC((String) requestBody.get("requestHMAC"), mapper.writeValueAsString(request));
+				 validateRequestHMAC((String) requestBody.get("requestHMAC"),
+				 mapper.writeValueAsString(request));
 			}
 			return requestBody;
 		} catch (ClassCastException | JsonProcessingException e) {
@@ -93,12 +90,8 @@ public class IdAuthFilter extends BaseAuthFilter {
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see io.mosip.authentication.service.filter.BaseAuthFilter#
-	 * validateDecipheredRequest(io.mosip.authentication.service.filter.
-	 * ResettableStreamHttpServletRequest, java.util.Map)
+	/* (non-Javadoc)
+	 * @see io.mosip.authentication.service.filter.BaseAuthFilter#validateDecipheredRequest(io.mosip.authentication.service.filter.ResettableStreamHttpServletRequest, java.util.Map)
 	 */
 	@Override
 	protected void validateDecipheredRequest(ResettableStreamHttpServletRequest requestWrapper,
@@ -164,7 +157,7 @@ public class IdAuthFilter extends BaseAuthFilter {
 	 * @throws IdAuthenticationAppException the id authentication app exception
 	 */
 	private void validPartnerId(String partnerId) throws IdAuthenticationAppException {
-		String partnerIdJson = env.getProperty(PARTNER_KEY + partnerId);
+		String partnerIdJson = env.getProperty("partner.policy." + partnerId);
 		Map<String, String> partnerIdMap = null;
 		if (null == partnerIdJson) {
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.PARTNER_NOT_REGISTERED);
@@ -196,13 +189,13 @@ public class IdAuthFilter extends BaseAuthFilter {
 	private String validMISPPartnerMapping(String partnerId, String mispId) throws IdAuthenticationAppException {
 		Map<String, String> partnerIdMap = null;
 		String policyId = null;
-		boolean mispPartnerMappingJson = env.getProperty(MISP_PARTNER_MAPPING + mispId + "." + partnerId,
+		boolean mispPartnerMappingJson = env.getProperty("misp.partner.mapping." + mispId + "." + partnerId,
 				boolean.class);
 		if (!mispPartnerMappingJson) {
-
+			
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.PARTNER_NOT_MAPPED);
 		}
-		String partnerIdJson = env.getProperty(PARTNER_KEY + partnerId);
+		String partnerIdJson = env.getProperty("partner.policy." + partnerId);
 		try {
 			partnerIdMap = mapper.readValue(partnerIdJson.getBytes("UTF-8"), Map.class);
 			policyId = partnerIdMap.get(POLICY_ID);
@@ -215,7 +208,7 @@ public class IdAuthFilter extends BaseAuthFilter {
 	/**
 	 * Check allowed auth type based on policy.
 	 *
-	 * @param policyId    the policy id
+	 * @param policyId the policy id
 	 * @param requestBody the request body
 	 * @throws IdAuthenticationAppException the id authentication app exception
 	 */
@@ -245,7 +238,7 @@ public class IdAuthFilter extends BaseAuthFilter {
 	/**
 	 * Check allowed auth type based on policy.
 	 *
-	 * @param requestBody  the request body
+	 * @param requestBody the request body
 	 * @param authPolicies the auth policies
 	 * @throws IdAuthenticationAppException the id authentication app exception
 	 */
@@ -311,7 +304,7 @@ public class IdAuthFilter extends BaseAuthFilter {
 	/**
 	 * Check mandatory auth type based on policy.
 	 *
-	 * @param requestBody           the request body
+	 * @param requestBody the request body
 	 * @param mandatoryAuthPolicies the mandatory auth policies
 	 * @throws IdAuthenticationAppException the id authentication app exception
 	 */
@@ -393,9 +386,9 @@ public class IdAuthFilter extends BaseAuthFilter {
 	/**
 	 * Checks if is allowed auth type.
 	 *
-	 * @param authType    the auth type
+	 * @param authType the auth type
 	 * @param subAuthType the sub auth type
-	 * @param policies    the policies
+	 * @param policies the policies
 	 * @return true, if is allowed auth type
 	 */
 	protected boolean isAllowedAuthType(String authType, String subAuthType, List<AuthPolicy> policies) {

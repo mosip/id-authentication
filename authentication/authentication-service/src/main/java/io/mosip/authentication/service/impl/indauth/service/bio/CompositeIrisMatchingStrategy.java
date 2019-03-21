@@ -28,9 +28,8 @@ public enum CompositeIrisMatchingStrategy implements MatchingStrategy {
 																			// provided
 				return (int) func.apply(reqInfoMap, (Map<String, String>) entityInfo).doubleValue();
 			} else {
-				throw new IdAuthenticationBusinessException(
-						IdAuthenticationErrorConstants.IRISIMG_MISMATCH.getErrorCode(),
-						String.format(IdAuthenticationErrorConstants.IRISIMG_MISMATCH.getErrorMessage(),
+				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.BIO_MISMATCH.getErrorCode(),
+						String.format(IdAuthenticationErrorConstants.BIO_MISMATCH.getErrorCode(),
 								BioAuthType.IRIS_COMP_IMG.getType()));
 			}
 		}

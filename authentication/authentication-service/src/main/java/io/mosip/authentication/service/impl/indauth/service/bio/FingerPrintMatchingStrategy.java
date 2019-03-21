@@ -37,7 +37,10 @@ public enum FingerPrintMatchingStrategy implements MatchingStrategy {
 				BioAuthType bioAuthType = ((BioAuthType) object);
 				if (bioAuthType.equals(BioAuthType.FGR_MIN)) {
 					logError(IdAuthenticationErrorConstants.BIO_MISMATCH);
-					throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.BIO_MISMATCH);
+					throw new IdAuthenticationBusinessException(
+							IdAuthenticationErrorConstants.BIO_MISMATCH.getErrorCode(),
+							String.format(IdAuthenticationErrorConstants.BIO_MISMATCH.getErrorMessage(),
+									BioAuthType.FGR_MIN.getType()));
 				} else if (bioAuthType.equals(BioAuthType.FGR_IMG)) {
 					logError(IdAuthenticationErrorConstants.BIO_MISMATCH);
 					throw new IdAuthenticationBusinessException(
