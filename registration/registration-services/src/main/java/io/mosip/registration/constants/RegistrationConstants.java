@@ -516,8 +516,8 @@ public class RegistrationConstants {
 	public static final String EXCEPTION_PHOTOGRAPH_NAME = "Exception Photograph.jpg";
 	public static final String APPLICANT_IMAGE = "Applicant Image";
 	public static final String EXCEPTION_IMAGE = "Exception Image";
-	public static final String APPLICANT_PHOTO_PANE = "applicantPhoto";
-	public static final String EXCEPTION_PHOTO_PANE = "exceptionPhoto";
+	public static final String APPLICANT_PHOTO_PANE = "applicantImagePane";
+	public static final String EXCEPTION_PHOTO_PANE = "exceptionImagePane";
 	public static final String WEB_CAMERA_PAGE_TITLE = "Applicant Biometrics";
 
 	// Acknowledement Form
@@ -1027,7 +1027,6 @@ public class RegistrationConstants {
 
 	// Packet Export
 	public static final String FILE_EXPLORER_NAME = "File Explorer";
-	public static final String INFO = "INFO";
 
 	// Sync Status
 	public static final String REG_PKT_APPRVL_CNT_EXCEED = "REG_PKT_APPRVL_CNT_EXCEED";

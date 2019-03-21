@@ -149,7 +149,7 @@ public class SyncDataProcessController extends BaseController implements Initial
 			syncDataTableViewId.setItems(syncDataProcessDTOsObservableList);
 		} else if (responseDTO.getErrorResponseDTOs() != null) {
 			ErrorResponseDTO errorResponseDTO = responseDTO.getErrorResponseDTOs().get(0);
-			generateAlertLanguageSpecific(RegistrationConstants.INFO, errorResponseDTO.getMessage());
+			generateAlertLanguageSpecific(RegistrationConstants.ALERT_INFORMATION, errorResponseDTO.getMessage());
 		}
 	}
 

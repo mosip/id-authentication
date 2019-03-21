@@ -1,34 +1,119 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.*?>
 <?import javafx.scene.*?>
-<?import javafx.scene.image.*?>
 <?import javafx.scene.text.*?>
+<?import javafx.scene.image.*?>
 <?import javafx.scene.control.*?>
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane fx:id="uploadPacketRoot" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" styleClass="uploadPacketparentPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.reg.PacketUploadController">
+<GridPane fx:id="uploadPacketRoot" styleClass="uploadPacketparentPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.reg.PacketUploadController">
+  <columnConstraints>
+    <ColumnConstraints hgrow="SOMETIMES" percentWidth="100" />
+  </columnConstraints>
+  <rowConstraints>
+    <RowConstraints percentHeight="100" vgrow="SOMETIMES" />
+  </rowConstraints>
    <children>
-      <AnchorPane fx:id="uploadPacketHeader" layoutX="-1.0">
+      <GridPane>
+        <columnConstraints>
+          <ColumnConstraints hgrow="SOMETIMES" percentWidth="100.0" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints percentHeight="7.0" vgrow="SOMETIMES" />
+          <RowConstraints percentHeight="93.0" vgrow="SOMETIMES" />
+        </rowConstraints>
          <children>
-            <Button fx:id="saveToDevice" layoutX="990.0" layoutY="5.0" mnemonicParsing="false" onAction="#packetExport" text="%saveToDevice" />
-            <Button fx:id="formValidationButton" layoutX="1130.0" layoutY="5.0" mnemonicParsing="false" onAction="#syncAndUploadPacket" text="%upload" />
-            <AnchorPane layoutX="2.0" layoutY="-5.0">
+            <GridPane GridPane.rowIndex="1">
+              <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" percentWidth="100.0" />
+              </columnConstraints>
+              <rowConstraints>
+                <RowConstraints percentHeight="100.0" vgrow="SOMETIMES" />
+              </rowConstraints>
                <children>
-                  <Button layoutY="14.0" mnemonicParsing="false" onAction="#goToHomePageFromRegistration" styleClass="homeButton" text="%home" />
-                  <Label layoutX="60.0" layoutY="16.0" styleClass="headerLabel" text="%/uploadpacket" />
+                  <GridPane>
+                    <columnConstraints>
+                      <ColumnConstraints hgrow="SOMETIMES" percentWidth="100.0" />
+                    </columnConstraints>
+                    <rowConstraints>
+                        <RowConstraints percentHeight="10.0" vgrow="SOMETIMES" />
+                      <RowConstraints percentHeight="100.0" vgrow="SOMETIMES" />
+                    </rowConstraints>
+                     <GridPane.margin>
+                        <Insets />
+                     </GridPane.margin>
+                     <padding>
+                        <Insets bottom="50.0" left="50.0" right="50.0" />
+                     </padding>
+                     <children>
+                        <TableView fx:id="table" GridPane.halignment="LEFT" GridPane.rowIndex="1" GridPane.valignment="CENTER">
+                           <columns>
+                              <TableColumn fx:id="checkBoxColumn" prefWidth="50.0">
+                                 <graphic>
+                                    <CheckBox fx:id="selectAllCheckBox" alignment="CENTER" mnemonicParsing="false" onAction="#selectAllCheckBox">
+                                       <padding>
+                                          <Insets bottom="2.0" />
+                                       </padding></CheckBox>
+                                 </graphic>
+                              </TableColumn>
+                              <TableColumn fx:id="fileNameColumn" prefWidth="2500.0" text="%files" />
+                           </columns>
+                        </TableView>
+                        <GridPane>
+                          <columnConstraints>
+                            <ColumnConstraints hgrow="SOMETIMES" percentWidth="40.0" />
+                            <ColumnConstraints hgrow="SOMETIMES" percentWidth="20.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" percentWidth="40.0" />
+                          </columnConstraints>
+                          <rowConstraints>
+                            <RowConstraints percentHeight="100.0" vgrow="SOMETIMES" />
+                          </rowConstraints>
+                           <children>
+                              <ProgressIndicator fx:id="progressIndicator" progress="0.0" visible="false" GridPane.columnIndex="1" />
+                           </children>
+                        </GridPane>
+                     </children>
+                  </GridPane>
                </children>
-            </AnchorPane>
-            <Label layoutX="530.0" layoutY="2.0" styleClass="mainHeader" text="%uploadpacket" />
+            </GridPane>
+            <GridPane fx:id="uploadPacketHeader">
+              <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" percentWidth="33.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" percentWidth="34.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" percentWidth="33.0" />
+              </columnConstraints>
+              <rowConstraints>
+                <RowConstraints percentHeight="100.0" vgrow="SOMETIMES" />
+              </rowConstraints>
+               <children>
+                  <HBox alignment="CENTER_LEFT" spacing="3.0">
+                     <children>
+                        <Button mnemonicParsing="false" onAction="#goToHomePageFromRegistration" styleClass="homeButton" text="%home" />
+                        <Label styleClass="headerLabel" text="%/uploadpacket" />
+                     </children>
+                     <GridPane.margin>
+                        <Insets left="20.0" />
+                     </GridPane.margin></HBox>
+                  <HBox alignment="CENTER" GridPane.columnIndex="1">
+                     <children>
+                        <Label styleClass="mainHeader" text="%uploadpacket" />
+                     </children>
+                  </HBox>
+                  <HBox alignment="CENTER_RIGHT" spacing="10.0" GridPane.columnIndex="2">
+                     <children>
+                        <Button fx:id="saveToDevice" mnemonicParsing="false" onAction="#packetExport" text="%saveToDevice" />
+                        <Button fx:id="formValidationButton" mnemonicParsing="false" onAction="#syncAndUploadPacket" text="%upload" />
+                     </children>
+                     <GridPane.margin>
+                        <Insets right="50.0" />
+                     </GridPane.margin>
+                  </HBox>
+               </children>
+            </GridPane>
          </children>
-      </AnchorPane>
-      <TableView fx:id="table" layoutX="58.0" layoutY="75.0" prefHeight="400.0" prefWidth="162.0" styleClass="packetUploadTable">
-        <columns>
-            <TableColumn fx:id="checkBoxColumn" prefWidth="50.0" />
-          <TableColumn fx:id="fileNameColumn" prefWidth="205.0" styleClass="fileNameColumn" text="%files" />
-        </columns>
-      </TableView>
-      <ProgressIndicator fx:id="progressIndicator" layoutX="400.0" layoutY="60.0" prefHeight="109.0" prefWidth="90.0" progress="0.0" visible="false" />
-      <CheckBox fx:id="selectAllCheckBox" layoutX="75.0" layoutY="79.0" mnemonicParsing="false" onAction="#selectAllCheckBox" />	
+      </GridPane>
    </children>
-</AnchorPane>
+</GridPane>

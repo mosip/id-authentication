@@ -278,21 +278,26 @@ public class PacketUploadServiceTest extends BaseIntegrationTest {
 		documentDetailsDTOIdentity.setType("POI");
 		documentDetailsDTOIdentity.setFormat("format");
 		documentDetailsDTOIdentity.setOwner("owner");
+		documentDetailsDTOIdentity.setValue("ProofOfIdentity");
 
 		DocumentDetailsDTO documentDetailsDTOAddress = new DocumentDetailsDTO();
 		documentDetailsDTOAddress.setType("POA");
 		documentDetailsDTOAddress.setFormat("format");
 		documentDetailsDTOAddress.setOwner("owner");
-
+		documentDetailsDTOAddress.setValue("ProofOfAddress");
+		
 		DocumentDetailsDTO documentDetailsDTORelationship = new DocumentDetailsDTO();
 		documentDetailsDTORelationship.setType("POR");
 		documentDetailsDTORelationship.setFormat("format");
 		documentDetailsDTORelationship.setOwner("owner");
-
+		documentDetailsDTORelationship.setValue("ProofOfRelationship");
+		
 		DocumentDetailsDTO documentDetailsDTODOB = new DocumentDetailsDTO();
-		documentDetailsDTODOB.setType("PODOB");
+		documentDetailsDTODOB.setType("POB");
 		documentDetailsDTODOB.setFormat("format");
 		documentDetailsDTODOB.setOwner("owner");
+		documentDetailsDTODOB.setValue("DateOfBirthProof");
+
 		identity.setProofOfIdentity(documentDetailsDTOIdentity);
 		identity.setProofOfAddress(documentDetailsDTOAddress);
 		identity.setProofOfRelationship(documentDetailsDTORelationship);

@@ -68,7 +68,7 @@ public class BioIrisAuthentication extends IdaScriptsUtil implements ITest{
 	}
 	
 	@BeforeMethod
-	public void testData(Method method, Object[] testData) {
+	public void testData(Method method, Object[] testData,ITestContext c) {
 		String testCase = "";
 		if (testData != null && testData.length > 0) {
 			TestParameters testParams = null;
@@ -83,6 +83,9 @@ public class BioIrisAuthentication extends IdaScriptsUtil implements ITest{
 				testCase = testParams.getTestCaseName();
 			}
 		}
+		c.setAttribute("tcName", 1+String.format(testCase));
+		System.out.println("CSTRING IS"+c.getAttribute("tcName"));
+
 		this.testCaseName = String.format(testCase);
 	}
 
@@ -114,7 +117,9 @@ public class BioIrisAuthentication extends IdaScriptsUtil implements ITest{
 	} 
 
 	@Test(dataProvider = "testcaselist")
-	public void idaApiBioAuthExecution(TestParameters objTestParameters, String testScenario, String testcaseName) {
+	public void idaApiBioAuthExecution(TestParameters objTestParameters, String testScenario, String testcaseName,ITestContext c) {
+		//c.setAttribute("tcName", testcaseName);
+		System.out.println("CSTRING IS"+c.getAttribute("tcName"));
 		File testCaseName = objTestParameters.getTestCaseFile();
 		int testCaseNumber = Integer.parseInt(objTestParameters.getTestId());
 		displayLog(testCaseName, testCaseNumber);

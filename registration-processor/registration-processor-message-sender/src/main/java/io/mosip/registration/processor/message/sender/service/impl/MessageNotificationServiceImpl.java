@@ -46,12 +46,12 @@ import io.mosip.registration.processor.core.packet.dto.demographicinfo.JsonValue
 import io.mosip.registration.processor.core.spi.message.sender.MessageNotificationService;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
-import io.mosip.registration.processor.core.template.generator.TemplateGenerator;
 import io.mosip.registration.processor.core.util.JsonUtil;
 import io.mosip.registration.processor.message.sender.exception.EmailIdNotFoundException;
 import io.mosip.registration.processor.message.sender.exception.PhoneNumberNotFoundException;
 import io.mosip.registration.processor.message.sender.exception.TemplateGenerationFailedException;
 import io.mosip.registration.processor.message.sender.exception.TemplateNotFoundException;
+import io.mosip.registration.processor.message.sender.template.TemplateGenerator;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.packet.storage.exception.FieldNotFoundException;
 import io.mosip.registration.processor.packet.storage.exception.IdentityNotFoundException;

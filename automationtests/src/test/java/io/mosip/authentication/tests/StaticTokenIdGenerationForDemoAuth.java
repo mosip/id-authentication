@@ -169,8 +169,8 @@ public class StaticTokenIdGenerationForDemoAuth extends IdaScriptsUtil implement
 	}
 	
 	public void performTokenIdOper(String uin, String tspId, String tokenId) {
-		File file = new File(RunConfig.getUserDirectory() + RunConfig.getSrcPath() + "/ida/"
-				+ RunConfig.getTestDataFolderName() + "/RunConfig/tokenId.properties");
+		File file = new File(new File("./"+RunConfig.getSrcPath() + "/ida/"
+				+ RunConfig.getTestDataFolderName() + "/RunConfig/tokenId.properties").getAbsolutePath());
 		if (file.exists()) {
 			if (!getProperty(file.getAbsolutePath()).containsKey(uin + "." + tspId)) {
 				Map<String, String> map = getPropertyAsMap(file.getAbsolutePath());

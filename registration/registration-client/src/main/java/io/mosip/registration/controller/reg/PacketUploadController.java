@@ -142,7 +142,7 @@ public class PacketUploadController extends BaseController implements Initializa
 		} catch (RegBaseCheckedException checkedException) {
 			LOGGER.info("REGISTRATION - UPLOAD_ERROR - PACKET_UPLOAD_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
 					checkedException.getMessage() + ExceptionUtils.getStackTrace(checkedException));
-			generateAlert(RegistrationConstants.ERROR, checkedException.getErrorText());
+			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.PACKET_UPLOAD_EMPTY_ERROR);
 		}
 
 	}
@@ -268,7 +268,7 @@ public class PacketUploadController extends BaseController implements Initializa
 						progressIndicator.setVisible(false);
 						displayStatus(populateTableData(tableMap));
 					} else {
-						generateAlert(RegistrationConstants.INFO, RegistrationUIConstants.PACKET_UPLOAD_EMPTY);
+						generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.PACKET_UPLOAD_EMPTY);
 					}
 					selectedPackets.clear();
 					return status;

@@ -20,7 +20,6 @@ import io.mosip.registration.processor.core.queue.factory.MosipQueueConnectionFa
 import io.mosip.registration.processor.core.queue.impl.MosipActiveMqImpl;
 import io.mosip.registration.processor.core.spi.queue.MosipQueueConnectionFactory;
 import io.mosip.registration.processor.core.spi.queue.MosipQueueManager;
-import io.mosip.registration.processor.core.template.generator.TemplateGenerator;
 
 @PropertySource("classpath:bootstrap.properties")
 @Configuration
@@ -60,11 +59,6 @@ public class CoreConfigBean {
 	@Bean
 	MosipQueueManager<?, ?> getMosipQueueManager(){
 		return new MosipActiveMqImpl();
-	}
-	
-	@Bean
-	public TemplateGenerator getTemplateGenerator() {
-		return new TemplateGenerator();
 	}
 	
 	@Bean

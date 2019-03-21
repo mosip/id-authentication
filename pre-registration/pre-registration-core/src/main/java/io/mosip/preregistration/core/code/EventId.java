@@ -36,5 +36,8 @@ public enum EventId {
 
 	/** Id for Copy Document. */
 	PRE_409,
+	
+	/** Id for authentication event . */
+	PRE_410
 
 }

@@ -141,7 +141,7 @@ public class BioFingerAuthentication extends IdaScriptsUtil implements ITest{
 		Reporter.log(objReportUtil.getOutputValiReport(ouputValid));
 		Assert.assertEquals(objOpValiUtil.publishOutputResult(ouputValid), true);
 		if(objFileUtil.verifyFilePresent(testCaseName.listFiles(), "auth_transaction")) {
-			wait(5000);
+			//wait(2000);
 			logger.info("************* Auth Transaction Validation ******************");
 			Reporter.log("<b><u>Auth Transaction Validation</u></b>");
 			Map<String, List<OutputValidationDto>> auditTxnvalidation = objAuditValidUtil
@@ -149,7 +149,7 @@ public class BioFingerAuthentication extends IdaScriptsUtil implements ITest{
 			Reporter.log(objReportUtil.getOutputValiReport(auditTxnvalidation));
 			Assert.assertEquals(objOpValiUtil.publishOutputResult(auditTxnvalidation), true);
 		}if (objFileUtil.verifyFilePresent(testCaseName.listFiles(), "audit_log")) {
-			wait(5000);
+			//wait(2000);
 			logger.info("************* Audit Log Validation ******************");
 			Reporter.log("<b><u>Audit Log Validation</u></b>");
 			Map<String, List<OutputValidationDto>> auditLogValidation = objAuditValidUtil

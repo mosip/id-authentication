@@ -109,7 +109,6 @@ public class prereg_dbread {
 		
 		/*String queryString=
                 "  SELECT * FROM prereg.applicant_demographic where prereg_id='74157648721735' ";
-
 	*/	
 																																						
 		Query query = session.createSQLQuery(queryString);
@@ -171,7 +170,10 @@ public class prereg_dbread {
 					if(BaseTestCase.environment.equalsIgnoreCase("qa"))
 						factory = new Configuration().configure("preregqa.cfg.xml")
 					.addAnnotatedClass(OtpEntity.class).buildSessionFactory();	
-				}
+				}	
+
+			
+
 		
 		
 		for(String preId : preIds)

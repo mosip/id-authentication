@@ -1,25 +1,25 @@
-import { Component, OnInit } from "@angular/core";
-import { Router } from "@angular/router";
-import { TranslateService } from "@ngx-translate/core";
-import { DialougComponent } from "src/app/shared/dialoug/dialoug.component";
-import { MatDialog } from "@angular/material";
-import { AuthService } from "../auth.service";
-import { DataStorageService } from "src/app/core/services/data-storage.service";
-import { RegistrationService } from "src/app/core/services/registration.service";
-import { ConfigService } from "src/app/core/services/config.service";
-import * as appConstants from "../../app.constants";
-import { UserIdleService } from "angular-user-idle";
+import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { TranslateService } from '@ngx-translate/core';
+import { DialougComponent } from 'src/app/shared/dialoug/dialoug.component';
+import { MatDialog } from '@angular/material';
+import { AuthService } from '../auth.service';
+import { DataStorageService } from 'src/app/core/services/data-storage.service';
+import { RegistrationService } from 'src/app/core/services/registration.service';
+import { ConfigService } from 'src/app/core/services/config.service';
+import * as appConstants from '../../app.constants';
+// import { UserIdleService } from "angular-user-idle";
 
 @Component({
-  selector: "app-login",
-  templateUrl: "./login.component.html",
-  styleUrls: ["./login.component.css"]
+  selector: 'app-login',
+  templateUrl: './login.component.html',
+  styleUrls: ['./login.component.css']
 })
 export class LoginComponent implements OnInit {
   languages: string[] = [];
 
-  inputPlaceholderContact = "Email ID or Phone Number";
-  inputPlaceholderOTP = "Enter OTP";
+  inputPlaceholderContact = 'Email ID or Phone Number';
+  inputPlaceholderOTP = 'Enter OTP';
   disableBtn = false;
   timer: any;
   inputOTP: string;
@@ -29,7 +29,9 @@ export class LoginComponent implements OnInit {
   selectedLanguage = '';
   langCode = 'ara';
   dir = 'ltr';
+  primaryLangFromConfig = '';
   primaryLang = '';
+  secondaryLangFromConfig = '';
   secondaryLang = '';
   showSendOTP = true;
   showResend = false;
@@ -50,43 +52,41 @@ export class LoginComponent implements OnInit {
     private dialog: MatDialog,
     private dataService: DataStorageService,
     private regService: RegistrationService,
-    private configService: ConfigService,
-    private userIdle: UserIdleService
+    private configService: ConfigService // private userIdle: UserIdleService
   ) {
-    const loggedOut = localStorage.getItem("loggedOut");
-    this.loggedOutLang = localStorage.getItem("loggedOutLang");
+    const loggedOut = localStorage.getItem('loggedOut');
+    this.loggedOutLang = localStorage.getItem('loggedOutLang');
     localStorage.clear();
-    localStorage.setItem("loggedOut", loggedOut);
-    localStorage.setItem("langCode", this.langCode);
+    localStorage.setItem('loggedOut', loggedOut);
+    localStorage.setItem('langCode', this.langCode);
     this.showMessage();
   }
 
   ngOnInit() {
     this.showSpinner = true;
-    if (localStorage.getItem("langCode")) {
-      this.langCode = localStorage.getItem("langCode");
+    if (localStorage.getItem('langCode')) {
+      this.langCode = localStorage.getItem('langCode');
       if (this.loggedOutLang) {
         this.translate.use(this.loggedOutLang);
       } else {
-        this.translate.use("ara");
+        this.translate.use(localStorage.getItem('langCode'));
       }
     }
-    localStorage.setItem("loggedIn", "false");
+    localStorage.setItem('loggedIn', 'false');
     this.loadConfigs();
-//     this.userIdle.startWatching();
-//     this.userIdle.onTimerStart().subscribe(count => console.log(count));
-//     this.userIdle.onTimeout().subscribe(
-//       res =>{
-//         this.doLogOut();
-//       },
-//       err =>{},
-//       () => console.log('Time is up!'));
+    //     this.userIdle.startWatching();
+    //     this.userIdle.onTimerStart().subscribe(count => console.log(count));
+    //     this.userIdle.onTimeout().subscribe(
+    //       res =>{
+    //         this.doLogOut();
+    //       },
+    //       err =>{},
+    //       () => console.log('Time is up!'));
 
-// }
-// doLogOut(){
-//   alert('you have been logged out due to inactivity');
- }
-
+    // }
+    // doLogOut(){
+    //   alert('you have been logged out due to inactivity');
+  }
 
   loginIdValidator() {
     this.errorMessage = undefined;
@@ -97,16 +97,16 @@ export class LoginComponent implements OnInit {
       if (!(emailRegex.test(this.inputContactDetails) || phoneRegex.test(this.inputContactDetails))) {
         this.errorMessage = 'Invalid Email or Mobile Number entered';
       }
-    } else if (modes === "email") {
+    } else if (modes === 'email') {
       if (!emailRegex.test(this.inputContactDetails)) {
-        this.errorMessage = "Invalid email Entered";
+        this.errorMessage = 'Invalid email Entered';
       }
-    } else if (modes === "mobile") {
+    } else if (modes === 'mobile') {
       if (!phoneRegex.test(this.inputContactDetails)) {
-        this.errorMessage = "Invalid email Entered";
+        this.errorMessage = 'Invalid email Entered';
       }
     }
-    console.log("errorMessage", this.errorMessage);
+    console.log('errorMessage', this.errorMessage);
   }
 
   loadConfigs() {
@@ -118,26 +118,31 @@ export class LoginComponent implements OnInit {
         this.loadLanguagesWithConfig();
       },
       error => {
-        this.router.navigate(["error"]);
+        this.router.navigate(['error']);
       }
     );
   }
 
   loadLanguagesWithConfig() {
-    // const primaryLang = this.configService.getConfigByKey(appConstants.CONFIG_KEYS.mosip_primary_language);
-    // const secondaryLang = this.configService.getConfigByKey(appConstants.CONFIG_KEYS.mosip_secondary_language);
+    this.primaryLangFromConfig = this.configService.getConfigByKey(appConstants.CONFIG_KEYS.mosip_primary_language);
+    this.secondaryLangFromConfig = this.configService.getConfigByKey(appConstants.CONFIG_KEYS.mosip_secondary_language);
 
-    this.primaryLang = this.configService.getConfigByKey(appConstants.CONFIG_KEYS.mosip_primary_language);
-    this.secondaryLang = this.configService.getConfigByKey(appConstants.CONFIG_KEYS.mosip_secondary_language);
+    // this.primaryLang = this.configService.getConfigByKey(appConstants.CONFIG_KEYS.mosip_primary_language);
+    // this.secondaryLang = this.configService.getConfigByKey(appConstants.CONFIG_KEYS.mosip_secondary_language);
+    this.primaryLang = this.primaryLangFromConfig;
+    this.secondaryLang = this.secondaryLangFromConfig;
 
-    this.setLanguageDirection(this.primaryLang, this.secondaryLang);
-    localStorage.setItem('langCode', this.primaryLang);
-    localStorage.setItem('secondaryLangCode', this.secondaryLang);
-    if (appConstants.languageMapping[this.primaryLang] && appConstants.languageMapping[this.secondaryLang]) {
-      this.languages.push(appConstants.languageMapping[this.primaryLang].langName);
-      this.languages.push(appConstants.languageMapping[this.secondaryLang].langName);
+    this.setLanguageDirection(this.primaryLangFromConfig, this.secondaryLangFromConfig);
+    localStorage.setItem('langCode', this.primaryLangFromConfig);
+    localStorage.setItem('secondaryLangCode', this.secondaryLangFromConfig);
+    if (
+      appConstants.languageMapping[this.primaryLangFromConfig] &&
+      appConstants.languageMapping[this.secondaryLangFromConfig]
+    ) {
+      this.languages.push(appConstants.languageMapping[this.primaryLangFromConfig].langName);
+      this.languages.push(appConstants.languageMapping[this.secondaryLangFromConfig].langName);
     }
-    this.translate.addLangs([this.primaryLang, this.secondaryLang]);
+    this.translate.addLangs([this.primaryLangFromConfig, this.secondaryLangFromConfig]);
     this.showSpinner = false;
   }
 
@@ -146,17 +151,17 @@ export class LoginComponent implements OnInit {
       .getConfigByKey(appConstants.CONFIG_KEYS.mosip_left_to_right_orientation)
       .split(',');
     if (ltrLangs.includes(primaryLang)) {
-      this.dir = "ltr";
+      this.dir = 'ltr';
     } else {
-      this.dir = "rtl";
+      this.dir = 'rtl';
     }
     if (ltrLangs.includes(secondaryLang)) {
-      this.secondaryDir = "ltr";
+      this.secondaryDir = 'ltr';
     } else {
-      this.secondaryDir = "rtl";
+      this.secondaryDir = 'rtl';
     }
-    localStorage.setItem("dir", this.dir);
-    localStorage.setItem("secondaryDir", this.secondaryDir);
+    localStorage.setItem('dir', this.dir);
+    localStorage.setItem('secondaryDir', this.secondaryDir);
   }
 
   setTimer() {
@@ -166,50 +171,57 @@ export class LoginComponent implements OnInit {
       const minutes = time / 60;
       const seconds = time % 60;
       if (minutes < 10) {
-        this.minutes = "0" + minutes;
+        this.minutes = '0' + minutes;
       } else {
         this.minutes = String(minutes);
       }
       if (seconds < 10) {
-        this.seconds = "0" + seconds;
+        this.seconds = '0' + seconds;
       } else {
         this.seconds = String(seconds);
       }
     } else {
-      this.minutes = "02";
-      this.seconds = "00";
+      this.minutes = '02';
+      this.seconds = '00';
     }
   }
 
   showMessage() {
     if (this.loggedOutLang) {
-      this.dataService
-        .getSecondaryLanguageLabels(this.loggedOutLang)
-        .subscribe(async response => {
-          this.secondaryLanguagelabels = response["login"]["logout_msg"];
-          localStorage.removeItem("loggedOutLang");
-          localStorage.removeItem("loggedOut");
-          const data = {
-            case: "MESSAGE",
-            message: this.secondaryLanguagelabels
-          };
-          this.dialog.open(DialougComponent, {
-            width: "350px",
-            data: data
-          });
+      this.dataService.getSecondaryLanguageLabels(this.loggedOutLang).subscribe(async response => {
+        this.secondaryLanguagelabels = response['login']['logout_msg'];
+        localStorage.removeItem('loggedOutLang');
+        localStorage.removeItem('loggedOut');
+        const data = {
+          case: 'MESSAGE',
+          message: this.secondaryLanguagelabels
+        };
+        this.dialog.open(DialougComponent, {
+          width: '350px',
+          data: data
         });
+      });
     }
   }
 
   changeLanguage(): void {
-    if (this.selectedLanguage !== appConstants.languageMapping[this.primaryLang]) {
+    if (this.selectedLanguage !== appConstants.languageMapping[this.primaryLangFromConfig].langName) {
       this.secondaryLang = this.configService.getConfigByKey(appConstants.CONFIG_KEYS.mosip_primary_language);
       this.primaryLang = this.configService.getConfigByKey(appConstants.CONFIG_KEYS.mosip_secondary_language);
 
       this.setLanguageDirection(this.primaryLang, this.secondaryLang);
       localStorage.setItem('langCode', this.primaryLang);
       localStorage.setItem('secondaryLangCode', this.secondaryLang);
+    } else {
+      this.primaryLang = this.configService.getConfigByKey(appConstants.CONFIG_KEYS.mosip_primary_language);
+      this.secondaryLang = this.configService.getConfigByKey(appConstants.CONFIG_KEYS.mosip_secondary_language);
+
+      this.setLanguageDirection(this.primaryLang, this.secondaryLang);
+      localStorage.setItem('langCode', this.primaryLang);
+      localStorage.setItem('secondaryLangCode', this.secondaryLang);
     }
+
+    this.translate.use(localStorage.getItem('langCode'));
 
     // if (this.selectedLanguage === 'English') {
     //   this.langCode = 'eng';
@@ -249,20 +261,15 @@ export class LoginComponent implements OnInit {
 
   submit(): void {
     this.loginIdValidator();
-    if (
-      (this.showSendOTP || this.showResend) &&
-      this.errorMessage === undefined
-    ) {
+    if ((this.showSendOTP || this.showResend) && this.errorMessage === undefined) {
       this.showResend = true;
       this.showOTP = true;
       this.showSendOTP = false;
       this.showContactDetails = false;
 
       const timerFn = () => {
-        let secValue = Number(document.getElementById("secondsSpan").innerText);
-        const minValue = Number(
-          document.getElementById("minutesSpan").innerText
-        );
+        let secValue = Number(document.getElementById('secondsSpan').innerText);
+        const minValue = Number(document.getElementById('minutesSpan').innerText);
 
         if (secValue === 0) {
           secValue = 60;
@@ -273,31 +280,30 @@ export class LoginComponent implements OnInit {
             this.showResend = false;
             this.showOTP = false;
             this.showVerify = false;
-            document.getElementById("minutesSpan").innerText = this.minutes;
+            document.getElementById('minutesSpan').innerText = this.minutes;
 
-            document.getElementById("timer").style.visibility = "hidden";
+            document.getElementById('timer').style.visibility = 'hidden';
             clearInterval(this.timer);
             return;
           }
 
-          document.getElementById("minutesSpan").innerText =
-            "0" + (minValue - 1);
+          document.getElementById('minutesSpan').innerText = '0' + (minValue - 1);
         }
 
         if (secValue === 10 || secValue < 10) {
-          document.getElementById("secondsSpan").innerText = "0" + --secValue;
+          document.getElementById('secondsSpan').innerText = '0' + --secValue;
         } else {
-          document.getElementById("secondsSpan").innerText = --secValue + "";
+          document.getElementById('secondsSpan').innerText = --secValue + '';
         }
       };
 
       // update of timer value on click of resend
-      if (document.getElementById("timer").style.visibility === "visible") {
-        document.getElementById("secondsSpan").innerText = this.seconds;
-        document.getElementById("minutesSpan").innerText = this.minutes;
+      if (document.getElementById('timer').style.visibility === 'visible') {
+        document.getElementById('secondsSpan').innerText = this.seconds;
+        document.getElementById('minutesSpan').innerText = this.minutes;
       } else {
         // initial set up for timer
-        document.getElementById("timer").style.visibility = "visible";
+        document.getElementById('timer').style.visibility = 'visible';
         this.timer = setInterval(timerFn, 1000);
       }
 
@@ -307,24 +313,21 @@ export class LoginComponent implements OnInit {
 
       // dynamic update of button text for Resend and Verify
     } else if (this.showVerify && this.errorMessage === undefined) {
-      this.dataService
-        .verifyOtp(this.inputContactDetails, this.inputOTP)
-        .subscribe(
-          response => {
-            console.log(response);
-            if (!response["errors"]) {
-              clearInterval(this.timer);
-              localStorage.setItem("loggedIn", "true");
-              this.authService.setToken();
+      this.dataService.verifyOtp(this.inputContactDetails, this.inputOTP).subscribe(
+        response => {
+          console.log(response);
+          if (!response['errors']) {
+            clearInterval(this.timer);
+            localStorage.setItem('loggedIn', 'true');
+            this.authService.setToken();
 
-              this.regService.setLoginId(this.inputContactDetails);
-              this.router.navigate(["dashboard"]);
-            } else {
-              console.log(response["error"]);
-              this.showOtpMessage();
-            }
-          },
-
+            this.regService.setLoginId(this.inputContactDetails);
+            this.router.navigate(['dashboard']);
+          } else {
+            console.log(response['error']);
+            this.showOtpMessage();
+          }
+        },
 
         error => {
           this.showOtpMessage();
@@ -340,17 +343,15 @@ export class LoginComponent implements OnInit {
   }
 
   showOtpMessage() {
-    this.dataService
-      .getSecondaryLanguageLabels(localStorage.getItem("langCode"))
-      .subscribe(response => {
-        const message = {
-          case: "MESSAGE",
-          message: response["message"]["login"]["msg3"]
-        };
-        const dialogRef = this.dialog.open(DialougComponent, {
-          width: "350px",
-          data: message
-        });
+    this.dataService.getSecondaryLanguageLabels(localStorage.getItem('langCode')).subscribe(response => {
+      const message = {
+        case: 'MESSAGE',
+        message: response['message']['login']['msg3']
+      };
+      const dialogRef = this.dialog.open(DialougComponent, {
+        width: '350px',
+        data: message
       });
+    });
   }
 }

@@ -154,8 +154,7 @@ public class CreateUinRecord extends IdaScriptsUtil implements ITest{
 	public void storeUinData() {
 		UinDto.setUinData(storeUinData);
 		logger.info("Genereated UIN: " + UinDto.getUinData());
-		generateMappingDic(
-				RunConfig.getUserDirectory() + RunConfig.getSrcPath() + "ida/"+RunConfig.getTestDataFolderName()+"/RunConfig/uin.properties",
+		generateMappingDic(new File("./"+RunConfig.getSrcPath() + "ida/"+RunConfig.getTestDataFolderName()+"/RunConfig/uin.properties").getAbsolutePath(),
 				UinDto.getUinData());
 	}
 
