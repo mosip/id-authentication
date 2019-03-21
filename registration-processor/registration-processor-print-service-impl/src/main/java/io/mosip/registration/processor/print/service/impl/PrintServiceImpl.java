@@ -444,7 +444,7 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 			List<String> subtype = new ArrayList<>();
 			byte[] photobyte = util.getPhoto(value, FACE, subtype);
 			String imageString = CryptoUtil.encodeBase64String(photobyte);
-			attributes.put(APPLICANT_PHOTO, "data:image/png;base64," + imageString);
+			attributes.put(APPLICANT_PHOTO, "data:image/gif;base64," + imageString);
 			isPhotoSet = true;
 		}
 

@@ -87,6 +87,7 @@ public class PrintServiceConfig {
 	 * @return the prints the service
 	 */
 	@Bean
+	@Primary
 	public PrintService<Map<String, byte[]>> getPrintService() {
 		return new PrintServiceImpl();
 	}
@@ -97,6 +98,7 @@ public class PrintServiceConfig {
 	 * @return the uin card generator impl
 	 */
 	@Bean
+	@Primary
 	public UinCardGenerator<ByteArrayOutputStream> getUinCardGeneratorImpl() {
 		return new UinCardGeneratorImpl();
 	}
@@ -140,6 +142,7 @@ public class PrintServiceConfig {
 	 * @return the print & post service impl
 	 */
 	@Bean
+	@Primary
 	public PrintPostServiceImpl getPrintPostServiceImpl() {
 		return new PrintPostServiceImpl();
 	}

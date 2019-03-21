@@ -51,15 +51,15 @@ public class PrintPostServiceImpl {
 	/** The print & postal service provider address. */
 	private String printPostalAddress = "postal-service";
 
-	@Autowired
-	private MosipQueueManager<MosipQueue, byte[]> mosipQueueManager;
+//	@Autowired
+//	private MosipQueueManager<MosipQueue, byte[]> mosipQueueManager;
 
 	@SuppressWarnings("unchecked")
-	public boolean generatePrintandPostal(String regId, MosipQueue queue) {
+	public boolean generatePrintandPostal(String regId, MosipQueue queue, MosipQueueManager<MosipQueue, byte[]> mosipQueueManager) {
 
 		JSONObject response = null;
 
-		PrintQueueDTO result = checkFromTrusted(queue);
+		PrintQueueDTO result = checkFromTrusted(queue, mosipQueueManager);
 
 		if (!result.getUin().isEmpty()) {
 			response = new JSONObject();
@@ -81,7 +81,7 @@ public class PrintPostServiceImpl {
 		return isPdfAddedtoQueue;
 	}
 
-	public PrintQueueDTO checkFromTrusted(MosipQueue queue) {
+	public PrintQueueDTO checkFromTrusted(MosipQueue queue, MosipQueueManager<MosipQueue, byte[]> mosipQueueManager) {
 		PrintQueueDTO printQueueDTO = new PrintQueueDTO();
 
 		try {
