@@ -54,6 +54,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
 /**
@@ -74,17 +75,17 @@ public class AuthenticationController extends BaseController implements Initiali
 	@FXML
 	private AnchorPane temporaryLogin;
 	@FXML
-	private AnchorPane pwdBasedLogin;
+	private GridPane pwdBasedLogin;
 	@FXML
-	private AnchorPane otpBasedLogin;
+	private GridPane otpBasedLogin;
 	@FXML
-	private AnchorPane fingerprintBasedLogin;
+	private GridPane fingerprintBasedLogin;
 	@FXML
-	private AnchorPane irisBasedLogin;
+	private GridPane irisBasedLogin;
 	@FXML
-	private AnchorPane faceBasedLogin;
+	private GridPane faceBasedLogin;
 	@FXML
-	private AnchorPane errorPane;
+	private GridPane errorPane;
 	@FXML
 	private Label errorLabel;
 	@FXML
@@ -114,7 +115,7 @@ public class AuthenticationController extends BaseController implements Initiali
 	@FXML
 	private TextField otp;
 	@FXML
-	private AnchorPane operatorAuthenticationPane;
+	private GridPane operatorAuthenticationPane;
 	@FXML
 	private Button operatorAuthContinue;
 	

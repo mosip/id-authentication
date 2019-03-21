@@ -55,6 +55,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.TextArea;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -78,9 +80,9 @@ public class RegistrationController extends BaseController {
 	@Autowired
 	private DocumentScanController documentScanController;
 	@FXML
-	private AnchorPane documentScan;
+	private GridPane documentScan;
 	@FXML
-	private AnchorPane registrationId;
+	private GridPane registrationId;
 
 	@Autowired
 	private Validations validation;
@@ -91,24 +93,24 @@ public class RegistrationController extends BaseController {
 	@Autowired
 	private DemographicDetailController demographicDetailController;
 	@FXML
-	private AnchorPane demographicDetail;
+	private GridPane demographicDetail;
 	@FXML
-	private AnchorPane fingerPrintCapture;
+	private GridPane fingerPrintCapture;
 
 	@FXML
 	private AnchorPane biometricException;
 
 	@FXML
-	private AnchorPane faceCapture;
+	private GridPane faceCapture;
 	@FXML
-	private AnchorPane irisCapture;
+	private GridPane irisCapture;
 	@FXML
-	private AnchorPane operatorAuthenticationPane;
+	private GridPane operatorAuthenticationPane;
 	@FXML
 	public ImageView biometricTracker;
 
 	@FXML
-	private AnchorPane registrationPreview;
+	private GridPane registrationPreview;
 
 	@Autowired
 	private AuthenticationController authenticationController;
@@ -126,7 +128,7 @@ public class RegistrationController extends BaseController {
 			}
 
 			if (isEditPage() && getRegistrationDTOFromSession() != null) {
-				prepareEditPageContent();
+				prepareEditPageContent();	
 			}
 			uinUpdate();
 
@@ -427,7 +429,7 @@ public class RegistrationController extends BaseController {
 	 * Validates the fields of demographic pane1
 	 * 
 	 */
-	public boolean validateDemographicPane(AnchorPane paneToValidate) {
+	public boolean validateDemographicPane(Pane paneToValidate) {
 		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Validating the fields in demographic pane");
 

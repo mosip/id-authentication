@@ -75,6 +75,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -251,11 +252,13 @@ public class BaseController extends BaseService{
 	 * @param alertType type of alert
 	 * @param context   alert context
 	 */
-	protected void generateAlert(AnchorPane parentPane, String id, String context, String isConsolidated,
+	protected void generateAlert(Pane parentPane, String id, String context, String isConsolidated,
 			StringBuilder validationMessage) {
-		if (RegistrationConstants.DD.equalsIgnoreCase(id) || RegistrationConstants.MM.equalsIgnoreCase(id)
-				|| RegistrationConstants.YYYY.equalsIgnoreCase(id)) {
+		if (id.matches("dd|mm|yyyyddLocalLanguage|mmLocalLanguage|yyyyLocalLanguage")) {
 			id = RegistrationConstants.DOB;
+		}
+		if(id.contains("ontype")) {
+			id=id.replaceAll("_ontype", "");
 		}
 		if (RegistrationConstants.DISABLE.equalsIgnoreCase(isConsolidated)) {
 			Label label = ((Label) (parentPane
@@ -782,15 +785,15 @@ public class BaseController extends BaseService{
 	 * @param show       - Id of Anchorpane which has to be shown
 	 * 
 	 */
-	protected void getCurrentPage(AnchorPane pageId, String notTosShow, String show) {
+	protected void getCurrentPage(Pane pageId, String notTosShow, String show) {
 
 		LOGGER.info(LoggerConstants.LOG_REG_BASE, APPLICATION_NAME, APPLICATION_ID, "Navigating to next page");
 
 		if (notTosShow != null) {
-			((AnchorPane) pageId.lookup("#" + notTosShow)).setVisible(false);
+			((Pane) pageId.lookup("#" + notTosShow)).setVisible(false);
 		}
 		if (show != null) {
-			((AnchorPane) pageId.lookup("#" + show)).setVisible(true);
+			((Pane) pageId.lookup("#" + show)).setVisible(true);
 		}
 
 		LOGGER.info(LoggerConstants.LOG_REG_BASE, APPLICATION_NAME, APPLICATION_ID, "Navigated to next page");

@@ -47,6 +47,7 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
 /**
@@ -81,15 +82,15 @@ public class FingerPrintCaptureController extends BaseController implements Init
 
 	/** The left hand palm pane. */
 	@FXML
-	private AnchorPane leftHandPalmPane;
+	private GridPane leftHandPalmPane;
 
 	/** The right hand palm pane. */
 	@FXML
-	private AnchorPane rightHandPalmPane;
+	private GridPane rightHandPalmPane;
 
 	/** The thumb pane. */
 	@FXML
-	private AnchorPane thumbPane;
+	private GridPane thumbPane;
 
 	/** The left hand palm imageview. */
 	@FXML
@@ -132,7 +133,7 @@ public class FingerPrintCaptureController extends BaseController implements Init
 	private Label duplicateCheckLbl;
 
 	/** The selected pane. */
-	private AnchorPane selectedPane = null;
+	private GridPane selectedPane = null;
 
 	/** The selected pane. */
 	@Autowired
@@ -174,8 +175,8 @@ public class FingerPrintCaptureController extends BaseController implements Init
 			scanBtn.setDisable(true);
 
 			EventHandler<Event> mouseClick = event -> {
-				if (event.getSource() instanceof AnchorPane) {
-					AnchorPane sourcePane = (AnchorPane) event.getSource();
+				if (event.getSource() instanceof GridPane) {
+					GridPane sourcePane = (GridPane) event.getSource();
 					sourcePane.requestFocus();
 					selectedPane = sourcePane;
 					scanBtn.setDisable(true);
@@ -591,7 +592,7 @@ public class FingerPrintCaptureController extends BaseController implements Init
 
 	private void scanFingers(FingerprintDetailsDTO detailsDTO, List<FingerprintDetailsDTO> fingerprintDetailsDTOs,
 			String fingerType, String[] segmentedFingersPath, ImageView fingerImageView, Label scoreLabel,
-			Stage popupStage, AnchorPane parentPane) throws RegBaseCheckedException {
+			Stage popupStage, GridPane parentPane) throws RegBaseCheckedException {
 
 		ImageView imageView = fingerImageView;
 		Label qualityScoreLabel = scoreLabel;

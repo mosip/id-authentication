@@ -1,76 +1,163 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.*?>
 <?import javafx.scene.text.*?>
-<?import javafx.scene.image.*?>
+<?import javafx.scene.web.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.shape.*?>
 <?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.GridPane?>
 
-<AnchorPane fx:id="reRegistrationRootPane" styleClass="parentPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.eodapproval.ReRegistrationController">
+<GridPane fx:id="reRegistrationRootPane" styleClass="parentPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.eodapproval.ReRegistrationController">
+  <columnConstraints>
+    <ColumnConstraints hgrow="SOMETIMES" percentWidth="100.0" />
+  </columnConstraints>
+  <rowConstraints>
+    <RowConstraints percentHeight="100.0" vgrow="SOMETIMES" />
+  </rowConstraints>
    <children>
-      <AnchorPane fx:id="pendingActionRegistrationRootSubPane" styleClass="approveRegistrationRootSubPane">
+      <GridPane>
+        <columnConstraints>
+          <ColumnConstraints hgrow="SOMETIMES" percentWidth="100.0" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints percentHeight="5.0" vgrow="SOMETIMES" />
+          <RowConstraints percentHeight="90.0" vgrow="SOMETIMES" />
+            <RowConstraints percentHeight="5.0" vgrow="SOMETIMES" />
+        </rowConstraints>
          <children>
-            <AnchorPane fx:id="imageAnchorPane" layoutX="268.0" layoutY="50.0" styleClass="imageAnchorPaneStyle">
+            <GridPane fx:id="approveRegistrationRootSubPane" styleClass="approveRegistrationRootSubPane" GridPane.rowIndex="1">
+              <columnConstraints>
+                  <ColumnConstraints hgrow="SOMETIMES" percentWidth="1.0" />
+                <ColumnConstraints hgrow="SOMETIMES" percentWidth="31.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" percentWidth="1.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" percentWidth="66.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" percentWidth="1.0" />
+              </columnConstraints>
+              <rowConstraints>
+                  <RowConstraints percentHeight="5.0" vgrow="SOMETIMES" />
+                <RowConstraints percentHeight="100.0" vgrow="SOMETIMES" />
+              </rowConstraints>
                <children>
-                  <ImageView fx:id="imageView" fitHeight="272.0" fitWidth="613.0" layoutX="10.0" layoutY="4.0" pickOnBounds="true" preserveRatio="true" />
+                  <GridPane GridPane.columnIndex="1" GridPane.rowIndex="1">
+                    <columnConstraints>
+                      <ColumnConstraints hgrow="SOMETIMES" percentWidth="100.0" />
+                    </columnConstraints>
+                    <rowConstraints>
+                      <RowConstraints percentHeight="100.0" vgrow="SOMETIMES" />
+                    </rowConstraints>
+                     <children>
+                        <TableView fx:id="table" styleClass="approvalTable">
+                           <columns>
+                              <TableColumn fx:id="id" styleClass="reRegTableId" text="%registrationid" />
+                              <TableColumn fx:id="acknowledgementFormPath" text="%registrtionid" visible="false" />
+                           </columns>
+                        </TableView>
+                     </children>
+                  </GridPane>
+                  <GridPane fx:id="imageAnchorPane" styleClass="imageAnchorPaneStyle" GridPane.columnIndex="3" GridPane.rowIndex="1">
+                    <columnConstraints>
+                      <ColumnConstraints hgrow="SOMETIMES" percentWidth="100.0" />
+                    </columnConstraints>
+                    <rowConstraints>
+                      <RowConstraints percentHeight="100.0" vgrow="SOMETIMES" />
+                    </rowConstraints>
+                     <children>
+                        <AnchorPane styleClass="imageAnchorPaneStyle">
+                           <children>
+                              <ImageView fx:id="imageView" fitHeight="${imageAnchorPane.height}" fitWidth="${imageAnchorPane.width}" pickOnBounds="true" preserveRatio="true" />
+                           </children>
+                        </AnchorPane>
+                     </children>
+                  </GridPane>
                </children>
-            </AnchorPane>
-            <TableView fx:id="table" layoutX="15.0" layoutY="50.0" styleClass="approvalTable">
-               <columns>
-                  <TableColumn fx:id="id" styleClass="reRegTableId" text="%registrationid" />
-                  <TableColumn fx:id="acknowledgementFormPath" text="%registrtionid" visible="false" />
-               </columns>
-            </TableView>
-            <AnchorPane layoutY="619.0" styleClass="pendingApprovalFooter">
+            </GridPane>
+            <GridPane styleClass="pendingApprovalFooter" GridPane.rowIndex="2">
+              <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" percentWidth="100.0" />
+              </columnConstraints>
+              <rowConstraints>
+                <RowConstraints percentHeight="100.0" vgrow="SOMETIMES" />
+              </rowConstraints>
                <children>
-                  <Button fx:id="submitBtn" layoutX="1110.0" layoutY="6.0" mnemonicParsing="false" onAction="#authenticateReregister" styleClass="approveButton" text="%authenticate">
-                  <graphic>
-                  <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../images/Authenticate.png" />
-                     </image>
-                  </ImageView>
-               </graphic>
-               </Button>
-                  <Label layoutX="800.0" layoutY="11.0" text="%aplicatoinactioned" />
+                  <Button fx:id="submitBtn" mnemonicParsing="false" onAction="#authenticateReregister" styleClass="approveButton" text="%authenticate" GridPane.halignment="RIGHT">
+                     <graphic>
+                        <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../images/Authenticate.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+                  <Label text="%aplicatoinactioned" GridPane.halignment="CENTER" />
                </children>
-            </AnchorPane>
+            </GridPane>
+            <GridPane styleClass="pendingApprovalHeader">
+              <columnConstraints>
+                  <ColumnConstraints hgrow="SOMETIMES" percentWidth="5.0" />
+                <ColumnConstraints hgrow="SOMETIMES" percentWidth="30.0" />
+                <ColumnConstraints hgrow="SOMETIMES" percentWidth="30.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" percentWidth="10.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" percentWidth="10.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" percentWidth="10.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" percentWidth="5.0" />
+              </columnConstraints>
+              <rowConstraints>
+                <RowConstraints percentHeight="100.0" vgrow="SOMETIMES" />
+              </rowConstraints>
+               <children>
+                  <HBox alignment="BASELINE_LEFT" spacing="3.0" GridPane.columnIndex="1">
+                     <children>
+                        <Button mnemonicParsing="false" onAction="#goToHomePageFromRegistration" styleClass="homeButton" text="%home" />
+                        <Label styleClass="headerLabel" text="%/reRegistration" />
+                     </children>
+                  </HBox>
+                  <HBox alignment="CENTER" GridPane.columnIndex="2">
+                     <children>
+                        <Label styleClass="mainHeader" text="%reRegistration" />
+                     </children>
+                  </HBox>
+                  <HBox alignment="CENTER_RIGHT" GridPane.columnIndex="4" GridPane.halignment="RIGHT">
+                     <GridPane.margin>
+                        <Insets right="2.0" />
+                     </GridPane.margin>
+                     <children>
+                        <ToggleButton fx:id="notInformedBtn" mnemonicParsing="false" onAction="#notInformedToUser" styleClass="reRegToggle" text="%cantinformed">
+                           <graphic>
+                              <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../images/informed.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                           <toggleGroup>
+                              <ToggleGroup fx:id="informedStatus" />
+                           </toggleGroup>
+                        </ToggleButton>
+                     </children>
+                  </HBox>
+                  <HBox alignment="CENTER_RIGHT" GridPane.columnIndex="5">
+                     <GridPane.margin>
+                        <Insets left="2.0" />
+                     </GridPane.margin>
+                     <children>
+                        <ToggleButton fx:id="informedBtn" mnemonicParsing="false" onAction="#informedToUser" styleClass="reRegToggle" text="%informed" toggleGroup="$informedStatus">
+                           <graphic>
+                              <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../images/cantInform.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </ToggleButton>
+                     </children>
+                  </HBox>
+               </children>
+            </GridPane>
          </children>
-      </AnchorPane>
-      <AnchorPane fx:id="reRegistrationHeader" layoutX="-2.0" layoutY="2.0">
-         <children>
-            <ToggleButton fx:id="notInformedBtn" layoutX="1050.0" layoutY="10.0" mnemonicParsing="false" onAction="#notInformedToUser" styleClass="reRegToggle" text="%cantinformed">
-               <toggleGroup>
-                  <ToggleGroup fx:id="informedStatus" />
-               </toggleGroup>
-               <graphic>
-                  <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../images/informed.png" />
-                     </image>
-                  </ImageView>
-               </graphic>
-            </ToggleButton>
-            <ToggleButton fx:id="informedBtn" layoutX="1160.0" layoutY="10.0" mnemonicParsing="false" onAction="#informedToUser" styleClass="reRegToggle" text="%informed" toggleGroup="$informedStatus">
-            <graphic>
-                  <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../images/cantInform.png" />
-                     </image>
-                  </ImageView>
-               </graphic>
-               
-            </ToggleButton>
-            <AnchorPane layoutY="-10.0">
-               <children>
-                  <Button layoutY="14.0" mnemonicParsing="false" onAction="#goToHomePageFromRegistration" styleClass="homeButton" text="%home" />
-                  <Label layoutX="80.0" layoutY="16.0" styleClass="headerLabel" text="%/reRegistration" />
-               </children>
-            </AnchorPane>
-            <Label layoutX="590.0" styleClass="mainHeader" text="%reRegistration" />
-         </children>
-      </AnchorPane>
+      </GridPane>
    </children>
-</AnchorPane>
+</GridPane>

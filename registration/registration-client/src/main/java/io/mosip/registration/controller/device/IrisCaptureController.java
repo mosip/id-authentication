@@ -39,7 +39,7 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
@@ -61,9 +61,9 @@ public class IrisCaptureController extends BaseController {
 	@FXML
 	private Label leftIrisQualityScore;
 	@FXML
-	private AnchorPane rightIrisPane;
+	private GridPane rightIrisPane;
 	@FXML
-	private AnchorPane leftIrisPane;
+	private GridPane leftIrisPane;
 	@FXML
 	private Label leftIrisThreshold;
 	@FXML
@@ -262,9 +262,7 @@ public class IrisCaptureController extends BaseController {
 
 			// Display the Scanned Iris Image in the Scan pop-up screen
 			scanPopUpViewController.getScanImage().setImage(convertBytesToImage(irisDetailsDTO.getIris()));
-
 			generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.IRIS_SUCCESS_MSG);
-
 			if (irisType.equals(RegistrationConstants.LEFT)) {
 				leftIrisImage.setImage(convertBytesToImage(irisDetailsDTO.getIris()));
 				leftIrisPane.getStyleClass().add("IrisPanesSelected");

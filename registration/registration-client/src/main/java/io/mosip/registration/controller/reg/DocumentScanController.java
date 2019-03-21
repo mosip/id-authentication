@@ -111,13 +111,13 @@ public class DocumentScanController extends BaseController {
 	private DemographicDetailController demographicDetailController;
 
 	@FXML
-	protected AnchorPane documentScan;
+	protected GridPane documentScan;
 
 	@FXML
-	private AnchorPane documentPane;
+	private GridPane documentPane;
 
 	@FXML
-	private AnchorPane exceptionPane;
+	private GridPane exceptionPane;
 
 	@FXML
 	protected ImageView docPreviewImgView;
@@ -129,12 +129,12 @@ public class DocumentScanController extends BaseController {
 	protected Button docPreviewPrev;
 
 	@FXML
-	protected Text docPageNumber;
+	protected Label docPageNumber;
 
 	@FXML
 	protected Label docPreviewLabel;
 	@FXML
-	public AnchorPane documentScanPane;
+	public GridPane documentScanPane;
 
 	@FXML
 	private VBox docScanVbox;

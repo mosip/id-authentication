@@ -9,6 +9,7 @@ import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.controller.BaseController;
 import javafx.fxml.FXML;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.GridPane;
 
 
 /**
@@ -28,7 +29,7 @@ public class UserOnboardParentController extends BaseController{
 	private static final Logger LOGGER = AppConfig.getLogger(UserOnboardParentController.class);
 	
 	@FXML
-	protected AnchorPane userOnboardId;
+	protected GridPane userOnboardId;
 	
 	
 	public void showCurrentPage(String notTosShow, String show) {

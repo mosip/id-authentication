@@ -1,34 +1,76 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.*?>
-<?import javafx.scene.image.*?>
 <?import javafx.scene.text.*?>
+<?import javafx.scene.image.*?>
 <?import javafx.scene.control.*?>
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane fx:id="uploadPacketRoot" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" styleClass="uploadPacketparentPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.reg.PacketUploadController">
+<AnchorPane fx:id="reRegistrationRootPane" styleClass="parentPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.eodapproval.ReRegistrationController">
    <children>
-      <AnchorPane fx:id="uploadPacketHeader" layoutX="-1.0">
+      <AnchorPane fx:id="pendingActionRegistrationRootSubPane" styleClass="approveRegistrationRootSubPane">
          <children>
-            <Button fx:id="saveToDevice" layoutX="990.0" layoutY="5.0" mnemonicParsing="false" onAction="#packetExport" text="%saveToDevice" />
-            <Button fx:id="formValidationButton" layoutX="1130.0" layoutY="5.0" mnemonicParsing="false" onAction="#syncAndUploadPacket" text="%upload" />
-            <AnchorPane layoutX="2.0" layoutY="-5.0">
+            <AnchorPane fx:id="imageAnchorPane" layoutX="268.0" layoutY="50.0" styleClass="imageAnchorPaneStyle">
                <children>
-                  <Button layoutY="14.0" mnemonicParsing="false" onAction="#goToHomePageFromRegistration" styleClass="homeButton" text="%home" />
-                  <Label layoutX="60.0" layoutY="16.0" styleClass="headerLabel" text="%/uploadpacket" />
+                  <ImageView fx:id="imageView" fitHeight="272.0" fitWidth="613.0" layoutX="10.0" layoutY="4.0" pickOnBounds="true" preserveRatio="true" />
                </children>
             </AnchorPane>
-            <Label layoutX="530.0" layoutY="2.0" styleClass="mainHeader" text="%uploadpacket" />
+            <TableView fx:id="table" layoutX="15.0" layoutY="50.0" styleClass="approvalTable">
+               <columns>
+                  <TableColumn fx:id="id" styleClass="reRegTableId" text="%registrationid" />
+                  <TableColumn fx:id="acknowledgementFormPath" text="%registrtionid" visible="false" />
+               </columns>
+            </TableView>
+            <AnchorPane layoutY="619.0" styleClass="pendingApprovalFooter">
+               <children>
+                  <Button fx:id="submitBtn" layoutX="1110.0" layoutY="6.0" mnemonicParsing="false" onAction="#authenticateReregister" styleClass="approveButton" text="%authenticate">
+                  <graphic>
+                  <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/Authenticate.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+               </Button>
+                  <Label layoutX="800.0" layoutY="11.0" text="%aplicatoinactioned" />
+               </children>
+            </AnchorPane>
          </children>
       </AnchorPane>
-      <TableView fx:id="table" layoutX="58.0" layoutY="75.0" prefHeight="400.0" prefWidth="162.0" styleClass="packetUploadTable">
-        <columns>
-            <TableColumn fx:id="checkBoxColumn" prefWidth="50.0" />
-          <TableColumn fx:id="fileNameColumn" prefWidth="205.0" styleClass="fileNameColumn" text="%files" />
-        </columns>
-      </TableView>
-      <ProgressIndicator fx:id="progressIndicator" layoutX="400.0" layoutY="60.0" prefHeight="109.0" prefWidth="90.0" progress="0.0" visible="false" />
-      <CheckBox fx:id="selectAllCheckBox" layoutX="75.0" layoutY="79.0" mnemonicParsing="false" onAction="#selectAllCheckBox" />	
+      <AnchorPane fx:id="reRegistrationHeader" layoutX="-2.0" layoutY="2.0">
+         <children>
+            <ToggleButton fx:id="notInformedBtn" layoutX="1050.0" layoutY="10.0" mnemonicParsing="false" onAction="#notInformedToUser" styleClass="reRegToggle" text="%cantinformed">
+               <toggleGroup>
+                  <ToggleGroup fx:id="informedStatus" />
+               </toggleGroup>
+               <graphic>
+                  <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/informed.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </ToggleButton>
+            <ToggleButton fx:id="informedBtn" layoutX="1160.0" layoutY="10.0" mnemonicParsing="false" onAction="#informedToUser" styleClass="reRegToggle" text="%informed" toggleGroup="$informedStatus">
+            <graphic>
+                  <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/cantInform.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+               
+            </ToggleButton>
+            <AnchorPane layoutY="-10.0">
+               <children>
+                  <Button layoutY="14.0" mnemonicParsing="false" onAction="#goToHomePageFromRegistration" styleClass="homeButton" text="%home" />
+                  <Label layoutX="80.0" layoutY="16.0" styleClass="headerLabel" text="%/reRegistration" />
+               </children>
+            </AnchorPane>
+            <Label layoutX="590.0" styleClass="mainHeader" text="%reRegistration" />
+         </children>
+      </AnchorPane>
    </children>
 </AnchorPane>

@@ -101,6 +101,9 @@ public class LoginController extends BaseController implements Initializable {
 
 	@FXML
 	private AnchorPane irisPane;
+	
+	@Value("${mosip.primary-language}")
+	private String prim;
 
 	@FXML
 	private AnchorPane facePane;
@@ -189,7 +192,6 @@ public class LoginController extends BaseController implements Initializable {
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		otpValidity.setText("Valid for " + otpValidityImMins + " minutes");
 		stopTimer();
-		
 		password.textProperty().addListener((obsValue, oldValue, newValue) -> {
 			if(newValue.length() > Integer.parseInt(String.valueOf(ApplicationContext.map().get(RegistrationConstants.PWORD_LENGTH)))) {
 				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.PWORD_LENGTH);
@@ -233,7 +235,7 @@ public class LoginController extends BaseController implements Initializable {
 				pageFlow.getInitialPageDetails();
 
 				primaryStage.setMaximized(true);
-				primaryStage.setResizable(false);
+				primaryStage.setResizable(true);
 				primaryStage.setScene(scene);
 				primaryStage.show();
 

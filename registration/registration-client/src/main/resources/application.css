@@ -134,254 +134,6 @@
     -fx-background-color: #d9d9d9;
 }
 
-/*Header page design starts here*/
-#headerParent{
-	-fx-pref-height: 37.0px;
-	-fx-pref-width: 1280.0px;
-}
-
-#headerPage{
-	-fx-text-fill: white;  
-	-fx-background-color:#0B6A82;
-	-fx-pref-height: 37.0px;
-	-fx-pref-width: 1000.0px;
-}
-
-#headerDetails {
-    -fx-background-color: #175768;
-	-fx-pref-height: 37.0px;
-	-fx-pref-width: 820.0px;
-}
-
-#headerDetails .label{
-	-fx-text-fill: white;
-	-fx-font-family: Roboto;
-	-fx-font-size: 14.0px;
-}
-
-#menu{
-	-fx-pref-height: 24.0px;
-	-fx-pref-width: 228.0px;	
-}
-.context-menu {
-  -fx-background-color: #FFFFFF;
-  -fx-border-color: #C9C9C9;
-  -fx-padding: 0em 0em 0em 0em;
-  -fx-page-information-alignment: 10;
-}
-.menu-item .label {
-    -fx-text-fill: #000000;
-    -fx-font-size: 14.0px;
-     -fx-background-image: url(images/MenuItems.png);
-     -fx-background-repeat: no-repeat;
-     -fx-background-position: left;
-     -fx-background-size: 20px 20px;
-     -fx-padding: 0.0em 0.0em 0.0em 2.0em;
-}
-
-.separator .line { 
-	-fx-background-color: #C9C9C9;
-	-fx-border-width: 0.001px;
-}
-
-.menu-item:focused .label{
-	-fx-background-color: #FF4081;
-    -fx-padding: 0.0em 0.0em 0.0em 2.0em;
-    -fx-background-image: url(images/MenuItemsFocus.png); 
-    -fx-background-repeat: no-repeat;
-    -fx-background-position: left;
-    -fx-background-size: 20px 20px;
-    -fx-text-fill: white;    
-}
-.menu-item:focused {
-     -fx-background: -fx-accent;
-     -fx-background-color: #FF4081;
-}
-.menu-item {
-    -fx-background-color: transparent;
-    -fx-padding: 1.0em 1.0em 1.0em 1.0em;
-}
-#logout .label{
-	-fx-text-fill: #000000;
-    -fx-font-size: 14.0px;
-     -fx-background-image: url(images/logout.png);
-     -fx-background-repeat: no-repeat;
-     -fx-background-position: left;
-     -fx-background-size: 20px 20px;
-     -fx-padding: 0.0em 0.0em 0.0em 2.0em;    
-}
-
-#logout:focused .label{
-	-fx-text-fill: #000000;
-    -fx-font-size: 14.0px;
-     -fx-background-image: url(images/logoutFocus.png);
-     -fx-background-repeat: no-repeat;
-     -fx-background-position: left;
-     -fx-background-size: 20px 20px;
-     -fx-padding: 0.0em 0.0em 0.0em 2.0em;    
-}
-#registrationOfficeLocation{
-	-fx-pref-height: 21.0px;
-	-fx-pref-width: 155.0px;
-}
-
-#registrationOfficerName{
-	-fx-pref-height: 21.0px;
-	-fx-pref-width: 120.0px;
-}
-
-#registrationOfficerIdPane{
-	-fx-background-radius: 21.0,21.0,21.0,21.0;	
-	-fx-background-color: #F57E20;
-	-fx-border-radius: 21.0,21.0,21.0,21.0;
-	-fx-border-color: #61AB01;
-	-fx-pref-height: 25.0px;
-	-fx-pref-width: 155.0px;
-}
-
-#registrationOfficeId{
-	-fx-pref-height: 21.0px;
-	-fx-pref-width: 81.0px;
-}
-
-.internetMode{
-	-fx-pref-height: 21.0px;
-	-fx-pref-width: 115.0px;
-}
-
-#internetModePane{
-	-fx-background-radius: 21.0,21.0,21.0,21.0;
-	-fx-background-color: #1EBD22;
-	-fx-border-radius: 21.0,21.0,21.0,21.0;
-	-fx-border-color: #61AB01;
-	-fx-pref-height: 25.0px;
-	-fx-pref-width: 187.0px;
-}
-.headerParentBorder{
-	-fx-border-color: #F4F4F4;
-	-fx-border-width: 1.0 1.0 0.0 1.0;
-	
-}
-/* Header Page design Ends Here */
-
-/* Home page design starts here */
-
-.newRegBtnStyle{
-	-fx-background-radius: 4.0,4.0,4.0,4.0;
-	-fx-border-radius: 4.0,4.0,4.0,4.0;
-	-fx-border-color: #FF4081;
-	-fx-background-color:#FF4081;
-	-fx-text-fill: white;
-	-fx-font-family: Roboto;
-	-fx-pref-height: 80.0px;
-	-fx-pref-width: 400.0px;
-}
-.optionHeaderStyle{
-	-fx-text-fill: #666666;
-	-fx-font-family: Roboto;
-	-fx-font-size: 16.0px;
-	-fx-font-weight: lighter;
-	-fx-pref-height: 27.0px;
-	-fx-pref-width: 173.0px;
-}
-.uinUpdateBtnStyle{
-	-fx-background-radius: 4.0,4.0,4.0,4.0;
-	-fx-border-radius: 4.0,4.0,4.0,4.0;
-	-fx-border-color: #FF4081;
-	-fx-background-color:#FFFFFF;
-	-fx-text-fill: #FF4081;
-	-fx-font-family: Roboto;
-	-fx-pref-height: 80.0px;
-	-fx-pref-width: 400.0px;	
-}
-.reggistrationPaneStyle{
-	-fx-border-width: 0.0 1.0 0.0 0.0;
-	-fx-border-color: #C9C9C9;
-	-fx-Opacity: 1.0; 
-	-fx-pref-height: 517.0px;
-	-fx-pref-width: 453.0px;	
-}
-.operationalPaneStyle{
-	-fx-pref-height: 261.0px;
-	-fx-pref-width: 465.0px;
-}
-.operationalPaneDetails{
-	-fx-border-width: 1.0 1.0 1.0 1.0;
-	-fx-border-color: #FF4081;
-	-fx-background-color:#FFFFFF;
-	-fx-pref-height: 70.0px;
-	-fx-pref-width: 450.0px;
-}
-.operationalPaneDetailsSync{
-	 -fx-border-radius: 4.0 4.0 0.0 0.0;
-  	 -fx-background-radius: 4.0 4.0 0.0 0.0;
-}
-.operationalPaneDetailsBioUpdate{
-	 -fx-border-radius: 0.0 0.0 4.0 4.0;
-  	 -fx-background-radius: 0.0 0.0 4.0 4.0;
-}
-.operationalDetails{
-	-fx-text-fill: #FF4081;
-	-fx-font-family: Roboto;
-	-fx-font-size: 10.0px;
-	-fx-pref-height: 27.0px;
-	-fx-pref-width: 337.0px;
-}
-.operationalTitle{
-	-fx-text-fill: #FF4081;
-	-fx-font-family: Roboto;
-	-fx-font-size: 16.0px;
-	-fx-pref-height: 27.0px;
-	-fx-pref-width: 337.0px;
-} 
-.newsUpdatePaneStyle{
-	-fx-pref-height: 523.0px;
-	-fx-pref-width: 314.0px;
-}
-.newsUpdateDescPaneStyle{
-	-fx-pref-height: 103.0px;
-	-fx-pref-width: 281.0px;
-}
-.newsUpdates{
-	-fx-background-color:#FFFFFF;
-	-fx-border-color: #C9C9C9;
-	-fx-border-radius: 4.0 4.0 4.0 4.0;
-  	-fx-background-radius: 4.0 4.0 4.0 4.0;
-  	-fx-pref-height: 478.0px;
-	-fx-pref-width: 300.0px;
-}
-.newsUpdatesTitle{
-	-fx-font-size: 11.0px;	
-	-fx-text-fill: #666666;
-	-fx-font-family: Roboto;
-	-fx-font-weight: bold;
-}
-.newsUpdateTime{
-	-fx-font-size: 10.0px;	
-	-fx-text-fill: #666666;
-	-fx-font-family: Roboto;
-	-fx-font-weight: lighter;
-}
-.newsUpdateDescription{
-	-fx-font-size: 12.0px;	
-	-fx-text-fill: #666666;
-	-fx-font-family: Roboto;
-}
-.homeParentPane{
-	-fx-border-color: #F4F4F4;
-	-fx-border-width: 0.0 1.0 1.0 1.0;
-	-fx-pref-height: 667.0px;
-	-fx-pref-width: 1280.0px;	
-}
-#newsViewAll{
-	-fx-font-size: 10.0px;	
-	-fx-text-fill: #666666;
-	-fx-font-family: Roboto;
-	-fx-font-weight: bold;
-	-fx-pref-height: 27.0px;
-	-fx-pref-width: 64.0px;
-}
-/* Home Page Design Ends */
 
 /*Onoard User page Design Starts here*/
 .onboardUserPaneStyle{
@@ -389,8 +141,6 @@
 	-fx-border-radius: 4.0,4.0,4.0,4.0;
 	-fx-border-color: #FF4081;
 	-fx-background-color:#FFFFFF;	
-	-fx-pref-height: 80.0px;
-	-fx-pref-width: 200.0px;
 }
 .useronBoardLink{
 	-fx-text-fill: #FF4081;
@@ -405,7 +155,7 @@
 }
 .useronBoardLinkDesc{
 	-fx-font-family: Roboto;
-	-fx-font-size: 18.0px;
+	-fx-font-size: 1.2em;
 	-fx-text-fill: #666666;	
 }
 .onboardAlertMsg{
@@ -775,7 +525,7 @@
 
 #duplicateCheckLbl{
 	-fx-text-fill: red;
-	-fx-font-size: 12.0px;
+	-fx-font-size : 1.2em;
 }
 
 #bioPreviewGridId{
@@ -1015,8 +765,9 @@ Working on new Css by taleev
 
 
 .trackerHighlighter{
-	-fx-font-size : 18;
+	-fx-font-size : 1.2em;
 	-fx-text-fill : #E43391;	
+	-fx-font-weight : bold;
 }
 
 .demoGraphicPaneContentButton{
@@ -1024,8 +775,6 @@ Working on new Css by taleev
 	-fx-border-color: #FF4081;
 	-fx-background-color : #FFFFFF;
 	-fx-border-radius: 3,3,3,3;
-	-fx-pref-height: 4px;	
-	-fx-pref-width: 150px;
 	-fx-font-size : 15px;
 	 
 }
@@ -1042,18 +791,15 @@ Working on new Css by taleev
 	-fx-border-color: #FF4081;
 	-fx-background-color : #FFFFFF;
 	-fx-border-radius: 3,3,3,3;
-	-fx-pref-height: 2px;	
-	-fx-pref-width: 120px;
+	-fx-font-size : 1.2em;
 }
 
 .contiuneButton{
 	-fx-background-color:#FF4081;
 	-fx-border-width: 1 1 1 1;
 	-fx-border-color: #FF4081;
-	-fx-border-radius: 3,3,3,3;
-	-fx-pref-height: 2px;	
-	-fx-pref-width: 120px;
-	
+	-fx-border-radius: 3,3,3,3;	
+	-fx-font-size: 1.2em;
 }
 
 .backButton{
@@ -1061,26 +807,19 @@ Working on new Css by taleev
 	-fx-border-width: 1 1 1 1;
 	-fx-border-color: #FF4081;
 	-fx-border-radius: 3,3,3,3;
-	-fx-pref-height: 2px;	
-	-fx-pref-width: 120px;
+	-fx-font-size: 1.2em;
 	
 }
 
 .demoGraphicTextField{
-	-fx-pref-height: 10px;	
-	-fx-pref-width: 395px;
 	-fx-border-color: #C9C9C9;
-	-fx-background-insets: 0,0 0 0 0;
   	-fx-border-width: 0 0 1 0;	
   	-fx-background-color: #FFFFFF;
-  	-fx-padding : 5 0 5 0;
 	-fx-prompt-text-fill: #000000;	
-	-fx-font-size: 15px;
+	-fx-font-size: 1.2em;
 }
 
 .demoGraphicTextFieldTypeSecond{
-	-fx-pref-height: 10px;	
-	-fx-pref-width: 190px;
 	-fx-border-color: #C9C9C9;
 	-fx-background-insets: 0,0 0 0 0;
   	-fx-border-width: 0 0 1 0;	
@@ -1097,20 +836,16 @@ Working on new Css by taleev
 }
 
 .demographicMiscTexts{
-	-fx-font-size: 15px;
 	-fx-text-fill: #000000;	
+	-fx-font-size: 1.2em;
 }
 
 .demoGraphicTextFieldTypThree{
-	-fx-pref-height: 10px;	
-	-fx-pref-width: 40px;
 	-fx-border-color: #C9C9C9;
-	-fx-background-insets: 0,0 0 0 0;
   	-fx-border-width: 0 0 1 0;	
   	-fx-background-color: #FFFFFF;
-  	-fx-padding: 5 0 5 0;
   	-fx-prompt-text-fill: #000000;	
-  	-fx-font-size: 15px;
+  	-fx-font-size: 1.2em;
   	
 }
 .demographicScrollpane{
@@ -1122,19 +857,21 @@ Working on new Css by taleev
 .demoGraphicFieldLabel{
 		-fx-background-color:#ffffff;
 		-fx-border-width: 0;
-		-fx-pref-height: 10px;	
-		-fx-pref-width: 300px;
 		-fx-text-fill : black;
-		-fx-font-size: 17px;
+		-fx-font-size: 1.3em;
 		
 }
 
 .demoGraphicFieldMessageLabel{
 		-fx-background-color:#ffffff;
-		-fx-pref-height: 10px;	
-		-fx-pref-width: 300px;
 		-fx-text-fill : red;
 }
+
+#tF,#tF1,#tF2,#tF21,#tF22,#tF23,#t24,#tF25,#tF26,#tF27{
+	-fx-border-width : 0 1 0 0;
+	-fx-border-color : red;
+}
+
 
 
 .demographicCombobox{
@@ -1177,8 +914,6 @@ Working on new Css by taleev
 }
 
 .fingerPrintPanes{
-	-fx-pref-height: 160;	
-	-fx-pref-width: 180;
 	-fx-background-color : #F0F0F0;
 	-fx-border-color : #F0F0F0;
 	-fx-border-width : 5;
@@ -1186,8 +921,6 @@ Working on new Css by taleev
 }
 
 .fingerPrintPanes:focused{
-	-fx-pref-height: 160;	
-	-fx-pref-width: 180;
 	-fx-background-color : #F0F0F0;
 	-fx-border-color : #00A6E9;
 	-fx-border-width : 5;
@@ -1197,8 +930,6 @@ Working on new Css by taleev
 }
 
 .fingerPrintPanesSelected{
-	-fx-pref-height: 160;	
-	-fx-pref-width: 180;
 	-fx-background-color : #F0F0F0;
 	-fx-border-color : #EFEFEF;
 	-fx-border-width : 5;
@@ -1207,34 +938,28 @@ Working on new Css by taleev
 }
 
 .IrisPanes{
-	-fx-pref-height: 160;	
-	-fx-pref-width: 180;
-	-fx-background-color : #F0F0F0;
-	-fx-border-color : #FFFFFF;
+	-fx-background-color : red;
+	-fx-border-color : red;
 	-fx-border-width : 5;
 	-fx-padding : -2.5;
 }
 
 .IrisPanes:focused{
-	-fx-pref-height: 160;	
-	-fx-pref-width: 180;
 	-fx-background-color : #F0F0F0;
 	-fx-border-color : #00A6E9;
-	-fx-border-width : 5;
+	-fx-border-width : 5 5 5 5;
 	-fx-padding : -2.5;
 	-fx-border-radius: 3,3,3,3;
 	
 }
 
 .IrisPanesSelected{
-	-fx-pref-height: 160;	
-	-fx-pref-width: 180;
-	-fx-background-color : #F0F0F0;
-	-fx-border-color : #EFEFEF;
+	-fx-background-color : green;
+	-fx-border-color : red;
 	-fx-border-width : 5;
 	-fx-padding : -2.5;
-	-fx-border-radius: 3,3,3,3;
-}
+}	
+
 .paneAtDisplayIris{
 	-fx-background-color:#FFFFFF;
 	-fx-pref-height: 600px;	
@@ -1248,8 +973,6 @@ Working on new Css by taleev
 }
 
 .photoCapturePanes{
-	-fx-pref-height: 160;	
-	-fx-pref-width: 180;
 	-fx-background-color : #F0F0F0;
 	-fx-border-color : #FFFFFF;
 	-fx-border-width : 5;
@@ -1257,8 +980,6 @@ Working on new Css by taleev
 }
 
 .photoCapturePanes:focused{
-	-fx-pref-height: 160;	
-	-fx-pref-width: 180;
 	-fx-background-color : #F0F0F0;
 	-fx-border-color : #00A6E9;
 	-fx-border-width : 5;
@@ -1273,8 +994,6 @@ Working on new Css by taleev
 }
 
 .photoCapturePanesSelected{
-	-fx-pref-height: 160;	
-	-fx-pref-width: 180;
 	-fx-background-color : #F0F0F0;
 	-fx-border-color : #EFEFEF;
 	-fx-border-width : 5;
@@ -1310,7 +1029,7 @@ Working on new Css by taleev
 
 .qualityBoxLabel{
 	-fx-text-fill : #666666;
-	-fx-font-size : 15px;
+	-fx-font-size : 1.5em;
 }
 
 .paneHeader{
@@ -1331,8 +1050,6 @@ Working on new Css by taleev
 }
 
 .operatorAuthenticationStyleTextTypeOne{
-	-fx-pref-height: 39px; 
-	-fx-pref-width: 269px;
 	-fx-text-fill: #666666;
 }
 
@@ -1395,6 +1112,7 @@ Working on new Css by taleev
 
 .headerLabel{
 	-fx-text-fill : #666666;
+	-fx-font-size : 1.2em;
 }
 
 .mainHeader{
@@ -1413,9 +1131,8 @@ Working on new Css by taleev
 
 .homeButton{
 		-fx-background-color : #FFFFFF;
-		-fx-pref-height : 20;
-		-fx-pref-width : 70;
-		-fx-padding : 0 0 0 0;
+		-fx-padding : 0 0 0 10;
+		-fx-font-size : 1.2em;
 }
 
 
@@ -1702,4 +1419,46 @@ Working on new Css by taleev
 
 .rejectCommentCloseButton{
 	-fx-background-color:white;
+}
+
+.headerFooter{
+	-fx-background-color : white;
+	-fx-effect: dropshadow( three-pass-box , rgba(0.0,0.0,0.0,5.4) , 5.0, 0.0 , 0.0 , 0.0 );
+}
+
+.headerTexts{
+	-fx-font-size : 1.2em;
+}
+
+.headerPageTracker{
+	-fx-border-width : 0 0 2 0;
+	-fx-border-color : #FF4081;
+	-fx-padding : 0 0 0.5 0;
+}
+
+.bioTracker{
+   -fx-border-image-source: url(images/DemographicpageTracker.png);
+    -fx-border-image-insets: 10, 20;
+    -fx-border-image-width: 0 0 10 0;
+    -fx-border-image-slice: 10, 10;
+	
+}
+
+.subMainComponent{
+	-fx-background-color : #FFFFFF;
+}
+
+.homeBox{
+	-fx-padding : 0 0 10 0;
+}
+
+
+#docScanVboxHolder{
+	-fx-border-width : 0 1 0 0;
+	-fx-border-color : #C9C9C9;
+}
+
+#lowerBorder{
+	-fx-border-width : 1 0 0 0;
+	-fx-border-color : #C9C9C9;
 }

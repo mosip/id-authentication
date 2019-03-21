@@ -57,6 +57,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -76,11 +77,11 @@ public class FaceCaptureController extends BaseController implements Initializab
 
 	private Pane selectedPhoto;
 	@FXML
-	private AnchorPane applicantImagePane;
+	private GridPane applicantImagePane;
 	@FXML
 	private ImageView applicantImage;
 	@FXML
-	private AnchorPane exceptionImagePane;
+	private GridPane exceptionImagePane;
 	@FXML
 	private ImageView exceptionImage;
 	@FXML
@@ -124,6 +125,7 @@ public class FaceCaptureController extends BaseController implements Initializab
 		if (getRegistrationDTOFromSession() != null && getRegistrationDTOFromSession().getSelectionListDTO() != null) {
 			registrationNavlabel.setText(RegistrationConstants.UIN_NAV_LABEL);
 		}
+
 
 		takePhoto.setDisable(true);
 
@@ -292,7 +294,8 @@ public class FaceCaptureController extends BaseController implements Initializab
 
 	/**
 	 * 
-	 * To set the captured image to the imageView in the Applicant Biometrics page
+	 * To set the captured image to the imageView in the Applicant Biometrics
+	 * page
 	 * 
 	 * @param capturedImage
 	 *            the image that is captured
@@ -356,12 +359,12 @@ public class FaceCaptureController extends BaseController implements Initializab
 
 	/**
 	 * 
-	 * To clear the captured image from the imageView in the Applicant Biometrics
-	 * page
+	 * To clear the captured image from the imageView in the Applicant
+	 * Biometrics page
 	 *
 	 * @param photoType
-	 *            the type of image that is to be cleared, whether exception image
-	 *            or applicant image
+	 *            the type of image that is to be cleared, whether exception
+	 *            image or applicant image
 	 */
 	@Override
 	public void clearPhoto(String photoType) {

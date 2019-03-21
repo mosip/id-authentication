@@ -364,12 +364,8 @@ public class PacketHandlerController extends BaseController implements Initializ
 			if (!validateScreenAuthorization(root.getId())) {
 				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.AUTHORIZATION_ERROR);
 			} else {
-				ObservableList<Node> nodes = homeController.getMainBox().getChildren();
-				IntStream.range(1, nodes.size()).forEach(index -> {
-					nodes.get(index).setVisible(false);
-					nodes.get(index).setManaged(false);
-				});
-				nodes.add(root);
+				 homeController.getMainBox().getChildren().remove(homeController.getMainBox().getChildren().size()-1);
+				 homeController.getMainBox().add(root, 1, 1);
 			}
 		} catch (IOException ioException) {
 			LOGGER.error("REGISTRATION - OFFICER_PACKET_MANAGER - APPROVE PACKET", APPLICATION_NAME, APPLICATION_ID,
@@ -686,16 +682,8 @@ public class PacketHandlerController extends BaseController implements Initializ
 			LOGGER.info("REGISTRATION - LOAD_REREGISTRATION_SCREEN - REGISTRATION_OFFICER_PACKET_CONTROLLER",
 					APPLICATION_NAME, APPLICATION_ID, "Loading reregistration screen");
 
-			if (!validateScreenAuthorization(root.getId())) {
-				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.AUTHORIZATION_ERROR);
-			} else {
-				ObservableList<Node> nodes = homeController.getMainBox().getChildren();
-				IntStream.range(1, nodes.size()).forEach(index -> {
-					nodes.get(index).setVisible(false);
-					nodes.get(index).setManaged(false);
-				});
-				nodes.add(root);
-			}
+				 homeController.getMainBox().getChildren().remove(homeController.getMainBox().getChildren().size()-1);
+				 homeController.getMainBox().add(root, 0, 1);
 		} catch (IOException ioException) {
 			LOGGER.error("REGISTRATION - LOAD_REREGISTRATION_SCREEN - REGISTRATION_OFFICER_PACKET_CONTROLLER",
 					APPLICATION_NAME, APPLICATION_ID,
