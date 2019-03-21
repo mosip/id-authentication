@@ -2,18 +2,15 @@ package io.mosip.preregistration.notification.service;
 
 import static org.junit.Assert.assertEquals;
 
+import java.text.DateFormat;
 import java.text.ParseException;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -31,7 +28,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import io.mosip.kernel.core.exception.IOException;
 import io.mosip.kernel.core.qrcodegenerator.exception.QrcodeGenerationException;
@@ -66,7 +62,7 @@ public class NotificationServiceTest {
 	@Autowired
 	private ObjectMapper mapper;
 
-	@MockBean(name="restTemplate")
+	@MockBean(name = "restTemplate")
 	private RestTemplate restTemplate;
 
 	@MockBean
@@ -86,7 +82,8 @@ public class NotificationServiceTest {
 
 	@Before
 	public void beforeSet() throws ParseException {
-		mapper.registerModule(new JavaTimeModule());
+
+		//mapper.registerModule(new JavaTimeModule());
 		notificationDTO = new NotificationDTO();
 		notificationDTO.setName("sanober Noor");
 		notificationDTO.setPreId("1234567890");
@@ -96,12 +93,10 @@ public class NotificationServiceTest {
 		notificationDTO.setAppointmentTime("22:57");
 		mainReqDto.setId("mosip.pre-registration.demographic.create");
 		mainReqDto.setVersion("1.0");
-		DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
-		LocalDateTime localDateTime = LocalDateTime.parse("2019-01-22T07:22:57.186Z", DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"));
-		 
+		DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+		mapper.setDateFormat(df);
 
-		
-		mainReqDto.setRequesttime(localDateTime);
+		mainReqDto.setRequesttime(df.parse("2019-01-22T07:22:57.186Z"));
 		mainReqDto.setRequest(notificationDTO);
 		responseDTO = new MainResponseDTO<>();
 		responseDTO.setResponse(notificationDTO);
@@ -233,14 +228,16 @@ public class NotificationServiceTest {
 	 * @throws IOException
 	 * @throws java.io.IOException
 	 */
-	/*@Test
-	public void getConfigSuccessTest() throws Exception {
-		ResponseEntity<String> res = new ResponseEntity<String>("mosip.secondary-language=fra", HttpStatus.OK);
-		Map<String, String> configParams = new HashMap<>();
-		MainResponseDTO<Map<String, String>> response = new MainResponseDTO<>();
-		Mockito.when(restTemplate.getForEntity(Mockito.anyString(), Mockito.eq(String.class))).thenReturn(res);
-		response = service.getConfig();
-		assertEquals(response.getResponse().get("mosip.secondary-language"), "fra");
-	}*/
+	/*
+	 * @Test public void getConfigSuccessTest() throws Exception {
+	 * ResponseEntity<String> res = new
+	 * ResponseEntity<String>("mosip.secondary-language=fra", HttpStatus.OK);
+	 * Map<String, String> configParams = new HashMap<>();
+	 * MainResponseDTO<Map<String, String>> response = new MainResponseDTO<>();
+	 * Mockito.when(restTemplate.getForEntity(Mockito.anyString(),
+	 * Mockito.eq(String.class))).thenReturn(res); response = service.getConfig();
+	 * assertEquals(response.getResponse().get("mosip.secondary-language"), "fra");
+	 * }
+	 */
 
 }
