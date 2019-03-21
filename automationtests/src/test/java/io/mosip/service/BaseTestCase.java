@@ -81,8 +81,9 @@ public class BaseTestCase {
 			prop = new Properties();
 			InputStream inputStream = new FileInputStream("src"+BaseTestCase.SEPRATOR+"config"+BaseTestCase.SEPRATOR+"test.properties");
 			prop.load(inputStream);
+			
 			logger.info("Setting test configs/TestEnvironment from " +  "src/config/test.properties");
-			environment = System.getProperty("env.user");
+			environment = prop.getProperty("environment");
 			logger.info("Environemnt is  ==== :" +environment);
 			if (environment.equalsIgnoreCase("integration"))
 				ApplnURI="https://integ.mosip.io";
