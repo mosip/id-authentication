@@ -22,7 +22,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.print.PrinterJob;
 import javafx.scene.control.Button;
-import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.text.Text;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
@@ -46,7 +46,7 @@ public class AckReceiptController extends BaseController implements Initializabl
 	private Writer stringWriter;
 
 	@FXML
-	protected AnchorPane rootPane;
+	protected GridPane rootPane;
 
 	@FXML
 	private WebView webView;
