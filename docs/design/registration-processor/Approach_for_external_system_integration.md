@@ -132,23 +132,23 @@ Update above apache camel route with the below:
 
 
 ------------
-- Without http end point:
+- Without External System Stage:
 
-![HTTP stage diagram](_images/registration_external_without_http_integration.png)
+![HTTP stage diagram](_images/registration_workflow_integration.png)
 
-- With http end point:
+- After adding External System Stage:
 
-![HTTP stage diagram](_images/registration_external_with_http_integration.png)
+![HTTP stage diagram](_images/registration_external_with_vertx_integration.png)
 
 
 **Class Diagram**
 
 ------------
 
-![HTTP stage class diagram](_images/http_stage_class_diagram.png)
+![HTTP stage class diagram](_images/external_stage_class_diagram.png)
 
 **Sequence Diagram**
 
 ------------
 
-![Reprocess sequence diagram](_images/http_stage_seq_diagram.png) 
+![Reprocess sequence diagram](_images/external_stage_seq_diagram.png) 
