@@ -5,11 +5,13 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import java.io.File;
 import java.sql.Connection;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.sql.DataSource;
 
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -25,10 +27,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.init.ScriptUtils;
-import org.springframework.test.util.ReflectionTestUtils;
 
+import io.mosip.kernel.core.exception.IOException;
 import io.mosip.kernel.core.util.FileUtils;
 import io.mosip.registration.audit.AuditFactory;
+import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.dao.GlobalParamDAO;
 import io.mosip.registration.dao.PreRegistrationDataSyncDAO;
 import io.mosip.registration.dao.RegistrationDAO;
@@ -77,10 +80,13 @@ public class CenterMachineReMapServiceTest {
 	private PreRegistrationDataSyncDAO preRegistrationDataSyncDAO;
 	@Autowired
 	FileUtils fileUtils;
+	
+	@BeforeClass
+	public static void initialize() throws IOException, java.io.IOException {		
+		Map<String, Object> applicationMap = new HashMap<>();
+		applicationMap.put("mosip.registration.registration_pre_reg_packet_location","..//PreRegPacketStore");
+		ApplicationContext.getInstance().setApplicationMap(applicationMap);
 
-	@Before
-	public void setUp() {
-		ReflectionTestUtils.setField(centerMachineReMapServiceImpl, "preRegPacketLocation", "test.txt");
 	}
 
 	@Test
