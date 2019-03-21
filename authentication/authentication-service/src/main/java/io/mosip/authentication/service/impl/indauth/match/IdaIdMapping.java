@@ -3,6 +3,7 @@ package io.mosip.authentication.service.impl.indauth.match;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -162,6 +163,14 @@ public enum IdaIdMapping implements IdMapping {
 	public static Set<IdMapping> setOf(IdMapping... idMapping) {
 		return Stream.of(idMapping).collect(Collectors.toSet());
 
+	}
+	
+	public static Optional<String> getIdNameForMapping(String mappingName, MappingConfig mappingConfig) {
+		return Stream.of(IdaIdMapping.values())
+				.filter(mapping -> mapping.getSubIdMappings().isEmpty())
+				.filter(mapping -> mapping.getMappingFunction().apply(mappingConfig, null).contains(mappingName))
+				.findFirst()
+				.map(IdaIdMapping::getIdname);
 	}
 
 }

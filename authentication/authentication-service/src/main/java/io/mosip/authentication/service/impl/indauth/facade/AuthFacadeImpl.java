@@ -45,7 +45,6 @@ import io.mosip.authentication.core.spi.indauth.service.PinAuthService;
 import io.mosip.authentication.core.spi.notification.service.NotificationService;
 import io.mosip.authentication.service.entity.AutnTxn;
 import io.mosip.authentication.service.helper.AuditHelper;
-import io.mosip.authentication.service.helper.IdInfoHelper;
 import io.mosip.authentication.service.impl.indauth.builder.AuthResponseBuilder;
 import io.mosip.authentication.service.impl.indauth.service.bio.BioAuthType;
 import io.mosip.kernel.core.exception.ParseException;
@@ -132,9 +131,6 @@ public class AuthFacadeImpl implements AuthFacade {
 	/** The TokenId Generator */
 	@Autowired
 	private TokenIdGenerator<String, String> tokenIdGenerator;
-
-	@Autowired
-	private IdInfoHelper idInfoHelper;
 
 	@Autowired
 	private IdInfoFetcher idInfoFetcher;

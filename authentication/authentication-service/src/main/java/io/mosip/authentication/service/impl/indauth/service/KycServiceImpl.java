@@ -1,8 +1,10 @@
 package io.mosip.authentication.service.impl.indauth.service;
 
+import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -16,9 +18,10 @@ import io.mosip.authentication.core.dto.indauth.DataDTO;
 import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
 import io.mosip.authentication.core.dto.indauth.KycResponseDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
+import io.mosip.authentication.core.spi.indauth.match.MappingConfig;
 import io.mosip.authentication.core.spi.indauth.service.KycService;
-import io.mosip.authentication.core.util.MaskUtil;
 import io.mosip.authentication.service.helper.IdInfoHelper;
+import io.mosip.authentication.service.impl.indauth.match.IdaIdMapping;
 
 /**
  * The implementation of Kyc Authentication service.
@@ -32,12 +35,6 @@ public class KycServiceImpl implements KycService {
 	/** The Constant MOSIP_SECONDARY_LANG_CODE. */
 	private static final String MOSIP_SECONDARY_LANG_CODE = "mosip.secondary.lang-code";
 
-	/** The Constant UIN_MASKING_CHARCOUNT. */
-	private static final String UIN_MASKING_CHARCOUNT = "uin.masking.charcount";
-
-	/** The Constant UIN_MASKING_REQUIRED. */
-	private static final String UIN_MASKING_REQUIRED = "uin.masking.required";
-
 	/** The Constant MOSIP_PRIMARY_LANG_CODE. */
 	private static final String MOSIP_PRIMARY_LANG_CODE = "mosip.primary.lang-code";
 
@@ -47,6 +44,9 @@ public class KycServiceImpl implements KycService {
 	/** The demo helper. */
 	@Autowired
 	private IdInfoHelper idInfoHelper;
+
+	@Autowired
+	private MappingConfig mappingConfig;
 
 	/**
 	 * This method will return the KYC info of the individual.
@@ -64,7 +64,6 @@ public class KycServiceImpl implements KycService {
 	public KycResponseDTO retrieveKycInfo(String uin, List<String> allowedkycAttributes, String secLangCode,
 			Map<String, List<IdentityInfoDTO>> identityInfo) throws IdAuthenticationBusinessException {
 		KycResponseDTO kycResponseDTO = new KycResponseDTO();
-
 		Map<String, Object> filteredIdentityInfo = constructIdentityInfo(allowedkycAttributes, identityInfo,
 				secLangCode);
 		if (Objects.nonNull(filteredIdentityInfo) && filteredIdentityInfo.get("face") instanceof List) {
@@ -84,14 +83,12 @@ public class KycServiceImpl implements KycService {
 			filteredIdentityInfo.put("biometrics", bioValue);
 		}
 		if (Objects.nonNull(filteredIdentityInfo)) {
-			Object maskedUin = uin;
-			Boolean maskRequired = env.getProperty(UIN_MASKING_REQUIRED, Boolean.class);
-			Integer maskCount = env.getProperty(UIN_MASKING_CHARCOUNT, Integer.class);
-			if (maskRequired.booleanValue()) {
-				maskedUin = MaskUtil.generateMaskValue(uin, maskCount);
-			}
-			filteredIdentityInfo.put("uin", maskedUin);
-			kycResponseDTO.setIdentity(filteredIdentityInfo);
+			Map<String, Object> idMappingIdentityInfo = filteredIdentityInfo.entrySet()
+					.stream()
+					.map(entry -> new SimpleEntry<>(IdaIdMapping.getIdNameForMapping(entry.getKey(), mappingConfig).orElse(""), entry.getValue()))
+					.filter(entry -> !entry.getKey().isEmpty())
+					.collect(Collectors.toMap(Entry::getKey, Entry::getValue));
+			kycResponseDTO.setIdentity(idMappingIdentityInfo);
 		}
 		return kycResponseDTO;
 	}
