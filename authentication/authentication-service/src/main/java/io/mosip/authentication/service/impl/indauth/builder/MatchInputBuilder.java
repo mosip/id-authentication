@@ -1,8 +1,6 @@
 package io.mosip.authentication.service.impl.indauth.builder;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -10,17 +8,19 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
+
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.RequestDTO;
 import io.mosip.authentication.core.spi.indauth.match.AuthType;
 import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
 import io.mosip.authentication.core.spi.indauth.match.MatchInput;
 import io.mosip.authentication.core.spi.indauth.match.MatchType;
-import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
 import io.mosip.authentication.core.spi.indauth.match.MatchType.Category;
+import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
 import io.mosip.authentication.service.helper.IdInfoHelper;
 
 /**
@@ -77,13 +77,12 @@ public class MatchInputBuilder {
 		Map<String, String> infoFromAuthRequest = matchType.getReqestInfoFunction().apply(authRequestDTO);
 		Optional<AuthType> authTypeOpt = AuthType.getAuthTypeForMatchType(matchType, authTypes);
 		if (authTypeOpt.isPresent()) {
-			matchInputs.add(buildMatchInput(authRequestDTO, matchType, infoFromAuthRequest, authTypeOpt, language));
+			matchInputs.add(buildMatchInput(authRequestDTO, matchType, infoFromAuthRequest, authTypeOpt.get(), language));
 		}
 	}
 
 	private MatchInput buildMatchInput(AuthRequestDTO authRequestDTO, MatchType matchType,
-			Map<String, String> infoFromAuthRequest, Optional<AuthType> authTypeOpt, String language) {
-		AuthType authType = authTypeOpt.get();
+			Map<String, String> infoFromAuthRequest, AuthType authType, String language) {
 		if (infoFromAuthRequest.isEmpty()) {
 			// For Identity
 			Optional<RequestDTO> identityOpt = Optional.ofNullable(authRequestDTO.getRequest());

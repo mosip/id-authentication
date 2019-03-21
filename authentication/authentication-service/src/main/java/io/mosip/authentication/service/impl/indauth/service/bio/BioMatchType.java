@@ -13,7 +13,6 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import io.mosip.authentication.core.dto.indauth.AuthUsageDataBit;
 import io.mosip.authentication.core.dto.indauth.BioIdentityInfoDTO;
 import io.mosip.authentication.core.dto.indauth.DataDTO;
 import io.mosip.authentication.core.dto.indauth.IdentityDTO;
@@ -121,12 +120,6 @@ public enum BioMatchType implements MatchType {
 	/** The allowed matching strategy. */
 	private Set<MatchingStrategy> allowedMatchingStrategy;
 
-	/** The used bit. */
-	private AuthUsageDataBit usedBit;
-
-	/** The matched bit. */
-	private AuthUsageDataBit matchedBit;
-
 	private Function<RequestDTO, Map<String, List<IdentityInfoDTO>>> identityInfoFunction;
 
 	private IdMapping idMapping;
@@ -210,24 +203,6 @@ public enum BioMatchType implements MatchType {
 	 */
 	public Function<Map<String, String>, Map<String, String>> getEntityInfoMapper() {
 		return Function.identity();
-	}
-
-	/**
-	 * Gets the used bit.
-	 *
-	 * @return the used bit
-	 */
-	public AuthUsageDataBit getUsedBit() {
-		return usedBit;
-	}
-
-	/**
-	 * Gets the matched bit.
-	 *
-	 * @return the matched bit
-	 */
-	public AuthUsageDataBit getMatchedBit() {
-		return matchedBit;
 	}
 
 	public IdMapping getIdMapping() {
