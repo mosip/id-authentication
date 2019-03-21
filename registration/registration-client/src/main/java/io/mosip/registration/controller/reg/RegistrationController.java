@@ -98,7 +98,7 @@ public class RegistrationController extends BaseController {
 	private GridPane fingerPrintCapture;
 
 	@FXML
-	private AnchorPane biometricException;
+	private GridPane biometricException;
 
 	@FXML
 	private GridPane faceCapture;

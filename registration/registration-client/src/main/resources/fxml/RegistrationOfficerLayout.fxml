@@ -43,7 +43,7 @@
         </rowConstraints>
          <children>
            	<fx:include fx:id="onboard" prefHeight="${onboardPane.height}" prefWidth="${onboardPane.width}" source="Onboard.fxml" visible="true" />
-			<fx:include fx:id="registrationOfficerPacketLayout" prefHeight="${onboardPane.height}" prefWidth="${onboardPane.width}" source="RegistrationOfficerPacketLayout.fxml" visible="false" />	           	
+			<fx:include fx:id="homeContent" prefHeight="${onboardPane.height}" prefWidth="${onboardPane.width}" source="RegistrationOfficerPacketLayout.fxml" visible="false" />	           	
          </children>
       </GridPane>
    </children>

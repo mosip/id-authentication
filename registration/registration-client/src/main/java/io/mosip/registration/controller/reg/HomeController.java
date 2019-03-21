@@ -40,13 +40,10 @@ public class HomeController extends BaseController implements Initializable {
 
 	@FXML
 	private GridPane mainBox;
-	
 	@FXML
-	private AnchorPane registrationOfficerPacketLayout;
-	
+	public GridPane homeContent;
 	@FXML
 	private GridPane onboard;
-
 
 	/**
 	 * Building Home screen on Login success
@@ -77,7 +74,7 @@ public class HomeController extends BaseController implements Initializable {
 						.get(RegistrationConstants.ONBOARD_USER_UPDATE)) {
 					clearOnboardData();
 				}
-				registrationOfficerPacketLayout.setVisible(true);
+				homeContent.setVisible(true);
 			}
 			
 			getScene(mainBox);

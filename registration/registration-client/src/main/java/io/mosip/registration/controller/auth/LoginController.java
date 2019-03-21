@@ -233,9 +233,8 @@ public class LoginController extends BaseController implements Initializable {
 
 				scene = getScene(loginRoot);
 				pageFlow.getInitialPageDetails();
-
-				primaryStage.setMaximized(true);
 				primaryStage.setResizable(true);
+				//primaryStage.setFullScreen(true);
 				primaryStage.setScene(scene);
 				primaryStage.show();
 

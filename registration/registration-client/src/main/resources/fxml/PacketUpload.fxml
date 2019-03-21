@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.*?>
 <?import javafx.scene.*?>
 <?import javafx.scene.text.*?>
 <?import javafx.scene.image.*?>
@@ -8,69 +9,111 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane fx:id="reRegistrationRootPane" styleClass="parentPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.eodapproval.ReRegistrationController">
+<GridPane fx:id="uploadPacketRoot" styleClass="uploadPacketparentPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.reg.PacketUploadController">
+  <columnConstraints>
+    <ColumnConstraints hgrow="SOMETIMES" percentWidth="100" />
+  </columnConstraints>
+  <rowConstraints>
+    <RowConstraints percentHeight="100" vgrow="SOMETIMES" />
+  </rowConstraints>
    <children>
-      <AnchorPane fx:id="pendingActionRegistrationRootSubPane" styleClass="approveRegistrationRootSubPane">
+      <GridPane>
+        <columnConstraints>
+          <ColumnConstraints hgrow="SOMETIMES" percentWidth="100.0" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints percentHeight="7.0" vgrow="SOMETIMES" />
+          <RowConstraints percentHeight="93.0" vgrow="SOMETIMES" />
+        </rowConstraints>
          <children>
-            <AnchorPane fx:id="imageAnchorPane" layoutX="268.0" layoutY="50.0" styleClass="imageAnchorPaneStyle">
+            <GridPane GridPane.rowIndex="1">
+              <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" percentWidth="100.0" />
+              </columnConstraints>
+              <rowConstraints>
+                <RowConstraints percentHeight="100.0" vgrow="SOMETIMES" />
+              </rowConstraints>
                <children>
-                  <ImageView fx:id="imageView" fitHeight="272.0" fitWidth="613.0" layoutX="10.0" layoutY="4.0" pickOnBounds="true" preserveRatio="true" />
+                  <GridPane>
+                    <columnConstraints>
+                      <ColumnConstraints hgrow="SOMETIMES" percentWidth="100.0" />
+                    </columnConstraints>
+                    <rowConstraints>
+                        <RowConstraints percentHeight="10.0" vgrow="SOMETIMES" />
+                      <RowConstraints percentHeight="100.0" vgrow="SOMETIMES" />
+                    </rowConstraints>
+                     <GridPane.margin>
+                        <Insets />
+                     </GridPane.margin>
+                     <padding>
+                        <Insets bottom="50.0" left="50.0" right="50.0" />
+                     </padding>
+                     <children>
+                        <TableView fx:id="table" GridPane.halignment="LEFT" GridPane.rowIndex="1" GridPane.valignment="CENTER">
+                           <columns>
+                              <TableColumn fx:id="checkBoxColumn" prefWidth="50.0">
+                                 <graphic>
+                                    <CheckBox fx:id="selectAllCheckBox" alignment="CENTER" mnemonicParsing="false" onAction="#selectAllCheckBox">
+                                       <padding>
+                                          <Insets bottom="2.0" />
+                                       </padding></CheckBox>
+                                 </graphic>
+                              </TableColumn>
+                              <TableColumn fx:id="fileNameColumn" prefWidth="2500.0" text="%files" />
+                           </columns>
+                        </TableView>
+                        <GridPane>
+                          <columnConstraints>
+                            <ColumnConstraints hgrow="SOMETIMES" percentWidth="40.0" />
+                            <ColumnConstraints hgrow="SOMETIMES" percentWidth="20.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" percentWidth="40.0" />
+                          </columnConstraints>
+                          <rowConstraints>
+                            <RowConstraints percentHeight="100.0" vgrow="SOMETIMES" />
+                          </rowConstraints>
+                           <children>
+                              <ProgressIndicator fx:id="progressIndicator" progress="0.0" visible="false" GridPane.columnIndex="1" />
+                           </children>
+                        </GridPane>
+                     </children>
+                  </GridPane>
                </children>
-            </AnchorPane>
-            <TableView fx:id="table" layoutX="15.0" layoutY="50.0" styleClass="approvalTable">
-               <columns>
-                  <TableColumn fx:id="id" styleClass="reRegTableId" text="%registrationid" />
-                  <TableColumn fx:id="acknowledgementFormPath" text="%registrtionid" visible="false" />
-               </columns>
-            </TableView>
-            <AnchorPane layoutY="619.0" styleClass="pendingApprovalFooter">
+            </GridPane>
+            <GridPane fx:id="uploadPacketHeader">
+              <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" percentWidth="33.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" percentWidth="34.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" percentWidth="33.0" />
+              </columnConstraints>
+              <rowConstraints>
+                <RowConstraints percentHeight="100.0" vgrow="SOMETIMES" />
+              </rowConstraints>
                <children>
-                  <Button fx:id="submitBtn" layoutX="1110.0" layoutY="6.0" mnemonicParsing="false" onAction="#authenticateReregister" styleClass="approveButton" text="%authenticate">
-                  <graphic>
-                  <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../images/Authenticate.png" />
-                     </image>
-                  </ImageView>
-               </graphic>
-               </Button>
-                  <Label layoutX="800.0" layoutY="11.0" text="%aplicatoinactioned" />
+                  <HBox alignment="CENTER_LEFT" spacing="3.0">
+                     <children>
+                        <Button mnemonicParsing="false" onAction="#goToHomePageFromRegistration" styleClass="homeButton" text="%home" />
+                        <Label styleClass="headerLabel" text="%/uploadpacket" />
+                     </children>
+                     <GridPane.margin>
+                        <Insets left="20.0" />
+                     </GridPane.margin></HBox>
+                  <HBox alignment="CENTER" GridPane.columnIndex="1">
+                     <children>
+                        <Label styleClass="mainHeader" text="%uploadpacket" />
+                     </children>
+                  </HBox>
+                  <HBox alignment="CENTER_RIGHT" spacing="10.0" GridPane.columnIndex="2">
+                     <children>
+                        <Button fx:id="saveToDevice" mnemonicParsing="false" onAction="#packetExport" text="%saveToDevice" />
+                        <Button fx:id="formValidationButton" mnemonicParsing="false" onAction="#syncAndUploadPacket" text="%upload" />
+                     </children>
+                     <GridPane.margin>
+                        <Insets right="50.0" />
+                     </GridPane.margin>
+                  </HBox>
                </children>
-            </AnchorPane>
+            </GridPane>
          </children>
-      </AnchorPane>
-      <AnchorPane fx:id="reRegistrationHeader" layoutX="-2.0" layoutY="2.0">
-         <children>
-            <ToggleButton fx:id="notInformedBtn" layoutX="1050.0" layoutY="10.0" mnemonicParsing="false" onAction="#notInformedToUser" styleClass="reRegToggle" text="%cantinformed">
-               <toggleGroup>
-                  <ToggleGroup fx:id="informedStatus" />
-               </toggleGroup>
-               <graphic>
-                  <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../images/informed.png" />
-                     </image>
-                  </ImageView>
-               </graphic>
-            </ToggleButton>
-            <ToggleButton fx:id="informedBtn" layoutX="1160.0" layoutY="10.0" mnemonicParsing="false" onAction="#informedToUser" styleClass="reRegToggle" text="%informed" toggleGroup="$informedStatus">
-            <graphic>
-                  <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../images/cantInform.png" />
-                     </image>
-                  </ImageView>
-               </graphic>
-               
-            </ToggleButton>
-            <AnchorPane layoutY="-10.0">
-               <children>
-                  <Button layoutY="14.0" mnemonicParsing="false" onAction="#goToHomePageFromRegistration" styleClass="homeButton" text="%home" />
-                  <Label layoutX="80.0" layoutY="16.0" styleClass="headerLabel" text="%/reRegistration" />
-               </children>
-            </AnchorPane>
-            <Label layoutX="590.0" styleClass="mainHeader" text="%reRegistration" />
-         </children>
-      </AnchorPane>
+      </GridPane>
    </children>
-</AnchorPane>
+</GridPane>
