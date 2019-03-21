@@ -382,7 +382,7 @@ public class DataSyncServiceUtilTest {
 		responsestatusDto.add(multipartResponseDTOs);
 
 		MainListResponseDTO<DocumentMultipartResponseDTO> mainListResponseDTO = new MainListResponseDTO<>();
-		mainListResponseDTO.setResTime(resTime);
+		mainListResponseDTO.setResponsetime(resTime);
 		mainListResponseDTO.setErr(null);
 		mainListResponseDTO.setResponse(responsestatusDto);
 		ResponseEntity<MainListResponseDTO<DocumentMultipartResponseDTO>> respEntity = new ResponseEntity<>(
@@ -405,7 +405,7 @@ public class DataSyncServiceUtilTest {
 		RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
 		Mockito.when(restTemplateBuilder.build()).thenReturn(restTemplate);
 		MainListResponseDTO<DemographicResponseDTO> mainResponseDTO = new MainListResponseDTO<>();
-		mainResponseDTO.setResTime(resTime);
+		mainResponseDTO.setResponsetime(resTime);
 		mainResponseDTO.setErr(null);
 		mainResponseDTO.setResponse(list);
 		ResponseEntity<MainListResponseDTO<DemographicResponseDTO>> respEntity = new ResponseEntity<>(mainResponseDTO,

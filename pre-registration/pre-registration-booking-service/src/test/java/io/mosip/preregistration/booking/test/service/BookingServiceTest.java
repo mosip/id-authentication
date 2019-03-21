@@ -801,7 +801,7 @@ public class BookingServiceTest {
 		MainListResponseDTO<DeleteBookingDTO> response = new MainListResponseDTO<>();
 		response.setErr(null);
 		response.setResponse(deleteList);
-		response.setResTime(serviceUtil.getCurrentResponseTime());
+		response.setResponsetime(serviceUtil.getCurrentResponseTime());
 
 		assertEquals(response.getResponse().get(0).getPreRegistrationId(),
 				service.deleteBooking("12345678909876").getResponse().get(0).getPreRegistrationId());

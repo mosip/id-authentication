@@ -268,7 +268,7 @@ public class DemographicServiceTest {
 		requiredRequestMap.put("ver", versionUrl);
 
 		responseDTO = new MainListResponseDTO<DemographicResponseDTO>();
-		responseDTO.setResTime(serviceUtil.getCurrentResponseTime());
+		responseDTO.setResponsetime(serviceUtil.getCurrentResponseTime());
 		//responseDTO.setStatus(Boolean.TRUE);
 		responseDTO.setErr(null);
 
@@ -606,7 +606,7 @@ byte[] encryptedDemographicDetails= {1,0,1,0,1,0};
 		//delResponseDto.setStatus(Boolean.TRUE);
 		delResponseDto.setErr(null);
 		delResponseDto.setResponse(deleteAllList);
-		delResponseDto.setResTime(serviceUtil.getCurrentResponseTime());
+		delResponseDto.setResponsetime(serviceUtil.getCurrentResponseTime());
 
 		ResponseEntity<MainListResponseDTO> res = new ResponseEntity<>(delResponseDto, HttpStatus.OK);
 		Mockito.when(demographicRepository.findBypreRegistrationId(preRegId)).thenReturn(null);
@@ -634,7 +634,7 @@ byte[] encryptedDemographicDetails= {1,0,1,0,1,0};
 		//delResponseDto.setStatus(Boolean.TRUE);
 		delResponseDto.setErr(null);
 		delResponseDto.setResponse(deleteAllList);
-		delResponseDto.setResTime(serviceUtil.getCurrentResponseTime());
+		delResponseDto.setResponsetime(serviceUtil.getCurrentResponseTime());
 
 		ResponseEntity<MainListResponseDTO> res = new ResponseEntity<>(delResponseDto, HttpStatus.OK);
 		Mockito.when(demographicRepository.findBypreRegistrationId(preRegId)).thenReturn(preRegistrationEntity);
@@ -665,7 +665,7 @@ byte[] encryptedDemographicDetails= {1,0,1,0,1,0};
 
 		delResponseDto.setErr(err);
 		delResponseDto.setResponse(deleteAllList);
-		delResponseDto.setResTime(serviceUtil.getCurrentResponseTime());
+		delResponseDto.setResponsetime(serviceUtil.getCurrentResponseTime());
 
 		ResponseEntity<MainListResponseDTO> res = new ResponseEntity<>(delResponseDto, HttpStatus.OK);
 		Mockito.when(demographicRepository.findBypreRegistrationId(preRegId)).thenReturn(preRegistrationEntity);
@@ -694,7 +694,7 @@ byte[] encryptedDemographicDetails= {1,0,1,0,1,0};
 		//delResponseDto.setStatus(Boolean.TRUE);
 		delResponseDto.setErr(null);
 		delResponseDto.setResponse(deleteAllList);
-		delResponseDto.setResTime(serviceUtil.getCurrentResponseTime());
+		delResponseDto.setResponsetime(serviceUtil.getCurrentResponseTime());
 
 		ResponseEntity<MainListResponseDTO> res = new ResponseEntity<>(delResponseDto, HttpStatus.OK);
 		Mockito.when(demographicRepository.findBypreRegistrationId(preRegId)).thenReturn(preRegistrationEntity);
@@ -729,7 +729,7 @@ byte[] encryptedDemographicDetails= {1,0,1,0,1,0};
 		//delResponseDto.setStatus(Boolean.TRUE);
 		delResponseDto.setErr(null);
 		delResponseDto.setResponse(deleteAllList);
-		delResponseDto.setResTime(serviceUtil.getCurrentResponseTime());
+		delResponseDto.setResponsetime(serviceUtil.getCurrentResponseTime());
 
 		Mockito.when(demographicRepository.findBypreRegistrationId(preRegId)).thenReturn(preRegistrationEntity);
 

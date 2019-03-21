@@ -380,7 +380,7 @@ public class BookingServiceUtilTest {
 
 		preRegResponse.setResponse(statusList);
 		preRegResponse.setErr(null);
-		preRegResponse.setResTime(serviceUtil.getCurrentResponseTime());
+		preRegResponse.setResponsetime(serviceUtil.getCurrentResponseTime());
 		RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
 		Mockito.when(restTemplateBuilder.build()).thenReturn(restTemplate);
 		
@@ -413,7 +413,7 @@ public class BookingServiceUtilTest {
 		err.setErrorCode(ErrorCodes.PRG_BOOK_RCI_011.name());
 		err.setMessage(ErrorMessages.DEMOGRAPHIC_STATUS_UPDATION_FAILED.getMessage());
 		preRegResponse.setErr(err);
-		preRegResponse.setResTime(serviceUtil.getCurrentResponseTime());
+		preRegResponse.setResponsetime(serviceUtil.getCurrentResponseTime());
 		RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
 		Mockito.when(restTemplateBuilder.build()).thenReturn(restTemplate);
 		@SuppressWarnings("unchecked")
@@ -434,7 +434,7 @@ public class BookingServiceUtilTest {
 		err.setErrorCode(ErrorCodes.PRG_BOOK_RCI_011.name());
 		err.setMessage(ErrorMessages.DEMOGRAPHIC_STATUS_UPDATION_FAILED.getMessage());
 		preRegResponse.setErr(err);
-		preRegResponse.setResTime(serviceUtil.getCurrentResponseTime());
+		preRegResponse.setResponsetime(serviceUtil.getCurrentResponseTime());
 		RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
 		Mockito.when(restTemplateBuilder.build()).thenReturn(restTemplate);
 		@SuppressWarnings("unchecked")
