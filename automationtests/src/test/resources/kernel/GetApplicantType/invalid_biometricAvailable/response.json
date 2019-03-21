@@ -1,0 +1,7 @@
+{
+    "timestamp": "2019-03-05T09:44:33.408+0000",
+    "status": 400,
+    "error": "Bad Request",
+    "message": "Failed to convert value of type 'java.lang.String' to required type 'java.lang.Boolean'; nested exception is java.lang.IllegalArgumentException: Invalid boolean value [fsadfdf]",
+    "path": "/applicanttype/v1.0/applicanttype/getApplicantType"
+}

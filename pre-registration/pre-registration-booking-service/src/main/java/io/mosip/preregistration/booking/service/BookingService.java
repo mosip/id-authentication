@@ -16,10 +16,12 @@ import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import io.mosip.kernel.auth.adapter.AuthUserDetails;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.preregistration.booking.codes.RequestCodes;
 import io.mosip.preregistration.booking.dto.AvailabilityDto;
@@ -65,6 +67,7 @@ import io.mosip.preregistration.core.util.ValidationUtil;
  * @author Kishan Rathore
  * @author Jagadishwari
  * @author Ravi C. Balaji
+ * @author Sanober Noor
  * @since 1.0.0
  *
  */
@@ -117,6 +120,10 @@ public class BookingService {
 
 	@Autowired
 	private AuditLogUtil auditLogUtil;
+	
+	 public AuthUserDetails  authUserDetails() {
+			return (AuthUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal(); 
+	}
 
 	/**
 	 * It will sync the registration center details
@@ -146,10 +153,10 @@ public class BookingService {
 			if (isSaveSuccess) {
 				setAuditValues(EventId.PRE_407.toString(), EventName.PERSIST.toString(), EventType.SYSTEM.toString(),
 						"Availability for booking successfully saved in the database",
-						AuditLogVariables.MULTIPLE_ID.toString());
+						AuditLogVariables.MULTIPLE_ID.toString(),authUserDetails().getUserId(),authUserDetails().getUsername());
 			} else {
 				setAuditValues(EventId.PRE_405.toString(), EventName.EXCEPTION.toString(), EventType.SYSTEM.toString(),
-						"addAvailability failed", AuditLogVariables.NO_ID.toString());
+						"addAvailability failed", AuditLogVariables.NO_ID.toString(),authUserDetails().getUserId(),authUserDetails().getUsername());
 			}
 		}
 		response.setResponsetime(serviceUtil.getCurrentResponseTime());
@@ -195,10 +202,10 @@ public class BookingService {
 			if (isSaveSuccess) {
 				setAuditValues(EventId.PRE_401.toString(), EventName.RETRIEVE.toString(), EventType.SYSTEM.toString(),
 						"  Availability retrieved successfully for booking  ",
-						AuditLogVariables.MULTIPLE_ID.toString());
+						AuditLogVariables.MULTIPLE_ID.toString(),authUserDetails().getUserId(),authUserDetails().getUsername());
 			} else {
 				setAuditValues(EventId.PRE_405.toString(), EventName.EXCEPTION.toString(), EventType.SYSTEM.toString(),
-						"Availability failed to get", AuditLogVariables.NO_ID.toString());
+						"Availability failed to get", AuditLogVariables.NO_ID.toString(),authUserDetails().getUserId(),authUserDetails().getUsername());
 			}
 		}
 		response.setResponsetime(serviceUtil.getCurrentResponseTime());
@@ -292,10 +299,10 @@ public class BookingService {
 		} finally {
 			if (isSaveSuccess) {
 				setAuditValues(EventId.PRE_407.toString(), EventName.PERSIST.toString(), EventType.SYSTEM.toString(),
-						"  Appointment booked successfully    ", AuditLogVariables.MULTIPLE_ID.toString());
+						"  Appointment booked successfully    ", AuditLogVariables.MULTIPLE_ID.toString(),authUserDetails().getUserId(),authUserDetails().getUsername());
 			} else {
 				setAuditValues(EventId.PRE_405.toString(), EventName.EXCEPTION.toString(), EventType.SYSTEM.toString(),
-						"Appointment failed to book", AuditLogVariables.NO_ID.toString());
+						"Appointment failed to book", AuditLogVariables.NO_ID.toString(),authUserDetails().getUserId(),authUserDetails().getUsername());
 			}
 		}
 		responseDTO.setResponsetime(serviceUtil.getCurrentResponseTime());
@@ -367,10 +374,10 @@ public class BookingService {
 		} finally {
 			if (isSaveSuccess) {
 				setAuditValues(EventId.PRE_403.toString(), EventName.DELETE.toString(), EventType.SYSTEM.toString(),
-						"  Appointment canceled successfully for booking  ", AuditLogVariables.MULTIPLE_ID.toString());
+						"  Appointment canceled successfully for booking  ", AuditLogVariables.MULTIPLE_ID.toString(),authUserDetails().getUserId(),authUserDetails().getUsername());
 			} else {
 				setAuditValues(EventId.PRE_405.toString(), EventName.EXCEPTION.toString(), EventType.SYSTEM.toString(),
-						"cancelAppointment failed", AuditLogVariables.NO_ID.toString());
+						"cancelAppointment failed", AuditLogVariables.NO_ID.toString(),authUserDetails().getUserId(),authUserDetails().getUsername());
 			}
 		}
 		responseDto.setResponsetime(serviceUtil.getCurrentResponseTime());
@@ -531,10 +538,10 @@ public class BookingService {
 		} finally {
 			if (isSaveSuccess) {
 				setAuditValues(EventId.PRE_402.toString(), EventName.UPDATE.toString(), EventType.SYSTEM.toString(),
-						"  Booking cancel successfully ", AuditLogVariables.MULTIPLE_ID.toString());
+						"  Booking cancel successfully ", AuditLogVariables.MULTIPLE_ID.toString(),authUserDetails().getUserId(),authUserDetails().getUsername());
 			} else {
 				setAuditValues(EventId.PRE_405.toString(), EventName.EXCEPTION.toString(), EventType.SYSTEM.toString(),
-						" Booking failed to cancel ", AuditLogVariables.NO_ID.toString());
+						" Booking failed to cancel ", AuditLogVariables.NO_ID.toString(),authUserDetails().getUserId(),authUserDetails().getUsername());
 			}
 		}
 		return cancelBookingResponseDTO;
@@ -645,13 +652,15 @@ public class BookingService {
 	 * @param description
 	 * @param idType
 	 */
-	public void setAuditValues(String eventId, String eventName, String eventType, String description, String idType) {
+	public void setAuditValues(String eventId, String eventName, String eventType, String description, String idType,String userId,String userName) {
 		AuditRequestDto auditRequestDto = new AuditRequestDto();
 		auditRequestDto.setEventId(eventId);
 		auditRequestDto.setEventName(eventName);
 		auditRequestDto.setEventType(eventType);
 		auditRequestDto.setDescription(description);
 		auditRequestDto.setId(idType);
+		auditRequestDto.setSessionUserId(userId);
+		auditRequestDto.setSessionUserName(userName);
 		auditRequestDto.setModuleId(AuditLogVariables.BOOK.toString());
 		auditRequestDto.setModuleName(AuditLogVariables.BOOKING_SERVICE.toString());
 		auditLogUtil.saveAuditDetails(auditRequestDto);

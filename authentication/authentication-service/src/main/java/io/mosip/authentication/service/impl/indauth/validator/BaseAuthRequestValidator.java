@@ -80,7 +80,6 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 //	/** The Final Constant For IRIS_PROVIDER_ALL */
 //	private static final String IRIS_PROVIDER_ALL = "iris.provider.all";
 
-
 	/** The mosip logger. */
 	private static Logger mosipLogger = IdaLogger.getLogger(BaseAuthRequestValidator.class);
 
@@ -104,7 +103,7 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 
 	/** The Constant OTP_LENGTH. */
 	private static final Integer OTP_LENGTH = 6;
-	
+
 	private static final Integer STATIC_PIN_LENGTH = 6;
 
 	/** The Constant finger. */
@@ -121,12 +120,11 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 
 	/** The Constant PATTERN. */
 	private static final Pattern STATIC_PIN_PATTERN = Pattern.compile("^[0-9]{" + STATIC_PIN_LENGTH + "}");
-	
+
 	private static final Pattern OTP_PIN_PATTERN = Pattern.compile("^[0-9]{" + OTP_LENGTH + "}");
 
 	/** The Constant AUTH_TYPE. */
 	private static final String AUTH_TYPE = "requestedAuth";
-
 
 	/** email Validator */
 	@Autowired
@@ -166,8 +164,7 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 		if (baseAuthRequestDTO != null) {
 			validateId(baseAuthRequestDTO.getId(), errors);
 		}
-		
-		
+
 	}
 
 	/**
@@ -212,11 +209,12 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	 * 
 	 * @param pinInfo
 	 * @param errors
-	 * @param pattern 
+	 * @param pattern
 	 */
 	private void checkAdditionalFactorsValue(Optional<String> info, String type, Errors errors, Pattern pattern) {
 		if (!pattern.matcher(info.get()).matches()) {
-			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE, "Invalid Input " + type + " pin Value");
+			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE,
+					"Invalid Input " + type + " pin Value");
 			errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
 					new Object[] { type }, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
 		}
@@ -242,7 +240,7 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 				errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.MISSING_BIOMETRICDATA.getErrorCode(),
 						String.format(IdAuthenticationErrorConstants.MISSING_BIOMETRICDATA.getErrorMessage(), REQUEST));
 			} else {
-				
+
 				List<DataDTO> bioData = bioInfo.stream().map(BioIdentityInfoDTO::getData).collect(Collectors.toList());
 
 				validateDeviceInfo(bioData, errors);
@@ -440,7 +438,8 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 
 	private boolean checkAnyBioIdAvailable(AuthRequestDTO authRequestDTO, String type) {
 		return Optional.ofNullable(authRequestDTO.getRequest()).map(RequestDTO::getBiometrics)
-				.filter(list -> list.stream().anyMatch(bioId -> bioId.getData().getBioType().equalsIgnoreCase(type))).isPresent();
+				.filter(list -> list.stream().anyMatch(bioId -> bioId.getData().getBioType().equalsIgnoreCase(type)))
+				.isPresent();
 	}
 
 	/**
@@ -513,7 +512,8 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	 */
 	private boolean isDuplicateBioType(AuthRequestDTO authRequestDTO, BioAuthType bioType) {
 		List<BioIdentityInfoDTO> bioInfo = authRequestDTO.getRequest().getBiometrics();
-		List<DataDTO> bioData = bioInfo.stream().map(BioIdentityInfoDTO::getData).collect(Collectors.toList());;
+		List<DataDTO> bioData = bioInfo.stream().map(BioIdentityInfoDTO::getData).collect(Collectors.toList());
+		;
 		Long bioTypeCount = Optional.ofNullable(bioData).map(List::parallelStream)
 				.map(stream -> stream
 						.filter(bio -> bio.getBioType().isEmpty() && bio.getBioType().equals(bioType.getType()))
@@ -552,16 +552,14 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	}
 
 	private Map<String, Long> getBioSubtypeCount(List<BioIdentityInfoDTO> idendityInfoList) {
-		Map<String, Long> countsMap = idendityInfoList.stream()
-				.map(BioIdentityInfoDTO :: getData)
+		Map<String, Long> countsMap = idendityInfoList.stream().map(BioIdentityInfoDTO::getData)
 				.collect(Collectors.groupingBy(DataDTO::getBioSubType, Collectors.counting()));
 		return countsMap;
 
 	}
 
 	private Map<String, Long> getBioValuesCount(List<BioIdentityInfoDTO> idendityInfoList) {
-		Map<String, Long> countsMap = idendityInfoList.stream()
-				.map(BioIdentityInfoDTO :: getData)
+		Map<String, Long> countsMap = idendityInfoList.stream().map(BioIdentityInfoDTO::getData)
 				.collect(Collectors.groupingBy(DataDTO::getBioValue, Collectors.counting()));
 		return countsMap;
 
@@ -575,7 +573,7 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	 * @param errors         the errors
 	 */
 	private void validateIrisRequestCount(AuthRequestDTO authRequestDTO, Errors errors) {
-		Map<String, Long> irisSubtypeCounts = getBioSubtypeCounts(authRequestDTO,BioAuthType.IRIS_IMG.getType());
+		Map<String, Long> irisSubtypeCounts = getBioSubtypeCounts(authRequestDTO, BioAuthType.IRIS_IMG.getType());
 		if (irisSubtypeCounts.values().stream().anyMatch(count -> count > 1)) {
 			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE,
 					"Iris : either left eye or right eye count is more than 1.");
@@ -979,24 +977,24 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 			}
 		}
 
-		if (authTypeDTO.isPin() || authTypeDTO.isOtp()) {
-			if (!allowedAuthType.contains(MatchType.Category.SPIN.getType())) {
-				errors.rejectValue(REQUEST,
-						IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorCode(),
-						new Object[] { MatchType.Category.SPIN.getType() },
-						IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorMessage());
-			} 
+		if (authTypeDTO.isOtp()) {
 			if (!allowedAuthType.contains(MatchType.Category.OTP.getType())) {
-				errors.rejectValue(REQUEST,
-						IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorCode(),
+				errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorCode(),
 						new Object[] { MatchType.Category.OTP.getType() },
 						IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorMessage());
 			}
-			
-			if(!errors.hasErrors()) {
-				validateAdditionalFactorsDetails(requestDTO, errors);
-			}
+		}
 
+		if (authTypeDTO.isPin()) {
+			if (!allowedAuthType.contains(MatchType.Category.SPIN.getType())) {
+				errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorCode(),
+						new Object[] { MatchType.Category.SPIN.getType() },
+						IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorMessage());
+			}
+		}
+
+		if ((authTypeDTO.isPin() || authTypeDTO.isOtp()) && !errors.hasErrors()) {
+			validateAdditionalFactorsDetails(requestDTO, errors);
 		}
 	}
 

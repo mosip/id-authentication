@@ -120,7 +120,7 @@ public class TriggerNotification extends BaseTestCase implements ITest {
 			/*Creating the Pre-Registration Application*/			
 			Response createApplicationResponse = preRegLib.CreatePreReg();
 			
-			Response triggerNotifyResponse = preRegLib.TriggerNotification(createApplicationResponse);
+			Response triggerNotifyResponse = preRegLib.TriggerNotification();
 			
 			System.out.println("triggerNotifyResponse:"+triggerNotifyResponse.asString());
 			

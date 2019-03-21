@@ -17,6 +17,7 @@ import org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy;
 import org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.jpa.JpaTransactionManager;
@@ -26,8 +27,6 @@ import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-
-import com.zaxxer.hikari.HikariDataSource;
 
 import io.mosip.kernel.core.idrepo.constant.IdRepoConstants;
 import io.mosip.kernel.core.idrepo.spi.ShardDataSourceResolver;
@@ -90,15 +89,6 @@ public class IdRepoConfig implements WebMvcConfigurer {
 	}
 
 	/**
-	 * Gets the status.
-	 *
-	 * @return the status
-	 */
-	public List<String> getStatus() {
-		return status;
-	}
-
-	/**
 	 * Sets the status.
 	 *
 	 * @param status
@@ -106,15 +96,6 @@ public class IdRepoConfig implements WebMvcConfigurer {
 	 */
 	public void setStatus(List<String> status) {
 		this.status = status;
-	}
-
-	/**
-	 * Gets the id.
-	 *
-	 * @return the id
-	 */
-	public Map<String, String> getId() {
-		return id;
 	}
 
 	/**
@@ -128,15 +109,6 @@ public class IdRepoConfig implements WebMvcConfigurer {
 	}
 
 	/**
-	 * Gets the allowed bio types.
-	 *
-	 * @return the allowed bio types
-	 */
-	public List<String> getAllowedBioAttributes() {
-		return allowedBioAttributes;
-	}
-
-	/**
 	 * Sets the allowed bio types.
 	 *
 	 * @param allowedBioTypes
@@ -146,16 +118,8 @@ public class IdRepoConfig implements WebMvcConfigurer {
 		this.allowedBioAttributes = allowedBioAttributes;
 	}
 
-	public List<String> getBioAttributes() {
-		return bioAttributes;
-	}
-
 	public void setBioAttributes(List<String> bioAttributes) {
 		this.bioAttributes = bioAttributes;
-	}
-
-	public List<String> getAllowedTypes() {
-		return allowedTypes;
 	}
 
 	public void setAllowedTypes(List<String> allowedTypes) {
@@ -193,7 +157,7 @@ public class IdRepoConfig implements WebMvcConfigurer {
 	public Map<String, String> id() {
 		return Collections.unmodifiableMap(id);
 	}
-
+	
 	/**
 	 * Allowed bio types.
 	 *
