@@ -380,6 +380,7 @@ public class FaceCaptureController extends BaseController implements Initializab
 			exceptionBufferedImage = null;
 			exceptionImageCaptured = false;
 		}
+		disableNextButton();
 	}
 
 	/**
