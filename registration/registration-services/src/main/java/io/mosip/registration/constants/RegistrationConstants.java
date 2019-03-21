@@ -224,6 +224,8 @@ public class RegistrationConstants {
 
 	// onBoard User
 	public static final String ONBOARD_BIOMETRICS = "Biometrics - ";
+	public static final String ONBOARD_STYLE_CLASS = "onboardAlertMsg";
+	public static final String ONBOARD_IMG_PATH = "images/tick.png";
 
 	// RegistrationApproval
 	public static final String PLACEHOLDER_LABEL = "No Packets for approval";
