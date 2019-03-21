@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
+import io.mosip.registration.constants.RegistrationUIConstants;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.exception.RegBaseCheckedException;
@@ -131,9 +132,9 @@ public class SchedulerUtil extends BaseController {
 	 * To show the warning alert to user about session expire
 	 */
 	private static void alert() {
-		alert.setTitle("TIMEOUT");
-		alert.setHeaderText("You've been quite for a while.");
-		alert.setContentText("Would you like to continue, please click ok.");
+		alert.setTitle(RegistrationUIConstants.TIMEOUT_TITLE);
+		alert.setHeaderText(RegistrationUIConstants.TIMEOUT_HEADER);
+		alert.setContentText(RegistrationUIConstants.TIMEOUT_CONTENT);
 		if (!alert.isShowing()) {
 			res = alert.showAndWait();
 		}

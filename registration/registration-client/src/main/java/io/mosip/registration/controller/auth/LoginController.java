@@ -132,15 +132,6 @@ public class LoginController extends BaseController implements Initializable {
 	@FXML
 	private Label otpValidity;
 
-	@Value("${TIME_OUT_INTERVAL}")
-	private long timeoutInterval;
-
-	@Value("${IDEAL_TIME}")
-	private long idealTime;
-
-	@Value("${REFRESHED_LOGIN_TIME}")
-	private long refreshedLoginTime;
-
 	@Value("${otp_validity_in_mins}")
 	private long otpValidityImMins;
 
@@ -234,7 +225,7 @@ public class LoginController extends BaseController implements Initializable {
 				scene = getScene(loginRoot);
 				pageFlow.getInitialPageDetails();
 				primaryStage.setResizable(true);
-				//primaryStage.setFullScreen(true);
+				primaryStage.setFullScreen(true);
 				primaryStage.setScene(scene);
 				primaryStage.show();
 
@@ -735,10 +726,12 @@ public class LoginController extends BaseController implements Initializable {
 			LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
 					"Setting values for session context and user context");
 
+			long refreshedLoginTime = Long.parseLong(String.valueOf(ApplicationContext.map().get(RegistrationConstants.REFRESHED_LOGIN_TIME)));
+			long idealTime = Long.parseLong(String.valueOf(ApplicationContext.map().get(RegistrationConstants.IDEAL_TIME)));
+			
 			sessionContext.setLoginTime(new Date());
 			sessionContext.setRefreshedLoginTime(refreshedLoginTime);
 			sessionContext.setIdealTime(idealTime);
-			sessionContext.setTimeoutInterval(timeoutInterval);
 
 			SessionContext.UserContext userContext = sessionContext.getUserContext();
 			userContext.setUserId(userId.getText());
