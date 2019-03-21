@@ -234,9 +234,12 @@ public class DocumentScanController extends BaseController {
 			documentsMap.keySet().retainAll(docCategoryKeys);
 			for (String docCategoryKey : docCategoryKeys) {
 				DocumentDetailsDTO documentDetailsDTO = documentsMap.get(docCategoryKey);
-				if (documentDetailsDTO != null)
+				if (documentDetailsDTO != null) {
 					addDocumentsToScreen(documentDetailsDTO.getValue(), documentDetailsDTO.getFormat(),
 							documentVBoxes.get(docCategoryKey));
+					FXUtils.getInstance().selectComboBoxValue(documentComboBoxes.get(docCategoryKey),
+							documentDetailsDTO.getValue().substring(documentDetailsDTO.getValue().indexOf("_")+1));
+				}
 			}
 		} else if (documentVBoxes.isEmpty() && documentsMap != null) {
 			documentsMap.clear();
