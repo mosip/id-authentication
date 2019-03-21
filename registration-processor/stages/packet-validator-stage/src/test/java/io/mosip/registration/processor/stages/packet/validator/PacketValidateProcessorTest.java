@@ -140,9 +140,6 @@ public class PacketValidateProcessorTest {
 	@Mock
 	DocumentUtility documentUtility;
 
-	// @Mock
-	// MasterDataValidation masterDataValidation;
-
 	@Mock
 	private RegistrationProcessorRestClientService<Object> registrationProcessorRestService;
 
@@ -175,19 +172,6 @@ public class PacketValidateProcessorTest {
 	public void setUp() throws Exception {
 
 		list = new ArrayList<InternalRegistrationStatusDto>();
-
-		// ClassLoader classLoader = getClass().getClassLoader();
-		// File identityMappingjson = new
-		// File(classLoader.getResource("RegistrationProcessorIdentity.json").getFile());
-		// InputStream identityMappingjsonStream = new
-		// FileInputStream(identityMappingjson);
-
-		// try {
-		// identityMappingjsonString = IOUtils.toString(identityMappingjsonStream,
-		// StandardCharsets.UTF_8);
-		// } catch (IOException e) {
-		// e.printStackTrace();
-		// }
 
 		listAppender = new ListAppender<>();
 
@@ -311,32 +295,15 @@ public class PacketValidateProcessorTest {
 		validationReport = new ValidationReport();
 		validationReport.setValid(true);
 
-		// MasterDataValidation masterDataValidation =
-		// Mockito.mock(MasterDataValidation.class);
-
-		// PowerMockito.whenNew(MasterDataValidation.class).withArguments(any(), any(),
-		// any(), any())
-		// .thenReturn(masterDataValidation);
-		// Mockito.when(masterDataValidation.validateMasterData(any())).thenReturn(true);
+		when(env.getProperty(anyString())).thenReturn("gender");
+		when(env.getProperty("primary.language")).thenReturn("eng");
+		when(env.getProperty("secondary.language")).thenReturn("ara");
+		when(env.getProperty("registration.processor.idjson.attributes"))
+				.thenReturn("gender,region,province,city,postalcode");
 		Mockito.when(jsonValidatorImpl.validateJson(any())).thenReturn(validationReport);
 
 		JSONObject demographicIdentity = new JSONObject();
 		PowerMockito.when(JsonUtil.getJSONObject(any(), any())).thenReturn(demographicIdentity);
-
-		// PowerMockito.mockStatic(Utilities.class);
-		// PowerMockito.when(Utilities.class, "getJson", CONFIG_SERVER_URL,
-		// "RegistrationProcessorIdentity.json")
-		// .thenReturn(identityMappingjsonString);
-		// Mockito.when(utility.getConfigServerFileStorageURL()).thenReturn(CONFIG_SERVER_URL);
-		// Mockito.when(utility.getGetRegProcessorDemographicIdentity()).thenReturn("identity");
-		// Mockito.when(utility.getGetRegProcessorIdentityJson()).thenReturn("RegistrationProcessorIdentity.json");
-
-		// registrationProcessorIdentity = new RegistrationProcessorIdentity();
-		when(env.getProperty("registration.processor.idjson.attributes"))
-				.thenReturn("gender,region,province,city,postalcode");
-		// Mockito.when(mapIdentityJsonStringToObject.readValue(anyString(),
-		// Mockito.any(Class.class)))
-		// .thenReturn(registrationProcessorIdentity);
 
 	}
 
