@@ -6,11 +6,8 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.when;
 
-import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
 
 import org.apache.commons.io.IOUtils;
 import org.junit.Before;
@@ -29,15 +26,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.identify.Identity;
-import io.mosip.registration.processor.core.packet.dto.demographicinfo.identify.IdentityJsonValues;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.identify.RegistrationProcessorIdentity;
 import io.mosip.registration.processor.core.packet.dto.masterdata.StatusResponseDto;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
+import io.mosip.registration.processor.core.util.JsonUtil;
 import io.mosip.registration.processor.packet.storage.utils.Utilities;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ Utilities.class })
+@PrepareForTest({ Utilities.class, JsonUtil.class })
 public class MasterDataValidationTest {
 
 	@Mock
@@ -62,12 +59,10 @@ public class MasterDataValidationTest {
 	ObjectMapper mapIdentityJsonStringToObject;
 
 	Identity identityDemo = new Identity();
-	private String identityMappingjsonString;
 
 	StatusResponseDto statusResponseDto;
 
 	String jsonString = null;
-	private static final String CONFIG_SERVER_URL = "url";
 
 	MasterDataValidation masterDataValidation;
 
@@ -77,62 +72,57 @@ public class MasterDataValidationTest {
 		byte[] bytes = IOUtils.toByteArray(inputStream);
 		jsonString = new String(bytes);
 
-		ClassLoader classLoader = getClass().getClassLoader();
-		File identityMappingjson = new File(classLoader.getResource("RegistrationProcessorIdentity.json").getFile());
-		InputStream identityMappingjsonStream = new FileInputStream(identityMappingjson);
-		try {
-			identityMappingjsonString = IOUtils.toString(identityMappingjsonStream, StandardCharsets.UTF_8);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		IdentityJsonValues gender = new IdentityJsonValues();
-		IdentityJsonValues region = new IdentityJsonValues();
-		IdentityJsonValues province = new IdentityJsonValues();
-		IdentityJsonValues city = new IdentityJsonValues();
-		IdentityJsonValues postalcode = new IdentityJsonValues();
-
-		gender.setValue("female");
-		region.setValue("Rabat-Salé-Kénitra");
-		province.setValue("Rabat");
-		city.setValue("bng-south");
-		postalcode.setValue("10000");
-
-		registrationProcessorIdentity = new RegistrationProcessorIdentity();
-
-		identityDemo.setGender(gender);
-		identityDemo.setRegion(region);
-		identityDemo.setProvince(province);
-		identityDemo.setCity(city);
-		identityDemo.setPostalCode(postalcode);
-		registrationProcessorIdentity.setIdentity(identityDemo);
-
 		statusResponseDto = new StatusResponseDto();
 		statusResponseDto.setStatus("valid");
 
 		PowerMockito.mockStatic(Utilities.class);
-		PowerMockito.when(Utilities.class, "getJson", CONFIG_SERVER_URL, "RegistrationProcessorIdentity.json")
-				.thenReturn(identityMappingjsonString);
-		Mockito.when(utility.getConfigServerFileStorageURL()).thenReturn(CONFIG_SERVER_URL);
+
 		Mockito.when(utility.getGetRegProcessorDemographicIdentity()).thenReturn("identity");
-		Mockito.when(utility.getGetRegProcessorIdentityJson()).thenReturn("RegistrationProcessorIdentity.json");
 
 		Mockito.when(mapIdentityJsonStringToObject.readValue(anyString(), Mockito.any(Class.class)))
 				.thenReturn(registrationProcessorIdentity);
 
+		when(env.getProperty(anyString())).thenReturn("gender");
 		when(env.getProperty("registration.processor.idjson.attributes"))
 				.thenReturn("gender,region,province,city,postalcode");
 		Mockito.when(registrationProcessorRestService.getApi(any(), any(), any(), any(), any()))
 				.thenReturn(statusResponseDto);
 		masterDataValidation = new MasterDataValidation(registrationStatusDto, env, registrationProcessorRestService,
-				utility, regProcessorIdentityJson);
+				utility);
 	}
 
 	@Test
 	public void testMasterDataValidationSuccess() throws Exception {
 
 		boolean isMasterDataValidated = masterDataValidation.validateMasterData(jsonString);
-		assertTrue("Test for successful Structural Validation", isMasterDataValidated);
+		assertTrue("Test for successful Master Data Validation", isMasterDataValidated);
+
+	}
+
+	@Test
+	public void testMasterDataValidationResouceFailure() throws Exception {
+
+		when(env.getProperty(anyString())).thenReturn(null);
+		when(env.getProperty("registration.processor.idjson.attributes")).thenReturn("gender");
+		boolean isMasterDataValidated = masterDataValidation.validateMasterData(jsonString);
+		assertFalse("Test for resource not found", isMasterDataValidated);
+
+	}
+
+	@Test
+	public void testIOException() throws Exception {
+		PowerMockito.mockStatic(JsonUtil.class);
+		PowerMockito.when(JsonUtil.class, "getJSONObject", any(), any()).thenReturn(null);
+		boolean isMasterDataValidated = masterDataValidation.validateMasterData(jsonString);
+		assertFalse("Test for IOException", isMasterDataValidated);
+
+	}
+
+	@Test
+	public void testException() throws Exception {
+		when(env.getProperty("registration.processor.idjson.attributes")).thenReturn("gen");
+		boolean isMasterDataValidated = masterDataValidation.validateMasterData(jsonString);
+		assertFalse("Test for IOException", isMasterDataValidated);
 
 	}
 
@@ -190,7 +180,7 @@ public class MasterDataValidationTest {
 	public void testMasterDataValidationPostalCodeFailure() throws Exception {
 		statusResponseDto = new StatusResponseDto();
 		statusResponseDto.setStatus("invalid");
-		when(env.getProperty("registration.processor.idjson.attributes")).thenReturn("postalcode");
+		when(env.getProperty("registration.processor.idjson.attributes")).thenReturn("postalCode");
 		Mockito.when(registrationProcessorRestService.getApi(any(), any(), any(), any(), any()))
 				.thenReturn(statusResponseDto);
 

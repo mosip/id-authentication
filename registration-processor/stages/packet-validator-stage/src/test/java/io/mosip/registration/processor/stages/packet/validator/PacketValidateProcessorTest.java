@@ -7,11 +7,8 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.when;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -180,15 +177,18 @@ public class PacketValidateProcessorTest {
 
 		list = new ArrayList<InternalRegistrationStatusDto>();
 
-		ClassLoader classLoader = getClass().getClassLoader();
-		File identityMappingjson = new File(classLoader.getResource("RegistrationProcessorIdentity.json").getFile());
-		InputStream identityMappingjsonStream = new FileInputStream(identityMappingjson);
+		// ClassLoader classLoader = getClass().getClassLoader();
+		// File identityMappingjson = new
+		// File(classLoader.getResource("RegistrationProcessorIdentity.json").getFile());
+		// InputStream identityMappingjsonStream = new
+		// FileInputStream(identityMappingjson);
 
-		try {
-			identityMappingjsonString = IOUtils.toString(identityMappingjsonStream, StandardCharsets.UTF_8);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		// try {
+		// identityMappingjsonString = IOUtils.toString(identityMappingjsonStream,
+		// StandardCharsets.UTF_8);
+		// } catch (IOException e) {
+		// e.printStackTrace();
+		// }
 
 		listAppender = new ListAppender<>();
 
@@ -312,28 +312,32 @@ public class PacketValidateProcessorTest {
 		validationReport = new ValidationReport();
 		validationReport.setValid(true);
 
-		MasterDataValidation masterDataValidation = Mockito.mock(MasterDataValidation.class);
+		// MasterDataValidation masterDataValidation =
+		// Mockito.mock(MasterDataValidation.class);
 
-		PowerMockito.whenNew(MasterDataValidation.class).withArguments(any(), any(), any(), any(), any())
-				.thenReturn(masterDataValidation);
-		Mockito.when(masterDataValidation.validateMasterData(any())).thenReturn(true);
+		// PowerMockito.whenNew(MasterDataValidation.class).withArguments(any(), any(),
+		// any(), any())
+		// .thenReturn(masterDataValidation);
+		// Mockito.when(masterDataValidation.validateMasterData(any())).thenReturn(true);
 		Mockito.when(jsonValidatorImpl.validateJson(any())).thenReturn(validationReport);
 
 		JSONObject demographicIdentity = new JSONObject();
 		PowerMockito.when(JsonUtil.getJSONObject(any(), any())).thenReturn(demographicIdentity);
 
-		PowerMockito.mockStatic(Utilities.class);
-		PowerMockito.when(Utilities.class, "getJson", CONFIG_SERVER_URL, "RegistrationProcessorIdentity.json")
-				.thenReturn(identityMappingjsonString);
-		Mockito.when(utility.getConfigServerFileStorageURL()).thenReturn(CONFIG_SERVER_URL);
-		Mockito.when(utility.getGetRegProcessorDemographicIdentity()).thenReturn("identity");
-		Mockito.when(utility.getGetRegProcessorIdentityJson()).thenReturn("RegistrationProcessorIdentity.json");
+		// PowerMockito.mockStatic(Utilities.class);
+		// PowerMockito.when(Utilities.class, "getJson", CONFIG_SERVER_URL,
+		// "RegistrationProcessorIdentity.json")
+		// .thenReturn(identityMappingjsonString);
+		// Mockito.when(utility.getConfigServerFileStorageURL()).thenReturn(CONFIG_SERVER_URL);
+		// Mockito.when(utility.getGetRegProcessorDemographicIdentity()).thenReturn("identity");
+		// Mockito.when(utility.getGetRegProcessorIdentityJson()).thenReturn("RegistrationProcessorIdentity.json");
 
-		registrationProcessorIdentity = new RegistrationProcessorIdentity();
+		// registrationProcessorIdentity = new RegistrationProcessorIdentity();
 		when(env.getProperty("registration.processor.idjson.attributes"))
 				.thenReturn("gender,region,province,city,postalcode");
-		Mockito.when(mapIdentityJsonStringToObject.readValue(anyString(), Mockito.any(Class.class)))
-				.thenReturn(registrationProcessorIdentity);
+		// Mockito.when(mapIdentityJsonStringToObject.readValue(anyString(),
+		// Mockito.any(Class.class)))
+		// .thenReturn(registrationProcessorIdentity);
 
 	}
 
