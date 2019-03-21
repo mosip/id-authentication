@@ -22,6 +22,8 @@ import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
+import io.mosip.registration.processor.core.packet.dto.Identity;
+import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.packet.service.PacketCreationService;
 import io.mosip.registration.processor.packet.service.PacketGeneratorService;
@@ -38,6 +40,7 @@ import io.mosip.registration.processor.packet.service.dto.demographic.Demographi
 import io.mosip.registration.processor.packet.service.dto.demographic.MoroccoIdentity;
 import io.mosip.registration.processor.packet.service.exception.RegBaseCheckedException;
 import io.mosip.registration.processor.packet.service.external.StorageService;
+import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.packet.upload.service.SyncUploadEncryptionService;
 import io.mosip.registration.processor.status.code.RegistrationType;
 
@@ -75,6 +78,9 @@ public class PacketGeneratorServiceImpl implements PacketGeneratorService {
 	private UinValidator<String> uinValidatorImpl;
 
 	private static Logger regProcLogger = RegProcessorLogger.getLogger(PacketCreationServiceImpl.class);
+	
+	@Autowired
+	private PacketInfoManager<Identity, ApplicantInfoDto> packetInfoManager;
 
 	/*
 	 * (non-Javadoc)
@@ -137,6 +143,13 @@ public class PacketGeneratorServiceImpl implements PacketGeneratorService {
 		boolean isValidUIN = false;
 		try {
 			isValidUIN = uinValidatorImpl.validateId(uin);
+			List<String> regIdList=packetInfoManager.getRegIdByUIN(uin);
+			if(isValidUIN && ((regIdList!=null)&& !regIdList.isEmpty())){
+				isValidUIN=true;
+			}else {
+				throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION, "UIN is not valid", new Throwable());
+
+			}
 		} catch (InvalidIDException ex) {
 			throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION, ex.getErrorText(), ex);
 
