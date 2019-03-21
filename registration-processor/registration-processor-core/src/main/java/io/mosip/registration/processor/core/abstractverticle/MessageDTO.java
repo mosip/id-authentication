@@ -20,6 +20,10 @@ public class MessageDTO implements Serializable {
 		super();
 	}
 
+	/** The registration type. */
+
+	private String reg_type;
+
 	/** The rid. */
 	private String rid;
 	
@@ -34,12 +38,32 @@ public class MessageDTO implements Serializable {
 
 	/** The retry count. */
 	private Integer retryCount;
+    /**
+     * Gets the reg type
+     *
+     * @return the reg_type
+     */
 
+	public String getReg_type()
+	{
+		return reg_type;
+	}
+
+	/**
+	 * Sets the reg_type
+	 *
+	 * @param the new reg_type.
+	 */
+	public void setReg_type(String reg_type)
+	{
+		this.reg_type=reg_type;
+	}
 	/**
 	 * Gets the rid.
 	 *
 	 * @return the rid
 	 */
+
 	public String getRid() {
 		return rid;
 	}

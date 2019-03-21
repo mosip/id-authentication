@@ -2,19 +2,21 @@
 # External System Integration Stage 
 
 **Background**
-Technical stack used in Registration Processor gives ability to add or change order/sequence of stages/route in the flow. Most of the stages works in isolation, can be deployed independently and does not depend on the previous or next stage in the flow. This design document will helps support team to understand steps to integrate with external system using vertx.
+
+Technical stack used in Registration Processor gives ability to add or change order/sequence of stages/route in the flow. Most of the stages works in isolation, which are deployed independently and does not depend on the previous or next stage in the flow. This design document describe one of option to integrate registration processor with external system by creating vertx stage. 
 
 **The target users are -**
-Product technical support team.
+System Integrator Team
 
 **The key requirements are -**
--	MOSIP product should have capability to integrate with external system.
+-	MOSIP product should provide sample code along with documentation which can be used to integrate with the external system.
 
-**Apache Camel Bridge Limitation-**
-All the vertx stages in registration process are configured using apache camel brige to execute in a sequence. Though technically it is possible to add or remove stages in the camel bridge but in some cases this sequece or order can not be altered due to highly dependent activity. For example Packet Receiver, Virous Scanner and Packet Uploader need to work in sequence. 
+** Limitation- (TBD) -**
 
-**The key non-functional requirements are**
-1.	Introduce vertx stage which can be pluged in between stages in registration processor.
+All the vertx stages in registration process are configured using apache camel bridge to execute in a sequence. However, technically, it is possible to add or remove stages in the camel bridge but in some cases, this sequence or order cannot be altered due to highly dependent activity. For example, Packet Receiver, Virus Scanner and Packet Uploader need to work in sequence. 
+
+**The key non-functional requirements are -**
+1.	Introduce vertx stage which can be plugged in between stages in registration processor.
 2.  Auditing of the all the transactions including success and failed scenario.
 3.	Logging of the all the requests
 - 	INFO log message in case print request success or failed
@@ -27,23 +29,23 @@ All the vertx stages in registration process are configured using apache camel b
 
 ------------
 
-**Add Stage: **
-
-- Additional stage can be created which is then deployed in line with existing Event Bus.
-This additional stage is responsible to communicate with the external HTTP end points.
+Solution is based on creating and adding additional vertx stage in workflow which will connect to external system.
 
 **The key solution considerations are -**
 1.	Create Vertx Stage:
 - Create vertx stage (ExternalIntegrationStage) by extending MosipVerticleManager abstract class and provide implementation for abstract method. 
-- Add bussiness logic in process method which includes connecting to HTTP endpoint, send request and process response
-- Once business logic executed successfully, update packet process status (SUCCESS) in registration table as in case of failure reprocesser will process it.
-- In case of exception update status with ERROR
+- Add business logic in process method which includes connecting to HTTP endpoint, send request and process response
+- Fetch ID json object from DFL system and send it to external system using REST API
+- Update registration status once business logic is executed in ExternalIntegrationStage SUCCESS/ERROR.
 
-2.	Apache Camel Changes:
+2.  Create dummy External System
+- Create a microservice 'dummy-external-system' and create POST REST API which accept ID json object and send success response.
+
+3.	Apache Camel Changes:
 - 	Update apache camel DSL xml file:
-Add additional route in DSL xml file for created vertx. 
+Update apache camel DSL xml file "registration-processor-camel-routes.xml" to add additional route to connect to external system. 
 
-Example: For example let's integrate created stage : ExternalIntegrationStage between existing packet validator and OSI validator stage. To include this stage apache camel DSL file - "registration-processor-camel-routes.xml" need to be update in spring configuration.
+Example: Let's update workflow to add additional route so ExternalIntegrationStage will be executed after packet validator stage and before OSI validator stage. Extract and update "registration-processor-camel-routes.xml" in spring configuration with below details:
 	
 Below is the route details from original registration-processor-camel-routes.xml file:
 
@@ -130,23 +132,23 @@ Update above apache camel route with the below:
 
 
 ------------
-- Without http end point:
+- Without External System Stage:
 
-![HTTP stage diagram](_images/registration_external_without_http_integration.png)
+![HTTP stage diagram](_images/registration_workflow_integration.png)
 
-- With http end point:
+- After adding External System Stage:
 
-![HTTP stage diagram](_images/registration_external_with_http_integration.png)
+![HTTP stage diagram](_images/registration_external_with_vertx_integration.png)
 
 
 **Class Diagram**
 
 ------------
 
-![HTTP stage class diagram](_images/http_stage_class_diagram.png)
+![HTTP stage class diagram](_images/external_stage_class_diagram.png)
 
 **Sequence Diagram**
 
 ------------
 
-![Reprocess sequence diagram](_images/http_stage_seq_diagram.png)
+![Reprocess sequence diagram](_images/external_stage_seq_diagram.png) 

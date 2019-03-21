@@ -1,151 +1,480 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.shape.*?>
 <?import javafx.scene.text.*?>
-<?import javafx.scene.image.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.shape.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" styleClass="homeParentPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.reg.PacketHandlerController">
-    <children>
-    <ImageView fitHeight="740.0" fitWidth="1300.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@../images/pexels-photo.png" />
-               </image>
-            </ImageView>
-      <AnchorPane layoutY="70.0" styleClass="reggistrationPaneStyle">
+<GridPane fx:id="homeContent" alignment="CENTER" styleClass="homeContent" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.reg.PacketHandlerController">
+  <columnConstraints>
+    <ColumnConstraints />
+      <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" percentWidth="100.0" />
+  </columnConstraints>
+  <rowConstraints>
+    <RowConstraints />
+      <RowConstraints percentHeight="100.0" valignment="CENTER" vgrow="ALWAYS" />
+  </rowConstraints>
+   <children>
+      <GridPane alignment="CENTER" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
+        <columnConstraints>
+          <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" percentWidth="32.0" />
+            <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" percentWidth="2.0" />
+          <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" percentWidth="36.0" />
+            <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" percentWidth="2.0" />
+            <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" percentWidth="28.0" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints percentHeight="92.0" valignment="CENTER" vgrow="ALWAYS" />
+            <RowConstraints percentHeight="8.0" valignment="CENTER" vgrow="ALWAYS" />
+        </rowConstraints>
          <children>
-         	<Label layoutX="60.0" styleClass="optionHeaderStyle" text="%registrationTasks" />
-            <Button fx:id="uinUpdateBtn" layoutX="40.0" layoutY="147.0" mnemonicParsing="false" onAction="#updateUIN" styleClass="uinUpdateBtnStyle" text="%uinupdate" />            
-            <Button fx:id="newRegistrationBtn" layoutX="40.0" layoutY="37.0" mnemonicParsing="false" onAction="#createPacket" styleClass="newRegBtnStyle" text="%newregistration" />
-            <ImageView fitHeight="30.0" fitWidth="30.0" layoutX="60.0" layoutY="62.0" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@../images/NewRegistration.png" />
-               </image>
-            </ImageView>
-            <ImageView fx:id="uinUpdateImage" fitHeight="30.0" fitWidth="30.0" layoutX="60.0" layoutY="172.0" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@../images/UINUpdate.png" />
-               </image>
-            </ImageView>    		         
-         </children>
-      </AnchorPane>
-      <AnchorPane layoutX="449.0" layoutY="70.0">
-         <children>
-            <Label layoutX="60.0" styleClass="optionHeaderStyle" text="%operationalTasks" />
-            <AnchorPane layoutX="16.0" layoutY="37.0" onMouseClicked="#syncData" styleClass="operationalPaneDetails,operationalPaneDetailsSync">
+            <GridPane>
+              <columnConstraints>
+                <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" percentWidth="100.0" />
+              </columnConstraints>
+              <rowConstraints>
+                <RowConstraints percentHeight="10.0" valignment="CENTER" vgrow="ALWAYS" />
+                  <RowConstraints percentHeight="7.0" valignment="CENTER" vgrow="ALWAYS" />
+                  <RowConstraints percentHeight="15.0" valignment="CENTER" vgrow="ALWAYS" />
+                  <RowConstraints percentHeight="5.0" valignment="CENTER" vgrow="ALWAYS" />
+                <RowConstraints percentHeight="15.0" valignment="CENTER" vgrow="ALWAYS" />
+                <RowConstraints percentHeight="48.0" valignment="CENTER" vgrow="ALWAYS" />
+              </rowConstraints>
                <children>
-                  <ImageView fitHeight="30.0" fitWidth="30.0" layoutX="14.0" layoutY="16.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../images/sync.png" />
-                     </image>
-                  </ImageView>
-                  <Label layoutX="80.0" layoutY="8.0" styleClass="operationalTitle" text="%synchronizeData" />
-                  <Label layoutX="80.0" layoutY="33.0" styleClass="operationalDetails" text="Last Sync - on Monday 10 Jan 2:300 PM" />
+                  <Label styleClass="optionHeaderStyle" text="%registrationTasks" GridPane.halignment="LEFT" GridPane.rowIndex="1" GridPane.valignment="CENTER">
+                     <GridPane.margin>
+                        <Insets left="40.0" />
+                     </GridPane.margin>
+                  </Label>
+                  <GridPane onMouseClicked="#createPacket" styleClass="newRegBtnStyle" GridPane.rowIndex="2">
+                    <columnConstraints>
+                      <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" percentWidth="40.0" />
+                      <ColumnConstraints halignment="LEFT" hgrow="ALWAYS" percentWidth="60.0" />
+                    </columnConstraints>
+                    <rowConstraints>
+                      <RowConstraints percentHeight="100.0" valignment="CENTER" vgrow="ALWAYS" />
+                    </rowConstraints>
+                     <children>
+                        <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../images/NewRegistration.png" />
+                           </image>
+                        </ImageView>
+                        <Button fx:id="newRegistrationBtn" mnemonicParsing="false" styleClass="newRegBtnStyle" text="%newregistration" GridPane.columnIndex="1" GridPane.halignment="LEFT" />
+                     </children>
+                     <GridPane.margin>
+                        <Insets left="30.0" />
+                     </GridPane.margin>
+                  </GridPane>
+                  <GridPane onMouseClicked="#updateUIN" styleClass="uinUpdateStyle" GridPane.rowIndex="4">
+                     <children>
+                        <ImageView fx:id="uinUpdateImage" fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../images/UINUpdate.png" />
+                           </image>
+                        </ImageView>
+                        <Button fx:id="uinUpdateBtn" mnemonicParsing="false" styleClass="uinUpdateBtnStyle" text="%uinupdate" GridPane.columnIndex="1" />
+                     </children>
+                     <columnConstraints>
+                        <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" percentWidth="40.0" />
+                        <ColumnConstraints halignment="LEFT" hgrow="ALWAYS" percentWidth="60.0" />
+                     </columnConstraints>
+                     <rowConstraints>
+                        <RowConstraints percentHeight="100.0" valignment="CENTER" vgrow="ALWAYS" />
+                     </rowConstraints>
+                     <GridPane.margin>
+                        <Insets left="30.0" />
+                     </GridPane.margin>
+                  </GridPane>
                </children>
-            </AnchorPane>
-            <AnchorPane layoutX="16.0" layoutY="106.0" onMouseClicked="#downloadPreRegData" styleClass="operationalPaneDetails">
-               <children>                  
-                  <ImageView fitHeight="30.0" fitWidth="30.0" layoutX="14.0" layoutY="16.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../images/DownloadPreRegData.png" />
-                     </image>
-                  </ImageView>
-                  <Label layoutX="80.0" layoutY="33.0" styleClass="operationalDetails" text="Downloaded on Monday 10 Jan 8:00 AM; Size 564 MB" />
-                  <Label layoutX="80.0" layoutY="8.0" styleClass="operationalTitle" text="%downloadPreregistrationData" />
-               </children>
-            </AnchorPane>
-            <AnchorPane layoutX="16.0" layoutY="175.0" onMouseClicked="#onBoardUser" styleClass="operationalPaneDetails,operationalPaneDetailsBioUpdate">
-               <children>                  
-                  <ImageView fitHeight="30.0" fitWidth="30.0" layoutX="14.0" layoutY="16.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../images/UpdateOperatorBiometrics.png" />
-                     </image>
-                  </ImageView>
-                  <Label layoutX="80.0" layoutY="33.0" styleClass="operationalDetails" text="Not uploaded yet" />
-                  <Label layoutX="80.0" layoutY="8.0" styleClass="operationalTitle" text="%updateOperatorBiometrics" />
-               </children>
-            </AnchorPane>
-         </children>
-      </AnchorPane>
-      <AnchorPane fx:id="eodProcessAnchorPane" layoutX="449.0" layoutY="340.0" styleClass="operationalPaneStyle">
-         <children>
-            <Label layoutX="60.0" styleClass="optionHeaderStyle" text="%endofDayProcesses" />
-            <AnchorPane layoutX="16.0" layoutY="37.0" onMouseClicked="#approvePacket" styleClass="operationalPaneDetails,operationalPaneDetailsSync">
+            </GridPane>
+            <GridPane GridPane.columnIndex="2">
+              <columnConstraints>
+                <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" percentWidth="100.0" />
+              </columnConstraints>
+              <rowConstraints>
+                  <RowConstraints percentHeight="10.0" valignment="CENTER" vgrow="ALWAYS" />
+                  <RowConstraints percentHeight="7.0" valignment="CENTER" vgrow="ALWAYS" />
+                <RowConstraints percentHeight="37.0" valignment="CENTER" vgrow="ALWAYS" />
+                  <RowConstraints percentHeight="9.0" valignment="CENTER" vgrow="ALWAYS" />
+                  <RowConstraints percentHeight="37.0" valignment="CENTER" vgrow="ALWAYS" />
+              </rowConstraints>
                <children>
-                  <ImageView fitHeight="30.0" fitWidth="30.0" layoutX="14.0" layoutY="16.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../images/PendingApproval.png" />
-                     </image>
-                  </ImageView>
-                  <Label layoutX="80.0" layoutY="8.0" styleClass="operationalTitle" text="%pendingapproval" />
-                  <Label fx:id="pendingApprovalCountLbl" layoutX="80.0" layoutY="33.0" styleClass="operationalDetails" text="18 Applications" />
+                  <Label styleClass="optionHeaderStyle" text="%operationalTasks" GridPane.halignment="LEFT" GridPane.rowIndex="1" GridPane.valignment="CENTER">
+                     <GridPane.margin>
+                        <Insets left="40.0" />
+                     </GridPane.margin></Label>
+                  <GridPane GridPane.rowIndex="4">
+                     <children>
+                        <GridPane onMouseClicked="#approvePacket" styleClass="operationalPaneDetailsSync">
+                           <children>
+                              <GridPane GridPane.columnIndex="1">
+                                 <children>
+                                    <Label styleClass="operationalTitle" text="%pendingapproval" GridPane.rowIndex="1" />
+                                    <Label fx:id="pendingApprovalCountLbl" styleClass="operationalDetails" text="18 Applications" GridPane.rowIndex="2" />
+                                 </children>
+                                 <columnConstraints>
+                                    <ColumnConstraints halignment="LEFT" hgrow="ALWAYS" percentWidth="100.0" />
+                                 </columnConstraints>
+                                 <rowConstraints>
+                                    <RowConstraints percentHeight="20.0" valignment="CENTER" vgrow="ALWAYS" />
+                                    <RowConstraints percentHeight="40.0" valignment="CENTER" vgrow="ALWAYS" />
+                                    <RowConstraints percentHeight="40.0" valignment="CENTER" vgrow="ALWAYS" />
+                                    <RowConstraints percentHeight="20.0" valignment="CENTER" vgrow="ALWAYS" />
+                                 </rowConstraints>
+                              </GridPane>
+                              <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../images/PendingApproval.png" />
+                                 </image>
+                              </ImageView>
+                           </children>
+                           <columnConstraints>
+                              <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" percentWidth="20.0" />
+                              <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" percentWidth="80.0" />
+                           </columnConstraints>
+                           <rowConstraints>
+                              <RowConstraints percentHeight="100.0" valignment="CENTER" vgrow="ALWAYS" />
+                           </rowConstraints>
+                        </GridPane>
+                        <GridPane onMouseClicked="#loadReRegistrationScreen" styleClass="operationalPaneDetailsPreReg" GridPane.rowIndex="1">
+                           <children>
+                              <GridPane GridPane.columnIndex="1">
+                                 <children>
+                                    <Label styleClass="operationalTitle" text="%reRegistration" GridPane.rowIndex="1" />
+                                    <Label fx:id="reRegistrationCountLbl" styleClass="operationalDetails" text="8 Applications" GridPane.rowIndex="2" />
+                                 </children>
+                                 <columnConstraints>
+                                    <ColumnConstraints halignment="LEFT" hgrow="ALWAYS" percentWidth="100.0" />
+                                 </columnConstraints>
+                                 <rowConstraints>
+                                    <RowConstraints percentHeight="20.0" valignment="CENTER" vgrow="ALWAYS" />
+                                    <RowConstraints percentHeight="40.0" valignment="CENTER" vgrow="ALWAYS" />
+                                    <RowConstraints percentHeight="40.0" valignment="CENTER" vgrow="ALWAYS" />
+                                    <RowConstraints percentHeight="20.0" valignment="CENTER" vgrow="ALWAYS" />
+                                 </rowConstraints>
+                              </GridPane>
+                              <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../images/Re-Registration.png" />
+                                 </image>
+                              </ImageView>
+                           </children>
+                           <columnConstraints>
+                              <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" percentWidth="20.0" />
+                              <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" percentWidth="80.0" />
+                           </columnConstraints>
+                           <rowConstraints>
+                              <RowConstraints percentHeight="100.0" valignment="CENTER" vgrow="ALWAYS" />
+                           </rowConstraints>
+                        </GridPane>
+                        <GridPane styleClass="operationalPaneDetailsBioUpdate" GridPane.rowIndex="2">
+                           <children>
+                              <GridPane GridPane.columnIndex="1">
+                                 <columnConstraints>
+                                    <ColumnConstraints halignment="LEFT" hgrow="ALWAYS" percentWidth="100.0" />
+                                 </columnConstraints>
+                                 <rowConstraints>
+                                    <RowConstraints percentHeight="20.0" valignment="CENTER" vgrow="ALWAYS" />
+                                    <RowConstraints percentHeight="40.0" valignment="CENTER" vgrow="ALWAYS" />
+                                    <RowConstraints percentHeight="40.0" valignment="CENTER" vgrow="ALWAYS" />
+                                    <RowConstraints percentHeight="20.0" valignment="CENTER" vgrow="ALWAYS" />
+                                 </rowConstraints>
+                                 <children>
+                                    <Label styleClass="operationalTitle" text="%viewReport" GridPane.rowIndex="1" />
+                                 </children>
+                              </GridPane>
+                              <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../images/ViewReports.png" />
+                                 </image>
+                              </ImageView>
+                           </children>
+                           <columnConstraints>
+                              <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" percentWidth="20.0" />
+                              <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" percentWidth="80.0" />
+                           </columnConstraints>
+                           <rowConstraints>
+                              <RowConstraints percentHeight="100.0" valignment="CENTER" vgrow="ALWAYS" />
+                           </rowConstraints>
+                        </GridPane>
+                     </children>
+                     <columnConstraints>
+                        <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" percentWidth="100.0" />
+                     </columnConstraints>
+                     <rowConstraints>
+                        <RowConstraints percentHeight="33.0" valignment="CENTER" vgrow="ALWAYS" />
+                        <RowConstraints percentHeight="33.0" valignment="CENTER" vgrow="ALWAYS" />
+                        <RowConstraints percentHeight="34.0" valignment="CENTER" vgrow="ALWAYS" />
+                     </rowConstraints>
+                  </GridPane>
+                  <GridPane GridPane.rowIndex="2">
+                    <columnConstraints>
+                      <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" percentWidth="100.0" />
+                    </columnConstraints>
+                    <rowConstraints>
+                      <RowConstraints percentHeight="33.0" valignment="CENTER" vgrow="ALWAYS" />
+                      <RowConstraints percentHeight="33.0" valignment="CENTER" vgrow="ALWAYS" />
+                      <RowConstraints percentHeight="34.0" valignment="CENTER" vgrow="ALWAYS" />
+                    </rowConstraints>
+                     <children>
+                        <GridPane onMouseClicked="#syncData" styleClass="operationalPaneDetailsSync">
+                           <children>
+                              <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
+                                 <image>
+                                    <Image url="@../images/sync.png" />
+                                 </image>
+                                 <GridPane.margin>
+                                    <Insets />
+                                 </GridPane.margin>
+                              </ImageView>
+                              <GridPane GridPane.columnIndex="1">
+                                 <children>
+                                    <Label styleClass="operationalTitle" text="%synchronizeData" GridPane.rowIndex="1" />
+                                    <Label styleClass="operationalDetails" text="Last Sync - on Monday 10 Jan 2:300 PM" GridPane.rowIndex="2" />
+                                 </children>
+                                 <columnConstraints>
+                                    <ColumnConstraints halignment="LEFT" hgrow="ALWAYS" percentWidth="100.0" />
+                                 </columnConstraints>
+                                 <rowConstraints>
+                                    <RowConstraints percentHeight="20.0" valignment="CENTER" vgrow="ALWAYS" />
+                                    <RowConstraints percentHeight="40.0" valignment="CENTER" vgrow="ALWAYS" />
+                                    <RowConstraints percentHeight="40.0" valignment="CENTER" vgrow="ALWAYS" />
+                                    <RowConstraints percentHeight="20.0" valignment="CENTER" vgrow="ALWAYS" />
+                                 </rowConstraints>
+                              </GridPane>
+                           </children>
+                           <columnConstraints>
+                              <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" percentWidth="20.0" />
+                              <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" percentWidth="80.0" />
+                           </columnConstraints>
+                           <rowConstraints>
+                              <RowConstraints percentHeight="100.0" valignment="CENTER" vgrow="ALWAYS" />
+                           </rowConstraints>
+                        </GridPane>
+                        <GridPane onMouseClicked="#downloadPreRegData" styleClass="operationalPaneDetailsPreReg" GridPane.rowIndex="1">
+                           <children>
+                              <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
+                                 <image>
+                                    <Image url="@../images/DownloadPreRegData.png" />
+                                 </image>
+                                 <GridPane.margin>
+                                    <Insets />
+                                 </GridPane.margin>
+                              </ImageView>
+                              <GridPane GridPane.columnIndex="1">
+                                 <children>
+                                    <Label styleClass="operationalTitle" text="%downloadPreregistrationData" GridPane.rowIndex="1" />
+                                    <Label styleClass="operationalDetails" text="Downloaded on Monday 10 Jan 8:00 AM; Size 564 MB" GridPane.rowIndex="2" />
+                                 </children>
+                                 <columnConstraints>
+                                    <ColumnConstraints halignment="LEFT" hgrow="ALWAYS" percentWidth="100.0" />
+                                 </columnConstraints>
+                                 <rowConstraints>
+                                    <RowConstraints percentHeight="20.0" valignment="CENTER" vgrow="ALWAYS" />
+                                    <RowConstraints percentHeight="40.0" valignment="CENTER" vgrow="ALWAYS" />
+                                    <RowConstraints percentHeight="40.0" valignment="CENTER" vgrow="ALWAYS" />
+                                    <RowConstraints percentHeight="20.0" valignment="CENTER" vgrow="ALWAYS" />
+                                 </rowConstraints>
+                              </GridPane>
+                           </children>
+                           <columnConstraints>
+                              <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" percentWidth="20.0" />
+                              <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" percentWidth="80.0" />
+                           </columnConstraints>
+                           <rowConstraints>
+                              <RowConstraints percentHeight="100.0" valignment="CENTER" vgrow="ALWAYS" />
+                           </rowConstraints>
+                        </GridPane>
+                        <GridPane onMouseClicked="#onBoardUser" styleClass="operationalPaneDetailsBioUpdate" GridPane.rowIndex="2">
+                           <children>
+                              <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
+                                 <image>
+                                    <Image url="@../images/UpdateOperatorBiometrics.png" />
+                                 </image>
+                                 <GridPane.margin>
+                                    <Insets />
+                                 </GridPane.margin>
+                              </ImageView>
+                              <GridPane GridPane.columnIndex="1">
+                                 <children>
+                                    <Label styleClass="operationalTitle" text="%updateOperatorBiometrics" GridPane.rowIndex="1" />
+                                    <Label styleClass="operationalDetails" text="Not uploaded yet" GridPane.rowIndex="2" />
+                                 </children>
+                                 <columnConstraints>
+                                    <ColumnConstraints halignment="LEFT" hgrow="ALWAYS" percentWidth="100.0" />
+                                 </columnConstraints>
+                                 <rowConstraints>
+                                    <RowConstraints percentHeight="20.0" valignment="CENTER" vgrow="ALWAYS" />
+                                    <RowConstraints percentHeight="40.0" valignment="CENTER" vgrow="ALWAYS" />
+                                    <RowConstraints percentHeight="40.0" valignment="CENTER" vgrow="ALWAYS" />
+                                    <RowConstraints percentHeight="20.0" valignment="CENTER" vgrow="ALWAYS" />
+                                 </rowConstraints>
+                              </GridPane>
+                           </children>
+                           <columnConstraints>
+                              <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" percentWidth="20.0" />
+                              <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" percentWidth="80.0" />
+                           </columnConstraints>
+                           <rowConstraints>
+                              <RowConstraints percentHeight="100.0" valignment="CENTER" vgrow="ALWAYS" />
+                           </rowConstraints>
+                        </GridPane>
+                     </children>
+                  </GridPane>
+                  <Label styleClass="optionHeaderStyle" text="%endofDayProcesses" GridPane.halignment="LEFT" GridPane.rowIndex="3">
+                     <GridPane.margin>
+                        <Insets left="40.0" />
+                     </GridPane.margin>
+                  </Label>
                </children>
-            </AnchorPane>
-            <AnchorPane layoutX="16.0" layoutY="106.0" onMouseClicked="#loadReRegistrationScreen" styleClass="operationalPaneDetails">
-               <children>                  
-                  <ImageView fitHeight="30.0" fitWidth="30.0" layoutX="14.0" layoutY="16.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../images/Re-Registration.png" />
-                     </image>
-                  </ImageView>
-                  <Label fx:id="reRegistrationCountLbl" layoutX="80.0" layoutY="33.0" styleClass="operationalDetails" text="8 Applications" />
-                  <Label layoutX="80.0" layoutY="8.0" styleClass="operationalTitle" text="%reRegistration" />
-               </children>
-            </AnchorPane>
-            <AnchorPane layoutX="16.0" layoutY="175.0" styleClass="operationalPaneDetails,operationalPaneDetailsBioUpdate">
+            </GridPane>
+            <GridPane alignment="TOP_CENTER" GridPane.columnIndex="4" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
+              <columnConstraints>
+                <ColumnConstraints hgrow="ALWAYS" percentWidth="100.0" />
+              </columnConstraints>
+              <rowConstraints>
+                  <RowConstraints percentHeight="10.0" valignment="CENTER" vgrow="ALWAYS" />
+                  <RowConstraints percentHeight="7.0" valignment="CENTER" vgrow="ALWAYS" />
+                <RowConstraints percentHeight="83.0" valignment="CENTER" vgrow="ALWAYS" />
+              </rowConstraints>
                <children>
-                  <ImageView fitHeight="30.0" fitWidth="30.0" layoutX="14.0" layoutY="16.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../images/ViewReports.png" />
-                     </image>
-                  </ImageView>
-                  <Label layoutX="80.0" layoutY="8.0" styleClass="operationalTitle" text="%viewReport" />
+                  <Label styleClass="optionHeaderStyle" text="%newsandUpdates" GridPane.rowIndex="1">
+                     <GridPane.margin>
+                        <Insets left="40.0" />
+                     </GridPane.margin></Label>
+                  <Label fx:id="newsViewAll" alignment="CENTER_RIGHT" text="%viewall" GridPane.halignment="RIGHT" GridPane.rowIndex="1" GridPane.valignment="CENTER">
+                     <GridPane.margin>
+                        <Insets right="40.0" />
+                     </GridPane.margin></Label>
+                  <GridPane styleClass="newsUpdates" GridPane.rowIndex="2">
+                    <columnConstraints>
+                      <ColumnConstraints halignment="LEFT" hgrow="ALWAYS" percentWidth="100.0" />
+                    </columnConstraints>
+                    <rowConstraints>
+                        <RowConstraints percentHeight="25.0" valignment="CENTER" vgrow="ALWAYS" />
+                      <RowConstraints percentHeight="25.0" valignment="CENTER" vgrow="ALWAYS" />
+                      <RowConstraints percentHeight="25.0" valignment="CENTER" vgrow="ALWAYS" />
+                      <RowConstraints percentHeight="25.0" valignment="CENTER" vgrow="ALWAYS" />
+                    </rowConstraints>
+                     <children>
+                        <GridPane>
+                           <children>
+                              <Label styleClass="newsUpdatesTitle" text="Update Title" />
+                              <Label styleClass="newsUpdateTime" text="Monday 10 Jan 8:00 AM" GridPane.rowIndex="1" />
+                              <Label styleClass="newsUpdateTime" text="Description" GridPane.rowIndex="3" />
+                           </children>
+                           <columnConstraints>
+                              <ColumnConstraints hgrow="ALWAYS" percentWidth="100.0" />
+                           </columnConstraints>
+                           <rowConstraints>
+                              <RowConstraints percentHeight="20.0" valignment="CENTER" vgrow="ALWAYS" />
+                              <RowConstraints percentHeight="20.0" valignment="CENTER" vgrow="ALWAYS" />
+                              <RowConstraints percentHeight="5.0" valignment="CENTER" vgrow="ALWAYS" />
+                              <RowConstraints percentHeight="55.0" valignment="CENTER" vgrow="ALWAYS" />
+                           </rowConstraints>
+                           <GridPane.margin>
+                              <Insets left="15.0" />
+                           </GridPane.margin>
+                        </GridPane>
+                        <GridPane GridPane.rowIndex="1">
+                           <children>
+                              <Label styleClass="newsUpdatesTitle" text="Update Title" />
+                              <Label styleClass="newsUpdateTime" text="Monday 10 Jan 8:00 AM" GridPane.rowIndex="1" />
+                              <Label styleClass="newsUpdateTime" text="Description" GridPane.rowIndex="3" />
+                           </children>
+                           <columnConstraints>
+                              <ColumnConstraints hgrow="ALWAYS" percentWidth="100.0" />
+                           </columnConstraints>
+                           <rowConstraints>
+                              <RowConstraints percentHeight="20.0" valignment="CENTER" vgrow="ALWAYS" />
+                              <RowConstraints percentHeight="20.0" valignment="CENTER" vgrow="ALWAYS" />
+                              <RowConstraints percentHeight="5.0" valignment="CENTER" vgrow="ALWAYS" />
+                              <RowConstraints percentHeight="55.0" valignment="CENTER" vgrow="ALWAYS" />
+                           </rowConstraints>
+                           <GridPane.margin>
+                              <Insets left="15.0" />
+                           </GridPane.margin>
+                        </GridPane>
+                        <GridPane GridPane.rowIndex="2">
+                           <children>
+                              <Label styleClass="newsUpdatesTitle" text="Update Title" />
+                              <Label styleClass="newsUpdateTime" text="Monday 10 Jan 8:00 AM" GridPane.rowIndex="1" />
+                              <Label styleClass="newsUpdateTime" text="Description" GridPane.rowIndex="3" />
+                           </children>
+                           <columnConstraints>
+                              <ColumnConstraints hgrow="ALWAYS" percentWidth="100.0" />
+                           </columnConstraints>
+                           <rowConstraints>
+                              <RowConstraints percentHeight="20.0" valignment="CENTER" vgrow="ALWAYS" />
+                              <RowConstraints percentHeight="20.0" valignment="CENTER" vgrow="ALWAYS" />
+                              <RowConstraints percentHeight="5.0" valignment="CENTER" vgrow="ALWAYS" />
+                              <RowConstraints percentHeight="55.0" valignment="CENTER" vgrow="ALWAYS" />
+                           </rowConstraints>
+                           <GridPane.margin>
+                              <Insets left="15.0" />
+                           </GridPane.margin>
+                        </GridPane>
+                        <GridPane GridPane.rowIndex="3">
+                           <children>
+                              <Label styleClass="newsUpdatesTitle" text="Update Title" />
+                              <Label styleClass="newsUpdateTime" text="Monday 10 Jan 8:00 AM" GridPane.rowIndex="1" />
+                              <Label styleClass="newsUpdateTime" text="Description" GridPane.rowIndex="3" />
+                           </children>
+                           <columnConstraints>
+                              <ColumnConstraints hgrow="ALWAYS" percentWidth="100.0" />
+                           </columnConstraints>
+                           <rowConstraints>
+                              <RowConstraints percentHeight="20.0" valignment="CENTER" vgrow="ALWAYS" />
+                              <RowConstraints percentHeight="20.0" valignment="CENTER" vgrow="ALWAYS" />
+                              <RowConstraints percentHeight="5.0" valignment="CENTER" vgrow="ALWAYS" />
+                              <RowConstraints percentHeight="55.0" valignment="CENTER" vgrow="ALWAYS" />
+                           </rowConstraints>
+                           <GridPane.margin>
+                              <Insets left="15.0" />
+                           </GridPane.margin>
+                        </GridPane>
+                     </children>
+                     <GridPane.margin>
+                        <Insets />
+                     </GridPane.margin>
+                  </GridPane>
                </children>
-            </AnchorPane>
-         </children>
-      </AnchorPane>
-      <AnchorPane layoutX="925.0" layoutY="70.0" styleClass="newsupdatePaneStyle">
-         <children>
-            <Label layoutX="60.0" styleClass="optionHeaderStyle" text="%newsandUpdates" />
-            <Label fx:id="newsViewAll" layoutX="250.0" prefHeight="27.0" prefWidth="64.0" text="%viewall" />
-            <AnchorPane layoutY="37.0" styleClass="newsUpdates">
+               <GridPane.margin>
+                  <Insets right="40.0" />
+               </GridPane.margin>
+            </GridPane>
+            <Label text="© 2019, Powered by MOSIP" GridPane.columnIndex="2" GridPane.rowIndex="1">
+               <GridPane.margin>
+                  <Insets bottom="10.0" />
+               </GridPane.margin></Label>
+            <GridPane alignment="CENTER" GridPane.columnIndex="1">
+              <columnConstraints>
+                <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" percentWidth="100.0" />
+              </columnConstraints>
+              <rowConstraints>
+                <RowConstraints percentHeight="12.0" valignment="CENTER" vgrow="ALWAYS" />
+                <RowConstraints percentHeight="88.0" valignment="CENTER" vgrow="ALWAYS" />
+              </rowConstraints>
                <children>
-                  <AnchorPane layoutX="6.0" layoutY="1.0" styleClass="newsUpdateDescPaneStyle">
+                  <GridPane fx:id="splitroot" alignment="CENTER" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
+                    <columnConstraints>
+                      <ColumnConstraints hgrow="ALWAYS" percentWidth="100.0" />
+                    </columnConstraints>
+                    <rowConstraints>
+                      <RowConstraints percentHeight="100.0" valignment="CENTER" vgrow="ALWAYS" />
+                    </rowConstraints>
                      <children>
-                        <Label layoutX="7.0" layoutY="10.0" styleClass="newsUpdatesTitle" text="Update Title" />
-                        <Label layoutX="7.0" layoutY="29.0" styleClass="newsUpdateTime" text="Monday 10 Jan 8:00 AM" />
-                        <Text layoutX="7.0" layoutY="64.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="newsUpdateDescription" text="Description in 2-3 lines for an update will show here. The snippet of news and updates to be shown so that the user is informed of any changes in policy etc." wrappingWidth="288.0" />
+                        <Line startY="${splitroot.height}" styleClass="slitLine" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
                      </children>
-                  </AnchorPane>
-                  <AnchorPane layoutX="6.0" layoutY="110.0" styleClass="newsUpdateDescPaneStyle">
-                     <children>
-                        <Label layoutX="7.0" layoutY="10.0" styleClass="newsUpdatesTitle" text="Update Title" />
-                        <Label layoutX="7.0" layoutY="29.0" styleClass="newsUpdateTime" text="Monday 10 Jan 8:00 AM" />
-                        <Text layoutX="7.0" layoutY="64.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="newsUpdateDescription" text="Description in 2-3 lines for an update will show here. The snippet of news and updates to be shown so that the user is informed of any changes in policy etc." wrappingWidth="288.0" />
-                     </children>
-                  </AnchorPane>
-                  <AnchorPane layoutX="6.0" layoutY="220.0" styleClass="newsUpdateDescPaneStyle">
-                     <children>
-                        <Label layoutX="7.0" layoutY="10.0" styleClass="newsUpdatesTitle" text="Update Title" />
-                        <Label layoutX="7.0" layoutY="29.0" styleClass="newsUpdateTime" text="Monday 10 Jan 8:00 AM" />
-                        <Text layoutX="7.0" layoutY="64.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="newsUpdateDescription" text="Description in 2-3 lines for an update will show here. The snippet of news and updates to be shown so that the user is informed of any changes in policy etc." wrappingWidth="288.0" />
-                     </children>
-                  </AnchorPane>
-                  <AnchorPane layoutX="6.0" layoutY="330.0" styleClass="newsUpdateDescPaneStyle">
-                     <children>
-                        <Label layoutX="7.0" layoutY="10.0" styleClass="newsUpdatesTitle" text="Update Title" />
-                        <Label layoutX="7.0" layoutY="29.0" styleClass="newsUpdateTime" text="Monday 10 Jan 8:00 AM" />
-                        <Text layoutX="7.0" layoutY="64.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="newsUpdateDescription" text="Description in 2-3 lines for an update will show here. The snippet of news and updates to be shown so that the user is informed of any changes in policy etc." wrappingWidth="288.0" />
-                     </children>
-                  </AnchorPane>
+                  </GridPane>
                </children>
-            </AnchorPane>
+            </GridPane>
          </children>
-      </AnchorPane>
-       <ProgressIndicator fx:id="reMapProgressIndicator" layoutX="407.0" layoutY="20.0" prefHeight="345.0" prefWidth="417.0" progress="0.0" visible="false" />
+      </GridPane>
    </children>
-</AnchorPane>
+</GridPane>

@@ -82,6 +82,8 @@ public class RegistrationPacketVirusScanServiceImpl implements RegistrationPacke
 			responseDTO.setSuccessResponseDTO(successResponseDTO);
 		} catch (VirusScannerException virusScannerException) {
 			LOGGER.error("REGISTRATION - PACKET_SCAN_EXCEPTION", APPLICATION_NAME, APPLICATION_ID,
+					virusScannerException.getMessage());
+			LOGGER.debug("REGISTRATION - PACKET_SCAN_EXCEPTION_DEBUG", APPLICATION_NAME, APPLICATION_ID,
 					virusScannerException.getMessage() + ExceptionUtils.getStackTrace(virusScannerException));
 			ErrorResponseDTO errorResponseDTO = new ErrorResponseDTO();
 			errorResponseDTO.setCode("ServiceException");

@@ -115,7 +115,7 @@ public class UserClientMachineMappingServiceTest {
 
 		ResponseDTO res = mapMachineServiceImpl.view();
 
-		Assert.assertEquals("User Data Fetched Successfully", res.getSuccessResponseDTO().getMessage());
+		Assert.assertEquals("MACHINE_MAPPING_ENTITY_SUCCESS_MESSAGE", res.getSuccessResponseDTO().getMessage());
 	}
 
 	@Test
@@ -123,7 +123,7 @@ public class UserClientMachineMappingServiceTest {
 		RegBaseCheckedException baseCheckedException = new RegBaseCheckedException("101", "No record Found");
 		Mockito.when(machineMappingDAO.getStationID(Mockito.anyString())).thenReturn(baseCheckedException.getMessage());
 		ResponseDTO res = mapMachineServiceImpl.view();
-		Assert.assertEquals("No Records Found", res.getErrorResponseDTOs().get(0).getMessage());
+		Assert.assertEquals("MACHINE_MAPPING_ENTITY_ERROR_NO_RECORDS", res.getErrorResponseDTOs().get(0).getMessage());
 	}
 
 	@Test
@@ -199,7 +199,7 @@ public class UserClientMachineMappingServiceTest {
 		Mockito.when(machineMappingDAO.findByID(Mockito.any())).thenThrow(RegBaseUncheckedException.class);
 		Assert.assertEquals(
 				mapMachineServiceImpl.saveOrUpdate(machineMappingDTO).getErrorResponseDTOs().get(0).getMessage(),
-				"Unable to map user");
+				"MACHINE_MAPPING_ERROR_MESSAGE");
 	}
 
 	@Test

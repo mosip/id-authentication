@@ -4,6 +4,11 @@ import io.mosip.kernel.core.exception.BaseUncheckedException;
 
 public class HashingException extends BaseUncheckedException {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 43021822814026167L;
+
 	public HashingException() {
 		super();
 	}

@@ -100,7 +100,7 @@ Example1:-
 		@Autowired
 		JsonValidator jsonValidatorImpl;
 		
- ValidationReport validationReport  =  jsonValidatorImpl.validateJson(jsonString, "identity-schema.json");
+ ValidationReport validationReport  =  jsonValidatorImpl.validateJson(jsonString);
  
  //validationReport.valid    // true or false
 
