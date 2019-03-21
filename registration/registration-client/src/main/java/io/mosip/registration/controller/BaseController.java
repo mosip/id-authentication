@@ -835,7 +835,13 @@ public class BaseController extends BaseService{
 				public void handle(WorkerStateEvent t) {
 					service.reset();
 					packetHandlerController.reMapProgressIndicator.setVisible(false);
-					generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.REMAP_PROCESS_SUCCESS);
+					if (!centerMachineReMapService.isPacketsPendingForProcessing()) {
+						generateAlert(RegistrationConstants.ALERT_INFORMATION,
+								RegistrationUIConstants.REMAP_PROCESS_SUCCESS);
+					} else {
+						generateAlert(RegistrationConstants.ALERT_INFORMATION,
+								RegistrationUIConstants.REMAP_PROCESS_STILL_PENDING);
+					}
 
 				}
 			});

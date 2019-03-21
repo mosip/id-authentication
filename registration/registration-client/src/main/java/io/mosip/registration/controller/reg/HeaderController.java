@@ -348,4 +348,12 @@ public class HeaderController extends BaseController {
 		packetHandlerController.uploadPacket();
 	}
 
+	public void intiateRemapProcess() {
+		if (!isMachineRemapProcessStarted()) {
+			
+			generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.REMAP_NOT_APPLICABLE);
+		}
+
+	}
+
 }
