@@ -134,6 +134,7 @@ public class PacketUploadController extends BaseController implements Initializa
 						}
 					});
 				} else {
+					loadInitialPage();
 					generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.PACKET_UPLOAD_EMPTY_ERROR);
 				}
 			} else {
@@ -191,8 +192,6 @@ public class PacketUploadController extends BaseController implements Initializa
 
 										synchedPacket.setPacketClientStatus(
 												RegistrationClientStatusCode.UPLOADED_SUCCESSFULLY.getCode());
-										synchedPacket.setPacketServerStatus(
-												RegistrationClientStatusCode.UPLOAD_SUCCESS_STATUS.getCode());
 										synchedPacket
 												.setPacketServerStatus(response.getSuccessResponseDTO().getMessage());
 										packetUploadList.add(synchedPacket);
@@ -268,6 +267,7 @@ public class PacketUploadController extends BaseController implements Initializa
 						progressIndicator.setVisible(false);
 						displayStatus(populateTableData(tableMap));
 					} else {
+						loadInitialPage();
 						generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.PACKET_UPLOAD_EMPTY);
 					}
 					selectedPackets.clear();
