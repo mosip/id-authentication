@@ -150,6 +150,12 @@ public class FingerPrintCaptureController extends BaseController implements Init
 	private Button scanBtn;
 
 	@FXML
+	private Button continueBtn;
+	
+	@FXML
+	private Button backBtn;
+	
+	@FXML
 	private Label registrationNavlabel;
 
 	private int leftSlapCount;
@@ -172,6 +178,9 @@ public class FingerPrintCaptureController extends BaseController implements Init
 				registrationNavlabel.setText(RegistrationConstants.UIN_NAV_LABEL);
 			}
 
+			continueBtn.setDisable(true);
+			backBtn.setDisable(true);
+			
 			scanBtn.setDisable(true);
 
 			EventHandler<Event> mouseClick = event -> {
@@ -316,6 +325,17 @@ public class FingerPrintCaptureController extends BaseController implements Init
 
 		}
 		SessionContext.map().put(RegistrationConstants.OLD_BIOMETRIC_EXCEPTION, tempExceptionList);
+		
+
+		if (leftSlapCount == 4 && rightSlapCount == 4 && thumbCount == 2) {
+			continueBtn.setDisable(false);
+			backBtn.setDisable(false);
+		}
+		
+		if(!validateFingerPrints()) {
+			continueBtn.setDisable(true);
+			backBtn.setDisable(true);
+		}
 	}
 
 	private void removeFingerPrint(String handSlap) {
@@ -354,6 +374,11 @@ public class FingerPrintCaptureController extends BaseController implements Init
 				.setImage(new Image(getClass().getResource(RegistrationConstants.THUMB_IMG_PATH).toExternalForm()));
 		thumbsQualityScore.setText(RegistrationConstants.EMPTY);
 		removeFingerPrint(RegistrationConstants.THUMBS);
+		
+		if(!validateFingerPrints()) {
+			continueBtn.setDisable(true);
+			backBtn.setDisable(true);
+		}
 	}
 
 	private void exceptionFingersCount() {
@@ -436,8 +461,6 @@ public class FingerPrintCaptureController extends BaseController implements Init
 						AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
 
 				scanPopUpViewController.init(this, RegistrationUIConstants.FINGERPRINT);
-			} else {
-				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.FINGERPRINT_MAX_RETRIES_ALERT);
 			}
 
 			LOGGER.info(LOG_REG_FINGERPRINT_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
@@ -636,6 +659,13 @@ public class FingerPrintCaptureController extends BaseController implements Init
 		imageView.setImage(convertBytesToImage(detailsDTO.getFingerPrint()));
 		qualityScoreLabel.setText(getQualityScore(detailsDTO.getQualityScore()));
 		scanBtn.setDisable(true);
+		
+		
+		if(validateFingerPrints()) {
+			continueBtn.setDisable(false);
+			backBtn.setDisable(false);
+		}
+
 	}
 
 	/**
@@ -652,15 +682,12 @@ public class FingerPrintCaptureController extends BaseController implements Init
 
 			exceptionFingersCount();
 			if ((boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
-				if (validateFingerPrints()) {
 					irisCaptureController.clearIrisBasedOnExceptions();
 					userOnboardParentController.showCurrentPage(RegistrationConstants.FINGERPRINT_CAPTURE,
 							getOnboardPageDetails(RegistrationConstants.FINGERPRINT_CAPTURE,
 									RegistrationConstants.NEXT));
-				}
 			} else {
 				if (getRegistrationDTOFromSession().getSelectionListDTO() != null) {
-					if (validateFingerPrints()) {
 						SessionContext.map().remove(RegistrationConstants.DUPLICATE_FINGER);
 
 						long irisCount = getRegistrationDTOFromSession().getBiometricDTO().getApplicantBiometricDTO()
@@ -680,15 +707,12 @@ public class FingerPrintCaptureController extends BaseController implements Init
 							registrationPreviewController.setUpPreviewContent();
 						}
 						registrationController.showUINUpdateCurrentPage();
-					}
 				} else {
-					if (validateFingerPrints()) {
 						SessionContext.map().remove(RegistrationConstants.DUPLICATE_FINGER);
 						irisCaptureController.clearIrisBasedOnExceptions();
 
 						registrationController.showCurrentPage(RegistrationConstants.FINGERPRINT_CAPTURE,
 								getPageDetails(RegistrationConstants.FINGERPRINT_CAPTURE, RegistrationConstants.NEXT));
-					}
 				}
 			}
 			LOGGER.info(LOG_REG_FINGERPRINT_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
@@ -718,13 +742,10 @@ public class FingerPrintCaptureController extends BaseController implements Init
 
 			exceptionFingersCount();
 			if ((boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
-				if (validateFingerPrints()) {
 					userOnboardParentController.showCurrentPage(RegistrationConstants.FINGERPRINT_CAPTURE,
 							getOnboardPageDetails(RegistrationConstants.FINGERPRINT_CAPTURE,
 									RegistrationConstants.PREVIOUS));
-				}
 			} else {
-				if (validateFingerPrints()) {
 					SessionContext.getInstance().getMapObject().remove(RegistrationConstants.DUPLICATE_FINGER);
 					if (getRegistrationDTOFromSession().getSelectionListDTO() != null) {
 						SessionContext.map().put("fingerPrintCapture", false);
@@ -746,7 +767,6 @@ public class FingerPrintCaptureController extends BaseController implements Init
 								getPageDetails(RegistrationConstants.FINGERPRINT_CAPTURE,
 										RegistrationConstants.PREVIOUS));
 					}
-				}
 			}
 			LOGGER.info(LOG_REG_FINGERPRINT_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 					"Navigating to Demographic capture page for user registration ended");
@@ -810,7 +830,6 @@ public class FingerPrintCaptureController extends BaseController implements Init
 						isthumbsCaptured = true;
 					}
 				} else {
-					generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.IRIS_QUALITY_SCORE_ERROR);
 					return isValid;
 				}
 			}
@@ -853,8 +872,6 @@ public class FingerPrintCaptureController extends BaseController implements Init
 				} else {
 					isValid = true;
 				}
-			} else {
-				generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.FINGERPRINT_SCAN_ALERT);
 			}
 			LOGGER.info(LOG_REG_FINGERPRINT_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 					"Validating Fingerprints captured ended");

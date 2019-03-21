@@ -68,7 +68,6 @@
 .ackBackButton{
 	-fx-border-width: 1 1 1 1;
 	-fx-border-radius: 3,3,3,3;
-	-fx-pref-height: 2px;
 	-fx-background-color:#FFFFFF;
 	-fx-border-color: #FF4081;
 	-fx-font-family: Roboto;	
@@ -81,7 +80,6 @@
 .ackPageButton {
 	-fx-border-width: 1 1 1 1;
 	-fx-border-radius: 3,3,3,3;
-	-fx-pref-height: 2px;
 	-fx-background-color: #FF4081;
 	-fx-text-fill: white;
 	-fx-font-family: Roboto;
@@ -362,6 +360,7 @@
 	-fx-font-family: Roboto;
 	-fx-font-size: 16.0px;
 	-fx-text-fill:  #45A30A;	
+	-fx-background-color:White;
 }
 /*Onoard User page Design Ends here*/
 

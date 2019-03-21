@@ -61,7 +61,7 @@
                                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                       </rowConstraints>
                                        <children>
-                                          <Button contentDisplay="BOTTOM" mnemonicParsing="false" prefHeight="${backButtonPane.height-10}" prefWidth="${backButtonPane.width-10}" styleClass="backButton" text="%back" onAction="#previousSection"/>
+                                          <Button fx:id="backBtn" contentDisplay="BOTTOM" mnemonicParsing="false" onAction="#previousSection" prefHeight="${backButtonPane.height-10}" prefWidth="${backButtonPane.width-10}" styleClass="backButton" text="%back" />
                                        </children>
                                     </GridPane>
                                  </children>
@@ -78,7 +78,7 @@
                                  <children>
                                     <GridPane fx:id="continueButtonPane" GridPane.columnIndex="2">
                                        <children>
-                                          <Button mnemonicParsing="false" prefHeight="${continueButtonPane.height-10}" prefWidth="${continueButtonPane.width-10}" styleClass="contiuneButton" text="%continue" onAction="#nextSection" />
+                                          <Button fx:id="continueBtn" mnemonicParsing="false" onAction="#nextSection" prefHeight="${continueButtonPane.height-10}" prefWidth="${continueButtonPane.width-10}" styleClass="contiuneButton" text="%continue" />
                                        </children>
                                        <columnConstraints>
                                           <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -123,7 +123,7 @@
                <children>
                   <GridPane>
                      <children>
-                        <GridPane GridPane.columnIndex="1" styleClass="subMainComponent">
+                        <GridPane styleClass="subMainComponent" GridPane.columnIndex="1">
                            <children>
                               <GridPane alignment="CENTER" GridPane.rowIndex="1">
                                  <children>
@@ -250,7 +250,7 @@
                                                       <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="1">
                                                          <children>
                                                             <Label styleClass="qualityLabel" text="%quality" />
-                                                            <Label fx:id="rightIrisQualityScore" styleClass="qualityLabel" text="-" />
+                                                            <Label fx:id="leftIrisQualityScore" styleClass="qualityLabel" text="-" />
                                                          </children>
                                                       </VBox>
                                                       <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" GridPane.rowIndex="1">
@@ -304,7 +304,7 @@
                                                             <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="1">
                                                                <children>
                                                                   <Label styleClass="qualityLabel" text="%quality" />
-                                                                  <Label fx:id="leftIrisQualityScore" styleClass="qualityLabel" text="-" />
+                                                                  <Label fx:id="rightIrisQualityScore" styleClass="qualityLabel" text="-" />
                                                                </children>
                                                             </VBox>
                                                             <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" GridPane.rowIndex="1">
@@ -399,22 +399,35 @@
                                  <children>
                                     <GridPane GridPane.columnIndex="1">
                                       <columnConstraints>
-                                        <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" minWidth="10.0" percentWidth="60.0" prefWidth="100.0" />
-                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="40.0" prefWidth="100.0" />
+                                        <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" minWidth="10.0" percentWidth="90.0" prefWidth="100.0" />
+                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="10.0" prefWidth="100.0" />
                                       </columnConstraints>
                                       <rowConstraints>
                                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                       </rowConstraints>
                                        <children>
-                                          <Button fx:id="scanIris" mnemonicParsing="false" onAction="#scan" styleClass="onboardScanBtn" text="%scan">
-                                             <graphic>
-                                                <ImageView fitHeight="15.0" fitWidth="15.0" layoutY="25.0" pickOnBounds="true" preserveRatio="true">
-                                                   <image>
-                                                      <Image url="@../images/scan.png" />
-                                                   </image>
-                                                </ImageView>
-                                             </graphic>
-                                          </Button>
+                                          <HBox prefHeight="100.0" prefWidth="200.0" spacing="20.0">
+                                             <children>
+                                                <Button fx:id="scanIris" mnemonicParsing="false" onAction="#scan" styleClass="onboardScanBtn" text="%scan">
+                                                   <graphic>
+                                                      <ImageView fitHeight="15.0" fitWidth="15.0" layoutY="25.0" pickOnBounds="true" preserveRatio="true">
+                                                         <image>
+                                                            <Image url="@../images/scan.png" />
+                                                         </image>
+                                                      </ImageView>
+                                                   </graphic>
+                                                </Button>
+                                                <Button fx:id="startOverBtn" mnemonicParsing="false" onAction="#clearIrisData" styleClass="onboardScanBtn" text="%startOver">
+                                                   <graphic>
+                                                      <ImageView fitHeight="15.0" fitWidth="15.0" layoutY="25.0" pickOnBounds="true" preserveRatio="true">
+                                                         <image>
+                                                            <Image url="@../images/scan.png" />
+                                                         </image>
+                                                      </ImageView>
+                                                   </graphic>
+                                                </Button>
+                                             </children>
+                                          </HBox>
                                        </children>
                                     </GridPane>
                                  </children>
@@ -522,7 +535,7 @@
                   <Label fx:id="registrationNavlabel" styleClass="headerLabel" text="%/registration" />
                </children>
             </HBox>
-            <GridPane  alignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="1" styleClass="headerPageTracker">
+            <GridPane alignment="CENTER" styleClass="headerPageTracker" GridPane.columnIndex="1" GridPane.rowIndex="1">
                <children>
                   <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="5.0">
                      <children>

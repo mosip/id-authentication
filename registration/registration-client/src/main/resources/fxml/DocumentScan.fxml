@@ -61,7 +61,7 @@
                                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                       </rowConstraints>
                                        <children>
-                                          <Button contentDisplay="BOTTOM" mnemonicParsing="false" onAction="#back" prefHeight="${backButtonPane.height-10}" prefWidth="${backButtonPane.width-10}" styleClass="backButton" text="%back" />
+                                          <Button fx:id="backBtn" contentDisplay="BOTTOM" mnemonicParsing="false" onAction="#back" prefHeight="${backButtonPane.height-10}" prefWidth="${backButtonPane.width-10}" styleClass="backButton" text="%back" />
                                        </children>
                                     </GridPane>
                                  </children>
@@ -78,7 +78,7 @@
                                  <children>
                                     <GridPane fx:id="continueButtonPane" GridPane.columnIndex="2">
                                        <children>
-                                          <Button mnemonicParsing="false" onAction="#next" prefHeight="${continueButtonPane.height-10}" prefWidth="${continueButtonPane.width-10}" styleClass="contiuneButton" text="%continue" />
+                                          <Button fx:id="continueBtn" mnemonicParsing="false" onAction="#next" prefHeight="${continueButtonPane.height-10}" prefWidth="${continueButtonPane.width-10}" styleClass="contiuneButton" text="%continue" />
                                        </children>
                                        <columnConstraints>
                                           <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -442,7 +442,7 @@
             <HBox spacing="5.0" styleClass="homeBox" GridPane.rowIndex="1">
                <children>
                   <Button mnemonicParsing="false" onAction="#goToHomePageFromRegistration" styleClass="homeButton" text="%home" />
-                  <Label  fx:id="registrationNavlabel" styleClass="headerLabel" text="%/registration" />
+                  <Label fx:id="registrationNavlabel" styleClass="headerLabel" text="%/registration" />
                </children>
             </HBox>
             <GridPane alignment="CENTER" styleClass="headerPageTracker" GridPane.columnIndex="1" GridPane.rowIndex="1">
