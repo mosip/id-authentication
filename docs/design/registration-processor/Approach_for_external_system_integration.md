@@ -2,6 +2,7 @@
 # External System Integration Stage 
 
 **Background**
+
 Technical stack used in Registration Processor gives ability to add or change order/sequence of stages/route in the flow. Most of the stages works in isolation, which are deployed independently and does not depend on the previous or next stage in the flow. This design document describe one of option to integrate registration processor with external system by creating vertx stage. 
 
 **The target users are -**
@@ -10,10 +11,11 @@ System Integrator Team
 **The key requirements are -**
 -	MOSIP product should provide sample code along with documentation which can be used to integrate with the external system.
 
-** Limitation- (TBD)**
+** Limitation- (TBD) -**
+
 All the vertx stages in registration process are configured using apache camel bridge to execute in a sequence. However, technically, it is possible to add or remove stages in the camel bridge but in some cases, this sequence or order cannot be altered due to highly dependent activity. For example, Packet Receiver, Virus Scanner and Packet Uploader need to work in sequence. 
 
-**The key non-functional requirements are**
+**The key non-functional requirements are -**
 1.	Introduce vertx stage which can be plugged in between stages in registration processor.
 2.  Auditing of the all the transactions including success and failed scenario.
 3.	Logging of the all the requests
