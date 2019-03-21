@@ -62,7 +62,6 @@ public class PacketExportController extends BaseController {
 			File defaultDirectory = new File(currentRelativePath.toAbsolutePath().toString());
 			destinationSelector.setInitialDirectory(defaultDirectory);
 			File destinationPath = destinationSelector.showDialog(primaryStage);
-			Long packetSize = 0L;
 			if (destinationPath != null) {
 				// Iterate through the synched packets and copy to the Destination folder
 				for (PacketStatusDTO packetToCopy : synchedRecords) {
@@ -89,13 +88,13 @@ public class PacketExportController extends BaseController {
 					ResponseDTO responseDTO = packetExportServiceImpl.updateRegistrationStatus(exportedPackets);
 					if (responseDTO.getSuccessResponseDTO() != null
 							&& responseDTO.getSuccessResponseDTO().getMessage().equals(RegistrationConstants.SUCCESS)) {
-						generateAlert(RegistrationConstants.INFO,
+						generateAlert(RegistrationConstants.ALERT_INFORMATION,
 								exportedPackets.size() + " " + RegistrationUIConstants.PACKET_EXPORT_SUCCESS_MESSAGE);
 					}
-				} 
+				}
 			}
 		} else {
-			generateAlert(RegistrationConstants.INFO, RegistrationUIConstants.PACKET_EXPORT_MESSAGE);
+			generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.PACKET_EXPORT_MESSAGE);
 		}
 		return exportedPackets;
 

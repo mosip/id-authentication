@@ -19,4 +19,5 @@ public class BiometricExceptionDTO extends BaseDTO {
 	protected String reason;
 	// Permanent or Temporary
 	protected String exceptionType;
+	private boolean isMarkedAsException;
 }

@@ -138,8 +138,8 @@ export const DOCUMENT_UPLOAD_REQUEST_DTO = {
   request: {
     pre_registartion_id: '',
     doc_cat_code: '',
-    doc_typ_code: '',
-    lang_code: ''
+    doc_typ_code: 'address',
+    lang_code: 'ENG'
   }
 };
 

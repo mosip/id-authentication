@@ -26,4 +26,4 @@ VOLUME /home/logs
 
 COPY ./target/registration-processor-packet-generator-service-*.jar registration-processor-packet-generator-service.jar
 EXPOSE 8082
-CMD ["java","-Dspring.cloud.config.label=${spring_config_label_env}","-Dspring.profiles.active=${active_profile_env}","-Dspring.cloud.config.uri=${spring_config_url_env}","-jar","packet-bio-dedupe-service.jar"]
+CMD ["java","-Dspring.cloud.config.label=${spring_config_label_env}","-Dspring.profiles.active=${active_profile_env}","-Dspring.cloud.config.uri=${spring_config_url_env}","-jar","registration-processor-packet-generator-service.jar"]

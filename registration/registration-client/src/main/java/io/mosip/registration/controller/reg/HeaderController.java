@@ -193,7 +193,7 @@ public class HeaderController extends BaseController {
 			ResponseDTO responseDTO = jobConfigurationService.executeAllJobs();
 
 			if (responseDTO.getSuccessResponseDTO() != null) {
-				generateAlert(RegistrationUIConstants.SYNC_SUCCESS);
+				generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.SYNC_SUCCESS);
 			} else if (responseDTO.getErrorResponseDTOs() != null) {
 				generateAlert(RegistrationUIConstants.SYNC_FAILURE,
 						responseDTO.getErrorResponseDTOs().get(0).getMessage());
@@ -325,12 +325,12 @@ public class HeaderController extends BaseController {
 
 		if (responseDTO.getSuccessResponseDTO() != null) {
 			SuccessResponseDTO successResponseDTO = responseDTO.getSuccessResponseDTO();
-			generateAlert(successResponseDTO.getCode(), successResponseDTO.getMessage());
+			generateAlertLanguageSpecific(successResponseDTO.getCode(), successResponseDTO.getMessage());
 
 		} else if (responseDTO.getErrorResponseDTOs() != null) {
 
 			ErrorResponseDTO errorresponse = responseDTO.getErrorResponseDTOs().get(0);
-			generateAlert(errorresponse.getCode(), errorresponse.getMessage());
+			generateAlertLanguageSpecific(errorresponse.getCode(), errorresponse.getMessage());
 
 		}
 	}
