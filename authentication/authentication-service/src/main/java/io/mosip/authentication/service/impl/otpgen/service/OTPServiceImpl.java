@@ -34,7 +34,6 @@ import io.mosip.authentication.service.integration.NotificationManager;
 import io.mosip.authentication.service.integration.OTPManager;
 import io.mosip.authentication.service.repository.AutnTxnRepository;
 import io.mosip.kernel.core.exception.ParseException;
-import io.mosip.kernel.core.idrepo.spi.IdRepoService;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.core.util.UUIDUtils;
@@ -78,9 +77,6 @@ public class OTPServiceImpl implements OTPService {
 
 	@Autowired
 	private IdInfoHelper idInfoHelper;
-
-	@Autowired
-	IdRepoService idInfoService;
 
 	@Autowired
 	private NotificationService notificationService;

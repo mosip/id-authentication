@@ -41,7 +41,6 @@ import io.mosip.authentication.service.impl.indauth.service.pin.PinAuthType;
 import io.mosip.authentication.service.integration.IdTemplateManager;
 import io.mosip.authentication.service.integration.NotificationManager;
 import io.mosip.kernel.core.exception.BaseCheckedException;
-import io.mosip.kernel.core.idrepo.spi.IdRepoService;
 import io.mosip.kernel.core.logger.spi.Logger;
 
 /**
@@ -72,9 +71,6 @@ public class NotificationServiceImpl implements NotificationService {
 	/** Property Name for OTP SMS Template */
 	private static final String OTP_SMS_TEMPLATE = "mosip.otp.sms.template";
 
-	/** The Constant STATUS_SUCCESS. */
-	private static final String STATUS_SUCCESS = "y";
-
 	/** Property Name for Auth Email Subject Template */
 	private static final String AUTH_EMAIL_SUBJECT_TEMPLATE = "mosip.auth.mail.subject.template";
 
@@ -102,9 +98,6 @@ public class NotificationServiceImpl implements NotificationService {
 
 	@Autowired
 	private IdInfoFetcher idInfoFetcher;
-
-	@Autowired
-	IdRepoService idInfoService;
 
 	/** ID Template manager */
 	@Autowired

@@ -70,7 +70,6 @@ import io.mosip.authentication.service.integration.NotificationManager;
 import io.mosip.authentication.service.integration.OTPManager;
 import io.mosip.authentication.service.repository.AutnTxnRepository;
 import io.mosip.kernel.core.idgenerator.spi.TokenIdGenerator;
-import io.mosip.kernel.core.idrepo.spi.IdRepoService;
 import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderImpl;
 
 /**
@@ -303,7 +302,6 @@ public class AuthFacadeImplTest {
 		authRequestDTO.setRequestedAuth(authTypeDTO);
 		authRequestDTO.setId("1234567");
 
-		ZoneOffset offset = ZoneOffset.MAX;
 		authRequestDTO.setRequestTime(Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
 		authRequestDTO.setId("id");
