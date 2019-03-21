@@ -54,6 +54,7 @@ The key solution considerations are -
     + Update "latest_trn_status_code" column with below values while processing packet:
       +  SUCCESS: In case processing successful
       +  FAILED: In case if validation fails
+	  +  IN-PROGRESS: In case of asynchronous call
       +  ERROR: In case of exception while processing packet
       +  REPROCESS: Update status with this value in case of exception which can be re-processed latter. Some of exceptions are like database or REST end point connection time out
       +  PROCESSED: This status indicate that end to end processing of packet is successful
