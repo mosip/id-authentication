@@ -56,11 +56,11 @@ import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessor
 import io.mosip.registration.processor.core.spi.uincardgenerator.UinCardGenerator;
 import io.mosip.registration.processor.core.util.CbeffToBiometricUtil;
 import io.mosip.registration.processor.core.util.JsonUtil;
+import io.mosip.registration.processor.core.util.exception.FieldNotFoundException;
+import io.mosip.registration.processor.core.util.exception.InstantanceCreationException;
 import io.mosip.registration.processor.message.sender.template.TemplateGenerator;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
-import io.mosip.registration.processor.packet.storage.exception.FieldNotFoundException;
 import io.mosip.registration.processor.packet.storage.exception.IdentityNotFoundException;
-import io.mosip.registration.processor.packet.storage.exception.InstantanceCreationException;
 import io.mosip.registration.processor.packet.storage.exception.ParsingException;
 import io.mosip.registration.processor.packet.storage.utils.Utilities;
 import io.mosip.registration.processor.print.service.dto.JsonFileDTO;

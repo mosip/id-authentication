@@ -46,6 +46,7 @@ import io.mosip.preregistration.booking.repository.BookingAvailabilityRepository
 import io.mosip.preregistration.booking.repository.RegistrationBookingRepository;
 import io.mosip.preregistration.booking.repository.impl.BookingDAO;
 import io.mosip.preregistration.booking.service.util.BookingServiceUtil;
+import io.mosip.preregistration.booking.test.BookingApplicationTest;
 import io.mosip.preregistration.core.code.StatusCodes;
 import io.mosip.preregistration.core.common.dto.BookingRegistrationDTO;
 import io.mosip.preregistration.core.common.dto.ExceptionJSONInfoDTO;
@@ -54,7 +55,7 @@ import io.mosip.preregistration.core.common.dto.MainResponseDTO;
 import io.mosip.preregistration.core.common.dto.PreRegistartionStatusDTO;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest
+@SpringBootTest(classes = { BookingApplicationTest.class })
 public class BookingServiceUtilTest {
 
 	@MockBean
@@ -380,7 +381,7 @@ public class BookingServiceUtilTest {
 
 		preRegResponse.setResponse(statusList);
 		preRegResponse.setErr(null);
-		preRegResponse.setResTime(serviceUtil.getCurrentResponseTime());
+		preRegResponse.setResponsetime(serviceUtil.getCurrentResponseTime());
 		RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
 		Mockito.when(restTemplateBuilder.build()).thenReturn(restTemplate);
 		
@@ -413,7 +414,7 @@ public class BookingServiceUtilTest {
 		err.setErrorCode(ErrorCodes.PRG_BOOK_RCI_011.name());
 		err.setMessage(ErrorMessages.DEMOGRAPHIC_STATUS_UPDATION_FAILED.getMessage());
 		preRegResponse.setErr(err);
-		preRegResponse.setResTime(serviceUtil.getCurrentResponseTime());
+		preRegResponse.setResponsetime(serviceUtil.getCurrentResponseTime());
 		RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
 		Mockito.when(restTemplateBuilder.build()).thenReturn(restTemplate);
 		@SuppressWarnings("unchecked")
@@ -434,7 +435,7 @@ public class BookingServiceUtilTest {
 		err.setErrorCode(ErrorCodes.PRG_BOOK_RCI_011.name());
 		err.setMessage(ErrorMessages.DEMOGRAPHIC_STATUS_UPDATION_FAILED.getMessage());
 		preRegResponse.setErr(err);
-		preRegResponse.setResTime(serviceUtil.getCurrentResponseTime());
+		preRegResponse.setResponsetime(serviceUtil.getCurrentResponseTime());
 		RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
 		Mockito.when(restTemplateBuilder.build()).thenReturn(restTemplate);
 		@SuppressWarnings("unchecked")

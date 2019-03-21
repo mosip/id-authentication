@@ -14,6 +14,7 @@ import org.springframework.web.context.request.WebRequest;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.preregistration.auth.dto.MainResponseDTO;
 import io.mosip.preregistration.auth.exceptions.AuthServiceException;
+import io.mosip.preregistration.auth.exceptions.ConfigFileNotFoundException;
 import io.mosip.preregistration.auth.exceptions.InvalidateTokenException;
 import io.mosip.preregistration.auth.exceptions.ParseResponseException;
 import io.mosip.preregistration.auth.exceptions.SendOtpFailedException;
@@ -95,7 +96,7 @@ public class AuthExceptionHandler {
 		errorRes.setId(e.getMainResposneDTO().getId());
 		errorRes.setVersion(e.getMainResposneDTO().getVersion());
 		errorRes.setErrors(errorList);
-		errorRes.setResponsetime(getCurrentResponseTime());
+		errorRes.setResponsetime(GenericUtil.getCurrentResponseTime());
 		return new ResponseEntity<>(errorRes, HttpStatus.OK);
 	}
 	
@@ -111,6 +112,25 @@ public class AuthExceptionHandler {
 		errorRes.setResponsetime(GenericUtil.getCurrentResponseTime());
 		return new ResponseEntity<>(errorRes, HttpStatus.OK);
 	} 
+	
+	
+	/**
+	 * @param e
+	 *            pass the exception
+	 * @param request
+	 *            pass the request
+	 * @return response for ConfigFileNotFoundException
+	 */
+	@ExceptionHandler(ConfigFileNotFoundException.class)
+	public ResponseEntity<MainResponseDTO<?>> configFileNotFoundException(final ConfigFileNotFoundException e, WebRequest request) {
+		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getErrorText());
+		MainResponseDTO<?> errorRes = new MainResponseDTO<>();
+		List<ExceptionJSONInfoDTO> errorList = new ArrayList<>();
+		errorList.add(errorDetails);
+		errorRes.setErrors(errorList);
+		errorRes.setResponsetime(GenericUtil.getCurrentResponseTime());
+		return new ResponseEntity<>(errorRes, HttpStatus.OK);
+	}
 	private String getCurrentResponseTime() {
 		return DateUtils.formatDate(new Date(System.currentTimeMillis()), utcDateTimePattern);
 

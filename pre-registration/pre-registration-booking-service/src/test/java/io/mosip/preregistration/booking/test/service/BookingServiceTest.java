@@ -11,6 +11,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
@@ -34,11 +35,15 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import io.mosip.kernel.auth.adapter.AuthUserDetails;
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.exception.FileNotFoundException;
 import io.mosip.kernel.core.exception.ParseException;
@@ -68,7 +73,10 @@ import io.mosip.preregistration.booking.repository.RegistrationBookingRepository
 import io.mosip.preregistration.booking.repository.impl.BookingDAO;
 import io.mosip.preregistration.booking.service.BookingService;
 import io.mosip.preregistration.booking.service.util.BookingServiceUtil;
+import io.mosip.preregistration.booking.test.BookingApplicationTest;
+import io.mosip.preregistration.core.code.AuditLogVariables;
 import io.mosip.preregistration.core.code.StatusCodes;
+import io.mosip.preregistration.core.common.dto.AuditRequestDto;
 import io.mosip.preregistration.core.common.dto.BookingRegistrationDTO;
 import io.mosip.preregistration.core.common.dto.DeleteBookingDTO;
 import io.mosip.preregistration.core.common.dto.MainListRequestDTO;
@@ -81,6 +89,7 @@ import io.mosip.preregistration.core.common.dto.PreRegistartionStatusDTO;
 import io.mosip.preregistration.core.exception.AppointmentReBookException;
 import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
 import io.mosip.preregistration.core.exception.TableNotAccessibleException;
+import io.mosip.preregistration.core.util.AuditLogUtil;
 import io.mosip.preregistration.core.util.ValidationUtil;
 
 /**
@@ -90,7 +99,7 @@ import io.mosip.preregistration.core.util.ValidationUtil;
  *
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest
+@SpringBootTest(classes = { BookingApplicationTest.class })
 public class BookingServiceTest {
 
 	@MockBean
@@ -101,6 +110,11 @@ public class BookingServiceTest {
 
 	@MockBean
 	RestTemplateBuilder restTemplateBuilder;
+	@MockBean
+	private SecurityContextHolder context; 
+	
+	@MockBean
+	private AuditLogUtil auditLogUtil; 
 
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -115,6 +129,8 @@ public class BookingServiceTest {
 
 	@MockBean
 	private BookingDAO bookingDAO;
+	
+	AuditRequestDto auditRequestDto = new AuditRequestDto(); 
 
 	private AvailabilityDto availability = new AvailabilityDto();
 	private List<DateTimeDto> dateList = new ArrayList<>();
@@ -305,9 +321,26 @@ public class BookingServiceTest {
 		reBookingDto.setRequesttime(new Date());
 		reBookingDto.setVersion("1.0");
 		reBookingDto.setRequest(rebookingList);
+		
+		AuthUserDetails applicationUser = Mockito.mock(AuthUserDetails.class);
+        Authentication authentication = Mockito.mock(Authentication.class);
+        SecurityContext securityContext = Mockito.mock(SecurityContext.class);
+        Mockito.when(securityContext.getAuthentication()).thenReturn(authentication);
+        SecurityContextHolder.setContext(securityContext);
+        Mockito.when(SecurityContextHolder.getContext().getAuthentication().getPrincipal()).thenReturn(applicationUser);
+        auditRequestDto.setActionTimeStamp(LocalDateTime.now(ZoneId.of("UTC")));
+		auditRequestDto.setApplicationId(AuditLogVariables.MOSIP_1.toString());
+		auditRequestDto.setApplicationName(AuditLogVariables.PREREGISTRATION.toString());
+		auditRequestDto.setCreatedBy(AuditLogVariables.SYSTEM.toString());
+		auditRequestDto.setHostIp(auditLogUtil.getServerIp());
+		auditRequestDto.setHostName(auditLogUtil.getServerName());
+		auditRequestDto.setId(AuditLogVariables.NO_ID.toString());
+		auditRequestDto.setIdType(AuditLogVariables.PRE_REGISTRATION_ID.toString());
+		auditRequestDto.setSessionUserId(AuditLogVariables.SYSTEM.toString());
+		auditRequestDto.setSessionUserName(AuditLogVariables.SYSTEM.toString());
 	}
 
-//	@Test
+	@Test
 	public void getAvailabilityTest() {
 
 		logger.info("Availability dto " + availability);
@@ -325,7 +358,7 @@ public class BookingServiceTest {
 
 	}
 
-//	@Test(expected = TableNotAccessibleException.class)
+	@Test(expected = TableNotAccessibleException.class)
 	public void getAvailabilityFailureTest() {
 
 		Mockito.when(bookingDAO.findDate(Mockito.anyString(), Mockito.any(), Mockito.any()))
@@ -334,7 +367,7 @@ public class BookingServiceTest {
 
 	}
 
-//	@Test
+	@Test
 	public void successBookAppointment() {
 
 		requestValidatorFlag = ValidationUtil.requestValidator(bookingDto);
@@ -348,7 +381,7 @@ public class BookingServiceTest {
 		assertEquals(1, response.getResponse().size());
 	}
 
-//	@Test
+	@Test
 	public void successExpiredAppointment() {
 
 		MainListRequestDTO<BookingRequestDTO> reBookingMainDto = new MainListRequestDTO<>();
@@ -505,7 +538,7 @@ public class BookingServiceTest {
 		assertEquals(1, response.getResponse().size());
 	}
 
-//	@Test
+	@Test
 	public void addAvailabilityServiceTest() {
 
 		String date1 = "2016-11-09 09:00:00";
@@ -557,7 +590,7 @@ public class BookingServiceTest {
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-//	@Test
+	@Test
 	public void cancelAppointmentSuccessTest() throws java.text.ParseException {
 
 		String date5 = "2016-11-09 14:20:00";
@@ -704,7 +737,7 @@ public class BookingServiceTest {
 		assertEquals("APPOINTMENT_SUCCESSFULLY_BOOKED", response.getBookingMessage());
 	}
 
-//	@Test(expected = TableNotAccessibleException.class)
+	@Test(expected = TableNotAccessibleException.class)
 	public void cancelBookingFailureTest() throws java.text.ParseException {
 
 		String date5 = "2016-11-09 14:20:00";
@@ -726,7 +759,7 @@ public class BookingServiceTest {
 		service.cancelBooking(cancelbookingDto);
 	}
 
-//	@Test(expected = TimeSpanException.class)
+	@Test(expected = TimeSpanException.class)
 	public void cancelTimeSpanFailureTest() throws java.text.ParseException {
 		AppointmentReBookException exception = new AppointmentReBookException(ErrorCodes.PRG_BOOK_RCI_026.getCode(),
 				ErrorMessages.BOOKING_STATUS_CANNOT_BE_ALTERED.getMessage());
@@ -801,7 +834,7 @@ public class BookingServiceTest {
 		MainListResponseDTO<DeleteBookingDTO> response = new MainListResponseDTO<>();
 		response.setErr(null);
 		response.setResponse(deleteList);
-		response.setResTime(serviceUtil.getCurrentResponseTime());
+		response.setResponsetime(serviceUtil.getCurrentResponseTime());
 
 		assertEquals(response.getResponse().get(0).getPreRegistrationId(),
 				service.deleteBooking("12345678909876").getResponse().get(0).getPreRegistrationId());
