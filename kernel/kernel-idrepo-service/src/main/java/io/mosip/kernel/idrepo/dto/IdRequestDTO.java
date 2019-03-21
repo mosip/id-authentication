@@ -12,11 +12,7 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 public class IdRequestDTO extends BaseIdRequestResponseDTO {
 	
-	/** The status. */
-	private String status;
-	
-	/** The registration id. */
-	private String registrationId;
+	private String requesttime;
 	
 	/** The request. */
 	private RequestDTO request;

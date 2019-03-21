@@ -208,13 +208,13 @@ public class IdRepoExceptionHandler extends ResponseEntityExceptionHandler {
 			response.setErrors(errors);
 		}
 
-		response.setTimestamp(
+		response.setResponsetime(
 				DateUtils.getUTCCurrentDateTimeString(env.getProperty(IdRepoConstants.DATETIME_PATTERN.getValue())));
 
 		response.setVersion(env.getProperty(IdRepoConstants.APPLICATION_VERSION.getValue()));
 
 		mapper.setFilterProvider(new SimpleFilterProvider().addFilter("responseFilter",
-				SimpleBeanPropertyFilter.serializeAllExcept("registrationId", "status", "response")));
+				SimpleBeanPropertyFilter.serializeAllExcept("registrationId", "status", "response", "metadata")));
 
 		return response;
 	}

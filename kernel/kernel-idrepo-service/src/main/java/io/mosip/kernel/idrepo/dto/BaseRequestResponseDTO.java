@@ -12,6 +12,9 @@ import lombok.Data;
 @Data
 public class BaseRequestResponseDTO {
 	
+	/** The status. */
+	private String status;
+	
 	/** The identity. */
 	private Object identity;
 	
