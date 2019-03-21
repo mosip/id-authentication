@@ -109,7 +109,7 @@ public class BookingServiceTest {
 	private RegistrationBookingRepository registrationBookingRepository;
 
 	@MockBean
-	RestTemplateBuilder restTemplateBuilder;
+	RestTemplate restTemplate;
 	@MockBean
 	private SecurityContextHolder context; 
 	
@@ -371,8 +371,8 @@ public class BookingServiceTest {
 	public void successBookAppointment() {
 
 		requestValidatorFlag = ValidationUtil.requestValidator(bookingDto);
-		RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
-		Mockito.when(restTemplateBuilder.build()).thenReturn(restTemplate);
+//		RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
+//		Mockito.when(restTemplateBuilder.build()).thenReturn(restTemplate);
 		ResponseEntity<MainListResponseDTO<PreRegistartionStatusDTO>> respEntity = new ResponseEntity<>(preRegResponse, HttpStatus.OK);
 		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
 				Mockito.eq(new ParameterizedTypeReference<MainListResponseDTO<PreRegistartionStatusDTO>>() {}))).thenReturn(respEntity);
@@ -441,8 +441,8 @@ public class BookingServiceTest {
 
 		requestValidatorFlag = ValidationUtil.requestValidator(bookingDto);
 
-		RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
-		Mockito.when(restTemplateBuilder.build()).thenReturn(restTemplate);
+//		RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
+//		Mockito.when(restTemplateBuilder.build()).thenReturn(restTemplate);
 		Mockito.when(bookingDAO.findByPreRegistrationId("12345678909876")).thenReturn(bookingEntity);
 		ResponseEntity<MainListResponseDTO<PreRegistartionStatusDTO>> respEntity = new ResponseEntity<>(preRegResponseRebook, HttpStatus.OK);
 		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
@@ -525,8 +525,8 @@ public class BookingServiceTest {
 		Mockito.when(bookingDAO.findByFromTimeAndToTimeAndRegDateAndRegcntrId(Mockito.any(), Mockito.any(),
 				Mockito.any(), Mockito.any())).thenReturn(availableEntity);
 		availableEntity.setAvailableKiosks(availableEntity.getAvailableKiosks() + 1);
-		RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
-		Mockito.when(restTemplateBuilder.build()).thenReturn(restTemplate);
+//		RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
+//		Mockito.when(restTemplateBuilder.build()).thenReturn(restTemplate);
 		Mockito.when(bookingDAO.findByPreRegistrationId("12345678909876")).thenReturn(bookingEntity);
 		ResponseEntity<MainListResponseDTO<PreRegistartionStatusDTO>> respEntity = new ResponseEntity<>(preRegResponseRebook, HttpStatus.OK);
 		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
@@ -575,8 +575,8 @@ public class BookingServiceTest {
 
 		MainResponseDTO<String> response = new MainResponseDTO<>();
 
-		RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
-		Mockito.when(restTemplateBuilder.build()).thenReturn(restTemplate);
+//		RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
+//		Mockito.when(restTemplateBuilder.build()).thenReturn(restTemplate);
 
 		ResponseEntity<RegistrationCenterResponseDto> rescenter = new ResponseEntity<>(regCenDto, HttpStatus.OK);
 		ResponseEntity<RegistrationCenterHolidayDto> resHoliday = new ResponseEntity<>(CenholidayDto, HttpStatus.OK);
@@ -600,8 +600,8 @@ public class BookingServiceTest {
 		statusList.add(preRegistartionStatusDTO);
 
 		requestValidatorFlag = ValidationUtil.requestValidator(cancelRequestdto);
-		RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
-		Mockito.when(restTemplateBuilder.build()).thenReturn(restTemplate);
+//		RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
+//		Mockito.when(restTemplateBuilder.build()).thenReturn(restTemplate);
 
 		ResponseEntity<MainListResponseDTO<PreRegistartionStatusDTO>> res = new ResponseEntity<>(preRegResponse, HttpStatus.OK);
 
@@ -684,8 +684,8 @@ public class BookingServiceTest {
 		bookingEntityRebook.setSlotFromTime(LocalTime.parse(oldBookingRegistrationDTO.getSlotFromTime()));
 		bookingEntityRebook.setSlotToTime(LocalTime.parse(oldBookingRegistrationDTO.getSlotToTime()));
 		Mockito.when(bookingDAO.findByPreRegistrationId("12345678909876")).thenReturn(bookingEntityRebook);
-		RestTemplate restTemplate = Mockito.mock(RestTemplate.class); 
-		Mockito.when(restTemplateBuilder.build()).thenReturn(restTemplate);
+//		RestTemplate restTemplate = Mockito.mock(RestTemplate.class); 
+//		Mockito.when(restTemplateBuilder.build()).thenReturn(restTemplate);
 		ResponseEntity<MainListResponseDTO<PreRegistartionStatusDTO>> respEntity = new ResponseEntity<>(preRegResponseRebook, HttpStatus.OK);
 		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
 				Mockito.eq(new ParameterizedTypeReference<MainListResponseDTO<PreRegistartionStatusDTO>>() {}))).thenReturn(respEntity);
@@ -696,8 +696,8 @@ public class BookingServiceTest {
 	@Test(expected = BookingDataNotFoundException.class)
 	public void getAppointmentDetailsTestFail() {
 		Mockito.when(bookingDAO.findByPreRegistrationId("23587986034785")).thenReturn(bookingEntity);
-		RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
-		Mockito.when(restTemplateBuilder.build()).thenReturn(restTemplate);
+//		RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
+//		Mockito.when(restTemplateBuilder.build()).thenReturn(restTemplate);
 		ResponseEntity<MainListResponseDTO<PreRegistartionStatusDTO>> respEntity = new ResponseEntity<>(preRegResponse, HttpStatus.OK);
 		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
 				Mockito.eq(new ParameterizedTypeReference<MainListResponseDTO<PreRegistartionStatusDTO>>() {}))).thenReturn(respEntity);
@@ -706,8 +706,8 @@ public class BookingServiceTest {
 
 	@Test(expected = TableNotAccessibleException.class)
 	public void getAppointmentDetailsFailureTest() {
-		RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
-		Mockito.when(restTemplateBuilder.build()).thenReturn(restTemplate);
+//		RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
+//		Mockito.when(restTemplateBuilder.build()).thenReturn(restTemplate);
 		ResponseEntity<MainListResponseDTO<PreRegistartionStatusDTO>> respEntity = new ResponseEntity<>(preRegResponse, HttpStatus.OK);
 		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
 				Mockito.eq(new ParameterizedTypeReference<MainListResponseDTO<PreRegistartionStatusDTO>>() {}))).thenReturn(respEntity);
@@ -718,8 +718,8 @@ public class BookingServiceTest {
 
 	@Test
 	public void bookTest() {
-		RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
-		Mockito.when(restTemplateBuilder.build()).thenReturn(restTemplate);
+//		RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
+//		Mockito.when(restTemplateBuilder.build()).thenReturn(restTemplate);
 
 		MainResponseDTO mainResponseDTO = new MainResponseDTO<>();
 		mainResponseDTO.setErrors(null);
@@ -747,8 +747,8 @@ public class BookingServiceTest {
 		statusList.add(preRegistartionStatusDTO);
 
 		requestValidatorFlag = ValidationUtil.requestValidator(cancelRequestdto);
-		RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
-		Mockito.when(restTemplateBuilder.build()).thenReturn(restTemplate);
+//		RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
+//		Mockito.when(restTemplateBuilder.build()).thenReturn(restTemplate);
 
 		ResponseEntity<MainListResponseDTO<PreRegistartionStatusDTO>> res = new ResponseEntity<>(preRegResponse, HttpStatus.OK);
 
@@ -793,8 +793,8 @@ public class BookingServiceTest {
 		statusList.add(preRegistartionStatusDTO);
 
 		requestValidatorFlag = ValidationUtil.requestValidator(cancelRequestdto);
-		RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
-		Mockito.when(restTemplateBuilder.build()).thenReturn(restTemplate);
+//		RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
+//		Mockito.when(restTemplateBuilder.build()).thenReturn(restTemplate);
 
 		ResponseEntity<MainListResponseDTO<PreRegistartionStatusDTO>> res = new ResponseEntity<>(preRegResponse, HttpStatus.OK);
 
