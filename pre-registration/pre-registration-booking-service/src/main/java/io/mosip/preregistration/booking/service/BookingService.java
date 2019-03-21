@@ -420,7 +420,7 @@ public class BookingService {
 					preRegIdsByRegCenterIdResponseDTO.setPreRegistrationIds(preRegIdList);
 					preRegIdsByRegCenterIdResponseDTOList.add(preRegIdsByRegCenterIdResponseDTO);
 
-					responseDto.setResTime(serviceUtil.getCurrentResponseTime());
+					responseDto.setResponsetime(serviceUtil.getCurrentResponseTime());
 					responseDto.setResponse(preRegIdsByRegCenterIdResponseDTOList);
 				} else {
 					throw new BookingDataNotFoundException(ErrorCodes.PRG_BOOK_RCI_013.toString(),
@@ -581,7 +581,7 @@ public class BookingService {
 			new BookingExceptionCatcher().handle(ex);
 		}
 
-		response.setResTime(serviceUtil.getCurrentResponseTime());
+		response.setResponsetime(serviceUtil.getCurrentResponseTime());
 		response.setId(idUrl);
 		response.setVersion(versionUrl);
 		response.setResponse(deleteList);
