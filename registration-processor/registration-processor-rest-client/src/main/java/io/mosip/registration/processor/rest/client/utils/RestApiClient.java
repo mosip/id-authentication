@@ -105,6 +105,41 @@ public class RestApiClient {
 		}
 		return result;
 	}
+	
+	/**
+	 * Patch api.
+	 *
+	 * @param <T>
+	 *            the generic type
+	 * @param uri
+	 *            the uri
+	 * @param requestType
+	 *            the request type
+	 * @param responseClass
+	 *            the response class
+	 * @return the t
+	 */
+	@SuppressWarnings("unchecked")
+	public <T> T patchApi(String uri, Object requestType, Class<?> responseClass) throws Exception {
+
+		RestTemplate restTemplate;
+		T result = null;
+		try {
+			restTemplate = getRestTemplate();
+			logger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
+					LoggerFileConstant.APPLICATIONID.toString(), uri);
+			logger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
+					LoggerFileConstant.APPLICATIONID.toString(), requestType.toString());
+			result = (T) restTemplate.patchForObject(uri, requestType, responseClass);
+		} catch (Exception e) {
+
+			logger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
+					LoggerFileConstant.APPLICATIONID.toString(), e.getMessage() + ExceptionUtils.getStackTrace(e));
+
+			throw e;
+		}
+		return result;
+	}
 
 	public RestTemplate getRestTemplate() throws KeyManagementException, NoSuchAlgorithmException, KeyStoreException {
 		logger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),

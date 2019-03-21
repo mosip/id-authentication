@@ -31,7 +31,7 @@ public class BatchServiceController {
 	@Autowired
 	private ExpiredStatusService expiredStatusService;
 	
-	@PreAuthorize("hasAnyRole('individual')")
+	@PreAuthorize("hasAnyRole('PRE_REGISTRATION_ADMIN')")
 	@PutMapping(path="/consumedStatus",produces=MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<MainResponseDTO<String>> consumedAppointments(){
 		
@@ -40,7 +40,7 @@ public class BatchServiceController {
 		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
 	
-	@PreAuthorize("hasAnyRole('individual')")
+	@PreAuthorize("hasAnyRole('PRE_REGISTRATION_ADMIN')")
 	@PutMapping(path="/expiredStatus",produces=MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<MainResponseDTO<String>> expiredAppointments(){
 		

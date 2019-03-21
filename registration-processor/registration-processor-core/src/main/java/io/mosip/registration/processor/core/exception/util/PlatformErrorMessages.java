@@ -508,8 +508,52 @@ public enum PlatformErrorMessages {
 
 	/** The rpr ugs packet store not accessible. */
 	RPR_UGS_PACKET_STORE_NOT_ACCESSIBLE(PlatformConstants.RPR_UIN_GENERATOR_STAGE + "001",
-			"The Packet store set by the System is not accessible");
+			"The Packet store set by the System is not accessible"),
+	/** The rpr pgs file not present. */
+	RPR_PGS_FILE_NOT_PRESENT(PlatformConstants.RPR_PACKET_GENERATOR_MODULE + "001",
+			"The Packet store set by the System is not accessible"),
 
+	/** The rpr pgs invalid key illegal argument. */
+	RPR_PGS_INVALID_KEY_ILLEGAL_ARGUMENT(PlatformConstants.RPR_PACKET_GENERATOR_MODULE + "002",
+			"The key is invalid or illegal argument"),
+
+	/** The rpr pgs api resource not available. */
+	RPR_PGS_API_RESOURCE_NOT_AVAILABLE(PlatformConstants.RPR_PACKET_GENERATOR_MODULE + "003",
+			"The Api resource is not available"),
+
+	/** The rpr pgs reg base exception. */
+	RPR_PGS_REG_BASE_EXCEPTION(PlatformConstants.RPR_PACKET_GENERATOR_MODULE + "004", "reg Based checked exception"),
+
+	/** The rpr pgs json processing exception. */
+	RPR_PGS_JSON_PROCESSING_EXCEPTION(PlatformConstants.RPR_PACKET_GENERATOR_MODULE + "005",
+			"Exception while parsing object to JSON"),
+
+	/** The rpr pgs json validator error code. */
+	RPR_PGS_JSON_VALIDATOR_ERROR_CODE(PlatformConstants.RPR_PACKET_GENERATOR_MODULE + "006",
+			"Exception while validating ID json file"),
+
+	/** The rpr pgs encryptor invlaid data exception. */
+	RPR_PGS_ENCRYPTOR_INVLAID_DATA_EXCEPTION(PlatformConstants.RPR_PACKET_GENERATOR_MODULE + "007",
+			"Exception occured while encryting the packet Invalid data"),
+
+	/** The rpr pgs encryptor invlaid key exception. */
+	RPR_PGS_ENCRYPTOR_INVLAID_KEY_EXCEPTION(PlatformConstants.RPR_PACKET_GENERATOR_MODULE + "008",
+			"Exception occured while encryting the packet Invalid Key"),
+
+	/** The rpr pgs packet meta convertor exception. */
+	RPR_PGS_PACKET_META_CONVERTOR_EXCEPTION(PlatformConstants.RPR_PACKET_GENERATOR_MODULE + "009",
+			"Packet meta info converter error"),
+
+	/** The missing input parameter. */
+	RPR_PGS_MISSING_INPUT_PARAMETER(PlatformConstants.RPR_PACKET_GENERATOR_MODULE + "010",
+			"Missing Input Parameter - %s"),
+
+	/** The invalid input parameter. */
+	RPR_PGS_INVALID_INPUT_PARAMETER(PlatformConstants.RPR_PACKET_GENERATOR_MODULE + "011",
+			"Invalid Input Parameter - %s"),
+	/** The data validation failed. */
+	RPR_PGS_DATA_VALIDATION_FAILED(PlatformConstants.RPR_PACKET_GENERATOR_MODULE + "012",
+			"Input Data Validation Failed");
 	/** The error message. */
 	private final String errorMessage;
 

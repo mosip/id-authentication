@@ -204,6 +204,68 @@ public class RegistrationProcessorRestClientServiceImpl implements RegistrationP
 		return obj;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 *
+	 * @see io.mosip.registration.processor.core.spi.restclient.
+	 * RegistrationProcessorRestClientService#patchApi(io.mosip.registration.
+	 * processor.core.code.ApiName, java.util.List, java.lang.String,
+	 * java.lang.String, java.lang.Object, java.lang.Class)
+	 */
+	public Object patchApi(ApiName apiName, List<String> pathsegments, String queryParamName, String queryParamValue,
+			Object requestedData, Class<?> responseType) throws ApisResourceAccessException {
+
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
+				"RegistrationProcessorRestClientServiceImpl::postApi()::entry");
+		Object obj = null;
+		String apiHostIpPort = env.getProperty(apiName.name());
+		UriComponentsBuilder builder = null;
+		if (apiHostIpPort != null)
+			builder = UriComponentsBuilder.fromUriString(apiHostIpPort);
+		if (builder != null) {
+
+			if (!((pathsegments == null) || (pathsegments.isEmpty()))) {
+				for (String segment : pathsegments) {
+					if (!((segment == null) || (("").equals(segment)))) {
+						builder.pathSegment(segment);
+					}
+				}
+
+			}
+			if (!checkNull(queryParamName)) {
+				String[] queryParamNameArr = queryParamName.split(",");
+				String[] queryParamValueArr = queryParamValue.split(",");
+
+				for (int i = 0; i < queryParamNameArr.length; i++) {
+					builder.queryParam(queryParamNameArr[i], queryParamValueArr[i]);
+				}
+			}
+
+			try {
+				obj = restApiClient.patchApi(builder.toUriString(), requestedData, responseType);
+
+			} catch (Exception e) {
+				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
+						LoggerFileConstant.REGISTRATIONID.toString(), "",
+						e.getMessage() + ExceptionUtils.getStackTrace(e));
+
+				throw new ApisResourceAccessException(
+						PlatformErrorMessages.RPR_RCT_UNKNOWN_RESOURCE_EXCEPTION.getMessage(), e);
+
+			}
+		}
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
+				"RegistrationProcessorRestClientServiceImpl::postApi()::exit");
+		return obj;
+	}
+
+	/**
+	 * Check null.
+	 *
+	 * @param queryParamName
+	 *            the query param name
+	 * @return true, if successful
+	 */
 	private boolean checkNull(String queryParamName) {
 
 		return ((queryParamName == null) || (("").equals(queryParamName)));

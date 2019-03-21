@@ -90,13 +90,15 @@
 		<log
 			message="packet-validator-->osi-validator route ${bodyAs(String)}" />
 		<choice>
-			<when>
+			  <when>
 				<simple>${bodyAs(String)} contains '"isValid":true'</simple>
-				<log
-					message="packet-validator-->osi-validator route ${bodyAs(String)}" />
-				<to uri="vertx:osi-validator-bus-in" />
-				<log
-					message="packet-validator-->osi-validator route ${bodyAs(String)} sent" />
+				<when>
+				      <simple>${bodyAs(String)} contains '"reg_type":"ACTIVATED"' or ${bodyAs(String)} contains '"reg_type":"DEACTIVATED"'</simple>
+					  <to uri="vertx:uin-generation-bus-in" />
+				 </when>
+				 <otherwise>
+                   <to uri="vertx:osi-validator-bus-in" />
+				 </otherwise>
 			</when>
 			<when>
 				<simple>${bodyAs(String)} contains '"isValid":false'</simple>

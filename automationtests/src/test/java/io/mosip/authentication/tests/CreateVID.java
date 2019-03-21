@@ -1,5 +1,6 @@
 package io.mosip.authentication.tests;
 
+import java.io.File;
 import java.lang.reflect.Field; 
 import java.lang.reflect.Method;
 import java.util.HashMap;
@@ -40,8 +41,7 @@ public class CreateVID extends IdaScriptsUtil implements ITest{
 		
 	@Test
 	public void generateVidForUin() {
-		Properties prop = getProperty(
-				RunConfig.getUserDirectory() + RunConfig.getSrcPath() + "ida/"+RunConfig.getTestDataFolderName()+"/RunConfig/uin.properties");
+		Properties prop = getProperty(new File("./"+RunConfig.getSrcPath() + "ida/"+RunConfig.getTestDataFolderName()+"/RunConfig/uin.properties").getAbsolutePath());
 		Map<String, String> uinMap = new HashMap<String, String>();
 		Map<String, String> vidMap = new HashMap<String, String>();
 		for (String str : prop.stringPropertyNames()) {
@@ -56,8 +56,7 @@ public class CreateVID extends IdaScriptsUtil implements ITest{
 				vidMap.put(vid, entry.getKey());
 			}
 		}
-		generateMappingDic(
-				RunConfig.getUserDirectory() + RunConfig.getSrcPath() + "ida/"+RunConfig.getTestDataFolderName()+"/RunConfig/vid.properties",
+		generateMappingDic(new File("./"+RunConfig.getSrcPath() + "ida/"+RunConfig.getTestDataFolderName()+"/RunConfig/vid.properties").getAbsolutePath(),
 				vidMap);
 	}
 	

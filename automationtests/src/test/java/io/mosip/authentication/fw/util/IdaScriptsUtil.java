@@ -411,8 +411,7 @@ public class IdaScriptsUtil {
 		Properties prop = new Properties();
 		InputStream input = null;
 		try {
-			input = new FileInputStream(
-					System.getProperty("user.dir") + "/src/test/resources/ida/Testdata/RunConfig/envRunConfig.properties");
+			input = new FileInputStream(new File("./"+"src/test/resources/ida/Testdata/RunConfig/envRunConfig.properties").getAbsolutePath());
 			prop.load(input);
 			return prop;
 		} catch (Exception e) {
@@ -550,7 +549,7 @@ public class IdaScriptsUtil {
 		 * Saving TestNG reports to be published
 		 */
 		String currentModule = ctx.getCurrentXmlTest().getClasses().get(0).getName().split("\\.")[2];
-		//objReportUtil.moveReport(currentModule);
+		objReportUtil.moveReport(currentModule);
 		exitDemoAppRunner();
 	}
 	
@@ -564,12 +563,12 @@ public class IdaScriptsUtil {
 	public void createBatFileForDemoApp() {
 		try {
 			String javaHome = System.getenv("JAVA_HOME");
-			String jarPath="C:/Users/"+System.getProperty("user.name")+"/.m2/repository/io/mosip/Testing/demoApp/testing-demoApp.jar";
+			String jarPath=new File("./src/test/resources/testing-demoApp.jar").getAbsolutePath();
 			String demoAppJarPath = jarPath;
 			String content = '"' + javaHome + "/bin/java" + '"'
 					+ " -Dspring.profiles.active=local -Djava.net.useSystemProxies=true -agentlib:jdwp=transport=dt_socket,server=y,address=4000,suspend=n -jar "
 					+ '"' + demoAppJarPath.toString() + '"';
-			demoAppBatchFilePath = new File(System.getProperty("user.dir") + "/src/test/resources/demoApp.bat");
+			demoAppBatchFilePath = new File("./src/test/resources/demoApp.bat");
 			FileOutputStream fos = new FileOutputStream(demoAppBatchFilePath);
 			DataOutputStream dos = new DataOutputStream(fos);
 			dos.writeBytes(content);

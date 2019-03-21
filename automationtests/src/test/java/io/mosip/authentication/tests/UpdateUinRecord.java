@@ -145,8 +145,7 @@ public class UpdateUinRecord extends IdaScriptsUtil implements ITest{
 	public void storeUinData() {
 		UinDto.setUinData(storeUinData);
 		logger.info("Updated UIN: " + UinDto.getUinData());
-		updateMappingDic(
-				RunConfig.getUserDirectory() + RunConfig.getSrcPath() + "ida/"+RunConfig.getTestDataFolderName()+"/RunConfig/uin.properties",
+		updateMappingDic(new File("./"+RunConfig.getSrcPath() + "ida/"+RunConfig.getTestDataFolderName()+"/RunConfig/uin.properties").getAbsolutePath(),
 				UinDto.getUinData());
 	}
 

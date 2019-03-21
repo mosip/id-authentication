@@ -19,9 +19,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
-
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -32,7 +29,6 @@ import io.mosip.preregistration.auth.dto.User;
 import io.mosip.preregistration.auth.errorcodes.ErrorCodes;
 import io.mosip.preregistration.auth.errorcodes.ErrorMessages;
 import io.mosip.preregistration.auth.exceptions.ParseResponseException;
-import io.mosip.preregistration.auth.exceptions.SendOtpFailedException;
 import io.mosip.preregistration.core.common.dto.AuthNResponse;
 import io.mosip.preregistration.core.config.LoggerConfiguration;
 import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
@@ -63,12 +59,6 @@ public class AuthCommonUtil {
 	@Autowired
 	private RestTemplateBuilder restTemplateBuilder;
 	
-	@Value("${mosip.regex.phone}")
-	private String mobileRegex;
-	
-	@Value("${mosip.regex.email}")
-	private String emailRegex;
-	
 	@Value("${otpChannel.mobile}")
 	private String mobileChannel;
 	
@@ -81,6 +71,7 @@ public class AuthCommonUtil {
 	 * @return MainResponseDTO<?>
 	 */
 	public  MainResponseDTO<?> getMainResponseDto(MainRequestDTO<?> mainRequestDto ){
+		log.info("sessionId", "idType", "id", "In getMainResponseDTO method of Auth Common Util");
 		MainResponseDTO<?> response=new MainResponseDTO<>();
 		response.setId(mainRequestDto.getId());
 		response.setVersion(mainRequestDto.getVersion());
@@ -99,6 +90,7 @@ public class AuthCommonUtil {
 	 */
 	
 	public ResponseEntity<?> getResponseEntity(String url,HttpMethod httpMethodType,MediaType mediaType,Object body,Map<String,String> headersMap,Class<?> responseClass){
+		log.info("sessionId", "idType", "id", "In getResponseEntity method of Auth Common Util");
 		RestTemplate restTemplate=restTemplateBuilder.build();
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(mediaType);
@@ -118,8 +110,14 @@ public class AuthCommonUtil {
 		
 	}
 	
-
+	/**
+	 * This method provides validation of the userid and returns the otpChannel list 
+	 * @param userId
+	 * @param langCode
+	 * @return List<String>
+	 */
 	public  List<String> validateUserIdAndLangCode(String userId,String langCode) {
+		log.info("sessionId", "idType", "id", "In validateUserIdandLangCode method of Auth Common Util");
 		List<String> list=new ArrayList<>();
 		if(langCode == null ) {
 			throw new InvalidRequestParameterException(ErrorCodes.PRG_AUTH_009.getCode(),ErrorMessages.INVALID_REQUEST_LANGCODE.getMessage());
@@ -138,15 +136,25 @@ public class AuthCommonUtil {
 		
 		throw new InvalidRequestParameterException(ErrorCodes.PRG_AUTH_008.getCode(), ErrorMessages.INVALID_REQUEST_USERID.getMessage());
 	}
+	
+	/**
+	 * This method provides current response time
+	 * @return String
+	 */
 
 	public String getCurrentResponseTime() {
 		return DateUtils.formatDate(new Date(System.currentTimeMillis()), utcDateTimePattern);
 
 	}
 	
+	/**
+	 * This method will validate the null check for incoming request
+	 * @param mainRequest
+	 * @return
+	 */
 	
 	public boolean validateRequest(MainRequestDTO<?> mainRequest) {
-		
+		log.info("sessionId", "idType", "id", "In validateRequest method of Auth Common Util");
 	 if(mainRequest.getId() == null  ) {
 			throw new InvalidRequestParameterException(ErrorCodes.PRG_AUTH_004.getCode(), ErrorMessages.INVALID_REQUEST_ID.getMessage());
 		}
@@ -162,7 +170,12 @@ public class AuthCommonUtil {
 		return true;
 	}
 	
+	/**
+	 * This method will validate the otp and userid for null values
+	 * @param user
+	 */
 	public void validateOtpAndUserid(User user) {
+		log.info("sessionId", "idType", "id", "In validateOtpAndUserid method of Auth Common Util");
 		if(user.getUserId() == null) {
 			throw new InvalidRequestParameterException(ErrorCodes.PRG_AUTH_008.getCode(), ErrorMessages.INVALID_REQUEST_USERID.getMessage());
 		}
@@ -171,6 +184,11 @@ public class AuthCommonUtil {
 		}
 	}
 	
+	/**
+	 * This method will read value from response body and covert it into requested class object
+	 * @param serviceResponseBody
+	 * @return
+	 */
 	public AuthNResponse requestBodyExchange(String serviceResponseBody) {
 		try {
 			return objectMapper.readValue(serviceResponseBody, AuthNResponse.class);

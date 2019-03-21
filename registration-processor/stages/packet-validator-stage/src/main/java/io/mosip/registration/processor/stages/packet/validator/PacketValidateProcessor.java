@@ -37,6 +37,7 @@ import io.mosip.registration.processor.core.exception.ApisResourceAccessExceptio
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.exception.util.PlatformSuccessMessages;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
+import io.mosip.registration.processor.core.packet.dto.FieldValue;
 import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.packet.dto.PacketMetaInfo;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.identify.RegistrationProcessorIdentity;
@@ -59,6 +60,7 @@ import io.mosip.registration.processor.stages.utils.FilesValidation;
 import io.mosip.registration.processor.stages.utils.MasterDataValidation;
 import io.mosip.registration.processor.stages.utils.StatusMessage;
 import io.mosip.registration.processor.status.code.RegistrationStatusCode;
+import io.mosip.registration.processor.status.code.RegistrationType;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
 import io.mosip.registration.processor.status.exception.TablenotAccessibleException;
@@ -67,6 +69,9 @@ import io.mosip.registration.processor.status.service.RegistrationStatusService;
 @Service
 @Transactional
 public class PacketValidateProcessor {
+
+	/** The identity iterator util. */
+	IdentityIteratorUtil identityIteratorUtil = new IdentityIteratorUtil();
 
 	/** The Constant FILE_SEPARATOR. */
 	public static final String FILE_SEPARATOR = "\\";
@@ -127,6 +132,9 @@ public class PacketValidateProcessor {
 	/** the Error Code */
 	private String code;
 
+	/** The flag check for reg_type. */
+	private boolean regTypeCheck;
+
 	JSONObject identityJson = null;
 
 	JSONObject demographicIdentity = null;
@@ -154,11 +162,17 @@ public class PacketValidateProcessor {
 			boolean isApplicantDocumentValidation = false;
 			boolean isFilesValidated = false;
 			boolean isMasterDataValidated = false;
+
 			try {
 				registrationStatusDto = registrationStatusService.getRegistrationStatus(registrationId);
 				InputStream packetMetaInfoStream = adapter.getFile(registrationId, PacketFiles.PACKET_META_INFO.name());
 				PacketMetaInfo packetMetaInfo = (PacketMetaInfo) JsonUtil.inputStreamtoJavaObject(packetMetaInfoStream,
 						PacketMetaInfo.class);
+				List<FieldValue> metadataList = packetMetaInfo.getIdentity().getMetaData();
+				object.setReg_type(identityIteratorUtil.getFieldValue(metadataList, JsonConstant.REGISTRATIONTYPE));
+				regTypeCheck = (object.getReg_type().equalsIgnoreCase(RegistrationType.ACTIVATED.toString())
+						|| object.getReg_type().equalsIgnoreCase(RegistrationType.DEACTIVATED.toString()));
+
 				InputStream idJsonStream = adapter.getFile(registrationId,
 						PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR + PacketFiles.ID.name());
 				byte[] bytearray = IOUtils.toByteArray(idJsonStream);
@@ -167,10 +181,9 @@ public class PacketValidateProcessor {
 				ValidationReport isSchemaValidated = jsonValidator.validateJson(jsonString);
 
 				InputStream documentInfoStream = null;
-
 				List<Document> documentList = null;
-				if (isSchemaValidated.isValid()) {
 
+				if (isSchemaValidated.isValid()) {
 					FilesValidation filesValidation = new FilesValidation(adapter, registrationStatusDto);
 					isFilesValidated = filesValidation.filesValidation(registrationId, packetMetaInfo.getIdentity());
 
@@ -179,14 +192,15 @@ public class PacketValidateProcessor {
 						documentInfoStream = adapter.getFile(registrationId,
 								PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR + PacketFiles.ID.name());
 						bytes = IOUtils.toByteArray(documentInfoStream);
-						documentList = documentUtility.getDocumentList(bytes);
-
+						if (!regTypeCheck) {
+							documentList = documentUtility.getDocumentList(bytes);
+						}
 						CheckSumValidation checkSumValidation = new CheckSumValidation(adapter, registrationStatusDto);
 
 						isCheckSumValidated = checkSumValidation.checksumvalidation(registrationId,
 								packetMetaInfo.getIdentity());
 
-						if (isCheckSumValidated) {
+						if (isCheckSumValidated && !(regTypeCheck)) {
 							ApplicantDocumentValidation applicantDocumentValidation = new ApplicantDocumentValidation(
 									registrationStatusDto);
 							isApplicantDocumentValidation = applicantDocumentValidation
@@ -197,14 +211,14 @@ public class PacketValidateProcessor {
 										registrationStatusDto, env, registrationProcessorRestService, utility);
 								isMasterDataValidated = masterDataValidation.validateMasterData(jsonString);
 							}
-
 						}
 					}
-
 				}
 
-				if (isSchemaValidated.isValid() && isFilesValidated && isCheckSumValidated
-						&& isApplicantDocumentValidation && isMasterDataValidated) {
+				if ((isSchemaValidated.isValid() && isFilesValidated && isCheckSumValidated
+						&& isApplicantDocumentValidation && isMasterDataValidated)
+						|| (isSchemaValidated.isValid() && isFilesValidated && isCheckSumValidated && regTypeCheck
+								&& isMasterDataValidated)) {
 					object.setIsValid(Boolean.TRUE);
 					registrationStatusDto.setStatusComment(StatusMessage.PACKET_STRUCTURAL_VALIDATION_SUCCESS);
 					registrationStatusDto.setStatusCode(RegistrationStatusCode.STRUCTURE_VALIDATION_SUCCESS.toString());
@@ -284,6 +298,13 @@ public class PacketValidateProcessor {
 				object.setInternalError(Boolean.TRUE);
 				object.setRid(registrationStatusDto.getRegistrationId());
 
+			} catch (TablenotAccessibleException e) {
+				object.setInternalError(Boolean.TRUE);
+				description = PlatformErrorMessages.RPR_RGS_REGISTRATION_TABLE_NOT_ACCESSIBLE.getMessage();
+				code = PlatformErrorMessages.RPR_RGS_REGISTRATION_TABLE_NOT_ACCESSIBLE.getCode();
+				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), code + " -- " + registrationId,
+						PlatformErrorMessages.RPR_RGS_REGISTRATION_TABLE_NOT_ACCESSIBLE.getMessage(), e.toString());
+
 			} catch (Exception ex) {
 				isTransactionSuccessful = false;
 				description = PlatformErrorMessages.STRUCTURAL_VALIDATION_FAILED.getMessage();
@@ -325,7 +346,7 @@ public class PacketValidateProcessor {
 						moduleName, registrationId);
 			}
 
-			if (this.registrationId != null && this.registrationId.trim().isEmpty()) {
+			if (this.registrationId != null) {
 				isTransactionSuccessful = false;
 				MainResponseDTO<ReverseDatasyncReponseDTO> mainResponseDto = null;
 				if (preRegId != null && !preRegId.trim().isEmpty()) {
@@ -357,13 +378,6 @@ public class PacketValidateProcessor {
 				}
 
 			}
-
-		} catch (TablenotAccessibleException e) {
-			object.setInternalError(Boolean.TRUE);
-			description = PlatformErrorMessages.RPR_RGS_REGISTRATION_TABLE_NOT_ACCESSIBLE.getMessage();
-			code = PlatformErrorMessages.RPR_RGS_REGISTRATION_TABLE_NOT_ACCESSIBLE.getCode();
-			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), code + " -- " + registrationId,
-					PlatformErrorMessages.RPR_RGS_REGISTRATION_TABLE_NOT_ACCESSIBLE.getMessage(), e.toString());
 
 		} catch (ApisResourceAccessException e) {
 

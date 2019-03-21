@@ -6,6 +6,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doNothing;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -29,6 +30,9 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
 
 import io.mosip.kernel.core.fsadapter.exception.FSAdapterException;
 import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
@@ -45,6 +49,7 @@ import io.mosip.registration.processor.core.constant.PacketFiles;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.packet.dto.ApplicantDocument;
 import io.mosip.registration.processor.core.packet.dto.Identity;
+import io.mosip.registration.processor.core.packet.dto.PacketMetaInfo;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.identify.RegistrationProcessorIdentity;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
@@ -56,6 +61,7 @@ import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequest
 import io.mosip.registration.processor.rest.client.audit.dto.AuditResponseDto;
 import io.mosip.registration.processor.stages.uingenerator.idrepo.dto.Documents;
 import io.mosip.registration.processor.stages.uingenerator.idrepo.dto.ErrorDTO;
+import io.mosip.registration.processor.stages.uingenerator.idrepo.dto.IdRequestDto;
 import io.mosip.registration.processor.stages.uingenerator.idrepo.dto.IdResponseDTO;
 import io.mosip.registration.processor.stages.uingenerator.idrepo.dto.ResponseDTO;
 import io.mosip.registration.processor.stages.uingenerator.stage.UinGeneratorStage;
@@ -125,6 +131,10 @@ public class UinGeneratorStageTest {
 	/** The registration status dto. */
 	private InternalRegistrationStatusDto registrationStatusDto = new InternalRegistrationStatusDto();
 
+	/** The id request DTO. */
+	private IdRequestDto idRequestDTO = new IdRequestDto();
+
+	private IdResponseDTO idResponseDTO = new IdResponseDTO();
 
 	@Mock
 	private Utilities utility;
@@ -137,6 +147,8 @@ public class UinGeneratorStageTest {
 
 	/** The Constant CONFIG_SERVER_URL. */
 	private static final String CONFIG_SERVER_URL = "url";
+
+	private PacketMetaInfo packetMetaInfo;
 
 	private String identityMappingjsonString;
 
@@ -188,44 +200,6 @@ public class UinGeneratorStageTest {
 	}
 
 	@Test
-	public void testUinGenerationSuccesswithUIN() throws Exception {
-		MessageDTO messageDTO = new MessageDTO();
-		messageDTO.setRid("27847657360002520181210094052");
-
-		ClassLoader classLoader = getClass().getClassLoader();
-		File idJsonFile = new File(classLoader.getResource("ID1.json").getFile());
-		InputStream idJsonStream = new FileInputStream(idJsonFile);
-
-		ClassLoader classLoader1 = getClass().getClassLoader();
-		File idJsonFile1 = new File(classLoader1.getResource("packet_meta_info.json").getFile());
-		InputStream idJsonStream1 = new FileInputStream(idJsonFile1);
-
-		Mockito.when(adapter.getFile("27847657360002520181210094052",
-				PacketFiles.DEMOGRAPHIC.name() + "\\" + PacketFiles.ID.name())).thenReturn(idJsonStream);
-
-		Mockito.when(adapter.getFile("27847657360002520181210094052", PacketFiles.PACKET_META_INFO.name()))
-				.thenReturn(idJsonStream1);
-		IdResponseDTO idResponseDTO = new IdResponseDTO();
-		ResponseDTO responseDTO = new ResponseDTO();
-		responseDTO.setEntity("https://dev.mosip.io/idrepo/v1.0/identity/203560486746");
-		idResponseDTO.setErrors(null);
-		idResponseDTO.setId("mosip.id.create");
-		idResponseDTO.setResponse(responseDTO);
-		idResponseDTO.setStatus("ACTIVATED");
-		idResponseDTO.setTimestamp("2019-01-17T06:29:01.940Z");
-		idResponseDTO.setVersion("1.0");
-		Mockito.when(registrationProcessorRestClientService.postApi(any(), any(), any(), any(), any(), any()))
-				.thenReturn(idResponseDTO);
-
-		doNothing().when(registrationStatusService).updateRegistrationStatus(registrationStatusDto);
-		doNothing().when(demographicDedupeRepository).updateUinWrtRegistraionId(any(), any());
-
-		MessageDTO result = uinGeneratorStage.process(messageDTO);
-		assertFalse(result.getInternalError());
-
-	}
-
-	@Test
 	public void testUinGenerationSuccessWithoutUIN() throws Exception {
 		MessageDTO messageDTO = new MessageDTO();
 		messageDTO.setRid("27847657360002520181210094052");
@@ -246,7 +220,7 @@ public class UinGeneratorStageTest {
 
 		Mockito.when(adapter.getFile("27847657360002520181210094052", PacketFiles.PACKET_META_INFO.name()))
 				.thenReturn(idJsonStream1);
-		
+
 		IdResponseDTO idResponseDTO = new IdResponseDTO();
 		ResponseDTO responseDTO = new ResponseDTO();
 		responseDTO.setEntity("https://dev.mosip.io/idrepo/v1.0/identity/203560486746");
@@ -266,6 +240,183 @@ public class UinGeneratorStageTest {
 	}
 
 	@Test
+	public void testUinReActivationifAlreadyActivatedSuccess() throws Exception {
+
+		MessageDTO messageDTO = new MessageDTO();
+		messageDTO.setRid("27847657360002520181210094052");
+		messageDTO.setReg_type("ACTIVATED");
+
+		IdResponseDTO idResponseDTO = new IdResponseDTO();
+		ResponseDTO responseDTO = new ResponseDTO();
+		responseDTO.setEntity("https://dev.mosip.io/idrepo/v1.0/identity/203560486746");
+		idResponseDTO.setErrors(null);
+		idResponseDTO.setId("mosip.id.update");
+		idResponseDTO.setResponse(responseDTO);
+		idResponseDTO.setStatus("ACTIVATED");
+		idResponseDTO.setTimestamp("2019-01-17T06:29:01.940Z");
+		idResponseDTO.setVersion("1.0");
+
+
+		Mockito.when(registrationProcessorRestClientService.getApi(any(), any(), any(), any(), any())).thenReturn(idResponseDTO);
+
+		String idJsonData="{\"identity\":{\"IDSchemaVersion\":1.0,\"UIN\":4215839851}}";
+		InputStream idJsonStream = new ByteArrayInputStream(idJsonData.getBytes(StandardCharsets.UTF_8));
+
+		Mockito.when(adapter.getFile("27847657360002520181210094052",
+				PacketFiles.DEMOGRAPHIC.name() + "\\" + PacketFiles.ID.name())).thenReturn(idJsonStream);
+
+		Mockito.when(registrationProcessorRestClientService.postApi(any(), any(), any(), any(), any(), any()))
+				.thenReturn(idResponseDTO);
+
+		MessageDTO result = uinGeneratorStage.process(messageDTO);
+		assertFalse(result.getIsValid());
+
+	}
+
+
+	@Test
+	public void testUinReActivationIfNotActivatedSuccess() throws Exception {
+
+		MessageDTO messageDTO = new MessageDTO();
+		messageDTO.setRid("27847657360002520181210094052");
+		messageDTO.setReg_type("ACTIVATED");
+
+		IdResponseDTO idResponseDTO = new IdResponseDTO();
+		ResponseDTO responseDTO = new ResponseDTO();
+		responseDTO.setEntity("https://dev.mosip.io/idrepo/v1.0/identity/203560486746");
+		idResponseDTO.setErrors(null);
+		idResponseDTO.setId("mosip.id.update");
+		idResponseDTO.setResponse(responseDTO);
+		idResponseDTO.setStatus("ANY");
+		idResponseDTO.setTimestamp("2019-01-17T06:29:01.940Z");
+		idResponseDTO.setVersion("1.0");
+
+
+
+		IdResponseDTO idResponseDTO1 = new IdResponseDTO();
+		ResponseDTO responseDTO1 = new ResponseDTO();
+		responseDTO1.setEntity("https://dev.mosip.io/idrepo/v1.0/identity/203560486746");
+		idResponseDTO1.setErrors(null);
+		idResponseDTO1.setId("mosip.id.update");
+		idResponseDTO1.setResponse(responseDTO1);
+		idResponseDTO1.setStatus("ACTIVATED");
+		idResponseDTO1.setTimestamp("2019-01-17T06:29:01.940Z");
+		idResponseDTO1.setVersion("1.0");
+
+
+		Mockito.when(registrationProcessorRestClientService.getApi(any(), any(), any(), any(), any())).thenReturn(idResponseDTO);
+
+		String idJsonData="{\"identity\":{\"IDSchemaVersion\":1.0,\"UIN\":4215839851}}";
+		InputStream idJsonStream = new ByteArrayInputStream(idJsonData.getBytes(StandardCharsets.UTF_8));
+
+		Mockito.when(adapter.getFile("27847657360002520181210094052",
+				PacketFiles.DEMOGRAPHIC.name() + "\\" + PacketFiles.ID.name())).thenReturn(idJsonStream);
+
+		Mockito.when(registrationProcessorRestClientService.patchApi(any(), any(), any(), any(), any(), any()))
+				.thenReturn(idResponseDTO1);
+
+		MessageDTO result = uinGeneratorStage.process(messageDTO);
+		assertTrue(result.getIsValid());
+
+	}
+
+
+	@Test
+	public void testUinReActivationIfNotGotActivatedStaus() throws Exception {
+
+		MessageDTO messageDTO = new MessageDTO();
+		messageDTO.setRid("27847657360002520181210094052");
+		messageDTO.setReg_type("ACTIVATED");
+
+		IdResponseDTO idResponseDTO = new IdResponseDTO();
+		ResponseDTO responseDTO = new ResponseDTO();
+		responseDTO.setEntity("https://dev.mosip.io/idrepo/v1.0/identity/203560486746");
+		idResponseDTO.setErrors(null);
+		idResponseDTO.setId("mosip.id.update");
+		idResponseDTO.setResponse(responseDTO);
+		idResponseDTO.setStatus("ANY");
+		idResponseDTO.setTimestamp("2019-01-17T06:29:01.940Z");
+		idResponseDTO.setVersion("1.0");
+
+
+
+		IdResponseDTO idResponseDTO1 = new IdResponseDTO();
+		ResponseDTO responseDTO1 = new ResponseDTO();
+		responseDTO1.setEntity("https://dev.mosip.io/idrepo/v1.0/identity/203560486746");
+		idResponseDTO1.setErrors(null);
+		idResponseDTO1.setId("mosip.id.update");
+		idResponseDTO1.setResponse(responseDTO1);
+		idResponseDTO1.setStatus("ANY");
+		idResponseDTO1.setTimestamp("2019-01-17T06:29:01.940Z");
+		idResponseDTO1.setVersion("1.0");
+
+
+		Mockito.when(registrationProcessorRestClientService.getApi(any(), any(), any(), any(), any())).thenReturn(idResponseDTO);
+
+		String idJsonData="{\"identity\":{\"IDSchemaVersion\":1.0,\"UIN\":4215839851}}";
+		InputStream idJsonStream = new ByteArrayInputStream(idJsonData.getBytes(StandardCharsets.UTF_8));
+
+		Mockito.when(adapter.getFile("27847657360002520181210094052",
+				PacketFiles.DEMOGRAPHIC.name() + "\\" + PacketFiles.ID.name())).thenReturn(idJsonStream);
+
+		Mockito.when(registrationProcessorRestClientService.patchApi(any(), any(), any(), any(), any(), any()))
+				.thenReturn(idResponseDTO1);
+
+		MessageDTO result = uinGeneratorStage.process(messageDTO);
+		assertFalse(result.getIsValid());
+
+	}
+
+	@Test
+	public void testUinReActivationFailure() throws Exception {
+
+		MessageDTO messageDTO = new MessageDTO();
+		messageDTO.setRid("27847657360002520181210094052");
+		messageDTO.setReg_type("ACTIVATED");
+
+
+		IdResponseDTO idResponseDTO = new IdResponseDTO();
+		ResponseDTO responseDTO = new ResponseDTO();
+		responseDTO.setEntity("https://dev.mosip.io/idrepo/v1.0/identity/203560486746");
+		idResponseDTO.setErrors(null);
+		idResponseDTO.setId("mosip.id.update");
+		idResponseDTO.setResponse(responseDTO);
+		idResponseDTO.setStatus("ANY");
+		idResponseDTO.setTimestamp("2019-01-17T06:29:01.940Z");
+		idResponseDTO.setVersion("1.0");
+
+
+		IdResponseDTO idResponseDTO1 = new IdResponseDTO();
+		List<ErrorDTO> errors=new ArrayList<>();
+		ErrorDTO errorDTO= new ErrorDTO("tets","error");
+		errors.add(errorDTO);
+		idResponseDTO1.setErrors(errors);
+		idResponseDTO1.setId("mosip.id.update");
+		idResponseDTO1.setResponse(null);
+		idResponseDTO1.setStatus("ANY");
+		idResponseDTO1.setTimestamp("2019-01-17T06:29:01.940Z");
+		idResponseDTO1.setVersion("1.0");
+
+
+		Mockito.when(registrationProcessorRestClientService.getApi(any(), any(), any(), any(), any())).thenReturn(idResponseDTO);
+
+		String idJsonData="{\"identity\":{\"IDSchemaVersion\":1.0,\"UIN\":4215839851}}";
+		InputStream idJsonStream = new ByteArrayInputStream(idJsonData.getBytes(StandardCharsets.UTF_8));
+
+		Mockito.when(adapter.getFile("27847657360002520181210094052",
+				PacketFiles.DEMOGRAPHIC.name() + "\\" + PacketFiles.ID.name())).thenReturn(idJsonStream);
+
+		Mockito.when(registrationProcessorRestClientService.patchApi(any(), any(), any(), any(), any(), any()))
+				.thenReturn(idResponseDTO1);
+
+		MessageDTO result = uinGeneratorStage.process(messageDTO);
+		assertFalse(result.getIsValid());
+
+	}
+
+
+
+	@Test
 	public void testUinUpdationFaliure() throws Exception {
 
 		IdResponseDTO idResponseDTO = new IdResponseDTO();
@@ -282,6 +433,8 @@ public class UinGeneratorStageTest {
 		idResponseDTO.setTimestamp("2019-01-17T06:29:01.940Z");
 		idResponseDTO.setVersion("1.0");
 
+		// String response = new String(
+		// "{\"id\":\"mosip.id.create\",\"version\":\"1.0\",\"timestamp\":\"2019-01-17T06:29:01.940Z\",\"status\":\"ACTIVATED\",\"response\":{\"entity\":\"https://dev.mosip.io/idrepo/v1.0/identity/203560486746\"}}");
 
 		Mockito.when(registrationProcessorRestClientService.postApi(any(), any(), any(), any(), any(), any()))
 				.thenReturn(idResponseDTO);
@@ -377,6 +530,206 @@ public class UinGeneratorStageTest {
 				.thenThrow(exp);
 		MessageDTO messageDTO = new MessageDTO();
 		messageDTO.setRid("27847657360002520181210094052");
+		uinGeneratorStage.process(messageDTO);
+	}
+
+	@Test
+	public void deactivateTestSuccess() throws ApisResourceAccessException {
+		MessageDTO messageDTO = new MessageDTO();
+		messageDTO.setRid("10031100110005020190313110030");
+		messageDTO.setReg_type("DEACTIVATED");
+
+		IdResponseDTO responsedto = new IdResponseDTO();
+		responsedto.setStatus("ACTIVATED");
+
+		String idJson = "{\"identity\":{\"IDSchemaVersion\":1.0,\"UIN\":4215839851}}";
+		InputStream idJsonStream1 = new ByteArrayInputStream(idJson.getBytes(StandardCharsets.UTF_8));
+
+		IdResponseDTO idResponseDTO = new IdResponseDTO();
+		ResponseDTO responseDTO = new ResponseDTO();
+		responseDTO.setEntity("https://dev.mosip.io/idrepo/v1.0/identity/203560486746");
+		idResponseDTO.setErrors(null);
+		idResponseDTO.setId("mosip.id.update");
+		idResponseDTO.setStatus("DEACTIVATED");
+		idResponseDTO.setResponse(responseDTO);
+		idResponseDTO.setTimestamp("2019-03-12T06:49:30.779Z");
+		idResponseDTO.setVersion("1.0");
+
+		Mockito.when(adapter.getFile("10031100110005020190313110030",
+				PacketFiles.DEMOGRAPHIC.name() + "\\" + PacketFiles.ID.name())).thenReturn(idJsonStream1);
+		Mockito.when(registrationProcessorRestClientService.getApi(any(), any(), any(), any(), any()))
+				.thenReturn(responsedto);
+		Mockito.when(registrationProcessorRestClientService.patchApi(any(), any(), any(), any(), any(), any()))
+				.thenReturn(idResponseDTO);
+
+		MessageDTO result = uinGeneratorStage.process(messageDTO);
+		assertTrue(result.getIsValid());
+	}
+
+	@Test
+	public void checkIsUinDeactivatedSuccess() throws ApisResourceAccessException {
+		MessageDTO messageDTO = new MessageDTO();
+		messageDTO.setRid("10031100110005020190313110030");
+		messageDTO.setReg_type("DEACTIVATED");
+
+		String idJson = "{\"identity\":{\"IDSchemaVersion\":1.0,\"UIN\":4215839851}}";
+		ResponseDTO responseDTO = new ResponseDTO();
+		responseDTO.setEntity("https://dev.mosip.io/idrepo/v1.0/identity/203560486746");
+		InputStream idJsonStream1 = new ByteArrayInputStream(idJson.getBytes(StandardCharsets.UTF_8));
+
+		IdResponseDTO responsedto = new IdResponseDTO();
+		responsedto.setResponse(responseDTO);
+		responsedto.setStatus("DEACTIVATED");
+
+		Mockito.when(adapter.getFile("10031100110005020190313110030",
+				PacketFiles.DEMOGRAPHIC.name() + "\\" + PacketFiles.ID.name())).thenReturn(idJsonStream1);
+		Mockito.when(registrationProcessorRestClientService.getApi(any(), any(), any(), any(), any()))
+				.thenReturn(responsedto);
+
+		MessageDTO result = uinGeneratorStage.process(messageDTO);
+		assertFalse(result.getIsValid());
+	}
+
+	@Test
+	public void deactivateTestForExistingUinTestSuccess() throws ApisResourceAccessException {
+		MessageDTO messageDTO = new MessageDTO();
+		messageDTO.setRid("10031100110005020190313110030");
+		messageDTO.setReg_type("DEACTIVATED");
+
+		String idJson = "{\"identity\":{\"IDSchemaVersion\":1.0,\"UIN\":4215839851}}";
+		InputStream idJsonStream1 = new ByteArrayInputStream(idJson.getBytes(StandardCharsets.UTF_8));
+
+		ErrorDTO errorDto = new ErrorDTO();
+		errorDto.setErrorCode("KER-IDR-001");
+		errorDto.setErrorMessage("Record already Exists in DB");
+
+		List<ErrorDTO> errors = new ArrayList<>();
+		errors.add(errorDto);
+
+		IdResponseDTO idResponseDTO = new IdResponseDTO();
+		ResponseDTO responseDTO = new ResponseDTO();
+		responseDTO.setEntity("https://dev.mosip.io/idrepo/v1.0/identity/203560486746");
+		idResponseDTO.setErrors(errors);
+		idResponseDTO.setId("mosip.id.update");
+		idResponseDTO.setStatus("DEACTIVATED");
+		idResponseDTO.setResponse(null);
+		idResponseDTO.setTimestamp("2019-03-12T06:49:30.779Z");
+		idResponseDTO.setVersion("1.0");
+
+		Mockito.when(adapter.getFile("10031100110005020190313110030",
+				PacketFiles.DEMOGRAPHIC.name() + "\\" + PacketFiles.ID.name())).thenReturn(idJsonStream1);
+		Mockito.when(registrationProcessorRestClientService.patchApi(any(), any(), any(), any(), any(), any()))
+				.thenReturn(idResponseDTO);
+		Mockito.when(registrationProcessorRestClientService.getApi(any(), any(), any(), any(), any()))
+				.thenReturn(idResponseDTO);
+
+		MessageDTO result = uinGeneratorStage.process(messageDTO);
+		assertFalse(result.getIsValid());
+	}
+
+	@Test
+	public void deactivateTestFailure() throws ApisResourceAccessException {
+
+		ApisResourceAccessException exp = new ApisResourceAccessException(
+				HibernateErrorCode.ERR_DATABASE.getErrorCode());
+
+		MessageDTO messageDTO = new MessageDTO();
+		messageDTO.setRid("10031100110005020190313110030");
+		messageDTO.setReg_type("DEACTIVATED");
+
+		String idJson = "{\"identity\":{\"IDSchemaVersion\":1.0,\"UIN\":4215839851}}";
+		InputStream idJsonStream1 = new ByteArrayInputStream(idJson.getBytes(StandardCharsets.UTF_8));
+
+		ErrorDTO errorDto = new ErrorDTO();
+		errorDto.setErrorCode("KER-IDR-001");
+		errorDto.setErrorMessage("Record already Exists in DB");
+
+		List<ErrorDTO> errors = new ArrayList<>();
+		errors.add(errorDto);
+
+		IdResponseDTO idResponseDTO = new IdResponseDTO();
+		ResponseDTO responseDTO = new ResponseDTO();
+		responseDTO.setEntity("https://dev.mosip.io/idrepo/v1.0/identity/203560486746");
+		idResponseDTO.setErrors(errors);
+		idResponseDTO.setId("mosip.id.update");
+		idResponseDTO.setStatus("DEACTIVATED");
+		idResponseDTO.setResponse(null);
+		idResponseDTO.setTimestamp("2019-03-12T06:49:30.779Z");
+		idResponseDTO.setVersion("1.0");
+
+		Mockito.when(adapter.getFile("10031100110005020190313110030",
+				PacketFiles.DEMOGRAPHIC.name() + "\\" + PacketFiles.ID.name())).thenReturn(idJsonStream1);
+
+		Mockito.when(registrationProcessorRestClientService.getApi(any(), any(), any(), any(), any()))
+				.thenReturn(idResponseDTO);
+
+		Mockito.when(registrationProcessorRestClientService.patchApi(any(), any(), any(), any(), any(), any())).thenThrow(exp);
+		uinGeneratorStage.process(messageDTO);
+	}
+
+	@Test
+	public void apisResourceAccessExceptionTest() throws ApisResourceAccessException {
+
+		ApisResourceAccessException apisResourceAccessException = Mockito.mock(ApisResourceAccessException.class);
+		HttpServerErrorException httpServerErrorException = new HttpServerErrorException(
+				HttpStatus.INTERNAL_SERVER_ERROR, "KER-FSE-004:encrypted data is corrupted or not base64 encoded");
+		Mockito.when(apisResourceAccessException.getCause()).thenReturn(httpServerErrorException);
+
+		MessageDTO messageDTO = new MessageDTO();
+		messageDTO.setRid("10031100110005020190313110030");
+		messageDTO.setReg_type("DEACTIVATED");
+
+		String idJson = "{\"identity\":{\"IDSchemaVersion\":1.0,\"UIN\":4215839851}}";
+		InputStream idJsonStream1 = new ByteArrayInputStream(idJson.getBytes(StandardCharsets.UTF_8));
+
+
+		Mockito.when(adapter.getFile("10031100110005020190313110030",
+				PacketFiles.DEMOGRAPHIC.name() + "\\" + PacketFiles.ID.name())).thenReturn(idJsonStream1);
+
+		Mockito.when(registrationProcessorRestClientService.getApi(any(), any(), any(), any(), any())).thenThrow(apisResourceAccessException);
+		uinGeneratorStage.process(messageDTO);
+	}
+
+	@Test
+	public void clientErrorExceptionTest() throws ApisResourceAccessException {
+
+		ApisResourceAccessException apisResourceAccessException = Mockito.mock(ApisResourceAccessException.class);
+		HttpClientErrorException httpErrorErrorException = new HttpClientErrorException(
+				HttpStatus.INTERNAL_SERVER_ERROR, "KER-FSE-004:encrypted data is corrupted or not base64 encoded");
+		Mockito.when(apisResourceAccessException.getCause()).thenReturn(httpErrorErrorException);
+
+		MessageDTO messageDTO = new MessageDTO();
+		messageDTO.setRid("10031100110005020190313110030");
+		messageDTO.setReg_type("DEACTIVATED");
+
+		String idJson = "{\"identity\":{\"IDSchemaVersion\":1.0,\"UIN\":4215839851}}";
+		InputStream idJsonStream1 = new ByteArrayInputStream(idJson.getBytes(StandardCharsets.UTF_8));
+
+
+		Mockito.when(adapter.getFile("10031100110005020190313110030",
+				PacketFiles.DEMOGRAPHIC.name() + "\\" + PacketFiles.ID.name())).thenReturn(idJsonStream1);
+
+		Mockito.when(registrationProcessorRestClientService.getApi(any(), any(), any(), any(), any())).thenThrow(apisResourceAccessException);
+		uinGeneratorStage.process(messageDTO);
+	}
+
+	@Test
+	public void getApiExceptionTest() throws ApisResourceAccessException {
+
+		ApisResourceAccessException apisResourceAccessException = Mockito.mock(ApisResourceAccessException.class);
+
+		MessageDTO messageDTO = new MessageDTO();
+		messageDTO.setRid("10031100110005020190313110030");
+		messageDTO.setReg_type("DEACTIVATED");
+
+		String idJson = "{\"identity\":{\"IDSchemaVersion\":1.0,\"UIN\":4215839851}}";
+		InputStream idJsonStream1 = new ByteArrayInputStream(idJson.getBytes(StandardCharsets.UTF_8));
+
+
+		Mockito.when(adapter.getFile("10031100110005020190313110030",
+				PacketFiles.DEMOGRAPHIC.name() + "\\" + PacketFiles.ID.name())).thenReturn(idJsonStream1);
+
+		Mockito.when(registrationProcessorRestClientService.getApi(any(), any(), any(), any(), any())).thenThrow(apisResourceAccessException);
 		uinGeneratorStage.process(messageDTO);
 	}
 

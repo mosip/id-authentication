@@ -37,6 +37,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
+import io.mosip.kernel.core.fsadapter.exception.FSAdapterException;
 import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
 import io.mosip.kernel.core.jsonvalidator.model.ValidationReport;
 import io.mosip.kernel.core.jsonvalidator.spi.JsonValidator;
@@ -70,6 +71,7 @@ import io.mosip.registration.processor.stages.utils.DocumentUtility;
 import io.mosip.registration.processor.stages.utils.MasterDataValidation;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
+import io.mosip.registration.processor.status.exception.TablenotAccessibleException;
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
 
 /**
@@ -121,9 +123,6 @@ public class PacketValidateProcessorTest {
 
 	/** The packet meta info. */
 	private PacketMetaInfo packetMetaInfo;
-
-	private RegistrationProcessorIdentity registrationProcessorIdentity;
-
 	/** The identity. */
 	Identity identity = new Identity();
 
@@ -426,9 +425,8 @@ public class PacketValidateProcessorTest {
 		PowerMockito.mockStatic(JsonUtil.class);
 		PowerMockito.when(JsonUtil.class, "inputStreamtoJavaObject", inputStream, PacketMetaInfo.class)
 				.thenReturn(packetMetaInfo);
-
+		dto.setReg_type("ABC");
 		MessageDTO messageDto = packetValidateProcessor.process(dto);
-
 		assertFalse(messageDto.getIsValid());
 
 	}
@@ -571,7 +569,7 @@ public class PacketValidateProcessorTest {
 		Mockito.when(registrationStatusService.getRegistrationStatus(anyString())).thenReturn(registrationStatusDto);
 		Mockito.doNothing().when(registrationStatusService).updateRegistrationStatus(registrationStatusDto);
 		Mockito.when(filesystemCephAdapterImpl.checkFileExistence(anyString(), anyString())).thenReturn(Boolean.FALSE);
-
+		// regTypeCheck=false;
 		MessageDTO messageDto = packetValidateProcessor.process(dto);
 		assertFalse(messageDto.getIsValid());
 	}
@@ -749,4 +747,26 @@ public class PacketValidateProcessorTest {
 		assertTrue(messageDto.getIsValid());
 
 	}
+
+	@Test
+	public void fSAdapterExceptionTest() throws Exception {
+		Mockito.when(filesystemCephAdapterImpl.checkFileExistence(anyString(), anyString()))
+				.thenThrow(new FSAdapterException("", ""));
+
+		MessageDTO messageDto = packetValidateProcessor.process(dto);
+		assertEquals(true, messageDto.getInternalError());
+
+	}
+
+	@Test
+	public void TablenotAccessibleExceptionTest() throws Exception {
+		Mockito.when(registrationStatusService.getRegistrationStatus(anyString()))
+				.thenThrow(new TablenotAccessibleException("") {
+				});
+
+		MessageDTO messageDto = packetValidateProcessor.process(dto);
+		assertEquals(true, messageDto.getInternalError());
+
+	}
+
 }
