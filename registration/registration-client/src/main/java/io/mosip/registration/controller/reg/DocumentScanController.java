@@ -106,7 +106,7 @@ public class DocumentScanController extends BaseController {
 
 	@Autowired
 	private DocumentScanFacade documentScanFacade;
-	
+
 	@Autowired
 	private DemographicDetailController demographicDetailController;
 
@@ -150,23 +150,32 @@ public class DocumentScanController extends BaseController {
 	@Autowired
 	private DocumentCategoryService documentCategoryService;
 
+	@Autowired
+	private BiometricExceptionController biometricExceptionController;
+
 	@Value("${DOCUMENT_SCANNER_ENABLED}")
 	private String isScannerEnabled;
 
 	private List<BufferedImage> docPages;
-	
+
 	@Autowired
 	private ApplicantType applicantTypeService;
-	
+
 	@FXML
 	private Label registrationNavlabel;
+
+	@FXML
+	private Button continueBtn;
+	@FXML
+	private Button backBtn;
 
 	@FXML
 	private void initialize() {
 		LOGGER.info(RegistrationConstants.DOCUMNET_SCAN_CONTROLLER, APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Entering the LOGIN_CONTROLLER");
 		try {
-			if (getRegistrationDTOFromSession()!=null && getRegistrationDTOFromSession().getSelectionListDTO() != null) {
+			if (getRegistrationDTOFromSession() != null
+					&& getRegistrationDTOFromSession().getSelectionListDTO() != null) {
 				registrationNavlabel.setText(RegistrationConstants.UIN_NAV_LABEL);
 			}
 			switchedOnForBiometricException = new SimpleBooleanProperty(false);
@@ -210,7 +219,7 @@ public class DocumentScanController extends BaseController {
 			applicantTypeMap.put(RegistrationConstants.ATTR_GENDER_TYPE, gender);
 			applicantType = applicantTypeService.getApplicantType(applicantTypeMap);
 			getRegistrationDTOFromSession().getRegistrationMetaDataDTO().setApplicantTypeCode(applicantType);
-		}		else {
+		} else {
 			/* TODO - to be removed after the clarification of UIN update */
 			applicantType = "007";
 			getRegistrationDTOFromSession().getRegistrationMetaDataDTO().setApplicantTypeCode(null);
@@ -238,7 +247,7 @@ public class DocumentScanController extends BaseController {
 					addDocumentsToScreen(documentDetailsDTO.getValue(), documentDetailsDTO.getFormat(),
 							documentVBoxes.get(docCategoryKey));
 					FXUtils.getInstance().selectComboBoxValue(documentComboBoxes.get(docCategoryKey),
-							documentDetailsDTO.getValue().substring(documentDetailsDTO.getValue().indexOf("_")+1));
+							documentDetailsDTO.getValue().substring(documentDetailsDTO.getValue().indexOf("_") + 1));
 				}
 			}
 		} else if (documentVBoxes.isEmpty() && documentsMap != null) {
@@ -306,7 +315,8 @@ public class DocumentScanController extends BaseController {
 						Button clickedBtn = (Button) event.getSource();
 						clickedBtn.getId();
 						scanDocument(comboBox, documentVBox, documentCategory.getCode(),
-								RegistrationUIConstants.PLEASE_SELECT +" "+ documentCategory.getCode() + " "+RegistrationUIConstants.DOCUMENT);
+								RegistrationUIConstants.PLEASE_SELECT + " " + documentCategory.getCode() + " "
+										+ RegistrationUIConstants.DOCUMENT);
 					}
 				});
 
@@ -457,7 +467,8 @@ public class DocumentScanController extends BaseController {
 		LOGGER.info(RegistrationConstants.DOCUMNET_SCAN_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Converting byte array to image");
 
-		if (byteArray.length > Integer.parseInt(String.valueOf(ApplicationContext.map().get(RegistrationConstants.DOC_SIZE)))) {
+		if (byteArray.length > Integer
+				.parseInt(String.valueOf(ApplicationContext.map().get(RegistrationConstants.DOC_SIZE)))) {
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.SCAN_DOC_SIZE);
 		} else {
 			if (selectedDocument != null) {
@@ -532,7 +543,8 @@ public class DocumentScanController extends BaseController {
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.SCAN_DOCUMENT_CONVERTION_ERR);
 			return;
 		}
-		if (byteArray.length > Integer.parseInt(String.valueOf(ApplicationContext.map().get(RegistrationConstants.DOC_SIZE)))) {
+		if (byteArray.length > Integer
+				.parseInt(String.valueOf(ApplicationContext.map().get(RegistrationConstants.DOC_SIZE)))) {
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.SCAN_DOC_SIZE);
 		} else {
 			if (selectedDocument != null) {
@@ -603,7 +615,10 @@ public class DocumentScanController extends BaseController {
 	 */
 	private void displayDocument(byte[] document, String documentName) {
 
-		/*TODO - pdf to images to be replaced wit ketrnal and setscanner factory has to be removed here*/
+		/*
+		 * TODO - pdf to images to be replaced wit ketrnal and setscanner factory has to
+		 * be removed here
+		 */
 		documentScanFacade.setScannerFactory();
 		LOGGER.info(RegistrationConstants.DOCUMNET_SCAN_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Converting bytes to Image to display scanned document");
@@ -941,6 +956,7 @@ public class DocumentScanController extends BaseController {
 		auditFactory.audit(AuditEvent.REG_DOC_NEXT, Components.REG_DOCUMENTS, SessionContext.userId(),
 				AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
 
+		biometricExceptionController.disableNextBtn();
 		if (getRegistrationDTOFromSession().getSelectionListDTO() != null) {
 			if (registrationController.validateDemographicPane(documentScanPane)) {
 				SessionContext.map().put("documentScan", false);
@@ -950,7 +966,8 @@ public class DocumentScanController extends BaseController {
 
 			}
 		} else {
-			if (RegistrationConstants.ENABLE.equalsIgnoreCase(String.valueOf(ApplicationContext.map().get(RegistrationConstants.DOC_DISABLE_FLAG)))) {
+			if (RegistrationConstants.ENABLE.equalsIgnoreCase(
+					String.valueOf(ApplicationContext.map().get(RegistrationConstants.DOC_DISABLE_FLAG)))) {
 				if (registrationController.validateDemographicPane(documentScanPane)) {
 					registrationController.showCurrentPage(RegistrationConstants.DOCUMENT_SCAN,
 							getPageDetails(RegistrationConstants.DOCUMENT_SCAN, RegistrationConstants.NEXT));

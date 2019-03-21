@@ -582,7 +582,7 @@
                                        <children>
                                           <GridPane fx:id="backButtonPane" GridPane.columnIndex="1">
                                              <children>
-                                                <Button contentDisplay="BOTTOM" mnemonicParsing="false" onAction="#goToPreviousPage" styleClass="backButton" text="%back" />
+                                                <Button fx:id="backBtn" contentDisplay="BOTTOM" mnemonicParsing="false" onAction="#goToPreviousPage" styleClass="backButton" text="%back" />
                                              </children>
                                              <columnConstraints>
                                                 <ColumnConstraints hgrow="SOMETIMES" percentWidth="100.0" />
@@ -605,7 +605,7 @@
                                        <children>
                                           <GridPane fx:id="continueButtonPane" GridPane.columnIndex="2">
                                              <children>
-                                                <Button mnemonicParsing="false" onAction="#goToNextPage" styleClass="contiuneButton" text="%continue" />
+                                                <Button fx:id="continueBtn" mnemonicParsing="false" onAction="#goToNextPage" styleClass="contiuneButton" text="%continue" />
                                              </children>
                                              <columnConstraints>
                                                 <ColumnConstraints hgrow="SOMETIMES" percentWidth="100.0" />
