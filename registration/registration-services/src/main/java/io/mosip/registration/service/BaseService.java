@@ -21,8 +21,10 @@ import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dao.MachineMappingDAO;
 import io.mosip.registration.dao.UserOnboardDAO;
 import io.mosip.registration.dto.ErrorResponseDTO;
+import io.mosip.registration.dto.PacketStatusDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.SuccessResponseDTO;
+import io.mosip.registration.entity.Registration;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.service.template.impl.NotificationServiceImpl;
 import io.mosip.registration.util.healthcheck.RegistrationSystemPropertiesChecker;
@@ -143,12 +145,15 @@ public class BaseService {
 	 * @return user id
 	 */
 	protected String getUserIdFromSession() {
-
-		String userId = SessionContext.userId();
-		if (userId.equals(RegistrationConstants.AUDIT_DEFAULT_USER)) {
+		String userId = null;
+		if (SessionContext.isSessionContextAvailable()) {
+			userId = SessionContext.userId();
+			if (userId.equals(RegistrationConstants.AUDIT_DEFAULT_USER)) {
+				userId = RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM;
+			}
+		} else {
 			userId = RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM;
 		}
-
 		return userId;
 	}
 
@@ -250,6 +255,22 @@ public class BaseService {
 		}
 
 		return (String) applicationMap.get(key);
+	}
+	
+
+	/**
+	 * Convertion of Registration to Packet Status DTO
+	 * @param registration
+	 * @return
+	 */
+	public PacketStatusDTO packetStatusDtoPreperation(Registration registration) {
+		PacketStatusDTO statusDTO = new PacketStatusDTO();
+		statusDTO.setFileName(registration.getId());
+		statusDTO.setPacketClientStatus(registration.getClientStatusCode());
+		statusDTO.setPacketPath(registration.getAckFilename());
+		statusDTO.setPacketServerStatus(registration.getServerStatusCode());
+		statusDTO.setUploadStatus(registration.getFileUploadStatus());
+		return statusDTO;
 	}
 
 }

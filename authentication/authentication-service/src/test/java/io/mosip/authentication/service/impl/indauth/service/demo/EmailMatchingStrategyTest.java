@@ -77,7 +77,7 @@ public class EmailMatchingStrategyTest {
 		assertEquals(0, value);
 	}
 
-	@Test(expected = IdAuthenticationBusinessException.class)
+	@Test
 	public void TestInvalidEmail() throws IdAuthenticationBusinessException {
 		Map<String, Object> matchProperties = new HashMap<>();
 		MatchFunction matchFunction = EmailMatchingStrategy.EXACT.getMatchFunction();
@@ -85,7 +85,7 @@ public class EmailMatchingStrategyTest {
 		assertEquals(0, value4);
 	}
 
-	@Test(expected = IdAuthenticationBusinessException.class)
+	@Test
 	public void TestInvalidE_mail() throws IdAuthenticationBusinessException {
 		Map<String, Object> matchProperties = new HashMap<>();
 		MatchFunction matchFunction = EmailMatchingStrategy.EXACT.getMatchFunction();

@@ -36,7 +36,7 @@ public interface TitleRepository extends BaseRepository<Title, CodeAndLanguageCo
 	 *            input from user
 	 * @return title data for the corresponding code entered
 	 */
-	@Query("FROM Title WHERE code =?1 AND (isDeleted is null OR isDeleted = false)")
+	@Query("FROM Title WHERE code =?1 AND (isDeleted is null OR isDeleted = false) and isActive = true")
 	List<Title> findByCode(String code);
 
 }

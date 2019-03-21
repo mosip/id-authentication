@@ -15,7 +15,8 @@
     "action_send": "Send OTP",
     "action_resend": "Resend",
     "action_verify": "Verify",
-    "logout_msg":"Applicant has to login with same Mobile/Email to access the created applications"
+    "logout_msg":"Applicant has to login with same Mobile/Email to access the created applications",
+    "otp_valid_label": "Valid for"
   },
 
   "stepper": {
@@ -106,6 +107,7 @@
     "label_age": "Age",
     "text_years": "Years",
     "text_gender": "Gender",
+    "text_resident_status": "Resident Status",
     "subheading_contact": "Contact Details",
     "label_address": "Address",
     "label_region": "Region",
@@ -117,6 +119,7 @@
     "label_email_id": "Email ID",
     "label_pin": "CNIE/EC",
     "title_document": "Documents Uploaded",
+    "text_not_uploaded": "Not Uploaded",
     "action_modify": "modify",
     "action_back": "BACK",
     "action_add_applicant": "ADD APPLICANT",

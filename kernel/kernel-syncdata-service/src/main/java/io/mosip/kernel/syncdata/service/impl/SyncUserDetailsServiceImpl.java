@@ -63,7 +63,7 @@ public class SyncUserDetailsServiceImpl implements SyncUserDetailsService {
 				.collect(Collectors.toList());
 
 		try {
-			response = restTemplate.postForEntity(userDetailsUri.toString(), userIds, UserDetailResponseDto.class);
+			response = restTemplate.postForEntity(userDetailsUri.toString()+"/registrationclient", userIds, UserDetailResponseDto.class);
 			if (response.getStatusCode().is2xxSuccessful())
 				data = response.getBody();
 			if(data != null && data.getMosipUserDtoList() != null) {

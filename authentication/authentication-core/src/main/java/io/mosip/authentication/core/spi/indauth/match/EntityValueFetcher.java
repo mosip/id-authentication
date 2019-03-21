@@ -19,6 +19,6 @@ public interface EntityValueFetcher {
 	 * @return
 	 * @throws IdAuthenticationBusinessException
 	 */
-	public Map<String, String> fetch(String uin, AuthRequestDTO authReq) throws IdAuthenticationBusinessException;
+	public Map<String, String> fetch(String uin, AuthRequestDTO authReq,String partnerID) throws IdAuthenticationBusinessException;
 
 }

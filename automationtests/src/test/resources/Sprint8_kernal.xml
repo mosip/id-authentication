@@ -38,13 +38,7 @@
 			<classes>
 				<class name="io.mosip.kernel.tests.SyncConfigurations" />
 			</classes>
-		</test> -->
-		<test name="Kernel.SyncMasterdataController">
-			<parameter name="testType" value="smokeandregression" />
-			<classes>
-				<class name="io.mosip.kernel.tests.SyncMasterdataController" />
-			</classes>
-		</test> 
+		</test> --> 
 	<!--	<test name="Kernel.SyncMasterDataWithTimestamp">
 			<parameter name="testType" value="smokeandregression" />
 			<classes>

@@ -1,0 +1,23 @@
+{
+	"biometricAvailable":"string",
+	"dateofbirth":"string",
+	"genderCode":"string",
+	"individualTypeCode":"string",
+	"FLE_FR_ADL_False":"string",
+	"FLE_FR_ADL_true":"string",
+	"FLE_FR_CHL_False":"string",
+	"FLE_FR_CHL_True":"string",
+	"FLE_NFR_ADL_False":"string",
+	"FLE_NFR_ADL_true":"string",
+	"FLE_NFR_CHL_False":"string",
+	"FLE_NFR_CHL_true":"string",
+	"MLE_FR_ADL_False":"string",
+	"MLE_FR_ADL_True":"string",
+	"MLE_FR_CHL_False":"string",
+	"MLE_NFR_ADL_False":"string",
+	"MLE_NFR_ADL_True":"string",
+	"MLE_NFR_CHL_False":"string",
+	"MLE_NFR_CHL_True":"string",
+	"Future_date_as_DOB":"string",
+	"invalid_DOB_lessThanAYear":"string"
+}

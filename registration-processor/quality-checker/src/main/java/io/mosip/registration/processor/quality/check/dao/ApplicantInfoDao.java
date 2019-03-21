@@ -1,5 +1,5 @@
 package io.mosip.registration.processor.quality.check.dao;
-	
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -62,7 +62,8 @@ public class ApplicantInfoDao {
 	/**
 	 * Gets the packetsfor QC user.
 	 *
-	 * @param qcuserId the qcuser id
+	 * @param qcuserId
+	 *            the qcuser id
 	 * @return the packetsfor QC user
 	 */
 	public List<ApplicantInfoDto> getPacketsforQCUser(String qcuserId) {
@@ -84,8 +85,8 @@ public class ApplicantInfoDao {
 						applicantInfoDto.setDemoDedupeList(demoDedupeList);
 
 					} else if (object instanceof ApplicantPhotographEntity) {
-						applicantInfoDto
-								.setApplicantPhotograph(convertEntityToPhotographDto((ApplicantPhotographEntity) object));
+						applicantInfoDto.setApplicantPhotograph(
+								convertEntityToPhotographDto((ApplicantPhotographEntity) object));
 					}
 				}
 				applicantInfoDtoList.add(applicantInfoDto);
@@ -96,12 +97,11 @@ public class ApplicantInfoDao {
 		return applicantInfoDtoList;
 	}
 
-
-
 	/**
 	 * Convert entity to photograph dto.
 	 *
-	 * @param object the object
+	 * @param object
+	 *            the object
 	 * @return the photograph dto
 	 */
 	private PhotographDto convertEntityToPhotographDto(ApplicantPhotographEntity object) {
@@ -112,7 +112,7 @@ public class ApplicantInfoDao {
 		photographDto.setExcpPhotoName(object.getExcpPhotoName());
 		String docValue = "dGVzdA";
 		byte[] docStore = docValue.getBytes();
-		
+
 		photographDto.setExcpPhotoStore(docStore);
 		photographDto.setHasExcpPhotograph(object.getHasExcpPhotograph());
 		photographDto.setImageName(object.getImageName());
@@ -139,7 +139,8 @@ public class ApplicantInfoDao {
 	 * irisData.setIris(null); irisData.setNumRetry(0);
 	 * bioData.setIrisData(irisData); return bioData; }
 	 *
-	 * @param object the object
+	 * @param object
+	 *            the object
 	 * @return the demographic info dto
 	 */
 
@@ -150,8 +151,7 @@ public class ApplicantInfoDao {
 		demo.setLangCode(object.getId().getLangCode());
 		demo.setName(object.getName());
 		demo.setGenderCode(object.getGender());
-		demo.setDob(object.getDob());
-
+		// demo.setDob(object.getDob());
 
 		return demo;
 	}
@@ -159,7 +159,8 @@ public class ApplicantInfoDao {
 	/**
 	 * Save.
 	 *
-	 * @param qcUserRegistrationIdEntity the qc user registration id entity
+	 * @param qcUserRegistrationIdEntity
+	 *            the qc user registration id entity
 	 * @return the qcuser registration id entity
 	 */
 	public QcuserRegistrationIdEntity save(QcuserRegistrationIdEntity qcUserRegistrationIdEntity) {
@@ -170,7 +171,8 @@ public class ApplicantInfoDao {
 	/**
 	 * Update.
 	 *
-	 * @param qcUserRegistrationIdEntity the qc user registration id entity
+	 * @param qcUserRegistrationIdEntity
+	 *            the qc user registration id entity
 	 * @return the qcuser registration id entity
 	 */
 	public QcuserRegistrationIdEntity update(QcuserRegistrationIdEntity qcUserRegistrationIdEntity) {
@@ -181,8 +183,10 @@ public class ApplicantInfoDao {
 	/**
 	 * Find by id.
 	 *
-	 * @param qcUserId the qc user id
-	 * @param regId the reg id
+	 * @param qcUserId
+	 *            the qc user id
+	 * @param regId
+	 *            the reg id
 	 * @return the qcuser registration id entity
 	 */
 	public QcuserRegistrationIdEntity findById(String qcUserId, String regId) {

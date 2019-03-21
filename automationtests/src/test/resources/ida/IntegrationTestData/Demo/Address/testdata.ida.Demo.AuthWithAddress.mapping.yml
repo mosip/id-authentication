@@ -1,0 +1,75 @@
+testdata:
+  Demo_Auth_With_Address_Authendication_Pos:
+    input.demo-auth-request:
+      demoAuthReq.idvId: $UIN$
+      demoAuthReq.tspID: REF01
+      demoAuthReq.reqTime: $TIMESTAMP$
+      demoAuthReq.txnID: $RANDOM:N:10$
+    input.identity-encrypt-data:
+      identityReq.languageaddressLine3: $idrepo~$input.demo-auth-request:demoAuthReq.idvId$~languageaddressLine31$
+      identityReq.valueaddressLine1: $idrepo~$input.demo-auth-request:demoAuthReq.idvId$~valueaddressLine11$
+      identityReq.tspID: $input.demo-auth-request:demoAuthReq.tspID$
+      identityReq.valueaddressLine2: $idrepo~$input.demo-auth-request:demoAuthReq.idvId$~valueaddressLine21$
+      identityReq.valueaddressLine3: $idrepo~$input.demo-auth-request:demoAuthReq.idvId$~valueaddressLine31$
+      identityReq.languageaddressLine1: $idrepo~$input.demo-auth-request:demoAuthReq.idvId$~languageaddressLine11$
+      identityReq.languageaddressLine2: $idrepo~$input.demo-auth-request:demoAuthReq.idvId$~languageaddressLine21$
+    output.output-1-expected-y-res:
+      output.1.response.y.status: Y
+      output.1.response.y.txnID: $input.demo-auth-request:demoAuthReq.txnID$
+      output.1.response.y.resTime: $TIMESTAMP$
+      output.1.response.y.reqTime: $TIMESTAMP$
+    audit.auth_transaction:
+      txnId: $input.demo-auth-request:demoAuthReq.txnID$
+      refId: $input.demo-auth-request:demoAuthReq.idvId$
+      authTypeCode: DEMO-AUTH
+      statusCode: $output.output-1-expected-y-res:output.1.response.y.status$
+      reqTime: $FETCH$
+      resTime: $FETCH$
+      statusComment: $REGEXP:.*Demo.*Authentication.*Success.*$
+      idType: D
+    audit.audit_log:
+      refId: $input.demo-auth-request:demoAuthReq.idvId$
+      eventId: $REGEXP:.*IDA-EVT.*$
+      eventName: AUTH_REQUEST_RESPONSE
+      appId: IDA
+      appName: ID-Authentication
+      moduleName: DEMO_AUTH
+      refIdType: UIN
+      
+  Demo_Auth_With_invalid_Address_Authendication_Neg:
+    input.demo-auth-request:
+      demoAuthReq.idvId: $UIN$
+      demoAuthReq.tspID: REF01
+      demoAuthReq.reqTime: $TIMESTAMP$
+      demoAuthReq.txnID: $RANDOM:N:10$
+    input.identity-encrypt-data:
+      identityReq.languageaddressLine3: $idrepo~$input.demo-auth-request:demoAuthReq.idvId$~languageaddressLine31$
+      identityReq.valueaddressLine1: $idrepo~$input.demo-auth-request:demoAuthReq.idvId$~valueaddressLine11$
+      identityReq.tspID: $input.demo-auth-request:demoAuthReq.tspID$
+      identityReq.valueaddressLine2: $idrepo~$input.demo-auth-request:demoAuthReq.idvId$~valueaddressLine21$
+      identityReq.valueaddressLine3: S+$idrepo~$input.demo-auth-request:demoAuthReq.idvId$~valueaddressLine31$
+      identityReq.languageaddressLine1: $idrepo~$input.demo-auth-request:demoAuthReq.idvId$~languageaddressLine11$
+      identityReq.languageaddressLine2: $idrepo~$input.demo-auth-request:demoAuthReq.idvId$~languageaddressLine21$
+    output.output-1-expected-n-res:
+      output.1.response.y.status: N
+      output.1.response.y.txnID: $input.demo-auth-request:demoAuthReq.txnID$
+      output.1.response.y.resTime: $TIMESTAMP$
+      output.1.response.y.reqTime: $input.demo-auth-request:demoAuthReq.reqTime$
+      output.1.response.y.usageData: '0x0070000000600000'
+    audit.auth_transaction:
+      txnId: $input.demo-auth-request:demoAuthReq.txnID$
+      refId: $input.demo-auth-request:demoAuthReq.idvId$
+      authTypeCode: DEMO-AUTH
+      statusCode: $output.output-1-expected-n-res:output.1.response.y.status$
+      reqTime: $FETCH$
+      resTime: $FETCH$
+      statusComment: $REGEXP:.*Demo.*Authentication.*Failed.*$
+      idType: D
+    audit.audit_log:
+      refId: $input.demo-auth-request:demoAuthReq.idvId$
+      eventId: $REGEXP:.*IDA-EVT.*$
+      eventName: AUTH_REQUEST_RESPONSE
+      appId: IDA
+      appName: ID-Authentication
+      moduleName: DEMO_AUTH
+      refIdType: UIN

@@ -46,6 +46,7 @@ import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.core.util.IdentityIteratorUtil;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
+import io.mosip.registration.processor.stages.osivalidator.utils.OSIUtils;
 import io.mosip.registration.processor.stages.osivalidator.utils.StatusMessage;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 
@@ -70,8 +71,14 @@ public class UMCValidator {
 
 	/** The umc client. */
 
+	@Value("${mosip.workinghour.validation.required}")
+	private Boolean isWorkingHourValidationRequired;
+
 	@Autowired
 	private RegistrationProcessorRestClientService<Object> registrationProcessorRestService;
+
+	@Autowired
+	private OSIUtils osiUtils;
 
 	/** The registration status dto. */
 	private InternalRegistrationStatusDto registrationStatusDto = new InternalRegistrationStatusDto();
@@ -241,45 +248,43 @@ public class UMCValidator {
 		pathsegments.add(machineId);
 		pathsegments.add(superviserId);
 		RegistrationCenterUserMachineMappingHistoryResponseDto supervisordto;
-		try {
-			supervisordto = (RegistrationCenterUserMachineMappingHistoryResponseDto) registrationProcessorRestService
-					.getApi(ApiName.CENTERUSERMACHINEHISTORY, pathsegments, "", "",
-							RegistrationCenterUserMachineMappingHistoryResponseDto.class);
+		supervisorActive = validateMapping(pathsegments);
+
+		if (!supervisorActive) {
 			List<String> officerpathsegments = new ArrayList<>();
 			officerpathsegments.add(effectiveTimestamp);
 			officerpathsegments.add(registrationCenterId);
 			officerpathsegments.add(machineId);
 			officerpathsegments.add(officerId);
-			RegistrationCenterUserMachineMappingHistoryResponseDto officerdto = (RegistrationCenterUserMachineMappingHistoryResponseDto) registrationProcessorRestService
-					.getApi(ApiName.CENTERUSERMACHINEHISTORY, officerpathsegments, "", "",
+			officerActive = validateMapping(officerpathsegments);
+
+		}
+		return supervisorActive || officerActive;
+	}
+
+	private boolean validateMapping(List<String> pathsegments) {
+		boolean isValidUser = false;
+		try {
+			RegistrationCenterUserMachineMappingHistoryResponseDto userDto = (RegistrationCenterUserMachineMappingHistoryResponseDto) registrationProcessorRestService
+					.getApi(ApiName.CENTERUSERMACHINEHISTORY, pathsegments, "", "",
 							RegistrationCenterUserMachineMappingHistoryResponseDto.class);
-            if(supervisordto.getErrors()==null) {
-			supervisorActive = supervisordto.getRegistrationCenters().get(0).getIsActive();
-            }else {
-            	ErrorDTO error = supervisordto.getErrors().get(0);
-            	this.registrationStatusDto.setStatusComment(error.getErrorMessage());
-            }
-            if(officerdto.getErrors()==null) {
-			     officerActive = officerdto.getRegistrationCenters().get(0).getIsActive();
-            }else {
-            	ErrorDTO error = officerdto.getErrors().get(0);
-            	this.registrationStatusDto.setStatusComment(error.getErrorMessage());
-            }
+			if(userDto != null && userDto.getErrors() == null) {
+				isValidUser = userDto.getRegistrationCenters().get(0).getIsActive();
+			}else {
+				ErrorDTO error = userDto.getErrors().get(0);
+				this.registrationStatusDto.setStatusComment(error.getErrorMessage());
+			}
 		} catch (ApisResourceAccessException e) {
 			if (e.getCause() instanceof HttpClientErrorException) {
 				HttpClientErrorException httpClientException = (HttpClientErrorException) e.getCause();
 				String result = httpClientException.getResponseBodyAsString();
-				Gson gsonObj = new Gson();
-				supervisordto = gsonObj.fromJson(result, RegistrationCenterUserMachineMappingHistoryResponseDto.class);
-				ErrorDTO error = supervisordto.getErrors().get(0);
-				supervisorActive = false;
+				isValidUser = false;
 
-				this.registrationStatusDto.setStatusComment(error.getErrorMessage());
+				this.registrationStatusDto.setStatusComment(httpClientException.getResponseBodyAsString());
 
 			}
-
 		}
-		return supervisorActive || officerActive;
+		return isValidUser;
 	}
 
 	/**
@@ -323,7 +328,8 @@ public class UMCValidator {
 				registrationId, "UMCValidator::isValidUMC()::entry");
 		RegistrationCenterMachineDto rcmDto = getCenterMachineDto(registrationId);
 
-		RegOsiDto regOsi = packetInfoManager.getOsi(registrationId);
+		identity = osiUtils.getIdentity(registrationId);
+		RegOsiDto regOsi = osiUtils.getOSIDetailsFromMetaInfo(registrationId, identity);
 		boolean umc = false;
 
 		if (rcmDto.getLatitude() == null || rcmDto.getLongitude() == null || rcmDto.getLatitude().trim().isEmpty()
@@ -331,13 +337,19 @@ public class UMCValidator {
 			this.registrationStatusDto.setStatusComment(StatusMessage.GPS_DATA_NOT_PRESENT);
 		}
 
-		else if (isValidRegistrationCenter(rcmDto.getRegcntrId(), primaryLanguagecode, rcmDto.getPacketCreationDate())
+		else if (isWorkingHourValidationRequired
+				&& isValidRegistrationCenter(rcmDto.getRegcntrId(), primaryLanguagecode, rcmDto.getPacketCreationDate())
 				&& isValidMachine(rcmDto.getMachineId(), primaryLanguagecode, rcmDto.getPacketCreationDate())
-				&& isValidUMCmapping(rcmDto.getPacketCreationDate(), rcmDto.getRegcntrId(), rcmDto.getMachineId(),
-						regOsi.getSupervisorId(), regOsi.getOfficerId())
-				&& validateCenterIdAndTimestamp(rcmDto) && isValidDevice(rcmDto)) {
+				&& isValidUMCmapping(rcmDto.getPacketCreationDate(), rcmDto.getRegcntrId(), rcmDto.getMachineId(),regOsi.getSupervisorId(), regOsi.getOfficerId())
+				&& validateCenterIdAndTimestamp(rcmDto)
+				&& isValidDevice(rcmDto))
+				 umc =true;
+		else if(isValidRegistrationCenter(rcmDto.getRegcntrId(), primaryLanguagecode, rcmDto.getPacketCreationDate())
+				&& isValidMachine(rcmDto.getMachineId(), primaryLanguagecode, rcmDto.getPacketCreationDate())
+				&& isValidUMCmapping(rcmDto.getPacketCreationDate(), rcmDto.getRegcntrId(), rcmDto.getMachineId(),regOsi.getSupervisorId(), regOsi.getOfficerId())
+				&& isValidDevice(rcmDto))
 			umc = true;
-		}
+
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 				registrationId, "UMCValidator::isValidUMC()::exit");
 		return umc;
@@ -376,7 +388,7 @@ public class UMCValidator {
 	private RegistrationCenterMachineDto getCenterMachineDto(String registrationId)
 			throws JsonParseException, JsonMappingException, io.mosip.kernel.core.exception.IOException, IOException {
 
-		identity = getIdentity(registrationId);
+		identity = osiUtils.getIdentity(registrationId);
 
 		List<FieldValue> metaData = identity.getMetaData();
 		return mapMetaDataToDto(metaData);
@@ -401,31 +413,7 @@ public class UMCValidator {
 		return dto;
 	}
 
-	/**
-	 * Gets the identity.
-	 *
-	 * @param registrationId
-	 *            the registration id
-	 * @return the identity
-	 * @throws IOException
-	 * @throws io.mosip.kernel.core.exception.IOException
-	 * @throws io.mosip.kernel.core.exception.IOException
-	 * @throws JsonMappingException
-	 * @throws JsonParseException
-	 */
-	private Identity getIdentity(String registrationId)
-			throws IOException, JsonParseException, JsonMappingException, io.mosip.kernel.core.exception.IOException {
 
-		InputStream packetMetaInfoStream = adapter.getFile(registrationId, PacketFiles.PACKET_META_INFO.name());
-
-		String packetMetaInfoString = IOUtils.toString(packetMetaInfoStream, StandardCharsets.UTF_8);
-
-		PacketMetaInfo packetMetaInfo = (PacketMetaInfo) JsonUtils.jsonStringToJavaObject(PacketMetaInfo.class,
-				packetMetaInfoString);
-
-		return packetMetaInfo.getIdentity();
-
-	}
 
 	/**
 	 * Checks if is valid device.
@@ -456,7 +444,7 @@ public class UMCValidator {
 	private boolean isDeviceMappedWithCenter(RegistrationCenterMachineDto rcmDto) throws ApisResourceAccessException {
 		boolean isDeviceMappedWithCenter = false;
 		List<FieldValue> registreredDeviceIds = identity.getCapturedRegisteredDevices();
-
+		if(registreredDeviceIds!=null && !registreredDeviceIds.isEmpty()) {
 		for (FieldValue fieldValue : registreredDeviceIds) {
 			String deviceId = null;
 			deviceId = fieldValue.getValue();
@@ -503,7 +491,9 @@ public class UMCValidator {
 				break;
 			}
 		}
-
+	}else {
+		isDeviceMappedWithCenter=true;
+	}
 		return isDeviceMappedWithCenter;
 	}
 
@@ -546,6 +536,7 @@ public class UMCValidator {
 		boolean isDeviceActive = false;
 
 		List<FieldValue> registreredDeviceIds = identity.getCapturedRegisteredDevices();
+		if(registreredDeviceIds!=null && !registreredDeviceIds.isEmpty()) {
 		for (FieldValue fieldValue : registreredDeviceIds) {
 			String deviceId = null;
 			deviceId = fieldValue.getValue();
@@ -593,6 +584,10 @@ public class UMCValidator {
 			}
 
 		}
+
+	}else {
+		isDeviceActive=true;
+	}
 		return isDeviceActive;
 	}
 

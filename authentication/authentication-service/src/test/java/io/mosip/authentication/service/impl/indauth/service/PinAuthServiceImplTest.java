@@ -3,9 +3,7 @@ package io.mosip.authentication.service.impl.indauth.service;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
 
 import org.junit.Before;
@@ -28,7 +26,7 @@ import org.springframework.web.context.WebApplicationContext;
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.AuthStatusInfo;
 import io.mosip.authentication.core.dto.indauth.AuthTypeDTO;
-import io.mosip.authentication.core.dto.indauth.PinInfo;
+import io.mosip.authentication.core.dto.indauth.RequestDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.service.config.IDAMappingConfig;
 import io.mosip.authentication.service.entity.StaticPin;
@@ -38,7 +36,6 @@ import io.mosip.authentication.service.helper.IdInfoHelper;
 import io.mosip.authentication.service.helper.RestHelper;
 import io.mosip.authentication.service.integration.OTPManager;
 import io.mosip.authentication.service.repository.StaticPinRepository;
-import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.core.util.HMACUtils;
 
 @RunWith(SpringRunner.class)
@@ -97,7 +94,7 @@ public class PinAuthServiceImplTest {
 		stat.setPin(HMACUtils.digestAsPlainText(HMACUtils.generateHash(("12345").getBytes())));
 		Optional<StaticPin> entityValue = Optional.of(stat);
 		Mockito.when(staticPinRepo.findById(Mockito.anyString())).thenReturn(entityValue);
-		AuthStatusInfo validatePin = pinAuthServiceImpl.authenticate(constructRequest(), "284169042058",Collections.emptyMap());
+		AuthStatusInfo validatePin = pinAuthServiceImpl.authenticate(constructRequest(), "284169042058",Collections.emptyMap(),"123456");
 		assertTrue(validatePin.isStatus());
 	}
 
@@ -107,7 +104,7 @@ public class PinAuthServiceImplTest {
 		stat.setPin("123456");
 		Optional<StaticPin> entityValue = Optional.of(stat);
 		Mockito.when(staticPinRepo.findById(Mockito.anyString())).thenReturn(entityValue);
-		AuthStatusInfo validatePin = pinAuthServiceImpl.authenticate(constructRequest(), "284169042058",Collections.emptyMap());
+		AuthStatusInfo validatePin = pinAuthServiceImpl.authenticate(constructRequest(), "284169042058",Collections.emptyMap(),"123456");
 		assertFalse(validatePin.isStatus());
 	}
 
@@ -116,15 +113,11 @@ public class PinAuthServiceImplTest {
 		authRequestDTO.setId("mosip.identity.auth");
 		AuthTypeDTO authType = new AuthTypeDTO();
 		authType.setPin(true);
-		authRequestDTO.setAuthType(authType);
-		authRequestDTO.setIdvId("284169042058");
-		authRequestDTO.setIdvIdType("D");
-		PinInfo pinInfo = new PinInfo();
-		pinInfo.setType("pin");
-		pinInfo.setValue("12345");
-		List<PinInfo> pinInfoList = new ArrayList<PinInfo>();
-		pinInfoList.add(pinInfo);
-		authRequestDTO.setPinInfo(pinInfoList);
+		authRequestDTO.setRequestedAuth(authType);
+		authRequestDTO.setIndividualId("284169042058");
+		RequestDTO requestDTO = new RequestDTO();
+		requestDTO.setStaticPin("12345");
+		authRequestDTO.setRequest(requestDTO);
 		return authRequestDTO;
 	}
 }

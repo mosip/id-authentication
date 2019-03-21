@@ -119,7 +119,7 @@ public class RegistrationPacketSyncJobTest {
 
 		Mockito.when(applicationContext.getBean(Mockito.anyString())).thenReturn(registrationPacketSyncJob);
 
-		Mockito.when(regPacketStatusService.syncPacket()).thenReturn(responseDTO);
+		Mockito.when(regPacketStatusService.syncPacket("System")).thenReturn(responseDTO);
 
 		registrationPacketSyncJob.executeInternal(context);
 		registrationPacketSyncJob.executeJob("User", "1");
@@ -179,7 +179,7 @@ public class RegistrationPacketSyncJobTest {
 
 		Mockito.when(applicationContext.getBean(Mockito.anyString())).thenReturn(registrationPacketSyncJob);
 
-		Mockito.when(regPacketStatusService.syncPacket()).thenThrow(RuntimeException.class);
+		Mockito.when(regPacketStatusService.syncPacket("System")).thenThrow(RuntimeException.class);
 
 		// assertEquals(responseDTO, deletionJob.executeInternal(context));
 		registrationPacketSyncJob.executeInternal(context);

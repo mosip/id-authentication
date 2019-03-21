@@ -120,7 +120,7 @@ public class BaseJobTest {
 		
 		Mockito.when(applicationContext.getBean(Mockito.anyString())).thenReturn(packetSyncStatusJob);
 	
-		Mockito.when(packetStatusService.packetSyncStatus()).thenReturn(responseDTO);
+		Mockito.when(packetStatusService.packetSyncStatus("System")).thenReturn(responseDTO);
 
 	
 		packetSyncStatusJob.executeInternal(context);
@@ -214,7 +214,7 @@ public class BaseJobTest {
 		
 		Mockito.when(applicationContext.getBean(Mockito.anyString())).thenReturn(packetSyncStatusJob);
 	
-		Mockito.when(packetStatusService.packetSyncStatus()).thenReturn(responseDTO);
+		Mockito.when(packetStatusService.packetSyncStatus("System")).thenReturn(responseDTO);
 
 		Mockito.when(applicationContext.getBean(Mockito.anyString())).thenReturn(packetSyncStatusJob);		
 		
@@ -236,7 +236,7 @@ public class BaseJobTest {
 		//Mockito.when(JobConfigurationServiceImpl.SYNC_JOB_MAP.get(Mockito.any())).thenReturn(new SyncJob());
 		Mockito.when(syncManager.createSyncTransaction(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(), Mockito.any())).thenThrow(RegBaseUncheckedException.class);
 		
-		Mockito.when(packetStatusService.packetSyncStatus()).thenReturn(responseDTO);
+		Mockito.when(packetStatusService.packetSyncStatus("System")).thenReturn(responseDTO);
 		packetSyncStatusJob.executeJob("User","1");
 	}
 	
@@ -253,7 +253,7 @@ public class BaseJobTest {
 		//Mockito.when(JobConfigurationServiceImpl.SYNC_JOB_MAP.get(Mockito.any())).thenReturn(new SyncJob());
 		Mockito.when(syncManager.createSyncTransaction(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(), Mockito.any())).thenThrow(RegBaseUncheckedException.class);
 		
-		Mockito.when(packetStatusService.packetSyncStatus()).thenReturn(responseDTO);
+		Mockito.when(packetStatusService.packetSyncStatus("System")).thenReturn(responseDTO);
 		packetSyncStatusJob.executeJob("User","1");
 		
 	}

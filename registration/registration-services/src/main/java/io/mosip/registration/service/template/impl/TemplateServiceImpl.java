@@ -3,7 +3,6 @@ package io.mosip.registration.service.template.impl;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,21 +36,23 @@ public class TemplateServiceImpl implements TemplateService {
 	/**
 	 * This method takes the list of templates, template file formats and template
 	 * types from database and chooses the required template for creation of
-	 * acknowledgement
+	 * specific template
 	 * 
-	 * * @param templateName to define the template name
-	 * 
+	 * @param templateTypeCode
+	 *            the specified template type code
+	 * @param langCode
+	 *            specified language code
 	 * @return single template
 	 */
 
-	public Template getTemplate(String templateName) {
+	public Template getTemplate(String templateTypeCode, String langCode) {
 		LOGGER.info("REGISTRATION - TEMPLATE_GENERATION - TEMPLATE_SERVICE_IMPL", APPLICATION_NAME, APPLICATION_ID,
 				"Getting templates from database has been started");
 
 		Template ackTemplate = new Template();
 		try {
-			List<Template> templates = templateDao.getAllTemplates();
-			List<TemplateType> templateTypes = templateDao.getAllTemplateTypes();
+			List<Template> templates = templateDao.getAllTemplates(templateTypeCode);
+			List<TemplateType> templateTypes = templateDao.getAllTemplateTypes(templateTypeCode, langCode);
 			List<TemplateFileFormat> templateFileFormats = templateDao.getAllTemplateFileFormats();
 
 			/*
@@ -59,15 +60,12 @@ public class TemplateServiceImpl implements TemplateService {
 			 * template_file_format_code
 			 */
 			for (Template template : templates) {
-				if (template.getName().equals(templateName)) {
-					for (TemplateType type : templateTypes) {
-						if (template.getLangCode().equals(type.getPkTmpltCode().getLangCode())
-								&& template.getTemplateTypCode().equals(type.getPkTmpltCode().getCode())) {
-							for (TemplateFileFormat fileFormat : templateFileFormats) {
-								if (template.getLangCode().equals(fileFormat.getPkTfftCode().getLangCode())
-										&& template.getFileFormatCode().equals(fileFormat.getPkTfftCode().getCode())) {
-									ackTemplate = template;
-								}
+				for (TemplateType type : templateTypes) {
+					if (template.getLangCode().equals(type.getPkTmpltCode().getLangCode())) {
+						for (TemplateFileFormat fileFormat : templateFileFormats) {
+							if (template.getLangCode().equals(fileFormat.getPkTfftCode().getLangCode())
+									&& template.getFileFormatCode().equals(fileFormat.getPkTfftCode().getCode())) {
+								ackTemplate = template;
 							}
 						}
 					}
@@ -82,15 +80,14 @@ public class TemplateServiceImpl implements TemplateService {
 		return ackTemplate;
 	}
 
-	public String getHtmlTemplate(String templateName) {
+	public String getHtmlTemplate(String templateTypeCode, String langCode) {
 		LOGGER.info("REGISTRATION - TEMPLATE_GENERATION - TEMPLATE_SERVICE_IMPL", APPLICATION_NAME, APPLICATION_ID,
 				"Getting required template from DB started");
 
-		byte[] templateInBytes = null;
 		String templateText = null;
-		if (templateName != null && !templateName.isEmpty() && getTemplate(templateName).getFileTxt() != null) {
-			templateInBytes = getTemplate(templateName).getFileTxt();
-			templateText = new String(templateInBytes, StandardCharsets.UTF_8);
+		if (templateTypeCode != null && !templateTypeCode.isEmpty()
+				&& getTemplate(templateTypeCode, langCode).getFileTxt() != null) {
+			templateText = getTemplate(templateTypeCode, langCode).getFileTxt();
 		}
 
 		return templateText;

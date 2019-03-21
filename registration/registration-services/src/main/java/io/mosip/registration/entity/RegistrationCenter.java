@@ -2,12 +2,13 @@ package io.mosip.registration.entity;
 
 import java.sql.Time;
 import java.sql.Timestamp;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.OneToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import io.mosip.registration.entity.id.RegistartionCenterId;
@@ -72,7 +73,7 @@ public class RegistrationCenter extends RegistrationCommonFields {
 	@Column(name = "del_dtimes")
 	private Timestamp delDtimes;
 
-	@OneToOne(fetch = FetchType.EAGER, mappedBy = "registrationCenter")
-	private RegCenterUser regCenterUser;
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "registrationCenter")
+	private List<RegCenterUser> regCenterUser;
 
 }

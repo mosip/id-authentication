@@ -4,7 +4,7 @@ import { AppConfigService } from './app-config.service';
 import { of } from 'rxjs';
 import { HttpClientModule } from '@angular/common/http';
 
-fdescribe('AppConfigService', () => {
+describe('AppConfigService', () => {
 
   let service: AppConfigService = null;
 

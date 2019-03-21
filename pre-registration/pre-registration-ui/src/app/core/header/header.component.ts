@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../../auth/auth.service';
 import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
+import { DataStorageService } from '../services/data-storage.service';
 
 @Component({
   selector: 'app-header',
@@ -9,8 +10,8 @@ import { TranslateService } from '@ngx-translate/core';
   styleUrls: ['./header.component.css']
 })
 export class HeaderComponent implements OnInit {
-  constructor(public authService: AuthService, private router: Router, private translate: TranslateService) {
-    // this.translate.use(localStorage.getItem('langCode'));
+  constructor(public authService: AuthService, private translate: TranslateService, private router: Router) {
+    this.translate.use(localStorage.getItem('langCode'));
   }
 
   ngOnInit() {}
@@ -35,10 +36,13 @@ export class HeaderComponent implements OnInit {
   }
 
   doLogout() {
-    localStorage.setItem('loggedIn', 'false');
-    localStorage.setItem('loggedOut', 'true');
-    localStorage.setItem('loggedOutLang', localStorage.getItem('langCode'));
-    console.log('logout', localStorage.getItem('loggedOutLang'));
-    this.router.navigate(['/']);
+    // localStorage.setItem('loggedIn', 'false');
+    // localStorage.setItem('loggedOut', 'true');
+    // localStorage.setItem('loggedOutLang', localStorage.getItem('langCode'));
+    // this.authService.removeToken();
+    // this.dataStorageService.onLogout().subscribe(res => console.log(res));
+    // console.log('logout', localStorage.getItem('loggedOutLang'));
+    // this.router.navigate(['/']);
+    this.authService.onLogout();
   }
 }

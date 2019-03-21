@@ -1,4 +1,4 @@
-package io.mosip.preregistration.booking.test.controller;
+/*package io.mosip.preregistration.booking.test.controller;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -41,12 +41,13 @@ import io.mosip.preregistration.core.common.dto.PreRegIdsByRegCenterIdDTO;
 import io.mosip.preregistration.core.common.dto.PreRegIdsByRegCenterIdResponseDTO;
 import net.minidev.json.parser.JSONParser;
 import net.minidev.json.parser.ParseException;
-/**
+
+*//**
  * Booking Controller Test
  * 
  * @author Kishan Rathore
  *
- */
+ *//*
 @RunWith(SpringRunner.class)
 @WebMvcTest(BookingController.class)
 public class BookingControllerTest {
@@ -73,14 +74,13 @@ public class BookingControllerTest {
 	private Object jsonObject = null;
 
 	private Object jsonObject1 = null;
-	CancelBookingResponseDTO cancelBookingResponseDTO=new CancelBookingResponseDTO();
-	CancelBookingDTO cancelbookingDto=new CancelBookingDTO();
-	MainRequestDTO<CancelBookingDTO> dto=new MainRequestDTO<>();
-	MainRequestDTO<PreRegIdsByRegCenterIdDTO> requestDTO=new MainRequestDTO<>();
-	PreRegIdsByRegCenterIdResponseDTO preRegIdsResponseDTO=new PreRegIdsByRegCenterIdResponseDTO();
+	CancelBookingResponseDTO cancelBookingResponseDTO = new CancelBookingResponseDTO();
+	CancelBookingDTO cancelbookingDto = new CancelBookingDTO();
+	MainRequestDTO<CancelBookingDTO> dto = new MainRequestDTO<>();
+	MainRequestDTO<PreRegIdsByRegCenterIdDTO> requestDTO = new MainRequestDTO<>();
+	PreRegIdsByRegCenterIdResponseDTO preRegIdsResponseDTO = new PreRegIdsByRegCenterIdResponseDTO();
 	List<PreRegIdsByRegCenterIdResponseDTO> respList = new ArrayList<>();
-	PreRegIdsByRegCenterIdDTO preRegIdsByRegCenterIdDTO=new PreRegIdsByRegCenterIdDTO();
-
+	PreRegIdsByRegCenterIdDTO preRegIdsByRegCenterIdDTO = new PreRegIdsByRegCenterIdDTO();
 
 	@SuppressWarnings({ "deprecation" })
 	@Before
@@ -104,9 +104,8 @@ public class BookingControllerTest {
 		// bookingRequestDTOB.setReg_date("2018-12-06");
 
 		bookingDTO.setRequest(bookingList);
-		
-		
-		responseDto.setErr(null);
+
+		responseDto.setErrors(null);
 
 		URI cancelUri = new URI(
 				classLoader.getResource("cancelAppointment.json").getFile().trim().replaceAll("\\u0020", "%20"));
@@ -142,8 +141,7 @@ public class BookingControllerTest {
 	public void saveAvailability() throws Exception {
 		MainResponseDTO<String> response = new MainResponseDTO<>();
 		Mockito.when(service.addAvailability()).thenReturn(response);
-		RequestBuilder requestBuilder = MockMvcRequestBuilders
-				.get("/appointment/availability/sync")
+		RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/appointment/availability/sync")
 				.contentType(MediaType.APPLICATION_JSON_VALUE).characterEncoding("UTF-8")
 				.accept(MediaType.APPLICATION_JSON_VALUE);
 		mockMvc.perform(requestBuilder).andExpect(status().isOk());
@@ -153,8 +151,7 @@ public class BookingControllerTest {
 	@Test
 	public void successBookingTest() throws Exception {
 
-		responseDto.setStatus(true);
-		responseDto.setResTime(serviceUtil.getCurrentResponseTime());
+		responseDto.setResponsetime(serviceUtil.getCurrentResponseTime());
 		List<String> respList = new ArrayList<>();
 		respList.add("APPOINTMENT_SUCCESSFULLY_BOOKED");
 		responseDto.setResponse(respList);
@@ -172,7 +169,6 @@ public class BookingControllerTest {
 	@Test
 	public void failureBookingTest() throws Exception {
 
-		responseDto.setStatus(false);
 		bookingDTO.setRequest(null);
 		Mockito.when(service.bookAppointment(bookingDTO)).thenReturn(responseDto);
 
@@ -187,9 +183,8 @@ public class BookingControllerTest {
 	@Test
 	public void cancelAppointmentSuccessTest() throws Exception {
 
-		responseDto.setErr(null);
-		responseDto.setStatus(true);
-		responseDto.setResTime(serviceUtil.getCurrentResponseTime());
+		responseDto.setErrors(null);
+		responseDto.setResponsetime(serviceUtil.getCurrentResponseTime());
 		cancelBookingResponseDTO.setMessage("APPOINTMENT_SUCCESSFULLY_CANCELED");
 		cancelBookingResponseDTO.setTransactionId("375765");
 		responseDto.setResponse(cancelBookingResponseDTO);
@@ -207,7 +202,6 @@ public class BookingControllerTest {
 	@Test
 	public void cancelAppointmentFailureTest() throws Exception {
 
-		responseDto.setStatus(false);
 		dto.setRequest(null);
 		Mockito.when(service.cancelAppointment(dto)).thenReturn(responseDto);
 
@@ -220,32 +214,15 @@ public class BookingControllerTest {
 
 	@Test
 	public void getAppointmentDetails() throws Exception {
-		MainResponseDTO<BookingRegistrationDTO> response=new MainResponseDTO<>();
+		MainResponseDTO<BookingRegistrationDTO> response = new MainResponseDTO<>();
 		Mockito.when(service.getAppointmentDetails("12345")).thenReturn(response);
 		RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/appointment")
 				.contentType(MediaType.APPLICATION_JSON_VALUE).characterEncoding("UTF-8")
 				.accept(MediaType.APPLICATION_JSON_VALUE).param("pre_registration_id", "12345");
 		mockMvc.perform(requestBuilder).andExpect(status().isOk());
 	}
-	
-	@Test
-	public void getPreIdsByRegCenterId() throws Exception {
-		MainListResponseDTO<PreRegIdsByRegCenterIdResponseDTO> response=new MainListResponseDTO<>();
-response.setErr(null);
-response.setStatus(false);
-response.setResTime(serviceUtil.getCurrentResponseTime());
 
-		response.setResponse(respList);
 
-		Mockito.when(service.getPreIdsByRegCenterId(requestDTO)).thenReturn(response);
-
-		RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/appointment/preIdsByRegId")
-				.contentType(MediaType.APPLICATION_JSON_VALUE).characterEncoding("UTF-8")
-				.accept(MediaType.APPLICATION_JSON_VALUE).content(jsonObject1.toString());
-
-		mockMvc.perform(requestBuilder).andExpect(status().isOk());
-	}
-	
 	@Test
 	public void deleteBookingTest() throws Exception {
 		String preId = "3";
@@ -265,4 +242,34 @@ response.setResTime(serviceUtil.getCurrentResponseTime());
 		mockMvc.perform(requestBuilder).andExpect(status().isOk());
 	}
 
+	*//**
+	 * @throws Exception
+	 *             on error
+	 *//*
+	@Test
+	public void getAllApplicationByDateTest() throws Exception {
+
+		String fromDate = "2018-12-06";
+		String toDate = "2018-12-06";
+		MainResponseDTO<PreRegIdsByRegCenterIdResponseDTO> response = new MainResponseDTO<>();
+		List<String> preIds = new ArrayList<>();
+		preIds.add("1234");
+		PreRegIdsByRegCenterIdResponseDTO byRegCenterIdResponseDTO = new PreRegIdsByRegCenterIdResponseDTO();
+		byRegCenterIdResponseDTO.setPreRegistrationIds(preIds);
+		byRegCenterIdResponseDTO.setRegistrationCenterId("10001");
+		response.setResponse(byRegCenterIdResponseDTO);
+
+		Mockito.when(service.getBookedPreRegistrationByDate(Mockito.any(), Mockito.any(), Mockito.anyString()))
+				.thenReturn(response);
+
+		RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/appointment/byDateAndRegCenterId/")
+				.contentType(MediaType.APPLICATION_JSON_VALUE).characterEncoding("UTF-8")
+				.accept(MediaType.APPLICATION_JSON_VALUE).param("from_date", fromDate)
+				.accept(MediaType.APPLICATION_JSON_VALUE).param("to_date", toDate)
+				.accept(MediaType.APPLICATION_JSON_VALUE).param("reg_center_id", "10001");
+
+		mockMvc.perform(requestBuilder).andExpect(status().isOk());
+
+	}
 }
+*/

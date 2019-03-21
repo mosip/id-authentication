@@ -1,4 +1,5 @@
 {
+  "lastSyncTime": "2019-03-07T07:38:54.575Z",
   "roles": [
     {
       "roleId": "REGISTRATION_ADMIN",
@@ -6,24 +7,24 @@
       "roleDescription": "Registration administrator"
     },
     {
-      "roleId": "TSP",
-      "roleName": "TSP",
+      "roleId": "MISP",
+      "roleName": "MISP",
       "roleDescription": "Trusted Service Provider"
     },
     {
-      "roleId": "ADMIN1",
-      "roleName": "ADMIN1",
-      "roleDescription": "ADMIN1"
+      "roleId": "REGISTRATION_PROCESSOR",
+      "roleName": "REGISTRATION_PROCESSOR",
+      "roleDescription": "REG PROC"
     },
     {
-      "roleId": "ADMIN",
-      "roleName": "ADMIN",
-      "roleDescription": "admin"
+      "roleId": "TEST",
+      "roleName": "TEST",
+      "roleDescription": "test"
     },
     {
-      "roleId": "INDIVIDUAL",
-      "roleName": "INDIVIDUAL",
-      "roleDescription": "individual"
+      "roleId": "IDA",
+      "roleName": "IDA",
+      "roleDescription": "Trusted Service Provider"
     },
     {
       "roleId": "REGISTRATION_SUPERVISOR",
@@ -34,6 +35,11 @@
       "roleId": "SUPERADMIN",
       "roleName": "SUPERADMIN",
       "roleDescription": "Super administrator"
+    },
+    {
+      "roleId": "ID_AUTHENTICATION",
+      "roleName": "ID_AUTHENTICATION",
+      "roleDescription": "IDA"
     },
     {
       "roleId": "REGISTRATION_OFFICER",

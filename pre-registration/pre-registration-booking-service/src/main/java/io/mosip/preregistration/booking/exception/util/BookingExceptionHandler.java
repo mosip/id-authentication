@@ -4,8 +4,11 @@
  */
 package io.mosip.preregistration.booking.exception.util;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -56,6 +59,15 @@ import io.mosip.preregistration.core.exception.TableNotAccessibleException;
 @RestControllerAdvice
 public class BookingExceptionHandler {
 
+	@Value("${mosip.utc-datetime-pattern}")
+	private String utcDateTimePattern;
+	
+	@Value("${ver}")
+	String versionUrl;
+
+	@Value("${id}")
+	String idUrl;
+	
 	/**
 	 * @param e
 	 * @param request
@@ -64,13 +76,16 @@ public class BookingExceptionHandler {
 	@ExceptionHandler(DemographicStatusUpdationException.class)
 	public ResponseEntity<MainResponseDTO<?>> updateStatusException(final DemographicStatusUpdationException e,
 			WebRequest request) {
-		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(),
-				e.getErrorText());
-		MainResponseDTO<?> errorRes = new MainResponseDTO<>();
-		errorRes.setErr(errorDetails);
-		errorRes.setStatus(false);
-		errorRes.setResTime(getCurrentResponseTime());
-		return new ResponseEntity<>(errorRes, HttpStatus.OK);
+		ExceptionJSONInfoDTO errorDetails=new ExceptionJSONInfoDTO(e.getErrorCode(),e.getErrorText());
+		MainResponseDTO<?> errorRes=new MainResponseDTO<>();
+		List<ExceptionJSONInfoDTO> errorList = new ArrayList<>();
+		errorList.add(errorDetails);
+		errorRes.setErrors(errorList);
+		errorRes.setId(idUrl);
+		errorRes.setVersion(versionUrl);
+		errorRes.setResponsetime(DateUtils.formatDate(new Date(), utcDateTimePattern));
+		
+		return new ResponseEntity<>(errorRes,HttpStatus.OK);
 	}
 
 	/**
@@ -81,13 +96,16 @@ public class BookingExceptionHandler {
 	@ExceptionHandler(AvailabilityTableNotAccessableException.class)
 	public ResponseEntity<MainResponseDTO<?>> availabilityTableNotAccessableException(
 			final AvailabilityTableNotAccessableException e, WebRequest request) {
-		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(),
-				e.getErrorText());
-		MainResponseDTO<?> errorRes = new MainResponseDTO<>();
-		errorRes.setErr(errorDetails);
-		errorRes.setStatus(false);
-		errorRes.setResTime(getCurrentResponseTime());
-		return new ResponseEntity<>(errorRes, HttpStatus.OK);
+		ExceptionJSONInfoDTO errorDetails=new ExceptionJSONInfoDTO(e.getErrorCode(),e.getErrorText());
+		MainResponseDTO<?> errorRes=new MainResponseDTO<>();
+		List<ExceptionJSONInfoDTO> errorList = new ArrayList<>();
+		errorList.add(errorDetails);
+		errorRes.setErrors(errorList);
+		errorRes.setId(idUrl);
+		errorRes.setVersion(versionUrl);
+		errorRes.setResponsetime(DateUtils.formatDate(new Date(), utcDateTimePattern));
+		
+		return new ResponseEntity<>(errorRes,HttpStatus.OK);
 	}
 
 	/**
@@ -98,13 +116,16 @@ public class BookingExceptionHandler {
 	@ExceptionHandler(DemographicGetStatusException.class)
 	public ResponseEntity<MainResponseDTO<?>> getStatusException(final DemographicGetStatusException e,
 			WebRequest request) {
-		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(),
-				e.getErrorText());
-		MainResponseDTO<?> errorRes = new MainResponseDTO<>();
-		errorRes.setErr(errorDetails);
-		errorRes.setStatus(false);
-		errorRes.setResTime(getCurrentResponseTime());
-		return new ResponseEntity<>(errorRes, HttpStatus.OK);
+		ExceptionJSONInfoDTO errorDetails=new ExceptionJSONInfoDTO(e.getErrorCode(),e.getErrorText());
+		MainResponseDTO<?> errorRes=new MainResponseDTO<>();
+		List<ExceptionJSONInfoDTO> errorList = new ArrayList<>();
+		errorList.add(errorDetails);
+		errorRes.setErrors(errorList);
+		errorRes.setId(idUrl);
+		errorRes.setVersion(versionUrl);
+		errorRes.setResponsetime(DateUtils.formatDate(new Date(), utcDateTimePattern));
+		
+		return new ResponseEntity<>(errorRes,HttpStatus.OK);
 	}
 
 	/**
@@ -115,13 +136,16 @@ public class BookingExceptionHandler {
 	@ExceptionHandler(MasterDataNotAvailableException.class)
 	public ResponseEntity<MainResponseDTO<?>> masterDataNotAvailableException(final MasterDataNotAvailableException e,
 			WebRequest request) {
-		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(),
-				e.getErrorText());
-		MainResponseDTO<?> errorRes = new MainResponseDTO<>();
-		errorRes.setErr(errorDetails);
-		errorRes.setStatus(false);
-		errorRes.setResTime(getCurrentResponseTime());
-		return new ResponseEntity<>(errorRes, HttpStatus.OK);
+		ExceptionJSONInfoDTO errorDetails=new ExceptionJSONInfoDTO(e.getErrorCode(),e.getErrorText());
+		MainResponseDTO<?> errorRes=new MainResponseDTO<>();
+		List<ExceptionJSONInfoDTO> errorList = new ArrayList<>();
+		errorList.add(errorDetails);
+		errorRes.setErrors(errorList);
+		errorRes.setId(idUrl);
+		errorRes.setVersion(versionUrl);
+		errorRes.setResponsetime(DateUtils.formatDate(new Date(), utcDateTimePattern));
+		
+		return new ResponseEntity<>(errorRes,HttpStatus.OK);
 	}
 
 	/**
@@ -131,13 +155,16 @@ public class BookingExceptionHandler {
 	 */
 	@ExceptionHandler(RestCallException.class)
 	public ResponseEntity<MainResponseDTO<?>> databaseerror(final RestCallException e, WebRequest request) {
-		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(),
-				e.getErrorText());
-		MainResponseDTO<?> errorRes = new MainResponseDTO<>();
-		errorRes.setErr(errorDetails);
-		errorRes.setStatus(false);
-		errorRes.setResTime(getCurrentResponseTime());
-		return new ResponseEntity<>(errorRes, HttpStatus.OK);
+		ExceptionJSONInfoDTO errorDetails=new ExceptionJSONInfoDTO(e.getErrorCode(),e.getErrorText());
+		MainResponseDTO<?> errorRes=new MainResponseDTO<>();
+		List<ExceptionJSONInfoDTO> errorList = new ArrayList<>();
+		errorList.add(errorDetails);
+		errorRes.setErrors(errorList);
+		errorRes.setId(idUrl);
+		errorRes.setVersion(versionUrl);
+		errorRes.setResponsetime(DateUtils.formatDate(new Date(), utcDateTimePattern));
+		
+		return new ResponseEntity<>(errorRes,HttpStatus.OK);
 	}
 
 	/**
@@ -148,15 +175,16 @@ public class BookingExceptionHandler {
 	@ExceptionHandler(BookingTimeSlotNotSeletectedException.class)
 	public ResponseEntity<MainResponseDTO<?>> timeSlotNotSelected(final BookingTimeSlotNotSeletectedException e,
 			WebRequest request) {
-		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(),
-				e.getErrorText());
-
-		MainResponseDTO<?> responseDto = new MainResponseDTO<>();
-
-		responseDto.setStatus(false);
-		responseDto.setErr(errorDetails);
-		responseDto.setResTime(getCurrentResponseTime());
-		return new ResponseEntity<>(responseDto, HttpStatus.OK);
+		ExceptionJSONInfoDTO errorDetails=new ExceptionJSONInfoDTO(e.getErrorCode(),e.getErrorText());
+		MainResponseDTO<?> errorRes=new MainResponseDTO<>();
+		List<ExceptionJSONInfoDTO> errorList = new ArrayList<>();
+		errorList.add(errorDetails);
+		errorRes.setErrors(errorList);
+		errorRes.setId(idUrl);
+		errorRes.setVersion(versionUrl);
+		errorRes.setResponsetime(DateUtils.formatDate(new Date(), utcDateTimePattern));
+		
+		return new ResponseEntity<>(errorRes,HttpStatus.OK);
 
 	}
 
@@ -168,15 +196,16 @@ public class BookingExceptionHandler {
 	@ExceptionHandler(AppointmentCannotBeBookedException.class)
 	public ResponseEntity<MainResponseDTO<?>> timeSlotNotSelected(final AppointmentCannotBeBookedException e,
 			WebRequest request) {
-		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(),
-				e.getErrorText());
-
-		MainResponseDTO<?> responseDto = new MainResponseDTO<>();
-
-		responseDto.setStatus(false);
-		responseDto.setErr(errorDetails);
-		responseDto.setResTime(getCurrentResponseTime());
-		return new ResponseEntity<>(responseDto, HttpStatus.OK);
+		ExceptionJSONInfoDTO errorDetails=new ExceptionJSONInfoDTO(e.getErrorCode(),e.getErrorText());
+		MainResponseDTO<?> errorRes=new MainResponseDTO<>();
+		List<ExceptionJSONInfoDTO> errorList = new ArrayList<>();
+		errorList.add(errorDetails);
+		errorRes.setErrors(errorList);
+		errorRes.setId(idUrl);
+		errorRes.setVersion(versionUrl);
+		errorRes.setResponsetime(DateUtils.formatDate(new Date(), utcDateTimePattern));
+		
+		return new ResponseEntity<>(errorRes,HttpStatus.OK);
 
 	}
 
@@ -187,14 +216,16 @@ public class BookingExceptionHandler {
 	 */
 	@ExceptionHandler(BookingPreIdNotFoundException.class)
 	public ResponseEntity<MainResponseDTO<?>> preIdNotFound(final BookingPreIdNotFoundException e, WebRequest request) {
-		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(),
-				e.getErrorText());
-
-		MainResponseDTO<?> responseDto = new MainResponseDTO<>();
-		responseDto.setStatus(false);
-		responseDto.setErr(errorDetails);
-		responseDto.setResTime(getCurrentResponseTime());
-		return new ResponseEntity<>(responseDto, HttpStatus.OK);
+		ExceptionJSONInfoDTO errorDetails=new ExceptionJSONInfoDTO(e.getErrorCode(),e.getErrorText());
+		MainResponseDTO<?> errorRes=new MainResponseDTO<>();
+		List<ExceptionJSONInfoDTO> errorList = new ArrayList<>();
+		errorList.add(errorDetails);
+		errorRes.setErrors(errorList);
+		errorRes.setId(idUrl);
+		errorRes.setVersion(versionUrl);
+		errorRes.setResponsetime(DateUtils.formatDate(new Date(), utcDateTimePattern));
+		
+		return new ResponseEntity<>(errorRes,HttpStatus.OK);
 	}
 
 	/**
@@ -205,14 +236,16 @@ public class BookingExceptionHandler {
 	@ExceptionHandler(BookingRegistrationCenterIdNotFoundException.class)
 	public ResponseEntity<MainResponseDTO<?>> regCenterNotFound(final BookingRegistrationCenterIdNotFoundException e,
 			WebRequest request) {
-		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(ErrorCodes.PRG_BOOK_RCI_007.toString(),
-				ErrorMessages.REGISTRATION_CENTER_ID_NOT_ENTERED.toString());
-
-		MainResponseDTO<?> responseDto = new MainResponseDTO<>();
-		responseDto.setStatus(false);
-		responseDto.setErr(errorDetails);
-		responseDto.setResTime(getCurrentResponseTime());
-		return new ResponseEntity<>(responseDto, HttpStatus.OK);
+		ExceptionJSONInfoDTO errorDetails=new ExceptionJSONInfoDTO(e.getErrorCode(),e.getErrorText());
+		MainResponseDTO<?> errorRes=new MainResponseDTO<>();
+		List<ExceptionJSONInfoDTO> errorList = new ArrayList<>();
+		errorList.add(errorDetails);
+		errorRes.setErrors(errorList);
+		errorRes.setId(idUrl);
+		errorRes.setVersion(versionUrl);
+		errorRes.setResponsetime(DateUtils.formatDate(new Date(), utcDateTimePattern));
+		
+		return new ResponseEntity<>(errorRes,HttpStatus.OK);
 	}
 
 	/**
@@ -223,14 +256,16 @@ public class BookingExceptionHandler {
 	@ExceptionHandler(InvalidDateTimeFormatException.class)
 	public ResponseEntity<MainResponseDTO<?>> invalidDateTimeException(final InvalidDateTimeFormatException e,
 			WebRequest request) {
-		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(),
-				e.getErrorText());
-
-		MainResponseDTO<?> responseDto = new MainResponseDTO<>();
-		responseDto.setStatus(false);
-		responseDto.setErr(errorDetails);
-		responseDto.setResTime(getCurrentResponseTime());
-		return new ResponseEntity<>(responseDto, HttpStatus.OK);
+		ExceptionJSONInfoDTO errorDetails=new ExceptionJSONInfoDTO(e.getErrorCode(),e.getErrorText());
+		MainResponseDTO<?> errorRes=new MainResponseDTO<>();
+		List<ExceptionJSONInfoDTO> errorList = new ArrayList<>();
+		errorList.add(errorDetails);
+		errorRes.setErrors(errorList);
+		errorRes.setId(idUrl);
+		errorRes.setVersion(versionUrl);
+		errorRes.setResponsetime(DateUtils.formatDate(new Date(), utcDateTimePattern));
+		
+		return new ResponseEntity<>(errorRes,HttpStatus.OK);
 	}
 
 	/**
@@ -241,14 +276,16 @@ public class BookingExceptionHandler {
 	@ExceptionHandler(BookingTimeSlotAlreadyBooked.class)
 	public ResponseEntity<MainResponseDTO<?>> timeSlotAlreadyBooked(final BookingTimeSlotAlreadyBooked e,
 			WebRequest request) {
-		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(ErrorCodes.PRG_BOOK_RCI_004.toString(),
-				ErrorMessages.APPOINTMENT_TIME_SLOT_IS_ALREADY_BOOKED.toString());
-
-		MainResponseDTO<?> responseDto = new MainResponseDTO<>();
-		responseDto.setStatus(false);
-		responseDto.setErr(errorDetails);
-		responseDto.setResTime(getCurrentResponseTime());
-		return new ResponseEntity<>(responseDto, HttpStatus.OK);
+		ExceptionJSONInfoDTO errorDetails=new ExceptionJSONInfoDTO(e.getErrorCode(),e.getErrorText());
+		MainResponseDTO<?> errorRes=new MainResponseDTO<>();
+		List<ExceptionJSONInfoDTO> errorList = new ArrayList<>();
+		errorList.add(errorDetails);
+		errorRes.setErrors(errorList);
+		errorRes.setId(idUrl);
+		errorRes.setVersion(versionUrl);
+		errorRes.setResponsetime(DateUtils.formatDate(new Date(), utcDateTimePattern));
+		
+		return new ResponseEntity<>(errorRes,HttpStatus.OK);
 	}
 
 	/**
@@ -259,14 +296,16 @@ public class BookingExceptionHandler {
 	@ExceptionHandler(BookingDateNotSeletectedException.class)
 	public ResponseEntity<MainResponseDTO<?>> bookingDateNotSelected(final BookingDateNotSeletectedException e,
 			WebRequest request) {
-		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(),
-				e.getErrorText());
-
-		MainResponseDTO<?> responseDto = new MainResponseDTO<>();
-		responseDto.setStatus(false);
-		responseDto.setErr(errorDetails);
-		responseDto.setResTime(getCurrentResponseTime());
-		return new ResponseEntity<>(responseDto, HttpStatus.OK);
+		ExceptionJSONInfoDTO errorDetails=new ExceptionJSONInfoDTO(e.getErrorCode(),e.getErrorText());
+		MainResponseDTO<?> errorRes=new MainResponseDTO<>();
+		List<ExceptionJSONInfoDTO> errorList = new ArrayList<>();
+		errorList.add(errorDetails);
+		errorRes.setErrors(errorList);
+		errorRes.setId(idUrl);
+		errorRes.setVersion(versionUrl);
+		errorRes.setResponsetime(DateUtils.formatDate(new Date(), utcDateTimePattern));
+		
+		return new ResponseEntity<>(errorRes,HttpStatus.OK);
 	}
 
 	/**
@@ -277,12 +316,16 @@ public class BookingExceptionHandler {
 	@ExceptionHandler(InvalidRequestParameterException.class)
 	public ResponseEntity<MainResponseDTO<?>> bookingDateNotSelected(final InvalidRequestParameterException e,
 			WebRequest request) {
-		MainResponseDTO<?> responseDto = new MainResponseDTO<>();
-		ExceptionJSONInfoDTO err = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getErrorText());
-		responseDto.setStatus(false);
-		responseDto.setErr(err);
-		responseDto.setResTime(getCurrentResponseTime());
-		return new ResponseEntity<>(responseDto, HttpStatus.OK);
+		ExceptionJSONInfoDTO errorDetails=new ExceptionJSONInfoDTO(e.getErrorCode(),e.getErrorText());
+		MainResponseDTO<?> errorRes=new MainResponseDTO<>();
+		List<ExceptionJSONInfoDTO> errorList = new ArrayList<>();
+		errorList.add(errorDetails);
+		errorRes.setErrors(errorList);
+		errorRes.setId(idUrl);
+		errorRes.setVersion(versionUrl);
+		errorRes.setResponsetime(DateUtils.formatDate(new Date(), utcDateTimePattern));
+		
+		return new ResponseEntity<>(errorRes,HttpStatus.OK);
 	}
 
 	/**
@@ -293,14 +336,16 @@ public class BookingExceptionHandler {
 	@ExceptionHandler(BookingDataNotFoundException.class)
 	public ResponseEntity<MainResponseDTO<?>> bookingDataNotFound(final BookingDataNotFoundException e,
 			WebRequest request) {
-		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(),
-				e.getErrorText());
-
-		MainResponseDTO<?> responseDto = new MainResponseDTO<>();
-		responseDto.setStatus(false);
-		responseDto.setErr(errorDetails);
-		responseDto.setResTime(getCurrentResponseTime());
-		return new ResponseEntity<>(responseDto, HttpStatus.OK);
+		ExceptionJSONInfoDTO errorDetails=new ExceptionJSONInfoDTO(e.getErrorCode(),e.getErrorText());
+		MainResponseDTO<?> errorRes=new MainResponseDTO<>();
+		List<ExceptionJSONInfoDTO> errorList = new ArrayList<>();
+		errorList.add(errorDetails);
+		errorRes.setErrors(errorList);
+		errorRes.setId(idUrl);
+		errorRes.setVersion(versionUrl);
+		errorRes.setResponsetime(DateUtils.formatDate(new Date(), utcDateTimePattern));
+		
+		return new ResponseEntity<>(errorRes,HttpStatus.OK);
 	}
 
 	/**
@@ -310,14 +355,16 @@ public class BookingExceptionHandler {
 	 */
 	@ExceptionHandler(RecordNotFoundException.class)
 	public ResponseEntity<MainResponseDTO<?>> recordNotFound(final RecordNotFoundException e, WebRequest request) {
-		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(),
-				e.getErrorText());
-
-		MainResponseDTO<?> responseDto = new MainResponseDTO<>();
-		responseDto.setStatus(false);
-		responseDto.setErr(errorDetails);
-		responseDto.setResTime(getCurrentResponseTime());
-		return new ResponseEntity<>(responseDto, HttpStatus.OK);
+		ExceptionJSONInfoDTO errorDetails=new ExceptionJSONInfoDTO(e.getErrorCode(),e.getErrorText());
+		MainResponseDTO<?> errorRes=new MainResponseDTO<>();
+		List<ExceptionJSONInfoDTO> errorList = new ArrayList<>();
+		errorList.add(errorDetails);
+		errorRes.setErrors(errorList);
+		errorRes.setId(idUrl);
+		errorRes.setVersion(versionUrl);
+		errorRes.setResponsetime(DateUtils.formatDate(new Date(), utcDateTimePattern));
+		
+		return new ResponseEntity<>(errorRes,HttpStatus.OK);
 	}
 
 	/**
@@ -329,15 +376,16 @@ public class BookingExceptionHandler {
 	@ExceptionHandler(AppointmentAlreadyCanceledException.class)
 	public ResponseEntity<MainResponseDTO<?>> appointmentAlreadyCanceledException(
 			final AppointmentAlreadyCanceledException e, WebRequest request) {
-		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(),
-				e.getErrorText());
-
-		MainResponseDTO responseDto = new MainResponseDTO();
-
-		responseDto.setStatus(false);
-		responseDto.setErr(errorDetails);
-		responseDto.setResTime(getCurrentResponseTime());
-		return new ResponseEntity<>(responseDto, HttpStatus.OK);
+		ExceptionJSONInfoDTO errorDetails=new ExceptionJSONInfoDTO(e.getErrorCode(),e.getErrorText());
+		MainResponseDTO<?> errorRes=new MainResponseDTO<>();
+		List<ExceptionJSONInfoDTO> errorList = new ArrayList<>();
+		errorList.add(errorDetails);
+		errorRes.setErrors(errorList);
+		errorRes.setId(idUrl);
+		errorRes.setVersion(versionUrl);
+		errorRes.setResponsetime(DateUtils.formatDate(new Date(), utcDateTimePattern));
+		
+		return new ResponseEntity<>(errorRes,HttpStatus.OK);
 	}
 
 	/**
@@ -349,14 +397,16 @@ public class BookingExceptionHandler {
 	@ExceptionHandler(AppointmentCannotBeCanceledException.class)
 	public ResponseEntity<MainResponseDTO<?>> appointmentCanNotCanceledException(
 			final AppointmentCannotBeCanceledException e, WebRequest request) {
-		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(),
-				e.getErrorText());
-
-		MainResponseDTO responseDto = new MainResponseDTO();
-		responseDto.setStatus(false);
-		responseDto.setErr(errorDetails);
-		responseDto.setResTime(getCurrentResponseTime());
-		return new ResponseEntity<>(responseDto, HttpStatus.OK);
+		ExceptionJSONInfoDTO errorDetails=new ExceptionJSONInfoDTO(e.getErrorCode(),e.getErrorText());
+		MainResponseDTO<?> errorRes=new MainResponseDTO<>();
+		List<ExceptionJSONInfoDTO> errorList = new ArrayList<>();
+		errorList.add(errorDetails);
+		errorRes.setErrors(errorList);
+		errorRes.setId(idUrl);
+		errorRes.setVersion(versionUrl);
+		errorRes.setResponsetime(DateUtils.formatDate(new Date(), utcDateTimePattern));
+		
+		return new ResponseEntity<>(errorRes,HttpStatus.OK);
 	}
 
 	/**
@@ -368,14 +418,16 @@ public class BookingExceptionHandler {
 	@ExceptionHandler(CancelAppointmentFailedException.class)
 	public ResponseEntity<MainResponseDTO<?>> appointmentCancelFailedException(final CancelAppointmentFailedException e,
 			WebRequest request) {
-		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(),
-				e.getErrorText());
-
-		MainResponseDTO responseDto = new MainResponseDTO();
-		responseDto.setStatus(false);
-		responseDto.setErr(errorDetails);
-		responseDto.setResTime(getCurrentResponseTime());
-		return new ResponseEntity<>(responseDto, HttpStatus.OK);
+		ExceptionJSONInfoDTO errorDetails=new ExceptionJSONInfoDTO(e.getErrorCode(),e.getErrorText());
+		MainResponseDTO<?> errorRes=new MainResponseDTO<>();
+		List<ExceptionJSONInfoDTO> errorList = new ArrayList<>();
+		errorList.add(errorDetails);
+		errorRes.setErrors(errorList);
+		errorRes.setId(idUrl);
+		errorRes.setVersion(versionUrl);
+		errorRes.setResponsetime(DateUtils.formatDate(new Date(), utcDateTimePattern));
+		
+		return new ResponseEntity<>(errorRes,HttpStatus.OK);
 	}
 
 	/**
@@ -387,14 +439,16 @@ public class BookingExceptionHandler {
 	@ExceptionHandler(AppointmentReBookingFailedException.class)
 	public ResponseEntity<MainResponseDTO<?>> appointmentReBookingFailedException(
 			final AppointmentReBookingFailedException e, WebRequest request) {
-		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(),
-				e.getErrorText());
-
-		MainResponseDTO responseDto = new MainResponseDTO();
-		responseDto.setStatus(false);
-		responseDto.setErr(errorDetails);
-		responseDto.setResTime(getCurrentResponseTime());
-		return new ResponseEntity<>(responseDto, HttpStatus.OK);
+		ExceptionJSONInfoDTO errorDetails=new ExceptionJSONInfoDTO(e.getErrorCode(),e.getErrorText());
+		MainResponseDTO<?> errorRes=new MainResponseDTO<>();
+		List<ExceptionJSONInfoDTO> errorList = new ArrayList<>();
+		errorList.add(errorDetails);
+		errorRes.setErrors(errorList);
+		errorRes.setId(idUrl);
+		errorRes.setVersion(versionUrl);
+		errorRes.setResponsetime(DateUtils.formatDate(new Date(), utcDateTimePattern));
+		
+		return new ResponseEntity<>(errorRes,HttpStatus.OK);
 	}
 
 	/**
@@ -405,13 +459,16 @@ public class BookingExceptionHandler {
 	@SuppressWarnings({ "rawtypes" })
 	@ExceptionHandler(DocumentNotFoundException.class)
 	public ResponseEntity<MainResponseDTO<?>> documentNotFound(final DocumentNotFoundException e, WebRequest request) {
-		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getErrorText());
-
-		MainResponseDTO responseDto = new MainResponseDTO();
-		responseDto.setStatus(false);
-		responseDto.setErr(errorDetails);
-		responseDto.setResTime(getCurrentResponseTime());
-		return new ResponseEntity<>(responseDto, HttpStatus.OK);
+		ExceptionJSONInfoDTO errorDetails=new ExceptionJSONInfoDTO(e.getErrorCode(),e.getErrorText());
+		MainResponseDTO<?> errorRes=new MainResponseDTO<>();
+		List<ExceptionJSONInfoDTO> errorList = new ArrayList<>();
+		errorList.add(errorDetails);
+		errorRes.setErrors(errorList);
+		errorRes.setId(idUrl);
+		errorRes.setVersion(versionUrl);
+		errorRes.setResponsetime(DateUtils.formatDate(new Date(), utcDateTimePattern));
+		
+		return new ResponseEntity<>(errorRes,HttpStatus.OK);
 	}
 
 	/**
@@ -423,13 +480,16 @@ public class BookingExceptionHandler {
 	@ExceptionHandler(AvailablityNotFoundException.class)
 	public ResponseEntity<MainResponseDTO<?>> availablityNotFound(final AvailablityNotFoundException e,
 			WebRequest request) {
-		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getErrorText());
-
-		MainResponseDTO responseDto = new MainResponseDTO();
-		responseDto.setStatus(false);
-		responseDto.setErr(errorDetails);
-		responseDto.setResTime(getCurrentResponseTime());
-		return new ResponseEntity<>(responseDto, HttpStatus.OK);
+		ExceptionJSONInfoDTO errorDetails=new ExceptionJSONInfoDTO(e.getErrorCode(),e.getErrorText());
+		MainResponseDTO<?> errorRes=new MainResponseDTO<>();
+		List<ExceptionJSONInfoDTO> errorList = new ArrayList<>();
+		errorList.add(errorDetails);
+		errorRes.setErrors(errorList);
+		errorRes.setId(idUrl);
+		errorRes.setVersion(versionUrl);
+		errorRes.setResponsetime(DateUtils.formatDate(new Date(), utcDateTimePattern));
+		
+		return new ResponseEntity<>(errorRes,HttpStatus.OK);
 	}
 
 	/**
@@ -440,15 +500,20 @@ public class BookingExceptionHandler {
 	@SuppressWarnings({ "rawtypes" })
 	@ExceptionHandler(TableNotAccessibleException.class)
 
-	public ResponseEntity<MainResponseDTO<?>> tablenotAccessible(final TableNotAccessibleException e, WebRequest request) {
-		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getErrorText());
-
-		MainResponseDTO responseDto = new MainResponseDTO();
-		responseDto.setStatus(false);
-		responseDto.setErr(errorDetails);
-		responseDto.setResTime(getCurrentResponseTime());
-		return new ResponseEntity<>(responseDto, HttpStatus.OK);
+	public ResponseEntity<MainResponseDTO<?>> tablenotAccessible(final TableNotAccessibleException e,
+			WebRequest request) {
+		ExceptionJSONInfoDTO errorDetails=new ExceptionJSONInfoDTO(e.getErrorCode(),e.getErrorText());
+		MainResponseDTO<?> errorRes=new MainResponseDTO<>();
+		List<ExceptionJSONInfoDTO> errorList = new ArrayList<>();
+		errorList.add(errorDetails);
+		errorRes.setErrors(errorList);
+		errorRes.setId(idUrl);
+		errorRes.setVersion(versionUrl);
+		errorRes.setResponsetime(DateUtils.formatDate(new Date(), utcDateTimePattern));
+		
+		return new ResponseEntity<>(errorRes,HttpStatus.OK);
 	}
+
 	/**
 	 * @param e
 	 * @param request
@@ -458,62 +523,65 @@ public class BookingExceptionHandler {
 	@ExceptionHandler(AppointmentBookingFailedException.class)
 	public ResponseEntity<MainResponseDTO<?>> appointmentBookingFailed(final AppointmentBookingFailedException e,
 			WebRequest request) {
-		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getErrorText());
-
-		MainResponseDTO responseDto = new MainResponseDTO();
-		responseDto.setStatus(false);
-		responseDto.setErr(errorDetails);
-		responseDto.setResTime(getCurrentResponseTime());
-		return new ResponseEntity<>(responseDto, HttpStatus.OK);
+		ExceptionJSONInfoDTO errorDetails=new ExceptionJSONInfoDTO(e.getErrorCode(),e.getErrorText());
+		MainResponseDTO<?> errorRes=new MainResponseDTO<>();
+		List<ExceptionJSONInfoDTO> errorList = new ArrayList<>();
+		errorList.add(errorDetails);
+		errorRes.setErrors(errorList);
+		errorRes.setId(idUrl);
+		errorRes.setVersion(versionUrl);
+		errorRes.setResponsetime(DateUtils.formatDate(new Date(), utcDateTimePattern));
+		
+		return new ResponseEntity<>(errorRes,HttpStatus.OK);
 	}
+
 	@ExceptionHandler(TimeSpanException.class)
-	public ResponseEntity<MainResponseDTO<?>> timeSpanException(final TimeSpanException e,
-			WebRequest request) {
-		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(),
-				e.getErrorText());
-
-		MainResponseDTO<?> responseDto = new MainResponseDTO<>();
-
-		responseDto.setStatus(false);
-		responseDto.setErr(errorDetails);
-		responseDto.setResTime(getCurrentResponseTime());
-		return new ResponseEntity<>(responseDto, HttpStatus.OK);
+	public ResponseEntity<MainResponseDTO<?>> timeSpanException(final TimeSpanException e, WebRequest request) {
+		ExceptionJSONInfoDTO errorDetails=new ExceptionJSONInfoDTO(e.getErrorCode(),e.getErrorText());
+		MainResponseDTO<?> errorRes=new MainResponseDTO<>();
+		List<ExceptionJSONInfoDTO> errorList = new ArrayList<>();
+		errorList.add(errorDetails);
+		errorRes.setErrors(errorList);
+		errorRes.setId(idUrl);
+		errorRes.setVersion(versionUrl);
+		errorRes.setResponsetime(DateUtils.formatDate(new Date(), utcDateTimePattern));
+		
+		return new ResponseEntity<>(errorRes,HttpStatus.OK);
 
 	}
+
 	@ExceptionHandler(RecordFailedToDeleteException.class)
 	public ResponseEntity<MainResponseDTO<?>> recordFailedToDeleteException(final RecordFailedToDeleteException e,
 			WebRequest request) {
-		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(),
-				e.getErrorText());
-
-		MainResponseDTO<?> responseDto = new MainResponseDTO<>();
-
-		responseDto.setStatus(false);
-		responseDto.setErr(errorDetails);
-		responseDto.setResTime(getCurrentResponseTime());
-		return new ResponseEntity<>(responseDto, HttpStatus.OK);
+		ExceptionJSONInfoDTO errorDetails=new ExceptionJSONInfoDTO(e.getErrorCode(),e.getErrorText());
+		MainResponseDTO<?> errorRes=new MainResponseDTO<>();
+		List<ExceptionJSONInfoDTO> errorList = new ArrayList<>();
+		errorList.add(errorDetails);
+		errorRes.setErrors(errorList);
+		errorRes.setId(idUrl);
+		errorRes.setVersion(versionUrl);
+		errorRes.setResponsetime(DateUtils.formatDate(new Date(), utcDateTimePattern));
+		
+		return new ResponseEntity<>(errorRes,HttpStatus.OK);
 
 	}
+
 	@ExceptionHandler(OperationNotAllowedException.class)
 	public ResponseEntity<MainResponseDTO<?>> operationNotAllowedException(final OperationNotAllowedException e,
 			WebRequest request) {
-		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(),
-				e.getErrorText());
-
-		MainResponseDTO<?> responseDto = new MainResponseDTO<>();
-
-		responseDto.setStatus(false);
-		responseDto.setErr(errorDetails);
-		responseDto.setResTime(getCurrentResponseTime());
-		return new ResponseEntity<>(responseDto, HttpStatus.OK);
+		ExceptionJSONInfoDTO errorDetails=new ExceptionJSONInfoDTO(e.getErrorCode(),e.getErrorText());
+		MainResponseDTO<?> errorRes=new MainResponseDTO<>();
+		List<ExceptionJSONInfoDTO> errorList = new ArrayList<>();
+		errorList.add(errorDetails);
+		errorRes.setErrors(errorList);
+		errorRes.setId(idUrl);
+		errorRes.setVersion(versionUrl);
+		errorRes.setResponsetime(DateUtils.formatDate(new Date(), utcDateTimePattern));
+		
+		return new ResponseEntity<>(errorRes,HttpStatus.OK);
 
 	}
+
 	
-	/**
-	 * @return Date time format
-	 */
-	public String getCurrentResponseTime() {
-		return DateUtils.formatDate(new Date(System.currentTimeMillis()), "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
-	}
 
 }

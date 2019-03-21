@@ -81,9 +81,8 @@ public class PacketInfoDaoTest {
 		dedupePKEntity.setLangCode("fr");
 		dedupePKEntity.setRegId("2018782130000224092018121229");
 		dedupeEntity.setId(dedupePKEntity);
-		dedupeEntity.setDob(date);
+		dedupeEntity.setDob(date.toString());
 		dedupeEntity.setName("Ibrahim");
-		dedupeEntity.setPhoneticName("I165");
 		dedupeEntity.setGender("mâle");
 		dedupeEntity.setIsActive(true);
 

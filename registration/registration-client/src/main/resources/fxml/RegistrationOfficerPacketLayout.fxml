@@ -11,7 +11,7 @@
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" styleClass="homeParentPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.reg.PacketHandlerController">
     <children>
-    <ImageView fitHeight="740.0" fitWidth="1300.0" layoutX="0.0" layoutY="0.0" pickOnBounds="true" preserveRatio="true">
+    <ImageView fitHeight="740.0" fitWidth="1300.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@../images/pexels-photo.png" />
                </image>
@@ -146,5 +146,6 @@
             </AnchorPane>
          </children>
       </AnchorPane>
+       <ProgressIndicator fx:id="reMapProgressIndicator" layoutX="407.0" layoutY="20.0" prefHeight="345.0" prefWidth="417.0" progress="0.0" visible="false" />
    </children>
 </AnchorPane>

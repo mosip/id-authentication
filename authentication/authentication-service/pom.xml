@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>io.mosip.authentication</groupId>
 		<artifactId>authentication-parent</artifactId>
-		<version>0.9.3</version>
+		<version>0.9.8</version>
 	</parent>
 
 	<artifactId>authentication-service</artifactId>
@@ -19,7 +19,7 @@
 		<dependency>
 			<groupId>io.mosip.authentication</groupId>
 			<artifactId>authentication-core</artifactId>
-			<version>0.9.3</version>
+			<version>0.9.8</version>
 		</dependency>
 
 		<!-- Kernel Template -->
@@ -71,11 +71,6 @@
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-datavalidator</artifactId>
-			<version>${kernel.core.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>io.mosip.kernel</groupId>
-			<artifactId>kernel-crypto-jce</artifactId>
 			<version>${kernel.core.version}</version>
 		</dependency>
 		<dependency>
@@ -165,7 +160,11 @@
 			<version>${powermock.version}</version>
 			<scope>test</scope>
 		</dependency>
-
+		<dependency>
+			<groupId>org.bitbucket.b_c</groupId>
+			<artifactId>jose4j</artifactId>
+			<version>0.6.4</version>
+		</dependency>
 	</dependencies>
 
 	<repositories>

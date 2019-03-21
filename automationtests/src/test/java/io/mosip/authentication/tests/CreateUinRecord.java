@@ -1,6 +1,6 @@
 package io.mosip.authentication.tests;
 
-import java.io.File; 
+import java.io.File;  
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.HashMap;
@@ -27,18 +27,18 @@ import org.testng.internal.TestResult;
 
 import com.google.common.base.Verify;
 
-import io.mosip.authentication.fw.idrepo.IdRepoUtil;
-import io.mosip.authentication.fw.idrepo.UinDto;
 import io.mosip.authentication.fw.util.DataProviderClass;
 import io.mosip.authentication.fw.util.FileUtil;
+import io.mosip.authentication.fw.util.IdRepoUtil;
 import io.mosip.authentication.fw.util.IdaScriptsUtil;
-import io.mosip.authentication.fw.util.OutputValidationDto;
+import io.mosip.authentication.fw.dto.OutputValidationDto;
+import io.mosip.authentication.fw.dto.UinDto;
 import io.mosip.authentication.fw.util.OutputValidationUtil;
 import io.mosip.authentication.fw.util.ReportUtil;
 import io.mosip.authentication.fw.util.RunConfig;
 import io.mosip.authentication.fw.util.TestParameters;
-import io.mosip.testdata.TestDataProcessor;
-import io.mosip.testdata.TestDataUtil;
+import io.mosip.authentication.testdata.TestDataProcessor;
+import io.mosip.authentication.testdata.TestDataUtil;
 
 import org.testng.Reporter;
 
@@ -60,12 +60,14 @@ public class CreateUinRecord extends IdaScriptsUtil implements ITest{
 	private TestDataProcessor objTestDataProcessor = new TestDataProcessor();
 	private IdRepoUtil objIdRepoUtil = new IdRepoUtil();
 	private Map<String,String> storeUinData = new HashMap<String,String>();
+	private String TESTDATA_PATH="ida/TestData/UINData/CreateTestData/";
+	private String TESTDATA_FILENAME="testdata.ida.UINData.CreateTestData.mapping.yml";
 
-	@Parameters({ "testDatPath" , "testDataFileName" })
+	@Parameters({"testType"})
 	@BeforeClass
-	public void setConfigurations(String testDatPath,String testDataFileName) {
-		objRunConfig.setConfig(testDatPath,testDataFileName,"smokeandregression");
-		objTestDataProcessor.initateTestDataProcess(testDataFileName,testDatPath,"ida");
+	public void setConfigurations(String testType) {
+		objRunConfig.setConfig(TESTDATA_PATH,TESTDATA_FILENAME,testType);
+		objTestDataProcessor.initateTestDataProcess(TESTDATA_FILENAME,TESTDATA_PATH,"ida");
 	}
 	
 	@BeforeMethod
@@ -151,9 +153,10 @@ public class CreateUinRecord extends IdaScriptsUtil implements ITest{
 	@AfterClass
 	public void storeUinData() {
 		UinDto.setUinData(storeUinData);
-		logger.info("Genereated UIN: "+UinDto.getUinData());
-		objIdRepoUtil.generateUinMappingDic(
-				RunConfig.getUserDirectory() + RunConfig.getSrcPath() + "ida\\TestData\\RunConfig\\uin.properties");
+		logger.info("Genereated UIN: " + UinDto.getUinData());
+		generateMappingDic(new File("./"+RunConfig.getSrcPath() + "ida/"+RunConfig.getTestDataFolderName()+"/RunConfig/uin.properties").getAbsolutePath(),
+				UinDto.getUinData());
 	}
 
 }
+

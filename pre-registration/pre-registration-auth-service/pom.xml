@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>io.mosip.preregistration</groupId>
 		<artifactId>pre-registration-parent</artifactId>
-		<version>0.9.3</version>
+		<version>0.9.8</version>
 	</parent>
 
 	<artifactId>pre-registration-auth-service</artifactId>
@@ -56,20 +56,6 @@
 			<artifactId>pre-registration-core</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-		<dependency>
-			<groupId>org.powermock</groupId>
-			<artifactId>powermock-module-junit4</artifactId>
-			<version>1.6.6</version>
-			<scope>test</scope>
-		</dependency>
-		<!-- PowerMock Mockito2 API -->
-		<dependency>
-			<groupId>org.powermock</groupId>
-			<artifactId>powermock-api-mockito2</artifactId>
-			<version>1.6.6</version>
-			<scope>test</scope>
-		</dependency>
-	
 	</dependencies>
 
 	<build>

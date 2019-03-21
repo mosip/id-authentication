@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
-import io.mosip.authentication.core.dto.indauth.BioInfo;
+import io.mosip.authentication.core.dto.indauth.DataDTO;
 import io.mosip.authentication.core.spi.bioauth.provider.MosipBiometricProvider;
 import io.mosip.authentication.service.impl.fingerauth.provider.impl.CogentFingerprintProvider;
 import io.mosip.authentication.service.impl.fingerauth.provider.impl.MantraFingerprintProvider;
@@ -32,7 +32,7 @@ public class BiometricProviderFactory {
 	private static final String COGENT_IRIS_PROVIDER = "iris.provider.cogent";
 	
 	/** The Constant morphoBiometricProvider. */
-	private static final String MORHO_IRIS_PROVIDER = "iris.provider.morpho";
+	private static final String MORPHO_IRIS_PROVIDER = "iris.provider.morpho";
 
 	
 	@Autowired
@@ -77,25 +77,30 @@ public class BiometricProviderFactory {
 	 *            the bio info
 	 * @return the biometric provider
 	 */
-	public MosipBiometricProvider getBiometricProvider(BioInfo bioInfo) {
+	public MosipBiometricProvider getBiometricProvider(DataDTO bioInfo) {
 
 		if (bioInfo.getBioType().equalsIgnoreCase(BioAuthType.IRIS_IMG.getType())) {
-			if (bioInfo.getDeviceInfo().getMake().equalsIgnoreCase(environment.getProperty(BiometricProviderFactory.COGENT_IRIS_PROVIDER))) {
+			//TODO FIXME as dynamically provider has to be changed based on the request
+			if (bioInfo.getDeviceProviderID().equalsIgnoreCase(environment.getProperty(BiometricProviderFactory.COGENT_IRIS_PROVIDER))) {
 				return getCogentIrisProvider();
-			} else if(bioInfo.getDeviceInfo().getMake().equalsIgnoreCase(environment.getProperty(BiometricProviderFactory.MORHO_IRIS_PROVIDER))) {
+			} else if(bioInfo.getDeviceProviderID().equalsIgnoreCase(environment.getProperty(BiometricProviderFactory.MORPHO_IRIS_PROVIDER))) {
 				return getMorphoIrisProvider();
 			}
+			return getCogentIrisProvider();
+			
 		}
 
 		else if (bioInfo.getBioType().equalsIgnoreCase(BioAuthType.FGR_MIN.getType()) || bioInfo.getBioType().equalsIgnoreCase(BioAuthType.FGR_IMG.getType())) {
-			if (bioInfo.getDeviceInfo().getMake().equalsIgnoreCase(environment.getProperty(BiometricProviderFactory.COGENT_FP_PROVIDER))) {
+			//TODO FIXME as dynamically provider has to be changed based on the request
+			if (bioInfo.getDeviceProviderID().equalsIgnoreCase(environment.getProperty(BiometricProviderFactory.COGENT_FP_PROVIDER))) {
 				return getCogentFingerProvider();
-			} else if (bioInfo.getDeviceInfo().getMake().equalsIgnoreCase(environment.getProperty(BiometricProviderFactory.MANTRA_FP_PROVIDER))) {
+			} else if (bioInfo.getDeviceProviderID().equalsIgnoreCase(environment.getProperty(BiometricProviderFactory.MANTRA_FP_PROVIDER))) {
 				return getMantraFingerprintProvider();
 			}
-		}
-		
-		return null;
+		return getMantraFingerprintProvider();
 
 	}
+		return null;
 }
+	
+}	

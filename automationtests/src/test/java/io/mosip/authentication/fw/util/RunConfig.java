@@ -1,11 +1,14 @@
 package io.mosip.authentication.fw.util;
 
 import java.io.File;
+import java.net.InetAddress;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-import io.mosip.testdata.TestDataConfig;
-import io.mosip.testdata.TestDataUtil;
+import org.apache.log4j.Logger;
+
+import io.mosip.authentication.testdata.TestDataConfig;
+import io.mosip.authentication.testdata.TestDataUtil;
 
 /**
  * Dto to hold all the run config path available in runconfiguration file
@@ -15,6 +18,7 @@ import io.mosip.testdata.TestDataUtil;
  */
 public class RunConfig extends IdaScriptsUtil{
 	
+	private static Logger logger = Logger.getLogger(RunConfig.class);
 	private static String endPointUrl;
 	private static String ekycPath;
 	private static String encryptUtilBaseUrl;
@@ -24,7 +28,7 @@ public class RunConfig extends IdaScriptsUtil{
 		return endPointUrl;
 	}
 	public static void setEndPointUrl(String endPointUrl) {
-		RunConfig.endPointUrl = endPointUrl;
+		RunConfig.endPointUrl = endPointUrl.replace("$env$", System.getProperty("env.user"));
 	}
 	public static String getEkycPath() {
 		return ekycPath;
@@ -35,8 +39,15 @@ public class RunConfig extends IdaScriptsUtil{
 	public static String getEncryptUtilBaseUrl() {
 		return encryptUtilBaseUrl;
 	}
+
 	public static void setEncryptUtilBaseUrl(String encryptUtilBaseUrl) {
-		RunConfig.encryptUtilBaseUrl = encryptUtilBaseUrl;
+		try {
+			InetAddress inetAddress = InetAddress.getLocalHost();
+			String actualUrl = encryptUtilBaseUrl.replace("$hostname$", inetAddress.getHostName().toLowerCase());
+			RunConfig.encryptUtilBaseUrl = actualUrl;
+		} catch (Exception e) {
+			logger.error("Execption in RunConfig " + e.getMessage());
+		}
 	}
 	public static String getEncryptionPath() {
 		return encryptionPath;
@@ -92,7 +103,7 @@ public class RunConfig extends IdaScriptsUtil{
 	private static String authPath;
 	private static String internalAuthPath;
 	private static String otpPath;
-	private static String userDirectory;
+	//private static String userDirectory;
 	private static String testDataPath;
 	
 	public static String getTestDataPath() {
@@ -101,22 +112,23 @@ public class RunConfig extends IdaScriptsUtil{
 	public static void setTestDataPath(String testDataPath) {
 		RunConfig.testDataPath = testDataPath;
 	}
-	public static String getUserDirectory() {
+	/*public static String getUserDirectory() {
 		return userDirectory;
 	}
 	public static void setUserDirectory() {
 		RunConfig.userDirectory = System.getProperty("user.dir");
-	}
+	}*/
 	
 	private static String idRepoEndPointUrl;
 	public static String getIdRepoEndPointUrl() {
 		return idRepoEndPointUrl;
 	}
 	public static void setIdRepoEndPointUrl(String idRepoEndPointUrl) {
-		RunConfig.idRepoEndPointUrl = idRepoEndPointUrl;
+		RunConfig.idRepoEndPointUrl = idRepoEndPointUrl.replace("$env$", System.getProperty("env.user"));
 	}
 	
 	public void setConfig(String testDataPath,String testDataFileName,String testType) {
+		setAuthVersion(getPropertyValue("authVersion"));
 		setEndPointUrl(getPropertyValue("endPointUrl"));
 		setEkycPath(getPropertyValue("ekycPath"));
 		setSrcPath(getPropertyValue("srcPath"));
@@ -127,18 +139,17 @@ public class RunConfig extends IdaScriptsUtil{
 		setEncryptionPath(getPropertyValue("encryptionPath"));
 		setEncodePath(getPropertyValue("encodePath"));
 		setDecodePath(getPropertyValue("decodePath"));
-		setUserDirectory();
+		//setUserDirectory();
 		setTestDataPath(testDataPath);	
 		setIdRepoEndPointUrl(getPropertyValue("idRepoEndPointUrl"));
 		setIdRepoRetrieveDataPath(getPropertyValue("idRepoRetrieveDataPath"));
-		setDbUrl(getPropertyValue("dbUrl"));
 		setDbKernelTableName(getPropertyValue("dbKernelTableName"));
 		setDbKernelSchemaName(getPropertyValue("dbKernelSchemaName"));
 		setDbKernelUserName(getPropertyValue("dbKernelUserName"));
 		setDbKernelPwd(getPropertyValue("dbKernelPwd"));
-		File testDataFilePath = new File(RunConfig.getUserDirectory() + RunConfig.getSrcPath()
+		File testDataFilePath = new File(/*RunConfig.getUserDirectory() +*/ RunConfig.getSrcPath()
 		+ testDataPath + testDataFileName);
-		setFilePathFromTestdataFileName(testDataFilePath);
+		setFilePathFromTestdataFileName(testDataFilePath,testDataPath);
 		setTestType(testType);
 		setGenerateUINPath(getPropertyValue("generateUINPath"));
 		setStaticPinPath(getPropertyValue("staticPinPath"));
@@ -152,19 +163,18 @@ public class RunConfig extends IdaScriptsUtil{
 		setDbAuditSchemaName(getPropertyValue("dbAuditSchemaName"));
 		setDbAuditUserName(getPropertyValue("dbAuditUserName"));
 		setDbAuditPwd(getPropertyValue("dbAuditPwd"));
+		setEncodeFilePath(getPropertyValue("encodeFilePath"));
+		setDecodeFilePath(getPropertyValue("decodeFilePath"));
+		setDbKernelUrl(getPropertyValue("dbKernelUrl"));
+		setDbIdaUrl(getPropertyValue("dbIdaUrl"));
+		setDbAuditUrl(getPropertyValue("dbAuditUrl"));
+		setVidGenPath(getPropertyValue("vidGenPath"));		
 	}
 	
-	private static String dbUrl;
 	private static String dbKernelTableName;
 	private static String dbKernelSchemaName;
 	private static String dbKernelUserName;
 	private static String dbKernelPwd;
-	public static String getDbUrl() {
-		return dbUrl;
-	}
-	public static void setDbUrl(String dbUrl) {
-		RunConfig.dbUrl = dbUrl;
-	}
 	public static String getDbKernelTableName() {
 		return dbKernelTableName;
 	}
@@ -190,12 +200,24 @@ public class RunConfig extends IdaScriptsUtil{
 		RunConfig.dbKernelPwd = dbKernelPwd;
 	}
 	
-	private void setFilePathFromTestdataFileName(File filePath) {
+	private void setFilePathFromTestdataFileName(File filePath,String testDataPath) {
 		String[] folderList = filePath.getName().split(Pattern.quote("."));
 		String temp = "";
 		for (int i = 1; i < folderList.length - 2; i++) {
-			temp = temp + "\\" + folderList[i];
+			temp = temp + "/" + folderList[i];
 		}
+		String testDataFolderName="";
+		if(testDataPath.contains("\\"))
+		{
+			String[] list=testDataPath.split(Pattern.quote("\\\\"));
+			testDataFolderName=list[1];
+		}
+		else if(testDataPath.contains("/"))
+		{
+			String[] list=testDataPath.split(Pattern.quote("/"));
+			testDataFolderName=list[1];
+		}		
+		setTestDataFolderName(testDataFolderName);
 		scenarioPath = temp;
 		setScenarioPath(scenarioPath);
 		String mapping = folderList[folderList.length - 2];
@@ -303,5 +325,66 @@ public class RunConfig extends IdaScriptsUtil{
 	public static void setDbAuditPwd(String dbAuditPwd) {
 		RunConfig.dbAuditPwd = dbAuditPwd;
 	}
+	
+	private static String encodeFilePath;
+	public static String getEncodeFilePath() {
+		return encodeFilePath;
+	}
+	public static void setEncodeFilePath(String encodeFile) {
+		RunConfig.encodeFilePath = encodeFile;
+	}
+	private static String decodeFilePath;
+	public static String getDecodeFilePath() {
+		return decodeFilePath;
+	}
+	public static void setDecodeFilePath(String decodeFilePath) {
+		RunConfig.decodeFilePath = decodeFilePath;
+	}
+	
+	private static String dbKernelUrl;
+	private static String dbIdaUrl;
+	private static String dbAuditUrl;
+	public static String getDbKernelUrl() {
+		return dbKernelUrl;
+	}
+	public static void setDbKernelUrl(String dbKernelUrl) {
+		RunConfig.dbKernelUrl = dbKernelUrl;
+	}
+	public static String getDbIdaUrl() {
+		return dbIdaUrl;
+	}
+	public static void setDbIdaUrl(String dbIdaUrl) {
+		RunConfig.dbIdaUrl = dbIdaUrl;
+	}
+	public static String getDbAuditUrl() {
+		return dbAuditUrl;
+	}
+	public static void setDbAuditUrl(String dbAuditUrl) {
+		RunConfig.dbAuditUrl = dbAuditUrl;
+	}	
+	
+	private static String vidGenPath;
+	public static String getVidGenPath() {
+		return vidGenPath;
+	}
+	public static void setVidGenPath(String vidGenPath) {
+		RunConfig.vidGenPath = vidGenPath;
+	}
+	
+	private static String testDataFolderName;
+	public static String getTestDataFolderName() {
+		return testDataFolderName;
+	}
+	public static void setTestDataFolderName(String testDataFolderName) {
+		RunConfig.testDataFolderName = testDataFolderName;
+	}
+	private static String authVersion;
+	public static String getAuthVersion() {
+		return authVersion;
+	}
+	public static void setAuthVersion(String authVersion) {
+		RunConfig.authVersion = authVersion;
+	}
 
 }
+

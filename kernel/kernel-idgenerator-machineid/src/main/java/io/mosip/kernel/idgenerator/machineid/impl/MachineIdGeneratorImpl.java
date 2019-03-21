@@ -3,7 +3,7 @@ package io.mosip.kernel.idgenerator.machineid.impl;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 
-import javax.transaction.Transactional;
+import javax.persistence.EntityExistsException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -25,7 +25,6 @@ import io.mosip.kernel.idgenerator.machineid.repository.MachineIdRepository;
  *
  */
 @Component
-@Transactional
 public class MachineIdGeneratorImpl implements MachineIdGenerator<String> {
 	/**
 	 * The length of machine ID.
@@ -47,7 +46,7 @@ public class MachineIdGeneratorImpl implements MachineIdGenerator<String> {
 	 */
 	@Override
 	public String generateMachineId() {
-		int generatedMID;
+		int generatedMID = 0;
 
 		final int initialValue = MathUtils.getPow(MachineIdConstant.ID_BASE.getValue(), machineIdLength - 1);
 
@@ -59,21 +58,29 @@ public class MachineIdGeneratorImpl implements MachineIdGenerator<String> {
 			throw new MachineIdServiceException(MachineIdConstant.MID_FETCH_EXCEPTION.getErrorCode(),
 					MachineIdConstant.MID_FETCH_EXCEPTION.getErrorMessage(), dataAccessLayerException.getCause());
 		}
-		if (machineId == null) {
-			machineId = new MachineId();
-			machineId.setMId(initialValue);
-			machineId.setCreatedBy("default@user");
-			machineId.setCreatedDateTime(LocalDateTime.now(ZoneId.of("UTC")));
-			machineId.setUpdatedBy("default@user");
-			machineId.setUpdatedDateTime(null);
-			generatedMID = initialValue;
-			machineIdRepository.save(machineId);
-		} else {
-			try {
-				machineIdRepository.updateMID(machineId.getMId() + 1, machineId.getMId(),
-						LocalDateTime.now(ZoneId.of("UTC")));
+		try {
+			if (machineId == null) {
+				machineId = new MachineId();
+				machineId.setMId(initialValue);
+				machineId.setCreatedBy("default@user");
+				machineId.setCreatedDateTime(LocalDateTime.now(ZoneId.of("UTC")));
+				machineId.setUpdatedBy("default@user");
+				machineId.setUpdatedDateTime(null);
+				generatedMID = initialValue;
+				machineIdRepository.create(machineId);
+			} else {
 				generatedMID = machineId.getMId() + 1;
-			} catch (DataAccessLayerException e) {
+				MachineId entity = new MachineId();
+				entity.setMId(generatedMID);
+				entity.setCreatedDateTime(LocalDateTime.now(ZoneId.of("UTC")));
+				entity.setUpdatedDateTime(LocalDateTime.now(ZoneId.of("UTC")));
+				machineIdRepository.create(entity);
+			}
+
+		} catch (DataAccessLayerException e) {
+			if (e.getCause().getClass() == EntityExistsException.class) {
+				generateMachineId();
+			} else {
 				throw new MachineIdServiceException(MachineIdConstant.MID_INSERT_EXCEPTION.getErrorCode(),
 						MachineIdConstant.MID_INSERT_EXCEPTION.getErrorMessage(), e);
 			}

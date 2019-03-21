@@ -61,6 +61,7 @@ import io.mosip.registration.processor.stages.uingenerator.idrepo.dto.IdResponse
 import io.mosip.registration.processor.stages.uingenerator.idrepo.dto.RequestDto;
 import io.mosip.registration.processor.stages.uingenerator.util.UinStatusMessage;
 import io.mosip.registration.processor.status.code.RegistrationStatusCode;
+import io.mosip.registration.processor.status.code.RegistrationType;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
@@ -68,7 +69,8 @@ import io.mosip.registration.processor.status.service.RegistrationStatusService;
 /**
  * The Class UinGeneratorStage.
  * 
- * @author M1047487 M1049387
+ * @author Ranjitha Siddegowda
+ * @author Rishabh Keshari
  */
 @Service
 public class UinGeneratorStage extends MosipVerticleManager {
@@ -158,12 +160,26 @@ public class UinGeneratorStage extends MosipVerticleManager {
 
 	/** The identity iterator util. */
 	IdentityIteratorUtil identityIteratorUtil = new IdentityIteratorUtil();
+	
+	/** The Constant UIN_FAILURE. */
 	private static final String UIN_FAILURE = "UIN updation failure for registrationId ";
+	
+	/** The Constant NULL_IDREPO_RESPONSE. */
 	private static final String NULL_IDREPO_RESPONSE = "Response from IdRepo is null";
+	
+	/** The description. */
 	private String description = "";
+	
+	/** The is transaction successful. */
 	private boolean isTransactionSuccessful = false;
+	
+	/** The Constant UIN_GENERATION_FAILED. */
 	private static final String UIN_GENERATION_FAILED = "UIN Generation failed :";
-
+	
+	/** The registration status dto. */
+	InternalRegistrationStatusDto registrationStatusDto=null;
+	
+	private static final String UIN = "UIN";
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -182,20 +198,17 @@ public class UinGeneratorStage extends MosipVerticleManager {
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 				registrationId, "UinGeneratorStage::process()::entry");
 		UinResponseDto uinResponseDto = null;
-		InternalRegistrationStatusDto registrationStatusDto = registrationStatusService
-				.getRegistrationStatus(registrationId);
+		registrationStatusDto = registrationStatusService.getRegistrationStatus(registrationId);
 		try {
 
 			InputStream idJsonStream = adapter.getFile(registrationId,
 					PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR + PacketFiles.ID.name());
 			byte[] idJsonBytes = IOUtils.toByteArray(idJsonStream);
 			String getJsonStringFromBytes = new String(idJsonBytes);
-			JSONParser parser = new JSONParser();
-			identityJson = (JSONObject) parser.parse(getJsonStringFromBytes);
-			demographicIdentity = (JSONObject) identityJson.get("identity");
-			String uinFieldCheck = (String) demographicIdentity.get("UIN");
-			boolean isUinCreate = false;
-			if (uinFieldCheck == null || uinFieldCheck.isEmpty()) {
+			identityJson = (JSONObject) JsonUtil.objectMapperReadValue(getJsonStringFromBytes, JSONObject.class);
+			demographicIdentity = JsonUtil.getJSONObject(identityJson, utility.getGetRegProcessorDemographicIdentity());
+			Long uinFieldCheck = (Long) JsonUtil.getJSONValue(demographicIdentity, UIN);
+			if (uinFieldCheck == null) {
 				String test = (String) registrationProcessorRestClientService.getApi(ApiName.UINGENERATOR, null, "", "",
 						String.class);
 				Gson gsonObj = new Gson();
@@ -203,55 +216,44 @@ public class UinGeneratorStage extends MosipVerticleManager {
 				long uinInLong = Long.parseLong(uinResponseDto.getUin());
 				demographicIdentity.put("UIN", uinInLong);
 				idResponseDTO = sendIdRepoWithUin(registrationId, uinResponseDto.getUin());
-
-				Gson gson = new GsonBuilder().create();
-				String idResponse = gson.toJson(idResponseDTO);
+				if (idResponseDTO != null && idResponseDTO.getResponse() != null) {
+					demographicDedupeRepository.updateUinWrtRegistraionId(registrationId, uinResponseDto.getUin());
+					registrationStatusDto.setStatusComment(UinStatusMessage.PACKET_UIN_UPDATION_SUCCESS_MSG);
+					registrationStatusDto.setStatusCode(RegistrationStatusCode.PACKET_UIN_UPDATION_SUCCESS.toString());
+					isTransactionSuccessful = true;
+					description = "UIN updated succesfully for registrationId " + registrationId;
+					regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
+							LoggerFileConstant.REGISTRATIONID.toString(), registrationId,
+							"UinGeneratorStage::process()::exit");
+					regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
+							LoggerFileConstant.REGISTRATIONID.toString(), registrationId, description);
+				} else {
+					String statusComment = idResponseDTO != null && idResponseDTO.getErrors() != null
+							? idResponseDTO.getErrors().get(0).getErrorMessage()
+							: NULL_IDREPO_RESPONSE;
+					registrationStatusDto.setStatusComment(statusComment);
+					object.setInternalError(Boolean.TRUE);
+					registrationStatusDto.setStatusCode(RegistrationStatusCode.PACKET_UIN_UPDATION_FAILURE.toString());
+					isTransactionSuccessful = false;
+					description = UIN_FAILURE + registrationId + "::" + idResponseDTO != null
+							&& idResponseDTO.getErrors() != null ? idResponseDTO.getErrors().get(0).getErrorMessage()
+									: NULL_IDREPO_RESPONSE;
+					regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
+							LoggerFileConstant.REGISTRATIONID.toString(), registrationId,
+							idResponseDTO != null ? idResponseDTO.getErrors().get(0).getErrorMessage()
+									: NULL_IDREPO_RESPONSE + "  :  " + idResponseDTO != null ? idResponseDTO.toString()
+											: NULL_IDREPO_RESPONSE);
+				}
 				regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
 						LoggerFileConstant.REGISTRATIONID.toString() + registrationId, "Response from IdRepo API",
-						"is :" + idResponse);
-				isUinCreate = true;
+						"is :" + idResponseDTO.toString());
 			} else {
-				idResponseDTO = updateIdRepowithUin(registrationId, uinFieldCheck);
-			}
-			if (idResponseDTO != null && idResponseDTO.getResponse() != null) {
-				if (isUinCreate) {
-					demographicDedupeRepository.updateUinWrtRegistraionId(registrationId, uinResponseDto.getUin());
-					// triggerNotification.triggerNotification(uinResponseDto.getUin(),
-					// NotificationTemplateType.UIN_CREATED);
-				} else {
-					// triggerNotification.triggerNotification(uinFieldCheck,
-					// NotificationTemplateType.UIN_UPDATE);
-
+				if ((RegistrationType.ACTIVATED.toString()).equalsIgnoreCase(object.getReg_type())) {
+					idResponseDTO = reActivateUin(registrationId, uinFieldCheck, object);
+				} else if ((RegistrationType.DEACTIVATED.toString()).equalsIgnoreCase(object.getReg_type())) {
+					idResponseDTO = deactivateUin(registrationId, uinFieldCheck, object);
 				}
-
-				registrationStatusDto.setStatusComment(UinStatusMessage.PACKET_UIN_UPDATION_SUCCESS_MSG);
-				registrationStatusDto.setStatusCode(RegistrationStatusCode.PACKET_UIN_UPDATION_SUCCESS.toString());
-				isTransactionSuccessful = true;
-				description = "UIN updated succesfully for registrationId " + registrationId;
-				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
-						LoggerFileConstant.REGISTRATIONID.toString(), registrationId,
-						"UinGeneratorStage::process()::exit");
-				regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
-						LoggerFileConstant.REGISTRATIONID.toString(), registrationId, description);
-			} else {
-				String statusComment = idResponseDTO != null && idResponseDTO.getErrors() != null
-						? idResponseDTO.getErrors().get(0).getErrorMessage()
-						: NULL_IDREPO_RESPONSE;
-				registrationStatusDto.setStatusComment(statusComment);
-				object.setInternalError(Boolean.TRUE);
-				registrationStatusDto.setStatusCode(RegistrationStatusCode.PACKET_UIN_UPDATION_FAILURE.toString());
-				isTransactionSuccessful = false;
-				description = UIN_FAILURE + registrationId + "::" + idResponseDTO != null
-						&& idResponseDTO.getErrors() != null ? idResponseDTO.getErrors().get(0).getErrorMessage()
-								: NULL_IDREPO_RESPONSE;
-				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
-						LoggerFileConstant.REGISTRATIONID.toString(), registrationId,
-						idResponseDTO != null ? idResponseDTO.getErrors().get(0).getErrorMessage()
-								: NULL_IDREPO_RESPONSE + "  :  " + idResponseDTO != null ? idResponseDTO.toString()
-										: NULL_IDREPO_RESPONSE);
-
 			}
-
 			registrationStatusDto.setUpdatedBy(USER);
 			registrationStatusService.updateRegistrationStatus(registrationStatusDto);
 		} catch (FSAdapterException e) {
@@ -266,14 +268,14 @@ public class UinGeneratorStage extends MosipVerticleManager {
 		} catch (ApisResourceAccessException ex) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationId, RegistrationStatusCode.PACKET_UIN_UPDATION_SUCCESS.toString() + ex.getMessage()
-							+ ExceptionUtils.getStackTrace(ex));
+					+ ExceptionUtils.getStackTrace(ex));
 			object.setInternalError(Boolean.TRUE);
 			description = "Internal error occured in UINGenerator stage while processing registrationId "
 					+ registrationId + "::" + ex.getMessage();
 		} catch (Exception ex) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationId, RegistrationStatusCode.PACKET_UIN_UPDATION_SUCCESS.toString() + ex.getMessage()
-							+ ExceptionUtils.getStackTrace(ex));
+					+ ExceptionUtils.getStackTrace(ex));
 			object.setInternalError(Boolean.TRUE);
 			description = "Internal error occured in UINGenerator stage while processing registrationId "
 					+ registrationId + ex.getMessage();
@@ -330,16 +332,6 @@ public class UinGeneratorStage extends MosipVerticleManager {
 					"is : " + result.toString());
 
 		} catch (ApisResourceAccessException e) {
-			// regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
-			// LoggerFileConstant.REGISTRATIONID.toString(),
-			// registrationId,
-			// PlatformErrorMessages.RPR_SYS_JSON_PARSING_EXCEPTION.getMessage() +
-			// e.getMessage()
-			// + ExceptionUtils.getStackTrace(e));
-			//
-			// regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
-			// LoggerFileConstant.REGISTRATIONID.toString(),
-			// registrationId, "Internal Error Occured ");
 			if (e.getCause() instanceof HttpClientErrorException) {
 				HttpClientErrorException httpClientException = (HttpClientErrorException) e.getCause();
 				description = UIN_GENERATION_FAILED + registrationId + "::"
@@ -374,8 +366,7 @@ public class UinGeneratorStage extends MosipVerticleManager {
 		List<Documents> applicantDocuments = new ArrayList<>();
 		Documents documentsInfoDto = null;
 		List<ApplicantDocument> applicantDocument = packetInfoManager.getDocumentsByRegId(regId);
-		// mocked adding biometric files to idrepo
-		// applicantDocuments.add(addBiometricDetails(regId));
+		applicantDocuments.add(addBiometricDetails(regId));
 		for (ApplicantDocument entity : applicantDocument) {
 			documentsInfoDto = new Documents();
 			documentsInfoDto.setCategory(entity.getDocName());
@@ -444,52 +435,197 @@ public class UinGeneratorStage extends MosipVerticleManager {
 		return file;
 	}
 
+
 	/**
-	 * Update id repowith uin.
+	 * Re activate uin.
 	 *
-	 * @param regId
-	 *            the reg id
-	 * @param uin
-	 *            the uin
+	 * @param regId the reg id
+	 * @param uin the uin
+	 * @param object the object
 	 * @return the id response DTO
+	 * @throws ApisResourceAccessException the apis resource access exception
 	 */
-	private IdResponseDTO updateIdRepowithUin(String regId, String uin) {
-		List<Documents> documentInfo = getAllDocumentsByRegId(regId);
-		RequestDto requestDto = new RequestDto();
-		requestDto.setIdentity(demographicIdentity);
-		requestDto.setDocuments(documentInfo);
-
+	private IdResponseDTO reActivateUin(String regId, Long uin, MessageDTO object) throws ApisResourceAccessException {
+		IdResponseDTO result = getIdRepoDataByUIN(uin);
 		List<String> pathsegments = new ArrayList<>();
-		pathsegments.add(uin);
-
-		idRequestDTO.setId(idRepoUpdate);
-		idRequestDTO.setRegistrationId(regId);
-		idRequestDTO.setRequest(requestDto);
-		idRequestDTO.setTimestamp(DateUtils.formatToISOString(LocalDateTime.now()));
-		idRequestDTO.setVersion(idRepoApiVersion);
-		Gson gson = new GsonBuilder().create();
-		String idReq = gson.toJson(idResponseDTO);
-		IdResponseDTO result = null;
-
-		regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
-				LoggerFileConstant.REGISTRATIONID.toString() + regId, "Update Request to IdRepo API", "is : " + idReq);
 
 		try {
-			result = (IdResponseDTO) registrationProcessorRestClientService.postApi(ApiName.IDREPOSITORY, pathsegments,
-					"", "", idRequestDTO, IdResponseDTO.class);
-			// Gson gsonObj = new Gson();
-			// idResponseDTO = gsonObj.fromJson(result, IdResponseDTO.class);
+			if (result != null && result.getResponse() != null) {
+
+				if ((RegistrationType.ACTIVATED.toString()).equalsIgnoreCase(result.getStatus())) {
+
+					registrationStatusDto.setStatusCode(RegistrationStatusCode.PACKET_UIN_UPDATION_FAILURE.toString());
+					registrationStatusDto.setStatusComment(
+							UinStatusMessage.UIN_UPDATION_ALREADY_ACTIVATED + " for registration Id:  " + regId);
+					description = UinStatusMessage.UIN_UPDATION_ALREADY_ACTIVATED + " for registration Id:  " + regId;
+					object.setIsValid(Boolean.FALSE);
+					return result;
+
+				} else {
+
+					pathsegments.add(Long.toString(uin));
+					idRequestDTO.setId(idRepoUpdate);
+					idRequestDTO.setRegistrationId(regId);
+					idRequestDTO.setStatus(RegistrationType.ACTIVATED.toString());
+					idRequestDTO.setTimestamp(DateUtils.getUTCCurrentDateTimeString());
+					idRequestDTO.setVersion(idRepoApiVersion);
+					Gson gson = new GsonBuilder().create();
+					String idReq = gson.toJson(idResponseDTO);
+
+					regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
+							LoggerFileConstant.REGISTRATIONID.toString() + regId, "Update Request to IdRepo API",
+							"is : " + idReq);
+
+					result = (IdResponseDTO) registrationProcessorRestClientService.patchApi(ApiName.IDREPOSITORY,
+							pathsegments, "", "", idRequestDTO, IdResponseDTO.class);
+
+					if (result != null && result.getResponse() != null) {
+
+						if ((RegistrationType.ACTIVATED.toString()).equalsIgnoreCase(result.getStatus())) {
+							isTransactionSuccessful = true;
+							registrationStatusDto
+									.setStatusCode(RegistrationStatusCode.PACKET_UIN_UPDATION_SUCCESS.toString());
+							registrationStatusDto.setStatusComment(
+									UinStatusMessage.UIN_UPDATION_ACTIVATED + " for registration Id:  " + regId);
+							description = UinStatusMessage.UIN_UPDATION_ACTIVATED + " for registration Id:  " + regId;
+							object.setIsValid(Boolean.TRUE);
+						} else {
+
+							registrationStatusDto
+									.setStatusCode(RegistrationStatusCode.PACKET_UIN_UPDATION_FAILURE.toString());
+							registrationStatusDto.setStatusComment(UinStatusMessage.UIN_UPDATION_RE_ACTIVATION_FAILURE
+									+ " for registration Id:  " + regId);
+							description = UinStatusMessage.UIN_UPDATION_RE_ACTIVATION_FAILURE
+									+ " for registration Id:  " + regId;
+							object.setIsValid(Boolean.FALSE);
+						}
+					} else {
+						String statusComment = result != null && result.getErrors() != null
+								? result.getErrors().get(0).getErrorMessage()
+								: NULL_IDREPO_RESPONSE;
+						registrationStatusDto.setStatusComment(statusComment);
+						registrationStatusDto
+								.setStatusCode(RegistrationStatusCode.PACKET_UIN_UPDATION_FAILURE.toString());
+
+						description = UIN_FAILURE + regId + "::" + result != null && result.getErrors() != null
+								? result.getErrors().get(0).getErrorMessage()
+								: NULL_IDREPO_RESPONSE;
+						object.setIsValid(Boolean.FALSE);
+					}
+
+				}
+
+			}
+		} catch (ApisResourceAccessException e) {
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					regId, PlatformErrorMessages.RPR_SYS_JSON_PARSING_EXCEPTION.getMessage() + e.getMessage()
+							+ ExceptionUtils.getStackTrace(e));
+		}
+		return result;
+	}
+
+	/**
+	 * Deactivate uin.
+	 *
+	 * @param regId the reg id
+	 * @param uin the uin
+	 * @param object the object
+	 * @return the id response DTO
+	 */
+	private IdResponseDTO deactivateUin(String regId, Long uin, MessageDTO object) {
+		IdResponseDTO idResponseDto = new IdResponseDTO();
+		List<String> pathsegments = new ArrayList<>();
+
+		try {
+			idResponseDto = getIdRepoDataByUIN(uin);
+
+			if (idResponseDto.getResponse() != null && idResponseDto.getStatus().equalsIgnoreCase(RegistrationType.DEACTIVATED.toString())) {
+
+				registrationStatusDto.setStatusCode(RegistrationStatusCode.PACKET_UIN_UPDATION_FAILURE.toString());
+				registrationStatusDto.setStatusComment(UinStatusMessage.UIN_DEACTIVATE_FAILURE + regId);
+				description = UinStatusMessage.UIN_DEACTIVATE_FAILURE + regId;
+				object.setIsValid(Boolean.FALSE);
+				return idResponseDto;
+
+			} else {
+				pathsegments.add(Long.toString(uin));
+				idRequestDTO.setId(idRepoUpdate);
+				idRequestDTO.setRegistrationId(regId);
+				idRequestDTO.setStatus(RegistrationType.DEACTIVATED.toString());
+				idRequestDTO.setTimestamp(DateUtils.getUTCCurrentDateTimeString());
+				idRequestDTO.setVersion(idRepoApiVersion);
+
+				idResponseDto = (IdResponseDTO) registrationProcessorRestClientService.patchApi(ApiName.IDREPOSITORY,
+						pathsegments, "", "", idRequestDTO, IdResponseDTO.class);
+
+				if (idResponseDto != null && idResponseDto.getResponse() != null) {
+					if (idResponseDto.getStatus().equalsIgnoreCase(RegistrationType.DEACTIVATED.toString())) {
+						registrationStatusDto
+								.setStatusCode(RegistrationStatusCode.PACKET_UIN_UPDATION_SUCCESS.toString());
+						registrationStatusDto.setStatusComment(UinStatusMessage.UIN_DEACTIVATE_SUCCESS + regId);
+						description = UinStatusMessage.UIN_DEACTIVATE_SUCCESS + regId;
+						object.setIsValid(Boolean.TRUE);
+					}
+				} else {
+
+					String statusComment = idResponseDto != null && idResponseDto.getErrors() != null
+							? idResponseDto.getErrors().get(0).getErrorMessage()
+							: NULL_IDREPO_RESPONSE;
+					registrationStatusDto.setStatusCode(RegistrationStatusCode.PACKET_UIN_UPDATION_FAILURE.toString());
+					registrationStatusDto.setStatusComment(statusComment);
+					description = statusComment;
+					object.setIsValid(Boolean.FALSE);
+				}
+
+			}
 			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
 					LoggerFileConstant.REGISTRATIONID.toString() + regId, "Updated Response from IdRepo API",
-					"is : " + result.toString());
-
+					"is : " + idResponseDto.toString());
 		} catch (ApisResourceAccessException e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationId, PlatformErrorMessages.RPR_SYS_JSON_PARSING_EXCEPTION.getMessage() + e.getMessage()
 							+ ExceptionUtils.getStackTrace(e));
 		}
 
-		return result;
+		return idResponseDto;
+	}
+
+
+	/**
+	 * Gets the id repo data by UIN.
+	 *
+	 * @param uin the uin
+	 * @return the id repo data by UIN
+	 * @throws ApisResourceAccessException the apis resource access exception
+	 */
+	private IdResponseDTO getIdRepoDataByUIN(Long uin) throws ApisResourceAccessException{
+		IdResponseDTO response  = new IdResponseDTO();
+
+		List<String> pathsegments = new ArrayList<>();
+		pathsegments.add(Long.toString(uin));
+		try {
+			response = (IdResponseDTO) registrationProcessorRestClientService.getApi(ApiName.IDREPOSITORY, pathsegments, "",
+					"", IdResponseDTO.class);
+		} catch (ApisResourceAccessException e) {
+			if (e.getCause() instanceof HttpClientErrorException) {
+				HttpClientErrorException httpClientException = (HttpClientErrorException) e.getCause();
+				description = UIN_GENERATION_FAILED + registrationId + "::"
+						+ httpClientException.getResponseBodyAsString();
+				throw new ApisResourceAccessException(httpClientException.getResponseBodyAsString(),
+						httpClientException);
+			} else if (e.getCause() instanceof HttpServerErrorException) {
+				HttpServerErrorException httpServerException = (HttpServerErrorException) e.getCause();
+				description = UIN_GENERATION_FAILED + registrationId + "::"
+						+ httpServerException.getResponseBodyAsString();
+
+				throw new ApisResourceAccessException(httpServerException.getResponseBodyAsString(),
+						httpServerException);
+			} else {
+				description = UIN_GENERATION_FAILED + registrationId + "::" + e.getMessage();
+				throw new ApisResourceAccessException(UIN_GENERATION_FAILED, e);
+			}
+		}
+		return response;
 	}
 
 	/**
@@ -497,7 +633,7 @@ public class UinGeneratorStage extends MosipVerticleManager {
 	 */
 	public void deployVerticle() {
 		//
-		mosipEventBus = this.getEventBus(this.getClass(), clusterManagerUrl);
+		mosipEventBus = this.getEventBus(this, clusterManagerUrl, 50);
 		this.consumeAndSend(mosipEventBus, MessageBusAddress.UIN_GENERATION_BUS_IN,
 				MessageBusAddress.UIN_GENERATION_BUS_OUT);
 

@@ -138,7 +138,7 @@ public class MessageSenderStage extends MosipVerticleManager {
 	 * Deploy verticle.
 	 */
 	public void deployVerticle() {
-		MosipEventBus mosipEventBus = this.getEventBus(this.getClass(), clusterManagerUrl);
+		MosipEventBus mosipEventBus = this.getEventBus(this, clusterManagerUrl);
 		this.consume(mosipEventBus, MessageBusAddress.MESSAGE_SENDER_BUS);
 	}
 
@@ -183,11 +183,13 @@ public class MessageSenderStage extends MosipVerticleManager {
 			sendNotification(id, attributes, ccEMailList, allNotificationTypes);
 			isTransactionSuccessful = true;
             description = "Notification sent successfully for registrationId " + id;
+            
             regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
                     id, "MessageSenderStage::process()::exit");
             regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
                     id, description);
-			registrationStatusDto.setStatusCode(RegistrationStatusCode.NOTIFICATION_SENT_TO_RESIDENT.toString());
+			
+            registrationStatusDto.setStatusCode(RegistrationStatusCode.NOTIFICATION_SENT_TO_RESIDENT.toString());
 			registrationStatusDto.setStatusComment(description);
 
 			TransactionDto transactionDto = new TransactionDto(UUID.randomUUID().toString(),
@@ -283,13 +285,13 @@ public class MessageSenderStage extends MosipVerticleManager {
 		case UIN_CREATED:
 			smsTemplateCode = NotificationTemplateCode.RPR_UIN_GEN_SMS;
 			emailTemplateCode = NotificationTemplateCode.RPR_UIN_GEN_EMAIL;
-			idType = IdType.RID;
+			idType = IdType.UIN;
 			subject = uinGeneratedSubject;
 			break;
 		case UIN_UPDATE:
 			smsTemplateCode = NotificationTemplateCode.RPR_UIN_UPD_SMS;
 			emailTemplateCode = NotificationTemplateCode.RPR_UIN_UPD_EMAIL;
-			idType = IdType.RID;
+			idType = IdType.UIN;
 			subject = uinGeneratedSubject;
 			break;
 		case DUPLICATE_UIN:

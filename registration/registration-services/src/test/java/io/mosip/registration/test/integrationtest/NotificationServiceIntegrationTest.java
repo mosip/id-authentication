@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.stream.Stream;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 //import org.junit.jupiter.params.ParameterizedTest;
 //import org.junit.jupiter.params.provider.Arguments;
 import io.mosip.registration.config.AppConfig;
+import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.service.template.NotificationService;
 import junit.framework.Assert;
@@ -28,6 +30,13 @@ public class NotificationServiceIntegrationTest extends BaseIntegrationTest{
 	 */
 	@Autowired
 	NotificationService notifiserviceTest;
+	
+	
+	@Before
+	public void setvalue()
+	{
+	SessionContext.getInstance().getUserContext().setUserId(IntegrationTestConstants.userId_val);
+	}
 	
 	@Test
 public void Validate_sendSMSTest()
@@ -62,6 +71,15 @@ public void Validate_sendSMSTestFail()
 {
 	String expectedmsg="Contact number cannot contains alphabet,special character or less than or more than 10 digits";
 	ResponseDTO resSMSDTO=notifiserviceTest.sendSMS("Testing SMS service", "955108", "12345678901234567890123456789");
+	String actualmsg=resSMSDTO.getErrorResponseDTOs().get(0).getMessage();
+	assertEquals(expectedmsg,actualmsg);
+}
+
+@Test
+public void Validate_sendSMSTest_alpha_Fail()
+{
+	String expectedmsg="Contact number cannot contains alphabet,special character or less than or more than 10 digits";
+	ResponseDTO resSMSDTO=notifiserviceTest.sendSMS("Testing SMS service", "955108qwee", "12345678901234567890123456789");
 	String actualmsg=resSMSDTO.getErrorResponseDTOs().get(0).getMessage();
 	assertEquals(expectedmsg,actualmsg);
 }

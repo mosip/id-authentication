@@ -67,15 +67,20 @@ public class UserOnboardServiceImpl implements UserOnboardService {
 		count = count + (photoDetails == null ? 0 : 1);
 
 		// API for validating biometrics need to be implemented
-
-		if (count >= UserOnBoardThresholdLimit) {
-
-			responseDTO = save(biometricDTO);
+		
+		if (RegistrationConstants.ENABLE.equalsIgnoreCase(String.valueOf(ApplicationContext.map().get(RegistrationConstants.FINGERPRINT_DISABLE_FLAG)))
+				|| RegistrationConstants.ENABLE.equalsIgnoreCase(String.valueOf(ApplicationContext.map().get(RegistrationConstants.IRIS_DISABLE_FLAG)))
+				|| RegistrationConstants.ENABLE.equalsIgnoreCase(String.valueOf(ApplicationContext.map().get(RegistrationConstants.FACE_DISABLE_FLAG)))) {
+			
+			if (count >= UserOnBoardThresholdLimit) {
+				responseDTO = save(biometricDTO);
+			} else {
+				responseDTO = errorRespone(RegistrationConstants.USER_ON_BOARDING_THRESHOLD_NOT_MET_CODE,
+						RegistrationConstants.USER_ON_BOARDING_THRESHOLD_NOT_MET_MSG);
+			}
 
 		} else {
-
-			responseDTO = errorRespone(RegistrationConstants.USER_ON_BOARDING_THRESHOLD_NOT_MET_CODE,
-					RegistrationConstants.USER_ON_BOARDING_THRESHOLD_NOT_MET_MSG);
+			responseDTO = save(biometricDTO);
 		}
 
 		return responseDTO;

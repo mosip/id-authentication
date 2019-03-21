@@ -16,18 +16,19 @@
             <AnchorPane layoutX="2.0" layoutY="-5.0">
                <children>
                   <Button layoutY="14.0" mnemonicParsing="false" onAction="#goToHomePageFromRegistration" styleClass="homeButton" text="%home" />
+                  <Label layoutX="60.0" layoutY="16.0" styleClass="headerLabel" text="%/uploadpacket" />
                </children>
             </AnchorPane>
             <Label layoutX="530.0" layoutY="2.0" styleClass="mainHeader" text="%uploadpacket" />
-            <Label layoutX="81.0" layoutY="11.0" styleClass="headerLabel" text="%/uploadpacket" />
          </children>
       </AnchorPane>
-      <TableView fx:id="table" layoutX="52.0" layoutY="66.0" styleClass="packetUploadTable">
+      <TableView fx:id="table" layoutX="58.0" layoutY="75.0" prefHeight="400.0" prefWidth="162.0" styleClass="packetUploadTable">
         <columns>
-          <TableColumn fx:id="fileNameColumn" styleClass="fileNameColumn" text="%files" />
-          <TableColumn fx:id="uploadStatusColumn" styleClass="uploadStatusColumn" text="%status" />
+            <TableColumn fx:id="checkBoxColumn" prefWidth="50.0" />
+          <TableColumn fx:id="fileNameColumn" prefWidth="105.0" styleClass="fileNameColumn" text="%files" />
         </columns>
       </TableView>
-      <ProgressIndicator fx:id="progressIndicator" layoutX="400.0" layoutY="20.0" prefHeight="109.0" prefWidth="90.0" progress="0.0" visible="false" />	
+      <ProgressIndicator fx:id="progressIndicator" layoutX="400.0" layoutY="20.0" prefHeight="109.0" prefWidth="90.0" progress="0.0" visible="false" />
+      <CheckBox fx:id="selectAllCheckBox" layoutX="86.0" layoutY="80.0" mnemonicParsing="false" onAction="#selectAllCheckBox" />	
    </children>
 </AnchorPane>

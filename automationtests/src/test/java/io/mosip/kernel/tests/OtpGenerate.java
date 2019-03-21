@@ -67,6 +67,7 @@ public class OtpGenerate extends BaseTestCase implements ITest{
 	String finalStatus = "";
 	static String testParam="";
 	private static final String otpGenerate_URI = "/otpmanager/v1.0/otp/generate";
+	private static final String otpValidate_URI = "/otpmanager/v1.0/otp/validate";
 	
 	/*
 	 * Data Providers to read the input json files from the folders
@@ -111,18 +112,18 @@ public class OtpGenerate extends BaseTestCase implements ITest{
 		List<String> innerKeys = new ArrayList<String>();
 		JSONObject actualRequest = ResponseRequestMapper.mapRequest(testSuite, object);
 		Expectedresponse = ResponseRequestMapper.mapResponse(testSuite, object);
-		@SuppressWarnings("unchecked")
-		Response res=applicationLibrary.postRequest(actualRequest, otpGenerate_URI);
 		
+			Response res=applicationLibrary.postRequest(actualRequest, otpGenerate_URI);
+			
 		/*
-		   Removing of unstable attributes from response
-		*/
+		 *  Removing of unstable attributes from response
+		 */
 		
 		outerKeys.add("otp");
 		outerKeys.add("timestamp");
 		
 		/*
-		  Comparing expected and actual response
+		 *  Comparing expected and actual response
 		 */
 		
 		ArrayList<String> listOfElementToRemove=new ArrayList<String>();
@@ -130,20 +131,6 @@ public class OtpGenerate extends BaseTestCase implements ITest{
 		listOfElementToRemove.add("timestamp");
 		status = AssertResponses.assertResponses(res, Expectedresponse, outerKeys, innerKeys);
       if (status) {
-//	             String id= (actualRequest.get("id").toString());
-//	             System.out.println("id------------>"+id);
-//	             String queryStr = "SELECT * FROM master.registration_center WHERE id='"+id+"'";
-//					boolean valid = KernelMasterDataR.masterDataDBConnection(OtpEntity.class,queryStr);
-//					System.out.println("status------>"+valid);
-			if(status)
-					{
-						finalStatus ="Pass";
-					}
-					else
-					{
-		 				finalStatus ="Fail";
-						//break;
-					}
 	            
 				finalStatus = "Pass";
 			}	

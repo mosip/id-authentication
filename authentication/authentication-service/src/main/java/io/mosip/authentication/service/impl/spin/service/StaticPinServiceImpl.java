@@ -12,15 +12,12 @@ import java.util.TimeZone;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
-import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import io.mosip.authentication.core.constant.AuditEvents;
 import io.mosip.authentication.core.constant.AuditModules;
-import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.dto.indauth.IdType;
-import io.mosip.authentication.core.dto.spinstore.StaticPinIdentityDTO;
 import io.mosip.authentication.core.dto.spinstore.StaticPinRequestDTO;
 import io.mosip.authentication.core.dto.spinstore.StaticPinResponseDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
@@ -51,9 +48,6 @@ public class StaticPinServiceImpl implements StaticPinService {
 
 	/** The Constant UIN_Key */
 	private static final String UIN_KEY = "uin";
-
-	/** The Constant SUCCESS. */
-	private static final String SUCCESS = "Y";
 
 	/** The Constant DATETIME_PATTERN. */
 	private static final String DATETIME_PATTERN = "datetime.pattern";
@@ -88,69 +82,65 @@ public class StaticPinServiceImpl implements StaticPinService {
 	 * This method is to call the StaticPinServiceImpl and constructs the Response
 	 * based on the status got from StaticPinServiceImpl.
 	 *
-	 * @param staticPinRequestDTO
-	 *            the static pin request DTO
+	 * @param staticPinRequestDTO the static pin request DTO
 	 * @return the static pin response DTO
-	 * @throws IdAuthenticationBusinessException
-	 *             the id authentication business exception
+	 * @throws IdAuthenticationBusinessException the id authentication business
+	 *                                           exception
 	 */
 	@Override
 	public StaticPinResponseDTO storeSpin(StaticPinRequestDTO staticPinRequestDTO)
 			throws IdAuthenticationBusinessException {
-		try {
-			StaticPinIdentityDTO requestdto = staticPinRequestDTO.getRequest().getIdentity();
-			IdType idtype = IdType.UIN;
-			String uin = requestdto.getUin();
-			String vid = requestdto.getVid();
-			String idvId = "";
-			if (uin != null) {
-				idvId = uin;
-				idtype =  IdType.UIN;
-			} else if (vid != null) {
-				idvId = vid;
-				idtype =  IdType.VID;
+			String idvId = staticPinRequestDTO.getIndividualId();
+			String idTypedto = staticPinRequestDTO.getIndividualIdType();
+			String idTypeStr = null;
+			IdType idType = IdType.UIN;
+			if (idTypedto.equals(IdType.UIN.getType())) {
+				idType = IdType.UIN;
+				idTypeStr = idType.getType();
+			} else if (idTypedto.equals(IdType.VID.getType())) {
+				idType = IdType.VID;
+				idTypeStr = idType.getType();
 			}
-			Map<String, Object> idResDTO = idAuthService.processIdType(idtype.getType(), idvId, false);
-			
-			String uinValue = null;
-			if (idResDTO != null && idResDTO.containsKey(UIN_KEY)) {
-				uinValue = (String) idResDTO.get(UIN_KEY);
-			}
-			if (uinValue != null && !uinValue.isEmpty()) {
-				storeSpin(staticPinRequestDTO, uinValue);
+			Map<String, Object> idResDTO = idAuthService.processIdType(idTypeStr, idvId, false);
+			Optional<String> uinValue = getUINValue(idResDTO);
+			if (uinValue.isPresent()) {
+				storeSpin(staticPinRequestDTO, uinValue.get());
 			}
 			String dateTimePattern = env.getProperty(DATETIME_PATTERN);
 			DateTimeFormatter isoPattern = DateTimeFormatter.ofPattern(dateTimePattern);
-			String reqTime = staticPinRequestDTO.getReqTime();
+			String reqTime = staticPinRequestDTO.getRequestTime();
 			ZonedDateTime zonedDateTime2 = ZonedDateTime.parse(reqTime, isoPattern);
 			ZoneId zone = zonedDateTime2.getZone();
 			String resTime = DateUtils.formatDate(new Date(), dateTimePattern, TimeZone.getTimeZone(zone));
 			StaticPinResponseDTO staticPinResponseDTO = new StaticPinResponseDTO();
 			auditHelper.audit(AuditModules.STATIC_PIN_STORAGE, AuditEvents.STATIC_PIN_STORAGE_REQUEST_RESPONSE, idvId,
-					idtype, AuditModules.STATIC_PIN_STORAGE.getDesc());
-			staticPinResponseDTO.setStatus(SUCCESS);
-			staticPinResponseDTO.setErr(Collections.emptyList());
+					idType, AuditModules.STATIC_PIN_STORAGE.getDesc());
+			staticPinResponseDTO.setStatus(true);
+			staticPinResponseDTO.setErrors(Collections.emptyList());
 			staticPinResponseDTO.setId(staticPinRequestDTO.getId());
-			staticPinResponseDTO.setVer(staticPinRequestDTO.getVer());
-			staticPinResponseDTO.setResTime(resTime);
+			staticPinResponseDTO.setVersion(staticPinRequestDTO.getVersion());
+			staticPinResponseDTO.setResponseTime(resTime);
 			return staticPinResponseDTO;
-		} catch (DataAccessException e) {
-			logger.error(SESSION_ID, this.getClass().getName(), e.getClass().getName(), e.getMessage());
-			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.STATICPIN_NOT_STORED_PINVAUE, e);
+		
+	}
+
+	private Optional<String> getUINValue(Map<String, Object> idResDTO) {
+
+		if (idResDTO != null && !idResDTO.isEmpty() && idResDTO.containsKey(UIN_KEY)) {
+			return Optional.ofNullable((String) idResDTO.get(UIN_KEY));
 		}
+		return Optional.empty();
 	}
 
 	/**
 	 * This method is to store the StaticPin in StaticPin and StaticPinHistory
 	 * Table.
 	 *
-	 * @param staticPinRequestDTO
-	 *            the static pin request DTO
-	 * @param uinValue
-	 *            the uin value
+	 * @param staticPinRequestDTO the static pin request DTO
+	 * @param uinValue            the uin value
 	 * @return true, if successful
-	 * @throws IdAuthenticationBusinessException
-	 *             the id authentication business exception
+	 * @throws IdAuthenticationBusinessException the id authentication business
+	 *                                           exception
 	 */
 	@Transactional
 	private boolean storeSpin(StaticPinRequestDTO staticPinRequestDTO, String uinValue)
@@ -197,8 +187,7 @@ public class StaticPinServiceImpl implements StaticPinService {
 	/**
 	 * Hash the Static Pin.
 	 *
-	 * @param pinValue
-	 *            the Static Pin
+	 * @param pinValue the Static Pin
 	 * @return the string
 	 */
 	private String hashStaticPin(byte[] pinValue) {

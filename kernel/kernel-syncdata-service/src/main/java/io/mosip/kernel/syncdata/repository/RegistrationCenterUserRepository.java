@@ -17,17 +17,37 @@ import io.mosip.kernel.syncdata.entity.id.RegistrationCenterUserID;
  * @since 1.0.0
  */
 @Repository
-public interface RegistrationCenterUserRepository extends BaseRepository<RegistrationCenterUser, RegistrationCenterUserID> {
+public interface RegistrationCenterUserRepository
+		extends BaseRepository<RegistrationCenterUser, RegistrationCenterUserID> {
 
-	
-
+	/**
+	 * 
+	 * @param regCenter - registration center id
+	 * @return list of {@link RegistrationCenterUser} - list of registration center user
+	 */
 	@Query("FROM RegistrationCenterUser WHERE registrationCenterUserID.regCenterId=?1 and (isDeleted=false or isDeleted is null) ")
 	List<RegistrationCenterUser> findByRegistrationCenterUserByRegCenterId(String regCenter);
-	
+
+	/**
+	 * 
+	 * @param regId
+	 *            - registration center id
+	 * @param lastUpdated
+	 *            - last updated time stamp
+	 * @param currentTimeStamp
+	 *            - current time stamp
+	 * @return list of {@link RegistrationCenterUser} - list of registration center user
+	 *        
+	 */
 	@Query("FROM RegistrationCenterUser rcu WHERE rcu.registrationCenterUserID.regCenterId = ?1 AND ((rcu.createdDateTime > ?2 AND rcu.createdDateTime<=?3) OR (rcu.updatedDateTime > ?2 AND rcu.updatedDateTime <=?3) OR (rcu.deletedDateTime > ?2 AND rcu.deletedDateTime <=?3))")
 	public List<RegistrationCenterUser> findAllByRegistrationCenterIdCreatedUpdatedDeleted(String regId,
-			LocalDateTime lastUpdated,LocalDateTime currentTimeStamp) ;
+			LocalDateTime lastUpdated, LocalDateTime currentTimeStamp);
 
+	/**
+	 * 
+	 * @param regId - registration center id
+	 * @return list of {@link RegistrationCenterUser} - list of registration center user
+	 */
 	@Query("FROM RegistrationCenterUser rcu WHERE rcu.registrationCenterUserID.regCenterId = ?1")
 	public List<RegistrationCenterUser> findAllByRegistrationCenterId(String regId);
 

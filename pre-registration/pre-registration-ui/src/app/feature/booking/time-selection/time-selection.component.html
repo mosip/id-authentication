@@ -36,8 +36,8 @@
     </div>
 </mat-card>
 <div class="time-seelection__slot-groups-div">
-  <p (click)="tabSelected('morning')" [ngClass]="activeTab === 'morning' ? 'time-seelection__slot-groups-div-selected' : 'time-seelection__slot-groups-div p'">{{'timeSelection.text_morning'|translate}}</p>
-  <p (click)="tabSelected('afternoon')" [ngClass]="activeTab === 'afternoon' ? 'time-seelection__slot-groups-div-selected' : 'time-seelection__slot-groups-div p'">{{'timeSelection.text_afternoon'|translate}}</p>
+  <a (click)="tabSelected('morning')" [ngClass]="activeTab === 'morning' ? 'time-seelection__slot-groups-div-selected' : 'time-seelection__slot-groups-div a'">{{'timeSelection.text_morning'|translate}}</a>
+  <a (click)="tabSelected('afternoon')" [ngClass]="activeTab === 'afternoon' ? 'time-seelection__slot-groups-div-selected' : 'time-seelection__slot-groups-div a'">{{'timeSelection.text_afternoon'|translate}}</a>
 </div>
 <div class="time-selection__slots-div">
   <mat-card class="time-selection__time-slots-container">
