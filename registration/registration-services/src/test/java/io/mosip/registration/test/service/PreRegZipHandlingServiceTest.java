@@ -79,7 +79,7 @@ public class PreRegZipHandlingServiceTest {
 		mosipSecurityMethod = MosipSecurityMethod.AES_WITH_CBC_AND_PKCS7PADDING;
 		
 		Map<String, Object> applicationMap = new HashMap<>();
-		applicationMap.put("PRE_REG_PACKET_LOCATION","..//PreRegPacketStore");
+		applicationMap.put("mosip.registration.registration_pre_reg_packet_location","..//PreRegPacketStore");
 		ApplicationContext.getInstance().setApplicationMap(applicationMap);
 
 	}
