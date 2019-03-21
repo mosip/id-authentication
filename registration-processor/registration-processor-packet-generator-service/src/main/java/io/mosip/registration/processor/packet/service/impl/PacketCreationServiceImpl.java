@@ -91,7 +91,7 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 
 			// Generating Demographic JSON as byte array
 			String idJsonAsString = javaObjectToJsonString(registrationDTO.getDemographicDTO().getDemographicInfoDTO());
-			jsonValidator.validateJson(idJsonAsString, "mosip-identity-json-schema-dev.json");
+			jsonValidator.validateJson(idJsonAsString);
 			filesGeneratedForPacket.put(DEMOGRPAHIC_JSON_NAME, idJsonAsString.getBytes());
 
 			AuditRequestBuilder auditRequestBuilder = new AuditRequestBuilder();
@@ -195,7 +195,7 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 	private List<FieldValueArray> buildHashSequence(final HashSequence hashSequence) {
 		List<FieldValueArray> hashSequenceList = new LinkedList<>();
 		// Add Sequence of Applicant Biometric
-		FieldValueArray fieldValueArray;
+		FieldValueArray fieldValueArray = new FieldValueArray();
 
 		// Add Sequence of Applicant Demographic
 		fieldValueArray = new FieldValueArray();

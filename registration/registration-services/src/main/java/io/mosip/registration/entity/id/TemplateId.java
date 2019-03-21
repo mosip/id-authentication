@@ -5,6 +5,8 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
+import lombok.Data;
+
 /**
  * TemplateId entity details
  * 
@@ -12,6 +14,7 @@ import javax.persistence.Embeddable;
  * @since 1.0.0
  */
 @Embeddable
+@Data
 public class TemplateId implements Serializable {
 
 	private static final long serialVersionUID = -7306845601917592413L;

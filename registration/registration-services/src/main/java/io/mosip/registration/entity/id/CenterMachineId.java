@@ -3,6 +3,7 @@ package io.mosip.registration.entity.id;
 import java.io.Serializable;
 
 import javax.persistence.Column;
+import javax.persistence.Embeddable;
 
 import lombok.Data;
 
@@ -12,6 +13,7 @@ import lombok.Data;
  * @author Dinesh Ashokan
  *
  */
+@Embeddable
 @Data
 public class CenterMachineId implements Serializable{
 	

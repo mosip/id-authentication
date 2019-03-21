@@ -5,12 +5,15 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
+import lombok.Data;
+
 /**
  * @author Sreekar Chukka
  * @since 1.0.0
  */
 
 @Embeddable
+@Data
 public class CodeLangCodeAndRsnCatCodeID implements Serializable {
 
 	/**

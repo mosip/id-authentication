@@ -755,9 +755,8 @@ public class BaseController extends BaseService{
 
 				LOGGER.info(LoggerConstants.LOG_REG_BASE, APPLICATION_NAME, APPLICATION_ID,
 						"User Onboard is success and clearing Onboard data");
-
-				generateAlert(RegistrationConstants.SUCCESS, RegistrationUIConstants.USER_ONBOARD_SUCCESS);
-				popupStatge("Onboarding Successful", "images/tick.png", "onboardAlertMsg");
+			
+				popupStatge(RegistrationUIConstants.USER_ONBOARD_SUCCESS,RegistrationConstants.ONBOARD_IMG_PATH, RegistrationConstants.ONBOARD_STYLE_CLASS);
 				clearOnboardData();
 				goToHomePage();
 
@@ -836,7 +835,13 @@ public class BaseController extends BaseService{
 				public void handle(WorkerStateEvent t) {
 					service.reset();
 					packetHandlerController.reMapProgressIndicator.setVisible(false);
-					generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.REMAP_PROCESS_SUCCESS);
+					if (!centerMachineReMapService.isPacketsPendingForProcessing()) {
+						generateAlert(RegistrationConstants.ALERT_INFORMATION,
+								RegistrationUIConstants.REMAP_PROCESS_SUCCESS);
+					} else {
+						generateAlert(RegistrationConstants.ALERT_INFORMATION,
+								RegistrationUIConstants.REMAP_PROCESS_STILL_PENDING);
+					}
 
 				}
 			});

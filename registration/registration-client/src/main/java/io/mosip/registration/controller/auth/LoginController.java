@@ -383,7 +383,7 @@ public class LoginController extends BaseController implements Initializable {
 						}
 					}
 				} else {
-					generateAlert(RegistrationConstants.USER_MACHINE_VALIDATION_CODE,
+					generateAlert(RegistrationConstants.ERROR,
 							RegistrationUIConstants.USER_MACHINE_VALIDATION_MSG);
 				}
 			} catch (RegBaseUncheckedException regBaseUncheckedException) {
