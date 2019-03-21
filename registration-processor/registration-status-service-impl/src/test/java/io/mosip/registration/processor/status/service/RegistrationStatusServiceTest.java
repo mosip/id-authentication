@@ -1,4 +1,4 @@
-/*package io.mosip.registration.processor.status.service;
+package io.mosip.registration.processor.status.service;
 
 import static org.junit.Assert.assertEquals;
 
@@ -25,6 +25,7 @@ import io.mosip.registration.processor.status.code.RegistrationExternalStatusCod
 import io.mosip.registration.processor.status.dao.RegistrationStatusDao;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
+import io.mosip.registration.processor.status.dto.RegistrationStatusSubRequestDto;
 import io.mosip.registration.processor.status.dto.TransactionDto;
 import io.mosip.registration.processor.status.entity.RegistrationStatusEntity;
 import io.mosip.registration.processor.status.entity.TransactionEntity;
@@ -83,8 +84,7 @@ public class RegistrationStatusServiceTest {
 		Mockito.when(transcationStatusService.addRegistrationTransaction(ArgumentMatchers.any()))
 				.thenReturn(transactionEntity);
 
-		Mockito.when(registrationStatusMapUtil.getExternalStatus(ArgumentMatchers.any(), ArgumentMatchers.any()))
-				.thenReturn(RegistrationExternalStatusCode.RESEND);
+		
 	}
 
 	@Test
@@ -156,17 +156,25 @@ public class RegistrationStatusServiceTest {
 	public void testGetByIdsSuccess() {
 
 		Mockito.when(registrationStatusDao.getByIds(ArgumentMatchers.any())).thenReturn(entities);
-
-		List<RegistrationStatusDto> list = registrationStatusService.getByIds("1001,1000");
-		assertEquals("RESEND", list.get(0).getStatusCode());
+		RegistrationStatusSubRequestDto registrationId =new RegistrationStatusSubRequestDto();
+		registrationId.setRegistrationId("1001");
+		List<RegistrationStatusSubRequestDto> registrationIds =new ArrayList<>();
+		registrationIds.add(registrationId);
+		List<RegistrationStatusDto> list = registrationStatusService.getByIds(registrationIds);
+		assertEquals("PACKET_UPLOADED_TO_VIRUS_SCAN", list.get(0).getStatusCode());
 	}
 
 	@Test(expected = TablenotAccessibleException.class)
 	public void getByIdsFailureTest() {
+		RegistrationStatusSubRequestDto registrationId =new RegistrationStatusSubRequestDto();
+		registrationId.setRegistrationId("1001");
+		List<RegistrationStatusSubRequestDto> registrationIds =new ArrayList<>();
+		registrationIds.add(registrationId);
+		
 		DataAccessLayerException exp = new DataAccessLayerException(HibernateErrorCode.ERR_DATABASE.getErrorCode(),
 				"errorMessage", new Exception());
 		Mockito.when(registrationStatusDao.getByIds(ArgumentMatchers.any())).thenThrow(exp);
-		registrationStatusService.getByIds("1001,1000");
+		registrationStatusService.getByIds(registrationIds);
 	}
 
-}*/
+}
