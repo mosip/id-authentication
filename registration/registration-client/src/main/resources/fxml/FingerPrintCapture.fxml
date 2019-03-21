@@ -61,7 +61,7 @@
                                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                       </rowConstraints>
                                        <children>
-                                          <Button contentDisplay="BOTTOM" mnemonicParsing="false" onAction="#goToPreviousPage" prefHeight="${backButtonPane.height-10}" prefWidth="${backButtonPane.width-10}" styleClass="backButton" text="%back" />
+                                          <Button fx:id="backBtn" contentDisplay="BOTTOM" mnemonicParsing="false" onAction="#goToPreviousPage" prefHeight="${backButtonPane.height-10}" prefWidth="${backButtonPane.width-10}" styleClass="backButton" text="%back" />
                                        </children>
                                     </GridPane>
                                  </children>
@@ -78,7 +78,7 @@
                                  <children>
                                     <GridPane fx:id="continueButtonPane" GridPane.columnIndex="2">
                                        <children>
-                                          <Button mnemonicParsing="false" onAction="#goToNextPage" prefHeight="${continueButtonPane.height-10}" prefWidth="${continueButtonPane.width-10}" styleClass="contiuneButton" text="%continue" />
+                                          <Button fx:id="continueBtn" mnemonicParsing="false" onAction="#goToNextPage" prefHeight="${continueButtonPane.height-10}" prefWidth="${continueButtonPane.width-10}" styleClass="contiuneButton" text="%continue" />
                                        </children>
                                        <columnConstraints>
                                           <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -509,22 +509,35 @@
                                  <children>
                                     <GridPane GridPane.columnIndex="1">
                                       <columnConstraints>
-                                        <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" minWidth="10.0" percentWidth="60.0" prefWidth="100.0" />
-                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="40.0" prefWidth="100.0" />
+                                        <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" minWidth="10.0" percentWidth="90.0" prefWidth="100.0" />
+                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="10.0" prefWidth="100.0" />
                                       </columnConstraints>
                                       <rowConstraints>
                                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                       </rowConstraints>
                                        <children>
-                                          <Button fx:id="scanBtn" mnemonicParsing="false" onAction="#scan" styleClass="onboardScanBtn" text="%scan">
-                                             <graphic>
-                                                <ImageView fitHeight="15.0" fitWidth="15.0" layoutY="25.0" pickOnBounds="true" preserveRatio="true">
-                                                   <image>
-                                                      <Image url="@../images/scan.png" />
-                                                   </image>
-                                                </ImageView>
-                                             </graphic>
-                                          </Button>
+                                          <HBox prefHeight="100.0" prefWidth="200.0" spacing="20.0">
+                                             <children>
+                                                <Button fx:id="scanBtn" mnemonicParsing="false" onAction="#scan" styleClass="onboardScanBtn" text="%scan">
+                                                   <graphic>
+                                                      <ImageView fitHeight="15.0" fitWidth="15.0" layoutY="25.0" pickOnBounds="true" preserveRatio="true">
+                                                         <image>
+                                                            <Image url="@../images/scan.png" />
+                                                         </image>
+                                                      </ImageView>
+                                                   </graphic>
+                                                </Button>
+                                                <Button fx:id="startOverBtn" mnemonicParsing="false" onAction="#clearFingerPrintDTO" styleClass="onboardScanBtn" text="%startOver">
+                                                   <graphic>
+                                                      <ImageView fitHeight="15.0" fitWidth="15.0" layoutY="25.0" pickOnBounds="true" preserveRatio="true">
+                                                         <image>
+                                                            <Image url="@../images/scan.png" />
+                                                         </image>
+                                                      </ImageView>
+                                                   </graphic>
+                                                </Button>
+                                             </children>
+                                          </HBox>
                                        </children>
                                     </GridPane>
                                     <GridPane>
