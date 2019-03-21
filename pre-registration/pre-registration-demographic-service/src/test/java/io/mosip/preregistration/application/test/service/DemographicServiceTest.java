@@ -710,7 +710,7 @@ byte[] encryptedDemographicDetails= {1,0,1,0,1,0};
 
 	}
 
-	@Test
+//	@Test
 	public void deleteIndividualSuccessTest() {
 		RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
 		Mockito.when(restTemplateBuilder.build()).thenReturn(restTemplate);
