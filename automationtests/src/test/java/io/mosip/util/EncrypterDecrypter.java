@@ -42,18 +42,18 @@ public class EncrypterDecrypter {
 		return null;
 	}
 	
-	public void encryptFile(File f,String sourcePath,String destinationPath) throws ZipException, FileNotFoundException, IOException {
+	public void encryptFile(File f,String sourcePath,String destinationPath,String fileName) throws ZipException, FileNotFoundException, IOException {
 	
 		File folder = new File(destinationPath);
 		folder.mkdirs();
 		logger.info("File name is :: "+ sourcePath+"/"+f.getName());
 		logger.info("Inside EncryptFile Method");
-		logger.info("File Path Is :: "+destinationPath+"/"+f.getName()+".zip");
-		 org.zeroturnaround.zip.ZipUtil.pack(new File(sourcePath+"/"+f.getName()),new File(destinationPath+"/"+f.getName()+".zip"));
-		  File file1=new File(destinationPath+"/"+f.getName()+".zip");
+		logger.info("File Path Is :: "+destinationPath+"/"+fileName+".zip");
+		 org.zeroturnaround.zip.ZipUtil.pack(new File(sourcePath+"/"+f.getName()),new File(destinationPath+"/"+fileName+".zip"));
+		  File file1=new File(destinationPath+"/"+fileName+".zip");
 		  Response response=applnMethods.putDecryptedFile(file1,encrypterURL);
 		 logger.info("Response from encrypter URL is  :: "+response.contentType());
-		  try (FileOutputStream fileOuputStream = new FileOutputStream(destinationPath+"/"+f.getName()+".zip")){
+		  try (FileOutputStream fileOuputStream = new FileOutputStream(destinationPath+"/"+fileName+".zip")){
 			    fileOuputStream.write(response.asByteArray());
 			    fileOuputStream.close();
 			    logger.info("Successfully Wrote The file");
