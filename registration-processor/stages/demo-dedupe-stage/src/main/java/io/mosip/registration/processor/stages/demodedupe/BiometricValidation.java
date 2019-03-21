@@ -10,9 +10,11 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
+import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -25,6 +27,8 @@ import io.mosip.registration.processor.core.constant.PacketFiles;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.identify.RegistrationProcessorIdentity;
+import io.mosip.registration.processor.core.util.JsonUtil;
+import io.mosip.registration.processor.packet.storage.utils.Utilities;
 //remove the class when auth is fixed
 @Component
 public class BiometricValidation {
@@ -32,12 +36,15 @@ public class BiometricValidation {
 	/** The adapter. */
 	@Autowired
 	private FileSystemAdapter adapter;
-	
+
 	/** The reg proc logger. */
 	private static Logger regProcLogger = RegProcessorLogger.getLogger(BiometricValidation.class);
 
 	@Autowired
 	private RegistrationProcessorIdentity regProcessorIdentityJson;
+
+	@Autowired
+	private Utilities utility;
 
 	/** The Constant ENCODING. */
 	public static final String ENCODING = "UTF-8";
@@ -57,30 +64,38 @@ public class BiometricValidation {
 		 * authResponseDTO.getStatus() != null &&
 		 * authResponseDTO.getStatus().equalsIgnoreCase("y");
 		 */
-
-		boolean isValid= false;
-		InputStream demographicInfoStream = null;
-		demographicInfoStream = adapter.getFile(regId,
-				PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR + PacketFiles.ID.name());
-		String demographicInfo = IOUtils.toString(demographicInfoStream, ENCODING);
-		ObjectMapper mapIdentityJsonStringToObject = new ObjectMapper();
-		regProcessorIdentityJson = mapIdentityJsonStringToObject.readValue(demographicInfo,
-				RegistrationProcessorIdentity.class);
-		String doBValue = regProcessorIdentityJson.getIdentity().getDob().getValue();
+		InputStream demographicInfoStream = adapter.getFile(regId,PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR + PacketFiles.ID.name());
+		String demographicJsonString  = IOUtils.toString(demographicInfoStream, ENCODING);
 		Date date = null;
+		boolean isValid = false;
+
+		String getIdentityJsonString = Utilities.getJson(utility.getConfigServerFileStorageURL(),
+				utility.getGetRegProcessorIdentityJson());
+		ObjectMapper mapIdentityJsonStringToObject = new ObjectMapper();
+		regProcessorIdentityJson = mapIdentityJsonStringToObject.readValue(getIdentityJsonString,
+				RegistrationProcessorIdentity.class);
+		JSONObject demographicJson = (JSONObject) JsonUtil.objectMapperReadValue(demographicJsonString,
+				JSONObject.class);
+
+		Object identityJson = demographicJson.get("identity");
+		JSONObject dobJson =new JSONObject((Map) identityJson);
+		Object dob = dobJson.get("dateOfBirth");
+		
+		
 		try {
-			date = new SimpleDateFormat("yyyy/mm/dd").parse(doBValue);
+			date = new SimpleDateFormat("yyyy/mm/dd").parse(dob.toString());
+			Calendar calendar = new GregorianCalendar();
+			calendar.setTime(date);
+			int year = calendar.get(Calendar.YEAR);
+			if(year%2==0) {
+				isValid=true;
+			}
 		} catch (ParseException e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					regId, "Date Parse Exception in BiometricValidation" + e.getMessage()
-							+ ExceptionUtils.getStackTrace(e));
+					+ ExceptionUtils.getStackTrace(e));
 		}
-		Calendar calendar = new GregorianCalendar();
-		calendar.setTime(date);
-		int year = calendar.get(Calendar.YEAR);
-		if(year%2==0) {
-			isValid=true;
-		}				
+
 		return isValid;
 	}
 }
