@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testng-results skipped="0" failed="0" ignored="0" total="2" passed="2">
+  <reporter-output>
+  </reporter-output>
+  <suite name="Mosip API Suite" duration-ms="15110" started-at="2019-03-06T12:47:02Z" finished-at="2019-03-06T12:47:17Z">
+    <groups>
+    </groups>
+    <test name="RegistrationProcessor.StageValidationTests" duration-ms="15110" started-at="2019-03-06T12:47:02Z" finished-at="2019-03-06T12:47:17Z">
+      <class name="io.mosip.registrationProcessor.tests.StageValidationTests">
+        <test-method status="PASS" signature="readUserStage(java.lang.String, java.lang.String)[pri:0, instance:io.mosip.registrationProcessor.tests.StageValidationTests@51b279c9]" name="readUserStage" is-config="true" duration-ms="16" started-at="2019-03-06T18:17:02Z" finished-at="2019-03-06T18:17:02Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[ValidPacketSmoke]]>
+              </value>
+            </param>
+            <param index="1">
+              <value>
+                <![CDATA[StageBits.properties]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- readUserStage -->
+        <test-method status="PASS" signature="allStagesFailed()[pri:0, instance:io.mosip.registrationProcessor.tests.StageValidationTests@51b279c9]" name="allStagesFailed" duration-ms="8988" started-at="2019-03-06T18:17:02Z" finished-at="2019-03-06T18:17:11Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- allStagesFailed -->
+        <test-method status="PASS" signature="virusScanUploadTestSmoke()[pri:0, instance:io.mosip.registrationProcessor.tests.StageValidationTests@51b279c9]" name="virusScanUploadTestSmoke" duration-ms="6106" started-at="2019-03-06T18:17:11Z" finished-at="2019-03-06T18:17:17Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- virusScanUploadTestSmoke -->
+        <test-method status="PASS" signature="compareList()[pri:0, instance:io.mosip.registrationProcessor.tests.StageValidationTests@51b279c9]" name="compareList" is-config="true" duration-ms="0" started-at="2019-03-06T18:17:17Z" finished-at="2019-03-06T18:17:17Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- compareList -->
+      </class> <!-- io.mosip.registrationProcessor.tests.StageValidationTests -->
+    </test> <!-- RegistrationProcessor.StageValidationTests -->
+  </suite> <!-- Mosip API Suite -->
+</testng-results>

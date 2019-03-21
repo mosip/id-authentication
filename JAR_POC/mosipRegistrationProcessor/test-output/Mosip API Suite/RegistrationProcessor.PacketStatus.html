@@ -1,0 +1,119 @@
+<html>
+<head>
+<title>TestNG:  RegistrationProcessor.PacketStatus</title>
+<link href="../testng.css" rel="stylesheet" type="text/css" />
+<link href="../my-testng.css" rel="stylesheet" type="text/css" />
+
+<style type="text/css">
+.log { display: none;} 
+.stack-trace { display: none;} 
+</style>
+<script type="text/javascript">
+<!--
+function flip(e) {
+  current = e.style.display;
+  if (current == 'block') {
+    e.style.display = 'none';
+    return 0;
+  }
+  else {
+    e.style.display = 'block';
+    return 1;
+  }
+}
+
+function toggleBox(szDivId, elem, msg1, msg2)
+{
+  var res = -1;  if (document.getElementById) {
+    res = flip(document.getElementById(szDivId));
+  }
+  else if (document.all) {
+    // this is the way old msie versions work
+    res = flip(document.all[szDivId]);
+  }
+  if(elem) {
+    if(res == 0) elem.innerHTML = msg1; else elem.innerHTML = msg2;
+  }
+
+}
+
+function toggleAllBoxes() {
+  if (document.getElementsByTagName) {
+    d = document.getElementsByTagName('div');
+    for (i = 0; i < d.length; i++) {
+      if (d[i].className == 'log') {
+        flip(d[i]);
+      }
+    }
+  }
+}
+
+// -->
+</script>
+
+</head>
+<body>
+<h2 align='center'>RegistrationProcessor.PacketStatus</h2><table border='1' align="center">
+<tr>
+<td>Tests passed/Failed/Skipped:</td><td>8/0/0</td>
+</tr><tr>
+<td>Started on:</td><td>Wed Mar 06 17:06:20 IST 2019</td>
+</tr>
+<tr><td>Total time:</td><td>57 seconds (57091 ms)</td>
+</tr><tr>
+<td>Included groups:</td><td></td>
+</tr><tr>
+<td>Excluded groups:</td><td></td>
+</tr>
+</table><p/>
+<small><i>(Hover the method name to see the test class name)</i></small><p/>
+<table width='100%' border='1' class='invocation-passed'>
+<tr><td colspan='4' align='center'><b>PASSED TESTS</b></td></tr>
+<tr><td><b>Test method</b></td>
+<td width="30%"><b>Exception</b></td>
+<td width="10%"><b>Time (seconds)</b></td>
+<td><b>Instance</b></td>
+</tr>
+<tr>
+<td title='io.mosip.registrationProcessor.tests.PacketStatus.Invalid_emptyId()'><b>Invalid_emptyId</b><br>Test class: io.mosip.registrationProcessor.tests.PacketStatus (Invalid_emptyId)<br>Parameters: regProc/PacketStatus, 7, {"emptyRegId":"valid","jiraId":"MOS-1000","registrationId":"valid","testType":"regression","testCaseName":"Invalid_emptyId","emptyTimestamp":"valid","emptyVersion":"valid","validAndInvalidRegIds":"valid","emptyId":"invalid","status":"Fail"}</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.registrationProcessor.tests.PacketStatus@3daa422a</td></tr>
+<tr>
+<td title='io.mosip.registrationProcessor.tests.PacketStatus.Invalid_emptyRegId()'><b>Invalid_emptyRegId</b><br>Test class: io.mosip.registrationProcessor.tests.PacketStatus (Invalid_emptyId)<br>Parameters: regProc/PacketStatus, 2, {"emptyRegId":"invalid","jiraId":"MOS-1001","registrationId":"valid","testType":"regression","testCaseName":"Invalid_emptyRegId","emptyTimestamp":"valid","emptyVersion":"valid","validAndInvalidRegIds":"valid","emptyId":"valid","status":"Pass"}</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.registrationProcessor.tests.PacketStatus@3daa422a</td></tr>
+<tr>
+<td title='io.mosip.registrationProcessor.tests.PacketStatus.Invalid_emptyTimestamp()'><b>Invalid_emptyTimestamp</b><br>Test class: io.mosip.registrationProcessor.tests.PacketStatus (Invalid_emptyId)<br>Parameters: regProc/PacketStatus, 4, {"emptyRegId":"valid","jiraId":"MOS-1002","registrationId":"valid","testType":"regression","testCaseName":"Invalid_emptyTimestamp","emptyTimestamp":"invalid","emptyVersion":"valid","validAndInvalidRegIds":"valid","emptyId":"valid","status":"Fail"}</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.registrationProcessor.tests.PacketStatus@3daa422a</td></tr>
+<tr>
+<td title='io.mosip.registrationProcessor.tests.PacketStatus.Invalid_emptyVersion()'><b>Invalid_emptyVersion</b><br>Test class: io.mosip.registrationProcessor.tests.PacketStatus (Invalid_emptyId)<br>Parameters: regProc/PacketStatus, 5, {"emptyRegId":"valid","jiraId":"MOS-1003","registrationId":"valid","testType":"regression","testCaseName":"Invalid_emptyVersion","emptyTimestamp":"valid","emptyVersion":"invalid","validAndInvalidRegIds":"valid","emptyId":"valid","status":"Fail"}</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.registrationProcessor.tests.PacketStatus@3daa422a</td></tr>
+<tr>
+<td title='io.mosip.registrationProcessor.tests.PacketStatus.Invalid_registrationId()'><b>Invalid_registrationId</b><br>Test class: io.mosip.registrationProcessor.tests.PacketStatus (Invalid_emptyId)<br>Parameters: regProc/PacketStatus, 3, {"emptyRegId":"valid","jiraId":"MOS-1004","registrationId":"invalid","testType":"regression","testCaseName":"Invalid_registrationId","emptyTimestamp":"valid","emptyVersion":"valid","validAndInvalidRegIds":"valid","emptyId":"valid","status":"Pass"}</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.registrationProcessor.tests.PacketStatus@3daa422a</td></tr>
+<tr>
+<td title='io.mosip.registrationProcessor.tests.PacketStatus.Invalid_validAndInvalidRegIds()'><b>Invalid_validAndInvalidRegIds</b><br>Test class: io.mosip.registrationProcessor.tests.PacketStatus (Invalid_emptyId)<br>Parameters: regProc/PacketStatus, 6, {"emptyRegId":"valid","jiraId":"MOS-1005","registrationId":"valid","testType":"regression","testCaseName":"Invalid_validAndInvalidRegIds","emptyTimestamp":"valid","emptyVersion":"valid","validAndInvalidRegIds":"invalid","emptyId":"valid","status":"Pass"}</td>
+<td></td>
+<td>13</td>
+<td>io.mosip.registrationProcessor.tests.PacketStatus@3daa422a</td></tr>
+<tr>
+<td title='io.mosip.registrationProcessor.tests.PacketStatus.PacketStatus_mutipleRegIds_smoke()'><b>PacketStatus_mutipleRegIds_smoke</b><br>Test class: io.mosip.registrationProcessor.tests.PacketStatus (Invalid_emptyId)<br>Parameters: regProc/PacketStatus, 0, {"emptyRegId":"valid","jiraId":"MOS-1008","registrationId":"valid","testType":"smoke","testCaseName":"PacketStatus_mutipleRegIds_smoke","emptyTimestamp":"valid","emptyVersion":"valid","validAndInvalidRegIds":"valid","emptyId":"valid","status":"Pass"}</td>
+<td></td>
+<td>29</td>
+<td>io.mosip.registrationProcessor.tests.PacketStatus@3daa422a</td></tr>
+<tr>
+<td title='io.mosip.registrationProcessor.tests.PacketStatus.PacketStatus_smoke()'><b>PacketStatus_smoke</b><br>Test class: io.mosip.registrationProcessor.tests.PacketStatus (Invalid_emptyId)<br>Parameters: regProc/PacketStatus, 1, {"emptyRegId":"valid","jiraId":"MOS-1009","registrationId":"valid","testType":"smoke","testCaseName":"PacketStatus_smoke","emptyTimestamp":"valid","emptyVersion":"valid","validAndInvalidRegIds":"valid","emptyId":"valid","status":"Pass"}</td>
+<td></td>
+<td>12</td>
+<td>io.mosip.registrationProcessor.tests.PacketStatus@3daa422a</td></tr>
+</table><p>
+</body>
+</html>
