@@ -51,6 +51,7 @@ import javafx.scene.control.ToggleButton;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.scene.web.WebView;
 import javafx.stage.Modality;
@@ -120,11 +121,11 @@ public class RegistrationApprovalController extends BaseController implements In
 
 	/** The approve registration root sub pane. */
 	@FXML
-	private AnchorPane approveRegistrationRootSubPane;
+	private GridPane approveRegistrationRootSubPane;
 
 	/** The image anchor pane. */
 	@FXML
-	private AnchorPane imageAnchorPane;
+	private GridPane imageAnchorPane;
 
 	/** The map list. */
 	private List<Map<String, String>> approvalmapList = null;

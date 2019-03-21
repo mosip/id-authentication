@@ -3,7 +3,6 @@ package io.mosip.registration.controller.reg;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
-import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -23,8 +22,7 @@ import io.mosip.registration.controller.BaseController;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.GridPane;
 
 /**
  * Class for Home Page
@@ -41,9 +39,11 @@ public class HomeController extends BaseController implements Initializable {
 	private static final Logger LOGGER = AppConfig.getLogger(HomeController.class);
 
 	@FXML
-	private VBox mainBox;
-
-	AnchorPane optionRoot;
+	private GridPane mainBox;
+	@FXML
+	public GridPane homeContent;
+	@FXML
+	private GridPane onboard;
 
 	/**
 	 * Building Home screen on Login success
@@ -56,16 +56,13 @@ public class HomeController extends BaseController implements Initializable {
 			LOGGER.info("REGISTRATION - REGSITRATION_HOME_PAGE_LAYOUT", APPLICATION_NAME, APPLICATION_ID,
 					"Constructing Registration Home Page");
 
-			HBox headerRoot = BaseController.load(getClass().getResource(RegistrationConstants.HEADER_PAGE));
-			mainBox.getChildren().add(headerRoot);
-
 			if ((boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)
 					&& !(boolean) SessionContext.map()
 							.get(RegistrationConstants.ONBOARD_USER_UPDATE)) {
 				auditFactory.audit(AuditEvent.NAV_ON_BOARD_USER, Components.NAVIGATION, APPLICATION_NAME,
 						AuditReferenceIdTypes.APPLICATION_ID.getReferenceTypeId());
 
-				optionRoot = BaseController.load(getClass().getResource(RegistrationConstants.USER_ONBOARD));
+				onboard.setVisible(true);
 				SessionContext.map().remove(RegistrationConstants.USER_ONBOARD_DATA);
 				SessionContext.map().remove(RegistrationConstants.OLD_BIOMETRIC_EXCEPTION);
 				SessionContext.map().remove(RegistrationConstants.NEW_BIOMETRIC_EXCEPTION);
@@ -77,22 +74,15 @@ public class HomeController extends BaseController implements Initializable {
 						.get(RegistrationConstants.ONBOARD_USER_UPDATE)) {
 					clearOnboardData();
 				}
-				optionRoot = BaseController.load(getClass().getResource(RegistrationConstants.OFFICER_PACKET_PAGE));
+				homeContent.setVisible(true);
 			}
-
-			mainBox.getChildren().add(optionRoot);
+			
 			getScene(mainBox);
 
-		} catch (IOException ioException) {
+		} catch (RuntimeException ioException) {
 
 			LOGGER.error(LoggerConstants.LOG_REG_HOME, APPLICATION_NAME, APPLICATION_ID,
 					ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));
-
-			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_LOAD_HOME_PAGE);
-		} catch (RuntimeException runtimeException) {
-
-			LOGGER.error(LoggerConstants.LOG_REG_HOME, APPLICATION_NAME, APPLICATION_ID,
-					runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
 
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_LOAD_HOME_PAGE);
 		}
@@ -101,14 +91,14 @@ public class HomeController extends BaseController implements Initializable {
 	/**
 	 * @return the mainBox
 	 */
-	public VBox getMainBox() {
+	public GridPane getMainBox() {
 		return mainBox;
 	}
 
 	/**
 	 * @param mainBox the mainBox to set
 	 */
-	public void setMainBox(VBox mainBox) {
+	public void setMainBox(GridPane mainBox) {
 		this.mainBox = mainBox;
 	}
 }

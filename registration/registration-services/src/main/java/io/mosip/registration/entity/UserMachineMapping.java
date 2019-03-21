@@ -12,6 +12,9 @@ import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
+
 import io.mosip.registration.entity.id.UserMachineMappingID;
 
 @Entity
@@ -28,7 +31,8 @@ public class UserMachineMapping extends RegistrationCommonFields implements Seri
 	private UserMachineMappingID userMachineMappingId;
 
 	/** The user detail. */
-	@ManyToOne(fetch=FetchType.LAZY)
+	@ManyToOne(fetch=FetchType.EAGER)
+	@NotFound(action=NotFoundAction.IGNORE)
 	@JoinColumn(name = "usr_id", nullable = false, insertable = false, updatable = false)
 	private UserDetail userDetail;
 

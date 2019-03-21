@@ -38,7 +38,7 @@ import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
@@ -56,9 +56,9 @@ public class BiometricExceptionController extends BaseController implements Init
 	private ImageView rightEye;
 
 	@FXML
-	private AnchorPane fingerPane;
+	private GridPane fingerPane;
 	@FXML
-	private AnchorPane irisPane;
+	private GridPane irisPane;
 	@FXML
 	private ImageView rightLittle;
 	@FXML
@@ -97,26 +97,28 @@ public class BiometricExceptionController extends BaseController implements Init
 	private Pane rightEyePane;
 	@FXML
 	private Button previousBtn;
-	@FXML
+	/*@FXML
 	private AnchorPane userOnboardTracker;
 	@FXML
-	private ImageView registrationImg;
+	private ImageView registrationImg;*/
 	@FXML
-	private AnchorPane biometricException;
+	private GridPane biometricException;
 	@FXML
-	private AnchorPane operatorExceptionLayout;
+	private GridPane operatorExceptionLayout;
 	@FXML
-	private AnchorPane registrationExceptionHeader;
+	private GridPane registrationExceptionHeader;
 	@FXML
-	private AnchorPane operatorExceptionHeader;
+	private GridPane operatorExceptionHeader;
 	@FXML
-	private AnchorPane exceptionDocProof;
+	private GridPane exceptionDocProof;
+	//@FXML
+	//private AnchorPane regExceptionHeader;
 	@FXML
-	private AnchorPane regExceptionHeader;
+	private GridPane userOnboardFooter;
 	@FXML
-	private AnchorPane userOnboardFooter;
+	private GridPane registrationFooter;
 	@FXML
-	private AnchorPane registrationFooter;
+	private GridPane spliterLine;
 
 	@Autowired
 	private RegistrationController registrationController;
@@ -167,16 +169,17 @@ public class BiometricExceptionController extends BaseController implements Init
 				irisPane.setVisible(false);
 			}
 
-			trackerImage.setVisible(false);
+			//trackerImage.setVisible(false);
 			registrationExceptionHeader.setVisible(false);
 			exceptionDocProof.setVisible(false);
-			regExceptionHeader.setVisible(false);
-			registrationImg.setVisible(false);
+			//regExceptionHeader.setVisible(false);
+			//registrationImg.setVisible(false);
 			registrationFooter.setVisible(false);
 			userOnboardFooter.setVisible(true);
-			userOnboardTracker.setVisible(true);
+			//userOnboardTracker.setVisible(true);
 			operatorExceptionLayout.setVisible(true);
 			operatorExceptionHeader.setVisible(true);
+			spliterLine.setVisible(true);
 		} else {
 			if (!((Map<String, Map<String, Boolean>>) ApplicationContext.map()
 					.get(RegistrationConstants.REGISTRATION_MAP)).get(RegistrationConstants.BIOMETRIC_EXCEPTION)
@@ -191,12 +194,13 @@ public class BiometricExceptionController extends BaseController implements Init
 				irisPane.setVisible(false);
 			}
 			exceptionDocProof.setVisible(true);
-			regExceptionHeader.setVisible(true);
-			registrationImg.setVisible(true);
+			//regExceptionHeader.setVisible(true);
+			//registrationImg.setVisible(true);
 			registrationFooter.setVisible(true);
 			registrationExceptionHeader.setVisible(true);
+			spliterLine.setVisible(false);
 			userOnboardFooter.setVisible(false);
-			userOnboardTracker.setVisible(false);
+			//userOnboardTracker.setVisible(false);
 			operatorExceptionLayout.setVisible(false);
 			operatorExceptionHeader.setVisible(false);
 		}
@@ -373,10 +377,11 @@ public class BiometricExceptionController extends BaseController implements Init
 				biometricExceptionDTO.setMissingBiometric(bioType);
 				biometricExceptionDTO.setExceptionType(RegistrationConstants.PERMANENT_EXCEPTION);
 				biometricExceptionDTO.setReason(RegistrationConstants.MISSING_BIOMETRICS);
+				biometricExceptionDTO.setMarkedAsException(true);
 				biometricExceptionList.add(biometricExceptionDTO);
 			});
 			SessionContext.map().put(RegistrationConstants.NEW_BIOMETRIC_EXCEPTION, biometricExceptionList);
-			if ((boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
+			if ((boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER) || (boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER_UPDATE)) {
 				((BiometricDTO) SessionContext.map().get(RegistrationConstants.USER_ONBOARD_DATA))
 						.getOperatorBiometricDTO().setBiometricExceptionDTO(biometricExceptionList);
 			} else {
