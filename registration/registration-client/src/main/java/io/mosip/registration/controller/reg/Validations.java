@@ -17,6 +17,7 @@ import io.mosip.kernel.core.idvalidator.spi.UinValidator;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.constants.RegistrationUIConstants;
 import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.service.MasterSyncService;
@@ -289,7 +290,7 @@ public class Validations extends BaseController {
 			try {
 				uinValidator.validateId(field.getText());
 			} catch (InvalidIDException invalidUinException) {
-				generateAlert(RegistrationConstants.ERROR, invalidUinException.getErrorText());
+				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UIN_INVALID);
 				LOGGER.error("UIN VALIDATOIN FAILED", APPLICATION_NAME,
 						RegistrationConstants.APPLICATION_ID, invalidUinException.getMessage()+ ExceptionUtils.getStackTrace(invalidUinException));
 				return false;
@@ -298,7 +299,7 @@ public class Validations extends BaseController {
 			try {
 				ridValidator.validateId(field.getText());
 			} catch (InvalidIDException invalidRidException) {
-				generateAlert(RegistrationConstants.ERROR, invalidRidException.getErrorText());
+				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.RID_INVALID);
 				LOGGER.error("RID VALIDATOIN FAILED", APPLICATION_NAME,
 						RegistrationConstants.APPLICATION_ID, invalidRidException.getMessage() + ExceptionUtils.getStackTrace(invalidRidException));
 				return false;

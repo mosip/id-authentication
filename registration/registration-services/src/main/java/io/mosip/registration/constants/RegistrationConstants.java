@@ -1027,7 +1027,6 @@ public class RegistrationConstants {
 
 	// Packet Export
 	public static final String FILE_EXPLORER_NAME = "File Explorer";
-	public static final String INFO = "INFO";
 
 	// Sync Status
 	public static final String REG_PKT_APPRVL_CNT_EXCEED = "REG_PKT_APPRVL_CNT_EXCEED";

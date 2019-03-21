@@ -14,6 +14,11 @@ public class RegistrationUIConstants {
 		return bundle.getString(key);
 	}
 
+	//ALERT
+	public static final String ERROR = bundle.getString("ERROR");
+	public static final String INFORMATION = bundle.getString("INFORMATION");
+	public static final String SUCCESS = bundle.getString("SUCCESS");	
+	
 	// LOGIN
 	public static final String UNABLE_LOAD_LOGIN_SCREEN = bundle.getString("UNABLE_LOAD_LOGIN_SCREEN");
 	public static final String BIOMETRIC_DISABLE_SCREEN_1 = bundle.getString("BIOMETRIC_DISABLE_SCREEN_1");
@@ -129,6 +134,8 @@ public class RegistrationUIConstants {
 	public static final String PHOTO_CAPTURE = bundle.getString("PHOTO_CAPTURE");
 	public static final String PREVIOUS_ADDRESS = bundle.getString("PREVIOUS_ADDRESS");
 	public static final String PREVIEW_DOC= bundle.getString("PREVIEW_DOC");
+	public static final String RID_INVALID= bundle.getString("RID_INVALID");
+	public static final String UIN_INVALID= bundle.getString("UIN_INVALID");
 
 
 

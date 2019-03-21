@@ -219,7 +219,7 @@ public class BaseController extends BaseService{
 		Alert alert = new Alert(AlertType.INFORMATION);
 		alert.setHeaderText(null);
 		alert.setContentText(context);
-		alert.setTitle(title);
+		alert.setTitle(RegistrationUIConstants.getMessageLanguageSpecific(title));
 		alert.setGraphic(null);
 		alert.setResizable(true);
 		alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
@@ -238,7 +238,7 @@ public class BaseController extends BaseService{
 		Alert alert = new Alert(AlertType.INFORMATION);
 		alert.setHeaderText(null);
 		alert.setContentText(RegistrationUIConstants.getMessageLanguageSpecific(context));
-		alert.setTitle(title);
+		alert.setTitle(RegistrationUIConstants.getMessageLanguageSpecific(title));
 		alert.setGraphic(null);
 		alert.setResizable(true);
 		alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
@@ -824,7 +824,7 @@ public class BaseController extends BaseService{
 				message += "\n" + RegistrationUIConstants.REMAP_EOD_PROCESS_MESSAGE;
 			}
 			message += "\n" + RegistrationUIConstants.REMAP_CLICK_OK;
-			generateAlert(RegistrationConstants.INFO, message);
+			generateAlert(RegistrationConstants.ALERT_INFORMATION, message);
 
 			packetHandlerController.reMapProgressIndicator.progressProperty().bind(service.progressProperty());
 
@@ -836,7 +836,7 @@ public class BaseController extends BaseService{
 				public void handle(WorkerStateEvent t) {
 					service.reset();
 					packetHandlerController.reMapProgressIndicator.setVisible(false);
-					generateAlert(RegistrationConstants.INFO, RegistrationUIConstants.REMAP_PROCESS_SUCCESS);
+					generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.REMAP_PROCESS_SUCCESS);
 
 				}
 			});
