@@ -16,8 +16,8 @@ import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfigurat
  * @since 1.0.0
  *
  */
-@SpringBootApplication(scanBasePackages= {"io.mosip.preregistration.core.*,io.mosip.preregistration.document.*"
-		+ ",io.mosip.preregistration.notification.*"	+ ",io.mosip.preregistration.application.*"+ ",io.mosip.kernel.emailnotifier.*,io.mosip.kernel.smsnotifier.*,io.mosip.kernel.cryotomanager.*,io.mosip.kernel.auditmanger.*,io.mosip.kernel.idgenerator.*"})
+@SpringBootApplication(scanBasePackages= {"io.mosip.preregistration.core.*"
+		+ ",io.mosip.preregistration.notification.*"	+ ",io.mosip.kernel.templatemanager.velocity.*,io.mosip.kernel.qrcode.generator.zxing.*"})
 @EnableAutoConfiguration(exclude = { DataSourceAutoConfiguration.class, HibernateJpaAutoConfiguration.class }) 
 public class NotificationApplicationTest {
 
