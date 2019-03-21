@@ -103,21 +103,5 @@ public class AppConfig {
 		return new TemplateManagerBuilderImpl();
 	}
 
-	/**
-	 * scheduler factory bean used to shedule the batch jobs
-	 * 
-	 * @return scheduler factory which includes job detail and trigger detail
-	 */
-	@Bean(name = "schedulerFactoryBean")
-	public SchedulerFactoryBean getSchedulerFactoryBean() {
-		SchedulerFactoryBean schFactoryBean = new SchedulerFactoryBean();
-		schFactoryBean.setGlobalTriggerListeners(new TriggerListener[] { commonTriggerListener });
-		schFactoryBean.setGlobalJobListeners(new JobListener[] { jobProcessListener });
-		Properties quartzProperties = new Properties();
-		quartzProperties.put("org.quartz.threadPool.threadCount",
-				String.valueOf(syncJobConfigDAO.getActiveJobs().size()));
-		schFactoryBean.setQuartzProperties(quartzProperties);
-		return schFactoryBean;
-	}
-
+	
 }
