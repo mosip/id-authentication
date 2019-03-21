@@ -9,6 +9,7 @@ import java.util.List;
 
 import javax.sql.DataSource;
 
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -77,7 +78,7 @@ public class CenterMachineReMapServiceTest {
 	@Autowired
 	FileUtils fileUtils;
 
-	@org.junit.Before
+	@Before
 	public void setUp() {
 		ReflectionTestUtils.setField(centerMachineReMapServiceImpl, "preRegPacketLocation", "test.txt");
 	}
@@ -116,6 +117,7 @@ public class CenterMachineReMapServiceTest {
 
 	@Test
 	public void HandleRemapTest() throws Exception {
+
 		PowerMockito.mockStatic(RegistrationAppHealthCheckUtil.class);
 		PowerMockito.mockStatic(FileUtils.class);
 
@@ -155,6 +157,22 @@ public class CenterMachineReMapServiceTest {
 		List<Registration> regList = new ArrayList<>();
 		Mockito.when(registrationDAO.getEnrollmentByStatus(Mockito.anyString())).thenReturn(regList);
 		assertNotNull(centerMachineReMapServiceImpl.isPacketsPendingForEOD());
+
+	}
+
+	@Test
+	public void handleRemapProcessTestFailure() throws Exception {
+		PowerMockito.mockStatic(FileUtils.class);
+		PowerMockito.mockStatic(RegistrationAppHealthCheckUtil.class);
+		Mockito.when(RegistrationAppHealthCheckUtil.isNetworkAvailable()).thenReturn(true);
+
+		GlobalParam globalParam = new GlobalParam();
+
+		globalParam.setVal("true");
+		Mockito.when(globalParamDAO.get(Mockito.anyObject())).thenReturn(globalParam);
+		PowerMockito.doThrow(new io.mosip.kernel.core.exception.IOException("error", "error")).when(FileUtils.class,
+				"deleteDirectory", Mockito.any(File.class));
+		centerMachineReMapServiceImpl.handleReMapProcess(3);
 
 	}
 

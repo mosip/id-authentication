@@ -946,11 +946,9 @@ public class TemplateGenerator extends BaseService {
 	 * @throws RegBaseCheckedException
 	 */
 	public Writer generateNotificationTemplate(String templateText, RegistrationDTO registration,
-			TemplateManagerBuilder templateManagerBuilder) throws RegBaseCheckedException {
+			TemplateManagerBuilder templateManagerBuilder) {
 
 		try {
-			ResourceBundle localProperties = ApplicationContext.localLanguageProperty();
-			ResourceBundle applicationLanguageProperties = ApplicationContext.applicationLanguageBundle();
 			String applicationLanguageCode = ApplicationContext.applicationLanguage().toLowerCase();
 			InputStream is = new ByteArrayInputStream(templateText.getBytes());
 			Map<String, Object> values = new LinkedHashMap<>();
@@ -959,8 +957,7 @@ public class TemplateGenerator extends BaseService {
 
 			values.put(RegistrationConstants.TEMPLATE_RESIDENT_NAME,
 					getValue(moroccoIdentity.getFullName(), applicationLanguageCode));
-			values.put(RegistrationConstants.TEMPLATE_RID,
-					getValue(registration.getRegistrationId()));
+			values.put(RegistrationConstants.TEMPLATE_RID, getValue(registration.getRegistrationId()));
 
 			SimpleDateFormat sdf = new SimpleDateFormat(RegistrationConstants.TEMPLATE_DATE_FORMAT);
 			String currentDate = sdf.format(new Date());
@@ -1043,7 +1040,8 @@ public class TemplateGenerator extends BaseService {
 
 		if (exceptionFingers != null) {
 			for (BiometricExceptionDTO exceptionFinger : exceptionFingers) {
-				if (exceptionFinger.getBiometricType().equalsIgnoreCase(RegistrationConstants.FINGERPRINT)) {
+				if (exceptionFinger.getBiometricType().equalsIgnoreCase(RegistrationConstants.FINGERPRINT)
+						&& exceptionFinger.getReason().equals(RegistrationConstants.MISSING_BIOMETRICS)) {
 					fingersQuality.put(exceptionFinger.getMissingBiometric(), (double) 0);
 				}
 			}

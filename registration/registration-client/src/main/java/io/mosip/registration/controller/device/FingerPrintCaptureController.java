@@ -47,6 +47,7 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
 /**
@@ -81,15 +82,15 @@ public class FingerPrintCaptureController extends BaseController implements Init
 
 	/** The left hand palm pane. */
 	@FXML
-	private AnchorPane leftHandPalmPane;
+	private GridPane leftHandPalmPane;
 
 	/** The right hand palm pane. */
 	@FXML
-	private AnchorPane rightHandPalmPane;
+	private GridPane rightHandPalmPane;
 
 	/** The thumb pane. */
 	@FXML
-	private AnchorPane thumbPane;
+	private GridPane thumbPane;
 
 	/** The left hand palm imageview. */
 	@FXML
@@ -132,7 +133,7 @@ public class FingerPrintCaptureController extends BaseController implements Init
 	private Label duplicateCheckLbl;
 
 	/** The selected pane. */
-	private AnchorPane selectedPane = null;
+	private GridPane selectedPane = null;
 
 	/** The selected pane. */
 	@Autowired
@@ -147,10 +148,10 @@ public class FingerPrintCaptureController extends BaseController implements Init
 	/** The scan btn. */
 	@FXML
 	private Button scanBtn;
-	
+
 	@FXML
 	private Label registrationNavlabel;
-	
+
 	private int leftSlapCount;
 	private int rightSlapCount;
 	private int thumbCount;
@@ -166,15 +167,16 @@ public class FingerPrintCaptureController extends BaseController implements Init
 		LOGGER.info(LOG_REG_FINGERPRINT_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 				"Loading of FingerprintCapture screen started");
 		try {
-			if (getRegistrationDTOFromSession()!=null && getRegistrationDTOFromSession().getSelectionListDTO() != null) {
+			if (getRegistrationDTOFromSession() != null
+					&& getRegistrationDTOFromSession().getSelectionListDTO() != null) {
 				registrationNavlabel.setText(RegistrationConstants.UIN_NAV_LABEL);
 			}
 
 			scanBtn.setDisable(true);
 
 			EventHandler<Event> mouseClick = event -> {
-				if (event.getSource() instanceof AnchorPane) {
-					AnchorPane sourcePane = (AnchorPane) event.getSource();
+				if (event.getSource() instanceof GridPane) {
+					GridPane sourcePane = (GridPane) event.getSource();
 					sourcePane.requestFocus();
 					selectedPane = sourcePane;
 					scanBtn.setDisable(true);
@@ -368,17 +370,20 @@ public class FingerPrintCaptureController extends BaseController implements Init
 		}
 		for (BiometricExceptionDTO biometricExceptionDTO : biometricExceptionDTOs) {
 
-			if (biometricExceptionDTO.getMissingBiometric().contains(RegistrationConstants.LEFT.toLowerCase())
+			if ((biometricExceptionDTO.getMissingBiometric().contains(RegistrationConstants.LEFT.toLowerCase())
+					&& biometricExceptionDTO.isMarkedAsException())
 					&& !biometricExceptionDTO.getMissingBiometric().contains(RegistrationConstants.THUMB)
 					&& !biometricExceptionDTO.getMissingBiometric().contains(RegistrationConstants.EYE)) {
 				leftSlapCount++;
 			}
-			if (biometricExceptionDTO.getMissingBiometric().contains(RegistrationConstants.RIGHT.toLowerCase())
+			if ((biometricExceptionDTO.getMissingBiometric().contains(RegistrationConstants.RIGHT.toLowerCase())
+					&& biometricExceptionDTO.isMarkedAsException())
 					&& !biometricExceptionDTO.getMissingBiometric().contains(RegistrationConstants.THUMB)
 					&& !biometricExceptionDTO.getMissingBiometric().contains(RegistrationConstants.EYE)) {
 				rightSlapCount++;
 			}
-			if (biometricExceptionDTO.getMissingBiometric().contains(RegistrationConstants.THUMB)) {
+			if ((biometricExceptionDTO.getMissingBiometric().contains(RegistrationConstants.THUMB)
+					&& biometricExceptionDTO.isMarkedAsException())) {
 				thumbCount++;
 			}
 		}
@@ -587,7 +592,7 @@ public class FingerPrintCaptureController extends BaseController implements Init
 
 	private void scanFingers(FingerprintDetailsDTO detailsDTO, List<FingerprintDetailsDTO> fingerprintDetailsDTOs,
 			String fingerType, String[] segmentedFingersPath, ImageView fingerImageView, Label scoreLabel,
-			Stage popupStage, AnchorPane parentPane) throws RegBaseCheckedException {
+			Stage popupStage, GridPane parentPane) throws RegBaseCheckedException {
 
 		ImageView imageView = fingerImageView;
 		Label qualityScoreLabel = scoreLabel;
@@ -728,10 +733,10 @@ public class FingerPrintCaptureController extends BaseController implements Init
 								.get(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION)) {
 							SessionContext.map().put("biometricException", true);
 							registrationController.showUINUpdateCurrentPage();
-						} else if(!RegistrationConstants.DISABLE.equalsIgnoreCase(
-								String.valueOf(ApplicationContext.map().get(RegistrationConstants.DOC_DISABLE_FLAG)))){
+						} else if (!RegistrationConstants.DISABLE.equalsIgnoreCase(
+								String.valueOf(ApplicationContext.map().get(RegistrationConstants.DOC_DISABLE_FLAG)))) {
 							SessionContext.map().put("documentScan", true);
-						}else {
+						} else {
 							SessionContext.map().put("demographicDetail", true);
 						}
 						registrationController.showUINUpdateCurrentPage();
@@ -867,7 +872,8 @@ public class FingerPrintCaptureController extends BaseController implements Init
 	/**
 	 * Validating quality score of captured fingerprints.
 	 *
-	 * @param fingerprintDetailsDTO the fingerprint details DTO
+	 * @param fingerprintDetailsDTO
+	 *            the fingerprint details DTO
 	 * @return true, if successful
 	 */
 	private boolean validateQualityScore(FingerprintDetailsDTO fingerprintDetailsDTO) {
@@ -898,8 +904,10 @@ public class FingerPrintCaptureController extends BaseController implements Init
 	/**
 	 * Validates QualityScore.
 	 *
-	 * @param fingerprintDetailsDTO the fingerprint details DTO
-	 * @param handThreshold         the hand threshold
+	 * @param fingerprintDetailsDTO
+	 *            the fingerprint details DTO
+	 * @param handThreshold
+	 *            the hand threshold
 	 * @return boolean
 	 */
 	private Boolean validate(FingerprintDetailsDTO fingerprintDetailsDTO, String handThreshold) {
@@ -929,7 +937,8 @@ public class FingerPrintCaptureController extends BaseController implements Init
 	/**
 	 * Gets the selected pane.
 	 *
-	 * @param fingerPrintDetails the finger print details
+	 * @param fingerPrintDetails
+	 *            the finger print details
 	 * @return the selected pane
 	 */
 	private Stream<FingerprintDetailsDTO> getSelectedPane(List<FingerprintDetailsDTO> fingerPrintDetails) {
@@ -960,7 +969,8 @@ public class FingerPrintCaptureController extends BaseController implements Init
 	/**
 	 * Gets the value from application context.
 	 *
-	 * @param key the key
+	 * @param key
+	 *            the key
 	 * @return the value from application context
 	 */
 	private String getValueFromApplicationContext(String key) {

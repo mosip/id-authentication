@@ -19,16 +19,17 @@ public static final String actualStationID="10011";
 public static final String centerID="centerId";
 public static final String CenterId_val="20916";
 public static final String RegistrationCenterId_val="10011";
-public static final String userId_val="mosip";
+public static final String userId_val="110011";
 public static final String stationId="stationId";
 public static final String stationId_val="10011";
+public static final String FingerPrint_score="90";
 
 public static final String USER_ON_BOARD_THRESHOLD_LIMIT="USER_ON_BOARD_THRESHOLD_LIMIT";
 public static final String USER_ON_BOARD_THRESHOLD_LIMIT_val="10";
-public static final String userOBErrormsg="Threshold for number of successful authentications not met.";
+public static final String userOBErrormsg="USER_ON_BOARDING_THRESHOLD_NOT_MET_MSG";
 public static final String UOB_Validate_null_path="src/test/resources/testData/UserOnboardServiceData/OfficerOrSupervisor_No_FP_No_IRIS_No_FACE.json";
 public static final String UOB_NO_IRIS_NoTHUMB_9="src/test/resources/testData/UserOnboardServiceData/OfficerOrSupervisor_NO_IRIS_NoTHUMB_9Count.json";
-public static final String UOB_success_msg="User on-boarded successfully.";
+public static final String UOB_success_msg="USER_ONBOARD_SUCCESS";
 public static final String IRIS_FP_NoLeftThumbs_path="src/test/resources/testData/UserOnboardServiceData/OfficerOrSupervisor_IRIS_FP_NoLeftThumbs.json";
 public static final String FP_NoIRIS_path="src/test/resources/testData/UserOnboardServiceData/OfficerOrSupervisor_FP_NoIRIS.json";
 

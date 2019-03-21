@@ -1,303 +1,659 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.*?>
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.text.Text?>
-<?import javafx.scene.shape.*?>
-<?import javafx.scene.image.*?>
-<?import javafx.scene.text.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.collections.*?>
-<?import javafx.stage.Screen?>
 
-<AnchorPane fx:id="biometricException" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" styleClass="exceptionBackPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.reg.BiometricExceptionController">
+<GridPane fx:id="biometricException" alignment="CENTER" styleClass="exceptionBackPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.reg.BiometricExceptionController">
+  <columnConstraints>
+    <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" percentWidth="100.0" />
+  </columnConstraints>
+  <rowConstraints>
+    <RowConstraints percentHeight="100.0" valignment="CENTER" vgrow="ALWAYS" />
+  </rowConstraints>
    <children>
-      <ImageView fx:id="registrationImg" fitHeight="192.0" fitWidth="130.0" layoutX="1130.0" layoutY="152.0" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@../images/exceptionProgressImg.png" />
-         </image>
-      </ImageView>
-      <AnchorPane fx:id="userOnboardTracker" layoutX="1130.0" layoutY="152.0" prefHeight="200.0" prefWidth="141.0">
+      <GridPane alignment="CENTER" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
+        <columnConstraints>
+          <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" percentWidth="100.0" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints percentHeight="5.0" valignment="CENTER" vgrow="ALWAYS" />
+          <RowConstraints percentHeight="88.0" valignment="CENTER" vgrow="ALWAYS" />
+          <RowConstraints percentHeight="7.0" valignment="CENTER" vgrow="ALWAYS" />
+        </rowConstraints>
          <children>
-            <ImageView fitHeight="192.0" fitWidth="130.0" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@../images/UserOnboardExceptionTracker.png" />
-               </image>
-            </ImageView>
-            <Label layoutX="36.0" layoutY="0.0" styleClass="currentTracker" text="%exception" />
-            <Label layoutX="36.0" layoutY="67.0" styleClass="uncompleteTracker" text="%fingerprints" />
-            <Label layoutX="36.0" layoutY="122.0" styleClass="uncompleteTracker" text="%iris" />
-            <Label layoutX="36.0" layoutY="177.0" styleClass="uncompleteTracker" text="%image" />
-         </children>
-      </AnchorPane>
-      <AnchorPane fx:id="operatorExceptionHeader" layoutX="1.0" styleClass="userOnboardHeader">
-         <children>
-            <Text fx:id="onboardHomeLink" layoutX="20.0" layoutY="20.0" onMouseClicked="#goToHomePage" text="%homeLink" />
-            <Text fx:id="onboardPageDesc" layoutX="68.0" layoutY="20.0" text="%onboardOperator" />
-            <Label fx:id="onboardPageTitle" layoutX="559.0" layoutY="2.0" text="%onboardOperator" />
-         </children>
-      </AnchorPane>
-      <AnchorPane fx:id="regExceptionHeader" layoutX="180.0" styleClass="regExceptionLayout" />
-      <AnchorPane layoutX="180.0" layoutY="34.0" styleClass="onboardImgPane">
-         <children>
-            <AnchorPane fx:id="operatorExceptionLayout" layoutX="66.0" layoutY="14.0" styleClass="operatorExceptionLayout">
+            <GridPane alignment="CENTER" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
+              <columnConstraints>
+                <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" percentWidth="10.0" />
+                <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" percentWidth="80.0" />
+                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" percentWidth="10.0" />
+              </columnConstraints>
+              <rowConstraints>
+                <RowConstraints percentHeight="100.0" valignment="CENTER" vgrow="ALWAYS" />
+              </rowConstraints>
                <children>
-                  <Label styleClass="onboardOperatorDetailsHeader" text="%employeeName" />
-                  <Label layoutX="192.0" styleClass="onboardOperatorDetailsHeader" text="%employeeCode" />
-                  <Label layoutX="589.0" styleClass="onboardOperatorDetailsHeader" text="%machineID" />
-                  <Label layoutX="376.0" styleClass="onboardOperatorDetailsHeader" text="%registrationCentreID" />
-                  <Label fx:id="employeeCode" layoutX="192.0" layoutY="25.0" styleClass="onboardOperatorDetails" />
-                  <Label fx:id="employeeName" layoutY="25.0" styleClass="onboardOperatorDetails" />
-                  <Label fx:id="machineID" layoutX="589.0" layoutY="25.0" styleClass="onboardOperatorDetails" text="machineID" />
-                  <Label fx:id="regCenterID" layoutX="376.0" layoutY="25.0" styleClass="onboardOperatorDetails" />
-               </children>
-            </AnchorPane>
-            <HBox layoutX="66.0" layoutY="90.0" styleClass="exceptionIrisPaneParent">
-               <children>
-                  <AnchorPane fx:id="fingerPane" layoutX="40.0" styleClass="exceptionFingerPane">
+                  <GridPane styleClass="onboardImgPane" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
+                    <columnConstraints>
+                      <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" percentWidth="100.0" />
+                    </columnConstraints>
+                    <rowConstraints>
+                      <RowConstraints percentHeight="100.0" valignment="CENTER" vgrow="ALWAYS" />
+                    </rowConstraints>
                      <children>
-                        <Label styleClass="onboardPageBioTitle" text="%exception" />
-                        <Pane fx:id="rightHandPane" layoutX="32.0" layoutY="33.0" prefHeight="157.0" prefWidth="120.0" styleClass="biometricExceptionPaneFinger">
+                        <GridPane GridPane.halignment="CENTER" GridPane.valignment="CENTER">
+                          <columnConstraints>
+                            <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" percentWidth="7.0" />
+                            <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" percentWidth="86.0" />
+                              <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" percentWidth="7.0" />
+                          </columnConstraints>
+                          <rowConstraints>
+                            <RowConstraints percentHeight="100.0" valignment="CENTER" vgrow="ALWAYS" />
+                          </rowConstraints>
                            <children>
-                              <ImageView fitHeight="150.0" fitWidth="200.0" layoutX="12.0" layoutY="4.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@../images/rightHandException.png" />
-                                 </image>
-                              </ImageView>
-                              <ImageView fx:id="rightLittle" fitHeight="43.0" fitWidth="26.0" layoutX="12.0" layoutY="28.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@../images/rightLittle.png" />
-                                 </image>
-                              </ImageView>
-                              <ImageView fx:id="rightRing" fitHeight="50.0" fitWidth="18.0" layoutX="33.0" layoutY="11.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@../images/rightRing.png" />
-                                 </image>
-                              </ImageView>
-                              <ImageView fx:id="rightMiddle" fitHeight="45.0" fitWidth="18.0" layoutX="53.0" layoutY="5.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@../images/rightMiddle.png" />
-                                 </image>
-                              </ImageView>
-                              <ImageView fx:id="rightIndex" fitHeight="39.0" fitWidth="18.0" layoutX="67.0" layoutY="12.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@../images/rightIndex.png" />
-                                 </image>
-                              </ImageView>
-                              <ImageView fx:id="rightThumb" fitHeight="29.0" fitWidth="36.0" layoutX="81.0" layoutY="62.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@../images/rightThumb.png" />
-                                 </image>
-                              </ImageView>
+                              <GridPane GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
+                                 <children>
+                                    <GridPane fx:id="operatorExceptionLayout" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
+                                       <columnConstraints>
+                                          <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" percentWidth="25.0" />
+                                          <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" percentWidth="25.0" />
+                                          <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" percentWidth="25.0" />
+                                          <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" percentWidth="25.0" />
+                                       </columnConstraints>
+                                       <rowConstraints>
+                                          <RowConstraints percentHeight="50.0" valignment="CENTER" vgrow="ALWAYS" />
+                                          <RowConstraints percentHeight="50.0" valignment="CENTER" vgrow="ALWAYS" />
+                                       </rowConstraints>
+                                       <children>
+                                          <Label styleClass="onboardOperatorDetailsHeader" text="%employeeName" />
+                                          <Label styleClass="onboardOperatorDetailsHeader" text="%employeeCode" GridPane.columnIndex="1" />
+                                          <Label styleClass="onboardOperatorDetailsHeader" text="%registrationCentreID" GridPane.columnIndex="2" />
+                                          <Label styleClass="onboardOperatorDetailsHeader" text="%machineID" GridPane.columnIndex="3" />
+                                          <Label fx:id="employeeName" styleClass="onboardOperatorDetails" GridPane.rowIndex="1" />
+                                          <Label fx:id="employeeCode" styleClass="onboardOperatorDetails" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                          <Label fx:id="regCenterID" styleClass="onboardOperatorDetails" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                                          <Label fx:id="machineID" styleClass="onboardOperatorDetails" text="machineID" GridPane.columnIndex="3" GridPane.rowIndex="1" />
+                                       </children>
+                                    </GridPane>
+                                    <GridPane GridPane.halignment="CENTER" GridPane.rowIndex="3" GridPane.valignment="CENTER">
+                                      <columnConstraints>
+                                        <ColumnConstraints hgrow="SOMETIMES" percentWidth="50.0" />
+                                        <ColumnConstraints hgrow="SOMETIMES" percentWidth="50.0" />
+                                      </columnConstraints>
+                                      <rowConstraints>
+                                        <RowConstraints percentHeight="100.0" valignment="CENTER" vgrow="ALWAYS" />
+                                      </rowConstraints>
+                                       <children>
+                                          <Label styleClass="onboardPageBioTitle" text="%exception" GridPane.halignment="CENTER" />
+                                          <Label styleClass="onboardPageBioTitle" text="%irisexception" GridPane.columnIndex="1" GridPane.halignment="CENTER" />
+                                       </children>
+                                    </GridPane>
+                                    <GridPane alignment="CENTER" GridPane.halignment="CENTER" GridPane.rowIndex="4" GridPane.valignment="CENTER">
+                                      <columnConstraints>
+                                        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" percentWidth="50.0" />
+                                        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" percentWidth="50.0" />
+                                      </columnConstraints>
+                                      <rowConstraints>
+                                        <RowConstraints percentHeight="100.0" valignment="CENTER" vgrow="ALWAYS" />
+                                      </rowConstraints>
+                                       <children>
+                                          <GridPane fx:id="fingerPane" alignment="BOTTOM_CENTER" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
+                                            <columnConstraints>
+                                              <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" percentWidth="50.0" />
+                                              <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" percentWidth="50.0" />
+                                            </columnConstraints>
+                                            <rowConstraints>
+                                              <RowConstraints percentHeight="80.0" valignment="CENTER" vgrow="ALWAYS" />
+                                                <RowConstraints percentHeight="20.0" valignment="CENTER" vgrow="ALWAYS" />
+                                            </rowConstraints>
+                                             <children>
+                                                <GridPane GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                                  <columnConstraints>
+                                                    <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" percentWidth="20.0" />
+                                                      <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" percentWidth="80.0" />
+                                                  </columnConstraints>
+                                                  <rowConstraints>
+                                                    <RowConstraints percentHeight="100.0" valignment="CENTER" vgrow="SOMETIMES" />
+                                                  </rowConstraints>
+                                                   <children>
+                                                      <Label alignment="CENTER" styleClass="onboardBioDetailsHeader" text="%leftHand" GridPane.columnIndex="1" />
+                                                   </children>
+                                                </GridPane>
+                                                <GridPane alignment="CENTER" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
+                                                  <columnConstraints>
+                                                    <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" percentWidth="20.0" />
+                                                    <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" percentWidth="60.0" />
+                                                      <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" percentWidth="20.0" />
+                                                  </columnConstraints>
+                                                  <rowConstraints>
+                                                    <RowConstraints percentHeight="90.0" valignment="CENTER" vgrow="ALWAYS" />
+                                                    <RowConstraints percentHeight="10.0" valignment="CENTER" vgrow="ALWAYS" />
+                                                  </rowConstraints>
+                                                   <children>
+                                                      <GridPane fx:id="rightHandPane" alignment="CENTER" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
+                                                        <columnConstraints>
+                                                          <ColumnConstraints hgrow="SOMETIMES" percentWidth="100.0" />
+                                                        </columnConstraints>
+                                                        <rowConstraints>
+                                                          <RowConstraints percentHeight="100.0" vgrow="SOMETIMES" />
+                                                        </rowConstraints>
+                                                         <children>
+                                                            <Pane fx:id="rightHandPane" nodeOrientation="LEFT_TO_RIGHT" styleClass="biometricExceptionPaneFinger">
+                                                               <children>
+                                                                  <ImageView fitHeight="235.0" fitWidth="133.0" layoutX="12.0" layoutY="4.0" pickOnBounds="true" preserveRatio="true">
+                                                                     <image>
+                                                                        <Image url="@../images/rightHandException.png" />
+                                                                     </image>
+                                                                  </ImageView>
+                                                                  <ImageView fx:id="rightLittle" fitHeight="52.0" fitWidth="41.0" layoutX="12.0" layoutY="36.0" pickOnBounds="true" preserveRatio="true">
+                                                                     <image>
+                                                                        <Image url="@../images/rightLittle.png" />
+                                                                     </image>
+                                                                  </ImageView>
+                                                                  <ImageView fx:id="rightRing" fitHeight="63.0" fitWidth="41.0" layoutX="40.0" layoutY="13.0" pickOnBounds="true" preserveRatio="true">
+                                                                     <image>
+                                                                        <Image url="@../images/rightRing.png" />
+                                                                     </image>
+                                                                  </ImageView>
+                                                                  <ImageView fx:id="rightMiddle" fitHeight="65.0" fitWidth="32.0" layoutX="66.0" layoutY="4.0" pickOnBounds="true" preserveRatio="true">
+                                                                     <image>
+                                                                        <Image url="@../images/rightMiddle.png" />
+                                                                     </image>
+                                                                  </ImageView>
+                                                                  <ImageView fx:id="rightIndex" fitHeight="80.0" fitWidth="27.0" layoutX="82.0" layoutY="16.0" pickOnBounds="true" preserveRatio="true">
+                                                                     <image>
+                                                                        <Image url="@../images/rightIndex.png" />
+                                                                     </image>
+                                                                  </ImageView>
+                                                                  <ImageView fx:id="rightThumb" fitHeight="37.0" fitWidth="43.0" layoutX="105.0" layoutY="81.0" pickOnBounds="true" preserveRatio="true">
+                                                                     <image>
+                                                                        <Image url="@../images/rightThumb.png" />
+                                                                     </image>
+                                                                  </ImageView>
+                                                               </children>
+                                                            </Pane>
+                                                         </children>
+                                                      </GridPane>
+                                                   </children>
+                                                </GridPane>
+                                                <Label alignment="CENTER" styleClass="onboardBioDetailsHeader" text="%rightHand" GridPane.rowIndex="1" />
+                                                <GridPane alignment="CENTER" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
+                                                  <columnConstraints>
+                                                    <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" percentWidth="20.0" />
+                                                    <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" percentWidth="60.0" />
+                                                      <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" percentWidth="20.0" />
+                                                  </columnConstraints>
+                                                  <rowConstraints>
+                                                    <RowConstraints percentHeight="90.0" valignment="CENTER" vgrow="ALWAYS" />
+                                                    <RowConstraints percentHeight="10.0" valignment="CENTER" vgrow="ALWAYS" />
+                                                  </rowConstraints>
+                                                   <children>
+                                                      <GridPane alignment="CENTER" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
+                                                         <children>
+                                                            <Pane fx:id="leftHandPane" styleClass="biometricExceptionPaneFinger">
+                                                               <children>
+                                                                  <ImageView fitHeight="200.0" fitWidth="200.0" layoutX="10.0" layoutY="4.0" pickOnBounds="true" preserveRatio="true">
+                                                                     <image>
+                                                                        <Image url="@../images/leftHandException.png" />
+                                                                     </image>
+                                                                  </ImageView>
+                                                                  <ImageView fx:id="leftLittle" fitHeight="50.0" fitWidth="37.0" layoutX="110.0" layoutY="35.0" pickOnBounds="true" preserveRatio="true">
+                                                                     <image>
+                                                                        <Image url="@../images/leftLittle.png" />
+                                                                     </image>
+                                                                  </ImageView>
+                                                                  <ImageView fx:id="leftRing" fitHeight="61.0" fitWidth="43.0" layoutX="90.0" layoutY="13.0" pickOnBounds="true" preserveRatio="true">
+                                                                     <image>
+                                                                        <Image url="@../images/leftRing.png" />
+                                                                     </image>
+                                                                  </ImageView>
+                                                                  <ImageView fx:id="leftMiddle" fitHeight="64.0" fitWidth="20.0" layoutX="71.0" layoutY="4.0" pickOnBounds="true" preserveRatio="true">
+                                                                     <image>
+                                                                        <Image url="@../images/leftMiddle.png" />
+                                                                     </image>
+                                                                  </ImageView>
+                                                                  <ImageView fx:id="leftIndex" fitHeight="54.0" fitWidth="65.0" layoutX="47.0" layoutY="16.0" pickOnBounds="true" preserveRatio="true">
+                                                                     <image>
+                                                                        <Image url="@../images/leftIndex.png" />
+                                                                     </image>
+                                                                  </ImageView>
+                                                                  <ImageView fx:id="leftThumb" fitHeight="38.0" fitWidth="50.0" layoutX="10.0" layoutY="82.0" pickOnBounds="true" preserveRatio="true">
+                                                                     <image>
+                                                                        <Image url="@../images/leftThumb.png" />
+                                                                     </image>
+                                                                  </ImageView>
+                                                               </children>
+                                                            </Pane>
+                                                         </children>
+                                                         <columnConstraints>
+                                                            <ColumnConstraints hgrow="SOMETIMES" percentWidth="100.0" />
+                                                         </columnConstraints>
+                                                         <rowConstraints>
+                                                            <RowConstraints percentHeight="100.0" vgrow="SOMETIMES" />
+                                                         </rowConstraints>
+                                                      </GridPane>
+                                                   </children>
+                                                </GridPane>
+                                             </children>
+                                          </GridPane>
+                                          <GridPane fx:id="irisPane" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
+                                             <columnConstraints>
+                                                <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" percentWidth="50.0" />
+                                                <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" percentWidth="50.0" />
+                                             </columnConstraints>
+                                             <rowConstraints>
+                                                <RowConstraints percentHeight="80.0" valignment="CENTER" vgrow="ALWAYS" />
+                                                <RowConstraints percentHeight="20.0" vgrow="ALWAYS" />
+                                             </rowConstraints>
+                                             <children>
+                                                <GridPane GridPane.columnIndex="1">
+                                                  <columnConstraints>
+                                                    <ColumnConstraints hgrow="SOMETIMES" percentWidth="10.0" />
+                                                    <ColumnConstraints hgrow="SOMETIMES" percentWidth="52.0" />
+                                                      <ColumnConstraints hgrow="SOMETIMES" percentWidth="38.0" />
+                                                  </columnConstraints>
+                                                  <rowConstraints>
+                                                    <RowConstraints percentHeight="25.0" vgrow="ALWAYS" />
+                                                    <RowConstraints percentHeight="28.0" vgrow="ALWAYS" />
+                                                    <RowConstraints percentHeight="47.0" vgrow="ALWAYS" />
+                                                  </rowConstraints>
+                                                   <children>
+                                                      <GridPane alignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                                        <columnConstraints>
+                                                          <ColumnConstraints hgrow="SOMETIMES" percentWidth="100.0" />
+                                                        </columnConstraints>
+                                                        <rowConstraints>
+                                                          <RowConstraints percentHeight="100.0" vgrow="SOMETIMES" />
+                                                        </rowConstraints>
+                                                         <children>
+                                                            <Pane fx:id="leftEyePane">
+                                                               <children>
+                                                                  <ImageView fx:id="leftEye" fitHeight="${leftEyePane.height+20}" fitWidth="${leftEyePane.width+20}" pickOnBounds="true" preserveRatio="true" styleClass="addBorderStyle">
+                                                                     <image>
+                                                                        <Image url="@../images/exceptionEye.png" />
+                                                                     </image>
+                                                                  </ImageView>
+                                                               </children>
+                                                            </Pane>
+                                                         </children>
+                                                      </GridPane>
+                                                   </children>
+                                                </GridPane>
+                                                <Label styleClass="onboardBioDetailsHeader" text="%rightIris" GridPane.rowIndex="1" />
+                                                <Label styleClass="onboardBioDetailsHeader" text="%leftIris" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                                <GridPane>
+                                                  <columnConstraints>
+                                                    <ColumnConstraints hgrow="SOMETIMES" percentWidth="15.0" />
+                                                    <ColumnConstraints hgrow="SOMETIMES" percentWidth="52.0" />
+                                                      <ColumnConstraints hgrow="SOMETIMES" percentWidth="33.0" />
+                                                  </columnConstraints>
+                                                  <rowConstraints>
+                                                    <RowConstraints percentHeight="25.0" vgrow="ALWAYS" />
+                                                    <RowConstraints percentHeight="28.0" valignment="CENTER" vgrow="ALWAYS" />
+                                                    <RowConstraints percentHeight="47.0" vgrow="ALWAYS" />
+                                                  </rowConstraints>
+                                                   <children>
+                                                      <GridPane alignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                                        <columnConstraints>
+                                                          <ColumnConstraints hgrow="SOMETIMES" percentWidth="100.0" />
+                                                        </columnConstraints>
+                                                        <rowConstraints>
+                                                          <RowConstraints percentHeight="100.0" vgrow="SOMETIMES" />
+                                                        </rowConstraints>
+                                                         <children>
+                                                            <Pane fx:id="rightEyePane">
+                                                               <children>
+                                                                  <ImageView fx:id="rightEye" fitHeight="${rightEyePane.height+20}" fitWidth="${rightEyePane.width+20}" pickOnBounds="true" preserveRatio="true">
+                                                                     <image>
+                                                                        <Image url="@../images/exceptionEye.png" />
+                                                                     </image>
+                                                                  </ImageView>
+                                                               </children>
+                                                            </Pane>
+                                                         </children>
+                                                      </GridPane>
+                                                   </children>
+                                                </GridPane>
+                                             </children>
+                                          </GridPane>
+                                       </children>
+                                    </GridPane>
+                                    <HBox spacing="2.0" GridPane.rowIndex="5">
+                                       <children>
+                                          <Label styleClass="onboardInfoDetails" text="%clicktomarktheparticular">
+                                             <graphic>
+                                                <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
+                                                   <image>
+                                                      <Image url="@../images/infoSymbol.png" />
+                                                   </image>
+                                                </ImageView>
+                                             </graphic>
+                                          </Label>
+                                          <Label styleClass="onboardInfoDetailsName" text="%finger/Iris" />
+                                          <Label styleClass="onboardInfoDetails" text="%asException" />
+                                       </children>
+                                    </HBox>
+                                    <GridPane GridPane.rowIndex="6">
+                                      <columnConstraints>
+                                        <ColumnConstraints hgrow="SOMETIMES" percentWidth="100.0" />
+                                      </columnConstraints>
+                                      <rowConstraints>
+                                          <RowConstraints percentHeight="100.0" vgrow="ALWAYS" />
+                                      </rowConstraints>
+                                       <children>
+                                          <GridPane>
+                                            <columnConstraints>
+                                              <ColumnConstraints hgrow="SOMETIMES" percentWidth="50.0" />
+                                              <ColumnConstraints hgrow="SOMETIMES" percentWidth="50.0" />
+                                            </columnConstraints>
+                                            <rowConstraints>
+                                              <RowConstraints percentHeight="100.0" vgrow="SOMETIMES" />
+                                            </rowConstraints>
+                                             <children>
+                                                <GridPane>
+                                                  <columnConstraints>
+                                                    <ColumnConstraints hgrow="SOMETIMES" percentWidth="100.0" />
+                                                  </columnConstraints>
+                                                  <rowConstraints>
+                                                    <RowConstraints percentHeight="10.0" vgrow="SOMETIMES" />
+                                                    <RowConstraints percentHeight="90.0" vgrow="SOMETIMES" />
+                                                  </rowConstraints>
+                                                   <children>
+                                                      <Label styleClass="onboardExceptionDetails" text="%markedasException" />
+                                                   </children>
+                                                </GridPane>
+                                                <GridPane fx:id="exceptionDocProof" GridPane.columnIndex="1">
+                                                  <columnConstraints>
+                                                    <ColumnConstraints hgrow="SOMETIMES" percentWidth="50.0" />
+                                                      <ColumnConstraints hgrow="SOMETIMES" percentWidth="50.0" />
+                                                  </columnConstraints>
+                                                  <rowConstraints>
+                                                    <RowConstraints percentHeight="10.0" vgrow="SOMETIMES" />
+                                                      <RowConstraints percentHeight="90.0" vgrow="SOMETIMES" />
+                                                  </rowConstraints>
+                                                   <children>
+                                                      <Button fx:id="scanBtn" mnemonicParsing="false" styleClass="onboardScanBtn" text="%scan" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="TOP">
+                                                         <graphic>
+                                                            <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
+                                                               <image>
+                                                                  <Image url="@../images/scan.png" />
+                                                               </image>
+                                                            </ImageView>
+                                                         </graphic>
+                                                      </Button>
+                                                      <ComboBox promptText="%selectProForException" styleClass="exceptionCombobox" GridPane.rowIndex="1" GridPane.valignment="TOP" />
+                                                      <Label styleClass="onboardExceptionDetails" text="%documentEvidence" />
+                                                   </children>
+                                                </GridPane>
+                                             </children>
+                                          </GridPane>
+                                       </children>
+                                    </GridPane>
+                                    <GridPane fx:id="spliterLine" GridPane.rowIndex="1">
+                                      <columnConstraints>
+                                        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" percentWidth="100.0" />
+                                      </columnConstraints>
+                                      <rowConstraints>
+                                        <RowConstraints percentHeight="100.0" valignment="CENTER" vgrow="ALWAYS" />
+                                      </rowConstraints>
+                                       <children>
+                                         <Line startX="${spliterLine.width-5}" styleClass="slitLine" />
+                                       </children>
+                                    </GridPane>
+                                 </children>
+                                 <columnConstraints>
+                                    <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" percentWidth="100.0" />
+                                 </columnConstraints>
+                                 <rowConstraints>
+                                    <RowConstraints percentHeight="10.0" valignment="CENTER" vgrow="ALWAYS" />
+                                    <RowConstraints percentHeight="3.0" valignment="CENTER" vgrow="ALWAYS" />
+                                    <RowConstraints percentHeight="5.0" valignment="CENTER" vgrow="ALWAYS" />
+                                    <RowConstraints percentHeight="5.0" valignment="CENTER" vgrow="ALWAYS" />
+                                    <RowConstraints percentHeight="43.0" valignment="CENTER" vgrow="ALWAYS" />
+                                    <RowConstraints percentHeight="4.0" valignment="CENTER" vgrow="ALWAYS" />
+                                    <RowConstraints percentHeight="30.0" valignment="CENTER" vgrow="ALWAYS" />
+                                 </rowConstraints>
+                              </GridPane>
                            </children>
-                        </Pane>
-                        <Pane fx:id="leftHandPane" layoutX="189.0" layoutY="33.0" prefHeight="157.0" prefWidth="120.0" styleClass="biometricExceptionPaneFinger">
+                        </GridPane>
+                     </children>
+                  </GridPane>
+               </children>
+            </GridPane>
+            <GridPane styleClass="userOnboardHeader">
+              <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" percentWidth="100.0" />
+              </columnConstraints>
+              <rowConstraints>
+                <RowConstraints percentHeight="100.0" vgrow="ALWAYS" />
+              </rowConstraints>
+               <children>
+                  <GridPane fx:id="operatorExceptionHeader">
+                    <columnConstraints>
+                      <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" percentWidth="33.0" />
+                      <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" percentWidth="34.0" />
+                        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" percentWidth="33.0" />
+                    </columnConstraints>
+                    <rowConstraints>
+                      <RowConstraints percentHeight="100.0" valignment="CENTER" vgrow="ALWAYS" />
+                    </rowConstraints>
+                     <children>
+                        <Label fx:id="onboardPageTitle" text="%onboardOperator" GridPane.columnIndex="1" />
+                        <HBox alignment="CENTER_LEFT" spacing="2.0" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
                            <children>
-                              <ImageView fitHeight="150.0" fitWidth="200.0" layoutX="10.0" layoutY="4.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@../images/leftHandException.png" />
-                                 </image>
-                              </ImageView>
-                              <ImageView fx:id="leftLittle" fitHeight="45.0" fitWidth="26.0" layoutX="84.0" layoutY="27.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@../images/leftLittle.png" />
-                                 </image>
-                              </ImageView>
-                              <ImageView fx:id="leftRing" fitHeight="45.0" fitWidth="18.0" layoutX="70.0" layoutY="11.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@../images/leftRing.png" />
-                                 </image>
-                              </ImageView>
-                              <ImageView fx:id="leftMiddle" fitHeight="50.0" fitWidth="13.0" layoutX="56.0" layoutY="4.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@../images/leftMiddle.png" />
-                                 </image>
-                              </ImageView>
-                              <ImageView fx:id="leftIndex" fitHeight="50.0" fitWidth="18.0" layoutX="38.0" layoutY="13.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@../images/leftIndex.png" />
-                                 </image>
-                              </ImageView>
-                              <ImageView fx:id="leftThumb" fitHeight="27.0" fitWidth="58.0" layoutX="10.0" layoutY="62.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@../images/leftThumb.png" />
-                                 </image>
-                              </ImageView>
+                              <Text fx:id="onboardHomeLink" onMouseClicked="#goToHomePage" text="%homeLink" />
+                              <Text fx:id="onboardPageDesc" text="%onboardOperator" />
                            </children>
-                        </Pane>
-                        <Label layoutX="46.0" layoutY="202.0" styleClass="onboardBioDetailsHeader" text="%rightHand" />
-                        <Label layoutX="229.0" layoutY="202.0" styleClass="onboardBioDetailsHeader" text="%leftHand" />
+                           <padding>
+                              <Insets left="10.0" />
+                           </padding>
+                        </HBox>
                      </children>
-                  </AnchorPane>
-                  <AnchorPane fx:id="irisPane" layoutX="429.0" styleClass="exceptionPanes">
+                  </GridPane>
+                  <GridPane fx:id="registrationExceptionHeader" styleClass="headerFooter">
                      <children>
-                        <Pane fx:id="rightEyePane" layoutX="4.0" layoutY="71.0" prefHeight="90.0" prefWidth="160.0" styleClass="biometricExceptionPaneIris">
+                        <HBox alignment="CENTER_LEFT" spacing="5.0" styleClass="homeBox">
                            <children>
-                              <ImageView fx:id="rightEye" fitHeight="100.0" fitWidth="150.0" layoutX="5.0" layoutY="5.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@../images/exceptionEye.png" />
-                                 </image>
-                              </ImageView>
+                              <Button mnemonicParsing="false" onAction="#goToHomePageFromRegistration" styleClass="homeButton" text="%home" />
+                              <Label styleClass="headerLabel" text="%/registration" />
                            </children>
-                        </Pane>
-                        <Pane fx:id="leftEyePane" layoutX="173.0" layoutY="71.0" prefHeight="90.0" prefWidth="160.0" styleClass="biometricExceptionPaneIris">
+                        </HBox>
+                        <GridPane alignment="CENTER" styleClass="headerPageTracker" GridPane.columnIndex="1">
                            <children>
-                              <ImageView fx:id="leftEye" fitHeight="100.0" fitWidth="150.0" layoutX="5.0" layoutY="5.0" pickOnBounds="true" preserveRatio="true">
+                              <HBox alignment="CENTER_LEFT" spacing="5.0">
+                                 <children>
+                                    <ImageView fitHeight="14.0" fitWidth="14.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../images/activeDemographicDetails.png" />
+                                       </image>
+                                    </ImageView>
+                                    <Label styleClass="headerTexts" text="%demograhpicDetails" />
+                                 </children>
+                              </HBox>
+                              <HBox alignment="CENTER_LEFT" spacing="5.0" GridPane.columnIndex="1">
+                                 <children>
+                                    <ImageView fitHeight="14.0" fitWidth="14.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../images/activeUplaodDocument.png" />
+                                       </image>
+                                    </ImageView>
+                                    <Label alignment="BOTTOM_CENTER" contentDisplay="TOP" styleClass="headerTexts" text="%uploadDocuments" />
+                                 </children>
+                              </HBox>
+                              <HBox alignment="CENTER_LEFT" spacing="5.0" GridPane.columnIndex="2">
+                                 <children>
+                                    <ImageView fitHeight="24.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../images/activeBiometricDetail.png" />
+                                       </image>
+                                    </ImageView>
+                                    <Label contentDisplay="TOP" styleClass="trackerHighlighter" text="%biometricDetails" />
+                                 </children>
+                              </HBox>
+                              <HBox alignment="CENTER_LEFT" spacing="5.0" GridPane.columnIndex="3">
+                                 <children>
+                                    <ImageView fitHeight="24.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../images/deactiveAuthentication.png" />
+                                       </image>
+                                    </ImageView>
+                                    <Label styleClass="headerTexts" text="%authentication" />
+                                 </children>
+                              </HBox>
+                           </children>
+                           <columnConstraints>
+                              <ColumnConstraints hgrow="SOMETIMES" percentWidth="25.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" percentWidth="25.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" percentWidth="25.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" percentWidth="25.0" />
+                           </columnConstraints>
+                           <rowConstraints>
+                              <RowConstraints percentHeight="100.0" valignment="CENTER" vgrow="SOMETIMES" />
+                           </rowConstraints>
+                        </GridPane>
+                     </children>
+                     <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" percentWidth="20.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" percentWidth="60.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" percentWidth="20.0" />
+                     </columnConstraints>
+                     <rowConstraints>
+                        <RowConstraints percentHeight="100.0" vgrow="SOMETIMES" />
+                     </rowConstraints>
+                  </GridPane>
+               </children>
+            </GridPane>
+            <GridPane GridPane.rowIndex="2">
+              <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" percentWidth="100.0" />
+              </columnConstraints>
+              <rowConstraints>
+                <RowConstraints percentHeight="100.0" vgrow="SOMETIMES" />
+              </rowConstraints>
+               <children>
+                  <GridPane fx:id="userOnboardFooter" styleClass="userOnboardFooter">
+                    <columnConstraints>
+                      <ColumnConstraints hgrow="SOMETIMES" percentWidth="10.0" />
+                        <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" percentWidth="10.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" percentWidth="60.0" />
+                        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" percentWidth="10.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" percentWidth="10.0" />
+                    </columnConstraints>
+                    <rowConstraints>
+                      <RowConstraints percentHeight="100.0" vgrow="SOMETIMES" />
+                    </rowConstraints>
+                     <children>
+                        <Button fx:id="previousBtn" mnemonicParsing="false" onAction="#goToPreviousPage" styleClass="backButton" text="%back" GridPane.columnIndex="1">
+                           <graphic>
+                              <ImageView fitHeight="20.0" fitWidth="27.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="@../images/exceptionEye.png" />
+                                    <Image url="@../images/arrowLeft.png" />
                                  </image>
                               </ImageView>
+                           </graphic>
+                           <GridPane.margin>
+                              <Insets left="10.0" />
+                           </GridPane.margin>
+                        </Button>
+                        <Button fx:id="nextBtn" mnemonicParsing="false" onAction="#goToNextPage" styleClass="contiuneButton" text="%continue" GridPane.columnIndex="3" GridPane.halignment="RIGHT">
+                           <graphic>
+                              <ImageView fitHeight="20.0" fitWidth="27.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../images/arrowRight.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                           <GridPane.margin>
+                              <Insets right="10.0" />
+                           </GridPane.margin>
+                        </Button>
+                     </children>
+                  </GridPane>
+                  <GridPane fx:id="registrationFooter">
+                     <children>
+                        <GridPane hgap="10.0" GridPane.columnIndex="1">
+                           <children>
+                              <GridPane>
+                                 <children>
+                                    <GridPane>
+                                       <children>
+                                          <GridPane fx:id="backButtonPane" GridPane.columnIndex="1">
+                                             <children>
+                                                <Button contentDisplay="BOTTOM" mnemonicParsing="false" onAction="#goToPreviousPage" styleClass="backButton" text="%back" />
+                                             </children>
+                                             <columnConstraints>
+                                                <ColumnConstraints hgrow="SOMETIMES" percentWidth="100.0" />
+                                             </columnConstraints>
+                                             <rowConstraints>
+                                                <RowConstraints percentHeight="100.0" vgrow="SOMETIMES" />
+                                             </rowConstraints>
+                                          </GridPane>
+                                       </children>
+                                       <columnConstraints>
+                                          <ColumnConstraints hgrow="SOMETIMES" percentWidth="15.0" />
+                                          <ColumnConstraints hgrow="SOMETIMES" percentWidth="20.0" />
+                                          <ColumnConstraints hgrow="SOMETIMES" percentWidth="65.0" />
+                                       </columnConstraints>
+                                       <rowConstraints>
+                                          <RowConstraints percentHeight="100.0" vgrow="SOMETIMES" />
+                                       </rowConstraints>
+                                    </GridPane>
+                                    <GridPane GridPane.columnIndex="1">
+                                       <children>
+                                          <GridPane fx:id="continueButtonPane" GridPane.columnIndex="2">
+                                             <children>
+                                                <Button mnemonicParsing="false" onAction="#goToNextPage" styleClass="contiuneButton" text="%continue" />
+                                             </children>
+                                             <columnConstraints>
+                                                <ColumnConstraints hgrow="SOMETIMES" percentWidth="100.0" />
+                                             </columnConstraints>
+                                             <rowConstraints>
+                                                <RowConstraints percentHeight="100.0" vgrow="SOMETIMES" />
+                                             </rowConstraints>
+                                          </GridPane>
+                                       </children>
+                                       <columnConstraints>
+                                          <ColumnConstraints hgrow="SOMETIMES" percentWidth="20.0" />
+                                          <ColumnConstraints hgrow="SOMETIMES" percentWidth="60.0" />
+                                          <ColumnConstraints hgrow="SOMETIMES" percentWidth="20.0" />
+                                       </columnConstraints>
+                                       <rowConstraints>
+                                          <RowConstraints percentHeight="100.0" vgrow="SOMETIMES" />
+                                       </rowConstraints>
+                                    </GridPane>
+                                 </children>
+                                 <columnConstraints>
+                                    <ColumnConstraints hgrow="SOMETIMES" percentWidth="50.0" />
+                                    <ColumnConstraints hgrow="SOMETIMES" percentWidth="50.0" />
+                                 </columnConstraints>
+                                 <rowConstraints>
+                                    <RowConstraints percentHeight="100.0" vgrow="SOMETIMES" />
+                                 </rowConstraints>
+                              </GridPane>
                            </children>
-                        </Pane>
-                        <Label styleClass="onboardPageBioTitle" text="%irisexception" />
-                        <Label layoutX="44.0" layoutY="202.0" styleClass="onboardBioDetailsHeader" text="%rightIris" />
-                        <Label layoutX="225.0" layoutY="202.0" styleClass="onboardBioDetailsHeader" text="%leftIris" />
+                           <columnConstraints>
+                              <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" />
+                           </columnConstraints>
+                           <rowConstraints>
+                              <RowConstraints vgrow="SOMETIMES" />
+                           </rowConstraints>
+                        </GridPane>
                      </children>
-                  </AnchorPane>
+                     <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" percentWidth="10.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" percentWidth="80.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" percentWidth="10.0" />
+                     </columnConstraints>
+                     <rowConstraints>
+                        <RowConstraints percentHeight="100" vgrow="SOMETIMES" />
+                     </rowConstraints>
+                  </GridPane>
                </children>
-            </HBox>
-            <AnchorPane layoutX="147.0" layoutY="410.0" prefHeight="157.0" prefWidth="322.0">
-               <children>
-                  <Label layoutX="7.0" layoutY="1.0" styleClass="onboardExceptionDetails" text="%markedasException" />
-               </children>
-            </AnchorPane>
-            <AnchorPane layoutX="147.0" layoutY="360.0" prefHeight="50.0" prefWidth="449.0">
-               <children>
-                  <Label layoutX="24.0" layoutY="6.0" styleClass="onboardInfoDetails" text="%clicktomarktheparticular" />
-                  <Label layoutX="258.0" layoutY="6.0" styleClass="onboardInfoDetailsName" text="%finger/Iris" />
-                  <Label layoutX="421.0" layoutY="6.0" styleClass="onboardInfoDetails" text="%asException" />
-                  <ImageView fitHeight="15.0" fitWidth="15.0" layoutY="5.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../images/infoSymbol.png" />
-                     </image>
-                  </ImageView>
-               </children>
-            </AnchorPane>
-            <AnchorPane fx:id="exceptionDocProof" layoutX="508.0" layoutY="410.0" styleClass="exceptionDocProof">
-               <children>
-                  <Label layoutX="1.0" layoutY="1.0" styleClass="onboardExceptionDetails" text="%documentEvidence" />
-                  <ComboBox layoutX="1.0" layoutY="17.0" prefHeight="35.0" prefWidth="200.0" promptText="%selectProForException" styleClass="exceptionCombobox" />
-                  <Button fx:id="scanBtn" layoutX="221.0" layoutY="24.0" mnemonicParsing="false" styleClass="onboardScanBtn" text="%scan">
-                     <graphic>
-                        <ImageView fitHeight="15.0" fitWidth="15.0" layoutY="25.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@../images/scan.png" />
-                           </image>
-                        </ImageView>
-                     </graphic>
-                  </Button>
-               </children>
-            </AnchorPane>
+            </GridPane>
          </children>
-      </AnchorPane>
-      <AnchorPane fx:id="userOnboardFooter" layoutX="1.0" layoutY="620.0" styleClass="userOnboardFooter">
-         <children>
-            <Button fx:id="previousBtn" layoutX="124.0" layoutY="3.0" mnemonicParsing="false" onAction="#goToPreviousPage" styleClass="backButton" text="%back">
-               <graphic>
-                  <ImageView fitHeight="20.0" fitWidth="27.0" layoutY="25.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../images/arrowLeft.png" />
-                     </image>
-                  </ImageView>
-               </graphic>
-            </Button>
-            <Button fx:id="nextBtn" layoutX="991.0" layoutY="4.0" mnemonicParsing="false" onAction="#goToNextPage" styleClass="contiuneButton" text="%continue">
-               <graphic>
-                  <ImageView fitHeight="20.0" fitWidth="27.0" layoutY="25.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../images/arrowRight.png" />
-                     </image>
-                  </ImageView>
-               </graphic>
-            </Button>
-         </children>
-      </AnchorPane>
-      <AnchorPane fx:id="registrationFooter" layoutY="624.0" styleClass="registrationFooter">
-         <children>
-            <Button layoutX="124.0" layoutY="3.0" mnemonicParsing="false" onAction="#goToPreviousPage" styleClass="backButton" text="%back">
-               <graphic>
-                  <ImageView fitHeight="20.0" fitWidth="27.0" layoutY="25.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../images/arrowLeft.png" />
-                     </image>
-                  </ImageView>
-               </graphic>
-            </Button>
-            <Button layoutX="991.0" layoutY="4.0" mnemonicParsing="false" onAction="#goToNextPage" styleClass="contiuneButton" text="%continue">
-               <graphic>
-                  <ImageView fitHeight="20.0" fitWidth="27.0" layoutY="25.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../images/arrowRight.png" />
-                     </image>
-                  </ImageView>
-               </graphic>
-            </Button>
-         </children>
-      </AnchorPane>
-      <AnchorPane fx:id="registrationExceptionHeader">
-         <children>
-            <AnchorPane fx:id="biometricExceptionHeader" layoutY="0.0">
-               <children>
-                  <AnchorPane>
-                     <children>
-                        <Button layoutY="5.0" mnemonicParsing="false" onAction="#goToHomePageFromRegistration" styleClass="homeButton" text="%home" />
-                        <Label layoutX="75.0" layoutY="7.0" styleClass="headerLabel" text="%/biometricException" />
-                     </children>
-                  </AnchorPane>
-               </children>
-            </AnchorPane>
-            <AnchorPane layoutX="210.0" layoutY="9.0" styleClass="registrationHeaderBorder">
-               <children>
-                  <AnchorPane>
-                     <children>
-                        <Label layoutX="59.0" layoutY="-3.0" text="%titleDemographicPane" />
-                        <ImageView fitHeight="24.0" fitWidth="18.0" layoutX="16.0" layoutY="-5.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@../images/activeDemographicDetails.png" />
-                           </image>
-                        </ImageView>
-                     </children>
-                  </AnchorPane>
-                  <AnchorPane layoutX="709.0">
-                     <children>
-                        <Label layoutX="46.0" layoutY="-3.0" text="%authentication" />
-                        <ImageView fitHeight="24.0" fitWidth="18.0" layoutY="-5.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@../images/deactiveAuthentication.png" />
-                           </image>
-                        </ImageView>
-                     </children>
-                  </AnchorPane>
-                  <AnchorPane layoutX="476.0">
-                     <children>
-                        <Label layoutX="62.0" layoutY="-3.0" text="%biometricDetails" />
-                        <ImageView fitHeight="24.0" fitWidth="18.0" layoutX="20.0" layoutY="-5.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@../images/deactiveBiometriDetails.png" />
-                           </image>
-                        </ImageView>
-                     </children>
-                  </AnchorPane>
-                  <AnchorPane layoutX="251.0">
-                     <children>
-                        <Label layoutX="42.0" layoutY="-3.0" text="%uploadDocuments" />
-                        <ImageView fitHeight="24.0" fitWidth="18.0" layoutX="1.0" layoutY="-5.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@../images/deactiveUploadDocument.png" />
-                           </image>
-                        </ImageView>
-                     </children>
-                  </AnchorPane>
-               </children>
-            </AnchorPane>
-         </children>
-      </AnchorPane>
-      <ImageView fx:id="trackerImage" fitHeight="25.0" fitWidth="194.0" layoutX="710.0" layoutY="35.0" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@../images/DemographicpageTracker.png" />
-         </image>
-      </ImageView>
+      </GridPane>
    </children>
-</AnchorPane>
+</GridPane>

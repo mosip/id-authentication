@@ -13,7 +13,7 @@ public class PacketStatusReaderDTO {
 
 	private String id;
 	private String version;
-	private String requestTimestamp;
+	private String requesttime;
 	private List<RegistrationIdDTO> request;
 	
 	
