@@ -1,13 +1,6 @@
 package io.mosip.preregistration.notification.service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -23,7 +16,6 @@ import io.mosip.preregistration.core.util.ValidationUtil;
 import io.mosip.preregistration.notification.dto.QRCodeResponseDTO;
 import io.mosip.preregistration.notification.error.ErrorCodes;
 import io.mosip.preregistration.notification.error.ErrorMessages;
-import io.mosip.preregistration.notification.exception.ConfigFileNotFoundException;
 import io.mosip.preregistration.notification.exception.MandatoryFieldException;
 import io.mosip.preregistration.notification.exception.util.NotificationExceptionCatcher;
 import io.mosip.preregistration.notification.service.util.NotificationServiceUtil;
@@ -55,14 +47,7 @@ public class NotificationService {
 	@Autowired
 	private QrCodeGenerator<QrVersion> qrCodeGenerator;
 
-	@Value("${global.config.file}")
-	private String globalFileName;
 
-	@Value("${pre.reg.config.file}")
-	private String preRegFileName;
-
-	@Value("${ui.config.params}")
-	private String uiConfigParams;
 
 	/**
 	 * Method to send notification.
@@ -139,42 +124,6 @@ public class NotificationService {
 		return response;
 	}
 
-	/**
-	 * This will return UI related configurations return
-	 */
-	public MainResponseDTO<Map<String, String>> getConfig() {
-		log.info("sessionId", "idType", "id",
-				"In notification service of getConfig ");
-		MainResponseDTO<Map<String, String>> res = new MainResponseDTO<>();
-		List<String> reqParams = new ArrayList<>();
-		Map<String, String> configParams = new HashMap<>();
-		try {
-			String[] uiParams = uiConfigParams.split(",");
-			for (int i = 0; i < uiParams.length; i++) {
-				reqParams.add(uiParams[i]);
-			}
-			if (globalFileName != null && preRegFileName != null) {
-				String globalParam = serviceUtil.configRestCall(globalFileName);
-				String preregParam = serviceUtil.configRestCall(preRegFileName);
-				Properties prop1 = serviceUtil.parsePropertiesString(globalParam);
-				Properties prop2 = serviceUtil.parsePropertiesString(preregParam);
-				serviceUtil.getConfigParams(prop1,configParams,reqParams);
-				serviceUtil.getConfigParams(prop2,configParams,reqParams);
-		
-			} else {
-				throw new ConfigFileNotFoundException(ErrorCodes.PRG_ACK_007.name(),
-						ErrorMessages.CONFIG_FILE_NOT_FOUND_EXCEPTION.name());
-			}
-			
-		} catch (Exception ex) {
-			log.error("sessionId", "idType", "id",
-					"In notification service of getConfig "+ex.getMessage());
-			new NotificationExceptionCatcher().handle(ex);
-		}
-		res.setResponse(configParams);
-		res.setResponsetime(serviceUtil.getCurrentResponseTime());
-		return res;
-	}
 
 	
 }

@@ -4,7 +4,6 @@
  */
 package io.mosip.preregistration.notification.exception.util;
 
-import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 
 import io.mosip.kernel.core.jsonvalidator.exception.HttpRequestException;
@@ -13,7 +12,6 @@ import io.mosip.kernel.core.util.exception.JsonParseException;
 import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
 import io.mosip.preregistration.notification.error.ErrorCodes;
 import io.mosip.preregistration.notification.error.ErrorMessages;
-import io.mosip.preregistration.notification.exception.ConfigFileNotFoundException;
 import io.mosip.preregistration.notification.exception.IOException;
 import io.mosip.preregistration.notification.exception.IllegalParamException;
 import io.mosip.preregistration.notification.exception.JsonValidationException;
@@ -74,10 +72,6 @@ public class NotificationExceptionCatcher {
 		} else if (ex instanceof MissingRequestParameterException) {
 			throw new MissingRequestParameterException(((MissingRequestParameterException) ex).getErrorCode(),
 					((MissingRequestParameterException) ex).getErrorText());
-		}
-		else if (ex instanceof HttpClientErrorException) {
-			throw new ConfigFileNotFoundException(ErrorCodes.PRG_ACK_007.name(),
-					ErrorMessages.CONFIG_FILE_NOT_FOUND_EXCEPTION.name());
 		}
 	}
 

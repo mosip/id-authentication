@@ -45,7 +45,7 @@ public class DataSyncExceptionHandler {
 		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getErrorText());
 		MainListResponseDTO responseDto = new MainListResponseDTO<>();
 		responseDto.setErr(errorDetails);
-		responseDto.setResTime(getCurrentResponseTime());
+		responseDto.setResponsetime(getCurrentResponseTime());
 		return new ResponseEntity<>(responseDto, HttpStatus.OK);
 
 	}
@@ -63,7 +63,7 @@ public class DataSyncExceptionHandler {
 		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getErrorText());
 		MainListResponseDTO responseDto = new MainListResponseDTO<>();
 		responseDto.setErr(errorDetails);
-		responseDto.setResTime(getCurrentResponseTime());
+		responseDto.setResponsetime(getCurrentResponseTime());
 		return new ResponseEntity<>(responseDto, HttpStatus.OK);
 
 	}
@@ -80,7 +80,7 @@ public class DataSyncExceptionHandler {
 		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getErrorText());
 		MainListResponseDTO responseDto = new MainListResponseDTO<>();
 		responseDto.setErr(errorDetails);
-		responseDto.setResTime(getCurrentResponseTime());
+		responseDto.setResponsetime(getCurrentResponseTime());
 		return new ResponseEntity<>(responseDto, HttpStatus.OK);
 	}
 
@@ -96,7 +96,7 @@ public class DataSyncExceptionHandler {
 		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getErrorText());
 		MainListResponseDTO responseDto = new MainListResponseDTO<>();
 		responseDto.setErr(errorDetails);
-		responseDto.setResTime(getCurrentResponseTime());
+		responseDto.setResponsetime(getCurrentResponseTime());
 		return new ResponseEntity<>(responseDto, HttpStatus.OK);
 	}
 
@@ -112,7 +112,7 @@ public class DataSyncExceptionHandler {
 		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getErrorText());
 		MainListResponseDTO responseDto = new MainListResponseDTO<>();
 		responseDto.setErr(errorDetails);
-		responseDto.setResTime(getCurrentResponseTime());
+		responseDto.setResponsetime(getCurrentResponseTime());
 		return new ResponseEntity<>(responseDto, HttpStatus.OK);
 
 	}
@@ -128,7 +128,7 @@ public class DataSyncExceptionHandler {
 		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getErrorText());
 		MainListResponseDTO responseDto = new MainListResponseDTO<>();
 		responseDto.setErr(errorDetails);
-		responseDto.setResTime(getCurrentResponseTime());
+		responseDto.setResponsetime(getCurrentResponseTime());
 		return new ResponseEntity<>(responseDto, HttpStatus.OK);
 
 	}
@@ -143,7 +143,7 @@ public class DataSyncExceptionHandler {
 		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getErrorText());
 		MainListResponseDTO responseDto = new MainListResponseDTO<>();
 		responseDto.setErr(errorDetails);
-		responseDto.setResTime(getCurrentResponseTime());
+		responseDto.setResponsetime(getCurrentResponseTime());
 		return new ResponseEntity<>(responseDto, HttpStatus.OK);
 
 	}
@@ -159,7 +159,7 @@ public class DataSyncExceptionHandler {
 		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getErrorText());
 		MainListResponseDTO responseDto = new MainListResponseDTO<>();
 		responseDto.setErr(errorDetails);
-		responseDto.setResTime(getCurrentResponseTime());
+		responseDto.setResponsetime(getCurrentResponseTime());
 		return new ResponseEntity<>(responseDto, HttpStatus.OK);
 
 	}
@@ -174,7 +174,7 @@ public class DataSyncExceptionHandler {
 		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getErrorText());
 		MainListResponseDTO responseDto = new MainListResponseDTO<>();
 		responseDto.setErr(errorDetails);
-		responseDto.setResTime(getCurrentResponseTime());
+		responseDto.setResponsetime(getCurrentResponseTime());
 		return new ResponseEntity<>(responseDto, HttpStatus.OK);
 
 	}

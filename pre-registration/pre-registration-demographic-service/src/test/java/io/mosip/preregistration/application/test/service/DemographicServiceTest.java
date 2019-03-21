@@ -273,8 +273,10 @@ public class DemographicServiceTest {
 		requiredRequestMap.put("ver", versionUrl);
 
 		responseDTO = new MainListResponseDTO<DemographicResponseDTO>();
-		responseDTO.setResTime(serviceUtil.getCurrentResponseTime());
-		// responseDTO.setStatus(Boolean.TRUE);
+
+		responseDTO.setResponsetime(serviceUtil.getCurrentResponseTime());
+		//responseDTO.setStatus(Boolean.TRUE);
+
 		responseDTO.setErr(null);
 
 		auditRequestDto.setActionTimeStamp(LocalDateTime.now(ZoneId.of("UTC")));
@@ -614,7 +616,7 @@ public class DemographicServiceTest {
 		// delResponseDto.setStatus(Boolean.TRUE);
 		delResponseDto.setErr(null);
 		delResponseDto.setResponse(deleteAllList);
-		delResponseDto.setResTime(serviceUtil.getCurrentResponseTime());
+		delResponseDto.setResponsetime(serviceUtil.getCurrentResponseTime());
 
 		ResponseEntity<MainListResponseDTO> res = new ResponseEntity<>(delResponseDto, HttpStatus.OK);
 		Mockito.when(demographicRepository.findBypreRegistrationId(preRegId)).thenReturn(null);
@@ -642,7 +644,7 @@ public class DemographicServiceTest {
 		// delResponseDto.setStatus(Boolean.TRUE);
 		delResponseDto.setErr(null);
 		delResponseDto.setResponse(deleteAllList);
-		delResponseDto.setResTime(serviceUtil.getCurrentResponseTime());
+		delResponseDto.setResponsetime(serviceUtil.getCurrentResponseTime());
 
 		ResponseEntity<MainListResponseDTO> res = new ResponseEntity<>(delResponseDto, HttpStatus.OK);
 		Mockito.when(demographicRepository.findBypreRegistrationId(preRegId)).thenReturn(preRegistrationEntity);
@@ -661,28 +663,8 @@ public class DemographicServiceTest {
 		RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
 		Mockito.when(restTemplateBuilder.build()).thenReturn(restTemplate);
 		String preRegId = "98746563542672";
-//
-//		DocumentDeleteDTO deleteDTO = new DocumentDeleteDTO();
-//		deleteDTO.setDocumnet_Id(String.valueOf("1"));
-//		List<DocumentDeleteDTO> deleteAllList = new ArrayList<>();
-//		deleteAllList.add(deleteDTO);
-//
-//		MainListResponseDTO<DocumentDeleteDTO> delResponseDto = new MainListResponseDTO<>();
 		ExceptionJSONInfoDTO err = new ExceptionJSONInfoDTO("PRG_PAM_DOC_015", "");
-//		//delResponseDto.setStatus(Boolean.FALSE);
-//
-//		delResponseDto.setErr(err);
-//		delResponseDto.setResponse(deleteAllList);
-//		delResponseDto.setResTime(serviceUtil.getCurrentResponseTime());
-
-//		ResponseEntity<MainListResponseDTO> res = new ResponseEntity<>(delResponseDto, HttpStatus.OK);
 		Mockito.when(demographicRepository.findBypreRegistrationId(preRegId)).thenReturn(preRegistrationEntity);
-//
-//		HttpHeaders headers = new HttpHeaders();
-//		headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
-//		Mockito.when(restTemplate1.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.DELETE), Mockito.any(),
-//				Mockito.eq(MainListResponseDTO.class))).thenReturn(res);
-
 		DocumentDeleteResponseDTO deleteDTO = new DocumentDeleteResponseDTO();
 		deleteDTO.setDocumnet_Id(String.valueOf("1"));
 		List<DocumentDeleteResponseDTO> deleteAllList = new ArrayList<>();
@@ -694,14 +676,12 @@ public class DemographicServiceTest {
 		list.add(deleteBookingDTO);
 		delBookingResponseDTO.setResponse(list);
 		MainListResponseDTO<DocumentDeleteResponseDTO> delResponseDto = new MainListResponseDTO<>();
-		// delResponseDto.setStatus(Boolean.TRUE);
-
 		List<ExceptionJSONInfoDTO> exceptionJSONInfoDTOs = new ArrayList<>();
 		exceptionJSONInfoDTOs.add(err);
 
 		delResponseDto.setErr(err);
 		delResponseDto.setResponse(deleteAllList);
-		delResponseDto.setResTime(serviceUtil.getCurrentResponseTime());
+		delResponseDto.setResponsetime(serviceUtil.getCurrentResponseTime());
 
 		ResponseEntity<MainListResponseDTO<DocumentDeleteResponseDTO>> res = new ResponseEntity<>(delResponseDto,
 				HttpStatus.OK);
@@ -752,7 +732,7 @@ public class DemographicServiceTest {
 
 		delResponseDto.setErr(null);
 		delResponseDto.setResponse(deleteAllList);
-		delResponseDto.setResTime(serviceUtil.getCurrentResponseTime());
+		delResponseDto.setResponsetime(serviceUtil.getCurrentResponseTime());
 
 		ResponseEntity<MainListResponseDTO<DocumentDeleteResponseDTO>> res = new ResponseEntity<>(delResponseDto,
 				HttpStatus.OK);
@@ -773,6 +753,7 @@ public class DemographicServiceTest {
 		preRegistrationService.deleteIndividual(preRegId);
 
 	}
+
 
 	@MockBean
 	private RestTemplate restTemplate1;
@@ -803,7 +784,7 @@ public class DemographicServiceTest {
 		// delResponseDto.setStatus(Boolean.TRUE);
 		delResponseDto.setErr(null);
 		delResponseDto.setResponse(deleteAllList);
-		delResponseDto.setResTime(serviceUtil.getCurrentResponseTime());
+		delResponseDto.setResponsetime(serviceUtil.getCurrentResponseTime());
 
 		Mockito.when(demographicRepository.findBypreRegistrationId(preRegId)).thenReturn(preRegistrationEntity);
 
