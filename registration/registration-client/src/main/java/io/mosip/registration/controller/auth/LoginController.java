@@ -1,4 +1,5 @@
 
+
 package io.mosip.registration.controller.auth;
 
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
@@ -69,6 +70,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
@@ -224,8 +226,9 @@ public class LoginController extends BaseController implements Initializable {
 
 				scene = getScene(loginRoot);
 				pageFlow.getInitialPageDetails();
-				primaryStage.setResizable(true);
+				primaryStage.setResizable(false);
 				primaryStage.setFullScreen(true);
+				primaryStage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
 				primaryStage.setScene(scene);
 				primaryStage.show();
 

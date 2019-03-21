@@ -254,7 +254,7 @@ public class BaseController extends BaseService{
 	 */
 	protected void generateAlert(Pane parentPane, String id, String context, String isConsolidated,
 			StringBuilder validationMessage) {
-		if (id.matches("dd|mm|yyyyddLocalLanguage|mmLocalLanguage|yyyyLocalLanguage")) {
+		if (id.matches("dd|mm|yyyy|ddLocalLanguage|mmLocalLanguage|yyyyLocalLanguage")) {
 			id = RegistrationConstants.DOB;
 		}
 		if(id.contains("ontype")) {
@@ -346,6 +346,7 @@ public class BaseController extends BaseService{
 	public void goToHomePage() {
 		try {
 			BaseController.load(getClass().getResource(RegistrationConstants.HOME_PAGE));
+			clearOnboardData();
 		} catch (IOException ioException) {
 			LOGGER.error("REGISTRATION - REDIRECTHOME - BASE_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
 					ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));
@@ -385,7 +386,7 @@ public class BaseController extends BaseService{
 				RegistrationConstants.APPLICATION_ID, "Going to home page");
 
 		clearRegistrationData();
-
+		clearOnboardData();
 		goToHomePage();
 	}
 

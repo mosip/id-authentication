@@ -335,7 +335,10 @@ public class FaceCaptureController extends BaseController implements Initializab
 			exceptionImageCaptured = true;
 		}
 
-		if (validateApplicantImage()) {
+		if ((boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER) && validateOperatorPhoto()) {
+			saveBiometricDetailsBtn.setDisable(false);
+
+		} else if (validateApplicantImage()) {
 			saveBiometricDetailsBtn.setDisable(false);
 		}
 	}
