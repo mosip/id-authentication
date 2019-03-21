@@ -28,6 +28,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentMatchers;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -184,7 +185,7 @@ public class DemographicServiceTest {
 	private ObjectMapper mapper;
 	JSONArray fullname;
 	LocalDateTime encryptionDateTime = DateUtils.getUTCCurrentDateTime();
-
+	DemographicService spyDemographicService;
 	/**
 	 * @throws ParseException
 	 * @throws FileNotFoundException
@@ -288,7 +289,8 @@ public class DemographicServiceTest {
         Mockito.when(securityContext.getAuthentication()).thenReturn(authentication);
         SecurityContextHolder.setContext(securityContext);
         Mockito.when(SecurityContextHolder.getContext().getAuthentication().getPrincipal()).thenReturn(applicationUser); 
-
+        
+        spyDemographicService=Mockito.spy(preRegistrationService);
 	}
 
 	/**
@@ -708,7 +710,7 @@ byte[] encryptedDemographicDetails= {1,0,1,0,1,0};
 
 	}
 
-	//@Test
+	@Test
 	public void deleteIndividualSuccessTest() {
 		RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
 		Mockito.when(restTemplateBuilder.build()).thenReturn(restTemplate);
@@ -873,22 +875,29 @@ byte[] encryptedDemographicDetails= {1,0,1,0,1,0};
 		Mockito.when(demographicRepository.findBypreRegistrationId("98746563542672")).thenReturn(preRegistrationEntity);
 		preRegistrationService.updatePreRegistrationStatus("98746563542672", "NA");
 	}
+	
+	@Mock
+	private DemographicEntity entity;
 
-	//@Test
+	@Test
 	public void getApplicationByDateTest() {
+		List<String> list=new ArrayList<>();
+		
+		
 		LocalDate fromDate = LocalDate.now();
 		LocalDate toDate = LocalDate.now();
 		MainListResponseDTO<String> response = new MainListResponseDTO<>();
 		List<String> preIds = new ArrayList<>();
 		List<DemographicEntity> details = new ArrayList<>();
-		DemographicEntity entity = new DemographicEntity();
+		//DemographicEntity entity = new DemographicEntity();
 		entity.setPreRegistrationId("98746563542672");
 		details.add(entity);
-
+		byte[] sampleAppJson="JSON".getBytes();
 		preIds.add("98746563542672");
 		response.setResponse(preIds);
+		response.setVersion("1.0");
 		//response.setStatus(true);
-
+		Mockito.doReturn(list).when(spyDemographicService).getPreRegistrationByDateEntityCheck(details);
 		String dateFormat = "yyyy-MM-dd HH:mm:ss";
 		Date myFromDate;
 		// myFromDate = DateUtils.parseToDate(URLDecoder.decode(fromDate, "UTF-8"),
@@ -900,8 +909,8 @@ byte[] encryptedDemographicDetails= {1,0,1,0,1,0};
 
 		LocalDateTime toLocaldate = toDate.atTime(23, 59, 59);
 		Mockito.when(demographicRepository.findBycreateDateTimeBetween(fromLocaldate, toLocaldate)).thenReturn(details);
-
-		MainListResponseDTO<String> actualRes = preRegistrationService.getPreRegistrationByDate(fromDate, toDate);
+		Mockito.when(entity.getApplicantDetailJson()).thenReturn(sampleAppJson);
+		MainListResponseDTO<String> actualRes = spyDemographicService.getPreRegistrationByDate(fromDate, toDate);
 		assertEquals(actualRes.getVersion(), response.getVersion());
 
 	}
@@ -995,7 +1004,7 @@ byte[] encryptedDemographicDetails= {1,0,1,0,1,0};
 
 	}
 
-	//@Test
+	@Test
 	public void callGetAppointmentDetailsRestServiceTest()
 			throws ParseException, org.json.simple.parser.ParseException {
 		byte[] encryptedDemographicDetails = jsonTestObject.toJSONString().getBytes();
@@ -1017,7 +1026,7 @@ byte[] encryptedDemographicDetails= {1,0,1,0,1,0};
 
 		viewList.add(viewDto);
 		response.setResponse(viewList);
-		//response.setStatus(Boolean.TRUE);
+		response.setVersion("1.0");
 		Mockito.when(cryptoUtil.decrypt(Mockito.any(), Mockito.any()))
 				.thenReturn(userEntityDetails.get(0).getApplicantDetailJson());
 		Mockito.when(demographicRepository.findByCreatedBy(userId, "Consumed")).thenReturn(userEntityDetails);
@@ -1035,7 +1044,7 @@ byte[] encryptedDemographicDetails= {1,0,1,0,1,0};
 
 	}
 
-	//@Test
+	@Test
 	public void callGetUpdatedDateTimeRestServiceTest() throws ParseException, org.json.simple.parser.ParseException {
 		RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
 		MainResponseDTO<Map<String, String>> dto = new MainResponseDTO<>();
@@ -1047,6 +1056,7 @@ byte[] encryptedDemographicDetails= {1,0,1,0,1,0};
 
 		dto.setErrors(null);
 		dto.setResponsetime(LocalDateTime.now().toString());
+		dto.setVersion("1.0");
 		Map<String, String> map = new HashMap<>();
 		map.put("98746563542672", LocalDateTime.now().toString());
 
