@@ -18,7 +18,7 @@ import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.packet.dto.BiometricDetails;
-import io.mosip.registration.processor.core.packet.dto.BiometricException;
+import io.mosip.registration.processor.core.packet.dto.BiometricExceptionDTO;
 
 
 import io.mosip.registration.processor.core.packet.dto.FieldValue;
@@ -213,7 +213,7 @@ public class PacketInfoMapper {
 	 *            the meta data
 	 * @return the biometric exception entity
 	 */
-	public static BiometricExceptionEntity convertBiometricExceptioDtoToEntity(BiometricException exception,
+	public static BiometricExceptionEntity convertBiometricExceptioDtoToEntity(BiometricExceptionDTO exception,
 			List<FieldValue> metaData) {
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
 				"", "PacketInfoMapper::convertBiometricExceptioDtoToEntity()::entry");
@@ -506,9 +506,10 @@ public class PacketInfoMapper {
 			entity.setIsActive(true);
 			entity.setIsDeleted(false);
 			String applicantName = null;
-			if (demoDto.getName() != null)
+			if (demoDto.getName() != null) {
 				applicantName = getJsonValues(demoDto.getName(), languageArray[i]);
 			entity.setName(getHMACHashCode(applicantName.trim().toUpperCase()));
+			}
 
 			if (demoDto.getDateOfBirth() != null) {
 				try {

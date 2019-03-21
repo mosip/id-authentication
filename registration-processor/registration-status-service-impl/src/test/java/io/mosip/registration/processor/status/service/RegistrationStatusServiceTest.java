@@ -83,8 +83,10 @@ public class RegistrationStatusServiceTest {
 		transactionEntity.setId("1001");
 		Mockito.when(transcationStatusService.addRegistrationTransaction(ArgumentMatchers.any()))
 				.thenReturn(transactionEntity);
+//		Mockito.when(registrationStatusMapUtil.getExternalStatus(ArgumentMatchers.any(), ArgumentMatchers.any()))
+//				.thenReturn(RegistrationExternalStatusCode.RESEND);
+		Mockito.when(registrationStatusDao.getByIds(ArgumentMatchers.any())).thenReturn(entities);
 
-		
 	}
 
 	@Test
@@ -156,6 +158,7 @@ public class RegistrationStatusServiceTest {
 	public void testGetByIdsSuccess() {
 
 		Mockito.when(registrationStatusDao.getByIds(ArgumentMatchers.any())).thenReturn(entities);
+
 		RegistrationStatusSubRequestDto registrationId =new RegistrationStatusSubRequestDto();
 		registrationId.setRegistrationId("1001");
 		List<RegistrationStatusSubRequestDto> registrationIds =new ArrayList<>();
@@ -174,7 +177,9 @@ public class RegistrationStatusServiceTest {
 		DataAccessLayerException exp = new DataAccessLayerException(HibernateErrorCode.ERR_DATABASE.getErrorCode(),
 				"errorMessage", new Exception());
 		Mockito.when(registrationStatusDao.getByIds(ArgumentMatchers.any())).thenThrow(exp);
+
 		registrationStatusService.getByIds(registrationIds);
+
 	}
 
 }

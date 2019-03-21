@@ -195,7 +195,7 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 	private List<FieldValueArray> buildHashSequence(final HashSequence hashSequence) {
 		List<FieldValueArray> hashSequenceList = new LinkedList<>();
 		// Add Sequence of Applicant Biometric
-		FieldValueArray fieldValueArray = new FieldValueArray();
+		FieldValueArray fieldValueArray;
 
 		// Add Sequence of Applicant Demographic
 		fieldValueArray = new FieldValueArray();

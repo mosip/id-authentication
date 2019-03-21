@@ -38,7 +38,7 @@ import io.mosip.registration.processor.core.packet.dto.Applicant;
 import io.mosip.registration.processor.core.packet.dto.ApplicantDocument;
 import io.mosip.registration.processor.core.packet.dto.Biometric;
 import io.mosip.registration.processor.core.packet.dto.BiometricDetails;
-import io.mosip.registration.processor.core.packet.dto.BiometricException;
+import io.mosip.registration.processor.core.packet.dto.BiometricExceptionDTO;
 
 import io.mosip.registration.processor.core.packet.dto.FieldValue;
 import io.mosip.registration.processor.core.packet.dto.Identity;
@@ -225,7 +225,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 		Biometric biometric = identity.getBiometric();
 
 		List<FieldValue> osiData = identity.getOsiData();
-		List<BiometricException> exceptionBiometrics = identity.getExceptionBiometrics();
+		List<BiometricExceptionDTO> exceptionBiometrics = identity.getExceptionBiometrics();
 		Photograph applicantPhotographData = identity.getApplicantPhotograph();
 		Photograph exceptionPhotographData = identity.getExceptionPhotograph();
 		metaData = identity.getMetaData();
@@ -271,8 +271,8 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 	 * @param exceptionBiometrics
 	 *            the exception biometrics
 	 */
-	private void saveExceptionBiometricDatas(List<BiometricException> exceptionBiometrics) {
-		for (BiometricException exp : exceptionBiometrics) {
+	private void saveExceptionBiometricDatas(List<BiometricExceptionDTO> exceptionBiometrics) {
+		for (BiometricExceptionDTO exp : exceptionBiometrics) {
 			BiometricExceptionEntity biometricExceptionEntity = PacketInfoMapper
 					.convertBiometricExceptioDtoToEntity(exp, metaData);
 			biometricExceptionRepository.save(biometricExceptionEntity);
@@ -916,10 +916,14 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 	@Override
 	public void saveAbisRef(RegAbisRefDto regAbisRefDto) {
 		boolean isTransactionSuccessful = false;
-		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
-				regAbisRefDto.getReg_id(), "PacketInfoManagerImpl::saveAbisRef()::entry");
+		
 		try {
+			String regId="";
+			
 			if (regAbisRefDto != null) {
+				regId=regAbisRefDto.getReg_id();
+				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
+						regId, "PacketInfoManagerImpl::saveAbisRef()::entry");
 				RegAbisRefEntity regAbisRefEntity = PacketInfoMapper.convertRegAbisRefToEntity(regAbisRefDto);
 				regAbisRefRepository.save(regAbisRefEntity);
 				isTransactionSuccessful = true;
@@ -945,7 +949,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 
 		}
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
-				regAbisRefDto.getReg_id(), "PacketInfoManagerImpl::saveAbisRef()::exit");
+				regId, "PacketInfoManagerImpl::saveAbisRef()::exit");
 	}
 
 }
