@@ -48,6 +48,7 @@ import io.mosip.preregistration.core.common.dto.PreRegIdsByRegCenterIdResponseDT
 import io.mosip.preregistration.core.config.LoggerConfiguration;
 import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
 import io.mosip.preregistration.core.util.AuditLogUtil;
+import io.mosip.preregistration.datasync.DataSyncApplicationTest;
 import io.mosip.preregistration.datasync.dto.DataSyncRequestDTO;
 import io.mosip.preregistration.datasync.dto.PreRegArchiveDTO;
 import io.mosip.preregistration.datasync.dto.ReverseDataSyncRequestDTO;
@@ -63,7 +64,7 @@ import io.mosip.preregistration.datasync.repository.ProcessedDataSyncRepo;
 import io.mosip.preregistration.datasync.service.util.DataSyncServiceUtil;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest
+@SpringBootTest(classes = { DataSyncApplicationTest.class })
 public class DataSyncServiceUtilTest {
 
 	/**
@@ -382,7 +383,7 @@ public class DataSyncServiceUtilTest {
 		responsestatusDto.add(multipartResponseDTOs);
 
 		MainListResponseDTO<DocumentMultipartResponseDTO> mainListResponseDTO = new MainListResponseDTO<>();
-		mainListResponseDTO.setResTime(resTime);
+		mainListResponseDTO.setResponsetime(resTime);
 		mainListResponseDTO.setErr(null);
 		mainListResponseDTO.setResponse(responsestatusDto);
 		ResponseEntity<MainListResponseDTO<DocumentMultipartResponseDTO>> respEntity = new ResponseEntity<>(
@@ -405,7 +406,7 @@ public class DataSyncServiceUtilTest {
 		RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
 		Mockito.when(restTemplateBuilder.build()).thenReturn(restTemplate);
 		MainListResponseDTO<DemographicResponseDTO> mainResponseDTO = new MainListResponseDTO<>();
-		mainResponseDTO.setResTime(resTime);
+		mainResponseDTO.setResponsetime(resTime);
 		mainResponseDTO.setErr(null);
 		mainResponseDTO.setResponse(list);
 		ResponseEntity<MainListResponseDTO<DemographicResponseDTO>> respEntity = new ResponseEntity<>(mainResponseDTO,

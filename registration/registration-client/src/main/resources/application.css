@@ -29,6 +29,54 @@
 	-fx-pref-height: 20.0px;
 	-fx-pref-width: 55.0px;
 }
+.progress-barGreen > .bar {
+    -fx-background-color: #45A30A;
+}
+
+.progress-barRed > .bar {
+   -fx-background-color: #FF0000;
+}
+
+.qualityLabelGrey{
+	-fx-background-radius: 21.0,21.0,21.0,21.0;	
+	-fx-background-color: #F0F0F0;
+	-fx-border-radius: 21.0,21.0,21.0,21.0;
+	-fx-border-color: #F0F0F0;
+	-fx-pref-height: 25.0px;
+	-fx-pref-width: 25.0px;
+	-fx-text-fill: #666666;
+}
+
+.qualityLabelRed{
+	-fx-background-radius: 21.0,21.0,21.0,21.0;	
+	-fx-background-color: #FF0000;
+	-fx-border-radius: 21.0,21.0,21.0,21.0;
+	-fx-border-color: #FF0000;
+	-fx-pref-height: 25.0px;
+	-fx-pref-width: 25.0px;
+	-fx-text-fill: #FFFFFF;
+}
+
+.qualityLabelGreen{
+	-fx-background-radius: 21.0,21.0,21.0,21.0;	
+	-fx-background-color: #45A30A;
+	-fx-border-radius: 21.0,21.0,21.0,21.0;
+	-fx-border-color: #45A30A;
+	-fx-pref-height: 25.0px;
+	-fx-pref-width: 25.0px;
+	-fx-text-fill: #FFFFFF;
+}
+
+.labelGreen{
+	-fx-text-fill: #45A30A;
+	-fx-font-size:20.0px;
+}
+
+.labelRed{
+	-fx-text-fill: #FF0000;
+	-fx-font-size:20.0px;
+}
+
 .biometricExceptionPane{
 	-fx-border-width: 1.0 1.0 1.0 1.0;
 	-fx-border-color: white;
@@ -68,7 +116,6 @@
 .ackBackButton{
 	-fx-border-width: 1 1 1 1;
 	-fx-border-radius: 3,3,3,3;
-	-fx-pref-height: 2px;
 	-fx-background-color:#FFFFFF;
 	-fx-border-color: #FF4081;
 	-fx-font-family: Roboto;	
@@ -81,7 +128,6 @@
 .ackPageButton {
 	-fx-border-width: 1 1 1 1;
 	-fx-border-radius: 3,3,3,3;
-	-fx-pref-height: 2px;
 	-fx-background-color: #FF4081;
 	-fx-text-fill: white;
 	-fx-font-family: Roboto;
@@ -362,6 +408,7 @@
 	-fx-font-family: Roboto;
 	-fx-font-size: 16.0px;
 	-fx-text-fill:  #45A30A;	
+	-fx-background-color:White;
 }
 /*Onoard User page Design Ends here*/
 

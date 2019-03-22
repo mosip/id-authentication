@@ -54,6 +54,8 @@ public class RegistrationUIConstants {
 	public static final String REMAP_EOD_PROCESS_MESSAGE = bundle.getString("REMAP_EOD_PROCESS_MESSAGE");
 	public static final String REMAP_CLICK_OK = bundle.getString("REMAP_CLICK_OK");
 	public static final String REMAP_PROCESS_SUCCESS = bundle.getString("REMAP_PROCESS_SUCCESS");
+	public static final String REMAP_NOT_APPLICABLE = bundle.getString("REMAP_NOT_APPLICABLE");
+	public static final String REMAP_PROCESS_STILL_PENDING = bundle.getString("REMAP_PROCESS_STILL_PENDING");
 
 	// DEVICE
 	public static final String DEVICE_FP_NOT_FOUND = bundle.getString("DEVICE_FP_NOT_FOUND");
@@ -268,4 +270,9 @@ public class RegistrationUIConstants {
 	public static final String UPLOAD_COLUMN_HEADER_FILE = bundle.getString("UPLOAD_COLUMN_HEADER_FILE");
 	public static final String UPLOAD_COLUMN_HEADER_STATUS=bundle.getString("UPLOAD_COLUMN_HEADER_STATUS");
 	public static final String PACKET_UPLOAD_SUCCESS=bundle.getString("PACKET_UPLOAD_SUCCESS");
+	
+	//Scheduler
+	public static final String TIMEOUT_TITLE = bundle.getString("TIMEOUT_TITLE");
+	public static final String TIMEOUT_HEADER = bundle.getString("TIMEOUT_HEADER");
+	public static final String TIMEOUT_CONTENT = bundle.getString("TIMEOUT_CONTENT");
 }

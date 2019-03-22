@@ -47,15 +47,15 @@ import io.mosip.registration.processor.core.spi.message.sender.MessageNotificati
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.core.util.JsonUtil;
+import io.mosip.registration.processor.core.util.exception.FieldNotFoundException;
+import io.mosip.registration.processor.core.util.exception.InstantanceCreationException;
 import io.mosip.registration.processor.message.sender.exception.EmailIdNotFoundException;
 import io.mosip.registration.processor.message.sender.exception.PhoneNumberNotFoundException;
 import io.mosip.registration.processor.message.sender.exception.TemplateGenerationFailedException;
 import io.mosip.registration.processor.message.sender.exception.TemplateNotFoundException;
 import io.mosip.registration.processor.message.sender.template.TemplateGenerator;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
-import io.mosip.registration.processor.packet.storage.exception.FieldNotFoundException;
 import io.mosip.registration.processor.packet.storage.exception.IdentityNotFoundException;
-import io.mosip.registration.processor.packet.storage.exception.InstantanceCreationException;
 import io.mosip.registration.processor.packet.storage.exception.ParsingException;
 import io.mosip.registration.processor.packet.storage.utils.Utilities;
 import io.mosip.registration.processor.rest.client.utils.RestApiClient;
@@ -300,8 +300,7 @@ public class MessageNotificationServiceImpl
 	 *             Signals that an I/O exception has occurred.
 	 */
 	@SuppressWarnings("unchecked")
-	private Map<String, Object> setAttributes(String idJsonString, Map<String, Object> attribute)
-			throws IOException {
+	private Map<String, Object> setAttributes(String idJsonString, Map<String, Object> attribute) throws IOException {
 		try {
 			JSONObject demographicjson = JsonUtil.objectMapperReadValue(idJsonString, JSONObject.class);
 			JSONObject demographicIdentity = JsonUtil.getJSONObject(demographicjson,
@@ -318,22 +317,22 @@ public class MessageNotificationServiceImpl
 			List<String> mapperJsonKeys = new ArrayList<>(mapperIdentity.keySet());
 			for (String key : mapperJsonKeys) {
 				JSONObject jsonValue = JsonUtil.getJSONObject(mapperIdentity, key);
-				Object object = JsonUtil.getJSONValue(demographicIdentity, (String)jsonValue.get(VALUE));
+				Object object = JsonUtil.getJSONValue(demographicIdentity, (String) jsonValue.get(VALUE));
 				if (object instanceof ArrayList) {
-					JSONArray node = JsonUtil.getJSONArray(demographicIdentity, (String)jsonValue.get(VALUE));
+					JSONArray node = JsonUtil.getJSONArray(demographicIdentity, (String) jsonValue.get(VALUE));
 					JsonValue[] jsonValues = mapJsonNodeToJavaObject(JsonValue.class, node);
 					for (int count = 0; count < jsonValues.length; count++) {
 						String lang = jsonValues[count].getLanguage();
 						attribute.put(key + "_" + lang, jsonValues[count].getValue());
 					}
 				} else if (object instanceof LinkedHashMap) {
-					JSONObject json = JsonUtil.getJSONObject(demographicIdentity, (String)jsonValue.get(VALUE));
+					JSONObject json = JsonUtil.getJSONObject(demographicIdentity, (String) jsonValue.get(VALUE));
 					attribute.put(key, json.get(VALUE));
 				} else {
 					attribute.put(key, object);
 				}
 			}
-			
+
 		} catch (JsonParseException | JsonMappingException e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					null, "Error while parsing Json file" + ExceptionUtils.getStackTrace(e));

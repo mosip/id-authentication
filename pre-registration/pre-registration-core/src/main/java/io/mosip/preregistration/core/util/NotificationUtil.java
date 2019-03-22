@@ -117,7 +117,7 @@ public class NotificationUtil {
 			notifierResponse.setStatus(resp.getBody().getStatus());
 			list.add(notifierResponse);
 			response.setResponse(list);
-			response.setResTime(getCurrentResponseTime());
+			response.setResponsetime(getCurrentResponseTime());
 		
 		return response;
 	}
@@ -166,7 +166,7 @@ public class NotificationUtil {
 			notifierResponse.setStatus(resp.getBody().getStatus());
 			list.add(notifierResponse);
 			response.setResponse(list);
-			response.setResTime(getCurrentResponseTime());
+			response.setResponsetime(getCurrentResponseTime());
 		
 		return response;
 

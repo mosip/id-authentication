@@ -2,14 +2,12 @@ package io.mosip.registration.processor.stages.uingenerator.stage;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -535,6 +533,7 @@ public class UinGeneratorStage extends MosipVerticleManager {
 	private IdResponseDTO deactivateUin(String regId, Long uin, MessageDTO object) {
 		IdResponseDTO idResponseDto = new IdResponseDTO();
 		List<String> pathsegments = new ArrayList<>();
+		String statusComment ="";
 
 		try {
 			idResponseDto = getIdRepoDataByUIN(uin);
@@ -565,10 +564,12 @@ public class UinGeneratorStage extends MosipVerticleManager {
 						registrationStatusDto.setStatusComment(UinStatusMessage.UIN_DEACTIVATE_SUCCESS + regId);
 						description = UinStatusMessage.UIN_DEACTIVATE_SUCCESS + regId;
 						object.setIsValid(Boolean.TRUE);
+						statusComment=idResponseDto.getStatus().toString();
+	
 					}
 				} else {
 
-					String statusComment = idResponseDto != null && idResponseDto.getErrors() != null
+					statusComment = idResponseDto != null && idResponseDto.getErrors() != null
 							? idResponseDto.getErrors().get(0).getErrorMessage()
 							: NULL_IDREPO_RESPONSE;
 					registrationStatusDto.setStatusCode(RegistrationStatusCode.PACKET_UIN_UPDATION_FAILURE.toString());
@@ -580,7 +581,7 @@ public class UinGeneratorStage extends MosipVerticleManager {
 			}
 			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
 					LoggerFileConstant.REGISTRATIONID.toString() + regId, "Updated Response from IdRepo API",
-					"is : " + idResponseDto.toString());
+					"is : " + statusComment);
 		} catch (ApisResourceAccessException e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationId, PlatformErrorMessages.RPR_SYS_JSON_PARSING_EXCEPTION.getMessage() + e.getMessage()

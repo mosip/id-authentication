@@ -254,7 +254,7 @@ public class BaseController extends BaseService{
 	 */
 	protected void generateAlert(Pane parentPane, String id, String context, String isConsolidated,
 			StringBuilder validationMessage) {
-		if (id.matches("dd|mm|yyyyddLocalLanguage|mmLocalLanguage|yyyyLocalLanguage")) {
+		if (id.matches("dd|mm|yyyy|ddLocalLanguage|mmLocalLanguage|yyyyLocalLanguage")) {
 			id = RegistrationConstants.DOB;
 		}
 		if(id.contains("ontype")) {
@@ -346,6 +346,7 @@ public class BaseController extends BaseService{
 	public void goToHomePage() {
 		try {
 			BaseController.load(getClass().getResource(RegistrationConstants.HOME_PAGE));
+			clearOnboardData();
 		} catch (IOException ioException) {
 			LOGGER.error("REGISTRATION - REDIRECTHOME - BASE_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
 					ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));
@@ -385,7 +386,7 @@ public class BaseController extends BaseService{
 				RegistrationConstants.APPLICATION_ID, "Going to home page");
 
 		clearRegistrationData();
-
+		clearOnboardData();
 		goToHomePage();
 	}
 
@@ -755,9 +756,8 @@ public class BaseController extends BaseService{
 
 				LOGGER.info(LoggerConstants.LOG_REG_BASE, APPLICATION_NAME, APPLICATION_ID,
 						"User Onboard is success and clearing Onboard data");
-
-				generateAlert(RegistrationConstants.SUCCESS, RegistrationUIConstants.USER_ONBOARD_SUCCESS);
-				popupStatge("Onboarding Successful", "images/tick.png", "onboardAlertMsg");
+			
+				popupStatge(RegistrationUIConstants.USER_ONBOARD_SUCCESS,RegistrationConstants.ONBOARD_IMG_PATH, RegistrationConstants.ONBOARD_STYLE_CLASS);
 				clearOnboardData();
 				goToHomePage();
 
@@ -836,7 +836,13 @@ public class BaseController extends BaseService{
 				public void handle(WorkerStateEvent t) {
 					service.reset();
 					packetHandlerController.reMapProgressIndicator.setVisible(false);
-					generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.REMAP_PROCESS_SUCCESS);
+					if (!centerMachineReMapService.isPacketsPendingForProcessing()) {
+						generateAlert(RegistrationConstants.ALERT_INFORMATION,
+								RegistrationUIConstants.REMAP_PROCESS_SUCCESS);
+					} else {
+						generateAlert(RegistrationConstants.ALERT_INFORMATION,
+								RegistrationUIConstants.REMAP_PROCESS_STILL_PENDING);
+					}
 
 				}
 			});

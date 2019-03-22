@@ -103,8 +103,61 @@ Apache DSL camel file "registration-processor-camel-routes.xml" need to be updat
 	</route>
 ```
 
-**Logical Architecture Diagram**
+Sample Http Request:
 
+```html
+{
+	"id":"mosip.registration.httpintegration.httpcall",			
+	"version":"1.0",	
+	"requesttime":"2018-14-03T10:15:30Z",
+	
+	"metadata" : {
+	},
+	
+	"request" : {
+		// ID JSON
+	}
+}
+```
+
+Sample Http Success Response:
+
+```html
+{ 
+   "id":"mosip.registration.httpintegration.httpresponse",			
+   "version":"1.0",	
+   "responsetime":"2018-14-03T10:15:30Z",
+   "metadata" : {
+   	"registrationid":"<<registrationid>>"
+   },
+   "response" : {
+   	"status":"Success"
+   }
+   "errors":[
+   ]
+}
+```
+Sample Http Error Response:
+
+```html
+{ 
+   "id":"mosip.registration.httpintegration.httpresponse",			
+   "version":"1.0",	
+   "responsetime":"2018-14-03T10:15:30Z",
+   "metadata" : {
+   	"registrationid":"<<registrationid>>"
+   },
+   "response" : {
+   	"status":"Failed"
+   }
+   "errors":[
+		"errorCode": "PRG_REG_HTTP_APP_001",
+		"message": "Error Processing Request"
+   ]
+}
+```
+
+**Logical Architecture Diagram**
 
 
 ------------
@@ -116,12 +169,6 @@ Apache DSL camel file "registration-processor-camel-routes.xml" need to be updat
 
 ![HTTP stage diagram](_images/registration_external_with_http_integration.png)
 
-
-**Class Diagram**
-
-------------
-
-![HTTP stage class diagram](_images/http_stage_class_diagram.png)
 
 **Sequence Diagram**
 

@@ -160,7 +160,7 @@ public class DocumentService {
 						&& serviceUtil.fileExtensionCheck(file)) {
 					serviceUtil.isValidRequest(docReqDto.getRequest());
 					List<DocumentResponseDTO> docResponseDtos = createDoc(docReqDto.getRequest(), file);
-					responseDto.setResTime(serviceUtil.getCurrentResponseTime());
+					responseDto.setResponsetime(serviceUtil.getCurrentResponseTime());
 					responseDto.setResponse(docResponseDtos);
 				} else {
 					throw new DocumentVirusScanException(ErrorCodes.PRG_PAM_DOC_010.toString(),
@@ -281,7 +281,7 @@ public class DocumentService {
 					copyDcoResDto.setDestPreRegId(destinationPreId);
 					copyDcoResDto.setDestDocumnetId(String.valueOf(copyDocumentEntity.getDocumentId()));
 					copyDocumentList.add(copyDcoResDto);
-					responseDto.setResTime(serviceUtil.getCurrentResponseTime());
+					responseDto.setResponsetime(serviceUtil.getCurrentResponseTime());
 					responseDto.setResponse(copyDocumentList);
 				} else {
 					throw new DocumentNotFoundException(DocumentStatusMessages.DOCUMENT_IS_MISSING.toString());
@@ -348,7 +348,7 @@ public class DocumentService {
 			if (ValidationUtil.isvalidPreRegId(preId)) {
 				List<DocumentEntity> documentEntities = documnetDAO.findBypreregId(preId);
 				responseDto.setResponse(dtoSetter(documentEntities));
-				responseDto.setResTime(serviceUtil.getCurrentResponseTime());
+				responseDto.setResponsetime(serviceUtil.getCurrentResponseTime());
 			}
 			isRetrieveSuccess = true;
 			responseDto.setId(id);
@@ -442,7 +442,7 @@ public class DocumentService {
 				deleteDocList.add(deleteDTO);
 				delResponseDto.setResponse(deleteDocList);
 			}
-			delResponseDto.setResTime(serviceUtil.getCurrentResponseTime());
+			delResponseDto.setResponsetime(serviceUtil.getCurrentResponseTime());
 			delResponseDto.setId(id);
 			delResponseDto.setVersion(ver);
 		} catch (Exception ex) {
@@ -504,7 +504,7 @@ public class DocumentService {
 			}
 
 			delResponseDto.setResponse(deleteAllList);
-			delResponseDto.setResTime(serviceUtil.getCurrentResponseTime());
+			delResponseDto.setResponsetime(serviceUtil.getCurrentResponseTime());
 		}
 
 		return delResponseDto;

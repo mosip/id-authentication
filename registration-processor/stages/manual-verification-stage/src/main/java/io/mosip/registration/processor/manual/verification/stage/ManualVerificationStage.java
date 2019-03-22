@@ -151,8 +151,8 @@ public class ManualVerificationStage extends MosipVerticleAPIManager{
 			manualVerificationRequestValidator.validate(obj,env.getProperty(BIOMETRIC_SERVICE_ID));
 			ManualAppBiometricRequestDTO pojo = Json.mapper.convertValue ( obj.getMap(), ManualAppBiometricRequestDTO.class );
 			byte[] packetInfo = manualAdjudicationService.getApplicantFile(pojo.getRequest().getRegId(),pojo.getRequest().getFileName());
-			String byteAsString = new String(packetInfo);
 			if (packetInfo != null) {
+				String byteAsString = new String(packetInfo);
 				this.setResponse(ctx, ManualVerificationResponseBuilder.buildManualVerificationSuccessResponse(byteAsString,env.getProperty(BIOMETRIC_SERVICE_ID),env.getProperty(MVS_APPLICATION_VERSION),env.getProperty(DATETIME_PATTERN)),APPLICATION_JSON);
 			}
 		
@@ -163,8 +163,9 @@ public class ManualVerificationStage extends MosipVerticleAPIManager{
 			manualVerificationRequestValidator.validate(obj,env.getProperty(DEMOGRAPHIC_SERVICE_ID));
 			ManualAppBiometricRequestDTO pojo = Json.mapper.convertValue ( obj.getMap(), ManualAppBiometricRequestDTO.class );
 			byte[] packetInfo = manualAdjudicationService.getApplicantFile(pojo.getRequest().getRegId(),PacketFiles.DEMOGRAPHIC.name());
-			String byteAsString = new String(packetInfo);
+			
 			if (packetInfo != null) {
+				String byteAsString = new String(packetInfo);
 				this.setResponse(ctx, ManualVerificationResponseBuilder.buildManualVerificationSuccessResponse(byteAsString,env.getProperty(DEMOGRAPHIC_SERVICE_ID),env.getProperty(MVS_APPLICATION_VERSION),env.getProperty(DATETIME_PATTERN)),APPLICATION_JSON);
 			}
 		

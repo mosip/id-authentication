@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.FilterType;
 
 import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
-import io.mosip.kernel.fsadapter.hdfs.util.ConnectionUtil;
+import io.mosip.kernel.fsadapter.hdfs.util.ConnectionUtils;
 import io.mosip.registration.processor.rest.client.config.RestConfigBean;
 import io.mosip.registration.processor.status.config.RegistrationStatusBeanConfig;
 
@@ -21,6 +21,6 @@ public class RegistrationStatusConfigTest {
 	public FileSystemAdapter filesystemAdapter;
 
 	@MockBean
-	public ConnectionUtil connectionUtil;
+	public ConnectionUtils connectionUtil;
 
 }

@@ -166,7 +166,6 @@ public class FXUtils {
 			field.focusedProperty().addListener((obsValue, oldValue, newValue) -> {
 			if (newValue) {
 				try {
-					System.out.println(field.getId());
 					((Label) parentPane.lookup(RegistrationConstants.HASH + field.getId() + RegistrationConstants.LABEL)).setVisible(true);
 					promptText = ((TextField) parentPane.lookup(RegistrationConstants.HASH + field.getId())).getPromptText();
 					((TextField) parentPane.lookup(RegistrationConstants.HASH + field.getId())).setPromptText(null);

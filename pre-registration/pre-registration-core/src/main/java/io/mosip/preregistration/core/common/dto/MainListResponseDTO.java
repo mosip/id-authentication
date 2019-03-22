@@ -47,7 +47,7 @@ public class MainListResponseDTO<T> implements Serializable {
 	 * Response Date Time
 	 */
 	@ApiModelProperty(value = "response time", position = 3)
-	private String resTime;
+	private String responsetime;
 
 	/**
 	 * List of Response

@@ -56,7 +56,6 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Modality;
@@ -114,7 +113,7 @@ public class FaceCaptureController extends BaseController implements Initializab
 	private Image defaultExceptionImage;
 	private boolean applicantImageCaptured;
 	private boolean exceptionImageCaptured;
-	
+
 	private boolean hasBiometricException = false;
 
 	@Override
@@ -126,6 +125,7 @@ public class FaceCaptureController extends BaseController implements Initializab
 			registrationNavlabel.setText(RegistrationConstants.UIN_NAV_LABEL);
 		}
 
+		disableNextButton();
 
 		takePhoto.setDisable(true);
 
@@ -294,8 +294,7 @@ public class FaceCaptureController extends BaseController implements Initializab
 
 	/**
 	 * 
-	 * To set the captured image to the imageView in the Applicant Biometrics
-	 * page
+	 * To set the captured image to the imageView in the Applicant Biometrics page
 	 * 
 	 * @param capturedImage
 	 *            the image that is captured
@@ -335,6 +334,13 @@ public class FaceCaptureController extends BaseController implements Initializab
 			exceptionBufferedImage = capturedImage;
 			exceptionImageCaptured = true;
 		}
+
+		if ((boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER) && validateOperatorPhoto()) {
+			saveBiometricDetailsBtn.setDisable(false);
+
+		} else if (validateApplicantImage()) {
+			saveBiometricDetailsBtn.setDisable(false);
+		}
 	}
 
 	@Override
@@ -359,12 +365,12 @@ public class FaceCaptureController extends BaseController implements Initializab
 
 	/**
 	 * 
-	 * To clear the captured image from the imageView in the Applicant
-	 * Biometrics page
+	 * To clear the captured image from the imageView in the Applicant Biometrics
+	 * page
 	 *
 	 * @param photoType
-	 *            the type of image that is to be cleared, whether exception
-	 *            image or applicant image
+	 *            the type of image that is to be cleared, whether exception image
+	 *            or applicant image
 	 */
 	@Override
 	public void clearPhoto(String photoType) {
@@ -380,6 +386,7 @@ public class FaceCaptureController extends BaseController implements Initializab
 			exceptionBufferedImage = null;
 			exceptionImageCaptured = false;
 		}
+		disableNextButton();
 	}
 
 	/**
@@ -390,30 +397,16 @@ public class FaceCaptureController extends BaseController implements Initializab
 				RegistrationConstants.APPLICATION_ID, "validating applicant biometrics");
 
 		boolean imageCaptured = false;
-		if (applicantImageCaptured) {
-			if (hasBiometricException) {
-				if (exceptionImageCaptured) {
-					if (getRegistrationDTOFromSession() != null
-							&& getRegistrationDTOFromSession().getDemographicDTO() != null) {
-						imageCaptured = true;
-					} else {
-						generateAlert(RegistrationConstants.ERROR,
-								RegistrationUIConstants.DEMOGRAPHIC_DETAILS_ERROR_CONTEXT);
-					}
-				} else {
-					generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.APPLICANT_IMAGE_ERROR);
-				}
-			} else {
-				if (getRegistrationDTOFromSession() != null
-						&& getRegistrationDTOFromSession().getDemographicDTO() != null) {
-					imageCaptured = true;
-				} else {
-					generateAlert(RegistrationConstants.ERROR,
-							RegistrationUIConstants.DEMOGRAPHIC_DETAILS_ERROR_CONTEXT);
-				}
+		if (applicantImageCaptured && hasBiometricException) {
+			if (exceptionImageCaptured && (getRegistrationDTOFromSession() != null
+					&& getRegistrationDTOFromSession().getDemographicDTO() != null)) {
+				imageCaptured = true;
 			}
 		} else {
-			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.APPLICANT_IMAGE_ERROR);
+			if (applicantImageCaptured && getRegistrationDTOFromSession() != null
+					&& getRegistrationDTOFromSession().getDemographicDTO() != null) {
+				imageCaptured = true;
+			}
 		}
 		return imageCaptured;
 	}
@@ -422,7 +415,6 @@ public class FaceCaptureController extends BaseController implements Initializab
 		if (getBiometricDTOFromSession().getOperatorBiometricDTO().getFaceDetailsDTO().getFace() != null) {
 			return true;
 		} else {
-			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.PHOTO_CAPTURE);
 			return false;
 		}
 	}
@@ -454,17 +446,10 @@ public class FaceCaptureController extends BaseController implements Initializab
 		LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Enabling the capture button based on selected pane");
 
-		/* get the selected pane to capture photo */
-		Pane sourcePane = (Pane) mouseEvent.getSource();
-		sourcePane.requestFocus();
-		selectedPhoto = sourcePane;
-
 		/*
-		 * if the selected pane is exception photo, check if the applicant has biometric
-		 * exception
+		 * check if the applicant has biometric exception
 		 */
-		if (selectedPhoto.getId().equals(RegistrationConstants.EXCEPTION_PHOTO_PANE)
-				&& !(boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
+		if (!(boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
 			hasBiometricException = (Boolean) SessionContext.userContext().getUserMap()
 					.get(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION);
 			/* if there is no missing biometric, check for low quality of biometrics */
@@ -472,6 +457,11 @@ public class FaceCaptureController extends BaseController implements Initializab
 				hasBiometricException = validateBiometrics(hasBiometricException);
 			}
 		}
+
+		/* get the selected pane to capture photo */
+		Pane sourcePane = (Pane) mouseEvent.getSource();
+		sourcePane.requestFocus();
+		selectedPhoto = sourcePane;
 
 		takePhoto.setDisable(true);
 		if (selectedPhoto.getId().equals(RegistrationConstants.APPLICANT_PHOTO_PANE)) {
@@ -708,4 +698,23 @@ public class FaceCaptureController extends BaseController implements Initializab
 	private Timestamp getCurrentTimestamp() {
 		return Timestamp.from(Instant.now());
 	}
+
+	/**
+	 * Clear all captured images.
+	 */
+	public void clearAllCapturedImages() {
+		clearPhoto(RegistrationConstants.APPLICANT_IMAGE);
+		clearPhoto(RegistrationConstants.EXCEPTION_IMAGE);
+		disableNextButton();
+	}
+
+	/**
+	 * Disable next button.
+	 */
+	public void disableNextButton() {
+		if (!validateApplicantImage()) {
+			saveBiometricDetailsBtn.setDisable(true);
+		}
+	}
+
 }
