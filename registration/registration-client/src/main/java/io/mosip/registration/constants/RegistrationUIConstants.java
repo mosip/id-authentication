@@ -43,6 +43,7 @@ public class RegistrationUIConstants {
 	public static final String IRIS_MATCH = bundle.getString("IRIS_MATCH");
 	public static final String FACE_MATCH = bundle.getString("FACE_MATCH");
 	public static final String FINGERPRINT = bundle.getString("FINGERPRINT");
+	public static final String RECAPTURE =  bundle.getString("RECAPTURE");
 
 	// AUTHORIZATION
 	public static final String ROLES_EMPTY_ERROR = bundle.getString("ROLES_EMPTY_ERROR");

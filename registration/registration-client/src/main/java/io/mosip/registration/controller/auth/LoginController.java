@@ -226,9 +226,9 @@ public class LoginController extends BaseController implements Initializable {
 					
 					scene = getScene(loginRoot);
 					pageFlow.getInitialPageDetails();
-					primaryStage.setResizable(false);
-					primaryStage.setFullScreen(true);
-					primaryStage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
+				//	primaryStage.setResizable(true);
+					//primaryStage.setFullScreen(true);
+				//	primaryStage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
 					primaryStage.setScene(scene);
 					primaryStage.show();
 			}
