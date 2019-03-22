@@ -1,6 +1,7 @@
 package io.mosip.kernel.otpmanager.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -22,6 +23,7 @@ import io.mosip.kernel.otpmanager.dto.GenerationDTOValidationLevels;
  * @since 1.0.0
  *
  */
+@RefreshScope
 @RestController
 @CrossOrigin
 public class OtpGeneratorController {

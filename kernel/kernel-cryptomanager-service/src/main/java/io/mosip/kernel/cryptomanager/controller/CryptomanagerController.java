@@ -9,6 +9,7 @@ package io.mosip.kernel.cryptomanager.controller;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -29,6 +30,7 @@ import io.swagger.annotations.ApiParam;
  *
  * @since 1.0.0
  */
+@RefreshScope
 @CrossOrigin
 @RestController
 @RequestMapping("/v1.0")

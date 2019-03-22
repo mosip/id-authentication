@@ -6,6 +6,7 @@ import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -40,6 +41,7 @@ import springfox.documentation.annotations.ApiIgnore;
  * @since 1.0.0
  */
 @RestController
+//@RefreshScope
 @RequestMapping(value = "/v1.0")
 public class SyncDataController {
 	/**

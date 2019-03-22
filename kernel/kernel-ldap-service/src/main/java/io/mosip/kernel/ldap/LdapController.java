@@ -3,6 +3,7 @@ package io.mosip.kernel.ldap;
 
 import io.mosip.kernel.ldap.dto.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -14,6 +15,7 @@ import java.util.List;
  *  @author Sabbu Uday Kumar
  *  @since 1.0.0
  */
+@RefreshScope
 @RestController
 public class LdapController {
 
