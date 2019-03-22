@@ -1120,6 +1120,24 @@ public class RegistrationConstants {
 
 	}
 
+	// ID JSON Business Validation
+	private static final String ID_JSON_BIZ_VALIDATION_PREFIX = "mosip.id.validation.identity";
+	public static final String LENGTH = "length";
+	public static final String EMAIL_VALIDATION_REGEX = ID_JSON_BIZ_VALIDATION_PREFIX.concat(DOT).concat("email");
+	public static final String EMAIL_VALIDATION_LENGTH = EMAIL_VALIDATION_REGEX.concat(DOT).concat(LENGTH);
+	public static final String PHONE_VALIDATION_REGEX = ID_JSON_BIZ_VALIDATION_PREFIX.concat(DOT).concat("phone");
+	public static final String PHONE_VALIDATION_LENGTH = PHONE_VALIDATION_REGEX.concat(DOT).concat(LENGTH);
+	public static final String CNIE_VALIDATION_REGEX = ID_JSON_BIZ_VALIDATION_PREFIX.concat(DOT).concat("CNIENumber");
+	public static final String CNIE_VALIDATION_LENGTH = CNIE_VALIDATION_REGEX.concat(DOT).concat(LENGTH);
+	public static final String POSTAL_CODE_VALIDATION_REGEX = ID_JSON_BIZ_VALIDATION_PREFIX.concat(DOT).concat("postalCode");
+	public static final String POSTAL_CODE_VALIDATION_LENGTH = POSTAL_CODE_VALIDATION_REGEX.concat(DOT).concat(LENGTH);
+	public static final String DOB_VALIDATION_REGEX = ID_JSON_BIZ_VALIDATION_PREFIX.concat(DOT).concat("dateOfBirth");
+	public static final String TRUE = String.valueOf(true);
+	public static final String FALSE = String.valueOf(false);
+	public static final String REGEX = "regex";
+	public static final String IS_MANDATORY = "isMandatory";
+	public static final String IS_FIXED = "isFixed";
+
 	// Virus Scan
 	public static final String VIRUS_SCAN_PACKET_NOT_FOUND = "FILE_NOT_PRESENT_FOR_SCAN";
 	public static final String VIRUS_SCAN_INFECTED_FILES = "Infected Files";
