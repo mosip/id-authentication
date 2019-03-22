@@ -42,12 +42,16 @@ import org.testng.annotations.Test;
 import org.testng.collections.Lists;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.gson.JsonObject;
 import com.jayway.jsonpath.Configuration;
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.spi.json.JacksonJsonNodeJsonProvider;
 import com.jayway.jsonpath.spi.mapper.JacksonMappingProvider;
 
+import io.mosip.dbaccess.prereg_dbread;
+import io.mosip.dbentity.AccessToken;
+import io.mosip.dbentity.OtpEntity;
 import io.mosip.service.ApplicationLibrary;
 import io.mosip.service.BaseTestCase;
 import io.mosip.util.GetHeader;
@@ -66,6 +70,8 @@ public class PreRegistrationLibrary extends BaseTestCase {
 
 	static String folder = "preReg";
 	static String testSuite = "";
+	static String userId="";
+	static String otp="";
 	static Response createPregResponse;
 	static JSONObject createPregRequest;
 	static Response response;
@@ -101,6 +107,7 @@ public class PreRegistrationLibrary extends BaseTestCase {
 	 private static String preReg_DiscardBookingURI;
 	 private static String preReg_SyncMasterDataURI;
 	 private static String otpSend_URI;
+	 private static String validateOTP_URI;
 	 private static String langCodeKey; 
 
 	/*
@@ -131,42 +138,84 @@ public class PreRegistrationLibrary extends BaseTestCase {
 		}
 
 		createPregResponse = applnLib.postRequest(createPregRequest, preReg_CreateApplnURI);
-		preReg_Id = createPregResponse.jsonPath().get("response[0].preRegistrationId").toString();
-		Assert.assertTrue(preReg_Id != null);
+		/*preReg_Id = createPregResponse.jsonPath().get("response[0].preRegistrationId").toString();
+		Assert.assertTrue(preReg_Id != null);*/
 		return createPregResponse;
 	}
+	
 	/**
 	 * Generate OTP
 	 * @return
 	 */
-	public static Response generateOTP() {
-		testSuite = "generateOTP/generateOTP_smoke";
+	public static Response generateOTP(JSONObject request) {
+		response = applnLib.postRequest(request, otpSend_URI);
+		return createPregResponse;
+	}
+	
+	public String getToken()
+	{
+		testSuite="generateOTP/generateOTP_smoke";
+		request=otpRequest(testSuite);
+		Response generateOTPResponse = generateOTP(request);
+		System.out.println("userid is ++++++++++++++"+userId);
+		String otpQueryStr = "SELECT E.otp FROM kernel.otp_transaction E WHERE id='"+userId+"'";
+		List<Object> otpData = prereg_dbread.fetchOTPFromDB(otpQueryStr, OtpEntity.class);
+		otp = otpData.get(0).toString();
+		logger.info("OTP is============"+otp);
+		testSuite = "validateOTP/validateOTP_smoke";
+		request=validateOTPRequest(testSuite);
+		validateOTP(request);
+		String tokenQueryStr = "SELECT E.auth_token FROM iam.oauth_access_token E WHERE user_id='"+userId+"'";
+		List<Object> token = prereg_dbread.fetchFromDB(tokenQueryStr, AccessToken.class);
+		String auth_token = token.get(0).toString();
+		System.out.println("auth token is +++++++++++"+auth_token);
+		return auth_token;
+	
+	}
+	/**
+	 * VALIDATING OTP
+	 * @param request
+	 * @return
+	 */
+	public static Response validateOTP(JSONObject request) {
+		response = applnLib.postRequest(request, validateOTP_URI);
+		return response;
+	}
+	
+	/**
+	 * ValidateRequest
+	 * @return
+	 */
+	public JSONObject validateOTPRequest(String testSuite)
+	{
+		JSONObject otpRequest = null;
+		/**
+		 * Reading request body from configpath
+		 */
 		String configPath = "src/test/resources/" + folder + "/" + testSuite;
 		File folder = new File(configPath);
 		File[] listOfFiles = folder.listFiles();
 		for (File f : listOfFiles) {
 			if (f.getName().contains("request")) {
 				try {
-					request = (JSONObject) new JSONParser().parse(new FileReader(f.getPath()));
-				} catch (IOException | ParseException e) {
-					// TODO Auto-generated catch block
+					otpRequest = (JSONObject) new JSONParser().parse(new FileReader(f.getPath()));
+				} catch (Exception e) {
 					e.printStackTrace();
+					logger.error(e.getMessage());
 				}
-
+				
 			}
 		}
-		String createdBy = new Integer(createdBy()).toString();
 		JSONObject object = null;
-		for (Object key : request.keySet()) {
+		for (Object key : otpRequest.keySet()) {
 			if (key.equals("request")) {
-				object = (JSONObject) request.get(key);
-				object.put("userId", createdBy);
-				request.replace(key, object);
+				object = (JSONObject) otpRequest.get(key);
+				object.put("userId", userId);
+				object.put("otp", otp);
+				otpRequest.replace(key, object);
 			}
-		}
-
-		response = applnLib.postRequest(request, otpSend_URI);
-		return createPregResponse;
+		}	
+		return otpRequest;
 	}
 
 	/*
@@ -1697,7 +1746,7 @@ public class PreRegistrationLibrary extends BaseTestCase {
 		for (Object key : createPregRequest.keySet()) {
 			if (key.equals("request")) {
 				object = (JSONObject) createPregRequest.get(key);
-				object.put("createdBy", createdBy);
+				object.put("createdBy", userId);
 				createPregRequest.replace(key, object);
 			}
 		}
@@ -1705,6 +1754,40 @@ public class PreRegistrationLibrary extends BaseTestCase {
 		
 		
 		return createPregRequest;
+	}
+	public JSONObject otpRequest(String testSuite)
+	{
+		JSONObject otpRequest = null;
+		testSuite = "generateOTP/generateOTP_smoke";
+		/**
+		 * Reading request body from configpath
+		 */
+		String configPath = "src/test/resources/" + folder + "/" + testSuite;
+		File folder = new File(configPath);
+		File[] listOfFiles = folder.listFiles();
+		for (File f : listOfFiles) {
+			if (f.getName().contains("request")) {
+				try {
+					otpRequest = (JSONObject) new JSONParser().parse(new FileReader(f.getPath()));
+				} catch (Exception e) {
+					e.printStackTrace();
+					logger.error(e.getMessage());
+				}
+				
+			}
+		}
+		double d = (Math.random()*1000000000);
+		long l= (long)d;
+		userId= "9"+ l ;
+		JSONObject object = null;
+		for (Object key : otpRequest.keySet()) {
+			if (key.equals("request")) {
+				object = (JSONObject) otpRequest.get(key);
+				object.put("userId", userId);
+				otpRequest.replace(key, object);
+			}
+		}	
+		return otpRequest;
 	}
 
 	
@@ -1810,6 +1893,7 @@ public class PreRegistrationLibrary extends BaseTestCase {
 		 preReg_NotifyURI=commonLibrary.fetch_IDRepo("preReg_NotifyURI");
 		 langCodeKey=commonLibrary.fetch_IDRepo("langCode.key");
 		 otpSend_URI=commonLibrary.fetch_IDRepo("otpSend_URI");
+		 validateOTP_URI=commonLibrary.fetch_IDRepo("validateOTP_URI");
 		
 	}
 

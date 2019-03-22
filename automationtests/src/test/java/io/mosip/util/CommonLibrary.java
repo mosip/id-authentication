@@ -28,10 +28,14 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+import io.mosip.service.BaseTestCase;
+import io.restassured.http.Cookie;
+import io.restassured.http.Cookie.Builder;
+import io.restassured.http.Header;
 import io.restassured.response.Response;
 
 
-public class CommonLibrary {
+public class CommonLibrary extends BaseTestCase{
 
 	private static Logger logger = Logger.getLogger(CommonLibrary.class);
 
@@ -254,9 +258,12 @@ public class CommonLibrary {
 	}
 	
 	
+	
+	
 	public Response post_Request(String url, Object body, String contentHeader, String acceptHeader) {
 
-		Response postResponse = given().relaxedHTTPSValidation().body(body).contentType(contentHeader)
+		Cookie.Builder builder = new Cookie.Builder("Authorization",authToken);
+		Response postResponse = given().cookie(builder.build()).relaxedHTTPSValidation().body(body).contentType(contentHeader)
 				.accept(acceptHeader).log().all().when().post(url).then().log().all().extract().response();
 		// log then response
 		logger.info("REST-ASSURED: The response from the request is: " + postResponse.asString());
@@ -340,8 +347,11 @@ public class CommonLibrary {
      */
      public Response get_Request_queryParam(String url,HashMap<String, String> valueMap) {
            logger.info("REST-ASSURED: Sending a GET request to " + url);
-           Response getResponse = given().relaxedHTTPSValidation().queryParams(valueMap)
-                       .log().all().when().get(url).then().log().all().extract().response();
+          /* Response getResponse = given().relaxedHTTPSValidation().queryParams(valueMap)
+                       .log().all().when().get(url).then().log().all().extract().response();*/
+           Cookie.Builder builder = new Cookie.Builder("Authorization",authToken);
+      	 Response getResponse = given().cookie(builder.build()).relaxedHTTPSValidation().queryParams(valueMap)
+                             .log().all().when().get(url).then().log().all().extract().response();
            // log then response
            logger.info("REST-ASSURED: The response from the request is: " + getResponse.asString());
            logger.info("REST-ASSURED: The response Time is: " + getResponse.time());
@@ -528,6 +538,14 @@ public class CommonLibrary {
  	 			
  	 			logger.info("Configs from properties file is fetched for preReg_CreateApplnURI.  " +IDRepo_Element);
  	 			break;
+ 	 			case "validateOTP_URI":
+	 				
+	 				IDRepo_Element=prop.getProperty("validateOTP_URI"); 	
+	 				
+	 				
+	 			
+	 			logger.info("Configs from properties file is fetched for validateOTP_URI.  " +IDRepo_Element);
+	 			break;
  	 			case "otpSend_URI":
  	 				
  	 				IDRepo_Element=prop.getProperty("otpSend_URI"); 	

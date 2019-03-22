@@ -1,7 +1,9 @@
 package io.mosip.preregistration.tests;
 
 import java.util.List;
+import java.util.Random;
 
+import org.json.simple.JSONObject;
 import org.testng.annotations.Test;
 
 import io.mosip.dbaccess.KernelMasterDataR;
@@ -10,24 +12,32 @@ import io.mosip.dbentity.AccessToken;
 import io.mosip.dbentity.OtpEntity;
 import io.mosip.service.BaseTestCase;
 import io.mosip.util.PreRegistrationLibrary;
+import io.restassured.response.Response;
 
 public class Sample_DB extends BaseTestCase {
+	public static long generateID() { 
+	    Random rnd = new Random();
+	    char [] digits = new char[11];
+	    digits[0] = (char) (rnd.nextInt(9) + '1');
+	    for(int i=1; i<digits.length; i++) {
+	        digits[i] = (char) (rnd.nextInt(10) + '0');
+	    }
+	    return Long.parseLong(new String(digits));
+	}
 	
 
 	@Test
-	public static void DB() {
+	public static void DB() throws InterruptedException {
 		PreRegistrationLibrary lib=new PreRegistrationLibrary();
-		lib.generateOTP();
-		//lib.CreatePreReg(createRequest)
-		/*String otpQueryStr = "SELECT E.otp FROM kernel.otp_transaction E WHERE id='123'";
-		List<Object> otpData = prereg_dbread.fetchOTPFromDB(otpQueryStr, OtpEntity.class);
-		String otp = otpData.get(0).toString();
-		System.out.println(otp);
-		String tokenQueryStr = "SELECT E.auth_token FROM iam.oauth_access_token E WHERE user_id='6371787698'";
-		List<Object> token = prereg_dbread.fetchFromDB(tokenQueryStr, AccessToken.class);
-		String auth_token = token.get(0).toString();
-		System.out.println(auth_token);*/
-
+		String testSuite = "Create_PreRegistration/createPreRegistration_smoke";
+		JSONObject request = lib.createRequest(testSuite);
+		Response response = lib.CreatePreReg(request);
+		String preRegID = response.jsonPath().get("response[0].preRegistrationId").toString();
+		String createdBy = response.jsonPath().get("response[0].createdBy").toString();
+		lib.fetchAllPreRegistrationCreatedByUser(createdBy);
+		//lib.getPreRegistrationData(preRegID);
+	
+	
 	}
 
 }
