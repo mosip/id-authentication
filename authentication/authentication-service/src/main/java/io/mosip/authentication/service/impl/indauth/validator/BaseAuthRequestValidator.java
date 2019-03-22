@@ -14,6 +14,8 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import javax.annotation.PostConstruct;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.Errors;
 
@@ -40,14 +42,9 @@ import io.mosip.authentication.service.impl.indauth.service.demo.DemoMatchType;
 import io.mosip.authentication.service.impl.indauth.service.pin.PinMatchType;
 import io.mosip.authentication.service.integration.MasterDataManager;
 import io.mosip.authentication.service.validator.IdAuthValidator;
-import io.mosip.kernel.core.datavalidator.exception.InvalidPhoneNumberException;
-import io.mosip.kernel.core.datavalidator.exception.InvalideEmailException;
-import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.exception.ParseException;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
-import io.mosip.kernel.datavalidator.email.impl.EmailValidatorImpl;
-import io.mosip.kernel.datavalidator.phone.impl.PhoneValidatorImpl;
 
 /**
  * The Class BaseAuthRequestValidator.
@@ -58,6 +55,10 @@ import io.mosip.kernel.datavalidator.phone.impl.PhoneValidatorImpl;
  * 
  */
 public class BaseAuthRequestValidator extends IdAuthValidator {
+
+	private static final String MOSIP_ID_VALIDATION_IDENTITY_EMAIL = "mosip.id.validation.identity.email";
+	
+	private static final String MOSIP_ID_VALIDATION_IDENTITY_PHONE = "mosip.id.validation.identity.phone";
 
 	private static final String OTP2 = "OTP";
 
@@ -125,14 +126,6 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	/** The Constant AUTH_TYPE. */
 	private static final String AUTH_TYPE = "requestedAuth";
 
-	/** email Validator */
-	@Autowired
-	EmailValidatorImpl emailValidatorImpl;
-
-	/** phone Validator */
-	@Autowired
-	PhoneValidatorImpl phoneValidatorImpl;
-
 	/** The id info helper. */
 	@Autowired
 	protected IdInfoHelper idInfoHelper;
@@ -143,6 +136,15 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 
 	@Autowired
 	private MasterDataManager masterDataManager;
+
+	private Pattern emailPattern;
+	private Pattern phonePattern;
+	
+	@PostConstruct
+	private void initialize() {
+		emailPattern = Pattern.compile(env.getProperty(MOSIP_ID_VALIDATION_IDENTITY_EMAIL));
+		phonePattern = Pattern.compile(env.getProperty(MOSIP_ID_VALIDATION_IDENTITY_PHONE));
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -863,18 +865,21 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	 * @param errors      the errors
 	 */
 	private void validateEmail(AuthRequestDTO authRequest, Errors errors) {
-		try {
 			List<IdentityInfoDTO> emailId = DemoMatchType.EMAIL.getIdentityInfoList(authRequest.getRequest());
 			if (emailId != null) {
 				for (IdentityInfoDTO email : emailId) {
-					emailValidatorImpl.validateEmail(email.getValue());
+					validatePattern(email.getValue(),errors,"emailId",emailPattern);
 				}
 			}
-		} catch (InvalideEmailException e) {
+	}
+
+	private void validatePattern(String value,Errors errors,String type,Pattern pattern) {
+	
+		if(!pattern.matcher(value).matches()) {
 			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), INVALID_INPUT_PARAMETER,
-					"Invalid email \n" + ExceptionUtils.getStackTrace(e));
+					"Invalid email \n" + value);
 			errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
-					new Object[] { "emailId" },
+					new Object[] { type },
 					IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
 		}
 	}
@@ -886,21 +891,12 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	 * @param errors      the errors
 	 */
 	private void validatePhone(AuthRequestDTO authRequest, Errors errors) {
-		try {
-			List<IdentityInfoDTO> phoneNumber = DemoMatchType.PHONE.getIdentityInfoList(authRequest.getRequest());
-			if (phoneNumber != null) {
-				for (IdentityInfoDTO phone : phoneNumber) {
-					phoneValidatorImpl.validatePhone(phone.getValue());
-				}
+		List<IdentityInfoDTO> phoneNumber = DemoMatchType.PHONE.getIdentityInfoList(authRequest.getRequest());
+		if (phoneNumber != null) {
+			for (IdentityInfoDTO phone : phoneNumber) {
+				validatePattern(phone.getValue(), errors, "phoneNumber", phonePattern);
 			}
-		} catch (InvalidPhoneNumberException e) {
-			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), INVALID_INPUT_PARAMETER,
-					"Invalid email \n" + ExceptionUtils.getStackTrace(e));
-			errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
-					new Object[] { "phoneNumber" },
-					IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
 		}
-
 	}
 
 	/**
