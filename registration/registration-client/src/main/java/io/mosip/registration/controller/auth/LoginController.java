@@ -37,6 +37,7 @@ import io.mosip.registration.constants.RegistrationUIConstants;
 import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
+import io.mosip.registration.controller.RestartController;
 import io.mosip.registration.controller.reg.Validations;
 import io.mosip.registration.device.face.FaceFacade;
 import io.mosip.registration.device.fp.FingerprintFacade;
@@ -45,6 +46,7 @@ import io.mosip.registration.device.iris.IrisFacade;
 import io.mosip.registration.dto.AuthenticationValidatorDTO;
 import io.mosip.registration.dto.LoginUserDTO;
 import io.mosip.registration.dto.ResponseDTO;
+import io.mosip.registration.dto.SuccessResponseDTO;
 import io.mosip.registration.dto.biometric.FaceDetailsDTO;
 import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
 import io.mosip.registration.dto.biometric.IrisDetailsDTO;
@@ -180,6 +182,8 @@ public class LoginController extends BaseController implements Initializable {
 	
 	@Autowired
 	private UserDetailService userDetailService; 
+	@Autowired
+	private RestartController restartController;
 
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
@@ -204,6 +208,14 @@ public class LoginController extends BaseController implements Initializable {
 		
 		try {
 			ResponseDTO responseDTO = getSyncConfigData();
+			if (responseDTO != null) {
+				SuccessResponseDTO successResponseDTO = responseDTO.getSuccessResponseDTO();
+				if (successResponseDTO != null) {
+					if (successResponseDTO.getOtherAttributes() != null) {
+						restartController.restart();
+					}
+				}
+			}
 			
 			/* Save Global Param Values in Application Context's application map */		
 			getGlobalParams();
