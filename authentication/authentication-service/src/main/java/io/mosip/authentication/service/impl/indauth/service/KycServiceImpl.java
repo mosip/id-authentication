@@ -48,6 +48,7 @@ public class KycServiceImpl implements KycService {
 	@Autowired
 	private MappingConfig mappingConfig;
 
+	
 	/**
 	 * This method will return the KYC info of the individual.
 	 *
