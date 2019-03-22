@@ -195,12 +195,6 @@ Sample Http Error Response:
 ![HTTP stage diagram](_images/registration_external_with_vertx_integration.png)
 
 
-**Class Diagram**
-
-------------
-
-![HTTP stage class diagram](_images/external_stage_class_diagram.png)
-
 **Sequence Diagram**
 
 ------------
