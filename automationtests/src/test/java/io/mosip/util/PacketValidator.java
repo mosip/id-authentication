@@ -48,13 +48,12 @@ public class PacketValidator {
 	 * @throws IOException
 	 * @throws ParseException
 	 */
-	public boolean packetValidatorStage(String testcaseName)throws IOException, ParseException{
-		String regId = getRegID(testcaseName);	
+	public boolean packetValidatorStage(File packet)throws IOException, ParseException{
+		String regId = packet.getName();	
 
 		boolean isPacketValidated = false;
 		//using decrypt api to extract files present inside the packet
-		File dummyDecryptFile = new File("src/test/resources/regProc/StageValidation/DummyDecryptedPacket/10031100110025720190228141424");
-		File[] listOfFiles = dummyDecryptFile.listFiles();
+		File[] listOfFiles = packet.listFiles();
 		List<String> docListInPacketInfo = new ArrayList<String>();
 		for(File f : listOfFiles){
 
@@ -71,7 +70,7 @@ public class PacketValidator {
 		//Extracting folders/files from the decrpyted packet
 		List<String> documents = new ArrayList<>();
 		List<String> listOfIDDocs = new ArrayList<>();
-		File[] folders = dummyDecryptFile.listFiles();
+		File[] folders = packet.listFiles();
 		for (int j = 0; j < folders.length; j++) {
 			if (folders[j].isDirectory()) {
 				File[] listOfDocs = folders[j].listFiles();
@@ -261,12 +260,10 @@ public class PacketValidator {
 		logger.info("hashSequence....... : "+hashSequence);
 		for(Object obj : hashSequence){
 			JSONObject value = (JSONObject) obj;
-			logger.info("obj.........."+value.get("value"));
 			String docs = value.get("value").toString();
 			docs=docs.replaceAll("[\\[\\]]", "");
 			if(!docs.isEmpty() && docs.contains(",")){
 				splittedList = Arrays.asList(docs.split(","));
-				logger.info("splitted list : "+splittedList);
 				docListInPacketInfo.addAll(splittedList);
 			}else if (!docs.isEmpty())
 				docListInPacketInfo.add(docs);
@@ -274,22 +271,12 @@ public class PacketValidator {
 		return docListInPacketInfo;
 	}
 	
-	//method to get regId from the folder
-	public String getRegID(String testCaseName) {
-		String reg_ID = "";
-		File file = new File(configPath + "/" + testCaseName);
-		File[] listOfFile = file.listFiles();
-		for (File f : listOfFile) {
-			reg_ID = f.getName().substring(0, f.getName().lastIndexOf('.'));
-		}
-		return reg_ID;
-	}
-
 	@Test
 	public void testMethod() throws IOException, ParseException {
+		File dummyDecryptFile = new File("src/test/resources/regProc/StageValidation/DummyDecryptedPacket/10031100110025720190228141424");
 
 		try {
-			packetValidatorStage("ValidPacketSmoke");
+			packetValidatorStage(dummyDecryptFile);
 		} catch (SdkClientException | FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
