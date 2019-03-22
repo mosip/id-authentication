@@ -18,17 +18,13 @@ import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.constant.PacketFiles;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
-import io.mosip.registration.processor.core.packet.dto.demographicinfo.identify.RegistrationProcessorIdentity;
 import io.mosip.registration.processor.core.util.JsonUtil;
-import io.mosip.registration.processor.packet.storage.utils.Utilities;
 //remove the class when auth is fixed
 @Component
 public class BiometricValidation {
@@ -39,12 +35,6 @@ public class BiometricValidation {
 
 	/** The reg proc logger. */
 	private static Logger regProcLogger = RegProcessorLogger.getLogger(BiometricValidation.class);
-
-	@Autowired
-	private RegistrationProcessorIdentity regProcessorIdentityJson;
-
-	@Autowired
-	private Utilities utility;
 
 	/** The Constant ENCODING. */
 	public static final String ENCODING = "UTF-8";
@@ -66,20 +56,19 @@ public class BiometricValidation {
 		 */
 		InputStream demographicInfoStream = adapter.getFile(regId,PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR + PacketFiles.ID.name());
 		String demographicJsonString  = IOUtils.toString(demographicInfoStream, ENCODING);
-		Date date = null;
-		boolean isValid = false;
-
-		String getIdentityJsonString = Utilities.getJson(utility.getConfigServerFileStorageURL(),
-				utility.getGetRegProcessorIdentityJson());
-		ObjectMapper mapIdentityJsonStringToObject = new ObjectMapper();
-		regProcessorIdentityJson = mapIdentityJsonStringToObject.readValue(getIdentityJsonString,
-				RegistrationProcessorIdentity.class);
 		JSONObject demographicJson = (JSONObject) JsonUtil.objectMapperReadValue(demographicJsonString,
 				JSONObject.class);
-
+		Date date = null;
+		boolean isValid = false;
+		JSONObject dobJson = null;
+		Object dob=null;
 		Object identityJson = demographicJson.get("identity");
-		JSONObject dobJson =new JSONObject((Map) identityJson);
-		Object dob = dobJson.get("dateOfBirth");
+		
+		if(!(identityJson.equals(null)))
+		 dobJson =new JSONObject((Map) identityJson);
+		
+		if(!(dobJson.equals(null)))
+		 dob = dobJson.get("dateOfBirth");
 
 		if(dob != null && dob.toString().trim() != "" ) {
 			try {

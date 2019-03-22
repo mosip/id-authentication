@@ -29,7 +29,6 @@ import io.mosip.preregistration.datasync.exception.system.SystemFileIOException;
  */
 @RestControllerAdvice
 public class DataSyncExceptionHandler {
-	private boolean status = Boolean.FALSE;
 	private String dateTimeFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
 
 	/**
@@ -45,7 +44,7 @@ public class DataSyncExceptionHandler {
 		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getErrorText());
 		MainListResponseDTO responseDto = new MainListResponseDTO<>();
 		responseDto.setErr(errorDetails);
-		responseDto.setResTime(getCurrentResponseTime());
+		responseDto.setResponsetime(getCurrentResponseTime());
 		return new ResponseEntity<>(responseDto, HttpStatus.OK);
 
 	}
@@ -63,7 +62,7 @@ public class DataSyncExceptionHandler {
 		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getErrorText());
 		MainListResponseDTO responseDto = new MainListResponseDTO<>();
 		responseDto.setErr(errorDetails);
-		responseDto.setResTime(getCurrentResponseTime());
+		responseDto.setResponsetime(getCurrentResponseTime());
 		return new ResponseEntity<>(responseDto, HttpStatus.OK);
 
 	}
@@ -80,7 +79,7 @@ public class DataSyncExceptionHandler {
 		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getErrorText());
 		MainListResponseDTO responseDto = new MainListResponseDTO<>();
 		responseDto.setErr(errorDetails);
-		responseDto.setResTime(getCurrentResponseTime());
+		responseDto.setResponsetime(getCurrentResponseTime());
 		return new ResponseEntity<>(responseDto, HttpStatus.OK);
 	}
 
@@ -96,7 +95,7 @@ public class DataSyncExceptionHandler {
 		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getErrorText());
 		MainListResponseDTO responseDto = new MainListResponseDTO<>();
 		responseDto.setErr(errorDetails);
-		responseDto.setResTime(getCurrentResponseTime());
+		responseDto.setResponsetime(getCurrentResponseTime());
 		return new ResponseEntity<>(responseDto, HttpStatus.OK);
 	}
 
@@ -112,7 +111,7 @@ public class DataSyncExceptionHandler {
 		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getErrorText());
 		MainListResponseDTO responseDto = new MainListResponseDTO<>();
 		responseDto.setErr(errorDetails);
-		responseDto.setResTime(getCurrentResponseTime());
+		responseDto.setResponsetime(getCurrentResponseTime());
 		return new ResponseEntity<>(responseDto, HttpStatus.OK);
 
 	}
@@ -128,7 +127,7 @@ public class DataSyncExceptionHandler {
 		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getErrorText());
 		MainListResponseDTO responseDto = new MainListResponseDTO<>();
 		responseDto.setErr(errorDetails);
-		responseDto.setResTime(getCurrentResponseTime());
+		responseDto.setResponsetime(getCurrentResponseTime());
 		return new ResponseEntity<>(responseDto, HttpStatus.OK);
 
 	}
@@ -143,7 +142,7 @@ public class DataSyncExceptionHandler {
 		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getErrorText());
 		MainListResponseDTO responseDto = new MainListResponseDTO<>();
 		responseDto.setErr(errorDetails);
-		responseDto.setResTime(getCurrentResponseTime());
+		responseDto.setResponsetime(getCurrentResponseTime());
 		return new ResponseEntity<>(responseDto, HttpStatus.OK);
 
 	}
@@ -159,7 +158,7 @@ public class DataSyncExceptionHandler {
 		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getErrorText());
 		MainListResponseDTO responseDto = new MainListResponseDTO<>();
 		responseDto.setErr(errorDetails);
-		responseDto.setResTime(getCurrentResponseTime());
+		responseDto.setResponsetime(getCurrentResponseTime());
 		return new ResponseEntity<>(responseDto, HttpStatus.OK);
 
 	}
@@ -174,7 +173,7 @@ public class DataSyncExceptionHandler {
 		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getErrorText());
 		MainListResponseDTO responseDto = new MainListResponseDTO<>();
 		responseDto.setErr(errorDetails);
-		responseDto.setResTime(getCurrentResponseTime());
+		responseDto.setResponsetime(getCurrentResponseTime());
 		return new ResponseEntity<>(responseDto, HttpStatus.OK);
 
 	}

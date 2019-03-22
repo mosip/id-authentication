@@ -224,6 +224,8 @@ public class RegistrationConstants {
 
 	// onBoard User
 	public static final String ONBOARD_BIOMETRICS = "Biometrics - ";
+	public static final String ONBOARD_STYLE_CLASS = "onboardAlertMsg";
+	public static final String ONBOARD_IMG_PATH = "images/tick.png";
 
 	// RegistrationApproval
 	public static final String PLACEHOLDER_LABEL = "No Packets for approval";
@@ -1061,11 +1063,9 @@ public class RegistrationConstants {
 	public static final String USER_ON_BOARDING_EXCEPTION_MSG_CODE = "REG-URE‌-000";
 	public static final String USER_ON_BOARDING_SUCCESS_CODE = "REG-URE‌-002";
 	public static final String USER_ON_BOARDING_SUCCESS_MSG = "USER_ONBOARD_SUCCESS";
-	public static final String USER_ON_BOARDING_THRESHOLD_NOT_MET_CODE = "REG-URE‌-008";
 	public static final String USER_ON_BOARDING_THRESHOLD_NOT_MET_MSG = "USER_ON_BOARDING_THRESHOLD_NOT_MET_MSG";
 	public static final String USER_STATION_ID = "stationId";
 	public static final String USER_CENTER_ID = "centerId";
-	public static final String USER_MACHINE_VALIDATION_CODE = "REG-URE‌-009";
 	public static final String USER_ONBOARD_DATA = "UserOnboardBiometricData";
 	public static final String USER_ON_BOARD_THRESHOLD_LIMIT = "mosip.registration.user_on_board_threshold_limit";
 
@@ -1163,5 +1163,7 @@ public class RegistrationConstants {
 	public static final String ATTR_FORINGER = "FR";
 	public static final String ATTR_FORINGER_DOB_PARSING="yyyy/MM/dd";
 	public static final String ATTR_FORINGER_DOB_FORMAT="yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
+	
+	public static final String SYNC_FAILURE = "SYNC_FAILURE";
 
 }

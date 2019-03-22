@@ -93,7 +93,6 @@ public class Validations extends BaseController {
 	public boolean validateTheFields(Pane pane, List<String> notTovalidate, boolean isValid,
 			String isConsolidated) {
 		for (Node node : pane.getChildren()) {
-			System.out.println(node.getId());
 			if (node instanceof Pane) {
 				tempValid = validateTheFields((Pane) node, notTovalidate, isValid, isConsolidated);
 				if(tempValid) {

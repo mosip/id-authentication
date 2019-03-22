@@ -281,7 +281,7 @@
                                                                   <RowConstraints minHeight="10.0" percentHeight="20.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                                               </rowConstraints>
                                                                <children>
-                                                                  <VBox prefHeight="200.0" prefWidth="100.0" spacing="5.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                                                  <VBox fx:id="applicationFullName" prefHeight="200.0" prefWidth="100.0" spacing="5.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
                                                                      <children>
                                                                         <Label fx:id="fullNameLabel" styleClass="demoGraphicFieldLabel" text="%fullName" visible="true" />
                                                                         <TextField fx:id="fullName" promptText="%fullName" styleClass="demoGraphicTextField" />
@@ -292,7 +292,7 @@
                                                             </GridPane>
                                                             <GridPane GridPane.columnIndex="1">
                                                                <children>
-                                                                  <VBox prefHeight="200.0" prefWidth="100.0" spacing="5.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                                                  <VBox fx:id="localFullName" prefHeight="200.0" prefWidth="100.0" spacing="5.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
                                                                      <children>
                                                                         <Label fx:id="fullNameLocalLanguageLabel" styleClass="demoGraphicFieldLabel" text="%fullName" visible="true" />
                                                                         <TextField fx:id="fullNameLocalLanguage" promptText="%fullName" styleClass="demoGraphicTextField" />
@@ -331,7 +331,7 @@
                                                       </GridPane>
                                                       <GridPane fx:id="dobParentPane" prefHeight="80" prefWidth="${scrollParentPane.width}">
                                                          <children>
-                                                            <GridPane>
+                                                            <GridPane fx:id="applicationAge">
                                                                <children>
                                                                   <VBox spacing="5.0" GridPane.columnIndex="1">
                                                                      <children>
@@ -424,7 +424,7 @@
                                                                   <RowConstraints minHeight="10.0" percentHeight="100.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                                                </rowConstraints>
                                                             </GridPane>
-                                                            <GridPane GridPane.columnIndex="1">
+                                                            <GridPane fx:id="localAge" GridPane.columnIndex="1">
                                                                <children>
                                                                   <VBox spacing="5.0" GridPane.columnIndex="1">
                                                                      <children>
@@ -528,7 +528,7 @@
                                                       </GridPane>
                                                       <GridPane fx:id="genderParentPane" prefHeight="100" prefWidth="${scrollParentPane.width}">
                                                          <children>
-                                                            <GridPane>
+                                                            <GridPane fx:id="applicationGender">
                                                                <children>
                                                                   <VBox prefHeight="200.0" prefWidth="100.0" spacing="5.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
                                                                      <children>
@@ -556,7 +556,7 @@
                                                                   <RowConstraints minHeight="10.0" percentHeight="90.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                                                </rowConstraints>
                                                             </GridPane>
-                                                            <GridPane GridPane.columnIndex="1">
+                                                            <GridPane fx:id="localGender" GridPane.columnIndex="1">
                                                                <children>
                                                                   <VBox prefHeight="200.0" prefWidth="100.0" spacing="5.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
                                                                      <children>
@@ -595,7 +595,7 @@
                                                       </GridPane>
                                                       <GridPane fx:id="residenceParentpane" prefHeight="70.0" prefWidth="${scrollParentPane.width}">
                                                          <children>
-                                                            <GridPane>
+                                                            <GridPane fx:id="applicationResidence">
                                                                <children>
                                                                   <VBox prefHeight="44.0" prefWidth="224.0" spacing="1.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
                                                                      <children>
@@ -624,7 +624,7 @@
                                                                   <RowConstraints minHeight="10.0" percentHeight="70.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                                                </rowConstraints>
                                                             </GridPane>
-                                                            <GridPane GridPane.columnIndex="1">
+                                                            <GridPane fx:id="localResidence" GridPane.columnIndex="1">
                                                                <children>
                                                                   <VBox spacing="1.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
                                                                      <children>
@@ -670,7 +670,7 @@
                                                                      <children>
                                                                         <VBox fx:id="applicationLanguageAddressPane">
                                                                            <children>
-                                                                              <VBox spacing="5.0">
+                                                                              <VBox fx:id="applicationAddress" spacing="5.0">
                                                                                  <children>
                                                                                     <Label fx:id="addressLine1Label" styleClass="demoGraphicFieldLabel" text="%addressLine1" visible="true" />
                                                                                     <TextField fx:id="addressLine1" promptText="%addressLine1" styleClass="demoGraphicTextField" />
@@ -837,7 +837,7 @@
                                                                                     <Label fx:id="regionLocalLanguageMessage" styleClass="demoGraphicFieldMessageLabel" text="region message" visible="true" />
                                                                                  </children>
                                                                               </VBox>
-                                                                              <VBox spacing="5.0">
+                                                                              <VBox fx:id="provinceLocalLanguagePane" spacing="5.0">
                                                                                  <children>
                                                                                     <Label fx:id="provinceLocalLanguageLabel" styleClass="demoGraphicFieldLabel" text="%province" visible="true" />
                                                                                     <ComboBox fx:id="provinceLocalLanguage" onAction="#addCity" promptText="%province" styleClass="demographicCombobox" />
@@ -873,7 +873,7 @@
                                                                                     <Label fx:id="postalCodeLocalLanguageMessage" styleClass="demoGraphicFieldMessageLabel" text="postalCode message" visible="true" />
                                                                                  </children>
                                                                               </VBox>
-                                                                              <VBox spacing="5.0" GridPane.columnIndex="2">
+                                                                              <VBox fx:id="localMobileNumberPane" spacing="5.0" GridPane.columnIndex="2">
                                                                                  <children>
                                                                                     <Label fx:id="mobileNoLocalLanguageLabel" styleClass="demoGraphicFieldLabel" text="%mobileNo" visible="true" />
                                                                                     <TextField fx:id="mobileNoLocalLanguage" promptText="%mobileNo" styleClass="demoGraphicTextFieldTypeSecond" />
@@ -933,18 +933,18 @@
                                                       </GridPane>
                                                       <GridPane fx:id="emailIdCniParentPane" prefHeight="100" prefWidth="${scrollParentPane.width}">
                                                          <children>
-                                                            <GridPane>
+                                                            <GridPane fx:id="emailIdCni">
                                                                <children>
                                                                   <GridPane prefHeight="100.0" GridPane.columnIndex="1">
                                                                      <children>
-                                                                        <VBox fx:id="emailIdPane" spacing="5.0">
+                                                                        <VBox fx:id="applicationemailIdPane" spacing="5.0">
                                                                            <children>
                                                                               <Label fx:id="emailIdLabel" styleClass="demoGraphicFieldLabel" text="%emailId" visible="true" />
                                                                               <TextField fx:id="emailId" promptText="%emailId" styleClass="demoGraphicTextFieldTypeSecond" />
                                                                               <Label fx:id="emailIdMessage" styleClass="demoGraphicFieldMessageLabel" text="emaild Id Message" visible="true" />
                                                                            </children>
                                                                         </VBox>
-                                                                        <VBox fx:id="cniOrPinNumberPane" spacing="5.0" GridPane.columnIndex="2">
+                                                                        <VBox fx:id="applicationCniOrPinNumberPane" spacing="5.0" GridPane.columnIndex="2">
                                                                            <children>
                                                                               <Label fx:id="cniOrPinNumberLabel" styleClass="demoGraphicFieldLabel" text="%cniOrPinNumber" visible="true" />
                                                                               <TextField fx:id="cniOrPinNumber" prefHeight="35.0" prefWidth="161.0" promptText="%cniOrPinNumber" styleClass="demoGraphicTextFieldTypeSecond" />
@@ -975,14 +975,14 @@
                                                                <children>
                                                                   <GridPane prefHeight="100.0" GridPane.columnIndex="1">
                                                                      <children>
-                                                                        <VBox spacing="5.0">
+                                                                        <VBox fx:id="localEmailIdPane" spacing="5.0">
                                                                            <children>
                                                                               <Label fx:id="emailIdLocalLanguageLabel" styleClass="demoGraphicFieldLabel" text="%emailId" visible="true" />
                                                                               <TextField fx:id="emailIdLocalLanguage" promptText="%emailId" styleClass="demoGraphicTextFieldTypeSecond" />
                                                                               <Label fx:id="emailIdLocalLanguageMessage" styleClass="demoGraphicFieldMessageLabel" text="emaidl id message" visible="true" />
                                                                            </children>
                                                                         </VBox>
-                                                                        <VBox spacing="5.0" GridPane.columnIndex="2">
+                                                                        <VBox fx:id="localCniOrPinPane" spacing="5.0" GridPane.columnIndex="2">
                                                                            <children>
                                                                               <Label fx:id="cniOrPinNumberLocalLanguageLabel" styleClass="demoGraphicFieldLabel" text="%cniOrPinNumber" visible="true" />
                                                                               <TextField fx:id="cniOrPinNumberLocalLanguage" prefHeight="35.0" prefWidth="161.0" promptText="%cniOrPinNumber" styleClass="demoGraphicTextFieldTypeSecond" />
@@ -1046,12 +1046,20 @@
                                                                <children>
                                                                   <VBox prefHeight="200.0" prefWidth="100.0" spacing="5.0" GridPane.columnIndex="1">
                                                                      <children>
-                                                                        <Label fx:id="parentNameLocalLanguageLabel" styleClass="demoGraphicFieldLabel" text="%parentName" visible="true" />
-                                                                        <TextField fx:id="parentNameLocalLanguage" promptText="%parentName" styleClass="demoGraphicTextField" />
-                                                                        <Label fx:id="parentNameLocalLanguageMessage" styleClass="demoGraphicFieldMessageLabel" text="parentName message" visible="true" />
-                                                                        <Label fx:id="uinIdLocalLanguageLabel" styleClass="demoGraphicFieldLabel" text="%uinId" visible="true" />
-                                                                        <TextField fx:id="uinIdLocalLanguage" promptText="%uinId" styleClass="demoGraphicTextField" />
-                                                                        <Label fx:id="uinIdLocalLanguageMessage" styleClass="demoGraphicFieldMessageLabel" text="uinId message" visible="true" />
+                                                                        <VBox spacing="5.0">
+                                                                           <children>
+                                                                              <Label fx:id="parentNameLocalLanguageLabel" styleClass="demoGraphicFieldLabel" text="%parentName" visible="true" />
+                                                                              <TextField fx:id="parentNameLocalLanguage" promptText="%parentName" styleClass="demoGraphicTextField" />
+                                                                              <Label fx:id="parentNameLocalLanguageMessage" styleClass="demoGraphicFieldMessageLabel" text="parentName message" visible="true" />
+                                                                           </children>
+                                                                        </VBox>
+                                                                        <VBox fx:id="localUinIdPane" spacing="5.0">
+                                                                           <children>
+                                                                              <Label fx:id="uinIdLocalLanguageLabel" styleClass="demoGraphicFieldLabel" text="%uinId" visible="true" />
+                                                                              <TextField fx:id="uinIdLocalLanguage" promptText="%uinId" styleClass="demoGraphicTextField" />
+                                                                              <Label fx:id="uinIdLocalLanguageMessage" styleClass="demoGraphicFieldMessageLabel" text="uinId message" visible="true" />
+                                                                           </children>
+                                                                        </VBox>
                                                                      </children>
                                                                   </VBox>
                                                                   <AnchorPane prefHeight="200.0" prefWidth="200.0">

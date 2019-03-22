@@ -82,19 +82,5 @@ public class NotificationController {
 		
 	}
 	
-	/**
-	 *
-	 * @return the response entity
-	 */
-	//@PreAuthorize("hasAnyRole('individual')")
-	@GetMapping(path="/config" ,produces = MediaType.APPLICATION_JSON_VALUE)
-	@ApiOperation(value = "Get global and Pre-Registration config data")
-	@ApiResponses(value = { @ApiResponse(code = 200, message = "global and Pre-Registration config data successfully retrieved"),
-			@ApiResponse(code = 400, message = "Unable to get the global and Pre-Registration config data") })
-	public ResponseEntity<MainResponseDTO<Map<String,String>>> configParams() {
-		log.info("sessionId", "idType", "id",
-				"In notification controller for getting config values ");
-		return  new ResponseEntity<>( notificationService.getConfig(),HttpStatus.OK);
-		
-	}
+	
 }

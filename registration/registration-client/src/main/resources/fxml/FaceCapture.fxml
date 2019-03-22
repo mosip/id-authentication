@@ -61,7 +61,7 @@
                                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                       </rowConstraints>
                                        <children>
-                                          <Button contentDisplay="BOTTOM" mnemonicParsing="false" prefHeight="${backButtonPane.height-10}" prefWidth="${backButtonPane.width-10}" styleClass="backButton" text="%back" onAction="#goToPreviousPane"/>
+                                          <Button fx:id="biometricPrevBtn" contentDisplay="BOTTOM" mnemonicParsing="false" onAction="#goToPreviousPane" prefHeight="${backButtonPane.height-10}" prefWidth="${backButtonPane.width-10}" styleClass="backButton" text="%back" />
                                        </children>
                                     </GridPane>
                                  </children>
@@ -78,7 +78,7 @@
                                  <children>
                                     <GridPane fx:id="continueButtonPane" GridPane.columnIndex="2">
                                        <children>
-                                          <Button mnemonicParsing="false" prefHeight="${continueButtonPane.height-10}" prefWidth="${continueButtonPane.width-10}" styleClass="contiuneButton" text="%continue" onAction="#saveBiometricDetails"/>
+                                          <Button fx:id="saveBiometricDetailsBtn" mnemonicParsing="false" onAction="#saveBiometricDetails" prefHeight="${continueButtonPane.height-10}" prefWidth="${continueButtonPane.width-10}" styleClass="contiuneButton" text="%continue" />
                                        </children>
                                        <columnConstraints>
                                           <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -418,21 +418,35 @@
                                                 <Label fx:id="photoAlert" styleClass="photoAlert" text="" />
                                                 <GridPane fx:id="takePhotoPane" GridPane.rowIndex="1">
                                                   <columnConstraints>
-                                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="90.0" prefWidth="100.0" />
+                                                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="10.0" prefWidth="100.0" />
                                                   </columnConstraints>
                                                   <rowConstraints>
                                                     <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                                   </rowConstraints>
                                                    <children>
-                                                      <Button fx:id="takePhoto" disable="true"  prefHeight="${takePhotoPane.height-100}" prefWidth="${takePhotoPane.width-100}" mnemonicParsing="false" onAction="#takePhoto" styleClass="documentContentButton" text="%takePhoto">
-                                                         <graphic>
-                                                            <ImageView fitHeight="15.0" fitWidth="15.0" layoutY="25.0" pickOnBounds="true" preserveRatio="true">
-                                                               <image>
-                                                                  <Image url="@../images/scan.png" />
-                                                               </image>
-                                                            </ImageView>
-                                                         </graphic>
-                                                      </Button>
+                                                      <HBox prefHeight="100.0" prefWidth="200.0" spacing="20.0">
+                                                         <children>
+                                                            <Button fx:id="takePhoto" disable="true" mnemonicParsing="false" onAction="#takePhoto" styleClass="onboardScanBtn" text="%takePhoto">
+                                                               <graphic>
+                                                                  <ImageView fitHeight="15.0" fitWidth="15.0" layoutY="25.0" pickOnBounds="true" preserveRatio="true">
+                                                                     <image>
+                                                                        <Image url="@../images/scan.png" />
+                                                                     </image>
+                                                                  </ImageView>
+                                                               </graphic>
+                                                            </Button>
+                                                            <Button fx:id="startOverBtn" mnemonicParsing="false" onAction="#clearAllCapturedImages" styleClass="onboardScanBtn" text="%startOver">
+                                                               <graphic>
+                                                                  <ImageView fitHeight="15.0" fitWidth="15.0" layoutY="25.0" pickOnBounds="true" preserveRatio="true">
+                                                                     <image>
+                                                                        <Image url="@../images/scan.png" />
+                                                                     </image>
+                                                                  </ImageView>
+                                                               </graphic>
+                                                            </Button>
+                                                         </children>
+                                                      </HBox>
                                                    </children>
                                                 </GridPane>
                                              </children>

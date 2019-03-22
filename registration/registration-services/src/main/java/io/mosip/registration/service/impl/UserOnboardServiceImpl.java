@@ -75,7 +75,7 @@ public class UserOnboardServiceImpl implements UserOnboardService {
 			if (count >= UserOnBoardThresholdLimit) {
 				responseDTO = save(biometricDTO);
 			} else {
-				responseDTO = errorRespone(RegistrationConstants.USER_ON_BOARDING_THRESHOLD_NOT_MET_CODE,
+				responseDTO = errorRespone(RegistrationConstants.ERROR,
 						RegistrationConstants.USER_ON_BOARDING_THRESHOLD_NOT_MET_MSG);
 			}
 
@@ -123,7 +123,7 @@ public class UserOnboardServiceImpl implements UserOnboardService {
 			LOGGER.error(LOG_REG_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID, uncheckedException.getMessage()
 					+ onBoardingResponse + ExceptionUtils.getStackTrace(uncheckedException));
 
-			responseDTO = errorRespone(RegistrationConstants.USER_ON_BOARDING_EXCEPTION_MSG_CODE,
+			responseDTO = errorRespone(RegistrationConstants.ERROR,
 					RegistrationConstants.USER_ON_BOARDING_ERROR_RESPONSE);
 
 		} catch (RuntimeException runtimeException) {

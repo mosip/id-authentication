@@ -1,17 +1,20 @@
 package io.mosip.preregistration.auth.util;
 
 import java.io.IOException;
+import java.io.StringReader;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
+import java.util.Properties;
+import java.util.Map.Entry;
 import java.util.Date;
 import java.util.HashMap;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -47,17 +50,22 @@ public class AuthCommonUtil {
 	private String utcDateTimePattern;
 	
 	/**
+	 * Environment instance
+	 */
+	@Autowired
+	private Environment env;
+	
+	
+	@Autowired
+	private RestTemplate restTemplate;
+	
+	/**
 	 * Logger instance
 	 */
 	private Logger log = LoggerConfiguration.logConfig(AuthCommonUtil.class);
 	
 	private final ObjectMapper objectMapper=new ObjectMapper();
 	
-	/**
-	 * Autowired reference for {@link #restTemplateBuilder}
-	 */
-	@Autowired
-	private RestTemplateBuilder restTemplateBuilder;
 	
 	@Value("${otpChannel.mobile}")
 	private String mobileChannel;
@@ -91,7 +99,6 @@ public class AuthCommonUtil {
 	
 	public ResponseEntity<?> getResponseEntity(String url,HttpMethod httpMethodType,MediaType mediaType,Object body,Map<String,String> headersMap,Class<?> responseClass){
 		log.info("sessionId", "idType", "id", "In getResponseEntity method of Auth Common Util");
-		RestTemplate restTemplate=restTemplateBuilder.build();
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(mediaType);
 		HttpEntity<?> request=null;
@@ -197,4 +204,34 @@ public class AuthCommonUtil {
 			
 		} 
 	}
+	
+	public Properties parsePropertiesString(String s) throws IOException {
+		final Properties p = new Properties();
+		p.load(new StringReader(s));
+		return p;
+	}
+
+	public String configRestCall(String filname) {
+		String configServerUri = env.getProperty("spring.cloud.config.uri");
+		String configLabel = env.getProperty("spring.cloud.config.label");
+		String configProfile = env.getProperty("spring.profiles.active");
+		String configAppName = env.getProperty("spring.cloud.config.name");
+		StringBuilder uriBuilder= new StringBuilder();
+
+		uriBuilder.append(configServerUri + "/").append(configAppName + "/").append(configProfile + "/")
+				.append(configLabel + "/").append(filname);
+		log.info("sessionId", "idType", "id", " URL in notification service util of configRestCall" + uriBuilder);
+		return restTemplate.getForObject(uriBuilder.toString(), String.class);
+
+	}
+
+	public void getConfigParams(Properties prop, Map<String, String> configParamMap, List<String> reqParams) {
+		for (Entry<Object, Object> e : prop.entrySet()) {
+			if (reqParams.contains(String.valueOf(e.getKey()))) {
+				configParamMap.put(String.valueOf(e.getKey()), e.getValue().toString());
+			}
+
+		}
+	}
+
 }

@@ -1,4 +1,4 @@
-package io.mosip.preregistration.notification.exception;
+package io.mosip.preregistration.auth.exceptions;
 
 import io.mosip.kernel.core.exception.BaseUncheckedException;
 
