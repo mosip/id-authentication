@@ -64,10 +64,10 @@ public enum ApiName {
 	/** The idrepodev. */
 	IDREPODEV,
 
-	/** The Cryptomaanger **/
+	/** The Cryptomaanger *. */
 	CRYPTOMANAGERDECRYPT,
 
-	/** The ReverseDataSync **/
+	/** The ReverseDataSync *. */
 	REVERSEDATASYNC,
 
 	/** The Device history **/
@@ -81,6 +81,74 @@ public enum ApiName {
 
 	/** The registration connector **/
 	REGISTRATIONCONNECTOR,
+
+	/** The fullname. */
+	FULLNAME,
+
+	/** The dateofbirth. */
+	DATEOFBIRTH,
+
+	/** The age. */
+	AGE,
+
+	/** The gender. */
+	GENDER,
+
+	/** The residencestatus. */
+	RESIDENCESTATUS,
+
+	/** The addressline1. */
+	ADDRESSLINE1,
+
+	/** The addressline2. */
+	ADDRESSLINE2,
+
+	/** The addressline3. */
+	ADDRESSLINE3,
+
+	/** The region. */
+	REGION,
+
+	/** The city. */
+	CITY,
+
+	/** The postalcode. */
+	POSTALCODE,
+
+	/** The province. */
+	PROVINCE,
+
+	/** The phone. */
+	PHONE,
+
+	/** The email. */
+	EMAIL,
+
+	/** The localadministrativeauthority. */
+	LOCALADMINISTRATIVEAUTHORITY,
+
+	/** The proofofidentity. */
+	PROOFOFIDENTITY,
+
+	/** The proofofaddress. */
+	PROOFOFADDRESS,
+
+	/** The proofofrelationship. */
+	PROOFOFRELATIONSHIP,
+
+	/** The proofofdateofbirth. */
+	PROOFOFDATEOFBIRTH,
+
+	/** The parentorguardianbiometrics. */
+	PARENTORGUARDIANBIOMETRICS,
+
+	/** The idschemaversion. */
+	IDSCHEMAVERSION,
+
+	/** The cnienumber. */
+	CNIENUMBER,
+
+	/** The decryption api from DMZ *. */
 
 	SYNCSERVICE,
 

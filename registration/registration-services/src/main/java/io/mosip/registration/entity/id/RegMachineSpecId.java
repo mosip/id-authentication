@@ -5,10 +5,13 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
+import lombok.Data;
+
 /**
  * The Class RegMachineSpecId.
  */
 @Embeddable
+@Data
 public class RegMachineSpecId implements Serializable {
 	private static final long serialVersionUID = -7306845601917592413L;
 

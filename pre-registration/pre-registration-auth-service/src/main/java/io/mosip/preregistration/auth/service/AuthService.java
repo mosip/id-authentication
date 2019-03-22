@@ -1,5 +1,6 @@
 package io.mosip.preregistration.auth.service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
@@ -11,6 +12,7 @@ import java.util.HashMap;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -30,7 +32,10 @@ import io.mosip.preregistration.auth.dto.OtpUserDTO;
 import io.mosip.preregistration.auth.dto.User;
 import io.mosip.preregistration.auth.dto.UserOtp;
 import io.mosip.preregistration.auth.dto.UserOtpDTO;
+import io.mosip.preregistration.auth.errorcodes.ErrorCodes;
+import io.mosip.preregistration.auth.errorcodes.ErrorMessages;
 import io.mosip.preregistration.auth.exceptions.AuthServiceException;
+import io.mosip.preregistration.auth.exceptions.ConfigFileNotFoundException;
 import io.mosip.preregistration.auth.exceptions.util.AuthExceptionCatcher;
 import io.mosip.preregistration.auth.util.AuthCommonUtil;
 import io.mosip.preregistration.core.code.AuditLogVariables;
@@ -52,6 +57,15 @@ public class AuthService {
 	 */
 	@Autowired
 	private AuthCommonUtil authCommonUtil;
+	
+	@Value("${global.config.file}")
+	private String globalFileName;
+
+	@Value("${pre.reg.config.file}")
+	private String preRegFileName;
+
+	@Value("${ui.config.params}")
+	private String uiConfigParams;
 	
 	/**
 	 * Reference for ${sendOtp.resource.url} from property file
@@ -239,5 +253,42 @@ public class AuthService {
 		auditRequestDto.setModuleId(AuditLogVariables.DEM.toString());
 		auditRequestDto.setModuleName(AuditLogVariables.DEMOGRAPHY_SERVICE.toString());
 		auditLogUtil.saveAuditDetails(auditRequestDto);
+	}
+	
+	/**
+	 * This will return UI related configurations return
+	 */
+	public MainResponseDTO<Map<String, String>> getConfig() {
+		log.info("sessionId", "idType", "id",
+				"In notification service of getConfig ");
+		MainResponseDTO<Map<String, String>> res = new MainResponseDTO<>();
+		List<String> reqParams = new ArrayList<>();
+		Map<String, String> configParams = new HashMap<>();
+		try {
+			String[] uiParams = uiConfigParams.split(",");
+			for (int i = 0; i < uiParams.length; i++) {
+				reqParams.add(uiParams[i]);
+			}
+			if (globalFileName != null && preRegFileName != null) {
+				String globalParam = authCommonUtil.configRestCall(globalFileName);
+				String preregParam = authCommonUtil.configRestCall(preRegFileName);
+				Properties prop1 = authCommonUtil.parsePropertiesString(globalParam);
+				Properties prop2 = authCommonUtil.parsePropertiesString(preregParam);
+				authCommonUtil.getConfigParams(prop1,configParams,reqParams);
+				authCommonUtil.getConfigParams(prop2,configParams,reqParams);
+		
+			} else {
+				throw new ConfigFileNotFoundException(ErrorCodes.PRG_AUTH_012.name(),
+						ErrorMessages.CONFIG_FILE_NOT_FOUND_EXCEPTION.name());
+			}
+			
+		} catch (Exception ex) {
+			log.error("sessionId", "idType", "id",
+					"In notification service of getConfig "+ex.getMessage());
+			new AuthExceptionCatcher().handle(ex,"config");
+		}
+		res.setResponse(configParams);
+		res.setResponsetime(authCommonUtil.getCurrentResponseTime());
+		return res;
 	}
 }

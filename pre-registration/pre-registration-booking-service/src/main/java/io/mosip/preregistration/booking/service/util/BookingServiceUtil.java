@@ -93,7 +93,7 @@ public class BookingServiceUtil {
 	 * Autowired reference for {@link #restTemplateBuilder}
 	 */
 	@Autowired
-	RestTemplateBuilder restTemplateBuilder;
+	RestTemplate restTemplate;
 
 	/**
 	 * Reference for ${regCenter.url} from property file
@@ -133,7 +133,7 @@ public class BookingServiceUtil {
 		log.info("sessionId", "idType", "id", "In callRegCenterDateRestService method of Booking Service Util");
 		List<RegistrationCenterDto> regCenter = null;
 		try {
-			RestTemplate restTemplate = restTemplateBuilder.build();
+			//RestTemplate restTemplate = restTemplateBuilder.build();
 			UriComponentsBuilder regbuilder = UriComponentsBuilder.fromHttpUrl(regCenterUrl);
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
@@ -179,7 +179,7 @@ public class BookingServiceUtil {
 		log.info("sessionId", "idType", "id", "In callGetHolidayListRestService method of Booking Service Util");
 		List<String> holidaylist = null;
 		try {
-			RestTemplate restTemplate = restTemplateBuilder.build();
+			//RestTemplate restTemplate = restTemplateBuilder.build();
 			String holidayUrl = holidayListUrl + regDto.getLangCode() + "/" + regDto.getId() + "/"
 					+ LocalDate.now().getYear();
 			UriComponentsBuilder builder2 = UriComponentsBuilder.fromHttpUrl(holidayUrl);
@@ -230,7 +230,7 @@ public class BookingServiceUtil {
 	public boolean callUpdateStatusRestService(String preId, String status) {
 		log.info("sessionId", "idType", "id", "In callUpdateStatusRestService method of Booking Service Util");
 		try {
-			RestTemplate restTemplate = restTemplateBuilder.build();
+			//RestTemplate restTemplate = restTemplateBuilder.build();
 
 			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(preRegResourceUrl + "/applications")
 					.queryParam("pre_registration_id", preId).queryParam("status_code", status);
@@ -270,7 +270,7 @@ public class BookingServiceUtil {
 		log.info("sessionId", "idType", "id", "In callGetStatusRestService method of Booking Service Util");
 		String statusCode = "";
 		try {
-			RestTemplate restTemplate = restTemplateBuilder.build();
+			//RestTemplate restTemplate = restTemplateBuilder.build();
 			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(preRegResourceUrl + "/applications/status")
 					.queryParam("pre_registration_id", preId);
 			HttpHeaders headers = new HttpHeaders();
@@ -313,7 +313,7 @@ public class BookingServiceUtil {
 	public boolean callGetStatusForCancelRestService(String preId) {
 		log.info("sessionId", "idType", "id", "In callGetStatusForCancelRestService method of Booking Service Util");
 		try {
-			RestTemplate restTemplate = restTemplateBuilder.build();
+			//RestTemplate restTemplate = restTemplateBuilder.build();
 			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(preRegResourceUrl + "/applications/status")
 					.queryParam("pre_registration_id", preId);
 			HttpHeaders headers = new HttpHeaders();

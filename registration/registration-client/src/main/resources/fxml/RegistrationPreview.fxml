@@ -159,7 +159,7 @@
       </GridPane>
       <GridPane fx:id="registrationPreviewHeader" styleClass="headerFooter">
          <children>
-            <HBox spacing="5.0" styleClass="homeBox" GridPane.halignment="LEFT" GridPane.hgrow="ALWAYS" GridPane.valignment="BASELINE" GridPane.vgrow="ALWAYS">
+            <HBox alignment="CENTER_LEFT" spacing="5.0" styleClass="homeBox" GridPane.halignment="LEFT" GridPane.hgrow="ALWAYS" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
                <children>
                   <Text onMouseClicked="#goToHomePageFromRegistration" styleClass="homeButton" text="%home" />
                   <Text fx:id="registrationNavlabel" styleClass="headerLabel" text="%/newregistration" />
@@ -180,9 +180,9 @@
                   </GridPane>
                </children>
                <columnConstraints>
-                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="20.0" prefWidth="100.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="15.0" prefWidth="100.0" />
                   <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="40.0" prefWidth="100.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="25.0" prefWidth="100.0" />
                </columnConstraints>
                <rowConstraints>
                   <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />

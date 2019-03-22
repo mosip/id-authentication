@@ -224,6 +224,8 @@ public class RegistrationConstants {
 
 	// onBoard User
 	public static final String ONBOARD_BIOMETRICS = "Biometrics - ";
+	public static final String ONBOARD_STYLE_CLASS = "onboardAlertMsg";
+	public static final String ONBOARD_IMG_PATH = "images/tick.png";	
 
 	// RegistrationApproval
 	public static final String PLACEHOLDER_LABEL = "No Packets for approval";
@@ -1061,11 +1063,9 @@ public class RegistrationConstants {
 	public static final String USER_ON_BOARDING_EXCEPTION_MSG_CODE = "REG-URE‌-000";
 	public static final String USER_ON_BOARDING_SUCCESS_CODE = "REG-URE‌-002";
 	public static final String USER_ON_BOARDING_SUCCESS_MSG = "USER_ONBOARD_SUCCESS";
-	public static final String USER_ON_BOARDING_THRESHOLD_NOT_MET_CODE = "REG-URE‌-008";
 	public static final String USER_ON_BOARDING_THRESHOLD_NOT_MET_MSG = "USER_ON_BOARDING_THRESHOLD_NOT_MET_MSG";
 	public static final String USER_STATION_ID = "stationId";
 	public static final String USER_CENTER_ID = "centerId";
-	public static final String USER_MACHINE_VALIDATION_CODE = "REG-URE‌-009";
 	public static final String USER_ONBOARD_DATA = "UserOnboardBiometricData";
 	public static final String USER_ON_BOARD_THRESHOLD_LIMIT = "mosip.registration.user_on_board_threshold_limit";
 
@@ -1120,6 +1120,24 @@ public class RegistrationConstants {
 
 	}
 
+	// ID JSON Business Validation
+	private static final String ID_JSON_BIZ_VALIDATION_PREFIX = "mosip.id.validation.identity";
+	public static final String LENGTH = "length";
+	public static final String EMAIL_VALIDATION_REGEX = ID_JSON_BIZ_VALIDATION_PREFIX.concat(DOT).concat("email");
+	public static final String EMAIL_VALIDATION_LENGTH = EMAIL_VALIDATION_REGEX.concat(DOT).concat(LENGTH);
+	public static final String PHONE_VALIDATION_REGEX = ID_JSON_BIZ_VALIDATION_PREFIX.concat(DOT).concat("phone");
+	public static final String PHONE_VALIDATION_LENGTH = PHONE_VALIDATION_REGEX.concat(DOT).concat(LENGTH);
+	public static final String CNIE_VALIDATION_REGEX = ID_JSON_BIZ_VALIDATION_PREFIX.concat(DOT).concat("CNIENumber");
+	public static final String CNIE_VALIDATION_LENGTH = CNIE_VALIDATION_REGEX.concat(DOT).concat(LENGTH);
+	public static final String POSTAL_CODE_VALIDATION_REGEX = ID_JSON_BIZ_VALIDATION_PREFIX.concat(DOT).concat("postalCode");
+	public static final String POSTAL_CODE_VALIDATION_LENGTH = POSTAL_CODE_VALIDATION_REGEX.concat(DOT).concat(LENGTH);
+	public static final String DOB_VALIDATION_REGEX = ID_JSON_BIZ_VALIDATION_PREFIX.concat(DOT).concat("dateOfBirth");
+	public static final String TRUE = String.valueOf(true);
+	public static final String FALSE = String.valueOf(false);
+	public static final String REGEX = "regex";
+	public static final String IS_MANDATORY = "isMandatory";
+	public static final String IS_FIXED = "isFixed";
+
 	// Virus Scan
 	public static final String VIRUS_SCAN_PACKET_NOT_FOUND = "FILE_NOT_PRESENT_FOR_SCAN";
 	public static final String VIRUS_SCAN_INFECTED_FILES = "Infected Files";
@@ -1163,5 +1181,11 @@ public class RegistrationConstants {
 	public static final String ATTR_FORINGER = "FR";
 	public static final String ATTR_FORINGER_DOB_PARSING="yyyy/MM/dd";
 	public static final String ATTR_FORINGER_DOB_FORMAT="yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
+	
+	public static final String SYNC_FAILURE = "SYNC_FAILURE";
+	
+	//Scheduler
+	public static final String IDEAL_TIME = "mosip.registration.ideal_time";
+	public static final String REFRESHED_LOGIN_TIME = "mosip.registration.refreshed_login_time";
 
 }
