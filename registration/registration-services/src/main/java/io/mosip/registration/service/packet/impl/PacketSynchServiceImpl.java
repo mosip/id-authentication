@@ -106,12 +106,12 @@ public class PacketSynchServiceImpl extends BaseService implements PacketSynchSe
 				responseDTO = syncPacketsToServer(registrationPacketSyncDTO,
 						RegistrationConstants.JOB_TRIGGER_POINT_USER);
 			}
-			if (responseDTO != null && responseDTO.getSuccessResponseDTO() != null) {
+			if (responseDTO.getSuccessResponseDTO() != null) {
 
 				for (PacketStatusDTO registration : packetsToBeSynched) {
 					String status = (String) responseDTO.getSuccessResponseDTO().getOtherAttributes()
 							.get(registration.getFileName());
-					if (status != null && status.equalsIgnoreCase(RegistrationConstants.SUCCESS)) {
+					if (RegistrationConstants.SUCCESS.equalsIgnoreCase(status)) {
 
 						registration.setPacketClientStatus(RegistrationClientStatusCode.META_INFO_SYN_SERVER.getCode());
 
