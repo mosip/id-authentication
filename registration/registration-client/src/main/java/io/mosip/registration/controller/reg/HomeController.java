@@ -43,7 +43,7 @@ public class HomeController extends BaseController implements Initializable {
 	@FXML
 	public GridPane homeContent;
 	@FXML
-	private GridPane onboard;
+	public GridPane onboard;
 
 	/**
 	 * Building Home screen on Login success
@@ -72,7 +72,6 @@ public class HomeController extends BaseController implements Initializable {
 
 				if ((boolean) SessionContext.map()
 						.get(RegistrationConstants.ONBOARD_USER_UPDATE)) {
-					clearOnboardData();
 				}
 				homeContent.setVisible(true);
 			}

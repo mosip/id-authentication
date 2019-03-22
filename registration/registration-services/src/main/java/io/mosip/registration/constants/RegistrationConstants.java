@@ -225,7 +225,7 @@ public class RegistrationConstants {
 	// onBoard User
 	public static final String ONBOARD_BIOMETRICS = "Biometrics - ";
 	public static final String ONBOARD_STYLE_CLASS = "onboardAlertMsg";
-	public static final String ONBOARD_IMG_PATH = "images/tick.png";
+	public static final String ONBOARD_IMG_PATH = "images/tick.png";	
 
 	// RegistrationApproval
 	public static final String PLACEHOLDER_LABEL = "No Packets for approval";
@@ -1165,5 +1165,9 @@ public class RegistrationConstants {
 	public static final String ATTR_FORINGER_DOB_FORMAT="yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
 	
 	public static final String SYNC_FAILURE = "SYNC_FAILURE";
+	
+	//Scheduler
+	public static final String IDEAL_TIME = "mosip.registration.ideal_time";
+	public static final String REFRESHED_LOGIN_TIME = "mosip.registration.refreshed_login_time";
 
 }

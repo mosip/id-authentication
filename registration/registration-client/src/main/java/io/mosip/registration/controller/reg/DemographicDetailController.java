@@ -1001,8 +1001,8 @@ public class DemographicDetailController extends BaseController {
 												.with(value -> value.setLanguage(localLanguageCode))
 												.with(value -> value.setValue(fullNameLocalLanguage.getText())).get()))
 										.get()))
-						.with(identity -> identity.setDateOfBirth(DateUtils.formatDate(dateOfBirth, "yyyy/MM/dd")))
-						.with(identity -> identity.setAge( Integer.parseInt(ageField.getText())))
+						.with(identity -> identity.setDateOfBirth(applicationAge.isDisable() ? null : DateUtils.formatDate(dateOfBirth, "yyyy/MM/dd")))
+						.with(identity -> identity.setAge(applicationAge.isDisable()? null : Integer.parseInt(ageField.getText())))
 						.with(identity -> identity.setGender(gender.isDisabled() ? null
 								: (List<ValuesDTO>) Builder.build(LinkedList.class).with(values -> values.add(Builder
 										.build(ValuesDTO.class).with(value -> value.setLanguage(platformLanguageCode))
@@ -1451,17 +1451,18 @@ public class DemographicDetailController extends BaseController {
 		SessionContext.map().put(RegistrationConstants.IS_CONSOLIDATED, RegistrationConstants.DISABLE);
 	}
 
+	@Autowired
+	HomeController homeController;
+	
 	@FXML
 	private void back() {
 		try {
 			if (getRegistrationDTOFromSession().getSelectionListDTO() != null) {
-				Parent root = BaseController.load(getClass().getResource(RegistrationConstants.UIN_UPDATE));
-				ObservableList<Node> nodes = demographicDetail.getChildren();
-				IntStream.range(1, nodes.size()).forEach(index -> {
-					nodes.get(index).setVisible(false);
-					nodes.get(index).setManaged(false);
-				});
-				nodes.add(root);
+				Parent root = BaseController.load(getClass().getResource(RegistrationConstants.HOME_PAGE));
+				Parent uinUpdate = BaseController.load(getClass().getResource(RegistrationConstants.UIN_UPDATE));
+				homeController.getMainBox().getChildren().remove(homeController.getMainBox().getChildren().size()-1);
+				homeController.getMainBox().add(uinUpdate, 0, 1);
+				getScene(root);
 			} else {
 				goToHomePageFromRegistration();
 			}
