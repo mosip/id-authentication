@@ -2,6 +2,7 @@ package io.mosip.authentication.core.dto.indauth;
 
 import java.util.List;
 
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 /**
@@ -22,6 +23,7 @@ public class IdentityDTO {
 	List<IdentityInfoDTO> name;
 
 	/** List of identity info to hold dateOfBirthType */
+	@ApiModelProperty(required = false, hidden = true)
 	List<IdentityInfoDTO> dobType;
 
 	/** List of identity info to hold gender */
