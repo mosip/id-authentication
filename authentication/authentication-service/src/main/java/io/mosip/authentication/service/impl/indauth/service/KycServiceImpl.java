@@ -48,7 +48,6 @@ public class KycServiceImpl implements KycService {
 	@Autowired
 	private MappingConfig mappingConfig;
 
-	
 	/**
 	 * This method will return the KYC info of the individual.
 	 *
@@ -84,9 +83,10 @@ public class KycServiceImpl implements KycService {
 			filteredIdentityInfo.put("biometrics", bioValue);
 		}
 		if (Objects.nonNull(filteredIdentityInfo)) {
-			Map<String, Object> idMappingIdentityInfo = filteredIdentityInfo.entrySet()
-					.stream()
-					.map(entry -> new SimpleEntry<>(IdaIdMapping.getIdNameForMapping(entry.getKey(), mappingConfig).orElse(""), entry.getValue()))
+			Map<String, Object> idMappingIdentityInfo = filteredIdentityInfo.entrySet().stream()
+					.map(entry -> new SimpleEntry<>(
+							IdaIdMapping.getIdNameForMapping(entry.getKey(), mappingConfig).orElse(""),
+							entry.getValue()))
 					.filter(entry -> !entry.getKey().isEmpty())
 					.collect(Collectors.toMap(Entry::getKey, Entry::getValue));
 			kycResponseDTO.setIdentity(idMappingIdentityInfo);
@@ -107,8 +107,7 @@ public class KycServiceImpl implements KycService {
 		Map<String, List<IdentityInfoDTO>> identityInfo = null;
 		Map<String, Object> identityInfos = null;
 		if (Objects.nonNull(allowedKycType)) {
-			identityInfo = identity.entrySet().stream()
-					.filter(id -> allowedKycType.contains(id.getKey()))
+			identityInfo = identity.entrySet().stream().filter(id -> allowedKycType.contains(id.getKey()))
 					.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 		}
 		if (Objects.nonNull(identityInfo)) {
