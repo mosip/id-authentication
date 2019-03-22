@@ -44,8 +44,9 @@ import io.mosip.registration.jobs.JobTriggerListener;
 @ComponentScan({ "io.mosip.registration", "io.mosip.kernel.core", "io.mosip.kernel.keygenerator",
 		"io.mosip.kernel.idvalidator", "io.mosip.kernel.ridgenerator", "io.mosip.kernel.qrcode",
 		"io.mosip.kernel.crypto", "io.mosip.kernel.jsonvalidator", "io.mosip.kernel.idgenerator",
-		"io.mosip.kernel.virusscanner", "io.mosip.kernel.transliteration", "io.mosip.kernel.applicanttype", "io.mosip.kernel.cbeffutil" })
-@PropertySource(value= {"classpath:spring.properties", "classpath:spring-${spring.profiles.active}.properties"})
+		"io.mosip.kernel.virusscanner", "io.mosip.kernel.transliteration", "io.mosip.kernel.applicanttype",
+		"io.mosip.kernel.cbeffutil" })
+@PropertySource(value = { "classpath:spring.properties", "classpath:spring-${spring.profiles.active}.properties" })
 public class AppConfig {
 
 	private static final RollingFileAppender MOSIP_ROLLING_APPENDER = new RollingFileAppender();
@@ -55,21 +56,6 @@ public class AppConfig {
 	@Autowired
 	@Qualifier("dataSource")
 	private DataSource datasource;
-
-	/**
-	 * Job processor
-	 */
-	@Autowired
-	private JobProcessListener jobProcessListener;
-
-	/**
-	 * Job Trigger
-	 */
-	@Autowired
-	private JobTriggerListener commonTriggerListener;
-
-	@Autowired
-	private SyncJobConfigDAO syncJobConfigDAO;
 
 	static {
 		ResourceBundle resourceBundle = ResourceBundle.getBundle("log4j");
@@ -103,5 +89,4 @@ public class AppConfig {
 		return new TemplateManagerBuilderImpl();
 	}
 
-	
 }
