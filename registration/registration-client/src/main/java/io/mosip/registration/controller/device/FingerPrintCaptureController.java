@@ -324,12 +324,17 @@ public class FingerPrintCaptureController extends BaseController implements Init
 		for(int j = 0; j < retries+1; j++) {
 			if(quality > threshold) {
 				clearAttemptsBox("qualityLabelGreen", retries);
-				fpProgress.getStyleClass().remove("progress-barRed");
+				fpProgress.getStyleClass().removeAll("progress-barRed");
 				fpProgress.getStyleClass().add("progress-barGreen");
 			} else {
 				clearAttemptsBox("qualityLabelRed", retries);
-				fpProgress.getStyleClass().remove("progress-barGreen");
+				fpProgress.getStyleClass().removeAll("progress-barGreen");
 				fpProgress.getStyleClass().add("progress-barRed");
+			}
+		}
+		if(retries > 1) {
+			for(int ret = retries; ret > 0; --ret) {
+				clearAttemptsBox("qualityLabelRed",ret);
 			}
 		}
 	}
@@ -463,8 +468,8 @@ public class FingerPrintCaptureController extends BaseController implements Init
 		
 		if(!(boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
 			fpProgress.setProgress(0);
-			fpProgress.getStyleClass().remove("progress-barRed");
-			fpProgress.getStyleClass().remove("progress-barGreen");
+			fpProgress.getStyleClass().removeAll("progress-barRed");
+			fpProgress.getStyleClass().removeAll("progress-barGreen");
 			
 			qualityText.setText(RegistrationConstants.EMPTY);
 			qualityText.getStyleClass().remove("labelRed");
@@ -762,13 +767,13 @@ public class FingerPrintCaptureController extends BaseController implements Init
 			qualityText.setText(getQualityScore(detailsDTO.getQualityScore()));
 				if(Double.valueOf(getQualityScore(detailsDTO.getQualityScore()).split(RegistrationConstants.PERCENTAGE)[0]) > thresholdValue) {
 					clearAttemptsBox("qualityLabelGreen", detailsDTO.getNumRetry());
-					fpProgress.getStyleClass().remove("progress-barRed");
+					fpProgress.getStyleClass().removeAll("progress-barRed");
 					fpProgress.getStyleClass().add("progress-barGreen");
 					qualityText.getStyleClass().remove("labelRed");
 					qualityText.getStyleClass().add("labelGreen");
 				} else {
 					clearAttemptsBox("qualityLabelRed", detailsDTO.getNumRetry());
-					fpProgress.getStyleClass().remove("progress-barGreen");
+					fpProgress.getStyleClass().removeAll("progress-barGreen");
 					fpProgress.getStyleClass().add("progress-barRed");
 					qualityText.getStyleClass().remove("labelGreen");
 					qualityText.getStyleClass().add("labelRed");

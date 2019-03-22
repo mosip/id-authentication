@@ -257,12 +257,17 @@ public class IrisCaptureController extends BaseController {
 	private void updateRetriesBox(double quality, double threshold, int retries) {
 		if(quality > threshold) {
 			clearAttemptsBox("qualityLabelGreen",retries);
-			irisProgress.getStyleClass().remove("progress-barRed");
+			irisProgress.getStyleClass().removeAll("progress-barRed");
 			irisProgress.getStyleClass().add("progress-barGreen");
 		} else {
 			clearAttemptsBox("qualityLabelRed",retries);
-			irisProgress.getStyleClass().remove("progress-barGreen");
+			irisProgress.getStyleClass().removeAll("progress-barGreen");
 			irisProgress.getStyleClass().add("progress-barRed");
+		}
+		if(retries > 1) {
+			for(int ret = retries; ret > 0; --ret) {
+				clearAttemptsBox("qualityLabelRed",ret);
+			}
 		}
 	}
 
@@ -349,11 +354,11 @@ public class IrisCaptureController extends BaseController {
 						.split(RegistrationConstants.PERCENTAGE)[0]) > Double.valueOf(
 								String.valueOf(ApplicationContext.map().get(RegistrationConstants.IRIS_THRESHOLD)))) {
 					clearAttemptsBox("qualityLabelGreen", irisDetailsDTO.getNumOfIrisRetry());
-					irisProgress.getStyleClass().remove("progress-barRed");
+					irisProgress.getStyleClass().removeAll("progress-barRed");
 					irisProgress.getStyleClass().add("progress-barGreen");
 				} else {
 					clearAttemptsBox("qualityLabelRed", irisDetailsDTO.getNumOfIrisRetry());
-					irisProgress.getStyleClass().remove("progress-barGreen");
+					irisProgress.getStyleClass().removeAll("progress-barGreen");
 					irisProgress.getStyleClass().add("progress-barRed");
 				}
 			}
@@ -622,7 +627,7 @@ public class IrisCaptureController extends BaseController {
 		if(!(boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
 		
 			irisProgress.setProgress(0);
-			irisProgress.getStyleClass().remove("progress-barRed");
+			irisProgress.getStyleClass().removeAll("progress-barRed");
 			irisProgress.getStyleClass().remove("progress-barGreen");
 			
 			irisQuality.setText(RegistrationConstants.EMPTY);
