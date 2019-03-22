@@ -268,10 +268,10 @@ public class FaceCaptureController extends BaseController implements Initializab
 							.filter(bio -> bio.getBiometricType().equalsIgnoreCase(RegistrationConstants.IRIS)).count();
 
 					if (getRegistrationDTOFromSession().getSelectionListDTO().isBiometricIris()
-							|| fingerPrintCount > 0) {
+							|| irisCount > 0) {
 						SessionContext.map().put("irisCapture", true);
 					} else if (getRegistrationDTOFromSession().getSelectionListDTO().isBiometricFingerprint()
-							|| irisCount > 0) {
+							|| fingerPrintCount > 0) {
 						SessionContext.map().put("fingerPrintCapture", true);
 					} else if (!RegistrationConstants.DISABLE.equalsIgnoreCase(
 							String.valueOf(ApplicationContext.map().get(RegistrationConstants.DOC_DISABLE_FLAG)))) {

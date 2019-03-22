@@ -1156,11 +1156,13 @@ public class DemographicDetailController extends BaseController {
 
 			keyboardNode.setDisable(false);
 
+			autoFillBtn.setVisible(false);
 			registrationNavlabel.setText(RegistrationConstants.UIN_NAV_LABEL);
 			parentFlowPane.setDisable(false);
 			fetchBtn.setVisible(false);
 			preRegistrationLabel.setText(RegistrationConstants.UIN_LABEL);
 			updateUinId.setVisible(true);
+			updateUinId.setDisable(true);
 			preRegistrationId.setVisible(false);
 			getRegistrationDTOFromSession().getRegistrationMetaDataDTO()
 					.setUin(getRegistrationDTOFromSession().getSelectionListDTO().getUinId());

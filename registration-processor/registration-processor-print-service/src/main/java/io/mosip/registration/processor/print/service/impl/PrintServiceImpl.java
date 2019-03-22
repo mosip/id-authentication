@@ -197,7 +197,7 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 				uin = packetInfoManager.getUINByRid(idValue).get(0);
 				if (uin == null) {
 					regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
-							LoggerFileConstant.REGISTRATIONID.toString(), uin,
+							LoggerFileConstant.REGISTRATIONID.toString(), null,
 							PlatformErrorMessages.RPR_PRT_UIN_NOT_FOUND_IN_DATABASE.name());
 					throw new UINNotFoundInDatabase(PlatformErrorMessages.RPR_PRT_UIN_NOT_FOUND_IN_DATABASE.getCode());
 				}
