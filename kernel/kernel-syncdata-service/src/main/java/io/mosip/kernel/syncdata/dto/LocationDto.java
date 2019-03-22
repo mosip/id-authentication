@@ -23,12 +23,5 @@ public class LocationDto extends BaseDto{
 	private String hierarchyName;
 
 	private String parentLocCode;
-
-	private String createdBy;
-
-	private String updatedBy;
-	
-	
-	
-
+		
 }

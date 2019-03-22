@@ -43,4 +43,14 @@ public class MainRequestDTO<T> implements Serializable{
 	 */
 	@ApiModelProperty(value = "request", position = 4)
 	private T request;
+	
+	public Date getReqTime() {
+		if(reqTime!=null)
+			return new Date(reqTime.getTime());
+		return null;
+	}
+
+	public void setReqTime(Date reqTime) {
+		this.reqTime=reqTime!=null?new Date(reqTime.getTime()):null;
+	}
 }

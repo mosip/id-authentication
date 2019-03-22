@@ -42,7 +42,7 @@
           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
-           	<fx:include fx:id="onboard" prefHeight="${onboardPane.height}" prefWidth="${onboardPane.width}" source="Onboard.fxml" visible="true" />
+           	<fx:include fx:id="onboard" prefHeight="${onboardPane.height}" prefWidth="${onboardPane.width}" source="Onboard.fxml" visible="false" />
 			<fx:include fx:id="homeContent" prefHeight="${onboardPane.height}" prefWidth="${onboardPane.width}" source="RegistrationOfficerPacketLayout.fxml" visible="false" />	           	
          </children>
       </GridPane>

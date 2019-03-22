@@ -447,12 +447,6 @@ public class PacketHandlerController extends BaseController implements Initializ
 					} else {
 						homeController.getMainBox().getChildren().remove(homeController.getMainBox().getChildren().size()-1);
 						homeController.getMainBox().add(root, 0, 1);
-						/*ObservableList<Node> nodes = homeController.getMainBox().getChildren();
-						IntStream.range(1, nodes.size()).forEach(index -> {
-							nodes.get(index).setVisible(false);
-							nodes.get(index).setManaged(false);
-						});
-						nodes.add(root);*/
 					}
 				}
 			} catch (IOException ioException) {
@@ -553,14 +547,11 @@ public class PacketHandlerController extends BaseController implements Initializ
 
 		LOGGER.info(PACKET_HANDLER, APPLICATION_NAME, APPLICATION_ID, "Loading User Onboard Update page");
 
-		VBox mainBox = new VBox();
 		try {
-			GridPane headerRoot = BaseController.load(getClass().getResource(RegistrationConstants.HEADER_PAGE));
-			mainBox.getChildren().add(headerRoot);
-			GridPane onboardRoot = BaseController.load(getClass().getResource(RegistrationConstants.USER_ONBOARD),
-					applicationContext.getApplicationLanguageBundle());
-			mainBox.getChildren().add(onboardRoot);
-			getScene(mainBox).setRoot(mainBox);
+			GridPane headerRoot = BaseController.load(getClass().getResource(RegistrationConstants.HOME_PAGE));
+			homeController.homeContent.setVisible(false);
+			homeController.onboard.setVisible(true);
+			getScene(headerRoot);
 			userOnboardParentController.userOnboardId.lookup("#onboardUser").setVisible(false);
 		} catch (IOException ioException) {
 			LOGGER.error("REGISTRATION - ONBOARD_USER_UPDATE - REGISTRATION_OFFICER_DETAILS_CONTROLLER",
@@ -568,7 +559,6 @@ public class PacketHandlerController extends BaseController implements Initializ
 					ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));
 		}
 		userOnboardController.initUserOnboard();
-
 		LOGGER.info(PACKET_HANDLER, APPLICATION_NAME, APPLICATION_ID, "User Onboard Update page is loaded");
 	}
 

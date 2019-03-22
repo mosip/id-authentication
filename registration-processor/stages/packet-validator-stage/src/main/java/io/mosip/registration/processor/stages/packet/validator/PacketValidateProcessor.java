@@ -217,8 +217,7 @@ public class PacketValidateProcessor {
 
 				if ((isSchemaValidated.isValid() && isFilesValidated && isCheckSumValidated
 						&& isApplicantDocumentValidation && isMasterDataValidated)
-						|| (isSchemaValidated.isValid() && isFilesValidated && isCheckSumValidated && regTypeCheck
-								&& isMasterDataValidated)) {
+						|| (isSchemaValidated.isValid() && isFilesValidated && isCheckSumValidated && regTypeCheck)) {
 					object.setIsValid(Boolean.TRUE);
 					registrationStatusDto.setStatusComment(StatusMessage.PACKET_STRUCTURAL_VALIDATION_SUCCESS);
 					registrationStatusDto.setStatusCode(RegistrationStatusCode.STRUCTURE_VALIDATION_SUCCESS.toString());
