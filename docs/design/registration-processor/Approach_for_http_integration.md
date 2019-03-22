@@ -152,7 +152,7 @@ Sample Http Error Response:
    }
    "errors":[
 		"errorCode": "PRG_REG_HTTP_APP_001",
-		"message": "Invalid Response"
+		"message": "Error Processing Request"
    ]
 }
 ```
