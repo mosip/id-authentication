@@ -24,7 +24,6 @@ import io.mosip.kernel.uingenerator.exception.UinNotIssuedException;
 import io.mosip.kernel.uingenerator.exception.UinStatusNotFoundException;
 import io.mosip.kernel.uingenerator.service.UinGeneratorService;
 import io.vertx.core.Vertx;
-import io.vertx.core.json.Json;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
 import io.vertx.ext.web.handler.BodyHandler;
@@ -79,7 +78,7 @@ public class UinGeneratorRouter {
 		UinResponseDto uin = new UinResponseDto();
 		try {
 			uin = uinGeneratorService.getUin();
-			ResponseWrapper<Object> reswrp = new ResponseWrapper<>();
+			ResponseWrapper<UinResponseDto> reswrp = new ResponseWrapper<>();
 			reswrp.setResponse(uin);
 			reswrp.setErrors(null);
 			routingContext.response().putHeader("content-type", "application/json").setStatusCode(200).end(objectMapper.writeValueAsString(reswrp));
@@ -125,7 +124,7 @@ public class UinGeneratorRouter {
 		}
 		try {
 			uinresponse = uinGeneratorService.updateUinStatus(uin);
-			ResponseWrapper<Object> reswrp = new ResponseWrapper<>();
+			ResponseWrapper<UinStatusUpdateReponseDto> reswrp = new ResponseWrapper<>();
 			reswrp.setResponse(uinresponse);
 			reswrp.setId(reqwrp.getId());
 			reswrp.setVersion(reqwrp.getVersion());
@@ -147,7 +146,6 @@ public class UinGeneratorRouter {
 			ServiceError error = new ServiceError(UinGeneratorErrorCode.INTERNAL_SERVER_ERROR.getErrorCode(),
 					e.getMessage());
 			setError(routingContext, error, reqwrp);
-			return;
 		}
 
 	}

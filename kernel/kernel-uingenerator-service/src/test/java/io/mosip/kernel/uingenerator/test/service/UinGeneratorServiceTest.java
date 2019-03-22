@@ -8,7 +8,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
-import org.springframework.test.util.ReflectionTestUtils;
 
 import io.mosip.kernel.uingenerator.entity.UinEntity;
 import io.mosip.kernel.uingenerator.exception.UinNotFoundException;
@@ -17,10 +16,10 @@ import io.mosip.kernel.uingenerator.exception.UinStatusNotFoundException;
 import io.mosip.kernel.uingenerator.repository.UinRepository;
 import io.mosip.kernel.uingenerator.service.impl.UinGeneratorServiceImpl;
 import io.mosip.kernel.uingenerator.test.config.UinGeneratorTestConfiguration;
-import io.vertx.core.json.JsonObject;
 
 /**
  * @author Megha Tanga
+ * @since 1.0.0
  * 
  */
 
@@ -53,7 +52,6 @@ public class UinGeneratorServiceTest {
 	@Test(expected = UinNotIssuedException.class)
 	public void updateUinStatusNotFoundIssuedTest() {
 		UinEntity entity = new UinEntity("9723157067", "UNUSED");
-		JsonObject uin = new JsonObject();
 		Mockito.when(uinRepository.findByUin(Mockito.any())).thenReturn(entity);
 		uinGeneratorServiceImpl.updateUinStatus(entity);
 	}
@@ -61,7 +59,6 @@ public class UinGeneratorServiceTest {
 	@Test(expected = UinNotFoundException.class)
 	public void updateUinStatusUinNotFoundTest() {
 		UinEntity entity = new UinEntity();
-		JsonObject uin = new JsonObject();
 		Mockito.when(uinRepository.findByUin(Mockito.any())).thenReturn(null);
 		uinGeneratorServiceImpl.updateUinStatus(entity);
 	}
@@ -69,7 +66,6 @@ public class UinGeneratorServiceTest {
 	@Test(expected = UinStatusNotFoundException.class)
 	public void updateUinStatusNotFoundStatusTest() {
 		UinEntity entity = new UinEntity("9723157067", "ISSUED");
-		JsonObject uin = new JsonObject();
 		Mockito.when(uinRepository.findByUin(Mockito.any())).thenReturn(entity);
 		uinGeneratorServiceImpl.updateUinStatus(entity);
 	}
@@ -80,7 +76,6 @@ public class UinGeneratorServiceTest {
 		UinEntity givEntity = new UinEntity("9723157067", "ASSIGNED");
 		Mockito.when(uinRepository.findByUin(Mockito.any())).thenReturn(extEntity);
 		Mockito.when(uinRepository.save(Mockito.any())).thenReturn(givEntity);
-		//ReflectionTestUtils.setField(uinGeneratorServiceImpl, "assigned", "ASSIGNED");
 		uinGeneratorServiceImpl.updateUinStatus(givEntity);
 	}
 
@@ -90,7 +85,6 @@ public class UinGeneratorServiceTest {
 		UinEntity givEntity = new UinEntity("9723157067", "UNASSIGNED");
 		Mockito.when(uinRepository.findByUin(Mockito.any())).thenReturn(entity);
 		Mockito.when(uinRepository.save(Mockito.any())).thenReturn(givEntity);
-		//ReflectionTestUtils.setField(uinGeneratorServiceImpl, "unassigned", "UNASSIGNED");
 		uinGeneratorServiceImpl.updateUinStatus(givEntity);
 	}
 }
