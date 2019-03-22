@@ -130,15 +130,19 @@ public class IrisCaptureController extends BaseController {
 			continueBtn.setDisable(true);
 			backBtn.setDisable(true);
 			
-			for(int i = 0; i <Integer
-					.parseInt(String.valueOf(ApplicationContext.map().get(RegistrationConstants.IRIS_RETRY_COUNT))); i++) {
-				Label c = new Label();
-				c.getStyleClass().add("qualityLabelGrey");
-				c.setId("retryAttempt_"+(i+1));
-				c.setVisible(true);
-				c.setText(String.valueOf(i+1));
-				c.setAlignment(Pos.CENTER);
-				irisRetryBox.getChildren().add(c);
+			if(!(boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
+			
+				for(int attempt = 0; attempt <Integer
+						.parseInt(String.valueOf(ApplicationContext.map().get(RegistrationConstants.IRIS_RETRY_COUNT))); attempt++) {
+					Label label = new Label();
+					label.getStyleClass().add("qualityLabelGrey");
+					label.setId("retryAttempt_"+(attempt+1));
+					label.setVisible(true);
+					label.setText(String.valueOf(attempt+1));
+					label.setAlignment(Pos.CENTER);
+					irisRetryBox.getChildren().add(label);
+				}
+				irisProgress.setProgress(0);
 			}
 
 			// Set Threshold
@@ -148,7 +152,6 @@ public class IrisCaptureController extends BaseController {
 
 			// Disable Scan button
 			scanIris.setDisable(true);
-			irisProgress.setProgress(0);
 
 			// Display the Captured Iris
 			if (getBiometricDTOFromSession() != null || getRegistrationDTOFromSession() != null) {
@@ -195,11 +198,14 @@ public class IrisCaptureController extends BaseController {
 			sourcePane.requestFocus();
 			selectedIris = sourcePane;
 			scanIris.setDisable(true);
-			irisProgress.setProgress(0);
-						
-			for(int attempt = 0; attempt < Integer.parseInt(getValueFromApplicationMap(RegistrationConstants.IRIS_RETRY_COUNT)); attempt++) {
-				irisRetryBox.lookup("#retryAttempt_"+(attempt+1)).getStyleClass().clear();
-				irisRetryBox.lookup("#retryAttempt_"+(attempt+1)).getStyleClass().add("qualityLabelGrey");
+			
+			if(!(boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
+				irisProgress.setProgress(0);
+							
+				for(int attempt = 0; attempt < Integer.parseInt(getValueFromApplicationMap(RegistrationConstants.IRIS_RETRY_COUNT)); attempt++) {
+					irisRetryBox.lookup("#retryAttempt_"+(attempt+1)).getStyleClass().clear();
+					irisRetryBox.lookup("#retryAttempt_"+(attempt+1)).getStyleClass().add("qualityLabelGrey");
+				}
 			}
 			// Get the Iris from RegistrationDTO based on selected Iris Pane
 			IrisDetailsDTO irisDetailsDTO = getIrisBySelectedPane().findFirst().orElse(null);
@@ -226,12 +232,14 @@ public class IrisCaptureController extends BaseController {
 							|| irisDetailsDTO.isForceCaptured())) {
 				scanIris.setDisable(false);
 			}
-			irisProgress.setProgress(irisDetailsDTO != null ? irisDetailsDTO.getQualityScore()/100 : 0);
-			irisQuality.setText(irisDetailsDTO != null ? String.valueOf((int)irisDetailsDTO.getQualityScore()).concat(RegistrationConstants.PERCENTAGE) : "");
-			
-			if(irisDetailsDTO != null) {
-				updateRetriesBox(irisDetailsDTO.getQualityScore(), Double.parseDouble(
-						getValueFromApplicationMap(RegistrationConstants.IRIS_THRESHOLD)), irisDetailsDTO.getNumOfIrisRetry());
+			if(!(boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
+				irisProgress.setProgress(irisDetailsDTO != null ? irisDetailsDTO.getQualityScore()/100 : 0);
+				irisQuality.setText(irisDetailsDTO != null ? String.valueOf((int)irisDetailsDTO.getQualityScore()).concat(RegistrationConstants.PERCENTAGE) : "");
+				
+				if(irisDetailsDTO != null) {
+					updateRetriesBox(irisDetailsDTO.getQualityScore(), Double.parseDouble(
+							getValueFromApplicationMap(RegistrationConstants.IRIS_THRESHOLD)), irisDetailsDTO.getNumOfIrisRetry());
+				}
 			}
 			
 			LOGGER.info(LOG_REG_IRIS_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
@@ -334,21 +342,21 @@ public class IrisCaptureController extends BaseController {
 				rightIrisQualityScore.setText(getQualityScoreAsString(irisDetailsDTO.getQualityScore()));
 				rightIrisAttempts.setText(String.valueOf(irisDetailsDTO.getNumOfIrisRetry()));
 			}
-			
-			irisProgress.setProgress(Double.valueOf(getQualityScoreAsString(irisDetailsDTO.getQualityScore()).split("%")[0])/100);
-			irisQuality.setText(getQualityScoreAsString(irisDetailsDTO.getQualityScore()));
-			if (Double.valueOf(getQualityScoreAsString(irisDetailsDTO.getQualityScore())
-					.split(RegistrationConstants.PERCENTAGE)[0]) > Double.valueOf(
-							String.valueOf(ApplicationContext.map().get(RegistrationConstants.IRIS_THRESHOLD)))) {
-				clearAttemptsBox("qualityLabelGreen", irisDetailsDTO.getNumOfIrisRetry());
-				irisProgress.getStyleClass().remove("progress-barRed");
-				irisProgress.getStyleClass().add("progress-barGreen");
-			} else {
-				clearAttemptsBox("qualityLabelRed", irisDetailsDTO.getNumOfIrisRetry());
-				irisProgress.getStyleClass().remove("progress-barGreen");
-				irisProgress.getStyleClass().add("progress-barRed");
+			if(!(boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
+				irisProgress.setProgress(Double.valueOf(getQualityScoreAsString(irisDetailsDTO.getQualityScore()).split("%")[0])/100);
+				irisQuality.setText(getQualityScoreAsString(irisDetailsDTO.getQualityScore()));
+				if (Double.valueOf(getQualityScoreAsString(irisDetailsDTO.getQualityScore())
+						.split(RegistrationConstants.PERCENTAGE)[0]) > Double.valueOf(
+								String.valueOf(ApplicationContext.map().get(RegistrationConstants.IRIS_THRESHOLD)))) {
+					clearAttemptsBox("qualityLabelGreen", irisDetailsDTO.getNumOfIrisRetry());
+					irisProgress.getStyleClass().remove("progress-barRed");
+					irisProgress.getStyleClass().add("progress-barGreen");
+				} else {
+					clearAttemptsBox("qualityLabelRed", irisDetailsDTO.getNumOfIrisRetry());
+					irisProgress.getStyleClass().remove("progress-barGreen");
+					irisProgress.getStyleClass().add("progress-barRed");
+				}
 			}
-
 			popupStage.close();
 			
 			
@@ -611,19 +619,21 @@ public class IrisCaptureController extends BaseController {
 				new Image(getClass().getResource(RegistrationConstants.RIGHT_IRIS_IMG_PATH).toExternalForm()));
 		rightIrisQualityScore.setText(RegistrationConstants.EMPTY);
 		rightIrisAttempts.setText(RegistrationConstants.EMPTY);
+		if(!(boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
 		
-		irisProgress.setProgress(0);
-		irisProgress.getStyleClass().remove("progress-barRed");
-		irisProgress.getStyleClass().remove("progress-barGreen");
-		
-		irisQuality.setText(RegistrationConstants.EMPTY);
-		irisQuality.getStyleClass().remove("labelRed");
-		irisQuality.getStyleClass().remove("labelGreen");
-		
-		for(int attempt = 0; attempt < Integer.parseInt(getValueFromApplicationMap(RegistrationConstants.IRIS_RETRY_COUNT)); attempt++) {
-			irisRetryBox.lookup("#retryAttempt_"+(attempt+1)).getStyleClass().clear();
-			irisRetryBox.lookup("#retryAttempt_"+(attempt+1)).getStyleClass().add("qualityLabelGrey");
-		}	
+			irisProgress.setProgress(0);
+			irisProgress.getStyleClass().remove("progress-barRed");
+			irisProgress.getStyleClass().remove("progress-barGreen");
+			
+			irisQuality.setText(RegistrationConstants.EMPTY);
+			irisQuality.getStyleClass().remove("labelRed");
+			irisQuality.getStyleClass().remove("labelGreen");
+			
+			for(int attempt = 0; attempt < Integer.parseInt(getValueFromApplicationMap(RegistrationConstants.IRIS_RETRY_COUNT)); attempt++) {
+				irisRetryBox.lookup("#retryAttempt_"+(attempt+1)).getStyleClass().clear();
+				irisRetryBox.lookup("#retryAttempt_"+(attempt+1)).getStyleClass().add("qualityLabelGrey");
+			}	
+		}
 		
 		if (getRegistrationDTOFromSession() != null) {
 			getRegistrationDTOFromSession().getBiometricDTO().getApplicantBiometricDTO()
