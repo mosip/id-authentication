@@ -227,7 +227,7 @@ public class RegPacketStatusServiceImpl extends BaseService implements RegPacket
 		PacketStatusReaderDTO packetStatusReaderDTO = new PacketStatusReaderDTO();
 		packetStatusReaderDTO.setId(RegistrationConstants.PACKET_STATUS_READER_ID);
 		packetStatusReaderDTO.setVersion(RegistrationConstants.PACKET_SYNC_VERSION);
-		packetStatusReaderDTO.setRequestTimestamp(DateUtils.getUTCCurrentDateTimeString());
+		packetStatusReaderDTO.setRequesttime(DateUtils.getUTCCurrentDateTimeString());
 
 		List<RegistrationIdDTO> registrationIdDTOs = new ArrayList<>();
 		for (String packetId : packetIds) {

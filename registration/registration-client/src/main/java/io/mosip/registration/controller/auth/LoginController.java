@@ -1,4 +1,5 @@
 
+
 package io.mosip.registration.controller.auth;
 
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
@@ -42,10 +43,8 @@ import io.mosip.registration.device.fp.FingerprintFacade;
 import io.mosip.registration.device.fp.MosipFingerprintProvider;
 import io.mosip.registration.device.iris.IrisFacade;
 import io.mosip.registration.dto.AuthenticationValidatorDTO;
-import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.LoginUserDTO;
 import io.mosip.registration.dto.ResponseDTO;
-import io.mosip.registration.dto.SuccessResponseDTO;
 import io.mosip.registration.dto.biometric.FaceDetailsDTO;
 import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
 import io.mosip.registration.dto.biometric.IrisDetailsDTO;
@@ -71,6 +70,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
@@ -103,6 +103,9 @@ public class LoginController extends BaseController implements Initializable {
 
 	@FXML
 	private AnchorPane irisPane;
+	
+	@Value("${mosip.primary-language}")
+	private String prim;
 
 	@FXML
 	private AnchorPane facePane;
@@ -130,15 +133,6 @@ public class LoginController extends BaseController implements Initializable {
 
 	@FXML
 	private Label otpValidity;
-
-	@Value("${TIME_OUT_INTERVAL}")
-	private long timeoutInterval;
-
-	@Value("${IDEAL_TIME}")
-	private long idealTime;
-
-	@Value("${REFRESHED_LOGIN_TIME}")
-	private long refreshedLoginTime;
 
 	@Value("${otp_validity_in_mins}")
 	private long otpValidityImMins;
@@ -191,7 +185,6 @@ public class LoginController extends BaseController implements Initializable {
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		otpValidity.setText("Valid for " + otpValidityImMins + " minutes");
 		stopTimer();
-		
 		password.textProperty().addListener((obsValue, oldValue, newValue) -> {
 			if(newValue.length() > Integer.parseInt(String.valueOf(ApplicationContext.map().get(RegistrationConstants.PWORD_LENGTH)))) {
 				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.PWORD_LENGTH);
@@ -233,9 +226,9 @@ public class LoginController extends BaseController implements Initializable {
 
 				scene = getScene(loginRoot);
 				pageFlow.getInitialPageDetails();
-
-				primaryStage.setMaximized(true);
 				primaryStage.setResizable(false);
+				primaryStage.setFullScreen(true);
+				primaryStage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
 				primaryStage.setScene(scene);
 				primaryStage.show();
 
@@ -384,7 +377,7 @@ public class LoginController extends BaseController implements Initializable {
 						}
 					}
 				} else {
-					generateAlert(RegistrationConstants.USER_MACHINE_VALIDATION_CODE,
+					generateAlert(RegistrationConstants.ERROR,
 							RegistrationUIConstants.USER_MACHINE_VALIDATION_MSG);
 				}
 			} catch (RegBaseUncheckedException regBaseUncheckedException) {
@@ -469,13 +462,11 @@ public class LoginController extends BaseController implements Initializable {
 				changeToOTPSubmitMode();
 
 				// Generate alert to show OTP
-				SuccessResponseDTO successResponseDTO = responseDTO.getSuccessResponseDTO();
-				generateAlert(RegistrationConstants.ERROR, successResponseDTO.getMessage());
+				generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.OTP_GENERATION_SUCCESS_MESSAGE);
 
 			} else if (responseDTO.getErrorResponseDTOs() != null) {
 				// Generate Alert to show INVALID USERNAME
-				ErrorResponseDTO errorResponseDTO = responseDTO.getErrorResponseDTOs().get(0);
-				generateAlert(RegistrationConstants.ERROR, errorResponseDTO.getMessage());
+				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.OTP_GENERATION_ERROR_MESSAGE);
 
 			}
 		}
@@ -738,10 +729,12 @@ public class LoginController extends BaseController implements Initializable {
 			LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
 					"Setting values for session context and user context");
 
+			long refreshedLoginTime = Long.parseLong(String.valueOf(ApplicationContext.map().get(RegistrationConstants.REFRESHED_LOGIN_TIME)));
+			long idealTime = Long.parseLong(String.valueOf(ApplicationContext.map().get(RegistrationConstants.IDEAL_TIME)));
+			
 			sessionContext.setLoginTime(new Date());
 			sessionContext.setRefreshedLoginTime(refreshedLoginTime);
 			sessionContext.setIdealTime(idealTime);
-			sessionContext.setTimeoutInterval(timeoutInterval);
 
 			SessionContext.UserContext userContext = sessionContext.getUserContext();
 			userContext.setUserId(userId.getText());

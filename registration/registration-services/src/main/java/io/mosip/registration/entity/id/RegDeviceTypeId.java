@@ -5,6 +5,8 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
+import lombok.Data;
+
 /**
  * composite primary key of {@link RegDeviceTypeId}
  * 
@@ -13,6 +15,7 @@ import javax.persistence.Embeddable;
  */
 
 @Embeddable
+@Data
 public class RegDeviceTypeId implements Serializable {
 	private static final long serialVersionUID = -8748623866593150099L;
 

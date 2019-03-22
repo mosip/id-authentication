@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
-import io.mosip.kernel.fsadapter.hdfs.util.ConnectionUtil;
+import io.mosip.kernel.fsadapter.hdfs.util.ConnectionUtils;
 import io.mosip.registration.processor.core.spi.filesystem.manager.FileManager;
 import io.mosip.registration.processor.packet.manager.dto.DirectoryPathDto;
 import io.mosip.registration.processor.packet.manager.service.impl.FileManagerImpl;
@@ -27,5 +27,5 @@ public class PacketManagerConfigTest {
 	public FileSystemAdapter filesystemAdapter;
 
 	@MockBean
-	public ConnectionUtil connectionUtil;
+	public ConnectionUtils connectionUtil;
 }
