@@ -3,17 +3,9 @@ package io.mosip.registration.processor.stages.utils;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
+import java.util.logging.Logger;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.exception.ExceptionUtils;
-
-import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
-import io.mosip.kernel.core.logger.spi.Logger;
-import io.mosip.kernel.core.util.HMACUtils;
-import io.mosip.registration.processor.core.constant.LoggerFileConstant;
-import io.mosip.registration.processor.core.constant.PacketFiles;
-import io.mosip.registration.processor.core.logger.RegProcessorLogger;
-import io.mosip.registration.processor.core.packet.dto.FieldValueArray;
 
 /**
  * The Class CheckSumGeneration.

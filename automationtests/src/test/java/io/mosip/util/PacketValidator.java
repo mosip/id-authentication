@@ -15,6 +15,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import org.testng.annotations.Test;
 
 import com.amazonaws.AmazonServiceException;
 import com.amazonaws.SdkClientException;
@@ -33,13 +34,7 @@ public class PacketValidator {
 	private static Logger logger = Logger.getLogger(PacketValidator.class);
 	RegProcTransactionDb packetTransaction=new RegProcTransactionDb();
 	final String configPath= "src/test/resources/regProc/Stagevalidation";
-	final String url = "/registrationstatus/v0.1/registration-processor/registration-status/decryptPacket";
-	private static ApplicationLibrary applicationLibrary = new ApplicationLibrary();
-	static Response actualResponse = null;
-	private static final String ACCESS_KEY = "P9OJLQY2WS4GZLOEF8LH";
-	private static final String SECRET_KEY = "jAx8v9XejubN42Twe0ooBakXd1ihM2BvTiOMiC2M";
-	
-	String regId = "10031100110025720190228141424";
+		
 	ConnectionUtils connectionUtil = new ConnectionUtils();
 	FileSystemAdapter adapter = new HDFSAdapterImpl(connectionUtil);
 
@@ -53,18 +48,14 @@ public class PacketValidator {
 	 * @throws IOException
 	 * @throws ParseException
 	 */
-	public boolean packetValidatorStage(String testcaseName)throws AmazonServiceException, SdkClientException, IOException, ParseException{
-
-
-		//using decrypt api to extract files present inside the packet
-		
+	public boolean packetValidatorStage(String testcaseName)throws IOException, ParseException{
+		String regId = getRegID(testcaseName);	
 
 		boolean isPacketValidated = false;
-		JSONArray hashSequence1 = null;
+		//using decrypt api to extract files present inside the packet
 		File dummyDecryptFile = new File("src/test/resources/regProc/StageValidation/DummyDecryptedPacket/10031100110025720190228141424");
 		File[] listOfFiles = dummyDecryptFile.listFiles();
 		List<String> docListInPacketInfo = new ArrayList<String>();
-		List<String> splittedList = new ArrayList<String>();
 		for(File f : listOfFiles){
 
 			// extracting file names present in hashsequence1 and hashsequence2 of
@@ -73,7 +64,7 @@ public class PacketValidator {
 				JSONObject objectData = (JSONObject) new JSONParser().parse(new FileReader(f.getPath()));
 				docListInPacketInfo = getHashSequenceFiles("hashSequence1",docListInPacketInfo, objectData);
 				docListInPacketInfo = getHashSequenceFiles("hashSequence2", docListInPacketInfo, objectData);
-				System.out.println("refactored docList: "+docListInPacketInfo);
+				logger.info("refactored docList: "+docListInPacketInfo);
 			}
 		}
 
@@ -110,7 +101,7 @@ public class PacketValidator {
 							JSONObject parentOrGuardianBiometrics = (JSONObject) identity.get("parentOrGuardianBiometrics");
 							String poib = parentOrGuardianBiometrics.get("value").toString();
 							listOfIDDocs.add(poib);
-							System.out.println("listOfIDDocs : "+listOfIDDocs);
+							logger.info("listOfIDDocs : "+listOfIDDocs);
 						}
 					}
 				}
@@ -119,7 +110,7 @@ public class PacketValidator {
 					&& !folders[j].getName().matches("packet_osi_hash.txt"))
 				documents.add(folders[j].getName());
 		}
-		System.out.println("documents : "+documents);
+		logger.info("documents : "+documents);
 
 		//file validation
 		List<String> modifiedList = new ArrayList<>();
@@ -132,7 +123,7 @@ public class PacketValidator {
 		}
 		//comparing files present in hashsequences and files present in decrypted packet
 		modifiedList.removeAll(docListInPacketInfo);
-		System.out.println("modifiedList new  : "+modifiedList);
+		logger.info("files not matched between documents and  docListInPacketInfo: "+modifiedList);
 
 		int noFilesPresent = 0;
 		int noOfDocuments =0;
@@ -153,56 +144,57 @@ public class PacketValidator {
 			}	
 			if(noFilesPresent==noOfDocuments)
 				isFileValidated = true;
-				logger.info("ALL FILES ARE MATCHING..............");	
+			logger.info("ALL FILES ARE MATCHING..............");	
 		}
 
 		//Document validation
-		
 		boolean isDocumentValidated = false;
-		modifiedList = listOfIDDocs;
-		System.out.println("modified list ID doc : "+modifiedList);
-		System.out.println("docListInPacketInfo for doc validation : "+docListInPacketInfo);
+		for(String file : listOfIDDocs){
+			file = '"'+ file+'"';
+			modifiedList.add(file);
+		}
+		//modifiedList = listOfIDDocs;
 		modifiedList.removeAll(docListInPacketInfo);
-
-		System.out.println("modified list doc validation : "+modifiedList);
+		logger.info("files not matched between listOfIDDocs and  docListInPacketInfo : "+modifiedList);
 		if(modifiedList.isEmpty()){
 			isDocumentValidated = true;
 		}
 
 		//CheckSum generation
-		byte[] hashCodeGenerated = checksumGeneration(listOfFiles);
+		byte[] hashCodeGenerated = checksumGeneration(listOfFiles, regId);
 		//CheckSum Validation
-				InputStream packetDataHashStream = adapter.getFile("10031100110025720190228141424", "PACKET_DATA_HASH");
-				byte[] packetDataHashByte = IOUtils.toByteArray(packetDataHashStream);
+		InputStream packetDataHashStream = adapter.getFile(regId, "PACKET_DATA_HASH");
+		byte[] packetDataHashByte = IOUtils.toByteArray(packetDataHashStream);
 
-				Boolean isChecksumValidated = Arrays.equals(hashCodeGenerated, packetDataHashByte);
-				if(isChecksumValidated){
-					System.out.println("Checksum validated.........");
-				}else
-					System.out.println("checksum validation failed......");
-				
-				
-				if(isFileValidated && isDocumentValidated && isChecksumValidated){
-					isPacketValidated = true ;
-				}
-				return isPacketValidated;
+		Boolean isChecksumValidated = Arrays.equals(hashCodeGenerated, packetDataHashByte);
+		if(isChecksumValidated){
+			logger.info("Checksum validated.........");
+		}else
+			logger.info("checksum validation failed......");
+
+		//Packet validation
+		if(isFileValidated && isDocumentValidated && isChecksumValidated){
+			isPacketValidated = true ;
+		}
+		logger.info("isPacketValidated : "+isPacketValidated);
+		return isPacketValidated;
 	}
 
 
 
 
-	private byte[] checksumGeneration(File[] listOfFiles) throws IOException, ParseException, FileNotFoundException {
-		JSONArray hashSequence1;
+	private byte[] checksumGeneration(File[] listOfFiles, String regId) throws IOException, ParseException, FileNotFoundException {
+ 		JSONArray hashSequence1;
 		byte[] hashCodeGenerated = null;
 		for(File f : listOfFiles){
 			if(f.getName().contains("packet_meta_info.json")){
 				JSONObject objectData = (JSONObject) new JSONParser().parse(new FileReader(f.getPath()));
 				JSONObject identity = (JSONObject) objectData.get("identity");
 				hashSequence1 = (JSONArray) identity.get("hashSequence1");
-				System.out.println("hashSequence1....... : "+hashSequence1);
+				logger.info("hashSequence1....... : "+hashSequence1);
 				for(Object obj : hashSequence1){
 					JSONObject label = (JSONObject) obj;
-					System.out.println("obj : "+label.get("label"));
+					logger.info("obj : "+label.get("label"));
 					if(label.get("label").equals("applicantBiometricSequence")){
 						List<String> docs = (List<String>) label.get("value");
 						generateBiometricsHash(docs, regId);
@@ -220,50 +212,40 @@ public class PacketValidator {
 		return hashCodeGenerated;
 	}
 
-
-
-
 	private void generateDemographicHash(List<String> docs, String regId2) {
 		docs.forEach(document -> {
 			byte[] filebyte = null;
-				InputStream fileStream = adapter.getFile(regId2,
-						"DEMOGRAPHIC\\" + document.toUpperCase());
-				try {
-					filebyte = IOUtils.toByteArray(fileStream);
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+			InputStream fileStream = adapter.getFile(regId2,
+					"DEMOGRAPHIC\\" + document.toUpperCase());
+			try {
+				filebyte = IOUtils.toByteArray(fileStream);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 
 			generateHash(filebyte);
 		});
-		
+
 	}
-
-
-
 
 	private void generateBiometricsHash(List<String> docs, String regId) {
 		docs.forEach(file -> {
 			byte[] filebyte = null;
-				InputStream fileStream = adapter.getFile(regId,
-						"BIOMETRIC\\"+ file.toUpperCase());
+			InputStream fileStream = adapter.getFile(regId,
+					"BIOMETRIC\\"+ file.toUpperCase());
 
-				try {
-					filebyte = IOUtils.toByteArray(fileStream);
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+			try {
+				filebyte = IOUtils.toByteArray(fileStream);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			generateHash(filebyte);
 
 		});
-		
+
 	}
-
-
-
-
 
 	private void generateHash(byte[] fileByte) {
 		if (fileByte != null) {
@@ -271,35 +253,28 @@ public class PacketValidator {
 		}	
 	}
 
-
-
-
-
 	private List<String> getHashSequenceFiles(String hashSeqValue, List<String> docListInPacketInfo, JSONObject objectData) {
 		JSONArray hashSequence;
 		List<String> splittedList;
 		JSONObject identity = (JSONObject) objectData.get("identity");
 		hashSequence = (JSONArray) identity.get(hashSeqValue);
-		System.out.println("hashSequence....... : "+hashSequence);
+		logger.info("hashSequence....... : "+hashSequence);
 		for(Object obj : hashSequence){
 			JSONObject value = (JSONObject) obj;
-			System.out.println("obj.........."+value.get("value"));
+			logger.info("obj.........."+value.get("value"));
 			String docs = value.get("value").toString();
 			docs=docs.replaceAll("[\\[\\]]", "");
 			if(!docs.isEmpty() && docs.contains(",")){
 				splittedList = Arrays.asList(docs.split(","));
-				System.out.println("splitted list : "+splittedList);
+				logger.info("splitted list : "+splittedList);
 				docListInPacketInfo.addAll(splittedList);
 			}else if (!docs.isEmpty())
 				docListInPacketInfo.add(docs);
 		}
 		return docListInPacketInfo;
 	}
-
-
-
-
-
+	
+	//method to get regId from the folder
 	public String getRegID(String testCaseName) {
 		String reg_ID = "";
 		File file = new File(configPath + "/" + testCaseName);
@@ -309,30 +284,13 @@ public class PacketValidator {
 		}
 		return reg_ID;
 	}
-	/*@Test
-		public void testMethod() {
-			getStatusList("ValidPacketSmoke");
-			try {
-				packetValidator("ValidPacketSmoke");
-			} catch (SdkClientException | FileNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}*/
 
-	public static void main(String[] args) {
-		PacketValidator m = new PacketValidator();
+	@Test
+	public void testMethod() throws IOException, ParseException {
+
 		try {
-			try {
-				m.packetValidatorStage("ValidPacketSmoke");
-			} catch (IOException | ParseException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		} catch (AmazonServiceException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (SdkClientException e) {
+			packetValidatorStage("ValidPacketSmoke");
+		} catch (SdkClientException | FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
