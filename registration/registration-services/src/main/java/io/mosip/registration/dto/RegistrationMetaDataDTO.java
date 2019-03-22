@@ -11,8 +11,6 @@ public class RegistrationMetaDataDTO extends BaseDTO {
 
 	private double geoLatitudeLoc;
 	private double geoLongitudeLoc;
-	// New , update , correction, lost UIN
-	private String applicationType;
 	// Document Based or Introducer Based
 	private String registrationCategory;
 	private String machineId;
@@ -65,21 +63,6 @@ public class RegistrationMetaDataDTO extends BaseDTO {
 	 */
 	public void setGeoLongitudeLoc(double geoLongitudeLoc) {
 		this.geoLongitudeLoc = geoLongitudeLoc;
-	}
-
-	/**
-	 * @return the applicationType
-	 */
-	public String getApplicationType() {
-		return applicationType;
-	}
-
-	/**
-	 * @param applicationType
-	 *            the applicationType to set
-	 */
-	public void setApplicationType(String applicationType) {
-		this.applicationType = applicationType;
 	}
 
 	/**

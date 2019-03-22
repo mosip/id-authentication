@@ -1,5 +1,7 @@
 package io.mosip.registration.processor.packet.storage.dao;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -11,7 +13,6 @@ import org.springframework.stereotype.Component;
 
 import io.mosip.registration.processor.core.packet.dto.ApplicantDocument;
 import io.mosip.registration.processor.core.packet.dto.RegOsiDto;
-import io.mosip.registration.processor.core.packet.dto.RegistrationCenterMachineDto;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.DemographicInfoDto;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.packet.storage.dto.PhotographDto;
@@ -275,7 +276,7 @@ public class PacketInfoDao {
 	 * @return the all demographic entities
 	 */
 	private List<IndividualDemographicDedupeEntity> getAllDemographicEntities(String name, String gender,
-			Date dob, String langCode) {
+			String dob, String langCode) {
 		Map<String, Object> params = new HashMap<>();
 		String className = IndividualDemographicDedupeEntity.class.getSimpleName();
 		String alias = IndividualDemographicDedupeEntity.class.getName().toLowerCase().substring(0, 1);
@@ -313,7 +314,7 @@ public class PacketInfoDao {
 	 * @param langCode the lang code
 	 * @return the all demographic info dtos
 	 */
-	public List<DemographicInfoDto> getAllDemographicInfoDtos(String name, String gender, Date dob,
+	public List<DemographicInfoDto> getAllDemographicInfoDtos(String name, String gender, String dob,
 			String langCode) {
 
 		List<DemographicInfoDto> demographicInfoDtos = new ArrayList<>();

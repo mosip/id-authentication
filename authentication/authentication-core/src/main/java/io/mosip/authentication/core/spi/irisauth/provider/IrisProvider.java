@@ -37,10 +37,10 @@ public abstract class IrisProvider implements MosipIrisProvider {
 	private static final String IRISIMG_RIGHT_MATCH_VALUE = ".irisimg.right.match.value";
 
 	/** The Constant LEFTTEYE. */
-	static final String LEFTTEYE = "leftEye";
+	static final String LEFTTEYE = "LEFT"; //FIXME Hardcoded
 
 	/** The Constant RIGHTEYE. */
-	static final String RIGHTEYE = "rightEye";
+	static final String RIGHTEYE = "RIGHT"; //FIXME Hardcoded
 
 	/** The Constant idvid. */
 	private static final String IDVID = "idvid";

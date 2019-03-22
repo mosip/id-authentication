@@ -1,5 +1,7 @@
 package io.mosip.authentication.core.spi.id.service;
 
+import org.springframework.stereotype.Service;
+
 import io.mosip.authentication.core.dto.vid.VIDResponseDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 
@@ -8,6 +10,7 @@ import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
  * 
  * @author Arun Bose
  */
+@Service
 public interface VIDService {
 	
 	/**

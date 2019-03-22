@@ -10,6 +10,7 @@ import { RegistrationService } from 'src/app/core/services/registration.service'
 import { TranslateService } from '@ngx-translate/core';
 import Utils from 'src/app/app.util';
 import { ConfigService } from 'src/app/core/services/config.service';
+import * as appConstants from './../../../app.constants';
 
 @Component({
   selector: 'app-center-selection',
@@ -21,9 +22,9 @@ export class CenterSelectionComponent implements OnInit {
   // timeSelectionComponent: TimeSelectionComponent;
 
   REGISTRATION_CENTRES: RegistrationCentre[] = [];
- // displayedColumns: string[] = ['select', 'name', 'addressLine1', 'contactPerson', 'centerTypeCode', 'contactPhone'];
- // dataSource = new MatTableDataSource<RegistrationCentre>(REGISTRATION_CENTRES);
- // selection = new SelectionModel<RegistrationCentre>(true, []);
+  // displayedColumns: string[] = ['select', 'name', 'addressLine1', 'contactPerson', 'centerTypeCode', 'contactPhone'];
+  // dataSource = new MatTableDataSource<RegistrationCentre>(REGISTRATION_CENTRES);
+  // selection = new SelectionModel<RegistrationCentre>(true, []);
   searchClick: boolean = true;
 
   locationTypes = [];
@@ -58,7 +59,7 @@ export class CenterSelectionComponent implements OnInit {
 
   ngOnInit() {
     this.REGISTRATION_CENTRES = [];
-   // this.dataSource.data = REGISTRATION_CENTRES;
+    // this.dataSource.data = REGISTRATION_CENTRES;
     this.selectedCentre = null;
     //  this.getLocation();
     this.dataService.getLocationTypeData().subscribe(response => {
@@ -74,13 +75,16 @@ export class CenterSelectionComponent implements OnInit {
     this.users.forEach(user => {
       pincodes.push(user['postalCode']);
     });
-    this.dataService.recommendedCenters(localStorage.getItem('langCode'),
-    this.configService.getConfigByKey('preregistration.recommended.centers.locCode')
-    , pincodes).subscribe(response => {
-      console.log(response);
-      if (!response['errors'])
-        this.displayResults(response);
-    })
+    this.dataService
+      .recommendedCenters(
+        localStorage.getItem('langCode'),
+        this.configService.getConfigByKey(appConstants.CONFIG_KEYS.preregistration_recommended_centers_locCode),
+        pincodes
+      )
+      .subscribe(response => {
+        console.log(response);
+        if (!response['errors']) this.displayResults(response);
+      });
   }
 
   setSearchClick(flag: boolean) {
@@ -147,7 +151,7 @@ export class CenterSelectionComponent implements OnInit {
   }
 
   getLocation() {
-  //  this.dataSource.data = [];
+    //  this.dataSource.data = [];
     this.REGISTRATION_CENTRES = [];
     if (navigator.geolocation) {
       this.showMap = false;

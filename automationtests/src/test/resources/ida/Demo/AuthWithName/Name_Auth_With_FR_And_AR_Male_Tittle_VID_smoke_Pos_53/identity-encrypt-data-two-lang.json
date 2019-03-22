@@ -1,1 +1,1 @@
-{"identityRequest":{"identity":{"name":[{"language":"ara","value":"أستاذ. ڤِگنِسه ڤِجَيَكُمَر"},{"language":"fra","value":"Monsieur. Vignesh Vijayakumar"}]}},"tspID":"TSP00001"}
+{"identityRequest":{"identity":{"name":[{"value":"أستاذ. $REMOVE$"},{"value":"Monsieur. $REMOVE$"}]}},"tspID":"TSP00001"}

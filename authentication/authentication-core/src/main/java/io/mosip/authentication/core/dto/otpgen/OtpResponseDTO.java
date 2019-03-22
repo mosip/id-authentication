@@ -15,32 +15,22 @@ import lombok.Data;
 @Data
 public class OtpResponseDTO {
 
-	/**
-	 * Variable to hold status
-	 */
-	private String status;
-	/**
-	 * List to hold errors
-	 */
-	private List<AuthError> err;
-	/**
-	 * List to hold Transaction Id
-	 */
-	private String txnID;
-	/**
-	 * List to hold Response Time
-	 */
-	private String resTime;
+	/** Variable to hold id */
+	private String id;
 
-	/**
-	 * masked mobile(i.e XXXXXXX123) number where send OTP
-	 */
-	// TODO
-	private String maskedMobile;
-	/**
-	 * masked email id(raXXXXXXXXXan@xyz.com) where send OTP
-	 */
-	// TODO
-	private String maskedEmail;
+	/** Variable to hold id */
+	private String version;
+
+	/** Variable to hold id */
+	private String transactionID;
+
+	/** Variable to hold id */
+	private String responseTime;
+
+	/** List to hold errors */
+	private List<AuthError> errors;
+
+	/** List to hold response */
+	private MaskedResponseDTO response;
 
 }

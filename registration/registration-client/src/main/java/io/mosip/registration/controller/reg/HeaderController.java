@@ -29,7 +29,6 @@ import io.mosip.registration.jobs.BaseJob;
 import io.mosip.registration.scheduler.SchedulerUtil;
 import io.mosip.registration.service.MasterSyncService;
 import io.mosip.registration.service.config.JobConfigurationService;
-import io.mosip.registration.service.packet.RegistrationPacketVirusScanService;
 import io.mosip.registration.service.sync.PreRegistrationDataSyncService;
 import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
 import javafx.event.ActionEvent;
@@ -98,9 +97,6 @@ public class HeaderController extends BaseController {
 	PacketHandlerController packetHandlerController;
 
 	@Autowired
-	private RegistrationPacketVirusScanService registrationPacketVirusScanService;
-
-	@Autowired
 	private RestartController restartController;
 
 	/**
@@ -147,6 +143,14 @@ public class HeaderController extends BaseController {
 
 			LOGGER.info(LoggerConstants.LOG_REG_HEADER, APPLICATION_NAME, APPLICATION_ID, "Clearing Session context");
 
+			if (SessionContext.authTokenDTO().getCookie() != null) {
+
+				serviceDelegateUtil.invalidateToken(SessionContext.authTokenDTO().getCookie());
+
+			}
+
+			ApplicationContext.map().remove(RegistrationConstants.USER_DTO);
+
 			SessionContext.destroySession();
 			SchedulerUtil.stopScheduler();
 
@@ -172,11 +176,16 @@ public class HeaderController extends BaseController {
 	/**
 	 * Sync data through batch jobs.
 	 *
-	 * @param event
-	 *            the event
+	 * @param event the event
 	 */
 	public void syncData(ActionEvent event) {
 
+		if (isMachineRemapProcessStarted()) {
+
+			LOGGER.info(LoggerConstants.LOG_REG_HEADER, APPLICATION_NAME, APPLICATION_ID,
+					RegistrationConstants.MACHINE_CENTER_REMAP_MSG);
+			return;
+		}
 		AnchorPane syncData;
 		try {
 			auditFactory.audit(AuditEvent.NAV_SYNC_DATA, Components.NAVIGATION,
@@ -184,9 +193,9 @@ public class HeaderController extends BaseController {
 			ResponseDTO responseDTO = jobConfigurationService.executeAllJobs();
 
 			if (responseDTO.getSuccessResponseDTO() != null) {
-				generateAlert(RegistrationUIConstants.SYNC_SUCCESS);
+				generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.SYNC_SUCCESS);
 			} else if (responseDTO.getErrorResponseDTOs() != null) {
-				generateAlert(RegistrationUIConstants.SYNC_FAILURE,
+				generateAlert(RegistrationConstants.SYNC_FAILURE,
 						responseDTO.getErrorResponseDTOs().get(0).getMessage());
 			}
 
@@ -224,6 +233,12 @@ public class HeaderController extends BaseController {
 	 * Redirecting to PacketStatusSync Page
 	 */
 	public void syncPacketStatus(ActionEvent event) {
+		if (isMachineRemapProcessStarted()) {
+
+			LOGGER.info(LoggerConstants.LOG_REG_HEADER, APPLICATION_NAME, APPLICATION_ID,
+					RegistrationConstants.MACHINE_CENTER_REMAP_MSG);
+			return;
+		}
 		try {
 			auditFactory.audit(AuditEvent.SYNC_REGISTRATION_PACKET_STATUS, Components.SYNC_SERVER_TO_CLIENT,
 					SessionContext.userContext().getUserId(), AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
@@ -249,10 +264,15 @@ public class HeaderController extends BaseController {
 	/**
 	 * Redirects to Device On-Boarding UI Page.
 	 * 
-	 * @param actionEvent
-	 *            is an action event
+	 * @param actionEvent is an action event
 	 */
 	public void onBoardDevice(ActionEvent actionEvent) {
+		if (isMachineRemapProcessStarted()) {
+
+			LOGGER.info(LoggerConstants.LOG_REG_HEADER, APPLICATION_NAME, APPLICATION_ID,
+					RegistrationConstants.MACHINE_CENTER_REMAP_MSG);
+			return;
+		}
 		LOGGER.info(LoggerConstants.DEVICE_ONBOARD_PAGE_NAVIGATION, APPLICATION_NAME, APPLICATION_ID,
 				"Navigating to Device Onboarding Page");
 
@@ -291,6 +311,12 @@ public class HeaderController extends BaseController {
 	 */
 	@FXML
 	public void downloadPreRegData(ActionEvent event) {
+		if (isMachineRemapProcessStarted()) {
+
+			LOGGER.info(LoggerConstants.LOG_REG_HEADER, APPLICATION_NAME, APPLICATION_ID,
+					RegistrationConstants.MACHINE_CENTER_REMAP_MSG);
+			return;
+		}
 		auditFactory.audit(AuditEvent.SYNC_PRE_REGISTRATION_PACKET, Components.SYNC_SERVER_TO_CLIENT,
 				SessionContext.userContext().getUserId(), AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
 
@@ -299,21 +325,35 @@ public class HeaderController extends BaseController {
 
 		if (responseDTO.getSuccessResponseDTO() != null) {
 			SuccessResponseDTO successResponseDTO = responseDTO.getSuccessResponseDTO();
-			generateAlert(successResponseDTO.getCode(), successResponseDTO.getMessage());
+			generateAlertLanguageSpecific(successResponseDTO.getCode(), successResponseDTO.getMessage());
 
 		} else if (responseDTO.getErrorResponseDTOs() != null) {
 
 			ErrorResponseDTO errorresponse = responseDTO.getErrorResponseDTOs().get(0);
-			generateAlert(errorresponse.getCode(), errorresponse.getMessage());
+			generateAlertLanguageSpecific(errorresponse.getCode(), errorresponse.getMessage());
 
 		}
 	}
 
 	public void uploadPacketToServer() {
+		if (isMachineRemapProcessStarted()) {
+
+			LOGGER.info(LoggerConstants.LOG_REG_HEADER, APPLICATION_NAME, APPLICATION_ID,
+					RegistrationConstants.MACHINE_CENTER_REMAP_MSG);
+			return;
+		}
 		auditFactory.audit(AuditEvent.SYNC_PRE_REGISTRATION_PACKET, Components.SYNC_SERVER_TO_CLIENT,
 				SessionContext.userContext().getUserId(), AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
 
 		packetHandlerController.uploadPacket();
+	}
+
+	public void intiateRemapProcess() {
+		if (!isMachineRemapProcessStarted()) {
+			
+			generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.REMAP_NOT_APPLICABLE);
+		}
+
 	}
 
 }

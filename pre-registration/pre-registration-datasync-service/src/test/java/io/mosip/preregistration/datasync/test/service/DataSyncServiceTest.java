@@ -1,6 +1,6 @@
 package io.mosip.preregistration.datasync.test.service;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -36,6 +36,7 @@ import io.mosip.preregistration.core.common.dto.MainResponseDTO;
 import io.mosip.preregistration.core.common.dto.PreRegIdsByRegCenterIdResponseDTO;
 import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
 import io.mosip.preregistration.core.util.AuditLogUtil;
+import io.mosip.preregistration.datasync.DataSyncApplicationTest;
 import io.mosip.preregistration.datasync.dto.DataSyncRequestDTO;
 import io.mosip.preregistration.datasync.dto.PreRegArchiveDTO;
 import io.mosip.preregistration.datasync.dto.PreRegistrationIdsDTO;
@@ -50,7 +51,7 @@ import io.mosip.preregistration.datasync.service.DataSyncService;
 import io.mosip.preregistration.datasync.service.util.DataSyncServiceUtil;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest
+@SpringBootTest(classes = { DataSyncApplicationTest.class })
 public class DataSyncServiceTest {
 
 	@Mock
@@ -114,7 +115,7 @@ public class DataSyncServiceTest {
 	MainResponseDTO<ReverseDatasyncReponseDTO> reverseResponseDTO = new MainResponseDTO<>();
 	ReverseDataSyncRequestDTO reverseDataSyncRequestDTO = new ReverseDataSyncRequestDTO();
 	ReverseDatasyncReponseDTO reverseDatasyncReponse = new ReverseDatasyncReponseDTO();
-	
+
 	@Before
 	public void setUp() throws URISyntaxException, IOException, org.json.simple.parser.ParseException, ParseException,
 			java.text.ParseException {
@@ -192,18 +193,18 @@ public class DataSyncServiceTest {
 		demography.setLangCode("12L");
 		demography.setPreRegistrationId(preid);
 
-		byte[] demographicDetails= {1,0,1,0,1,0}; 
-			 
+		byte[] demographicDetails = { 1, 0, 1, 0, 1, 0 };
 
 		demography.setDemographicDetails(null);
 
 		archiveDTO.setZipBytes(demographicDetails);
 		archiveDTO.setFileName(demography.getPreRegistrationId().toString());
 
-		mainResponseDTO.setStatus(true);
-		mainResponseDTO.setResTime(resTime);
+		mainResponseDTO.setResponsetime(resTime);
 		mainResponseDTO.setResponse(archiveDTO);
-		mainResponseDTO.setErr(errlist);
+		List<ExceptionJSONInfoDTO> exceptionJSONInfoDTOs = new ArrayList<>();
+		exceptionJSONInfoDTOs.add(errlist);
+		mainResponseDTO.setErrors(exceptionJSONInfoDTOs);
 
 		preRegIds.add(preId);
 
@@ -216,8 +217,8 @@ public class DataSyncServiceTest {
 		dataSyncRequestDTO.setUserId("256752365832");
 
 		datasyncReqDto.setId(idUrl);
-		datasyncReqDto.setVer(versionUrl);
-		datasyncReqDto.setReqTime(new Timestamp(System.currentTimeMillis()));
+		datasyncReqDto.setVersion(versionUrl);
+		datasyncReqDto.setRequesttime(new Timestamp(System.currentTimeMillis()));
 		datasyncReqDto.setRequest(dataSyncRequestDTO);
 
 		Map<String, String> list = new HashMap<>();
@@ -227,15 +228,14 @@ public class DataSyncServiceTest {
 		preRegistrationIdsDTO.setCountOfPreRegIds("1");
 
 		dataSyncResponseDTO.setResponse(preRegistrationIdsDTO);
-		dataSyncResponseDTO.setErr(null);
-		dataSyncResponseDTO.setStatus(Boolean.TRUE);
-		dataSyncResponseDTO.setResTime("2019-02-12T10:54:53.131Z");
+		dataSyncResponseDTO.setErrors(null);
+		dataSyncResponseDTO.setResponsetime("2019-02-12T10:54:53.131Z");
 
 		Date date = new Timestamp(System.currentTimeMillis());
 
 		requestMap.put("id", datasyncReqDto.getId());
-		requestMap.put("ver", datasyncReqDto.getVer());
-		requestMap.put("reqTime", DateUtils.formatDate(date, dateTimeFormat));
+		requestMap.put("version", datasyncReqDto.getVersion());
+		requestMap.put("requesttime", DateUtils.formatDate(date, dateTimeFormat));
 		requestMap.put("request", datasyncReqDto.getRequest().toString());
 
 		List<String> preRegistrationIds = new ArrayList<>();
@@ -246,9 +246,9 @@ public class DataSyncServiceTest {
 		reverseDataSyncRequestDTO.setUpdateBy("5766477466");
 
 		reverseRequestDTO.setRequest(reverseDataSyncRequestDTO);
-		reverseRequestDTO.setReqTime(new Timestamp(System.currentTimeMillis()));
+		reverseRequestDTO.setRequesttime(new Timestamp(System.currentTimeMillis()));
 		reverseRequestDTO.setId(idUrl);
-		reverseRequestDTO.setVer(versionUrl);
+		reverseRequestDTO.setVersion(versionUrl);
 
 		reverseDatasyncReponse.setTransactionId("1111");
 		reverseDatasyncReponse.setAlreadyStoredPreRegIds(preId);
@@ -267,57 +267,45 @@ public class DataSyncServiceTest {
 
 		assertEquals(response.getResponse().getPreRegistrationId(), archiveDTO.getPreRegistrationId());
 	}
-	
-	
-	@Test(expected=DemographicGetDetailsException.class)
+
+	@Test(expected = DemographicGetDetailsException.class)
 	public void GetPreRegistrationTest1() throws Exception {
-		DemographicGetDetailsException ex= new DemographicGetDetailsException(ErrorCodes.PRG_DATA_SYNC_007.toString(),
+		DemographicGetDetailsException ex = new DemographicGetDetailsException(ErrorCodes.PRG_DATA_SYNC_007.toString(),
 				ErrorMessages.DEMOGRAPHIC_GET_RECORD_FAILED.toString());
 		Mockito.when(serviceUtil.callGetPreRegInfoRestService(Mockito.anyString())).thenThrow(ex);
-	    dataSyncService.getPreRegistrationData(preId);
+		dataSyncService.getPreRegistrationData(preId);
 	}
-	
 
 	@Test
 	public void successRetrieveAllPreRegIdTest() throws Exception {
-		Mockito.when(serviceUtil.prepareRequestParamMap(Mockito.any())).thenReturn(requestMap);
 		Mockito.when(serviceUtil.validateDataSyncRequest(Mockito.any())).thenReturn(true);
-		Mockito.when(serviceUtil.callGetPreIdsRestService(Mockito.anyString(), Mockito.anyString()))
-				.thenReturn(preregIds);
-		Mockito.when(serviceUtil.callGetPreIdsByRegCenterIdRestService(Mockito.anyString(), Mockito.any()))
-				.thenReturn(preRegIdsByRegCenterIdResponseDTO);
+		Mockito.when(serviceUtil.callBookedPreIdsByDateAndRegCenterIdRestService(Mockito.any(), Mockito.any(),
+				Mockito.anyString())).thenReturn(preRegIdsByRegCenterIdResponseDTO);
+		// Mockito.when(serviceUtil.callGetPreIdsByRegCenterIdRestService(Mockito.anyString(),
+		// Mockito.any()))
+		// .thenReturn(preRegIdsByRegCenterIdResponseDTO);
 		Mockito.when(serviceUtil.getLastUpdateTimeStamp(Mockito.any())).thenReturn(preRegistrationIdsDTO);
 		MainResponseDTO<PreRegistrationIdsDTO> response = dataSyncService.retrieveAllPreRegIds(datasyncReqDto);
 
 		assertEquals(preRegistrationIdsDTO.getCountOfPreRegIds(), response.getResponse().getCountOfPreRegIds());
 	}
-	
-	@Test(expected=InvalidRequestParameterException.class)
+
+	@Test(expected = InvalidRequestParameterException.class)
 	public void RetrieveAllPreRegIdTest1() throws Exception {
-		InvalidRequestParameterException ex= new InvalidRequestParameterException(ErrorCodes.PRG_DATA_SYNC_009.toString(),
-					ErrorMessages.INVALID_REGISTRATION_CENTER_ID.toString());
-		Mockito.when(serviceUtil.prepareRequestParamMap(Mockito.any())).thenReturn(requestMap);
+		InvalidRequestParameterException ex = new InvalidRequestParameterException(
+				ErrorCodes.PRG_DATA_SYNC_009.toString(), ErrorMessages.INVALID_REGISTRATION_CENTER_ID.toString());
 		Mockito.when(serviceUtil.validateDataSyncRequest(Mockito.any())).thenThrow(ex);
 		dataSyncService.retrieveAllPreRegIds(datasyncReqDto);
 	}
 
 	@Test
 	public void successStoreConsumedPreRegistrationsTest() throws Exception {
-		Mockito.when(serviceUtil.prepareRequestParamMap(Mockito.any())).thenReturn(requestMap);
 		Mockito.when(serviceUtil.validateReverseDataSyncRequest(Mockito.any())).thenReturn(true);
 		Mockito.when(serviceUtil.reverseDateSyncSave(Mockito.any(), Mockito.any())).thenReturn(reverseDatasyncReponse);
 		reverseResponseDTO = dataSyncService.storeConsumedPreRegistrations(reverseRequestDTO);
 
 		assertEquals(reverseDatasyncReponse.getAlreadyStoredPreRegIds(),
 				reverseResponseDTO.getResponse().getAlreadyStoredPreRegIds());
-	}
-	
-	@Test(expected=InvalidRequestParameterException.class)
-	public void storeConsumedPreRegistrationsTest1() throws Exception {
-		InvalidRequestParameterException ex= new InvalidRequestParameterException(ErrorCodes.PRG_DATA_SYNC_009.toString(),
-				ErrorMessages.INVALID_REGISTRATION_CENTER_ID.toString());
-		Mockito.when(serviceUtil.prepareRequestParamMap(Mockito.any())).thenThrow(ex);
-		dataSyncService.storeConsumedPreRegistrations(reverseRequestDTO);
 	}
 
 }

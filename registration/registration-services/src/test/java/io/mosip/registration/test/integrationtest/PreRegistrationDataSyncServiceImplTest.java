@@ -1,11 +1,17 @@
 package io.mosip.registration.test.integrationtest;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -20,9 +26,14 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.ApplicationContext;
+import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.entity.PreRegistrationList;
 import io.mosip.registration.repositories.PreRegistrationDataSyncRepository;
 import io.mosip.registration.service.config.GlobalParamService;
@@ -99,6 +110,56 @@ public class PreRegistrationDataSyncServiceImplTest {
 		
 	}
 	
+	@Test
+	public void getPreRegistrationIds_ValidRegistrationCenterId() throws JsonProcessingException {
+		ResponseDTO responseDTO = preRegistrationDataSyncService.getPreRegistrationIds(RegistrationConstants.JOB_TRIGGER_POINT_USER);
+		ObjectMapper mapper = new ObjectMapper();
+		System.out.println(mapper.writer().writeValueAsString(responseDTO));
+		assertNotNull(responseDTO.getSuccessResponseDTO());
+	}
 	
+	@Test
+	public void getPreRegistrationIds_ValidPreRegID() throws JsonProcessingException {
+		ResponseDTO responseDTO = preRegistrationDataSyncService.getPreRegistration(getPreRegIdFromDB());
+		ObjectMapper mapper = new ObjectMapper();
+		System.out.println(mapper.writer().writeValueAsString(responseDTO));
+		assertNotNull(responseDTO.getSuccessResponseDTO());
+		assertNull(responseDTO.getErrorResponseDTOs());
+	}
+	
+	@Test
+	public void getPreRegistrationIds_InvalidPreRegID() throws JsonProcessingException {
+		ResponseDTO responseDTO = preRegistrationDataSyncService.getPreRegistration("99999999999999");
+		ObjectMapper mapper = new ObjectMapper();
+		System.out.println(mapper.writer().writeValueAsString(responseDTO));
+		assertNull(responseDTO.getSuccessResponseDTO());
+		assertNotNull(responseDTO.getErrorResponseDTOs());
+	}
+	
+	public String getPreRegIdFromDB() {
+		String preRegID = null;
+		Connection con;
+		PreparedStatement pre;
+		try {
+			Class.forName("org.apache.derby.jdbc.EmbeddedDriver");
+
+			con = DriverManager.getConnection("jdbc:derby:D:/Mosip_QA_080_build/mosip/registration/registration-services/reg;bootPassword=mosip12345", "", "");
+			pre = con.prepareStatement("select prereg_id from reg.pre_registration_list");
+			ResultSet res = pre.executeQuery();
+
+			
+
+			if (res.next()) {
+				System.out.println("Pre-Registration ID fetched from database");
+				preRegID = res.getString("PREREG_ID");
+			}
+
+			pre.close();
+			con.close();
+		} catch (Exception e) {
+			System.out.println("Unable to fetch pre-registration ID from database");
+		}
+		return preRegID;
+	}
 	
 }

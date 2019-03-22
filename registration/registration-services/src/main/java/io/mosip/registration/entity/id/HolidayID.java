@@ -6,11 +6,14 @@ import java.time.LocalDate;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
+import lombok.Data;
+
 /**
  * @author Sreekar Chukka
  * @since 1.0.0
  */
 @Embeddable
+@Data
 public class HolidayID implements Serializable {
 
 	private static final long serialVersionUID = -1631873932622755759L;

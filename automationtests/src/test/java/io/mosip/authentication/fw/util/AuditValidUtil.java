@@ -16,8 +16,8 @@ import org.testng.Reporter;
 import io.mosip.authentication.fw.dbUtil.DbConnection;
 import io.mosip.authentication.fw.dto.OutputValidationDto;
 import io.mosip.authentication.fw.dto.UinDto;
+import io.mosip.authentication.testdata.Precondtion;
 import io.mosip.authentication.testdata.keywords.IdaKeywordUtil;
-import io.mosip.authentication.testdata.precondtion.Precondtion;
 
 public class AuditValidUtil {
 	
@@ -122,7 +122,7 @@ public class AuditValidUtil {
 	private String getAuditLogQuery(String app_name, String module_name, String ref_id) {
 		return "select * from audit.app_audit_log where app_name ='" + app_name + "' and module_name='" + module_name
 				+ "' and ref_id ='" + ref_id + "' order by log_dtimes limit 1";
-	}
-	
+	}	
 
 }
+

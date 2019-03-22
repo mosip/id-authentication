@@ -91,7 +91,7 @@ public class SwaggerConfig {
 
 		Docket docket = new Docket(DocumentationType.SWAGGER_2).apiInfo(apiInfo())
 				.tags(new Tag("keymanager", "operation related to keymanagement and interaction with softhsm")).groupName(TITLE)
-				.select().apis(RequestHandlerSelectors.any()).paths(PathSelectors.regex("(?!/(error|actuator).*).*"))
+				.select().apis(RequestHandlerSelectors.any()).paths(PathSelectors.regex("(?!/(error).*).*"))
 				.build();
 
 		if (swaggerBaseUrlSet) {

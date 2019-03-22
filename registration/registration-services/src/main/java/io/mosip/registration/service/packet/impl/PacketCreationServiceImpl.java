@@ -1,9 +1,18 @@
 package io.mosip.registration.service.packet.impl;
 
+import static io.mosip.kernel.core.util.JsonUtils.javaObjectToJsonString;
+import static io.mosip.registration.constants.LoggerConstants.LOG_PKT_CREATION;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
+import static io.mosip.registration.constants.RegistrationConstants.DEMOGRPAHIC_JSON_NAME;
+import static io.mosip.registration.mapper.CustomObjectMapper.MAPPER_FACADE;
+
+import java.io.InputStream;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -11,10 +20,22 @@ import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
 
+import javax.xml.bind.JAXBElement;
+import javax.xml.namespace.QName;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.auditmanager.entity.Audit;
+import io.mosip.kernel.cbeffutil.impl.CbeffImpl;
+import io.mosip.kernel.core.cbeffutil.constant.CbeffConstant;
+import io.mosip.kernel.core.cbeffutil.entity.BDBInfo;
+import io.mosip.kernel.core.cbeffutil.entity.BIR;
+import io.mosip.kernel.core.cbeffutil.entity.BIRInfo;
+import io.mosip.kernel.core.cbeffutil.jaxbclasses.ProcessedLevelType;
+import io.mosip.kernel.core.cbeffutil.jaxbclasses.PurposeType;
+import io.mosip.kernel.core.cbeffutil.jaxbclasses.SingleAnySubtypeType;
+import io.mosip.kernel.core.cbeffutil.jaxbclasses.SingleType;
 import io.mosip.kernel.core.jsonvalidator.exception.FileIOException;
 import io.mosip.kernel.core.jsonvalidator.exception.JsonIOException;
 import io.mosip.kernel.core.jsonvalidator.exception.JsonSchemaIOException;
@@ -35,19 +56,13 @@ import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dao.AuditDAO;
 import io.mosip.registration.dao.AuditLogControlDAO;
 import io.mosip.registration.dao.MachineMappingDAO;
+import io.mosip.registration.dto.BaseDTO;
 import io.mosip.registration.dto.RegistrationDTO;
+import io.mosip.registration.dto.biometric.BiometricDTO;
 import io.mosip.registration.dto.biometric.BiometricInfoDTO;
 import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
 import io.mosip.registration.dto.biometric.IrisDetailsDTO;
-import io.mosip.registration.dto.cbeff.BDBInfo;
-import io.mosip.registration.dto.cbeff.BIR;
-import io.mosip.registration.dto.cbeff.BIRInfo;
-import io.mosip.registration.dto.cbeff.jaxbclasses.ProcessedLevelType;
-import io.mosip.registration.dto.cbeff.jaxbclasses.PurposeType;
-import io.mosip.registration.dto.cbeff.jaxbclasses.SingleAnySubtypeType;
-import io.mosip.registration.dto.cbeff.jaxbclasses.SingleType;
-import io.mosip.registration.dto.cbeff.jaxbclasses.TestBiometric;
-import io.mosip.registration.dto.cbeff.jaxbclasses.TestBiometricType;
+import io.mosip.registration.dto.demographic.ApplicantDocumentDTO;
 import io.mosip.registration.dto.json.metadata.BiometricSequence;
 import io.mosip.registration.dto.json.metadata.DemographicSequence;
 import io.mosip.registration.dto.json.metadata.FieldValue;
@@ -61,15 +76,6 @@ import io.mosip.registration.exception.RegistrationExceptionConstants;
 import io.mosip.registration.service.external.ZipCreationService;
 import io.mosip.registration.service.packet.PacketCreationService;
 import io.mosip.registration.util.hmac.HMACGeneration;
-import io.mosip.registration.util.kernal.cbeff.constant.CbeffConstant;
-import io.mosip.registration.util.kernal.cbeff.service.CbeffI;
-
-import static io.mosip.kernel.core.util.JsonUtils.javaObjectToJsonString;
-import static io.mosip.registration.constants.LoggerConstants.LOG_PKT_CREATION;
-import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
-import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
-import static io.mosip.registration.constants.RegistrationConstants.DEMOGRPAHIC_JSON_NAME;
-import static io.mosip.registration.mapper.CustomObjectMapper.MAPPER_FACADE;
 
 /**
  * Class for creating the Resident Registration
@@ -85,7 +91,7 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 	private ZipCreationService zipCreationService;
 	private static final Logger LOGGER = AppConfig.getLogger(PacketCreationServiceImpl.class);
 	@Autowired
-	private CbeffI cbeffI;
+	private CbeffImpl cbeffI;
 	@Autowired
 	private JsonValidator jsonValidator;
 	private static Random random = new Random(5000);
@@ -97,7 +103,7 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 	private AuditDAO auditDAO;
 	@Autowired
 	private MachineMappingDAO machineMappingDAO;
-
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -120,20 +126,18 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 			// Packet Meta-Data and Audit
 			Map<String, byte[]> filesGeneratedForPacket = new HashMap<>();
 
-			byte[] cbeffInBytes = createCBEFFXML(registrationDTO.getBiometricDTO().getApplicantBiometricDTO(),
-					RegistrationConstants.INDIVIDUAL, birUUIDs);
+			byte[] cbeffInBytes = createCBEFFXML(registrationDTO, RegistrationConstants.INDIVIDUAL, birUUIDs);
 			if (cbeffInBytes != null) {
 				filesGeneratedForPacket.put(RegistrationConstants.APPLICANT_BIO_CBEFF_FILE_NAME, cbeffInBytes);
+
+				LOGGER.info(LOG_PKT_CREATION, APPLICATION_NAME, APPLICATION_ID,
+						String.format(loggerMessageForCBEFF, RegistrationConstants.APPLICANT_BIO_CBEFF_FILE_NAME));
+				auditFactory.audit(AuditEvent.PACKET_HMAC_FILE_CREATED, Components.PACKET_CREATOR, rid,
+						AuditReferenceIdTypes.REGISTRATION_ID.getReferenceTypeId());
 			}
 
-			LOGGER.info(LOG_PKT_CREATION, APPLICATION_NAME, APPLICATION_ID,
-					String.format(loggerMessageForCBEFF, RegistrationConstants.APPLICANT_BIO_CBEFF_FILE_NAME));
-			auditFactory.audit(AuditEvent.PACKET_HMAC_FILE_CREATED, Components.PACKET_CREATOR, rid,
-					AuditReferenceIdTypes.REGISTRATION_ID.getReferenceTypeId());
-
 			if (registrationDTO.getBiometricDTO().getIntroducerBiometricDTO() != null) {
-				cbeffInBytes = createCBEFFXML(registrationDTO.getBiometricDTO().getIntroducerBiometricDTO(),
-						RegistrationConstants.INTRODUCER, birUUIDs);
+				cbeffInBytes = createCBEFFXML(registrationDTO, RegistrationConstants.INTRODUCER, birUUIDs);
 
 				if (cbeffInBytes != null) {
 					filesGeneratedForPacket.put(RegistrationConstants.INTRODUCER_BIO_CBEFF_FILE_NAME, cbeffInBytes);
@@ -146,8 +150,7 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 			}
 
 			if (registrationDTO.getBiometricDTO().getOperatorBiometricDTO() != null) {
-				cbeffInBytes = createCBEFFXML(registrationDTO.getBiometricDTO().getOperatorBiometricDTO(),
-						RegistrationConstants.OFFICER, birUUIDs);
+				cbeffInBytes = createCBEFFXML(registrationDTO, RegistrationConstants.OFFICER, birUUIDs);
 
 				if (cbeffInBytes != null) {
 					filesGeneratedForPacket.put(RegistrationConstants.OFFICER_BIO_CBEFF_FILE_NAME, cbeffInBytes);
@@ -160,8 +163,7 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 			}
 
 			if (registrationDTO.getBiometricDTO().getSupervisorBiometricDTO() != null) {
-				cbeffInBytes = createCBEFFXML(registrationDTO.getBiometricDTO().getSupervisorBiometricDTO(),
-						RegistrationConstants.SUPERVISOR, birUUIDs);
+				cbeffInBytes = createCBEFFXML(registrationDTO, RegistrationConstants.SUPERVISOR, birUUIDs);
 
 				if (cbeffInBytes != null) {
 					filesGeneratedForPacket.put(RegistrationConstants.SUPERVISOR_BIO_CBEFF_FILE_NAME, cbeffInBytes);
@@ -175,7 +177,7 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 
 			// Generating Demographic JSON as byte array
 			String idJsonAsString = javaObjectToJsonString(registrationDTO.getDemographicDTO().getDemographicInfoDTO());
-			jsonValidator.validateJson(idJsonAsString, "mosip-identity-json-schema.json");
+			jsonValidator.validateJson(idJsonAsString, RegistrationConstants.IDENTITY_JSON_FILE_NAME);
 			filesGeneratedForPacket.put(DEMOGRPAHIC_JSON_NAME, idJsonAsString.getBytes());
 
 			LOGGER.info(LOG_PKT_CREATION, APPLICATION_NAME, APPLICATION_ID,
@@ -293,42 +295,61 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 		return hashSequenceList;
 	}
 
-	private byte[] createCBEFFXML(final BiometricInfoDTO biometricInfoDTO, String personType,
+	private byte[] createCBEFFXML(final RegistrationDTO registrationDTO, String personType,
 			Map<String, String> birUUIDs) throws RegBaseCheckedException {
 		try {
 			LOGGER.info(LOG_PKT_CREATION, APPLICATION_NAME, APPLICATION_ID, "Creating CBEFF file as bytes");
 
 			List<BIR> birs = new ArrayList<>();
 
-			boolean onlyUniqueRequiredInCBEFF = RegistrationConstants.GLOBAL_CONFIG_TRUE_VALUE
-					.equalsIgnoreCase(String.valueOf(ApplicationContext.map()
-							.get(RegistrationConstants.CBEFF_ONLY_UNIQUE_TAGS)));
+			BiometricInfoDTO biometricInfoDTO = getBiometricDataByActor(registrationDTO.getBiometricDTO(), personType);
 
-			if (biometricInfoDTO.getFingerprintDetailsDTO() != null
-					&& !biometricInfoDTO.getFingerprintDetailsDTO().isEmpty()) {
-				createFingerprintsBIR(onlyUniqueRequiredInCBEFF, personType,
-						biometricInfoDTO.getFingerprintDetailsDTO(), birs, birUUIDs);
-			}
+			if (biometricInfoDTO != null) {
+				// Add Fingerprint
+				createFingerprintsBIR(personType, biometricInfoDTO.getFingerprintDetailsDTO(), birs, birUUIDs);
 
-			if (biometricInfoDTO.getIrisDetailsDTO() != null && !biometricInfoDTO.getIrisDetailsDTO().isEmpty()) {
-				for (IrisDetailsDTO iris : biometricInfoDTO.getIrisDetailsDTO()) {
+				// Add Iris
+				if (isListNotEmpty(biometricInfoDTO.getIrisDetailsDTO())) {
+					for (IrisDetailsDTO iris : biometricInfoDTO.getIrisDetailsDTO()) {
 
-					BIR bir = buildBIR(onlyUniqueRequiredInCBEFF, iris.getIris(), CbeffConstant.ISO_FORMAT_OWNER,
-							CbeffConstant.FORMAT_TYPE_IRIS, (int) Math.round(iris.getQualityScore()),
-							Arrays.asList(SingleType.IRIS),
-							Arrays.asList(
-									iris.getIrisType().equalsIgnoreCase("lefteye") ? SingleAnySubtypeType.LEFT.value()
-											: SingleAnySubtypeType.RIGHT.value()));
+						BIR bir = buildBIR(iris.getIris(), CbeffConstant.FORMAT_OWNER, CbeffConstant.FORMAT_TYPE_IRIS,
+								(int) Math.round(iris.getQualityScore()), Arrays.asList(SingleType.IRIS),
+								Arrays.asList(iris.getIrisType().equalsIgnoreCase("lefteye")
+										? SingleAnySubtypeType.LEFT.value()
+										: SingleAnySubtypeType.RIGHT.value()));
 
-					birs.add(bir);
-					birUUIDs.put(personType.concat(iris.getIrisType()).toLowerCase(), bir.getBdbInfo().getIndex());
+						birs.add(bir);
+						birUUIDs.put(personType.concat(iris.getIrisType()).toLowerCase(), bir.getBdbInfo().getIndex());
+					}
+				}
+
+				// Add Face
+				if (personType.equals(RegistrationConstants.INDIVIDUAL)) {
+					ApplicantDocumentDTO applicantDocumentDTO = registrationDTO.getDemographicDTO()
+							.getApplicantDocumentDTO();
+
+					createFaceBIR(personType, birUUIDs, birs, applicantDocumentDTO.getPhoto(),
+							(int) Math.round(applicantDocumentDTO.getQualityScore()),
+							RegistrationConstants.VALIDATION_TYPE_FACE);
+
+					createFaceBIR(personType, birUUIDs, birs, applicantDocumentDTO.getExceptionPhoto(),
+							(int) Math.round(applicantDocumentDTO.getQualityScore()),
+							RegistrationConstants.FACE_EXCEPTION);
+				} else {
+					createFaceBIR(personType, birUUIDs, birs, biometricInfoDTO.getFaceDetailsDTO().getFace(),
+							(int) Math.round(biometricInfoDTO.getFaceDetailsDTO().getQualityScore()),
+							RegistrationConstants.VALIDATION_TYPE_FACE);
 				}
 			}
 
 			byte[] cbeffXMLInBytes = null;
 
 			if (!birs.isEmpty()) {
-				cbeffXMLInBytes = cbeffI.createXML(birs);
+				InputStream file = this.getClass().getResourceAsStream(RegistrationConstants.CBEFF_SCHEMA_FILE_PATH);
+				byte[] bytesArray = new byte[(int) file.available()];
+				file.read(bytesArray);
+				file.close();
+				cbeffXMLInBytes = cbeffI.createXML(birs, bytesArray);
 			}
 
 			LOGGER.info(LOG_PKT_CREATION, APPLICATION_NAME, APPLICATION_ID,
@@ -343,51 +364,99 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 		}
 	}
 
-	private void createFingerprintsBIR(boolean onlyUniqueRequiredInCBEFF, String personType,
-			List<FingerprintDetailsDTO> fingerprints, List<BIR> birs, Map<String, String> birUUIDs) {
-		for (FingerprintDetailsDTO fingerprint : fingerprints) {
-			if (personType.equals(RegistrationConstants.INDIVIDUAL) && fingerprint.getSegmentedFingerprints() != null
-					&& !fingerprint.getSegmentedFingerprints().isEmpty()) {
-				for (FingerprintDetailsDTO segmentedFingerprint : fingerprint.getSegmentedFingerprints()) {
-					BIR bir = buildFingerprintBIR(onlyUniqueRequiredInCBEFF, segmentedFingerprint,
-							segmentedFingerprint.getFingerPrint());
+	private void createFaceBIR(String personType, Map<String, String> birUUIDs, List<BIR> birs, byte[] image,
+			int qualityScore, String imageType) {
+		if (image != null) {
+			BIR bir = buildBIR(image, CbeffConstant.FORMAT_OWNER, CbeffConstant.FORMAT_TYPE_FACE, qualityScore,
+					Arrays.asList(SingleType.FACE), Arrays.asList());
+
+			birs.add(bir);
+			birUUIDs.put(personType.concat(imageType).toLowerCase(), bir.getBdbInfo().getIndex());
+		}
+	}
+
+	private BiometricInfoDTO getBiometricDataByActor(BiometricDTO biometricDTO, String actorType) {
+		BiometricInfoDTO biometricInfoDTO;
+
+		switch (actorType) {
+		case RegistrationConstants.INDIVIDUAL:
+			biometricInfoDTO = biometricDTO.getApplicantBiometricDTO();
+			break;
+		case RegistrationConstants.INTRODUCER:
+			biometricInfoDTO = biometricDTO.getIntroducerBiometricDTO();
+			break;
+		case RegistrationConstants.OFFICER:
+			biometricInfoDTO = biometricDTO.getOperatorBiometricDTO();
+			break;
+		case RegistrationConstants.SUPERVISOR:
+			biometricInfoDTO = biometricDTO.getSupervisorBiometricDTO();
+			break;
+		default:
+			biometricInfoDTO = null;
+		}
+
+		return biometricInfoDTO;
+	}
+
+	private void createFingerprintsBIR(String personType, List<FingerprintDetailsDTO> fingerprints, List<BIR> birs,
+			Map<String, String> birUUIDs) {
+		if (isListNotEmpty(fingerprints)) {
+			for (FingerprintDetailsDTO fingerprint : fingerprints) {
+				if (personType.equals(RegistrationConstants.INDIVIDUAL)
+						&& isListNotEmpty(fingerprint.getSegmentedFingerprints())) {
+					for (FingerprintDetailsDTO segmentedFingerprint : fingerprint.getSegmentedFingerprints()) {
+						BIR bir = buildFingerprintBIR(segmentedFingerprint, segmentedFingerprint.getFingerPrint());
+						birs.add(bir);
+						birUUIDs.put(personType.concat(segmentedFingerprint.getFingerType()).toLowerCase(),
+								bir.getBdbInfo().getIndex());
+					}
+				} else {
+					BIR bir = buildFingerprintBIR(fingerprint, fingerprint.getFingerPrint());
 					birs.add(bir);
-					birUUIDs.put(personType.concat(segmentedFingerprint.getFingerType()).toLowerCase(),
+					birUUIDs.put(personType.concat(fingerprint.getFingerType()).toLowerCase(),
 							bir.getBdbInfo().getIndex());
 				}
-			} else {
-				BIR bir = buildFingerprintBIR(onlyUniqueRequiredInCBEFF, fingerprint, fingerprint.getFingerPrint());
-				birs.add(bir);
-				birUUIDs.put(personType.concat(fingerprint.getFingerType()).toLowerCase(), bir.getBdbInfo().getIndex());
 			}
 		}
 	}
 
-	private BIR buildFingerprintBIR(boolean onlyUniqueRequiredInCBEFF, FingerprintDetailsDTO fingerprint,
-			byte[] fingerprintImageInBytes) {
-		return buildBIR(onlyUniqueRequiredInCBEFF, fingerprintImageInBytes, CbeffConstant.ISO_FORMAT_OWNER,
-				CbeffConstant.FORMAT_TYPE_FINGER, (int) Math.round(fingerprint.getQualityScore()),
-				Arrays.asList(SingleType.FINGER), getFingerSubType(fingerprint.getFingerType()));
+	private BIR buildFingerprintBIR(FingerprintDetailsDTO fingerprint, byte[] fingerprintImageInBytes) {
+		return buildBIR(fingerprintImageInBytes, CbeffConstant.FORMAT_OWNER, CbeffConstant.FORMAT_TYPE_FINGER,
+				(int) Math.round(fingerprint.getQualityScore()), Arrays.asList(SingleType.FINGER),
+				getFingerSubType(fingerprint.getFingerType()));
 	}
 
-	private BIR buildBIR(boolean onlyUniqueRequiredInCBEFF, byte[] bdb, long isoFormatOwner, long formatType,
-			int qualityScore, List<SingleType> type, List<String> subType) {
-		TestBiometricType testBiometricType = new TestBiometricType();
-		testBiometricType.setXmlns("testschema");
-		if (onlyUniqueRequiredInCBEFF) {
-			testBiometricType.setTestBiometric(TestBiometric.UNIQUE);
-		} else {
-			testBiometricType
-					.setTestBiometric((random.nextInt() % 2 == 0) ? TestBiometric.DUPLICATE : TestBiometric.UNIQUE);
-		}
+	private BIR buildBIR(byte[] bdb, long isoFormatOwner, long formatType, int qualityScore, List<SingleType> type,
+			List<String> subType) {
 
-		return new BIR.BIRBuilder().withBdb(bdb).withTestFingerPrint(testBiometricType)
+		return new BIR.BIRBuilder().withBdb(bdb).withElement(Arrays.asList(getCBEFFTestTag(type.get(0))))
 				.withBirInfo(new BIRInfo.BIRInfoBuilder().withIntegrity(false).build())
 				.withBdbInfo(new BDBInfo.BDBInfoBuilder().withFormatOwner(isoFormatOwner).withFormatType(formatType)
 						.withQuality(qualityScore).withType(type).withSubtype(subType).withPurpose(PurposeType.ENROLL)
-						.withLevel(ProcessedLevelType.INTERMEDIATE).withCreationDate(new Date())
+						.withLevel(ProcessedLevelType.INTERMEDIATE).withCreationDate(LocalDateTime.now(ZoneOffset.UTC))
 						.withIndex(UUID.randomUUID().toString()).build())
 				.build();
+	}
+
+	private JAXBElement<String> getCBEFFTestTag(SingleType biometricType) {
+		String testTagType = null;
+		String testTagElementName = null;
+
+		if (RegistrationConstants.GLOBAL_CONFIG_TRUE_VALUE.equalsIgnoreCase(String.valueOf(ApplicationContext.map().get(RegistrationConstants.CBEFF_UNQ_TAG)))) {
+			testTagType = "Unique";
+		} else {
+			testTagType = random.nextInt() % 2 == 0 ? "Duplicate" : "Unique";
+		}
+
+		if (biometricType.equals(SingleType.FINGER)) {
+			testTagElementName = "TestFinger";
+		} else if (biometricType.equals(SingleType.IRIS)) {
+			testTagElementName = "TestIris";
+		} else if (biometricType.equals(SingleType.FACE)) {
+			testTagElementName = "TestFace";
+		}
+
+		return new JAXBElement<>(new QName("testschema", testTagElementName), String.class, testTagType);
 	}
 
 	private List<String> getFingerSubType(String fingerType) {
@@ -428,6 +497,10 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 		}
 
 		return capturedRegisteredDevices;
+	}
+
+	private boolean isListNotEmpty(List<? extends BaseDTO> listToValidate) {
+		return !(listToValidate == null || listToValidate.isEmpty());
 	}
 
 }

@@ -19,7 +19,6 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
-
 /**
  * The Class VIDController,it is an REST Api to generate the VID.
  * 
@@ -27,24 +26,23 @@ import io.swagger.annotations.ApiResponses;
  */
 @RestController
 public class VIDController {
-	
+
 	/** The Constant SESSION_ID. */
 	private static final String SESSION_ID = "sessionId";
-	
 
 	/** The mosipLogger. */
 	private Logger mosipLogger = IdaLogger.getLogger(VIDController.class);
-	
+
 	/** The uin validator. */
 	@Autowired
 	private UinValidatorImpl uinValidator;
-	
-	
+
 	/** The Static Pin Facade */
 	@Autowired
 	private VIDServiceImpl vidService;
 	
 	
+
 	/**
 	 * Generate VID.
 	 *
@@ -52,7 +50,7 @@ public class VIDController {
 	 * @return the VID response DTO
 	 * @throws IdAuthenticationAppException the id authentication app exception
 	 */
-	@GetMapping(path = "0.8/vid/{uin}", produces = MediaType.APPLICATION_JSON_VALUE)
+	@GetMapping(path = "/vid/${ida.api.version}/{uin}", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "VID Generation Request", response = IdAuthenticationAppException.class)
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "VID generated successfully"),
 			@ApiResponse(code = 400, message = "VID generation failed") })

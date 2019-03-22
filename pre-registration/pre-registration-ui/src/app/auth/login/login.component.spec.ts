@@ -14,7 +14,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { ConfigService } from 'src/app/core/services/config.service';
 
-fdescribe('LoginComponent', () => {
+describe('LoginComponent', () => {
 
   let configs = {
     "mosip.default.dob.day": "01",
@@ -70,7 +70,7 @@ fdescribe('LoginComponent', () => {
 
   let configService: ConfigService, mockConfigs = {
     setConfig: jasmine.createSpy('setConfig').and.returnValue(of(configs)),
-    getConfigByKey: jasmine.createSpy('getConfigByKey').and.returnValue('120')
+    getConfigByKey: jasmine.createSpy('getConfigByKey').and.returnValue('fra')
   }
 
   beforeEach(async(() => {
@@ -177,4 +177,10 @@ fdescribe('LoginComponent', () => {
     component.showOtpMessage();
     expect(localStorage.getItem('langCode')).toBe('ara');
   });
+
+  it('Should test set language direction', () => {
+    component.setLanguageDirection('ara', 'fra');
+    fixture.detectChanges();
+    expect(component.dir).toBe('rtl');
+  })
 });

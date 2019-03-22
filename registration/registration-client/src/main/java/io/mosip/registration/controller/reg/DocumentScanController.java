@@ -5,7 +5,10 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,6 +18,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 
+import io.mosip.kernel.core.applicanttype.exception.InvalidApplicantArgumentException;
+import io.mosip.kernel.core.applicanttype.spi.ApplicantType;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.StringUtils;
@@ -101,18 +106,18 @@ public class DocumentScanController extends BaseController {
 
 	@Autowired
 	private DocumentScanFacade documentScanFacade;
-	
+
 	@Autowired
 	private DemographicDetailController demographicDetailController;
 
 	@FXML
-	protected AnchorPane documentScan;
+	protected GridPane documentScan;
 
 	@FXML
-	private AnchorPane documentPane;
+	private GridPane documentPane;
 
 	@FXML
-	private AnchorPane exceptionPane;
+	private GridPane exceptionPane;
 
 	@FXML
 	protected ImageView docPreviewImgView;
@@ -124,12 +129,12 @@ public class DocumentScanController extends BaseController {
 	protected Button docPreviewPrev;
 
 	@FXML
-	protected Text docPageNumber;
+	protected Label docPageNumber;
 
 	@FXML
 	protected Label docPreviewLabel;
 	@FXML
-	public AnchorPane documentScanPane;
+	public GridPane documentScanPane;
 
 	@FXML
 	private VBox docScanVbox;
@@ -145,28 +150,34 @@ public class DocumentScanController extends BaseController {
 	@Autowired
 	private DocumentCategoryService documentCategoryService;
 
-	@Value("${DOCUMENT_SIZE}")
-	public int documentSize;
+	@Autowired
+	private BiometricExceptionController biometricExceptionController;
 
 	@Value("${DOCUMENT_SCANNER_ENABLED}")
 	private String isScannerEnabled;
 
-	@Value("${DOCUMENT_SCANNER_DOCTYPE}")
-	private String scannerDocType;
-
-	@Value("${DOCUMENT_DISABLE_FLAG}")
-	private String documentDisableFlag;
-	
-	@Value("${mosip.registration.age_limit_for_child}")
-	private int minAge;
-
 	private List<BufferedImage> docPages;
+
+	@Autowired
+	private ApplicantType applicantTypeService;
+
+	@FXML
+	private Label registrationNavlabel;
+
+	@FXML
+	private Button continueBtn;
+	@FXML
+	private Button backBtn;
 
 	@FXML
 	private void initialize() {
 		LOGGER.info(RegistrationConstants.DOCUMNET_SCAN_CONTROLLER, APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Entering the LOGIN_CONTROLLER");
 		try {
+			if (getRegistrationDTOFromSession() != null
+					&& getRegistrationDTOFromSession().getSelectionListDTO() != null) {
+				registrationNavlabel.setText(RegistrationConstants.UIN_NAV_LABEL);
+			}
 			switchedOnForBiometricException = new SimpleBooleanProperty(false);
 			toggleFunctionForBiometricException();
 
@@ -178,7 +189,7 @@ public class DocumentScanController extends BaseController {
 		}
 	}
 
-	protected <T> void populateDocumentCategories() {
+	protected <T> void populateDocumentCategories() throws InvalidApplicantArgumentException, ParseException {
 
 		/* clearing all the previously added fields */
 		docScanVbox.getChildren().clear();
@@ -192,16 +203,23 @@ public class DocumentScanController extends BaseController {
 		if (demographicDetailController.getSelectedGenderCode() != null) {
 			gender = demographicDetailController.getSelectedGenderCode();
 		}
-		Integer age = identityDto.getAge();
+		String dateOfBirth = identityDto.getDateOfBirth();
 		String individualType = null;
 		if (demographicDetailController.getSelectedNationalityCode() != null) {
 			individualType = demographicDetailController.getSelectedNationalityCode();
 		}
-		if (gender != null && age != null && individualType != null) {
-			applicantType = findApplicantType(gender, age, individualType);
+		if (gender != null && dateOfBirth != null && individualType != null) {
+			SimpleDateFormat inputFormat = new SimpleDateFormat(RegistrationConstants.ATTR_FORINGER_DOB_PARSING);
+			SimpleDateFormat outputFormat = new SimpleDateFormat(RegistrationConstants.ATTR_FORINGER_DOB_FORMAT);
+			Date date = inputFormat.parse(dateOfBirth);
+			String formattedDob = outputFormat.format(date);
+			Map<String, Object> applicantTypeMap = new HashMap<>();
+			applicantTypeMap.put(RegistrationConstants.ATTR_INDIVIDUAL_TYPE, individualType);
+			applicantTypeMap.put(RegistrationConstants.ATTR_DATE_OF_BIRTH, formattedDob);
+			applicantTypeMap.put(RegistrationConstants.ATTR_GENDER_TYPE, gender);
+			applicantType = applicantTypeService.getApplicantType(applicantTypeMap);
 			getRegistrationDTOFromSession().getRegistrationMetaDataDTO().setApplicantTypeCode(applicantType);
-		}
-		else {
+		} else {
 			/* TODO - to be removed after the clarification of UIN update */
 			applicantType = "007";
 			getRegistrationDTOFromSession().getRegistrationMetaDataDTO().setApplicantTypeCode(null);
@@ -225,9 +243,12 @@ public class DocumentScanController extends BaseController {
 			documentsMap.keySet().retainAll(docCategoryKeys);
 			for (String docCategoryKey : docCategoryKeys) {
 				DocumentDetailsDTO documentDetailsDTO = documentsMap.get(docCategoryKey);
-				if (documentDetailsDTO != null)
+				if (documentDetailsDTO != null) {
 					addDocumentsToScreen(documentDetailsDTO.getValue(), documentDetailsDTO.getFormat(),
 							documentVBoxes.get(docCategoryKey));
+					FXUtils.getInstance().selectComboBoxValue(documentComboBoxes.get(docCategoryKey),
+							documentDetailsDTO.getValue().substring(documentDetailsDTO.getValue().indexOf("_") + 1));
+				}
 			}
 		} else if (documentVBoxes.isEmpty() && documentsMap != null) {
 			documentsMap.clear();
@@ -294,7 +315,8 @@ public class DocumentScanController extends BaseController {
 						Button clickedBtn = (Button) event.getSource();
 						clickedBtn.getId();
 						scanDocument(comboBox, documentVBox, documentCategory.getCode(),
-								RegistrationUIConstants.PLEASE_SELECT +" "+ documentCategory.getCode() + " "+RegistrationUIConstants.DOCUMENT);
+								RegistrationUIConstants.PLEASE_SELECT + " " + documentCategory.getCode() + " "
+										+ RegistrationUIConstants.DOCUMENT);
 					}
 				});
 
@@ -349,7 +371,7 @@ public class DocumentScanController extends BaseController {
 	}
 
 	private boolean isChild(Integer age) {
-		return age <= Integer.valueOf(minAge);
+		return age <= Integer.valueOf(String.valueOf(ApplicationContext.map().get(RegistrationConstants.MIN_AGE)));
 	}
 
 	private MoroccoIdentity getIdentityDto() {
@@ -445,7 +467,8 @@ public class DocumentScanController extends BaseController {
 		LOGGER.info(RegistrationConstants.DOCUMNET_SCAN_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Converting byte array to image");
 
-		if (byteArray.length > documentSize) {
+		if (byteArray.length > Integer
+				.parseInt(String.valueOf(ApplicationContext.map().get(RegistrationConstants.DOC_SIZE)))) {
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.SCAN_DOC_SIZE);
 		} else {
 			if (selectedDocument != null) {
@@ -511,7 +534,7 @@ public class DocumentScanController extends BaseController {
 			return;
 		}
 		byte[] byteArray;
-		if (!"pdf".equalsIgnoreCase(scannerDocType)) {
+		if (!"pdf".equalsIgnoreCase(String.valueOf(ApplicationContext.map().get(RegistrationConstants.DOC_TYPE)))) {
 			byteArray = documentScanFacade.asImage(scannedPages);
 		} else {
 			byteArray = documentScanFacade.asPDF(scannedPages);
@@ -520,7 +543,8 @@ public class DocumentScanController extends BaseController {
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.SCAN_DOCUMENT_CONVERTION_ERR);
 			return;
 		}
-		if (byteArray.length > documentSize) {
+		if (byteArray.length > Integer
+				.parseInt(String.valueOf(ApplicationContext.map().get(RegistrationConstants.DOC_SIZE)))) {
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.SCAN_DOC_SIZE);
 		} else {
 			if (selectedDocument != null) {
@@ -552,7 +576,7 @@ public class DocumentScanController extends BaseController {
 
 		documentDetailsDTO.setDocument(byteArray);
 		documentDetailsDTO.setType(document.getName());
-		documentDetailsDTO.setFormat(scannerDocType);
+		documentDetailsDTO.setFormat(String.valueOf(ApplicationContext.map().get(RegistrationConstants.DOC_TYPE)));
 		documentDetailsDTO.setValue(selectedDocument.concat("_").concat(document.getName()));
 
 		LOGGER.info(RegistrationConstants.DOCUMNET_SCAN_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
@@ -591,7 +615,10 @@ public class DocumentScanController extends BaseController {
 	 */
 	private void displayDocument(byte[] document, String documentName) {
 
-		/*TODO - pdf to images to be replaced wit ketrnal and setscanner factory has to be removed here*/
+		/*
+		 * TODO - pdf to images to be replaced wit ketrnal and setscanner factory has to
+		 * be removed here
+		 */
 		documentScanFacade.setScannerFactory();
 		LOGGER.info(RegistrationConstants.DOCUMNET_SCAN_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Converting bytes to Image to display scanned document");
@@ -614,7 +641,7 @@ public class DocumentScanController extends BaseController {
 			} catch (IOException ioException) {
 				LOGGER.error("DOCUMENT_SCAN_CONTROLLER", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
 						ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));
-				generateAlert(RegistrationConstants.ERROR, "Unable to preview the document");
+				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.PREVIEW_DOC);
 				return;
 			}
 		} else {
@@ -889,13 +916,11 @@ public class DocumentScanController extends BaseController {
 		}
 
 		if (getRegistrationDTOFromSession().getSelectionListDTO().isBiometricException()) {
-			bioExceptionToggleLabel1.setId(RegistrationConstants.SECOND_TOGGLE_LABEL);
-			bioExceptionToggleLabel2.setId(RegistrationConstants.FIRST_TOGGLE_LABEL);
+			switchedOnForBiometricException.setValue(true);
 			toggleBiometricException = true;
 			SessionContext.userMap().put(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION, toggleBiometricException);
 		} else {
-			bioExceptionToggleLabel1.setId(RegistrationConstants.FIRST_TOGGLE_LABEL);
-			bioExceptionToggleLabel2.setId(RegistrationConstants.SECOND_TOGGLE_LABEL);
+			switchedOnForBiometricException.setValue(false);
 			toggleBiometricException = false;
 			SessionContext.userMap().put(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION, toggleBiometricException);
 			faceCaptureController.clearExceptionImage();
@@ -916,7 +941,7 @@ public class DocumentScanController extends BaseController {
 
 		if (getRegistrationDTOFromSession().getSelectionListDTO() != null) {
 			SessionContext.map().put("documentScan", false);
-			updateUINMethod();
+			updateUINMethodFlow();
 			registrationController.showUINUpdateCurrentPage();
 		} else {
 			registrationController.showCurrentPage(RegistrationConstants.DOCUMENT_SCAN,
@@ -931,16 +956,18 @@ public class DocumentScanController extends BaseController {
 		auditFactory.audit(AuditEvent.REG_DOC_NEXT, Components.REG_DOCUMENTS, SessionContext.userId(),
 				AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
 
+		biometricExceptionController.disableNextBtn();
 		if (getRegistrationDTOFromSession().getSelectionListDTO() != null) {
 			if (registrationController.validateDemographicPane(documentScanPane)) {
 				SessionContext.map().put("documentScan", false);
-				updateUINMethod();
+				updateUINMethodFlow();
 
 				registrationController.showUINUpdateCurrentPage();
 
 			}
 		} else {
-			if (RegistrationConstants.ENABLE.equalsIgnoreCase(documentDisableFlag)) {
+			if (RegistrationConstants.ENABLE.equalsIgnoreCase(
+					String.valueOf(ApplicationContext.map().get(RegistrationConstants.DOC_DISABLE_FLAG)))) {
 				if (registrationController.validateDemographicPane(documentScanPane)) {
 					registrationController.showCurrentPage(RegistrationConstants.DOCUMENT_SCAN,
 							getPageDetails(RegistrationConstants.DOCUMENT_SCAN, RegistrationConstants.NEXT));
@@ -952,31 +979,6 @@ public class DocumentScanController extends BaseController {
 			}
 		}
 
-	}
-
-	private void updateUINMethod() {
-		if ((Boolean) SessionContext.userContext().getUserMap().get(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION)
-				|| getRegistrationDTOFromSession().getSelectionListDTO().isBiometricException()
-						&& (Boolean) SessionContext.userContext().getUserMap()
-								.get(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION)) {
-			SessionContext.map().put("biometricException", true);
-		} else if (getRegistrationDTOFromSession().getSelectionListDTO().isBiometricFingerprint()
-				&& !getRegistrationDTOFromSession().getSelectionListDTO().isBiometricException()
-				|| getRegistrationDTOFromSession().getSelectionListDTO().isBiometricFingerprint()
-						&& getRegistrationDTOFromSession().getSelectionListDTO().isBiometricException()
-						&& !(Boolean) SessionContext.userContext().getUserMap()
-								.get(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION)) {
-			SessionContext.map().put("fingerPrintCapture", true);
-		} else if (getRegistrationDTOFromSession().getSelectionListDTO().isBiometricIris()
-				&& !getRegistrationDTOFromSession().getSelectionListDTO().isBiometricException()
-				|| getRegistrationDTOFromSession().getSelectionListDTO().isBiometricIris()
-						&& getRegistrationDTOFromSession().getSelectionListDTO().isBiometricException()
-						&& !(Boolean) SessionContext.userContext().getUserMap()
-								.get(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION)) {
-			SessionContext.map().put("irisCapture", true);
-		} else {
-			SessionContext.map().put("faceCapture", true);
-		}
 	}
 
 }

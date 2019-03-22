@@ -40,15 +40,6 @@ import io.mosip.registration.device.scanner.IMosipDocumentScannerService;
 @Service
 public abstract class DocumentScannerService implements IMosipDocumentScannerService {
 
-	@Value("${DOCUMENT_SCANNER_DPI}")
-	protected int scannerDpi;
-
-	@Value("${DOCUMENT_SCANNER_CONTRAST}")
-	protected int scannerContrast;
-
-	@Value("${DOCUMENT_SCANNER_BRIGHTNESS}")
-	protected int scannerBrightness;
-
 	@Value("${DOCUMENT_SCANNER_DEPTH}")
 	protected int scannerDepth;
 

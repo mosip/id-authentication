@@ -29,7 +29,6 @@ import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.constants.RegistrationUIConstants;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.controller.auth.AuthenticationController;
-import io.mosip.registration.controller.reg.ViewAckController;
 import io.mosip.registration.dto.RegistrationApprovalDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
@@ -52,6 +51,8 @@ import javafx.scene.control.ToggleButton;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.web.WebView;
 import javafx.stage.Modality;
@@ -75,10 +76,6 @@ public class RegistrationApprovalController extends BaseController implements In
 
 	@Autowired
 	private RegistrationApprovalService registration;
-
-	/** The view ack controller. */
-	@Autowired
-	private ViewAckController viewAckController;
 
 	@Autowired
 	private PacketSynchService packetSynchService;
@@ -125,11 +122,11 @@ public class RegistrationApprovalController extends BaseController implements In
 
 	/** The approve registration root sub pane. */
 	@FXML
-	private AnchorPane approveRegistrationRootSubPane;
+	private GridPane approveRegistrationRootSubPane;
 
 	/** The image anchor pane. */
 	@FXML
-	private AnchorPane imageAnchorPane;
+	private GridPane imageAnchorPane;
 
 	/** The map list. */
 	private List<Map<String, String>> approvalmapList = null;
@@ -217,25 +214,9 @@ public class RegistrationApprovalController extends BaseController implements In
 
 			webView.getEngine().loadContent("");
 
-			approvalBtn.setSelected(false);
-			rejectionBtn.setSelected(false);
-
 			approvalBtn.setVisible(true);
 			rejectionBtn.setVisible(true);
 			imageAnchorPane.setVisible(true);
-
-			for (Map<String, String> map : approvalmapList) {
-
-				if (map.get(RegistrationConstants.REGISTRATIONID) == table.getSelectionModel().getSelectedItem()
-						.getId()) {
-					if (map.get(RegistrationConstants.STATUSCODE) == RegistrationClientStatusCode.APPROVED.getCode()) {
-						approvalBtn.setSelected(true);
-					} else if (map.get(RegistrationConstants.STATUSCODE) == RegistrationClientStatusCode.REJECTED
-							.getCode()) {
-						rejectionBtn.setSelected(true);
-					}
-				}
-			}
 
 			try (FileInputStream file = new FileInputStream(
 					new File(table.getSelectionModel().getSelectedItem().getAcknowledgementFormPath()))) {
@@ -256,15 +237,6 @@ public class RegistrationApprovalController extends BaseController implements In
 		}
 		LOGGER.info(LOG_REG_PENDING_APPROVAL, APPLICATION_NAME, APPLICATION_ID,
 				"Displaying the Acknowledgement form completed");
-	}
-
-	/**
-	 * Opening registration acknowledgement form on clicking on image.
-	 */
-	public void openAckForm() {
-		LOGGER.info(LOG_REG_PENDING_APPROVAL, APPLICATION_NAME, APPLICATION_ID, "Opening the Acknowledgement Form");
-		viewAckController.viewAck(table.getSelectionModel().getSelectedItem().getAcknowledgementFormPath(),
-				fXComponents.getStage());
 	}
 
 	/**
@@ -293,8 +265,10 @@ public class RegistrationApprovalController extends BaseController implements In
 	/**
 	 * {@code updateStatus} is to update the status of registration.
 	 *
-	 * @param event the event
-	 * @throws RegBaseCheckedException the reg base checked exception
+	 * @param event
+	 *            the event
+	 * @throws RegBaseCheckedException
+	 *             the reg base checked exception
 	 */
 	public void updateStatus(ActionEvent event) throws RegBaseCheckedException {
 
@@ -324,8 +298,6 @@ public class RegistrationApprovalController extends BaseController implements In
 			approvalmapList.add(map);
 
 			authenticateBtn.setDisable(false);
-			approvalBtn.setSelected(true);
-			rejectionBtn.setSelected(false);
 
 			int rowNum = table.getSelectionModel().getFocusedIndex();
 			RegistrationApprovalDTO approvalDTO = new RegistrationApprovalDTO(
@@ -347,13 +319,10 @@ public class RegistrationApprovalController extends BaseController implements In
 
 					loadStage(primarystage, RegistrationConstants.REJECTION_PAGE);
 
-					rejectionBtn.setSelected(true);
-					approvalBtn.setSelected(false);
 					authenticateBtn.setDisable(false);
 
 				} else if (tBtn.getId().equals(authenticateBtn.getId())) {
 
-					authenticateBtn.setSelected(false);
 					loadStage(primarystage, RegistrationConstants.USER_AUTHENTICATION);
 					authenticationController.init(this, ProcessNames.EOD.getType());
 
@@ -376,18 +345,22 @@ public class RegistrationApprovalController extends BaseController implements In
 	/**
 	 * Loading stage.
 	 *
-	 * @param primarystage the stage
-	 * @param fxmlPath     the fxml path
+	 * @param primarystage
+	 *            the stage
+	 * @param fxmlPath
+	 *            the fxml path
 	 * @return the stage
-	 * @throws RegBaseCheckedException the reg base checked exception
+	 * @throws RegBaseCheckedException
+	 *             the reg base checked exception
 	 */
 	private Stage loadStage(Stage primarystage, String fxmlPath) throws RegBaseCheckedException {
 
 		try {
 
-			AnchorPane authRoot = BaseController.load(getClass().getResource(fxmlPath));
+			Pane authRoot = BaseController.load(getClass().getResource(fxmlPath));
 			Scene scene = new Scene(authRoot);
-			scene.getStylesheets().add(ClassLoader.getSystemClassLoader().getResource(RegistrationConstants.CSS_FILE_PATH).toExternalForm());
+			scene.getStylesheets().add(ClassLoader.getSystemClassLoader()
+					.getResource(RegistrationConstants.CSS_FILE_PATH).toExternalForm());
 			primarystage.initStyle(StageStyle.UNDECORATED);
 			primarystage.setScene(scene);
 			primarystage.initModality(Modality.WINDOW_MODAL);
@@ -435,17 +408,9 @@ public class RegistrationApprovalController extends BaseController implements In
 
 			if (RegistrationAppHealthCheckUtil.isNetworkAvailable() && !regIds.isEmpty()) {
 
-				String response = packetSynchService.syncEODPackets(regIds);
-				if (response.equals(RegistrationConstants.EMPTY)) {
-					packetUploadService.uploadEODPackets(regIds);
-				}
-			}
-		} catch (RegBaseCheckedException checkedException) {
-			LOGGER.error(LOG_REG_PENDING_APPROVAL, APPLICATION_NAME, APPLICATION_ID,
-					"Error in sync and upload of packets" + checkedException.getMessage()
-							+ ExceptionUtils.getStackTrace(checkedException));
+				uploadPacketsInBackground(regIds);
 
-			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.ERROR_IN_SYNC_AND_UPLOAD);
+			}
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error(LOG_REG_PENDING_APPROVAL, APPLICATION_NAME, APPLICATION_ID,
 					"unable to sync and upload of packets" + runtimeException.getMessage()
@@ -455,5 +420,25 @@ public class RegistrationApprovalController extends BaseController implements In
 		}
 		LOGGER.info(LOG_REG_PENDING_APPROVAL, APPLICATION_NAME, APPLICATION_ID,
 				"Updation of registration according to status ended");
+	}
+
+	private void uploadPacketsInBackground(List<String> regIds) {
+		Runnable upload = new Runnable() {
+			public void run() {
+				String response;
+				try {
+					response = packetSynchService.syncEODPackets(regIds);
+					if (response.equals(RegistrationConstants.EMPTY)) {
+						packetUploadService.uploadEODPackets(regIds);
+					}
+				} catch (RegBaseCheckedException checkedException) {
+					LOGGER.error(LOG_REG_PENDING_APPROVAL, APPLICATION_NAME, APPLICATION_ID,
+							"Error in sync and upload of packets" + checkedException.getMessage()
+									+ ExceptionUtils.getStackTrace(checkedException));
+				}
+			}
+		};
+
+		new Thread(upload).start();
 	}
 }

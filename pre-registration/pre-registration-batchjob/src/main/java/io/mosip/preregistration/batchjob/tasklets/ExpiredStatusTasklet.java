@@ -16,7 +16,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
+import io.mosip.preregistration.core.config.LoggerConfiguration;
 
 @Component
 public class ExpiredStatusTasklet implements Tasklet{
@@ -28,6 +30,8 @@ public class ExpiredStatusTasklet implements Tasklet{
 	
 	@Value("${expiredStatus.url}")
 	String expiredStatusUrl;
+	
+	private Logger log = LoggerConfiguration.logConfig(ExpiredStatusTasklet.class);
 
 	@Override
 	public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
@@ -39,6 +43,7 @@ public class ExpiredStatusTasklet implements Tasklet{
 
 		String uriBuilder = regbuilder.build().encode().toUriString();
 
+		log.info("sessionId", "idType", "id", "In ExpiredStatusTasklet method of Batch Service URL- "+uriBuilder);
 		ResponseEntity<MainResponseDTO> responseEntity = restTemplate.exchange(uriBuilder,
 				HttpMethod.PUT, entity, MainResponseDTO.class);
 		

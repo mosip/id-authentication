@@ -13,6 +13,7 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dao.RegistrationDAO;
+import io.mosip.registration.dto.PacketStatusDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.SuccessResponseDTO;
 import io.mosip.registration.entity.Registration;
@@ -33,12 +34,24 @@ public class PacketExportServiceImpl implements PacketExportService {
 	 * getSynchedRecords()
 	 */
 	@Override
-	public List<Registration> getSynchedRecords() {
+	public List<PacketStatusDTO> getSynchedRecords() {
 
 		LOGGER.debug("REGISTRATION - FETCH_EXPORT_PACKETS - PACKET_EXPORT_SERVICE", APPLICATION_NAME, APPLICATION_ID,
 				"Fetch the packets that needs to be exported");
 
-		return registrationDAO.getPacketsToBeSynched(RegistrationConstants.PACKET_EXPORT_STATUS);
+		List<PacketStatusDTO> packetDto = new ArrayList<>();
+		List<Registration> synchedPackets =  registrationDAO.getPacketsToBeSynched(RegistrationConstants.PACKET_EXPORT_STATUS);
+		synchedPackets.forEach(packet -> {
+			PacketStatusDTO packetStatusDTO =new PacketStatusDTO();
+			packetStatusDTO.setClientStatusComments(packet.getClientStatusComments());
+			packetStatusDTO.setFileName(packet.getId());
+			packetStatusDTO.setPacketClientStatus(packet.getClientStatusCode());
+			packetStatusDTO.setPacketPath(packet.getAckFilename());
+			packetStatusDTO.setPacketServerStatus(packet.getServerStatusCode());
+			packetStatusDTO.setUploadStatus(packet.getFileUploadStatus());
+			packetDto.add(packetStatusDTO);
+		});
+		return packetDto;
 	}
 
 	/*
@@ -48,7 +61,7 @@ public class PacketExportServiceImpl implements PacketExportService {
 	 * updateRegistrationStatus(java.util.List)
 	 */
 	@Override
-	public ResponseDTO updateRegistrationStatus(List<Registration> exportedPackets) {
+	public ResponseDTO updateRegistrationStatus(List<PacketStatusDTO> exportedPackets) {
 
 		LOGGER.debug("REGISTRATION - UPDATE_EXPORTED_PACKETS - PACKET_EXPORT_SERVICE", APPLICATION_NAME, APPLICATION_ID,
 				"Updating the table with the updated status");

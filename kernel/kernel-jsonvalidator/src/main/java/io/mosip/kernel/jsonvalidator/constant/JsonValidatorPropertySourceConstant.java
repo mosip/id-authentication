@@ -8,6 +8,7 @@ package io.mosip.kernel.jsonvalidator.constant;
 	 */
 	public enum JsonValidatorPropertySourceConstant {
 		CONFIG_SERVER("CONFIG_SERVER"), 
+		APPLICATION_CONTEXT("APPLICATION_CONTEXT"), 
 		LOCAL("LOCAL");
 
 		/**

@@ -22,7 +22,6 @@ import org.apache.commons.io.IOUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -41,6 +40,7 @@ import io.mosip.kernel.core.util.StringUtils;
 import io.mosip.kernel.keygenerator.bouncycastle.KeyGenerator;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dto.PreRegistrationDTO;
 import io.mosip.registration.dto.RegistrationDTO;
@@ -60,11 +60,6 @@ import io.mosip.registration.service.external.PreRegZipHandlingService;
  */
 @Service
 public class PreRegZipHandlingServiceImpl implements PreRegZipHandlingService {
-
-	@Value("${PRE_REG_PACKET_LOCATION}")
-	private String preRegPacketLocation;
-	@Value("${mosip.registration.identity-class-name}")
-	private String identityClassName;
 
 	@Autowired
 	private JsonValidator jsonValidator;
@@ -149,7 +144,7 @@ public class PreRegZipHandlingServiceImpl implements PreRegZipHandlingService {
 
 			if (!StringUtils.isEmpty(jsonString)) {
 				/* validate id json schema */
-				jsonValidator.validateJson(jsonString.toString(), "mosip-identity-json-schema.json");
+				jsonValidator.validateJson(jsonString.toString(), RegistrationConstants.IDENTITY_JSON_FILE_NAME);
 				getRegistrationDtoContent().getDemographicDTO().getDemographicInfoDTO()
 						.setIdentity(validateJSONAndConvertToIdentity(jsonString));
 			}
@@ -175,7 +170,7 @@ public class PreRegZipHandlingServiceImpl implements PreRegZipHandlingService {
 	@SuppressWarnings("unchecked")
 	private Identity validateJSONAndConvertToIdentity(StringBuilder jsonString)
 			throws IOException, JSONException, ClassNotFoundException {
-		Class<? extends Identity> identityClass = (Class<? extends Identity>) Class.forName(identityClassName);
+		Class<? extends Identity> identityClass = (Class<? extends Identity>) Class.forName(String.valueOf(ApplicationContext.map().get(RegistrationConstants.IDENTITY_CLASS_NAME)));
 		
 		return new ObjectMapper().readValue(new JSONObject(jsonString.toString()).get("identity").toString(),
 				identityClass);
@@ -227,7 +222,7 @@ public class PreRegZipHandlingServiceImpl implements PreRegZipHandlingService {
 			throws RegBaseCheckedException {
 		try {
 			// Generate the file path for storing the Encrypted Packet
-			String filePath = preRegPacketLocation.concat(separator).concat(PreRegistrationId)
+			String filePath = String.valueOf(ApplicationContext.map().get(RegistrationConstants.PRE_REG_PACKET_LOCATION)).concat(separator).concat(PreRegistrationId)
 					.concat(ZIP_FILE_EXTENSION);
 			// Storing the Encrypted Registration Packet as zip
 			FileUtils.copyToFile(new ByteArrayInputStream(encryptedPacket), new File(filePath));

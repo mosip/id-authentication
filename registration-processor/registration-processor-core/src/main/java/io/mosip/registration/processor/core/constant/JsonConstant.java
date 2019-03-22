@@ -154,5 +154,71 @@ public class JsonConstant {
 	public static final String SUPERVISOROTPAUTHENTICATION = "SUPERVISOROTPAUTHENTICATION";
 	/** officer Authentication */
 	public static final String OFFICEROTPAUTHENTICATION = "OFFICEROTPAUTHENTICATION";
+	
+	
+	
+	/**OSI DTO instance field constants*/ 
+	
+	/** The reg id. */
+	public static final String REGID="REGID";
 
+	/** The prereg id. */
+	public static final String PREREGID="PREREGID";
+
+	/** The officer iris image name. */
+	public static final String OFFICERIRISIMAGENAME="OFFICERIRISIMAGENAME";
+
+	/** The officerfinger type. */
+	public static final String OFFICERFINGERTYPE="OFFICERFINGERTYPE";
+
+	/** The officer photo name. */
+	public static final String OFFICERPHOTONAME="OFFICERFACEIMAGE";
+
+	/** The officer hashed pin. */
+	public static final String OFFICERHASHEDPIN="OFFICERHASHEDPIN";
+
+	/** The officer hashed pwd. */
+	public static final String OFFICERHASHEDPWD="OFFICERHASHEDPWD";
+
+	/** The officer fingerp image name. */
+	public static final String OFFICERFINGERPIMAGENAME="OFFICERFINGERPIMAGENAME";
+
+	/** The supervisor fingerp image name. */
+	public static final String SUPERVISORFINGERPIMAGENAME="SUPERVISORFINGERPIMAGENAME";
+
+	/** The supervisor iris image name. */
+	public static final String SUPERVISORIRISIMAGENAME="SUPERVISORIRISIMAGENAME";
+
+	/** The supervisor finger type. */
+	public static final String SUPERVISORFINGERTYPE="SUPERVISORFINGERTYPE";
+
+	/** The supervisor hashed pwd. */
+	public static final String SUPERVISORHASHEDPWD="SUPERVISORHASHEDPWD";
+
+	/** The supervisor hashed pin. */
+	public static final String SUPERVISORHASHEDPIN="SUPERVISORHASHEDPIN";
+
+	/** The supervisor photo name. */
+	public static final String SUPERVISORPHOTONAME="SUPERVISORPHOTONAME";
+
+	/** The introducer id. */
+	public static final String INTRODUCERID="INTRODUCERID";
+
+	/** The introducer typ. */
+	public static final String INTRODUCERTYP="INTRODUCERTYP";
+
+	/** The introducer reg id. */
+	public static final String INTRODUCERREGID="INTRODUCERREGID";
+
+	/** The introducer iris image name. */
+	public static final String INTRODUCERIRISIMAGENAME="INTRODUCERIRISIMAGENAME";
+
+	/** The introducer fingerp type. */
+	public static final String INTRODUCERFINGERPTYPE="INTRODUCERFINGERPTYPE";
+
+	/** The introducer fingerp image name. */
+	public static final String INTRODUCERFINGERPIMAGENAME="INTRODUCERFINGERPIMAGENAME";
+	
+	/** The introducer photo name. */
+	public static final String INTRODUCERPHOTONAME="INTRODUCERPHOTONAME";
 }

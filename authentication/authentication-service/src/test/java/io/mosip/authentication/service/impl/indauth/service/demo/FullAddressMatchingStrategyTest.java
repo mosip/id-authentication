@@ -8,6 +8,7 @@ import static org.junit.Assert.assertNull;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import io.mosip.authentication.core.dto.indauth.LanguageType;
@@ -74,7 +75,7 @@ public class FullAddressMatchingStrategyTest {
 	 * 
 	 * @throws IdAuthenticationBusinessException
 	 */
-	@Test(expected = IdAuthenticationBusinessException.class)
+	@Test
 	public void TestInvalidExactMatchingStrategyFunction() throws IdAuthenticationBusinessException {
 		MatchFunction matchFunction = FullAddressMatchingStrategy.EXACT.getMatchFunction();
 		Map<String, Object> matchProperties = new HashMap<>();
@@ -84,7 +85,7 @@ public class FullAddressMatchingStrategyTest {
 
 	}
 
-	@Test(expected = IdAuthenticationBusinessException.class)
+	@Test
 	public void TestExactMatchInvalidSecondaryLang() throws IdAuthenticationBusinessException {
 		MatchFunction matchFunction = FullAddressMatchingStrategy.EXACT.getMatchFunction();
 		Map<String, Object> matchProperties = new HashMap<>();
@@ -93,7 +94,7 @@ public class FullAddressMatchingStrategyTest {
 		assertEquals(0, value1);
 	}
 
-	@Test(expected = IdAuthenticationBusinessException.class)
+	@Test
 	public void TestExactMatchOtherLangType() throws IdAuthenticationBusinessException {
 		MatchFunction matchFunction = FullAddressMatchingStrategy.EXACT.getMatchFunction();
 		Map<String, Object> matchProperties = new HashMap<>();
@@ -103,7 +104,7 @@ public class FullAddressMatchingStrategyTest {
 		assertEquals(0, value2);
 	}
 
-	@Test(expected = IdAuthenticationBusinessException.class)
+	@Test
 	public void TestInvalidPartialMatch() throws IdAuthenticationBusinessException {
 		MatchFunction matchFunction = FullAddressMatchingStrategy.PARTIAL.getMatchFunction();
 		Map<String, Object> matchProperties = new HashMap<>();
@@ -113,7 +114,7 @@ public class FullAddressMatchingStrategyTest {
 
 	}
 
-	@Test(expected = IdAuthenticationBusinessException.class)
+	@Test
 	public void TestInvalidPartialMatchSecondaryLang() throws IdAuthenticationBusinessException {
 		MatchFunction matchFunction = FullAddressMatchingStrategy.PARTIAL.getMatchFunction();
 		Map<String, Object> matchProperties = new HashMap<>();
@@ -122,7 +123,7 @@ public class FullAddressMatchingStrategyTest {
 		assertEquals(0, value1);
 	}
 
-	@Test(expected = IdAuthenticationBusinessException.class)
+	@Test
 	public void TestInvalidPartialMatchOtherLangType() throws IdAuthenticationBusinessException {
 		MatchFunction matchFunction = FullAddressMatchingStrategy.PARTIAL.getMatchFunction();
 		Map<String, Object> matchProperties = new HashMap<>();
@@ -132,7 +133,7 @@ public class FullAddressMatchingStrategyTest {
 		assertEquals(0, value2);
 	}
 
-	@Test(expected = IdAuthenticationBusinessException.class)
+	@Test
 	public void TestInvalidPhoneticsMatch() throws IdAuthenticationBusinessException {
 		MatchFunction matchFunction = FullAddressMatchingStrategy.PHONETICS.getMatchFunction();
 		Map<String, Object> matchProperties = new HashMap<>();
@@ -142,7 +143,7 @@ public class FullAddressMatchingStrategyTest {
 
 	}
 
-	@Test(expected = IdAuthenticationBusinessException.class)
+	@Test
 	public void TestInvalidPhoneticsMatchSecondaryLang() throws IdAuthenticationBusinessException {
 		MatchFunction matchFunction = FullAddressMatchingStrategy.PHONETICS.getMatchFunction();
 		Map<String, Object> matchProperties = new HashMap<>();
@@ -151,7 +152,7 @@ public class FullAddressMatchingStrategyTest {
 		assertEquals(0, value1);
 	}
 
-	@Test(expected = IdAuthenticationBusinessException.class)
+	@Test
 	public void TestInvalidPhoneticsMatchOtherLangType() throws IdAuthenticationBusinessException {
 		MatchFunction matchFunction = FullAddressMatchingStrategy.PHONETICS.getMatchFunction();
 		Map<String, Object> matchProperties = new HashMap<>();
@@ -212,7 +213,7 @@ public class FullAddressMatchingStrategyTest {
 	 * 
 	 * @throws IdAuthenticationBusinessException
 	 */
-	@Test(expected = IdAuthenticationBusinessException.class)
+	@Test
 	public void TestInvalidPartialMatchingStrategyFunction() throws IdAuthenticationBusinessException {
 		MatchFunction matchFunction = FullAddressMatchingStrategy.PARTIAL.getMatchFunction();
 		Map<String, Object> matchProperties = new HashMap<>();
@@ -246,7 +247,7 @@ public class FullAddressMatchingStrategyTest {
 	 * 
 	 * @throws IdAuthenticationBusinessException
 	 */
-	@Test(expected = IdAuthenticationBusinessException.class)
+	@Test
 	public void TestPhoneticsMatchValue() throws IdAuthenticationBusinessException {
 		Map<String, Object> matchProperties = new HashMap<>();
 		MatchFunction matchFunction = FullAddressMatchingStrategy.PHONETICS.getMatchFunction();
@@ -259,7 +260,7 @@ public class FullAddressMatchingStrategyTest {
 	 * 
 	 * @throws IdAuthenticationBusinessException
 	 */
-	@Test(expected = IdAuthenticationBusinessException.class)
+	@Test
 	public void TestPhoneticsMatchValueWithLanguageCode_Return_NotMatched() throws IdAuthenticationBusinessException {
 		MatchFunction matchFunction = FullAddressMatchingStrategy.PHONETICS.getMatchFunction();
 		Map<String, Object> matchProperties = new HashMap<>();
@@ -293,7 +294,7 @@ public class FullAddressMatchingStrategyTest {
 	 * 
 	 * @throws IdAuthenticationBusinessException
 	 */
-	@Test(expected = IdAuthenticationBusinessException.class)
+	@Test
 	public void TestPhoneticsMatchWithLanguageNameAndReqInfoAsInteger_Return_NotMatched()
 			throws IdAuthenticationBusinessException {
 		Map<String, Object> matchProperties = new HashMap<>();
@@ -302,11 +303,11 @@ public class FullAddressMatchingStrategyTest {
 		assertEquals(0, value);
 	}
 
-	@Test(expected = IdAuthenticationBusinessException.class)
+	@Test
 	public void TestThrowError() throws IdAuthenticationBusinessException {
 		Map<String, Object> matchProperties = new HashMap<>();
 		MatchFunction matchFunction = FullAddressMatchingStrategy.EXACT.getMatchFunction();
 		int value = matchFunction.match(5, 3, matchProperties);
 		assertEquals(0, value);
-	} 
+	}
 }

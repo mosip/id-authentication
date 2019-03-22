@@ -109,12 +109,11 @@ public class StaticPinServiceImplTest {
 		staticPinRequestDTO.setId("mosip.identity.static-pin");
 		String reqTime = ZonedDateTime.now().format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern")))
 				.toString();
-		staticPinRequestDTO.setReqTime(reqTime);
-		staticPinRequestDTO.setVer("1.0");
+		staticPinRequestDTO.setRequestTime(reqTime);
+		staticPinRequestDTO.setVersion("1.0");
 		StaticPinIdentityDTO dto = new StaticPinIdentityDTO();
 		dto.setUin(uin);
 		PinRequestDTO pinRequestDTO = new PinRequestDTO();
-		pinRequestDTO.setIdentity(dto);
 		String pin = "123454";
 		pinRequestDTO.setStaticPin(pin);
 		staticPinRequestDTO.setRequest(pinRequestDTO);
@@ -149,12 +148,11 @@ public class StaticPinServiceImplTest {
 		staticPinRequestDTO.setId("mosip.identity.static-pin");
 		String reqTime = ZonedDateTime.now().format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern")))
 				.toString();
-		staticPinRequestDTO.setReqTime(reqTime);
-		staticPinRequestDTO.setVer("1.0");
+		staticPinRequestDTO.setRequestTime(reqTime);
+		staticPinRequestDTO.setVersion("1.0");
 		StaticPinIdentityDTO dto = new StaticPinIdentityDTO();
 		dto.setUin(uin);
 		PinRequestDTO pinRequestDTO = new PinRequestDTO();
-		pinRequestDTO.setIdentity(dto);
 		String pin = "123454";
 		pinRequestDTO.setStaticPin(pin);
 		staticPinRequestDTO.setRequest(pinRequestDTO);
@@ -192,12 +190,11 @@ public class StaticPinServiceImplTest {
 		staticPinRequestDTO.setId("mosip.identity.static-pin");
 		String reqTime = ZonedDateTime.now().format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern")))
 				.toString();
-		staticPinRequestDTO.setReqTime(reqTime);
-		staticPinRequestDTO.setVer("1.0");
+		staticPinRequestDTO.setRequestTime(reqTime);
+		staticPinRequestDTO.setVersion("1.0");
 		StaticPinIdentityDTO dto = new StaticPinIdentityDTO();
 		dto.setUin(uin);
 		PinRequestDTO pinRequestDTO = new PinRequestDTO();
-		pinRequestDTO.setIdentity(dto);
 		String pin = "123454";
 		pinRequestDTO.setStaticPin(pin);
 		staticPinRequestDTO.setRequest(pinRequestDTO);
@@ -228,6 +225,38 @@ public class StaticPinServiceImplTest {
 		ReflectionTestUtils.invokeMethod(staticPinServiceImpl, "storeSpin", staticPinRequestDTO, "794138547620");
 	}
 
+	@Test
+	public void testGetUin() {
+		String uin = "794138547620";
+		Map<String, Object> idRepo = new HashMap<>();
+		idRepo.put("uin", uin);
+		idRepo.put("registrationId", "1234567890");
+		ReflectionTestUtils.invokeMethod(staticPinServiceImpl, "getUINValue",idRepo);
+	}
+	@Test
+	public void testGetUin_UINEmpty() {
+		String uin = "";
+		Map<String, Object> idRepo = new HashMap<>();
+		idRepo.put("uin", uin);
+		idRepo.put("registrationId", "1234567890");
+		ReflectionTestUtils.invokeMethod(staticPinServiceImpl, "getUINValue",idRepo);
+	}
+	@Test
+	public void testGetUin_UINNull() {
+		String uin = null;
+		Map<String, Object> idRepo = new HashMap<>();
+		idRepo.put("uin", uin);
+		idRepo.put("registrationId", "1234567890");
+		ReflectionTestUtils.invokeMethod(staticPinServiceImpl, "getUINValue",idRepo);
+	}
+	@Test
+	public void testGetUin_DifferentKey() {
+		String uin = null;
+		Map<String, Object> idRepo = new HashMap<>();
+		idRepo.put("vid", uin);
+		idRepo.put("registrationId", "1234567890");
+		ReflectionTestUtils.invokeMethod(staticPinServiceImpl, "getUINValue",idRepo);
+	}
 	private LocalDateTime now() throws IdAuthenticationBusinessException {
 		return DateUtils.getUTCCurrentDateTime();
 	}

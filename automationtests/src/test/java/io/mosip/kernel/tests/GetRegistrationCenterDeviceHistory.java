@@ -123,25 +123,7 @@ public class GetRegistrationCenterDeviceHistory extends BaseTestCase implements 
 		listOfElementToRemove.add("timestamp");
 		
 		status = assertKernel.assertKernel(res, Expectedresponse,listOfElementToRemove);
-      if (status) {
-    	  if(testParam.equals("smoke"))
-    	  {
-//    		  String id=actualRequest.get("id").toString();
-//	             String queryStr = "SELECT id FROM master.registration_center WHERE id='"+id+"'";
-//					boolean valid = KernelMasterDataR.masterDataDBConnection(RegistrationCenterDto.class,queryStr);
-//					System.out.println("status------>"+valid);
-    	  }
-	            
-			if(status)
-					{
-						finalStatus ="Pass";
-					}
-					else
-					{
-		 				finalStatus ="Fail";
-						//break;
-					}
-	            
+      if (status) {          
 				finalStatus = "Pass";
 			}	
 		

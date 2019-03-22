@@ -14,7 +14,6 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 
 import io.mosip.kernel.core.exception.ExceptionUtils;
@@ -26,6 +25,7 @@ import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.service.template.NotificationService;
+import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
 import javafx.beans.binding.Bindings;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -56,9 +56,6 @@ public class SendNotificationController extends BaseController implements Initia
 	private ImageView mobileIcon;
 	@FXML
 	private Button send;
-
-	@Value("${mosip.registration.mode_of_communication}")
-	private String modeOfCommunication;
 
 	@Autowired
 	private NotificationService notificationService;
@@ -93,6 +90,8 @@ public class SendNotificationController extends BaseController implements Initia
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
+		String modeOfCommunication = String
+				.valueOf(applicationContext.getApplicationMap().get(RegistrationConstants.MODE_OF_COMMUNICATION));
 		if (!modeOfCommunication.contains(RegistrationConstants.EMAIL_SERVICE.toUpperCase())) {
 			email.setVisible(false);
 			emailIcon.setVisible(false);
@@ -113,71 +112,70 @@ public class SendNotificationController extends BaseController implements Initia
 				RegistrationConstants.APPLICATION_ID, "generating Email/SMS notification after packet creation");
 
 		try {
-			Writer writeNotificationTemplate = getNotificationTemplate();
-			String registrationId = getRegistrationDTOFromSession().getRegistrationId();
+			if (RegistrationAppHealthCheckUtil.isNetworkAvailable()) {
+				Writer writeNotificationTemplate = getNotificationTemplate("");
+				String registrationId = getRegistrationDTOFromSession().getRegistrationId();
 
-			List<String> notifications = new ArrayList<>();
-			if (email.getText() != null && !email.getText().isEmpty()) {
-				String emails = email.getText();
-				List<String> emailList = getRecipients(emails, RegistrationConstants.CONTENT_TYPE_EMAIL);
-				if (!emailList.isEmpty()) {
-					StringBuilder unsentMails = new StringBuilder();
-					String prefix = "";
-					for (String emailId : emailList) {
-						ResponseDTO emailNotificationResponse = notificationService
-								.sendEmail(writeNotificationTemplate.toString(), emailId, registrationId);
-						if (emailNotificationResponse.getErrorResponseDTOs() != null) {
-							unsentMails.append(prefix);
-							prefix = ",";
-							unsentMails.append(emailId);
+				List<String> notifications = new ArrayList<>();
+				if (email.getText() != null && !email.getText().isEmpty()) {
+					String emails = email.getText();
+					List<String> emailList = getRecipients(emails, RegistrationConstants.CONTENT_TYPE_EMAIL);
+					if (!emailList.isEmpty()) {
+						StringBuilder unsentMails = new StringBuilder();
+						String prefix = "";
+						for (String emailId : emailList) {
+							ResponseDTO emailNotificationResponse = notificationService
+									.sendEmail(writeNotificationTemplate.toString(), emailId, registrationId);
+							if (emailNotificationResponse.getErrorResponseDTOs() != null) {
+								unsentMails.append(prefix);
+								prefix = ",";
+								unsentMails.append(emailId);
+							}
+						}
+						if (unsentMails.length() > 1) {
+							generateAlert(RegistrationConstants.ERROR,
+									RegistrationUIConstants.NOTIFICATION_EMAIL_FAIL + " to " + unsentMails);
+						} else {
+							notifications.add(RegistrationConstants.CONTENT_TYPE_EMAIL);
+
 						}
 					}
-					if (unsentMails.length() > 1) {
-						generateAlert(RegistrationConstants.ERROR,
-								RegistrationUIConstants.NOTIFICATION_EMAIL_FAIL + " to " + unsentMails);
-					} else {
-						notifications.add(RegistrationConstants.CONTENT_TYPE_EMAIL);
-
-					}
-				} else {
-					generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.NO_VALID_EMAIL);
 				}
-			}
-			if (mobile.getText() != null && !mobile.getText().isEmpty()) {
-				String mobileNos = mobile.getText();
-				List<String> mobileList = getRecipients(mobileNos, RegistrationConstants.CONTENT_TYPE_MOBILE);
-				if (!mobileList.isEmpty()) {
-					StringBuilder unsentSMS = new StringBuilder();
-					String prefix = "";
-					for (String mobileNo : mobileList) {
-						ResponseDTO smsNotificationResponse = notificationService
-								.sendSMS(writeNotificationTemplate.toString(), mobileNo, registrationId);
-						if (smsNotificationResponse.getErrorResponseDTOs() != null) {
-							unsentSMS.append(prefix);
-							prefix = ",";
-							unsentSMS.append(mobileNo);
+				if (mobile.getText() != null && !mobile.getText().isEmpty()) {
+					String mobileNos = mobile.getText();
+					List<String> mobileList = getRecipients(mobileNos, RegistrationConstants.CONTENT_TYPE_MOBILE);
+					if (!mobileList.isEmpty()) {
+						StringBuilder unsentSMS = new StringBuilder();
+						String prefix = "";
+						for (String mobileNo : mobileList) {
+							ResponseDTO smsNotificationResponse = notificationService
+									.sendSMS(writeNotificationTemplate.toString(), mobileNo, registrationId);
+							if (smsNotificationResponse.getErrorResponseDTOs() != null) {
+								unsentSMS.append(prefix);
+								prefix = ",";
+								unsentSMS.append(mobileNo);
+							}
+						}
+						if (unsentSMS.length() > 1) {
+							generateAlert(RegistrationConstants.ERROR,
+									RegistrationUIConstants.NOTIFICATION_SMS_FAIL + " to " + unsentSMS);
+						} else {
+							notifications.add(RegistrationConstants.CONTENT_TYPE_MOBILE);
 						}
 					}
-					if (unsentSMS.length() > 1) {
-						generateAlert(RegistrationConstants.ERROR,
-								RegistrationUIConstants.NOTIFICATION_SMS_FAIL + " to " + unsentSMS);
-					} else {
-						notifications.add(RegistrationConstants.CONTENT_TYPE_MOBILE);
+				}
+				if (notifications.size() > 1) {
+					generateAlert(RegistrationConstants.SUCCESS, RegistrationUIConstants.NOTIFICATION_SUCCESS);
+					popupStage.close();
+				} else if (notifications.size() == 1) {
+					if (notifications.get(0).equals(RegistrationConstants.CONTENT_TYPE_EMAIL)) {
+						generateAlert(RegistrationConstants.SUCCESS,
+								RegistrationUIConstants.EMAIL_NOTIFICATION_SUCCESS);
+					} else if (notifications.get(0).equals(RegistrationConstants.CONTENT_TYPE_MOBILE)) {
+						generateAlert(RegistrationConstants.SUCCESS, RegistrationUIConstants.SMS_NOTIFICATION_SUCCESS);
 					}
-				} else {
-					generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.NO_VALID_MOBILE);
+					popupStage.close();
 				}
-			}
-			if (notifications.size() > 1) {
-				generateAlert(RegistrationConstants.SUCCESS, RegistrationUIConstants.NOTIFICATION_SUCCESS);
-				popupStage.close();
-			} else if (notifications.size() == 1) {
-				if (notifications.get(0).equals(RegistrationConstants.CONTENT_TYPE_EMAIL)) {
-					generateAlert(RegistrationConstants.SUCCESS, RegistrationUIConstants.EMAIL_NOTIFICATION_SUCCESS);
-				} else if (notifications.get(0).equals(RegistrationConstants.CONTENT_TYPE_MOBILE)) {
-					generateAlert(RegistrationConstants.SUCCESS, RegistrationUIConstants.SMS_NOTIFICATION_SUCCESS);
-				}
-				popupStage.close();
 			}
 		} catch (RegBaseUncheckedException regBaseUncheckedException) {
 			LOGGER.error("REGISTRATION - UI - SEND_NOTIFICATION", APPLICATION_NAME, APPLICATION_ID,
@@ -217,12 +215,19 @@ public class SendNotificationController extends BaseController implements Initia
 			}
 		}
 		if (contents.size() > 5) {
-			generateAlert(RegistrationUIConstants.NOTIFICATION_LIMIT_EXCEEDED);
+			generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.NOTIFICATION_LIMIT_EXCEEDED);
 		} else {
 			for (String content : contents) {
 				if (RegistrationConstants.CONTENT_TYPE_EMAIL.equalsIgnoreCase(contentType) ? validateMail(content)
 						: validateMobile(content)) {
 					contentsList.add(content);
+				}
+			}
+			if (contentsList.size() == 0) {
+				if (RegistrationConstants.CONTENT_TYPE_EMAIL.equalsIgnoreCase(contentType)) {
+					generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.NO_VALID_EMAIL);
+				} else {
+					generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.NO_VALID_MOBILE);
 				}
 			}
 		}

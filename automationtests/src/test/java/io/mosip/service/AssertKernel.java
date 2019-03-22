@@ -3,7 +3,10 @@ package io.mosip.service;
 import java.io.IOException;
 import org.apache.log4j.Logger;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -36,10 +39,32 @@ public class AssertKernel {
 			ArrayList<String> listOfElementToRemove) throws JsonProcessingException, IOException, ParseException {
 		JSONObject expectedResponseBody = (JSONObject) new JSONParser().parse(expectedResponse.asString());
 		JSONObject actualResponseBody = actualResponse;
-		
-			expectedResponseBody = AssertKernel.removeElementFromBody(expectedResponseBody, listOfElementToRemove);
-			actualResponseBody = AssertKernel.removeElementFromBody(actualResponse, listOfElementToRemove);
-		
+
+		expectedResponseBody = AssertKernel.removeElementFromBody(expectedResponseBody, listOfElementToRemove);
+		actualResponseBody = AssertKernel.removeElementFromBody(actualResponse, listOfElementToRemove);
+
+		return jsonComparison(expectedResponseBody, actualResponseBody);
+
+	}
+/**
+ * @author Arjun chandramohan
+ * Created for id repo assertion
+ * @param expectedResponse
+ * @param actualResponse
+ * @param listOfElementToRemove
+ * @return
+ * @throws JsonProcessingException
+ * @throws IOException
+ * @throws ParseException
+ */
+	public boolean assertIdRepo(Object expectedResponse, Object actualResponse, ArrayList<String> listOfElementToRemove)
+			throws JsonProcessingException, IOException, ParseException {
+		JSONObject expectedResponseBody = (JSONObject) new JSONParser().parse(expectedResponse.toString());
+		JSONObject actualResponseBody = (JSONObject) new JSONParser().parse(actualResponse.toString());
+
+		expectedResponseBody = AssertKernel.removeElementFromBody(expectedResponseBody, listOfElementToRemove);
+		actualResponseBody = AssertKernel.removeElementFromBody(actualResponseBody, listOfElementToRemove);
+
 		return jsonComparison(expectedResponseBody, actualResponseBody);
 
 	}
@@ -91,12 +116,49 @@ public class AssertKernel {
 	 * @return
 	 * @throws ParseException
 	 */
-	public static JSONObject removeElementFromBody(JSONObject responce, ArrayList<String> listOfElementToRemove) throws ParseException {
+	public static JSONObject removeElementFromBody(JSONObject responce, ArrayList<String> listOfElementToRemove)
+			throws ParseException {
 		for (String elementToRemove : listOfElementToRemove) {
 			responce.remove(elementToRemove);
 		}
-		
+
 		return responce;
+	}
+	
+	/**
+	 * this method takes Json array of objects obtained in response, and key value of field send to fetch data and  
+	 * list of attributes which should be present in response objects.
+	 * @param responseArray
+	 * @param attributesToValidate
+	 * @param passedAttributes
+	 * @return
+	 */
+	public static boolean validator(JSONArray responseArray, List<String> attributesToValidate, HashMap<String, String> passedAttributes)
+	{
+		    for(int i=0;i<responseArray.size();i++) {
+		    	 JSONObject object = (JSONObject) responseArray.get(0);
+				 if(passedAttributes.size()>0)
+				 {
+					 String[] keys = passedAttributes.keySet().toArray(new String[passedAttributes.size()]);
+					 for(int j=0;j<keys.length;j++) {
+						 if(!passedAttributes.get(keys[j]).equals(object.get(keys[j]).toString()))
+						 {
+							 System.err.println("passed data to fetch does not match with Reponse data");
+							 return false;
+						 }
+					 }
+				 }
+				 for(int j=0;j<attributesToValidate.size();j++) {
+					 String key = attributesToValidate.get(j);
+				 if (!object.containsKey(key) || object.get(key)==null) 
+				        {
+					 System.err.println(key+"  is not present in Response data");
+					 		return false;
+				        }
+				 }
+				      
+		    }
+		return true;
 	}
 
 }

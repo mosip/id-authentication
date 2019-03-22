@@ -3,6 +3,7 @@ package io.mosip.registration.dao;
 import java.sql.Timestamp;
 import java.util.List;
 
+import io.mosip.registration.dto.PacketStatusDTO;
 import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.entity.Registration;
 import io.mosip.registration.exception.RegBaseCheckedException;
@@ -67,7 +68,7 @@ public interface RegistrationDAO {
 	 * @param regId
 	 * @return
 	 */
-	Registration updateRegStatus(Registration packetStatus);
+	Registration updateRegStatus(PacketStatusDTO packetStatus);
 	
 	/**Fetch the packets that needs to be Synched with the server.
 	 * @param statusCodes
@@ -79,7 +80,7 @@ public interface RegistrationDAO {
 	 * @param packet
 	 * @return
 	 */
-	Registration updatePacketSyncStatus(Registration packet);
+	Registration updatePacketSyncStatus(PacketStatusDTO packet);
 	
 	/**
 	 * Get all the Re-Registration packets
@@ -113,6 +114,26 @@ public interface RegistrationDAO {
 	 * @return list of registrations
 	 */
 	List<Registration> get(Timestamp crDtimes, String clientStatus);
+
+	/**
+	 * @param serveSstatusCodes
+	 * @return
+	 */
+	List<Registration> findByServerStatusCodeIn(List<String> serveSstatusCodes);
+
+	/**
+	 * @param serverStatusCodes
+	 * @return
+	 */
+	List<Registration> findByServerStatusCodeNotIn(List<String> serverStatusCodes);
+	
+	/**
+	 * This method is used to fetch the records for the packets to Upload.
+	 * @param clientStatus
+	 * @param serverStatus
+	 * @return
+	 */
+	List<Registration> fetchPacketsToUpload(List<String> clientStatus, String serverStatus);
 
 
 }

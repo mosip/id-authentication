@@ -95,7 +95,7 @@ public class ManualVerificationStage extends MosipVerticleAPIManager{
 	}
 
 	private void routes(Router router) {
-		router.post("/manual-verification/applicantBiometric/v1.0").handler(ctx -> {
+		router.post("/manual-verification/applicantBiometric/v1.0").blockingHandler(ctx -> {
 			processBiometric(ctx);
 		}).failureHandler(handlerObj -> {
 			manualVerificationExceptionHandler.setId(env.getProperty(BIOMETRIC_SERVICE_ID));
@@ -103,35 +103,35 @@ public class ManualVerificationStage extends MosipVerticleAPIManager{
 			this.setResponse(handlerObj, manualVerificationExceptionHandler.handler(handlerObj.failure()),APPLICATION_JSON); 
 		});
 
-		router.post("/manual-verification/applicantDemographic/v1.0").handler(ctx -> { 
+		router.post("/manual-verification/applicantDemographic/v1.0").blockingHandler(ctx -> { 
 			processDemographic(ctx);
-		}).failureHandler(handlerObj -> {
+		}, false).failureHandler(handlerObj -> {
 			manualVerificationExceptionHandler.setId(env.getProperty(DEMOGRAPHIC_SERVICE_ID));
 			manualVerificationExceptionHandler.setResponseDtoType(new ManualVerificationBioDemoResponseDTO());
 			this.setResponse(handlerObj, manualVerificationExceptionHandler.handler(handlerObj.failure()),APPLICATION_JSON); 
 		
 		});
 		
-		router.post("/manual-verification/assignment/v1.0").handler(ctx -> {
+		router.post("/manual-verification/assignment/v1.0").blockingHandler(ctx -> {
 			processAssignment(ctx);
-		}).failureHandler(handlerObj -> {
+		}, false).failureHandler(handlerObj -> {
 			manualVerificationExceptionHandler.setId(env.getProperty(ASSIGNMENT_SERVICE_ID));
 			manualVerificationExceptionHandler.setResponseDtoType(new ManualVerificationAssignResponseDTO());
 			this.setResponse(handlerObj, manualVerificationExceptionHandler.handler(handlerObj.failure()),APPLICATION_JSON); 
 		 
 		});
 
-		router.post("/manual-verification/decision/v1.0").handler(ctx -> {
+		router.post("/manual-verification/decision/v1.0").blockingHandler(ctx -> {
 			processDecision(ctx);
-		}).failureHandler(handlerObj -> {
+		}, false).failureHandler(handlerObj -> {
 			manualVerificationExceptionHandler.setId(env.getProperty(DECISION_SERVICE_ID));
 			manualVerificationExceptionHandler.setResponseDtoType(new ManualVerificationAssignResponseDTO());
 			this.setResponse(handlerObj, manualVerificationExceptionHandler.handler(handlerObj.failure()),APPLICATION_JSON);  
 		});
 
-		router.post("/manual-verification/packetInfo/v1.0").handler(ctx -> {
+		router.post("/manual-verification/packetInfo/v1.0").blockingHandler(ctx -> {
 			processPacketInfo(ctx);
-		}).failureHandler(handlerObj -> {
+		}, false).failureHandler(handlerObj -> {
 			manualVerificationExceptionHandler.setId(env.getProperty(PACKETINFO_SERVICE_ID));
 			manualVerificationExceptionHandler.setResponseDtoType(new ManualVerificationAssignResponseDTO());
 			this.setResponse(handlerObj, manualVerificationExceptionHandler.handler(handlerObj.failure()),APPLICATION_JSON);  
@@ -151,8 +151,8 @@ public class ManualVerificationStage extends MosipVerticleAPIManager{
 			manualVerificationRequestValidator.validate(obj,env.getProperty(BIOMETRIC_SERVICE_ID));
 			ManualAppBiometricRequestDTO pojo = Json.mapper.convertValue ( obj.getMap(), ManualAppBiometricRequestDTO.class );
 			byte[] packetInfo = manualAdjudicationService.getApplicantFile(pojo.getRequest().getRegId(),pojo.getRequest().getFileName());
-			String byteAsString = new String(packetInfo);
 			if (packetInfo != null) {
+				String byteAsString = new String(packetInfo);
 				this.setResponse(ctx, ManualVerificationResponseBuilder.buildManualVerificationSuccessResponse(byteAsString,env.getProperty(BIOMETRIC_SERVICE_ID),env.getProperty(MVS_APPLICATION_VERSION),env.getProperty(DATETIME_PATTERN)),APPLICATION_JSON);
 			}
 		
@@ -163,8 +163,9 @@ public class ManualVerificationStage extends MosipVerticleAPIManager{
 			manualVerificationRequestValidator.validate(obj,env.getProperty(DEMOGRAPHIC_SERVICE_ID));
 			ManualAppBiometricRequestDTO pojo = Json.mapper.convertValue ( obj.getMap(), ManualAppBiometricRequestDTO.class );
 			byte[] packetInfo = manualAdjudicationService.getApplicantFile(pojo.getRequest().getRegId(),PacketFiles.DEMOGRAPHIC.name());
-			String byteAsString = new String(packetInfo);
+			
 			if (packetInfo != null) {
+				String byteAsString = new String(packetInfo);
 				this.setResponse(ctx, ManualVerificationResponseBuilder.buildManualVerificationSuccessResponse(byteAsString,env.getProperty(DEMOGRAPHIC_SERVICE_ID),env.getProperty(MVS_APPLICATION_VERSION),env.getProperty(DATETIME_PATTERN)),APPLICATION_JSON);
 			}
 		
@@ -174,7 +175,7 @@ public class ManualVerificationStage extends MosipVerticleAPIManager{
 			JsonObject obj = ctx.getBodyAsJson();
 			ManualVerificationAssignmentRequestDTO pojo = Json.mapper.convertValue ( obj.getMap(), ManualVerificationAssignmentRequestDTO.class );
 			manualVerificationRequestValidator.validate(obj,env.getProperty(ASSIGNMENT_SERVICE_ID));
-			ManualVerificationDTO manualVerificationDTO = manualAdjudicationService.assignApplicant(pojo.getRequest());
+			ManualVerificationDTO manualVerificationDTO = manualAdjudicationService.assignApplicant(pojo.getRequest(),pojo.getMatchType());
 			if (manualVerificationDTO != null) {
 				this.setResponse(ctx, ManualVerificationResponseBuilder.buildManualVerificationSuccessResponse(manualVerificationDTO,env.getProperty(ASSIGNMENT_SERVICE_ID),env.getProperty(MVS_APPLICATION_VERSION),env.getProperty(DATETIME_PATTERN)),APPLICATION_JSON);
 

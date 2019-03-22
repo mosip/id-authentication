@@ -25,8 +25,8 @@ import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.constants.RegistrationUIConstants;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
+import io.mosip.registration.dto.PacketStatusDTO;
 import io.mosip.registration.dto.ResponseDTO;
-import io.mosip.registration.entity.Registration;
 import io.mosip.registration.service.packet.PacketExportService;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
@@ -42,7 +42,7 @@ public class PacketExportController extends BaseController {
 	/**
 	 * To Get the Synced Packets and export the external device
 	 */
-	public List<Registration> packetExport() {
+	public List<PacketStatusDTO> packetExport() {
 		auditFactory.audit(AuditEvent.EXPORT_REG_PACKETS, Components.EXPORT_REG_PACKETS,
 				SessionContext.userContext().getUserId(), AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
 
@@ -50,8 +50,8 @@ public class PacketExportController extends BaseController {
 				"Export the packets to the External device");
 
 		// Fetching the Synched Packets
-		List<Registration> synchedRecords = packetExportServiceImpl.getSynchedRecords();
-		List<Registration> exportedPackets = new ArrayList<>();
+		List<PacketStatusDTO> synchedRecords = packetExportServiceImpl.getSynchedRecords();
+		List<PacketStatusDTO> exportedPackets = new ArrayList<>();
 
 		if (!synchedRecords.isEmpty()) {
 
@@ -62,25 +62,22 @@ public class PacketExportController extends BaseController {
 			File defaultDirectory = new File(currentRelativePath.toAbsolutePath().toString());
 			destinationSelector.setInitialDirectory(defaultDirectory);
 			File destinationPath = destinationSelector.showDialog(primaryStage);
-			Long packetSize = 0L;
 			if (destinationPath != null) {
-				Long freeSpace = destinationPath.getUsableSpace();
 				// Iterate through the synched packets and copy to the Destination folder
-				for (Registration packetToCopy : synchedRecords) {
-					String ackFileName = packetToCopy.getAckFilename();
+				for (PacketStatusDTO packetToCopy : synchedRecords) {
+					String ackFileName = packetToCopy.getPacketPath();
 					int lastIndex = ackFileName.indexOf(RegistrationConstants.ACKNOWLEDGEMENT_FILE);
 					String packetPath = ackFileName.substring(0, lastIndex);
 					File packet = new File(packetPath + RegistrationConstants.ZIP_FILE_EXTENSION);
-					packetSize = packetSize + packet.length();
-					if (packet.length() < freeSpace) {
+					if (packet.length() < destinationPath.getUsableSpace()) {
 						try {
 							FileUtils.copyFileToDirectory(packet, destinationPath);
-							packetToCopy.setClientStatusCode(RegistrationClientStatusCode.EXPORT.getCode());
+							packetToCopy.setPacketClientStatus(RegistrationClientStatusCode.EXPORT.getCode());
 							exportedPackets.add(packetToCopy);
 						} catch (IOException ioException) {
 							LOGGER.error("REGISTRATION - HANDLE_PACKET_EXPORT_ERROR - PACKET_EXPORT_CONTROLLER",
 									APPLICATION_NAME, APPLICATION_ID, "Error while exporting packets. packet id : "
-											+ packetToCopy.getId() + ExceptionUtils.getStackTrace(ioException));
+											+ packetToCopy.getFileName() + ExceptionUtils.getStackTrace(ioException));
 						}
 					} else {
 						generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.PACKET_EXPORT_FAILURE);
@@ -91,15 +88,13 @@ public class PacketExportController extends BaseController {
 					ResponseDTO responseDTO = packetExportServiceImpl.updateRegistrationStatus(exportedPackets);
 					if (responseDTO.getSuccessResponseDTO() != null
 							&& responseDTO.getSuccessResponseDTO().getMessage().equals(RegistrationConstants.SUCCESS)) {
-						generateAlert(RegistrationConstants.INFO,
+						generateAlert(RegistrationConstants.ALERT_INFORMATION,
 								exportedPackets.size() + " " + RegistrationUIConstants.PACKET_EXPORT_SUCCESS_MESSAGE);
 					}
-				} else {
-					generateAlert(RegistrationConstants.INFO, RegistrationUIConstants.PACKET_EXPORT_MESSAGE);
 				}
 			}
 		} else {
-			generateAlert(RegistrationConstants.INFO, RegistrationUIConstants.PACKET_EXPORT_MESSAGE);
+			generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.PACKET_EXPORT_MESSAGE);
 		}
 		return exportedPackets;
 

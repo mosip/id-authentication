@@ -6,7 +6,7 @@
   	<parent>
     	<groupId>io.mosip.registrationprocessor</groupId>
     	<artifactId>registration-processor</artifactId>
-    	<version>0.9.5</version>
+    	<version>0.9.8</version>
   	</parent>
   		
   	<artifactId>registration-processor-print-service</artifactId>
@@ -73,6 +73,11 @@
 		</dependency>
 		<dependency>
 			<groupId>io.mosip.registrationprocessor</groupId>
+			<artifactId>registration-processor-message-sender</artifactId>
+			<version>${registration.status.service.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>io.mosip.registrationprocessor</groupId>
 			<artifactId>packet-info-storage-service</artifactId>
 			<version>${packet.info.storage.service.version}</version>
 		</dependency>
@@ -80,11 +85,6 @@
 			<groupId>io.mosip.registrationprocessor</groupId>
 			<artifactId>registration-processor-rest-client</artifactId>
 			<version>${registration.processor.rest.client.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>io.mosip.registrationprocessor</groupId>
-			<artifactId>registration-processor-message-sender</artifactId>
-			<version>${registration.processor.message.sender.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>

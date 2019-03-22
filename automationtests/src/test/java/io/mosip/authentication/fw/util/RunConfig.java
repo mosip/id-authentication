@@ -28,7 +28,7 @@ public class RunConfig extends IdaScriptsUtil{
 		return endPointUrl;
 	}
 	public static void setEndPointUrl(String endPointUrl) {
-		RunConfig.endPointUrl = endPointUrl;
+		RunConfig.endPointUrl = endPointUrl.replace("$env$", System.getProperty("env.user"));
 	}
 	public static String getEkycPath() {
 		return ekycPath;
@@ -103,7 +103,7 @@ public class RunConfig extends IdaScriptsUtil{
 	private static String authPath;
 	private static String internalAuthPath;
 	private static String otpPath;
-	private static String userDirectory;
+	//private static String userDirectory;
 	private static String testDataPath;
 	
 	public static String getTestDataPath() {
@@ -112,19 +112,19 @@ public class RunConfig extends IdaScriptsUtil{
 	public static void setTestDataPath(String testDataPath) {
 		RunConfig.testDataPath = testDataPath;
 	}
-	public static String getUserDirectory() {
+	/*public static String getUserDirectory() {
 		return userDirectory;
 	}
 	public static void setUserDirectory() {
 		RunConfig.userDirectory = System.getProperty("user.dir");
-	}
+	}*/
 	
 	private static String idRepoEndPointUrl;
 	public static String getIdRepoEndPointUrl() {
 		return idRepoEndPointUrl;
 	}
 	public static void setIdRepoEndPointUrl(String idRepoEndPointUrl) {
-		RunConfig.idRepoEndPointUrl = idRepoEndPointUrl;
+		RunConfig.idRepoEndPointUrl = idRepoEndPointUrl.replace("$env$", System.getProperty("env.user"));
 	}
 	
 	public void setConfig(String testDataPath,String testDataFileName,String testType) {
@@ -139,7 +139,7 @@ public class RunConfig extends IdaScriptsUtil{
 		setEncryptionPath(getPropertyValue("encryptionPath"));
 		setEncodePath(getPropertyValue("encodePath"));
 		setDecodePath(getPropertyValue("decodePath"));
-		setUserDirectory();
+		//setUserDirectory();
 		setTestDataPath(testDataPath);	
 		setIdRepoEndPointUrl(getPropertyValue("idRepoEndPointUrl"));
 		setIdRepoRetrieveDataPath(getPropertyValue("idRepoRetrieveDataPath"));
@@ -147,7 +147,7 @@ public class RunConfig extends IdaScriptsUtil{
 		setDbKernelSchemaName(getPropertyValue("dbKernelSchemaName"));
 		setDbKernelUserName(getPropertyValue("dbKernelUserName"));
 		setDbKernelPwd(getPropertyValue("dbKernelPwd"));
-		File testDataFilePath = new File(RunConfig.getUserDirectory() + RunConfig.getSrcPath()
+		File testDataFilePath = new File(/*RunConfig.getUserDirectory() +*/ RunConfig.getSrcPath()
 		+ testDataPath + testDataFileName);
 		setFilePathFromTestdataFileName(testDataFilePath,testDataPath);
 		setTestType(testType);
@@ -387,3 +387,4 @@ public class RunConfig extends IdaScriptsUtil{
 	}
 
 }
+

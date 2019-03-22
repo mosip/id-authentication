@@ -1,19 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.control.*?>
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane fx:id="onBoardRoot" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.reg.UserOnboardParentController">
+<GridPane fx:id="onBoardRoot" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.reg.UserOnboardParentController">
+  <columnConstraints>
+    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+  </columnConstraints>
+  <rowConstraints>
+    <RowConstraints minHeight="10.0" percentHeight="100.0" prefHeight="30.0" vgrow="SOMETIMES" />
+  </rowConstraints>
    <children>
-      <AnchorPane fx:id="userOnboardId">
-      	<children>      		
-         	<fx:include fx:id="biometricException" source="BiometricException.fxml" visible="false" />
-            <fx:include fx:id="fingerPrintCapture" source="UserOnboardFPCapture.fxml" visible="false" />
-            <fx:include fx:id="irisCapture" source="UserOnboardIrisCapture.fxml" visible="false" />
-            <fx:include fx:id="faceCapture" source="UserOnboardWebCamera.fxml" visible="false" />
-            <fx:include fx:id="onboardUser" source="UserOnboard.fxml" visible="true" />
-        	</children>
-       </AnchorPane>
+      <GridPane fx:id="userOnboardId">
+        <columnConstraints>
+          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints minHeight="10.0" percentHeight="100.0" prefHeight="30.0" vgrow="SOMETIMES" />
+        </rowConstraints>
+         <children>
+         	<fx:include fx:id="biometricException" prefHeight="${userOnboardId.height}" prefWidth="${userOnboardId.width}" source="BiometricException.fxml" visible="false" />
+            <fx:include fx:id="fingerPrintCapture" prefHeight="${userOnboardId.height}" prefWidth="${userOnboardId.width}" source="UserOnboardFPCapture.fxml" visible="false" />
+            <fx:include fx:id="irisCapture" prefHeight="${userOnboardId.height}" prefWidth="${userOnboardId.width}" source="UserOnboardIrisCapture.fxml" visible="false" />
+            <fx:include fx:id="faceCapture" prefHeight="${userOnboardId.height}" prefWidth="${userOnboardId.width}" source="UserOnboardWebCamera.fxml" visible="false" />
+            <fx:include fx:id="onboardUser" prefHeight="${userOnboardId.height}" prefWidth="${userOnboardId.width}" source="UserOnboard.fxml" visible="true" />
+         </children>
+      </GridPane>
    </children>
-</AnchorPane>
+</GridPane>

@@ -76,7 +76,6 @@ public class PacketEncryptionServiceImpl implements PacketEncryptionService {
 	 */
 	@Autowired
 	private AuditLogControlDAO auditLogControlDAO;
-
 	/**
 	 * Encrypts the input data using AES algorithm followed by RSA
 	 * 
@@ -98,8 +97,7 @@ public class PacketEncryptionServiceImpl implements PacketEncryptionService {
 					APPLICATION_ID, "Packet encrypted successfully");
 			
 			// Validate the size of the generated registration packet
-			long maxPacketSizeInBytes = Long.parseLong((String) ApplicationContext.map()
-					.get(RegistrationConstants.MAX_REG_PACKET_SIZE_IN_MB)) * 1024 * 1024;
+			long maxPacketSizeInBytes = Long.valueOf(String.valueOf(ApplicationContext.map().get(RegistrationConstants.REG_PKT_SIZE))) * 1024 * 1024;
 			if (encryptedPacket.length > maxPacketSizeInBytes) {
 				LOGGER.error(LOG_PKT_ENCRYPTION, APPLICATION_NAME, APPLICATION_ID,
 						RegistrationExceptionConstants.REG_PACKET_SIZE_EXCEEDED_ERROR_CODE.getErrorMessage());

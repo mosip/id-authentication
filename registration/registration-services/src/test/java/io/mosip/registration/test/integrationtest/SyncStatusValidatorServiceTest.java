@@ -1,5 +1,7 @@
 package io.mosip.registration.test.integrationtest;
 
+import static org.junit.Assert.assertTrue;
+
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -26,6 +28,18 @@ public class SyncStatusValidatorServiceTest extends BaseIntegrationTest
 				
 		//syncstatusvalidatorservice.validateSyncStatus();
 		ResponseDTO result = syncstatusvalidatorservice.validateSyncStatus();
-		System.out.println("********"+result.getErrorResponseDTOs().get(0).getMessage());
+		assertTrue(result.getErrorResponseDTOs().isEmpty());
+	}
+	
+	
+	@Test
+	public void test2() {
+		ApplicationContext applicationContext = ApplicationContext.getInstance();
+		
+		applicationContext.getApplicationMap().putAll(globalParamService.getGlobalParams());
+				
+		//syncstatusvalidatorservice.validateSyncStatus();
+		ResponseDTO result = syncstatusvalidatorservice.validateSyncStatus();
+		assertTrue(result.getSuccessResponseDTO()==null);
 	}
 }

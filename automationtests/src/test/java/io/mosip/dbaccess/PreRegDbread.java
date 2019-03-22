@@ -33,7 +33,7 @@ public class PreRegDbread {
 				else
 				{
 					if(BaseTestCase.environment.equalsIgnoreCase("qa"))				
-						factory = new Configuration().configure("prereginteg.cfg.xml").addAnnotatedClass(OtpEntity.class)
+						factory = new Configuration().configure("preregqa.cfg.xml").addAnnotatedClass(OtpEntity.class)
 								.buildSessionFactory();
 				}
 			session = factory.getCurrentSession();
@@ -62,8 +62,18 @@ public class PreRegDbread {
 	public static boolean prereg_dbDataPersistenceCheck(String preId) {
 		boolean flag = false;
 
-		factory = new Configuration().configure("prereginteg.cfg.xml").addAnnotatedClass(OtpEntity.class)
-				.buildSessionFactory();
+
+		if(BaseTestCase.environment.equalsIgnoreCase("integration"))
+			factory = new Configuration().configure("prereginteg.cfg.xml")
+		.addAnnotatedClass(OtpEntity.class).buildSessionFactory();	
+				else
+				{
+					if(BaseTestCase.environment.equalsIgnoreCase("qa"))
+						factory = new Configuration().configure("preregqa.cfg.xml")
+					.addAnnotatedClass(OtpEntity.class).buildSessionFactory();	
+				}
+
+	
 		session = factory.getCurrentSession();
 		session.beginTransaction();
 
@@ -141,8 +151,17 @@ public class PreRegDbread {
 		boolean flag = false;
 		// String preId;
 
-		factory = new Configuration().configure("prereginteg.cfg.xml").addAnnotatedClass(OtpEntity.class)
-				.buildSessionFactory();
+
+		if(BaseTestCase.environment.equalsIgnoreCase("integration"))				
+			factory = new Configuration().configure("prereginteg.cfg.xml").addAnnotatedClass(OtpEntity.class)
+					.buildSessionFactory();
+			else
+			{
+				if(BaseTestCase.environment.equalsIgnoreCase("qa"))				
+					factory = new Configuration().configure("preregqa.cfg.xml").addAnnotatedClass(OtpEntity.class)
+							.buildSessionFactory();
+			}
+
 
 		for (String preId : preIds)
 
@@ -192,8 +211,16 @@ public class PreRegDbread {
 		boolean flag = false;
 		// String preId;
 
-		factory = new Configuration().configure("prereginteg.cfg.xml").addAnnotatedClass(OtpEntity.class)
-				.buildSessionFactory();
+
+		if(BaseTestCase.environment.equalsIgnoreCase("integration"))				
+			factory = new Configuration().configure("prereginteg.cfg.xml").addAnnotatedClass(OtpEntity.class)
+					.buildSessionFactory();
+			else
+			{
+				if(BaseTestCase.environment.equalsIgnoreCase("qa"))				
+					factory = new Configuration().configure("preregqa.cfg.xml").addAnnotatedClass(OtpEntity.class)
+							.buildSessionFactory();
+			}
 
 		session = factory.getCurrentSession();
 		session.beginTransaction();

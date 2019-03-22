@@ -10,6 +10,8 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.CreationTimestamp;
 
+import io.mosip.registration.processor.core.code.DedupeSourceName;
+
 /**
  * The persistent class for the reg_manual_verification database table.
  *
@@ -76,6 +78,25 @@ public class ManualVerificationEntity extends BasePacketEntity<ManualVerificatio
 	/** The upd dtimes. */
 	@Column(name = "upd_dtimes")
 	private Timestamp updDtimes;
+	
+	/** The dedupe source name. */
+	@Column(name = "trntyp_code")
+	private String trnTypCode;
+	
+	/**
+	 * Gets the source name.
+	 *
+	 * @return the source name.
+	 */
+	
+
+	public String getTrnTypCode() {
+		return trnTypCode;
+	}
+
+	public void setTrnTypCode(String trnTypCode) {
+		this.trnTypCode = trnTypCode;
+	}
 
 	/**
 	 * Instantiates a new manual verification entity.

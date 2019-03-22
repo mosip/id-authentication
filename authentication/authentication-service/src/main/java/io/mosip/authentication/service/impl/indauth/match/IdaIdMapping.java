@@ -1,9 +1,13 @@
 package io.mosip.authentication.service.impl.indauth.match;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import io.mosip.authentication.core.spi.bioauth.CbeffDocType;
 import io.mosip.authentication.core.spi.indauth.match.IdMapping;
@@ -20,78 +24,118 @@ import io.mosip.kernel.core.cbeffutil.jaxbclasses.SingleType;
 
 public enum IdaIdMapping implements IdMapping {
 
-	NAME("name", MappingConfig::getName), DOB("dob", MappingConfig::getDob),
-	DOBTYPE("dobType", MappingConfig::getDobType), AGE("age", MappingConfig::getAge),
-	GENDER("gender", MappingConfig::getGender), PHONE("phoneNumber", MappingConfig::getPhoneNumber),
-	EMAIL("emailId", MappingConfig::getEmailId), ADDRESSLINE1("addressLine1", MappingConfig::getAddressLine1),
+	NAME("name", MappingConfig::getName), 
+	DOB("dob", MappingConfig::getDob),
+	DOBTYPE("dobType", MappingConfig::getDobType), 
+	AGE("age", MappingConfig::getAge),
+	GENDER("gender", MappingConfig::getGender), 
+	PHONE("phoneNumber", MappingConfig::getPhoneNumber),
+	EMAIL("emailId", MappingConfig::getEmailId), 
+	ADDRESSLINE1("addressLine1", MappingConfig::getAddressLine1),
 	ADDRESSLINE2("addressLine2", MappingConfig::getAddressLine2),
-	ADDRESSLINE3("addressLine3", MappingConfig::getAddressLine3), LOCATION1("location1", MappingConfig::getLocation1),
-	LOCATION2("location2", MappingConfig::getLocation2), LOCATION3("location3", MappingConfig::getLocation3),
-	PINCODE("postalCode", MappingConfig::getPostalCode), FULLADDRESS("fullAddress", MappingConfig::getFullAddress),
-	OTP("otp", MappingConfig::getOtp), PIN("pin", MappingConfig::getPin),
-	LEFTINDEX("leftIndex",
-			(mappingConfig, matchType) -> getCbeffMapping(SingleType.FINGER, SingleAnySubtypeType.LEFT,
-					SingleAnySubtypeType.INDEX_FINGER, matchType)),
-	LEFTLITTLE("leftLittle",
-			(mappingConfig, matchType) -> getCbeffMapping(SingleType.FINGER, SingleAnySubtypeType.LEFT,
-					SingleAnySubtypeType.LITTLE_FINGER, matchType)),
-	LEFTMIDDLE("leftMiddle",
-			(mappingConfig, matchType) -> getCbeffMapping(SingleType.FINGER, SingleAnySubtypeType.LEFT,
-					SingleAnySubtypeType.MIDDLE_FINGER, matchType)),
-	LEFTRING("leftRing",
-			(mappingConfig, matchType) -> getCbeffMapping(SingleType.FINGER, SingleAnySubtypeType.LEFT,
-					SingleAnySubtypeType.RING_FINGER, matchType)),
-	LEFTTHUMB("leftThumb",
-			(mappingConfig, matchType) -> getCbeffMapping(SingleType.FINGER, SingleAnySubtypeType.LEFT,
-					SingleAnySubtypeType.THUMB, matchType)),
-	RIGHTINDEX("rightIndex",
-			(mappingConfig, matchType) -> getCbeffMapping(SingleType.FINGER, SingleAnySubtypeType.RIGHT,
-					SingleAnySubtypeType.INDEX_FINGER, matchType)),
-	RIGHTLITTLE("rightLittle",
-			(mappingConfig, matchType) -> getCbeffMapping(SingleType.FINGER, SingleAnySubtypeType.RIGHT,
-					SingleAnySubtypeType.LITTLE_FINGER, matchType)),
-	RIGHTMIDDLE("rightMiddle",
-			(mappingConfig, matchType) -> getCbeffMapping(SingleType.FINGER, SingleAnySubtypeType.RIGHT,
-					SingleAnySubtypeType.MIDDLE_FINGER, matchType)),
-	RIGHTRING("rightRing",
-			(mappingConfig, matchType) -> getCbeffMapping(SingleType.FINGER, SingleAnySubtypeType.RIGHT,
-					SingleAnySubtypeType.RING_FINGER, matchType)),
-	RIGHTTHUMB("rightThumb",
-			(mappingConfig, matchType) -> getCbeffMapping(SingleType.FINGER, SingleAnySubtypeType.RIGHT,
-					SingleAnySubtypeType.THUMB, matchType)),
-	FINGERPRINT("fingerprint", MappingConfig::getFingerprint), IRIS("iris", MappingConfig::getIris),
-	RIGHTEYE("rightEye",
-			(mappingConfig, matchType) -> getCbeffMapping(SingleType.IRIS, SingleAnySubtypeType.RIGHT, null,
-					matchType)),
-	LEFTEYE("leftEye",
-			(mappingConfig, matchType) -> getCbeffMapping(SingleType.IRIS, SingleAnySubtypeType.LEFT, null, matchType)),
-	FACE("face", (mappingConfig, matchType) -> getCbeffMapping(SingleType.FACE, null, null, matchType));
+	ADDRESSLINE3("addressLine3", MappingConfig::getAddressLine3), 
+	LOCATION1("location1", MappingConfig::getLocation1),
+	LOCATION2("location2", MappingConfig::getLocation2), 
+	LOCATION3("location3", MappingConfig::getLocation3),
+	PINCODE("postalCode", MappingConfig::getPostalCode), 
+	FULLADDRESS("fullAddress", MappingConfig::getFullAddress),
+	OTP("otp", MappingConfig::getOtp), 
+	PIN("pin", MappingConfig::getPin), 
+	LEFTINDEX("LEFT_INDEX"),
+	LEFTLITTLE("LEFT_LITTLE"), 
+	LEFTMIDDLE("LEFT_MIDDLE"), 
+	LEFTRING("LEFT_RING"), 
+	LEFTTHUMB("LEFT_THUMB"),
+	RIGHTINDEX("RIGHT_INDEX"), 
+	RIGHTLITTLE("RIGHT_LITTLE"), 
+	RIGHTMIDDLE("RIGHT_MIDDLE"), 
+	RIGHTRING("RIGHT_RING"),
+	RIGHTTHUMB("RIGHT_THUMB"), 
+	UNKNOWN_FINGER("UNKNOWN"),
+
+	FINGERPRINT("fingerprint", setOf(
+			LEFTINDEX,
+			LEFTLITTLE,
+			LEFTMIDDLE,
+			LEFTRING,
+			LEFTTHUMB,
+			RIGHTINDEX,
+			RIGHTLITTLE,
+			RIGHTMIDDLE,
+			RIGHTRING,
+			RIGHTTHUMB,
+			UNKNOWN_FINGER
+			)),
+	LEFTEYE("LEFT"), 
+	RIGHTIRIS("RIGHT"), 
+	UNKNOWN_IRIS("UNKNOWN"),
+	IRIS("iris", setOf(
+			RIGHTIRIS,
+			LEFTEYE,
+			UNKNOWN_IRIS
+			)), 
+	
+	FACE("face", cfg -> Collections.emptyList());
 
 	private String idname;
 
 	private BiFunction<MappingConfig, MatchType, List<String>> mappingFunction;
 
+	private Set<IdMapping> subIdMappings;
+
 	private IdaIdMapping(String idname, Function<MappingConfig, List<String>> mappingFunction) {
 		this.idname = idname;
 		this.mappingFunction = (cfg, matchType) -> mappingFunction.apply(cfg);
+		this.subIdMappings = Collections.emptySet();
 	}
 
-	private IdaIdMapping(String idname, BiFunction<MappingConfig, MatchType, List<String>> mappingFunction) {
+	private IdaIdMapping(String idname) {
 		this.idname = idname;
-		this.mappingFunction = mappingFunction;
+		this.mappingFunction = (mappingConfig, matchType) -> getCbeffMapping(matchType);
+		this.subIdMappings = Collections.emptySet();
+	}
+	
+
+	private IdaIdMapping(String idname, Set<IdMapping> subIdMappings) {
+		this.idname = idname;
+		this.subIdMappings = subIdMappings;
+		this.mappingFunction = (mappingConfig, matchType) 
+									-> {
+										if(matchType instanceof BioMatchType) {
+											return Stream.of(((BioMatchType)matchType).getMatchTypesForSubIdMappings(subIdMappings))
+												.flatMap(subMatchType -> 
+												subMatchType.getIdMapping().getMappingFunction()
+														.apply(mappingConfig, subMatchType)
+														.stream())
+												.collect(Collectors.toList());
+										} else {
+											return Collections.emptyList();
+										}
+									};
 	}
 
 	public String getIdname() {
 		return idname;
 	}
+	
+	public Set<IdMapping> getSubIdMappings() {
+		return subIdMappings;
+	}
 
-	public static List<String> getCbeffMapping(SingleType singleType, SingleAnySubtypeType subType,
-			SingleAnySubtypeType singleSubType, MatchType matchType) {
-		String formatType = "";
+	private static List<String> getCbeffMapping(MatchType matchType) {
 		if (matchType instanceof BioMatchType) {
-			CbeffDocType cbeffDocType = ((BioMatchType) matchType).getCbeffDocType();
-			formatType = String.valueOf(cbeffDocType.getValue());
+			BioMatchType bioMatchType = (BioMatchType) matchType;
+			return getCbeffMapping(bioMatchType.getCbeffDocType().getType(), bioMatchType.getSubType(),
+					bioMatchType.getSingleAnySubtype(), bioMatchType);
 		}
+		return Collections.emptyList();
+	}
+
+	private static List<String> getCbeffMapping(SingleType singleType, SingleAnySubtypeType subType,
+			SingleAnySubtypeType singleSubType, BioMatchType matchType) {
+		String formatType = "";
+		CbeffDocType cbeffDocType = ((BioMatchType) matchType).getCbeffDocType();
+		formatType = String.valueOf(cbeffDocType.getValue());
 		String cbeffKey = singleType.name() + "_" + (subType == null ? "" : subType.value())
 				+ (singleSubType == null ? "" : (" " + singleSubType.value())) + "_" + formatType;
 		return Arrays.asList(cbeffKey);
@@ -99,6 +143,11 @@ public enum IdaIdMapping implements IdMapping {
 
 	public BiFunction<MappingConfig, MatchType, List<String>> getMappingFunction() {
 		return mappingFunction;
+	}
+	
+	public static Set<IdMapping> setOf(IdMapping... idMapping) {
+		return Stream.of(idMapping).collect(Collectors.toSet());
+
 	}
 
 }

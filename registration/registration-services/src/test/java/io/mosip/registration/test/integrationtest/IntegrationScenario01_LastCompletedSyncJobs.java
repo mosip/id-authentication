@@ -2,8 +2,9 @@ package io.mosip.registration.test.integrationtest;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.sql.Timestamp;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
+
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -13,6 +14,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.ibm.icu.text.SimpleDateFormat;
+
+import cern.colt.matrix.doublealgo.Formatter;
 import io.mosip.kernel.core.util.HMACUtils;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.ApplicationContext;
@@ -65,16 +69,22 @@ public class IntegrationScenario01_LastCompletedSyncJobs extends BaseIntegration
 				assertEquals(RegistrationConstants.PWD_MATCH, passwordCheck);
 	}
 	@Test
-	public void testLoginIntegration() throws InterruptedException {
+	public void testLoginIntegration() throws InterruptedException, ParseException {
 		login();
 		//ResponseDTO responseDTO=jobConfigurationService.getLastCompletedSyncJobs();
 		 //List<SyncDataProcessDTO> syncData=(List<SyncDataProcessDTO>) responseDTO.getSuccessResponseDTO().getOtherAttributes().get("SYNC-DATA DTO");
 		
 		// System.out.println("********"+syncData);
+		
+		Date timeformat = new Timestamp(System.currentTimeMillis());
+		SimpleDateFormat date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		String newdate = date.format(timeformat);
+		System.out.println("*********"+newdate);
+		
+		
 		jobConfigurationService.initiateJobs();
 		ResponseDTO responsedto = jobConfigurationService.executeAllJobs();
 		Thread.sleep(5000);
-		
 		System.out.println("**********"+responsedto.getSuccessResponseDTO().getMessage());
 		
 	

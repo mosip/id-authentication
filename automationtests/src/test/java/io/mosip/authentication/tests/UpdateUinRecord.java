@@ -21,6 +21,8 @@ import org.testng.annotations.Test;
 import org.testng.internal.BaseTestMethod;
 import org.testng.internal.TestResult;
 
+import com.beust.jcommander.Parameter;
+
 import io.mosip.authentication.fw.dto.OutputValidationDto;
 import io.mosip.authentication.fw.dto.UinDto;
 import io.mosip.authentication.fw.util.DataProviderClass;
@@ -50,12 +52,15 @@ public class UpdateUinRecord extends IdaScriptsUtil implements ITest{
 	private IdRepoUtil objIdRepoUtil = new IdRepoUtil();
 	private Map<String,String> storeUinData = new HashMap<String,String>();
 	private static UinVidNumberUtil objUinVidNumberUtil = new UinVidNumberUtil();
+	
+	private String TESTDATA_PATH="ida/TestData/UINData/UpdateTestData/";
+	private String TESTDATA_FILENAME="testdata.ida.UINData.UpdateTestData.mapping.yml";
 
-	@Parameters({ "testDatPath" , "testDataFileName" })
+	@Parameters({"testType"})
 	@BeforeClass
-	public void setConfigurations(String testDatPath,String testDataFileName) {
-		objRunConfig.setConfig(testDatPath,testDataFileName,"smokeandregression");
-		objTestDataProcessor.initateTestDataProcess(testDataFileName,testDatPath,"ida");
+	public void setConfigurations(String testType) {
+		objRunConfig.setConfig(TESTDATA_PATH,TESTDATA_FILENAME,testType);
+		objTestDataProcessor.initateTestDataProcess(TESTDATA_FILENAME,TESTDATA_PATH,"ida");
 	}
 	
 	@BeforeMethod
@@ -140,9 +145,9 @@ public class UpdateUinRecord extends IdaScriptsUtil implements ITest{
 	public void storeUinData() {
 		UinDto.setUinData(storeUinData);
 		logger.info("Updated UIN: " + UinDto.getUinData());
-		updateMappingDic(
-				RunConfig.getUserDirectory() + RunConfig.getSrcPath() + "ida/"+RunConfig.getTestDataFolderName()+"/RunConfig/uin.properties",
+		updateMappingDic(new File("./"+RunConfig.getSrcPath() + "ida/"+RunConfig.getTestDataFolderName()+"/RunConfig/uin.properties").getAbsolutePath(),
 				UinDto.getUinData());
 	}
 
 }
+

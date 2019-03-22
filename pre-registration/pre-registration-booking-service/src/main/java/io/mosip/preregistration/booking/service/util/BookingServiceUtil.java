@@ -19,6 +19,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -63,9 +64,11 @@ import io.mosip.preregistration.booking.exception.DemographicGetStatusException;
 import io.mosip.preregistration.booking.exception.DemographicStatusUpdationException;
 import io.mosip.preregistration.booking.exception.MasterDataNotAvailableException;
 import io.mosip.preregistration.booking.exception.RestCallException;
+import io.mosip.preregistration.booking.exception.TimeSpanException;
 import io.mosip.preregistration.booking.repository.impl.BookingDAO;
 import io.mosip.preregistration.core.code.StatusCodes;
 import io.mosip.preregistration.core.common.dto.BookingRegistrationDTO;
+import io.mosip.preregistration.core.common.dto.ExceptionJSONInfoDTO;
 import io.mosip.preregistration.core.common.dto.MainListRequestDTO;
 import io.mosip.preregistration.core.common.dto.MainListResponseDTO;
 import io.mosip.preregistration.core.common.dto.MainRequestDTO;
@@ -90,7 +93,7 @@ public class BookingServiceUtil {
 	 * Autowired reference for {@link #restTemplateBuilder}
 	 */
 	@Autowired
-	RestTemplateBuilder restTemplateBuilder;
+	RestTemplate restTemplate;
 
 	/**
 	 * Reference for ${regCenter.url} from property file
@@ -115,7 +118,7 @@ public class BookingServiceUtil {
 
 	@Value("${preregistration.timespan.rebook}")
 	private long timeSpanCheckForRebook;
-	
+
 	@Value("${mosip.utc-datetime-pattern}")
 	private String utcDateTimePattern;
 
@@ -130,12 +133,14 @@ public class BookingServiceUtil {
 		log.info("sessionId", "idType", "id", "In callRegCenterDateRestService method of Booking Service Util");
 		List<RegistrationCenterDto> regCenter = null;
 		try {
-			RestTemplate restTemplate = restTemplateBuilder.build();
+			//RestTemplate restTemplate = restTemplateBuilder.build();
 			UriComponentsBuilder regbuilder = UriComponentsBuilder.fromHttpUrl(regCenterUrl);
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
 			HttpEntity<RegistrationCenterResponseDto> entity = new HttpEntity<>(headers);
 			String uriBuilder = regbuilder.build().encode().toUriString();
+			log.info("sessionId", "idType", "id",
+					"In callRegCenterDateRestService method of Booking Service URL- " + uriBuilder);
 			ResponseEntity<RegistrationCenterResponseDto> responseEntity = restTemplate.exchange(uriBuilder,
 					HttpMethod.GET, entity, RegistrationCenterResponseDto.class);
 			regCenter = responseEntity.getBody().getRegistrationCenters();
@@ -174,7 +179,7 @@ public class BookingServiceUtil {
 		log.info("sessionId", "idType", "id", "In callGetHolidayListRestService method of Booking Service Util");
 		List<String> holidaylist = null;
 		try {
-			RestTemplate restTemplate = restTemplateBuilder.build();
+			//RestTemplate restTemplate = restTemplateBuilder.build();
 			String holidayUrl = holidayListUrl + regDto.getLangCode() + "/" + regDto.getId() + "/"
 					+ LocalDate.now().getYear();
 			UriComponentsBuilder builder2 = UriComponentsBuilder.fromHttpUrl(holidayUrl);
@@ -182,6 +187,8 @@ public class BookingServiceUtil {
 			headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
 			HttpEntity<RegistrationCenterHolidayDto> httpHolidayEntity = new HttpEntity<>(headers);
 			String uriBuilder = builder2.build().encode().toUriString();
+			log.info("sessionId", "idType", "id",
+					"In callGetHolidayListRestService method of Booking Service URL- " + uriBuilder);
 			ResponseEntity<RegistrationCenterHolidayDto> responseEntity2 = restTemplate.exchange(uriBuilder,
 					HttpMethod.GET, httpHolidayEntity, RegistrationCenterHolidayDto.class);
 			holidaylist = new ArrayList<>();
@@ -190,6 +197,7 @@ public class BookingServiceUtil {
 					holidaylist.add(holiday.getHolidayDate());
 				}
 			}
+
 		} catch (HttpClientErrorException ex) {
 			log.error("sessionId", "idType", "id",
 					"In callGetHolidayListRestService method of Booking Service Util for HttpClientErrorException- "
@@ -222,7 +230,7 @@ public class BookingServiceUtil {
 	public boolean callUpdateStatusRestService(String preId, String status) {
 		log.info("sessionId", "idType", "id", "In callUpdateStatusRestService method of Booking Service Util");
 		try {
-			RestTemplate restTemplate = restTemplateBuilder.build();
+			//RestTemplate restTemplate = restTemplateBuilder.build();
 
 			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(preRegResourceUrl + "/applications")
 					.queryParam("pre_registration_id", preId).queryParam("status_code", status);
@@ -230,16 +238,17 @@ public class BookingServiceUtil {
 			headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
 			HttpEntity<MainResponseDTO<String>> httpEntity = new HttpEntity<>(headers);
 			String uriBuilder = builder.build().encode().toUriString();
-			log.info("sessionId", "idType", "id", "Call Update Status in demographic URL : "+uriBuilder);
-			@SuppressWarnings("rawtypes")
-			ResponseEntity<MainResponseDTO> bookingResponse = restTemplate.exchange(uriBuilder, HttpMethod.PUT,
-					httpEntity, MainResponseDTO.class);
-			if (!bookingResponse.getBody().isStatus()) {
-				throw new DemographicStatusUpdationException(bookingResponse.getBody().getErr().getErrorCode(),
-						bookingResponse.getBody().getErr().getMessage());
+			log.info("sessionId", "idType", "id", "Call Update Status in demographic URL : " + uriBuilder);
+			ResponseEntity<MainResponseDTO<String>> bookingResponse = restTemplate.exchange(uriBuilder, HttpMethod.PUT,
+					httpEntity, new ParameterizedTypeReference<MainResponseDTO<String>>() {
+					});
+			if (bookingResponse.getBody().getErrors() != null) {
+				throw new DemographicStatusUpdationException(
+						bookingResponse.getBody().getErrors().get(0).getErrorCode(),
+						bookingResponse.getBody().getErrors().get(0).getMessage());
 			}
 
-			return bookingResponse.getBody().isStatus();
+			return true;
 
 		} catch (RestClientException ex) {
 			log.error("sessionId", "idType", "id",
@@ -261,19 +270,20 @@ public class BookingServiceUtil {
 		log.info("sessionId", "idType", "id", "In callGetStatusRestService method of Booking Service Util");
 		String statusCode = "";
 		try {
-			RestTemplate restTemplate = restTemplateBuilder.build();
+			//RestTemplate restTemplate = restTemplateBuilder.build();
 			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(preRegResourceUrl + "/applications/status")
 					.queryParam("pre_registration_id", preId);
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
 			HttpEntity<MainListResponseDTO<PreRegistartionStatusDTO>> httpEntity = new HttpEntity<>(headers);
 			String uriBuilder = builder.build().encode().toUriString();
-			log.info("sessionId", "idType", "id", "Call Get Status from demographic URL : "+uriBuilder);
-			@SuppressWarnings({ "rawtypes" })
-			ResponseEntity<MainListResponseDTO> respEntity = restTemplate.exchange(uriBuilder, HttpMethod.GET,
-					httpEntity, MainListResponseDTO.class);
+			log.info("sessionId", "idType", "id", "Call Get Status from demographic URL : " + uriBuilder);
+			ResponseEntity<MainListResponseDTO<PreRegistartionStatusDTO>> respEntity = restTemplate.exchange(uriBuilder,
+					HttpMethod.GET, httpEntity,
+					new ParameterizedTypeReference<MainListResponseDTO<PreRegistartionStatusDTO>>() {
+					});
 
-			if (respEntity.getBody().isStatus()) {
+			if (respEntity.getBody().getErr()==null) {
 				ObjectMapper mapper = new ObjectMapper();
 				PreRegistartionStatusDTO preRegResponsestatusDto = mapper
 						.convertValue(respEntity.getBody().getResponse().get(0), PreRegistartionStatusDTO.class);
@@ -303,19 +313,22 @@ public class BookingServiceUtil {
 	public boolean callGetStatusForCancelRestService(String preId) {
 		log.info("sessionId", "idType", "id", "In callGetStatusForCancelRestService method of Booking Service Util");
 		try {
-			RestTemplate restTemplate = restTemplateBuilder.build();
+			//RestTemplate restTemplate = restTemplateBuilder.build();
 			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(preRegResourceUrl + "/applications/status")
 					.queryParam("pre_registration_id", preId);
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
-			HttpEntity<MainListResponseDTO<?>> httpEntity = new HttpEntity<>(headers);
+			HttpEntity<MainListResponseDTO<PreRegistartionStatusDTO>> httpEntity = new HttpEntity<>(headers);
 			String uriBuilder = builder.build().encode().toUriString();
+			log.info("sessionId", "idType", "id",
+					"In callGetStatusForCancelRestService method of Booking Service URL- " + uriBuilder);
 
-			@SuppressWarnings({ "rawtypes" })
-			ResponseEntity<MainListResponseDTO> respEntity = restTemplate.exchange(uriBuilder, HttpMethod.GET,
-					httpEntity, MainListResponseDTO.class);
+			ResponseEntity<MainListResponseDTO<PreRegistartionStatusDTO>> respEntity = restTemplate.exchange(uriBuilder,
+					HttpMethod.GET, httpEntity,
+					new ParameterizedTypeReference<MainListResponseDTO<PreRegistartionStatusDTO>>() {
+					});
 
-			if (respEntity.getBody().isStatus()) {
+			if (respEntity.getBody().getErr() == null) {
 				ObjectMapper mapper = new ObjectMapper();
 				PreRegistartionStatusDTO preRegResponsestatusDto = mapper
 						.convertValue(respEntity.getBody().getResponse().get(0), PreRegistartionStatusDTO.class);
@@ -324,7 +337,7 @@ public class BookingServiceUtil {
 
 				if (!statusCode.equals(StatusCodes.BOOKED.getCode())) {
 
-					throw new AppointmentCannotBeCanceledException(ErrorCodes.PRG_BOOK_RCI_018.getCode(),
+					throw new AppointmentCannotBeCanceledException(ErrorCodes.PRG_BOOK_RCI_018.toString(),
 							ErrorMessages.APPOINTMENT_CANNOT_BE_CANCELED.getMessage());
 				}
 			} else {
@@ -343,20 +356,26 @@ public class BookingServiceUtil {
 
 	public boolean timeSpanCheckForCancle(LocalDateTime bookedDateTime) {
 		LocalDateTime current = LocalDateTime.now();
+		log.info("sessionId", "idType", "id",
+				"In timeSpanCheckForCancle method of Booking Service for current Date Time- " + current);
 		long hours = ChronoUnit.HOURS.between(current, bookedDateTime);
 		if (Math.abs(hours) >= timeSpanCheckForCancel)
 			return true;
 		else
-			return false;
+			throw new TimeSpanException(ErrorCodes.PRG_BOOK_RCI_026.getCode(),
+					ErrorMessages.BOOKING_STATUS_CANNOT_BE_ALTERED.getMessage());
 	}
 
 	public boolean timeSpanCheckForRebook(LocalDateTime bookedDateTime) {
 		LocalDateTime current = LocalDateTime.now();
+		log.info("sessionId", "idType", "id",
+				"In timeSpanCheckForRebook method of Booking Service for current Date Time- " + current);
 		long hours = ChronoUnit.HOURS.between(current, bookedDateTime);
 		if (Math.abs(hours) >= timeSpanCheckForRebook)
 			return true;
 		else
-			return false;
+			throw new TimeSpanException(ErrorCodes.PRG_BOOK_RCI_026.getCode(),
+					ErrorMessages.BOOKING_STATUS_CANNOT_BE_ALTERED.getMessage());
 
 	}
 
@@ -608,8 +627,8 @@ public class BookingServiceUtil {
 		log.info("sessionId", "idType", "id", "In prepareRequestMap method of Booking Service Util");
 		Map<String, String> requestMap = new HashMap<>();
 		requestMap.put("id", requestDto.getId());
-		requestMap.put("ver", requestDto.getVer());
-		requestMap.put("reqTime", new SimpleDateFormat(utcDateTimePattern).format(requestDto.getReqTime()));
+		requestMap.put("ver", requestDto.getVersion());
+		requestMap.put("reqTime", new SimpleDateFormat(utcDateTimePattern).format(requestDto.getRequesttime()));
 		requestMap.put("request", requestDto.getRequest().toString());
 		return requestMap;
 	}
@@ -626,8 +645,8 @@ public class BookingServiceUtil {
 		log.info("sessionId", "idType", "id", "In prepareRequestMap method of Booking Service Util");
 		Map<String, String> requestMap = new HashMap<>();
 		requestMap.put("id", requestDto.getId());
-		requestMap.put("ver", requestDto.getVer());
-		requestMap.put("reqTime", new SimpleDateFormat(utcDateTimePattern).format(requestDto.getReqTime()));
+		requestMap.put("ver", requestDto.getVersion());
+		requestMap.put("reqTime", new SimpleDateFormat(utcDateTimePattern).format(requestDto.getRequesttime()));
 		requestMap.put("request", requestDto.getRequest().toString());
 		return requestMap;
 	}

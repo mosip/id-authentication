@@ -2,6 +2,9 @@ package io.mosip.kernel.syncdata.dto.response;
 
 import java.util.List;
 
+import io.mosip.kernel.syncdata.dto.AppAuthenticationMethodDto;
+import io.mosip.kernel.syncdata.dto.AppDetailDto;
+import io.mosip.kernel.syncdata.dto.AppRolePriorityDto;
 import io.mosip.kernel.syncdata.dto.ApplicantValidDocumentDto;
 import io.mosip.kernel.syncdata.dto.ApplicationDto;
 import io.mosip.kernel.syncdata.dto.BiometricAttributeDto;
@@ -22,6 +25,7 @@ import io.mosip.kernel.syncdata.dto.MachineDto;
 import io.mosip.kernel.syncdata.dto.MachineSpecificationDto;
 import io.mosip.kernel.syncdata.dto.MachineTypeDto;
 import io.mosip.kernel.syncdata.dto.PostReasonCategoryDto;
+import io.mosip.kernel.syncdata.dto.ProcessListDto;
 import io.mosip.kernel.syncdata.dto.ReasonListDto;
 import io.mosip.kernel.syncdata.dto.RegistrationCenterDeviceDto;
 import io.mosip.kernel.syncdata.dto.RegistrationCenterDeviceHistoryDto;
@@ -35,6 +39,7 @@ import io.mosip.kernel.syncdata.dto.RegistrationCenterUserDto;
 import io.mosip.kernel.syncdata.dto.RegistrationCenterUserHistoryDto;
 import io.mosip.kernel.syncdata.dto.RegistrationCenterUserMachineMappingDto;
 import io.mosip.kernel.syncdata.dto.RegistrationCenterUserMachineMappingHistoryDto;
+import io.mosip.kernel.syncdata.dto.ScreenAuthorizationDto;
 import io.mosip.kernel.syncdata.dto.TemplateDto;
 import io.mosip.kernel.syncdata.dto.TemplateFileFormatDto;
 import io.mosip.kernel.syncdata.dto.TemplateTypeDto;
@@ -81,6 +86,12 @@ public class MasterDataResponseDto {
 	private List<LanguageDto> languages;
 	private List<ApplicantValidDocumentDto> applicantValidDocuments;
 	private List<IndividualTypeDto> individualTypes;
+	private List<AppAuthenticationMethodDto> appAuthenticationMethods;
+	private List<AppDetailDto> appDetails;
+	private List<AppRolePriorityDto> appRolePriorities;
+	private List<ScreenAuthorizationDto> screenAuthorizations;
+	private List<ProcessListDto> processList;
+	//private List<SyncJobDefDto> syncJobDefinitions;
 	
 	
 	private List<RegistrationCenterMachineDto> registrationCenterMachines;

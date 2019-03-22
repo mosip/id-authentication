@@ -1,1 +1,1 @@
-{"status":"Y","err":[],"resTime":"2019-03-12T12:47:24.139+05:30","info":{"idType":"D","reqTime":"2019-03-12T12:45:14.014+05:30","matchInfos":[],"usageData":"0x0020000000200000"},"txnID":"8644416055","ver":"0.8","staticToken":"933107142442113202406022182299630716"}
+{"status":"N","err":[{"errorCode":"IDA-RST-007","errorMessage":"5XX - Server Error occured"}],"resTime":"2019-03-15T14:56:30.598+05:30","txnID":"4833044565","ver":"0.8"}

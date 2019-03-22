@@ -45,6 +45,7 @@ public class IdaKeywordUtil extends KeywordUtil{
 	private static XmlPrecondtion objXmlPrecondtion = new XmlPrecondtion();
 	private EncrypDecrptUtils objEncrypDecrptUtils = new EncrypDecrptUtils();
 	private UinVidNumberUtil objUinVidNumberUtil= new UinVidNumberUtil();
+
 	//private String UIN_PATH="ida/"+RunConfig.getTestDataFolderName()+"/RunConfig/uin.properties";
 	//private String STATIC_PIN_UIN_PATH="ida/"+RunConfig.getTestDataFolderName()+"/RunConfig/uinStaticPin.properties";
 	//public String VID_PATH="ida/"+RunConfig.getTestDataFolderName()+"/RunConfig/vid.properties";
@@ -228,8 +229,7 @@ public class IdaKeywordUtil extends KeywordUtil{
 			{
 				String value = entry.getValue().replace("$", "");
 				String[] actVal=value.split(":");
-				String file=TestDataConfig.getUserDirectory()+TestDataConfig.getSrcPath()+TestDataConfig.getTestDataPath()+actVal[1];
-				System.out.println(file);
+				String file=new File(TestDataConfig.getSrcPath()+TestDataConfig.getTestDataPath()+actVal[1]).getAbsolutePath();
 				returnMap.put(entry.getKey(),objEncrypDecrptUtils.getEncodeFile(new File(file)));
 			}
 			else

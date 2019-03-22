@@ -18,8 +18,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
-import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
+import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.processor.core.auth.dto.AuthRequestDTO;
 import io.mosip.registration.processor.core.auth.dto.AuthTypeDTO;
 import io.mosip.registration.processor.core.auth.dto.IdentityDTO;
@@ -27,8 +27,8 @@ import io.mosip.registration.processor.core.auth.dto.IdentityInfoDTO;
 import io.mosip.registration.processor.core.auth.dto.PinInfo;
 import io.mosip.registration.processor.core.auth.dto.RequestDTO;
 import io.mosip.registration.processor.core.constant.JsonConstant;
-import io.mosip.registration.processor.core.constant.PacketFiles;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
+import io.mosip.registration.processor.core.constant.PacketFiles;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.packet.dto.FieldValue;
@@ -42,10 +42,10 @@ import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessor
 import io.mosip.registration.processor.core.util.IdentityIteratorUtil;
 import io.mosip.registration.processor.core.util.JsonUtil;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
+import io.mosip.registration.processor.stages.osivalidator.utils.OSIUtils;
 import io.mosip.registration.processor.stages.osivalidator.utils.StatusMessage;
 import io.mosip.registration.processor.status.code.ApplicantType;
 import io.mosip.registration.processor.status.code.IntroducerType;
-import io.mosip.registration.processor.status.code.RegistrationStatusCode;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.SyncTypeDto;
@@ -53,6 +53,7 @@ import io.mosip.registration.processor.status.dto.TransactionDto;
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
 import io.mosip.registration.processor.status.service.TransactionService;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class OSIValidator.
  */
@@ -83,17 +84,18 @@ public class OSIValidator {
 	@Autowired
 	RegistrationProcessorRestClientService<Object> restClientService;
 
-	/** The transcation status service. */
-	@Autowired
-	private TransactionService<TransactionDto> transcationStatusService;
-
 	/** The env. */
 	@Autowired
 	private Environment env;
 
+	/** The osi utils. */
+	@Autowired
+	private OSIUtils osiUtils;
+
 	/** The message. */
 	private String message = null;
 
+	/** The Constant TRUE. */
 	private static final String TRUE = "true";
 
 	/** The registration status dto. */
@@ -135,17 +137,17 @@ public class OSIValidator {
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 				registrationId, "OSIValidator::isValidOSI()::entry");
 		boolean isValidOsi = false;
-		RegOsiDto regOsi = packetInfoManager.getOsi(registrationId);
-		String officerId = getOsiDataValue(registrationId, JsonConstant.OFFICERID);
-		String supervisorId = getOsiDataValue(registrationId, JsonConstant.SUPERVISORID);
-		if (officerId == null && supervisorId == null) {
-			registrationStatusDto
-					.setStatusComment(StatusMessage.OSI_VALIDATION_FAILURE + " Officer and Supervisor are null");
-			return false;
 
+		Identity identity = osiUtils.getIdentity(registrationId);
+		/** Getting data from packet MetadataInfo*/
+		RegOsiDto regOsi = osiUtils.getOSIDetailsFromMetaInfo(registrationId,identity);
+		String officerId = regOsi.getOfficerId();
+		String supervisorId = regOsi.getSupervisorId();
+		if (officerId == null && supervisorId == null) {
+			registrationStatusDto.setStatusComment(StatusMessage.OSI_VALIDATION_FAILURE + " Officer and Supervisor are null");
+			return false;
 		}
-		if (((isValidOperator(regOsi, registrationId)) && (isValidSupervisor(regOsi, registrationId)))
-				&& (isValidIntroducer(regOsi, registrationId)))
+		if (((isValidOperator(regOsi, registrationId)) && (isValidSupervisor(regOsi, registrationId))) && (isValidIntroducer(regOsi, registrationId)))
 			isValidOsi = true;
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 				registrationId, "OSIValidator::isValidOSI()::exit");
@@ -168,17 +170,17 @@ public class OSIValidator {
 	private boolean isValidOperator(RegOsiDto regOsi, String registrationId)
 			throws IOException, ApisResourceAccessException {
 
-		String officerId = getOsiDataValue(registrationId, JsonConstant.OFFICERID);
+		String officerId = regOsi.getOfficerId();
 		if (officerId != null) {
-			String fingerPrint = getOsiDataValue(registrationId, JsonConstant.OFFICERBIOMETRICFILENAME);
+			String fingerPrint = regOsi.getOfficerFingerpImageName();
 			String fingerPrintType = regOsi.getOfficerfingerType();
 			String iris = regOsi.getOfficerIrisImageName();
 			String irisType = regOsi.getOfficerIrisType();
 			String face = regOsi.getOfficerPhotoName();
 			String pin = regOsi.getOfficerHashedPin();
 			// officer password and otp check
-			String officerPassword = getOsiDataValue(registrationId, JsonConstant.OFFICERPWR);
-			String officerOTPAuthentication = getOsiDataValue(registrationId, JsonConstant.OFFICEROTPAUTHENTICATION);
+			String officerPassword =regOsi.getOfficerHashedPwd();
+			String officerOTPAuthentication = regOsi.getOfficerOTPAuthentication();
 			if (checkBiometricNull(fingerPrint, iris, face, pin)) {
 				boolean flag = validateOtpAndPwd(officerPassword, officerOTPAuthentication);
 				if (flag) {
@@ -236,14 +238,13 @@ public class OSIValidator {
 	 */
 	private boolean isValidSupervisor(RegOsiDto regOsi, String registrationId)
 			throws IOException, ApisResourceAccessException {
-		String supervisorId = getOsiDataValue(registrationId, JsonConstant.SUPERVISORID);
+		String supervisorId = regOsi.getSupervisorId();
 		if (supervisorId != null) {
 
-			String fingerPrint = getOsiDataValue(registrationId, JsonConstant.SUPERVISORBIOMETRICFILENAME);
+			String fingerPrint = regOsi.getSupervisorBiometricFileName();
 			// superVisior otp and password
-			String supervisiorPassword = getOsiDataValue(registrationId, JsonConstant.SUPERVISORPWR);
-			String supervisorOTPAuthentication = getOsiDataValue(registrationId,
-					JsonConstant.SUPERVISOROTPAUTHENTICATION);
+			String supervisiorPassword = regOsi.getSupervisorHashedPwd();
+			String supervisorOTPAuthentication = regOsi.getSupervisorOTPAuthentication();
 			String fingerPrintType = regOsi.getSupervisorFingerType();
 			String iris = regOsi.getSupervisorIrisImageName();
 			String irisType = regOsi.getSupervisorIrisType();
@@ -252,12 +253,9 @@ public class OSIValidator {
 			if (checkBiometricNull(fingerPrint, iris, face, pin)) {
 				boolean flag = validateOtpAndPwd(supervisiorPassword, supervisorOTPAuthentication);
 				if (flag) {
-					registrationStatusDto
-							.setStatusComment(StatusMessage.VALIDATION_DETAILS_SUCCESS + StatusMessage.SUPERVISOR);
+					registrationStatusDto.setStatusComment(StatusMessage.VALIDATION_DETAILS_SUCCESS + StatusMessage.SUPERVISOR);
 				} else {
-					registrationStatusDto
-							.setStatusComment(StatusMessage.VALIDATION_DETAILS_FAILURE + StatusMessage.SUPERVISOR);
-
+					registrationStatusDto.setStatusComment(StatusMessage.VALIDATION_DETAILS_FAILURE + StatusMessage.SUPERVISOR);
 				}
 				return flag;
 			} else if ((validateUIN(supervisorId))
@@ -526,6 +524,13 @@ public class OSIValidator {
 		return isValidPin;
 	}
 
+	/**
+	 * Validate otp and pwd.
+	 *
+	 * @param password the password
+	 * @param otp the otp
+	 * @return true, if successful
+	 */
 	boolean validateOtpAndPwd(String password, String otp) {
 		if (password != null && password.equals(TRUE) || otp != null && otp.equals(TRUE)) {
 			return true;
@@ -673,24 +678,6 @@ public class OSIValidator {
 			return demographicDedupeDtoList.get(0).getUin();
 		}
 		return null;
-	}
-
-	/**
-	 * Gets the osi data value.
-	 *
-	 * @param registrationId
-	 *            the registration id
-	 * @param label
-	 *            the label
-	 * @return the osi data value
-	 * @throws UnsupportedEncodingException
-	 *             the unsupported encoding exception
-	 */
-	private String getOsiDataValue(String registrationId, String label) throws UnsupportedEncodingException {
-		Identity identity = getIdentity(registrationId);
-		List<FieldValue> osiData = identity.getOsiData();
-		return identityIteratorUtil.getMetadataLabelValue(osiData, label);
-
 	}
 
 	/**

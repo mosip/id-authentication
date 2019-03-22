@@ -26,6 +26,7 @@ import io.mosip.registration.constants.AuditReferenceIdTypes;
 import io.mosip.registration.constants.Components;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.constants.RegistrationUIConstants;
+import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.controller.reg.RegistrationController;
@@ -41,11 +42,15 @@ import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ProgressBar;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 
 /**
@@ -80,15 +85,15 @@ public class FingerPrintCaptureController extends BaseController implements Init
 
 	/** The left hand palm pane. */
 	@FXML
-	private AnchorPane leftHandPalmPane;
+	private GridPane leftHandPalmPane;
 
 	/** The right hand palm pane. */
 	@FXML
-	private AnchorPane rightHandPalmPane;
+	private GridPane rightHandPalmPane;
 
 	/** The thumb pane. */
 	@FXML
-	private AnchorPane thumbPane;
+	private GridPane thumbPane;
 
 	/** The left hand palm imageview. */
 	@FXML
@@ -129,9 +134,27 @@ public class FingerPrintCaptureController extends BaseController implements Init
 	/** The duplicate check label. */
 	@FXML
 	private Label duplicateCheckLbl;
+	
+	@FXML
+	private ProgressBar fpProgress;
+	
+	@FXML
+	private Label qualityText;
+	
+	@FXML
+	private HBox fpRetryBox;
+	
+	@FXML
+	private Label rightSlapAttempt;
+	
+	@FXML
+	private Label thumbSlapAttempt;
+
+	@FXML
+	private Label leftSlapAttempt;
 
 	/** The selected pane. */
-	private AnchorPane selectedPane = null;
+	private GridPane selectedPane = null;
 
 	/** The selected pane. */
 	@Autowired
@@ -146,6 +169,15 @@ public class FingerPrintCaptureController extends BaseController implements Init
 	/** The scan btn. */
 	@FXML
 	private Button scanBtn;
+
+	@FXML
+	private Button continueBtn;
+	
+	@FXML
+	private Button backBtn;
+	
+	@FXML
+	private Label registrationNavlabel;
 
 	private int leftSlapCount;
 	private int rightSlapCount;
@@ -162,16 +194,41 @@ public class FingerPrintCaptureController extends BaseController implements Init
 		LOGGER.info(LOG_REG_FINGERPRINT_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 				"Loading of FingerprintCapture screen started");
 		try {
+			if (getRegistrationDTOFromSession() != null
+					&& getRegistrationDTOFromSession().getSelectionListDTO() != null) {
+				registrationNavlabel.setText(RegistrationConstants.UIN_NAV_LABEL);
+			}
+			
+			for(int i = 0; i <Integer
+			.parseInt(getValueFromApplicationContext(RegistrationConstants.FINGERPRINT_RETRIES_COUNT)); i++) {
+				Label c = new Label();
+				c.getStyleClass().add("qualityLabelGrey");
+				c.setId("retryAttempt_"+(i+1));
+				c.setVisible(true);
+				c.setText(String.valueOf(i+1));
+				c.setAlignment(Pos.CENTER);
+				fpRetryBox.getChildren().add(c);
+			}
 
+			continueBtn.setDisable(true);
+			backBtn.setDisable(true);
+			
 			scanBtn.setDisable(true);
 
 			EventHandler<Event> mouseClick = event -> {
-				if (event.getSource() instanceof AnchorPane) {
-					AnchorPane sourcePane = (AnchorPane) event.getSource();
+				if (event.getSource() instanceof GridPane) {
+					GridPane sourcePane = (GridPane) event.getSource();
 					sourcePane.requestFocus();
 					selectedPane = sourcePane;
 					scanBtn.setDisable(true);
 					duplicateCheckLbl.setText(RegistrationConstants.EMPTY);
+					fpProgress.setProgress(0);
+					
+					for(int attempt = 0; attempt < Integer
+							.parseInt(getValueFromApplicationContext(RegistrationConstants.FINGERPRINT_RETRIES_COUNT)); attempt++) {
+						fpRetryBox.lookup("#retryAttempt_"+(attempt+1)).getStyleClass().clear();
+						fpRetryBox.lookup("#retryAttempt_"+(attempt+1)).getStyleClass().add("qualityLabelGrey");
+					}
 
 					exceptionFingersCount();
 
@@ -197,6 +254,28 @@ public class FingerPrintCaptureController extends BaseController implements Init
 													.parseDouble(getValueFromApplicationContext(
 															RegistrationConstants.THUMBS_FINGERPRINT_THRESHOLD))))) {
 						scanBtn.setDisable(false);
+					}
+					fpProgress.setProgress(fpDetailsDTO != null ? fpDetailsDTO.getQualityScore()/100 : 0);
+					qualityText.setText(fpDetailsDTO != null ? String.valueOf((int)fpDetailsDTO.getQualityScore()).concat(RegistrationConstants.PERCENTAGE) : "");
+					
+					if(fpDetailsDTO != null && fpDetailsDTO.getFingerType().equals(RegistrationConstants.LEFTPALM)) {
+						updateRetryBox(fpDetailsDTO.getNumRetry(),
+								Double.valueOf(getQualityScore(fpDetailsDTO.getQualityScore())
+										.split(RegistrationConstants.PERCENTAGE)[0]),
+								Double.parseDouble(getValueFromApplicationContext(
+										RegistrationConstants.LEFTSLAP_FINGERPRINT_THRESHOLD)));
+					} else if (fpDetailsDTO != null && fpDetailsDTO.getFingerType().equals(RegistrationConstants.RIGHTPALM)) {
+						updateRetryBox(fpDetailsDTO.getNumRetry(),
+								Double.valueOf(getQualityScore(fpDetailsDTO.getQualityScore())
+										.split(RegistrationConstants.PERCENTAGE)[0]),
+								Double.parseDouble(getValueFromApplicationContext(
+										RegistrationConstants.RIGHTSLAP_FINGERPRINT_THRESHOLD)));
+					} else if(fpDetailsDTO != null && fpDetailsDTO.getFingerType().equals(RegistrationConstants.THUMBS)) {
+						updateRetryBox(fpDetailsDTO.getNumRetry(),
+								Double.valueOf(getQualityScore(fpDetailsDTO.getQualityScore())
+										.split(RegistrationConstants.PERCENTAGE)[0]),
+								Double.parseDouble(getValueFromApplicationContext(
+										RegistrationConstants.THUMBS_FINGERPRINT_THRESHOLD)));
 					}
 				}
 			};
@@ -231,6 +310,20 @@ public class FingerPrintCaptureController extends BaseController implements Init
 			throw new RegBaseUncheckedException(RegistrationConstants.USER_REG_FINGERPRINT_PAGE_LOAD_EXP,
 					String.format("Exception while initializing Fingerprint Capture page for user registration  %s",
 							runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException)));
+		}
+	}
+	
+	private void updateRetryBox(int retries, double quality, double threshold ) {
+		for(int j = 0; j < retries+1; j++) {
+			if(quality > threshold) {
+				clearAttemptsBox("qualityLabelGreen", retries);
+				fpProgress.getStyleClass().remove("progress-barRed");
+				fpProgress.getStyleClass().add("progress-barGreen");
+			} else {
+				clearAttemptsBox("qualityLabelRed", retries);
+				fpProgress.getStyleClass().remove("progress-barGreen");
+				fpProgress.getStyleClass().add("progress-barRed");
+			}
 		}
 	}
 
@@ -307,6 +400,17 @@ public class FingerPrintCaptureController extends BaseController implements Init
 
 		}
 		SessionContext.map().put(RegistrationConstants.OLD_BIOMETRIC_EXCEPTION, tempExceptionList);
+		
+
+		if (leftSlapCount == 4 && rightSlapCount == 4 && thumbCount == 2) {
+			continueBtn.setDisable(false);
+			backBtn.setDisable(false);
+		}
+		
+		if(!validateFingerPrints()) {
+			continueBtn.setDisable(true);
+			backBtn.setDisable(true);
+		}
 	}
 
 	private void removeFingerPrint(String handSlap) {
@@ -345,6 +449,29 @@ public class FingerPrintCaptureController extends BaseController implements Init
 				.setImage(new Image(getClass().getResource(RegistrationConstants.THUMB_IMG_PATH).toExternalForm()));
 		thumbsQualityScore.setText(RegistrationConstants.EMPTY);
 		removeFingerPrint(RegistrationConstants.THUMBS);
+		
+		leftSlapAttempt.setText(RegistrationConstants.EMPTY);
+		rightSlapAttempt.setText(RegistrationConstants.EMPTY);
+		thumbSlapAttempt.setText(RegistrationConstants.EMPTY);
+		
+		fpProgress.setProgress(0);
+		fpProgress.getStyleClass().remove("progress-barRed");
+		fpProgress.getStyleClass().remove("progress-barGreen");
+		
+		qualityText.setText(RegistrationConstants.EMPTY);
+		qualityText.getStyleClass().remove("labelRed");
+		qualityText.getStyleClass().remove("labelGreen");
+		
+		for(int attempt = 0; attempt < Integer
+				.parseInt(getValueFromApplicationContext(RegistrationConstants.FINGERPRINT_RETRIES_COUNT)); attempt++) {
+			fpRetryBox.lookup("#retryAttempt_"+(attempt+1)).getStyleClass().clear();
+			fpRetryBox.lookup("#retryAttempt_"+(attempt+1)).getStyleClass().add("qualityLabelGrey");
+		}
+		
+		if(!validateFingerPrints()) {
+			continueBtn.setDisable(true);
+			backBtn.setDisable(true);
+		}
 	}
 
 	private void exceptionFingersCount() {
@@ -361,17 +488,20 @@ public class FingerPrintCaptureController extends BaseController implements Init
 		}
 		for (BiometricExceptionDTO biometricExceptionDTO : biometricExceptionDTOs) {
 
-			if (biometricExceptionDTO.getMissingBiometric().contains(RegistrationConstants.LEFT.toLowerCase())
+			if ((biometricExceptionDTO.getMissingBiometric().contains(RegistrationConstants.LEFT.toLowerCase())
+					&& biometricExceptionDTO.isMarkedAsException())
 					&& !biometricExceptionDTO.getMissingBiometric().contains(RegistrationConstants.THUMB)
 					&& !biometricExceptionDTO.getMissingBiometric().contains(RegistrationConstants.EYE)) {
 				leftSlapCount++;
 			}
-			if (biometricExceptionDTO.getMissingBiometric().contains(RegistrationConstants.RIGHT.toLowerCase())
+			if ((biometricExceptionDTO.getMissingBiometric().contains(RegistrationConstants.RIGHT.toLowerCase())
+					&& biometricExceptionDTO.isMarkedAsException())
 					&& !biometricExceptionDTO.getMissingBiometric().contains(RegistrationConstants.THUMB)
 					&& !biometricExceptionDTO.getMissingBiometric().contains(RegistrationConstants.EYE)) {
 				rightSlapCount++;
 			}
-			if (biometricExceptionDTO.getMissingBiometric().contains(RegistrationConstants.THUMB)) {
+			if ((biometricExceptionDTO.getMissingBiometric().contains(RegistrationConstants.THUMB)
+					&& biometricExceptionDTO.isMarkedAsException())) {
 				thumbCount++;
 			}
 		}
@@ -424,8 +554,6 @@ public class FingerPrintCaptureController extends BaseController implements Init
 						AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
 
 				scanPopUpViewController.init(this, RegistrationUIConstants.FINGERPRINT);
-			} else {
-				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.FINGERPRINT_MAX_RETRIES_ALERT);
 			}
 
 			LOGGER.info(LOG_REG_FINGERPRINT_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
@@ -468,10 +596,9 @@ public class FingerPrintCaptureController extends BaseController implements Init
 			if (selectedPane.getId() == leftHandPalmPane.getId()) {
 
 				scanFingers(detailsDTO, fingerprintDetailsDTOs, RegistrationConstants.LEFTPALM,
-
 						RegistrationConstants.LEFTHAND_SEGMNTD_FILE_PATHS_USERONBOARD, leftHandPalmImageview,
-
-						leftSlapQualityScore, popupStage, leftHandPalmPane);
+						leftSlapQualityScore, popupStage, leftHandPalmPane, Double.parseDouble(
+								getValueFromApplicationContext(RegistrationConstants.LEFTSLAP_FINGERPRINT_THRESHOLD)), leftSlapAttempt);
 
 			} else if (selectedPane.getId() == rightHandPalmPane.getId()) {
 
@@ -479,14 +606,16 @@ public class FingerPrintCaptureController extends BaseController implements Init
 
 						RegistrationConstants.RIGHTHAND_SEGMNTD_FILE_PATHS_USERONBOARD, rightHandPalmImageview,
 
-						rightSlapQualityScore, popupStage, rightHandPalmPane);
+						rightSlapQualityScore, popupStage, rightHandPalmPane, Double.parseDouble(
+								getValueFromApplicationContext(RegistrationConstants.RIGHTSLAP_FINGERPRINT_THRESHOLD)), rightSlapAttempt);
 
 			} else if (selectedPane.getId() == thumbPane.getId()) {
 
 				scanFingers(detailsDTO, fingerprintDetailsDTOs, RegistrationConstants.THUMBS,
 
 						RegistrationConstants.THUMBS_SEGMNTD_FILE_PATHS_USERONBOARD, thumbImageview, thumbsQualityScore,
-						popupStage, thumbPane);
+						popupStage, thumbPane, Double.parseDouble(
+								getValueFromApplicationContext(RegistrationConstants.THUMBS_FINGERPRINT_THRESHOLD)), thumbSlapAttempt);
 
 			}
 
@@ -526,35 +655,30 @@ public class FingerPrintCaptureController extends BaseController implements Init
 			if (selectedPane.getId() == leftHandPalmPane.getId()) {
 
 				scanFingers(detailsDTO, fingerprintDetailsDTOs, RegistrationConstants.LEFTPALM,
-
 						RegistrationConstants.LEFTHAND_SEGMNTD_FILE_PATHS, leftHandPalmImageview,
-
-						leftSlapQualityScore, popupStage,leftHandPalmPane);
+						leftSlapQualityScore, popupStage, leftHandPalmPane, Double.parseDouble(
+								getValueFromApplicationContext(RegistrationConstants.LEFTSLAP_FINGERPRINT_THRESHOLD)), leftSlapAttempt);
 
 			} else if (selectedPane.getId() == rightHandPalmPane.getId()) {
 
 				if (SessionContext.map().containsKey(RegistrationConstants.DUPLICATE_FINGER)) {
-
 					scanFingers(detailsDTO, fingerprintDetailsDTOs, RegistrationConstants.RIGHTPALM,
-
 							RegistrationConstants.RIGHTHAND_SEGMNTD_FILE_PATHS, rightHandPalmImageview,
-
-							rightSlapQualityScore, popupStage, rightHandPalmPane);
+							rightSlapQualityScore, popupStage, rightHandPalmPane, Double.parseDouble(
+									getValueFromApplicationContext(RegistrationConstants.RIGHTSLAP_FINGERPRINT_THRESHOLD)), rightSlapAttempt);
 
 				} else {
 					scanFingers(detailsDTO, fingerprintDetailsDTOs, RegistrationConstants.RIGHTPALM,
-
 							RegistrationConstants.RIGHTHAND_SEGMNTD_DUPLICATE_FILE_PATHS, rightHandPalmImageview,
-
-							rightSlapQualityScore, popupStage, rightHandPalmPane);
+							rightSlapQualityScore, popupStage, rightHandPalmPane, Double.parseDouble(
+									getValueFromApplicationContext(RegistrationConstants.RIGHTSLAP_FINGERPRINT_THRESHOLD)), rightSlapAttempt);
 				}
 
 			} else if (selectedPane.getId() == thumbPane.getId()) {
-
 				scanFingers(detailsDTO, fingerprintDetailsDTOs, RegistrationConstants.THUMBS,
-
-						RegistrationConstants.THUMBS_SEGMNTD_FILE_PATHS, thumbImageview, thumbsQualityScore,
-						popupStage, thumbPane);
+						RegistrationConstants.THUMBS_SEGMNTD_FILE_PATHS, thumbImageview, thumbsQualityScore, popupStage,
+						thumbPane, Double.parseDouble(
+								getValueFromApplicationContext(RegistrationConstants.THUMBS_FINGERPRINT_THRESHOLD)), thumbSlapAttempt);
 
 			}
 
@@ -580,7 +704,7 @@ public class FingerPrintCaptureController extends BaseController implements Init
 
 	private void scanFingers(FingerprintDetailsDTO detailsDTO, List<FingerprintDetailsDTO> fingerprintDetailsDTOs,
 			String fingerType, String[] segmentedFingersPath, ImageView fingerImageView, Label scoreLabel,
-			Stage popupStage, AnchorPane parentPane) throws RegBaseCheckedException {
+			Stage popupStage, GridPane parentPane, Double thresholdValue, Label attemptSlap) throws RegBaseCheckedException {
 
 		ImageView imageView = fingerImageView;
 		Label qualityScoreLabel = scoreLabel;
@@ -623,7 +747,30 @@ public class FingerPrintCaptureController extends BaseController implements Init
 		parentPane.getStyleClass().add("fingerPrintPanesSelected");
 		imageView.setImage(convertBytesToImage(detailsDTO.getFingerPrint()));
 		qualityScoreLabel.setText(getQualityScore(detailsDTO.getQualityScore()));
+		attemptSlap.setText(String.valueOf(detailsDTO.getNumRetry()+1));
+		fpProgress.setProgress(Double.valueOf(getQualityScore(detailsDTO.getQualityScore()).split(RegistrationConstants.PERCENTAGE)[0])/100);
+		qualityText.setText(getQualityScore(detailsDTO.getQualityScore()));
+			if(Double.valueOf(getQualityScore(detailsDTO.getQualityScore()).split(RegistrationConstants.PERCENTAGE)[0]) > thresholdValue) {
+				clearAttemptsBox("qualityLabelGreen", detailsDTO.getNumRetry());
+				fpProgress.getStyleClass().remove("progress-barRed");
+				fpProgress.getStyleClass().add("progress-barGreen");
+				qualityText.getStyleClass().remove("labelRed");
+				qualityText.getStyleClass().add("labelGreen");
+			} else {
+				clearAttemptsBox("qualityLabelRed", detailsDTO.getNumRetry());
+				fpProgress.getStyleClass().remove("progress-barGreen");
+				fpProgress.getStyleClass().add("progress-barRed");
+				qualityText.getStyleClass().remove("labelGreen");
+				qualityText.getStyleClass().add("labelRed");
+			}
 		scanBtn.setDisable(true);
+		
+		
+		if(validateFingerPrints()) {
+			continueBtn.setDisable(false);
+			backBtn.setDisable(false);
+		}
+
 	}
 
 	/**
@@ -634,21 +781,18 @@ public class FingerPrintCaptureController extends BaseController implements Init
 		try {
 			auditFactory.audit(AuditEvent.REG_BIO_FINGERPRINT_NEXT, Components.REG_BIOMETRICS, SessionContext.userId(),
 					AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
-			
+
 			LOGGER.info(LOG_REG_FINGERPRINT_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 					"Navigating to Iris capture page for user registration started");
 
 			exceptionFingersCount();
 			if ((boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
-				if (validateFingerPrints()) {
 					irisCaptureController.clearIrisBasedOnExceptions();
 					userOnboardParentController.showCurrentPage(RegistrationConstants.FINGERPRINT_CAPTURE,
 							getOnboardPageDetails(RegistrationConstants.FINGERPRINT_CAPTURE,
 									RegistrationConstants.NEXT));
-				}
 			} else {
 				if (getRegistrationDTOFromSession().getSelectionListDTO() != null) {
-					if (validateFingerPrints()) {
 						SessionContext.map().remove(RegistrationConstants.DUPLICATE_FINGER);
 
 						long irisCount = getRegistrationDTOFromSession().getBiometricDTO().getApplicantBiometricDTO()
@@ -656,24 +800,24 @@ public class FingerPrintCaptureController extends BaseController implements Init
 								.filter(bio -> bio.getBiometricType().equalsIgnoreCase(RegistrationConstants.IRIS))
 								.count();
 
+						SessionContext.map().put("fingerPrintCapture", false);
 						if (getRegistrationDTOFromSession().getSelectionListDTO().isBiometricIris() || irisCount > 0) {
 							irisCaptureController.clearIrisBasedOnExceptions();
-							SessionContext.map().put("fingerPrintCapture", false);
 							SessionContext.map().put("irisCapture", true);
-						} else {
-							SessionContext.map().put("fingerPrintCapture", false);
+						} else if (!RegistrationConstants.DISABLE.equalsIgnoreCase(String
+								.valueOf(ApplicationContext.map().get(RegistrationConstants.FACE_DISABLE_FLAG)))) {
 							SessionContext.map().put("faceCapture", true);
+						} else {
+							SessionContext.map().put("registrationPreview", true);
+							registrationPreviewController.setUpPreviewContent();
 						}
 						registrationController.showUINUpdateCurrentPage();
-					}
 				} else {
-					if (validateFingerPrints()) {
 						SessionContext.map().remove(RegistrationConstants.DUPLICATE_FINGER);
 						irisCaptureController.clearIrisBasedOnExceptions();
 
 						registrationController.showCurrentPage(RegistrationConstants.FINGERPRINT_CAPTURE,
 								getPageDetails(RegistrationConstants.FINGERPRINT_CAPTURE, RegistrationConstants.NEXT));
-					}
 				}
 			}
 			LOGGER.info(LOG_REG_FINGERPRINT_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
@@ -697,37 +841,37 @@ public class FingerPrintCaptureController extends BaseController implements Init
 		try {
 			auditFactory.audit(AuditEvent.REG_BIO_FINGERPRINT_BACK, Components.REG_BIOMETRICS, SessionContext.userId(),
 					AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
-			
+
 			LOGGER.info(LOG_REG_FINGERPRINT_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 					"Navigating to Demographic capture page for user registration started");
 
 			exceptionFingersCount();
 			if ((boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
-				if (validateFingerPrints()) {
 					userOnboardParentController.showCurrentPage(RegistrationConstants.FINGERPRINT_CAPTURE,
 							getOnboardPageDetails(RegistrationConstants.FINGERPRINT_CAPTURE,
 									RegistrationConstants.PREVIOUS));
-				}
 			} else {
-				if (validateFingerPrints()) {
 					SessionContext.getInstance().getMapObject().remove(RegistrationConstants.DUPLICATE_FINGER);
 					if (getRegistrationDTOFromSession().getSelectionListDTO() != null) {
+						SessionContext.map().put("fingerPrintCapture", false);
+
 						if ((boolean) SessionContext.getInstance().getUserContext().getUserMap()
 								.get(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION)) {
-							SessionContext.getInstance().getMapObject().put("fingerPrintCapture", false);
-							SessionContext.getInstance().getMapObject().put("biometricException", true);
+							SessionContext.map().put("biometricException", true);
 							registrationController.showUINUpdateCurrentPage();
+						} else if (!RegistrationConstants.DISABLE.equalsIgnoreCase(
+								String.valueOf(ApplicationContext.map().get(RegistrationConstants.DOC_DISABLE_FLAG)))) {
+							SessionContext.map().put("documentScan", true);
 						} else {
-							SessionContext.getInstance().getMapObject().put("fingerPrintCapture", false);
-							SessionContext.getInstance().getMapObject().put("documentScan", true);
-							registrationController.showUINUpdateCurrentPage();
+							SessionContext.map().put("demographicDetail", true);
 						}
+						registrationController.showUINUpdateCurrentPage();
+
 					} else {
 						registrationController.showCurrentPage(RegistrationConstants.FINGERPRINT_CAPTURE,
 								getPageDetails(RegistrationConstants.FINGERPRINT_CAPTURE,
 										RegistrationConstants.PREVIOUS));
 					}
-				}
 			}
 			LOGGER.info(LOG_REG_FINGERPRINT_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 					"Navigating to Demographic capture page for user registration ended");
@@ -791,7 +935,6 @@ public class FingerPrintCaptureController extends BaseController implements Init
 						isthumbsCaptured = true;
 					}
 				} else {
-					generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.IRIS_QUALITY_SCORE_ERROR);
 					return isValid;
 				}
 			}
@@ -834,8 +977,6 @@ public class FingerPrintCaptureController extends BaseController implements Init
 				} else {
 					isValid = true;
 				}
-			} else {
-				generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.FINGERPRINT_SCAN_ALERT);
 			}
 			LOGGER.info(LOG_REG_FINGERPRINT_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 					"Validating Fingerprints captured ended");
@@ -853,7 +994,8 @@ public class FingerPrintCaptureController extends BaseController implements Init
 	/**
 	 * Validating quality score of captured fingerprints.
 	 *
-	 * @param fingerprintDetailsDTO the fingerprint details DTO
+	 * @param fingerprintDetailsDTO
+	 *            the fingerprint details DTO
 	 * @return true, if successful
 	 */
 	private boolean validateQualityScore(FingerprintDetailsDTO fingerprintDetailsDTO) {
@@ -884,8 +1026,10 @@ public class FingerPrintCaptureController extends BaseController implements Init
 	/**
 	 * Validates QualityScore.
 	 *
-	 * @param fingerprintDetailsDTO the fingerprint details DTO
-	 * @param handThreshold         the hand threshold
+	 * @param fingerprintDetailsDTO
+	 *            the fingerprint details DTO
+	 * @param handThreshold
+	 *            the hand threshold
 	 * @return boolean
 	 */
 	private Boolean validate(FingerprintDetailsDTO fingerprintDetailsDTO, String handThreshold) {
@@ -915,7 +1059,8 @@ public class FingerPrintCaptureController extends BaseController implements Init
 	/**
 	 * Gets the selected pane.
 	 *
-	 * @param fingerPrintDetails the finger print details
+	 * @param fingerPrintDetails
+	 *            the finger print details
 	 * @return the selected pane
 	 */
 	private Stream<FingerprintDetailsDTO> getSelectedPane(List<FingerprintDetailsDTO> fingerPrintDetails) {
@@ -946,10 +1091,16 @@ public class FingerPrintCaptureController extends BaseController implements Init
 	/**
 	 * Gets the value from application context.
 	 *
-	 * @param key the key
+	 * @param key
+	 *            the key
 	 * @return the value from application context
 	 */
 	private String getValueFromApplicationContext(String key) {
 		return (String) applicationContext.getApplicationMap().get(key);
+	}
+	
+	private void clearAttemptsBox(String styleClass, int retries) {		
+		fpRetryBox.lookup("#retryAttempt_"+(retries+1)).getStyleClass().clear();
+		fpRetryBox.lookup("#retryAttempt_"+(retries+1)).getStyleClass().add(styleClass);
 	}
 }

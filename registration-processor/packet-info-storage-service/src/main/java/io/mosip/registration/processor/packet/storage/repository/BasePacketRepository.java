@@ -94,9 +94,21 @@ public interface BasePacketRepository<E extends BasePacketEntity<?>, T> extends 
 	 * @return {@link ManualVerificationEntity}
 	 */
 	@Query(value = "SELECT mve FROM ManualVerificationEntity mve WHERE mve.crDtimes in "
-			+ "(SELECT min(mve2.crDtimes) FROM ManualVerificationEntity mve2 where mve2.statusCode=:statusCode) and mve.statusCode=:statusCode")
-	public List<E> getFirstApplicantDetails(@Param("statusCode") String statusCode);
+			+ "(SELECT min(mve2.crDtimes) FROM ManualVerificationEntity mve2 where mve2.statusCode=:statusCode AND mve2.trnTypCode=:trntyp_code) and mve.statusCode=:statusCode")
+	public List<E> getFirstApplicantDetails(@Param("statusCode") String statusCode, @Param("trntyp_code") String matchType);
 
+	/**
+	 * This method gets the first created registration record for source name as ALL
+	 * {@link ManualVerificationEntity} with the specified status.
+	 *
+	 * @param statusCode
+	 *            The statusCode
+	 * @return {@link ManualVerificationEntity}
+	 */
+	@Query(value = "SELECT mve FROM ManualVerificationEntity mve WHERE mve.crDtimes in "
+			+ "(SELECT min(mve2.crDtimes) FROM ManualVerificationEntity mve2 where mve2.statusCode=:statusCode) and mve.statusCode=:statusCode")
+	public List<E> getFirstApplicantDetailsForAll(@Param("statusCode") String statusCode);
+	
 	/**
 	 * This method returns {@link ManualVerificationEntity} corresponding to
 	 * specified registration Id and manual verifier user Id.
@@ -192,4 +204,5 @@ public interface BasePacketRepository<E extends BasePacketEntity<?>, T> extends 
 	 */
 	@Query("SELECT abis.id.regId FROM RegAbisRefEntity abis WHERE abis.abisRefId =:refId")
 	public List<String> getRidByReferenceId(@Param("refId") String refId);
+
 }

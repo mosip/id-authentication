@@ -16,11 +16,11 @@ import { FormControlModal } from 'src/app/shared/models/demographic-model/form.c
 import { IdentityModel } from 'src/app/shared/models/demographic-model/identity.modal';
 import { DemoIdentityModel } from 'src/app/shared/models/demographic-model/demo.identity.modal';
 import { RequestModel } from 'src/app/shared/models/demographic-model/request.modal';
-import AttributeModel from 'src/app/shared/models/demographic-model';
 import * as appConstants from '../../../app.constants';
 import Utils from 'src/app/app.util';
 import { DialougComponent } from 'src/app/shared/dialoug/dialoug.component';
 import { ConfigService } from 'src/app/core/services/config.service';
+import { AttributeModel } from 'src/app/shared/models/demographic-model/attribute.modal';
 
 @Component({
   selector: 'app-demographic',
@@ -38,12 +38,25 @@ export class DemographicComponent implements OnInit, OnDestroy {
   keyboardLang = appConstants.virtual_keyboard_languages[this.primaryLang];
   keyboardSecondaryLang = appConstants.virtual_keyboard_languages[this.secondaryLang];
   numberPattern = appConstants.NUMBER_PATTERN;
-  textPattern = appConstants.TEXT_PATTERN;
+  // textPattern = appConstants.TEXT_PATTERN;
+
+  YEAR_PATTERN = appConstants.YEAR_PATTERN;
+  MONTH_PATTERN = appConstants.MONTH_PATTERN;
+  DATE_PATTERN = appConstants.DATE_PATTERN;
+
   MOBILE_PATTERN: string;
+  MOBILE_LENGTH: string;
   CNIE_PATTERN: string;
+  CNIE_LENGTH: string;
   EMAIL_PATTERN: string;
+  EMAIL_LENGTH: string;
   DOB_PATTERN: string;
   POSTALCODE_PATTERN: string;
+  POSTALCODE_LENGTH: string;
+  ADDRESS_LENGTH: string;
+  defaultDay: string;
+  defaultMonth: string;
+  FULLNAME_LENGTH: string;
 
   ageOrDobPref = '';
   showDate = false;
@@ -138,27 +151,38 @@ export class DemographicComponent implements OnInit, OnDestroy {
     private dialog: MatDialog
   ) {
     this.translate.use(localStorage.getItem('langCode'));
-    this.setConfig();
+    this.regService.getMessage().subscribe(message => (this.message = message));
     this.initialization();
   }
 
   async ngOnInit() {
     this.config = this.configService.getConfig();
+    // this.regService.currentMessage.subscribe(message => (this.message = message));
+    this.setConfig();
     this.initForm();
     await this.getPrimaryLabels();
     this.dataStorageService.getSecondaryLanguageLabels(this.secondaryLang).subscribe(response => {
       this.secondaryLanguagelabels = response['demographic'];
     });
     if (!this.dataModification) this.consentDeclaration();
-    console.log(this.primaryLanguagelabels);
+    // this.regService.currentMessage.subscribe(message => (this.message = message));
+    // console.log(this.primaryLanguagelabels);
   }
 
   setConfig() {
-    this.MOBILE_PATTERN = this.config['mosip.regex.phone'];
-    this.CNIE_PATTERN = this.config['mosip.regex.CNIE'];
-    this.EMAIL_PATTERN = this.config['mosip.regex.email'];
-    this.POSTALCODE_PATTERN = this.config['mosip.regex.postalCode'];
-    this.DOB_PATTERN = this.config['mosip.regex.DOB'];
+    this.MOBILE_PATTERN = this.config[appConstants.CONFIG_KEYS.mosip_regex_phone];
+    this.CNIE_PATTERN = this.config[appConstants.CONFIG_KEYS.mosip_regex_CNIE];
+    this.EMAIL_PATTERN = this.config[appConstants.CONFIG_KEYS.mosip_regex_email];
+    this.POSTALCODE_PATTERN = this.config[appConstants.CONFIG_KEYS.mosip_regex_postalCode];
+    this.DOB_PATTERN = this.config[appConstants.CONFIG_KEYS.mosip_regex_DOB];
+    this.defaultDay = this.config[appConstants.CONFIG_KEYS.mosip_default_dob_day];
+    this.defaultMonth = this.config[appConstants.CONFIG_KEYS.mosip_default_dob_month];
+    this.POSTALCODE_LENGTH = this.config[appConstants.CONFIG_KEYS.mosip_postal_code_length];
+    this.CNIE_LENGTH = this.config[appConstants.CONFIG_KEYS.mosip_CINE_length];
+    this.EMAIL_LENGTH = this.config[appConstants.CONFIG_KEYS.mosip_email_length];
+    this.MOBILE_LENGTH = this.config[appConstants.CONFIG_KEYS.mosip_mobile_length];
+    this.ADDRESS_LENGTH = this.config[appConstants.CONFIG_KEYS.preregistration_address_length];
+    this.FULLNAME_LENGTH = this.config[appConstants.CONFIG_KEYS.preregistration_fullname_length];
   }
 
   private getPrimaryLabels() {
@@ -174,8 +198,7 @@ export class DemographicComponent implements OnInit, OnDestroy {
     if (localStorage.getItem('newApplicant') === 'true') {
       this.isNewApplicant = true;
     }
-    this.regService.currentMessage.subscribe(message => (this.message = message));
-
+    // this.regService.currentMessage.subscribe(message => (this.message = message));
     // this.message$ = this.regService.currentMessage;
     // this.message$.subscribe(message => (this.message = message));
     if (this.message['modifyUser'] === 'true' || this.message['modifyUserFromPreview'] === 'true') {
@@ -201,6 +224,7 @@ export class DemographicComponent implements OnInit, OnDestroy {
         alertMessageFirst: this.primaryLanguagelabels.consent.alertMessageFirst,
         alertMessageSecond: this.primaryLanguagelabels.consent.alertMessageSecond,
         alertMessageThird: this.primaryLanguagelabels.consent.alertMessageThird
+        //adding consent parameters as per language selected by user form language json..
       };
       this.dialog.open(DialougComponent, {
         width: '550px',
@@ -239,20 +263,20 @@ export class DemographicComponent implements OnInit, OnDestroy {
         Validators.required,
         Validators.maxLength(2),
         Validators.minLength(2),
-        Validators.pattern(this.numberPattern)
+        Validators.pattern(this.DATE_PATTERN)
       ]),
       [this.formControlNames.month]: new FormControl(this.formControlValues.month, [
         Validators.required,
         Validators.maxLength(2),
         Validators.minLength(2),
-        Validators.pattern(this.numberPattern)
+        Validators.pattern(this.MONTH_PATTERN)
       ]),
       [this.formControlNames.year]: new FormControl(this.formControlValues.year, [
         Validators.required,
         Validators.maxLength(4),
         Validators.minLength(4),
         Validators.min(this.maxDate.getFullYear() - 150),
-        Validators.pattern(this.numberPattern)
+        Validators.pattern(this.YEAR_PATTERN)
       ]),
       [this.formControlNames.addressLine1]: new FormControl(this.formControlValues.addressLine1, [
         Validators.required,
@@ -429,33 +453,38 @@ export class DemographicComponent implements OnInit, OnDestroy {
   }
 
   private filterOnLangCode(langCode: string, genderEntity = [], entityArray: any) {
-    entityArray.filter((element: any) => {
-      if (element.langCode === langCode) genderEntity.push(element);
-    });
-    if (this.formControlValues.gender) {
-      genderEntity.filter(element => {
-        if (element.code === this.formControlValues.gender) {
-          const codeValue: CodeValueModal = {
-            valueCode: element.code,
-            valueName: element.genderName,
-            languageCode: element.langCode
-          };
-          this.addCodeValue(codeValue);
-        }
+    if (entityArray) {
+      console.log('genderEntity', genderEntity);
+
+      entityArray.filter((element: any) => {
+        if (element.langCode === langCode) genderEntity.push(element);
       });
+      if (this.formControlValues.gender) {
+        genderEntity.filter(element => {
+          if (element.code === this.formControlValues.gender) {
+            const codeValue: CodeValueModal = {
+              valueCode: element.code,
+              valueName: element.genderName,
+              languageCode: element.langCode
+            };
+            this.addCodeValue(codeValue);
+          }
+        });
+      }
     }
   }
-
   getLocationMetadataHirearchy() {
     return new Promise((resolve, reject) => {
       this.dataStorageService.getLocationMetadataHirearchy(appConstants.COUNTRY_HIERARCHY).subscribe(
         response => {
           const countryHirearchy = response[appConstants.DEMOGRAPHIC_RESPONSE_KEYS.locations];
-          const uppermostLocationHierarchy = countryHirearchy.filter(
-            (element: any) => element.name === appConstants.COUNTRY_NAME
-          );
-          this.uppermostLocationHierarchy = uppermostLocationHierarchy;
-          resolve(this.uppermostLocationHierarchy);
+          if (countryHirearchy) {
+            const uppermostLocationHierarchy = countryHirearchy.filter(
+              (element: any) => element.name === appConstants.COUNTRY_NAME
+            );
+            this.uppermostLocationHierarchy = uppermostLocationHierarchy;
+            resolve(this.uppermostLocationHierarchy);
+          }
         },
         error => console.log('Error in fetching location Hierarchy')
       );
@@ -487,7 +516,7 @@ export class DemographicComponent implements OnInit, OnDestroy {
     }
   }
 
-  private addCodeValue(element: CodeValueModal) {
+  addCodeValue(element: CodeValueModal) {
     this.codeValue.push({
       valueCode: element.valueCode,
       valueName: element.valueName,
@@ -535,7 +564,11 @@ export class DemographicComponent implements OnInit, OnDestroy {
 
   onEntityChange(entity: any, event?: MatButtonToggleChange) {
     if (event) {
+      console.log('entity', entity);
+
       entity.forEach(element => {
+        console.log('elem:', element);
+
         element.filter((element: any) => {
           if (event.value === element.code) {
             const codeValue: CodeValueModal = {
@@ -555,10 +588,12 @@ export class DemographicComponent implements OnInit, OnDestroy {
     if (age) {
       const now = new Date();
       const calulatedYear = now.getFullYear() - age;
-      this.userForm.controls[this.formControlNames.date].patchValue('01');
-      this.userForm.controls[this.formControlNames.month].patchValue('01');
+      this.userForm.controls[this.formControlNames.date].patchValue(this.defaultDay);
+      this.userForm.controls[this.formControlNames.month].patchValue(this.defaultMonth);
       this.userForm.controls[this.formControlNames.year].patchValue(calulatedYear);
-      this.userForm.controls[this.formControlNames.dateOfBirth].patchValue(calulatedYear + '/01/01');
+      this.userForm.controls[this.formControlNames.dateOfBirth].patchValue(
+        calulatedYear + '/' + this.defaultMonth + '/' + this.defaultDay
+      );
       this.userForm.controls[this.formControlNames.dateOfBirth].setErrors(null);
     }
   }
@@ -586,7 +621,7 @@ export class DemographicComponent implements OnInit, OnDestroy {
     }
   }
 
-  private calculateAge(bDay: Date) {
+  calculateAge(bDay: Date) {
     const now = new Date();
     const born = new Date(bDay);
     const years = Math.floor((now.getTime() - born.getTime()) / (365.25 * 24 * 60 * 60 * 1000));
@@ -652,6 +687,10 @@ export class DemographicComponent implements OnInit, OnDestroy {
       this.dataStorageService.addUser(request).subscribe(
         response => {
           console.log(response);
+          if (response[appConstants.NESTED_ERROR] === null && response[appConstants.RESPONSE] === null) {
+            this.router.navigate(['error']);
+            return;
+          }
           if (response[appConstants.NESTED_ERROR] !== null) {
             this.router.navigate(['error']);
             return;
@@ -689,13 +728,13 @@ export class DemographicComponent implements OnInit, OnDestroy {
     this.regService.addUser(new UserModel(this.preRegId, request, [], this.codeValue));
     this.sharedService.addNameList({
       fullName: this.userForm.controls[this.formControlNames.fullName].value,
-      fullNameSecondaryLang: this.formControlValues.fullNameSecondary,
+      fullNameSecondaryLang: this.transUserForm.controls[this.formControlNames.fullNameSecondary].value,
       preRegId: this.preRegId,
-      postalCode: this.formControlValues.postalCode
+      postalCode: this.userForm.controls[this.formControlNames.postalCode].value
     });
   }
 
-  private onSubmission() {
+  onSubmission() {
     this.checked = true;
     this.dataUploadComplete = true;
     let url = '';
@@ -755,7 +794,6 @@ export class DemographicComponent implements OnInit, OnDestroy {
 
   private createRequestJSON() {
     const identity = this.createIdentityJSONDynamic();
-
     let preRegistrationId = '';
     let createdBy = this.loginId;
     let createdDateTime = Utils.getCurrentDate();

@@ -13,11 +13,9 @@ The authentication and authorization in the MOSIP platform is handled in the a c
 
 - A centralized Auth Server handles the authorization request from the platform. 
 
-- Once authenticated, the Auth Server  sends back a Token. There are 2 types of Tokens are used in the MOSIP platform. Once is Auth token and the other is the Refresh token. 
+- Once authenticated, the Auth Server  sends back an AuthToken.
 
 - Auth token contains the information about the authenticated user and the meta data such as the expiration time, subject, issuer etc., 
-
-- Refresh token is long lived. The refresh token is used to get a new Auth token. 
 
 - An additional layers in the Auth service will ensure about the forced logout scenario. Essentially, all the service calls to the Auth Service will go through this creamy layer, where we have a proxy user datastore which will maintain the additional information about the validitiy of the tokens. 
 
@@ -27,7 +25,7 @@ The authentication and authorization in the MOSIP platform is handled in the a c
 
 ![Tokens Overview](_images/kernel-authn-tokensoverview.jpg)
 
-**Architectural Principles**
+**MOSIP Authentication and Authorization Principles**
 
 - No resource in the MOSIP can be accessed without Authentication and Authorization. 
 
@@ -39,7 +37,7 @@ The authentication and authorization in the MOSIP platform is handled in the a c
 
 - The platform's authentication method should support the heterogenous technologies and authentication should happen seamlessly. 
 
-- All the user information are stored only in the Data store. 
+- All the user information are stored in the centralized Data store. 
 
 - In the rest of the MOSIP platform uses only the userid as the handle to the actual user in the data store. No other user attribute should be used as the handle in the MOSIP platform. 
 
@@ -83,26 +81,29 @@ Reference: https://github.com/mosip/mosip/wiki/Auth-SpringBoot-User-Guide
 
 2. In case of background serivces, pass the applicationid & secret-key. 
 
-3. Once authenticated, the client receives the Auth Token and Refresh token. Client stores them in a secured local store. 
+3. Once authenticated, the client receives the Auth Token. Client stores them in a secured local store.
 
 4. In all the REST service calls to server, include the Auth Token. 
 
-5. If the Auth Token is expired, pass the Refresh token and get the Auth token.
-
-6. If the Refresh token is expired, login again. 
+5. If the Auth token is expired, login again. 
 
 
 **Implementing Auth in Angular application**
 
 1. The human user logs in using the username and the password. 
 
-2. Once authenticated, the client receives the Auth Token and Refresh token. Client stores them in a HTTP-only cookie. 
+2. Once authenticated, the client receives the Auth Token. Client stores them in a HTTP-only cookie. 
 
-3. In all the REST service calls to server, include the Auth Token. 
+3. In all the REST service calls to server, Auth Token is included.  
 
-4. If the Auth Token is expired, pass the Refresh token and get the Auth token.
+4. If the Auth Token is expired, the page is redirected to the login page.
 
-5. If the Refresh token is expired, login again. 
+5. A timer runs in the client side, which is lesser than the session timeout. This timer calls the "/authorize/validateToken" service.
+
+6. If the Auth Token comes insides the Sliding Window Threshold, a new Auth Token will be issued. 
+
+![Angular authentication keeep alive flow](_images/kernel-authentication-keepalive-prereg.jpg)
+
 
 Reference: https://github.com/mosip/mosip/wiki/Auth-Angular-User-Guide
 

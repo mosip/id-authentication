@@ -16,6 +16,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import io.mosip.preregistration.application.DemographicTestApplication;
 import io.mosip.preregistration.application.dto.DemographicRequestDTO;
 import io.mosip.preregistration.application.entity.DemographicEntity;
 import io.mosip.preregistration.application.exception.MissingRequestParameterException;
@@ -36,7 +37,7 @@ import io.mosip.preregistration.core.util.CryptoUtil;
  * 
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest
+@SpringBootTest(classes={DemographicTestApplication.class})
 public class DemographicServiceUtilTest {
 
 	/**

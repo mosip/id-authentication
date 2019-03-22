@@ -88,7 +88,7 @@ public class IrisFacade {
 				if ((boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
 					qualityScore = 90.0;
 				}else {
-					qualityScore = 50.0;
+					qualityScore = 80.0;
 				}
 			}
 

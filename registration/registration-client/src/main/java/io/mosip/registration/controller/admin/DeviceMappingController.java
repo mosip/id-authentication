@@ -115,7 +115,7 @@ public class DeviceMappingController extends BaseController implements Initializ
 					SessionContext.userContext().getUserId(), RegistrationConstants.ONBOARD_DEVICES_REF_ID_TYPE);
 
 			// Set Machine ID
-			SessionContext.map().put(RegistrationConstants.MACHINE_ID, "1947");
+			SessionContext.map().put(RegistrationConstants.MAC_ADDRESS, "1947");
 
 			// Add 'All' option to Device Types dropdown
 			deviceTypes.getItems().add(RegistrationConstants.DEVICE_TYPES_ALL_OPTION);
@@ -203,7 +203,7 @@ public class DeviceMappingController extends BaseController implements Initializ
 			Map<String, List<DeviceDTO>> devicesMap = mapMachineService.getDeviceMappingList(
 					SessionContext.userContext().getRegistrationCenterDetailDTO()
 							.getRegistrationCenterId(),
-					(String) SessionContext.map().get(RegistrationConstants.MACHINE_ID));
+					(String) SessionContext.map().get(RegistrationConstants.MAC_ADDRESS));
 
 			// If Available Devices or Mapped Devices or both not available, add new
 			// ArrayList
@@ -470,7 +470,7 @@ public class DeviceMappingController extends BaseController implements Initializ
 
 			// Get the Machine ID
 			String machineId = (String) SessionContext.map()
-					.get(RegistrationConstants.MACHINE_ID);
+					.get(RegistrationConstants.MAC_ADDRESS);
 
 			// Update the Machine ID
 			devicesAdded.forEach(deviceDTO -> deviceDTO.setMachineId(machineId));
