@@ -225,6 +225,7 @@ public class IdAuthFilter extends BaseAuthFilter {
 			String policyJson = getPolicy(policyId);
 			Policies policies = null;
 			policies = mapper.readValue(policyJson.getBytes("UTF-8"), Policies.class);
+			//Get kyc attributes
 			List<AuthPolicy> authPolicies = policies.getPolicies().getAuthPolicies();
 			List<KYCAttributes> allowedKycAttributes = policies.getPolicies().getAllowedKycAttributes();
 			List<String> allowedTypeList = allowedKycAttributes.stream().map(value -> value.getAttributeName())
