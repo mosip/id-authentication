@@ -106,7 +106,6 @@ Apache DSL camel file "registration-processor-camel-routes.xml" need to be updat
 **Logical Architecture Diagram**
 
 
-
 ------------
 - Without http end point:
 
@@ -116,12 +115,6 @@ Apache DSL camel file "registration-processor-camel-routes.xml" need to be updat
 
 ![HTTP stage diagram](_images/registration_external_with_http_integration.png)
 
-
-**Class Diagram**
-
-------------
-
-![HTTP stage class diagram](_images/http_stage_class_diagram.png)
 
 **Sequence Diagram**
 
