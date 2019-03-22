@@ -3,6 +3,7 @@ package io.mosip.authentication.service.impl.indauth.match;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -50,8 +51,19 @@ public enum IdaIdMapping implements IdMapping {
 	RIGHTLITTLE("RIGHT_LITTLE"), 
 	RIGHTMIDDLE("RIGHT_MIDDLE"), 
 	RIGHTRING("RIGHT_RING"),
-	RIGHTTHUMB("RIGHT_THUMB"), 
-	UNKNOWN_FINGER("UNKNOWN"),
+	RIGHTTHUMB("RIGHT_THUMB"),
+	UNKNOWN_FINGER("UNKNOWN", setOf(
+			LEFTINDEX,
+			LEFTLITTLE,
+			LEFTMIDDLE,
+			LEFTRING,
+			LEFTTHUMB,
+			RIGHTINDEX,
+			RIGHTLITTLE,
+			RIGHTMIDDLE,
+			RIGHTRING,
+			RIGHTTHUMB
+			)),
 
 	FINGERPRINT("fingerprint", setOf(
 			LEFTINDEX,
@@ -68,7 +80,10 @@ public enum IdaIdMapping implements IdMapping {
 			)),
 	LEFTEYE("LEFT"), 
 	RIGHTIRIS("RIGHT"), 
-	UNKNOWN_IRIS("UNKNOWN"),
+	UNKNOWN_IRIS("UNKNOWN", setOf(
+			RIGHTIRIS,
+			LEFTEYE
+			)),
 	IRIS("iris", setOf(
 			RIGHTIRIS,
 			LEFTEYE,
@@ -148,6 +163,14 @@ public enum IdaIdMapping implements IdMapping {
 	public static Set<IdMapping> setOf(IdMapping... idMapping) {
 		return Stream.of(idMapping).collect(Collectors.toSet());
 
+	}
+	
+	public static Optional<String> getIdNameForMapping(String mappingName, MappingConfig mappingConfig) {
+		return Stream.of(IdaIdMapping.values())
+				.filter(mapping -> mapping.getSubIdMappings().isEmpty())
+				.filter(mapping -> mapping.getMappingFunction().apply(mappingConfig, null).contains(mappingName))
+				.findFirst()
+				.map(IdaIdMapping::getIdname);
 	}
 
 }

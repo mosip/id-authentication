@@ -2,6 +2,7 @@ package io.mosip.authentication.core.spi.fingerprintauth.provider;
 
 import java.util.Base64;
 import java.util.Map;
+import java.util.Set;
 
 import com.google.gson.JsonSyntaxException;
 import com.machinezoo.sourceafis.FingerprintMatcher;
@@ -118,14 +119,27 @@ public abstract class FingerprintProvider implements MosipFingerprintProvider {
 	 * matchMultiMinutae(java.util.Map, java.util.Map)
 	 */
 	public double matchMultiMinutae(Map<String, String> reqInfo, Map<String, String> entityInfo) {
-		double matchScore = 0;
-		for (Map.Entry<String, String> e : reqInfo.entrySet()) {
-			String key = e.getKey();
-			String value1 = e.getValue();
-			String value2 = entityInfo.get(key);
-			matchScore += matchMinutiae(value1, value2);
+		if (!reqInfo.containsKey("UNKNOWN")) {
+			double matchScore = 0;
+			for (Map.Entry<String, String> e : reqInfo.entrySet()) {
+				String key = e.getKey();
+				String value1 = e.getValue();
+				String value2 = entityInfo.get(key);
+				matchScore += matchMinutiae(value1, value2);
+			} 
+			return matchScore;
+		} else {
+			double maxMatchScore = 0;
+			for (Map.Entry<String, String> e : entityInfo.entrySet()) {
+				String value1 = e.getValue();
+				String value2 = reqInfo.get("UNKNOWN");
+				double matchScore = matchMinutiae(value1, value2);
+				if(matchScore > maxMatchScore ) {
+					maxMatchScore = matchScore;
+				}
+			} 
+			return maxMatchScore;
 		}
-		return matchScore;
 	}
 
 	/*
