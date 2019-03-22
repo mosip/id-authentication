@@ -236,6 +236,7 @@ public class RegistrationUIConstants {
 	public static final String ERROR_IN_SYNC_AND_UPLOAD = bundle.getString("ERROR_IN_SYNC_AND_UPLOAD");
 	public static final String UNABLE_TO_SYNC_AND_UPLOAD = bundle.getString("UNABLE_TO_SYNC_AND_UPLOAD");
 	public static final String NETWORK_ERROR = bundle.getString("NETWORK_ERROR");
+	public static final String SUPERVISOR_VERIFICATION = bundle.getString("SUPERVISOR_VERIFICATION");
 
 	// Virus Scan
 	public static final String VIRUS_SCAN_ERROR_FIRST_PART = bundle.getString("VIRUS_SCAN_ERROR_FIRST_PART");
