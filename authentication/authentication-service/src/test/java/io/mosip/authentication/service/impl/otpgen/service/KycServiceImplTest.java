@@ -272,6 +272,7 @@ public class KycServiceImplTest {
 
 	private List<String> fullKycList() {
 		String s = "fullName,firstName,middleName,lastName,dateOfBirth,gender,phone,email,addressLine1,addressLine2,addressLine3,city,province,region,postalCode,face,documents.individualBiometrics";
+		
 		return Arrays.asList(s.split(","));
 	}
 }
