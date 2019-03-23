@@ -237,7 +237,42 @@ public class DemographicDetailController extends BaseController {
 	private TextField mobileNo;
 	
 	@FXML
-	private VBox mobileNumberParentPane;
+	private VBox applicationMobileNumber;
+	
+
+	@FXML
+	private VBox applicationAddressLine1;
+
+	@FXML
+	private VBox localAddressLine1;
+	
+	@FXML
+	private VBox localAddressLine2;
+	
+	@FXML
+	private VBox localAddressLine3;
+
+	@FXML
+	private VBox applicationAddressLine2;
+
+	@FXML
+	private VBox applicationAddressLine3;
+
+	@FXML
+	private VBox applicationRegion;
+
+	@FXML
+	private VBox applicationProvince;
+
+	@FXML
+	private VBox applicationCity;
+	
+
+	@FXML
+	private VBox applicationlocalAdminAuthority;
+
+	@FXML
+	private VBox applicationPostalCode;
 
 	@FXML
 	private TextField mobileNoLocalLanguage;
@@ -440,6 +475,17 @@ public class DemographicDetailController extends BaseController {
 	@FXML
 	private VBox applicationFullName;
 	@FXML
+	private ImageView fullNameKeyboardImage;
+	@FXML
+	private ImageView addressLine1KeyboardImage;
+	@FXML
+	private ImageView addressLine2KeyboardImage;
+	@FXML
+	private ImageView addressLine3KeyboardImage;
+	@FXML
+	private ImageView parentNameKeyboardImage;
+
+	@FXML
 	private VBox localFullName;
 	@FXML
 	private GridPane applicationAge;
@@ -490,7 +536,6 @@ public class DemographicDetailController extends BaseController {
 	private GridPane borderToDo;
 	@FXML
 	private Label registrationNavlabel;
-	private GridPane fullNameKeyboard;
 	@FXML
 	private AnchorPane keyboardPane;
 	@FXML
@@ -1171,16 +1216,28 @@ public class DemographicDetailController extends BaseController {
 					.setUin(getRegistrationDTOFromSession().getSelectionListDTO().getUinId());
 			updateUinId.setText(getRegistrationDTOFromSession().getSelectionListDTO().getUinId());
 			applicationFullName.setDisable(false);
+			fullNameKeyboardImage.setDisable(false);
 			localFullName.setDisable(false);
 			applicationAge.setDisable(!getRegistrationDTOFromSession().getSelectionListDTO().isAge());
 			applicationGender.setDisable(!getRegistrationDTOFromSession().getSelectionListDTO().isGender());
 			applicatoinAddressPane
 					.setDisable(!getRegistrationDTOFromSession().getSelectionListDTO().isAddress());
-			localAddressPane
-					.setDisable(!getRegistrationDTOFromSession().getSelectionListDTO().isAddress());
 			
-			mobileNumberParentPane.setDisable(!getRegistrationDTOFromSession().getSelectionListDTO().isPhone());
-
+			applicationAddressLine1.setDisable(!getRegistrationDTOFromSession().getSelectionListDTO().isAddress());
+			addressLine1KeyboardImage.setDisable(!getRegistrationDTOFromSession().getSelectionListDTO().isAddress());
+			addressLine2KeyboardImage.setDisable(!getRegistrationDTOFromSession().getSelectionListDTO().isAddress());
+			addressLine3KeyboardImage.setDisable(!getRegistrationDTOFromSession().getSelectionListDTO().isAddress());
+			applicationAddressLine2.setDisable(!getRegistrationDTOFromSession().getSelectionListDTO().isAddress());
+			applicationAddressLine3.setDisable(!getRegistrationDTOFromSession().getSelectionListDTO().isAddress());
+			localAddressLine1.setDisable(!getRegistrationDTOFromSession().getSelectionListDTO().isAddress());
+			localAddressLine2.setDisable(!getRegistrationDTOFromSession().getSelectionListDTO().isAddress());
+			localAddressLine3.setDisable(!getRegistrationDTOFromSession().getSelectionListDTO().isAddress());
+			applicationRegion.setDisable(!getRegistrationDTOFromSession().getSelectionListDTO().isAddress());
+			applicationProvince.setDisable(!getRegistrationDTOFromSession().getSelectionListDTO().isAddress());
+			applicationCity.setDisable(!getRegistrationDTOFromSession().getSelectionListDTO().isAddress());
+			applicationCity.setDisable(!getRegistrationDTOFromSession().getSelectionListDTO().isAddress());
+			applicationlocalAdminAuthority.setDisable(!getRegistrationDTOFromSession().getSelectionListDTO().isAddress());
+			applicationMobileNumber.setDisable(!getRegistrationDTOFromSession().getSelectionListDTO().isPhone());
 			applicationemailIdPane.setDisable(!getRegistrationDTOFromSession().getSelectionListDTO().isEmail());
 
 			residenceParentpane.setDisable(!getRegistrationDTOFromSession().getSelectionListDTO().isForeigner());
@@ -1194,11 +1251,13 @@ public class DemographicDetailController extends BaseController {
 
 			parentDetailPane.setDisable(!isChild);
 			parentDetailPane.setVisible(isChild);
+			parentNameKeyboardImage.setDisable(!isChild);
 
 			if (SessionContext.map().get(RegistrationConstants.IS_Child) != null) {
 				isChild = (boolean) SessionContext.map().get(RegistrationConstants.IS_Child);
 				parentDetailPane.setDisable(!isChild);
 				parentDetailPane.setVisible(isChild);
+				parentNameKeyboardImage.setDisable(!isChild);
 			}
 
 		}
@@ -1383,7 +1442,7 @@ public class DemographicDetailController extends BaseController {
 	@FXML
 	private void setFocusonLocalField(MouseEvent event) {
 		try {
-			keyboardNode.setLayoutX(470.00);
+			keyboardNode.setLayoutX(500.00);
 			Node node = (Node) event.getSource();
 
 			if (node.getId().equals(RegistrationConstants.ADDRESS_LINE1)) {
