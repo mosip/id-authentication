@@ -10,7 +10,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
@@ -23,36 +22,9 @@ import io.mosip.authentication.core.util.dto.RestRequestDTO;
 import io.mosip.authentication.service.factory.RestRequestFactory;
 import io.mosip.authentication.service.helper.RestHelper;
 import io.mosip.kernel.core.logger.spi.Logger;
-import io.mosip.kernel.core.templatemanager.spi.TemplateManager;
-import io.mosip.kernel.core.templatemanager.spi.TemplateManagerBuilder;
 
 @Component
 public class MasterDataManager {
-
-	/**
-	 * Language type
-	 */
-	private static final String LANGUAGE_TYPE_REQUIRED = "secondary";
-
-	/**
-	 * Notification language support
-	 */
-	private static final String NOTIFICATION_LANGUAGE_SUPPORT = "notification.language.support";
-
-	/** The template manager. */
-	private TemplateManager templateManager;
-
-	/**
-	 * The Template Manager Builder
-	 */
-	@Autowired
-	private TemplateManagerBuilder templateManagerBuilder;
-
-	/**
-	 * Environment
-	 */
-	@Autowired
-	private Environment environment;
 
 	/**
 	 * The Rest Helper

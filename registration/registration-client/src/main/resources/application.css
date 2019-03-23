@@ -1160,10 +1160,11 @@ Working on new Css by taleev
 }
 
 .IrisPanes{
-	-fx-background-color : red;
-	-fx-border-color : red;
+	-fx-background-color : #F0F0F0;
+	-fx-border-color : #EFEFEF;
 	-fx-border-width : 5;
 	-fx-padding : -2.5;
+	-fx-border-radius: 3,3,3,3;
 }
 
 .IrisPanes:focused{
@@ -1176,10 +1177,11 @@ Working on new Css by taleev
 }
 
 .IrisPanesSelected{
-	-fx-background-color : green;
-	-fx-border-color : red;
+	-fx-background-color : #F0F0F0;
+	-fx-border-color : #EFEFEF;
 	-fx-border-width : 5;
 	-fx-padding : -2.5;
+	-fx-border-radius: 3,3,3,3;
 }	
 
 .paneAtDisplayIris{

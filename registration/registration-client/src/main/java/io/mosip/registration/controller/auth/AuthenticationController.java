@@ -563,7 +563,7 @@ public class AuthenticationController extends BaseController implements Initiali
 		errorText1.setText(RegistrationUIConstants.BIOMETRIC_DISABLE_SCREEN_1);
 		errorText2.setText(RegistrationUIConstants.BIOMETRIC_DISABLE_SCREEN_2);
 		if (isSupervisor) {
-			errorLabel.setText(RegistrationConstants.SUPERVISOR_VERIFICATION);
+			errorLabel.setText(RegistrationUIConstants.SUPERVISOR_VERIFICATION);
 		}
 	}
 
@@ -579,7 +579,7 @@ public class AuthenticationController extends BaseController implements Initiali
 		otpUserId.clear();
 		otpUserId.setEditable(false);
 		if (isSupervisor) {
-			otpLabel.setText(RegistrationConstants.SUPERVISOR_VERIFICATION);
+			otpLabel.setText(RegistrationUIConstants.SUPERVISOR_VERIFICATION);
 			if (authCount > 1 && !userNameField.isEmpty()) {
 				otpUserId.setText(userNameField);
 			} else {
@@ -602,7 +602,7 @@ public class AuthenticationController extends BaseController implements Initiali
 		password.clear();
 		username.setEditable(false);
 		if (isSupervisor) {
-			passwdLabel.setText(RegistrationConstants.SUPERVISOR_VERIFICATION);
+			passwdLabel.setText(RegistrationUIConstants.SUPERVISOR_VERIFICATION);
 			if (authCount > 1 && !userNameField.isEmpty()) {
 				username.setText(userNameField);
 			} else {
@@ -646,7 +646,7 @@ public class AuthenticationController extends BaseController implements Initiali
 		fpUserId.clear();
 		fpUserId.setEditable(false);
 		if (isSupervisor) {
-			irisLabel.setText(RegistrationConstants.SUPERVISOR_VERIFICATION);
+			irisLabel.setText(RegistrationUIConstants.SUPERVISOR_VERIFICATION);
 			if (authCount > 1 && !userNameField.isEmpty()) {
 				fpUserId.setText(userNameField);
 			} else {
@@ -668,7 +668,7 @@ public class AuthenticationController extends BaseController implements Initiali
 		fpUserId.clear();
 		fpUserId.setEditable(false);
 		if (isSupervisor) {
-			faceLabel.setText(RegistrationConstants.SUPERVISOR_VERIFICATION);
+			faceLabel.setText(RegistrationUIConstants.SUPERVISOR_VERIFICATION);
 			if (authCount > 1 && !userNameField.isEmpty()) {
 				fpUserId.setText(userNameField);
 			} else {

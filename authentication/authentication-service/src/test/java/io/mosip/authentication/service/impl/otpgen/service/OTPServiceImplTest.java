@@ -1,7 +1,6 @@
 package io.mosip.authentication.service.impl.otpgen.service;
 
 import java.text.SimpleDateFormat;
-import java.time.Instant;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -38,7 +37,6 @@ import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.IdAuthenticationDaoException;
 import io.mosip.authentication.core.exception.RestServiceException;
 import io.mosip.authentication.core.spi.id.service.IdAuthService;
-import io.mosip.authentication.core.spi.id.service.IdRepoService;
 import io.mosip.authentication.core.util.OTPUtil;
 import io.mosip.authentication.core.util.dto.RestRequestDTO;
 import io.mosip.authentication.service.entity.AutnTxn;
@@ -53,6 +51,7 @@ import io.mosip.authentication.service.integration.OTPManager;
 import io.mosip.authentication.service.integration.dto.OtpGeneratorResponseDto;
 import io.mosip.authentication.service.repository.AutnTxnRepository;
 import io.mosip.kernel.core.exception.ParseException;
+import io.mosip.kernel.core.idrepo.spi.IdRepoService;
 
 /**
  * Test class for OTPServiceImpl.
@@ -121,7 +120,6 @@ public class OTPServiceImplTest {
 		ReflectionTestUtils.setField(idInfoHelper, "environment", env);
 		ReflectionTestUtils.setField(otpServiceImpl, "notificationService", notificationService);
 		ReflectionTestUtils.setField(otpServiceImpl, "idAuthService", idAuthService);
-		ReflectionTestUtils.setField(otpServiceImpl, "idInfoService", idInfoService);
 	}
 
 	private OtpRequestDTO getOtpRequestDTO() {
@@ -149,7 +147,6 @@ public class OTPServiceImplTest {
 		Mockito.when(idAuthService.getIdInfo(Mockito.any())).thenReturn(idInfo);
 		Mockito.when(autntxnrepository.countRequestDTime(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(1);
 		Mockito.when(idInfoHelper.getEntityInfoAsString(Mockito.any(), Mockito.any())).thenReturn("9999999999");
-		Mockito.when(idInfoHelper.getUTCTime(Mockito.anyString())).thenReturn(Instant.now().toString());
 		OtpRequestDTO otpRequestDTO = getOtpRequestDTO();
 		ChannelDTO otpChannel = new ChannelDTO();
 		otpChannel.setEmail(false);
@@ -169,7 +166,6 @@ public class OTPServiceImplTest {
 		Mockito.when(idAuthService.getIdInfo(Mockito.any())).thenReturn(idInfo);
 		Mockito.when(autntxnrepository.countRequestDTime(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(1);
 		Mockito.when(idInfoHelper.getEntityInfoAsString(Mockito.any(), Mockito.any())).thenReturn("");
-		Mockito.when(idInfoHelper.getUTCTime(Mockito.anyString())).thenReturn(Instant.now().toString());
 		OtpRequestDTO otpRequestDTO = getOtpRequestDTO();
 		ChannelDTO otpChannel = new ChannelDTO();
 		otpChannel.setEmail(false);
@@ -189,8 +185,8 @@ public class OTPServiceImplTest {
 		Mockito.when(idAuthService.getIdInfo(Mockito.any())).thenReturn(idInfo);
 		Mockito.when(autntxnrepository.countRequestDTime(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(1);
 		Mockito.when(idInfoHelper.getEntityInfoAsString(Mockito.any(), Mockito.any())).thenReturn("9999999999");
-		Mockito.when(idInfoHelper.getUTCTime(Mockito.anyString())).thenReturn("");
 		OtpRequestDTO otpRequestDTO = getOtpRequestDTO();
+		otpRequestDTO.setRequestTime("");
 		Mockito.when(otpManager.generateOTP(Mockito.anyString())).thenReturn("123456");
 		otpServiceImpl.generateOtp(otpRequestDTO, "TEST0000001");
 	}
@@ -206,7 +202,6 @@ public class OTPServiceImplTest {
 		Mockito.when(idAuthService.getIdInfo(Mockito.any())).thenReturn(idInfo);
 		Mockito.when(autntxnrepository.countRequestDTime(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(1);
 		Mockito.when(idInfoHelper.getEntityInfoAsString(Mockito.any(), Mockito.any())).thenReturn("9999999999");
-		Mockito.when(idInfoHelper.getUTCTime(Mockito.anyString())).thenReturn(Instant.now().toString());
 		RestRequestDTO requestDTO = getRestRequestDTO();
 		Mockito.when(otpManager.generateOTP(Mockito.anyString())).thenReturn("123456");
 		otpServiceImpl.generateOtp(otpRequestDto, "TEST0000001");
@@ -229,7 +224,7 @@ public class OTPServiceImplTest {
 	public void TestDateParseException() throws IdAuthenticationBusinessException {
 		OtpRequestDTO otpRequestDTO = getOtpRequestDTO();
 		Mockito.when(otpManager.generateOTP(Mockito.any())).thenReturn("123456");
-		Mockito.when(idInfoHelper.getUTCTime(Mockito.any())).thenThrow(new DateTimeParseException("", "", 0));
+		Mockito.when(otpService.getUTCTime(Mockito.any())).thenThrow(new DateTimeParseException("", "", 0));
 		otpManager.generateOTP("123456");
 	}
 
@@ -258,7 +253,7 @@ public class OTPServiceImplTest {
 				.thenReturn(requestDTO);
 		Mockito.when(restHelper.requestSync(Mockito.any()))
 				.thenThrow(new RestServiceException(IdAuthenticationErrorConstants.OTP_GENERATION_FAILED));
-		Mockito.when(idInfoHelper.getUTCTime(Mockito.anyString())).thenReturn(Instant.now().toString());
+
 		otpServiceImpl.generateOtp(otpRequestDTO, "TEST0000001");
 
 	}
@@ -338,7 +333,7 @@ public class OTPServiceImplTest {
 		Mockito.when(idInfoHelper.getEntityInfoAsString(DemoMatchType.EMAIL, idInfo)).thenReturn(emailId);
 
 		Mockito.when(idInfoHelper.getEntityInfoAsString(DemoMatchType.PHONE, idInfo)).thenReturn(mobileNumber);
-		Mockito.when(idInfoHelper.getUTCTime(Mockito.anyString())).thenReturn("2019-02-18T12:28:17.078");
+		Mockito.when(otpService.getUTCTime(Mockito.anyString())).thenReturn("2019-02-18T12:28:17.078");
 		Optional<String> uinOpt = Optional.of("426789089018");
 		otpServiceImpl.generateOtp(otpRequestDto, "TEST0000001");
 	}
@@ -377,7 +372,7 @@ public class OTPServiceImplTest {
 		Mockito.when(idInfoHelper.getEntityInfoAsString(DemoMatchType.EMAIL, idInfo)).thenReturn(emailId);
 
 		Mockito.when(idInfoHelper.getEntityInfoAsString(DemoMatchType.PHONE, idInfo)).thenReturn(mobileNumber);
-		Mockito.when(idInfoHelper.getUTCTime(Mockito.anyString())).thenReturn("2019-02-18T12:28:17.078");
+		Mockito.when(otpService.getUTCTime(Mockito.anyString())).thenReturn("2019-02-18T12:28:17.078");
 		Optional<String> uinOpt = Optional.of("426789089018");
 		ChannelDTO otpChannel = new ChannelDTO();
 		otpChannel.setEmail(true);
@@ -409,7 +404,7 @@ public class OTPServiceImplTest {
 
 		ReflectionTestUtils.invokeMethod(otpServiceImpl, "getEmail", idInfo);
 		ReflectionTestUtils.invokeMethod(otpServiceImpl, "getMobileNumber", idInfo);
-		Mockito.when(idInfoHelper.getUTCTime(Mockito.anyString())).thenReturn("2019-02-18T12:28:17.078");
+		Mockito.when(otpService.getUTCTime(Mockito.anyString())).thenReturn("2019-02-18T12:28:17.078");
 		otpServiceImpl.generateOtp(otpRequestDto, "TEST0000001");
 
 	}
@@ -432,7 +427,7 @@ public class OTPServiceImplTest {
 		String otp = null;
 
 		String otpKey = OTPUtil.generateKey(productid, uin, txnID, "TEST0000001");
-		Mockito.when(idInfoHelper.getUTCTime(Mockito.anyString())).thenReturn("2019-02-18T12:28:17.078");
+		Mockito.when(otpService.getUTCTime(Mockito.anyString())).thenReturn("2019-02-18T12:28:17.078");
 		Mockito.when(otpManager.generateOTP(otpKey)).thenReturn(otp);
 		Mockito.when(otpServiceImpl.generateOtp(Mockito.any(), Mockito.any()))
 				.thenThrow(new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.OTP_GENERATION_FAILED));
@@ -459,7 +454,7 @@ public class OTPServiceImplTest {
 	@Ignore
 	@Test(expected = IdAuthenticationBusinessException.class)
 	public void TestParseExceptioncreateAuthTxn() throws Throwable {
-		Mockito.when(idInfoHelper.getUTCTime(Mockito.any())).thenReturn("2019-02-18T18:17:48.923+05:30");
+		Mockito.when(otpService.getUTCTime(Mockito.any())).thenReturn("2019-02-18T18:17:48.923+05:30");
 		try {
 			ReflectionTestUtils.invokeMethod(otpServiceImpl, "createAuthTxn", "", "", "", "2019-02T18:17:48.923+05:30",
 					"", "", "", RequestType.OTP_REQUEST);
