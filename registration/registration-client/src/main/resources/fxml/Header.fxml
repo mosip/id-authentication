@@ -150,9 +150,9 @@
                   <SeparatorMenuItem />
                   <MenuItem mnemonicParsing="false" onAction="#downloadPreRegData" text="%downloadpre-registrationdata" />
                   <SeparatorMenuItem />
-                  <MenuItem mnemonicParsing="false" onAction="#redirectHome" text="%home" />
-                  <SeparatorMenuItem />
                   <MenuItem fx:id="remap" mnemonicParsing="false" onAction="#intiateRemapProcess" text="%remap"/>                       
+                  <SeparatorMenuItem />
+                  <MenuItem mnemonicParsing="false" onAction="#redirectHome" text="%home" />
                   <SeparatorMenuItem />
                   <MenuItem fx:id="logout" mnemonicParsing="false" onAction="#logout" text="%logout" />
                </items>
