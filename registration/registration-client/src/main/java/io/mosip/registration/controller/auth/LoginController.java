@@ -205,7 +205,7 @@ public class LoginController extends BaseController implements Initializable {
 	 * @throws RegBaseCheckedException
 	 */
 	public void loadInitialScreen(Stage primaryStage) {
-		//
+		
 		try {
 			ResponseDTO responseDTO = getSyncConfigData();
 			if (responseDTO != null) {

@@ -1527,9 +1527,9 @@ public class DemographicDetailController extends BaseController {
 			} else {
 				goToHomePageFromRegistration();
 			}
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		} catch (IOException exception) {
+			LOGGER.error("COULD NOT LOAD HOME PAGE", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
+					exception.getMessage() + ExceptionUtils.getStackTrace(exception));
 		}
 	}
 
