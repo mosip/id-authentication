@@ -41,6 +41,9 @@ import io.mosip.kernel.qrcode.generator.zxing.constant.QrVersion;
 import io.mosip.registration.processor.core.constant.IdType;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.exception.TemplateProcessingFailureException;
+import io.mosip.registration.processor.core.idrepo.dto.Documents;
+import io.mosip.registration.processor.core.idrepo.dto.IdResponseDTO;
+import io.mosip.registration.processor.core.idrepo.dto.ResponseDTO;
 import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.spi.print.service.PrintService;
@@ -50,9 +53,6 @@ import io.mosip.registration.processor.message.sender.template.TemplateGenerator
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.packet.storage.utils.Utilities;
 import io.mosip.registration.processor.print.service.impl.PrintServiceImpl;
-import io.mosip.registration.processor.print.service.kernel.dto.Documents;
-import io.mosip.registration.processor.print.service.kernel.dto.IdResponseDTO;
-import io.mosip.registration.processor.print.service.kernel.dto.ResponseDTO;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
 
 @RunWith(PowerMockRunner.class)
