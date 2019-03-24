@@ -76,6 +76,7 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Bounds;
+import javafx.geometry.NodeOrientation;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
@@ -545,6 +546,7 @@ public class DemographicDetailController extends BaseController {
 		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Entering the LOGIN_CONTROLLER");
 		try {
+			changeOrientation(NodeOrientation.RIGHT_TO_LEFT);
 			fxUtils = FXUtils.getInstance();
 			fxUtils.setTransliteration(transliteration);
 			SessionContext.map().put(RegistrationConstants.IS_CONSOLIDATED, RegistrationConstants.DISABLE);
@@ -581,6 +583,24 @@ public class DemographicDetailController extends BaseController {
 
 		}
 	}
+	
+	
+	/*
+	 * TO change  the orientation based on language 
+	 */
+	
+	private void changeOrientation(NodeOrientation orientation) {
+		fullName.setNodeOrientation(orientation);
+		addressLine1.setNodeOrientation(orientation);
+		addressLine2.setNodeOrientation(orientation);
+		addressLine3.setNodeOrientation(orientation);
+		province.setNodeOrientation(orientation);
+		city.setNodeOrientation(orientation);
+		region.setNodeOrientation(orientation);
+		localAdminAuthority.setNodeOrientation(orientation);
+		parentName.setNodeOrientation(orientation);
+	}
+	
 
 	private void disableLocalFields() {
 		localGender.setDisable(true);
@@ -838,7 +858,9 @@ public class DemographicDetailController extends BaseController {
 			emailIdLocalLanguageLabel.setText(localProperties.getString("emailId"));
 			emailIdLocalLanguage.setPromptText(localProperties.getString("emailId"));
 			parentNameLocalLanguageLabel.setText(localProperties.getString("parentName"));
+			parentNameLocalLanguage.setPromptText(localProperties.getString("parentName"));
 			uinIdLocalLanguageLabel.setText(localProperties.getString("uinId"));
+			uinIdLocalLanguage.setPromptText(localProperties.getString("uinId"));
 			residenceLblLocalLanguage.setText(localProperties.getString("residence"));
 			nationalLocalLanguage.setText(localProperties.getString("national"));
 			foreignerLocalLanguage.setText(localProperties.getString("foreigner"));
