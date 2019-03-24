@@ -3,14 +3,10 @@
  */
 package io.mosip.authentication.service.helper;
 
-import java.text.SimpleDateFormat;
-import java.time.ZoneId;
-import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -19,7 +15,6 @@ import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-import java.util.TimeZone;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -28,44 +23,23 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
-import io.mosip.authentication.core.dto.indauth.AuthError;
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
-import io.mosip.authentication.core.dto.indauth.AuthStatusInfo;
-import io.mosip.authentication.core.dto.indauth.DataDTO;
-import io.mosip.authentication.core.dto.indauth.IdType;
 import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
 import io.mosip.authentication.core.dto.indauth.LanguageType;
-import io.mosip.authentication.core.dto.indauth.RequestDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.logger.IdaLogger;
-import io.mosip.authentication.core.spi.bioauth.CbeffDocType;
-import io.mosip.authentication.core.spi.bioauth.provider.MosipBiometricProvider;
-import io.mosip.authentication.core.spi.indauth.match.AuthType;
 import io.mosip.authentication.core.spi.indauth.match.EntityValueFetcher;
 import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
 import io.mosip.authentication.core.spi.indauth.match.IdMapping;
-import io.mosip.authentication.core.spi.indauth.match.MasterDataFetcher;
 import io.mosip.authentication.core.spi.indauth.match.MatchInput;
 import io.mosip.authentication.core.spi.indauth.match.MatchOutput;
 import io.mosip.authentication.core.spi.indauth.match.MatchType;
 import io.mosip.authentication.core.spi.indauth.match.MatchType.Category;
 import io.mosip.authentication.core.spi.indauth.match.MatchingStrategy;
 import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
-import io.mosip.authentication.core.spi.indauth.match.ValidateOtpFunction;
 import io.mosip.authentication.service.config.IDAMappingConfig;
-import io.mosip.authentication.service.factory.BiometricProviderFactory;
-import io.mosip.authentication.service.impl.indauth.builder.AuthStatusInfoBuilder;
 import io.mosip.authentication.service.impl.indauth.match.IdaIdMapping;
-import io.mosip.authentication.service.impl.indauth.service.bio.BioAuthType;
-import io.mosip.authentication.service.impl.indauth.service.bio.BioMatchType;
-import io.mosip.authentication.service.impl.indauth.service.demo.DemoAuthType;
-import io.mosip.authentication.service.impl.indauth.service.pin.PinAuthType;
-import io.mosip.authentication.service.integration.MasterDataManager;
-import io.mosip.authentication.service.integration.OTPManager;
-import io.mosip.kernel.core.cbeffutil.spi.CbeffUtil;
 import io.mosip.kernel.core.logger.spi.Logger;
-import io.mosip.kernel.core.util.CryptoUtil;
-import io.mosip.kernel.core.util.DateUtils;
 
 /**
  * The Class IdInfoHelper.
@@ -74,36 +48,16 @@ import io.mosip.kernel.core.util.DateUtils;
  */
 
 @Component
-public class IdInfoHelper implements IdInfoFetcher {
-
-	/** The Constant MOSIP_SUPPORTED_LANGUAGES. */
-	private static final String MOSIP_SUPPORTED_LANGUAGES = "mosip.supported-languages";
+public class IdInfoHelper {
 
 	/** The logger. */
 	private static Logger logger = IdaLogger.getLogger(IdInfoHelper.class);
 
-	private static final String INDIVIDUAL_BIOMETRICS = "individualBiometrics";
-
 	/** The Constant DEFAULT_SESSION_ID. */
 	private static final String SESSION_ID = "sessionId";
 
-	/** The Constant PRIMARY_LANG_CODE. */
-	private static final String PRIMARY_LANG_CODE = "mosip.primary.lang-code";
-
-	/** The Constant SECONDARY_LANG_CODE. */
-	private static final String SECONDARY_LANG_CODE = "mosip.secondary.lang-code";
-
-	/** The Constant DEFAULT_EXACT_MATCH_VALUE. */
-	public static final int DEFAULT_EXACT_MATCH_VALUE = 100;
-
-	/** The Constant DEFAULT_MATCH_VALUE. */
-	public static final String DEFAULT_MATCH_VALUE = "demo.min.match.value";
-
-	/** The Constant UTC. */
-	private static final String UTC = "UTC";
-
-	/** The Constant DATETIME_PATTERN. */
-	private static final String DATETIME_PATTERN = "datetime.pattern";
+	/** The Constant MOSIP_SUPPORTED_LANGUAGES. */
+	private static final String MOSIP_SUPPORTED_LANGUAGES = "mosip.supported-languages";
 
 	/** The id mapping config. */
 	@Autowired
@@ -113,84 +67,11 @@ public class IdInfoHelper implements IdInfoFetcher {
 	@Autowired
 	private Environment environment;
 
-	/** The BiometricProviderFactory value */
 	@Autowired
-	private BiometricProviderFactory biometricProviderFactory;
-
-	/** The OTPManager */
-	@Autowired
-	private OTPManager otpManager;
-
-	@Autowired
-	private CbeffUtil cbeffUtil;
-
-	@Autowired
-	private MasterDataManager masterDataManager;
-
-	/*
-	 * Fetch language Name based on language code
-	 */
-	public Optional<String> getLanguageName(String languageCode) {
-		String languagName = null;
-		String key = null;
-		if (languageCode != null) {
-			key = "mosip.phonetic.lang.".concat(languageCode.toLowerCase()); // mosip.phonetic.lang.
-			String property = environment.getProperty(key);
-			if (property != null && !property.isEmpty()) {
-				String[] split = property.split("-");
-				languagName = split[0];
-			}
-		}
-		return Optional.ofNullable(languagName);
-	}
-
-	/**
-	 * Fetch language code from properties
-	 *
-	 * @param langType - the language code
-	 * @return the language code
-	 */
-	public String getLanguageCode(LanguageType langType) {
-		if (langType == LanguageType.PRIMARY_LANG) {
-			return environment.getProperty(PRIMARY_LANG_CODE);
-		} else {
-			return environment.getProperty(SECONDARY_LANG_CODE);
-		}
-	}
+	private IdInfoFetcher idInfoFetcher;
 
 	public Map<String, String> getAuthReqestInfo(MatchType matchType, AuthRequestDTO authRequestDTO) {
 		return matchType.getReqestInfoFunction().apply(authRequestDTO);
-	}
-
-	/**
-	 * Fetch Identity info based on Match type and Identity
-	 *
-	 * 
-	 * @return Map
-	 */
-	public Map<String, String> getIdentityRequestInfo(MatchType matchType, RequestDTO identity, String language) {
-		return getInfo(matchType.getIdentityInfoFunction().apply(identity), language);
-	}
-
-	/**
-	 * Fetch the Identity info based on Identity Info map and Language.
-	 *
-	 * @param idInfosMap           the id infos map
-	 * @param languageForMatchType the language for match type
-	 * @return the info
-	 */
-	private Map<String, String> getInfo(Map<String, List<IdentityInfoDTO>> idInfosMap, String languageForMatchType) {
-		if (idInfosMap != null && !idInfosMap.isEmpty()) {
-			return idInfosMap.entrySet().parallelStream()
-
-					.map(entry -> new SimpleEntry<String, String>(entry.getKey(),
-							Optional.ofNullable(entry.getValue()).flatMap(value -> value.stream()
-									.filter(idInfo -> checkLanguageType(languageForMatchType, idInfo.getLanguage()))
-									.map(IdentityInfoDTO::getValue).findAny()).orElse("")))
-					.filter(entry -> entry.getValue().length() > 0)
-					.collect(Collectors.toMap(Entry::getKey, Entry::getValue));
-		}
-		return Collections.emptyMap();
 	}
 
 	/**
@@ -206,47 +87,10 @@ public class IdInfoHelper implements IdInfoFetcher {
 		List<IdentityInfoDTO> identityInfoList = identityInfo.get(name).getValue();
 		if (identityInfoList != null && !identityInfoList.isEmpty()) {
 			return identityInfoList.stream()
-					.filter(idinfo -> checkLanguageType(languageForMatchType, idinfo.getLanguage()))
+					.filter(idinfo -> idInfoFetcher.checkLanguageType(languageForMatchType, idinfo.getLanguage()))
 					.map(idInfo -> idInfo.getValue());
 		}
 		return Stream.empty();
-	}
-
-	/**
-	 * Fetch the identity value.
-	 *
-	 * @param name                 the name
-	 * @param languageForMatchType the language for match type
-	 * @param demoInfo             the demo info
-	 * @return the identity value
-	 */
-	private Stream<String> getIdentityValue(String name, String languageForMatchType,
-			Map<String, List<IdentityInfoDTO>> demoInfo) {
-		List<IdentityInfoDTO> identityInfoList = demoInfo.get(name);
-		if (identityInfoList != null && !identityInfoList.isEmpty()) {
-			return identityInfoList.stream()
-					.filter(idinfo -> checkLanguageType(languageForMatchType, idinfo.getLanguage()))
-					.map(idInfo -> idInfo.getValue());
-		}
-
-		return Stream.empty();
-	}
-
-	/**
-	 * Check language type.
-	 *
-	 * @param languageForMatchType the language for match type
-	 * @param languageFromReq      the language from req
-	 * @return true, if successful
-	 */
-	private boolean checkLanguageType(String languageForMatchType, String languageFromReq) {
-		if (languageForMatchType == null || languageFromReq == null || languageFromReq.isEmpty()
-				|| languageFromReq.equalsIgnoreCase("null")) {
-			return languageForMatchType == null
-					|| getLanguageCode(LanguageType.PRIMARY_LANG).equalsIgnoreCase(languageForMatchType);
-		} else {
-			return languageForMatchType.equalsIgnoreCase(languageFromReq);
-		}
 	}
 
 	/**
@@ -302,7 +146,7 @@ public class IdInfoHelper implements IdInfoFetcher {
 	 */
 	public String getEntityInfoAsString(MatchType matchType, Map<String, List<IdentityInfoDTO>> demoEntity)
 			throws IdAuthenticationBusinessException {
-		String langCode = getLanguageCode(LanguageType.PRIMARY_LANG);
+		String langCode = idInfoFetcher.getLanguageCode(LanguageType.PRIMARY_LANG);
 		return getEntityInfoAsString(matchType, langCode, demoEntity);
 	}
 
@@ -332,7 +176,8 @@ public class IdInfoHelper implements IdInfoFetcher {
 	 */
 	private Map<String, String> getIdentityValuesMap(MatchType matchType, List<String> propertyNames,
 			String languageCode, Map<String, List<IdentityInfoDTO>> idEntity) throws IdAuthenticationBusinessException {
-		Map<String, Entry<String, List<IdentityInfoDTO>>> mappedIdEntity = matchType.mapEntityInfo(idEntity, this);
+		Map<String, Entry<String, List<IdentityInfoDTO>>> mappedIdEntity = matchType.mapEntityInfo(idEntity,
+				idInfoFetcher);
 		return propertyNames.stream().filter(propName -> mappedIdEntity.containsKey(propName)).collect(Collectors.toMap(
 				propName -> mappedIdEntity.get(propName).getKey(),
 				propName -> getIdentityValueFromMap(propName, languageCode, mappedIdEntity).findAny().orElse(""),
@@ -468,7 +313,8 @@ public class IdInfoHelper implements IdInfoFetcher {
 				Map<String, String> reqInfo = null;
 				reqInfo = getAuthReqestInfo(matchType, authRequestDTO);
 				if (null == reqInfo || reqInfo.isEmpty()) {
-					reqInfo = getIdentityRequestInfo(matchType, authRequestDTO.getRequest(), input.getLanguage());
+					reqInfo = idInfoFetcher.getIdentityRequestInfo(matchType, authRequestDTO.getRequest(),
+							input.getLanguage());
 				}
 				if (null != reqInfo && reqInfo.size() > 0) {
 					Map<String, String> entityInfo = getEntityInfo(demoEntity, uin, authRequestDTO, input,
@@ -528,256 +374,12 @@ public class IdInfoHelper implements IdInfoFetcher {
 	}
 
 	/**
-	 * Construct match input.
-	 *
-	 * @param authRequestDTO the auth request DTO
-	 * @param authTypes      the auth types
-	 * @param matchTypes     the match types
-	 * @return the list
-	 */
-	public List<MatchInput> constructMatchInput(AuthRequestDTO authRequestDTO, AuthType[] authTypes,
-			MatchType[] matchTypes) {
-		return Stream.of(matchTypes).flatMap(matchType -> {
-			Set<String> languages = extractAllowedLang();
-			List<MatchInput> matchInputs = new ArrayList<>();
-			if (matchType.isMultiLanguage()) {
-				for (String language : languages) {
-					addMatchInput(authRequestDTO, authTypes, matchType, matchInputs, language);
-				}
-			} else {
-				addMatchInput(authRequestDTO, authTypes, matchType, matchInputs, null);
-			}
-			return matchInputs.stream();
-		}).filter(Objects::nonNull).collect(Collectors.toList());
-
-	}
-
-	private void addMatchInput(AuthRequestDTO authRequestDTO, AuthType[] authTypes, MatchType matchType,
-			List<MatchInput> matchInputs, String language) {
-		Map<String, String> infoFromAuthRequest = matchType.getReqestInfoFunction().apply(authRequestDTO);
-		Optional<AuthType> authTypeOpt = AuthType.getAuthTypeForMatchType(matchType, authTypes);
-		if (authTypeOpt.isPresent()) {
-			matchInputs.add(buildMatchInput(authRequestDTO, matchType, infoFromAuthRequest, authTypeOpt, language));
-		}
-	}
-
-	private MatchInput buildMatchInput(AuthRequestDTO authRequestDTO, MatchType matchType,
-			Map<String, String> infoFromAuthRequest, Optional<AuthType> authTypeOpt, String language) {
-		AuthType authType = authTypeOpt.get();
-		if (infoFromAuthRequest.isEmpty()) {
-			// For Identity
-			Optional<RequestDTO> identityOpt = Optional.ofNullable(authRequestDTO.getRequest());
-			if (identityOpt.isPresent()) {
-				RequestDTO identity = identityOpt.get();
-				if (authType.isAuthTypeEnabled(authRequestDTO, this)
-						&& getIdentityRequestInfo(matchType, identity, language).size() > 0) {
-					return contstructMatchInput(authRequestDTO, matchType, authType, language);
-				}
-			}
-		} else {
-			// For non-identity
-			if (authType.isAuthTypeEnabled(authRequestDTO, this) && authType.isAuthTypeInfoAvailable(authRequestDTO)) {
-				return contstructMatchInput(authRequestDTO, matchType, authType, null);
-			}
-		}
-		return null;
-	}
-
-	/**
-	 * Construct match input.
-	 *
-	 * @param authRequestDTO the auth request DTO
-	 * @param matchType      TODO
-	 * @param authType       TODO
-	 * @param language       the language
-	 * @return the list
-	 */
-	public MatchInput contstructMatchInput(AuthRequestDTO authRequestDTO, MatchType matchType, AuthType authType,
-			String language) {
-
-		if (matchType.getCategory() == Category.BIO && !authType.isAuthTypeInfoAvailable(authRequestDTO)) {
-			return null;
-		} else {
-			Integer matchValue = DEFAULT_EXACT_MATCH_VALUE;
-			String matchingStrategy = MatchingStrategyType.DEFAULT_MATCHING_STRATEGY.getType();
-
-			Optional<String> matchingStrategyOpt = authType.getMatchingStrategy(authRequestDTO, language);
-			if (matchingStrategyOpt.isPresent()) {
-				matchingStrategy = matchingStrategyOpt.get();
-				if (matchingStrategyOpt.get().equals(MatchingStrategyType.PARTIAL.getType())
-						|| matchingStrategyOpt.get().equals(MatchingStrategyType.PHONETICS.getType())) {
-					Optional<Integer> matchThresholdOpt = authType.getMatchingThreshold(authRequestDTO, language,
-							environment);
-					matchValue = matchThresholdOpt
-							.orElseGet(() -> Integer.parseInt(environment.getProperty(DEFAULT_MATCH_VALUE)));
-				}
-			}
-			Map<String, Object> matchProperties = authType.getMatchProperties(authRequestDTO, this, language);
-
-			return new MatchInput(authType, matchType, matchingStrategy, matchValue, matchProperties, language);
-		}
-	}
-
-	/**
-	 * Builds the status info.
-	 *
-	 * @param demoMatched      the demo matched
-	 * @param listMatchInputs  the list match inputs
-	 * @param listMatchOutputs the list match outputs
-	 * @param authTypes        the auth types
-	 * @return the auth status info
-	 */
-	public AuthStatusInfo buildStatusInfo(boolean demoMatched, List<MatchInput> listMatchInputs,
-			List<MatchOutput> listMatchOutputs, AuthType[] authTypes) {
-		AuthStatusInfoBuilder statusInfoBuilder = AuthStatusInfoBuilder.newInstance();
-		statusInfoBuilder.setStatus(demoMatched);
-		prepareErrorList(listMatchOutputs, statusInfoBuilder);
-		return statusInfoBuilder.build();
-	}
-
-	/**
-	 * Builds the usage data bits.
-	 *
-	 * @param listMatchOutputs  the list match outputs
-	 * @param statusInfoBuilder the status info builder
-	 */
-	/**
-	 * prepares the list of errors if the authentication status got failed
-	 *
-	 * @param listMatchOutputs  the list match outputs
-	 * @param statusInfoBuilder the status info builder
-	 */
-	private void prepareErrorList(List<MatchOutput> listMatchOutputs, AuthStatusInfoBuilder statusInfoBuilder) {
-		listMatchOutputs.forEach((MatchOutput matchOutput) -> {
-			if (!matchOutput.isMatched()) {
-				prepareErrorList(matchOutput, statusInfoBuilder);
-			}
-		});
-	}
-
-	private void prepareErrorList(MatchOutput matchOutput, AuthStatusInfoBuilder statusInfoBuilder) {
-
-		if (matchOutput != null && !matchOutput.isMatched()) {
-			String category = matchOutput.getMatchType().getCategory().getType();
-			if (category.equalsIgnoreCase(Category.BIO.getType())) {
-				constructBioError(matchOutput, statusInfoBuilder);
-			} else if (category.equalsIgnoreCase(Category.SPIN.getType())) {
-				constructPinError(matchOutput, statusInfoBuilder);
-			} else if (category.equalsIgnoreCase(Category.DEMO.getType())) {
-				constructDemoError(matchOutput, statusInfoBuilder);
-			} else if (category.equalsIgnoreCase(Category.OTP.getType())) {
-				constructOTPError(matchOutput, statusInfoBuilder);
-			}
-		}
-	}
-
-	private void constructDemoError(MatchOutput matchOutput, AuthStatusInfoBuilder statusInfoBuilder) {
-		Optional<AuthType> authTypeForMatchType;
-		AuthType[] authTypes;
-		authTypes = DemoAuthType.values();
-		authTypeForMatchType = AuthType.getAuthTypeForMatchType(matchOutput.getMatchType(), authTypes);
-
-		if (authTypeForMatchType.isPresent()) {
-			AuthError errors = null;
-			List<String> mappings = IdaIdMapping.FULLADDRESS.getMappingFunction().apply(idMappingConfig,
-					matchOutput.getMatchType());
-			IdMapping idMapping = matchOutput.getMatchType().getIdMapping();
-			String name = mappings.contains(idMapping.getIdname()) ? "address line item(s)" : idMapping.getIdname();
-
-			if (name.equalsIgnoreCase(IdaIdMapping.PHONE.getIdname())
-					|| name.equalsIgnoreCase(IdaIdMapping.EMAIL.getIdname())
-					|| name.equalsIgnoreCase(IdaIdMapping.DOB.getIdname())
-					|| name.equalsIgnoreCase(IdaIdMapping.DOBTYPE.getIdname())
-					|| name.equalsIgnoreCase(IdaIdMapping.AGE.getIdname())) {
-				errors = new AuthError(IdAuthenticationErrorConstants.DEMO_DATA_MISMATCH.getErrorCode(),
-						String.format(IdAuthenticationErrorConstants.DEMO_DATA_MISMATCH.getErrorMessage(), name,
-								matchOutput.getLanguage()));
-			} else {
-				errors = new AuthError(IdAuthenticationErrorConstants.DEMOGRAPHIC_DATA_MISMATCH.getErrorCode(),
-						String.format(IdAuthenticationErrorConstants.DEMOGRAPHIC_DATA_MISMATCH.getErrorMessage(), name,
-								matchOutput.getLanguage()));
-			}
-
-			statusInfoBuilder.addErrors(errors);
-		}
-	}
-
-	private void constructOTPError(MatchOutput matchOutput, AuthStatusInfoBuilder statusInfoBuilder) {
-		Optional<AuthType> authTypeForMatchType;
-		AuthType[] authTypes;
-		authTypes = PinAuthType.values();
-		authTypeForMatchType = AuthType.getAuthTypeForMatchType(matchOutput.getMatchType(), authTypes);
-
-		if (authTypeForMatchType.isPresent()) {
-			AuthError errors = new AuthError(IdAuthenticationErrorConstants.INVALID_OTP.getErrorCode(),
-					IdAuthenticationErrorConstants.INVALID_OTP.getErrorMessage());
-			statusInfoBuilder.addErrors(errors);
-		}
-	}
-
-	/**
-	 * Construct pin error.
-	 *
-	 * @param matchOutput       the match output
-	 * @param statusInfoBuilder the status info builder
-	 */
-	private void constructPinError(MatchOutput matchOutput, AuthStatusInfoBuilder statusInfoBuilder) {
-		Optional<AuthType> authTypeForMatchType;
-		AuthType authType;
-		AuthType[] authTypes;
-		authTypes = PinAuthType.values();
-		authTypeForMatchType = AuthType.getAuthTypeForMatchType(matchOutput.getMatchType(), authTypes);
-
-		if (authTypeForMatchType.isPresent()) {
-			authType = authTypeForMatchType.get();
-			AuthError errors = null;
-
-			if (authType.getDisplayName().equals(PinAuthType.SPIN.getDisplayName())) {
-				errors = new AuthError(IdAuthenticationErrorConstants.PIN_MISMATCH.getErrorCode(),
-						IdAuthenticationErrorConstants.PIN_MISMATCH.getErrorMessage());
-			}
-			statusInfoBuilder.addErrors(errors);
-		}
-	}
-
-	/**
-	 * Construct bio error.
-	 *
-	 * @param matchOutput       the match output
-	 * @param statusInfoBuilder the status info builder
-	 */
-	private void constructBioError(MatchOutput matchOutput, AuthStatusInfoBuilder statusInfoBuilder) {
-		Optional<AuthType> authTypeForMatchType;
-		AuthType authType;
-		AuthType[] authTypes;
-		authTypes = BioAuthType.values();
-		authTypeForMatchType = AuthType.getAuthTypeForMatchType(matchOutput.getMatchType(), authTypes);
-
-		if (authTypeForMatchType.isPresent()) {
-			authType = authTypeForMatchType.get();
-			AuthError errors = null;
-
-			if (authType.getDisplayName().equals(BioAuthType.FGR_MIN.getDisplayName())) {
-				errors = new AuthError(IdAuthenticationErrorConstants.BIO_MISMATCH.getErrorCode(),
-						IdAuthenticationErrorConstants.BIO_MISMATCH.getErrorMessage());
-			}
-
-			else if (authType.getDisplayName().equals(BioAuthType.IRIS_IMG.getDisplayName())) {
-				errors = new AuthError(IdAuthenticationErrorConstants.IRISIMG_MISMATCH.getErrorCode(),
-						IdAuthenticationErrorConstants.IRISIMG_MISMATCH.getErrorMessage());
-
-			}
-			statusInfoBuilder.addErrors(errors);
-		}
-	}
-
-	/**
 	 * Concat values.
 	 *
 	 * @param values the values
 	 * @return the string
 	 */
-	public static String concatValues(String... values) {
+	private static String concatValues(String... values) {
 		StringBuilder demoBuilder = new StringBuilder();
 		for (int i = 0; i < values.length; i++) {
 			String demo = values[i];
@@ -792,37 +394,11 @@ public class IdInfoHelper implements IdInfoFetcher {
 	}
 
 	/**
-	 * Gets the finger print provider.
-	 *
-	 * @param bioinfovalue the bioinfovalue
-	 * @return the finger print provider
-	 */
-	public MosipBiometricProvider getFingerPrintProvider(DataDTO bioinfovalue) {
-		return biometricProviderFactory.getBiometricProvider(bioinfovalue);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher#getIrisProvider(
-	 * io.mosip.authentication.core.dto.indauth.BioInfo)
-	 */
-	public MosipBiometricProvider getIrisProvider(DataDTO bioinfovalue) {
-		return biometricProviderFactory.getBiometricProvider(bioinfovalue);
-	}
-
-	@Override
-	public ValidateOtpFunction getValidateOTPFunction() {
-		return otpManager::validateOtp;
-	}
-
-	/**
 	 * Extract allowed lang.
 	 *
 	 * @return the sets the
 	 */
-	public Set<String> extractAllowedLang() {
+	public Set<String> getAllowedLang() {
 		Set<String> allowedLang;
 		String languages = environment.getProperty(MOSIP_SUPPORTED_LANGUAGES);
 		if (null != languages && languages.contains(",")) {
@@ -834,100 +410,4 @@ public class IdInfoHelper implements IdInfoFetcher {
 		return allowedLang;
 	}
 
-	@Override
-	public Map<String, Entry<String, List<IdentityInfoDTO>>> getCbeffValues(Map<String, List<IdentityInfoDTO>> idEntity,
-			CbeffDocType type, MatchType matchType) throws IdAuthenticationBusinessException {
-		Optional<String> identityValue = getIdentityValue("documents." + INDIVIDUAL_BIOMETRICS, null, idEntity)
-				.findAny();
-		if (identityValue.isPresent()) {
-			Map<String, String> bdbBasedOnType;
-			try {
-				bdbBasedOnType = cbeffUtil.getBDBBasedOnType(CryptoUtil.decodeBase64(identityValue.get()),
-						type.getName(), null);
-			} catch (Exception e) {
-				// TODO Add corresponding error code and message
-				throw new IdAuthenticationBusinessException("Inside getCbeffValues", "", e);
-			}
-			return bdbBasedOnType.entrySet().stream()
-					.collect(Collectors.toMap(Entry<String, String>::getKey, (Entry<String, String> entry) -> {
-						IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
-						identityInfoDTO.setValue(entry.getValue());
-						List<IdentityInfoDTO> idenityList = new ArrayList<>(1);
-						idenityList.add(identityInfoDTO);
-						return new SimpleEntry<>(getNameForCbeffName(entry.getKey(), matchType), idenityList);
-					}));
-		} else {
-			return Collections.emptyMap();
-		}
-	}
-
-	private String getNameForCbeffName(String cbeffName, MatchType matchType) {
-		return Stream.of(IdaIdMapping.values())
-				.filter(cfg -> matchType.getIdMapping().equals(cfg) 
-						|| matchType.getIdMapping().getSubIdMappings().contains(cfg))
-				.map(cfg -> {
-			String idname;
-			Set<IdMapping> subIdMappings = matchType.getIdMapping().getSubIdMappings();
-			if (!subIdMappings.isEmpty() && matchType instanceof BioMatchType) {
-				idname = Stream.of(((BioMatchType) matchType).getMatchTypesForSubIdMappings(subIdMappings))
-						.filter(bioMatchType -> bioMatchType.getIdMapping().getMappingFunction()
-								.apply(idMappingConfig, bioMatchType).contains(cbeffName))
-						.findFirst().map(MatchType::getIdMapping).map(IdMapping::getIdname).orElse(cfg.getIdname());
-			} else {
-				idname = cfg.getIdname();
-			}
-			List<String> cbeffNames = cfg.getMappingFunction().apply(idMappingConfig, matchType);
-			return new SimpleEntry<>(idname, cbeffNames);
-		}).filter(entry -> entry.getValue().stream().anyMatch(v -> v.equalsIgnoreCase(cbeffName))).map(Entry::getKey)
-				.findAny().orElse("");
-	}
-
-	public String getUTCTime(String reqTime) {
-		Date reqDate = DateUtils.parseToDate(reqTime, environment.getProperty(DATETIME_PATTERN));
-		SimpleDateFormat dateFormatter = new SimpleDateFormat(environment.getProperty(DATETIME_PATTERN));
-		dateFormatter.setTimeZone(TimeZone.getTimeZone(ZoneId.of(UTC)));
-		return dateFormatter.format(reqDate);
-	}
-
-	@Override
-	public Environment getEnvironment() {
-		return environment;
-	}
-
-	@Override
-	public MasterDataFetcher getTitleFetcher() {
-		return masterDataManager::fetchTitles;
-	}
-
-	/**
-	 * Gets the uin or vid.
-	 *
-	 * @param authRequestDTO the auth request DTO
-	 * @return the uin or vid
-	 */
-	public Optional<String> getUinOrVid(AuthRequestDTO authRequestDTO) {
-		String individualId = authRequestDTO.getIndividualId();
-		Optional<String> id = Optional.of(individualId);
-
-		if (id.isPresent()) {
-			return id;
-		}
-		return null;
-	}
-
-	/**
-	 * Gets the uin or vid type.
-	 *
-	 * @param authRequestDTO the auth request DTO
-	 * @return the uin or vid type
-	 */
-	public IdType getUinOrVidType(AuthRequestDTO authRequestDTO) {
-		String individualIdType = authRequestDTO.getIndividualIdType();
-		if (individualIdType.equals(IdType.UIN.getType())) {
-			return IdType.UIN;
-		} else if (individualIdType.equals(IdType.VID.getType())) {
-			return IdType.VID;
-		}
-		return null;
-	}
 }

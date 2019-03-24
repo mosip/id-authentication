@@ -5,7 +5,6 @@
 package io.mosip.preregistration.notification.exception.util;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
@@ -14,13 +13,12 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 
-import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.preregistration.core.common.dto.ExceptionJSONInfoDTO;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
 import io.mosip.preregistration.core.util.GenericUtil;
-import io.mosip.preregistration.notification.exception.ConfigFileNotFoundException;
 import io.mosip.preregistration.notification.exception.IllegalParamException;
 import io.mosip.preregistration.notification.exception.MandatoryFieldException;
+
 /**
  * Exception Handler for acknowledgement application.
  * 
@@ -30,44 +28,45 @@ import io.mosip.preregistration.notification.exception.MandatoryFieldException;
  */
 @RestControllerAdvice
 public class NotificationExceptionHandler {
-	
-	private String dateTimeFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
+
 	protected boolean falseStatus = false;
-	
+
 	/**
 	 * @param e
 	 * @param request
 	 * @return response of MandatoryFieldRequiredException
 	 */
 	@ExceptionHandler(MandatoryFieldException.class)
-	public ResponseEntity<MainResponseDTO<?>> mandatoryFieldrequired(final MandatoryFieldException e,WebRequest request){
-		
-		ExceptionJSONInfoDTO errorDetails=new ExceptionJSONInfoDTO(e.getErrorCode(),e.getErrorText());
-		MainResponseDTO<?> errorRes=new MainResponseDTO<>();
+	public ResponseEntity<MainResponseDTO<?>> mandatoryFieldrequired(final MandatoryFieldException e,
+			WebRequest request) {
+
+		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getErrorText());
+		MainResponseDTO<?> errorRes = new MainResponseDTO<>();
 		List<ExceptionJSONInfoDTO> errorList = new ArrayList<>();
 		errorList.add(errorDetails);
 		errorRes.setErrors(errorList);
 		errorRes.setResponsetime(GenericUtil.getCurrentResponseTime());
-		
-		return new ResponseEntity<>(errorRes,HttpStatus.OK);
+
+		return new ResponseEntity<>(errorRes, HttpStatus.OK);
 	}
 
-	
-//	/**
-//	 * @param e
-//	 * @param request
-//	 * @return response of FailedToTransliterateException
-//	 */
-//	@ExceptionHandler(JsonValidationException.class)
-//	public ResponseEntity<MainResponseDTO<?>> translitrationFailed(final JsonValidationException e,WebRequest request){
-//		ExceptionJSONInfoDTO errorDetails=new ExceptionJSONInfoDTO(e.getErrorCode(),e.getErrorText());
-//		MainResponseDTO<?> errorRes=new MainResponseDTO<>();
-//		errorRes.setErr(errorDetails);
-//		errorRes.setResTime(DateUtils.formatDate(new Date(), dateTimeFormat));
-//		errorRes.setStatus(falseStatus);
-//		return new ResponseEntity<>(errorRes,HttpStatus.OK);
-//	}
-	
+	// /**
+	// * @param e
+	// * @param request
+	// * @return response of FailedToTransliterateException
+	// */
+	// @ExceptionHandler(JsonValidationException.class)
+	// public ResponseEntity<MainResponseDTO<?>> translitrationFailed(final
+	// JsonValidationException e,WebRequest request){
+	// ExceptionJSONInfoDTO errorDetails=new
+	// ExceptionJSONInfoDTO(e.getErrorCode(),e.getErrorText());
+	// MainResponseDTO<?> errorRes=new MainResponseDTO<>();
+	// errorRes.setErr(errorDetails);
+	// errorRes.setResTime(DateUtils.formatDate(new Date(), dateTimeFormat));
+	// errorRes.setStatus(falseStatus);
+	// return new ResponseEntity<>(errorRes,HttpStatus.OK);
+	// }
+
 	/**
 	 * @param e
 	 *            pass the exception
@@ -85,23 +84,5 @@ public class NotificationExceptionHandler {
 		errorRes.setResponsetime(GenericUtil.getCurrentResponseTime());
 		return new ResponseEntity<>(errorRes, HttpStatus.OK);
 	}
-	
-	
-	/**
-	 * @param e
-	 *            pass the exception
-	 * @param request
-	 *            pass the request
-	 * @return response for ConfigFileNotFoundException
-	 */
-	@ExceptionHandler(ConfigFileNotFoundException.class)
-	public ResponseEntity<MainResponseDTO<?>> configFileNotFoundException(final ConfigFileNotFoundException e, WebRequest request) {
-		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getErrorText());
-		MainResponseDTO<?> errorRes = new MainResponseDTO<>();
-		List<ExceptionJSONInfoDTO> errorList = new ArrayList<>();
-		errorList.add(errorDetails);
-		errorRes.setErrors(errorList);
-		errorRes.setResponsetime(GenericUtil.getCurrentResponseTime());
-		return new ResponseEntity<>(errorRes, HttpStatus.OK);
-	}
+
 }

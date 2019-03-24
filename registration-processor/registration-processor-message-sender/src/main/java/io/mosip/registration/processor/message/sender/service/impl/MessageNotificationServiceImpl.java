@@ -3,8 +3,6 @@ package io.mosip.registration.processor.message.sender.service.impl;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Array;
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -54,9 +52,7 @@ import io.mosip.registration.processor.message.sender.exception.PhoneNumberNotFo
 import io.mosip.registration.processor.message.sender.exception.TemplateGenerationFailedException;
 import io.mosip.registration.processor.message.sender.exception.TemplateNotFoundException;
 import io.mosip.registration.processor.message.sender.template.TemplateGenerator;
-import io.mosip.registration.processor.packet.storage.exception.FieldNotFoundException;
 import io.mosip.registration.processor.packet.storage.exception.IdentityNotFoundException;
-import io.mosip.registration.processor.packet.storage.exception.InstantanceCreationException;
 import io.mosip.registration.processor.packet.storage.exception.ParsingException;
 import io.mosip.registration.processor.packet.storage.utils.Utilities;
 import io.mosip.registration.processor.rest.client.utils.RestApiClient;
@@ -73,9 +69,6 @@ import io.mosip.registration.processor.status.code.RegistrationType;
 @Service
 public class MessageNotificationServiceImpl
 		implements MessageNotificationService<SmsResponseDto, ResponseDto, MultipartFile[]> {
-
-	/** The Constant LANGUAGE. */
-	private static final String LANGUAGE = "language";
 
 	/** The Constant VALUE. */
 	private static final String VALUE = "value";
@@ -119,10 +112,10 @@ public class MessageNotificationServiceImpl
 	/** The resclient. */
 	@Autowired
 	private RestApiClient resclient;
-	
+
 	/** The email id. */
 	private String emailId;
-	
+
 	/** The phone number. */
 	private String phoneNumber;
 
@@ -262,12 +255,17 @@ public class MessageNotificationServiceImpl
 	/**
 	 * Gets the template json.
 	 *
-	 * @param id            the id
-	 * @param idType            the id type
-	 * @param attributes            the attributes
-	 * @param regType the reg type
+	 * @param id
+	 *            the id
+	 * @param idType
+	 *            the id type
+	 * @param attributes
+	 *            the attributes
+	 * @param regType
+	 *            the reg type
 	 * @return the template json
-	 * @throws IOException             Signals that an I/O exception has occurred.
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
 	 */
 	private Map<String, Object> setAttributes(String id, IdType idType, Map<String, Object> attributes, String regType)
 			throws IOException {
@@ -303,11 +301,15 @@ public class MessageNotificationServiceImpl
 	/**
 	 * Sets the attributes from id repo.
 	 *
-	 * @param uin the uin
-	 * @param attributes the attributes
-	 * @param regType the reg type
+	 * @param uin
+	 *            the uin
+	 * @param attributes
+	 *            the attributes
+	 * @param regType
+	 *            the reg type
 	 * @return the map
-	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
 	 */
 	@SuppressWarnings("rawtypes")
 	private Map<String, Object> setAttributesFromIdRepo(Integer uin, Map<String, Object> attributes, String regType)
@@ -342,11 +344,15 @@ public class MessageNotificationServiceImpl
 	/**
 	 * Gets the keysand values.
 	 *
-	 * @param idJsonString the id json string
-	 * @param attribute            the attribute
-	 * @param regType the reg type
+	 * @param idJsonString
+	 *            the id json string
+	 * @param attribute
+	 *            the attribute
+	 * @param regType
+	 *            the reg type
 	 * @return the keysand values
-	 * @throws IOException             Signals that an I/O exception has occurred.
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
 	 */
 	@SuppressWarnings("unchecked")
 	private Map<String, Object> setAttributes(String idJsonString, Map<String, Object> attribute, String regType)
@@ -377,7 +383,7 @@ public class MessageNotificationServiceImpl
 				Object object = JsonUtil.getJSONValue(demographicIdentity, (String) jsonValue.get(VALUE));
 				if (object instanceof ArrayList) {
 					JSONArray node = JsonUtil.getJSONArray(demographicIdentity, (String) jsonValue.get(VALUE));
-					JsonValue[] jsonValues = mapJsonNodeToJavaObject(JsonValue.class, node);
+					JsonValue[] jsonValues = JsonUtil.mapJsonNodeToJavaObject(JsonValue.class, node);
 					for (int count = 0; count < jsonValues.length; count++) {
 						String lang = jsonValues[count].getLanguage();
 						attribute.put(key + "_" + lang, jsonValues[count].getValue());
@@ -389,7 +395,7 @@ public class MessageNotificationServiceImpl
 					attribute.put(key, object);
 				}
 			}
-			
+
 			setEmailAndPhone(demographicIdentity);
 
 		} catch (JsonParseException | JsonMappingException e) {
@@ -404,72 +410,23 @@ public class MessageNotificationServiceImpl
 	/**
 	 * Sets the email and phone.
 	 *
-	 * @param demographicIdentity the new email and phone
-	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @param demographicIdentity
+	 *            the new email and phone
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
 	 */
 	private void setEmailAndPhone(JSONObject demographicIdentity) throws IOException {
-		
+
 		String getIdentityJsonString = Utilities.getJson(utility.getConfigServerFileStorageURL(),
 				utility.getGetRegProcessorIdentityJson());
 		ObjectMapper mapIdentityJsonStringToObject = new ObjectMapper();
-		RegistrationProcessorIdentity regProcessorIdentityJson = mapIdentityJsonStringToObject.readValue(getIdentityJsonString,
-				RegistrationProcessorIdentity.class);
+		RegistrationProcessorIdentity regProcessorIdentityJson = mapIdentityJsonStringToObject
+				.readValue(getIdentityJsonString, RegistrationProcessorIdentity.class);
 		String email = regProcessorIdentityJson.getIdentity().getEmail().getValue();
 		String phone = regProcessorIdentityJson.getIdentity().getPhone().getValue();
-		
+
 		emailId = JsonUtil.getJSONValue(demographicIdentity, email);
 		phoneNumber = JsonUtil.getJSONValue(demographicIdentity, phone);
-	}
-
-	/**
-	 * Map json node to java object.
-	 *
-	 * @param <T>
-	 *            the generic type
-	 * @param genericType
-	 *            the generic type
-	 * @param demographicJsonNode
-	 *            the demographic json node
-	 * @return the t[]
-	 */
-	@SuppressWarnings("unchecked")
-	private <T> T[] mapJsonNodeToJavaObject(Class<? extends Object> genericType, JSONArray demographicJsonNode) {
-		String language;
-		String value;
-		T[] javaObject = (T[]) Array.newInstance(genericType, demographicJsonNode.size());
-		try {
-			for (int i = 0; i < demographicJsonNode.size(); i++) {
-
-				T jsonNodeElement = (T) genericType.newInstance();
-
-				JSONObject objects = JsonUtil.getJSONObjectFromArray(demographicJsonNode, i);
-				language = (String) objects.get(LANGUAGE);
-				value = (String) objects.get(VALUE);
-
-				Field languageField = jsonNodeElement.getClass().getDeclaredField(LANGUAGE);
-				languageField.setAccessible(true);
-				languageField.set(jsonNodeElement, language);
-
-				Field valueField = jsonNodeElement.getClass().getDeclaredField(VALUE);
-				valueField.setAccessible(true);
-				valueField.set(jsonNodeElement, value);
-
-				javaObject[i] = jsonNodeElement;
-			}
-		} catch (InstantiationException | IllegalAccessException e) {
-			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					null, "Error while Creating Instance of generic type" + ExceptionUtils.getStackTrace(e));
-			throw new InstantanceCreationException(PlatformErrorMessages.RPR_SYS_INSTANTIATION_EXCEPTION.getMessage(),
-					e);
-
-		} catch (NoSuchFieldException | SecurityException e) {
-			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					null, "no such field exception" + ExceptionUtils.getStackTrace(e));
-			throw new FieldNotFoundException(PlatformErrorMessages.RPR_SYS_NO_SUCH_FIELD_EXCEPTION.getMessage(), e);
-
-		}
-
-		return javaObject;
 	}
 
 }

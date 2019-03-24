@@ -5,10 +5,13 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import java.io.File;
 import java.sql.Connection;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.sql.DataSource;
 
+import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,10 +27,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.init.ScriptUtils;
-import org.springframework.test.util.ReflectionTestUtils;
 
+import io.mosip.kernel.core.exception.IOException;
 import io.mosip.kernel.core.util.FileUtils;
 import io.mosip.registration.audit.AuditFactory;
+import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.dao.GlobalParamDAO;
 import io.mosip.registration.dao.PreRegistrationDataSyncDAO;
 import io.mosip.registration.dao.RegistrationDAO;
@@ -77,9 +81,12 @@ public class CenterMachineReMapServiceTest {
 	@Autowired
 	FileUtils fileUtils;
 
-	@org.junit.Before
-	public void setUp() {
-		ReflectionTestUtils.setField(centerMachineReMapServiceImpl, "preRegPacketLocation", "test.txt");
+	@BeforeClass
+	public static void initialize() throws IOException, java.io.IOException {
+		Map<String, Object> applicationMap = new HashMap<>();
+		applicationMap.put("mosip.registration.registration_pre_reg_packet_location", "..//PreRegPacketStore");
+		ApplicationContext.getInstance().setApplicationMap(applicationMap);
+
 	}
 
 	@Test
@@ -116,6 +123,7 @@ public class CenterMachineReMapServiceTest {
 
 	@Test
 	public void HandleRemapTest() throws Exception {
+
 		PowerMockito.mockStatic(RegistrationAppHealthCheckUtil.class);
 		PowerMockito.mockStatic(FileUtils.class);
 
@@ -155,6 +163,22 @@ public class CenterMachineReMapServiceTest {
 		List<Registration> regList = new ArrayList<>();
 		Mockito.when(registrationDAO.getEnrollmentByStatus(Mockito.anyString())).thenReturn(regList);
 		assertNotNull(centerMachineReMapServiceImpl.isPacketsPendingForEOD());
+
+	}
+
+	@Test
+	public void handleRemapProcessTestFailure() throws Exception {
+		PowerMockito.mockStatic(FileUtils.class);
+		PowerMockito.mockStatic(RegistrationAppHealthCheckUtil.class);
+		Mockito.when(RegistrationAppHealthCheckUtil.isNetworkAvailable()).thenReturn(true);
+
+		GlobalParam globalParam = new GlobalParam();
+
+		globalParam.setVal("true");
+		Mockito.when(globalParamDAO.get(Mockito.anyObject())).thenReturn(globalParam);
+		PowerMockito.doThrow(new IOException("error", "error")).when(FileUtils.class, "deleteDirectory",
+				Mockito.any(File.class));
+		centerMachineReMapServiceImpl.handleReMapProcess(3);
 
 	}
 

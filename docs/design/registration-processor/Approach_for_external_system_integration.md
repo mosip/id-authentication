@@ -2,6 +2,7 @@
 # External System Integration Stage 
 
 **Background**
+
 Technical stack used in Registration Processor gives ability to add or change order/sequence of stages/route in the flow. Most of the stages works in isolation, which are deployed independently and does not depend on the previous or next stage in the flow. This design document describe one of option to integrate registration processor with external system by creating vertx stage. 
 
 **The target users are -**
@@ -10,10 +11,11 @@ System Integrator Team
 **The key requirements are -**
 -	MOSIP product should provide sample code along with documentation which can be used to integrate with the external system.
 
-** Limitation- (TBD)**
+** Limitation- (TBD) -**
+
 All the vertx stages in registration process are configured using apache camel bridge to execute in a sequence. However, technically, it is possible to add or remove stages in the camel bridge but in some cases, this sequence or order cannot be altered due to highly dependent activity. For example, Packet Receiver, Virus Scanner and Packet Uploader need to work in sequence. 
 
-**The key non-functional requirements are**
+**The key non-functional requirements are -**
 1.	Introduce vertx stage which can be plugged in between stages in registration processor.
 2.  Auditing of the all the transactions including success and failed scenario.
 3.	Logging of the all the requests
@@ -125,28 +127,76 @@ Update above apache camel route with the below:
 
 ```
 
+Sample Http Request:
+
+```html
+{
+	"id":"mosip.registration.httpintegration.httpcall",			
+	"version":"1.0",	
+	"requesttime":"2018-14-03T10:15:30Z",
+	
+	"metadata" : {
+	},
+	
+	"request" : {
+		// ID JSON
+	}
+}
+```
+
+Sample Http Success Response:
+
+```html
+{ 
+   "id":"mosip.registration.httpintegration.httpresponse",			
+   "version":"1.0",	
+   "responsetime":"2018-14-03T10:15:30Z",
+   "metadata" : {
+   	"registrationid":"<<registrationid>>"
+   },
+   "response" : {
+   	"status":"Success"
+   }
+   "errors":[
+   ]
+}
+```
+Sample Http Error Response:
+
+```html
+{ 
+   "id":"mosip.registration.httpintegration.httpresponse",			
+   "version":"1.0",	
+   "responsetime":"2018-14-03T10:15:30Z",
+   "metadata" : {
+   	"registrationid":"<<registrationid>>"
+   },
+   "response" : {
+   	"status":"Failed"
+   }
+   "errors":[
+		"errorCode": "PRG_REG_HTTP_APP_001",
+		"message": "Error Processing Request"
+   ]
+}
+```
+
 **Logical Architecture Diagram**
 
 
 
 ------------
-- Without http end point:
+- Without External System Stage:
 
-![HTTP stage diagram](_images/registration_external_without_http_integration.png)
+![HTTP stage diagram](_images/registration_workflow_integration.png)
 
-- With http end point:
+- After adding External System Stage:
 
-![HTTP stage diagram](_images/registration_external_with_http_integration.png)
+![HTTP stage diagram](_images/registration_external_with_vertx_integration.png)
 
-
-**Class Diagram**
-
-------------
-
-![HTTP stage class diagram](_images/http_stage_class_diagram.png)
 
 **Sequence Diagram**
 
 ------------
 
-![Reprocess sequence diagram](_images/http_stage_seq_diagram.png) 
+![Reprocess sequence diagram](_images/external_stage_seq_diagram.png) 

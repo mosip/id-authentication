@@ -177,7 +177,7 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 
 			// Generating Demographic JSON as byte array
 			String idJsonAsString = javaObjectToJsonString(registrationDTO.getDemographicDTO().getDemographicInfoDTO());
-			jsonValidator.validateJson(idJsonAsString, "mosip-identity-json-schema.json");
+			jsonValidator.validateJson(idJsonAsString, RegistrationConstants.IDENTITY_JSON_FILE_NAME);
 			filesGeneratedForPacket.put(DEMOGRPAHIC_JSON_NAME, idJsonAsString.getBytes());
 
 			LOGGER.info(LOG_PKT_CREATION, APPLICATION_NAME, APPLICATION_ID,
@@ -345,7 +345,7 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 			byte[] cbeffXMLInBytes = null;
 
 			if (!birs.isEmpty()) {
-				InputStream file = this.getClass().getResourceAsStream("/cbeff.xsd");
+				InputStream file = this.getClass().getResourceAsStream(RegistrationConstants.CBEFF_SCHEMA_FILE_PATH);
 				byte[] bytesArray = new byte[(int) file.available()];
 				file.read(bytesArray);
 				file.close();

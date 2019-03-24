@@ -3,6 +3,7 @@ package io.mosip.kernel.smsnotification.controller;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -24,6 +25,7 @@ import io.mosip.kernel.smsnotification.dto.SmsResponseDto;
 
 @CrossOrigin
 @RestController
+@RefreshScope
 public class SmsNotificationController {
 
 	/**

@@ -44,8 +44,8 @@ import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.RestServiceException;
 import io.mosip.authentication.core.util.dto.RestRequestDTO;
 import io.mosip.authentication.service.factory.RestRequestFactory;
-import io.mosip.authentication.service.helper.IdInfoHelper;
 import io.mosip.authentication.service.helper.RestHelper;
+import io.mosip.authentication.service.impl.indauth.service.IdInfoFetcherImpl;
 import io.mosip.kernel.core.pdfgenerator.spi.PDFGenerator;
 import io.mosip.kernel.core.templatemanager.spi.TemplateManager;
 import io.mosip.kernel.pdfgenerator.itext.impl.PDFGeneratorImpl;
@@ -77,7 +77,7 @@ public class IdTemplateManagerTest {
 	private Environment environment;
 
 	@InjectMocks
-	private IdInfoHelper idInfoHelper;
+	private IdInfoFetcherImpl idInfoFetcherImpl;
 
 	@Mock
 	private RestRequestFactory restFactory;
@@ -96,15 +96,12 @@ public class IdTemplateManagerTest {
 	/** Class path. */
 	private static final String CLASSPATH = "classpath";
 
-	private final String value = "OTP for UIN  $uin is $otp and is valid for $validTime minutes. (Generated at $datetimestamp)";
-
 	@Before
 	public void before() {
 		ReflectionTestUtils.setField(idTemplateManager, "masterDataManager", masterDataManager);
 		ReflectionTestUtils.setField(idTemplateManager, "environment", environment);
-		ReflectionTestUtils.setField(idTemplateManager, "idInfoHelper", idInfoHelper);
-		ReflectionTestUtils.setField(masterDataManager, "environment", environment);
-		ReflectionTestUtils.setField(idInfoHelper, "environment", environment);
+		ReflectionTestUtils.setField(idTemplateManager, "idInfoFetcher", idInfoFetcherImpl);
+		ReflectionTestUtils.setField(idInfoFetcherImpl, "environment", environment);
 		ReflectionTestUtils.setField(restFactory, "env", environment);
 		ReflectionTestUtils.setField(idTemplateManager, "templateManagerBuilder", templateManagerBuilder);
 		templateManagerBuilder.encodingType(ENCODE_TYPE).enableCache(false).resourceLoader(CLASSPATH).build();
@@ -194,6 +191,7 @@ public class IdTemplateManagerTest {
 		while ((line = br.readLine()) != null) {
 			sb.append(line.trim());
 		}
+		br.close();
 		ByteArrayOutputStream bos = (ByteArrayOutputStream) actpdfGenerator.generate(sb.toString());
 		Mockito.when(pdfGenerator.generate(Mockito.any(InputStream.class))).thenReturn(bos);
 		String outputPath = System.getProperty("user.dir");
@@ -259,7 +257,7 @@ public class IdTemplateManagerTest {
 		Mockito.when(restFactory.buildRequest(RestServicesConstants.ID_MASTERDATA_TEMPLATE_SERVICE, null, Map.class))
 				.thenReturn(getRestRequestDTO());
 		Map<String, List<Map<String, Object>>> valuemap = new HashMap<>();
-		List<Map<String, Object>> finalList = new ArrayList();
+		List<Map<String, Object>> finalList = new ArrayList<Map<String, Object>>();
 		Map<String, Object> actualMap = new HashMap<>();
 		actualMap.put("fileText",
 				"OTP pour UIN $uin est $otp et est valide pour $validTime minutes. (Généré le $date à $time Hrs)");

@@ -5,8 +5,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Array;
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -60,9 +58,7 @@ import io.mosip.registration.processor.core.util.CbeffToBiometricUtil;
 import io.mosip.registration.processor.core.util.JsonUtil;
 import io.mosip.registration.processor.message.sender.template.TemplateGenerator;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
-import io.mosip.registration.processor.packet.storage.exception.FieldNotFoundException;
 import io.mosip.registration.processor.packet.storage.exception.IdentityNotFoundException;
-import io.mosip.registration.processor.packet.storage.exception.InstantanceCreationException;
 import io.mosip.registration.processor.packet.storage.exception.ParsingException;
 import io.mosip.registration.processor.packet.storage.utils.Utilities;
 import io.mosip.registration.processor.print.service.dto.JsonFileDTO;
@@ -88,9 +84,6 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 
 	/** The Constant FILE_SEPARATOR. */
 	public static final String FILE_SEPARATOR = File.separator;
-
-	/** The Constant LANGUAGE. */
-	private static final String LANGUAGE = "language";
 
 	/** The Constant VALUE. */
 	private static final String VALUE = "value";
@@ -197,7 +190,7 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 				uin = packetInfoManager.getUINByRid(idValue).get(0);
 				if (uin == null) {
 					regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
-							LoggerFileConstant.REGISTRATIONID.toString(), uin,
+							LoggerFileConstant.REGISTRATIONID.toString(), null,
 							PlatformErrorMessages.RPR_PRT_UIN_NOT_FOUND_IN_DATABASE.name());
 					throw new UINNotFoundInDatabase(PlatformErrorMessages.RPR_PRT_UIN_NOT_FOUND_IN_DATABASE.getCode());
 				}
@@ -444,7 +437,7 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 			List<String> subtype = new ArrayList<>();
 			byte[] photobyte = util.getImageBytes(value, FACE, subtype);
 			String imageString = CryptoUtil.encodeBase64String(photobyte);
-			attributes.put(APPLICANT_PHOTO, "data:image/gif;base64," + imageString);
+			attributes.put(APPLICANT_PHOTO, "data:image/png;base64," + imageString);
 			isPhotoSet = true;
 		}
 
@@ -481,7 +474,7 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 				Object object = JsonUtil.getJSONValue(demographicIdentity, (String) jsonValue.get(VALUE));
 				if (object instanceof ArrayList) {
 					JSONArray node = JsonUtil.getJSONArray(demographicIdentity, (String) jsonValue.get(VALUE));
-					JsonValue[] jsonValues = mapJsonNodeToJavaObject(JsonValue.class, node);
+					JsonValue[] jsonValues = JsonUtil.mapJsonNodeToJavaObject(JsonValue.class, node);
 					for (int count = 0; count < jsonValues.length; count++) {
 						String lang = jsonValues[count].getLanguage();
 						attribute.put(key + "_" + lang, jsonValues[count].getValue());
@@ -499,57 +492,6 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 					null, "Error while parsing Json file" + ExceptionUtils.getStackTrace(e));
 			throw new ParsingException(PlatformErrorMessages.RPR_SYS_JSON_PARSING_EXCEPTION.getMessage(), e);
 		}
-	}
-
-	/**
-	 * Map json node to java object.
-	 *
-	 * @param <T>
-	 *            the generic type
-	 * @param genericType
-	 *            the generic type
-	 * @param demographicJsonNode
-	 *            the demographic json node
-	 * @return the t[]
-	 */
-	@SuppressWarnings("unchecked")
-	private <T> T[] mapJsonNodeToJavaObject(Class<? extends Object> genericType, JSONArray demographicJsonNode) {
-		String language;
-		String value;
-		T[] javaObject = (T[]) Array.newInstance(genericType, demographicJsonNode.size());
-		try {
-			for (int i = 0; i < demographicJsonNode.size(); i++) {
-
-				T jsonNodeElement = (T) genericType.newInstance();
-
-				JSONObject objects = JsonUtil.getJSONObjectFromArray(demographicJsonNode, i);
-				language = (String) objects.get(LANGUAGE);
-				value = (String) objects.get(VALUE);
-
-				Field languageField = jsonNodeElement.getClass().getDeclaredField(LANGUAGE);
-				languageField.setAccessible(true);
-				languageField.set(jsonNodeElement, language);
-
-				Field valueField = jsonNodeElement.getClass().getDeclaredField(VALUE);
-				valueField.setAccessible(true);
-				valueField.set(jsonNodeElement, value);
-
-				javaObject[i] = jsonNodeElement;
-			}
-		} catch (InstantiationException | IllegalAccessException e) {
-			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					null, "Error while Creating Instance of generic type" + ExceptionUtils.getStackTrace(e));
-			throw new InstantanceCreationException(PlatformErrorMessages.RPR_SYS_INSTANTIATION_EXCEPTION.getMessage(),
-					e);
-
-		} catch (NoSuchFieldException | SecurityException e) {
-			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					null, "no such field exception" + ExceptionUtils.getStackTrace(e));
-			throw new FieldNotFoundException(PlatformErrorMessages.RPR_SYS_NO_SUCH_FIELD_EXCEPTION.getMessage(), e);
-
-		}
-
-		return javaObject;
 	}
 
 }

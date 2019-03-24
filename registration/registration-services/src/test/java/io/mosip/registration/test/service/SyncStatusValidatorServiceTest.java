@@ -146,21 +146,13 @@ public class SyncStatusValidatorServiceTest {
 		List<ErrorResponseDTO> errorResponseDTOs = responseDTO.getErrorResponseDTOs();
 
 		assertEquals("REG-ICS‌-002", errorResponseDTOs.get(1).getCode());
-		assertEquals(
-				"Time since last export of registration packets exceeded maximum limit. Please export or upload packets to server before proceeding with this registration",
-				errorResponseDTOs.get(1).getMessage());
+		assertEquals("OPT_TO_REG_TIME_SYNC_EXCEED", errorResponseDTOs.get(1).getMessage());
 		assertEquals("REG-ICS‌-001", errorResponseDTOs.get(0).getCode());
-		assertEquals(
-				"Time since last sync exceeded maximum limit. Please sync from server before proceeding with this registration",
-				errorResponseDTOs.get(0).getMessage());
+		assertEquals("OPT_TO_REG_TIME_SYNC_EXCEED", errorResponseDTOs.get(0).getMessage());
 		assertEquals("REG-ICS‌-003", errorResponseDTOs.get(2).getCode());
-		assertEquals(
-				"Maximum limit for registration packets on client reached. Please export or upload packets to server before proceeding with this registration",
-				errorResponseDTOs.get(2).getMessage());
+		assertEquals("OPT_TO_REG_REACH_MAX_LIMIT", errorResponseDTOs.get(2).getMessage());
 		assertEquals("REG-ICS‌-004", errorResponseDTOs.get(3).getCode());
-		assertEquals(
-				"Your client machine location is outside the registration center. Please note that registration can be done only from within the registration centre",
-				errorResponseDTOs.get(3).getMessage());
+		assertEquals("OPT_TO_REG_OUTSIDE_LOCATION", errorResponseDTOs.get(3).getMessage());
 
 	}
 
@@ -271,20 +263,13 @@ public class SyncStatusValidatorServiceTest {
 		List<ErrorResponseDTO> errorResponseDTOs = responseDTO.getErrorResponseDTOs();
 
 		assertEquals("REG-ICS‌-002", errorResponseDTOs.get(1).getCode());
-		assertEquals(
-				"Time since last export of registration packets exceeded maximum limit. Please export or upload packets to server before proceeding with this registration",
-				errorResponseDTOs.get(1).getMessage());
+		assertEquals("OPT_TO_REG_TIME_SYNC_EXCEED", errorResponseDTOs.get(1).getMessage());
 		assertEquals("REG-ICS‌-001", errorResponseDTOs.get(0).getCode());
-		assertEquals(
-				"Time since last sync exceeded maximum limit. Please sync from server before proceeding with this registration",
-				errorResponseDTOs.get(0).getMessage());
+		assertEquals("OPT_TO_REG_TIME_SYNC_EXCEED", errorResponseDTOs.get(0).getMessage());
 		assertEquals("REG-ICS‌-003", errorResponseDTOs.get(2).getCode());
-		assertEquals(
-				"Maximum limit for registration packets on client reached. Please export or upload packets to server before proceeding with this registration",
-				errorResponseDTOs.get(2).getMessage());
+		assertEquals("OPT_TO_REG_REACH_MAX_LIMIT", errorResponseDTOs.get(2).getMessage());
 		assertEquals("REG-ICS‌-006", errorResponseDTOs.get(3).getCode());
-		assertEquals("Unable to validate machine location due to weak GPS signal. Please try again",
-				errorResponseDTOs.get(3).getMessage());
+		assertEquals("OPT_TO_REG_WEAK_GPS", errorResponseDTOs.get(3).getMessage());
 
 	}
 
@@ -341,20 +326,13 @@ public class SyncStatusValidatorServiceTest {
 		List<ErrorResponseDTO> errorResponseDTOs = responseDTO.getErrorResponseDTOs();
 
 		assertEquals("REG-ICS‌-002", errorResponseDTOs.get(1).getCode());
-		assertEquals(
-				"Time since last export of registration packets exceeded maximum limit. Please export or upload packets to server before proceeding with this registration",
-				errorResponseDTOs.get(1).getMessage());
+		assertEquals("OPT_TO_REG_TIME_SYNC_EXCEED", errorResponseDTOs.get(1).getMessage());
 		assertEquals("REG-ICS‌-001", errorResponseDTOs.get(0).getCode());
-		assertEquals(
-				"Time since last sync exceeded maximum limit. Please sync from server before proceeding with this registration",
-				errorResponseDTOs.get(0).getMessage());
+		assertEquals("OPT_TO_REG_TIME_SYNC_EXCEED", errorResponseDTOs.get(0).getMessage());
 		assertEquals("REG-ICS‌-003", errorResponseDTOs.get(2).getCode());
-		assertEquals(
-				"Maximum limit for registration packets on client reached. Please export or upload packets to server before proceeding with this registration",
-				errorResponseDTOs.get(2).getMessage());
+		assertEquals("OPT_TO_REG_REACH_MAX_LIMIT", errorResponseDTOs.get(2).getMessage());
 		assertEquals("REG-ICS‌-005", errorResponseDTOs.get(3).getCode());
-		assertEquals("Unable to validate machine location. Please insert the GPS device and try again",
-				errorResponseDTOs.get(3).getMessage());
+		assertEquals("OPT_TO_REG_INSERT_GPS", errorResponseDTOs.get(3).getMessage());
 
 	}
 
@@ -412,20 +390,13 @@ public class SyncStatusValidatorServiceTest {
 		List<ErrorResponseDTO> errorResponseDTOs = responseDTO.getErrorResponseDTOs();
 
 		assertEquals("REG-ICS‌-002", errorResponseDTOs.get(1).getCode());
-		assertEquals(
-				"Time since last export of registration packets exceeded maximum limit. Please export or upload packets to server before proceeding with this registration",
-				errorResponseDTOs.get(1).getMessage());
+		assertEquals("OPT_TO_REG_TIME_SYNC_EXCEED", errorResponseDTOs.get(1).getMessage());
 		assertEquals("REG-ICS‌-001", errorResponseDTOs.get(0).getCode());
-		assertEquals(
-				"Time since last sync exceeded maximum limit. Please sync from server before proceeding with this registration",
-				errorResponseDTOs.get(0).getMessage());
+		assertEquals("OPT_TO_REG_TIME_SYNC_EXCEED", errorResponseDTOs.get(0).getMessage());
 		assertEquals("REG-ICS‌-003", errorResponseDTOs.get(2).getCode());
-		assertEquals(
-				"Maximum limit for registration packets on client reached. Please export or upload packets to server before proceeding with this registration",
-				errorResponseDTOs.get(2).getMessage());
+		assertEquals("OPT_TO_REG_REACH_MAX_LIMIT", errorResponseDTOs.get(2).getMessage());
 		assertEquals("REG-ICS‌-005", errorResponseDTOs.get(3).getCode());
-		assertEquals("Unable to validate machine location. Please insert the GPS device and try again",
-				errorResponseDTOs.get(3).getMessage());
+		assertEquals("OPT_TO_REG_INSERT_GPS", errorResponseDTOs.get(3).getMessage());
 
 	}
 
@@ -482,17 +453,11 @@ public class SyncStatusValidatorServiceTest {
 		List<ErrorResponseDTO> errorResponseDTOs = responseDTO.getErrorResponseDTOs();
 
 		assertEquals("REG-ICS‌-002", errorResponseDTOs.get(1).getCode());
-		assertEquals(
-				"Time since last export of registration packets exceeded maximum limit. Please export or upload packets to server before proceeding with this registration",
-				errorResponseDTOs.get(1).getMessage());
+		assertEquals("OPT_TO_REG_TIME_SYNC_EXCEED", errorResponseDTOs.get(1).getMessage());
 		assertEquals("REG-ICS‌-001", errorResponseDTOs.get(0).getCode());
-		assertEquals(
-				"Time since last sync exceeded maximum limit. Please sync from server before proceeding with this registration",
-				errorResponseDTOs.get(0).getMessage());
+		assertEquals("OPT_TO_REG_TIME_SYNC_EXCEED", errorResponseDTOs.get(0).getMessage());
 		assertEquals("REG-ICS‌-003", errorResponseDTOs.get(2).getCode());
-		assertEquals(
-				"Maximum limit for registration packets on client reached. Please export or upload packets to server before proceeding with this registration",
-				errorResponseDTOs.get(2).getMessage());
+		assertEquals("OPT_TO_REG_REACH_MAX_LIMIT", errorResponseDTOs.get(2).getMessage());
 		assertEquals("REG-ICS‌-007", errorResponseDTOs.get(3).getCode());
 		assertEquals(RegistrationConstants.OPT_TO_REG_GPS_PORT_MISMATCH, errorResponseDTOs.get(3).getMessage());
 
@@ -553,9 +518,7 @@ public class SyncStatusValidatorServiceTest {
 		ResponseDTO responseDTO = syncStatusValidatorServiceImpl.validateSyncStatus();
 		List<ErrorResponseDTO> errorResponseDTOs = responseDTO.getErrorResponseDTOs();
 		assertEquals("REG-ICS‌-008", errorResponseDTOs.get(0).getCode());
-		assertEquals(
-				"Maximum number of registration packets pending approval on client reached. Please approve or reject packets before proceeding with this registration",
-				errorResponseDTOs.get(0).getMessage());
+		assertEquals("REG_PKT_APPRVL_CNT_EXCEED", errorResponseDTOs.get(0).getMessage());
 
 	}
 
@@ -610,9 +573,7 @@ public class SyncStatusValidatorServiceTest {
 		ResponseDTO responseDTO = syncStatusValidatorServiceImpl.validateSyncStatus();
 		List<ErrorResponseDTO> errorResponseDTOs = responseDTO.getErrorResponseDTOs();
 		assertEquals("REG-ICS‌-009", errorResponseDTOs.get(0).getCode());
-		assertEquals(
-				"Maximum duration for registration packets pending approval on client reached.Please approve or reject packets before proceeding with this registration",
-				errorResponseDTOs.get(0).getMessage());
+		assertEquals("REG_PKT_APPRVL_TIME_EXCEED", errorResponseDTOs.get(0).getMessage());
 
 	}
 
@@ -685,9 +646,7 @@ public class SyncStatusValidatorServiceTest {
 		List<ErrorResponseDTO> errorResponseDTOs = responseDTO.getErrorResponseDTOs();
 
 		assertEquals("REG-ICS‌-003", errorResponseDTOs.get(0).getCode());
-		assertEquals(
-				"Maximum limit for registration packets on client reached. Please export or upload packets to server before proceeding with this registration",
-				errorResponseDTOs.get(0).getMessage());
+		assertEquals("OPT_TO_REG_REACH_MAX_LIMIT", errorResponseDTOs.get(0).getMessage());
 	}
 
 }

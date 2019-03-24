@@ -70,6 +70,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
@@ -98,7 +99,7 @@ public class PacketHandlerController extends BaseController implements Initializ
 	private Button newRegistrationBtn;
 
 	@FXML
-	private AnchorPane uploadRoot;
+	private GridPane uploadRoot;
 
 	@FXML
 	private AnchorPane optionRoot;
@@ -267,7 +268,7 @@ public class PacketHandlerController extends BaseController implements Initializ
 						for (ErrorResponseDTO errorResponseDTO : errorResponseDTOs) {
 							errorMessage.append(errorResponseDTO.getMessage() + "\n\n");
 						}
-						generateAlert(RegistrationConstants.ERROR, errorMessage.toString().trim());
+						generateAlertLanguageSpecific(RegistrationConstants.ERROR, errorMessage.toString().trim());
 					} else {
 						getScene(createRoot).setRoot(createRoot);
 					}
@@ -280,7 +281,7 @@ public class PacketHandlerController extends BaseController implements Initializ
 				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_LOAD_REG_PAGE);
 			}
 		} else {
-			generateAlert(RegistrationUIConstants.INVALID_KEY);
+			generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.INVALID_KEY);
 		}
 		LOGGER.info(PACKET_HANDLER, APPLICATION_NAME, APPLICATION_ID, "Creating of Registration ended.");
 	}
@@ -364,12 +365,8 @@ public class PacketHandlerController extends BaseController implements Initializ
 			if (!validateScreenAuthorization(root.getId())) {
 				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.AUTHORIZATION_ERROR);
 			} else {
-				ObservableList<Node> nodes = homeController.getMainBox().getChildren();
-				IntStream.range(1, nodes.size()).forEach(index -> {
-					nodes.get(index).setVisible(false);
-					nodes.get(index).setManaged(false);
-				});
-				nodes.add(root);
+				homeController.getMainBox().getChildren().remove(homeController.getMainBox().getChildren().size()-1);
+				homeController.getMainBox().add(root, 0, 1);
 			}
 		} catch (IOException ioException) {
 			LOGGER.error("REGISTRATION - OFFICER_PACKET_MANAGER - APPROVE PACKET", APPLICATION_NAME, APPLICATION_ID,
@@ -404,13 +401,8 @@ public class PacketHandlerController extends BaseController implements Initializ
 			if (!validateScreenAuthorization(uploadRoot.getId())) {
 				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.AUTHORIZATION_ERROR);
 			} else {
-
-				ObservableList<Node> nodes = homeController.getMainBox().getChildren();
-				IntStream.range(1, nodes.size()).forEach(index -> {
-					nodes.get(index).setVisible(false);
-					nodes.get(index).setManaged(false);
-				});
-				nodes.add(uploadRoot);
+				homeController.getMainBox().getChildren().remove(homeController.getMainBox().getChildren().size()-1);
+				homeController.getMainBox().add(uploadRoot, 0, 1);
 			}
 		} catch (IOException ioException) {
 			LOGGER.error("REGISTRATION - UI- Officer Packet upload", APPLICATION_NAME, APPLICATION_ID,
@@ -450,15 +442,11 @@ public class PacketHandlerController extends BaseController implements Initializ
 						for (ErrorResponseDTO errorResponseDTO : errorResponseDTOs) {
 							errorMessage.append(errorResponseDTO.getMessage() + "\n\n");
 						}
-						generateAlert(RegistrationConstants.ERROR, errorMessage.toString().trim());
+						generateAlertLanguageSpecific(RegistrationConstants.ERROR, errorMessage.toString().trim());
 
 					} else {
-						ObservableList<Node> nodes = homeController.getMainBox().getChildren();
-						IntStream.range(1, nodes.size()).forEach(index -> {
-							nodes.get(index).setVisible(false);
-							nodes.get(index).setManaged(false);
-						});
-						nodes.add(root);
+						homeController.getMainBox().getChildren().remove(homeController.getMainBox().getChildren().size()-1);
+						homeController.getMainBox().add(root, 0, 1);
 					}
 				}
 			} catch (IOException ioException) {
@@ -466,7 +454,7 @@ public class PacketHandlerController extends BaseController implements Initializ
 						ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));
 			}
 		} else {
-			generateAlert(RegistrationUIConstants.INVALID_KEY);
+			generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.INVALID_KEY);
 		}
 		LOGGER.info(PACKET_HANDLER, APPLICATION_NAME, APPLICATION_ID, "Loading Update UIN screen ended.");
 	}
@@ -525,12 +513,12 @@ public class PacketHandlerController extends BaseController implements Initializ
 
 		if (responseDTO.getSuccessResponseDTO() != null) {
 			SuccessResponseDTO successResponseDTO = responseDTO.getSuccessResponseDTO();
-			generateAlert(successResponseDTO.getCode(), successResponseDTO.getMessage());
+			generateAlertLanguageSpecific(successResponseDTO.getCode(), successResponseDTO.getMessage());
 
 		} else if (responseDTO.getErrorResponseDTOs() != null) {
 
 			ErrorResponseDTO errorresponse = responseDTO.getErrorResponseDTOs().get(0);
-			generateAlert(errorresponse.getCode(), errorresponse.getMessage());
+			generateAlertLanguageSpecific(errorresponse.getCode(), errorresponse.getMessage());
 
 		}
 		LOGGER.info(PACKET_HANDLER, APPLICATION_NAME, APPLICATION_ID, "Downloading pre-registration data ended.");
@@ -559,14 +547,11 @@ public class PacketHandlerController extends BaseController implements Initializ
 
 		LOGGER.info(PACKET_HANDLER, APPLICATION_NAME, APPLICATION_ID, "Loading User Onboard Update page");
 
-		VBox mainBox = new VBox();
 		try {
-			HBox headerRoot = BaseController.load(getClass().getResource(RegistrationConstants.HEADER_PAGE));
-			mainBox.getChildren().add(headerRoot);
-			AnchorPane onboardRoot = BaseController.load(getClass().getResource(RegistrationConstants.USER_ONBOARD),
-					applicationContext.getApplicationLanguageBundle());
-			mainBox.getChildren().add(onboardRoot);
-			getScene(mainBox).setRoot(mainBox);
+			GridPane headerRoot = BaseController.load(getClass().getResource(RegistrationConstants.HOME_PAGE));
+			homeController.homeContent.setVisible(false);
+			homeController.onboard.setVisible(true);
+			getScene(headerRoot);
 			userOnboardParentController.userOnboardId.lookup("#onboardUser").setVisible(false);
 		} catch (IOException ioException) {
 			LOGGER.error("REGISTRATION - ONBOARD_USER_UPDATE - REGISTRATION_OFFICER_DETAILS_CONTROLLER",
@@ -574,7 +559,6 @@ public class PacketHandlerController extends BaseController implements Initializ
 					ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));
 		}
 		userOnboardController.initUserOnboard();
-
 		LOGGER.info(PACKET_HANDLER, APPLICATION_NAME, APPLICATION_ID, "User Onboard Update page is loaded");
 	}
 
@@ -686,16 +670,8 @@ public class PacketHandlerController extends BaseController implements Initializ
 			LOGGER.info("REGISTRATION - LOAD_REREGISTRATION_SCREEN - REGISTRATION_OFFICER_PACKET_CONTROLLER",
 					APPLICATION_NAME, APPLICATION_ID, "Loading reregistration screen");
 
-			if (!validateScreenAuthorization(root.getId())) {
-				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.AUTHORIZATION_ERROR);
-			} else {
-				ObservableList<Node> nodes = homeController.getMainBox().getChildren();
-				IntStream.range(1, nodes.size()).forEach(index -> {
-					nodes.get(index).setVisible(false);
-					nodes.get(index).setManaged(false);
-				});
-				nodes.add(root);
-			}
+				 homeController.getMainBox().getChildren().remove(homeController.getMainBox().getChildren().size()-1);
+				 homeController.getMainBox().add(root, 0, 1);
 		} catch (IOException ioException) {
 			LOGGER.error("REGISTRATION - LOAD_REREGISTRATION_SCREEN - REGISTRATION_OFFICER_PACKET_CONTROLLER",
 					APPLICATION_NAME, APPLICATION_ID,
@@ -785,7 +761,7 @@ public class PacketHandlerController extends BaseController implements Initializ
 
 		Optional.ofNullable(notificationResponse).map(ResponseDTO::getErrorResponseDTOs)
 				.flatMap(list -> list.stream().findFirst()).map(ErrorResponseDTO::getMessage)
-				.ifPresent(message -> generateAlert(notificationType, message));
+				.ifPresent(message -> generateAlertLanguageSpecific(notificationType, message));
 
 	}
 }

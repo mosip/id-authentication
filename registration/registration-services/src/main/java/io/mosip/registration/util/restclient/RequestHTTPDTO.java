@@ -3,6 +3,7 @@ package io.mosip.registration.util.restclient;
 import java.net.URI;
 
 import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
 
@@ -21,6 +22,8 @@ public class RequestHTTPDTO {
 	private boolean isAuthRequired;
 	private String authZHeader;
 	private String triggerPoint;
+	private HttpHeaders httpHeaders;
+	private Object requestBody;
 
 	public HttpMethod getHttpMethod() {
 		return httpMethod;
@@ -92,6 +95,22 @@ public class RequestHTTPDTO {
 
 	public void setTriggerPoint(String triggerPoint) {
 		this.triggerPoint = triggerPoint;
+	}
+
+	public HttpHeaders getHttpHeaders() {
+		return httpHeaders;
+	}
+
+	public void setHttpHeaders(HttpHeaders httpHeaders) {
+		this.httpHeaders = httpHeaders;
+	}
+
+	public Object getRequestBody() {
+		return requestBody;
+	}
+
+	public void setRequestBody(Object requestBody) {
+		this.requestBody = requestBody;
 	}
 
 }
