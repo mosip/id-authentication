@@ -201,7 +201,7 @@ public class PrintStage extends MosipVerticleAPIManager {
 			registrationStatusDto.setUpdatedBy(USER);
 			registrationStatusService.updateRegistrationStatus(registrationStatusDto);
 
-			printPostService.generatePrintandPostal(regId, queue);
+			printPostService.generatePrintandPostal(regId, queue, mosipQueueManager);
 
 			if (consumeResponseFromQueue(regId, queue)) {
 				description = "Print and Post Completed for the regId : " + regId;

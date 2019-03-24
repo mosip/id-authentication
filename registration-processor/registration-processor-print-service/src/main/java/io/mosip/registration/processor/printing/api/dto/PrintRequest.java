@@ -1,6 +1,8 @@
 package io.mosip.registration.processor.printing.api.dto;
 
+import io.mosip.registration.processor.core.common.rest.dto.BaseRestRequestDTO;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  * Instantiates a new prints the request.
@@ -8,16 +10,10 @@ import lombok.Data;
  * @author M1048358 Alok
  */
 @Data
-public class PrintRequest {
+@EqualsAndHashCode(callSuper = true)
+public class PrintRequest extends BaseRestRequestDTO {
 
-	/** The id. */
-	private String id;
-
-	/** The version. */
-	private String version;
-
-	/** The request time. */
-	private String requestTime;
+	private static final long serialVersionUID = 1L;
 
 	/** The request. */
 	private RequestDTO request;

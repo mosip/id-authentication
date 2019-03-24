@@ -47,6 +47,8 @@ import io.mosip.registration.processor.core.constant.UinCardType;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.exception.TemplateProcessingFailureException;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
+import io.mosip.registration.processor.core.idrepo.dto.Documents;
+import io.mosip.registration.processor.core.idrepo.dto.IdResponseDTO;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.JsonValue;
@@ -67,8 +69,6 @@ import io.mosip.registration.processor.print.service.dto.JsonFileDTO;
 import io.mosip.registration.processor.print.service.dto.JsonRequestDTO;
 import io.mosip.registration.processor.print.service.exception.IDRepoResponseNull;
 import io.mosip.registration.processor.print.service.exception.UINNotFoundInDatabase;
-import io.mosip.registration.processor.print.service.kernel.dto.Documents;
-import io.mosip.registration.processor.print.service.kernel.dto.IdResponseDTO;
 import io.mosip.registration.processor.print.service.utility.UINCardConstant;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
@@ -442,7 +442,7 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 		if (value != null) {
 			CbeffToBiometricUtil util = new CbeffToBiometricUtil(cbeffutil);
 			List<String> subtype = new ArrayList<>();
-			byte[] photobyte = util.getPhoto(value, FACE, subtype);
+			byte[] photobyte = util.getImageBytes(value, FACE, subtype);
 			String imageString = CryptoUtil.encodeBase64String(photobyte);
 			attributes.put(APPLICANT_PHOTO, "data:image/gif;base64," + imageString);
 			isPhotoSet = true;

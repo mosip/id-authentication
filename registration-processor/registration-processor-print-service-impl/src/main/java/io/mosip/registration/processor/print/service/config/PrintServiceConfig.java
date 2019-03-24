@@ -88,7 +88,7 @@ public class PrintServiceConfig {
 	 */
 	@Bean
 	@Primary
-	public PrintService<Map<String, byte[]>> getPrintService() {
+	public PrintService<Map<String, byte[]>> printServiceImpl() {
 		return new PrintServiceImpl();
 	}
 

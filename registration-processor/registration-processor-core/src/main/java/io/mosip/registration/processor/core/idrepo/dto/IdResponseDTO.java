@@ -1,4 +1,4 @@
-package io.mosip.registration.processor.print.service.kernel.dto;
+package io.mosip.registration.processor.core.idrepo.dto;
 
 import java.util.List;
 
@@ -17,13 +17,13 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 @JsonFilter("responseFilter")
 public class IdResponseDTO extends BaseIdRequestResponseDTO {
-	
+
 	/** The err. */
 	private List<ErrorDTO> error;
-	
+
 	/** The status. */
 	private String status;
-	
+
 	/** The response. */
 	@JsonFilter("responseFilter")
 	private ResponseDTO response;
