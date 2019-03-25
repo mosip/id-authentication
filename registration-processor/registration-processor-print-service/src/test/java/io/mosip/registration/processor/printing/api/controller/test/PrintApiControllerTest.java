@@ -1,4 +1,4 @@
-package io.mosip.registration.processor.printing.api.controller.test;
+/*package io.mosip.registration.processor.printing.api.controller.test;
 
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -35,47 +35,47 @@ import io.mosip.registration.processor.printing.api.dto.PrintRequest;
 import io.mosip.registration.processor.printing.api.dto.RequestDTO;
 import io.mosip.registration.processor.printing.api.util.PrintServiceRequestValidator;
 
-/**
+*//**
  * The Class PrintApiControllerTest.
  * 
  * @author M1048358 Alok
- */
+ *//*
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @AutoConfigureMockMvc
 public class PrintApiControllerTest {
 
-	/** The printapicontroller. */
+	*//** The printapicontroller. *//*
 	@InjectMocks
 	private PrintApiController printapicontroller = new PrintApiController();
 
-	/** The printservice. */
+	*//** The printservice. *//*
 	@MockBean
 	private PrintService<Map<String, byte[]>> printservice;
 
-	/** The env. */
+	*//** The env. *//*
 	@Mock
 	private Environment env;
 
-	/** The mock mvc. */
+	*//** The mock mvc. *//*
 	@Autowired
 	private MockMvc mockMvc;
 
-	/** The validator. */
+	*//** The validator. *//*
 	@Mock
 	private PrintServiceRequestValidator validator;
 
-	/** The json. */
+	*//** The json. *//*
 	private String json;
 
-	/** The map. */
+	*//** The map. *//*
 	private Map<String, byte[]> map = new HashMap<>();
 
-	/**
+	*//**
 	 * Setup.
 	 *
 	 * @throws JsonProcessingException the json processing exception
-	 */
+	 *//*
 	@Before
 	public void setup() throws JsonProcessingException {
 		when(env.getProperty("mosip.registration.processor.print.service.id")).thenReturn("mosip.registration.print");
@@ -98,11 +98,11 @@ public class PrintApiControllerTest {
 		map.put("uinPdf", pdfbyte);
 	}
 
-	/**
+	*//**
 	 * Testpdf success.
 	 *
 	 * @throws Exception the exception
-	 */
+	 *//*
 	@Test
 	public void testpdfSuccess() throws Exception {
 		Mockito.when(printservice.getDocuments(ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(map);
@@ -111,11 +111,11 @@ public class PrintApiControllerTest {
 				.contentType(MediaType.APPLICATION_JSON_VALUE).content(json)).andExpect(status().isOk());
 	}
 
-	/**
+	*//**
 	 * Test pdf failure.
 	 *
 	 * @throws Exception the exception
-	 */
+	 *//*
 	@Test
 	public void testPdfFailure() throws Exception {
 		String body = "";
@@ -123,3 +123,4 @@ public class PrintApiControllerTest {
 				.contentType(MediaType.APPLICATION_JSON_VALUE).content(body)).andExpect(status().isNotFound());
 	}
 }
+*/
