@@ -252,7 +252,7 @@ public class MessageSenderStageTest {
 		assertTrue(result.getIsValid());
 	}
 
-	@Test(expected = TemplateGenerationFailedException.class)
+	@Test
 	public void testConfigNotFoundException() throws Exception {
 		ReflectionTestUtils.setField(stage, "notificationTypes", "");
 		Mockito.when(registrationStatusService.getRegistrationStatus(any())).thenReturn(registrationStatusDto);
