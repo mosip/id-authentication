@@ -26,6 +26,7 @@ public class TweakRegProcPackets {
 	String packetName="";
 	EncrypterDecrypter encryptDecrypt = new EncrypterDecrypter();
 
+	@SuppressWarnings("unchecked")
 	public void tweakFile(String testCaseName, String parameterToBeChanged, String parameterValue)
 			throws IOException, ZipException {
 		File decryptedFile = null;
