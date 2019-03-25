@@ -1,6 +1,7 @@
 package io.mosip.kernel.keymanagerservice.service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 import io.mosip.kernel.keymanagerservice.dto.PublicKeyResponse;
@@ -38,5 +39,8 @@ public interface KeymanagerService {
 	 */
 	public PublicKeyResponse<String> getPublicKey(String applicationId, String timeStamp,
 			Optional<String> referenceId);
+
+	//TODO: To be removed added for debugging
+	List<String> getAllAlias();
 
 }

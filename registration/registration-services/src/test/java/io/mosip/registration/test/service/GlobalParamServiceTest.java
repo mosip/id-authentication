@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -68,6 +69,7 @@ public class GlobalParamServiceTest {
 		assertEquals(globalParamMap, gloablContextParamServiceImpl.getGlobalParams());
 	}
 
+	@Ignore
 	@Test
 	public void syncConfigDataTest() throws RegBaseCheckedException, HttpClientErrorException, SocketTimeoutException {
 
@@ -111,6 +113,8 @@ public class GlobalParamServiceTest {
 
 		gloablContextParamServiceImpl.synchConfigData(false);
 	}
+	
+	@Ignore
 	@Test
 	public void syncConfigTest() throws RegBaseCheckedException, HttpClientErrorException, SocketTimeoutException {
 

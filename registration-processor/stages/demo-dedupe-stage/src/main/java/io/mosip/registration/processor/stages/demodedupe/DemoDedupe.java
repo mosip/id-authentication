@@ -270,7 +270,8 @@ public class DemoDedupe {
 				}
 			}
 		}
-		return validateBiometric(duplicateUin);
+		return biometricValidation.validateBiometric(duplicateUin,regId);
+		// return validateBiometric(duplicateUin);
 	}
 
 	/**
