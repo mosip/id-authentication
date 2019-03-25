@@ -7,9 +7,6 @@ import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
@@ -99,6 +96,8 @@ public class PrintStage extends MosipVerticleAPIManager {
 	/** The is transactional. */
 	private boolean isTransactionSuccessful = false;
 
+	private String registrationId;
+
 	/** The registration status service. */
 	@Autowired
 	RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> registrationStatusService;
@@ -145,13 +144,20 @@ public class PrintStage extends MosipVerticleAPIManager {
 	/** The packet info manager. */
 	@Autowired
 	private PacketInfoManager<Identity, ApplicantInfoDto> packetInfoManager;
+	
+	@Autowired
+	ConsumerStage consumerStage;
+
+	MessageDTO messageDTO;
 
 	/**
 	 * Deploy verticle.
 	 */
 	public void deployVerticle() {
-		mosipEventBus = this.getEventBus(this, clusterManagerUrl);
+		mosipEventBus = this.getEventBus(this, clusterManagerUrl, 50);
+		ConsumerStage.mosipEventBus = mosipEventBus;
 		this.consume(mosipEventBus, MessageBusAddress.PRINTING_BUS);
+		this.consume(mosipEventBus, MessageBusAddress.PRINTING_BUS_RESEND);
 	}
 
 	/*
@@ -166,8 +172,8 @@ public class PrintStage extends MosipVerticleAPIManager {
 		object.setMessageBusAddress(MessageBusAddress.PRINTING_BUS);
 		object.setInternalError(Boolean.FALSE);
 		String description = null;
+		registrationId = object.getRid();
 		String regId = object.getRid();
-
 		try {
 			InternalRegistrationStatusDto registrationStatusDto = registrationStatusService
 					.getRegistrationStatus(regId);
@@ -203,22 +209,6 @@ public class PrintStage extends MosipVerticleAPIManager {
 
 			registrationStatusDto.setUpdatedBy(USER);
 			registrationStatusService.updateRegistrationStatus(registrationStatusDto);
-
-			if (consumeResponseFromQueue(regId, queue)) {
-				description = "Print and Post Completed for the regId : " + regId;
-				registrationStatusDto.setStatusCode(RegistrationStatusCode.PRINT_AND_POST_COMPLETED.toString());
-				registrationStatusDto.setStatusComment(description);
-				registrationStatusDto.setUpdatedBy(USER);
-				registrationStatusService.updateRegistrationStatus(registrationStatusDto);
-			} else {
-				description = "Re-Send uin card with regId " + regId + " for printing";
-				registrationStatusDto.setStatusCode(RegistrationStatusCode.RESEND_UIN_CARD_FOR_PRINTING.toString());
-				registrationStatusDto.setStatusComment(description);
-				registrationStatusDto.setUpdatedBy(USER);
-				registrationStatusService.updateRegistrationStatus(registrationStatusDto);
-				object.setIsValid(Boolean.FALSE);
-			}
-
 			fileCleanup(documentBytesMap.get("UIN"));
 
 		} catch (PDFGeneratorException e) {
@@ -260,17 +250,19 @@ public class PrintStage extends MosipVerticleAPIManager {
 			eventType = eventId.equalsIgnoreCase(EventId.RPR_402.toString()) ? EventType.BUSINESS.toString()
 					: EventType.SYSTEM.toString();
 
-			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,regId, ApiName.AUDIT);
+			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType, regId,
+					ApiName.AUDIT);
 		}
 
+		consumerStage.process(object);
 		return object;
 	}
 
 	private void fileCleanup(byte[] bs) throws IOException {
 		String uin = new String(bs);
-		if(FileUtils.getFile(RESOURCES + uin + ".txt").exists())
+		if (FileUtils.getFile(RESOURCES + uin + ".txt").exists())
 			FileUtils.forceDelete(FileUtils.getFile(RESOURCES + uin + ".txt"));
-		if(FileUtils.getFile(RESOURCES + uin + ".pdf").exists())
+		if (FileUtils.getFile(RESOURCES + uin + ".pdf").exists())
 			FileUtils.forceDelete(FileUtils.getFile(RESOURCES + uin + ".pdf"));
 	}
 
@@ -378,35 +370,6 @@ public class PrintStage extends MosipVerticleAPIManager {
 			this.setResponse(ctx, "Caught internal error in messageDto");
 		}
 
-	}
-
-	/**
-	 * Consume response from queue.
-	 *
-	 * @param regId
-	 *            the reg id
-	 * @return true, if successful
-	 */
-	private boolean consumeResponseFromQueue(String regId, MosipQueue queue) {
-		boolean result = false;
-
-		// Consuming the response from the third party service provider
-		byte[] responseFromQueue = mosipQueueManager.consume(queue, printPostalAddress);
-		String response = new String(responseFromQueue);
-		JSONParser parser = new JSONParser();
-		JSONObject identityJson = null;
-		try {
-			identityJson = (JSONObject) parser.parse(response);
-			String uinFieldCheck = (String) identityJson.get("Status");
-			if (uinFieldCheck.equals("Success")) {
-				result = true;
-			}
-		} catch (ParseException e) {
-			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					regId, PlatformErrorMessages.RPR_PRT_PRINT_POST_ACK_FAILED.name() + e.getMessage()
-							+ ExceptionUtils.getStackTrace(e));
-		}
-		return result;
 	}
 
 }
