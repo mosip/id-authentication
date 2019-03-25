@@ -33,7 +33,7 @@ public enum BioAuthType implements AuthType {
 			setOf(BioMatchType.FGRMIN_LEFT_THUMB, BioMatchType.FGRMIN_LEFT_INDEX, BioMatchType.FGRMIN_LEFT_MIDDLE,
 					BioMatchType.FGRMIN_LEFT_RING, BioMatchType.FGRMIN_LEFT_LITTLE, BioMatchType.FGRMIN_RIGHT_THUMB,
 					BioMatchType.FGRMIN_RIGHT_INDEX, BioMatchType.FGRMIN_RIGHT_MIDDLE, BioMatchType.FGRMIN_RIGHT_RING,
-					BioMatchType.FGRMIN_RIGHT_LITTLE),
+					BioMatchType.FGRMIN_RIGHT_LITTLE, BioMatchType.FGRMIN_UNKNOWN),
 			getFingerprint(), 1) {
 
 		@Override
@@ -42,10 +42,16 @@ public enum BioAuthType implements AuthType {
 			Map<String, Object> valueMap = new HashMap<>();
 			authRequestDTO.getRequest().getBiometrics().stream().map(BioIdentityInfoDTO::getData)
 					.filter(bioinfo -> bioinfo.getBioType().equals(this.getType())).forEach((DataDTO bioinfovalue) -> {
-						BiFunction<String, String, Double> func = idInfoFetcher
-								.getFingerPrintProvider(bioinfovalue)::matchMinutiae;
-						valueMap.put(FingerprintProvider.class.getSimpleName(), func);
-						valueMap.put(BioAuthType.class.getSimpleName(), this);
+						if(!bioinfovalue.getBioSubType().equalsIgnoreCase("UNKNOWN")) {							
+							BiFunction<String, String, Double> func = idInfoFetcher
+									.getFingerPrintProvider(bioinfovalue)::matchMinutiae;
+							valueMap.put(FingerprintProvider.class.getSimpleName(), func);
+							valueMap.put(BioAuthType.class.getSimpleName(), this);
+						} else {
+							BiFunction<Map<String, String>, Map<String, String>, Double> func = idInfoFetcher
+									.getFingerPrintProvider(bioinfovalue)::matchMultiMinutae;
+							valueMap.put(FingerprintProvider.class.getSimpleName(), func);
+						}
 					});
 			return valueMap;
 		}
@@ -151,7 +157,7 @@ public enum BioAuthType implements AuthType {
 		}
 
 	},
-	IRIS_IMG("IIR", setOf(BioMatchType.RIGHT_IRIS, BioMatchType.LEFT_IRIS), "Iris", 1) {
+	IRIS_IMG("IIR", setOf(BioMatchType.RIGHT_IRIS, BioMatchType.LEFT_IRIS, BioMatchType.IRIS_UNKNOWN), "Iris", 1) {
 
 		@Override
 		public Map<String, Object> getMatchProperties(AuthRequestDTO authRequestDTO, IdInfoFetcher idInfoFetcher,
@@ -159,9 +165,15 @@ public enum BioAuthType implements AuthType {
 			Map<String, Object> valueMap = new HashMap<>();
 			authRequestDTO.getRequest().getBiometrics().stream().map(BioIdentityInfoDTO::getData)
 					.filter(bioinfo -> bioinfo.getBioType().equals(this.getType())).forEach((DataDTO bioinfovalue) -> {
-						BiFunction<Map<String, String>, Map<String, String>, Double> func = idInfoFetcher
-								.getIrisProvider(bioinfovalue)::matchImage;// TODO add provider
-						valueMap.put(IrisProvider.class.getSimpleName(), func);
+						if(!bioinfovalue.getBioSubType().equalsIgnoreCase("UNKNOWN")) {
+							BiFunction<Map<String, String>, Map<String, String>, Double> func = idInfoFetcher
+									.getIrisProvider(bioinfovalue)::matchImage;// TODO add provider
+							valueMap.put(IrisProvider.class.getSimpleName(), func);
+						} else {
+							BiFunction<Map<String, String>, Map<String, String>, Double> func = idInfoFetcher
+									.getIrisProvider(bioinfovalue)::matchMultiImage;// TODO add provider
+							valueMap.put(IrisProvider.class.getSimpleName(), func);
+						}
 					});
 			valueMap.put("idvid", idInfoFetcher.getUinOrVid(authRequestDTO).orElse(""));
 			return valueMap;

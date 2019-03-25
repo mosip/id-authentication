@@ -43,6 +43,7 @@ public class RegistrationUIConstants {
 	public static final String IRIS_MATCH = bundle.getString("IRIS_MATCH");
 	public static final String FACE_MATCH = bundle.getString("FACE_MATCH");
 	public static final String FINGERPRINT = bundle.getString("FINGERPRINT");
+	public static final String RECAPTURE =  bundle.getString("RECAPTURE");
 
 	// AUTHORIZATION
 	public static final String ROLES_EMPTY_ERROR = bundle.getString("ROLES_EMPTY_ERROR");
@@ -54,6 +55,8 @@ public class RegistrationUIConstants {
 	public static final String REMAP_EOD_PROCESS_MESSAGE = bundle.getString("REMAP_EOD_PROCESS_MESSAGE");
 	public static final String REMAP_CLICK_OK = bundle.getString("REMAP_CLICK_OK");
 	public static final String REMAP_PROCESS_SUCCESS = bundle.getString("REMAP_PROCESS_SUCCESS");
+	public static final String REMAP_NOT_APPLICABLE = bundle.getString("REMAP_NOT_APPLICABLE");
+	public static final String REMAP_PROCESS_STILL_PENDING = bundle.getString("REMAP_PROCESS_STILL_PENDING");
 
 	// DEVICE
 	public static final String DEVICE_FP_NOT_FOUND = bundle.getString("DEVICE_FP_NOT_FOUND");
@@ -234,6 +237,7 @@ public class RegistrationUIConstants {
 	public static final String ERROR_IN_SYNC_AND_UPLOAD = bundle.getString("ERROR_IN_SYNC_AND_UPLOAD");
 	public static final String UNABLE_TO_SYNC_AND_UPLOAD = bundle.getString("UNABLE_TO_SYNC_AND_UPLOAD");
 	public static final String NETWORK_ERROR = bundle.getString("NETWORK_ERROR");
+	public static final String SUPERVISOR_VERIFICATION = bundle.getString("SUPERVISOR_VERIFICATION");
 
 	// Virus Scan
 	public static final String VIRUS_SCAN_ERROR_FIRST_PART = bundle.getString("VIRUS_SCAN_ERROR_FIRST_PART");
@@ -268,4 +272,9 @@ public class RegistrationUIConstants {
 	public static final String UPLOAD_COLUMN_HEADER_FILE = bundle.getString("UPLOAD_COLUMN_HEADER_FILE");
 	public static final String UPLOAD_COLUMN_HEADER_STATUS=bundle.getString("UPLOAD_COLUMN_HEADER_STATUS");
 	public static final String PACKET_UPLOAD_SUCCESS=bundle.getString("PACKET_UPLOAD_SUCCESS");
+	
+	//Scheduler
+	public static final String TIMEOUT_TITLE = bundle.getString("TIMEOUT_TITLE");
+	public static final String TIMEOUT_HEADER = bundle.getString("TIMEOUT_HEADER");
+	public static final String TIMEOUT_CONTENT = bundle.getString("TIMEOUT_CONTENT");
 }

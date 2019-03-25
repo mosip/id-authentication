@@ -61,7 +61,7 @@
                                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                       </rowConstraints>
                                        <children>
-                                          <Button contentDisplay="BOTTOM" mnemonicParsing="false" onAction="#previousSection" prefHeight="${backButtonPane.height-10}" prefWidth="${backButtonPane.width-10}" styleClass="backButton" text="%back" />
+                                          <Button fx:id="backBtn" contentDisplay="BOTTOM" mnemonicParsing="false" onAction="#previousSection" prefHeight="${backButtonPane.height-10}" prefWidth="${backButtonPane.width-10}" styleClass="backButton" text="%back" />
                                        </children>
                                     </GridPane>
                                  </children>
@@ -78,7 +78,7 @@
                                  <children>
                                     <GridPane fx:id="continueButtonPane" GridPane.columnIndex="2">
                                        <children>
-                                          <Button mnemonicParsing="false" onAction="#nextSection" prefHeight="${continueButtonPane.height-10}" prefWidth="${continueButtonPane.width-10}" styleClass="contiuneButton" text="%continue" />
+                                          <Button fx:id="continueBtn" mnemonicParsing="false" onAction="#nextSection" prefHeight="${continueButtonPane.height-10}" prefWidth="${continueButtonPane.width-10}" styleClass="contiuneButton" text="%continue" />
                                        </children>
                                        <columnConstraints>
                                           <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -138,12 +138,12 @@
                                           <GridPane>
                                             <columnConstraints>
                                               <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="30.0" prefWidth="100.0" />
-                                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="40.0" prefWidth="100.0" />
+                                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="30.0" prefWidth="100.0" />
                                             </columnConstraints>
                                             <rowConstraints>
-                                              <RowConstraints minHeight="10.0" percentHeight="0.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                              <RowConstraints minHeight="10.0" percentHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                              <RowConstraints minHeight="10.0" percentHeight="90.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                             </rowConstraints>
                                              <children>
                                                 <GridPane fx:id="rightIrisPane" onMouseClicked="#enableScan" styleClass="IrisPanes" GridPane.columnIndex="1" GridPane.rowIndex="1">
@@ -256,7 +256,7 @@
                                                       <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" GridPane.rowIndex="1">
                                                          <children>
                                                             <Label styleClass="attemptsLabel" text="%attempts" />
-                                                            <Label styleClass="attemptsLabel" text="-" />
+                                                            <Label fx:id="leftIrisAttempts" styleClass="attemptsLabel" text="-" />
                                                          </children>
                                                       </VBox>
                                                       <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
@@ -310,7 +310,7 @@
                                                             <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" GridPane.rowIndex="1">
                                                                <children>
                                                                   <Label styleClass="attemptsLabel" text="%attempts" />
-                                                                  <Label styleClass="attemptsLabel" text="-" />
+                                                                  <Label fx:id="rightIrisAttempts" styleClass="attemptsLabel" text="-" />
                                                                </children>
                                                             </VBox>
                                                             <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
@@ -369,12 +369,12 @@
                                        </children>
                                        <columnConstraints>
                                           <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="30.0" prefWidth="100.0" />
-                                          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                                          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="40.0" prefWidth="100.0" />
+                                          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="30.0" prefWidth="100.0" />
                                        </columnConstraints>
                                        <rowConstraints>
-                                          <RowConstraints minHeight="10.0" percentHeight="0.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                          <RowConstraints minHeight="10.0" percentHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                          <RowConstraints minHeight="10.0" percentHeight="90.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                        </rowConstraints>
                                     </GridPane>
                                  </children>
@@ -415,6 +415,24 @@
                                                 </ImageView>
                                              </graphic>
                                           </Button>
+                                       </children>
+                                    </GridPane>
+                                    <GridPane>
+                                      <columnConstraints>
+                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                      </columnConstraints>
+                                      <rowConstraints>
+                                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                      </rowConstraints>
+                                       <children>
+                                          <Label text="Quality" />
+                                          <Label text="Attempts" GridPane.rowIndex="1" />
+                                          <Label fx:id="irisQuality" GridPane.columnIndex="2" />
+                                          <ProgressBar fx:id="irisProgress" prefWidth="200.0" progress="0.0" GridPane.columnIndex="1" />
+                                          <HBox fx:id="irisRetryBox" prefHeight="100.0" prefWidth="200.0" spacing="30.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                                        </children>
                                     </GridPane>
                                  </children>

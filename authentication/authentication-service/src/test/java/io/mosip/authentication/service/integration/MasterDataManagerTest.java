@@ -39,12 +39,6 @@ import io.mosip.authentication.service.helper.RestHelper;
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class})
 @WebMvcTest
 public class MasterDataManagerTest {
-	/**
-	 * Environment
-	 */
-	@Autowired
-	private Environment environment;
-	
 	@Autowired
 	private Environment env;
 
@@ -75,7 +69,6 @@ public class MasterDataManagerTest {
 	
 	@Before
 	public void before() {
-		ReflectionTestUtils.setField(masterDataManager, "environment", environment);
 		ReflectionTestUtils.setField(masterDataManager, "restHelper", restHelper);
 		ReflectionTestUtils.setField(masterDataManager, "restFactory", restFactory);
 		ReflectionTestUtils.setField(restFactory, "env", env);

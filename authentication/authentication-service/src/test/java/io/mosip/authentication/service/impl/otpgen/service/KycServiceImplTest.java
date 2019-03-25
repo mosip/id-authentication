@@ -36,10 +36,10 @@ import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
 import io.mosip.authentication.core.dto.indauth.KycResponseDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.IdAuthenticationDaoException;
+import io.mosip.authentication.core.spi.indauth.match.MappingConfig;
 import io.mosip.authentication.service.config.IDAMappingConfig;
 import io.mosip.authentication.service.helper.IdInfoHelper;
 import io.mosip.authentication.service.impl.indauth.service.KycServiceImpl;
-import io.mosip.kernel.cbeffutil.impl.CbeffImpl;
 import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderImpl;
 
 /**
@@ -65,12 +65,12 @@ public class KycServiceImplTest {
 
 	@Autowired
 	private IDAMappingConfig idMappingConfig;
+	
+	@Autowired
+	private MappingConfig mappingConfig;
 
 	@InjectMocks
 	private KycServiceImpl kycServiceImpl;
-
-	@InjectMocks
-	private CbeffImpl cbeffUtil;
 
 	@Value("${sample.demo.entity}")
 	String value;
@@ -83,7 +83,7 @@ public class KycServiceImplTest {
 		ReflectionTestUtils.setField(kycServiceImpl, "idInfoHelper", idInfoHelper);
 		ReflectionTestUtils.setField(idInfoHelper, "environment", environment);
 		ReflectionTestUtils.setField(idInfoHelper, "idMappingConfig", idMappingConfig);
-		ReflectionTestUtils.setField(idInfoHelper, "cbeffUtil", cbeffUtil);
+		ReflectionTestUtils.setField(kycServiceImpl, "mappingConfig", mappingConfig);
 		idInfo = getIdInfo("12232323121");
 
 	}
@@ -100,7 +100,7 @@ public class KycServiceImplTest {
 			e.printStackTrace();
 		}
 	}
-	
+
 	@Test
 	public void validdata() throws IOException {
 		try {
@@ -115,7 +115,7 @@ public class KycServiceImplTest {
 			e.printStackTrace();
 		}
 	}
-	
+
 	@Test
 	public void validdata2() throws IOException {
 		try {
@@ -129,7 +129,7 @@ public class KycServiceImplTest {
 			e.printStackTrace();
 		}
 	}
-	
+
 	@Test
 	public void validdata3() throws IOException {
 		try {
@@ -188,7 +188,6 @@ public class KycServiceImplTest {
 		}
 	}
 
-
 	@Test
 	public void validUIN4() {
 		try {
@@ -217,17 +216,7 @@ public class KycServiceImplTest {
 		environment.setProperty("uin.masking.required", "true");
 		environment.setProperty("uin.masking.charcount", "2");
 		ReflectionTestUtils.setField(kycServiceImpl, "env", environment);
-		
-		kycServiceImpl.retrieveKycInfo("12232323121", fullKycList(), "ara", idInfo);
-	}
 
-	@Test(expected = NullPointerException.class)
-	public void validUIN7() throws IdAuthenticationDaoException, IOException, IdAuthenticationBusinessException {
-		MockEnvironment environment = new MockEnvironment();
-		environment.setProperty("mosip.primary.lang-code", "ara");
-		environment.setProperty("ekyc.type.fullkyc",
-				"fullName,firstName,middleName,lastName,dateOfBirth,gender,phone,email,addressLine1,addressLine2,addressLine3,city,province,region,postalCode,face");
-		ReflectionTestUtils.setField(kycServiceImpl, "env", environment);
 		kycServiceImpl.retrieveKycInfo("12232323121", fullKycList(), "ara", idInfo);
 	}
 
@@ -280,9 +269,10 @@ public class KycServiceImplTest {
 		List<String> allowedKycList = Arrays.asList(s.split(","));
 		return allowedKycList;
 	}
-	
+
 	private List<String> fullKycList() {
 		String s = "fullName,firstName,middleName,lastName,dateOfBirth,gender,phone,email,addressLine1,addressLine2,addressLine3,city,province,region,postalCode,face,documents.individualBiometrics";
+		
 		return Arrays.asList(s.split(","));
 	}
 }

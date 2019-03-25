@@ -34,6 +34,15 @@ public interface IdInfoFetcher {
 	public String getLanguageCode(LanguageType langType);
 
 	/**
+	 * To check language type
+	 * 
+	 * @param languageForMatchType
+	 * @param languageFromReq
+	 * @return
+	 */
+	public boolean checkLanguageType(String languageForMatchType, String languageFromReq);
+
+	/**
 	 * Get language name for Match Properties based on language code.
 	 *
 	 * @param languageCode language code
@@ -94,16 +103,18 @@ public interface IdInfoFetcher {
 
 	/**
 	 * Title info fetcher from Master data manager
+	 * 
 	 * @return
 	 */
 	public MasterDataFetcher getTitleFetcher();
+
 	/**
 	 * 
 	 * @param authRequestDTO
 	 * @return
 	 */
-	public  Optional<String> getUinOrVid(AuthRequestDTO authRequestDTO);
-	
+	public Optional<String> getUinOrVid(AuthRequestDTO authRequestDTO);
+
 	/**
 	 * 
 	 * @param authRequestDTO

@@ -1,7 +1,6 @@
 package io.mosip.authentication.service.integration;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -23,7 +22,6 @@ import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.util.dto.RestRequestDTO;
 import io.mosip.authentication.service.factory.RestRequestFactory;
 import io.mosip.authentication.service.helper.RestHelper;
-import io.mosip.authentication.service.integration.dto.OTPValidateResponseDTO;
 import io.mosip.authentication.service.integration.dto.OtpGeneratorRequestDto;
 import io.mosip.authentication.service.integration.dto.OtpGeneratorResponseDto;
 import io.mosip.kernel.core.logger.spi.Logger;

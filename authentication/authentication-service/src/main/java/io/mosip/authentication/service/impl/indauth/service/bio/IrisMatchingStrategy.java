@@ -30,8 +30,7 @@ public enum IrisMatchingStrategy implements MatchingStrategy {
 				return (int) func.apply(reqInfoMap, (Map<String, String>) entityInfo).doubleValue();
 			} else {
 				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.BIO_MISMATCH.getErrorCode(),
-						String.format(IdAuthenticationErrorConstants.BIO_MISMATCH.getErrorMessage(),
-								BioAuthType.IRIS_IMG.getType()));
+						IdAuthenticationErrorConstants.BIO_MISMATCH.getErrorMessage());
 			}
 		}
 		return 0;

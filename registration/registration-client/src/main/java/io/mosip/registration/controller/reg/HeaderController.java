@@ -195,7 +195,7 @@ public class HeaderController extends BaseController {
 			if (responseDTO.getSuccessResponseDTO() != null) {
 				generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.SYNC_SUCCESS);
 			} else if (responseDTO.getErrorResponseDTOs() != null) {
-				generateAlert(RegistrationUIConstants.SYNC_FAILURE,
+				generateAlert(RegistrationConstants.SYNC_FAILURE,
 						responseDTO.getErrorResponseDTOs().get(0).getMessage());
 			}
 
@@ -346,6 +346,14 @@ public class HeaderController extends BaseController {
 				SessionContext.userContext().getUserId(), AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
 
 		packetHandlerController.uploadPacket();
+	}
+
+	public void intiateRemapProcess() {
+		if (!isMachineRemapProcessStarted()) {
+			
+			generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.REMAP_NOT_APPLICABLE);
+		}
+
 	}
 
 }

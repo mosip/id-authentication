@@ -51,7 +51,7 @@ public class DataSyncController {
 	 * @param DataSyncDTO
 	 * @return responseDto
 	 */
-	@PreAuthorize("hasAnyRole('reg-officer','reg-supervisor')") 
+	@PreAuthorize("hasAnyRole('REGISTRATION_OFFICER','REGISTRATION_SUPERVISOR')")
 	@PostMapping(path = "/datasync", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "All PreRegistrationIds fetched successfully"),
 			@ApiResponse(code = 400, message = "Unable to fetch PreRegistrationIds ") })
@@ -67,7 +67,7 @@ public class DataSyncController {
 	 * @param preId
 	 * @return zip file to download
 	 */
-	@PreAuthorize("hasAnyRole('reg-officer','reg-supervisor')") 
+	@PreAuthorize("hasAnyRole('REGISTRATION_OFFICER','REGISTRATION_SUPERVISOR')")
 	@GetMapping(path = "/datasync", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Retrieve Pre-Registrations")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Data Sync records fetched"),
@@ -83,7 +83,7 @@ public class DataSyncController {
 	 * @param consumedData
 	 * @return response object
 	 */
-	
+	@PreAuthorize("hasAnyRole('REGISTRATION_OFFICER','REGISTRATION_SUPERVISOR')")
 	@PostMapping(path = "/datasync/store", consumes = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Store consumed Pre-Registrations")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Consumed Pre-Registrations saved"),

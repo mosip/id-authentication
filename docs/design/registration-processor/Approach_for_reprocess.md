@@ -46,18 +46,32 @@ The key solution considerations are -
 -   Add key registration.processor.reprocess.fetchsize with value 1000
 -   Add key registration.processor.reprocess.elapse.time with value in second is: 21600
 
-3.	Fallow below steps while processing packet in all stages which gives system capability to re-process records in case of crash:
-4.	Transaction management need to be implemented properly to manage multiple data base operations in stages to ensure data integrity and consistency.
+3.	Follow and implement below considerations while processing packet in all stages which gives system capability to re-process records in case of crash:
+- Transaction management need to be implemented properly to manage multiple data base operations in stages to ensure data integrity and consistency.
 
-5.	Update REGISTRATION table with the values as suggested below:
-    + Update column "latest_trn_type_code" with the value stage name
+- 	Update REGISTRATION table with the values as suggested below:
+    + Update column "latest_trn_type_code" with the below suggested values:
+```java
+	Packet Receiver
+	Virus Scan
+	Upload Packet
+	Validate Packet
+	OSI Validate
+	External Integration
+	Demographic Verification
+	Manual Varification
+	Biographic Verification
+	UNI Generator
+	Notification
+	Print
+```
     + Update "latest_trn_status_code" column with below values while processing packet:
       +  SUCCESS: In case processing successful
       +  FAILED: In case if validation fails
 	  +  IN-PROGRESS: In case of asynchronous call
       +  ERROR: In case of exception while processing packet
       +  REPROCESS: Update status with this value in case of exception which can be re-processed latter. Some of exceptions are like database or REST end point connection time out
-      +  PROCESSED: This status indicate that end to end processing of packet is successful
+      +  PROCESSED: This status indicate that end to end processing of packet is successful. Update transaction table with this status in UIN Generation Stage. Do not update registration table from Print and Notification stages as these are not being business critical operations.
 
 4. Reprocess Stage 
 +	Create a Vertx state: Reprocess Stage

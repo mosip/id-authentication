@@ -25,7 +25,10 @@ import io.mosip.authentication.core.spi.indauth.match.MatchInput;
 import io.mosip.authentication.core.spi.indauth.match.MatchOutput;
 import io.mosip.authentication.core.spi.indauth.service.OTPAuthService;
 import io.mosip.authentication.core.util.OTPUtil;
+import io.mosip.authentication.service.config.IDAMappingConfig;
 import io.mosip.authentication.service.helper.IdInfoHelper;
+import io.mosip.authentication.service.impl.indauth.builder.AuthStatusInfoBuilder;
+import io.mosip.authentication.service.impl.indauth.builder.MatchInputBuilder;
 import io.mosip.authentication.service.impl.indauth.service.pin.PinAuthType;
 import io.mosip.authentication.service.impl.indauth.service.pin.PinMatchType;
 import io.mosip.authentication.service.repository.AutnTxnRepository;
@@ -63,7 +66,13 @@ public class OTPAuthServiceImpl implements OTPAuthService {
 	private IdInfoHelper idInfoHelper;
 
 	@Autowired
+	private MatchInputBuilder matchInputBuilder;
+
+	@Autowired
 	private VIDRepository vidrepository;
+
+	@Autowired
+	private IDAMappingConfig idaMappingConfig;
 
 	/**
 	 * Validates generated OTP via OTP Manager.
@@ -98,8 +107,8 @@ public class OTPAuthServiceImpl implements OTPAuthService {
 				List<MatchOutput> listMatchOutputs = constructMatchOutput(authRequestDTO, listMatchInputs, uin,
 						partnerId);
 				boolean isPinMatched = listMatchOutputs.stream().anyMatch(MatchOutput::isMatched);
-				return idInfoHelper.buildStatusInfo(isPinMatched, listMatchInputs, listMatchOutputs,
-						PinAuthType.values());
+				return AuthStatusInfoBuilder.buildStatusInfo(isPinMatched, listMatchInputs, listMatchOutputs,
+						PinAuthType.values(), idaMappingConfig);
 			} else {
 				mosipLogger.debug(DEAFULT_SESSSION_ID, this.getClass().getSimpleName(), "Inside Invalid Txn ID",
 						getClass().toString());
@@ -141,7 +150,7 @@ public class OTPAuthServiceImpl implements OTPAuthService {
 	 * @return the list
 	 */
 	private List<MatchInput> constructMatchInput(AuthRequestDTO authRequestDTO) {
-		return idInfoHelper.constructMatchInput(authRequestDTO, PinAuthType.values(), PinMatchType.values());
+		return matchInputBuilder.buildMatchInput(authRequestDTO, PinAuthType.values(), PinMatchType.values());
 	}
 
 //	

@@ -1,4 +1,4 @@
-/*package io.mosip.preregistration.booking.test.controller;
+package io.mosip.preregistration.booking.test.controller;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -16,21 +16,24 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureWebMvc;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import io.mosip.preregistration.booking.controller.BookingController;
 import io.mosip.preregistration.booking.dto.AvailabilityDto;
 import io.mosip.preregistration.booking.dto.BookingRequestDTO;
 import io.mosip.preregistration.booking.dto.CancelBookingDTO;
 import io.mosip.preregistration.booking.dto.CancelBookingResponseDTO;
 import io.mosip.preregistration.booking.service.BookingService;
 import io.mosip.preregistration.booking.service.util.BookingServiceUtil;
+import io.mosip.preregistration.booking.test.BookingApplicationTest;
 import io.mosip.preregistration.core.common.dto.BookingRegistrationDTO;
 import io.mosip.preregistration.core.common.dto.DeleteBookingDTO;
 import io.mosip.preregistration.core.common.dto.MainListRequestDTO;
@@ -42,14 +45,15 @@ import io.mosip.preregistration.core.common.dto.PreRegIdsByRegCenterIdResponseDT
 import net.minidev.json.parser.JSONParser;
 import net.minidev.json.parser.ParseException;
 
-*//**
+/**
  * Booking Controller Test
  * 
  * @author Kishan Rathore
  *
- *//*
+ */
+@SpringBootTest(classes = { BookingApplicationTest.class })
 @RunWith(SpringRunner.class)
-@WebMvcTest(BookingController.class)
+@AutoConfigureMockMvc
 public class BookingControllerTest {
 
 	@Autowired
@@ -127,6 +131,7 @@ public class BookingControllerTest {
 		preRegIdsResponseDTO.setPreRegistrationIds(respList);
 	}
 
+	@WithUserDetails("individual")
 	@Test
 	public void getAvailability() throws Exception {
 		MainResponseDTO<AvailabilityDto> response = new MainResponseDTO<>();
@@ -137,6 +142,7 @@ public class BookingControllerTest {
 		mockMvc.perform(requestBuilder).andExpect(status().isOk());
 	}
 
+	@WithUserDetails("PRE_REGISTRATION_ADMIN")
 	@Test
 	public void saveAvailability() throws Exception {
 		MainResponseDTO<String> response = new MainResponseDTO<>();
@@ -149,6 +155,7 @@ public class BookingControllerTest {
 
 	@SuppressWarnings("unchecked")
 	@Test
+	@WithUserDetails("individual")
 	public void successBookingTest() throws Exception {
 
 		responseDto.setResponsetime(serviceUtil.getCurrentResponseTime());
@@ -167,6 +174,7 @@ public class BookingControllerTest {
 
 	@SuppressWarnings("unchecked")
 	@Test
+	@WithUserDetails("individual")
 	public void failureBookingTest() throws Exception {
 
 		bookingDTO.setRequest(null);
@@ -181,6 +189,7 @@ public class BookingControllerTest {
 
 	@SuppressWarnings("unchecked")
 	@Test
+	@WithUserDetails("individual")
 	public void cancelAppointmentSuccessTest() throws Exception {
 
 		responseDto.setErrors(null);
@@ -200,6 +209,7 @@ public class BookingControllerTest {
 
 	@SuppressWarnings("unchecked")
 	@Test
+	@WithUserDetails("individual")
 	public void cancelAppointmentFailureTest() throws Exception {
 
 		dto.setRequest(null);
@@ -213,6 +223,7 @@ public class BookingControllerTest {
 	}
 
 	@Test
+	@WithUserDetails("individual")
 	public void getAppointmentDetails() throws Exception {
 		MainResponseDTO<BookingRegistrationDTO> response = new MainResponseDTO<>();
 		Mockito.when(service.getAppointmentDetails("12345")).thenReturn(response);
@@ -224,6 +235,7 @@ public class BookingControllerTest {
 
 
 	@Test
+	@WithUserDetails("individual")
 	public void deleteBookingTest() throws Exception {
 		String preId = "3";
 		MainListResponseDTO<DeleteBookingDTO> response = new MainListResponseDTO<>();
@@ -242,11 +254,12 @@ public class BookingControllerTest {
 		mockMvc.perform(requestBuilder).andExpect(status().isOk());
 	}
 
-	*//**
+	/**
 	 * @throws Exception
 	 *             on error
-	 *//*
+	 */
 	@Test
+	@WithUserDetails("individual")
 	public void getAllApplicationByDateTest() throws Exception {
 
 		String fromDate = "2018-12-06";
@@ -272,4 +285,3 @@ public class BookingControllerTest {
 
 	}
 }
-*/

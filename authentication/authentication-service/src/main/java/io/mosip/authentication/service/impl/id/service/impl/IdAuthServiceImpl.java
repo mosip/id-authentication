@@ -24,7 +24,6 @@ import io.mosip.authentication.core.exception.IdAuthenticationDaoException;
 import io.mosip.authentication.core.exception.IdValidationFailedException;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.id.service.IdAuthService;
-import io.mosip.authentication.core.spi.id.service.IdRepoService;
 import io.mosip.authentication.core.util.dto.AuditRequestDto;
 import io.mosip.authentication.core.util.dto.AuditResponseDto;
 import io.mosip.authentication.core.util.dto.RestRequestDTO;
@@ -72,7 +71,7 @@ public class IdAuthServiceImpl implements IdAuthService<AutnTxn> {
 	private VIDRepository vidRepository;
 
 	@Autowired
-	private IdRepoService idRepoService;
+	private IdRepoManager idRepoManager;
 
 	/** The autntxnrepository. */
 	@Autowired
@@ -87,7 +86,7 @@ public class IdAuthServiceImpl implements IdAuthService<AutnTxn> {
 	 */
 	@Override
 	public Map<String, Object> getIdRepoByUIN(String uin, boolean isBio) throws IdAuthenticationBusinessException {
-		Map<String, Object> idRepo = idRepoService.getIdenity(uin, isBio);
+		Map<String, Object> idRepo = idRepoManager.getIdenity(uin, isBio);
 		auditData();
 		return idRepo;
 	}
@@ -121,7 +120,7 @@ public class IdAuthServiceImpl implements IdAuthService<AutnTxn> {
 					&& vidEntityOpt.get().isActive()) {
 				String uin = vidEntityOpt.get().getUin().trim();
 				try {
-					idRepo = idRepoService.getIdenity(uin, isBio);
+					idRepo = idRepoManager.getIdenity(uin, isBio);
 				} catch (IdAuthenticationBusinessException e) {
 					if (e.getErrorCode().equals(IdAuthenticationErrorConstants.UIN_DEACTIVATED.getErrorCode())) {
 						throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.VID_DEACTIVATED_UIN);

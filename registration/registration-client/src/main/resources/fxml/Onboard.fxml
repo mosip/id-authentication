@@ -24,7 +24,7 @@
             <fx:include fx:id="fingerPrintCapture" prefHeight="${userOnboardId.height}" prefWidth="${userOnboardId.width}" source="UserOnboardFPCapture.fxml" visible="false" />
             <fx:include fx:id="irisCapture" prefHeight="${userOnboardId.height}" prefWidth="${userOnboardId.width}" source="UserOnboardIrisCapture.fxml" visible="false" />
             <fx:include fx:id="faceCapture" prefHeight="${userOnboardId.height}" prefWidth="${userOnboardId.width}" source="UserOnboardWebCamera.fxml" visible="false" />
-            <fx:include fx:id="onboardUser" prefHeight="${userOnboardId.height}" prefWidth="${userOnboardId.width}" source="UserOnboard.fxml" visible="false" />
+            <fx:include fx:id="onboardUser" prefHeight="${userOnboardId.height}" prefWidth="${userOnboardId.width}" source="UserOnboard.fxml" visible="true" />
          </children>
       </GridPane>
    </children>

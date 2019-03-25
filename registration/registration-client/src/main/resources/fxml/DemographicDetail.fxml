@@ -152,7 +152,7 @@
                                        <content>
                                           <AnchorPane fx:id="keyboardPane" prefHeight="200.0" prefWidth="200.0">
                                              <children>
-                                                <FlowPane fx:id="parentFlowPane" prefHeight="1500.0" prefWidth="${scrollParentPane.width}">
+                                                <FlowPane fx:id="parentFlowPane" prefHeight="1500.0" prefWidth="${scrollParentPane.width}" styleClass="paneAtDisplayDemoGraphic">
                                                    <children>
                                                       <GridPane fx:id="preRegParentPane" prefHeight="80" prefWidth="${scrollParentPane.width}">
                                                          <children>
@@ -272,8 +272,8 @@
                                                             <GridPane>
                                                               <columnConstraints>
                                                                 <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="10.0" prefWidth="100.0" />
-                                                                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="70.0" prefWidth="100.0" />
-                                                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="20.0" prefWidth="100.0" />
+                                                                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="85.0" prefWidth="100.0" />
+                                                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="5.0" prefWidth="100.0" />
                                                               </columnConstraints>
                                                               <rowConstraints>
                                                                 <RowConstraints minHeight="10.0" percentHeight="20.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -281,27 +281,27 @@
                                                                   <RowConstraints minHeight="10.0" percentHeight="20.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                                               </rowConstraints>
                                                                <children>
-                                                                  <VBox prefHeight="200.0" prefWidth="100.0" spacing="5.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                                                  <VBox fx:id="applicationFullName" prefHeight="200.0" prefWidth="100.0" spacing="5.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
                                                                      <children>
-                                                                        <Label fx:id="fullNameLabel" styleClass="demoGraphicFieldLabel" text="%fullName" visible="true" />
+                                                                        <Label fx:id="fullNameLabel" styleClass="demoGraphicFieldLabel" text="%fullName" visible="false" />
                                                                         <TextField fx:id="fullName" promptText="%fullName" styleClass="demoGraphicTextField" />
-                                                                        <Label fx:id="fullNameMessage1" styleClass="demoGraphicFieldMessageLabel" text="fullName message" visible="true" />
+                                                                        <Label fx:id="fullNameMessage" styleClass="demoGraphicFieldMessageLabel" text="fullName message" visible="false" />
                                                                      </children>
                                                                   </VBox>
                                                                </children>
                                                             </GridPane>
                                                             <GridPane GridPane.columnIndex="1">
                                                                <children>
-                                                                  <VBox prefHeight="200.0" prefWidth="100.0" spacing="5.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                                                  <VBox fx:id="localFullName" prefHeight="200.0" prefWidth="100.0" spacing="5.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
                                                                      <children>
-                                                                        <Label fx:id="fullNameLocalLanguageLabel" styleClass="demoGraphicFieldLabel" text="%fullName" visible="true" />
+                                                                        <Label fx:id="fullNameLocalLanguageLabel" styleClass="demoGraphicFieldLabel" text="%fullName" visible="false" />
                                                                         <TextField fx:id="fullNameLocalLanguage" promptText="%fullName" styleClass="demoGraphicTextField" />
-                                                                        <Label fx:id="fullNameLocalLanguageMessage" styleClass="demoGraphicFieldMessageLabel" text="fullName message" visible="true" />
+                                                                        <Label fx:id="fullNameLocalLanguageMessage" styleClass="demoGraphicFieldMessageLabel" text="fullName message" visible="false" />
                                                                      </children>
                                                                   </VBox>
                                                                   <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="1">
                                                                      <children>
-                                                                        <ImageView id="fullName" fitHeight="20.0" fitWidth="27.0" layoutX="16.0" layoutY="27.0" onMouseClicked="#setFocusonLocalField" pickOnBounds="true" preserveRatio="true">
+                                                                        <ImageView id="fullName" fitHeight="20.0" fitWidth="27.0" layoutX="21.0" layoutY="27.0" onMouseClicked="#setFocusonLocalField" pickOnBounds="true" preserveRatio="true">
                                                                            <image>
                                                                               <Image url="@../images/keyboard.png" />
                                                                            </image>
@@ -311,8 +311,8 @@
                                                                </children>
                                                                <columnConstraints>
                                                                   <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="10.0" prefWidth="100.0" />
-                                                                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="70.0" prefWidth="100.0" />
-                                                                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="20.0" prefWidth="100.0" />
+                                                                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="85.0" prefWidth="100.0" />
+                                                                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="5.0" prefWidth="100.0" />
                                                                </columnConstraints>
                                                                <rowConstraints>
                                                                   <RowConstraints minHeight="10.0" percentHeight="20.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -331,7 +331,7 @@
                                                       </GridPane>
                                                       <GridPane fx:id="dobParentPane" prefHeight="80" prefWidth="${scrollParentPane.width}">
                                                          <children>
-                                                            <GridPane>
+                                                            <GridPane fx:id="applicationAge">
                                                                <children>
                                                                   <VBox spacing="5.0" GridPane.columnIndex="1">
                                                                      <children>
@@ -339,7 +339,7 @@
                                                                            <children>
                                                                               <VBox spacing="5.0">
                                                                                  <children>
-                                                                                    <Label fx:id="ddLabel" styleClass="demoGraphicFieldLabel" text="%dd" visible="true" />
+                                                                                    <Label fx:id="ddLabel" styleClass="demoGraphicFieldLabel" text="%dd" visible="false" />
                                                                                     <TextField fx:id="dd" promptText="%dd" styleClass="demoGraphicTextFieldTypThree" />
                                                                                  </children>
                                                                               </VBox>
@@ -351,7 +351,7 @@
                                                                               </VBox>
                                                                               <VBox spacing="5.0">
                                                                                  <children>
-                                                                                    <Label fx:id="mmLabel" styleClass="demoGraphicFieldLabel" text="%mm" visible="true" />
+                                                                                    <Label fx:id="mmLabel" styleClass="demoGraphicFieldLabel" text="%mm" visible="false" />
                                                                                     <TextField fx:id="mm" promptText="%mm" styleClass="demoGraphicTextFieldTypThree" />
                                                                                  </children>
                                                                               </VBox>
@@ -363,22 +363,22 @@
                                                                               </VBox>
                                                                               <VBox spacing="5.0">
                                                                                  <children>
-                                                                                    <Label fx:id="yyyyLabel" styleClass="demoGraphicFieldLabel" text="%yyyy" visible="true" />
+                                                                                    <Label fx:id="yyyyLabel" styleClass="demoGraphicFieldLabel" text="%yyyy" visible="false" />
                                                                                     <TextField fx:id="yyyy" promptText="%yyyy" styleClass="demoGraphicTextFieldTypThree" />
                                                                                  </children>
                                                                               </VBox>
                                                                            </children>
                                                                         </HBox>
-                                                                        <Label fx:id="dobMessage" styleClass="demoGraphicFieldMessageLabel" text="year message" visible="true" />
+                                                                        <Label fx:id="dobMessage" styleClass="demoGraphicFieldMessageLabel" text="year message" visible="false" />
                                                                      </children>
                                                                   </VBox>
                                                                   <GridPane GridPane.columnIndex="2">
                                                                      <children>
                                                                         <VBox spacing="5.0" GridPane.columnIndex="1">
                                                                            <children>
-                                                                              <Label fx:id="ageFieldLabel" styleClass="demoGraphicFieldLabel" text="%ageField" visible="true" />
+                                                                              <Label fx:id="ageFieldLabel" styleClass="demoGraphicFieldLabel" text="%ageField" visible="false" />
                                                                               <TextField fx:id="ageField" prefWidth="20.0" promptText="%ageField" styleClass="demoGraphicTextFieldTypThree" />
-                                                                              <Label fx:id="ageFieldMessage" styleClass="demoGraphicFieldMessageLabel" text="age message" visible="true" />
+                                                                              <Label fx:id="ageFieldMessage" styleClass="demoGraphicFieldMessageLabel" text="age message" visible="false" />
                                                                            </children>
                                                                         </VBox>
                                                                         <GridPane>
@@ -407,8 +407,8 @@
                                                                      </children>
                                                                      <columnConstraints>
                                                                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="45.0" prefWidth="100.0" />
-                                                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="40.0" prefWidth="100.0" />
-                                                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="20.0" prefWidth="100.0" />
+                                                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="50.0" prefWidth="100.0" />
+                                                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="10.0" prefWidth="100.0" />
                                                                      </columnConstraints>
                                                                      <rowConstraints>
                                                                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -417,14 +417,14 @@
                                                                </children>
                                                                <columnConstraints>
                                                                   <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="10.0" prefWidth="100.0" />
-                                                                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="50.0" prefWidth="100.0" />
                                                                   <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="40.0" prefWidth="100.0" />
+                                                                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="50.0" prefWidth="100.0" />
                                                                </columnConstraints>
                                                                <rowConstraints>
                                                                   <RowConstraints minHeight="10.0" percentHeight="100.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                                                </rowConstraints>
                                                             </GridPane>
-                                                            <GridPane GridPane.columnIndex="1">
+                                                            <GridPane fx:id="localAge" GridPane.columnIndex="1">
                                                                <children>
                                                                   <VBox spacing="5.0" GridPane.columnIndex="1">
                                                                      <children>
@@ -432,7 +432,7 @@
                                                                            <children>
                                                                               <VBox spacing="5.0">
                                                                                  <children>
-                                                                                    <Label fx:id="ddLocalLanguageLabel" styleClass="demoGraphicFieldLabel" text="%dd" visible="true" />
+                                                                                    <Label fx:id="ddLocalLanguageLabel" styleClass="demoGraphicFieldLabel" text="%dd" visible="false" />
                                                                                     <TextField fx:id="ddLocalLanguage" promptText="%dd" styleClass="demoGraphicTextFieldTypThree" />
                                                                                  </children>
                                                                               </VBox>
@@ -444,7 +444,7 @@
                                                                               </VBox>
                                                                               <VBox spacing="5.0">
                                                                                  <children>
-                                                                                    <Label fx:id="mmLocalLanguageLabel" styleClass="demoGraphicFieldLabel" text="%mm" visible="true" />
+                                                                                    <Label fx:id="mmLocalLanguageLabel" styleClass="demoGraphicFieldLabel" text="%mm" visible="false" />
                                                                                     <TextField fx:id="mmLocalLanguage" promptText="%mm" styleClass="demoGraphicTextFieldTypThree" />
                                                                                  </children>
                                                                               </VBox>
@@ -456,22 +456,22 @@
                                                                               </VBox>
                                                                               <VBox spacing="5.0">
                                                                                  <children>
-                                                                                    <Label fx:id="yyyyLocalLanguageLabel" styleClass="demoGraphicFieldLabel" text="%yyyy" visible="true" />
+                                                                                    <Label fx:id="yyyyLocalLanguageLabel" styleClass="demoGraphicFieldLabel" text="%yyyy" visible="false" />
                                                                                     <TextField fx:id="yyyyLocalLanguage" promptText="%yyyy" styleClass="demoGraphicTextFieldTypThree" />
                                                                                  </children>
                                                                               </VBox>
                                                                            </children>
                                                                         </HBox>
-                                                                        <Label fx:id="dobMessage" styleClass="demoGraphicFieldMessageLabel" text="year message" visible="true" />
+                                                                        <Label fx:id="dobMessage" styleClass="demoGraphicFieldMessageLabel" text="year message" visible="false" />
                                                                      </children>
                                                                   </VBox>
                                                                   <GridPane GridPane.columnIndex="2">
                                                                      <children>
                                                                         <VBox spacing="5.0" GridPane.columnIndex="1">
                                                                            <children>
-                                                                              <Label fx:id="ageFieldLocalLanguageLabel" styleClass="demoGraphicFieldLabel" text="%ageField" visible="true" />
+                                                                              <Label fx:id="ageFieldLocalLanguageLabel" styleClass="demoGraphicFieldLabel" text="%ageField" visible="false" />
                                                                               <TextField fx:id="ageFieldLocalLanguage" prefWidth="20.0" promptText="%ageField" styleClass="demoGraphicTextFieldTypThree" />
-                                                                              <Label fx:id="ageFieldLocalLanguageMessage" styleClass="demoGraphicFieldMessageLabel" text="age message" visible="true" />
+                                                                              <Label fx:id="ageFieldLocalLanguageMessage" styleClass="demoGraphicFieldMessageLabel" text="age message" visible="false" />
                                                                            </children>
                                                                         </VBox>
                                                                         <GridPane>
@@ -528,11 +528,11 @@
                                                       </GridPane>
                                                       <GridPane fx:id="genderParentPane" prefHeight="100" prefWidth="${scrollParentPane.width}">
                                                          <children>
-                                                            <GridPane>
+                                                            <GridPane fx:id="applicationGender">
                                                                <children>
                                                                   <VBox prefHeight="200.0" prefWidth="100.0" spacing="5.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
                                                                      <children>
-                                                                        <Label fx:id="genderLabel" styleClass="demoGraphicFieldLabel" text="%gender" visible="true" />
+                                                                        <Label fx:id="genderLabel" styleClass="demoGraphicFieldLabel" text="%gender" visible="false" />
                                                                         <ComboBox fx:id="gender" promptText="%gender" styleClass="demographicCombobox">
                                                                            <items>
                                                                               <FXCollections fx:factory="observableArrayList">
@@ -542,7 +542,7 @@
                                                                               </FXCollections>
                                                                            </items>
                                                                         </ComboBox>
-                                                                        <Label fx:id="genderMessage" styleClass="demoGraphicFieldMessageLabel" text="gender message" visible="true" />
+                                                                        <Label fx:id="genderMessage" styleClass="demoGraphicFieldMessageLabel" text="gender message" visible="false" />
                                                                      </children>
                                                                   </VBox>
                                                                </children>
@@ -556,11 +556,11 @@
                                                                   <RowConstraints minHeight="10.0" percentHeight="90.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                                                </rowConstraints>
                                                             </GridPane>
-                                                            <GridPane GridPane.columnIndex="1">
+                                                            <GridPane fx:id="localGender" GridPane.columnIndex="1">
                                                                <children>
                                                                   <VBox prefHeight="200.0" prefWidth="100.0" spacing="5.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
                                                                      <children>
-                                                                        <Label fx:id="genderLocalLanguageLabel" styleClass="demoGraphicFieldLabel" text="%gender" visible="true" />
+                                                                        <Label fx:id="genderLocalLanguageLabel" styleClass="demoGraphicFieldLabel" text="%gender" visible="false" />
                                                                         <ComboBox fx:id="genderLocalLanguage" promptText="%gender" styleClass="demographicCombobox">
                                                                            <items>
                                                                               <FXCollections fx:factory="observableArrayList">
@@ -570,7 +570,7 @@
                                                                               </FXCollections>
                                                                            </items>
                                                                         </ComboBox>
-                                                                        <Label fx:id="genderLocalLanguageMessage" styleClass="demoGraphicFieldMessageLabel" text="gender message" visible="true" />
+                                                                        <Label fx:id="genderLocalLanguageMessage" styleClass="demoGraphicFieldMessageLabel" text="gender message" visible="false" />
                                                                      </children>
                                                                   </VBox>
                                                                </children>
@@ -595,7 +595,7 @@
                                                       </GridPane>
                                                       <GridPane fx:id="residenceParentpane" prefHeight="70.0" prefWidth="${scrollParentPane.width}">
                                                          <children>
-                                                            <GridPane>
+                                                            <GridPane fx:id="applicationResidence">
                                                                <children>
                                                                   <VBox prefHeight="44.0" prefWidth="224.0" spacing="1.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
                                                                      <children>
@@ -624,7 +624,7 @@
                                                                   <RowConstraints minHeight="10.0" percentHeight="70.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                                                </rowConstraints>
                                                             </GridPane>
-                                                            <GridPane GridPane.columnIndex="1">
+                                                            <GridPane fx:id="localResidence" GridPane.columnIndex="1">
                                                                <children>
                                                                   <VBox spacing="1.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
                                                                      <children>
@@ -666,29 +666,29 @@
                                                          <children>
                                                             <GridPane fx:id="applicatoinAddressPane">
                                                                <children>
-                                                                  <VBox prefHeight="632.0" prefWidth="223.0" spacing="5.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                                                  <VBox fx:id="addressVBox" prefHeight="632.0" prefWidth="223.0" spacing="5.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
                                                                      <children>
                                                                         <VBox fx:id="applicationLanguageAddressPane">
                                                                            <children>
-                                                                              <VBox spacing="5.0">
+                                                                              <VBox fx:id="applicationAddress" spacing="5.0">
                                                                                  <children>
-                                                                                    <Label fx:id="addressLine1Label" styleClass="demoGraphicFieldLabel" text="%addressLine1" visible="true" />
-                                                                                    <TextField fx:id="addressLine1" promptText="%addressLine1" styleClass="demoGraphicTextField" />
-                                                                                    <Label fx:id="addressLine1Message" styleClass="demoGraphicFieldMessageLabel" text="addressLine1 message" visible="true" />
+                                                                                    <Label fx:id="addressLine1Label" styleClass="demoGraphicFieldLabel" text="%addressLine1" visible="false" />
+                                                                                    <TextField fx:id="addressLine1" prefWidth="${addressVBox.width}" promptText="%addressLine1" styleClass="demoGraphicTextField" />
+                                                                                    <Label fx:id="addressLine1Message" styleClass="demoGraphicFieldMessageLabel" text="addressLine1 message" visible="false" />
                                                                                  </children>
                                                                               </VBox>
                                                                               <VBox spacing="5.0">
                                                                                  <children>
-                                                                                    <Label fx:id="addressLine2Label" styleClass="demoGraphicFieldLabel" text="%addressLine2" visible="true" />
-                                                                                    <TextField fx:id="addressLine2" promptText="%addressLine2" styleClass="demoGraphicTextField" />
-                                                                                    <Label fx:id="addressLine2Message" styleClass="demoGraphicFieldMessageLabel" text="addressLine2 message" visible="true" />
+                                                                                    <Label fx:id="addressLine2Label" styleClass="demoGraphicFieldLabel" text="%addressLine2" visible="false" />
+                                                                                    <TextField fx:id="addressLine2" prefWidth="${addressVBox.width}" promptText="%addressLine2" styleClass="demoGraphicTextField" />
+                                                                                    <Label fx:id="addressLine2Message" styleClass="demoGraphicFieldMessageLabel" text="addressLine2 message" visible="false" />
                                                                                  </children>
                                                                               </VBox>
                                                                               <VBox spacing="5.0">
                                                                                  <children>
-                                                                                    <Label fx:id="addressLine3Label" styleClass="demoGraphicFieldLabel" text="%addressLine3" visible="true" />
-                                                                                    <TextField fx:id="addressLine3" promptText="%addressLine3" styleClass="demoGraphicTextField" />
-                                                                                    <Label fx:id="addressLine3Message" styleClass="demoGraphicFieldMessageLabel" text="addressLine3 message" visible="true" />
+                                                                                    <Label fx:id="addressLine3Label" styleClass="demoGraphicFieldLabel" text="%addressLine3" visible="false" />
+                                                                                    <TextField fx:id="addressLine3" prefWidth="${addressVBox.width}" promptText="%addressLine3" styleClass="demoGraphicTextField" />
+                                                                                    <Label fx:id="addressLine3Message" styleClass="demoGraphicFieldMessageLabel" text="addressLine3 message" visible="false" />
                                                                                  </children>
                                                                               </VBox>
                                                                            </children>
@@ -714,16 +714,16 @@
                                                                            <children>
                                                                               <VBox spacing="5.0">
                                                                                  <children>
-                                                                                    <Label fx:id="regionLabel" styleClass="demoGraphicFieldLabel" text="%region" visible="true" />
-                                                                                    <ComboBox fx:id="region" onAction="#addProvince" promptText="%region" styleClass="demographicCombobox" />
-                                                                                    <Label fx:id="regionMessage" styleClass="demoGraphicFieldMessageLabel" text="region message" visible="true" />
+                                                                                    <Label fx:id="regionLabel" styleClass="demoGraphicFieldLabel" text="%region" visible="false" />
+                                                                                    <ComboBox fx:id="region" onAction="#addProvince" prefWidth="${addressVBox.width/2}" promptText="%region" styleClass="demographicCombobox" />
+                                                                                    <Label fx:id="regionMessage" styleClass="demoGraphicFieldMessageLabel" text="region message" visible="false" />
                                                                                  </children>
                                                                               </VBox>
                                                                               <VBox spacing="5.0">
                                                                                  <children>
-                                                                                    <Label fx:id="provinceLabel" styleClass="demoGraphicFieldLabel" text="%province" visible="true" />
-                                                                                    <ComboBox fx:id="province" onAction="#addCity" promptText="%province" styleClass="demographicCombobox" />
-                                                                                    <Label fx:id="provinceMessage" styleClass="demoGraphicFieldMessageLabel" text="province message" visible="true" />
+                                                                                    <Label fx:id="provinceLabel" styleClass="demoGraphicFieldLabel" text="%province" visible="false" />
+                                                                                    <ComboBox fx:id="province" onAction="#addCity" prefWidth="${addressVBox.width/2}" promptText="%province" styleClass="demographicCombobox" />
+                                                                                    <Label fx:id="provinceMessage" styleClass="demoGraphicFieldMessageLabel" text="province message" visible="false" />
                                                                                  </children>
                                                                               </VBox>
                                                                            </children>
@@ -732,16 +732,16 @@
                                                                            <children>
                                                                               <VBox spacing="5.0">
                                                                                  <children>
-                                                                                    <Label fx:id="cityLabel" styleClass="demoGraphicFieldLabel" text="%city" visible="true" />
-                                                                                    <ComboBox fx:id="city" onAction="#addlocalAdminAuthority" promptText="%city" styleClass="demographicCombobox" />
-                                                                                    <Label fx:id="cityMessage" styleClass="demoGraphicFieldMessageLabel" text="city message" visible="true" />
+                                                                                    <Label fx:id="cityLabel" styleClass="demoGraphicFieldLabel" text="%city" visible="false" />
+                                                                                    <ComboBox fx:id="city" onAction="#addlocalAdminAuthority" prefWidth="${addressVBox.width/2}" promptText="%city" styleClass="demographicCombobox" />
+                                                                                    <Label fx:id="cityMessage" styleClass="demoGraphicFieldMessageLabel" text="city message" visible="false" />
                                                                                  </children>
                                                                               </VBox>
                                                                               <VBox spacing="5.0">
                                                                                  <children>
-                                                                                    <Label fx:id="localAdminAuthorityLabel" styleClass="demoGraphicFieldLabel" text="%localAdminAuthority" visible="true" />
-                                                                                    <ComboBox fx:id="localAdminAuthority" promptText="%localAdminAuthority" styleClass="demographicCombobox" />
-                                                                                    <Label fx:id="localAdminAuthorityMessage" styleClass="demoGraphicFieldMessageLabel" text="localAdminAuthority message" visible="true" />
+                                                                                    <Label fx:id="localAdminAuthorityLabel" styleClass="demoGraphicFieldLabel" text="%localAdminAuthority" visible="false" />
+                                                                                    <ComboBox fx:id="localAdminAuthority" prefWidth="${addressVBox.width/2}" promptText="%localAdminAuthority" styleClass="demographicCombobox" />
+                                                                                    <Label fx:id="localAdminAuthorityMessage" styleClass="demoGraphicFieldMessageLabel" text="localAdminAuthority message" visible="false" />
                                                                                  </children>
                                                                               </VBox>
                                                                            </children>
@@ -750,16 +750,16 @@
                                                                            <children>
                                                                               <VBox spacing="5.0">
                                                                                  <children>
-                                                                                    <Label fx:id="postalCodeLabel" styleClass="demoGraphicFieldLabel" text="%postalCode" visible="true" />
-                                                                                    <TextField fx:id="postalCode" promptText="%postalCode" styleClass="demoGraphicTextFieldTypeSecond" />
-                                                                                    <Label fx:id="postalCodeMessage" styleClass="demoGraphicFieldMessageLabel" text="postalCode message" visible="true" />
+                                                                                    <Label fx:id="postalCodeLabel" styleClass="demoGraphicFieldLabel" text="%postalCode" visible="false" />
+                                                                                    <TextField fx:id="postalCode" prefWidth="${addressVBox.width/2}" promptText="%postalCode" styleClass="demoGraphicTextFieldTypeSecond" />
+                                                                                    <Label fx:id="postalCodeMessage" styleClass="demoGraphicFieldMessageLabel" text="postalCode message" visible="false" />
                                                                                  </children>
                                                                               </VBox>
                                                                               <VBox fx:id="mobileNumberParentPane" spacing="5.0" GridPane.columnIndex="2">
                                                                                  <children>
-                                                                                    <Label fx:id="mobileNoLabel" styleClass="demoGraphicFieldLabel" text="%mobileNo" visible="true" />
-                                                                                    <TextField fx:id="mobileNo" promptText="%mobileNo" styleClass="demoGraphicTextFieldTypeSecond" />
-                                                                                    <Label fx:id="mobileNoMessage" styleClass="demoGraphicFieldMessageLabel" text="mobileNo message" visible="true" />
+                                                                                    <Label fx:id="mobileNoLabel" styleClass="demoGraphicFieldLabel" text="%mobileNo" visible="false" />
+                                                                                    <TextField fx:id="mobileNo" prefWidth="${addressVBox.width/2}" promptText="%mobileNo" styleClass="demoGraphicTextFieldTypeSecond" />
+                                                                                    <Label fx:id="mobileNoMessage" styleClass="demoGraphicFieldMessageLabel" text="mobileNo message" visible="false" />
                                                                                  </children>
                                                                               </VBox>
                                                                            </children>
@@ -777,8 +777,8 @@
                                                                </children>
                                                                <columnConstraints>
                                                                   <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="10.0" prefWidth="100.0" />
-                                                                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="70.0" prefWidth="100.0" />
-                                                                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="20.0" prefWidth="100.0" />
+                                                                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="85.0" prefWidth="100.0" />
+                                                                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="5.0" prefWidth="100.0" />
                                                                </columnConstraints>
                                                                <rowConstraints>
                                                                   <RowConstraints minHeight="10.0" percentHeight="2.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -793,23 +793,23 @@
                                                                            <children>
                                                                               <VBox spacing="5.0">
                                                                                  <children>
-                                                                                    <Label fx:id="addressLine1LocalLanguageLabel" styleClass="demoGraphicFieldLabel" text="%addressLine1" visible="true" />
-                                                                                    <TextField fx:id="addressLine1LocalLanguage" promptText="%addressLine1" styleClass="demoGraphicTextField" />
-                                                                                    <Label fx:id="addressLine1LocalLanguageMessage" styleClass="demoGraphicFieldMessageLabel" text="addressLine1 message" visible="true" />
+                                                                                    <Label fx:id="addressLine1LocalLanguageLabel" styleClass="demoGraphicFieldLabel" text="%addressLine1" visible="false" />
+                                                                                    <TextField fx:id="addressLine1LocalLanguage" prefWidth="${addressVBox.width}" promptText="%addressLine1" styleClass="demoGraphicTextField" />
+                                                                                    <Label fx:id="addressLine1LocalLanguageMessage" styleClass="demoGraphicFieldMessageLabel" text="addressLine1 message" visible="false" />
                                                                                  </children>
                                                                               </VBox>
                                                                               <VBox spacing="5.0">
                                                                                  <children>
-                                                                                    <Label fx:id="addressLine2LocalLanguageLabel" styleClass="demoGraphicFieldLabel" text="%addressLine2" visible="true" />
-                                                                                    <TextField fx:id="addressLine2LocalLanguage" promptText="%addressLine2" styleClass="demoGraphicTextField" />
-                                                                                    <Label fx:id="addressLine2LocalLanguageMessage" styleClass="demoGraphicFieldMessageLabel" text="addressLine2 message" visible="true" />
+                                                                                    <Label fx:id="addressLine2LocalLanguageLabel" styleClass="demoGraphicFieldLabel" text="%addressLine2" visible="false" />
+                                                                                    <TextField fx:id="addressLine2LocalLanguage" prefWidth="${addressVBox.width}" promptText="%addressLine2" styleClass="demoGraphicTextField" />
+                                                                                    <Label fx:id="addressLine2LocalLanguageMessage" styleClass="demoGraphicFieldMessageLabel" text="addressLine2 message" visible="false" />
                                                                                  </children>
                                                                               </VBox>
                                                                               <VBox spacing="5.0">
                                                                                  <children>
-                                                                                    <Label fx:id="addressLine3LocalLanguageLabel" styleClass="demoGraphicFieldLabel" text="%addressLine3" visible="true" />
-                                                                                    <TextField fx:id="addressLine3LocalLanguage" promptText="%addressLine3" styleClass="demoGraphicTextField" />
-                                                                                    <Label fx:id="addressLine3LocalLanguageMessage" styleClass="demoGraphicFieldMessageLabel" text="addressLine3 message" visible="true" />
+                                                                                    <Label fx:id="addressLine3LocalLanguageLabel" styleClass="demoGraphicFieldLabel" text="%addressLine3" visible="false" />
+                                                                                    <TextField fx:id="addressLine3LocalLanguage" prefWidth="${addressVBox.width}" promptText="%addressLine3" styleClass="demoGraphicTextField" />
+                                                                                    <Label fx:id="addressLine3LocalLanguageMessage" styleClass="demoGraphicFieldMessageLabel" text="addressLine3 message" visible="false" />
                                                                                  </children>
                                                                               </VBox>
                                                                            </children>
@@ -832,16 +832,16 @@
                                                                            <children>
                                                                               <VBox fx:id="regionLocalLanguagePane" spacing="5.0">
                                                                                  <children>
-                                                                                    <Label fx:id="regionLocalLanguageLabel" styleClass="demoGraphicFieldLabel" text="%region" visible="true" />
-                                                                                    <ComboBox fx:id="regionLocalLanguage" onAction="#addProvince" promptText="%region" styleClass="demographicCombobox" />
-                                                                                    <Label fx:id="regionLocalLanguageMessage" styleClass="demoGraphicFieldMessageLabel" text="region message" visible="true" />
+                                                                                    <Label fx:id="regionLocalLanguageLabel" styleClass="demoGraphicFieldLabel" text="%region" visible="false" />
+                                                                                    <ComboBox fx:id="regionLocalLanguage" onAction="#addProvince" prefWidth="${addressVBox.width/2}" promptText="%region" styleClass="demographicCombobox" />
+                                                                                    <Label fx:id="regionLocalLanguageMessage" styleClass="demoGraphicFieldMessageLabel" text="region message" visible="false" />
                                                                                  </children>
                                                                               </VBox>
-                                                                              <VBox spacing="5.0">
+                                                                              <VBox fx:id="provinceLocalLanguagePane" spacing="5.0">
                                                                                  <children>
-                                                                                    <Label fx:id="provinceLocalLanguageLabel" styleClass="demoGraphicFieldLabel" text="%province" visible="true" />
-                                                                                    <ComboBox fx:id="provinceLocalLanguage" onAction="#addCity" promptText="%province" styleClass="demographicCombobox" />
-                                                                                    <Label fx:id="provinceLocalLanguageMessage" styleClass="demoGraphicFieldMessageLabel" text="province message" visible="true" />
+                                                                                    <Label fx:id="provinceLocalLanguageLabel" styleClass="demoGraphicFieldLabel" text="%province" visible="false" />
+                                                                                    <ComboBox fx:id="provinceLocalLanguage" onAction="#addCity" prefWidth="${addressVBox.width/2}" promptText="%province" styleClass="demographicCombobox" />
+                                                                                    <Label fx:id="provinceLocalLanguageMessage" styleClass="demoGraphicFieldMessageLabel" text="province message" visible="false" />
                                                                                  </children>
                                                                               </VBox>
                                                                            </children>
@@ -850,16 +850,16 @@
                                                                            <children>
                                                                               <VBox fx:id="cityLocalLanguagePane" spacing="5.0">
                                                                                  <children>
-                                                                                    <Label fx:id="cityLocalLanguageLabel" styleClass="demoGraphicFieldLabel" text="%city" visible="true" />
-                                                                                    <ComboBox fx:id="cityLocalLanguage" onAction="#addlocalAdminAuthority" promptText="%city" styleClass="demographicCombobox" />
-                                                                                    <Label fx:id="cityLocalLanguageMessage" styleClass="demoGraphicFieldMessageLabel" text="city message" visible="true" />
+                                                                                    <Label fx:id="cityLocalLanguageLabel" styleClass="demoGraphicFieldLabel" text="%city" visible="false" />
+                                                                                    <ComboBox fx:id="cityLocalLanguage" onAction="#addlocalAdminAuthority" prefWidth="${addressVBox.width/2}" promptText="%city" styleClass="demographicCombobox" />
+                                                                                    <Label fx:id="cityLocalLanguageMessage" styleClass="demoGraphicFieldMessageLabel" text="city message" visible="false" />
                                                                                  </children>
                                                                               </VBox>
                                                                               <VBox fx:id="localAdminAuthorityLocalLanguagePane" spacing="5.0">
                                                                                  <children>
-                                                                                    <Label fx:id="localAdminAuthorityLocalLanguageLabel" styleClass="demoGraphicFieldLabel" text="%localAdminAuthority" visible="true" />
-                                                                                    <ComboBox fx:id="localAdminAuthorityLocalLanguage" promptText="%localAdminAuthority" styleClass="demographicCombobox" />
-                                                                                    <Label fx:id="localAdminAuthorityLocalLanguageMessage" styleClass="demoGraphicFieldMessageLabel" text="localAdminAuthority message" visible="true" />
+                                                                                    <Label fx:id="localAdminAuthorityLocalLanguageLabel" styleClass="demoGraphicFieldLabel" text="%localAdminAuthority" visible="false" />
+                                                                                    <ComboBox fx:id="localAdminAuthorityLocalLanguage" prefWidth="${addressVBox.width/2}" promptText="%localAdminAuthority" styleClass="demographicCombobox" />
+                                                                                    <Label fx:id="localAdminAuthorityLocalLanguageMessage" styleClass="demoGraphicFieldMessageLabel" text="localAdminAuthority message" visible="false" />
                                                                                  </children>
                                                                               </VBox>
                                                                            </children>
@@ -868,16 +868,16 @@
                                                                            <children>
                                                                               <VBox fx:id="postalCodeLocalLanguagePane" spacing="5.0">
                                                                                  <children>
-                                                                                    <Label fx:id="postalCodeLocalLanguageLabel" styleClass="demoGraphicFieldLabel" text="%postalCode" visible="true" />
-                                                                                    <TextField fx:id="postalCodeLocalLanguage" promptText="%postalCode" styleClass="demoGraphicTextFieldTypeSecond" />
-                                                                                    <Label fx:id="postalCodeLocalLanguageMessage" styleClass="demoGraphicFieldMessageLabel" text="postalCode message" visible="true" />
+                                                                                    <Label fx:id="postalCodeLocalLanguageLabel" styleClass="demoGraphicFieldLabel" text="%postalCode" visible="false" />
+                                                                                    <TextField fx:id="postalCodeLocalLanguage" prefWidth="${addressVBox.width/2}" promptText="%postalCode" styleClass="demoGraphicTextFieldTypeSecond" />
+                                                                                    <Label fx:id="postalCodeLocalLanguageMessage" styleClass="demoGraphicFieldMessageLabel" text="postalCode message" visible="false" />
                                                                                  </children>
                                                                               </VBox>
-                                                                              <VBox spacing="5.0" GridPane.columnIndex="2">
+                                                                              <VBox fx:id="localMobileNumberPane" spacing="5.0" GridPane.columnIndex="2">
                                                                                  <children>
-                                                                                    <Label fx:id="mobileNoLocalLanguageLabel" styleClass="demoGraphicFieldLabel" text="%mobileNo" visible="true" />
-                                                                                    <TextField fx:id="mobileNoLocalLanguage" promptText="%mobileNo" styleClass="demoGraphicTextFieldTypeSecond" />
-                                                                                    <Label fx:id="mobileNoLocalLanguageMessage" styleClass="demoGraphicFieldMessageLabel" text="mobileNo message" visible="true" />
+                                                                                    <Label fx:id="mobileNoLocalLanguageLabel" styleClass="demoGraphicFieldLabel" text="%mobileNo" visible="false" />
+                                                                                    <TextField fx:id="mobileNoLocalLanguage" prefWidth="${addressVBox.width/2}" promptText="%mobileNo" styleClass="demoGraphicTextFieldTypeSecond" />
+                                                                                    <Label fx:id="mobileNoLocalLanguageMessage" styleClass="demoGraphicFieldMessageLabel" text="mobileNo message" visible="false" />
                                                                                  </children>
                                                                               </VBox>
                                                                            </children>
@@ -894,17 +894,17 @@
                                                                   </VBox>
                                                                   <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="1">
                                                                      <children>
-                                                                        <ImageView id="addressLine1" fitHeight="21.0" fitWidth="34.0" layoutX="14.0" layoutY="40.0" onMouseClicked="#setFocusonLocalField" pickOnBounds="true" preserveRatio="true">
+                                                                        <ImageView id="addressLine1" fitHeight="21.0" fitWidth="34.0" layoutX="19.0" layoutY="40.0" onMouseClicked="#setFocusonLocalField" pickOnBounds="true" preserveRatio="true">
                                                                            <image>
                                                                               <Image url="@../images/keyboard.png" />
                                                                            </image>
                                                                         </ImageView>
-                                                                        <ImageView id="addressLine2" fitHeight="21.0" fitWidth="34.0" layoutX="14.0" layoutY="120.0" onMouseClicked="#setFocusonLocalField" pickOnBounds="true" preserveRatio="true">
+                                                                        <ImageView id="addressLine2" fitHeight="21.0" fitWidth="34.0" layoutX="18.0" layoutY="120.0" onMouseClicked="#setFocusonLocalField" pickOnBounds="true" preserveRatio="true">
                                                                            <image>
                                                                               <Image url="@../images/keyboard.png" />
                                                                            </image>
                                                                         </ImageView>
-                                                                        <ImageView id="addressLine3" fitHeight="21.0" fitWidth="34.0" layoutX="14.0" layoutY="210.0" onMouseClicked="#setFocusonLocalField" pickOnBounds="true" preserveRatio="true">
+                                                                        <ImageView id="addressLine3" fitHeight="21.0" fitWidth="34.0" layoutX="19.0" layoutY="199.0" onMouseClicked="#setFocusonLocalField" pickOnBounds="true" preserveRatio="true">
                                                                            <image>
                                                                               <Image url="@../images/keyboard.png" />
                                                                            </image>
@@ -914,8 +914,8 @@
                                                                </children>
                                                                <columnConstraints>
                                                                   <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="10.0" prefWidth="100.0" />
-                                                                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="70.0" prefWidth="100.0" />
-                                                                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="20.0" prefWidth="100.0" />
+                                                                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="85.0" prefWidth="100.0" />
+                                                                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="5.0" prefWidth="100.0" />
                                                                </columnConstraints>
                                                                <rowConstraints>
                                                                   <RowConstraints minHeight="10.0" percentHeight="2.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -933,22 +933,22 @@
                                                       </GridPane>
                                                       <GridPane fx:id="emailIdCniParentPane" prefHeight="100" prefWidth="${scrollParentPane.width}">
                                                          <children>
-                                                            <GridPane>
+                                                            <GridPane fx:id="emailIdCni">
                                                                <children>
                                                                   <GridPane prefHeight="100.0" GridPane.columnIndex="1">
                                                                      <children>
-                                                                        <VBox fx:id="emailIdPane" spacing="5.0">
+                                                                        <VBox fx:id="applicationemailIdPane" spacing="5.0">
                                                                            <children>
-                                                                              <Label fx:id="emailIdLabel" styleClass="demoGraphicFieldLabel" text="%emailId" visible="true" />
+                                                                              <Label fx:id="emailIdLabel" styleClass="demoGraphicFieldLabel" text="%emailId" visible="false" />
                                                                               <TextField fx:id="emailId" promptText="%emailId" styleClass="demoGraphicTextFieldTypeSecond" />
-                                                                              <Label fx:id="emailIdMessage" styleClass="demoGraphicFieldMessageLabel" text="emaild Id Message" visible="true" />
+                                                                              <Label fx:id="emailIdMessage" styleClass="demoGraphicFieldMessageLabel" text="emaild Id Message" visible="false" />
                                                                            </children>
                                                                         </VBox>
-                                                                        <VBox fx:id="cniOrPinNumberPane" spacing="5.0" GridPane.columnIndex="2">
+                                                                        <VBox fx:id="applicationCniOrPinNumberPane" spacing="5.0" GridPane.columnIndex="2">
                                                                            <children>
-                                                                              <Label fx:id="cniOrPinNumberLabel" styleClass="demoGraphicFieldLabel" text="%cniOrPinNumber" visible="true" />
+                                                                              <Label fx:id="cniOrPinNumberLabel" styleClass="demoGraphicFieldLabel" text="%cniOrPinNumber" visible="false" />
                                                                               <TextField fx:id="cniOrPinNumber" prefHeight="35.0" prefWidth="161.0" promptText="%cniOrPinNumber" styleClass="demoGraphicTextFieldTypeSecond" />
-                                                                              <Label fx:id="cniOrPinNumberMessage" styleClass="demoGraphicFieldMessageLabel" text="cniOrPinNumber message" visible="true" />
+                                                                              <Label fx:id="cniOrPinNumberMessage" styleClass="demoGraphicFieldMessageLabel" text="cniOrPinNumber message" visible="false" />
                                                                            </children>
                                                                         </VBox>
                                                                      </children>
@@ -964,8 +964,8 @@
                                                                </children>
                                                                <columnConstraints>
                                                                   <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="10.0" prefWidth="100.0" />
-                                                                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="70.0" prefWidth="100.0" />
-                                                                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="20.0" prefWidth="100.0" />
+                                                                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="85.0" prefWidth="100.0" />
+                                                                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="5.0" prefWidth="100.0" />
                                                                </columnConstraints>
                                                                <rowConstraints>
                                                                   <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -975,18 +975,18 @@
                                                                <children>
                                                                   <GridPane prefHeight="100.0" GridPane.columnIndex="1">
                                                                      <children>
-                                                                        <VBox spacing="5.0">
+                                                                        <VBox fx:id="localEmailIdPane" spacing="5.0">
                                                                            <children>
-                                                                              <Label fx:id="emailIdLocalLanguageLabel" styleClass="demoGraphicFieldLabel" text="%emailId" visible="true" />
+                                                                              <Label fx:id="emailIdLocalLanguageLabel" styleClass="demoGraphicFieldLabel" text="%emailId" visible="false" />
                                                                               <TextField fx:id="emailIdLocalLanguage" promptText="%emailId" styleClass="demoGraphicTextFieldTypeSecond" />
-                                                                              <Label fx:id="emailIdLocalLanguageMessage" styleClass="demoGraphicFieldMessageLabel" text="emaidl id message" visible="true" />
+                                                                              <Label fx:id="emailIdLocalLanguageMessage" styleClass="demoGraphicFieldMessageLabel" text="emaidl id message" visible="false" />
                                                                            </children>
                                                                         </VBox>
-                                                                        <VBox spacing="5.0" GridPane.columnIndex="2">
+                                                                        <VBox fx:id="localCniOrPinPane" spacing="5.0" GridPane.columnIndex="2">
                                                                            <children>
-                                                                              <Label fx:id="cniOrPinNumberLocalLanguageLabel" styleClass="demoGraphicFieldLabel" text="%cniOrPinNumber" visible="true" />
+                                                                              <Label fx:id="cniOrPinNumberLocalLanguageLabel" styleClass="demoGraphicFieldLabel" text="%cniOrPinNumber" visible="false" />
                                                                               <TextField fx:id="cniOrPinNumberLocalLanguage" prefHeight="35.0" prefWidth="161.0" promptText="%cniOrPinNumber" styleClass="demoGraphicTextFieldTypeSecond" />
-                                                                              <Label fx:id="cniOrPinNumberLocalLanguageMessage" styleClass="demoGraphicFieldMessageLabel" text="cniOrPinNumber message" visible="true" />
+                                                                              <Label fx:id="cniOrPinNumberLocalLanguageMessage" styleClass="demoGraphicFieldMessageLabel" text="cniOrPinNumber message" visible="false" />
                                                                            </children>
                                                                         </VBox>
                                                                      </children>
@@ -1002,8 +1002,8 @@
                                                                </children>
                                                                <columnConstraints>
                                                                   <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="10.0" prefWidth="100.0" />
-                                                                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="70.0" prefWidth="100.0" />
-                                                                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="20.0" prefWidth="100.0" />
+                                                                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="85.0" prefWidth="100.0" />
+                                                                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="5.0" prefWidth="100.0" />
                                                                </columnConstraints>
                                                                <rowConstraints>
                                                                   <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -1024,19 +1024,19 @@
                                                                <children>
                                                                   <VBox prefHeight="200.0" prefWidth="100.0" spacing="5.0" GridPane.columnIndex="1">
                                                                      <children>
-                                                                        <Label fx:id="parentNameLabel" styleClass="demoGraphicFieldLabel" text="%parentName" visible="true" />
+                                                                        <Label fx:id="parentNameLabel" styleClass="demoGraphicFieldLabel" text="%parentName" visible="false" />
                                                                         <TextField fx:id="parentName" promptText="%parentName" styleClass="demoGraphicTextField" />
-                                                                        <Label fx:id="parentNameMessage" styleClass="demoGraphicFieldMessageLabel" text="parentName message" visible="true" />
-                                                                        <Label fx:id="uinIdLabel" styleClass="demoGraphicFieldLabel" text="%uinId" visible="true" />
+                                                                        <Label fx:id="parentNameMessage" styleClass="demoGraphicFieldMessageLabel" text="parentName message" visible="false" />
+                                                                        <Label fx:id="uinIdLabel" styleClass="demoGraphicFieldLabel" text="%uinId" visible="false" />
                                                                         <TextField fx:id="uinId" promptText="%uinId" styleClass="demoGraphicTextField" />
-                                                                        <Label fx:id="uinIdMessage" styleClass="demoGraphicFieldMessageLabel" text="uinId message" visible="true" />
+                                                                        <Label fx:id="uinIdMessage" styleClass="demoGraphicFieldMessageLabel" text="uinId message" visible="false" />
                                                                      </children>
                                                                   </VBox>
                                                                </children>
                                                                <columnConstraints>
                                                                   <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="10.0" prefWidth="100.0" />
-                                                                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="70.0" prefWidth="100.0" />
-                                                                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="30.0" prefWidth="100.0" />
+                                                                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="85.0" prefWidth="100.0" />
+                                                                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="5.0" prefWidth="100.0" />
                                                                </columnConstraints>
                                                                <rowConstraints>
                                                                   <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -1046,12 +1046,20 @@
                                                                <children>
                                                                   <VBox prefHeight="200.0" prefWidth="100.0" spacing="5.0" GridPane.columnIndex="1">
                                                                      <children>
-                                                                        <Label fx:id="parentNameLocalLanguageLabel" styleClass="demoGraphicFieldLabel" text="%parentName" visible="true" />
-                                                                        <TextField fx:id="parentNameLocalLanguage" promptText="%parentName" styleClass="demoGraphicTextField" />
-                                                                        <Label fx:id="parentNameLocalLanguageMessage" styleClass="demoGraphicFieldMessageLabel" text="parentName message" visible="true" />
-                                                                        <Label fx:id="uinIdLocalLanguageLabel" styleClass="demoGraphicFieldLabel" text="%uinId" visible="true" />
-                                                                        <TextField fx:id="uinIdLocalLanguage" promptText="%uinId" styleClass="demoGraphicTextField" />
-                                                                        <Label fx:id="uinIdLocalLanguageMessage" styleClass="demoGraphicFieldMessageLabel" text="uinId message" visible="true" />
+                                                                        <VBox spacing="5.0">
+                                                                           <children>
+                                                                              <Label fx:id="parentNameLocalLanguageLabel" styleClass="demoGraphicFieldLabel" text="%parentName" visible="false" />
+                                                                              <TextField fx:id="parentNameLocalLanguage" promptText="%parentName" styleClass="demoGraphicTextField" />
+                                                                              <Label fx:id="parentNameLocalLanguageMessage" styleClass="demoGraphicFieldMessageLabel" text="parentName message" visible="false" />
+                                                                           </children>
+                                                                        </VBox>
+                                                                        <VBox fx:id="localUinIdPane" spacing="5.0">
+                                                                           <children>
+                                                                              <Label fx:id="uinIdLocalLanguageLabel" styleClass="demoGraphicFieldLabel" text="%uinId" visible="false" />
+                                                                              <TextField fx:id="uinIdLocalLanguage" promptText="%uinId" styleClass="demoGraphicTextField" />
+                                                                              <Label fx:id="uinIdLocalLanguageMessage" styleClass="demoGraphicFieldMessageLabel" text="uinId message" visible="false" />
+                                                                           </children>
+                                                                        </VBox>
                                                                      </children>
                                                                   </VBox>
                                                                   <AnchorPane prefHeight="200.0" prefWidth="200.0">
@@ -1066,8 +1074,8 @@
                                                                </children>
                                                                <columnConstraints>
                                                                   <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="10.0" prefWidth="100.0" />
-                                                                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="70.0" prefWidth="100.0" />
-                                                                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="20.0" prefWidth="100.0" />
+                                                                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="85.0" prefWidth="100.0" />
+                                                                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="5.0" prefWidth="100.0" />
                                                                </columnConstraints>
                                                                <rowConstraints>
                                                                   <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -1158,7 +1166,7 @@
           <RowConstraints minHeight="10.0" percentHeight="70.0" prefHeight="30.0" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
-            <HBox spacing="5.0" styleClass="homeBox" GridPane.rowIndex="1">
+            <HBox alignment="CENTER" spacing="5.0" styleClass="homeBox" GridPane.rowIndex="1">
                <children>
                   <Button mnemonicParsing="false" onAction="#goToHomePageFromRegistration" styleClass="homeButton" text="%home" />
                   <Label fx:id="registrationNavlabel" styleClass="headerLabel" text="%/registration" />
@@ -1166,7 +1174,7 @@
             </HBox>
             <GridPane alignment="CENTER" styleClass="headerPageTracker" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
                <children>
-                  <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="10.0" styleClass="bioTracker" GridPane.halignment="LEFT" GridPane.valignment="CENTER">
+                  <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="10.0" GridPane.halignment="LEFT" GridPane.valignment="CENTER">
                      <children>
                         <ImageView fitHeight="24.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
                            <image>
@@ -1176,7 +1184,7 @@
                         <Label styleClass="trackerHighlighter" text="%demograhpicDetails" />
                      </children>
                   </HBox>
-                  <HBox alignment="TOP_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="10.0" GridPane.columnIndex="2">
+                  <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="10.0" GridPane.columnIndex="2">
                      <children>
                         <ImageView fitHeight="14.0" fitWidth="14.0" pickOnBounds="true" preserveRatio="true">
                            <image>
@@ -1186,7 +1194,7 @@
                         <Label alignment="BOTTOM_CENTER" contentDisplay="TOP" styleClass="headerTexts" text="%uploadDocuments" />
                      </children>
                   </HBox>
-                  <HBox alignment="TOP_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="10.0" GridPane.columnIndex="4">
+                  <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="10.0" GridPane.columnIndex="4">
                      <children>
                         <ImageView fitHeight="14.0" fitWidth="14.0" pickOnBounds="true" preserveRatio="true">
                            <image>
@@ -1196,7 +1204,7 @@
                         <Label alignment="BOTTOM_CENTER" contentDisplay="TOP" styleClass="headerTexts" text="%biometricDetails" />
                      </children>
                   </HBox>
-                  <HBox alignment="TOP_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="10.0" GridPane.columnIndex="6">
+                  <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="10.0" GridPane.columnIndex="6">
                      <children>
                         <ImageView fitHeight="14.0" fitWidth="14.0" pickOnBounds="true" preserveRatio="true">
                            <image>
