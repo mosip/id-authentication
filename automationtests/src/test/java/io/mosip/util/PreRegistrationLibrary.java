@@ -1149,7 +1149,7 @@ public class PreRegistrationLibrary extends BaseTestCase {
 			}
 		}
 		for (Object key : request.keySet()) {
-			if (key.toString().toLowerCase().contains("request")) {
+			if (key.toString().toLowerCase().equals("request")) {
 				object = new JSONObject();
 				JSONObject resp = null;
 

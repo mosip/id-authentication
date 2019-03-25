@@ -395,7 +395,8 @@ public class CommonLibrary extends BaseTestCase{
     
     public Response delete_Request(String url,HashMap<String, String> valueMap) {
     	logger.info("REST-ASSURED: Sending a DELETE request to   "+ url);
-    	Response getResponse=given().relaxedHTTPSValidation().queryParams(valueMap).log().all().when().delete(url).then().log().all().extract().response();
+    	Cookie.Builder builder = new Cookie.Builder("Authorization",authToken);
+		Response getResponse=given().cookie(builder.build()).relaxedHTTPSValidation().queryParams(valueMap).log().all().when().delete(url).then().log().all().extract().response();
     	logger.info("REST-ASSURED: The response from the request is: "+getResponse.asString());
     	logger.info("REST-ASSURED: the response time is: "+ getResponse.time());
     	return getResponse;
@@ -425,7 +426,8 @@ public class CommonLibrary extends BaseTestCase{
     	 */
     	String Document_request=fetch_IDRepo("req.Documentrequest");
     
-    	 getResponse=given().relaxedHTTPSValidation().multiPart("file",file).formParam(Document_request, body).contentType(contentHeader).expect().when().post(url);
+    	  Cookie.Builder builder = new Cookie.Builder("Authorization",authToken);
+		  getResponse=given().cookie(builder.build()).relaxedHTTPSValidation().multiPart("file",file).formParam(Document_request, body).contentType(contentHeader).expect().when().post(url);
     	logger.info("REST:ASSURED: The response from request is:"+getResponse.asString());
     	logger.info("REST-ASSURED: the response time is: "+ getResponse.time());
     	return getResponse;

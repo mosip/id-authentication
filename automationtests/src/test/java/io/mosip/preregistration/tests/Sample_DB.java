@@ -29,14 +29,15 @@ public class Sample_DB extends BaseTestCase {
 	@Test
 	public static void DB() throws InterruptedException {
 		PreRegistrationLibrary lib=new PreRegistrationLibrary();
-		String testSuite = "Create_PreRegistration/createPreRegistration_smoke";
+		/*String testSuite = "Create_PreRegistration/createPreRegistration_smoke";
 		JSONObject request = lib.createRequest(testSuite);
 		Response response = lib.CreatePreReg(request);
 		String preRegID = response.jsonPath().get("response[0].preRegistrationId").toString();
-		String createdBy = response.jsonPath().get("response[0].createdBy").toString();
-		lib.fetchAllPreRegistrationCreatedByUser(createdBy);
-		//lib.getPreRegistrationData(preRegID);
-	
+		Response documentUploadResponse = lib.documentUpload(response);
+		Response FetchCentreResponse = lib.FetchCentre();
+		lib.BookAppointment(documentUploadResponse, FetchCentreResponse, preRegID);
+		*/
+		lib.discardApplication("59650873587583");
 	
 	}
 
