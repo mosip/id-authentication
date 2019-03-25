@@ -1,5 +1,7 @@
 package io.mosip.registration.processor.packet.service.dto;
 
+import java.io.Serializable;
+
 import lombok.Data;
 
 /* (non-Javadoc)
@@ -7,7 +9,12 @@ import lombok.Data;
  * @author Rishabh Keshari
  */
 @Data
-public class PublicKeyResponseDto {
+public class PublicKeyResponseDto implements Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -5038613164048257390L;
 
 	/** The public key. */
 	private String publicKey;

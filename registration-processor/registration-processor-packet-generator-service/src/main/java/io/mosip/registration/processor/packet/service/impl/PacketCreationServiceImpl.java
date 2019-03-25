@@ -147,7 +147,7 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 
 			}
 			// Add HashSequence
-			packetInfo.getIdentity().setHashSequence(buildHashSequence(hashSequence));
+			packetInfo.getIdentity().setHashSequence1(buildHashSequence(hashSequence));
 			List<String> hashsequence2List = new ArrayList<String>();
 			hashsequence2List.add("audit");
 			// Add HashSequence for packet_osi_data

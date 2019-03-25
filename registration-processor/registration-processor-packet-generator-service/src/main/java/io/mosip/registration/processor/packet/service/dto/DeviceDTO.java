@@ -1,5 +1,9 @@
 package io.mosip.registration.processor.packet.service.dto;
 
+import java.io.Serializable;
+
+import lombok.Data;
+
 /**
  * The DTO class for Device.
  * <p>
@@ -8,8 +12,13 @@ package io.mosip.registration.processor.packet.service.dto;
  * @author Sowmya
  * 
  */
-public class DeviceDTO {
+@Data
+public class DeviceDTO implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 671400882015112831L;
 	private String deviceId;
 	private String regCenterId;
 	private String machineId;

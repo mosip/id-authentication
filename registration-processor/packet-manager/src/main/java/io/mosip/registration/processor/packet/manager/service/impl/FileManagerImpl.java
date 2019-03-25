@@ -4,8 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
-import io.mosip.kernel.core.exception.ExceptionUtils;
-import io.mosip.kernel.core.logger.spi.Logger;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,6 +11,8 @@ import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
+import io.mosip.kernel.core.exception.ExceptionUtils;
+import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
@@ -21,7 +21,8 @@ import io.mosip.registration.processor.packet.manager.dto.DirectoryPathDto;
 import io.mosip.registration.processor.packet.manager.exception.FileNotFoundInDestinationException;
 import io.mosip.registration.processor.packet.manager.exception.FileNotFoundInSourceException;
 import io.mosip.registration.processor.packet.manager.exception.FilePathNotAccessibleException;
-	
+
+// TODO: Auto-generated Javadoc
 /**
  * The implementation Class for FileManager.
  *
@@ -32,15 +33,13 @@ import io.mosip.registration.processor.packet.manager.exception.FilePathNotAcces
 @Service
 public class FileManagerImpl implements FileManager<DirectoryPathDto, InputStream> {
 
-
 	/** The reg proc logger. */
 	private static Logger regProcLogger = RegProcessorLogger.getLogger(FileManagerImpl.class);
-	
+
 	/** The extention. */
 	@Value("${registration.processor.packet.ext}")
 	private String extention;
 	/** The path. */
-
 
 	/** The env. */
 	@Autowired
@@ -63,13 +62,13 @@ public class FileManagerImpl implements FileManager<DirectoryPathDto, InputStrea
 	 */
 	@Override
 	public void put(String fileName, InputStream file, DirectoryPathDto workingDirectory) throws IOException {
-		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
-				"", "FileManagerImpl::put()::entry");
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
+				"FileManagerImpl::put()::entry");
 		File destinationDirectory = new File(
 				env.getProperty(workingDirectory.toString()) + File.separator + getFileName(fileName));
 		FileUtils.copyToFile(file, destinationDirectory);
-		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
-				"", "FileManagerImpl::put()::exit");
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
+				"FileManagerImpl::put()::exit");
 	}
 
 	/*
@@ -80,12 +79,12 @@ public class FileManagerImpl implements FileManager<DirectoryPathDto, InputStrea
 	 */
 	@Override
 	public Boolean checkIfFileExists(DirectoryPathDto destinationDirectory, String fileName) {
-		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
-				"", "FileManagerImpl::checkIfFileExists()::entry");
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
+				"FileManagerImpl::checkIfFileExists()::entry");
 		File file = FileUtils.getFile(env.getProperty(destinationDirectory.toString()), getFileName(fileName));
-		
-		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
-				"", "FileManagerImpl::checkIfFileExists()::exit");
+
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
+				"FileManagerImpl::checkIfFileExists()::exit");
 		return file.exists();
 	}
 
@@ -98,8 +97,8 @@ public class FileManagerImpl implements FileManager<DirectoryPathDto, InputStrea
 	 */
 	@Override
 	public void cleanUpFile(DirectoryPathDto srcFolderLoc, DirectoryPathDto destFolderLoc, String fileName) {
-		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
-				"", "FileManagerImpl::cleanUpFile()::entry");
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
+				"FileManagerImpl::cleanUpFile()::entry");
 		boolean fileExistsInDestination = false;
 		boolean fileExistsInSource = false;
 		try {
@@ -127,8 +126,8 @@ public class FileManagerImpl implements FileManager<DirectoryPathDto, InputStrea
 					PlatformErrorMessages.RPR_PKM_FILE_PATH_NOT_ACCESSIBLE.getMessage());
 
 		}
-		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
-				"", "FileManagerImpl::cleanUpFile()::exit");
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
+				"FileManagerImpl::cleanUpFile()::exit");
 
 	}
 
@@ -172,8 +171,8 @@ public class FileManagerImpl implements FileManager<DirectoryPathDto, InputStrea
 	@Override
 	public void copy(String fileName, DirectoryPathDto sourceWorkingDirectory,
 			DirectoryPathDto destinationWorkingDirectory) throws IOException {
-		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
-				"", "FileManagerImpl::copy()::entry");
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
+				"FileManagerImpl::copy()::entry");
 		if (checkIfFileExists(sourceWorkingDirectory, fileName)) {
 			File srcFile = new File(
 					env.getProperty(sourceWorkingDirectory.toString()) + File.separator + getFileName(fileName));
@@ -182,8 +181,8 @@ public class FileManagerImpl implements FileManager<DirectoryPathDto, InputStrea
 			FileUtils.copyFile(srcFile, destFile);
 
 		}
-		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
-				"", "FileManagerImpl::copy()::exit");
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
+				"FileManagerImpl::copy()::exit");
 
 	}
 
@@ -193,7 +192,6 @@ public class FileManagerImpl implements FileManager<DirectoryPathDto, InputStrea
 	 * @see
 	 * io.mosip.idissuance.packet.manager.service.FileManager#getCurrentDirectory()
 	 */
-
 
 	/*
 	 * (non-Javadoc)
@@ -205,8 +203,8 @@ public class FileManagerImpl implements FileManager<DirectoryPathDto, InputStrea
 	@Override
 	public void cleanUpFile(DirectoryPathDto srcFolderLoc, DirectoryPathDto destFolderLoc, String fileName,
 			String childFolderName) {
-		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
-				"", "FileManagerImpl::cleanUpFile()::entry");
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
+				"FileManagerImpl::cleanUpFile()::entry");
 
 		boolean fileExistsInDestination = false;
 		boolean fileExistsInSource = false;
@@ -236,9 +234,8 @@ public class FileManagerImpl implements FileManager<DirectoryPathDto, InputStrea
 					PlatformErrorMessages.RPR_PKM_FILE_PATH_NOT_ACCESSIBLE.getMessage());
 
 		}
-		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
-				"", "FileManagerImpl::cleanUpFile()::exit");
-
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
+				"FileManagerImpl::cleanUpFile()::exit");
 
 	}
 
@@ -250,8 +247,8 @@ public class FileManagerImpl implements FileManager<DirectoryPathDto, InputStrea
 	 */
 	@Override
 	public void deletePacket(DirectoryPathDto workingDirectory, String fileName) throws IOException {
-		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
-				"", "FileManagerImpl::deletePacket()::entry");
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
+				"FileManagerImpl::deletePacket()::entry");
 		boolean isFilePresent = (boolean) checkIfFileExists(workingDirectory, fileName);
 		if (isFilePresent) {
 			delete(workingDirectory, fileName);
@@ -260,8 +257,8 @@ public class FileManagerImpl implements FileManager<DirectoryPathDto, InputStrea
 					PlatformErrorMessages.RPR_PKM_FILE_PATH_NOT_ACCESSIBLE.getMessage());
 
 		}
-		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
-				"", "FileManagerImpl::deletePacket()::exit");
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
+				"FileManagerImpl::deletePacket()::exit");
 	}
 
 	/*
@@ -272,14 +269,31 @@ public class FileManagerImpl implements FileManager<DirectoryPathDto, InputStrea
 	 */
 	@Override
 	public void deleteFolder(DirectoryPathDto destinationDirectory, String fileName) throws IOException {
-		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
-				"", "FileManagerImpl::deleteFolder()::entry");
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
+				"FileManagerImpl::deleteFolder()::entry");
 		File filePath = new File(env.getProperty(destinationDirectory.toString()) + File.separator + fileName);
 
 		FileUtils.forceDelete(filePath);
-		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
-				"", "FileManagerImpl::deleteFolder()::exit");
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
+				"FileManagerImpl::deleteFolder()::exit");
 
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.registration.processor.core.spi.filesystem.manager.FileManager#
+	 * getFile(java.lang.Object, java.lang.String)
+	 */
+	@Override
+	public File getFile(DirectoryPathDto workingDirectory, String fileName) throws IOException {
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
+				"FileManagerImpl::getFile()::entry");
+		File file = FileUtils.getFile(env.getProperty(workingDirectory.toString()), getFileName(fileName));
+
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
+				"FileManagerImpl::getFile()::exit");
+		return file;
 	}
 
 }

@@ -30,7 +30,9 @@ import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
+import io.mosip.registration.processor.core.spi.filesystem.manager.FileManager;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
+import io.mosip.registration.processor.packet.manager.dto.DirectoryPathDto;
 import io.mosip.registration.processor.packet.service.constants.RegistrationConstants;
 import io.mosip.registration.processor.packet.service.dto.PacketGeneratorResDto;
 import io.mosip.registration.processor.packet.service.dto.PacketReceiverResponseDTO;
@@ -68,6 +70,10 @@ public class SyncUploadEncryptionServiceImpl implements SyncUploadEncryptionServ
 	@Autowired
 	private Environment env;
 
+	/** The filemanager. */
+	@Autowired
+	protected FileManager<DirectoryPathDto, InputStream> filemanager;
+
 	private static final String REG_SYNC_SERVICE_ID = "mosip.registration.processor.registration.sync.id";
 	private static final String REG_SYNC_APPLICATION_VERSION = "mosip.registration.processor.application.version";
 	private static final String DATETIME_PATTERN = "mosip.registration.processor.datetime.pattern";
@@ -81,18 +87,20 @@ public class SyncUploadEncryptionServiceImpl implements SyncUploadEncryptionServ
 	 * SyncUploadEncryptionService#uploadUinPacket(java.io.File, java.lang.String,
 	 * java.lang.String)
 	 */
-	public PacketGeneratorResDto uploadUinPacket(File decryptedUinZipFile, String registartionId, String creationTime)
+	public PacketGeneratorResDto uploadUinPacket(String registartionId, String creationTime)
 			throws RegBaseCheckedException {
 		PacketGeneratorResDto packerGeneratorResDto = new PacketGeneratorResDto();
 
 		String syncStatus = "";
-		String encryptedFilePath = "";
+
 		InputStream decryptedFileStream = null;
+		File enryptedUinZipFile = null;
 		String uploadStatus = "";
 		try {
-			decryptedFileStream = new FileInputStream(decryptedUinZipFile);
+			decryptedFileStream = new FileInputStream(
+					filemanager.getFile(DirectoryPathDto.PACKET_GENERATED_DECRYPTED, registartionId));
 
-			encryptedFilePath = encryptorUtil.encryptUinUpdatePacket(decryptedFileStream, registartionId, creationTime);
+			encryptorUtil.encryptUinUpdatePacket(decryptedFileStream, registartionId, creationTime);
 
 			RegSyncResponseDTO regSyncResponseDTO = packetSync(registartionId);
 			if (regSyncResponseDTO != null) {
@@ -107,7 +115,7 @@ public class SyncUploadEncryptionServiceImpl implements SyncUploadEncryptionServ
 			if ("success".equalsIgnoreCase(syncStatus)) {
 
 				PacketReceiverResponseDTO packetReceiverResponseDTO = null;
-				File enryptedUinZipFile = new File(encryptedFilePath);
+				enryptedUinZipFile = filemanager.getFile(DirectoryPathDto.PACKET_GENERATED_DECRYPTED, registartionId);
 				LinkedMultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
 				map.add("file", new FileSystemResource(enryptedUinZipFile));
 				HttpHeaders headers = new HttpHeaders();

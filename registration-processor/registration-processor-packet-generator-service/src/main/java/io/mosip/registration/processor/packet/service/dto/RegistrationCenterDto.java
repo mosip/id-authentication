@@ -1,11 +1,12 @@
 package io.mosip.registration.processor.packet.service.dto;
 
+import java.io.Serializable;
 import java.time.LocalTime;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-	
+
 /* (non-Javadoc)
  * @see java.lang.Object#toString()
  */
@@ -14,29 +15,52 @@ import lombok.NoArgsConstructor;
 /**
  * Instantiates a new registration center dto.
  *
- * @param id the id
- * @param name the name
- * @param centerTypeCode the center type code
- * @param addressLine1 the address line 1
- * @param addressLine2 the address line 2
- * @param addressLine3 the address line 3
- * @param latitude the latitude
- * @param longitude the longitude
- * @param locationCode the location code
- * @param holidayLocationCode the holiday location code
- * @param contactPhone the contact phone
- * @param numberOfStations the number of stations
- * @param workingHours the working hours
- * @param languageCode the language code
- * @param numberOfKiosks the number of kiosks
- * @param perKioskProcessTime the per kiosk process time
- * @param centerStartTime the center start time
- * @param centerEndTime the center end time
- * @param timeZone the time zone
- * @param contactPerson the contact person
- * @param lunchStartTime the lunch start time
- * @param lunchEndTime the lunch end time
- * @param isActive the is active
+ * @param id
+ *            the id
+ * @param name
+ *            the name
+ * @param centerTypeCode
+ *            the center type code
+ * @param addressLine1
+ *            the address line 1
+ * @param addressLine2
+ *            the address line 2
+ * @param addressLine3
+ *            the address line 3
+ * @param latitude
+ *            the latitude
+ * @param longitude
+ *            the longitude
+ * @param locationCode
+ *            the location code
+ * @param holidayLocationCode
+ *            the holiday location code
+ * @param contactPhone
+ *            the contact phone
+ * @param numberOfStations
+ *            the number of stations
+ * @param workingHours
+ *            the working hours
+ * @param languageCode
+ *            the language code
+ * @param numberOfKiosks
+ *            the number of kiosks
+ * @param perKioskProcessTime
+ *            the per kiosk process time
+ * @param centerStartTime
+ *            the center start time
+ * @param centerEndTime
+ *            the center end time
+ * @param timeZone
+ *            the time zone
+ * @param contactPerson
+ *            the contact person
+ * @param lunchStartTime
+ *            the lunch start time
+ * @param lunchEndTime
+ *            the lunch end time
+ * @param isActive
+ *            the is active
  */
 @AllArgsConstructor
 
@@ -44,7 +68,12 @@ import lombok.NoArgsConstructor;
  * Instantiates a new registration center dto.
  */
 @NoArgsConstructor
-public class RegistrationCenterDto {
+public class RegistrationCenterDto implements Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 6759249058983874681L;
 
 	/** The id. */
 	private String id;

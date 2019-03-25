@@ -1,9 +1,12 @@
 package io.mosip.registration.processor.packet.service.dto.demographic;
 
+import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import lombok.Data;
 
 /**
  * This class contains the applicant demographic, biometric, proofs and parent
@@ -12,7 +15,13 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * @author Sowmya
  * @since 1.0.0
  */
-public class MoroccoIdentity extends Identity {
+@Data
+public class MoroccoIdentity extends Identity implements Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8278281340941524717L;
 
 	/** The uin. */
 	@JsonProperty("UIN")

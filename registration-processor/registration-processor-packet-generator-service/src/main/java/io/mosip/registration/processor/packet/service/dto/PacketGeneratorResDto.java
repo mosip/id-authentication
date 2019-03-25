@@ -2,11 +2,14 @@ package io.mosip.registration.processor.packet.service.dto;
 
 import java.io.Serializable;
 
+import lombok.Data;
+
 /**
  * The Class PacketGeneratorResDto.
  * 
  * @author Sowmya
  */
+@Data
 public class PacketGeneratorResDto implements Serializable {
 
 	/** The Constant serialVersionUID. */
