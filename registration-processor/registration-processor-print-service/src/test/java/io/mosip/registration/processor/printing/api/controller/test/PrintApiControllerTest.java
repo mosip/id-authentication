@@ -32,35 +32,50 @@ import io.mosip.registration.processor.core.constant.IdType;
 import io.mosip.registration.processor.core.spi.print.service.PrintService;
 import io.mosip.registration.processor.printing.api.controller.PrintApiController;
 import io.mosip.registration.processor.printing.api.dto.PrintRequest;
-import io.mosip.registration.processor.printing.api.dto.PrintResponse;
 import io.mosip.registration.processor.printing.api.dto.RequestDTO;
-import io.mosip.registration.processor.printing.api.dto.ResponseDTO;
 import io.mosip.registration.processor.printing.api.util.PrintServiceRequestValidator;
 
+/**
+ * The Class PrintApiControllerTest.
+ * 
+ * @author M1048358 Alok
+ */
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @AutoConfigureMockMvc
 public class PrintApiControllerTest {
 
+	/** The printapicontroller. */
 	@InjectMocks
 	private PrintApiController printapicontroller = new PrintApiController();
 
+	/** The printservice. */
 	@MockBean
 	private PrintService<Map<String, byte[]>> printservice;
 
+	/** The env. */
 	@Mock
 	private Environment env;
 
+	/** The mock mvc. */
 	@Autowired
 	private MockMvc mockMvc;
 
+	/** The validator. */
 	@Mock
 	private PrintServiceRequestValidator validator;
 
+	/** The json. */
 	private String json;
 
+	/** The map. */
 	private Map<String, byte[]> map = new HashMap<>();
 
+	/**
+	 * Setup.
+	 *
+	 * @throws JsonProcessingException the json processing exception
+	 */
 	@Before
 	public void setup() throws JsonProcessingException {
 		when(env.getProperty("mosip.registration.processor.print.service.id")).thenReturn("mosip.registration.print");
@@ -79,17 +94,15 @@ public class PrintApiControllerTest {
 		Gson gson = new GsonBuilder().serializeNulls().create();
 		json = gson.toJson(request);
 
-		PrintResponse response = new PrintResponse();
-		response.setId("mosip.registration.print");
-		response.setVersion("1.0");
-		response.setResponsetime("2019-03-15T09:08:38.548Z");
-		ResponseDTO dto2 = new ResponseDTO();
 		byte[] pdfbyte = "pdf bytes".getBytes();
-		dto2.setFile(pdfbyte);
-		response.setResponse(dto2);
 		map.put("uinPdf", pdfbyte);
 	}
 
+	/**
+	 * Testpdf success.
+	 *
+	 * @throws Exception the exception
+	 */
 	@Test
 	public void testpdfSuccess() throws Exception {
 		Mockito.when(printservice.getDocuments(ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(map);
@@ -98,9 +111,15 @@ public class PrintApiControllerTest {
 				.contentType(MediaType.APPLICATION_JSON_VALUE).content(json)).andExpect(status().isOk());
 	}
 
-//	@Test
-//	public void testPdfFailure() throws Exception {
-//		this.mockMvc.perform(post("/registration-processor/print/v1.0").accept(MediaType.APPLICATION_JSON_VALUE)
-//				.contentType(MediaType.APPLICATION_JSON_VALUE)).andExpect(status().isBadRequest());
-//	}
+	/**
+	 * Test pdf failure.
+	 *
+	 * @throws Exception the exception
+	 */
+	@Test
+	public void testPdfFailure() throws Exception {
+		String body = "";
+		this.mockMvc.perform(post("/registration-processor/print/v1.0").accept(MediaType.APPLICATION_JSON_VALUE)
+				.contentType(MediaType.APPLICATION_JSON_VALUE).content(body)).andExpect(status().isNotFound());
+	}
 }
