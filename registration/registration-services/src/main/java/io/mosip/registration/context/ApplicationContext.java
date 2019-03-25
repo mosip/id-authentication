@@ -22,7 +22,7 @@ public class ApplicationContext {
 	private ResourceBundle localLanguageBundle;
 	private ResourceBundle applicationMessagesBundle;
 	private ResourceBundle localMessagesBundle;
-	private Map<String, Object> applicationMap = new HashMap<>();
+	private static Map<String, Object> applicationMap = new HashMap<>();
 	private ResourceBundle applicationLanguagevalidationBundle;
 	private String localLanguage;
 	private String applicationLanguge;
@@ -206,5 +206,12 @@ public class ApplicationContext {
 		localMessagesBundle = ResourceBundle.getBundle("messages",
 				new Locale(AppConfig.getApplicationProperty("local_language")));
 	}
+	public static void setGlobalConfigValueOf(String code, String val) {
+		applicationMap.put(code, val);
+	}
 
+	public static void removeGlobalConfigValueOf(String code) {
+		applicationMap.remove(code);
+
+}
 }

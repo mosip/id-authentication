@@ -14,7 +14,7 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 public class Address extends AddressDTO {
 	/**
-	* 
+	*
 	*/
 	private static final long serialVersionUID = 5170367565734470755L;
 }

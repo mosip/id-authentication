@@ -34,6 +34,7 @@ import io.mosip.authentication.service.factory.BiometricProviderFactory;
 import io.mosip.authentication.service.factory.RestRequestFactory;
 import io.mosip.authentication.service.helper.IdInfoHelper;
 import io.mosip.authentication.service.helper.RestHelper;
+import io.mosip.authentication.service.impl.indauth.builder.MatchInputBuilder;
 import io.mosip.authentication.service.integration.OTPManager;
 import io.mosip.authentication.service.repository.StaticPinRepository;
 import io.mosip.kernel.core.util.HMACUtils;
@@ -41,7 +42,7 @@ import io.mosip.kernel.core.util.HMACUtils;
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
 @WebMvcTest
-@Import(value = { IDAMappingConfig.class})
+@Import(value = { IDAMappingConfig.class })
 public class PinAuthServiceImplTest {
 
 	/** The id info helper. */
@@ -76,16 +77,24 @@ public class PinAuthServiceImplTest {
 	@InjectMocks
 	private RestRequestFactory restRequestFactory;
 
+	@InjectMocks
+	private IdInfoFetcherImpl idInfoFetcherImpl;
+
+	@InjectMocks
+	private MatchInputBuilder matchInputBuilder;
+
 	@Before
 	public void before() {
 		ReflectionTestUtils.setField(pinAuthServiceImpl, "idInfoHelper", idInfoHelper);
-		ReflectionTestUtils.setField(pinAuthServiceImpl, "staticPinRepo", staticPinRepo);
-		ReflectionTestUtils.setField(idInfoHelper, "idMappingConfig", idMappingConfig);
+		ReflectionTestUtils.setField(pinAuthServiceImpl, "matchInputBuilder", matchInputBuilder);
+		ReflectionTestUtils.setField(matchInputBuilder, "idInfoHelper", idInfoHelper);
 		ReflectionTestUtils.setField(idInfoHelper, "environment", environment);
-		ReflectionTestUtils.setField(idInfoHelper, "biometricProviderFactory", biometricProviderFactory);
+		ReflectionTestUtils.setField(pinAuthServiceImpl, "staticPinRepo", staticPinRepo);
+		ReflectionTestUtils.setField(idInfoFetcherImpl, "idMappingConfig", idMappingConfig);
+		ReflectionTestUtils.setField(idInfoFetcherImpl, "environment", environment);
+		ReflectionTestUtils.setField(idInfoFetcherImpl, "biometricProviderFactory", biometricProviderFactory);
 		ReflectionTestUtils.setField(otpManager, "restHelper", restHelper);
 		ReflectionTestUtils.setField(otpManager, "restRequestFactory", restRequestFactory);
-
 	}
 
 	@Test
@@ -94,7 +103,8 @@ public class PinAuthServiceImplTest {
 		stat.setPin(HMACUtils.digestAsPlainText(HMACUtils.generateHash(("12345").getBytes())));
 		Optional<StaticPin> entityValue = Optional.of(stat);
 		Mockito.when(staticPinRepo.findById(Mockito.anyString())).thenReturn(entityValue);
-		AuthStatusInfo validatePin = pinAuthServiceImpl.authenticate(constructRequest(), "284169042058",Collections.emptyMap(),"123456");
+		AuthStatusInfo validatePin = pinAuthServiceImpl.authenticate(constructRequest(), "284169042058",
+				Collections.emptyMap(), "123456");
 		assertTrue(validatePin.isStatus());
 	}
 
@@ -104,7 +114,8 @@ public class PinAuthServiceImplTest {
 		stat.setPin("123456");
 		Optional<StaticPin> entityValue = Optional.of(stat);
 		Mockito.when(staticPinRepo.findById(Mockito.anyString())).thenReturn(entityValue);
-		AuthStatusInfo validatePin = pinAuthServiceImpl.authenticate(constructRequest(), "284169042058",Collections.emptyMap(),"123456");
+		AuthStatusInfo validatePin = pinAuthServiceImpl.authenticate(constructRequest(), "284169042058",
+				Collections.emptyMap(), "123456");
 		assertFalse(validatePin.isStatus());
 	}
 

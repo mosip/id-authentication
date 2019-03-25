@@ -99,7 +99,6 @@ public class RegistrationConstants {
 	public static final String SCAN = "/images/scan.png";
 
 	// Authentication
-	public static final String SUPERVISOR_VERIFICATION = "Supervisor Login";
 	public static final String SUPERVISOR_FINGERPRINT_LOGIN = "Supervisior Fingerprint Authentication";
 	public static final String FINGER_PRINT_SINGLE = "single";
 	public static final String FINGER_PRINT_MULTIPLE = "multiple";
@@ -236,8 +235,6 @@ public class RegistrationConstants {
 	public static final String REJECTION_COMMENTS = "REJECT_COMMENTS";
 	public static final String EMPTY = "";
 	public static final String CONSTANTS_FILE_NAME = "/constants.properties";
-	public static final String APPROVED = "Marked for Approval";
-	public static final String REJECTED = "Marked for Rejection";
 	public static final String PENDING = "Pending";
 	public static final String EOD_PROCESS_CONFIG_FLAG = "mosip.registration.eod_process_config_flag";
 
@@ -666,7 +663,7 @@ public class RegistrationConstants {
 	public static final String EMAIL_SERVICE = "email";
 	public static final String SMS_SERVICE = "sms";
 	public static final String NOTIFICATION_SERVICE = "REGISTRATION - NOTIFICATION SERVICE ";
-	public static final String MODE_OF_COMMUNICATION = "mosip.registration.mode_of_communication";
+	public static final String MODE_OF_COMMUNICATION = "mosip.registration.modeofcommunication";
 
 	// Global configuration parameters
 	public static final String REGISTARTION_CENTER = "REGISTARTION_CENTER";
@@ -833,13 +830,13 @@ public class RegistrationConstants {
 	public static final String LEFT_HAND = "Left hand ";
 	public static final String RIGHT_HAND = "Right hand ";
 	public static final String[] LEFTHAND_SEGMNTD_FILE_PATHS_USERONBOARD = new String[] {
-			"/fingerprints/UserOnboard/leftHand/leftIndex/", "/fingerprints/UserOnboard/leftHand/leftLittle/",
-			"/fingerprints/UserOnboard/leftHand/leftMiddle/", "/fingerprints/UserOnboard/leftHand/leftRing/" };
+			"/UserOnboard/leftHand/leftIndex/", "/UserOnboard/leftHand/leftLittle/",
+			"/UserOnboard/leftHand/leftMiddle/", "/UserOnboard/leftHand/leftRing/" };
 	public static final String[] RIGHTHAND_SEGMNTD_FILE_PATHS_USERONBOARD = new String[] {
-			"/fingerprints/UserOnboard/rightHand/rightIndex/", "/fingerprints/UserOnboard/rightHand/rightLittle/",
-			"/fingerprints/UserOnboard/rightHand/rightMiddle/", "/fingerprints/UserOnboard/rightHand/rightRing/" };
+			"/UserOnboard/rightHand/rightIndex/", "/UserOnboard/rightHand/rightLittle/",
+			"/UserOnboard/rightHand/rightMiddle/", "/UserOnboard/rightHand/rightRing/" };
 	public static final String[] THUMBS_SEGMNTD_FILE_PATHS_USERONBOARD = new String[] {
-			"/fingerprints/UserOnboard/thumb/leftThumb/", "/fingerprints/UserOnboard/thumb/rightThumb/" };
+			"/UserOnboard/thumb/leftThumb/", "/UserOnboard/thumb/rightThumb/" };
 
 	/** Exception codes **/
 	private static final String REG_SERVICE_CODE = "REG-SER-";
@@ -1119,6 +1116,24 @@ public class RegistrationConstants {
 		return fieldToExclude;
 
 	}
+
+	// ID JSON Business Validation
+	private static final String ID_JSON_BIZ_VALIDATION_PREFIX = "mosip.id.validation.identity";
+	public static final String LENGTH = "length";
+	public static final String EMAIL_VALIDATION_REGEX = ID_JSON_BIZ_VALIDATION_PREFIX.concat(DOT).concat("email");
+	public static final String EMAIL_VALIDATION_LENGTH = EMAIL_VALIDATION_REGEX.concat(DOT).concat(LENGTH);
+	public static final String PHONE_VALIDATION_REGEX = ID_JSON_BIZ_VALIDATION_PREFIX.concat(DOT).concat("phone");
+	public static final String PHONE_VALIDATION_LENGTH = PHONE_VALIDATION_REGEX.concat(DOT).concat(LENGTH);
+	public static final String CNIE_VALIDATION_REGEX = ID_JSON_BIZ_VALIDATION_PREFIX.concat(DOT).concat("CNIENumber");
+	public static final String CNIE_VALIDATION_LENGTH = CNIE_VALIDATION_REGEX.concat(DOT).concat(LENGTH);
+	public static final String POSTAL_CODE_VALIDATION_REGEX = ID_JSON_BIZ_VALIDATION_PREFIX.concat(DOT).concat("postalCode");
+	public static final String POSTAL_CODE_VALIDATION_LENGTH = POSTAL_CODE_VALIDATION_REGEX.concat(DOT).concat(LENGTH);
+	public static final String DOB_VALIDATION_REGEX = ID_JSON_BIZ_VALIDATION_PREFIX.concat(DOT).concat("dateOfBirth");
+	public static final String TRUE = String.valueOf(true);
+	public static final String FALSE = String.valueOf(false);
+	public static final String REGEX = "regex";
+	public static final String IS_MANDATORY = "isMandatory";
+	public static final String IS_FIXED = "isFixed";
 
 	// Virus Scan
 	public static final String VIRUS_SCAN_PACKET_NOT_FOUND = "FILE_NOT_PRESENT_FOR_SCAN";

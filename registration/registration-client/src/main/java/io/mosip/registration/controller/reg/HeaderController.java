@@ -170,7 +170,11 @@ public class HeaderController extends BaseController {
 	 * Redirecting to Home page
 	 */
 	public void redirectHome(ActionEvent event) {
-		goToHomePageFromRegistration();
+		if ((boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
+			goToHomePageFromOnboard();
+		} else {
+			goToHomePageFromRegistration();
+		}
 	}
 
 	/**
@@ -350,7 +354,7 @@ public class HeaderController extends BaseController {
 
 	public void intiateRemapProcess() {
 		if (!isMachineRemapProcessStarted()) {
-			
+
 			generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.REMAP_NOT_APPLICABLE);
 		}
 

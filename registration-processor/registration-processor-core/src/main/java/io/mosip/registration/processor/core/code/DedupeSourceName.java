@@ -7,5 +7,8 @@ public enum DedupeSourceName {
 
 		/** Bio dedupe stage. */
 		BIO,	
+		
+
+		ALL
 	}
 

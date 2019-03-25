@@ -256,10 +256,14 @@ public class BaseController extends BaseService{
 			StringBuilder validationMessage) {
 		if (id.matches("dd|mm|yyyy|ddLocalLanguage|mmLocalLanguage|yyyyLocalLanguage")) {
 			id = RegistrationConstants.DOB;
+			parentPane = (Pane) parentPane.getParent().getParent();
 		}
 		if(id.contains("ontype")) {
 			id=id.replaceAll("_ontype", "");
 		}
+		if(id.equals("mobileNo")) {
+			System.out.println("Hello");
+		}	
 		if (RegistrationConstants.DISABLE.equalsIgnoreCase(isConsolidated)) {
 			Label label = ((Label) (parentPane
 					.lookup(RegistrationConstants.HASH + id + RegistrationConstants.MESSAGE)));
@@ -346,7 +350,9 @@ public class BaseController extends BaseService{
 	public void goToHomePage() {
 		try {
 			BaseController.load(getClass().getResource(RegistrationConstants.HOME_PAGE));
+			if (!(boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
 			clearOnboardData();
+			}
 		} catch (IOException ioException) {
 			LOGGER.error("REGISTRATION - REDIRECTHOME - BASE_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
 					ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));
@@ -389,7 +395,18 @@ public class BaseController extends BaseService{
 		clearOnboardData();
 		goToHomePage();
 	}
-
+	/**
+	 * This method is used clear all the new onboard related mapm values and
+	 * navigates to the home page
+	 * 
+	 * 
+	 */
+	public void goToHomePageFromOnboard() {
+		LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+				RegistrationConstants.APPLICATION_ID, "Going to home page");	
+		
+		goToHomePage();
+	}
 	@SuppressWarnings("unchecked")
 	protected void clearRegistrationData() {
 
@@ -605,7 +622,6 @@ public class BaseController extends BaseService{
 				faceCaptureController.clearPhoto(RegistrationConstants.APPLICANT_IMAGE);
 				faceCaptureController.clearPhoto(RegistrationConstants.EXCEPTION_IMAGE);
 			}
-			
 		}
 	}
 

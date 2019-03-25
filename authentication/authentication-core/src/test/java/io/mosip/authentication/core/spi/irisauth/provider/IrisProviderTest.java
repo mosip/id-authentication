@@ -64,7 +64,6 @@ public class IrisProviderTest {
 		Map<String, String> reqInfo = new HashMap<>();
 		String lefteye = "Rk1SACAyMAAAAADkAAABPAFiAMUAxQEAAAAoIYCiANo5ZICOAMKzUECuALHAZEDSAMHGZECaASQqZEDpAM7OZED/APlQZEDdAT4KKIC5AVEHV4B3AG0TZED3AVeCG4CVAN08ZEDTAPK3V0DbAN3IXYCAALOnUIBgAN8pZICFAJ77UEClAUkTPECgAHniZECIAVAKIUDnAVcCNUChAFPxV4CQAPmtZECTALS/UECFARkrXUDeAQHEV0BjAMYoZIDCAT8bV0DZAJXPZIBZAJcjZIBrAUkONUBQAVAKG0BeAFQZZAAA";
 		reqInfo.put("LEFT", lefteye);
-		String righteye = "Rk1SACAyMAAAAADeAAABPAFiAMUAxQEAAAAoIECOARQNZICKASsEZEBjAO4mZEDrARVVZID5AORUZEDuATpfV4DKAJ9rZIBTALMjZIDQAJLcZEB6AIgfZIC5AHmDZECBAQ8fZEDJASleZEDVASZYZEB6AUYGZEDGAVZ6NUCBAJ+jZEBjAVEHV0A/ANIiUEBDAVEKPIB7AH6jZEB8AEaNV4CMANkXZEC/ATJpZIC4AUd0ZICoAVJ9KEB4AVMASYBMATUYZEDzAURrV4CfAIr+ZED4AVeASUECAVsCKAAA";
 		String uin = "749763540713";
 		reqInfo.put("idvid", uin);
 		Map<String, String> entityInfo = new HashMap<>();
@@ -94,6 +93,24 @@ public class IrisProviderTest {
 	}
 	
 	@Test
+	public void testmatchUnknownIrisImage() {
+		Map<String, String> reqInfo = new HashMap<>();
+		String lefteye = "Rk1SACAyMAAAAADkAAABPAFiAMUAxQEAAAAoIYCiANo5ZICOAMKzUECuALHAZEDSAMHGZECaASQqZEDpAM7OZED/APlQZEDdAT4KKIC5AVEHV4B3AG0TZED3AVeCG4CVAN08ZEDTAPK3V0DbAN3IXYCAALOnUIBgAN8pZICFAJ77UEClAUkTPECgAHniZECIAVAKIUDnAVcCNUChAFPxV4CQAPmtZECTALS/UECFARkrXUDeAQHEV0BjAMYoZIDCAT8bV0DZAJXPZIBZAJcjZIBrAUkONUBQAVAKG0BeAFQZZAAA";
+		reqInfo.put("UNKNOWN", lefteye);
+		String righteye = "Rk1SACAyMAAAAADeAAABPAFiAMUAxQEAAAAoIECOARQNZICKASsEZEBjAO4mZEDrARVVZID5AORUZEDuATpfV4DKAJ9rZIBTALMjZIDQAJLcZEB6AIgfZIC5AHmDZECBAQ8fZEDJASleZEDVASZYZEB6AUYGZEDGAVZ6NUCBAJ+jZEBjAVEHV0A/ANIiUEBDAVEKPIB7AH6jZEB8AEaNV4CMANkXZEC/ATJpZIC4AUd0ZICoAVJ9KEB4AVMASYBMATUYZEDzAURrV4CfAIr+ZED4AVeASUECAVsCKAAA";
+		String uin = "749763540712";
+		reqInfo.put("idvid", uin);
+		Map<String, String> entityInfo = new HashMap<>();
+		entityInfo.put("RIGHT", righteye);
+		entityInfo.put("LEFT", lefteye);
+		entityInfo.put("idvid", "749763540712");
+		Mockito.when(environment.getProperty("evenuin.irisimg.right.match.value", Double.class)).thenReturn(70D);
+		Mockito.when(environment.getProperty("evenuin.irisimg.left.match.value", Double.class)).thenReturn(40D);
+		double score = iris.matchMultiImage(reqInfo, entityInfo);
+		assertEquals(40D, score, 0);
+	}
+	
+	@Test
 	public void testMatchScoreCalculator()
 	{
 		iris.matchScoreCalculator("test", "test");
@@ -103,6 +120,20 @@ public class IrisProviderTest {
 	public void testMatchScoreCalculatorByte()
 	{
 		iris.matchScoreCalculator(leftEye,leftEye );
+		assertEquals(0, 0);
+	}
+	
+	@Test
+	public void testMatchMin()
+	{
+		iris.matchImage("test", "test");
+		assertEquals(0, 0);
+	}
+	
+	@Test
+	public void testMatchMultiMin()
+	{
+		iris.matchMultiImage("test", "test");
 		assertEquals(0, 0);
 	}
 	 

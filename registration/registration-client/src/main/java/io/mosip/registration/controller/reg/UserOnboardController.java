@@ -51,10 +51,17 @@ public class UserOnboardController extends BaseController implements Initializab
 
 	@FXML
 	public void initUserOnboard() {		
+		clearOnboard();		
 		biometricDTO = new BiometricDTO();
 		biometricDTO.setOperatorBiometricDTO(createBiometricInfoDTO());
 		SessionContext.map().put(RegistrationConstants.USER_ONBOARD_DATA, biometricDTO);		
 		userOnboardParentController.showCurrentPage(RegistrationConstants.ONBOARD_USER_PARENT, getOnboardPageDetails(RegistrationConstants.ONBOARD_USER_PARENT,RegistrationConstants.NEXT));
 		clearAllValues();
+	}
+	
+	public void clearOnboard() {
+		SessionContext.map().remove(RegistrationConstants.USER_ONBOARD_DATA);
+		SessionContext.map().remove(RegistrationConstants.OLD_BIOMETRIC_EXCEPTION);
+		SessionContext.map().remove(RegistrationConstants.NEW_BIOMETRIC_EXCEPTION);
 	}
 }

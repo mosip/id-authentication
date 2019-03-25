@@ -4,7 +4,9 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
@@ -28,8 +30,6 @@ import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
@@ -60,7 +60,7 @@ public class Validations extends BaseController {
 
 	public Validations() {
 		try {
-			noAlert = new ArrayList<String>();
+			noAlert = new ArrayList<>();
 			noAlert.add("ageField");
 			noAlert.add("dd");
 			noAlert.add("mm");
@@ -69,7 +69,6 @@ public class Validations extends BaseController {
 			noAlert.add("mmLocalLanguage");
 			noAlert.add("yyyyLocalLanguage");
 			noAlert.add("mobileNo");
-			noAlert.add("postalCode");
 			noAlert.add("postalCode");
 			noAlert.add("cniOrPinNumber");
 			noAlert.add("uinId");
@@ -194,14 +193,28 @@ public class Validations extends BaseController {
 	 */
 	public boolean validateTextField(Pane parentPane, TextField node, String id, String isConsolidated) {
 		try {
-			String validationProperty[] = validationBundle.getString(id)
-					.split(RegistrationConstants.VALIDATION_SPLITTER);
+			String[] validationProperty = null;
 			String label = id.replaceAll(RegistrationConstants.ON_TYPE, RegistrationConstants.EMPTY);
 			label = label.replaceAll(RegistrationConstants.LOCAL_LANGUAGE, RegistrationConstants.EMPTY);
-			String regex = validationProperty[0];
-			int length = Integer.parseInt(validationProperty[1]);
-			String isMandetory = validationProperty[2];
-			String isFixed = validationProperty[3];
+			String regex;
+			int length;
+			String isMandetory;
+			String isFixed;
+
+			if (validationBundle.containsKey(id)) {
+				validationProperty = validationBundle.getString(id).split(RegistrationConstants.VALIDATION_SPLITTER);
+				regex = validationProperty[0];
+				length = Integer.parseInt(validationProperty[1]);
+				isMandetory = validationProperty[2];
+				isFixed = validationProperty[3];
+			} else {
+				Map<String, Object> validationMap = getValidationFromGlobalParam(id);
+				regex = (String) validationMap.get(RegistrationConstants.REGEX);
+				length = Integer.parseInt((String) validationMap.get(RegistrationConstants.LENGTH));
+				isMandetory = (String) validationMap.get(RegistrationConstants.IS_MANDATORY);
+				isFixed = (String) validationMap.get(RegistrationConstants.IS_FIXED);
+			}
+
 			boolean showAlert = (noAlert.contains(node.getId()) && id.contains(RegistrationConstants.ON_TYPE));
 			if (node.isDisabled())
 				return true;
@@ -314,14 +327,9 @@ public class Validations extends BaseController {
 	 * Validate for the single string
 	 */
 	public boolean validateSingleString(String value, String id) {
-		String validationProperty[] = validationBundle.getString(id).split(RegistrationConstants.VALIDATION_SPLITTER);
+		String[] validationProperty = validationBundle.getString(id).split(RegistrationConstants.VALIDATION_SPLITTER);
 
-		String regex = validationProperty[0];
-
-		if (value.matches(regex)) {
-			return true;
-		}
-		return false;
+		return value.matches(validationProperty[0]);
 	}
 
 
@@ -345,6 +353,48 @@ public class Validations extends BaseController {
 
 	public void setValidationMessage() {
 		validationMessage.delete(0, validationMessage.length());
+	}
+
+	private Map<String, Object> getValidationFromGlobalParam(String id) {
+		Map<String, Object> validation = new HashMap<>();
+
+		switch (id.replaceAll(RegistrationConstants.LOCAL_LANGUAGE, RegistrationConstants.EMPTY)
+				.replaceAll(RegistrationConstants.ON_TYPE, RegistrationConstants.EMPTY)) {
+		case "emailId":
+			validation.put(RegistrationConstants.REGEX,
+					ApplicationContext.map().get(RegistrationConstants.EMAIL_VALIDATION_REGEX));
+			validation.put(RegistrationConstants.LENGTH,
+					ApplicationContext.map().get(RegistrationConstants.EMAIL_VALIDATION_LENGTH));
+			validation.put(RegistrationConstants.IS_MANDATORY, RegistrationConstants.TRUE);
+			validation.put(RegistrationConstants.IS_FIXED, RegistrationConstants.FALSE);
+			break;
+		case "cniOrPinNumber":
+			validation.put(RegistrationConstants.REGEX,
+					ApplicationContext.map().get(RegistrationConstants.CNIE_VALIDATION_REGEX));
+			validation.put(RegistrationConstants.LENGTH,
+					ApplicationContext.map().get(RegistrationConstants.CNIE_VALIDATION_LENGTH));
+			validation.put(RegistrationConstants.IS_MANDATORY, RegistrationConstants.FALSE);
+			validation.put(RegistrationConstants.IS_FIXED, RegistrationConstants.FALSE);
+			break;
+		case "mobileNo":
+			validation.put(RegistrationConstants.REGEX,
+					ApplicationContext.map().get(RegistrationConstants.PHONE_VALIDATION_REGEX));
+			validation.put(RegistrationConstants.IS_FIXED, RegistrationConstants.TRUE);
+			validation.put(RegistrationConstants.LENGTH,
+					ApplicationContext.map().get(RegistrationConstants.PHONE_VALIDATION_LENGTH));
+			validation.put(RegistrationConstants.IS_MANDATORY, RegistrationConstants.TRUE);
+			break;
+		case "postalCode":
+			validation.put(RegistrationConstants.REGEX,
+					ApplicationContext.map().get(RegistrationConstants.POSTAL_CODE_VALIDATION_REGEX));
+			validation.put(RegistrationConstants.IS_FIXED, RegistrationConstants.FALSE);
+			validation.put(RegistrationConstants.IS_MANDATORY, RegistrationConstants.TRUE);
+			validation.put(RegistrationConstants.LENGTH,
+					ApplicationContext.map().get(RegistrationConstants.POSTAL_CODE_VALIDATION_LENGTH));
+			break;
+		}
+
+		return validation;
 	}
 
 }

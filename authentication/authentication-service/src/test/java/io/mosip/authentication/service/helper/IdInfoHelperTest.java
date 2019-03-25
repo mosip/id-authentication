@@ -32,8 +32,10 @@ import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.IdType;
 import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
 import io.mosip.authentication.core.dto.indauth.LanguageType;
+import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
 import io.mosip.authentication.service.config.IDAMappingConfig;
 import io.mosip.authentication.service.factory.IDAMappingFactory;
+import io.mosip.authentication.service.impl.indauth.service.IdInfoFetcherImpl;
 import io.mosip.authentication.service.impl.otpgen.service.OTPServiceImpl;
 
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class, IDAMappingFactory.class,
@@ -44,6 +46,9 @@ public class IdInfoHelperTest {
 
 	@InjectMocks
 	IdInfoHelper idInfoHelper;
+
+	@InjectMocks
+	IdInfoFetcherImpl idInfoFetcherImpl;
 
 	@Autowired
 	private Environment environment;
@@ -56,9 +61,11 @@ public class IdInfoHelperTest {
 
 	@Before
 	public void before() {
+		ReflectionTestUtils.setField(idInfoHelper, "idInfoFetcher", idInfoFetcherImpl);
 		ReflectionTestUtils.setField(idInfoHelper, "environment", environment);
 		ReflectionTestUtils.setField(otpServiceImpl, "idInfoHelper", idInfoHelper);
 		ReflectionTestUtils.setField(idInfoHelper, "idMappingConfig", idMappingConfig);
+		ReflectionTestUtils.setField(idInfoFetcherImpl, "environment", environment);
 	}
 
 	@Test
@@ -68,8 +75,8 @@ public class IdInfoHelperTest {
 		mockenv.merge(((AbstractEnvironment) environment));
 		mockenv.setProperty("mosip.phonetic.lang.".concat(langCode.toLowerCase()), "arabic-ar");
 		mockenv.setProperty("mosip.phonetic.lang.ar", "arabic-ar");
-		ReflectionTestUtils.setField(idInfoHelper, "environment", mockenv);
-		Optional<String> languageName = idInfoHelper.getLanguageName(langCode);
+		ReflectionTestUtils.setField(idInfoFetcherImpl, "environment", mockenv);
+		Optional<String> languageName = idInfoFetcherImpl.getLanguageName(langCode);
 		String value = languageName.get();
 		assertEquals("arabic", value);
 	}
@@ -82,9 +89,9 @@ public class IdInfoHelperTest {
 		mockenv.merge(((AbstractEnvironment) environment));
 		mockenv.setProperty(priLangCode, "ara");
 		mockenv.setProperty(secLangCode, "fra");
-		String languageCode = idInfoHelper.getLanguageCode(LanguageType.PRIMARY_LANG);
+		String languageCode = idInfoFetcherImpl.getLanguageCode(LanguageType.PRIMARY_LANG);
 		assertEquals("ara", languageCode);
-		String languageCode2 = idInfoHelper.getLanguageCode(LanguageType.SECONDARY_LANG);
+		String languageCode2 = idInfoFetcherImpl.getLanguageCode(LanguageType.SECONDARY_LANG);
 		assertEquals("fra", languageCode2);
 	}
 
@@ -116,7 +123,7 @@ public class IdInfoHelperTest {
 		String key = "FINGER_Left IndexFinger_2";
 		Map<String, List<IdentityInfoDTO>> demoInfo = new HashMap<>();
 		demoInfo.put(key, identityInfoList);
-		ReflectionTestUtils.invokeMethod(idInfoHelper, "getIdentityValue", key, language, demoInfo);
+		ReflectionTestUtils.invokeMethod(idInfoFetcherImpl, "getIdentityValue", key, language, demoInfo);
 	}
 
 	@Test
@@ -125,29 +132,29 @@ public class IdInfoHelperTest {
 		List<IdentityInfoDTO> identityInfoList = null;
 		Map<String, List<IdentityInfoDTO>> demoInfo = new HashMap<>();
 		demoInfo.put(key, identityInfoList);
-		ReflectionTestUtils.invokeMethod(idInfoHelper, "getIdentityValue", key, "ara", demoInfo);
+		ReflectionTestUtils.invokeMethod(idInfoFetcherImpl, "getIdentityValue", key, "ara", demoInfo);
 	}
 
 	@Test
 	public void checkLanguageType() {
-		ReflectionTestUtils.invokeMethod(idInfoHelper, "checkLanguageType", null, null);
+		ReflectionTestUtils.invokeMethod(idInfoFetcherImpl, "checkLanguageType", null, null);
 	}
 
 	@Test
 	public void checkLanguageTypeEmpty() {
-		ReflectionTestUtils.invokeMethod(idInfoHelper, "checkLanguageType", "", "");
+		ReflectionTestUtils.invokeMethod(idInfoFetcherImpl, "checkLanguageType", "", "");
 	}
 
 	@Test
 	public void checkLanguageTypenull() {
-		ReflectionTestUtils.invokeMethod(idInfoHelper, "checkLanguageType", "null", "null");
+		ReflectionTestUtils.invokeMethod(idInfoFetcherImpl, "checkLanguageType", "null", "null");
 	}
 
 	@Test
 	public void TestgetUinType() {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		authRequestDTO.setIndividualIdType(IdType.UIN.getType());
-		IdType uinType = idInfoHelper.getUinOrVidType(authRequestDTO);
+		IdType uinType = idInfoFetcherImpl.getUinOrVidType(authRequestDTO);
 		assertEquals(IdType.UIN, uinType);
 	}
 
@@ -155,7 +162,7 @@ public class IdInfoHelperTest {
 	public void TestgetVidType() {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		authRequestDTO.setIndividualIdType(IdType.VID.getType());
-		IdType uinType = idInfoHelper.getUinOrVidType(authRequestDTO);
+		IdType uinType = idInfoFetcherImpl.getUinOrVidType(authRequestDTO);
 		assertEquals(IdType.VID, uinType);
 	}
 
@@ -163,14 +170,8 @@ public class IdInfoHelperTest {
 	public void TestgetUinorVid() {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		authRequestDTO.setIndividualId("274390482564");
-		Optional<String> uinOrVid = idInfoHelper.getUinOrVid(authRequestDTO);
+		Optional<String> uinOrVid = idInfoFetcherImpl.getUinOrVid(authRequestDTO);
 		assertNotEquals(Optional.empty(), uinOrVid.get());
-	}
-
-	@Test
-	public void TestgetUtcTime() {
-		String utcTime = idInfoHelper.getUTCTime(Instant.now().toString());
-		assertNotNull(utcTime);
 	}
 
 	@Test

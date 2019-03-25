@@ -34,7 +34,7 @@ public class OTPFilter extends IdAuthFilter {
 			throws IdAuthenticationAppException {
 		if (!isAllowedAuthType(OTP_REQUEST, authPolicies)) {
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorCode(),
-					String.format(IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorCode(), OTP_REQUEST));
+					String.format(IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorMessage(), OTP_REQUEST));
 		}
 	}
 

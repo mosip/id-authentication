@@ -32,7 +32,7 @@ import io.mosip.authentication.core.exception.RestServiceException;
 import io.mosip.authentication.core.util.dto.RestRequestDTO;
 import io.mosip.authentication.service.factory.RestRequestFactory;
 import io.mosip.authentication.service.helper.RestHelper;
-import io.mosip.authentication.service.impl.id.service.impl.IdRepoServiceImpl;
+import io.mosip.authentication.service.impl.id.service.impl.IdRepoManager;
 import io.mosip.kernel.core.idrepo.constant.IdRepoErrorConstants;
 
 /**
@@ -55,9 +55,9 @@ public class IdRepoServiceImplTest {
 	ConfigurableEnvironment env;
 
 	@InjectMocks
-	private IdRepoServiceImpl idReposerviceImpl;
+	private IdRepoManager idReposerviceImpl;
 	@Mock
-	private IdRepoServiceImpl idReposerviceImplMock;
+	private IdRepoManager idReposerviceImplMock;
 
 	@Autowired
 	private Environment environment;
