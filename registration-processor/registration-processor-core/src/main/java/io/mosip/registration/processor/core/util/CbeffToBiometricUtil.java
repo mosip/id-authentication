@@ -35,7 +35,7 @@ public class CbeffToBiometricUtil {
 	 * @return the photo
 	 * @throws Exception the exception
 	 */
-	public byte[] getPhoto(String cbeffFileString, String type, List<String> subType) throws Exception {
+	public byte[] getImageBytes(String cbeffFileString, String type, List<String> subType) throws Exception {
 		byte[] photoBytes = null;
 		if (cbeffFileString != null) {
 			byte[] biometricBytes = CryptoUtil.decodeBase64(cbeffFileString);

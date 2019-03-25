@@ -499,6 +499,10 @@ public enum PlatformErrorMessages {
 	RPR_PRT_PRINT_POST_ACK_FAILED(PlatformConstants.RPR_PRINTING_MODULE + "010",
 			"Error while getting response from Print and Postal Service Provider"),
 
+	/** The print validation failed. */
+	RPR_PRT_DATA_VALIDATION_FAILED(PlatformConstants.RPR_PRINTING_MODULE + "011",
+			"Error while print data validation"),
+
 	/** The rpr rgs registration connector not accessible. */
 	RPR_RGS_REGISTRATION_CONNECTOR_NOT_ACCESSIBLE("", "Registration connector stage is not accessible "),
 
