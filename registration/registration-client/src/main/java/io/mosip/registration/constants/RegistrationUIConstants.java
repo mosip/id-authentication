@@ -43,6 +43,7 @@ public class RegistrationUIConstants {
 	public static final String IRIS_MATCH = bundle.getString("IRIS_MATCH");
 	public static final String FACE_MATCH = bundle.getString("FACE_MATCH");
 	public static final String FINGERPRINT = bundle.getString("FINGERPRINT");
+	public static final String RECAPTURE =  bundle.getString("RECAPTURE");
 
 	// AUTHORIZATION
 	public static final String ROLES_EMPTY_ERROR = bundle.getString("ROLES_EMPTY_ERROR");
@@ -236,6 +237,7 @@ public class RegistrationUIConstants {
 	public static final String ERROR_IN_SYNC_AND_UPLOAD = bundle.getString("ERROR_IN_SYNC_AND_UPLOAD");
 	public static final String UNABLE_TO_SYNC_AND_UPLOAD = bundle.getString("UNABLE_TO_SYNC_AND_UPLOAD");
 	public static final String NETWORK_ERROR = bundle.getString("NETWORK_ERROR");
+	public static final String SUPERVISOR_VERIFICATION = bundle.getString("SUPERVISOR_VERIFICATION");
 
 	// Virus Scan
 	public static final String VIRUS_SCAN_ERROR_FIRST_PART = bundle.getString("VIRUS_SCAN_ERROR_FIRST_PART");

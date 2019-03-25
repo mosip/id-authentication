@@ -1,5 +1,6 @@
 package io.mosip.kernel.keymanagerservice.controller;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,7 @@ import io.mosip.kernel.keymanagerservice.service.KeymanagerService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import springfox.documentation.annotations.ApiIgnore;
 
 /**
  * This class provides controller methods for Key manager.
@@ -54,11 +56,12 @@ public class KeymanagerController {
 	 *            Reference id of the application requesting publicKey
 	 * @return {@link PublicKeyResponse} instance
 	 */
-	@ApiOperation(value = "Get the public key of a particular application",response = PublicKeyResponse.class)
+	@ApiOperation(value = "Get the public key of a particular application", response = PublicKeyResponse.class)
 	@GetMapping(value = "/publickey/{applicationId}")
-	public ResponseEntity<PublicKeyResponse<String>> getPublicKey(@ApiParam("Id of application")@PathVariable("applicationId") String applicationId,
-			@ApiParam("Timestamp as metadata")	@RequestParam("timeStamp") String timeStamp,
-			@ApiParam("Refrence Id as metadata")@RequestParam("referenceId") Optional<String> referenceId) {
+	public ResponseEntity<PublicKeyResponse<String>> getPublicKey(
+			@ApiParam("Id of application") @PathVariable("applicationId") String applicationId,
+			@ApiParam("Timestamp as metadata") @RequestParam("timeStamp") String timeStamp,
+			@ApiParam("Refrence Id as metadata") @RequestParam("referenceId") Optional<String> referenceId) {
 
 		return new ResponseEntity<>(keymanagerService.getPublicKey(applicationId, timeStamp, referenceId),
 				HttpStatus.OK);
@@ -72,11 +75,18 @@ public class KeymanagerController {
 	 * 
 	 * @return {@link SymmetricKeyResponseDto} symmetricKeyResponseDto
 	 */
-	@ApiOperation(value = "Decrypt the encrypted Data",response = SymmetricKeyResponseDto.class)
+	@ApiOperation(value = "Decrypt the encrypted Data", response = SymmetricKeyResponseDto.class)
 	@PostMapping(value = "/decrypt")
-	public ResponseEntity<SymmetricKeyResponseDto> decryptSymmetricKey(@ApiParam("Data to decrypt in BASE64 encoding with meta-data")
-			@RequestBody SymmetricKeyRequestDto symmetricKeyRequestDto) {
+	public ResponseEntity<SymmetricKeyResponseDto> decryptSymmetricKey(
+			@ApiParam("Data to decrypt in BASE64 encoding with meta-data") @RequestBody SymmetricKeyRequestDto symmetricKeyRequestDto) {
 
 		return new ResponseEntity<>(keymanagerService.decryptSymmetricKey(symmetricKeyRequestDto), HttpStatus.OK);
+	}
+
+	//TODO: To be removed added for debugging
+	@ApiIgnore
+	@GetMapping(value = "/alias")
+	public ResponseEntity<List<String>> getAllAlias() {
+		return new ResponseEntity<>(keymanagerService.getAllAlias(), HttpStatus.OK);
 	}
 }

@@ -33,6 +33,7 @@ import io.swagger.annotations.ApiOperation;
 
 /**
  * The Class OldEncrypt is used to encrypt the identity block.
+ * 
  * @author ArunBose S
  */
 @RestController
@@ -41,48 +42,49 @@ public class OldEncrypt {
 	/** The obj mapper. */
 	@Autowired
 	private ObjectMapper objMapper;
-	
+
 	/** The Constant ASYMMETRIC_ALGORITHM. */
-	private static final String ASYMMETRIC_ALGORITHM ="RSA";	
-	
+	private static final String ASYMMETRIC_ALGORITHM = "RSA";
+
 	/** The Constant fileInfoPath. */
-	private static final String fileInfoPath ="lib\\Keystore\\PublicKey";
-	
+	private static final String fileInfoPath = "lib\\Keystore\\PublicKey";
+
 	/**
 	 * this method is used to encrypt the identity block
 	 *
 	 * @param encryptionRequestDto the encryption request dto
 	 * @return the encryption response dto
 	 * @throws NoSuchAlgorithmException the no such algorithm exception
-	 * @throws JsonProcessingException the json processing exception
-	 * @throws InvalidKeySpecException the invalid key spec exception
-	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws JsonProcessingException  the json processing exception
+	 * @throws InvalidKeySpecException  the invalid key spec exception
+	 * @throws IOException              Signals that an I/O exception has occurred.
 	 */
 	@PostMapping(path = "/identity/oldEncrypt")
 	@ApiOperation(value = "Encrypt Identity with sessionKey and Encrypt Session Key with Public Key", response = EncryptionResponseDto.class)
 	public EncryptionResponseDto oldEncrypt(@RequestBody EncryptionRequestDto encryptionRequestDto)
-			throws NoSuchAlgorithmException, JsonProcessingException, InvalidKeySpecException, IOException {
+			throws NoSuchAlgorithmException, InvalidKeySpecException, IOException {
 		EncryptionResponseDto encryptionResponseDto = new EncryptionResponseDto();
-		CryptoUtility cryptoUtil=new CryptoUtility();
-		SecretKey secKey=cryptoUtil.genSecKey();
-		byte encryptedDateArr[]=null;
+		CryptoUtility cryptoUtil = new CryptoUtility();
+		SecretKey secKey = cryptoUtil.genSecKey();
+		byte encryptedDateArr[] = null;
 		try {
-			encryptedDateArr = cryptoUtil.symmetricEncrypt(objMapper.writeValueAsString(encryptionRequestDto.getIdentityRequest()).getBytes(), secKey);
+			encryptedDateArr = cryptoUtil.symmetricEncrypt(
+					objMapper.writeValueAsString(encryptionRequestDto.getIdentityRequest()).getBytes(), secKey);
 		} catch (InvalidKeyException | NoSuchPaddingException | InvalidAlgorithmParameterException
 				| IllegalBlockSizeException | BadPaddingException e) {
 			encryptionResponseDto.setEncryptedIdentity(e.getMessage());
 		}
 		encryptionResponseDto.setEncryptedIdentity(Base64.encodeBase64URLSafeString(encryptedDateArr));
-		byte encryptedSessionKeyArr[]=null;
+		byte encryptedSessionKeyArr[] = null;
 		try {
-			encryptedSessionKeyArr = cryptoUtil.asymmetricEncrypt(secKey.getEncoded(),loadPublicKey());
+			encryptedSessionKeyArr = cryptoUtil.asymmetricEncrypt(secKey.getEncoded(), loadPublicKey());
 		} catch (InvalidKeyException | NoSuchPaddingException | IllegalBlockSizeException | BadPaddingException e) {
 			encryptionResponseDto.setEncryptedSessionKey(e.getMessage());
 		}
 		encryptionResponseDto.setEncryptedSessionKey(Base64.encodeBase64URLSafeString(encryptedSessionKeyArr));
 		return encryptionResponseDto;
 	}
-	
+
 	/**
 	 * Gets the public key from the file.
 	 *
@@ -90,29 +92,27 @@ public class OldEncrypt {
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	private byte[] getPublicKey() throws IOException {
-		byte[] publicKeyByteArr=null;
-		File publicKeyFile= FileUtils.getFile(OldEncrypt.fileInfoPath);
-			if(publicKeyFile.exists())
-			{
-				byte[] publicKeyByteEncodedArr=Files.readAllBytes(publicKeyFile.toPath());
-				publicKeyByteArr= Base64.decodeBase64(publicKeyByteEncodedArr);
-			}
-		 return publicKeyByteArr;
-		
+		byte[] publicKeyByteArr = null;
+		File publicKeyFile = FileUtils.getFile(OldEncrypt.fileInfoPath);
+		if (publicKeyFile.exists()) {
+			byte[] publicKeyByteEncodedArr = Files.readAllBytes(publicKeyFile.toPath());
+			publicKeyByteArr = Base64.decodeBase64(publicKeyByteEncodedArr);
+		}
+		return publicKeyByteArr;
+
 	}
-	
+
 	/**
 	 * Loads the PublicKey from the publicKey file.
 	 *
 	 * @return the public key
-	 * @throws InvalidKeySpecException the invalid key spec exception
+	 * @throws InvalidKeySpecException  the invalid key spec exception
 	 * @throws NoSuchAlgorithmException the no such algorithm exception
-	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws IOException              Signals that an I/O exception has occurred.
 	 */
-	private PublicKey loadPublicKey()
-			throws InvalidKeySpecException, NoSuchAlgorithmException, IOException {
+	private PublicKey loadPublicKey() throws InvalidKeySpecException, NoSuchAlgorithmException, IOException {
 		byte[] publicKeyBytes = getPublicKey();
-		PublicKey publicKey = KeyFactory.getInstance(OldEncrypt.ASYMMETRIC_ALGORITHM).generatePublic(new X509EncodedKeySpec(publicKeyBytes));
-        return publicKey;
+		return KeyFactory.getInstance(OldEncrypt.ASYMMETRIC_ALGORITHM)
+				.generatePublic(new X509EncodedKeySpec(publicKeyBytes));
 	}
 }

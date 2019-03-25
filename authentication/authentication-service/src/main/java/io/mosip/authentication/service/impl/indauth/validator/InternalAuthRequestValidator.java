@@ -97,9 +97,9 @@ public class InternalAuthRequestValidator extends BaseAuthRequestValidator {
 				Integer reqDateMaxTimeInt = env.getProperty(REQUESTDATE_RECEIVED_IN_MAX_TIME_MINS, Integer.class);
 				if (reqDate.after(new Date()) || Duration.between(reqTimeInstance, now).toHours() > reqDateMaxTimeInt) {
 					errors.rejectValue(REQ_TIME,
-							IdAuthenticationErrorConstants.INVALID_OTP_REQUEST_TIMESTAMP.getErrorCode(),
+							IdAuthenticationErrorConstants.INVALID_TIMESTAMP.getErrorCode(),
 							new Object[] { env.getProperty(REQUESTDATE_RECEIVED_IN_MAX_TIME_MINS, Integer.class) },
-							IdAuthenticationErrorConstants.INVALID_OTP_REQUEST_TIMESTAMP.getErrorMessage());
+							IdAuthenticationErrorConstants.INVALID_TIMESTAMP.getErrorMessage());
 				}
 
 			} catch (ParseException e) {

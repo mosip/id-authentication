@@ -17,36 +17,31 @@ import org.springframework.web.context.WebApplicationContext;
 
 import io.mosip.authentication.demo.service.controller.FingerPrint;
 
-
 /**
- * @author Arun Bose S
- * The Class FingerPrintTest.
+ * @author Arun Bose S The Class FingerPrintTest.
  */
 @Ignore
 @RunWith(SpringRunner.class)
 @WebMvcTest
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
 public class FingerPrintTest {
-	
-/** The finger print mock. */
-@InjectMocks
-private FingerPrint fingerPrintMock;
 
-//private FingerPrintD
+	/** The finger print mock. */
+	@InjectMocks
+	private FingerPrint fingerPrintMock;
 
-/**
- * Finger print test.
- *
- * @throws KeyManagementException the key management exception
- * @throws RestClientException the rest client exception
- * @throws NoSuchAlgorithmException the no such algorithm exception
- * @throws JSONException the JSON exception
- */
-@Test
- public void fingerPrintTest() throws KeyManagementException, RestClientException, NoSuchAlgorithmException, JSONException {
-	//Mockito.mock(classToMock)
-	fingerPrintMock.fingerprint();
-}
-
+	/**
+	 * Finger print test.
+	 *
+	 * @throws KeyManagementException   the key management exception
+	 * @throws RestClientException      the rest client exception
+	 * @throws NoSuchAlgorithmException the no such algorithm exception
+	 * @throws JSONException            the JSON exception
+	 */
+	@Test
+	public void fingerPrintTest()
+			throws KeyManagementException, RestClientException, NoSuchAlgorithmException, JSONException {
+		fingerPrintMock.fingerprint();
+	}
 
 }

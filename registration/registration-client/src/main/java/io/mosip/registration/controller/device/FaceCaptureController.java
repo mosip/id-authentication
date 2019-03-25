@@ -674,7 +674,7 @@ public class FaceCaptureController extends BaseController implements Initializab
 
 		photoLabel.setVisible(true);
 		// Bind the photoLabel text property to the timeDiff property
-		photoLabel.textProperty().bind(Bindings.concat("Recapture after ", timeDiff.asString(), " seconds"));
+		photoLabel.textProperty().bind(Bindings.concat(RegistrationUIConstants.RECAPTURE+" ", timeDiff.asString(), " seconds"));
 		Timeline timeline = new Timeline();
 		timeline.getKeyFrames().add(
 				new KeyFrame(Duration.seconds((Integer) (configuredSecs - diffSeconds)), new KeyValue(timeDiff, 1)));
