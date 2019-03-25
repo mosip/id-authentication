@@ -142,7 +142,7 @@ public class RetriveAllPreRegIdByRegCenterId extends BaseTestCase implements ITe
 		testCaseName = object.get("testCaseName").toString();
 		
 		
-		preReg_URI = commonLibrary.fetch_IDRepo("preReg_RetriveBookedPreIdsByRegId");
+		preReg_URI = commonLibrary.fetch_IDRepo().get("preReg_RetriveBookedPreIdsByRegId");
 		
 	}
 

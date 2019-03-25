@@ -167,7 +167,7 @@ public class FetchAllApplicationCreatedByUser extends BaseTestCase implements IT
     public static void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
           JSONObject object = (JSONObject) testdata[2];
           testCaseName = object.get("testCaseName").toString();
-          preReg_URI = commonLibrary.fetch_IDRepo("preReg_FetchAllApplicationCreatedByUserURI");
+          preReg_URI = commonLibrary.fetch_IDRepo().get("preReg_FetchAllApplicationCreatedByUserURI");
           
           /*
            * Fetch all the applications created by user Resource URI            

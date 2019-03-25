@@ -187,7 +187,7 @@ public class FetchAllPreRegistrationIds extends BaseTestCase implements ITest{
           JSONObject object = (JSONObject) testdata[2];
           testCaseName = object.get("testCaseName").toString();
    
-          preReg_URI = commonLibrary.fetch_IDRepo("preReg_FetchAllPreRegistrationIdsURI");
+          preReg_URI = commonLibrary.fetch_IDRepo().get("preReg_FetchAllPreRegistrationIdsURI");
     }
 
 

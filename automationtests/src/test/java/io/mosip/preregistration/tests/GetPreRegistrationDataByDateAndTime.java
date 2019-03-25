@@ -73,7 +73,7 @@ public class GetPreRegistrationDataByDateAndTime extends BaseTestCase implements
 	private static CommonLibrary commonLibrary = new CommonLibrary();
 
 	public GetPreRegistrationDataByDateAndTime() {
-		preReg_URI = commonLibrary.fetch_IDRepo("preReg_FetchPreRegistrationByDateAndTimeURI");
+		preReg_URI = commonLibrary.fetch_IDRepo().get("preReg_FetchPreRegistrationByDateAndTimeURI");
 	}
 
 	/**

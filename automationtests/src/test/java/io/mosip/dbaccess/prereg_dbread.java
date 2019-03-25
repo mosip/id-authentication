@@ -272,27 +272,7 @@ public class prereg_dbread {
            return flag;      
           
     }
-	@SuppressWarnings("deprecation")
-	public static List<Object> fetchFromDB(String queryStr, Class dtoClass)
-	{
-		List<Object> objs =null;
-		if(BaseTestCase.environment.equalsIgnoreCase("integration"))
-			factory = new Configuration().configure("preregiamqa.cfg.xml")
-		.addAnnotatedClass(OtpEntity.class).buildSessionFactory();	
-				else
-				{
-					if(BaseTestCase.environment.equalsIgnoreCase("qa"))
-						factory = new Configuration().configure("preregiamqa.cfg.xml")
-					.addAnnotatedClass(dtoClass).buildSessionFactory();	
-				}
-		session = factory.getCurrentSession();
-		session.beginTransaction();
-		objs=fetchingData(session, queryStr);
-		
-		return objs;
-		
-
-	}
+	
 	
 	@SuppressWarnings("unchecked")
 	private static List<Object> fetchingData(Session session, String queryStr)

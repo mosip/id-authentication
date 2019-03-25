@@ -191,7 +191,7 @@ public class FetchTheStatusOfApplication extends BaseTestCase implements ITest {
 		JSONObject object = (JSONObject) testdata[2];
 		testCaseName = object.get("testCaseName").toString();
 		
-         preReg_URI = commonLibrary.fetch_IDRepo("preReg_FetchStatusOfApplicationURI");
+         preReg_URI = commonLibrary.fetch_IDRepo().get("preReg_FetchStatusOfApplicationURI");
 	}
 
 	@Override

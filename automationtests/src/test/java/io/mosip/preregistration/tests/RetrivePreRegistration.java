@@ -74,7 +74,7 @@ public class RetrivePreRegistration extends BaseTestCase implements ITest {
 	private static CommonLibrary commonLibrary = new CommonLibrary();
 	PreRegistrationLibrary lib=new PreRegistrationLibrary();
 	public RetrivePreRegistration() {
-		preReg_URI = commonLibrary.fetch_IDRepo("preReg_DataSyncnURI");
+		preReg_URI = commonLibrary.fetch_IDRepo().get("preReg_DataSyncnURI");
 		
 	}
 

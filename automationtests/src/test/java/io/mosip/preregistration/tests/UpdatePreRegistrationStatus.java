@@ -77,7 +77,7 @@ public class UpdatePreRegistrationStatus extends BaseTestCase implements ITest {
 	PreRegistrationLibrary lib=new PreRegistrationLibrary();
 	public UpdatePreRegistrationStatus() {
 		super();
-		preReg_URI = commonLibrary.fetch_IDRepo("preReg_UpdateStatusAppURI");
+		preReg_URI = commonLibrary.fetch_IDRepo().get("preReg_UpdateStatusAppURI");
 		logger.info("======================"+preReg_URI);
 		
 	}

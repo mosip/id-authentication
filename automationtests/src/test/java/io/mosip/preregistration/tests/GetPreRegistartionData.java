@@ -188,7 +188,7 @@ public class GetPreRegistartionData extends BaseTestCase implements ITest {
 	public static void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
 		JSONObject object = (JSONObject) testdata[2];
 		testCaseName = object.get("testCaseName").toString();
-		 preReg_URI = commonLibrary.fetch_IDRepo("preReg_FetchRegistrationDataURI");
+		 preReg_URI = commonLibrary.fetch_IDRepo().get("preReg_FetchRegistrationDataURI");
 	}
 
 	@Override

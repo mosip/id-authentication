@@ -173,7 +173,7 @@ public class CancelAnBookedAppointment extends BaseTestCase implements ITest {
 	
 		testCaseName = object.get("testCaseName").toString();
 		
-		preReg_URI = commonLibrary.fetch_IDRepo("preReg_CancelAppointmentURI");
+		preReg_URI = commonLibrary.fetch_IDRepo().get("preReg_CancelAppointmentURI");
 	}
 
 	
