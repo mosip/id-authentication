@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
+import io.mosip.authentication.core.dto.otpgen.ChannelDTO;
 import io.mosip.authentication.core.dto.otpgen.OtpRequestDTO;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.service.validator.IdAuthValidator;
@@ -80,8 +81,19 @@ public class OTPRequestValidator extends IdAuthValidator {
 						INDIVIDUAL_ID);
 			}
 
+			if (!errors.hasErrors()) {
+				validateOtpChannel(otpRequestDto.getOtpChannel(), errors);
+			}
+
 		}
 		// validateVer(otpRequestDto.getVer(), errors);
+	}
+
+	private void validateOtpChannel(ChannelDTO otpChannel, Errors errors) {
+		if (!otpChannel.isEmail() && !otpChannel.isPhone()) {
+			errors.reject(IdAuthenticationErrorConstants.OTP_CHANNEL_NOT_PROVIDED.getErrorCode(),
+					IdAuthenticationErrorConstants.OTP_CHANNEL_NOT_PROVIDED.getErrorMessage());
+		}
 	}
 
 	/**

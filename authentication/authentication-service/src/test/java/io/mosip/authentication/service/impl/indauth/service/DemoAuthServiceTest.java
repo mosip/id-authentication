@@ -356,7 +356,6 @@ public class DemoAuthServiceTest {
 //	public void getDemoEntityTest() throws IdAuthenticationBusinessException {
 //		// Mockito.when(demoRepository.findByUinRefIdAndLangCode("12345", "EN"));
 //		Map<String, List<IdentityInfoDTO>> demoEntity = demoAuthServiceImpl.getDemoEntity("12345");
-//		System.out.println(demoEntity);
 //	}
 
 	@Test(expected = IdAuthenticationBusinessException.class)

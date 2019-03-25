@@ -360,7 +360,6 @@ public class KycAuthRequestValidatorTest {
 		Errors errors = new BeanPropertyBindingResult(kycAuthRequestDTO, "kycAuthRequestDTO");
 		KycAuthRequestValidator.validate(kycAuthRequestDTO, errors);
 		assertTrue(errors.hasErrors());
-		System.out.println(errors);
 	}
 
 	@Test

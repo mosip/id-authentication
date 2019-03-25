@@ -195,7 +195,6 @@ public class FingerprintProviderTest {
 		entityInfo.put("leftIndex", leftIndex);
 		entityInfo.put("rightIndex", rightIndex);
 		double score = fingerPrint.matchMultiImage(reqInfo, entityInfo);
-		System.out.println(score);
 		assertTrue(score > 500);
 	}
 

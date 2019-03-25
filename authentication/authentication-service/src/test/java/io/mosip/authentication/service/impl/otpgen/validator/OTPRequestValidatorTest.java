@@ -88,7 +88,6 @@ public class OTPRequestValidatorTest {
 		Errors errors = new BeanPropertyBindingResult(OtpRequestDTO, "OtpRequestDTO");
 		OtpRequestDTO.setId("id");
 		OtpRequestDTO.setTransactionID("1234567890");
-		ZoneOffset offset = ZoneOffset.MAX;
 		OtpRequestDTO.setRequestTime(Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
 		OtpRequestDTO.setIndividualId("5076204698");
@@ -238,7 +237,23 @@ public class OTPRequestValidatorTest {
 		System.err.println(Instant.now() + toString());
 		Errors errors = new BeanPropertyBindingResult(otpRequestDTO, "OtpRequestDTO");
 		otpRequestValidator.validate(otpRequestDTO, errors);
-		System.err.println(errors);
+	}
 
+	@Test
+	public void TestOtpChannel() {
+		OtpRequestDTO otpRequestDTO = new OtpRequestDTO();
+		Errors errors = new BeanPropertyBindingResult(otpRequestDTO, "OtpRequestDTO");
+		otpRequestDTO.setRequestTime(Instant.now().toString());
+		otpRequestDTO.setVersion("1.1");
+		otpRequestDTO.setId("id");
+		otpRequestDTO.setIndividualId("5076204698");
+		otpRequestDTO.setIndividualIdType(IdType.UIN.getType());
+		ChannelDTO channel = new ChannelDTO();
+		channel.setPhone(false);
+		channel.setPhone(false);
+		otpRequestDTO.setOtpChannel(channel);
+		otpRequestDTO.setTransactionID("1234567890");
+		otpRequestValidator.validate(otpRequestDTO, errors);
+		assertTrue(errors.hasErrors());
 	}
 }

@@ -159,7 +159,7 @@ public class OTPManager {
 				.isPresent()) {
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_OTP);
 		}
-		throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.SERVER_ERROR);
+		throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS);
 	}
 
 	private void throwOtpException(String message) throws IdAuthenticationBusinessException {

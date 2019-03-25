@@ -227,10 +227,7 @@ public class IdAuthServiceImpl implements IdAuthService<AutnTxn> {
 						return (getDocumentValues((List<Map<String, Object>>) entry.getValue())).entrySet().stream();
 					}
 					return Stream.empty();
-				}).peek(entry -> System.out.println(entry)).collect(Collectors.toMap(t -> {
-					System.out.println(t.getKey());
-					return t.getKey();
-				}, entry -> {
+				}).collect(Collectors.toMap(t -> t.getKey(), entry -> {
 					Object val = entry.getValue();
 					if (val instanceof List) {
 						List<Map> arrayList = (List) val;
