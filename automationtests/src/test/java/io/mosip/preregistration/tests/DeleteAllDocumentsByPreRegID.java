@@ -169,7 +169,7 @@ public class DeleteAllDocumentsByPreRegID extends BaseTestCase implements ITest 
          * Document Upload Resource URI            
          */
         
-        preReg_URI = commonLibrary.fetch_IDRepo("preReg_DeleteAllDocumentByPreIdURI");
+        preReg_URI = commonLibrary.fetch_IDRepo().get("preReg_DeleteAllDocumentByPreIdURI");
 		
 	}
 

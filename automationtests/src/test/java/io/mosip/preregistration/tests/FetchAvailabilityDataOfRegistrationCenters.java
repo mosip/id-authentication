@@ -154,7 +154,7 @@ public class FetchAvailabilityDataOfRegistrationCenters extends BaseTestCase imp
 		testCaseName = object.get("testCaseName").toString();
 		
 		
-		preReg_URI = commonLibrary.fetch_IDRepo("preReg_CancelAppointmentURI");
+		preReg_URI = commonLibrary.fetch_IDRepo().get("preReg_CancelAppointmentURI");
 	}
 
 	@AfterMethod(alwaysRun = true)

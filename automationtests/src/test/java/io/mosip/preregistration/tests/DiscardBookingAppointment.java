@@ -242,7 +242,7 @@ public class DiscardBookingAppointment extends BaseTestCase implements ITest {
            * Booking Appointment Resource URI            
            */
           
-          preReg_URI = commonLibrary.fetch_IDRepo("preReg_DiscardBookingURI");
+          preReg_URI = commonLibrary.fetch_IDRepo().get("preReg_DiscardBookingURI");
           
           
     }

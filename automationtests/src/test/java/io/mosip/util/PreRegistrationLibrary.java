@@ -154,21 +154,21 @@ public class PreRegistrationLibrary extends BaseTestCase {
 	
 	public String getToken()
 	{
+		
 		testSuite="generateOTP/generateOTP_smoke";
 		request=otpRequest(testSuite);
 		Response generateOTPResponse = generateOTP(request);
-		System.out.println("userid is ++++++++++++++"+userId);
+		logger.info("userid is ++++++++++++++"+userId);
 		String otpQueryStr = "SELECT E.otp FROM kernel.otp_transaction E WHERE id='"+userId+"'";
 		List<Object> otpData = prereg_dbread.fetchOTPFromDB(otpQueryStr, OtpEntity.class);
 		otp = otpData.get(0).toString();
 		logger.info("OTP is============"+otp);
 		testSuite = "validateOTP/validateOTP_smoke";
 		request=validateOTPRequest(testSuite);
-		validateOTP(request);
-		String tokenQueryStr = "SELECT E.auth_token FROM iam.oauth_access_token E WHERE user_id='"+userId+"'";
-		List<Object> token = prereg_dbread.fetchFromDB(tokenQueryStr, AccessToken.class);
-		String auth_token = token.get(0).toString();
-		System.out.println("auth token is +++++++++++"+auth_token);
+		Response validateOTPRes = validateOTP(request);
+	    String cookieValue = validateOTPRes.getCookie("Authorization");
+		String auth_token = cookieValue;
+		
 		return auth_token;
 	
 	}
@@ -1011,7 +1011,8 @@ public class PreRegistrationLibrary extends BaseTestCase {
 		}
 
 		try {
-			String preReg_FetchCenterIDURI = commonLibrary.fetch_IDRepo("preReg_FetchCenterIDURI");
+			
+			String preReg_FetchCenterIDURI = commonLibrary.fetch_IDRepo().get("preReg_FetchCenterIDURI");
 			response = applnLib.getRequest(preReg_FetchCenterIDURI, GetHeader.getHeader(fetchCenterReqjson));
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -1867,33 +1868,33 @@ public class PreRegistrationLibrary extends BaseTestCase {
 	
 	@BeforeClass
 	public void PreRegistrationResourceIntialize() {
-		preReg_CreateApplnURI = commonLibrary.fetch_IDRepo("preReg_CreateApplnURI");
-		preReg_DocumentUploadURI = commonLibrary.fetch_IDRepo("preReg_DocumentUploadURI");
-		preReg_FetchCenterIDURI = commonLibrary.fetch_IDRepo("preReg_FetchCenterIDURI");
-		preReg_BookingAppointmentURI = commonLibrary.fetch_IDRepo("preReg_BookingAppointmentURI");
-		preReg_DataSyncnURI = commonLibrary.fetch_IDRepo("preReg_DataSyncnURI");
-		preReg_FetchRegistrationDataURI = commonLibrary.fetch_IDRepo("preReg_FetchRegistrationDataURI");
-		preReg_FetchCenterIDURI = commonLibrary.fetch_IDRepo("preReg_FetchCenterIDURI");
-		preReg_FecthAppointmentDetailsURI = commonLibrary.fetch_IDRepo("preReg_FecthAppointmentDetailsURI");
-		preReg_FetchAllDocumentURI = commonLibrary.fetch_IDRepo("preReg_FetchAllDocumentURI");
-		prereg_DeleteDocumentByDocIdURI = commonLibrary.fetch_IDRepo("prereg_DeleteDocumentByDocIdURI");
-		preReg_DeleteAllDocumentByPreIdURI = commonLibrary.fetch_IDRepo("preReg_DeleteAllDocumentByPreIdURI");
-		preReg_CopyDocumentsURI = commonLibrary.fetch_IDRepo("preReg_CopyDocumentsURI");
-		preReg_FetchBookedPreIdByRegIdURI = commonLibrary.fetch_IDRepo("preReg_FetchBookedPreIdByRegIdURI");
-		preReg_FetchStatusOfApplicationURI = commonLibrary.fetch_IDRepo("preReg_FetchStatusOfApplicationURI");
-		preReg_DiscardApplnURI = commonLibrary.fetch_IDRepo("preReg_DiscardApplnURI");
-		preReg_UpdateStatusAppURI = commonLibrary.fetch_IDRepo("preReg_UpdateStatusAppURI");
-		preReg_CancelAppointmentURI = commonLibrary.fetch_IDRepo("preReg_CancelAppointmentURI");
-		preReg_ExpiredURI = commonLibrary.fetch_IDRepo("preReg_ExpiredURI");
-		preReg_ConsumedURI = commonLibrary.fetch_IDRepo("preReg_ConsumedURI");
-		preReg_ReverseDataSyncURI = commonLibrary.fetch_IDRepo("preReg_ReverseDataSyncURI");
-		preReg_FetchAllApplicationCreatedByUserURI = commonLibrary.fetch_IDRepo("preReg_FetchAllApplicationCreatedByUserURI");
-		 preReg_DiscardBookingURI=commonLibrary.fetch_IDRepo("preReg_DiscardBookingURI");
-		 preReg_SyncMasterDataURI=commonLibrary.fetch_IDRepo("preReg_SyncMasterDataURI");
-		 preReg_NotifyURI=commonLibrary.fetch_IDRepo("preReg_NotifyURI");
-		 langCodeKey=commonLibrary.fetch_IDRepo("langCode.key");
-		 otpSend_URI=commonLibrary.fetch_IDRepo("otpSend_URI");
-		 validateOTP_URI=commonLibrary.fetch_IDRepo("validateOTP_URI");
+		preReg_CreateApplnURI = commonLibrary.fetch_IDRepo().get("preReg_CreateApplnURI");
+		preReg_DocumentUploadURI = commonLibrary.fetch_IDRepo().get("preReg_DocumentUploadURI");
+		preReg_FetchCenterIDURI = commonLibrary.fetch_IDRepo().get("preReg_FetchCenterIDURI");
+		preReg_BookingAppointmentURI = commonLibrary.fetch_IDRepo().get("preReg_BookingAppointmentURI");
+		preReg_DataSyncnURI = commonLibrary.fetch_IDRepo().get("preReg_DataSyncnURI");
+		preReg_FetchRegistrationDataURI = commonLibrary.fetch_IDRepo().get("preReg_FetchRegistrationDataURI");
+		preReg_FetchCenterIDURI = commonLibrary.fetch_IDRepo().get("preReg_FetchCenterIDURI");
+		preReg_FecthAppointmentDetailsURI = commonLibrary.fetch_IDRepo().get("preReg_FecthAppointmentDetailsURI");
+		preReg_FetchAllDocumentURI = commonLibrary.fetch_IDRepo().get("preReg_FetchAllDocumentURI");
+		prereg_DeleteDocumentByDocIdURI = commonLibrary.fetch_IDRepo().get("prereg_DeleteDocumentByDocIdURI");
+		preReg_DeleteAllDocumentByPreIdURI = commonLibrary.fetch_IDRepo().get("preReg_DeleteAllDocumentByPreIdURI");
+		preReg_CopyDocumentsURI = commonLibrary.fetch_IDRepo().get("preReg_CopyDocumentsURI");
+		preReg_FetchBookedPreIdByRegIdURI = commonLibrary.fetch_IDRepo().get("preReg_FetchBookedPreIdByRegIdURI");
+		preReg_FetchStatusOfApplicationURI = commonLibrary.fetch_IDRepo().get("preReg_FetchStatusOfApplicationURI");
+		preReg_DiscardApplnURI = commonLibrary.fetch_IDRepo().get("preReg_DiscardApplnURI");
+		preReg_UpdateStatusAppURI = commonLibrary.fetch_IDRepo().get("preReg_UpdateStatusAppURI");
+		preReg_CancelAppointmentURI = commonLibrary.fetch_IDRepo().get("preReg_CancelAppointmentURI");
+		preReg_ExpiredURI = commonLibrary.fetch_IDRepo().get("preReg_ExpiredURI");
+		preReg_ConsumedURI = commonLibrary.fetch_IDRepo().get("preReg_ConsumedURI");
+		preReg_ReverseDataSyncURI = commonLibrary.fetch_IDRepo().get("preReg_ReverseDataSyncURI");
+		preReg_FetchAllApplicationCreatedByUserURI = commonLibrary.fetch_IDRepo().get("preReg_FetchAllApplicationCreatedByUserURI");
+		 preReg_DiscardBookingURI=commonLibrary.fetch_IDRepo().get("preReg_DiscardBookingURI");
+		 preReg_SyncMasterDataURI=commonLibrary.fetch_IDRepo().get("preReg_SyncMasterDataURI");
+		 preReg_NotifyURI=commonLibrary.fetch_IDRepo().get("preReg_NotifyURI");
+		 langCodeKey=commonLibrary.fetch_IDRepo().get("langCode.key");
+		 otpSend_URI=commonLibrary.fetch_IDRepo().get("otpSend_URI");
+		 validateOTP_URI=commonLibrary.fetch_IDRepo().get("validateOTP_URI");
 		
 	}
 

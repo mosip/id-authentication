@@ -218,7 +218,7 @@ public class FetchAppointmentDetails extends BaseTestCase implements ITest {
          * Fetch Appointment Details Resource URI            
          */
         
-        preReg_URI = commonLibrary.fetch_IDRepo("preReg_CopyDocumentsURI");
+        preReg_URI = commonLibrary.fetch_IDRepo().get("preReg_CopyDocumentsURI");
 	}
 
 	@AfterMethod(alwaysRun = true)

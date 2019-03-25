@@ -211,7 +211,7 @@ public class CreatePreRegistration extends BaseTestCase implements ITest{
            * CreatePreRegistration Resource URI            
            */
           
-          preReg_URI = commonLibrary.fetch_IDRepo("preReg_CreateApplnURI");
+          preReg_URI = commonLibrary.fetch_IDRepo().get("preReg_CreateApplnURI");
           
           
           

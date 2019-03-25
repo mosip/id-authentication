@@ -174,7 +174,7 @@ public class DeleteDocumentByDocId extends BaseTestCase implements ITest {
          * Delete document by Document Id Resource URI           
          */
         
-        preReg_URI = commonLibrary.fetch_IDRepo("prereg_DeleteDocumentByDocIdURI");
+        preReg_URI = commonLibrary.fetch_IDRepo().get("prereg_DeleteDocumentByDocIdURI");
 		
 		
 	}
