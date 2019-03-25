@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletRequestWrapper;
 
 import org.springframework.stereotype.Component;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
@@ -34,12 +35,20 @@ import io.mosip.kernel.core.util.DateUtils;
 @Component
 public class IdAuthFilter extends BaseAuthFilter {
 
+	private static final String MISP_PARTNER_MAPPING = "misp.partner.mapping.";
+
+	private static final String PARTNER_KEY = "partner.";
+
+	/** The Constant LICENSE_KEY. */
 	private static final String LICENSE_KEY = "licenseKey.";
 
+	/** The Constant MISPLICENSE_KEY. */
 	private static final String MISPLICENSE_KEY = "misplicenseKey";
 
+	/** The Constant PARTNER_ID. */
 	private static final String PARTNER_ID = "partnerId";
 
+	/** The Constant MISP_ID. */
 	private static final String MISP_ID = "mispId";
 
 	/** The Constant POLICY_ID. */
@@ -57,6 +66,7 @@ public class IdAuthFilter extends BaseAuthFilter {
 	/** The Constant REQUEST. */
 	private static final String REQUEST = "request";
 
+	/** The Constant KYC. */
 	private static final String KYC = null;
 
 	/*
@@ -74,16 +84,22 @@ public class IdAuthFilter extends BaseAuthFilter {
 				Map<String, Object> request = keyManager.requestData(requestBody, mapper);
 				requestBody.replace(REQUEST, request);
 
-				// validateRequestHMAC((String) requestBody.get("requestHMAC"),
-				// mapper.writeValueAsString(request));
+				validateRequestHMAC((String) requestBody.get("requestHMAC"), mapper.writeValueAsString(request));
 			}
 			return requestBody;
-		} catch (ClassCastException e) {
+		} catch (ClassCastException | JsonProcessingException e) {
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(),
 					IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorMessage());
 		}
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.authentication.service.filter.BaseAuthFilter#
+	 * validateDecipheredRequest(io.mosip.authentication.service.filter.
+	 * ResettableStreamHttpServletRequest, java.util.Map)
+	 */
 	@Override
 	protected void validateDecipheredRequest(ResettableStreamHttpServletRequest requestWrapper,
 			Map<String, Object> requestBody) throws IdAuthenticationAppException {
@@ -113,7 +129,7 @@ public class IdAuthFilter extends BaseAuthFilter {
 	 * license key expiry and staus.
 	 *
 	 * @param licenseKey the license key
-	 * @param mispId     the misp id
+	 * @return the string
 	 * @throws IdAuthenticationAppException the id authentication app exception
 	 */
 	private String licenseKeyMISPMapping(String licenseKey) throws IdAuthenticationAppException {
@@ -147,8 +163,8 @@ public class IdAuthFilter extends BaseAuthFilter {
 	 * @param partnerId the partner id
 	 * @throws IdAuthenticationAppException the id authentication app exception
 	 */
-	public void validPartnerId(String partnerId) throws IdAuthenticationAppException {
-		String partnerIdJson = env.getProperty("partner.policy." + partnerId);
+	private void validPartnerId(String partnerId) throws IdAuthenticationAppException {
+		String partnerIdJson = env.getProperty(PARTNER_KEY + partnerId);
 		Map<String, String> partnerIdMap = null;
 		if (null == partnerIdJson) {
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.PARTNER_NOT_REGISTERED);
@@ -177,15 +193,16 @@ public class IdAuthFilter extends BaseAuthFilter {
 	 * @return the string
 	 * @throws IdAuthenticationAppException the id authentication app exception
 	 */
-	public String validMISPPartnerMapping(String partnerId, String mispId) throws IdAuthenticationAppException {
+	private String validMISPPartnerMapping(String partnerId, String mispId) throws IdAuthenticationAppException {
 		Map<String, String> partnerIdMap = null;
 		String policyId = null;
-		boolean mispPartnerMappingJson = env.getProperty("misp.partner.mapping." + mispId + "." + partnerId,
+		boolean mispPartnerMappingJson = env.getProperty(MISP_PARTNER_MAPPING + mispId + "." + partnerId,
 				boolean.class);
 		if (!mispPartnerMappingJson) {
+
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.PARTNER_NOT_MAPPED);
 		}
-		String partnerIdJson = env.getProperty("partner.policy." + partnerId);
+		String partnerIdJson = env.getProperty(PARTNER_KEY + partnerId);
 		try {
 			partnerIdMap = mapper.readValue(partnerIdJson.getBytes("UTF-8"), Map.class);
 			policyId = partnerIdMap.get(POLICY_ID);
@@ -195,12 +212,20 @@ public class IdAuthFilter extends BaseAuthFilter {
 		return policyId;
 	}
 
+	/**
+	 * Check allowed auth type based on policy.
+	 *
+	 * @param policyId    the policy id
+	 * @param requestBody the request body
+	 * @throws IdAuthenticationAppException the id authentication app exception
+	 */
 	protected void checkAllowedAuthTypeBasedOnPolicy(String policyId, Map<String, Object> requestBody)
 			throws IdAuthenticationAppException {
 		try {
 			String policyJson = getPolicy(policyId);
 			Policies policies = null;
 			policies = mapper.readValue(policyJson.getBytes("UTF-8"), Policies.class);
+			//Get kyc attributes
 			List<AuthPolicy> authPolicies = policies.getPolicies().getAuthPolicies();
 			List<KYCAttributes> allowedKycAttributes = policies.getPolicies().getAllowedKycAttributes();
 			List<String> allowedTypeList = allowedKycAttributes.stream().map(value -> value.getAttributeName())
@@ -218,6 +243,13 @@ public class IdAuthFilter extends BaseAuthFilter {
 		}
 	}
 
+	/**
+	 * Check allowed auth type based on policy.
+	 *
+	 * @param requestBody  the request body
+	 * @param authPolicies the auth policies
+	 * @throws IdAuthenticationAppException the id authentication app exception
+	 */
 	protected void checkAllowedAuthTypeBasedOnPolicy(Map<String, Object> requestBody, List<AuthPolicy> authPolicies)
 			throws IdAuthenticationAppException {
 		try {
@@ -277,6 +309,13 @@ public class IdAuthFilter extends BaseAuthFilter {
 		}
 	}
 
+	/**
+	 * Check mandatory auth type based on policy.
+	 *
+	 * @param requestBody           the request body
+	 * @param mandatoryAuthPolicies the mandatory auth policies
+	 * @throws IdAuthenticationAppException the id authentication app exception
+	 */
 	protected void checkMandatoryAuthTypeBasedOnPolicy(Map<String, Object> requestBody,
 			List<AuthPolicy> mandatoryAuthPolicies) throws IdAuthenticationAppException {
 		try {
@@ -301,7 +340,7 @@ public class IdAuthFilter extends BaseAuthFilter {
 							String.format(IdAuthenticationErrorConstants.AUTHTYPE_MANDATORY.getErrorMessage(),
 									MatchType.Category.OTP.getType()));
 				} else if (mandatoryAuthPolicy.getAuthType().equalsIgnoreCase(MatchType.Category.DEMO.getType())
-						&& !authType.isPin()) {
+						&& !authType.isDemo()) {
 					throw new IdAuthenticationAppException(
 							IdAuthenticationErrorConstants.AUTHTYPE_MANDATORY.getErrorCode(),
 							String.format(IdAuthenticationErrorConstants.AUTHTYPE_MANDATORY.getErrorMessage(),
@@ -341,10 +380,25 @@ public class IdAuthFilter extends BaseAuthFilter {
 		}
 	}
 
+	/**
+	 * Checks if is allowed auth type.
+	 *
+	 * @param authType the auth type
+	 * @param policies the policies
+	 * @return true, if is allowed auth type
+	 */
 	protected boolean isAllowedAuthType(String authType, List<AuthPolicy> policies) {
 		return isAllowedAuthType(authType, null, policies);
 	}
 
+	/**
+	 * Checks if is allowed auth type.
+	 *
+	 * @param authType    the auth type
+	 * @param subAuthType the sub auth type
+	 * @param policies    the policies
+	 * @return true, if is allowed auth type
+	 */
 	protected boolean isAllowedAuthType(String authType, String subAuthType, List<AuthPolicy> policies) {
 		if (subAuthType == null) {
 			return policies.stream().anyMatch(authPolicy -> authPolicy.getAuthType().equalsIgnoreCase(authType));
@@ -354,10 +408,22 @@ public class IdAuthFilter extends BaseAuthFilter {
 		}
 	}
 
+	/**
+	 * Gets the policy.
+	 *
+	 * @param policyId the policy id
+	 * @return the policy
+	 */
 	private String getPolicy(String policyId) {
 		return env.getProperty("policy." + policyId);
 	}
 
+	/**
+	 * Gets the auth part.
+	 *
+	 * @param requestWrapper the request wrapper
+	 * @return the auth part
+	 */
 	protected Map<String, String> getAuthPart(ResettableStreamHttpServletRequest requestWrapper) {
 		Map<String, String> params = new HashMap<>();
 		if (requestWrapper instanceof HttpServletRequestWrapper) {

@@ -2,18 +2,14 @@ package io.mosip.authentication.service.impl.indauth.controller;
 
 import static org.junit.Assert.assertFalse;
 
-import java.time.Instant;
-import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -35,7 +31,6 @@ import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.AuthResponseDTO;
 import io.mosip.authentication.core.dto.indauth.AuthTypeDTO;
-import io.mosip.authentication.core.dto.indauth.IdType;
 import io.mosip.authentication.core.dto.indauth.IdentityDTO;
 import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
 import io.mosip.authentication.core.dto.indauth.KycAuthRequestDTO;
@@ -132,7 +127,7 @@ public class AuthControllerTest {
 	public void authenticationFailed()
 			throws IdAuthenticationAppException, IdAuthenticationBusinessException, IdAuthenticationDaoException {
 		AuthRequestDTO authReqDTO = new AuthRequestDTO();
-		Mockito.when(authFacade.authenticateApplicant(authReqDTO, true,"123456","123456"))
+		Mockito.when(authFacade.authenticateApplicant(authReqDTO, true,"123456"))
 				.thenThrow(new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UIN_DEACTIVATED));
 		authController.authenticateApplication(authReqDTO, error,"123456","123456");
 
@@ -142,7 +137,7 @@ public class AuthControllerTest {
 	public void authenticationSuccess()
 			throws IdAuthenticationAppException, IdAuthenticationBusinessException, IdAuthenticationDaoException {
 		AuthRequestDTO authReqDTO = new AuthRequestDTO();
-		Mockito.when(authFacade.authenticateApplicant(authReqDTO, true,"123456","123456")).thenReturn(new AuthResponseDTO());
+		Mockito.when(authFacade.authenticateApplicant(authReqDTO, true,"123456")).thenReturn(new AuthResponseDTO());
 		authController.authenticateApplication(authReqDTO, error,"123456","123456");
 
 	}
@@ -153,7 +148,7 @@ public class AuthControllerTest {
 		KycAuthRequestDTO kycAuthReqDTO = new KycAuthRequestDTO();
 		Errors errors = new BindException(kycAuthReqDTO, "kycAuthReqDTO");
 		errors.rejectValue("id", "errorCode", "defaultMessage");
-		authFacade.authenticateApplicant(kycAuthReqDTO, true,"123456789","123456789");
+		authFacade.authenticateApplicant(kycAuthReqDTO, true,"123456789");
 		authController.processKyc(kycAuthReqDTO, errors,"123456","123456");
 	}
 
@@ -198,7 +193,6 @@ public class AuthControllerTest {
 		kycAuthResponseDTO.setTransactionID("34567");
 		kycAuthResponseDTO.setErrors(null);
 		kycResponseDTO.setTtl(env.getProperty("ekyc.ttl.hours"));
-		Map<String, ? extends Object> identity = null;
 		kycAuthResponseDTO.setStatus(Boolean.TRUE);
 
 		kycAuthResponseDTO.setResponseTime(ZonedDateTime.now()
@@ -219,7 +213,7 @@ public class AuthControllerTest {
 		authResponseDTO.setErrors(null);
 		authResponseDTO.setTransactionID("123456789");
 		authResponseDTO.setVersion("1.0");
-		Mockito.when(authFacade.authenticateApplicant(Mockito.any(), Mockito.anyBoolean(),Mockito.anyString(),Mockito.anyString()))
+		Mockito.when(authFacade.authenticateApplicant(Mockito.any(), Mockito.anyBoolean(),Mockito.anyString()))
 				.thenReturn(authResponseDTO);
 		Mockito.when(authFacade.processKycAuth(kycAuthReqDTO, authResponseDTO, "123456789")).thenReturn(kycAuthResponseDTO);
 		authController.processKyc(kycAuthReqDTO, errors, "123456789", "12345689");
@@ -266,7 +260,6 @@ public class AuthControllerTest {
 		kycAuthResponseDTO.setTransactionID("34567");
 		kycAuthResponseDTO.setErrors(null);
 		kycResponseDTO.setTtl(env.getProperty("ekyc.ttl.hours"));
-		Map<String, ? extends Object> identity = null;
 		kycAuthResponseDTO.setStatus(Boolean.TRUE);
 
 		kycAuthResponseDTO.setResponseTime(ZonedDateTime.now()
@@ -287,7 +280,7 @@ public class AuthControllerTest {
 		authResponseDTO.setErrors(null);
 		authResponseDTO.setTransactionID("123456789");
 		authResponseDTO.setVersion("1.0");
-		Mockito.when(authFacade.authenticateApplicant(Mockito.any(), Mockito.anyBoolean(),Mockito.anyString(),Mockito.anyString()))
+		Mockito.when(authFacade.authenticateApplicant(Mockito.any(), Mockito.anyBoolean(),Mockito.anyString()))
 		.thenReturn(authResponseDTO);
 		Mockito.when(authFacade.processKycAuth(kycAuthRequestDTO, authResponseDTO, "12346789"))
 				.thenThrow(new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS));

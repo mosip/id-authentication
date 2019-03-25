@@ -37,6 +37,7 @@ import io.mosip.registration.constants.RegistrationUIConstants;
 import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
+import io.mosip.registration.controller.RestartController;
 import io.mosip.registration.controller.reg.Validations;
 import io.mosip.registration.device.face.FaceFacade;
 import io.mosip.registration.device.fp.FingerprintFacade;
@@ -45,6 +46,7 @@ import io.mosip.registration.device.iris.IrisFacade;
 import io.mosip.registration.dto.AuthenticationValidatorDTO;
 import io.mosip.registration.dto.LoginUserDTO;
 import io.mosip.registration.dto.ResponseDTO;
+import io.mosip.registration.dto.SuccessResponseDTO;
 import io.mosip.registration.dto.biometric.FaceDetailsDTO;
 import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
 import io.mosip.registration.dto.biometric.IrisDetailsDTO;
@@ -180,6 +182,8 @@ public class LoginController extends BaseController implements Initializable {
 	
 	@Autowired
 	private UserDetailService userDetailService; 
+	@Autowired
+	private RestartController restartController;
 
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
@@ -201,50 +205,58 @@ public class LoginController extends BaseController implements Initializable {
 	 * @throws RegBaseCheckedException
 	 */
 	public void loadInitialScreen(Stage primaryStage) {
-
-		ResponseDTO responseDTO = getSyncConfigData();
 		
-		ResponseDTO masterResponseDTO = masterSyncService.getMasterSync(RegistrationConstants.OPT_TO_REG_MDS_J00001, RegistrationConstants.JOB_TRIGGER_POINT_USER);
-
-		ResponseDTO userResponseDTO = userDetailService.save(RegistrationConstants.JOB_TRIGGER_POINT_USER);
-
-		if (responseDTO.getSuccessResponseDTO() == null || masterResponseDTO.getSuccessResponseDTO() == null || userResponseDTO.getSuccessResponseDTO()== null) {
-			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.SYNC_CONFIG_DATA_FAILURE);
-		} else {
-
-			LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID, "Retrieve Login mode");
-
-			fXComponents.setStage(primaryStage);
-
-			try {
-
-				/* Save Global Param Values in Application Context's application map */
-				getGlobalParams();
-				ApplicationContext.loadResources();
-				validations.setResourceBundle();
-				BorderPane loginRoot = BaseController.load(getClass().getResource(RegistrationConstants.INITIAL_PAGE));
-
-				scene = getScene(loginRoot);
-				pageFlow.getInitialPageDetails();
-				primaryStage.setResizable(false);
-				primaryStage.setFullScreen(true);
-				primaryStage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
-				primaryStage.setScene(scene);
-				primaryStage.show();
-
-			} catch (IOException ioException) {
-
-				LOGGER.error(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
-						ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));
-
-				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_LOAD_LOGIN_SCREEN);
-			} catch (RuntimeException runtimeException) {
-
-				LOGGER.error(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
-						runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
-
-				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_LOAD_LOGIN_SCREEN);
+		try {
+			ResponseDTO responseDTO = getSyncConfigData();
+			if (responseDTO != null) {
+				SuccessResponseDTO successResponseDTO = responseDTO.getSuccessResponseDTO();
+				if (successResponseDTO != null) {
+					if (successResponseDTO.getOtherAttributes() != null) {
+						restartController.restart();
+					}
+				}
 			}
+			
+			/* Save Global Param Values in Application Context's application map */		
+			getGlobalParams();
+			ApplicationContext.loadResources();
+			
+			ResponseDTO masterResponseDTO = masterSyncService.getMasterSync(RegistrationConstants.OPT_TO_REG_MDS_J00001, RegistrationConstants.JOB_TRIGGER_POINT_USER);
+
+			ResponseDTO userResponseDTO = userDetailService.save(RegistrationConstants.JOB_TRIGGER_POINT_USER);
+			
+			if (responseDTO.getSuccessResponseDTO() == null || masterResponseDTO.getSuccessResponseDTO() == null || userResponseDTO.getSuccessResponseDTO()== null) {
+				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.SYNC_CONFIG_DATA_FAILURE);
+			} else {
+
+				LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID, "Retrieve Login mode");
+
+				fXComponents.setStage(primaryStage);
+
+					validations.setResourceBundle();
+					BorderPane loginRoot = BaseController.load(getClass().getResource(RegistrationConstants.INITIAL_PAGE));
+					
+					scene = getScene(loginRoot);
+					pageFlow.getInitialPageDetails();
+				//	primaryStage.setResizable(true);
+					//primaryStage.setFullScreen(true);
+				//	primaryStage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
+					primaryStage.setScene(scene);
+					primaryStage.show();
+			}
+
+		} catch (IOException ioException) {
+
+			LOGGER.error(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
+					ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));
+
+			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_LOAD_LOGIN_SCREEN);
+		} catch (RuntimeException runtimeException) {
+
+			LOGGER.error(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
+					runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
+
+			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_LOAD_LOGIN_SCREEN);
 		}
 	}
 

@@ -988,6 +988,10 @@ Working on new Css by taleev
 	-fx-font-size : 1.2em;
 	-fx-text-fill : #E43391;	
 	-fx-font-weight : bold;
+	-fx-border-image-source: url(images/DemographicpageTracker.png);
+    -fx-border-image-insets: 10, 20;
+    -fx-border-image-width: 0 0 10 0;
+    -fx-border-image-slice: 10, 10;
 }
 
 .demoGraphicPaneContentButton{
@@ -1001,8 +1005,6 @@ Working on new Css by taleev
 
 .paneAtDisplayDemoGraphic{
 	-fx-background-color:#FFFFFF;
-	-fx-pref-height: 1050px;	
-	-fx-pref-width: 1100px;
 }
 
 
@@ -1158,10 +1160,11 @@ Working on new Css by taleev
 }
 
 .IrisPanes{
-	-fx-background-color : red;
-	-fx-border-color : red;
+	-fx-background-color : #F0F0F0;
+	-fx-border-color : #EFEFEF;
 	-fx-border-width : 5;
 	-fx-padding : -2.5;
+	-fx-border-radius: 3,3,3,3;
 }
 
 .IrisPanes:focused{
@@ -1174,10 +1177,11 @@ Working on new Css by taleev
 }
 
 .IrisPanesSelected{
-	-fx-background-color : green;
-	-fx-border-color : red;
+	-fx-background-color : #F0F0F0;
+	-fx-border-color : #EFEFEF;
 	-fx-border-width : 5;
 	-fx-padding : -2.5;
+	-fx-border-radius: 3,3,3,3;
 }	
 
 .paneAtDisplayIris{
@@ -1569,7 +1573,6 @@ Working on new Css by taleev
 .headerPageTracker{
 	-fx-border-width : 0 0 2 0;
 	-fx-border-color : #FF4081;
-	-fx-padding : 0 0 0.5 0;
 }
 
 .bioTracker{

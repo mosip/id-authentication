@@ -80,11 +80,11 @@ public class CenterMachineReMapServiceTest {
 	private PreRegistrationDataSyncDAO preRegistrationDataSyncDAO;
 	@Autowired
 	FileUtils fileUtils;
-	
+
 	@BeforeClass
-	public static void initialize() throws IOException, java.io.IOException {		
+	public static void initialize() throws IOException, java.io.IOException {
 		Map<String, Object> applicationMap = new HashMap<>();
-		applicationMap.put("mosip.registration.registration_pre_reg_packet_location","..//PreRegPacketStore");
+		applicationMap.put("mosip.registration.registration_pre_reg_packet_location", "..//PreRegPacketStore");
 		ApplicationContext.getInstance().setApplicationMap(applicationMap);
 
 	}
@@ -176,8 +176,8 @@ public class CenterMachineReMapServiceTest {
 
 		globalParam.setVal("true");
 		Mockito.when(globalParamDAO.get(Mockito.anyObject())).thenReturn(globalParam);
-		PowerMockito.doThrow(new io.mosip.kernel.core.exception.IOException("error", "error")).when(FileUtils.class,
-				"deleteDirectory", Mockito.any(File.class));
+		PowerMockito.doThrow(new IOException("error", "error")).when(FileUtils.class, "deleteDirectory",
+				Mockito.any(File.class));
 		centerMachineReMapServiceImpl.handleReMapProcess(3);
 
 	}

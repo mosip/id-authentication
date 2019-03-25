@@ -46,28 +46,46 @@ The key solution considerations are -
 -   Add key registration.processor.reprocess.fetchsize with value 1000
 -   Add key registration.processor.reprocess.elapse.time with value in second is: 21600
 
-3.	Fallow below steps while processing packet in all stages which gives system capability to re-process records in case of crash:
-4.	Transaction management need to be implemented properly to manage multiple data base operations in stages to ensure data integrity and consistency.
+3.	Follow and implement below considerations while processing packet in all stages which gives system capability to re-process records in case of crash:
+- Transaction management need to be implemented properly to manage multiple data base operations in stages to ensure data integrity and consistency.
 
-5.	Update REGISTRATION table with the values as suggested below:
-    + Update column "latest_trn_type_code" with the value stage name
+- 	Update REGISTRATION table with the values as suggested below:
+    + Update column "latest_trn_type_code" with the below suggested values:
+```java
+	Packet Receiver
+	Virus Scan
+	Upload Packet
+	Validate Packet
+	OSI Validate
+	External Integration
+	Demographic Verification
+	Manual Varification
+	Biographic Verification
+	UIN Generator
+	Notification
+	Print
+```
     + Update "latest_trn_status_code" column with below values while processing packet:
       +  SUCCESS: In case processing successful
       +  FAILED: In case if validation fails
 	  +  IN-PROGRESS: In case of asynchronous call
       +  ERROR: In case of exception while processing packet
       +  REPROCESS: Update status with this value in case of exception which can be re-processed latter. Some of exceptions are like database or REST end point connection time out
-      +  PROCESSED: This status indicate that end to end processing of packet is successful
+      +  PROCESSED: This status indicate that end to end processing of packet is successful. Update transaction table with this status in UIN Generation Stage. Do not update registration table from Print and Notification stages as these are not being business critical operations.
 
 4. Reprocess Stage 
 +	Create a Vertx state: Reprocess Stage
 +	Use Vertx Chime scheduler to execute job at specific time interval. Time interval value can be fetched from configuration server using key: registration.processor.reprocess.schedule.trigger.time 
-+	Once scheduler triggered, add logic in the job to fetch records from registration table, filtered on status is SUCCESS or ERROR and reprocess_count less than the value configured in configuration server using key: registration.processor.reprocess.attempt.count. Also filter data by number of records using value configured in configuration server using key: registration.processor.reprocess.fetchsize and last update time "upd_dtimes" less than current time minus time configured in configuration server using key : "registration.processor.reprocess.elapse.time"
-+   Once data fetched iterate through each records and update column "latest_regtrn_dtimes" in REGISTRATION table for each recoard with the current system time. 
-+	For each record to be feachted construct data transfer object or camel payload object to be send to vertx stages.   
++	Once scheduler triggered, add logic in the job to fetch records from registration table. 
+		- Recoards with status: SUCCESS, PROCESSED
+		- Recoards having reprocess_count less than the value configured in configuration server using key: registration.processor.reprocess.attempt.count. 
+		-  Recoards having last update time "upd_dtimes" less than current time minus time configured in configuration server using key : "registration.processor.reprocess.elapse.time"
+		- Filter data by number of records using value configured in configuration server using key: registration.processor.reprocess.fetchsize 
++   Iterate all records and update column "latest_regtrn_dtimes" in REGISTRATION table with current system time before sending event. 
++	Also construct data transfer object or camel payload object to be send to vertx stages.   
 +	Send event on the Vertx event bus with the created payload to process record further in registration processor flow.
-+	Once event send successfully increment "process_retry_coun" value in database by one and update it in database.
-+	Repeat above steps in case if data is more than fetch size configured in config server using key: registration.processor.reprocess.fetchsize
++	Once event send successfully increment "process_retry_count" value in database by one and update it in database.
++	Repeat above steps in case if records are more than fetch size configured in config server using key: registration.processor.reprocess.fetchsize
 +	In case reprocess_count reach to the maximum value configured in configuration server (using in key:registration.processor.reprocess.attempt.count ) then send notification mail.
 +	Update registration status service to include above mentioned columns
 

@@ -88,8 +88,8 @@
 		</dependency>
 		<dependency>
 			<groupId>io.mosip.registrationprocessor</groupId>
-			<artifactId>registration-processor-print-service</artifactId>
-			<version>${registration.processor.print.service.version}</version>
+			<artifactId>registration-processor-print-service-impl</artifactId>
+			<version>${registration.processor.print.service.impl.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>

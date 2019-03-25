@@ -23,12 +23,13 @@ public interface MessageNotificationService<T, U, V> {
 	 * @param id
 	 * @param idType
 	 * @param attributes
+	 * @param regType 
 	 * @return
 	 * @throws ApisResourceAccessException
 	 * @throws IOException
 	 */
 	public T sendSmsNotification(String templateTypeCode, String id, IdType idType,
-			Map<String, Object> attributes) throws ApisResourceAccessException, IOException;
+			Map<String, Object> attributes, String regType) throws ApisResourceAccessException, IOException;
 	
 	
 	/**
@@ -40,12 +41,13 @@ public interface MessageNotificationService<T, U, V> {
 	 * @param mailCc
 	 * @param subject
 	 * @param attachment
+	 * @param regType 
 	 * @return
 	 * @throws IOException
 	 * @throws ApisResourceAccessException
 	 */
 	public U sendEmailNotification(String templateTypeCode, String id,
 			IdType idType, Map<String, Object> attributes, String[] mailCc, String subject,
-			V attachment) throws IOException, ApisResourceAccessException,Exception;
+			V attachment, String regType) throws IOException, ApisResourceAccessException,Exception;
 	
 }

@@ -256,10 +256,14 @@ public class BaseController extends BaseService{
 			StringBuilder validationMessage) {
 		if (id.matches("dd|mm|yyyy|ddLocalLanguage|mmLocalLanguage|yyyyLocalLanguage")) {
 			id = RegistrationConstants.DOB;
+			parentPane = (Pane) parentPane.getParent().getParent();
 		}
 		if(id.contains("ontype")) {
 			id=id.replaceAll("_ontype", "");
 		}
+		if(id.equals("mobileNo")) {
+			System.out.println("Hello");
+		}	
 		if (RegistrationConstants.DISABLE.equalsIgnoreCase(isConsolidated)) {
 			Label label = ((Label) (parentPane
 					.lookup(RegistrationConstants.HASH + id + RegistrationConstants.MESSAGE)));

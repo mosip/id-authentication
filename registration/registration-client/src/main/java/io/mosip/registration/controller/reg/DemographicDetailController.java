@@ -374,6 +374,9 @@ public class DemographicDetailController extends BaseController {
 	@Autowired
 	MasterSyncService masterSync;
 
+	@Autowired
+	HomeController homeController;
+
 	@FXML
 	private AnchorPane dateAnchorPane;
 	@FXML
@@ -1156,11 +1159,13 @@ public class DemographicDetailController extends BaseController {
 
 			keyboardNode.setDisable(false);
 
+			autoFillBtn.setVisible(false);
 			registrationNavlabel.setText(RegistrationConstants.UIN_NAV_LABEL);
 			parentFlowPane.setDisable(false);
 			fetchBtn.setVisible(false);
 			preRegistrationLabel.setText(RegistrationConstants.UIN_LABEL);
 			updateUinId.setVisible(true);
+			updateUinId.setDisable(true);
 			preRegistrationId.setVisible(false);
 			getRegistrationDTOFromSession().getRegistrationMetaDataDTO()
 					.setUin(getRegistrationDTOFromSession().getSelectionListDTO().getUinId());
@@ -1417,7 +1422,7 @@ public class DemographicDetailController extends BaseController {
 	public void clickMe() {
 		SessionContext.map().put(RegistrationConstants.IS_CONSOLIDATED, RegistrationConstants.ENABLE);
 		validation.setValidationMessage();
-		fullName.setText("Ayoub Toufiq");
+		fullName.setText("أيوب توفيق");
 		int age = 27;
 		switchedOn.set(false);
 		ageField.setText("" + age);
@@ -1426,8 +1431,8 @@ public class DemographicDetailController extends BaseController {
 			gender.getSelectionModel().select(0);
 			genderLocalLanguage.getSelectionModel().select(0);
 		}
-		addressLine1.setText("30 Rue Oum Errabia");
-		addressLine2.setText("Errabia");
+		addressLine1.setText("٣٠ ر أم عربية");
+		addressLine2.setText("عربية");
 		if (!region.getItems().isEmpty()) {
 			region.getSelectionModel().select(0);
 			retrieveAndPopulateLocationByHierarchy(region, province, provinceLocalLanguage);
@@ -1451,9 +1456,6 @@ public class DemographicDetailController extends BaseController {
 		SessionContext.map().put(RegistrationConstants.IS_CONSOLIDATED, RegistrationConstants.DISABLE);
 	}
 
-	@Autowired
-	HomeController homeController;
-	
 	@FXML
 	private void back() {
 		try {
