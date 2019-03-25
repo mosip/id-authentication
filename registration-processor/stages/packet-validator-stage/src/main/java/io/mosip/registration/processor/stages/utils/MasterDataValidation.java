@@ -62,6 +62,12 @@ public class MasterDataValidation {
 	/** The Constant VALUE. */
 	private static final String VALUE = "value";
 
+	private static final String PRIMARY_LANGUAGE = "primary.language";
+
+	private static final String SECONDARY_LANGUAGE = "secondary.language";
+
+	private static final String ATTRIBUTES = "registration.processor.idjson.attributes";
+
 	/**
 	 * Instantiates a new master data validation.
 	 *
@@ -92,13 +98,13 @@ public class MasterDataValidation {
 	 */
 	public Boolean validateMasterData(String jsonString) {
 		boolean isValid = false;
-		String primaryLanguage = env.getProperty("primary.language");
-		String secondaryLanguage = env.getProperty("secondary.language");
+		String primaryLanguage = env.getProperty(PRIMARY_LANGUAGE);
+		String secondaryLanguage = env.getProperty(SECONDARY_LANGUAGE);
 		try {
 
 			demographicIdentity = getDemographicJson(jsonString);
 
-			String[] attributes = env.getProperty("registration.processor.idjson.attributes").split(",");
+			String[] attributes = env.getProperty(ATTRIBUTES).split(",");
 			List<String> list = new ArrayList<>(Arrays.asList(attributes));
 
 			Iterator<String> it = list.iterator();

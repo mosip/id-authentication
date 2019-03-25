@@ -37,6 +37,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
+import io.mosip.kernel.core.exception.BaseUncheckedException;
 import io.mosip.kernel.core.fsadapter.exception.FSAdapterException;
 import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
 import io.mosip.kernel.core.jsonvalidator.model.ValidationReport;
@@ -561,6 +562,16 @@ public class PacketValidateProcessorTest {
 		Mockito.when(registrationStatusService.getRegistrationStatus(anyString())).thenReturn(registrationStatusDto);
 		Mockito.doNothing().when(registrationStatusService).updateRegistrationStatus(registrationStatusDto);
 		Mockito.when(filesystemCephAdapterImpl.checkFileExistence(anyString(), anyString())).thenReturn(Boolean.TRUE);
+
+		MessageDTO messageDto = packetValidateProcessor.process(dto);
+
+		assertEquals(true, messageDto.getInternalError());
+
+	}
+
+	@Test
+	public void testBAseUncheckedExceptions() throws Exception {
+		Mockito.when(jsonValidatorImpl.validateJson(any())).thenThrow(new BaseUncheckedException());
 
 		MessageDTO messageDto = packetValidateProcessor.process(dto);
 
