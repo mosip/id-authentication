@@ -431,15 +431,84 @@
                 <RowConstraints percentHeight="100.0" vgrow="ALWAYS" />
               </rowConstraints>
                <children>
-                  <GridPane fx:id="operatorExceptionHeader">
+                  <GridPane fx:id="registrationExceptionHeader">
                     <columnConstraints>
-                      <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" percentWidth="33.0" />
-                      <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" percentWidth="34.0" />
-                        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" percentWidth="33.0" />
+                      <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" percentWidth="15.0" />
+                      <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" percentWidth="75.0" />
+                        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" percentWidth="10.0" />
                     </columnConstraints>
                     <rowConstraints>
                       <RowConstraints percentHeight="100.0" valignment="CENTER" vgrow="ALWAYS" />
                     </rowConstraints>
+                     <children>
+                        <HBox alignment="CENTER_LEFT" spacing="2.0" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
+                           <padding>
+                              <Insets left="10.0" />
+                           </padding>
+                           <children>
+                              <Button mnemonicParsing="false" onAction="#goToHomePageFromRegistration" styleClass="homeButton" text="%home" />
+                              <Label fx:id="registrationNavlabel" styleClass="headerLabel" text="%/registration" />
+                           </children>
+                        </HBox>
+                        <GridPane alignment="CENTER" styleClass="headerPageTracker" GridPane.columnIndex="1">
+                           <children>
+                              <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="10.0" GridPane.halignment="LEFT" GridPane.valignment="CENTER">
+                                 <children>
+                                    <ImageView fitHeight="14.0" fitWidth="14.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../images/activeDemographicDetails.png" />
+                                       </image>
+                                    </ImageView>
+                                    <Label styleClass="headerTexts" text="%demograhpicDetails" />
+                                 </children>
+                              </HBox>
+                              <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="10.0" GridPane.columnIndex="2">
+                                 <children>
+                                    <ImageView fitHeight="14.0" fitWidth="14.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../images/activeUploadDocument.png" />
+                                       </image>
+                                    </ImageView>
+                                    <Label alignment="BOTTOM_CENTER" contentDisplay="TOP" styleClass="headerTexts" text="%uploadDocuments" />
+                                 </children>
+                              </HBox>
+                              <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="10.0" GridPane.columnIndex="4">
+                                 <children>
+                                    <ImageView fitHeight="18.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../images/activeBiometricDetail.png" />
+                                       </image>
+                                    </ImageView>
+                                    <Label alignment="BOTTOM_CENTER" contentDisplay="TOP" styleClass="trackerHighlighter" text="%biometricDetails" />
+                                 </children>
+                              </HBox>
+                              <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="10.0" GridPane.columnIndex="6">
+                                 <children>
+                                    <ImageView fitHeight="14.0" fitWidth="14.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../images/deactiveAuthentication.png" />
+                                       </image>
+                                    </ImageView>
+                                    <Label alignment="BOTTOM_CENTER" styleClass="headerTexts" text="%authentication" />
+                                 </children>
+                              </HBox>
+                           </children>
+                           <columnConstraints>
+                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="20.0" prefWidth="100.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="5.0" prefWidth="100.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="20.0" prefWidth="100.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="5.0" prefWidth="100.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="20.0" prefWidth="100.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="5.0" prefWidth="100.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="25.0" prefWidth="100.0" />
+                           </columnConstraints>
+                           <rowConstraints>
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" valignment="CENTER" vgrow="SOMETIMES" />
+                           </rowConstraints>
+                        </GridPane>
+                     </children>
+                  </GridPane>
+                  <GridPane fx:id="operatorExceptionHeader">
                      <children>
                         <Label fx:id="onboardPageTitle" text="%onboardOperator" GridPane.columnIndex="1" />
                         <HBox alignment="CENTER_LEFT" spacing="2.0" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
@@ -452,76 +521,13 @@
                            </padding>
                         </HBox>
                      </children>
-                  </GridPane>
-                  <GridPane fx:id="registrationExceptionHeader" styleClass="headerFooter">
-                     <children>
-                        <HBox alignment="CENTER_LEFT" spacing="5.0" styleClass="homeBox">
-                           <children>
-                              <Button mnemonicParsing="false" onAction="#goToHomePageFromRegistration" styleClass="homeButton" text="%home" />
-                              <Label styleClass="headerLabel" text="%/registration" />
-                           </children>
-                        </HBox>
-                        <GridPane alignment="CENTER" styleClass="headerPageTracker" GridPane.columnIndex="1">
-                           <children>
-                              <HBox alignment="CENTER_LEFT" spacing="5.0">
-                                 <children>
-                                    <ImageView fitHeight="14.0" fitWidth="14.0" pickOnBounds="true" preserveRatio="true">
-                                       <image>
-                                          <Image url="@../images/activeDemographicDetails.png" />
-                                       </image>
-                                    </ImageView>
-                                    <Label styleClass="headerTexts" text="%demograhpicDetails" />
-                                 </children>
-                              </HBox>
-                              <HBox alignment="CENTER_LEFT" spacing="5.0" GridPane.columnIndex="1">
-                                 <children>
-                                    <ImageView fitHeight="14.0" fitWidth="14.0" pickOnBounds="true" preserveRatio="true">
-                                       <image>
-                                          <Image url="@../images/activeUplaodDocument.png" />
-                                       </image>
-                                    </ImageView>
-                                    <Label alignment="BOTTOM_CENTER" contentDisplay="TOP" styleClass="headerTexts" text="%uploadDocuments" />
-                                 </children>
-                              </HBox>
-                              <HBox alignment="CENTER_LEFT" spacing="5.0" GridPane.columnIndex="2">
-                                 <children>
-                                    <ImageView fitHeight="24.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
-                                       <image>
-                                          <Image url="@../images/activeBiometricDetail.png" />
-                                       </image>
-                                    </ImageView>
-                                    <Label contentDisplay="TOP" styleClass="trackerHighlighter" text="%biometricDetails" />
-                                 </children>
-                              </HBox>
-                              <HBox alignment="CENTER_LEFT" spacing="5.0" GridPane.columnIndex="3">
-                                 <children>
-                                    <ImageView fitHeight="24.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
-                                       <image>
-                                          <Image url="@../images/deactiveAuthentication.png" />
-                                       </image>
-                                    </ImageView>
-                                    <Label styleClass="headerTexts" text="%authentication" />
-                                 </children>
-                              </HBox>
-                           </children>
-                           <columnConstraints>
-                              <ColumnConstraints hgrow="SOMETIMES" percentWidth="25.0" />
-                              <ColumnConstraints hgrow="SOMETIMES" percentWidth="25.0" />
-                              <ColumnConstraints hgrow="SOMETIMES" percentWidth="25.0" />
-                              <ColumnConstraints hgrow="SOMETIMES" percentWidth="25.0" />
-                           </columnConstraints>
-                           <rowConstraints>
-                              <RowConstraints percentHeight="100.0" valignment="CENTER" vgrow="SOMETIMES" />
-                           </rowConstraints>
-                        </GridPane>
-                     </children>
                      <columnConstraints>
-                        <ColumnConstraints hgrow="SOMETIMES" percentWidth="20.0" />
-                        <ColumnConstraints hgrow="SOMETIMES" percentWidth="60.0" />
-                        <ColumnConstraints hgrow="SOMETIMES" percentWidth="20.0" />
+                        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" percentWidth="33.0" />
+                        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" percentWidth="34.0" />
+                        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" percentWidth="33.0" />
                      </columnConstraints>
                      <rowConstraints>
-                        <RowConstraints percentHeight="100.0" vgrow="SOMETIMES" />
+                        <RowConstraints percentHeight="100.0" valignment="CENTER" vgrow="ALWAYS" />
                      </rowConstraints>
                   </GridPane>
                </children>
@@ -572,7 +578,7 @@
                         </Button>
                      </children>
                   </GridPane>
-                  <GridPane fx:id="registrationFooter">
+                  <GridPane fx:id="registrationFooter" styleClass="registrationFooter">
                      <children>
                         <GridPane hgap="10.0" GridPane.columnIndex="1">
                            <children>

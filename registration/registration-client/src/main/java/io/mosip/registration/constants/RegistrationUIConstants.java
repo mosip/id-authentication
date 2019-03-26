@@ -105,6 +105,10 @@ public class RegistrationUIConstants {
 	public static final String AUTH_APPROVAL_SUCCESS_MSG = bundle.getString("AUTH_APPROVAL_SUCCESS_MSG");
 	public static final String AUTH_PENDING_ACTION_SUCCESS_MSG = bundle.getString("AUTH_PENDING_ACTION_SUCCESS_MSG");
 	public static final String AUTHENTICATION_ERROR_MSG = bundle.getString("AUTHENTICATION_ERROR_MSG");
+	public static final String APPROVED = bundle.getString("APPROVED");
+	public static final String REJECTED = bundle.getString("REJECTED");
+	public static final String PENDING = bundle.getString("PENDING");
+
 
 	// CAMERA
 	public static final String APPLICANT_IMAGE_ERROR = bundle.getString("APPLICANT_IMAGE_ERROR");

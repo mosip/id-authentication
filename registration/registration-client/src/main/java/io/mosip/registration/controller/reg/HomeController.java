@@ -3,6 +3,7 @@ package io.mosip.registration.controller.reg;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -42,8 +43,6 @@ public class HomeController extends BaseController implements Initializable {
 	private GridPane mainBox;
 	@FXML
 	public GridPane homeContent;
-	@FXML
-	public GridPane onboard;
 
 	/**
 	 * Building Home screen on Login success
@@ -61,23 +60,26 @@ public class HomeController extends BaseController implements Initializable {
 							.get(RegistrationConstants.ONBOARD_USER_UPDATE)) {
 				auditFactory.audit(AuditEvent.NAV_ON_BOARD_USER, Components.NAVIGATION, APPLICATION_NAME,
 						AuditReferenceIdTypes.APPLICATION_ID.getReferenceTypeId());
-
-				onboard.setVisible(true);
-				SessionContext.map().remove(RegistrationConstants.USER_ONBOARD_DATA);
-				SessionContext.map().remove(RegistrationConstants.OLD_BIOMETRIC_EXCEPTION);
-				SessionContext.map().remove(RegistrationConstants.NEW_BIOMETRIC_EXCEPTION);
+				try {
+					GridPane onboard = BaseController
+							.load(getClass().getResource(RegistrationConstants.USER_ONBOARD));
+					getScene(onboard);
+				} catch (IOException ioException) {
+					LOGGER.error("REGISTRATION - ONBOARD_USER - HOMECONTROLLER",
+							APPLICATION_NAME, APPLICATION_ID,
+							ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));
+				}
 			} else {
 				auditFactory.audit(AuditEvent.NAV_HOME, Components.NAVIGATION, SessionContext.userContext().getUserId(),
 						AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
 
 				if ((boolean) SessionContext.map()
 						.get(RegistrationConstants.ONBOARD_USER_UPDATE)) {
+					clearOnboardData();
 				}
 				homeContent.setVisible(true);
-			}
-			
-			getScene(mainBox);
-
+				getScene(mainBox);
+			}			
 		} catch (RuntimeException ioException) {
 
 			LOGGER.error(LoggerConstants.LOG_REG_HOME, APPLICATION_NAME, APPLICATION_ID,
