@@ -204,10 +204,10 @@ public enum PlatformErrorMessages {
 			"Attribute unAvailable in DemographicInfo Json for Master Data Validation"),
 
 	RPR_PVM_RESOURCE_NOT_FOUND(PlatformConstants.RPR_PACKET_VALIDATOR_MODULE + "004",
-			"Resource not found for the Attribute specified in Msster Data Validation"),
+			"Resource not found for the Attribute specified in Msster Data Validation for key"),
 
 	RPR_PVM_IDENTITY_INVALID(PlatformConstants.RPR_PACKET_VALIDATOR_MODULE + "005",
-			"Attribute Value Invalid in Master Data Validation"),
+			"Attribute Value Invalid in Master Data Validation for"),
 
 	RPR_PVM_API_RESOUCE_ACCESS_FAILED(PlatformConstants.RPR_PACKET_VALIDATOR_MODULE + "006",
 			"Not able to access the API resource"), RPR_PVM_BASE_UNCHECKED_EXCEPTION(

@@ -66,7 +66,7 @@ public class MasterDataValidation {
 
 	private static final String SECONDARY_LANGUAGE = "secondary.language";
 
-	private static final String ATTRIBUTES = "registration.processor.idjson.attributes";
+	private static final String ATTRIBUTES = "registration.processor.masterdata.validation.attributes";
 
 	/**
 	 * Instantiates a new master data validation.
@@ -136,16 +136,17 @@ public class MasterDataValidation {
 						isValid = false;
 						regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
 								LoggerFileConstant.REGISTRATIONID.toString(), "",
-								PlatformErrorMessages.RPR_PVM_IDENTITY_INVALID.getMessage());
+								PlatformErrorMessages.RPR_PVM_IDENTITY_INVALID.getMessage() + " " + key);
 						this.registrationStatusDto
-								.setStatusComment(StatusMessage.MASTERDATA_VALIDATION_FAILURE_INVALID_ATTRIBUTES + key);
+								.setStatusComment(StatusMessage.MASTERDATA_VALIDATION_FAILURE_INVALID_ATTRIBUTES + key
+										+ "and for values are" + engValue + " " + araValue);
 						break;
 					}
 				} else {
 					isValid = false;
 					regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
 							LoggerFileConstant.REGISTRATIONID.toString(), "",
-							PlatformErrorMessages.RPR_PVM_RESOURCE_NOT_FOUND.getMessage());
+							PlatformErrorMessages.RPR_PVM_RESOURCE_NOT_FOUND.getMessage() + " " + key);
 					this.registrationStatusDto
 							.setStatusComment(StatusMessage.MASTERDATA_VALIDATION_FAILED_RESOURCE_NOT_FOUND + key);
 					break;

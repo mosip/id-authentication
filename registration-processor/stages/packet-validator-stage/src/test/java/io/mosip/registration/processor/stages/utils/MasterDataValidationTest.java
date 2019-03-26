@@ -66,6 +66,12 @@ public class MasterDataValidationTest {
 
 	MasterDataValidation masterDataValidation;
 
+	private static final String PRIMARY_LANGUAGE = "primary.language";
+
+	private static final String SECONDARY_LANGUAGE = "secondary.language";
+
+	private static final String ATTRIBUTES = "registration.processor.masterdata.validation.attributes";
+
 	@Before
 	public void setUp() throws Exception {
 		InputStream inputStream = new FileInputStream("src/test/resources/ID.json");
@@ -83,10 +89,9 @@ public class MasterDataValidationTest {
 				.thenReturn(registrationProcessorIdentity);
 
 		when(env.getProperty(anyString())).thenReturn("gender");
-		when(env.getProperty("primary.language")).thenReturn("eng");
-		when(env.getProperty("secondary.language")).thenReturn("ara");
-		when(env.getProperty("registration.processor.idjson.attributes"))
-				.thenReturn("gender,region,province,city,postalcode");
+		when(env.getProperty(PRIMARY_LANGUAGE)).thenReturn("eng");
+		when(env.getProperty(SECONDARY_LANGUAGE)).thenReturn("ara");
+		when(env.getProperty(ATTRIBUTES)).thenReturn("gender,region,province,city,postalcode");
 		Mockito.when(registrationProcessorRestService.getApi(any(), any(), any(), any(), any()))
 				.thenReturn(statusResponseDto);
 		masterDataValidation = new MasterDataValidation(registrationStatusDto, env, registrationProcessorRestService,
@@ -105,9 +110,9 @@ public class MasterDataValidationTest {
 	public void testMasterDataValidationResouceFailure() throws Exception {
 
 		when(env.getProperty(anyString())).thenReturn(null);
-		when(env.getProperty("registration.processor.idjson.attributes")).thenReturn("gender");
-		when(env.getProperty("primary.language")).thenReturn("eng");
-		when(env.getProperty("secondary.language")).thenReturn("ara");
+		when(env.getProperty(ATTRIBUTES)).thenReturn("gender");
+		when(env.getProperty(PRIMARY_LANGUAGE)).thenReturn("eng");
+		when(env.getProperty(SECONDARY_LANGUAGE)).thenReturn("ara");
 		boolean isMasterDataValidated = masterDataValidation.validateMasterData(jsonString);
 		assertFalse("Test for resource not found", isMasterDataValidated);
 
@@ -124,7 +129,7 @@ public class MasterDataValidationTest {
 
 	@Test
 	public void testException() throws Exception {
-		when(env.getProperty("registration.processor.idjson.attributes")).thenReturn("gen");
+		when(env.getProperty("registration.processor.masterdata.validation.attributes")).thenReturn("gen");
 		boolean isMasterDataValidated = masterDataValidation.validateMasterData(jsonString);
 		assertFalse("Test for IOException", isMasterDataValidated);
 
@@ -147,7 +152,7 @@ public class MasterDataValidationTest {
 
 		statusResponseDto = new StatusResponseDto();
 		statusResponseDto.setStatus("invalid");
-		when(env.getProperty("registration.processor.idjson.attributes")).thenReturn("region,province,city,postalcode");
+		when(env.getProperty(ATTRIBUTES)).thenReturn("region,province,city,postalcode");
 		Mockito.when(registrationProcessorRestService.getApi(any(), any(), any(), any(), any()))
 				.thenReturn(statusResponseDto);
 
@@ -160,7 +165,7 @@ public class MasterDataValidationTest {
 
 		statusResponseDto = new StatusResponseDto();
 		statusResponseDto.setStatus("invalid");
-		when(env.getProperty("registration.processor.idjson.attributes")).thenReturn("province,city,postalcode");
+		when(env.getProperty(ATTRIBUTES)).thenReturn("province,city,postalcode");
 		Mockito.when(registrationProcessorRestService.getApi(any(), any(), any(), any(), any()))
 				.thenReturn(statusResponseDto);
 
@@ -172,7 +177,7 @@ public class MasterDataValidationTest {
 	public void testMasterDataValidationCityFailure() throws Exception {
 		statusResponseDto = new StatusResponseDto();
 		statusResponseDto.setStatus("invalid");
-		when(env.getProperty("registration.processor.idjson.attributes")).thenReturn("city,postalcode");
+		when(env.getProperty(ATTRIBUTES)).thenReturn("city,postalcode");
 		Mockito.when(registrationProcessorRestService.getApi(any(), any(), any(), any(), any()))
 				.thenReturn(statusResponseDto);
 
@@ -184,7 +189,7 @@ public class MasterDataValidationTest {
 	public void testMasterDataValidationPostalCodeFailure() throws Exception {
 		statusResponseDto = new StatusResponseDto();
 		statusResponseDto.setStatus("invalid");
-		when(env.getProperty("registration.processor.idjson.attributes")).thenReturn("postalCode");
+		when(env.getProperty(ATTRIBUTES)).thenReturn("postalCode");
 		Mockito.when(registrationProcessorRestService.getApi(any(), any(), any(), any(), any()))
 				.thenReturn(statusResponseDto);
 
@@ -195,8 +200,7 @@ public class MasterDataValidationTest {
 	@Test
 	public void testMasterDataValidationGenderApiException() throws Exception {
 
-		when(env.getProperty("registration.processor.idjson.attributes"))
-				.thenReturn("gender,region,province,city,postalcode");
+		when(env.getProperty(ATTRIBUTES)).thenReturn("gender,region,province,city,postalcode");
 		byte[] responseBody = "{\"timestamp\":1548931133376,\"status\":400,\"errors\":[{\"errorCode\":\"KER\",\"errorMessage\":\"Invalid \"}]}"
 				.getBytes();
 		ApisResourceAccessException apisResourceAccessException = Mockito.mock(ApisResourceAccessException.class);
@@ -213,7 +217,7 @@ public class MasterDataValidationTest {
 	@Test
 	public void testMasterDataValidationLocationApiException() throws Exception {
 
-		when(env.getProperty("registration.processor.idjson.attributes")).thenReturn("region,province,city,postalcode");
+		when(env.getProperty(ATTRIBUTES)).thenReturn("region,province,city,postalcode");
 		byte[] responseBody = "{\"timestamp\":1548931133376,\"status\":400,\"errors\":[{\"errorCode\":\"KER\",\"errorMessage\":\"Invalid \"}]}"
 				.getBytes();
 		ApisResourceAccessException apisResourceAccessException = Mockito.mock(ApisResourceAccessException.class);
