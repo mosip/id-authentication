@@ -60,6 +60,7 @@ public class Validations extends BaseController {
 	private List<String> applicationLanguageblackListedWords;
 	private List<String> localLanguageblackListedWords;
 	private List<String> noAlert;
+	private boolean isLostUIN = false;
 
 	public Validations() {
 		try {
@@ -125,6 +126,13 @@ public class Validations extends BaseController {
 			}
 		}
 		return isValid;
+	}
+	
+	/**
+	 * To mark as lost UIN for demographic fields validation
+	 */
+	protected void updateAsLostUIN(boolean isLostUIN) {
+		this.isLostUIN = isLostUIN;
 	}
 
 	/**
@@ -237,6 +245,10 @@ public class Validations extends BaseController {
 				isFixed = (String) validationMap.get(RegistrationConstants.IS_FIXED);
 			}
 
+			if(isLostUIN) {
+				isMandetory = "false";
+			} 
+			
 			boolean showAlert = (noAlert.contains(node.getId()) && id.contains(RegistrationConstants.ON_TYPE));
 			if (node.isDisabled())
 				return true;
@@ -310,6 +322,8 @@ public class Validations extends BaseController {
 			if (id.matches(RegistrationConstants.POR_DOCUMENTS) && !isChild)
 				return true;
 			if (node.isDisabled())
+				return true;
+			if(isLostUIN)
 				return true;
 			if (node.getValue() == null) {
 				generateAlert(parentPane, id,

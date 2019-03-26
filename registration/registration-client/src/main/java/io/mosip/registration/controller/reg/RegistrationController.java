@@ -123,6 +123,7 @@ public class RegistrationController extends BaseController {
 				RegistrationConstants.APPLICATION_ID, "Entering the LOGIN_CONTROLLER");
 		try {
 			if (getRegistrationDTOFromSession() == null) {
+				validation.updateAsLostUIN(false);
 				createRegistrationDTOObject(RegistrationConstants.PACKET_TYPE_NEW);
 			}
 
@@ -146,10 +147,15 @@ public class RegistrationController extends BaseController {
 	}
 
 	public void init(SelectionListDTO selectionListDTO) {
+		validation.updateAsLostUIN(false);
 		createRegistrationDTOObject(RegistrationConstants.PACKET_TYPE_UPDATE);
 		getRegistrationDTOFromSession().setSelectionListDTO(selectionListDTO);
 	}
 
+	protected void initializeLostUIN() {
+		validation.updateAsLostUIN(true);
+		createRegistrationDTOObject(RegistrationConstants.PACKET_TYPE_LOST);
+	}
 	/**
 	 * This method is to prepopulate all the values for edit operation
 	 */
