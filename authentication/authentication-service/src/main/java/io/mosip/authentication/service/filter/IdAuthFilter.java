@@ -9,9 +9,8 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
+import javax.crypto.SecretKey;
 import javax.servlet.http.HttpServletRequestWrapper;
-
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -34,6 +33,10 @@ import io.mosip.kernel.core.util.DateUtils;
  */
 @Component
 public class IdAuthFilter extends BaseAuthFilter {
+
+	private static final String REQUEST_HMAC = "requestHMAC";
+
+	private static final String SECRET_KEY = "secretKey";
 
 	private static final String MISP_PARTNER_MAPPING = "misp.partner.mapping.";
 
@@ -80,16 +83,22 @@ public class IdAuthFilter extends BaseAuthFilter {
 	protected Map<String, Object> decipherRequest(Map<String, Object> requestBody) throws IdAuthenticationAppException {
 		try {
 			requestBody.replace(REQUEST, decode((String) requestBody.get(REQUEST)));
+			requestBody.replace(REQUEST_HMAC, decode((String) requestBody.get(REQUEST_HMAC)));
 			if (null != requestBody.get(REQUEST)) {
-				Map<String, Object> request = keyManager.requestData(requestBody, mapper);
-				requestBody.replace(REQUEST, request);
-
-				validateRequestHMAC((String) requestBody.get("requestHMAC"), mapper.writeValueAsString(request));
+				Map<String, Object> request = keyManager.requestData(requestBody, mapper);	
+                if(null!=request.get(SECRET_KEY)) {
+                	SecretKey secretKey=(SecretKey)request.get(SECRET_KEY);
+                	byte[] reqHMAC=keyManager.symmetricDecrypt(secretKey,(byte[]) requestBody.get(REQUEST_HMAC));
+                	request.remove(SECRET_KEY);
+				  validateRequestHMAC(new String(reqHMAC), mapper.writeValueAsString(request));
+				  
+                }  
+                requestBody.replace(REQUEST, request);
 			}
 			return requestBody;
-		} catch (ClassCastException | JsonProcessingException e) {
+		} catch (ClassCastException | JsonProcessingException  e) {
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(),
-					IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorMessage());
+					IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorMessage(),e);
 		}
 	}
 
@@ -225,7 +234,6 @@ public class IdAuthFilter extends BaseAuthFilter {
 			String policyJson = getPolicy(policyId);
 			Policies policies = null;
 			policies = mapper.readValue(policyJson.getBytes("UTF-8"), Policies.class);
-			//Get kyc attributes
 			List<AuthPolicy> authPolicies = policies.getPolicies().getAuthPolicies();
 			List<KYCAttributes> allowedKycAttributes = policies.getPolicies().getAllowedKycAttributes();
 			List<String> allowedTypeList = allowedKycAttributes.stream().map(value -> value.getAttributeName())
