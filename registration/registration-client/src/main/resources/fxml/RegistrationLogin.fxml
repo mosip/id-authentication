@@ -40,6 +40,7 @@
                  <Label layoutX="57.0" layoutY="80.0" text="%withusername" />
       			 <TextField fx:id="userId" layoutX="57.0" layoutY="116.0" promptText="%username" styleClass="loginTextStyle" AnchorPane.leftAnchor="53.0" />
                   <Button layoutX="52.0" layoutY="171.0" mnemonicParsing="false" onAction="#validateUserId" styleClass="loginSubmitStyle" text="%submit" />
+                  <ProgressIndicator fx:id="progressIndicator" disable="true" layoutX="130.0" layoutY="50.0" progress="0.0" />
                </children>
             </AnchorPane>
             <AnchorPane fx:id="credentialsPane" layoutX="37.0" layoutY="188.0" styleClass="loginAnchorPaneExtendedStyle" visible="false">
