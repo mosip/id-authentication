@@ -1077,7 +1077,7 @@ public class LoginController extends BaseController implements Initializable {
 							return RegistrationConstants.FAILURE;
 						}
 
-						return "Completed";
+						return RegistrationConstants.SUCCESS;
 					}
 				};
 			}
