@@ -29,6 +29,7 @@
     	<module>message-sender-stage</module>
     	<module>printing-stage</module>
     	<module>registration-processor-connector-stage</module>
+    	<module>reprocessor-stage</module>
   </modules>
 
 </project>
