@@ -1,7 +1,6 @@
 package io.mosip.kernel.otpmanager.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -11,9 +10,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.kernel.core.otpmanager.spi.OtpGenerator;
+import io.mosip.kernel.otpmanager.dto.GenerationDTOValidationLevels;
 import io.mosip.kernel.otpmanager.dto.OtpGeneratorRequestDto;
 import io.mosip.kernel.otpmanager.dto.OtpGeneratorResponseDto;
-import io.mosip.kernel.otpmanager.dto.GenerationDTOValidationLevels;
 
 /**
  * This class provides controller methods for OTP generation.
@@ -23,7 +22,6 @@ import io.mosip.kernel.otpmanager.dto.GenerationDTOValidationLevels;
  * @since 1.0.0
  *
  */
-@RefreshScope
 @RestController
 @CrossOrigin
 public class OtpGeneratorController {
