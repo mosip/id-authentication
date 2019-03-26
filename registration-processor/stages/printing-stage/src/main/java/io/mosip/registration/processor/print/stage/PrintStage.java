@@ -239,6 +239,7 @@ public class PrintStage extends MosipVerticleAPIManager {
 			description = "Internal error occured while processing registration  id : " + regId;
 			object.setInternalError(Boolean.TRUE);
 		} finally {
+			consumerStage.process(object);
 			String eventId = "";
 			String eventName = "";
 			String eventType = "";
@@ -253,8 +254,6 @@ public class PrintStage extends MosipVerticleAPIManager {
 			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType, regId,
 					ApiName.AUDIT);
 		}
-
-		consumerStage.process(object);
 		return object;
 	}
 
