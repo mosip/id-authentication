@@ -6,6 +6,10 @@ metadata:
     kubernetes.io/ingress.class: nginx
     nginx.ingress.kubernetes.io/rewrite-target: /
     ingress.kubernetes.io/proxy-body-size: "50m"
+    ingress.kubernetes.io/proxy-connect-timeout: "3600"
+    ingress.kubernetes.io/proxy-read-timeout: "3600"
+    ingress.kubernetes.io/proxy-send-timeout: "3600"
+    ingress.kubernetes.io/send-timeout: "3600"
 spec:  
   rules:
   - http:
@@ -122,6 +126,10 @@ spec:
         backend:
           serviceName: registration-processor-connector-stage
           servicePort: 8091 
+      - path: /manual-verification
+        backend:
+          serviceName: registration-processor-manual-verification-stage
+          servicePort: 8084
       - path: /nginx
         backend:
           serviceName: sample-nginx
