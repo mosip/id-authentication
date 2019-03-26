@@ -282,4 +282,8 @@ public class RegistrationUIConstants {
 	public static final String TIMEOUT_TITLE = bundle.getString("TIMEOUT_TITLE");
 	public static final String TIMEOUT_HEADER = bundle.getString("TIMEOUT_HEADER");
 	public static final String TIMEOUT_CONTENT = bundle.getString("TIMEOUT_CONTENT");
+	
+	//Notification
+	public static final String EMAIL_ERROR_MSG = bundle.getString("EMAIL_ERROR_MSG");
+	public static final String SMS_ERROR_MSG = bundle.getString("SMS_ERROR_MSG");
 }

@@ -733,7 +733,7 @@ public class PacketHandlerController extends BaseController implements Initializ
 						if (!writeNotificationTemplate.toString().isEmpty()) {
 							notificationResponse = notificationService.sendEmail(writeNotificationTemplate.toString(),
 									email, regID);
-							notificationAlert(notificationResponse, "Email Notification");
+							notificationAlert(notificationResponse, RegistrationUIConstants.EMAIL_ERROR_MSG);
 						}
 					}
 					if (mobile != null && (notificationServiceName.toUpperCase())
@@ -742,7 +742,7 @@ public class PacketHandlerController extends BaseController implements Initializ
 						if (!writeNotificationTemplate.toString().isEmpty()) {
 							notificationResponse = notificationService.sendSMS(writeNotificationTemplate.toString(),
 									mobile, regID);
-							notificationAlert(notificationResponse, "SMS Notification");
+							notificationAlert(notificationResponse, RegistrationUIConstants.SMS_ERROR_MSG);
 						}
 					}
 				}
@@ -753,11 +753,11 @@ public class PacketHandlerController extends BaseController implements Initializ
 		}
 	}
 
-	private void notificationAlert(ResponseDTO notificationResponse, String notificationType) {
+	private void notificationAlert(ResponseDTO notificationResponse,String alertMsg) {
 
 		Optional.ofNullable(notificationResponse).map(ResponseDTO::getErrorResponseDTOs)
 				.flatMap(list -> list.stream().findFirst()).map(ErrorResponseDTO::getMessage)
-				.ifPresent(message -> generateAlertLanguageSpecific(notificationType, message));
+				.ifPresent(message -> generateAlert("ERROR", alertMsg));
 
 	}
 }

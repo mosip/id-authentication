@@ -41,7 +41,6 @@
           <RowConstraints percentHeight="100.0" valignment="CENTER" vgrow="ALWAYS" />
         </rowConstraints>
          <children>
-            <Line endY="16.0" stroke="WHITE" GridPane.columnIndex="1" />
             <GridPane styleClass="registrationOfficerIdPane" GridPane.columnIndex="4">
               <columnConstraints>
                 <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" percentWidth="100.0" />
@@ -129,6 +128,17 @@
                         </ImageView>
                      </graphic>
                   </Label>
+               </children>
+            </GridPane>
+            <GridPane fx:id="hederSeparator" GridPane.columnIndex="1">
+              <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" percentWidth="100.0" />
+              </columnConstraints>
+              <rowConstraints>
+                <RowConstraints percentHeight="100.0" vgrow="SOMETIMES" />
+              </rowConstraints>
+               <children>
+                  <Line endY="${hederSeparator.height/2.5}" styleClass="splitLineSeparator" stroke="WHITE" GridPane.halignment="CENTER" />
                </children>
             </GridPane>
          </children>

@@ -160,7 +160,7 @@ public class GlobalParamServiceImpl extends BaseService implements GlobalParamSe
 				}
 
 				/* Save all Global Params */
-				globalParamDAO.saveAll(globalParamList);
+				//globalParamDAO.saveAll(globalParamList);
 				if (isToBeRestarted) {
 					Map<String, Object> attributes = new HashMap<>();
 					attributes.put("Restart", RegistrationConstants.ENABLE);

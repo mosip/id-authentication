@@ -185,7 +185,7 @@
                                         <RowConstraints percentHeight="100.0" vgrow="SOMETIMES" />
                                       </rowConstraints>
                                        <children>
-                                          <Line startX="${spliterLine.width-5}" styleClass="slitLine" />
+                                          <Line startX="${spliterLine.width-5}" styleClass="splitLineSeparator" />
                                        </children>
                                     </GridPane>
                                  </children>

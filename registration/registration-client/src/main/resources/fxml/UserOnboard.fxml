@@ -8,7 +8,7 @@
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 
-<GridPane fx:id="onboardUser" styleClass="onboardUserParenrPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.reg.UserOnboardController">
+<GridPane fx:id="onboardUser" styleClass="onboardUserParentPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.reg.UserOnboardController">
   <columnConstraints>
     <ColumnConstraints hgrow="ALWAYS" percentWidth="100.0" />
   </columnConstraints>

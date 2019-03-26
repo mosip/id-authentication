@@ -449,7 +449,7 @@
                   <Insets right="40.0" />
                </GridPane.margin>
             </GridPane>
-            <Label text="© 2019, Powered by MOSIP" GridPane.columnIndex="2" GridPane.rowIndex="1">
+            <Label styleClass="powerdBy" text="© 2019, Powered by MOSIP" GridPane.columnIndex="2" GridPane.rowIndex="1">
                <GridPane.margin>
                   <Insets bottom="10.0" />
                </GridPane.margin></Label>
@@ -470,7 +470,7 @@
                       <RowConstraints percentHeight="100.0" valignment="CENTER" vgrow="ALWAYS" />
                     </rowConstraints>
                      <children>
-                        <Line startY="${splitroot.height}" styleClass="slitLine" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
+                        <Line startY="${splitroot.height}" styleClass="splitLineSeparator" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
                      </children>
                   </GridPane>
                </children>
