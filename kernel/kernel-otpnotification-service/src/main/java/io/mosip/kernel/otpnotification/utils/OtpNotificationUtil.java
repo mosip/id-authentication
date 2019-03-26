@@ -87,6 +87,7 @@ public class OtpNotificationUtil {
 	 * 
 	 * @param otp      the otp generated.
 	 * @param template the template provided.
+	 * @param notificationType notification type
 	 * @return the merged template.
 	 */
 	public String templateMerger(String otp, String template, String notificationType) {

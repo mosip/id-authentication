@@ -27,15 +27,12 @@ import io.mosip.kernel.auth.entities.AuthNResponse;
 import io.mosip.kernel.auth.entities.AuthNResponseDto;
 import io.mosip.kernel.auth.entities.AuthToken;
 import io.mosip.kernel.auth.entities.ClientSecretDto;
-import io.mosip.kernel.auth.entities.LoginUser;
 import io.mosip.kernel.auth.entities.LoginUserDTO;
 import io.mosip.kernel.auth.entities.MosipUserDto;
 import io.mosip.kernel.auth.entities.MosipUserDtoToken;
 import io.mosip.kernel.auth.entities.MosipUserListDto;
 import io.mosip.kernel.auth.entities.RolesListDto;
-import io.mosip.kernel.auth.entities.UserOtp;
 import io.mosip.kernel.auth.entities.UserOtpDto;
-import io.mosip.kernel.auth.entities.otp.OtpUser;
 import io.mosip.kernel.auth.entities.otp.OtpUserDto;
 import io.mosip.kernel.auth.exception.AuthManagerException;
 import io.mosip.kernel.auth.service.AuthService;
@@ -80,9 +77,14 @@ public class AuthController {
 	/**
 	 * API to authenticate using userName and password
 	 * 
-	 * request is of type {@link LoginUser}
+	 * @param request
+	 *            request of LoginUserDTO
+	 * @param res
+	 *            HttpServletResponse
 	 * 
 	 * @return ResponseEntity Cookie value with Auth token
+	 * @throws Exception
+	 *             exception
 	 */
 
 	@PostMapping(value = "/authenticate/useridPwd")
@@ -118,9 +120,12 @@ public class AuthController {
 	/**
 	 * API to send OTP
 	 * 
-	 * otpUser is of type {@link OtpUser}
+	 * @param otpUserDto
+	 *            otpUserDto is of type otpUserDto
 	 * 
 	 * @return ResponseEntity with OTP Sent message
+	 * @throws Exception
+	 *             exception
 	 */
 
 	@PostMapping(value = "/authenticate/sendotp")
@@ -138,9 +143,13 @@ public class AuthController {
 	/**
 	 * API to validate OTP with user Id
 	 * 
-	 * userOtp is of type {@link UserOtp}
-	 * 
+	 * @param userOtpDto
+	 *            userOtpDto is of type userOtpDto
+	 * @param res
+	 *            HttpServletResponse
 	 * @return ResponseEntity with Cookie value with Auth token
+	 * @throws Exception
+	 *             exception
 	 */
 
 	@PostMapping(value = "/authenticate/useridOTP")
@@ -148,22 +157,20 @@ public class AuthController {
 			throws Exception {
 		AuthNResponse authNResponse = null;
 		AuthNResponseDto authResponseDto = authService.authenticateUserWithOtp(userOtpDto.getRequest());
-		if (authResponseDto != null && authResponseDto.getToken()!=null) {
+		if (authResponseDto != null && authResponseDto.getToken() != null) {
 			Cookie cookie = createCookie(authResponseDto.getToken(), mosipEnvironment.getTokenExpiry());
 			authNResponse = new AuthNResponse();
 			res.addCookie(cookie);
 			authNResponse.setMessage(authResponseDto.getMessage());
 			AuthToken token = getAuthToken(authResponseDto);
-			if(token!=null && token.getUserId()!=null)
-			{
-			customTokenServices.StoreToken(token);
+			if (token != null && token.getUserId() != null) {
+				customTokenServices.StoreToken(token);
 			}
-			
-		}
-		else
-		{
+
+		} else {
 			authNResponse = new AuthNResponse();
-			authNResponse.setMessage(authResponseDto.getMessage()!=null?authResponseDto.getMessage():"Otp validation failed");
+			authNResponse.setMessage(
+					authResponseDto.getMessage() != null ? authResponseDto.getMessage() : "Otp validation failed");
 		}
 		return new ResponseEntity<>(authNResponse, HttpStatus.OK);
 	}
@@ -171,14 +178,18 @@ public class AuthController {
 	/**
 	 * API to authenticate using clientId and secretKey
 	 * 
-	 * clientSecretDto is of type {@link ClientSecretDto}
-	 * 
+	 * @param clientSecretDto
+	 *            clientSecretDto is of type ClientSecretDto
+	 * @param res
+	 *            HttpServletResponse
 	 * @return ResponseEntity with Cookie value with Auth token
+	 * @throws Exception
+	 *             exception
 	 */
 
 	@PostMapping(value = "/authenticate/clientidsecretkey")
-	public ResponseEntity<AuthNResponse> clientIdSecretKey(@RequestBody ClientSecretDto clientSecretDto, HttpServletResponse res)
-			throws Exception {
+	public ResponseEntity<AuthNResponse> clientIdSecretKey(@RequestBody ClientSecretDto clientSecretDto,
+			HttpServletResponse res) throws Exception {
 		AuthNResponse authNResponse = null;
 		AuthNResponseDto authResponseDto = authService.authenticateWithSecretKey(clientSecretDto.getRequest());
 		if (authResponseDto != null) {
@@ -199,8 +210,16 @@ public class AuthController {
 	/**
 	 * API to validate token
 	 * 
-	 * 
+	 * @param request
+	 *            HttpServletRequest
+	 * @param res
+	 *            HttpServletResponse
 	 * @return ResponseEntity with MosipUserDto
+	 * 
+	 * @throws AuthManagerException
+	 *             authManagerException
+	 * @throws Exception
+	 *             Exception
 	 */
 
 	@PostMapping(value = "/authorize/validateToken")
@@ -233,8 +252,14 @@ public class AuthController {
 	/**
 	 * API to retry token when auth token expires
 	 * 
+	 * @param request
+	 *            HttpServletRequest
+	 * @param res
+	 *            HttpServletResponse
 	 * 
 	 * @return ResponseEntity with MosipUserDto
+	 * @throws Exception
+	 *             exception
 	 */
 
 	@PostMapping(value = "/authorize/refreshToken")
@@ -256,8 +281,13 @@ public class AuthController {
 	/**
 	 * API to invalidate token when both refresh and auth token expires
 	 * 
-	 * 
+	 * @param request
+	 *            HttpServletRequest
+	 * @param res
+	 *            HttpServletResponse
 	 * @return ResponseEntity with MosipUserDto
+	 * @throws Exception
+	 *             exception
 	 */
 
 	@PostMapping(value = "/authorize/invalidateToken")
@@ -274,6 +304,14 @@ public class AuthController {
 		return new ResponseEntity<>(authNResponse, HttpStatus.OK);
 	}
 
+	/**
+	 * 
+	 * @param appId
+	 *            app id
+	 * @return list of rolelist dto
+	 * @throws Exception
+	 *             exception
+	 */
 	@GetMapping(value = "/roles/{appid}")
 	public ResponseEntity<RolesListDto> getAllRoles(@PathVariable("appid") String appId) throws Exception {
 		HttpHeaders responseHeaders = new HttpHeaders();
@@ -281,11 +319,21 @@ public class AuthController {
 		return new ResponseEntity<>(rolesListDto, responseHeaders, HttpStatus.OK);
 	}
 
+	/**
+	 * 
+	 * @param userDetails
+	 *            user details
+	 * @param appId
+	 *            app id
+	 * @return MosipUserListDto
+	 * @throws Exception
+	 *             exception
+	 */
 	@PostMapping(value = "/userdetails/{appid}")
 	public ResponseEntity<MosipUserListDto> getListOfUsersDetails(@RequestBody List<String> userDetails,
 			@PathVariable("appid") String appId) throws Exception {
 		HttpHeaders responseHeaders = new HttpHeaders();
-		MosipUserListDto mosipUsers = authService.getListOfUsersDetails(userDetails,appId);
+		MosipUserListDto mosipUsers = authService.getListOfUsersDetails(userDetails, appId);
 		return new ResponseEntity<>(mosipUsers, responseHeaders, HttpStatus.OK);
 	}
 

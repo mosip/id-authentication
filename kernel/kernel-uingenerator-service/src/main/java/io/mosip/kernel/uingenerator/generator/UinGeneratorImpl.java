@@ -40,7 +40,8 @@ public class UinGeneratorImpl implements UinGenerator<Set<UinEntity>> {
 	/**
 	 * The logger instance
 	 */
-	//private static final Logger LOGGER = LoggerFactory.getLogger(UinGeneratorImpl.class);
+	// private static final Logger LOGGER =
+	// LoggerFactory.getLogger(UinGeneratorImpl.class);
 
 	/**
 	 * Field for number of uins to generate
@@ -64,8 +65,7 @@ public class UinGeneratorImpl implements UinGenerator<Set<UinEntity>> {
 	 *            The number of uins to generate
 	 * @param uinLength
 	 *            The length of the uin
-	 * @param uinDefaultStatus
-	 *            The Default value of the uin
+	 * 
 	 */
 	public UinGeneratorImpl(@Value("${mosip.kernel.uin.uins-to-generate}") long uinsCount,
 			@Value("${mosip.kernel.uin.length}") int uinLength) {
