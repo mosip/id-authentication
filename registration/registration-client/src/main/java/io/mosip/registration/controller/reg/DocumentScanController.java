@@ -286,7 +286,8 @@ public class DocumentScanController extends BaseController {
 				comboBox.getStyleClass().add("documentCombobox");
 				StringConverter<T> uiRenderForComboBox = FXUtils.getInstance().getStringConverterForComboBox();
 				comboBox.setConverter((StringConverter<DocumentCategoryDto>) uiRenderForComboBox);
-				comboBox.setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
+				if(applicationContext.isPrimaryLanguageRightToLeft())
+					comboBox.setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
 
 				/*
 				 * adding all the dynamically created combo boxes in a map inorder to show it in

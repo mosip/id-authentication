@@ -1,9 +1,12 @@
 package io.mosip.registration.context;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
+
+import org.assertj.core.util.Arrays;
 
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
@@ -26,6 +29,18 @@ public class ApplicationContext {
 	private ResourceBundle applicationLanguagevalidationBundle;
 	private String localLanguage;
 	private String applicationLanguge;
+	private boolean primaryLanguageRightToLeft;
+	private boolean secondaryLanguageRightToLeft;
+	
+
+	public boolean isPrimaryLanguageRightToLeft() {
+		return primaryLanguageRightToLeft;
+	}
+
+	public boolean isSecondaryLanguageRightToLeft() {
+		return secondaryLanguageRightToLeft;
+	}
+
 	private AuthTokenDTO authTokenDTO;
 
 	private ApplicationContext() {
@@ -43,6 +58,14 @@ public class ApplicationContext {
 		try {
 			applicationLanguge = (String) applicationMap.get(RegistrationConstants.PRIMARY_LANGUAGE);
 			localLanguage = (String) applicationMap.get(RegistrationConstants.SECONDARY_LANGUAGE);
+			String rightToLeft  = (String) applicationContext.getApplicationMap().get("mosip.right_to_left_orientation");
+			if(rightToLeft.contains(applicationLanguge)) {
+				primaryLanguageRightToLeft=true;
+			}
+			if(rightToLeft.contains(localLanguage)) {
+				secondaryLanguageRightToLeft=true;
+			}
+
 		} catch (RuntimeException exception) {
 			LOGGER.error("Application Context", RegistrationConstants.APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, exception.getMessage());
@@ -122,6 +145,10 @@ public class ApplicationContext {
 
 	public static ResourceBundle applicationMessagesBundle() {
 		return applicationContext.getApplicationMessagesBundle();
+	}
+	
+	public static ResourceBundle localMessagesBundle() {
+		return applicationContext.getLocalMessagesBundle();
 	}
 
 	public static void loadResources() {

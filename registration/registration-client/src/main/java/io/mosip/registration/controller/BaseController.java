@@ -261,9 +261,6 @@ public class BaseController extends BaseService{
 		if(id.contains("ontype")) {
 			id=id.replaceAll("_ontype", "");
 		}
-		if(id.equals("mobileNo")) {
-			System.out.println("Hello");
-		}	
 		if (RegistrationConstants.DISABLE.equalsIgnoreCase(isConsolidated)) {
 			Label label = ((Label) (parentPane
 					.lookup(RegistrationConstants.HASH + id + RegistrationConstants.MESSAGE)));
