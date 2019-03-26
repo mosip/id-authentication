@@ -143,7 +143,7 @@ public class RegistrationUIConstants {
 	public static final String PREVIEW_DOC= bundle.getString("PREVIEW_DOC");
 	public static final String RID_INVALID= bundle.getString("RID_INVALID");
 	public static final String UIN_INVALID= bundle.getString("UIN_INVALID");
-
+	public static final String IS_BLOCKED_WORD= bundle.getString("IS_BLOCKED_WORD");
 
 
 	// OPT TO REGISTER
