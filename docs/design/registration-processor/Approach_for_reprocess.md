@@ -77,7 +77,8 @@ The key solution considerations are -
 +	Create a Vertx state: Reprocess Stage
 +	Use Vertx Chime scheduler to execute job at specific time interval. Time interval value can be fetched from configuration server using key: registration.processor.reprocess.schedule.trigger.time 
 +	Once scheduler triggered, add logic in the job to fetch records from registration table. 
-		- Recoards with status: SUCCESS, PROCESSED
+
+		-  Recoards with status: SUCCESS, REPROCESS
 		- Recoards having reprocess_count less than the value configured in configuration server using key: registration.processor.reprocess.attempt.count. 
 		-  Recoards having last update time "upd_dtimes" less than current time minus time configured in configuration server using key : "registration.processor.reprocess.elapse.time"
 		- Filter data by number of records using value configured in configuration server using key: registration.processor.reprocess.fetchsize 
