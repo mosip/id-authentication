@@ -341,21 +341,13 @@ public class BiometricExceptionController extends BaseController implements Init
 			exceptionDTOCreation();
 			if (getRegistrationDTOFromSession().getSelectionListDTO() != null) {
 
-				List<BiometricExceptionDTO> biometricExceptionDTOs = ((RegistrationDTO) SessionContext.map()
-						.get(RegistrationConstants.REGISTRATION_DATA)).getBiometricDTO().getApplicantBiometricDTO()
-								.getBiometricExceptionDTO();
+				SessionContext.map().put("biometricException", false);
 
-				long fingerPrintCount = biometricExceptionDTOs.stream()
-						.filter(bio -> bio.getBiometricType().equals("fingerprint")).count();
-
-				if (getRegistrationDTOFromSession().getSelectionListDTO().isBiometricFingerprint()
-						|| fingerPrintCount > 0) {
-
-					SessionContext.map().put("biometricException", false);
+				if (RegistrationConstants.ENABLE.equalsIgnoreCase(
+						String.valueOf(ApplicationContext.map().get(RegistrationConstants.FINGERPRINT_DISABLE_FLAG)))) {
 					SessionContext.map().put("fingerPrintCapture", true);
-				} else {
-
-					SessionContext.map().put("biometricException", false);
+				} else if(RegistrationConstants.ENABLE.equalsIgnoreCase(
+						String.valueOf(ApplicationContext.map().get(RegistrationConstants.IRIS_DISABLE_FLAG)))){
 					SessionContext.map().put("irisCapture", true);
 				}
 				registrationController.showUINUpdateCurrentPage();

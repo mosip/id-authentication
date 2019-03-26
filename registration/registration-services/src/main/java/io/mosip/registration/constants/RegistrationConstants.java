@@ -221,9 +221,7 @@ public class RegistrationConstants {
 	public static final String UIN_UPDATE_GENDER = "gender";
 	public static final String UIN_UPDATE_PARENT_DETAILS = "parentOrGuardianDetails";
 	public static final String UIN_UPDATE_CNIE_NUMBER = "cnieNumber";
-	public static final String UIN_UPDATE_BIO_EXCEPTION = "biometricException";
-	public static final String UIN_UPDATE_BIO_FP = "biometricFingerprint";
-	public static final String UIN_UPDATE_BIO_IRIS = "biometricIris";
+	public static final String UIN_UPDATE_BIOMETRICS = "biometrics";
 
 	// onBoard User
 	public static final String ONBOARD_BIOMETRICS = "Biometrics - ";

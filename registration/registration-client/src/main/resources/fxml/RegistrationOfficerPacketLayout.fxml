@@ -72,7 +72,7 @@
                         <Insets left="30.0" />
                      </GridPane.margin>
                   </GridPane>
-                  <GridPane onMouseClicked="#updateUIN" styleClass="uinUpdateStyle" GridPane.rowIndex="4">
+                  <GridPane fx:id="uinUpdateGridPane" onMouseClicked="#updateUIN" styleClass="uinUpdateStyle" GridPane.rowIndex="4">
                      <children>
                         <ImageView fx:id="uinUpdateImage" fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                            <image>
@@ -132,7 +132,7 @@
                      </GridPane.margin></Label>
                   <GridPane GridPane.rowIndex="4">
                      <children>
-                        <GridPane onMouseClicked="#approvePacket" styleClass="operationalPaneDetailsSync">
+                        <GridPane fx:id="eodProcessGridPane" onMouseClicked="#approvePacket" styleClass="operationalPaneDetailsSync">
                            <children>
                               <GridPane GridPane.columnIndex="1">
                                  <children>

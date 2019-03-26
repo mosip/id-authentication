@@ -161,13 +161,13 @@ public class DemographicDetailController extends BaseController {
 
 	@FXML
 	private TextField ageFieldLocalLanguage;
-	
+
 	@FXML
 	private Label dobMessage;
 
 	@FXML
 	private Label toggleLabel1;
-	
+
 	@FXML
 	private Label mmLabel;
 	@FXML
@@ -349,13 +349,13 @@ public class DemographicDetailController extends BaseController {
 
 	@FXML
 	private TextField parentName;
-	
+
 	@FXML
 	private Label ageFieldMessage;
-	
+
 	@FXML
 	private Label ageFieldLabel;
-	
+
 	@FXML
 	private Label ageFieldLocalLanguageMessage;
 
@@ -652,10 +652,7 @@ public class DemographicDetailController extends BaseController {
 						toggleLabel1LocalLanguage.setLayoutX(0);
 						ageField.clear();
 						ageFieldLocalLanguage.clear();
-						if (!(getRegistrationDTOFromSession().getSelectionListDTO() != null
-								&& getRegistrationDTOFromSession().getSelectionListDTO().isChild())) {
-							parentDetailPane.setVisible(false);
-						}
+						parentDetailPane.setVisible(false);
 						ageField.setDisable(true);
 						dob.setDisable(false);
 						dobLocallanguage.setDisable(false);
@@ -663,10 +660,7 @@ public class DemographicDetailController extends BaseController {
 						toggleLabel1.setLayoutX(30);
 						toggleLabel1LocalLanguage.setLayoutX(30);
 						ageField.clear();
-						if (!(getRegistrationDTOFromSession().getSelectionListDTO() != null
-								&& getRegistrationDTOFromSession().getSelectionListDTO().isChild())) {
-							parentDetailPane.setVisible(false);
-						}
+						parentDetailPane.setVisible(false);
 						ageField.setDisable(false);
 						ageFieldLocalLanguage.clear();
 						dob.setDisable(true);
@@ -679,7 +673,7 @@ public class DemographicDetailController extends BaseController {
 					ddLocalLanguage.clear();
 					mmLocalLanguage.clear();
 					yyyyLocalLanguage.clear();
-					
+
 					ageFieldMessage.setVisible(false);
 					ageFieldLabel.setVisible(false);
 					ageFieldLocalLanguageLabel.setVisible(false);
@@ -693,7 +687,6 @@ public class DemographicDetailController extends BaseController {
 					mmLocalLanguageLabel.setVisible(false);
 					yyyyLocalLanguageLabel.setVisible(false);
 
-					
 				}
 			});
 
@@ -777,9 +770,6 @@ public class DemographicDetailController extends BaseController {
 				}
 				int age = 0;
 				if (newValue.matches("\\d{1,3}")) {
-					if (getRegistrationDTOFromSession().getSelectionListDTO() != null
-							&& getRegistrationDTOFromSession().getSelectionListDTO().isChild())
-						maxAge = minAge;
 					if (Integer.parseInt(ageField.getText()) >= maxAge) {
 						ageField.setText(oldValue);
 						generateAlert(RegistrationConstants.ERROR,
@@ -789,8 +779,7 @@ public class DemographicDetailController extends BaseController {
 						LocalDate currentYear = LocalDate.of(LocalDate.now().getYear(), 1, 1);
 						dateOfBirth = Date
 								.from(currentYear.minusYears(age).atStartOfDay(ZoneId.systemDefault()).toInstant());
-						if (age <= minAge && !(getRegistrationDTOFromSession().getSelectionListDTO() != null
-								&& !getRegistrationDTOFromSession().getSelectionListDTO().isChild())) {
+						if (age <= minAge) {
 							parentDetailPane.setVisible(true);
 							parentDetailPane.setDisable(false);
 							parentName.clear();
@@ -1010,8 +999,7 @@ public class DemographicDetailController extends BaseController {
 	}
 
 	/**
-	 * To load the localAdminAuthorities selection list based on the language
-	 * code
+	 * To load the localAdminAuthorities selection list based on the language code
 	 */
 	@FXML
 	private void addlocalAdminAuthority() {
@@ -1306,9 +1294,6 @@ public class DemographicDetailController extends BaseController {
 					.setDisable(!getRegistrationDTOFromSession().getSelectionListDTO().isCnieNumber());
 
 			switchedOn.set(true);
-			if (!isChild)
-				isChild = getRegistrationDTOFromSession().getSelectionListDTO().isChild()
-						|| getRegistrationDTOFromSession().getSelectionListDTO().isParentOrGuardianDetails();
 
 			parentDetailPane.setDisable(!isChild);
 			parentDetailPane.setVisible(isChild);
@@ -1580,6 +1565,7 @@ public class DemographicDetailController extends BaseController {
 	private void back() {
 		try {
 			if (getRegistrationDTOFromSession().getSelectionListDTO() != null) {
+				clearRegistrationData();
 				Parent root = BaseController.load(getClass().getResource(RegistrationConstants.HOME_PAGE));
 				Parent uinUpdate = BaseController.load(getClass().getResource(RegistrationConstants.UIN_UPDATE));
 				homeController.getMainBox().getChildren().remove(homeController.getMainBox().getChildren().size() - 1);
@@ -1638,14 +1624,11 @@ public class DemographicDetailController extends BaseController {
 		boolean isValid = true;
 		isValid = registrationController.validateDemographicPane(parentFlowPane);
 		if (isValid)
-			if (getRegistrationDTOFromSession().getSelectionListDTO() != null
-					&& !getRegistrationDTOFromSession().getSelectionListDTO().isChild()) {
-				if (ageField.getText().matches("\\d+")) {
-					int age = Integer.parseInt(ageField.getText());
-					if (age < minAge) {
-						ageField.setText("");
-						isValid = false;
-					}
+			if (ageField.getText().matches("\\d+")) {
+				int age = Integer.parseInt(ageField.getText());
+				if (age < minAge) {
+					ageField.setText("");
+					isValid = false;
 				}
 			}
 		if (isValid)

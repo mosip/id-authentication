@@ -85,9 +85,6 @@ public class PacketHandlerController extends BaseController implements Initializ
 	private static final Logger LOGGER = AppConfig.getLogger(PacketHandlerController.class);
 
 	@FXML
-	private AnchorPane acknowRoot;
-
-	@FXML
 	private Button uinUpdateBtn;
 
 	@FXML
@@ -100,22 +97,22 @@ public class PacketHandlerController extends BaseController implements Initializ
 	private GridPane uploadRoot;
 
 	@FXML
-	private AnchorPane optionRoot;
-
-	@FXML
 	private Label pendingApprovalCountLbl;
 
 	@FXML
 	private Label reRegistrationCountLbl;
 
 	@FXML
-	private AnchorPane eodProcessAnchorPane;
-	
+	private GridPane eodProcessGridPane;
+
 	@FXML
 	private GridPane lostUINPane;
 
 	@FXML
 	public ProgressIndicator reMapProgressIndicator;
+
+	@FXML
+	public GridPane uinUpdateGridPane;
 
 	@Autowired
 	private AckReceiptController ackReceiptController;
@@ -158,7 +155,6 @@ public class PacketHandlerController extends BaseController implements Initializ
 
 	@Autowired
 	private PacketUploadService packetUploadService;
-	
 	@Autowired
 	private PolicySyncService policySyncService;
 	
@@ -170,7 +166,7 @@ public class PacketHandlerController extends BaseController implements Initializ
 
 		if (!SessionContext.userContext().getRoles().contains(RegistrationConstants.SUPERVISOR)
 				&& !SessionContext.userContext().getRoles().contains(RegistrationConstants.ADMIN_ROLE)) {
-			eodProcessAnchorPane.setVisible(false);
+			eodProcessGridPane.setVisible(false);
 		}
 		pendingApprovalCountLbl.setText(RegistrationUIConstants.NO_PENDING_APPLICATIONS);
 		reRegistrationCountLbl.setText(RegistrationUIConstants.NO_RE_REGISTER_APPLICATIONS);
@@ -191,66 +187,14 @@ public class PacketHandlerController extends BaseController implements Initializ
 		}
 		if (!(String.valueOf(ApplicationContext.map().get(RegistrationConstants.UIN_UPDATE_CONFIG_FLAG)))
 				.equalsIgnoreCase(RegistrationConstants.ENABLE)
-				|| configuredFieldsfromDB.get(RegistrationConstants.PARAM_ZERO).isEmpty()
-				|| globalCheckForBiometrics(configuredFieldsfromDB,
-						String.valueOf(ApplicationContext.map().get(RegistrationConstants.FINGERPRINT_DISABLE_FLAG)),
-						RegistrationConstants.UIN_UPDATE_BIO_FP)
-				|| globalCheckForBiometrics(configuredFieldsfromDB,
-						String.valueOf(ApplicationContext.map().get(RegistrationConstants.IRIS_DISABLE_FLAG)),
-						RegistrationConstants.UIN_UPDATE_BIO_IRIS)
-				|| globalCheckForExceptionBiometrics(configuredFieldsfromDB,
-						String.valueOf(ApplicationContext.map().get(RegistrationConstants.FINGERPRINT_DISABLE_FLAG)),
-						String.valueOf(ApplicationContext.map().get(RegistrationConstants.IRIS_DISABLE_FLAG)))) {
+				|| configuredFieldsfromDB.get(RegistrationConstants.PARAM_ZERO).isEmpty()) {
 			uinUpdateBtn.setVisible(false);
 			uinUpdateImage.setVisible(false);
+			uinUpdateGridPane.setVisible(false);
 		}
 
-		lostUINPane.setVisible(false);
-		// if
-		// (!(String.valueOf(ApplicationContext.map().get(RegistrationConstants.LOST_UIN_CONFIG_FLAG)))
-		// .equalsIgnoreCase(RegistrationConstants.ENABLE)) {
-		// lostUINPane.setVisible(false);
-		// }
 	}
 
-	/**
-	 * Global check for biometrics.
-	 *
-	 * @param configuredFieldsfromDB
-	 *            the configured fieldsfrom DB
-	 * @param bioFlag
-	 *            the biometric flag
-	 * @param bioName
-	 *            the biometric name
-	 * @return true, if successful
-	 */
-	private boolean globalCheckForBiometrics(List<String> configuredFieldsfromDB, String bioFlag, String bioName) {
-		return configuredFieldsfromDB.size() == 1 && RegistrationConstants.DISABLE.equalsIgnoreCase(bioFlag)
-				&& configuredFieldsfromDB.get(RegistrationConstants.PARAM_ZERO).equalsIgnoreCase(bioName);
-	}
-
-	/**
-	 * Global check for exception biometrics.
-	 *
-	 * @param configuredFieldsfromDB
-	 *            the configured fieldsfrom DB
-	 * @param biofpFlag
-	 *            the biometric fingerprint flag
-	 * @param bioirisFlag
-	 *            the biometric iris flag
-	 * @return true, if successful
-	 */
-	private boolean globalCheckForExceptionBiometrics(List<String> configuredFieldsfromDB, String biofpFlag,
-			String bioirisFlag) {
-		return RegistrationConstants.DISABLE.equalsIgnoreCase(biofpFlag)
-				&& RegistrationConstants.DISABLE.equalsIgnoreCase(bioirisFlag)
-				&& ((configuredFieldsfromDB.size() == 3 && configuredFieldsfromDB
-						.containsAll(Arrays.asList(RegistrationConstants.UIN_UPDATE_BIO_EXCEPTION,
-								RegistrationConstants.UIN_UPDATE_BIO_FP, RegistrationConstants.UIN_UPDATE_BIO_IRIS)))
-						|| (configuredFieldsfromDB.size() == 1
-								&& configuredFieldsfromDB.get(RegistrationConstants.PARAM_ZERO)
-										.equalsIgnoreCase(RegistrationConstants.UIN_UPDATE_BIO_EXCEPTION)));
-	}
 
 	/**
 	 * Validating screen authorization and Creating Packet and displaying
@@ -536,8 +480,7 @@ public class PacketHandlerController extends BaseController implements Initializ
 	/**
 	 * Sync data through batch jobs.
 	 *
-	 * @param event
-	 *            the event
+	 * @param event the event
 	 */
 	public void syncData() {
 		if (isMachineRemapProcessStarted()) {
@@ -603,8 +546,7 @@ public class PacketHandlerController extends BaseController implements Initializ
 	/**
 	 * change On-Board user Perspective
 	 * 
-	 * @param event
-	 *            is an action event
+	 * @param event is an action event
 	 * @throws IOException
 	 */
 	public void onBoardUser() {
@@ -774,8 +716,7 @@ public class PacketHandlerController extends BaseController implements Initializ
 	/**
 	 * Sync and upload packet.
 	 *
-	 * @throws RegBaseCheckedException
-	 *             the reg base checked exception
+	 * @throws RegBaseCheckedException the reg base checked exception
 	 */
 	private void syncAndUploadPacket() throws RegBaseCheckedException {
 		LOGGER.info(PACKET_HANDLER, APPLICATION_NAME, APPLICATION_ID, "Sync and Upload of created Packet started");

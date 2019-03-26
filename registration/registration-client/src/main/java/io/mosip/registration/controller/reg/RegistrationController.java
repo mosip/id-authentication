@@ -142,7 +142,6 @@ public class RegistrationController extends BaseController {
 	private void uinUpdate() {
 		if (getRegistrationDTOFromSession().getSelectionListDTO() != null) {
 			demographicDetailController.uinUpdate();
-			documentScanController.uinUpdate();
 		}
 	}
 

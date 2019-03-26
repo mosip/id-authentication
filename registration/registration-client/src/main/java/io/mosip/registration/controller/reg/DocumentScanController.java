@@ -177,6 +177,9 @@ public class DocumentScanController extends BaseController {
 					&& getRegistrationDTOFromSession().getSelectionListDTO() != null) {
 				registrationNavlabel.setText(RegistrationConstants.UIN_NAV_LABEL);
 			}
+
+			continueBtn.setDisable(true);
+
 			switchedOnForBiometricException = new SimpleBooleanProperty(false);
 			toggleFunctionForBiometricException();
 
@@ -284,7 +287,7 @@ public class DocumentScanController extends BaseController {
 				comboBox.getStyleClass().add("documentCombobox");
 				StringConverter<T> uiRenderForComboBox = FXUtils.getInstance().getStringConverterForComboBox();
 				comboBox.setConverter((StringConverter<DocumentCategoryDto>) uiRenderForComboBox);
-				if(applicationContext.isPrimaryLanguageRightToLeft())
+				if (applicationContext.isPrimaryLanguageRightToLeft())
 					comboBox.setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
 
 				/*
@@ -444,6 +447,9 @@ public class DocumentScanController extends BaseController {
 				scanFromStubbed(popupStage);
 			}
 
+			if (registrationController.validateDemographicPane(documentScanPane)) {
+				continueBtn.setDisable(false);
+			}
 		} catch (IOException ioException) {
 			LOGGER.error(LoggerConstants.LOG_REG_REGISTRATION_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 					String.format("%s -> Exception while scanning documents for registration  %s -> %s",
@@ -720,6 +726,10 @@ public class DocumentScanController extends BaseController {
 				getDocumentsMapFromSession().remove(key);
 
 				vboxElement.getChildren().remove(gridpane);
+
+				if (registrationController.validateDemographicPane(documentScanPane)) {
+					continueBtn.setDisable(false);
+				}
 			}
 
 		});
@@ -907,24 +917,6 @@ public class DocumentScanController extends BaseController {
 			LOGGER.error("REGISTRATION - TOGGLING FOR BIOMETRIC EXCEPTION SWITCH FAILED ", APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID,
 					runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
-		}
-	}
-
-	public void uinUpdate() {
-		if (getRegistrationDTOFromSession().getSelectionListDTO().isChild()) {
-			bioExceptionToggleLabel1.setDisable(true);
-			bioExceptionToggleLabel2.setDisable(true);
-		}
-
-		if (getRegistrationDTOFromSession().getSelectionListDTO().isBiometricException()) {
-			switchedOnForBiometricException.setValue(true);
-			toggleBiometricException = true;
-			SessionContext.userMap().put(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION, toggleBiometricException);
-		} else {
-			switchedOnForBiometricException.setValue(false);
-			toggleBiometricException = false;
-			SessionContext.userMap().put(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION, toggleBiometricException);
-			faceCaptureController.clearExceptionImage();
 		}
 	}
 

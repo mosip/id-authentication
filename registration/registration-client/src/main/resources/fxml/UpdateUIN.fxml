@@ -72,7 +72,7 @@
                                     <TextField fx:id="uinId" styleClass="uinUpdateTextFiledStyle"  promptText="%uinno"/>                                
                                  </children>
                               </GridPane>
-                              <GridPane GridPane.rowIndex="2">
+                              <GridPane GridPane.rowIndex="6">
                                 <columnConstraints>
                                   <ColumnConstraints hgrow="SOMETIMES" percentWidth="25.0" />
                                     <ColumnConstraints hgrow="SOMETIMES" percentWidth="20.0" />
@@ -89,35 +89,10 @@
                                       <rowConstraints>
                                         <RowConstraints percentHeight="100.0" vgrow="SOMETIMES" />
                                       </rowConstraints>
-                                       <children>
-                                          <Label styleClass="uinUpdateLabelsTypeTwo" text="%isadult" />
-                                       </children>
-                                    </GridPane>
-                                    <GridPane GridPane.columnIndex="1">
-                                      <columnConstraints>
-                                        <ColumnConstraints hgrow="SOMETIMES" percentWidth="100.0" />
-                                      </columnConstraints>
-                                      <rowConstraints>
-                                          <RowConstraints percentHeight="30.0" valignment="BOTTOM" vgrow="SOMETIMES" />
-                                        <RowConstraints percentHeight="70.0" valignment="BOTTOM" vgrow="SOMETIMES" />
-                                      </rowConstraints>
-                                       <children>
-                                          <HBox spacing="20.0" GridPane.rowIndex="1" GridPane.valignment="BOTTOM">
-                                             <children>
-                                                <Label styleClass="uinUpdateLabelsTypeTwo" text="%yes" />
-                                                <AnchorPane>
-                                                   <children>
-                                                      <Label fx:id="toggleLabel1" />
-                                                      <Label fx:id="toggleLabel2" layoutX="0.0" layoutY="2.0" />
-                                                   </children>
-                                                </AnchorPane>
-                                                <Label styleClass="uinUpdateLabelsTypeTwo" text="%no" />
-                                             </children></HBox>
-                                       </children>
                                     </GridPane>
                                  </children>
                               </GridPane>
-                              <GridPane GridPane.rowIndex="3">
+                              <GridPane GridPane.rowIndex="2">
                                 <columnConstraints>
                                   <ColumnConstraints hgrow="SOMETIMES" percentWidth="100.0" />
                                 </columnConstraints>
@@ -128,7 +103,7 @@
                                     <Label styleClass="uinUpdateLabels" text="%selecttoupdate" />
                                  </children>
                               </GridPane>
-                              <GridPane GridPane.rowIndex="4">
+                              <GridPane GridPane.rowIndex="3">
                                 <columnConstraints>
                                   <ColumnConstraints hgrow="SOMETIMES" percentWidth="100.0" />
                                 </columnConstraints>
@@ -149,7 +124,7 @@
                                     </HBox>
                                  </children>
                               </GridPane>
-                              <GridPane GridPane.rowIndex="5">
+                              <GridPane GridPane.rowIndex="4">
                                 <columnConstraints>
                                   <ColumnConstraints hgrow="SOMETIMES" percentWidth="100.0" />
                                 </columnConstraints>
@@ -161,14 +136,12 @@
                                        <children>
                                           <CheckBox fx:id="cnieNumber" mnemonicParsing="false" styleClass="updateUinCheckBox" text="%cnie/pin/residencecardnumber" />
                                           <CheckBox fx:id="parentOrGuardianDetails" mnemonicParsing="false" styleClass="updateUinCheckBox" text="%parent/guardiandetails" />
-                                          <CheckBox fx:id="biometricException" mnemonicParsing="false" styleClass="updateUinCheckBox" text="%biometrics-exception" />
-                                          <CheckBox fx:id="biometricFingerprint" mnemonicParsing="false" styleClass="updateUinCheckBox" text="%biometrics-fingerprint" />
-                                          <CheckBox fx:id="biometricIris" mnemonicParsing="false" styleClass="updateUinCheckBox" text="%biometrics-iris" />
+                                          <CheckBox fx:id="biometrics" mnemonicParsing="false" styleClass="updateUinCheckBox" text="%uinUpdateBiometrics" />
                                        </children>
                                     </HBox>
                                  </children>
                               </GridPane>
-                              <GridPane GridPane.rowIndex="6">
+                              <GridPane GridPane.rowIndex="5">
                                 <columnConstraints>
                                   <ColumnConstraints hgrow="SOMETIMES" percentWidth="90.0" />
                                     <ColumnConstraints hgrow="SOMETIMES" percentWidth="10.0" />

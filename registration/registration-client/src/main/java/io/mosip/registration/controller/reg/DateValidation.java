@@ -57,11 +57,11 @@ public class DateValidation extends BaseController {
 		dateMapper.put("12", "31");
 	}
 
-	public void validateDate(Pane parentPane, TextField date, TextField month, TextField year, Validations validations, FXUtils fxUtils,
-			TextField localField) {
+	public void validateDate(Pane parentPane, TextField date, TextField month, TextField year, Validations validations,
+			FXUtils fxUtils, TextField localField) {
 
 		try {
-			fxUtils.populateLocalFieldOnType(parentPane,date, validation, localField);
+			fxUtils.populateLocalFieldOnType(parentPane, date, validation, localField);
 			date.textProperty().addListener((obsValue, oldValue, newValue) -> {
 				int dateVal = 1;
 				if (date.getText().matches("\\d+")) {
@@ -73,7 +73,8 @@ public class DateValidation extends BaseController {
 				if (date.getText().matches("\\d+") && month.getText().matches("\\d+")) {
 					try {
 						if (Integer.parseInt(date.getText()) > Integer.parseInt(dateMapper.get(month.getText()))) {
-							generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.DATE_VALIDATION_MSG);
+							generateAlert(RegistrationConstants.ALERT_INFORMATION,
+									RegistrationUIConstants.DATE_VALIDATION_MSG);
 							date.setText(oldValue);
 						}
 					} catch (RuntimeException runTimeException) {
@@ -91,8 +92,8 @@ public class DateValidation extends BaseController {
 		}
 	}
 
-	public void validateMonth(Pane parentPane,TextField date, TextField month, TextField year, Validations validations, FXUtils fxUtils,
-			TextField localField) {
+	public void validateMonth(Pane parentPane, TextField date, TextField month, TextField year, Validations validations,
+			FXUtils fxUtils, TextField localField) {
 		try {
 			fxUtils.populateLocalFieldOnType(parentPane, month, validation, localField);
 			month.textProperty().addListener((obsValue, oldValue, newValue) -> {
@@ -104,7 +105,8 @@ public class DateValidation extends BaseController {
 					if (date.getText().matches("\\d+") && month.getText().matches("\\d+")) {
 						try {
 							if (Integer.parseInt(date.getText()) > Integer.parseInt(dateMapper.get(month.getText()))) {
-								generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.DATE_VALIDATION_MSG);
+								generateAlert(RegistrationConstants.ALERT_INFORMATION,
+										RegistrationUIConstants.DATE_VALIDATION_MSG);
 								date.clear();
 							}
 						} catch (RuntimeException runTimeException) {
@@ -162,8 +164,8 @@ public class DateValidation extends BaseController {
 		}
 	}
 
-	public void validateYear(Pane parentPane, TextField date, TextField month, TextField year, Validations validations, FXUtils fxUtils,
-			TextField localField) {
+	public void validateYear(Pane parentPane, TextField date, TextField month, TextField year, Validations validations,
+			FXUtils fxUtils, TextField localField) {
 		try {
 			fxUtils.populateLocalFieldOnType(parentPane, year, validation, localField);
 			year.textProperty().addListener((obsValue, oldValue, newValue) -> {
@@ -171,17 +173,8 @@ public class DateValidation extends BaseController {
 					int yearVal = Integer.parseInt(year.getText());
 					LocalDate localDate = LocalDate.now();
 					int minYear = 1900;
-					if (getRegistrationDTOFromSession().getSelectionListDTO() != null
-							&& getRegistrationDTOFromSession().getSelectionListDTO().isChild()) {
-						minYear = LocalDate.now().getYear() - 5;
-					}
-					if (yearVal < minYear || yearVal > localDate.getYear()) {
-						year.setText(oldValue);
-					}
 
-					if (getRegistrationDTOFromSession().getSelectionListDTO() != null
-							&& !getRegistrationDTOFromSession().getSelectionListDTO().isChild()
-							&& localDate.getYear() - yearVal <= 5) {
+					if (yearVal < minYear || yearVal > localDate.getYear()) {
 						year.setText(oldValue);
 					}
 
@@ -196,7 +189,8 @@ public class DateValidation extends BaseController {
 						try {
 							if (Integer.parseInt(date.getText()) > Integer.parseInt(dateMapper.get(month.getText()))) {
 								date.clear();
-								generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.DATE_VALIDATION_MSG);
+								generateAlert(RegistrationConstants.ALERT_INFORMATION,
+										RegistrationUIConstants.DATE_VALIDATION_MSG);
 							}
 						} catch (RuntimeException runTimeException) {
 							LOGGER.error("DATE VALIDATOINS", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,

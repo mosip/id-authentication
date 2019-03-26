@@ -84,7 +84,7 @@ public class TemplateGenerator extends BaseService {
 	 * @throws RegBaseCheckedException
 	 */
 	public ResponseDTO generateTemplate(String templateText, RegistrationDTO registration,
-			TemplateManagerBuilder templateManagerBuilder, String templateType) {
+			TemplateManagerBuilder templateManagerBuilder, String templateType) {	
 
 		ResponseDTO response = new ResponseDTO();
 
@@ -401,7 +401,8 @@ public class TemplateGenerator extends BaseService {
 			}
 
 			if (registration.getSelectionListDTO() != null) {
-				if (registration.getSelectionListDTO().isBiometricIris()) {
+			
+				if (registration.getSelectionListDTO().isBiometrics()) {
 					templateValues = countMissingIrises(templateValues, registration, templateType);
 				} else {
 					if (!RegistrationConstants.ENABLE.equalsIgnoreCase(faceDisableFlag)
@@ -587,7 +588,8 @@ public class TemplateGenerator extends BaseService {
 			if (RegistrationConstants.ENABLE.equalsIgnoreCase(fingerPrintDisableFlag)) {
 
 				if (registration.getSelectionListDTO() != null) {
-					if (registration.getSelectionListDTO().isBiometricFingerprint()) {
+					
+					if (registration.getSelectionListDTO().isBiometrics()) {
 						addToCapturedBiometrics(biometricsCaptured, biometricsCapturedLocalLang,
 								applicationLanguageProperties, localProperties, "fingersCount", fingersAndIrises[0]);
 					}
@@ -598,7 +600,8 @@ public class TemplateGenerator extends BaseService {
 			}
 			if (RegistrationConstants.ENABLE.equalsIgnoreCase(irisDisableFlag)) {
 				if (registration.getSelectionListDTO() != null) {
-					if (registration.getSelectionListDTO().isBiometricIris()) {
+					
+					if (registration.getSelectionListDTO().isBiometrics()) {
 						addToCapturedBiometrics(biometricsCaptured, biometricsCapturedLocalLang,
 								applicationLanguageProperties, localProperties, "irisCount", fingersAndIrises[1]);
 					}
@@ -686,7 +689,7 @@ public class TemplateGenerator extends BaseService {
 
 			if (RegistrationConstants.ENABLE.equalsIgnoreCase(fingerPrintDisableFlag)
 					&& ((registration.getSelectionListDTO() != null
-							&& registration.getSelectionListDTO().isBiometricFingerprint())
+							&& registration.getSelectionListDTO().isBiometrics())
 							|| (!registration.getBiometricDTO().getApplicantBiometricDTO().getFingerprintDetailsDTO()
 									.isEmpty()))) {
 				templateValues.put(RegistrationConstants.TEMPLATE_FINGERPRINTS_CAPTURED, null);

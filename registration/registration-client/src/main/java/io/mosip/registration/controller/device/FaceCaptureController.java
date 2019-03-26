@@ -260,18 +260,14 @@ public class FaceCaptureController extends BaseController implements Initializab
 					SessionContext.map().put("faceCapture", false);
 
 					long fingerPrintCount = getRegistrationDTOFromSession().getBiometricDTO().getApplicantBiometricDTO()
-							.getBiometricExceptionDTO().stream()
-							.filter(bio -> bio.getBiometricType().equalsIgnoreCase("fingerprint")).count();
+							.getFingerprintDetailsDTO().stream().count();
 
 					long irisCount = getRegistrationDTOFromSession().getBiometricDTO().getApplicantBiometricDTO()
-							.getBiometricExceptionDTO().stream()
-							.filter(bio -> bio.getBiometricType().equalsIgnoreCase(RegistrationConstants.IRIS)).count();
+							.getIrisDetailsDTO().stream().count();
 
-					if (getRegistrationDTOFromSession().getSelectionListDTO().isBiometricIris()
-							|| irisCount > 0) {
+					if (updateUINNextPage(RegistrationConstants.IRIS_DISABLE_FLAG) || irisCount>0) {
 						SessionContext.map().put("irisCapture", true);
-					} else if (getRegistrationDTOFromSession().getSelectionListDTO().isBiometricFingerprint()
-							|| fingerPrintCount > 0) {
+					} else if (updateUINNextPage(RegistrationConstants.FINGERPRINT_DISABLE_FLAG) || fingerPrintCount>0) {
 						SessionContext.map().put("fingerPrintCapture", true);
 					} else if (!RegistrationConstants.DISABLE.equalsIgnoreCase(
 							String.valueOf(ApplicationContext.map().get(RegistrationConstants.DOC_DISABLE_FLAG)))) {

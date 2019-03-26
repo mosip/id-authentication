@@ -91,7 +91,7 @@ import javafx.util.Duration;
  */
 
 @Component
-public class BaseController extends BaseService{
+public class BaseController extends BaseService {
 
 	@Autowired
 	private SyncStatusValidatorService syncStatusValidatorService;
@@ -130,13 +130,13 @@ public class BaseController extends BaseService{
 
 	@Autowired
 	private UserOnboardService userOnboardService;
-	
+
 	@Autowired
 	private CenterMachineReMapService centerMachineReMapService;
 
 	@Autowired
 	private PacketHandlerController packetHandlerController;
-	
+
 	protected ApplicationContext applicationContext = ApplicationContext.getInstance();
 
 	protected Scene scene;
@@ -258,8 +258,8 @@ public class BaseController extends BaseService{
 			id = RegistrationConstants.DOB;
 			parentPane = (Pane) parentPane.getParent().getParent();
 		}
-		if(id.contains("ontype")) {
-			id=id.replaceAll("_ontype", "");
+		if (id.contains("ontype")) {
+			id = id.replaceAll("_ontype", "");
 		}
 		if (RegistrationConstants.DISABLE.equalsIgnoreCase(isConsolidated)) {
 			Label label = ((Label) (parentPane
@@ -348,7 +348,7 @@ public class BaseController extends BaseService{
 		try {
 			BaseController.load(getClass().getResource(RegistrationConstants.HOME_PAGE));
 			if (!(boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
-			clearOnboardData();
+				clearOnboardData();
 			}
 		} catch (IOException ioException) {
 			LOGGER.error("REGISTRATION - REDIRECTHOME - BASE_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
@@ -392,6 +392,7 @@ public class BaseController extends BaseService{
 		clearOnboardData();
 		goToHomePage();
 	}
+
 	/**
 	 * This method is used clear all the new onboard related mapm values and
 	 * navigates to the home page
@@ -400,10 +401,11 @@ public class BaseController extends BaseService{
 	 */
 	public void goToHomePageFromOnboard() {
 		LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
-				RegistrationConstants.APPLICATION_ID, "Going to home page");	
-		
+				RegistrationConstants.APPLICATION_ID, "Going to home page");
+
 		goToHomePage();
 	}
+
 	@SuppressWarnings("unchecked")
 	protected void clearRegistrationData() {
 
@@ -429,7 +431,7 @@ public class BaseController extends BaseService{
 		SessionContext.map().remove(RegistrationConstants.NEW_BIOMETRIC_EXCEPTION);
 
 		clearAllValues();
-		
+
 		SessionContext.userMap().remove(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION);
 		SessionContext.map().remove(RegistrationConstants.DUPLICATE_FINGER);
 
@@ -638,8 +640,7 @@ public class BaseController extends BaseService{
 		try {
 			// get the data for notification template
 			String platformLanguageCode = ApplicationContext.applicationLanguage();
-			String notificationTemplate = templateService.getHtmlTemplate(templateCode,
-					platformLanguageCode);
+			String notificationTemplate = templateService.getHtmlTemplate(templateCode, platformLanguageCode);
 			if (notificationTemplate != null && !notificationTemplate.isEmpty()) {
 				// generate the notification template
 				writeNotificationTemplate = templateGenerator.generateNotificationTemplate(notificationTemplate,
@@ -652,7 +653,7 @@ public class BaseController extends BaseService{
 		}
 		return writeNotificationTemplate;
 	}
-	
+
 	protected RegistrationDTO getRegistrationDTOFromSession() {
 		return (RegistrationDTO) SessionContext.map().get(RegistrationConstants.REGISTRATION_DATA);
 	}
@@ -764,13 +765,15 @@ public class BaseController extends BaseService{
 				LOGGER.info(LoggerConstants.LOG_REG_BASE, APPLICATION_NAME, APPLICATION_ID,
 						"Displaying Alert if validation is not success");
 
-				generateAlertLanguageSpecific(RegistrationConstants.ERROR, response.getErrorResponseDTOs().get(0).getMessage());
+				generateAlertLanguageSpecific(RegistrationConstants.ERROR,
+						response.getErrorResponseDTOs().get(0).getMessage());
 			} else if (response != null && response.getSuccessResponseDTO() != null) {
 
 				LOGGER.info(LoggerConstants.LOG_REG_BASE, APPLICATION_NAME, APPLICATION_ID,
 						"User Onboard is success and clearing Onboard data");
-			
-				popupStatge(RegistrationUIConstants.USER_ONBOARD_SUCCESS,RegistrationConstants.ONBOARD_IMG_PATH, RegistrationConstants.ONBOARD_STYLE_CLASS);
+
+				popupStatge(RegistrationUIConstants.USER_ONBOARD_SUCCESS, RegistrationConstants.ONBOARD_IMG_PATH,
+						RegistrationConstants.ONBOARD_STYLE_CLASS);
 				clearOnboardData();
 				goToHomePage();
 
@@ -863,7 +866,7 @@ public class BaseController extends BaseService{
 		}
 		return isRemapped;
 	}
-	
+
 	Service<String> service = new Service<String>() {
 		@Override
 		protected Task<String> createTask() {
@@ -886,7 +889,7 @@ public class BaseController extends BaseService{
 	};
 
 	protected boolean isPacketsPendingForEOD() {
-			
+
 		return centerMachineReMapService.isPacketsPendingForEOD();
 	}
 
@@ -950,34 +953,29 @@ public class BaseController extends BaseService{
 
 		return alert;
 	}
-	
+
 	protected void updateUINMethodFlow() {
-		if ((Boolean) SessionContext.userContext().getUserMap().get(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION)
-				|| getRegistrationDTOFromSession().getSelectionListDTO().isBiometricException()
-						&& (Boolean) SessionContext.userContext().getUserMap()
-								.get(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION)) {
+		if ((Boolean) SessionContext.userContext().getUserMap()
+				.get(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION)) {
 			SessionContext.map().put("biometricException", true);
-		} else if ((getRegistrationDTOFromSession().getSelectionListDTO().isBiometricFingerprint()
-				&& !getRegistrationDTOFromSession().getSelectionListDTO().isBiometricException())
-				|| (getRegistrationDTOFromSession().getSelectionListDTO().isBiometricFingerprint()
-						&& getRegistrationDTOFromSession().getSelectionListDTO().isBiometricException()
-						&& !(Boolean) SessionContext.userContext().getUserMap()
-								.get(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION))) {
+		} else if (updateUINNextPage(RegistrationConstants.FINGERPRINT_DISABLE_FLAG)) {
 			SessionContext.map().put("fingerPrintCapture", true);
-		} else if ((getRegistrationDTOFromSession().getSelectionListDTO().isBiometricIris()
-				&& !getRegistrationDTOFromSession().getSelectionListDTO().isBiometricException())
-				|| (getRegistrationDTOFromSession().getSelectionListDTO().isBiometricIris()
-						&& getRegistrationDTOFromSession().getSelectionListDTO().isBiometricException()
-						&& !(Boolean) SessionContext.userContext().getUserMap()
-								.get(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION))) {
+		} else if (updateUINNextPage(RegistrationConstants.IRIS_DISABLE_FLAG)) {
 			SessionContext.map().put("irisCapture", true);
-		} else if(!RegistrationConstants.DISABLE.equalsIgnoreCase(String.valueOf(
-				ApplicationContext.map().get(RegistrationConstants.FACE_DISABLE_FLAG)))){
+		} else if (RegistrationConstants.ENABLE.equalsIgnoreCase(
+				String.valueOf(ApplicationContext.map().get(RegistrationConstants.FACE_DISABLE_FLAG)))) {
 			SessionContext.map().put("faceCapture", true);
-		}else {
+		} else {
 			SessionContext.map().put("registrationPreview", true);
 			registrationPreviewController.setUpPreviewContent();
 		}
+	}
+
+	protected boolean updateUINNextPage(String pageFlag) {
+		return RegistrationConstants.ENABLE.equalsIgnoreCase(
+				String.valueOf(ApplicationContext.map().get(pageFlag)))
+				&& (getRegistrationDTOFromSession().getSelectionListDTO().isBiometrics()
+						&& !(Boolean) SessionContext.userMap().get(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION));
 	}
 
 }

@@ -101,11 +101,9 @@ public class RegistrationPreviewController extends BaseController implements Ini
 		if (!RegistrationConstants.DISABLE.equalsIgnoreCase(
 				String.valueOf(ApplicationContext.map().get(RegistrationConstants.FACE_DISABLE_FLAG)))) {
 			SessionContext.getInstance().getMapObject().put("faceCapture", true);
-		} else if (getRegistrationDTOFromSession().getSelectionListDTO().isBiometricIris()
-				|| fingerPrintCount > 0 ) {
+		} else if (irisCount > 0 ) {
 			SessionContext.map().put("irisCapture", true);
-		} else if (getRegistrationDTOFromSession().getSelectionListDTO().isBiometricFingerprint()
-				|| irisCount > 0 ) {
+		} else if (fingerPrintCount > 0 ) {
 			SessionContext.map().put("fingerPrintCapture", true);
 		} else if (!RegistrationConstants.DISABLE.equalsIgnoreCase(
 				String.valueOf(ApplicationContext.map().get(RegistrationConstants.DOC_DISABLE_FLAG)))) {
@@ -256,18 +254,16 @@ public class RegistrationPreviewController extends BaseController implements Ini
 			SessionContext.map().put("registrationPreview", false);
 
 			long fingerPrintCount = getRegistrationDTOFromSession().getBiometricDTO().getApplicantBiometricDTO()
-					.getBiometricExceptionDTO().stream()
-					.filter(bio -> bio.getBiometricType().equalsIgnoreCase("fingerprint")).count();
+					.getFingerprintDetailsDTO().stream().count();
 
 			long irisCount = getRegistrationDTOFromSession().getBiometricDTO().getApplicantBiometricDTO()
-					.getBiometricExceptionDTO().stream()
-					.filter(bio -> bio.getBiometricType().equalsIgnoreCase(RegistrationConstants.IRIS)).count();
-
-			if (getRegistrationDTOFromSession().getSelectionListDTO().isBiometricFingerprint()
-					|| fingerPrintCount > 0) {
+					.getIrisDetailsDTO().stream().count();
+			if((Boolean) SessionContext.userMap().get(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION)) {
+				SessionContext.map().put("biometricException", true);
+			}
+			else if (fingerPrintCount > 0) {
 				SessionContext.map().put("fingerPrintCapture", true);
-			} else if (!getRegistrationDTOFromSession().getSelectionListDTO().isBiometricFingerprint()
-					&& getRegistrationDTOFromSession().getSelectionListDTO().isBiometricIris() || irisCount>0) {
+			} else if (irisCount>0) {
 				SessionContext.map().put("irisCapture", true);
 			} else if (!RegistrationConstants.DISABLE.equalsIgnoreCase(
 					String.valueOf(ApplicationContext.map().get(RegistrationConstants.FACE_DISABLE_FLAG)))) {
