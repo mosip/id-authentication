@@ -461,7 +461,7 @@
                                                                               </VBox>
                                                                            </children>
                                                                         </HBox>
-                                                                        <Label fx:id="dobMessage" styleClass="demoGraphicFieldMessageLabel" text="year message" visible="false" />
+                                                                        <Label  styleClass="demoGraphicFieldMessageLabel" text="year message" visible="false" />
                                                                      </children>
                                                                   </VBox>
                                                                   <GridPane GridPane.columnIndex="2">

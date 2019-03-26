@@ -169,9 +169,19 @@ public class DemographicDetailController extends BaseController {
 
 	@FXML
 	private TextField ageFieldLocalLanguage;
+	
+	@FXML
+	private Label dobMessage;
 
 	@FXML
 	private Label toggleLabel1;
+	
+	@FXML
+	private Label mmLabel;
+	@FXML
+	private Label ddLabel;
+	@FXML
+	private Label yyyyLabel;
 
 	@FXML
 	private Label toggleLabel2;
@@ -347,6 +357,15 @@ public class DemographicDetailController extends BaseController {
 
 	@FXML
 	private TextField parentName;
+	
+	@FXML
+	private Label ageFieldMessage;
+	
+	@FXML
+	private Label ageFieldLabel;
+	
+	@FXML
+	private Label ageFieldLocalLanguageMessage;
 
 	@FXML
 	private TextField uinId;
@@ -668,6 +687,21 @@ public class DemographicDetailController extends BaseController {
 					ddLocalLanguage.clear();
 					mmLocalLanguage.clear();
 					yyyyLocalLanguage.clear();
+					
+					ageFieldMessage.setVisible(false);
+					ageFieldLabel.setVisible(false);
+					ageFieldLocalLanguageLabel.setVisible(false);
+					ageFieldLocalLanguageMessage.setVisible(false);
+					dobMessage.setVisible(false);
+					System.out.println(dobMessage.getText());
+					ddLabel.setVisible(false);
+					mmLabel.setVisible(false);
+					yyyyLabel.setVisible(false);
+					ddLocalLanguageLabel.setVisible(false);
+					mmLocalLanguageLabel.setVisible(false);
+					yyyyLocalLanguageLabel.setVisible(false);
+
+					
 				}
 			});
 
@@ -742,6 +776,7 @@ public class DemographicDetailController extends BaseController {
 			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, "Validating the age given by age field");
 			fxUtils.focusUnfocusListener(dobParentPane, ageField, ageFieldLocalLanguage);
+			fxUtils.onTypeFocusUnfocusListener(dobParentPane, ageFieldLocalLanguage);
 			ageField.textProperty().addListener((obsValue, oldValue, newValue) -> {
 				ageFieldLocalLanguage.setText(newValue);
 				if (!validation.validateTextField(parentFlowPane, ageField, ageField.getId() + "_ontype",
