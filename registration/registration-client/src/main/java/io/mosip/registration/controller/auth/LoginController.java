@@ -1,5 +1,3 @@
-
-
 package io.mosip.registration.controller.auth;
 
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
@@ -64,15 +62,12 @@ import io.mosip.registration.util.common.OTPManager;
 import io.mosip.registration.util.common.PageFlow;
 import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
 import io.mosip.registration.util.healthcheck.RegistrationSystemPropertiesChecker;
-import io.mosip.registration.util.restclient.ServiceDelegateUtil;
-
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
@@ -105,9 +100,6 @@ public class LoginController extends BaseController implements Initializable {
 
 	@FXML
 	private AnchorPane irisPane;
-	
-	@Value("${mosip.primary-language}")
-	private String prim;
 
 	@FXML
 	private AnchorPane facePane;
@@ -173,9 +165,6 @@ public class LoginController extends BaseController implements Initializable {
 
 	@Autowired
 	private PageFlow pageFlow;
-
-	@Autowired
-	private ServiceDelegateUtil serviceDelegateUtil;
 	
 	@Autowired
 	private MasterSyncService masterSyncService;
@@ -225,7 +214,7 @@ public class LoginController extends BaseController implements Initializable {
 
 			ResponseDTO userResponseDTO = userDetailService.save(RegistrationConstants.JOB_TRIGGER_POINT_USER);
 			
-			if (responseDTO.getSuccessResponseDTO() == null || masterResponseDTO.getSuccessResponseDTO() == null || userResponseDTO.getSuccessResponseDTO()== null) {
+			if ((null != responseDTO && responseDTO.getSuccessResponseDTO() == null) || masterResponseDTO.getSuccessResponseDTO() == null || userResponseDTO.getSuccessResponseDTO()== null) {
 				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.SYNC_CONFIG_DATA_FAILURE);
 			} else {
 

@@ -41,6 +41,7 @@ import javafx.scene.control.ProgressBar;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
@@ -85,6 +86,12 @@ public class IrisCaptureController extends BaseController {
 	private Label leftIrisAttempts;
 	@FXML
 	private Label rightIrisAttempts;
+	@FXML
+	private ColumnConstraints thresholdPane1;
+	@FXML
+	private ColumnConstraints thresholdPane2;
+	@FXML
+	private Label thresholdLabel;
 
 	@Autowired
 	private RegistrationController registrationController;
@@ -130,6 +137,11 @@ public class IrisCaptureController extends BaseController {
 			continueBtn.setDisable(true);
 			backBtn.setDisable(true);
 			
+			// Set Threshold
+			String irisThreshold = getValueFromApplicationMap(RegistrationConstants.IRIS_THRESHOLD);
+			leftIrisThreshold.setText(irisThreshold.concat(RegistrationConstants.PERCENTAGE));
+			rightIrisThreshold.setText(irisThreshold.concat(RegistrationConstants.PERCENTAGE));
+			
 			if(!(boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
 			
 				for(int attempt = 0; attempt <Integer
@@ -143,12 +155,12 @@ public class IrisCaptureController extends BaseController {
 					irisRetryBox.getChildren().add(label);
 				}
 				irisProgress.setProgress(0);
+				
+				thresholdPane1.setPercentWidth(Double.parseDouble(irisThreshold));
+				thresholdPane2.setPercentWidth(100.00-(Double.parseDouble(irisThreshold)));
+				thresholdLabel.setAlignment(Pos.CENTER);
+				thresholdLabel.setText(thresholdLabel.getText().concat("  ").concat(irisThreshold).concat(RegistrationConstants.PERCENTAGE));
 			}
-
-			// Set Threshold
-			String irisThreshold = getValueFromApplicationMap(RegistrationConstants.IRIS_THRESHOLD);
-			leftIrisThreshold.setText(irisThreshold.concat(RegistrationConstants.PERCENTAGE));
-			rightIrisThreshold.setText(irisThreshold.concat(RegistrationConstants.PERCENTAGE));
 
 			// Disable Scan button
 			scanIris.setDisable(true);

@@ -29,6 +29,12 @@
 	-fx-pref-height: 20.0px;
 	-fx-pref-width: 55.0px;
 }
+
+#thresholdBar{
+	-fx-border-color : red;
+	-fx-border-width : 0 1 0 0;
+}
+
 .progress-barGreen > .bar {
     -fx-background-color: #45A30A;
 }

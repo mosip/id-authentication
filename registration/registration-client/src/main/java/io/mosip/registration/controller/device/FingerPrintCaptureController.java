@@ -49,6 +49,7 @@ import javafx.scene.control.ProgressBar;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
@@ -149,6 +150,15 @@ public class FingerPrintCaptureController extends BaseController implements Init
 	
 	@FXML
 	private Label thumbSlapAttempt;
+	
+	@FXML
+	private ColumnConstraints thresholdPane1;
+	
+	@FXML
+	private ColumnConstraints thresholdPane2;
+	
+	@FXML
+	private Label thresholdLabel;
 
 	@FXML
 	private Label leftSlapAttempt;
@@ -210,6 +220,13 @@ public class FingerPrintCaptureController extends BaseController implements Init
 							label.setAlignment(Pos.CENTER);
 							fpRetryBox.getChildren().add(label);
 						}
+				
+				String threshold = getValueFromApplicationContext(RegistrationConstants.LEFTSLAP_FINGERPRINT_THRESHOLD);
+				
+				thresholdLabel.setAlignment(Pos.CENTER);
+				thresholdLabel.setText(RegistrationUIConstants.THRESHOLD.concat("  ").concat(threshold).concat(RegistrationConstants.PERCENTAGE));
+				thresholdPane1.setPercentWidth(Double.parseDouble(threshold));
+				thresholdPane2.setPercentWidth(100.00-(Double.parseDouble(threshold)));
 			}
 
 			continueBtn.setDisable(true);
@@ -232,6 +249,22 @@ public class FingerPrintCaptureController extends BaseController implements Init
 							fpRetryBox.lookup("#retryAttempt_"+(attempt+1)).getStyleClass().clear();
 							fpRetryBox.lookup("#retryAttempt_"+(attempt+1)).getStyleClass().add("qualityLabelGrey");
 						}
+						
+						String fpThreshold = "";
+						if (leftHandPalmPane.getId().equals(selectedPane.getId())){
+							fpThreshold = getValueFromApplicationContext(RegistrationConstants.LEFTSLAP_FINGERPRINT_THRESHOLD);
+							thresholdLabel.setText("");
+						} else if(rightHandPalmPane.getId().equals(selectedPane.getId())) {
+							fpThreshold = getValueFromApplicationContext(RegistrationConstants.RIGHTSLAP_FINGERPRINT_THRESHOLD);
+							thresholdLabel.setText("");
+						} else if (thumbPane.getId().equals(selectedPane.getId())) {
+							fpThreshold = getValueFromApplicationContext(RegistrationConstants.THUMBS_FINGERPRINT_THRESHOLD);
+							thresholdLabel.setText("");
+						}
+						thresholdPane1.setPercentWidth(Double.parseDouble(fpThreshold));
+						thresholdPane2.setPercentWidth(100.00-(Double.parseDouble(fpThreshold)));
+						thresholdLabel.setAlignment(Pos.CENTER);
+						thresholdLabel.setText(RegistrationUIConstants.THRESHOLD.concat("  ").concat(fpThreshold).concat(RegistrationConstants.PERCENTAGE));
 
 					}
 			
