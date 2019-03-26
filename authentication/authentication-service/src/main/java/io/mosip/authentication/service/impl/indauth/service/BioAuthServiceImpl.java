@@ -14,7 +14,10 @@ import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.spi.indauth.match.MatchInput;
 import io.mosip.authentication.core.spi.indauth.match.MatchOutput;
 import io.mosip.authentication.core.spi.indauth.service.BioAuthService;
+import io.mosip.authentication.service.config.IDAMappingConfig;
 import io.mosip.authentication.service.helper.IdInfoHelper;
+import io.mosip.authentication.service.impl.indauth.builder.AuthStatusInfoBuilder;
+import io.mosip.authentication.service.impl.indauth.builder.MatchInputBuilder;
 import io.mosip.authentication.service.impl.indauth.service.bio.BioAuthType;
 import io.mosip.authentication.service.impl.indauth.service.bio.BioMatchType;
 
@@ -29,22 +32,29 @@ public class BioAuthServiceImpl implements BioAuthService {
 	@Autowired
 	private IdInfoHelper idInfoHelper;
 
+	@Autowired
+	private MatchInputBuilder matchInputBuilder;
+
+	@Autowired
+	private IDAMappingConfig idMappingConfig;
+
 	/**
 	 * Validate Bio Auth details based on Bio auth request and Biometric Identity
 	 * values
 	 */
 	@Override
-	public AuthStatusInfo authenticate(AuthRequestDTO authRequestDTO,String uin,
-			Map<String, List<IdentityInfoDTO>> bioIdentity) throws IdAuthenticationBusinessException {
+	public AuthStatusInfo authenticate(AuthRequestDTO authRequestDTO, String uin,
+			Map<String, List<IdentityInfoDTO>> bioIdentity, String partnerId) throws IdAuthenticationBusinessException {
 		if (bioIdentity == null || bioIdentity.isEmpty()) {
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.SERVER_ERROR);
 		} else {
 			List<MatchInput> listMatchInputs = constructMatchInput(authRequestDTO);
-			List<MatchOutput> listMatchOutputs = getMatchOutput(listMatchInputs,
-					authRequestDTO, bioIdentity);
+			List<MatchOutput> listMatchOutputs = getMatchOutput(listMatchInputs, authRequestDTO, bioIdentity,
+					partnerId);
 			// Using OR condition on the match output for Bio auth.
 			boolean bioMatched = listMatchOutputs.stream().anyMatch(MatchOutput::isMatched);
-			return idInfoHelper.buildStatusInfo(bioMatched, listMatchInputs, listMatchOutputs, BioAuthType.values());
+			return AuthStatusInfoBuilder.buildStatusInfo(bioMatched, listMatchInputs, listMatchOutputs,
+					BioAuthType.values(), idMappingConfig);
 		}
 
 	}
@@ -56,12 +66,12 @@ public class BioAuthServiceImpl implements BioAuthService {
 	 * @return
 	 */
 	private List<MatchInput> constructMatchInput(AuthRequestDTO authRequestDTO) {
-		return idInfoHelper.constructMatchInput(authRequestDTO, BioAuthType.values(), BioMatchType.values());
+		return matchInputBuilder.buildMatchInput(authRequestDTO, BioAuthType.values(), BioMatchType.values());
 	}
 
 	private List<MatchOutput> getMatchOutput(List<MatchInput> listMatchInputs, AuthRequestDTO authRequestDTO,
-			Map<String, List<IdentityInfoDTO>> demoEntity) throws IdAuthenticationBusinessException {
-		return idInfoHelper.matchIdentityData(authRequestDTO, demoEntity, listMatchInputs);
+			Map<String, List<IdentityInfoDTO>> demoEntity, String partnerId) throws IdAuthenticationBusinessException {
+		return idInfoHelper.matchIdentityData(authRequestDTO, demoEntity, listMatchInputs, partnerId);
 	}
 
 }

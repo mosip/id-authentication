@@ -1,7 +1,7 @@
 {
   "applicationtypes": [
     {
-      "code": "001113",
+      "code": "1111",
       "name": "Pre_Reg",
       "description": "string",
       "langCode": "eng",

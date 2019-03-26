@@ -2,8 +2,15 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
+	<parent>
+		<groupId>io.mosip.authentication</groupId>
+		<artifactId>authentication-parent</artifactId>
+		<version>0.10.0</version>
+	</parent>
 
+	<artifactId>authentication-demo</artifactId>
 	<packaging>jar</packaging>
+	
 	<repositories>
 		<repository>
 			<id>local-maven-repo</id>
@@ -19,7 +26,7 @@
 		<maven.javadoc.version>3.0.1</maven.javadoc.version>
 		<maven.swagger.version>2.9.2</maven.swagger.version>
 		<maven.jacoco.version>0.8.2</maven.jacoco.version>
-		<maven.sonar.version>3.2</maven.sonar.version>
+		<sonar.skip>true</sonar.skip>
 	</properties>
 
 	<dependencies>
@@ -27,12 +34,12 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
-			<version>2.0.4.RELEASE</version>
+			<version>${spring.boot.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
-			<version>2.0.4.RELEASE</version>
+			<version>${spring.boot.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>io.springfox</groupId>
@@ -114,21 +121,35 @@
 			<artifactId>commons-codec</artifactId>
 			<version>1.9</version>
 		</dependency>
-
-
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-config</artifactId>
+			<version>${spring-cloud-config.version}</version>
+		</dependency>
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-jsonvalidator</artifactId>
 			<version>0.7.0-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
-
-	<artifactId>demoApp</artifactId>
-	<groupId>mosip.id.demo</groupId>
-	<version>1.0.0</version>
-	
 		<build>
 		<plugins>
+			<plugin>
+                   <groupId>org.springframework.boot</groupId>
+                  <artifactId>spring-boot-maven-plugin</artifactId>
+                  <version>${spring.boot.version}</version>
+                  <configuration>
+                         <executable>true</executable>
+                  </configuration>
+                  <executions>
+                         <execution>
+                               <goals>
+                                      <goal>build-info</goal>
+                                      <goal>repackage</goal>
+                               </goals>
+                         </execution>
+                  </executions>
+            </plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>

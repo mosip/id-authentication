@@ -241,6 +241,10 @@ public class MapperUtils {
 	 * entity to entity. Like when both <code>source</code> and
 	 * <code>destination</code> are object which extends {@link BaseEntity}.
 	 * 
+	 * @param <S>
+	 *            is a type parameter
+	 * @param <D>
+	 *            is a type parameter
 	 * @param source
 	 *            which value is going to be mapped
 	 * @param destination
@@ -282,6 +286,10 @@ public class MapperUtils {
 	/**
 	 * Map values from source object to destination object.
 	 * 
+	 * @param <S>
+	 *            is a type parameter
+	 * @param <D>
+	 *            is a type parameter
 	 * @param source
 	 *            which value is going to be mapped
 	 * @param destination
@@ -294,7 +302,7 @@ public class MapperUtils {
 	 */
 	private static <S, D> void mapValues(S source, D destination)
 			throws IllegalAccessException, InstantiationException {
-		    mapFieldValues(source, destination);// this method simply map values if field name and type are same
+		mapFieldValues(source, destination);// this method simply map values if field name and type are same
 
 		if (source.getClass().isAnnotationPresent(Entity.class)) {
 			mapEntityToDto(source, destination);
@@ -306,6 +314,10 @@ public class MapperUtils {
 	/**
 	 * This method map source DTO to a class object which extends {@link BaseEntity}
 	 * 
+	 * @param <S>
+	 *            is a type parameter
+	 * @param <D>
+	 *            is a type parameter
 	 * @param source
 	 *            which value is going to be mapped
 	 * @param destination
@@ -338,6 +350,10 @@ public class MapperUtils {
 	/**
 	 * Map source which extends {@link BaseEntity} to a DTO object.
 	 * 
+	 * @param <S>
+	 *            is a type parameter
+	 * @param <D>
+	 *            is a type parameter
 	 * @param source
 	 *            which value is going to be mapped
 	 * @param destination
@@ -377,6 +393,10 @@ public class MapperUtils {
 	/**
 	 * Map values from source field to destination.
 	 * 
+	 * @param <S>
+	 *            is a type parameter
+	 * @param <D>
+	 *            is a type parameter
 	 * @param source
 	 *            which value is going to be mapped
 	 * @param destination
@@ -423,6 +443,10 @@ public class MapperUtils {
 	/**
 	 * Take value from source field and insert value into destination field.
 	 * 
+	 * @param <S>
+	 *            is a type parameter
+	 * @param <D>
+	 *            is a type parameter
 	 * @param source
 	 *            which value is going to be mapped
 	 * @param destination
@@ -506,14 +530,14 @@ public class MapperUtils {
 			deviceLangCodeDtypeDto.setDeviceSpecId((String) arr[5]);
 			deviceLangCodeDtypeDto.setLangCode((String) arr[6]);
 			deviceLangCodeDtypeDto.setIsActive((boolean) arr[7]);
-			if(arr[8] != null)
-			{			deviceLangCodeDtypeDto.setValidityEndDateTime(((Timestamp) arr[8]).toLocalDateTime());}
+			if (arr[8] != null) {
+				deviceLangCodeDtypeDto.setValidityEndDateTime(((Timestamp) arr[8]).toLocalDateTime());
+			}
 			deviceLangCodeDtypeDto.setDeviceTypeCode((String) arr[9]);
 			deviceLangCodeDtypeDtoList.add(deviceLangCodeDtypeDto);
 
 		});
 		return deviceLangCodeDtypeDtoList;
 	}
-	
-	
+
 }

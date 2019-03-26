@@ -1,11 +1,11 @@
 package io.mosip.registration.processor.print.stage;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.util.Map;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,6 +24,7 @@ import io.mosip.registration.processor.core.code.EventName;
 import io.mosip.registration.processor.core.code.EventType;
 import io.mosip.registration.processor.core.constant.IdType;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
+import io.mosip.registration.processor.core.exception.TemplateProcessingFailureException;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.packet.dto.Identity;
@@ -33,7 +34,6 @@ import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.spi.print.service.PrintService;
 import io.mosip.registration.processor.core.spi.queue.MosipQueueConnectionFactory;
 import io.mosip.registration.processor.core.spi.queue.MosipQueueManager;
-import io.mosip.registration.processor.message.sender.exception.TemplateProcessingFailureException;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.print.exception.PrintGlobalExceptionHandler;
 import io.mosip.registration.processor.print.exception.QueueConnectionNotFound;
@@ -58,7 +58,7 @@ import io.vertx.ext.web.RoutingContext;
 public class PrintStage extends MosipVerticleAPIManager {
 
 	/** The Constant FILE_SEPARATOR. */
-	public static final String FILE_SEPARATOR = "\\";
+	public static final String FILE_SEPARATOR = File.separator;
 
 	/** The Constant USER. */
 	private static final String USER = "MOSIP_SYSTEM";
@@ -68,8 +68,6 @@ public class PrintStage extends MosipVerticleAPIManager {
 
 	/** The Constant UIN_TEXT_FILE. */
 	private static final String UIN_TEXT_FILE = "textFile";
-
-	private static final String RESOURCES = "src/main/resources/";
 
 	/** The reg proc logger. */
 	private static Logger regProcLogger = RegProcessorLogger.getLogger(PrintStage.class);
@@ -144,7 +142,7 @@ public class PrintStage extends MosipVerticleAPIManager {
 	/** The packet info manager. */
 	@Autowired
 	private PacketInfoManager<Identity, ApplicantInfoDto> packetInfoManager;
-	
+
 	@Autowired
 	ConsumerStage consumerStage;
 
@@ -180,7 +178,7 @@ public class PrintStage extends MosipVerticleAPIManager {
 
 			String uin = packetInfoManager.getUINByRid(regId).get(0);
 
-			Map<String, byte[]> documentBytesMap = printService.getPdf(IdType.RID, regId);
+			Map<String, byte[]> documentBytesMap = printService.getDocuments(IdType.RID, regId);
 
 			MosipQueue queue = mosipConnectionFactory.createConnection(typeOfQueue, username, password, url);
 			if (queue == null) {
@@ -209,9 +207,10 @@ public class PrintStage extends MosipVerticleAPIManager {
 
 			registrationStatusDto.setUpdatedBy(USER);
 			registrationStatusService.updateRegistrationStatus(registrationStatusDto);
-			fileCleanup(documentBytesMap.get("UIN"));
 
-		} catch (PDFGeneratorException e) {
+            printPostService.generatePrintandPostal(regId, queue, mosipQueueManager);
+
+        } catch (PDFGeneratorException e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					regId, PlatformErrorMessages.RPR_PRT_PDF_GENERATION_FAILED.name() + e.getMessage()
 							+ ExceptionUtils.getStackTrace(e));
@@ -251,18 +250,10 @@ public class PrintStage extends MosipVerticleAPIManager {
 			eventType = eventId.equalsIgnoreCase(EventId.RPR_402.toString()) ? EventType.BUSINESS.toString()
 					: EventType.SYSTEM.toString();
 
-			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType, regId,
-					ApiName.AUDIT);
+			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,regId, ApiName.AUDIT);
 		}
-		return object;
-	}
 
-	private void fileCleanup(byte[] bs) throws IOException {
-		String uin = new String(bs);
-		if (FileUtils.getFile(RESOURCES + uin + ".txt").exists())
-			FileUtils.forceDelete(FileUtils.getFile(RESOURCES + uin + ".txt"));
-		if (FileUtils.getFile(RESOURCES + uin + ".pdf").exists())
-			FileUtils.forceDelete(FileUtils.getFile(RESOURCES + uin + ".pdf"));
+		return object;
 	}
 
 	/**
@@ -362,8 +353,8 @@ public class PrintStage extends MosipVerticleAPIManager {
 		JsonObject object = ctx.getBodyAsJson();
 		MessageDTO messageDTO = new MessageDTO();
 		messageDTO.setRid(object.getString("regId"));
-		MessageDTO responceMessageDto = this.process(messageDTO);
-		if (responceMessageDto.getIsValid()) {
+		MessageDTO responseMessageDto = this.process(messageDTO);
+		if (responseMessageDto.getIsValid()) {
 			this.setResponse(ctx, RegistrationStatusCode.DOCUMENT_RESENT_TO_CAMEL_QUEUE);
 		} else {
 			this.setResponse(ctx, "Caught internal error in messageDto");

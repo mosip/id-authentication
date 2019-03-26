@@ -11,7 +11,6 @@ import java.util.UUID;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
@@ -47,6 +46,10 @@ import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 
 /**
  * The Class BioDedupeServiceImpl.
+ *
+ * @author Alok
+ * @author Nagalakshmi
+ *
  */
 @Service
 public class BioDedupeServiceImpl implements BioDedupeService {
@@ -88,6 +91,7 @@ public class BioDedupeServiceImpl implements BioDedupeService {
 	@Autowired
 	private FileSystemAdapter filesystemCephAdapterImpl;
 
+	/** The identity iterator util. */
 	IdentityIteratorUtil identityIteratorUtil = new IdentityIteratorUtil();
 
 	/*

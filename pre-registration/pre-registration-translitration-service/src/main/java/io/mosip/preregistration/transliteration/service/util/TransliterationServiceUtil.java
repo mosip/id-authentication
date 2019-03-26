@@ -13,8 +13,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.preregistration.core.common.dto.MainRequestDTO;
 import io.mosip.preregistration.transliteration.code.RequestCodes;
-import io.mosip.preregistration.transliteration.dto.MainRequestDTO;
 import io.mosip.preregistration.transliteration.dto.TransliterationDTO;
 
 /**
@@ -46,9 +46,9 @@ public class TransliterationServiceUtil {
 			MainRequestDTO<TransliterationDTO> requestDTO) {
 		Map<String, String> inputValidation = new HashMap<>();
 		inputValidation.put(RequestCodes.ID.getCode(), requestDTO.getId());
-		inputValidation.put(RequestCodes.VER.getCode(), requestDTO.getVer());
+		inputValidation.put(RequestCodes.VER.getCode(), requestDTO.getVersion());
 		inputValidation.put(RequestCodes.REQ_TIME.getCode(),
-				getDateString(requestDTO.getReqTime()));
+				getDateString(requestDTO.getRequesttime()));
 		inputValidation.put(RequestCodes.REQUEST.getCode(), requestDTO.getRequest().toString());
 		return inputValidation;
 	}

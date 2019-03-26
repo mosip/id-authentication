@@ -28,11 +28,11 @@ public interface AuthFacade {
 	 *                                           exception
 	 * @throws IdAuthenticationDaoException the Id authentication Dao Exception
 	 */
-	AuthResponseDTO authenticateApplicant(AuthRequestDTO authRequest, boolean request)
+	AuthResponseDTO authenticateApplicant(AuthRequestDTO authRequest, boolean request,String partnerId)
 			throws IdAuthenticationBusinessException, IdAuthenticationDaoException;
 
 
-	KycAuthResponseDTO processKycAuth(KycAuthRequestDTO kycAuthRequestDTO, AuthResponseDTO authResponseDTO)
+	KycAuthResponseDTO processKycAuth(KycAuthRequestDTO kycAuthRequestDTO, AuthResponseDTO authResponseDTO,String partnerId)
 			throws IdAuthenticationBusinessException;
 
 }

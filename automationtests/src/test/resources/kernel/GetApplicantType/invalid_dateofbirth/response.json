@@ -1,0 +1,10 @@
+{
+  "timestamp": 1551676438816,
+  "status": 200,
+  "errors": [
+    {
+      "errorCode": "KER-MSD-148",
+      "errorMessage": "One or more input parameter is invalid or does not exist"
+    }
+  ]
+}

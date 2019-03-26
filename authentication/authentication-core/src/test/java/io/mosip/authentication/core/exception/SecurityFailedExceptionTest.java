@@ -9,12 +9,12 @@ public class SecurityFailedExceptionTest {
 
 	@Test(expected=SecurityFailedException.class)
 	public void SecurityFailedExceptionEnum() throws SecurityFailedException {
-		throw new SecurityFailedException(IdAuthenticationErrorConstants.OTP_NOT_PRESENT);
+		throw new SecurityFailedException(IdAuthenticationErrorConstants.OTP_GENERATION_FAILED);
 	}
 	
 	@Test(expected=SecurityFailedException.class)
 	public void SecurityFailedExceptionEnumThrowable() throws SecurityFailedException {
-		throw new SecurityFailedException(IdAuthenticationErrorConstants.OTP_NOT_PRESENT, null);
+		throw new SecurityFailedException(IdAuthenticationErrorConstants.OTP_GENERATION_FAILED, null);
 	}
 	
 	@Test(expected=SecurityFailedException.class)

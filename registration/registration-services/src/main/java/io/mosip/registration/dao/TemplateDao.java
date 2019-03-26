@@ -18,26 +18,29 @@ import io.mosip.registration.entity.TemplateType;
 public interface TemplateDao {
 
 	/**
-	 * This method returns the list of templates which are active
+	 * This method returns the list of templates which are active and have specified
+	 * templateTypeCode
 	 * 
-	 * @return List<Template>
-	 *            the list of templates
+	 * @param templateTypeCode
+	 *            the required template type code
+	 * @return List<Template> the list of templates
 	 */
-	List<Template> getAllTemplates();
-	
+	List<Template> getAllTemplates(String templateTypeCode);
+
 	/**
-	 * This method returns the list of template types which are active
+	 * This method returns the list of template types which are active and have
+	 * specified templateTypeCode and language code
 	 * 
-	 * @return List<TemplateType>
-	 *            the list of template types
+	 * @param templateTypeCode
+	 *            the combination of templateTypeCode and language code
+	 * @return List<TemplateType> the list of template types
 	 */
-	List<TemplateType> getAllTemplateTypes();
-	
+	List<TemplateType> getAllTemplateTypes(String code,String langCode);
+
 	/**
 	 * This method returns the list of template file formats which are active
 	 * 
-	 * @return List<TemplateFileFormatO>
-	 *            the list of template file formats
+	 * @return List<TemplateFileFormatO> the list of template file formats
 	 */
 	List<TemplateFileFormat> getAllTemplateFileFormats();
 }

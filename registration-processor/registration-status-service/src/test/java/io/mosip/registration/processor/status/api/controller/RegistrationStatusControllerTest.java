@@ -38,6 +38,7 @@ import io.mosip.registration.processor.status.dto.RegistrationStatusRequestDTO;
 import io.mosip.registration.processor.status.dto.RegistrationStatusSubRequestDto;
 import io.mosip.registration.processor.status.dto.SyncRegistrationDto;
 import io.mosip.registration.processor.status.dto.SyncResponseDto;
+import io.mosip.registration.processor.status.exception.RegStatusAppException;
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
 import io.mosip.registration.processor.status.service.SyncRegistrationService;
 import io.mosip.registration.processor.status.validator.RegistrationStatusRequestValidator;
@@ -162,6 +163,14 @@ public class RegistrationStatusControllerTest {
         this.mockMvc.perform(MockMvcRequestBuilders
                 .get("/registration-processor/registrationstatus/v1.0").accept(MediaType.ALL_VALUE).contentType(MediaType.ALL_VALUE))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
+	}
+	
+	@Test
+	public void searchRegstatusException() throws Exception {
+
+		Mockito.doThrow(new RegStatusAppException()).when(registrationStatusRequestValidator).validate(ArgumentMatchers.any(), ArgumentMatchers.any());
+		this.mockMvc.perform(MockMvcRequestBuilders
+                .get("/registration-processor/registrationstatus/v1.0").param("request", regStatusToJson).accept(MediaType.ALL_VALUE).contentType(MediaType.ALL_VALUE));
 	}
 
 }

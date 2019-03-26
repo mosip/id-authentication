@@ -20,7 +20,7 @@ import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.dto.indauth.LanguageType;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.logger.IdaLogger;
-import io.mosip.authentication.service.helper.IdInfoHelper;
+import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.pdfgenerator.spi.PDFGenerator;
 import io.mosip.kernel.core.templatemanager.spi.TemplateManager;
@@ -34,6 +34,8 @@ import io.mosip.kernel.core.templatemanager.spi.TemplateManagerBuilder;
 @Component
 public class IdTemplateManager {
 
+	private static final String SESSION_ID = "SESSION_ID";
+
 	private static final String NOTIFICATION_LANGUAGE_SUPPORT = "notification.language.support";
 
 	/** Class path. */
@@ -42,35 +44,32 @@ public class IdTemplateManager {
 	/** UTF type. */
 	private static final String ENCODE_TYPE = "UTF-8";
 
-	/** The template manager. */
+	/** The template manager to apply template for eKyc */
 	private TemplateManager templateManager;
 
-	/** PDF Generator */
+	/** PDF Generator for eKYC document */
 	private PDFGenerator pdfGenerator;
 
 	/**
-	 * 
+	 * Template Manager Builder to build templates
 	 */
 	@Autowired
 	private TemplateManagerBuilder templateManagerBuilder;
 
 	/**
-	 * 
+	 * To integrate Master data from Kernal
 	 */
 	@Autowired
 	private MasterDataManager masterDataManager;
 
 	/**
-	 * 
+	 * The environment
 	 */
 	@Autowired
 	private Environment environment;
 
-	/**
-	 * 
-	 */
 	@Autowired
-	private IdInfoHelper idInfoHelper;
+	private IdInfoFetcher idInfoFetcher;
 
 	/**
 	 * Id template manager post construct.
@@ -110,7 +109,9 @@ public class IdTemplateManager {
 			IOUtils.copy(templateValue, writer, StandardCharsets.UTF_8);
 			return writer.toString();
 		} else {
-			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.MISSING_TEMPLATE_CONFIG);
+			throw new IdAuthenticationBusinessException(
+					IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(), String.format(
+							IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(), "Template"));
 		}
 	}
 
@@ -126,12 +127,12 @@ public class IdTemplateManager {
 		StringBuilder stringBuilder = new StringBuilder();
 		if (languageRequired.equalsIgnoreCase("secondary")) {
 			stringBuilder.append(masterDataManager
-					.fetchTemplate(idInfoHelper.getLanguageCode(LanguageType.PRIMARY_LANG), templateName) + "\n\n");
+					.fetchTemplate(idInfoFetcher.getLanguageCode(LanguageType.PRIMARY_LANG), templateName) + "\n\n");
 			stringBuilder.append(masterDataManager
-					.fetchTemplate(idInfoHelper.getLanguageCode(LanguageType.SECONDARY_LANG), templateName));
+					.fetchTemplate(idInfoFetcher.getLanguageCode(LanguageType.SECONDARY_LANG), templateName));
 		} else if (languageRequired.equalsIgnoreCase("primary")) {
 			stringBuilder.append(masterDataManager
-					.fetchTemplate(idInfoHelper.getLanguageCode(LanguageType.PRIMARY_LANG), templateName));
+					.fetchTemplate(idInfoFetcher.getLanguageCode(LanguageType.PRIMARY_LANG), templateName));
 		} else {
 			// TODO throw exception
 		}
@@ -154,8 +155,8 @@ public class IdTemplateManager {
 			Objects.requireNonNull(template);
 			return pdfGenerator.generate(new ByteArrayInputStream(template.getBytes()));
 		} catch (IOException e) {
-			logger.error("NA", "Inside generatePDF >>>>>", e.getMessage(), e.getMessage());
-			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.PDF_NOT_GENERATED, e);
+			logger.error(SESSION_ID, "Inside generatePDF >>>>>", e.getMessage(), e.getMessage());
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
 		}
 
 	}

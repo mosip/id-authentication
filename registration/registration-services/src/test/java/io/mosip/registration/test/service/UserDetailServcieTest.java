@@ -16,7 +16,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
-import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.springframework.web.client.HttpClientErrorException;
@@ -25,7 +24,6 @@ import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dao.UserDetailDAO;
 import io.mosip.registration.dto.UserDetailDto;
 import io.mosip.registration.dto.UserDetailResponseDto;
-import io.mosip.registration.entity.UserDetail;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.service.UserOnboardService;
 import io.mosip.registration.service.impl.UserDetailServiceImpl;
@@ -64,9 +62,9 @@ public class UserDetailServcieTest {
 		map.put(RegistrationConstants.USER_CENTER_ID, "10011");
 		doNothing().when(userDetailDAO).save(Mockito.any(UserDetailResponseDto.class));
 		Mockito.when(userOnboardService.getMachineCenterId()).thenReturn(map);
-		Mockito.when(serviceDelegateUtil.get(Mockito.anyString(), Mockito.any(), Mockito.anyBoolean()))
+		Mockito.when(serviceDelegateUtil.get(Mockito.anyString(), Mockito.any(), Mockito.anyBoolean(),Mockito.anyString()))
 				.thenReturn(userDetail);
-		userDetailServiceImpl.save();
+		userDetailServiceImpl.save("System");
 	}
 
 	@SuppressWarnings("unchecked")
@@ -84,9 +82,9 @@ public class UserDetailServcieTest {
 		map.put(RegistrationConstants.USER_CENTER_ID, "10011");
 		doNothing().when(userDetailDAO).save(Mockito.any(UserDetailResponseDto.class));
 		Mockito.when(userOnboardService.getMachineCenterId()).thenReturn(map);
-		Mockito.when(serviceDelegateUtil.get(Mockito.anyString(), Mockito.any(), Mockito.anyBoolean()))
+		Mockito.when(serviceDelegateUtil.get(Mockito.anyString(), Mockito.any(), Mockito.anyBoolean(),Mockito.anyString()))
 				.thenThrow(HttpClientErrorException.class);
-		userDetailServiceImpl.save();
+		userDetailServiceImpl.save("System");
 	}
 
 	@SuppressWarnings("unchecked")
@@ -104,9 +102,9 @@ public class UserDetailServcieTest {
 		map.put(RegistrationConstants.USER_CENTER_ID, "10011");
 		doNothing().when(userDetailDAO).save(Mockito.any(UserDetailResponseDto.class));
 		Mockito.when(userOnboardService.getMachineCenterId()).thenReturn(map);
-		Mockito.when(serviceDelegateUtil.get(Mockito.anyString(), Mockito.any(), Mockito.anyBoolean()))
+		Mockito.when(serviceDelegateUtil.get(Mockito.anyString(), Mockito.any(), Mockito.anyBoolean(),Mockito.anyString()))
 				.thenThrow(SocketTimeoutException.class);
-		userDetailServiceImpl.save();
+		userDetailServiceImpl.save("System");
 	}
 
 }

@@ -4,11 +4,13 @@ package io.mosip.kernel.idgenerator.tokenid.constant;
  * Exception constant ENUM for Token ID Generator.
  * 
  * @author Sagar Mahapatra
+ * @author Ritesh sinha
  * @since 1.0.0
  *
  */
 public enum TokenIDExceptionConstant {
-	EMPTY_OR_NULL_VALUES("KER-TIG-001", "Input values should not be empty or null");
+	TOKENID_FETCH_EXCEPTION("KER-TIG-001", "Error occur while fetching counter and value details"),
+	TOKENID_INSERTION_EXCEPTION("KER-TIG-002", "Error occur while updating counter details");
 
 	/**
 	 * The error code.

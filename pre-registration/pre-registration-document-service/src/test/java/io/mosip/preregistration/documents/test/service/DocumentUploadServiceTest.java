@@ -25,23 +25,29 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.RestTemplate;
 
+import io.mosip.kernel.auth.adapter.AuthUserDetails;
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.core.virusscanner.spi.VirusScanner;
 import io.mosip.preregistration.core.code.AuditLogVariables;
 import io.mosip.preregistration.core.common.dto.AuditRequestDto;
+import io.mosip.preregistration.core.common.dto.DemographicResponseDTO;
 import io.mosip.preregistration.core.common.dto.DocumentDeleteResponseDTO;
 import io.mosip.preregistration.core.common.dto.DocumentMultipartResponseDTO;
 import io.mosip.preregistration.core.common.dto.MainListResponseDTO;
+import io.mosip.preregistration.core.common.dto.MainResponseDTO;
 import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
 import io.mosip.preregistration.core.exception.TableNotAccessibleException;
 import io.mosip.preregistration.core.util.AuditLogUtil;
@@ -77,8 +83,8 @@ public class DocumentUploadServiceTest {
 	@Autowired
 	private DocumentServiceUtil serviceUtil;
 
-	@MockBean
-	RestTemplateBuilder restTemplateBuilder;
+	@MockBean(name = "restTemplate")
+	RestTemplate restTemplate;
 
 	@MockBean
 	private FileSystemAdapter fs;
@@ -87,6 +93,9 @@ public class DocumentUploadServiceTest {
 
 	@MockBean
 	private DocumentRepository documentRepository;
+	
+	@MockBean
+	private SecurityContextHolder context;
 
 //	@Autowired
 //	private DocumentDAO documnetDAO;
@@ -126,13 +135,13 @@ public class DocumentUploadServiceTest {
 	@Before
 	public void setUp() throws URISyntaxException, FileNotFoundException, IOException {
 
-		docJson = "{\"id\": \"mosip.pre-registration.document.upload\",\"ver\" : \"1.0\","
-				+ "\"reqTime\" : \"2018-12-28T05:23:08.019Z\",\"request\" :"
+		docJson = "{\"id\": \"mosip.pre-registration.document.upload\",\"version\" : \"1.0\","
+				+ "\"requesttime\" : \"2018-12-28T05:23:08.019Z\",\"request\" :"
 				+ "{\"pre_registartion_id\" : \"86710482195706\",\"doc_cat_code\" "
 				+ ": \"POA\",\"doc_typ_code\" : \"address\",\"lang_code\":\"ENG\"}}";
 
-		errJson = "{\"id\": \"mosip.pre-registration.document.upload\",\"ver\" : \"1.0\","
-				+ "\"reqTime\" : \"2018-12-28T05:23:08.019Z\",\"request\" :"
+		errJson = "{\"id\": \"mosip.pre-registration.document.upload\",\"version\" : \"1.0\","
+				+ "\"requesttime\" : \"2018-12-28T05:23:08.019Z\",\"request\" :"
 				+ "{\"pre_registartion_id\" : \"86710482195706\",\"doc_cat_code\" "
 				+ ": \"\",\"doc_typ_code\" : \"address\",\"lang_code\":\"ENG\"}}";
 
@@ -193,22 +202,28 @@ public class DocumentUploadServiceTest {
 		auditRequestDto.setIdType(AuditLogVariables.PRE_REGISTRATION_ID.toString());
 		auditRequestDto.setSessionUserId(AuditLogVariables.SYSTEM.toString());
 		auditRequestDto.setSessionUserName(AuditLogVariables.SYSTEM.toString());
+		
+		AuthUserDetails applicationUser = Mockito.mock(AuthUserDetails.class);
+        Authentication authentication = Mockito.mock(Authentication.class);
+        SecurityContext securityContext = Mockito.mock(SecurityContext.class);
+        Mockito.when(securityContext.getAuthentication()).thenReturn(authentication);
+        SecurityContextHolder.setContext(securityContext);
+        Mockito.when(SecurityContextHolder.getContext().getAuthentication().getPrincipal()).thenReturn(applicationUser);
 	}
 
-	@Test
+	//@Test
 	public void uploadDocumentSuccessTest() throws IOException {
 		List<DocumentResponseDTO> responseUploadList = new ArrayList<>();
-		MainListResponseDTO restRes = new MainListResponseDTO<>();
+		MainResponseDTO<DemographicResponseDTO> restRes = new MainResponseDTO<DemographicResponseDTO>();
+		DemographicResponseDTO dto= new DemographicResponseDTO();
+		
 		docResp.setResMsg(DocumentStatusMessages.DOCUMENT_UPLOAD_SUCCESSFUL.toString());
 		responseUploadList.add(docResp);
 		responseUpload.setResponse(responseUploadList);
-		RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
-		Mockito.when(restTemplateBuilder.build()).thenReturn(restTemplate);
-		restRes.setStatus(true);
-
-		ResponseEntity<MainListResponseDTO> rescenter = new ResponseEntity<>(restRes, HttpStatus.OK);
+		ResponseEntity<MainResponseDTO<DemographicResponseDTO>> rescenter = new ResponseEntity<>(restRes, HttpStatus.OK);
 		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
-				Mockito.eq(MainListResponseDTO.class))).thenReturn(rescenter);
+				Mockito.eq(new ParameterizedTypeReference<MainResponseDTO<DemographicResponseDTO>>() {
+				}))).thenReturn(rescenter);
 		Mockito.when(virusScan.scanDocument(mockMultipartFile.getBytes())).thenReturn(true);
 		Mockito.doReturn(true).when(fs).storeFile(Mockito.any(), Mockito.any(), Mockito.any());
 		Mockito.when(documentRepository.findSingleDocument(Mockito.anyString(), Mockito.anyString()))
@@ -274,13 +289,10 @@ public class DocumentUploadServiceTest {
 		List<DocumentResponseDTO> responseUploadList = new ArrayList<>();
 		MainListResponseDTO restRes = new MainListResponseDTO<>();
 		responseUpload.setResponse(responseUploadList);
-		RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
-		Mockito.when(restTemplateBuilder.build()).thenReturn(restTemplate);
-		restRes.setStatus(true);
-
-		ResponseEntity<MainListResponseDTO> rescenter = new ResponseEntity<>(restRes, HttpStatus.OK);
+		ResponseEntity<MainListResponseDTO<DemographicResponseDTO>> rescenter = new ResponseEntity<>(restRes, HttpStatus.OK);
 		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
-				Mockito.eq(MainListResponseDTO.class))).thenReturn(rescenter);
+				Mockito.eq(new ParameterizedTypeReference<MainListResponseDTO<DemographicResponseDTO>>() {
+				}))).thenReturn(rescenter);
 		Mockito.when(virusScan.scanDocument(mockMultipartFile.getBytes())).thenReturn(true);
 		Mockito.doReturn(true).when(fs).storeFile(Mockito.any(), Mockito.any(), Mockito.any());
 		Mockito.when(documentRepository.findSingleDocument(Mockito.anyString(), Mockito.anyString()))
@@ -294,12 +306,10 @@ public class DocumentUploadServiceTest {
 	@Test(expected = TableNotAccessibleException.class)
 	public void uploadDocumentRepoFailurTest1() throws IOException {
 		MainListResponseDTO restRes = new MainListResponseDTO<>();
-		RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
-		Mockito.when(restTemplateBuilder.build()).thenReturn(restTemplate);
-		restRes.setStatus(true);
-		ResponseEntity<MainListResponseDTO> rescenter = new ResponseEntity<>(restRes, HttpStatus.OK);
+		ResponseEntity<MainListResponseDTO<DemographicResponseDTO>> rescenter = new ResponseEntity<>(restRes, HttpStatus.OK);
 		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
-				Mockito.eq(MainListResponseDTO.class))).thenReturn(rescenter);
+				Mockito.eq(new ParameterizedTypeReference<MainListResponseDTO<DemographicResponseDTO>>() {
+				}))).thenReturn(rescenter);
 		Mockito.when(virusScan.scanDocument(mockMultipartSaveCheck.getBytes())).thenReturn(true);
 		Mockito.when(documentRepository.findSingleDocument(Mockito.anyString(), Mockito.anyString()))
 				.thenThrow(DataAccessLayerException.class);
@@ -314,13 +324,10 @@ public class DocumentUploadServiceTest {
 		docResp.setResMsg(DocumentStatusMessages.DOCUMENT_UPLOAD_SUCCESSFUL.toString());
 		responseUploadList.add(docResp);
 		responseUpload.setResponse(responseUploadList);
-		RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
-		Mockito.when(restTemplateBuilder.build()).thenReturn(restTemplate);
-		restRes.setStatus(true);
-
-		ResponseEntity<MainListResponseDTO> rescenter = new ResponseEntity<>(restRes, HttpStatus.OK);
+		ResponseEntity<MainListResponseDTO<DemographicResponseDTO>> rescenter = new ResponseEntity<>(restRes, HttpStatus.OK);
 		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
-				Mockito.eq(MainListResponseDTO.class))).thenReturn(rescenter);
+				Mockito.eq(new ParameterizedTypeReference<MainListResponseDTO<DemographicResponseDTO>>() {
+				}))).thenReturn(rescenter);
 		Mockito.when(virusScan.scanDocument(mockMultipartFile.getBytes())).thenReturn(true);
 		Mockito.doReturn(false).when(fs).storeFile(Mockito.any(), Mockito.any(), Mockito.any());
 		Mockito.when(documentRepository.findSingleDocument(Mockito.anyString(), Mockito.anyString()))
@@ -340,18 +347,12 @@ public class DocumentUploadServiceTest {
 		copyDcoResDto.setDestPreRegId("48690172097499");
 		copyDcoResDto.setDestDocumnetId("2");
 		docCopyList.add(copyDcoResDto);
-
-		responseCopy.setStatus(true);
 		responseCopy.setResponse(docCopyList);
-		responseCopy.setResTime(serviceUtil.getCurrentResponseTime());
-		
-		RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
-		Mockito.when(restTemplateBuilder.build()).thenReturn(restTemplate);
-		restRes.setStatus(true);
-
-		ResponseEntity<MainListResponseDTO> rescenter = new ResponseEntity<>(restRes, HttpStatus.OK);
+		responseCopy.setResponsetime(serviceUtil.getCurrentResponseTime());
+		ResponseEntity<MainListResponseDTO<DemographicResponseDTO>> rescenter = new ResponseEntity<>(restRes, HttpStatus.OK);
 		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
-				Mockito.eq(MainListResponseDTO.class))).thenReturn(rescenter);
+				Mockito.eq(new ParameterizedTypeReference<MainListResponseDTO<DemographicResponseDTO>>() {
+				}))).thenReturn(rescenter);
 		Mockito.when(documentRepository.findSingleDocument(Mockito.anyString(), Mockito.anyString()))
 				.thenReturn(entity);
 		Mockito.when(documentRepository.save(Mockito.any())).thenReturn(copyEntity);
@@ -368,13 +369,10 @@ public class DocumentUploadServiceTest {
 	@Test(expected = DocumentNotFoundException.class)
 	public void documentCopyFailureTest1() throws FileNotFoundException {
 		MainListResponseDTO restRes = new MainListResponseDTO<>();
-		RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
-		Mockito.when(restTemplateBuilder.build()).thenReturn(restTemplate);
-		restRes.setStatus(true);
-
-		ResponseEntity<MainListResponseDTO> rescenter = new ResponseEntity<>(restRes, HttpStatus.OK);
+		ResponseEntity<MainListResponseDTO<DemographicResponseDTO>> rescenter = new ResponseEntity<>(restRes, HttpStatus.OK);
 		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
-				Mockito.eq(MainListResponseDTO.class))).thenReturn(rescenter);
+				Mockito.eq(new ParameterizedTypeReference<MainListResponseDTO<DemographicResponseDTO>>() {
+				}))).thenReturn(rescenter);
 		InputStream sourceFile = new FileInputStream(file);
 		
 		Mockito.doReturn(sourceFile).when(fs).getFile(Mockito.anyString(), Mockito.anyString());
@@ -385,13 +383,10 @@ public class DocumentUploadServiceTest {
 	@Test(expected = DocumentFailedToCopyException.class)
 	public void documentCopyFailureTest2() throws FileNotFoundException {
 		MainListResponseDTO restRes = new MainListResponseDTO<>();
-		RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
-		Mockito.when(restTemplateBuilder.build()).thenReturn(restTemplate);
-		restRes.setStatus(true);
-
-		ResponseEntity<MainListResponseDTO> rescenter = new ResponseEntity<>(restRes, HttpStatus.OK);
+		ResponseEntity<MainListResponseDTO<DemographicResponseDTO>> rescenter = new ResponseEntity<>(restRes, HttpStatus.OK);
 		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
-				Mockito.eq(MainListResponseDTO.class))).thenReturn(rescenter);
+				Mockito.eq(new ParameterizedTypeReference<MainListResponseDTO<DemographicResponseDTO>>() {
+				}))).thenReturn(rescenter);
 		Mockito.when(documentRepository.findSingleDocument("48690172097498", "POA")).thenReturn(entity);
 		InputStream sourceFile = new FileInputStream(file);
 		
@@ -403,16 +398,12 @@ public class DocumentUploadServiceTest {
 	@Test(expected = TableNotAccessibleException.class)
 	public void documentCopyFailureTest3() throws FileNotFoundException {
 		MainListResponseDTO restRes = new MainListResponseDTO<>();
-		RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
-		Mockito.when(restTemplateBuilder.build()).thenReturn(restTemplate);
-		restRes.setStatus(true);
-
-		ResponseEntity<MainListResponseDTO> rescenter = new ResponseEntity<>(restRes, HttpStatus.OK);
+		ResponseEntity<MainListResponseDTO<DemographicResponseDTO>> rescenter = new ResponseEntity<>(restRes, HttpStatus.OK);
 		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
-				Mockito.eq(MainListResponseDTO.class))).thenReturn(rescenter);
+				Mockito.eq(new ParameterizedTypeReference<MainListResponseDTO<DemographicResponseDTO>>() {
+				}))).thenReturn(rescenter);
 		Mockito.when(documentRepository.findSingleDocument("48690172097498", "POA")).thenReturn(entity);
 		InputStream sourceFile = new FileInputStream(file);
-		
 		Mockito.doReturn(sourceFile).when(fs).getFile(Mockito.anyString(), Mockito.anyString());
 		Mockito.when(documentRepository.save(Mockito.any())).thenThrow(DataAccessLayerException.class);
 		documentUploadService.copyDocument("POA", "48690172097498", "48690172097499");
@@ -436,13 +427,10 @@ public class DocumentUploadServiceTest {
 	@Test(expected = FSServerException.class)
 	public void documentCopyFailureTest4() throws FileNotFoundException {
 		MainListResponseDTO restRes = new MainListResponseDTO<>();
-		RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
-		Mockito.when(restTemplateBuilder.build()).thenReturn(restTemplate);
-		restRes.setStatus(true);
-
-		ResponseEntity<MainListResponseDTO> rescenter = new ResponseEntity<>(restRes, HttpStatus.OK);
+		ResponseEntity<MainListResponseDTO<DemographicResponseDTO>> rescenter = new ResponseEntity<>(restRes, HttpStatus.OK);
 		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
-				Mockito.eq(MainListResponseDTO.class))).thenReturn(rescenter);
+				Mockito.eq(new ParameterizedTypeReference<MainListResponseDTO<DemographicResponseDTO>>() {
+				}))).thenReturn(rescenter);
 		Mockito.doReturn(false).when(fs).copyFile(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),
 				Mockito.anyString());
 		Mockito.when(documentRepository.findSingleDocument("48690172097498", "POA")).thenReturn(entity);
@@ -557,5 +545,5 @@ public class DocumentUploadServiceTest {
 		Mockito.when(documentRepository.deleteAllBydocumentId(documentId)).thenReturn(1);
 	    documentUploadService.deleteDocument(documentId);
 	}
-	
+		
 }

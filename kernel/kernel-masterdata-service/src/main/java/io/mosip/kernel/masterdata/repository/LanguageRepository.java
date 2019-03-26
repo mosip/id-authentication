@@ -27,9 +27,10 @@ public interface LanguageRepository extends BaseRepository<Language, String> {
 	 * @see Language
 	 * @return list of language
 	 */
+	@Query("FROM Language where (isDeleted is null OR isDeleted = false) AND isActive = true")
 	public List<Language> findAllByIsDeletedFalseOrIsDeletedIsNull();
 
-	@Query("FROM Language l where l.code = ?1 and (l.isDeleted is null or l.isDeleted = false)")
+	@Query("FROM Language l where l.code = ?1 and (l.isDeleted is null or l.isDeleted = false) AND isActive=true")
 	public Language findLanguageByCode(String code);
 
 }

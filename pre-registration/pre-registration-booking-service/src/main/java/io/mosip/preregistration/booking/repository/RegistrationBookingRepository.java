@@ -4,6 +4,7 @@
  */
 package io.mosip.preregistration.booking.repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.Modifying;
@@ -16,7 +17,8 @@ import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
 import io.mosip.preregistration.booking.entity.RegistrationBookingEntity;
 
 /**
- * This repository interface is used to define the JPA methods for Booking application.
+ * This repository interface is used to define the JPA methods for Booking
+ * application.
  * 
  * @author Kishan Rathore
  * @author Jagadishwari
@@ -29,22 +31,37 @@ import io.mosip.preregistration.booking.entity.RegistrationBookingEntity;
 public interface RegistrationBookingRepository extends BaseRepository<RegistrationBookingEntity, String> {
 
 	public static final String preIdQuery = "SELECT u FROM RegistrationBookingEntity u WHERE u.bookingPK.preregistrationId = ?1";
-	public static final String deletePreIdQuery="delete from RegistrationBookingEntity u where u.bookingPK.preregistrationId = ?1";
-	 
+	public static final String deletePreIdQuery = "delete from RegistrationBookingEntity u where u.bookingPK.preregistrationId = ?1";
+	public static final String getPreIdQuery = "select u from RegistrationBookingEntity u where u.registrationCenterId=?3 and u.bookingPK.bookingDateTime between ?1 and ?2";
+
 	@Query(preIdQuery)
 	RegistrationBookingEntity getPreRegId(@Param("preRegId") String preRegId);
-	
+
 	/**
 	 * @param registrationCenterId
 	 * @param statusCode
-	 * @return List RegistrationBookingEntity based on Registration center id and status code
- 	 */
-	public List<RegistrationBookingEntity> findByRegistrationCenterId(@Param("regcntr_id")String registrationCenterId);
-	
+	 * @return List RegistrationBookingEntity based on Registration center id and
+	 *         status code
+	 */
+	public List<RegistrationBookingEntity> findByRegistrationCenterId(@Param("regcntr_id") String registrationCenterId);
+
 	@Query(preIdQuery)
 	public List<RegistrationBookingEntity> findBypreregistrationId(String preId);
+
 	@Transactional
 	@Modifying
 	@Query(deletePreIdQuery)
 	public int deleteByPreRegistrationId(String preregistrationId);
+
+	/**
+	 * @param start
+	 *            pass startTime
+	 * @param end
+	 *            pass endTime
+	 * @return list of booked preregistration data between start and end date
+	 */
+	@Query(getPreIdQuery)
+	public List<RegistrationBookingEntity> findByBookingDateTimeBetweenAndRegistrationCenterId(LocalDateTime start,
+			LocalDateTime end, String regCenterId);
+
 }

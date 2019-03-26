@@ -16,8 +16,7 @@ CREATE TABLE regprc.individual_demographic_dedup(
 	reg_id 			character varying(39) not null,	   	-- regprc.registration.id
 	uin				character varying(28),				-- UIN of indivisuals and referenced from idrepo database
 	name 			character varying(128),            	-- Name of an individual, This is combination of fname, mname and lname or full name
-	phonetic_name 	character varying(128),
-	dob 	date,
+	dob 	character varying(64),
 	gender 	character varying(64),
 
 	lang_code 	character varying(3) not null,
@@ -34,6 +33,9 @@ CREATE TABLE regprc.individual_demographic_dedup(
 -- keys section ----------------------------------------------------------------
  alter table regprc.individual_demographic_dedup add constraint pk_idemogd_id primary key (reg_id, lang_code)
  ; 
+ 
+  -- indexes section -------------------------------------------------
+create index idx_idemogd_namedob on regprc.individual_demographic_dedup (name, dob);
 
 -- ddl-end --
 COMMENT ON TABLE regprc.individual_demographic_dedup IS 'Individual demographic table stores applicant demographic details for deduplication';
@@ -43,8 +45,6 @@ COMMENT ON COLUMN regprc.individual_demographic_dedup.reg_id IS 'Registration id
 COMMENT ON COLUMN regprc.individual_demographic_dedup.uin IS 'UIN of Individuals';
 -- ddl-end --
 COMMENT ON COLUMN regprc.individual_demographic_dedup.name IS 'Name of an individual, This is combination of fname, mname and lname or full name';
--- ddl-end --
-COMMENT ON COLUMN regprc.individual_demographic_dedup.phonetic_name IS 'Phonetic name';
 -- ddl-end --
 COMMENT ON COLUMN regprc.individual_demographic_dedup.dob IS 'DOB of an individual';
 -- ddl-end --

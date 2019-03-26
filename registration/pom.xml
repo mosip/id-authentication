@@ -6,11 +6,11 @@
 	<parent>
 		<groupId>io.mosip</groupId>
 		<artifactId>mosip-parent</artifactId>
-		<version>0.9.5</version>
+		<version>0.10.0</version>
 	</parent>
 
 	<groupId>io.mosip.registration</groupId>
-	<version>0.9.5</version>
+	<version>0.10.0</version>
 	<artifactId>registration-parent</artifactId>
 	<packaging>pom</packaging>
 	<name>registration</name>
@@ -278,6 +278,16 @@
 			<dependency>
 				<groupId>io.mosip.kernel</groupId>
 				<artifactId>kernel-transliteration-icu4j</artifactId>
+				<version>${mosip.core.kernel.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>io.mosip.kernel</groupId>
+				<artifactId>kernel-applicanttype-api</artifactId>
+				<version>${mosip.core.kernel.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>io.mosip.kernel</groupId>
+				<artifactId>kernel-cbeffutil-api</artifactId>
 				<version>${mosip.core.kernel.version}</version>
 			</dependency>
 		</dependencies>

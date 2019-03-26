@@ -38,10 +38,10 @@ public class RegistrationCenterDAOTest {
 		registrationCenter.setRegistartionCenterId(registartionCenterId);
 		
 		Optional<RegistrationCenter> registrationCenterList = Optional.of(registrationCenter);
-		Mockito.when(registrationCenterRepository.findByRegistartionCenterIdIdAndRegistartionCenterIdLangCodeAndIsActiveTrue("mosip","ara"))
+		Mockito.when(registrationCenterRepository.findByIsActiveTrueAndRegistartionCenterIdIdAndRegistartionCenterIdLangCode("mosip","eng"))
 				.thenReturn(registrationCenterList);
 		assertTrue(registrationCenterList.isPresent());
-		assertNotNull(registrationCenterDAOImpl.getRegistrationCenterDetails("mosip"));
+		assertNotNull(registrationCenterDAOImpl.getRegistrationCenterDetails("mosip","eng"));
 	}
 
 }

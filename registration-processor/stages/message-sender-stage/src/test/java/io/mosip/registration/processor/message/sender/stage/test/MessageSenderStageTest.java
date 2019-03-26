@@ -1,5 +1,6 @@
 package io.mosip.registration.processor.message.sender.stage.test;
 
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 
 import java.util.ArrayList;
@@ -19,10 +20,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import io.mosip.kernel.core.fsadapter.exception.FSAdapterException;
 import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.abstractverticle.MosipEventBus;
-import io.mosip.registration.processor.core.dto.config.GlobalConfig;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.notification.template.generator.dto.ResponseDto;
 import io.mosip.registration.processor.core.notification.template.generator.dto.SmsResponseDto;
@@ -35,6 +36,7 @@ import io.mosip.registration.processor.message.sender.stage.MessageSenderStage;
 import io.mosip.registration.processor.packet.storage.utils.Utilities;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
 import io.mosip.registration.processor.status.code.RegistrationStatusCode;
+import io.mosip.registration.processor.status.code.RegistrationType;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.TransactionDto;
@@ -52,9 +54,6 @@ public class MessageSenderStageTest {
 
 	@Mock
 	private ObjectMapper mapper;
-
-	@Mock
-	private GlobalConfig jsonObject;
 
 	@Mock
 	private RegistrationProcessorRestClientService<Object> restClientService;
@@ -92,16 +91,16 @@ public class MessageSenderStageTest {
 		stage.deployVerticle();
 	}
 
-	@SuppressWarnings("unchecked")
 	@Before
 	public void setup() throws Exception {
-		System.setProperty("registration.processor.notification.emails", "alokranjan1106@gmail.com");
-		System.setProperty("registration.processor.uin.generated.subject", "UIN Generated");
-		System.setProperty("registration.processor.duplicate.uin.subject", "duplicate UIN");
-		System.setProperty("registration.processor.reregister.subject", "Re-Register");
 		ReflectionTestUtils.setField(stage, "notificationTypes", "SMS|EMAIL");
-
-		Mockito.when(mapper.readValue(Mockito.anyString(), Mockito.any(Class.class))).thenReturn(jsonObject);
+		ReflectionTestUtils.setField(stage, "uinGeneratedSubject", "UIN generated");
+		ReflectionTestUtils.setField(stage, "uinActivateSubject", "UIN activated");
+		ReflectionTestUtils.setField(stage, "uinDeactivateSubject", "UIN deactivated");
+		ReflectionTestUtils.setField(stage, "duplicateUinSubject", "duplicate uin");
+		ReflectionTestUtils.setField(stage, "reregisterSubject", "re register");
+		ReflectionTestUtils.setField(stage, "notificationEmails", "abc@gmail.com");
+		
 		Mockito.doNothing().when(registrationStatusDto).setStatusCode(any());
 		Mockito.doNothing().when(registrationStatusDto).setStatusComment(any());
 		Mockito.doNothing().when(registrationStatusService).updateRegistrationStatus(any());
@@ -127,12 +126,12 @@ public class MessageSenderStageTest {
 
 		MessageDTO dto = new MessageDTO();
 		dto.setRid("85425022110000120190117110505");
-		stage.process(dto);
+		MessageDTO result = stage.process(dto);
+		assertTrue(result.getIsValid());
 	}
 
 	@Test
 	public void testMessageSentUINUpdate() throws Exception {
-
 		TemplateResponseDto templateResponseDto = new TemplateResponseDto();
 
 		TemplateDto templateDto = new TemplateDto();
@@ -151,7 +150,58 @@ public class MessageSenderStageTest {
 
 		MessageDTO dto = new MessageDTO();
 		dto.setRid("85425022110000120190117110505");
-		stage.process(dto);
+		MessageDTO result = stage.process(dto);
+		assertTrue(result.getIsValid());
+	}
+	
+	@Test
+	public void testMessageSentUINUpdatewithActivatedUIN() throws Exception {
+		TemplateResponseDto templateResponseDto = new TemplateResponseDto();
+
+		TemplateDto templateDto = new TemplateDto();
+		TemplateDto templateDto1 = new TemplateDto();
+
+		templateDto.setTemplateTypeCode("RPR_UIN_REAC_SMS");
+		List<TemplateDto> list = new ArrayList<TemplateDto>();
+		list.add(templateDto);
+		templateDto1.setTemplateTypeCode("RPR_UIN_REAC_EMAIL");
+		list.add(templateDto1);
+		templateResponseDto.setTemplates(list);
+		Mockito.when(restClientService.getApi(any(), any(), any(), any(), any())).thenReturn(templateResponseDto);
+
+		Mockito.when(registrationStatusService.getRegistrationStatus(any())).thenReturn(registrationStatusDto);
+		Mockito.when(registrationStatusDto.getStatusCode()).thenReturn(RegistrationStatusCode.PACKET_UIN_UPDATION_SUCCESS.name());
+
+		MessageDTO dto = new MessageDTO();
+		dto.setRid("85425022110000120190117110505");
+		dto.setReg_type(RegistrationType.ACTIVATED.name());
+		MessageDTO result = stage.process(dto);
+		assertTrue(result.getIsValid());
+	}
+	
+	@Test
+	public void testMessageSentUINUpdatewithDeactivatedUIN() throws Exception {
+		TemplateResponseDto templateResponseDto = new TemplateResponseDto();
+
+		TemplateDto templateDto = new TemplateDto();
+		TemplateDto templateDto1 = new TemplateDto();
+
+		templateDto.setTemplateTypeCode("RPR_UIN_DEAC_SMS");
+		List<TemplateDto> list = new ArrayList<TemplateDto>();
+		list.add(templateDto);
+		templateDto1.setTemplateTypeCode("RPR_UIN_DEAC_EMAIL");
+		list.add(templateDto1);
+		templateResponseDto.setTemplates(list);
+		Mockito.when(restClientService.getApi(any(), any(), any(), any(), any())).thenReturn(templateResponseDto);
+
+		Mockito.when(registrationStatusService.getRegistrationStatus(any())).thenReturn(registrationStatusDto);
+		Mockito.when(registrationStatusDto.getStatusCode()).thenReturn(RegistrationStatusCode.PACKET_UIN_UPDATION_SUCCESS.name());
+
+		MessageDTO dto = new MessageDTO();
+		dto.setRid("85425022110000120190117110505");
+		dto.setReg_type(RegistrationType.DEACTIVATED.name());
+		MessageDTO result = stage.process(dto);
+		assertTrue(result.getIsValid());
 	}
 
 	@Test
@@ -174,7 +224,8 @@ public class MessageSenderStageTest {
 
 		MessageDTO dto = new MessageDTO();
 		dto.setRid("85425022110000120190117110505");
-		stage.process(dto);
+		MessageDTO result = stage.process(dto);
+		assertTrue(result.getIsValid());
 	}
 
 	@Test
@@ -197,10 +248,11 @@ public class MessageSenderStageTest {
 		
 		MessageDTO dto = new MessageDTO();
 		dto.setRid("85425022110000120190117110505");
-		stage.process(dto);
+		MessageDTO result = stage.process(dto);
+		assertTrue(result.getIsValid());
 	}
 
-	@Test(expected = TemplateGenerationFailedException.class)
+	@Test
 	public void testConfigNotFoundException() throws Exception {
 		ReflectionTestUtils.setField(stage, "notificationTypes", "");
 		Mockito.when(registrationStatusService.getRegistrationStatus(any())).thenReturn(registrationStatusDto);
@@ -208,7 +260,8 @@ public class MessageSenderStageTest {
 
 		MessageDTO dto = new MessageDTO();
 		dto.setRid("85425022110000120190117110505");
-		stage.process(dto);
+		MessageDTO result = stage.process(dto);
+		assertTrue(result.getInternalError());
 	}
 
 	@Test
@@ -220,20 +273,44 @@ public class MessageSenderStageTest {
 
 		MessageDTO dto = new MessageDTO();
 		dto.setRid("85425022110000120190117110505");
-		stage.process(dto);
+		MessageDTO result = stage.process(dto);
+		assertTrue(result.getInternalError());
 	}
 	
 	@Test
 	public void testException() throws ApisResourceAccessException {
-		
 		Mockito.when(registrationStatusService.getRegistrationStatus(any())).thenReturn(registrationStatusDto);
 		Mockito.when(registrationStatusDto.getStatusCode()).thenReturn(RegistrationStatusCode.PACKET_BIO_DEDUPE_FAILED.name());
 
 		MessageDTO dto = new MessageDTO();
 		dto.setRid("85425022110000120190117110505");
-		stage.process(dto);
+		MessageDTO result = stage.process(dto);
+		assertTrue(result.getInternalError());
 	}
 	
-	
+	@Test
+	public void testFsadapterException() throws ApisResourceAccessException {
+		FSAdapterException e = new FSAdapterException(null, null);
+		TemplateResponseDto templateResponseDto = new TemplateResponseDto();
 
+		TemplateDto templateDto = new TemplateDto();
+		TemplateDto templateDto1 = new TemplateDto();
+
+		templateDto.setTemplateTypeCode("RPR_TEC_ISSUE_SMS");
+		List<TemplateDto> list = new ArrayList<TemplateDto>();
+		list.add(templateDto);
+		templateDto1.setTemplateTypeCode("RPR_TEC_ISSUE_EMAIL");
+		list.add(templateDto1);
+		templateResponseDto.setTemplates(list);
+		Mockito.when(restClientService.getApi(any(), any(), any(), any(), any())).thenThrow(e);
+
+		Mockito.when(registrationStatusService.getRegistrationStatus(any())).thenReturn(registrationStatusDto);
+		Mockito.when(registrationStatusDto.getStatusCode()).thenReturn(RegistrationStatusCode.PACKET_OSI_VALIDATION_FAILED.name());
+		
+		MessageDTO dto = new MessageDTO();
+		dto.setRid("85425022110000120190117110505");
+		MessageDTO result = stage.process(dto);
+		assertTrue(result.getInternalError());
+	}
+	
 }

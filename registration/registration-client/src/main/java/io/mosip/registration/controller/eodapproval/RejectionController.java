@@ -18,6 +18,7 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationClientStatusCode;
 import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.constants.RegistrationUIConstants;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.dto.RegistrationApprovalDTO;
 import io.mosip.registration.dto.mastersync.ReasonListDto;
@@ -146,7 +147,7 @@ public class RejectionController extends BaseController implements Initializable
 			RegistrationApprovalDTO approvalDTO = new RegistrationApprovalDTO(
 					regRejectionTable.getItems().get(regRejectionTable.getSelectionModel().getFocusedIndex()).getId(),
 					regRejectionTable.getItems().get(regRejectionTable.getSelectionModel().getFocusedIndex()).getAcknowledgementFormPath(),
-					RegistrationConstants.REJECTED);
+					RegistrationUIConstants.REJECTED);
 
 			regRejectionTable.getItems().set(rowNum, approvalDTO);
 			regRejectionTable.requestFocus();

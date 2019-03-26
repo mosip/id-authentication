@@ -151,8 +151,8 @@ public class ManualVerificationStage extends MosipVerticleAPIManager{
 			manualVerificationRequestValidator.validate(obj,env.getProperty(BIOMETRIC_SERVICE_ID));
 			ManualAppBiometricRequestDTO pojo = Json.mapper.convertValue ( obj.getMap(), ManualAppBiometricRequestDTO.class );
 			byte[] packetInfo = manualAdjudicationService.getApplicantFile(pojo.getRequest().getRegId(),pojo.getRequest().getFileName());
-			String byteAsString = new String(packetInfo);
 			if (packetInfo != null) {
+				String byteAsString = new String(packetInfo);
 				this.setResponse(ctx, ManualVerificationResponseBuilder.buildManualVerificationSuccessResponse(byteAsString,env.getProperty(BIOMETRIC_SERVICE_ID),env.getProperty(MVS_APPLICATION_VERSION),env.getProperty(DATETIME_PATTERN)),APPLICATION_JSON);
 			}
 		
@@ -163,8 +163,9 @@ public class ManualVerificationStage extends MosipVerticleAPIManager{
 			manualVerificationRequestValidator.validate(obj,env.getProperty(DEMOGRAPHIC_SERVICE_ID));
 			ManualAppBiometricRequestDTO pojo = Json.mapper.convertValue ( obj.getMap(), ManualAppBiometricRequestDTO.class );
 			byte[] packetInfo = manualAdjudicationService.getApplicantFile(pojo.getRequest().getRegId(),PacketFiles.DEMOGRAPHIC.name());
-			String byteAsString = new String(packetInfo);
+			
 			if (packetInfo != null) {
+				String byteAsString = new String(packetInfo);
 				this.setResponse(ctx, ManualVerificationResponseBuilder.buildManualVerificationSuccessResponse(byteAsString,env.getProperty(DEMOGRAPHIC_SERVICE_ID),env.getProperty(MVS_APPLICATION_VERSION),env.getProperty(DATETIME_PATTERN)),APPLICATION_JSON);
 			}
 		
@@ -174,7 +175,7 @@ public class ManualVerificationStage extends MosipVerticleAPIManager{
 			JsonObject obj = ctx.getBodyAsJson();
 			ManualVerificationAssignmentRequestDTO pojo = Json.mapper.convertValue ( obj.getMap(), ManualVerificationAssignmentRequestDTO.class );
 			manualVerificationRequestValidator.validate(obj,env.getProperty(ASSIGNMENT_SERVICE_ID));
-			ManualVerificationDTO manualVerificationDTO = manualAdjudicationService.assignApplicant(pojo.getRequest());
+			ManualVerificationDTO manualVerificationDTO = manualAdjudicationService.assignApplicant(pojo.getRequest(),pojo.getMatchType());
 			if (manualVerificationDTO != null) {
 				this.setResponse(ctx, ManualVerificationResponseBuilder.buildManualVerificationSuccessResponse(manualVerificationDTO,env.getProperty(ASSIGNMENT_SERVICE_ID),env.getProperty(MVS_APPLICATION_VERSION),env.getProperty(DATETIME_PATTERN)),APPLICATION_JSON);
 

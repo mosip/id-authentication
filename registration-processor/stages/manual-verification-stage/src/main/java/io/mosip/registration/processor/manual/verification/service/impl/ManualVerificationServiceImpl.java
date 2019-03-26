@@ -6,17 +6,16 @@ import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 import org.apache.commons.io.IOUtils;
-import org.slf4j.LoggerFactory;
-
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
+import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.code.ApiName;
+import io.mosip.registration.processor.core.code.DedupeSourceName;
 import io.mosip.registration.processor.core.code.EventId;
 import io.mosip.registration.processor.core.code.EventName;
 import io.mosip.registration.processor.core.code.EventType;
@@ -33,6 +32,7 @@ import io.mosip.registration.processor.manual.verification.dto.UserDto;
 import io.mosip.registration.processor.manual.verification.exception.InvalidFileNameException;
 import io.mosip.registration.processor.manual.verification.exception.InvalidUpdateException;
 import io.mosip.registration.processor.manual.verification.exception.NoRecordAssignedException;
+import io.mosip.registration.processor.manual.verification.exception.UserIDNotPresentException;
 import io.mosip.registration.processor.manual.verification.service.ManualVerificationService;
 import io.mosip.registration.processor.manual.verification.stage.ManualVerificationStage;
 import io.mosip.registration.processor.manual.verification.util.StatusMessage;
@@ -84,14 +84,19 @@ public class ManualVerificationServiceImpl implements ManualVerificationService 
 	 * ManualAdjudicationService#assignStatus(io.mosip.registration.processor.manual
 	 * .adjudication.dto.UserDto)
 	 */
-	@Override
-	public ManualVerificationDTO assignApplicant(UserDto dto) {
+
+	public ManualVerificationDTO assignApplicant(UserDto dto,String matchType) {
 		ManualVerificationDTO manualVerificationDTO = new ManualVerificationDTO();
 		List<ManualVerificationEntity> entities;
+		
 		entities = basePacketRepository.getAssignedApplicantDetails(dto.getUserId(),
 				ManualVerificationStatus.ASSIGNED.name());
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
 				dto.getUserId(), "ManualVerificationServiceImpl::assignApplicant()::entry");
+		if(dto.getUserId().isEmpty()) {
+			throw new UserIDNotPresentException(PlatformErrorMessages.RPR_MVS_NO_USER_ID_PRESENT.getCode(),
+					PlatformErrorMessages.RPR_MVS_NO_USER_ID_PRESENT.getMessage());
+		}
 		ManualVerificationEntity manualVerificationEntity;
 		if (!entities.isEmpty()) {
 			manualVerificationEntity = entities.get(0);
@@ -102,7 +107,14 @@ public class ManualVerificationServiceImpl implements ManualVerificationService 
 			manualVerificationDTO.setStatusCode(manualVerificationEntity.getStatusCode());
 			manualVerificationDTO.setReasonCode(manualVerificationEntity.getReasonCode());
 		} else {
-			entities = basePacketRepository.getFirstApplicantDetails(ManualVerificationStatus.PENDING.name());
+			if(matchType.equals(DedupeSourceName.ALL.toString())) {
+				entities = basePacketRepository.getFirstApplicantDetailsForAll(ManualVerificationStatus.PENDING.name());
+
+			}
+			else {
+				entities = basePacketRepository.getFirstApplicantDetails(ManualVerificationStatus.PENDING.name(),matchType);
+
+			}
 			if (entities.isEmpty()) {
 				throw new NoRecordAssignedException(PlatformErrorMessages.RPR_MVS_NO_ASSIGNED_RECORD.getCode(),
 						PlatformErrorMessages.RPR_MVS_NO_ASSIGNED_RECORD.getMessage());
@@ -293,16 +305,7 @@ public class ManualVerificationServiceImpl implements ManualVerificationService 
 
 	}
 
-	private boolean validateManualVerificationDTO(ManualVerificationDTO manualVerificationDTO) {
-		return !(manualVerificationDTO.getMvUsrId() != null || manualVerificationDTO.getMatchedRefId() != null
-				|| manualVerificationDTO.getMatchedRefType() != null || manualVerificationDTO.getReasonCode() != null
-				|| manualVerificationDTO.getRegId() != null || manualVerificationDTO.getStatusCode() != null ||
 
-				!(manualVerificationDTO.getMvUsrId() == "") || !manualVerificationDTO.getMatchedRefId().equals("")
-				|| !manualVerificationDTO.getMatchedRefType().equals("")
-				|| !manualVerificationDTO.getReasonCode().equals("") || !manualVerificationDTO.getRegId().equals("")
-				|| !manualVerificationDTO.getStatusCode().equals(""));
-	}
 
 	/*
 	 * (non-Javadoc)

@@ -146,8 +146,11 @@ public class PacketReceiverStage extends MosipVerticleAPIManager {
 					"", e.getMessage() + ExceptionUtils.getStackTrace(e));
 			throw new UnexpectedException(e.getMessage());
 		} finally {
-			if (file.exists())
-				deleteFile(file);
+			if(file != null) {
+				if (file.exists()) {
+					deleteFile(file);
+				}
+			}
 		}
 	}
 

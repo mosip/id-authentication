@@ -3,6 +3,7 @@ package io.mosip.kernel.otpnotification.controller;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -21,6 +22,7 @@ import io.swagger.annotations.ApiOperation;
  * @author Ritesh Sinha
  * @since 1.0.0
  */
+@RefreshScope
 @RestController
 @CrossOrigin
 public class OtpNotificationController {

@@ -27,6 +27,7 @@ import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.AuditEvent;
 import io.mosip.registration.constants.AuditReferenceIdTypes;
 import io.mosip.registration.constants.Components;
+import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.NotificationDTO;
@@ -96,7 +97,7 @@ public class NotificationServiceImpl implements NotificationService {
 		try {
 			@SuppressWarnings("unchecked")
 			Map<String, List<Map<String, String>>> response = (Map<String, List<Map<String, String>>>) serviceDelegateUtil
-					.post(service, object);
+					.post(service, object,RegistrationConstants.JOB_TRIGGER_POINT_USER);
 			String res = Optional.ofNullable(String.valueOf(response.get("status"))).orElse("");
 			if (res.equals(expectedStatus)) {
 				sb = new StringBuilder();

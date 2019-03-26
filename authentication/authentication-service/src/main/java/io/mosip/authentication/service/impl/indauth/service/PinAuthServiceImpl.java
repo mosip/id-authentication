@@ -15,8 +15,11 @@ import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.spi.indauth.match.MatchInput;
 import io.mosip.authentication.core.spi.indauth.match.MatchOutput;
 import io.mosip.authentication.core.spi.indauth.service.PinAuthService;
+import io.mosip.authentication.service.config.IDAMappingConfig;
 import io.mosip.authentication.service.entity.StaticPin;
 import io.mosip.authentication.service.helper.IdInfoHelper;
+import io.mosip.authentication.service.impl.indauth.builder.AuthStatusInfoBuilder;
+import io.mosip.authentication.service.impl.indauth.builder.MatchInputBuilder;
 import io.mosip.authentication.service.impl.indauth.service.pin.PinAuthType;
 import io.mosip.authentication.service.impl.indauth.service.pin.PinMatchType;
 import io.mosip.authentication.service.repository.StaticPinRepository;
@@ -33,9 +36,16 @@ public class PinAuthServiceImpl implements PinAuthService {
 	@Autowired
 	public IdInfoHelper idInfoHelper;
 
+	/** The id info helper. */
+	@Autowired
+	public MatchInputBuilder matchInputBuilder;
+
 	/** The static pin repo. */
 	@Autowired
 	private StaticPinRepository staticPinRepo;
+
+	@Autowired
+	private IDAMappingConfig idaMappingConfig;
 
 	/*
 	 * (non-Javadoc)
@@ -45,53 +55,48 @@ public class PinAuthServiceImpl implements PinAuthService {
 	 * io.mosip.authentication.core.dto.indauth.AuthRequestDTO, java.lang.String)
 	 */
 	@Override
-	public AuthStatusInfo authenticate(AuthRequestDTO authRequestDTO, String uin, Map<String, List<IdentityInfoDTO>> idInfo)
-			throws IdAuthenticationBusinessException {
+	public AuthStatusInfo authenticate(AuthRequestDTO authRequestDTO, String uin,
+			Map<String, List<IdentityInfoDTO>> idInfo, String partnerId) throws IdAuthenticationBusinessException {
 		List<MatchInput> listMatchInputs = constructMatchInput(authRequestDTO);
-		List<MatchOutput> listMatchOutputs = constructMatchOutput(authRequestDTO, listMatchInputs, uin);
+		List<MatchOutput> listMatchOutputs = constructMatchOutput(authRequestDTO, listMatchInputs, uin, partnerId);
 		boolean isPinMatched = listMatchOutputs.stream().anyMatch(MatchOutput::isMatched);
-		return idInfoHelper.buildStatusInfo(isPinMatched, listMatchInputs, listMatchOutputs, PinAuthType.values());
+		return AuthStatusInfoBuilder.buildStatusInfo(isPinMatched, listMatchInputs, listMatchOutputs,
+				PinAuthType.values(), idaMappingConfig);
 	}
 
 	/**
 	 * Construct match input.
 	 *
-	 * @param authRequestDTO
-	 *            the auth request DTO
+	 * @param authRequestDTO the auth request DTO
 	 * @return the list
 	 */
 	private List<MatchInput> constructMatchInput(AuthRequestDTO authRequestDTO) {
-		return idInfoHelper.constructMatchInput(authRequestDTO, PinAuthType.values(), PinMatchType.values());
+		return matchInputBuilder.buildMatchInput(authRequestDTO, PinAuthType.values(), PinMatchType.values());
 	}
 
 	/**
 	 * Construct match output.
 	 *
-	 * @param authRequestDTO
-	 *            the auth request DTO
-	 * @param listMatchInputs
-	 *            the list match inputs
-	 * @param uin
-	 *            the uin
+	 * @param authRequestDTO  the auth request DTO
+	 * @param listMatchInputs the list match inputs
+	 * @param uin             the uin
 	 * @return the list
-	 * @throws IdAuthenticationBusinessException
-	 *             the id authentication business exception
+	 * @throws IdAuthenticationBusinessException the id authentication business
+	 *                                           exception
 	 */
 	private List<MatchOutput> constructMatchOutput(AuthRequestDTO authRequestDTO, List<MatchInput> listMatchInputs,
-			String uin) throws IdAuthenticationBusinessException {
-		return idInfoHelper.matchIdentityData(authRequestDTO, uin, listMatchInputs, this::getSPin);
+			String uin, String partnerId) throws IdAuthenticationBusinessException {
+		return idInfoHelper.matchIdentityData(authRequestDTO, uin, listMatchInputs, this::getSPin, partnerId);
 	}
 
 	/**
 	 * Gets the s pin.
 	 *
-	 * @param uinValue
-	 *            the uin value
-	 * @param authReq
-	 *            the match type
+	 * @param uinValue the uin value
+	 * @param authReq  the match type
 	 * @return the s pin
 	 */
-	public Map<String, String> getSPin(String uinValue, AuthRequestDTO authReq) {
+	public Map<String, String> getSPin(String uinValue, AuthRequestDTO authReq, String partnerId) {
 		Map<String, String> map = new HashMap<>();
 		String pin = null;
 		Optional<StaticPin> entityValues = staticPinRepo.findById(uinValue);

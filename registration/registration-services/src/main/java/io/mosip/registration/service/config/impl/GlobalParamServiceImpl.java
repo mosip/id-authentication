@@ -5,12 +5,10 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 
 import java.net.SocketTimeoutException;
 import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,17 +16,14 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.ResourceAccessException;
 
+import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
-import io.mosip.registration.audit.AuditFactory;
 import io.mosip.registration.config.AppConfig;
-import io.mosip.registration.constants.AuditEvent;
-import io.mosip.registration.constants.AuditReferenceIdTypes;
-import io.mosip.registration.constants.Components;
 import io.mosip.registration.constants.LoggerConstants;
 import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.dao.GlobalParamDAO;
-import io.mosip.registration.dao.UserOnboardDAO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.entity.GlobalParam;
 import io.mosip.registration.entity.id.GlobalParamId;
@@ -36,7 +31,6 @@ import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.service.BaseService;
 import io.mosip.registration.service.config.GlobalParamService;
 import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
-import io.mosip.registration.util.healthcheck.RegistrationSystemPropertiesChecker;
 
 /**
  * Class for implementing GlobalContextParam service
@@ -54,19 +48,10 @@ public class GlobalParamServiceImpl extends BaseService implements GlobalParamSe
 	private static final Logger LOGGER = AppConfig.getLogger(GlobalParamServiceImpl.class);
 
 	/**
-	 * Instance of {@code AuditFactory}
-	 */
-	@Autowired
-	private AuditFactory auditFactory;
-
-	/**
 	 * Class to retrieve Global parameters of application
 	 */
 	@Autowired
 	private GlobalParamDAO globalParamDAO;
-
-	@Autowired
-	private UserOnboardDAO userOnboardDAO;
 
 	/*
 	 * (non-Javadoc)
@@ -78,89 +63,30 @@ public class GlobalParamServiceImpl extends BaseService implements GlobalParamSe
 		LOGGER.info(LoggerConstants.GLOBAL_PARAM_SERVICE_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
 				"Fetching list of global params");
 
-		auditFactory.audit(AuditEvent.LOGIN_MODES_FETCH, Components.LOGIN_MODES, RegistrationConstants.APPLICATION_NAME,
-				AuditReferenceIdTypes.APPLICATION_ID.getReferenceTypeId());
-
 		return globalParamDAO.getGlobalParams();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * io.mosip.registration.service.config.GlobalParamService#synchConfigData()
-	 */
 	@Override
-	public ResponseDTO synchConfigData() {
+	public ResponseDTO synchConfigData(boolean isJob) {
 		LOGGER.info(LoggerConstants.GLOBAL_PARAM_SERVICE_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
 				"config data synch is started");
 
 		ResponseDTO responseDTO = new ResponseDTO();
 
-		if (!RegistrationAppHealthCheckUtil.isNetworkAvailable() && getGlobalParams().isEmpty()) {
-			LOGGER.info(LoggerConstants.GLOBAL_PARAM_SERVICE_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
-					" Unable to synch config data");
-			return setErrorResponse(responseDTO, RegistrationConstants.GLOBAL_CONFIG_ERROR_MSG, null);
-		}
+		String triggerPoint = (isJob ? RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM
+				: RegistrationConstants.JOB_TRIGGER_POINT_USER);
 
-		String centerID = null;
-		try {
-			String macId = RegistrationSystemPropertiesChecker.getMachineId();
+		saveGlobalParams(responseDTO, triggerPoint);
 
-			// get stationID
-			String stationID = userOnboardDAO.getStationID(macId);
-			// get CenterID
-			centerID = userOnboardDAO.getCenterID(stationID);
-
-			Map<String, String> requestParamMap = new HashMap<String, String>();
-			requestParamMap.put(RegistrationConstants.REGISTRATION_CENTER_ID, centerID);
-
-			/* REST CALL */
-			@SuppressWarnings("unchecked")
-			HashMap<String, Object> globalParamJsonMap = (HashMap<String, Object>) serviceDelegateUtil
-					.get(RegistrationConstants.GET_GLOBAL_CONFIG, requestParamMap, true);
-			HashMap<String, String> globalParamMap = new HashMap<>();
-			parseToMap(globalParamJsonMap, globalParamMap);
-
-			List<GlobalParam> list = new ArrayList<>();
-
-			for (Entry<String, String> key : globalParamMap.entrySet()) {
-
-				GlobalParam globalParam = globalParamDAO.get(key.getKey());
-
-				if (globalParam != null) {
-					globalParam.setVal(globalParamMap.get(key.getKey()));
-
-					globalParam.setUpdBy(getUserIdFromSession());
-					globalParam.setUpdDtimes(Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()));
-
-				} else {
-					globalParam = new GlobalParam();
-					GlobalParamId globalParamId = new GlobalParamId();
-					globalParamId.setCode(UUID.randomUUID().toString());
-					globalParamId.setLangCode("ENG");
-					globalParam.setGlobalParamId(globalParamId);
-					globalParam.setName(key.getKey());
-					globalParam.setTyp("CONFIGURATION");
-					globalParam.setIsActive(true);
-					globalParam.setCrBy("brahma");
-					globalParam.setCrDtime(Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()));
-					globalParam.setVal(globalParamMap.get(key.getKey()).trim());
-				}
-
-				list.add(globalParam);
+		if (!isJob) {
+			/* If unable to fetch from server and no data in DB create error response */
+			if (responseDTO.getSuccessResponseDTO() == null && getGlobalParams().isEmpty()) {
+				setErrorResponse(responseDTO, RegistrationConstants.POLICY_SYNC_ERROR_MESSAGE, null);
+			} else {
+				setSuccessResponse(responseDTO, RegistrationConstants.POLICY_SYNC_SUCCESS_MESSAGE, null);
 			}
-
-			/* Save all Global Params */
-			globalParamDAO.saveAll(list);
-
-			setSuccessResponse(responseDTO, RegistrationConstants.POLICY_SYNC_SUCCESS_MESSAGE, null);
-
-		} catch (HttpServerErrorException | HttpClientErrorException | SocketTimeoutException | RegBaseCheckedException
-				| ClassCastException | ResourceAccessException exception) {
-			setErrorResponse(responseDTO, RegistrationConstants.POLICY_SYNC_ERROR_MESSAGE, null);
-			LOGGER.error("REGISTRATION_SYNCH_CONFIG_DATA", APPLICATION_NAME, APPLICATION_ID, exception.getMessage());
 		}
+
 		LOGGER.info(LoggerConstants.GLOBAL_PARAM_SERVICE_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
 				"config data synch is completed");
 
@@ -175,8 +101,117 @@ public class GlobalParamServiceImpl extends BaseService implements GlobalParamSe
 			if (entry.getValue() instanceof HashMap) {
 				parseToMap((HashMap<String, Object>) entry.getValue(), globalParamMap);
 			} else {
-				globalParamMap.put(key, entry.getValue().toString().trim());
+				globalParamMap.put(key, entry.getValue().toString());
 			}
 		}
+	}
+
+	private void saveGlobalParams(ResponseDTO responseDTO, String triggerPoinnt) {
+		if (RegistrationAppHealthCheckUtil.isNetworkAvailable()) {
+			try {
+				boolean isToBeRestarted = false;
+				Map<String, String> requestParamMap = new HashMap<>();
+
+				/* REST CALL */
+				@SuppressWarnings("unchecked")
+				HashMap<String, Object> globalParamJsonMap = (HashMap<String, Object>) serviceDelegateUtil
+						.get(RegistrationConstants.GET_GLOBAL_CONFIG, requestParamMap, true, triggerPoinnt);
+				HashMap<String, String> globalParamMap = new HashMap<>();
+				parseToMap(globalParamJsonMap, globalParamMap);
+
+				List<GlobalParam> globalParamList = globalParamDAO.getAllEntries();
+
+				for (GlobalParam globalParam : globalParamList) {
+
+					/* Check in map, if exists, update it and remove from map */
+					GlobalParamId globalParamId = globalParam.getGlobalParamId();
+
+					if (globalParamMap.get(globalParamId.getCode()) != null) {
+
+						/* update (Local already exists) but val change */
+						if (!globalParamMap.get(globalParamId.getCode()).trim().equals(globalParam.getVal())) {
+							String val = globalParamMap.get(globalParamId.getCode()).trim();
+							updateVal(globalParam, val);
+
+							/* Add in application map */
+							ApplicationContext.setGlobalConfigValueOf(globalParamId.getCode(), val);
+
+							if (globalParamId.getCode().contains("kernel")) {
+								isToBeRestarted = true;
+							}
+						}
+					}
+					/* Set is deleted true as removed from server */
+					else {
+						updateIsDeleted(globalParam);
+						ApplicationContext.removeGlobalConfigValueOf(globalParamId.getCode());
+					}
+					globalParamMap.remove(globalParamId.getCode());
+				}
+
+				for (Entry<String, String> key : globalParamMap.entrySet()) {
+					createNew(key.getKey(), globalParamMap.get(key.getKey()), globalParamList);
+
+					if (key.getKey().contains("kernel")) {
+						isToBeRestarted = true;
+					}
+					/* Add in application map */
+					ApplicationContext.setGlobalConfigValueOf(key.getKey(), key.getValue());
+				}
+
+				/* Save all Global Params */
+				globalParamDAO.saveAll(globalParamList);
+				if (isToBeRestarted) {
+					Map<String, Object> attributes = new HashMap<>();
+					attributes.put("Restart", RegistrationConstants.ENABLE);
+					setSuccessResponse(responseDTO, RegistrationConstants.POLICY_SYNC_SUCCESS_MESSAGE, attributes);
+				} else {
+					setSuccessResponse(responseDTO, RegistrationConstants.POLICY_SYNC_SUCCESS_MESSAGE, null);
+				}
+			} catch (HttpServerErrorException | HttpClientErrorException | SocketTimeoutException
+					| RegBaseCheckedException | ClassCastException | ResourceAccessException exception) {
+				setErrorResponse(responseDTO, RegistrationConstants.POLICY_SYNC_ERROR_MESSAGE, null);
+				LOGGER.error("REGISTRATION_SYNCH_CONFIG_DATA", APPLICATION_NAME, APPLICATION_ID,
+						exception.getMessage() + ExceptionUtils.getStackTrace(exception));
+			}
+		} else {
+			LOGGER.error(LoggerConstants.GLOBAL_PARAM_SERVICE_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
+					" Unable to synch config data as no internet connection and no data in DB");
+			setErrorResponse(responseDTO, RegistrationConstants.POLICY_SYNC_ERROR_MESSAGE, null);
+
+		}
+	}
+
+	private void updateVal(GlobalParam globalParam, String val) {
+		globalParam.setVal(val);
+		globalParam.setUpdBy(getUserIdFromSession());
+		globalParam.setUpdDtimes(Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()));
+		globalParam.setIsActive(true);
+		globalParam.setIsDeleted(false);
+	}
+
+	private void updateIsDeleted(GlobalParam globalParam) {
+		globalParam.setIsActive(false);
+		globalParam.setIsDeleted(true);
+		globalParam.setUpdBy(getUserIdFromSession());
+		globalParam.setUpdDtimes(Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()));
+	}
+
+	private void createNew(String code, String value, List<GlobalParam> globalParamList) {
+		GlobalParam globalParam = new GlobalParam();
+
+		GlobalParamId globalParamId = new GlobalParamId();
+		globalParamId.setCode(code);
+		globalParamId.setLangCode("ENG");
+
+		/* TODO Need to Add Description not key (CODE) */
+		globalParam.setName(code);
+		globalParam.setTyp("CONFIGURATION");
+		globalParam.setIsActive(true);
+		globalParam.setCrBy("brahma");
+		globalParam.setCrDtime(Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()));
+		globalParam.setVal(value);
+		globalParam.setGlobalParamId(globalParamId);
+		globalParamList.add(globalParam);
 	}
 }

@@ -15,7 +15,6 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.core.io.support.ResourcePropertySource;
 
-import io.mosip.registration.processor.core.notification.template.mapping.RegistrationProcessorNotificationTemplate;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.identify.RegistrationProcessorIdentity;
 import io.mosip.registration.processor.core.queue.factory.MosipQueueConnectionFactoryImpl;
 import io.mosip.registration.processor.core.queue.impl.MosipActiveMqImpl;
@@ -57,11 +56,6 @@ public class CoreConfigBean {
 		return new RegistrationProcessorIdentity();
 	}
 
-	@Bean
-	RegistrationProcessorNotificationTemplate getRegistrationProcessorNotificationTemplate() {
-		return new RegistrationProcessorNotificationTemplate();
-	}
-	
 	@Bean
 	MosipQueueManager<?, ?> getMosipQueueManager(){
 		return new MosipActiveMqImpl();

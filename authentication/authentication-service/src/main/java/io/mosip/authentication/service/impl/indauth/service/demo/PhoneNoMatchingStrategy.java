@@ -16,10 +16,10 @@ import io.mosip.authentication.core.util.DemoMatcherUtil;
 public enum PhoneNoMatchingStrategy implements TextMatchingStrategy {
 
 	EXACT(MatchingStrategyType.EXACT, (Object reqInfo, Object entityInfo, Map<String, Object> props) -> {
-		if (reqInfo instanceof String) {
+		if (reqInfo instanceof String && entityInfo instanceof String) {
 			return DemoMatcherUtil.doExactMatch((String) reqInfo, (String) entityInfo);
 		} else {
-			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.PHONE_MISMATCH);
+			return 0;
 		}
 	});
 

@@ -15,8 +15,9 @@ import org.mockito.junit.MockitoRule;
 
 import io.mosip.registration.dao.MasterSyncDao;
 import io.mosip.registration.dao.ValidDocumentDAO;
+import io.mosip.registration.entity.ApplicantValidDocument;
 import io.mosip.registration.entity.DocumentType;
-import io.mosip.registration.entity.ValidDocument;
+import io.mosip.registration.entity.id.ApplicantValidDocumentID;
 import io.mosip.registration.service.impl.ValidDocumentServiceImpl;
 
 public class ValidDocumentServiceImplTest {
@@ -36,11 +37,13 @@ public class ValidDocumentServiceImplTest {
 	@Test
 	public void getDocumentCategoriesTest() {
 
-		List<ValidDocument> validDocuments = new ArrayList<>();
-		ValidDocument validDocument = new ValidDocument();
-		validDocument.setApplicantType("007");
-		validDocument.setDocCategoryCode("POA");
-		validDocument.setDocTypeCode("DocType");
+		List<ApplicantValidDocument> validDocuments = new ArrayList<>();
+		ApplicantValidDocument validDocument = new ApplicantValidDocument();
+		ApplicantValidDocumentID validDocumentId=new ApplicantValidDocumentID();
+		validDocumentId.setAppTypeCode("007");
+		validDocumentId.setDocCatCode("POA");
+		validDocumentId.setDocTypeCode("DocType");
+		validDocument.setValidDocumentId(validDocumentId);
 
 		validDocuments.add(validDocument);
 
@@ -54,7 +57,7 @@ public class ValidDocumentServiceImplTest {
 		documentType.setName("Passport");
 		documentTypes.add(documentType);
 
-		Mockito.when(validDocumentDAO.getValidDocuments("007", "POA", "eng")).thenReturn(validDocuments);
+		Mockito.when(validDocumentDAO.getValidDocuments("007", "POA")).thenReturn(validDocuments);
 		Mockito.when(masterSyncDao.getDocumentTypes(list, "eng")).thenReturn(documentTypes);
 
 		assertNotNull(validDocumentServiceImpl.getDocumentCategories("007", "POA", "eng"));

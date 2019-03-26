@@ -1,10 +1,12 @@
 package io.mosip.registration.cipher;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.nio.charset.StandardCharsets;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Base64;
+import java.util.Properties;
 
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
@@ -22,14 +24,24 @@ import io.mosip.kernel.crypto.jce.processor.SymmetricProcessor;
  *
  */
 public class CilentJarDecryption {
+	
+	
 	private static final String SLASH = "/";
 	private static final String AES_ALGORITHM = "AES";
 	private static final String REGISTRATION = "registration";
 
+	static {
+		String tempPath = System.getProperty("java.io.tmpdir");
+		System.setProperty("java.ext.dirs", "D:/ManifestTesting/mosip-sw-0.9.6/lib/;" + tempPath + "/mosip/");
+
+		System.out.println(System.getProperty("java.ext.dirs"));
+	}
+
 	/**
 	 * Decrypt the bytes
 	 * 
-	 * @param Jar bytes
+	 * @param Jar
+	 *            bytes
 	 * @throws UnsupportedEncodingException
 	 */
 	public byte[] decrypt(byte[] data, byte[] encodedString) {
@@ -44,41 +56,63 @@ public class CilentJarDecryption {
 	 * Decrypt and save the file in temp directory
 	 * 
 	 * @param args
+	 * @throws SecurityException
+	 * @throws NoSuchMethodException
+	 * @throws InvocationTargetException
+	 * @throws IllegalArgumentException
+	 * @throws IllegalAccessException
+	 * @throws InterruptedException
 	 */
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) throws IOException, InterruptedException {
+
 		CilentJarDecryption aesDecrypt = new CilentJarDecryption();
-		// ResourceBundle resourceBundle = ResourceBundle.getBundle("reg-application");
+
+		File encryptedClientJar = new File(
+				new File(System.getProperty("user.dir")).getAbsolutePath() + "/" + "mosip-client.jar");
+
+		File encryptedServicesJar = new File(new File(System.getProperty("user.dir")).getParent() + "/" + "lib/"
+				+ "registration-services-" + "0.9.6" + ".jar");
+
 		String tempPath = FileUtils.getTempDirectoryPath();
-		File file = new File("D:\\decryption\\mosip-sw-0.8.10\\bin\\mosip-client.jar");
 
-		String source = "D:\\decryption\\mosip-sw-0.8.10\\lib";
-		File srcDir = new File(source);
-
-		System.out.println("Decrypt File Name====>" + file.getName());
-		byte[] decryptedRegFileBytes = aesDecrypt.decrypt(FileUtils.readFileToByteArray(file),
+		System.out.println("Decrypt File Name====>" + encryptedClientJar.getName());
+		byte[] decryptedRegFileBytes = aesDecrypt.decrypt(FileUtils.readFileToByteArray(encryptedClientJar),
 				Base64.getDecoder().decode("bBQX230Wskq6XpoZ1c+Ep1D+znxfT89NxLQ7P4KFkc4="));
 
-		FileUtils.writeByteArrayToFile(new File(tempPath + "/mosip/"+file.getName()), decryptedRegFileBytes);
+		FileUtils.writeByteArrayToFile(new File(tempPath + "/mosip/" + encryptedClientJar.getName()),
+				decryptedRegFileBytes);
 
-		for (File files : srcDir.listFiles()) {
+		System.out.println("Decrypt File Name====>" + encryptedServicesJar.getName());
+		byte[] decryptedRegServiceBytes = aesDecrypt.decrypt(FileUtils.readFileToByteArray(encryptedServicesJar),
+				Base64.getDecoder().decode("bBQX230Wskq6XpoZ1c+Ep1D+znxfT89NxLQ7P4KFkc4="));
 
-			byte[] decryptedReFileBytes = null;
+		FileUtils.writeByteArrayToFile(new File(tempPath + "/mosip/" + encryptedServicesJar.getName()),
+				decryptedRegServiceBytes);
 
-			if (files.getName().contains(REGISTRATION)) {
+		ProcessBuilder clientBuilder = new ProcessBuilder("java", "-jar", tempPath + "/mosip/mosip-client.jar");
 
-				System.out.println("Decrypt File Name====>" + files.getName());
-				decryptedReFileBytes = aesDecrypt.decrypt(FileUtils.readFileToByteArray(files),
-						Base64.getDecoder().decode("bBQX230Wskq6XpoZ1c+Ep1D+znxfT89NxLQ7P4KFkc4="));
+		Process process = clientBuilder.start();
 
-				FileUtils.writeByteArrayToFile(new File(tempPath + "/mosip/"+ files.getName()),
-						decryptedReFileBytes);
+		System.out.println("Invoked suuceessfully");
 
-			} /*else {
-				FileUtils.writeByteArrayToFile(new File(tempPath + "/mosip/lib/" + files.getName()),
-						FileUtils.readFileToByteArray(files));
-			}*/
-
+		int status = process.waitFor();
+		if (status == 0) {
+			System.out.println("Registration Client stopped with the status: " + status);
+			process.destroy();
+			FileUtils.deleteDirectory(new File(tempPath + "mosip\\"));
 		}
+	}
+
+	private void setProperties() throws IOException {
+
+		String propsFilePath = new File(System.getProperty("user.dir")).getParentFile()
+				+ "/props/mosip-application.properties";
+
+		FileInputStream fileInputStream = new FileInputStream(propsFilePath);
+		Properties properties = new Properties();
+		properties.load(fileInputStream);
+
+		System.setProperty("reg.db.path", properties.getProperty("mosip.dbpath"));
 
 	}
 }

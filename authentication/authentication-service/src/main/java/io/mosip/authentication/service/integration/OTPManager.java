@@ -1,7 +1,6 @@
 package io.mosip.authentication.service.integration;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -23,7 +22,6 @@ import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.util.dto.RestRequestDTO;
 import io.mosip.authentication.service.factory.RestRequestFactory;
 import io.mosip.authentication.service.helper.RestHelper;
-import io.mosip.authentication.service.integration.dto.OTPValidateResponseDTO;
 import io.mosip.authentication.service.integration.dto.OtpGeneratorRequestDto;
 import io.mosip.authentication.service.integration.dto.OtpGeneratorResponseDto;
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -32,9 +30,12 @@ import io.mosip.kernel.core.logger.spi.Logger;
  * OTPManager handling with OTP-Generation and OTP-Validation.
  * 
  * @author Rakesh Roshan
+ * @author Dinesh Karuppiah.T
  */
 @Component
 public class OTPManager {
+
+	private static final String SESSION_ID = "SESSION_ID";
 
 	private static final String VALIDATION_UNSUCCESSFUL = "VALIDATION_UNSUCCESSFUL";
 
@@ -74,7 +75,8 @@ public class OTPManager {
 					otpGeneratorRequestDto, OtpGeneratorResponseDto.class);
 			otpGeneratorResponsetDto = restHelper.requestSync(restRequestDTO);
 			response = otpGeneratorResponsetDto.getOtp();
-			logger.info("NA", "NA", "NA", "otpGeneratorResponsetDto " + response);
+			logger.info(SESSION_ID, this.getClass().getSimpleName(), "generateOTP",
+					"otpGeneratorResponsetDto " + response);
 
 		} catch (RestServiceException e) {
 
@@ -85,7 +87,7 @@ public class OTPManager {
 				String message = otpGeneratorResponsetDto.getMessage();
 				if (status != null && status.equalsIgnoreCase(STATUS_FAILURE)
 						&& message.equalsIgnoreCase(USER_BLOCKED)) {
-					throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.BLOCKED_OTP_TO_GENERATE);
+					throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.BLOCKED_OTP_GENERATE);
 
 				}
 			} else {
@@ -94,11 +96,10 @@ public class OTPManager {
 				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.SERVER_ERROR);
 			}
 
-			logger.error("NA", "NA", e.getErrorCode(), e.getErrorText());
+			logger.error(SESSION_ID, this.getClass().getSimpleName(), e.getErrorCode(), e.getErrorText());
 
 		} catch (IDDataValidationException e) {
-			throw new IdAuthenticationBusinessException(
-					IdAuthenticationErrorConstants.KERNEL_OTP_GENERATION_REQUEST_FAILED, e);
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.OTP_GENERATION_FAILED, e);
 		}
 		return response;
 	}
@@ -126,7 +127,8 @@ public class OTPManager {
 					.map(res -> String.valueOf(res.get("status")))
 					.filter(status -> status.equalsIgnoreCase(STATUS_SUCCESS)).isPresent();
 		} catch (RestServiceException e) {
-			logger.error("NA", "NA", e.getErrorCode() + e.getErrorText(), e.getResponseBodyAsString().orElse(""));
+			logger.error(SESSION_ID, this.getClass().getSimpleName(), e.getErrorCode() + e.getErrorText(),
+					e.getResponseBodyAsString().orElse(""));
 
 			Optional<Object> responseBody = e.getResponseBody();
 			if (responseBody.isPresent()) {
@@ -142,9 +144,8 @@ public class OTPManager {
 				}
 			}
 		} catch (IDDataValidationException e) {
-			logger.error("NA", "NA", "Inside validateOtp", null);
-			throw new IdAuthenticationBusinessException(
-					IdAuthenticationErrorConstants.KERNEL_OTP_VALIDATION_REQUEST_FAILED, e);
+			logger.error(SESSION_ID, this.getClass().getSimpleName(), "Inside validateOtp", null);
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.DATA_VALIDATION_FAILED, e);
 		}
 		return isValidOtp;
 	}
@@ -153,8 +154,8 @@ public class OTPManager {
 		Optional<String> errorCode = e.getResponseBodyAsString().flatMap(this::getErrorCode);
 		// Do not throw server error for OTP not generated, throw invalid OTP error
 		// instead
-		if (errorCode.filter(
-				code -> code.equals(IdAuthenticationErrorConstants.VAL_KEY_NOT_FOUND_OTP_NOT_GENERATED.getErrorCode()))
+		// FIXME change errorcode
+		if (errorCode.filter(code -> code.equals(IdAuthenticationErrorConstants.OTP_GENERATION_FAILED.getErrorCode()))
 				.isPresent()) {
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_OTP);
 		}
@@ -163,7 +164,7 @@ public class OTPManager {
 
 	private void throwOtpException(String message) throws IdAuthenticationBusinessException {
 		if (message.equalsIgnoreCase(USER_BLOCKED)) {
-			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.BLOCKED_OTP_TO_VALIDATE);
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.BLOCKED_OTP_VALIDATE);
 		} else if (message.equalsIgnoreCase(OTP_EXPIRED)) {
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.EXPIRED_OTP);
 		} else if (message.equalsIgnoreCase(VALIDATION_UNSUCCESSFUL)) {
@@ -187,7 +188,7 @@ public class OTPManager {
 			try {
 				res = mapper.readValue(str, Map.class);
 			} catch (IOException e) {
-				logger.error("NA", "NA", "Error parsing response body", null);
+				logger.error(SESSION_ID, this.getClass().getSimpleName(), "Error parsing response body", null);
 			}
 			return res;
 		}).map(map -> map.get("errors")).filter(obj -> obj instanceof List).flatMap(obj -> ((List) obj).stream()

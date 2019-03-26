@@ -8,7 +8,7 @@ import io.mosip.registration.processor.core.notification.template.generator.dto.
 import io.mosip.registration.processor.core.notification.template.generator.dto.SmsResponseDto;
 import io.mosip.registration.processor.core.spi.message.sender.MessageNotificationService;
 import io.mosip.registration.processor.message.sender.service.impl.MessageNotificationServiceImpl;
-import io.mosip.registration.processor.message.sender.template.generator.TemplateGenerator;
+import io.mosip.registration.processor.message.sender.template.TemplateGenerator;
 
 @Configuration
 public class MsgNotificationBeanCofig {

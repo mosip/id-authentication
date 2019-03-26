@@ -64,28 +64,108 @@ public enum ApiName {
 	/** The idrepodev. */
 	IDREPODEV,
 
-	/** The Cryptomaanger **/
+	/** The Cryptomaanger *. */
 	CRYPTOMANAGERDECRYPT,
 
-	/** The ReverseDataSync **/
+	/** The ReverseDataSync *. */
 	REVERSEDATASYNC,
 
-    /** The Device history **/
+	/** The Device history **/
 	DEVICESHISTORIES,
 
-    /** The Reg center device history **/
+	/** The Reg center device history **/
 	REGISTRATIONCENTERDEVICEHISTORY,
 
-    /** The registration center timestamp **/
+	/** The registration center timestamp **/
 	REGISTRATIONCENTERTIMESTAMP,
-	
-	 /** The registration connector**/
+
+	/** The registration connector **/
 	REGISTRATIONCONNECTOR,
-	
-	 /** The decryption api from DMZ**/
+
+	/** The fullname. */
+	FULLNAME,
+
+	/** The dateofbirth. */
+	DATEOFBIRTH,
+
+	/** The age. */
+	AGE,
+
+	/** The gender. */
+	GENDER,
+
+	/** The residencestatus. */
+	RESIDENCESTATUS,
+
+	/** The addressline1. */
+	ADDRESSLINE1,
+
+	/** The addressline2. */
+	ADDRESSLINE2,
+
+	/** The addressline3. */
+	ADDRESSLINE3,
+
+	/** The region. */
+	REGION,
+
+	/** The city. */
+	CITY,
+
+	/** The postalcode. */
+	POSTALCODE,
+
+	/** The province. */
+	PROVINCE,
+
+	/** The phone. */
+	PHONE,
+
+	/** The email. */
+	EMAIL,
+
+	/** The localadministrativeauthority. */
+	LOCALADMINISTRATIVEAUTHORITY,
+
+	/** The proofofidentity. */
+	PROOFOFIDENTITY,
+
+	/** The proofofaddress. */
+	PROOFOFADDRESS,
+
+	/** The proofofrelationship. */
+	PROOFOFRELATIONSHIP,
+
+	/** The proofofdateofbirth. */
+	PROOFOFDATEOFBIRTH,
+
+	/** The parentorguardianbiometrics. */
+	PARENTORGUARDIANBIOMETRICS,
+
+	/** The idschemaversion. */
+	IDSCHEMAVERSION,
+
+	/** The cnienumber. */
+	CNIENUMBER,
+
+	/** The decryption api from DMZ *. */
+
+	SYNCSERVICE,
+
+	ENCRYPTIONSERVICE,
+
+	PACKETRECEIVER,
+
+	/** The decryption api from DMZ **/
 	DMZCRYPTOMANAGERDECRYPT,
 
-	/** The AUDIT api from DMZ**/
-	DMZAUDIT
+	/** The AUDIT api from DMZ **/
+	DMZAUDIT,
+
+	/** The centerdetails. */
+	CENTERDETAILS,
+
+	/** The machinedetails. */
+	MACHINEDETAILS;
 
 }

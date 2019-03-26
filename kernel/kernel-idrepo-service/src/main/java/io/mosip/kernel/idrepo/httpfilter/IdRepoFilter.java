@@ -121,6 +121,7 @@ public class IdRepoFilter extends OncePerRequestFilter {
 
 		Instant requestTime = Instant.now();
 		uin = StringUtils.substringAfter(request.getRequestURL().toString(), "v1.0/");
+		IdRepoLogger.setUin(uin);
 		ResettableStreamHttpServletRequest requestWrapper = new ResettableStreamHttpServletRequest(request);
 		mosipLogger.debug(uin, ID_REPO, ID_REPO_FILTER, "Request Received at: " + requestTime);
 		mosipLogger.debug(uin, ID_REPO, ID_REPO_FILTER, "Request URL: " + request.getRequestURL());

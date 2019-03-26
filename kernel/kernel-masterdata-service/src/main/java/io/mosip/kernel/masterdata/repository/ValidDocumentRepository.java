@@ -28,7 +28,7 @@ public interface ValidDocumentRepository extends BaseRepository<ValidDocument, V
 	 *            the document category code.
 	 * @return list of valid document.
 	 */
-	@Query("FROM ValidDocument WHERE docCategoryCode=?1 AND (isDeleted is null OR isDeleted = false)")
+	@Query("FROM ValidDocument WHERE docCategoryCode=?1 AND (isDeleted is null OR isDeleted = false) and isActive = true")
 	List<ValidDocument> findByDocCategoryCode(String code);
 
 	/**
@@ -38,7 +38,7 @@ public interface ValidDocumentRepository extends BaseRepository<ValidDocument, V
 	 *            the document type code.
 	 * @return list of valid document.
 	 */
-	@Query("FROM ValidDocument WHERE docTypeCode=?1 AND (isDeleted is null OR isDeleted = false)")
+	@Query("FROM ValidDocument WHERE docTypeCode=?1 AND (isDeleted is null OR isDeleted = false) and isActive = true")
 	List<ValidDocument> findByDocTypeCode(String code);
 
 	/**

@@ -12,7 +12,7 @@ import io.mosip.registration.processor.packet.uploader.stage.PacketUploaderStage
  */
 @Configuration
 public class PacketUploaderConfig {
-	
+
 	/**
 	 * PacketUploaderStage Bean
 	 * @return

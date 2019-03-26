@@ -24,10 +24,11 @@ import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.spi.spin.service.StaticPinService;
 import io.mosip.authentication.service.impl.spin.validator.StaticPinRequestValidator;
+
 /**
  * 
  * This Test Class tests the StaticPinController class.
- *   
+ * 
  * @author Prem Kumar
  *
  */
@@ -35,55 +36,58 @@ import io.mosip.authentication.service.impl.spin.validator.StaticPinRequestValid
 @WebMvcTest
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
 public class StaticPinControllerTest {
-	
+
 	/** The Static Pin Facade */
 	@Mock
 	private StaticPinService staticPinService;
-	
-	/** The Static Pin Request Validator  */
+
+	/** The Static Pin Request Validator */
 	@InjectMocks
 	private StaticPinRequestValidator staticPinRequestValidator;
-	
-	/** The Static Pin Controller */ 
+
+	/** The Static Pin Controller */
 	@InjectMocks
 	private StaticPinController staticPinController;
-	
+
 	/** The WebDataBinder */
 	@Mock
 	WebDataBinder binder;
-	
+
 	Errors error = new BindException(StaticPinRequestDTO.class, "staticPinRequestDTO");
-	
+
 	@Before
 	public void before() {
 		ReflectionTestUtils.setField(staticPinController, "staticPinService", staticPinService);
 		ReflectionTestUtils.invokeMethod(staticPinController, "initBinder", binder);
 	}
+
 	/*
 	 * 
-	 * Errors in the StaticPinRequestValidator is handled here and exception is thrown
+	 * Errors in the StaticPinRequestValidator is handled here and exception is
+	 * thrown
 	 */
 	@Test(expected = IdAuthenticationAppException.class)
-	public void showStaticPinRequestValidator()
-			throws IdAuthenticationAppException, IdAuthenticationBusinessException{
+	public void showStaticPinRequestValidator() throws IdAuthenticationAppException, IdAuthenticationBusinessException {
 		StaticPinRequestDTO dto = new StaticPinRequestDTO();
 		Errors error = new BindException(dto, "staticPinRequestDTO");
 		error.rejectValue("id", "errorCode", "testErrorMessage");
 		staticPinController.storeSpin(dto, error);
 
 	}
+
 	@Test
-	public void testController_Succes() throws  IdAuthenticationAppException, IdAuthenticationBusinessException{
-		StaticPinRequestDTO dto=new StaticPinRequestDTO();
+	public void testController_Succes() throws IdAuthenticationAppException, IdAuthenticationBusinessException {
+		StaticPinRequestDTO dto = new StaticPinRequestDTO();
 		Mockito.when(staticPinService.storeSpin(dto)).thenReturn(new StaticPinResponseDTO());
 		staticPinController.storeSpin(dto, error);
 	}
-	
+
 	@Test(expected = IdAuthenticationAppException.class)
-	public void testController_Failure_DataValidation() throws IdAuthenticationBusinessException, IdAuthenticationAppException
-	{
-		StaticPinRequestDTO dto=new StaticPinRequestDTO();
-		Mockito.when(staticPinService.storeSpin(dto)).thenThrow(new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.STATICPIN_NOT_STORED_PINVAUE));
+	public void testController_Failure_DataValidation()
+			throws IdAuthenticationBusinessException, IdAuthenticationAppException {
+		StaticPinRequestDTO dto = new StaticPinRequestDTO();
+		Mockito.when(staticPinService.storeSpin(dto))
+				.thenThrow(new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.PIN_NOT_STORED));
 		staticPinController.storeSpin(dto, error);
 	}
 }

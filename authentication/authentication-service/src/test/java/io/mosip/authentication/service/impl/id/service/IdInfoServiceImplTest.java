@@ -10,7 +10,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import io.mosip.authentication.core.exception.IdAuthenticationDaoException;
-import io.mosip.authentication.service.impl.id.service.impl.IdRepoServiceImpl;
+import io.mosip.authentication.service.impl.id.service.impl.IdRepoManager;
 
 //@RunWith(SpringRunner.class)
 
@@ -18,7 +18,7 @@ import io.mosip.authentication.service.impl.id.service.impl.IdRepoServiceImpl;
 @TestPropertySource("classpath:sample-output-test.properties")
 public class IdInfoServiceImplTest {
 
-	IdRepoServiceImpl IdInfoService = new IdRepoServiceImpl();
+	IdRepoManager IdInfoService = new IdRepoManager();
 
 	@Value("${sample.demo.entity}")
 	String value;

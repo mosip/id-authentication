@@ -55,7 +55,7 @@ public class RegistrationPacketSyncJob extends BaseJob {
 			regPacketStatusService = applicationContext.getBean(RegPacketStatusService.class);
 			
 			// Run the Parent JOB always first
-			this.responseDTO = regPacketStatusService.syncPacket();
+			this.responseDTO = regPacketStatusService.syncPacket(triggerPoint);
 
 			// To run the child jobs after the parent job Success
 			if (responseDTO.getSuccessResponseDTO() != null && context != null) {
@@ -88,7 +88,7 @@ public class RegistrationPacketSyncJob extends BaseJob {
 		LOGGER.debug(LoggerConstants.REG_PACKET_SYNC_STATUS_JOB, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "execute Job started");
 
-		this.responseDTO = regPacketStatusService.syncPacket();
+		this.responseDTO = regPacketStatusService.syncPacket(triggerPoint);
 		syncTransactionUpdate(responseDTO, triggerPoint, jobId);
 
 		LOGGER.debug(LoggerConstants.REG_PACKET_SYNC_STATUS_JOB, RegistrationConstants.APPLICATION_NAME,

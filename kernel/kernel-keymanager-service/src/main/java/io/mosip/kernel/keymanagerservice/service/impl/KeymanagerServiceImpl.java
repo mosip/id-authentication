@@ -121,7 +121,7 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 				KeymanagerConstant.GETPUBLICKEY);
 		LOGGER.info(KeymanagerConstant.SESSIONID, KeymanagerConstant.REFERENCEID, referenceId.toString(),
 				KeymanagerConstant.GETPUBLICKEY);
-		LocalDateTime localDateTimeStamp =keymanagerUtil.parseToLocalDateTime(timeStamp);
+		LocalDateTime localDateTimeStamp = keymanagerUtil.parseToLocalDateTime(timeStamp);
 		PublicKeyResponse<String> publicKeyResponse = new PublicKeyResponse<>();
 		if (!referenceId.isPresent() || referenceId.get().trim().isEmpty()) {
 			LOGGER.info(KeymanagerConstant.SESSIONID, KeymanagerConstant.EMPTY, KeymanagerConstant.EMPTY,
@@ -496,5 +496,11 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 		dbKeyStore.setPublicKey(publicKey);
 		dbKeyStore.setPrivateKey(encryptedPrivateKey);
 		keyStoreRepository.save(keymanagerUtil.setMetaData(dbKeyStore));
+	}
+
+	//TODO: To be removed added for debugging
+	@Override
+	public List<String> getAllAlias() {
+		return keyStore.getAllAlias();
 	}
 }

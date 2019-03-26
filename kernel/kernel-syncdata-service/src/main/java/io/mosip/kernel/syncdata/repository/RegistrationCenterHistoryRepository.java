@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.stereotype.Repository;
 
 import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
+import io.mosip.kernel.syncdata.entity.RegistrationCenterDevice;
 import io.mosip.kernel.syncdata.entity.RegistrationCenterHistory;
 
 /**
@@ -27,7 +28,7 @@ public interface RegistrationCenterHistoryRepository extends BaseRepository<Regi
 	 *            The language code
 	 * @param effectivetimes
 	 *            The effective time
-	 * @return Registration center history
+	 * @return list of {@link RegistrationCenterHistory} -list of registration center history
 	 */
 	List<RegistrationCenterHistory> findByIdAndLangCodeAndEffectivetimesLessThanEqualAndIsDeletedFalse(String id,
 			String languageCode, LocalDateTime effectivetimes);

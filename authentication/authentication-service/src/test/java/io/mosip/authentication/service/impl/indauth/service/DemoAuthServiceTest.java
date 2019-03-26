@@ -11,8 +11,10 @@ import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -33,15 +35,13 @@ import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.context.WebApplicationContext;
 
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
-import io.mosip.authentication.core.dto.indauth.AuthSecureDTO;
 import io.mosip.authentication.core.dto.indauth.AuthStatusInfo;
 import io.mosip.authentication.core.dto.indauth.AuthTypeDTO;
-import io.mosip.authentication.core.dto.indauth.BioInfo;
-import io.mosip.authentication.core.dto.indauth.BioType;
-import io.mosip.authentication.core.dto.indauth.DeviceInfo;
+import io.mosip.authentication.core.dto.indauth.BioIdentityInfoDTO;
+import io.mosip.authentication.core.dto.indauth.DataDTO;
+import io.mosip.authentication.core.dto.indauth.IdType;
 import io.mosip.authentication.core.dto.indauth.IdentityDTO;
 import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
-import io.mosip.authentication.core.dto.indauth.MatchInfo;
 import io.mosip.authentication.core.dto.indauth.RequestDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.IdAuthenticationDaoException;
@@ -50,14 +50,18 @@ import io.mosip.authentication.core.spi.indauth.match.AuthType;
 import io.mosip.authentication.core.spi.indauth.match.MatchInput;
 import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
 import io.mosip.authentication.service.config.IDAMappingConfig;
+import io.mosip.authentication.service.factory.IDAMappingFactory;
 import io.mosip.authentication.service.helper.IdInfoHelper;
+import io.mosip.authentication.service.impl.indauth.builder.MatchInputBuilder;
+import io.mosip.authentication.service.impl.indauth.service.bio.BioAuthType;
 import io.mosip.authentication.service.impl.indauth.service.demo.DemoMatchType;
 import io.mosip.authentication.service.integration.MasterDataManager;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest
 @Import(IDAMappingConfig.class)
-@ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
+@ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class, IDAMappingConfig.class,
+		IDAMappingFactory.class })
 public class DemoAuthServiceTest {
 
 	@Autowired
@@ -66,27 +70,37 @@ public class DemoAuthServiceTest {
 	@InjectMocks
 	private DemoAuthServiceImpl demoAuthServiceImpl;
 
-	@Autowired
-	private IDAMappingConfig idMappingConfig;
-
-	@Mock
+	@InjectMocks
 	private IdInfoHelper idInfoHelper;
 
 	@InjectMocks
-	private IdInfoHelper actualidInfoHelper;
+	private IdInfoFetcherImpl idInfoFetcherImpl;
+
+	@InjectMocks
+	private MatchInputBuilder matchInputBuilder;
 
 	@Mock
 	private IdAuthService<?> idInfoService;
-	
+
 	@Mock
 	private MasterDataManager masterDataManager;
 
+	@Autowired
+	private IDAMappingConfig idaMappingConfig;
+
 	@Before
 	public void before() {
-		ReflectionTestUtils.setField(actualidInfoHelper, "environment", environment);
-		ReflectionTestUtils.setField(actualidInfoHelper, "idMappingConfig", idMappingConfig);
+		ReflectionTestUtils.setField(idInfoHelper, "environment", environment);
+		ReflectionTestUtils.setField(idInfoHelper, "idMappingConfig", idaMappingConfig);
 		ReflectionTestUtils.setField(demoAuthServiceImpl, "environment", environment);
-		ReflectionTestUtils.setField(demoAuthServiceImpl, "idInfoHelper", actualidInfoHelper);
+		ReflectionTestUtils.setField(demoAuthServiceImpl, "idInfoHelper", idInfoHelper);
+		ReflectionTestUtils.setField(demoAuthServiceImpl, "idaMappingConfig", idaMappingConfig);
+		ReflectionTestUtils.setField(demoAuthServiceImpl, "matchInputBuilder", matchInputBuilder);
+		ReflectionTestUtils.setField(matchInputBuilder, "idInfoFetcher", idInfoFetcherImpl);
+		ReflectionTestUtils.setField(idInfoFetcherImpl, "environment", environment);
+		ReflectionTestUtils.setField(idInfoHelper, "idInfoFetcher", idInfoFetcherImpl);
+		ReflectionTestUtils.setField(matchInputBuilder, "idInfoHelper", idInfoHelper);
+		ReflectionTestUtils.setField(idInfoHelper, "environment", environment);
 	}
 
 	@Test
@@ -98,28 +112,11 @@ public class DemoAuthServiceTest {
 	public void fadMatchInputtest() throws NoSuchMethodException, SecurityException, IllegalAccessException,
 			IllegalArgumentException, InvocationTargetException {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
-		AuthTypeDTO authType = new AuthTypeDTO();
-		authType.setAddress(false);
-		authType.setFullAddress(true);
-		authType.setBio(false);
-		authType.setOtp(false);
-		authType.setPersonalIdentity(false);
-		authType.setPin(false);
-		authRequestDTO.setAuthType(authType);
-		authRequestDTO.setId("IDA");
-		authRequestDTO.setIdvId("426789089018");
-		BioInfo bioinfo = new BioInfo();
-		bioinfo.setBioType(BioType.FGRIMG.getType());
-
-		DeviceInfo deviceInfo = new DeviceInfo();
-		deviceInfo.setDeviceId("12345");
-		deviceInfo.setMake("Mantra");
-		deviceInfo.setModel("M123");
-		bioinfo.setDeviceInfo(deviceInfo);
-
-		List<BioInfo> bioInfoList = new ArrayList<BioInfo>();
-		bioInfoList.add(bioinfo);
-		authRequestDTO.setBioInfo(bioInfoList);
+		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
+		authTypeDTO.setDemo(true);
+		authRequestDTO.setRequestedAuth(authTypeDTO);
+		authRequestDTO.setId("mosip.identity.auth");
+		authRequestDTO.setIndividualId("426789089018");
 		RequestDTO requestDTO = new RequestDTO();
 		IdentityDTO identityDTO = new IdentityDTO();
 		List<IdentityInfoDTO> infoList = new ArrayList<>();
@@ -128,50 +125,35 @@ public class DemoAuthServiceTest {
 		identityInfoDTO.setValue("Test");
 		infoList.add(identityInfoDTO);
 		identityDTO.setFullAddress(infoList);
-		requestDTO.setIdentity(identityDTO);
-		authRequestDTO.setIdvIdType("D");
-		AuthSecureDTO authSecureDTO = new AuthSecureDTO();
-		authSecureDTO.setPublicKeyCert("1234567890");
-		authSecureDTO.setSessionKey("1234567890");
-		authRequestDTO.setKey(authSecureDTO);
-		MatchInfo matchInfo = new MatchInfo();
-		matchInfo.setAuthType("fullAddress");
-		matchInfo.setLanguage("fre");
-		matchInfo.setMatchingStrategy(MatchingStrategyType.PARTIAL.getType());
-		matchInfo.setMatchingThreshold(60);
-		List<MatchInfo> matchInfolist = new ArrayList<>();
-		matchInfolist.add(matchInfo);
-		authRequestDTO.setMatchInfo(matchInfolist);
-		authRequestDTO.setTspID("1234567890");
-		authRequestDTO.setPinInfo(new ArrayList<>());
-//		authRequestDTO.setReqHmac("string");
-		authRequestDTO.setReqTime("2018-10-30T11:02:22.778+0000");
-		RequestDTO request = new RequestDTO();
+		requestDTO.setDemographics(identityDTO);
+		authRequestDTO.setRequestHMAC("string");
+		authRequestDTO.setRequestTime("2018-10-30T11:02:22.778+0000");
 		IdentityInfoDTO identityinfo = new IdentityInfoDTO();
 		identityinfo.setLanguage("fre");
 		identityinfo.setValue("exemple d'adresse ligne 1 exemple d'adresse ligne 2 exemple d'adresse ligne 3");
-		IdentityDTO identity = new IdentityDTO();
 		List<IdentityInfoDTO> addresslist = new ArrayList<>();
 		addresslist.add(identityinfo);
-		identity.setFullAddress(addresslist);
-		request.setIdentity(identity);
+		RequestDTO request = new RequestDTO();
+		IdentityDTO identity = new IdentityDTO();
+		request.setDemographics(identity);
 		authRequestDTO.setRequest(request);
-		authRequestDTO.setTxnID("1234567890");
-		// authRequestDTO.setVer("1.0");
+		identity.setFullAddress(addresslist);
+		request.setDemographics(identity);
+		authRequestDTO.setRequest(request);
+		authRequestDTO.setTransactionID("1234567890");
 		Map<String, Object> matchProperties = new HashMap<>();
 		List<MatchInput> listMatchInputsExp = new ArrayList<>();
 		AuthType demoAuthType = null;
-		DeviceInfo deviceInfo1 = null;
 		listMatchInputsExp.add(new MatchInput(demoAuthType, DemoMatchType.ADDR, MatchingStrategyType.PARTIAL.getType(),
-				60, matchProperties, deviceInfo, "fre"));
+				60, matchProperties, "fre"));
 		Method demoImplMethod = DemoAuthServiceImpl.class.getDeclaredMethod("constructMatchInput",
 				AuthRequestDTO.class);
 		demoImplMethod.setAccessible(true);
-		Mockito.when(idInfoHelper.constructMatchInput(Mockito.any(), Mockito.any(), Mockito.any()))
-				.thenReturn(listMatchInputsExp);
 		List<MatchInput> listMatchInputsActual = (List<MatchInput>) demoImplMethod.invoke(demoAuthServiceImpl,
 				authRequestDTO);
 		assertNotNull(listMatchInputsActual);
+		System.err.println(listMatchInputsExp);
+		System.err.println(listMatchInputsActual);
 //		assertEquals(listMatchInputsExp, listMatchInputsActual);
 //		assertTrue(listMatchInputsExp.containsAll(listMatchInputsActual));
 
@@ -181,29 +163,25 @@ public class DemoAuthServiceTest {
 	public void adMatchInputtest() throws NoSuchMethodException, SecurityException, IllegalAccessException,
 			IllegalArgumentException, InvocationTargetException {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
-		BioInfo bioinfo = new BioInfo();
-		bioinfo.setBioType(BioType.FGRIMG.getType());
-
-		DeviceInfo deviceInfo = new DeviceInfo();
-		deviceInfo.setDeviceId("12345");
-		deviceInfo.setMake("Mantra");
-		deviceInfo.setModel("M123");
-		bioinfo.setDeviceInfo(deviceInfo);
-
-		List<BioInfo> bioInfoList = new ArrayList<BioInfo>();
-		bioInfoList.add(bioinfo);
-		authRequestDTO.setBioInfo(bioInfoList);
-		AuthTypeDTO authType = new AuthTypeDTO();
-		authType.setAddress(true);
-		authType.setFullAddress(false);
-		authType.setBio(false);
-		authType.setOtp(false);
-		authType.setPersonalIdentity(false);
-		authType.setPin(false);
-		authRequestDTO.setAuthType(authType);
+		BioIdentityInfoDTO fingerValue = new BioIdentityInfoDTO();
+		DataDTO dataDTOFinger = new DataDTO();
+		dataDTOFinger.setBioValue("finger");
+		dataDTOFinger.setBioSubType("Thumb");
+		dataDTOFinger.setBioType(BioAuthType.FGR_IMG.getType());
+		dataDTOFinger.setDeviceProviderID("1234567890");
+		fingerValue.setData(dataDTOFinger);
+		List<BioIdentityInfoDTO> fingerIdentityInfoDtoList = new ArrayList<BioIdentityInfoDTO>();
+		fingerIdentityInfoDtoList.add(fingerValue);
+		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
+		authTypeDTO.setBio(false);
+		authTypeDTO.setDemo(true);
+		authTypeDTO.setOtp(false);
+		authTypeDTO.setPin(false);
+		authRequestDTO.setRequestedAuth(authTypeDTO);
 		authRequestDTO.setId("IDA");
-		authRequestDTO.setId("426789089018");
+
 		RequestDTO requestDTO = new RequestDTO();
+		requestDTO.setBiometrics(fingerIdentityInfoDtoList);
 		IdentityDTO identityDTO = new IdentityDTO();
 		List<IdentityInfoDTO> infoList = new ArrayList<>();
 		IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
@@ -212,24 +190,8 @@ public class DemoAuthServiceTest {
 				"exemple d'adresse ligne 1 exemple d'adresse ligne 2 exemple d'adresse ligne 3 Casablanca Tanger-Tétouan-Al Hoceima Fès-Meknès");
 		infoList.add(identityInfoDTO);
 		identityDTO.setFullAddress(infoList);
-		requestDTO.setIdentity(identityDTO);
-		authRequestDTO.setIdvIdType("D");
-		AuthSecureDTO authSecureDTO = new AuthSecureDTO();
-		authSecureDTO.setPublicKeyCert("1234567890");
-		authSecureDTO.setSessionKey("1234567890");
-		authRequestDTO.setKey(authSecureDTO);
-		MatchInfo matchInfo = new MatchInfo();
-		matchInfo.setAuthType("address");
-		matchInfo.setLanguage("fre");
-		matchInfo.setMatchingStrategy(MatchingStrategyType.EXACT.getType());
-		matchInfo.setMatchingThreshold(100);
-		List<MatchInfo> matchInfolist = new ArrayList<>();
-		matchInfolist.add(matchInfo);
-		authRequestDTO.setMatchInfo(matchInfolist);
-		authRequestDTO.setTspID("1234567890");
-		authRequestDTO.setPinInfo(new ArrayList<>());
-//		authRequestDTO.setReqHmac("string");
-		authRequestDTO.setReqTime("2018-10-30T11:02:22.778+0000");
+		requestDTO.setDemographics(identityDTO);
+		authRequestDTO.setRequestTime("2018-10-30T11:02:22.778+0000");
 		RequestDTO request = new RequestDTO();
 		IdentityInfoDTO address1 = new IdentityInfoDTO();
 		address1.setLanguage("fre");
@@ -268,32 +230,30 @@ public class DemoAuthServiceTest {
 		identity.setLocation1(location1list);
 		identity.setLocation2(location2list);
 		identity.setLocation3(location3list);
-		request.setIdentity(identity);
+		request.setDemographics(identity);
 		authRequestDTO.setRequest(request);
-		authRequestDTO.setTxnID("1234567890");
+		authRequestDTO.setIndividualId("426789089018");
+		authRequestDTO.setTransactionID("1234567890");
 		// authRequestDTO.setVer("1.0");
 		List<MatchInput> listMatchInputsExp = new ArrayList<>();
 		AuthType demoAuthType = null;
-		DeviceInfo deviceInfo1 = null;
 		Map<String, Object> matchProperties = new HashMap<>();
 		listMatchInputsExp.add(new MatchInput(demoAuthType, DemoMatchType.ADDR_LINE1,
-				MatchingStrategyType.EXACT.getType(), 100, matchProperties, deviceInfo, "fre"));
+				MatchingStrategyType.EXACT.getType(), 100, matchProperties, "fre"));
 		listMatchInputsExp.add(new MatchInput(demoAuthType, DemoMatchType.ADDR_LINE2,
-				MatchingStrategyType.EXACT.getType(), 100, matchProperties, deviceInfo, "fre"));
+				MatchingStrategyType.EXACT.getType(), 100, matchProperties, "fre"));
 		listMatchInputsExp.add(new MatchInput(demoAuthType, DemoMatchType.ADDR_LINE3,
-				MatchingStrategyType.EXACT.getType(), 100, matchProperties, deviceInfo, "fre"));
+				MatchingStrategyType.EXACT.getType(), 100, matchProperties, "fre"));
 		listMatchInputsExp.add(new MatchInput(demoAuthType, DemoMatchType.LOCATION1,
-				MatchingStrategyType.EXACT.getType(), 100, matchProperties, deviceInfo, "fre"));
+				MatchingStrategyType.EXACT.getType(), 100, matchProperties, "fre"));
 		listMatchInputsExp.add(new MatchInput(demoAuthType, DemoMatchType.LOCATION2,
-				MatchingStrategyType.EXACT.getType(), 100, matchProperties, deviceInfo, "fre"));
+				MatchingStrategyType.EXACT.getType(), 100, matchProperties, "fre"));
 		listMatchInputsExp.add(new MatchInput(demoAuthType, DemoMatchType.LOCATION3,
-				MatchingStrategyType.EXACT.getType(), 100, matchProperties, deviceInfo, "fre"));
+				MatchingStrategyType.EXACT.getType(), 100, matchProperties, "fre"));
 //		listMatchInputsExp.add(new MatchInput(DemoMatchType.PINCODE_SEC, MatchingStrategyType.EXACT.getType(), 100));
 		Method demoImplMethod = DemoAuthServiceImpl.class.getDeclaredMethod("constructMatchInput",
 				AuthRequestDTO.class);
 		demoImplMethod.setAccessible(true);
-		Mockito.when(idInfoHelper.constructMatchInput(Mockito.any(), Mockito.any(), Mockito.any()))
-				.thenReturn(listMatchInputsExp);
 		List<MatchInput> listMatchInputsActual = (List<MatchInput>) demoImplMethod.invoke(demoAuthServiceImpl,
 				authRequestDTO);
 		assertNotNull(listMatchInputsActual);
@@ -309,30 +269,25 @@ public class DemoAuthServiceTest {
 			IllegalArgumentException, InvocationTargetException {
 
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
-		BioInfo bioinfo = new BioInfo();
-		bioinfo.setBioType(BioType.FGRIMG.getType());
-
-		DeviceInfo deviceInfo = new DeviceInfo();
-		deviceInfo.setDeviceId("12345");
-		deviceInfo.setMake("Mantra");
-		deviceInfo.setModel("M123");
-		bioinfo.setDeviceInfo(deviceInfo);
-
-		List<BioInfo> bioInfoList = new ArrayList<BioInfo>();
-		bioInfoList.add(bioinfo);
-		authRequestDTO.setBioInfo(bioInfoList);
-		AuthTypeDTO authType = new AuthTypeDTO();
-		authType.setAddress(false);
-		authType.setFullAddress(false);
-		authType.setBio(false);
-		authType.setOtp(false);
-		authType.setPersonalIdentity(true);
-		authType.setPin(false);
-		authRequestDTO.setAuthType(authType);
+		BioIdentityInfoDTO fingerValue = new BioIdentityInfoDTO();
+		DataDTO dataDTOFinger = new DataDTO();
+		dataDTOFinger.setBioValue("finger");
+		dataDTOFinger.setBioSubType("Thumb");
+		dataDTOFinger.setBioType(BioAuthType.FGR_IMG.getType());
+		dataDTOFinger.setDeviceProviderID("1234567890");
+		fingerValue.setData(dataDTOFinger);
+		List<BioIdentityInfoDTO> fingerIdentityInfoDtoList = new ArrayList<BioIdentityInfoDTO>();
+		fingerIdentityInfoDtoList.add(fingerValue);
+		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
+		authTypeDTO.setBio(false);
+		authTypeDTO.setDemo(true);
+		authTypeDTO.setOtp(false);
+		authTypeDTO.setPin(false);
+		authRequestDTO.setRequestedAuth(authTypeDTO);
 		authRequestDTO.setId("IDA");
-		authRequestDTO.setIdvId("426789089018");
 		RequestDTO requestDTO = new RequestDTO();
 		IdentityDTO identityDTO = new IdentityDTO();
+
 		/* Name */
 		List<IdentityInfoDTO> nameList = new ArrayList<>();
 		IdentityInfoDTO nameInfoDTO = new IdentityInfoDTO();
@@ -340,50 +295,33 @@ public class DemoAuthServiceTest {
 		nameInfoDTO.setValue("Ibrahim Ibn Ali");
 		nameList.add(nameInfoDTO);
 		identityDTO.setName(nameList);
-		requestDTO.setIdentity(identityDTO);
-		authRequestDTO.setIdvIdType("D");
-		AuthSecureDTO authSecureDTO = new AuthSecureDTO();
-		authSecureDTO.setPublicKeyCert("1234567890");
-		authSecureDTO.setSessionKey("1234567890");
-		authRequestDTO.setKey(authSecureDTO);
-		MatchInfo matchInfo = new MatchInfo();
-		matchInfo.setAuthType("personalIdentity");
-		matchInfo.setLanguage("fre");
-		matchInfo.setMatchingStrategy(MatchingStrategyType.EXACT.getType());
-		matchInfo.setMatchingThreshold(100);
-		List<MatchInfo> matchInfolist = new ArrayList<>();
-		matchInfolist.add(matchInfo);
-		authRequestDTO.setMatchInfo(matchInfolist);
-		authRequestDTO.setTspID("1234567890");
-		authRequestDTO.setPinInfo(new ArrayList<>());
-//		authRequestDTO.setReqHmac("string");
-		authRequestDTO.setReqTime("2018-10-30T11:02:22.778+0000");
+		requestDTO.setDemographics(identityDTO);
+		authRequestDTO.setRequestTime("2018-10-30T11:02:22.778+0000");
 		RequestDTO request = new RequestDTO();
-		request.setIdentity(identityDTO);
+		request.setDemographics(identityDTO);
+		requestDTO.setBiometrics(fingerIdentityInfoDtoList);
 		authRequestDTO.setRequest(request);
-		authRequestDTO.setTxnID("1234567890");
+		authRequestDTO.setIndividualId("426789089018");
+		authRequestDTO.setTransactionID("1234567890");
 		// authRequestDTO.setVer("1.0");
 		List<MatchInput> listMatchInputsExp = new ArrayList<>();
 		AuthType demoAuthType = null;
-		DeviceInfo deviceInfo1 = null;
 		Map<String, Object> matchProperties = new HashMap<>();
 		listMatchInputsExp.add(new MatchInput(demoAuthType, DemoMatchType.NAME, MatchingStrategyType.EXACT.getType(),
-				100, matchProperties, deviceInfo, "fre"));
+				100, matchProperties, "fre"));
 		listMatchInputsExp.add(new MatchInput(demoAuthType, DemoMatchType.AGE, MatchingStrategyType.EXACT.getType(),
-				100, matchProperties, deviceInfo, "fre"));
+				100, matchProperties, "fre"));
 		listMatchInputsExp.add(new MatchInput(demoAuthType, DemoMatchType.DOB, MatchingStrategyType.EXACT.getType(),
-				100, matchProperties, deviceInfo, "fre"));
+				100, matchProperties, "fre"));
 		listMatchInputsExp.add(new MatchInput(demoAuthType, DemoMatchType.EMAIL, MatchingStrategyType.EXACT.getType(),
-				100, matchProperties, deviceInfo, "fre"));
+				100, matchProperties, "fre"));
 		listMatchInputsExp.add(new MatchInput(demoAuthType, DemoMatchType.PHONE, MatchingStrategyType.EXACT.getType(),
-				100, matchProperties, deviceInfo, "fre"));
+				100, matchProperties, "fre"));
 		listMatchInputsExp.add(new MatchInput(demoAuthType, DemoMatchType.GENDER, MatchingStrategyType.EXACT.getType(),
-				100, matchProperties, deviceInfo, "fre"));
+				100, matchProperties, "fre"));
 		Method demoImplMethod = DemoAuthServiceImpl.class.getDeclaredMethod("constructMatchInput",
 				AuthRequestDTO.class);
 		demoImplMethod.setAccessible(true);
-		Mockito.when(idInfoHelper.constructMatchInput(Mockito.any(), Mockito.any(), Mockito.any()))
-				.thenReturn(listMatchInputsExp);
 		List<MatchInput> listMatchInputsActual = (List<MatchInput>) demoImplMethod.invoke(demoAuthServiceImpl,
 				authRequestDTO);
 		assertNotNull(listMatchInputsActual);
@@ -395,17 +333,13 @@ public class DemoAuthServiceTest {
 	public void constructMatchInputTestNoFad() throws NoSuchMethodException, SecurityException, IllegalAccessException,
 			IllegalArgumentException, InvocationTargetException {
 		AuthRequestDTO authRequest = new AuthRequestDTO();
-		AuthTypeDTO authType = new AuthTypeDTO();
-		authType.setAddress(false);
-		authType.setFullAddress(false);
-		authType.setBio(false);
-		authType.setOtp(false);
-		authType.setPersonalIdentity(false);
-		authType.setPin(false);
-		authRequest.setAuthType(authType);
+		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
+		authTypeDTO.setBio(false);
+		authTypeDTO.setDemo(true);
+		authTypeDTO.setOtp(false);
+		authTypeDTO.setPin(false);
+		authRequest.setRequestedAuth(authTypeDTO);
 		List<MatchInput> matchInputs = new ArrayList<>();
-		Mockito.when(idInfoHelper.constructMatchInput(Mockito.any(), Mockito.any(), Mockito.any()))
-				.thenReturn(matchInputs);
 		Method constructInputMethod = DemoAuthServiceImpl.class.getDeclaredMethod("constructMatchInput",
 				AuthRequestDTO.class);
 		constructInputMethod.setAccessible(true);
@@ -434,12 +368,11 @@ public class DemoAuthServiceTest {
 		idInfo.put("email", list);
 		idInfo.put("phone", list);
 		DemoAuthServiceImpl demoAuthService = Mockito.mock(DemoAuthServiceImpl.class);
-		Mockito.when(
-				demoAuthService.authenticate(Mockito.any(AuthRequestDTO.class), Mockito.anyString(), Mockito.any()))
-				.thenThrow(new IdAuthenticationBusinessException());
+		Mockito.when(demoAuthService.authenticate(Mockito.any(AuthRequestDTO.class), Mockito.anyString(), Mockito.any(),
+				Mockito.anyString())).thenThrow(new IdAuthenticationBusinessException());
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 
-		demoAuthService.authenticate(authRequestDTO, "", idInfo);
+		demoAuthService.authenticate(authRequestDTO, "", idInfo, "123456");
 	}
 
 	@Test
@@ -464,24 +397,20 @@ public class DemoAuthServiceTest {
 		idInfo.put("phone", list);
 		AuthStatusInfo authStatusInfovalue = new AuthStatusInfo();
 		authStatusInfovalue.setStatus(false);
-		Mockito.when(idInfoHelper.buildStatusInfo(Mockito.anyBoolean(), Mockito.any(), Mockito.any(), Mockito.any()))
-				.thenReturn(authStatusInfovalue);
-		AuthStatusInfo authStatusInfo = demoAuthServiceImpl.authenticate(authRequestDTO, "121212", idInfo);
+		AuthStatusInfo authStatusInfo = demoAuthServiceImpl.authenticate(authRequestDTO, "121212", idInfo, "123456");
 		assertTrue(!authStatusInfo.isStatus());
 	}
 
 	private AuthRequestDTO generateData() {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
-		AuthTypeDTO authType = new AuthTypeDTO();
-		authType.setAddress(false);
-		authType.setFullAddress(false);
-		authType.setBio(false);
-		authType.setOtp(false);
-		authType.setPersonalIdentity(true);
-		authType.setPin(false);
-		authRequestDTO.setAuthType(authType);
+		AuthRequestDTO authRequest = new AuthRequestDTO();
+		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
+		authTypeDTO.setBio(false);
+		authTypeDTO.setDemo(true);
+		authTypeDTO.setOtp(false);
+		authTypeDTO.setPin(false);
+		authRequest.setRequestedAuth(authTypeDTO);
 		authRequestDTO.setId("IDA");
-		authRequestDTO.setIdvId("426789089018");
 		RequestDTO requestDTO = new RequestDTO();
 		IdentityDTO identityDTO = new IdentityDTO();
 		/* Name */
@@ -491,29 +420,13 @@ public class DemoAuthServiceTest {
 		nameInfoDTO.setValue("Ibrahim Ibn Ali");
 		nameList.add(nameInfoDTO);
 		identityDTO.setName(nameList);
-		requestDTO.setIdentity(identityDTO);
-		authRequestDTO.setIdvIdType("D");
-		AuthSecureDTO authSecureDTO = new AuthSecureDTO();
-		authSecureDTO.setPublicKeyCert("1234567890");
-		authSecureDTO.setSessionKey("1234567890");
-		authRequestDTO.setKey(authSecureDTO);
-		MatchInfo matchInfo = new MatchInfo();
-		matchInfo.setAuthType("personalIdentity");
-		matchInfo.setLanguage("fre");
-		matchInfo.setMatchingStrategy(MatchingStrategyType.EXACT.getType());
-		matchInfo.setMatchingThreshold(100);
-		List<MatchInfo> matchInfolist = new ArrayList<>();
-		matchInfolist.add(matchInfo);
-		authRequestDTO.setMatchInfo(matchInfolist);
-		authRequestDTO.setTspID("1234567890");
-		authRequestDTO.setPinInfo(new ArrayList<>());
-//		authRequestDTO.setReqHmac("string");
-		authRequestDTO.setReqTime("2018-10-30T11:02:22.778+0000");
+		requestDTO.setDemographics(identityDTO);
+		authRequestDTO.setRequestTime("2018-10-30T11:02:22.778+0000");
 		RequestDTO request = new RequestDTO();
-		request.setIdentity(identityDTO);
+		request.setDemographics(identityDTO);
 		authRequestDTO.setRequest(request);
-		authRequestDTO.setTxnID("1234567890");
-		// authRequestDTO.setVer("1.0");
+		authRequestDTO.setIndividualId("426789089018");
+		authRequestDTO.setTransactionID("1234567890");
 		return authRequestDTO;
 
 	}
@@ -522,62 +435,41 @@ public class DemoAuthServiceTest {
 	public void TestInValidgetDemoStatus() throws IdAuthenticationBusinessException {
 		AuthRequestDTO authRequestDTO = generateData();
 		Map<String, List<IdentityInfoDTO>> idInfo = new HashMap<>();
-		AuthStatusInfo authStatusInfo = demoAuthServiceImpl.authenticate(authRequestDTO, "121212", idInfo);
+		AuthStatusInfo authStatusInfo = demoAuthServiceImpl.authenticate(authRequestDTO, "121212", idInfo, "123456");
 	}
-
-//	@Test()
-//	public void TestcontstructMatchInput() {
-//		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
-//		DemoMatchType demoMatchType = DemoMatchType.NAME_PRI;
-//		AuthType demoAuthType = DemoAuthType.PI_PRI;
-//		demoAuthServiceImpl.contstructMatchInput(authRequestDTO, demoMatchType, demoAuthType);
-//	}
 
 	@Test(expected = IdAuthenticationBusinessException.class)
 	public void TestdemoEntityisNull() throws IdAuthenticationBusinessException {
 		AuthRequestDTO authRequestDTO = null;
 		String uin = "";
 		Map<String, List<IdentityInfoDTO>> demoEntity = new HashMap<>();
-		demoAuthServiceImpl.authenticate(authRequestDTO, uin, demoEntity);
+		demoAuthServiceImpl.authenticate(authRequestDTO, uin, demoEntity, "123456");
 	}
 
 	@Test
 	public void TestDemoAuthStatus() throws IdAuthenticationBusinessException {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
-		authTypeDTO.setPersonalIdentity(true);
-		authRequestDTO.setAuthType(authTypeDTO);
+		authTypeDTO.setBio(false);
+		authTypeDTO.setDemo(true);
+		authTypeDTO.setOtp(false);
+		authTypeDTO.setPin(false);
+		authRequestDTO.setRequestedAuth(authTypeDTO);
 		authRequestDTO.setId("mosip.identity.auth");
-		authRequestDTO.setIdvId("274390482564");
-		authRequestDTO.setIdvIdType("D");
-		authRequestDTO.setKey(new AuthSecureDTO());
-		BioInfo bioinfo = new BioInfo();
-		bioinfo.setBioType(BioType.FGRIMG.getType());
+		BioIdentityInfoDTO fingerValue = new BioIdentityInfoDTO();
+		DataDTO dataDTOFinger = new DataDTO();
+		dataDTOFinger.setBioValue("finger");
+		dataDTOFinger.setBioSubType("Thumb");
+		dataDTOFinger.setBioType(BioAuthType.FGR_IMG.getType());
+		dataDTOFinger.setDeviceProviderID("1234567890");
+		fingerValue.setData(dataDTOFinger);
+		List<BioIdentityInfoDTO> fingerIdentityInfoDtoList = new ArrayList<BioIdentityInfoDTO>();
+		fingerIdentityInfoDtoList.add(fingerValue);
 
-		DeviceInfo deviceInfo = new DeviceInfo();
-		deviceInfo.setDeviceId("12345");
-		deviceInfo.setMake("Mantra");
-		deviceInfo.setModel("M123");
-		bioinfo.setDeviceInfo(deviceInfo);
-
-		List<BioInfo> bioInfoList = new ArrayList<BioInfo>();
-		bioInfoList.add(bioinfo);
-		List<MatchInfo> matchInfoList = new ArrayList<>();
-		MatchInfo matchInfo = new MatchInfo();
-		matchInfo.setAuthType("personalIdentity");
-		matchInfo.setLanguage("fre");
-		matchInfo.setMatchingStrategy(MatchingStrategyType.PARTIAL.getType());
-		matchInfo.setMatchingThreshold(60);
-		matchInfoList.add(matchInfo);
-		authRequestDTO.setMatchInfo(matchInfoList);
-		authRequestDTO.setTspID("1234567890");
-		authRequestDTO.setBioInfo(bioInfoList);
 		ZoneOffset offset = ZoneOffset.MAX;
-		authRequestDTO.setReqTime(Instant.now().atOffset(offset)
+		authRequestDTO.setRequestTime(Instant.now().atOffset(offset)
 				.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
-//		authRequestDTO.setReqHmac("1234567890");
-		authRequestDTO.setTxnID("1234567890");
-		// authRequestDTO.setVer("1.0");
+		authRequestDTO.setTransactionID("1234567890");
 		RequestDTO requestDTO = new RequestDTO();
 		IdentityDTO identity = new IdentityDTO();
 		List<IdentityInfoDTO> nameList = new ArrayList<>();
@@ -587,8 +479,10 @@ public class DemoAuthServiceTest {
 		identityInfoDTO.setValue(value);
 		nameList.add(identityInfoDTO);
 		identity.setName(nameList);
-		requestDTO.setIdentity(identity);
+		requestDTO.setDemographics(identity);
+		requestDTO.setBiometrics(fingerIdentityInfoDtoList);
 		authRequestDTO.setRequest(requestDTO);
+		authRequestDTO.setIndividualId("426789089018");
 		Map<String, List<IdentityInfoDTO>> demoIdentity = new HashMap<>();
 		IdentityInfoDTO identityInfoDTO1 = new IdentityInfoDTO();
 		identityInfoDTO1.setLanguage("fre");
@@ -602,10 +496,57 @@ public class DemoAuthServiceTest {
 		mockenv.setProperty("mosip.primary.lang-code", "fre");
 		mockenv.setProperty("mosip.secondary.lang-code", "ara");
 		mockenv.setProperty("mosip.supported-languages", "eng,ara,fre");
-		ReflectionTestUtils.setField(actualidInfoHelper, "environment", mockenv);
+		ReflectionTestUtils.setField(idInfoHelper, "environment", mockenv);
 		Mockito.when(masterDataManager.fetchTitles()).thenReturn(createFetcher());
-		AuthStatusInfo validateBioDetails = demoAuthServiceImpl.authenticate(authRequestDTO, uin, demoIdentity);
+		AuthStatusInfo validateBioDetails = demoAuthServiceImpl.authenticate(authRequestDTO, uin, demoIdentity,
+				"123456");
 		assertFalse(validateBioDetails.isStatus());
+	}
+
+	@Test
+	public void TestValidDemographicData() throws IdAuthenticationBusinessException {
+		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+		String individualId = "274390482564";
+		authRequestDTO.setIndividualId(individualId);
+		authRequestDTO.setIndividualIdType(IdType.UIN.getType());
+		AuthTypeDTO requestedAuth = new AuthTypeDTO();
+		requestedAuth.setDemo(true);
+		authRequestDTO.setRequestedAuth(requestedAuth);
+		authRequestDTO.setConsentObtained(true);
+		authRequestDTO.setTransactionID("1234567890");
+		authRequestDTO.setVersion("1.0");
+		RequestDTO request = new RequestDTO();
+		IdentityDTO demographics = new IdentityDTO();
+		List<IdentityInfoDTO> nameList = new ArrayList<>();
+		IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
+		identityInfoDTO.setLanguage("fra");
+		identityInfoDTO.setValue("Dinesh");
+		nameList.add(identityInfoDTO);
+		demographics.setName(nameList);
+		request.setDemographics(demographics);
+		authRequestDTO.setRequest(request);
+		Map<String, List<IdentityInfoDTO>> demoEntity = new HashMap<>();
+		demoEntity.put("fullName", nameList);
+		Set<String> valueSet = new HashSet<>();
+		valueSet.add("fra");
+		AuthStatusInfo authenticate = demoAuthServiceImpl.authenticate(authRequestDTO, individualId, demoEntity,
+				"1234567890");
+		assertTrue(authenticate.isStatus());
+	}
+
+	@Test
+	public void TestInValidDemographicData() throws IdAuthenticationBusinessException {
+		AuthRequestDTO authRequestDTO = getTestData();
+		Map<String, List<IdentityInfoDTO>> demoEntity = new HashMap<>();
+		List<IdentityInfoDTO> nameList = new ArrayList<>();
+		IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
+		identityInfoDTO.setLanguage("fra");
+		identityInfoDTO.setValue("Dinesh1");
+		demoEntity.put("fullName", nameList);
+		String individualId = "274390482564";
+		AuthStatusInfo authenticate = demoAuthServiceImpl.authenticate(authRequestDTO, individualId, demoEntity,
+				"1234567890");
+		assertFalse(authenticate.isStatus());
 	}
 
 	@Test(expected = IdAuthenticationBusinessException.class)
@@ -613,7 +554,7 @@ public class DemoAuthServiceTest {
 		AuthRequestDTO authRequestDTO = null;
 		String uin = null;
 		Map<String, List<IdentityInfoDTO>> demoEntity = null;
-		demoAuthServiceImpl.authenticate(authRequestDTO, uin, demoEntity);
+		demoAuthServiceImpl.authenticate(authRequestDTO, uin, demoEntity, "123456");
 	}
 
 	@Test(expected = IdAuthenticationBusinessException.class)
@@ -621,45 +562,24 @@ public class DemoAuthServiceTest {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		String uin = null;
 		Map<String, List<IdentityInfoDTO>> demoEntity = new HashMap<>();
-		demoAuthServiceImpl.authenticate(authRequestDTO, uin, demoEntity);
+		demoAuthServiceImpl.authenticate(authRequestDTO, uin, demoEntity, "123456");
 	}
 
 	@Test
 	public void TestgetDemoStatus() throws IdAuthenticationBusinessException {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
-		authTypeDTO.setPersonalIdentity(true);
-		authRequestDTO.setAuthType(authTypeDTO);
+		authTypeDTO.setBio(false);
+		authTypeDTO.setDemo(true);
+		authTypeDTO.setOtp(false);
+		authTypeDTO.setPin(false);
+		authRequestDTO.setRequestedAuth(authTypeDTO);
 		authRequestDTO.setId("mosip.identity.auth");
-		authRequestDTO.setIdvId("274390482564");
-		authRequestDTO.setIdvIdType("D");
-		authRequestDTO.setKey(new AuthSecureDTO());
-		BioInfo bioinfo = new BioInfo();
-		bioinfo.setBioType(BioType.FGRIMG.getType());
-
-		DeviceInfo deviceInfo = new DeviceInfo();
-		deviceInfo.setDeviceId("12345");
-		deviceInfo.setMake("Mantra");
-		deviceInfo.setModel("M123");
-		bioinfo.setDeviceInfo(deviceInfo);
-
-		List<BioInfo> bioInfoList = new ArrayList<BioInfo>();
-		bioInfoList.add(bioinfo);
-		List<MatchInfo> matchInfoList = new ArrayList<>();
-		MatchInfo matchInfo = new MatchInfo();
-		matchInfo.setAuthType("personalIdentity");
-		matchInfo.setLanguage("fre");
-		matchInfo.setMatchingStrategy(MatchingStrategyType.PARTIAL.getType());
-		matchInfo.setMatchingThreshold(60);
-		matchInfoList.add(matchInfo);
-		authRequestDTO.setMatchInfo(matchInfoList);
-		authRequestDTO.setTspID("1234567890");
-		authRequestDTO.setBioInfo(bioInfoList);
 		ZoneOffset offset = ZoneOffset.MAX;
-		authRequestDTO.setReqTime(Instant.now().atOffset(offset)
+		authRequestDTO.setRequestTime(Instant.now().atOffset(offset)
 				.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
 //		authRequestDTO.setReqHmac("1234567890");
-		authRequestDTO.setTxnID("1234567890");
+		authRequestDTO.setTransactionID("1234567890");
 		// authRequestDTO.setVer("1.0");
 		RequestDTO requestDTO = new RequestDTO();
 		IdentityDTO identity = new IdentityDTO();
@@ -670,14 +590,40 @@ public class DemoAuthServiceTest {
 		identityInfoDTO.setValue(value);
 		nameList.add(identityInfoDTO);
 		identity.setName(nameList);
-		requestDTO.setIdentity(identity);
+		requestDTO.setDemographics(identity);
 		authRequestDTO.setRequest(requestDTO);
+		authRequestDTO.setIndividualId("426789089018");
 		Map<String, List<IdentityInfoDTO>> demoEntity = new HashMap<>();
 		demoEntity.put("name", nameList);
-		AuthStatusInfo demoStatus = demoAuthServiceImpl.authenticate(authRequestDTO, "274390482564", demoEntity);
+		AuthStatusInfo demoStatus = demoAuthServiceImpl.authenticate(authRequestDTO, "274390482564", demoEntity,
+				"123456");
 
 	}
-	
+
+	private AuthRequestDTO getTestData() {
+		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+		String individualId = "274390482564";
+		authRequestDTO.setIndividualId(individualId);
+		authRequestDTO.setIndividualIdType(IdType.UIN.getType());
+		AuthTypeDTO requestedAuth = new AuthTypeDTO();
+		requestedAuth.setDemo(true);
+		authRequestDTO.setRequestedAuth(requestedAuth);
+		authRequestDTO.setConsentObtained(true);
+		authRequestDTO.setTransactionID("1234567890");
+		authRequestDTO.setVersion("1.0");
+		RequestDTO request = new RequestDTO();
+		IdentityDTO demographics = new IdentityDTO();
+		List<IdentityInfoDTO> nameList = new ArrayList<>();
+		IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
+		identityInfoDTO.setLanguage("fra");
+		identityInfoDTO.setValue("Dinesh");
+		nameList.add(identityInfoDTO);
+		demographics.setName(nameList);
+		request.setDemographics(demographics);
+		authRequestDTO.setRequest(request);
+		return authRequestDTO;
+	}
+
 	private Map<String, List<String>> createFetcher() {
 		List<String> l = new ArrayList<>();
 		l.add("Mr");
