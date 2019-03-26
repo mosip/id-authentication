@@ -548,9 +548,7 @@ public class PacketHandlerController extends BaseController implements Initializ
 		LOGGER.info(PACKET_HANDLER, APPLICATION_NAME, APPLICATION_ID, "Loading User Onboard Update page");
 
 		try {
-			GridPane headerRoot = BaseController.load(getClass().getResource(RegistrationConstants.HOME_PAGE));
-			homeController.homeContent.setVisible(false);
-			homeController.onboard.setVisible(true);
+			GridPane headerRoot = BaseController.load(getClass().getResource(RegistrationConstants.USER_ONBOARD));			
 			getScene(headerRoot);
 			userOnboardParentController.userOnboardId.lookup("#onboardUser").setVisible(false);
 		} catch (IOException ioException) {
