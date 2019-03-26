@@ -3,7 +3,6 @@ package io.mosip.kernel.emailnotification.controller;
 import java.util.concurrent.CompletableFuture;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,7 +20,7 @@ import io.mosip.kernel.emailnotification.dto.ResponseDto;
  * @since 1.0.0
  *
  */
-@RefreshScope
+
 @RestController
 public class EmailNotificationController {
 	/**
