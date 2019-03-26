@@ -50,7 +50,6 @@ import io.mosip.registration.entity.SyncControl;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.service.MasterSyncService;
-import io.mosip.registration.service.UserOnboardService;
 import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
 import io.mosip.registration.util.healthcheck.RegistrationSystemPropertiesChecker;
 import io.mosip.registration.util.restclient.ServiceDelegateUtil;
@@ -72,9 +71,6 @@ public class MasterSyncServiceImpl implements MasterSyncService {
 	@Autowired
 	ServiceDelegateUtil serviceDelegateUtil;
 
-	@Autowired
-	private UserOnboardService UserOnboardService;
-
 	/** Object for Logger. */
 	private static final Logger LOGGER = AppConfig.getLogger(MasterSyncServiceImpl.class);
 
@@ -84,6 +80,7 @@ public class MasterSyncServiceImpl implements MasterSyncService {
 	 * @see io.mosip.registration.service.MasterSyncService#getMasterSync(java.lang.
 	 * String)
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
 	public synchronized ResponseDTO getMasterSync(String masterSyncDtls,String triggerPoint) {
 
@@ -127,14 +124,18 @@ public class MasterSyncServiceImpl implements MasterSyncService {
 					"Fetching the last sync and machine Id details from databse Ends");
 
 			Object masterSyncJson = getMasterSyncJson(machineId, masterLastSyncTime, triggerPoint);
+			
+			LinkedHashMap<String, Object> masterSyncResponse= (LinkedHashMap<String, Object>) masterSyncJson;
 
-			if (null != masterSyncJson) {
+			if (!masterSyncResponse.containsKey(RegistrationConstants.ERRORS)) {
 
 				LOGGER.info(RegistrationConstants.MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID,
 						"master sync json ======>" + masterSyncJson.toString());
+				
+				 String jsonString =  new ObjectMapper().writeValueAsString(masterSyncJson); 
 
 				// Mapping json object to respective dto's
-				MasterDataResponseDto masterSyncDto = objectMapper.readValue(masterSyncJson.toString(),
+				MasterDataResponseDto masterSyncDto = objectMapper.readValue(jsonString,
 						MasterDataResponseDto.class);
 
 				resoponse = masterSyncDao.save(masterSyncDto);
@@ -151,7 +152,7 @@ public class MasterSyncServiceImpl implements MasterSyncService {
 					responseDTO.setSuccessResponseDTO(sucessResponse);
 
 				} else {
-					
+
 					LOGGER.info(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID,
 							RegistrationConstants.MASTER_SYNC_FAILURE_MSG_INFO);
 					responseDTO = buildErrorRespone(RegistrationConstants.MASTER_SYNC_FAILURE_MSG_CODE,
@@ -174,7 +175,6 @@ public class MasterSyncServiceImpl implements MasterSyncService {
 					RegistrationConstants.MASTER_SYNC_FAILURE_MSG);
 
 		} catch (RuntimeException | IOException runtimeException) {
-			runtimeException.printStackTrace();
 			LOGGER.error(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID,
 					runtimeException.getMessage() + resoponse + ExceptionUtils.getStackTrace(runtimeException));
 
@@ -194,8 +194,11 @@ public class MasterSyncServiceImpl implements MasterSyncService {
 	 * @return the master sync json
 	 * @throws RegBaseCheckedException the reg base checked exception
 	 */
+	@SuppressWarnings("unchecked")
 	private Object getMasterSyncJson(String machineId, LocalDateTime lastSyncTime,String triggerPoint) throws RegBaseCheckedException {
 
+		ResponseDTO responseDTO = new ResponseDTO();
+		List<ErrorResponseDTO> erResponseDTOs = new ArrayList<>();
 		Object response = null;
 		String time = RegistrationConstants.EMPTY;
 
@@ -217,6 +220,23 @@ public class MasterSyncServiceImpl implements MasterSyncService {
 
 			response = serviceDelegateUtil.get(RegistrationConstants.MASTER_VALIDATOR_SERVICE_NAME, requestParamMap,
 					false,triggerPoint);
+			
+		LinkedHashMap<String, Object> masterSyncResponse= (LinkedHashMap<String, Object>) response;
+		
+			if (!masterSyncResponse.containsKey(RegistrationConstants.ERRORS)) {
+				SuccessResponseDTO successResponseDTO = new SuccessResponseDTO();
+				successResponseDTO.setCode(RegistrationConstants.SUCCESS);
+				responseDTO.setSuccessResponseDTO(successResponseDTO);
+			} else if (masterSyncResponse.containsKey(RegistrationConstants.ERRORS)) {
+				ErrorResponseDTO errorResponseDTO = new ErrorResponseDTO();
+				errorResponseDTO.setCode(RegistrationConstants.ERRORS);
+				errorResponseDTO
+						.setMessage(((List<LinkedHashMap<String, String>>) masterSyncResponse.get(RegistrationConstants.ERRORS))
+								.get(0).get("errorMessage"));
+				erResponseDTOs.add(errorResponseDTO);
+				responseDTO.setErrorResponseDTOs(erResponseDTOs);
+			}
+			
 		} catch (HttpClientErrorException httpClientErrorException) {
 			LOGGER.error(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID,
 					httpClientErrorException.getRawStatusCode() + "Http error while pulling json from server"
