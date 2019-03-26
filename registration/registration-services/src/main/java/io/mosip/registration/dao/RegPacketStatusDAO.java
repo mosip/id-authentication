@@ -2,7 +2,6 @@ package io.mosip.registration.dao;
 
 import java.util.List;
 
-import io.mosip.registration.dto.RegPacketStatusDTO;
 import io.mosip.registration.entity.Registration;
 
 /**
