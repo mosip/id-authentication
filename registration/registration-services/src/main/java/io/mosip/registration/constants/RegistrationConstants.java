@@ -191,13 +191,17 @@ public class RegistrationConstants {
 
 	public static final String MACHINE_MAPPING_ACTIVE = "ACTIVE";
 	public static final String MACHINE_MAPPING_IN_ACTIVE = "IN-ACTIVE";
-	public static final String TOGGLE_BIO_METRIC_EXCEPTION = "toggleBiometricException";	
+	public static final String TOGGLE_BIO_METRIC_EXCEPTION = "toggleBiometricException";
 
-	//Reasons for Exception 
+	// Reasons for Exception
 	public static final String MISSING_BIOMETRICS = "Missing biometrics";
 	public static final String LOW_QUALITY_BIOMETRICS = "Low quality of biometrics";
 	public static final String PERMANENT_EXCEPTION = "Permanent";
 	public static final String TEMPORARY_EXCEPTION = "Temporary";
+
+	// Lost UIN
+	public static final String PACKET_TYPE_LOST = "Lost";
+	public static final String LOST_UIN_CONFIG_FLAG = "mosip.registration.lost_uin_config_flag";
 
 	// update UIN
 	public static final String UIN_NAV_LABEL = "/ UIN Update";
@@ -224,7 +228,7 @@ public class RegistrationConstants {
 	// onBoard User
 	public static final String ONBOARD_BIOMETRICS = "Biometrics - ";
 	public static final String ONBOARD_STYLE_CLASS = "onboardAlertMsg";
-	public static final String ONBOARD_IMG_PATH = "images/tick.png";	
+	public static final String ONBOARD_IMG_PATH = "images/tick.png";
 
 	// RegistrationApproval
 	public static final String PLACEHOLDER_LABEL = "No Packets for approval";
@@ -558,10 +562,10 @@ public class RegistrationConstants {
 	public static final String USER_IN_ACTIVE = "In-Active";
 
 	// Upload Packet
-	
+
 	public static final String UPLOAD_STATUS = "status";
 	public static final List<String> PACKET_UPLOAD_STATUS = Arrays.asList("SYNCED", "EXPORTED", "RESEND", "E");
-	
+
 	public static final String PACKET_UPLOAD = "packet_upload";
 	public static final String PACKET_DUPLICATE = "duplicate";
 
@@ -756,8 +760,8 @@ public class RegistrationConstants {
 	public static final String DOB_DOCUMENT = "POB";
 	public static final String SERVER_STATUS_RESEND = "RESEND";
 	public static final List<String> PACKET_STATUS = Arrays.asList("APPROVED", "REJECTED", "RE_REGISTER_APPROVED");
-	
-	public static final List<String> PACKET_STATUS_UPLOAD = Arrays.asList("APPROVED", "REJECTED", "SYNCED","EXPORTED");
+
+	public static final List<String> PACKET_STATUS_UPLOAD = Arrays.asList("APPROVED", "REJECTED", "SYNCED", "EXPORTED");
 
 	public static final List<String> PACKET_EXPORT_STATUS = Arrays.asList("EXPORTED", "SYNCED");
 
@@ -835,8 +839,8 @@ public class RegistrationConstants {
 	public static final String[] RIGHTHAND_SEGMNTD_FILE_PATHS_USERONBOARD = new String[] {
 			"/UserOnboard/rightHand/rightIndex/", "/UserOnboard/rightHand/rightLittle/",
 			"/UserOnboard/rightHand/rightMiddle/", "/UserOnboard/rightHand/rightRing/" };
-	public static final String[] THUMBS_SEGMNTD_FILE_PATHS_USERONBOARD = new String[] {
-			"/UserOnboard/thumb/leftThumb/", "/UserOnboard/thumb/rightThumb/" };
+	public static final String[] THUMBS_SEGMNTD_FILE_PATHS_USERONBOARD = new String[] { "/UserOnboard/thumb/leftThumb/",
+			"/UserOnboard/thumb/rightThumb/" };
 
 	/** Exception codes **/
 	private static final String REG_SERVICE_CODE = "REG-SER-";
@@ -967,7 +971,7 @@ public class RegistrationConstants {
 	public static final String MASTER_SYNC = "MASTER_SYNC";
 	public static final String MASTER_VALIDATOR_SERVICE_NAME = "master_sync";
 	public static final String MASTER_DATA_LASTUPDTAE = "lastUpdated";
-	public static final String MASTER_SYNC_LOGGER_INFO="Entering into Master Sync Dao Impl...";
+	public static final String MASTER_SYNC_LOGGER_INFO = "Entering into Master Sync Dao Impl...";
 	// POLICY SYNC
 	public static final String POLICY_SYNC_SUCCESS_CODE = "REG-MDS‌-001 ";
 	public static final String POLICY_SYNC_SUCCESS_MESSAGE = "SYNC_SUCCESS";
@@ -1092,7 +1096,7 @@ public class RegistrationConstants {
 	public static final String AUTH_EXPIRES = "Expires";
 	public static final String AUTH_MAX_AGE = "Max-Age";
 	public static final String REGISTRATION_CLIENT = "REGISTRATIONCLIENT";
-	public static final String COOKIE ="Cookie";
+	public static final String COOKIE = "Cookie";
 	public static final String ENGLISH_LANG_CODE = "eng";
 	public static final String USER_ID_CODE = "USERID";
 	public static final String OTP_CHANNELS = "mosip.registration.otp_channels";
@@ -1126,7 +1130,8 @@ public class RegistrationConstants {
 	public static final String PHONE_VALIDATION_LENGTH = PHONE_VALIDATION_REGEX.concat(DOT).concat(LENGTH);
 	public static final String CNIE_VALIDATION_REGEX = ID_JSON_BIZ_VALIDATION_PREFIX.concat(DOT).concat("CNIENumber");
 	public static final String CNIE_VALIDATION_LENGTH = CNIE_VALIDATION_REGEX.concat(DOT).concat(LENGTH);
-	public static final String POSTAL_CODE_VALIDATION_REGEX = ID_JSON_BIZ_VALIDATION_PREFIX.concat(DOT).concat("postalCode");
+	public static final String POSTAL_CODE_VALIDATION_REGEX = ID_JSON_BIZ_VALIDATION_PREFIX.concat(DOT)
+			.concat("postalCode");
 	public static final String POSTAL_CODE_VALIDATION_LENGTH = POSTAL_CODE_VALIDATION_REGEX.concat(DOT).concat(LENGTH);
 	public static final String DOB_VALIDATION_REGEX = ID_JSON_BIZ_VALIDATION_PREFIX.concat(DOT).concat("dateOfBirth");
 	public static final String TRUE = String.valueOf(true);
@@ -1176,12 +1181,12 @@ public class RegistrationConstants {
 	public static final String ATTR_GENDER_TYPE = "genderCode";
 	public static final String ATTR_NON_FORINGER = "NFR";
 	public static final String ATTR_FORINGER = "FR";
-	public static final String ATTR_FORINGER_DOB_PARSING="yyyy/MM/dd";
-	public static final String ATTR_FORINGER_DOB_FORMAT="yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
-	
+	public static final String ATTR_FORINGER_DOB_PARSING = "yyyy/MM/dd";
+	public static final String ATTR_FORINGER_DOB_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
+
 	public static final String SYNC_FAILURE = "SYNC_FAILURE";
-	
-	//Scheduler
+
+	// Scheduler
 	public static final String IDEAL_TIME = "mosip.registration.ideal_time";
 	public static final String REFRESHED_LOGIN_TIME = "mosip.registration.refreshed_login_time";
 

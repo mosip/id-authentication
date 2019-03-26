@@ -42,7 +42,9 @@
                   <RowConstraints percentHeight="15.0" valignment="CENTER" vgrow="ALWAYS" />
                   <RowConstraints percentHeight="5.0" valignment="CENTER" vgrow="ALWAYS" />
                 <RowConstraints percentHeight="15.0" valignment="CENTER" vgrow="ALWAYS" />
-                <RowConstraints percentHeight="48.0" valignment="CENTER" vgrow="ALWAYS" />
+                <RowConstraints percentHeight="5.0" valignment="CENTER" vgrow="ALWAYS" />
+                <RowConstraints percentHeight="15.0" valignment="CENTER" vgrow="ALWAYS" />
+                <RowConstraints percentHeight="28.0" valignment="CENTER" vgrow="ALWAYS" />
               </rowConstraints>
                <children>
                   <Label styleClass="optionHeaderStyle" text="%registrationTasks" GridPane.halignment="LEFT" GridPane.rowIndex="1" GridPane.valignment="CENTER">
@@ -78,6 +80,26 @@
                            </image>
                         </ImageView>
                         <Button fx:id="uinUpdateBtn" mnemonicParsing="false" styleClass="uinUpdateBtnStyle" text="%uinupdate" GridPane.columnIndex="1" />
+                     </children>
+                     <columnConstraints>
+                        <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" percentWidth="40.0" />
+                        <ColumnConstraints halignment="LEFT" hgrow="ALWAYS" percentWidth="60.0" />
+                     </columnConstraints>
+                     <rowConstraints>
+                        <RowConstraints percentHeight="100.0" valignment="CENTER" vgrow="ALWAYS" />
+                     </rowConstraints>
+                     <GridPane.margin>
+                        <Insets left="30.0" />
+                     </GridPane.margin>
+                  </GridPane>
+                  <GridPane fx:id="lostUINPane" onMouseClicked="#lostUIN" styleClass="uinUpdateStyle" GridPane.rowIndex="6">
+                     <children>
+                        <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../images/UINUpdate.png" />
+                           </image>
+                        </ImageView>
+                        <Button mnemonicParsing="false" styleClass="uinUpdateBtnStyle" text="%lostuin" GridPane.columnIndex="1" />
                      </children>
                      <columnConstraints>
                         <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" percentWidth="40.0" />
