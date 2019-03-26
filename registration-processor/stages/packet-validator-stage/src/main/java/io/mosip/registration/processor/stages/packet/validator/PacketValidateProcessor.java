@@ -363,7 +363,7 @@ public class PacketValidateProcessor {
 	private boolean schemaValidation(String jsonString)
 			throws JsonValidationProcessingException, JsonIOException, JsonSchemaIOException, FileIOException {
 
-		if (env.getProperty(VALIDATESCHEMA).equalsIgnoreCase(VALIDATIONFALSE))
+		if (env.getProperty(VALIDATESCHEMA).trim().equalsIgnoreCase(VALIDATIONFALSE))
 			return true;
 
 		ValidationReport validationReport = jsonValidator.validateJson(jsonString);
@@ -376,7 +376,7 @@ public class PacketValidateProcessor {
 	}
 
 	private boolean fileValidation(Identity identity, InternalRegistrationStatusDto registrationStatusDto) {
-		if (env.getProperty(VALIDATEFILE).equalsIgnoreCase(VALIDATIONFALSE))
+		if (env.getProperty(VALIDATEFILE).trim().equalsIgnoreCase(VALIDATIONFALSE))
 			return true;
 		FilesValidation filesValidation = new FilesValidation(adapter, registrationStatusDto);
 		isFilesValidated = filesValidation.filesValidation(registrationId, identity);
@@ -387,7 +387,7 @@ public class PacketValidateProcessor {
 
 	private boolean checkSumValidation(Identity identity, InternalRegistrationStatusDto registrationStatusDto)
 			throws IOException {
-		if (env.getProperty(VALIDATECHECKSUM).equalsIgnoreCase(VALIDATIONFALSE))
+		if (env.getProperty(VALIDATECHECKSUM).trim().equalsIgnoreCase(VALIDATIONFALSE))
 			return true;
 		CheckSumValidation checkSumValidation = new CheckSumValidation(adapter, registrationStatusDto);
 		isCheckSumValidated = checkSumValidation.checksumvalidation(registrationId, identity);
@@ -398,7 +398,7 @@ public class PacketValidateProcessor {
 
 	private boolean applicantDocumentValidation(Identity identity, InternalRegistrationStatusDto registrationStatusDto)
 			throws IOException {
-		if (env.getProperty(VALIDATEAPPLICANTDOCUMENT).equalsIgnoreCase(VALIDATIONFALSE))
+		if (env.getProperty(VALIDATEAPPLICANTDOCUMENT).trim().equalsIgnoreCase(VALIDATIONFALSE))
 			return true;
 		InputStream documentInfoStream = null;
 		List<Document> documentList = null;
@@ -418,7 +418,7 @@ public class PacketValidateProcessor {
 	}
 
 	private boolean masterDataValidation(String jsonString, InternalRegistrationStatusDto registrationStatusDto) {
-		if (env.getProperty(VALIDATEMASTERDATA).equalsIgnoreCase(VALIDATIONFALSE))
+		if (env.getProperty(VALIDATEMASTERDATA).trim().equalsIgnoreCase(VALIDATIONFALSE))
 			return true;
 
 		MasterDataValidation masterDataValidation = new MasterDataValidation(registrationStatusDto, env,
