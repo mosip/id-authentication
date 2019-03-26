@@ -76,6 +76,7 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Bounds;
+import javafx.geometry.NodeOrientation;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
@@ -237,7 +238,42 @@ public class DemographicDetailController extends BaseController {
 	private TextField mobileNo;
 	
 	@FXML
-	private VBox mobileNumberParentPane;
+	private VBox applicationMobileNumber;
+	
+
+	@FXML
+	private VBox applicationAddressLine1;
+
+	@FXML
+	private VBox localAddressLine1;
+	
+	@FXML
+	private VBox localAddressLine2;
+	
+	@FXML
+	private VBox localAddressLine3;
+
+	@FXML
+	private VBox applicationAddressLine2;
+
+	@FXML
+	private VBox applicationAddressLine3;
+
+	@FXML
+	private VBox applicationRegion;
+
+	@FXML
+	private VBox applicationProvince;
+
+	@FXML
+	private VBox applicationCity;
+	
+
+	@FXML
+	private VBox applicationlocalAdminAuthority;
+
+	@FXML
+	private VBox applicationPostalCode;
 
 	@FXML
 	private TextField mobileNoLocalLanguage;
@@ -440,6 +476,17 @@ public class DemographicDetailController extends BaseController {
 	@FXML
 	private VBox applicationFullName;
 	@FXML
+	private ImageView fullNameKeyboardImage;
+	@FXML
+	private ImageView addressLine1KeyboardImage;
+	@FXML
+	private ImageView addressLine2KeyboardImage;
+	@FXML
+	private ImageView addressLine3KeyboardImage;
+	@FXML
+	private ImageView parentNameKeyboardImage;
+
+	@FXML
 	private VBox localFullName;
 	@FXML
 	private GridPane applicationAge;
@@ -490,7 +537,6 @@ public class DemographicDetailController extends BaseController {
 	private GridPane borderToDo;
 	@FXML
 	private Label registrationNavlabel;
-	private GridPane fullNameKeyboard;
 	@FXML
 	private AnchorPane keyboardPane;
 	@FXML
@@ -500,6 +546,7 @@ public class DemographicDetailController extends BaseController {
 		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Entering the LOGIN_CONTROLLER");
 		try {
+			changeOrientation(NodeOrientation.RIGHT_TO_LEFT);
 			fxUtils = FXUtils.getInstance();
 			fxUtils.setTransliteration(transliteration);
 			SessionContext.map().put(RegistrationConstants.IS_CONSOLIDATED, RegistrationConstants.DISABLE);
@@ -536,6 +583,24 @@ public class DemographicDetailController extends BaseController {
 
 		}
 	}
+	
+	
+	/*
+	 * TO change  the orientation based on language 
+	 */
+	
+	private void changeOrientation(NodeOrientation orientation) {
+		fullName.setNodeOrientation(orientation);
+		addressLine1.setNodeOrientation(orientation);
+		addressLine2.setNodeOrientation(orientation);
+		addressLine3.setNodeOrientation(orientation);
+		province.setNodeOrientation(orientation);
+		city.setNodeOrientation(orientation);
+		region.setNodeOrientation(orientation);
+		localAdminAuthority.setNodeOrientation(orientation);
+		parentName.setNodeOrientation(orientation);
+	}
+	
 
 	private void disableLocalFields() {
 		localGender.setDisable(true);
@@ -793,7 +858,9 @@ public class DemographicDetailController extends BaseController {
 			emailIdLocalLanguageLabel.setText(localProperties.getString("emailId"));
 			emailIdLocalLanguage.setPromptText(localProperties.getString("emailId"));
 			parentNameLocalLanguageLabel.setText(localProperties.getString("parentName"));
+			parentNameLocalLanguage.setPromptText(localProperties.getString("parentName"));
 			uinIdLocalLanguageLabel.setText(localProperties.getString("uinId"));
+			uinIdLocalLanguage.setPromptText(localProperties.getString("uinId"));
 			residenceLblLocalLanguage.setText(localProperties.getString("residence"));
 			nationalLocalLanguage.setText(localProperties.getString("national"));
 			foreignerLocalLanguage.setText(localProperties.getString("foreigner"));
@@ -1171,16 +1238,28 @@ public class DemographicDetailController extends BaseController {
 					.setUin(getRegistrationDTOFromSession().getSelectionListDTO().getUinId());
 			updateUinId.setText(getRegistrationDTOFromSession().getSelectionListDTO().getUinId());
 			applicationFullName.setDisable(false);
+			fullNameKeyboardImage.setDisable(false);
 			localFullName.setDisable(false);
 			applicationAge.setDisable(!getRegistrationDTOFromSession().getSelectionListDTO().isAge());
 			applicationGender.setDisable(!getRegistrationDTOFromSession().getSelectionListDTO().isGender());
 			applicatoinAddressPane
 					.setDisable(!getRegistrationDTOFromSession().getSelectionListDTO().isAddress());
-			localAddressPane
-					.setDisable(!getRegistrationDTOFromSession().getSelectionListDTO().isAddress());
 			
-			mobileNumberParentPane.setDisable(!getRegistrationDTOFromSession().getSelectionListDTO().isPhone());
-
+			applicationAddressLine1.setDisable(!getRegistrationDTOFromSession().getSelectionListDTO().isAddress());
+			addressLine1KeyboardImage.setDisable(!getRegistrationDTOFromSession().getSelectionListDTO().isAddress());
+			addressLine2KeyboardImage.setDisable(!getRegistrationDTOFromSession().getSelectionListDTO().isAddress());
+			addressLine3KeyboardImage.setDisable(!getRegistrationDTOFromSession().getSelectionListDTO().isAddress());
+			applicationAddressLine2.setDisable(!getRegistrationDTOFromSession().getSelectionListDTO().isAddress());
+			applicationAddressLine3.setDisable(!getRegistrationDTOFromSession().getSelectionListDTO().isAddress());
+			localAddressLine1.setDisable(!getRegistrationDTOFromSession().getSelectionListDTO().isAddress());
+			localAddressLine2.setDisable(!getRegistrationDTOFromSession().getSelectionListDTO().isAddress());
+			localAddressLine3.setDisable(!getRegistrationDTOFromSession().getSelectionListDTO().isAddress());
+			applicationRegion.setDisable(!getRegistrationDTOFromSession().getSelectionListDTO().isAddress());
+			applicationProvince.setDisable(!getRegistrationDTOFromSession().getSelectionListDTO().isAddress());
+			applicationCity.setDisable(!getRegistrationDTOFromSession().getSelectionListDTO().isAddress());
+			applicationCity.setDisable(!getRegistrationDTOFromSession().getSelectionListDTO().isAddress());
+			applicationlocalAdminAuthority.setDisable(!getRegistrationDTOFromSession().getSelectionListDTO().isAddress());
+			applicationMobileNumber.setDisable(!getRegistrationDTOFromSession().getSelectionListDTO().isPhone());
 			applicationemailIdPane.setDisable(!getRegistrationDTOFromSession().getSelectionListDTO().isEmail());
 
 			residenceParentpane.setDisable(!getRegistrationDTOFromSession().getSelectionListDTO().isForeigner());
@@ -1194,11 +1273,13 @@ public class DemographicDetailController extends BaseController {
 
 			parentDetailPane.setDisable(!isChild);
 			parentDetailPane.setVisible(isChild);
+			parentNameKeyboardImage.setDisable(!isChild);
 
 			if (SessionContext.map().get(RegistrationConstants.IS_Child) != null) {
 				isChild = (boolean) SessionContext.map().get(RegistrationConstants.IS_Child);
 				parentDetailPane.setDisable(!isChild);
 				parentDetailPane.setVisible(isChild);
+				parentNameKeyboardImage.setDisable(!isChild);
 			}
 
 		}
@@ -1383,7 +1464,7 @@ public class DemographicDetailController extends BaseController {
 	@FXML
 	private void setFocusonLocalField(MouseEvent event) {
 		try {
-			keyboardNode.setLayoutX(470.00);
+			keyboardNode.setLayoutX(500.00);
 			Node node = (Node) event.getSource();
 
 			if (node.getId().equals(RegistrationConstants.ADDRESS_LINE1)) {
@@ -1468,9 +1549,9 @@ public class DemographicDetailController extends BaseController {
 			} else {
 				goToHomePageFromRegistration();
 			}
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		} catch (IOException exception) {
+			LOGGER.error("COULD NOT LOAD HOME PAGE", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
+					exception.getMessage() + ExceptionUtils.getStackTrace(exception));
 		}
 	}
 

@@ -164,9 +164,9 @@ public class RegistrationApprovalController extends BaseController implements In
 				public void updateItem(String item, boolean empty) {
 					super.updateItem(item, empty);
 					setText(item);
-					if (item != null && item.equals(RegistrationConstants.APPROVED)) {
+					if (item != null && item.equals(RegistrationUIConstants.APPROVED)) {
 						setTextFill(Color.GREEN);
-					} else if (item != null && item.equals(RegistrationConstants.REJECTED)) {
+					} else if (item != null && item.equals(RegistrationUIConstants.REJECTED)) {
 						setTextFill(Color.RED);
 					}
 				}
@@ -303,7 +303,7 @@ public class RegistrationApprovalController extends BaseController implements In
 			RegistrationApprovalDTO approvalDTO = new RegistrationApprovalDTO(
 					table.getItems().get(table.getSelectionModel().getFocusedIndex()).getId(),
 					table.getItems().get(table.getSelectionModel().getFocusedIndex()).getAcknowledgementFormPath(),
-					RegistrationConstants.APPROVED);
+					RegistrationUIConstants.APPROVED);
 			table.getItems().set(rowNum, approvalDTO);
 			table.requestFocus();
 			table.getFocusModel().focus(rowNum);

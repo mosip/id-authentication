@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>io.mosip</groupId>
 		<artifactId>mosip-parent</artifactId>
-		<version>0.9.8</version>
+		<version>0.9.9</version>
 	</parent>
 
 	<groupId>io.mosip.registrationprocessor</groupId>
@@ -110,6 +110,7 @@
 		<registration.processor.message.sender.version>0.9.8</registration.processor.message.sender.version>
 		<packet.bio.dedupe.api.version>0.9.8</packet.bio.dedupe.api.version>
 		<registration.processor.print.service.version>0.9.8</registration.processor.print.service.version>
+        <registration.processor.print.service.impl.version>0.9.8</registration.processor.print.service.impl.version>
 
 		<!-- Kernel -->
 		<kernel.core.version>0.9.8</kernel.core.version>
@@ -243,7 +244,8 @@
 		<module>packet-bio-dedupe-service-impl</module>
 		<module>registration-processor-abis</module>
 		<module>packet-bio-dedupe-service</module>
-        <module>registration-processor-print-service</module>
+    	<module>registration-processor-print-service-impl</module>
+		<module>registration-processor-print-service</module>
         <module>registration-processor-packet-generator-service</module>
   </modules>
 

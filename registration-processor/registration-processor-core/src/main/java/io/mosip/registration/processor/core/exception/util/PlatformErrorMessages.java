@@ -332,6 +332,7 @@ public enum PlatformErrorMessages {
 
 	RPR_MVS_DECODE_EXCEPTION(PlatformConstants.RPR_MANUAL_VERIFICATION_MODULE + "013", "Request Decoding Exception"),
 
+	RPR_MVS_NO_USER_ID_PRESENT(PlatformConstants.RPR_MANUAL_VERIFICATION_MODULE + "014", "User Id can not empty"),
 	/** The rpr tem not found. */
 	// Registration processor Message sender Exception error code
 	RPR_TEM_NOT_FOUND(PlatformConstants.RPR_MESSAGE_SENDER_TEMPLATE + "001", "Template was Not Found"),
@@ -499,6 +500,10 @@ public enum PlatformErrorMessages {
 	/** The print and postal acknowledment generation failed. */
 	RPR_PRT_PRINT_POST_ACK_FAILED(PlatformConstants.RPR_PRINTING_MODULE + "010",
 			"Error while getting response from Print and Postal Service Provider"),
+
+	/** The print validation failed. */
+	RPR_PRT_DATA_VALIDATION_FAILED(PlatformConstants.RPR_PRINTING_MODULE + "011",
+			"Error while print data validation"),
 
 	/** The rpr rgs registration connector not accessible. */
 	RPR_RGS_REGISTRATION_CONNECTOR_NOT_ACCESSIBLE("", "Registration connector stage is not accessible "),

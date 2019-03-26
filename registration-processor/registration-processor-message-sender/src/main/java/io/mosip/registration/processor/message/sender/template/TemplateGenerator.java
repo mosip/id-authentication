@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.runtime.RuntimeConstants;
 import org.apache.velocity.runtime.log.NullLogChute;
@@ -17,19 +18,20 @@ import org.apache.velocity.runtime.resource.loader.FileResourceLoader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.templatemanager.exception.TemplateMethodInvocationException;
 import io.mosip.kernel.core.templatemanager.exception.TemplateParsingException;
 import io.mosip.kernel.core.templatemanager.exception.TemplateResourceNotFoundException;
 import io.mosip.kernel.core.templatemanager.spi.TemplateManager;
 import io.mosip.kernel.templatemanager.velocity.impl.TemplateManagerImpl;
 import io.mosip.registration.processor.core.code.ApiName;
+import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.exception.TemplateProcessingFailureException;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
+import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.notification.template.generator.dto.TemplateResponseDto;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
-import io.vertx.core.logging.Logger;
-import io.vertx.core.logging.LoggerFactory;
 
 /**
  * The Class TemplateGenerator.
@@ -39,8 +41,8 @@ import io.vertx.core.logging.LoggerFactory;
 @Component
 public class TemplateGenerator {
 
-	/** The log. */
-	private static Logger log = LoggerFactory.getLogger(TemplateGenerator.class);
+	/** The reg proc logger. */
+	private static Logger regProcLogger = RegProcessorLogger.getLogger(TemplateGenerator.class);
 
 	/** The Constant TEMPLATES. */
 	private static final String TEMPLATES = "templates";
@@ -86,18 +88,19 @@ public class TemplateGenerator {
 			pathSegments.add(templateTypeCode);
 			TemplateResponseDto template = (TemplateResponseDto) restClientService.getApi(ApiName.MASTER, pathSegments,
 					"", "", TemplateResponseDto.class);
-			
+
 			InputStream fileTextStream = null;
-			if(template != null) {
+			if (template != null) {
 				InputStream stream = new ByteArrayInputStream(
-					template.getTemplates().iterator().next().getFileText().getBytes());
+						template.getTemplates().iterator().next().getFileText().getBytes());
 				fileTextStream = getTemplateManager().merge(stream, attributes);
 			}
-
 			return fileTextStream;
 
 		} catch (TemplateResourceNotFoundException | TemplateParsingException | TemplateMethodInvocationException e) {
-			log.error("Template processing failed due to resource absence", e);
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					null, PlatformErrorMessages.RPR_TEM_PROCESSING_FAILURE.name() + e.getMessage()
+							+ ExceptionUtils.getStackTrace(e));
 			throw new TemplateProcessingFailureException(PlatformErrorMessages.RPR_TEM_PROCESSING_FAILURE.getCode());
 		}
 	}
@@ -122,5 +125,4 @@ public class TemplateGenerator {
 		engine.init();
 		return new TemplateManagerImpl(engine);
 	}
-
 }

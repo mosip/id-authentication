@@ -61,7 +61,7 @@ The key solution considerations are -
 	Demographic Verification
 	Manual Varification
 	Biographic Verification
-	UNI Generator
+	UIN Generator
 	Notification
 	Print
 ```
@@ -76,12 +76,16 @@ The key solution considerations are -
 4. Reprocess Stage 
 +	Create a Vertx state: Reprocess Stage
 +	Use Vertx Chime scheduler to execute job at specific time interval. Time interval value can be fetched from configuration server using key: registration.processor.reprocess.schedule.trigger.time 
-+	Once scheduler triggered, add logic in the job to fetch records from registration table, filtered on status is SUCCESS or ERROR and reprocess_count less than the value configured in configuration server using key: registration.processor.reprocess.attempt.count. Also filter data by number of records using value configured in configuration server using key: registration.processor.reprocess.fetchsize and last update time "upd_dtimes" less than current time minus time configured in configuration server using key : "registration.processor.reprocess.elapse.time"
-+   Once data fetched iterate through each records and update column "latest_regtrn_dtimes" in REGISTRATION table for each recoard with the current system time. 
-+	For each record to be feachted construct data transfer object or camel payload object to be send to vertx stages.   
++	Once scheduler triggered, add logic in the job to fetch records from registration table. 
+		- Recoards with status: SUCCESS, PROCESSED
+		- Recoards having reprocess_count less than the value configured in configuration server using key: registration.processor.reprocess.attempt.count. 
+		-  Recoards having last update time "upd_dtimes" less than current time minus time configured in configuration server using key : "registration.processor.reprocess.elapse.time"
+		- Filter data by number of records using value configured in configuration server using key: registration.processor.reprocess.fetchsize 
++   Iterate all records and update column "latest_regtrn_dtimes" in REGISTRATION table with current system time before sending event. 
++	Also construct data transfer object or camel payload object to be send to vertx stages.   
 +	Send event on the Vertx event bus with the created payload to process record further in registration processor flow.
-+	Once event send successfully increment "process_retry_coun" value in database by one and update it in database.
-+	Repeat above steps in case if data is more than fetch size configured in config server using key: registration.processor.reprocess.fetchsize
++	Once event send successfully increment "process_retry_count" value in database by one and update it in database.
++	Repeat above steps in case if records are more than fetch size configured in config server using key: registration.processor.reprocess.fetchsize
 +	In case reprocess_count reach to the maximum value configured in configuration server (using in key:registration.processor.reprocess.attempt.count ) then send notification mail.
 +	Update registration status service to include above mentioned columns
 
