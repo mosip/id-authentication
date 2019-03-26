@@ -74,13 +74,13 @@ public class PrintPostServiceImpl {
 
 	boolean isConnection = false;
 
-	public void generatePrintandPostal(String regId, MosipQueue queue,) {
+	public void generatePrintandPostal(String regId, MosipQueue queue, MosipQueueManager<MosipQueue, byte[]> mosipQueueManager) {
 
 		if (!isConnection) {
 			QueueListener listener = new QueueListener() {
 				@Override
 				public void setListener(Message message) {
-					consumeLogic(message, queue);
+					consumeLogic(message, queue, mosipQueueManager);
 				}
 			};
 
@@ -91,7 +91,7 @@ public class PrintPostServiceImpl {
 	}
 
 	@SuppressWarnings("unchecked")
-	protected boolean consumeLogic(Message message, MosipQueue queue) {
+	protected boolean consumeLogic(Message message, MosipQueue queue, MosipQueueManager<MosipQueue, byte[]> mosipQueueManager) {
 		boolean isPdfAddedtoQueue = false;
 		try {
 			JSONObject response;

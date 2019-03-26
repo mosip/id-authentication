@@ -136,9 +136,6 @@ public class PrintStage extends MosipVerticleAPIManager {
 	@Value("${registration.processor.queue.address}")
 	private String address;
 
-	/** The print & postal service provider address. */
-	private String printPostalAddress = "postal-service";
-
 	/** The packet info manager. */
 	@Autowired
 	private PacketInfoManager<Identity, ApplicantInfoDto> packetInfoManager;
@@ -189,7 +186,7 @@ public class PrintStage extends MosipVerticleAPIManager {
 			}
 
 			boolean isAddedToQueue = sendToQueue(queue, documentBytesMap, 0, uin);
-			printPostService.generatePrintandPostal(regId, queue);
+			printPostService.generatePrintandPostal(regId, queue, mosipQueueManager);
 
 			if (isAddedToQueue) {
 				object.setIsValid(Boolean.TRUE);
