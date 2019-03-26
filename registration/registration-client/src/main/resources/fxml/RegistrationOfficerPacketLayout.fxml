@@ -66,7 +66,7 @@
                               <Image url="@../images/NewRegistration.png" />
                            </image>
                         </ImageView>
-                        <Button fx:id="newRegistrationBtn" mnemonicParsing="false" styleClass="newRegBtnStyle" text="%newregistration" GridPane.columnIndex="1" GridPane.halignment="LEFT" />
+                        <Label styleClass="newRegBtnStyle" text="%newregistration" GridPane.columnIndex="1" />
                      </children>
                      <GridPane.margin>
                         <Insets left="30.0" />
@@ -79,7 +79,7 @@
                               <Image url="@../images/UINUpdate.png" />
                            </image>
                         </ImageView>
-                        <Button fx:id="uinUpdateBtn" mnemonicParsing="false" styleClass="uinUpdateBtnStyle" text="%uinupdate" GridPane.columnIndex="1" />
+                        <Label styleClass="uinUpdateBtnStyle" text="%uinupdate" GridPane.columnIndex="1" />
                      </children>
                      <columnConstraints>
                         <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" percentWidth="40.0" />
@@ -99,7 +99,7 @@
                               <Image url="@../images/UINUpdate.png" />
                            </image>
                         </ImageView>
-                        <Button mnemonicParsing="false" styleClass="uinUpdateBtnStyle" text="%lostuin" GridPane.columnIndex="1" />
+                        <Label styleClass="uinUpdateBtnStyle" text="%lostuin" GridPane.columnIndex="1" />
                      </children>
                      <columnConstraints>
                         <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" percentWidth="40.0" />
