@@ -160,26 +160,7 @@ public class Encrypt {
 		return encryptionResponseDto;
 	}
 
-	/**
-	 * Splits the encrypted response based on keySplitter.
-	 *
-	 * @param value
-	 *            the value
-	 * @return the encrypted request
-	 */
-	private EncryptionResponseDto split(String value) {
-		EncryptionResponseDto encryptionResponse = new EncryptionResponseDto();
-		byte[] encryptedHybridData = Base64.decodeBase64(value);
-		int keyDemiliterIndex = 0;
-		keyDemiliterIndex = CryptoUtil.getSplitterIndex(encryptedHybridData, keyDemiliterIndex, keySplitter);
-		byte[] encryptedKey = Arrays.copyOfRange(encryptedHybridData, 0, keyDemiliterIndex);
-		byte[] encryptedData = Arrays.copyOfRange(encryptedHybridData, keyDemiliterIndex + keySplitter.length(),
-				encryptedHybridData.length);
-		encryptionResponse.setEncryptedSessionKey(Base64.encodeBase64URLSafeString(encryptedKey));
-		encryptionResponse.setEncryptedIdentity(Base64.encodeBase64URLSafeString(encryptedData));
-		return encryptionResponse;
-	}
-
+	
 	/**
 	 * Gets the encrypted value.
 	 *
