@@ -256,7 +256,7 @@ public class Validations extends BaseController {
 					if ((!id.contains(RegistrationConstants.ON_TYPE)) && blackListedWords.contains(node.getText())) {
 						if (!showAlert)
 							generateAlert(parentPane, id,
-									node.getText().concat(RegistrationUIConstants.IS_BLOCKED_WORD),
+									node.getText().concat(" "+messageBundle.getString(RegistrationConstants.IS_BLOCKED_WORD)),
 									isConsolidated, validationMessage);
 						return false;
 					}
