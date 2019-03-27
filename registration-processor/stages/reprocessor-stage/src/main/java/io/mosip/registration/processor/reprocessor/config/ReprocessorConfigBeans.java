@@ -15,6 +15,8 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.core.io.support.ResourcePropertySource;
 
+import io.mosip.registration.processor.reprocessor.stage.ReprocessorStage;
+
 @PropertySource("classpath:bootstrap.properties")
 @Configuration
 public class ReprocessorConfigBeans {
@@ -41,5 +43,9 @@ public class ReprocessorConfigBeans {
 	public List<String> getAppNames(Environment env) {
 		String names = env.getProperty("spring.application.name");
 		return Stream.of(names.split(",")).collect(Collectors.toList());
+	}
+	@Bean
+	public ReprocessorStage getReprocessorStage() {
+		return new ReprocessorStage();
 	}
 }
