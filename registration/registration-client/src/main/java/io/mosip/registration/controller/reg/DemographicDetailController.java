@@ -1612,14 +1612,21 @@ public class DemographicDetailController extends BaseController {
 			} else {
 				LocationDTO locationDto = ((AddressDTO) SessionContext.map().get(RegistrationConstants.ADDRESS_KEY))
 						.getLocationDTO();
-				fxUtils.selectComboBoxValue(region, locationDto.getRegion());
-				retrieveAndPopulateLocationByHierarchy(region, province, provinceLocalLanguage);
-				fxUtils.selectComboBoxValue(province, locationDto.getProvince());
-				retrieveAndPopulateLocationByHierarchy(province, city, cityLocalLanguage);
-				fxUtils.selectComboBoxValue(city, locationDto.getCity());
-				retrieveAndPopulateLocationByHierarchy(city, localAdminAuthority, localAdminAuthorityLocalLanguage);
-
-				postalCode.setText(locationDto.getPostalCode());
+				if (locationDto.getRegion() != null) {
+					fxUtils.selectComboBoxValue(region, locationDto.getRegion());
+					retrieveAndPopulateLocationByHierarchy(region, province, provinceLocalLanguage);
+				}
+				if (locationDto.getProvince() != null) {
+					fxUtils.selectComboBoxValue(province, locationDto.getProvince());
+					retrieveAndPopulateLocationByHierarchy(province, city, cityLocalLanguage);
+				}
+				if (locationDto.getCity() != null) {
+					fxUtils.selectComboBoxValue(city, locationDto.getCity());
+					retrieveAndPopulateLocationByHierarchy(city, localAdminAuthority, localAdminAuthorityLocalLanguage);
+				}
+				if (locationDto.getPostalCode() != null) {
+					postalCode.setText(locationDto.getPostalCode());
+				}
 				LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 						RegistrationConstants.APPLICATION_ID, "Loaded address from previous entry");
 			}
@@ -1788,16 +1795,16 @@ public class DemographicDetailController extends BaseController {
 			try {
 				dateOfBirth.parse(dd.getText() + "-" + mm.getText() + "-" + yyyy.getText());
 			} catch (ParseException exception) {
-				if(getRegistrationDTOFromSession().getRegistrationMetaDataDTO().getRegistrationCategory()
+				if (getRegistrationDTOFromSession().getRegistrationMetaDataDTO().getRegistrationCategory()
 						.equals(RegistrationConstants.PACKET_TYPE_LOST)) {
-					if(dd.getText().isEmpty() && mm.getText().isEmpty() && yyyy.getText().isEmpty()) {
+					if (dd.getText().isEmpty() && mm.getText().isEmpty() && yyyy.getText().isEmpty()) {
 						isValid = true;
 					}
 				} else {
 					dobMessage.setText(RegistrationUIConstants.INVALID_DATE_OF_BIRTH);
 					dobMessage.setVisible(true);
 					isValid = false;
-				}				
+				}
 			}
 		}
 		if (isValid)

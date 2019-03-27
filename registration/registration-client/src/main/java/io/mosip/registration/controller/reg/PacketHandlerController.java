@@ -669,14 +669,14 @@ public class PacketHandlerController extends BaseController implements Initializ
 			if (registrationDTO.getSelectionListDTO() == null) {
 
 				AddressDTO addressDTO = Builder.build(AddressDTO.class)
-						.with(address -> address.setAddressLine1(moroccoIdentity.getAddressLine1().get(0).getValue()))
-						.with(address -> address.setAddressLine2(moroccoIdentity.getAddressLine2().get(0).getValue()))
-						.with(address -> address.setLine3(moroccoIdentity.getAddressLine3().get(0).getValue()))
+						.with(address -> address.setAddressLine1(moroccoIdentity.getAddressLine1() != null ? moroccoIdentity.getAddressLine1().get(0).getValue() : null))
+						.with(address -> address.setAddressLine2(moroccoIdentity.getAddressLine2() != null ? moroccoIdentity.getAddressLine2().get(0).getValue() : null))
+						.with(address -> address.setLine3(moroccoIdentity.getAddressLine3() != null ? moroccoIdentity.getAddressLine3().get(0).getValue() : null))
 						.with(address -> address.setLocationDTO(Builder.build(LocationDTO.class)
-								.with(location -> location.setCity(moroccoIdentity.getCity().get(0).getValue()))
-								.with(location -> location.setProvince(moroccoIdentity.getProvince().get(0).getValue()))
-								.with(location -> location.setRegion(moroccoIdentity.getRegion().get(0).getValue()))
-								.with(location -> location.setPostalCode(moroccoIdentity.getPostalCode())).get()))
+								.with(location -> location.setCity(moroccoIdentity.getCity() != null ? moroccoIdentity.getCity().get(0).getValue() : null))
+								.with(location -> location.setProvince(moroccoIdentity.getProvince() != null ? moroccoIdentity.getProvince().get(0).getValue() : null))
+								.with(location -> location.setRegion(moroccoIdentity.getRegion() != null ? moroccoIdentity.getRegion().get(0).getValue() : null))
+								.with(location -> location.setPostalCode(moroccoIdentity.getPostalCode() != null ? moroccoIdentity.getPostalCode() : null)).get()))
 						.get();
 
 				SessionContext.map().put(RegistrationConstants.ADDRESS_KEY, addressDTO);
