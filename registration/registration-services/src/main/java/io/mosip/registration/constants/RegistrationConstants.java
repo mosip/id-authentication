@@ -1173,7 +1173,7 @@ public class RegistrationConstants {
 	public static final String YYYY = "yyyy";
 	public static final String DOB = "dob";
 	public static final String ERRORS = "errors";
-	public static final String ERROR_MSG ="errorMessage";
+	public static final String ERROR_MSG ="message";
 
 	public static final String ATTR_INDIVIDUAL_TYPE = "individualTypeCode";
 	public static final String ATTR_DATE_OF_BIRTH = "dateofbirth";

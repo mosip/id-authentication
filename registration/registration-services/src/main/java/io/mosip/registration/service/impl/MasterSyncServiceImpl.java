@@ -127,16 +127,16 @@ public class MasterSyncServiceImpl implements MasterSyncService {
 			
 			LinkedHashMap<String, Object> masterSyncResponse= (LinkedHashMap<String, Object>) masterSyncJson;
 
-			if (!masterSyncResponse.containsKey(RegistrationConstants.ERRORS)) {
+			if (null != masterSyncResponse.get(RegistrationConstants.PACKET_STATUS_READER_RESPONSE)) {
 
 				LOGGER.info(RegistrationConstants.MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID,
 						"master sync json ======>" + masterSyncJson.toString());
-				
-				 String jsonString =  new ObjectMapper().writeValueAsString(masterSyncJson); 
+
+				String jsonString = new ObjectMapper().writeValueAsString(
+						masterSyncResponse.get(RegistrationConstants.PACKET_STATUS_READER_RESPONSE));
 
 				// Mapping json object to respective dto's
-				MasterDataResponseDto masterSyncDto = objectMapper.readValue(jsonString,
-						MasterDataResponseDto.class);
+				MasterDataResponseDto masterSyncDto = objectMapper.readValue(jsonString, MasterDataResponseDto.class);
 
 				resoponse = masterSyncDao.save(masterSyncDto);
 
@@ -223,15 +223,15 @@ public class MasterSyncServiceImpl implements MasterSyncService {
 			
 		LinkedHashMap<String, Object> masterSyncResponse= (LinkedHashMap<String, Object>) response;
 		
-			if (!masterSyncResponse.containsKey(RegistrationConstants.ERRORS)) {
+			if (null != masterSyncResponse.get(RegistrationConstants.PACKET_STATUS_READER_RESPONSE)) {
 				SuccessResponseDTO successResponseDTO = new SuccessResponseDTO();
 				successResponseDTO.setCode(RegistrationConstants.SUCCESS);
 				responseDTO.setSuccessResponseDTO(successResponseDTO);
-			} else if (masterSyncResponse.containsKey(RegistrationConstants.ERRORS)) {
+			} else {
 				ErrorResponseDTO errorResponseDTO = new ErrorResponseDTO();
 				errorResponseDTO.setCode(RegistrationConstants.ERRORS);
-				errorResponseDTO
-						.setMessage(((List<LinkedHashMap<String, String>>) masterSyncResponse.get(RegistrationConstants.ERRORS))
+				errorResponseDTO.setMessage(
+						((List<LinkedHashMap<String, String>>) masterSyncResponse.get(RegistrationConstants.ERRORS))
 								.get(0).get(RegistrationConstants.ERROR_MSG));
 				erResponseDTOs.add(errorResponseDTO);
 				responseDTO.setErrorResponseDTOs(erResponseDTOs);

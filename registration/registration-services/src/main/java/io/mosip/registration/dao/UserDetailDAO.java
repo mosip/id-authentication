@@ -30,10 +30,28 @@ public interface UserDetailDAO {
 	 */
 	void updateLoginParams(UserDetail userDetail);
 
+	/**
+	 * Gets the all active users.
+	 *
+	 * @param attrCode the attr code
+	 * @return the all active users
+	 */
 	List<UserBiometric> getAllActiveUsers(String attrCode);
 
+	/**
+	 * Gets the user specific bio details.
+	 *
+	 * @param userId the user id
+	 * @param bioType the bio type
+	 * @return the user specific bio details
+	 */
 	List<UserBiometric> getUserSpecificBioDetails(String userId, String bioType);
 
+	/**
+	 * Save.
+	 *
+	 * @param userDetailsResponse the user details response
+	 */
 	void save(UserDetailResponseDto userDetailsResponse);
 
 }
