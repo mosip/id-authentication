@@ -353,7 +353,8 @@ public class RegPacketStatusServiceImpl extends BaseService implements RegPacket
 	public void deleteRegistrations(final List<Registration> registrations) {
 		for (Registration registration : registrations) {
 
-			if (registration.getStatusCode().equalsIgnoreCase(RegistrationConstants.PACKET_STATUS_CODE_PROCESSED)) {
+			if (registration.getServerStatusCode()
+					.equalsIgnoreCase(RegistrationConstants.PACKET_STATUS_CODE_PROCESSED)) {
 				/* Delete Registration */
 				delete(registration);
 			}
