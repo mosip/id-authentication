@@ -129,7 +129,8 @@ public class GlobalParamServiceImpl extends BaseService implements GlobalParamSe
 					if (globalParamMap.get(globalParamId.getCode()) != null) {
 
 						/* update (Local already exists) but val change */
-						if (!globalParamMap.get(globalParamId.getCode()).trim().equals(globalParam.getVal())) {
+						if (!globalParamMap.get(globalParamId.getCode()).trim().equals(globalParam.getVal())
+								|| (globalParam.getIsActive().booleanValue())) {
 							String val = globalParamMap.get(globalParamId.getCode()).trim();
 							updateVal(globalParam, val);
 
@@ -208,7 +209,7 @@ public class GlobalParamServiceImpl extends BaseService implements GlobalParamSe
 		globalParam.setName(code);
 		globalParam.setTyp("CONFIGURATION");
 		globalParam.setIsActive(true);
-		globalParam.setCrBy("brahma");
+		globalParam.setCrBy(getUserIdFromSession());
 		globalParam.setCrDtime(Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()));
 		globalParam.setVal(value);
 		globalParam.setGlobalParamId(globalParamId);
