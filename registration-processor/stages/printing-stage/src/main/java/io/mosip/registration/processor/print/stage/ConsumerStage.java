@@ -112,7 +112,7 @@ public class ConsumerStage extends MosipVerticleAPIManager {
 
 	InternalRegistrationStatusDto registrationStatusDto = new InternalRegistrationStatusDto();
 
-	private MessageDTO satgeObject;
+	private MessageDTO stageObject;
 	
 	boolean isConnection = false;
 
@@ -121,7 +121,7 @@ public class ConsumerStage extends MosipVerticleAPIManager {
 
 	public MessageDTO process(MessageDTO object) {
 		this.registrationId =  object.getRid();
-		this.satgeObject = object;
+		this.stageObject = object;
 		try {
 			registrationStatusDto = registrationStatusService.getRegistrationStatus(registrationId);
 
@@ -145,7 +145,7 @@ public class ConsumerStage extends MosipVerticleAPIManager {
 					registrationId, PlatformErrorMessages.RPR_PRT_PRINT_POST_ACK_FAILED.name() + e.getMessage()
 							+ ExceptionUtils.getStackTrace(e));
 		}
-		return satgeObject;
+		return stageObject;
 	}
 
 	public void sendMessage(Message message) {
@@ -154,7 +154,9 @@ public class ConsumerStage extends MosipVerticleAPIManager {
 
 			JSONObject jsonObject = JsonUtil.objectMapperReadValue(response, JSONObject.class);
 			String status = JsonUtil.getJSONValue(jsonObject, "Status");
-
+			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
+					LoggerFileConstant.REGISTRATIONID.toString(), registrationId,
+					"ConsumerStage::process()::exit");
 			if (status.equals(SUCCESS)) {
 				description = "Print and Post Completed for the regId : " + registrationId;
 				registrationStatusDto.setStatusCode(RegistrationStatusCode.PRINT_AND_POST_COMPLETED.toString());
@@ -167,8 +169,13 @@ public class ConsumerStage extends MosipVerticleAPIManager {
 				registrationStatusDto.setStatusComment(description);
 				registrationStatusDto.setUpdatedBy(USER);
 				registrationStatusService.updateRegistrationStatus(registrationStatusDto);
-				this.send(mosipEventBus, MessageBusAddress.PRINTING_BUS_RESEND, this.satgeObject);
+				this.send(mosipEventBus, MessageBusAddress.PRINTING_BUS_RESEND, this.stageObject);
 			}
+			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
+					LoggerFileConstant.REGISTRATIONID.toString(), registrationId,
+					"ConsumerStage::process()::exit");
+			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
+					LoggerFileConstant.REGISTRATIONID.toString(), registrationId, description);
 		} catch (IOException e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationId, PlatformErrorMessages.RPR_PRT_PRINT_POST_ACK_FAILED.name() + e.getMessage()
