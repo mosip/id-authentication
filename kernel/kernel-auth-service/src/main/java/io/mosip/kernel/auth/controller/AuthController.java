@@ -52,7 +52,6 @@ import io.swagger.annotations.Api;
 
 @CrossOrigin
 @RestController
-@RequestMapping("/v1.0")
 @Api(value = "Operation related to Authentication and Authorization", tags = { "authmanager" })
 public class AuthController {
 
