@@ -3,6 +3,7 @@
  */
 package io.mosip.kernel.auth.service.impl;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,6 +43,7 @@ import io.mosip.kernel.auth.service.OTPGenerateService;
 import io.mosip.kernel.auth.service.OTPService;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.exception.ServiceError;
+import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseWrapper;
 
 /**
@@ -225,7 +227,10 @@ public class OTPServiceImpl implements OTPService {
 			OtpSmsSendRequestDto otpSmsSendRequestDto = new OtpSmsSendRequestDto(mobile, message);
 			SmsResponseDto otpSmsSendResponseDto=null;
 			String url = mosipEnvironment.getOtpSenderSmsApi();
-			ResponseEntity<String> response = restTemplate.postForEntity(url, otpSmsSendRequestDto,
+			RequestWrapper<OtpSmsSendRequestDto> reqWrapper = new RequestWrapper<>();
+			reqWrapper.setRequesttime(LocalDateTime.now());
+			reqWrapper.setRequest(otpSmsSendRequestDto);
+			ResponseEntity<String> response = restTemplate.postForEntity(url, reqWrapper,
 					String.class);	
 			validationErrorsList = ExceptionUtils.getServiceErrorList(response.getBody());  
 			if (!validationErrorsList.isEmpty()) {
