@@ -124,7 +124,7 @@ public class DemographicServiceUtil {
 		demographicEntity.setCreateDateTime(LocalDateTime.now(ZoneId.of("UTC")));
 		demographicEntity.setStatusCode(statuscode);
 		log.info("sessionId", "idType", "id", "Hashing start time : "+DateUtils.getUTCCurrentDateTimeString());
-		demographicEntity.setDemogDetailHash(new String(HashUtill.hashUtill(demographicEntity.getApplicantDetailJson())));
+		demographicEntity.setDemogDetailHash(HashUtill.hashUtill(demographicEntity.getApplicantDetailJson()));
 		log.info("sessionId", "idType", "id", "Hashing end time : "+DateUtils.getUTCCurrentDateTimeString());
 		try {
 			if (entityType.equals(RequestCodes.SAVE.getCode())) {
