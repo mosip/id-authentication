@@ -51,6 +51,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.geometry.NodeOrientation;
+import javafx.geometry.Pos;
 import javafx.scene.Cursor;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
@@ -171,7 +172,7 @@ public class DocumentScanController extends BaseController {
 	
 	private TextField scannedField;
 	
-	private int totalDocument=0;
+	private int totalDocument;
 
 	@FXML
 	private void initialize() {
@@ -182,6 +183,7 @@ public class DocumentScanController extends BaseController {
 					&& getRegistrationDTOFromSession().getSelectionListDTO() != null) {
 				registrationNavlabel.setText(RegistrationConstants.UIN_NAV_LABEL);
 			}
+			totalDocument=0;
 			scannedField=new TextField();
 			scannedField.setVisible(false);
 			continueBtn.setDisable(true);
@@ -252,7 +254,7 @@ public class DocumentScanController extends BaseController {
 		if (applicantType != null) {
 			List<DocumentCategory> documentCategories = documentCategoryService
 					.getDocumentCategoriesByLangCode(ApplicationContext.applicationLanguage());
-			docScanVbox.setSpacing(25);
+			docScanVbox.setSpacing(5);
 			if (documentCategories != null && documentCategories.size() > 0)
 				prepareDocumentScanSection(applicantType, documentCategories);
 		}
@@ -288,6 +290,8 @@ public class DocumentScanController extends BaseController {
 		for (DocumentCategory documentCategory : documentCategories) {
 
 			String docCategoryCode = documentCategory.getCode();
+			
+			String docCategoryName = documentCategory.getName();
 
 			List<DocumentCategoryDto> documentCategoryDtos = null;
 
@@ -304,13 +308,21 @@ public class DocumentScanController extends BaseController {
 				HBox hBox = new HBox();
 
 				ComboBox<DocumentCategoryDto> comboBox = new ComboBox<>();
-				comboBox.setId(docCategoryCode);
-				comboBox.setPromptText(docCategoryCode);
+				ImageView indicatorImage = new ImageView(new Image(this.getClass().getResourceAsStream(RegistrationConstants.CLOSE_IMAGE_PATH), 15, 15,
+								true, true));
+				comboBox.setPromptText(docCategoryName);
 				comboBox.getStyleClass().add("documentCombobox");
+				Label documentLabel = new Label(docCategoryName);
+				documentLabel.setVisible(false);
+				comboBox.getSelectionModel().selectedItemProperty().addListener((options, oldValue, newValue) -> {
+					documentLabel.setVisible(true);
+				});
 				StringConverter<T> uiRenderForComboBox = FXUtils.getInstance().getStringConverterForComboBox();
 				comboBox.setConverter((StringConverter<DocumentCategoryDto>) uiRenderForComboBox);
-				if (applicationContext.isPrimaryLanguageRightToLeft())
+				if (applicationContext.isPrimaryLanguageRightToLeft()) {
 					comboBox.setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
+					documentLabel.setAlignment(Pos.CENTER_RIGHT);
+				}
 				totalDocument++;
 
 				/*
@@ -346,10 +358,10 @@ public class DocumentScanController extends BaseController {
 										+ RegistrationUIConstants.DOCUMENT);
 					}
 				});
-
-				hBox.getChildren().addAll(comboBox, documentVBox, scanButton);
-				docScanVbox.getChildren().add(hBox);
-
+				hBox.getChildren().addAll(indicatorImage,comboBox, documentVBox, scanButton);
+				docScanVbox.getChildren().addAll(documentLabel,hBox);
+				//System.out.println("D"+docScanVbox.getWidth());
+				documentLabel.setPrefWidth(docScanVbox.getWidth()/2.2);
 				comboBox.getItems().addAll(documentCategoryDtos);
 			}
 
@@ -469,7 +481,8 @@ public class DocumentScanController extends BaseController {
 			} else {
 				scanFromStubbed(popupStage);
 			}
-			scannedField.setText(""+(--totalDocument));
+			totalDocument--;
+			scannedField.setText(""+(totalDocument));
 		} catch (IOException ioException) {
 			LOGGER.error(LoggerConstants.LOG_REG_REGISTRATION_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 					String.format("%s -> Exception while scanning documents for registration  %s -> %s",
@@ -605,13 +618,13 @@ public class DocumentScanController extends BaseController {
 		documentDetailsDTO.setType(document.getName());
 		documentDetailsDTO.setFormat(String.valueOf(ApplicationContext.map().get(RegistrationConstants.DOC_TYPE)));
 		documentDetailsDTO.setValue(selectedDocument.concat("_").concat(document.getName()));
-
 		LOGGER.info(RegistrationConstants.DOCUMNET_SCAN_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Set details to DocumentDetailsDTO");
 
 		LOGGER.info(RegistrationConstants.DOCUMNET_SCAN_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Set DocumentDetailsDTO to RegistrationDTO");
-
+		((ImageView)((HBox) vboxElement.getParent()).getChildren().get(0)).setImage(new Image(this.getClass().getResourceAsStream(RegistrationConstants.DONE_IMAGE_PATH), 15, 15,
+				true, true));
 		addDocumentsToScreen(documentDetailsDTO.getValue(), documentDetailsDTO.getFormat(), vboxElement);
 
 		generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.SCAN_DOC_SUCCESS);
@@ -735,6 +748,9 @@ public class DocumentScanController extends BaseController {
 				auditFactory.audit(AuditEvent.REG_DOC_POA_DELETE, Components.REG_DOCUMENTS, SessionContext.userId(),
 						AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
 
+				((ImageView)((HBox) vboxElement.getParent()).getChildren().get(0)).setImage(new Image(this.getClass().getResourceAsStream(RegistrationConstants.CLOSE_IMAGE_PATH), 15, 15,
+						true, true));
+				
 				initializePreviewSection();
 
 				GridPane gridpane = (GridPane) ((ImageView) event.getSource()).getParent();
