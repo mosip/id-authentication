@@ -3,7 +3,11 @@ package io.mosip.registration.service.external;
 import io.mosip.registration.dto.PreRegistrationDTO;
 import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
-
+/**
+ * 
+ * @author balamurugan ramamoorthy
+ *
+ */
 public interface PreRegZipHandlingService {
 
 	/**

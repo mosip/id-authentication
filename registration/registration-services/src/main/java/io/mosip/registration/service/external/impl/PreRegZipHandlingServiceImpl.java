@@ -245,6 +245,15 @@ public class PreRegZipHandlingServiceImpl implements PreRegZipHandlingService {
 		}
 	}
 
+	
+	/**
+	 * This method is used to decrypt the pre registration packet using the
+	 * symmetric key
+	 * 
+	 * @param symmetricKey
+	 * @param encryptedPacket
+	 * @return byte[]
+	 */
 	@Override
 	public byte[] decryptPreRegPacket(String symmetricKey, byte[] encryptedPacket) {
 

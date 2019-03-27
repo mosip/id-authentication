@@ -3,7 +3,11 @@ package io.mosip.registration.device.scanner;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.List;
-
+/**
+ * 
+ * @author balamurugan ramamoorthy
+ *
+ */
 public interface IMosipDocumentScannerService {
 
 	/**
