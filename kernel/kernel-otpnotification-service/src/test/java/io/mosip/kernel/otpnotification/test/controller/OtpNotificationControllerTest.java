@@ -1,9 +1,7 @@
 package io.mosip.kernel.otpnotification.test.controller;
 
-import static org.hamcrest.CoreMatchers.is;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.ArrayList;
@@ -64,8 +62,8 @@ public class OtpNotificationControllerTest {
 		request.setSmsTemplate("YOUR LOGIN OTP IS $otp");
 		String json = mapper.writeValueAsString(request);
 		when(service.sendOtpNotification(request)).thenReturn(response);
-		mockMvc.perform(post("/v1.0/otp/send").contentType(MediaType.APPLICATION_JSON).content(json))
-				.andExpect(status().isOk()).andExpect(jsonPath("$.status", is("success")));
+		mockMvc.perform(post("/otp/send").contentType(MediaType.APPLICATION_JSON).content(json))
+				.andExpect(status().isOk());
 
 	}
 

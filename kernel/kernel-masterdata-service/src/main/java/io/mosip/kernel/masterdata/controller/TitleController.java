@@ -13,7 +13,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.mosip.kernel.masterdata.dto.RequestDto;
+import io.mosip.kernel.core.http.RequestWrapper;
+import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.masterdata.dto.TitleDto;
 import io.mosip.kernel.masterdata.dto.getresponse.TitleResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
@@ -44,7 +45,8 @@ public class TitleController {
 	 * 
 	 * @return list of all titles present in master DB
 	 */
-	@GetMapping(value = "/v1.0/title")
+	@ResponseFilter
+	@GetMapping(value = "/title")
 	public TitleResponseDto getAllTitles() {
 		return titleService.getAllTitles();
 	}
@@ -57,7 +59,8 @@ public class TitleController {
 	 *            code
 	 * @return list of all titles for the particular language code
 	 */
-	@GetMapping(value = "/v1.0/title/{langcode}")
+	@ResponseFilter
+	@GetMapping(value = "/title/{langcode}")
 	public TitleResponseDto getTitlesBylangCode(@PathVariable("langcode") String langCode) {
 		return titleService.getByLanguageCode(langCode);
 	}
@@ -69,9 +72,10 @@ public class TitleController {
 	 *            input from user
 	 * @return primary key of entered row
 	 */
-	@PostMapping("/v1.0/title")
-	public ResponseEntity<CodeAndLanguageCodeID> saveTitle(@Valid @RequestBody RequestDto<TitleDto> title) {
-		return new ResponseEntity<>(titleService.saveTitle(title), HttpStatus.OK);
+	@ResponseFilter
+	@PostMapping("/title")
+	public ResponseEntity<CodeAndLanguageCodeID> saveTitle(@Valid @RequestBody RequestWrapper<TitleDto> title) {
+		return new ResponseEntity<>(titleService.saveTitle(title.getRequest()), HttpStatus.OK);
 
 	}
 
@@ -82,7 +86,8 @@ public class TitleController {
 	 *            input DTO for updated row
 	 * @return composite primary key of updated row
 	 */
-	@PutMapping("/v1.0/title")
+	@ResponseFilter
+	@PutMapping("/title")
 	@ApiOperation(value = "Service to update title", notes = "Update title and return composite id", response = CodeAndLanguageCodeID.class)
 	@ApiResponses({
 			@ApiResponse(code = 200, message = "When title successfully updated", response = CodeResponseDto.class),
@@ -90,8 +95,8 @@ public class TitleController {
 			@ApiResponse(code = 404, message = "When No title found"),
 			@ApiResponse(code = 500, message = "While updating title any error occured") })
 	public ResponseEntity<CodeAndLanguageCodeID> updateTitle(
-			@ApiParam("Title DTO to update") @Valid @RequestBody RequestDto<TitleDto> titles) {
-		return new ResponseEntity<>(titleService.updateTitle(titles), HttpStatus.OK);
+			@ApiParam("Title DTO to update") @Valid @RequestBody RequestWrapper<TitleDto> titles) {
+		return new ResponseEntity<>(titleService.updateTitle(titles.getRequest()), HttpStatus.OK);
 	}
 
 	/**
@@ -101,7 +106,8 @@ public class TitleController {
 	 *            input from user
 	 * @return composite key of deleted row of data
 	 */
-	@DeleteMapping("/v1.0/title/{code}")
+	@ResponseFilter
+	@DeleteMapping("/title/{code}")
 	@ApiOperation(value = "Service to delete title", notes = "Delete title and return composite id", response = CodeResponseDto.class)
 	@ApiResponses({
 			@ApiResponse(code = 200, message = "When title successfully deleted", response = CodeResponseDto.class),

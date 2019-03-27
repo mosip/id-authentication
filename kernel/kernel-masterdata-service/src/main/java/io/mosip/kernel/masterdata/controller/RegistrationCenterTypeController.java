@@ -13,7 +13,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.kernel.masterdata.dto.RegistrationCenterTypeDto;
-import io.mosip.kernel.masterdata.dto.RequestDto;
+import io.mosip.kernel.core.http.RequestWrapper;
+import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.service.RegistrationCenterTypeService;
@@ -44,11 +45,12 @@ public class RegistrationCenterTypeController {
 	 *            be added.
 	 * @return the response dto.
 	 */
-	@PostMapping("/v1.0/registrationcentertypes")
+	@ResponseFilter
+	@PostMapping("/registrationcentertypes")
 	public ResponseEntity<CodeAndLanguageCodeID> createRegistrationCenterType(
-			@Valid @RequestBody RequestDto<RegistrationCenterTypeDto> registrationCenterTypeDto) {
+			@Valid @RequestBody RequestWrapper<RegistrationCenterTypeDto> registrationCenterTypeDto) {
 		return new ResponseEntity<>(
-				registrationCenterTypeService.createRegistrationCenterType(registrationCenterTypeDto),
+				registrationCenterTypeService.createRegistrationCenterType(registrationCenterTypeDto.getRequest()),
 				HttpStatus.OK);
 	}
 
@@ -60,11 +62,12 @@ public class RegistrationCenterTypeController {
 	 *            be updated.
 	 * @return the response dto.
 	 */
-	@PutMapping("/v1.0/registrationcentertypes")
+	@ResponseFilter
+	@PutMapping("/registrationcentertypes")
 	public ResponseEntity<CodeAndLanguageCodeID> updateRegistrationCenterType(
-			@Valid @RequestBody RequestDto<RegistrationCenterTypeDto> registrationCenterTypeDto) {
+			@Valid @RequestBody RequestWrapper<RegistrationCenterTypeDto> registrationCenterTypeDto) {
 		return new ResponseEntity<>(
-				registrationCenterTypeService.updateRegistrationCenterType(registrationCenterTypeDto), HttpStatus.OK);
+				registrationCenterTypeService.updateRegistrationCenterType(registrationCenterTypeDto.getRequest()), HttpStatus.OK);
 
 	}
 
@@ -75,7 +78,8 @@ public class RegistrationCenterTypeController {
 	 *            the code of the registration center type that needs to be deleted.
 	 * @return the response.
 	 */
-	@DeleteMapping("/v1.0/registrationcentertypes/{code}")
+	@ResponseFilter
+	@DeleteMapping("/registrationcentertypes/{code}")
 	public ResponseEntity<CodeResponseDto> deleteRegistrationCenterType(@PathVariable("code") String code) {
 		return new ResponseEntity<>(registrationCenterTypeService.deleteRegistrationCenterType(code), HttpStatus.OK);
 	}

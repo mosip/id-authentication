@@ -15,7 +15,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.kernel.masterdata.dto.DocumentCategoryDto;
-import io.mosip.kernel.masterdata.dto.RequestDto;
+import io.mosip.kernel.core.http.RequestWrapper;
+import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.masterdata.dto.getresponse.DocumentCategoryResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
@@ -45,7 +46,8 @@ public class DocumentCategoryController {
 	 * 
 	 * @return All Document categories
 	 */
-	@GetMapping("/v1.0/documentcategories")
+	@ResponseFilter
+	@GetMapping("/documentcategories")
 	public DocumentCategoryResponseDto getAllDocumentCategory() {
 		return documentCategoryService.getAllDocumentCategory();
 	}
@@ -58,7 +60,8 @@ public class DocumentCategoryController {
 	 * 
 	 * @return {@link DocumentCategoryResponseDto}
 	 */
-	@GetMapping("/v1.0/documentcategories/{langcode}")
+	@ResponseFilter
+	@GetMapping("/documentcategories/{langcode}")
 	public DocumentCategoryResponseDto getAllDocumentCategoryByLaguageCode(@PathVariable("langcode") String langCode) {
 		return documentCategoryService.getAllDocumentCategoryByLaguageCode(langCode);
 	}
@@ -72,7 +75,8 @@ public class DocumentCategoryController {
 	 *            the language code
 	 * @return {@link DocumentCategoryResponseDto}
 	 */
-	@GetMapping("/v1.0/documentcategories/{code}/{langcode}")
+	@ResponseFilter
+	@GetMapping("/documentcategories/{code}/{langcode}")
 	public DocumentCategoryResponseDto getDocumentCategoryByCodeAndLangCode(@PathVariable("code") String code,
 			@PathVariable("langcode") String langCode) {
 		return documentCategoryService.getDocumentCategoryByCodeAndLangCode(code, langCode);
@@ -86,11 +90,12 @@ public class DocumentCategoryController {
 	 * 
 	 * @return {@link CodeAndLanguageCodeID}
 	 */
-	@PostMapping("/v1.0/documentcategories")
+	@ResponseFilter
+	@PostMapping("/documentcategories")
 	@ApiOperation(value = "Service to create document category", notes = "Create document category and return composite id", response = CodeAndLanguageCodeID.class)
 	public ResponseEntity<CodeAndLanguageCodeID> createDocumentCategory(
-			@ApiParam("Document category DTO to create") @Valid @RequestBody RequestDto<DocumentCategoryDto> category) {
-		return new ResponseEntity<>(documentCategoryService.createDocumentCategory(category), HttpStatus.OK);
+			@ApiParam("Document category DTO to create") @Valid @RequestBody RequestWrapper<DocumentCategoryDto> category) {
+		return new ResponseEntity<>(documentCategoryService.createDocumentCategory(category.getRequest()), HttpStatus.OK);
 	}
 
 	/**
@@ -100,11 +105,12 @@ public class DocumentCategoryController {
 	 *            is of type {@link DocumentCategoryDto}
 	 * @return {@link CodeAndLanguageCodeID}
 	 */
-	@PutMapping("/v1.0/documentcategories")
+	@ResponseFilter
+	@PutMapping("/documentcategories")
 	@ApiOperation(value = "Service to update document category", notes = "Update document category and return composite id", response = CodeAndLanguageCodeID.class)
 	public ResponseEntity<CodeAndLanguageCodeID> updateDocumentCategory(
-			@ApiParam("Document category DTO to update") @Valid @RequestBody RequestDto<DocumentCategoryDto> category) {
-		return new ResponseEntity<>(documentCategoryService.updateDocumentCategory(category), HttpStatus.OK);
+			@ApiParam("Document category DTO to update") @Valid @RequestBody RequestWrapper<DocumentCategoryDto> category) {
+		return new ResponseEntity<>(documentCategoryService.updateDocumentCategory(category.getRequest()), HttpStatus.OK);
 	}
 
 	/**
@@ -114,7 +120,8 @@ public class DocumentCategoryController {
 	 *            the document category code.
 	 * @return the code.
 	 */
-	@DeleteMapping("/v1.0/documentcategories/{code}")
+	@ResponseFilter
+	@DeleteMapping("/documentcategories/{code}")
 	@ApiOperation(value = "Service to delete document category", notes = "Delete document category and return composite id", response = CodeAndLanguageCodeID.class)
 	public ResponseEntity<CodeResponseDto> deleteDocumentCategory(@PathVariable("code") String code) {
 		return new ResponseEntity<>(documentCategoryService.deleteDocumentCategory(code), HttpStatus.OK);

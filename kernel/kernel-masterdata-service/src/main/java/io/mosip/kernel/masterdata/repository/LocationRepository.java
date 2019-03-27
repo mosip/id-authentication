@@ -23,7 +23,7 @@ public interface LocationRepository extends BaseRepository<Location, CodeAndLang
 	@Query("FROM Location WHERE (isDeleted is null OR isDeleted = false) AND isActive = true")
 	List<Location> findLocationHierarchyByIsDeletedIsNullOrIsDeletedFalse();
 
-	@Query(value = "FROM Location l where l.code=?1 and l.langCode=?2 and (l.isDeleted is null or l.isDeleted=false)")
+	@Query(value = "FROM Location l where l.code=?1 and l.langCode=?2 and (l.isDeleted is null or l.isDeleted=false) and l.isActive = true")
 	List<Location> findLocationHierarchyByCodeAndLanguageCode(String locCode, String languagecode);
 
 	@Query(value = "FROM Location l where parentLocCode=?1 and langCode=?2 and (l.isDeleted is null or l.isDeleted=false) and l.isActive=true")
@@ -32,7 +32,7 @@ public interface LocationRepository extends BaseRepository<Location, CodeAndLang
 	@Query(value = "select distinct hierarchy_level, hierarchy_level_name, is_active from master.location where lang_code=?1 and (is_deleted='f' or is_deleted is null) and is_active='t' ", nativeQuery = true)
 	List<Object[]> findDistinctLocationHierarchyByIsDeletedFalse(String langCode);
 
-	@Query(value = "FROM Location l where l.code=?1 and (l.isDeleted is null or l.isDeleted=false)")
+	@Query(value = "FROM Location l where l.code=?1 and (l.isDeleted is null or l.isDeleted=false) and l.isActive = true")
 	List<Location> findByCode(String locationCode);
 
 	/**

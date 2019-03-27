@@ -14,7 +14,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.kernel.masterdata.dto.MachineDto;
-import io.mosip.kernel.masterdata.dto.RequestDto;
+import io.mosip.kernel.core.http.RequestWrapper;
+import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.masterdata.dto.getresponse.MachineResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.entity.id.IdAndLanguageCodeID;
@@ -54,7 +55,8 @@ public class MachineController {
 	 * @return MachineResponseDto machine detail based on given Machine ID and
 	 *         Language code {@link MachineResponseDto}
 	 */
-	@GetMapping(value = "/v1.0/machines/{id}/{langcode}")
+	@ResponseFilter
+	@GetMapping(value = "/machines/{id}/{langcode}")
 	@ApiOperation(value = "Retrieve all Machine Details for given Languge Code", notes = "Retrieve all Machine Detail for given Languge Code and ID", response = MachineResponseDto.class)
 	@ApiResponses({
 			@ApiResponse(code = 200, message = "When Machine Details retrieved from database for the given Languge Code and ID", response = MachineResponseDto.class),
@@ -76,8 +78,8 @@ public class MachineController {
 	 * @return MachineResponseDto machine detail based on given Language code
 	 *         {@link MachineResponseDto}
 	 */
-
-	@GetMapping(value = "/v1.0/machines/{langcode}")
+	@ResponseFilter
+	@GetMapping(value = "/machines/{langcode}")
 	@ApiOperation(value = "Retrieve all Machine Details for given Languge Code", notes = "Retrieve all Machine Detail for given Languge Code", response = MachineResponseDto.class)
 	@ApiResponses({
 			@ApiResponse(code = 200, message = "When Machine Details retrieved from database for the given Languge Code", response = MachineResponseDto.class),
@@ -93,7 +95,8 @@ public class MachineController {
 	 * 
 	 * @return MachineResponseDto all machines details {@link MachineResponseDto}
 	 */
-	@GetMapping(value = "/v1.0/machines")
+	@ResponseFilter
+	@GetMapping(value = "/machines")
 	@ApiOperation(value = "Retrieve all Machine Details", notes = "Retrieve all Machine Detail", response = MachineResponseDto.class)
 	@ApiResponses({
 			@ApiResponse(code = 200, message = "When all Machine retrieved from database", response = MachineResponseDto.class),
@@ -113,15 +116,16 @@ public class MachineController {
 	 * @return ResponseEntity Machine Id which is inserted successfully
 	 *         {@link ResponseEntity}
 	 */
-	@PostMapping("/v1.0/machines")
+	@ResponseFilter
+	@PostMapping("/machines")
 	@ApiOperation(value = "Service to save Machine", notes = "Saves Machine Detail and return Machine id", response = IdResponseDto.class)
 	@ApiResponses({
 			@ApiResponse(code = 201, message = "When Machine successfully created", response = IdResponseDto.class),
 			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
 			@ApiResponse(code = 404, message = "When No Machine found"),
 			@ApiResponse(code = 500, message = "While creating Machine any error occured") })
-	public ResponseEntity<IdAndLanguageCodeID> createMachine(@Valid @RequestBody RequestDto<MachineDto> machine) {
-		return new ResponseEntity<>(machineService.createMachine(machine), HttpStatus.OK);
+	public ResponseEntity<IdAndLanguageCodeID> createMachine(@Valid @RequestBody RequestWrapper<MachineDto> machine) {
+		return new ResponseEntity<>(machineService.createMachine(machine.getRequest()), HttpStatus.OK);
 	}
 
 	/**
@@ -133,15 +137,16 @@ public class MachineController {
 	 * @return ResponseEntity Machine Id which is update successfully
 	 *         {@link ResponseEntity}
 	 */
-	@PutMapping("/v1.0/machines")
+	@ResponseFilter
+	@PutMapping("/machines")
 	@ApiOperation(value = "Service to update Machine", notes = "update Machine Detail and return Machine id", response = IdResponseDto.class)
 	@ApiResponses({
 			@ApiResponse(code = 200, message = "When Machine successfully udated", response = IdResponseDto.class),
 			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
 			@ApiResponse(code = 404, message = "When No Machine found"),
 			@ApiResponse(code = 500, message = "While updating Machine any error occured") })
-	public ResponseEntity<IdAndLanguageCodeID> updateMachine(@Valid @RequestBody RequestDto<MachineDto> machine) {
-		return new ResponseEntity<>(machineService.updateMachine(machine), HttpStatus.OK);
+	public ResponseEntity<IdAndLanguageCodeID> updateMachine(@Valid @RequestBody RequestWrapper<MachineDto> machine) {
+		return new ResponseEntity<>(machineService.updateMachine(machine.getRequest()), HttpStatus.OK);
 	}
 
 	/**
@@ -153,7 +158,8 @@ public class MachineController {
 	 * @return ResponseEntity Machine Id which is deleted successfully
 	 *         {@link ResponseEntity}
 	 */
-	@DeleteMapping("/v1.0/machines/{id}")
+	@ResponseFilter
+	@DeleteMapping("/machines/{id}")
 	@ApiOperation(value = "Service to delete Machine ", notes = "Delete Machine  and return Machine  Id ", response = IdResponseDto.class)
 	@ApiResponses({
 			@ApiResponse(code = 200, message = "When Machine successfully deleted", response = IdResponseDto.class),
