@@ -217,8 +217,7 @@ public class DemographicService {
 			if (ValidationUtil.requestValidator(demographicRequest)) {
 				log.info("sessionId", "idType", "id",
 						"JSON validator start time : " + DateUtils.getUTCCurrentDateTimeString());
-				jsonValidator.validateJson(demographicRequest.getRequest().getDemographicDetails().toJSONString(),
-						schemaName);
+				jsonValidator.validateJson(demographicRequest.getRequest().getDemographicDetails().toJSONString());
 				log.info("sessionId", "idType", "id",
 						"JSON validator end time : " + DateUtils.getUTCCurrentDateTimeString());
 				mainListResponseDTO = createOrUpdate(demographicRequest.getRequest(), demographicRequest.getId());
@@ -332,7 +331,7 @@ public class DemographicService {
 				DemographicEntity demographicEntity = demographicRepository.findBypreRegistrationId(preRegId);
 
 				if (demographicEntity != null) {
-					String hashString = new String(HashUtill.hashUtill(demographicEntity.getApplicantDetailJson()));
+					String hashString = HashUtill.hashUtill(demographicEntity.getApplicantDetailJson());
 
 					if (demographicEntity.getDemogDetailHash().equals(hashString)) {
 						statusdto.setPreRegistartionId(demographicEntity.getPreRegistrationId());
@@ -444,7 +443,7 @@ public class DemographicService {
 			if (ValidationUtil.requstParamValidator(requestParamMap)) {
 				DemographicEntity demographicEntity = demographicRepository.findBypreRegistrationId(preRegId);
 				if (demographicEntity != null) {
-					String hashString = new String(HashUtill.hashUtill(demographicEntity.getApplicantDetailJson()));
+					String hashString = HashUtill.hashUtill(demographicEntity.getApplicantDetailJson());
 
 					if (demographicEntity.getDemogDetailHash().equals(hashString)) {
 
@@ -580,7 +579,7 @@ public class DemographicService {
 		if (demographicEntityList != null && !demographicEntityList.isEmpty()) {
 			for (DemographicEntity entity : demographicEntityList) {
 				if (entity.getDemogDetailHash()
-						.equals(new String(HashUtill.hashUtill(entity.getApplicantDetailJson())))) {
+						.equals(HashUtill.hashUtill(entity.getApplicantDetailJson()))) {
 					preIds.add(entity.getPreRegistrationId());
 				} else {
 
