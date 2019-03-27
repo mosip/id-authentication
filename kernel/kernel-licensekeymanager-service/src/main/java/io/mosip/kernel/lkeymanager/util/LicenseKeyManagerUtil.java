@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.core.exception.ServiceError;
@@ -23,6 +24,7 @@ import io.mosip.kernel.lkeymanager.exception.LicenseKeyServiceException;
  * @since 1.0.0
  *
  */
+@RefreshScope
 @Component
 public class LicenseKeyManagerUtil {
 	/**
