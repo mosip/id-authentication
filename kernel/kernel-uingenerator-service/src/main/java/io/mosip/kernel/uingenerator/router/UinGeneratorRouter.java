@@ -171,11 +171,13 @@ public class UinGeneratorRouter {
 		errorResponse.getErrors().add(error);
 		objectMapper.registerModule(new JavaTimeModule());
 		JsonNode reqNode;
-		try {
-			reqNode = objectMapper.readTree(routingContext.getBodyAsJson().toString());
-			errorResponse.setId(reqNode.path("id").asText());
-			errorResponse.setVersion(reqNode.path("version").asText());
-		} catch (IOException e) {
+		if (routingContext.getBodyAsJson() != null) {
+			try {
+				reqNode = objectMapper.readTree(routingContext.getBodyAsJson().toString());
+				errorResponse.setId(reqNode.path("id").asText());
+				errorResponse.setVersion(reqNode.path("version").asText());
+			} catch (IOException e) {
+			}
 		}
 		try {
 			routingContext.response().putHeader("content-type", "application/json").setStatusCode(200)
