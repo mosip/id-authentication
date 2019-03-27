@@ -13,7 +13,7 @@ public interface PacketUploadService {
 	
 	/**
 	 * Get the list of Synched Packets or the packets that are marked are Reupload.
-	 * @return
+	 * @return All the Synched packets
 	 */
 
 	List<Registration> getSynchedPackets();
@@ -30,7 +30,7 @@ public interface PacketUploadService {
 	/**
 	 * Update the Packet upload status to the local Database.	
 	 * @param packetStatus
-	 * @return
+	 * @return Boolean isUpdated
 	 */
 	 Boolean updateStatus(List<PacketStatusDTO> packetUploadStatus);
 	 
@@ -49,5 +49,8 @@ public interface PacketUploadService {
 	 */
 	void uploadEODPackets(List<String> regIds);
 
+	/**
+	 * This method will upload all the synched packets which is used for machine remapping.
+	 */
 	void uploadAllSyncedPackets();
 }

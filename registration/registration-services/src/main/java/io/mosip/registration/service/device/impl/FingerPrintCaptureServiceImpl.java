@@ -16,6 +16,11 @@ public class FingerPrintCaptureServiceImpl {
 	@Autowired
 	private AuthenticationService authenticationService;
 
+	/**
+	 * Validate the scanned fingers
+	 * @param fingerprintDetailsDTOs
+	 * @return Boolean isMatched
+	 */
 	public boolean validateFingerprint(List<FingerprintDetailsDTO> fingerprintDetailsDTOs) {
 		AuthenticationValidatorDTO authenticationValidatorDTO=new AuthenticationValidatorDTO();
 		authenticationValidatorDTO.setUserId(SessionContext.userContext().getUserId());

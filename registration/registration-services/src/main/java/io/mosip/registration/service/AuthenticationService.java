@@ -17,6 +17,12 @@ public class AuthenticationService {
 
 	private List<AuthenticationBaseValidator> authenticationBaseValidators;
 
+	/**
+	 * Common Validator for all the Authentications
+	 * @param validatorType
+	 * @param authenticationValidatorDTO
+	 * @return
+	 */
 	public Boolean authValidator(String validatorType, AuthenticationValidatorDTO authenticationValidatorDTO) {
 
 		for (AuthenticationBaseValidator validator : authenticationBaseValidators) {
@@ -27,6 +33,10 @@ public class AuthenticationService {
 		return false;
 	}
 
+	/**
+	 * This method is used to set the Authentication validators
+	 * @param authBaseValidators
+	 */
 	@Autowired
 	public void setAuthenticationBaseValidator(List<AuthenticationBaseValidator> authBaseValidators) {
 		this.authenticationBaseValidators = authBaseValidators;

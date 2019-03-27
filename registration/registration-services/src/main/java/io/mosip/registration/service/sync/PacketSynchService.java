@@ -57,7 +57,16 @@ public interface PacketSynchService {
 	 */
 	String syncEODPackets(List<String> regIds) throws RegBaseCheckedException;
 
+	/**
+	 * @param packetsToBeSynched
+	 * @return 
+	 * @throws RegBaseCheckedException
+	 */
 	String packetSync(List<PacketStatusDTO> packetsToBeSynched) throws RegBaseCheckedException;
 
+	/**
+	 * 
+	 * @throws RegBaseCheckedException
+	 */
 	void syncAllPackets() throws RegBaseCheckedException;
 }
