@@ -388,6 +388,11 @@ public class RegistrationStatusServiceImpl
 		registrationStatusDto.setDeletedDateTime(entity.getDeletedDateTime());
 		registrationStatusDto.setRetryCount(entity.getRetryCount());
 		registrationStatusDto.setApplicantType(entity.getApplicantType());
+		registrationStatusDto.setReProcessRetryCount(entity.getRegProcessRetryCount());
+		registrationStatusDto.setLatestTransactionStatusCode(entity.getLatestTransactionStatusCode());
+		registrationStatusDto.setLatestTransactionTypeCode(entity.getLatestTransactionTypeCode());
+		registrationStatusDto.setRegistrationStageName(entity.getRegistrationStageName());
+		registrationStatusDto.setUpdateDateTime(entity.getUpdateDateTime());
 		return registrationStatusDto;
 	}
 
@@ -416,6 +421,11 @@ public class RegistrationStatusServiceImpl
 		registrationStatusEntity.setDeletedDateTime(dto.getDeletedDateTime());
 		registrationStatusEntity.setRetryCount(dto.getRetryCount());
 		registrationStatusEntity.setApplicantType(dto.getApplicantType());
+		registrationStatusEntity.setRegProcessRetryCount(dto.getReProcessRetryCount());
+		registrationStatusEntity.setLatestTransactionStatusCode(dto.getLatestTransactionStatusCode());
+		registrationStatusEntity.setLatestTransactionTypeCode(dto.getLatestTransactionTypeCode());
+		registrationStatusEntity.setRegistrationStageName(dto.getRegistrationStageName());
+		registrationStatusEntity.setUpdateDateTime(dto.getUpdateDateTime());
 		return registrationStatusEntity;
 	}
 
