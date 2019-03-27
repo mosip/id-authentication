@@ -7,38 +7,34 @@ import java.util.stream.Stream;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.uingenerator.dto.UinResponseDto;
 import io.mosip.kernel.uingenerator.dto.UinStatusUpdateReponseDto;
-import io.mosip.kernel.uingenerator.entity.UinEntity;
 import io.mosip.kernel.uingenerator.test.config.UinGeneratorTestConfiguration;
 import io.mosip.kernel.uingenerator.verticle.UinGeneratorServerVerticle;
 import io.mosip.kernel.uingenerator.verticle.UinGeneratorVerticle;
 import io.vertx.core.DeploymentOptions;
 import io.vertx.core.Verticle;
 import io.vertx.core.Vertx;
-import io.vertx.core.json.Json;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.unit.Async;
 import io.vertx.ext.unit.TestContext;
 import io.vertx.ext.unit.junit.VertxUnitRunner;
 
+@Ignore
 @RunWith(VertxUnitRunner.class)
 public class UinStatusUpdateVerticleStatusNotFoundExpTest {
 
