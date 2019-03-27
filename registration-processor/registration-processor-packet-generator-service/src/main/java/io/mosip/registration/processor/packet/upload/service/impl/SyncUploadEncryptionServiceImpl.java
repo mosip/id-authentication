@@ -87,7 +87,7 @@ public class SyncUploadEncryptionServiceImpl implements SyncUploadEncryptionServ
 	 * SyncUploadEncryptionService#uploadUinPacket(java.io.File, java.lang.String,
 	 * java.lang.String)
 	 */
-	public PacketGeneratorResDto uploadUinPacket(String registartionId, String creationTime)
+	public PacketGeneratorResDto uploadUinPacket(String registartionId, String creationTime, String regType)
 			throws RegBaseCheckedException {
 		PacketGeneratorResDto packerGeneratorResDto = new PacketGeneratorResDto();
 
@@ -102,7 +102,7 @@ public class SyncUploadEncryptionServiceImpl implements SyncUploadEncryptionServ
 
 			encryptorUtil.encryptUinUpdatePacket(decryptedFileStream, registartionId, creationTime);
 
-			RegSyncResponseDTO regSyncResponseDTO = packetSync(registartionId);
+			RegSyncResponseDTO regSyncResponseDTO = packetSync(registartionId, regType);
 			if (regSyncResponseDTO != null) {
 
 				List<SyncResponseDto> synList = regSyncResponseDTO.getResponse();
@@ -184,7 +184,7 @@ public class SyncUploadEncryptionServiceImpl implements SyncUploadEncryptionServ
 	 * @return the reg sync response DTO
 	 * @throws ApisResourceAccessException
 	 */
-	private RegSyncResponseDTO packetSync(String regId) throws ApisResourceAccessException {
+	private RegSyncResponseDTO packetSync(String regId, String regType) throws ApisResourceAccessException {
 		RegSyncResponseDTO regSyncResponseDTO = null;
 
 		List<SyncRegistrationDTO> syncDtoList = new ArrayList<>();
@@ -199,7 +199,7 @@ public class SyncUploadEncryptionServiceImpl implements SyncUploadEncryptionServ
 		syncDto.setStatusComment(SYNCSTATUSCOMMENT);
 		syncDto.setRegistrationId(regId);
 		syncDto.setSyncStatus(RegistrationConstants.PACKET_STATUS_PRE_SYNC);
-		syncDto.setSyncType(RegistrationConstants.PACKET_STATUS_SYNC_TYPE);
+		syncDto.setSyncType(regType);
 		syncDtoList.add(syncDto);
 		registrationSyncRequestDTO.setRequest(syncDtoList);
 		response = (String) restClientService.postApi(ApiName.SYNCSERVICE, "", "", registrationSyncRequestDTO,

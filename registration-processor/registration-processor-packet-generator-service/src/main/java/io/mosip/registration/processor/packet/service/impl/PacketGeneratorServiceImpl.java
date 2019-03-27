@@ -110,7 +110,7 @@ public class PacketGeneratorServiceImpl implements PacketGeneratorService {
 						DirectoryPathDto.PACKET_GENERATED_DECRYPTED);
 
 				packerGeneratorResDto = syncUploadEncryptionService.uploadUinPacket(registrationDTO.getRegistrationId(),
-						creationTime);
+						creationTime, request.getRegistrationType());
 				return packerGeneratorResDto;
 			} catch (Exception e) {
 				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
