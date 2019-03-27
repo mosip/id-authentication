@@ -18,17 +18,17 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.util.ContentCachingRequestWrapper;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import io.mosip.kernel.core.exception.BaseUncheckedException;
 import io.mosip.kernel.core.exception.ServiceError;
-import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseWrapper;
+import io.mosip.kernel.core.util.EmptyCheckUtils;
 import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.constant.RegistrationCenterUserMappingHistoryErrorCode;
 import io.mosip.kernel.masterdata.constant.RequestErrorCode;
-import io.mosip.kernel.core.util.EmptyCheckUtils;
 
 /**
  * Rest Controller Advice for Master Data
@@ -46,23 +46,26 @@ public class ApiExceptionHandler {
 	private ObjectMapper objectMapper;
 
 	@ExceptionHandler(MasterDataServiceException.class)
-	public ResponseEntity<ResponseWrapper<ServiceError>> controlDataServiceException(final 
-			HttpServletRequest httpServletRequest, final MasterDataServiceException e) throws IOException {
+	public ResponseEntity<ResponseWrapper<ServiceError>> controlDataServiceException(
+			final HttpServletRequest httpServletRequest, final MasterDataServiceException e) throws IOException {
 		return getErrorResponseEntity(e, HttpStatus.INTERNAL_SERVER_ERROR, httpServletRequest);
 	}
 
 	@ExceptionHandler(DataNotFoundException.class)
-	public ResponseEntity<ResponseWrapper<ServiceError>> controlDataNotFoundException(final HttpServletRequest httpServletRequest, final DataNotFoundException e) throws IOException {
+	public ResponseEntity<ResponseWrapper<ServiceError>> controlDataNotFoundException(
+			final HttpServletRequest httpServletRequest, final DataNotFoundException e) throws IOException {
 		return getErrorResponseEntity(e, HttpStatus.OK, httpServletRequest);
 	}
 
 	@ExceptionHandler(RequestException.class)
-	public ResponseEntity<ResponseWrapper<ServiceError>> controlRequestException(final HttpServletRequest httpServletRequest, final RequestException e) throws IOException {
+	public ResponseEntity<ResponseWrapper<ServiceError>> controlRequestException(
+			final HttpServletRequest httpServletRequest, final RequestException e) throws IOException {
 		return getErrorResponseEntity(e, HttpStatus.OK, httpServletRequest);
 	}
 
 	@ExceptionHandler(DateTimeParseException.class)
-	public ResponseEntity<ResponseWrapper<ServiceError>> numberFormatException(final HttpServletRequest httpServletRequest, final DateTimeParseException e) throws IOException {
+	public ResponseEntity<ResponseWrapper<ServiceError>> numberFormatException(
+			final HttpServletRequest httpServletRequest, final DateTimeParseException e) throws IOException {
 		ServiceError error = new ServiceError(
 				RegistrationCenterUserMappingHistoryErrorCode.DATE_TIME_PARSE_EXCEPTION.getErrorCode(),
 				e.getMessage() + MasterDataConstant.DATETIMEFORMAT);
@@ -72,8 +75,8 @@ public class ApiExceptionHandler {
 	}
 
 	@ExceptionHandler(MethodArgumentNotValidException.class)
-	public ResponseEntity<ResponseWrapper<ServiceError>> methodArgumentNotValidException(final HttpServletRequest httpServletRequest, 
-			final MethodArgumentNotValidException e) throws IOException {
+	public ResponseEntity<ResponseWrapper<ServiceError>> methodArgumentNotValidException(
+			final HttpServletRequest httpServletRequest, final MethodArgumentNotValidException e) throws IOException {
 		ResponseWrapper<ServiceError> errorResponse = setErrors(httpServletRequest);
 		final List<FieldError> fieldErrors = e.getBindingResult().getFieldErrors();
 		fieldErrors.forEach(x -> {
@@ -85,8 +88,8 @@ public class ApiExceptionHandler {
 	}
 
 	@ExceptionHandler(HttpMessageNotReadableException.class)
-	public ResponseEntity<ResponseWrapper<ServiceError>> onHttpMessageNotReadable(final HttpServletRequest httpServletRequest, 
-			final HttpMessageNotReadableException e) throws IOException {
+	public ResponseEntity<ResponseWrapper<ServiceError>> onHttpMessageNotReadable(
+			final HttpServletRequest httpServletRequest, final HttpMessageNotReadableException e) throws IOException {
 		ResponseWrapper<ServiceError> errorResponse = setErrors(httpServletRequest);
 		ServiceError error = new ServiceError(RequestErrorCode.REQUEST_DATA_NOT_VALID.getErrorCode(), e.getMessage());
 		errorResponse.getErrors().add(error);
@@ -94,7 +97,8 @@ public class ApiExceptionHandler {
 	}
 
 	@ExceptionHandler(value = { Exception.class, RuntimeException.class })
-	public ResponseEntity<ResponseWrapper<ServiceError>> defaultErrorHandler(final HttpServletRequest httpServletRequest, Exception e) throws IOException {
+	public ResponseEntity<ResponseWrapper<ServiceError>> defaultErrorHandler(
+			final HttpServletRequest httpServletRequest, Exception e) throws IOException {
 		ResponseWrapper<ServiceError> errorResponse = setErrors(httpServletRequest);
 		ServiceError error = new ServiceError(RequestErrorCode.INTERNAL_SERVER_ERROR.getErrorCode(), e.getMessage());
 		errorResponse.getErrors().add(error);
@@ -110,20 +114,19 @@ public class ApiExceptionHandler {
 	}
 
 	private ResponseWrapper<ServiceError> setErrors(HttpServletRequest httpServletRequest) throws IOException {
-		RequestWrapper<?> requestWrapper = null;
 		ResponseWrapper<ServiceError> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponsetime(LocalDateTime.now(ZoneId.of("UTC")));
 		String requestBody = null;
 		if (httpServletRequest instanceof ContentCachingRequestWrapper) {
 			requestBody = new String(((ContentCachingRequestWrapper) httpServletRequest).getContentAsByteArray());
 		}
-		if(EmptyCheckUtils.isNullEmpty(requestBody)) {
+		if (EmptyCheckUtils.isNullEmpty(requestBody)) {
 			return responseWrapper;
 		}
 		objectMapper.registerModule(new JavaTimeModule());
-		requestWrapper = objectMapper.readValue(requestBody, RequestWrapper.class);
-		responseWrapper.setId(requestWrapper.getId());
-		responseWrapper.setVersion(requestWrapper.getVersion());
+		JsonNode reqNode = objectMapper.readTree(requestBody);
+		responseWrapper.setId(reqNode.path("id").asText());
+		responseWrapper.setVersion(reqNode.path("version").asText());
 		return responseWrapper;
 	}
 

@@ -4,8 +4,6 @@
 package io.mosip.kernel.auth.exception;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -16,13 +14,13 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.util.ContentCachingRequestWrapper;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
-import io.mosip.kernel.core.exception.ErrorResponse;
 import io.mosip.kernel.core.exception.ServiceError;
-import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseWrapper;
+import io.mosip.kernel.core.util.EmptyCheckUtils;
 
 /**
  * @author M1049825
@@ -43,23 +41,18 @@ public class AuthManagerExceptionHandler {
 	}
 	
 	private ResponseWrapper<ServiceError> setErrors(HttpServletRequest httpServletRequest) throws IOException {
-		RequestWrapper<?> requestWrapper = null;
 		ResponseWrapper<ServiceError> responseWrapper = new ResponseWrapper<>();
 		String requestBody = null;
 		if (httpServletRequest instanceof ContentCachingRequestWrapper) {
 			requestBody = new String(((ContentCachingRequestWrapper) httpServletRequest).getContentAsByteArray());
 		}
-		if (requestBody == null) {
+		if (EmptyCheckUtils.isNullEmpty(requestBody)) {
 			return responseWrapper;
 		}
 		objectMapper.registerModule(new JavaTimeModule());
-		if(!requestBody.isEmpty())
-		{
-		requestWrapper = objectMapper.readValue(requestBody, RequestWrapper.class);
-		responseWrapper.setId(requestWrapper.getId());
-		responseWrapper.setVersion(requestWrapper.getVersion());
-		responseWrapper.setResponsetime(LocalDateTime.now(ZoneId.of("UTC")));
-		}
+		JsonNode reqNode = objectMapper.readTree(requestBody);
+		responseWrapper.setId(reqNode.path("id").asText());
+		responseWrapper.setVersion(reqNode.path("version").asText());
 		return responseWrapper;
 	}
 	
