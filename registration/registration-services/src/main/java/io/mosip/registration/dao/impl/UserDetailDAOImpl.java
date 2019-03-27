@@ -20,7 +20,6 @@ import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.SessionContext;
-import io.mosip.registration.dao.RegistrationCenterDAO;
 import io.mosip.registration.dao.UserDetailDAO;
 import io.mosip.registration.dto.UserDetailResponseDto;
 import io.mosip.registration.entity.UserBiometric;
@@ -35,7 +34,7 @@ import io.mosip.registration.repositories.UserPwdRepository;
 import io.mosip.registration.repositories.UserRoleRepository;
 
 /**
- * The implementation class of {@link RegistrationCenterDAO}.
+ * The implementation class of {@link UserDetailDAO}.
  *
  * @author Sravya Surampalli
  * @since 1.0.0
@@ -53,14 +52,15 @@ public class UserDetailDAOImpl implements UserDetailDAO {
 	@Autowired
 	private UserDetailRepository userDetailRepository;
 
-	/** The userDetail repository. */
+	/** The userPwd repository. */
 	@Autowired
 	private UserPwdRepository userPwdRepository;
 
-	/** The userDetail repository. */
+	/** The userRole repository. */
 	@Autowired
 	private UserRoleRepository userRoleRepository;
 
+	/** The userBiometric repository. */
 	@Autowired
 	private UserBiometricRepository userBiometricRepository;
 
@@ -102,16 +102,45 @@ public class UserDetailDAOImpl implements UserDetailDAO {
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.mosip.registration.dao.RegistrationUserDetailDAO#getAllActiveUsers(java.lang.
+	 * String)
+	 */
 	public List<UserBiometric> getAllActiveUsers(String attrCode) {
+		
+		LOGGER.info("REGISTRATION - ACTIVE_USERS - REGISTRATION_USER_DETAIL_DAO_IMPL", APPLICATION_NAME,
+				APPLICATION_ID, "Fetching all active users");
+		
 		return userBiometricRepository.findByUserBiometricIdBioAttributeCodeAndIsActiveTrue(attrCode);
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.mosip.registration.dao.RegistrationUserDetailDAO#getUserSpecificBioDetails(java.lang.
+	 * String, java.lang.String)
+	 */
 	public List<UserBiometric> getUserSpecificBioDetails(String userId, String bioType) {
+		
+		LOGGER.info("REGISTRATION - USER_SPECIFIC_BIO - REGISTRATION_USER_DETAIL_DAO_IMPL", APPLICATION_NAME,
+				APPLICATION_ID, "Fetching user specific biometric details");
+		
 		return userBiometricRepository
 				.findByUserBiometricIdUsrIdAndIsActiveTrueAndUserBiometricIdBioTypeCodeIgnoreCase(userId, bioType);
 	}
 
+	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.registration.dao.UserDetailDAO#save(io.mosip.registration.dto.
+	 * UserDetailResponseDto)
+	 */
 	public void save(UserDetailResponseDto userDetailsResponse) throws RegBaseUncheckedException {
 
 		LOGGER.info(LOG_REG_USER_DETAIL, APPLICATION_NAME, APPLICATION_ID, "Entering user detail save method...");

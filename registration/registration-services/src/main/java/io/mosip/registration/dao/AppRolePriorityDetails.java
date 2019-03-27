@@ -4,6 +4,8 @@ public interface AppRolePriorityDetails {
 	
 	/**
 	 * To fetch only selected columns from Embeddable
+	 * 
+	 * @return {@link AppRolePriority}
 	 */
 	AppRolePriority getAppRolePriorityId();
 	
