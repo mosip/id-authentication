@@ -2,6 +2,10 @@ package io.mosip.registration.dto;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+import io.mosip.registration.dto.mastersync.MasterSyncBaseDto;
+
 /**
  * Service class for user detail dto
  * 
@@ -9,7 +13,8 @@ import java.util.List;
  * @since 1.0.0
  *
  */
-public class UserDetailDto {
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class UserDetailDto extends MasterSyncBaseDto {
 	private String userName;
 	private String mobile;
 	private String mail;
@@ -17,6 +22,21 @@ public class UserDetailDto {
 	private byte[] userPassword;
 	private String name;
 	private List<String> roles;
+	private Boolean isActive;
+
+	/**
+	 * @return the isActive
+	 */
+	public Boolean getIsActive() {
+		return isActive;
+	}
+
+	/**
+	 * @param isActive the isActive to set
+	 */
+	public void setIsActive(Boolean isActive) {
+		this.isActive = isActive;
+	}
 
 	/**
 	 * @return the userName

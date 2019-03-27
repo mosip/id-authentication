@@ -1173,6 +1173,7 @@ public class RegistrationConstants {
 	public static final String YYYY = "yyyy";
 	public static final String DOB = "dob";
 	public static final String ERRORS = "errors";
+	public static final String ERROR_MSG ="errorMessage";
 
 	public static final String ATTR_INDIVIDUAL_TYPE = "individualTypeCode";
 	public static final String ATTR_DATE_OF_BIRTH = "dateofbirth";
@@ -1187,5 +1188,7 @@ public class RegistrationConstants {
 	// Scheduler
 	public static final String IDEAL_TIME = "mosip.registration.ideal_time";
 	public static final String REFRESHED_LOGIN_TIME = "mosip.registration.refreshed_login_time";
+	
+	public static final String USER_DETAILS="userDetails";
 
 }

@@ -232,7 +232,7 @@ public class MasterSyncServiceImpl implements MasterSyncService {
 				errorResponseDTO.setCode(RegistrationConstants.ERRORS);
 				errorResponseDTO
 						.setMessage(((List<LinkedHashMap<String, String>>) masterSyncResponse.get(RegistrationConstants.ERRORS))
-								.get(0).get("errorMessage"));
+								.get(0).get(RegistrationConstants.ERROR_MSG));
 				erResponseDTOs.add(errorResponseDTO);
 				responseDTO.setErrorResponseDTOs(erResponseDTOs);
 			}
