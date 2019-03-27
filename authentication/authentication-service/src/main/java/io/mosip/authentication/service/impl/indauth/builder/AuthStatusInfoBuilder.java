@@ -204,17 +204,9 @@ public class AuthStatusInfoBuilder {
 		if (authTypeForMatchType.isPresent()) {
 			authType = authTypeForMatchType.get();
 			AuthError errors = null;
-
-			if (authType.getDisplayName().equals(BioAuthType.FGR_MIN.getDisplayName())) {
-				errors = new AuthError(IdAuthenticationErrorConstants.BIO_MISMATCH.getErrorCode(),
-						IdAuthenticationErrorConstants.BIO_MISMATCH.getErrorMessage());
-			}
-
-			else if (authType.getDisplayName().equals(BioAuthType.IRIS_IMG.getDisplayName())) {
-				errors = new AuthError(IdAuthenticationErrorConstants.IRISIMG_MISMATCH.getErrorCode(),
-						IdAuthenticationErrorConstants.IRISIMG_MISMATCH.getErrorMessage());
-
-			}
+			IdMapping idMapping = matchOutput.getMatchType().getIdMapping();
+			errors = new AuthError(IdAuthenticationErrorConstants.BIO_MISMATCH.getErrorCode(), String
+					.format(IdAuthenticationErrorConstants.BIO_MISMATCH.getErrorMessage(), idMapping.getIdname()));
 			statusInfoBuilder.addErrors(errors);
 		}
 	}

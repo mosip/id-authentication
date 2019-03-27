@@ -1,9 +1,11 @@
-package io.mosip.authentication.service.impl.iris;
+package io.mosip.authentication.service.impl.face;
 
 import java.util.Map;
 
 import org.springframework.core.env.Environment;
+import org.springframework.stereotype.Component;
 
+import io.mosip.authentication.core.spi.faceauth.provider.FaceProvider;
 import io.mosip.authentication.core.spi.irisauth.provider.IrisProvider;
 
 
@@ -13,11 +15,10 @@ import io.mosip.authentication.core.spi.irisauth.provider.IrisProvider;
  * The Class MorphoIrisProvider.
  */
 
-public class MorphoIrisProvider extends IrisProvider {
+public class MorphoFaceProvider extends FaceProvider {
 
-	public MorphoIrisProvider(Environment environment) {
+	public MorphoFaceProvider(Environment environment) {
 		super(environment);
-		// TODO Auto-generated constructor stub
 	}
 
 	/* (non-Javadoc)
@@ -25,18 +26,22 @@ public class MorphoIrisProvider extends IrisProvider {
 	 */
 	@Override
 	public String createMinutiae(byte[] inputImage) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public double matchMinutiae(Object reqInfo, Object entityInfo) {
-		// TODO Auto-generated method stub
 		return 0;
 	}
 
 	@Override
 	public double matchMultiMinutae(Map<String, String> reqInfo, Map<String, String> entityInfo) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public double matchMultiImage(Object reqInfo, Object entityInfo) {
 		// TODO Auto-generated method stub
 		return 0;
 	}

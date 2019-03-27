@@ -1083,7 +1083,6 @@ public class BaseAuthRequestValidatorTest {
 		authRequestDTO.setRequest(requestDTO);
 
 		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "validateIrisRequestCount", authRequestDTO, error);
-		System.err.println(error);
 		assertTrue(error.hasErrors());
 
 	}

@@ -85,20 +85,20 @@ public class IdAuthFilter extends BaseAuthFilter {
 			requestBody.replace(REQUEST, decode((String) requestBody.get(REQUEST)));
 			requestBody.replace(REQUEST_HMAC, decode((String) requestBody.get(REQUEST_HMAC)));
 			if (null != requestBody.get(REQUEST)) {
-				Map<String, Object> request = keyManager.requestData(requestBody, mapper);	
-                if(null!=request.get(SECRET_KEY)) {
-                	SecretKey secretKey=(SecretKey)request.get(SECRET_KEY);
-                	byte[] reqHMAC=keyManager.symmetricDecrypt(secretKey,(byte[]) requestBody.get(REQUEST_HMAC));
-                	request.remove(SECRET_KEY);
-				  validateRequestHMAC(new String(reqHMAC), mapper.writeValueAsString(request));
-				  
-                }  
-                requestBody.replace(REQUEST, request);
+				Map<String, Object> request = keyManager.requestData(requestBody, mapper);
+				if (null != request.get(SECRET_KEY)) {
+					SecretKey secretKey = (SecretKey) request.get(SECRET_KEY);
+					byte[] reqHMAC = keyManager.symmetricDecrypt(secretKey, (byte[]) requestBody.get(REQUEST_HMAC));
+					request.remove(SECRET_KEY);
+					validateRequestHMAC(new String(reqHMAC), mapper.writeValueAsString(request));
+
+				}
+				requestBody.replace(REQUEST, request);
 			}
 			return requestBody;
-		} catch (ClassCastException | JsonProcessingException  e) {
+		} catch (ClassCastException | JsonProcessingException e) {
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(),
-					IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorMessage(),e);
+					IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorMessage(), e);
 		}
 	}
 
@@ -289,6 +289,8 @@ public class IdAuthFilter extends BaseAuthFilter {
 					for (String bioType : bioTypeList) {
 						if (bioType.equalsIgnoreCase("FIR") || bioType.equalsIgnoreCase("FMR")) {
 							bioType = "FINGER";
+						} else if (bioType.equalsIgnoreCase("FID")) {
+							bioType = "FACE";
 						}
 						if (!isAllowedAuthType(MatchType.Category.BIO.getType(), bioType, authPolicies)) {
 							throw new IdAuthenticationAppException(

@@ -177,6 +177,11 @@ public class IdInfoFetcherImpl implements IdInfoFetcher {
 	}
 
 	@Override
+	public MosipBiometricProvider getFaceProvider(DataDTO bioinfovalue) {
+		return biometricProviderFactory.getBiometricProvider(bioinfovalue);
+	}
+
+	@Override
 	public ValidateOtpFunction getValidateOTPFunction() {
 		return otpManager::validateOtp;
 	}
@@ -290,4 +295,5 @@ public class IdInfoFetcherImpl implements IdInfoFetcher {
 		}
 		return null;
 	}
+
 }

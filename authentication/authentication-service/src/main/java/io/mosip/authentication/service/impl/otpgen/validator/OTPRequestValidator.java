@@ -91,8 +91,8 @@ public class OTPRequestValidator extends IdAuthValidator {
 
 	private void validateOtpChannel(ChannelDTO otpChannel, Errors errors) {
 		if (!otpChannel.isEmail() && !otpChannel.isPhone()) {
-			errors.reject(IdAuthenticationErrorConstants.OTP_CHANNEL_NOT_PROVIDED.getErrorCode(),
-					IdAuthenticationErrorConstants.OTP_CHANNEL_NOT_PROVIDED.getErrorMessage());
+			errors.reject(IdAuthenticationErrorConstants.OTP_CHANNEL_NOT_PROVIDED.getErrorCode(), String
+					.format(IdAuthenticationErrorConstants.OTP_CHANNEL_NOT_PROVIDED.getErrorMessage(), "Phone/E-Mail"));
 		}
 	}
 

@@ -57,7 +57,7 @@ import io.mosip.kernel.core.util.DateUtils;
 public class BaseAuthRequestValidator extends IdAuthValidator {
 
 	private static final String MOSIP_ID_VALIDATION_IDENTITY_EMAIL = "mosip.id.validation.identity.email";
-	
+
 	private static final String MOSIP_ID_VALIDATION_IDENTITY_PHONE = "mosip.id.validation.identity.phone";
 
 	private static final String OTP2 = "OTP";
@@ -139,7 +139,7 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 
 	private Pattern emailPattern;
 	private Pattern phonePattern;
-	
+
 	@PostConstruct
 	private void initialize() {
 		emailPattern = Pattern.compile(env.getProperty(MOSIP_ID_VALIDATION_IDENTITY_EMAIL));
@@ -543,15 +543,15 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 
 		if (anyInfoIsMoreThanOne || anyValueIsMoreThanOne) {
 			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE, "Duplicate fingers");
-			errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.DUPLICATE_FINGER.getErrorCode(),
-					String.format(IdAuthenticationErrorConstants.DUPLICATE_FINGER.getErrorMessage(), REQUEST));
+			errors.reject(IdAuthenticationErrorConstants.DUPLICATE_FINGER.getErrorCode(),
+					IdAuthenticationErrorConstants.DUPLICATE_FINGER.getErrorMessage());
 		}
 
 		Long fingerCountExceeding = fingerSubtypesCountsMap.values().stream().mapToLong(l -> l).sum();
 		if (fingerCountExceeding > 2) {
 			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE, "finger count is exceeding to 2");
-			errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.FINGER_EXCEEDING.getErrorCode(),
-					String.format(IdAuthenticationErrorConstants.FINGER_EXCEEDING.getErrorMessage(), REQUEST));
+			errors.reject(IdAuthenticationErrorConstants.FINGER_EXCEEDING.getErrorCode(),
+					String.format(IdAuthenticationErrorConstants.FINGER_EXCEEDING.getErrorMessage()));
 		}
 	}
 
@@ -579,8 +579,8 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	private void validateIrisRequestCount(AuthRequestDTO authRequestDTO, Errors errors) {
 		Map<String, Long> irisSubtypeCounts = getBioSubtypeCounts(authRequestDTO, BioAuthType.IRIS_IMG.getType());
 		if (irisSubtypeCounts.entrySet().stream()
-				.anyMatch(map -> (map.getKey().equalsIgnoreCase("UNKNOWN") && map.getValue()>2)
-						|| (!map.getKey().equalsIgnoreCase("UNKNOWN") && map.getValue()>1))) {
+				.anyMatch(map -> (map.getKey().equalsIgnoreCase("UNKNOWN") && map.getValue() > 2)
+						|| (!map.getKey().equalsIgnoreCase("UNKNOWN") && map.getValue() > 1))) {
 			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE,
 					"Iris : either left eye or right eye count is more than 1.");
 			errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.IRIS_EXCEEDING.getErrorCode(),
@@ -867,22 +867,21 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	 * @param errors      the errors
 	 */
 	private void validateEmail(AuthRequestDTO authRequest, Errors errors) {
-			List<IdentityInfoDTO> emailId = DemoMatchType.EMAIL.getIdentityInfoList(authRequest.getRequest());
-			if (emailId != null) {
-				for (IdentityInfoDTO email : emailId) {
-					validatePattern(email.getValue(),errors,"emailId",emailPattern);
-				}
+		List<IdentityInfoDTO> emailId = DemoMatchType.EMAIL.getIdentityInfoList(authRequest.getRequest());
+		if (emailId != null) {
+			for (IdentityInfoDTO email : emailId) {
+				validatePattern(email.getValue(), errors, "emailId", emailPattern);
 			}
+		}
 	}
 
-	private void validatePattern(String value,Errors errors,String type,Pattern pattern) {
-	
-		if(!pattern.matcher(value).matches()) {
+	private void validatePattern(String value, Errors errors, String type, Pattern pattern) {
+
+		if (!pattern.matcher(value).matches()) {
 			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), INVALID_INPUT_PARAMETER,
 					"Invalid email \n" + value);
 			errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
-					new Object[] { type },
-					IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
+					new Object[] { type }, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
 		}
 	}
 

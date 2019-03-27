@@ -30,6 +30,8 @@ import io.mosip.authentication.core.util.MaskUtil;
 import io.mosip.authentication.core.util.OTPUtil;
 import io.mosip.authentication.service.entity.AutnTxn;
 import io.mosip.authentication.service.helper.IdInfoHelper;
+import io.mosip.authentication.service.impl.indauth.match.IdaIdMapping;
+import io.mosip.authentication.service.impl.indauth.service.demo.DemoAuthType;
 import io.mosip.authentication.service.impl.indauth.service.demo.DemoMatchType;
 import io.mosip.authentication.service.integration.NotificationManager;
 import io.mosip.authentication.service.integration.OTPManager;
@@ -128,17 +130,23 @@ public class OTPServiceImpl implements OTPService {
 				String email = getEmail(idInfo);
 				String phoneNumber = getPhoneNumber(idInfo);
 				MaskedResponseDTO maskedResponseDTO = new MaskedResponseDTO();
+
 				if (otpRequestDto.getOtpChannel().isEmail() && isNotNullorEmpty(email)) {
 					maskedResponseDTO.setMaskedEmail(MaskUtil.maskEmail(email));
 				} else {
 					throw new IdAuthenticationBusinessException(
-							IdAuthenticationErrorConstants.PHONE_EMAIL_NOT_REGISTERED);
+							IdAuthenticationErrorConstants.PHONE_EMAIL_NOT_REGISTERED.getErrorCode(),
+							String.format(IdAuthenticationErrorConstants.PHONE_EMAIL_NOT_REGISTERED.getErrorMessage(),
+									IdaIdMapping.EMAIL.name()));
 				}
+
 				if (otpRequestDto.getOtpChannel().isPhone() && isNotNullorEmpty(phoneNumber)) {
 					maskedResponseDTO.setMaskedEmail(MaskUtil.maskEmail(phoneNumber));
 				} else {
 					throw new IdAuthenticationBusinessException(
-							IdAuthenticationErrorConstants.PHONE_EMAIL_NOT_REGISTERED);
+							IdAuthenticationErrorConstants.PHONE_EMAIL_NOT_REGISTERED.getErrorCode(),
+							String.format(IdAuthenticationErrorConstants.PHONE_EMAIL_NOT_REGISTERED.getErrorMessage(),
+									IdaIdMapping.PHONE.name()));
 				}
 				otpResponseDTO.setResponse(maskedResponseDTO);
 				AutnTxn authTxn = createAuthTxn(individualId, individualIdType, uin, requestTime, transactionId, "Y",

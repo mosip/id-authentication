@@ -74,6 +74,11 @@ public interface IdInfoFetcher {
 	 * @return the finger print provider
 	 */
 	public MosipBiometricProvider getFingerPrintProvider(DataDTO bioinfovalue);
+	
+	
+	
+	
+	public MosipBiometricProvider getFaceProvider(DataDTO bioinfovalue);
 
 	/**
 	 * Validate Otp function

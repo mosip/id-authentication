@@ -14,6 +14,7 @@ import org.springframework.core.env.Environment;
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.BioIdentityInfoDTO;
 import io.mosip.authentication.core.dto.indauth.DataDTO;
+import io.mosip.authentication.core.spi.faceauth.provider.FaceProvider;
 import io.mosip.authentication.core.spi.fingerprintauth.provider.FingerprintProvider;
 import io.mosip.authentication.core.spi.indauth.match.AuthType;
 import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
@@ -42,7 +43,7 @@ public enum BioAuthType implements AuthType {
 			Map<String, Object> valueMap = new HashMap<>();
 			authRequestDTO.getRequest().getBiometrics().stream().map(BioIdentityInfoDTO::getData)
 					.filter(bioinfo -> bioinfo.getBioType().equals(this.getType())).forEach((DataDTO bioinfovalue) -> {
-						if(!bioinfovalue.getBioSubType().equalsIgnoreCase("UNKNOWN")) {							
+						if (!bioinfovalue.getBioSubType().equalsIgnoreCase("UNKNOWN")) {
 							BiFunction<String, String, Double> func = idInfoFetcher
 									.getFingerPrintProvider(bioinfovalue)::matchMinutiae;
 							valueMap.put(FingerprintProvider.class.getSimpleName(), func);
@@ -165,7 +166,7 @@ public enum BioAuthType implements AuthType {
 			Map<String, Object> valueMap = new HashMap<>();
 			authRequestDTO.getRequest().getBiometrics().stream().map(BioIdentityInfoDTO::getData)
 					.filter(bioinfo -> bioinfo.getBioType().equals(this.getType())).forEach((DataDTO bioinfovalue) -> {
-						if(!bioinfovalue.getBioSubType().equalsIgnoreCase("UNKNOWN")) {
+						if (!bioinfovalue.getBioSubType().equalsIgnoreCase("UNKNOWN")) {
 							BiFunction<Map<String, String>, Map<String, String>, Double> func = idInfoFetcher
 									.getIrisProvider(bioinfovalue)::matchImage;// TODO add provider
 							valueMap.put(IrisProvider.class.getSimpleName(), func);
@@ -184,11 +185,25 @@ public enum BioAuthType implements AuthType {
 			return BioAuthType.getIrisValuesCountInIdentity(reqDTO, helper);
 		}
 	},
-	FACE_IMG("FID", Collections.emptySet(), "face", 1) {
+	FACE_IMG("FID", setOf(BioMatchType.FACE), "face", 1) {
+
+		@Override
+		public Map<String, Object> getMatchProperties(AuthRequestDTO authRequestDTO, IdInfoFetcher idInfoFetcher,
+				String language) {
+			Map<String, Object> valueMap = new HashMap<>();
+			authRequestDTO.getRequest().getBiometrics().stream().map(BioIdentityInfoDTO::getData)
+					.filter(bioinfo -> bioinfo.getBioType().equals(this.getType())).forEach((DataDTO bioinfovalue) -> {
+						BiFunction<Map<String, String>, Map<String, String>, Double> func = idInfoFetcher
+								.getFaceProvider(bioinfovalue)::matchImage;
+						valueMap.put(FaceProvider.class.getSimpleName(), func);
+					});
+			valueMap.put("idvid", idInfoFetcher.getUinOrVid(authRequestDTO).orElse(""));
+			return valueMap;
+		}
+
 		@Override
 		protected Long getBioIdentityValuesCount(AuthRequestDTO reqDTO, IdInfoFetcher helper) {
-			// TODO
-			return 0L;
+			return BioAuthType.getFaceValuesCountInIdentity(reqDTO, helper, BioMatchType.FACE);
 		}
 	};
 
@@ -220,7 +235,6 @@ public enum BioAuthType implements AuthType {
 	 */
 	private BioAuthType(String type, Set<MatchType> associatedMatchTypes, String displayName, int count) {
 		this.type = type;
-
 		this.displayName = displayName;
 		this.count = count;
 		this.associatedMatchTypes = Collections.unmodifiableSet(associatedMatchTypes);
@@ -231,17 +245,23 @@ public enum BioAuthType implements AuthType {
 	/**
 	 * Gets the FP values count in identity.
 	 *
-	 * @param reqDTO the req DTO
-	 * @param helper the helper
-	 * @param fpMultiMatchType 
+	 * @param reqDTO           the req DTO
+	 * @param helper           the helper
+	 * @param fpMultiMatchType
 	 * @return the FP values count in identity
 	 */
-	private static Long getFPValuesCountInIdentity(AuthRequestDTO reqDTO, IdInfoFetcher helper, MatchType fpMultiMatchType) {
+	private static Long getFPValuesCountInIdentity(AuthRequestDTO reqDTO, IdInfoFetcher helper,
+			MatchType fpMultiMatchType) {
 		return (long) helper.getIdentityRequestInfo(fpMultiMatchType, reqDTO.getRequest(), null).size();
 	}
 
 	private static Long getIrisValuesCountInIdentity(AuthRequestDTO reqDTO, IdInfoFetcher helper) {
 		return (long) helper.getIdentityRequestInfo(BioMatchType.IRIS_COMP, reqDTO.getRequest(), null).size();
+	}
+
+	private static Long getFaceValuesCountInIdentity(AuthRequestDTO reqDTO, IdInfoFetcher helper,
+			MatchType faceMatchType) {
+		return (long) helper.getIdentityRequestInfo(faceMatchType, reqDTO.getRequest(), null).size();
 	}
 
 	/*
