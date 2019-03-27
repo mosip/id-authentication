@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
@@ -232,21 +231,18 @@
 
 	<modules>
 		<module>registration-processor-core</module>
-		<module>registration-processor-registration-status-service-impl</module>
-		<module>registration-processor-registration-status-service</module>
 		<module>registration-processor-rest-client</module>
 		<module>registration-processor-packet-manager</module>
 		<module>registration-processor-camel-bridge</module>
-		<module>registration-processor-stages</module>
-		<module>registration-processor-packet-info-storage-service</module>
-		<module>registration-processor-quality-checker</module>
-		<module>registration-processor-message-sender</module>
-		<module>registration-processor-bio-dedupe-service-impl</module>
-		<module>registration-processor-abis</module>
-		<module>registration-processor-bio-dedupe-service</module>
+        <module>registration-processor-bio-dedupe-service-impl</module>
     	<module>registration-processor-print-service-impl</module>
-		<module>registration-processor-print-service</module>
-        <module>registration-processor-packet-generator-service</module>
+		<module>registration-processor-info-storage-service</module>
+		<module>registration-processor-registration-status-service-impl</module>
+		<module>registration-processor-quality-checker</module>
+        <module>init</module>
+        <module>pre-processor</module>
+        <module>core-processor</module>
+        <module>post-processor</module>
   </modules>
 
 	<profiles>
