@@ -53,10 +53,13 @@ public class AuthManagerExceptionHandler {
 			return responseWrapper;
 		}
 		objectMapper.registerModule(new JavaTimeModule());
+		if(!requestBody.isEmpty())
+		{
 		requestWrapper = objectMapper.readValue(requestBody, RequestWrapper.class);
 		responseWrapper.setId(requestWrapper.getId());
 		responseWrapper.setVersion(requestWrapper.getVersion());
 		responseWrapper.setResponsetime(LocalDateTime.now(ZoneId.of("UTC")));
+		}
 		return responseWrapper;
 	}
 	
