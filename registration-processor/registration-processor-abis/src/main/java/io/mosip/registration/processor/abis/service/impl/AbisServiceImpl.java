@@ -53,10 +53,10 @@ public class AbisServiceImpl implements AbisService {
 	private static final String DUPLICATE = "duplicate";
 
 	/** The Constant INSERT. */
-	private static final String INSERT = "insert";
+	private static final String INSERT = "mosip.abis.insert";
 
 	/** The Constant IDENTIFY. */
-	private static final String IDENTIFY = "Identify";
+	private static final String IDENTIFY = "mosip.abis.identify";
 
 	/** The Constant TESTFINGERPRINT. */
 	@Value("${TESTFINGERPRINT}")
@@ -97,6 +97,9 @@ public class AbisServiceImpl implements AbisService {
 		AbisInsertResponseDto response = new AbisInsertResponseDto();
 		String referenceId = abisInsertRequestDto.getReferenceId();
 		try {
+			response.setId(INSERT);
+			response.setRequestId(abisInsertRequestDto.getRequestId());
+			response.setTimestamp(abisInsertRequestDto.getTimestamp());
 
 			Document doc = getCbeffDocument(referenceId);
 
@@ -112,15 +115,16 @@ public class AbisServiceImpl implements AbisService {
 				if (fingerNodeList.getLength() > 0 || irisNodeList.getLength() > 0 || faceNodeList.getLength() > 0) {
 					isPresent = true;
 				}
-			}
-			response.setId(INSERT);
-			response.setRequestId(abisInsertRequestDto.getRequestId());
-			response.setTimestamp(abisInsertRequestDto.getTimestamp());
-			if (isPresent) {
-				response.setReturnValue(1);
-			} else {
+				if (isPresent) {
+					response.setReturnValue(1);
+				} else {
+					response.setReturnValue(2);
+				}
+			}else {
 				response.setReturnValue(2);
+				response.setFailureReason(3);
 			}
+			
 		} catch (Exception e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					referenceId, "Test Tags are not present" + ExceptionUtils.getStackTrace(e));
@@ -150,25 +154,30 @@ public class AbisServiceImpl implements AbisService {
 			throws ApisResourceAccessException, IOException, ParserConfigurationException, SAXException {
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
 				"", "AbisServiceImpl::getCbeffDocument()::entry");
+		List<String> regId = null;
+		if(referenceId != null) {
+			regId = packetInfoManager.getRidByReferenceId(referenceId);
+			List<String> pathSegments = new ArrayList<>();
+			if(regId != null && regId.size() > 0) {
+				pathSegments.add(regId.get(0));
 
-		String regId = packetInfoManager.getRidByReferenceId(referenceId).get(0);
-		List<String> pathSegments = new ArrayList<>();
-		pathSegments.add(regId);
+				byte[] bytefile = (byte[]) restClientService.getApi(ApiName.BIODEDUPE, pathSegments, "", "", byte[].class);
+				if (bytefile == null) {
+					regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+							referenceId, "Byte file not found from BioDedupe api");
+				}
 
-		byte[] bytefile = (byte[]) restClientService.getApi(ApiName.BIODEDUPE, pathSegments, "", "", byte[].class);
-		if (bytefile == null) {
-			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					referenceId, "Byte file not found from BioDedupe api");
-		}
-		if (bytefile != null) {
-			String byteFileStr = new String(bytefile);
+				if (bytefile != null) {
+					String byteFileStr = new String(bytefile);
 
-			InputSource is = new InputSource();
-			is.setCharacterStream(new StringReader(byteFileStr));
+					InputSource is = new InputSource();
+					is.setCharacterStream(new StringReader(byteFileStr));
 
-			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-			return dBuilder.parse(is);
+					DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+					DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+					return dBuilder.parse(is);
+				}
+			}
 		}
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
 				"", "AbisServiceImpl::getCbeffDocument()::exit");
@@ -202,48 +211,48 @@ public class AbisServiceImpl implements AbisService {
 		String referenceId = identifyRequest.getReferenceId();
 
 		try {
-			Document doc = getCbeffDocument(referenceId);
-if(doc != null) {
-			NodeList fingerNodeList = doc.getElementsByTagName(testFingerPrint);
-			if(fingerNodeList != null) {
-				duplicate = checkDuplicate(duplicate, fingerNodeList);
-			}
-
-			NodeList irisNodeList = doc.getElementsByTagName(testIris);
-			if(irisNodeList != null) {
-				duplicate = checkDuplicate(duplicate, irisNodeList);
-			}
-			NodeList faceNodeList = doc.getElementsByTagName(testFace);
-			if(faceNodeList != null) {
-				duplicate = checkDuplicate(duplicate, faceNodeList);
-			}
 			response.setId(IDENTIFY);
 			response.setRequestId(identifyRequest.getRequestId());
 			response.setTimestamp(identifyRequest.getTimestamp());
-			response.setReturnValue(1);
-
-			if (duplicate) {
-				CandidateListDto cd = new CandidateListDto();
-				CandidatesDto[] candidatesDto = new CandidatesDto[identifyRequest.getMaxResults() + 2];
-
-				for (int i = 0; i <candidatesDto.length; i++) {
-					candidatesDto[i] = new CandidatesDto();
-					candidatesDto[i].setReferenceId(i + "1234567-89AB-CDEF-0123-456789ABCDEF");
-					candidatesDto[i].setScaledScore(100 - i + "");
-					count++;
+			
+			Document doc = getCbeffDocument(referenceId);
+			if(doc != null) {
+				NodeList fingerNodeList = doc.getElementsByTagName(testFingerPrint);
+				if(fingerNodeList != null) {
+					duplicate = checkDuplicate(duplicate, fingerNodeList);
 				}
-				cd.setCount(count + "");
-				cd.setCandidates(candidatesDto);
-				response.setCandidateList(cd);
-			}
-}else {
-	response.setId(IDENTIFY);
-	response.setRequestId(identifyRequest.getRequestId());
-	response.setTimestamp(identifyRequest.getTimestamp());
-	response.setReturnValue(3);
 
-}
+				NodeList irisNodeList = doc.getElementsByTagName(testIris);
+				if(irisNodeList != null) {
+					duplicate = checkDuplicate(duplicate, irisNodeList);
+				}
+				NodeList faceNodeList = doc.getElementsByTagName(testFace);
+				if(faceNodeList != null) {
+					duplicate = checkDuplicate(duplicate, faceNodeList);
+				}
+					response.setReturnValue(1);
+
+				if (duplicate) {
+					CandidateListDto cd = new CandidateListDto();
+					CandidatesDto[] candidatesDto = new CandidatesDto[identifyRequest.getMaxResults() + 2];
+
+					for (int i = 0; i <candidatesDto.length; i++) {
+						candidatesDto[i] = new CandidatesDto();
+						candidatesDto[i].setReferenceId(i + "1234567-89AB-CDEF-0123-456789ABCDEF");
+						candidatesDto[i].setScaledScore(100 - i + "");
+						count++;
+					}
+					cd.setCount(count + "");
+					cd.setCandidates(candidatesDto);
+					response.setCandidateList(cd);
+				}
+			}else {
+				response.setReturnValue(3);
+
+			}
 		} catch (Exception e) {
+			response.setReturnValue(2);
+			response.setFailureReason(1);
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					referenceId, "Due to some internal error, abis failed" + ExceptionUtils.getStackTrace(e));
 		}
