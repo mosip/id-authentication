@@ -89,7 +89,6 @@ import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.TextAlignment;
 import javafx.util.StringConverter;
 
 /**
@@ -122,25 +121,25 @@ public class DemographicDetailController extends BaseController {
 
 	@FXML
 	private Label fullNameLocalLanguageMessage;
-	
+
 	@FXML
 	private Label ageFieldLocalLanguageLabel;
 
 	@FXML
 	private Label genderLocalLanguageLabel;
-	
+
 	@FXML
 	private Label regionLocalLanguageMessage;
-	
+
 	@FXML
 	private Label regionLocalLanguageLabel;
 
 	@FXML
 	private Label cityLocalLanguageLabel;
-	
+
 	@FXML
 	private Label cityLocalLanguageMessage;
-	
+
 	@FXML
 	private Label provinceLocalLanguageLabel;
 
@@ -149,7 +148,7 @@ public class DemographicDetailController extends BaseController {
 
 	@FXML
 	private Label localAdminAuthorityLocalLanguageLabel;
-	
+
 	@FXML
 	private Label localAdminAuthorityLocalLanguageMessage;
 
@@ -167,7 +166,7 @@ public class DemographicDetailController extends BaseController {
 
 	@FXML
 	private Label parentNameLocalLanguageLabel;
-	
+
 	@FXML
 	private Label parentNameLocalLanguageMessage;
 
@@ -214,7 +213,7 @@ public class DemographicDetailController extends BaseController {
 
 	@FXML
 	private ComboBox<GenderDto> gender;
-	
+
 	@FXML
 	private Label genderMessage;
 
@@ -223,10 +222,10 @@ public class DemographicDetailController extends BaseController {
 
 	@FXML
 	private TextField addressLine1;
-	
+
 	@FXML
 	private Label addressLine1Label;
-	
+
 	@FXML
 	private Label addressLine1Message;
 
@@ -235,16 +234,16 @@ public class DemographicDetailController extends BaseController {
 
 	@FXML
 	private Label addressLine1LocalLanguageLabel;
-	
+
 	@FXML
 	private Label addressLine1LocalLanguageMessage;
 
 	@FXML
 	private TextField addressLine2;
-	
+
 	@FXML
 	private Label addressLine2Label;
-	
+
 	@FXML
 	private Label addressLine2Message;
 
@@ -253,16 +252,16 @@ public class DemographicDetailController extends BaseController {
 
 	@FXML
 	private Label addressLine2LocalLanguageLabel;
-	
+
 	@FXML
 	private Label addressLine2LocalLanguageMessage;
 
 	@FXML
 	private TextField addressLine3;
-	
+
 	@FXML
 	private Label addressLine3Label;
-	
+
 	@FXML
 	private Label addressLine3Message;
 
@@ -275,7 +274,6 @@ public class DemographicDetailController extends BaseController {
 	@FXML
 	private Label addressLine3LocalLanguageMessage;
 
-	
 	@FXML
 	private TextField emailId;
 
@@ -329,13 +327,12 @@ public class DemographicDetailController extends BaseController {
 
 	@FXML
 	private ComboBox<LocationDto> region;
-	
+
 	@FXML
 	private Label regionMessage;
-	
+
 	@FXML
 	private Label regionLabel;
-
 
 	@FXML
 	private ComboBox<LocationDto> regionLocalLanguage;
@@ -345,14 +342,12 @@ public class DemographicDetailController extends BaseController {
 
 	@FXML
 	private ComboBox<LocationDto> city;
-	
+
 	@FXML
 	private Label cityMessage;
-	
+
 	@FXML
 	private Label cityLabel;
-
-
 
 	@FXML
 	private ComboBox<LocationDto> cityLocalLanguage;
@@ -362,10 +357,10 @@ public class DemographicDetailController extends BaseController {
 
 	@FXML
 	private ComboBox<LocationDto> province;
-	
+
 	@FXML
 	private Label provinceLabel;
-	
+
 	@FXML
 	private Label provinceMessage;
 
@@ -389,10 +384,10 @@ public class DemographicDetailController extends BaseController {
 
 	@FXML
 	private ComboBox<LocationDto> localAdminAuthority;
-	
+
 	@FXML
 	private Label localAdminAuthorityMessage;
-	
+
 	@FXML
 	private Label localAdminAuthorityLabel;
 
@@ -425,10 +420,10 @@ public class DemographicDetailController extends BaseController {
 
 	@FXML
 	private TextField parentName;
-	
+
 	@FXML
 	private Label parentNameMessage;
-	
+
 	@FXML
 	private Label parentNameLabel;
 
@@ -636,12 +631,15 @@ public class DemographicDetailController extends BaseController {
 	@FXML
 	private AnchorPane keyboardPane;
 
+	private boolean lostUIN = false;
+
 	@FXML
 	private void initialize() {
 
 		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Entering the LOGIN_CONTROLLER");
 		try {
+			lostUIN = false;
 			changeOrientation(NodeOrientation.RIGHT_TO_LEFT);
 			fxUtils = FXUtils.getInstance();
 			fxUtils.setTransliteration(transliteration);
@@ -681,6 +679,7 @@ public class DemographicDetailController extends BaseController {
 	}
 
 	protected void lostUIN() {
+		lostUIN = true;
 		registrationNavlabel.setText(ApplicationContext.applicationLanguageBundle().getString("/lostuin"));
 	}
 
@@ -1225,7 +1224,7 @@ public class DemographicDetailController extends BaseController {
 														.get()))
 												.get()))
 						.with(identity -> identity
-								.setDateOfBirth(applicationAge.isDisable() || dd.getText().isEmpty() ? null
+								.setDateOfBirth(applicationAge.isDisable() || (dd.getText().isEmpty() && lostUIN) ? null
 										: DateUtils.formatDate(dateOfBirth, "yyyy/MM/dd")))
 						.with(identity -> identity
 								.setAge(applicationAge.isDisable() || ageField.getText().isEmpty() ? null
@@ -1784,17 +1783,24 @@ public class DemographicDetailController extends BaseController {
 				}
 			}
 
-		if(isValid && switchedOn.get() && !applicationAge.isDisable()) {
+		if (isValid && switchedOn.get() && !applicationAge.isDisable()) {
 			SimpleDateFormat dateOfBirth = new SimpleDateFormat("dd-MM-yyyy");
-				dateOfBirth.setLenient(false);
-				try {
-					dateOfBirth.parse(dd.getText()+"-"+mm.getText()+"-"+yyyy.getText());
-				}catch(ParseException exception){
+			dateOfBirth.setLenient(false);
+			try {
+				dateOfBirth.parse(dd.getText() + "-" + mm.getText() + "-" + yyyy.getText());
+			} catch (ParseException exception) {
+				if(getRegistrationDTOFromSession().getRegistrationMetaDataDTO().getRegistrationCategory()
+						.equals(RegistrationConstants.PACKET_TYPE_LOST)) {
+					if(dd.getText().isEmpty() && mm.getText().isEmpty() && yyyy.getText().isEmpty()) {
+						isValid = true;
+					}
+				} else {
 					dobMessage.setText(RegistrationUIConstants.INVALID_DATE_OF_BIRTH);
 					dobMessage.setVisible(true);
 					isValid = false;
 				}				
 			}
+		}
 		if (isValid)
 			isValid = validation.validateUinOrRid(uinId, isChild, uinValidator, ridValidator);
 		registrationController.displayValidationMessage(validation.getValidationMessage().toString());
