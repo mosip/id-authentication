@@ -1029,6 +1029,7 @@ public class LoginController extends BaseController implements Initializable {
 
 	private void executePreLaunchTask(BorderPane loginRoot) {
 
+		progressIndicator.setVisible(true);
 		loginRoot.setDisable(true);
 
 		/**
@@ -1054,7 +1055,7 @@ public class LoginController extends BaseController implements Initializable {
 
 						LOGGER.info("REGISTRATION - HANDLE_PACKET_UPLOAD_START - PACKET_UPLOAD_CONTROLLER",
 								APPLICATION_NAME, APPLICATION_ID, "Handling all the packet upload activities");
-
+					
 						ResponseDTO responseDTO = getSyncConfigData();
 						if (responseDTO != null) {
 							SuccessResponseDTO successResponseDTO = responseDTO.getSuccessResponseDTO();
