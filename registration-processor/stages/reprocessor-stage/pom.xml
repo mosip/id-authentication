@@ -17,5 +17,10 @@
 		<java.version>1.8</java.version>
 	</properties>
 	<dependencies>
+	<dependency>
+			<groupId>io.mosip.registrationprocessor</groupId>
+			<artifactId>registration-processor-core</artifactId>
+			<version>${registration.processor.core.version}</version>
+		</dependency>
 	</dependencies>
 </project>

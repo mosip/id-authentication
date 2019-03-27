@@ -1,10 +1,6 @@
-package io.mosip.reprocessor_stage;
+package io.mosip.registration.processor.reprocessor.stage;
 
-/**
- * Hello world!
- *
- */
-public class App 
+public class ReprocessorStage 
 {
     public static void main( String[] args )
     {
