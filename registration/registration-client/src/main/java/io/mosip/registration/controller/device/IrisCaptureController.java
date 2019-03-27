@@ -200,8 +200,7 @@ public class IrisCaptureController extends BaseController {
 	 * This event handler will be invoked when left iris or right iris {@link Pane}
 	 * is clicked.
 	 * 
-	 * @param mouseEvent
-	 *            the triggered {@link MouseEvent} object
+	 * @param mouseEvent the triggered {@link MouseEvent} object
 	 */
 	@FXML
 	private void enableScan(MouseEvent mouseEvent) {
@@ -548,8 +547,20 @@ public class IrisCaptureController extends BaseController {
 				}
 			}
 
-			if (isLeftEyeCaptured && isRightEyeCaptured) {
+			if (getRegistrationDTOFromSession().getSelectionListDTO() != null
+
+					&& (getRegistrationDTOFromSession().getSelectionListDTO().isBiometrics() && isLeftEyeCaptured
+							&& isRightEyeCaptured)
+
+					|| getRegistrationDTOFromSession().getBiometricDTO().getApplicantBiometricDTO()
+							.getFingerprintDetailsDTO().isEmpty()
+							&& !getRegistrationDTOFromSession().getSelectionListDTO().isBiometrics()
+							&& (isLeftEyeCaptured || isRightEyeCaptured)) {
 				isValid = true;
+			} else {
+				if (isLeftEyeCaptured && isRightEyeCaptured) {
+					isValid = true;
+				}
 			}
 
 			LOGGER.info(LOG_REG_IRIS_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
@@ -655,10 +666,7 @@ public class IrisCaptureController extends BaseController {
 					.setIrisDetailsDTO(new ArrayList<>());
 		}
 
-		if (!(validateIris() && validateIrisLocalDedup())) {
-			continueBtn.setDisable(true);
-			backBtn.setDisable(true);
-		}
+		singleBiometricCaptureCheck();
 	}
 
 	public void clearIrisBasedOnExceptions() {
@@ -683,17 +691,26 @@ public class IrisCaptureController extends BaseController {
 			continueBtn.setDisable(false);
 			backBtn.setDisable(false);
 		}
+		singleBiometricCaptureCheck();
+	}
+
+	private void singleBiometricCaptureCheck() {
 		if (!(validateIris() && validateIrisLocalDedup())) {
 			continueBtn.setDisable(true);
 			backBtn.setDisable(true);
+		}
+		if (!getRegistrationDTOFromSession().getBiometricDTO().getApplicantBiometricDTO().getFingerprintDetailsDTO()
+				.isEmpty() && getRegistrationDTOFromSession().getSelectionListDTO() != null
+				&& !getRegistrationDTOFromSession().getSelectionListDTO().isBiometrics()) {
+			continueBtn.setDisable(false);
+			backBtn.setDisable(false);
 		}
 	}
 
 	/**
 	 * Any iris exception.
 	 *
-	 * @param iris
-	 *            the iris
+	 * @param iris the iris
 	 * @return true, if successful
 	 */
 	private boolean anyIrisException(String iris) {

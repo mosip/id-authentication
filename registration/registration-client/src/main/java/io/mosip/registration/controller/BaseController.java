@@ -960,8 +960,10 @@ public class BaseController extends BaseService {
 			SessionContext.map().put("biometricException", true);
 		} else if (updateUINNextPage(RegistrationConstants.FINGERPRINT_DISABLE_FLAG)) {
 			SessionContext.map().put("fingerPrintCapture", true);
+			fingerPrintCaptureController.clearImage();
 		} else if (updateUINNextPage(RegistrationConstants.IRIS_DISABLE_FLAG)) {
 			SessionContext.map().put("irisCapture", true);
+			irisCaptureController.clearIrisBasedOnExceptions();
 		} else if (RegistrationConstants.ENABLE.equalsIgnoreCase(
 				String.valueOf(ApplicationContext.map().get(RegistrationConstants.FACE_DISABLE_FLAG)))) {
 			SessionContext.map().put("faceCapture", true);
@@ -974,8 +976,7 @@ public class BaseController extends BaseService {
 	protected boolean updateUINNextPage(String pageFlag) {
 		return RegistrationConstants.ENABLE.equalsIgnoreCase(
 				String.valueOf(ApplicationContext.map().get(pageFlag)))
-				&& (getRegistrationDTOFromSession().getSelectionListDTO().isBiometrics()
-						&& !(Boolean) SessionContext.userMap().get(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION));
+				&& !(Boolean) SessionContext.userMap().get(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION);
 	}
 
 }

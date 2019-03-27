@@ -557,7 +557,7 @@
                                               <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                             </rowConstraints>
                                              <children>
-                                                <Label fx:id="duplicateCheckLbl" prefHeight="${duplicateLabelPane.height}" prefWidth="${duplicateLabelPane.width}" text="" />
+                                                <Label fx:id="duplicateCheckLbl" prefHeight="${duplicateLabelPane.height}" prefWidth="${duplicateLabelPane.width}" text="" wrapText="true" />
                                              </children>
                                           </GridPane>
                                           <GridPane fx:id="parentProgressPane" GridPane.columnIndex="1">
@@ -709,7 +709,7 @@
                               <Image url="@../images/activeUploadDocument.png" />
                            </image>
                         </ImageView>
-                        <Label alignment="BOTTOM_CENTER" contentDisplay="TOP"  styleClass="headerTexts" text="%uploadDocuments" />
+                        <Label alignment="BOTTOM_CENTER" contentDisplay="TOP" styleClass="headerTexts" text="%uploadDocuments" />
                      </children>
                   </HBox>
                   <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="10.0" GridPane.columnIndex="4">

@@ -464,9 +464,22 @@ public class FingerPrintCaptureController extends BaseController implements Init
 			backBtn.setDisable(false);
 		}
 
+		singleBiomtericCaptureCheck();
+	}
+
+	private void singleBiomtericCaptureCheck() {
+
 		if (!validateFingerPrints()) {
 			continueBtn.setDisable(true);
 			backBtn.setDisable(true);
+		}
+
+		if (!RegistrationConstants.DISABLE
+				.equalsIgnoreCase(String.valueOf(ApplicationContext.map().get(RegistrationConstants.IRIS_DISABLE_FLAG)))
+				&& getRegistrationDTOFromSession().getSelectionListDTO() != null
+				&& !getRegistrationDTOFromSession().getSelectionListDTO().isBiometrics()) {
+			continueBtn.setDisable(false);
+			backBtn.setDisable(false);
 		}
 	}
 
@@ -527,10 +540,7 @@ public class FingerPrintCaptureController extends BaseController implements Init
 			}
 		}
 
-		if (!validateFingerPrints()) {
-			continueBtn.setDisable(true);
-			backBtn.setDisable(true);
-		}
+		singleBiomtericCaptureCheck();
 	}
 
 	private void exceptionFingersCount() {
@@ -1016,37 +1026,23 @@ public class FingerPrintCaptureController extends BaseController implements Init
 				isthumbsCaptured = true;
 			}
 
-			if (isleftHandSlapCaptured && isrightHandSlapCaptured && isthumbsCaptured) {
-				if (!(boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
-					if (!fingerPrintCaptureServiceImpl.validateFingerprint(segmentedFingerprintDetailsDTOs)) {
-						isValid = true;
-					} else {
-						FingerprintDetailsDTO duplicateFinger = (FingerprintDetailsDTO) SessionContext.map()
-								.get(RegistrationConstants.DUPLICATE_FINGER);
+			if (getRegistrationDTOFromSession().getSelectionListDTO() != null
 
-						Iterator<FingerprintDetailsDTO> iterator = fingerprintDetailsDTOs.iterator();
+					&& (getRegistrationDTOFromSession().getSelectionListDTO().isBiometrics() && isleftHandSlapCaptured
+							&& isrightHandSlapCaptured && isthumbsCaptured)
 
-						while (iterator.hasNext()) {
-							FingerprintDetailsDTO value = iterator.next();
-							for (FingerprintDetailsDTO duplicate : value.getSegmentedFingerprints()) {
-								if (duplicate.getFingerType().equals(duplicateFinger.getFingerType())) {
-									iterator.remove();
-									break;
-								}
-							}
-						}
-						String finger;
-						if (duplicateFinger.getFingerType().contains(RegistrationConstants.LEFT.toLowerCase())) {
-							finger = duplicateFinger.getFingerType().replace(RegistrationConstants.LEFT.toLowerCase(),
-									RegistrationConstants.LEFT_HAND);
-						} else {
-							finger = duplicateFinger.getFingerType().replace(RegistrationConstants.RIGHT.toLowerCase(),
-									RegistrationConstants.RIGHT_HAND);
-						}
-						duplicateCheckLbl.setText(finger + " " + RegistrationUIConstants.FINGERPRINT_DUPLICATION_ALERT);
-					}
-				} else {
-					isValid = true;
+					|| RegistrationConstants.DISABLE.equalsIgnoreCase(
+							String.valueOf(ApplicationContext.map().get(RegistrationConstants.IRIS_DISABLE_FLAG)))
+							&& !getRegistrationDTOFromSession().getSelectionListDTO().isBiometrics()
+							&& (isleftHandSlapCaptured || isrightHandSlapCaptured || isthumbsCaptured)) {
+
+				isValid = fingerdeduplicationCheck(segmentedFingerprintDetailsDTOs, isValid, fingerprintDetailsDTOs);
+
+			} else {
+				if (isleftHandSlapCaptured && isrightHandSlapCaptured && isthumbsCaptured) {
+
+					isValid = fingerdeduplicationCheck(segmentedFingerprintDetailsDTOs, isValid,
+							fingerprintDetailsDTOs);
 				}
 			}
 			LOGGER.info(LOG_REG_FINGERPRINT_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
@@ -1062,11 +1058,46 @@ public class FingerPrintCaptureController extends BaseController implements Init
 		}
 	}
 
+	private boolean fingerdeduplicationCheck(List<FingerprintDetailsDTO> segmentedFingerprintDetailsDTOs,
+			boolean isValid, List<FingerprintDetailsDTO> fingerprintDetailsDTOs) {
+		if (!(boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
+			if (!fingerPrintCaptureServiceImpl.validateFingerprint(segmentedFingerprintDetailsDTOs)) {
+				isValid = true;
+			} else {
+				FingerprintDetailsDTO duplicateFinger = (FingerprintDetailsDTO) SessionContext.map()
+						.get(RegistrationConstants.DUPLICATE_FINGER);
+
+				Iterator<FingerprintDetailsDTO> iterator = fingerprintDetailsDTOs.iterator();
+
+				while (iterator.hasNext()) {
+					FingerprintDetailsDTO value = iterator.next();
+					for (FingerprintDetailsDTO duplicate : value.getSegmentedFingerprints()) {
+						if (duplicate.getFingerType().equals(duplicateFinger.getFingerType())) {
+							iterator.remove();
+							break;
+						}
+					}
+				}
+				String finger;
+				if (duplicateFinger.getFingerType().contains(RegistrationConstants.LEFT.toLowerCase())) {
+					finger = duplicateFinger.getFingerType().replace(RegistrationConstants.LEFT.toLowerCase(),
+							RegistrationConstants.LEFT_HAND);
+				} else {
+					finger = duplicateFinger.getFingerType().replace(RegistrationConstants.RIGHT.toLowerCase(),
+							RegistrationConstants.RIGHT_HAND);
+				}
+				duplicateCheckLbl.setText(finger + " " + RegistrationUIConstants.FINGERPRINT_DUPLICATION_ALERT);
+			}
+		} else {
+			isValid = true;
+		}
+		return isValid;
+	}
+
 	/**
 	 * Validating quality score of captured fingerprints.
 	 *
-	 * @param fingerprintDetailsDTO
-	 *            the fingerprint details DTO
+	 * @param fingerprintDetailsDTO the fingerprint details DTO
 	 * @return true, if successful
 	 */
 	private boolean validateQualityScore(FingerprintDetailsDTO fingerprintDetailsDTO) {
@@ -1097,10 +1128,8 @@ public class FingerPrintCaptureController extends BaseController implements Init
 	/**
 	 * Validates QualityScore.
 	 *
-	 * @param fingerprintDetailsDTO
-	 *            the fingerprint details DTO
-	 * @param handThreshold
-	 *            the hand threshold
+	 * @param fingerprintDetailsDTO the fingerprint details DTO
+	 * @param handThreshold         the hand threshold
 	 * @return boolean
 	 */
 	private Boolean validate(FingerprintDetailsDTO fingerprintDetailsDTO, String handThreshold) {
@@ -1130,8 +1159,7 @@ public class FingerPrintCaptureController extends BaseController implements Init
 	/**
 	 * Gets the selected pane.
 	 *
-	 * @param fingerPrintDetails
-	 *            the finger print details
+	 * @param fingerPrintDetails the finger print details
 	 * @return the selected pane
 	 */
 	private Stream<FingerprintDetailsDTO> getSelectedPane(List<FingerprintDetailsDTO> fingerPrintDetails) {
@@ -1162,8 +1190,7 @@ public class FingerPrintCaptureController extends BaseController implements Init
 	/**
 	 * Gets the value from application context.
 	 *
-	 * @param key
-	 *            the key
+	 * @param key the key
 	 * @return the value from application context
 	 */
 	private String getValueFromApplicationContext(String key) {

@@ -269,13 +269,18 @@ public class FaceCaptureController extends BaseController implements Initializab
 					long fingerPrintCount = getRegistrationDTOFromSession().getBiometricDTO().getApplicantBiometricDTO()
 							.getFingerprintDetailsDTO().stream().count();
 
+					
 					long irisCount = getRegistrationDTOFromSession().getBiometricDTO().getApplicantBiometricDTO()
 							.getIrisDetailsDTO().stream().count();
+					
+					long fingerPrintExceptionCount = biomerticExceptionCount(RegistrationConstants.FINGERPRINT);
 
-					if (updateUINNextPage(RegistrationConstants.IRIS_DISABLE_FLAG) || irisCount > 0) {
+					long irisExceptionCount = biomerticExceptionCount(RegistrationConstants.IRIS);
+
+					if (updateUINNextPage(RegistrationConstants.IRIS_DISABLE_FLAG) || irisCount > 0 || irisExceptionCount > 0) {
 						SessionContext.map().put("irisCapture", true);
 					} else if (updateUINNextPage(RegistrationConstants.FINGERPRINT_DISABLE_FLAG)
-							|| fingerPrintCount > 0) {
+							|| fingerPrintCount > 0 || fingerPrintExceptionCount > 0) {
 						SessionContext.map().put("fingerPrintCapture", true);
 					} else if (!RegistrationConstants.DISABLE.equalsIgnoreCase(
 							String.valueOf(ApplicationContext.map().get(RegistrationConstants.DOC_DISABLE_FLAG)))) {
@@ -294,6 +299,12 @@ public class FaceCaptureController extends BaseController implements Initializab
 						runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
 			}
 		}
+	}
+
+	private long biomerticExceptionCount(String biometric) {
+		return getRegistrationDTOFromSession().getBiometricDTO().getApplicantBiometricDTO()
+				.getBiometricExceptionDTO().stream()
+				.filter(bio -> bio.getBiometricType().equalsIgnoreCase(biometric)).count();
 	}
 
 	/**
