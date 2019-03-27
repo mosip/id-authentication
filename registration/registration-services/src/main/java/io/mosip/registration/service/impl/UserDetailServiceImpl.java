@@ -74,10 +74,10 @@ public class UserDetailServiceImpl extends BaseService implements UserDetailServ
 
 			LinkedHashMap<String, Object> userDetailSyncResponse = (LinkedHashMap<String, Object>) userDetail;
 
-			if (!userDetailSyncResponse.containsKey(RegistrationConstants.ERRORS)
-					&& null != userDetailSyncResponse.get(RegistrationConstants.USER_DETAILS)) {
+			if (null != userDetailSyncResponse.get(RegistrationConstants.PACKET_STATUS_READER_RESPONSE)) {
 
-				String jsonString = new ObjectMapper().writeValueAsString(userDetail);
+				String jsonString = new ObjectMapper().writeValueAsString(
+						userDetailSyncResponse.get(RegistrationConstants.PACKET_STATUS_READER_RESPONSE));
 
 				UserDetailResponseDto userDtlsSyncDto = objectMapper.readValue(jsonString, UserDetailResponseDto.class);
 
@@ -141,13 +141,13 @@ public class UserDetailServiceImpl extends BaseService implements UserDetailServ
 
 			LinkedHashMap<String, Object> userDetailResponse = (LinkedHashMap<String, Object>) userDetail;
 
-			if (!userDetailResponse.containsKey(RegistrationConstants.ERRORS)) {
+			if (null!=userDetailResponse.get(RegistrationConstants.PACKET_STATUS_READER_RESPONSE)) {
 
 				SuccessResponseDTO successResponseDTO = new SuccessResponseDTO();
 				successResponseDTO.setCode(RegistrationConstants.SUCCESS);
 				responseDTO.setSuccessResponseDTO(successResponseDTO);
 
-			} else if (userDetailResponse.containsKey(RegistrationConstants.ERRORS)) {
+			} else {
 
 				ErrorResponseDTO errorResponseDTO = new ErrorResponseDTO();
 				errorResponseDTO.setCode(RegistrationConstants.ERRORS);

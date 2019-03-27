@@ -24,7 +24,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
-import org.modelmapper.internal.bytebuddy.dynamic.scaffold.MethodGraph.Linked;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
@@ -164,7 +163,9 @@ public class MasterSyncServiceTest {
 
 		Map<String, String> map = new HashMap<>();
 		LinkedHashMap<String, Object> responseMap=new LinkedHashMap<>();
-		responseMap.put("", "");
+		Map<String, String> masterSyncMap = new LinkedHashMap<>();
+		masterSyncMap.put("lastSyncTime", "2019-03-27T11:07:34.408Z");
+		responseMap.put("response", masterSyncMap);
 		map.put(RegistrationConstants.USER_CENTER_ID, "10011");
 		Mockito.when(userOnboardService.getMachineCenterId()).thenReturn(map);
 		Mockito.when(serviceDelegateUtil.get(Mockito.anyString(), Mockito.any(), Mockito.anyBoolean(),Mockito.anyString()))
@@ -856,6 +857,89 @@ public class MasterSyncServiceTest {
 
 		Mockito.when(masterSyncDao.save(Mockito.any(MasterDataResponseDto.class)))
 				.thenReturn(RegistrationConstants.SUCCESS);
+
+		sucessResponse.setCode(RegistrationConstants.MASTER_SYNC_SUCESS_MSG_CODE);
+		sucessResponse.setInfoType(RegistrationConstants.ALERT_INFORMATION);
+		sucessResponse.setMessage(RegistrationConstants.MASTER_SYNC_SUCCESS);
+
+		responseDTO.setSuccessResponseDTO(sucessResponse);
+
+		ResponseDTO responseDto = masterSyncServiceImpl.getMasterSync("MDS_J00001","System");
+		// assertEquals(RegistrationConstants.MASTER_SYNC_SUCCESS,
+		// responseDto.getSuccessResponseDTO().getMessage());
+	}
+	
+	@Test
+	public void testMasterSyncSucessFailure()
+			throws RegBaseCheckedException, JsonParseException, JsonMappingException, IOException {
+		PowerMockito.mockStatic(RegistrationAppHealthCheckUtil.class);
+		MasterDataResponseDto masterSyncDto = new MasterDataResponseDto();
+		SuccessResponseDTO sucessResponse = new SuccessResponseDTO();
+		ResponseDTO responseDTO = new ResponseDTO();
+
+		BiometricAttributeDto biometricattributes = new BiometricAttributeDto();
+
+		BiometricAttributeDto biometricAttributeResponseDto = new BiometricAttributeDto();
+
+		biometricattributes.setBiometricTypeCode("1");
+		biometricattributes.setCode("1");
+		biometricattributes.setDescription("finerprints");
+		biometricattributes.setLangCode("eng");
+		biometricattributes.setName("littile finger");
+
+		List<BiometricAttributeDto> biometricattribute = new ArrayList<>();
+		biometricattribute.add(biometricattributes);
+
+		biometricAttributeResponseDto.setBiometricTypeCode("1");
+		biometricAttributeResponseDto.setCode("1");
+		biometricAttributeResponseDto.setDescription("finerprints");
+		biometricAttributeResponseDto.setLangCode("eng");
+		biometricAttributeResponseDto.setName("littile finger");
+
+		List<BiometricAttributeDto> biometrictypes = new ArrayList<>();
+		biometrictypes.add(biometricAttributeResponseDto);
+
+		masterSyncDto.setBiometricattributes(biometrictypes);
+
+		SyncControl masterSyncDetails = new SyncControl();
+
+		masterSyncDetails.setSyncJobId("MDS_J00001");
+		masterSyncDetails.setLastSyncDtimes(new Timestamp(System.currentTimeMillis()));
+		masterSyncDetails.setCrBy("mosip");
+		masterSyncDetails.setIsActive(true);
+		masterSyncDetails.setLangCode("eng");
+		masterSyncDetails.setCrDtime(new Timestamp(System.currentTimeMillis()));
+
+		String masterJson = "{\n" + "   \"registrationCenter\": [\n" + "      {\n" + "         \"id\": \"10011\",\n"
+				+ "         \"name\": \"centre Souissi\",\n" + "         \"centerTypeCode\": \"REG\",\n"
+				+ "         \"addressLine1\": \"avenue de Mohammed VI\",\n" + "         \"addressLine2\": \"Rabat\",\n"
+				+ "         \"addressLine3\": \"Maroc\",\n" + "         \"latitude\": \"33.986608\",\n"
+				+ "         \"longitude\": \"-6.828873\",\n" + "         \"locationCode\": \"10105\",\n"
+				+ "         \"holidayLocationCode\": \"RBT\",\n" + "         \"contactPhone\": \"878691008\",\n"
+				+ "         \"numberOfStations\": null,\n" + "         \"workingHours\": \"8:00:00\",\n"
+				+ "         \"numberOfKiosks\": 1,\n" + "         \"perKioskProcessTime\": \"00:15:00\",\n"
+				+ "         \"centerStartTime\": \"09:00:00\",\n" + "         \"centerEndTime\": \"17:00:00\",\n"
+				+ "         \"timeZone\": \"GTM + 01h00) HEURE EUROPEENNE CENTRALE\",\n"
+				+ "         \"contactPerson\": \"Minnie Mum\",\n" + "         \"lunchStartTime\": \"13:00:00\",\n"
+				+ "         \"lunchEndTime\": \"14:00:00\",\n" + "         \"isDeleted\": null,\n"
+				+ "         \"langCode\": \"fra\",\n" + "         \"isActive\": true\n" + "      }\n" + "   ]\n" + "}";
+
+		Map<String, String> map = new HashMap<>();
+		LinkedHashMap<String, Object> responseMap=new LinkedHashMap<>();
+		Map<String, String> masterSyncMap = new LinkedHashMap<>();
+		masterSyncMap.put("lastSyncTime", "2019-03-27T11:07:34.408Z");
+		responseMap.put("response", masterSyncMap);
+		map.put(RegistrationConstants.USER_CENTER_ID, "10011");
+		Mockito.when(userOnboardService.getMachineCenterId()).thenReturn(map);
+		Mockito.when(serviceDelegateUtil.get(Mockito.anyString(), Mockito.any(), Mockito.anyBoolean(),Mockito.anyString()))
+		.thenReturn(responseMap);
+		Mockito.when(masterSyncDao.syncJobDetails(Mockito.anyString())).thenReturn(masterSyncDetails);
+		Mockito.when(RegistrationAppHealthCheckUtil.isNetworkAvailable()).thenReturn(true);
+
+		Mockito.when(objectMapper.readValue(masterJson, MasterDataResponseDto.class)).thenReturn(masterSyncDto);
+
+		Mockito.when(masterSyncDao.save(Mockito.any(MasterDataResponseDto.class)))
+				.thenReturn(RegistrationConstants.FAILURE);
 
 		sucessResponse.setCode(RegistrationConstants.MASTER_SYNC_SUCESS_MSG_CODE);
 		sucessResponse.setInfoType(RegistrationConstants.ALERT_INFORMATION);
