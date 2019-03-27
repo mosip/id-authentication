@@ -56,6 +56,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -167,6 +168,10 @@ public class DocumentScanController extends BaseController {
 	private Button continueBtn;
 	@FXML
 	private Button backBtn;
+	
+	private TextField scannedField;
+	
+	private int totalDocument=0;
 
 	@FXML
 	private void initialize() {
@@ -177,7 +182,8 @@ public class DocumentScanController extends BaseController {
 					&& getRegistrationDTOFromSession().getSelectionListDTO() != null) {
 				registrationNavlabel.setText(RegistrationConstants.UIN_NAV_LABEL);
 			}
-
+			scannedField=new TextField();
+			scannedField.setVisible(false);
 			continueBtn.setDisable(true);
 
 			switchedOnForBiometricException = new SimpleBooleanProperty(false);
@@ -191,6 +197,13 @@ public class DocumentScanController extends BaseController {
 				docScanVbox.setDisable(true);
 				continueBtn.setDisable(false);
 			}
+			
+			scannedField.textProperty().addListener((absValue,oldValue,newValue)->{
+				if(Integer.parseInt(newValue)==0)
+					continueBtn.setDisable(false);
+				else
+					continueBtn.setDisable(true);
+			});
 			
 			// populateDocumentCategories();
 		} catch (RuntimeException exception) {
@@ -298,6 +311,7 @@ public class DocumentScanController extends BaseController {
 				comboBox.setConverter((StringConverter<DocumentCategoryDto>) uiRenderForComboBox);
 				if (applicationContext.isPrimaryLanguageRightToLeft())
 					comboBox.setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
+				totalDocument++;
 
 				/*
 				 * adding all the dynamically created combo boxes in a map inorder to show it in
@@ -455,10 +469,7 @@ public class DocumentScanController extends BaseController {
 			} else {
 				scanFromStubbed(popupStage);
 			}
-
-			if (registrationController.validateDemographicPane(documentScanPane)) {
-				continueBtn.setDisable(false);
-			}
+			scannedField.setText(""+(--totalDocument));
 		} catch (IOException ioException) {
 			LOGGER.error(LoggerConstants.LOG_REG_REGISTRATION_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 					String.format("%s -> Exception while scanning documents for registration  %s -> %s",
@@ -720,11 +731,7 @@ public class DocumentScanController extends BaseController {
 		LOGGER.info(RegistrationConstants.DOCUMNET_SCAN_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Creating Image to delete the attached document");
 
-		imageView.setOnMouseClicked(new EventHandler<MouseEvent>() {
-
-			@Override
-			public void handle(MouseEvent event) {
-
+		imageView.setOnMouseClicked((event)-> {
 				auditFactory.audit(AuditEvent.REG_DOC_POA_DELETE, Components.REG_DOCUMENTS, SessionContext.userId(),
 						AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
 
@@ -735,12 +742,8 @@ public class DocumentScanController extends BaseController {
 				getDocumentsMapFromSession().remove(key);
 
 				vboxElement.getChildren().remove(gridpane);
-
-				if (registrationController.validateDemographicPane(documentScanPane)) {
-					continueBtn.setDisable(false);
-				}
-			}
-
+				totalDocument++;
+				scannedField.setText(""+totalDocument);
 		});
 
 		LOGGER.info(RegistrationConstants.DOCUMNET_SCAN_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
@@ -765,9 +768,7 @@ public class DocumentScanController extends BaseController {
 				RegistrationConstants.APPLICATION_ID,
 				"Binding OnAction event to Hyperlink to display Scanned document");
 
-		hyperLink.setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent actionEvent) {
+		hyperLink.setOnAction((actionEvent)-> {
 
 				auditFactory.audit(AuditEvent.REG_DOC_POA_VIEW, Components.REG_DOCUMENTS, SessionContext.userId(),
 						AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
@@ -781,8 +782,6 @@ public class DocumentScanController extends BaseController {
 					displayDocument(selectedDocumentToDisplay.getDocument(),
 							selectedDocumentToDisplay.getValue() + "." + selectedDocumentToDisplay.getFormat());
 				}
-
-			}
 		});
 
 		LOGGER.info(RegistrationConstants.DOCUMNET_SCAN_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
