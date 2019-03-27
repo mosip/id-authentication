@@ -253,11 +253,19 @@ public class CommonLibrary {
 		Response postResponse = given().relaxedHTTPSValidation().body(body).contentType(contentHeader)
 				.accept(acceptHeader).log().all().when().post(url).then().log().all().extract().response();
 		// log then response
-		logger.info("REST-ASSURED: The response from the request is: " + postResponse.asString());
-		logger.info("REST-ASSURED: The response Time is: " + postResponse.time());
+		//logger.info("REST-ASSURED: The response from the request is: " + postResponse.asString());
+		//logger.info("REST-ASSURED: The response Time is: " + postResponse.time());
 		return postResponse;
 	} // end POST_REQUEST
+	public Response postRequestToDecrypt(String url, Object body, String contentHeader, String acceptHeader) {
 
+		Response postResponse = given().relaxedHTTPSValidation().body(body).contentType(contentHeader)
+				.accept(acceptHeader).when().post(url).then().extract().response();
+		// log then response
+		//logger.info("REST-ASSURED: The response from the request is: " + postResponse.asString());
+		//logger.info("REST-ASSURED: The response Time is: " + postResponse.time());
+		return postResponse;
+	}
 	/**
 	 * @author Arjun this method is specifically for email notification
 	 * @param jsonString
