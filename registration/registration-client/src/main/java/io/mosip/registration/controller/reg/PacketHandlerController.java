@@ -157,7 +157,7 @@ public class PacketHandlerController extends BaseController implements Initializ
 	private PacketUploadService packetUploadService;
 	@Autowired
 	private PolicySyncService policySyncService;
-	
+
 	@Autowired
 	private RegistrationController registrationController;
 
@@ -192,9 +192,14 @@ public class PacketHandlerController extends BaseController implements Initializ
 			uinUpdateImage.setVisible(false);
 			uinUpdateGridPane.setVisible(false);
 		}
+		lostUINPane.setVisible(false);
+		// if
+		// (!(String.valueOf(ApplicationContext.map().get(RegistrationConstants.LOST_UIN_CONFIG_FLAG)))
+		// .equalsIgnoreCase(RegistrationConstants.ENABLE)) {
+		// lostUINPane.setVisible(false);
+		// }
 
 	}
-
 
 	/**
 	 * Validating screen authorization and Creating Packet and displaying
@@ -252,54 +257,68 @@ public class PacketHandlerController extends BaseController implements Initializ
 	 * Validating screen authorization and Creating Packet in case of Lost UIN
 	 */
 	public void lostUIN() {
-		if (isMachineRemapProcessStarted()) {
 
-			LOGGER.info("REGISTRATION - CREATE_PACKET - REGISTRATION_OFFICER_PACKET_CONTROLLER", APPLICATION_NAME,
-					APPLICATION_ID, RegistrationConstants.MACHINE_CENTER_REMAP_MSG);
-			return;
-		}
-		if (isKeyValid()) {
-			LOGGER.info(PACKET_HANDLER, APPLICATION_NAME, APPLICATION_ID,
-					"Creating of Registration for lost UIN Starting.");
-			try {
-				auditFactory.audit(AuditEvent.NAV_NEW_REG, Components.NAVIGATION,
-						SessionContext.userContext().getUserId(), AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
+		String fingerPrintDisableFlag = String
+				.valueOf(ApplicationContext.map().get(RegistrationConstants.FINGERPRINT_DISABLE_FLAG));
+		String irisDisableFlag = String.valueOf(ApplicationContext.map().get(RegistrationConstants.IRIS_DISABLE_FLAG));
+		String faceDisableFlag = String.valueOf(ApplicationContext.map().get(RegistrationConstants.FACE_DISABLE_FLAG));
 
-				/* Mark Registration Category as Lost UIN */
-				registrationController.initializeLostUIN();
-
-				Parent createRoot = BaseController.load(
-						getClass().getResource(RegistrationConstants.CREATE_PACKET_PAGE),
-						applicationContext.getApplicationLanguageBundle());
-				LOGGER.info("REGISTRATION - CREATE_PACKET - REGISTRATION_OFFICER_PACKET_CONTROLLER", APPLICATION_NAME,
-						APPLICATION_ID, "Validating Create Packet screen for specific role");
-
-				if (!validateScreenAuthorization(createRoot.getId())) {
-					generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.AUTHORIZATION_ERROR);
-				} else {
-					StringBuilder errorMessage = new StringBuilder();
-					ResponseDTO responseDTO;
-					responseDTO = validateSyncStatus();
-					List<ErrorResponseDTO> errorResponseDTOs = responseDTO.getErrorResponseDTOs();
-					if (errorResponseDTOs != null && !errorResponseDTOs.isEmpty()) {
-						for (ErrorResponseDTO errorResponseDTO : errorResponseDTOs) {
-							errorMessage.append(errorResponseDTO.getMessage() + "\n\n");
-						}
-						generateAlertLanguageSpecific(RegistrationConstants.ERROR, errorMessage.toString().trim());
-					} else {
-						getScene(createRoot).setRoot(createRoot);
-					}
-				}
-
-			} catch (IOException ioException) {
-				LOGGER.error("REGISTRATION - UI- Officer Packet Create for Lost UIN", APPLICATION_NAME, APPLICATION_ID,
-						ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));
-
-				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_LOAD_REG_PAGE);
-			}
+		if (RegistrationConstants.DISABLE.equalsIgnoreCase(fingerPrintDisableFlag)
+				&& RegistrationConstants.DISABLE.equalsIgnoreCase(irisDisableFlag)
+				&& RegistrationConstants.DISABLE.equalsIgnoreCase(faceDisableFlag)) {
+			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.LOST_UIN_REQUEST_ERROR);
 		} else {
-			generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.INVALID_KEY);
+			if (isMachineRemapProcessStarted()) {
+
+				LOGGER.info("REGISTRATION - CREATE_PACKET - REGISTRATION_OFFICER_PACKET_CONTROLLER", APPLICATION_NAME,
+						APPLICATION_ID, RegistrationConstants.MACHINE_CENTER_REMAP_MSG);
+				return;
+			}
+			if (isKeyValid()) {
+				LOGGER.info(PACKET_HANDLER, APPLICATION_NAME, APPLICATION_ID,
+						"Creating of Registration for lost UIN Starting.");
+				try {
+					auditFactory.audit(AuditEvent.NAV_NEW_REG, Components.NAVIGATION,
+							SessionContext.userContext().getUserId(),
+							AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
+
+					/* Mark Registration Category as Lost UIN */
+					registrationController.initializeLostUIN();
+
+					Parent createRoot = BaseController.load(
+							getClass().getResource(RegistrationConstants.CREATE_PACKET_PAGE),
+							applicationContext.getApplicationLanguageBundle());
+					LOGGER.info("REGISTRATION - CREATE_PACKET - REGISTRATION_OFFICER_PACKET_CONTROLLER",
+							APPLICATION_NAME, APPLICATION_ID, "Validating Create Packet screen for specific role");
+
+					if (!validateScreenAuthorization(createRoot.getId())) {
+						generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.AUTHORIZATION_ERROR);
+					} else {
+						StringBuilder errorMessage = new StringBuilder();
+						ResponseDTO responseDTO;
+						responseDTO = validateSyncStatus();
+						List<ErrorResponseDTO> errorResponseDTOs = responseDTO.getErrorResponseDTOs();
+						if (errorResponseDTOs != null && !errorResponseDTOs.isEmpty()) {
+							for (ErrorResponseDTO errorResponseDTO : errorResponseDTOs) {
+								errorMessage.append(errorResponseDTO.getMessage() + "\n\n");
+							}
+							generateAlertLanguageSpecific(RegistrationConstants.ERROR, errorMessage.toString().trim());
+						} else {
+							getScene(createRoot).setRoot(createRoot);
+						}
+					}
+
+				} catch (IOException ioException) {
+					LOGGER.error("REGISTRATION - UI- Officer Packet Create for Lost UIN", APPLICATION_NAME,
+							APPLICATION_ID, ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));
+
+					generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_LOAD_REG_PAGE);
+				}
+			} else {
+				generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.INVALID_KEY);
+			}
 		}
+
 		LOGGER.info(PACKET_HANDLER, APPLICATION_NAME, APPLICATION_ID, "Creating of Registration for lost UIN ended.");
 	}
 
@@ -480,7 +499,8 @@ public class PacketHandlerController extends BaseController implements Initializ
 	/**
 	 * Sync data through batch jobs.
 	 *
-	 * @param event the event
+	 * @param event
+	 *            the event
 	 */
 	public void syncData() {
 		if (isMachineRemapProcessStarted()) {
@@ -546,7 +566,8 @@ public class PacketHandlerController extends BaseController implements Initializ
 	/**
 	 * change On-Board user Perspective
 	 * 
-	 * @param event is an action event
+	 * @param event
+	 *            is an action event
 	 * @throws IOException
 	 */
 	public void onBoardUser() {
@@ -716,7 +737,8 @@ public class PacketHandlerController extends BaseController implements Initializ
 	/**
 	 * Sync and upload packet.
 	 *
-	 * @throws RegBaseCheckedException the reg base checked exception
+	 * @throws RegBaseCheckedException
+	 *             the reg base checked exception
 	 */
 	private void syncAndUploadPacket() throws RegBaseCheckedException {
 		LOGGER.info(PACKET_HANDLER, APPLICATION_NAME, APPLICATION_ID, "Sync and Upload of created Packet started");

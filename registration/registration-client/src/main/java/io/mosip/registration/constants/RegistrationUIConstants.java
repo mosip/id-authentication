@@ -44,6 +44,9 @@ public class RegistrationUIConstants {
 	public static final String FACE_MATCH = bundle.getString("FACE_MATCH");
 	public static final String FINGERPRINT = bundle.getString("FINGERPRINT");
 	public static final String RECAPTURE =  bundle.getString("RECAPTURE");
+	
+	//Lost UIN
+	public static final String LOST_UIN_REQUEST_ERROR = bundle.getString("LOST_UIN_REQUEST_ERROR");
 
 	// AUTHORIZATION
 	public static final String ROLES_EMPTY_ERROR = bundle.getString("ROLES_EMPTY_ERROR");
