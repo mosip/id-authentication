@@ -123,5 +123,14 @@ public class ConsumerStageTest {
 		((org.apache.activemq.command.Message) msg).setContent(response2);
 		consumerStage.sendMessage(msg);
 	}
+	@Test
+	public void testProcessException()
+	{
+		NullPointerException e =  new NullPointerException();
+		Mockito.doThrow(e).when(registrationStatusService).getRegistrationStatus(Mockito.any());
+		//Mockito.when(mosipConnectionFactory.createConnection(Mockito.any(),Mockito.any(),Mockito.any(),Mockito.any())).thenThrow(new Exception());
+		MessageDTO obj = consumerStage.process(messageDto);
+		assertTrue("2018701130000410092018110735".equals(obj.getRid()));
+	}
 
 }
