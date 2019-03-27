@@ -78,6 +78,14 @@ public class SyncHandlerControllerAdvice {
 		responseWrapper.getErrors().add(error);
 		return new ResponseEntity<>(responseWrapper, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
+	
+	@ExceptionHandler(AuthManagerServiceException.class)
+	public ResponseEntity<ResponseWrapper<ServiceError>> authManagerServiceException(
+			HttpServletRequest httpServletRequest, final AuthManagerServiceException exception) throws IOException {
+		ResponseWrapper<ServiceError> errorResponse = setErrors(httpServletRequest);
+		errorResponse.getErrors().addAll(exception.getList());
+		return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+	}
 
 	private ResponseEntity<ResponseWrapper<ServiceError>> getServiceErrorResponseEntity(BaseUncheckedException e,
 			HttpStatus httpStatus, HttpServletRequest httpServletRequest) throws IOException {
