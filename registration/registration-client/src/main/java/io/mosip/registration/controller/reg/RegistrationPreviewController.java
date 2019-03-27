@@ -61,17 +61,23 @@ public class RegistrationPreviewController extends BaseController implements Ini
 
 	@Autowired
 	private RegistrationController registrationController;
-	
+
 	@FXML
 	private Text registrationNavlabel;
 
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
-		if (getRegistrationDTOFromSession()!=null && getRegistrationDTOFromSession().getSelectionListDTO() != null) {
+		if (getRegistrationDTOFromSession() != null && getRegistrationDTOFromSession().getSelectionListDTO() != null) {
 			registrationNavlabel.setText(RegistrationConstants.UIN_NAV_LABEL);
-		}		
+		}
+		if (getRegistrationDTOFromSession() != null
+				&& getRegistrationDTOFromSession().getRegistrationMetaDataDTO().getRegistrationCategory() != null
+				&& getRegistrationDTOFromSession().getRegistrationMetaDataDTO().getRegistrationCategory()
+						.equals(RegistrationConstants.PACKET_TYPE_LOST)) {
+			registrationNavlabel.setText(ApplicationContext.applicationLanguageBundle().getString("/lostuin"));
+		}
 	}
-	
+
 	@FXML
 	public void goToPrevPage(ActionEvent event) {
 		auditFactory.audit(AuditEvent.REG_PREVIEW_BACK, Components.REG_PREVIEW, SessionContext.userId(),
@@ -89,7 +95,7 @@ public class RegistrationPreviewController extends BaseController implements Ini
 	}
 
 	private void updateUINFlowMethod() {
-	
+
 		long fingerPrintCount = getRegistrationDTOFromSession().getBiometricDTO().getApplicantBiometricDTO()
 				.getBiometricExceptionDTO().stream()
 				.filter(bio -> bio.getBiometricType().equalsIgnoreCase("fingerprint")).count();
@@ -101,9 +107,9 @@ public class RegistrationPreviewController extends BaseController implements Ini
 		if (!RegistrationConstants.DISABLE.equalsIgnoreCase(
 				String.valueOf(ApplicationContext.map().get(RegistrationConstants.FACE_DISABLE_FLAG)))) {
 			SessionContext.getInstance().getMapObject().put("faceCapture", true);
-		} else if (irisCount > 0 ) {
+		} else if (irisCount > 0) {
 			SessionContext.map().put("irisCapture", true);
-		} else if (fingerPrintCount > 0 ) {
+		} else if (fingerPrintCount > 0) {
 			SessionContext.map().put("fingerPrintCapture", true);
 		} else if (!RegistrationConstants.DISABLE.equalsIgnoreCase(
 				String.valueOf(ApplicationContext.map().get(RegistrationConstants.DOC_DISABLE_FLAG)))) {
@@ -258,12 +264,11 @@ public class RegistrationPreviewController extends BaseController implements Ini
 
 			long irisCount = getRegistrationDTOFromSession().getBiometricDTO().getApplicantBiometricDTO()
 					.getIrisDetailsDTO().stream().count();
-			if((Boolean) SessionContext.userMap().get(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION)) {
+			if ((Boolean) SessionContext.userMap().get(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION)) {
 				SessionContext.map().put("biometricException", true);
-			}
-			else if (fingerPrintCount > 0) {
+			} else if (fingerPrintCount > 0) {
 				SessionContext.map().put("fingerPrintCapture", true);
-			} else if (irisCount>0) {
+			} else if (irisCount > 0) {
 				SessionContext.map().put("irisCapture", true);
 			} else if (!RegistrationConstants.DISABLE.equalsIgnoreCase(
 					String.valueOf(ApplicationContext.map().get(RegistrationConstants.FACE_DISABLE_FLAG)))) {

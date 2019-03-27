@@ -125,6 +125,13 @@ public class FaceCaptureController extends BaseController implements Initializab
 			registrationNavlabel.setText(RegistrationConstants.UIN_NAV_LABEL);
 		}
 
+		if (getRegistrationDTOFromSession() != null
+				&& getRegistrationDTOFromSession().getRegistrationMetaDataDTO().getRegistrationCategory() != null
+				&& getRegistrationDTOFromSession().getRegistrationMetaDataDTO().getRegistrationCategory()
+						.equals(RegistrationConstants.PACKET_TYPE_LOST)) {
+			registrationNavlabel.setText(ApplicationContext.applicationLanguageBundle().getString("/lostuin"));
+		}
+
 		disableNextButton();
 
 		takePhoto.setDisable(true);
@@ -265,9 +272,10 @@ public class FaceCaptureController extends BaseController implements Initializab
 					long irisCount = getRegistrationDTOFromSession().getBiometricDTO().getApplicantBiometricDTO()
 							.getIrisDetailsDTO().stream().count();
 
-					if (updateUINNextPage(RegistrationConstants.IRIS_DISABLE_FLAG) || irisCount>0) {
+					if (updateUINNextPage(RegistrationConstants.IRIS_DISABLE_FLAG) || irisCount > 0) {
 						SessionContext.map().put("irisCapture", true);
-					} else if (updateUINNextPage(RegistrationConstants.FINGERPRINT_DISABLE_FLAG) || fingerPrintCount>0) {
+					} else if (updateUINNextPage(RegistrationConstants.FINGERPRINT_DISABLE_FLAG)
+							|| fingerPrintCount > 0) {
 						SessionContext.map().put("fingerPrintCapture", true);
 					} else if (!RegistrationConstants.DISABLE.equalsIgnoreCase(
 							String.valueOf(ApplicationContext.map().get(RegistrationConstants.DOC_DISABLE_FLAG)))) {
@@ -670,7 +678,8 @@ public class FaceCaptureController extends BaseController implements Initializab
 
 		photoLabel.setVisible(true);
 		// Bind the photoLabel text property to the timeDiff property
-		photoLabel.textProperty().bind(Bindings.concat(RegistrationUIConstants.RECAPTURE+" ", timeDiff.asString(), " seconds"));
+		photoLabel.textProperty()
+				.bind(Bindings.concat(RegistrationUIConstants.RECAPTURE + " ", timeDiff.asString(), " seconds"));
 		Timeline timeline = new Timeline();
 		timeline.getKeyFrames().add(
 				new KeyFrame(Duration.seconds((Integer) (configuredSecs - diffSeconds)), new KeyValue(timeDiff, 1)));

@@ -151,9 +151,9 @@ public class RegistrationController extends BaseController {
 		getRegistrationDTOFromSession().setSelectionListDTO(selectionListDTO);
 	}
 
-	protected void initializeLostUIN() {
+	protected void initializeLostUIN() {			
 		validation.updateAsLostUIN(true);
-		createRegistrationDTOObject(RegistrationConstants.PACKET_TYPE_LOST);
+		createRegistrationDTOObject(RegistrationConstants.PACKET_TYPE_LOST);		
 	}
 	/**
 	 * This method is to prepopulate all the values for edit operation
@@ -357,7 +357,7 @@ public class RegistrationController extends BaseController {
 		// Create object for RegistrationMetaData DTO
 		RegistrationMetaDataDTO registrationMetaDataDTO = new RegistrationMetaDataDTO();
 		registrationMetaDataDTO.setRegistrationCategory(registrationCategory);
-
+		
 		RegistrationCenterDetailDTO registrationCenter = SessionContext.userContext().getRegistrationCenterDetailDTO();
 
 		if (RegistrationConstants.ENABLE

@@ -160,6 +160,9 @@ public class PacketHandlerController extends BaseController implements Initializ
 
 	@Autowired
 	private RegistrationController registrationController;
+	
+	@Autowired
+	private DemographicDetailController demographicDetailController;
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
@@ -257,7 +260,6 @@ public class PacketHandlerController extends BaseController implements Initializ
 	 * Validating screen authorization and Creating Packet in case of Lost UIN
 	 */
 	public void lostUIN() {
-
 		String fingerPrintDisableFlag = String
 				.valueOf(ApplicationContext.map().get(RegistrationConstants.FINGERPRINT_DISABLE_FLAG));
 		String irisDisableFlag = String.valueOf(ApplicationContext.map().get(RegistrationConstants.IRIS_DISABLE_FLAG));
@@ -269,7 +271,6 @@ public class PacketHandlerController extends BaseController implements Initializ
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.LOST_UIN_REQUEST_ERROR);
 		} else {
 			if (isMachineRemapProcessStarted()) {
-
 				LOGGER.info("REGISTRATION - CREATE_PACKET - REGISTRATION_OFFICER_PACKET_CONTROLLER", APPLICATION_NAME,
 						APPLICATION_ID, RegistrationConstants.MACHINE_CENTER_REMAP_MSG);
 				return;
@@ -284,7 +285,7 @@ public class PacketHandlerController extends BaseController implements Initializ
 
 					/* Mark Registration Category as Lost UIN */
 					registrationController.initializeLostUIN();
-
+					
 					Parent createRoot = BaseController.load(
 							getClass().getResource(RegistrationConstants.CREATE_PACKET_PAGE),
 							applicationContext.getApplicationLanguageBundle());
@@ -303,11 +304,11 @@ public class PacketHandlerController extends BaseController implements Initializ
 								errorMessage.append(errorResponseDTO.getMessage() + "\n\n");
 							}
 							generateAlertLanguageSpecific(RegistrationConstants.ERROR, errorMessage.toString().trim());
-						} else {
+						} else {							
 							getScene(createRoot).setRoot(createRoot);
+							demographicDetailController.lostUIN();
 						}
 					}
-
 				} catch (IOException ioException) {
 					LOGGER.error("REGISTRATION - UI- Officer Packet Create for Lost UIN", APPLICATION_NAME,
 							APPLICATION_ID, ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));
@@ -322,7 +323,7 @@ public class PacketHandlerController extends BaseController implements Initializ
 		LOGGER.info(PACKET_HANDLER, APPLICATION_NAME, APPLICATION_ID, "Creating of Registration for lost UIN ended.");
 	}
 
-	public void showReciept(String capturePhotoUsingDevice) {
+	public void showReciept() {
 		LOGGER.info(PACKET_HANDLER, APPLICATION_NAME, APPLICATION_ID, "Showing receipt Started.");
 		try {
 			RegistrationDTO registrationDTO = (RegistrationDTO) SessionContext.map()

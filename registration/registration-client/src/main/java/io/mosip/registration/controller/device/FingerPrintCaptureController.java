@@ -208,6 +208,12 @@ public class FingerPrintCaptureController extends BaseController implements Init
 					&& getRegistrationDTOFromSession().getSelectionListDTO() != null) {
 				registrationNavlabel.setText(RegistrationConstants.UIN_NAV_LABEL);
 			}
+			if (getRegistrationDTOFromSession() != null
+					&& getRegistrationDTOFromSession().getRegistrationMetaDataDTO().getRegistrationCategory() != null
+					&& getRegistrationDTOFromSession().getRegistrationMetaDataDTO().getRegistrationCategory()
+							.equals(RegistrationConstants.PACKET_TYPE_LOST)) {
+				registrationNavlabel.setText(ApplicationContext.applicationLanguageBundle().getString("/lostuin"));
+			}
 
 			if (!(boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
 				for (int retry = 0; retry < Integer.parseInt(
@@ -1059,7 +1065,8 @@ public class FingerPrintCaptureController extends BaseController implements Init
 	/**
 	 * Validating quality score of captured fingerprints.
 	 *
-	 * @param fingerprintDetailsDTO the fingerprint details DTO
+	 * @param fingerprintDetailsDTO
+	 *            the fingerprint details DTO
 	 * @return true, if successful
 	 */
 	private boolean validateQualityScore(FingerprintDetailsDTO fingerprintDetailsDTO) {
@@ -1090,8 +1097,10 @@ public class FingerPrintCaptureController extends BaseController implements Init
 	/**
 	 * Validates QualityScore.
 	 *
-	 * @param fingerprintDetailsDTO the fingerprint details DTO
-	 * @param handThreshold         the hand threshold
+	 * @param fingerprintDetailsDTO
+	 *            the fingerprint details DTO
+	 * @param handThreshold
+	 *            the hand threshold
 	 * @return boolean
 	 */
 	private Boolean validate(FingerprintDetailsDTO fingerprintDetailsDTO, String handThreshold) {
@@ -1121,7 +1130,8 @@ public class FingerPrintCaptureController extends BaseController implements Init
 	/**
 	 * Gets the selected pane.
 	 *
-	 * @param fingerPrintDetails the finger print details
+	 * @param fingerPrintDetails
+	 *            the finger print details
 	 * @return the selected pane
 	 */
 	private Stream<FingerprintDetailsDTO> getSelectedPane(List<FingerprintDetailsDTO> fingerPrintDetails) {
@@ -1152,7 +1162,8 @@ public class FingerPrintCaptureController extends BaseController implements Init
 	/**
 	 * Gets the value from application context.
 	 *
-	 * @param key the key
+	 * @param key
+	 *            the key
 	 * @return the value from application context
 	 */
 	private String getValueFromApplicationContext(String key) {

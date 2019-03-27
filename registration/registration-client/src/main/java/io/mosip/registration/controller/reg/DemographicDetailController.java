@@ -593,11 +593,14 @@ public class DemographicDetailController extends BaseController {
 
 		}
 	}
+	
+	protected void lostUIN() {
+		registrationNavlabel.setText(ApplicationContext.applicationLanguageBundle().getString("/lostuin"));
+	}
 
 	/*
 	 * TO change the orientation based on language
 	 */
-
 	private void changeOrientation(NodeOrientation orientation) {
 		if ((boolean) applicationContext.isPrimaryLanguageRightToLeft()) {
 			fullName.setNodeOrientation(orientation);
@@ -1600,6 +1603,13 @@ public class DemographicDetailController extends BaseController {
 			 */
 
 			documentScanController.populateDocumentCategories();
+			
+			if (getRegistrationDTOFromSession() != null
+					&& getRegistrationDTOFromSession().getRegistrationMetaDataDTO().getRegistrationCategory() != null
+					&& getRegistrationDTOFromSession().getRegistrationMetaDataDTO().getRegistrationCategory()
+							.equals(RegistrationConstants.PACKET_TYPE_LOST)) {
+				documentScanController.disableDocuments();
+			}
 
 			auditFactory.audit(AuditEvent.REG_DEMO_NEXT, Components.REG_DEMO_DETAILS, SessionContext.userId(),
 					AuditReferenceIdTypes.USER_ID.getReferenceTypeId());

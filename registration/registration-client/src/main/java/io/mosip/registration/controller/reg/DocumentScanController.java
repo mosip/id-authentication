@@ -183,12 +183,6 @@ public class DocumentScanController extends BaseController {
 			switchedOnForBiometricException = new SimpleBooleanProperty(false);
 			toggleFunctionForBiometricException();
 
-			if (getRegistrationDTOFromSession().getRegistrationMetaDataDTO().getRegistrationCategory() != null
-					&& getRegistrationDTOFromSession().getRegistrationMetaDataDTO().getRegistrationCategory()
-							.equals(RegistrationConstants.PACKET_TYPE_LOST)) {
-				docScanVbox.setDisable(true);
-			}
-			
 			// populateDocumentCategories();
 		} catch (RuntimeException exception) {
 			LOGGER.error("REGISTRATION - CONTROLLER", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
@@ -197,6 +191,12 @@ public class DocumentScanController extends BaseController {
 		}
 	}
 
+	protected void disableDocuments() {
+		registrationNavlabel.setText(ApplicationContext.applicationLanguageBundle().getString("/lostuin"));
+		docScanVbox.setDisable(true);
+		continueBtn.setDisable(false);
+	}
+	
 	protected <T> void populateDocumentCategories() throws InvalidApplicantArgumentException, ParseException {
 
 		/* clearing all the previously added fields */
