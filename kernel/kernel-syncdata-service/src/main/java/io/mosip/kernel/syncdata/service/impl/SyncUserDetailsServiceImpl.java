@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
@@ -29,6 +30,7 @@ import io.mosip.kernel.syncdata.utils.MapperUtils;
  * @author Megha Tanga
  * @since 1.0.0
  */
+@RefreshScope
 @Service
 public class SyncUserDetailsServiceImpl implements SyncUserDetailsService {
 

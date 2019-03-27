@@ -7,7 +7,7 @@
 	<parent>
 		<groupId>io.mosip.kernel</groupId>
 		<artifactId>kernel-parent</artifactId>
-		<version>0.9.9</version>
+		<version>0.10.0</version>
 	</parent>
 
 	<artifactId>kernel-auth-service</artifactId>
@@ -42,13 +42,6 @@
 			<artifactId>spring-boot-starter-web</artifactId>
 			<version>${spring.boot.version}</version>
 		</dependency>
-
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-actuator</artifactId>
-			<version>${spring.boot.version}</version>
-		</dependency>
-
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>

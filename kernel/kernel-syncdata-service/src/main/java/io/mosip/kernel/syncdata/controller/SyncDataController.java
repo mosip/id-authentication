@@ -41,7 +41,6 @@ import springfox.documentation.annotations.ApiIgnore;
  * @since 1.0.0
  */
 @RestController
-//@RefreshScope
 @RequestMapping(value = "/v1.0")
 public class SyncDataController {
 	/**

@@ -13,6 +13,7 @@ import java.util.Map;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -43,6 +44,7 @@ import io.mosip.kernel.otpnotification.exception.OtpNotifierServiceException;
  * @author Ritesh Sinha
  * @since 1.0.0
  */
+@RefreshScope
 @Component
 public class OtpNotificationUtil {
 
