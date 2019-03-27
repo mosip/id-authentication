@@ -20,11 +20,8 @@ import io.mosip.registration.processor.status.repositary.RegistrationRepositary;
 @Component
 public class RegistrationStatusDao {
 
-	/** The Constant REPROCESS. */
-	private static final String REPROCESS = "REPROCESS";
-
-	/** The Constant SUCCESS. */
-	private static final String SUCCESS = "SUCCESS";
+	/** The Constant LIMIT. */
+	private static final String LIMIT = "LIMIT";
 
 	/** The registration status repositary. */
 	@Autowired
@@ -158,10 +155,10 @@ public class RegistrationStatusDao {
 	/**
 	 * Gets the un processed packets.
 	 *
-	 * @param fetchSize the fetch size
-	 * @param elapseTime the elapse time
-	 * @param reprocessCount the reprocess count
-	 * @param status 
+	 * @param fetchSize            the fetch size
+	 * @param elapseTime            the elapse time
+	 * @param reprocessCount            the reprocess count
+	 * @param status the status
 	 * @return the un processed packets
 	 */
 	public List<RegistrationStatusEntity> getUnProcessedPackets(Integer fetchSize, long elapseTime,
@@ -172,11 +169,12 @@ public class RegistrationStatusDao {
 		String alias = RegistrationStatusEntity.class.getName().toLowerCase().substring(0, 1);
 		LocalDateTime timeDifference = LocalDateTime.now().minusSeconds(elapseTime);
 
-		String queryStr = SELECT_DISTINCT + alias + FROM + className + EMPTY_STRING + alias + WHERE + "(" + alias
-				+ ".latestTransactionStatusCode=:" + SUCCESS + "OR" + alias + ".latestTransactionStatusCode=:"
-				+ REPROCESS + ")" + "AND" + alias + ".regProcessRetryCount<" + "reprocessCount" + "AND" + alias
-				+ ".latestTransactionTimes<" + "timeDifference" + "LIMIT" + "fetchSize";
+		String queryStr = SELECT_DISTINCT + alias + FROM + className + EMPTY_STRING + alias + WHERE + alias
+				+ ".latestTransactionStatusCode IN :status" + AND + alias + ".regProcessRetryCount<"
+				+ "reprocessCount" + AND + alias + ".latestTransactionTimes<" + "timeDifference" + LIMIT
+				+ "fetchSize";
 
+		params.put("status", status);
 		params.put("reprocessCount", reprocessCount);
 		params.put("timeDifference", timeDifference);
 		params.put("fetchSize", fetchSize);
@@ -187,7 +185,8 @@ public class RegistrationStatusDao {
 	/**
 	 * Sets the update time.
 	 *
-	 * @param entity the new update time
+	 * @param entity
+	 *            the new update time
 	 */
 	public void setUpdateTime(RegistrationStatusEntity entity) {
 		entity.setUpdateDateTime(LocalDateTime.now());
@@ -197,7 +196,8 @@ public class RegistrationStatusDao {
 	/**
 	 * Update retry count.
 	 *
-	 * @param entity the entity
+	 * @param entity
+	 *            the entity
 	 */
 	public void updateRetryCount(RegistrationStatusEntity entity) {
 		entity.setRegProcessRetryCount(entity.getRegProcessRetryCount() + 1);
