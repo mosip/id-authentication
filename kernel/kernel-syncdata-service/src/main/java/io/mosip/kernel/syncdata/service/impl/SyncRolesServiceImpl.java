@@ -2,6 +2,7 @@ package io.mosip.kernel.syncdata.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
@@ -19,6 +20,7 @@ import io.mosip.kernel.syncdata.service.SyncRolesService;
  * @since 1.0.0
  * 
  */
+@RefreshScope
 @Service
 public class SyncRolesServiceImpl implements SyncRolesService {
 

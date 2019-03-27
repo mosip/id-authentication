@@ -5,6 +5,7 @@ import java.time.ZoneId;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.otpmanager.spi.OtpGenerator;
@@ -24,6 +25,7 @@ import io.mosip.kernel.otpmanager.util.OtpProvider;
  * @since 1.0.0
  *
  */
+@RefreshScope
 @Service
 public class OtpGeneratorServiceImpl implements OtpGenerator<OtpGeneratorRequestDto, OtpGeneratorResponseDto> {
 	/**

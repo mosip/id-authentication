@@ -3,6 +3,7 @@ package io.mosip.kernel.smsnotification.service.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -23,6 +24,7 @@ import io.mosip.kernel.smsnotification.exception.InvalidNumberException;
  * @since 1.0.0
  *
  */
+@RefreshScope
 @Service
 public class SmsNotificationServiceImpl implements SmsNotification<SmsResponseDto> {
 
