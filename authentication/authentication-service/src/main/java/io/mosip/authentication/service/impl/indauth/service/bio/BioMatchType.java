@@ -3,12 +3,12 @@ import static io.mosip.authentication.core.spi.indauth.match.MatchType.setOf;
 
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -158,20 +158,22 @@ public enum BioMatchType implements MatchType {
 	}
 	
 	private Map<String, List<IdentityInfoDTO>> getIdInfoFromBioIdInfo(List<BioIdentityInfoDTO> biometrics) {
-		Optional<String> valueOpt = biometrics.stream().filter(bioId -> {
-			Optional<AuthType> authType = AuthType.getAuthTypeForMatchType(this, BioAuthType.values());
-			if (authType.isPresent() && bioId.getData().getBioType().equalsIgnoreCase(authType.get().getType())) {
-				return bioId.getData().getBioSubType().equalsIgnoreCase(getIdMapping().getIdname());
-			}
-			return false;
-		}).map(BioIdentityInfoDTO::getData).map(DataDTO::getBioValue).findAny();
-		if (valueOpt.isPresent()) {
-			Map<String, List<IdentityInfoDTO>> valuesMap = new HashMap<>();
-			List<IdentityInfoDTO> values = Arrays.asList(new IdentityInfoDTO(null, valueOpt.get()));
-			valuesMap.put(idMapping.getIdname(), values);
-			return valuesMap;
-		}
-		return Collections.emptyMap();
+		AtomicInteger count = new AtomicInteger(0);
+		return biometrics.stream().filter(bioId -> {
+					Optional<AuthType> authType = AuthType.getAuthTypeForMatchType(this, BioAuthType.values());
+					if (authType.isPresent() && bioId.getData().getBioType().equalsIgnoreCase(authType.get().getType())) {
+						return bioId.getData().getBioSubType().equalsIgnoreCase(getIdMapping().getIdname());
+					}
+					return false;
+				}).map(BioIdentityInfoDTO::getData).map(DataDTO::getBioValue)
+				.map(value -> Arrays.asList(new IdentityInfoDTO(null, value)))
+				.collect(Collectors.toMap(value -> {
+					String idname = idMapping.getIdname();
+					if(idname.startsWith("UNKNOWN")) {
+						idname += count.incrementAndGet();
+					}
+					return idname;
+				}, value -> value));
 	}
 	
 	private Map<String, List<IdentityInfoDTO>> getIdInfoFromSubIdMappings(RequestDTO identityDto, Set<IdMapping> subIdMappings) {

@@ -93,7 +93,7 @@ public abstract class IrisProvider implements MosipIrisProvider {
 				return environment.getProperty(uinType + IRISIMG_RIGHT_MATCH_VALUE, Double.class);
 			} else if (reqInfoMap.containsKey(IrisProvider.LEFTTEYE)) {
 				return environment.getProperty(uinType + IRISIMG_LEFT_MATCH_VALUE, Double.class);
-			} else if (reqInfoMap.containsKey(IrisProvider.UNKNOWNEYE)) {
+			} else if (reqInfoMap.keySet().stream().anyMatch(key -> key.startsWith(UNKNOWNEYE))) {
 				return environment.getProperty(uinType + IRISIMG_LEFT_MATCH_VALUE, Double.class);
 			}
 		}
@@ -128,27 +128,51 @@ public abstract class IrisProvider implements MosipIrisProvider {
 		double match = 0;
 		if (reqInfo instanceof Map && entityInfo instanceof Map) {
 			Map<String, String> reqInfoMap = (Map<String, String>) reqInfo;
-			if (!reqInfoMap.containsKey(UNKNOWNEYE)) {
+			if (reqInfoMap.keySet().stream().noneMatch(key -> key.startsWith(UNKNOWNEYE))) {
 				String uin = reqInfoMap.get(IDVID);
 				for (Entry<String, String> entry : reqInfoMap.entrySet()) {
-					Map<String, String> requestInfo = new HashMap<>();
-					requestInfo.put(entry.getKey(), entry.getValue());
-					requestInfo.put(IDVID, uin);
-					match += matchImage(requestInfo, entityInfo);
+					if(!entry.getKey().equals(IDVID)) {
+						Map<String, String> requestInfo = new HashMap<>();
+						requestInfo.put(entry.getKey(), entry.getValue());
+						requestInfo.put(IDVID, uin);
+						match += matchImage(requestInfo, entityInfo);
+					}
 				} 
 			} else {
-				double score = 0;
-				Map<String, String> entityInfoMap = (Map<String, String>) entityInfo;
-				String uin = reqInfoMap.get(IDVID);
+				match = matchUnknownImage(entityInfo, match, reqInfoMap);
+			}
+		}
+		return match;
+	}
+
+	/**
+	 * Match unknown image.
+	 *
+	 * @param entityInfo the entity info
+	 * @param match the match
+	 * @param reqInfoMap the req info map
+	 * @return the double
+	 */
+	@SuppressWarnings("unchecked")
+	private double matchUnknownImage(Object entityInfo, double match, Map<String, String> reqInfoMap) {
+		double score = 0;
+		double individualScore=0;
+		Map<String, String> entityInfoMap = (Map<String, String>) entityInfo;
+		String uin = reqInfoMap.get(IDVID);
+		for (Entry<String, String> reqEntry : reqInfoMap.entrySet()) {
+			if (!reqEntry.getKey().equals(IDVID)) {
 				for (Entry<String, String> entry : entityInfoMap.entrySet()) {
 					Map<String, String> requestInfo = new HashMap<>();
-					requestInfo.put(UNKNOWNEYE, entry.getValue());
+					Map<String, String> entityMap = new HashMap<>();
+					requestInfo.put(reqEntry.getKey(), reqEntry.getValue());
 					requestInfo.put(IDVID, uin);
-					score = matchImage(requestInfo, entityInfo);
-					if(score > match) {
-						match = score;
+					entityMap.put(entry.getKey(), entry.getValue());
+					score = matchImage(requestInfo, entityMap);
+					if (score > individualScore) {
+						individualScore = score;
 					}
-				}
+				} 
+				match += individualScore;
 			}
 		}
 		return match;

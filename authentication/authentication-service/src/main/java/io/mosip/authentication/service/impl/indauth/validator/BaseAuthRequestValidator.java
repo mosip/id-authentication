@@ -578,7 +578,9 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	 */
 	private void validateIrisRequestCount(AuthRequestDTO authRequestDTO, Errors errors) {
 		Map<String, Long> irisSubtypeCounts = getBioSubtypeCounts(authRequestDTO, BioAuthType.IRIS_IMG.getType());
-		if (irisSubtypeCounts.values().stream().anyMatch(count -> count > 1)) {
+		if (irisSubtypeCounts.entrySet().stream()
+				.anyMatch(map -> (map.getKey().equalsIgnoreCase("UNKNOWN") && map.getValue()>2)
+						|| (!map.getKey().equalsIgnoreCase("UNKNOWN") && map.getValue()>1))) {
 			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE,
 					"Iris : either left eye or right eye count is more than 1.");
 			errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.IRIS_EXCEEDING.getErrorCode(),

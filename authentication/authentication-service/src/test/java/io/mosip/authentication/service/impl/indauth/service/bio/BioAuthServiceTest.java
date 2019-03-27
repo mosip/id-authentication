@@ -351,11 +351,10 @@ public class BioAuthServiceTest {
 		bioInfo.setBioType("FMR");
 		bioInfo.setDeviceProviderID("provider001");
 		// bioInfo.setDeviceInfo(deviceInfo);
-		bioIdentityInfoDTO.setData(bioInfo);
-		bioIdentityInfoDTOList.add(bioIdentityInfoDTO);
 		String value = "Rk1SACAyMAAAAAEIAAABPAFiAMUAxQEAAAAoJ4CEAOs8UICiAQGXUIBzANXIV4CmARiXUEC6AObFZIB3ALUSZEBlATPYZICIAKUCZEBmAJ4YZEAnAOvBZIDOAKTjZEBCAUbQQ0ARANu0ZECRAOC4NYBnAPDUXYCtANzIXUBhAQ7bZIBTAQvQZICtASqWZEDSAPnMZICaAUAVZEDNAS63Q0CEAVZiSUDUAT+oNYBhAVprSUAmAJyvZICiAOeyQ0CLANDSPECgAMzXQ0CKAR8OV0DEAN/QZEBNAMy9ZECaAKfwZEC9ATieUEDaAMfWUEDJAUA2NYB5AVttSUBKAI+oZECLAG0FZAAA";
 		bioInfo.setBioSubType("LEFT_INDEX");
 		bioInfo.setBioValue(value);
+		bioIdentityInfoDTO.setData(bioInfo);
 		bioIdentityInfoDTOList.add(bioIdentityInfoDTO);
 		request.setDemographics(identity);
 		request.setBiometrics(bioIdentityInfoDTOList);
@@ -375,10 +374,7 @@ public class BioAuthServiceTest {
 		cbeffValueMap.put("FINGER_Left ThumbFinger_2", value);
 		Mockito.when(cbeffUtil.getBDBBasedOnType(Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenReturn(cbeffValueMap);
-
-		AuthStatusInfo validateBioDetails = bioAuthServiceImpl.authenticate(authRequestDTO, "", bioIdentity, "");
-		System.err.println(validateBioDetails.isStatus());
-		System.err.println(validateBioDetails.getErr());
+		bioAuthServiceImpl.authenticate(authRequestDTO, "", bioIdentity, "");
 	}
 
 	@Test
@@ -402,11 +398,10 @@ public class BioAuthServiceTest {
 		DataDTO bioInfo = new DataDTO();
 		bioInfo.setBioType("FMR");
 		bioInfo.setDeviceProviderID("provider001");
-		bioIdentityInfoDTO.setData(bioInfo);
-		bioIdentityInfoDTOList.add(bioIdentityInfoDTO);
 		String value = "Rk1SACAyMAAAAAEIAAABPAFiAMUAxQEAAAAoJ4CEAOs8UICiAQGXUIBzANXIV4CmARiXUEC6AObFZIB3ALUSZEBlATPYZICIAKUCZEBmAJ4YZEAnAOvBZIDOAKTjZEBCAUbQQ0ARANu0ZECRAOC4NYBnAPDUXYCtANzIXUBhAQ7bZIBTAQvQZICtASqWZEDSAPnMZICaAUAVZEDNAS63Q0CEAVZiSUDUAT+oNYBhAVprSUAmAJyvZICiAOeyQ0CLANDSPECgAMzXQ0CKAR8OV0DEAN/QZEBNAMy9ZECaAKfwZEC9ATieUEDaAMfWUEDJAUA2NYB5AVttSUBKAI+oZECLAG0FZAAA";
 		bioInfo.setBioSubType("LEFT_INDEX");
 		bioInfo.setBioValue(value);
+		bioIdentityInfoDTO.setData(bioInfo);
 		bioIdentityInfoDTOList.add(bioIdentityInfoDTO);
 		RequestDTO request = new RequestDTO();
 		request.setBiometrics(bioIdentityInfoDTOList);
@@ -423,9 +418,7 @@ public class BioAuthServiceTest {
 		cbeffValueMap.put("FINGER_Left ThumbFinger_2", value);
 		Mockito.when(cbeffUtil.getBDBBasedOnType(Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenReturn(cbeffValueMap);
-		AuthStatusInfo validateBioDetails = bioAuthServiceImpl.authenticate(authRequestDTO, "", bioIdentity, "");
-		System.err.println(validateBioDetails.isStatus());
-		System.err.println(validateBioDetails.getErr());
+		bioAuthServiceImpl.authenticate(authRequestDTO, "", bioIdentity, "");
 	}
 
 	@Test
@@ -450,11 +443,10 @@ public class BioAuthServiceTest {
 		DataDTO bioInfo = new DataDTO();
 		bioInfo.setBioType("FMR");
 		bioInfo.setDeviceProviderID("provider001");
-		bioIdentityInfoDTO.setData(bioInfo);
-		bioIdentityInfoDTOList.add(bioIdentityInfoDTO);
 		String value = "Rk1SACAyMAAAAAEIAAABPAFiAMUAxQEAAAAoJ4CEAOs8UICiAQGXUIBzANXIV4CmARiXUEC6AObFZIB3ALUSZEBlATPYZICIAKUCZEBmAJ4YZEAnAOvBZIDOAKTjZEBCAUbQQ0ARANu0ZECRAOC4NYBnAPDUXYCtANzIXUBhAQ7bZIBTAQvQZICtASqWZEDSAPnMZICaAUAVZEDNAS63Q0CEAVZiSUDUAT+oNYBhAVprSUAmAJyvZICiAOeyQ0CLANDSPECgAMzXQ0CKAR8OV0DEAN/QZEBNAMy9ZECaAKfwZEC9ATieUEDaAMfWUEDJAUA2NYB5AVttSUBKAI+oZECLAG0FZAAA";
 		bioInfo.setBioSubType("LEFT_INDEX");
 		bioInfo.setBioValue(value);
+		bioIdentityInfoDTO.setData(bioInfo);
 		bioIdentityInfoDTOList.add(bioIdentityInfoDTO);
 		request.setDemographics(identity);
 		request.setBiometrics(bioIdentityInfoDTOList);
@@ -473,9 +465,7 @@ public class BioAuthServiceTest {
 		cbeffValueMap.put("FINGER_Left IndexFinger_2", value);
 		Mockito.when(cbeffUtil.getBDBBasedOnType(Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenReturn(cbeffValueMap);
-		AuthStatusInfo validateBioDetails = bioAuthServiceImpl.authenticate(authRequestDTO, "", bioIdentity, "");
-		System.err.println(validateBioDetails.isStatus());
-		System.err.println(validateBioDetails.getErr());
+		bioAuthServiceImpl.authenticate(authRequestDTO, "", bioIdentity, "");
 	}
 
 	@Test
@@ -500,20 +490,18 @@ public class BioAuthServiceTest {
 		DataDTO bioInfo = new DataDTO();
 		bioInfo.setBioType("FMR");
 		bioInfo.setDeviceProviderID("provider001");
-		bioIdentityInfoDTO.setData(bioInfo);
-		bioIdentityInfoDTOList.add(bioIdentityInfoDTO);
 		String value = "Rk1SACAyMAAAAAEIAAABPAFiAMUAxQEAAAAoJ4CEAOs8UICiAQGXUIBzANXIV4CmARiXUEC6AObFZIB3ALUSZEBlATPYZICIAKUCZEBmAJ4YZEAnAOvBZIDOAKTjZEBCAUbQQ0ARANu0ZECRAOC4NYBnAPDUXYCtANzIXUBhAQ7bZIBTAQvQZICtASqWZEDSAPnMZICaAUAVZEDNAS63Q0CEAVZiSUDUAT+oNYBhAVprSUAmAJyvZICiAOeyQ0CLANDSPECgAMzXQ0CKAR8OV0DEAN/QZEBNAMy9ZECaAKfwZEC9ATieUEDaAMfWUEDJAUA2NYB5AVttSUBKAI+oZECLAG0FZAAA";
 		bioInfo.setBioSubType("LEFT_INDEX");
 		bioInfo.setBioValue(value);
+		bioIdentityInfoDTO.setData(bioInfo);
 		bioIdentityInfoDTOList.add(bioIdentityInfoDTO);
-		value = "Rk1SACAyMAAAAAEIAAABPAFiAMUAxQEAAAAoJ4CEAOs8UICiAQGXUIBzANXIV4CmARiXUEC6AObFZIB3ALUSZEBlATPYZICIAKUCZEBmAJ4YZEAnAOvBZIDOAKTjZEBCAUbQQ0ARANu0ZECRAOC4NYBnAPDUXYCtANzIXUBhAQ7bZIBTAQvQZICtASqWZEDSAPnMZICaAUAVZEDNAS63Q0CEAVZiSUDUAT+oNYBhAVprSUAmAJyvZICiAOeyQ0CLANDSPECgAMzXQ0CKAR8OV0DEAN/QZEBNAMy9ZECaAKfwZEC9ATieUEDaAMfWUEDJAUA2NYB5AVttSUBKAI+oZECLAG0FZAAA";
 		DataDTO dataDTO = new DataDTO();
-		dataDTO.setBioType("FMR");
+		/*dataDTO.setBioType("FMR");
 		dataDTO.setBioSubType("LEFT_INDEX");
 		dataDTO.setBioValue(value);
 		dataDTO.setDeviceProviderID("mantra");
 		bioIdentityInfoDTO.setData(dataDTO);
-		bioIdentityInfoDTOList.add(bioIdentityInfoDTO);
+		bioIdentityInfoDTOList.add(bioIdentityInfoDTO);*/
 		bioIdentityInfoDTO = new BioIdentityInfoDTO();
 		dataDTO = new DataDTO();
 		dataDTO.setBioType("FMR");
