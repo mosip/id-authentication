@@ -13,7 +13,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.kernel.masterdata.dto.RegistrationCenterMachineDto;
-import io.mosip.kernel.masterdata.dto.RequestDto;
+import io.mosip.kernel.core.http.RequestWrapper;
+import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.masterdata.dto.ResponseRrgistrationCenterMachineDto;
 import io.mosip.kernel.masterdata.entity.id.RegistrationCenterMachineID;
 import io.mosip.kernel.masterdata.service.RegistrationCenterMachineService;
@@ -30,13 +31,14 @@ import io.swagger.annotations.ApiResponses;
  * @since 1.0.0
  */
 @RestController
-@RequestMapping("/v1.0/registrationcentermachine")
+@RequestMapping("/registrationcentermachine")
 @Api(tags = { "RegistrationCenterMachine" })
 public class RegistrationCenterMachineController {
 
 	@Autowired
 	private RegistrationCenterMachineService registrationCenterMachineService;
 
+	@ResponseFilter
 	@PostMapping
 	@ApiOperation(value = "Map provided registration center and machine", notes = "Map provided registration center id and machine id", response = ResponseRrgistrationCenterMachineDto.class)
 	@ApiResponses({
@@ -44,8 +46,8 @@ public class RegistrationCenterMachineController {
 			@ApiResponse(code = 400, message = "When Request body passed  is invalid"),
 			@ApiResponse(code = 500, message = "While mapping registration center and machine") })
 	public ResponseEntity<ResponseRrgistrationCenterMachineDto> createRegistrationCenterAndMachine(
-			@Valid @RequestBody RequestDto<RegistrationCenterMachineDto> requestDto) {
-		return new ResponseEntity<>(registrationCenterMachineService.createRegistrationCenterAndMachine(requestDto),
+			@Valid @RequestBody RequestWrapper<RegistrationCenterMachineDto> requestDto) {
+		return new ResponseEntity<>(registrationCenterMachineService.createRegistrationCenterAndMachine(requestDto.getRequest()),
 				HttpStatus.OK);
 	}
 
@@ -58,6 +60,7 @@ public class RegistrationCenterMachineController {
 	 *            MachineId id to be deleted
 	 * @return {@link RegistrationCenterMachineID}
 	 */
+	@ResponseFilter
 	@ApiOperation(value = "Delete the mapping of registration center and machine", response = RegistrationCenterMachineID.class)
 	@DeleteMapping("/{regCenterId}/{machineId}")
 	public ResponseEntity<RegistrationCenterMachineID> deleteRegistrationCenterMachineMapping(

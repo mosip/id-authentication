@@ -5,6 +5,8 @@ package io.mosip.kernel.core.idgenerator.spi;
  * 
  * @author Sidhant Agarwal
  * @since 1.0.0
+ * @param <T>
+ *            type to generate RID
  *
  */
 public interface RidGenerator<T> {
@@ -15,7 +17,7 @@ public interface RidGenerator<T> {
 	 *            input given by user
 	 * @param machineId
 	 *            input by user
-	 * @return  containing generated RID
+	 * @return containing generated RID
 	 */
 	public T generateId(String agentId, String machineId);
 

@@ -13,7 +13,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.kernel.masterdata.dto.ApplicationDto;
-import io.mosip.kernel.masterdata.dto.RequestDto;
+import io.mosip.kernel.core.http.RequestWrapper;
+import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.masterdata.dto.getresponse.ApplicationResponseDto;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.service.ApplicationService;
@@ -29,7 +30,7 @@ import io.swagger.annotations.Api;
 
 @Api(tags = { "Application" })
 @RestController
-@RequestMapping("/v1.0/applicationtypes")
+@RequestMapping("/applicationtypes")
 public class ApplicationController {
 
 	@Autowired
@@ -40,6 +41,7 @@ public class ApplicationController {
 	 * 
 	 * @return All Application details
 	 */
+	@ResponseFilter
 	@GetMapping
 	public ApplicationResponseDto getAllApplication() {
 		return applicationService.getAllApplication();
@@ -53,6 +55,7 @@ public class ApplicationController {
 	 * 
 	 * @return All Application details
 	 */
+	@ResponseFilter
 	@GetMapping("/{langcode}")
 	public ApplicationResponseDto getAllApplicationByLanguageCode(@PathVariable("langcode") String langCode) {
 		return applicationService.getAllApplicationByLanguageCode(langCode);
@@ -69,6 +72,7 @@ public class ApplicationController {
 	 * 
 	 * @return Application detail
 	 */
+	@ResponseFilter
 	@GetMapping("/{code}/{langcode}")
 	public ApplicationResponseDto getApplicationByCodeAndLanguageCode(@PathVariable("code") String code,
 			@PathVariable("langcode") String langCode) {
@@ -83,10 +87,11 @@ public class ApplicationController {
 	 * 
 	 * @return {@linkplain CodeAndLanguageCodeID}
 	 */
+	@ResponseFilter
 	@PostMapping
 	public ResponseEntity<CodeAndLanguageCodeID> createApplication(
-			@Valid @RequestBody RequestDto<ApplicationDto> application) {
-		return new ResponseEntity<>(applicationService.createApplication(application), HttpStatus.OK);
+			@Valid @RequestBody RequestWrapper<ApplicationDto> application) {
+		return new ResponseEntity<>(applicationService.createApplication(application.getRequest()), HttpStatus.OK);
 
 	}
 }

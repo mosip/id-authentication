@@ -13,7 +13,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.kernel.masterdata.dto.MachineSpecificationDto;
-import io.mosip.kernel.masterdata.dto.RequestDto;
+import io.mosip.kernel.core.http.RequestWrapper;
+import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.entity.id.IdAndLanguageCodeID;
 import io.mosip.kernel.masterdata.service.MachineSpecificationService;
@@ -48,16 +49,17 @@ public class MachineSpecificationController {
 	 * @return ResponseEntity Machine Specification ID which is successfully
 	 *         inserted
 	 */
-	@PostMapping("/v1.0/machinespecifications")
+	@ResponseFilter
+	@PostMapping("/machinespecifications")
 	@ApiOperation(value = "Service to save Machine Specification", notes = "Saves Machine Spacification and return Machine Spacification ID ", response = IdResponseDto.class)
 	@ApiResponses({
 			@ApiResponse(code = 201, message = "When Machine Specification successfully created", response = IdResponseDto.class),
 			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
 			@ApiResponse(code = 500, message = "While creating Machine Specification any error occured") })
 	public ResponseEntity<IdAndLanguageCodeID> createMachineSpecification(
-			@Valid @RequestBody RequestDto<MachineSpecificationDto> machineSpecification) {
+			@Valid @RequestBody RequestWrapper<MachineSpecificationDto> machineSpecification) {
 
-		return new ResponseEntity<>(machineSpecificationService.createMachineSpecification(machineSpecification),
+		return new ResponseEntity<>(machineSpecificationService.createMachineSpecification(machineSpecification.getRequest()),
 				HttpStatus.OK);
 	}
 
@@ -68,7 +70,8 @@ public class MachineSpecificationController {
 	 *            input Machine specification DTO from user
 	 * @return ResponseEntity Machine Specification ID which is successfully updated
 	 */
-	@PutMapping("/v1.0/machinespecifications")
+	@ResponseFilter
+	@PutMapping("/machinespecifications")
 	@ApiOperation(value = "Service to update Machine Specification", notes = "update Machine Spacification and return Machine Spacification ID ", response = IdResponseDto.class)
 	@ApiResponses({
 			@ApiResponse(code = 200, message = "When Machine Specification successfully updated", response = IdResponseDto.class),
@@ -76,9 +79,9 @@ public class MachineSpecificationController {
 			@ApiResponse(code = 404, message = "When No Machine Specification found"),
 			@ApiResponse(code = 500, message = "While updating Machine Specification any error occured") })
 	public ResponseEntity<IdAndLanguageCodeID> updateMachineSpecification(
-			@Valid @RequestBody RequestDto<MachineSpecificationDto> machineSpecification) {
+			@Valid @RequestBody RequestWrapper<MachineSpecificationDto> machineSpecification) {
 
-		return new ResponseEntity<>(machineSpecificationService.updateMachineSpecification(machineSpecification),
+		return new ResponseEntity<>(machineSpecificationService.updateMachineSpecification(machineSpecification.getRequest()),
 				HttpStatus.OK);
 	}
 
@@ -89,7 +92,8 @@ public class MachineSpecificationController {
 	 *            input Machine specification id
 	 * @return ResponseEntity Machine Specification ID which is successfully deleted
 	 */
-	@DeleteMapping("/v1.0/machinespecifications/{id}")
+	@ResponseFilter
+	@DeleteMapping("/machinespecifications/{id}")
 	@ApiOperation(value = "Service to delete Machine Specification", notes = "Delete Machine Spacification and return Machine Spacification ID ", response = IdResponseDto.class)
 	@ApiResponses({
 			@ApiResponse(code = 200, message = "When Machine Specification successfully deleted", response = IdResponseDto.class),

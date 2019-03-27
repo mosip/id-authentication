@@ -13,7 +13,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.mosip.kernel.masterdata.dto.RequestDto;
+import io.mosip.kernel.core.http.RequestWrapper;
+import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.masterdata.dto.TemplateFileFormatDto;
 import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
@@ -32,7 +33,7 @@ import io.swagger.annotations.ApiResponses;
  *
  */
 @RestController
-@RequestMapping("/v1.0/templatefileformats")
+@RequestMapping("/templatefileformats")
 @Api(tags = { "TemplateFileFormat" })
 public class TemplateFileFormatController {
 
@@ -47,10 +48,11 @@ public class TemplateFileFormatController {
 	 * 
 	 * @return {@link CodeAndLanguageCodeID}
 	 */
+	@ResponseFilter
 	@PostMapping
 	public ResponseEntity<CodeAndLanguageCodeID> createTemplateFileFormat(
-			@Valid @RequestBody RequestDto<TemplateFileFormatDto> templateFileFormatRequestDto) {
-		return new ResponseEntity<>(templateFileFormatService.createTemplateFileFormat(templateFileFormatRequestDto),
+			@Valid @RequestBody RequestWrapper<TemplateFileFormatDto> templateFileFormatRequestDto) {
+		return new ResponseEntity<>(templateFileFormatService.createTemplateFileFormat(templateFileFormatRequestDto.getRequest()),
 				HttpStatus.OK);
 
 	}
@@ -64,6 +66,7 @@ public class TemplateFileFormatController {
 	 * @return ResponseEntity TemplateFileFormat Code and LangCode which is updated
 	 *         successfully {@link ResponseEntity}
 	 */
+	@ResponseFilter
 	@PutMapping
 	@ApiOperation(value = "Service to update TemplateFileFormat", notes = "Update TemplateFileFormat and return TemplateFileFormat id", response = CodeAndLanguageCodeID.class)
 	@ApiResponses({
@@ -72,9 +75,9 @@ public class TemplateFileFormatController {
 			@ApiResponse(code = 404, message = "When TemplateFileFormat is not found"),
 			@ApiResponse(code = 500, message = "While updating TemplateFileFormat any error occured") })
 	public ResponseEntity<CodeAndLanguageCodeID> updateDevice(
-			@Valid @RequestBody RequestDto<TemplateFileFormatDto> templateFileFormatRequestDto) {
+			@Valid @RequestBody RequestWrapper<TemplateFileFormatDto> templateFileFormatRequestDto) {
 
-		return new ResponseEntity<>(templateFileFormatService.updateTemplateFileFormat(templateFileFormatRequestDto),
+		return new ResponseEntity<>(templateFileFormatService.updateTemplateFileFormat(templateFileFormatRequestDto.getRequest()),
 				HttpStatus.OK);
 	}
 
@@ -85,6 +88,7 @@ public class TemplateFileFormatController {
 	 *            the TemplateFileFormat code
 	 * @return the code of templatefileformat
 	 */
+	@ResponseFilter
 	@DeleteMapping("/{code}")
 	@ApiOperation(value = "Service to delete TemplateFileFormat", notes = "Delete TemplateFileFormat and return code", response = CodeResponseDto.class)
 	@ApiResponses({

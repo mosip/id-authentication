@@ -11,10 +11,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.syncdata.dto.ConfigDto;
 import io.mosip.kernel.syncdata.dto.PublicKeyResponse;
@@ -41,7 +41,6 @@ import springfox.documentation.annotations.ApiIgnore;
  * @since 1.0.0
  */
 @RestController
-@RequestMapping(value = "/v1.0")
 public class SyncDataController {
 	/**
 	 * Service instance {@link SyncMasterDataService}
@@ -72,7 +71,7 @@ public class SyncDataController {
 	 * 
 	 * @return JSONObject - global config response
 	 */
-
+	@ResponseFilter
 	@ApiOperation(value = "API to sync global config details")
 	@GetMapping(value = "/configs")
 	public ConfigDto getConfigDetails() {
@@ -87,6 +86,7 @@ public class SyncDataController {
 	 * 
 	 * @return JSONObject - global config response
 	 */
+	@ResponseFilter
 	@ApiIgnore
 	@ApiOperation(value = "API to sync global config details")
 	@GetMapping(value = "/globalconfigs")
@@ -102,6 +102,7 @@ public class SyncDataController {
 	 *            registration Id
 	 * @return JSONObject
 	 */
+	@ResponseFilter
 	@ApiIgnore
 	@ApiOperation(value = "Api to get registration center configuration")
 	@GetMapping(value = "/registrationcenterconfig/{registrationcenterid}")
@@ -109,6 +110,7 @@ public class SyncDataController {
 		return syncConfigDetailsService.getRegistrationCenterConfigDetails(regId);
 	}
 
+	@ResponseFilter
 	@ApiIgnore
 	@GetMapping("/configuration/{registrationCenterId}")
 	public ConfigDto getConfiguration(@PathVariable("registrationCenterId") String registrationCenterId) {
@@ -129,6 +131,7 @@ public class SyncDataController {
 	 * @throws ExecutionException
 	 *             - this method will throw exeution exception
 	 */
+	@ResponseFilter
 	@ApiOperation(value = "Api to sync the masterdata", response = MasterDataResponseDto.class)
 	@GetMapping("/masterdata")
 	public MasterDataResponseDto syncMasterData(@RequestParam(value = "macaddress", required = false) String macId,
@@ -162,6 +165,7 @@ public class SyncDataController {
 	 * @throws ExecutionException
 	 *             - this method will throw exeution exception
 	 */
+	@ResponseFilter
 	@ApiOperation(value = "Api to sync the masterdata", response = MasterDataResponseDto.class)
 	@GetMapping("/masterdata/{regcenterId}")
 	public MasterDataResponseDto syncMasterDataWithRegCenterId(@PathVariable("regcenterId") String regCenterId,
@@ -184,6 +188,7 @@ public class SyncDataController {
 	 * 
 	 * @return RolesResponseDto
 	 */
+	@ResponseFilter
 	@GetMapping("/roles")
 	public RolesResponseDto getAllRoles() {
 		String currentTimeStamp = DateUtils.getUTCCurrentDateTimeString();
@@ -200,6 +205,7 @@ public class SyncDataController {
 	 * 
 	 * @return UserDetailResponseDto - user detail response
 	 */
+	@ResponseFilter
 	@GetMapping("/userdetails/{regid}")
 	public SyncUserDetailDto getUserDetails(@PathVariable("regid") String regId) {
 		String currentTimeStamp = DateUtils.getUTCCurrentDateTimeString();
@@ -219,6 +225,7 @@ public class SyncDataController {
 	 *            Reference id of the application requesting publicKey
 	 * @return {@link PublicKeyResponse} instance
 	 */
+	@ResponseFilter
 	@ApiOperation(value = "Get the public key of a particular application", response = PublicKeyResponse.class)
 	@GetMapping(value = "/publickey/{applicationId}")
 	public ResponseEntity<PublicKeyResponse<String>> getPublicKey(

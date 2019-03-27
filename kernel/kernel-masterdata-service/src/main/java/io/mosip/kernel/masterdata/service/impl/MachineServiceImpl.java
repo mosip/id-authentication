@@ -10,7 +10,6 @@ import org.springframework.transaction.annotation.Transactional;
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.masterdata.constant.MachineErrorCode;
 import io.mosip.kernel.masterdata.dto.MachineDto;
-import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.getresponse.MachineResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.entity.Machine;
@@ -163,10 +162,10 @@ public class MachineServiceImpl implements MachineService {
 	 */
 	@Override
 	@Transactional
-	public IdAndLanguageCodeID createMachine(RequestDto<MachineDto> machine) {
+	public IdAndLanguageCodeID createMachine(MachineDto machine) {
 		Machine crtMachine = null;
-		Machine entity = MetaDataUtils.setCreateMetaData(machine.getRequest(), Machine.class);
-		MachineHistory entityHistory = MetaDataUtils.setCreateMetaData(machine.getRequest(), MachineHistory.class);
+		Machine entity = MetaDataUtils.setCreateMetaData(machine, Machine.class);
+		MachineHistory entityHistory = MetaDataUtils.setCreateMetaData(machine, MachineHistory.class);
 		entityHistory.setEffectDateTime(entity.getCreatedDateTime());
 		entityHistory.setCreatedDateTime(entity.getCreatedDateTime());
 		try {
@@ -192,14 +191,14 @@ public class MachineServiceImpl implements MachineService {
 	 */
 	@Override
 	@Transactional
-	public IdAndLanguageCodeID updateMachine(RequestDto<MachineDto> machine) {
+	public IdAndLanguageCodeID updateMachine(MachineDto machine) {
 		Machine updMachine = null;
 		try {
 			Machine renmachine = machineRepository.findMachineByIdAndLangCodeAndIsDeletedFalseorIsDeletedIsNull(
-					machine.getRequest().getId(), machine.getRequest().getLangCode());
+					machine.getId(), machine.getLangCode());
 
 			if (renmachine != null) {
-				MetaDataUtils.setUpdateMetaData(machine.getRequest(), renmachine, false);
+				MetaDataUtils.setUpdateMetaData(machine, renmachine, false);
 				updMachine = machineRepository.update(renmachine);
 
 				MachineHistory machineHistory = new MachineHistory();

@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
@@ -21,6 +22,7 @@ import io.mosip.kernel.auth.exception.AuthManagerServiceException;
 import io.mosip.kernel.auth.service.OTPGenerateService;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.exception.ServiceError;
+import io.mosip.kernel.core.http.ResponseWrapper;
 
 /**
  * @author Ramadurai Pandian
@@ -48,14 +50,16 @@ public class OTPGenerateServiceImpl implements OTPGenerateService {
 			OtpGenerateResponseDto otpGenerateResponseDto;
 			OtpGenerateRequestDto otpGenerateRequestDto = new OtpGenerateRequestDto(mosipUserDto);
 			final String url = mosipEnvironment.getGenerateOtpApi();
-			String response = restTemplate.postForObject(url, otpGenerateRequestDto,
+			ResponseEntity<String> response = restTemplate.postForEntity(url, otpGenerateRequestDto,
 					String.class);
-			validationErrorsList = ExceptionUtils.getServiceErrorList(response);  
+			validationErrorsList = ExceptionUtils.getServiceErrorList(response.getBody());  
 			if (!validationErrorsList.isEmpty()) {
 				throw new AuthManagerServiceException(validationErrorsList);
 			}
+			ResponseWrapper<?> responseObject;
 			try {
-				otpGenerateResponseDto= mapper.readValue(response, OtpGenerateResponseDto.class);
+				responseObject = mapper.readValue(response.getBody(), ResponseWrapper.class);
+				otpGenerateResponseDto= mapper.readValue(mapper.writeValueAsString(responseObject.getResponse()), OtpGenerateResponseDto.class);
 			}catch(Exception e)
 			{
 				throw new AuthManagerException(String.valueOf(HttpStatus.UNAUTHORIZED.value()),e.getMessage());

@@ -15,7 +15,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.kernel.masterdata.dto.DeviceDto;
-import io.mosip.kernel.masterdata.dto.RequestDto;
+import io.mosip.kernel.core.http.RequestWrapper;
+import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.masterdata.dto.getresponse.DeviceLangCodeResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.DeviceResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
@@ -37,7 +38,7 @@ import io.swagger.annotations.ApiResponses;
  */
 
 @RestController
-@RequestMapping(value = "/v1.0/devices")
+@RequestMapping(value = "/devices")
 @Api(tags = { "Device" })
 public class DeviceController {
 
@@ -56,6 +57,7 @@ public class DeviceController {
 	 * @return DeviceResponseDto all device details based on given language code
 	 *         {@link DeviceResponseDto}
 	 */
+	@ResponseFilter
 	@GetMapping(value = "/{languagecode}")
 	@ApiOperation(value = "Retrieve all Device for the given Languge Code", notes = "Retrieve all Device for the given Languge Code", response = DeviceResponseDto.class)
 	@ApiResponses({
@@ -78,6 +80,7 @@ public class DeviceController {
 	 * @return DeviceLangCodeResponseDto all device details based on given device
 	 *         type and language code {@link DeviceLangCodeResponseDto}
 	 */
+	@ResponseFilter
 	@GetMapping(value = "/{languagecode}/{deviceType}")
 	@ApiOperation(value = "Retrieve all Device for the given Languge Code and Device Type", notes = "Retrieve all Device for the given Languge Code and Device Type", response = DeviceLangCodeResponseDto.class)
 	@ApiResponses({
@@ -99,15 +102,16 @@ public class DeviceController {
 	 * @return ResponseEntity Device Id which is inserted successfully
 	 *         {@link ResponseEntity}
 	 */
+	@ResponseFilter
 	@PostMapping
 	@ApiOperation(value = "Service to save Device", notes = "Saves Device and return Device id", response = IdResponseDto.class)
 	@ApiResponses({
 			@ApiResponse(code = 201, message = "When Device successfully created", response = IdResponseDto.class),
 			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
 			@ApiResponse(code = 500, message = "While creating device any error occured") })
-	public ResponseEntity<IdAndLanguageCodeID> createDevice(@Valid @RequestBody RequestDto<DeviceDto> deviceRequestDto) {
+	public ResponseEntity<IdAndLanguageCodeID> createDevice(@Valid @RequestBody RequestWrapper<DeviceDto> deviceRequestDto) {
 
-		return new ResponseEntity<>(deviceService.createDevice(deviceRequestDto), HttpStatus.OK);
+		return new ResponseEntity<>(deviceService.createDevice(deviceRequestDto.getRequest()), HttpStatus.OK);
 	}
 
 	/**
@@ -119,6 +123,7 @@ public class DeviceController {
 	 * @return ResponseEntity Device Id which is updated successfully
 	 *         {@link ResponseEntity}
 	 */
+	@ResponseFilter
 	@PutMapping
 	@ApiOperation(value = "Service to update Device", notes = "Update Device and return Device id", response = IdResponseDto.class)
 	@ApiResponses({
@@ -126,9 +131,9 @@ public class DeviceController {
 			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
 			@ApiResponse(code = 404, message = "When Device is not found"),
 			@ApiResponse(code = 500, message = "While updating device any error occured") })
-	public ResponseEntity<IdAndLanguageCodeID> updateDevice(@Valid @RequestBody RequestDto<DeviceDto> deviceRequestDto) {
+	public ResponseEntity<IdAndLanguageCodeID> updateDevice(@Valid @RequestBody RequestWrapper<DeviceDto> deviceRequestDto) {
 
-		return new ResponseEntity<>(deviceService.updateDevice(deviceRequestDto), HttpStatus.OK);
+		return new ResponseEntity<>(deviceService.updateDevice(deviceRequestDto.getRequest()), HttpStatus.OK);
 	}
 
 	/**
@@ -139,6 +144,7 @@ public class DeviceController {
 	 * 
 	 * @return {@link ResponseEntity} The id of the Device which is deleted
 	 */
+	@ResponseFilter
 	@DeleteMapping("/{id}")
 	@ApiOperation(value = "Service to delete device", notes = "Delete Device and return Device Id", response = IdResponseDto.class)
 	@ApiResponses({
