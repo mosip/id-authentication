@@ -16,6 +16,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -62,7 +63,7 @@ public class UinStatusUpdateVerticleTest {
 	}
 
 	//@Test
-	public void updateVerticle(TestContext context) {
+	public void updateVerticle(TestContext context) throws JsonProcessingException {
 		Async async = context.async();
 		ObjectMapper mapper = new ObjectMapper();
 

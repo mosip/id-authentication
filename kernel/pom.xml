@@ -128,7 +128,7 @@
 	</properties>
 
 	<modules>
-		<module>kernel-core</module>
+ 		<module>kernel-core</module>
 		<module>kernel-auth-adapter</module>
 		<module>kernel-auditmanager-api</module>
 		<module>kernel-logger-logback</module>
@@ -160,7 +160,7 @@
 		<module>kernel-fsadapter-ceph</module>
 		<module>kernel-fsadapter-hdfs</module>
 		<module>kernel-transliteration-icu4j</module>
-		<module>kernel-applicanttype-api</module>
+		<module>kernel-applicanttype-api</module> 
 
 		<module>kernel-uingenerator-service</module>
 		<module>kernel-masterdata-service</module>
