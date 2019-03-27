@@ -421,8 +421,8 @@ public class PacketValidateProcessor {
 		if (env.getProperty(VALIDATEMASTERDATA).trim().equalsIgnoreCase(VALIDATIONFALSE))
 			return true;
 
-		MasterDataValidation masterDataValidation = new MasterDataValidation(registrationStatusDto, env,
-				registrationProcessorRestService, utility);
+		MasterDataValidation masterDataValidation = new MasterDataValidation(env, registrationProcessorRestService,
+				utility);
 		isMasterDataValidation = masterDataValidation.validateMasterData(jsonString);
 
 		return isMasterDataValidation;

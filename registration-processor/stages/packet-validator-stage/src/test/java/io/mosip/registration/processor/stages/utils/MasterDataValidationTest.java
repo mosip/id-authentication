@@ -94,8 +94,7 @@ public class MasterDataValidationTest {
 		when(env.getProperty(ATTRIBUTES)).thenReturn("gender,region,province,city,postalcode");
 		Mockito.when(registrationProcessorRestService.getApi(any(), any(), any(), any(), any()))
 				.thenReturn(statusResponseDto);
-		masterDataValidation = new MasterDataValidation(registrationStatusDto, env, registrationProcessorRestService,
-				utility);
+		masterDataValidation = new MasterDataValidation(env, registrationProcessorRestService, utility);
 	}
 
 	@Test
