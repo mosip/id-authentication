@@ -22,6 +22,7 @@ import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.ResponseDTO;
+import io.mosip.registration.entity.Registration;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.service.packet.PacketCreationService;
@@ -29,7 +30,8 @@ import io.mosip.registration.service.packet.PacketEncryptionService;
 import io.mosip.registration.service.packet.PacketHandlerService;
 
 /**
- * The class to handle the enrollment data and create packet out of it
+ * The class to handle the registration data to create packet out of it and save
+ * the registration packet data in {@link Registration}
  * 
  * @author Balaji Sridharan
  * @since 1.0.0

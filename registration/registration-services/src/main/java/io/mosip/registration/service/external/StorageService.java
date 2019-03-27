@@ -1,10 +1,11 @@
 package io.mosip.registration.service.external;
 
+import io.mosip.registration.entity.Registration;
 import io.mosip.registration.exception.RegBaseCheckedException;
 
 /**
- * Interface to store the encrypted packet and acknowledgement receipt of the
- * Registration in local disk
+ * Interface to store the encrypted packet of the {@link Registration} in
+ * configured location in local disk
  * 
  * @author Balaji Sridharan
  * @since 1.0.0
@@ -13,18 +14,15 @@ import io.mosip.registration.exception.RegBaseCheckedException;
 public interface StorageService {
 
 	/**
-	 * Writes the encrypted packet and the acknowledgement receipt to the local
-	 * storage
+	 * Writes the encrypted packet to the configured local storage
 	 * 
 	 * @param registrationId
-	 *            the id of the Registration
+	 *            the id of the {@link Registration}
 	 * @param packet
 	 *            the encrypted packet data to be stored in local storage
-	 * @param ackReceipt
-	 *            the registration acknowledgement receipt to be stored in local
-	 *            storage
-	 * @return returns the file path where the files had been stored
+	 * @return the file path where the files had been stored
 	 * @throws RegBaseCheckedException
+	 *             any exception while saving the encrypted packet
 	 */
 	String storeToDisk(String registrationId, byte[] packet) throws RegBaseCheckedException;
 }

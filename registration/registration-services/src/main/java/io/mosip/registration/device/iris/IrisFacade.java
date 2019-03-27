@@ -38,6 +38,16 @@ public class IrisFacade {
 
 	private static final Logger LOGGER = AppConfig.getLogger(IrisFacade.class);
 
+	/**
+	 * Gets the iris stub image as DTO.
+	 *
+	 * @param irisDetailsDTO
+	 *            the iris details DTO
+	 * @param irisType
+	 *            the iris type
+	 * @throws RegBaseCheckedException
+	 *             the reg base checked exception
+	 */
 	public void getIrisImageAsDTO(IrisDetailsDTO irisDetailsDTO, String irisType) throws RegBaseCheckedException {
 		try {
 			LOGGER.info(LOG_REG_IRIS_FACADE, APPLICATION_NAME, APPLICATION_ID,
@@ -127,7 +137,13 @@ public class IrisFacade {
 	/**
 	 * Validate Iris
 	 * 
-	 * @return boolean of captured Iris
+	 * @param irisDetailsDTO
+	 *            the {@link IrisDetailsDTO} to be validated
+	 * @param userIrisDetails
+	 *            the list of {@link IrisDetailsDTO} available in database
+	 * 
+	 * @return the validation result. <code>true</code> if match is found, else
+	 *         <code>false</code>
 	 */
 	public boolean validateIris(IrisDetailsDTO irisDetailsDTO, List<UserBiometric> userIrisDetails) {
 

@@ -66,9 +66,8 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 			Registration registration = new Registration();
 			registration.setId(registrationDTO.getRegistrationId());
 			registration.setRegType(RegistrationType.NEW.getCode());
-			registration.setRefRegId("12345");
 			registration.setStatusCode(RegistrationClientStatusCode.CREATED.getCode());
-			registration.setLangCode("ENG");
+			registration.setLangCode(RegistrationConstants.ENGLISH_LANG_CODE);
 			registration.setStatusTimestamp(time);
 			registration.setAckFilename(zipFileName + "_Ack." + RegistrationConstants.ACKNOWLEDGEMENT_FORMAT);
 			registration.setClientStatusCode(RegistrationClientStatusCode.CREATED.getCode());
@@ -85,7 +84,7 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 			RegistrationTransaction registrationTxn = new RegistrationTransaction();
 			registrationTxn.setRegId(registration.getId());
 			registrationTxn.setTrnTypeCode(RegistrationTransactionType.CREATED.getCode());
-			registrationTxn.setLangCode("ENG");
+			registrationTxn.setLangCode(RegistrationConstants.ENGLISH_LANG_CODE);
 			registrationTxn.setStatusCode(RegistrationClientStatusCode.CREATED.getCode());
 			registrationTxn.setCrBy(SessionContext.userContext().getUserId());
 			registrationTxn.setCrDtime(time);
@@ -131,7 +130,7 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 			RegistrationTransaction registrationTxn = new RegistrationTransaction();
 			registrationTxn.setRegId(registrationID);
 			registrationTxn.setTrnTypeCode(RegistrationTransactionType.UPDATED.getCode());
-			registrationTxn.setLangCode("ENG");
+			registrationTxn.setLangCode(RegistrationConstants.ENGLISH_LANG_CODE);
 			registrationTxn.setStatusCode(clientStatusCode);
 			registrationTxn.setStatusComment(statusComments);
 			registrationTxn.setCrBy(SessionContext.userContext().getUserId());
@@ -257,7 +256,7 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 		regTransaction.setRegId(registrationPacket.getId());
 		regTransaction.setTrnTypeCode(RegistrationTransactionType.UPDATED.getCode());
 		regTransaction.setStatusCode(registrationPacket.getClientStatusCode());
-		regTransaction.setLangCode("ENG");
+		regTransaction.setLangCode(RegistrationConstants.ENGLISH_LANG_CODE);
 		regTransaction.setCrBy(SessionContext.isSessionContextAvailable() ? SessionContext.userContext().getUserId()
 				: RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM);
 		regTransaction.setCrDtime(time);

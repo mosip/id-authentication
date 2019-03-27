@@ -18,6 +18,7 @@ import io.mosip.registration.exception.RegBaseCheckedException;
  *
  */
 public interface RegistrationDAO {
+
 	/**
 	 * Saves the Registration entity
 	 * 
@@ -26,6 +27,8 @@ public interface RegistrationDAO {
 	 * @param registrationDTO
 	 *            the {@link RegistrationDTO} of the individual
 	 * @throws RegBaseCheckedException
+	 *             will be thrown if any exception occurs while saving
+	 *             {@link Registration}
 	 */
 	void save(String zipFileName, RegistrationDTO registrationDTO) throws RegBaseCheckedException;
 
@@ -57,9 +60,10 @@ public interface RegistrationDAO {
 	 * This method is used to get the Packet details using the Id.
 	 * 
 	 * @param packetNames
-	 * @return
+	 * @return the list of {@link Registration} based on status 
 	 */
 	List<Registration> getRegistrationByStatus(List<String> packetStatus);
+
 	/**
 	 * 
 	 * This method is used to update the registration status in the Registration
