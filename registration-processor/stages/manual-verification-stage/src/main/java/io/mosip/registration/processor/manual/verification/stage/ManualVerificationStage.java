@@ -137,7 +137,7 @@ public class ManualVerificationStage extends MosipVerticleAPIManager{
 			this.setResponse(handlerObj, manualVerificationExceptionHandler.handler(handlerObj.failure()),APPLICATION_JSON);  
 		});
 
-		router.get("/manualverification/health").handler(ctx -> {
+		router.get("/manual-verification/health").handler(ctx -> {
 			this.setResponse(ctx, "Server is up and running");
 		}).failureHandler(handlerObj->{
 			this.setResponse(handlerObj, handlerObj.failure().getMessage()); 
