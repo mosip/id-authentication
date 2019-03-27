@@ -99,6 +99,12 @@ public class AckReceiptController extends BaseController implements Initializabl
 			registrationNavLabel.setText(RegistrationConstants.UIN_NAV_LABEL);
 			newRegistration.setVisible(false);
 		}
+		
+		if (getRegistrationData().getRegistrationMetaDataDTO().getRegistrationCategory() != null
+				&& getRegistrationData().getRegistrationMetaDataDTO().getRegistrationCategory()
+						.equals(RegistrationConstants.PACKET_TYPE_LOST)) {
+			registrationNavLabel.setText(ApplicationContext.applicationLanguageBundle().getString("/lostuin"));
+		}
 
 		WebEngine engine = webView.getEngine();
 		// loads the generated HTML template content into webview

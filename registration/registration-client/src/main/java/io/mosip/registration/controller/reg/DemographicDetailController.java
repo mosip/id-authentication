@@ -5,6 +5,7 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 import java.io.IOException;
 import java.math.BigInteger;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Date;
@@ -73,6 +74,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.NodeOrientation;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
@@ -118,10 +120,16 @@ public class DemographicDetailController extends BaseController {
 	private Label fullNameLocalLanguageLabel;
 
 	@FXML
+	private Label fullNameLocalLanguageMessage;
+
+	@FXML
 	private Label ageFieldLocalLanguageLabel;
 
 	@FXML
 	private Label genderLocalLanguageLabel;
+
+	@FXML
+	private Label regionLocalLanguageMessage;
 
 	@FXML
 	private Label regionLocalLanguageLabel;
@@ -130,10 +138,19 @@ public class DemographicDetailController extends BaseController {
 	private Label cityLocalLanguageLabel;
 
 	@FXML
+	private Label cityLocalLanguageMessage;
+
+	@FXML
 	private Label provinceLocalLanguageLabel;
 
 	@FXML
+	private Label provinceLocalLanguageMessage;
+
+	@FXML
 	private Label localAdminAuthorityLocalLanguageLabel;
+
+	@FXML
+	private Label localAdminAuthorityLocalLanguageMessage;
 
 	@FXML
 	private Label postalCodeLocalLanguageLabel;
@@ -151,6 +168,9 @@ public class DemographicDetailController extends BaseController {
 	private Label parentNameLocalLanguageLabel;
 
 	@FXML
+	private Label parentNameLocalLanguageMessage;
+
+	@FXML
 	private Label uinIdLocalLanguageLabel;
 
 	@FXML
@@ -161,9 +181,6 @@ public class DemographicDetailController extends BaseController {
 
 	@FXML
 	private TextField ageFieldLocalLanguage;
-
-	@FXML
-	private Label dobMessage;
 
 	@FXML
 	private Label toggleLabel1;
@@ -198,10 +215,19 @@ public class DemographicDetailController extends BaseController {
 	private ComboBox<GenderDto> gender;
 
 	@FXML
+	private Label genderMessage;
+
+	@FXML
 	private ComboBox<GenderDto> genderLocalLanguage;
 
 	@FXML
 	private TextField addressLine1;
+
+	@FXML
+	private Label addressLine1Label;
+
+	@FXML
+	private Label addressLine1Message;
 
 	@FXML
 	private TextField addressLine1LocalLanguage;
@@ -210,7 +236,16 @@ public class DemographicDetailController extends BaseController {
 	private Label addressLine1LocalLanguageLabel;
 
 	@FXML
+	private Label addressLine1LocalLanguageMessage;
+
+	@FXML
 	private TextField addressLine2;
+
+	@FXML
+	private Label addressLine2Label;
+
+	@FXML
+	private Label addressLine2Message;
 
 	@FXML
 	private TextField addressLine2LocalLanguage;
@@ -219,13 +254,25 @@ public class DemographicDetailController extends BaseController {
 	private Label addressLine2LocalLanguageLabel;
 
 	@FXML
+	private Label addressLine2LocalLanguageMessage;
+
+	@FXML
 	private TextField addressLine3;
+
+	@FXML
+	private Label addressLine3Label;
+
+	@FXML
+	private Label addressLine3Message;
 
 	@FXML
 	private TextField addressLine3LocalLanguage;
 
 	@FXML
 	private Label addressLine3LocalLanguageLabel;
+
+	@FXML
+	private Label addressLine3LocalLanguageMessage;
 
 	@FXML
 	private TextField emailId;
@@ -282,6 +329,12 @@ public class DemographicDetailController extends BaseController {
 	private ComboBox<LocationDto> region;
 
 	@FXML
+	private Label regionMessage;
+
+	@FXML
+	private Label regionLabel;
+
+	@FXML
 	private ComboBox<LocationDto> regionLocalLanguage;
 
 	@FXML
@@ -291,6 +344,12 @@ public class DemographicDetailController extends BaseController {
 	private ComboBox<LocationDto> city;
 
 	@FXML
+	private Label cityMessage;
+
+	@FXML
+	private Label cityLabel;
+
+	@FXML
 	private ComboBox<LocationDto> cityLocalLanguage;
 
 	@FXML
@@ -298,6 +357,12 @@ public class DemographicDetailController extends BaseController {
 
 	@FXML
 	private ComboBox<LocationDto> province;
+
+	@FXML
+	private Label provinceLabel;
+
+	@FXML
+	private Label provinceMessage;
 
 	@FXML
 	private ComboBox<LocationDto> provinceLocalLanguage;
@@ -319,6 +384,12 @@ public class DemographicDetailController extends BaseController {
 
 	@FXML
 	private ComboBox<LocationDto> localAdminAuthority;
+
+	@FXML
+	private Label localAdminAuthorityMessage;
+
+	@FXML
+	private Label localAdminAuthorityLabel;
 
 	@FXML
 	private ComboBox<LocationDto> localAdminAuthorityLocalLanguage;
@@ -349,6 +420,12 @@ public class DemographicDetailController extends BaseController {
 
 	@FXML
 	private TextField parentName;
+
+	@FXML
+	private Label parentNameMessage;
+
+	@FXML
+	private Label parentNameLabel;
 
 	@FXML
 	private Label ageFieldMessage;
@@ -392,6 +469,9 @@ public class DemographicDetailController extends BaseController {
 
 	@FXML
 	private Label ddLocalLanguageLabel;
+
+	@FXML
+	private Label dobMessage;
 
 	@FXML
 	private TextField mmLocalLanguage;
@@ -440,6 +520,8 @@ public class DemographicDetailController extends BaseController {
 	private Label preRegistrationLabel;
 	@FXML
 	private Label fullNameLabel;
+	@FXML
+	private Label fullNameMessage;
 	@FXML
 	private Label genderLabel;
 	@FXML
@@ -549,12 +631,15 @@ public class DemographicDetailController extends BaseController {
 	@FXML
 	private AnchorPane keyboardPane;
 
+	private boolean lostUIN = false;
+
 	@FXML
 	private void initialize() {
 
 		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Entering the LOGIN_CONTROLLER");
 		try {
+			lostUIN = false;
 			changeOrientation(NodeOrientation.RIGHT_TO_LEFT);
 			fxUtils = FXUtils.getInstance();
 			fxUtils.setTransliteration(transliteration);
@@ -593,32 +678,74 @@ public class DemographicDetailController extends BaseController {
 		}
 	}
 
+	protected void lostUIN() {
+		lostUIN = true;
+		registrationNavlabel.setText(ApplicationContext.applicationLanguageBundle().getString("/lostuin"));
+	}
+
 	/*
 	 * TO change the orientation based on language
 	 */
-
 	private void changeOrientation(NodeOrientation orientation) {
 		if ((boolean) applicationContext.isPrimaryLanguageRightToLeft()) {
 			fullName.setNodeOrientation(orientation);
+			fullNameLabel.setAlignment(Pos.CENTER_RIGHT);
+			fullNameMessage.setAlignment(Pos.CENTER_RIGHT);
 			addressLine1.setNodeOrientation(orientation);
+			addressLine1Label.setAlignment(Pos.CENTER_RIGHT);
+			addressLine1Message.setAlignment(Pos.CENTER_RIGHT);
 			addressLine2.setNodeOrientation(orientation);
+			addressLine2Label.setAlignment(Pos.CENTER_RIGHT);
+			addressLine2Message.setAlignment(Pos.CENTER_RIGHT);
 			addressLine3.setNodeOrientation(orientation);
+			addressLine3Label.setAlignment(Pos.CENTER_RIGHT);
+			addressLine3Message.setAlignment(Pos.CENTER_RIGHT);
 			province.setNodeOrientation(orientation);
+			provinceLabel.setAlignment(Pos.CENTER_RIGHT);
+			provinceMessage.setAlignment(Pos.CENTER_RIGHT);
 			city.setNodeOrientation(orientation);
+			cityLabel.setAlignment(Pos.CENTER_RIGHT);
+			cityMessage.setAlignment(Pos.CENTER_RIGHT);
 			region.setNodeOrientation(orientation);
+			regionLabel.setAlignment(Pos.CENTER_RIGHT);
+			regionMessage.setAlignment(Pos.CENTER_RIGHT);
 			localAdminAuthority.setNodeOrientation(orientation);
+			localAdminAuthorityLabel.setAlignment(Pos.CENTER_RIGHT);
+			localAdminAuthorityMessage.setAlignment(Pos.CENTER_RIGHT);
 			parentName.setNodeOrientation(orientation);
+			parentNameLabel.setAlignment(Pos.CENTER_RIGHT);
+			parentNameMessage.setAlignment(Pos.CENTER_RIGHT);
+
 		}
 		if ((boolean) applicationContext.isSecondaryLanguageRightToLeft()) {
 			fullNameLocalLanguage.setNodeOrientation(orientation);
+			fullNameLocalLanguageLabel.setAlignment(Pos.CENTER_RIGHT);
+			fullNameLocalLanguageMessage.setAlignment(Pos.CENTER_RIGHT);
 			addressLine1LocalLanguage.setNodeOrientation(orientation);
+			addressLine1LocalLanguageLabel.setAlignment(Pos.CENTER_RIGHT);
+			addressLine1LocalLanguageMessage.setAlignment(Pos.CENTER_RIGHT);
 			addressLine2LocalLanguage.setNodeOrientation(orientation);
+			addressLine2LocalLanguageLabel.setAlignment(Pos.CENTER_RIGHT);
+			addressLine2LocalLanguageMessage.setAlignment(Pos.CENTER_RIGHT);
 			addressLine3LocalLanguage.setNodeOrientation(orientation);
+			addressLine3LocalLanguageLabel.setAlignment(Pos.CENTER_RIGHT);
+			addressLine3LocalLanguageMessage.setAlignment(Pos.CENTER_RIGHT);
 			provinceLocalLanguage.setNodeOrientation(orientation);
+			provinceLocalLanguageLabel.setAlignment(Pos.CENTER_RIGHT);
+			provinceLocalLanguageMessage.setAlignment(Pos.CENTER_RIGHT);
 			cityLocalLanguage.setNodeOrientation(orientation);
+			cityLocalLanguageLabel.setAlignment(Pos.CENTER_RIGHT);
+			cityLocalLanguageMessage.setAlignment(Pos.CENTER_RIGHT);
 			regionLocalLanguage.setNodeOrientation(orientation);
+			regionLocalLanguageLabel.setAlignment(Pos.CENTER_RIGHT);
+			regionLocalLanguageMessage.setAlignment(Pos.CENTER_RIGHT);
 			localAdminAuthorityLocalLanguage.setNodeOrientation(orientation);
-			parentNameLocalLanguage.setNodeOrientation(orientation);
+			localAdminAuthorityLocalLanguageLabel.setAlignment(Pos.CENTER_RIGHT);
+			localAdminAuthorityLocalLanguageMessage.setAlignment(Pos.CENTER_RIGHT);
+			parentName.setNodeOrientation(orientation);
+			parentNameLocalLanguageLabel.setAlignment(Pos.CENTER_RIGHT);
+			parentNameLocalLanguageMessage.setAlignment(Pos.CENTER_RIGHT);
+
 		}
 	}
 
@@ -679,7 +806,6 @@ public class DemographicDetailController extends BaseController {
 					ageFieldLocalLanguageLabel.setVisible(false);
 					ageFieldLocalLanguageMessage.setVisible(false);
 					dobMessage.setVisible(false);
-					System.out.println(dobMessage.getText());
 					ddLabel.setVisible(false);
 					mmLabel.setVisible(false);
 					yyyyLabel.setVisible(false);
@@ -1085,20 +1211,24 @@ public class DemographicDetailController extends BaseController {
 
 		return Builder.build(DemographicInfoDTO.class).with(demographicInfo -> demographicInfo.setIdentity(
 				(MoroccoIdentity) Builder.build(MoroccoIdentity.class)
-						.with(identity -> identity.setFullName(fullName.isDisabled() ? null
-								: (List<ValuesDTO>) Builder.build(LinkedList.class)
-										.with(values -> values.add(Builder.build(ValuesDTO.class)
-												.with(value -> value.setLanguage(platformLanguageCode))
-												.with(value -> value.setValue(fullName.getText())).get()))
-										.with(values -> values.add(Builder.build(ValuesDTO.class)
-												.with(value -> value.setLanguage(localLanguageCode))
-												.with(value -> value.setValue(fullNameLocalLanguage.getText())).get()))
-										.get()))
-						.with(identity -> identity.setDateOfBirth(
-								applicationAge.isDisable() ? null : DateUtils.formatDate(dateOfBirth, "yyyy/MM/dd")))
 						.with(identity -> identity
-								.setAge(applicationAge.isDisable() ? null : Integer.parseInt(ageField.getText())))
-						.with(identity -> identity.setGender(gender.isDisabled() ? null
+								.setFullName(fullName.isDisabled() || fullName.getText().isEmpty() ? null
+										: (List<ValuesDTO>) Builder.build(LinkedList.class)
+												.with(values -> values.add(Builder.build(ValuesDTO.class)
+														.with(value -> value.setLanguage(platformLanguageCode))
+														.with(value -> value.setValue(fullName.getText())).get()))
+												.with(values -> values.add(Builder.build(ValuesDTO.class)
+														.with(value -> value.setLanguage(localLanguageCode))
+														.with(value -> value.setValue(fullNameLocalLanguage.getText()))
+														.get()))
+												.get()))
+						.with(identity -> identity
+								.setDateOfBirth(applicationAge.isDisable() || (dd.getText().isEmpty() && lostUIN) ? null
+										: DateUtils.formatDate(dateOfBirth, "yyyy/MM/dd")))
+						.with(identity -> identity
+								.setAge(applicationAge.isDisable() || ageField.getText().isEmpty() ? null
+										: Integer.parseInt(ageField.getText())))
+						.with(identity -> identity.setGender(gender.isDisabled() || gender.getValue() == null ? null
 								: (List<ValuesDTO>) Builder.build(LinkedList.class).with(values -> values.add(Builder
 										.build(ValuesDTO.class).with(value -> value.setLanguage(platformLanguageCode))
 										.with(value -> value.setValue(gender.getValue().getGenderName())).get())).with(
@@ -1108,46 +1238,54 @@ public class DemographicDetailController extends BaseController {
 																genderLocalLanguage.getValue().getGenderName()))
 														.get()))
 										.get()))
-						.with(identity -> identity.setResidenceStatus(residence.isDisabled() ? null
-								: (List<ValuesDTO>) Builder.build(LinkedList.class)
-										.with(values -> values.add(Builder.build(ValuesDTO.class)
-												.with(value -> value.setLanguage(platformLanguageCode))
-												.with(value -> value.setValue(residence.getText())).get()))
-										.with(values -> values.add(Builder.build(ValuesDTO.class)
-												.with(value -> value.setLanguage(localLanguageCode))
-												.with(value -> value.setValue(residenceLocalLanguage.getText())).get()))
-										.get()))
-						.with(identity -> identity.setAddressLine1(addressLine1.isDisabled() ? null
-								: (List<ValuesDTO>) Builder.build(LinkedList.class)
-										.with(values -> values.add(Builder.build(ValuesDTO.class)
-												.with(value -> value.setLanguage(platformLanguageCode))
-												.with(value -> value.setValue(addressLine1.getText())).get()))
-										.with(values -> values.add(Builder.build(ValuesDTO.class)
-												.with(value -> value.setLanguage(localLanguageCode))
-												.with(value -> value.setValue(addressLine1LocalLanguage.getText()))
+						.with(identity -> identity
+								.setResidenceStatus(residence.isDisabled() || residence.getText().isEmpty() ? null
+										: (List<ValuesDTO>) Builder.build(LinkedList.class)
+												.with(values -> values.add(Builder.build(ValuesDTO.class)
+														.with(value -> value.setLanguage(platformLanguageCode))
+														.with(value -> value.setValue(residence.getText())).get()))
+												.with(values -> values.add(Builder.build(ValuesDTO.class)
+														.with(value -> value.setLanguage(localLanguageCode))
+														.with(value -> value.setValue(residenceLocalLanguage.getText()))
+														.get()))
 												.get()))
-										.get()))
-						.with(identity -> identity.setAddressLine2(addressLine2.isDisabled() ? null
-								: (List<ValuesDTO>) Builder.build(LinkedList.class)
-										.with(values -> values.add(Builder.build(ValuesDTO.class)
-												.with(value -> value.setLanguage(platformLanguageCode))
-												.with(value -> value.setValue(addressLine2.getText())).get()))
-										.with(values -> values.add(Builder.build(ValuesDTO.class)
-												.with(value -> value.setLanguage(localLanguageCode))
-												.with(value -> value.setValue(addressLine2LocalLanguage.getText()))
+						.with(identity -> identity
+								.setAddressLine1(addressLine1.isDisabled() || addressLine1.getText().isEmpty() ? null
+										: (List<ValuesDTO>) Builder.build(LinkedList.class)
+												.with(values -> values.add(Builder.build(ValuesDTO.class)
+														.with(value -> value.setLanguage(platformLanguageCode))
+														.with(value -> value.setValue(addressLine1.getText())).get()))
+												.with(values -> values.add(Builder.build(ValuesDTO.class)
+														.with(value -> value.setLanguage(localLanguageCode))
+														.with(value -> value
+																.setValue(addressLine1LocalLanguage.getText()))
+														.get()))
 												.get()))
-										.get()))
-						.with(identity -> identity.setAddressLine3(addressLine3.isDisabled() ? null
-								: (List<ValuesDTO>) Builder.build(LinkedList.class)
-										.with(values -> values.add(Builder.build(ValuesDTO.class)
-												.with(value -> value.setLanguage(platformLanguageCode))
-												.with(value -> value.setValue(addressLine3.getText())).get()))
-										.with(values -> values.add(Builder.build(ValuesDTO.class)
-												.with(value -> value.setLanguage(localLanguageCode))
-												.with(value -> value.setValue(addressLine3LocalLanguage.getText()))
+						.with(identity -> identity
+								.setAddressLine2(addressLine2.isDisabled() || addressLine2.getText().isEmpty() ? null
+										: (List<ValuesDTO>) Builder.build(LinkedList.class)
+												.with(values -> values.add(Builder.build(ValuesDTO.class)
+														.with(value -> value.setLanguage(platformLanguageCode))
+														.with(value -> value.setValue(addressLine2.getText())).get()))
+												.with(values -> values.add(Builder.build(ValuesDTO.class)
+														.with(value -> value.setLanguage(localLanguageCode))
+														.with(value -> value
+																.setValue(addressLine2LocalLanguage.getText()))
+														.get()))
 												.get()))
-										.get()))
-						.with(identity -> identity.setRegion(region.isDisabled() ? null
+						.with(identity -> identity
+								.setAddressLine3(addressLine3.isDisabled() || addressLine3.getText().isEmpty() ? null
+										: (List<ValuesDTO>) Builder.build(LinkedList.class)
+												.with(values -> values.add(Builder.build(ValuesDTO.class)
+														.with(value -> value.setLanguage(platformLanguageCode))
+														.with(value -> value.setValue(addressLine3.getText())).get()))
+												.with(values -> values.add(Builder.build(ValuesDTO.class)
+														.with(value -> value.setLanguage(localLanguageCode))
+														.with(value -> value
+																.setValue(addressLine3LocalLanguage.getText()))
+														.get()))
+												.get()))
+						.with(identity -> identity.setRegion(region.isDisabled() || region.getValue() == null ? null
 								: (List<ValuesDTO>) Builder.build(LinkedList.class)
 										.with(values -> values.add(Builder.build(ValuesDTO.class)
 												.with(value -> value.setLanguage(platformLanguageCode))
@@ -1157,7 +1295,8 @@ public class DemographicDetailController extends BaseController {
 												.with(value -> value.setValue(regionLocalLanguage.getValue().getName()))
 												.get()))
 										.get()))
-						.with(identity -> identity.setProvince(province.isDisabled() ? null
+						.with(identity -> identity.setProvince(province.isDisabled() || province.getValue() == null
+								? null
 								: (List<ValuesDTO>) Builder.build(LinkedList.class)
 										.with(values -> values.add(Builder.build(ValuesDTO.class)
 												.with(value -> value.setLanguage(platformLanguageCode))
@@ -1168,7 +1307,7 @@ public class DemographicDetailController extends BaseController {
 														.setValue(provinceLocalLanguage.getValue().getName()))
 												.get()))
 										.get()))
-						.with(identity -> identity.setCity(city.isDisabled() ? null
+						.with(identity -> identity.setCity(city.isDisabled() || city.getValue() == null ? null
 								: (List<ValuesDTO>) Builder.build(LinkedList.class)
 										.with(values -> values.add(Builder.build(ValuesDTO.class)
 												.with(value -> value.setLanguage(platformLanguageCode))
@@ -1178,40 +1317,52 @@ public class DemographicDetailController extends BaseController {
 												.with(value -> value.setValue(cityLocalLanguage.getValue().getName()))
 												.get()))
 										.get()))
-						.with(identity -> identity.setPostalCode(postalCode.isDisabled() ? null : postalCode.getText()))
-						.with(identity -> identity.setPhone(mobileNo.isDisabled() ? null : mobileNo.getText()))
-						.with(identity -> identity.setEmail(emailId.isDisabled() ? null : emailId.getText()))
 						.with(identity -> identity
-								.setCnieNumber(cniOrPinNumber.isDisabled() ? null : cniOrPinNumber.getText()))
-						.with(identity -> identity.setLocalAdministrativeAuthority(localAdminAuthority.isDisabled()
-								? null
-								: (List<ValuesDTO>) Builder.build(LinkedList.class)
-										.with(values -> values.add(Builder.build(ValuesDTO.class)
-												.with(value -> value.setLanguage(platformLanguageCode))
-												.with(value -> value.setValue(localAdminAuthority.getValue().getName()))
+								.setPostalCode(postalCode.isDisabled() || postalCode.getText().isEmpty() ? null
+										: postalCode.getText()))
+						.with(identity -> identity.setPhone(
+								mobileNo.isDisabled() || mobileNo.getText().isEmpty() ? null : mobileNo.getText()))
+						.with(identity -> identity.setEmail(
+								emailId.isDisabled() || emailId.getText().isEmpty() ? null : emailId.getText()))
+						.with(identity -> identity
+								.setCnieNumber(cniOrPinNumber.isDisabled() || cniOrPinNumber.getText().isEmpty() ? null
+										: cniOrPinNumber.getText()))
+						.with(identity -> identity.setLocalAdministrativeAuthority(
+								localAdminAuthority.isDisabled() || localAdminAuthority.getValue() == null ? null
+										: (List<ValuesDTO>) Builder.build(LinkedList.class)
+												.with(values -> values.add(Builder.build(ValuesDTO.class)
+														.with(value -> value.setLanguage(platformLanguageCode))
+														.with(value -> value
+																.setValue(localAdminAuthority.getValue().getName()))
+														.get()))
+												.with(values -> values.add(Builder.build(ValuesDTO.class)
+														.with(value -> value.setLanguage(localLanguageCode))
+														.with(value -> value.setValue(
+																localAdminAuthorityLocalLanguage.getValue().getName()))
+														.get()))
 												.get()))
-										.with(values -> values.add(Builder.build(ValuesDTO.class)
-												.with(value -> value.setLanguage(localLanguageCode))
-												.with(value -> value.setValue(
-														localAdminAuthorityLocalLanguage.getValue().getName()))
+						.with(identity -> identity
+								.setParentOrGuardianRIDOrUIN(uinId.isDisabled() || uinId.getText().isEmpty() ? null
+										: new BigInteger(uinId.getText())))
+						.with(identity -> identity.setParentOrGuardianName(
+								parentName.isDisabled() || parentName.getText().isEmpty() ? null
+										: (List<ValuesDTO>) Builder.build(LinkedList.class)
+												.with(values -> values.add(Builder.build(ValuesDTO.class)
+														.with(value -> value.setLanguage(platformLanguageCode))
+														.with(value -> value.setValue(parentName.getText())).get()))
+												.with(values -> values.add(Builder.build(ValuesDTO.class)
+														.with(value -> value.setLanguage(localLanguageCode))
+														.with(value -> value
+																.setValue(parentNameLocalLanguage.getText()))
+														.get()))
 												.get()))
-										.get()))
-						.with(identity -> identity.setParentOrGuardianRIDOrUIN(
-								uinId.isDisabled() ? null : new BigInteger(uinId.getText())))
-						.with(identity -> identity.setParentOrGuardianName(parentName.isDisabled() ? null
-								: (List<ValuesDTO>) Builder.build(LinkedList.class)
-										.with(values -> values.add(Builder.build(ValuesDTO.class)
-												.with(value -> value.setLanguage(platformLanguageCode))
-												.with(value -> value.setValue(parentName.getText())).get()))
-										.with(values -> values.add(Builder.build(ValuesDTO.class)
-												.with(value -> value.setLanguage(localLanguageCode))
-												.with(value -> value.setValue(parentNameLocalLanguage.getText()))
-												.get()))
-										.get()))
-						.with(identity -> identity.setProofOfIdentity(documents.get("POI")))
-						.with(identity -> identity.setProofOfAddress(documents.get("POA")))
-						.with(identity -> identity.setProofOfRelationship(documents.get("POR")))
-						.with(identity -> identity.setProofOfDateOfBirth(documents.get("POB")))
+						.with(identity -> identity
+								.setProofOfIdentity(documents.isEmpty() ? null : documents.get("POI")))
+						.with(identity -> identity.setProofOfAddress(documents.isEmpty() ? null : documents.get("POA")))
+						.with(identity -> identity
+								.setProofOfRelationship(documents.isEmpty() ? null : documents.get("POR")))
+						.with(identity -> identity
+								.setProofOfDateOfBirth(documents.isEmpty() ? null : documents.get("POB")))
 						.with(identity -> identity.setIdSchemaVersion(1.0))
 						.with(identity -> identity.setUin(
 								getRegistrationDTOFromSession().getRegistrationMetaDataDTO().getUin() == null ? null
@@ -1630,6 +1781,25 @@ public class DemographicDetailController extends BaseController {
 					isValid = false;
 				}
 			}
+
+		if (isValid && switchedOn.get() && !applicationAge.isDisable()) {
+			SimpleDateFormat dateOfBirth = new SimpleDateFormat("dd-MM-yyyy");
+			dateOfBirth.setLenient(false);
+			try {
+				dateOfBirth.parse(dd.getText() + "-" + mm.getText() + "-" + yyyy.getText());
+			} catch (ParseException exception) {
+				if(getRegistrationDTOFromSession().getRegistrationMetaDataDTO().getRegistrationCategory()
+						.equals(RegistrationConstants.PACKET_TYPE_LOST)) {
+					if(dd.getText().isEmpty() && mm.getText().isEmpty() && yyyy.getText().isEmpty()) {
+						isValid = true;
+					}
+				} else {
+					dobMessage.setText(RegistrationUIConstants.INVALID_DATE_OF_BIRTH);
+					dobMessage.setVisible(true);
+					isValid = false;
+				}				
+			}
+		}
 		if (isValid)
 			isValid = validation.validateUinOrRid(uinId, isChild, uinValidator, ridValidator);
 		registrationController.displayValidationMessage(validation.getValidationMessage().toString());

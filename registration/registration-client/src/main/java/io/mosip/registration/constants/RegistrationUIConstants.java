@@ -44,6 +44,9 @@ public class RegistrationUIConstants {
 	public static final String FACE_MATCH = bundle.getString("FACE_MATCH");
 	public static final String FINGERPRINT = bundle.getString("FINGERPRINT");
 	public static final String RECAPTURE =  bundle.getString("RECAPTURE");
+	
+	//Lost UIN
+	public static final String LOST_UIN_REQUEST_ERROR = bundle.getString("LOST_UIN_REQUEST_ERROR");
 
 	// AUTHORIZATION
 	public static final String ROLES_EMPTY_ERROR = bundle.getString("ROLES_EMPTY_ERROR");
@@ -145,6 +148,7 @@ public class RegistrationUIConstants {
 	public static final String UIN_INVALID= bundle.getString("UIN_INVALID");
 	public static final String IS_BLOCKED_WORD= bundle.getString("IS_BLOCKED_WORD");
 	public static final String THRESHOLD = bundle.getString("THRESHOLD");
+	public static final String INVALID_DATE_OF_BIRTH=bundle.getString("INVALID_DATE_OF_BIRTH");
 
 
 	// OPT TO REGISTER

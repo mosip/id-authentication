@@ -6,7 +6,7 @@ public interface RegistrationPacketVirusScanService {
 
 	/**
 	 * Scan the packets in the configured path
-	 * @return
+	 * @return Success or Error Response based on the virus scan result
 	 */
 	ResponseDTO scanPacket();
 

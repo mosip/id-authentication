@@ -40,7 +40,7 @@ public interface PacketSynchService {
 	Boolean updateSyncStatus(List<PacketStatusDTO> synchedPackets);
 
 	/**
-	 * Gets the packet to sync.
+	 * Sync packet after creation when EOD is OFF .
 	 *
 	 * @param rId the registration id
 	 * @return the packet to sync
@@ -49,14 +49,24 @@ public interface PacketSynchService {
 	String packetSync(String rId) throws RegBaseCheckedException;
 
 	/**
-	 * Sync EOD packets.
+	 * Sync packets after approval/rejection in EOD when EOD is ON.
 	 *
-	 * @return the string
-	 * @throws RegBaseCheckedException
+	 * @param regIds the list registration id's to sync
+	 * @return the error message if any
+	 * @throws RegBaseCheckedException the reg base checked exception
 	 */
 	String syncEODPackets(List<String> regIds) throws RegBaseCheckedException;
 
+	/**
+	 * @param packetsToBeSynched
+	 * @return 
+	 * @throws RegBaseCheckedException
+	 */
 	String packetSync(List<PacketStatusDTO> packetsToBeSynched) throws RegBaseCheckedException;
 
+	/**
+	 * 
+	 * @throws RegBaseCheckedException
+	 */
 	void syncAllPackets() throws RegBaseCheckedException;
 }

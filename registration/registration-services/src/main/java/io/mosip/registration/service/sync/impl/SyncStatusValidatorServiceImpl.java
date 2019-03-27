@@ -40,7 +40,8 @@ import io.mosip.registration.service.sync.SyncStatusValidatorService;
 
 /**
  * {@code SyncStatusValidatorServiceImpl} is the sync status validate service
- * class.
+ * class which validates all the sync happened,count of packets on machine,geo location of system,etc... 
+ * are within the configured limits before going to new registration/update UIN.
  *
  * @author Chukka Sreekar
  * @author Mahesh Kumar
@@ -388,11 +389,11 @@ public class SyncStatusValidatorServiceImpl extends BaseService implements SyncS
 	}
 
 	/**
-	 * Gets the sync job id.
+	 * Gets the sync job id from database after sync.
 	 *
 	 * @return the sync job id
 	 */
-	public Map<String, String> getSyncJobId() {
+	private Map<String, String> getSyncJobId() {
 		LOGGER.info(LoggerConstants.OPT_TO_REG_LOGGER_SESSION_ID, APPLICATION_NAME, APPLICATION_ID,
 				"Fetching Job ID's from sync_job_def table using API name started");
 

@@ -4,12 +4,15 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
+import org.assertj.core.util.Arrays;
 import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.core.exception.ExceptionUtils;
@@ -265,12 +268,19 @@ public class Validations extends BaseController {
 			if (node.getText().matches(regex)) {
 
 				if (blackListedWords != null) {
-					if ((!id.contains(RegistrationConstants.ON_TYPE)) && blackListedWords.contains(node.getText())) {
-						if (!showAlert)
-							generateAlert(parentPane, id,
-									node.getText().concat(" "+messageBundle.getString(RegistrationConstants.IS_BLOCKED_WORD)),
-									isConsolidated, validationMessage);
-						return false;
+					if ((!id.contains(RegistrationConstants.ON_TYPE))) {
+						String bWords = String.join(", ",
+								Stream.of(node.getText().split("\\s+")).collect(Collectors.toList()).stream()
+										.filter(word -> blackListedWords.contains(word)).collect(Collectors.toList()));
+						if (bWords.length() > 0) {
+							if (!showAlert) {
+								generateAlert(parentPane, id,
+										bWords.concat(
+												" " + messageBundle.getString(RegistrationConstants.IS_BLOCKED_WORD)),
+										isConsolidated, validationMessage);
+								return false;
+							}
+						}
 					}
 				}
 
@@ -305,7 +315,8 @@ public class Validations extends BaseController {
 
 			}
 			if (!showAlert)
-				generateAlert(parentPane, id, messageBundle.getString(label + "_" + RegistrationConstants.REG_DDC_004), isConsolidated, validationMessage);
+				generateAlert(parentPane, id, messageBundle.getString(label + "_" + RegistrationConstants.REG_DDC_004),
+						isConsolidated, validationMessage);
 			return false;
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error(RegistrationConstants.VALIDATION_LOGGER, APPLICATION_NAME, APPLICATION_ID,

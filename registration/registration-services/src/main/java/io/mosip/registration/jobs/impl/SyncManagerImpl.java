@@ -55,7 +55,7 @@ public class SyncManagerImpl extends BaseService implements SyncManager {
 		SyncControl syncControl = syncJobDAO.findBySyncJobId(syncTransaction.getSyncJobId());
 
 		boolean isNotCreated = syncControl == null;
-		if (syncControl == null) {
+		if (isNotCreated) {
 			syncControl = new SyncControl();
 			syncControl.setId(UUID.randomUUID().toString());
 			syncControl.setSyncJobId(syncTransaction.getSyncJobId());

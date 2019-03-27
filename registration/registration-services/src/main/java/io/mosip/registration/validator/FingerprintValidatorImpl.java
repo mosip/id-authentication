@@ -24,7 +24,7 @@ public class FingerprintValidatorImpl extends AuthenticationBaseValidator {
 	private UserDetailDAO userDetailDAO;
 
 	@Autowired
-	FingerprintFacade fingerprintFacade;
+	private FingerprintFacade fingerprintFacade;
 
 	/**
 	 * Validate the Fingerprint with the AuthenticationValidatorDTO as input

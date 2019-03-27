@@ -56,16 +56,16 @@ import io.mosip.registration.exception.RegistrationExceptionConstants;
 public class ServiceDelegateUtil {
 
 	@Autowired
-	RestClientUtil restClientUtil;
+	private RestClientUtil restClientUtil;
 
 	@Autowired
-	Environment environment;
+	private Environment environment;
 
 	@Value("${HTTP_API_READ_TIMEOUT}")
-	int readTimeout;
+	private int readTimeout;
 
 	@Value("${HTTP_API_WRITE_TIMEOUT}")
-	int connectTimeout;
+	private int connectTimeout;
 
 	@Value("${AUTH_CLIENT_ID:}")
 	private String clientId;

@@ -134,6 +134,9 @@ public class BiometricExceptionController extends BaseController implements Init
 
 	@Autowired
 	private IrisCaptureController irisCaptureController;
+	
+	@FXML
+	private Label registrationNavlabel;
 
 	@FXML
 	private Button continueBtn;
@@ -191,6 +194,13 @@ public class BiometricExceptionController extends BaseController implements Init
 			operatorExceptionHeader.setVisible(true);
 			spliterLine.setVisible(true);
 		} else {
+			if (getRegistrationDTOFromSession() != null
+					&& getRegistrationDTOFromSession().getRegistrationMetaDataDTO().getRegistrationCategory() != null
+					&& getRegistrationDTOFromSession().getRegistrationMetaDataDTO().getRegistrationCategory()
+							.equals(RegistrationConstants.PACKET_TYPE_LOST)) {
+				registrationNavlabel.setText(ApplicationContext.applicationLanguageBundle().getString("/lostuin"));
+			}
+			
 			if (!((Map<String, Map<String, Boolean>>) ApplicationContext.map()
 					.get(RegistrationConstants.REGISTRATION_MAP)).get(RegistrationConstants.BIOMETRIC_EXCEPTION)
 							.get(RegistrationConstants.FINGER_PANE)) {

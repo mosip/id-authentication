@@ -130,6 +130,12 @@ public class IrisCaptureController extends BaseController {
 					&& getRegistrationDTOFromSession().getSelectionListDTO() != null) {
 				registrationNavlabel.setText(RegistrationConstants.UIN_NAV_LABEL);
 			}
+			if (getRegistrationDTOFromSession() != null
+					&& getRegistrationDTOFromSession().getRegistrationMetaDataDTO().getRegistrationCategory() != null
+					&& getRegistrationDTOFromSession().getRegistrationMetaDataDTO().getRegistrationCategory()
+							.equals(RegistrationConstants.PACKET_TYPE_LOST)) {
+				registrationNavlabel.setText(ApplicationContext.applicationLanguageBundle().getString("/lostuin"));
+			}
 			continueBtn.setDisable(true);
 			backBtn.setDisable(true);
 
@@ -194,7 +200,8 @@ public class IrisCaptureController extends BaseController {
 	 * This event handler will be invoked when left iris or right iris {@link Pane}
 	 * is clicked.
 	 * 
-	 * @param mouseEvent the triggered {@link MouseEvent} object
+	 * @param mouseEvent
+	 *            the triggered {@link MouseEvent} object
 	 */
 	@FXML
 	private void enableScan(MouseEvent mouseEvent) {
@@ -685,7 +692,8 @@ public class IrisCaptureController extends BaseController {
 	/**
 	 * Any iris exception.
 	 *
-	 * @param iris the iris
+	 * @param iris
+	 *            the iris
 	 * @return true, if successful
 	 */
 	private boolean anyIrisException(String iris) {

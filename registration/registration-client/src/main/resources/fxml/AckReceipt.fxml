@@ -54,8 +54,8 @@
                   <HBox spacing="3.0">
                      <children>
                         <Text onMouseClicked="#goToHomePageFromRegistration" strokeType="OUTSIDE" strokeWidth="0.0" text="%home" />
-                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="%/acknowledgement" />
                         <Text fx:id="registrationNavLabel" strokeType="OUTSIDE" strokeWidth="0.0" text="%/newregistration" wrappingWidth="154.2451171875" />
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="%/acknowledgement" />
                      </children>
                      <GridPane.margin>
                         <Insets left="20.0" />

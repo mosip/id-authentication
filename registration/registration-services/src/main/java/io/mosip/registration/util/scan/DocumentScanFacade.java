@@ -14,6 +14,11 @@ import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.device.scanner.IMosipDocumentScannerService;
 import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
 
+/**
+ * 
+ * @author balamurugan ramamoorthy
+ *
+ */
 @Component
 public class DocumentScanFacade {
 
@@ -23,6 +28,12 @@ public class DocumentScanFacade {
 
 	private static final Logger LOGGER = AppConfig.getLogger(DocumentScanFacade.class);
 
+	/**
+	 * gets the sample scanned document
+	 * 
+	 * @return byte[]
+	 * @throws IOException
+	 */
 	public byte[] getScannedDocument() throws IOException {
 
 		LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
@@ -37,11 +48,22 @@ public class DocumentScanFacade {
 
 	}
 
+	/**
+	 * gets all the possible scanner implementations
+	 * 
+	 * @param documentScannerServices
+	 *            - list that holds the scanner impl details
+	 */
 	@Autowired
 	public void setFingerprintProviders(List<IMosipDocumentScannerService> documentScannerServices) {
 		this.documentScannerServices = documentScannerServices;
 	}
 
+	/**
+	 * Checks the platform and selects the scanner implementation accordingly
+	 * 
+	 * @return boolean
+	 */
 	public boolean setScannerFactory() {
 		String factoryName = "";
 
@@ -61,6 +83,12 @@ public class DocumentScanFacade {
 
 	}
 
+	/**
+	 * scans the document from the scanner
+	 * 
+	 * @return BufferedImage- scanned file
+	 * @throws IOException
+	 */
 	public BufferedImage getScannedDocumentFromScanner() throws IOException {
 
 		LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
@@ -70,6 +98,14 @@ public class DocumentScanFacade {
 
 	}
 
+	/**
+	 * converts Buffredimage to byte[]
+	 * 
+	 * @param bufferedImage
+	 *            - scanned file
+	 * @return byte[] - holds the image data in bytes
+	 * @throws IOException
+	 */
 	public byte[] getImageBytesFromBufferedImage(BufferedImage bufferedImage) throws IOException {
 
 		LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
@@ -79,6 +115,13 @@ public class DocumentScanFacade {
 
 	}
 
+	/**
+	 * converts all the captured scanned docs to single image file
+	 * 
+	 * @param bufferedImages
+	 * @return byte[]
+	 * @throws IOException
+	 */
 	public byte[] asImage(List<BufferedImage> bufferedImages) throws IOException {
 
 		LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
@@ -88,6 +131,13 @@ public class DocumentScanFacade {
 
 	}
 
+	/**
+	 * converts all the captured scanned docs to single pdf file
+	 * 
+	 * @param bufferedImages
+	 * @return byte[]
+	 * @throws IOException
+	 */
 	public byte[] asPDF(List<BufferedImage> bufferedImages) throws IOException {
 
 		LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
@@ -97,11 +147,24 @@ public class DocumentScanFacade {
 
 	}
 
+	/**
+	 * converts single pdf file into list of images in order show it in the doc
+	 * preview
+	 * 
+	 * @param byte[]
+	 * @return List<BufferedImage>
+	 * @throws IOException
+	 */
 	public List<BufferedImage> pdfToImages(byte[] pdfBytes) throws IOException {
 
 		return documentScannerService.pdfToImages(pdfBytes);
 	}
 
+	/**
+	 * checks the scanner connectivity
+	 * 
+	 * @return boolean- true if connected or else false
+	 */
 	public boolean isConnected() {
 		return documentScannerService.isConnected();
 

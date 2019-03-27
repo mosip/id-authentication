@@ -34,9 +34,8 @@ public class ClientJarEncryption {
 	private static final String SLASH = "/";
 	private static final String AES_ALGORITHM = "AES";
 	private static final String REGISTRATION = "registration";
-	private static final String MOSIP_CLIENT_JAR_PATH = "bin/mosip-client.jar";
 	private static final String MOSIP_APPLICATION_PROPERTIES_PATH = "props/mosip-application.properties";
-	private static final String MOSIP_EXE_JAR = "bin/mosip-exec.jar";
+	private static final String MOSIP_EXE_JAR = "mosip-exec.jar";
 	private static final String MOSIP_LIB = "lib";
 	private static final String MOSIP_DB = "db";
 	private static final String MOSIP_ZIP = ".zip";
@@ -46,6 +45,8 @@ public class ClientJarEncryption {
 	private static final String MOSIP_REG_LIBS = "registration-libs-";
 	private static final String MANIFEST_FILE_NAME = "MANIFEST";
 	private static final String MANIFEST_FILE_FORMAT = ".MF";
+	private static final String MOSIP_BIN = "bin";
+	
 
 	/**
 	 * Encrypt the bytes
@@ -89,16 +90,12 @@ public class ClientJarEncryption {
 				System.out.println("Zip Creation started");
 
 				if (file != null && file.exists()) {
-					String encryptedFileToSave = MOSIP_CLIENT_JAR_PATH;
 					String propertiesFile = MOSIP_APPLICATION_PROPERTIES_PATH;
-					String runFileName = MOSIP_EXE_JAR;
 					String libraries = MOSIP_LIB + SLASH;
 
 					String zipFilename = file.getParent() + SLASH + "mosip-sw-" + args[3] + MOSIP_ZIP;
 
-					byte[] encryptedFileBytes = aes.encyrpt(FileUtils.readFileToByteArray(file),
-							Base64.getDecoder().decode(args[2].getBytes()));
-					byte[] propertiesBytes = (MOSIP_LOG_PATH + "\n" + MOSIP_DB_PATH).getBytes();
+						byte[] propertiesBytes = (MOSIP_LOG_PATH + "\n" + MOSIP_DB_PATH).getBytes();
 					byte[] runExecutbale = FileUtils
 							.readFileToByteArray(new File(args[4] + MOSIP_REG_LIBS + args[3] + MOSIP_JAR));
 					File listOfJars = new File(file.getParent() + SLASH + MOSIP_LIB).getAbsoluteFile();
@@ -106,11 +103,13 @@ public class ClientJarEncryption {
 					// Add files to be archived into zip file
 					Map<String, byte[]> fileNameByBytes = new HashMap<>();
 
-					fileNameByBytes.put(encryptedFileToSave, encryptedFileBytes);
+					// fileNameByBytes.put(encryptedFileToSave, encryptedFileBytes);
 					fileNameByBytes.put(propertiesFile, propertiesBytes);
-					fileNameByBytes.put(runFileName, runExecutbale);
 					fileNameByBytes.put(MOSIP_DB + SLASH, new byte[] {});
-
+					fileNameByBytes.put(MOSIP_LIB + SLASH, new byte[] {});
+					fileNameByBytes.put(MOSIP_BIN + SLASH, new byte[] {});
+					fileNameByBytes.put(MOSIP_EXE_JAR, runExecutbale);
+					
 					String path = new File(args[4]).getPath();
 
 					File regLibFile = new File(path + SLASH + libraries);
@@ -131,14 +130,15 @@ public class ClientJarEncryption {
 						if (files.getName().contains(REGISTRATION)) {
 							byte[] encryptedRegFileBytes = aes.encyrpt(FileUtils.readFileToByteArray(files),
 									Base64.getDecoder().decode(args[2].getBytes()));
-							fileNameByBytes.put(libraries + files.getName(), encryptedRegFileBytes);
+							// fileNameByBytes.put(libraries + files.getName(), encryptedRegFileBytes);
 
 							/* Add To Manifest */
 							addToManifest(files.getName(), encryptedRegFileBytes, manifest);
 
 							saveLibJars(encryptedRegFileBytes, files.getName(), regLibFile);
 						} else {
-							fileNameByBytes.put(libraries + files.getName(), FileUtils.readFileToByteArray(files));
+							// fileNameByBytes.put(libraries + files.getName(),
+							// FileUtils.readFileToByteArray(files));
 
 							/* Add To Manifest */
 							addToManifest(files.getName(), Files.readAllBytes(files.toPath()), manifest);
@@ -148,9 +148,13 @@ public class ClientJarEncryption {
 						}
 					}
 
+					writeManifest(fileOutputStream, manifest);
+
+					fileNameByBytes.put(MANIFEST_FILE_NAME+MANIFEST_FILE_FORMAT, FileUtils.readFileToByteArray(
+							new File(file.getParent() + SLASH + MANIFEST_FILE_NAME + MANIFEST_FILE_FORMAT)));
+					
 					aes.writeFileToZip(fileNameByBytes, zipFilename);
 
-					writeManifest(fileOutputStream, manifest);
 					System.out.println("Zip Creation ended with path :::" + zipFilename);
 				}
 			}

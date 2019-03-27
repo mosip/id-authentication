@@ -15,6 +15,8 @@ public interface RegPacketStatusService {
 	/**
 	 * packet status sync with server
 	 * 
+	 * @param triggerpoint - the point by which the service was triggered
+	 * 
 	 * @return ResponseDTO which specifies either success response or error response
 	 *         after sync with server
 	 */
