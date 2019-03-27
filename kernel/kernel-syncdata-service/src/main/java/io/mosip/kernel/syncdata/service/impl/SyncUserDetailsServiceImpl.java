@@ -97,15 +97,14 @@ public class SyncUserDetailsServiceImpl implements SyncUserDetailsService {
 				syncDataRequestHeaders);
 
 		try {
-			/*
-			 * ResponseEntity<String> response = restTemplate.postForEntity(
-			 * userDetailsUri.toString() + "/registrationclient", userDetailRequestEntity,
-			 * String.class);
-			 */
 
 			ResponseEntity<String> response = restTemplate.postForEntity(
-					"https://dev.mosip.io/authmanager/userdetails/registrationclient", userDetailRequestEntity,
-					String.class);
+					userDetailsUri.toString() + "/registrationclient", userDetailRequestEntity, String.class);
+			/*
+			 * ResponseEntity<String> response = restTemplate.postForEntity(
+			 * "https://dev.mosip.io/authmanager/userdetails/registrationclient",
+			 * userDetailRequestEntity, String.class);
+			 */
 
 			String responseBody = response.getBody();
 			List<ServiceError> validationErrorsList = null;
@@ -132,7 +131,6 @@ public class SyncUserDetailsServiceImpl implements SyncUserDetailsService {
 				syncUserDetailDto = new SyncUserDetailDto();
 				syncUserDetailDto.setUserDetails(userDetails);
 			}
-
 			return syncUserDetailDto;
 
 		} catch (HttpServerErrorException | HttpClientErrorException e) {
