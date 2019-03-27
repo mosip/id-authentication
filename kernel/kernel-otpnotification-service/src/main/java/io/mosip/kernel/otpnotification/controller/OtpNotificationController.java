@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.mosip.kernel.core.http.RequestWrapper;
+import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.core.otpnotification.spi.OtpNotification;
 import io.mosip.kernel.otpnotification.dto.OtpNotificationRequestDto;
 import io.mosip.kernel.otpnotification.dto.OtpNotificationResponseDto;
@@ -34,16 +36,17 @@ public class OtpNotificationController {
 	/**
 	 * Api to notify with OTP to user.
 	 * 
-	 * @param request
+	 * @param otpNotificationRequestDto
 	 *            the request dto.
 	 * @return the response entity.
 	 */
-	@PostMapping(value = "/v1.0/otp/send")
+	@ResponseFilter
+	@PostMapping(value = "/otp/send")
 	@ApiOperation(value = "Service to send OTP notification", response = OtpNotificationResponseDto.class)
 	public ResponseEntity<OtpNotificationResponseDto> sendOtpNotification(
-			@Valid @RequestBody OtpNotificationRequestDto request) {
-
-		return new ResponseEntity<>(otpNotificationService.sendOtpNotification(request), HttpStatus.OK);
+			@Valid @RequestBody RequestWrapper<OtpNotificationRequestDto> otpNotificationRequestDto) {
+		return new ResponseEntity<>(otpNotificationService.sendOtpNotification(otpNotificationRequestDto.getRequest()),
+				HttpStatus.OK);
 	}
 
 }

@@ -12,7 +12,6 @@ import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.masterdata.constant.DeviceErrorCode;
 import io.mosip.kernel.masterdata.dto.DeviceDto;
 import io.mosip.kernel.masterdata.dto.DeviceLangCodeDtypeDto;
-import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.getresponse.DeviceLangCodeResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.DeviceResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
@@ -126,11 +125,11 @@ public class DeviceServiceImpl implements DeviceService {
 	 */
 	@Override
 	@Transactional
-	public IdAndLanguageCodeID createDevice(RequestDto<DeviceDto> deviceDto) {
+	public IdAndLanguageCodeID createDevice(DeviceDto deviceDto) {
 		Device device = null;
 
-		Device entity = MetaDataUtils.setCreateMetaData(deviceDto.getRequest(), Device.class);
-		DeviceHistory entityHistory = MetaDataUtils.setCreateMetaData(deviceDto.getRequest(), DeviceHistory.class);
+		Device entity = MetaDataUtils.setCreateMetaData(deviceDto, Device.class);
+		DeviceHistory entityHistory = MetaDataUtils.setCreateMetaData(deviceDto, DeviceHistory.class);
 		entityHistory.setEffectDateTime(entity.getCreatedDateTime());
 		entityHistory.setCreatedDateTime(entity.getCreatedDateTime());
 
@@ -160,15 +159,15 @@ public class DeviceServiceImpl implements DeviceService {
 	 */
 	@Override
 	@Transactional
-	public IdAndLanguageCodeID updateDevice(RequestDto<DeviceDto> deviceRequestDto) {
+	public IdAndLanguageCodeID updateDevice(DeviceDto deviceRequestDto) {
 		Device entity = null;
 		Device updatedDevice = null;
 		try {
 			Device oldDevice = deviceRepository.findByIdAndLangCodeAndIsDeletedFalseOrIsDeletedIsNull(
-					deviceRequestDto.getRequest().getId(), deviceRequestDto.getRequest().getLangCode());
+					deviceRequestDto.getId(), deviceRequestDto.getLangCode());
 
 			if (oldDevice != null) {
-				entity = MetaDataUtils.setUpdateMetaData(deviceRequestDto.getRequest(), oldDevice, false);
+				entity = MetaDataUtils.setUpdateMetaData(deviceRequestDto, oldDevice, false);
 				updatedDevice = deviceRepository.update(entity);
 				DeviceHistory deviceHistory = new DeviceHistory();
 				MapperUtils.map(updatedDevice, deviceHistory);

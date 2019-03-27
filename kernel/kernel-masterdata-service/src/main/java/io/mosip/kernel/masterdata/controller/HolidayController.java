@@ -18,7 +18,8 @@ import io.mosip.kernel.masterdata.dto.HolidayDto;
 import io.mosip.kernel.masterdata.dto.HolidayIDDto;
 import io.mosip.kernel.masterdata.dto.HolidayIdDeleteDto;
 import io.mosip.kernel.masterdata.dto.HolidayUpdateDto;
-import io.mosip.kernel.masterdata.dto.RequestDto;
+import io.mosip.kernel.core.http.RequestWrapper;
+import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.masterdata.dto.getresponse.HolidayResponseDto;
 import io.mosip.kernel.masterdata.service.HolidayService;
 import io.swagger.annotations.Api;
@@ -34,7 +35,7 @@ import io.swagger.annotations.ApiOperation;
  */
 @RestController
 @Api(tags = { "Holiday" })
-@RequestMapping("/v1.0/holidays")
+@RequestMapping("/holidays")
 public class HolidayController {
 
 	@Autowired
@@ -45,6 +46,7 @@ public class HolidayController {
 	 * 
 	 * @return list of all holidays
 	 */
+	@ResponseFilter
 	@GetMapping
 	public HolidayResponseDto getAllHolidays() {
 		return holidayService.getAllHolidays();
@@ -57,6 +59,7 @@ public class HolidayController {
 	 *            input parameter holiday id
 	 * @return list of holidays for a particular holiday id
 	 */
+	@ResponseFilter
 	@GetMapping("/{holidayid}")
 	public HolidayResponseDto getAllHolidayById(@PathVariable("holidayid") int holidayId) {
 		return holidayService.getHolidayById(holidayId);
@@ -72,6 +75,7 @@ public class HolidayController {
 	 *            input parameter language code
 	 * @return {@link HolidayResponseDto}
 	 */
+	@ResponseFilter
 	@GetMapping("/{holidayid}/{langcode}")
 	public HolidayResponseDto getAllHolidayByIdAndLangCode(@PathVariable("holidayid") int holidayId,
 			@PathVariable("langcode") String langCode) {
@@ -85,9 +89,10 @@ public class HolidayController {
 	 *            input values to add a new row of data
 	 * @return primary key of inserted Holiday data
 	 */
+	@ResponseFilter
 	@PostMapping
-	public ResponseEntity<HolidayIDDto> saveHoliday(@Valid @RequestBody RequestDto<HolidayDto> holiday) {
-		return new ResponseEntity<>(holidayService.saveHoliday(holiday), HttpStatus.OK);
+	public ResponseEntity<HolidayIDDto> saveHoliday(@Valid @RequestBody RequestWrapper<HolidayDto> holiday) {
+		return new ResponseEntity<>(holidayService.saveHoliday(holiday.getRequest()), HttpStatus.OK);
 
 	}
 
@@ -98,10 +103,11 @@ public class HolidayController {
 	 *            input values to update the data
 	 * @return id of updated Holiday data
 	 */
+	@ResponseFilter
 	@PutMapping
 	@ApiOperation(value = "to update a holiday", response = HolidayIDDto.class)
-	public HolidayIDDto updateHoliday(@Valid @RequestBody RequestDto<HolidayUpdateDto> holiday) {
-		return holidayService.updateHoliday(holiday);
+	public HolidayIDDto updateHoliday(@Valid @RequestBody RequestWrapper<HolidayUpdateDto> holiday) {
+		return holidayService.updateHoliday(holiday.getRequest());
 	}
 
 	/**
@@ -111,9 +117,10 @@ public class HolidayController {
 	 *            input values to delete 
 	 * @return id of the deleted Holiday data
 	 */
+	@ResponseFilter
 	@DeleteMapping
 	@ApiOperation(value = "to delete a holiday", response = HolidayIdDeleteDto.class)
-	public HolidayIdDeleteDto deleteHoliday(@Valid @RequestBody RequestDto<HolidayIdDeleteDto> request) {
+	public HolidayIdDeleteDto deleteHoliday(@Valid @RequestBody RequestWrapper<HolidayIdDeleteDto> request) {
 		return holidayService.deleteHoliday(request);
 	}
 

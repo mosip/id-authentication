@@ -16,7 +16,8 @@ import org.springframework.web.bind.annotation.RestController;
 import io.mosip.kernel.masterdata.dto.RegCenterMachineUserReqDto;
 import io.mosip.kernel.masterdata.dto.RegCenterMachineUserResponseDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterUserMachineMappingDto;
-import io.mosip.kernel.masterdata.dto.RequestDto;
+import io.mosip.kernel.core.http.RequestWrapper;
+import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.masterdata.entity.id.RegistrationCenterMachineUserID;
 import io.mosip.kernel.masterdata.service.RegistrationCenterMachineUserService;
 import io.swagger.annotations.Api;
@@ -51,10 +52,11 @@ public class RegistrationCenterUserMachineController {
 	 *            {@link RegistrationCenterUserMachineMappingDto} request
 	 * @return {@link RegistrationCenterMachineUserID} as response
 	 */
+	@ResponseFilter
 	@ApiOperation(value = "Create a mapping of registration center,user,and machine", response = RegistrationCenterMachineUserID.class)
-	@PostMapping("/v1.0/registrationmachineusermappings")
+	@PostMapping("/registrationmachineusermappings")
 	public ResponseEntity<RegistrationCenterMachineUserID> createRegistrationCentersMachineUserMapping(
-			@ApiParam("Registration center id,user id and ,machine id with metadata") @RequestBody @Valid RequestDto<RegistrationCenterUserMachineMappingDto> registrationCenterUserMachineMappingDto) {
+			@ApiParam("Registration center id,user id and ,machine id with metadata") @RequestBody @Valid RequestWrapper<RegistrationCenterUserMachineMappingDto> registrationCenterUserMachineMappingDto) {
 		return new ResponseEntity<>(registrationCenterMachineUserService.createRegistrationCentersMachineUserMapping(
 				registrationCenterUserMachineMappingDto), HttpStatus.OK);
 	}
@@ -70,8 +72,9 @@ public class RegistrationCenterUserMachineController {
 	 *            input from user
 	 * @return {@link RegistrationCenterMachineUserID} as response
 	 */
+	@ResponseFilter
 	@ApiOperation(value = "Delete the mapping of registration center and user and machine", response = RegistrationCenterMachineUserID.class)
-	@DeleteMapping("/v1.0/registrationmachineusermappings/{regCenterId}/{machineId}/{userId}")
+	@DeleteMapping("/registrationmachineusermappings/{regCenterId}/{machineId}/{userId}")
 	public ResponseEntity<RegistrationCenterMachineUserID> deleteRegistrationCenterUserMachineMapping(
 			@ApiParam("Registration center id to be deleted") @PathVariable String regCenterId,
 			@ApiParam("Machine id to be deleted") @PathVariable String machineId,
@@ -87,8 +90,9 @@ public class RegistrationCenterUserMachineController {
 	 *            {@link RegCenterMachineUserReqDto} request
 	 * @return {@link RegCenterMachineUserResponseDto} as response
 	 */
+	@ResponseFilter
 	@ApiOperation(value = "Create or update a mapping of registration center,user,and machine", response = RegCenterMachineUserResponseDto.class)
-	@PutMapping("/v1.0/registrationmachineusermappings")
+	@PutMapping("/registrationmachineusermappings")
 	public ResponseEntity<RegCenterMachineUserResponseDto> createOrUpdateRegistrationCentersMachineUserMapping(
 			@ApiParam("Registration center id,user id and ,machine id with metadata") @RequestBody @Valid RegCenterMachineUserReqDto<RegistrationCenterUserMachineMappingDto> regCenterMachineUserReqDto) {
 		return new ResponseEntity<>(registrationCenterMachineUserService

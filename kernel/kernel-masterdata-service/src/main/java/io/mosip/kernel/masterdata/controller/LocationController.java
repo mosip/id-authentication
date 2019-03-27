@@ -15,7 +15,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.kernel.masterdata.dto.LocationDto;
-import io.mosip.kernel.masterdata.dto.RequestDto;
+import io.mosip.kernel.core.http.RequestWrapper;
+import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.masterdata.dto.getresponse.LocationHierarchyResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.LocationResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
@@ -36,7 +37,7 @@ import io.swagger.annotations.Api;
  */
 @RestController
 @Api(tags = { "Location" })
-@RequestMapping(value = "/v1.0/locations")
+@RequestMapping(value = "/locations")
 public class LocationController {
 
 	/**
@@ -52,17 +53,19 @@ public class LocationController {
 	 *            language code
 	 * @return list of location hierarchies
 	 */
+	@ResponseFilter
 	@GetMapping(value = "/{langcode}")
 	public LocationHierarchyResponseDto getLocationHierarchyDetails(@PathVariable String langcode) {
 		return locationHierarchyService.getLocationDetails(langcode);
 
 	}
 
+	@ResponseFilter
 	@PostMapping()
 	public ResponseEntity<PostLocationCodeResponseDto> createLocationHierarchyDetails(
-			@Valid @RequestBody RequestDto<LocationDto> locationRequestDto) {
+			@Valid @RequestBody RequestWrapper<LocationDto> locationRequestDto) {
 
-		return new ResponseEntity<>(locationHierarchyService.createLocationHierarchy(locationRequestDto),
+		return new ResponseEntity<>(locationHierarchyService.createLocationHierarchy(locationRequestDto.getRequest()),
 				HttpStatus.OK);
 	}
 
@@ -74,6 +77,7 @@ public class LocationController {
 	 *            language code
 	 * @return list of location hierarchies
 	 */
+	@ResponseFilter
 	@GetMapping(value = "/{locationcode}/{langcode}")
 	public LocationResponseDto getLocationHierarchyByLangCode(@PathVariable("locationcode") String locationCode,
 			@PathVariable("langcode") String langCode) {
@@ -87,8 +91,8 @@ public class LocationController {
 	 *            hierarchy Name
 	 * @return list of location hierarchies
 	 */
+	@ResponseFilter
 	@GetMapping(value = "/locationhierarchy/{hierarchyname}")
-
 	public LocationResponseDto getLocationDataByHierarchyName(
 			@PathVariable(value = "hierarchyname") String hierarchyName) {
 
@@ -102,11 +106,12 @@ public class LocationController {
 	 *            - location request DTO
 	 * @return PostLocationCodeResponseDto
 	 */
-	@PutMapping()
+	@ResponseFilter
+	@PutMapping
 	public PostLocationCodeResponseDto updateLocationHierarchyDetails(
-			@Valid @RequestBody RequestDto<LocationDto> locationRequestDto) {
+			@Valid @RequestBody RequestWrapper<LocationDto> locationRequestDto) {
 
-		return locationHierarchyService.updateLocationDetails(locationRequestDto);
+		return locationHierarchyService.updateLocationDetails(locationRequestDto.getRequest());
 	}
 
 	/**
@@ -116,6 +121,7 @@ public class LocationController {
 	 *            -location code
 	 * @return CodeResponseDto
 	 */
+	@ResponseFilter
 	@DeleteMapping(value = "/{locationcode}")
 	public CodeResponseDto deleteLocationHierarchyDetails(@PathVariable(value = "locationcode") String locationCode) {
 		return locationHierarchyService.deleteLocationDetials(locationCode);
@@ -129,6 +135,7 @@ public class LocationController {
 	 *            language code
 	 * @return list of location hierarchies
 	 */
+	@ResponseFilter
 	@GetMapping(value = "immediatechildren/{locationcode}/{langcode}")
 	public LocationResponseDto getImmediateChildrenByLocCodeAndLangCode(
 			@PathVariable("locationcode") String locationCode, @PathVariable("langcode") String langCode) {
@@ -144,10 +151,12 @@ public class LocationController {
 	 *            location name
 	 * @return {@link StatusResponseDto} StatusResponseDto
 	 */
-	@GetMapping(value = "/validate/{locationname}")
+	@ResponseFilter
+	@GetMapping(value="/validate/{locationname}")
 	public StatusResponseDto validateLocationName(@PathVariable("locationname") String locationName) {
 		return locationHierarchyService.validateLocationName(locationName);
 
 	}
-
+	
 }
+

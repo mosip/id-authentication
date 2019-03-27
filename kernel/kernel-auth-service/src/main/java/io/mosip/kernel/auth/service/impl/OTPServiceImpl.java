@@ -42,6 +42,7 @@ import io.mosip.kernel.auth.service.OTPGenerateService;
 import io.mosip.kernel.auth.service.OTPService;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.exception.ServiceError;
+import io.mosip.kernel.core.http.ResponseWrapper;
 
 /**
  * @author Ramadurai Pandian
@@ -114,6 +115,7 @@ public class OTPServiceImpl implements OTPService {
 	private String getOtpEmailMessage(OtpGenerateResponseDto otpGenerateResponseDto, String appId) {
 			String template = null;
 			OtpTemplateResponseDto otpTemplateResponseDto = null;
+			
 			final String url = mosipEnvironment.getMasterDataTemplateApi()
 					+"/"+ mosipEnvironment.getPrimaryLanguage() + mosipEnvironment.getMasterDataOtpTemplate();
 			ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
@@ -124,8 +126,10 @@ public class OTPServiceImpl implements OTPService {
 				if (!validationErrorsList.isEmpty()) {
 					throw new AuthManagerServiceException(validationErrorsList);
 				}
+				ResponseWrapper<?> responseObject;
 				try {
-					otpTemplateResponseDto = mapper.readValue(responseBody, OtpTemplateResponseDto.class);
+					responseObject = mapper.readValue(response.getBody(), ResponseWrapper.class);
+					otpTemplateResponseDto = mapper.readValue(mapper.writeValueAsString(responseObject.getResponse()), OtpTemplateResponseDto.class);
 				}catch(Exception e)
 				{
 					throw new AuthManagerException(String.valueOf(HttpStatus.UNAUTHORIZED.value()),e.getMessage());
@@ -156,8 +160,10 @@ public class OTPServiceImpl implements OTPService {
 				if (!validationErrorsList.isEmpty()) {
 					throw new AuthManagerServiceException(validationErrorsList);
 				}
+				ResponseWrapper<?> responseObject;
 				try {
-					otpTemplateResponseDto = mapper.readValue(responseBody, OtpTemplateResponseDto.class);
+					responseObject = mapper.readValue(response.getBody(), ResponseWrapper.class);
+					otpTemplateResponseDto = mapper.readValue(mapper.writeValueAsString(responseObject.getResponse()), OtpTemplateResponseDto.class);
 				}catch(Exception e)
 				{
 					throw new AuthManagerException(String.valueOf(HttpStatus.UNAUTHORIZED.value()),e.getMessage());
@@ -201,8 +207,10 @@ public class OTPServiceImpl implements OTPService {
 				if (!validationErrorsList.isEmpty()) {
 					throw new AuthManagerServiceException(validationErrorsList);
 				}
+				ResponseWrapper<?> responseObject;
 				try {
-					otpEmailSendResponseDto = mapper.readValue(responseBody, OtpEmailSendResponseDto.class);
+					responseObject = mapper.readValue(response.getBody(), ResponseWrapper.class);
+					otpEmailSendResponseDto = mapper.readValue(mapper.writeValueAsString(responseObject.getResponse()), OtpEmailSendResponseDto.class);
 				}catch(Exception e)
 				{
 					throw new AuthManagerException(String.valueOf(HttpStatus.UNAUTHORIZED.value()),e.getMessage());
@@ -217,14 +225,16 @@ public class OTPServiceImpl implements OTPService {
 			OtpSmsSendRequestDto otpSmsSendRequestDto = new OtpSmsSendRequestDto(mobile, message);
 			SmsResponseDto otpSmsSendResponseDto=null;
 			String url = mosipEnvironment.getOtpSenderSmsApi();
-			String response = restTemplate.postForObject(url, otpSmsSendRequestDto,
+			ResponseEntity<String> response = restTemplate.postForEntity(url, otpSmsSendRequestDto,
 					String.class);	
-			validationErrorsList = ExceptionUtils.getServiceErrorList(response);  
+			validationErrorsList = ExceptionUtils.getServiceErrorList(response.getBody());  
 			if (!validationErrorsList.isEmpty()) {
 				throw new AuthManagerServiceException(validationErrorsList);
 			}
+			ResponseWrapper<?> responseObject;
 			try {
-				otpSmsSendResponseDto= mapper.readValue(response, SmsResponseDto.class);
+				responseObject = mapper.readValue(response.getBody(), ResponseWrapper.class);
+				otpSmsSendResponseDto= mapper.readValue(mapper.writeValueAsString(responseObject.getResponse()), SmsResponseDto.class);
 			}catch(Exception e)
 			{
 				throw new AuthManagerException(String.valueOf(HttpStatus.UNAUTHORIZED.value()),e.getMessage());
@@ -254,8 +264,10 @@ public class OTPServiceImpl implements OTPService {
 				throw new AuthManagerServiceException(validationErrorsList);
 			}
 			OtpValidatorResponseDto otpResponse = null;
+			ResponseWrapper<?> responseObject;
 			try {
-				otpResponse = mapper.readValue(responseBody, OtpValidatorResponseDto.class);
+				responseObject = mapper.readValue(response.getBody(), ResponseWrapper.class);
+				otpResponse = mapper.readValue(mapper.writeValueAsString(responseObject.getResponse()), OtpValidatorResponseDto.class);
 			}catch(Exception e)
 			{
 				throw new AuthManagerException(String.valueOf(HttpStatus.UNAUTHORIZED.value()),e.getMessage());

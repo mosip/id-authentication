@@ -12,7 +12,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.kernel.masterdata.dto.IdTypeDto;
-import io.mosip.kernel.masterdata.dto.RequestDto;
+import io.mosip.kernel.core.http.RequestWrapper;
+import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.masterdata.dto.getresponse.IdTypeResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
@@ -46,7 +47,8 @@ public class IdTypeController {
 	 *            the language code against which id types are to be fetched.
 	 * @return the list of id types.
 	 */
-	@GetMapping("/v1.0/idtypes/{langcode}")
+	@ResponseFilter
+	@GetMapping("/idtypes/{langcode}")
 	@ApiOperation(value = "Service to fetch id types based on language code.", notes = "Fetch IdTypes based on Language Code.", response = IdTypeResponseDto.class)
 	@ApiResponses({
 			@ApiResponse(code = 200, message = "When idtypes successfully fetched.", response = IdTypeResponseDto.class),
@@ -64,14 +66,15 @@ public class IdTypeController {
 	 *            the request of idtype to be added.
 	 * @return the response.
 	 */
-	@PostMapping("/v1.0/idtypes")
+	@ResponseFilter
+	@PostMapping("/idtypes")
 	@ApiOperation(value = "Service to create id type.", notes = "Create Id Type.", response = CodeAndLanguageCodeID.class)
 	@ApiResponses({
 			@ApiResponse(code = 200, message = "When id type successfully created.", response = CodeResponseDto.class),
 			@ApiResponse(code = 400, message = "When input request has null or invalid values."),
 			@ApiResponse(code = 500, message = "Error occured while creating id type.") })
 	public ResponseEntity<CodeAndLanguageCodeID> createIdType(
-			@Valid @RequestBody RequestDto<IdTypeDto> idTypeRequestDto) {
-		return new ResponseEntity<>(idService.createIdType(idTypeRequestDto), HttpStatus.OK);
+			@Valid @RequestBody RequestWrapper<IdTypeDto> idTypeRequestDto) {
+		return new ResponseEntity<>(idService.createIdType(idTypeRequestDto.getRequest()), HttpStatus.OK);
 	}
 }
