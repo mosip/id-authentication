@@ -16,7 +16,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.kernel.masterdata.dto.DeviceSpecificationDto;
-import io.mosip.kernel.masterdata.dto.RequestDto;
+import io.mosip.kernel.core.http.RequestWrapper;
+import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.masterdata.dto.getresponse.DeviceSpecificationResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.entity.id.IdAndLanguageCodeID;
@@ -57,7 +58,8 @@ public class DeviceSpecificationController {
 	 *         on given language code
 	 * 
 	 */
-	@GetMapping("/v1.0/devicespecifications/{langcode}")
+	@ResponseFilter
+	@GetMapping("/devicespecifications/{langcode}")
 	@ApiOperation(value = "Retrieve all Device Specification for given Languge Code", notes = "Retrieve all DeviceSpecification for the given Languge Code", response = DeviceSpecificationResponseDto.class)
 	@ApiResponses({
 			@ApiResponse(code = 200, message = "When Device Specification retrieved from database for the given Languge Code ", response = DeviceSpecificationResponseDto.class),
@@ -81,8 +83,8 @@ public class DeviceSpecificationController {
 	 * @return {@link DeviceSpecificationResponseDto}
 	 * 
 	 */
-
-	@GetMapping("/v1.0/devicespecifications/{langcode}/{devicetypecode}")
+	@ResponseFilter
+	@GetMapping("/devicespecifications/{langcode}/{devicetypecode}")
 	@ApiOperation(value = "Retrieve all Device Specification for specific langCode and DeviceTypeCode", notes = "Retrieve all DeviceSpecification for specific langCode and DeviceTypeCode", response = DeviceSpecificationResponseDto.class)
 	@ApiResponses({
 			@ApiResponse(code = 200, message = "When Device Specification retrieved from database for specific langCode and DeviceTypeCode ", response = DeviceSpecificationResponseDto.class),
@@ -104,20 +106,22 @@ public class DeviceSpecificationController {
 	 * 
 	 * @return {@link IdResponseDto}
 	 */
-	@PostMapping("/v1.0/devicespecifications")
+	@ResponseFilter
+	@PostMapping("/devicespecifications")
 	@ApiOperation(value = "Service to save Device Specification", notes = "Saves Device Specification and return Device Specification ID", response = IdResponseDto.class)
 	@ApiResponses({
 			@ApiResponse(code = 201, message = "When Device Specification successfully created", response = IdResponseDto.class),
 			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
 			@ApiResponse(code = 500, message = "While creating Device Specification any error occured") })
 	public ResponseEntity<IdAndLanguageCodeID> createDeviceSpecification(
-			@Valid @RequestBody RequestDto<DeviceSpecificationDto> deviceSpecification) {
+			@Valid @RequestBody RequestWrapper<DeviceSpecificationDto> deviceSpecification) {
 
-		return new ResponseEntity<>(deviceSpecificationService.createDeviceSpecification(deviceSpecification),
+		return new ResponseEntity<>(deviceSpecificationService.createDeviceSpecification(deviceSpecification.getRequest()),
 				HttpStatus.OK);
 	}
 
-	@PutMapping("/v1.0/devicespecifications")
+	@ResponseFilter
+	@PutMapping("/devicespecifications")
 	@ApiOperation(value = "Service to update device specification", notes = "update Device Specification and return Device Specification ID", response = IdResponseDto.class)
 	@ApiResponses({
 			@ApiResponse(code = 200, message = "When device specification successfully updated", response = IdResponseDto.class),
@@ -125,12 +129,13 @@ public class DeviceSpecificationController {
 			@ApiResponse(code = 404, message = "When No device specification found"),
 			@ApiResponse(code = 500, message = "While updating device specification any error occured") })
 	public ResponseEntity<IdAndLanguageCodeID> updateDeviceSpecification(
-			@Valid @RequestBody RequestDto<DeviceSpecificationDto> deviceSpecification) {
-		return new ResponseEntity<>(deviceSpecificationService.updateDeviceSpecification(deviceSpecification),
+			@Valid @RequestBody RequestWrapper<DeviceSpecificationDto> deviceSpecification) {
+		return new ResponseEntity<>(deviceSpecificationService.updateDeviceSpecification(deviceSpecification.getRequest()),
 				HttpStatus.OK);
 	}
 
-	@DeleteMapping("/v1.0/devicespecifications/{id}")
+	@ResponseFilter
+	@DeleteMapping("/devicespecifications/{id}")
 	@ApiOperation(value = "Service to delete device specifications", notes = "Delete device specifications and return device specification id", response = IdResponseDto.class)
 	@ApiResponses({
 			@ApiResponse(code = 200, message = "When device specifications successfully deleted", response = IdResponseDto.class),

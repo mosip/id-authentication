@@ -11,7 +11,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.mosip.kernel.masterdata.dto.RequestDto;
+import io.mosip.kernel.core.http.RequestWrapper;
+import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.masterdata.dto.ValidDocumentDto;
 import io.mosip.kernel.masterdata.dto.postresponse.DocCategoryAndTypeResponseDto;
 import io.mosip.kernel.masterdata.entity.id.ValidDocumentID;
@@ -43,11 +44,12 @@ public class ValidDocumentController {
 	 *            the DTO for valid document.
 	 * @return ValidDocumentID.
 	 */
-	@PostMapping("/v1.0/validdocuments")
+	@ResponseFilter
+	@PostMapping("/validdocuments")
 	@ApiOperation(value = "Service to create valid document", notes = "Create valid document and return composite id", response = ValidDocumentID.class)
 	public ResponseEntity<ValidDocumentID> createValidDocument(
-			@Valid @RequestBody RequestDto<ValidDocumentDto> document) {
-		return new ResponseEntity<>(documentService.createValidDocument(document), HttpStatus.OK);
+			@Valid @RequestBody RequestWrapper<ValidDocumentDto> document) {
+		return new ResponseEntity<>(documentService.createValidDocument(document.getRequest()), HttpStatus.OK);
 	}
 
 	/**
@@ -59,7 +61,8 @@ public class ValidDocumentController {
 	 *            the document type code.
 	 * @return the PostValidDocumentResponseDto.
 	 */
-	@DeleteMapping("/v1.0/validdocuments/{doccategorycode}/{doctypecode}")
+	@ResponseFilter
+	@DeleteMapping("/validdocuments/{doccategorycode}/{doctypecode}")
 	@ApiOperation(value = "Service to delete valid document", notes = "Delete valid document and return composite id", response = DocCategoryAndTypeResponseDto.class)
 	public ResponseEntity<DocCategoryAndTypeResponseDto> deleteValidDocuemnt(
 			@PathVariable("doccategorycode") String docCatCode, @PathVariable("doctypecode") String docTypeCode) {

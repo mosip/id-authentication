@@ -18,7 +18,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.kernel.masterdata.dto.RegistrationCenterDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterHolidayDto;
-import io.mosip.kernel.masterdata.dto.RequestDto;
+import io.mosip.kernel.core.http.RequestWrapper;
+import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.masterdata.dto.getresponse.RegistrationCenterResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.ResgistrationCenterStatusResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
@@ -63,7 +64,8 @@ public class RegistrationCenterController {
 	 *            searched.
 	 * @return {@link RegistrationCenterResponseDto} RegistrationCenterResponseDto
 	 */
-	@GetMapping("/v1.0/getlocspecificregistrationcenters/{langcode}/{locationcode}")
+	@ResponseFilter
+	@GetMapping("/getlocspecificregistrationcenters/{langcode}/{locationcode}")
 	public RegistrationCenterResponseDto getRegistrationCenterDetailsByLocationCode(
 			@PathVariable("langcode") String langCode, @PathVariable("locationcode") String locationCode) {
 		return registrationCenterService.getRegistrationCentersByLocationCodeAndLanguageCode(locationCode, langCode);
@@ -81,7 +83,8 @@ public class RegistrationCenterController {
 	 *            the year provided by user.
 	 * @return {@link RegistrationCenterHolidayDto} RegistrationCenterHolidayDto
 	 */
-	@GetMapping("/v1.0/getregistrationcenterholidays/{langcode}/{registrationcenterid}/{year}")
+	@ResponseFilter
+	@GetMapping("/getregistrationcenterholidays/{langcode}/{registrationcenterid}/{year}")
 	public RegistrationCenterHolidayDto getRegistrationCenterHolidays(@PathVariable("langcode") String langCode,
 			@PathVariable("registrationcenterid") String registrationCenterId, @PathVariable("year") int year) {
 		return registrationCenterService.getRegistrationCenterHolidays(registrationCenterId, year, langCode);
@@ -100,7 +103,8 @@ public class RegistrationCenterController {
 	 *            the proximity distance provided by user.
 	 * @return {@link RegistrationCenterResponseDto} RegistrationCenterResponseDto
 	 */
-	@GetMapping("/v1.0/getcoordinatespecificregistrationcenters/{langcode}/{longitude}/{latitude}/{proximitydistance}")
+	@ResponseFilter
+	@GetMapping("/getcoordinatespecificregistrationcenters/{langcode}/{longitude}/{latitude}/{proximitydistance}")
 	public RegistrationCenterResponseDto getCoordinateSpecificRegistrationCenters(
 			@PathVariable("langcode") String langCode, @PathVariable("longitude") double longitude,
 			@PathVariable("latitude") double latitude, @PathVariable("proximitydistance") int proximityDistance) {
@@ -117,7 +121,8 @@ public class RegistrationCenterController {
 	 *            langCode of required center.
 	 * @return {@link RegistrationCenterResponseDto} RegistrationCenterResponseDto
 	 */
-	@GetMapping("/v1.0/registrationcenters/{id}/{langcode}")
+	@ResponseFilter
+	@GetMapping("/registrationcenters/{id}/{langcode}")
 	public RegistrationCenterResponseDto getSpecificRegistrationCenterById(
 			@PathVariable("id") String registrationCenterId, @PathVariable("langcode") String langCode) {
 		return registrationCenterService.getRegistrationCentersByIDAndLangCode(registrationCenterId, langCode);
@@ -128,7 +133,8 @@ public class RegistrationCenterController {
 	 * 
 	 * @return {@link RegistrationCenterResponseDto} RegistrationCenterResponseDto
 	 */
-	@GetMapping("/v1.0/registrationcenters")
+	@ResponseFilter
+	@GetMapping("/registrationcenters")
 	public RegistrationCenterResponseDto getAllRegistrationCentersDetails() {
 		return registrationCenterService.getAllRegistrationCenters();
 	}
@@ -145,7 +151,8 @@ public class RegistrationCenterController {
 	 *            input from user
 	 * @return {@link RegistrationCenterResponseDto} RegistrationCenterResponseDto
 	 */
-	@GetMapping("/v1.0/registrationcenters/{langcode}/{hierarchylevel}/{name}")
+	@ResponseFilter
+	@GetMapping("/registrationcenters/{langcode}/{hierarchylevel}/{name}")
 	public RegistrationCenterResponseDto getRegistrationCenterByHierarchyLevelAndTextAndlangCode(
 			@PathVariable("langcode") String langCode, @PathVariable("hierarchylevel") Short hierarchyLevel,
 			@PathVariable("name") String name) {
@@ -167,7 +174,8 @@ public class RegistrationCenterController {
 	 * @return {@link ResgistrationCenterStatusResponseDto} -
 	 *         RegistrationCenterStatusResponseDto
 	 */
-	@GetMapping("/v1.0/registrationcenters/validate/{id}/{langCode}/{timestamp}")
+	@ResponseFilter
+	@GetMapping("/registrationcenters/validate/{id}/{langCode}/{timestamp}")
 	public ResgistrationCenterStatusResponseDto validateTimestamp(@PathVariable("id") String regId,
 			@PathVariable("langCode") String langCode, @PathVariable("timestamp") String timeStamp) {
 		return registrationCenterService.validateTimeStampWithRegistrationCenter(regId, langCode, timeStamp);
@@ -181,10 +189,11 @@ public class RegistrationCenterController {
 	 *            the request DTO for creating registration center.
 	 * @return the response i.e. the id of the registration center created.
 	 */
-	@PostMapping("/v1.0/registrationcenters")
+	@ResponseFilter
+	@PostMapping("/registrationcenters")
 	public ResponseEntity<IdResponseDto> createRegistrationCenter(
-			@RequestBody @Valid RequestDto<RegistrationCenterDto> registrationCenterDto) {
-		return new ResponseEntity<>(registrationCenterService.createRegistrationCenter(registrationCenterDto),
+			@RequestBody @Valid RequestWrapper<RegistrationCenterDto> registrationCenterDto) {
+		return new ResponseEntity<>(registrationCenterService.createRegistrationCenter(registrationCenterDto.getRequest()),
 				HttpStatus.OK);
 	}
 
@@ -195,15 +204,17 @@ public class RegistrationCenterController {
 	 *            the request DTO for updating registration center.
 	 * @return the response i.e. the id of the registration center updated.
 	 */
-	@PutMapping("/v1.0/registrationcenters")
+	@ResponseFilter
+	@PutMapping("/registrationcenters")
 	public ResponseEntity<IdAndLanguageCodeID> updateRegistrationCenter(
-			@RequestBody @Valid RequestDto<RegistrationCenterDto> registrationCenterDto) {
+			@RequestBody @Valid RequestWrapper<RegistrationCenterDto> registrationCenterDto) {
 		return new ResponseEntity<>(registrationCenterService.updateRegistrationCenter(registrationCenterDto),
 				HttpStatus.OK);
 
 	}
 
-	@DeleteMapping("/v1.0/registrationcenters/{registrationCenterId}")
+	@ResponseFilter
+	@DeleteMapping("/registrationcenters/{registrationCenterId}")
 	public ResponseEntity<IdResponseDto> deleteRegistrationCenter(
 			@PathVariable("registrationCenterId") String registrationCenterId) {
 		return new ResponseEntity<>(registrationCenterService.deleteRegistrationCenter(registrationCenterId),
@@ -223,7 +234,8 @@ public class RegistrationCenterController {
 	 *            input from user
 	 * @return {@link RegistrationCenterResponseDto} RegistrationCenterResponseDto
 	 */
-	@GetMapping("/v1.0/registrationcenters/{langcode}/{hierarchylevel}/names")
+	@ResponseFilter
+	@GetMapping("/registrationcenters/{langcode}/{hierarchylevel}/names")
 	public RegistrationCenterResponseDto getRegistrationCenterByHierarchyLevelAndListTextAndlangCode(
 			@PathVariable("langcode") String langCode, @PathVariable("hierarchylevel") Short hierarchyLevel,
 			@RequestParam("name") List<String> names) {

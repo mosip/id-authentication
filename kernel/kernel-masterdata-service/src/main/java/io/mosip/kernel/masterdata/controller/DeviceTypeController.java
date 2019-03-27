@@ -10,7 +10,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.kernel.masterdata.dto.DeviceTypeDto;
-import io.mosip.kernel.masterdata.dto.RequestDto;
+import io.mosip.kernel.core.http.RequestWrapper;
+import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.service.DeviceTypeService;
 import io.swagger.annotations.Api;
@@ -44,16 +45,16 @@ public class DeviceTypeController {
 	 * 
 	 * @return {@link CodeAndLanguageCodeID}
 	 */
-
-	@PostMapping("/v1.0/devicetypes")
+	@ResponseFilter
+	@PostMapping("/devicetypes")
 	@ApiOperation(value = "Service to save Device Type", notes = "Saves Device Type and return Device Code and Languge Code", response = CodeAndLanguageCodeID.class)
 	@ApiResponses({
 			@ApiResponse(code = 201, message = "When Device Type successfully created", response = CodeAndLanguageCodeID.class),
 			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
 			@ApiResponse(code = 500, message = "While creating Device Type any error occured") })
 	public ResponseEntity<CodeAndLanguageCodeID> createDeviceType(
-			@Valid @RequestBody RequestDto<DeviceTypeDto> deviceTypes) {
-		return new ResponseEntity<>(deviceTypeService.createDeviceType(deviceTypes), HttpStatus.OK);
+			@Valid @RequestBody RequestWrapper<DeviceTypeDto> deviceTypes) {
+		return new ResponseEntity<>(deviceTypeService.createDeviceType(deviceTypes.getRequest()), HttpStatus.OK);
 	}
 	 
 

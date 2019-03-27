@@ -82,10 +82,10 @@ public interface FileSystemAdapter {
 
 	/**
 	 * Checks if is packet present.
-	 *
-	 * @param registrationId
+	 * 
+	 * @param id
 	 *            the registration id
-	 * @return the boolean
+	 * @return true if packet is present
 	 */
 	public boolean isPacketPresent(String id);
 
@@ -96,11 +96,10 @@ public interface FileSystemAdapter {
 	 *            The id
 	 * @param key
 	 *            Physical path of the packet which needs to be stored
-	 * @param file
+	 * @param document
 	 *            file to be stored
 	 * @return True If the packet is stored successfully
 	 */
-
 	public boolean storeFile(String id, String key, InputStream document);
 
 	/**
@@ -134,6 +133,6 @@ public interface FileSystemAdapter {
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
 	 */
-	public void unpackPacket(String id) throws IOException ;
+	public void unpackPacket(String id) throws IOException;
 
 }

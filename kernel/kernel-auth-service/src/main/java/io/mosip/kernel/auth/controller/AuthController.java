@@ -5,6 +5,7 @@ import java.util.List;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -25,20 +26,20 @@ import io.mosip.kernel.auth.constant.AuthConstant;
 import io.mosip.kernel.auth.entities.AuthNResponse;
 import io.mosip.kernel.auth.entities.AuthNResponseDto;
 import io.mosip.kernel.auth.entities.AuthToken;
+import io.mosip.kernel.auth.entities.ClientSecret;
 import io.mosip.kernel.auth.entities.ClientSecretDto;
 import io.mosip.kernel.auth.entities.LoginUser;
-import io.mosip.kernel.auth.entities.LoginUserDTO;
 import io.mosip.kernel.auth.entities.MosipUserDto;
 import io.mosip.kernel.auth.entities.MosipUserDtoToken;
 import io.mosip.kernel.auth.entities.MosipUserListDto;
 import io.mosip.kernel.auth.entities.RolesListDto;
 import io.mosip.kernel.auth.entities.UserOtp;
-import io.mosip.kernel.auth.entities.UserOtpDto;
 import io.mosip.kernel.auth.entities.otp.OtpUser;
-import io.mosip.kernel.auth.entities.otp.OtpUserDto;
 import io.mosip.kernel.auth.exception.AuthManagerException;
 import io.mosip.kernel.auth.service.AuthService;
 import io.mosip.kernel.auth.service.CustomTokenServices;
+import io.mosip.kernel.core.http.RequestWrapper;
+import io.mosip.kernel.core.http.ResponseFilter;
 import io.swagger.annotations.Api;
 
 /**
@@ -84,8 +85,9 @@ public class AuthController {
 	 * @return ResponseEntity Cookie value with Auth token
 	 */
 
+	@ResponseFilter
 	@PostMapping(value = "/authenticate/useridPwd")
-	public ResponseEntity<AuthNResponse> authenticateUseridPwd(@RequestBody LoginUserDTO request,
+	public ResponseEntity<AuthNResponse> authenticateUseridPwd(@RequestBody @Valid RequestWrapper<LoginUser> request,
 			HttpServletResponse res) throws Exception {
 		AuthNResponse authNResponse = null;
 		AuthNResponseDto authResponseDto = authService.authenticateUser(request.getRequest());
@@ -121,10 +123,10 @@ public class AuthController {
 	 * 
 	 * @return ResponseEntity with OTP Sent message
 	 */
-
+	@ResponseFilter
 	@PostMapping(value = "/authenticate/sendotp")
 	@ResponseStatus(value = HttpStatus.OK)
-	public ResponseEntity<AuthNResponse> sendOTP(@RequestBody OtpUserDto otpUserDto) throws Exception {
+	public ResponseEntity<AuthNResponse> sendOTP(@RequestBody @Valid RequestWrapper<OtpUser> otpUserDto) throws Exception {
 		AuthNResponse authNResponse = null;
 		AuthNResponseDto authResponseDto = authService.authenticateWithOtp(otpUserDto.getRequest());
 		if (authResponseDto != null) {
@@ -141,9 +143,9 @@ public class AuthController {
 	 * 
 	 * @return ResponseEntity with Cookie value with Auth token
 	 */
-
+	@ResponseFilter
 	@PostMapping(value = "/authenticate/useridOTP")
-	public ResponseEntity<AuthNResponse> userIdOTP(@RequestBody UserOtpDto userOtpDto, HttpServletResponse res)
+	public ResponseEntity<AuthNResponse> userIdOTP(@RequestBody @Valid RequestWrapper<UserOtp> userOtpDto, HttpServletResponse res)
 			throws Exception {
 		AuthNResponse authNResponse = null;
 		AuthNResponseDto authResponseDto = authService.authenticateUserWithOtp(userOtpDto.getRequest());
@@ -174,9 +176,9 @@ public class AuthController {
 	 * 
 	 * @return ResponseEntity with Cookie value with Auth token
 	 */
-
+	@ResponseFilter
 	@PostMapping(value = "/authenticate/clientidsecretkey")
-	public ResponseEntity<AuthNResponse> clientIdSecretKey(@RequestBody ClientSecretDto clientSecretDto, HttpServletResponse res)
+	public ResponseEntity<AuthNResponse> clientIdSecretKey(@RequestBody @Valid RequestWrapper<ClientSecret> clientSecretDto, HttpServletResponse res)
 			throws Exception {
 		AuthNResponse authNResponse = null;
 		AuthNResponseDto authResponseDto = authService.authenticateWithSecretKey(clientSecretDto.getRequest());
@@ -186,10 +188,6 @@ public class AuthController {
 			res.addCookie(cookie);
 			authNResponse.setMessage(authResponseDto.getMessage());
 			AuthToken token = getAuthToken(authResponseDto);
-			// Cookie refreshCookie =
-			// createRefreshCookie(authResponseDto.getRefreshToken(),
-			// mosipEnvironment.getTokenExpiry());
-			// res.addCookie(refreshCookie);
 			customTokenServices.StoreToken(token);
 		}
 		return new ResponseEntity<>(authNResponse, HttpStatus.OK);
@@ -201,7 +199,7 @@ public class AuthController {
 	 * 
 	 * @return ResponseEntity with MosipUserDto
 	 */
-
+	@ResponseFilter
 	@PostMapping(value = "/authorize/validateToken")
 	public ResponseEntity<MosipUserDto> validateToken(HttpServletRequest request, HttpServletResponse res)
 			throws AuthManagerException, Exception {
@@ -235,7 +233,7 @@ public class AuthController {
 	 * 
 	 * @return ResponseEntity with MosipUserDto
 	 */
-
+	@ResponseFilter
 	@PostMapping(value = "/authorize/refreshToken")
 	public ResponseEntity<MosipUserDto> retryToken(HttpServletRequest request, HttpServletResponse res)
 			throws Exception {
@@ -258,7 +256,7 @@ public class AuthController {
 	 * 
 	 * @return ResponseEntity with MosipUserDto
 	 */
-
+	@ResponseFilter
 	@PostMapping(value = "/authorize/invalidateToken")
 	public ResponseEntity<AuthNResponse> invalidateToken(HttpServletRequest request, HttpServletResponse res)
 			throws Exception {
@@ -272,14 +270,16 @@ public class AuthController {
 		AuthNResponse authNResponse = authService.invalidateToken(authToken);
 		return new ResponseEntity<>(authNResponse, HttpStatus.OK);
 	}
-
+	
+	@ResponseFilter
 	@GetMapping(value = "/roles/{appid}")
 	public ResponseEntity<RolesListDto> getAllRoles(@PathVariable("appid") String appId) throws Exception {
 		HttpHeaders responseHeaders = new HttpHeaders();
 		RolesListDto rolesListDto = authService.getAllRoles(appId);
 		return new ResponseEntity<>(rolesListDto, responseHeaders, HttpStatus.OK);
 	}
-
+	
+	@ResponseFilter
 	@PostMapping(value = "/userdetails/{appid}")
 	public ResponseEntity<MosipUserListDto> getListOfUsersDetails(@RequestBody List<String> userDetails,
 			@PathVariable("appid") String appId) throws Exception {

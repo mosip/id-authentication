@@ -25,6 +25,19 @@ public final class EmptyCheckUtils {
 	public static boolean isNullEmpty(Object obj) {
 		return obj == null;
 	}
+	
+	/**
+	 * This method is used to check if the given <code>str</code> is null or an
+	 * empty string.
+	 * 
+	 * @param str
+	 *            id of type java.lang.String
+	 * @return true if given <code>str</code> is null or length of it is Zero after
+	 *         trim.
+	 */
+	public static boolean isNullEmpty(String str) {
+		return str == null || str.trim().length() == 0;
+	}
 
 	/**
 	 * This method is used to check given <code>collection</code> is null or is

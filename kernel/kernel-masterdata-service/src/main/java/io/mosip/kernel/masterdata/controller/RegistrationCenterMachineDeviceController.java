@@ -13,7 +13,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.kernel.masterdata.dto.RegistrationCenterMachineDeviceDto;
-import io.mosip.kernel.masterdata.dto.RequestDto;
+import io.mosip.kernel.core.http.RequestWrapper;
+import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.masterdata.dto.ResponseRegistrationCenterMachineDeviceDto;
 import io.mosip.kernel.masterdata.entity.id.RegistrationCenterMachineDeviceID;
 import io.mosip.kernel.masterdata.service.RegistrationCenterMachineDeviceService;
@@ -29,13 +30,14 @@ import io.swagger.annotations.ApiResponses;
  * @since 1.0.0
  */
 @RestController
-@RequestMapping("/v1.0/registrationcentermachinedevice")
+@RequestMapping("/registrationcentermachinedevice")
 @Api(tags = { "RegistrationCenterMachineDevice" })
 public class RegistrationCenterMachineDeviceController {
 
 	@Autowired
 	private RegistrationCenterMachineDeviceService registrationCenterMachineDeviceService;
 
+	@ResponseFilter
 	@PostMapping
 	@ApiOperation(value = "Map provided registration center, machine and device", notes = "Map provided registration center id, machine id and device id", response = ResponseRegistrationCenterMachineDeviceDto.class)
 	@ApiResponses({
@@ -43,12 +45,13 @@ public class RegistrationCenterMachineDeviceController {
 			@ApiResponse(code = 400, message = "When Request body passed  is invalid"),
 			@ApiResponse(code = 500, message = "While mapping registration center, machine and device") })
 	public ResponseEntity<ResponseRegistrationCenterMachineDeviceDto> createRegistrationCenterMachineAndDevice(
-			@Valid @RequestBody RequestDto<RegistrationCenterMachineDeviceDto> requestDto) {
+			@Valid @RequestBody RequestWrapper<RegistrationCenterMachineDeviceDto> requestDto) {
 		return new ResponseEntity<>(
-				registrationCenterMachineDeviceService.createRegistrationCenterMachineAndDevice(requestDto),
+				registrationCenterMachineDeviceService.createRegistrationCenterMachineAndDevice(requestDto.getRequest()),
 				HttpStatus.OK);
 	}
 
+	@ResponseFilter
 	@DeleteMapping(value="/{regcenterid}/{machineid}/{deviceid}")
 	@ApiOperation(value="delete mapping if this service is called.")
 	@ApiResponses({
