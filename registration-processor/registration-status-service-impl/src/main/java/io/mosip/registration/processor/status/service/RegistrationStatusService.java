@@ -4,9 +4,11 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusSubRequestDto;
 
+// TODO: Auto-generated Javadoc
 /**
  * This service is used to perform crud operations(get/add/update) on registration
  * status table.
@@ -62,9 +64,34 @@ public interface RegistrationStatusService<T, U, D> {
 	/**
 	 * Gets the by ids.
 	 *
-	 * @param ids
-	 *            the ids
+	 * @param requestIds the request ids
 	 * @return the list of Registrations for the given ids.
 	 */
 	public List<D> getByIds(List<RegistrationStatusSubRequestDto> requestIds);
+	
+	/**
+	 * Gets the un processed packets.
+	 *
+	 * @param fetchSize the fetch size
+	 * @param elapseTime the elapse time
+	 * @param reprocessCount the reprocess count
+	 * @param status the status
+	 * @return the un processed packets
+	 */
+	public List<U> getUnProcessedPackets(Integer fetchSize, long elapseTime,
+			Integer reprocessCount, List<String> status);
+	
+	/**
+	 * Sets the updated time.
+	 *
+	 * @param dto the new updated time
+	 */
+	public void setUpdatedTime(U dto) ;
+	
+	/**
+	 * Update retry count.
+	 *
+	 * @param dto the dto
+	 */
+	public void updateRetryCount(U dto);
 }
