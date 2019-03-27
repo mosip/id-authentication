@@ -130,7 +130,7 @@ public class GlobalParamServiceImpl extends BaseService implements GlobalParamSe
 
 						/* update (Local already exists) but val change */
 						if (!globalParamMap.get(globalParamId.getCode()).trim().equals(globalParam.getVal())
-								|| (globalParam.getIsActive().booleanValue())) {
+								|| !(globalParam.getIsActive().booleanValue())) {
 							String val = globalParamMap.get(globalParamId.getCode()).trim();
 							updateVal(globalParam, val);
 
