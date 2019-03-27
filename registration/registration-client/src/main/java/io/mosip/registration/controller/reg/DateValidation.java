@@ -63,26 +63,6 @@ public class DateValidation extends BaseController {
 		try {
 			fxUtils.populateLocalFieldOnType(parentPane, date, validation, localField);
 			date.textProperty().addListener((obsValue, oldValue, newValue) -> {
-				int dateVal = 1;
-				if (date.getText().matches("\\d+")) {
-					dateVal = Integer.parseInt(date.getText());
-					if (dateVal > 31) {
-						date.setText(oldValue);
-					}
-				}
-				if (date.getText().matches("\\d+") && month.getText().matches("\\d+")) {
-					try {
-						if (Integer.parseInt(date.getText()) > Integer.parseInt(dateMapper.get(month.getText()))) {
-							generateAlert(RegistrationConstants.ALERT_INFORMATION,
-									RegistrationUIConstants.DATE_VALIDATION_MSG);
-							date.setText(oldValue);
-						}
-					} catch (RuntimeException runTimeException) {
-						LOGGER.error("DATE VALIDATOINS", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
-								runTimeException.getMessage() + ExceptionUtils.getStackTrace(runTimeException));
-
-					}
-				}
 				validateTheDate(date, month, year);
 			});
 		} catch (RuntimeException runTimeException) {
@@ -97,25 +77,6 @@ public class DateValidation extends BaseController {
 		try {
 			fxUtils.populateLocalFieldOnType(parentPane, month, validation, localField);
 			month.textProperty().addListener((obsValue, oldValue, newValue) -> {
-				if (month.getText().matches("\\d+")) {
-					int monthVal = Integer.parseInt(month.getText());
-					if (monthVal > 12) {
-						month.setText(oldValue);
-					}
-					if (date.getText().matches("\\d+") && month.getText().matches("\\d+")) {
-						try {
-							if (Integer.parseInt(date.getText()) > Integer.parseInt(dateMapper.get(month.getText()))) {
-								generateAlert(RegistrationConstants.ALERT_INFORMATION,
-										RegistrationUIConstants.DATE_VALIDATION_MSG);
-								date.clear();
-							}
-						} catch (RuntimeException runTimeException) {
-							LOGGER.error("DATE VALIDATOINS", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
-									runTimeException.getMessage() + ExceptionUtils.getStackTrace(runTimeException));
-
-						}
-					}
-				}
 				validateTheDate(date, month, year);
 			});
 		} catch (RuntimeException runTimeException) {
@@ -173,31 +134,8 @@ public class DateValidation extends BaseController {
 					int yearVal = Integer.parseInt(year.getText());
 					LocalDate localDate = LocalDate.now();
 					int minYear = 1900;
-
 					if (yearVal < minYear || yearVal > localDate.getYear()) {
 						year.setText(oldValue);
-					}
-
-					if (!(yearVal % 4 == 0)) {
-						dateMapper.put("2", "28");
-					}
-					if ((yearVal % 4 == 0)) {
-						dateMapper.put("2", "29");
-					}
-					if (date.getText().matches("\\d+") && month.getText().matches("\\d+")) {
-
-						try {
-							if (Integer.parseInt(date.getText()) > Integer.parseInt(dateMapper.get(month.getText()))) {
-								date.clear();
-								generateAlert(RegistrationConstants.ALERT_INFORMATION,
-										RegistrationUIConstants.DATE_VALIDATION_MSG);
-							}
-						} catch (RuntimeException runTimeException) {
-							LOGGER.error("DATE VALIDATOINS", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
-									runTimeException.getMessage() + ExceptionUtils.getStackTrace(runTimeException));
-
-						}
-
 					}
 				}
 				validateTheDate(date, month, year);

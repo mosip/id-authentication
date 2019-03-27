@@ -5,6 +5,7 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 import java.io.IOException;
 import java.math.BigInteger;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Date;
@@ -161,9 +162,6 @@ public class DemographicDetailController extends BaseController {
 
 	@FXML
 	private TextField ageFieldLocalLanguage;
-
-	@FXML
-	private Label dobMessage;
 
 	@FXML
 	private Label toggleLabel1;
@@ -392,6 +390,9 @@ public class DemographicDetailController extends BaseController {
 
 	@FXML
 	private Label ddLocalLanguageLabel;
+	
+	@FXML
+	private Label dobMessage;
 
 	@FXML
 	private TextField mmLocalLanguage;
@@ -679,7 +680,6 @@ public class DemographicDetailController extends BaseController {
 					ageFieldLocalLanguageLabel.setVisible(false);
 					ageFieldLocalLanguageMessage.setVisible(false);
 					dobMessage.setVisible(false);
-					System.out.println(dobMessage.getText());
 					ddLabel.setVisible(false);
 					mmLabel.setVisible(false);
 					yyyyLabel.setVisible(false);
@@ -1631,6 +1631,17 @@ public class DemographicDetailController extends BaseController {
 					isValid = false;
 				}
 			}
+		if(isValid) {
+				SimpleDateFormat dateOfBirth = new SimpleDateFormat("dd-MM-yyyy");
+				dateOfBirth.setLenient(false);
+				try {
+					dateOfBirth.parse(dd.getText()+"-"+mm.getText()+"-"+yyyy.getText());
+				}catch(ParseException exception){
+					dobMessage.setText(RegistrationUIConstants.INVALID_DATE_OF_BIRTH);
+					dobMessage.setVisible(true);
+					isValid=false;
+				}
+		}
 		if (isValid)
 			isValid = validation.validateUinOrRid(uinId, isChild, uinValidator, ridValidator);
 		registrationController.displayValidationMessage(validation.getValidationMessage().toString());
