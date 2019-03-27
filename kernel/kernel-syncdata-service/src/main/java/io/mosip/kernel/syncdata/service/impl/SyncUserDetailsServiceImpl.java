@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -17,6 +16,7 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.core.exception.ExceptionUtils;
@@ -26,6 +26,7 @@ import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.syncdata.constant.UserDetailsErrorCode;
 import io.mosip.kernel.syncdata.dto.RegistrationCenterUserDto;
 import io.mosip.kernel.syncdata.dto.SyncUserDetailDto;
+import io.mosip.kernel.syncdata.dto.UserDetailMapDto;
 import io.mosip.kernel.syncdata.dto.UserDetailRequestDto;
 import io.mosip.kernel.syncdata.dto.response.RegistrationCenterUserResponseDto;
 import io.mosip.kernel.syncdata.dto.response.UserDetailResponseDto;
@@ -34,6 +35,7 @@ import io.mosip.kernel.syncdata.exception.ParseResponseException;
 import io.mosip.kernel.syncdata.exception.SyncDataServiceException;
 import io.mosip.kernel.syncdata.service.RegistrationCenterUserService;
 import io.mosip.kernel.syncdata.service.SyncUserDetailsService;
+import io.mosip.kernel.syncdata.utils.MapperUtils;
 
 /**
  * This class will fetch all user details from the LDAP server through
@@ -77,7 +79,6 @@ public class SyncUserDetailsServiceImpl implements SyncUserDetailsService {
 		userDetailsUri.append(authUserDetailsBaseUri).append(authUserDetailsUri);
 		UserDetailResponseDto data = null;
 		SyncUserDetailDto syncUserDetailDto = null;
-		// ResponseEntity<UserDetailResponseDto> response = null;
 		RegistrationCenterUserResponseDto registrationCenterResponseDto = registrationCenterUserService
 				.getUsersBasedOnRegistrationCenterId(regId);
 		List<RegistrationCenterUserDto> registrationCenterUserDtos = registrationCenterResponseDto
@@ -96,14 +97,16 @@ public class SyncUserDetailsServiceImpl implements SyncUserDetailsService {
 				syncDataRequestHeaders);
 
 		try {
-			ResponseEntity<String> response = restTemplate.postForEntity(
-					userDetailsUri.toString()+"/registrationclient",
-					userDetailRequestEntity, String.class);
 			/*
 			 * ResponseEntity<String> response = restTemplate.postForEntity(
-			 * "https://dev.mosip.io/authmanager/userdetails/registrationclient",
-			 * userDetailRequestEntity, String.class);
+			 * userDetailsUri.toString() + "/registrationclient", userDetailRequestEntity,
+			 * String.class);
 			 */
+
+			ResponseEntity<String> response = restTemplate.postForEntity(
+					"https://dev.mosip.io/authmanager/userdetails/registrationclient", userDetailRequestEntity,
+					String.class);
+
 			String responseBody = response.getBody();
 			List<ServiceError> validationErrorsList = null;
 			validationErrorsList = ExceptionUtils.getServiceErrorList(responseBody);
@@ -111,23 +114,25 @@ public class SyncUserDetailsServiceImpl implements SyncUserDetailsService {
 			if (!validationErrorsList.isEmpty()) {
 				throw new AuthManagerServiceException(validationErrorsList);
 			}
-			ResponseWrapper<?> responseObject = null;
+			ResponseWrapper<UserDetailResponseDto> responseObject = null;
 			try {
-				responseObject = objectMapper.readValue(response.getBody(), ResponseWrapper.class);
-				syncUserDetailDto = objectMapper.readValue(
-						objectMapper.writeValueAsString(responseObject.getResponse()), SyncUserDetailDto.class);
+				responseObject = objectMapper.readValue(response.getBody(),
+						new TypeReference<ResponseWrapper<UserDetailResponseDto>>() {
+						});
+				data = responseObject.getResponse();
 			} catch (IOException | NullPointerException exception) {
 				throw new ParseResponseException(UserDetailsErrorCode.USER_DETAILS_PARSE_ERROR.getErrorCode(),
 						UserDetailsErrorCode.USER_DETAILS_PARSE_ERROR.getErrorMessage() + exception.getMessage(),
 						exception);
 			}
-			/*
-			 * if (response.getStatusCode().is2xxSuccessful()) data = response.getBody(); if
-			 * (data != null && data.getMosipUserDtoList() != null) { List<UserDetailMapDto>
-			 * userDetails = MapperUtils
-			 * .mapUserDetailsToUserDetailMap(data.getMosipUserDtoList()); syncUserDetailDto
-			 * = new SyncUserDetailDto(); syncUserDetailDto.setUserDetails(userDetails); }
-			 */
+
+			if (data != null && data.getMosipUserDtoList() != null) {
+				List<UserDetailMapDto> userDetails = MapperUtils
+						.mapUserDetailsToUserDetailMap(data.getMosipUserDtoList());
+				syncUserDetailDto = new SyncUserDetailDto();
+				syncUserDetailDto.setUserDetails(userDetails);
+			}
+
 			return syncUserDetailDto;
 
 		} catch (HttpServerErrorException | HttpClientErrorException e) {
