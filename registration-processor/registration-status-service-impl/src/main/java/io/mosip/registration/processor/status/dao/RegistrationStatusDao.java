@@ -1,5 +1,6 @@
 package io.mosip.registration.processor.status.dao;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,6 +19,12 @@ import io.mosip.registration.processor.status.repositary.RegistrationRepositary;
  */
 @Component
 public class RegistrationStatusDao {
+
+	/** The Constant REPROCESS. */
+	private static final String REPROCESS = "REPROCESS";
+
+	/** The Constant SUCCESS. */
+	private static final String SUCCESS = "SUCCESS";
 
 	/** The registration status repositary. */
 	@Autowired
@@ -146,6 +153,55 @@ public class RegistrationStatusDao {
 		params.put(ISDELETED, Boolean.FALSE);
 
 		return registrationStatusRepositary.createQuerySelect(queryStr, params);
+	}
+
+	/**
+	 * Gets the un processed packets.
+	 *
+	 * @param fetchSize the fetch size
+	 * @param elapseTime the elapse time
+	 * @param reprocessCount the reprocess count
+	 * @param status 
+	 * @return the un processed packets
+	 */
+	public List<RegistrationStatusEntity> getUnProcessedPackets(Integer fetchSize, long elapseTime,
+			Integer reprocessCount, List<String> status) {
+
+		Map<String, Object> params = new HashMap<>();
+		String className = RegistrationStatusEntity.class.getSimpleName();
+		String alias = RegistrationStatusEntity.class.getName().toLowerCase().substring(0, 1);
+		LocalDateTime timeDifference = LocalDateTime.now().minusSeconds(elapseTime);
+
+		String queryStr = SELECT_DISTINCT + alias + FROM + className + EMPTY_STRING + alias + WHERE + "(" + alias
+				+ ".latestTransactionStatusCode=:" + SUCCESS + "OR" + alias + ".latestTransactionStatusCode=:"
+				+ REPROCESS + ")" + "AND" + alias + ".regProcessRetryCount<" + "reprocessCount" + "AND" + alias
+				+ ".latestTransactionTimes<" + "timeDifference" + "LIMIT" + "fetchSize";
+
+		params.put("reprocessCount", reprocessCount);
+		params.put("timeDifference", timeDifference);
+		params.put("fetchSize", fetchSize);
+
+		return registrationStatusRepositary.createQuerySelect(queryStr, params);
+	}
+
+	/**
+	 * Sets the update time.
+	 *
+	 * @param entity the new update time
+	 */
+	public void setUpdateTime(RegistrationStatusEntity entity) {
+		entity.setUpdateDateTime(LocalDateTime.now());
+		registrationStatusRepositary.update(entity);
+	}
+
+	/**
+	 * Update retry count.
+	 *
+	 * @param entity the entity
+	 */
+	public void updateRetryCount(RegistrationStatusEntity entity) {
+		entity.setRegProcessRetryCount(entity.getRegProcessRetryCount() + 1);
+		registrationStatusRepositary.update(entity);
 	}
 
 }
