@@ -35,18 +35,17 @@ public interface PacketUploadService {
 	 Boolean updateStatus(List<PacketStatusDTO> packetUploadStatus);
 	 
 	 /**
- 	 * Upload packet.
+ 	 * Uploading packets after creation of packet and successful sync when EOD is OFF
  	 *
  	 * @param rid 
  	 * 			the registration id
- 	 * @return the string
  	 */
  	void uploadPacket(String rid);
 
 	/**
-	 * Upload EOD packets.
+	 * Uploading packets after approval/rejection in EOD and successful sync when EOD is ON.
 	 *
-	 * @param regIds the reg ids
+	 * @param regIds the registration id's
 	 */
 	void uploadEODPackets(List<String> regIds);
 
