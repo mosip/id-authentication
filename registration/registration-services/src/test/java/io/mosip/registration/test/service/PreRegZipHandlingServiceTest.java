@@ -87,8 +87,7 @@ public class PreRegZipHandlingServiceTest {
 	@Test
 	public void extractPreRegZipFileTest() throws RegBaseCheckedException, IOException,
 			JsonValidationProcessingException, JsonIOException, JsonSchemaIOException, FileIOException {
-		Mockito.when(jsonValidator.validateJson(Mockito.anyString(), Mockito.anyString()))
-				.thenReturn(new ValidationReport());
+		Mockito.when(jsonValidator.validateJson(Mockito.anyString())).thenReturn(new ValidationReport());
 		
 		Map<String,Object> appMap = new HashMap<>();
 		appMap.put(RegistrationConstants.IDENTITY_CLASS_NAME, "io.mosip.registration.dto.demographic.MoroccoIdentity");
@@ -103,8 +102,7 @@ public class PreRegZipHandlingServiceTest {
 	@Test(expected = RegBaseCheckedException.class)
 	public void extractPreRegZipFileTestNegative() throws RegBaseCheckedException, IOException,
 			JsonValidationProcessingException, JsonIOException, JsonSchemaIOException, FileIOException {
-		Mockito.when(jsonValidator.validateJson(Mockito.anyString(), Mockito.anyString()))
-				.thenThrow(new JsonValidationProcessingException("", ""));
+		Mockito.when(jsonValidator.validateJson(Mockito.anyString())).thenThrow(new JsonValidationProcessingException("", ""));
 		preRegZipHandlingServiceImpl.extractPreRegZipFile(preRegPacket);
 
 	}
