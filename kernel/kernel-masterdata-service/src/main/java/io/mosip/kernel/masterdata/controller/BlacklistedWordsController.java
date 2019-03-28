@@ -3,8 +3,6 @@ package io.mosip.kernel.masterdata.controller;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseFilter;
+import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.masterdata.dto.BlacklistedWordListRequestDto;
 import io.mosip.kernel.masterdata.dto.BlacklistedWordsDto;
 import io.mosip.kernel.masterdata.dto.getresponse.BlacklistedWordsResponseDto;
@@ -50,8 +49,11 @@ public class BlacklistedWordsController {
 	 */
 	@ResponseFilter
 	@GetMapping("/{langcode}")
-	public BlacklistedWordsResponseDto getAllBlackListedWordByLangCode(@PathVariable("langcode") String langCode) {
-		return blacklistedWordsService.getAllBlacklistedWordsBylangCode(langCode);
+	public ResponseWrapper<BlacklistedWordsResponseDto> getAllBlackListedWordByLangCode(@PathVariable("langcode") String langCode) {
+		
+		ResponseWrapper<BlacklistedWordsResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(blacklistedWordsService.getAllBlacklistedWordsBylangCode(langCode));
+		return responseWrapper;
 	}
 
 	/**
@@ -68,14 +70,17 @@ public class BlacklistedWordsController {
 	@ApiOperation(value = "Black listed word validation")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Valid Word"),
 			@ApiResponse(code = 200, message = "Invalid Word") })
-	public ResponseEntity<CodeResponseDto> validateWords(@RequestBody RequestWrapper<BlacklistedWordListRequestDto> blacklistedwords) {
+	public ResponseWrapper<CodeResponseDto> validateWords(@RequestBody RequestWrapper<BlacklistedWordListRequestDto> blacklistedwords) {
 		String isValid = "Valid";
 		if (!blacklistedWordsService.validateWord(blacklistedwords.getRequest().getBlacklistedwords())) {
 			isValid = "Invalid";
 		}
 		CodeResponseDto dto = new CodeResponseDto();
 		dto.setCode(isValid);
-		return new ResponseEntity<>(dto, HttpStatus.OK);
+		
+		ResponseWrapper<CodeResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(dto);
+		return responseWrapper;
 	}
 
 	/**
@@ -88,10 +93,12 @@ public class BlacklistedWordsController {
 	 */
 	@ResponseFilter
 	@PostMapping
-	public ResponseEntity<WordAndLanguageCodeID> createBlackListedWord(
+	public ResponseWrapper<WordAndLanguageCodeID> createBlackListedWord(
 			@RequestBody @Valid RequestWrapper<BlacklistedWordsDto> blackListedWordsRequestDto) {
-		return new ResponseEntity<>(
-				blacklistedWordsService.createBlackListedWord(blackListedWordsRequestDto.getRequest()), HttpStatus.OK);
+		
+		ResponseWrapper<WordAndLanguageCodeID> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(blacklistedWordsService.createBlackListedWord(blackListedWordsRequestDto.getRequest()));
+		return responseWrapper;
 	}
 
 	/**
@@ -105,9 +112,12 @@ public class BlacklistedWordsController {
 	@ResponseFilter
 	@PutMapping
 	@ApiOperation(value = "update the blacklisted word", response = WordAndLanguageCodeID.class)
-	public WordAndLanguageCodeID updateBlackListedWord(
+	public ResponseWrapper<WordAndLanguageCodeID> updateBlackListedWord(
 			@Valid @RequestBody RequestWrapper<BlacklistedWordsDto> blackListedWordsRequestDto) {
-		return blacklistedWordsService.updateBlackListedWord(blackListedWordsRequestDto.getRequest());
+		
+		ResponseWrapper<WordAndLanguageCodeID> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(blacklistedWordsService.updateBlackListedWord(blackListedWordsRequestDto.getRequest()));
+		return responseWrapper;
 	}
 
 	/**
@@ -120,9 +130,12 @@ public class BlacklistedWordsController {
 	@ResponseFilter
 	@DeleteMapping("/{word}")
 	@ApiOperation(value = "delete the blacklisted word", response = WordAndLanguageCodeID.class)
-	public ResponseEntity<CodeResponseDto> deleteBlackListedWord(@PathVariable("word") String word) {
+	public ResponseWrapper<CodeResponseDto> deleteBlackListedWord(@PathVariable("word") String word) {
 		CodeResponseDto dto = new CodeResponseDto();//
 		dto.setCode(blacklistedWordsService.deleteBlackListedWord(word));
-		return new ResponseEntity<>(dto, HttpStatus.OK);
+		
+		ResponseWrapper<CodeResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(dto);
+		return responseWrapper;
 	}
 }

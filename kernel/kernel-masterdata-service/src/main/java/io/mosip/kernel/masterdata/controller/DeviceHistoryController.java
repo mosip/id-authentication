@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.kernel.core.http.ResponseFilter;
+import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.masterdata.dto.getresponse.DeviceHistoryResponseDto;
 import io.mosip.kernel.masterdata.service.DeviceHistoryService;
 import io.swagger.annotations.Api;
@@ -55,9 +56,11 @@ public class DeviceHistoryController {
 			@ApiResponse(code = 200, message = "When Device History Details retrieved from database for the given Languge Code, ID and Effective date time", response = DeviceHistoryResponseDto.class),
 			@ApiResponse(code = 404, message = "When No Device History Details found for the given Languge Code, ID and Effective date time"),
 			@ApiResponse(code = 500, message = "While retrieving Device History Details any error occured") })
-	public DeviceHistoryResponseDto getDeviceHistoryIdLangEff(@PathVariable("id") String id,
+	public ResponseWrapper<DeviceHistoryResponseDto> getDeviceHistoryIdLangEff(@PathVariable("id") String id,
 			@PathVariable("langcode") String langCode, @PathVariable("effdatetimes") String dateAndTime) {
 
-		return devHistoryService.getDeviceHistroyIdLangEffDTime(id, langCode, dateAndTime);
+		ResponseWrapper<DeviceHistoryResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(devHistoryService.getDeviceHistroyIdLangEffDTime(id, langCode, dateAndTime));
+		return responseWrapper;
 	}
 }
