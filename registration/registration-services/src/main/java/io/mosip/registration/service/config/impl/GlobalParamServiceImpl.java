@@ -116,17 +116,18 @@ public class GlobalParamServiceImpl extends BaseService implements GlobalParamSe
 				@SuppressWarnings("unchecked")
 				HashMap<String, Object> globalParamJsonMap = (HashMap<String, Object>) serviceDelegateUtil
 						.get(RegistrationConstants.GET_GLOBAL_CONFIG, requestParamMap, true, triggerPoinnt);
-				HashMap<String, String> globalParamMap = new HashMap<>();
-				parseToMap(globalParamJsonMap, globalParamMap);
+				if (null != globalParamJsonMap.get(RegistrationConstants.PACKET_STATUS_READER_RESPONSE)) {
+					HashMap<String, String> globalParamMap = new HashMap<>();
+					parseToMap(globalParamJsonMap, globalParamMap);
 
-				List<GlobalParam> globalParamList = globalParamDAO.getAllEntries();
+					List<GlobalParam> globalParamList = globalParamDAO.getAllEntries();
 
-				for (GlobalParam globalParam : globalParamList) {
+					for (GlobalParam globalParam : globalParamList) {
 
-					/* Check in map, if exists, update it and remove from map */
-					GlobalParamId globalParamId = globalParam.getGlobalParamId();
+						/* Check in map, if exists, update it and remove from map */
+						GlobalParamId globalParamId = globalParam.getGlobalParamId();
 
-					if (globalParamMap.get(globalParamId.getCode()) != null) {
+						if (globalParamMap.get(globalParamId.getCode()) != null) {
 
 						/* update (Local already exists) but val change */
 						if (!globalParamMap.get(globalParamId.getCode()).trim().equals(globalParam.getVal())
@@ -134,40 +135,43 @@ public class GlobalParamServiceImpl extends BaseService implements GlobalParamSe
 							String val = globalParamMap.get(globalParamId.getCode()).trim();
 							updateVal(globalParam, val);
 
-							/* Add in application map */
-							ApplicationContext.setGlobalConfigValueOf(globalParamId.getCode(), val);
+								/* Add in application map */
+								ApplicationContext.setGlobalConfigValueOf(globalParamId.getCode(), val);
 
-							if (globalParamId.getCode().contains("kernel")) {
-								isToBeRestarted = true;
+								if (globalParamId.getCode().contains("kernel")) {
+									isToBeRestarted = true;
+								}
 							}
 						}
+						/* Set is deleted true as removed from server */
+						else {
+							updateIsDeleted(globalParam);
+							ApplicationContext.removeGlobalConfigValueOf(globalParamId.getCode());
+						}
+						globalParamMap.remove(globalParamId.getCode());
 					}
-					/* Set is deleted true as removed from server */
-					else {
-						updateIsDeleted(globalParam);
-						ApplicationContext.removeGlobalConfigValueOf(globalParamId.getCode());
+
+					for (Entry<String, String> key : globalParamMap.entrySet()) {
+						createNew(key.getKey(), globalParamMap.get(key.getKey()), globalParamList);
+
+						if (key.getKey().contains("kernel")) {
+							isToBeRestarted = true;
+						}
+						/* Add in application map */
+						ApplicationContext.setGlobalConfigValueOf(key.getKey(), key.getValue());
 					}
-					globalParamMap.remove(globalParamId.getCode());
-				}
 
-				for (Entry<String, String> key : globalParamMap.entrySet()) {
-					createNew(key.getKey(), globalParamMap.get(key.getKey()), globalParamList);
-
-					if (key.getKey().contains("kernel")) {
-						isToBeRestarted = true;
+					/* Save all Global Params */
+					globalParamDAO.saveAll(globalParamList);
+					if (isToBeRestarted) {
+						Map<String, Object> attributes = new HashMap<>();
+						attributes.put("Restart", RegistrationConstants.ENABLE);
+						setSuccessResponse(responseDTO, RegistrationConstants.POLICY_SYNC_SUCCESS_MESSAGE, attributes);
+					} else {
+						setSuccessResponse(responseDTO, RegistrationConstants.POLICY_SYNC_SUCCESS_MESSAGE, null);
 					}
-					/* Add in application map */
-					ApplicationContext.setGlobalConfigValueOf(key.getKey(), key.getValue());
-				}
-
-				/* Save all Global Params */
-				globalParamDAO.saveAll(globalParamList);
-				if (isToBeRestarted) {
-					Map<String, Object> attributes = new HashMap<>();
-					attributes.put("Restart", RegistrationConstants.ENABLE);
-					setSuccessResponse(responseDTO, RegistrationConstants.POLICY_SYNC_SUCCESS_MESSAGE, attributes);
 				} else {
-					setSuccessResponse(responseDTO, RegistrationConstants.POLICY_SYNC_SUCCESS_MESSAGE, null);
+					setErrorResponse(responseDTO, RegistrationConstants.POLICY_SYNC_ERROR_MESSAGE, null);
 				}
 			} catch (HttpServerErrorException | HttpClientErrorException | SocketTimeoutException
 					| RegBaseCheckedException | ClassCastException | ResourceAccessException exception) {
