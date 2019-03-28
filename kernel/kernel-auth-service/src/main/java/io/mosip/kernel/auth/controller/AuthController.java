@@ -43,7 +43,6 @@ import io.swagger.annotations.Api;
  * Controller APIs for Authentication and Authorization
  * 
  * @author Ramadurai Pandian
- * @author Bal Vikash Sharma
  * @since 1.0.0
  *
  */
@@ -86,6 +85,7 @@ public class AuthController {
 	@PostMapping(value = "/authenticate/useridPwd")
 	public ResponseWrapper<AuthNResponse> authenticateUseridPwd(@RequestBody @Valid RequestWrapper<LoginUser> request,
 			HttpServletResponse res) throws Exception {
+		ResponseWrapper<AuthNResponse> responseWrapper = new ResponseWrapper<>();
 		AuthNResponse authNResponse = null;
 		AuthNResponseDto authResponseDto = authService.authenticateUser(request.getRequest());
 		if (authResponseDto != null) {
@@ -96,9 +96,8 @@ public class AuthController {
 			AuthToken token = getAuthToken(authResponseDto);
 			customTokenServices.StoreToken(token);
 		}
-		ResponseWrapper<AuthNResponse> response = new ResponseWrapper<>();
-		response.setResponse(authNResponse);
-		return response;
+		responseWrapper.setResponse(authNResponse);
+		return responseWrapper;
 	}
 
 	private AuthToken getAuthToken(AuthNResponseDto authResponseDto) {
@@ -127,15 +126,15 @@ public class AuthController {
 	@ResponseStatus(value = HttpStatus.OK)
 	public ResponseWrapper<AuthNResponse> sendOTP(@RequestBody @Valid RequestWrapper<OtpUser> otpUserDto)
 			throws Exception {
+		ResponseWrapper<AuthNResponse> responseWrapper = new ResponseWrapper<>();
 		AuthNResponse authNResponse = null;
 		AuthNResponseDto authResponseDto = authService.authenticateWithOtp(otpUserDto.getRequest());
 		if (authResponseDto != null) {
 			authNResponse = new AuthNResponse();
 			authNResponse.setMessage(authResponseDto.getMessage());
 		}
-		ResponseWrapper<AuthNResponse> response = new ResponseWrapper<>();
-		response.setResponse(authNResponse);
-		return response;
+		responseWrapper.setResponse(authNResponse);
+		return responseWrapper;
 	}
 
 	/**
@@ -149,6 +148,7 @@ public class AuthController {
 	@PostMapping(value = "/authenticate/useridOTP")
 	public ResponseWrapper<AuthNResponse> userIdOTP(@RequestBody @Valid RequestWrapper<UserOtp> userOtpDto,
 			HttpServletResponse res) throws Exception {
+		ResponseWrapper<AuthNResponse> responseWrapper = new ResponseWrapper<>();
 		AuthNResponse authNResponse = null;
 		AuthNResponseDto authResponseDto = authService.authenticateUserWithOtp(userOtpDto.getRequest());
 		if (authResponseDto != null && authResponseDto.getToken() != null) {
@@ -160,15 +160,13 @@ public class AuthController {
 			if (token != null && token.getUserId() != null) {
 				customTokenServices.StoreToken(token);
 			}
-
 		} else {
 			authNResponse = new AuthNResponse();
 			authNResponse.setMessage(
 					authResponseDto.getMessage() != null ? authResponseDto.getMessage() : "Otp validation failed");
 		}
-		ResponseWrapper<AuthNResponse> response = new ResponseWrapper<>();
-		response.setResponse(authNResponse);
-		return response;
+		responseWrapper.setResponse(authNResponse);
+		return responseWrapper;
 	}
 
 	/**
@@ -183,6 +181,7 @@ public class AuthController {
 	public ResponseWrapper<AuthNResponse> clientIdSecretKey(
 			@RequestBody @Valid RequestWrapper<ClientSecret> clientSecretDto, HttpServletResponse res)
 			throws Exception {
+		ResponseWrapper<AuthNResponse> responseWrapper = new ResponseWrapper<>();
 		AuthNResponse authNResponse = null;
 		AuthNResponseDto authResponseDto = authService.authenticateWithSecretKey(clientSecretDto.getRequest());
 		if (authResponseDto != null) {
@@ -193,9 +192,8 @@ public class AuthController {
 			AuthToken token = getAuthToken(authResponseDto);
 			customTokenServices.StoreToken(token);
 		}
-		ResponseWrapper<AuthNResponse> response = new ResponseWrapper<>();
-		response.setResponse(authNResponse);
-		return response;
+		responseWrapper.setResponse(authNResponse);
+		return responseWrapper;
 	}
 
 	/**
@@ -208,6 +206,7 @@ public class AuthController {
 	@PostMapping(value = "/authorize/validateToken")
 	public ResponseWrapper<MosipUserDto> validateToken(HttpServletRequest request, HttpServletResponse res)
 			throws AuthManagerException, Exception {
+		ResponseWrapper<MosipUserDto> responseWrapper = new ResponseWrapper<>();
 		String authToken = null;
 		Cookie[] cookies = request.getCookies();
 		MosipUserDtoToken mosipUserDtoToken = null;
@@ -229,9 +228,8 @@ public class AuthController {
 
 			throw new AuthManagerException(AuthConstant.UNAUTHORIZED_CODE, e.getMessage());
 		}
-		ResponseWrapper<MosipUserDto> response = new ResponseWrapper<>();
-		response.setResponse(mosipUserDtoToken.getMosipUserDto());
-		return response;
+		responseWrapper.setResponse(mosipUserDtoToken.getMosipUserDto());
+		return responseWrapper;
 	}
 
 	/**
@@ -244,6 +242,7 @@ public class AuthController {
 	@PostMapping(value = "/authorize/refreshToken")
 	public ResponseWrapper<MosipUserDto> retryToken(HttpServletRequest request, HttpServletResponse res)
 			throws Exception {
+		ResponseWrapper<MosipUserDto> responseWrapper = new ResponseWrapper<>();
 		String authToken = null;
 		Cookie[] cookies = request.getCookies();
 		for (Cookie cookie : cookies) {
@@ -254,9 +253,8 @@ public class AuthController {
 		MosipUserDtoToken mosipUserDtoToken = authService.retryToken(authToken);
 		Cookie cookie = createCookie(mosipUserDtoToken.getToken(), mosipEnvironment.getTokenExpiry());
 		res.addCookie(cookie);
-		ResponseWrapper<MosipUserDto> response = new ResponseWrapper<>();
-		response.setResponse(mosipUserDtoToken.getMosipUserDto());
-		return response;
+		responseWrapper.setResponse(mosipUserDtoToken.getMosipUserDto());
+		return responseWrapper;
 	}
 
 	/**
@@ -269,6 +267,7 @@ public class AuthController {
 	@PostMapping(value = "/authorize/invalidateToken")
 	public ResponseWrapper<AuthNResponse> invalidateToken(HttpServletRequest request, HttpServletResponse res)
 			throws Exception {
+		ResponseWrapper<AuthNResponse> responseWrapper = new ResponseWrapper<>();
 		String authToken = null;
 		Cookie[] cookies = request.getCookies();
 		for (Cookie cookie : cookies) {
@@ -277,18 +276,17 @@ public class AuthController {
 			}
 		}
 		AuthNResponse authNResponse = authService.invalidateToken(authToken);
-		ResponseWrapper<AuthNResponse> response = new ResponseWrapper<>();
-		response.setResponse(authNResponse);
-		return response;
+		responseWrapper.setResponse(authNResponse);
+		return responseWrapper;
 	}
 
 	@ResponseFilter
 	@GetMapping(value = "/roles/{appid}")
 	public ResponseWrapper<RolesListDto> getAllRoles(@PathVariable("appid") String appId) throws Exception {
+		ResponseWrapper<RolesListDto> responseWrapper = new ResponseWrapper<>();
 		RolesListDto rolesListDto = authService.getAllRoles(appId);
-		ResponseWrapper<RolesListDto> response = new ResponseWrapper<>();
-		response.setResponse(rolesListDto);
-		return response;
+		responseWrapper.setResponse(rolesListDto);
+		return responseWrapper;
 	}
 
 	@ResponseFilter
@@ -296,11 +294,11 @@ public class AuthController {
 	public ResponseWrapper<MosipUserListDto> getListOfUsersDetails(
 			@RequestBody RequestWrapper<UserDetailsRequest> userDetails, @PathVariable("appid") String appId)
 			throws Exception {
+		ResponseWrapper<MosipUserListDto> responseWrapper = new ResponseWrapper<>();
 		MosipUserListDto mosipUsers = authService.getListOfUsersDetails(userDetails.getRequest().getUserDetails(),
 				appId);
-		ResponseWrapper<MosipUserListDto> response = new ResponseWrapper<>();
-		response.setResponse(mosipUsers);
-		return response;
+		responseWrapper.setResponse(mosipUsers);
+		return responseWrapper;
 	}
 
 }

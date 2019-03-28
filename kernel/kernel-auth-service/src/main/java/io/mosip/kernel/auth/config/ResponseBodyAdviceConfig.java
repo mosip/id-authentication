@@ -59,10 +59,8 @@ public class ResponseBodyAdviceConfig implements ResponseBodyAdvice<ResponseWrap
 	public ResponseWrapper<?> beforeBodyWrite(ResponseWrapper<?> body, MethodParameter returnType,
 			MediaType selectedContentType, Class<? extends HttpMessageConverter<?>> selectedConverterType,
 			ServerHttpRequest request, ServerHttpResponse response) {
-
 		RequestWrapper<?> requestWrapper = null;
 		String requestBody = null;
-
 		try {
 			HttpServletRequest httpServletRequest = ((ServletServerHttpRequest) request).getServletRequest();
 
@@ -75,7 +73,6 @@ public class ResponseBodyAdviceConfig implements ResponseBodyAdvice<ResponseWrap
 						((ContentCachingRequestWrapper) ((HttpServletRequestWrapper) httpServletRequest).getRequest())
 								.getContentAsByteArray());
 			}
-
 			objectMapper.registerModule(new JavaTimeModule());
 			if (!EmptyCheckUtils.isNullEmpty(requestBody)) {
 				requestWrapper = objectMapper.readValue(requestBody, RequestWrapper.class);
@@ -88,6 +85,7 @@ public class ResponseBodyAdviceConfig implements ResponseBodyAdvice<ResponseWrap
 			Logger mosipLogger = LoggerConfiguration.logConfig(ResponseBodyAdviceConfig.class);
 			mosipLogger.error("", "", "", e.getMessage());
 		}
+
 		return body;
 	}
 
