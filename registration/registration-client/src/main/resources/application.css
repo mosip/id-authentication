@@ -266,12 +266,6 @@
 	-fx-pref-width: 100.0px;
 }
 
-.headerPane {
-	-fx-background-color:#808080;
-	-fx-pref-height: 54.0px;
-	-fx-pref-width: 483.0px;
-}
-
 .paneRoot {
 	-fx-border-width: 1.0 1.0 1.0 1.0;
 	-fx-border-color: black;
@@ -621,16 +615,19 @@ Working on new Css by taleev
 		
 }
 
+.scanPage{
+	-fx-background-color : white;
+	-fx-text-fill : black;
+	-fx-font-size: 1.3em;
+	-fx-border-width : 1;
+	-fx-border-color : black;
+	
+}
+
 .demoGraphicFieldMessageLabel{
 		-fx-background-color:#ffffff;
 		-fx-text-fill : red;
 }
-
-#tF,#tF1,#tF2,#tF21,#tF22,#tF23,#t24,#tF25,#tF26,#tF27{
-	-fx-border-width : 0 1 0 0;
-	-fx-border-color : red;
-}
-
 
 
 .demographicCombobox{
@@ -830,6 +827,7 @@ Working on new Css by taleev
 	-fx-text-fill: #FF4081;
 	
 }
+
 
 .registrationHeaderBorder{
 	-fx-border-width: 0 0 1 0;
@@ -1145,14 +1143,6 @@ Working on new Css by taleev
 }
 /*Registration pending approval page design ends */
 
-/*Authentication page design starts */
-.exitButtonStyle{
-	-fx-border-color: transparent;
-    -fx-padding: 4.0 0.0 4.0 0.0;
-    -fx-text-fill: black;
-    -fx-background-image : url('/images/Close.png');
-    -fx-font-size: 14.0px;
-}
 .authenticationStyle{
 	-fx-pref-height: 39.0px; 
 	-fx-pref-width: 269.0px;
