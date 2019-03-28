@@ -54,6 +54,7 @@ import io.mosip.registration.dto.mastersync.TemplateDto;
 import io.mosip.registration.dto.mastersync.TemplateFileFormatDto;
 import io.mosip.registration.dto.mastersync.TemplateTypeDto;
 import io.mosip.registration.dto.mastersync.TitleDto;
+import io.mosip.registration.dto.mastersync.ValidDocumentDto;
 import io.mosip.registration.entity.ApplicantValidDocument;
 import io.mosip.registration.entity.Application;
 import io.mosip.registration.entity.BiometricAttribute;
@@ -88,12 +89,14 @@ import io.mosip.registration.entity.TemplateFileFormat;
 import io.mosip.registration.entity.TemplateType;
 import io.mosip.registration.entity.Title;
 import io.mosip.registration.entity.UserMachineMapping;
+import io.mosip.registration.entity.ValidDocument;
 import io.mosip.registration.entity.id.CenterMachineId;
 import io.mosip.registration.entity.id.RegCenterUserId;
 import io.mosip.registration.entity.id.RegCentreMachineDeviceId;
 import io.mosip.registration.entity.id.RegistartionCenterId;
 import io.mosip.registration.entity.id.UserMachineMappingID;
 import io.mosip.registration.exception.RegBaseUncheckedException;
+import io.mosip.registration.repositories.ApplicantValidDocumentRepository;
 import io.mosip.registration.repositories.ApplicationRepository;
 import io.mosip.registration.repositories.BiometricAttributeRepository;
 import io.mosip.registration.repositories.BiometricTypeRepository;
@@ -230,6 +233,10 @@ public class MasterSyncDaoImpl implements MasterSyncDao {
 	@Autowired
 	private TitleRepository titleRepository;
 
+	/** Object for Sync Applicant Valid Document Repository. */
+	@Autowired
+	private ApplicantValidDocumentRepository applicantValidDocumentRepository;
+	
 	/** Object for Sync Valid Document Repository. */
 	@Autowired
 	private ValidDocumentRepository validDocumentRepository;
@@ -352,6 +359,7 @@ public class MasterSyncDaoImpl implements MasterSyncDao {
 		List<RegistrationCenterDto> registrationCenter = masterSyncDto.getRegistrationCenter();
 		List<RegistrationCenterTypeDto> registrationCenterType = masterSyncDto.getRegistrationCenterTypes();
 		List<IndividualTypeDto> indiviualType = masterSyncDto.getIndividualTypes();
+		List<ValidDocumentDto> masterValidDocuments = masterSyncDto.getValidDocumentMapping();
 		String sucessResponse = null;
 
 		try {
@@ -550,7 +558,7 @@ public class MasterSyncDaoImpl implements MasterSyncDao {
 					"Applicant Valid Document details syncing....");
 			List<ApplicantValidDocument> masterValidDocumnetsDtoEntity = MetaDataUtils
 					.setCreateMetaData(masterValidDocumnetsDto, ApplicantValidDocument.class);
-			validDocumentRepository.saveAll(masterValidDocumnetsDtoEntity);
+			applicantValidDocumentRepository.saveAll(masterValidDocumnetsDtoEntity);
 
 			LOGGER.info(RegistrationConstants.MASTER_SYNC_JOD_DETAILS, APPLICATION_NAME, APPLICATION_ID,
 					"Individual Type details syncing....");
@@ -711,6 +719,9 @@ public class MasterSyncDaoImpl implements MasterSyncDao {
 				masterRegCenterMachineEntity.add(centerMachn);
 			});
 			centerMachineRepository.saveAll(masterRegCenterMachineEntity);
+			List<ValidDocument> masterValidDocumentsEntity = MetaDataUtils.setCreateMetaData(masterValidDocuments,
+					ValidDocument.class);
+			validDocumentRepository.saveAll(masterValidDocumentsEntity);
 			sucessResponse = RegistrationConstants.SUCCESS;
 
 		} catch (Exception runtimeException) {
@@ -816,9 +827,9 @@ public class MasterSyncDaoImpl implements MasterSyncDao {
 	 * io.mosip.registration.dao.MasterSyncDao#getValidDocumets(java.lang.String)
 	 */
 	@Override
-	public List<ApplicantValidDocument> getValidDocumets(String docCategoryCode, String langCode) {
+	public List<ValidDocument> getValidDocumets(String docCategoryCode, String langCode) {
 		return validDocumentRepository
-				.findByIsActiveTrueAndDocumentCategoryCodeAndDocumentCategoryLangCode(docCategoryCode, langCode);
+				.findByIsActiveTrueAndDocCategoryCodeAndLangCode(docCategoryCode, langCode);
 	}
 
 	/* (non-Javadoc)

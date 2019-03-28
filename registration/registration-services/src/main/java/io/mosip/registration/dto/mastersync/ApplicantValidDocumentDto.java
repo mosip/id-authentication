@@ -6,15 +6,33 @@ package io.mosip.registration.dto.mastersync;
  *
  */
 
-public class ValidDocumentDto extends MasterSyncBaseDto {
+public class ApplicantValidDocumentDto extends MasterSyncBaseDto {
+
+	private String appTypeCode;
 
 	private String docTypeCode;
 
-	private String docCategoryCode;
+	private String docCatCode;
 
 	private String langCode;
 
 	private Boolean isActive;
+
+	public String getAppTypeCode() {
+		return appTypeCode;
+	}
+
+	public void setAppTypeCode(String appTypeCode) {
+		this.appTypeCode = appTypeCode;
+	}
+
+	public String getDocCatCode() {
+		return docCatCode;
+	}
+
+	public void setDocCatCode(String docCatCode) {
+		this.docCatCode = docCatCode;
+	}
 
 	/**
 	 * @return the docTypeCode
@@ -29,21 +47,6 @@ public class ValidDocumentDto extends MasterSyncBaseDto {
 	 */
 	public void setDocTypeCode(String docTypeCode) {
 		this.docTypeCode = docTypeCode;
-	}
-
-	/**
-	 * @return the docCategoryCode
-	 */
-	public String getDocCategoryCode() {
-		return docCategoryCode;
-	}
-
-	/**
-	 * @param docCategoryCode
-	 *            the docCategoryCode to set
-	 */
-	public void setDocCategoryCode(String docCategoryCode) {
-		this.docCategoryCode = docCategoryCode;
 	}
 
 	/**

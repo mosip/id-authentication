@@ -90,14 +90,17 @@ import io.mosip.registration.entity.TemplateEmbeddedKeyCommonFields;
 import io.mosip.registration.entity.TemplateFileFormat;
 import io.mosip.registration.entity.TemplateType;
 import io.mosip.registration.entity.Title;
+import io.mosip.registration.entity.ValidDocument;
 import io.mosip.registration.entity.id.ApplicantValidDocumentID;
 import io.mosip.registration.entity.id.CodeAndLanguageCodeID;
 import io.mosip.registration.entity.id.HolidayID;
 import io.mosip.registration.entity.id.IndividualTypeId;
 import io.mosip.registration.entity.id.RegDeviceTypeId;
 import io.mosip.registration.entity.id.RegMachineSpecId;
+import io.mosip.registration.entity.id.ValidDocumentID;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
+import io.mosip.registration.repositories.ApplicantValidDocumentRepository;
 import io.mosip.registration.repositories.ApplicationRepository;
 import io.mosip.registration.repositories.BiometricAttributeRepository;
 import io.mosip.registration.repositories.BiometricTypeRepository;
@@ -130,7 +133,6 @@ import io.mosip.registration.repositories.TemplateRepository;
 import io.mosip.registration.repositories.TemplateTypeRepository;
 import io.mosip.registration.repositories.TitleRepository;
 import io.mosip.registration.repositories.UserMachineMappingRepository;
-import io.mosip.registration.repositories.ValidDocumentRepository;
 import io.mosip.registration.service.impl.MasterSyncServiceImpl;
 import io.mosip.registration.util.mastersync.MetaDataUtils;
 
@@ -202,7 +204,7 @@ public class MasterSyncDaoImplTest {
 	@Mock
 	private TitleRepository masterSyncTitleRepository;
 	@Mock
-	private ValidDocumentRepository masterSyncValidDocumentRepository;
+	private ApplicantValidDocumentRepository masterSyncValidDocumentRepository;
 	@Mock
 	private IndividualTypeRepository individualTypeRepository;
 
@@ -750,7 +752,7 @@ public class MasterSyncDaoImplTest {
 		validDocumentId.setDocCatCode("D101");
 		validDocumentId.setDocTypeCode("DC101");
 		validDocumentId.setAppTypeCode("007");
-		MasterValidDocuments.setValidDocumentId(validDocumentId);
+		MasterValidDocuments.setValidDocument(validDocumentId);
 		MasterValidDocuments.setLangCode("ENG");
 		validDocuments.add(MasterValidDocuments);
 		// biometric Attributes
@@ -1701,13 +1703,11 @@ public class MasterSyncDaoImplTest {
 	@Test
 	public void findValidDoc() {
 
-		List<ApplicantValidDocument> docList = new ArrayList<>();
-		ApplicantValidDocument docs = new ApplicantValidDocument();
-		ApplicantValidDocumentID validDocumentId=new ApplicantValidDocumentID();
-		validDocumentId.setDocCatCode("D101");
+		List<ValidDocument> docList = new ArrayList<>();
+		ValidDocument docs = new ValidDocument();
+		ValidDocumentID validDocumentId=new ValidDocumentID();
+		validDocumentId.setDocCategoryCode("D101");
 		validDocumentId.setDocTypeCode("DC101");
-		validDocumentId.setAppTypeCode("007");
-		docs.setValidDocumentId(validDocumentId);
 		docs.setLangCode("eng");
 		docList.add(docs);
 

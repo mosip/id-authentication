@@ -38,7 +38,6 @@ import io.mosip.registration.dto.mastersync.GenderDto;
 import io.mosip.registration.dto.mastersync.LocationDto;
 import io.mosip.registration.dto.mastersync.MasterDataResponseDto;
 import io.mosip.registration.dto.mastersync.ReasonListDto;
-import io.mosip.registration.entity.ApplicantValidDocument;
 import io.mosip.registration.entity.BlacklistedWords;
 import io.mosip.registration.entity.DocumentType;
 import io.mosip.registration.entity.Gender;
@@ -47,6 +46,7 @@ import io.mosip.registration.entity.Location;
 import io.mosip.registration.entity.ReasonCategory;
 import io.mosip.registration.entity.ReasonList;
 import io.mosip.registration.entity.SyncControl;
+import io.mosip.registration.entity.ValidDocument;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.service.MasterSyncService;
@@ -430,12 +430,12 @@ public class MasterSyncServiceImpl implements MasterSyncService {
 	 */
 	@Override
 	public List<DocumentCategoryDto> getDocumentCategories(String docCode, String langCode) {
-
-		List<ApplicantValidDocument> masterValidDocuments = masterSyncDao.getValidDocumets(docCode, langCode);
+		
+		List<ValidDocument> masterValidDocuments = masterSyncDao.getValidDocumets(docCode, langCode);
 
 		List<String> validDocuments = new ArrayList<>();
 		masterValidDocuments.forEach(docs -> {
-			validDocuments.add(docs.getValidDocumentId().getDocTypeCode());
+			validDocuments.add(docs.getDocTypeCode());
 		});
 
 		List<DocumentCategoryDto> documentsDTO = new ArrayList<>();
