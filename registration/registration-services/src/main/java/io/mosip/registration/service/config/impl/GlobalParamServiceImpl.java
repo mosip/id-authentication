@@ -83,7 +83,7 @@ public class GlobalParamServiceImpl extends BaseService implements GlobalParamSe
 			if (responseDTO.getSuccessResponseDTO() == null && getGlobalParams().isEmpty()) {
 				setErrorResponse(responseDTO, RegistrationConstants.POLICY_SYNC_ERROR_MESSAGE, null);
 			} else {
-				setSuccessResponse(responseDTO, RegistrationConstants.POLICY_SYNC_SUCCESS_MESSAGE, null);
+				setSuccessResponse(responseDTO, RegistrationConstants.POLICY_SYNC_SUCCESS_MESSAGE, responseDTO.getSuccessResponseDTO().getOtherAttributes());
 			}
 		}
 
@@ -101,7 +101,7 @@ public class GlobalParamServiceImpl extends BaseService implements GlobalParamSe
 			if (entry.getValue() instanceof HashMap) {
 				parseToMap((HashMap<String, Object>) entry.getValue(), globalParamMap);
 			} else {
-				globalParamMap.put(key, entry.getValue().toString());
+				globalParamMap.put(key, String.valueOf(entry.getValue()));
 			}
 		}
 	}
@@ -138,7 +138,7 @@ public class GlobalParamServiceImpl extends BaseService implements GlobalParamSe
 								/* Add in application map */
 								ApplicationContext.setGlobalConfigValueOf(globalParamId.getCode(), val);
 
-								if (globalParamId.getCode().contains("kernel")) {
+								if (globalParamId.getCode().contains("kernel") || globalParamId.getCode().contains("mosip.primary")) {
 									isToBeRestarted = true;
 								}
 							}
@@ -154,7 +154,7 @@ public class GlobalParamServiceImpl extends BaseService implements GlobalParamSe
 					for (Entry<String, String> key : globalParamMap.entrySet()) {
 						createNew(key.getKey(), globalParamMap.get(key.getKey()), globalParamList);
 
-						if (key.getKey().contains("kernel")) {
+						if (key.getKey().contains("kernel") || key.getKey().contains("mosip.primary")) {
 							isToBeRestarted = true;
 						}
 						/* Add in application map */

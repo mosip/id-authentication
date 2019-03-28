@@ -41,8 +41,10 @@ public class ClientJarEncryption {
 	private static final String MOSIP_DB = "db";
 	private static final String MOSIP_ZIP = ".zip";
 	private static final String MOSIP_JAR = ".jar";
-	private static final String MOSIP_LOG_PATH = "mosip.logpath= ";
-	private static final String MOSIP_DB_PATH = "mosip.dbpath= ";
+	private static final String MOSIP_LOG_PARAM = "mosip.logpath= ";
+	private static final String MOSIP_DB_PARAM = "mosip.dbpath= ";
+	private static final String MOSIP_LOG_PATH = "../logs";
+	private static final String MOSIP_DB_PATH = "/db/reg";
 	private static final String MOSIP_REG_LIBS = "registration-libs-";
 	private static final String MANIFEST_FILE_NAME = "MANIFEST";
 	private static final String MANIFEST_FILE_FORMAT = ".MF";
@@ -96,7 +98,7 @@ public class ClientJarEncryption {
 
 					String zipFilename = file.getParent() + SLASH + "mosip-sw-" + args[3] + MOSIP_ZIP;
 
-					byte[] propertiesBytes = (MOSIP_LOG_PATH + "\n" + MOSIP_DB_PATH).getBytes();
+					byte[] propertiesBytes = (MOSIP_LOG_PARAM + MOSIP_LOG_PATH + "\n" + MOSIP_DB_PARAM + MOSIP_DB_PATH).getBytes();
 					byte[] runExecutbale = FileUtils
 							.readFileToByteArray(new File(args[4] + MOSIP_REG_LIBS + args[3] + MOSIP_JAR));
 					File listOfJars = new File(file.getParent() + SLASH + MOSIP_LIB).getAbsoluteFile();

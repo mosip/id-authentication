@@ -96,14 +96,26 @@ public class ApplicationContext {
 	 */
 	public void loadResourceBundle() {
 		try {
-			applicationLanguge = (String) applicationMap.get(RegistrationConstants.PRIMARY_LANGUAGE);
-			localLanguage = (String) applicationMap.get(RegistrationConstants.SECONDARY_LANGUAGE);
-			String rightToLeft  = (String) applicationContext.getApplicationMap().get("mosip.right_to_left_orientation");
-			if(rightToLeft.contains(applicationLanguge)) {
-				primaryLanguageRightToLeft=true;
+
+			if (null != applicationMap.get(RegistrationConstants.PRIMARY_LANGUAGE)) {
+				applicationLanguge = (String) applicationMap.get(RegistrationConstants.PRIMARY_LANGUAGE);
+			} else {
+				applicationLanguge = Locale.getDefault().getDisplayLanguage() != null
+						? Locale.getDefault().getDisplayLanguage().toLowerCase().substring(0, 3)
+						: "eng";
 			}
-			if(rightToLeft.contains(localLanguage)) {
-				secondaryLanguageRightToLeft=true;
+			localLanguage = applicationMap.get(RegistrationConstants.SECONDARY_LANGUAGE) != null
+					? (String) applicationMap.get(RegistrationConstants.SECONDARY_LANGUAGE)
+					: null;
+			String rightToLeft = (String) applicationContext.getApplicationMap().get("mosip.right_to_left_orientation");
+			
+			if(null != rightToLeft) {
+				if (rightToLeft.contains(applicationLanguge)) {
+					primaryLanguageRightToLeft = true;
+				}
+				if (null != localLanguage && rightToLeft.contains(localLanguage)) {
+					secondaryLanguageRightToLeft = true;
+				}
 			}
 
 		} catch (RuntimeException exception) {
@@ -111,9 +123,9 @@ public class ApplicationContext {
 					RegistrationConstants.APPLICATION_ID, exception.getMessage());
 		}
 
-		
-		Locale applicationLanguageLocale = new Locale(applicationLanguge != null ? applicationLanguge.substring(0, 2) : null);
-		Locale secondaryLanguageLocale = new Locale(localLanguage != null ? localLanguage.substring(0, 2): null);
+		Locale applicationLanguageLocale = new Locale(
+				applicationLanguge != null ? applicationLanguge.substring(0, 2) : null);
+		Locale secondaryLanguageLocale = new Locale(localLanguage != null ? localLanguage.substring(0, 2) : null);
 
 		applicationLanguageBundle = ResourceBundle.getBundle("labels", applicationLanguageLocale);
 		localLanguageBundle = ResourceBundle.getBundle("labels", secondaryLanguageLocale);

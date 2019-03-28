@@ -64,6 +64,7 @@ import io.mosip.registration.util.common.PageFlow;
 import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
 import io.mosip.registration.util.healthcheck.RegistrationSystemPropertiesChecker;
 import io.mosip.registration.util.restclient.ServiceDelegateUtil;
+import javafx.application.Platform;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.concurrent.WorkerStateEvent;
@@ -107,9 +108,6 @@ public class LoginController extends BaseController implements Initializable {
 
 	@FXML
 	private AnchorPane irisPane;
-
-	@Value("${mosip.primary-language}")
-	private String prim;
 
 	@FXML
 	private AnchorPane facePane;
@@ -1060,21 +1058,22 @@ public class LoginController extends BaseController implements Initializable {
 						if (responseDTO != null) {
 							SuccessResponseDTO successResponseDTO = responseDTO.getSuccessResponseDTO();
 							if (successResponseDTO != null && successResponseDTO.getOtherAttributes() != null) {
-								restartController.restart();
+								return RegistrationConstants.RESTART;
+							} else {
+								ResponseDTO masterResponseDTO = masterSyncService.getMasterSync(
+										RegistrationConstants.OPT_TO_REG_MDS_J00001,
+										RegistrationConstants.JOB_TRIGGER_POINT_USER);
+
+								ResponseDTO userResponseDTO = userDetailService
+										.save(RegistrationConstants.JOB_TRIGGER_POINT_USER);
+								
+								if (masterResponseDTO.getSuccessResponseDTO() == null
+										|| userResponseDTO.getSuccessResponseDTO() == null) {
+									return RegistrationConstants.FAILURE;
+								}
 
 							}
-						}
-
-						ResponseDTO masterResponseDTO = masterSyncService.getMasterSync(
-								RegistrationConstants.OPT_TO_REG_MDS_J00001,
-								RegistrationConstants.JOB_TRIGGER_POINT_USER);
-
-						ResponseDTO userResponseDTO = userDetailService
-								.save(RegistrationConstants.JOB_TRIGGER_POINT_USER);
-
-						if (responseDTO.getSuccessResponseDTO() == null
-								|| masterResponseDTO.getSuccessResponseDTO() == null
-								|| userResponseDTO.getSuccessResponseDTO() == null) {
+						} else {
 							return RegistrationConstants.FAILURE;
 						}
 
@@ -1090,7 +1089,14 @@ public class LoginController extends BaseController implements Initializable {
 			@Override
 			public void handle(WorkerStateEvent t) {
 
-				if (RegistrationConstants.FAILURE.equalsIgnoreCase(taskService.getValue())) {
+				if (RegistrationConstants.RESTART.equalsIgnoreCase(taskService.getValue())) {
+					Platform.runLater(new Runnable() {
+					    @Override
+					    public void run() {
+					    	restartController.restart();
+					    }
+					});
+				} else if (RegistrationConstants.FAILURE.equalsIgnoreCase(taskService.getValue())) {
 					generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.SYNC_CONFIG_DATA_FAILURE);
 				}
 				loginRoot.setDisable(false);
