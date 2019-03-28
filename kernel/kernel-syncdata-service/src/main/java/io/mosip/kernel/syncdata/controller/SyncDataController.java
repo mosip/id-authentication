@@ -6,15 +6,13 @@ import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cloud.context.config.annotation.RefreshScope;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.kernel.core.http.ResponseFilter;
+import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.syncdata.dto.ConfigDto;
 import io.mosip.kernel.syncdata.dto.PublicKeyResponse;
@@ -74,11 +72,13 @@ public class SyncDataController {
 	@ResponseFilter
 	@ApiOperation(value = "API to sync global config details")
 	@GetMapping(value = "/configs")
-	public ConfigDto getConfigDetails() {
+	public ResponseWrapper<ConfigDto> getConfigDetails() {
 		String currentTimeStamp = DateUtils.getUTCCurrentDateTimeString();
 		ConfigDto syncConfigResponse = syncConfigDetailsService.getConfigDetails();
 		syncConfigResponse.setLastSyncTime(currentTimeStamp);
-		return syncConfigResponse;
+		ResponseWrapper<ConfigDto> response = new ResponseWrapper<>();
+		response.setResponse(syncConfigResponse);
+		return response;
 	}
 
 	/**
@@ -90,8 +90,10 @@ public class SyncDataController {
 	@ApiIgnore
 	@ApiOperation(value = "API to sync global config details")
 	@GetMapping(value = "/globalconfigs")
-	public JSONObject getGlobalConfigDetails() {
-		return syncConfigDetailsService.getGlobalConfigDetails();
+	public ResponseWrapper<JSONObject> getGlobalConfigDetails() {
+		ResponseWrapper<JSONObject> response = new ResponseWrapper<>();
+		response.setResponse(syncConfigDetailsService.getGlobalConfigDetails());
+		return response;
 	}
 
 	/**
@@ -106,15 +108,21 @@ public class SyncDataController {
 	@ApiIgnore
 	@ApiOperation(value = "Api to get registration center configuration")
 	@GetMapping(value = "/registrationcenterconfig/{registrationcenterid}")
-	public JSONObject getRegistrationCentreConfig(@PathVariable(value = "registrationcenterid") String regId) {
-		return syncConfigDetailsService.getRegistrationCenterConfigDetails(regId);
+	public ResponseWrapper<JSONObject> getRegistrationCentreConfig(
+			@PathVariable(value = "registrationcenterid") String regId) {
+		ResponseWrapper<JSONObject> response = new ResponseWrapper<>();
+		response.setResponse(syncConfigDetailsService.getRegistrationCenterConfigDetails(regId));
+		return response;
 	}
 
 	@ResponseFilter
 	@ApiIgnore
 	@GetMapping("/configuration/{registrationCenterId}")
-	public ConfigDto getConfiguration(@PathVariable("registrationCenterId") String registrationCenterId) {
-		return syncConfigDetailsService.getConfiguration(registrationCenterId);
+	public ResponseWrapper<ConfigDto> getConfiguration(
+			@PathVariable("registrationCenterId") String registrationCenterId) {
+		ResponseWrapper<ConfigDto> response = new ResponseWrapper<>();
+		response.setResponse(syncConfigDetailsService.getConfiguration(registrationCenterId));
+		return response;
 	}
 
 	/**
@@ -134,7 +142,8 @@ public class SyncDataController {
 	@ResponseFilter
 	@ApiOperation(value = "Api to sync the masterdata", response = MasterDataResponseDto.class)
 	@GetMapping("/masterdata")
-	public MasterDataResponseDto syncMasterData(@RequestParam(value = "macaddress", required = false) String macId,
+	public ResponseWrapper<MasterDataResponseDto> syncMasterData(
+			@RequestParam(value = "macaddress", required = false) String macId,
 			@RequestParam(value = "serialnumber", required = false) String serialNumber,
 			@RequestParam(value = "lastupdated", required = false) String lastUpdated)
 			throws InterruptedException, ExecutionException {
@@ -146,7 +155,10 @@ public class SyncDataController {
 				timestamp, currentTimeStamp);
 
 		masterDataResponseDto.setLastSyncTime(DateUtils.formatToISOString(currentTimeStamp));
-		return masterDataResponseDto;
+
+		ResponseWrapper<MasterDataResponseDto> response = new ResponseWrapper<>();
+		response.setResponse(masterDataResponseDto);
+		return response;
 	}
 
 	/**
@@ -168,7 +180,8 @@ public class SyncDataController {
 	@ResponseFilter
 	@ApiOperation(value = "Api to sync the masterdata", response = MasterDataResponseDto.class)
 	@GetMapping("/masterdata/{regcenterId}")
-	public MasterDataResponseDto syncMasterDataWithRegCenterId(@PathVariable("regcenterId") String regCenterId,
+	public ResponseWrapper<MasterDataResponseDto> syncMasterDataWithRegCenterId(
+			@PathVariable("regcenterId") String regCenterId,
 			@RequestParam(value = "macaddress", required = false) String macId,
 			@RequestParam(value = "serialnumber", required = false) String serialNumber,
 			@RequestParam(value = "lastupdated", required = false) String lastUpdated)
@@ -180,7 +193,10 @@ public class SyncDataController {
 				timestamp, currentTimeStamp);
 
 		masterDataResponseDto.setLastSyncTime(DateUtils.formatToISOString(currentTimeStamp));
-		return masterDataResponseDto;
+
+		ResponseWrapper<MasterDataResponseDto> response = new ResponseWrapper<>();
+		response.setResponse(masterDataResponseDto);
+		return response;
 	}
 
 	/**
@@ -190,11 +206,13 @@ public class SyncDataController {
 	 */
 	@ResponseFilter
 	@GetMapping("/roles")
-	public RolesResponseDto getAllRoles() {
+	public ResponseWrapper<RolesResponseDto> getAllRoles() {
 		String currentTimeStamp = DateUtils.getUTCCurrentDateTimeString();
 		RolesResponseDto rolesResponseDto = syncRolesService.getAllRoles();
 		rolesResponseDto.setLastSyncTime(currentTimeStamp);
-		return rolesResponseDto;
+		ResponseWrapper<RolesResponseDto> response = new ResponseWrapper<>();
+		response.setResponse(rolesResponseDto);
+		return response;
 	}
 
 	/**
@@ -207,11 +225,13 @@ public class SyncDataController {
 	 */
 	@ResponseFilter
 	@GetMapping("/userdetails/{regid}")
-	public SyncUserDetailDto getUserDetails(@PathVariable("regid") String regId) {
+	public ResponseWrapper<SyncUserDetailDto> getUserDetails(@PathVariable("regid") String regId) {
 		String currentTimeStamp = DateUtils.getUTCCurrentDateTimeString();
 		SyncUserDetailDto syncUserDetailDto = syncUserDetailsService.getAllUserDetail(regId);
 		syncUserDetailDto.setLastSyncTime(currentTimeStamp);
-		return syncUserDetailDto;
+		ResponseWrapper<SyncUserDetailDto> response = new ResponseWrapper<>();
+		response.setResponse(syncUserDetailDto);
+		return response;
 	}
 
 	/**
@@ -228,7 +248,7 @@ public class SyncDataController {
 	@ResponseFilter
 	@ApiOperation(value = "Get the public key of a particular application", response = PublicKeyResponse.class)
 	@GetMapping(value = "/publickey/{applicationId}")
-	public ResponseEntity<PublicKeyResponse<String>> getPublicKey(
+	public ResponseWrapper<PublicKeyResponse<String>> getPublicKey(
 			@ApiParam("Id of application") @PathVariable("applicationId") String applicationId,
 			@ApiParam("Timestamp as metadata") @RequestParam("timeStamp") String timeStamp,
 			@ApiParam("Refrence Id as metadata") @RequestParam("referenceId") Optional<String> referenceId) {
@@ -237,7 +257,10 @@ public class SyncDataController {
 		PublicKeyResponse<String> publicKeyResponse = syncConfigDetailsService.getPublicKey(applicationId, timeStamp,
 				referenceId);
 		publicKeyResponse.setLastSyncTime(currentTimeStamp);
-		return new ResponseEntity<>(publicKeyResponse, HttpStatus.OK);
+
+		ResponseWrapper<PublicKeyResponse<String>> response = new ResponseWrapper<>();
+		response.setResponse(publicKeyResponse);
+		return response;
 	}
 
 }
