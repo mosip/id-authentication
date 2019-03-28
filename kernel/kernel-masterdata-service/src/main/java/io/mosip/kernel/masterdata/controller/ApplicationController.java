@@ -12,9 +12,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.mosip.kernel.masterdata.dto.ApplicationDto;
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseFilter;
+import io.mosip.kernel.core.http.ResponseWrapper;
+import io.mosip.kernel.masterdata.dto.ApplicationDto;
 import io.mosip.kernel.masterdata.dto.getresponse.ApplicationResponseDto;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.service.ApplicationService;
@@ -43,8 +44,10 @@ public class ApplicationController {
 	 */
 	@ResponseFilter
 	@GetMapping
-	public ApplicationResponseDto getAllApplication() {
-		return applicationService.getAllApplication();
+	public ResponseWrapper<ApplicationResponseDto> getAllApplication() {
+		ResponseWrapper<ApplicationResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(applicationService.getAllApplication());
+		return responseWrapper;
 	}
 
 	/**

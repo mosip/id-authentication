@@ -24,7 +24,7 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.EmptyCheckUtils;
 
 @RestControllerAdvice
-public class ResponseBodyAdviceConfig implements ResponseBodyAdvice<Object> {
+public class ResponseBodyAdviceConfig implements ResponseBodyAdvice<ResponseWrapper<?>> {
 
 	@Autowired
 	private ObjectMapper objectMapper;
@@ -35,12 +35,11 @@ public class ResponseBodyAdviceConfig implements ResponseBodyAdvice<Object> {
 	}
 
 	@Override
-	public Object beforeBodyWrite(Object body, MethodParameter returnType, MediaType selectedContentType,
-			Class<? extends HttpMessageConverter<?>> selectedConverterType, ServerHttpRequest request,
-			ServerHttpResponse response) {
+	public ResponseWrapper<?> beforeBodyWrite(ResponseWrapper<?> body, MethodParameter returnType,
+			MediaType selectedContentType, Class<? extends HttpMessageConverter<?>> selectedConverterType,
+			ServerHttpRequest request, ServerHttpResponse response) {
 
 		RequestWrapper<?> requestWrapper = null;
-		ResponseWrapper<Object> responseWrapper = new ResponseWrapper<>();
 		String requestBody = null;
 
 		try {
@@ -59,12 +58,11 @@ public class ResponseBodyAdviceConfig implements ResponseBodyAdvice<Object> {
 			objectMapper.registerModule(new JavaTimeModule());
 			if (!EmptyCheckUtils.isNullEmpty(requestBody)) {
 				requestWrapper = objectMapper.readValue(requestBody, RequestWrapper.class);
-				responseWrapper.setId(requestWrapper.getId());
-				responseWrapper.setVersion(requestWrapper.getVersion());
+				body.setId(requestWrapper.getId());
+				body.setVersion(requestWrapper.getVersion());
 			}
-			responseWrapper.setResponse(body);
-			responseWrapper.setErrors(null);
-			return responseWrapper;
+			body.setErrors(null);
+			return body;
 		} catch (Exception e) {
 			Logger mosipLogger = LoggerConfiguration.logConfig(ResponseBodyAdviceConfig.class);
 			mosipLogger.error("", "", "", e.getMessage());
