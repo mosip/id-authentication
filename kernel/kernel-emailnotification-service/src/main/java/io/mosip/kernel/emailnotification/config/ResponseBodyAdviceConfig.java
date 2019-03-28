@@ -32,7 +32,7 @@ import io.mosip.kernel.core.util.EmptyCheckUtils;
  *
  */
 @RestControllerAdvice
-public class ResponseBodyAdviceConfig implements ResponseBodyAdvice<ResponseWrapper<?>> {
+public class ResponseBodyAdviceConfig implements ResponseBodyAdvice<Object> {
 
 	/**
 	 * Autowired reference for {@link ObjectMapper}.
@@ -63,10 +63,11 @@ public class ResponseBodyAdviceConfig implements ResponseBodyAdvice<ResponseWrap
 	 * org.springframework.http.server.ServerHttpResponse)
 	 */
 	@Override
-	public ResponseWrapper<?> beforeBodyWrite(ResponseWrapper<?> body, MethodParameter returnType,
-			MediaType selectedContentType, Class<? extends HttpMessageConverter<?>> selectedConverterType,
-			ServerHttpRequest request, ServerHttpResponse response) {
+	public Object beforeBodyWrite(Object body, MethodParameter returnType, MediaType selectedContentType,
+			Class<? extends HttpMessageConverter<?>> selectedConverterType, ServerHttpRequest request,
+			ServerHttpResponse response) {
 		RequestWrapper<?> requestWrapper = null;
+		ResponseWrapper<Object> responseWrapper = new ResponseWrapper<>();
 		String requestBody = null;
 		try {
 			HttpServletRequest httpServletRequest = ((ServletServerHttpRequest) request).getServletRequest();
@@ -83,11 +84,12 @@ public class ResponseBodyAdviceConfig implements ResponseBodyAdvice<ResponseWrap
 			objectMapper.registerModule(new JavaTimeModule());
 			if (!EmptyCheckUtils.isNullEmpty(requestBody)) {
 				requestWrapper = objectMapper.readValue(requestBody, RequestWrapper.class);
-				body.setId(requestWrapper.getId());
-				body.setVersion(requestWrapper.getVersion());
+				responseWrapper.setId(requestWrapper.getId());
+				responseWrapper.setVersion(requestWrapper.getVersion());
 			}
-			body.setErrors(null);
-			return body;
+			responseWrapper.setResponse(body);
+			responseWrapper.setErrors(null);
+			return responseWrapper;
 		} catch (Exception e) {
 			Logger mosipLogger = LoggerConfiguration.logConfig(ResponseBodyAdviceConfig.class);
 			mosipLogger.error("", "", "", e.getMessage());

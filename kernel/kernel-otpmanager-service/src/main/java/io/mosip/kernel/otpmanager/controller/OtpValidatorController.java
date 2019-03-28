@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.kernel.core.http.ResponseFilter;
-import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.otpmanager.spi.OtpValidator;
 import io.mosip.kernel.otpmanager.dto.OtpValidatorResponseDto;
 
@@ -39,9 +38,7 @@ public class OtpValidatorController {
 	 */
 	@ResponseFilter
 	@GetMapping(value = "/otp/validate")
-	public ResponseWrapper<OtpValidatorResponseDto> validateOtp(@RequestParam String key, @RequestParam String otp) {
-		ResponseWrapper<OtpValidatorResponseDto> responseWrapper = new ResponseWrapper<>();
-		responseWrapper.setResponse(otpValidatorService.validateOtp(key, otp).getBody());
-		return responseWrapper;
+	public ResponseEntity<OtpValidatorResponseDto> validateOtp(@RequestParam String key, @RequestParam String otp) {
+		return otpValidatorService.validateOtp(key, otp);
 	}
 }

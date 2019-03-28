@@ -156,7 +156,7 @@ public class OtpNotificationUtil {
 		HttpHeaders smsHeaders = new HttpHeaders();
 		smsHeaders.setContentType(MediaType.APPLICATION_JSON);
 
-		HttpEntity<RequestWrapper<SmsRequestDto>> smsEntity = new HttpEntity<>(reqWrapper, smsHeaders);
+		HttpEntity<SmsRequestDto> smsEntity = new HttpEntity<>(smsRequest, smsHeaders);
 
 		ResponseEntity<String> response = restTemplate.exchange(smsServiceApi, HttpMethod.POST, smsEntity,
 				String.class);
