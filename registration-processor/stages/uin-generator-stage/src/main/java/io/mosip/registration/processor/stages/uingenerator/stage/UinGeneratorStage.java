@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -52,6 +53,8 @@ import io.mosip.registration.processor.packet.storage.entity.IndividualDemograph
 import io.mosip.registration.processor.packet.storage.repository.BasePacketRepository;
 import io.mosip.registration.processor.packet.storage.utils.Utilities;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
+import io.mosip.registration.processor.stages.uingenerator.dto.UinDto;
+import io.mosip.registration.processor.stages.uingenerator.dto.UinRequestDto;
 import io.mosip.registration.processor.stages.uingenerator.dto.UinResponseDto;
 import io.mosip.registration.processor.stages.uingenerator.idrepo.dto.Documents;
 import io.mosip.registration.processor.stages.uingenerator.idrepo.dto.IdRequestDto;
@@ -178,6 +181,10 @@ public class UinGeneratorStage extends MosipVerticleManager {
 	InternalRegistrationStatusDto registrationStatusDto=null;
 	
 	private static final String UIN = "UIN";
+	
+	private static final String UIN_ASSIGNED = "ASSIGNED";
+	
+	private static final String UIN_UNASSIGNED = "UNASSIGNED";
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -218,6 +225,7 @@ public class UinGeneratorStage extends MosipVerticleManager {
 					demographicDedupeRepository.updateUinWrtRegistraionId(registrationId, uinResponseDto.getUin());
 					registrationStatusDto.setStatusComment(UinStatusMessage.PACKET_UIN_UPDATION_SUCCESS_MSG);
 					registrationStatusDto.setStatusCode(RegistrationStatusCode.PACKET_UIN_UPDATION_SUCCESS.toString());
+					sendResponseToUinGenerator(uinResponseDto.getUin(), UIN_ASSIGNED);
 					isTransactionSuccessful = true;
 					description = "UIN updated succesfully for registrationId " + registrationId;
 					regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
@@ -232,6 +240,7 @@ public class UinGeneratorStage extends MosipVerticleManager {
 					registrationStatusDto.setStatusComment(statusComment);
 					object.setInternalError(Boolean.TRUE);
 					registrationStatusDto.setStatusCode(RegistrationStatusCode.PACKET_UIN_UPDATION_FAILURE.toString());
+					sendResponseToUinGenerator(uinResponseDto.getUin(), UIN_UNASSIGNED);
 					isTransactionSuccessful = false;
 					description = UIN_FAILURE + registrationId + "::" + idResponseDTO != null
 							&& idResponseDTO.getErrors() != null ? idResponseDTO.getErrors().get(0).getErrorMessage()
@@ -628,7 +637,37 @@ public class UinGeneratorStage extends MosipVerticleManager {
 		}
 		return response;
 	}
+	
+	private void sendResponseToUinGenerator(String uin, String uinStatus) {
+		UinRequestDto uinRequest = new UinRequestDto();
+		uinRequest.setUin(uin);
+		uinRequest.setStatus(uinStatus);
+		String jsonString = null;
+		ObjectMapper objMapper = new ObjectMapper();
+		try {
+			jsonString = objMapper.writeValueAsString(uinRequest);
+			String response = (String) registrationProcessorRestClientService.putApi(ApiName.UINGENERATOR, null, "", "",
+					jsonString, String.class);
+			Gson gsonValue = new Gson();
+			UinDto uinresponse = gsonValue.fromJson(response, UinDto.class);
+			if (uinresponse.getUin() != null) {
+				String uinSuccessDescription = "Kernel service called successfully to update the uin status as assigned";
+				regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
+						LoggerFileConstant.REGISTRATIONID.toString() + registrationId, "Success",
+						uinSuccessDescription);
+			} else {
+				String uinErrorDescription = "Kernel service called successfully to update the uin status as unassigned";
+				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
+						LoggerFileConstant.REGISTRATIONID.toString() + registrationId, "Failure",
+						"is : " + uinErrorDescription);
+			}
+		} catch (JsonProcessingException e) {
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					registrationId, PlatformErrorMessages.RPR_SYS_JSON_PARSING_EXCEPTION.getMessage() + e.getMessage()
+							+ ExceptionUtils.getStackTrace(e));
+		}
 
+	}
 	/**
 	 * Deploy verticle.
 	 */
