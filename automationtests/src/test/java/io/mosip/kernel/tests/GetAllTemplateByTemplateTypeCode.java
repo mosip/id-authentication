@@ -27,6 +27,8 @@ import org.testng.internal.TestResult;
 
 import com.google.common.base.Verify;
 
+import io.mosip.dbaccess.KernelMasterDataR;
+import io.mosip.dbdto.DeviceHistoryDto;
 import io.mosip.service.ApplicationLibrary;
 import io.mosip.service.AssertKernel;
 import io.mosip.service.BaseTestCase;
@@ -44,7 +46,7 @@ public class GetAllTemplateByTemplateTypeCode extends BaseTestCase implements IT
 	/**
 	 *  Declaration of all variables
 	 */
-	private static Logger logger = Logger.getLogger(GetAllTemplateByTemplateTypeCode.class);
+	private static Logger logger = Logger.getLogger(GetDeviceHistory.class);
 	protected static String testCaseName = "";
 	static SoftAssert softAssert=new SoftAssert();
 	public static JSONArray arr = new JSONArray();
@@ -76,7 +78,7 @@ public class GetAllTemplateByTemplateTypeCode extends BaseTestCase implements IT
 	@DataProvider(name = "GetAllTemplateByTemplateTypeCode")
 	public static Object[][] readData1(ITestContext context) throws Exception {
 		 testParam = context.getCurrentXmlTest().getParameter("testType");
-		switch (testParam) {
+		switch ("smokeAndRegression") {
 		case "smoke":
 			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
 		case "regression":
@@ -171,7 +173,7 @@ public class GetAllTemplateByTemplateTypeCode extends BaseTestCase implements IT
 				Field f = baseTestMethod.getClass().getSuperclass().getDeclaredField("m_methodName");
 				f.setAccessible(true);
 
-				f.set(baseTestMethod, GetAllTemplateByTemplateTypeCode.testCaseName);
+				f.set(baseTestMethod, GetDeviceHistory.testCaseName);
 
 				
 			} catch (Exception e) {
