@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.kernel.core.http.ResponseFilter;
+import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.masterdata.dto.getresponse.RegistrationCenterUserMachineMappingHistoryResponseDto;
 import io.mosip.kernel.masterdata.service.RegistrationCenterMachineUserHistoryService;
 import io.swagger.annotations.Api;
@@ -44,14 +45,17 @@ public class RegistrationCenterUserMachineHistoryController {
 	 */
 	@ResponseFilter
 	@GetMapping("/getregistrationmachineusermappinghistory/{effdtimes}/{registrationcenterid}/{machineid}/{userid}")
-	public RegistrationCenterUserMachineMappingHistoryResponseDto getRegistrationCentersMachineUserMapping(
+	public ResponseWrapper<RegistrationCenterUserMachineMappingHistoryResponseDto> getRegistrationCentersMachineUserMapping(
 			@PathVariable("effdtimes") String effectiveTimestamp,
 			@PathVariable("registrationcenterid") String registrationCenterId,
 			@PathVariable("machineid") String machineId,
 			@PathVariable("userid") String userId) {
-		return registrationCenterMachineUserHistoryService
+		
+		ResponseWrapper<RegistrationCenterUserMachineMappingHistoryResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(registrationCenterMachineUserHistoryService
 				.getRegistrationCentersMachineUserMapping(effectiveTimestamp,
-						registrationCenterId, machineId, userId);
+						registrationCenterId, machineId, userId));
+		return responseWrapper;
 	}
 
 }

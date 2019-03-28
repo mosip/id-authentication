@@ -3,8 +3,6 @@ package io.mosip.kernel.masterdata.controller;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import io.mosip.kernel.masterdata.dto.LanguageDto;
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseFilter;
+import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.masterdata.dto.getresponse.LanguageResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
 import io.mosip.kernel.masterdata.service.LanguageService;
@@ -49,8 +48,10 @@ public class LanguageController {
 			@ApiResponse(code = 200, message = "When all Language retrieved from database", response = LanguageResponseDto.class),
 			@ApiResponse(code = 404, message = "When No Language found"),
 			@ApiResponse(code = 500, message = "While retrieving Language any error occured") })
-	public LanguageResponseDto getAllLaguages() {
-		return languageService.getAllLaguages();
+	public ResponseWrapper<LanguageResponseDto> getAllLaguages() {
+		ResponseWrapper<LanguageResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(languageService.getAllLaguages());
+		return responseWrapper;
 	}
 
 	@ResponseFilter
@@ -60,8 +61,10 @@ public class LanguageController {
 			@ApiResponse(code = 201, message = "When Language successfully created", response = CodeResponseDto.class),
 			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
 			@ApiResponse(code = 500, message = "While creating Language any error occured") })
-	public ResponseEntity<CodeResponseDto> saveLanguage(@Valid @RequestBody RequestWrapper<LanguageDto> language) {
-		return new ResponseEntity<>(languageService.saveLanguage(language.getRequest()), HttpStatus.OK);
+	public ResponseWrapper<CodeResponseDto> saveLanguage(@Valid @RequestBody RequestWrapper<LanguageDto> language) {
+		ResponseWrapper<CodeResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(languageService.saveLanguage(language.getRequest()));
+		return responseWrapper;
 	}
 
 	@ResponseFilter
@@ -72,8 +75,10 @@ public class LanguageController {
 			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
 			@ApiResponse(code = 404, message = "When No Language found"),
 			@ApiResponse(code = 500, message = "While updating Language any error occured") })
-	public ResponseEntity<CodeResponseDto> updateLanguage(@Valid @RequestBody RequestWrapper<LanguageDto> language) {
-		return new ResponseEntity<>(languageService.updateLanguage(language.getRequest()), HttpStatus.OK);
+	public ResponseWrapper<CodeResponseDto> updateLanguage(@Valid @RequestBody RequestWrapper<LanguageDto> language) {
+		ResponseWrapper<CodeResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(languageService.updateLanguage(language.getRequest()));
+		return responseWrapper;
 	}
 
 	@ResponseFilter
@@ -84,8 +89,10 @@ public class LanguageController {
 			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
 			@ApiResponse(code = 404, message = "When No Language found"),
 			@ApiResponse(code = 500, message = "While deleting Language any error occured") })
-	public ResponseEntity<CodeResponseDto> deleteLanguage(@PathVariable("code") String code) {
-		return new ResponseEntity<>(languageService.deleteLanguage(code), HttpStatus.OK);
+	public ResponseWrapper<CodeResponseDto> deleteLanguage(@PathVariable("code") String code) {
+		ResponseWrapper<CodeResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(languageService.deleteLanguage(code));
+		return responseWrapper;
 	}
 
 }

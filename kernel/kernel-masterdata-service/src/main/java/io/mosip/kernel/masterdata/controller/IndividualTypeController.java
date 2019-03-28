@@ -1,13 +1,12 @@
 package io.mosip.kernel.masterdata.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.kernel.core.http.ResponseFilter;
+import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.masterdata.dto.getresponse.IndividualTypeResponseDto;
 import io.mosip.kernel.masterdata.service.IndividualTypeService;
 import io.swagger.annotations.Api;
@@ -34,7 +33,9 @@ public class IndividualTypeController {
 	@ResponseFilter
 	@GetMapping
 	@ApiOperation(value = "get value from Caretory for the given id", notes = "get value from Category for the given id", response = IndividualTypeResponseDto.class)
-	public ResponseEntity<IndividualTypeResponseDto> getAllIndividualTypes() {
-		return new ResponseEntity<>(individualTypeService.getAllIndividualTypes(), HttpStatus.OK);
+	public ResponseWrapper<IndividualTypeResponseDto> getAllIndividualTypes() {
+		ResponseWrapper<IndividualTypeResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(individualTypeService.getAllIndividualTypes());
+		return responseWrapper;
 	}
 }

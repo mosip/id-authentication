@@ -3,8 +3,6 @@ package io.mosip.kernel.masterdata.controller;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -12,9 +10,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.mosip.kernel.masterdata.dto.RegistrationCenterMachineDto;
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseFilter;
+import io.mosip.kernel.core.http.ResponseWrapper;
+import io.mosip.kernel.masterdata.dto.RegistrationCenterMachineDto;
 import io.mosip.kernel.masterdata.dto.ResponseRrgistrationCenterMachineDto;
 import io.mosip.kernel.masterdata.entity.id.RegistrationCenterMachineID;
 import io.mosip.kernel.masterdata.service.RegistrationCenterMachineService;
@@ -45,10 +44,12 @@ public class RegistrationCenterMachineController {
 			@ApiResponse(code = 201, message = "When registration center and machine mapped", response = ResponseRrgistrationCenterMachineDto.class),
 			@ApiResponse(code = 400, message = "When Request body passed  is invalid"),
 			@ApiResponse(code = 500, message = "While mapping registration center and machine") })
-	public ResponseEntity<ResponseRrgistrationCenterMachineDto> createRegistrationCenterAndMachine(
+	public ResponseWrapper<ResponseRrgistrationCenterMachineDto> createRegistrationCenterAndMachine(
 			@Valid @RequestBody RequestWrapper<RegistrationCenterMachineDto> requestDto) {
-		return new ResponseEntity<>(registrationCenterMachineService.createRegistrationCenterAndMachine(requestDto.getRequest()),
-				HttpStatus.OK);
+		
+		ResponseWrapper<ResponseRrgistrationCenterMachineDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(registrationCenterMachineService.createRegistrationCenterAndMachine(requestDto.getRequest()));
+		return responseWrapper;
 	}
 
 	/**
@@ -63,11 +64,13 @@ public class RegistrationCenterMachineController {
 	@ResponseFilter
 	@ApiOperation(value = "Delete the mapping of registration center and machine", response = RegistrationCenterMachineID.class)
 	@DeleteMapping("/{regCenterId}/{machineId}")
-	public ResponseEntity<RegistrationCenterMachineID> deleteRegistrationCenterMachineMapping(
+	public ResponseWrapper<RegistrationCenterMachineID> deleteRegistrationCenterMachineMapping(
 			@ApiParam("Registration center id to be deleted") @PathVariable String regCenterId,
 			@ApiParam("MachineId id to be deleted") @PathVariable String machineId) {
-		return new ResponseEntity<>(registrationCenterMachineService
-				.deleteRegistrationCenterMachineMapping(regCenterId, machineId),
-				HttpStatus.OK);
+		
+		ResponseWrapper<RegistrationCenterMachineID> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(registrationCenterMachineService
+				.deleteRegistrationCenterMachineMapping(regCenterId, machineId));
+		return responseWrapper;
 	}
 }

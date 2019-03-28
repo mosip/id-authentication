@@ -3,8 +3,6 @@ package io.mosip.kernel.masterdata.controller;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseFilter;
+import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.masterdata.dto.TitleDto;
 import io.mosip.kernel.masterdata.dto.getresponse.TitleResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
@@ -47,8 +46,10 @@ public class TitleController {
 	 */
 	@ResponseFilter
 	@GetMapping(value = "/title")
-	public TitleResponseDto getAllTitles() {
-		return titleService.getAllTitles();
+	public ResponseWrapper<TitleResponseDto> getAllTitles() {
+		ResponseWrapper<TitleResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(titleService.getAllTitles());
+		return responseWrapper;
 	}
 
 	/**
@@ -61,8 +62,11 @@ public class TitleController {
 	 */
 	@ResponseFilter
 	@GetMapping(value = "/title/{langcode}")
-	public TitleResponseDto getTitlesBylangCode(@PathVariable("langcode") String langCode) {
-		return titleService.getByLanguageCode(langCode);
+	public ResponseWrapper<TitleResponseDto> getTitlesBylangCode(@PathVariable("langcode") String langCode) {
+		
+		ResponseWrapper<TitleResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(titleService.getByLanguageCode(langCode));
+		return responseWrapper;
 	}
 
 	/**
@@ -74,9 +78,11 @@ public class TitleController {
 	 */
 	@ResponseFilter
 	@PostMapping("/title")
-	public ResponseEntity<CodeAndLanguageCodeID> saveTitle(@Valid @RequestBody RequestWrapper<TitleDto> title) {
-		return new ResponseEntity<>(titleService.saveTitle(title.getRequest()), HttpStatus.OK);
-
+	public ResponseWrapper<CodeAndLanguageCodeID> saveTitle(@Valid @RequestBody RequestWrapper<TitleDto> title) {
+		
+		ResponseWrapper<CodeAndLanguageCodeID> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(titleService.saveTitle(title.getRequest()));
+		return responseWrapper;
 	}
 
 	/**
@@ -94,9 +100,12 @@ public class TitleController {
 			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
 			@ApiResponse(code = 404, message = "When No title found"),
 			@ApiResponse(code = 500, message = "While updating title any error occured") })
-	public ResponseEntity<CodeAndLanguageCodeID> updateTitle(
+	public ResponseWrapper<CodeAndLanguageCodeID> updateTitle(
 			@ApiParam("Title DTO to update") @Valid @RequestBody RequestWrapper<TitleDto> titles) {
-		return new ResponseEntity<>(titleService.updateTitle(titles.getRequest()), HttpStatus.OK);
+		
+		ResponseWrapper<CodeAndLanguageCodeID> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(titleService.updateTitle(titles.getRequest()));
+		return responseWrapper;
 	}
 
 	/**
@@ -114,8 +123,11 @@ public class TitleController {
 			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
 			@ApiResponse(code = 404, message = "When No title found"),
 			@ApiResponse(code = 500, message = "While deleting title any error occured") })
-	public ResponseEntity<CodeResponseDto> deleteTitle(@PathVariable("code") String code) {
-		return new ResponseEntity<>(titleService.deleteTitle(code), HttpStatus.OK);
+	public ResponseWrapper<CodeResponseDto> deleteTitle(@PathVariable("code") String code) {
+		
+		ResponseWrapper<CodeResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(titleService.deleteTitle(code));
+		return responseWrapper;
 	}
 
 }

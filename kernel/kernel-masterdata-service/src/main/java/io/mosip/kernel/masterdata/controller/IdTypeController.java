@@ -3,8 +3,6 @@ package io.mosip.kernel.masterdata.controller;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import io.mosip.kernel.masterdata.dto.IdTypeDto;
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseFilter;
+import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.masterdata.dto.getresponse.IdTypeResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
@@ -55,8 +54,10 @@ public class IdTypeController {
 			@ApiResponse(code = 400, message = "When input request has null or invalid values."),
 			@ApiResponse(code = 404, message = "When no idtypes found."),
 			@ApiResponse(code = 500, message = "Error occured while fetching id types.") })
-	public IdTypeResponseDto getIdTypesByLanguageCode(@Valid @PathVariable("langcode") String langCode) {
-		return idService.getIdTypesByLanguageCode(langCode);
+	public ResponseWrapper<IdTypeResponseDto> getIdTypesByLanguageCode(@Valid @PathVariable("langcode") String langCode) {
+		ResponseWrapper<IdTypeResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(idService.getIdTypesByLanguageCode(langCode));
+		return responseWrapper;
 	}
 
 	/**
@@ -73,8 +74,10 @@ public class IdTypeController {
 			@ApiResponse(code = 200, message = "When id type successfully created.", response = CodeResponseDto.class),
 			@ApiResponse(code = 400, message = "When input request has null or invalid values."),
 			@ApiResponse(code = 500, message = "Error occured while creating id type.") })
-	public ResponseEntity<CodeAndLanguageCodeID> createIdType(
+	public ResponseWrapper<CodeAndLanguageCodeID> createIdType(
 			@Valid @RequestBody RequestWrapper<IdTypeDto> idTypeRequestDto) {
-		return new ResponseEntity<>(idService.createIdType(idTypeRequestDto.getRequest()), HttpStatus.OK);
+		ResponseWrapper<CodeAndLanguageCodeID> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(idService.createIdType(idTypeRequestDto.getRequest()));
+		return responseWrapper;
 	}
 }

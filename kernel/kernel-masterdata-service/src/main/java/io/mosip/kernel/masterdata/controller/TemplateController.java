@@ -3,8 +3,6 @@ package io.mosip.kernel.masterdata.controller;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseFilter;
+import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.masterdata.dto.TemplateDto;
 import io.mosip.kernel.masterdata.dto.getresponse.TemplateResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
@@ -49,8 +48,10 @@ public class TemplateController {
 	 */
 	@ResponseFilter
 	@GetMapping
-	public TemplateResponseDto getAllTemplate() {
-		return templateService.getAllTemplate();
+	public ResponseWrapper<TemplateResponseDto> getAllTemplate() {
+		ResponseWrapper<TemplateResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(templateService.getAllTemplate());
+		return responseWrapper;
 	}
 
 	/**
@@ -62,8 +63,11 @@ public class TemplateController {
 	 */
 	@ResponseFilter
 	@GetMapping("/{langcode}")
-	public TemplateResponseDto getAllTemplateBylangCode(@PathVariable("langcode") String langCode) {
-		return templateService.getAllTemplateByLanguageCode(langCode);
+	public ResponseWrapper<TemplateResponseDto> getAllTemplateBylangCode(@PathVariable("langcode") String langCode) {
+		
+		ResponseWrapper<TemplateResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(templateService.getAllTemplateByLanguageCode(langCode));
+		return responseWrapper;
 	}
 
 	/**
@@ -78,9 +82,12 @@ public class TemplateController {
 	 */
 	@ResponseFilter
 	@GetMapping("/{langcode}/{templatetypecode}")
-	public TemplateResponseDto getAllTemplateBylangCodeAndTemplateTypeCode(@PathVariable("langcode") String langCode,
+	public ResponseWrapper<TemplateResponseDto> getAllTemplateBylangCodeAndTemplateTypeCode(@PathVariable("langcode") String langCode,
 			@PathVariable("templatetypecode") String templateTypeCode) {
-		return templateService.getAllTemplateByLanguageCodeAndTemplateTypeCode(langCode, templateTypeCode);
+		
+		ResponseWrapper<TemplateResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(templateService.getAllTemplateByLanguageCodeAndTemplateTypeCode(langCode, templateTypeCode));
+		return responseWrapper;
 	}
 
 	/**
@@ -96,8 +103,11 @@ public class TemplateController {
 	@ApiResponses({ @ApiResponse(code = 201, message = " successfully created", response = IdAndLanguageCodeID.class),
 			@ApiResponse(code = 400, message = " Request body passed  is null or invalid"),
 			@ApiResponse(code = 500, message = " creating any error occured") })
-	public ResponseEntity<IdAndLanguageCodeID> createTemplate(@Valid @RequestBody RequestWrapper<TemplateDto> template) {
-		return new ResponseEntity<>(templateService.createTemplate(template.getRequest()), HttpStatus.OK);
+	public ResponseWrapper<IdAndLanguageCodeID> createTemplate(@Valid @RequestBody RequestWrapper<TemplateDto> template) {
+		
+		ResponseWrapper<IdAndLanguageCodeID> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(templateService.createTemplate(template.getRequest()));
+		return responseWrapper;
 	}
 
 	/**
@@ -113,8 +123,11 @@ public class TemplateController {
 	@ApiResponses({ @ApiResponse(code = 200, message = " successfully updated", response = IdAndLanguageCodeID.class),
 			@ApiResponse(code = 400, message = " Request body passed  is null or invalid"),
 			@ApiResponse(code = 500, message = " creating any error occured") })
-	public ResponseEntity<IdAndLanguageCodeID> updateTemplate(@Valid @RequestBody RequestWrapper<TemplateDto> template) {
-		return new ResponseEntity<>(templateService.updateTemplates(template.getRequest()), HttpStatus.OK);
+	public ResponseWrapper<IdAndLanguageCodeID> updateTemplate(@Valid @RequestBody RequestWrapper<TemplateDto> template) {
+		
+		ResponseWrapper<IdAndLanguageCodeID> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(templateService.updateTemplates(template.getRequest()));
+		return responseWrapper;
 	}
 
 	/**
@@ -132,8 +145,11 @@ public class TemplateController {
 			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
 			@ApiResponse(code = 404, message = "When No template found"),
 			@ApiResponse(code = 500, message = "While deleting template  error occured") })
-	public ResponseEntity<IdResponseDto> deleteTemplate(@PathVariable("id") String id) {
-		return new ResponseEntity<>(templateService.deleteTemplates(id), HttpStatus.OK);
+	public ResponseWrapper<IdResponseDto> deleteTemplate(@PathVariable("id") String id) {
+		
+		ResponseWrapper<IdResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(templateService.deleteTemplates(id));
+		return responseWrapper;
 	}
 
 	/**
@@ -144,7 +160,10 @@ public class TemplateController {
 	 * @return All {@link TemplateDto}
 	 */
 	@GetMapping("/templatetypecodes/{code}")
-	public TemplateResponseDto getAllTemplateByTemplateTypeCode(@PathVariable("code") String templateTypeCode) {
-		return templateService.getAllTemplateByTemplateTypeCode(templateTypeCode);
+	public ResponseWrapper<TemplateResponseDto> getAllTemplateByTemplateTypeCode(@PathVariable("code") String templateTypeCode) {
+		
+		ResponseWrapper<TemplateResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(templateService.getAllTemplateByTemplateTypeCode(templateTypeCode));
+		return responseWrapper;
 	}
 }

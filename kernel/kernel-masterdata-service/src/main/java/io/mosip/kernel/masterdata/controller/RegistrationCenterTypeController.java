@@ -3,8 +3,6 @@ package io.mosip.kernel.masterdata.controller;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -12,9 +10,10 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.mosip.kernel.masterdata.dto.RegistrationCenterTypeDto;
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseFilter;
+import io.mosip.kernel.core.http.ResponseWrapper;
+import io.mosip.kernel.masterdata.dto.RegistrationCenterTypeDto;
 import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.service.RegistrationCenterTypeService;
@@ -47,11 +46,12 @@ public class RegistrationCenterTypeController {
 	 */
 	@ResponseFilter
 	@PostMapping("/registrationcentertypes")
-	public ResponseEntity<CodeAndLanguageCodeID> createRegistrationCenterType(
+	public ResponseWrapper<CodeAndLanguageCodeID> createRegistrationCenterType(
 			@Valid @RequestBody RequestWrapper<RegistrationCenterTypeDto> registrationCenterTypeDto) {
-		return new ResponseEntity<>(
-				registrationCenterTypeService.createRegistrationCenterType(registrationCenterTypeDto.getRequest()),
-				HttpStatus.OK);
+		
+		ResponseWrapper<CodeAndLanguageCodeID> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(registrationCenterTypeService.createRegistrationCenterType(registrationCenterTypeDto.getRequest()));
+		return responseWrapper;
 	}
 
 	/**
@@ -64,11 +64,12 @@ public class RegistrationCenterTypeController {
 	 */
 	@ResponseFilter
 	@PutMapping("/registrationcentertypes")
-	public ResponseEntity<CodeAndLanguageCodeID> updateRegistrationCenterType(
+	public ResponseWrapper<CodeAndLanguageCodeID> updateRegistrationCenterType(
 			@Valid @RequestBody RequestWrapper<RegistrationCenterTypeDto> registrationCenterTypeDto) {
-		return new ResponseEntity<>(
-				registrationCenterTypeService.updateRegistrationCenterType(registrationCenterTypeDto.getRequest()), HttpStatus.OK);
-
+		
+		ResponseWrapper<CodeAndLanguageCodeID> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(registrationCenterTypeService.updateRegistrationCenterType(registrationCenterTypeDto.getRequest()));
+		return responseWrapper;
 	}
 
 	/**
@@ -80,7 +81,10 @@ public class RegistrationCenterTypeController {
 	 */
 	@ResponseFilter
 	@DeleteMapping("/registrationcentertypes/{code}")
-	public ResponseEntity<CodeResponseDto> deleteRegistrationCenterType(@PathVariable("code") String code) {
-		return new ResponseEntity<>(registrationCenterTypeService.deleteRegistrationCenterType(code), HttpStatus.OK);
+	public ResponseWrapper<CodeResponseDto> deleteRegistrationCenterType(@PathVariable("code") String code) {
+		
+		ResponseWrapper<CodeResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(registrationCenterTypeService.deleteRegistrationCenterType(code));
+		return responseWrapper;
 	}
 }

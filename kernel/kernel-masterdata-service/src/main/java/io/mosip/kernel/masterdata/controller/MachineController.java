@@ -3,7 +3,6 @@ package io.mosip.kernel.masterdata.controller;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,9 +12,10 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.mosip.kernel.masterdata.dto.MachineDto;
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseFilter;
+import io.mosip.kernel.core.http.ResponseWrapper;
+import io.mosip.kernel.masterdata.dto.MachineDto;
 import io.mosip.kernel.masterdata.dto.getresponse.MachineResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.entity.id.IdAndLanguageCodeID;
@@ -62,10 +62,12 @@ public class MachineController {
 			@ApiResponse(code = 200, message = "When Machine Details retrieved from database for the given Languge Code and ID", response = MachineResponseDto.class),
 			@ApiResponse(code = 404, message = "When No Machine Details found for the given Languge Code and ID"),
 			@ApiResponse(code = 500, message = "While retrieving Machine Details any error occured") })
-	public MachineResponseDto getMachineIdLangcode(@PathVariable("id") String machineId,
+	public ResponseWrapper<MachineResponseDto> getMachineIdLangcode(@PathVariable("id") String machineId,
 			@PathVariable("langcode") String langCode) {
-		return machineService.getMachine(machineId, langCode);
-
+		
+		ResponseWrapper<MachineResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(machineService.getMachine(machineId, langCode));
+		return responseWrapper;
 	}
 
 	/**
@@ -85,9 +87,10 @@ public class MachineController {
 			@ApiResponse(code = 200, message = "When Machine Details retrieved from database for the given Languge Code", response = MachineResponseDto.class),
 			@ApiResponse(code = 404, message = "When No Machine Details found for the given Languge Code"),
 			@ApiResponse(code = 500, message = "While retrieving Machine Details any error occured") })
-	public MachineResponseDto getMachineLangcode(@PathVariable("langcode") String langCode) {
-		return machineService.getMachine(langCode);
-
+	public ResponseWrapper<MachineResponseDto> getMachineLangcode(@PathVariable("langcode") String langCode) {
+		ResponseWrapper<MachineResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(machineService.getMachine(langCode));
+		return responseWrapper;
 	}
 
 	/**
@@ -102,9 +105,10 @@ public class MachineController {
 			@ApiResponse(code = 200, message = "When all Machine retrieved from database", response = MachineResponseDto.class),
 			@ApiResponse(code = 404, message = "When No Machine found"),
 			@ApiResponse(code = 500, message = "While retrieving Machine any error occured") })
-	public MachineResponseDto getMachineAll() {
-		return machineService.getMachineAll();
-
+	public ResponseWrapper<MachineResponseDto> getMachineAll() {
+		ResponseWrapper<MachineResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(machineService.getMachineAll());
+		return responseWrapper;
 	}
 
 	/**
@@ -124,8 +128,10 @@ public class MachineController {
 			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
 			@ApiResponse(code = 404, message = "When No Machine found"),
 			@ApiResponse(code = 500, message = "While creating Machine any error occured") })
-	public ResponseEntity<IdAndLanguageCodeID> createMachine(@Valid @RequestBody RequestWrapper<MachineDto> machine) {
-		return new ResponseEntity<>(machineService.createMachine(machine.getRequest()), HttpStatus.OK);
+	public ResponseWrapper<IdAndLanguageCodeID> createMachine(@Valid @RequestBody RequestWrapper<MachineDto> machine) {
+		ResponseWrapper<IdAndLanguageCodeID> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(machineService.createMachine(machine.getRequest()));
+		return responseWrapper;
 	}
 
 	/**
@@ -145,8 +151,11 @@ public class MachineController {
 			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
 			@ApiResponse(code = 404, message = "When No Machine found"),
 			@ApiResponse(code = 500, message = "While updating Machine any error occured") })
-	public ResponseEntity<IdAndLanguageCodeID> updateMachine(@Valid @RequestBody RequestWrapper<MachineDto> machine) {
-		return new ResponseEntity<>(machineService.updateMachine(machine.getRequest()), HttpStatus.OK);
+	public ResponseWrapper<IdAndLanguageCodeID> updateMachine(@Valid @RequestBody RequestWrapper<MachineDto> machine) {
+		
+		ResponseWrapper<IdAndLanguageCodeID> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(machineService.updateMachine(machine.getRequest()));
+		return responseWrapper;
 	}
 
 	/**
@@ -166,9 +175,11 @@ public class MachineController {
 			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
 			@ApiResponse(code = 404, message = "When No Machine found"),
 			@ApiResponse(code = 500, message = "While deleting Machine any error occured") })
-	public ResponseEntity<IdResponseDto> deleteMachine(@Valid @PathVariable("id") String id) {
+	public ResponseWrapper<IdResponseDto> deleteMachine(@Valid @PathVariable("id") String id) {
 
-		return new ResponseEntity<>(machineService.deleteMachine(id), HttpStatus.OK);
+		ResponseWrapper<IdResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(machineService.deleteMachine(id));
+		return responseWrapper;
 	}
 
 }

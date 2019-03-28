@@ -3,8 +3,6 @@ package io.mosip.kernel.masterdata.controller;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -12,10 +10,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.mosip.kernel.masterdata.dto.PostReasonCategoryDto;
-import io.mosip.kernel.masterdata.dto.ReasonListDto;
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseFilter;
+import io.mosip.kernel.core.http.ResponseWrapper;
+import io.mosip.kernel.masterdata.dto.PostReasonCategoryDto;
+import io.mosip.kernel.masterdata.dto.ReasonListDto;
 import io.mosip.kernel.masterdata.dto.getresponse.PacketRejectionReasonResponseDto;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.entity.id.CodeLangCodeAndRsnCatCodeID;
@@ -44,9 +43,11 @@ public class PacketRejectionReasonController {
 	 */
 	@ResponseFilter
 	@PostMapping("/reasoncategory")
-	public ResponseEntity<CodeAndLanguageCodeID> createReasonCategories(@Valid@RequestBody RequestWrapper<PostReasonCategoryDto> requestDto) {
-                
-		return new ResponseEntity<>(reasonService.createReasonCategories(requestDto.getRequest()),HttpStatus.OK);
+	public ResponseWrapper<CodeAndLanguageCodeID> createReasonCategories(@Valid@RequestBody RequestWrapper<PostReasonCategoryDto> requestDto) {
+          
+		ResponseWrapper<CodeAndLanguageCodeID> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(reasonService.createReasonCategories(requestDto.getRequest()));
+		return responseWrapper;
 	}
 	
 	/**
@@ -56,9 +57,11 @@ public class PacketRejectionReasonController {
 	 */
 	@ResponseFilter
 	@PostMapping("/reasonlist")
-	public ResponseEntity<CodeLangCodeAndRsnCatCodeID> createReasonLists(@Valid@RequestBody RequestWrapper<ReasonListDto> requestDto) {
-                
-		return new ResponseEntity<>(reasonService.createReasonList(requestDto.getRequest()),HttpStatus.OK);
+	public ResponseWrapper<CodeLangCodeAndRsnCatCodeID> createReasonLists(@Valid@RequestBody RequestWrapper<ReasonListDto> requestDto) {
+         
+		ResponseWrapper<CodeLangCodeAndRsnCatCodeID> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(reasonService.createReasonList(requestDto.getRequest()));
+		return responseWrapper;
 	}
 
 	/**
@@ -68,9 +71,11 @@ public class PacketRejectionReasonController {
 	 */
 	@ResponseFilter
 	@GetMapping
-	public PacketRejectionReasonResponseDto getAllReasons() {
+	public ResponseWrapper<PacketRejectionReasonResponseDto> getAllReasons() {
 
-		return reasonService.getAllReasons();
+		ResponseWrapper<PacketRejectionReasonResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(reasonService.getAllReasons());
+		return responseWrapper;
 	}
 
 	/**
@@ -81,10 +86,11 @@ public class PacketRejectionReasonController {
 	 */
 	@ResponseFilter
 	@GetMapping(value = "/{reasoncategorycode}/{langcode}")
-	public PacketRejectionReasonResponseDto getReasonsBasedOnReasonCatgCodeAndlangCode(@PathVariable("reasoncategorycode") String reasonCategoryCode,
+	public ResponseWrapper<PacketRejectionReasonResponseDto> getReasonsBasedOnReasonCatgCodeAndlangCode(@PathVariable("reasoncategorycode") String reasonCategoryCode,
 			@PathVariable("langcode") String langCode) {
 		
-		return reasonService.getReasonsBasedOnLangCodeAndCategoryCode(reasonCategoryCode,langCode );
-
+		ResponseWrapper<PacketRejectionReasonResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(reasonService.getReasonsBasedOnLangCodeAndCategoryCode(reasonCategoryCode,langCode ));
+		return responseWrapper;
 	}
 }
