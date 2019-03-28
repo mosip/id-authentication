@@ -17,6 +17,11 @@ import org.apache.http.ssl.TrustStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.core.env.Environment;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
@@ -140,6 +145,57 @@ public class RestApiClient {
 		}
 		return result;
 	}
+	
+	@SuppressWarnings("unchecked")
+	public <T> T putApi(String uri, Object requestType, Class<?> responseClass) throws Exception {
+
+		RestTemplate restTemplate;
+		T result = null;
+		ResponseEntity<T> response = null;
+		try {
+			restTemplate = getRestTemplate();
+			logger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
+					LoggerFileConstant.APPLICATIONID.toString(), uri);
+			logger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
+					LoggerFileConstant.APPLICATIONID.toString(), requestType.toString());
+			
+			// set headers
+			HttpHeaders headers = new HttpHeaders();
+			headers.setContentType(MediaType.APPLICATION_JSON);
+			 HttpEntity<String> entity = new HttpEntity<String>(requestType.toString(), headers);
+			 response = (ResponseEntity<T>) restTemplate.exchange(uri, HttpMethod.PUT, entity, responseClass);
+			 result = response.getBody();
+		} catch (Exception e) {
+
+			logger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
+					LoggerFileConstant.APPLICATIONID.toString(), e.getMessage() + ExceptionUtils.getStackTrace(e));
+
+			throw e;
+		}
+		return result;
+	}
+/*	
+	@SuppressWarnings("unchecked")
+	public <T> T putApi(String uri, Object requestType, Class<?> responseClass) throws Exception {
+
+		RestTemplate restTemplate;
+		T result = null;
+		try {
+			restTemplate = getRestTemplate();
+			logger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
+					LoggerFileConstant.APPLICATIONID.toString(), uri);
+			logger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
+					LoggerFileConstant.APPLICATIONID.toString(), requestType.toString());
+			restTemplate.put(uri, requestType, responseClass);
+		} catch (Exception e) {
+
+			logger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
+					LoggerFileConstant.APPLICATIONID.toString(), e.getMessage() + ExceptionUtils.getStackTrace(e));
+
+			throw e;
+		}
+		return null;
+	}*/
 
 	public RestTemplate getRestTemplate() throws KeyManagementException, NoSuchAlgorithmException, KeyStoreException {
 		logger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),

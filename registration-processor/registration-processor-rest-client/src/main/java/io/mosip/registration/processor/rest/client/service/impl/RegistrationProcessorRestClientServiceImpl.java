@@ -258,6 +258,51 @@ public class RegistrationProcessorRestClientServiceImpl implements RegistrationP
 				"RegistrationProcessorRestClientServiceImpl::postApi()::exit");
 		return obj;
 	}
+	
+	public Object putApi(ApiName apiName, List<String> pathsegments, String queryParamName, String queryParamValue,
+			Object requestedData, Class<?> responseType) {
+
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
+				"RegistrationProcessorRestClientServiceImpl::postApi()::entry");
+		Object obj = null;
+		//String apiHostIpPort = env.getProperty(apiName.name());
+		String apiHostIpPort = "https://qa.mosip.io/uingenerator/v1.0/uin";
+		UriComponentsBuilder builder = null;
+		if (apiHostIpPort != null)
+			builder = UriComponentsBuilder.fromUriString(apiHostIpPort);
+		if (builder != null) {
+
+			if (!((pathsegments == null) || (pathsegments.isEmpty()))) {
+				for (String segment : pathsegments) {
+					if (!((segment == null) || (("").equals(segment)))) {
+						builder.pathSegment(segment);
+					}
+				}
+
+			}
+			if (!checkNull(queryParamName)) {
+				String[] queryParamNameArr = queryParamName.split(",");
+				String[] queryParamValueArr = queryParamValue.split(",");
+
+				for (int i = 0; i < queryParamNameArr.length; i++) {
+					builder.queryParam(queryParamNameArr[i], queryParamValueArr[i]);
+				}
+			}
+
+			try {
+				obj = restApiClient.putApi(builder.toUriString(), requestedData, responseType);
+
+			} catch (Exception e) {
+				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
+						LoggerFileConstant.REGISTRATIONID.toString(), "",
+						e.getMessage() + ExceptionUtils.getStackTrace(e));
+
+			}
+		}
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
+				"RegistrationProcessorRestClientServiceImpl::postApi()::exit");
+		return obj;
+	}
 
 	/**
 	 * Check null.
