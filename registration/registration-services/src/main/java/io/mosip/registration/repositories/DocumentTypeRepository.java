@@ -12,5 +12,8 @@ import io.mosip.registration.entity.DocumentType;
  */
 
 public interface DocumentTypeRepository extends BaseRepository<DocumentType, String> {
-	List<DocumentType> findByIsActiveTrueAndLangCodeAndCodeIn(String langCode,List<String> docCode);
+
+	List<DocumentType> findByIsActiveTrueAndLangCodeAndCodeIn(String langCode, List<String> docCode);
+
+	List<DocumentType> findByIsActiveTrueAndName(String docTypeName);
 }

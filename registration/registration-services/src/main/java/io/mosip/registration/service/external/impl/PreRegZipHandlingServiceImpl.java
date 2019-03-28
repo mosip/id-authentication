@@ -12,7 +12,9 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Arrays;
 import java.util.Base64;
+import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -42,10 +44,13 @@ import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
+import io.mosip.registration.dao.DocumentTypeDAO;
+import io.mosip.registration.dao.MasterSyncDao;
 import io.mosip.registration.dto.PreRegistrationDTO;
 import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.demographic.DocumentDetailsDTO;
 import io.mosip.registration.dto.demographic.Identity;
+import io.mosip.registration.entity.DocumentType;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.exception.RegistrationExceptionConstants;
@@ -66,6 +71,12 @@ public class PreRegZipHandlingServiceImpl implements PreRegZipHandlingService {
 
 	@Autowired
 	private KeyGenerator keyGenerator;
+	
+	@Autowired
+	private DocumentTypeDAO documentTypeDAO;
+	
+	@Autowired
+	private MasterSyncDao masterSyncDao;
 
 	private static final Logger LOGGER = AppConfig.getLogger(PreRegZipHandlingServiceImpl.class);
 
@@ -120,8 +131,26 @@ public class PreRegZipHandlingServiceImpl implements PreRegZipHandlingService {
 		documentDetailsDTO.setDocument(IOUtils.toByteArray(zipInputStream));
 		documentDetailsDTO.setType(docCatgory);
 		documentDetailsDTO.setFormat(fileName.substring(fileName.lastIndexOf(RegistrationConstants.DOT) + 1));
+		
+		String docTypeName = fileName.substring(fileName.lastIndexOf("_") + 1, fileName.lastIndexOf("."));
+
+		/*
+		 * checking and setting the doc type name based on the reg client primary
+		 * language irrespective of pre reg language
+		 */
+		if (StringUtils.isNotEmpty(docTypeName)) {
+			List<DocumentType> documentTypes = documentTypeDAO.getDocTypeByName(docTypeName);
+			if (isListNotEmpty(documentTypes)
+					&& !ApplicationContext.applicationLanguage().equalsIgnoreCase(documentTypes.get(0).getLangCode())) {
+				List<DocumentType> docTypesForPrimaryLanguage = masterSyncDao.getDocumentTypes(
+						Arrays.asList(documentTypes.get(0).getCode()), ApplicationContext.applicationLanguage());
+				if (isListNotEmpty(docTypesForPrimaryLanguage)) {
+					docTypeName = docTypesForPrimaryLanguage.get(0).getName();
+				}
+			}
+		}
 		documentDetailsDTO.setValue(docCatgory.concat("_")
-				.concat(fileName.substring(fileName.lastIndexOf("_") + 1, fileName.lastIndexOf("."))));
+				.concat(docTypeName));
 	}
 
 	/**
@@ -266,4 +295,7 @@ public class PreRegZipHandlingServiceImpl implements PreRegZipHandlingService {
 				.get(RegistrationConstants.REGISTRATION_DATA);
 	}
 
+	private boolean isListNotEmpty(List<?> values) {
+		return values != null && !values.isEmpty();
+	}
 }

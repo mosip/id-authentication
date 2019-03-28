@@ -6,7 +6,4 @@ delete from reg.reg_center_type;
 delete from reg.reg_center_user;
 delete from reg.reg_center_user_machine;
 delete from reg.registration_center; 
-
-
-
-
+delete from reg.key_store;
