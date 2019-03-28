@@ -355,7 +355,8 @@
                                              <children>
                                                 <GridPane>
                                                   <columnConstraints>
-                                                    <ColumnConstraints hgrow="SOMETIMES" percentWidth="100.0" />
+                                                    <ColumnConstraints hgrow="SOMETIMES" percentWidth="70.0" />
+                                                      <ColumnConstraints hgrow="SOMETIMES" percentWidth="30.0" />
                                                   </columnConstraints>
                                                   <rowConstraints>
                                                     <RowConstraints percentHeight="10.0" vgrow="SOMETIMES" />
@@ -363,6 +364,14 @@
                                                   </rowConstraints>
                                                    <children>
                                                       <Label styleClass="onboardExceptionDetails" text="%markedasException" />
+                                                      <TableView fx:id="exceptionTable" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="1">
+                                                        <placeholder>
+        													<Label text="" />
+    													</placeholder>
+                                                        <columns>
+                                                          <TableColumn fx:id="exceptionTableColumn" prefWidth="813.0" text="markedasException" />
+                                                        </columns>
+                                                      </TableView>
                                                    </children>
                                                 </GridPane>
                                                 <GridPane fx:id="exceptionDocProof" GridPane.columnIndex="1">

@@ -767,6 +767,7 @@ public class BaseController extends BaseService {
 
 				generateAlertLanguageSpecific(RegistrationConstants.ERROR,
 						response.getErrorResponseDTOs().get(0).getMessage());
+				returnPage=currentPage;
 			} else if (response != null && response.getSuccessResponseDTO() != null) {
 
 				LOGGER.info(LoggerConstants.LOG_REG_BASE, APPLICATION_NAME, APPLICATION_ID,
@@ -779,8 +780,8 @@ public class BaseController extends BaseService {
 
 				LOGGER.info(LoggerConstants.LOG_REG_BASE, APPLICATION_NAME, APPLICATION_ID,
 						"Redirecting to Home page after success onboarding");
-			}
-			returnPage = "";
+				returnPage = "";
+			}			
 		}
 
 		LOGGER.info(LoggerConstants.LOG_REG_BASE, APPLICATION_NAME, APPLICATION_ID,
@@ -899,6 +900,7 @@ public class BaseController extends BaseService {
 		primaryStage.setX(540);
 		primaryStage.setY(85);
 		AnchorPane anchorPane = new AnchorPane();
+		anchorPane.getStyleClass().add(styleClass);
 		anchorPane.setPrefWidth(250);
 		anchorPane.setPrefHeight(40);
 		Label label = new Label();

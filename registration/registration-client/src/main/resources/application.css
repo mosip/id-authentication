@@ -931,7 +931,7 @@ Working on new Css by taleev
 }
 
 .table-view > .virtual-flow > .scroll-bar:vertical > .thumb {
-    -fx-background-color: white;
+    -fx-background-color: #e8e8e8;
 }
 
 .uploadStatusColumn{
@@ -1496,5 +1496,72 @@ Working on new Css by taleev
 	-fx-text-fill: #666666;
 	-fx-font-family: Roboto;
 	-fx-font-size: 14.0px;	
+}
+.exceptionBackPane .table-view {
+    -fx-table-cell-border-color: #FFFFFF;
+    -fx-border-width : 0 0 0 0;
+    -fx-background-color: white;
+}
+
+.exceptionBackPane .table-view > .virtual-flow > .scroll-bar{
+	-fx-background-color : white;
+	
+}
+
+.exceptionBackPane .table-cell {
+    -fx-padding: 0.0em; 
+    -fx-background-color: #FFFFFF; 
+    -fx-text-fill: red;
+    -fx-cell-size: 1.0em;
+}
+
+.exceptionBackPane .table-view *.scroll-bar:horizontal *.increment-button,
+.exceptionBackPane .table-view *.scroll-bar:horizontal *.decrement-button {
+  -fx-background-color: null;
+  -fx-background-radius: 0;
+  -fx-background-insets: 0;
+  -fx-padding: 0;
+}
+
+.exceptionBackPane .table-view *.scroll-bar:horizontal *.increment-arrow,
+.exceptionBackPane .table-view *.scroll-bar:horizontal *.decrement-arrow {
+  -fx-background-color: null;
+  -fx-background-radius: 0;
+  -fx-background-insets: 0;
+  -fx-padding: 0;
+  -fx-shape: null;
+}
+.exceptionBackPane .column-header-background { 
+	visibility: hidden; 
+	-fx-padding: -1em;
+}
+
+
+.exceptionBackPane .table-row-cell {
+    -fx-background-color: white;
+    -fx-background-insets: 0, 0 0 1 0;	
+	-fx-padding: 0.0em;	
+    -fx-border-width : 0 0 0 0;
+    -fx-border-color : white;
+    -fx-pref-height : 20;
+    -fx-pref-width : 30;
+}
+
+.exceptionBackPane .table-row-cell:focused{
+	-fx-border-width : 0 0 0 0;
+	-fx-padding: 0.0em;	
+	-fx-pref-height : 20;
+    -fx-pref-width : 30;
+}
+
+.exceptionBackPane .table-view:focused > .virtual-flow > .clipped-container > .sheet > .table-row-cell:filled:selected > .table-cell{
+	-fx-text-fill: red;
+    -fx-background-color: #FFFFFF;
+    -fx-border-width : 0 0 0 0;
+    -fx-padding: 0.0em;	
+}
+
+.exceptionBackPane .table-view > .virtual-flow > .scroll-bar:vertical > .thumb {
+    -fx-background-color: #d1d1d1;
 }
 /*user onboard exception design ends */

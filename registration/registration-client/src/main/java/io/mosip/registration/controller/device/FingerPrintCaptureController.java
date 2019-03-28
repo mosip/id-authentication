@@ -476,7 +476,7 @@ public class FingerPrintCaptureController extends BaseController implements Init
 
 		if (!RegistrationConstants.DISABLE
 				.equalsIgnoreCase(String.valueOf(ApplicationContext.map().get(RegistrationConstants.IRIS_DISABLE_FLAG)))
-				&& getRegistrationDTOFromSession().getSelectionListDTO() != null
+				&& getRegistrationDTOFromSession() !=null && getRegistrationDTOFromSession().getSelectionListDTO() != null
 				&& !getRegistrationDTOFromSession().getSelectionListDTO().isBiometrics()) {
 			continueBtn.setDisable(false);
 			backBtn.setDisable(false);
@@ -1026,7 +1026,7 @@ public class FingerPrintCaptureController extends BaseController implements Init
 				isthumbsCaptured = true;
 			}
 
-			if (getRegistrationDTOFromSession().getSelectionListDTO() != null
+			if (getRegistrationDTOFromSession() != null && getRegistrationDTOFromSession().getSelectionListDTO() != null
 
 					&& (getRegistrationDTOFromSession().getSelectionListDTO().isBiometrics() && isleftHandSlapCaptured
 							&& isrightHandSlapCaptured && isthumbsCaptured)

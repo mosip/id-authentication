@@ -547,7 +547,7 @@ public class IrisCaptureController extends BaseController {
 				}
 			}
 
-			if (getRegistrationDTOFromSession().getSelectionListDTO() != null
+			if (getRegistrationDTOFromSession() !=null && (getRegistrationDTOFromSession().getSelectionListDTO() != null
 
 					&& (getRegistrationDTOFromSession().getSelectionListDTO().isBiometrics() && isLeftEyeCaptured
 							&& isRightEyeCaptured)
@@ -555,7 +555,7 @@ public class IrisCaptureController extends BaseController {
 					|| getRegistrationDTOFromSession().getBiometricDTO().getApplicantBiometricDTO()
 							.getFingerprintDetailsDTO().isEmpty()
 							&& !getRegistrationDTOFromSession().getSelectionListDTO().isBiometrics()
-							&& (isLeftEyeCaptured || isRightEyeCaptured)) {
+							&& (isLeftEyeCaptured || isRightEyeCaptured))) {
 				isValid = true;
 			} else {
 				if (isLeftEyeCaptured && isRightEyeCaptured) {
@@ -699,7 +699,7 @@ public class IrisCaptureController extends BaseController {
 			continueBtn.setDisable(true);
 			backBtn.setDisable(true);
 		}
-		if (!getRegistrationDTOFromSession().getBiometricDTO().getApplicantBiometricDTO().getFingerprintDetailsDTO()
+		if (getRegistrationDTOFromSession() !=null && !getRegistrationDTOFromSession().getBiometricDTO().getApplicantBiometricDTO().getFingerprintDetailsDTO()
 				.isEmpty() && getRegistrationDTOFromSession().getSelectionListDTO() != null
 				&& !getRegistrationDTOFromSession().getSelectionListDTO().isBiometrics()) {
 			continueBtn.setDisable(false);
