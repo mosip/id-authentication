@@ -215,7 +215,7 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 						registrationCenterUserHistoryList, registrationCenterUserMachineMappingHistoryList,
 						registrationCenterMachineDeviceHistoryList, registrationCenterDeviceHistoryList,
 						registrationCenterMachineHistoryList, applicantValidDocumentList, individualTypeList,
-						appAuthenticationMethods, appDetails, appRolePriorities, processList, screenAuthorizations)
+						appAuthenticationMethods, appDetails, appRolePriorities, processList, screenAuthorizations,serviceHelper.getSyncJobDefDetails(lastUpdated, currentTimeStamp))
 				.join();
 
 		response.setMachineDetails(machineDetails.get());

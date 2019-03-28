@@ -7,10 +7,19 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestClientException;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
+import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.syncdata.constant.MasterDataErrorCode;
 import io.mosip.kernel.syncdata.dto.AppAuthenticationMethodDto;
 import io.mosip.kernel.syncdata.dto.AppDetailDto;
@@ -50,11 +59,13 @@ import io.mosip.kernel.syncdata.dto.RegistrationCenterUserHistoryDto;
 import io.mosip.kernel.syncdata.dto.RegistrationCenterUserMachineMappingDto;
 import io.mosip.kernel.syncdata.dto.RegistrationCenterUserMachineMappingHistoryDto;
 import io.mosip.kernel.syncdata.dto.ScreenAuthorizationDto;
+import io.mosip.kernel.syncdata.dto.SyncJobDefDto;
 import io.mosip.kernel.syncdata.dto.TemplateDto;
 import io.mosip.kernel.syncdata.dto.TemplateFileFormatDto;
 import io.mosip.kernel.syncdata.dto.TemplateTypeDto;
 import io.mosip.kernel.syncdata.dto.TitleDto;
 import io.mosip.kernel.syncdata.dto.ValidDocumentDto;
+import io.mosip.kernel.syncdata.dto.response.SyncJobDefResponseDto;
 import io.mosip.kernel.syncdata.entity.AppAuthenticationMethod;
 import io.mosip.kernel.syncdata.entity.AppDetail;
 import io.mosip.kernel.syncdata.entity.AppRolePriority;
@@ -240,6 +251,10 @@ public class SyncMasterDataServiceHelper {
 	private ScreenAuthorizationRepository screenAuthorizationRepository;
 	@Autowired
 	private ProcessListRepository processListRepository;
+	@Autowired
+	private RestTemplate restTemplate;
+	@Value("${mosip.kernel.syncdata.admin-base-url:http://localhost:8900/admin/syncjobdef}")
+	private String baseUri;
 	
 
 	/**
@@ -1592,6 +1607,38 @@ public class SyncMasterDataServiceHelper {
 			processListDtos = MapperUtils.mapAll(processList, ProcessListDto.class);
 		}
 		return CompletableFuture.completedFuture(processListDtos);
+	}
+	
+	
+	@Async
+	public CompletableFuture<List<SyncJobDefDto>> getSyncJobDefDetails(LocalDateTime lastUpdatedTime,
+			LocalDateTime currentTimeStamp) {
+		
+		List<SyncJobDefDto> syncJobDefDtos = null;
+		ResponseEntity<SyncJobDefResponseDto> response=null;
+		RequestWrapper<String> syncJobDefReqWrapper= new RequestWrapper<>();
+		try {
+			if (lastUpdatedTime == null) {
+				lastUpdatedTime = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
+			}
+			UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(baseUri)
+					// Add query parameter
+					.queryParam("lastupdated", lastUpdatedTime.toString());
+			syncJobDefReqWrapper.setId("SYNCDATA_REQUEST");
+			syncJobDefReqWrapper.setVersion("v1.0");
+			HttpHeaders syncReqHeaders= new HttpHeaders();
+			syncReqHeaders.setContentType(MediaType.APPLICATION_JSON);
+			HttpEntity<RequestWrapper<?>> userDetailRequestEntity = new HttpEntity<>(syncJobDefReqWrapper,
+					syncReqHeaders);
+			response =restTemplate.getForEntity(builder.toUriString(),SyncJobDefResponseDto.class); 
+			System.out.println(response);
+		} catch (RestClientException ex) {
+			throw new SyncDataServiceException(MasterDataErrorCode.PROCESS_LIST_FETCH_EXCEPTION.getErrorCode(),
+					MasterDataErrorCode.PROCESS_LIST_FETCH_EXCEPTION.getErrorMessage());
+		}
+		
+		
+		return null;
 	}
 	
 	
