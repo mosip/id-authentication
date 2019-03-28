@@ -6,6 +6,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
@@ -46,7 +47,7 @@ public class ClientJarEncryption {
 	private static final String MANIFEST_FILE_NAME = "MANIFEST";
 	private static final String MANIFEST_FILE_FORMAT = ".MF";
 	private static final String MOSIP_BIN = "bin";
-	
+	private static final String MOSIP_LOG = "log";
 
 	/**
 	 * Encrypt the bytes
@@ -95,7 +96,7 @@ public class ClientJarEncryption {
 
 					String zipFilename = file.getParent() + SLASH + "mosip-sw-" + args[3] + MOSIP_ZIP;
 
-						byte[] propertiesBytes = (MOSIP_LOG_PATH + "\n" + MOSIP_DB_PATH).getBytes();
+					byte[] propertiesBytes = (MOSIP_LOG_PATH + "\n" + MOSIP_DB_PATH).getBytes();
 					byte[] runExecutbale = FileUtils
 							.readFileToByteArray(new File(args[4] + MOSIP_REG_LIBS + args[3] + MOSIP_JAR));
 					File listOfJars = new File(file.getParent() + SLASH + MOSIP_LIB).getAbsoluteFile();
@@ -108,8 +109,10 @@ public class ClientJarEncryption {
 					fileNameByBytes.put(MOSIP_DB + SLASH, new byte[] {});
 					fileNameByBytes.put(MOSIP_LIB + SLASH, new byte[] {});
 					fileNameByBytes.put(MOSIP_BIN + SLASH, new byte[] {});
+					fileNameByBytes.put(MOSIP_LOG + SLASH, new byte[] {});
+
 					fileNameByBytes.put(MOSIP_EXE_JAR, runExecutbale);
-					
+
 					String path = new File(args[4]).getPath();
 
 					File regLibFile = new File(path + SLASH + libraries);
@@ -118,11 +121,16 @@ public class ClientJarEncryption {
 					byte[] clientJarEncryptedBytes = aes.getEncryptedBytes(Files.readAllBytes(clientJar.toPath()),
 							Base64.getDecoder().decode(args[2].getBytes()));
 
+					String filePath = listOfJars.getAbsolutePath()+SLASH+clientJar.getName();
+					try (FileOutputStream regFileOutputStream = new FileOutputStream(new File(filePath))) {
+						regFileOutputStream.write(clientJarEncryptedBytes);
+
+					}
 					/* Add To Manifest */
 					addToManifest(clientJar.getName(), clientJarEncryptedBytes, manifest);
 
-					/* Save Client jar to registration-libs */
-					saveLibJars(clientJarEncryptedBytes, clientJar.getName(), regLibFile);
+					// /* Save Client jar to registration-libs */
+					// saveLibJars(clientJarEncryptedBytes, clientJar.getName(), regLibFile);
 
 					// Adding lib files into map
 					for (File files : listOfJars.listFiles()) {
@@ -132,10 +140,18 @@ public class ClientJarEncryption {
 									Base64.getDecoder().decode(args[2].getBytes()));
 							// fileNameByBytes.put(libraries + files.getName(), encryptedRegFileBytes);
 
+							
+							Path servicesJar = files.toPath();
+							try (FileOutputStream regFileOutputStream = new FileOutputStream(servicesJar.toFile())) {
+								regFileOutputStream.write(encryptedRegFileBytes);
+
+							}
+							
+
 							/* Add To Manifest */
 							addToManifest(files.getName(), encryptedRegFileBytes, manifest);
 
-							saveLibJars(encryptedRegFileBytes, files.getName(), regLibFile);
+							// saveLibJars(encryptedRegFileBytes, files.getName(), regLibFile);
 						} else {
 							// fileNameByBytes.put(libraries + files.getName(),
 							// FileUtils.readFileToByteArray(files));
@@ -143,16 +159,16 @@ public class ClientJarEncryption {
 							/* Add To Manifest */
 							addToManifest(files.getName(), Files.readAllBytes(files.toPath()), manifest);
 
-							saveLibJars(files, regLibFile);
+							// saveLibJars(files, regLibFile);
 
 						}
 					}
 
 					writeManifest(fileOutputStream, manifest);
 
-					fileNameByBytes.put(MANIFEST_FILE_NAME+MANIFEST_FILE_FORMAT, FileUtils.readFileToByteArray(
+					fileNameByBytes.put(MANIFEST_FILE_NAME + MANIFEST_FILE_FORMAT, FileUtils.readFileToByteArray(
 							new File(file.getParent() + SLASH + MANIFEST_FILE_NAME + MANIFEST_FILE_FORMAT)));
-					
+
 					aes.writeFileToZip(fileNameByBytes, zipFilename);
 
 					System.out.println("Zip Creation ended with path :::" + zipFilename);
@@ -207,31 +223,32 @@ public class ClientJarEncryption {
 
 	}
 
-	private static void saveLibJars(File srcFile, File destFile) {
+	/*
+	 * private static void saveLibJars(File srcFile, File destFile) {
+	 * 
+	 * try {
+	 * 
+	 * String val =
+	 * srcFile.getName().split("\\.")[srcFile.getName().split("\\.").length - 1]; if
+	 * ("jar".equals(val)) { FileUtils.copyFileToDirectory(srcFile, destFile); } }
+	 * catch (NullPointerException | IOException exception) {
+	 * exception.printStackTrace(); }
+	 * 
+	 * }
+	 */
 
-		try {
-
-			String val = srcFile.getName().split("\\.")[srcFile.getName().split("\\.").length - 1];
-			if ("jar".equals(val)) {
-				FileUtils.copyFileToDirectory(srcFile, destFile);
-			}
-		} catch (NullPointerException | IOException exception) {
-			exception.printStackTrace();
-		}
-
-	}
-
-	private static void saveLibJars(byte[] jarBytes, String srcFileName, File destDir) {
-
-		File file = new File(destDir.getAbsolutePath() + SLASH + srcFileName);
-
-		try (FileOutputStream fileOutputStream = new FileOutputStream(file)) {
-			fileOutputStream.write(jarBytes);
-		} catch (NullPointerException | IOException exception) {
-			exception.printStackTrace();
-		}
-
-	}
+	/*
+	 * private static void saveLibJars(byte[] jarBytes, String srcFileName, File
+	 * destDir) {
+	 * 
+	 * File file = new File(destDir.getAbsolutePath() + SLASH + srcFileName);
+	 * 
+	 * try (FileOutputStream fileOutputStream = new FileOutputStream(file)) {
+	 * fileOutputStream.write(jarBytes); } catch (NullPointerException | IOException
+	 * exception) { exception.printStackTrace(); }
+	 * 
+	 * }
+	 */
 
 	private byte[] getEncryptedBytes(byte[] jarBytes, byte[] decodeBytes) {
 		return encyrpt(jarBytes, decodeBytes);
