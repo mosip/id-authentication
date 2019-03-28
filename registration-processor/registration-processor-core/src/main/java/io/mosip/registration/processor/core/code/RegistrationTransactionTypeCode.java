@@ -1,4 +1,4 @@
-package io.mosip.registration.processor.status.code;
+package io.mosip.registration.processor.core.code;
 
 /**
  * The Enum RegistrationTransactionTypeCode.

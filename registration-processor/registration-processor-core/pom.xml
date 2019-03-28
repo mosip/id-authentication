@@ -12,12 +12,7 @@
 	<artifactId>registration-processor-core</artifactId>
 
 	<dependencies>
-	<dependency>
-			<groupId>io.mosip.registrationprocessor</groupId>
-			<artifactId>registration-status-service-impl</artifactId>
-			<version>${registration.status.service.version}</version>
-		</dependency>
-	<dependency>
+		<dependency>
 			<groupId>io.vertx</groupId>
 			<artifactId>vertx-web</artifactId>
 			<version>${vertx.version}</version>
