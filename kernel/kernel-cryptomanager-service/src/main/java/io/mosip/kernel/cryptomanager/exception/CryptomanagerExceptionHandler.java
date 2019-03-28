@@ -21,6 +21,7 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.util.ContentCachingRequestWrapper;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -30,7 +31,6 @@ import io.mosip.kernel.core.crypto.exception.InvalidKeyException;
 import io.mosip.kernel.core.crypto.exception.NullDataException;
 import io.mosip.kernel.core.exception.NoSuchAlgorithmException;
 import io.mosip.kernel.core.exception.ServiceError;
-import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.util.EmptyCheckUtils;
 import io.mosip.kernel.cryptomanager.constant.CryptomanagerConstant;
@@ -194,7 +194,6 @@ public class CryptomanagerExceptionHandler {
 	}
 
 	private ResponseWrapper<ServiceError> setErrors(HttpServletRequest httpServletRequest) throws IOException {
-		RequestWrapper<?> requestWrapper = null;
 		ResponseWrapper<ServiceError> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponsetime(LocalDateTime.now(ZoneId.of("UTC")));
 		String requestBody = null;
@@ -205,9 +204,9 @@ public class CryptomanagerExceptionHandler {
 			return responseWrapper;
 		}
 		objectMapper.registerModule(new JavaTimeModule());
-		requestWrapper = objectMapper.readValue(requestBody, RequestWrapper.class);
-		responseWrapper.setId(requestWrapper.getId());
-		responseWrapper.setVersion(requestWrapper.getVersion());
+		JsonNode reqNode = objectMapper.readTree(requestBody);
+		responseWrapper.setId(reqNode.path("id").asText());
+		responseWrapper.setVersion(reqNode.path("version").asText());
 		return responseWrapper;
 	}
 }
