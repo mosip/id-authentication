@@ -2,6 +2,8 @@ package io.mosip.authentication.service.filter;
 
 import java.io.IOException;
 import java.security.InvalidKeyException;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.PublicKey;
@@ -152,6 +154,9 @@ public abstract class BaseAuthFilter extends BaseIDAFilter {
 			if (certificateChainHeaderValue.size() == NumberUtils.INTEGER_ONE
 					&& jws.getAlgorithmHeaderValue().equals(env.getProperty(MOSIP_JWS_CERTIFICATE_ALGM))) {
 				X509Certificate certificate = certificateChainHeaderValue.get(0);
+				KeyStore keyStore = KeyStore.getInstance(KeyStore.getDefaultType());
+				keyStore.load(null);
+				keyStore.setCertificateEntry("password", certificate);
 				certificate.checkValidity();
 				publicKey = certificate.getPublicKey();
 				certificate.verify(publicKey);
@@ -162,7 +167,7 @@ public abstract class BaseAuthFilter extends BaseIDAFilter {
 				throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.INVALID_CERTIFICATE);
 			}
 		} catch (JoseException | InvalidKeyException | CertificateException | NoSuchAlgorithmException
-				| NoSuchProviderException | SignatureException e) {
+				| NoSuchProviderException | SignatureException | KeyStoreException | IOException e) {
 			mosipLogger.error(SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER, "Invalid certificate");
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.INVALID_CERTIFICATE, e);
 		}

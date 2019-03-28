@@ -13,8 +13,10 @@ import javax.crypto.SecretKey;
 import javax.servlet.http.HttpServletRequestWrapper;
 import org.springframework.stereotype.Component;
 
+import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonMappingException;
 
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.dto.indauth.AuthTypeDTO;
@@ -34,12 +36,19 @@ import io.mosip.kernel.core.util.DateUtils;
 @Component
 public class IdAuthFilter extends BaseAuthFilter {
 
+	/** The Constant UTF_8. */
+	private static final String UTF_8 = "UTF-8";
+
+	/** The Constant REQUEST_HMAC. */
 	private static final String REQUEST_HMAC = "requestHMAC";
 
+	/** The Constant SECRET_KEY. */
 	private static final String SECRET_KEY = "secretKey";
 
+	/** The Constant MISP_PARTNER_MAPPING. */
 	private static final String MISP_PARTNER_MAPPING = "misp.partner.mapping.";
 
+	/** The Constant PARTNER_KEY. */
 	private static final String PARTNER_KEY = "partner.";
 
 	/** The Constant LICENSE_KEY. */
@@ -141,13 +150,14 @@ public class IdAuthFilter extends BaseAuthFilter {
 	 * @return the string
 	 * @throws IdAuthenticationAppException the id authentication app exception
 	 */
+	@SuppressWarnings("unchecked")
 	private String licenseKeyMISPMapping(String licenseKey) throws IdAuthenticationAppException {
 		String mispId = null;
-		Map<String, Object> licenseKeyMap = null;
 		String licensekeyMappingJson = env.getProperty(LICENSE_KEY + licenseKey);
-		if (null != licensekeyMappingJson) {
+		if (Objects.nonNull(licensekeyMappingJson)) {
+			Map<String, Object> licenseKeyMap = null;
 			try {
-				licenseKeyMap = mapper.readValue(licensekeyMappingJson.getBytes("UTF-8"), HashMap.class);
+				licenseKeyMap = mapper.readValue(licensekeyMappingJson.getBytes(UTF_8), HashMap.class);
 				mispId = (String) licenseKeyMap.get(MISP_ID);
 			} catch (IOException e) {
 				throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS);
@@ -172,14 +182,15 @@ public class IdAuthFilter extends BaseAuthFilter {
 	 * @param partnerId the partner id
 	 * @throws IdAuthenticationAppException the id authentication app exception
 	 */
+	@SuppressWarnings("unchecked")
 	private void validPartnerId(String partnerId) throws IdAuthenticationAppException {
 		String partnerIdJson = env.getProperty(PARTNER_KEY + partnerId);
-		Map<String, String> partnerIdMap = null;
 		if (null == partnerIdJson) {
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.PARTNER_NOT_REGISTERED);
 		} else {
+			Map<String, String> partnerIdMap = null;
 			try {
-				partnerIdMap = mapper.readValue(partnerIdJson.getBytes("UTF-8"), Map.class);
+				partnerIdMap = mapper.readValue(partnerIdJson.getBytes(UTF_8), Map.class);
 			} catch (IOException e) {
 				throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS);
 			}
@@ -202,6 +213,7 @@ public class IdAuthFilter extends BaseAuthFilter {
 	 * @return the string
 	 * @throws IdAuthenticationAppException the id authentication app exception
 	 */
+	@SuppressWarnings("unchecked")
 	private String validMISPPartnerMapping(String partnerId, String mispId) throws IdAuthenticationAppException {
 		Map<String, String> partnerIdMap = null;
 		String policyId = null;
@@ -213,7 +225,7 @@ public class IdAuthFilter extends BaseAuthFilter {
 		}
 		String partnerIdJson = env.getProperty(PARTNER_KEY + partnerId);
 		try {
-			partnerIdMap = mapper.readValue(partnerIdJson.getBytes("UTF-8"), Map.class);
+			partnerIdMap = mapper.readValue(partnerIdJson.getBytes(UTF_8), Map.class);
 			policyId = partnerIdMap.get(POLICY_ID);
 		} catch (IOException e) {
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS);
@@ -233,17 +245,17 @@ public class IdAuthFilter extends BaseAuthFilter {
 		try {
 			String policyJson = getPolicy(policyId);
 			Policies policies = null;
-			policies = mapper.readValue(policyJson.getBytes("UTF-8"), Policies.class);
+			policies = mapper.readValue(policyJson.getBytes(UTF_8), Policies.class);
 			List<AuthPolicy> authPolicies = policies.getPolicies().getAuthPolicies();
 			List<KYCAttributes> allowedKycAttributes = policies.getPolicies().getAllowedKycAttributes();
-			List<String> allowedTypeList = allowedKycAttributes.stream().map(value -> value.getAttributeName())
+			List<String> allowedTypeList = allowedKycAttributes.stream().map(KYCAttributes::getAttributeName)
 					.collect(Collectors.toList());
 			if (allowedTypeList == null) {
 				allowedTypeList = Collections.emptyList();
 			}
 			requestBody.put("allowedKycAttributes", allowedTypeList);
 			checkAllowedAuthTypeBasedOnPolicy(requestBody, authPolicies);
-			List<AuthPolicy> mandatoryAuthPolicies = authPolicies.stream().filter(policy -> policy.isMandatory())
+			List<AuthPolicy> mandatoryAuthPolicies = authPolicies.stream().filter(AuthPolicy::isMandatory)
 					.collect(Collectors.toList());
 			checkMandatoryAuthTypeBasedOnPolicy(requestBody, mandatoryAuthPolicies);
 		} catch (IOException e) {
@@ -271,35 +283,7 @@ public class IdAuthFilter extends BaseAuthFilter {
 			}
 
 			if (authType.isBio()) {
-				if (!isAllowedAuthType(MatchType.Category.BIO.getType(), authPolicies)) {
-					throw new IdAuthenticationAppException(
-							IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorCode(),
-							String.format(IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorMessage(),
-									MatchType.Category.BIO.name()));
-				} else {
-					Object value = Optional.ofNullable(requestBody.get("request")).filter(obj -> obj instanceof Map)
-							.map(obj -> ((Map<String, Object>) obj).get("biometrics"))
-							.filter(obj -> obj instanceof List).orElse(Collections.emptyList());
-					List<BioIdentityInfoDTO> listBioInfo = mapper.readValue(mapper.writeValueAsBytes(value),
-							new TypeReference<List<BioIdentityInfoDTO>>() {
-							});
-
-					List<String> bioTypeList = listBioInfo.stream().map(s -> s.getData().getBioType())
-							.collect(Collectors.toList());
-					for (String bioType : bioTypeList) {
-						if (bioType.equalsIgnoreCase("FIR") || bioType.equalsIgnoreCase("FMR")) {
-							bioType = "FINGER";
-						} else if (bioType.equalsIgnoreCase("FID")) {
-							bioType = "FACE";
-						}
-						if (!isAllowedAuthType(MatchType.Category.BIO.getType(), bioType, authPolicies)) {
-							throw new IdAuthenticationAppException(
-									IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorCode(),
-									String.format(IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorMessage(),
-											MatchType.Category.BIO.name() + "-" + bioType));
-						}
-					}
-				}
+				checkAllowedAuthTypeForBio(requestBody, authPolicies);
 			}
 
 			if (authType.isPin() && !isAllowedAuthType(MatchType.Category.SPIN.getType(), authPolicies)) {
@@ -320,18 +304,64 @@ public class IdAuthFilter extends BaseAuthFilter {
 	}
 
 	/**
+	 * Check allowed auth type for bio.
+	 *
+	 * @param requestBody the request body
+	 * @param authPolicies the auth policies
+	 * @throws IdAuthenticationAppException the id authentication app exception
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws JsonParseException the json parse exception
+	 * @throws JsonMappingException the json mapping exception
+	 * @throws JsonProcessingException the json processing exception
+	 */
+	@SuppressWarnings("unchecked")
+	private void checkAllowedAuthTypeForBio(Map<String, Object> requestBody, List<AuthPolicy> authPolicies)
+			throws IdAuthenticationAppException, IOException {
+		if (!isAllowedAuthType(MatchType.Category.BIO.getType(), authPolicies)) {
+			throw new IdAuthenticationAppException(
+					IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorCode(),
+					String.format(IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorMessage(),
+							MatchType.Category.BIO.name()));
+		} else {
+			Object value = Optional.ofNullable(requestBody.get(REQUEST)).filter(obj -> obj instanceof Map)
+					.map(obj -> ((Map<String, Object>) obj).get("biometrics"))
+					.filter(obj -> obj instanceof List).orElse(Collections.emptyList());
+			List<BioIdentityInfoDTO> listBioInfo = mapper.readValue(mapper.writeValueAsBytes(value),
+					new TypeReference<List<BioIdentityInfoDTO>>() {
+					});
+
+			List<String> bioTypeList = listBioInfo.stream().map(s -> s.getData().getBioType())
+					.collect(Collectors.toList());
+			for (String bioType : bioTypeList) {
+				if (bioType.equalsIgnoreCase("FIR") || bioType.equalsIgnoreCase("FMR")) {
+					bioType = "FINGER";
+				} else if (bioType.equalsIgnoreCase("FID")) {
+					bioType = "FACE";
+				}
+				if (!isAllowedAuthType(MatchType.Category.BIO.getType(), bioType, authPolicies)) {
+					throw new IdAuthenticationAppException(
+							IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorCode(),
+							String.format(IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorMessage(),
+									MatchType.Category.BIO.name() + "-" + bioType));
+				}
+			}
+		}
+	}
+
+	/**
 	 * Check mandatory auth type based on policy.
 	 *
 	 * @param requestBody           the request body
 	 * @param mandatoryAuthPolicies the mandatory auth policies
 	 * @throws IdAuthenticationAppException the id authentication app exception
 	 */
+	@SuppressWarnings("unchecked")
 	protected void checkMandatoryAuthTypeBasedOnPolicy(Map<String, Object> requestBody,
 			List<AuthPolicy> mandatoryAuthPolicies) throws IdAuthenticationAppException {
 		try {
 			AuthTypeDTO authType = mapper.readValue(mapper.writeValueAsBytes(requestBody.get("requestedAuth")),
 					AuthTypeDTO.class);
-			Object value = Optional.ofNullable(requestBody.get("request")).filter(obj -> obj instanceof Map)
+			Object value = Optional.ofNullable(requestBody.get(REQUEST)).filter(obj -> obj instanceof Map)
 					.map(obj -> ((Map<String, Object>) obj).get("biometrics")).filter(obj -> obj instanceof List)
 					.orElse(Collections.emptyList());
 			List<BioIdentityInfoDTO> listBioInfo = mapper.readValue(mapper.writeValueAsBytes(value),
@@ -343,50 +373,62 @@ public class IdAuthFilter extends BaseAuthFilter {
 				bioTypeList.add("FINGER");
 			}
 			for (AuthPolicy mandatoryAuthPolicy : mandatoryAuthPolicies) {
-				if (mandatoryAuthPolicy.getAuthType().equalsIgnoreCase(MatchType.Category.OTP.getType())
-						&& !authType.isOtp()) {
-					throw new IdAuthenticationAppException(
-							IdAuthenticationErrorConstants.AUTHTYPE_MANDATORY.getErrorCode(),
-							String.format(IdAuthenticationErrorConstants.AUTHTYPE_MANDATORY.getErrorMessage(),
-									MatchType.Category.OTP.getType()));
-				} else if (mandatoryAuthPolicy.getAuthType().equalsIgnoreCase(MatchType.Category.DEMO.getType())
-						&& !authType.isDemo()) {
-					throw new IdAuthenticationAppException(
-							IdAuthenticationErrorConstants.AUTHTYPE_MANDATORY.getErrorCode(),
-							String.format(IdAuthenticationErrorConstants.AUTHTYPE_MANDATORY.getErrorMessage(),
-									MatchType.Category.DEMO.getType()));
-				} else if (mandatoryAuthPolicy.getAuthType().equalsIgnoreCase(MatchType.Category.SPIN.getType())
-						&& !authType.isPin()) {
-					throw new IdAuthenticationAppException(
-							IdAuthenticationErrorConstants.AUTHTYPE_MANDATORY.getErrorCode(),
-							String.format(IdAuthenticationErrorConstants.AUTHTYPE_MANDATORY.getErrorMessage(),
-									MatchType.Category.SPIN.getType()));
-				} else if (mandatoryAuthPolicy.getAuthType().equalsIgnoreCase(MatchType.Category.BIO.getType())) {
-					if (!authType.isBio()) {
-						throw new IdAuthenticationAppException(
-								IdAuthenticationErrorConstants.AUTHTYPE_MANDATORY.getErrorCode(),
-								String.format(IdAuthenticationErrorConstants.AUTHTYPE_MANDATORY.getErrorMessage(),
-										MatchType.Category.BIO.getType()));
-					} else {
-						if (!bioTypeList.contains(mandatoryAuthPolicy.getAuthSubType())) {
-							throw new IdAuthenticationAppException(
-									IdAuthenticationErrorConstants.AUTHTYPE_MANDATORY.getErrorCode(),
-									String.format(IdAuthenticationErrorConstants.AUTHTYPE_MANDATORY.getErrorMessage(),
-											MatchType.Category.BIO.getType() + "-"
-													+ mandatoryAuthPolicy.getAuthSubType()));
-						}
-					}
-				} else if (mandatoryAuthPolicy.getAuthType().equalsIgnoreCase(KYC)) {
-					if (!Optional.ofNullable(requestBody.get("id"))
-							.filter(id -> id.equals(env.getProperty("mosip.ida.api.ids.ekyc"))).isPresent()) {
-						throw new IdAuthenticationAppException(
-								IdAuthenticationErrorConstants.AUTHTYPE_MANDATORY.getErrorCode(), String.format(
-										IdAuthenticationErrorConstants.AUTHTYPE_MANDATORY.getErrorMessage(), KYC));
-					}
-				}
+				validateAuthPolicy(requestBody, authType, bioTypeList, mandatoryAuthPolicy);
 			}
 		} catch (IOException e) {
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
+		}
+	}
+
+	/**
+	 * Validate auth policy.
+	 *
+	 * @param requestBody the request body
+	 * @param authType the auth type
+	 * @param bioTypeList the bio type list
+	 * @param mandatoryAuthPolicy the mandatory auth policy
+	 * @throws IdAuthenticationAppException the id authentication app exception
+	 */
+	private void validateAuthPolicy(Map<String, Object> requestBody, AuthTypeDTO authType, List<String> bioTypeList,
+			AuthPolicy mandatoryAuthPolicy) throws IdAuthenticationAppException {
+		if (mandatoryAuthPolicy.getAuthType().equalsIgnoreCase(MatchType.Category.OTP.getType())
+				&& !authType.isOtp()) {
+			throw new IdAuthenticationAppException(
+					IdAuthenticationErrorConstants.AUTHTYPE_MANDATORY.getErrorCode(),
+					String.format(IdAuthenticationErrorConstants.AUTHTYPE_MANDATORY.getErrorMessage(),
+							MatchType.Category.OTP.getType()));
+		} else if (mandatoryAuthPolicy.getAuthType().equalsIgnoreCase(MatchType.Category.DEMO.getType())
+				&& !authType.isDemo()) {
+			throw new IdAuthenticationAppException(
+					IdAuthenticationErrorConstants.AUTHTYPE_MANDATORY.getErrorCode(),
+					String.format(IdAuthenticationErrorConstants.AUTHTYPE_MANDATORY.getErrorMessage(),
+							MatchType.Category.DEMO.getType()));
+		} else if (mandatoryAuthPolicy.getAuthType().equalsIgnoreCase(MatchType.Category.SPIN.getType())
+				&& !authType.isPin()) {
+			throw new IdAuthenticationAppException(
+					IdAuthenticationErrorConstants.AUTHTYPE_MANDATORY.getErrorCode(),
+					String.format(IdAuthenticationErrorConstants.AUTHTYPE_MANDATORY.getErrorMessage(),
+							MatchType.Category.SPIN.getType()));
+		} else if (mandatoryAuthPolicy.getAuthType().equalsIgnoreCase(MatchType.Category.BIO.getType())) {
+			if (!authType.isBio()) {
+				throw new IdAuthenticationAppException(
+						IdAuthenticationErrorConstants.AUTHTYPE_MANDATORY.getErrorCode(),
+						String.format(IdAuthenticationErrorConstants.AUTHTYPE_MANDATORY.getErrorMessage(),
+								MatchType.Category.BIO.getType()));
+			} else {
+				if (!bioTypeList.contains(mandatoryAuthPolicy.getAuthSubType())) {
+					throw new IdAuthenticationAppException(
+							IdAuthenticationErrorConstants.AUTHTYPE_MANDATORY.getErrorCode(),
+							String.format(IdAuthenticationErrorConstants.AUTHTYPE_MANDATORY.getErrorMessage(),
+									MatchType.Category.BIO.getType() + "-"
+											+ mandatoryAuthPolicy.getAuthSubType()));
+				}
+			}
+		} else if (mandatoryAuthPolicy.getAuthType().equalsIgnoreCase(KYC) && !Optional.ofNullable(requestBody.get("id"))
+				.filter(id -> id.equals(env.getProperty("mosip.ida.api.ids.ekyc"))).isPresent()) {
+				throw new IdAuthenticationAppException(
+						IdAuthenticationErrorConstants.AUTHTYPE_MANDATORY.getErrorCode(), String.format(
+								IdAuthenticationErrorConstants.AUTHTYPE_MANDATORY.getErrorMessage(), KYC));
 		}
 	}
 

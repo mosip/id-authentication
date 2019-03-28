@@ -16,6 +16,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.authentication.service.policy.AuthPolicy;
+import io.mosip.kernel.core.util.CryptoUtil;
 
 /**
  * The Class KycAuthFilter.
@@ -69,8 +70,8 @@ public class KycAuthFilter extends IdAuthFilter {
 		}
 
 		if (Objects.nonNull(asymmetricKeyEncrypt) && Objects.nonNull(symmetricDataEncrypt)) {
-			response.replace(RESPONSE, org.apache.commons.codec.binary.Base64.encodeBase64String(asymmetricKeyEncrypt)
-					.concat(org.apache.commons.codec.binary.Base64.encodeBase64String(symmetricDataEncrypt)));
+			response.replace(RESPONSE, CryptoUtil.encodeBase64String(asymmetricKeyEncrypt)
+					.concat(CryptoUtil.encodeBase64String(symmetricDataEncrypt)));
 		}
 	}
 

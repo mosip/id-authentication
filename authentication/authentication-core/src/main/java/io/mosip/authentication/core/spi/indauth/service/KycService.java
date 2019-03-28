@@ -15,7 +15,7 @@ import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 @FunctionalInterface
 public interface KycService {
 
-	public KycResponseDTO retrieveKycInfo(String uin, List<String> eKycTypeattributes, String secLangCode,
+	public KycResponseDTO retrieveKycInfo(String uin, List<String> eKycTypeAttributes, String secLangCode,
 			Map<String, List<IdentityInfoDTO>> identityInfo) throws IdAuthenticationBusinessException;
 
 }
