@@ -2,6 +2,11 @@ package io.mosip.registration.dto;
 
 import javafx.beans.property.SimpleStringProperty;
 
+/**
+ * The Class RegistrationApprovalDTO.
+ * 
+ * @author Mahesh Kumar
+ */
 public class RegistrationApprovalDTO {
 
 	private SimpleStringProperty id;
@@ -9,11 +14,14 @@ public class RegistrationApprovalDTO {
 	private SimpleStringProperty statusComment;
 
 	/**
-	 * @param id
-	 * @param type
-	 * @param name
-	 * @param operatorId
-	 * @param operatorName
+	 * Instantiates a new registration approval DTO.
+	 *
+	 * @param id 
+	 * 				the id
+	 * @param acknowledgementFormPath 
+	 * 				the acknowledgement form path
+	 * @param statusComment 
+	 * 				the status comment
 	 */
 	public RegistrationApprovalDTO(String id, String acknowledgementFormPath, String statusComment) {
 		super();
@@ -23,6 +31,8 @@ public class RegistrationApprovalDTO {
 	}
 
 	/**
+	 * Gets the id.
+	 *
 	 * @return the id
 	 */
 	public String getId() {
@@ -30,6 +40,8 @@ public class RegistrationApprovalDTO {
 	}
 
 	/**
+	 * Gets the acknowledgement form path.
+	 *
 	 * @return the acknowledgementFormPath
 	 */
 	public String getAcknowledgementFormPath() {
@@ -37,6 +49,8 @@ public class RegistrationApprovalDTO {
 	}
 
 	/**
+	 * Gets the status comment.
+	 *
 	 * @return the statusComment
 	 */
 	public String getStatusComment() {
