@@ -1,8 +1,6 @@
 package io.mosip.kernel.lkeymanager.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -11,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseFilter;
+import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.licensekeymanager.spi.LicenseKeyManagerService;
 import io.mosip.kernel.lkeymanager.dto.LicenseKeyFetchResponseDto;
 import io.mosip.kernel.lkeymanager.dto.LicenseKeyGenerationDto;
@@ -46,11 +45,13 @@ public class LicenseKeyController {
 	 */
 	@ResponseFilter
 	@PostMapping(value = "/license/generate")
-	public ResponseEntity<LicenseKeyGenerationResponseDto> generateLicenseKey(
+	public ResponseWrapper<LicenseKeyGenerationResponseDto> generateLicenseKey(
 			@RequestBody RequestWrapper<LicenseKeyGenerationDto> licenseKeyGenerationDto) {
 		LicenseKeyGenerationResponseDto responseDto = new LicenseKeyGenerationResponseDto();
 		responseDto.setLicenseKey(licenseKeyManagerService.generateLicenseKey(licenseKeyGenerationDto.getRequest()));
-		return new ResponseEntity<>(responseDto, HttpStatus.OK);
+		ResponseWrapper<LicenseKeyGenerationResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(responseDto);
+		return responseWrapper;
 	}
 
 	/**
@@ -63,12 +64,14 @@ public class LicenseKeyController {
 	 */
 	@ResponseFilter
 	@PostMapping(value = "/license/permission")
-	public ResponseEntity<LicenseKeyMappingResponseDto> mapLicenseKey(
+	public ResponseWrapper<LicenseKeyMappingResponseDto> mapLicenseKey(
 			@RequestBody RequestWrapper<LicenseKeyMappingDto> licenseKeyMappingDto) {
 		LicenseKeyMappingResponseDto licenseKeyMappingResponseDto = new LicenseKeyMappingResponseDto();
 		licenseKeyMappingResponseDto
 				.setStatus(licenseKeyManagerService.mapLicenseKey(licenseKeyMappingDto.getRequest()));
-		return new ResponseEntity<>(licenseKeyMappingResponseDto, HttpStatus.OK);
+		ResponseWrapper<LicenseKeyMappingResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(licenseKeyMappingResponseDto);
+		return responseWrapper;
 	}
 
 	/**
@@ -80,11 +83,13 @@ public class LicenseKeyController {
 	 */
 	@ResponseFilter
 	@GetMapping(value = "/license/permission")
-	public ResponseEntity<LicenseKeyFetchResponseDto> fetchLicenseKeyPermissions(@RequestParam("tspId") String tspId,
+	public ResponseWrapper<LicenseKeyFetchResponseDto> fetchLicenseKeyPermissions(@RequestParam("tspId") String tspId,
 			@RequestParam("licenseKey") String licenseKey) {
 		LicenseKeyFetchResponseDto licenseKeyFetchResponseDto = new LicenseKeyFetchResponseDto();
 		licenseKeyFetchResponseDto
 				.setPermissions(licenseKeyManagerService.fetchLicenseKeyPermissions(tspId, licenseKey));
-		return new ResponseEntity<>(licenseKeyFetchResponseDto, HttpStatus.OK);
+		ResponseWrapper<LicenseKeyFetchResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(licenseKeyFetchResponseDto);
+		return responseWrapper;
 	}
 }
