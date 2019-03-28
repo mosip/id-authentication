@@ -130,7 +130,7 @@ public class Validations extends BaseController {
 		}
 		return isValid;
 	}
-	
+
 	/**
 	 * To mark as lost UIN for demographic fields validation
 	 */
@@ -157,8 +157,8 @@ public class Validations extends BaseController {
 	}
 
 	/**
-	 * Pass the node to check for the validation, specific validation method
-	 * will be called for each field
+	 * Pass the node to check for the validation, specific validation method will be
+	 * called for each field
 	 */
 	public boolean validateTheNode(Pane parentPane, Node node, String id) {
 
@@ -189,10 +189,8 @@ public class Validations extends BaseController {
 								validated = true;
 							} else {
 								/*
-								 * generateAlert(messageBundle.getString(
-								 * "docMandateMsg").replace("{}", ((VBox)
-								 * innerNode).getId()), isConsolidated,
-								 * validationMessage);
+								 * generateAlert(messageBundle.getString( "docMandateMsg").replace("{}", ((VBox)
+								 * innerNode).getId()), isConsolidated, validationMessage);
 								 */
 								node.requestFocus();
 								break outer;
@@ -248,10 +246,10 @@ public class Validations extends BaseController {
 				isFixed = (String) validationMap.get(RegistrationConstants.IS_FIXED);
 			}
 
-			if(isLostUIN) {
+			if (isLostUIN) {
 				isMandetory = "false";
-			} 
-			
+			}
+
 			boolean showAlert = (noAlert.contains(node.getId()) && id.contains(RegistrationConstants.ON_TYPE));
 			if (node.isDisabled())
 				return true;
@@ -334,8 +332,12 @@ public class Validations extends BaseController {
 				return true;
 			if (node.isDisabled())
 				return true;
-			if(isLostUIN)
+			if (isLostUIN) {
 				return true;
+			}
+			if (id.equalsIgnoreCase(RegistrationConstants.DOCUMENT_SCAN_PANE)) {
+				return true;
+			}
 			if (node.getValue() == null) {
 				generateAlert(parentPane, id,
 						applicationLabelBundle.getString(id).concat(" ")

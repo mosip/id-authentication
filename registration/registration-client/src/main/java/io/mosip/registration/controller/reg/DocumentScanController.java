@@ -40,8 +40,8 @@ import io.mosip.registration.dto.demographic.DocumentDetailsDTO;
 import io.mosip.registration.dto.demographic.MoroccoIdentity;
 import io.mosip.registration.dto.mastersync.DocumentCategoryDto;
 import io.mosip.registration.entity.DocumentCategory;
+import io.mosip.registration.service.MasterSyncService;
 import io.mosip.registration.service.impl.DocumentCategoryService;
-import io.mosip.registration.service.impl.ValidDocumentService;
 import io.mosip.registration.util.scan.DocumentScanFacade;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ChangeListener;
@@ -60,7 +60,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -146,7 +145,7 @@ public class DocumentScanController extends BaseController {
 	private FaceCaptureController faceCaptureController;
 
 	@Autowired
-	private ValidDocumentService validDocumentService;
+	private MasterSyncService masterSyncService;
 
 	@Autowired
 	private DocumentCategoryService documentCategoryService;
@@ -169,9 +168,9 @@ public class DocumentScanController extends BaseController {
 	private Button continueBtn;
 	@FXML
 	private Button backBtn;
-	
+
 	private TextField scannedField;
-	
+
 	private int totalDocument;
 
 	@FXML
@@ -183,10 +182,10 @@ public class DocumentScanController extends BaseController {
 					&& getRegistrationDTOFromSession().getSelectionListDTO() != null) {
 				registrationNavlabel.setText(RegistrationConstants.UIN_NAV_LABEL);
 			}
-			totalDocument=0;
-			scannedField=new TextField();
+			totalDocument = 0;
+			scannedField = new TextField();
 			scannedField.setVisible(false);
-			continueBtn.setDisable(true);
+			continueBtn.setDisable(false);
 
 			switchedOnForBiometricException = new SimpleBooleanProperty(false);
 			toggleFunctionForBiometricException();
@@ -199,14 +198,14 @@ public class DocumentScanController extends BaseController {
 				docScanVbox.setDisable(true);
 				continueBtn.setDisable(false);
 			}
-			
-			scannedField.textProperty().addListener((absValue,oldValue,newValue)->{
-				if(Integer.parseInt(newValue)==0)
+
+			scannedField.textProperty().addListener((absValue, oldValue, newValue) -> {
+				if (Integer.parseInt(newValue) == 0)
 					continueBtn.setDisable(false);
 				else
 					continueBtn.setDisable(true);
 			});
-			
+
 			// populateDocumentCategories();
 		} catch (RuntimeException exception) {
 			LOGGER.error("REGISTRATION - CONTROLLER", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
@@ -255,8 +254,8 @@ public class DocumentScanController extends BaseController {
 			List<DocumentCategory> documentCategories = documentCategoryService
 					.getDocumentCategoriesByLangCode(ApplicationContext.applicationLanguage());
 			docScanVbox.setSpacing(5);
-			if (documentCategories != null && documentCategories.size() > 0)
-				prepareDocumentScanSection(applicantType, documentCategories);
+			if (documentCategories != null && !documentCategories.isEmpty())
+				prepareDocumentScanSection(documentCategories);
 		}
 
 		/*
@@ -286,17 +285,17 @@ public class DocumentScanController extends BaseController {
 	}
 
 	@SuppressWarnings("unchecked")
-	private <T> void prepareDocumentScanSection(String applicantType, List<DocumentCategory> documentCategories) {
+	private <T> void prepareDocumentScanSection(List<DocumentCategory> documentCategories) {
 		for (DocumentCategory documentCategory : documentCategories) {
 
 			String docCategoryCode = documentCategory.getCode();
-			
+
 			String docCategoryName = documentCategory.getName();
 
 			List<DocumentCategoryDto> documentCategoryDtos = null;
 
 			try {
-				documentCategoryDtos = validDocumentService.getDocumentCategories(applicantType, docCategoryCode,
+				documentCategoryDtos = masterSyncService.getDocumentCategories(docCategoryCode,
 						ApplicationContext.applicationLanguage());
 			} catch (RuntimeException runtimeException) {
 				LOGGER.error("REGISTRATION - LOADING LIST OF DOCUMENTS FAILED ", APPLICATION_NAME,
@@ -308,7 +307,8 @@ public class DocumentScanController extends BaseController {
 				HBox hBox = new HBox();
 
 				ComboBox<DocumentCategoryDto> comboBox = new ComboBox<>();
-				ImageView indicatorImage = new ImageView(new Image(this.getClass().getResourceAsStream(RegistrationConstants.CLOSE_IMAGE_PATH), 15, 15,
+				ImageView indicatorImage = new ImageView(
+						new Image(this.getClass().getResourceAsStream(RegistrationConstants.CLOSE_IMAGE_PATH), 15, 15,
 								true, true));
 				comboBox.setPromptText(docCategoryName);
 				comboBox.getStyleClass().add("documentCombobox");
@@ -358,10 +358,10 @@ public class DocumentScanController extends BaseController {
 										+ RegistrationUIConstants.DOCUMENT);
 					}
 				});
-				hBox.getChildren().addAll(indicatorImage,comboBox, documentVBox, scanButton);
-				docScanVbox.getChildren().addAll(documentLabel,hBox);
-				//System.out.println("D"+docScanVbox.getWidth());
-				documentLabel.setPrefWidth(docScanVbox.getWidth()/2.2);
+				hBox.getChildren().addAll(indicatorImage, comboBox, documentVBox, scanButton);
+				docScanVbox.getChildren().addAll(documentLabel, hBox);
+				// System.out.println("D"+docScanVbox.getWidth());
+				documentLabel.setPrefWidth(docScanVbox.getWidth() / 2.2);
 				comboBox.getItems().addAll(documentCategoryDtos);
 			}
 
@@ -482,7 +482,7 @@ public class DocumentScanController extends BaseController {
 				scanFromStubbed(popupStage);
 			}
 			totalDocument--;
-			scannedField.setText(""+(totalDocument));
+			scannedField.setText("" + (totalDocument));
 		} catch (IOException ioException) {
 			LOGGER.error(LoggerConstants.LOG_REG_REGISTRATION_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 					String.format("%s -> Exception while scanning documents for registration  %s -> %s",
@@ -623,8 +623,8 @@ public class DocumentScanController extends BaseController {
 
 		LOGGER.info(RegistrationConstants.DOCUMNET_SCAN_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Set DocumentDetailsDTO to RegistrationDTO");
-		((ImageView)((HBox) vboxElement.getParent()).getChildren().get(0)).setImage(new Image(this.getClass().getResourceAsStream(RegistrationConstants.DONE_IMAGE_PATH), 15, 15,
-				true, true));
+		((ImageView) ((HBox) vboxElement.getParent()).getChildren().get(0)).setImage(new Image(
+				this.getClass().getResourceAsStream(RegistrationConstants.DONE_IMAGE_PATH), 15, 15, true, true));
 		addDocumentsToScreen(documentDetailsDTO.getValue(), documentDetailsDTO.getFormat(), vboxElement);
 
 		generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.SCAN_DOC_SUCCESS);
@@ -744,22 +744,22 @@ public class DocumentScanController extends BaseController {
 		LOGGER.info(RegistrationConstants.DOCUMNET_SCAN_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Creating Image to delete the attached document");
 
-		imageView.setOnMouseClicked((event)-> {
-				auditFactory.audit(AuditEvent.REG_DOC_POA_DELETE, Components.REG_DOCUMENTS, SessionContext.userId(),
-						AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
+		imageView.setOnMouseClicked((event) -> {
+			auditFactory.audit(AuditEvent.REG_DOC_POA_DELETE, Components.REG_DOCUMENTS, SessionContext.userId(),
+					AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
 
-				((ImageView)((HBox) vboxElement.getParent()).getChildren().get(0)).setImage(new Image(this.getClass().getResourceAsStream(RegistrationConstants.CLOSE_IMAGE_PATH), 15, 15,
-						true, true));
-				
-				initializePreviewSection();
+			((ImageView) ((HBox) vboxElement.getParent()).getChildren().get(0)).setImage(new Image(
+					this.getClass().getResourceAsStream(RegistrationConstants.CLOSE_IMAGE_PATH), 15, 15, true, true));
 
-				GridPane gridpane = (GridPane) ((ImageView) event.getSource()).getParent();
-				String key = ((VBox) gridpane.getParent()).getId();
-				getDocumentsMapFromSession().remove(key);
+			initializePreviewSection();
 
-				vboxElement.getChildren().remove(gridpane);
-				totalDocument++;
-				scannedField.setText(""+totalDocument);
+			GridPane gridpane = (GridPane) ((ImageView) event.getSource()).getParent();
+			String key = ((VBox) gridpane.getParent()).getId();
+			getDocumentsMapFromSession().remove(key);
+
+			vboxElement.getChildren().remove(gridpane);
+			totalDocument++;
+			scannedField.setText("" + totalDocument);
 		});
 
 		LOGGER.info(RegistrationConstants.DOCUMNET_SCAN_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
@@ -784,20 +784,20 @@ public class DocumentScanController extends BaseController {
 				RegistrationConstants.APPLICATION_ID,
 				"Binding OnAction event to Hyperlink to display Scanned document");
 
-		hyperLink.setOnAction((actionEvent)-> {
+		hyperLink.setOnAction((actionEvent) -> {
 
-				auditFactory.audit(AuditEvent.REG_DOC_POA_VIEW, Components.REG_DOCUMENTS, SessionContext.userId(),
-						AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
+			auditFactory.audit(AuditEvent.REG_DOC_POA_VIEW, Components.REG_DOCUMENTS, SessionContext.userId(),
+					AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
 
-				GridPane pane = (GridPane) ((Hyperlink) actionEvent.getSource()).getParent();
+			GridPane pane = (GridPane) ((Hyperlink) actionEvent.getSource()).getParent();
 
-				String documentKey = ((VBox) pane.getParent()).getId();
-				DocumentDetailsDTO selectedDocumentToDisplay = getDocumentsMapFromSession().get(documentKey);
+			String documentKey = ((VBox) pane.getParent()).getId();
+			DocumentDetailsDTO selectedDocumentToDisplay = getDocumentsMapFromSession().get(documentKey);
 
-				if (selectedDocumentToDisplay != null) {
-					displayDocument(selectedDocumentToDisplay.getDocument(),
-							selectedDocumentToDisplay.getValue() + "." + selectedDocumentToDisplay.getFormat());
-				}
+			if (selectedDocumentToDisplay != null) {
+				displayDocument(selectedDocumentToDisplay.getDocument(),
+						selectedDocumentToDisplay.getValue() + "." + selectedDocumentToDisplay.getFormat());
+			}
 		});
 
 		LOGGER.info(RegistrationConstants.DOCUMNET_SCAN_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
