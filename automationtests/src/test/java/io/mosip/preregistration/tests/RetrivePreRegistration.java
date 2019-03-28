@@ -92,7 +92,7 @@ public class RetrivePreRegistration extends BaseTestCase implements ITest {
 	@DataProvider(name = "Retrive_PreRegistration")
 	public Object[][] readData(ITestContext context) throws JsonParseException, JsonMappingException, IOException, ParseException {
 		 String testParam = context.getCurrentXmlTest().getParameter("testType");
-		 switch ("smokeAndRegression") {
+		 switch ("smoke") {
 		case "smoke":
 			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
 
@@ -129,7 +129,7 @@ public class RetrivePreRegistration extends BaseTestCase implements ITest {
 			status = true;
 		} else {
 			try {
-				Actualresponse = applicationLibrary.getRequest(preReg_URI, GetHeader.getHeader(actualRequest));
+				Actualresponse = applicationLibrary.getRequestDataSync(preReg_URI, GetHeader.getHeader(actualRequest));
 
 			} catch (Exception e) {
 				logger.info(e);

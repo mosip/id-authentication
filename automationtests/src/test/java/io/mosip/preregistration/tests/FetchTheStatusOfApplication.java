@@ -94,7 +94,7 @@ public class FetchTheStatusOfApplication extends BaseTestCase implements ITest {
 	public Object[][] readData(ITestContext context)
 			throws JsonParseException, JsonMappingException, IOException, ParseException {
 		String testParam = context.getCurrentXmlTest().getParameter("testType");
-		switch ("smokeAndRegression") {
+		switch (testParam) {
 		case "smoke":
 			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
 
@@ -124,15 +124,14 @@ public class FetchTheStatusOfApplication extends BaseTestCase implements ITest {
 			String preRegistrationId = (createPreRegResponse.jsonPath().get("response[0].preRegistrationId"))
 					.toString();
 			Actualresponse = preLab.getPreRegistrationStatus(preRegistrationId);
-			String statusCode = Actualresponse.jsonPath().get("status").toString();
-			if (statusCode.equals("true")) {
 				preId = (Actualresponse.jsonPath().get("response[0].preRegistartionId")).toString();
-			}
+				if(preId.equals(Actualresponse.jsonPath().get("response[0].preRegistartionId").toString()) )
 			status = true;
-		} else {
+		}
+		else {
 			Actualresponse = applicationLibrary.getRequest(preReg_URI, GetHeader.getHeader(actualRequest));
 
-			outerKeys.add("resTime");
+			outerKeys.add("responsetime");
 			outerKeys.add("timestamp");
 			innerKeys.add("createdDatTime");
 			innerKeys.add("preRegistartionId");

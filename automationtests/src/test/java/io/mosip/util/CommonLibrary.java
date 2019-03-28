@@ -28,6 +28,7 @@ import org.apache.log4j.Logger;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import org.postgresql.ssl.jdbc4.LibPQFactory;
 
 import io.mosip.service.BaseTestCase;
 import io.restassured.http.Cookie;
@@ -272,6 +273,33 @@ public class CommonLibrary extends BaseTestCase{
 		logger.info("REST-ASSURED: The response Time is: " + postResponse.time());
 		return postResponse;
 	} // end POST_REQUEST
+	public Response dataSyncPost_Request(String url, Object body, String contentHeader, String acceptHeader) {
+
+		 PreRegistrationLibrary lib=new PreRegistrationLibrary();
+		  String regClientAdminAuthToken = lib.regClientAdminToken();
+		  Cookie.Builder builder = new Cookie.Builder("Authorization",regClientAdminAuthToken);
+		Response postResponse = given().cookie(builder.build()).relaxedHTTPSValidation().body(body).contentType(contentHeader)
+				.accept(acceptHeader).log().all().when().post(url).then().log().all().extract().response();
+		// log then response
+		logger.info("REST-ASSURED: The response from the request is: " + postResponse.asString());
+		logger.info("REST-ASSURED: The response Time is: " + postResponse.time());
+		return postResponse;
+	}
+	
+	public Response authPost_Request(String url, Object body, String contentHeader, String acceptHeader) {
+
+		
+		
+		Response postResponse = given().relaxedHTTPSValidation().body(body).contentType(contentHeader)
+				.accept(acceptHeader).log().all().when().post(url).then().log().all().extract().response();
+		// log then response
+		logger.info("REST-ASSURED: The response from the request is: " + postResponse.asString());
+		logger.info("REST-ASSURED: The response Time is: " + postResponse.time());
+		return postResponse;
+	} 
+	
+	
+	
 	/**
 	 * @author Arjun
 	 * this method is specifically for email notification
@@ -359,6 +387,20 @@ public class CommonLibrary extends BaseTestCase{
            logger.info("REST-ASSURED: The response Time is: " + getResponse.time());
            return getResponse;
      } // end GET_REQUEST
+     
+     public Response get_Request_queryParamDataSync(String url,HashMap<String, String> valueMap) {
+         logger.info("REST-ASSURED: Sending a GET request to " + url);
+         logger.info("REST-ASSURED: Sending a PUT request to " + url);
+		  PreRegistrationLibrary lib=new PreRegistrationLibrary();
+		  String regClientAdminAuthToken = lib.regClientAdminToken();
+		  Cookie.Builder builder = new Cookie.Builder("Authorization",regClientAdminAuthToken);
+    	 Response getResponse = given().cookie(builder.build()).relaxedHTTPSValidation().queryParams(valueMap)
+                           .log().all().when().get(url).then().log().all().extract().response();
+         // log then response
+         logger.info("REST-ASSURED: The response from the request is: " + getResponse.asString());
+         logger.info("REST-ASSURED: The response Time is: " + getResponse.time());
+         return getResponse;
+   }
     
 
     /**
@@ -488,8 +530,8 @@ public class CommonLibrary extends BaseTestCase{
 
     public Response put_RequestWithBody(String url,String contentHeader,String acceptHeader,JSONObject valueMap) {
     	  logger.info("REST-ASSURED: Sending a PUT request to " + url);
-    	  
-    	  Response getResponse= given().relaxedHTTPSValidation().contentType(MediaType.APPLICATION_JSON).body(valueMap.toJSONString()).log().all().when().put(url).then().log().all().extract().response();
+    	  Cookie.Builder builder = new Cookie.Builder("Authorization",authToken);
+    	  Response getResponse= given().cookie(builder.build()).relaxedHTTPSValidation().contentType(MediaType.APPLICATION_JSON).body(valueMap.toJSONString()).log().all().when().put(url).then().log().all().extract().response();
     	  logger.info("REST-ASSURED: The response from the request is: "+getResponse.asString());
     	  logger.info("REST-ASSURED: the response Time is: "+  getResponse.time());
     	  return getResponse;
@@ -537,12 +579,22 @@ public class CommonLibrary extends BaseTestCase{
  	 	
 	public Response put_RequestWithoutBody(String url,String contentHeader,String acceptHeader) {
   logger.info("REST-ASSURED: Sending a PUT request to " + url);
-    	  
-    	  Response getResponse= given().relaxedHTTPSValidation().contentType(MediaType.APPLICATION_JSON).log().all().when().put(url).then().log().all().extract().response();
+  Cookie.Builder builder = new Cookie.Builder("Authorization",authToken);
+    	  Response getResponse= given().cookie(builder.build()).relaxedHTTPSValidation().contentType(MediaType.APPLICATION_JSON).log().all().when().put(url).then().log().all().extract().response();
     	  logger.info("REST-ASSURED: The response from the request is: "+getResponse.asString());
     	  logger.info("REST-ASSURED: the response Time is: "+  getResponse.time());
     	  return getResponse;
 	}
+	public Response adminPut_RequestWithoutBody(String url,String contentHeader,String acceptHeader) {
+		  logger.info("REST-ASSURED: Sending a PUT request to " + url);
+		  PreRegistrationLibrary lib=new PreRegistrationLibrary();
+		  String preRegAdminAuthToken = lib.preRegAdminToken();
+		  Cookie.Builder builder = new Cookie.Builder("Authorization",preRegAdminAuthToken);
+		    	  Response getResponse= given().cookie(builder.build()).relaxedHTTPSValidation().contentType(MediaType.APPLICATION_JSON).log().all().when().put(url).then().log().all().extract().response();
+		    	  logger.info("REST-ASSURED: The response from the request is: "+getResponse.asString());
+		    	  logger.info("REST-ASSURED: the response Time is: "+  getResponse.time());
+		    	  return getResponse;
+			}
 	
 	/**
 	 * @author Arjun

@@ -20,6 +20,14 @@ public class ApplicationLibrary extends BaseTestCase {
 		return commonLibrary.post_Request(ApplnURI + Resource_URI, body, MediaType.APPLICATION_JSON,
 				MediaType.APPLICATION_JSON);
 	}
+	public Response dataSyncPostRequest(Object body, String Resource_URI) {
+		return commonLibrary.dataSyncPost_Request(ApplnURI + Resource_URI, body, MediaType.APPLICATION_JSON,
+				MediaType.APPLICATION_JSON);
+	}
+	public Response authPostRequest(Object body, String Resource_URI) {
+		return commonLibrary.authPost_Request(ApplnURI + Resource_URI, body, MediaType.APPLICATION_JSON,
+				MediaType.APPLICATION_JSON);
+	}
 	
 	
 
@@ -27,6 +35,9 @@ public class ApplicationLibrary extends BaseTestCase {
 
 	public Response getRequest(String Resource_URI, HashMap<String, String> valueMap) {
 		return commonLibrary.get_Request_queryParam(ApplnURI + Resource_URI, valueMap);
+	}
+	public Response getRequestDataSync(String Resource_URI, HashMap<String, String> valueMap) {
+		return commonLibrary.get_Request_queryParamDataSync(ApplnURI + Resource_URI, valueMap);
 	}
 
 	public Response putRequest(Object body, String Resource_URI) {
@@ -116,6 +127,10 @@ public class ApplicationLibrary extends BaseTestCase {
 
 	public Response putRequest_WithoutBody(String Resource_URI) {
 		return commonLibrary.put_RequestWithoutBody(ApplnURI + Resource_URI, MediaType.APPLICATION_JSON,
+				MediaType.APPLICATION_JSON);
+	}
+	public Response adminputRequest_WithoutBody(String Resource_URI) {
+		return commonLibrary.adminPut_RequestWithoutBody(ApplnURI + Resource_URI, MediaType.APPLICATION_JSON,
 				MediaType.APPLICATION_JSON);
 	}
 	 public Response getRequestPathQueryPara(String Resource_URI, HashMap<String, String> path_value,HashMap<String, List<String>> query_value) {

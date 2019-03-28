@@ -109,6 +109,8 @@ public class PreRegistrationLibrary extends BaseTestCase {
 	 private static String otpSend_URI;
 	 private static String validateOTP_URI;
 	 private static String langCodeKey; 
+	 private static String preReg_AdminTokenURI;
+	 private static String preReg_translitrationRequestURI;
 
 	/*
 	 * We configure the jsonProvider using Configuration builder.
@@ -141,6 +143,61 @@ public class PreRegistrationLibrary extends BaseTestCase {
 		/*preReg_Id = createPregResponse.jsonPath().get("response[0].preRegistrationId").toString();
 		Assert.assertTrue(preReg_Id != null);*/
 		return createPregResponse;
+	}
+	/**
+	 * Request body for translitration service
+	 * @param testSuite
+	 * @param from_field_lang
+	 * @param from_field_value
+	 * @param to_field_lang
+	 * @return
+	 */
+	public JSONObject translitrationRequest(String testSuite,String from_field_lang,String from_field_value,String to_field_lang) {
+		JSONObject createPregRequest = null;
+		JSONObject translitrationRequest = null;
+		/**
+		 * Reading request body from configpath
+		 */
+		String configPath = "src/test/resources/" + folder + "/" + testSuite;
+		File folder = new File(configPath);
+		File[] listOfFiles = folder.listFiles();
+		for (File f : listOfFiles) {
+			if (f.getName().contains("request")) {
+				try {
+					translitrationRequest = (JSONObject) new JSONParser().parse(new FileReader(f.getPath()));
+				} catch (Exception e) {
+					e.printStackTrace();
+					logger.error(e.getMessage());
+				}
+
+			}
+		}
+		String createdBy = new Integer(createdBy()).toString();
+		JSONObject object = null;
+		for (Object key : translitrationRequest.keySet()) {
+			if (key.equals("request")) {
+				object = (JSONObject) translitrationRequest.get(key);
+				object.put("from_field_lang", from_field_lang);
+				object.put("from_field_value", from_field_value);
+				object.put("to_field_lang", to_field_lang);
+				translitrationRequest.replace(key, object);
+			}
+		}
+
+		return translitrationRequest;
+	}
+	/**
+	 * method for translitration service
+	 * @param translitrationRequest
+	 * @return
+	 */
+	public Response translitration(JSONObject translitrationRequest) {
+		try {
+			response = applnLib.postRequest(translitrationRequest.toJSONString(), preReg_translitrationRequestURI);
+		} catch (Exception e) {
+			logger.info(e);
+		}
+		return response;
 	}
 	
 	/**
@@ -511,7 +568,7 @@ public class PreRegistrationLibrary extends BaseTestCase {
 		}
 		request.put("pre_registration_id", preRegistrationId);
 		try {
-			response = applnLib.getRequest(preReg_DataSyncnURI, GetHeader.getHeader(request));
+			response = applnLib.getRequestDataSync(preReg_DataSyncnURI, GetHeader.getHeader(request));
 		} catch (Exception e) {
 			logger.info(e);
 		}
@@ -569,7 +626,7 @@ public class PreRegistrationLibrary extends BaseTestCase {
 			}
 		}
 		for (Object key : request.keySet()) {
-			if (key.toString().toLowerCase().contains("request")) {
+			if (key.toString().toLowerCase().equals("request")) {
 				object = new JSONObject();
 				JSONObject resp = null;
 
@@ -738,9 +795,73 @@ public class PreRegistrationLibrary extends BaseTestCase {
 			response = applnLib.putFileAndJson(preReg_DocumentUploadURI, request, file);
 		} catch (Exception e) {
 		}
-		response = applnLib.putFileAndJson(preReg_DocumentUploadURI, request, file);
 		return response;
 	}
+	/**
+	 * method to get Pre Registration admin auth token
+	 * @return
+	 */
+	public String preRegAdminToken()
+	{
+		JSONObject preRegAdminTokenRequest = null;
+		testSuite = "preRegAdminToken/preRegAdminToken_smoke";
+		/**
+		 * Reading request body from configpath
+		 */
+		String configPath = "src/test/resources/" + folder + "/" + testSuite;
+		File folder = new File(configPath);
+		File[] listOfFiles = folder.listFiles();
+		for (File f : listOfFiles) {
+			if (f.getName().contains("request")) {
+				try {
+					preRegAdminTokenRequest = (JSONObject) new JSONParser().parse(new FileReader(f.getPath()));
+				} catch (Exception e) {
+					e.printStackTrace();
+					logger.error(e.getMessage());
+				}
+				
+			}
+		}
+		try {
+			response = applnLib.authPostRequest(preRegAdminTokenRequest.toJSONString(), preReg_AdminTokenURI);
+		} catch (Exception e) {
+			logger.info(e);
+		}
+		String cookieValue = response.getCookie("Authorization");
+		String auth_token = cookieValue;
+		return auth_token;	
+	}
+	public String regClientAdminToken()
+	{
+		JSONObject regClientAdminTokenRequest = null;
+		testSuite = "regClientAdminToken/regClientAdminToken_smoke";
+		/**
+		 * Reading request body from configpath
+		 */
+		String configPath = "src/test/resources/" + folder + "/" + testSuite;
+		File folder = new File(configPath);
+		File[] listOfFiles = folder.listFiles();
+		for (File f : listOfFiles) {
+			if (f.getName().contains("request")) {
+				try {
+					regClientAdminTokenRequest = (JSONObject) new JSONParser().parse(new FileReader(f.getPath()));
+				} catch (Exception e) {
+					e.printStackTrace();
+					logger.error(e.getMessage());
+				}
+				
+			}
+		}
+		try {
+			response = applnLib.authPostRequest(regClientAdminTokenRequest.toJSONString(), preReg_AdminTokenURI);
+		} catch (Exception e) {
+			logger.info(e);
+		}
+		String cookieValue = response.getCookie("Authorization");
+		String auth_token = cookieValue;
+		return auth_token;	
+	}
+
 
 	/*
 	 * Generic method to get the PreRegistration Data
@@ -1219,7 +1340,7 @@ public class PreRegistrationLibrary extends BaseTestCase {
 			}
 		}
 		for (Object key : request.keySet()) {
-			if (key.toString().toLowerCase().contains("request")) {
+			if (key.toString().toLowerCase().equals("request")) {
 				object = new JSONObject();
 				JSONObject resp = null;
 
@@ -1465,7 +1586,7 @@ public class PreRegistrationLibrary extends BaseTestCase {
 	public Response expiredStatus() {
 		try {
 
-			response = applnLib.putRequest_WithoutBody(preReg_ExpiredURI);
+			response = applnLib.adminputRequest_WithoutBody(preReg_ExpiredURI);
 		} catch (Exception e) {
 			logger.info(e);
 		}
@@ -1530,11 +1651,12 @@ public class PreRegistrationLibrary extends BaseTestCase {
 		 * "10025","54321","10007","10003", "10027");
 		 */
 
-		List<String> givenList = Lists.newArrayList("10002", "10020", "10027", "10014", "10010", "10016", "10006",
+		/*List<String> givenList = Lists.newArrayList("10002", "10020", "10027", "10014", "10010", "10016", "10006",
 				"10024", "10111", "10019", "10017", "10023", "10045", "10037", "10042", "10005", "10029", "10026",
 				"10038", "10009",  "10030", "10013", "10015", "10021", "10004", "10035", "10034",
 				"10011", "10008", "10032",  "10018", "10001", "10022", "10012", "10033", "10025", "10007",
-				"10003");
+				"10003");*/
+		List<String> givenList = Lists.newArrayList("10001","10002","10003","10004","10005","10006","10007","10008","10009","10010","10011","10012","10013","10014","10015");
 		String s = null;
 
 		int numberOfElements = givenList.size();
@@ -1779,7 +1901,7 @@ public class PreRegistrationLibrary extends BaseTestCase {
 		}
 		double d = (Math.random()*1000000000);
 		long l= (long)d;
-		userId= "9"+ l ;
+		userId = "9"+l ;
 		JSONObject object = null;
 		for (Object key : otpRequest.keySet()) {
 			if (key.equals("request")) {
@@ -1895,6 +2017,8 @@ public class PreRegistrationLibrary extends BaseTestCase {
 		 langCodeKey=commonLibrary.fetch_IDRepo().get("langCode.key");
 		 otpSend_URI=commonLibrary.fetch_IDRepo().get("otpSend_URI");
 		 validateOTP_URI=commonLibrary.fetch_IDRepo().get("validateOTP_URI");
+		 preReg_AdminTokenURI=commonLibrary.fetch_IDRepo().get("preReg_AdminTokenURI");
+		 preReg_translitrationRequestURI=commonLibrary.fetch_IDRepo().get("preReg_translitrationRequestURI");
 		
 	}
 

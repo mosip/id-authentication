@@ -88,7 +88,7 @@ public class FetchAllPreRegistrationIds extends BaseTestCase implements ITest{
 	@DataProvider(name = "Fetch_all_PreRegistration_Ids")
 	public Object[][] readData(ITestContext context) throws JsonParseException, JsonMappingException, IOException, ParseException {
 		 String testParam = context.getCurrentXmlTest().getParameter("testType");
-		 switch (testParam) {
+		 switch ("regression") {
 		case "smoke":
 			return ReadFolder.readFolders(folderPath, outputFile,requestKeyFile,"smoke");
 			
@@ -115,17 +115,17 @@ public class FetchAllPreRegistrationIds extends BaseTestCase implements ITest{
 		JSONObject actualRequest = ResponseRequestMapper.mapRequest(testSuite, object);
 		Expectedresponse = ResponseRequestMapper.mapResponse(testSuite, object);
 		try {
-			Actualresponse = applicationLibrary.postRequest(actualRequest.toJSONString(), preReg_URI);
+			Actualresponse = applicationLibrary.dataSyncPostRequest(actualRequest.toJSONString(), preReg_URI);
 			
 		} catch (Exception e) {
 			logger.info(e);
 		}
-		String statusCode = Actualresponse.jsonPath().get("status").toString();
+		//String statusCode = Actualresponse.jsonPath().get("status").toString();
 		
 		/**
 		 * Removing dynamic element from actual and expected response
 		 */
-				outerKeys.add("resTime");
+				outerKeys.add("responsetime");
 				innerKeys.add("transactionId");
 				innerKeys.add("preRegistrationIds");
 				innerKeys.add("countOfPreRegIds");
