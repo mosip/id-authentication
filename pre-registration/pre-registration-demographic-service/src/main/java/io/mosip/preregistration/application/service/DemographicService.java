@@ -155,11 +155,6 @@ public class DemographicService {
 
 	@Value("${booking.resource.url}")
 	private String deleteAppointmentResourseUrl;
-	/**
-	 * Reference for ${schemaName} from property file
-	 */
-	@Value("${schemaName}")
-	private String schemaName;
 
 	/**
 	 * Reference for ${mosip.utc-datetime-pattern} from property file
