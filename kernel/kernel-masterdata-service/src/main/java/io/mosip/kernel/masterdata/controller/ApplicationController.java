@@ -60,8 +60,10 @@ public class ApplicationController {
 	 */
 	@ResponseFilter
 	@GetMapping("/{langcode}")
-	public ApplicationResponseDto getAllApplicationByLanguageCode(@PathVariable("langcode") String langCode) {
-		return applicationService.getAllApplicationByLanguageCode(langCode);
+	public ResponseWrapper<ApplicationResponseDto> getAllApplicationByLanguageCode(@PathVariable("langcode") String langCode) {
+		ResponseWrapper<ApplicationResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(applicationService.getAllApplicationByLanguageCode(langCode));
+		return responseWrapper;
 	}
 
 	/**
