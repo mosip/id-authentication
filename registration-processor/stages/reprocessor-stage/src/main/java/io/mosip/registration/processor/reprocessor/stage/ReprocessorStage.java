@@ -59,7 +59,7 @@ public class ReprocessorStage extends MosipVerticleManager {
 	private long elapseTime;
 
 	/** The reprocess count. */
-	@Value("${registration.processor.reprocess.attempt.count ")
+	@Value("${registration.processor.reprocess.attempt.count}")
 	private Integer reprocessCount;
 
 	/** The registration id. */
@@ -91,6 +91,7 @@ public class ReprocessorStage extends MosipVerticleManager {
 	public void deployVerticle() {
 		mosipEventBus = this.getEventBus(this, clusterManagerUrl);
 		deployScheduler(mosipEventBus.getEventbus());
+
 	}
 
 	/**
