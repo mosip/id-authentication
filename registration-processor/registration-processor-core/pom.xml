@@ -13,6 +13,11 @@
 
 	<dependencies>
 	<dependency>
+			<groupId>io.mosip.registrationprocessor</groupId>
+			<artifactId>registration-status-service-impl</artifactId>
+			<version>${registration.status.service.version}</version>
+		</dependency>
+	<dependency>
 			<groupId>io.vertx</groupId>
 			<artifactId>vertx-web</artifactId>
 			<version>${vertx.version}</version>
@@ -120,6 +125,11 @@
 		<dependency>
 			<groupId>com.googlecode.json-simple</groupId>
 			<artifactId>json-simple</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>io.mosip.registrationprocessor</groupId>
+			<artifactId>registration-processor-rest-client</artifactId>
+			<version>${registration.processor.rest.client.version}</version>
 		</dependency>
 	</dependencies>
 	<dependencyManagement>
