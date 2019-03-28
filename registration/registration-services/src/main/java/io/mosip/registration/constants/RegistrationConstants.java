@@ -158,6 +158,7 @@ public class RegistrationConstants {
 	public static final String VALIDATION_SPLITTER = "\\s,";
 	public static final String ON_TYPE = "_ontype";
 	public static final String POR_DOCUMENTS = "porDocuments";
+	public static final String DOCUMENT_SCAN_PANE = "documentScanPane";
 	public static final String POR_BOX = "porBox";
 	public static final String VALIDATION_LOGGER = "VALIDATIONS";
 	public static final String REG_LGN_001 = "REG_LGN_001";
