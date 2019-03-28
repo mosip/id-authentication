@@ -137,8 +137,11 @@ export class FileUploadComponent implements OnInit {
     let DOCUMENT_CATEGORY_DTO = appConstants.DOCUMENT_CATEGORY_DTO;
     let re = /\//g;
     let DOB = this.users[0].request.demographicDetails.identity.dateOfBirth;
-    if (this.users[0].request.demographicDetails.identity.residenceStatus[0].value === 'national') {
-      DOCUMENT_CATEGORY_DTO.attributes[0].value = 'NFR';
+
+    for (let language of this.users[0].request.demographicDetails.identity.residenceStatus) {
+      if (language.language === localStorage.getItem('langCode')) {
+        DOCUMENT_CATEGORY_DTO.attributes[0].value = language.value;
+      }
     }
     DOCUMENT_CATEGORY_DTO.attributes[2].value = this.users[0].request.demographicDetails.identity.gender[0].value;
     // DOB = DOB + 'T11:46:12.640Z';
