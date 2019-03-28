@@ -23,7 +23,9 @@ import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.exception.util.PlatformSuccessMessages;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
+import io.mosip.registration.processor.core.util.MessageBusUtil;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
+import io.mosip.registration.processor.status.code.RegistrationType;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
 import io.mosip.registration.processor.status.exception.TablenotAccessibleException;
@@ -36,6 +38,10 @@ import io.vertx.core.json.JsonObject;
  * The Class ReprocessorStage.
  */
 public class ReprocessorStage extends MosipVerticleManager {
+
+	private static final String BUS_OUT = "-bus-out";
+
+	private static final String BUS_IN = "-bus-in";
 
 	private static Logger regProcLogger = RegProcessorLogger.getLogger(ReprocessorStage.class);
 
@@ -184,13 +190,22 @@ public class ReprocessorStage extends MosipVerticleManager {
 						this.registrationId = dto.getRegistrationId();
 						object.setRid(registrationId);
 						object.setIsValid(true);
+						object.setReg_type(RegistrationType.NEW.name());
 						description = "";
 						isTransactionSuccessful = true;
 						dto.setUpdatedBy(USER);
 						dto.setLatestTransactionTimes(LocalDateTime.now());
 						registrationStatusService.updateRegistrationStatus(dto);
 
-						// To do send message call
+						String stageName = MessageBusUtil.getMessageBusAdress(dto.getRegistrationStageName());
+						if (dto.getLatestTransactionStatusCode() == RegistrationTransactionStatusCode.REPROCESS
+								.name()) {
+							stageName = stageName.concat(BUS_IN);
+						} else {
+							stageName = stageName.concat(BUS_OUT);
+						}
+						MessageBusAddress address = new MessageBusAddress(stageName);
+						sendMessage(object, address);
 
 						Integer reprocessRetryCount = dto.getReProcessRetryCount() != null
 								? dto.getReProcessRetryCount() + 1
@@ -200,7 +215,6 @@ public class ReprocessorStage extends MosipVerticleManager {
 						if (reprocessRetryCount > reprocessCount) {
 							object.setIsValid(false);
 						}
-
 					});
 					totalUnprocessesPackets = totalUnprocessesPackets - fetchSize;
 				}
