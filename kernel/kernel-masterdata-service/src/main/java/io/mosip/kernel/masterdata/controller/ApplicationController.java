@@ -3,8 +3,6 @@ package io.mosip.kernel.masterdata.controller;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -12,9 +10,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.mosip.kernel.masterdata.dto.ApplicationDto;
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseFilter;
+import io.mosip.kernel.core.http.ResponseWrapper;
+import io.mosip.kernel.masterdata.dto.ApplicationDto;
 import io.mosip.kernel.masterdata.dto.getresponse.ApplicationResponseDto;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.service.ApplicationService;
@@ -43,8 +42,10 @@ public class ApplicationController {
 	 */
 	@ResponseFilter
 	@GetMapping
-	public ApplicationResponseDto getAllApplication() {
-		return applicationService.getAllApplication();
+	public ResponseWrapper<ApplicationResponseDto> getAllApplication() {
+		ResponseWrapper<ApplicationResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(applicationService.getAllApplication());
+		return responseWrapper;
 	}
 
 	/**
@@ -57,8 +58,10 @@ public class ApplicationController {
 	 */
 	@ResponseFilter
 	@GetMapping("/{langcode}")
-	public ApplicationResponseDto getAllApplicationByLanguageCode(@PathVariable("langcode") String langCode) {
-		return applicationService.getAllApplicationByLanguageCode(langCode);
+	public ResponseWrapper<ApplicationResponseDto> getAllApplicationByLanguageCode(@PathVariable("langcode") String langCode) {
+		ResponseWrapper<ApplicationResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(applicationService.getAllApplicationByLanguageCode(langCode));
+		return responseWrapper;
 	}
 
 	/**
@@ -74,9 +77,11 @@ public class ApplicationController {
 	 */
 	@ResponseFilter
 	@GetMapping("/{code}/{langcode}")
-	public ApplicationResponseDto getApplicationByCodeAndLanguageCode(@PathVariable("code") String code,
+	public ResponseWrapper<ApplicationResponseDto> getApplicationByCodeAndLanguageCode(@PathVariable("code") String code,
 			@PathVariable("langcode") String langCode) {
-		return applicationService.getApplicationByCodeAndLanguageCode(code, langCode);
+		ResponseWrapper<ApplicationResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(applicationService.getApplicationByCodeAndLanguageCode(code, langCode));
+		return responseWrapper;
 	}
 
 	/**
@@ -89,9 +94,11 @@ public class ApplicationController {
 	 */
 	@ResponseFilter
 	@PostMapping
-	public ResponseEntity<CodeAndLanguageCodeID> createApplication(
+	public ResponseWrapper<CodeAndLanguageCodeID> createApplication(
 			@Valid @RequestBody RequestWrapper<ApplicationDto> application) {
-		return new ResponseEntity<>(applicationService.createApplication(application.getRequest()), HttpStatus.OK);
+		ResponseWrapper<CodeAndLanguageCodeID> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(applicationService.createApplication(application.getRequest()));
+		return responseWrapper;
 
 	}
 }
