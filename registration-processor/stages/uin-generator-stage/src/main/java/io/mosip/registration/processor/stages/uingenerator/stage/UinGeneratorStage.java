@@ -655,8 +655,9 @@ public class UinGeneratorStage extends MosipVerticleManager {
 		ObjectMapper objMapper = new ObjectMapper();
 		try {
 			jsonString = objMapper.writeValueAsString(uinRequest);
-			String response = (String) registrationProcessorRestClientService.putApi(ApiName.UINGENERATOR, null, "", "",
-					jsonString, String.class);
+			String response;
+				response = (String) registrationProcessorRestClientService.putApi(ApiName.UINGENERATOR, null, "", "",
+						jsonString, String.class);
 			Gson gsonValue = new Gson();
 			UinDto uinresponse = gsonValue.fromJson(response, UinDto.class);
 			if (uinresponse.getUin() != null) {
@@ -673,6 +674,10 @@ public class UinGeneratorStage extends MosipVerticleManager {
 		} catch (JsonProcessingException e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationId, PlatformErrorMessages.RPR_SYS_JSON_PARSING_EXCEPTION.getMessage() + e.getMessage()
+							+ ExceptionUtils.getStackTrace(e));
+		} catch (ApisResourceAccessException e) {
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					registrationId, PlatformErrorMessages.RPR_PVM_API_RESOUCE_ACCESS_FAILED.getMessage() + e.getMessage()
 							+ ExceptionUtils.getStackTrace(e));
 		}
 

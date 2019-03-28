@@ -109,7 +109,8 @@ public interface RegistrationProcessorRestClientService<T> {
 	 * @param requestedData the requested data
 	 * @param responseType the response type
 	 * @return the t
+	 * @throws ApisResourceAccessException 
 	 */
 	public T putApi(ApiName apiName, List<String> pathsegments, String queryParam, String queryParamValue,
-			T requestedData, Class<?> responseType);
+			T requestedData, Class<?> responseType) throws ApisResourceAccessException;
 }
