@@ -467,7 +467,7 @@ public class PacketHandlerController extends BaseController implements Initializ
 						&& RegistrationConstants.DISABLE.equalsIgnoreCase(String
 								.valueOf(ApplicationContext.map().get(RegistrationConstants.IRIS_DISABLE_FLAG)))) {
 
-					generateAlert(RegistrationConstants.ALERT,
+					generateAlert(RegistrationConstants.ERROR,
 							RegistrationUIConstants.UPDATE_UIN_NO_BIOMETRIC_CONFIG_ALERT);
 				} else {
 					Parent root = BaseController.load(getClass().getResource(RegistrationConstants.UIN_UPDATE));

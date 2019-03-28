@@ -1739,45 +1739,48 @@ public class DemographicDetailController extends BaseController {
 
 	@FXML
 	private void next() throws InvalidApplicantArgumentException, ParseException {
-		
-		if(getRegistrationDTOFromSession().getSelectionListDTO()!=null && uinId.getText().equals(getRegistrationDTOFromSession().getSelectionListDTO().getUinId())) {
-			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UPDATE_UIN_INDIVIDUAL_AND_PARENT_SAME_UIN_ALERT);
-		}
-		
-		if (validateThisPane()) {
-			if (!switchedOn.get()) {
 
-				if (dd.getText().matches("\\d+") && mm.getText().matches("\\d+") && yyyy.getText().matches("\\d+")) {
+		if (getRegistrationDTOFromSession().getSelectionListDTO() != null
+				&& uinId.getText().equals(getRegistrationDTOFromSession().getSelectionListDTO().getUinId())) {
+			generateAlert(RegistrationConstants.ERROR,
+					RegistrationUIConstants.UPDATE_UIN_INDIVIDUAL_AND_PARENT_SAME_UIN_ALERT);
+		} else {
+			if (validateThisPane()) {
+				if (!switchedOn.get()) {
 
-					LocalDate currentYear = LocalDate.of(Integer.parseInt(yyyy.getText()),
-							Integer.parseInt(mm.getText()), Integer.parseInt(dd.getText()));
-					dateOfBirth = Date.from(currentYear.atStartOfDay(ZoneId.systemDefault()).toInstant());
+					if (dd.getText().matches("\\d+") && mm.getText().matches("\\d+")
+							&& yyyy.getText().matches("\\d+")) {
+
+						LocalDate currentYear = LocalDate.of(Integer.parseInt(yyyy.getText()),
+								Integer.parseInt(mm.getText()), Integer.parseInt(dd.getText()));
+						dateOfBirth = Date.from(currentYear.atStartOfDay(ZoneId.systemDefault()).toInstant());
+					}
 				}
-			}
-			saveDetail();
+				saveDetail();
 
-			/*
-			 * SessionContext.map().put("demographicDetail", false);
-			 * SessionContext.map().put("documentScan", true);
-			 */
+				/*
+				 * SessionContext.map().put("demographicDetail", false);
+				 * SessionContext.map().put("documentScan", true);
+				 */
 
-			documentScanController.populateDocumentCategories();
+				documentScanController.populateDocumentCategories();
 
-			auditFactory.audit(AuditEvent.REG_DEMO_NEXT, Components.REG_DEMO_DETAILS, SessionContext.userId(),
-					AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
+				auditFactory.audit(AuditEvent.REG_DEMO_NEXT, Components.REG_DEMO_DETAILS, SessionContext.userId(),
+						AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
 
-			if (getRegistrationDTOFromSession().getSelectionListDTO() != null) {
-				SessionContext.map().put("demographicDetail", false);
-				if (!RegistrationConstants.DISABLE.equalsIgnoreCase(
-						String.valueOf(ApplicationContext.map().get(RegistrationConstants.DOC_DISABLE_FLAG)))) {
-					SessionContext.map().put("documentScan", true);
+				if (getRegistrationDTOFromSession().getSelectionListDTO() != null) {
+					SessionContext.map().put("demographicDetail", false);
+					if (!RegistrationConstants.DISABLE.equalsIgnoreCase(
+							String.valueOf(ApplicationContext.map().get(RegistrationConstants.DOC_DISABLE_FLAG)))) {
+						SessionContext.map().put("documentScan", true);
+					} else {
+						updateUINMethodFlow();
+					}
+					registrationController.showUINUpdateCurrentPage();
 				} else {
-					updateUINMethodFlow();
+					registrationController.showCurrentPage(RegistrationConstants.DEMOGRAPHIC_DETAIL,
+							getPageDetails(RegistrationConstants.DEMOGRAPHIC_DETAIL, RegistrationConstants.NEXT));
 				}
-				registrationController.showUINUpdateCurrentPage();
-			} else {
-				registrationController.showCurrentPage(RegistrationConstants.DEMOGRAPHIC_DETAIL,
-						getPageDetails(RegistrationConstants.DEMOGRAPHIC_DETAIL, RegistrationConstants.NEXT));
 			}
 		}
 	}
@@ -1785,14 +1788,6 @@ public class DemographicDetailController extends BaseController {
 	public boolean validateThisPane() {
 		boolean isValid = true;
 		isValid = registrationController.validateDemographicPane(parentFlowPane);
-		if (isValid)
-			if (ageField.getText().matches("\\d+")) {
-				int age = Integer.parseInt(ageField.getText());
-				if (age < minAge) {
-					ageField.setText("");
-					isValid = false;
-				}
-			}
 
 		if (isValid && switchedOn.get() && !applicationAge.isDisable()) {
 			SimpleDateFormat dateOfBirth = new SimpleDateFormat("dd-MM-yyyy");
