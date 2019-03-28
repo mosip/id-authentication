@@ -44,7 +44,7 @@ node {
       "target": "libs-release-local/io/mosip/registration/registration-client/${version}/"
     },
     {
-      "pattern": "${branch}/registration/registration-client/target/lib",
+      "pattern": "${branch}/registration/registration-client/target/lib/",
       "target": "libs-release-local/io/mosip/registration/registration-client/${version}/"
     },
     {
