@@ -54,6 +54,7 @@ import io.mosip.authentication.service.factory.IDAMappingFactory;
 import io.mosip.authentication.service.helper.IdInfoHelper;
 import io.mosip.authentication.service.impl.indauth.builder.MatchInputBuilder;
 import io.mosip.authentication.service.impl.indauth.service.bio.BioAuthType;
+import io.mosip.authentication.service.impl.indauth.service.demo.DOBType;
 import io.mosip.authentication.service.impl.indauth.service.demo.DemoMatchType;
 import io.mosip.authentication.service.integration.MasterDataManager;
 
@@ -531,6 +532,53 @@ public class DemoAuthServiceTest {
 		AuthStatusInfo authenticate = demoAuthServiceImpl.authenticate(authRequestDTO, individualId, demoEntity,
 				"1234567890");
 		assertTrue(authenticate.isStatus());
+	}
+
+	@Test
+	public void TestconstructDemoError() throws IdAuthenticationBusinessException {
+		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+		String individualId = "274390482564";
+		authRequestDTO.setIndividualId(individualId);
+		authRequestDTO.setIndividualIdType(IdType.UIN.getType());
+		AuthTypeDTO requestedAuth = new AuthTypeDTO();
+		requestedAuth.setDemo(true);
+		authRequestDTO.setRequestedAuth(requestedAuth);
+		authRequestDTO.setConsentObtained(true);
+		authRequestDTO.setTransactionID("1234567890");
+		authRequestDTO.setVersion("1.0");
+		RequestDTO request = new RequestDTO();
+		IdentityDTO demographics = new IdentityDTO();
+		demographics.setPhoneNumber("0000000000");
+		demographics.setEmailId("abc@test.com");
+		demographics.setDob("11/09/1898");
+		List<IdentityInfoDTO> dobType = new ArrayList<>();
+		IdentityInfoDTO reqIdentityInfodto = new IdentityInfoDTO();
+		reqIdentityInfodto.setValue(DOBType.VERIFIED.name());
+		demographics.setDobType(dobType);
+		demographics.setAge("20");
+		request.setDemographics(demographics);
+		authRequestDTO.setRequest(request);
+		Map<String, List<IdentityInfoDTO>> demoEntity = new HashMap<>();
+		List<IdentityInfoDTO> phoneList = new ArrayList<>();
+		List<IdentityInfoDTO> mailList = new ArrayList<>();
+		List<IdentityInfoDTO> dobList = new ArrayList<>();
+		IdentityInfoDTO phonedto = new IdentityInfoDTO();
+		phonedto.setValue("0000000001");
+		phoneList.add(phonedto);
+		demoEntity.put("phone", phoneList);
+		IdentityInfoDTO maildto = new IdentityInfoDTO();
+		maildto.setValue("invalid");
+		mailList.add(maildto);
+		demoEntity.put("email", mailList);
+		IdentityInfoDTO dobdto = new IdentityInfoDTO();
+		dobdto.setValue("1990/09/11");
+		dobList.add(dobdto);
+		demoEntity.put("dateOfBirth", dobList);
+		Set<String> valueSet = new HashSet<>();
+		valueSet.add("fra");
+		AuthStatusInfo authenticate = demoAuthServiceImpl.authenticate(authRequestDTO, individualId, demoEntity,
+				"1234567890");
+		assertFalse(authenticate.isStatus());
 	}
 
 	@Test

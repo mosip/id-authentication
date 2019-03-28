@@ -14,6 +14,7 @@ import javax.crypto.NoSuchPaddingException;
 
 import org.json.JSONException;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -43,6 +44,7 @@ import io.mosip.authentication.demo.service.dto.EncryptionResponseDto;
  * @author Arun Bose S
  * The Class EncryptTest.
  */
+@Ignore
 @RunWith(SpringRunner.class)
 @WebMvcTest
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })

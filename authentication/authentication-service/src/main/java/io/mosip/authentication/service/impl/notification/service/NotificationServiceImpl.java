@@ -24,6 +24,7 @@ import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.AuthResponseDTO;
 import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
+import io.mosip.authentication.core.dto.indauth.LanguageType;
 import io.mosip.authentication.core.dto.indauth.NotificationType;
 import io.mosip.authentication.core.dto.indauth.SenderType;
 import io.mosip.authentication.core.dto.otpgen.OtpRequestDTO;
@@ -53,6 +54,10 @@ import io.mosip.kernel.core.logger.spi.Logger;
 @Service
 public class NotificationServiceImpl implements NotificationService {
 
+	private static final String MOSIP_SECONDARY_LANG_CODE = "mosip.secondary.lang-code";
+
+	private static final String MOSIP_PRIMARY_LANG_CODE = "mosip.primary.lang-code";
+	
 	private static final String DATETIME_PATTERN = "datetime.pattern";
 	/** The Constant AUTH_TYPE. */
 	private static final String AUTH_TYPE = "authType";
@@ -115,7 +120,15 @@ public class NotificationServiceImpl implements NotificationService {
 		boolean ismaskRequired = Boolean.parseBoolean(env.getProperty("uin.masking.required"));
 
 		Map<String, Object> values = new HashMap<>();
-		values.put(NAME, infoHelper.getEntityInfoAsString(DemoMatchType.NAME, idInfo));
+		
+		String priLang = idInfoFetcher.getLanguageCode(LanguageType.PRIMARY_LANG);
+		String namePri = infoHelper.getEntityInfoAsString(DemoMatchType.NAME, priLang, idInfo);
+		values.put(NAME, namePri);
+		values.put(NAME + "_" +  priLang, namePri);
+		String secLang = idInfoFetcher.getLanguageCode(LanguageType.SECONDARY_LANG);
+		String nameSec = infoHelper.getEntityInfoAsString(DemoMatchType.NAME,  secLang, idInfo);
+		values.put(NAME + "_" + secLang, nameSec);
+
 		String resTime = authResponseDTO.getResponseTime();
 
 		ZonedDateTime zonedDateTime2 = ZonedDateTime.parse(authRequestDTO.getRequestTime());
@@ -348,6 +361,7 @@ public class NotificationServiceImpl implements NotificationService {
 			contentTemplate = otpContentTemaplate;
 		}
 
+		
 		String mailSubject = applyTemplate(values, subjectTemplate);
 		String mailContent = applyTemplate(values, contentTemplate);
 		notificationManager.sendEmailNotification(emailId, mailSubject, mailContent);

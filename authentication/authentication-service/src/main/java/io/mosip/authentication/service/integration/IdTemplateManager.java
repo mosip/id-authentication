@@ -34,8 +34,19 @@ import io.mosip.kernel.core.templatemanager.spi.TemplateManagerBuilder;
 @Component
 public class IdTemplateManager {
 
+	/** The Constant TEMPLATE. */
+	private static final String TEMPLATE = "Template";
+
+	/** The Constant PRIMARY. */
+	private static final String PRIMARY = "primary";
+
+	/** The Constant SECONDARY. */
+	private static final String SECONDARY = "secondary";
+
+	/** The Constant SESSION_ID. */
 	private static final String SESSION_ID = "SESSION_ID";
 
+	/** The Constant NOTIFICATION_LANGUAGE_SUPPORT. */
 	private static final String NOTIFICATION_LANGUAGE_SUPPORT = "notification.language.support";
 
 	/** Class path. */
@@ -110,8 +121,8 @@ public class IdTemplateManager {
 			return writer.toString();
 		} else {
 			throw new IdAuthenticationBusinessException(
-					IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(), String.format(
-							IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(), "Template"));
+					IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
+					String.format(IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(), TEMPLATE));
 		}
 	}
 
@@ -125,12 +136,9 @@ public class IdTemplateManager {
 	public String fetchTemplate(String templateName) throws IdAuthenticationBusinessException {
 		String languageRequired = environment.getProperty(NOTIFICATION_LANGUAGE_SUPPORT);
 		StringBuilder stringBuilder = new StringBuilder();
-		if (languageRequired.equalsIgnoreCase("secondary")) {
-			stringBuilder.append(masterDataManager
-					.fetchTemplate(idInfoFetcher.getLanguageCode(LanguageType.PRIMARY_LANG), templateName) + "\n\n");
-			stringBuilder.append(masterDataManager
-					.fetchTemplate(idInfoFetcher.getLanguageCode(LanguageType.SECONDARY_LANG), templateName));
-		} else if (languageRequired.equalsIgnoreCase("primary")) {
+		if (languageRequired.equalsIgnoreCase(SECONDARY)) {
+			stringBuilder.append(masterDataManager.fetchTemplate(templateName));
+		} else if (languageRequired.equalsIgnoreCase(PRIMARY)) {
 			stringBuilder.append(masterDataManager
 					.fetchTemplate(idInfoFetcher.getLanguageCode(LanguageType.PRIMARY_LANG), templateName));
 		} else {
