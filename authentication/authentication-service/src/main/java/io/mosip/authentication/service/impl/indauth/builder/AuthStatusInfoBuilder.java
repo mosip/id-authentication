@@ -196,13 +196,11 @@ public class AuthStatusInfoBuilder {
 	 */
 	private static void constructBioError(MatchOutput matchOutput, AuthStatusInfoBuilder statusInfoBuilder) {
 		Optional<AuthType> authTypeForMatchType;
-		AuthType authType;
 		AuthType[] authTypes;
 		authTypes = BioAuthType.values();
 		authTypeForMatchType = AuthType.getAuthTypeForMatchType(matchOutput.getMatchType(), authTypes);
 
 		if (authTypeForMatchType.isPresent()) {
-			authType = authTypeForMatchType.get();
 			AuthError errors = null;
 			IdMapping idMapping = matchOutput.getMatchType().getIdMapping();
 			errors = new AuthError(IdAuthenticationErrorConstants.BIO_MISMATCH.getErrorCode(), String

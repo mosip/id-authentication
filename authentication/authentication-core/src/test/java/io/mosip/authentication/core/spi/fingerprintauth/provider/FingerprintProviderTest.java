@@ -79,9 +79,6 @@ public class FingerprintProviderTest {
 			return null;
 		}
 
-		
-
-		
 	};
 
 	FingerprintProvider fingerPrint = new FingerprintProvider() {
@@ -109,8 +106,6 @@ public class FingerprintProviderTest {
 			// TODO Auto-generated method stub
 			return null;
 		}
-
-		
 
 	};
 
@@ -159,6 +154,15 @@ public class FingerprintProviderTest {
 		fingerPrint.matchMinutiae(value, value);
 		fingerPrint.matchImage(value, value);
 		fingerPrint.decodeValue(value);
+	}
+
+	@Test
+	public void TestInvalidmatchMinutiaewithStringvalue() {
+		String value = null;
+		fingerPrint.matchImage(1, value);
+		fingerPrint.matchMinutiae(1, value);
+		fingerPrint.matchImage(1, value);
+
 	}
 
 	@Test
@@ -211,6 +215,31 @@ public class FingerprintProviderTest {
 		double score = fingerPrint.matchMultiMinutae(reqInfo, entityInfo);
 		fingerPrint.matchMultiImage(reqInfo, entityInfo);
 		assertTrue(score < 60);
+	}
+
+	@Test
+	public void TestInvalidmatchMinutiae() {
+		String reqInfo = null;
+		String entityInfo = null;
+		fingerPrint.matchMultiImage(reqInfo, entityInfo);
+	}
+
+	@Test
+	public void TestInvalidmatchMinutiaewithString() {
+		String reqInfo = null;
+		Map entityInfo = null;
+		fingerPrint.matchMultiImage(reqInfo, entityInfo);
+	}
+
+	@Test
+	public void TestInvalidmatchMultiMinutae() {
+		Map<String, String> reqInfo = new HashMap<>();
+		String leftIndex = "Rk1SACAyMAAAAADkAAABPAFiAMUAxQEAAAAoIYCiANo5ZICOAMKzUECuALHAZEDSAMHGZECaASQqZEDpAM7OZED/APlQZEDdAT4KKIC5AVEHV4B3AG0TZED3AVeCG4CVAN08ZEDTAPK3V0DbAN3IXYCAALOnUIBgAN8pZICFAJ77UEClAUkTPECgAHniZECIAVAKIUDnAVcCNUChAFPxV4CQAPmtZECTALS/UECFARkrXUDeAQHEV0BjAMYoZIDCAT8bV0DZAJXPZIBZAJcjZIBrAUkONUBQAVAKG0BeAFQZZAAA";
+		String rightIndex = "Rk1SACAyMAAAAADeAAABPAFiAMUAxQEAAAAoIECOARQNZICKASsEZEBjAO4mZEDrARVVZID5AORUZEDuATpfV4DKAJ9rZIBTALMjZIDQAJLcZEB6AIgfZIC5AHmDZECBAQ8fZEDJASleZEDVASZYZEB6AUYGZEDGAVZ6NUCBAJ+jZEBjAVEHV0A/ANIiUEBDAVEKPIB7AH6jZEB8AEaNV4CMANkXZEC/ATJpZIC4AUd0ZICoAVJ9KEB4AVMASYBMATUYZEDzAURrV4CfAIr+ZED4AVeASUECAVsCKAAA";
+		reqInfo.put("UNKNOWN", rightIndex);
+		Map<String, String> entityInfo = new HashMap<>();
+		entityInfo.put("UNKNOWN", leftIndex);
+		fingerPrint.matchMultiMinutae(reqInfo, entityInfo);
 	}
 
 }
