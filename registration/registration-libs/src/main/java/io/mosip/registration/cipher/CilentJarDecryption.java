@@ -11,11 +11,14 @@ import java.util.Properties;
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
+import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.commons.io.FileUtils;
+import org.xml.sax.SAXException;
 
 import io.mosip.kernel.crypto.jce.constant.SecurityMethod;
 import io.mosip.kernel.crypto.jce.processor.SymmetricProcessor;
+import io.mosip.registration.config.RegistrationUpdate;
 
 /**
  * Decryption the Client Jar with Symmetric Key
@@ -24,8 +27,7 @@ import io.mosip.kernel.crypto.jce.processor.SymmetricProcessor;
  *
  */
 public class CilentJarDecryption {
-	
-	
+
 	private static final String SLASH = "/";
 	private static final String AES_ALGORITHM = "AES";
 	private static final String REGISTRATION = "registration";
@@ -67,6 +69,13 @@ public class CilentJarDecryption {
 
 		CilentJarDecryption aesDecrypt = new CilentJarDecryption();
 
+		try {
+			checkForJars();
+		} catch (ParserConfigurationException | SAXException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 		File encryptedClientJar = new File(
 				new File(System.getProperty("user.dir")).getAbsolutePath() + "/" + "mosip-client.jar");
 
@@ -100,6 +109,24 @@ public class CilentJarDecryption {
 			System.out.println("Registration Client stopped with the status: " + status);
 			process.destroy();
 			FileUtils.deleteDirectory(new File(tempPath + "mosip\\"));
+		}
+	}
+
+	private static void checkForJars() throws IOException, ParserConfigurationException, SAXException {
+		RegistrationUpdate registrationUpdate = new RegistrationUpdate();
+
+		if (registrationUpdate.hasUpdate()) {
+
+			// Generate alert to update or to continue with existing
+			boolean update = true;
+
+			if (update) {
+				registrationUpdate.getWithLatestJars();
+			} else {
+				registrationUpdate.getJars();
+			}
+		} else {
+			registrationUpdate.getJars();
 		}
 	}
 
