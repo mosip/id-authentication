@@ -14,7 +14,6 @@ import java.util.zip.ZipOutputStream;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -84,10 +83,10 @@ public class DataSyncServiceUtil {
 	private ProcessedDataSyncRepo processedDataSyncRepo;
 
 	/**
-	 * Autowired reference for {@link #RestTemplateBuilder}
+	 * Autowired reference for {@link #RestTemplate}
 	 */
 	@Autowired
-	RestTemplateBuilder restTemplateBuilder;
+	RestTemplate restTemplate;
 
 	/**
 	 * Reference for ${demographic.resource.url} from property file
@@ -215,7 +214,6 @@ public class DataSyncServiceUtil {
 			if (isNull(toDate)) {
 				toDate = fromDate;
 			}
-			RestTemplate restTemplate = restTemplateBuilder.build();
 			UriComponentsBuilder builder = UriComponentsBuilder
 					.fromHttpUrl(bookingResourceUrl + "/appointment/byDateAndRegCenterId")
 					.queryParam("from_date", fromDate).queryParam("to_date", toDate)
@@ -251,7 +249,6 @@ public class DataSyncServiceUtil {
 		log.info("sessionId", "idType", "id", "In callGetDocRestService method of datasync service util");
 		List<DocumentMultipartResponseDTO> responsestatusDto = new ArrayList<>();
 		try {
-			RestTemplate restTemplate = restTemplateBuilder.build();
 			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(documentResourceUrl + "/documents")
 					.queryParam("pre_registration_id", preId);
 			HttpHeaders headers = new HttpHeaders();
@@ -286,7 +283,6 @@ public class DataSyncServiceUtil {
 		DemographicResponseDTO responsestatusDto = new DemographicResponseDTO();
 		try {
 
-			RestTemplate restTemplate = restTemplateBuilder.build();
 			UriComponentsBuilder builder = UriComponentsBuilder
 					.fromHttpUrl(demographicResourceUrl + "/applications/details")
 					.queryParam("pre_registration_id", preId);
@@ -328,7 +324,6 @@ public class DataSyncServiceUtil {
 				"In callGetAppointmentDetailsRestService method of datasync service util");
 		BookingRegistrationDTO bookingRegistrationDTO = null;
 		try {
-			RestTemplate restTemplate = restTemplateBuilder.build();
 			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(bookingResourceUrl + "/appointment")
 					.queryParam("pre_registration_id", preId);
 			HttpHeaders headers = new HttpHeaders();
@@ -498,7 +493,6 @@ public class DataSyncServiceUtil {
 		try {
 			MainRequestDTO<PreRegIdsByRegCenterIdDTO> mainRequestDTO = new MainRequestDTO<>();
 			mainRequestDTO.setRequest(preRegIdsDTO);
-			RestTemplate restTemplate = restTemplateBuilder.build();
 			UriComponentsBuilder builder = UriComponentsBuilder
 					.fromHttpUrl(demographicResourceUrl + "/applications/updatedTime");
 			HttpHeaders headers = new HttpHeaders();
@@ -510,8 +504,8 @@ public class DataSyncServiceUtil {
 					new ParameterizedTypeReference<MainResponseDTO<Map<String, String>>>() {
 					});
 			if (respEntity.getBody().getErrors() != null) {
-				throw new DemographicGetDetailsException(respEntity.getBody().getErrors().get(0).getErrorCode(),
-						respEntity.getBody().getErrors().get(0).getMessage());
+				throw new DemographicGetDetailsException(ErrorCodes.PRG_DATA_SYNC_011.toString(),
+						ErrorMessages.INVALID_REQUESTED_PRE_REG_ID_LIST.toString());
 			} else {
 				response = mapper.convertValue(respEntity.getBody().getResponse(), Map.class);
 			}
