@@ -18,7 +18,7 @@ import io.mosip.registration.processor.core.code.EventId;
 import io.mosip.registration.processor.core.code.EventName;
 import io.mosip.registration.processor.core.code.EventType;
 import io.mosip.registration.processor.core.code.ModuleName;
-import io.mosip.registration.processor.core.code.RegistrationTransactionTypeCode;
+import io.mosip.registration.processor.core.code.RegistrationTransactionStatusCode;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.exception.util.PlatformSuccessMessages;
@@ -169,8 +169,8 @@ public class ReprocessorStage extends MosipVerticleManager {
 	public MessageDTO process(MessageDTO object) {
 		List<InternalRegistrationStatusDto> dtolist = null;
 		List<String> statusList = new ArrayList<>();
-		statusList.add(RegistrationTransactionTypeCode.SUCCESS.toString());
-		statusList.add(RegistrationTransactionTypeCode.REPROCESS.toString());
+		statusList.add(RegistrationTransactionStatusCode.SUCCESS.toString());
+		statusList.add(RegistrationTransactionStatusCode.REPROCESS.toString());
 		try {
 			Integer totalUnprocessesPackets = registrationStatusService.getUnProcessedPacketsCount(elapseTime,
 					reprocessCount, statusList);
