@@ -3,7 +3,7 @@ package io.mosip.registration.processor.core.code;
 /**
  * The Enum RegistrationTransactionTypeCode.
  */
-public enum RegistrationTransactionTypeCode {
+public enum RegistrationTransactionStatusCode {
 	
 	/** The success. */
 	SUCCESS,
