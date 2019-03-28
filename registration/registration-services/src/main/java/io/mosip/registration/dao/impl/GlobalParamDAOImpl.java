@@ -96,7 +96,12 @@ public class GlobalParamDAOImpl implements GlobalParamDAO {
 
 		return globalParamRepository.findByNameIn(names);
 	}
-	
+
+	/**
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.registration.dao.GlobalParamDAO#getAllEntries()
+	 */
 	@Override
 	public List<GlobalParam> getAllEntries() {
 		return globalParamRepository.findAll();

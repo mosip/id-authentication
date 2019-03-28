@@ -110,7 +110,7 @@ public class PolicySyncServiceImpl extends BaseService implements PolicySyncServ
 		requestParams.put("referenceId", getCenterId(getStationId(getMacAddress())));
 		try {
 			PublicKeyResponse<String> publicKeyResponse = (PublicKeyResponse<String>) serviceDelegateUtil
-					.get("policysync", requestParams, false,RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM);
+					.get("policysync", requestParams, false, RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM);
 			keyStore.setId(UUID.randomUUID().toString());
 			keyStore.setPublicKey(((String) publicKeyResponse.getPublicKey()).getBytes());
 			keyStore.setValidFromDtimes(Timestamp.valueOf(publicKeyResponse.getIssuedAt()));
@@ -130,6 +130,11 @@ public class PolicySyncServiceImpl extends BaseService implements PolicySyncServ
 
 	}
 
+	/**
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.registration.service.PolicySyncService#checkKeyValidation()
+	 */
 	@Override
 	public ResponseDTO checkKeyValidation() {
 
@@ -140,8 +145,8 @@ public class PolicySyncServiceImpl extends BaseService implements PolicySyncServ
 		try {
 
 			KeyStore keyStore = policySyncDAO.findByMaxExpireTime();
-			
-			if(keyStore != null) {
+
+			if (keyStore != null) {
 				String val = getGlobalConfigValueOf(RegistrationConstants.KEY_NAME);
 				if (val != null) {
 

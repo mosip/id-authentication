@@ -9,6 +9,17 @@ import io.mosip.registration.dto.ResponseDTO;
  *
  */
 public interface PolicySyncService {
+	/**
+	 * it gets the key from server
+	 * 
+	 * @return ResponseDTO
+	 */
 	ResponseDTO fetchPolicy();
-	ResponseDTO checkKeyValidation() ;
+
+	/**
+	 * it checks either key is valid or not
+	 * 
+	 * @return ResponseDTO
+	 */
+	ResponseDTO checkKeyValidation();
 }
