@@ -54,7 +54,7 @@ public class ConnectionUtils {
 	 * Field for username
 	 */
 	//@Value("${mosip.kernel.fsadapter.hdfs.user-name}")
-	private String userName = "regprocessor";
+	private String userName = "qa-regprocessor";
 
 	/**
 	 * Field for userPass
