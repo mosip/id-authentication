@@ -259,14 +259,16 @@ public class RegistrationProcessorRestClientServiceImpl implements RegistrationP
 		return obj;
 	}
 	
+	/* (non-Javadoc)
+	 * @see io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService#putApi(io.mosip.registration.processor.core.code.ApiName, java.util.List, java.lang.String, java.lang.String, java.lang.Object, java.lang.Class)
+	 */
 	public Object putApi(ApiName apiName, List<String> pathsegments, String queryParamName, String queryParamValue,
 			Object requestedData, Class<?> responseType) {
 
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
 				"RegistrationProcessorRestClientServiceImpl::postApi()::entry");
 		Object obj = null;
-		//String apiHostIpPort = env.getProperty(apiName.name());
-		String apiHostIpPort = "https://qa.mosip.io/uingenerator/v1.0/uin";
+		String apiHostIpPort = env.getProperty(apiName.name());
 		UriComponentsBuilder builder = null;
 		if (apiHostIpPort != null)
 			builder = UriComponentsBuilder.fromUriString(apiHostIpPort);

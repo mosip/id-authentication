@@ -146,6 +146,16 @@ public class RestApiClient {
 		return result;
 	}
 	
+	/**
+	 * Put api.
+	 *
+	 * @param <T> the generic type
+	 * @param uri the uri
+	 * @param requestType the request type
+	 * @param responseClass the response class
+	 * @return the t
+	 * @throws Exception the exception
+	 */
 	@SuppressWarnings("unchecked")
 	public <T> T putApi(String uri, Object requestType, Class<?> responseClass) throws Exception {
 
@@ -174,28 +184,6 @@ public class RestApiClient {
 		}
 		return result;
 	}
-/*	
-	@SuppressWarnings("unchecked")
-	public <T> T putApi(String uri, Object requestType, Class<?> responseClass) throws Exception {
-
-		RestTemplate restTemplate;
-		T result = null;
-		try {
-			restTemplate = getRestTemplate();
-			logger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
-					LoggerFileConstant.APPLICATIONID.toString(), uri);
-			logger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
-					LoggerFileConstant.APPLICATIONID.toString(), requestType.toString());
-			restTemplate.put(uri, requestType, responseClass);
-		} catch (Exception e) {
-
-			logger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
-					LoggerFileConstant.APPLICATIONID.toString(), e.getMessage() + ExceptionUtils.getStackTrace(e));
-
-			throw e;
-		}
-		return null;
-	}*/
 
 	public RestTemplate getRestTemplate() throws KeyManagementException, NoSuchAlgorithmException, KeyStoreException {
 		logger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),

@@ -180,10 +180,13 @@ public class UinGeneratorStage extends MosipVerticleManager {
 	/** The registration status dto. */
 	InternalRegistrationStatusDto registrationStatusDto=null;
 	
+	/** The Constant UIN. */
 	private static final String UIN = "UIN";
 	
+	/** The Constant UIN_ASSIGNED. */
 	private static final String UIN_ASSIGNED = "ASSIGNED";
 	
+	/** The Constant UIN_UNASSIGNED. */
 	private static final String UIN_UNASSIGNED = "UNASSIGNED";
 	/*
 	 * (non-Javadoc)
@@ -638,6 +641,12 @@ public class UinGeneratorStage extends MosipVerticleManager {
 		return response;
 	}
 	
+	/**
+	 * Send response to uin generator.
+	 *
+	 * @param uin the uin
+	 * @param uinStatus the uin status
+	 */
 	private void sendResponseToUinGenerator(String uin, String uinStatus) {
 		UinRequestDto uinRequest = new UinRequestDto();
 		uinRequest.setUin(uin);
