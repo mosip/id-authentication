@@ -63,7 +63,7 @@ public class TitleController {
 	@ResponseFilter
 	@GetMapping(value = "/title/{langcode}")
 	public ResponseWrapper<TitleResponseDto> getTitlesBylangCode(@PathVariable("langcode") String langCode) {
-		
+
 		ResponseWrapper<TitleResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(titleService.getByLanguageCode(langCode));
 		return responseWrapper;
@@ -79,7 +79,7 @@ public class TitleController {
 	@ResponseFilter
 	@PostMapping("/title")
 	public ResponseWrapper<CodeAndLanguageCodeID> saveTitle(@Valid @RequestBody RequestWrapper<TitleDto> title) {
-		
+
 		ResponseWrapper<CodeAndLanguageCodeID> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(titleService.saveTitle(title.getRequest()));
 		return responseWrapper;
@@ -94,15 +94,14 @@ public class TitleController {
 	 */
 	@ResponseFilter
 	@PutMapping("/title")
-	@ApiOperation(value = "Service to update title", notes = "Update title and return composite id", response = CodeAndLanguageCodeID.class)
-	@ApiResponses({
-			@ApiResponse(code = 200, message = "When title successfully updated", response = CodeResponseDto.class),
+	@ApiOperation(value = "Service to update title", notes = "Update title and return composite id")
+	@ApiResponses({ @ApiResponse(code = 200, message = "When title successfully updated"),
 			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
 			@ApiResponse(code = 404, message = "When No title found"),
 			@ApiResponse(code = 500, message = "While updating title any error occured") })
 	public ResponseWrapper<CodeAndLanguageCodeID> updateTitle(
 			@ApiParam("Title DTO to update") @Valid @RequestBody RequestWrapper<TitleDto> titles) {
-		
+
 		ResponseWrapper<CodeAndLanguageCodeID> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(titleService.updateTitle(titles.getRequest()));
 		return responseWrapper;
@@ -117,14 +116,13 @@ public class TitleController {
 	 */
 	@ResponseFilter
 	@DeleteMapping("/title/{code}")
-	@ApiOperation(value = "Service to delete title", notes = "Delete title and return composite id", response = CodeResponseDto.class)
-	@ApiResponses({
-			@ApiResponse(code = 200, message = "When title successfully deleted", response = CodeResponseDto.class),
+	@ApiOperation(value = "Service to delete title", notes = "Delete title and return composite id")
+	@ApiResponses({ @ApiResponse(code = 200, message = "When title successfully deleted"),
 			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
 			@ApiResponse(code = 404, message = "When No title found"),
 			@ApiResponse(code = 500, message = "While deleting title any error occured") })
 	public ResponseWrapper<CodeResponseDto> deleteTitle(@PathVariable("code") String code) {
-		
+
 		ResponseWrapper<CodeResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(titleService.deleteTitle(code));
 		return responseWrapper;

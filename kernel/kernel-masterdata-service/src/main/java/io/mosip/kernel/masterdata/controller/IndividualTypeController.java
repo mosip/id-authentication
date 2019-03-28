@@ -32,7 +32,7 @@ public class IndividualTypeController {
 	 */
 	@ResponseFilter
 	@GetMapping
-	@ApiOperation(value = "get value from Caretory for the given id", notes = "get value from Category for the given id", response = IndividualTypeResponseDto.class)
+	@ApiOperation(value = "get value from Caretory for the given id", notes = "get value from Category for the given id")
 	public ResponseWrapper<IndividualTypeResponseDto> getAllIndividualTypes() {
 		ResponseWrapper<IndividualTypeResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(individualTypeService.getAllIndividualTypes());

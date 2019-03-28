@@ -59,16 +59,16 @@ public class DeviceSpecificationController {
 	 */
 	@ResponseFilter
 	@GetMapping("/devicespecifications/{langcode}")
-	@ApiOperation(value = "Retrieve all Device Specification for given Languge Code", notes = "Retrieve all DeviceSpecification for the given Languge Code", response = DeviceSpecificationResponseDto.class)
+	@ApiOperation(value = "Retrieve all Device Specification for given Languge Code", notes = "Retrieve all DeviceSpecification for the given Languge Code")
 	@ApiResponses({
-			@ApiResponse(code = 200, message = "When Device Specification retrieved from database for the given Languge Code ", response = DeviceSpecificationResponseDto.class),
+			@ApiResponse(code = 200, message = "When Device Specification retrieved from database for the given Languge Code "),
 			@ApiResponse(code = 404, message = "When No Device Specificationfound for the given Languge Code and ID"),
 			@ApiResponse(code = 500, message = "While retrieving Device Specifications any error occured") })
 	public ResponseWrapper<DeviceSpecificationResponseDto> getDeviceSpecificationByLanguageCode(
 			@PathVariable("langcode") String langCode) {
 		List<DeviceSpecificationDto> deviceSpecificationDtos = deviceSpecificationService
 				.findDeviceSpecificationByLangugeCode(langCode);
-		
+
 		ResponseWrapper<DeviceSpecificationResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(new DeviceSpecificationResponseDto(deviceSpecificationDtos));
 		return responseWrapper;
@@ -87,16 +87,16 @@ public class DeviceSpecificationController {
 	 */
 	@ResponseFilter
 	@GetMapping("/devicespecifications/{langcode}/{devicetypecode}")
-	@ApiOperation(value = "Retrieve all Device Specification for specific langCode and DeviceTypeCode", notes = "Retrieve all DeviceSpecification for specific langCode and DeviceTypeCode", response = DeviceSpecificationResponseDto.class)
+	@ApiOperation(value = "Retrieve all Device Specification for specific langCode and DeviceTypeCode", notes = "Retrieve all DeviceSpecification for specific langCode and DeviceTypeCode")
 	@ApiResponses({
-			@ApiResponse(code = 200, message = "When Device Specification retrieved from database for specific langCode and DeviceTypeCode ", response = DeviceSpecificationResponseDto.class),
+			@ApiResponse(code = 200, message = "When Device Specification retrieved from database for specific langCode and DeviceTypeCode "),
 			@ApiResponse(code = 404, message = "When No Device Specificationfound for specific langCode and DeviceTypeCode"),
 			@ApiResponse(code = 500, message = "While retrieving Device Specifications any error occured") })
 	public ResponseWrapper<DeviceSpecificationResponseDto> getDeviceSpecificationByLanguageCodeAndDeviceTypeCode(
 			@PathVariable("langcode") String langCode, @PathVariable("devicetypecode") String deviceTypeCode) {
 		List<DeviceSpecificationDto> deviceSpecificationDtos = deviceSpecificationService
 				.findDeviceSpecByLangCodeAndDevTypeCode(langCode, deviceTypeCode);
-		
+
 		ResponseWrapper<DeviceSpecificationResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(new DeviceSpecificationResponseDto(deviceSpecificationDtos));
 		return responseWrapper;
@@ -112,46 +112,45 @@ public class DeviceSpecificationController {
 	 */
 	@ResponseFilter
 	@PostMapping("/devicespecifications")
-	@ApiOperation(value = "Service to save Device Specification", notes = "Saves Device Specification and return Device Specification ID", response = IdResponseDto.class)
-	@ApiResponses({
-			@ApiResponse(code = 201, message = "When Device Specification successfully created", response = IdResponseDto.class),
+	@ApiOperation(value = "Service to save Device Specification", notes = "Saves Device Specification and return Device Specification ID")
+	@ApiResponses({ @ApiResponse(code = 201, message = "When Device Specification successfully created"),
 			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
 			@ApiResponse(code = 500, message = "While creating Device Specification any error occured") })
 	public ResponseWrapper<IdAndLanguageCodeID> createDeviceSpecification(
 			@Valid @RequestBody RequestWrapper<DeviceSpecificationDto> deviceSpecification) {
 
 		ResponseWrapper<IdAndLanguageCodeID> responseWrapper = new ResponseWrapper<>();
-		responseWrapper.setResponse(deviceSpecificationService.createDeviceSpecification(deviceSpecification.getRequest()));
-		return responseWrapper;	
+		responseWrapper
+				.setResponse(deviceSpecificationService.createDeviceSpecification(deviceSpecification.getRequest()));
+		return responseWrapper;
 	}
 
 	@ResponseFilter
 	@PutMapping("/devicespecifications")
-	@ApiOperation(value = "Service to update device specification", notes = "update Device Specification and return Device Specification ID", response = IdResponseDto.class)
-	@ApiResponses({
-			@ApiResponse(code = 200, message = "When device specification successfully updated", response = IdResponseDto.class),
+	@ApiOperation(value = "Service to update device specification", notes = "update Device Specification and return Device Specification ID")
+	@ApiResponses({ @ApiResponse(code = 200, message = "When device specification successfully updated"),
 			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
 			@ApiResponse(code = 404, message = "When No device specification found"),
 			@ApiResponse(code = 500, message = "While updating device specification any error occured") })
 	public ResponseWrapper<IdAndLanguageCodeID> updateDeviceSpecification(
 			@Valid @RequestBody RequestWrapper<DeviceSpecificationDto> deviceSpecification) {
-		
+
 		ResponseWrapper<IdAndLanguageCodeID> responseWrapper = new ResponseWrapper<>();
-		responseWrapper.setResponse(deviceSpecificationService.updateDeviceSpecification(deviceSpecification.getRequest()));
+		responseWrapper
+				.setResponse(deviceSpecificationService.updateDeviceSpecification(deviceSpecification.getRequest()));
 		return responseWrapper;
 	}
 
 	@ResponseFilter
 	@DeleteMapping("/devicespecifications/{id}")
-	@ApiOperation(value = "Service to delete device specifications", notes = "Delete device specifications and return device specification id", response = IdResponseDto.class)
-	@ApiResponses({
-			@ApiResponse(code = 200, message = "When device specifications successfully deleted", response = IdResponseDto.class),
+	@ApiOperation(value = "Service to delete device specifications", notes = "Delete device specifications and return device specification id")
+	@ApiResponses({ @ApiResponse(code = 200, message = "When device specifications successfully deleted"),
 			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
 			@ApiResponse(code = 404, message = "When No device specifications found"),
 			@ApiResponse(code = 500, message = "While deleting device specifications  error occured") })
 	public ResponseWrapper<IdResponseDto> deleteDeviceSpecification(@PathVariable("id") String id) {
-		
-		ResponseWrapper<IdResponseDto> responseWrapper = new ResponseWrapper<IdResponseDto>();
+
+		ResponseWrapper<IdResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(deviceSpecificationService.deleteDeviceSpecification(id));
 		return responseWrapper;
 	}

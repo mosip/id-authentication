@@ -49,8 +49,9 @@ public class BlacklistedWordsController {
 	 */
 	@ResponseFilter
 	@GetMapping("/{langcode}")
-	public ResponseWrapper<BlacklistedWordsResponseDto> getAllBlackListedWordByLangCode(@PathVariable("langcode") String langCode) {
-		
+	public ResponseWrapper<BlacklistedWordsResponseDto> getAllBlackListedWordByLangCode(
+			@PathVariable("langcode") String langCode) {
+
 		ResponseWrapper<BlacklistedWordsResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(blacklistedWordsService.getAllBlacklistedWordsBylangCode(langCode));
 		return responseWrapper;
@@ -70,14 +71,15 @@ public class BlacklistedWordsController {
 	@ApiOperation(value = "Black listed word validation")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Valid Word"),
 			@ApiResponse(code = 200, message = "Invalid Word") })
-	public ResponseWrapper<CodeResponseDto> validateWords(@RequestBody RequestWrapper<BlacklistedWordListRequestDto> blacklistedwords) {
+	public ResponseWrapper<CodeResponseDto> validateWords(
+			@RequestBody RequestWrapper<BlacklistedWordListRequestDto> blacklistedwords) {
 		String isValid = "Valid";
 		if (!blacklistedWordsService.validateWord(blacklistedwords.getRequest().getBlacklistedwords())) {
 			isValid = "Invalid";
 		}
 		CodeResponseDto dto = new CodeResponseDto();
 		dto.setCode(isValid);
-		
+
 		ResponseWrapper<CodeResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(dto);
 		return responseWrapper;
@@ -95,9 +97,10 @@ public class BlacklistedWordsController {
 	@PostMapping
 	public ResponseWrapper<WordAndLanguageCodeID> createBlackListedWord(
 			@RequestBody @Valid RequestWrapper<BlacklistedWordsDto> blackListedWordsRequestDto) {
-		
+
 		ResponseWrapper<WordAndLanguageCodeID> responseWrapper = new ResponseWrapper<>();
-		responseWrapper.setResponse(blacklistedWordsService.createBlackListedWord(blackListedWordsRequestDto.getRequest()));
+		responseWrapper
+				.setResponse(blacklistedWordsService.createBlackListedWord(blackListedWordsRequestDto.getRequest()));
 		return responseWrapper;
 	}
 
@@ -111,12 +114,13 @@ public class BlacklistedWordsController {
 	 */
 	@ResponseFilter
 	@PutMapping
-	@ApiOperation(value = "update the blacklisted word", response = WordAndLanguageCodeID.class)
+	@ApiOperation(value = "update the blacklisted word")
 	public ResponseWrapper<WordAndLanguageCodeID> updateBlackListedWord(
 			@Valid @RequestBody RequestWrapper<BlacklistedWordsDto> blackListedWordsRequestDto) {
-		
+
 		ResponseWrapper<WordAndLanguageCodeID> responseWrapper = new ResponseWrapper<>();
-		responseWrapper.setResponse(blacklistedWordsService.updateBlackListedWord(blackListedWordsRequestDto.getRequest()));
+		responseWrapper
+				.setResponse(blacklistedWordsService.updateBlackListedWord(blackListedWordsRequestDto.getRequest()));
 		return responseWrapper;
 	}
 
@@ -129,11 +133,11 @@ public class BlacklistedWordsController {
 	 */
 	@ResponseFilter
 	@DeleteMapping("/{word}")
-	@ApiOperation(value = "delete the blacklisted word", response = WordAndLanguageCodeID.class)
+	@ApiOperation(value = "delete the blacklisted word")
 	public ResponseWrapper<CodeResponseDto> deleteBlackListedWord(@PathVariable("word") String word) {
 		CodeResponseDto dto = new CodeResponseDto();//
 		dto.setCode(blacklistedWordsService.deleteBlackListedWord(word));
-		
+
 		ResponseWrapper<CodeResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(dto);
 		return responseWrapper;

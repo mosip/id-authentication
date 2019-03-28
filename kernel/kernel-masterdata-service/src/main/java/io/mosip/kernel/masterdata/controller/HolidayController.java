@@ -63,7 +63,7 @@ public class HolidayController {
 	@ResponseFilter
 	@GetMapping("/{holidayid}")
 	public ResponseWrapper<HolidayResponseDto> getAllHolidayById(@PathVariable("holidayid") int holidayId) {
-		
+
 		ResponseWrapper<HolidayResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(holidayService.getHolidayById(holidayId));
 		return responseWrapper;
@@ -123,13 +123,14 @@ public class HolidayController {
 	 * Method to delete holidays
 	 * 
 	 * @param request
-	 *            input values to delete 
+	 *            input values to delete
 	 * @return id of the deleted Holiday data
 	 */
 	@ResponseFilter
 	@DeleteMapping
 	@ApiOperation(value = "to delete a holiday", response = HolidayIdDeleteDto.class)
-	public ResponseWrapper<HolidayIdDeleteDto> deleteHoliday(@Valid @RequestBody RequestWrapper<HolidayIdDeleteDto> request) {
+	public ResponseWrapper<HolidayIdDeleteDto> deleteHoliday(
+			@Valid @RequestBody RequestWrapper<HolidayIdDeleteDto> request) {
 		ResponseWrapper<HolidayIdDeleteDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(holidayService.deleteHoliday(request));
 		return responseWrapper;

@@ -45,10 +45,10 @@ public class ValidDocumentController {
 	 */
 	@ResponseFilter
 	@PostMapping("/validdocuments")
-	@ApiOperation(value = "Service to create valid document", notes = "Create valid document and return composite id", response = ValidDocumentID.class)
+	@ApiOperation(value = "Service to create valid document", notes = "Create valid document and return composite id")
 	public ResponseWrapper<ValidDocumentID> createValidDocument(
 			@Valid @RequestBody RequestWrapper<ValidDocumentDto> document) {
-		
+
 		ResponseWrapper<ValidDocumentID> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(documentService.createValidDocument(document.getRequest()));
 		return responseWrapper;
@@ -65,10 +65,10 @@ public class ValidDocumentController {
 	 */
 	@ResponseFilter
 	@DeleteMapping("/validdocuments/{doccategorycode}/{doctypecode}")
-	@ApiOperation(value = "Service to delete valid document", notes = "Delete valid document and return composite id", response = DocCategoryAndTypeResponseDto.class)
+	@ApiOperation(value = "Service to delete valid document", notes = "Delete valid document and return composite id")
 	public ResponseWrapper<DocCategoryAndTypeResponseDto> deleteValidDocuemnt(
 			@PathVariable("doccategorycode") String docCatCode, @PathVariable("doctypecode") String docTypeCode) {
-		
+
 		ResponseWrapper<DocCategoryAndTypeResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(documentService.deleteValidDocuemnt(docCatCode, docTypeCode));
 		return responseWrapper;

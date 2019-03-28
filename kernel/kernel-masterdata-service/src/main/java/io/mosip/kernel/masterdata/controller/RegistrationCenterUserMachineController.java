@@ -52,7 +52,7 @@ public class RegistrationCenterUserMachineController {
 	 * @return {@link RegistrationCenterMachineUserID} as response
 	 */
 	@ResponseFilter
-	@ApiOperation(value = "Create a mapping of registration center,user,and machine", response = RegistrationCenterMachineUserID.class)
+	@ApiOperation(value = "Create a mapping of registration center,user,and machine")
 	@PostMapping("/registrationmachineusermappings")
 	public ResponseWrapper<RegistrationCenterMachineUserID> createRegistrationCentersMachineUserMapping(
 			@ApiParam("Registration center id,user id and ,machine id with metadata") @RequestBody @Valid RequestWrapper<RegistrationCenterUserMachineMappingDto> registrationCenterUserMachineMappingDto) {
@@ -75,7 +75,7 @@ public class RegistrationCenterUserMachineController {
 	 * @return {@link RegistrationCenterMachineUserID} as response
 	 */
 	@ResponseFilter
-	@ApiOperation(value = "Delete the mapping of registration center and user and machine", response = RegistrationCenterMachineUserID.class)
+	@ApiOperation(value = "Delete the mapping of registration center and user and machine")
 	@DeleteMapping("/registrationmachineusermappings/{regCenterId}/{machineId}/{userId}")
 	public ResponseWrapper<RegistrationCenterMachineUserID> deleteRegistrationCenterUserMachineMapping(
 			@ApiParam("Registration center id to be deleted") @PathVariable String regCenterId,
@@ -96,7 +96,7 @@ public class RegistrationCenterUserMachineController {
 	 * @return {@link RegCenterMachineUserResponseDto} as response
 	 */
 	@ResponseFilter
-	@ApiOperation(value = "Create or update a mapping of registration center,user,and machine", response = RegCenterMachineUserResponseDto.class)
+	@ApiOperation(value = "Create or update a mapping of registration center,user,and machine")
 	@PutMapping("/registrationmachineusermappings")
 	public ResponseWrapper<RegCenterMachineUserResponseDto> createOrUpdateRegistrationCentersMachineUserMapping(
 			@ApiParam("Registration center id,user id and ,machine id with metadata") @RequestBody @Valid RegCenterMachineUserReqDto<RegistrationCenterUserMachineMappingDto> regCenterMachineUserReqDto) {

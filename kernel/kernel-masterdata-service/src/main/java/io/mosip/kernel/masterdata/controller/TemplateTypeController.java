@@ -20,7 +20,6 @@ import io.swagger.annotations.ApiResponses;
 
 /**
  * 
- * 
  * @author Uday Kumar
  * @since 1.0.0
  * 
@@ -41,13 +40,13 @@ public class TemplateTypeController {
 	 */
 	@ResponseFilter
 	@PostMapping("/templatetypes")
-	@ApiOperation(value = "Service to create template type", notes = "create TemplateType  and return  code and LangCode", response = CodeAndLanguageCodeID.class)
-	@ApiResponses({ @ApiResponse(code = 201, message = " successfully created", response = CodeAndLanguageCodeID.class),
+	@ApiOperation(value = "Service to create template type", notes = "create TemplateType  and return  code and LangCode")
+	@ApiResponses({ @ApiResponse(code = 201, message = " successfully created"),
 			@ApiResponse(code = 400, message = " Request body passed  is null or invalid"),
 			@ApiResponse(code = 500, message = " creating any error occured") })
 	public ResponseWrapper<CodeAndLanguageCodeID> createTemplateType(
 			@Valid @RequestBody RequestWrapper<TemplateTypeDto> templateType) {
-		
+
 		ResponseWrapper<CodeAndLanguageCodeID> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(templateTypeService.createTemplateType(templateType.getRequest()));
 		return responseWrapper;

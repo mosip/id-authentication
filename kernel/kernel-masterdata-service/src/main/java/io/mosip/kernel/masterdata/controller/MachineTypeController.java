@@ -48,14 +48,13 @@ public class MachineTypeController {
 	 */
 	@ResponseFilter
 	@PostMapping("/machinetypes")
-	@ApiOperation(value = "Service to save Machine Type", notes = "Saves MachineType and return  code and Languge Code", response = CodeAndLanguageCodeID.class)
-	@ApiResponses({
-			@ApiResponse(code = 201, message = "When Machine Type successfully created", response = CodeAndLanguageCodeID.class),
+	@ApiOperation(value = "Service to save Machine Type", notes = "Saves MachineType and return  code and Languge Code")
+	@ApiResponses({ @ApiResponse(code = 201, message = "When Machine Type successfully created"),
 			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
 			@ApiResponse(code = 500, message = "While creating Machine Type any error occured") })
 	public ResponseWrapper<CodeAndLanguageCodeID> createMachineType(
 			@Valid @RequestBody RequestWrapper<MachineTypeDto> machineType) {
-		
+
 		ResponseWrapper<CodeAndLanguageCodeID> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(machinetypeService.createMachineType(machineType.getRequest()));
 		return responseWrapper;

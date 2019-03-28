@@ -26,7 +26,7 @@ public class ApplicantValidDocumentController {
 
 	@ResponseFilter
 	@GetMapping(value = "/{applicantId}/languages")
-	@ApiOperation(value = "get value from Caretory for the given id", notes = "get value from Category for the given id", response = ApplicantValidDocumentDto.class)
+	@ApiOperation(value = "get value from Category for the given id", notes = "get value from Category for the given id")
 	public ResponseWrapper<ApplicantValidDocumentDto> getApplicantValidDocument(@PathVariable String applicantId,
 			@RequestParam("languages") List<String> languages) {
 		

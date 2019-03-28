@@ -80,8 +80,8 @@ public class LocationController {
 	 */
 	@ResponseFilter
 	@GetMapping(value = "/{locationcode}/{langcode}")
-	public ResponseWrapper<LocationResponseDto> getLocationHierarchyByLangCode(@PathVariable("locationcode") String locationCode,
-			@PathVariable("langcode") String langCode) {
+	public ResponseWrapper<LocationResponseDto> getLocationHierarchyByLangCode(
+			@PathVariable("locationcode") String locationCode, @PathVariable("langcode") String langCode) {
 
 		ResponseWrapper<LocationResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(locationHierarchyService.getLocationHierarchyByLangCode(locationCode, langCode));
@@ -129,7 +129,8 @@ public class LocationController {
 	 */
 	@ResponseFilter
 	@DeleteMapping(value = "/{locationcode}")
-	public ResponseWrapper<CodeResponseDto> deleteLocationHierarchyDetails(@PathVariable(value = "locationcode") String locationCode) {
+	public ResponseWrapper<CodeResponseDto> deleteLocationHierarchyDetails(
+			@PathVariable(value = "locationcode") String locationCode) {
 		ResponseWrapper<CodeResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(locationHierarchyService.deleteLocationDetials(locationCode));
 		return responseWrapper;
@@ -149,7 +150,8 @@ public class LocationController {
 			@PathVariable("locationcode") String locationCode, @PathVariable("langcode") String langCode) {
 
 		ResponseWrapper<LocationResponseDto> responseWrapper = new ResponseWrapper<>();
-		responseWrapper.setResponse(locationHierarchyService.getImmediateChildrenByLocCodeAndLangCode(locationCode, langCode));
+		responseWrapper
+				.setResponse(locationHierarchyService.getImmediateChildrenByLocCodeAndLangCode(locationCode, langCode));
 		return responseWrapper;
 	}
 
@@ -161,13 +163,12 @@ public class LocationController {
 	 * @return {@link StatusResponseDto} StatusResponseDto
 	 */
 	@ResponseFilter
-	@GetMapping(value="/validate/{locationname}")
+	@GetMapping(value = "/validate/{locationname}")
 	public ResponseWrapper<StatusResponseDto> validateLocationName(@PathVariable("locationname") String locationName) {
 		ResponseWrapper<StatusResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(locationHierarchyService.validateLocationName(locationName));
 		return responseWrapper;
 
 	}
-	
-}
 
+}

@@ -43,7 +43,7 @@ public class BiometricTypeController {
 	@ResponseFilter
 	@GetMapping
 	public ResponseWrapper<BiometricTypeResponseDto> getAllBiometricTypes() {
-		
+
 		ResponseWrapper<BiometricTypeResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(biometricTypeService.getAllBiometricTypes());
 		return responseWrapper;
@@ -59,8 +59,9 @@ public class BiometricTypeController {
 	 */
 	@ResponseFilter
 	@GetMapping("/{langcode}")
-	public ResponseWrapper<BiometricTypeResponseDto> getAllBiometricTypesByLanguageCode(@PathVariable("langcode") String langCode) {
-		
+	public ResponseWrapper<BiometricTypeResponseDto> getAllBiometricTypesByLanguageCode(
+			@PathVariable("langcode") String langCode) {
+
 		ResponseWrapper<BiometricTypeResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(biometricTypeService.getAllBiometricTypesByLanguageCode(langCode));
 		return responseWrapper;
@@ -77,9 +78,9 @@ public class BiometricTypeController {
 	 */
 	@ResponseFilter
 	@GetMapping("/{code}/{langcode}")
-	public ResponseWrapper<BiometricTypeResponseDto> getBiometricTypeByCodeAndLangCode(@PathVariable("code") String code,
-			@PathVariable("langcode") String langCode) {
-		
+	public ResponseWrapper<BiometricTypeResponseDto> getBiometricTypeByCodeAndLangCode(
+			@PathVariable("code") String code, @PathVariable("langcode") String langCode) {
+
 		ResponseWrapper<BiometricTypeResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(biometricTypeService.getBiometricTypeByCodeAndLangCode(code, langCode));
 		return responseWrapper;
@@ -97,7 +98,7 @@ public class BiometricTypeController {
 	@PostMapping
 	public ResponseWrapper<CodeAndLanguageCodeID> createBiometricType(
 			@Valid @RequestBody RequestWrapper<BiometricTypeDto> biometricType) {
-		
+
 		ResponseWrapper<CodeAndLanguageCodeID> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(biometricTypeService.createBiometricType(biometricType.getRequest()));
 		return responseWrapper;

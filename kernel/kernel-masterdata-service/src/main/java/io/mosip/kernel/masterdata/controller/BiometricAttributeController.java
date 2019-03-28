@@ -52,7 +52,7 @@ public class BiometricAttributeController {
 	@GetMapping("/getbiometricattributesbyauthtype/{langcode}/{biometrictypecode}")
 	public ResponseWrapper<BiometricAttributeResponseDto> getBiometricAttributesByBiometricType(
 			@PathVariable("langcode") String langCode, @PathVariable("biometrictypecode") String biometricTypeCode) {
-		
+
 		List<BiometricAttributeDto> biomentricAttributes = biometricAttributeService
 				.getBiometricAttribute(biometricTypeCode, langCode);
 		ResponseWrapper<BiometricAttributeResponseDto> responseWrapper = new ResponseWrapper<>();
@@ -69,15 +69,16 @@ public class BiometricAttributeController {
 	 */
 	@ResponseFilter
 	@PostMapping("/biometricattributes")
-	@ApiOperation(value = "Service to create Biometric Attributes", notes = "create Biometric Attributes  and return  code and LangCode", response = CodeAndLanguageCodeID.class)
-	@ApiResponses({ @ApiResponse(code = 201, message = " successfully created", response = CodeAndLanguageCodeID.class),
+	@ApiOperation(value = "Service to create Biometric Attributes", notes = "create Biometric Attributes  and return  code and LangCode")
+	@ApiResponses({ @ApiResponse(code = 201, message = " successfully created"),
 			@ApiResponse(code = 400, message = " Request body passed  is null or invalid"),
 			@ApiResponse(code = 500, message = " creating any error occured") })
 	public ResponseWrapper<CodeAndLanguageCodeID> createBiometricAttribute(
 			@Valid @RequestBody RequestWrapper<BiometricAttributeDto> biometricAttribute) {
-		
+
 		ResponseWrapper<CodeAndLanguageCodeID> responseWrapper = new ResponseWrapper<>();
-		responseWrapper.setResponse(biometricAttributeService.createBiometricAttribute(biometricAttribute.getRequest()));
+		responseWrapper
+				.setResponse(biometricAttributeService.createBiometricAttribute(biometricAttribute.getRequest()));
 		return responseWrapper;
 	}
 

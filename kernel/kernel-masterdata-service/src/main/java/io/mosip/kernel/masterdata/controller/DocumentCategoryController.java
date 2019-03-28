@@ -99,7 +99,7 @@ public class DocumentCategoryController {
 	 */
 	@ResponseFilter
 	@PostMapping("/documentcategories")
-	@ApiOperation(value = "Service to create document category", notes = "Create document category and return composite id", response = CodeAndLanguageCodeID.class)
+	@ApiOperation(value = "Service to create document category", notes = "Create document category and return composite id")
 	public ResponseWrapper<CodeAndLanguageCodeID> createDocumentCategory(
 			@ApiParam("Document category DTO to create") @Valid @RequestBody RequestWrapper<DocumentCategoryDto> category) {
 		
@@ -117,7 +117,7 @@ public class DocumentCategoryController {
 	 */
 	@ResponseFilter
 	@PutMapping("/documentcategories")
-	@ApiOperation(value = "Service to update document category", notes = "Update document category and return composite id", response = CodeAndLanguageCodeID.class)
+	@ApiOperation(value = "Service to update document category", notes = "Update document category and return composite id")
 	public ResponseWrapper<CodeAndLanguageCodeID> updateDocumentCategory(
 			@ApiParam("Document category DTO to update") @Valid @RequestBody RequestWrapper<DocumentCategoryDto> category) {
 		
@@ -135,7 +135,7 @@ public class DocumentCategoryController {
 	 */
 	@ResponseFilter
 	@DeleteMapping("/documentcategories/{code}")
-	@ApiOperation(value = "Service to delete document category", notes = "Delete document category and return composite id", response = CodeAndLanguageCodeID.class)
+	@ApiOperation(value = "Service to delete document category", notes = "Delete document category and return composite id")
 	public ResponseWrapper<CodeResponseDto> deleteDocumentCategory(@PathVariable("code") String code) {
 		
 		ResponseWrapper<CodeResponseDto> responseWrapper = new ResponseWrapper<>();

@@ -36,8 +36,8 @@ public class DeviceHistoryController {
 	private DeviceHistoryService devHistoryService;
 
 	/**
-	 * Get api to fetch a device history details based on given Device ID,
-	 * Language code and effective date time
+	 * Get api to fetch a device history details based on given Device ID, Language
+	 * code and effective date time
 	 * 
 	 * @param id
 	 *            input device Id from User
@@ -51,9 +51,9 @@ public class DeviceHistoryController {
 	 */
 	@ResponseFilter
 	@GetMapping(value = "/{id}/{langcode}/{effdatetimes}")
-	@ApiOperation(value = "Retrieve all Device History Details for the given Languge Code, ID and Effective date time", notes = "Retrieve all Device Detail for given Languge Code and ID", response = DeviceHistoryResponseDto.class)
+	@ApiOperation(value = "Retrieve all Device History Details for the given Languge Code, ID and Effective date time", notes = "Retrieve all Device Detail for given Languge Code and ID")
 	@ApiResponses({
-			@ApiResponse(code = 200, message = "When Device History Details retrieved from database for the given Languge Code, ID and Effective date time", response = DeviceHistoryResponseDto.class),
+			@ApiResponse(code = 200, message = "When Device History Details retrieved from database for the given Languge Code, ID and Effective date time"),
 			@ApiResponse(code = 404, message = "When No Device History Details found for the given Languge Code, ID and Effective date time"),
 			@ApiResponse(code = 500, message = "While retrieving Device History Details any error occured") })
 	public ResponseWrapper<DeviceHistoryResponseDto> getDeviceHistoryIdLangEff(@PathVariable("id") String id,

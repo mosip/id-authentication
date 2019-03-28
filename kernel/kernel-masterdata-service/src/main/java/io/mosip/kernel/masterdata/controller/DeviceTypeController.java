@@ -46,7 +46,7 @@ public class DeviceTypeController {
 	 */
 	@ResponseFilter
 	@PostMapping("/devicetypes")
-	@ApiOperation(value = "Service to save Device Type", notes = "Saves Device Type and return Device Code and Languge Code", response = CodeAndLanguageCodeID.class)
+	@ApiOperation(value = "Service to save Device Type", notes = "Saves Device Type and return Device Code and Languge Code")
 	@ApiResponses({
 			@ApiResponse(code = 201, message = "When Device Type successfully created", response = CodeAndLanguageCodeID.class),
 			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),

@@ -76,7 +76,7 @@ public class DocumentTypeController {
 	 */
 	@ResponseFilter
 	@PostMapping("/documenttypes")
-	@ApiOperation(value = "Service to create document type", response = CodeAndLanguageCodeID.class)
+	@ApiOperation(value = "Service to create document type")
 	public ResponseWrapper<CodeAndLanguageCodeID> createDocumentType(
 			@Valid @RequestBody RequestWrapper<DocumentTypeDto> types) {
 		
@@ -94,7 +94,7 @@ public class DocumentTypeController {
 	 */
 	@ResponseFilter
 	@PutMapping("/documenttypes")
-	@ApiOperation(value = "Service to update document type", response = CodeAndLanguageCodeID.class)
+	@ApiOperation(value = "Service to update document type")
 	public ResponseWrapper<CodeAndLanguageCodeID> updateDocumentType(
 			@ApiParam("Document Type DTO to update") @Valid @RequestBody RequestWrapper<DocumentTypeDto> types) {
 		
@@ -112,7 +112,7 @@ public class DocumentTypeController {
 	 */
 	@ResponseFilter
 	@DeleteMapping("/documenttypes/{code}")
-	@ApiOperation(value = "Service to delete document type", response = CodeAndLanguageCodeID.class)
+	@ApiOperation(value = "Service to delete document type")
 	public ResponseWrapper<CodeResponseDto> deleteDocumentType(@PathVariable("code") String code) {
 		ResponseWrapper<CodeResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(documentTypeService.deleteDocumentType(code));

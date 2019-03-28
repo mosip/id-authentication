@@ -64,7 +64,7 @@ public class TemplateController {
 	@ResponseFilter
 	@GetMapping("/{langcode}")
 	public ResponseWrapper<TemplateResponseDto> getAllTemplateBylangCode(@PathVariable("langcode") String langCode) {
-		
+
 		ResponseWrapper<TemplateResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(templateService.getAllTemplateByLanguageCode(langCode));
 		return responseWrapper;
@@ -82,11 +82,12 @@ public class TemplateController {
 	 */
 	@ResponseFilter
 	@GetMapping("/{langcode}/{templatetypecode}")
-	public ResponseWrapper<TemplateResponseDto> getAllTemplateBylangCodeAndTemplateTypeCode(@PathVariable("langcode") String langCode,
-			@PathVariable("templatetypecode") String templateTypeCode) {
-		
+	public ResponseWrapper<TemplateResponseDto> getAllTemplateBylangCodeAndTemplateTypeCode(
+			@PathVariable("langcode") String langCode, @PathVariable("templatetypecode") String templateTypeCode) {
+
 		ResponseWrapper<TemplateResponseDto> responseWrapper = new ResponseWrapper<>();
-		responseWrapper.setResponse(templateService.getAllTemplateByLanguageCodeAndTemplateTypeCode(langCode, templateTypeCode));
+		responseWrapper.setResponse(
+				templateService.getAllTemplateByLanguageCodeAndTemplateTypeCode(langCode, templateTypeCode));
 		return responseWrapper;
 	}
 
@@ -99,12 +100,13 @@ public class TemplateController {
 	 */
 	@ResponseFilter
 	@PostMapping
-	@ApiOperation(value = "Service to create template ", notes = "create Template  and return  code", response = IdAndLanguageCodeID.class)
-	@ApiResponses({ @ApiResponse(code = 201, message = " successfully created", response = IdAndLanguageCodeID.class),
+	@ApiOperation(value = "Service to create template ", notes = "create Template  and return  code")
+	@ApiResponses({ @ApiResponse(code = 201, message = " successfully created"),
 			@ApiResponse(code = 400, message = " Request body passed  is null or invalid"),
 			@ApiResponse(code = 500, message = " creating any error occured") })
-	public ResponseWrapper<IdAndLanguageCodeID> createTemplate(@Valid @RequestBody RequestWrapper<TemplateDto> template) {
-		
+	public ResponseWrapper<IdAndLanguageCodeID> createTemplate(
+			@Valid @RequestBody RequestWrapper<TemplateDto> template) {
+
 		ResponseWrapper<IdAndLanguageCodeID> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(templateService.createTemplate(template.getRequest()));
 		return responseWrapper;
@@ -119,12 +121,13 @@ public class TemplateController {
 	 */
 	@ResponseFilter
 	@PutMapping
-	@ApiOperation(value = "Service to update template ", notes = "update Template  and return  code ", response = IdAndLanguageCodeID.class)
-	@ApiResponses({ @ApiResponse(code = 200, message = " successfully updated", response = IdAndLanguageCodeID.class),
+	@ApiOperation(value = "Service to update template ", notes = "update Template  and return  code ")
+	@ApiResponses({ @ApiResponse(code = 200, message = " successfully updated"),
 			@ApiResponse(code = 400, message = " Request body passed  is null or invalid"),
 			@ApiResponse(code = 500, message = " creating any error occured") })
-	public ResponseWrapper<IdAndLanguageCodeID> updateTemplate(@Valid @RequestBody RequestWrapper<TemplateDto> template) {
-		
+	public ResponseWrapper<IdAndLanguageCodeID> updateTemplate(
+			@Valid @RequestBody RequestWrapper<TemplateDto> template) {
+
 		ResponseWrapper<IdAndLanguageCodeID> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(templateService.updateTemplates(template.getRequest()));
 		return responseWrapper;
@@ -139,14 +142,13 @@ public class TemplateController {
 	 */
 	@ResponseFilter
 	@DeleteMapping("/{id}")
-	@ApiOperation(value = "Service to delete template", notes = "Delete template and return template id", response = IdResponseDto.class)
-	@ApiResponses({
-			@ApiResponse(code = 200, message = "When template successfully deleted", response = IdResponseDto.class),
+	@ApiOperation(value = "Service to delete template", notes = "Delete template and return template id")
+	@ApiResponses({ @ApiResponse(code = 200, message = "When template successfully deleted"),
 			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
 			@ApiResponse(code = 404, message = "When No template found"),
 			@ApiResponse(code = 500, message = "While deleting template  error occured") })
 	public ResponseWrapper<IdResponseDto> deleteTemplate(@PathVariable("id") String id) {
-		
+
 		ResponseWrapper<IdResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(templateService.deleteTemplates(id));
 		return responseWrapper;
@@ -160,8 +162,9 @@ public class TemplateController {
 	 * @return All {@link TemplateDto}
 	 */
 	@GetMapping("/templatetypecodes/{code}")
-	public ResponseWrapper<TemplateResponseDto> getAllTemplateByTemplateTypeCode(@PathVariable("code") String templateTypeCode) {
-		
+	public ResponseWrapper<TemplateResponseDto> getAllTemplateByTemplateTypeCode(
+			@PathVariable("code") String templateTypeCode) {
+
 		ResponseWrapper<TemplateResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(templateService.getAllTemplateByTemplateTypeCode(templateTypeCode));
 		return responseWrapper;

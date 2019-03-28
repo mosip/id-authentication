@@ -38,30 +38,32 @@ public class RegistrationCenterMachineDeviceController {
 
 	@ResponseFilter
 	@PostMapping
-	@ApiOperation(value = "Map provided registration center, machine and device", notes = "Map provided registration center id, machine id and device id", response = ResponseRegistrationCenterMachineDeviceDto.class)
-	@ApiResponses({
-			@ApiResponse(code = 201, message = "When registration center, machine and device mapped", response = ResponseRegistrationCenterMachineDeviceDto.class),
+	@ApiOperation(value = "Map provided registration center, machine and device", notes = "Map provided registration center id, machine id and device id")
+	@ApiResponses({ @ApiResponse(code = 201, message = "When registration center, machine and device mapped"),
 			@ApiResponse(code = 400, message = "When Request body passed  is invalid"),
 			@ApiResponse(code = 500, message = "While mapping registration center, machine and device") })
 	public ResponseWrapper<ResponseRegistrationCenterMachineDeviceDto> createRegistrationCenterMachineAndDevice(
 			@Valid @RequestBody RequestWrapper<RegistrationCenterMachineDeviceDto> requestDto) {
-		
+
 		ResponseWrapper<ResponseRegistrationCenterMachineDeviceDto> responseWrapper = new ResponseWrapper<>();
-		responseWrapper.setResponse(registrationCenterMachineDeviceService.createRegistrationCenterMachineAndDevice(requestDto.getRequest()));
+		responseWrapper.setResponse(registrationCenterMachineDeviceService
+				.createRegistrationCenterMachineAndDevice(requestDto.getRequest()));
 		return responseWrapper;
 	}
 
 	@ResponseFilter
-	@DeleteMapping(value="/{regcenterid}/{machineid}/{deviceid}")
-	@ApiOperation(value="delete mapping if this service is called.")
-	@ApiResponses({
-		@ApiResponse(code = 201, message = "When registration center, machine and device mapped", response = ResponseRegistrationCenterMachineDeviceDto.class),
-		@ApiResponse(code = 400, message = "When Request body passed  is invalid"),
-		@ApiResponse(code = 500, message = "While mapping registration center, machine and device") })
-	public ResponseWrapper<RegistrationCenterMachineDeviceID> deleteRegistrationCentreMachineDeviceMappingDetails(@PathVariable(value="regcenterid") String regCenterId,@PathVariable(value="machineid") String machineId,@PathVariable(value="deviceid") String deviceId){
-		
+	@DeleteMapping(value = "/{regcenterid}/{machineid}/{deviceid}")
+	@ApiOperation(value = "delete mapping if this service is called.")
+	@ApiResponses({ @ApiResponse(code = 201, message = "When registration center, machine and device mapped"),
+			@ApiResponse(code = 400, message = "When Request body passed  is invalid"),
+			@ApiResponse(code = 500, message = "While mapping registration center, machine and device") })
+	public ResponseWrapper<RegistrationCenterMachineDeviceID> deleteRegistrationCentreMachineDeviceMappingDetails(
+			@PathVariable(value = "regcenterid") String regCenterId,
+			@PathVariable(value = "machineid") String machineId, @PathVariable(value = "deviceid") String deviceId) {
+
 		ResponseWrapper<RegistrationCenterMachineDeviceID> responseWrapper = new ResponseWrapper<>();
-		responseWrapper.setResponse(registrationCenterMachineDeviceService.deleteRegistrationCenterMachineAndDevice(regCenterId, machineId, deviceId));
+		responseWrapper.setResponse(registrationCenterMachineDeviceService
+				.deleteRegistrationCenterMachineAndDevice(regCenterId, machineId, deviceId));
 		return responseWrapper;
 	}
 

@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.core.http.ResponseWrapper;
-import io.mosip.kernel.masterdata.dto.RegistrationCenterDeviceHistoryDto;
 import io.mosip.kernel.masterdata.dto.getresponse.RegistrationCenterDeviceHistoryResponseDto;
 import io.mosip.kernel.masterdata.service.RegistrationCenterDeviceHistoryService;
 import io.swagger.annotations.Api;
@@ -50,9 +49,9 @@ public class RegistrationCenterDeviceHistoryController {
 	 */
 	@ResponseFilter
 	@GetMapping(value = "/{regcenterid}/{deviceid}/{effdatetimes}")
-	@ApiOperation(value = "Retrieve Registration Center Device History Details for the given Registration Center Id, Device Id and Effective date time", response = RegistrationCenterDeviceHistoryDto.class)
+	@ApiOperation(value = "Retrieve Registration Center Device History Details for the given Registration Center Id, Device Id and Effective date time")
 	@ApiResponses({
-			@ApiResponse(code = 200, message = "When Registration Center Device History Details retrieved from Registration Center Id, Device Id and Effective date time", response = RegistrationCenterDeviceHistoryDto.class),
+			@ApiResponse(code = 200, message = "When Registration Center Device History Details retrieved from Registration Center Id, Device Id and Effective date time"),
 			@ApiResponse(code = 404, message = "When No Registration Center Device History Details retrieved from Registration Center Id, Device Id and Effective date time"),
 			@ApiResponse(code = 500, message = "While retrieving Registration Center Device History Details any error occured") })
 	public ResponseWrapper<RegistrationCenterDeviceHistoryResponseDto> getRegCentDevHistByregCentIdDevIdEffTime(
@@ -60,8 +59,8 @@ public class RegistrationCenterDeviceHistoryController {
 			@PathVariable("effdatetimes") String effectiveTimes) {
 
 		ResponseWrapper<RegistrationCenterDeviceHistoryResponseDto> responseWrapper = new ResponseWrapper<>();
-		responseWrapper.setResponse(registrationCenterDeviceHistoryService.getRegCenterDeviceHisByregCenterIdDevIdEffDTime(regCenterId,
-				deviceId, effectiveTimes));
+		responseWrapper.setResponse(registrationCenterDeviceHistoryService
+				.getRegCenterDeviceHisByregCenterIdDevIdEffDTime(regCenterId, deviceId, effectiveTimes));
 		return responseWrapper;
 	}
 }

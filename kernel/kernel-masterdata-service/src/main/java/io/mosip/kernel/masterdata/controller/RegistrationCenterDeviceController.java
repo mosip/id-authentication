@@ -31,7 +31,7 @@ import io.swagger.annotations.ApiResponses;
  */
 @RestController
 @RequestMapping("/registrationcenterdevice")
-@Api(value = "Operation related to mapping of registration center and devices",tags = { "RegistrationCenterDevice" })
+@Api(value = "Operation related to mapping of registration center and devices", tags = { "RegistrationCenterDevice" })
 public class RegistrationCenterDeviceController {
 
 	@Autowired
@@ -39,19 +39,19 @@ public class RegistrationCenterDeviceController {
 
 	@ResponseFilter
 	@PostMapping
-	@ApiOperation(value = "Map provided registration center and device", notes = "Map provided registration center id and device id", response = ResponseRegistrationCenterDeviceDto.class)
-	@ApiResponses({
-			@ApiResponse(code = 201, message = "When registration center and device mapped", response = ResponseRegistrationCenterDeviceDto.class),
+	@ApiOperation(value = "Map provided registration center and device", notes = "Map provided registration center id and device id")
+	@ApiResponses({ @ApiResponse(code = 201, message = "When registration center and device mapped"),
 			@ApiResponse(code = 400, message = "When Request body passed  is invalid"),
 			@ApiResponse(code = 500, message = "While mapping registration center and device") })
 	public ResponseWrapper<ResponseRegistrationCenterDeviceDto> createRegistrationCenterAndDevice(
 			@Valid @RequestBody RequestWrapper<RegistrationCenterDeviceDto> requestDto) {
-		
+
 		ResponseWrapper<ResponseRegistrationCenterDeviceDto> responseWrapper = new ResponseWrapper<>();
-		responseWrapper.setResponse(registrationCenterDeviceService.createRegistrationCenterAndDevice(requestDto.getRequest()));
+		responseWrapper.setResponse(
+				registrationCenterDeviceService.createRegistrationCenterAndDevice(requestDto.getRequest()));
 		return responseWrapper;
 	}
-	
+
 	/**
 	 * Delete the mapping of registration center and device
 	 * 
@@ -62,14 +62,15 @@ public class RegistrationCenterDeviceController {
 	 * @return {@link RegistrationCenterDeviceID}
 	 */
 	@ResponseFilter
-	@ApiOperation(value = "Delete the mapping of registration center and device", response = RegistrationCenterDeviceID.class)
+	@ApiOperation(value = "Delete the mapping of registration center and device")
 	@DeleteMapping("/{regCenterId}/{deviceId}")
 	public ResponseWrapper<RegistrationCenterDeviceID> deleteRegistrationCenterDeviceMapping(
 			@ApiParam("Registration center id to be deleted") @PathVariable String regCenterId,
 			@ApiParam("DeviceId id to be deleted") @PathVariable String deviceId) {
-		
+
 		ResponseWrapper<RegistrationCenterDeviceID> responseWrapper = new ResponseWrapper<>();
-		responseWrapper.setResponse(registrationCenterDeviceService.deleteRegistrationCenterDeviceMapping(regCenterId, deviceId));
+		responseWrapper.setResponse(
+				registrationCenterDeviceService.deleteRegistrationCenterDeviceMapping(regCenterId, deviceId));
 		return responseWrapper;
 	}
 }

@@ -43,9 +43,8 @@ public class LanguageController {
 
 	@ResponseFilter
 	@GetMapping
-	@ApiOperation(value = "Retrieve all Languages", notes = "Retrieve all Languages", response = LanguageResponseDto.class)
-	@ApiResponses({
-			@ApiResponse(code = 200, message = "When all Language retrieved from database", response = LanguageResponseDto.class),
+	@ApiOperation(value = "Retrieve all Languages", notes = "Retrieve all Languages")
+	@ApiResponses({ @ApiResponse(code = 200, message = "When all Language retrieved from database"),
 			@ApiResponse(code = 404, message = "When No Language found"),
 			@ApiResponse(code = 500, message = "While retrieving Language any error occured") })
 	public ResponseWrapper<LanguageResponseDto> getAllLaguages() {
@@ -56,9 +55,8 @@ public class LanguageController {
 
 	@ResponseFilter
 	@PostMapping
-	@ApiOperation(value = "Service to save Language", notes = "Saves Language and return Language code", response = CodeResponseDto.class)
-	@ApiResponses({
-			@ApiResponse(code = 201, message = "When Language successfully created", response = CodeResponseDto.class),
+	@ApiOperation(value = "Service to save Language", notes = "Saves Language and return Language code")
+	@ApiResponses({ @ApiResponse(code = 201, message = "When Language successfully created"),
 			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
 			@ApiResponse(code = 500, message = "While creating Language any error occured") })
 	public ResponseWrapper<CodeResponseDto> saveLanguage(@Valid @RequestBody RequestWrapper<LanguageDto> language) {
@@ -69,9 +67,8 @@ public class LanguageController {
 
 	@ResponseFilter
 	@PutMapping
-	@ApiOperation(value = "Service to update Language", notes = "Update Language and return Language code", response = CodeResponseDto.class)
-	@ApiResponses({
-			@ApiResponse(code = 200, message = "When Language successfully updated", response = CodeResponseDto.class),
+	@ApiOperation(value = "Service to update Language", notes = "Update Language and return Language code")
+	@ApiResponses({ @ApiResponse(code = 200, message = "When Language successfully updated"),
 			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
 			@ApiResponse(code = 404, message = "When No Language found"),
 			@ApiResponse(code = 500, message = "While updating Language any error occured") })
@@ -83,9 +80,8 @@ public class LanguageController {
 
 	@ResponseFilter
 	@DeleteMapping("/{code}")
-	@ApiOperation(value = "Service to delete Language", notes = "Delete Language and return Language code", response = CodeResponseDto.class)
-	@ApiResponses({
-			@ApiResponse(code = 200, message = "When Language successfully deleted", response = CodeResponseDto.class),
+	@ApiOperation(value = "Service to delete Language", notes = "Delete Language and return Language code")
+	@ApiResponses({ @ApiResponse(code = 200, message = "When Language successfully deleted"),
 			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
 			@ApiResponse(code = 404, message = "When No Language found"),
 			@ApiResponse(code = 500, message = "While deleting Language any error occured") })

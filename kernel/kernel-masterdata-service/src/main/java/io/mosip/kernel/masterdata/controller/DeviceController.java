@@ -59,13 +59,13 @@ public class DeviceController {
 	 */
 	@ResponseFilter
 	@GetMapping(value = "/{languagecode}")
-	@ApiOperation(value = "Retrieve all Device for the given Languge Code", notes = "Retrieve all Device for the given Languge Code", response = DeviceResponseDto.class)
+	@ApiOperation(value = "Retrieve all Device for the given Languge Code", notes = "Retrieve all Device for the given Languge Code")
 	@ApiResponses({
-			@ApiResponse(code = 200, message = "When Device retrieved from database for the given Languge Code", response = DeviceResponseDto.class),
+			@ApiResponse(code = 200, message = "When Device retrieved from database for the given Languge Code"),
 			@ApiResponse(code = 404, message = "When No Device Details found for the given Languge Code"),
 			@ApiResponse(code = 500, message = "While retrieving Device any error occured") })
 	public ResponseWrapper<DeviceResponseDto> getDeviceLang(@PathVariable("languagecode") String langCode) {
-		
+
 		ResponseWrapper<DeviceResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(deviceService.getDeviceLangCode(langCode));
 		return responseWrapper;
@@ -85,14 +85,14 @@ public class DeviceController {
 	 */
 	@ResponseFilter
 	@GetMapping(value = "/{languagecode}/{deviceType}")
-	@ApiOperation(value = "Retrieve all Device for the given Languge Code and Device Type", notes = "Retrieve all Device for the given Languge Code and Device Type", response = DeviceLangCodeResponseDto.class)
+	@ApiOperation(value = "Retrieve all Device for the given Languge Code and Device Type", notes = "Retrieve all Device for the given Languge Code and Device Type")
 	@ApiResponses({
-			@ApiResponse(code = 200, message = "When Device retrieved from database for the given Languge Code", response = DeviceLangCodeResponseDto.class),
+			@ApiResponse(code = 200, message = "When Device retrieved from database for the given Languge Code"),
 			@ApiResponse(code = 404, message = "When No Device Details found for the given Languge Code and Device Type"),
 			@ApiResponse(code = 500, message = "While retrieving Device any error occured") })
-	public ResponseWrapper<DeviceLangCodeResponseDto> getDeviceLangCodeAndDeviceType(@PathVariable("languagecode") String langCode,
-			@PathVariable("deviceType") String deviceType) {
-		
+	public ResponseWrapper<DeviceLangCodeResponseDto> getDeviceLangCodeAndDeviceType(
+			@PathVariable("languagecode") String langCode, @PathVariable("deviceType") String deviceType) {
+
 		ResponseWrapper<DeviceLangCodeResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(deviceService.getDeviceLangCodeAndDeviceType(langCode, deviceType));
 		return responseWrapper;
@@ -109,12 +109,12 @@ public class DeviceController {
 	 */
 	@ResponseFilter
 	@PostMapping
-	@ApiOperation(value = "Service to save Device", notes = "Saves Device and return Device id", response = IdResponseDto.class)
-	@ApiResponses({
-			@ApiResponse(code = 201, message = "When Device successfully created", response = IdResponseDto.class),
+	@ApiOperation(value = "Service to save Device", notes = "Saves Device and return Device id")
+	@ApiResponses({ @ApiResponse(code = 201, message = "When Device successfully created"),
 			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
 			@ApiResponse(code = 500, message = "While creating device any error occured") })
-	public ResponseWrapper<IdAndLanguageCodeID> createDevice(@Valid @RequestBody RequestWrapper<DeviceDto> deviceRequestDto) {
+	public ResponseWrapper<IdAndLanguageCodeID> createDevice(
+			@Valid @RequestBody RequestWrapper<DeviceDto> deviceRequestDto) {
 
 		ResponseWrapper<IdAndLanguageCodeID> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(deviceService.createDevice(deviceRequestDto.getRequest()));
@@ -132,14 +132,14 @@ public class DeviceController {
 	 */
 	@ResponseFilter
 	@PutMapping
-	@ApiOperation(value = "Service to update Device", notes = "Update Device and return Device id", response = IdResponseDto.class)
-	@ApiResponses({
-			@ApiResponse(code = 200, message = "When Device updated successfully", response = IdResponseDto.class),
+	@ApiOperation(value = "Service to update Device", notes = "Update Device and return Device id")
+	@ApiResponses({ @ApiResponse(code = 200, message = "When Device updated successfully"),
 			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
 			@ApiResponse(code = 404, message = "When Device is not found"),
 			@ApiResponse(code = 500, message = "While updating device any error occured") })
-	public ResponseWrapper<IdAndLanguageCodeID> updateDevice(@Valid @RequestBody RequestWrapper<DeviceDto> deviceRequestDto) {
-		
+	public ResponseWrapper<IdAndLanguageCodeID> updateDevice(
+			@Valid @RequestBody RequestWrapper<DeviceDto> deviceRequestDto) {
+
 		ResponseWrapper<IdAndLanguageCodeID> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(deviceService.updateDevice(deviceRequestDto.getRequest()));
 		return responseWrapper;
@@ -155,9 +155,8 @@ public class DeviceController {
 	 */
 	@ResponseFilter
 	@DeleteMapping("/{id}")
-	@ApiOperation(value = "Service to delete device", notes = "Delete Device and return Device Id", response = IdResponseDto.class)
-	@ApiResponses({
-			@ApiResponse(code = 200, message = "When Device deleted successfully", response = IdResponseDto.class),
+	@ApiOperation(value = "Service to delete device", notes = "Delete Device and return Device Id")
+	@ApiResponses({ @ApiResponse(code = 200, message = "When Device deleted successfully"),
 			@ApiResponse(code = 404, message = "When Device not found"),
 			@ApiResponse(code = 500, message = "Error occurred while deleting Device") })
 	public ResponseWrapper<IdResponseDto> deleteDevice(@PathVariable("id") String id) {

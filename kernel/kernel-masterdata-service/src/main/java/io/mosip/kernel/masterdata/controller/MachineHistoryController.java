@@ -51,9 +51,9 @@ public class MachineHistoryController {
 	 */
 	@ResponseFilter
 	@GetMapping(value = "/{id}/{langcode}/{effdatetimes}")
-	@ApiOperation(value = "Retrieve all Machine History Details for the given Languge Code, ID and Effective date time", notes = "Retrieve all Machine Detail for given Languge Code and ID", response = MachineHistoryResponseDto.class)
+	@ApiOperation(value = "Retrieve all Machine History Details for the given Languge Code, ID and Effective date time", notes = "Retrieve all Machine Detail for given Languge Code and ID")
 	@ApiResponses({
-			@ApiResponse(code = 200, message = "When Machine History Details retrieved from database for the given Languge Code, ID and Effective date time", response = MachineHistoryResponseDto.class),
+			@ApiResponse(code = 200, message = "When Machine History Details retrieved from database for the given Languge Code, ID and Effective date time"),
 			@ApiResponse(code = 404, message = "When No Machine History Details found for the given Languge Code, ID and Effective date time"),
 			@ApiResponse(code = 500, message = "While retrieving Machine History Details any error occured") })
 	public ResponseWrapper<MachineHistoryResponseDto> getMachineHistoryIdLangEff(@PathVariable("id") String id,

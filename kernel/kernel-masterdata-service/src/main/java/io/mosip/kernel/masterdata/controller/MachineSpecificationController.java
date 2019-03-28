@@ -50,16 +50,16 @@ public class MachineSpecificationController {
 	 */
 	@ResponseFilter
 	@PostMapping("/machinespecifications")
-	@ApiOperation(value = "Service to save Machine Specification", notes = "Saves Machine Spacification and return Machine Spacification ID ", response = IdResponseDto.class)
-	@ApiResponses({
-			@ApiResponse(code = 201, message = "When Machine Specification successfully created", response = IdResponseDto.class),
+	@ApiOperation(value = "Service to save Machine Specification", notes = "Saves Machine Spacification and return Machine Spacification ID ")
+	@ApiResponses({ @ApiResponse(code = 201, message = "When Machine Specification successfully created"),
 			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
 			@ApiResponse(code = 500, message = "While creating Machine Specification any error occured") })
 	public ResponseWrapper<IdAndLanguageCodeID> createMachineSpecification(
 			@Valid @RequestBody RequestWrapper<MachineSpecificationDto> machineSpecification) {
 
 		ResponseWrapper<IdAndLanguageCodeID> responseWrapper = new ResponseWrapper<>();
-		responseWrapper.setResponse(machineSpecificationService.createMachineSpecification(machineSpecification.getRequest()));
+		responseWrapper
+				.setResponse(machineSpecificationService.createMachineSpecification(machineSpecification.getRequest()));
 		return responseWrapper;
 	}
 
@@ -72,9 +72,8 @@ public class MachineSpecificationController {
 	 */
 	@ResponseFilter
 	@PutMapping("/machinespecifications")
-	@ApiOperation(value = "Service to update Machine Specification", notes = "update Machine Spacification and return Machine Spacification ID ", response = IdResponseDto.class)
-	@ApiResponses({
-			@ApiResponse(code = 200, message = "When Machine Specification successfully updated", response = IdResponseDto.class),
+	@ApiOperation(value = "Service to update Machine Specification", notes = "update Machine Spacification and return Machine Spacification ID ")
+	@ApiResponses({ @ApiResponse(code = 200, message = "When Machine Specification successfully updated"),
 			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
 			@ApiResponse(code = 404, message = "When No Machine Specification found"),
 			@ApiResponse(code = 500, message = "While updating Machine Specification any error occured") })
@@ -82,7 +81,8 @@ public class MachineSpecificationController {
 			@Valid @RequestBody RequestWrapper<MachineSpecificationDto> machineSpecification) {
 
 		ResponseWrapper<IdAndLanguageCodeID> responseWrapper = new ResponseWrapper<>();
-		responseWrapper.setResponse(machineSpecificationService.updateMachineSpecification(machineSpecification.getRequest()));
+		responseWrapper
+				.setResponse(machineSpecificationService.updateMachineSpecification(machineSpecification.getRequest()));
 		return responseWrapper;
 	}
 
@@ -95,9 +95,8 @@ public class MachineSpecificationController {
 	 */
 	@ResponseFilter
 	@DeleteMapping("/machinespecifications/{id}")
-	@ApiOperation(value = "Service to delete Machine Specification", notes = "Delete Machine Spacification and return Machine Spacification ID ", response = IdResponseDto.class)
-	@ApiResponses({
-			@ApiResponse(code = 200, message = "When Machine Specification successfully deleted", response = IdResponseDto.class),
+	@ApiOperation(value = "Service to delete Machine Specification", notes = "Delete Machine Spacification and return Machine Spacification ID ")
+	@ApiResponses({ @ApiResponse(code = 200, message = "When Machine Specification successfully deleted"),
 			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
 			@ApiResponse(code = 404, message = "When No Machine Specification found"),
 			@ApiResponse(code = 500, message = "While deleting Machine Specification any error occured") })

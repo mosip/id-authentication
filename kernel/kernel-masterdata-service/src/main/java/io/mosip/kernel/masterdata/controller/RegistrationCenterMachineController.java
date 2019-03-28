@@ -39,9 +39,9 @@ public class RegistrationCenterMachineController {
 
 	@ResponseFilter
 	@PostMapping
-	@ApiOperation(value = "Map provided registration center and machine", notes = "Map provided registration center id and machine id", response = ResponseRrgistrationCenterMachineDto.class)
+	@ApiOperation(value = "Map provided registration center and machine", notes = "Map provided registration center id and machine id")
 	@ApiResponses({
-			@ApiResponse(code = 201, message = "When registration center and machine mapped", response = ResponseRrgistrationCenterMachineDto.class),
+			@ApiResponse(code = 201, message = "When registration center and machine mapped"),
 			@ApiResponse(code = 400, message = "When Request body passed  is invalid"),
 			@ApiResponse(code = 500, message = "While mapping registration center and machine") })
 	public ResponseWrapper<ResponseRrgistrationCenterMachineDto> createRegistrationCenterAndMachine(
@@ -62,7 +62,7 @@ public class RegistrationCenterMachineController {
 	 * @return {@link RegistrationCenterMachineID}
 	 */
 	@ResponseFilter
-	@ApiOperation(value = "Delete the mapping of registration center and machine", response = RegistrationCenterMachineID.class)
+	@ApiOperation(value = "Delete the mapping of registration center and machine")
 	@DeleteMapping("/{regCenterId}/{machineId}")
 	public ResponseWrapper<RegistrationCenterMachineID> deleteRegistrationCenterMachineMapping(
 			@ApiParam("Registration center id to be deleted") @PathVariable String regCenterId,

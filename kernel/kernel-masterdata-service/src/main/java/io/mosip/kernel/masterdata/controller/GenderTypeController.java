@@ -93,7 +93,7 @@ public class GenderTypeController {
 	 * @return key of updated row
 	 */
 	@ResponseFilter
-	@ApiOperation(value = "Update Gender Type", response = CodeAndLanguageCodeID.class)
+	@ApiOperation(value = "Update Gender Type")
 	@PutMapping("/gendertypes")
 	public ResponseWrapper<CodeAndLanguageCodeID> updateGenderType(
 			@ApiParam("Data to update with metadata") @Valid @RequestBody RequestWrapper<GenderTypeDto> gender) {
@@ -110,7 +110,7 @@ public class GenderTypeController {
 	 * @return code of deleted rows
 	 */
 	@ResponseFilter
-	@ApiOperation(value = "Delete Gender Type", response = CodeAndLanguageCodeID.class)
+	@ApiOperation(value = "Delete Gender Type")
 	@DeleteMapping("/gendertypes/{code}")
 	public ResponseWrapper<CodeResponseDto> deleteGenderType(
 			@ApiParam("Gender type Code of gender to be deleted") @PathVariable("code") String code) {

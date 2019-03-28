@@ -66,7 +66,7 @@ public class RegistrationCenterTypeController {
 	@PutMapping("/registrationcentertypes")
 	public ResponseWrapper<CodeAndLanguageCodeID> updateRegistrationCenterType(
 			@Valid @RequestBody RequestWrapper<RegistrationCenterTypeDto> registrationCenterTypeDto) {
-		
+
 		ResponseWrapper<CodeAndLanguageCodeID> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(registrationCenterTypeService.updateRegistrationCenterType(registrationCenterTypeDto.getRequest()));
 		return responseWrapper;
