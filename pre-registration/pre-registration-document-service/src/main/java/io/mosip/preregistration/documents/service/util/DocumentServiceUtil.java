@@ -91,7 +91,7 @@ public class DocumentServiceUtil {
 	 * Autowired reference for {@link #RestTemplateBuilder}
 	 */
 	@Autowired
-	RestTemplateBuilder restTemplateBuilder;
+	RestTemplate restTemplate;
 
 	/**
 	 * Reference for ${demographic.resource.url} from property file
@@ -135,8 +135,8 @@ public class DocumentServiceUtil {
 		DocumentRequestDTO documentDto = (DocumentRequestDTO) JsonUtils.jsonStringToJavaObject(DocumentRequestDTO.class,
 				docDTOData.toString());
 		uploadReqDto.setId(documentData.get("id").toString());
-		uploadReqDto.setVersion(documentData.get("ver").toString());
-		uploadReqDto.setRequesttime(new SimpleDateFormat(utcDateTimePattern).parse(documentData.get("reqTime").toString()));
+		uploadReqDto.setVersion(documentData.get("version").toString());
+		uploadReqDto.setRequesttime(new SimpleDateFormat(utcDateTimePattern).parse(documentData.get("requesttime").toString()));
 		uploadReqDto.setRequest(documentDto);
 		return uploadReqDto;
 	}
@@ -148,7 +148,7 @@ public class DocumentServiceUtil {
 	 *            pass the document dto
 	 * @return DocumentEntity
 	 */
-	public DocumentEntity dtoToEntity(MultipartFile file,DocumentRequestDTO dto) {
+	public DocumentEntity dtoToEntity(MultipartFile file,DocumentRequestDTO dto,String userId) {
 		log.info("sessionId", "idType", "id", "In dtoToEntity method of document service util");
 		DocumentEntity documentEntity = new DocumentEntity();
 		documentEntity.setDocumentId(UUIDGeneratorUtil.generateId());
@@ -160,8 +160,8 @@ public class DocumentServiceUtil {
 		documentEntity.setStatusCode(StatusCodes.DOCUMENT_UPLOADED.getCode());
 		documentEntity.setLangCode(dto.getLangCode());
 		documentEntity.setCrDtime(LocalDateTime.now(ZoneId.of("UTC")));
-		documentEntity.setCrBy("ADMIN");
-		documentEntity.setUpdBy("ADMIN");
+		documentEntity.setCrBy(userId);
+		documentEntity.setUpdBy(userId);
 		documentEntity.setUpdDtime(LocalDateTime.now(ZoneId.of("UTC")));
 		documentEntity.setEncryptedDateTime(LocalDateTime.now(ZoneId.of("UTC")));
 		return documentEntity;
@@ -350,7 +350,7 @@ public class DocumentServiceUtil {
 	public boolean callGetPreRegInfoRestService(String preId) {
 		log.info("sessionId", "idType", "id", "In callGetPreRegInfoRestService method of document service util");
 		try {
-			RestTemplate restTemplate = restTemplateBuilder.build();
+//			RestTemplate restTemplate = restTemplateBuilder.build();
 			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(demographicResourceUrl + "/applications/details")
 					.queryParam("pre_registration_id", preId);
 			HttpHeaders headers = new HttpHeaders();
@@ -358,11 +358,11 @@ public class DocumentServiceUtil {
 			HttpEntity<MainListResponseDTO<DemographicResponseDTO>> httpEntity = new HttpEntity<>(headers);
 			String uriBuilder = builder.build().encode().toUriString();
 			log.info("sessionId", "idType", "id", "In callGetPreRegInfoRestService method of document service util url "+uriBuilder);
-			ResponseEntity<MainResponseDTO<DemographicResponseDTO>> respEntity = restTemplate.exchange(uriBuilder, HttpMethod.GET,httpEntity
-					,new ParameterizedTypeReference<MainResponseDTO<DemographicResponseDTO>>() {});
-			if (respEntity.getBody().getErrors()!=null) {
-				throw new DemographicGetDetailsException(respEntity.getBody().getErrors().get(0).getErrorCode(),
-						respEntity.getBody().getErrors().get(0).getMessage());
+			ResponseEntity<MainListResponseDTO<DemographicResponseDTO>> respEntity = restTemplate.exchange(uriBuilder, HttpMethod.GET,httpEntity
+					,new ParameterizedTypeReference<MainListResponseDTO<DemographicResponseDTO>>() {});
+			if (respEntity.getBody().getErr()!=null) {
+				throw new DemographicGetDetailsException(respEntity.getBody().getErr().getErrorCode(),
+						respEntity.getBody().getErr().getMessage());
 			} 
 			
 		} catch (RestClientException ex) {

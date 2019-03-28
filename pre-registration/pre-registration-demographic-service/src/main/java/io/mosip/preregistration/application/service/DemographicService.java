@@ -124,7 +124,7 @@ public class DemographicService {
 	 * Autowired reference for {@link #RestTemplateBuilder}
 	 */
 	@Autowired
-	private RestTemplateBuilder restTemplateBuilder;
+	private RestTemplate restTemplate;
 
 	/**
 	 * Autowired reference for {@link #AuditLogUtil}
@@ -602,7 +602,7 @@ public class DemographicService {
 	private BookingRegistrationDTO callGetAppointmentDetailsRestService(String preId) {
 		log.info("sessionId", "idType", "id",
 				"In callGetAppointmentDetailsRestService method of pre-registration service ");
-		RestTemplate restTemplate = restTemplateBuilder.build();
+		
 		BookingRegistrationDTO bookingRegistrationDTO = null;
 		try {
 			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(appointmentResourseUrl)
@@ -685,9 +685,8 @@ public class DemographicService {
 	private void callDocumentServiceToDeleteAllByPreId(String preregId) {
 		log.info("sessionId", "idType", "id",
 				"In callDocumentServiceToDeleteAllByPreId method of pre-registration service ");
-		ResponseEntity<MainListResponseDTO> responseEntity = null;
+		ResponseEntity<MainListResponseDTO<DocumentDeleteResponseDTO>> responseEntity = null;
 		try {
-			RestTemplate restTemplate = restTemplateBuilder.build();
 			UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(resourceUrl + "/documents/byPreRegId")
 					.queryParam("pre_registration_id", preregId);
 			HttpHeaders headers = new HttpHeaders();
@@ -697,14 +696,13 @@ public class DemographicService {
 			log.info("sessionId", "idType", "id",
 					"In callDocumentServiceToDeleteAllByPreId method URL- " + strUriBuilder);
 			responseEntity = restTemplate.exchange(strUriBuilder, HttpMethod.DELETE, httpEntity,
-					new ParameterizedTypeReference<MainListResponseDTO>() {});
+					new ParameterizedTypeReference<MainListResponseDTO<DocumentDeleteResponseDTO>>() {});
 
 			if (responseEntity.getBody().getErr()!=null) {
-				if (!responseEntity.getBody().getErr().getErrorCode()
-						.equalsIgnoreCase(ErrorCodes.PRG_PAM_DOC_005.toString())) {
-					throw new DocumentFailedToDeleteException(ErrorCodes.PRG_PAM_DOC_015.name(),
-							ErrorMessages.DOCUMENT_FAILED_TO_DELETE.name());
-				}
+				
+					throw new DocumentFailedToDeleteException(responseEntity.getBody().getErr().getErrorCode(),
+							responseEntity.getBody().getErr().getMessage());
+				
 			}
 		} catch (RestClientException ex) {
 			log.error("sessionId", "idType", "id",
@@ -742,7 +740,7 @@ public class DemographicService {
 				"In callBookingServiceToDeleteAllByPreId method of pre-registration service ");
 		ResponseEntity<MainListResponseDTO> responseEntity = null;
 		try {
-			RestTemplate restTemplate = restTemplateBuilder.build();
+			
 			UriComponentsBuilder uriBuilder = UriComponentsBuilder
 					.fromHttpUrl(deleteAppointmentResourseUrl + "/deleteBooking")
 					.queryParam("pre_registration_id", preregId);

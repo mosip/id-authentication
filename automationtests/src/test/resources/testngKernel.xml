@@ -8,7 +8,7 @@
   						regression
   						smokeAndRegression -->
  
-  		   <test name="AuditLog">
+  		  <test name="AuditLog">
 			<parameter name="testType" value="smokeandregression" />
 			<classes>
 				<class name="io.mosip.kernel.tests.AuditLog" />
@@ -34,7 +34,7 @@
 			<classes>
 				<class name="io.mosip.kernel.tests.EncrptionDecryption" />
 			</classes>
-		</test> 
+		</test>
 		
 	 	<test name="FetchApplication">
 			<parameter name="testType" value="smokeandregression" />
@@ -42,7 +42,8 @@
 				<class name="io.mosip.kernel.tests.FetchApplication" />
 			</classes>
 		</test> 
-		 <test name="FetchBiometricAttribute">
+		
+		<test name="FetchBiometricAttribute">
 		<parameter name="testType" value="smokeandregression" />
 		<classes>
 			<class name="io.mosip.kernel.tests.FetchBiometricAttribute" />

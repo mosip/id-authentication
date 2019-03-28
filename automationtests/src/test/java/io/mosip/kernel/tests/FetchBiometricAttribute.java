@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
@@ -29,6 +31,8 @@ import org.testng.internal.TestResult;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.google.common.base.Verify;
+
+import io.mosip.dbaccess.MasterDataGetRequests;
 import io.mosip.service.ApplicationLibrary;
 import io.mosip.service.AssertKernel;
 import io.mosip.service.BaseTestCase;
@@ -121,30 +125,71 @@ public class FetchBiometricAttribute extends BaseTestCase implements ITest {
 		String configPath = "src/test/resources/" + moduleName + "/" + apiName + "/" + testcaseName;
 		File folder = new File(configPath);
 		File[] listofFiles = folder.listFiles();
+		JSONObject objectData = null;
 		for (int k = 0; k < listofFiles.length; k++) {
 
 			if (listofFiles[k].getName().toLowerCase().contains("request")) {
-				JSONObject objectData = (JSONObject) new JSONParser().parse(new FileReader(listofFiles[k].getPath()));
+				objectData = (JSONObject) new JSONParser().parse(new FileReader(listofFiles[k].getPath()));
 				logger.info("Json Request Is : " + objectData.toJSONString());
 				response = applicationLibrary.getRequestPathPara(service_URI, objectData);
 
-			} else if (listofFiles[k].getName().toLowerCase().contains("response"))
+			} else if (listofFiles[k].getName().toLowerCase().contains("response")
+					&& !testcaseName.toLowerCase().contains("smoke")) {
 				responseObject = (JSONObject) new JSONParser().parse(new FileReader(listofFiles[k].getPath()));
+				logger.info("Expected Response:" + responseObject.toJSONString());
+			}
 		}
 
-		// add parameters to remove in response before comparison like time stamp
-		ArrayList<String> listOfElementToRemove = new ArrayList<String>();
-		listOfElementToRemove.add("timestamp");
+		int statusCode = response.statusCode();
+		logger.info("Status Code is : " + statusCode);
 
-		status = assertions.assertKernel(response, responseObject, listOfElementToRemove);
-		if (status) {
-			int statusCode = response.statusCode();
-			logger.info("Status Code is : " + statusCode);
+		if (testcaseName.toLowerCase().contains("smoke")) {
 
-			finalStatus = "Pass";
+			String query = "select count(*) from master.biometric_attribute where lang_code = '" + objectData.get("langcode") + "' and bmtyp_code = '" + objectData.get("biometrictypecode") + "'";
+			
+			long obtainedObjectsCount = MasterDataGetRequests.validateDB(query);
+
+			// fetching json object from response
+			JSONObject responseJson = (JSONObject) new JSONParser().parse(response.asString());
+			// fetching json array of objects from response
+			JSONArray dataFromGet = (JSONArray) responseJson.get("biometricattributes");
+			logger.info("===Dbcount===" + obtainedObjectsCount + "===Get-count===" + dataFromGet.size());
+
+			// validating number of objects obtained form db and from get request
+			if (dataFromGet.size() == obtainedObjectsCount) {
+
+				// list to validate existance of attributes in response objects
+				List<String> attributesToValidateExistance = new ArrayList();
+				attributesToValidateExistance.add("code");
+				attributesToValidateExistance.add("name");
+				attributesToValidateExistance.add("description");
+				attributesToValidateExistance.add("isActive");
+
+				// key value of the attributes passed to fetch the data, should be same in all
+				// obtained objects
+				HashMap<String, String> passedAttributesToFetch = new HashMap();
+				if (objectData != null) {
+						passedAttributesToFetch.put("langCode", objectData.get("langcode").toString());
+						passedAttributesToFetch.put("biometricTypeCode", objectData.get("biometrictypecode").toString());
+						
+				}
+
+				status = AssertKernel.validator(dataFromGet, attributesToValidateExistance, passedAttributesToFetch);
+			} else
+				status = false;
+
 		}
 
 		else {
+			// add parameters to remove in response before comparison like time stamp
+			ArrayList<String> listOfElementToRemove = new ArrayList<String>();
+			listOfElementToRemove.add("timestamp");
+			status = assertions.assertKernel(response, responseObject, listOfElementToRemove);
+		}
+
+		if (status) {
+			finalStatus = "Pass";
+		} else {
 			finalStatus = "Fail";
 		}
 

@@ -15,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,6 +26,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.mosip.kernel.auth.adapter.AuthUserDetails;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.preregistration.application.dto.DeletePreRegistartionDTO;
 import io.mosip.preregistration.application.dto.DemographicRequestDTO;
@@ -73,7 +75,7 @@ public class DemographicController {
 	 *            the json object
 	 * @return List of response dto containing pre-id and group-id
 	 */
-//	@PreAuthorize("hasAnyRole('individual')")
+	@PreAuthorize("hasAnyRole('individual')")
 	@PostMapping(path = "/applications", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Create form data")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Demographic data successfully Created"),
@@ -82,6 +84,9 @@ public class DemographicController {
 			@RequestBody(required = true) MainRequestDTO<DemographicRequestDTO> jsonObject) {
 		log.info("sessionId", "idType", "id",
 				"In pre-registration controller for registration with json object" + jsonObject);
+//		AuthUserDetails authUserDetails = (AuthUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+//    	System.out.println(authUserDetails.getUserId()); 
+// 
 		return ResponseEntity.status(HttpStatus.OK).body(preRegistrationService.addPreRegistration(jsonObject));
 	}
 
@@ -92,7 +97,7 @@ public class DemographicController {
 	 *            the pre reg id
 	 * @return the application data for a pre-id
 	 */
-//	@PreAuthorize("hasAnyRole('individual')")
+	@PreAuthorize("hasAnyRole('individual')")
 	@GetMapping(path = "/applications/details", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Get Pre-Registartion data")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Demographic data successfully retrieved"),
