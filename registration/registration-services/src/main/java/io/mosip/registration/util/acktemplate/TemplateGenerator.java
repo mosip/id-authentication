@@ -81,7 +81,6 @@ public class TemplateGenerator extends BaseService {
 	 *            - RegistrationDTO to display required fields on the template
 	 * @return writer - After mapping all the fields into the template, it is
 	 *         written into a StringWriter and returned
-	 * @throws RegBaseCheckedException
 	 */
 	public ResponseDTO generateTemplate(String templateText, RegistrationDTO registration,
 			TemplateManagerBuilder templateManagerBuilder, String templateType) {
@@ -985,7 +984,6 @@ public class TemplateGenerator extends BaseService {
 	 *            - RegistrationDTO to display required fields on the template
 	 * @return writer - After mapping all the fields into the template, it is
 	 *         written into a StringWriter and returned
-	 * @throws RegBaseCheckedException
 	 */
 	public Writer generateNotificationTemplate(String templateText, RegistrationDTO registration,
 			TemplateManagerBuilder templateManagerBuilder) {
