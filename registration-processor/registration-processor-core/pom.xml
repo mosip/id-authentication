@@ -121,11 +121,7 @@
 			<groupId>com.googlecode.json-simple</groupId>
 			<artifactId>json-simple</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>io.mosip.registrationprocessor</groupId>
-			<artifactId>registration-processor-rest-client</artifactId>
-			<version>${registration.processor.rest.client.version}</version>
-		</dependency>
+	
 	</dependencies>
 	<dependencyManagement>
 		<dependencies>
