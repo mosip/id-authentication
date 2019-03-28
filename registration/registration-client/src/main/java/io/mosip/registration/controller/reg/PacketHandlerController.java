@@ -462,29 +462,38 @@ public class PacketHandlerController extends BaseController implements Initializ
 				auditFactory.audit(AuditEvent.NAV_UIN_UPDATE, Components.NAVIGATION,
 						SessionContext.userContext().getUserId(), AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
 
-				Parent root = BaseController.load(getClass().getResource(RegistrationConstants.UIN_UPDATE));
+				if (RegistrationConstants.DISABLE.equalsIgnoreCase(
+						String.valueOf(ApplicationContext.map().get(RegistrationConstants.FINGERPRINT_DISABLE_FLAG)))
+						&& RegistrationConstants.DISABLE.equalsIgnoreCase(String
+								.valueOf(ApplicationContext.map().get(RegistrationConstants.IRIS_DISABLE_FLAG)))) {
 
-				LOGGER.info("REGISTRATION - update UIN - REGISTRATION_OFFICER_PACKET_CONTROLLER", APPLICATION_NAME,
-						APPLICATION_ID, "updating UIN");
-
-				if (!validateScreenAuthorization(root.getId())) {
-					generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.AUTHORIZATION_ERROR);
+					generateAlert(RegistrationConstants.ALERT,
+							RegistrationUIConstants.UPDATE_UIN_NO_BIOMETRIC_CONFIG_ALERT);
 				} else {
+					Parent root = BaseController.load(getClass().getResource(RegistrationConstants.UIN_UPDATE));
 
-					StringBuilder errorMessage = new StringBuilder();
-					ResponseDTO responseDTO;
-					responseDTO = validateSyncStatus();
-					List<ErrorResponseDTO> errorResponseDTOs = responseDTO.getErrorResponseDTOs();
-					if (errorResponseDTOs != null && !errorResponseDTOs.isEmpty()) {
-						for (ErrorResponseDTO errorResponseDTO : errorResponseDTOs) {
-							errorMessage.append(errorResponseDTO.getMessage() + "\n\n");
-						}
-						generateAlertLanguageSpecific(RegistrationConstants.ERROR, errorMessage.toString().trim());
+					LOGGER.info("REGISTRATION - update UIN - REGISTRATION_OFFICER_PACKET_CONTROLLER", APPLICATION_NAME,
+							APPLICATION_ID, "updating UIN");
 
+					if (!validateScreenAuthorization(root.getId())) {
+						generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.AUTHORIZATION_ERROR);
 					} else {
-						homeController.getMainBox().getChildren()
-								.remove(homeController.getMainBox().getChildren().size() - 1);
-						homeController.getMainBox().add(root, 0, 1);
+
+						StringBuilder errorMessage = new StringBuilder();
+						ResponseDTO responseDTO;
+						responseDTO = validateSyncStatus();
+						List<ErrorResponseDTO> errorResponseDTOs = responseDTO.getErrorResponseDTOs();
+						if (errorResponseDTOs != null && !errorResponseDTOs.isEmpty()) {
+							for (ErrorResponseDTO errorResponseDTO : errorResponseDTOs) {
+								errorMessage.append(errorResponseDTO.getMessage() + "\n\n");
+							}
+							generateAlertLanguageSpecific(RegistrationConstants.ERROR, errorMessage.toString().trim());
+
+						} else {
+							homeController.getMainBox().getChildren()
+									.remove(homeController.getMainBox().getChildren().size() - 1);
+							homeController.getMainBox().add(root, 0, 1);
+						}
 					}
 				}
 			} catch (IOException ioException) {

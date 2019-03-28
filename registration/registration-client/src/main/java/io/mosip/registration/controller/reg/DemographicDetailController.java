@@ -1739,6 +1739,11 @@ public class DemographicDetailController extends BaseController {
 
 	@FXML
 	private void next() throws InvalidApplicantArgumentException, ParseException {
+		
+		if(getRegistrationDTOFromSession().getSelectionListDTO()!=null && uinId.getText().equals(getRegistrationDTOFromSession().getSelectionListDTO().getUinId())) {
+			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UPDATE_UIN_INDIVIDUAL_AND_PARENT_SAME_UIN_ALERT);
+		}
+		
 		if (validateThisPane()) {
 			if (!switchedOn.get()) {
 
