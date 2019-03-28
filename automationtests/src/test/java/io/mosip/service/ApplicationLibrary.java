@@ -22,7 +22,10 @@ public class ApplicationLibrary extends BaseTestCase{
 		return commonLibrary.post_Request(ApplnURI + Resource_URI, body,
 				MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON);
 	}
-	
+	public Response postRequestToDecrypt(Object body, String Resource_URI) {
+		return commonLibrary.postRequestToDecrypt(Resource_URI, body,
+				MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON);
+	}
     
     public Response getRequest(String Resource_URI, HashMap<String, String> valueMap) {
           return commonLibrary.get_Request_queryParam(ApplnURI + Resource_URI , valueMap);

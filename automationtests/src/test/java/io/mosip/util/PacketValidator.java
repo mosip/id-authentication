@@ -21,8 +21,6 @@ import com.amazonaws.AmazonServiceException;
 import com.amazonaws.SdkClientException;
 
 import io.mosip.dbaccess.RegProcTransactionDb;
-import io.mosip.service.ApplicationLibrary;
-import io.restassured.response.Response;
 
 /**
  * This class is used for packet validator stage validations

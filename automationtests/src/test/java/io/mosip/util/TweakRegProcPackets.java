@@ -1,37 +1,62 @@
 package io.mosip.util;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.Properties;
 import java.util.Random;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
+
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-import net.lingala.zip4j.exception.ZipException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
+import io.mosip.dbdto.DecrypterDto;
+import net.lingala.zip4j.exception.ZipException;
+/**
+ * 
+ * @author M1047227
+ *
+ */
 public class TweakRegProcPackets {
 	private static Logger logger = Logger.getLogger(TweakRegProcPackets.class);
+	
 	static String filesToBeDestroyed = null;
 	String centerId = "";
 	String machineId = "";
 	String packetName="";
 	EncrypterDecrypter encryptDecrypt = new EncrypterDecrypter();
-
+	DecrypterDto decrypterDto=new DecrypterDto();
+/**
+ * 
+ * @param testCaseName
+ * @param parameterToBeChanged
+ * @param parameterValue
+ * @throws IOException
+ * @throws ZipException
+ * @throws java.text.ParseException 
+ */
 	@SuppressWarnings("unchecked")
 	public void tweakFile(String testCaseName, String parameterToBeChanged, String parameterValue)
-			throws IOException, ZipException {
+			throws IOException, ZipException, java.text.ParseException, ParseException {
 		File decryptedFile = null;
 		JSONObject metaInfo = null;
-
 		String configPath = System.getProperty("user.dir") + "/" + "src/test/resources/regProc/Packets/ValidPackets/";
 		String invalidPacketsPath = System.getProperty("user.dir") + "/"
 				+ "src/test/resources/regProc/Packets/InvalidPackets/" + testCaseName;
@@ -39,8 +64,10 @@ public class TweakRegProcPackets {
 		File[] listOfFiles = file.listFiles();
 		for (File f : listOfFiles) {
 			if (f.getName().contains(".zip")) {
-				decryptedFile = encryptDecrypt.decryptFile(f, f.getPath());
-				filesToBeDestroyed = configPath + "/" + decryptedFile.getName();
+				JSONObject jsonObject=encryptDecrypt.generateCryptographicData(f);
+			
+				decryptedFile = encryptDecrypt.decryptFile(jsonObject, configPath,f.getName());
+				filesToBeDestroyed = configPath;
 				File[] packetFiles = decryptedFile.listFiles();
 				for (File info : packetFiles) {
 
@@ -76,9 +103,15 @@ public class TweakRegProcPackets {
 		}
 		logger.info("packetName :: ======================" + packetName);
 		encryptDecrypt.encryptFile(decryptedFile, configPath, invalidPacketsPath, packetName);
-		encryptDecrypt.revertPacketToValid(filesToBeDestroyed);
+		//encryptDecrypt.revertPacketToValid(filesToBeDestroyed);
 	}
-
+/**
+ * 
+ * @param metaData
+ * @param parameter
+ * @param value
+ * @return
+ */
 	public JSONArray tweakFile(JSONArray metaData, String parameter, String value) {
 		for (int i = 0; i < metaData.size(); i++) {
 			JSONObject labels = (JSONObject) metaData.get(i);
@@ -103,9 +136,17 @@ public class TweakRegProcPackets {
 		logger.info("Meta Data Updated Is  ::  ===================" + metaData);
 		return metaData;
 	}
-
+/**
+ * 
+ * @param propertyFiles
+ * @throws FileNotFoundException
+ * @throws IOException
+ * @throws ZipException
+ * @throws InterruptedException
+ * @throws java.text.ParseException 
+ */
 	public void invalidPacketGenerator(String propertyFiles)
-			throws FileNotFoundException, IOException, ZipException, InterruptedException {
+			throws FileNotFoundException, IOException, ZipException, InterruptedException, java.text.ParseException, ParseException {
 		EncrypterDecrypter encryptDecrypt = new EncrypterDecrypter();
 		TweakRegProcPackets e = new TweakRegProcPackets();
 		Properties prop = new Properties();
@@ -116,10 +157,15 @@ public class TweakRegProcPackets {
 			logger.info(prop.getProperty(property));
 			e.tweakFile("invalid" + property, property, prop.getProperty(property));
 		}
-		File decryptedPacket = new File(filesToBeDestroyed);
-		encryptDecrypt.destroyFiles(decryptedPacket);
+		
+		encryptDecrypt.destroyFiles(filesToBeDestroyed);
 	}
-
+/**
+ * 
+ * @param centerId
+ * @param machineId
+ * @return
+ */
 	public String generateRegID(String centerId, String machineId) {
 		String regID = "";
 		String timeStamp = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
@@ -130,7 +176,7 @@ public class TweakRegProcPackets {
 		return regID;
 	}
 
-	public static void main(String[] args) throws IOException, ZipException, InterruptedException {
+	public static void main(String[] args) throws IOException, ZipException, InterruptedException, java.text.ParseException, ParseException {
 		TweakRegProcPackets e = new TweakRegProcPackets();
 		e.invalidPacketGenerator("packetProperties.properties");
 	}
