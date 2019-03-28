@@ -65,9 +65,6 @@ public enum RegistrationExceptionTypeCode {
 	/** The invalid key spec exception. */
 	INVALID_KEY_SPEC_EXCEPTION,
 
-	/** The introspection exception. */
-	INTROSPECTION_EXCEPTION,
-
 	/** The illegal argument exception. */
 	ILLEGAL_ARGUMENT_EXCEPTION,
 
@@ -119,9 +116,6 @@ public enum RegistrationExceptionTypeCode {
 	/** The json schema io exception. */
 	JSON_SCHEMA_IO_EXCEPTION,
 
-	/** The file io exception. */
-	FILE_IO_EXCEPTION,
-
 	/** The file not found exception. */
 	FILE_NOT_FOUND_EXCEPTION,
 
@@ -130,10 +124,7 @@ public enum RegistrationExceptionTypeCode {
 
 	/** The no such algorithm exception. */
 	NO_SUCH_ALGORITHM_EXCEPTION,
-
-	/** The packet generator validation exception. */
-	PACKET_GENERATOR_VALIDATION_EXCEPTION,
-
+	
 	/** The run time exception. */
 	RUN_TIME_EXCEPTION,
 
@@ -143,26 +134,8 @@ public enum RegistrationExceptionTypeCode {
 	/** The mosip invalid keyexception. */
 	MOSIP_INVALID_KEY_EXCEPTION,
 
-	/** The reg base checked exception. */
-	REG_BASE_CHECKED_EXCEPTION,
-
-	/** The reg print app exception. */
-	REG_PRINT_APP_EXCEPTION,
-
 	/** The class not found exception. */
 	CLASS_NOT_FOUND_EXCEPTION,
-
-	/** The qr code generation exception. */
-	QR_CODE_GENERATION_EXCEPTION,
-
-	/** The uin not found in database. */
-	UIN_NOT_FOUND_IN_DATABASE,
-
-	/** The pdf generator exception. */
-	PDF_GENERATOR_EXCEPTION,
-
-	/** The reg status app exception. */
-	REG_STATUS_APP_EXCEPTION,
 
 	/** The reg status validation exception. */
 	REG_STATUS_VALIDATION_EXCEPTION,
@@ -170,20 +143,8 @@ public enum RegistrationExceptionTypeCode {
 	/** The packet decryption failure exception. */
 	PACKET_DECRYPTION_FAILURE_EXCEPTION,
 
-	/** The email id not found exception. */
-	EMAIL_ID_NOT_FOUND_EXCEPTION,
-
-	/** The phone number not found exception. */
-	PHONE_NUMBER_NOT_FOUND_EXCEPTION,
-
-	/** The template generation failed exception. */
-	TEMPLATE_GENERATION_FAILED_EXCEPTION,
-
 	/** The configuration not found exception. */
 	CONFIGURATION_NOT_FOUND_EXCEPTION,
-
-	/** The base unchecked exception. */
-	BASE_UNCHECKED_EXCEPTION,
 
 	/** The identity not found exception. */
 	IDENTITY_NOT_FOUND_EXCEPTION,
@@ -198,6 +159,8 @@ public enum RegistrationExceptionTypeCode {
 	VIRUS_SCAN_FAILED_EXCEPTION,
 
 	/** The ioexception. */
-	IOEXCEPTION
+	IOEXCEPTION,
+	
+	FILE_IO_EXCEPTION
 
 }
