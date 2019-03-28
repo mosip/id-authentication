@@ -119,8 +119,8 @@ public class BookingServiceTest {
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	@Autowired
-	@InjectMocks
-	private BookingService bookingservice;
+	//@InjectMocks
+	private BookingService service;
 
 	@Autowired
 	private BookingServiceUtil serviceUtil;
@@ -188,13 +188,13 @@ public class BookingServiceTest {
 	@Value("${demographic.resource.url}")
 	private String preRegResourceUrl;
 	
-	private BookingService service;
+	//private BookingService service;
 
 	@Before
 	public void setup() throws URISyntaxException, FileNotFoundException, ParseException, java.io.FileNotFoundException,
 			IOException, org.json.simple.parser.ParseException {
 
-		service=Mockito.spy(bookingservice);
+		//service=Mockito.spy(bookingservice);
 				
 		String date1 = "2016-11-09 09:00:00";
 		String date2 = "2016-11-09 09:20:00";
@@ -348,8 +348,7 @@ public class BookingServiceTest {
 	@Test
 	public void getAvailabilityTest() {
 
-		Mockito.doNothing().when(service).setAuditValues(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any());
-		
+		//Mockito.doNothing().when(service).setAuditValues(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any());
 		logger.info("Availability dto " + availability);
 		List<LocalDate> date = new ArrayList<>();
 		List<AvailibityEntity> entityList = new ArrayList<>();
