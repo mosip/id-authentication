@@ -69,6 +69,7 @@ import io.mosip.preregistration.application.exception.BookingDeletionFailedExcep
 import io.mosip.preregistration.application.exception.DocumentFailedToDeleteException;
 import io.mosip.preregistration.application.exception.RecordFailedToUpdateException;
 import io.mosip.preregistration.application.exception.RecordNotFoundException;
+import io.mosip.preregistration.application.exception.RecordNotFoundForPreIdsException;
 import io.mosip.preregistration.application.exception.system.DateParseException;
 import io.mosip.preregistration.application.exception.system.JsonValidationException;
 import io.mosip.preregistration.application.exception.system.SystemUnsupportedEncodingException;
@@ -194,7 +195,7 @@ public class DemographicServiceTest {
 	 * @throws ParseException
 	 * @throws FileNotFoundException
 	 * @throws IOException
-	 * @throws                       org.json.simple.parser.ParseException
+	 * @throws org.json.simple.parser.ParseException
 	 * @throws URISyntaxException
 	 */
 	@Before
@@ -275,7 +276,7 @@ public class DemographicServiceTest {
 		responseDTO = new MainListResponseDTO<DemographicResponseDTO>();
 
 		responseDTO.setResponsetime(serviceUtil.getCurrentResponseTime());
-		//responseDTO.setStatus(Boolean.TRUE);
+		// responseDTO.setStatus(Boolean.TRUE);
 
 		responseDTO.setErr(null);
 
@@ -754,7 +755,6 @@ public class DemographicServiceTest {
 
 	}
 
-
 	@MockBean
 	private RestTemplate restTemplate1;
 
@@ -824,46 +824,50 @@ public class DemographicServiceTest {
 		preRegistrationService.addPreRegistration(demographicRequestDTO);
 	}
 
-//	@Test(expected=RestClientException.class)
-//	public void deleteIndividualRestExceptionTest() {
-//		RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
-//		Mockito.when(restTemplateBuilder.build()).thenReturn(restTemplate);
-//		String preRegId = "98746563542672";
-//		preRegistrationEntity.setCreateDateTime(times);
-//		preRegistrationEntity.setCreatedBy("9988905444");
-//		preRegistrationEntity.setStatusCode("Booked");
-//		preRegistrationEntity.setUpdateDateTime(times);
-//		preRegistrationEntity.setApplicantDetailJson(jsonTestObject.toJSONString().getBytes());
-//		preRegistrationEntity.setPreRegistrationId("98746563542672");
-//
-//		DocumentDeleteDTO deleteDTO = new DocumentDeleteDTO();
-//		deleteDTO.setDocumnet_Id(String.valueOf("1"));
-//		List<DocumentDeleteDTO> deleteAllList = new ArrayList<>();
-//		deleteAllList.add(deleteDTO);
-//
-//		MainListResponseDTO<DocumentDeleteDTO> delResponseDto = new MainListResponseDTO<>();
-//		delResponseDto.setStatus(Boolean.TRUE);
-//		delResponseDto.setErr(null);
-//		delResponseDto.setResponse(deleteAllList);
-//		delResponseDto.setResTime(serviceUtil.getCurrentResponseTime());
-//
-//		Mockito.when(demographicRepository.findBypreRegistrationId(preRegId)).thenReturn(preRegistrationEntity);
-//
-//		ResponseEntity<MainListResponseDTO> res = new ResponseEntity<>(delResponseDto, HttpStatus.OK);
-//
-//		HttpHeaders headers = new HttpHeaders();
-//		headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
-//	Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.DELETE), Mockito.any(),
-//				Mockito.eq(MainListResponseDTO.class))).thenReturn(res);
-//
-//		Mockito.when(demographicRepository.deleteByPreRegistrationId(preRegistrationEntity.getPreRegistrationId()))
-//				.thenReturn(1);
-//
-//		MainListResponseDTO<DeletePreRegistartionDTO> actualres = preRegistrationService.deleteIndividual(preRegId);
-//
-//		//assertEquals(true, actualres.isStatus());
-//
-//	}
+	// @Test(expected=RestClientException.class)
+	// public void deleteIndividualRestExceptionTest() {
+	// RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
+	// Mockito.when(restTemplateBuilder.build()).thenReturn(restTemplate);
+	// String preRegId = "98746563542672";
+	// preRegistrationEntity.setCreateDateTime(times);
+	// preRegistrationEntity.setCreatedBy("9988905444");
+	// preRegistrationEntity.setStatusCode("Booked");
+	// preRegistrationEntity.setUpdateDateTime(times);
+	// preRegistrationEntity.setApplicantDetailJson(jsonTestObject.toJSONString().getBytes());
+	// preRegistrationEntity.setPreRegistrationId("98746563542672");
+	//
+	// DocumentDeleteDTO deleteDTO = new DocumentDeleteDTO();
+	// deleteDTO.setDocumnet_Id(String.valueOf("1"));
+	// List<DocumentDeleteDTO> deleteAllList = new ArrayList<>();
+	// deleteAllList.add(deleteDTO);
+	//
+	// MainListResponseDTO<DocumentDeleteDTO> delResponseDto = new
+	// MainListResponseDTO<>();
+	// delResponseDto.setStatus(Boolean.TRUE);
+	// delResponseDto.setErr(null);
+	// delResponseDto.setResponse(deleteAllList);
+	// delResponseDto.setResTime(serviceUtil.getCurrentResponseTime());
+	//
+	// Mockito.when(demographicRepository.findBypreRegistrationId(preRegId)).thenReturn(preRegistrationEntity);
+	//
+	// ResponseEntity<MainListResponseDTO> res = new
+	// ResponseEntity<>(delResponseDto, HttpStatus.OK);
+	//
+	// HttpHeaders headers = new HttpHeaders();
+	// headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
+	// Mockito.when(restTemplate.exchange(Mockito.anyString(),
+	// Mockito.eq(HttpMethod.DELETE), Mockito.any(),
+	// Mockito.eq(MainListResponseDTO.class))).thenReturn(res);
+	//
+	// Mockito.when(demographicRepository.deleteByPreRegistrationId(preRegistrationEntity.getPreRegistrationId()))
+	// .thenReturn(1);
+	//
+	// MainListResponseDTO<DeletePreRegistartionDTO> actualres =
+	// preRegistrationService.deleteIndividual(preRegId);
+	//
+	// //assertEquals(true, actualres.isStatus());
+	//
+	// }
 
 	@Test(expected = RecordNotFoundException.class)
 	public void RecordNotFoundExceptionTest() {
@@ -1131,7 +1135,7 @@ public class DemographicServiceTest {
 
 	}
 
-	@Test(expected = RecordNotFoundException.class)
+	@Test(expected = RecordNotFoundForPreIdsException.class)
 	public void invalidPreidFailureTest() {
 		List<String> preIds = new ArrayList<>();
 		preIds.add("");
@@ -1143,7 +1147,7 @@ public class DemographicServiceTest {
 
 	}
 
-	@Test(expected = RecordNotFoundException.class)
+	@Test(expected = RecordNotFoundForPreIdsException.class)
 	public void recordeNotFoundTest() {
 		List<String> preIds = new ArrayList<>();
 		preIds.add("userEntityDetails");
@@ -1156,7 +1160,7 @@ public class DemographicServiceTest {
 
 	}
 
-	@Test(expected = RecordNotFoundException.class)
+	@Test(expected = RecordNotFoundForPreIdsException.class)
 	public void recordeNotForPreIdFoundTest() {
 		List<String> preIds = new ArrayList<>();
 		preIds.add("userEntityDetails");

@@ -50,6 +50,7 @@ import io.mosip.preregistration.application.exception.DocumentFailedToDeleteExce
 import io.mosip.preregistration.application.exception.RecordFailedToDeleteException;
 import io.mosip.preregistration.application.exception.RecordFailedToUpdateException;
 import io.mosip.preregistration.application.exception.RecordNotFoundException;
+import io.mosip.preregistration.application.exception.RecordNotFoundForPreIdsException;
 import io.mosip.preregistration.application.exception.util.DemographicExceptionCatcher;
 import io.mosip.preregistration.application.repository.DemographicRepository;
 import io.mosip.preregistration.application.service.util.DemographicServiceUtil;
@@ -350,7 +351,7 @@ public class DemographicService {
 					}
 				} else {
 					throw new RecordNotFoundException(ErrorCodes.PRG_PAM_APP_005.name(),
-							ErrorMessages.INVALID_PRE_REGISTRATION_ID.name());
+							ErrorMessages.UNABLE_TO_FETCH_THE_PRE_REGISTRATION.name());
 
 				}
 			}
@@ -401,7 +402,7 @@ public class DemographicService {
 					}
 				} else {
 					throw new RecordNotFoundException(ErrorCodes.PRG_PAM_APP_005.name(),
-							ErrorMessages.INVALID_PRE_REGISTRATION_ID.name());
+							ErrorMessages.UNABLE_TO_FETCH_THE_PRE_REGISTRATION.name());
 				}
 			}
 			isDeleteSuccess = true;
@@ -527,7 +528,7 @@ public class DemographicService {
 			}
 		} else {
 			throw new RecordNotFoundException(ErrorCodes.PRG_PAM_APP_005.name(),
-					ErrorMessages.INVALID_PRE_REGISTRATION_ID.name());
+					ErrorMessages.UNABLE_TO_FETCH_THE_PRE_REGISTRATION.name());
 		}
 	}
 
@@ -604,15 +605,15 @@ public class DemographicService {
 	 * 
 	 * @param preId
 	 * @return BookingRegistrationDTO
-	 * @throws IOException 
-	 * @throws JsonMappingException 
-	 * @throws JsonParseException 
+	 * @throws IOException
+	 * @throws JsonMappingException
+	 * @throws JsonParseException
 	 * 
 	 */
 	private BookingRegistrationDTO callGetAppointmentDetailsRestService(String preId) {
 		log.info("sessionId", "idType", "id",
 				"In callGetAppointmentDetailsRestService method of pre-registration service ");
-		
+
 		BookingRegistrationDTO bookingRegistrationDTO = null;
 		try {
 			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(appointmentResourseUrl)
@@ -621,13 +622,13 @@ public class DemographicService {
 			HttpEntity<MainResponseDTO<BookingRegistrationDTO>> httpEntity = new HttpEntity<>(headers);
 			String uriBuilder = builder.build().encode().toUriString();
 			log.info("sessionId", "idType", "id", "In callGetAppointmentDetailsRestService method URL- " + uriBuilder);
-			
+
 			ResponseEntity<MainResponseDTO<BookingRegistrationDTO>> respEntity = restTemplate.exchange(uriBuilder,
 					HttpMethod.GET, httpEntity,
 					new ParameterizedTypeReference<MainResponseDTO<BookingRegistrationDTO>>() {
 					});
-			if(respEntity.getBody().getErrors()==null) {
-				bookingRegistrationDTO=respEntity.getBody().getResponse();
+			if (respEntity.getBody().getErrors() == null) {
+				bookingRegistrationDTO = respEntity.getBody().getResponse();
 			}
 		} catch (Exception ex) {
 			log.error("sessionId", "idType", "id",
@@ -782,6 +783,8 @@ public class DemographicService {
 
 	public MainResponseDTO<Map<String, String>> getUpdatedDateTimeForPreIds(
 			PreRegIdsByRegCenterIdDTO preRegIdsByRegCenterIdDTO) {
+		log.info("sessionId", "idType", "id",
+				"In getUpdatedDateTimeForPreIds method of pre-registration service " + preRegIdsByRegCenterIdDTO);
 		MainResponseDTO<Map<String, String>> mainResponseDTO = new MainResponseDTO<>();
 		try {
 			Map<String, String> preIdMap = new HashMap<>();
@@ -795,18 +798,20 @@ public class DemographicService {
 								demographicEntity.getUpdateDateTime().toString());
 					}
 				} else {
-					throw new RecordNotFoundException(ErrorCodes.PRG_PAM_APP_013.name(),
-							ErrorMessages.RECORD_NOT_FOUND.name());
+					throw new RecordNotFoundForPreIdsException(ErrorCodes.PRG_PAM_APP_005.name(),
+							ErrorMessages.UNABLE_TO_FETCH_THE_PRE_REGISTRATION.name());
 				}
 			} else {
-				throw new RecordNotFoundException(ErrorCodes.PRG_PAM_APP_005.name(),
-						ErrorMessages.INVALID_PRE_REGISTRATION_ID.name());
+				throw new RecordNotFoundForPreIdsException(ErrorCodes.PRG_PAM_APP_005.name(),
+						ErrorMessages.UNABLE_TO_FETCH_THE_PRE_REGISTRATION.name());
 			}
 			mainResponseDTO.setResponsetime(serviceUtil.getCurrentResponseTime());
 			mainResponseDTO.setId(id);
 			mainResponseDTO.setVersion(ver);
 			mainResponseDTO.setResponse(preIdMap);
 		} catch (Exception ex) {
+			log.error("sessionId", "idType", "id",
+					"In getUpdatedDateTimeForPreIds method of pre-registration service- " + ex.getMessage());
 			new DemographicExceptionCatcher().handle(ex);
 		}
 		return mainResponseDTO;
