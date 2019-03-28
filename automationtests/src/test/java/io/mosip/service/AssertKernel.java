@@ -48,7 +48,30 @@ public class AssertKernel {
 		return jsonComparison(expectedResponseBody, actualResponseBody);
 
 	}
+	
+	
+	/**
+	 * @author Arjun chandramohan
+	 * Created for id repo assertion
+	 * @param expectedResponse
+	 * @param actualResponse
+	 * @param listOfElementToRemove
+	 * @return
+	 * @throws JsonProcessingException
+	 * @throws IOException
+	 * @throws ParseException
+	 */
+		public boolean assertIdRepo(Object expectedResponse, Object actualResponse, ArrayList<String> listOfElementToRemove)
+				throws JsonProcessingException, IOException, ParseException {
+			JSONObject expectedResponseBody = (JSONObject) new JSONParser().parse(expectedResponse.toString());
+			JSONObject actualResponseBody = (JSONObject) new JSONParser().parse(actualResponse.toString());
 
+			expectedResponseBody = AssertKernel.removeElementFromBody(expectedResponseBody, listOfElementToRemove);
+			actualResponseBody = AssertKernel.removeElementFromBody(actualResponseBody, listOfElementToRemove);
+
+			return jsonComparison(expectedResponseBody, actualResponseBody);
+
+		}
 	/**
 	 * this function compare the request and response json and return the boolean
 	 * value
