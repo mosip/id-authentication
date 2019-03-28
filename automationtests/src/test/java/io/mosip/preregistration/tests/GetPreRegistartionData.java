@@ -92,7 +92,7 @@ public class GetPreRegistartionData extends BaseTestCase implements ITest {
 	public Object[][] readData(ITestContext context)
 			throws JsonParseException, JsonMappingException, IOException, ParseException {
 		String testParam = context.getCurrentXmlTest().getParameter("testType");
-		switch ("smokeAndRegression") {
+		switch (testParam) {
 		case "smoke":
 			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
 
@@ -131,6 +131,7 @@ public class GetPreRegistartionData extends BaseTestCase implements ITest {
 			} catch (Exception e) {
 				logger.info(e);
 			}
+			outerKeys.add("responsetime");
 			status = AssertResponses.assertResponses(Actualresponse, Expectedresponse, outerKeys, innerKeys);
 		}
 
@@ -188,7 +189,7 @@ public class GetPreRegistartionData extends BaseTestCase implements ITest {
 	public static void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
 		JSONObject object = (JSONObject) testdata[2];
 		testCaseName = object.get("testCaseName").toString();
-		 preReg_URI = commonLibrary.fetch_IDRepo("preReg_FetchRegistrationDataURI");
+		 preReg_URI = commonLibrary.fetch_IDRepo().get("preReg_FetchRegistrationDataURI");
 	}
 
 	@Override

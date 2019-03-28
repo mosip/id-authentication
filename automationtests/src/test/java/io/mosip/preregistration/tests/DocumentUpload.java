@@ -239,7 +239,7 @@ public class DocumentUpload extends BaseTestCase implements ITest {
            * Document Upload Resource URI            
            */
           
-          preReg_URI = commonLibrary.fetch_IDRepo("preReg_DocumentUploadURI");
+          preReg_URI = commonLibrary.fetch_IDRepo().get("preReg_DocumentUploadURI");
           
     }
 	@Override

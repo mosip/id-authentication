@@ -66,7 +66,8 @@ public class DiscardIndividual extends BaseTestCase implements ITest{
 	static Response Actualresponse = null;
 	static JSONObject Expectedresponse = null;
 	private static ApplicationLibrary applicationLibrary = new ApplicationLibrary();
-	private static final String preReg_URI = "/demographic/v0.1/pre-registration/applications";
+	private static String preReg_URI;
+	private static CommonLibrary commonLibrary = new CommonLibrary();
 	static String dest = "";
 	static String configPaths="";
 	static String folderPath = "preReg/Discard_Individual";
@@ -91,7 +92,7 @@ public class DiscardIndividual extends BaseTestCase implements ITest{
 	@DataProvider(name = "Discard_Individual")
 	public Object[][] readData(ITestContext context) throws JsonParseException, JsonMappingException, IOException, ParseException {
 		 String testParam = context.getCurrentXmlTest().getParameter("testType");
-		 switch ("smoke") {
+		 switch (testParam) {
 		case "smoke":
 			return ReadFolder.readFolders(folderPath, outputFile,requestKeyFile,"smoke");
 			
@@ -115,17 +116,22 @@ public class DiscardIndividual extends BaseTestCase implements ITest{
 		List<String> outerKeys = new ArrayList<String>();
 		List<String> innerKeys = new ArrayList<String>();
 		JSONObject actualRequest = ResponseRequestMapper.mapRequest(testSuite, object);
-		Response createPregResponse = prl.CreatePreReg();
-		String preReg_Id = createPregResponse.jsonPath().get("response[0].preRegistrationId").toString();
 		Expectedresponse = ResponseRequestMapper.mapResponse(testSuite, object);
-		Actualresponse=prl.discardApplication(preReg_Id);
-		String statusCode = Actualresponse.jsonPath().get("status").toString();
-		preId = Actualresponse.jsonPath().get("response[0].preRegistrationId").toString();
-		Assert.assertEquals(preId, preReg_Id);
-				outerKeys.add("resTime");
-				outerKeys.add("response");
-				innerKeys.add("preRegistrationId");
-				status = AssertResponses.assertResponses(Actualresponse, Expectedresponse, outerKeys, innerKeys);
+		if (testCaseName.toLowerCase().contains("smoke")) {
+			Response createPregResponse = prl.CreatePreReg();
+			String preReg_Id = createPregResponse.jsonPath().get("response[0].preRegistrationId").toString();
+			Expectedresponse = ResponseRequestMapper.mapResponse(testSuite, object);
+			Actualresponse=prl.discardApplication(preReg_Id);
+			preId = Actualresponse.jsonPath().get("response[0].preRegistrationId").toString();
+			Response getPreRegistrationDataResponse = prl.getPreRegistrationData(preReg_Id);
+			Assert.assertEquals(preId, preReg_Id);
+			status=true;
+		}
+		else {
+			outerKeys.add("responsetime");
+			Actualresponse = applicationLibrary.deleteRequest(preReg_URI, actualRequest);
+			status = AssertResponses.assertResponses(Actualresponse, Expectedresponse, outerKeys, innerKeys);
+		}
 				if (status) {
 					finalStatus="Pass";		
 				softAssert.assertAll();
@@ -177,6 +183,7 @@ public class DiscardIndividual extends BaseTestCase implements ITest{
     public static void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
           JSONObject object = (JSONObject) testdata[2];
           testCaseName = object.get("testCaseName").toString();
+          preReg_URI = commonLibrary.fetch_IDRepo().get("preReg_DiscardApplnURI");
         
     }
     @Override

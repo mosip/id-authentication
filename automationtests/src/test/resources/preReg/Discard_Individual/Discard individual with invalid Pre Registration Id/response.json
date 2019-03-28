@@ -1,0 +1,10 @@
+{
+    "id": null,
+    "version": null,
+    "err": {
+        "errorCode": "PRG_PAM_APP_005",
+        "message": "INVALID_PRE_REGISTRATION_ID"
+    },
+    "responsetime": "2019-03-27T06:58:07.637Z",
+    "response": null
+}

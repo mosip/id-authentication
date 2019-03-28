@@ -61,7 +61,7 @@ public class Sample extends BaseTestCase {
 	}
 
 	@Test(groups = { "IntegrationScenarios" })
-	public void getStatusOfBookedAppointment() {
+	public void discardBookedAppointment() {
 		testSuite = "Create_PreRegistration/createPreRegistration_smoke";
 		JSONObject createPregRequest = lib.createRequest(testSuite);
 		Response createResponse = lib.CreatePreReg(createPregRequest);
@@ -69,10 +69,10 @@ public class Sample extends BaseTestCase {
 		Response documentResponse = lib.documentUpload(createResponse);
 		Response avilibityResponse = lib.FetchCentre();
 		lib.BookAppointment(documentResponse, avilibityResponse, preID);
-		Response getPreRegistrationStatus = lib.getPreRegistrationStatus(preID);
-		Assert.assertEquals(getPreRegistrationStatus.jsonPath().get("response[0].statusCode"), "Booked");
-		Assert.assertEquals(getPreRegistrationStatus.jsonPath().get("response[0].preRegistartionId"), preID);
 	}
+
+
+
 
 
 }
