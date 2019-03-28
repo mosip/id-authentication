@@ -3,6 +3,7 @@
  */
 package io.mosip.kernel.auth.service.impl;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,7 @@ import io.mosip.kernel.auth.exception.AuthManagerServiceException;
 import io.mosip.kernel.auth.service.OTPGenerateService;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.exception.ServiceError;
+import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseWrapper;
 
 /**
@@ -50,7 +52,10 @@ public class OTPGenerateServiceImpl implements OTPGenerateService {
 			OtpGenerateResponseDto otpGenerateResponseDto;
 			OtpGenerateRequestDto otpGenerateRequestDto = new OtpGenerateRequestDto(mosipUserDto);
 			final String url = mosipEnvironment.getGenerateOtpApi();
-			ResponseEntity<String> response = restTemplate.postForEntity(url, otpGenerateRequestDto,
+			RequestWrapper<OtpGenerateRequestDto> reqWrapper = new RequestWrapper<>();
+			reqWrapper.setRequesttime(LocalDateTime.now());
+			reqWrapper.setRequest(otpGenerateRequestDto);
+			ResponseEntity<String> response = restTemplate.postForEntity(url, reqWrapper,
 					String.class);
 			validationErrorsList = ExceptionUtils.getServiceErrorList(response.getBody());  
 			if (!validationErrorsList.isEmpty()) {

@@ -3,13 +3,17 @@
  */
 package io.mosip.kernel.uingenerator.router;
 
+import java.io.IOException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.http.RequestWrapper;
@@ -69,8 +73,8 @@ public class UinGeneratorRouter {
 					getRouter(vertx, routingContext);
 				});
 		router.route().handler(BodyHandler.create());
-		router.put(environment.getProperty(UinGeneratorConstant.SERVER_SERVLET_PATH) + "/uin").consumes("application/json")
-				.handler(this::updateRouter);
+		router.put(environment.getProperty(UinGeneratorConstant.SERVER_SERVLET_PATH) + "/uin")
+				.consumes("application/json").handler(this::updateRouter);
 		return router;
 	}
 
@@ -81,7 +85,8 @@ public class UinGeneratorRouter {
 			ResponseWrapper<UinResponseDto> reswrp = new ResponseWrapper<>();
 			reswrp.setResponse(uin);
 			reswrp.setErrors(null);
-			routingContext.response().putHeader("content-type", "application/json").setStatusCode(200).end(objectMapper.writeValueAsString(reswrp));
+			routingContext.response().putHeader("content-type", "application/json").setStatusCode(200)
+					.end(objectMapper.writeValueAsString(reswrp));
 		} catch (UinNotFoundException e) {
 			ServiceError error = new ServiceError(UinGeneratorErrorCode.UIN_NOT_FOUND.getErrorCode(),
 					UinGeneratorErrorCode.UIN_NOT_FOUND.getErrorMessage());
@@ -129,7 +134,8 @@ public class UinGeneratorRouter {
 			reswrp.setId(reqwrp.getId());
 			reswrp.setVersion(reqwrp.getVersion());
 			reswrp.setErrors(null);
-			routingContext.response().putHeader("content-type", "application/json").setStatusCode(200).end(objectMapper.writeValueAsString(reswrp));
+			routingContext.response().putHeader("content-type", "application/json").setStatusCode(200)
+					.end(objectMapper.writeValueAsString(reswrp));
 		} catch (UinNotFoundException e) {
 			ServiceError error = new ServiceError(UinGeneratorErrorCode.UIN_NOT_FOUND.getErrorCode(),
 					UinGeneratorErrorCode.UIN_NOT_FOUND.getErrorMessage());
@@ -163,8 +169,19 @@ public class UinGeneratorRouter {
 	private void setError(RoutingContext routingContext, ServiceError error) {
 		ResponseWrapper<ServiceError> errorResponse = new ResponseWrapper<>();
 		errorResponse.getErrors().add(error);
+		objectMapper.registerModule(new JavaTimeModule());
+		JsonNode reqNode;
+		if (routingContext.getBodyAsJson() != null) {
+			try {
+				reqNode = objectMapper.readTree(routingContext.getBodyAsJson().toString());
+				errorResponse.setId(reqNode.path("id").asText());
+				errorResponse.setVersion(reqNode.path("version").asText());
+			} catch (IOException e) {
+			}
+		}
 		try {
-			routingContext.response().putHeader("content-type", "application/json").setStatusCode(200).end(objectMapper.writeValueAsString(errorResponse));
+			routingContext.response().putHeader("content-type", "application/json").setStatusCode(200)
+					.end(objectMapper.writeValueAsString(errorResponse));
 		} catch (JsonProcessingException e1) {
 
 		}
@@ -176,7 +193,8 @@ public class UinGeneratorRouter {
 		errorResponse.setId(reqwrp.getId());
 		errorResponse.setVersion(reqwrp.getVersion());
 		try {
-			routingContext.response().putHeader("content-type", "application/json").setStatusCode(200).end(objectMapper.writeValueAsString(errorResponse));
+			routingContext.response().putHeader("content-type", "application/json").setStatusCode(200)
+					.end(objectMapper.writeValueAsString(errorResponse));
 		} catch (JsonProcessingException e1) {
 
 		}

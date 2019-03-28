@@ -33,6 +33,7 @@ import io.mosip.kernel.auth.entities.MosipUserDto;
 import io.mosip.kernel.auth.entities.MosipUserDtoToken;
 import io.mosip.kernel.auth.entities.MosipUserListDto;
 import io.mosip.kernel.auth.entities.RolesListDto;
+import io.mosip.kernel.auth.entities.UserDetailsRequest;
 import io.mosip.kernel.auth.entities.UserOtp;
 import io.mosip.kernel.auth.entities.otp.OtpUser;
 import io.mosip.kernel.auth.exception.AuthManagerException;
@@ -52,7 +53,6 @@ import io.swagger.annotations.Api;
 
 @CrossOrigin
 @RestController
-@RequestMapping("/v1.0")
 @Api(value = "Operation related to Authentication and Authorization", tags = { "authmanager" })
 public class AuthController {
 
@@ -274,18 +274,16 @@ public class AuthController {
 	@ResponseFilter
 	@GetMapping(value = "/roles/{appid}")
 	public ResponseEntity<RolesListDto> getAllRoles(@PathVariable("appid") String appId) throws Exception {
-		HttpHeaders responseHeaders = new HttpHeaders();
 		RolesListDto rolesListDto = authService.getAllRoles(appId);
-		return new ResponseEntity<>(rolesListDto, responseHeaders, HttpStatus.OK);
+		return new ResponseEntity<>(rolesListDto, HttpStatus.OK);
 	}
 	
 	@ResponseFilter
 	@PostMapping(value = "/userdetails/{appid}")
-	public ResponseEntity<MosipUserListDto> getListOfUsersDetails(@RequestBody List<String> userDetails,
+	public ResponseEntity<MosipUserListDto> getListOfUsersDetails(@RequestBody RequestWrapper<UserDetailsRequest> userDetails,
 			@PathVariable("appid") String appId) throws Exception {
-		HttpHeaders responseHeaders = new HttpHeaders();
-		MosipUserListDto mosipUsers = authService.getListOfUsersDetails(userDetails,appId);
-		return new ResponseEntity<>(mosipUsers, responseHeaders, HttpStatus.OK);
+		MosipUserListDto mosipUsers = authService.getListOfUsersDetails(userDetails.getRequest().getUserDetails(),appId);
+		return new ResponseEntity<>(mosipUsers, HttpStatus.OK);
 	}
 
 }

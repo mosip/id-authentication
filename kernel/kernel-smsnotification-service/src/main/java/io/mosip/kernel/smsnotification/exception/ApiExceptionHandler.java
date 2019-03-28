@@ -1,8 +1,6 @@
 package io.mosip.kernel.smsnotification.exception;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -18,11 +16,11 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.util.ContentCachingRequestWrapper;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import io.mosip.kernel.core.exception.ServiceError;
-import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.smsnotification.constant.SmsExceptionConstant;
 import io.mosip.kernel.smsnotification.util.EmptyCheckUtils;
@@ -106,7 +104,6 @@ public class ApiExceptionHandler {
 	}
 
 	private ResponseWrapper<ServiceError> setErrors(HttpServletRequest httpServletRequest) throws IOException {
-		RequestWrapper<?> requestWrapper = null;
 		ResponseWrapper<ServiceError> responseWrapper = new ResponseWrapper<>();
 		String requestBody = null;
 		if (httpServletRequest instanceof ContentCachingRequestWrapper) {
@@ -116,10 +113,9 @@ public class ApiExceptionHandler {
 			return responseWrapper;
 		}
 		objectMapper.registerModule(new JavaTimeModule());
-		requestWrapper = objectMapper.readValue(requestBody, RequestWrapper.class);
-		responseWrapper.setId(requestWrapper.getId());
-		responseWrapper.setVersion(requestWrapper.getVersion());
-		responseWrapper.setResponsetime(LocalDateTime.now(ZoneId.of("UTC")));
+		JsonNode reqNode = objectMapper.readTree(requestBody);
+		responseWrapper.setId(reqNode.path("id").asText());
+		responseWrapper.setVersion(reqNode.path("version").asText());
 		return responseWrapper;
 	}
 
