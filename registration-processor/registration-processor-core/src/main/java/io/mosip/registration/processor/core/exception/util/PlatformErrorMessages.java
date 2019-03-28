@@ -558,7 +558,10 @@ public enum PlatformErrorMessages {
 			"Invalid Input Parameter - %s"),
 	/** The data validation failed. */
 	RPR_PGS_DATA_VALIDATION_FAILED(PlatformConstants.RPR_PACKET_GENERATOR_MODULE + "012",
-			"Input Data Validation Failed");
+			"Input Data Validation Failed"),
+	
+	REPROCESSOR_STAGE_FAILED("", "Reprocessor Stage Failed");
+
 	/** The error message. */
 	private final String errorMessage;
 

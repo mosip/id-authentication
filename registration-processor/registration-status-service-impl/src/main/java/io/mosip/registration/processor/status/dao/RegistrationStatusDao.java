@@ -53,6 +53,9 @@ public class RegistrationStatusDao {
 
 	/** The Constant ISDELETED_COLON. */
 	public static final String ISDELETED_COLON = ".isDeleted=:";
+	
+	
+	public static final String SELECT_COUNT= "SELECT COUNT(*)";
 
 	/**
 	 * Save.
@@ -182,26 +185,26 @@ public class RegistrationStatusDao {
 		return registrationStatusRepositary.createQuerySelect(queryStr, params);
 	}
 
-	/**
-	 * Sets the update time.
-	 *
-	 * @param entity
-	 *            the new update time
-	 */
-	public void setUpdateTime(RegistrationStatusEntity entity) {
-		entity.setUpdateDateTime(LocalDateTime.now());
-		registrationStatusRepositary.update(entity);
+	public Integer getUnProcessedPacketsCount(long elapseTime,
+			Integer reprocessCount, List<String> status) {
+
+		Map<String, Object> params = new HashMap<>();
+		String className = RegistrationStatusEntity.class.getSimpleName();
+		String alias = RegistrationStatusEntity.class.getName().toLowerCase().substring(0, 1);
+		LocalDateTime timeDifference = LocalDateTime.now().minusSeconds(elapseTime);
+
+		String queryStr = SELECT_COUNT + alias + FROM + className + EMPTY_STRING + alias + WHERE + alias
+				+ ".latestTransactionStatusCode IN :status" + AND + alias + ".regProcessRetryCount<"
+				+ "reprocessCount" + AND + alias + ".latestTransactionTimes<" + "timeDifference";
+
+		params.put("status", status);
+		params.put("reprocessCount", reprocessCount);
+		params.put("timeDifference", timeDifference);
+		List<RegistrationStatusEntity> unprocessedPackets=registrationStatusRepositary.createQuerySelect(queryStr, params);
+			
+		return unprocessedPackets.size();
+			
 	}
 
-	/**
-	 * Update retry count.
-	 *
-	 * @param entity
-	 *            the entity
-	 */
-	public void updateRetryCount(RegistrationStatusEntity entity) {
-		entity.setRegProcessRetryCount(entity.getRegProcessRetryCount() + 1);
-		registrationStatusRepositary.update(entity);
-	}
 
 }

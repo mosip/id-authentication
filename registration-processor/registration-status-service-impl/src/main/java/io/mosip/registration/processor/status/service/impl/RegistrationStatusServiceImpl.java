@@ -497,27 +497,24 @@ public class RegistrationStatusServiceImpl
 		}
 	}
 
-	/**
-	 * Sets the updated time.
-	 *
-	 * @param dto
-	 *            the new updated time
-	 */
-	public void setUpdatedTime(InternalRegistrationStatusDto dto) {
+	@Override
+	public Integer getUnProcessedPacketsCount(long elapseTime, Integer reprocessCount, List<String> status) {
 		boolean isTransactionSuccessful = false;
-		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
-				dto.getRegistrationId(), "RegistrationStatusServiceImpl::setUpdatedTime()::entry");
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
+				"RegistrationStatusServiceImpl::getUnProcessedPacketsCount()::entry");
 		try {
-			registrationStatusDao.setUpdateTime(convertDtoToEntity(dto));
+			int count = registrationStatusDao.getUnProcessedPacketsCount(
+					elapseTime, reprocessCount, status);
 
 			isTransactionSuccessful = true;
-			description = "Updation time for reprocess packet with Registration id : " + dto.getRegistrationId()
-					+ " is successfully updated";
+			description = "Get list of reprocess packets successful";
 			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
-					"RegistrationStatusServiceImpl::setUpdatedTime()::exit");
+					"RegistrationStatusServiceImpl::getUnProcessedPacketsCount()::exit");
+
+			return count;
+
 		} catch (DataAccessException | DataAccessLayerException e) {
-			description = "DataAccessLayerException while updating UpdationTime for Reprocess Packet with Registration id : "
-					+ dto.getRegistrationId();
+			description = "DataAccessLayerException while fetching Reprocess Packets";
 
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					"", e.getMessage() + ExceptionUtils.getStackTrace(e));
@@ -530,47 +527,10 @@ public class RegistrationStatusServiceImpl
 			eventType = eventId.equalsIgnoreCase(EventId.RPR_407.toString()) ? EventType.BUSINESS.toString()
 					: EventType.SYSTEM.toString();
 
-			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
-					dto.getRegistrationId(), ApiName.AUDIT);
+			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType, "",
+					ApiName.AUDIT);
 		}
 	}
 
-	/**
-	 * Update retry count.
-	 *
-	 * @param dto
-	 *            the dto
-	 */
-	public void updateRetryCount(InternalRegistrationStatusDto dto) {
-		boolean isTransactionSuccessful = false;
-		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
-				dto.getRegistrationId(), "RegistrationStatusServiceImpl::updateRetryCount()::entry");
-		try {
-			registrationStatusDao.updateRetryCount(convertDtoToEntity(dto));
-
-			isTransactionSuccessful = true;
-			description = "Reprocess Retry Count for reprocess packet with Registration id : " + dto.getRegistrationId()
-					+ " is successfully updated";
-			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
-					"RegistrationStatusServiceImpl::updateRetryCount()::exit");
-		} catch (DataAccessException | DataAccessLayerException e) {
-			description = "DataAccessLayerException while updating Reprocess Retry Count for Reprocess Packet with Registration id : "
-					+ dto.getRegistrationId();
-
-			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					"", e.getMessage() + ExceptionUtils.getStackTrace(e));
-			throw new TablenotAccessibleException(
-					PlatformErrorMessages.RPR_RGS_REGISTRATION_TABLE_NOT_ACCESSIBLE.getMessage(), e);
-		} finally {
-			eventId = isTransactionSuccessful ? EventId.RPR_407.toString() : EventId.RPR_405.toString();
-			eventName = eventId.equalsIgnoreCase(EventId.RPR_407.toString()) ? EventName.ADD.toString()
-					: EventName.EXCEPTION.toString();
-			eventType = eventId.equalsIgnoreCase(EventId.RPR_407.toString()) ? EventType.BUSINESS.toString()
-					: EventType.SYSTEM.toString();
-
-			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
-					dto.getRegistrationId(), ApiName.AUDIT);
-		}
-	}
-
+	
 }

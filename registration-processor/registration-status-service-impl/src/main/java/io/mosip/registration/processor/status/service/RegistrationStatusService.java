@@ -82,16 +82,14 @@ public interface RegistrationStatusService<T, U, D> {
 			Integer reprocessCount, List<String> status);
 	
 	/**
-	 * Sets the updated time.
+	 * Gets the un processed packets count.
 	 *
-	 * @param dto the new updated time
+	 * @param elapseTime the elapse time
+	 * @param reprocessCount the reprocess count
+	 * @param status the status
+	 * @return the un processed packets count
 	 */
-	public void setUpdatedTime(U dto) ;
+	public Integer getUnProcessedPacketsCount(long elapseTime,
+			Integer reprocessCount, List<String> status);
 	
-	/**
-	 * Update retry count.
-	 *
-	 * @param dto the dto
-	 */
-	public void updateRetryCount(U dto);
 }
