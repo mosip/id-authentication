@@ -56,11 +56,13 @@ public class EncrypterDecrypter {
 	 * @throws ZipException
 	 * @throws ParseException 
 	 */
-	public File decryptFile(JSONObject decryptDto,String destinationPath) throws IOException, ZipException, ParseException {
+	public File decryptFile(JSONObject decryptDto,String destinationPath,String fileName) throws IOException, ZipException, ParseException {
 		logger.info(destinationPath);
-		
+		destinationPath=destinationPath+"//TemporaryValidPackets";
+		File folder=new File(destinationPath);
+		folder.mkdirs();
+		destinationPath=destinationPath+"//"+fileName;
 		Response response=applnMethods.postRequestToDecrypt(decryptDto, decrypterURL);
-		logger.info("Response is :: "+response.asString());
 		JSONObject data= (JSONObject) new JSONParser().parse(response.asString());
 
 		byte[] decryptedPacket = CryptoUtil.decodeBase64(data.get("data").toString());
@@ -77,7 +79,7 @@ public class EncrypterDecrypter {
 	}
 	
 	public void encryptFile(File f,String sourcePath,String destinationPath,String fileName) throws ZipException, FileNotFoundException, IOException {
-	
+		sourcePath=sourcePath+"//TemporaryValidPackets";
 		File folder = new File(destinationPath);
 		folder.mkdirs();
 		 org.zeroturnaround.zip.ZipUtil.pack(new File(sourcePath+"/"+f.getName()),new File(destinationPath+"/"+fileName+".zip"));
@@ -86,9 +88,6 @@ public class EncrypterDecrypter {
 		  decryptedFileBody=generateCryptographicDataEncryption(file1);
 		  Response response=applnMethods.postRequestToDecrypt(decryptedFileBody, encrypterURL);
 		  try {
-
-			  
-			  
 			  JSONObject data= (JSONObject) new JSONParser().parse(response.asString());
 			byte[] encryptedPacket = CryptoUtil.decodeBase64(data.get("data").toString());
 			outstream = new ByteArrayInputStream(encryptedPacket); 
@@ -105,9 +104,10 @@ public class EncrypterDecrypter {
 		  
 	}
 	
-	public void destroyFiles(File file) throws IOException {
+	public void destroyFiles(String filePath) throws IOException {
 		logger.info("Destroying Files");
-
+		filePath=filePath+"//TemporaryValidPackets";
+		File file=new File(filePath);
 		File[] listOfFiles=file.listFiles();
 		
 		for(File f: listOfFiles) {
@@ -136,7 +136,7 @@ public class EncrypterDecrypter {
 		}
 		}
 	
-	public void revertPacketToValid(String filePath) throws FileNotFoundException, IOException {
+/*	public void revertPacketToValid(String filePath) throws FileNotFoundException, IOException {
 		File zipFile = new File(filePath+".zip");
 		JSONObject cryptographicRequest=new JSONObject();
 		cryptographicRequest=generateCryptographicDataEncryption(zipFile);
@@ -154,7 +154,7 @@ public class EncrypterDecrypter {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-	}
+	}*/
 	public JSONObject generateCryptographicData(File file) {
 		JSONObject cryptographicRequest=new JSONObject();
 		SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd'T'HHmmssSSS");

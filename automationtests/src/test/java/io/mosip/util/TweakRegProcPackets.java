@@ -37,7 +37,6 @@ import net.lingala.zip4j.exception.ZipException;
 public class TweakRegProcPackets {
 	private static Logger logger = Logger.getLogger(TweakRegProcPackets.class);
 	
-	private String applicationId="REGISTRATION";	
 	static String filesToBeDestroyed = null;
 	String centerId = "";
 	String machineId = "";
@@ -67,8 +66,8 @@ public class TweakRegProcPackets {
 			if (f.getName().contains(".zip")) {
 				JSONObject jsonObject=encryptDecrypt.generateCryptographicData(f);
 			
-				decryptedFile = encryptDecrypt.decryptFile(jsonObject, f.getPath());
-				filesToBeDestroyed = configPath + "/" + decryptedFile.getName();
+				decryptedFile = encryptDecrypt.decryptFile(jsonObject, configPath,f.getName());
+				filesToBeDestroyed = configPath;
 				File[] packetFiles = decryptedFile.listFiles();
 				for (File info : packetFiles) {
 
@@ -100,13 +99,11 @@ public class TweakRegProcPackets {
 					}
 
 				}
-			}else {
-				continue;
 			}
 		}
 		logger.info("packetName :: ======================" + packetName);
 		encryptDecrypt.encryptFile(decryptedFile, configPath, invalidPacketsPath, packetName);
-		encryptDecrypt.revertPacketToValid(filesToBeDestroyed);
+		//encryptDecrypt.revertPacketToValid(filesToBeDestroyed);
 	}
 /**
  * 
@@ -160,8 +157,8 @@ public class TweakRegProcPackets {
 			logger.info(prop.getProperty(property));
 			e.tweakFile("invalid" + property, property, prop.getProperty(property));
 		}
-		File decryptedPacket = new File(filesToBeDestroyed);
-		encryptDecrypt.destroyFiles(decryptedPacket);
+		
+		encryptDecrypt.destroyFiles(filesToBeDestroyed);
 	}
 /**
  * 
