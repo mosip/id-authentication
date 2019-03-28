@@ -1,15 +1,27 @@
 package io.mosip.kernel.lkeymanager.exception;
 
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.util.ContentCachingRequestWrapper;
 
-import io.mosip.kernel.core.exception.ErrorResponse;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+
 import io.mosip.kernel.core.exception.ServiceError;
+import io.mosip.kernel.core.http.RequestWrapper;
+import io.mosip.kernel.core.http.ResponseWrapper;
+import io.mosip.kernel.core.util.EmptyCheckUtils;
 import io.mosip.kernel.lkeymanager.constant.LicenseKeyManagerErrorCodes;
 
 /**
@@ -22,6 +34,8 @@ import io.mosip.kernel.lkeymanager.constant.LicenseKeyManagerErrorCodes;
  */
 @RestControllerAdvice
 public class LicenseKeyControllerAdvice {
+	@Autowired
+	private ObjectMapper objectMapper;
 
 	/**
 	 * Method to handle {@link InvalidArgumentsException}.
@@ -29,13 +43,13 @@ public class LicenseKeyControllerAdvice {
 	 * @param exception
 	 *            the exception.
 	 * @return {@link ErrorResponse}.
+	 * @throws IOException
 	 */
 	@ExceptionHandler(InvalidArgumentsException.class)
-	public ResponseEntity<ErrorResponse<ServiceError>> validateInputArguments(
-			final InvalidArgumentsException exception) {
-		ErrorResponse<ServiceError> errorResponse = new ErrorResponse<>();
+	public ResponseEntity<ResponseWrapper<ServiceError>> validateInputArguments(HttpServletRequest httpServletRequest,
+			final InvalidArgumentsException exception) throws IOException {
+		ResponseWrapper<ServiceError> errorResponse = setErrors(httpServletRequest);
 		errorResponse.getErrors().addAll(exception.getList());
-		errorResponse.setStatus(HttpStatus.OK.value());
 		return new ResponseEntity<>(errorResponse, HttpStatus.OK);
 	}
 
@@ -45,13 +59,14 @@ public class LicenseKeyControllerAdvice {
 	 * @param exception
 	 *            the exception.
 	 * @return {@link ErrorResponse}.
+	 * @throws IOException
 	 */
+
 	@ExceptionHandler(LicenseKeyServiceException.class)
-	public ResponseEntity<ErrorResponse<ServiceError>> handleServiceException(
-			final LicenseKeyServiceException exception) {
-		ErrorResponse<ServiceError> errorResponse = new ErrorResponse<>();
+	public ResponseEntity<ResponseWrapper<ServiceError>> handleServiceException(HttpServletRequest httpServletRequest,
+			final LicenseKeyServiceException exception) throws IOException {
+		ResponseWrapper<ServiceError> errorResponse = setErrors(httpServletRequest);
 		errorResponse.getErrors().addAll(exception.getList());
-		errorResponse.setStatus(HttpStatus.OK.value());
 		return new ResponseEntity<>(errorResponse, HttpStatus.OK);
 	}
 
@@ -60,17 +75,19 @@ public class LicenseKeyControllerAdvice {
 	 * 
 	 * @param exception
 	 *            the exception.
+	 * 
 	 * @return {@link ErrorResponse}.
+	 * @throws IOException
 	 */
 	@ExceptionHandler(HttpMessageNotReadableException.class)
-	public ResponseEntity<ErrorResponse<ServiceError>> onHttpMessageNotReadable(
-			final HttpMessageNotReadableException exception) {
-		ErrorResponse<ServiceError> errorResponse = new ErrorResponse<>();
+	public ResponseEntity<ResponseWrapper<ServiceError>> onHttpMessageNotReadable(
+			final HttpServletRequest httpServletRequest, final HttpMessageNotReadableException exception)
+			throws IOException {
+		ResponseWrapper<ServiceError> responseWrapper = setErrors(httpServletRequest);
 		ServiceError error = new ServiceError(LicenseKeyManagerErrorCodes.HTTP_MESSAGE_NOT_READABLE.getErrorCode(),
 				exception.getMessage());
-		errorResponse.getErrors().add(error);
-		errorResponse.setStatus(HttpStatus.OK.value());
-		return new ResponseEntity<>(errorResponse, HttpStatus.OK);
+		responseWrapper.getErrors().add(error);
+		return new ResponseEntity<>(responseWrapper, HttpStatus.OK);
 	}
 
 	/**
@@ -81,15 +98,31 @@ public class LicenseKeyControllerAdvice {
 	 * @param exception
 	 *            the exception.
 	 * @return {@link ErrorResponse}.
+	 * @throws IOException
 	 */
 	@ExceptionHandler(value = { Exception.class, RuntimeException.class })
-	public ResponseEntity<ErrorResponse<ServiceError>> defaultErrorHandler(HttpServletRequest request,
-			Exception exception) {
-		ErrorResponse<ServiceError> errorResponse = new ErrorResponse<>();
+	public ResponseEntity<ResponseWrapper<ServiceError>> defaultErrorHandler(HttpServletRequest httpServletRequest,
+			Exception exception) throws IOException {
+		ResponseWrapper<ServiceError> errorResponse = setErrors(httpServletRequest);
 		ServiceError error = new ServiceError(LicenseKeyManagerErrorCodes.RUNTIME_EXCEPTION.getErrorCode(),
 				exception.getMessage());
 		errorResponse.getErrors().add(error);
-		errorResponse.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
 		return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+	}
+
+	private ResponseWrapper<ServiceError> setErrors(HttpServletRequest httpServletRequest) throws IOException {
+		ResponseWrapper<ServiceError> responseWrapper = new ResponseWrapper<>();
+		String requestBody = null;
+		if (httpServletRequest instanceof ContentCachingRequestWrapper) {
+			requestBody = new String(((ContentCachingRequestWrapper) httpServletRequest).getContentAsByteArray());
+		}
+		if (EmptyCheckUtils.isNullEmpty(requestBody)) {
+			return responseWrapper;
+		}
+		objectMapper.registerModule(new JavaTimeModule());
+		JsonNode reqNode = objectMapper.readTree(requestBody);
+		responseWrapper.setId(reqNode.path("id").asText());
+		responseWrapper.setVersion(reqNode.path("version").asText());
+		return responseWrapper;
 	}
 }

@@ -9,7 +9,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.mosip.kernel.masterdata.dto.RequestDto;
+import io.mosip.kernel.core.http.RequestWrapper;
+import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.masterdata.dto.TemplateTypeDto;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.service.TemplateTypeService;
@@ -39,13 +40,14 @@ public class TemplateTypeController {
 	 *            the request dto.
 	 * @return {@link CodeAndLanguageCodeID}
 	 */
-	@PostMapping("/v1.0/templatetypes")
+	@ResponseFilter
+	@PostMapping("/templatetypes")
 	@ApiOperation(value = "Service to create template type", notes = "create TemplateType  and return  code and LangCode", response = CodeAndLanguageCodeID.class)
 	@ApiResponses({ @ApiResponse(code = 201, message = " successfully created", response = CodeAndLanguageCodeID.class),
 			@ApiResponse(code = 400, message = " Request body passed  is null or invalid"),
 			@ApiResponse(code = 500, message = " creating any error occured") })
 	public ResponseEntity<CodeAndLanguageCodeID> createTemplateType(
-			@Valid @RequestBody RequestDto<TemplateTypeDto> templateType) {
+			@Valid @RequestBody RequestWrapper<TemplateTypeDto> templateType) {
 		return new ResponseEntity<>(templateTypeService.createTemplateType(templateType.getRequest()),
 				HttpStatus.OK);
 

@@ -14,7 +14,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.kernel.masterdata.dto.PostReasonCategoryDto;
 import io.mosip.kernel.masterdata.dto.ReasonListDto;
-import io.mosip.kernel.masterdata.dto.RequestDto;
+import io.mosip.kernel.core.http.RequestWrapper;
+import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.masterdata.dto.getresponse.PacketRejectionReasonResponseDto;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.entity.id.CodeLangCodeAndRsnCatCodeID;
@@ -29,7 +30,7 @@ import io.swagger.annotations.Api;
  */
 @RestController
 @Api(tags = { "RejectionReason" })
-@RequestMapping(value = "/v1.0/packetrejectionreasons")
+@RequestMapping(value = "/packetrejectionreasons")
 public class PacketRejectionReasonController {
 	/**
 	 * creates instance of service class {@link PacketRejectionReasonService}
@@ -41,10 +42,11 @@ public class PacketRejectionReasonController {
 	 * @param requestDto- reasoncategoryObject
 	 * @return CodeAndLanguageCodeId
 	 */
+	@ResponseFilter
 	@PostMapping("/reasoncategory")
-	public ResponseEntity<CodeAndLanguageCodeID> createReasonCategories(@Valid@RequestBody RequestDto<PostReasonCategoryDto> requestDto) {
+	public ResponseEntity<CodeAndLanguageCodeID> createReasonCategories(@Valid@RequestBody RequestWrapper<PostReasonCategoryDto> requestDto) {
                 
-		return new ResponseEntity<>(reasonService.createReasonCategories(requestDto),HttpStatus.OK);
+		return new ResponseEntity<>(reasonService.createReasonCategories(requestDto.getRequest()),HttpStatus.OK);
 	}
 	
 	/**
@@ -52,10 +54,11 @@ public class PacketRejectionReasonController {
 	 * @param requestDto -reasonListObject
 	 * @return CodeLangCodeAndRsnCatCodeId
 	 */
+	@ResponseFilter
 	@PostMapping("/reasonlist")
-	public ResponseEntity<CodeLangCodeAndRsnCatCodeID> createReasonLists(@Valid@RequestBody RequestDto<ReasonListDto> requestDto) {
+	public ResponseEntity<CodeLangCodeAndRsnCatCodeID> createReasonLists(@Valid@RequestBody RequestWrapper<ReasonListDto> requestDto) {
                 
-		return new ResponseEntity<>(reasonService.createReasonList(requestDto),HttpStatus.OK);
+		return new ResponseEntity<>(reasonService.createReasonList(requestDto.getRequest()),HttpStatus.OK);
 	}
 
 	/**
@@ -63,6 +66,7 @@ public class PacketRejectionReasonController {
 	 * 
 	 * @return ReasonResponseDto
 	 */
+	@ResponseFilter
 	@GetMapping
 	public PacketRejectionReasonResponseDto getAllReasons() {
 
@@ -75,6 +79,7 @@ public class PacketRejectionReasonController {
 	 * @param langCode - language code
 	 * @return ReasonCategory- Reason category with reason list
 	 */
+	@ResponseFilter
 	@GetMapping(value = "/{reasoncategorycode}/{langcode}")
 	public PacketRejectionReasonResponseDto getReasonsBasedOnReasonCatgCodeAndlangCode(@PathVariable("reasoncategorycode") String reasonCategoryCode,
 			@PathVariable("langcode") String langCode) {

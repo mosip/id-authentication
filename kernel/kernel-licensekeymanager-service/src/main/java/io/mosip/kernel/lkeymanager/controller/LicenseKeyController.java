@@ -1,7 +1,6 @@
 package io.mosip.kernel.lkeymanager.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,6 +9,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.mosip.kernel.core.http.RequestWrapper;
+import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.core.licensekeymanager.spi.LicenseKeyManagerService;
 import io.mosip.kernel.lkeymanager.dto.LicenseKeyFetchResponseDto;
 import io.mosip.kernel.lkeymanager.dto.LicenseKeyGenerationDto;
@@ -27,7 +28,6 @@ import io.mosip.kernel.lkeymanager.dto.LicenseKeyMappingResponseDto;
  * @since 1.0.0
  *
  */
-@RefreshScope
 @RestController
 public class LicenseKeyController {
 	/**
@@ -40,14 +40,16 @@ public class LicenseKeyController {
 	 * This method will generate license key against a certain TSP ID.
 	 * 
 	 * @param licenseKeyGenerationDto
-	 *            the {@link LicenseKeyGenerationDto}.
+	 *            the LicenseKeyGenerationResponseDto request object wrapped in
+	 *            {@link RequestWrapper}.
 	 * @return the response entity.
 	 */
-	@PostMapping(value = "/v1.0/license/generate")
+	@ResponseFilter
+	@PostMapping(value = "/license/generate")
 	public ResponseEntity<LicenseKeyGenerationResponseDto> generateLicenseKey(
-			@RequestBody LicenseKeyGenerationDto licenseKeyGenerationDto) {
+			@RequestBody RequestWrapper<LicenseKeyGenerationDto> licenseKeyGenerationDto) {
 		LicenseKeyGenerationResponseDto responseDto = new LicenseKeyGenerationResponseDto();
-		responseDto.setLicenseKey(licenseKeyManagerService.generateLicenseKey(licenseKeyGenerationDto));
+		responseDto.setLicenseKey(licenseKeyManagerService.generateLicenseKey(licenseKeyGenerationDto.getRequest()));
 		return new ResponseEntity<>(responseDto, HttpStatus.OK);
 	}
 
@@ -59,11 +61,13 @@ public class LicenseKeyController {
 	 *            the {@link LicenseKeyMappingDto}.
 	 * @return the response entity.
 	 */
-	@PostMapping(value = "/v1.0/license/permission")
+	@ResponseFilter
+	@PostMapping(value = "/license/permission")
 	public ResponseEntity<LicenseKeyMappingResponseDto> mapLicenseKey(
-			@RequestBody LicenseKeyMappingDto licenseKeyMappingDto) {
+			@RequestBody RequestWrapper<LicenseKeyMappingDto> licenseKeyMappingDto) {
 		LicenseKeyMappingResponseDto licenseKeyMappingResponseDto = new LicenseKeyMappingResponseDto();
-		licenseKeyMappingResponseDto.setStatus(licenseKeyManagerService.mapLicenseKey(licenseKeyMappingDto));
+		licenseKeyMappingResponseDto
+				.setStatus(licenseKeyManagerService.mapLicenseKey(licenseKeyMappingDto.getRequest()));
 		return new ResponseEntity<>(licenseKeyMappingResponseDto, HttpStatus.OK);
 	}
 
@@ -74,7 +78,8 @@ public class LicenseKeyController {
 	 *            the license key of which the permissions need to be fetched.
 	 * @return the permissions fetched.
 	 */
-	@GetMapping(value = "/v1.0/license/permission")
+	@ResponseFilter
+	@GetMapping(value = "/license/permission")
 	public ResponseEntity<LicenseKeyFetchResponseDto> fetchLicenseKeyPermissions(@RequestParam("tspId") String tspId,
 			@RequestParam("licenseKey") String licenseKey) {
 		LicenseKeyFetchResponseDto licenseKeyFetchResponseDto = new LicenseKeyFetchResponseDto();

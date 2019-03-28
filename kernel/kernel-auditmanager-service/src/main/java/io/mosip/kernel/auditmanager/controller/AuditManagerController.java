@@ -3,7 +3,6 @@ package io.mosip.kernel.auditmanager.controller;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -15,15 +14,17 @@ import io.mosip.kernel.auditmanager.dto.AuditResponseDto;
 import io.mosip.kernel.auditmanager.entity.Audit;
 import io.mosip.kernel.auditmanager.request.AuditRequestDto;
 import io.mosip.kernel.auditmanager.service.AuditManagerService;
+import io.mosip.kernel.core.http.RequestWrapper;
+import io.mosip.kernel.core.http.ResponseFilter;
 
 /**
  * AuditManager controller with api to add new {@link Audit}
  * 
  * @author Dharmesh Khandelwal
+ * @author Bal Vikash Sharma
  * @since 1.0.0
  *
  */
-@RefreshScope
 @RestController
 @CrossOrigin
 public class AuditManagerController {
@@ -40,8 +41,9 @@ public class AuditManagerController {
 	 *            {@link AuditRequestDto} having required fields for auditing
 	 * @return The {@link AuditResponseDto} having the status of audit
 	 */
-	@PostMapping(value = "/v1.0/audits")
-	public ResponseEntity<AuditResponseDto> addAudit(@RequestBody @Valid AuditRequestDto auditRequestDto) {
-		return new ResponseEntity<>(service.addAudit(auditRequestDto), HttpStatus.OK);
+	@ResponseFilter
+	@PostMapping(value = "/audits")
+	public ResponseEntity<AuditResponseDto> addAudit(@RequestBody @Valid RequestWrapper<AuditRequestDto> requestDto) {
+		return new ResponseEntity<>(service.addAudit(requestDto.getRequest()), HttpStatus.OK);
 	}
 }

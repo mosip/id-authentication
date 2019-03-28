@@ -16,7 +16,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.kernel.masterdata.dto.DocumentTypeDto;
-import io.mosip.kernel.masterdata.dto.RequestDto;
+import io.mosip.kernel.core.http.RequestWrapper;
+import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.masterdata.dto.getresponse.ValidDocumentTypeResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
@@ -51,8 +52,9 @@ public class DocumentTypeController {
 	 * @return {@link ValidDocumentTypeResponseDto}}
 	 */
 
+	@ResponseFilter
 	@ApiOperation(value = "Fetch all the  valid doucment type avialbale for specific document category code ")
-	@GetMapping("/v1.0/documenttypes/{documentcategorycode}/{langcode}")
+	@GetMapping("/documenttypes/{documentcategorycode}/{langcode}")
 	public ValidDocumentTypeResponseDto getDoucmentTypesForDocumentCategoryAndLangCode(
 			@PathVariable("langcode") String langCode,
 			@PathVariable("documentcategorycode") String documentCategoryCode) {
@@ -70,11 +72,12 @@ public class DocumentTypeController {
 	 * 
 	 * @return {@link CodeAndLanguageCodeID }
 	 */
-	@PostMapping("/v1.0/documenttypes")
+	@ResponseFilter
+	@PostMapping("/documenttypes")
 	@ApiOperation(value = "Service to create document type", response = CodeAndLanguageCodeID.class)
 	public ResponseEntity<CodeAndLanguageCodeID> createDocumentType(
-			@Valid @RequestBody RequestDto<DocumentTypeDto> types) {
-		return new ResponseEntity<>(documentTypeService.createDocumentType(types), HttpStatus.OK);
+			@Valid @RequestBody RequestWrapper<DocumentTypeDto> types) {
+		return new ResponseEntity<>(documentTypeService.createDocumentType(types.getRequest()), HttpStatus.OK);
 	}
 
 	/**
@@ -84,11 +87,12 @@ public class DocumentTypeController {
 	 *            the DTO of document type.
 	 * @return {@link CodeAndLanguageCodeID}.
 	 */
-	@PutMapping("/v1.0/documenttypes")
+	@ResponseFilter
+	@PutMapping("/documenttypes")
 	@ApiOperation(value = "Service to update document type", response = CodeAndLanguageCodeID.class)
 	public ResponseEntity<CodeAndLanguageCodeID> updateDocumentType(
-			@ApiParam("Document Type DTO to update") @Valid @RequestBody RequestDto<DocumentTypeDto> types) {
-		return new ResponseEntity<>(documentTypeService.updateDocumentType(types), HttpStatus.OK);
+			@ApiParam("Document Type DTO to update") @Valid @RequestBody RequestWrapper<DocumentTypeDto> types) {
+		return new ResponseEntity<>(documentTypeService.updateDocumentType(types.getRequest()), HttpStatus.OK);
 	}
 
 	/**
@@ -98,7 +102,8 @@ public class DocumentTypeController {
 	 *            the document type code.
 	 * @return the code.
 	 */
-	@DeleteMapping("/v1.0/documenttypes/{code}")
+	@ResponseFilter
+	@DeleteMapping("/documenttypes/{code}")
 	@ApiOperation(value = "Service to delete document type", response = CodeAndLanguageCodeID.class)
 	public ResponseEntity<CodeResponseDto> deleteDocumentType(@PathVariable("code") String code) {
 		return new ResponseEntity<>(documentTypeService.deleteDocumentType(code), HttpStatus.OK);

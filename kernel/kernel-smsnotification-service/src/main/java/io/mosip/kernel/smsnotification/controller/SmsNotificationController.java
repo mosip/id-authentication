@@ -3,7 +3,6 @@ package io.mosip.kernel.smsnotification.controller;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -11,6 +10,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.mosip.kernel.core.http.RequestWrapper;
+import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.core.notification.spi.SmsNotification;
 import io.mosip.kernel.smsnotification.dto.SmsRequestDto;
 import io.mosip.kernel.smsnotification.dto.SmsResponseDto;
@@ -25,7 +26,6 @@ import io.mosip.kernel.smsnotification.dto.SmsResponseDto;
 
 @CrossOrigin
 @RestController
-@RefreshScope
 public class SmsNotificationController {
 
 	/**
@@ -41,13 +41,11 @@ public class SmsNotificationController {
 	 *            the request dto for sms-notification.
 	 * @return the status and message as dto response.
 	 */
-	@PostMapping(value = "/v1.0/sms/send")
-	public ResponseEntity<SmsResponseDto> sendSmsNotification(@Valid @RequestBody SmsRequestDto smsRequestDto) {
-
-		return new ResponseEntity<>(
-				smsNotifierService.sendSmsNotification(smsRequestDto.getNumber(), smsRequestDto.getMessage()),
-				HttpStatus.OK);
-
+	@ResponseFilter
+	@PostMapping(value = "/sms/send")
+	public ResponseEntity<SmsResponseDto> sendSmsNotification(
+			@Valid @RequestBody RequestWrapper<SmsRequestDto> smsRequestDto) {
+		return new ResponseEntity<>(smsNotifierService.sendSmsNotification(smsRequestDto.getRequest().getNumber(),
+				smsRequestDto.getRequest().getMessage()), HttpStatus.OK);
 	}
-
 }

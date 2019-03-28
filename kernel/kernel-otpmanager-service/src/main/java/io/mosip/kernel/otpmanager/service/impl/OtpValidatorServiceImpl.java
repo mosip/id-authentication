@@ -8,6 +8,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -31,6 +32,7 @@ import io.mosip.kernel.otpmanager.util.OtpManagerUtils;
  * @since 1.0.0
  *
  */
+@RefreshScope
 @Service
 public class OtpValidatorServiceImpl implements OtpValidator<ResponseEntity<OtpValidatorResponseDto>> {
 	/**

@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RestController;
 import io.mosip.kernel.applicanttype.dto.request.RequestDTO;
 import io.mosip.kernel.applicanttype.dto.response.ResponseDTO;
 import io.mosip.kernel.applicanttype.service.ApplicantTypeService;
+import io.mosip.kernel.core.http.RequestWrapper;
+import io.mosip.kernel.core.http.ResponseFilter;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
@@ -29,9 +31,10 @@ public class ApplicantTypeController {
 	@Autowired
 	private ApplicantTypeService applicantTypeService;
 
+	@ResponseFilter
 	@PostMapping(value = "/getApplicantType")
 	@ApiOperation(value = "Get applicant type for provided queries", notes = "Get applicant type for matching queries", response = String.class)
-	public ResponseEntity<ResponseDTO> getApplicantType(@Valid @RequestBody RequestDTO dto) {
-		return new ResponseEntity<>(applicantTypeService.getApplicantType(dto), HttpStatus.OK);
+	public ResponseEntity<ResponseDTO> getApplicantType(@Valid @RequestBody RequestWrapper<RequestDTO> dto) {
+		return new ResponseEntity<>(applicantTypeService.getApplicantType(dto.getRequest()), HttpStatus.OK);
 	}
 }

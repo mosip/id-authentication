@@ -15,7 +15,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.kernel.masterdata.dto.LanguageDto;
-import io.mosip.kernel.masterdata.dto.RequestDto;
+import io.mosip.kernel.core.http.RequestWrapper;
+import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.masterdata.dto.getresponse.LanguageResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
 import io.mosip.kernel.masterdata.service.LanguageService;
@@ -31,7 +32,7 @@ import io.swagger.annotations.ApiResponses;
  * @since 1.0.0
  */
 @RestController
-@RequestMapping("/v1.0/languages")
+@RequestMapping("/languages")
 @Api(tags = { "Language" })
 public class LanguageController {
 
@@ -41,6 +42,7 @@ public class LanguageController {
 	@Autowired
 	private LanguageService languageService;
 
+	@ResponseFilter
 	@GetMapping
 	@ApiOperation(value = "Retrieve all Languages", notes = "Retrieve all Languages", response = LanguageResponseDto.class)
 	@ApiResponses({
@@ -51,16 +53,18 @@ public class LanguageController {
 		return languageService.getAllLaguages();
 	}
 
+	@ResponseFilter
 	@PostMapping
 	@ApiOperation(value = "Service to save Language", notes = "Saves Language and return Language code", response = CodeResponseDto.class)
 	@ApiResponses({
 			@ApiResponse(code = 201, message = "When Language successfully created", response = CodeResponseDto.class),
 			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
 			@ApiResponse(code = 500, message = "While creating Language any error occured") })
-	public ResponseEntity<CodeResponseDto> saveLanguage(@Valid @RequestBody RequestDto<LanguageDto> language) {
-		return new ResponseEntity<>(languageService.saveLanguage(language), HttpStatus.OK);
+	public ResponseEntity<CodeResponseDto> saveLanguage(@Valid @RequestBody RequestWrapper<LanguageDto> language) {
+		return new ResponseEntity<>(languageService.saveLanguage(language.getRequest()), HttpStatus.OK);
 	}
 
+	@ResponseFilter
 	@PutMapping
 	@ApiOperation(value = "Service to update Language", notes = "Update Language and return Language code", response = CodeResponseDto.class)
 	@ApiResponses({
@@ -68,10 +72,11 @@ public class LanguageController {
 			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
 			@ApiResponse(code = 404, message = "When No Language found"),
 			@ApiResponse(code = 500, message = "While updating Language any error occured") })
-	public ResponseEntity<CodeResponseDto> updateLanguage(@Valid @RequestBody RequestDto<LanguageDto> language) {
-		return new ResponseEntity<>(languageService.updateLanguage(language), HttpStatus.OK);
+	public ResponseEntity<CodeResponseDto> updateLanguage(@Valid @RequestBody RequestWrapper<LanguageDto> language) {
+		return new ResponseEntity<>(languageService.updateLanguage(language.getRequest()), HttpStatus.OK);
 	}
 
+	@ResponseFilter
 	@DeleteMapping("/{code}")
 	@ApiOperation(value = "Service to delete Language", notes = "Delete Language and return Language code", response = CodeResponseDto.class)
 	@ApiResponses({

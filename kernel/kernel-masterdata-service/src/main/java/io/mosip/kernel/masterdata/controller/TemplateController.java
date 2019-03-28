@@ -14,7 +14,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.mosip.kernel.masterdata.dto.RequestDto;
+import io.mosip.kernel.core.http.RequestWrapper;
+import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.masterdata.dto.TemplateDto;
 import io.mosip.kernel.masterdata.dto.getresponse.TemplateResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
@@ -35,7 +36,7 @@ import io.swagger.annotations.ApiResponses;
  */
 @RestController
 @Api(tags = { "Template" })
-@RequestMapping("/v1.0/templates")
+@RequestMapping("/templates")
 public class TemplateController {
 
 	@Autowired
@@ -46,6 +47,7 @@ public class TemplateController {
 	 * 
 	 * @return All {@link TemplateDto}
 	 */
+	@ResponseFilter
 	@GetMapping
 	public TemplateResponseDto getAllTemplate() {
 		return templateService.getAllTemplate();
@@ -58,6 +60,7 @@ public class TemplateController {
 	 *            the language code
 	 * @return All {@link TemplateDto}
 	 */
+	@ResponseFilter
 	@GetMapping("/{langcode}")
 	public TemplateResponseDto getAllTemplateBylangCode(@PathVariable("langcode") String langCode) {
 		return templateService.getAllTemplateByLanguageCode(langCode);
@@ -73,6 +76,7 @@ public class TemplateController {
 	 *            the template type code
 	 * @return All {@link TemplateDto}
 	 */
+	@ResponseFilter
 	@GetMapping("/{langcode}/{templatetypecode}")
 	public TemplateResponseDto getAllTemplateBylangCodeAndTemplateTypeCode(@PathVariable("langcode") String langCode,
 			@PathVariable("templatetypecode") String templateTypeCode) {
@@ -86,12 +90,13 @@ public class TemplateController {
 	 *            the template detail
 	 * @return {@link IdResponseDto}
 	 */
+	@ResponseFilter
 	@PostMapping
 	@ApiOperation(value = "Service to create template ", notes = "create Template  and return  code", response = IdAndLanguageCodeID.class)
 	@ApiResponses({ @ApiResponse(code = 201, message = " successfully created", response = IdAndLanguageCodeID.class),
 			@ApiResponse(code = 400, message = " Request body passed  is null or invalid"),
 			@ApiResponse(code = 500, message = " creating any error occured") })
-	public ResponseEntity<IdAndLanguageCodeID> createTemplate(@Valid @RequestBody RequestDto<TemplateDto> template) {
+	public ResponseEntity<IdAndLanguageCodeID> createTemplate(@Valid @RequestBody RequestWrapper<TemplateDto> template) {
 		return new ResponseEntity<>(templateService.createTemplate(template.getRequest()), HttpStatus.OK);
 	}
 
@@ -102,12 +107,13 @@ public class TemplateController {
 	 *            the template detail
 	 * @return {@link IdResponseDto}
 	 */
+	@ResponseFilter
 	@PutMapping
 	@ApiOperation(value = "Service to update template ", notes = "update Template  and return  code ", response = IdAndLanguageCodeID.class)
 	@ApiResponses({ @ApiResponse(code = 200, message = " successfully updated", response = IdAndLanguageCodeID.class),
 			@ApiResponse(code = 400, message = " Request body passed  is null or invalid"),
 			@ApiResponse(code = 500, message = " creating any error occured") })
-	public ResponseEntity<IdAndLanguageCodeID> updateTemplate(@Valid @RequestBody RequestDto<TemplateDto> template) {
+	public ResponseEntity<IdAndLanguageCodeID> updateTemplate(@Valid @RequestBody RequestWrapper<TemplateDto> template) {
 		return new ResponseEntity<>(templateService.updateTemplates(template.getRequest()), HttpStatus.OK);
 	}
 
@@ -118,7 +124,7 @@ public class TemplateController {
 	 *            the template id
 	 * @return {@link IdResponseDto}
 	 */
-
+	@ResponseFilter
 	@DeleteMapping("/{id}")
 	@ApiOperation(value = "Service to delete template", notes = "Delete template and return template id", response = IdResponseDto.class)
 	@ApiResponses({

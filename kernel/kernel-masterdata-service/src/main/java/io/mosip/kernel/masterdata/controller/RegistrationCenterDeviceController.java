@@ -13,7 +13,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.kernel.masterdata.dto.RegistrationCenterDeviceDto;
-import io.mosip.kernel.masterdata.dto.RequestDto;
+import io.mosip.kernel.core.http.RequestWrapper;
+import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.masterdata.dto.ResponseRegistrationCenterDeviceDto;
 import io.mosip.kernel.masterdata.entity.id.RegistrationCenterDeviceID;
 import io.mosip.kernel.masterdata.service.RegistrationCenterDeviceService;
@@ -30,13 +31,14 @@ import io.swagger.annotations.ApiResponses;
  * @since 1.0.0
  */
 @RestController
-@RequestMapping("/v1.0/registrationcenterdevice")
+@RequestMapping("/registrationcenterdevice")
 @Api(value = "Operation related to mapping of registration center and devices",tags = { "RegistrationCenterDevice" })
 public class RegistrationCenterDeviceController {
 
 	@Autowired
 	private RegistrationCenterDeviceService registrationCenterDeviceService;
 
+	@ResponseFilter
 	@PostMapping
 	@ApiOperation(value = "Map provided registration center and device", notes = "Map provided registration center id and device id", response = ResponseRegistrationCenterDeviceDto.class)
 	@ApiResponses({
@@ -44,8 +46,8 @@ public class RegistrationCenterDeviceController {
 			@ApiResponse(code = 400, message = "When Request body passed  is invalid"),
 			@ApiResponse(code = 500, message = "While mapping registration center and device") })
 	public ResponseEntity<ResponseRegistrationCenterDeviceDto> createRegistrationCenterAndDevice(
-			@Valid @RequestBody RequestDto<RegistrationCenterDeviceDto> requestDto) {
-		return new ResponseEntity<>(registrationCenterDeviceService.createRegistrationCenterAndDevice(requestDto),
+			@Valid @RequestBody RequestWrapper<RegistrationCenterDeviceDto> requestDto) {
+		return new ResponseEntity<>(registrationCenterDeviceService.createRegistrationCenterAndDevice(requestDto.getRequest()),
 				HttpStatus.OK);
 	}
 	
@@ -58,6 +60,7 @@ public class RegistrationCenterDeviceController {
 	 *            DeviceId id to be deleted
 	 * @return {@link RegistrationCenterDeviceID}
 	 */
+	@ResponseFilter
 	@ApiOperation(value = "Delete the mapping of registration center and device", response = RegistrationCenterDeviceID.class)
 	@DeleteMapping("/{regCenterId}/{deviceId}")
 	public ResponseEntity<RegistrationCenterDeviceID> deleteRegistrationCenterDeviceMapping(
