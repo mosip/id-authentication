@@ -9,6 +9,7 @@ import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.bridj.cpp.std.list;
 import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.core.exception.ExceptionUtils;
@@ -22,6 +23,7 @@ import io.mosip.registration.constants.RegistrationUIConstants;
 import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.dto.mastersync.BlacklistedWordsDto;
+import io.mosip.registration.entity.BlacklistedWords;
 import io.mosip.registration.service.MasterSyncService;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
@@ -42,7 +44,6 @@ import javafx.scene.layout.VBox;
  * @since 1.0.0
  *
  */
-
 @Component
 public class Validations extends BaseController {
 
@@ -62,6 +63,9 @@ public class Validations extends BaseController {
 	private List<String> noAlert;
 	private boolean isLostUIN = false;
 
+	/**
+	 * Instantiates a new validations.
+	 */
 	public Validations() {
 		try {
 			noAlert = new ArrayList<>();
@@ -83,6 +87,10 @@ public class Validations extends BaseController {
 		}
 	}
 
+	/**
+	 * Sets the resource bundles for Validations, Messages in Application and
+	 * Secondary Languages and Labels in Application and Secondary Languages
+	 */
 	public void setResourceBundle() {
 		validationBundle = ApplicationContext.applicationLanguageValidationBundle();
 		applicationMessageBundle = ApplicationContext.applicationMessagesBundle();
@@ -92,7 +100,17 @@ public class Validations extends BaseController {
 	}
 
 	/**
-	 * Iterate the fields to and call the validate method on them
+	 * Iterate the fields to invoke the validate.
+	 *
+	 * @param pane
+	 *            the {@link Pane} containing the fields
+	 * @param notTovalidate
+	 *            the {@link List} of UI fields not be validated
+	 * @param isValid
+	 *            the flag indicating whether validation is success or fail
+	 * @param isConsolidated
+	 *            the flag to indicate for displaying consolidated message
+	 * @return true, if successful
 	 */
 	public boolean validateTheFields(Pane pane, List<String> notTovalidate, boolean isValid, String isConsolidated) {
 		for (Node node : pane.getChildren()) {
@@ -113,20 +131,44 @@ public class Validations extends BaseController {
 	}
 
 	/**
-	 * To mark as lost UIN for demographic fields validation
+	 * To mark as lost UIN for demographic fields validation.
+	 *
+	 * @param isLostUIN
+	 *            the flag indicating whether work flow is for Lost UIN
 	 */
 	protected void updateAsLostUIN(boolean isLostUIN) {
 		this.isLostUIN = isLostUIN;
 	}
 
 	/**
-	 * To decide whether this node should be validated or not
+	 * To decide whether this node should be validated or not.
+	 *
+	 * @param notTovalidate
+	 *            the {@link list} of fields not be validated
+	 * @param node
+	 *            the {@link Node} to be checked
+	 * @return true, if successful
 	 */
 	private boolean nodeToValidate(List<String> notTovalidate, Node node) {
 		return !(node.getId() == null || notTovalidate.contains(node.getId()) || node instanceof ImageView
 				|| node instanceof Button || node instanceof Label || node instanceof Hyperlink);
 	}
 
+	/**
+	 * Validate the UI fields. Fetch the {@link BlacklistedWords} for application
+	 * specific and secondary specific languages.
+	 *
+	 * @param pane
+	 *            the {@link Pane} containing the UI Fields to be validated
+	 * @param notTovalidate
+	 *            the {@link List} of fields not be validated
+	 * @param isValid
+	 *            the flag to indicating the status of validation
+	 * @param masterSync
+	 *            the instance of {@link MasterSyncService} for fetching
+	 *            {@link BlacklistedWords}
+	 * @return true, if successful
+	 */
 	public boolean validate(Pane pane, List<String> notTovalidate, boolean isValid, MasterSyncService masterSync) {
 		this.applicationLanguageblackListedWords = masterSync
 				.getAllBlackListedWords(ApplicationContext.applicationLanguage()).stream().map(BlacklistedWordsDto :: getWord)
@@ -138,7 +180,17 @@ public class Validations extends BaseController {
 
 	/**
 	 * Pass the node to check for the validation, specific validation method will be
-	 * called for each field
+	 * called for each field.
+	 *
+	 * @param parentPane
+	 *            the {@link Pane} containing the UI Fields to be validated
+	 * @param node
+	 *            the {@link Node} to be validated
+	 * @param id
+	 *            the id of the field to be validated
+	 * @param isConsolidated
+	 *            the flag to indicate for displaying consolidated message
+	 * @return true, if successful
 	 */
 	public boolean validateTheNode(Pane parentPane, Node node, String id, String isConsolidated) {
 		if (node instanceof ComboBox<?>) {
@@ -152,7 +204,13 @@ public class Validations extends BaseController {
 	}
 
 	/**
-	 * Validate for the document upload
+	 * Validate for the document upload.
+	 *
+	 * @param node the node
+	 * @param id the id
+	 * @param isConsolidated
+	 *            the flag to indicate for displaying consolidated message
+	 * @return true, if successful
 	 */
 	private boolean validateDocument(VBox node, String id, String isConsolidated) {
 		boolean validated = false;
@@ -188,7 +246,17 @@ public class Validations extends BaseController {
 	}
 
 	/**
-	 * Validate for the TextField
+	 * Validate for the TextField.
+	 *
+	 * @param parentPane
+	 *            the {@link Pane} containing the fields
+	 * @param node
+	 *            the {@link Node} to be validated
+	 * @param id
+	 *            the id of the UI field
+	 * @param isConsolidated
+	 *            the flag to indicate for displaying consolidated message
+	 * @return true, if successful
 	 */
 	public boolean validateTextField(Pane parentPane, TextField node, String id, String isConsolidated) {
 		if (node.getId().contains(RegistrationConstants.LOCAL_LANGUAGE)) {
@@ -351,23 +419,35 @@ public class Validations extends BaseController {
 	}
 
 	/**
-	 * Check for child
+	 * Check for child.
+	 *
+	 * @return true, if is child
 	 */
 	public boolean isChild() {
 		return isChild;
 	}
 
 	/**
-	 * Set for child
+	 * Set for child.
+	 *
+	 * @param isChild the new child
 	 */
 	public void setChild(boolean isChild) {
 		this.isChild = isChild;
 	}
 
+	/**
+	 * Gets the validation message.
+	 *
+	 * @return the validation message
+	 */
 	public StringBuilder getValidationMessage() {
 		return validationMessage;
 	}
 
+	/**
+	 * Sets the validation message.
+	 */
 	public void setValidationMessage() {
 		validationMessage.delete(0, validationMessage.length());
 	}
