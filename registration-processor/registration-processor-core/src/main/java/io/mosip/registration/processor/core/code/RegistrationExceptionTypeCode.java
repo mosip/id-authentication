@@ -32,9 +32,6 @@ public enum RegistrationExceptionTypeCode {
 	/** The unsupported encoding exception. */
 	UNSUPPORTED_ENCODING_EXCEPTION,
 
-	/** The io exception. */
-	IO_EXCEPTION,
-
 	/** The parse exception. */
 	PARSE_EXCEPTION,
 
@@ -124,7 +121,7 @@ public enum RegistrationExceptionTypeCode {
 
 	/** The no such algorithm exception. */
 	NO_SUCH_ALGORITHM_EXCEPTION,
-	
+
 	/** The run time exception. */
 	RUN_TIME_EXCEPTION,
 
@@ -160,7 +157,7 @@ public enum RegistrationExceptionTypeCode {
 
 	/** The ioexception. */
 	IOEXCEPTION,
-	
+
 	FILE_IO_EXCEPTION
 
 }
