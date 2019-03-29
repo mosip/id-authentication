@@ -10,7 +10,6 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +23,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import io.mosip.kernel.otpmanager.entity.OtpEntity;
 import io.mosip.kernel.otpmanager.repository.OtpRepository;
 
-@Ignore
 @RunWith(SpringRunner.class)
 @AutoConfigureMockMvc
 @SpringBootTest

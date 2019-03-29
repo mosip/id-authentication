@@ -63,9 +63,9 @@ public class ResponseBodyAdviceConfig implements ResponseBodyAdvice<ResponseWrap
 	 * org.springframework.http.server.ServerHttpResponse)
 	 */
 	@Override
-	public ResponseWrapper<?> beforeBodyWrite(ResponseWrapper<?> body, MethodParameter returnType, MediaType selectedContentType,
-			Class<? extends HttpMessageConverter<?>> selectedConverterType, ServerHttpRequest request,
-			ServerHttpResponse response) {
+	public ResponseWrapper<?> beforeBodyWrite(ResponseWrapper<?> body, MethodParameter returnType,
+			MediaType selectedContentType, Class<? extends HttpMessageConverter<?>> selectedConverterType,
+			ServerHttpRequest request, ServerHttpResponse response) {
 		RequestWrapper<?> requestWrapper = null;
 
 		String requestBody = null;
