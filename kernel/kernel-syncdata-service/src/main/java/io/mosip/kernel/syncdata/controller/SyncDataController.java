@@ -140,7 +140,6 @@ public class SyncDataController {
 	 *             - this method will throw exeution exception
 	 */
 	@ResponseFilter
-	@ApiOperation(value = "Api to sync the masterdata", response = MasterDataResponseDto.class)
 	@GetMapping("/masterdata")
 	public ResponseWrapper<MasterDataResponseDto> syncMasterData(
 			@RequestParam(value = "macaddress", required = false) String macId,
@@ -178,7 +177,6 @@ public class SyncDataController {
 	 *             - this method will throw exeution exception
 	 */
 	@ResponseFilter
-	@ApiOperation(value = "Api to sync the masterdata", response = MasterDataResponseDto.class)
 	@GetMapping("/masterdata/{regcenterId}")
 	public ResponseWrapper<MasterDataResponseDto> syncMasterDataWithRegCenterId(
 			@PathVariable("regcenterId") String regCenterId,
@@ -246,7 +244,6 @@ public class SyncDataController {
 	 * @return {@link PublicKeyResponse} instance
 	 */
 	@ResponseFilter
-	@ApiOperation(value = "Get the public key of a particular application", response = PublicKeyResponse.class)
 	@GetMapping(value = "/publickey/{applicationId}")
 	public ResponseWrapper<PublicKeyResponse<String>> getPublicKey(
 			@ApiParam("Id of application") @PathVariable("applicationId") String applicationId,
