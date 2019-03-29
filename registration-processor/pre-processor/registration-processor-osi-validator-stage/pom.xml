@@ -6,7 +6,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>io.mosip.registrationprocessor</groupId>
-		<artifactId>stages</artifactId>
+		<artifactId>pre-processor</artifactId>
 		<version>0.10.1</version>
 	</parent>
 	<artifactId>registration-processor-osi-validator-stage</artifactId>

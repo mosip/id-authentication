@@ -4,7 +4,7 @@
 
   	<parent>
 		<groupId>io.mosip.registrationprocessor</groupId>
-		<artifactId>stages</artifactId>
+		<artifactId>pre-processor</artifactId>
 		<version>0.10.1</version>
 	</parent>
 

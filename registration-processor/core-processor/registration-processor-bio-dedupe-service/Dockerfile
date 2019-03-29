@@ -24,6 +24,6 @@ ENV spring_config_label_env=${spring_config_label}
 # change volume to whichever storage directory you want to use for this container.
 VOLUME /home/logs
 
-COPY ./target/packet-bio-dedupe-service-*.jar packet-bio-dedupe-service.jar
+COPY ./target/registration-processor-bio-dedupe-service-*.jar registration-processor-bio-dedupe-service.jar
 
-CMD ["java","-Dspring.cloud.config.label=${spring_config_label_env}","-Dspring.profiles.active=${active_profile_env}","-Dspring.cloud.config.uri=${spring_config_url_env}","-jar","packet-bio-dedupe-service.jar"]
+CMD ["java","-Dspring.cloud.config.label=${spring_config_label_env}","-Dspring.profiles.active=${active_profile_env}","-Dspring.cloud.config.uri=${spring_config_url_env}","-jar","registration-processor-bio-dedupe-service.jar"]
