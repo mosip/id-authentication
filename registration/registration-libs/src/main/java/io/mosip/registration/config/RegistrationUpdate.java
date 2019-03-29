@@ -24,6 +24,12 @@ import org.xml.sax.SAXException;
 
 import io.mosip.kernel.core.util.FileUtils;
 
+/**
+ * Update the Application
+ * 
+ * @author YASWANTH S
+ *
+ */
 public class RegistrationUpdate {
 
 	private static String backUpPath = "D://mosip/AutoBackUp";
@@ -59,6 +65,8 @@ public class RegistrationUpdate {
 		if (latestVersion != null) {
 			return latestVersion;
 		} else {
+			
+			//Get latest version using meta-inf.xml
 			DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder db = documentBuilderFactory.newDocumentBuilder();
 			org.w3c.dom.Document metaInfXmlDocument = (org.w3c.dom.Document) db
@@ -82,6 +90,7 @@ public class RegistrationUpdate {
 		if (currentVersion != null) {
 			return currentVersion;
 		} else {
+			//Get Local manifest file
 			Manifest localManifest = getLocalManifest();
 			if (localManifest != null) {
 				currentVersion = (String) localManifest.getMainAttributes().get(Attributes.Name.MANIFEST_VERSION);
@@ -181,6 +190,7 @@ public class RegistrationUpdate {
 				deleteFile = new File(libsFolder + jarName);
 			}
 
+			//Delete Jars
 			if (deleteFile.exists()) {
 				try {
 					FileUtils.forceDelete(deleteFile);
