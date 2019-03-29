@@ -63,6 +63,8 @@ import io.mosip.kernel.idrepo.security.IdRepoSecurityManager;
 @Service
 public class IdRepoProxyServiceImpl implements IdRepoService<IdRequestDTO, IdResponseDTO> {
 
+	private static final String METADATA = "metadata";
+
 	private static final String GET_FILES = "getFiles";
 
 	/** The Constant UPDATE_IDENTITY. */
@@ -399,7 +401,7 @@ public class IdRepoProxyServiceImpl implements IdRepoService<IdRequestDTO, IdRes
 		try {
 			ShardDataSourceResolver.setCurrentShard(shardResolver.getShard(uin));
 			if (uinRepo.existsByUin(uin)) {
-				if (uinRepo.existsByRegId(request.getRegistrationId())) {
+				if (uinRepo.existsByRegId(request.getRequest().getRegistrationId())) {
 					mosipLogger.error(ID_REPO_SERVICE, ID_REPO_SERVICE_IMPL, GET_FILES,
 							IdRepoErrorConstants.RECORD_EXISTS.getErrorMessage());
 					throw new IdRepoAppException(IdRepoErrorConstants.RECORD_EXISTS);
@@ -442,22 +444,23 @@ public class IdRepoProxyServiceImpl implements IdRepoService<IdRequestDTO, IdRes
 
 		idResponse.setVersion(env.getProperty(IdRepoConstants.APPLICATION_VERSION.getValue()));
 
-		idResponse.setTimestamp(
+		idResponse.setResponsetime(
 				DateUtils.getUTCCurrentDateTimeString(env.getProperty(IdRepoConstants.DATETIME_PATTERN.getValue())));
 
-		idResponse.setStatus(uin.getStatusCode());
-
 		ResponseDTO response = new ResponseDTO();
+		
+		response.setStatus(uin.getStatusCode());
 
 		if (id.equals(this.id.get(CREATE)) || id.equals(this.id.get(UPDATE))) {
 			response.setEntity(
 					linkTo(methodOn(IdRepoController.class).retrieveIdentity(uin.getUin().trim(), null)).toUri()
 							.toString());
 			mapper.setFilterProvider(new SimpleFilterProvider().addFilter(RESPONSE_FILTER,
-					SimpleBeanPropertyFilter.serializeAllExcept(IDENTITY, ERRORS, DOCUMENTS)));
+					SimpleBeanPropertyFilter.serializeAllExcept(IDENTITY, ERRORS, DOCUMENTS, METADATA)));
 		} else {
 			ignoredProperties.add(ENTITY);
 			ignoredProperties.add(ERRORS);
+			ignoredProperties.add(METADATA);
 
 			if (Objects.isNull(documents)) {
 				ignoredProperties.add(DOCUMENTS);

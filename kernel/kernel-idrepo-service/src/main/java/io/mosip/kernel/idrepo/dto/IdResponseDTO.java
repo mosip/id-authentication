@@ -17,13 +17,10 @@ import lombok.EqualsAndHashCode;
 @JsonFilter("responseFilter")
 public class IdResponseDTO extends BaseIdRequestResponseDTO {
 	
-	/** The err. */
-	private List<ErrorDTO> errors;
+	private String responsetime;
 	
-	/** The status. */
-	private String status;
-	
-	/** The response. */
 	@JsonFilter("responseFilter")
 	private ResponseDTO response;
+	
+	private List<ErrorDTO> errors;
 }

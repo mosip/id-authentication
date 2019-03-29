@@ -146,7 +146,7 @@ public class IdRequestValidatorTest {
 			assertEquals(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(), error.getCode());
 			assertEquals(String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), "status"),
 					error.getDefaultMessage());
-			assertEquals("status", ((FieldError) error).getField());
+			assertEquals("request", ((FieldError) error).getField());
 		});
 	}
 
@@ -168,7 +168,7 @@ public class IdRequestValidatorTest {
 			assertEquals(
 					String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), "registrationId"),
 					error.getDefaultMessage());
-			assertEquals("registrationId", ((FieldError) error).getField());
+			assertEquals("request", ((FieldError) error).getField());
 		});
 	}
 
@@ -181,7 +181,7 @@ public class IdRequestValidatorTest {
 			assertEquals(
 					String.format(IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(), "registrationId"),
 					error.getDefaultMessage());
-			assertEquals("registrationId", ((FieldError) error).getField());
+			assertEquals("request", ((FieldError) error).getField());
 		});
 	}
 
@@ -388,9 +388,9 @@ public class IdRequestValidatorTest {
 		assertTrue(errors.hasErrors());
 		errors.getAllErrors().forEach(error -> {
 			assertEquals(IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(), error.getCode());
-			assertEquals(String.format(IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(), "timestamp"),
+			assertEquals(String.format(IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(), "requesttime"),
 					error.getDefaultMessage());
-			assertEquals("timestamp", ((FieldError) error).getField());
+			assertEquals("requesttime", ((FieldError) error).getField());
 		});
 	}
 
@@ -400,9 +400,9 @@ public class IdRequestValidatorTest {
 		assertTrue(errors.hasErrors());
 		errors.getAllErrors().forEach(error -> {
 			assertEquals(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(), error.getCode());
-			assertEquals(String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), "timestamp"),
+			assertEquals(String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), "requesttime"),
 					error.getDefaultMessage());
-			assertEquals("timestamp", ((FieldError) error).getField());
+			assertEquals("requesttime", ((FieldError) error).getField());
 		});
 	}
 
@@ -412,9 +412,9 @@ public class IdRequestValidatorTest {
 		assertTrue(errors.hasErrors());
 		errors.getAllErrors().forEach(error -> {
 			assertEquals(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(), error.getCode());
-			assertEquals(String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), "timestamp"),
+			assertEquals(String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), "requesttime"),
 					error.getDefaultMessage());
-			assertEquals("timestamp", ((FieldError) error).getField());
+			assertEquals("requesttime", ((FieldError) error).getField());
 		});
 	}
 
@@ -427,16 +427,16 @@ public class IdRequestValidatorTest {
 		Mockito.when(uinValidatorImpl.validateId(Mockito.anyString())).thenReturn(true);
 		IdRequestDTO request = new IdRequestDTO();
 		request.setId("mosip.id.create");
-		request.setRegistrationId("1234");
-		request.setStatus("ACTIVATED");
-		request.setTimestamp("2018-12-15T15:28:43.824Z");
 		request.setVersion("1.0");
+		request.setRequesttime("2018-12-15T15:28:43.824Z");
 		Object obj = mapper.readValue(
 				"{\"identity\":{\"firstName\":[{\"language\":\"AR\",\"value\":\"Manoj\",\"label\":\"string\"}]}}"
 						.getBytes(),
 				Object.class);
 
 		RequestDTO req = new RequestDTO();
+		req.setRegistrationId("1234");
+		req.setStatus("ACTIVATED");
 		req.setIdentity(obj);
 		request.setRequest(req);
 		validator.validate(request, errors);
@@ -452,16 +452,16 @@ public class IdRequestValidatorTest {
 		Mockito.when(uinValidatorImpl.validateId(Mockito.anyString())).thenReturn(true);
 		IdRequestDTO request = new IdRequestDTO();
 		request.setId("mosip.id.update");
-		request.setRegistrationId("1234");
-		request.setStatus("ACTIVATED");
 		request.setVersion("1.0");
-		request.setTimestamp("2018-12-15T15:28:43.824Z");
+		request.setRequesttime("2018-12-15T15:28:43.824Z");
 		Object obj = mapper.readValue(
 				"{\"identity\":{\"firstName\":[{\"language\":\"AR\",\"value\":\"Manoj\",\"label\":\"string\"}]}}"
 						.getBytes(),
 				Object.class);
 
 		RequestDTO req = new RequestDTO();
+		req.setRegistrationId("1234");
+		req.setStatus("ACTIVATED");
 		req.setIdentity(obj);
 		request.setRequest(req);
 		validator.validate(request, errors);

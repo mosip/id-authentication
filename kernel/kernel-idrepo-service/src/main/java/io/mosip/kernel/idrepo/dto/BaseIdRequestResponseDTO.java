@@ -16,6 +16,5 @@ public class BaseIdRequestResponseDTO {
 	/** The ver. */
 	private String version;
 	
-	/** The timestamp. */
-	private String timestamp;
+	private Object metadata;
 }
