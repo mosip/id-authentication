@@ -48,6 +48,82 @@ public class MasterDataResponseDto {
 	private List<ApplicantValidDocumentDto> applicantValidDocuments;
 	private List<IndividualTypeDto> individualTypes;
 	private List<ValidDocumentDto> validDocumentMapping;
+	private List<AppAuthenticationMethodDto> appAuthenticationMethods;
+	private List<AppDetailDto> appDetails;
+	private List<AppRolePriorityDto> appRolePriorities;
+	private List<ScreenAuthorizationDto> screenAuthorizations;
+	private List<ProcessListDto> processList;
+	
+
+	/**
+	 * @return the appAuthenticationMethods
+	 */
+	public List<AppAuthenticationMethodDto> getAppAuthenticationMethods() {
+		return appAuthenticationMethods;
+	}
+
+	/**
+	 * @param appAuthenticationMethods the appAuthenticationMethods to set
+	 */
+	public void setAppAuthenticationMethods(List<AppAuthenticationMethodDto> appAuthenticationMethods) {
+		this.appAuthenticationMethods = appAuthenticationMethods;
+	}
+
+	/**
+	 * @return the appDetails
+	 */
+	public List<AppDetailDto> getAppDetails() {
+		return appDetails;
+	}
+
+	/**
+	 * @param appDetails the appDetails to set
+	 */
+	public void setAppDetails(List<AppDetailDto> appDetails) {
+		this.appDetails = appDetails;
+	}
+
+	/**
+	 * @return the appRolePriorities
+	 */
+	public List<AppRolePriorityDto> getAppRolePriorities() {
+		return appRolePriorities;
+	}
+
+	/**
+	 * @param appRolePriorities the appRolePriorities to set
+	 */
+	public void setAppRolePriorities(List<AppRolePriorityDto> appRolePriorities) {
+		this.appRolePriorities = appRolePriorities;
+	}
+
+	/**
+	 * @return the screenAuthorizations
+	 */
+	public List<ScreenAuthorizationDto> getScreenAuthorizations() {
+		return screenAuthorizations;
+	}
+
+	/**
+	 * @param screenAuthorizations the screenAuthorizations to set
+	 */
+	public void setScreenAuthorizations(List<ScreenAuthorizationDto> screenAuthorizations) {
+		this.screenAuthorizations = screenAuthorizations;
+	}
+
+	/**
+	 * @return the processList
+	 */
+	public List<ProcessListDto> getProcessList() {
+		return processList;
+	}
+
+	/**
+	 * @param processList the processList to set
+	 */
+	public void setProcessList(List<ProcessListDto> processList) {
+		this.processList = processList;
+	}
 
 	public List<ValidDocumentDto> getValidDocumentMapping() {
 		return validDocumentMapping;

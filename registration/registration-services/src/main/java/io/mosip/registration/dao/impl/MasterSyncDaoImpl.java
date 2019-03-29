@@ -23,6 +23,9 @@ import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dao.MasterSyncDao;
 import io.mosip.registration.dto.ApplicantValidDocumentDto;
 import io.mosip.registration.dto.IndividualTypeDto;
+import io.mosip.registration.dto.mastersync.AppAuthenticationMethodDto;
+import io.mosip.registration.dto.mastersync.AppDetailDto;
+import io.mosip.registration.dto.mastersync.AppRolePriorityDto;
 import io.mosip.registration.dto.mastersync.ApplicationDto;
 import io.mosip.registration.dto.mastersync.BiometricAttributeDto;
 import io.mosip.registration.dto.mastersync.BiometricTypeDto;
@@ -42,6 +45,7 @@ import io.mosip.registration.dto.mastersync.MachineSpecificationDto;
 import io.mosip.registration.dto.mastersync.MachineTypeDto;
 import io.mosip.registration.dto.mastersync.MasterDataResponseDto;
 import io.mosip.registration.dto.mastersync.PostReasonCategoryDto;
+import io.mosip.registration.dto.mastersync.ProcessListDto;
 import io.mosip.registration.dto.mastersync.ReasonListDto;
 import io.mosip.registration.dto.mastersync.RegistrationCenterDeviceDto;
 import io.mosip.registration.dto.mastersync.RegistrationCenterDto;
@@ -50,11 +54,15 @@ import io.mosip.registration.dto.mastersync.RegistrationCenterMachineDto;
 import io.mosip.registration.dto.mastersync.RegistrationCenterTypeDto;
 import io.mosip.registration.dto.mastersync.RegistrationCenterUserDto;
 import io.mosip.registration.dto.mastersync.RegistrationCenterUserMachineMappingDto;
+import io.mosip.registration.dto.mastersync.ScreenAuthorizationDto;
 import io.mosip.registration.dto.mastersync.TemplateDto;
 import io.mosip.registration.dto.mastersync.TemplateFileFormatDto;
 import io.mosip.registration.dto.mastersync.TemplateTypeDto;
 import io.mosip.registration.dto.mastersync.TitleDto;
 import io.mosip.registration.dto.mastersync.ValidDocumentDto;
+import io.mosip.registration.entity.AppAuthenticationMethod;
+import io.mosip.registration.entity.AppDetail;
+import io.mosip.registration.entity.AppRolePriority;
 import io.mosip.registration.entity.ApplicantValidDocument;
 import io.mosip.registration.entity.Application;
 import io.mosip.registration.entity.BiometricAttribute;
@@ -71,6 +79,7 @@ import io.mosip.registration.entity.Language;
 import io.mosip.registration.entity.Location;
 import io.mosip.registration.entity.MachineMaster;
 import io.mosip.registration.entity.MachineType;
+import io.mosip.registration.entity.ProcessList;
 import io.mosip.registration.entity.ReasonCategory;
 import io.mosip.registration.entity.ReasonList;
 import io.mosip.registration.entity.RegCenterDevice;
@@ -82,6 +91,7 @@ import io.mosip.registration.entity.RegDeviceType;
 import io.mosip.registration.entity.RegMachineSpec;
 import io.mosip.registration.entity.RegistrationCenter;
 import io.mosip.registration.entity.RegistrationCenterType;
+import io.mosip.registration.entity.ScreenAuthorization;
 import io.mosip.registration.entity.SyncControl;
 import io.mosip.registration.entity.Template;
 import io.mosip.registration.entity.TemplateEmbeddedKeyCommonFields;
@@ -96,6 +106,9 @@ import io.mosip.registration.entity.id.RegCentreMachineDeviceId;
 import io.mosip.registration.entity.id.RegistartionCenterId;
 import io.mosip.registration.entity.id.UserMachineMappingID;
 import io.mosip.registration.exception.RegBaseUncheckedException;
+import io.mosip.registration.repositories.AppAuthenticationRepository;
+import io.mosip.registration.repositories.AppDetailRepository;
+import io.mosip.registration.repositories.AppRolePriorityRepository;
 import io.mosip.registration.repositories.ApplicantValidDocumentRepository;
 import io.mosip.registration.repositories.ApplicationRepository;
 import io.mosip.registration.repositories.BiometricAttributeRepository;
@@ -116,6 +129,7 @@ import io.mosip.registration.repositories.LocationRepository;
 import io.mosip.registration.repositories.MachineMasterRepository;
 import io.mosip.registration.repositories.MachineSpecificationRepository;
 import io.mosip.registration.repositories.MachineTypeRepository;
+import io.mosip.registration.repositories.ProcessListRepository;
 import io.mosip.registration.repositories.ReasonCategoryRepository;
 import io.mosip.registration.repositories.ReasonListRepository;
 import io.mosip.registration.repositories.RegistrationCenterDeviceRepository;
@@ -123,6 +137,7 @@ import io.mosip.registration.repositories.RegistrationCenterMachineDeviceReposit
 import io.mosip.registration.repositories.RegistrationCenterRepository;
 import io.mosip.registration.repositories.RegistrationCenterTypeRepository;
 import io.mosip.registration.repositories.RegistrationCenterUserRepository;
+import io.mosip.registration.repositories.ScreenAuthorizationRepository;
 import io.mosip.registration.repositories.SyncJobControlRepository;
 import io.mosip.registration.repositories.TemplateFileFormatRepository;
 import io.mosip.registration.repositories.TemplateRepository;
@@ -236,7 +251,7 @@ public class MasterSyncDaoImpl implements MasterSyncDao {
 	/** Object for Sync Applicant Valid Document Repository. */
 	@Autowired
 	private ApplicantValidDocumentRepository applicantValidDocumentRepository;
-	
+
 	/** Object for Sync Valid Document Repository. */
 	@Autowired
 	private ValidDocumentRepository validDocumentRepository;
@@ -276,6 +291,26 @@ public class MasterSyncDaoImpl implements MasterSyncDao {
 	/** Object for Sync Individual type Repository. */
 	@Autowired
 	private IndividualTypeRepository individualTypeRepository;
+
+	/** Object for Sync app authentication Repository. */
+	@Autowired
+	private AppAuthenticationRepository appAuthenticationRepository;
+
+	/** Object for Sync app role Repository. */
+	@Autowired
+	private AppRolePriorityRepository appRolePriorityRepository;
+
+	/** Object for Sync app detail Repository. */
+	@Autowired
+	private AppDetailRepository appDetailRepository;
+
+	/** Object for Sync screen auth Repository. */
+	@Autowired
+	private ScreenAuthorizationRepository screenAuthorizationRepository;
+
+	/** Object for Sync screen auth Repository. */
+	@Autowired
+	private ProcessListRepository processListRepository;
 
 	/**
 	 * logger for logging
@@ -360,33 +395,38 @@ public class MasterSyncDaoImpl implements MasterSyncDao {
 		List<RegistrationCenterTypeDto> registrationCenterType = masterSyncDto.getRegistrationCenterTypes();
 		List<IndividualTypeDto> indiviualType = masterSyncDto.getIndividualTypes();
 		List<ValidDocumentDto> masterValidDocuments = masterSyncDto.getValidDocumentMapping();
+		List<AppAuthenticationMethodDto> appAuthMethods = masterSyncDto.getAppAuthenticationMethods();
+		List<AppDetailDto> appDetails = masterSyncDto.getAppDetails();
+		List<AppRolePriorityDto> appRolePriority = masterSyncDto.getAppRolePriorities();
+		List<ScreenAuthorizationDto> screenAuth = masterSyncDto.getScreenAuthorizations();
+		List<ProcessListDto> processLst = masterSyncDto.getProcessList();
 		String sucessResponse = null;
 
 		try {
 
 			LOGGER.info(RegistrationConstants.MASTER_SYNC_JOD_DETAILS, APPLICATION_NAME, APPLICATION_ID,
 					"Language details syncing....");
-			
+
 			List<Language> masterLangauge = MetaDataUtils.setCreateMetaData(languageDto, Language.class);
 			languageRepository.saveAll(masterLangauge);
-			
+
 			LOGGER.info(RegistrationConstants.MASTER_SYNC_JOD_DETAILS, APPLICATION_NAME, APPLICATION_ID,
 					"Application details syncing....");
 
 			List<Application> masterApplicationDtoEntity = MetaDataUtils.setCreateMetaData(masterApplicationDto,
 					Application.class);
 			applicationRepository.saveAll(masterApplicationDtoEntity);
-			
+
 			LOGGER.info(RegistrationConstants.MASTER_SYNC_JOD_DETAILS, APPLICATION_NAME, APPLICATION_ID,
 					"Biometric Type details syncing....");
-			
+
 			List<BiometricType> masterBiometricTypeDtoEntity = MetaDataUtils.setCreateMetaData(masterBiometricTypeDto,
 					BiometricType.class);
 			biometricTypeRepository.saveAll(masterBiometricTypeDtoEntity);
 
 			LOGGER.info(RegistrationConstants.MASTER_SYNC_JOD_DETAILS, APPLICATION_NAME, APPLICATION_ID,
 					"Biometric Attribute details syncing....");
-			
+
 			List<BiometricAttribute> masterBiometricAttributeDtoEntity = MetaDataUtils
 					.setCreateMetaData(masterBiometricAttributeDto, BiometricAttribute.class);
 			biometricAttributeRepository.saveAll(masterBiometricAttributeDtoEntity);
@@ -722,9 +762,45 @@ public class MasterSyncDaoImpl implements MasterSyncDao {
 			List<ValidDocument> masterValidDocumentsEntity = MetaDataUtils.setCreateMetaData(masterValidDocuments,
 					ValidDocument.class);
 			validDocumentRepository.saveAll(masterValidDocumentsEntity);
+
+			LOGGER.info(RegistrationConstants.MASTER_SYNC_JOD_DETAILS, APPLICATION_NAME, APPLICATION_ID,
+					"App role priority details syncing....");
+
+			List<AppRolePriority> masterAppRolePriority = MetaDataUtils.setCreateMetaData(appRolePriority,
+					AppRolePriority.class);
+			appRolePriorityRepository.saveAll(masterAppRolePriority);
+
+			LOGGER.info(RegistrationConstants.MASTER_SYNC_JOD_DETAILS, APPLICATION_NAME, APPLICATION_ID,
+					"App details syncing....");
+
+			List<AppDetail> masterAppDetails = MetaDataUtils.setCreateMetaData(appDetails, AppDetail.class);
+			appDetailRepository.saveAll(masterAppDetails);
+
+			LOGGER.info(RegistrationConstants.MASTER_SYNC_JOD_DETAILS, APPLICATION_NAME, APPLICATION_ID,
+					"process list details syncing....");
+
+			List<ProcessList> masterProcessList = MetaDataUtils.setCreateMetaData(processLst, ProcessList.class);
+			processListRepository.saveAll(masterProcessList);
+
+			LOGGER.info(RegistrationConstants.MASTER_SYNC_JOD_DETAILS, APPLICATION_NAME, APPLICATION_ID,
+					"App authentication method details syncing....");
+
+			List<AppAuthenticationMethod> masterAppLoginMethod = MetaDataUtils.setCreateMetaData(appAuthMethods,
+					AppAuthenticationMethod.class);
+			appAuthenticationRepository.saveAll(masterAppLoginMethod);
+
+			LOGGER.info(RegistrationConstants.MASTER_SYNC_JOD_DETAILS, APPLICATION_NAME, APPLICATION_ID,
+					"screen autherization details syncing....");
+
+			List<ScreenAuthorization> masterScreenAuth = MetaDataUtils.setCreateMetaData(screenAuth,
+					ScreenAuthorization.class);
+			screenAuthorizationRepository.saveAll(masterScreenAuth);
+
 			sucessResponse = RegistrationConstants.SUCCESS;
 
 		} catch (Exception runtimeException) {
+
+			runtimeException.printStackTrace();
 
 			LOGGER.error(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID,
 					runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
@@ -828,16 +904,20 @@ public class MasterSyncDaoImpl implements MasterSyncDao {
 	 */
 	@Override
 	public List<ValidDocument> getValidDocumets(String docCategoryCode, String langCode) {
-		return validDocumentRepository
-				.findByIsActiveTrueAndDocCategoryCodeAndLangCode(docCategoryCode, langCode);
+		return validDocumentRepository.findByIsActiveTrueAndDocCategoryCodeAndLangCode(docCategoryCode, langCode);
 	}
 
-	/* (non-Javadoc)
-	 * @see io.mosip.registration.dao.MasterSyncDao#getIndividulType(java.lang.String, java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.registration.dao.MasterSyncDao#getIndividulType(java.lang.String,
+	 * java.lang.String)
 	 */
 	@Override
 	public List<IndividualType> getIndividulType(String code, String langCode) {
-		return individualTypeRepository.findByIndividualTypeIdCodeAndIndividualTypeIdLangCodeAndIsActiveTrue(code, langCode);
+		return individualTypeRepository.findByIndividualTypeIdCodeAndIndividualTypeIdLangCodeAndIsActiveTrue(code,
+				langCode);
 	}
 
 }

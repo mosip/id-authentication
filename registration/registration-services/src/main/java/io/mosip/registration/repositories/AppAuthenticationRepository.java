@@ -24,6 +24,6 @@ public interface AppAuthenticationRepository
 	 * 
 	 * @return the list of {@link AppAuthenticationDetails}
 	 */
-	List<AppAuthenticationDetails> findByIsActiveTrueAndAppAuthenticationMethodIdProcessIdAndAppAuthenticationMethodIdRoleCodeOrderByMethodSeq(String processId, String roleCode);
+	List<AppAuthenticationDetails> findByIsActiveTrueAndAppAuthenticationMethodIdProcessIdAndAppAuthenticationMethodIdRoleCodeOrderByMethodSequence(String processId, String roleCode);
 
 }
