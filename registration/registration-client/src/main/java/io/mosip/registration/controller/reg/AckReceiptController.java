@@ -58,9 +58,6 @@ public class AckReceiptController extends BaseController implements Initializabl
 	private Button print;
 
 	@FXML
-	private Button back;
-
-	@FXML
 	private Text registrationNavLabel;
 
 	@FXML

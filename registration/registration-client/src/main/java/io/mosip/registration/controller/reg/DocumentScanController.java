@@ -199,12 +199,12 @@ public class DocumentScanController extends BaseController {
 				continueBtn.setDisable(false);
 			}
 
-			scannedField.textProperty().addListener((absValue, oldValue, newValue) -> {
-				if (Integer.parseInt(newValue) == 0)
-					continueBtn.setDisable(false);
-				else
-					continueBtn.setDisable(true);
-			});
+//			scannedField.textProperty().addListener((absValue, oldValue, newValue) -> {
+//				if (Integer.parseInt(newValue) == 0)
+//					continueBtn.setDisable(false);
+//				else
+//					continueBtn.setDisable(true);
+//			});
 
 			// populateDocumentCategories();
 		} catch (RuntimeException exception) {

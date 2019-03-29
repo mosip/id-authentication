@@ -133,15 +133,6 @@
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
               </rowConstraints>
                <children>
-                  <Button fx:id="back" mnemonicParsing="false" styleClass="ackBackButton" text="%goToHome" GridPane.columnIndex="1">
-                     <graphic>
-                        <ImageView fitHeight="20.0" fitWidth="27.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@../images/arrowLeft.png" />
-                           </image>
-                        </ImageView>
-                     </graphic>
-                  </Button>
                   <Button fx:id="newRegistration" mnemonicParsing="false" onAction="#goToNewRegistration" styleClass="ackPageButton" text="%newregistration" GridPane.columnIndex="3">
                      <graphic>
                         <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
