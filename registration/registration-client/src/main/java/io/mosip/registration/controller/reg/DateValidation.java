@@ -3,8 +3,6 @@ package io.mosip.registration.controller.reg;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
 import java.time.LocalDate;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -12,8 +10,8 @@ import org.springframework.stereotype.Component;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
+import io.mosip.registration.constants.LoggerConstants;
 import io.mosip.registration.constants.RegistrationConstants;
-import io.mosip.registration.constants.RegistrationUIConstants;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.controller.FXUtils;
 import javafx.scene.control.TextField;
@@ -22,51 +20,23 @@ import javafx.scene.layout.Pane;
 @Component
 public class DateValidation extends BaseController {
 
+	private static final Logger LOGGER = AppConfig.getLogger(DateValidation.class);
 	@Autowired
 	private Validations validation;
-
-	private Map<String, String> dateMapper;
-
-	/**
-	 * Instance of {@link Logger}
-	 */
-	private static final Logger LOGGER = AppConfig.getLogger(DateValidation.class);
-
-	public DateValidation() {
-		dateMapper = new HashMap<>();
-		dateMapper.put("1", "31");
-		dateMapper.put("2", "29");
-		dateMapper.put("3", "31");
-		dateMapper.put("4", "30");
-		dateMapper.put("5", "31");
-		dateMapper.put("6", "30");
-		dateMapper.put("7", "31");
-		dateMapper.put("8", "31");
-		dateMapper.put("9", "30");
-		dateMapper.put("01", "31");
-		dateMapper.put("02", "29");
-		dateMapper.put("03", "31");
-		dateMapper.put("04", "30");
-		dateMapper.put("05", "31");
-		dateMapper.put("06", "30");
-		dateMapper.put("07", "31");
-		dateMapper.put("08", "31");
-		dateMapper.put("09", "30");
-		dateMapper.put("10", "31");
-		dateMapper.put("11", "30");
-		dateMapper.put("12", "31");
-	}
 
 	public void validateDate(Pane parentPane, TextField date, TextField month, TextField year, Validations validations,
 			FXUtils fxUtils, TextField localField) {
 
 		try {
-			fxUtils.populateLocalFieldOnType(parentPane, date, validation, localField);
+			fxUtils.validateOnType(parentPane, date, validation, localField, false);
 			date.textProperty().addListener((obsValue, oldValue, newValue) -> {
+				if ((newValue == null || newValue.isEmpty()) && !date.isFocused()) {
+					fxUtils.hideLabel(parentPane, date);
+				}
 				validateTheDate(date, month, year);
 			});
 		} catch (RuntimeException runTimeException) {
-			LOGGER.error("DATE VALIDATOINS", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
+			LOGGER.error(LoggerConstants.DATE_VALIDATION, APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
 					runTimeException.getMessage() + ExceptionUtils.getStackTrace(runTimeException));
 
 		}
@@ -75,12 +45,15 @@ public class DateValidation extends BaseController {
 	public void validateMonth(Pane parentPane, TextField date, TextField month, TextField year, Validations validations,
 			FXUtils fxUtils, TextField localField) {
 		try {
-			fxUtils.populateLocalFieldOnType(parentPane, month, validation, localField);
+			fxUtils.validateOnType(parentPane, month, validation, localField, false);
 			month.textProperty().addListener((obsValue, oldValue, newValue) -> {
+				if ((newValue == null || newValue.isEmpty()) && !month.isFocused()) {
+					fxUtils.hideLabel(parentPane, month);
+				}
 				validateTheDate(date, month, year);
 			});
 		} catch (RuntimeException runTimeException) {
-			LOGGER.error("DATE VALIDATOINS", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
+			LOGGER.error(LoggerConstants.DATE_VALIDATION, APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
 					runTimeException.getMessage() + ExceptionUtils.getStackTrace(runTimeException));
 
 		}
@@ -119,7 +92,7 @@ public class DateValidation extends BaseController {
 
 			}
 		} catch (RuntimeException runTimeException) {
-			LOGGER.error("DATE VALIDATOINS", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
+			LOGGER.error(LoggerConstants.DATE_VALIDATION, APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
 					runTimeException.getMessage() + ExceptionUtils.getStackTrace(runTimeException));
 
 		}
@@ -128,8 +101,11 @@ public class DateValidation extends BaseController {
 	public void validateYear(Pane parentPane, TextField date, TextField month, TextField year, Validations validations,
 			FXUtils fxUtils, TextField localField) {
 		try {
-			fxUtils.populateLocalFieldOnType(parentPane, year, validation, localField);
+			fxUtils.validateOnType(parentPane, year, validation, localField, false);
 			year.textProperty().addListener((obsValue, oldValue, newValue) -> {
+				if ((newValue == null || newValue.isEmpty()) && !year.isFocused()) {
+					fxUtils.hideLabel(parentPane, year);
+				}
 				if (year.getText().matches("\\d{4}")) {
 					int yearVal = Integer.parseInt(year.getText());
 					LocalDate localDate = LocalDate.now();
@@ -141,7 +117,7 @@ public class DateValidation extends BaseController {
 				validateTheDate(date, month, year);
 			});
 		} catch (RuntimeException runTimeException) {
-			LOGGER.error("DATE VALIDATOINS", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
+			LOGGER.error(LoggerConstants.DATE_VALIDATION, APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
 					runTimeException.getMessage() + ExceptionUtils.getStackTrace(runTimeException));
 
 		}

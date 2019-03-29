@@ -282,7 +282,7 @@
                                                                <children>
                                                                   <VBox fx:id="applicationFullName" prefHeight="200.0" prefWidth="100.0" spacing="5.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
                                                                      <children>
-                                                                        <Label fx:id="fullNameLabel" prefWidth="${applicationFullName.width}" styleClass="demoGraphicFieldLabel" text="%fullName" visible="true" />
+                                                                        <Label fx:id="fullNameLabel" prefWidth="${applicationFullName.width}" styleClass="demoGraphicFieldLabel" text="%fullName" visible="false" />
                                                                         <TextField fx:id="fullName" prefWidth="${applicationFullName.width}" promptText="%fullName" styleClass="demoGraphicTextField" />
                                                                         <Label fx:id="fullNameMessage" prefWidth="${applicationFullName.width}" styleClass="demoGraphicFieldMessageLabel" text="fullName message" visible="false" />
                                                                      </children>

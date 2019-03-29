@@ -769,64 +769,53 @@ public class DemographicDetailController extends BaseController {
 			LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID,
 					"Entering into toggle function for toggle label 1 and toggle level 2");
-			switchedOn.addListener(new ChangeListener<Boolean>() {
-				@Override
-				public void changed(ObservableValue<? extends Boolean> ov, Boolean oldValue, Boolean newValue) {
-					if (newValue) {
-						toggleLabel1.setLayoutX(0);
-						toggleLabel1LocalLanguage.setLayoutX(0);
-						ageField.clear();
-						ageFieldLocalLanguage.clear();
-						parentDetailPane.setVisible(false);
-						ageField.setDisable(true);
-						dob.setDisable(false);
-						dobLocallanguage.setDisable(false);
-					} else {
-						toggleLabel1.setLayoutX(30);
-						toggleLabel1LocalLanguage.setLayoutX(30);
-						ageField.clear();
-						parentDetailPane.setVisible(false);
-						ageField.setDisable(false);
-						ageFieldLocalLanguage.clear();
-						dob.setDisable(true);
-						dobLocallanguage.setDisable(true);
-					}
-					dd.clear();
-					mm.clear();
-					yyyy.clear();
 
-					ddLocalLanguage.clear();
-					mmLocalLanguage.clear();
-					yyyyLocalLanguage.clear();
-
-					ageFieldMessage.setVisible(false);
-					ageFieldLabel.setVisible(false);
-					ageFieldLocalLanguageLabel.setVisible(false);
-					ageFieldLocalLanguageMessage.setVisible(false);
-					dobMessage.setVisible(false);
-					ddLabel.setVisible(false);
-					mmLabel.setVisible(false);
-					yyyyLabel.setVisible(false);
-					ddLocalLanguageLabel.setVisible(false);
-					mmLocalLanguageLabel.setVisible(false);
-					yyyyLocalLanguageLabel.setVisible(false);
-
+			switchedOn.addListener((observableValue, oldValue, newValue) -> {
+				if (newValue) {
+					toggleLabel1.setLayoutX(0);
+					toggleLabel1LocalLanguage.setLayoutX(0);
+					ageField.clear();
+					ageFieldLocalLanguage.clear();
+					parentDetailPane.setVisible(false);
+					ageField.setDisable(true);
+					dob.setDisable(false);
+					dobLocallanguage.setDisable(false);
+				} else {
+					toggleLabel1.setLayoutX(30);
+					toggleLabel1LocalLanguage.setLayoutX(30);
+					ageField.clear();
+					parentDetailPane.setVisible(false);
+					ageField.setDisable(false);
+					ageFieldLocalLanguage.clear();
+					dob.setDisable(true);
+					dobLocallanguage.setDisable(true);
 				}
+
+				dd.clear();
+				mm.clear();
+				yyyy.clear();
+
+				ddLocalLanguage.clear();
+				mmLocalLanguage.clear();
+				yyyyLocalLanguage.clear();
+
+				ageFieldMessage.setVisible(false);
+				ageFieldLabel.setVisible(false);
+				ageFieldLocalLanguageLabel.setVisible(false);
+				ageFieldLocalLanguageMessage.setVisible(false);
+				dobMessage.setVisible(false);
+				ddLabel.setVisible(false);
+				mmLabel.setVisible(false);
+				yyyyLabel.setVisible(false);
+				ddLocalLanguageLabel.setVisible(false);
+				mmLocalLanguageLabel.setVisible(false);
+				yyyyLocalLanguageLabel.setVisible(false);
 			});
 
-			toggleLabel1.setOnMouseClicked((event) -> {
-				switchedOn.set(!switchedOn.get());
-			});
-			toggleLabel2.setOnMouseClicked((event) -> {
-				switchedOn.set(!switchedOn.get());
-			});
-
-			toggleLabel1LocalLanguage.setOnMouseClicked((event) -> {
-				switchedOn.set(!switchedOn.get());
-			});
-			toggleLabel2LocalLanguage.setOnMouseClicked((event) -> {
-				switchedOn.set(!switchedOn.get());
-			});
+			toggleLabel1.setOnMouseClicked(event -> switchedOn.set(!switchedOn.get()));
+			toggleLabel2.setOnMouseClicked(event -> switchedOn.set(!switchedOn.get()));
+			toggleLabel1LocalLanguage.setOnMouseClicked(event -> switchedOn.set(!switchedOn.get()));
+			toggleLabel2LocalLanguage.setOnMouseClicked(event -> switchedOn.set(!switchedOn.get()));
 
 			LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID,
@@ -938,23 +927,27 @@ public class DemographicDetailController extends BaseController {
 		try {
 			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, "Populating the local language fields");
-			fxUtils.validateOnType(parentFlowPane, fullName, validation, fullNameLocalLanguage);
-			fxUtils.validateOnType(parentFlowPane, addressLine1, validation, addressLine1LocalLanguage);
-			fxUtils.validateOnType(parentFlowPane, addressLine2, validation, addressLine2LocalLanguage);
-			fxUtils.validateOnType(parentFlowPane, addressLine3, validation, addressLine3LocalLanguage);
-			fxUtils.populateLocalFieldOnType(parentFlowPane, mobileNo, validation, mobileNoLocalLanguage);
-			fxUtils.populateLocalFieldOnType(parentFlowPane, postalCode, validation, postalCodeLocalLanguage);
-			fxUtils.populateLocalFieldOnType(parentFlowPane, emailId, validation, emailIdLocalLanguage);
-			fxUtils.populateLocalFieldOnType(parentFlowPane, cniOrPinNumber, validation, cniOrPinNumberLocalLanguage);
-			fxUtils.validateOnType(parentFlowPane, parentName, validation, parentNameLocalLanguage);
-			fxUtils.populateLocalFieldOnType(parentFlowPane, uinId, validation, uinIdLocalLanguage);
+			boolean hasToBeTransliterated = true;
+			fxUtils.validateOnType(parentFlowPane, fullName, validation, fullNameLocalLanguage, hasToBeTransliterated);
+			fxUtils.validateOnType(parentFlowPane, addressLine1, validation, addressLine1LocalLanguage, hasToBeTransliterated);
+			fxUtils.validateOnType(parentFlowPane, addressLine2, validation, addressLine2LocalLanguage, hasToBeTransliterated);
+			fxUtils.validateOnType(parentFlowPane, addressLine3, validation, addressLine3LocalLanguage, hasToBeTransliterated);
+			fxUtils.validateOnType(parentFlowPane, parentName, validation, parentNameLocalLanguage, hasToBeTransliterated);
+			fxUtils.validateOnType(parentFlowPane, uinId, validation, uinIdLocalLanguage, !hasToBeTransliterated);
+
 			fxUtils.validateOnType(parentFlowPane, fullNameLocalLanguage, validation);
+
+			fxUtils.validateOnFocusOut(parentFlowPane, mobileNo, validation, mobileNoLocalLanguage);
+			fxUtils.validateOnFocusOut(parentFlowPane, postalCode, validation, postalCodeLocalLanguage);
+			fxUtils.validateOnFocusOut(parentFlowPane, emailId, validation, emailIdLocalLanguage);
+			fxUtils.validateOnFocusOut(parentFlowPane, cniOrPinNumber, validation, cniOrPinNumberLocalLanguage);
+
 			fxUtils.populateLocalComboBox(parentFlowPane, gender, genderLocalLanguage);
 			fxUtils.populateLocalComboBox(parentFlowPane, city, cityLocalLanguage);
 			fxUtils.populateLocalComboBox(parentFlowPane, region, regionLocalLanguage);
 			fxUtils.populateLocalComboBox(parentFlowPane, province, provinceLocalLanguage);
-
 			fxUtils.populateLocalComboBox(parentFlowPane, localAdminAuthority, localAdminAuthorityLocalLanguage);
+
 			dateValidation.validateDate(parentFlowPane, dd, mm, yyyy, validation, fxUtils, ddLocalLanguage);
 			dateValidation.validateDate(parentFlowPane, ddLocalLanguage, mmLocalLanguage, yyyyLocalLanguage, validation,
 					fxUtils, null);
