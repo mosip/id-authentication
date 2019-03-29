@@ -654,8 +654,8 @@ public class DemographicServiceTest {
 
 	}
 
-	@Test(expected = RecordFailedToDeleteException.class)
-	public void deleteRecordFailedToDeleteException1() throws Exception {
+	@Test(expected = DocumentFailedToDeleteException.class)
+	public void documentFailedToDeleteExceptionTest() throws Exception {
 		String preRegId = "98746563542672";
 		ExceptionJSONInfoDTO err = new ExceptionJSONInfoDTO("PRG_PAM_DOC_015", "");
 		Mockito.when(demographicRepository.findBypreRegistrationId(preRegId)).thenReturn(preRegistrationEntity);

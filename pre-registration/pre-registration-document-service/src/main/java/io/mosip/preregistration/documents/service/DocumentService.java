@@ -491,6 +491,8 @@ public class DocumentService {
 
 	public MainListResponseDTO<DocumentDeleteResponseDTO> deleteFile(List<DocumentEntity> documentEntityList,
 			String preregId) {
+		log.info("sessionId", "idType", "id",
+				"In pre-registration service inside delete File method "+ preregId);
 		List<DocumentDeleteResponseDTO> deleteAllList = new ArrayList<>();
 		MainListResponseDTO<DocumentDeleteResponseDTO> delResponseDto = new MainListResponseDTO<>();
 		if (documnetDAO.deleteAllBypreregId(preregId) >= 0) {
