@@ -903,8 +903,8 @@ public class MasterSyncDaoImpl implements MasterSyncDao {
 	 * io.mosip.registration.dao.MasterSyncDao#getValidDocumets(java.lang.String)
 	 */
 	@Override
-	public List<ValidDocument> getValidDocumets(String docCategoryCode, String langCode) {
-		return validDocumentRepository.findByIsActiveTrueAndDocCategoryCodeAndLangCode(docCategoryCode, langCode);
+	public List<ValidDocument> getValidDocumets(String docCategoryCode) {
+		return validDocumentRepository.findByIsActiveTrueAndDocCategoryCode(docCategoryCode);
 	}
 
 	/*

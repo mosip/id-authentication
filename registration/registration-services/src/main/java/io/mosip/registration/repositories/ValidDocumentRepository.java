@@ -7,13 +7,19 @@ import io.mosip.registration.entity.ValidDocument;
 import io.mosip.registration.entity.id.ValidDocumentID;
 
 /**
- * 
- * @author Brahmananda Reddy
+ * The Interface ValidDocumentRepository.
  *
+ * @author Brahmananda Reddy
  */
 
 public interface ValidDocumentRepository extends BaseRepository<ValidDocument, ValidDocumentID> {
 	
-	List<ValidDocument> findByIsActiveTrueAndDocCategoryCodeAndLangCode(String docCategoryCode, String langCode);
+	/**
+	 * Find by is active true and doc category code.
+	 *
+	 * @param docCategoryCode the doc category code
+	 * @return the list
+	 */
+	List<ValidDocument> findByIsActiveTrueAndDocCategoryCode(String docCategoryCode);
 	
 }

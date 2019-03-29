@@ -101,10 +101,9 @@ public interface MasterSyncDao {
 	 * Gets the valid documets.
 	 *
 	 * @param docCategoryCode the doc category code
-	 * @param langCode the lang code
 	 * @return the valid documets
 	 */
-	List<ValidDocument> getValidDocumets(String docCategoryCode,String langCode);
+	List<ValidDocument> getValidDocumets(String docCategoryCode);
 	
 	/**
 	 * Gets the individul type.

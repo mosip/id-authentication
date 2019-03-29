@@ -431,7 +431,7 @@ public class MasterSyncServiceImpl implements MasterSyncService {
 	@Override
 	public List<DocumentCategoryDto> getDocumentCategories(String docCode, String langCode) {
 		
-		List<ValidDocument> masterValidDocuments = masterSyncDao.getValidDocumets(docCode, langCode);
+		List<ValidDocument> masterValidDocuments = masterSyncDao.getValidDocumets(docCode);
 
 		List<String> validDocuments = new ArrayList<>();
 		masterValidDocuments.forEach(docs -> {

@@ -1821,9 +1821,9 @@ public class MasterSyncDaoImplTest {
 		docs.setLangCode("eng");
 		docList.add(docs);
 
-		Mockito.when(masterSyncDao.getValidDocumets(Mockito.anyString(), Mockito.anyString())).thenReturn(docList);
+		Mockito.when(masterSyncDao.getValidDocumets(Mockito.anyString())).thenReturn(docList);
 
-		masterSyncDaoImpl.getValidDocumets("POA", "eng");
+		masterSyncDaoImpl.getValidDocumets("POA");
 
 		assertTrue(docList != null);
 
