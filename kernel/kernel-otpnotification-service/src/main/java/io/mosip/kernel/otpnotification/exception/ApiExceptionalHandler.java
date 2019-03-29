@@ -1,8 +1,6 @@
 package io.mosip.kernel.otpnotification.exception;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -25,7 +23,6 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import io.mosip.kernel.core.exception.ErrorResponse;
 import io.mosip.kernel.core.exception.ServiceError;
-import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.util.EmptyCheckUtils;
 import io.mosip.kernel.otpnotification.constant.OtpNotificationErrorConstant;
@@ -160,7 +157,6 @@ public class ApiExceptionalHandler {
 	}
 
 	private ResponseWrapper<ServiceError> setErrors(HttpServletRequest httpServletRequest) throws IOException {
-		RequestWrapper<?> requestWrapper = null;
 		ResponseWrapper<ServiceError> responseWrapper = new ResponseWrapper<>();
 		String requestBody = null;
 		if (httpServletRequest instanceof ContentCachingRequestWrapper) {
