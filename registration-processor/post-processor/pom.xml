@@ -15,7 +15,6 @@
   </properties>
   	<modules>
     	<module>registration-processor-message-sender-stage</module>
-        <module>registration-processor-message-sender</module>
     	<module>registration-processor-printing-stage</module>
 		<module>registration-processor-print-service</module>   	
   </modules>
