@@ -119,7 +119,8 @@ public class VirusScannerStage extends MosipVerticleManager {
 		File encryptedFile = new File(encryptedPacketPath);
 		boolean isEncryptedFileCleaned;
 		boolean isUnpackedFileCleaned;
-
+		registrationStatusDto.setLatestTransactionTypeCode(RegistrationTransactionTypeCode.VIRUS_SCAN.toString());
+		registrationStatusDto.setRegistrationStageName(RegistrationStageName.VIRUS_SCANNER_STAGE);
 		InputStream decryptedData = null;
 
 		// To avoid sonar issue
@@ -204,8 +205,7 @@ public class VirusScannerStage extends MosipVerticleManager {
 			description = "Internal error occured in virus scanner stage while processing registrationId : "
 					+ registrationId + ex.getMessage();
 		} finally {
-			registrationStatusDto.setLatestTransactionTypeCode(RegistrationTransactionTypeCode.VIRUS_SCAN.toString());
-			registrationStatusDto.setRegistrationStageName(RegistrationStageName.VIRUS_SCANNER_STAGE);
+
 			registrationStatusService.updateRegistrationStatus(registrationStatusDto);
 			String eventId = "";
 			String eventName = "";
