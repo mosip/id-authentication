@@ -1,6 +1,5 @@
 package io.mosip.registration.processor.reprocessor.stage;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -193,10 +192,6 @@ public class ReprocessorStage extends MosipVerticleManager {
 						object.setReg_type(RegistrationType.NEW.name());
 						description = "";
 						isTransactionSuccessful = true;
-						dto.setUpdatedBy(USER);
-						dto.setLatestTransactionTimes(LocalDateTime.now());
-						registrationStatusService.updateRegistrationStatus(dto);
-
 						String stageName = MessageBusUtil.getMessageBusAdress(dto.getRegistrationStageName());
 						if (dto.getLatestTransactionStatusCode() == RegistrationTransactionStatusCode.REPROCESS
 								.name()) {
@@ -206,7 +201,7 @@ public class ReprocessorStage extends MosipVerticleManager {
 						}
 						MessageBusAddress address = new MessageBusAddress(stageName);
 						sendMessage(object, address);
-
+						dto.setUpdatedBy(USER);
 						Integer reprocessRetryCount = dto.getReProcessRetryCount() != null
 								? dto.getReProcessRetryCount() + 1
 								: 1;

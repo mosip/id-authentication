@@ -178,14 +178,13 @@ public class RegistrationStatusDao {
 		String queryStr = SELECT_DISTINCT + alias + FROM + className + EMPTY_STRING + alias + WHERE + alias
 				+ ".latestTransactionStatusCode IN :status" + EMPTY_STRING + AND + EMPTY_STRING + alias
 				+ ".regProcessRetryCount<" + ":reprocessCount" + EMPTY_STRING + AND + EMPTY_STRING + alias
-				+ ".latestTransactionTimes<" + ":timeDifference" + LIMIT + ":fetchSize";
+				+ ".latestTransactionTimes<" + ":timeDifference";
 
 		params.put("status", status);
 		params.put("reprocessCount", reprocessCount);
 		params.put("timeDifference", timeDifference);
-		params.put("fetchSize", fetchSize);
 
-		return registrationStatusRepositary.createQuerySelect(queryStr, params);
+		return registrationStatusRepositary.createQuerySelect(queryStr, params, fetchSize);
 	}
 
 	public Integer getUnProcessedPacketsCount(long elapseTime, Integer reprocessCount, List<String> status) {
