@@ -24,11 +24,15 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.EmptyCheckUtils;
 
 /**
- * @author Bal Vikash Sharma
+ * Configuration class to wrap the service response in {@link ResponseWrapper}
+ * and set the request attributes.
+ * 
+ * @author Sagar Mahapatra
+ * @since 1.0.0
  *
  */
 @RestControllerAdvice
-public class ResponseBodyAdviceConfig implements ResponseBodyAdvice<Object> {
+public class ResponseBodyAdviceConfig implements ResponseBodyAdvice<ResponseWrapper<?>> {
 
 	/**
 	 * Autowired reference for {@link ObjectMapper}.
@@ -59,11 +63,10 @@ public class ResponseBodyAdviceConfig implements ResponseBodyAdvice<Object> {
 	 * org.springframework.http.server.ServerHttpResponse)
 	 */
 	@Override
-	public Object beforeBodyWrite(Object body, MethodParameter returnType, MediaType selectedContentType,
-			Class<? extends HttpMessageConverter<?>> selectedConverterType, ServerHttpRequest request,
-			ServerHttpResponse response) {
+	public ResponseWrapper<?> beforeBodyWrite(ResponseWrapper<?> body, MethodParameter returnType,
+			MediaType selectedContentType, Class<? extends HttpMessageConverter<?>> selectedConverterType,
+			ServerHttpRequest request, ServerHttpResponse response) {
 		RequestWrapper<?> requestWrapper = null;
-		ResponseWrapper<Object> responseWrapper = new ResponseWrapper<>();
 		String requestBody = null;
 		try {
 			HttpServletRequest httpServletRequest = ((ServletServerHttpRequest) request).getServletRequest();
@@ -80,12 +83,11 @@ public class ResponseBodyAdviceConfig implements ResponseBodyAdvice<Object> {
 			objectMapper.registerModule(new JavaTimeModule());
 			if (!EmptyCheckUtils.isNullEmpty(requestBody)) {
 				requestWrapper = objectMapper.readValue(requestBody, RequestWrapper.class);
-				responseWrapper.setId(requestWrapper.getId());
-				responseWrapper.setVersion(requestWrapper.getVersion());
+				body.setId(requestWrapper.getId());
+				body.setVersion(requestWrapper.getVersion());
 			}
-			responseWrapper.setResponse(body);
-			responseWrapper.setErrors(null);
-			return responseWrapper;
+			body.setErrors(null);
+			return body;
 		} catch (Exception e) {
 			Logger mosipLogger = LoggerConfiguration.logConfig(ResponseBodyAdviceConfig.class);
 			mosipLogger.error("", "", "", e.getMessage());
