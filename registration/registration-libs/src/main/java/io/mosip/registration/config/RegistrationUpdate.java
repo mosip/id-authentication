@@ -2,7 +2,7 @@ package io.mosip.registration.config;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -15,37 +15,41 @@ import java.util.Map.Entry;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 
-import javax.swing.text.Document;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
+
+import io.mosip.kernel.core.util.FileUtils;
 
 public class RegistrationUpdate {
 
 	private static String backUpPath = "D://mosip/AutoBackUp";
 
-	private static String folderSeperator = "/";
-
-	private static String buildVersion = "0.9.6";
-	private static String zipFileFormat = "mosip-sw-";
-	private static String zipFile = ".zip";
+	private static String SLASH = "/";
 
 	private static String manifestFile = "MANIFEST.MF";
 
 	// TODO move to application.properties
-	private static String serverRegClientURL = "http://13.71.87.138:8040/artifactory/libs-release/io/mosip/registration/registration-client";
-
+	private static String serverRegClientURL = "http://13.71.87.138:8040/artifactory/libs-release/io/mosip/registration/registration-client/";
 	private static String serverMosipXmlFileUrl = "http://13.71.87.138:8040/artifactory/libs-release/io/mosip/registration/registration-client/maven-metadata.xml";
 
-	private static String libsFolder = "/libs/";
+	private static String libsFolder = "lib/";
+	private static String binFolder = "bin/";
 
 	private static String currentVersion;
 
 	private static String latestVersion;
+
+	private static Manifest localManifest;
+
+	private static Manifest serverManifest;
+
+	private String registration = "registration";
+
+	private String versionTag = "version";
 
 	public boolean hasUpdate() throws IOException, ParserConfigurationException, SAXException {
 		return !getCurrentVersion().equals(getLatestVersion());
@@ -60,7 +64,7 @@ public class RegistrationUpdate {
 			org.w3c.dom.Document metaInfXmlDocument = (org.w3c.dom.Document) db
 					.parse(new URL(serverMosipXmlFileUrl).openStream());
 
-			NodeList list = metaInfXmlDocument.getDocumentElement().getElementsByTagName("version");
+			NodeList list = metaInfXmlDocument.getDocumentElement().getElementsByTagName(versionTag);
 			if (list != null && list.getLength() > 0) {
 				NodeList subList = list.item(0).getChildNodes();
 
@@ -74,7 +78,7 @@ public class RegistrationUpdate {
 		return latestVersion;
 	}
 
-	private String getCurrentVersion() throws IOException {
+	public String getCurrentVersion() throws IOException {
 		if (currentVersion != null) {
 			return currentVersion;
 		} else {
@@ -94,75 +98,126 @@ public class RegistrationUpdate {
 		List<String> deletableJars = new LinkedList<>();
 		List<String> checkableJars = new LinkedList<>();
 
-		downloadJarsWithVersion(getLatestVersion());
+		Map<String, Attributes> localAttributes = localManifest.getEntries();
+		Map<String, Attributes> serverAttributes = serverManifest.getEntries();
+
+		// Compare local and server Manifest
+		for (Entry<String, Attributes> jar : localAttributes.entrySet()) {
+			checkableJars.add(jar.getKey());
+			if (!serverAttributes.containsKey(jar.getKey())) {
+
+				/* unnecessary jar after update */
+				deletableJars.add(jar.getKey());
+
+			} else {
+				Attributes localAttribute = jar.getValue();
+				Attributes serverAttribute = serverAttributes.get(jar.getKey());
+				if (!localAttribute.getValue(Attributes.Name.CONTENT_TYPE)
+						.equals(serverAttribute.getValue(Attributes.Name.CONTENT_TYPE))) {
+
+					/* Jar to be downloaded */
+					downloadJars.add(jar.getKey());
+
+				}
+				serverManifest.getEntries().remove(jar.getKey());
+
+			}
+		}
+
+		for (Entry<String, Attributes> jar : serverAttributes.entrySet()) {
+			downloadJars.add(jar.getKey());
+		}
+
 		deleteJars(deletableJars);
 
 		// Un-Modified jars exist or not
 		checkableJars.removeAll(deletableJars);
 		checkableJars.removeAll(downloadJars);
 
+		// Download latest jars if not in local
+		checkJars(getLatestVersion(), downloadJars);
 		checkJars(getLatestVersion(), checkableJars);
+
+		replaceManifest();
 
 	}
 
 	private void checkJars(String version, List<String> checkableJars) throws IOException {
 		for (String jarFile : checkableJars) {
-			if (jarFile.contains("registration")) {
-				checkForJarFile(version, "bin", jarFile);
+			if (jarFile.contains(registration)) {
+				checkForJarFile(version, binFolder, jarFile);
 			} else {
-				checkForJarFile(version, "lib", jarFile);
+				checkForJarFile(version, libsFolder, jarFile);
 			}
 		}
 
 	}
 
 	private void checkForJarFile(String version, String folderName, String jarFileName) throws IOException {
-		String folderSeparator = "/";
-		File userDir = new File(System.getProperty("user.dir"));
-		File jarInFolder = new File(
-				userDir.getParentFile() + folderSeparator + folderName + folderSeparator + jarFileName);
+
+		File jarInFolder = new File(folderName + jarFileName);
 		if (!jarInFolder.exists()) {
 
-			// get input stream
-			Files.copy(getInputStreamOfJar(version, jarFileName), jarInFolder.toPath());
+			// TODO Temporary fix to get rid of Client jar
+			if (!(jarFileName.contains("client") || jarFileName.contains("pom"))) {
+				// get input stream
+				Files.copy(getInputStreamOfJar(version, jarFileName), jarInFolder.toPath());
+			}
 		}
 	}
 
 	private static InputStream getInputStreamOfJar(String version, String jarName)
 			throws MalformedURLException, IOException {
-		return new URL(serverRegClientURL + version + libsFolder + jarName).openStream();
+		return new URL(serverRegClientURL + version + SLASH + libsFolder + jarName).openStream();
 
 	}
 
 	private void deleteJars(List<String> deletableJars) {
-		// TODO Auto-generated method stub
+		deletableJars.forEach(jarName -> {
+			File deleteFile = null;
+			if (jarName.contains(registration)) {
+				deleteFile = new File(binFolder + jarName);
+			} else {
+				deleteFile = new File(libsFolder + jarName);
+			}
+
+			if (deleteFile.exists()) {
+				try {
+					FileUtils.forceDelete(deleteFile);
+				} catch (io.mosip.kernel.core.exception.IOException ioException) {
+					ioException.printStackTrace();
+				}
+			}
+		});
 
 	}
 
-	private void downloadJarsWithVersion(String latestVersion) {
-		// TODO Auto-generated method stub
-
-	}
-
-	private Manifest getLocalManifest() throws FileNotFoundException, IOException {
-		File userDir = getCurrentDirectoryFile();
-		File localManifestFile = new File(userDir.getParentFile() + folderSeperator + manifestFile);
+	private Manifest getLocalManifest() throws IOException {
+		if (localManifest != null) {
+			return localManifest;
+		}
+		File localManifestFile = new File(manifestFile);
 
 		if (localManifestFile.exists()) {
-			return new Manifest(new FileInputStream(localManifestFile));
+
+			// Set Local Manifest
+			setLocalManifest(new Manifest(new FileInputStream(localManifestFile)));
 
 		}
-		return null;
-	}
-
-	private File getCurrentDirectoryFile() {
-		return new File(System.getProperty("user.dir"));
+		return localManifest;
 	}
 
 	private Manifest getServerManifest() throws IOException, ParserConfigurationException, SAXException {
 
-		return new Manifest(
-				new FileInputStream(serverRegClientURL + getLatestVersion() + folderSeperator + manifestFile));
+		if (serverManifest != null) {
+			return serverManifest;
+		}
+
+		// Get latest Manifest from server
+		setServerManifest(
+				new Manifest(new URL(serverRegClientURL + getLatestVersion() + SLASH + manifestFile).openStream()));
+
+		return serverManifest;
 
 	}
 
@@ -184,5 +239,27 @@ public class RegistrationUpdate {
 			}
 
 		}
+	}
+
+	private void replaceManifest() throws IOException, ParserConfigurationException, SAXException {
+		Manifest serverManifest = getServerManifest();
+
+		File manifest = new File(manifestFile);
+
+		try (FileOutputStream fileOutputStream = new FileOutputStream(manifest)) {
+			serverManifest.write(fileOutputStream);
+
+			// Refresh Local Manifest
+			setLocalManifest(serverManifest);
+		}
+
+	}
+
+	private void setLocalManifest(Manifest localManifest) {
+		this.localManifest = localManifest;
+	}
+
+	private void setServerManifest(Manifest serverManifest) {
+		this.serverManifest = serverManifest;
 	}
 }
