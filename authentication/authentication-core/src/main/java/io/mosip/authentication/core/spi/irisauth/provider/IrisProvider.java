@@ -173,6 +173,7 @@ public abstract class IrisProvider implements MosipIrisProvider {
 					}
 				} 
 				match += individualScore;
+				individualScore =0;
 			}
 		}
 		return match;

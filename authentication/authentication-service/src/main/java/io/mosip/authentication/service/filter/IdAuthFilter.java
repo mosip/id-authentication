@@ -337,6 +337,8 @@ public class IdAuthFilter extends BaseAuthFilter {
 					bioType = "FINGER";
 				} else if (bioType.equalsIgnoreCase("FID")) {
 					bioType = "FACE";
+				} else if (bioType.equalsIgnoreCase("IIR")) {
+					bioType = "IRIS";
 				}
 				if (!isAllowedAuthType(MatchType.Category.BIO.getType(), bioType, authPolicies)) {
 					throw new IdAuthenticationAppException(
