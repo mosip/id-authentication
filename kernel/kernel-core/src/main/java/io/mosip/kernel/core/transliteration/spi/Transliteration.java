@@ -7,6 +7,7 @@ package io.mosip.kernel.core.transliteration.spi;
  * @author Ritesh Sinha
  * @since 1.0.0
  * @param <T>
+ *            is a type parameter
  */
 public interface Transliteration<T> {
 

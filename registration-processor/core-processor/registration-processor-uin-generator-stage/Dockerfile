@@ -24,6 +24,6 @@ ENV spring_config_label_env=${spring_config_label}
 # change volume to whichever storage directory you want to use for this container.
 VOLUME /home/logs
 
-COPY ./target/uin-generator-stage-*.jar uin-generator-stage.jar
+COPY ./target/registration-processor-uin-generator-stage-*.jar registration-processor-uin-generator-stage.jar
 
-CMD ["java","-Dspring.cloud.config.label=${spring_config_label_env}","-Dspring.profiles.active=${active_profile_env}","-Dspring.cloud.config.uri=${spring_config_url_env}","-jar","uin-generator-stage.jar"]
+CMD ["java","-Dspring.cloud.config.label=${spring_config_label_env}","-Dspring.profiles.active=${active_profile_env}","-Dspring.cloud.config.uri=${spring_config_url_env}","-jar","registration-processor-uin-generator-stage.jar"]

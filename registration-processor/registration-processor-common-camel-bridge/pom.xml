@@ -8,7 +8,7 @@
 		<artifactId>registration-processor</artifactId>
 		<version>0.10.1</version>
 	</parent>
-	<artifactId>registration-processor-camel-bridge</artifactId>
+	<artifactId>registration-processor-common-camel-bridge</artifactId>
 	<packaging>jar</packaging>
 
 	<properties>

@@ -51,6 +51,7 @@ import io.mosip.preregistration.application.exception.RecordFailedToDeleteExcept
 import io.mosip.preregistration.application.exception.RecordFailedToUpdateException;
 import io.mosip.preregistration.application.exception.RecordNotFoundException;
 import io.mosip.preregistration.application.exception.RecordNotFoundForPreIdsException;
+import io.mosip.preregistration.application.exception.RestCallException;
 import io.mosip.preregistration.application.exception.util.DemographicExceptionCatcher;
 import io.mosip.preregistration.application.repository.DemographicRepository;
 import io.mosip.preregistration.application.service.util.DemographicServiceUtil;
@@ -379,9 +380,7 @@ public class DemographicService {
 				DemographicEntity demographicEntity = demographicRepository.findBypreRegistrationId(preregId);
 				if (!serviceUtil.isNull(demographicEntity)) {
 					if (serviceUtil.checkStatusForDeletion(demographicEntity.getStatusCode())) {
-						if(!(demographicEntity.getStatusCode().equals(StatusCodes.PENDING_APPOINTMENT.getCode()))) {
 							callDocumentServiceToDeleteAllByPreId(preregId);
-						}
 						if (!(demographicEntity.getStatusCode().equals(StatusCodes.PENDING_APPOINTMENT.getCode()))) {
 							callBookingServiceToDeleteAllByPreId(preregId);
 						}
@@ -708,16 +707,16 @@ public class DemographicService {
 					});
 
 			if (responseEntity.getBody().getErr() != null) {
-
+				if(!responseEntity.getBody().getErr().getMessage().equalsIgnoreCase(ErrorMessages.DOCUMENT_IS_MISSING.name())) {
 				throw new DocumentFailedToDeleteException(responseEntity.getBody().getErr().getErrorCode(),
 						responseEntity.getBody().getErr().getMessage());
-
+				}
 			}
 		} catch (RestClientException ex) {
 			log.error("sessionId", "idType", "id",
 					"In callDocumentServiceToDeleteAllByPreId method of pre-registration service- " + ex.getMessage());
-			throw new DocumentFailedToDeleteException(ErrorCodes.PRG_PAM_DOC_015.name(),
-					ErrorMessages.DOCUMENT_FAILED_TO_DELETE.name());
+			throw new RestCallException(ErrorCodes.PRG_PAM_APP_014.name(),
+					ErrorMessages.DOCUMENT_SERVICE_FAILED_TO_CALL.name());
 		}
 	}
 

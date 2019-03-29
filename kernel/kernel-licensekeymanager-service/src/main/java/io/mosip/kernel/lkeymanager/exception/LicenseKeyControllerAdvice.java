@@ -1,8 +1,6 @@
 package io.mosip.kernel.lkeymanager.exception;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -18,8 +16,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
+import io.mosip.kernel.core.exception.ErrorResponse;
 import io.mosip.kernel.core.exception.ServiceError;
-import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.util.EmptyCheckUtils;
 import io.mosip.kernel.lkeymanager.constant.LicenseKeyManagerErrorCodes;

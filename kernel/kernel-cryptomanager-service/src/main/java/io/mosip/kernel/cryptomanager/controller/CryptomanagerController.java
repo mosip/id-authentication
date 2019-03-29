@@ -52,7 +52,6 @@ public class CryptomanagerController {
 	 */
 	// @PreAuthorize("hasAnyRole('INDIVIDUAL','REGISTRATION_PROCESSOR','ID_AUTHENTICATION','TEST')")
 	@ResponseFilter
-	@ApiOperation(value = "Encrypt the data", response = CryptomanagerResponseDto.class)
 	@PostMapping(value = "/encrypt", produces = "application/json")
 	public ResponseWrapper<CryptomanagerResponseDto> encrypt(
 			@ApiParam("Data to encrypt in BASE64 encoding with meta-data") @RequestBody @Valid RequestWrapper<CryptomanagerRequestDto> cryptomanagerRequestDto) {
@@ -70,7 +69,6 @@ public class CryptomanagerController {
 	 */
 	// @PreAuthorize("hasAnyRole('INDIVIDUAL','REGISTRATION_PROCESSOR','ID_AUTHENTICATION','TEST')")
 	@ResponseFilter
-	@ApiOperation(value = "Decrypt the data", response = CryptomanagerResponseDto.class)
 	@PostMapping(value = "/decrypt", produces = "application/json")
 	public ResponseWrapper<CryptomanagerResponseDto> decrypt(
 			@ApiParam("Data to decrypt in BASE64 encoding with meta-data") @RequestBody @Valid RequestWrapper<CryptomanagerRequestDto> cryptomanagerRequestDto) {
