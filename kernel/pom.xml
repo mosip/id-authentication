@@ -138,13 +138,13 @@
 		<module>kernel-idgenerator-tokenid</module>
 		<module>kernel-idgenerator-machineid</module>
 		<module>kernel-idgenerator-regcenterid</module>
-		<module>kernel-idgenerator-tspid</module>
+		<module>kernel-idgenerator-mispid</module>
 		<module>kernel-idgenerator-rid</module>
 		<module>kernel-idvalidator-prid</module>
 		<module>kernel-idvalidator-rid</module>
 		<module>kernel-idvalidator-uin</module>
 		<module>kernel-idvalidator-vid</module>
-		<module>kernel-idvalidator-tspid</module>
+		<module>kernel-idvalidator-mispid</module>
 		<module>kernel-datavalidator</module>
 		<module>kernel-jsonvalidator</module>
 		<module>kernel-pinvalidator</module>
