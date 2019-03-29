@@ -71,8 +71,7 @@ public class UinGeneratorImpl implements UinGenerator {
 	 *            The number of uins to generate
 	 * @param uinLength
 	 *            The length of the uin
-	 * @param uinDefaultStatus
-	 *            The Default value of the uin
+	 * 
 	 */
 	public UinGeneratorImpl(@Value("${mosip.kernel.uin.uins-to-generate}") long uinsCount,
 			@Value("${mosip.kernel.uin.length}") int uinLength) {

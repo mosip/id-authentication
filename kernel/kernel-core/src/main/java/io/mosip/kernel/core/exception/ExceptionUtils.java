@@ -63,8 +63,6 @@ public final class ExceptionUtils {
 	}
 
 	/**
-	 */
-	/**
 	 * This method gives service error list for response receive from service.
 	 * 
 	 * @param responseBody
@@ -87,12 +85,9 @@ public final class ExceptionUtils {
 
 				while (iter.hasNext()) {
 					JsonNode parameterNode = iter.next();
-					if (!(getJsonValue(parameterNode, "errorCode") == null
-							|| getJsonValue(parameterNode, "message") == null)) {
-						ServiceError serviceError = new ServiceError(getJsonValue(parameterNode, "errorCode"),
-								getJsonValue(parameterNode, "message"));
-						validationErrorsList.add(serviceError);
-					}
+					ServiceError serviceError = new ServiceError(getJsonValue(parameterNode, "errorCode"),
+							getJsonValue(parameterNode, "message"));
+					validationErrorsList.add(serviceError);
 				}
 			}
 		} catch (IOException e) {

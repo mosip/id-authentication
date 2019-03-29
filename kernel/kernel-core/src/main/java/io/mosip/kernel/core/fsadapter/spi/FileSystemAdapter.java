@@ -82,10 +82,10 @@ public interface FileSystemAdapter {
 
 	/**
 	 * Checks if is packet present.
-	 * 
+	 *
 	 * @param id
-	 *            the registration id
-	 * @return true if packet is present
+	 *            the id
+	 * @return the boolean
 	 */
 	public boolean isPacketPresent(String id);
 
@@ -97,7 +97,7 @@ public interface FileSystemAdapter {
 	 * @param key
 	 *            Physical path of the packet which needs to be stored
 	 * @param document
-	 *            file to be stored
+	 *            document to be stored
 	 * @return True If the packet is stored successfully
 	 */
 	public boolean storeFile(String id, String key, InputStream document);
