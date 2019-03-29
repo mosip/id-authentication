@@ -38,7 +38,7 @@ public final class HMACUtils {
 	 *            bytes to be hash generation
 	 * @return byte[] generated hash bytes
 	 */
-	public static byte[] generateHash(final byte[] bytes) {
+	public static synchronized byte[] generateHash(final byte[] bytes) {
 		return messageDigest.digest(bytes);
 	}
 
@@ -68,7 +68,7 @@ public final class HMACUtils {
 	 *            digest bytes
 	 * @return String converted digest as plain text
 	 */
-	public static String digestAsPlainText(final byte[] bytes) {
+	public static synchronized String digestAsPlainText(final byte[] bytes) {
 		return DatatypeConverter.printHexBinary(bytes).toUpperCase();
 	}
 

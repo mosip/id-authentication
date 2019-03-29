@@ -256,7 +256,7 @@ public class DocumentServiceUtil {
 		String key = sourceEntity.getDocCatCode() + "_" + sourceEntity.getDocumentId();
 		InputStream file=fs.getFile(sourceEntity.getPreregId(), key);
 
-		copyDocumentEntity.setDocHash(new String(HashUtill.hashUtill(IOUtils.toByteArray(file))));
+		copyDocumentEntity.setDocHash(HashUtill.hashUtill(IOUtils.toByteArray(file)));
 		copyDocumentEntity.setDocName(sourceEntity.getDocName());
 		copyDocumentEntity.setDocTypeCode(sourceEntity.getDocTypeCode());
 		copyDocumentEntity.setDocCatCode(sourceEntity.getDocCatCode());

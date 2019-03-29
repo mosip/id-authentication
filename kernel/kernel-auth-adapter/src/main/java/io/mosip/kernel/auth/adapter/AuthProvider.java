@@ -34,6 +34,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.exception.ServiceError;
+import io.mosip.kernel.core.http.ResponseWrapper;
 
 /***********************************************************************************************************************
  * Contacts auth server to verify token validity.
@@ -104,8 +105,12 @@ public class AuthProvider extends AbstractUserDetailsAuthenticationProvider {
 		catch (KeyManagementException | KeyStoreException | NoSuchAlgorithmException exp) {
 			throw new AuthManagerException(String.valueOf(HttpStatus.UNAUTHORIZED.value()), exp.getMessage());
 		}
+		ResponseWrapper<?> responseObject;
 		try {
-			mosipUserDto = objectMapper.readValue(response.getBody(), MosipUserDto.class);
+			responseObject = objectMapper.readValue(response.getBody(), ResponseWrapper.class);
+			mosipUserDto = objectMapper.readValue(
+					objectMapper.writeValueAsString(responseObject.getResponse()),
+					MosipUserDto.class);
 		} catch (Exception e) {
 			throw new AuthManagerException(String.valueOf(HttpStatus.UNAUTHORIZED.value()), e.getMessage());
 		}

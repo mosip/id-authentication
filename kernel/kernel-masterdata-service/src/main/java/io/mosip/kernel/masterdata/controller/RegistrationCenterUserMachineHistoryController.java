@@ -5,6 +5,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.mosip.kernel.core.http.ResponseFilter;
+import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.masterdata.dto.getresponse.RegistrationCenterUserMachineMappingHistoryResponseDto;
 import io.mosip.kernel.masterdata.service.RegistrationCenterMachineUserHistoryService;
 import io.swagger.annotations.Api;
@@ -38,18 +40,20 @@ public class RegistrationCenterUserMachineHistoryController {
 	 *            machine id provided by user
 	 * @param userId
 	 *            user id provided by user
-	 * @return {@link RegistrationCenterUserMachineMappingHistoryResponseDto} based on
-	 *         user inputs
+	 * @return {@link RegistrationCenterUserMachineMappingHistoryResponseDto} based
+	 *         on user inputs
 	 */
-	@GetMapping("/v1.0/getregistrationmachineusermappinghistory/{effdtimes}/{registrationcenterid}/{machineid}/{userid}")
-	public RegistrationCenterUserMachineMappingHistoryResponseDto getRegistrationCentersMachineUserMapping(
+	@ResponseFilter
+	@GetMapping("/getregistrationmachineusermappinghistory/{effdtimes}/{registrationcenterid}/{machineid}/{userid}")
+	public ResponseWrapper<RegistrationCenterUserMachineMappingHistoryResponseDto> getRegistrationCentersMachineUserMapping(
 			@PathVariable("effdtimes") String effectiveTimestamp,
 			@PathVariable("registrationcenterid") String registrationCenterId,
-			@PathVariable("machineid") String machineId,
-			@PathVariable("userid") String userId) {
-		return registrationCenterMachineUserHistoryService
-				.getRegistrationCentersMachineUserMapping(effectiveTimestamp,
-						registrationCenterId, machineId, userId);
+			@PathVariable("machineid") String machineId, @PathVariable("userid") String userId) {
+
+		ResponseWrapper<RegistrationCenterUserMachineMappingHistoryResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(registrationCenterMachineUserHistoryService
+				.getRegistrationCentersMachineUserMapping(effectiveTimestamp, registrationCenterId, machineId, userId));
+		return responseWrapper;
 	}
 
 }

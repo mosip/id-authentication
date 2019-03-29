@@ -117,11 +117,6 @@ public enum ErrorMessages {
 	/**
 	 * ErrorMessage for PRG_PAM_APP_005
 	 */
-	INVALID_PRE_REGISTRATION_ID,
-
-	/**
-	 * ErrorMessage for PRG_PAM_APP_005
-	 */
 	INVALID_STATUS_CODE,
 
 	/**
@@ -132,6 +127,12 @@ public enum ErrorMessages {
 	/**
 	 * PRG_PAM_APP_013
 	 */
-	RECORD_NOT_FOUND;
-	;
+	RECORD_NOT_FOUND,
+	
+	/**
+	 * PRG_PAM_APP_014
+	 */
+	DOCUMENT_SERVICE_FAILED_TO_CALL,
+	
+	DOCUMENT_IS_MISSING;
 }

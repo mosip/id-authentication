@@ -3,23 +3,20 @@
  */
 package io.mosip.kernel.auth.adapter;
 
-import org.springframework.security.authentication.InternalAuthenticationServiceException;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
-import org.springframework.security.web.authentication.RememberMeServices;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-import org.springframework.security.web.util.matcher.RequestMatcher;
+import java.io.IOException;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
+
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.security.web.util.matcher.RequestMatcher;
 
 /**
  * @author M1049825
@@ -27,17 +24,15 @@ import java.io.IOException;
  */
 public class AuthFilter extends AbstractAuthenticationProcessingFilter {
 
-	private RequestMatcher requestMatcher;
-
 	private String[] allowedEndPoints() {
-		return new String[] { "/assets/**", "/icons/**", "/screenshots/**", "/favicon**", "/**/favicon**", "/css/**",
-				"/js/**", "/**/error**", "/**/webjars/**", "/**/v2/api-docs", "/**/configuration/ui",
-				"/**/configuration/security", "/**/swagger-resources/**", "/**/swagger-ui.html"};
+		return new String[] { "/**/assets/**", "/**/icons/**", "/**/screenshots/**", "/favicon**", "/**/favicon**", "/**/css/**",
+				"/**/js/**", "/**/error**", "/**/webjars/**", "/**/v2/api-docs", "/**/configuration/ui",
+				"/**/configuration/security", "/**/swagger-resources/**", "/**/swagger-ui.html", "/**/csrf","/*/" };
 	}
 
 	protected AuthFilter(RequestMatcher requiresAuthenticationRequestMatcher) {
 		super(requiresAuthenticationRequestMatcher);
-		this.requestMatcher = requiresAuthenticationRequestMatcher;
+		//this.requestMatcher = requiresAuthenticationRequestMatcher;
 	}
 
 	@Override
@@ -49,10 +44,9 @@ public class AuthFilter extends AbstractAuthenticationProcessingFilter {
 				return false;
 			}
 		}
-
 		return true;
 	}
-	
+
 	@Override
 	public Authentication attemptAuthentication(HttpServletRequest httpServletRequest,
 			HttpServletResponse httpServletResponse) throws AuthenticationException {
@@ -66,9 +60,8 @@ public class AuthFilter extends AbstractAuthenticationProcessingFilter {
 			}
 		}
 		if (token == null) {
-			throw new RuntimeException(AuthAdapterConstant.AUTH_INVALID_TOKEN);
+			throw new BadCredentialsException(AuthAdapterConstant.AUTH_INVALID_TOKEN);
 		}
-
 		AuthToken authToken = new AuthToken(token);
 		return getAuthenticationManager().authenticate(authToken);
 	}

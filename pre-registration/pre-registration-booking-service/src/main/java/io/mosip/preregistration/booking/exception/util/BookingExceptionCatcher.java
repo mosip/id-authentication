@@ -8,6 +8,7 @@ import java.time.DateTimeException;
 import java.time.format.DateTimeParseException;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
+import io.mosip.kernel.core.exception.ParseException;
 import io.mosip.preregistration.booking.errorcodes.ErrorCodes;
 import io.mosip.preregistration.booking.errorcodes.ErrorMessages;
 import io.mosip.preregistration.booking.exception.AppointmentAlreadyCanceledException;
@@ -63,6 +64,9 @@ public class BookingExceptionCatcher {
 		} else if (ex instanceof DateTimeException || ex instanceof InvalidDateTimeFormatException) {
 			throw new InvalidDateTimeFormatException(((InvalidDateTimeFormatException) ex).getErrorCode(),
 					((InvalidDateTimeFormatException) ex).getErrorText());
+		} else if (ex instanceof ParseException) {
+			throw new ParseException(ErrorCodes.PRG_BOOK_RCI_009.toString(),
+					ErrorMessages.INVALID_DATE_TIME_FORMAT.toString());
 		} else if (ex instanceof DocumentNotFoundException) {
 			throw new DocumentNotFoundException(((DocumentNotFoundException) ex).getErrorCode(),
 					((DocumentNotFoundException) ex).getErrorText(), ex.getCause());

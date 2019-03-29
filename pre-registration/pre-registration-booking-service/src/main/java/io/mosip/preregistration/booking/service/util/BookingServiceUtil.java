@@ -362,8 +362,7 @@ public class BookingServiceUtil {
 		if (Math.abs(hours) >= timeSpanCheckForCancel)
 			return true;
 		else
-			throw new TimeSpanException(ErrorCodes.PRG_BOOK_RCI_026.getCode(),
-					ErrorMessages.BOOKING_STATUS_CANNOT_BE_ALTERED.getMessage());
+			return false;
 	}
 
 	public boolean timeSpanCheckForRebook(LocalDateTime bookedDateTime) {
@@ -374,8 +373,7 @@ public class BookingServiceUtil {
 		if (Math.abs(hours) >= timeSpanCheckForRebook)
 			return true;
 		else
-			throw new TimeSpanException(ErrorCodes.PRG_BOOK_RCI_026.getCode(),
-					ErrorMessages.BOOKING_STATUS_CANNOT_BE_ALTERED.getMessage());
+			return false;
 
 	}
 

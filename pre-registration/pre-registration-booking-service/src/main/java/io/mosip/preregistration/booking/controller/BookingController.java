@@ -4,7 +4,6 @@
  */
 package io.mosip.preregistration.booking.controller;
 
-import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -128,11 +127,11 @@ public class BookingController {
 	 * @throws ParseException
 	 * @throws java.text.ParseException
 	 */
-	@PreAuthorize("hasAnyRole('individual')")
+	@PreAuthorize("hasAnyRole('individual','REGISTRATION_OFFICER','REGISTRATION_SUPERVISOR')")
 	@GetMapping(path = "/appointment", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Fetch Appointment details")
-	@ApiResponses(value = { @ApiResponse(code = 200, message = "Appointment Booked Successfully"),
-			@ApiResponse(code = 400, message = "Unable to Book the appointment") })
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "Appointment details Successfully fetched"),
+			@ApiResponse(code = 400, message = "Unable to fetch the appointment details") })
 	public ResponseEntity<MainResponseDTO<BookingRegistrationDTO>> appointmentDetails(
 			@RequestParam(value = "pre_registration_id") String preRegID) {
 		log.info("sessionId", "idType", "id",
@@ -162,7 +161,6 @@ public class BookingController {
 		return ResponseEntity.status(HttpStatus.OK).body(bookingService.cancelAppointment(requestDTO));
 	}
 
-
 	/**
 	 * Delete API to delete the Individual booking associated with the PreId.
 	 *
@@ -191,14 +189,14 @@ public class BookingController {
 	 *            the to date
 	 * @return the booked pre-ids for date range
 	 */
-	@PreAuthorize("hasAnyRole('individual')")
+	@PreAuthorize("hasAnyRole('individual','REGISTRATION_OFFICER','REGISTRATION_SUPERVISOR')")
 	@GetMapping(path = "/appointment/byDateAndRegCenterId", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Get Pre-Registartion ids By Booked Date Time And Registration center id")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Booked data successfully retrieved"),
 			@ApiResponse(code = 400, message = "Unable to get the Booked data") })
 	public ResponseEntity<MainResponseDTO<PreRegIdsByRegCenterIdResponseDTO>> getApplicationByDate(
-			@RequestParam(value = "from_date", required = true) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate fromDate,
-			@RequestParam(value = "to_date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate toDate,
+			@RequestParam(value = "from_date", required = true) @DateTimeFormat(pattern = "yyyy-MM-dd") String fromDate,
+			@RequestParam(value = "to_date") @DateTimeFormat(pattern = "yyyy-MM-dd") String toDate,
 			@RequestParam(value = "reg_center_id") String regCenterId) {
 		log.info("sessionId", "idType", "id",
 				"In booking controller for fetching all booked preids " + fromDate + " to " + toDate);

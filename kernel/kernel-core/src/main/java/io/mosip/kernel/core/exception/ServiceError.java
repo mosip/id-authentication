@@ -17,7 +17,7 @@ public class ServiceError {
 	/**
 	 * The error message.
 	 */
-	private String errorMessage;
+	private String message;
 
 	/**
 	 * Constructor for ErrorBean.
@@ -29,7 +29,7 @@ public class ServiceError {
 	 */
 	public ServiceError(String errorCode, String errorMessage) {
 		this.errorCode = errorCode;
-		this.errorMessage = errorMessage;
+		this.message = errorMessage;
 	}
 
 }

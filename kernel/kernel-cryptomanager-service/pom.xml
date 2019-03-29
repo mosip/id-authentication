@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>io.mosip.kernel</groupId>
 		<artifactId>kernel-parent</artifactId>
-		<version>0.10.0</version>
+		<version>0.10.1</version>
 	</parent>
 	<artifactId>kernel-cryptomanager-service</artifactId>
 	<packaging>jar</packaging>
@@ -73,6 +73,11 @@
 			<groupId>org.apache.httpcomponents</groupId>
 			<artifactId>httpclient</artifactId>
 			<version>${apache.httpcomponents.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>io.mosip.kernel</groupId>
+			<artifactId>kernel-logger-logback</artifactId>
+			<version>${project.version}</version>
 		</dependency>
 	</dependencies>
 	<build>

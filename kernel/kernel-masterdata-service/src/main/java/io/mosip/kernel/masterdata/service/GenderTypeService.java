@@ -1,7 +1,7 @@
 package io.mosip.kernel.masterdata.service;
 
 import io.mosip.kernel.masterdata.dto.GenderTypeDto;
-import io.mosip.kernel.masterdata.dto.RequestDto;
+import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.masterdata.dto.getresponse.GenderTypeResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
@@ -49,16 +49,16 @@ public interface GenderTypeService {
 	 * @throws MasterDataServiceException
 	 *             when entered data not created
 	 */
-	public CodeAndLanguageCodeID saveGenderType(RequestDto<GenderTypeDto> genderRequestDto);
+	public CodeAndLanguageCodeID saveGenderType(GenderTypeDto genderRequestDto);
 
 	/**
 	 * Method to update Gender Type based on data provided.
 	 * 
 	 * @param gender
-	 *            {@link RequestDto} the request dto.
+	 *            {@link RequestWrapper} the request dto.
 	 * @return {@link CodeAndLanguageCodeID}
 	 */
-	public CodeAndLanguageCodeID updateGenderType(RequestDto<GenderTypeDto> gender);
+	public CodeAndLanguageCodeID updateGenderType(GenderTypeDto gender);
 
 	/**
 	 * Method to delete Gender Type based on code provided.

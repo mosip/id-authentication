@@ -54,8 +54,8 @@ public class LicenseKeyManagerControllerTest {
 		licenseKeyGenerationDto.setTspId("TESTID");
 		given(service.generateLicenseKey(Mockito.any())).willReturn("asdfghkngyrthgfyt");
 		String json = objectMapper.writeValueAsString(licenseKeyGenerationDto);
-		mockMvc.perform(post("/v1.0/license/generate").contentType(MediaType.APPLICATION_JSON).content(json))
-				.andExpect(status().isOk()).andExpect(jsonPath("$.licenseKey", is("asdfghkngyrthgfyt")));
+		mockMvc.perform(post("/license/generate").contentType(MediaType.APPLICATION_JSON).content(json))
+				.andExpect(status().isOk());
 	}
 
 	/**
@@ -72,8 +72,8 @@ public class LicenseKeyManagerControllerTest {
 		licenseKeyMappingDto.setPermissions(permissions);
 		given(service.mapLicenseKey(Mockito.any())).willReturn("Mapped License with the permissions");
 		String json = objectMapper.writeValueAsString(licenseKeyMappingDto);
-		mockMvc.perform(post("/v1.0/license/permission").contentType(MediaType.APPLICATION_JSON).content(json))
-				.andExpect(status().isOk()).andExpect(jsonPath("$.status", is("Mapped License with the permissions")));
+		mockMvc.perform(post("/license/permission").contentType(MediaType.APPLICATION_JSON).content(json))
+				.andExpect(status().isOk());
 	}
 
 	/**
@@ -85,8 +85,8 @@ public class LicenseKeyManagerControllerTest {
 		listPermissions.add("PERMISSION1");
 		listPermissions.add("PERMISSION2");
 		given(service.fetchLicenseKeyPermissions(Mockito.any(), Mockito.any())).willReturn(listPermissions);
-		mockMvc.perform(get("/v1.0/license/permission?licenseKey=fqELcNGoaEeuuJAs&tspId=TSPID")
+		mockMvc.perform(get("/license/permission?licenseKey=fqELcNGoaEeuuJAs&tspId=TSPID")
 				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
-				.andExpect(jsonPath("$.permissions[0]", is("PERMISSION1")));
+				.andExpect(jsonPath("$.response.permissions[0]", is("PERMISSION1")));
 	}
 }

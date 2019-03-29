@@ -1,7 +1,6 @@
 package io.mosip.kernel.masterdata.service;
 
 import io.mosip.kernel.masterdata.dto.BiometricTypeDto;
-import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.getresponse.BiometricTypeResponseDto;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
@@ -74,5 +73,5 @@ public interface BiometricTypeService {
 	 * @throws MasterDataServiceException
 	 *             If fails to insert the Biometric Type
 	 */
-	public CodeAndLanguageCodeID createBiometricType(RequestDto<BiometricTypeDto> biometricTypeRequestDto);
+	public CodeAndLanguageCodeID createBiometricType(BiometricTypeDto biometricTypeRequestDto);
 }

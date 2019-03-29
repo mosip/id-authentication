@@ -7,7 +7,7 @@
 	<parent>
 		<groupId>io.mosip.kernel</groupId>
 		<artifactId>kernel-parent</artifactId>
-		<version>0.10.0</version>
+		<version>0.10.1</version>
 	</parent>
 	<artifactId>kernel-masterdata-service</artifactId>
 	<name>kernel-masterdata-service</name>
@@ -100,8 +100,11 @@
 			<artifactId>httpclient</artifactId>
 			<version>4.5.6</version>
 		</dependency>
-
-
+		<dependency>
+			<groupId>io.mosip.kernel</groupId>
+			<artifactId>kernel-logger-logback</artifactId>
+			<version>${project.version}</version>
+		</dependency>
 		<dependency>
 			<groupId>ma.glasnost.orika</groupId>
 			<artifactId>orika-core</artifactId>
