@@ -22,9 +22,11 @@ public class MetaDataUtil {
 	/**
 	 * Function to set metadata
 	 * 
+	 * @param <T>
+	 *            is a type parameter
 	 * @param entity
-	 *            entity
-	 * @return <T> Entity with metadata
+	 *            entity of T type
+	 * @return Entity with meta data
 	 */
 	public <T extends BaseEntity> T setCreateMetaData(T entity) {
 		String contextUser = UinGeneratorConstant.DEFAULTADMIN_MOSIP_IO;
@@ -38,9 +40,11 @@ public class MetaDataUtil {
 	/**
 	 * Function to set metadata for update operation
 	 * 
+	 * @param <T>
+	 *            is a type parameter
 	 * @param entity
-	 *            entity
-	 * @return <T> Entity with metadata
+	 *            entity of T type
+	 * @return Entity with metadata
 	 */
 	public <T extends BaseEntity> T setUpdateMetaData(T entity) {
 		String contextUser = UinGeneratorConstant.DEFAULTADMIN_MOSIP_IO;

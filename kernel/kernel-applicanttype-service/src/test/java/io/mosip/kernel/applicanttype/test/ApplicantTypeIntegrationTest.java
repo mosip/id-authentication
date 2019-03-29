@@ -1,6 +1,5 @@
 package io.mosip.kernel.applicanttype.test;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -22,6 +21,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import io.mosip.kernel.applicanttype.dto.KeyValues;
 import io.mosip.kernel.applicanttype.dto.request.RequestDTO;
+import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.util.DateUtils;
 
 @SpringBootTest
@@ -42,10 +42,11 @@ public class ApplicantTypeIntegrationTest {
 
 	@Test
 	public void getApplicantType() throws Exception {
+		RequestWrapper<RequestDTO> request = new RequestWrapper<>();
 		RequestDTO dto = new RequestDTO();
-		dto.setId("applicanttype.getapplicanttype");
-		dto.setVer("V1.0");
-		dto.setRequestTime(DateUtils.getUTCCurrentDateTime());
+		request.setId("applicanttype.getapplicanttype");
+		request.setVersion("V1.0");
+		request.setRequesttime(DateUtils.getUTCCurrentDateTime());
 		List<KeyValues<String, Object>> list = new LinkedList<>();
 
 		KeyValues<String, Object> k1 = new KeyValues<>();
@@ -66,17 +67,19 @@ public class ApplicantTypeIntegrationTest {
 		list.add(k4);
 		dto.setAttributes(list);
 
+		request.setRequest(dto);
 		mockMvc.perform(post("/getApplicantType").contentType(MediaType.APPLICATION_JSON)
-				.content(mapper.writeValueAsString(dto))).andExpect(status().isOk());
+				.content(mapper.writeValueAsString(request))).andExpect(status().isOk());
 
 	}
 
 	@Test
 	public void getApplicantTypeDataNotFoundException() throws Exception {
+		RequestWrapper<RequestDTO> request = new RequestWrapper<>();
 		RequestDTO dto = new RequestDTO();
-		dto.setId("applicanttype.getapplicanttype");
-		dto.setVer("V1.0");
-		dto.setRequestTime(DateUtils.getUTCCurrentDateTime());
+		request.setId("applicanttype.getapplicanttype");
+		request.setVersion("V1.0");
+		request.setRequesttime(DateUtils.getUTCCurrentDateTime());
 		List<KeyValues<String, Object>> list = new LinkedList<>();
 
 		KeyValues<String, Object> k1 = new KeyValues<>();
@@ -97,17 +100,19 @@ public class ApplicantTypeIntegrationTest {
 		list.add(k4);
 		dto.setAttributes(list);
 
+		request.setRequest(dto);
 		mockMvc.perform(post("/getApplicantType").contentType(MediaType.APPLICATION_JSON)
-				.content(mapper.writeValueAsString(dto))).andExpect(status().isOk());
+				.content(mapper.writeValueAsString(request))).andExpect(status().isOk());
 
 	}
 
 	@Test
 	public void getApplicantTypeInvalidApplicantArgumentException() throws Exception {
+		RequestWrapper<RequestDTO> request = new RequestWrapper<>();
 		RequestDTO dto = new RequestDTO();
-		dto.setId("applicanttype.getapplicanttype");
-		dto.setVer("V1.0");
-		dto.setRequestTime(DateUtils.getUTCCurrentDateTime());
+		request.setId("applicanttype.getapplicanttype");
+		request.setVersion("V1.0");
+		request.setRequesttime(DateUtils.getUTCCurrentDateTime());
 		List<KeyValues<String, Object>> list = new LinkedList<>();
 
 		KeyValues<String, Object> k1 = new KeyValues<>();
@@ -128,9 +133,9 @@ public class ApplicantTypeIntegrationTest {
 		list.add(k4);
 		dto.setAttributes(list);
 
+		request.setRequest(dto);
 		mockMvc.perform(post("/getApplicantType").contentType(MediaType.APPLICATION_JSON)
-				.content(mapper.writeValueAsString(dto))).andExpect(status().isOk());
-
+				.content(mapper.writeValueAsString(request))).andExpect(status().isOk());
 
 	}
 

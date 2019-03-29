@@ -5,6 +5,13 @@ import java.util.List;
 import io.mosip.kernel.core.exception.BaseUncheckedException;
 import io.mosip.kernel.core.exception.ServiceError;
 
+/**
+ * Exception class to handle invalid arguments.
+ * 
+ * @author Sagar Mahapatra
+ * @since 1.0.0
+ *
+ */
 public class InvalidArgumentsException extends BaseUncheckedException {
 	/**
 	 * Generated serial version.
