@@ -2,19 +2,19 @@
   "identity" : {
     "fullName" : [ {
       "language" : "eng",
-      "value" : "Ayoub Toufiq"
+      "value" : "Lingam26"
     }, {
       "language" : "ara",
-      "value" : "َيُُب تُُفِق"
+      "value" : "مهىلشة٢٦"
     } ],
-    "dateOfBirth" : "1992/01/01",
-    "age" : 27,
+    "dateOfBirth" : "1993/01/01",
+    "age" : 26,
     "gender" : [ {
       "language" : "eng",
-      "value" : "female"
+      "value" : "Female"
     }, {
       "language" : "ara",
-      "value" : "ذكر"
+      "value" : "أنثى"
     } ],
     "residenceStatus" : [ {
       "language" : "eng",
@@ -25,17 +25,17 @@
     } ],
     "addressLine1" : [ {
       "language" : "eng",
-      "value" : "30 Rue Oum Errabia"
+      "value" : "Testing"
     }, {
       "language" : "ara",
-      "value" : "٣٠ رُِ ُُم ِررَبَِ"
+      "value" : "فثسفهىل"
     } ],
     "addressLine2" : [ {
       "language" : "eng",
       "value" : "Errabia"
     }, {
       "language" : "ara",
-      "value" : "ِررَبَِ"
+      "value" : ""
     } ],
     "addressLine3" : [ {
       "language" : "eng",
@@ -60,24 +60,24 @@
     } ],
     "city" : [ {
       "language" : "eng",
-      "value" : "Kenitra"
-    }, {
-      "language" : "ara",
-      "value" : "القنيطرة"
-    } ],
-    "postalCode" : "600111",
-    "phone" : "9965625706",
-    "email" : "ayoub.toufiq@gmail.com",
-    "localAdministrativeAuthority" : [ {
-      "language" : "eng",
       "value" : "Ben Mansour"
     }, {
       "language" : "ara",
       "value" : "بن منصور"
     } ],
+    "postalCode" : "600111",
+    "phone" : "6360409192",
+    "email" : "lingam.nidadavolu@mindtree.com",
+    "localAdministrativeAuthority" : [ {
+      "language" : "eng",
+      "value" : "14022"
+    }, {
+      "language" : "ara",
+      "value" : "14022"
+    } ],
     "proofOfAddress" : {
-      "value" : "POA_Rental contract",
-      "type" : "Rental contract",
+      "value" : "POA_Certificate of residence",
+      "type" : "Certificate of residence",
       "format" : "jpg"
     },
     "proofOfIdentity" : {
@@ -95,10 +95,10 @@
       "type" : "Certificate of Birth",
       "format" : "jpg"
     },
-    "parentOrGuardianBiometrics" : {
+    "individualBiometrics" : {
       "format" : "cbeff",
       "version" : 1.0,
-      "value" : "introducer_bio_CBEFF"
+      "value" : "applicant_bio_CBEFF"
     },
     "IDSchemaVersion" : 1.0,
     "CNIENumber" : "4545343123"

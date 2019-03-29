@@ -23,6 +23,7 @@ import com.amazonaws.SdkClientException;
 import io.mosip.dbaccess.RegProcTransactionDb;
 
 /**
+ * This class is used for packet validator stage validations
  * 
  * @author Sayeri Mishra
  *
@@ -30,19 +31,20 @@ import io.mosip.dbaccess.RegProcTransactionDb;
 public class PacketValidator {
 
 	private static Logger logger = Logger.getLogger(PacketValidator.class);
-	RegProcTransactionDb packetTransaction=new RegProcTransactionDb();
-	final String configPath= "src/test/resources/regProc/Stagevalidation";
+	final String configPath= "src/test/resources/regProc/StageValidation";
+	final String fileName = "/DummyDecryptedPacket/10011100110002020190326090045";
 		
 	ConnectionUtils connectionUtil = new ConnectionUtils();
 	FileSystemAdapter adapter = new HDFSAdapterImpl(connectionUtil);
 
 
+
 	/**
-	 * This method is used for validation of packet validation stage
+	 * This method is used for validation of packet validation stage, which
+	 * contains file validation, document validation and checksum validation
 	 * 
-	 * @param testcaseName
-	 * @throws AmazonServiceException
-	 * @throws SdkClientException
+	 * @param packet
+	 * @return boolean true, if packet is validates, else false
 	 * @throws IOException
 	 * @throws ParseException
 	 */
@@ -95,8 +97,8 @@ public class PacketValidator {
 							JSONObject proofOfDateOfBirth = (JSONObject) identity.get("proofOfDateOfBirth");
 							String pob = proofOfDateOfBirth.get("value").toString();
 							listOfIDDocs.add(pob);
-							JSONObject parentOrGuardianBiometrics = (JSONObject) identity.get("parentOrGuardianBiometrics");
-							String poib = parentOrGuardianBiometrics.get("value").toString();
+							JSONObject individualBiometrics = (JSONObject) identity.get("individualBiometrics");
+							String poib = individualBiometrics.get("value").toString();
 							listOfIDDocs.add(poib);
 							logger.info("listOfIDDocs : "+listOfIDDocs);
 						}
@@ -180,6 +182,16 @@ public class PacketValidator {
 
 
 
+	/**
+	 * This method is generating checksum value using file list present in hash sequence1 and regId
+	 * 
+	 * @param listOfFiles
+	 * @param regId
+	 * @return byte[] which is the hash code
+	 * @throws IOException
+	 * @throws ParseException
+	 * @throws FileNotFoundException
+	 */
 	private byte[] checksumGeneration(File[] listOfFiles, String regId) throws IOException, ParseException, FileNotFoundException {
  		JSONArray hashSequence1;
 		byte[] hashCodeGenerated = null;
@@ -209,6 +221,12 @@ public class PacketValidator {
 		return hashCodeGenerated;
 	}
 
+	/**
+	 * This method generate demographic hash using demographic documents and regId
+	 * 
+	 * @param docs
+	 * @param regId2
+	 */
 	private void generateDemographicHash(List<String> docs, String regId2) {
 		docs.forEach(document -> {
 			byte[] filebyte = null;
@@ -220,12 +238,17 @@ public class PacketValidator {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-
 			generateHash(filebyte);
 		});
 
 	}
 
+	/**
+	 * This method generates biometric hash code using biometric documents and regId
+	 * 
+	 * @param docs
+	 * @param regId
+	 */
 	private void generateBiometricsHash(List<String> docs, String regId) {
 		docs.forEach(file -> {
 			byte[] filebyte = null;
@@ -244,12 +267,25 @@ public class PacketValidator {
 
 	}
 
+	/**
+	 * This method generates hash code using byte[]
+	 * 
+	 * @param fileByte
+	 */
 	private void generateHash(byte[] fileByte) {
 		if (fileByte != null) {
 			HMACUtils.update(fileByte);
 		}	
 	}
 
+	/**
+	 * This method fetch all the file names present in hashsequence of packet_meta_info.json
+	 * 
+	 * @param hashSeqValue
+	 * @param docListInPacketInfo
+	 * @param objectData
+	 * @return List<String> which contains file names 
+	 */
 	private List<String> getHashSequenceFiles(String hashSeqValue, List<String> docListInPacketInfo, JSONObject objectData) {
 		JSONArray hashSequence;
 		List<String> splittedList;
@@ -271,13 +307,8 @@ public class PacketValidator {
 	
 	@Test
 	public void testMethod() throws IOException, ParseException {
-		File dummyDecryptFile = new File("src/test/resources/regProc/StageValidation/DummyDecryptedPacket/10031100110025720190228141424");
-
-		try {
-			packetValidatorStage(dummyDecryptFile);
-		} catch (SdkClientException | FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		File dummyDecryptFile = new File(configPath+fileName);
+		packetValidatorStage(dummyDecryptFile);
+		
 	}
 }
