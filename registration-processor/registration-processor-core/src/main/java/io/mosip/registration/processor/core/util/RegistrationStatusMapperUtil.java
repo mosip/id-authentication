@@ -102,10 +102,10 @@ public class RegistrationStatusMapperUtil {
 
 	}
 
-	public String getStatusCode(RegistrationExceptionTypeCode ExceptionCode) {
+	public String getStatusCode(RegistrationExceptionTypeCode exceptionCode) {
 		Map<RegistrationExceptionTypeCode, RegistrationTransactionStatusCode> mapStatus = RegistrationStatusMapperUtil
 				.statusMapper();
 
-		return mapStatus.get(RegistrationExceptionTypeCode.valueOf(ExceptionCode.toString())).toString();
+		return mapStatus.get(RegistrationExceptionTypeCode.valueOf(exceptionCode.toString())).toString();
 	}
 }
