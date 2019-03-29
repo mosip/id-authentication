@@ -27,6 +27,7 @@ import io.mosip.registration.device.scanner.wia.WiaImageIntent;
  * platform through WIA service
  * 
  * @author balamurugan.ramamoorthy
+ * @since 1.0.0
  *
  */
 @Service

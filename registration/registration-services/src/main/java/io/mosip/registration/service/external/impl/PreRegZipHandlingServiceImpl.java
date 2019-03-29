@@ -157,10 +157,12 @@ public class PreRegZipHandlingServiceImpl implements PreRegZipHandlingService {
 	 * This method is used to parse the demographic json and converts it into
 	 * RegistrationDto
 	 * 
-	 * @param zipInputStream
+	 * @param bufferedReader
+	 *            - reader for text file
 	 * @param zipEntry
-	 * @throws IOException
+	 *            - a file entry in zip
 	 * @throws RegBaseCheckedException
+	 *             - holds the cheked exceptions
 	 */
 	private void parseDemographicJson(BufferedReader bufferedReader, ZipEntry zipEntry) throws RegBaseCheckedException {
 
@@ -210,9 +212,12 @@ public class PreRegZipHandlingServiceImpl implements PreRegZipHandlingService {
 	 * the disk
 	 * 
 	 * @param PreRegistrationId
+	 *            - pre registration id
 	 * @param preRegPacket
-	 * @return PreRegistrationDTO
+	 *            - pre reg packet in bytes
+	 * @return PreRegistrationDTO - pre reg dto holds the pre reg data
 	 * @throws RegBaseCheckedException
+	 *             - holds the checked exceptions
 	 */
 	@Override
 	public PreRegistrationDTO encryptAndSavePreRegPacket(String PreRegistrationId, byte[] preRegPacket)
@@ -242,9 +247,12 @@ public class PreRegZipHandlingServiceImpl implements PreRegZipHandlingService {
 	 * location
 	 * 
 	 * @param PreRegistrationId
+	 *            - pre reg id
 	 * @param encryptedPacket
-	 * @return
+	 *            - pre reg encrypted packet in bytes
+	 * @return String - pre reg packet file path
 	 * @throws RegBaseCheckedException
+	 *             - holds the checked exceptions
 	 */
 	@Override
 	public String storePreRegPacketToDisk(String PreRegistrationId, byte[] encryptedPacket)
@@ -280,8 +288,10 @@ public class PreRegZipHandlingServiceImpl implements PreRegZipHandlingService {
 	 * symmetric key
 	 * 
 	 * @param symmetricKey
+	 *            - key to decrypt the pre reg packet
 	 * @param encryptedPacket
-	 * @return byte[]
+	 *            - pre reg encrypted packet in bytes
+	 * @return byte[] - decrypted pre reg packet
 	 */
 	@Override
 	public byte[] decryptPreRegPacket(String symmetricKey, byte[] encryptedPacket) {

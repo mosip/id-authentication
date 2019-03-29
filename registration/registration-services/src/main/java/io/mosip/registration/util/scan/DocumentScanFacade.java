@@ -15,9 +15,10 @@ import io.mosip.registration.device.scanner.IMosipDocumentScannerService;
 import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
 
 /**
+ * Facade Class to help connect the document scanner implementation
  * 
  * @author balamurugan ramamoorthy
- *
+ * @since 1.0.0
  */
 @Component
 public class DocumentScanFacade {
@@ -31,8 +32,9 @@ public class DocumentScanFacade {
 	/**
 	 * gets the sample scanned document
 	 * 
-	 * @return byte[]
+	 * @return byte[] - image file in bytes
 	 * @throws IOException
+	 *             - holds the ioexception
 	 */
 	public byte[] getScannedDocument() throws IOException {
 
@@ -62,7 +64,7 @@ public class DocumentScanFacade {
 	/**
 	 * Checks the platform and selects the scanner implementation accordingly
 	 * 
-	 * @return boolean
+	 * @return boolean - sets the scanner factory based on the os platform
 	 */
 	public boolean setScannerFactory() {
 		String factoryName = "";
@@ -88,6 +90,7 @@ public class DocumentScanFacade {
 	 * 
 	 * @return BufferedImage- scanned file
 	 * @throws IOException
+	 *             - holds the ioexception
 	 */
 	public BufferedImage getScannedDocumentFromScanner() throws IOException {
 
@@ -105,6 +108,7 @@ public class DocumentScanFacade {
 	 *            - scanned file
 	 * @return byte[] - holds the image data in bytes
 	 * @throws IOException
+	 *             - holds the ioexception
 	 */
 	public byte[] getImageBytesFromBufferedImage(BufferedImage bufferedImage) throws IOException {
 
@@ -119,8 +123,10 @@ public class DocumentScanFacade {
 	 * converts all the captured scanned docs to single image file
 	 * 
 	 * @param bufferedImages
-	 * @return byte[]
+	 *            - scanned files
+	 * @return byte[] - image in bytes
 	 * @throws IOException
+	 *             - holds the ioexception
 	 */
 	public byte[] asImage(List<BufferedImage> bufferedImages) throws IOException {
 
@@ -135,8 +141,10 @@ public class DocumentScanFacade {
 	 * converts all the captured scanned docs to single pdf file
 	 * 
 	 * @param bufferedImages
-	 * @return byte[]
+	 *            - scanned files
+	 * @return byte[] - pdf file in bytes
 	 * @throws IOException
+	 *             - holds the ioexception
 	 */
 	public byte[] asPDF(List<BufferedImage> bufferedImages) throws IOException {
 
@@ -152,8 +160,10 @@ public class DocumentScanFacade {
 	 * preview
 	 * 
 	 * @param byte[]
-	 * @return List<BufferedImage>
+	 *            - pdf in bytes
+	 * @return List<BufferedImage> - list of image files
 	 * @throws IOException
+	 *             - holds the ioexception
 	 */
 	public List<BufferedImage> pdfToImages(byte[] pdfBytes) throws IOException {
 
