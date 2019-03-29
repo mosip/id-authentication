@@ -23,6 +23,7 @@ import org.json.simple.parser.JSONParser;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mockito;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -118,6 +119,7 @@ public class BookingServiceTest {
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	@Autowired
+	//@InjectMocks
 	private BookingService service;
 
 	@Autowired
@@ -185,11 +187,15 @@ public class BookingServiceTest {
 
 	@Value("${demographic.resource.url}")
 	private String preRegResourceUrl;
+	
+	//private BookingService service;
 
 	@Before
 	public void setup() throws URISyntaxException, FileNotFoundException, ParseException, java.io.FileNotFoundException,
 			IOException, org.json.simple.parser.ParseException {
 
+		//service=Mockito.spy(bookingservice);
+				
 		String date1 = "2016-11-09 09:00:00";
 		String date2 = "2016-11-09 09:20:00";
 		LocalDateTime localDateTime1 = LocalDateTime.parse(date1, format);
@@ -342,6 +348,7 @@ public class BookingServiceTest {
 	@Test
 	public void getAvailabilityTest() {
 
+		//Mockito.doNothing().when(service).setAuditValues(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any());
 		logger.info("Availability dto " + availability);
 		List<LocalDate> date = new ArrayList<>();
 		List<AvailibityEntity> entityList = new ArrayList<>();
@@ -457,7 +464,7 @@ public class BookingServiceTest {
 		assertEquals(1, response.getResponse().size());
 	}
 
-	// @Test
+	@Test
 	public void successRebookAppointment() {
 		MainListRequestDTO<BookingRequestDTO> reBookingMainDto = new MainListRequestDTO<>();
 		BookingRequestDTO bookingRequestDTO = new BookingRequestDTO();
@@ -592,6 +599,56 @@ public class BookingServiceTest {
 				Mockito.eq(RegistrationCenterHolidayDto.class))).thenReturn(resHoliday);
 		response = service.addAvailability();
 		assertEquals("MASTER_DATA_SYNCED_SUCCESSFULLY", response.getResponse());
+	}
+	@Test
+	public void addAvailabilityServiceFailTest() {
+
+		String date1 = "2016-11-09 09:00:00";
+		String date2 = "2016-11-09 17:00:00";
+		String date3 = "2016-11-09 00:20:00";
+		String date4 = "2016-11-09 13:00:00";
+		String date5 = "2016-11-09 14:20:00";
+		LocalDateTime localDateTime1 = LocalDateTime.parse(date1, format);
+		LocalDateTime localDateTime2 = LocalDateTime.parse(date2, format);
+		LocalDateTime localDateTime3 = LocalDateTime.parse(date3, format);
+		LocalTime startTime = localDateTime1.toLocalTime();
+		LocalTime endTime = localDateTime2.toLocalTime();
+		LocalTime perKioskTime = localDateTime3.toLocalTime();
+		LocalTime LunchStartTime = LocalDateTime.parse(date4, format).toLocalTime();
+		LocalTime LunchEndTime = LocalDateTime.parse(date5, format).toLocalTime();
+		RegistrationCenterDto centerDto = new RegistrationCenterDto();
+		List<RegistrationCenterDto> centerList = new ArrayList<>();
+		centerDto.setId("1");
+		centerDto.setLangCode("LOC01");
+		centerDto.setCenterStartTime(startTime);
+		centerDto.setCenterEndTime(endTime);
+		centerDto.setPerKioskProcessTime(perKioskTime);
+		centerDto.setLunchStartTime(LunchStartTime);
+		centerDto.setLunchEndTime(LunchEndTime);
+		centerDto.setNumberOfKiosks((short) 4);
+		centerList.add(centerDto);
+		regCenDto.setRegistrationCenters(centerList);
+		RegistrationCenterHolidayDto CenholidayDto = new RegistrationCenterHolidayDto();
+		HolidayDto holiday = new HolidayDto();
+		List<HolidayDto> holidayList = new ArrayList<>();
+		holiday.setHolidayDate("2018-12-12");
+		holidayList.add(holiday);
+		CenholidayDto.setHolidays(holidayList);
+
+		MainResponseDTO<String> response = new MainResponseDTO<>();
+
+		// RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
+		// Mockito.when(restTemplateBuilder.build()).thenReturn(restTemplate);
+
+		ResponseEntity<RegistrationCenterResponseDto> rescenter = new ResponseEntity<>(regCenDto, HttpStatus.OK);
+		ResponseEntity<RegistrationCenterHolidayDto> resHoliday = new ResponseEntity<>(CenholidayDto, HttpStatus.OK);
+
+		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
+				Mockito.eq(RegistrationCenterResponseDto.class))).thenReturn(rescenter);
+		/*Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
+				Mockito.eq(RegistrationCenterHolidayDto.class))).thenReturn(resHoliday);*/
+		response = service.addAvailability();
+		assertEquals("1.0", response.getVersion());
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
@@ -860,7 +917,7 @@ public class BookingServiceTest {
 
 	}
 
-	// @Test
+	@Test
 	public void getBookedPreIdsByDateTest() {
 		MainListResponseDTO<String> response = new MainListResponseDTO<>();
 		List<String> preIds = new ArrayList<>();
@@ -869,6 +926,7 @@ public class BookingServiceTest {
 
 		preIds.add("98746563542672");
 		response.setResponse(preIds);
+		response.setVersion("1.0");
 		// response.setStatus(true);
 
 		String fromDateStr = "2019-01-01";
@@ -888,7 +946,7 @@ public class BookingServiceTest {
 
 		MainResponseDTO<PreRegIdsByRegCenterIdResponseDTO> actualRes = service
 				.getBookedPreRegistrationByDate(fromDateStr, toDateStr, "10001");
-		// assertEquals(actualRes.getVersion(), response.isStatus());
+		 assertEquals(actualRes.getVersion(), response.getVersion());
 
 	}
 

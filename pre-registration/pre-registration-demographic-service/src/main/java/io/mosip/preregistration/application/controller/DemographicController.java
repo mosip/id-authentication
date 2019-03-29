@@ -82,10 +82,6 @@ public class DemographicController {
 			@RequestBody(required = true) MainRequestDTO<DemographicRequestDTO> jsonObject) {
 		log.info("sessionId", "idType", "id",
 				"In pre-registration controller for registration with json object" + jsonObject);
-		// AuthUserDetails authUserDetails = (AuthUserDetails)
-		// SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		// System.out.println(authUserDetails.getUserId());
-		//
 		return ResponseEntity.status(HttpStatus.OK).body(preRegistrationService.addPreRegistration(jsonObject));
 	}
 

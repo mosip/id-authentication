@@ -127,6 +127,12 @@ public enum ErrorMessages {
 	/**
 	 * PRG_PAM_APP_013
 	 */
-	RECORD_NOT_FOUND;
-	;
+	RECORD_NOT_FOUND,
+	
+	/**
+	 * PRG_PAM_APP_014
+	 */
+	DOCUMENT_SERVICE_FAILED_TO_CALL,
+	
+	DOCUMENT_IS_MISSING;
 }
