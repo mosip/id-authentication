@@ -16,7 +16,6 @@ import org.apache.log4j.Logger;
 import org.yaml.snakeyaml.Yaml;
 
 import io.mosip.authentication.fw.util.FileUtil;
-import io.mosip.authentication.testdata.precondtion.Precondtion;
 
 /**
  * TestDataUtil will generate the request and response file for all the test
@@ -121,30 +120,30 @@ public class TestDataUtil {
 					String jsonFileName = file[1];
 					String inputJsonFilePath = "";
 					if (type.equalsIgnoreCase("input"))
-						inputJsonFilePath = TestDataConfig.getUserDirectory() + TestDataConfig.getSrcPath()
-								+ TestDataConfig.getTestDataPath() + "input/" + jsonFileName + ".json";
+						inputJsonFilePath = new File("./"+TestDataConfig.getSrcPath()
+								+ TestDataConfig.getTestDataPath() + "input/" + jsonFileName + ".json").getAbsolutePath();
 					else if (type.equalsIgnoreCase("output"))
-						inputJsonFilePath = TestDataConfig.getUserDirectory() + TestDataConfig.getSrcPath()
-								+ TestDataConfig.getTestDataPath() + "output/" + jsonFileName + ".json";
+						inputJsonFilePath = new File( "./"+TestDataConfig.getSrcPath()
+								+ TestDataConfig.getTestDataPath() + "output/" + jsonFileName + ".json").getAbsolutePath();
 					else if (type.equalsIgnoreCase("audit")) {
-						String auditMappingPath = TestDataConfig.getUserDirectory() + TestDataConfig.getSrcPath()
-								+ "ida/TestData/Audit/" + jsonFileName + ".properties";
+						String auditMappingPath = new File("./"+TestDataConfig.getSrcPath()
+								+ "ida/TestData/Audit/" + jsonFileName + ".properties").getAbsolutePath();
 						Map<String, String> fieldValue = new HashMap<String, String>();
 						for (Entry<String, Object> fieldvalMap : jsonFile.getValue().entrySet()) {
 							fieldValue.put(fieldvalMap.getKey(), fieldvalMap.getValue().toString());
 						}
 						fieldValue = objPrecondtion.parseAndWritePropertyFile(auditMappingPath, fieldValue,
-								TestDataConfig.getUserDirectory() + TestDataConfig.getSrcPath() + scenarioPath + "/"
-										+ getTestCaseName() + "/" + jsonFileName + ".properties");
+								new File("./"+ TestDataConfig.getSrcPath() + scenarioPath + "/"
+										+ getTestCaseName() + "/" + jsonFileName + ".properties").getAbsolutePath());
 						flag = false;
 					}
 					Map<String, String> fieldValue = new HashMap<String, String>();
 					if (flag) {
-						String mappingPath = TestDataConfig.getUserDirectory() + TestDataConfig.getSrcPath()
-								+ TestDataConfig.getTestDataPath() + mapping + ".properties";
+						String mappingPath = new File("./"+ TestDataConfig.getSrcPath()
+								+ TestDataConfig.getTestDataPath() + mapping + ".properties").getAbsolutePath();
 						setMappingPath(mappingPath);
-						String outputJsonFilePath = TestDataConfig.getUserDirectory() + TestDataConfig.getSrcPath()
-								+ scenarioPath + "/" + getTestCaseName() + "/" + jsonFileName + ".json";
+						String outputJsonFilePath = new File("./"+TestDataConfig.getSrcPath()
+								+ scenarioPath + "/" + getTestCaseName() + "/" + jsonFileName + ".json").getAbsolutePath();
 
 						for (Entry<String, Object> fieldvalMap : jsonFile.getValue().entrySet()) {
 							fieldValue.put(fieldvalMap.getKey(), fieldvalMap.getValue().toString());
@@ -163,3 +162,4 @@ public class TestDataUtil {
 	}
 
 }
+

@@ -22,6 +22,12 @@ A Token ID can be requested by an Indivudual against his UIN. A library should b
 
 ![Module Diagram](_images/kernel-idgenerator-tokenid.jpg)
 
+** ID Generator Algotithm **
+
+ [ID Generator Algotithm](kernel-id-generators-algorithm.md)
+
+
+
 
 **Class diagram**
 

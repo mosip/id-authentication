@@ -27,6 +27,7 @@ import org.springframework.transaction.TransactionException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
+import com.google.common.collect.Sets;
 
 import io.mosip.kernel.core.fsadapter.exception.FSAdapterException;
 import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
@@ -437,7 +438,7 @@ public class IdRepoProxyServiceImpl implements IdRepoService<IdRequestDTO, IdRes
 	 */
 	private IdResponseDTO constructIdResponse(String id, Uin uin, List<Documents> documents) throws IdRepoAppException {
 		IdResponseDTO idResponse = new IdResponseDTO();
-		Set<String> ignoredProperties = new HashSet<>();
+		Set<String> ignoredProperties = Sets.newHashSetWithExpectedSize(3);
 
 		idResponse.setId(id);
 

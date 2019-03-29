@@ -60,20 +60,6 @@ public class IdRepoSecurityManager {
 	@Autowired
 	private ObjectMapper mapper;
 
-	/** The request. */
-	private ObjectNode request;
-
-	/**
-	 * Builds the requet.
-	 */
-	@PostConstruct
-	public void buildRequest() {
-		request = new ObjectNode(mapper.getNodeFactory());
-		request.put("applicationId", env.getProperty(IdRepoConstants.APPLICATION_ID.getValue()));
-		request.put("timeStamp",
-				DateUtils.formatDate(new Date(), env.getProperty(IdRepoConstants.DATETIME_PATTERN.getValue())));
-	}
-
 	/**
 	 * Hash.
 	 *
@@ -94,6 +80,10 @@ public class IdRepoSecurityManager {
 	 */
 	public byte[] encrypt(byte[] dataToEncrypt) throws IdRepoAppException {
 		try {
+			ObjectNode request = new ObjectNode(mapper.getNodeFactory());
+			request.put("applicationId", env.getProperty(IdRepoConstants.APPLICATION_ID.getValue()));
+			request.put("timeStamp",
+					DateUtils.formatDate(new Date(), env.getProperty(IdRepoConstants.DATETIME_PATTERN.getValue())));
 			request.put("data", CryptoUtil.encodeBase64(dataToEncrypt));
 			return encryptDecryptData(
 					restBuilder.buildRequest(RestServicesConstants.CRYPTO_MANAGER_ENCRYPT, request, ObjectNode.class));
@@ -113,6 +103,10 @@ public class IdRepoSecurityManager {
 	 */
 	public byte[] decrypt(byte[] dataToDecrypt) throws IdRepoAppException {
 		try {
+			ObjectNode request = new ObjectNode(mapper.getNodeFactory());
+			request.put("applicationId", env.getProperty(IdRepoConstants.APPLICATION_ID.getValue()));
+			request.put("timeStamp",
+					DateUtils.formatDate(new Date(), env.getProperty(IdRepoConstants.DATETIME_PATTERN.getValue())));
 			request.put("data", CryptoUtil.encodeBase64(dataToDecrypt));
 			return encryptDecryptData(
 					restBuilder.buildRequest(RestServicesConstants.CRYPTO_MANAGER_DECRYPT, request, ObjectNode.class));

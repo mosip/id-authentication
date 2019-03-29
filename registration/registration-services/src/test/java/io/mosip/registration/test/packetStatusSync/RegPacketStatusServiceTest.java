@@ -141,13 +141,7 @@ public class RegPacketStatusServiceTest {
 
 	@Test
 	public void deleteReRegistrationPacketsTest() {
-		List<Registration> list = new LinkedList<>();
-		Registration regis = new Registration();
-		regis.setId("12345");
-		regis.setAckFilename("..//PacketStore/02-Jan-2019/2018782130000102012019115112_Ack.png");
-		regis.setClientStatusCode(RegistrationConstants.PACKET_STATUS_CODE_PROCESSED);
-		regis.setStatusCode(RegistrationConstants.PACKET_STATUS_CODE_PROCESSED);
-		list.add(regis);
+		List<Registration> list = prepareSamplePackets();
 		SuccessResponseDTO successResponseDTO = new SuccessResponseDTO();
 		successResponseDTO.setMessage(RegistrationConstants.REGISTRATION_DELETION_BATCH_JOBS_SUCCESS);
 
@@ -160,8 +154,7 @@ public class RegPacketStatusServiceTest {
 
 	}
 
-	@Test
-	public void deleteReRegistrationPacketsFailureTest() {
+	protected List<Registration> prepareSamplePackets() {
 		List<Registration> list = new LinkedList<>();
 		Registration regis = new Registration();
 		regis.setId("12345");
@@ -169,6 +162,12 @@ public class RegPacketStatusServiceTest {
 		regis.setClientStatusCode(RegistrationConstants.PACKET_STATUS_CODE_PROCESSED);
 		regis.setStatusCode(RegistrationConstants.PACKET_STATUS_CODE_PROCESSED);
 		list.add(regis);
+		return list;
+	}
+
+	@Test
+	public void deleteReRegistrationPacketsFailureTest() {
+		List<Registration> list = prepareSamplePackets();
 
 		when(registrationDAO.get(Mockito.any(),Mockito.anyString()))
 				.thenThrow(RuntimeException.class);
@@ -194,5 +193,14 @@ public class RegPacketStatusServiceTest {
 		Mockito.when(packetSynchService.updateSyncStatus(Mockito.anyList())).thenReturn(true);
 		assertEquals("Success", packetStatusService.syncPacket("System").getSuccessResponseDTO().getMessage());
 	}
-	
+
+	@Test
+	public void deleteAllProcessedRegPacketsTest() {
+		List<Registration> list = prepareSamplePackets();
+		Mockito.when(
+				registrationDAO.findByServerStatusCodeIn(RegistrationConstants.PACKET_STATUS_CODES_FOR_REMAPDELETE))
+				.thenReturn(list);
+		packetStatusService.deleteAllProcessedRegPackets();
+
+	}
 }

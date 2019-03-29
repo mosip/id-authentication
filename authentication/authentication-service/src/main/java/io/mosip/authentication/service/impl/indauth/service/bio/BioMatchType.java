@@ -13,7 +13,6 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import io.mosip.authentication.core.dto.indauth.AuthUsageDataBit;
 import io.mosip.authentication.core.dto.indauth.BioIdentityInfoDTO;
 import io.mosip.authentication.core.dto.indauth.DataDTO;
 import io.mosip.authentication.core.dto.indauth.IdentityDTO;
@@ -60,6 +59,9 @@ public enum BioMatchType implements MatchType {
 			CbeffDocType.FMR,SingleAnySubtypeType.RIGHT,SingleAnySubtypeType.RING_FINGER),
 	FGRMIN_RIGHT_LITTLE(IdaIdMapping.RIGHTLITTLE, setOf(FingerPrintMatchingStrategy.PARTIAL),
 			CbeffDocType.FMR,SingleAnySubtypeType.RIGHT, SingleAnySubtypeType.LITTLE_FINGER),
+	//unknown finger Minutiea
+	FGRMIN_UNKNOWN(IdaIdMapping.UNKNOWN_FINGER,
+			CbeffDocType.FMR, null, null, setOf(MultiFingerprintMatchingStrategy.PARTIAL)),
 
 	// Left Finger Image FGRIMG
 	FGRIMG_LEFT_THUMB(IdaIdMapping.LEFTTHUMB, setOf(FingerPrintMatchingStrategy.PARTIAL), 
@@ -109,17 +111,14 @@ public enum BioMatchType implements MatchType {
 	
 	//FIXME get Bio ID info of all eyes and return the map
 	IRIS_COMP(IdaIdMapping.IRIS, setOf(CompositeIrisMatchingStrategy.PARTIAL), CbeffDocType.IRIS, null, null),
+	//unknown IRIS
+	IRIS_UNKNOWN(IdaIdMapping.UNKNOWN_IRIS,
+			CbeffDocType.IRIS, null, null, setOf(CompositeIrisMatchingStrategy.PARTIAL)),
 	
 	FACE(IdaIdMapping.FACE, Collections.emptySet(), CbeffDocType.FACE, null, null);
 
 	/** The allowed matching strategy. */
 	private Set<MatchingStrategy> allowedMatchingStrategy;
-
-	/** The used bit. */
-	private AuthUsageDataBit usedBit;
-
-	/** The matched bit. */
-	private AuthUsageDataBit matchedBit;
 
 	private Function<RequestDTO, Map<String, List<IdentityInfoDTO>>> identityInfoFunction;
 
@@ -140,6 +139,12 @@ public enum BioMatchType implements MatchType {
 		} else {
 			this.identityInfoFunction = requestDto -> getIdInfoFromSubIdMappings(requestDto, subIdMappings);
 		}
+	}
+	
+	private BioMatchType(IdMapping idMapping,  CbeffDocType cbeffDocType,
+			SingleAnySubtypeType subType, SingleAnySubtypeType singleAnySubtype, Set<MatchingStrategy> allowedMatchingStrategy) {
+		this(idMapping, allowedMatchingStrategy, cbeffDocType, subType, singleAnySubtype, null);
+		this.identityInfoFunction = requestDto -> getIdInfoFromBioIdInfo(requestDto.getBiometrics());
 	}
 
 	private BioMatchType(IdMapping idMapping, Set<MatchingStrategy> allowedMatchingStrategy,CbeffDocType cbeffDocType, SingleAnySubtypeType subType, SingleAnySubtypeType singleAnySubtype,
@@ -198,24 +203,6 @@ public enum BioMatchType implements MatchType {
 	 */
 	public Function<Map<String, String>, Map<String, String>> getEntityInfoMapper() {
 		return Function.identity();
-	}
-
-	/**
-	 * Gets the used bit.
-	 *
-	 * @return the used bit
-	 */
-	public AuthUsageDataBit getUsedBit() {
-		return usedBit;
-	}
-
-	/**
-	 * Gets the matched bit.
-	 *
-	 * @return the matched bit
-	 */
-	public AuthUsageDataBit getMatchedBit() {
-		return matchedBit;
 	}
 
 	public IdMapping getIdMapping() {

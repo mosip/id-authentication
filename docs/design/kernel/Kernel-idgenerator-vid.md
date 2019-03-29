@@ -20,6 +20,12 @@ An alternate id needs to be generated for UIN to be used for authentication.
 ![Module Diagram](_images/kernel-idgenerator-vid.jpg)
 
 
+** ID Generator Algotithm **
+
+ [ID Generator Algotithm](kernel-id-generators-algorithm.md)
+
+
+
 
 **Class diagram**
 

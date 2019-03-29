@@ -1,6 +1,7 @@
 package io.mosip.registration.test.dao.impl;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.doNothing;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -57,6 +58,22 @@ public class PreRegistrationDAOImplTest {
 	public void updateTest() {
 		Mockito.when(registrationRepository.update(Mockito.any())).thenReturn(preRegistrationList);
 		assertEquals(preRegistrationList, preRegistrationDAOImpl.update(preRegistrationList));
+	}
+	
+
+	@Test
+	public void deleteAllTest() {
+		List<PreRegistrationList> list = new ArrayList<>();
+		list.add(preRegistrationList);
+		preRegistrationDAOImpl.deleteAll(list);
+	}
+
+	@Test
+	public void getAllPreRegPacketsTest() {
+		List<PreRegistrationList> list = new ArrayList<>();
+		list.add(preRegistrationList);
+		Mockito.when(registrationRepository.findAll()).thenReturn(list);
+		preRegistrationDAOImpl.getAllPreRegPackets();
 	}
 
 }

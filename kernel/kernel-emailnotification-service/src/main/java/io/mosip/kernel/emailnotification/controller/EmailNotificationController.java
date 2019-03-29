@@ -20,6 +20,7 @@ import io.mosip.kernel.emailnotification.dto.ResponseDto;
  * @since 1.0.0
  *
  */
+
 @RestController
 public class EmailNotificationController {
 	/**

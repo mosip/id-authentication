@@ -238,15 +238,19 @@ public class DemodedupeProcessorTest {
 
 	}
 
-	@Ignore
+	
 	@Test
 	public void testDemoDedupeSuccessNotDuplicateAfterAuth() throws Exception {
 
 		List<DemographicInfoDto> emptyDuplicateDtoSet = new ArrayList<>();
 		Mockito.when(demoDedupe.performDedupe(anyString())).thenReturn(duplicateDtos);
 		Mockito.when(demoDedupe.authenticateDuplicates(anyString(), anyList())).thenReturn(false);
+		registrationStatusDto.setRegistrationType("TEST");
+		Mockito.when(registrationStatusService.getRegistrationStatus(anyString())).thenReturn(registrationStatusDto);
 		MessageDTO messageDto = demodedupeProcessor.process(dto);
-		assertTrue(messageDto.getIsValid());
+//		assertTrue(messageDto.getIsValid());
+		assertEquals(false, messageDto.getIsValid());
+
 		}
 
 	/**
@@ -265,7 +269,7 @@ public class DemodedupeProcessorTest {
 		Mockito.when(registrationStatusService.getRegistrationStatus(any())).thenReturn(registrationStatusDto);
 		Mockito.when(manualVerficationRepository.save(any())).thenReturn(manualVerificationEntity);
 		Mockito.when(demoDedupe.performDedupe(anyString())).thenReturn(duplicateDtos);
-
+		registrationStatusDto.setRetryCount(2);
 		Mockito.when(demoDedupe.authenticateDuplicates(anyString(), anyList())).thenReturn(true);
 
 		MessageDTO messageDto = demodedupeProcessor.process(dto);
@@ -313,7 +317,7 @@ public class DemodedupeProcessorTest {
 
 		ApisResourceAccessException exp = new ApisResourceAccessException("errorMessage");
 		Mockito.doThrow(exp).when(demoDedupe).authenticateDuplicates(anyString(), anyList());
-
+		
 		MessageDTO messageDto = demodedupeProcessor.process(dto);
 		assertEquals(true, messageDto.getInternalError());
 	}
@@ -331,9 +335,10 @@ public class DemodedupeProcessorTest {
 	public void testException() throws ApisResourceAccessException, IOException {
 		Mockito.when(demoDedupe.performDedupe(anyString())).thenReturn(duplicateDtos);
 
-		ResourceAccessException exp = new ResourceAccessException("errorMessage");
+		ApisResourceAccessException exp = new ApisResourceAccessException("errorMessage");
 		Mockito.doThrow(exp).when(demoDedupe).authenticateDuplicates(anyString(), anyList());
-
+		registrationStatusDto.setRegistrationType("TEST");
+		Mockito.when(registrationStatusService.getRegistrationStatus(anyString())).thenReturn(registrationStatusDto);
 		MessageDTO messageDto = demodedupeProcessor.process(dto);
 		assertEquals(true, messageDto.getInternalError());
 	}
@@ -346,7 +351,8 @@ public class DemodedupeProcessorTest {
 
 		FSAdapterException exp = new FSAdapterException("errorMessage","test");
 		Mockito.doThrow(exp).when(demoDedupe).authenticateDuplicates(anyString(), anyList());
-
+		registrationStatusDto.setRegistrationType("TEST");
+		Mockito.when(registrationStatusService.getRegistrationStatus(anyString())).thenReturn(registrationStatusDto);
 		MessageDTO messageDto = demodedupeProcessor.process(dto);
 		assertEquals(true, messageDto.getInternalError());
 	}

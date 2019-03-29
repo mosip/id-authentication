@@ -143,7 +143,7 @@ public class DemodedupeProcessor {
 
 						int retryCount = registrationStatusDto.getRetryCount() != null
 							? registrationStatusDto.getRetryCount() + 1
-							: 1;
+									: 1;
 					description = registrationStatusDto.getStatusComment() + registrationId;
 					registrationStatusDto.setRetryCount(retryCount);
 
@@ -160,8 +160,6 @@ public class DemodedupeProcessor {
 					code=  PlatformSuccessMessages.RPR_PKR_DEMO_DE_DUP_POTENTIAL_DUPLICATION_FOUND.getCode();
 					description = PlatformSuccessMessages.RPR_PKR_DEMO_DE_DUP_POTENTIAL_DUPLICATION_FOUND.getMessage()+" -- " + registrationId;
 
-					// Saving potential duplicates in reg_manual_verification table
-					packetInfoManager.saveManualAdjudicationData(uniqueMatchedRefIdList, registrationId, DedupeSourceName.DEMO);
 				}
 
 			} else {

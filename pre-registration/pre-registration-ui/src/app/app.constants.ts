@@ -75,8 +75,8 @@ export const CONFIG_KEYS = {
   preregistration_nearby_centers: 'preregistration.nearby.centers',
   preregistration_timespan_rebook: 'preregistration.timespan.rebook',
   mosip_login_mode: 'mosip.login.mode',
-  mosip_regex_email: 'mosip.regex.email',
-  mosip_regex_phone: 'mosip.regex.phone',
+  mosip_regex_email: 'mosip.id.validation.identity.email',
+  mosip_regex_phone: 'mosip.id.validation.identity.phone',
   mosip_primary_language: 'mosip.primary-language',
   mosip_secondary_language: 'mosip.secondary-language',
   mosip_left_to_right_orientation: 'mosip.left_to_right_orientation',
@@ -84,17 +84,23 @@ export const CONFIG_KEYS = {
   mosip_kernel_otp_default_length: 'mosip.kernel.otp.default-length',
   preregistration_recommended_centers_locCode: 'preregistration.recommended.centers.locCode',
   preregistration_availability_noOfDays: 'preregistration.availability.noOfDays',
-  mosip_regex_CNIE: 'mosip.regex.CNIE',
-  mosip_regex_postalCode: 'mosip.regex.postalCode',
-  mosip_regex_DOB: 'mosip.regex.DOB',
+  mosip_regex_CNIE: 'mosip.id.validation.identity.CNIENumber',
+  mosip_regex_postalCode: 'mosip.id.validation.identity.postalCode',
+  mosip_regex_DOB: 'mosip.id.validation.identity.dateOfBirth',
   mosip_default_dob_day: 'mosip.default.dob.day',
   mosip_default_dob_month: 'mosip.default.dob.month',
-  mosip_postal_code_length: 'mosip.postal.code.length',
-  mosip_CINE_length: 'mosip.CINE.length',
-  mosip_email_length: 'mosip.email.length',
-  mosip_mobile_length: 'mosip.mobile.length',
+  mosip_postal_code_length: 'mosip.id.validation.identity.postalCode.length',
+  mosip_CINE_length: 'mosip.id.validation.identity.CNIENumber.length',
+  mosip_email_length: 'mosip.id.validation.identity.email.length',
+  mosip_mobile_length: 'mosip.id.validation.identity.phone.length',
   preregistration_address_length: 'preregistration.address.length',
   preregistration_fullname_length: 'preregistration.fullname.length'
+  // mosip.kernel.sms.number.length
+  // preregistration.max.file.size
+  // preregistration.workflow.demographic,
+  // preregistration.workflow.documentupload,
+  // preregistration.workflow.booking
+  // preregistration.auto.logout
 };
 
 export const DASHBOARD_RESPONSE_KEYS = {
@@ -132,8 +138,8 @@ export const DOCUMENT_UPLOAD_REQUEST_DTO = {
   request: {
     pre_registartion_id: '',
     doc_cat_code: '',
-    doc_typ_code: '',
-    lang_code: ''
+    doc_typ_code: 'address',
+    lang_code: 'ENG'
   }
 };
 

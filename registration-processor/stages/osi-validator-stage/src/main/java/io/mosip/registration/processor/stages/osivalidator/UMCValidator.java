@@ -248,45 +248,45 @@ public class UMCValidator {
 		pathsegments.add(machineId);
 		pathsegments.add(superviserId);
 		RegistrationCenterUserMachineMappingHistoryResponseDto supervisordto;
-		try {
-			supervisordto = (RegistrationCenterUserMachineMappingHistoryResponseDto) registrationProcessorRestService
-					.getApi(ApiName.CENTERUSERMACHINEHISTORY, pathsegments, "", "",
-							RegistrationCenterUserMachineMappingHistoryResponseDto.class);
+		supervisorActive = validateMapping(pathsegments);
+
+		if (!supervisorActive) {
 			List<String> officerpathsegments = new ArrayList<>();
 			officerpathsegments.add(effectiveTimestamp);
 			officerpathsegments.add(registrationCenterId);
 			officerpathsegments.add(machineId);
 			officerpathsegments.add(officerId);
-			RegistrationCenterUserMachineMappingHistoryResponseDto officerdto = (RegistrationCenterUserMachineMappingHistoryResponseDto) registrationProcessorRestService
-					.getApi(ApiName.CENTERUSERMACHINEHISTORY, officerpathsegments, "", "",
+			officerActive = validateMapping(officerpathsegments);
+
+		}
+		return supervisorActive || officerActive;
+	}
+
+	private boolean validateMapping(List<String> pathsegments) {
+		boolean isValidUser = false;
+		try {
+			RegistrationCenterUserMachineMappingHistoryResponseDto userDto = (RegistrationCenterUserMachineMappingHistoryResponseDto) registrationProcessorRestService
+					.getApi(ApiName.CENTERUSERMACHINEHISTORY, pathsegments, "", "",
 							RegistrationCenterUserMachineMappingHistoryResponseDto.class);
-            if(supervisordto.getErrors()==null) {
-			supervisorActive = supervisordto.getRegistrationCenters().get(0).getIsActive();
-            }else {
-            	ErrorDTO error = supervisordto.getErrors().get(0);
-            	this.registrationStatusDto.setStatusComment(error.getErrorMessage());
-            }
-            if(officerdto.getErrors()==null) {
-			     officerActive = officerdto.getRegistrationCenters().get(0).getIsActive();
-            }else {
-            	ErrorDTO error = officerdto.getErrors().get(0);
-            	this.registrationStatusDto.setStatusComment(error.getErrorMessage());
-            }
+			if(userDto != null) {
+			if(userDto.getErrors() == null) {
+				isValidUser = userDto.getRegistrationCenters().get(0).getIsActive();
+			}else {
+				ErrorDTO error = userDto.getErrors().get(0);
+				this.registrationStatusDto.setStatusComment(error.getErrorMessage());
+			}
+			}
 		} catch (ApisResourceAccessException e) {
 			if (e.getCause() instanceof HttpClientErrorException) {
 				HttpClientErrorException httpClientException = (HttpClientErrorException) e.getCause();
 				String result = httpClientException.getResponseBodyAsString();
-				Gson gsonObj = new Gson();
-				supervisordto = gsonObj.fromJson(result, RegistrationCenterUserMachineMappingHistoryResponseDto.class);
-				ErrorDTO error = supervisordto.getErrors().get(0);
-				supervisorActive = false;
+				isValidUser = false;
 
-				this.registrationStatusDto.setStatusComment(error.getErrorMessage());
+				this.registrationStatusDto.setStatusComment(httpClientException.getResponseBodyAsString());
 
 			}
-
 		}
-		return supervisorActive || officerActive;
+		return isValidUser;
 	}
 
 	/**

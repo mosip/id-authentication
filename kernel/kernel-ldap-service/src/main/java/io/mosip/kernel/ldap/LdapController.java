@@ -1,14 +1,19 @@
 package io.mosip.kernel.ldap;
 
 
-import io.mosip.kernel.ldap.dto.*;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
+import io.mosip.kernel.ldap.dto.LoginUserDto;
+import io.mosip.kernel.ldap.dto.MosipUserDto;
+import io.mosip.kernel.ldap.dto.MosipUserListDto;
+import io.mosip.kernel.ldap.dto.OtpUserDto;
+import io.mosip.kernel.ldap.dto.RolesListDto;
 
 /**
  *  @author Sabbu Uday Kumar

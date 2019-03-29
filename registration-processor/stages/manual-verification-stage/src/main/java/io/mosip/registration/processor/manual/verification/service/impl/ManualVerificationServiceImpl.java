@@ -6,15 +6,13 @@ import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 import org.apache.commons.io.IOUtils;
-import org.slf4j.LoggerFactory;
-
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
+import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.code.ApiName;
 import io.mosip.registration.processor.core.code.DedupeSourceName;
@@ -34,6 +32,7 @@ import io.mosip.registration.processor.manual.verification.dto.UserDto;
 import io.mosip.registration.processor.manual.verification.exception.InvalidFileNameException;
 import io.mosip.registration.processor.manual.verification.exception.InvalidUpdateException;
 import io.mosip.registration.processor.manual.verification.exception.NoRecordAssignedException;
+import io.mosip.registration.processor.manual.verification.exception.UserIDNotPresentException;
 import io.mosip.registration.processor.manual.verification.service.ManualVerificationService;
 import io.mosip.registration.processor.manual.verification.stage.ManualVerificationStage;
 import io.mosip.registration.processor.manual.verification.util.StatusMessage;
@@ -89,10 +88,15 @@ public class ManualVerificationServiceImpl implements ManualVerificationService 
 	public ManualVerificationDTO assignApplicant(UserDto dto,String matchType) {
 		ManualVerificationDTO manualVerificationDTO = new ManualVerificationDTO();
 		List<ManualVerificationEntity> entities;
+		
 		entities = basePacketRepository.getAssignedApplicantDetails(dto.getUserId(),
 				ManualVerificationStatus.ASSIGNED.name());
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
 				dto.getUserId(), "ManualVerificationServiceImpl::assignApplicant()::entry");
+		if(dto.getUserId().isEmpty()) {
+			throw new UserIDNotPresentException(PlatformErrorMessages.RPR_MVS_NO_USER_ID_PRESENT.getCode(),
+					PlatformErrorMessages.RPR_MVS_NO_USER_ID_PRESENT.getMessage());
+		}
 		ManualVerificationEntity manualVerificationEntity;
 		if (!entities.isEmpty()) {
 			manualVerificationEntity = entities.get(0);
@@ -103,7 +107,7 @@ public class ManualVerificationServiceImpl implements ManualVerificationService 
 			manualVerificationDTO.setStatusCode(manualVerificationEntity.getStatusCode());
 			manualVerificationDTO.setReasonCode(manualVerificationEntity.getReasonCode());
 		} else {
-			if(matchType.equals("ALL")) {
+			if(matchType.equals(DedupeSourceName.ALL.toString())) {
 				entities = basePacketRepository.getFirstApplicantDetailsForAll(ManualVerificationStatus.PENDING.name());
 
 			}

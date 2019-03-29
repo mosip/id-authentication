@@ -51,6 +51,8 @@ import javafx.scene.control.ToggleButton;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.web.WebView;
 import javafx.stage.Modality;
@@ -120,11 +122,11 @@ public class RegistrationApprovalController extends BaseController implements In
 
 	/** The approve registration root sub pane. */
 	@FXML
-	private AnchorPane approveRegistrationRootSubPane;
+	private GridPane approveRegistrationRootSubPane;
 
 	/** The image anchor pane. */
 	@FXML
-	private AnchorPane imageAnchorPane;
+	private GridPane imageAnchorPane;
 
 	/** The map list. */
 	private List<Map<String, String>> approvalmapList = null;
@@ -162,9 +164,9 @@ public class RegistrationApprovalController extends BaseController implements In
 				public void updateItem(String item, boolean empty) {
 					super.updateItem(item, empty);
 					setText(item);
-					if (item != null && item.equals(RegistrationConstants.APPROVED)) {
+					if (item != null && item.equals(RegistrationUIConstants.APPROVED)) {
 						setTextFill(Color.GREEN);
-					} else if (item != null && item.equals(RegistrationConstants.REJECTED)) {
+					} else if (item != null && item.equals(RegistrationUIConstants.REJECTED)) {
 						setTextFill(Color.RED);
 					}
 				}
@@ -301,7 +303,7 @@ public class RegistrationApprovalController extends BaseController implements In
 			RegistrationApprovalDTO approvalDTO = new RegistrationApprovalDTO(
 					table.getItems().get(table.getSelectionModel().getFocusedIndex()).getId(),
 					table.getItems().get(table.getSelectionModel().getFocusedIndex()).getAcknowledgementFormPath(),
-					RegistrationConstants.APPROVED);
+					RegistrationUIConstants.APPROVED);
 			table.getItems().set(rowNum, approvalDTO);
 			table.requestFocus();
 			table.getFocusModel().focus(rowNum);
@@ -355,7 +357,7 @@ public class RegistrationApprovalController extends BaseController implements In
 
 		try {
 
-			AnchorPane authRoot = BaseController.load(getClass().getResource(fxmlPath));
+			Pane authRoot = BaseController.load(getClass().getResource(fxmlPath));
 			Scene scene = new Scene(authRoot);
 			scene.getStylesheets().add(ClassLoader.getSystemClassLoader()
 					.getResource(RegistrationConstants.CSS_FILE_PATH).toExternalForm());

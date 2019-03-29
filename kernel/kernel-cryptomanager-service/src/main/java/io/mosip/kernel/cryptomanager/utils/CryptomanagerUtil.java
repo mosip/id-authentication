@@ -22,6 +22,7 @@ import javax.crypto.spec.SecretKeySpec;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -53,6 +54,7 @@ import io.mosip.kernel.cryptomanager.exception.ParseResponseException;
  *
  * @since 1.0.0
  */
+@RefreshScope
 @Component
 public class CryptomanagerUtil {
 

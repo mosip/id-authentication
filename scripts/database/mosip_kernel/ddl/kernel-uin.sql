@@ -14,7 +14,7 @@ create schema if not exists kernel
 	create table kernel.uin (
 	
 		uin 		character varying (28) not null,
-		is_used 	boolean ,
+		uin_status 	character varying (16) ,
 		
 		cr_by 		character varying (32) not null,
 		cr_dtimes 	timestamp  not null,

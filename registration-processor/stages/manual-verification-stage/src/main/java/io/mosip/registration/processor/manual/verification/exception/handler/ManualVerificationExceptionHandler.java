@@ -24,6 +24,7 @@ import io.mosip.registration.processor.manual.verification.exception.InvalidUpda
 import io.mosip.registration.processor.manual.verification.exception.ManualVerificationAppException;
 import io.mosip.registration.processor.manual.verification.exception.NoRecordAssignedException;
 import io.mosip.registration.processor.manual.verification.exception.PacketNotFoundException;
+import io.mosip.registration.processor.manual.verification.exception.UserIDNotPresentException;
 import io.mosip.registration.processor.manual.verification.response.dto.ManualVerificationAssignResponseDTO;
 import io.mosip.registration.processor.manual.verification.response.dto.ManualVerificationBioDemoResponseDTO;
 import io.vertx.core.json.DecodeException;
@@ -126,6 +127,16 @@ public class ManualVerificationExceptionHandler {
 	return buildAssignDecisionExceptionResponse((Exception)e);
 	}
 
+	/**
+	 * No record assigned exception handler.
+	 *
+	 * @param e the e
+	 * @return the string
+	 */
+	public String UserIDNotPresentException(UserIDNotPresentException e) {
+	return buildAssignDecisionExceptionResponse((Exception)e);
+	}
+	
 	/**
 	 * Data exception handler.
 	 *
@@ -259,6 +270,8 @@ public class ManualVerificationExceptionHandler {
 			return invalidUpdateException((InvalidUpdateException)exe);
 		if(exe instanceof NoRecordAssignedException)
 			return noRecordAssignedExceptionHandler((NoRecordAssignedException)exe);
+		if(exe instanceof UserIDNotPresentException)
+			return UserIDNotPresentException((UserIDNotPresentException)exe);
 		if(exe instanceof PacketNotFoundException)
 			return packetNotFoundExceptionHandler((PacketNotFoundException)exe);
 		if(exe instanceof InvalidFileNameException)

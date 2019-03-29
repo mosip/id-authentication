@@ -19,7 +19,8 @@ create table regprc.reg_manual_verification (
 	matched_score      	numeric(6,3) ,
 	status_code    	character varying(36),		-- master.status_list.code
 	reason_code    	character varying(36),		-- master.reason_list.code
-	status_comment 	character varying(256),			
+	status_comment 	character varying(256),	
+	trntyp_code 	character varying(36) ,		-- regprc.transaction_type.code
 	
 	lang_code 		character varying(3) not null,	-- master.language.code
 	

@@ -2,6 +2,7 @@ package io.mosip.authentication.core.spi.irisauth.provider;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.springframework.core.env.Environment;
 
@@ -41,6 +42,9 @@ public abstract class IrisProvider implements MosipIrisProvider {
 
 	/** The Constant RIGHTEYE. */
 	static final String RIGHTEYE = "RIGHT"; //FIXME Hardcoded
+	
+	/** The Constant RIGHTEYE. */
+	static final String UNKNOWNEYE = "UNKNOWN"; //FIXME Hardcoded
 
 	/** The Constant idvid. */
 	private static final String IDVID = "idvid";
@@ -89,6 +93,8 @@ public abstract class IrisProvider implements MosipIrisProvider {
 				return environment.getProperty(uinType + IRISIMG_RIGHT_MATCH_VALUE, Double.class);
 			} else if (reqInfoMap.containsKey(IrisProvider.LEFTTEYE)) {
 				return environment.getProperty(uinType + IRISIMG_LEFT_MATCH_VALUE, Double.class);
+			} else if (reqInfoMap.containsKey(IrisProvider.UNKNOWNEYE)) {
+				return environment.getProperty(uinType + IRISIMG_LEFT_MATCH_VALUE, Double.class);
 			}
 		}
 
@@ -122,20 +128,27 @@ public abstract class IrisProvider implements MosipIrisProvider {
 		double match = 0;
 		if (reqInfo instanceof Map && entityInfo instanceof Map) {
 			Map<String, String> reqInfoMap = (Map<String, String>) reqInfo;
-			String uin = reqInfoMap.get(IDVID);
-
-			if (reqInfoMap.containsKey(LEFTTEYE)) {
-				Map<String, String> requestInfo = new HashMap<>();
-				requestInfo.put(LEFTTEYE, reqInfoMap.get(LEFTTEYE));
-				requestInfo.put(IDVID, uin);
-				match += matchImage(requestInfo, entityInfo);
-			}
-
-			if (reqInfoMap.containsKey(RIGHTEYE)) {
-				Map<String, String> requestInfo = new HashMap<>();
-				requestInfo.put(RIGHTEYE, reqInfoMap.get(RIGHTEYE));
-				requestInfo.put(IDVID, uin);
-				match += matchImage(requestInfo, entityInfo);
+			if (!reqInfoMap.containsKey(UNKNOWNEYE)) {
+				String uin = reqInfoMap.get(IDVID);
+				for (Entry<String, String> entry : reqInfoMap.entrySet()) {
+					Map<String, String> requestInfo = new HashMap<>();
+					requestInfo.put(entry.getKey(), entry.getValue());
+					requestInfo.put(IDVID, uin);
+					match += matchImage(requestInfo, entityInfo);
+				} 
+			} else {
+				double score = 0;
+				Map<String, String> entityInfoMap = (Map<String, String>) entityInfo;
+				String uin = reqInfoMap.get(IDVID);
+				for (Entry<String, String> entry : entityInfoMap.entrySet()) {
+					Map<String, String> requestInfo = new HashMap<>();
+					requestInfo.put(UNKNOWNEYE, entry.getValue());
+					requestInfo.put(IDVID, uin);
+					score = matchImage(requestInfo, entityInfo);
+					if(score > match) {
+						match = score;
+					}
+				}
 			}
 		}
 		return match;

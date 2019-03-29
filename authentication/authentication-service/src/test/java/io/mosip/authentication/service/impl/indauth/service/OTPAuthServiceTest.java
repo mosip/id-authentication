@@ -41,6 +41,7 @@ import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.IdValidationFailedException;
 import io.mosip.authentication.service.entity.AutnTxn;
 import io.mosip.authentication.service.helper.IdInfoHelper;
+import io.mosip.authentication.service.impl.indauth.builder.MatchInputBuilder;
 import io.mosip.authentication.service.impl.otpgen.service.OTPServiceImpl;
 import io.mosip.authentication.service.integration.OTPManager;
 import io.mosip.authentication.service.repository.AutnTxnRepository;
@@ -57,13 +58,16 @@ import reactor.ipc.netty.http.HttpResources;
 public class OTPAuthServiceTest {
 
 	@InjectMocks
-	private OTPAuthServiceImpl authserviceimpl;
+	private OTPAuthServiceImpl otpauthserviceimpl;
+
+	@InjectMocks
+	private MatchInputBuilder matchInputBuilder;
+
+	@InjectMocks
+	private IdInfoFetcherImpl idInfoFetcherImpl;
 
 	@InjectMocks
 	private OTPServiceImpl otpserviceimpl;
-
-	@InjectMocks
-	private OTPAuthServiceImpl otpauthserviceimpl;
 
 	@Autowired
 	Environment env;
@@ -82,8 +86,11 @@ public class OTPAuthServiceTest {
 
 	@Before
 	public void before() {
-		ReflectionTestUtils.setField(authserviceimpl, "env", env);
-		ReflectionTestUtils.setField(authserviceimpl, "idInfoHelper", idInfoHelper);
+		ReflectionTestUtils.setField(otpauthserviceimpl, "env", env);
+		ReflectionTestUtils.setField(otpauthserviceimpl, "matchInputBuilder", matchInputBuilder);
+		ReflectionTestUtils.setField(matchInputBuilder, "idInfoHelper", idInfoHelper);
+		ReflectionTestUtils.setField(matchInputBuilder, "idInfoFetcher", idInfoFetcherImpl);
+		ReflectionTestUtils.setField(otpauthserviceimpl, "idInfoHelper", idInfoHelper);
 		ReflectionTestUtils.setField(idInfoHelper, "environment", env);
 	}
 
@@ -107,7 +114,7 @@ public class OTPAuthServiceTest {
 		RequestDTO request = new RequestDTO();
 		request.setOtp("123455");
 		authreqdto.setRequest(request);
-		authserviceimpl.authenticate(authreqdto, "1234567890", Collections.emptyMap(), "123456");
+		otpauthserviceimpl.authenticate(authreqdto, "1234567890", Collections.emptyMap(), "123456");
 	}
 
 	@Test
@@ -130,8 +137,8 @@ public class OTPAuthServiceTest {
 		Mockito.when(vidrepository.findVIDByUIN(Mockito.anyString(), Mockito.any())).thenReturn(valueList);
 		Mockito.when(repository.findByUinorVid(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),
 				Mockito.any(), Mockito.any())).thenReturn(valueList);
-		AuthStatusInfo authStatusInfo = authserviceimpl.authenticate(authreqdto, "1234567890", Collections.emptyMap(),
-				"123456");
+		AuthStatusInfo authStatusInfo = otpauthserviceimpl.authenticate(authreqdto, "1234567890",
+				Collections.emptyMap(), "123456");
 		assertNotNull(authStatusInfo);
 	}
 
@@ -140,14 +147,14 @@ public class OTPAuthServiceTest {
 		MockEnvironment mockenv = new MockEnvironment();
 		mockenv.merge(((AbstractEnvironment) mockenv));
 		mockenv.setProperty("application.id", "");
-		ReflectionTestUtils.setField(authserviceimpl, "env", mockenv);
+		ReflectionTestUtils.setField(otpauthserviceimpl, "env", mockenv);
 		AuthRequestDTO authreqdto = new AuthRequestDTO();
 		authreqdto.setRequestTime("2019-02-18T18:17:48.923+05:30");
 		RequestDTO request = new RequestDTO();
 		request.setOtp("123456");
 		authreqdto.setRequest(request);
 		Mockito.when(otpmanager.validateOtp(Mockito.any(), Mockito.any())).thenReturn(true);
-		authserviceimpl.authenticate(authreqdto, "", Collections.emptyMap(), "123456");
+		otpauthserviceimpl.authenticate(authreqdto, "", Collections.emptyMap(), "123456");
 	}
 
 	/**
@@ -163,7 +170,7 @@ public class OTPAuthServiceTest {
 		valueList.add("1234567890");
 		Mockito.when(repository.findByUinorVid(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),
 				Mockito.any(), Mockito.any())).thenReturn(valueList);
-		assertTrue(authserviceimpl.validateTxnId("", "", "", "2019-02-18T18:17:48.923+05:30"));
+		assertTrue(otpauthserviceimpl.validateTxnId("", "", "", "2019-02-18T18:17:48.923+05:30"));
 	}
 
 	/**
@@ -182,8 +189,8 @@ public class OTPAuthServiceTest {
 		valueList.add("1234567890");
 		Mockito.when(repository.findByUinorVid(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),
 				Mockito.any(), Mockito.any())).thenReturn(valueList);
-		assertTrue(
-				authserviceimpl.validateTxnId("232323", "1234567890", "1234567890", "2019-02-18T18:17:48.923+05:30"));
+		assertTrue(otpauthserviceimpl.validateTxnId("232323", "1234567890", "1234567890",
+				"2019-02-18T18:17:48.923+05:30"));
 	}
 
 	@Test(expected = IDDataValidationException.class)
@@ -195,7 +202,7 @@ public class OTPAuthServiceTest {
 		String uin = null;
 		Map<String, List<IdentityInfoDTO>> idInfo = new HashMap<>();
 		String partnerId = null;
-		authserviceimpl.authenticate(authRequestDTO, uin, idInfo, partnerId);
+		otpauthserviceimpl.authenticate(authRequestDTO, uin, idInfo, partnerId);
 	}
 
 	@Test(expected = IdValidationFailedException.class)
@@ -209,7 +216,7 @@ public class OTPAuthServiceTest {
 		String uin = null;
 		Map<String, List<IdentityInfoDTO>> idInfo = new HashMap<>();
 		String partnerId = null;
-		authserviceimpl.authenticate(authRequestDTO, uin, idInfo, partnerId);
+		otpauthserviceimpl.authenticate(authRequestDTO, uin, idInfo, partnerId);
 	}
 
 	/**
@@ -220,7 +227,7 @@ public class OTPAuthServiceTest {
 	@Test
 	public void TestisEmpty_withNull() {
 		String txnId = null;
-		assertTrue(authserviceimpl.isEmpty(txnId));
+		assertTrue(otpauthserviceimpl.isEmpty(txnId));
 	}
 
 	/**
@@ -229,7 +236,7 @@ public class OTPAuthServiceTest {
 	@Test
 	public void TestisEmpty_withEmpty() {
 		String txnId = "";
-		assertTrue(authserviceimpl.isEmpty(txnId));
+		assertTrue(otpauthserviceimpl.isEmpty(txnId));
 	}
 
 	/**
@@ -238,7 +245,7 @@ public class OTPAuthServiceTest {
 	@Test
 	public void TestisEmpty_withEmptyString() {
 		String txnId = "  ";
-		assertTrue(authserviceimpl.isEmpty(txnId));
+		assertTrue(otpauthserviceimpl.isEmpty(txnId));
 	}
 
 	/**
@@ -248,14 +255,14 @@ public class OTPAuthServiceTest {
 	@Test
 	public void TestisEmpty_withValidString() {
 		String txnId = "TXN00001";
-		assertFalse(authserviceimpl.isEmpty(txnId));
+		assertFalse(otpauthserviceimpl.isEmpty(txnId));
 	}
 
 	@Ignore
 	@Test(expected = IDDataValidationException.class)
 	public void TestOtpisNotPresent() throws IdAuthenticationBusinessException {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
-		authserviceimpl.authenticate(authRequestDTO, "", Collections.emptyMap(), "123456");
+		otpauthserviceimpl.authenticate(authRequestDTO, "", Collections.emptyMap(), "123456");
 	}
 
 	/**
@@ -283,7 +290,7 @@ public class OTPAuthServiceTest {
 		Mockito.when(repository.findByUinorVid(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),
 				Mockito.any(), Mockito.any())).thenReturn(valueList);
 		Mockito.when(vidrepository.findVIDByUIN(Mockito.anyString(), Mockito.any())).thenReturn(valueList);
-		AuthStatusInfo authStatus = authserviceimpl.authenticate(otpAuthRequestDTO, "45345435345",
+		AuthStatusInfo authStatus = otpauthserviceimpl.authenticate(otpAuthRequestDTO, "45345435345",
 				Collections.emptyMap(), "123456");
 		assertFalse(authStatus.isStatus());
 	}
@@ -311,7 +318,7 @@ public class OTPAuthServiceTest {
 		authType.setOtp(true);
 		otpAuthRequestDTO.setRequestedAuth(authType);
 		Mockito.when(vidrepository.findVIDByUIN(Mockito.anyString(), Mockito.any())).thenReturn(valueList);
-		AuthStatusInfo authStatus = authserviceimpl.authenticate(otpAuthRequestDTO, "45345435345",
+		AuthStatusInfo authStatus = otpauthserviceimpl.authenticate(otpAuthRequestDTO, "45345435345",
 				Collections.emptyMap(), "123456");
 		assertFalse(authStatus.isStatus());
 	}

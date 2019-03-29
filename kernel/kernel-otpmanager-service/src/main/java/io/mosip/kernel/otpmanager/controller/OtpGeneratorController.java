@@ -10,9 +10,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.kernel.core.otpmanager.spi.OtpGenerator;
+import io.mosip.kernel.otpmanager.dto.GenerationDTOValidationLevels;
 import io.mosip.kernel.otpmanager.dto.OtpGeneratorRequestDto;
 import io.mosip.kernel.otpmanager.dto.OtpGeneratorResponseDto;
-import io.mosip.kernel.otpmanager.dto.GenerationDTOValidationLevels;
 
 /**
  * This class provides controller methods for OTP generation.
