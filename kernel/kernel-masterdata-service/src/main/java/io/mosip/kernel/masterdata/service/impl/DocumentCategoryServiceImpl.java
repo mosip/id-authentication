@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.masterdata.constant.DocumentCategoryErrorCode;
 import io.mosip.kernel.masterdata.dto.DocumentCategoryDto;
-import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.getresponse.DocumentCategoryResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
 import io.mosip.kernel.masterdata.entity.DocumentCategory;
@@ -159,8 +158,8 @@ public class DocumentCategoryServiceImpl implements DocumentCategoryService {
 	 * createDocumentCategory(io.mosip.kernel.masterdata.dto.RequestDto)
 	 */
 	@Override
-	public CodeAndLanguageCodeID createDocumentCategory(RequestDto<DocumentCategoryDto> category) {
-		DocumentCategory entity = MetaDataUtils.setCreateMetaData(category.getRequest(), DocumentCategory.class);
+	public CodeAndLanguageCodeID createDocumentCategory(DocumentCategoryDto category) {
+		DocumentCategory entity = MetaDataUtils.setCreateMetaData(category, DocumentCategory.class);
 		DocumentCategory documentCategory;
 		try {
 			documentCategory = documentCategoryRepository.create(entity);
@@ -184,9 +183,7 @@ public class DocumentCategoryServiceImpl implements DocumentCategoryService {
 	 * updateDocumentCategory(io.mosip.kernel.masterdata.dto.RequestDto)
 	 */
 	@Override
-	public CodeAndLanguageCodeID updateDocumentCategory(RequestDto<DocumentCategoryDto> category) {
-
-		DocumentCategoryDto categoryDto = category.getRequest();
+	public CodeAndLanguageCodeID updateDocumentCategory(DocumentCategoryDto categoryDto) {
 
 		CodeAndLanguageCodeID documentCategoryId = new CodeAndLanguageCodeID();
 
@@ -194,8 +191,8 @@ public class DocumentCategoryServiceImpl implements DocumentCategoryService {
 		try {
 
 			DocumentCategory documentCategory = documentCategoryRepository
-					.findByCodeAndLangCodeAndIsDeletedFalseOrIsDeletedIsNull(category.getRequest().getCode(),
-							category.getRequest().getLangCode());
+					.findByCodeAndLangCodeAndIsDeletedFalseOrIsDeletedIsNull(categoryDto.getCode(),
+							categoryDto.getLangCode());
 
 			if (documentCategory != null) {
 				MetaDataUtils.setUpdateMetaData(categoryDto, documentCategory, false);

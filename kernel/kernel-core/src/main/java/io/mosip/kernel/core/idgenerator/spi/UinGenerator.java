@@ -9,13 +9,13 @@ package io.mosip.kernel.core.idgenerator.spi;
  * @param <T>
  *            Type of Id
  */
-public interface UinGenerator<T> {
+public interface UinGenerator {
 
 	/**
 	 * Function to generate an Id
 	 * 
 	 * @return The generated id
 	 */
-	T generateId();
+	void generateId();
 
 }

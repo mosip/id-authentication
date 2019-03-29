@@ -3,15 +3,15 @@ package io.mosip.kernel.masterdata.controller;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.mosip.kernel.masterdata.dto.RequestDto;
+import io.mosip.kernel.core.http.RequestWrapper;
+import io.mosip.kernel.core.http.ResponseFilter;
+import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.masterdata.dto.ValidDocumentDto;
 import io.mosip.kernel.masterdata.dto.postresponse.DocCategoryAndTypeResponseDto;
 import io.mosip.kernel.masterdata.entity.id.ValidDocumentID;
@@ -43,11 +43,15 @@ public class ValidDocumentController {
 	 *            the DTO for valid document.
 	 * @return ValidDocumentID.
 	 */
-	@PostMapping("/v1.0/validdocuments")
-	@ApiOperation(value = "Service to create valid document", notes = "Create valid document and return composite id", response = ValidDocumentID.class)
-	public ResponseEntity<ValidDocumentID> createValidDocument(
-			@Valid @RequestBody RequestDto<ValidDocumentDto> document) {
-		return new ResponseEntity<>(documentService.createValidDocument(document), HttpStatus.OK);
+	@ResponseFilter
+	@PostMapping("/validdocuments")
+	@ApiOperation(value = "Service to create valid document", notes = "Create valid document and return composite id")
+	public ResponseWrapper<ValidDocumentID> createValidDocument(
+			@Valid @RequestBody RequestWrapper<ValidDocumentDto> document) {
+
+		ResponseWrapper<ValidDocumentID> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(documentService.createValidDocument(document.getRequest()));
+		return responseWrapper;
 	}
 
 	/**
@@ -59,10 +63,14 @@ public class ValidDocumentController {
 	 *            the document type code.
 	 * @return the PostValidDocumentResponseDto.
 	 */
-	@DeleteMapping("/v1.0/validdocuments/{doccategorycode}/{doctypecode}")
-	@ApiOperation(value = "Service to delete valid document", notes = "Delete valid document and return composite id", response = DocCategoryAndTypeResponseDto.class)
-	public ResponseEntity<DocCategoryAndTypeResponseDto> deleteValidDocuemnt(
+	@ResponseFilter
+	@DeleteMapping("/validdocuments/{doccategorycode}/{doctypecode}")
+	@ApiOperation(value = "Service to delete valid document", notes = "Delete valid document and return composite id")
+	public ResponseWrapper<DocCategoryAndTypeResponseDto> deleteValidDocuemnt(
 			@PathVariable("doccategorycode") String docCatCode, @PathVariable("doctypecode") String docTypeCode) {
-		return new ResponseEntity<>(documentService.deleteValidDocuemnt(docCatCode, docTypeCode), HttpStatus.OK);
+
+		ResponseWrapper<DocCategoryAndTypeResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(documentService.deleteValidDocuemnt(docCatCode, docTypeCode));
+		return responseWrapper;
 	}
 }
