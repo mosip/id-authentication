@@ -80,7 +80,7 @@ public class DocumentScanController extends BaseController {
 
 	@FXML
 	private Label bioExceptionToggleLabel1;
-
+	
 	@FXML
 	private Label bioExceptionToggleLabel2;
 
@@ -222,41 +222,12 @@ public class DocumentScanController extends BaseController {
 		documentVBoxes.clear();
 		initializePreviewSection();
 
-		MoroccoIdentity identityDto = getIdentityDto();
-		String applicantType = null;
-		String gender = null;
-		if (demographicDetailController.getSelectedGenderCode() != null) {
-			gender = demographicDetailController.getSelectedGenderCode();
-		}
-		String dateOfBirth = identityDto.getDateOfBirth();
-		String individualType = null;
-		if (demographicDetailController.getSelectedNationalityCode() != null) {
-			individualType = demographicDetailController.getSelectedNationalityCode();
-		}
-		if (gender != null && dateOfBirth != null && individualType != null) {
-			SimpleDateFormat inputFormat = new SimpleDateFormat(RegistrationConstants.ATTR_FORINGER_DOB_PARSING);
-			SimpleDateFormat outputFormat = new SimpleDateFormat(RegistrationConstants.ATTR_FORINGER_DOB_FORMAT);
-			Date date = inputFormat.parse(dateOfBirth);
-			String formattedDob = outputFormat.format(date);
-			Map<String, Object> applicantTypeMap = new HashMap<>();
-			applicantTypeMap.put(RegistrationConstants.ATTR_INDIVIDUAL_TYPE, individualType);
-			applicantTypeMap.put(RegistrationConstants.ATTR_DATE_OF_BIRTH, formattedDob);
-			applicantTypeMap.put(RegistrationConstants.ATTR_GENDER_TYPE, gender);
-			applicantType = applicantTypeService.getApplicantType(applicantTypeMap);
-			getRegistrationDTOFromSession().getRegistrationMetaDataDTO().setApplicantTypeCode(applicantType);
-		} else {
-			/* TODO - to be removed after the clarification of UIN update */
-			applicantType = "007";
-			getRegistrationDTOFromSession().getRegistrationMetaDataDTO().setApplicantTypeCode(null);
-		}
 
-		if (applicantType != null) {
-			List<DocumentCategory> documentCategories = documentCategoryService
-					.getDocumentCategoriesByLangCode(ApplicationContext.applicationLanguage());
-			docScanVbox.setSpacing(5);
-			if (documentCategories != null && !documentCategories.isEmpty())
-				prepareDocumentScanSection(documentCategories);
-		}
+		List<DocumentCategory> documentCategories = documentCategoryService
+				.getDocumentCategoriesByLangCode(ApplicationContext.applicationLanguage());
+		docScanVbox.setSpacing(5);
+		if (documentCategories != null && !documentCategories.isEmpty())
+			prepareDocumentScanSection(documentCategories);
 
 		/*
 		 * populate the documents for edit if its already present or fetched from pre
