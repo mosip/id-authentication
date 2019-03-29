@@ -3,6 +3,8 @@ package io.mosip.preregistration.datasync.service;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.annotation.PostConstruct;
 
@@ -86,6 +88,13 @@ public class DataSyncService {
 		requiredRequestMap.put("ver", ver);
 	}
 
+	public static boolean isValidDate(String d) {
+		String regex = "^(1[0-2]|0[1-9])/(3[01]" + "|[12][0-9]|0[1-9])/[0-9]{4}$";
+		Pattern pattern = Pattern.compile(regex);
+		Matcher matcher = pattern.matcher((CharSequence) d);
+		return matcher.matches();
+	}
+
 	public MainResponseDTO<PreRegistrationIdsDTO> retrieveAllPreRegIds(
 			MainRequestDTO<DataSyncRequestDTO> dataSyncRequest) {
 		PreRegistrationIdsDTO preRegistrationIdsDTO = null;
@@ -96,7 +105,14 @@ public class DataSyncService {
 		try {
 			ValidationUtil.requestValidator(dataSyncRequest);
 			serviceUtil.validateDataSyncRequest(dataSyncRequest.getRequest());
+
 			DataSyncRequestDTO dataSyncRequestDTO = dataSyncRequest.getRequest();
+			if (serviceUtil.isNull(dataSyncRequestDTO.getToDate())) {
+				dataSyncRequestDTO.setToDate(dataSyncRequestDTO.getFromDate());
+			}
+//			if (isValidDate(dataSyncRequestDTO.getFromDate()) && isValidDate(dataSyncRequestDTO.getFromDate())) {
+//				System.out.println("Valid");
+//			}
 			PreRegIdsByRegCenterIdResponseDTO preRegIdsDTO = serviceUtil
 					.callBookedPreIdsByDateAndRegCenterIdRestService(dataSyncRequestDTO.getFromDate(),
 							dataSyncRequestDTO.getToDate(), dataSyncRequestDTO.getRegClientId());

@@ -411,12 +411,12 @@ public class DocumentUploadServiceTest {
 	
 	@Test(expected = InvalidRequestParameterException.class)
 	public void InvalidRequestParameterExceptionTest1() throws Exception {
-		documentUploadService.copyDocument("POA", "486", "48690172097499");
+		documentUploadService.copyDocument("POA", "", "48690172097499");
 	}
 	
 	@Test(expected = InvalidRequestParameterException.class)
 	public void InvalidRequestParameterExceptionTest2() throws Exception {
-		documentUploadService.copyDocument("POA", "48690172097499", "48");
+		documentUploadService.copyDocument("POA", "48690172097499", "");
 	}
 	
 	@Test(expected = InvalidRequestParameterException.class)

@@ -7,8 +7,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -23,7 +21,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import io.mosip.kernel.auth.adapter.AuthUserDetails;
 import io.mosip.kernel.core.logger.spi.Logger;
-import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.preregistration.booking.codes.RequestCodes;
 import io.mosip.preregistration.booking.dto.AvailabilityDto;
 import io.mosip.preregistration.booking.dto.BookingRequestDTO;
@@ -55,7 +52,6 @@ import io.mosip.preregistration.core.common.dto.MainListRequestDTO;
 import io.mosip.preregistration.core.common.dto.MainListResponseDTO;
 import io.mosip.preregistration.core.common.dto.MainRequestDTO;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
-import io.mosip.preregistration.core.common.dto.PreRegIdsByRegCenterIdDTO;
 import io.mosip.preregistration.core.common.dto.PreRegIdsByRegCenterIdResponseDTO;
 import io.mosip.preregistration.core.config.LoggerConfiguration;
 import io.mosip.preregistration.core.util.AuditLogUtil;
@@ -393,58 +389,6 @@ public class BookingService {
 	}
 
 	/**
-	 * This method will get Pre registration Id based on registration center Id.
-	 * 
-	 * @param requestDTO
-	 * @return
-	 */
-	public MainListResponseDTO<PreRegIdsByRegCenterIdResponseDTO> getPreIdsByRegCenterId(
-			MainRequestDTO<PreRegIdsByRegCenterIdDTO> requestDTO) {
-		log.info("sessionId", "idType", "id", "In getPreIdsByRegCenterId method of Booking Service");
-		MainListResponseDTO<PreRegIdsByRegCenterIdResponseDTO> responseDto = new MainListResponseDTO<>();
-		PreRegIdsByRegCenterIdResponseDTO preRegIdsByRegCenterIdResponseDTO = new PreRegIdsByRegCenterIdResponseDTO();
-		List<PreRegIdsByRegCenterIdResponseDTO> preRegIdsByRegCenterIdResponseDTOList = new ArrayList<>();
-		try {
-			if (ValidationUtil.requestValidator(requestDTO)) {
-				String regCenterId = requestDTO.getRequest().getRegistrationCenterId();
-				List<RegistrationBookingEntity> bookingEntities = bookingDAO
-						.findByRegistrationCenterId(regCenterId.trim());
-				Iterator<RegistrationBookingEntity> iterate = bookingEntities.iterator();
-				while (iterate.hasNext()) {
-					String preRegStatusCode = serviceUtil
-							.callGetStatusRestService(iterate.next().getBookingPK().getPreregistrationId());
-					if (!preRegStatusCode.equals(StatusCodes.BOOKED.getCode())) {
-						bookingEntities.remove(bookingEntities.indexOf(iterate.next()));
-					}
-				}
-				List<String> preRegIdList = requestDTO.getRequest().getPreRegistrationIds();
-				List<String> entityPreRegIdList = new LinkedList<>();
-				for (RegistrationBookingEntity bookingEntity : bookingEntities) {
-					entityPreRegIdList.add(bookingEntity.getBookingPK().getPreregistrationId());
-				}
-				preRegIdList.retainAll(entityPreRegIdList);
-				if (!preRegIdList.isEmpty()) {
-					preRegIdsByRegCenterIdResponseDTO.setRegistrationCenterId(regCenterId);
-					preRegIdsByRegCenterIdResponseDTO.setPreRegistrationIds(preRegIdList);
-					preRegIdsByRegCenterIdResponseDTOList.add(preRegIdsByRegCenterIdResponseDTO);
-
-					responseDto.setResponsetime(serviceUtil.getCurrentResponseTime());
-					responseDto.setResponse(preRegIdsByRegCenterIdResponseDTOList);
-				} else {
-					throw new BookingDataNotFoundException(ErrorCodes.PRG_BOOK_RCI_013.toString(),
-							ErrorMessages.BOOKING_DATA_NOT_FOUND.toString());
-				}
-			}
-		} catch (Exception ex) {
-			log.error("sessionId", "idType", "id",
-					"In getPreIdsByRegCenterId method of Booking Service for Exception- " + ex.getMessage());
-			new BookingExceptionCatcher().handle(ex);
-		}
-
-		return responseDto;
-	}
-
-	/**
 	 * 
 	 * This booking API will be called by bookAppointment.
 	 * 
@@ -695,10 +639,19 @@ public class BookingService {
 			if (toDateStr == null || toDateStr.isEmpty()) {
 				toDateStr = fromDateStr;
 			}
-			LocalDate fromDate = DateUtils
-					.parseDateToLocalDateTime(DateUtils.parseToDate(fromDateStr.trim(), "yyyy-MM-dd")).toLocalDate();
-			LocalDate toDate = DateUtils.parseDateToLocalDateTime(DateUtils.parseToDate(toDateStr.trim(), "yyyy-MM-dd"))
-					.toLocalDate();
+
+			DateTimeFormatter parseFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+			/*
+			 * LocalDate fromDate = DateUtils
+			 * .parseDateToLocalDateTime(DateUtils.parseToDate(fromDateStr.trim(),
+			 * "yyyy-MM-dd")).toLocalDate(); LocalDate toDate =
+			 * DateUtils.parseDateToLocalDateTime(DateUtils.parseToDate(toDateStr.trim(),
+			 * "yyyy-MM-dd")) .toLocalDate();
+			 */
+
+			LocalDate fromDate = LocalDate.parse(fromDateStr, parseFormatter);
+			LocalDate toDate = LocalDate.parse(toDateStr, parseFormatter);
 
 			LocalDateTime fromLocaldate = fromDate.atStartOfDay();
 			LocalDateTime toLocaldate = toDate.atTime(23, 59, 59);

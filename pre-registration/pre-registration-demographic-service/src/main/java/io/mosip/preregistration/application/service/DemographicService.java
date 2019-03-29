@@ -384,7 +384,7 @@ public class DemographicService {
 				DemographicEntity demographicEntity = demographicRepository.findBypreRegistrationId(preregId);
 				if (!serviceUtil.isNull(demographicEntity)) {
 					if (serviceUtil.checkStatusForDeletion(demographicEntity.getStatusCode())) {
-						if(!(demographicEntity.getStatusCode().equals(StatusCodes.PENDING_APPOINTMENT.getCode()))) {
+						if (!(demographicEntity.getStatusCode().equals(StatusCodes.PENDING_APPOINTMENT.getCode()))) {
 							callDocumentServiceToDeleteAllByPreId(preregId);
 						}
 						if (!(demographicEntity.getStatusCode().equals(StatusCodes.PENDING_APPOINTMENT.getCode()))) {
@@ -581,8 +581,7 @@ public class DemographicService {
 		List<String> preIds = new ArrayList<>();
 		if (demographicEntityList != null && !demographicEntityList.isEmpty()) {
 			for (DemographicEntity entity : demographicEntityList) {
-				if (entity.getDemogDetailHash()
-						.equals(HashUtill.hashUtill(entity.getApplicantDetailJson()))) {
+				if (entity.getDemogDetailHash().equals(HashUtill.hashUtill(entity.getApplicantDetailJson()))) {
 					preIds.add(entity.getPreRegistrationId());
 				} else {
 
@@ -789,7 +788,8 @@ public class DemographicService {
 		MainResponseDTO<Map<String, String>> mainResponseDTO = new MainResponseDTO<>();
 		try {
 			Map<String, String> preIdMap = new HashMap<>();
-			if (preRegIdsByRegCenterIdDTO.getPreRegistrationIds() != null) {
+			if (preRegIdsByRegCenterIdDTO.getPreRegistrationIds() != null
+					&& !preRegIdsByRegCenterIdDTO.getPreRegistrationIds().isEmpty()) {
 				List<String> preIds = preRegIdsByRegCenterIdDTO.getPreRegistrationIds();
 				List<DemographicEntity> demographicEntities = demographicRepository
 						.findByStatusCodeAndPreRegistrationIdIn(StatusCodes.BOOKED.getCode(), preIds);
@@ -803,8 +803,9 @@ public class DemographicService {
 							ErrorMessages.UNABLE_TO_FETCH_THE_PRE_REGISTRATION.name());
 				}
 			} else {
-				throw new RecordNotFoundForPreIdsException(ErrorCodes.PRG_PAM_APP_005.name(),
-						ErrorMessages.UNABLE_TO_FETCH_THE_PRE_REGISTRATION.name());
+				throw new RecordNotFoundForPreIdsException(
+						io.mosip.preregistration.core.errorcodes.ErrorCodes.PRG_CORE_REQ_001.name(),
+						io.mosip.preregistration.core.errorcodes.ErrorMessages.MISSING_REQUEST_PARAMETER.name());
 			}
 			mainResponseDTO.setResponsetime(serviceUtil.getCurrentResponseTime());
 			mainResponseDTO.setId(id);

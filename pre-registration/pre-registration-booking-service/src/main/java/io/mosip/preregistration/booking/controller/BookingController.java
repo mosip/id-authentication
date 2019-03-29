@@ -194,7 +194,7 @@ public class BookingController {
 	@ApiOperation(value = "Get Pre-Registartion ids By Booked Date Time And Registration center id")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Booked data successfully retrieved"),
 			@ApiResponse(code = 400, message = "Unable to get the Booked data") })
-	public ResponseEntity<MainResponseDTO<PreRegIdsByRegCenterIdResponseDTO>> getApplicationByDate(
+	public ResponseEntity<MainResponseDTO<PreRegIdsByRegCenterIdResponseDTO>> getBookedDataByDate(
 			@RequestParam(value = "from_date", required = true) @DateTimeFormat(pattern = "yyyy-MM-dd") String fromDate,
 			@RequestParam(value = "to_date") @DateTimeFormat(pattern = "yyyy-MM-dd") String toDate,
 			@RequestParam(value = "reg_center_id") String regCenterId) {
