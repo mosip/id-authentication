@@ -594,8 +594,6 @@ public class DemographicDetailController extends BaseController {
 	@FXML
 	private GridPane localResidence;
 	@FXML
-	private GridPane applicatoinAddressPane;
-	@FXML
 	private GridPane localAddressPane;
 	@FXML
 	private VBox applicationemailIdPane;
@@ -1418,7 +1416,6 @@ public class DemographicDetailController extends BaseController {
 			localFullName.setDisable(false);
 			applicationAge.setDisable(!getRegistrationDTOFromSession().getSelectionListDTO().isAge());
 			applicationGender.setDisable(!getRegistrationDTOFromSession().getSelectionListDTO().isGender());
-			applicatoinAddressPane.setDisable(!getRegistrationDTOFromSession().getSelectionListDTO().isAddress());
 
 			applicationAddressLine1.setDisable(!getRegistrationDTOFromSession().getSelectionListDTO().isAddress());
 			addressLine1KeyboardImage.setDisable(!getRegistrationDTOFromSession().getSelectionListDTO().isAddress());
@@ -1432,7 +1429,7 @@ public class DemographicDetailController extends BaseController {
 			applicationRegion.setDisable(!getRegistrationDTOFromSession().getSelectionListDTO().isAddress());
 			applicationProvince.setDisable(!getRegistrationDTOFromSession().getSelectionListDTO().isAddress());
 			applicationCity.setDisable(!getRegistrationDTOFromSession().getSelectionListDTO().isAddress());
-			applicationCity.setDisable(!getRegistrationDTOFromSession().getSelectionListDTO().isAddress());
+			applicationPostalCode.setDisable(!getRegistrationDTOFromSession().getSelectionListDTO().isAddress());
 			applicationlocalAdminAuthority
 					.setDisable(!getRegistrationDTOFromSession().getSelectionListDTO().isAddress());
 			applicationMobileNumber.setDisable(!getRegistrationDTOFromSession().getSelectionListDTO().isPhone());
