@@ -23,12 +23,12 @@ import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.syncdata.constant.RolesErrorCode;
 import io.mosip.kernel.syncdata.constant.UserDetailsErrorCode;
-import io.mosip.kernel.syncdata.dto.SyncUserDetailDto;
 import io.mosip.kernel.syncdata.dto.response.RolesResponseDto;
 import io.mosip.kernel.syncdata.exception.AuthManagerServiceException;
 import io.mosip.kernel.syncdata.exception.ParseResponseException;
 import io.mosip.kernel.syncdata.exception.SyncDataServiceException;
 import io.mosip.kernel.syncdata.service.SyncRolesService;
+import io.mosip.kernel.syncdata.utils.HashUtil;
 
 /**
  * This class handles fetching of everey roles that is in the server. The flow
@@ -68,6 +68,9 @@ public class SyncRolesServiceImpl implements SyncRolesService {
 
 	@Value("${mosip.kernel.syncdata.syncdata-version-id:v1.0}")
 	private String syncDataVersionId;
+	
+	@Autowired
+	HashUtil hashUtil;
 
 	/*
 	 * (non-Javadoc)
@@ -89,7 +92,7 @@ public class SyncRolesServiceImpl implements SyncRolesService {
 			syncDataRequestHeaders.setContentType(MediaType.APPLICATION_JSON);
 			HttpEntity<RequestWrapper<?>> userRolesRequestEntity = new HttpEntity<>(requestWrapper,
 					syncDataRequestHeaders);
-			response = restTemplate.exchange(uriBuilder.toString()+"/registrationclient",HttpMethod.GET , userRolesRequestEntity, String.class);//(uriBuilder.toString() + "/registrationclient",
+			response = restTemplate.exchange("https://dev.mosip.io/authmanager/roles/registrationclient",HttpMethod.GET , userRolesRequestEntity, String.class);//(uriBuilder.toString() + "/registrationclient",
 					//String.class);
 		} catch (RestClientException ex) {
 			throw new SyncDataServiceException(RolesErrorCode.ROLES_FETCH_EXCEPTION.getErrorCode(),
@@ -111,7 +114,11 @@ public class SyncRolesServiceImpl implements SyncRolesService {
 					UserDetailsErrorCode.USER_DETAILS_PARSE_ERROR.getErrorMessage() + exception.getMessage(),
 					exception);
 		}
-
+         
+		
+		String hashedText=hashUtil.hashData(response.toString());
+		System.out.println(hashedText);
+		
 		return rolesDtos;
 
 	}

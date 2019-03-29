@@ -27,14 +27,13 @@ public class ReqResFilter implements Filter {
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
-		
+
 		HttpServletRequest httpServletRequest = (HttpServletRequest) request;
 		HttpServletResponse httpServletResponse = (HttpServletResponse) response;
 		ContentCachingRequestWrapper requestWrapper = null;
 		ContentCachingResponseWrapper responseWrapper = null;
-		
 		try {
-			if(httpServletRequest.getRequestURI().endsWith(".stream")) {
+			if (httpServletRequest.getRequestURI().endsWith(".stream")) {
 				chain.doFilter(request, response);
 				return;
 			}
@@ -47,7 +46,7 @@ public class ReqResFilter implements Filter {
 			mosipLogger.error("", "", "", e.getMessage());
 		}
 	}
-	
+
 	@Override
 	public void destroy() {
 		// destroy method overriding
