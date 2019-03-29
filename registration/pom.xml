@@ -295,15 +295,15 @@
 
 	<build>
 	
-    <resources>
-        <resource>
-            <directory>${project.basedir}/src/main/resources/fx_lib/</directory>
-            <excludes>
-                <exclude>*.jar</exclude>
-            </excludes>
-            <filtering>false</filtering>
-        </resource>
-    </resources>
+<!--     <resources> -->
+<!--         <resource> -->
+<!--             <directory>${project.basedir}/src/main/resources/fx_lib/</directory> -->
+<!--             <excludes> -->
+<!--                 <exclude>fx_lib</exclude> -->
+<!--             </excludes> -->
+<!--             <filtering>false</filtering> -->
+<!--         </resource> -->
+<!--     </resources> -->
 
 		<plugins>
 			<plugin>
