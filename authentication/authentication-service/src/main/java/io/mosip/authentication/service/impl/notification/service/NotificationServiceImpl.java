@@ -199,7 +199,13 @@ public class NotificationServiceImpl implements NotificationService {
 			values.put(DATE, date);
 			values.put(TIME, time);
 
-			values.put("name", infoHelper.getEntityInfoAsString(DemoMatchType.NAME, idInfo));
+			String priLang = idInfoFetcher.getLanguageCode(LanguageType.PRIMARY_LANG);
+			String namePri = infoHelper.getEntityInfoAsString(DemoMatchType.NAME, priLang, idInfo);
+			values.put(NAME, namePri);
+			values.put(NAME + "_" +  priLang, namePri);
+			String secLang = idInfoFetcher.getLanguageCode(LanguageType.SECONDARY_LANG);
+			String nameSec = infoHelper.getEntityInfoAsString(DemoMatchType.NAME,  secLang, idInfo);
+			values.put(NAME + "_" + secLang, nameSec);
 
 			sendNotification(values, email, mobileNumber, SenderType.OTP, env.getProperty("otp.notification.type"));
 		} catch (BaseCheckedException e) {

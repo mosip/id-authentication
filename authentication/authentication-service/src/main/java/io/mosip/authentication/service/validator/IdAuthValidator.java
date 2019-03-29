@@ -2,7 +2,10 @@ package io.mosip.authentication.service.validator;
 
 import java.util.Date;
 import java.util.Objects;
+import java.util.Set;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
@@ -196,42 +199,57 @@ public abstract class IdAuthValidator implements Validator {
 	 * @param errors the errors
 	 */
 	private void validateIdtypeUinVid(String id, String idType, Errors errors, String idFieldName) {
+		String allowedIdTypes = env.getProperty("mosip.idtype.allowed");
+		Set<String> allowedIdTypeSet = Stream.of(allowedIdTypes.split(",")).filter(str -> !str.isEmpty())
+				.collect(Collectors.toSet());
+		// Checks for null IdType
 		if (Objects.isNull(idType)) {
 			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE,
 					MISSING_INPUT_PARAMETER + IDV_ID_TYPE);
 			errors.rejectValue(idFieldName, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
-					new Object[] { IDV_ID_TYPE }, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
-		} else if (idType.equals(IdType.UIN.getType())) {
-			try {
-				uinValidator.validateId(id);
-			} catch (InvalidIDException e) {
-				mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE, "InvalidIDException - " + e);
-				errors.rejectValue(idFieldName, IdAuthenticationErrorConstants.INVALID_UIN.getErrorCode(),
-						IdAuthenticationErrorConstants.INVALID_UIN.getErrorMessage());
+					new Object[] { IDV_ID_TYPE },
+					IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
+		} // checks IdType is Allowed orN Not
+		else if (allowedIdTypeSet.contains(idType)) {
+			if (idType.equals(IdType.UIN.getType())) {
+				try {
+					uinValidator.validateId(id);
+				} catch (InvalidIDException e) {
+					mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE,
+							"InvalidIDException - " + e);
+					errors.rejectValue(idFieldName, IdAuthenticationErrorConstants.INVALID_UIN.getErrorCode(),
+							IdAuthenticationErrorConstants.INVALID_UIN.getErrorMessage());
 
-			}
-		} else if (idType.equals(IdType.VID.getType())) {
-			try {
-				vidValidator.validateId(id);
-			} catch (InvalidIDException e) {
-				mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE, "InvalidIDException - " + e);
-				errors.rejectValue(idFieldName, IdAuthenticationErrorConstants.INVALID_VID.getErrorCode(),
-						IdAuthenticationErrorConstants.INVALID_VID.getErrorMessage());
+				}
+			} else if (idType.equals(IdType.VID.getType())) {
+				try {
+					vidValidator.validateId(id);
+				} catch (InvalidIDException e) {
+					mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE,
+							"InvalidIDException - " + e);
+					errors.rejectValue(idFieldName, IdAuthenticationErrorConstants.INVALID_VID.getErrorCode(),
+							IdAuthenticationErrorConstants.INVALID_VID.getErrorMessage());
+				}
 			}
 		} else {
-			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE, "INCORRECT_IDTYPE - " + idType);
-			errors.rejectValue(IDV_ID_TYPE, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
-					new Object[] { IDV_ID_TYPE },
-					IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
+			// Checks idType is valid or invalid.If Valid and not configured
+			// IDENTITYTYPE_NOT_ALLOWED error is thrown else INVALID_INPUT_PARAMETER will be
+			// thrown.
+			if (IdType.getIDType(idType).isPresent()) {
+				mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE,
+						"NOT ALLOWED IDENTITY TYPE - " + idType);
+				errors.rejectValue(IDV_ID_TYPE, IdAuthenticationErrorConstants.IDENTITYTYPE_NOT_ALLOWED.getErrorCode(),
+						new Object[] { idType },
+						IdAuthenticationErrorConstants.IDENTITYTYPE_NOT_ALLOWED.getErrorMessage());
+			} else {
+				mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE,
+						"INCORRECT_IDTYPE - " + idType);
+				errors.rejectValue(IDV_ID_TYPE, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+						new Object[] { IDV_ID_TYPE },
+						IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
+			}
 		}
 	}
-
-	/**
-	 * Validation for TspId.
-	 *
-	 * @param tspID  the tsp ID
-	 * @param errors the errors
-	 */
 
 	/**
 	 * Validates the ConsentRequest on request.

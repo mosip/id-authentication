@@ -40,6 +40,8 @@ public enum IdAuthenticationErrorConstants {
 	MISSING_AUTHTYPE("IDA-MLC-015", "Missing  %s auth attribute"),
 	PHONE_EMAIL_NOT_REGISTERED("IDA-MLC-016",
 			"%s not registered. Individual has to register and try again", "A0105"),
+	IDENTITYTYPE_NOT_ALLOWED("IDA-MLC-017","Identity Type - %s not configured for the country"),
+	
 	
 	DEMOGRAPHIC_DATA_MISMATCH("IDA-DEA-001", "Demographic data  %s  in  %s did not match", "A0109"),
 	UNSUPPORTED_LANGUAGE("IDA-DEA-002", "Unsupported Language Code - %s", "A0111"),
