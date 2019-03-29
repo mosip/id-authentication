@@ -194,7 +194,6 @@ public class IdRepoServiceTest {
 	public void setup() throws FileNotFoundException, IOException, IdRepoDataValidationException, RestServiceException {
 		ReflectionTestUtils.setField(securityManager, "env", env);
 		ReflectionTestUtils.setField(securityManager, "mapper", mapper);
-		ReflectionTestUtils.invokeMethod(securityManager, "buildRequest");
 		ReflectionTestUtils.setField(service, "securityManager", securityManager);
 		ReflectionTestUtils.setField(proxyService, "securityManager", securityManager);
 		when(restBuilder.buildRequest(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(new RestRequestDTO());
