@@ -13,10 +13,12 @@ import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.constants.RegistrationUIConstants;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.controller.FXUtils;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Pane;
 
 @Component
 public class DateValidation extends BaseController {
@@ -56,7 +58,7 @@ public class DateValidation extends BaseController {
 		dateMapper.put("12", "31");
 	}
 
-	public void validateDate(AnchorPane parentPane, TextField date, TextField month, TextField year, Validations validations, FXUtils fxUtils,
+	public void validateDate(Pane parentPane, TextField date, TextField month, TextField year, Validations validations, FXUtils fxUtils,
 			TextField localField) {
 
 		try {
@@ -72,7 +74,7 @@ public class DateValidation extends BaseController {
 				if (date.getText().matches("\\d+") && month.getText().matches("\\d+")) {
 					try {
 						if (Integer.parseInt(date.getText()) > Integer.parseInt(dateMapper.get(month.getText()))) {
-							generateAlert("Date", "Please enter the appropriate value");
+							generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.DATE_VALIDATION_MSG);
 							date.setText(oldValue);
 						}
 					} catch (RuntimeException runTimeException) {
@@ -90,7 +92,7 @@ public class DateValidation extends BaseController {
 		}
 	}
 
-	public void validateMonth(AnchorPane parentPane,TextField date, TextField month, TextField year, Validations validations, FXUtils fxUtils,
+	public void validateMonth(Pane parentPane,TextField date, TextField month, TextField year, Validations validations, FXUtils fxUtils,
 			TextField localField) {
 		try {
 			fxUtils.populateLocalFieldOnType(parentPane, month, validation, localField);
@@ -103,7 +105,7 @@ public class DateValidation extends BaseController {
 					if (date.getText().matches("\\d+") && month.getText().matches("\\d+")) {
 						try {
 							if (Integer.parseInt(date.getText()) > Integer.parseInt(dateMapper.get(month.getText()))) {
-								generateAlert("Please enter the appropriate value");
+								generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.DATE_VALIDATION_MSG);
 								date.clear();
 							}
 						} catch (RuntimeException runTimeException) {
@@ -161,7 +163,7 @@ public class DateValidation extends BaseController {
 		}
 	}
 
-	public void validateYear(AnchorPane parentPane, TextField date, TextField month, TextField year, Validations validations, FXUtils fxUtils,
+	public void validateYear(Pane parentPane, TextField date, TextField month, TextField year, Validations validations, FXUtils fxUtils,
 			TextField localField) {
 		try {
 			fxUtils.populateLocalFieldOnType(parentPane, year, validation, localField);
@@ -195,7 +197,7 @@ public class DateValidation extends BaseController {
 						try {
 							if (Integer.parseInt(date.getText()) > Integer.parseInt(dateMapper.get(month.getText()))) {
 								date.clear();
-								generateAlert("Please enter the appropriate value");
+								generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.DATE_VALIDATION_MSG);
 							}
 						} catch (RuntimeException runTimeException) {
 							LOGGER.error("DATE VALIDATOINS", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,

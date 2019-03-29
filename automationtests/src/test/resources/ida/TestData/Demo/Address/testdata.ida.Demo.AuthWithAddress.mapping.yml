@@ -1,0 +1,371 @@
+testdata:
+  Address_Auth_With_FR_smoke_pos_01:
+    input.demo-auth-request:
+      demoAuthReq.idvId: $UIN$
+      demoAuthReq.tspID: REF01
+      demoAuthReq.reqTime: $TIMESTAMP$
+      demoAuthReq.txnID: $RANDOM:N:10$
+    input.identity-encrypt-data:
+      identityReq.languageaddressLine30: $idrepo~$input.demo-auth-request:demoAuthReq.idvId$~languageaddressLine31$
+      identityReq.valueaddressLine10: $idrepo~$input.demo-auth-request:demoAuthReq.idvId$~valueaddressLine11$
+      identityReq.tspID: $input.demo-auth-request:demoAuthReq.tspID$
+      identityReq.valueaddressLine20: $idrepo~$input.demo-auth-request:demoAuthReq.idvId$~valueaddressLine21$
+      identityReq.valueaddressLine30: $idrepo~$input.demo-auth-request:demoAuthReq.idvId$~valueaddressLine31$
+      identityReq.languageaddressLine10: $idrepo~$input.demo-auth-request:demoAuthReq.idvId$~languageaddressLine11$
+      identityReq.languageaddressLine20: $idrepo~$input.demo-auth-request:demoAuthReq.idvId$~languageaddressLine21$
+    output.output-1-expected-y-res:
+      output.1.response.y.status: Y
+      output.1.response.y.resTime: $TIMESTAMP$
+      output.1.response.y.reqTime: $input.demo-auth-request:demoAuthReq.reqTime$
+      output.1.response.y.txnID: $input.demo-auth-request:demoAuthReq.txnID$
+      
+  Address_Auth_With_Line1_FR_regression_pos_02:
+    input.demo-auth-request:
+      demoAuthReq.idvId: $UIN$
+      demoAuthReq.tspID: REF01
+      demoAuthReq.reqTime: $TIMESTAMP$
+      demoAuthReq.txnID: $RANDOM:N:10$
+    input.identity-encrypt-data:
+      identityReq.valueaddressLine10: $idrepo~$input.demo-auth-request:demoAuthReq.idvId$~valueaddressLine11$
+      identityReq.tspID: $input.demo-auth-request:demoAuthReq.tspID$
+      identityReq.languageaddressLine10: $idrepo~$input.demo-auth-request:demoAuthReq.idvId$~languageaddressLine11$
+      identityReq.addressLine2: $REMOVE$
+      identityReq.addressLine3: $REMOVE$
+    output.output-1-expected-y-res:
+      output.1.response.y.status: Y
+      output.1.response.y.resTime: $TIMESTAMP$
+      output.1.response.y.reqTime: $input.demo-auth-request:demoAuthReq.reqTime$
+      output.1.response.y.txnID: $input.demo-auth-request:demoAuthReq.txnID$
+      
+  Address_Auth_With_Line2_FR_regression_pos_03:
+    input.demo-auth-request:
+      demoAuthReq.idvId: $UIN$
+      demoAuthReq.tspID: REF01
+      demoAuthReq.reqTime: $TIMESTAMP$
+      demoAuthReq.txnID: $RANDOM:N:10$
+    input.identity-encrypt-data:
+      identityReq.valueaddressLine20: $idrepo~$input.demo-auth-request:demoAuthReq.idvId$~valueaddressLine21$
+      identityReq.tspID: $input.demo-auth-request:demoAuthReq.tspID$
+      identityReq.languageaddressLine20: $idrepo~$input.demo-auth-request:demoAuthReq.idvId$~languageaddressLine21$
+      identityReq.addressLine1: $REMOVE$
+      identityReq.addressLine3: $REMOVE$
+    output.output-1-expected-y-res:
+      output.1.response.y.status: Y
+      output.1.response.y.resTime: $TIMESTAMP$
+      output.1.response.y.reqTime: $input.demo-auth-request:demoAuthReq.reqTime$
+      output.1.response.y.txnID: $input.demo-auth-request:demoAuthReq.txnID$
+      
+  Address_Auth_With_Line3_FR_regression_pos_04:
+    input.demo-auth-request:
+      demoAuthReq.idvId: $UIN$
+      demoAuthReq.tspID: REF01
+      demoAuthReq.reqTime: $TIMESTAMP$
+      demoAuthReq.txnID: $RANDOM:N:10$
+    input.identity-encrypt-data:
+      identityReq.valueaddressLine30: $idrepo~$input.demo-auth-request:demoAuthReq.idvId$~valueaddressLine31$
+      identityReq.tspID: $input.demo-auth-request:demoAuthReq.tspID$
+      identityReq.languageaddressLine30: $idrepo~$input.demo-auth-request:demoAuthReq.idvId$~languageaddressLine31$
+      identityReq.addressLine2: $REMOVE$
+      identityReq.addressLine1: $REMOVE$
+    output.output-1-expected-y-res:
+      output.1.response.y.status: Y
+      output.1.response.y.resTime: $TIMESTAMP$
+      output.1.response.y.reqTime: $input.demo-auth-request:demoAuthReq.reqTime$
+      output.1.response.y.txnID: $input.demo-auth-request:demoAuthReq.txnID$
+      
+  Address_Auth_With_Line_1_3_FR_regression_pos_05:
+    input.demo-auth-request:
+      demoAuthReq.idvId: $UIN$
+      demoAuthReq.tspID: REF01
+      demoAuthReq.reqTime: $TIMESTAMP$
+      demoAuthReq.txnID: $RANDOM:N:10$
+    input.identity-encrypt-data:
+      identityReq.valueaddressLine30: $idrepo~$input.demo-auth-request:demoAuthReq.idvId$~valueaddressLine31$
+      identityReq.tspID: $input.demo-auth-request:demoAuthReq.tspID$
+      identityReq.languageaddressLine30: $idrepo~$input.demo-auth-request:demoAuthReq.idvId$~languageaddressLine31$
+      identityReq.addressLine2: $REMOVE$
+      identityReq.valueaddressLine10: $idrepo~$input.demo-auth-request:demoAuthReq.idvId$~valueaddressLine11$
+      identityReq.languageaddressLine10: $idrepo~$input.demo-auth-request:demoAuthReq.idvId$~languageaddressLine11$
+    output.output-1-expected-y-res:
+      output.1.response.y.status: Y
+      output.1.response.y.resTime: $TIMESTAMP$
+      output.1.response.y.reqTime: $input.demo-auth-request:demoAuthReq.reqTime$
+      output.1.response.y.txnID: $input.demo-auth-request:demoAuthReq.txnID$
+      
+  Address_Auth_With_AR_smoke_pos_06:
+    input.demo-auth-request:
+      demoAuthReq.idvId: $UIN$
+      demoAuthReq.tspID: REF01
+      demoAuthReq.reqTime: $TIMESTAMP$
+      demoAuthReq.txnID: $RANDOM:N:10$
+    input.identity-encrypt-data:
+      identityReq.languageaddressLine30: $idrepo~$input.demo-auth-request:demoAuthReq.idvId$~languageaddressLine30$
+      identityReq.valueaddressLine10: $idrepo~$input.demo-auth-request:demoAuthReq.idvId$~valueaddressLine10$
+      identityReq.tspID: $input.demo-auth-request:demoAuthReq.tspID$
+      identityReq.valueaddressLine20: $idrepo~$input.demo-auth-request:demoAuthReq.idvId$~valueaddressLine20$
+      identityReq.valueaddressLine30: $idrepo~$input.demo-auth-request:demoAuthReq.idvId$~valueaddressLine30$
+      identityReq.languageaddressLine10: $idrepo~$input.demo-auth-request:demoAuthReq.idvId$~languageaddressLine10$
+      identityReq.languageaddressLine20: $idrepo~$input.demo-auth-request:demoAuthReq.idvId$~languageaddressLine20$
+    output.output-1-expected-y-res:
+      output.1.response.y.status: Y
+      output.1.response.y.resTime: $TIMESTAMP$
+      output.1.response.y.reqTime: $input.demo-auth-request:demoAuthReq.reqTime$
+      output.1.response.y.txnID: $input.demo-auth-request:demoAuthReq.txnID$
+      
+  Address_Auth_With_Line1_AR_regression_pos_07:
+    input.demo-auth-request:
+      demoAuthReq.idvId: $UIN$
+      demoAuthReq.tspID: REF01
+      demoAuthReq.reqTime: $TIMESTAMP$
+      demoAuthReq.txnID: $RANDOM:N:10$
+    input.identity-encrypt-data:
+      identityReq.valueaddressLine10: $idrepo~$input.demo-auth-request:demoAuthReq.idvId$~valueaddressLine10$
+      identityReq.tspID: $input.demo-auth-request:demoAuthReq.tspID$
+      identityReq.languageaddressLine10: $idrepo~$input.demo-auth-request:demoAuthReq.idvId$~languageaddressLine10$
+      identityReq.addressLine2: $REMOVE$
+      identityReq.addressLine3: $REMOVE$
+    output.output-1-expected-y-res:
+      output.1.response.y.status: Y
+      output.1.response.y.resTime: $TIMESTAMP$
+      output.1.response.y.reqTime: $input.demo-auth-request:demoAuthReq.reqTime$
+      output.1.response.y.txnID: $input.demo-auth-request:demoAuthReq.txnID$
+      
+  Address_Auth_With_Line2_AR_regression_pos_08:
+    input.demo-auth-request:
+      demoAuthReq.idvId: $UIN$
+      demoAuthReq.tspID: REF01
+      demoAuthReq.reqTime: $TIMESTAMP$
+      demoAuthReq.txnID: $RANDOM:N:10$
+    input.identity-encrypt-data:
+      identityReq.valueaddressLine20: $idrepo~$input.demo-auth-request:demoAuthReq.idvId$~valueaddressLine20$
+      identityReq.tspID: $input.demo-auth-request:demoAuthReq.tspID$
+      identityReq.languageaddressLine20: $idrepo~$input.demo-auth-request:demoAuthReq.idvId$~languageaddressLine20$
+      identityReq.addressLine1: $REMOVE$
+      identityReq.addressLine3: $REMOVE$
+    output.output-1-expected-y-res:
+      output.1.response.y.status: Y
+      output.1.response.y.resTime: $TIMESTAMP$
+      output.1.response.y.reqTime: $input.demo-auth-request:demoAuthReq.reqTime$
+      output.1.response.y.txnID: $input.demo-auth-request:demoAuthReq.txnID$
+      
+  Address_Auth_With_Line3_AR_regression_pos_09:
+    input.demo-auth-request:
+      demoAuthReq.idvId: $UIN$
+      demoAuthReq.tspID: REF01
+      demoAuthReq.reqTime: $TIMESTAMP$
+      demoAuthReq.txnID: $RANDOM:N:10$
+    input.identity-encrypt-data:
+      identityReq.valueaddressLine30: $idrepo~$input.demo-auth-request:demoAuthReq.idvId$~valueaddressLine30$
+      identityReq.tspID: $input.demo-auth-request:demoAuthReq.tspID$
+      identityReq.languageaddressLine30: $idrepo~$input.demo-auth-request:demoAuthReq.idvId$~languageaddressLine30$
+      identityReq.addressLine2: $REMOVE$
+      identityReq.addressLine1: $REMOVE$
+    output.output-1-expected-y-res:
+      output.1.response.y.status: Y
+      output.1.response.y.resTime: $TIMESTAMP$
+      output.1.response.y.reqTime: $input.demo-auth-request:demoAuthReq.reqTime$
+      output.1.response.y.txnID: $input.demo-auth-request:demoAuthReq.txnID$
+      
+  Address_Auth_With_Line_1_3_AR_regression_pos_10:
+    input.demo-auth-request:
+      demoAuthReq.idvId: $UIN$
+      demoAuthReq.tspID: REF01
+      demoAuthReq.reqTime: $TIMESTAMP$
+      demoAuthReq.txnID: $RANDOM:N:10$
+    input.identity-encrypt-data:
+      identityReq.valueaddressLine30: $idrepo~$input.demo-auth-request:demoAuthReq.idvId$~valueaddressLine30$
+      identityReq.tspID: $input.demo-auth-request:demoAuthReq.tspID$
+      identityReq.languageaddressLine30: $idrepo~$input.demo-auth-request:demoAuthReq.idvId$~languageaddressLine30$
+      identityReq.addressLine2: $REMOVE$
+      identityReq.valueaddressLine10: $idrepo~$input.demo-auth-request:demoAuthReq.idvId$~valueaddressLine10$
+      identityReq.languageaddressLine10: $idrepo~$input.demo-auth-request:demoAuthReq.idvId$~languageaddressLine10$
+    output.output-1-expected-y-res:
+      output.1.response.y.status: Y
+      output.1.response.y.resTime: $TIMESTAMP$
+      output.1.response.y.reqTime: $input.demo-auth-request:demoAuthReq.reqTime$
+      output.1.response.y.txnID: $input.demo-auth-request:demoAuthReq.txnID$
+      
+  Address_Auth_With_AR_FR_smoke_pos_11:
+    input.demo-auth-request:
+      demoAuthReq.idvId: $UIN$
+      demoAuthReq.tspID: REF01
+      demoAuthReq.reqTime: $TIMESTAMP$
+      demoAuthReq.txnID: $RANDOM:N:10$
+    input.identity-encrypt-two-lang-data:
+      identityReq.languageaddressLine30: $idrepo~$input.demo-auth-request:demoAuthReq.idvId$~languageaddressLine30$
+      identityReq.valueaddressLine10: $idrepo~$input.demo-auth-request:demoAuthReq.idvId$~valueaddressLine10$
+      identityReq.tspID: $input.demo-auth-request:demoAuthReq.tspID$
+      identityReq.valueaddressLine20: $idrepo~$input.demo-auth-request:demoAuthReq.idvId$~valueaddressLine20$
+      identityReq.valueaddressLine30: $idrepo~$input.demo-auth-request:demoAuthReq.idvId$~valueaddressLine30$
+      identityReq.languageaddressLine10: $idrepo~$input.demo-auth-request:demoAuthReq.idvId$~languageaddressLine10$
+      identityReq.languageaddressLine20: $idrepo~$input.demo-auth-request:demoAuthReq.idvId$~languageaddressLine20$
+      identityReq.languageaddressLine31: $idrepo~$input.demo-auth-request:demoAuthReq.idvId$~languageaddressLine31$
+      identityReq.valueaddressLine11: $idrepo~$input.demo-auth-request:demoAuthReq.idvId$~valueaddressLine11$
+      identityReq.tspID: $input.demo-auth-request:demoAuthReq.tspID$
+      identityReq.valueaddressLine21: $idrepo~$input.demo-auth-request:demoAuthReq.idvId$~valueaddressLine21$
+      identityReq.valueaddressLine31: $idrepo~$input.demo-auth-request:demoAuthReq.idvId$~valueaddressLine31$
+      identityReq.languageaddressLine11: $idrepo~$input.demo-auth-request:demoAuthReq.idvId$~languageaddressLine11$
+      identityReq.languageaddressLine21: $idrepo~$input.demo-auth-request:demoAuthReq.idvId$~languageaddressLine21$
+    output.output-1-expected-y-res:
+      output.1.response.y.status: Y
+      output.1.response.y.resTime: $TIMESTAMP$
+      output.1.response.y.reqTime: $input.demo-auth-request:demoAuthReq.reqTime$
+      output.1.response.y.txnID: $input.demo-auth-request:demoAuthReq.txnID$
+      
+  Address_Auth_With_Line1_AR_FR_regression_pos_12:
+    input.demo-auth-request:
+      demoAuthReq.idvId: $UIN$
+      demoAuthReq.tspID: REF01
+      demoAuthReq.reqTime: $TIMESTAMP$
+      demoAuthReq.txnID: $RANDOM:N:10$
+    input.identity-encrypt-two-lang-data:
+      identityReq.tspID: $input.demo-auth-request:demoAuthReq.tspID$
+      identityReq.valueaddressLine10: $idrepo~$input.demo-auth-request:demoAuthReq.idvId$~valueaddressLine10$      
+      identityReq.languageaddressLine10: $idrepo~$input.demo-auth-request:demoAuthReq.idvId$~languageaddressLine10$
+      identityReq.valueaddressLine11: $idrepo~$input.demo-auth-request:demoAuthReq.idvId$~valueaddressLine11$      
+      identityReq.languageaddressLine11: $idrepo~$input.demo-auth-request:demoAuthReq.idvId$~languageaddressLine11$
+      identityReq.addressLine2: $REMOVE$
+      identityReq.addressLine3: $REMOVE$
+    output.output-1-expected-y-res:
+      output.1.response.y.status: Y
+      output.1.response.y.resTime: $TIMESTAMP$
+      output.1.response.y.reqTime: $input.demo-auth-request:demoAuthReq.reqTime$
+      output.1.response.y.txnID: $input.demo-auth-request:demoAuthReq.txnID$
+      
+  Address_Auth_With_Line2_AR_FR_regression_pos_13:
+    input.demo-auth-request:
+      demoAuthReq.idvId: $UIN$
+      demoAuthReq.tspID: REF01
+      demoAuthReq.reqTime: $TIMESTAMP$
+      demoAuthReq.txnID: $RANDOM:N:10$
+    input.identity-encrypt-two-lang-data:
+      identityReq.tspID: $input.demo-auth-request:demoAuthReq.tspID$
+      identityReq.valueaddressLine20: $idrepo~$input.demo-auth-request:demoAuthReq.idvId$~valueaddressLine20$      
+      identityReq.languageaddressLine20: $idrepo~$input.demo-auth-request:demoAuthReq.idvId$~languageaddressLine20$
+      identityReq.valueaddressLine21: $idrepo~$input.demo-auth-request:demoAuthReq.idvId$~valueaddressLine21$      
+      identityReq.languageaddressLine21: $idrepo~$input.demo-auth-request:demoAuthReq.idvId$~languageaddressLine21$
+      identityReq.addressLine1: $REMOVE$
+      identityReq.addressLine3: $REMOVE$
+    output.output-1-expected-y-res:
+      output.1.response.y.status: Y
+      output.1.response.y.resTime: $TIMESTAMP$
+      output.1.response.y.reqTime: $input.demo-auth-request:demoAuthReq.reqTime$
+      output.1.response.y.txnID: $input.demo-auth-request:demoAuthReq.txnID$
+      
+  Address_Auth_With_Line3_AR_FR_regression_pos_14:
+    input.demo-auth-request:
+      demoAuthReq.idvId: $UIN$
+      demoAuthReq.tspID: REF01
+      demoAuthReq.reqTime: $TIMESTAMP$
+      demoAuthReq.txnID: $RANDOM:N:10$
+    input.identity-encrypt-two-lang-data:
+      identityReq.tspID: $input.demo-auth-request:demoAuthReq.tspID$
+      identityReq.valueaddressLine30: $idrepo~$input.demo-auth-request:demoAuthReq.idvId$~valueaddressLine30$      
+      identityReq.languageaddressLine30: $idrepo~$input.demo-auth-request:demoAuthReq.idvId$~languageaddressLine30$
+      identityReq.valueaddressLine31: $idrepo~$input.demo-auth-request:demoAuthReq.idvId$~valueaddressLine31$      
+      identityReq.languageaddressLine31: $idrepo~$input.demo-auth-request:demoAuthReq.idvId$~languageaddressLine31$
+      identityReq.addressLine2: $REMOVE$
+      identityReq.addressLine1: $REMOVE$
+    output.output-1-expected-y-res:
+      output.1.response.y.status: Y
+      output.1.response.y.resTime: $TIMESTAMP$
+      output.1.response.y.reqTime: $input.demo-auth-request:demoAuthReq.reqTime$
+      output.1.response.y.txnID: $input.demo-auth-request:demoAuthReq.txnID$
+      
+  Address_Auth_With_Line_3_2_AR_FR_regression_pos_15:
+    input.demo-auth-request:
+      demoAuthReq.idvId: $UIN$
+      demoAuthReq.tspID: REF01
+      demoAuthReq.reqTime: $TIMESTAMP$
+      demoAuthReq.txnID: $RANDOM:N:10$
+    input.identity-encrypt-two-lang-data:
+      identityReq.tspID: $input.demo-auth-request:demoAuthReq.tspID$
+      identityReq.valueaddressLine30: $idrepo~$input.demo-auth-request:demoAuthReq.idvId$~valueaddressLine30$      
+      identityReq.languageaddressLine30: $idrepo~$input.demo-auth-request:demoAuthReq.idvId$~languageaddressLine30$
+      identityReq.valueaddressLine31: $idrepo~$input.demo-auth-request:demoAuthReq.idvId$~valueaddressLine31$      
+      identityReq.languageaddressLine31: $idrepo~$input.demo-auth-request:demoAuthReq.idvId$~languageaddressLine31$
+      identityReq.valueaddressLine20: $idrepo~$input.demo-auth-request:demoAuthReq.idvId$~valueaddressLine20$      
+      identityReq.languageaddressLine20: $idrepo~$input.demo-auth-request:demoAuthReq.idvId$~languageaddressLine20$
+      identityReq.valueaddressLine21: $idrepo~$input.demo-auth-request:demoAuthReq.idvId$~valueaddressLine21$      
+      identityReq.languageaddressLine21: $idrepo~$input.demo-auth-request:demoAuthReq.idvId$~languageaddressLine21$
+      identityReq.addressLine1: $REMOVE$
+    output.output-1-expected-y-res:
+      output.1.response.y.status: Y
+      output.1.response.y.resTime: $TIMESTAMP$
+      output.1.response.y.reqTime: $input.demo-auth-request:demoAuthReq.reqTime$
+      output.1.response.y.txnID: $input.demo-auth-request:demoAuthReq.txnID$    
+      
+  Address_Auth_With_VID_FR_smoke_pos_16:
+    input.demo-auth-request:
+      demoAuthReq.idvId: $VID$
+      demoAuthReq.tspID: REF01
+      demoAuthReq.reqTime: $TIMESTAMP$
+      demoAuthReq.txnID: $RANDOM:N:10$
+      demoAuthReq.idvIdType: V
+    input.identity-encrypt-data:
+      identityReq.languageaddressLine30: $idrepo~$input.demo-auth-request:demoAuthReq.idvId$~languageaddressLine31$
+      identityReq.valueaddressLine10: $idrepo~$input.demo-auth-request:demoAuthReq.idvId$~valueaddressLine11$
+      identityReq.tspID: $input.demo-auth-request:demoAuthReq.tspID$
+      identityReq.valueaddressLine20: $idrepo~$input.demo-auth-request:demoAuthReq.idvId$~valueaddressLine21$
+      identityReq.valueaddressLine30: $idrepo~$input.demo-auth-request:demoAuthReq.idvId$~valueaddressLine31$
+      identityReq.languageaddressLine10: $idrepo~$input.demo-auth-request:demoAuthReq.idvId$~languageaddressLine11$
+      identityReq.languageaddressLine20: $idrepo~$input.demo-auth-request:demoAuthReq.idvId$~languageaddressLine21$
+    output.output-1-expected-y-res:
+      output.1.response.y.status: Y
+      output.1.response.y.idType: V
+      output.1.response.y.resTime: $TIMESTAMP$
+      output.1.response.y.reqTime: $input.demo-auth-request:demoAuthReq.reqTime$
+      output.1.response.y.txnID: $input.demo-auth-request:demoAuthReq.txnID$  
+      
+  Address_Auth_With_VID_AR_FR_smoke_pos_17:
+    input.demo-auth-request:
+      demoAuthReq.idvId: $VID$
+      demoAuthReq.tspID: REF01
+      demoAuthReq.reqTime: $TIMESTAMP$
+      demoAuthReq.txnID: $RANDOM:N:10$
+      demoAuthReq.idvIdType: V
+    input.identity-encrypt-two-lang-data:
+      identityReq.languageaddressLine30: $idrepo~$input.demo-auth-request:demoAuthReq.idvId$~languageaddressLine30$
+      identityReq.valueaddressLine10: $idrepo~$input.demo-auth-request:demoAuthReq.idvId$~valueaddressLine10$
+      identityReq.tspID: $input.demo-auth-request:demoAuthReq.tspID$
+      identityReq.valueaddressLine20: $idrepo~$input.demo-auth-request:demoAuthReq.idvId$~valueaddressLine20$
+      identityReq.valueaddressLine30: $idrepo~$input.demo-auth-request:demoAuthReq.idvId$~valueaddressLine30$
+      identityReq.languageaddressLine10: $idrepo~$input.demo-auth-request:demoAuthReq.idvId$~languageaddressLine10$
+      identityReq.languageaddressLine20: $idrepo~$input.demo-auth-request:demoAuthReq.idvId$~languageaddressLine20$
+      identityReq.languageaddressLine31: $idrepo~$input.demo-auth-request:demoAuthReq.idvId$~languageaddressLine31$
+      identityReq.valueaddressLine11: $idrepo~$input.demo-auth-request:demoAuthReq.idvId$~valueaddressLine11$
+      identityReq.tspID: $input.demo-auth-request:demoAuthReq.tspID$
+      identityReq.valueaddressLine21: $idrepo~$input.demo-auth-request:demoAuthReq.idvId$~valueaddressLine21$
+      identityReq.valueaddressLine31: $idrepo~$input.demo-auth-request:demoAuthReq.idvId$~valueaddressLine31$
+      identityReq.languageaddressLine11: $idrepo~$input.demo-auth-request:demoAuthReq.idvId$~languageaddressLine11$
+      identityReq.languageaddressLine21: $idrepo~$input.demo-auth-request:demoAuthReq.idvId$~languageaddressLine21$
+    output.output-1-expected-y-res:
+      output.1.response.y.status: Y
+      output.1.response.y.idType: V
+      output.1.response.y.resTime: $TIMESTAMP$
+      output.1.response.y.reqTime: $input.demo-auth-request:demoAuthReq.reqTime$
+      output.1.response.y.txnID: $input.demo-auth-request:demoAuthReq.txnID$
+      
+  Address_Auth_With_VID_AR_smoke_pos_18:
+    input.demo-auth-request:
+      demoAuthReq.idvId: $VID$
+      demoAuthReq.tspID: REF01
+      demoAuthReq.reqTime: $TIMESTAMP$
+      demoAuthReq.txnID: $RANDOM:N:10$
+      demoAuthReq.idvIdType: V
+    input.identity-encrypt-data:
+      identityReq.languageaddressLine30: $idrepo~$input.demo-auth-request:demoAuthReq.idvId$~languageaddressLine30$
+      identityReq.valueaddressLine10: $idrepo~$input.demo-auth-request:demoAuthReq.idvId$~valueaddressLine10$
+      identityReq.tspID: $input.demo-auth-request:demoAuthReq.tspID$
+      identityReq.valueaddressLine20: $idrepo~$input.demo-auth-request:demoAuthReq.idvId$~valueaddressLine20$
+      identityReq.valueaddressLine30: $idrepo~$input.demo-auth-request:demoAuthReq.idvId$~valueaddressLine30$
+      identityReq.languageaddressLine10: $idrepo~$input.demo-auth-request:demoAuthReq.idvId$~languageaddressLine10$
+      identityReq.languageaddressLine20: $idrepo~$input.demo-auth-request:demoAuthReq.idvId$~languageaddressLine20$
+    output.output-1-expected-y-res:
+      output.1.response.y.status: Y
+      output.1.response.y.idType: V
+      output.1.response.y.resTime: $TIMESTAMP$
+      output.1.response.y.reqTime: $input.demo-auth-request:demoAuthReq.reqTime$
+      output.1.response.y.txnID: $input.demo-auth-request:demoAuthReq.txnID$
+      
+     

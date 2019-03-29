@@ -21,6 +21,8 @@ import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dao.MasterSyncDao;
+import io.mosip.registration.dto.ApplicantValidDocumentDto;
+import io.mosip.registration.dto.IndividualTypeDto;
 import io.mosip.registration.dto.mastersync.ApplicationDto;
 import io.mosip.registration.dto.mastersync.BiometricAttributeDto;
 import io.mosip.registration.dto.mastersync.BiometricTypeDto;
@@ -52,7 +54,7 @@ import io.mosip.registration.dto.mastersync.TemplateDto;
 import io.mosip.registration.dto.mastersync.TemplateFileFormatDto;
 import io.mosip.registration.dto.mastersync.TemplateTypeDto;
 import io.mosip.registration.dto.mastersync.TitleDto;
-import io.mosip.registration.dto.mastersync.ValidDocumentDto;
+import io.mosip.registration.entity.ApplicantValidDocument;
 import io.mosip.registration.entity.Application;
 import io.mosip.registration.entity.BiometricAttribute;
 import io.mosip.registration.entity.BiometricType;
@@ -63,6 +65,7 @@ import io.mosip.registration.entity.DocumentType;
 import io.mosip.registration.entity.Gender;
 import io.mosip.registration.entity.Holiday;
 import io.mosip.registration.entity.IdType;
+import io.mosip.registration.entity.IndividualType;
 import io.mosip.registration.entity.Language;
 import io.mosip.registration.entity.Location;
 import io.mosip.registration.entity.MachineMaster;
@@ -85,7 +88,6 @@ import io.mosip.registration.entity.TemplateFileFormat;
 import io.mosip.registration.entity.TemplateType;
 import io.mosip.registration.entity.Title;
 import io.mosip.registration.entity.UserMachineMapping;
-import io.mosip.registration.entity.ValidDocument;
 import io.mosip.registration.entity.id.CenterMachineId;
 import io.mosip.registration.entity.id.RegCenterUserId;
 import io.mosip.registration.entity.id.RegCentreMachineDeviceId;
@@ -105,6 +107,7 @@ import io.mosip.registration.repositories.DocumentTypeRepository;
 import io.mosip.registration.repositories.GenderRepository;
 import io.mosip.registration.repositories.HolidayRepository;
 import io.mosip.registration.repositories.IdTypeRepository;
+import io.mosip.registration.repositories.IndividualTypeRepository;
 import io.mosip.registration.repositories.LanguageRepository;
 import io.mosip.registration.repositories.LocationRepository;
 import io.mosip.registration.repositories.MachineMasterRepository;
@@ -263,6 +266,10 @@ public class MasterSyncDaoImpl implements MasterSyncDao {
 	@Autowired
 	private RegistrationCenterTypeRepository registrationCenterTypeRepository;
 
+	/** Object for Sync Individual type Repository. */
+	@Autowired
+	private IndividualTypeRepository individualTypeRepository;
+
 	/**
 	 * logger for logging
 	 */
@@ -306,10 +313,10 @@ public class MasterSyncDaoImpl implements MasterSyncDao {
 	 * .dto.MasterSyncDto)
 	 */
 	@Override
-	public String save(MasterDataResponseDto masterSyncDto) {
+	public synchronized String save(MasterDataResponseDto masterSyncDto) {
 
 		LOGGER.info(RegistrationConstants.MASTER_SYNC_JOD_DETAILS, APPLICATION_NAME, APPLICATION_ID,
-				"Entering into Insert Master Sync Data..");
+				RegistrationConstants.MASTER_SYNC_LOGGER_INFO);
 
 		List<MachineDto> masterMachineDto = masterSyncDto.getMachineDetails();
 		List<MachineSpecificationDto> masterMachineSpecDto = masterSyncDto.getMachineSpecification();
@@ -320,7 +327,7 @@ public class MasterSyncDaoImpl implements MasterSyncDao {
 		List<HolidayDto> masterHolidaysDto = masterSyncDto.getHolidays();
 		List<DocumentCategoryDto> masterDocumnetCategoryDto = masterSyncDto.getDocumentCategories();
 		List<DocumentTypeDto> masterDocumnetTypeDto = masterSyncDto.getDocumentTypes();
-		List<ValidDocumentDto> masterValidDocumnetsDto = masterSyncDto.getValidDocumentMapping();
+		List<ApplicantValidDocumentDto> masterValidDocumnetsDto = masterSyncDto.getApplicantValidDocuments();
 		List<TemplateDto> masterTemplateDto = masterSyncDto.getTemplates();
 		List<TemplateTypeDto> masterTemplateTypeDto = masterSyncDto.getTemplatesTypes();
 		List<TemplateFileFormatDto> masterTemplateFileDto = masterSyncDto.getTemplateFileFormat();
@@ -344,81 +351,126 @@ public class MasterSyncDaoImpl implements MasterSyncDao {
 		List<RegistrationCenterUserDto> registrationCenterUsers = masterSyncDto.getRegistrationCenterUsers();
 		List<RegistrationCenterDto> registrationCenter = masterSyncDto.getRegistrationCenter();
 		List<RegistrationCenterTypeDto> registrationCenterType = masterSyncDto.getRegistrationCenterTypes();
+		List<IndividualTypeDto> indiviualType = masterSyncDto.getIndividualTypes();
 		String sucessResponse = null;
 
 		try {
 
+			LOGGER.info(RegistrationConstants.MASTER_SYNC_JOD_DETAILS, APPLICATION_NAME, APPLICATION_ID,
+					"Language details syncing....");
+			
 			List<Language> masterLangauge = MetaDataUtils.setCreateMetaData(languageDto, Language.class);
 			languageRepository.saveAll(masterLangauge);
+			
+			LOGGER.info(RegistrationConstants.MASTER_SYNC_JOD_DETAILS, APPLICATION_NAME, APPLICATION_ID,
+					"Application details syncing....");
 
 			List<Application> masterApplicationDtoEntity = MetaDataUtils.setCreateMetaData(masterApplicationDto,
 					Application.class);
 			applicationRepository.saveAll(masterApplicationDtoEntity);
-
+			
+			LOGGER.info(RegistrationConstants.MASTER_SYNC_JOD_DETAILS, APPLICATION_NAME, APPLICATION_ID,
+					"Biometric Type details syncing....");
+			
 			List<BiometricType> masterBiometricTypeDtoEntity = MetaDataUtils.setCreateMetaData(masterBiometricTypeDto,
 					BiometricType.class);
 			biometricTypeRepository.saveAll(masterBiometricTypeDtoEntity);
 
+			LOGGER.info(RegistrationConstants.MASTER_SYNC_JOD_DETAILS, APPLICATION_NAME, APPLICATION_ID,
+					"Biometric Attribute details syncing....");
+			
 			List<BiometricAttribute> masterBiometricAttributeDtoEntity = MetaDataUtils
 					.setCreateMetaData(masterBiometricAttributeDto, BiometricAttribute.class);
 			biometricAttributeRepository.saveAll(masterBiometricAttributeDtoEntity);
 
+			LOGGER.info(RegistrationConstants.MASTER_SYNC_JOD_DETAILS, APPLICATION_NAME, APPLICATION_ID,
+					"Blacklisted Words syncing....");
 			List<BlacklistedWords> blacklistedWordsEntity = MetaDataUtils.setCreateMetaData(masterBlackListedWordsDto,
 					BlacklistedWords.class);
 			blacklistedWordsRepository.saveAll(blacklistedWordsEntity);
 
+			LOGGER.info(RegistrationConstants.MASTER_SYNC_JOD_DETAILS, APPLICATION_NAME, APPLICATION_ID,
+					"Registration Device Type details syncing....");
 			List<RegDeviceType> masterDeviceTypeDtoEntity = MetaDataUtils.setCreateMetaData(masterDeviceTypeDto,
 					RegDeviceType.class);
 			deviceTypeRepository.saveAll(masterDeviceTypeDtoEntity);
 
+			LOGGER.info(RegistrationConstants.MASTER_SYNC_JOD_DETAILS, APPLICATION_NAME, APPLICATION_ID,
+					"Registration Device Specification details syncing....");
 			List<RegDeviceSpec> masterDeviceSpecificDtoEntity = MetaDataUtils.setCreateMetaData(masterDeviceSpecificDto,
 					RegDeviceSpec.class);
 			deviceSpecificationRepository.saveAll(masterDeviceSpecificDtoEntity);
 
+			LOGGER.info(RegistrationConstants.MASTER_SYNC_JOD_DETAILS, APPLICATION_NAME, APPLICATION_ID,
+					"Registration Device Master details syncing....");
 			List<RegDeviceMaster> masterDeviceDtoEntity = MetaDataUtils.setCreateMetaData(masterDeviceDto,
 					RegDeviceMaster.class);
 			deviceMasterRepository.saveAll(masterDeviceDtoEntity);
 
+			LOGGER.info(RegistrationConstants.MASTER_SYNC_JOD_DETAILS, APPLICATION_NAME, APPLICATION_ID,
+					"Document Category details syncing....");
 			List<DocumentCategory> masterDocumnetCategoryDtoEntity = MetaDataUtils
 					.setCreateMetaData(masterDocumnetCategoryDto, DocumentCategory.class);
 			documentCategoryRepository.saveAll(masterDocumnetCategoryDtoEntity);
 
+			LOGGER.info(RegistrationConstants.MASTER_SYNC_JOD_DETAILS, APPLICATION_NAME, APPLICATION_ID,
+					"Document Type details syncing....");
 			List<DocumentType> masterDocumnetTypeDtoEntity = MetaDataUtils.setCreateMetaData(masterDocumnetTypeDto,
 					DocumentType.class);
 			documentTypeRepository.saveAll(masterDocumnetTypeDtoEntity);
 
+			LOGGER.info(RegistrationConstants.MASTER_SYNC_JOD_DETAILS, APPLICATION_NAME, APPLICATION_ID,
+					"Gender details syncing....");
 			List<Gender> masterGenderDtoEntity = MetaDataUtils.setCreateMetaData(masterGenderDto, Gender.class);
 			genderRepository.saveAll(masterGenderDtoEntity);
 
+			LOGGER.info(RegistrationConstants.MASTER_SYNC_JOD_DETAILS, APPLICATION_NAME, APPLICATION_ID,
+					"Holiday details syncing....");
 			List<Holiday> masterHolidaysDtoEntity = MetaDataUtils.setCreateMetaData(masterHolidaysDto, Holiday.class);
-			// holidayRepository.saveAll(masterHolidaysDtoEntity);
+			holidayRepository.saveAll(masterHolidaysDtoEntity);
 
+			LOGGER.info(RegistrationConstants.MASTER_SYNC_JOD_DETAILS, APPLICATION_NAME, APPLICATION_ID,
+					"IdType details syncing....");
 			List<IdType> masterIdTypeDtoEntity = MetaDataUtils.setCreateMetaData(masterIdTypeDto, IdType.class);
 			idTypeRepository.saveAll(masterIdTypeDtoEntity);
 
+			LOGGER.info(RegistrationConstants.MASTER_SYNC_JOD_DETAILS, APPLICATION_NAME, APPLICATION_ID,
+					"Location details syncing....");
 			List<Location> masterLocationDtoEntity = MetaDataUtils.setCreateMetaData(masterLocationDto, Location.class);
 			locationRepository.saveAll(masterLocationDtoEntity);
 
+			LOGGER.info(RegistrationConstants.MASTER_SYNC_JOD_DETAILS, APPLICATION_NAME, APPLICATION_ID,
+					"Machine Type details syncing....");
 			List<MachineType> masterMachineTypeDtoEntity = MetaDataUtils.setCreateMetaData(masterMachineTypeDto,
 					MachineType.class);
 			machineTypeRepository.saveAll(masterMachineTypeDtoEntity);
 
+			LOGGER.info(RegistrationConstants.MASTER_SYNC_JOD_DETAILS, APPLICATION_NAME, APPLICATION_ID,
+					"Machine Specification details syncing....");
 			List<RegMachineSpec> masterMachineSpecDtoEntity = MetaDataUtils.setCreateMetaData(masterMachineSpecDto,
 					RegMachineSpec.class);
 			machineSpecificationRepository.saveAll(masterMachineSpecDtoEntity);
 
+			LOGGER.info(RegistrationConstants.MASTER_SYNC_JOD_DETAILS, APPLICATION_NAME, APPLICATION_ID,
+					"Machine Master details syncing....");
 			List<MachineMaster> masterMachineDtoEntity = MetaDataUtils.setCreateMetaData(masterMachineDto,
 					MachineMaster.class);
-			// machineRepository.saveAll(masterMachineDtoEntity);
+			machineRepository.saveAll(masterMachineDtoEntity);
 
+			LOGGER.info(RegistrationConstants.MASTER_SYNC_JOD_DETAILS, APPLICATION_NAME, APPLICATION_ID,
+					"Rejection Reason Category details syncing....");
 			List<ReasonCategory> masterReasonCategoryDtoEntity = MetaDataUtils
 					.setCreateMetaData(masterPostReasonCategoryDto, ReasonCategory.class);
 			reasonCategoryRepository.saveAll(masterReasonCategoryDtoEntity);
 
+			LOGGER.info(RegistrationConstants.MASTER_SYNC_JOD_DETAILS, APPLICATION_NAME, APPLICATION_ID,
+					"Rejection Reason List details syncing....");
 			List<ReasonList> masterReasonListDtoEntity = MetaDataUtils.setCreateMetaData(masterReasonListDto,
 					ReasonList.class);
 			reasonListRepository.saveAll(masterReasonListDtoEntity);
 
+			LOGGER.info(RegistrationConstants.MASTER_SYNC_JOD_DETAILS, APPLICATION_NAME, APPLICATION_ID,
+					"Template File Format details syncing....");
 			List<TemplateFileFormat> masterTemplateFileDtoEntity = new ArrayList<>();
 			masterTemplateFileDto.forEach(templateFrmat -> {
 				TemplateFileFormat templFrmat = new TemplateFileFormat();
@@ -428,20 +480,26 @@ public class MasterSyncDaoImpl implements MasterSyncDao {
 				templFrmat.setPkTfftCode(commnFields);
 				templFrmat.setDescr(templateFrmat.getDescription());
 				templFrmat.setActive(templateFrmat.getIsActive());
-				templFrmat.setCrBy(SessionContext.userContext().getUserId());
+				if (SessionContext.isSessionContextAvailable()) {
+					templFrmat.setCrBy(SessionContext.userContext().getUserId());
+				} else {
+					templFrmat.setCrBy(RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM);
+				}
 				templFrmat.setCrDtimes(Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()));
 				masterTemplateFileDtoEntity.add(templFrmat);
 			});
 
 			templateFileFormatRepository.saveAll(masterTemplateFileDtoEntity);
 
+			LOGGER.info(RegistrationConstants.MASTER_SYNC_JOD_DETAILS, APPLICATION_NAME, APPLICATION_ID,
+					"Template details syncing....");
 			List<Template> templetList = new ArrayList<>();
 			masterTemplateDto.forEach(templet -> {
 
 				Template templete = new Template();
 				templete.setId(templet.getId());
 				templete.setFileFormatCode(templet.getFileFormatCode());
-				templete.setFileTxt(templet.getFileText().getBytes());
+				templete.setFileTxt(templet.getFileText());
 				templete.setDescr(templet.getDescription());
 				templete.setActive(templet.getIsActive());
 				templete.setName(templet.getName());
@@ -450,13 +508,19 @@ public class MasterSyncDaoImpl implements MasterSyncDao {
 				templete.setModel(templet.getModel());
 				templete.setModuleId(templet.getModuleId());
 				templete.setLangCode(templet.getLangCode());
-				templete.setCrBy(SessionContext.userContext().getUserId());
+				if (SessionContext.isSessionContextAvailable()) {
+					templete.setCrBy(SessionContext.userContext().getUserId());
+				} else {
+					templete.setCrBy(RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM);
+				}
 				templete.setCrDtimes(Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()));
 				templetList.add(templete);
 			});
 
 			templateRepository.saveAll(templetList);
 
+			LOGGER.info(RegistrationConstants.MASTER_SYNC_JOD_DETAILS, APPLICATION_NAME, APPLICATION_ID,
+					"Template Type details syncing....");
 			List<TemplateType> masterTemplateTypeDtoEntity = new ArrayList<>();
 			masterTemplateTypeDto.forEach(templateType -> {
 				TemplateType tempType = new TemplateType();
@@ -466,19 +530,36 @@ public class MasterSyncDaoImpl implements MasterSyncDao {
 				tempType.setPkTmpltCode(commnFields);
 				tempType.setActive(templateType.getIsActive());
 				tempType.setDescr(templateType.getDescription());
-				tempType.setCrBy(SessionContext.userContext().getUserId());
+				if (SessionContext.isSessionContextAvailable()) {
+					tempType.setCrBy(SessionContext.userContext().getUserId());
+				} else {
+					tempType.setCrBy(RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM);
+				}
 				tempType.setCrDtimes(Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()));
+				masterTemplateTypeDtoEntity.add(tempType);
 			});
 
 			templateTypeRepository.saveAll(masterTemplateTypeDtoEntity);
 
+			LOGGER.info(RegistrationConstants.MASTER_SYNC_JOD_DETAILS, APPLICATION_NAME, APPLICATION_ID,
+					"Title details syncing....");
 			List<Title> masterTitleDtoEntity = MetaDataUtils.setCreateMetaData(masterTitleDto, Title.class);
 			titleRepository.saveAll(masterTitleDtoEntity);
 
-//			List<ValidDocument> masterValidDocumnetsDtoEntity = MetaDataUtils.setCreateMetaData(masterValidDocumnetsDto,
-//					ValidDocument.class);
-//			validDocumentRepository.saveAll(masterValidDocumnetsDtoEntity);
+			LOGGER.info(RegistrationConstants.MASTER_SYNC_JOD_DETAILS, APPLICATION_NAME, APPLICATION_ID,
+					"Applicant Valid Document details syncing....");
+			List<ApplicantValidDocument> masterValidDocumnetsDtoEntity = MetaDataUtils
+					.setCreateMetaData(masterValidDocumnetsDto, ApplicantValidDocument.class);
+			validDocumentRepository.saveAll(masterValidDocumnetsDtoEntity);
 
+			LOGGER.info(RegistrationConstants.MASTER_SYNC_JOD_DETAILS, APPLICATION_NAME, APPLICATION_ID,
+					"Individual Type details syncing....");
+			List<IndividualType> masterIndividualType = MetaDataUtils.setCreateMetaData(indiviualType,
+					IndividualType.class);
+			individualTypeRepository.saveAll(masterIndividualType);
+
+			LOGGER.info(RegistrationConstants.MASTER_SYNC_JOD_DETAILS, APPLICATION_NAME, APPLICATION_ID,
+					"Registration Center details syncing....");
 			List<RegistrationCenter> regCentr = new ArrayList<>();
 			registrationCenter.forEach(regCenter -> {
 				RegistrationCenter regCen = new RegistrationCenter();
@@ -505,7 +586,11 @@ public class MasterSyncDaoImpl implements MasterSyncDao {
 				regCen.setNumberOfKiosks(regCenter.getNumberOfKiosks().intValue());
 				regCen.setPerKioskProcessTime(Time.valueOf(regCenter.getPerKioskProcessTime()));
 				regCen.setTimeZone(regCenter.getTimeZone());
-				regCen.setCrBy(SessionContext.userContext().getUserId());
+				if (SessionContext.isSessionContextAvailable()) {
+					regCen.setCrBy(SessionContext.userContext().getUserId());
+				} else {
+					regCen.setCrBy(RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM);
+				}
 				regCen.setCrDtime(Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()));
 				regCen.setIsActive(regCenter.getIsActive());
 				regCentr.add(regCen);
@@ -513,6 +598,8 @@ public class MasterSyncDaoImpl implements MasterSyncDao {
 
 			registrationCenterRepository.saveAll(regCentr);
 
+			LOGGER.info(RegistrationConstants.MASTER_SYNC_JOD_DETAILS, APPLICATION_NAME, APPLICATION_ID,
+					"Registration Center Type details syncing....");
 			List<RegistrationCenterType> regCenterType = new ArrayList<>();
 			registrationCenterType.forEach(centerType -> {
 
@@ -522,16 +609,24 @@ public class MasterSyncDaoImpl implements MasterSyncDao {
 				regCentrType.setDescr(centerType.getDescr());
 				regCentrType.setLangCode(centerType.getLangCode());
 				regCentrType.setIsActive(centerType.getIsActive());
-				regCentrType.setCrBy(SessionContext.userContext().getUserId());
+				if (SessionContext.isSessionContextAvailable()) {
+					regCentrType.setCrBy(SessionContext.userContext().getUserId());
+				} else {
+					regCentrType.setCrBy(RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM);
+				}
 				regCentrType.setCrDtime(Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()));
 				regCenterType.add(regCentrType);
 			});
 			registrationCenterTypeRepository.saveAll(regCenterType);
 
+			LOGGER.info(RegistrationConstants.MASTER_SYNC_JOD_DETAILS, APPLICATION_NAME, APPLICATION_ID,
+					"Registration Center Device details syncing....");
 			List<RegCenterDevice> masterRegCenterDeviceEntity = MetaDataUtils
 					.setCreateMetaData(registrationCenterDevices, RegCenterDevice.class);
 			registrationCenterDeviceRepository.saveAll(masterRegCenterDeviceEntity);
 
+			LOGGER.info(RegistrationConstants.MASTER_SYNC_JOD_DETAILS, APPLICATION_NAME, APPLICATION_ID,
+					"Registration Center Machine Device details syncing....");
 			List<RegCentreMachineDevice> masterRegCenterMachineDeviceEntity = new ArrayList<>();
 			registrationCenterMachineDevices.forEach(centerMachDev -> {
 				RegCentreMachineDevice regMachDev = new RegCentreMachineDevice();
@@ -541,13 +636,19 @@ public class MasterSyncDaoImpl implements MasterSyncDao {
 				regMachDevId.setRegCentreId(centerMachDev.getRegCenterId());
 				regMachDev.setRegCentreMachineDeviceId(regMachDevId);
 				regMachDev.setIsActive(centerMachDev.getIsActive());
-				regMachDev.setCrBy(SessionContext.userContext().getUserId());
+				if (SessionContext.isSessionContextAvailable()) {
+					regMachDev.setCrBy(SessionContext.userContext().getUserId());
+				} else {
+					regMachDev.setCrBy(RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM);
+				}
 				regMachDev.setLangCode(centerMachDev.getLangCode());
 				regMachDev.setCrDtime(Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()));
 				masterRegCenterMachineDeviceEntity.add(regMachDev);
 			});
 			registrationCenterMachineDeviceRepository.saveAll(masterRegCenterMachineDeviceEntity);
 
+			LOGGER.info(RegistrationConstants.MASTER_SYNC_JOD_DETAILS, APPLICATION_NAME, APPLICATION_ID,
+					"User Machine Mapping details syncing....");
 			List<UserMachineMapping> masterRegCenterUserMachineEntity = new ArrayList<>();
 			registrationCenterUserMachines.forEach(centerUserMac -> {
 				UserMachineMappingID idMapping = new UserMachineMappingID();
@@ -556,7 +657,11 @@ public class MasterSyncDaoImpl implements MasterSyncDao {
 				idMapping.setUserID(centerUserMac.getUsrId());
 				UserMachineMapping userMachine = new UserMachineMapping();
 				userMachine.setUserMachineMappingId(idMapping);
-				userMachine.setCrBy(SessionContext.userContext().getUserId());
+				if (SessionContext.isSessionContextAvailable()) {
+					userMachine.setCrBy(SessionContext.userContext().getUserId());
+				} else {
+					userMachine.setCrBy(RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM);
+				}
 				userMachine.setCrDtime(Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()));
 				userMachine.setIsActive(true);
 				userMachine.setLangCode(centerUserMac.getLangCode());
@@ -565,12 +670,18 @@ public class MasterSyncDaoImpl implements MasterSyncDao {
 
 			userMachineMappingRepository.saveAll(masterRegCenterUserMachineEntity);
 
+			LOGGER.info(RegistrationConstants.MASTER_SYNC_JOD_DETAILS, APPLICATION_NAME, APPLICATION_ID,
+					"Registartion Center User Mapping details syncing....");
 			List<RegCenterUser> masterRegCenterUserEntity = new ArrayList<>();
 			registrationCenterUsers.forEach(centerUser -> {
 				RegCenterUser centerUsr = new RegCenterUser();
 				RegCenterUserId userIdMapping = new RegCenterUserId();
 				centerUsr.setIsActive(centerUser.getIsActive());
-				centerUsr.setCrBy(SessionContext.userContext().getUserId());
+				if (SessionContext.isSessionContextAvailable()) {
+					centerUsr.setCrBy(SessionContext.userContext().getUserId());
+				} else {
+					centerUsr.setCrBy(RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM);
+				}
 				centerUsr.setLangCode("eng");
 				centerUsr.setCrDtime(Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()));
 				userIdMapping.setRegcntrId(centerUser.getRegCenterId());
@@ -580,6 +691,8 @@ public class MasterSyncDaoImpl implements MasterSyncDao {
 			});
 			registrationCenterUserRepository.saveAll(masterRegCenterUserEntity);
 
+			LOGGER.info(RegistrationConstants.MASTER_SYNC_JOD_DETAILS, APPLICATION_NAME, APPLICATION_ID,
+					"Center Machine Mapping details syncing....");
 			List<CenterMachine> masterRegCenterMachineEntity = new ArrayList<>();
 			registrationCenterMachines.forEach(centerMachine -> {
 				CenterMachine centerMachn = new CenterMachine();
@@ -588,7 +701,11 @@ public class MasterSyncDaoImpl implements MasterSyncDao {
 				centerMachnId.setId(centerMachine.getMachineId());
 				centerMachn.setCenterMachineId(centerMachnId);
 				centerMachn.setIsActive(centerMachine.getIsActive());
-				centerMachn.setCrBy(SessionContext.userContext().getUserId());
+				if (SessionContext.isSessionContextAvailable()) {
+					centerMachn.setCrBy(SessionContext.userContext().getUserId());
+				} else {
+					centerMachn.setCrBy(RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM);
+				}
 				centerMachn.setLangCode(centerMachine.getLangCode());
 				centerMachn.setCrDtime(Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()));
 				masterRegCenterMachineEntity.add(centerMachn);
@@ -699,8 +816,17 @@ public class MasterSyncDaoImpl implements MasterSyncDao {
 	 * io.mosip.registration.dao.MasterSyncDao#getValidDocumets(java.lang.String)
 	 */
 	@Override
-	public List<ValidDocument> getValidDocumets(String docCategoryCode, String langCode) {
-		return validDocumentRepository.findByIsActiveTrueAndDocCategoryCodeAndLangCode(docCategoryCode, langCode);
+	public List<ApplicantValidDocument> getValidDocumets(String docCategoryCode, String langCode) {
+		return validDocumentRepository
+				.findByIsActiveTrueAndDocumentCategoryCodeAndDocumentCategoryLangCode(docCategoryCode, langCode);
+	}
+
+	/* (non-Javadoc)
+	 * @see io.mosip.registration.dao.MasterSyncDao#getIndividulType(java.lang.String, java.lang.String)
+	 */
+	@Override
+	public List<IndividualType> getIndividulType(String code, String langCode) {
+		return individualTypeRepository.findByIndividualTypeIdCodeAndIndividualTypeIdLangCodeAndIsActiveTrue(code, langCode);
 	}
 
 }

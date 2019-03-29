@@ -2,7 +2,6 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-
 	<groupId>customlib</groupId>
 	<artifactId>automationtests</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
@@ -10,7 +9,6 @@
 
 	<name>automationtests</name>
 	<url>http://maven.apache.org</url>
-
 
 	<dependencies>
 		<dependency>
@@ -30,6 +28,7 @@
 			<artifactId>json-path</artifactId>
 			<version>2.4.0</version>
 		</dependency>
+
 		<!-- https://mvnrepository.com/artifact/io.rest-assured/rest-assured -->
 		<dependency>
 			<groupId>io.rest-assured</groupId>
@@ -42,6 +41,7 @@
 			<version>6.11</version>
 			<scope>test</scope>
 		</dependency>
+
 		<!-- https://mvnrepository.com/artifact/org.zeroturnaround/zt-exec -->
 		<!-- https://mvnrepository.com/artifact/org.zeroturnaround/zt-zip -->
 		<dependency>
@@ -49,6 +49,7 @@
 			<artifactId>zt-zip</artifactId>
 			<version>1.13</version>
 		</dependency>
+
 
 
 		<!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-core -->
@@ -64,7 +65,6 @@
 			<artifactId>jackson-annotations</artifactId>
 			<version>2.9.5</version>
 		</dependency>
-
 		<!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind -->
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
@@ -147,9 +147,12 @@
 			<artifactId>commons-beanutils</artifactId>
 			<version>1.8.2</version>
 		</dependency>
-
-
-
+		<!-- Encryption Decryption Util Jar -->
+		<dependency>
+			<groupId>io.mosip</groupId>
+			<artifactId>testing</artifactId>
+			<version>demoApp</version>
+		</dependency>
 		<dependency>
 			<groupId>javax.validation</groupId>
 			<artifactId>validation-api</artifactId>
@@ -161,6 +164,7 @@
 			<version>1.5.15</version>
 		</dependency>
 
+
 <!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.datatype/jackson-datatype-jsr310 -->
 <dependency>
     <groupId>com.fasterxml.jackson.datatype</groupId>
@@ -168,13 +172,12 @@
     <version>2.9.5</version>
 </dependency>
 
+
 		<dependency>
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
 			<version>42.2.2</version>
 		</dependency>
-
-
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-log4j12</artifactId>
@@ -198,6 +201,7 @@
 			<artifactId>icu4j</artifactId>
 			<version>63.1</version>
 		</dependency>
+
 
 		<!-- https://mvnrepository.com/artifact/com.amazonaws/aws-java-sdk -->
 		<dependency>
@@ -275,11 +279,16 @@
 				<inherited>true</inherited>
 				<configuration>
 					<suiteXmlFiles>
+
 						<!-- <suiteXmlFile>src/test/resources/testngapi.xml</suiteXmlFile> -->
 						<suiteXmlFile>src/test/resources/testngapi.xml</suiteXmlFile>
 					</suiteXmlFiles>
 					<!-- <systemPropertyVariables>                         <environment>${env.user}</environment> 
 						                    </systemPropertyVariables> -->
+
+					<suiteXmlFile>src/test/resources/testngapi.xml</suiteXmlFile>
+
+
 				</configuration>
 
 			</plugin>

@@ -25,10 +25,10 @@ public class RegistrationCenterIdServiceTest {
 
 	@Value("${mosip.kernel.rcid.test.valid-initial-rcid}")
 	private int initialRcid;
-	
+
 	@Value("${mosip.kernel.rcid.test.valid-new-rcid}")
 	private int newRcid;
-	
+
 	@Autowired
 	RegistrationCenterIdGenerator<String> service;
 
@@ -40,7 +40,7 @@ public class RegistrationCenterIdServiceTest {
 		RegistrationCenterId entity = new RegistrationCenterId();
 		entity.setRcid(initialRcid);
 		when(repository.findLastRCID()).thenReturn(null);
-		when(repository.save(Mockito.any())).thenReturn(entity);
+		when(repository.create(Mockito.any())).thenReturn(entity);
 		assertThat(service.generateRegistrationCenterId(), is(Integer.toString(initialRcid)));
 	}
 
@@ -51,7 +51,7 @@ public class RegistrationCenterIdServiceTest {
 		RegistrationCenterId entityResponse = new RegistrationCenterId();
 		entityResponse.setRcid(1001);
 		when(repository.findLastRCID()).thenReturn(entity);
-		when(repository.save(Mockito.any())).thenReturn(entityResponse);
+		when(repository.create(Mockito.any())).thenReturn(entityResponse);
 		assertThat(service.generateRegistrationCenterId(), is(Integer.toString(newRcid)));
 	}
 
@@ -64,22 +64,23 @@ public class RegistrationCenterIdServiceTest {
 	@Test(expected = RegistrationCenterIdServiceException.class)
 	public void generateIdInsertExceptionTest() {
 		when(repository.findLastRCID()).thenReturn(null);
-		when(repository.save(Mockito.any()))
-				.thenThrow(new RegistrationCenterIdServiceException("", "cannot execute statement", null));
+		when(repository.create(Mockito.any())).thenThrow(
+				new RegistrationCenterIdServiceException("", "cannot execute statement", new RuntimeException()));
 		service.generateRegistrationCenterId();
 	}
 
 	@Test(expected = RegistrationCenterIdServiceException.class)
 	public void idServiceFetchExceptionTest() throws Exception {
 
-		when(repository.findLastRCID()).thenThrow(new DataAccessLayerException("", "cannot execute statement", null));
+		when(repository.findLastRCID())
+				.thenThrow(new DataAccessLayerException("", "cannot execute statement", new RuntimeException()));
 		service.generateRegistrationCenterId();
 	}
 
 	@Test(expected = RegistrationCenterIdServiceException.class)
 	public void idServiceInsertExceptionTest() throws Exception {
-		when(repository.save(Mockito.any()))
-				.thenThrow(new RegistrationCenterIdServiceException("", "cannot execute statement", null));
+		when(repository.create(Mockito.any())).thenThrow(
+				new RegistrationCenterIdServiceException("", "cannot execute statement", new RuntimeException()));
 		service.generateRegistrationCenterId();
 	}
 
@@ -88,8 +89,8 @@ public class RegistrationCenterIdServiceTest {
 		RegistrationCenterId entity = new RegistrationCenterId();
 		entity.setRcid(1000);
 		when(repository.findLastRCID()).thenReturn(entity);
-		when(repository.updateRCID(Mockito.anyInt(), Mockito.anyInt(), Mockito.any()))
-				.thenThrow(new DataAccessLayerException("", "cannot execute statement", null));
+		when(repository.create(Mockito.any()))
+				.thenThrow(new DataAccessLayerException("", "cannot execute statement", new RuntimeException()));
 		service.generateRegistrationCenterId();
 	}
 

@@ -3,21 +3,30 @@ package io.mosip.preregistration.core.util.test;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mockito;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
 
 import io.mosip.preregistration.core.code.RequestCodes;
+import io.mosip.preregistration.core.common.dto.MainRequestDTO;
 import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
 import io.mosip.preregistration.core.util.ValidationUtil;
 
+
+@RunWith(SpringRunner.class)
+@SpringBootTest
 public class ValidationUtilTest {
 	Map<String, String> requestMap = null;
 	Map<String, String> requiredRequestMap = null;
-
+	MainRequestDTO<String> mainRequest = new MainRequestDTO<>();
+	
 	@Before
 	public void setUp() throws Exception {
 		requestMap = new HashMap<>();
@@ -31,6 +40,12 @@ public class ValidationUtilTest {
 		requiredRequestMap.put(RequestCodes.VER, "1.0");
 		requiredRequestMap.put(RequestCodes.REQ_TIME, "2018-12-19T18:52:16.239Z");
 		requiredRequestMap.put(RequestCodes.REQUEST, "");
+		
+		mainRequest.setId("mosip.pre-registration");
+		mainRequest.setRequest("");
+		mainRequest.setRequesttime(new Date());
+		mainRequest.setVersion("1.0");
+		
 	}
 
 	@Test
@@ -59,87 +74,41 @@ public class ValidationUtilTest {
 
 	@Test
 	public void requestValidatorSuccessTest() {
-		requestMap.put(RequestCodes.ID, "mosip.pre-registration");
-		requestMap.put(RequestCodes.VER, "1.0");
-		requestMap.put(RequestCodes.REQ_TIME, "2018-12-19T18:52:16.239Z");
-		requestMap.put(RequestCodes.REQUEST, "{request}");
-
-		requiredRequestMap.put(RequestCodes.ID, "mosip.pre-registration");
-		requiredRequestMap.put(RequestCodes.VER, "1.0");
-
-		assertThat(ValidationUtil.requestValidator(requestMap, requiredRequestMap), is(true));
+		mainRequest.setId("mosip.pre-registration");
+		mainRequest.setRequest("Admin");
+		mainRequest.setRequesttime(new Date());
+		mainRequest.setVersion("1.0");
+		assertThat(ValidationUtil.requestValidator(mainRequest), is(true));
 	}
 
 	@Test(expected = InvalidRequestParameterException.class)
 	public void requestValidatorFailureTest1() {
-		requestMap.put(RequestCodes.ID, "mosip.pre-registration");
-		requestMap.put(RequestCodes.VER, "1.0");
-		requestMap.put(RequestCodes.REQ_TIME, "2018-12-19T18:52:16.239Z");
-		requestMap.put(RequestCodes.REQUEST, "{request}");
-
-		requiredRequestMap.put(RequestCodes.ID, "mosip.pre-registration.create");
-		requiredRequestMap.put(RequestCodes.VER, "1.0");
-		Mockito.when(ValidationUtil.requestValidator(requestMap, requiredRequestMap))
+		mainRequest.setVersion(null);
+		Mockito.when(ValidationUtil.requestValidator(mainRequest))
 				.thenThrow(InvalidRequestParameterException.class);
 	}
 
 	@Test(expected = InvalidRequestParameterException.class)
 	public void requestValidatorFailureTest2() {
-		requestMap.put(RequestCodes.ID, "mosip.pre-registration");
-		requestMap.put(RequestCodes.VER, "1.0");
-		requestMap.put(RequestCodes.REQ_TIME, "2018-12-19T18:52:16.239Z");
-		requestMap.put(RequestCodes.REQUEST, "{request}");
-
-		requiredRequestMap.put(RequestCodes.ID, "mosip.pre-registration");
-		requiredRequestMap.put(RequestCodes.VER, "0.1");
-		Mockito.when(ValidationUtil.requestValidator(requestMap, requiredRequestMap))
+		mainRequest.setId(null);
+		Mockito.when(ValidationUtil.requestValidator(mainRequest))
 		.thenThrow(InvalidRequestParameterException.class);
 	}
 
 	@Test(expected = InvalidRequestParameterException.class)
 	public void requestValidatorFailureTest4() {
-		requestMap.put(RequestCodes.ID, "mosip.pre-registration");
-		requestMap.put(RequestCodes.VER, "1.0");
-		requestMap.put(RequestCodes.REQ_TIME, "2018-12-19T18:52:16.239Z");
-		requestMap.put(RequestCodes.REQUEST, "");
-
-		requiredRequestMap.put(RequestCodes.ID, "mosip.pre-registration");
-		requiredRequestMap.put(RequestCodes.VER, "1.0");
-		requiredRequestMap.put(RequestCodes.REQ_TIME, "2018-12-19T18:52:16.239Z");
-		requiredRequestMap.put(RequestCodes.REQUEST, "{request}");
-		Mockito.when(ValidationUtil.requestValidator(requestMap, requiredRequestMap))
+		mainRequest.setRequest(null);
+		Mockito.when(ValidationUtil.requestValidator(mainRequest))
 		.thenThrow(InvalidRequestParameterException.class);
 	}
 
 	@Test(expected = InvalidRequestParameterException.class)
 	public void requestValidatorFailureTest5() {
-		requestMap.put(RequestCodes.ID, "mosip.pre-registration");
-		requestMap.put(RequestCodes.VER, "1.0");
-		requestMap.put(RequestCodes.REQ_TIME, "2018-12-19T18:52:16.239Z");
-		requestMap.put(RequestCodes.REQUEST, null);
-
-		requiredRequestMap.put(RequestCodes.ID, "mosip.pre-registration");
-		requiredRequestMap.put(RequestCodes.VER, "1.0");
-		requiredRequestMap.put(RequestCodes.REQ_TIME, "2018-12-19T18:52:16.239Z");
-		requiredRequestMap.put(RequestCodes.REQUEST, "{request}");
-		Mockito.when(ValidationUtil.requestValidator(requestMap, requiredRequestMap))
+		mainRequest.setRequesttime(null);
+		Mockito.when(ValidationUtil.requestValidator(mainRequest))
 		.thenThrow(InvalidRequestParameterException.class);
 	}
 
-	@Test(expected = InvalidRequestParameterException.class)
-	public void requestValidatorFailureTest6() {
-		requestMap.put(RequestCodes.ID, "mosip.pre-registration");
-		requestMap.put(RequestCodes.VER, "1.0");
-		requestMap.put(RequestCodes.REQ_TIME, null);
-		requestMap.put(RequestCodes.REQUEST, "{request}");
-
-		requiredRequestMap.put(RequestCodes.ID, "mosip.pre-registration");
-		requiredRequestMap.put(RequestCodes.VER, "1.0");
-		requiredRequestMap.put(RequestCodes.REQ_TIME, "2018-12-19T18:52:16.239Z");
-		requiredRequestMap.put(RequestCodes.REQUEST, "{request}");
-		Mockito.when(ValidationUtil.requestValidator(requestMap, requiredRequestMap))
-		.thenThrow(InvalidRequestParameterException.class);
-	}
 	
 //--------------------------------------------------------
 	@Test
@@ -258,15 +227,15 @@ public class ValidationUtilTest {
 		assertThat(ValidationUtil.requstParamValidator(requestMap), is(true));
 	}
 	
-	@Test
-	public void isValidPreIdSuccessTest() {
-		String preId="12345678901234";
-		assertThat(ValidationUtil.isvalidPreRegId(preId), is(true));
-	}
-	
-	@Test(expected = InvalidRequestParameterException.class)
-	public void isValidPreIdFailureTest() {
-		String preId="12345678901";
-		assertThat(ValidationUtil.isvalidPreRegId(preId), is(false));
-	}
+//	@Test
+//	public void isValidPreIdSuccessTest() {
+//		String preId="12345678901234";
+//		assertThat(ValidationUtil.isvalidPreRegId(preId), is(true));
+//	}
+//	
+//	@Test(expected = InvalidRequestParameterException.class)
+//	public void isValidPreIdFailureTest() {
+//		String preId="12345678901";
+//		assertThat(ValidationUtil.isvalidPreRegId(preId), is(false));
+//	}
 }

@@ -16,6 +16,7 @@ import lombok.Setter;
  * This DTO class is used to define the initial request parameters.
  * 
  * @author Rajath KR
+ * @author Akshay Jain
  * @since 1.0.0
  *
  */
@@ -35,13 +36,13 @@ public class MainRequestDTO<T> implements Serializable {
 	/**
 	 * version
 	 */
-	@ApiModelProperty(value = "request ver", position = 2)
-	private String ver;
+	@ApiModelProperty(value = "request version", position = 2)
+	private String version;
 	/**
 	 * Request Date Time
 	 */
 	@ApiModelProperty(value = "request time", position = 3)
-	private Date reqTime;
+	private Date requesttime;
 	/**
 	 * Request Object
 	 */

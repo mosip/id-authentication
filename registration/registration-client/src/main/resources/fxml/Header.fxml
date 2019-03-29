@@ -1,98 +1,163 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.paint.*?>
-<?import javafx.scene.shape.*?>
-<?import javafx.scene.effect.*?>
 <?import javafx.geometry.*?>
+<?import javafx.scene.shape.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.*?>
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.GridPane?>
 
-<HBox fx:id="headerParent" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" styleClass="headerParentBorder" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.reg.HeaderController">
+<GridPane styleClass="headerParentBorder" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.reg.HeaderController">
+  <columnConstraints>
+    <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" percentWidth="10.0" />
+      <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" percentWidth="5.0" />
+      <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" percentWidth="70.0" />
+      <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" percentWidth="7.0" />
+      <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" percentWidth="5.0" />
+      <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" percentWidth="3.0" />
+  </columnConstraints>
+  <rowConstraints>
+    <RowConstraints percentHeight="100.0" valignment="CENTER" vgrow="ALWAYS" />
+  </rowConstraints>
    <children>
-      <AnchorPane fx:id="headerPage">
+      <ImageView fitHeight="25.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../images/logo-final-small.png" />
+         </image>
+      </ImageView>
+      <GridPane styleClass="headerDetails" GridPane.columnIndex="2">
+        <columnConstraints>
+          <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" percentWidth="20.0" />
+            <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" percentWidth="3.0" />
+          <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" percentWidth="20.0" />
+            <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" percentWidth="22.0" />
+            <ColumnConstraints hgrow="ALWAYS" percentWidth="15.0" />
+            <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" percentWidth="3.0" />
+            <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" percentWidth="15.0" />
+            <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" percentWidth="2.0" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints percentHeight="100.0" valignment="CENTER" vgrow="ALWAYS" />
+        </rowConstraints>
          <children>
-            <ImageView fitHeight="25.0" fitWidth="30.0" layoutX="44.0" layoutY="5.0" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@../images/logo-final-small.png" />
-               </image>
-            </ImageView>
-            <AnchorPane fx:id="headerDetails" layoutX="230.0" styleClass="commonHeaderClazz">
+            <Line endY="16.0" stroke="WHITE" GridPane.columnIndex="1" />
+            <GridPane styleClass="registrationOfficerIdPane" GridPane.columnIndex="4">
+              <columnConstraints>
+                <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" percentWidth="100.0" />
+              </columnConstraints>
+              <rowConstraints>
+                <RowConstraints percentHeight="100.0" valignment="CENTER" vgrow="ALWAYS" />
+              </rowConstraints>
                <children>
-                  <ImageView fitHeight="24.0" fitWidth="24.0" layoutX="24.0" layoutY="6.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../images/User.png" />
-                     </image>
-                  </ImageView>
-                  <Label fx:id="registrationOfficerName" layoutX="60.0" layoutY="8.0" text="%roname" />
-                  <Line endY="16.0" layoutX="195.0" layoutY="8.0" stroke="WHITE" />
-                  <ImageView fitHeight="24.0" fitWidth="24.0" layoutX="220.0" layoutY="6.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../images/RegCentreLocation.png" />
-                     </image>
-                  </ImageView>
-                  <Label fx:id="registrationOfficeLocation" layoutX="264.0" layoutY="8.0" text="%rooffice" />
-                  <AnchorPane fx:id="registrationOfficerIdPane" layoutX="420.0" layoutY="5.0">
-                     <children>
-                        <Label fx:id="registrationOfficeId" layoutX="53.0" layoutY="3.0" text="%roid" />
-                        <ImageView fitHeight="24.0" fitWidth="24.0" layoutX="18.0" layoutY="1.0" pickOnBounds="true" preserveRatio="true">
+                  <Label fx:id="registrationOfficeId" graphicTextGap="10.0" text="%roid">
+                     <graphic>
+                        <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
                            <image>
                               <Image url="@../images/system.png" />
                            </image>
                         </ImageView>
-                     </children>
-                  </AnchorPane>
-                  <AnchorPane fx:id="internetModePane" layoutX="600.0" layoutY="5.0">
-                     <children>
-                        <Label fx:id="online" layoutX="48.0" layoutY="3.0" styleClass="internetMode" text="%internet" visible="false" />
-                        <Label fx:id="offline" layoutX="48.0" layoutY="3.0" styleClass="internetMode" text="%internet" visible="false" />
-                        <ImageView fx:id="availableIcon" fitHeight="24.0" fitWidth="24.0" layoutX="8.0" layoutY="1.0" pickOnBounds="true" preserveRatio="true">
+                     </graphic>
+                  </Label>
+               </children>
+               <GridPane.margin>
+                  <Insets bottom="2.0" top="2.0" />
+               </GridPane.margin>
+            </GridPane>
+            <GridPane styleClass="internetModePane" GridPane.columnIndex="6">
+               <columnConstraints>
+                  <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" percentWidth="100.0" />
+               </columnConstraints>
+               <rowConstraints>
+                  <RowConstraints percentHeight="100.0" valignment="CENTER" vgrow="ALWAYS" />
+               </rowConstraints>
+               <children>
+                  <Label fx:id="offline" graphicTextGap="10.0" text="%internet" visible="false">
+                     <graphic>
+                        <ImageView fx:id="availableIcon" fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
                            <image>
                               <Image url="@../images/SystemOnline.png" />
                            </image>
                         </ImageView>
-                     </children>
-                  </AnchorPane>
-               </children>
-            </AnchorPane>
-            <MenuBar fx:id="menu" layoutX="1180.0" layoutY="2">
-               <menus>
-                  <Menu fx:id="homeSelectionMenu" mnemonicParsing="false">
+                     </graphic></Label>
+                  <Label fx:id="online" graphicTextGap="10.0" text="%internet" visible="false">
                      <graphic>
-                        <ImageView fitHeight="23.0" fitWidth="23.0" layoutX="20.0" layoutY="30.0" pickOnBounds="true" preserveRatio="true">
+                        <ImageView fx:id="availableIcon1" fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
                            <image>
-                              <Image url="@../images/hamburger.png" />
+                              <Image url="@../images/SystemOnline.png" />
+                           </image>
+                        </ImageView>
+                     </graphic></Label>
+               </children>
+               <GridPane.margin>
+                  <Insets bottom="2.0" top="2.0" />
+               </GridPane.margin>
+            </GridPane>
+            <GridPane>
+               <columnConstraints>
+                  <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" percentWidth="100.0" />
+               </columnConstraints>
+               <rowConstraints>
+                  <RowConstraints percentHeight="100.0" valignment="CENTER" vgrow="ALWAYS" />
+               </rowConstraints>
+               <children>
+                  <Label fx:id="registrationOfficerName" graphicTextGap="10.0" text="%roname">
+                     <graphic>
+                        <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../images/User.png" />
                            </image>
                         </ImageView>
                      </graphic>
-                     <items>
-                       <MenuItem mnemonicParsing="false" onAction="#uploadPacketToServer" text="%uploadpacket"/>
-						
-                        <SeparatorMenuItem />
-                        <MenuItem fx:id="virusScan" mnemonicParsing="false" onAction="#virusScan" text="%virusscan"/>                        	
-                     
-                        <SeparatorMenuItem />
-                        <MenuItem mnemonicParsing="false" onAction="#syncData" text="%syncdata"/>                        	
-                       
-                        <SeparatorMenuItem />
-                        <MenuItem mnemonicParsing="false" onAction="#downloadPreRegData" text="%downloadpre-registrationdata"/>                        	
-                        
-                        <SeparatorMenuItem />
-                        <MenuItem mnemonicParsing="false" onAction="#onBoardDevice" text="%deviceonboarding"/>                        	
-                        
-                        <SeparatorMenuItem />
-                        <MenuItem mnemonicParsing="false" onAction="#redirectHome" text="%home"/>                        	
-                        
-                        <SeparatorMenuItem />
-                        <MenuItem fx:id="logout" mnemonicParsing="false" onAction="#logout" text="%logout"/> 
-                     </items>
-                  </Menu>
-               </menus>
-            </MenuBar>
+                  </Label>
+               </children>
+            </GridPane>
+            <GridPane GridPane.columnIndex="2">
+               <columnConstraints>
+                  <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" percentWidth="100.0" />
+               </columnConstraints>
+               <rowConstraints>
+                  <RowConstraints percentHeight="100.0" valignment="CENTER" vgrow="ALWAYS" />
+               </rowConstraints>
+               <children>
+                  <Label fx:id="registrationOfficeLocation" graphicTextGap="10.0" text="%rooffice">
+                     <graphic>
+                        <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../images/RegCentreLocation.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Label>
+               </children>
+            </GridPane>
          </children>
-      </AnchorPane>
+      </GridPane>
+      <MenuBar fx:id="menu" styleClass="menuBar" GridPane.columnIndex="4">
+         <menus>
+            <Menu fx:id="homeSelectionMenu" mnemonicParsing="false">
+               <graphic>
+                  <ImageView fitHeight="23.0" fitWidth="23.0" layoutX="20.0" layoutY="30.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/hamburger.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+               <items>
+                  <MenuItem mnemonicParsing="false" onAction="#uploadPacketToServer" text="%uploadpacket" />
+                  <SeparatorMenuItem />
+                  <MenuItem mnemonicParsing="false" onAction="#syncData" text="%syncdata" />
+                  <SeparatorMenuItem />
+                  <MenuItem mnemonicParsing="false" onAction="#downloadPreRegData" text="%downloadpre-registrationdata" />
+                  <SeparatorMenuItem />
+                  <MenuItem fx:id="remap" mnemonicParsing="false" onAction="#intiateRemapProcess" text="%remap"/>                       
+                  <SeparatorMenuItem />
+                  <MenuItem mnemonicParsing="false" onAction="#redirectHome" text="%home" />
+                  <SeparatorMenuItem />
+                  <MenuItem fx:id="logout" mnemonicParsing="false" onAction="#logout" text="%logout" />
+               </items>
+            </Menu>
+         </menus>
+      </MenuBar>
    </children>
-</HBox>
+</GridPane>

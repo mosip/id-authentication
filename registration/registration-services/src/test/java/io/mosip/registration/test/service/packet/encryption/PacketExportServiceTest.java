@@ -14,6 +14,7 @@ import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
 import io.mosip.registration.dao.RegistrationDAO;
+import io.mosip.registration.dto.PacketStatusDTO;
 import io.mosip.registration.entity.Registration;
 import io.mosip.registration.service.packet.impl.PacketExportServiceImpl;
 
@@ -41,8 +42,9 @@ public class PacketExportServiceTest {
 	@Test
 	public void updateRegistrationStatusTest() {
 		Registration reg=new Registration();
-		List<Registration> updatedExportPackets = new ArrayList<>();
-		updatedExportPackets.add(reg);
+		PacketStatusDTO statusDTO=new PacketStatusDTO();
+		List<PacketStatusDTO> updatedExportPackets = new ArrayList<>();
+		updatedExportPackets.add(statusDTO);
 		Mockito.when(registrationDAO.updateRegStatus(Mockito.anyObject())).thenReturn(reg);
 		assertEquals("Success", packetExportServiceImpl.updateRegistrationStatus(updatedExportPackets).getSuccessResponseDTO().getMessage());
 	}

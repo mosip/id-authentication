@@ -110,7 +110,7 @@ public interface RegistrationCenterService {
 	 *             when data not found
 	 */
 	public RegistrationCenterResponseDto findRegistrationCenterByHierarchyLevelandTextAndLanguageCode(
-			String languageCode, Integer hierarchyLevel, String name);
+			String languageCode, Short hierarchyLevel, String name);
 
 	/**
 	 * This service method can be used to create registration center.
@@ -128,11 +128,14 @@ public interface RegistrationCenterService {
 	 * 
 	 * @param id
 	 *            - registration id
+	 * @param langCode
+	 *            language code
 	 * @param timeStamp
 	 *            - Time stamp based on the format YYYY-MM-ddTHH:mm:ss.SSSZ
 	 * @return ResgistrationCenterStatusResponseDto
 	 */
-	public ResgistrationCenterStatusResponseDto validateTimeStampWithRegistrationCenter(String id, String langCode, String timeStamp);
+	public ResgistrationCenterStatusResponseDto validateTimeStampWithRegistrationCenter(String id, String langCode,
+			String timeStamp);
 
 	/**
 	 * This method deletes the registration center.
@@ -170,6 +173,6 @@ public interface RegistrationCenterService {
 	 *             when data not found
 	 */
 	public RegistrationCenterResponseDto findRegistrationCenterByHierarchyLevelAndListTextAndlangCode(
-			String languageCode, Integer hierarchyLevel, List<String> names);
+			String languageCode, Short hierarchyLevel, List<String> names);
 
 }

@@ -11,7 +11,7 @@ import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
-import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import io.mosip.kernel.auth.entities.AuthToken;
 import io.mosip.kernel.auth.entities.TimeToken;
+import io.mosip.kernel.auth.exception.AuthManagerException;
 import io.mosip.kernel.auth.service.CustomTokenServices;
 
 /**
@@ -31,11 +32,11 @@ import io.mosip.kernel.auth.service.CustomTokenServices;
 @Repository
 public class CustomTokenServicesImpl implements CustomTokenServices {
 	
-	public static final String INSERT_TOKEN="insert into iam.oauth_access_token(user_id,auth_token,refresh_token,expiration_time,cr_dtimes,is_active,cr_by) values(:userName,:token,:refreshToken,:expTime,NOW(),true,'Admin')";
+	public static final String INSERT_TOKEN="insert into iam.oauth_access_token(user_id,auth_token,refresh_token,expiration_time,cr_dtimes,is_active,cr_by) values(:userName,:token,:refreshToken,:expTime,:crdTimes,true,'Admin')";
 	
 	public static final String SELECT_TOKEN="select user_id,auth_token,refresh_token,expiration_time from iam.oauth_access_token where auth_token like :token ";
 	
-	public static final String UPDATE_TOKEN="update iam.oauth_access_token set user_id=:userName,auth_token=:token,refresh_token=:refreshToken,expiration_time=:expTime "
+	public static final String UPDATE_TOKEN="update iam.oauth_access_token set user_id=:userName,auth_token=:token,refresh_token=:refreshToken,expiration_time=:expTime,cr_dtimes=:crdTimes "
 			+ " where user_id = :userName";
 	
 	public static final String CHECK_USER="select user_id from iam.oauth_access_token where user_id like :userName";
@@ -44,7 +45,7 @@ public class CustomTokenServicesImpl implements CustomTokenServices {
 	
 	public static final String SELECT_TOKEN_NAME="select user_id,auth_token,refresh_token,expiration_time from iam.oauth_access_token where user_id like :userName ";
 	
-	public static final String DELETE_ACCESS_TOKEN="delete auth_token from iam.oauth_access_token where user_id like :userName";
+	public static final String DELETE_ACCESS_TOKEN="delete from iam.oauth_access_token where user_id like :userName";
 	
 	public static final String DELETE_REFRESH_TOKEN="delete from iam.oauth_access_token where user_id like :userName";
 	
@@ -61,8 +62,6 @@ public class CustomTokenServicesImpl implements CustomTokenServices {
 	private final String selectTokenFromName=SELECT_TOKEN_NAME;
 	
 	private final String deleteAccessToken=DELETE_ACCESS_TOKEN;
-	
-	private final String deleteRefreshToken=DELETE_REFRESH_TOKEN;
 	
 	private final NamedParameterJdbcTemplate jdbcTemplate;
 	
@@ -83,7 +82,8 @@ public class CustomTokenServicesImpl implements CustomTokenServices {
 			jdbcTemplate.update(updateTokenSQL, new MapSqlParameterSource()
 					.addValue("userName", token.getUserId())
 					.addValue("token",token.getAccessToken() ).addValue("refreshToken", token.getRefreshToken())
-					.addValue("expTime", new Date(token.getExpirationTime())));
+					.addValue("expTime", new Date(token.getExpirationTime()))
+					.addValue("crdTimes", new Date()));
 			
 		}
 		else
@@ -91,7 +91,8 @@ public class CustomTokenServicesImpl implements CustomTokenServices {
 			jdbcTemplate.update(insertTokenSQL, new MapSqlParameterSource()
 					.addValue("userName", token.getUserId())
 					.addValue("token",token.getAccessToken() ).addValue("refreshToken", token.getRefreshToken())
-					.addValue("expTime", new Date(token.getExpirationTime())));
+					.addValue("expTime", new Date(token.getExpirationTime()))
+					.addValue("crdTimes", new Date()));
 		}
 	}
 
@@ -164,20 +165,19 @@ public class CustomTokenServicesImpl implements CustomTokenServices {
 	@Override
 	public void revokeToken(String token) {
 		AuthToken authToken = getTokenDetails(token);
-		if(authToken.getRefreshToken()!=null)
+		if(authToken!=null)
 		{
-			removeRefreshToken(authToken.getUserId());
-		}
 		removeAccessToken(authToken.getUserId());
+		}
+		else
+		{
+			throw new AuthManagerException(String.valueOf(HttpStatus.UNAUTHORIZED.value()),"Token is not present in datastore,Please try with new token");
+		}
 	}
 
 	private void removeAccessToken(String userId) {
 		jdbcTemplate.update(deleteAccessToken, new MapSqlParameterSource().addValue("userName", userId));
 		
-	}
-
-	private void removeRefreshToken(String userId) {
-		jdbcTemplate.update(deleteRefreshToken, new MapSqlParameterSource().addValue("userName", userId));		
 	}
 
 }

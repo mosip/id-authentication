@@ -255,7 +255,7 @@
       "label" : "officerOTPAuthentication",
       "value" : "false"
     } ],
-    "hashSequence" : [ {
+    "hashSequence1" : [ {
       "label" : "applicantBiometricSequence",
       "value" : [ "applicant_bio_CBEFF" ]
     }, {

@@ -43,7 +43,7 @@ public class PacketReceiverStage extends MosipVerticleAPIManager {
 	private static Logger regProcLogger = RegProcessorLogger.getLogger(PacketReceiverStage.class);
 	
 	/** vertx Cluster Manager Url. */
-	@Value("${vertx.ignite.configuration}")
+	@Value("${vertx.cluster.configuration}")
 	private String clusterManagerUrl;
 
 	/** server port number. */
@@ -79,7 +79,7 @@ public class PacketReceiverStage extends MosipVerticleAPIManager {
 	 * deploys this verticle.
 	 */
 	public void deployVerticle() {
-		this.mosipEventBus = this.getEventBus(this, clusterManagerUrl);
+		this.mosipEventBus = this.getEventBus(this, clusterManagerUrl, 50);
 
 	}
 
@@ -105,9 +105,9 @@ public class PacketReceiverStage extends MosipVerticleAPIManager {
 	 */
 	private void routes(Router router) {
 		
-		router.post("/packetreceiver/registration-processor/registrationpackets/v1.0").handler(ctx -> {
+		router.post("/packetreceiver/registration-processor/registrationpackets/v1.0").blockingHandler(ctx -> {
 			processURL(ctx);
-		}).failureHandler(failureHandler -> {
+		}, false).failureHandler(failureHandler -> {
 			this.setResponse(failureHandler, globalExceptionHandler.handler(failureHandler.failure()),APPLICATION_JSON);
 		});
 		
@@ -146,8 +146,11 @@ public class PacketReceiverStage extends MosipVerticleAPIManager {
 					"", e.getMessage() + ExceptionUtils.getStackTrace(e));
 			throw new UnexpectedException(e.getMessage());
 		} finally {
-			if (file.exists())
-				deleteFile(file);
+			if(file != null) {
+				if (file.exists()) {
+					deleteFile(file);
+				}
+			}
 		}
 	}
 

@@ -5,7 +5,7 @@
   	<parent>
 		<groupId>io.mosip.registrationprocessor</groupId>
 		<artifactId>stages</artifactId>
-		<version>0.9.2</version>
+		<version>0.9.9</version>
 	</parent>
 
   <name>registration-processor-connector-stage</name>
@@ -55,11 +55,6 @@
 			<groupId>io.mosip.registrationprocessor</groupId>
 			<artifactId>registration-processor-core</artifactId>
 			<version>${registration.processor.core.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.testng</groupId>
-			<artifactId>testng</artifactId>
-			<version>6.8.13</version>
 		</dependency>
 		<dependency>
 			<groupId>javax.inject</groupId>

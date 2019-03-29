@@ -1,0 +1,33 @@
+{
+  "authType": {
+    "address": false,
+    "bio": true,
+    "otp": false,
+    "personalIdentity": false,
+    "pin": false
+  },
+  "bioInfo": [
+    {
+      "bioType": "fgrMin",
+      "deviceInfo": {
+        "deviceId": "123143",
+        "make": "mantra",
+        "model": "steel"
+      }
+    }
+  ],
+  "id": "mosip.identity.auth",
+  "idvId": "927869547638",
+  "idvIdType": "D",
+  "tspID": "7404012867",
+  "key": {
+    "publicKeyCert": "String",
+    "sessionKey": "bewbXKs2ZqYJ1A9yk7O6bXAJhs-ZCzkiQavwv0fqgP-MdfsnyvItqUx0kw7WUVHB1IlKs--nAFDKB5YwZRX-Tlz0KlRRYmUhVzd95B02frFKgpRilKv0StwroTWY7ZgVasPmt5vom_PZMZMJGjHfWmVXAnENgulZoMB25nIvay_rRsrSeIEOXPm_j5nzEGKb9mNLg5ljsJSPpNUgCgc3cPcKwJhKf6ftZaibl5KuF-tAj2PqN0e9Eoji-HDGc_6yjEWcIaP1mgY3HFjidCEvze6EugOVu32R_IraVvTU83YsmcdQWDETLqDebklo0p-LW64krMgJfP554v37FIw6EA"
+  },
+  "muaCode": "7404012867",
+  "reqHmac": "string",
+  "reqTime": "2019-01-29T14:12:32.032+05:30",
+  "request": "hOM1LujLMVV2XenV0Dv71y6-gy1lqEIShrYUOZWmau5Cux2AO6vapVEkW4ZBUZFj7QTLzSrRh2M-NUS6vdggCJqoTAishViBREXtHqFST1i0EJXxlNfU5z520nWy5i4VO2bGSE4BTTw_Dv63R6LbFeU93R80HvF8YIa20JuIAnJiw6oTKzp8yHFkcEyPG6-6SVX2g8ZmKsmP3SgNWT6soqlO6Vxm8bYy9FVy2_MhdFf5QU2-6wyRG-XTTYZdIhmcKV_gIYeGeB8lER4bK5FGdHAlPaEIRcPMHdewqSHksqnv26DcW0X8c8SkOB-5gHNtrECu2jEV0lnIdR16TZOJvPgeziRdVeXlAlQtmHzz_wNlA5uF5ktMfft3SAlXFJ7GsptY9M4V1-T4ArfEs0-r-b05ldNQ_G_-CJkE7C1xPoI9ySpbp9KiG0p6SwsweOphGDpmeWRdf1sUwZjhh1r9Rh04X1jjKkAnu2UO89skcHa8Oe0P5d7qNC9JuIJgUqVw3jl_RBWdbUHCJQhzf27RDAVAfaZBFtUWwkCxv7VafQejCf6-f9RWirXlq7n2r_X9L-nU5mNtmKQc7_HR40HsBWt1t3DjhVnM--ccliTrPn7Dps9Ju3kMelS-Pjj92pnBy0gSzv5XiBhfhEEz3leXLbPNcxoAiBk2vf00exTGY5nm1lg8XHE6H8v35iFgFphIOFcCTU_dmJeqWiciQwfhxorfF1rT3xFCnOMkgfAjQTpqY6XRqyI-sdVxQq-fi_tgfq6FIg_RFgE5o1zTlQH6oM2iPQM5yDhFOMJ-sEBpeVKpp9-bZHQ1cD1_x_lP33szkvkMlhl0rsTuQUr9Kk_Mw7jYwGMgpGmtYK9BAd9NNESz53UaAoVv-zzbX8wqKcrxS6km744acu1RqE8tCB7nTFK0NZRA8bvwQIJZMHm5ibddoIAxCiT6jvkb73Yz1yORw8K_AWo0icoMjpUZYTranRLj-z9IzDoHtUHKmA61CcR9JiZriiyJYZXsgMqV04ROBFDhf18CQi1uItb7-P0frdOlb3Kh5F2tRQo4mN5uEze588m_EPp-zEsEaKlpXgewc0XN7KkNg_Ibdkj5fQn7rdz7LnAHAQQBRti7kVB_4jqodXwFt59g9yTuy1oASy4GZjf3X5vawPXioEivFs95JF6Lk0R40_-xbbju04w_q5X6Hv4uIakbEw1XXqZZjLKox5M6Ct-gJ5_SoHGvFnOZMKCC-QG3Y3M2SInDZSDljVWIMvUN8vqnvPdhUUxnSSFIGq5zr9f1SwmseRmZ5I81l-gMFyvatKu2V4BSTkS6Cek5dWmb84mlvx_YOiv1zSOf",
+  "txnID": "7404012867",
+  "ver": "$version$"
+}

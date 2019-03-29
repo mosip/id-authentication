@@ -36,8 +36,7 @@ public class RegProcDataRead {
 	{
 		boolean flag=false;
 		try {	
-			factory = new Configuration().configure(registrationListConfigFile)
-					.addAnnotatedClass(RegistrationStatusEntity.class).buildSessionFactory();	
+
 			session = factory.getCurrentSession();
 			session.beginTransaction();
 			logger.info("Session value is :" +session);
@@ -66,10 +65,7 @@ public class RegProcDataRead {
 	public static SyncRegistrationDto regproc_dbDataInRegistrationList(String regId)
 	{
 		boolean flag=false;
-		String hibernateConfigFile=System.getProperty("user.dir")+"\\"+"src\\test\\resources\\regprocinteg.cfg.xml";
-		File f=new File(hibernateConfigFile);
-		factory = new Configuration().configure(registrationListConfigFile)
-				.addAnnotatedClass(RegistrationStatusEntity.class).buildSessionFactory();	
+
 		session = factory.getCurrentSession();
 		session.beginTransaction();
 
@@ -92,8 +88,6 @@ public class RegProcDataRead {
 	{
 		boolean flag=false;
 
-		factory = new Configuration().configure(registrationListConfigFile)
-				.addAnnotatedClass(RegistrationStatusEntity.class).buildSessionFactory();	
 		session = factory.getCurrentSession();
 		session.beginTransaction();
 
@@ -246,8 +240,7 @@ public class RegProcDataRead {
     {
           boolean flag=false;
 
-          factory = new Configuration().configure(registrationListConfigFile)
-                .addAnnotatedClass(RegistrationStatusEntity.class).buildSessionFactory();      
+
           session = factory.getCurrentSession();
           session.beginTransaction();
 
@@ -270,8 +263,6 @@ public class RegProcDataRead {
     {
           boolean flag=false;
 
-          factory = new Configuration().configure(registrationListConfigFile)
-                .addAnnotatedClass(RegistrationStatusEntity.class).buildSessionFactory();      
           session = factory.getCurrentSession();
           session.beginTransaction();
 

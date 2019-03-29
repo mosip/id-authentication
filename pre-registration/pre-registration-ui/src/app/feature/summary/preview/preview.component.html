@@ -37,6 +37,11 @@
                 <td> : </td>
                 <td>{{ previewData.gender[0].name }}</td>
               </tr>
+              <tr>
+                <td>{{ 'preview.text_resident_status' | translate }}</td>
+                <td> : </td>
+                <td>{{previewData.residenceStatus[0].name}}</td>
+              </tr>
             </table>
           </div>
           <div>
@@ -93,7 +98,7 @@
             <div class="preview__modify-div">
               <span>{{ secondaryLanguagelabels.language }}</span>
               <span (click)="modifyDemographic()" class="preview__modify-div-span"
-                    matTooltip="Info about the action"
+                    matTooltip="{{ 'helpText.modify_at_DemoPreview' | translate}}"
                 ><img src="assets/edit.png" /> {{ 'preview.action_modify' | translate }}</span
               >
             </div>
@@ -121,6 +126,11 @@
                 <td>{{ secondaryLanguagelabels.text_gender }}</td>
                 <td> : </td>
                 <td>{{ previewData.gender[1].name }}</td>
+              </tr>
+              <tr>
+                <td>{{ secondaryLanguagelabels.text_resident_status }}</td>
+                <td> : </td>
+                <td>{{previewData.residenceStatus[1].name}}</td>
               </tr>
             </table>
           </div>
@@ -180,14 +190,25 @@
       <div class="preview__footer">
         <span>{{ 'preview.title_document' | translate }}</span>
         <span (click)="modifyDocument()" class="preview__modify-file"
-              matTooltip="Info about the action"
+              matTooltip="{{ 'helpText.modify_at_DocumentPreview' | translate}}"
           ><img src="assets/edit.png" /> {{ 'preview.action_modify' | translate }}</span
         >
         <hr />
         <div class="preview__file-container">
-          <span class="preview__file-span" *ngFor="let file of files">
+          <!-- <span class="preview__file-span" *ngFor="let file of files">
             <img src="assets/pdf.png" />&nbsp;&nbsp;{{ file.doc_name }}
-          </span>
+          </span> -->
+          <table *ngIf="documentMapObject">
+            <tr class="preview__file__table__header">
+              <td *ngFor="let object of documentMapObject">{{object.name}}</td>
+            </tr>
+            <tr class="preview__file__table__data">
+              <td *ngFor="let object of documentMapObject">
+                <p *ngIf="object.fileName !== undefined">{{object.fileName}}</p>
+                <p class="error" *ngIf="object.fileName === undefined">{{ 'preview.text_not_uploaded' | translate }}</p>
+              </td>
+            </tr>
+          </table>
         </div>
       </div>
     </mat-card-footer>
@@ -198,22 +219,15 @@
   <mat-card class="center-selection__button-container">
     <button mat-button (click)="navigateBack()" class="user-back-btn">{{ 'preview.action_back' | translate }}</button>
     <span class="spacer"></span>
-    <button matTooltip="Info about the action" mat-button (click)="navigateDashboard()" class="user-book_later-btn">
+    <button matTooltip="{{ 'helpText.add_applicant' | translate}}" mat-button (click)="navigateDashboard()" class="user-book_later-btn">
       {{ 'preview.action_add_applicant' | translate }}
     </button>
-    <span
-      matTooltip="Info about the action"
-      [matTooltipDisabled]="enableContinue()"
-    >
-      <button mat-button 
-            [disabled]="!enableContinue()" 
-            (click)="navigateNext()" 
+      <button mat-button
+            (click)="navigateNext()"
             class="user-continue-btn"
-            matTooltip="Info about the action"
+            [disabled]="!enableContinue()"
             >
       {{ 'preview.action_continue' | translate }}
     </button>
-    </span>
-    
   </mat-card>
 </div>

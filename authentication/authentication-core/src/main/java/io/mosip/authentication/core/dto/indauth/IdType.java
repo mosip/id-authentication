@@ -15,7 +15,7 @@ import com.fasterxml.jackson.annotation.JsonValue;
  */
 public enum IdType {
 
-	UIN("D"), VID("V");
+	UIN("UIN"), VID("VID"),USER_ID("USER-ID");
 
 	/**
 	 * Value that indicates that default id.

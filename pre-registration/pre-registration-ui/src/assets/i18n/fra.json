@@ -15,7 +15,9 @@
     "label_otp": "Entrez OTP",
     "action_send": "Envoyer OTP",
     "action_resend": "Renvoyer",
-    "action_verify": "Vérifier"
+    "action_verify": "Vérifier",
+    "logout_msg": "Le demandeur doit se connecter avec le même téléphone portable / courriel pour accéder aux applications créées.",
+    "otp_valid_label": "valable"
   },
   "stepper": {
     "link_demographic": "Détails démographiques",
@@ -55,10 +57,22 @@
     "action_back": "RETOUR",
     "action_continue": "CONTINUER",
     "action_preview": "APERÇU",
+    "consent": {
+      "title": "Termes et conditions",
+      "subtitle": "Votre accord",
+      "message": "Donner son ement pour le stockage et l'utilisation des informations personnelles telles qu'elles sont données",
+      "checkCondition": "Cliquez pour accepter les termes et conditions",
+      "acceptButton": "Acceptez",
+      "alertMessageFirst":"Vous serez déconnecté car vous n'acceptez pas les conditions générales",
+      "alertMessageSecond":"Vous serez redirigé vers votre page d'application parce que vous n'acceptez pas les conditions générales",
+      "alertMessageThird":"Vous serez redirigé vers la page de prévisualisation car vous n'acceptez pas les conditions générales."
+    },
+
     "validation": {
       "name_required": "Le nom complet est requis",
       "age_validation": "L'âge devrait être inférieur à 150",
       "gender_validation": "S'il vous plaît sélectionner le sexe",
+      "nationality_validation": "Veuillez choisir une nationalité",
       "DOB_validation": "Entrez la date de naissance ou l'âge valide (l'âge doit être inférieur à 150 et le nombre entier)",
       "date_required": "Entrez 2 chiffres pour la date",
       "month_required": "Entrez 2 chiffres pour le mois",
@@ -106,6 +120,7 @@
     "label_age": "Âge",
     "text_years": "Années",
     "text_gender": "Le sexe",
+    "text_resident_status": "Statut de résident",
     "subheading_contact": "Détails du contact",
     "label_address": "Adresse",
     "label_region": "Région",
@@ -117,21 +132,10 @@
     "label_email_id": "Identifiant Email",
     "label_pin": "CNIE/EC",
     "title_document": "Documents téléchargés",
+    "text_not_uploaded": "Non téléchargé",
     "action_modify": "modifier",
     "action_back": "RETOUR",
     "action_add_applicant": "AJOUTER LE CANDIDAT",
-    "action_continue": "CONTINUER"
-  },
-  "bookAppointment": {
-    "title_book": "Rendez-vous du livre",
-    "text_prev": "précédent",
-    "text_next": "Suivant",
-    "text_morning": "Matin",
-    "text_afternoon": "Après midi",
-    "text_available": "Candidats disponibles",
-    "action_done": "TERMINÉ",
-    "action_back": "RETOUR",
-    "action_bookLater": "RÉSERVER PLUS TARD",
     "action_continue": "CONTINUER"
   },
   "message": {
@@ -162,7 +166,7 @@
       "msg2": "Appointment for the selected application has been successfully cancelled"
     }
   },
-  "uidStatus": {
+  "dashboard": {
     "title": "Vos applications",
     "action_modify_information": "Modifier les informations",
     "action_modify_appointment": "Réserver / modifier un rendez-vous",
@@ -174,16 +178,51 @@
       "text_status": "Statut",
       "action_modify_information": "Modifier les informations",
       "action_view_acknowledgement": "Voir accusé de réception"
+    },
+    "discard": {
+      "title_confirm": "Confirmer",
+      "title_success": "Succès",
+      "title_error": "Erreur",
+      "msg_confirm": "L'application sélectionnée sera supprimée. Veuillez confirmer.",
+      "msg_deleted": "L'application sélectionnée a été supprimée avec succès",
+      "msg_could_not_deleted": "L'application sélectionnée n'a pas pu être supprimée",
+      "button_confirm": "Confirmer",
+      "button_cancel": "Annuler"
+    },
+    "status": {
+      "pendingAppointment": "Rendez-vous en attente",
+      "booked": "Réservé",
+      "expired": "Expiré"
+    }
+  },
+  "timeSelection": {
+    "title_book": "Rendez-vous du livre",
+    "text_prev": "précédent",
+    "text_next": "Suivant",
+    "text_morning": "Matin",
+    "text_afternoon": "Après midi",
+    "text_available": "Candidats disponibles",
+    "text_availability": "Réservation disponible",
+    "text_slots": "fentes",
+    "action_done": "TERMINÉ",
+    "action_back": "RETOUR",
+    "action_bookLater": "RÉSERVER PLUS TARD",
+    "action_continue": "CONTINUER",
+    "booking": {
+      "title_success": "Succès",
+      "msg_success": "Réservation de rendez-vous terminée avec succès",
+      "title_failure": "Échec",
+      "msg_failure": "Rendez-vous de réservation a échoué"
     }
   },
   "appointmentCentreSearch": {
-    "title": " Book Appointment ",
-    "text_recommended_centres": "Recommended Centres",
-    "text_finding_result": "finding result for",
-    "text_nearBy": "Nearby",
-    "acttion_back": "BACK",
-    "action_bookLater": "BOOK LATER",
-    "action_continue": "CONTINUE"
+    "title": "Rendez-vous du livre",
+    "text_recommended_centres": "Centres recommandés",
+    "text_finding_result": "trouver le résultat pour",
+    "text_nearBy": "Proche",
+    "acttion_back": "Retour",
+    "action_bookLater": "Réservez plus tard",
+    "action_continue": "Continuer"
   },
   "appointmentConfirmed": {
     "title": "Rendez-vous confirmé",
@@ -194,7 +233,10 @@
   "dialog": {
     "title_applicant": "Envoyer une confirmation de rendez-vous",
     "content_applicant": "Email / Numéro de téléphone",
-    "invalidApplicantNumber_msg": "Email / numéro de téléphone invalide",
+    "text_email": "Entrer l'identifiant email",
+    "text_mobile": "Entrez le numéro de téléphone",
+    "invalidApplicantNumber": "Numéro de portable invalide",
+    "invalidApplicantEmailId": "Identifiant email invalide",
     "action_ok": "D'accord",
     "title_discard": "Jeter",
     "action_discard_app": "Jeter toute l'application",
@@ -213,8 +255,31 @@
     "text_centers": "centres",
     "text_timing": "Timing",
     "text_open": "Ouvrir",
+    "text_select": "Sélectionner les types d'emplacement",
+    "text_enter": "Entrer",
+    "text_search": "Chercher....",
     "action_back": "Retour",
     "action_book_later": "Réservez plus tard",
     "action_continue": "CONTINUER"
+  },
+  "helpText": {
+    "applicationId": "ID d'application pour votre pré-inscription",
+    "status": {
+      "pendingAppointment": "Rendez-vous n'est pas encore réservé",
+      "booked": "Rendez-vous est réservé avec succès",
+      "expired": "La date de rendez-vous est passée"
+    },
+    "deleteIcon": "Vous pouvez supprimer l’application entière ou annuler le rendez-vous et enregistrer les détails, Supprimer l’application entière et annuler le rendez-vous. Annulez le rendez-vous et enregistrez les détails.",
+    "book/modify_appointment": "Vous devez cocher la case en regard de l'identifiant de pré-inscription pour qu'un ou plusieurs demandeurs puissent prendre un rendez-vous",
+    "bookAppointment": "Commencez par sélectionner le créneau horaire préféré, puis sélectionnez le demandeur applicable pour le créneau sélectionné. ",
+    "send_email/sms": "Vous pouvez ajouter le destinataire supplémentaire pour recevoir la ou les notifications.",
+    "modify_at_DemoPreview": "Cliquez sur Modifier pour corriger les détails démographiques",
+    "modify_at_DocumentPreview": "Cliquez sur Modifier pour corriger le document téléchargé.",
+    "same_as": "Si la preuve d'adresse est identique à celle du demandeur déjà rempli, vous pouvez utiliser l'option Même comme",
+    "add_applicant": "Cliquez sur Ajouter un demandeur pour ajouter un ou plusieurs candidats.",
+    "recommended_centers": "Liste du centre recommandé selon votre code postal",
+    "nearBy": "Centres d'inscription basés sur votre géolocalisation",
+    "magnifying_glass": "Recherche basée sur la sélection du menu déroulant.",
+    "preview_continue": "Téléchargez tous les fichiers pour continuer"
   }
 }

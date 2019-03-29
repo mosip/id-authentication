@@ -3,6 +3,7 @@ package io.mosip.service;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.List;
 
 import javax.ws.rs.core.MediaType;
 
@@ -11,17 +12,15 @@ import org.json.simple.JSONObject;
 import io.mosip.util.CommonLibrary;
 import io.restassured.response.Response;
 
-public class ApplicationLibrary extends BaseTestCase{
-	
-	private static CommonLibrary commonLibrary = new CommonLibrary();
-	
-	
+public class ApplicationLibrary extends BaseTestCase {
 
-		
+	private static CommonLibrary commonLibrary = new CommonLibrary();
+
 	public Response postRequest(Object body, String Resource_URI) {
-		return commonLibrary.post_Request(ApplnURI + Resource_URI, body,
-				MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON);
+		return commonLibrary.post_Request(ApplnURI + Resource_URI, body, MediaType.APPLICATION_JSON,
+				MediaType.APPLICATION_JSON);
 	}
+
 	public Response postRequestToDecrypt(Object body, String Resource_URI) {
 		return commonLibrary.postRequestToDecrypt(Resource_URI, body,
 				MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON);
@@ -74,36 +73,77 @@ public class ApplicationLibrary extends BaseTestCase{
       
 }
 
-    public Response GetRequestNoParameter(String Resource_URI) {
-        return commonLibrary.GET_REQUEST_withoutParameters(ApplnURI + Resource_URI);
-        
-  }
-    
-    public Response deleteRequestPathParam(String Resource_URI,HashMap<String, String> valueMap) {
-    	return commonLibrary.delete_RequestPathParameters(ApplnURI+Resource_URI,valueMap);
 
-    }
-    
-    
-    public Response postModifiedGETRequest(String Resource_URI, HashMap<String, String> valueMap) {
-		return commonLibrary.post_Request_WithQueryParams(ApplnURI + Resource_URI, new JSONObject(),MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON,valueMap);
+
+	// public Response PutRequest(String Resource_URI, String )
+
+
+
+
+	
+	public Response get_RequestWithoutBody(String Resource_URI) {
+		return commonLibrary.get_RequestWithoutBody(ApplnURI + Resource_URI, MediaType.APPLICATION_JSON,
+				MediaType.APPLICATION_JSON);
 	}
-    
-    
-    public Response putRequest_WithBody(String Resource_URI, JSONObject object) {
-    	return commonLibrary.put_RequestWithBody(ApplnURI+Resource_URI,MediaType.APPLICATION_JSON,MediaType.APPLICATION_JSON,object);
-    }
 
+	/**
+	 * Author Arjun
+	 * 
+	 * @param Resource_URI
+	 * @param valueMap
+	 * @return
+	 */
+	
 
+	/**
+	 * @author Arjun patch request for id repo
+	 * @param body
+	 * @param Resource_URI
+	 * @return
+	 */
+	public Response patchRequest(Object body, String Resource_URI) {
+		return commonLibrary.patch_Request(ApplnURI + Resource_URI, body, MediaType.APPLICATION_JSON,
+				MediaType.APPLICATION_JSON);
+	}
+
+	public Response GetRequestNoParameter(String Resource_URI) {
+		return commonLibrary.GET_REQUEST_withoutParameters(ApplnURI + Resource_URI);
+
+	}
+
+	public Response deleteRequestPathParam(String Resource_URI, HashMap<String, String> valueMap) {
+		return commonLibrary.delete_RequestPathParameters(ApplnURI + Resource_URI, valueMap);
+
+	}
+
+	public Response postModifiedGETRequest(String Resource_URI, HashMap<String, String> valueMap) {
+		return commonLibrary.post_Request_WithQueryParams(ApplnURI + Resource_URI, new JSONObject(),
+				MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON, valueMap);
+	}
+
+	public Response putRequest_WithBody(String Resource_URI, JSONObject object) {
+		return commonLibrary.put_RequestWithBody(ApplnURI + Resource_URI, MediaType.APPLICATION_JSON,
+				MediaType.APPLICATION_JSON, object);
+	}
 
 	public Response postRequestFormData(JSONObject jsonString, String serviceUri) {
-		return commonLibrary.post_RequestWithBodyAsMultipartFormData(jsonString,ApplnURI+serviceUri);
+		return commonLibrary.post_RequestWithBodyAsMultipartFormData(jsonString, ApplnURI + serviceUri);
 	}
 
-    public Response putRequest_WithoutBody(String Resource_URI) {
-    	return commonLibrary.put_RequestWithoutBody(ApplnURI+Resource_URI,MediaType.APPLICATION_JSON,MediaType.APPLICATION_JSON);
-    }
+	public Response putRequest_WithoutBody(String Resource_URI) {
+		return commonLibrary.put_RequestWithoutBody(ApplnURI + Resource_URI, MediaType.APPLICATION_JSON,
+				MediaType.APPLICATION_JSON);
+	}
+	 public Response getRequestPathQueryPara(String Resource_URI, HashMap<String, String> path_value,HashMap<String, List<String>> query_value) {
+	        return commonLibrary.get_Request_Path_queryParam(ApplnURI + Resource_URI , path_value,query_value);
+	    } 
 
-    
+	  //Notify
+	    public Response putFileAndJsonParam(String Resource_Uri,Object body,File file,String langCodeKey,String value) {
+	    	
+	    	return commonLibrary.Post_JSONwithFileParam(body, file, ApplnURI+Resource_Uri, MediaType.MULTIPART_FORM_DATA,langCodeKey,value);
+	        
+	    }
+
+
 }
-

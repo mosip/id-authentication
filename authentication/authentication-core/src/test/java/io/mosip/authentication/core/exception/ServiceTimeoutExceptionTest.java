@@ -14,12 +14,12 @@ public class ServiceTimeoutExceptionTest {
 
 	@Test(expected=ServiceTimeoutException.class)
 	public void ServiceTimeoutExceptionEnum() throws ServiceTimeoutException {
-		throw new ServiceTimeoutException(IdAuthenticationErrorConstants.OTP_NOT_PRESENT);
+		throw new ServiceTimeoutException(IdAuthenticationErrorConstants.OTP_GENERATION_FAILED);
 	}
 	
 	@Test(expected=ServiceTimeoutException.class)
 	public void ServiceTimeoutExceptionEnumThrowable() throws ServiceTimeoutException {
-		throw new ServiceTimeoutException(IdAuthenticationErrorConstants.OTP_NOT_PRESENT, null);
+		throw new ServiceTimeoutException(IdAuthenticationErrorConstants.OTP_GENERATION_FAILED, null);
 	}
 
 }

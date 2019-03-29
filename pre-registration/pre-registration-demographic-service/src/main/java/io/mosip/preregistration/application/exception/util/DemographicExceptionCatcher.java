@@ -7,7 +7,7 @@ package io.mosip.preregistration.application.exception.util;
 
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
-import io.mosip.kernel.core.exception.BaseUncheckedException;
+import io.mosip.kernel.core.exception.IOException;
 import io.mosip.kernel.core.exception.ParseException;
 import io.mosip.kernel.core.jsonvalidator.exception.FileIOException;
 import io.mosip.kernel.core.jsonvalidator.exception.HttpRequestException;
@@ -15,12 +15,14 @@ import io.mosip.kernel.core.jsonvalidator.exception.JsonIOException;
 import io.mosip.kernel.core.jsonvalidator.exception.JsonSchemaIOException;
 import io.mosip.kernel.core.jsonvalidator.exception.JsonValidationProcessingException;
 import io.mosip.kernel.core.jsonvalidator.exception.UnidentifiedJsonException;
+import io.mosip.kernel.core.util.exception.JsonMappingException;
 import io.mosip.preregistration.application.errorcodes.ErrorCodes;
 import io.mosip.preregistration.application.errorcodes.ErrorMessages;
 import io.mosip.preregistration.application.exception.BookingDeletionFailedException;
 import io.mosip.preregistration.application.exception.DocumentFailedToDeleteException;
 import io.mosip.preregistration.application.exception.InvalidDateFormatException;
 import io.mosip.preregistration.application.exception.MissingRequestParameterException;
+import io.mosip.preregistration.application.exception.OperationNotAllowedException;
 import io.mosip.preregistration.application.exception.RecordFailedToDeleteException;
 import io.mosip.preregistration.application.exception.RecordFailedToUpdateException;
 import io.mosip.preregistration.application.exception.RecordNotFoundException;
@@ -30,6 +32,9 @@ import io.mosip.preregistration.application.exception.system.JsonValidationExcep
 import io.mosip.preregistration.application.exception.system.SystemFileIOException;
 import io.mosip.preregistration.application.exception.system.SystemIllegalArgumentException;
 import io.mosip.preregistration.application.exception.system.SystemUnsupportedEncodingException;
+import io.mosip.preregistration.core.exception.DecryptionFailedException;
+import io.mosip.preregistration.core.exception.EncryptionFailedException;
+import io.mosip.preregistration.core.exception.HashingException;
 import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
 import io.mosip.preregistration.core.exception.TableNotAccessibleException;
 
@@ -38,6 +43,7 @@ import io.mosip.preregistration.core.exception.TableNotAccessibleException;
  * pre-registration
  * 
  * @author Ravi C Balaji
+ * 
  * @since 1.0.0
  *
  */
@@ -92,6 +98,18 @@ public class DemographicExceptionCatcher {
 					((InvalidDateFormatException) ex).getErrorText());
 		}else if (ex instanceof BookingDeletionFailedException) {
 			throw new BookingDeletionFailedException(((BookingDeletionFailedException) ex).getErrorCode(),((BookingDeletionFailedException) ex).getErrorText());
+		}else if (ex instanceof HashingException) {
+			throw new HashingException(((HashingException) ex).getErrorCode(),((HashingException) ex).getErrorText());
+		}else if (ex instanceof OperationNotAllowedException) {
+			throw new OperationNotAllowedException(((OperationNotAllowedException) ex).getErrorCode(),((OperationNotAllowedException) ex).getErrorText());
+		}else if (ex instanceof EncryptionFailedException) {
+			throw new EncryptionFailedException(((EncryptionFailedException) ex).getErrorCode(),((EncryptionFailedException) ex).getErrorText());
+		}else if (ex instanceof DecryptionFailedException) {
+			throw new DecryptionFailedException(((DecryptionFailedException) ex).getErrorCode(),((DecryptionFailedException) ex).getErrorText());
+		}else if (ex instanceof JsonMappingException) {
+			throw new JsonValidationException(((JsonMappingException) ex).getErrorCode(),((JsonMappingException) ex).getErrorText());
+		}else if (ex instanceof IOException) {
+			throw new JsonValidationException(((IOException) ex).getErrorCode(),((IOException) ex).getErrorText());
 		}
 	}
 

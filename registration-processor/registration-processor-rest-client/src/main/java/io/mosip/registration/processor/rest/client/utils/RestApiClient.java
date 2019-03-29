@@ -1,5 +1,6 @@
 package io.mosip.registration.processor.rest.client.utils;
 
+import java.net.URI;
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
@@ -55,12 +56,12 @@ public class RestApiClient {
 	 * @throws Exception
 	 */
 	@SuppressWarnings("unchecked")
-	public <T> T getApi(String getURI, Class<?> responseType) throws Exception {
+	public <T> T getApi(URI uri, Class<?> responseType) throws Exception {
 		RestTemplate restTemplate;
 		T result = null;
 		try {
 			restTemplate = getRestTemplate();
-			result = (T) restTemplate.getForObject(getURI, responseType);
+			result = (T) restTemplate.getForObject(uri, responseType);
 
 		} catch (Exception e) {
 			logger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
@@ -95,6 +96,41 @@ public class RestApiClient {
 			logger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
 					LoggerFileConstant.APPLICATIONID.toString(), requestType.toString());
 			result = (T) restTemplate.postForObject(uri, requestType, responseClass);
+		} catch (Exception e) {
+
+			logger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
+					LoggerFileConstant.APPLICATIONID.toString(), e.getMessage() + ExceptionUtils.getStackTrace(e));
+
+			throw e;
+		}
+		return result;
+	}
+	
+	/**
+	 * Patch api.
+	 *
+	 * @param <T>
+	 *            the generic type
+	 * @param uri
+	 *            the uri
+	 * @param requestType
+	 *            the request type
+	 * @param responseClass
+	 *            the response class
+	 * @return the t
+	 */
+	@SuppressWarnings("unchecked")
+	public <T> T patchApi(String uri, Object requestType, Class<?> responseClass) throws Exception {
+
+		RestTemplate restTemplate;
+		T result = null;
+		try {
+			restTemplate = getRestTemplate();
+			logger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
+					LoggerFileConstant.APPLICATIONID.toString(), uri);
+			logger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
+					LoggerFileConstant.APPLICATIONID.toString(), requestType.toString());
+			result = (T) restTemplate.patchForObject(uri, requestType, responseClass);
 		} catch (Exception e) {
 
 			logger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),

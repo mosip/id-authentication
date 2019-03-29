@@ -43,6 +43,7 @@ import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.core.util.JsonUtil;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
+import io.mosip.registration.processor.stages.osivalidator.utils.OSIUtils;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.TransactionDto;
@@ -90,6 +91,9 @@ public class OSIValidatorTest {
 	/** The env. */
 	@Mock
 	Environment env;
+	
+	@Mock
+	private OSIUtils osiUtils;
 
 	/** The data. */
 	byte[] data = "1234567890".getBytes();
@@ -222,9 +226,15 @@ public class OSIValidatorTest {
 	 * @throws Exception
 	 *             the exception
 	 */
-	@Ignore
 	@Test
 	public void testisValidOSISuccess() throws Exception {
+		regOsiDto.setOfficerFingerpImageName(null);
+		regOsiDto.setOfficerHashedPwd("true");
+		regOsiDto.setSupervisorHashedPwd("true");
+		regOsiDto.setIntroducerUin("U1234");
+		regOsiDto.setIntroducerFingerpImageName(null);
+		Mockito.when(osiUtils.getIdentity(anyString())).thenReturn(identity);
+		Mockito.when(osiUtils.getOSIDetailsFromMetaInfo(anyString(),any())).thenReturn(regOsiDto);
 		Mockito.when(packetInfoManager.getOsi(anyString())).thenReturn(regOsiDto);
 		Mockito.when(packetInfoManager.findDemoById(anyString())).thenReturn(demographicDedupeDtoList);
 		Mockito.when(transcationStatusService.getTransactionByRegIdAndStatusCode(anyString(), anyString()))
@@ -248,7 +258,8 @@ public class OSIValidatorTest {
 		regOsiDto.setOfficerIrisImageName(null);
 		regOsiDto.setOfficerPhotoName(null);
 		regOsiDto.setOfficerHashedPin(null);
-
+		Mockito.when(osiUtils.getIdentity(anyString())).thenReturn(identity);
+		Mockito.when(osiUtils.getOSIDetailsFromMetaInfo(anyString(),any())).thenReturn(regOsiDto);
 		Mockito.when(packetInfoManager.getOsi(anyString())).thenReturn(regOsiDto);
 
 		boolean isValid = osiValidator.isValidOSI("reg1234");
@@ -266,11 +277,14 @@ public class OSIValidatorTest {
 	public void testIntroducerDetailsNull() throws Exception {
 		Mockito.when(transcationStatusService.getTransactionByRegIdAndStatusCode(anyString(), anyString()))
 				.thenReturn(transactionDto);
+		
 		regOsiDto.setOfficerfingerType("LEFTMIDDLE");
 		regOsiDto.setSupervisorFingerType("RIGHTINDEX");
 		regOsiDto.setIntroducerFingerpImageName(null);
 		regOsiDto.setIntroducerIrisImageName(null);
 		regOsiDto.setIntroducerPhotoName(null);
+		Mockito.when(osiUtils.getIdentity(anyString())).thenReturn(identity);
+		Mockito.when(osiUtils.getOSIDetailsFromMetaInfo(anyString(),any())).thenReturn(regOsiDto);
 		Mockito.when(packetInfoManager.getOsi(anyString())).thenReturn(regOsiDto);
 		Mockito.when(packetInfoManager.findDemoById(anyString())).thenReturn(demographicDedupeDtoList);
 
@@ -289,6 +303,8 @@ public class OSIValidatorTest {
 	public void testisValidOSIFailure() throws Exception {
 		authResponseDTO.setStatus("N");
 		regOsiDto.setOfficerfingerType("LEFTLITTLE");
+		Mockito.when(osiUtils.getIdentity(anyString())).thenReturn(identity);
+		Mockito.when(osiUtils.getOSIDetailsFromMetaInfo(anyString(),any())).thenReturn(regOsiDto);
 		Mockito.when(packetInfoManager.getOsi(anyString())).thenReturn(regOsiDto);
 		Mockito.when(restClientService.postApi(any(), anyString(), anyString(), anyString(), any()))
 				.thenReturn(authResponseDTO);
@@ -306,6 +322,8 @@ public class OSIValidatorTest {
 	 */
 	@Test
 	public void testvalidateFingerprintFailure() throws Exception {
+		Mockito.when(osiUtils.getIdentity(anyString())).thenReturn(identity);
+		Mockito.when(osiUtils.getOSIDetailsFromMetaInfo(anyString(),any())).thenReturn(regOsiDto);
 		Mockito.when(packetInfoManager.getOsi(anyString())).thenReturn(regOsiDto);
 		Mockito.when(packetInfoManager.findDemoById(anyString())).thenReturn(demographicDedupeDtoList);
 		Mockito.when(transcationStatusService.getTransactionByRegIdAndStatusCode(anyString(), anyString()))
@@ -325,6 +343,8 @@ public class OSIValidatorTest {
 	@Test
 	public void testvalidateFaceFailure() throws Exception {
 		regOsiDto.setOfficerFingerpImageName(null);
+		Mockito.when(osiUtils.getIdentity(anyString())).thenReturn(identity);
+		Mockito.when(osiUtils.getOSIDetailsFromMetaInfo(anyString(),any())).thenReturn(regOsiDto);
 		Mockito.when(packetInfoManager.getOsi(anyString())).thenReturn(regOsiDto);
 		Mockito.when(packetInfoManager.findDemoById(anyString())).thenReturn(demographicDedupeDtoList);
 		Mockito.when(transcationStatusService.getTransactionByRegIdAndStatusCode(anyString(), anyString()))
@@ -350,6 +370,8 @@ public class OSIValidatorTest {
 		regOsiDto.setSupervisorPhotoName(null);
 		regOsiDto.setSupervisorHashedPin(null);
 		
+		Mockito.when(osiUtils.getIdentity(anyString())).thenReturn(identity);
+		Mockito.when(osiUtils.getOSIDetailsFromMetaInfo(anyString(),any())).thenReturn(regOsiDto);
 
 		Mockito.when(packetInfoManager.getOsi(anyString())).thenReturn(regOsiDto);
 
@@ -369,6 +391,8 @@ public class OSIValidatorTest {
 		authResponseDTO.setStatus("N");
 		regOsiDto.setOfficerId(null);
 		regOsiDto.setSupervisorFingerpImageName(null);
+		Mockito.when(osiUtils.getIdentity(anyString())).thenReturn(identity);
+		Mockito.when(osiUtils.getOSIDetailsFromMetaInfo(anyString(),any())).thenReturn(regOsiDto);
 		Mockito.when(packetInfoManager.getOsi(anyString())).thenReturn(regOsiDto);
 		Mockito.when(restClientService.postApi(any(), anyString(), anyString(), anyString(), any()))
 				.thenReturn(authResponseDTO);
@@ -389,6 +413,8 @@ public class OSIValidatorTest {
 		regOsiDto.setIntroducerRegId(null);
 		regOsiDto.setIntroducerUin(null);
 
+		Mockito.when(osiUtils.getIdentity(anyString())).thenReturn(identity);
+		Mockito.when(osiUtils.getOSIDetailsFromMetaInfo(anyString(),any())).thenReturn(regOsiDto);
 		Mockito.when(packetInfoManager.getOsi(anyString())).thenReturn(regOsiDto);
 		Mockito.when(packetInfoManager.findDemoById(anyString())).thenReturn(demographicDedupeDtoList);
 		boolean isValid = osiValidator.isValidOSI("reg1234");
@@ -404,13 +430,14 @@ public class OSIValidatorTest {
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
 	 */
-	@Ignore
 	@Test
 	public void tesAllIntroducerFingerPrint1() throws ApisResourceAccessException, IOException {
 		regOsiDto.setIntroducerFingerpType("LEFTINDEX");
 		regOsiDto.setOfficerfingerType("LEFTRING");
 		regOsiDto.setSupervisorFingerType("RIGHTINDEX");
 		demographicInfoDto.setUin(null);
+		Mockito.when(osiUtils.getIdentity(anyString())).thenReturn(identity);
+		Mockito.when(osiUtils.getOSIDetailsFromMetaInfo(anyString(),any())).thenReturn(regOsiDto);
 		Mockito.when(packetInfoManager.getOsi(anyString())).thenReturn(regOsiDto);
 		Mockito.when(packetInfoManager.findDemoById(anyString())).thenReturn(demographicDedupeDtoList);
 		Mockito.when(transcationStatusService.getTransactionByRegIdAndStatusCode(anyString(), anyString()))
@@ -429,12 +456,18 @@ public class OSIValidatorTest {
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
 	 */
-	@Ignore
 	@Test
 	public void tesAllIntroducerFingerPrint() throws ApisResourceAccessException, IOException {
 		regOsiDto.setIntroducerFingerpType("LEFTTHUMB");
 		regOsiDto.setOfficerfingerType("RIGHTMIDDLE");
 		regOsiDto.setSupervisorFingerType("LEFTRING");
+		regOsiDto.setSupervisorHashedPwd("true");
+		regOsiDto.setOfficerFingerpImageName(null);
+		regOsiDto.setOfficerHashedPwd("true");
+		regOsiDto.setIntroducerUin("U1234");
+		regOsiDto.setIntroducerFingerpImageName(null);
+		Mockito.when(osiUtils.getIdentity(anyString())).thenReturn(identity);
+		Mockito.when(osiUtils.getOSIDetailsFromMetaInfo(anyString(),any())).thenReturn(regOsiDto);
 		Mockito.when(packetInfoManager.getOsi(anyString())).thenReturn(regOsiDto);
 		Mockito.when(packetInfoManager.findDemoById(anyString())).thenReturn(demographicDedupeDtoList);
 		Mockito.when(transcationStatusService.getTransactionByRegIdAndStatusCode(anyString(), anyString()))

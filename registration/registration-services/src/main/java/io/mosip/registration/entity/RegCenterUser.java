@@ -5,8 +5,10 @@ import java.sql.Timestamp;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinColumns;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
@@ -29,11 +31,11 @@ public class RegCenterUser extends RegistrationCommonFields {
 	@EmbeddedId
 	private RegCenterUserId regCenterUserId;
 
-	@OneToOne
+	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "usr_id", nullable = false, insertable = false, updatable = false)
 	private UserDetail userDetail;
 
-	@OneToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumns({ @JoinColumn(name = "regcntr_id",referencedColumnName="id", insertable = false, updatable = false),
 		@JoinColumn(name = "lang_code",referencedColumnName="lang_code", insertable = false, updatable = false) })
 	private RegistrationCenter registrationCenter;

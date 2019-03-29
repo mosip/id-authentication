@@ -1,0 +1,7 @@
+{
+      "DeleteAllDocumentByPassingInvalidDocumentId_Alphabets":"",
+      "DeleteAllDocumentByPassingInvalidDocumentId_AlphaNumeric": " ",
+      "DeleteAllDocumentByPassingInvalidDocumentId_AlphaNumericAndSpecialCharacters":"",
+      "DeleteAllDocumentByPassingInvalidDocumentId_EmptyValue":"",
+      "DeleteAllDocumentByPassingInvalidDocumentId_SpecialCharacters":""
+}

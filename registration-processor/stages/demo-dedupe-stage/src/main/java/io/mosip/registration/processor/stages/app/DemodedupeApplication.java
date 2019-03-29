@@ -19,9 +19,8 @@ public class DemodedupeApplication {
 				"io.mosip.registration.processor.packet.storage.config", "io.mosip.registration.processor.core.config",
 				"io.mosip.registration.processor.core.kernel.beans");
 		configApplicationContext.refresh();
-
 		DemodedupeStage demodedupeStage = configApplicationContext.getBean(DemodedupeStage.class);
 		demodedupeStage.deployVerticle();
-
+	
 	}
 }

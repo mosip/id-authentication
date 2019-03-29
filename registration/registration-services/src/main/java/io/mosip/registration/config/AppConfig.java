@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
@@ -37,13 +38,15 @@ import io.mosip.registration.jobs.JobTriggerListener;
  *
  */
 @Configuration
+@EnableAspectJAutoProxy
 @Import({ DaoConfig.class, AuditConfig.class, PropertiesConfig.class })
 @EnableJpaRepositories(basePackages = "io.mosip.registration", repositoryBaseClass = HibernateRepositoryImpl.class)
 @ComponentScan({ "io.mosip.registration", "io.mosip.kernel.core", "io.mosip.kernel.keygenerator",
 		"io.mosip.kernel.idvalidator", "io.mosip.kernel.ridgenerator", "io.mosip.kernel.qrcode",
 		"io.mosip.kernel.crypto", "io.mosip.kernel.jsonvalidator", "io.mosip.kernel.idgenerator",
-		"io.mosip.kernel.virusscanner", "io.mosip.kernel.transliteration" })
-@PropertySource("classpath:spring.properties")
+		"io.mosip.kernel.virusscanner", "io.mosip.kernel.transliteration", "io.mosip.kernel.applicanttype",
+		"io.mosip.kernel.cbeffutil" })
+@PropertySource(value = { "classpath:spring.properties", "classpath:spring-${spring.profiles.active}.properties" })
 public class AppConfig {
 
 	private static final RollingFileAppender MOSIP_ROLLING_APPENDER = new RollingFileAppender();
@@ -53,21 +56,6 @@ public class AppConfig {
 	@Autowired
 	@Qualifier("dataSource")
 	private DataSource datasource;
-
-	/**
-	 * Job processor
-	 */
-	@Autowired
-	private JobProcessListener jobProcessListener;
-
-	/**
-	 * Job Trigger
-	 */
-	@Autowired
-	private JobTriggerListener commonTriggerListener;
-
-	@Autowired
-	private SyncJobConfigDAO syncJobConfigDAO;
 
 	static {
 		ResourceBundle resourceBundle = ResourceBundle.getBundle("log4j");
@@ -99,23 +87,6 @@ public class AppConfig {
 	@Bean
 	public TemplateManagerBuilder getTemplateManagerBuilder() {
 		return new TemplateManagerBuilderImpl();
-	}
-
-	/**
-	 * scheduler factory bean used to shedule the batch jobs
-	 * 
-	 * @return scheduler factory which includes job detail and trigger detail
-	 */
-	@Bean(name = "schedulerFactoryBean")
-	public SchedulerFactoryBean getSchedulerFactoryBean() {
-		SchedulerFactoryBean schFactoryBean = new SchedulerFactoryBean();
-		schFactoryBean.setGlobalTriggerListeners(new TriggerListener[] { commonTriggerListener });
-		schFactoryBean.setGlobalJobListeners(new JobListener[] { jobProcessListener });
-		Properties quartzProperties = new Properties();
-		quartzProperties.put("org.quartz.threadPool.threadCount",
-				String.valueOf(syncJobConfigDAO.getActiveJobs().size()));
-		schFactoryBean.setQuartzProperties(quartzProperties);
-		return schFactoryBean;
 	}
 
 }

@@ -22,9 +22,11 @@ public interface TemplateRepository extends BaseRepository<Template, String> {
 	 * than lastUpdated timeStamp.
 	 * 
 	 * @param lastUpdated
-	 *            timeStamp
+	 *            timeStamp - last updated time stamp
+	 * @param currentTimeStamp
+	 *            - current time stamp
 	 * @return list of {@link Template}
 	 */
 	@Query("FROM Template WHERE (createdDateTime > ?1 and createdDateTime <=?2) OR (updatedDateTime > ?1 and updatedDateTime <=?2)  OR (deletedDateTime > ?1 and deletedDateTime <=?2)")
-	List<Template> findAllLatestCreatedUpdateDeleted(LocalDateTime lastUpdated,LocalDateTime currentTimeStamp);
+	List<Template> findAllLatestCreatedUpdateDeleted(LocalDateTime lastUpdated, LocalDateTime currentTimeStamp);
 }

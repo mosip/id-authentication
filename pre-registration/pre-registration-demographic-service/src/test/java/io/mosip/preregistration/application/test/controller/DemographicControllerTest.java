@@ -6,9 +6,11 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -18,23 +20,29 @@ import org.mockito.Mockito;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.security.test.context.support.WithUserDetails;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import io.mosip.preregistration.application.controller.DemographicController;
+import io.mosip.preregistration.application.DemographicTestApplication;
 import io.mosip.preregistration.application.dto.DeletePreRegistartionDTO;
 import io.mosip.preregistration.application.dto.DemographicRequestDTO;
 import io.mosip.preregistration.application.dto.PreRegistrationViewDTO;
-import io.mosip.preregistration.application.dto.UpdateResponseDTO;
 import io.mosip.preregistration.application.service.DemographicService;
 import io.mosip.preregistration.core.common.dto.DemographicResponseDTO;
 import io.mosip.preregistration.core.common.dto.MainListResponseDTO;
 import io.mosip.preregistration.core.common.dto.MainRequestDTO;
+import io.mosip.preregistration.core.common.dto.MainResponseDTO;
+import io.mosip.preregistration.core.common.dto.PreRegIdsByRegCenterIdDTO;
 import io.mosip.preregistration.core.common.dto.PreRegistartionStatusDTO;
 import io.mosip.preregistration.core.exception.TableNotAccessibleException;
 import net.minidev.json.parser.JSONParser;
@@ -51,8 +59,11 @@ import net.minidev.json.parser.ParseException;
  * @since 1.0.0
  * 
  */
+ @SpringBootTest(classes = { DemographicTestApplication.class })
+//@ContextConfiguration(classes = { DemographicTestApplication.class })
 @RunWith(SpringRunner.class)
-@WebMvcTest(DemographicController.class)
+@AutoConfigureMockMvc
+
 public class DemographicControllerTest {
 
 	/**
@@ -92,6 +103,7 @@ public class DemographicControllerTest {
 	 * @throws Exception
 	 *             on error
 	 */
+	@WithUserDetails("individual")
 	@Test
 	public void successSave() throws Exception {
 		logger.info("----------Successful save of application-------");
@@ -101,10 +113,10 @@ public class DemographicControllerTest {
 
 		MainRequestDTO<DemographicRequestDTO> request = new MainRequestDTO<>();
 		DemographicRequestDTO demo = new DemographicRequestDTO();
-		demo.setPreRegistrationId("22893647484937");
+		demo.setPreRegistrationId("98746563542672");
 		request.setRequest(demo);
 
-		createDto.setPreRegistrationId("22893647484937");
+		createDto.setPreRegistrationId("98746563542672");
 		saveList.add(createDto);
 		response.setResponse(saveList);
 
@@ -121,6 +133,7 @@ public class DemographicControllerTest {
 	 * @throws Exception
 	 *             on error
 	 */
+	@WithUserDetails("individual")
 	@Test
 	public void failureSave() throws Exception {
 		logger.info("----------Unsuccessful save of application-------");
@@ -137,14 +150,16 @@ public class DemographicControllerTest {
 	 * @throws Exception
 	 *             on error
 	 */
+	
 	@Test
+	@WithUserDetails("individual")
 	public void successUpdate() throws Exception {
 		logger.info("----------Successful save of application-------");
 
 		MainListResponseDTO<DemographicResponseDTO> response = new MainListResponseDTO<>();
 		List<DemographicResponseDTO> saveList = new ArrayList<DemographicResponseDTO>();
 		DemographicResponseDTO createDto = new DemographicResponseDTO();
-		createDto.setPreRegistrationId("22893647484937");
+		createDto.setPreRegistrationId("98746563542672");
 		saveList.add(createDto);
 		response.setResponse(saveList);
 		Mockito.when(preRegistrationService.addPreRegistration(Mockito.any())).thenReturn(response);
@@ -160,6 +175,7 @@ public class DemographicControllerTest {
 	 * @throws Exception
 	 *             on error
 	 */
+	@WithUserDetails("individual")
 	@Test
 	public void getAllApplicationTest() throws Exception {
 
@@ -186,6 +202,7 @@ public class DemographicControllerTest {
 	 * @throws Exception
 	 *             on error
 	 */
+	@WithUserDetails("individual")
 	@Test
 	public void getApplicationStatusTest() throws Exception {
 		String preId = "14532456789";
@@ -198,7 +215,7 @@ public class DemographicControllerTest {
 		response.setResponse(statusList);
 
 		Mockito.when(preRegistrationService.getApplicationStatus(Mockito.anyString())).thenReturn(response);
-		RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/applicationStatus/")
+		RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/applications/status/")
 				.contentType(MediaType.APPLICATION_JSON_VALUE).characterEncoding("UTF-8")
 				.accept(MediaType.APPLICATION_JSON_VALUE).param("pre_registration_id", preId);
 
@@ -209,6 +226,7 @@ public class DemographicControllerTest {
 	 * @throws Exception
 	 *             on error
 	 */
+	@WithUserDetails("individual")
 	@Test
 	public void discardIndividualTest() throws Exception {
 		String preId = "3";
@@ -232,19 +250,20 @@ public class DemographicControllerTest {
 	 * @throws Exception
 	 *             on error
 	 */
+	@WithUserDetails("individual")
 	@Test
 	public void getApplicationSuccessTest() throws Exception {
 		MainListResponseDTO<DemographicResponseDTO> response = new MainListResponseDTO<>();
 		List<DemographicResponseDTO> saveList = new ArrayList<DemographicResponseDTO>();
 		DemographicResponseDTO createDto = new DemographicResponseDTO();
 
-		createDto.setPreRegistrationId("22893647484937");
+		createDto.setPreRegistrationId("98746563542672");
 		saveList.add(createDto);
 		response.setResponse(saveList);
 
 		Mockito.when(preRegistrationService.getDemographicData("1234")).thenReturn(response);
 
-		RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/applicationData")
+		RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/applications/details")
 				.contentType(MediaType.APPLICATION_JSON_VALUE).characterEncoding("UTF-8")
 				.accept(MediaType.APPLICATION_JSON_VALUE)
 				.param("pre_registration_id", createDto.getPreRegistrationId());
@@ -256,13 +275,13 @@ public class DemographicControllerTest {
 	 * @throws Exception
 	 *             on error
 	 */
+	@WithUserDetails("individual")
 	@Test
 	public void updateApplicationStatusTest() throws Exception {
-		UpdateResponseDTO<String> response = new UpdateResponseDTO<>();
-		response.setErr(null);
+		MainResponseDTO<String> response = new MainResponseDTO<>();
+		response.setErrors(null);
 		response.setResponse("Status Updated sucessfully");
-		response.setResTime(new Timestamp(System.currentTimeMillis()));
-		response.setStatus("true");
+		// response.setResTime(new Timestamp(System.currentTimeMillis()));
 
 		Mockito.when(preRegistrationService.updatePreRegistrationStatus("1234", "Booked")).thenReturn(response);
 
@@ -278,20 +297,21 @@ public class DemographicControllerTest {
 	 * @throws Exception
 	 *             on error
 	 */
+	@WithUserDetails("individual")
 	@Test
 	public void getAllApplicationByDateTest() throws Exception {
 
-		String fromDate = "2018-12-06 09:49:29";
-		String toDate = "2018-12-06 12:59:29";
+		String fromDate = "2018-12-06";
+		String toDate = "2018-12-06";
 		MainListResponseDTO<String> response = new MainListResponseDTO<>();
 		List<String> preIds = new ArrayList<>();
 		preIds.add("1234");
 		response.setResponse(preIds);
 
-		Mockito.when(preRegistrationService.getPreRegistrationByDate(Mockito.anyString(), Mockito.anyString()))
+		Mockito.when(preRegistrationService.getPreRegistrationByDate(Mockito.any(), Mockito.any()))
 				.thenReturn(response);
 
-		RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/applicationDataByDateTime/")
+		RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/applications/byDateTime/")
 				.contentType(MediaType.APPLICATION_JSON_VALUE).characterEncoding("UTF-8")
 				.accept(MediaType.APPLICATION_JSON_VALUE).param("from_date", fromDate)
 				.accept(MediaType.APPLICATION_JSON_VALUE).param("to_date", toDate);
@@ -299,4 +319,38 @@ public class DemographicControllerTest {
 		mockMvc.perform(requestBuilder).andExpect(status().isOk());
 
 	}
+
+	/**
+	 * @throws Exception
+	 *             on error
+	 */
+	@WithUserDetails("individual")
+	@Test
+	public void getUpdatedDateTimeTest() throws Exception {
+		MainRequestDTO<PreRegIdsByRegCenterIdDTO> mainRequestDTO = new MainRequestDTO<>();
+		List<String> list = new ArrayList<>();
+		list.add("98746563542672");
+		PreRegIdsByRegCenterIdDTO byRegCenterIdDTO = new PreRegIdsByRegCenterIdDTO();
+		byRegCenterIdDTO.setPreRegistrationIds(list);
+		mainRequestDTO.setRequest(byRegCenterIdDTO);
+
+		MainResponseDTO<Map<String, String>> response = new MainResponseDTO<>();
+		Map<String, String> map = new HashMap<>();
+		map.put("98746563542672", LocalDateTime.now().toString());
+		response.setResponse(map);
+		response.setErrors(null);
+		response.setResponsetime(LocalDateTime.now().toString());
+
+		Mockito.when(preRegistrationService.getUpdatedDateTimeForPreIds(byRegCenterIdDTO)).thenReturn(response);
+		JSONParser parser = new JSONParser();
+		ClassLoader classLoader = getClass().getClassLoader();
+		File file = new File(classLoader.getResource("preids.json").getFile());
+		jsonObject = parser.parse(new FileReader(file));
+		RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/applications/updatedTime/")
+				.contentType(MediaType.APPLICATION_JSON_VALUE).characterEncoding("UTF-8")
+				.accept(MediaType.APPLICATION_JSON_VALUE).content(jsonObject.toString());
+
+		mockMvc.perform(requestBuilder).andExpect(status().isOk());
+	}
+
 }

@@ -167,6 +167,16 @@ public class PacketStatus extends BaseTestCase implements ITest {
 						if(dbDto != null && auditDto != null) {
 							if (expectedRegIds.contains(dbDto.getId())/*&& expectedRegIds.contains(auditDto.getId())*/){
 
+
+						Iterator<Object> iteratorNew = ((List) expectedResponse).iterator();
+						while(iterator.hasNext()){
+							JSONObject jsonObject = (JSONObject) iterator.next();
+							logger.info("regidtrationId" + ":" + jsonObject.get("registrationId"));
+							String expectedRegIdNew = jsonObject.get("registrationId").toString().trim();
+							logger.info("expectedRegId: "+expectedRegIdNew);
+							
+							if (expectedRegIdNew.matches(dbDto.getId())){							
+
 								logger.info("Validated in DB.......");
 								finalStatus = "Pass";
 							} 
@@ -179,7 +189,7 @@ public class PacketStatus extends BaseTestCase implements ITest {
 				finalStatus="Pass";
 			}
 			softAssert.assertTrue(true);
-		}else {
+		}}else {
 			finalStatus="Fail";
 			//softAssert.assertTrue(false);
 		}
@@ -187,7 +197,7 @@ public class PacketStatus extends BaseTestCase implements ITest {
 		softAssert.assertAll();
 		object.put("status", finalStatus);
 		arr.add(object);
-
+		}
 	}
 
 	@BeforeMethod

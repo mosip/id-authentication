@@ -1,11 +1,13 @@
 <div class="dashboard-body">
   <div class="heading-row">
     <div class="heading">
-      <p>{{ 'uidStatus.title' | translate }}</p>
+      <p>{{ 'dashboard.title' | translate }}</p>
     </div>
     <span class="spacer"></span>
     <div class="buttons">
-      <span matTooltip="Info about the action" [matTooltipDisabled]="!disableModifyAppointmentButton"
+      <span
+        matTooltip="{{ 'helpText.book/modify_appointment' | translate }}"
+        [matTooltipDisabled]="!disableModifyAppointmentButton"
         ><button
           mat-button
           [disabled]="disableModifyAppointmentButton"
@@ -13,13 +15,13 @@
           (click)="onModifyMultipleAppointment()"
         >
           <img src="assets\Book_Modify Appointment.png" class="modify-app-img" />
-          {{ 'uidStatus.action_modify_appointment' | translate }}
+          {{ 'dashboard.action_modify_appointment' | translate }}
         </button></span
       >
       <span
         ><button mat-button class="create-app-btn" (click)="onNewApplication()">
           <img src="assets\Create new application.png" class="create-app-img" />
-          {{ 'uidStatus.action_cre_application' | translate }}
+          {{ 'dashboard.action_cre_application' | translate }}
         </button></span
       >
     </div>
@@ -34,17 +36,19 @@
               ><mat-checkbox
                 [disabled]="isBookingAllowed(user.appointmentDateTime)"
                 (change)="onSelectUser(user, $event)"
-                >{{ 'uidStatus.card.text_app_id' | translate }}
+                >{{ 'dashboard.card.text_app_id' | translate }}
               </mat-checkbox></span
             >
             <span class="checkbox"
               ><strong>{{ user.applicationID }}</strong>
-              <mat-icon class="icon" matTooltip="Info about the action" [inline]="true">help_outline</mat-icon>
+              <mat-icon class="icon" matTooltip="{{ 'helpText.applicationId' | translate }}" [inline]="true"
+                >help_outline</mat-icon
+              >
             </span>
             <span class="spacer"></span>
             <button (click)="onDelete(user)" mat-icon-button [disabled]="user.status === 'Expired'">
               <img
-                matTooltip="Info about the action"
+                matTooltip="{{ 'helpText.deleteIcon' | translate }}"
                 [matTooltipDisabled]="false"
                 src="assets\delete.png"
                 class="delete-img"
@@ -55,18 +59,36 @@
             <div class="card-content">
               <table>
                 <tr>
-                  <td>{{ 'uidStatus.card.text_name' | translate }}</td>
+                  <td>{{ 'dashboard.card.text_name' | translate }}</td>
                   <td class="application-value">{{ user.name }}</td>
                 </tr>
                 <tr>
-                  <td>{{ 'uidStatus.card.text_appoinment_date' | translate }}</td>
+                  <td>{{ 'dashboard.card.text_appoinment_date' | translate }}</td>
                   <td class="application-value">{{ user.appointmentDateTime }}</td>
                 </tr>
                 <tr>
-                  <td>{{ 'uidStatus.card.text_status' | translate }}</td>
+                  <td>{{ 'dashboard.card.text_status' | translate }}</td>
                   <td id="status" [ngStyle]="{ color: getColor(user.status) }">
-                    {{ user.status }}
-                    <mat-icon class="icon" matTooltip="Info about the action" [inline]="true">help_outline</mat-icon>
+                    {{
+                      (user.status === 'Booked'
+                        ? 'dashboard.status.booked'
+                        : user.status === 'Expired'
+                        ? 'dashboard.status.expired'
+                        : 'dashboard.status.pendingAppointment') | translate
+                    }}
+
+                    <mat-icon
+                      class="icon"
+                      matTooltip="{{
+                        (user.status === 'Booked'
+                          ? 'helpText.status.booked'
+                          : user.status === 'Expired'
+                          ? 'helpText.status.expired'
+                          : 'helpText.status.pendingAppointment') | translate
+                      }}"
+                      [inline]="true"
+                      >help_outline</mat-icon
+                    >
                   </td>
                 </tr>
               </table>
@@ -78,10 +100,10 @@
                 mat-button
                 class="footer-btn"
                 [disabled]="disableModifyDataButton"
-                (click)="onModifyInformation(user.applicationID)"
+                (click)="onModifyInformation(user)"
               >
                 <img src="assets\Modify information_grey.png" class="modifyinfo-btn-img" />{{
-                  'uidStatus.card.action_modify_information' | translate
+                  'dashboard.card.action_modify_information' | translate
                 }}
               </button>
               <!-- (click)="onSelectUser(user)" -->
@@ -92,7 +114,7 @@
                 [disabled]="user.status === 'Pending_Appointment'"
               >
                 <img src="assets\view.png" class="modifyapp-btn-img" />{{
-                  'uidStatus.card.action_view_acknowledgement' | translate
+                  'dashboard.card.action_view_acknowledgement' | translate
                 }}
               </button>
               <!-- <button mat-icon-button class="footer-download-btn">

@@ -61,7 +61,7 @@ public class RegistrationCenterController {
 	 * @param locationCode
 	 *            location code for which the registration center needs to be
 	 *            searched.
-	 * @return {@link RegistrationCenterResponseDto}.
+	 * @return {@link RegistrationCenterResponseDto} RegistrationCenterResponseDto
 	 */
 	@GetMapping("/v1.0/getlocspecificregistrationcenters/{langcode}/{locationcode}")
 	public RegistrationCenterResponseDto getRegistrationCenterDetailsByLocationCode(
@@ -79,7 +79,7 @@ public class RegistrationCenterController {
 	 *            centerId of required center
 	 * @param year
 	 *            the year provided by user.
-	 * @return {@link RegistrationCenterHolidayDto}
+	 * @return {@link RegistrationCenterHolidayDto} RegistrationCenterHolidayDto
 	 */
 	@GetMapping("/v1.0/getregistrationcenterholidays/{langcode}/{registrationcenterid}/{year}")
 	public RegistrationCenterHolidayDto getRegistrationCenterHolidays(@PathVariable("langcode") String langCode,
@@ -98,7 +98,7 @@ public class RegistrationCenterController {
 	 *            the latitude provided by user.
 	 * @param proximityDistance
 	 *            the proximity distance provided by user.
-	 * @return {@link RegistrationCenterResponseDto}
+	 * @return {@link RegistrationCenterResponseDto} RegistrationCenterResponseDto
 	 */
 	@GetMapping("/v1.0/getcoordinatespecificregistrationcenters/{langcode}/{longitude}/{latitude}/{proximitydistance}")
 	public RegistrationCenterResponseDto getCoordinateSpecificRegistrationCenters(
@@ -115,7 +115,7 @@ public class RegistrationCenterController {
 	 *            centerId of required center.
 	 * @param langCode
 	 *            langCode of required center.
-	 * @return {@link RegistrationCenterResponseDto}
+	 * @return {@link RegistrationCenterResponseDto} RegistrationCenterResponseDto
 	 */
 	@GetMapping("/v1.0/registrationcenters/{id}/{langcode}")
 	public RegistrationCenterResponseDto getSpecificRegistrationCenterById(
@@ -126,7 +126,7 @@ public class RegistrationCenterController {
 	/**
 	 * Function to fetch all registration centers.
 	 * 
-	 * @return {@link RegistrationCenterResponseDto}
+	 * @return {@link RegistrationCenterResponseDto} RegistrationCenterResponseDto
 	 */
 	@GetMapping("/v1.0/registrationcenters")
 	public RegistrationCenterResponseDto getAllRegistrationCentersDetails() {
@@ -143,11 +143,11 @@ public class RegistrationCenterController {
 	 *            input from user
 	 * @param name
 	 *            input from user
-	 * @return {@link RegistrationCenterResponseDto}
+	 * @return {@link RegistrationCenterResponseDto} RegistrationCenterResponseDto
 	 */
 	@GetMapping("/v1.0/registrationcenters/{langcode}/{hierarchylevel}/{name}")
 	public RegistrationCenterResponseDto getRegistrationCenterByHierarchyLevelAndTextAndlangCode(
-			@PathVariable("langcode") String langCode, @PathVariable("hierarchylevel") Integer hierarchyLevel,
+			@PathVariable("langcode") String langCode, @PathVariable("hierarchylevel") Short hierarchyLevel,
 			@PathVariable("name") String name) {
 		return registrationCenterService.findRegistrationCenterByHierarchyLevelandTextAndLanguageCode(langCode,
 				hierarchyLevel, name);
@@ -159,10 +159,13 @@ public class RegistrationCenterController {
 	 * a holiday and is in between working hours.
 	 * 
 	 * @param regId
-	 *            - registration id
+	 *            - registration center id
+	 * @param langCode
+	 *            - language code
 	 * @param timeStamp
 	 *            - timestamp based on the format YYYY-MM-ddTHH:mm:ss.SSSZ
-	 * @return RegistrationCenterStatusResponseDto
+	 * @return {@link ResgistrationCenterStatusResponseDto} -
+	 *         RegistrationCenterStatusResponseDto
 	 */
 	@GetMapping("/v1.0/registrationcenters/validate/{id}/{langCode}/{timestamp}")
 	public ResgistrationCenterStatusResponseDto validateTimestamp(@PathVariable("id") String regId,
@@ -218,11 +221,11 @@ public class RegistrationCenterController {
 	 *            input from user
 	 * @param names
 	 *            input from user
-	 * @return {@link RegistrationCenterResponseDto}
+	 * @return {@link RegistrationCenterResponseDto} RegistrationCenterResponseDto
 	 */
 	@GetMapping("/v1.0/registrationcenters/{langcode}/{hierarchylevel}/names")
 	public RegistrationCenterResponseDto getRegistrationCenterByHierarchyLevelAndListTextAndlangCode(
-			@PathVariable("langcode") String langCode, @PathVariable("hierarchylevel") Integer hierarchyLevel,
+			@PathVariable("langcode") String langCode, @PathVariable("hierarchylevel") Short hierarchyLevel,
 			@RequestParam("name") List<String> names) {
 		return registrationCenterService.findRegistrationCenterByHierarchyLevelAndListTextAndlangCode(langCode,
 				hierarchyLevel, names);

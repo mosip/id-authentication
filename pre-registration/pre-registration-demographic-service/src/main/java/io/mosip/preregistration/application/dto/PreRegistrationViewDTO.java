@@ -6,6 +6,8 @@ package io.mosip.preregistration.application.dto;
 
 import java.io.Serializable;
 
+import org.json.simple.JSONArray;
+
 import io.mosip.preregistration.core.common.dto.BookingRegistrationDTO;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -34,7 +36,7 @@ public class PreRegistrationViewDTO implements Serializable {
 	/**
 	 * Full Name
 	 */
-	private String fullname;
+	private JSONArray fullname;
 	/**
 	 * Status code
 	 */
@@ -43,4 +45,8 @@ public class PreRegistrationViewDTO implements Serializable {
 	 * BookingRegistrationDTO object
 	 */
 	private BookingRegistrationDTO bookingRegistrationDTO;
+	/**
+	 * postalCode
+	 */
+	private String postalCode;
 }

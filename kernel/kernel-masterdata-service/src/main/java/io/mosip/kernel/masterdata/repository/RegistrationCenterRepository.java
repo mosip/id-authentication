@@ -52,7 +52,7 @@ public interface RegistrationCenterRepository extends BaseRepository<Registratio
 	 * 
 	 * @param id
 	 *            the centerId
-	 * @param languageCode
+	 * @param langCode
 	 *            the languageCode
 	 * @return the RegistrationCenter
 	 */
@@ -65,7 +65,7 @@ public interface RegistrationCenterRepository extends BaseRepository<Registratio
 	 * 
 	 * @param id
 	 *            the id against which the holiday location code needs to be found.
-	 * @param languageCode
+	 * @param langCode
 	 *            the language code against which the holiday location code needs to
 	 *            be found.
 	 * @return the holiday location code fetched.
@@ -78,11 +78,11 @@ public interface RegistrationCenterRepository extends BaseRepository<Registratio
 	 * 
 	 * @param locationCode
 	 *            locationCode provided by user
-	 * @param languageCode
+	 * @param langCode
 	 *            languageCode provided by user
 	 * @return list of {@link RegistrationCenter} fetched from database
 	 */
-	@Query("FROM RegistrationCenter WHERE locationCode= ?1 and  langCode =?2 and (isDeleted is null or isDeleted =false)")
+	@Query("FROM RegistrationCenter WHERE locationCode= ?1 and  langCode =?2 and (isDeleted is null or isDeleted =false) and isActive = true")
 	List<RegistrationCenter> findByLocationCodeAndLangCode(String locationCode, String langCode);
 
 	/**
@@ -91,6 +91,7 @@ public interface RegistrationCenterRepository extends BaseRepository<Registratio
 	 * 
 	 * @return the list of list of {@link RegistrationCenter}.
 	 */
+	@Query("FROM RegistrationCenter WHERE (isDeleted is null or isDeleted =false) and isActive = true")
 	List<RegistrationCenter> findAllByIsDeletedFalseOrIsDeletedIsNull();
 
 	/**
@@ -101,11 +102,11 @@ public interface RegistrationCenterRepository extends BaseRepository<Registratio
 	 *            the code against which registration centers need to be found.
 	 * @return the list of registration centers.
 	 */
-	@Query("FROM RegistrationCenter WHERE centerTypeCode= ?1 and (isDeleted is null or isDeleted =false)")
+	@Query("FROM RegistrationCenter WHERE centerTypeCode= ?1 and (isDeleted is null or isDeleted =false) and isActive = true")
 	List<RegistrationCenter> findByCenterTypeCode(String code);
 
-	@Query(value = "select EXISTS(select * from master.registration_center rc , master.loc_holiday hol where hol.is_active=true and (hol.is_deleted is null or hol.is_deleted=false) and hol.holiday_date=?1 and hol.location_code=rc.holiday_loc_code and rc.id=?2)", nativeQuery = true)
-	boolean validateDateWithHoliday(LocalDate date, String regId);
+	@Query(value = "select EXISTS(select * from  master.loc_holiday hol where hol.is_active=true and (hol.is_deleted is null or hol.is_deleted=false) and hol.holiday_date=?1 and hol.location_code=?2)", nativeQuery = true)
+	boolean validateDateWithHoliday(LocalDate date, String holidayLocationCode);
 
 	/**
 	 * This method triggers query to find registration centers based on id.
@@ -114,7 +115,7 @@ public interface RegistrationCenterRepository extends BaseRepository<Registratio
 	 *            - id of the registration center.
 	 * @return - the fetched registration center entity.
 	 */
-	@Query("FROM RegistrationCenter WHERE id= ?1 and (isDeleted is null or isDeleted =false)")
+	@Query("FROM RegistrationCenter WHERE id= ?1 and (isDeleted is null or isDeleted =false) and isActive = true")
 	RegistrationCenter findByIdAndIsDeletedFalseOrNull(String id);
 
 	/**
@@ -139,14 +140,14 @@ public interface RegistrationCenterRepository extends BaseRepository<Registratio
 	 * 
 	 * @param codes
 	 *            provided by user
+	 * @param langCode
+	 *            language code
 	 * @return list of {@link RegistrationCenter} fetched from database
 	 */
 
 	@Query(value = "SELECT r.id, r.name, r.cntrtyp_code, r.addr_line1, r.addr_line2, r.addr_line3,r.number_of_kiosks,r.per_kiosk_process_time,r.center_end_time,r.center_start_time,r.time_zone,r.contact_person,r.lunch_start_time, r.lunch_end_time,r.latitude, r.longitude, r.location_code,r.holiday_loc_code,r.contact_phone, r.working_hours, r.lang_code,r.is_active, r.cr_by,r.cr_dtimes, r.upd_by,r.upd_dtimes, r.is_deleted, r.del_dtimes FROM master.registration_center r  WHERE  r.lang_code=:langcode AND r.location_code in :codes AND (r.is_deleted is null or r.is_deleted = false) AND r.is_active = true", nativeQuery = true)
 	List<RegistrationCenter> findRegistrationCenterByListOfLocationCode(@Param("codes") Set<String> codes,
 			@Param("langcode") String langCode);
-	
-	
 
 	/**
 	 * This method triggers query to find registration centers based on id.
@@ -155,7 +156,7 @@ public interface RegistrationCenterRepository extends BaseRepository<Registratio
 	 *            - id of the registration center.
 	 * @return - the fetched registration center entity.
 	 */
-	@Query("FROM RegistrationCenter WHERE id= ?1 and (isDeleted is null or isDeleted =false)")
+	@Query("FROM RegistrationCenter WHERE id= ?1 and (isDeleted is null or isDeleted =false) and isActive=true")
 	List<RegistrationCenter> findByRegIdAndIsDeletedFalseOrNull(String id);
 
 }

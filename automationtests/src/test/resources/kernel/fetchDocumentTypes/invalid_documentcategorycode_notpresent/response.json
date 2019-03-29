@@ -1,0 +1,10 @@
+{
+  "timestamp": 1551874819751,
+  "status": 200,
+  "errors": [
+    {
+      "errorCode": "KER-MSD-118",
+      "errorMessage": "Document Type not found"
+    }
+  ]
+}

@@ -3,7 +3,6 @@
  */
 package io.mosip.registration.processor.stages.packet.validator;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
@@ -29,24 +28,20 @@ public class PacketValidatorStage extends MosipVerticleManager {
 	@Autowired
 	PacketValidateProcessor packetvalidateprocessor;
 
-	@Value("${vertx.ignite.configuration}")
+	@Value("${vertx.cluster.configuration}")
 	private String clusterManagerUrl;
-	/** The secs. */
-
 
 	/** The mosip event bus. */
 	MosipEventBus mosipEventBus = null;
-
 
 	/**
 	 * Deploy verticle.
 	 */
 	public void deployVerticle() {
-		mosipEventBus = this.getEventBus(this.getClass(), clusterManagerUrl);
-		this.consumeAndSend(mosipEventBus ,MessageBusAddress.PACKET_VALIDATOR_BUS_IN,MessageBusAddress.PACKET_VALIDATOR_BUS_OUT);
+		mosipEventBus = this.getEventBus(this, clusterManagerUrl, 50);
+		this.consumeAndSend(mosipEventBus, MessageBusAddress.PACKET_VALIDATOR_BUS_IN,
+				MessageBusAddress.PACKET_VALIDATOR_BUS_OUT);
 	}
-
-
 
 	/*
 	 * (non-Javadoc)

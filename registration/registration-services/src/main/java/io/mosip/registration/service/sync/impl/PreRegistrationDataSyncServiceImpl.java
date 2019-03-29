@@ -18,7 +18,6 @@ import java.util.WeakHashMap;
 
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
@@ -34,6 +33,7 @@ import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.core.util.FileUtils;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dao.PreRegistrationDataSyncDAO;
 import io.mosip.registration.dto.MainResponseDTO;
@@ -62,9 +62,6 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 
 	@Autowired
 	SyncManager syncManager;
-
-	@Value("${PRE_REG_NO_OF_DAYS_LIMIT}")
-	private int noOfDays;
 
 	@Autowired
 	private PreRegZipHandlingService preRegZipHandlingService;
@@ -106,7 +103,7 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 
 			/* REST call to get Pre Registartion Id's */
 			LinkedHashMap<String, Object> response = (LinkedHashMap<String, Object>) serviceDelegateUtil
-					.post(RegistrationConstants.GET_PRE_REGISTRATION_IDS, preRegistrationDataSyncDTO);
+					.post(RegistrationConstants.GET_PRE_REGISTRATION_IDS, preRegistrationDataSyncDTO,syncJobId);
 			TypeReference<MainResponseDTO<LinkedHashMap<String, Object>>> ref = new TypeReference<MainResponseDTO<LinkedHashMap<String, Object>>>() {
 			};
 			MainResponseDTO<LinkedHashMap<String, Object>> mainResponseDTO = new ObjectMapper()
@@ -206,7 +203,7 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 		}
 
 		byte[] decryptedPacket = null;
-		
+
 		boolean isFetchFromUi = false;
 		if (syncJobId == null) {
 			isFetchFromUi = true;
@@ -231,7 +228,7 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 			try {
 				/* REST call to get packet */
 				MainResponseDTO<LinkedHashMap<String, Object>> mainResponseDTO = (MainResponseDTO<LinkedHashMap<String, Object>>) serviceDelegateUtil
-						.get(RegistrationConstants.GET_PRE_REGISTRATION, requestParamMap, false);
+						.get(RegistrationConstants.GET_PRE_REGISTRATION, requestParamMap, false,syncJobId);
 
 				if (isPacketNotEmpty(mainResponseDTO)) {
 
@@ -389,8 +386,12 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 
 		PreRegistrationDataSyncRequestDTO preRegistrationDataSyncRequestDTO = new PreRegistrationDataSyncRequestDTO();
 		preRegistrationDataSyncRequestDTO.setFromDate(getFromDate(reqTime));
-		preRegistrationDataSyncRequestDTO.setRegClientId(
-				SessionContext.userContext().getRegistrationCenterDetailDTO().getRegistrationCenterId());
+		if (SessionContext.isSessionContextAvailable()) {
+			preRegistrationDataSyncRequestDTO.setRegClientId(
+					SessionContext.userContext().getRegistrationCenterDetailDTO().getRegistrationCenterId());
+		} else {
+			preRegistrationDataSyncRequestDTO.setRegClientId(getCenterId());
+		}
 		preRegistrationDataSyncRequestDTO.setToDate(getToDate(reqTime));
 		preRegistrationDataSyncRequestDTO.setUserId(getUserIdFromSession());
 
@@ -404,7 +405,7 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(reqTime);
-		cal.add(Calendar.DATE, noOfDays);
+		cal.add(Calendar.DATE, Integer.parseInt(String.valueOf(ApplicationContext.map().get(RegistrationConstants.PRE_REG_DAYS_LIMIT))));
 
 		/** To-Date */
 		return formatDate(cal);
@@ -460,6 +461,8 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 				"Fetching the records started");
 
 		ResponseDTO responseDTO = new ResponseDTO();
+		if(getGlobalConfigValueOf(RegistrationConstants.PRE_REG_DELETION_CONFIGURED_DAYS)!=null) {
+		
 		// Set the Date 15 days before the current date
 		Calendar startCal = Calendar.getInstance();
 		startCal.add(Calendar.DATE,
@@ -469,6 +472,7 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 
 		// fetch the records that needs to be deleted
 		List<PreRegistrationList> preRegList = preRegistrationDAO.fetchRecordsToBeDeleted(startDate);
+		
 
 		LOGGER.info(
 				"REGISTRATION - PRE_REGISTRATION_DATA_DELETION_RECORD_FETCH_ENDED - PRE_REGISTRATION_DATA_SYNC_SERVICE_IMPL",
@@ -476,6 +480,7 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 				"Fetching the records ended");
 
 		deletePreRegRecords(responseDTO, preRegList);
+		}
 
 		return responseDTO;
 	}

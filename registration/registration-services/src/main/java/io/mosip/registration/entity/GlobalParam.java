@@ -18,15 +18,14 @@ import lombok.Setter;
  * @since 1.0.0
  */
 @Entity
-@Table(schema = "master", name = "global_param")
+@Table(schema = "reg", name = "global_param")
 @Getter
 @Setter
 public class GlobalParam extends RegistrationCommonFields {
-
+	
 	@EmbeddedId
-	@Column(name = "pk_glbp_code")
 	private GlobalParamId globalParamId;
-
+	
 	@Column(name = "name")
 	private String name;
 	@Column(name = "val")

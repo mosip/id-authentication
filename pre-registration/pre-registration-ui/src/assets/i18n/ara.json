@@ -10,12 +10,13 @@
     "text": "خطوات سريعة وسهلة",
     "sub_text": "التسجيل المسبق ل",
     "sub_text_UID": "رقم تعريف فريد",
-
+    "otp_valid_label": "صالحة ل",
     "label_email_num": "معرف البريد الإلكتروني أو رقم الهاتف",
     "label_otp": "أدخل OTP",
     "action_send": "إرسال OTP",
     "action_resend": "إعادة إرسال",
-    "action_verify": "التحقق"
+    "action_verify": "التحقق",
+    "logout_msg": "يجب على مقدم الطلب تسجيل الدخول بنفس الهاتف المحمول / البريد الإلكتروني للوصول إلى التطبيقات التي تم إنشاؤها"
   },
   "stepper": {
     "link_demographic": "التفاصيل الديموغرافية",
@@ -54,10 +55,21 @@
     "action_back": "الى الخلف",
     "action_continue": "استمر",
     "action_preview": "معاينة",
+    "consent": {
+      "title": "الأحكام والشروط",
+      "subtitle": "موافقتك",
+      "message": "لتوفير الموافقة على تخزين واستخدام المعلومات الشخصية على النحو الوارد",
+      "checkCondition": "انقر لقبول الشروط والأحكام",
+      "acceptButton": "قبول",
+      "alertMessageFirst":"سيتم تسجيل خروجك بسبب عدم قبول الشروط والأحكام",
+      "alertMessageSecond":"ستتم إعادة توجيهك إلى صفحة التطبيق الخاصة بك بسبب عدم قبول الشروط والأحكام",
+      "alertMessageThird":"ستتم إعادة توجيهك إلى صفحة المعاينة بسبب عدم قبول الشروط والأحكام"
+    },
     "validation": {
       "name_required": "الإسم الكامل ضروري",
       "age_validation": "يجب أن يكون العمر أقل من 150",
       "gender_validation": "يرجى تحديد الجنس",
+      "nationality_validation": "يرجى تحديد الجنسية",
       "DOB_validation": "أدخل DOB صالحًا أو العمر  ",
       "date_required": "مطلوب رقمين التاريخ",
       "month_required": "أدخل رقمين رقميين للشهر",
@@ -106,6 +118,7 @@
     "label_age": "عمر",
     "text_years": "سنوات",
     "text_gender": "جنس",
+    "text_resident_status": "مركز المقيم",
     "subheading_contact": "بيانات المتصل",
     "label_address": "عنوان",
     "label_region": "منطقة",
@@ -117,21 +130,10 @@
     "label_email_id": "عنوان الايميل",
     "label_pin": "CNIE/EC",
     "title_document": "المستندات التي تم تحميلها",
+    "text_not_uploaded": "لم يتم الرفع",
     "action_modify": "تعديل",
     "action_back": "الى الخلف",
     "action_add_applicant": "إضافة تطبيق",
-    "action_continue": "استمر"
-  },
-  "bookAppointment": {
-    "title_book": " موعد الكتاب",
-    "text_prev": "سابق",
-    "text_next": "التالى",
-    "text_morning": "صباح",
-    "text_afternoon": "بعد الظهر",
-    "text_available": "مقدمو الطلبات المتاحة",
-    "action_done": "فعله",
-    "action_back": "الى الخلف",
-    "action_bookLater": " كتاب لاحقا",
     "action_continue": "استمر"
   },
   "message": {
@@ -162,7 +164,7 @@
       "msg_succes_cancel": "تم إلغاء الموعد المحدد للتطبيق المحدد بنجاح"
     }
   },
-  "uidStatus": {
+  "dashboard": {
     "title": "تطبيقاتك",
     "action_modify_information": "تعديل المعلومات",
     "action_modify_appointment": "كتاب / تعديل موعد",
@@ -174,6 +176,41 @@
       "text_status": "الحالة",
       "action_modify_information": "تعديل المعلومات",
       "action_view_acknowledgement": "عرض إقرار"
+    },
+    "discard": {
+      "title_confirm": "تؤكد",
+      "title_success": "نجاح",
+      "title_error": "خطأ",
+      "msg_confirm": "سيتم حذف التطبيق المحدد. يرجى تأكيد.",
+      "msg_deleted": "تم حذف التطبيق المحدد بنجاح",
+      "msg_could_not_deleted": "لا يمكن حذف التطبيق المحدد",
+      "button_confirm": "تؤكد",
+      "button_cancel": "إلغاء"
+    },
+    "status": {
+      "pendingAppointment": "في انتظار الموعد",
+      "booked": "حجز",
+      "expired": "منتهية الصلاحية"
+    }
+  },
+  "timeSelection": {
+    "title_book": " موعد الكتاب",
+    "text_prev": "سابق",
+    "text_next": "التالى",
+    "text_morning": "صباح",
+    "text_afternoon": "بعد الظهر",
+    "text_available": "مقدمو الطلبات المتاحة",
+    "text_availability": "الحجوزات المتاحة",
+    "text_slots": "فتحات",
+    "action_done": "فعله",
+    "action_back": "الى الخلف",
+    "action_bookLater": " كتاب لاحقا",
+    "action_continue": "استمر",
+    "booking": {
+      "title_success": "نجاح",
+      "msg_success": "اكتملت عملية حجز الموعد بنجاح",
+      "title_failure": "بالفشل",
+      "msg_failure": "فشل موعد الحجز"
     }
   },
   "appointmentCentreSearch": {
@@ -181,7 +218,7 @@
     "text_recommended_centres": "المراكز الموصى بها",
     "text_finding_result": "العثور على نتيجة ل",
     "text_nearBy": "مجاوز",
-    "acttion_back": "الى الخلف",
+    "action_back": "الى الخلف",
     "action_bookLater": "كتاب لاحقا",
     "action_continue": "استمر"
   },
@@ -194,7 +231,10 @@
   "dialog": {
     "title_applicant": "إرسال تأكيد موعد",
     "content_applicant": "البريد الإلكتروني / رقم الهاتف",
-    "invalidApplicantNumber_msg": "رقم البريد الإلكتروني / الهاتف غير صالح",
+    "text_email": "أدخل معرف البريد الإلكتروني",
+    "text_mobile": "أدخل رقم الجوال",
+    "invalidApplicantNumber": "رقم الجوال غير صالح",
+    "invalidApplicantEmailId": "معرف البريد الإلكتروني غير صالح",
     "action_ok": "حسنا",
     "title_discard": "تجاهل",
     "action_discard_app": "تجاهل التطبيق بأكمله",
@@ -213,8 +253,31 @@
     "text_centers": "مراكز",
     "text_timing": "توقيت",
     "text_open": "افتح",
+    "text_select": "حدد أنواع الموقع",
+    "text_enter": "أدخل",
+    "text_search": "بحث....",
     "action_back": "الى الخلف",
     "action_book_later": "كتاب لاحقا",
     "action_continue": "استمر"
+  },
+  "helpText": {
+    "applicationId": "معرف التطبيق للتسجيل المسبق الخاص بك",
+    "status": {
+      "pendingAppointment": "لم يتم حجز الموعد بعد",
+      "booked": "يتم حجز الموعد بنجاح",
+      "expired": "الموعد المعين قد مر"
+    },
+    "deleteIcon": "يمكنك إما تجاهل التطبيق بأكمله أو إلغاء الموعد وحفظ التفاصيل ، وتجاهل التطبيق بأكمله وإلغاء الموعد. إلغاء الموعد وحفظ التفاصيل.",
+    "book/modify_appointment": "يجب عليك وضع علامة في خانة الاختيار بالقرب من معرف التسجيل المسبق لأحد المتقدمين أو عدة لحجز / تعديل الموعد",
+    "bookAppointment": "أولاً ، حدد خانة الوقت المفضلة كما هو متوفر ثم اختر مقدم الطلب المناسب للفاصل الزمني المحدد. بالنسبة إلى التطبيقات المتعددة ، كرر نفس الشيء لمقدم الطلب المتبقي ",
+    "send_email/sms": "يمكنك إضافة المستلم الإضافي لتلقي الإخطار (الإخطارات).",
+    "modify_at_DemoPreview": "انقر فوق تعديل لتصحيح التفاصيل السكانية",
+    "modify_at_DocumentPreview": "انقر فوق تعديل لتصحيح المستند الذي تم تحميله",
+    "same_as": "إذا كان إثبات العنوان مطابقًا لـ POA المتقدم بالفعل ، يمكنك استخدام الخيار Same As",
+    "add_applicant": "انقر على إضافة مقدم الطلب لإضافة المزيد من المتقدمين (الطلبات).",
+    "recommended_centers": "قائمة المركز الموصى به حسب الرمز البريدي الخاص بك",
+    "nearBy": "مراكز التسجيل على أساس موقعك الجغرافي",
+    "magnifying_glass": "البحث يعتمد على اختيار القائمة المنسدلة.",
+    "preview_continue": "تحميل جميع الملفات للمتابعة"
   }
 }

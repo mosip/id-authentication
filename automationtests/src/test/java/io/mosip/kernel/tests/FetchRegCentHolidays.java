@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
@@ -30,6 +32,7 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.google.common.base.Verify;
 
+import io.mosip.dbaccess.MasterDataGetRequests;
 import io.mosip.service.ApplicationLibrary;
 import io.mosip.service.AssertKernel;
 import io.mosip.service.BaseTestCase;
@@ -142,25 +145,64 @@ public class FetchRegCentHolidays extends BaseTestCase implements ITest {
 
 				response = applicationLibrary.getRequestPathPara(service_URI, objectData);
 
-			} else if (listofFiles[k].getName().toLowerCase().contains("response"))
+			} else if (listofFiles[k].getName().toLowerCase().contains("response")
+					&& !testcaseName.toLowerCase().contains("smoke")) {
 				responseObject = (JSONObject) new JSONParser().parse(new FileReader(listofFiles[k].getPath()));
+				logger.info("Expected Response:" + responseObject.toJSONString());
+			}
 		}
-		logger.info("Expected Response:" + responseObject.toJSONString());
 
-		// add parameters to remove in response before comparison like time stamp
-		ArrayList<String> listOfElementToRemove = new ArrayList<String>();
-		listOfElementToRemove.add("timestamp");
+		int statusCode = response.statusCode();
+		logger.info("Status Code is : " + statusCode);
 
-		status = assertions.assertKernel(response, responseObject, listOfElementToRemove);
-		
-		if (status) {
-			int statusCode = response.statusCode();
-			logger.info("Status Code is : " + statusCode);
+		// fetching json object from response
+		JSONObject responseJson = (JSONObject) new JSONParser().parse(response.asString());
+		if (testcaseName.toLowerCase().contains("smoke")) {
 
-			finalStatus = "Pass";
+			String query = "select count(*) from master.loc_holiday where location_code = "
+					+ "(select holiday_loc_code from master.registration_center where id = '" 
+			+ objectData.get("registrationcenterid")
+					+ "' and lang_code = '" + objectData.get("langcode") + "') and holiday_date between '"
+					+ objectData.get("year").toString().split("T")[0] + "-01-01' and '"
+					+ objectData.get("year").toString().split("T")[0] +"-12-31' and lang_code = '"
+					+ objectData.get("langcode") + "'";
+
+			long obtainedObjectsCount = MasterDataGetRequests.validateDB(query);
+
+			// fetching json array of objects from response
+			JSONArray responseArrayFromGet = (JSONArray) responseJson.get("holidays");
+			logger.info("===Dbcount===" + obtainedObjectsCount + "===Get-count===" + responseArrayFromGet.size());
+
+			// validating number of objects obtained form db and from get request
+			if (responseArrayFromGet.size() == obtainedObjectsCount) {
+
+				// list to validate existance of attributes in response objects
+				List<String> attributesToValidateExistance = new ArrayList();
+				attributesToValidateExistance.add("id");
+				attributesToValidateExistance.add("holidayName");
+				attributesToValidateExistance.add("holidayDate");
+				attributesToValidateExistance.add("isActive");
+
+				HashMap<String, String> passedAttributesToFetch = new HashMap();
+
+				status = AssertKernel.validator(responseArrayFromGet, attributesToValidateExistance,
+						passedAttributesToFetch);
+			} else
+				status = false;
+
 		}
 
 		else {
+
+			// add parameters to remove in response before comparison like time stamp
+			ArrayList<String> listOfElementToRemove = new ArrayList<String>();
+			listOfElementToRemove.add("timestamp");
+			status = assertions.assertKernel(response, responseObject, listOfElementToRemove);
+		}
+
+		if (status) {
+			finalStatus = "Pass";
+		} else {
 			finalStatus = "Fail";
 		}
 

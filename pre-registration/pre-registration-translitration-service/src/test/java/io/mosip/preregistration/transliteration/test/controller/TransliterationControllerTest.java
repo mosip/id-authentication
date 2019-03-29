@@ -28,7 +28,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import io.mosip.preregistration.transliteration.dto.MainResponseDTO;
+import io.mosip.preregistration.core.common.dto.MainResponseDTO;
 import io.mosip.preregistration.transliteration.dto.TransliterationDTO;
 import io.mosip.preregistration.transliteration.exception.IllegalParamException;
 import io.mosip.preregistration.transliteration.service.TransliterationService;
@@ -92,7 +92,7 @@ public class TransliterationControllerTest {
 		TransliterationDTO dto = new TransliterationDTO();
 		//response.setResponse(dto);
 		Mockito.when(serviceImpl.translitratorService(Mockito.any())).thenReturn(response);
-		RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/translitrate")
+		RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/transliterate")
 				.contentType(MediaType.APPLICATION_JSON_VALUE).characterEncoding("UTF-8")
 				.accept(MediaType.APPLICATION_JSON_VALUE).content(jsonObject.toString());
 		logger.info("Resonse " + response);
@@ -109,7 +109,7 @@ public class TransliterationControllerTest {
 		logger.info("----------Unsuccessful transliteration controller operation-------");
 		Mockito.doThrow(new IllegalParamException("ex")).when(serviceImpl).translitratorService(Mockito.any());
 
-		RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/translitrate")
+		RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/transliterate")
 				.contentType(MediaType.APPLICATION_JSON_VALUE).characterEncoding("UTF-8")
 				.accept(MediaType.APPLICATION_JSON_VALUE).content(failObject.toString());
 		mockMvc.perform(requestBuilder).andExpect(status().isOk());

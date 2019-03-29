@@ -167,6 +167,17 @@ public class PacketStatus extends BaseTestCase implements ITest {
 						if(dbDto != null && auditDto != null) {
 							if (expectedRegIds.contains(dbDto.getId())/*&& expectedRegIds.contains(auditDto.getId())*/){
 
+<<<<<<< HEAD:JAR_POC/mosipRegistrationProcessor/src/test/java/io/mosip/registrationProcessor/tests/PacketStatus.java
+=======
+						Iterator<Object> iterator = expectedResponse.iterator();
+						while(iterator.hasNext()){
+							JSONObject jsonObject = (JSONObject) iterator.next();
+							logger.info("regidtrationId" + ":" + jsonObject.get("registrationId"));
+							String expectedRegId = jsonObject.get("registrationId").toString().trim();
+							logger.info("expectedRegId: "+expectedRegId);
+							
+							if (expectedRegId.matches(dbDto.getId())){							
+>>>>>>> 40461e4b8758ee6bdc38e4fa2fe0a6d06a6bc0a3:automationtests/src/test/java/io/mosip/regProc/tests/Assignment.java
 								logger.info("Validated in DB.......");
 								finalStatus = "Pass";
 							} 

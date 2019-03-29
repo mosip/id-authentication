@@ -1,19 +1,23 @@
 package io.mosip.preregistration.notification.controller;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.nio.charset.Charset;
+import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -22,6 +26,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
 import io.mosip.preregistration.core.common.dto.NotificationDTO;
+import io.mosip.preregistration.notification.NotificationApplicationTest;
 import io.mosip.preregistration.notification.service.NotificationService;
 import io.mosip.preregistration.notification.service.util.NotificationServiceUtil;
 
@@ -29,8 +34,9 @@ import io.mosip.preregistration.notification.service.util.NotificationServiceUti
  * @author Sanober Noor
  *@since 1.0.0
  */
+@SpringBootTest(classes = { NotificationApplicationTest.class })
 @RunWith(SpringRunner.class)
-@WebMvcTest(NotificationController.class)
+@AutoConfigureMockMvc
 public class NotificationControllerTest {
 
 	/**
@@ -55,6 +61,8 @@ public class NotificationControllerTest {
 	private NotificationDTO notificationDTO;
 
 	MainResponseDTO<NotificationDTO> responseDTO = new MainResponseDTO<>();
+	
+	MainResponseDTO<Map<String,String>> configRes = new MainResponseDTO<>();
 
 	@Before
 	public void setUp() {
@@ -67,14 +75,15 @@ public class NotificationControllerTest {
 		notificationDTO.setAppointmentTime("22:57");
 
 		responseDTO.setResponse(notificationDTO);
-		responseDTO.setResTime(serviceUtil.getCurrentResponseTime());
-		responseDTO.setStatus(Boolean.TRUE);
+		responseDTO.setResponsetime(serviceUtil.getCurrentResponseTime());
+		
 	}
 
 	/**
 	 * This test method is for success sendNotification method
 	 * @throws Exception
 	 */
+	@WithUserDetails("individual")
 	@Test
 	public void sendNotificationTest() throws Exception {
 		String stringjson = mapper.writeValueAsString(notificationDTO);
@@ -94,6 +103,7 @@ String langCode="eng";
 	 * This test method is for success qrCodeGeneration 
 	 * @throws Exception
 	 */
+	@WithUserDetails("individual")
 	@Test
 	public void qrCodeGenerationTest() throws Exception {
 		String stringjson = mapper.writeValueAsString(notificationDTO);

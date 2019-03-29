@@ -28,15 +28,8 @@ public class DemographicInfoDto implements Serializable {
 	private String name;
 	
 	/** The dob. */
-	private Date dob;
+	private String dob;
 	
-	public Date getDob() {
-		return this.dob!=null?new Date(this.dob.getTime()):null;
-	}
-
-	public void setDob(Date dob) {
-		this.dob = dob!=null?new Date(dob.getTime()):null;
-	}
 
 	/** The gender code. */
 	private String genderCode;

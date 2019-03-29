@@ -18,6 +18,7 @@ import org.springframework.core.env.Environment;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JSR310Module;
 
+import io.mosip.kernel.core.idgenerator.spi.RidGenerator;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
@@ -38,6 +39,8 @@ public class StorageServiceTest extends BaseIntegrationTest{
 	@Autowired
 	StorageService storageService;
 
+	@Autowired
+	private RidGenerator<String> ridGeneratorImpl;
 	@Autowired
 	private Environment environment;
 
@@ -75,24 +78,26 @@ public class StorageServiceTest extends BaseIntegrationTest{
 			documentDetailsDTOIdentity.setType("POI");
 			documentDetailsDTOIdentity.setFormat("format");
 			documentDetailsDTOIdentity.setOwner("owner");
-			
-			
+			documentDetailsDTOIdentity.setValue("ProofOfIdentity");
+
 			DocumentDetailsDTO documentDetailsDTOAddress = new DocumentDetailsDTO();
 			documentDetailsDTOAddress.setType("POA");
 			documentDetailsDTOAddress.setFormat("format");
 			documentDetailsDTOAddress.setOwner("owner");
-			
+			documentDetailsDTOAddress.setValue("ProofOfAddress");
 			
 			DocumentDetailsDTO documentDetailsDTORelationship = new DocumentDetailsDTO();
 			documentDetailsDTORelationship.setType("POR");
 			documentDetailsDTORelationship.setFormat("format");
 			documentDetailsDTORelationship.setOwner("owner");
-			
+			documentDetailsDTORelationship.setValue("ProofOfRelationship");
 			
 			DocumentDetailsDTO documentDetailsDTODOB = new DocumentDetailsDTO();
-			documentDetailsDTODOB.setType("PODOB");
+			documentDetailsDTODOB.setType("POB");
 			documentDetailsDTODOB.setFormat("format");
 			documentDetailsDTODOB.setOwner("owner");
+			documentDetailsDTODOB.setValue("DateOfBirthProof");
+
 			identity.setProofOfIdentity(documentDetailsDTOIdentity);
 			identity.setProofOfAddress(documentDetailsDTOAddress);
 			identity.setProofOfRelationship(documentDetailsDTORelationship);
@@ -108,6 +113,9 @@ public class StorageServiceTest extends BaseIntegrationTest{
 			documentDetailsDTO = identity.getProofOfDateOfBirth();
 			documentDetailsDTO.setDocument(data);
 			registrationDTO.getDemographicDTO().getDemographicInfoDTO().setIdentity(identity);
+			registrationDTO.setRegistrationId(ridGeneratorImpl.generateId(
+					ApplicationContext.getInstance().map().get(RegistrationConstants.REGISTARTION_CENTER).toString(),
+					"10011"));
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();

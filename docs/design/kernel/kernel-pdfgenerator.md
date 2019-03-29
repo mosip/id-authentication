@@ -2,7 +2,7 @@
 
 #### Background
 
-This application can be used converting plain/html template to PDF. It contains several methods that accept template as:
+This application can be used converting plain/html template to PDF. It contains several methods that accept content as:
 
 - Input Stream
 
@@ -39,4 +39,4 @@ This application can be used converting plain/html template to PDF. It contains 
 ## Implementation
 
 
-**kernel-pdfgenerator-itext** [README](../../kernel/kernel-pdfgenerator-itext/README.md)
+**kernel-pdfgenerator-itext** [README](../../../kernel/kernel-pdfgenerator-itext/README.md)

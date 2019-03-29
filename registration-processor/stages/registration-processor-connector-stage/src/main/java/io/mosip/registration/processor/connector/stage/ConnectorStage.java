@@ -25,7 +25,7 @@ public class ConnectorStage extends MosipVerticleAPIManager{
 	/**
 	 * vertx Cluster Manager Url
 	 */
-	@Value("${vertx.ignite.configuration}")
+	@Value("${vertx.cluster.configuration}")
 	private String clusterManagerUrl;
 
 	/**

@@ -78,7 +78,7 @@ public class UpdatePreRegistrationStatus extends BaseTestCase implements ITest {
 	public UpdatePreRegistrationStatus() {
 		super();
 		preReg_URI = commonLibrary.fetch_IDRepo("preReg_UpdateStatusAppURI");
-		System.out.println("======================"+preReg_URI);
+		logger.info("======================"+preReg_URI);
 		
 	}
 	/**
@@ -96,7 +96,7 @@ public class UpdatePreRegistrationStatus extends BaseTestCase implements ITest {
 	public Object[][] readData(ITestContext context)
 			throws JsonParseException, JsonMappingException, IOException, ParseException {
 		String testParam = context.getCurrentXmlTest().getParameter("testType");
-		switch (testParam) {
+		switch ("smoke") {
 		case "smoke":
 			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
 

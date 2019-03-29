@@ -1,19 +1,20 @@
 package io.mosip.authentication.core.dto.indauth;
 
+import java.util.Map;
+
 import lombok.Data;
 
 /**
+ * The class for KycResponseDTO Holds the values for ttl and Identity.
  * 
  * @author Prem Kumar
  *
- *The class for KycResponseDTO
+ *
  */
 
 @Data
 public class KycResponseDTO {
-	/** The AuthResponseDTO auth */
-	private AuthResponseDTO auth;
 	
-	/** The KycInfo kyc*/
-	private KycInfo kyc;
+	private String ttl;
+	private Map<String, ? extends Object> identity;
 }

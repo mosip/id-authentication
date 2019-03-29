@@ -21,6 +21,6 @@ public class JsonPathGenMain {
 		//obj.generateJSONPath(new String(Files.readAllBytes(Paths.get(inputFilePath))));
 		JsonPathGen o = new JsonPathGen(new String(Files.readAllBytes(Paths.get(inputFilePath))));
 		o.generateJsonMappingDic("D:\\MOSIP\\test_DEV\\v4\\mosip-test\\automation\\mosip-qa\\src\\test\\resources\\preReg\\TestData\\Create_PreRegistration\\input\\PreRegValidRequest.properties");
-		//System.out.println(o.getPathList());
+		//logger.info(o.getPathList());
 	}
 }

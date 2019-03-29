@@ -1,0 +1,10 @@
+{
+  "timestamp": 1551938456454,
+  "status": 200,
+  "errors": [
+    {
+      "errorCode": "KER-SNC-303",
+      "errorMessage": "Registration center user not found "
+    }
+  ]
+}

@@ -8,6 +8,7 @@ import java.util.ResourceBundle;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.dto.AuthTokenDTO;
 
 public class ApplicationContext {
 
@@ -21,10 +22,11 @@ public class ApplicationContext {
 	private ResourceBundle localLanguageBundle;
 	private ResourceBundle applicationMessagesBundle;
 	private ResourceBundle localMessagesBundle;
-	private Map<String, Object> applicationMap = new HashMap<>();
+	private static Map<String, Object> applicationMap = new HashMap<>();
 	private ResourceBundle applicationLanguagevalidationBundle;
 	private String localLanguage;
 	private String applicationLanguge;
+	private AuthTokenDTO authTokenDTO;
 
 	private ApplicationContext() {
 	
@@ -45,15 +47,10 @@ public class ApplicationContext {
 			LOGGER.error("Application Context", RegistrationConstants.APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, exception.getMessage());
 		}
-		if (applicationLanguge == null || RegistrationConstants.EMPTY.equals(applicationLanguge)) {
-			applicationLanguge = RegistrationConstants.LANGUAGE_ENGLISH;
-		}
-		if (localLanguage == null || RegistrationConstants.EMPTY.equals(localLanguage)) {
-			localLanguage = RegistrationConstants.LANGUAGE_ARABIC;
-		}
+
 		
-		Locale applicationLanguageLocale = new Locale(applicationLanguge.substring(0, 2));
-		Locale secondaryLanguageLocale = new Locale(localLanguage.substring(0, 2));
+		Locale applicationLanguageLocale = new Locale(applicationLanguge != null ? applicationLanguge.substring(0, 2) : null);
+		Locale secondaryLanguageLocale = new Locale(localLanguage != null ? localLanguage.substring(0, 2): null);
 
 		applicationLanguageBundle = ResourceBundle.getBundle("labels", applicationLanguageLocale);
 		localLanguageBundle = ResourceBundle.getBundle("labels", secondaryLanguageLocale);
@@ -70,6 +67,7 @@ public class ApplicationContext {
 	public static ApplicationContext getInstance() {
 		if (applicationContext == null) {
 			applicationContext = new ApplicationContext();
+			applicationContext.authTokenDTO = new AuthTokenDTO();
 			return applicationContext;
 		} else {
 			return applicationContext;
@@ -128,6 +126,14 @@ public class ApplicationContext {
 
 	public static void loadResources() {
 		applicationContext.loadResourceBundle();
+	}
+
+	public static void setAuthTokenDTO(AuthTokenDTO authTokenDTO) {
+		applicationContext.authTokenDTO = authTokenDTO;
+	}
+
+	public static AuthTokenDTO authTokenDTO() {
+		return applicationContext.authTokenDTO;
 	}
 
 	/**
@@ -200,5 +206,12 @@ public class ApplicationContext {
 		localMessagesBundle = ResourceBundle.getBundle("messages",
 				new Locale(AppConfig.getApplicationProperty("local_language")));
 	}
+	public static void setGlobalConfigValueOf(String code, String val) {
+		applicationMap.put(code, val);
+	}
 
+	public static void removeGlobalConfigValueOf(String code) {
+		applicationMap.remove(code);
+
+}
 }

@@ -1,0 +1,10 @@
+{
+    "timestamp": 1551873907861,
+    "status": 200,
+    "errors": [
+        {
+            "errorCode": "KER-OTG-001",
+            "errorMessage": "key: length should be in the range of 3-64"
+        }
+    ]
+}

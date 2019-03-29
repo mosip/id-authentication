@@ -17,25 +17,28 @@ import io.mosip.authentication.core.spi.irisauth.provider.IrisProvider;
  */
 public enum CompositeIrisMatchingStrategy implements MatchingStrategy {
 
+	@SuppressWarnings("unchecked")
 	PARTIAL(MatchingStrategyType.PARTIAL, (Object reqInfo, Object entityInfo, Map<String, Object> props) -> {
 		if (reqInfo instanceof Map && entityInfo instanceof Map) {
-			Object object = props.get(IrisProvider.class.getSimpleName()); 
+			Object object = props.get(IrisProvider.class.getSimpleName());
 			if (object instanceof BiFunction) {
-				BiFunction<Map<String, String>, Map<String, String>, Double> func = (BiFunction<Map<String, String>, Map<String,String>, Double>) object;
-				Map<String, String> reqInfoMap=(Map<String, String>) reqInfo;
-				reqInfoMap.put(getIdvid(), (String)props.get(getIdvid()));  //FIXME will be removed when iris sdk is provided
-				return (int) func.apply(reqInfoMap, (Map<String, String>)entityInfo).doubleValue();
-			}else {
-				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNKNOWN_ERROR);
+				BiFunction<Map<String, String>, Map<String, String>, Double> func = (BiFunction<Map<String, String>, Map<String, String>, Double>) object;
+				Map<String, String> reqInfoMap = (Map<String, String>) reqInfo;
+				reqInfoMap.put(getIdvid(), (String) props.get(getIdvid())); // FIXME will be removed when iris sdk is
+																			// provided
+				return (int) func.apply(reqInfoMap, (Map<String, String>) entityInfo).doubleValue();
+			} else {
+				throw new IdAuthenticationBusinessException(
+						IdAuthenticationErrorConstants.IRISIMG_MISMATCH.getErrorCode(),
+						String.format(IdAuthenticationErrorConstants.IRISIMG_MISMATCH.getErrorMessage(),
+								BioAuthType.IRIS_COMP_IMG.getType()));
 			}
 		}
 		return 0;
 	});
 
-	
 	private static final String IDVID = "idvid";
-	
-	
+
 	/** The match strategy type. */
 	private final MatchingStrategyType matchStrategyType;
 
@@ -46,23 +49,29 @@ public enum CompositeIrisMatchingStrategy implements MatchingStrategy {
 	 * Instantiates a new composite iris matching strategy.
 	 *
 	 * @param matchStrategyType the match strategy type
-	 * @param matchFunction the match function
+	 * @param matchFunction     the match function
 	 */
 	private CompositeIrisMatchingStrategy(MatchingStrategyType matchStrategyType, MatchFunction matchFunction) {
 		this.matchStrategyType = matchStrategyType;
 		this.matchFunction = matchFunction;
 	}
 
-	/* (non-Javadoc)
-	 * @see io.mosip.authentication.core.spi.indauth.match.MatchingStrategy#getType()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.authentication.core.spi.indauth.match.MatchingStrategy#getType()
 	 */
 	@Override
 	public MatchingStrategyType getType() {
 		return matchStrategyType;
 	}
 
-	/* (non-Javadoc)
-	 * @see io.mosip.authentication.core.spi.indauth.match.MatchingStrategy#getMatchFunction()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.authentication.core.spi.indauth.match.MatchingStrategy#
+	 * getMatchFunction()
 	 */
 	@Override
 	public MatchFunction getMatchFunction() {

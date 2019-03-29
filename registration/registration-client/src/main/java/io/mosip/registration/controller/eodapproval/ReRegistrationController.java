@@ -41,6 +41,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.GridPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -89,10 +90,10 @@ public class ReRegistrationController extends BaseController implements Initiali
 
 	/** The image anchor pane. */
 	@FXML
-	private AnchorPane imageAnchorPane;
+	private GridPane imageAnchorPane;
 
 	@FXML
-	private AnchorPane reRegistrationRootPane;
+	private GridPane reRegistrationRootPane;
 
 	private Map<String, String> reRegisterStatusMap = new HashMap<>();
 
@@ -155,7 +156,7 @@ public class ReRegistrationController extends BaseController implements Initiali
 				}
 			}
 			try (FileInputStream file = new FileInputStream(
-					new File(table.getSelectionModel().getSelectedItem().getSourcePath()))) {
+					new File(table.getSelectionModel().getSelectedItem().getPacketPath()))) {
 
 				imageView.setImage(new Image(file));
 			} catch (FileNotFoundException fileNotFoundException) {

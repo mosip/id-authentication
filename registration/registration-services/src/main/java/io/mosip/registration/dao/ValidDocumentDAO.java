@@ -2,7 +2,7 @@ package io.mosip.registration.dao;
 
 import java.util.List;
 
-import io.mosip.registration.entity.ValidDocument;
+import io.mosip.registration.entity.ApplicantValidDocument;
 
 /**
  * 
@@ -10,15 +10,15 @@ import io.mosip.registration.entity.ValidDocument;
  *
  */
 public interface ValidDocumentDAO {
+
+
 	/**
-	 * This method fetches the valid documents
-	 * 
-	 * @return {@link List} of valid documents
-	 * 
+	 * Gets the valid documents.
+	 *
+	 * @param applicantType the applicant type
+	 * @param docCategoryCode the doc category code
+	 * @return the valid documents
 	 */
-
-	List<ValidDocument> getValidDocuments();
-
-	List<ValidDocument> getValidDocuments(String applicantType, String docCategoryCode, String langCode);
+	List<ApplicantValidDocument> getValidDocuments(String applicantType, String docCategoryCode);
 
 }

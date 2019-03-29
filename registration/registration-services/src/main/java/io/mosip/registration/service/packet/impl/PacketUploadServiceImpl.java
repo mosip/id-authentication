@@ -26,12 +26,14 @@ import io.mosip.registration.constants.RegistrationClientStatusCode;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dao.RegistrationDAO;
 import io.mosip.registration.dto.ErrorResponseDTO;
+import io.mosip.registration.dto.PacketStatusDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.SuccessResponseDTO;
 import io.mosip.registration.entity.Registration;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.exception.RegistrationExceptionConstants;
+import io.mosip.registration.service.BaseService;
 import io.mosip.registration.service.packet.PacketUploadService;
 import io.mosip.registration.util.restclient.ServiceDelegateUtil;
 
@@ -45,7 +47,7 @@ import io.mosip.registration.util.restclient.ServiceDelegateUtil;
  */
 @Service
 @Transactional
-public class PacketUploadServiceImpl implements PacketUploadService {
+public class PacketUploadServiceImpl extends BaseService implements PacketUploadService {
 
 	/** The registration DAO. */
 	@Autowired
@@ -77,25 +79,29 @@ public class PacketUploadServiceImpl implements PacketUploadService {
 	 */
 	@SuppressWarnings("unchecked")
 	public ResponseDTO pushPacket(File packet) throws URISyntaxException, RegBaseCheckedException {
+		
 		LOGGER.info("REGISTRATION - PUSH_PACKET - PACKET_UPLOAD_SERVICE", APPLICATION_NAME, APPLICATION_ID,
 				"Push packets to the server");
 
 		LinkedMultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
 		map.add(RegistrationConstants.PACKET_TYPE, new FileSystemResource(packet));
-		LinkedHashMap<String, Object> response = new LinkedHashMap<>();
 		ResponseDTO responseDTO = new ResponseDTO();
 		List<ErrorResponseDTO> erResponseDTOs = new ArrayList<>();
 		try {
-			response = (LinkedHashMap<String, Object>) serviceDelegateUtil.post(RegistrationConstants.PACKET_UPLOAD,
-					map);
-			if (response.get("response") != null && response.get("error") == null) {
+			LinkedHashMap<String, Object> response = (LinkedHashMap<String, Object>) serviceDelegateUtil
+					.post(RegistrationConstants.PACKET_UPLOAD, map, RegistrationConstants.JOB_TRIGGER_POINT_USER);
+			if (response.get(RegistrationConstants.PACKET_STATUS_READER_RESPONSE) != null
+					&& response.get(RegistrationConstants.ERRORS) == null) {
 				SuccessResponseDTO successResponseDTO = new SuccessResponseDTO();
 				successResponseDTO.setCode(RegistrationConstants.SUCCESS);
+				successResponseDTO.setMessage((String)response.get(RegistrationConstants.UPLOAD_STATUS));
 				responseDTO.setSuccessResponseDTO(successResponseDTO);
-			} else if (response.get("error") != null) {
+			} else if (response.get(RegistrationConstants.ERRORS) != null) {
 				ErrorResponseDTO errorResponseDTO = new ErrorResponseDTO();
 				errorResponseDTO.setCode(RegistrationConstants.ERROR);
-				errorResponseDTO.setMessage(((LinkedHashMap<String, String>) response.get("error")).get("message"));
+				errorResponseDTO
+						.setMessage(((List<LinkedHashMap<String, String>>) response.get(RegistrationConstants.ERRORS))
+								.get(0).get(RegistrationConstants.PACKET_STATUS_READER_RESPONSE));
 				erResponseDTOs.add(errorResponseDTO);
 				responseDTO.setErrorResponseDTOs(erResponseDTOs);
 			}
@@ -128,7 +134,6 @@ public class PacketUploadServiceImpl implements PacketUploadService {
 					socketTimeoutException.getLocalizedMessage());
 		}
 		return responseDTO;
-
 	}
 
 	/*
@@ -138,10 +143,10 @@ public class PacketUploadServiceImpl implements PacketUploadService {
 	 * io.mosip.registration.service.PacketUploadService#updateStatus(java.util.
 	 * List)
 	 */
-	public Boolean updateStatus(List<Registration> packetsUploadStatus) {
+	public Boolean updateStatus(List<PacketStatusDTO> packetsUploadStatus) {
 		LOGGER.info("REGISTRATION - UPDATE_STATUS - PACKET_UPLOAD_SERVICE", APPLICATION_NAME, APPLICATION_ID,
 				"Update the status of the uploaded packet");
-		for (Registration registrationPacket : packetsUploadStatus) {
+		for (PacketStatusDTO registrationPacket : packetsUploadStatus) {
 			registrationDAO.updateRegStatus(registrationPacket);
 		}
 		return true;
@@ -159,8 +164,8 @@ public class PacketUploadServiceImpl implements PacketUploadService {
 	public void uploadPacket(String rid) {
 		Registration syncedPacket = registrationDAO
 				.getRegistrationById(RegistrationClientStatusCode.META_INFO_SYN_SERVER.getCode(), rid);
-		List<Registration> packetList = new ArrayList<>();
-		packetList.add(syncedPacket);
+		List<PacketStatusDTO> packetList = new ArrayList<>();
+		packetList.add(packetStatusDtoPreperation(syncedPacket));
 
 		uploadSyncedPacket(packetList);
 	}
@@ -168,17 +173,17 @@ public class PacketUploadServiceImpl implements PacketUploadService {
 	/**
 	 * Upload synced packets.
 	 *
-	 * @param syncedPackets the synced packets
+	 * @param syncedPackets
+	 *            the synced packets
 	 */
-	private void uploadSyncedPacket(List<Registration> syncedPackets) {
+	private void uploadSyncedPacket(List<PacketStatusDTO> syncedPackets) {
 
-		List<Registration> packetUploadList = new ArrayList<>();
+		List<PacketStatusDTO> packetUploadList = new ArrayList<>();
 
 		if (!syncedPackets.isEmpty()) {
-			for (Registration syncedPacket : syncedPackets) {
+			for (PacketStatusDTO syncedPacket : syncedPackets) {
 				if (syncedPacket != null) {
-					syncedPacket.setUploadCount((short) (syncedPacket.getUploadCount() + 1));
-					String ackFileName = syncedPacket.getAckFilename();
+					String ackFileName = syncedPacket.getPacketPath();
 					int lastIndex = ackFileName.indexOf(RegistrationConstants.ACKNOWLEDGEMENT_FILE);
 					String packetPath = ackFileName.substring(0, lastIndex);
 					File packet = new File(packetPath + RegistrationConstants.ZIP_FILE_EXTENSION);
@@ -187,25 +192,26 @@ public class PacketUploadServiceImpl implements PacketUploadService {
 							ResponseDTO response = pushPacket(packet);
 
 							if (response.getSuccessResponseDTO() != null) {
-								syncedPacket.setClientStatusCode(
+								syncedPacket.setPacketClientStatus(
 										RegistrationClientStatusCode.UPLOADED_SUCCESSFULLY.getCode());
-								syncedPacket.setFileUploadStatus(
+								syncedPacket.setUploadStatus(
 										RegistrationClientStatusCode.UPLOAD_SUCCESS_STATUS.getCode());
+								syncedPacket.setPacketServerStatus(response.getSuccessResponseDTO().getMessage());
 								packetUploadList.add(syncedPacket);
 
 							} else if (response.getErrorResponseDTOs() != null) {
 								String errMessage = response.getErrorResponseDTOs().get(0).getMessage();
 								if (errMessage.contains(RegistrationConstants.PACKET_DUPLICATE)) {
 
-									syncedPacket.setClientStatusCode(
+									syncedPacket.setPacketClientStatus(
 											RegistrationClientStatusCode.UPLOADED_SUCCESSFULLY.getCode());
-									syncedPacket.setFileUploadStatus(
+									syncedPacket.setUploadStatus(
 											RegistrationClientStatusCode.UPLOAD_SUCCESS_STATUS.getCode());
 									packetUploadList.add(syncedPacket);
 
 								}
 							} else {
-								syncedPacket.setFileUploadStatus(
+								syncedPacket.setUploadStatus(
 										RegistrationClientStatusCode.UPLOAD_ERROR_STATUS.getCode());
 								packetUploadList.add(syncedPacket);
 							}
@@ -214,7 +220,7 @@ public class PacketUploadServiceImpl implements PacketUploadService {
 						LOGGER.error("REGISTRATION - HANDLE_PACKET_UPLOAD_ERROR - PACKET_UPLOAD_SERVICE",
 								APPLICATION_NAME, APPLICATION_ID, "Error while pushing packets to the server"
 										+ exception.getMessage() + ExceptionUtils.getStackTrace(exception));
-						syncedPacket.setFileUploadStatus(RegistrationClientStatusCode.UPLOAD_ERROR_STATUS.getCode());
+						syncedPacket.setUploadStatus(RegistrationClientStatusCode.UPLOAD_ERROR_STATUS.getCode());
 						packetUploadList.add(syncedPacket);
 					} catch (RuntimeException runtimeException) {
 						LOGGER.error("REGISTRATION - HANDLE_PACKET_UPLOAD_RUNTIME_ERROR - PACKET_UPLOAD_SERVICE",
@@ -222,7 +228,7 @@ public class PacketUploadServiceImpl implements PacketUploadService {
 								"Run time error while connecting to the server" + runtimeException.getMessage()
 										+ ExceptionUtils.getStackTrace(runtimeException));
 
-						syncedPacket.setFileUploadStatus(RegistrationClientStatusCode.UPLOAD_ERROR_STATUS.getCode());
+						syncedPacket.setUploadStatus(RegistrationClientStatusCode.UPLOAD_ERROR_STATUS.getCode());
 						packetUploadList.add(syncedPacket);
 					}
 				}
@@ -241,6 +247,22 @@ public class PacketUploadServiceImpl implements PacketUploadService {
 	@Override
 	public void uploadEODPackets(List<String> regIds) {
 		List<Registration> registrations = registrationDAO.get(regIds);
-		uploadSyncedPacket(registrations);
+		List<PacketStatusDTO> packetsToBeSynced = new ArrayList<>();
+		registrations.forEach(reg -> {
+			packetsToBeSynced.add(packetStatusDtoPreperation(reg));
+		});
+		uploadSyncedPacket(packetsToBeSynced);
+	}
+
+	@Override
+	public void uploadAllSyncedPackets() {
+
+		List<Registration> synchedPackets = getSynchedPackets();
+		List<PacketStatusDTO> packetsToBeSynced = new ArrayList<>();
+		synchedPackets.forEach(reg -> {
+			packetsToBeSynced.add(packetStatusDtoPreperation(reg));
+		});
+		uploadSyncedPacket(packetsToBeSynced);
+
 	}
 }

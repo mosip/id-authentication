@@ -6,13 +6,15 @@ package io.mosip.preregistration.transliteration.service.util;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.preregistration.core.common.dto.MainRequestDTO;
 import io.mosip.preregistration.transliteration.code.RequestCodes;
-import io.mosip.preregistration.transliteration.dto.MainRequestDTO;
 import io.mosip.preregistration.transliteration.dto.TransliterationDTO;
 
 /**
@@ -25,7 +27,12 @@ import io.mosip.preregistration.transliteration.dto.TransliterationDTO;
 @Component
 public class TransliterationServiceUtil {
 	
-	private String dateTimeFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
+	
+	@Value("${mosip.utc-datetime-pattern}")
+	private String utcDateTimePattern;
+	
+	@Value("#{'${mosip.supported-languages}'.split(',')}")
+	private List<String> supportedLang;
 	
 	/**
 	 * This method is used to add the initial request values into a map for input
@@ -39,9 +46,9 @@ public class TransliterationServiceUtil {
 			MainRequestDTO<TransliterationDTO> requestDTO) {
 		Map<String, String> inputValidation = new HashMap<>();
 		inputValidation.put(RequestCodes.ID.getCode(), requestDTO.getId());
-		inputValidation.put(RequestCodes.VER.getCode(), requestDTO.getVer());
+		inputValidation.put(RequestCodes.VER.getCode(), requestDTO.getVersion());
 		inputValidation.put(RequestCodes.REQ_TIME.getCode(),
-				getDateString(requestDTO.getReqTime()));
+				getDateString(requestDTO.getRequesttime()));
 		inputValidation.put(RequestCodes.REQUEST.getCode(), requestDTO.getRequest().toString());
 		return inputValidation;
 	}
@@ -56,7 +63,7 @@ public class TransliterationServiceUtil {
 	 * @return date.
 	 */
 	public String getCurrentResponseTime() {
-		return DateUtils.formatDate(new Date(System.currentTimeMillis()), dateTimeFormat);
+		return DateUtils.formatDate(new Date(System.currentTimeMillis()), utcDateTimePattern);
 	}
 
 	/**
@@ -64,7 +71,7 @@ public class TransliterationServiceUtil {
 	 * @return date in string.
 	 */
 	public String getDateString(Date date) {
-		return DateUtils.formatDate(date, dateTimeFormat);
+		return DateUtils.formatDate(date, utcDateTimePattern);
 	}
 
 	/**
@@ -85,6 +92,14 @@ public class TransliterationServiceUtil {
 		transliterationResponseDTO.setToFieldValue(value);
 		transliterationResponseDTO.setToFieldLang(transliterationRequestDTO.getToFieldLang());
 		return transliterationResponseDTO;
+	}
+	
+	/**
+	 * @param dto
+	 * @return true if dto contains supported languages.
+	 */
+	public boolean supportedLanguageCheck(TransliterationDTO dto) {
+		return supportedLang.contains(dto.getFromFieldLang())&&supportedLang.contains(dto.getToFieldLang());
 	}
 
 }

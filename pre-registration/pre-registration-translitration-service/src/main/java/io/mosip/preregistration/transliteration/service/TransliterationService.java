@@ -13,13 +13,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import io.mosip.preregistration.core.common.dto.MainRequestDTO;
+import io.mosip.preregistration.core.common.dto.MainResponseDTO;
 import io.mosip.preregistration.core.util.ValidationUtil;
-import io.mosip.preregistration.transliteration.dto.MainRequestDTO;
-import io.mosip.preregistration.transliteration.dto.MainResponseDTO;
 import io.mosip.preregistration.transliteration.dto.TransliterationDTO;
 import io.mosip.preregistration.transliteration.errorcode.ErrorCodes;
 import io.mosip.preregistration.transliteration.errorcode.ErrorMessage;
 import io.mosip.preregistration.transliteration.exception.MandatoryFieldRequiredException;
+import io.mosip.preregistration.transliteration.exception.UnSupportedLanguageException;
 import io.mosip.preregistration.transliteration.exception.util.TransliterationExceptionCatcher;
 import io.mosip.preregistration.transliteration.repository.LanguageIdRepository;
 import io.mosip.preregistration.transliteration.service.util.TransliterationServiceUtil;
@@ -82,8 +83,6 @@ public class TransliterationService {
 		requiredRequestMap.put("ver", ver);
 	}
 
-	protected boolean trueStatus = true;
-
 	/**
 	 * 
 	 * This method is used to transliterate the given data.
@@ -94,22 +93,30 @@ public class TransliterationService {
 	public MainResponseDTO<TransliterationDTO> translitratorService(MainRequestDTO<TransliterationDTO> requestDTO) {
 		MainResponseDTO<TransliterationDTO> responseDTO = new MainResponseDTO<>();
 		try {
-			if (ValidationUtil.requestValidator(serviceUtil.prepareRequestParamMap(requestDTO), requiredRequestMap)) {
+			if (ValidationUtil.requestValidator(requestDTO)) {
 				TransliterationDTO transliterationRequestDTO = requestDTO.getRequest();
 				if (serviceUtil.isEntryFieldsNull(transliterationRequestDTO)) {
+					if(serviceUtil.supportedLanguageCheck(transliterationRequestDTO)) {
+						String languageId = idRepository
+								.findByFromLangAndToLang(transliterationRequestDTO.getFromFieldLang(),
+										transliterationRequestDTO.getToFieldLang())
+								.getLanguageId();
+						String toFieldValue = translitrator.translitrator(languageId,
+								transliterationRequestDTO.getFromFieldValue());
+						responseDTO.setResponse(serviceUtil.responseSetter(toFieldValue, transliterationRequestDTO));
+						responseDTO.setResponsetime(serviceUtil.getCurrentResponseTime());
+						responseDTO.setId(id);
+						responseDTO.setVersion(ver);
+					}
+					else {
+						throw new UnSupportedLanguageException(ErrorCodes.PRG_TRL_APP_008.getCode(), 
+								ErrorMessage.UNSUPPORTED_LANGUAGE.getMessage());
+					}
 
-					String languageId = idRepository
-							.findByFromLangAndToLang(transliterationRequestDTO.getFromFieldLang(),
-									transliterationRequestDTO.getToFieldLang())
-							.getLanguageId();
-					String toFieldValue = translitrator.translitrator(languageId,
-							transliterationRequestDTO.getFromFieldValue());
-					responseDTO.setResponse(serviceUtil.responseSetter(toFieldValue, transliterationRequestDTO));
-					responseDTO.setResTime(serviceUtil.getCurrentResponseTime());
-					responseDTO.setStatus(trueStatus);
+					
 				} else {
 					throw new MandatoryFieldRequiredException(ErrorCodes.PRG_TRL_APP_002.getCode(),
-							ErrorMessage.INCORRECT_MANDATORY_FIELDS.getCode());
+							ErrorMessage.INCORRECT_MANDATORY_FIELDS.getMessage());
 				}
 			}
 		} catch (Exception e) {

@@ -13,7 +13,6 @@ import java.util.Map;
 import java.util.WeakHashMap;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -49,12 +48,6 @@ import io.mosip.registration.service.sync.SyncStatusValidatorService;
 @Service
 
 public class SyncStatusValidatorServiceImpl extends BaseService implements SyncStatusValidatorService {
-
-	@Value("${GPS_DEVICE_MODEL}")
-	private String gpsDeviceModel;
-	/** Object forserialPortConnected. */
-	@Value("${GPS_DEVICE_ENABLE_FLAG}")
-	private String gpsEnableFlag;
 
 	/** Object for SyncJobDAO class. */
 	@Autowired
@@ -117,11 +110,11 @@ public class SyncStatusValidatorServiceImpl extends BaseService implements SyncS
 	 * @param errorResponseDTOList the error response DTO list
 	 */
 	private void validatingCenterToMachineDistance(List<ErrorResponseDTO> errorResponseDTOList) {
-		if (RegistrationConstants.ENABLE.equals(getGlobalConfigValueOf(RegistrationConstants.GEO_CAP_FREQ))) {
+		if (RegistrationConstants.ENABLE.equalsIgnoreCase(getGlobalConfigValueOf(RegistrationConstants.GEO_CAP_FREQ))) {
 			if (!isCapturedForTheDay()) {
 				captureGeoLocation(errorResponseDTOList);
 			}
-		} else if (RegistrationConstants.DISABLE.equals(getGlobalConfigValueOf(RegistrationConstants.GEO_CAP_FREQ))) {
+		} else if (RegistrationConstants.DISABLE.equalsIgnoreCase(getGlobalConfigValueOf(RegistrationConstants.GEO_CAP_FREQ))) {
 			captureGeoLocation(errorResponseDTOList);
 		}
 	}
@@ -162,12 +155,22 @@ public class SyncStatusValidatorServiceImpl extends BaseService implements SyncS
 			}
 
 			if (syncFailureCount > 0) {
-				getErrorResponse(RegistrationConstants.ICS_CODE_ONE,
-						RegistrationConstants.OPT_TO_REG_TIME_SYNC_EXCEED, RegistrationConstants.ERROR,
-						errorResponseDTOList);
+				getErrorResponse(RegistrationConstants.ICS_CODE_ONE, RegistrationConstants.OPT_TO_REG_TIME_SYNC_EXCEED,
+						RegistrationConstants.ERROR, errorResponseDTOList);
 			}
 		}
 
+		validatingLastExportDurationAndYetToExportCount(errorResponseDTOList, syncJobInfo);
+	}
+
+	/**
+	 * Validating last export duration and yet to export count.
+	 *
+	 * @param errorResponseDTOList the error response DTO list
+	 * @param syncJobInfo          the sync job info
+	 */
+	private void validatingLastExportDurationAndYetToExportCount(List<ErrorResponseDTO> errorResponseDTOList,
+			SyncJobInfo syncJobInfo) {
 		List<Registration> lastExportedRegistrations = syncJobInfo.getLastExportRegistrationList();
 		if (!lastExportedRegistrations.isEmpty()) {
 			Date lastSyncDate = new Date(
@@ -191,9 +194,8 @@ public class SyncStatusValidatorServiceImpl extends BaseService implements SyncS
 			auditFactory.audit(AuditEvent.SYNC_PKT_COUNT_VALIDATE, Components.SYNC_VALIDATE,
 					RegistrationConstants.APPLICATION_NAME, AuditReferenceIdTypes.APPLICATION_ID.getReferenceTypeId());
 
-			getErrorResponse(RegistrationConstants.ICS_CODE_THREE,
-					RegistrationConstants.OPT_TO_REG_REACH_MAX_LIMIT, RegistrationConstants.ERROR,
-					errorResponseDTOList);
+			getErrorResponse(RegistrationConstants.ICS_CODE_THREE, RegistrationConstants.OPT_TO_REG_REACH_MAX_LIMIT,
+					RegistrationConstants.ERROR, errorResponseDTOList);
 		}
 	}
 
@@ -273,22 +275,23 @@ public class SyncStatusValidatorServiceImpl extends BaseService implements SyncS
 	 */
 	private void captureGeoLocation(List<ErrorResponseDTO> errorResponseDTOList) {
 
-		LOGGER.info(LoggerConstants.OPT_TO_REG_LOGGER_SESSION_ID, APPLICATION_NAME, APPLICATION_ID,
-				"Validating the geo location of machine w.r.t registration center started");
-
-		double centerLatitude = Double.parseDouble(
-				SessionContext.userContext().getRegistrationCenterDetailDTO().getRegistrationCenterLatitude());
-
-		double centerLongitude = Double.parseDouble(
-				SessionContext.userContext().getRegistrationCenterDetailDTO().getRegistrationCenterLongitude());
 
 		LOGGER.info(LoggerConstants.OPT_TO_REG_LOGGER_SESSION_ID, APPLICATION_NAME, APPLICATION_ID,
 				"Getting the center latitude and longitudes from session conext");
 
-		if (gpsEnableFlag.equals(RegistrationConstants.ENABLE)) {
+		if (RegistrationConstants.ENABLE.equalsIgnoreCase(getGlobalConfigValueOf(RegistrationConstants.GPS_DEVICE_DISABLE_FLAG))) {
+			
+			LOGGER.info(LoggerConstants.OPT_TO_REG_LOGGER_SESSION_ID, APPLICATION_NAME, APPLICATION_ID,
+					"Validating the geo location of machine w.r.t registration center started");
+
+			double centerLatitude = Double.parseDouble(
+					SessionContext.userContext().getRegistrationCenterDetailDTO().getRegistrationCenterLatitude());
+
+			double centerLongitude = Double.parseDouble(
+					SessionContext.userContext().getRegistrationCenterDetailDTO().getRegistrationCenterLongitude());
 
 			Map<String, Object> gpsMapDetails = gpsFacade.getLatLongDtls(centerLatitude, centerLongitude,
-					gpsDeviceModel);
+					String.valueOf(ApplicationContext.map().get(RegistrationConstants.GPS_DEVICE_MODEL)));
 
 			if (RegistrationConstants.GPS_CAPTURE_SUCCESS_MSG
 					.equals(gpsMapDetails.get(RegistrationConstants.GPS_CAPTURE_ERROR_MSG))) {
@@ -397,9 +400,11 @@ public class SyncStatusValidatorServiceImpl extends BaseService implements SyncS
 		List<SyncJobDef> syncJobDefs = jobConfigDAO.getAll();
 		for (SyncJobDef syncJobDef : syncJobDefs) {
 			if (syncJobDef.getApiName() != null) {
-				String configuredValue = getGlobalConfigValueOf(syncJobDef.getApiName());
+				String configuredValue = getGlobalConfigValueOf(
+						RegistrationConstants.MOSIP_REGISTRATION.concat(syncJobDef.getApiName())
+								.concat(RegistrationConstants.DOT).concat(RegistrationConstants.FREQUENCY));
 				if (configuredValue != null) {
-					jobsMap.put(syncJobDef.getId(), configuredValue);
+					jobsMap.put(syncJobDef.getId(), configuredValue.trim());
 				}
 			}
 		}

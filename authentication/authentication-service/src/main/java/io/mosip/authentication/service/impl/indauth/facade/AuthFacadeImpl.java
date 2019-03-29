@@ -3,7 +3,6 @@
  */
 package io.mosip.authentication.service.impl.indauth.facade;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -13,6 +12,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.TimeZone;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,19 +26,17 @@ import io.mosip.authentication.core.constant.RequestType;
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.AuthResponseDTO;
 import io.mosip.authentication.core.dto.indauth.AuthStatusInfo;
-import io.mosip.authentication.core.dto.indauth.BioType;
+import io.mosip.authentication.core.dto.indauth.BioIdentityInfoDTO;
 import io.mosip.authentication.core.dto.indauth.IdType;
 import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
 import io.mosip.authentication.core.dto.indauth.KycAuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.KycAuthResponseDTO;
-import io.mosip.authentication.core.dto.indauth.KycInfo;
 import io.mosip.authentication.core.dto.indauth.KycResponseDTO;
-import io.mosip.authentication.core.dto.indauth.KycType;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.id.service.IdAuthService;
-import io.mosip.authentication.core.spi.id.service.IdRepoService;
 import io.mosip.authentication.core.spi.indauth.facade.AuthFacade;
+import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
 import io.mosip.authentication.core.spi.indauth.service.BioAuthService;
 import io.mosip.authentication.core.spi.indauth.service.DemoAuthService;
 import io.mosip.authentication.core.spi.indauth.service.KycService;
@@ -47,8 +45,9 @@ import io.mosip.authentication.core.spi.indauth.service.PinAuthService;
 import io.mosip.authentication.core.spi.notification.service.NotificationService;
 import io.mosip.authentication.service.entity.AutnTxn;
 import io.mosip.authentication.service.helper.AuditHelper;
-import io.mosip.authentication.service.helper.IdInfoHelper;
 import io.mosip.authentication.service.impl.indauth.builder.AuthResponseBuilder;
+import io.mosip.authentication.service.impl.indauth.service.bio.BioAuthType;
+import io.mosip.kernel.core.exception.ParseException;
 import io.mosip.kernel.core.idgenerator.spi.TokenIdGenerator;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
@@ -63,6 +62,8 @@ import io.mosip.kernel.core.util.UUIDUtils;
  */
 @Service
 public class AuthFacadeImpl implements AuthFacade {
+
+	private static final String STATIC_TOKEN_ENABLE = "static.token.enable";
 
 	private static final String FAILED = "N";
 
@@ -106,7 +107,7 @@ public class AuthFacadeImpl implements AuthFacade {
 	private Environment env;
 	/** The Id Info Service */
 	@Autowired
-	private IdAuthService idInfoService;
+	private IdAuthService<AutnTxn> idInfoService;
 	/** The Demo Auth Service */
 	@Autowired
 	private DemoAuthService demoAuthService;
@@ -132,7 +133,7 @@ public class AuthFacadeImpl implements AuthFacade {
 	private TokenIdGenerator<String, String> tokenIdGenerator;
 
 	@Autowired
-	private IdInfoHelper idInfoHelper;
+	private IdInfoFetcher idInfoFetcher;
 
 	/**
 	 * Process the authorization type and authorization response is returned.
@@ -144,30 +145,36 @@ public class AuthFacadeImpl implements AuthFacade {
 	 *                                           exception.
 	 */
 	@Override
-	public AuthResponseDTO authenticateApplicant(AuthRequestDTO authRequestDTO, boolean isAuth)
+	public AuthResponseDTO authenticateApplicant(AuthRequestDTO authRequestDTO, boolean isAuth, String partnerId)
 			throws IdAuthenticationBusinessException {
 
-		Map<String, Object> idResDTO = idAuthService.processIdType(authRequestDTO.getIdvIdType(),
-				authRequestDTO.getIdvId(), authRequestDTO.getAuthType().isBio());
+		IdType idType = idInfoFetcher.getUinOrVidType(authRequestDTO);
+		Optional<String> idvid = idInfoFetcher.getUinOrVid(authRequestDTO);
+		String idvIdType = idType.getType();
+		Map<String, Object> idResDTO = idAuthService.processIdType(idvIdType, idvid.orElse(""),
+				authRequestDTO.getRequestedAuth().isBio());
 
 		AuthResponseDTO authResponseDTO;
 		AuthResponseBuilder authResponseBuilder = AuthResponseBuilder.newInstance(env.getProperty(DATETIME_PATTERN));
 		Map<String, List<IdentityInfoDTO>> idInfo = null;
 		String uin = String.valueOf(idResDTO.get("uin"));
-		String tspId = authRequestDTO.getTspID();
+		String tspId = partnerId;
 		try {
 			idInfo = idInfoService.getIdInfo(idResDTO);
-			authResponseBuilder.setTxnID(authRequestDTO.getTxnID()).setIdType(authRequestDTO.getIdvIdType())
-					.setReqTime(authRequestDTO.getReqTime());
-			String staticTokenId = tokenIdGenerator.generateId(tspId, uin);
-			List<AuthStatusInfo> authStatusList = processAuthType(authRequestDTO, idInfo, uin, isAuth, staticTokenId);
+			authResponseBuilder.setTxnID(authRequestDTO.getTransactionID());
+			Boolean staticTokenRequired = env.getProperty(STATIC_TOKEN_ENABLE, Boolean.class);
+			String staticTokenId = staticTokenRequired ? tokenIdGenerator.generateId(tspId, uin) : "";
+			List<AuthStatusInfo> authStatusList = processAuthType(authRequestDTO, idInfo, uin, isAuth, staticTokenId,
+					partnerId);
 			authStatusList.forEach(authResponseBuilder::addAuthStatusInfo);
 			// Set static token
-			authResponseBuilder.setStaticTokenId(staticTokenId);
+			if (staticTokenRequired) {
+				authResponseBuilder.setStaticTokenId(staticTokenId);
+			}
 		} finally {
 			authResponseDTO = authResponseBuilder.build();
 			logger.info(DEFAULT_SESSION_ID, IDA, AUTH_FACADE,
-					"authenticateApplicant status : " + authResponseDTO.getStatus());
+					"authenticateApplicant status : " + authResponseDTO.isStatus());
 		}
 
 		if (idInfo != null && uin != null) {
@@ -192,25 +199,25 @@ public class AuthFacadeImpl implements AuthFacade {
 	 *                                           exception
 	 */
 	private List<AuthStatusInfo> processAuthType(AuthRequestDTO authRequestDTO,
-			Map<String, List<IdentityInfoDTO>> idInfo, String uin, boolean isAuth, String staticTokenId)
-			throws IdAuthenticationBusinessException {
+			Map<String, List<IdentityInfoDTO>> idInfo, String uin, boolean isAuth, String staticTokenId,
+			String partnerId) throws IdAuthenticationBusinessException {
 
 		List<AuthStatusInfo> authStatusList = new ArrayList<>();
 		IdType idType = null;
 
-		if (authRequestDTO.getIdvIdType().equals(IdType.UIN.getType())) {
+		if (idInfoFetcher.getUinOrVidType(authRequestDTO).getType().equals(IdType.UIN.getType())) {
 			idType = IdType.UIN;
 		} else {
 			idType = IdType.VID;
 		}
 
-		processOTPAuth(authRequestDTO, uin, isAuth, authStatusList, idType, staticTokenId);
+		processOTPAuth(authRequestDTO, uin, isAuth, authStatusList, idType, staticTokenId, partnerId);
 
-		processDemoAuth(authRequestDTO, idInfo, uin, isAuth, authStatusList, idType, staticTokenId);
+		processDemoAuth(authRequestDTO, idInfo, uin, isAuth, authStatusList, idType, staticTokenId, partnerId);
 
-		processBioAuth(authRequestDTO, idInfo, uin, isAuth, authStatusList, idType, staticTokenId);
+		processBioAuth(authRequestDTO, idInfo, uin, isAuth, authStatusList, idType, staticTokenId, partnerId);
 
-		processPinAuth(authRequestDTO, uin, isAuth, authStatusList, idType, staticTokenId);
+		processPinAuth(authRequestDTO, uin, isAuth, authStatusList, idType, staticTokenId, partnerId);
 
 		return authStatusList;
 	}
@@ -227,21 +234,22 @@ public class AuthFacadeImpl implements AuthFacade {
 	 * @throws IdAuthenticationBusinessException
 	 */
 	private void processPinAuth(AuthRequestDTO authRequestDTO, String uin, boolean isAuth,
-			List<AuthStatusInfo> authStatusList, IdType idType, String staticTokenId)
+			List<AuthStatusInfo> authStatusList, IdType idType, String staticTokenId, String partnerId)
 			throws IdAuthenticationBusinessException {
 		AuthStatusInfo statusInfo = null;
-		if (authRequestDTO.getAuthType().isPin()) {
+		if (authRequestDTO.getRequestedAuth().isPin()) {
 			AuthStatusInfo pinValidationStatus;
 			try {
 
-				pinValidationStatus = pinAuthService.authenticate(authRequestDTO, uin, Collections.emptyMap());
+				pinValidationStatus = pinAuthService.authenticate(authRequestDTO, uin, Collections.emptyMap(),
+						partnerId);
 				authStatusList.add(pinValidationStatus);
 				statusInfo = pinValidationStatus;
 			} finally {
 				boolean isStatus = statusInfo != null && statusInfo.isStatus();
 				logger.info(DEFAULT_SESSION_ID, IDA, AUTH_FACADE, "Pin Authentication  status :" + statusInfo);
-				auditHelper.audit(AuditModules.PIN_AUTH, AuditEvents.AUTH_REQUEST_RESPONSE, authRequestDTO.getIdvId(),
-						idType, AuditModules.PIN_AUTH.getDesc());
+				auditHelper.audit(AuditModules.PIN_AUTH, AuditEvents.AUTH_REQUEST_RESPONSE,
+						idInfoFetcher.getUinOrVid(authRequestDTO).get(), idType, AuditModules.PIN_AUTH.getDesc());
 				AutnTxn auth_txn = createAuthTxn(authRequestDTO, uin, RequestType.STATIC_PIN_AUTH, staticTokenId,
 						isStatus);
 				idAuthService.saveAutnTxn(auth_txn);
@@ -260,21 +268,21 @@ public class AuthFacadeImpl implements AuthFacade {
 	 * @throws IdAuthenticationBusinessException
 	 */
 	private void processBioAuth(AuthRequestDTO authRequestDTO, Map<String, List<IdentityInfoDTO>> idInfo, String uin,
-			boolean isAuth, List<AuthStatusInfo> authStatusList, IdType idType, String staticTokenId)
+			boolean isAuth, List<AuthStatusInfo> authStatusList, IdType idType, String staticTokenId, String partnerId)
 			throws IdAuthenticationBusinessException {
 
 		AuthStatusInfo statusInfo = null;
-		if (authRequestDTO.getAuthType().isBio()) {
+		if (authRequestDTO.getRequestedAuth().isBio()) {
 			AuthStatusInfo bioValidationStatus;
 			try {
-				bioValidationStatus = bioAuthService.authenticate(authRequestDTO, uin, idInfo);
+				bioValidationStatus = bioAuthService.authenticate(authRequestDTO, uin, idInfo, partnerId);
 				authStatusList.add(bioValidationStatus);
 				statusInfo = bioValidationStatus;
 			} finally {
 				boolean isStatus = statusInfo != null && statusInfo.isStatus();
 				logger.info(DEFAULT_SESSION_ID, IDA, AUTH_FACADE, "BioMetric Authentication status :" + statusInfo);
-				saveAndAuditBioAuthTxn(authRequestDTO, isAuth, authRequestDTO.getIdvId(), idType, isStatus,
-						staticTokenId);
+				saveAndAuditBioAuthTxn(authRequestDTO, isAuth, idInfoFetcher.getUinOrVid(authRequestDTO).get(), idType,
+						isStatus, staticTokenId);
 			}
 		}
 	}
@@ -292,14 +300,13 @@ public class AuthFacadeImpl implements AuthFacade {
 	 *                                           exception
 	 */
 	private void processDemoAuth(AuthRequestDTO authRequestDTO, Map<String, List<IdentityInfoDTO>> idInfo, String uin,
-			boolean isAuth, List<AuthStatusInfo> authStatusList, IdType idType, String staticTokenId)
+			boolean isAuth, List<AuthStatusInfo> authStatusList, IdType idType, String staticTokenId, String partnerId)
 			throws IdAuthenticationBusinessException {
 		AuthStatusInfo statusInfo = null;
-		if (authRequestDTO.getAuthType().isPersonalIdentity() || authRequestDTO.getAuthType().isAddress()
-				|| authRequestDTO.getAuthType().isFullAddress()) {
+		if (authRequestDTO.getRequestedAuth().isDemo()) {
 			AuthStatusInfo demoValidationStatus;
 			try {
-				demoValidationStatus = demoAuthService.authenticate(authRequestDTO, uin, idInfo);
+				demoValidationStatus = demoAuthService.authenticate(authRequestDTO, uin, idInfo, partnerId);
 				authStatusList.add(demoValidationStatus);
 				statusInfo = demoValidationStatus;
 			} finally {
@@ -307,8 +314,8 @@ public class AuthFacadeImpl implements AuthFacade {
 				boolean isStatus = statusInfo != null && statusInfo.isStatus();
 
 				logger.info(DEFAULT_SESSION_ID, IDA, AUTH_FACADE, "Demographic Authentication status : " + statusInfo);
-				auditHelper.audit(AuditModules.DEMO_AUTH, getAuditEvent(isAuth), authRequestDTO.getIdvId(), idType,
-						AuditModules.DEMO_AUTH.getDesc());
+				auditHelper.audit(AuditModules.DEMO_AUTH, getAuditEvent(isAuth),
+						idInfoFetcher.getUinOrVid(authRequestDTO).get(), idType, AuditModules.DEMO_AUTH.getDesc());
 
 				AutnTxn auth_txn = createAuthTxn(authRequestDTO, uin, RequestType.DEMO_AUTH, staticTokenId, isStatus);
 				idAuthService.saveAutnTxn(auth_txn);
@@ -329,20 +336,20 @@ public class AuthFacadeImpl implements AuthFacade {
 	 *                                           exception
 	 */
 	private void processOTPAuth(AuthRequestDTO authRequestDTO, String uin, boolean isAuth,
-			List<AuthStatusInfo> authStatusList, IdType idType, String staticTokenId)
+			List<AuthStatusInfo> authStatusList, IdType idType, String staticTokenId, String partnerId)
 			throws IdAuthenticationBusinessException {
 		AuthStatusInfo statusInfo = null;
-		if (authRequestDTO.getAuthType().isOtp()) {
+		if (authRequestDTO.getRequestedAuth().isOtp()) {
 			AuthStatusInfo otpValidationStatus;
 			try {
-				otpValidationStatus = otpService.authenticate(authRequestDTO, uin, Collections.emptyMap());
+				otpValidationStatus = otpService.authenticate(authRequestDTO, uin, Collections.emptyMap(), partnerId);
 				authStatusList.add(otpValidationStatus);
 				statusInfo = otpValidationStatus;
 			} finally {
 				boolean isStatus = statusInfo != null && statusInfo.isStatus();
 				logger.info(DEFAULT_SESSION_ID, IDA, AUTH_FACADE, "OTP Authentication status : " + statusInfo);
-				auditHelper.audit(AuditModules.OTP_AUTH, getAuditEvent(isAuth), authRequestDTO.getIdvId(), idType,
-						AuditModules.OTP_AUTH.getDesc());
+				auditHelper.audit(AuditModules.OTP_AUTH, getAuditEvent(isAuth),
+						idInfoFetcher.getUinOrVid(authRequestDTO).get(), idType, AuditModules.OTP_AUTH.getDesc());
 
 				AutnTxn authTxn = createAuthTxn(authRequestDTO, uin, RequestType.OTP_AUTH, staticTokenId, isStatus);
 				idAuthService.saveAutnTxn(authTxn);
@@ -362,25 +369,25 @@ public class AuthFacadeImpl implements AuthFacade {
 	 */
 	private void saveAndAuditBioAuthTxn(AuthRequestDTO authRequestDTO, boolean isAuth, String uin, IdType idType,
 			boolean isStatus, String staticTokenId) throws IdAuthenticationBusinessException {
-		if (authRequestDTO.getBioInfo().stream()
-				.anyMatch(bioInfo -> bioInfo.getBioType().equals(BioType.FGRMIN.getType())
-						|| bioInfo.getBioType().equals(BioType.FGRIMG.getType()))) {
-			auditHelper.audit(AuditModules.FINGERPRINT_AUTH, getAuditEvent(isAuth), authRequestDTO.getIdvId(), idType,
-					AuditModules.FINGERPRINT_AUTH.getDesc());
+		if (authRequestDTO.getRequest().getBiometrics().stream().map(BioIdentityInfoDTO::getData)
+				.anyMatch(bioInfo -> bioInfo.getBioType().equals(BioAuthType.FGR_MIN.getType())
+						|| bioInfo.getBioType().equals(BioAuthType.FGR_IMG.getType()))) {
+			auditHelper.audit(AuditModules.FINGERPRINT_AUTH, getAuditEvent(isAuth),
+					idInfoFetcher.getUinOrVid(authRequestDTO).get(), idType, AuditModules.FINGERPRINT_AUTH.getDesc());
 			AutnTxn authTxn = createAuthTxn(authRequestDTO, uin, RequestType.FINGER_AUTH, staticTokenId, isStatus);
 			idAuthService.saveAutnTxn(authTxn);
 		}
-		if (authRequestDTO.getBioInfo().stream()
-				.anyMatch(bioInfo -> bioInfo.getBioType().equals(BioType.IRISIMG.getType()))) {
-			auditHelper.audit(AuditModules.IRIS_AUTH, getAuditEvent(isAuth), authRequestDTO.getIdvId(), idType,
-					AuditModules.IRIS_AUTH.getDesc());
+		if (authRequestDTO.getRequest().getBiometrics().stream().map(BioIdentityInfoDTO::getData)
+				.anyMatch(bioInfo -> bioInfo.getBioType().equals(BioAuthType.IRIS_IMG.getType()))) {
+			auditHelper.audit(AuditModules.IRIS_AUTH, getAuditEvent(isAuth),
+					idInfoFetcher.getUinOrVid(authRequestDTO).get(), idType, AuditModules.IRIS_AUTH.getDesc());
 			AutnTxn authTxn = createAuthTxn(authRequestDTO, uin, RequestType.IRIS_AUTH, staticTokenId, isStatus);
 			idAuthService.saveAutnTxn(authTxn);
 		}
-		if (authRequestDTO.getBioInfo().stream()
-				.anyMatch(bioInfo -> bioInfo.getBioType().equals(BioType.FACEIMG.getType()))) {
-			auditHelper.audit(AuditModules.FACE_AUTH, getAuditEvent(isAuth), authRequestDTO.getIdvId(), idType,
-					AuditModules.FACE_AUTH.getDesc());
+		if (authRequestDTO.getRequest().getBiometrics().stream().map(BioIdentityInfoDTO::getData)
+				.anyMatch(bioInfo -> bioInfo.getBioType().equals(BioAuthType.FACE_IMG.getType()))) {
+			auditHelper.audit(AuditModules.FACE_AUTH, getAuditEvent(isAuth),
+					idInfoFetcher.getUinOrVid(authRequestDTO).get(), idType, AuditModules.FACE_AUTH.getDesc());
 			AutnTxn authTxn = createAuthTxn(authRequestDTO, uin, RequestType.FACE_AUTH, staticTokenId, isStatus);
 			idAuthService.saveAutnTxn(authTxn);
 		}
@@ -402,10 +409,10 @@ public class AuthFacadeImpl implements AuthFacade {
 		try {
 			String status = isStatus ? SUCCESS_STATUS : FAILED;
 			String comment = isStatus ? requestType.getMessage() + " Success" : requestType.getMessage() + " Failed";
-			String idvId = authRequestDTO.getIdvId();
-			String reqTime = authRequestDTO.getReqTime();
-			String idvIdType = authRequestDTO.getIdvIdType();
-			String txnID = authRequestDTO.getTxnID();
+			String idvId = idInfoFetcher.getUinOrVid(authRequestDTO).get();
+			String reqTime = authRequestDTO.getRequestTime();
+			String idvIdType = idInfoFetcher.getUinOrVidType(authRequestDTO).getType();
+			String txnID = authRequestDTO.getTransactionID();
 			AutnTxn autnTxn = new AutnTxn();
 			autnTxn.setRefId(idvId);
 			autnTxn.setRefIdType(idvIdType);
@@ -414,7 +421,7 @@ public class AuthFacadeImpl implements AuthFacade {
 			autnTxn.setCrBy(IDA);
 			autnTxn.setStaticTknId(staticTokenId);
 			autnTxn.setCrDTimes(DateUtils.getUTCCurrentDateTime());
-			String strUTCDate = idInfoHelper.getUTCTime(reqTime);
+			String strUTCDate = getUTCTime(reqTime);
 			autnTxn.setRequestDTtimes(DateUtils.parseToLocalDateTime(strUTCDate));
 			autnTxn.setResponseDTimes(DateUtils.getUTCCurrentDateTime()); // TODO check this
 			autnTxn.setAuthTypeCode(requestType.getRequestType());
@@ -424,10 +431,9 @@ public class AuthFacadeImpl implements AuthFacade {
 			// FIXME
 			autnTxn.setLangCode(env.getProperty(MOSIP_PRIMARY_LANG_CODE));
 			return autnTxn;
-		} catch (ParseException | io.mosip.kernel.core.exception.ParseException e) {
+		} catch (ParseException e) {
 			logger.error(DEFAULT_SESSION_ID, this.getClass().getName(), e.getClass().getName(), e.getMessage());
-			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST_TIMESTAMP,
-					e);
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
 		}
 	}
 
@@ -463,18 +469,21 @@ public class AuthFacadeImpl implements AuthFacade {
 	 *                                           exception
 	 */
 	@Override
-	public KycAuthResponseDTO processKycAuth(KycAuthRequestDTO kycAuthRequestDTO, AuthResponseDTO authResponseDTO)
-			throws IdAuthenticationBusinessException {
-		AuthRequestDTO authRequest = kycAuthRequestDTO.getAuthRequest();
+	public KycAuthResponseDTO processKycAuth(KycAuthRequestDTO kycAuthRequestDTO, AuthResponseDTO authResponseDTO,
+			String partnerId) throws IdAuthenticationBusinessException {
 		Map<String, Object> idResDTO = null;
-		String key = null;
 		String resTime = null;
 		IdType idType = null;
-		if (authRequest != null) {
-			idResDTO = idAuthService.processIdType(authRequest.getIdvIdType(), authRequest.getIdvId(), true);
-			key = "ekyc.mua.accesslevel." + kycAuthRequestDTO.getAuthRequest().getTspID();
+		if (kycAuthRequestDTO != null) {
+			String idvId = null;
+			Optional<String> idvIdOptional = idInfoFetcher.getUinOrVid(kycAuthRequestDTO);
+			if (idvIdOptional.isPresent()) {
+				idvId = idvIdOptional.get();
+			}
+			String idvIdtype = idInfoFetcher.getUinOrVidType(kycAuthRequestDTO).getType();
+			idResDTO = idAuthService.processIdType(idvIdtype, idvId, true);
 
-			if (kycAuthRequestDTO.getAuthRequest().getIdvIdType().equals(IdType.UIN.getType())) {
+			if (idvIdtype.equals(IdType.UIN.getType())) {
 				idType = IdType.UIN;
 			} else {
 				idType = IdType.VID;
@@ -483,33 +492,41 @@ public class AuthFacadeImpl implements AuthFacade {
 
 			DateTimeFormatter isoPattern = DateTimeFormatter.ofPattern(dateTimePattern);
 
-			ZonedDateTime zonedDateTime2 = ZonedDateTime.parse(kycAuthRequestDTO.getAuthRequest().getReqTime(),
-					isoPattern);
+			ZonedDateTime zonedDateTime2 = ZonedDateTime.parse(kycAuthRequestDTO.getRequestTime(), isoPattern);
 			ZoneId zone = zonedDateTime2.getZone();
 			resTime = DateUtils.formatDate(new Date(), dateTimePattern, TimeZone.getTimeZone(zone));
 			auditHelper.audit(AuditModules.EKYC_AUTH, AuditEvents.AUTH_REQUEST_RESPONSE,
-					kycAuthRequestDTO.getAuthRequest().getIdvId(), idType, AuditModules.EKYC_AUTH.getDesc());
+					kycAuthRequestDTO.getIndividualId(), idType, AuditModules.EKYC_AUTH.getDesc());
 		}
 		Map<String, List<IdentityInfoDTO>> idInfo = idInfoService.getIdInfo(idResDTO);
-		KycInfo info = null;
-		if (idResDTO != null && authResponseDTO.getStatus().equals(SUCCESS_STATUS)) {
-			info = kycService.retrieveKycInfo(String.valueOf(idResDTO.get("uin")),
-					KycType.getEkycAuthType(env.getProperty(key)), kycAuthRequestDTO.isEPrintReq(),
-					kycAuthRequestDTO.isSecLangReq(), idInfo);
-
+		KycResponseDTO response = null;
+		if (idResDTO != null && authResponseDTO.isStatus()) {
+			response = kycService.retrieveKycInfo(String.valueOf(idResDTO.get("uin")),
+					kycAuthRequestDTO.getAllowedKycAttributes(), kycAuthRequestDTO.getSecondaryLangCode(), idInfo);
+			response.setTtl(env.getProperty("ekyc.ttl.hours"));
 		}
 
 		KycAuthResponseDTO kycAuthResponseDTO = new KycAuthResponseDTO();
-
-		KycResponseDTO response = new KycResponseDTO();
-		response.setAuth(authResponseDTO);
 		kycAuthResponseDTO.setResponse(response);
-		kycAuthResponseDTO.getResponse().setKyc(info);
-		kycAuthResponseDTO.setTtl(env.getProperty("ekyc.ttl.hours"));
-		kycAuthResponseDTO.setErr(authResponseDTO.getErr());
-		kycAuthResponseDTO.setStatus(authResponseDTO.getStatus());
-		kycAuthResponseDTO.setResTime(resTime);
+		kycAuthResponseDTO.setId(authResponseDTO.getId());
+		kycAuthResponseDTO.setStaticToken(authResponseDTO.getStaticToken());
+		kycAuthResponseDTO.setTransactionID(authResponseDTO.getTransactionID());
+		kycAuthResponseDTO.setVersion(authResponseDTO.getVersion());
+		kycAuthResponseDTO.setErrors(authResponseDTO.getErrors());
+		kycAuthResponseDTO.setStatus(authResponseDTO.isStatus());
+		kycAuthResponseDTO.setResponseTime(resTime);
 		return kycAuthResponseDTO;
+	}
+
+	/**
+	 * @param reqTime
+	 * @return
+	 */
+	public String getUTCTime(String reqTime) {
+		Date reqDate = DateUtils.parseToDate(reqTime, env.getProperty(DATETIME_PATTERN));
+		SimpleDateFormat dateFormatter = new SimpleDateFormat(env.getProperty(DATETIME_PATTERN));
+		dateFormatter.setTimeZone(TimeZone.getTimeZone(ZoneId.of(UTC)));
+		return dateFormatter.format(reqDate);
 	}
 
 }

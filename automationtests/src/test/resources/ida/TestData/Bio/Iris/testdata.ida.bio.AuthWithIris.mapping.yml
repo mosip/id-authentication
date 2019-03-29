@@ -1,0 +1,696 @@
+testdata:
+  MockRequest_LeftAndRightEye_With_ValidCompositeScoreMatch_Smoke_Pos:
+    input.bio-auth-request:
+      bioAuthReq.idvId: $UIN:WITH:EVEN$
+      bioAuthReq.tspID: REF01
+      bioAuthReq.reqTime: $TIMESTAMP$    
+      bioAuthReq.txnID: $RANDOM:N:10$  
+    input.identity-encrypt-data:
+      identityReq.valuerightEye: $idrepo~$input.bio-auth-request:bioAuthReq.idvId$~DECODEFILE:valuedocuments0~//BIR/BDBInfo[Type='Iris'][Subtype='Right']//following::BDB$
+      identityReq.valueleftEye: $idrepo~$input.bio-auth-request:bioAuthReq.idvId$~DECODEFILE:valuedocuments0~//BIR/BDBInfo[Type='Iris'][Subtype='Left']//following::BDB$
+      identityReq.tspID: $input.bio-auth-request:bioAuthReq.tspID$
+    output.output-1-expected-y-res:
+      output.1.response.y.status: Y
+      #output.1.response.y.usageData: '0x0000200000002000'
+      output.1.response.y.resTime: $TIMESTAMP$
+      output.1.response.y.reqTime: $input.bio-auth-request:bioAuthReq.reqTime$
+      output.1.response.y.txnID: $input.bio-auth-request:bioAuthReq.txnID$
+    audit.auth_transaction:
+      txnId: $input.bio-auth-request:bioAuthReq.txnID$
+      authTypeCode: IRIS-AUTH
+      statusCode: $output.output-1-expected-y-res:output.1.response.y.status$
+      reqTime: $FETCH$
+      resTime: $FETCH$
+      statusComment: $REGEXP:.*Iris.*Authentication.*Success.*$
+      idType: D
+    audit.audit_log:
+      refId: $input.bio-auth-request:bioAuthReq.idvId$
+      eventId: $REGEXP:.*IDA-EVT.*$
+      eventName: AUTH_REQUEST_RESPONSE
+      appId: IDA
+      appName: ID-Authentication
+      moduleName: IRIS_AUTH
+      refIdType: UIN      
+      
+  MockRequest_LeftEye_With_MatchingScore_Exceed_ThresholdValue_Smoke_Pos:   
+    input.bio-auth-request:
+      bioAuthReq.idvId: $UIN:WITH:EVEN$
+      bioAuthReq.tspID: REF01
+      bioAuthReq.reqTime: $TIMESTAMP$   
+      bioAuthReq.txnID: $RANDOM:N:10$ 
+    input.identity-encrypt-data:
+      identityReq.rightEye: $REMOVE$
+      identityReq.valueleftEye: $idrepo~$input.bio-auth-request:bioAuthReq.idvId$~DECODEFILE:valuedocuments0~//BIR/BDBInfo[Type='Iris'][Subtype='Left']//following::BDB$
+      identityReq.tspID: $input.bio-auth-request:bioAuthReq.tspID$
+    output.output-1-expected-y-res:
+      output.1.response.y.status: Y
+      #output.1.response.y.usageData: '0x0000200000002000'
+      output.1.response.y.resTime: $TIMESTAMP$
+      output.1.response.y.reqTime: $input.bio-auth-request:bioAuthReq.reqTime$
+      output.1.response.y.txnID: $input.bio-auth-request:bioAuthReq.txnID$
+    audit.auth_transaction:
+      txnId: $input.bio-auth-request:bioAuthReq.txnID$
+      authTypeCode: IRIS-AUTH
+      statusCode: $output.output-1-expected-y-res:output.1.response.y.status$
+      reqTime: $FETCH$
+      resTime: $FETCH$
+      statusComment: $REGEXP:.*Iris.*Authentication.*Success.*$
+      idType: D
+    audit.audit_log:
+      refId: $input.bio-auth-request:bioAuthReq.idvId$
+      eventId: $REGEXP:.*IDA-EVT.*$
+      eventName: AUTH_REQUEST_RESPONSE
+      appId: IDA
+      appName: ID-Authentication
+      moduleName: IRIS_AUTH
+      refIdType: UIN
+      
+  MockRequest_RightEye_With_MatchingScore_Exceed_ThresholdValue_Smoke_Pos:   
+    input.bio-auth-request:
+      bioAuthReq.idvId: $UIN:WITH:ODD$
+      bioAuthReq.tspID: REF01
+      bioAuthReq.reqTime: $TIMESTAMP$   
+      bioAuthReq.txnID: $RANDOM:N:10$   
+    input.identity-encrypt-data:
+      identityReq.leftEye: $REMOVE$
+      identityReq.valuerightEye: $idrepo~$input.bio-auth-request:bioAuthReq.idvId$~DECODEFILE:valuedocuments0~//BIR/BDBInfo[Type='Iris'][Subtype='Right']//following::BDB$
+      identityReq.tspID: $input.bio-auth-request:bioAuthReq.tspID$
+    output.output-1-expected-y-res:
+      output.1.response.y.status: Y
+      #output.1.response.y.usageData: '0x0000200000002000'
+      output.1.response.y.resTime: $TIMESTAMP$
+      output.1.response.y.reqTime: $input.bio-auth-request:bioAuthReq.reqTime$
+      output.1.response.y.txnID: $input.bio-auth-request:bioAuthReq.txnID$
+    audit.auth_transaction:
+      txnId: $input.bio-auth-request:bioAuthReq.txnID$
+      authTypeCode: IRIS-AUTH
+      statusCode: $output.output-1-expected-y-res:output.1.response.y.status$
+      reqTime: $FETCH$
+      resTime: $FETCH$
+      statusComment: $REGEXP:.*Iris.*Authentication.*Success.*$
+      idType: D
+    audit.audit_log:
+      refId: $input.bio-auth-request:bioAuthReq.idvId$
+      eventId: $REGEXP:.*IDA-EVT.*$
+      eventName: AUTH_REQUEST_RESPONSE
+      appId: IDA
+      appName: ID-Authentication
+      moduleName: IRIS_AUTH
+      refIdType: UIN
+      
+  Request_Without_Model_regression_Neg:   
+    input.bio-auth-request:
+      bioAuthReq.idvId: $UIN$
+      bioAuthReq.tspID: REF01
+      bioAuthReq.reqTime: $TIMESTAMP$
+      bioAuthReq.model: $REMOVE$
+      bioAuthReq.txnID: $RANDOM:N:10$  
+    input.identity-encrypt-data:
+      identityReq.rightEye: $REMOVE$
+      identityReq.valueleftEye: $idrepo~$input.bio-auth-request:bioAuthReq.idvId$~DECODEFILE:valuedocuments0~//BIR/BDBInfo[Type='Iris'][Subtype='Left']//following::BDB$
+      identityReq.tspID: $input.bio-auth-request:bioAuthReq.tspID$
+    output.output-1-expected-n-error-res:
+      output.1.response.n.err.status: N
+      output.1.response.n.err.resTime: $TIMESTAMP$
+      output.1.response.n.err.errorMessage: Missing Input Parameter - model
+      output.1.response.n.err.errorCode: IDA-IDV-003
+   
+  Request_NullValue_Model_regression_Neg:   
+    input.bio-auth-request:
+      bioAuthReq.idvId: $UIN$
+      bioAuthReq.tspID: REF01
+      bioAuthReq.reqTime: $TIMESTAMP$
+      bioAuthReq.model: ''
+      bioAuthReq.txnID: $RANDOM:N:10$  
+    input.identity-encrypt-data:
+      identityReq.rightEye: $REMOVE$
+      identityReq.valueleftEye: $idrepo~$input.bio-auth-request:bioAuthReq.idvId$~DECODEFILE:valuedocuments0~//BIR/BDBInfo[Type='Iris'][Subtype='Left']//following::BDB$
+      identityReq.tspID: $input.bio-auth-request:bioAuthReq.tspID$
+    output.output-1-expected-n-error-res:
+      output.1.response.n.err.status: N
+      output.1.response.n.err.resTime: $TIMESTAMP$
+      output.1.response.n.err.errorMessage: Missing Input Parameter - model
+      output.1.response.n.err.errorCode: IDA-IDV-003
+      ##output.1.response.y.txnID: $input.bio-auth-request:bioAuthReq.txnID$
+      
+  Invalid_Without_Make:   
+    input.bio-auth-request:
+      bioAuthReq.idvId: $UIN$
+      bioAuthReq.tspID: REF01
+      bioAuthReq.reqTime: $TIMESTAMP$
+      bioAuthReq.make: $REMOVE$
+      bioAuthReq.txnID: $RANDOM:N:10$ 
+    input.identity-encrypt-data:
+      identityReq.rightEye: $REMOVE$
+      identityReq.valueleftEye: $idrepo~$input.bio-auth-request:bioAuthReq.idvId$~DECODEFILE:valuedocuments0~//BIR/BDBInfo[Type='Iris'][Subtype='Left']//following::BDB$
+      identityReq.tspID: $input.bio-auth-request:bioAuthReq.tspID$
+    output.output-1-expected-n-error-res:
+      output.1.response.n.err.status: N
+      output.1.response.n.err.resTime: $TIMESTAMP$
+      output.1.response.n.err.errorMessage: Missing Input Parameter - Make
+      output.1.response.n.err.errorCode: IDA-IDV-003
+      ##output.1.response.y.txnID: $input.bio-auth-request:bioAuthReq.txnID$
+      
+  Invalid_NullValue_Make:    
+    input.bio-auth-request:
+      bioAuthReq.idvId: $UIN$
+      bioAuthReq.tspID: REF01
+      bioAuthReq.reqTime: $TIMESTAMP$
+      bioAuthReq.make: ''
+      bioAuthReq.txnID: $RANDOM:N:10$  
+    input.identity-encrypt-data:
+      identityReq.rightEye: $REMOVE$
+      identityReq.valueleftEye: $idrepo~$input.bio-auth-request:bioAuthReq.idvId$~DECODEFILE:valuedocuments0~//BIR/BDBInfo[Type='Iris'][Subtype='Left']//following::BDB$
+      identityReq.tspID: $input.bio-auth-request:bioAuthReq.tspID$
+    output.output-1-expected-n-error-res:
+      output.1.response.n.err.status: N
+      output.1.response.n.err.resTime: $TIMESTAMP$
+      output.1.response.n.err.errorMessage: Missing Input Parameter - Make
+      output.1.response.n.err.errorCode: IDA-IDV-003
+      ##output.1.response.y.txnID: $input.bio-auth-request:bioAuthReq.txnID$
+      
+  Invalid_Make_Value:    
+    input.bio-auth-request:
+      bioAuthReq.idvId: $UIN$
+      bioAuthReq.tspID: REF01
+      bioAuthReq.reqTime: $TIMESTAMP$
+      bioAuthReq.make: abscf
+      bioAuthReq.txnID: $RANDOM:N:10$ 
+    input.identity-encrypt-data:
+      identityReq.rightEye: $REMOVE$
+      identityReq.valueleftEye: $idrepo~$input.bio-auth-request:bioAuthReq.idvId$~DECODEFILE:valuedocuments0~//BIR/BDBInfo[Type='Iris'][Subtype='Left']//following::BDB$
+      identityReq.tspID: $input.bio-auth-request:bioAuthReq.tspID$
+    output.output-1-expected-n-error-res:
+      output.1.response.n.err.status: N
+      output.1.response.n.err.resTime: $TIMESTAMP$
+      output.1.response.n.err.errorMessage: Invalid Input Parameter - make for irisImg bioType
+      output.1.response.n.err.errorCode: IDA-IDV-002
+      ##output.1.response.y.txnID: $input.bio-auth-request:bioAuthReq.txnID$
+      
+  Invalid_Without_deviceId:   
+    input.bio-auth-request:
+      bioAuthReq.idvId: $UIN$
+      bioAuthReq.tspID: REF01
+      bioAuthReq.reqTime: $TIMESTAMP$
+      bioAuthReq.deviceId: $REMOVE$
+      bioAuthReq.txnID: $RANDOM:N:10$ 
+    input.identity-encrypt-data:
+      identityReq.rightEye: $REMOVE$
+      identityReq.valueleftEye: $idrepo~$input.bio-auth-request:bioAuthReq.idvId$~DECODEFILE:valuedocuments0~//BIR/BDBInfo[Type='Iris'][Subtype='Left']//following::BDB$
+      identityReq.tspID: $input.bio-auth-request:bioAuthReq.tspID$
+    output.output-1-expected-n-error-res:
+      output.1.response.n.err.status: N
+      output.1.response.n.err.resTime: $TIMESTAMP$
+      output.1.response.n.err.errorMessage: Missing Input Parameter - Device Id
+      output.1.response.n.err.errorCode: IDA-IDV-003
+      #output.1.response.y.txnID: $input.bio-auth-request:bioAuthReq.txnID$
+      
+  Invalid_Null_deviceId:  
+    input.bio-auth-request:
+      bioAuthReq.idvId: $UIN$
+      bioAuthReq.tspID: REF01
+      bioAuthReq.reqTime: $TIMESTAMP$
+      bioAuthReq.deviceId: ''
+      bioAuthReq.txnID: $RANDOM:N:10$  
+    input.identity-encrypt-data:
+      identityReq.rightEye: $REMOVE$
+      identityReq.valueleftEye: $idrepo~$input.bio-auth-request:bioAuthReq.idvId$~DECODEFILE:valuedocuments0~//BIR/BDBInfo[Type='Iris'][Subtype='Left']//following::BDB$
+      identityReq.tspID: $input.bio-auth-request:bioAuthReq.tspID$
+    output.output-1-expected-n-error-res:
+      output.1.response.n.err.status: N
+      output.1.response.n.err.resTime: $TIMESTAMP$
+      output.1.response.n.err.errorMessage: Missing Input Parameter - Device Id
+      output.1.response.n.err.errorCode: IDA-IDV-003
+      #output.1.response.y.txnID: $input.bio-auth-request:bioAuthReq.txnID$
+      
+  Invalid_Without_BioType:  
+    input.bio-auth-request:
+      bioAuthReq.idvId: $UIN$
+      bioAuthReq.tspID: REF01
+      bioAuthReq.reqTime: $TIMESTAMP$
+      bioAuthReq.bioType: $REMOVE$
+      bioAuthReq.txnID: $RANDOM:N:10$  
+    input.identity-encrypt-data:
+      identityReq.rightEye: $REMOVE$
+      identityReq.valueleftEye: $idrepo~$input.bio-auth-request:bioAuthReq.idvId$~DECODEFILE:valuedocuments0~//BIR/BDBInfo[Type='Iris'][Subtype='Left']//following::BDB$
+      identityReq.tspID: $input.bio-auth-request:bioAuthReq.tspID$
+    output.output-1-expected-n-error-res:
+      output.1.response.n.err.status: N
+      output.1.response.n.err.resTime: $TIMESTAMP$
+      output.1.response.n.err.errorMessage: Missing Input Parameter - biotype
+      output.1.response.n.err.errorCode: IDA-IDV-003
+      #output.1.response.y.txnID: $input.bio-auth-request:bioAuthReq.txnID$
+      
+  Invalid_Null_BioType:   
+    input.bio-auth-request:
+      bioAuthReq.idvId: $UIN$
+      bioAuthReq.tspID: REF01
+      bioAuthReq.reqTime: $TIMESTAMP$
+      bioAuthReq.bioType: ''
+      bioAuthReq.txnID: $RANDOM:N:10$  
+    input.identity-encrypt-data:
+      identityReq.rightEye: $REMOVE$
+      identityReq.valueleftEye: $idrepo~$input.bio-auth-request:bioAuthReq.idvId$~DECODEFILE:valuedocuments0~//BIR/BDBInfo[Type='Iris'][Subtype='Left']//following::BDB$
+      identityReq.tspID: $input.bio-auth-request:bioAuthReq.tspID$
+    output.output-1-expected-n-error-res:
+      output.1.response.n.err.status: N
+      output.1.response.n.err.resTime: $TIMESTAMP$
+      output.1.response.n.err.errorMessage: Missing Input Parameter - biotype
+      output.1.response.n.err.errorCode: IDA-IDV-003
+      #output.1.response.y.txnID: $input.bio-auth-request:bioAuthReq.txnID$
+      
+  Invalid_BioType:   
+    input.bio-auth-request:
+      bioAuthReq.idvId: $UIN$
+      bioAuthReq.tspID: REF01
+      bioAuthReq.reqTime: $TIMESTAMP$
+      bioAuthReq.bioType: irisImggg
+      bioAuthReq.txnID: $RANDOM:N:10$  
+    input.identity-encrypt-data:
+      identityReq.rightEye: $REMOVE$
+      identityReq.valueleftEye: $idrepo~$input.bio-auth-request:bioAuthReq.idvId$~DECODEFILE:valuedocuments0~//BIR/BDBInfo[Type='Iris'][Subtype='Left']//following::BDB$
+      identityReq.tspID: $input.bio-auth-request:bioAuthReq.tspID$
+    output.output-1-expected-n-error-res:
+      output.1.response.n.err.status: N
+      output.1.response.n.err.resTime: $TIMESTAMP$
+      output.1.response.n.err.errorMessage: Invalid bioType - irisImggg
+      output.1.response.n.err.errorCode: IDA-BIA-013
+      #output.1.response.y.txnID: $input.bio-auth-request:bioAuthReq.txnID$
+      
+  Invalid_VID:    
+    input.bio-auth-request:
+      bioAuthReq.idvId: 1234567890123456
+      bioAuthReq.idvIdType: V
+      bioAuthReq.tspID: REF01
+      bioAuthReq.reqTime: $TIMESTAMP$
+      bioAuthReq.txnID: $RANDOM:N:10$  
+    input.identity-encrypt-data:
+      identityReq.rightEye: $REMOVE$
+      identityReq.valueleftEye: $idrepo~$input.bio-auth-request:bioAuthReq.idvId$~DECODEFILE:valuedocuments0~//BIR/BDBInfo[Type='Iris'][Subtype='Left']//following::BDB$
+      identityReq.tspID: $input.bio-auth-request:bioAuthReq.tspID$
+    output.output-1-expected-n-error-res:
+      output.1.response.n.err.status: N
+      output.1.response.n.err.resTime: $TIMESTAMP$
+      output.1.response.n.err.errorMessage: Invalid VID
+      output.1.response.n.err.errorCode: IDA-MLC-004
+      #output.1.response.y.txnID: $input.bio-auth-request:bioAuthReq.txnID$
+      
+  Invalid_UIN:    
+    input.bio-auth-request:
+      bioAuthReq.idvId: 1234567899
+      bioAuthReq.idvIdType: D
+      bioAuthReq.tspID: REF01
+      bioAuthReq.reqTime: $TIMESTAMP$
+      bioAuthReq.txnID: $RANDOM:N:10$  
+    input.identity-encrypt-data:
+      identityReq.rightEye: $REMOVE$
+      identityReq.valueleftEye: $idrepo~$input.bio-auth-request:bioAuthReq.idvId$~DECODEFILE:valuedocuments0~//BIR/BDBInfo[Type='Iris'][Subtype='Left']//following::BDB$
+      identityReq.tspID: $input.bio-auth-request:bioAuthReq.tspID$
+    output.output-1-expected-n-error-res:
+      output.1.response.n.err.status: N
+      output.1.response.n.err.resTime: $TIMESTAMP$
+      output.1.response.n.err.errorMessage: Invalid UIN
+      output.1.response.n.err.errorCode: IDA-MLC-002
+      #output.1.response.y.txnID: $input.bio-auth-request:bioAuthReq.txnID$
+    
+  Invalid_TimestampRequest:   
+    input.bio-auth-request:
+      bioAuthReq.idvId: $UIN$
+      bioAuthReq.tspID: REF01
+      bioAuthReq.reqTime: 2019-01-2512:50:13.013+05:30
+      bioAuthReq.txnID: $RANDOM:N:10$  
+    input.identity-encrypt-data:
+      identityReq.rightEye: $REMOVE$
+      identityReq.valueleftEye: $idrepo~$input.bio-auth-request:bioAuthReq.idvId$~DECODEFILE:valuedocuments0~//BIR/BDBInfo[Type='Iris'][Subtype='Left']//following::BDB$
+      identityReq.tspID: $input.bio-auth-request:bioAuthReq.tspID$
+    output.output-1-expected-n-error-res:
+      output.1.response.n.err.status: N
+      output.1.response.n.err.resTime: $TIMESTAMPZ$
+      output.1.response.n.err.errorMessage: Invalid Input Parameter - reqTime
+      output.1.response.n.err.errorCode: IDA-IDV-002
+      #output.1.response.y.txnID: $input.bio-auth-request:bioAuthReq.txnID$
+      
+  Invalid_Timestamp_LessThan24HR:   
+    input.bio-auth-request:
+      bioAuthReq.idvId: $UIN$
+      bioAuthReq.tspID: REF01
+      bioAuthReq.reqTime: $TIMESTAMP$HOUR-25
+      bioAuthReq.txnID: $RANDOM:N:10$  
+    input.identity-encrypt-data:
+      identityReq.rightEye: $REMOVE$
+      identityReq.valueleftEye: $idrepo~$input.bio-auth-request:bioAuthReq.idvId$~DECODEFILE:valuedocuments0~//BIR/BDBInfo[Type='Iris'][Subtype='Left']//following::BDB$
+      identityReq.tspID: $input.bio-auth-request:bioAuthReq.tspID$
+    output.output-1-expected-n-error-res:
+      output.1.response.n.err.status: N
+      output.1.response.n.err.resTime: $TIMESTAMP$
+      output.1.response.n.err.errorMessage: Request to be received at MOSIP within 24 hrs/min
+      output.1.response.n.err.errorCode: IDA-MLC-001
+      #output.1.response.y.txnID: $input.bio-auth-request:bioAuthReq.txnID$
+      
+  Invalid_Timestamp_GreaterThan24HR:    
+    input.bio-auth-request:
+      bioAuthReq.idvId: $UIN$
+      bioAuthReq.tspID: REF01
+      bioAuthReq.reqTime: $TIMESTAMP$HOUR+25
+      bioAuthReq.txnID: $RANDOM:N:10$  
+    input.identity-encrypt-data:
+      identityReq.rightEye: $REMOVE$
+      identityReq.valueleftEye: $idrepo~$input.bio-auth-request:bioAuthReq.idvId$~DECODEFILE:valuedocuments0~//BIR/BDBInfo[Type='Iris'][Subtype='Left']//following::BDB$
+      identityReq.tspID: $input.bio-auth-request:bioAuthReq.tspID$
+    output.output-1-expected-n-error-res:
+      output.1.response.n.err.status: N
+      output.1.response.n.err.resTime: $TIMESTAMP$
+      output.1.response.n.err.errorMessage: Request to be received at MOSIP within 24 hrs/min
+      output.1.response.n.err.errorCode: IDA-MLC-001
+      #output.1.response.y.txnID: $input.bio-auth-request:bioAuthReq.txnID$
+      
+  Invalid_SameValue_In_TwoIris:
+    input.bio-auth-request:
+      bioAuthReq.idvId: $UIN$
+      bioAuthReq.tspID: REF01
+      bioAuthReq.reqTime: $TIMESTAMP$    
+      bioAuthReq.txnID: $RANDOM:N:10$  
+    input.identity-encrypt-data:
+      identityReq.valuerightEye: $idrepo~$input.bio-auth-request:bioAuthReq.idvId$~DECODEFILE:valuedocuments0~//BIR/BDBInfo[Type='Iris'][Subtype='Left']//following::BDB$
+      identityReq.valueleftEye: $idrepo~$input.bio-auth-request:bioAuthReq.idvId$~DECODEFILE:valuedocuments0~//BIR/BDBInfo[Type='Iris'][Subtype='Left']//following::BDB$
+      identityReq.tspID: $input.bio-auth-request:bioAuthReq.tspID$
+    output.output-1-expected-n-error-res:
+      output.1.response.n.err.status: N
+      output.1.response.n.err.resTime: $TIMESTAMP$
+      output.1.response.n.err.errorMessage: Duplicate Irises in request
+      output.1.response.n.err.errorCode: IDA-BIA-016
+      #output.1.response.y.txnID: $input.bio-auth-request:bioAuthReq.txnID$
+      
+  Invalid_Remove_Bio_AuthType: 
+    input.bio-auth-request:
+      bioAuthReq.idvId: $UIN$
+      bioAuthReq.tspID: REF01
+      bioAuthReq.reqTime: $TIMESTAMP$
+      bioAuthReq.bio: $REMOVE$
+      bioAuthReq.txnID: $RANDOM:N:10$  
+    input.identity-encrypt-data:
+      identityReq.rightEye: $REMOVE$
+      identityReq.valueleftEye: $idrepo~$input.bio-auth-request:bioAuthReq.idvId$~DECODEFILE:valuedocuments0~//BIR/BDBInfo[Type='Iris'][Subtype='Left']//following::BDB$
+      identityReq.tspID: $input.bio-auth-request:bioAuthReq.tspID$
+    output.output-1-expected-n-error-res:
+      output.1.response.n.err.status: N
+      output.1.response.n.err.resTime: $TIMESTAMP$
+      output.1.response.n.err.errorMessage: No authentication type selected
+      output.1.response.n.err.errorCode: IDA-MLC-008
+      #output.1.response.y.txnID: $input.bio-auth-request:bioAuthReq.txnID$
+      
+  Invalid_Null_Bio_AuthType:   
+    input.bio-auth-request:
+      bioAuthReq.idvId: $UIN$
+      bioAuthReq.tspID: REF01
+      bioAuthReq.reqTime: $TIMESTAMP$
+      bioAuthReq.bio: ''
+      bioAuthReq.txnID: $RANDOM:N:10$  
+    input.identity-encrypt-data:
+      identityReq.rightEye: $REMOVE$
+      identityReq.valueleftEye: $idrepo~$input.bio-auth-request:bioAuthReq.idvId$~DECODEFILE:valuedocuments0~//BIR/BDBInfo[Type='Iris'][Subtype='Left']//following::BDB$
+      identityReq.tspID: $input.bio-auth-request:bioAuthReq.tspID$
+    output.output-1-expected-n-error-res:
+      output.1.response.n.err.status: N
+      output.1.response.n.err.resTime: $TIMESTAMP$
+      output.1.response.n.err.errorMessage: No authentication type selected
+      output.1.response.n.err.errorCode: IDA-MLC-008
+      #output.1.response.y.txnID: $input.bio-auth-request:bioAuthReq.txnID$
+      
+  Invalid_Bio_AuthType_NeitherTrueNorFalse:   
+    input.bio-auth-request:
+      bioAuthReq.idvId: $UIN:WITH:EVEN$
+      bioAuthReq.tspID: REF01
+      bioAuthReq.reqTime: $TIMESTAMP$
+      bioAuthReq.bio: tre
+      bioAuthReq.txnID: $RANDOM:N:10$  
+    input.identity-encrypt-data:
+      identityReq.rightEye: $REMOVE$
+      identityReq.valueleftEye: $idrepo~$input.bio-auth-request:bioAuthReq.idvId$~DECODEFILE:valuedocuments0~//BIR/BDBInfo[Type='Iris'][Subtype='Left']//following::BDB$
+      identityReq.tspID: $input.bio-auth-request:bioAuthReq.tspID$
+    output.output-1-expected-n-error-res:
+      output.1.response.n.err.status: N
+      output.1.response.n.err.resTime: $TIMESTAMP$
+      output.1.response.n.err.errorMessage: Invalid Auth Request
+      output.1.response.n.err.errorCode: IDA-RQV-101
+      #output.1.response.y.txnID: $input.bio-auth-request:bioAuthReq.txnID$
+      
+  Invalid_Bio_AuthType_False:   
+    input.bio-auth-request:
+      bioAuthReq.idvId: $UIN:WITH:EVEN$
+      bioAuthReq.tspID: REF01
+      bioAuthReq.reqTime: $TIMESTAMP$
+      bioAuthReq.bio: BOOLEAN:false
+      bioAuthReq.txnID: $RANDOM:N:10$  
+    input.identity-encrypt-data:
+      identityReq.rightEye: $REMOVE$
+      identityReq.valueleftEye: $idrepo~$input.bio-auth-request:bioAuthReq.idvId$~DECODEFILE:valuedocuments0~//BIR/BDBInfo[Type='Iris'][Subtype='Left']//following::BDB$
+      identityReq.tspID: $input.bio-auth-request:bioAuthReq.tspID$
+    output.output-1-expected-n-error-res:
+      output.1.response.n.err.status: N
+      output.1.response.n.err.resTime: $TIMESTAMP$
+      output.1.response.n.err.errorMessage: No authentication type selected
+      output.1.response.n.err.errorCode: IDA-MLC-008
+      #output.1.response.y.txnID: $input.bio-auth-request:bioAuthReq.txnID$
+      
+  Invalid_NullValue_leftEye:   
+    input.bio-auth-request:
+      bioAuthReq.idvId: $UIN:WITH:ODD$
+      bioAuthReq.tspID: REF01
+      bioAuthReq.reqTime: $TIMESTAMP$
+      bioAuthReq.txnID: $RANDOM:N:10$  
+    input.identity-encrypt-data:
+      identityReq.rightEye: $REMOVE$
+      identityReq.valueleftEye: ''
+      identityReq.tspID: $input.bio-auth-request:bioAuthReq.tspID$
+    output.output-1-expected-n-error-res:
+      output.1.response.n.err.status: N
+      output.1.response.n.err.resTime: $TIMESTAMP$
+      output.1.response.n.err.errorMessage: Missing Input Parameter - iris
+      output.1.response.n.err.errorCode: IDA-IDV-003 
+      #output.1.response.y.txnID: $input.bio-auth-request:bioAuthReq.txnID$
+      
+  Invalid_NullValue_rightEye:   
+    input.bio-auth-request:
+      bioAuthReq.idvId: $UIN:WITH:ODD$
+      bioAuthReq.tspID: REF01
+      bioAuthReq.reqTime: $TIMESTAMP$  
+      bioAuthReq.txnID: $RANDOM:N:10$  
+    input.identity-encrypt-data:
+      identityReq.leftEye: $REMOVE$
+      identityReq.valuerightEye: ''
+      identityReq.tspID: $input.bio-auth-request:bioAuthReq.tspID$
+    output.output-1-expected-n-error-res:
+      output.1.response.n.err.status: N
+      output.1.response.n.err.resTime: $TIMESTAMP$
+      output.1.response.n.err.errorMessage: Missing Input Parameter - iris
+      output.1.response.n.err.errorCode: IDA-IDV-003
+      #output.1.response.y.txnID: $input.bio-auth-request:bioAuthReq.txnID$
+      
+  Invalid_NullIdentity:   
+    input.bio-auth-request:
+      bioAuthReq.idvId: $UIN$
+      bioAuthReq.tspID: REF01
+      bioAuthReq.reqTime: $TIMESTAMP$
+      bioAuthReq.txnID: $RANDOM:N:10$  
+    input.identity-encrypt-data:
+      identityReq.rightEye: $REMOVE$
+      identityReq.leftEye: $REMOVE$
+      identityReq.tspID: $input.bio-auth-request:bioAuthReq.tspID$
+    output.output-1-expected-n-error-res:
+      output.1.response.n.err.status: N
+      output.1.response.n.err.resTime: $TIMESTAMP$
+      output.1.response.n.err.errorMessage: Missing Input Parameter - iris
+      output.1.response.n.err.errorCode: IDA-IDV-003
+      #output.1.response.y.txnID: $input.bio-auth-request:bioAuthReq.txnID$
+      
+  Invalid_Missing_Biometric_data_In_Mosip_DB:
+    input.bio-auth-request:
+      bioAuthReq.idvId: $UIN:WITH:NoBio$
+      bioAuthReq.tspID: REF01
+      bioAuthReq.reqTime: $TIMESTAMP$    
+      bioAuthReq.txnID: $RANDOM:N:10$  
+    input.identity-encrypt-data:
+      identityReq.rightEye: $REMOVE$
+      identityReq.valueleftEye: $idrepo~$input.bio-auth-request:bioAuthReq.idvId$~DECODEFILE:valuedocuments0~//BIR/BDBInfo[Type='Iris'][Subtype='Left']//following::BDB$
+      identityReq.tspID: $input.bio-auth-request:bioAuthReq.tspID$
+    output.output-1-expected-n-error-res:
+      output.1.response.n.err.status: N
+      output.1.response.n.err.resTime: $TIMESTAMP$
+      output.1.response.n.err.errorMessage: Missing biometric data in MOSIP database for the given UIN/Virtual ID
+      output.1.response.n.err.errorCode: IDA-BIA-011
+      #output.1.response.y.txnID: $input.bio-auth-request:bioAuthReq.txnID$
+    audit.auth_transaction:
+      txnId: $input.bio-auth-request:bioAuthReq.txnID$
+      authTypeCode: IRIS-AUTH
+      statusCode: $output.output-1-expected-n-error-res:output.1.response.n.err.status$
+      reqTime: $FETCH$
+      resTime: $FETCH$
+      statusComment: $REGEXP:.*Iris.*Authentication.*Failed.*$
+      idType: D
+    audit.audit_log:
+      refId: $input.bio-auth-request:bioAuthReq.idvId$
+      eventId: $REGEXP:.*IDA-EVT.*$
+      eventName: AUTH_REQUEST_RESPONSE
+      appId: IDA
+      appName: ID-Authentication
+      moduleName: IRIS_AUTH
+      refIdType: UIN
+      
+  Invalid_MatchingScore_NotExceed_ThresholdValue_UsingRightEye:   
+    input.bio-auth-request:
+      bioAuthReq.idvId: $UIN:WITH:EVEN$
+      bioAuthReq.tspID: REF01
+      bioAuthReq.reqTime: $TIMESTAMP$    
+      bioAuthReq.txnID: $RANDOM:N:10$  
+    input.identity-encrypt-data:
+      identityReq.valuerightEye: $idrepo~$input.bio-auth-request:bioAuthReq.idvId$~DECODEFILE:valuedocuments0~//BIR/BDBInfo[Type='Iris'][Subtype='Right']//following::BDB$
+      identityReq.leftEye: $REMOVE$
+      identityReq.tspID: $input.bio-auth-request:bioAuthReq.tspID$
+    output.output-1-expected-n-res:
+      output.1.response.y.status: N
+      #output.1.response.y.usageData: '0x0000200000000000'
+      output.1.response.y.resTime: $TIMESTAMP$
+      output.1.response.y.reqTime: $input.bio-auth-request:bioAuthReq.reqTime$
+      output.1.response.y.err.errorMessage: Biometric data - IrisImg did not match
+      output.1.response.y.err.errorCode: IDA-BIA-015
+      output.1.response.y.txnID: $input.bio-auth-request:bioAuthReq.txnID$
+    audit.auth_transaction:
+      txnId: $input.bio-auth-request:bioAuthReq.txnID$
+      authTypeCode: IRIS-AUTH
+      statusCode: $output.output-1-expected-n-res:output.1.response.y.status$
+      reqTime: $FETCH$
+      resTime: $FETCH$
+      statusComment: $REGEXP:.*Iris.*Authentication.*Failed.*$
+      idType: D
+    audit.audit_log:
+      refId: $input.bio-auth-request:bioAuthReq.idvId$
+      eventId: $REGEXP:.*IDA-EVT.*$
+      eventName: AUTH_REQUEST_RESPONSE
+      appId: IDA
+      appName: ID-Authentication
+      moduleName: IRIS_AUTH
+      refIdType: UIN
+      
+  Invalid_MatchingScore_NotExceed_ThresholdValue_UsingLeftEye:   
+    input.bio-auth-request:
+      bioAuthReq.idvId: $UIN:WITH:ODD$
+      bioAuthReq.tspID: REF01
+      bioAuthReq.reqTime: $TIMESTAMP$    
+      bioAuthReq.txnID: $RANDOM:N:10$ 
+    input.identity-encrypt-data:
+      identityReq.valueleftEye: $idrepo~$input.bio-auth-request:bioAuthReq.idvId$~DECODEFILE:valuedocuments0~//BIR/BDBInfo[Type='Iris'][Subtype='Left']//following::BDB$
+      identityReq.rightEye: $REMOVE$
+      identityReq.tspID: $input.bio-auth-request:bioAuthReq.tspID$
+    output.output-1-expected-n-res:
+      output.1.response.y.status: N
+      #output.1.response.y.usageData: '0x0000200000000000'
+      output.1.response.y.resTime: $TIMESTAMP$
+      output.1.response.y.reqTime: $input.bio-auth-request:bioAuthReq.reqTime$
+      output.1.response.y.err.errorMessage: Biometric data - IrisImg did not match
+      output.1.response.y.err.errorCode: IDA-BIA-015
+      output.1.response.y.txnID: $input.bio-auth-request:bioAuthReq.txnID$
+    audit.auth_transaction:
+      txnId: $input.bio-auth-request:bioAuthReq.txnID$
+      authTypeCode: IRIS-AUTH
+      statusCode: $output.output-1-expected-n-res:output.1.response.y.status$
+      reqTime: $FETCH$
+      resTime: $FETCH$
+      statusComment: $REGEXP:.*Iris.*Authentication.*Failed.*$
+      idType: D
+    audit.audit_log:
+      refId: $input.bio-auth-request:bioAuthReq.idvId$
+      eventId: $REGEXP:.*IDA-EVT.*$
+      eventName: AUTH_REQUEST_RESPONSE
+      appId: IDA
+      appName: ID-Authentication
+      moduleName: IRIS_AUTH
+      refIdType: UIN
+      
+  Invalid_IrisData_WithValidBioType:   
+    input.bio-auth-request:
+      bioAuthReq.idvId: $UIN:WITH:EVEN$
+      bioAuthReq.tspID: REF01
+      bioAuthReq.reqTime: $TIMESTAMP$   
+      bioAuthReq.bioType: fgrImg
+      bioAuthReq.txnID: $RANDOM:N:10$  
+    input.identity-encrypt-data:
+      identityReq.rightEye: $REMOVE$
+      identityReq.valueleftEye: $idrepo~$input.bio-auth-request:bioAuthReq.idvId$~DECODEFILE:valuedocuments0~//BIR/BDBInfo[Type='Iris'][Subtype='Left']//following::BDB$
+      identityReq.tspID: $input.bio-auth-request:bioAuthReq.tspID$
+    output.output-1-expected-n-error-res:
+      output.1.response.n.err.status: N
+      output.1.response.n.err.resTime: $TIMESTAMP$
+      output.1.response.n.err.errorMessage: Invalid bioType - fgrImg
+      output.1.response.n.err.errorCode: IDA-BIA-013
+      #output.1.response.y.txnID: $input.bio-auth-request:bioAuthReq.txnID$
+      
+  Invalid_Identity_Json:    
+    input.bio-auth-request:
+      bioAuthReq.idvId: $UIN:WITH:EVEN$
+      bioAuthReq.tspID: REF01
+      bioAuthReq.reqTime: $TIMESTAMP$   
+      bioAuthReq.txnID: $RANDOM:N:10$  
+    input.identity-encrypt-data:
+      identityReq.rightEye: {"value":"+$idrepo~$input.bio-auth-request:bioAuthReq.idvId$~DECODEFILE:valuedocuments0~//BIR/BDBInfo[Type='Iris'][Subtype='Right']//following::BDB$+"}
+      identityReq.leftEye: $idrepo~$input.bio-auth-request:bioAuthReq.idvId$~DECODEFILE:valuedocuments0~//BIR/BDBInfo[Type='Iris'][Subtype='Left']//following::BDB$
+      identityReq.tspID: $input.bio-auth-request:bioAuthReq.tspID$
+    output.output-1-expected-n-error-res:
+      output.1.response.n.err.status: N
+      output.1.response.n.err.resTime: $TIMESTAMP$
+      output.1.response.n.err.errorMessage: Invalid Auth Request
+      output.1.response.n.err.errorCode: IDA-RQV-101
+      #output.1.response.y.txnID: $input.bio-auth-request:bioAuthReq.txnID$
+      
+  Invalid_CompisiteMatchingScore_NotExceed_ThresholdValue:   
+    input.bio-auth-request:
+      bioAuthReq.idvId: $UIN:WITH:ODD$
+      bioAuthReq.tspID: REF01
+      bioAuthReq.reqTime: $TIMESTAMP$    
+      bioAuthReq.txnID: $RANDOM:N:10$  
+    input.identity-encrypt-data:
+      identityReq.valuerightEye: $idrepo~$input.bio-auth-request:bioAuthReq.idvId$~DECODEFILE:valuedocuments0~//BIR/BDBInfo[Type='Iris'][Subtype='Right']//following::BDB$
+      identityReq.valueleftEye: $idrepo~$input.bio-auth-request:bioAuthReq.idvId$~DECODEFILE:valuedocuments0~//BIR/BDBInfo[Type='Iris'][Subtype='Left']//following::BDB$
+      identityReq.tspID: $input.bio-auth-request:bioAuthReq.tspID$
+    output.output-1-expected-n-res:
+      output.1.response.y.status: N
+      #output.1.response.y.usageData: '0x0000200000000000'
+      output.1.response.y.resTime: $TIMESTAMP$
+      output.1.response.y.reqTime: $input.bio-auth-request:bioAuthReq.reqTime$
+      output.1.response.y.err.errorMessage: Biometric data - IrisImg did not match
+      output.1.response.y.err.errorCode: IDA-BIA-015
+      output.1.response.y.txnID: $input.bio-auth-request:bioAuthReq.txnID$
+    audit.auth_transaction:
+      txnId: $input.bio-auth-request:bioAuthReq.txnID$
+      authTypeCode: IRIS-AUTH
+      statusCode: $output.output-1-expected-n-res:output.1.response.y.status$
+      statusComment: $REGEXP:.*Iris.*Authentication.*Failed.*$
+      reqTime: $FETCH$
+      resTime: $FETCH$
+      idType: D
+    audit.audit_log:
+      refId: $input.bio-auth-request:bioAuthReq.idvId$
+      eventId: $REGEXP:.*IDA-EVT.*$
+      eventName: AUTH_REQUEST_RESPONSE
+      appId: IDA
+      appName: ID-Authentication
+      moduleName: IRIS_AUTH
+      refIdType: UIN
+      
+  Invalid_Attribute_In_Identity:   
+    input.bio-auth-request:
+      bioAuthReq.idvId: $UIN:WITH:EVEN$
+      bioAuthReq.tspID: REF01
+      bioAuthReq.reqTime: $TIMESTAMP$
+      bioAuthReq.txnID: $RANDOM:N:10$  
+    input.identity-encrypt-dummy-data:
+      identityReq.valueDummy: $idrepo~$input.bio-auth-request:bioAuthReq.idvId$~DECODEFILE:valuedocuments0~//BIR/BDBInfo[Type='Iris'][Subtype='Left']//following::BDB$
+      identityReq.tspID: $input.bio-auth-request:bioAuthReq.tspID$
+    output.output-1-expected-n-error-res:
+      output.1.response.n.err.status: N
+      output.1.response.n.err.resTime: $TIMESTAMP$
+      output.1.response.n.err.errorMessage: Missing Input Parameter - iris
+      output.1.response.n.err.errorCode: IDA-IDV-003
+      #output.1.response.y.txnID: $input.bio-auth-request:bioAuthReq.txnID$    
+  
+      

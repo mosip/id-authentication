@@ -17,6 +17,8 @@ import au.com.southsky.jfreesane.SaneException;
 import au.com.southsky.jfreesane.SaneSession;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
+import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.context.ApplicationContext;
 
 /**
  * This class is used to provide document scanner functionalities for Linux
@@ -84,11 +86,11 @@ public class DocumentScannerSaneServiceImpl extends DocumentScannerService {
 	 */
 	private void setScannerSettings(SaneDevice saneDevice) throws IOException, SaneException {
 		/* setting the resolution in dpi for the quality of the document */
-		saneDevice.getOption("resolution").setIntegerValue(scannerDpi);
+		saneDevice.getOption("resolution").setIntegerValue(Integer.parseInt(String.valueOf(ApplicationContext.map().get(RegistrationConstants.DOC_SCAN_DPI))));
+		
+		saneDevice.getOption("brightness").setIntegerValue(Integer.parseInt(String.valueOf(ApplicationContext.map().get(RegistrationConstants.DOC_SCAN_BRIGHTNESS))));
 
-		saneDevice.getOption("brightness").setIntegerValue(scannerBrightness);
-
-		saneDevice.getOption("contrast").setIntegerValue(scannerContrast);
+		saneDevice.getOption("contrast").setIntegerValue(Integer.parseInt(String.valueOf(ApplicationContext.map().get(RegistrationConstants.DOC_SCAN_CONTRAST))));
 
 		saneDevice.getOption("depth").setIntegerValue(scannerDepth);
 

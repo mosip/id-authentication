@@ -1,0 +1,11 @@
+{
+  "documents": [
+    {
+      "code": "CRN",
+      "name": "Certificate of Relationship",
+      "description": "Proof relationship of a person",
+      "langCode": "eng",
+      "isActive": true
+    }
+  ]
+}

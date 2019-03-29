@@ -122,7 +122,7 @@ public class UserDetailServiceJobTest {
 
 		Mockito.when(applicationContext.getBean(UserDetailService.class)).thenReturn(userDetailService);
 
-		Mockito.when(userDetailService.save()).thenReturn(responseDTO);
+		Mockito.when(userDetailService.save("System")).thenReturn(responseDTO);
 
 		userDetailServcieJob.executeInternal(context);
 		userDetailServcieJob.executeJob("User", "1");

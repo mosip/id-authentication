@@ -1,0 +1,10 @@
+{
+  "timestamp": 1551938909426,
+  "status": 200,
+  "errors": [
+    {
+      "errorCode": "KER_SYNC-100",
+      "errorMessage": "Text '2019-01-06 15:00:00.000Z' could not be parsed at index 10"
+    }
+  ]
+}

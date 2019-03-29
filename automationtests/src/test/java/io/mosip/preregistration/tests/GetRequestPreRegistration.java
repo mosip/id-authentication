@@ -101,7 +101,7 @@ public class GetRequestPreRegistration extends BaseTestCase {
 
 						logger.info(objectData.toJSONString());
 						GetHeader.getHeader(objectData);
-						System.out.println(GetHeader.getHeader(objectData));
+						logger.info(GetHeader.getHeader(objectData));
 						response = applicationLibrary.getRequest(preReg_URI, GetHeader.getHeader(objectData));
 
 					} else if (listofFiles[k].getName().toLowerCase().contains("response")) {

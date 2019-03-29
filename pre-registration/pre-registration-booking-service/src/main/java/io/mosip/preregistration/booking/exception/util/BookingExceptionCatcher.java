@@ -5,6 +5,7 @@
 package io.mosip.preregistration.booking.exception.util;
 
 import java.time.DateTimeException;
+import java.time.format.DateTimeParseException;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.preregistration.booking.errorcodes.ErrorCodes;
@@ -23,6 +24,7 @@ import io.mosip.preregistration.booking.exception.BookingTimeSlotAlreadyBooked;
 import io.mosip.preregistration.booking.exception.BookingTimeSlotNotSeletectedException;
 import io.mosip.preregistration.booking.exception.CancelAppointmentFailedException;
 import io.mosip.preregistration.booking.exception.DemographicGetStatusException;
+import io.mosip.preregistration.booking.exception.DemographicStatusUpdationException;
 import io.mosip.preregistration.booking.exception.DocumentNotFoundException;
 import io.mosip.preregistration.booking.exception.InvalidDateTimeFormatException;
 import io.mosip.preregistration.booking.exception.OperationNotAllowedException;
@@ -45,22 +47,22 @@ import io.mosip.preregistration.core.exception.TableNotAccessibleException;
  *
  */
 public class BookingExceptionCatcher {
-	
+
 	/**
 	 * Method to handle the respective exceptions
 	 * 
-	 * @param ex pass the exception
+	 * @param ex
+	 *            pass the exception
 	 */
 	public void handle(Exception ex) {
 		if (ex instanceof RecordNotFoundException) {
-			throw new RecordNotFoundException(((RecordNotFoundException) ex).getErrorCode(),
-					ex.getMessage());
+			throw new RecordNotFoundException(((RecordNotFoundException) ex).getErrorCode(), ex.getMessage());
 		} else if (ex instanceof InvalidRequestParameterException) {
 			throw new InvalidRequestParameterException(((InvalidRequestParameterException) ex).getErrorCode(),
 					((InvalidRequestParameterException) ex).getErrorText());
-		} else if (ex instanceof DateTimeException) {
-			throw new InvalidDateTimeFormatException(ErrorCodes.PRG_BOOK_RCI_009.toString(),
-					ErrorMessages.INVALID_DATE_TIME_FORMAT.toString());
+		} else if (ex instanceof DateTimeException || ex instanceof InvalidDateTimeFormatException) {
+			throw new InvalidDateTimeFormatException(((InvalidDateTimeFormatException) ex).getErrorCode(),
+					((InvalidDateTimeFormatException) ex).getErrorText());
 		} else if (ex instanceof DocumentNotFoundException) {
 			throw new DocumentNotFoundException(((DocumentNotFoundException) ex).getErrorCode(),
 					((DocumentNotFoundException) ex).getErrorText(), ex.getCause());
@@ -68,10 +70,10 @@ public class BookingExceptionCatcher {
 
 			throw new TableNotAccessibleException(((DataAccessLayerException) ex).getErrorCode(),
 					((DataAccessLayerException) ex).getErrorText());
-		}else if(ex instanceof BookingDataNotFoundException) {
+		} else if (ex instanceof BookingDataNotFoundException) {
 			throw new BookingDataNotFoundException(((BookingDataNotFoundException) ex).getErrorCode(),
 					((BookingDataNotFoundException) ex).getErrorText());
-		}else if (ex instanceof AppointmentBookingFailedException) {
+		} else if (ex instanceof AppointmentBookingFailedException) {
 			throw new AppointmentBookingFailedException(((AppointmentBookingFailedException) ex).getErrorCode(),
 					((AppointmentBookingFailedException) ex).getErrorText());
 		} else if (ex instanceof BookingTimeSlotAlreadyBooked) {
@@ -84,12 +86,13 @@ public class BookingExceptionCatcher {
 			throw new BookingPreIdNotFoundException(((BookingPreIdNotFoundException) ex).getErrorCode(),
 					((BookingPreIdNotFoundException) ex).getErrorText());
 		} else if (ex instanceof BookingRegistrationCenterIdNotFoundException) {
-			throw new BookingRegistrationCenterIdNotFoundException(((BookingRegistrationCenterIdNotFoundException) ex).getErrorCode(),
+			throw new BookingRegistrationCenterIdNotFoundException(
+					((BookingRegistrationCenterIdNotFoundException) ex).getErrorCode(),
 					((BookingRegistrationCenterIdNotFoundException) ex).getErrorText());
-		}  else if (ex instanceof BookingTimeSlotNotSeletectedException) {
+		} else if (ex instanceof BookingTimeSlotNotSeletectedException) {
 			throw new BookingTimeSlotNotSeletectedException(((BookingTimeSlotNotSeletectedException) ex).getErrorCode(),
 					((BookingTimeSlotNotSeletectedException) ex).getErrorText());
-		}  else if (ex instanceof BookingDateNotSeletectedException) {
+		} else if (ex instanceof BookingDateNotSeletectedException) {
 			throw new BookingDateNotSeletectedException(((BookingDateNotSeletectedException) ex).getErrorCode(),
 					((BookingDateNotSeletectedException) ex).getErrorText());
 		} else if (ex instanceof AppointmentCannotBeBookedException) {
@@ -98,47 +101,48 @@ public class BookingExceptionCatcher {
 		} else if (ex instanceof CancelAppointmentFailedException) {
 			throw new CancelAppointmentFailedException(((CancelAppointmentFailedException) ex).getErrorCode(),
 					((CancelAppointmentFailedException) ex).getErrorText());
-		}else if (ex instanceof AvailablityNotFoundException) {
+		} else if (ex instanceof AvailablityNotFoundException) {
 			throw new AvailablityNotFoundException(((AvailablityNotFoundException) ex).getErrorCode(),
 					((AvailablityNotFoundException) ex).getErrorText());
-		}else if (ex instanceof AppointmentAlreadyCanceledException) {
+		} else if (ex instanceof AppointmentAlreadyCanceledException) {
 			throw new AppointmentAlreadyCanceledException(((AppointmentAlreadyCanceledException) ex).getErrorCode(),
 					((AppointmentAlreadyCanceledException) ex).getErrorText());
-		}else if (ex instanceof AppointmentCannotBeCanceledException) {
+		} else if (ex instanceof AppointmentCannotBeCanceledException) {
 			throw new AppointmentCannotBeCanceledException(((AppointmentCannotBeCanceledException) ex).getErrorCode(),
 					((AppointmentCannotBeCanceledException) ex).getErrorText());
-		}
-		else if (ex instanceof AvailablityNotFoundException) {
-			throw new AvailablityNotFoundException(((AvailablityNotFoundException) ex).getErrorCode(),
-					((AvailablityNotFoundException) ex).getErrorText());
-		}
-		else if (ex instanceof DemographicGetStatusException) {
+		} else if (ex instanceof DemographicGetStatusException) {
 			throw new DemographicGetStatusException(((DemographicGetStatusException) ex).getErrorCode(),
 					((DemographicGetStatusException) ex).getErrorText());
-		}
-		else if (ex instanceof AppointmentBookException) {
+		} else if (ex instanceof AppointmentBookException) {
 			throw new AppointmentBookException(((AppointmentBookException) ex).getErrorCode(),
 					((AppointmentBookException) ex).getErrorText());
-		}
-		else if (ex instanceof AppointmentCancelException) {
+		} else if (ex instanceof AppointmentCancelException) {
 			throw new AppointmentCancelException(((AppointmentCancelException) ex).getErrorCode(),
 					((AppointmentCancelException) ex).getErrorText());
-		}
-		else if (ex instanceof AppointmentReBookException) {
+		} else if (ex instanceof AppointmentReBookException) {
 			throw new AppointmentReBookException(((AppointmentReBookException) ex).getErrorCode(),
 					((AppointmentReBookException) ex).getErrorText());
-		}
-		else if (ex instanceof TimeSpanException) {
-			throw new AppointmentReBookException(((TimeSpanException) ex).getErrorCode(),
+		} else if (ex instanceof TimeSpanException) {
+			throw new TimeSpanException(((TimeSpanException) ex).getErrorCode(),
 					((TimeSpanException) ex).getErrorText());
-		}
-		else if (ex instanceof RecordFailedToDeleteException) {
+		} else if (ex instanceof RecordFailedToDeleteException) {
 			throw new RecordFailedToDeleteException(((RecordFailedToDeleteException) ex).getErrorCode(),
 					((RecordFailedToDeleteException) ex).getErrorText());
-		}
-		else if (ex instanceof OperationNotAllowedException) {
+		} else if (ex instanceof OperationNotAllowedException) {
 			throw new OperationNotAllowedException(((OperationNotAllowedException) ex).getErrorCode(),
 					((OperationNotAllowedException) ex).getErrorText());
+		} else if (ex instanceof DemographicStatusUpdationException) {
+			throw new DemographicStatusUpdationException(((DemographicStatusUpdationException) ex).getErrorCode(),
+					((DemographicStatusUpdationException) ex).getErrorText());
+		} else if (ex instanceof DateTimeParseException) {
+			throw new InvalidDateTimeFormatException(ErrorCodes.PRG_BOOK_RCI_031.getCode(),
+					ErrorMessages.INVALID_BOOKING_DATE_TIME.getMessage());
+		} else if (ex instanceof InvalidDateTimeFormatException) {
+			throw new InvalidDateTimeFormatException(((InvalidDateTimeFormatException) ex).getErrorCode(),
+					((InvalidDateTimeFormatException) ex).getErrorText());
+		} else if (ex instanceof TableNotAccessibleException) {
+			throw new TableNotAccessibleException(((TableNotAccessibleException) ex).getErrorCode(),
+					((TableNotAccessibleException) ex).getErrorText());
 		}
 
 	}

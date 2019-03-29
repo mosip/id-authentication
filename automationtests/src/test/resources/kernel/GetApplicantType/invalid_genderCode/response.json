@@ -1,0 +1,10 @@
+{
+  "timestamp": 1551676231312,
+  "status": 200,
+  "errors": [
+    {
+      "errorCode": "KER-MSD-147",
+      "errorMessage": "Applicant Type data does not exist"
+    }
+  ]
+}

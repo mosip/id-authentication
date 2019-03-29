@@ -24,12 +24,12 @@ public class IdAuthenticationDaoExceptionTest {
 	
 	@Test(expected=IdAuthenticationDaoException.class)
 	public void IdAuthenticationDaoExceptionEnum() throws IdAuthenticationDaoException {
-		throw new IdAuthenticationDaoException(IdAuthenticationErrorConstants.OTP_NOT_PRESENT);
+		throw new IdAuthenticationDaoException(IdAuthenticationErrorConstants.OTP_GENERATION_FAILED);
 	}
 	
 	@Test(expected=IdAuthenticationDaoException.class)
 	public void IdAuthenticationDaoExceptionEnumThrowable() throws IdAuthenticationDaoException {
-		throw new IdAuthenticationDaoException(IdAuthenticationErrorConstants.OTP_NOT_PRESENT, null);
+		throw new IdAuthenticationDaoException(IdAuthenticationErrorConstants.OTP_GENERATION_FAILED, null);
 	}
 
 }

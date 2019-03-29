@@ -1,6 +1,7 @@
 package io.mosip.kernel.lkeymanager.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,6 +27,7 @@ import io.mosip.kernel.lkeymanager.dto.LicenseKeyMappingResponseDto;
  * @since 1.0.0
  *
  */
+@RefreshScope
 @RestController
 public class LicenseKeyController {
 	/**

@@ -40,10 +40,10 @@ public class AuditLogRequestBuilder {
 	 * @return the audit response dto
 	 */
 	public AuditResponseDto createAuditRequestBuilder(String description, String eventId, String eventName, String eventType,
-			String registrationId) {
+			String registrationId, ApiName apiname) {
 
-		AuditRequestDto auditRequestDto=null;
-		AuditResponseDto auditResponseDto=null;
+		AuditRequestDto auditRequestDto=new AuditRequestDto();
+		AuditResponseDto auditResponseDto=new AuditResponseDto();
 
 		try {
 			
@@ -64,12 +64,48 @@ public class AuditLogRequestBuilder {
 			auditRequestDto.setModuleName(null);
 			auditRequestDto.setSessionUserId(AuditLogConstant.SYSTEM.toString());
 			auditRequestDto.setSessionUserName(null);
-			auditResponseDto=(AuditResponseDto)registrationProcessorRestService.postApi(ApiName.AUDIT, "", "", auditRequestDto, AuditResponseDto.class);
+			auditResponseDto=(AuditResponseDto)registrationProcessorRestService.postApi(apiname, "", "", auditRequestDto, AuditResponseDto.class);
 
 		} catch (ApisResourceAccessException arae) {
 
 			LOGGER.error(arae.getMessage());
 			
+		}
+
+		return auditResponseDto;
+	}
+
+	public AuditResponseDto createAuditRequestBuilder(String description, String eventId, String eventName, String eventType,String moduleId,String moduleName,
+			String registrationId) {
+
+		AuditRequestDto auditRequestDto=null;
+		AuditResponseDto auditResponseDto=null;
+
+		try {
+
+			auditRequestDto= new AuditRequestDto();
+			auditRequestDto.setDescription(description);
+			auditRequestDto.setActionTimeStamp(DateUtils.getUTCCurrentDateTimeString());
+			auditRequestDto.setApplicationId(AuditLogConstant.MOSIP_4.toString());
+			auditRequestDto.setApplicationName(AuditLogConstant.REGISTRATION_PROCESSOR.toString());
+			auditRequestDto.setCreatedBy(AuditLogConstant.SYSTEM.toString());
+			auditRequestDto.setEventId(eventId);
+			auditRequestDto.setEventName(eventName);
+			auditRequestDto.setEventType(eventType);
+			auditRequestDto.setHostIp(ServerUtil.getServerUtilInstance().getServerIp());
+			auditRequestDto.setHostName(ServerUtil.getServerUtilInstance().getServerName());
+			auditRequestDto.setId(registrationId);
+			auditRequestDto.setIdType(AuditLogConstant.REGISTRATION_ID.toString());
+			auditRequestDto.setModuleId(moduleId);
+			auditRequestDto.setModuleName(moduleName);
+			auditRequestDto.setSessionUserId(AuditLogConstant.SYSTEM.toString());
+			auditRequestDto.setSessionUserName(null);
+			auditResponseDto=(AuditResponseDto)registrationProcessorRestService.postApi(ApiName.AUDIT, "", "", auditRequestDto, AuditResponseDto.class);
+
+		} catch (ApisResourceAccessException arae) {
+
+			LOGGER.error(arae.getMessage());
+
 		}
 
 		return auditResponseDto;

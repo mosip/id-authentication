@@ -1,0 +1,14 @@
+{
+  "status": "N",
+  "err": [],
+  "txnID": "1234567890",
+  "resTime": "2019-01-31T17:53:48.214+05:30",
+  "info": {
+    "idType": "D",
+    "reqTime": "2019-01-31T10:00:23.027+05:30",
+    "matchInfos": [],
+    "bioInfos": [],
+    "usageData": "0x0100000000000000"
+  },
+  "ver": "$version$"
+}

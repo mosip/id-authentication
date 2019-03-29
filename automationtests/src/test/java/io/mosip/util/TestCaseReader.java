@@ -27,15 +27,9 @@ public class TestCaseReader extends BaseTestCase {
 	 */
 	public static Object[][] readTestCases(String folderName, String testType) throws IOException, ParseException {
 
-	/*	String apiPath = "src/test/resources/" + folderName + "/";
-		File files = new File(apiPath);
-		File[] listOfFolders = files.listFiles();*/
-
-
-		String configPath1 =  "src/test/resources/" + folderName + "/";
+		String configPath1 = "src/test/resources/" + folderName + "/";
 		File folder1 = new File(configPath1);
 		File[] listOfFolders = folder1.listFiles();
- 
 
 		ArrayList<String> testCaseName = new ArrayList<>();
 		for (int j = 0; j < listOfFolders.length; j++) {

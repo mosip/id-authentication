@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.preregistration.core.code.AuditLogVariables;
 import io.mosip.preregistration.core.code.EventId;
@@ -22,9 +21,9 @@ import io.mosip.preregistration.core.common.dto.DemographicResponseDTO;
 import io.mosip.preregistration.core.common.dto.DocumentMultipartResponseDTO;
 import io.mosip.preregistration.core.common.dto.MainRequestDTO;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
+import io.mosip.preregistration.core.common.dto.PreRegIdsByRegCenterIdDTO;
 import io.mosip.preregistration.core.common.dto.PreRegIdsByRegCenterIdResponseDTO;
 import io.mosip.preregistration.core.config.LoggerConfiguration;
-import io.mosip.preregistration.core.exception.TableNotAccessibleException;
 import io.mosip.preregistration.core.util.AuditLogUtil;
 import io.mosip.preregistration.core.util.ValidationUtil;
 import io.mosip.preregistration.datasync.dto.DataSyncRequestDTO;
@@ -32,7 +31,6 @@ import io.mosip.preregistration.datasync.dto.PreRegArchiveDTO;
 import io.mosip.preregistration.datasync.dto.PreRegistrationIdsDTO;
 import io.mosip.preregistration.datasync.dto.ReverseDataSyncRequestDTO;
 import io.mosip.preregistration.datasync.dto.ReverseDatasyncReponseDTO;
-import io.mosip.preregistration.datasync.errorcodes.ErrorMessages;
 import io.mosip.preregistration.datasync.exception.util.DataSyncExceptionCatcher;
 import io.mosip.preregistration.datasync.service.util.DataSyncServiceUtil;
 
@@ -90,30 +88,28 @@ public class DataSyncService {
 
 	public MainResponseDTO<PreRegistrationIdsDTO> retrieveAllPreRegIds(
 			MainRequestDTO<DataSyncRequestDTO> dataSyncRequest) {
-		PreRegistrationIdsDTO preRegistrationIdsDTO = new PreRegistrationIdsDTO();
+		PreRegistrationIdsDTO preRegistrationIdsDTO = null;
 		MainResponseDTO<PreRegistrationIdsDTO> responseDto = new MainResponseDTO<>();
 		List<String> preregIds;
 		log.info("sessionId", "idType", "id", "In retrieveAllPreRegIds method of datasync service ");
 		boolean isRetrieveAllSuccess = false;
 		try {
-			    ValidationUtil.requestValidator(serviceUtil.prepareRequestParamMap(dataSyncRequest), requiredRequestMap);
-			    serviceUtil.validateDataSyncRequest(dataSyncRequest.getRequest());
-				DataSyncRequestDTO dataSyncRequestDTO = dataSyncRequest.getRequest();
-				preregIds = serviceUtil.callGetPreIdsRestService(dataSyncRequestDTO.getFromDate(),
-						dataSyncRequestDTO.getToDate());
-				PreRegIdsByRegCenterIdResponseDTO preRegIdsByRegCenterIdResponseDTO = serviceUtil
-						.callGetPreIdsByRegCenterIdRestService(dataSyncRequestDTO.getRegClientId(), preregIds);
-				preRegistrationIdsDTO = serviceUtil
-						.getLastUpdateTimeStamp(preRegIdsByRegCenterIdResponseDTO.getPreRegistrationIds());
-				responseDto.setStatus(Boolean.TRUE);
-				responseDto.setResTime(serviceUtil.getCurrentResponseTime());
-				responseDto.setResponse(preRegistrationIdsDTO);
-			
+			ValidationUtil.requestValidator(dataSyncRequest);
+			serviceUtil.validateDataSyncRequest(dataSyncRequest.getRequest());
+			DataSyncRequestDTO dataSyncRequestDTO = dataSyncRequest.getRequest();
+			PreRegIdsByRegCenterIdResponseDTO preRegIdsDTO = serviceUtil
+					.callBookedPreIdsByDateAndRegCenterIdRestService(dataSyncRequestDTO.getFromDate(),
+							dataSyncRequestDTO.getToDate(), dataSyncRequestDTO.getRegClientId());
+			PreRegIdsByRegCenterIdDTO byRegCenterIdDTO = new PreRegIdsByRegCenterIdDTO();
+			byRegCenterIdDTO.setPreRegistrationIds(preRegIdsDTO.getPreRegistrationIds());
+			preRegistrationIdsDTO = serviceUtil.getLastUpdateTimeStamp(byRegCenterIdDTO);
+			responseDto.setResponsetime(serviceUtil.getCurrentResponseTime());
+			responseDto.setResponse(preRegistrationIdsDTO);
+
 			isRetrieveAllSuccess = true;
 		} catch (Exception ex) {
 			log.error("sessionId", "idType", "id",
 					"In retrieveAllPreRegIds method of datasync service - " + ex.getMessage());
-
 			new DataSyncExceptionCatcher().handle(ex);
 		} finally {
 			if (isRetrieveAllSuccess) {
@@ -135,7 +131,7 @@ public class DataSyncService {
 	 */
 	public MainResponseDTO<PreRegArchiveDTO> getPreRegistrationData(String preId) {
 		MainResponseDTO<PreRegArchiveDTO> responseDto = new MainResponseDTO<>();
-		PreRegArchiveDTO preRegArchiveDTO = new PreRegArchiveDTO();
+		PreRegArchiveDTO preRegArchiveDTO = null;
 		log.info("sessionId", "idType", "id", "In getPreRegistrationData method of datasync service ");
 		boolean isRetrieveSuccess = false;
 		try {
@@ -144,8 +140,7 @@ public class DataSyncService {
 			BookingRegistrationDTO bookingRegistrationDTO = serviceUtil
 					.callGetAppointmentDetailsRestService(preId.trim());
 			preRegArchiveDTO = serviceUtil.archivingFiles(preRegistrationDTO, bookingRegistrationDTO, documentlist);
-			responseDto.setStatus(Boolean.TRUE);
-			responseDto.setResTime(serviceUtil.getCurrentResponseTime());
+			responseDto.setResponsetime(serviceUtil.getCurrentResponseTime());
 			responseDto.setResponse(preRegArchiveDTO);
 			isRetrieveSuccess = true;
 		} catch (Exception ex) {
@@ -173,19 +168,17 @@ public class DataSyncService {
 	public MainResponseDTO<ReverseDatasyncReponseDTO> storeConsumedPreRegistrations(
 			MainRequestDTO<ReverseDataSyncRequestDTO> reverseDataSyncRequest) {
 		MainResponseDTO<ReverseDatasyncReponseDTO> responseDto = new MainResponseDTO<>();
-		ReverseDatasyncReponseDTO reverseDatasyncReponse = new ReverseDatasyncReponseDTO();
+		ReverseDatasyncReponseDTO reverseDatasyncReponse = null;
 		log.info("sessionId", "idType", "id", "In storeConsumedPreRegistrations method of datasync service ");
 		boolean isSaveSuccess = false;
 		try {
-			if (ValidationUtil.requestValidator(serviceUtil.prepareRequestParamMap(reverseDataSyncRequest),
-					requiredRequestMap)
+			if (ValidationUtil.requestValidator(reverseDataSyncRequest)
 					&& serviceUtil.validateReverseDataSyncRequest(reverseDataSyncRequest.getRequest())) {
-				reverseDatasyncReponse = serviceUtil.reverseDateSyncSave(reverseDataSyncRequest.getReqTime(),
+				reverseDatasyncReponse = serviceUtil.reverseDateSyncSave(reverseDataSyncRequest.getRequesttime(),
 						reverseDataSyncRequest.getRequest());
-				responseDto.setStatus(Boolean.TRUE);
 				responseDto.setResponse(reverseDatasyncReponse);
-				responseDto.setResTime(serviceUtil.getCurrentResponseTime());
-				responseDto.setErr(null);
+				responseDto.setResponsetime(serviceUtil.getCurrentResponseTime());
+				responseDto.setErrors(null);
 			}
 			isSaveSuccess = true;
 		} catch (Exception ex) {

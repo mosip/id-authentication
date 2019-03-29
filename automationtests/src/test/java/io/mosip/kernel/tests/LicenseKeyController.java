@@ -93,7 +93,6 @@ public class LicenseKeyController extends BaseTestCase implements ITest{
 	 */
 	@DataProvider(name = "LicenseKeyGenerator")
 	public static Object[][] readData1(ITestContext context) throws Exception {
-		//CommonLibrary.configFileWriter(folderPath,requestKeyFile,"DemographicCreate","smokePreReg");
 		 testParam = context.getCurrentXmlTest().getParameter("testType");
 		switch (testParam) {
 		case "smoke":
@@ -114,7 +113,7 @@ public class LicenseKeyController extends BaseTestCase implements ITest{
 	 * Given input Json as per defined folders When POSt request is sent to /licensekeymanager/v1.0/license/generate"
 	 * Then Response is expected as 200 and other responses as per inputs passed in the request
 	 */
-	@Test(dataProvider="LicenseKeyGenerator")
+	@Test(dataProvider="LicenseKeyGenerator",priority=0)
 	public void generateLicenseKey(String testSuite, Integer i, JSONObject object) throws FileNotFoundException, IOException, ParseException
     {
 		List<String> outerKeys = new ArrayList<String>();
@@ -206,7 +205,7 @@ public class LicenseKeyController extends BaseTestCase implements ITest{
 	 * Given input Json as per defined folders When POSt request is sent to /licensekeymanager/v1.0/license/generate"
 	 * Then Response is expected as 200 and other responses as per inputs passed in the request
 	 */
-	@Test(dataProvider="mapLicenseKey")
+	@Test(dataProvider="mapLicenseKey",priority=1)
 	public void mapLicenceKey(String testSuite, Integer i, JSONObject object) throws FileNotFoundException, IOException, ParseException
     {
 		
@@ -223,9 +222,7 @@ public class LicenseKeyController extends BaseTestCase implements ITest{
 	    if(testCaseName.equals("smoke_MapLicenseKeyPermission"))
 	    {
 	    	actualRequest_map.put("tspId", tspId);
-			actualRequest_map.put("licenseKey", licenseKey);
-			System.out.println(licenseKey+"-------->"+tspId);
-		 
+			actualRequest_map.put("licenseKey", licenseKey);		 
 		  	
 		 Expectedresponse = ResponseRequestMapper.mapResponse(testSuite, object);
 		
@@ -270,9 +267,9 @@ public class LicenseKeyController extends BaseTestCase implements ITest{
 	 * @throws Exception
 	 */
 
-	/*@DataProvider(name = "fetchmapLicenseKey")
+	@DataProvider(name = "fetchmapLicenseKey")
 	public static Object[][] readData(ITestContext context) throws Exception {
-		//CommonLibrary.configFileWriter(folderPath,requestKeyFile,"DemographicCreate","smokePreReg");
+		
 		 testParam = context.getCurrentXmlTest().getParameter("testType");
 		switch (testParam) {
 		case "smoke":
@@ -282,7 +279,7 @@ public class LicenseKeyController extends BaseTestCase implements ITest{
 		default:
 			return ReadFolder.readFolders(folderPath2, outputFile2, requestKeyFile2, "smokeAndRegression");
 		}
-	}*/
+	}
 	
 	
 	/**
@@ -293,7 +290,7 @@ public class LicenseKeyController extends BaseTestCase implements ITest{
 	 * Given input Json as per defined folders When POSt request is sent to /licensekeymanager/v1.0/license/generate"
 	 * Then Response is expected as 200 and other responses as per inputs passed in the request
 	 */
-	/*@Test(dataProvider="fetchmapLicenseKey")
+	@Test(dataProvider="fetchmapLicenseKey",priority=2)
 	public void fetchMapLicenceKeyPermissions(String testSuite, Integer i, JSONObject object) throws FileNotFoundException, IOException, ParseException
     {
 		LicenseKeyController lc=new LicenseKeyController();
@@ -302,11 +299,10 @@ public class LicenseKeyController extends BaseTestCase implements ITest{
 		 outerKeys.add("timestamp");
 
 		JSONObject actualRequest = ResponseRequestMapper.mapRequest(testSuite, object);
-		if(testCaseName.equals("smoke_FetchLicenseKeyPermissions"))
+		if(testCaseName.equalsIgnoreCase("smoke_FetchLicenseKeyPermissions"))
 		{
 			actualRequest.put("tspId", tspId);
 			actualRequest.put("licenseKey", licenseKey);
-			System.out.println(licenseKey+"-------->"+tspId);
 		}
 		
 		Expectedresponse = ResponseRequestMapper.mapResponse(testSuite, object);
@@ -314,25 +310,14 @@ public class LicenseKeyController extends BaseTestCase implements ITest{
 		Response response=applicationLibrary.getRequestAsQueryParam(fetchmapLicenseKey, actualRequest);
 				
 		
-		
+		/*
 		 *Comparing expected and actual response
-		 
+		 */
 		
 		ArrayList<String> listOfElementToRemove=new ArrayList<String>();
 		listOfElementToRemove.add("timestamp");
 		status = AssertResponses.assertResponses(response, Expectedresponse, outerKeys, innerKeys);
-      if (status) {
-	            
-			if(status)
-					{
-						finalStatus ="Pass";
-					}
-					else
-					{
-		 				finalStatus ="Fail";
-						//break;
-					}
-	            
+      if (status) {	            
 				finalStatus = "Pass";
 			}	
 		
@@ -352,7 +337,7 @@ public class LicenseKeyController extends BaseTestCase implements ITest{
 			setFinalStatus=true;
 		Verify.verify(setFinalStatus);
 		softAssert.assertAll();
-}*/
+}
 		@Override
 		public String getTestName() {
 			return this.testCaseName;

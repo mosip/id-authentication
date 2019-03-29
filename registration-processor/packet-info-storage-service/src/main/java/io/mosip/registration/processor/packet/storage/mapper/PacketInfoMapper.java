@@ -10,14 +10,15 @@ import java.util.Optional;
 
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
-
+import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.kernel.core.util.HMACUtils;
 import io.mosip.registration.processor.core.constant.JsonConstant;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.packet.dto.BiometricDetails;
-import io.mosip.registration.processor.core.packet.dto.BiometricException;
+import io.mosip.registration.processor.core.packet.dto.BiometricExceptionDTO;
 
 
 import io.mosip.registration.processor.core.packet.dto.FieldValue;
@@ -212,7 +213,7 @@ public class PacketInfoMapper {
 	 *            the meta data
 	 * @return the biometric exception entity
 	 */
-	public static BiometricExceptionEntity convertBiometricExceptioDtoToEntity(BiometricException exception,
+	public static BiometricExceptionEntity convertBiometricExceptioDtoToEntity(BiometricExceptionDTO exception,
 			List<FieldValue> metaData) {
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
 				"", "PacketInfoMapper::convertBiometricExceptioDtoToEntity()::entry");
@@ -505,22 +506,23 @@ public class PacketInfoMapper {
 			entity.setIsActive(true);
 			entity.setIsDeleted(false);
 			String applicantName = null;
-			if (demoDto.getName() != null)
+			if (demoDto.getName() != null) {
 				applicantName = getJsonValues(demoDto.getName(), languageArray[i]);
-			entity.setName(applicantName);
+			entity.setName(getHMACHashCode(applicantName.trim().toUpperCase()));
+			}
 
 			if (demoDto.getDateOfBirth() != null) {
 				try {
 					Date date = new SimpleDateFormat("yyyy/MM/dd").parse(demoDto.getDateOfBirth());
 
-					entity.setDob(date);
+					entity.setDob(getHMACHashCode(demoDto.getDateOfBirth()));
 				} catch (ParseException e) {
 					regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 							regId, e.getMessage() + ExceptionUtils.getStackTrace(e));
 					throw new DateParseException(PlatformErrorMessages.RPR_SYS_PARSING_DATE_EXCEPTION.getMessage(), e);
 				}
 			}
-			entity.setGender(getJsonValues(demoDto.getGender(), languageArray[i]));
+			entity.setGender(getHMACHashCode(getJsonValues(demoDto.getGender(), languageArray[i])));
 			demogrphicDedupeEntities.add(entity);
 
 		}
@@ -556,4 +558,8 @@ public class PacketInfoMapper {
 		return applicantDemographicDataEntity;
 	}
 
+	public static String getHMACHashCode(String value) {
+		return  CryptoUtil.encodeBase64(HMACUtils.generateHash(value.getBytes()));
+		
+	}
 }

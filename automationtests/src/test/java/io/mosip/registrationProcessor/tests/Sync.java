@@ -153,6 +153,7 @@ public class Sync extends BaseTestCase implements ITest {
 					SyncRegistrationDto dbDto = RegProcDataRead.regproc_dbDataInRegistrationList(regIds);	
 					logger.info("dbDto :" +dbDto);
 
+
 					LocalDateTime logTime = LocalDateTime.of(2019,Month.JANUARY,30,10,15,51,270000000);   //2019-01-30 10:15:51.27					
 					logger.info("log time : "+logTime);
 					AuditRequestDto auditDto = RegProcDataRead.regproc_dbDataInAuditLog(regIds, "REGISTRATION_ID", "REGISTRATION_PROCESSOR", "GET",logTime);
@@ -167,6 +168,23 @@ public class Sync extends BaseTestCase implements ITest {
 							finalStatus = "Pass";
 							softAssert.assertTrue(true);
 						} 
+
+
+					if(dbDto != null) {
+
+						Iterator<Object> iteratorNew = ((List) Expectedresponse).iterator();
+						while(iterator.hasNext()){
+							JSONObject jsonObject = (JSONObject) iterator.next();
+							logger.info("regidtrationId" + ":" + jsonObject.get("registrationId"));
+							String expectedRegIdNew = jsonObject.get("registrationId").toString().trim();
+							logger.info("expectedRegId: "+expectedRegIdNew);
+							
+							if (expectedRegIdNew.matches(dbDto.getRegistrationId())){
+								
+								logger.info("Validated in DB.......");
+								finalStatus = "Pass";
+							} 
+						}
 
 					}
 
@@ -192,7 +210,7 @@ public class Sync extends BaseTestCase implements ITest {
 				}
 			}
 
-		}else {
+		}}else {
 			finalStatus="Fail";
 			softAssert.assertTrue(false);
 		}

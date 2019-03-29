@@ -14,8 +14,8 @@ import org.springframework.context.annotation.ComponentScan;
  * @author Rajath KR
  * @since 1.0.0
  */
-@SpringBootApplication
-@ComponentScan(basePackages = "io.mosip.*")
+@SpringBootApplication(scanBasePackages= {"io.mosip.preregistration.*","io.mosip.kernel.auth.*"})
+//@ComponentScan( basePackages = {"io.mosip.*"})
 public class DemographicApplication {
 	/**
 	 * 

@@ -1,7 +1,6 @@
 package io.mosip.registration.processor.status.service.impl;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -9,9 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Component;
-
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.exception.ExceptionUtils;
+import io.mosip.registration.processor.core.code.ApiName;
 import io.mosip.registration.processor.core.code.AuditLogConstant;
 import io.mosip.registration.processor.core.code.EventId;
 import io.mosip.registration.processor.core.code.EventName;
@@ -20,7 +19,6 @@ import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
-import io.mosip.registration.processor.status.code.RegistrationExternalStatusCode;
 import io.mosip.registration.processor.status.code.TransactionTypeCode;
 import io.mosip.registration.processor.status.dao.RegistrationStatusDao;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
@@ -31,7 +29,6 @@ import io.mosip.registration.processor.status.entity.RegistrationStatusEntity;
 import io.mosip.registration.processor.status.exception.TablenotAccessibleException;
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
 import io.mosip.registration.processor.status.service.TransactionService;
-import io.mosip.registration.processor.status.utilities.RegistrationStatusMapUtil;
 
 /**
  * The Class RegistrationStatusServiceImpl.
@@ -50,9 +47,6 @@ public class RegistrationStatusServiceImpl
 	/** The transcation status service. */
 	@Autowired
 	private TransactionService<TransactionDto> transcationStatusService;
-
-	@Autowired
-	private RegistrationStatusMapUtil registrationStatusMapUtil;
 
 	/** The event id. */
 	private String eventId = "";
@@ -115,7 +109,7 @@ public class RegistrationStatusServiceImpl
 					: EventType.SYSTEM.toString();
 
 			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
-					registrationId);
+					registrationId, ApiName.AUDIT);
 		}
 	}
 
@@ -161,7 +155,7 @@ public class RegistrationStatusServiceImpl
 					: EventType.SYSTEM.toString();
 
 			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
-					registrationStatusDto.getRegistrationId());
+					registrationStatusDto.getRegistrationId(), ApiName.AUDIT);
 		}
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
 				registrationStatusDto.getRegistrationId(), "RegistrationStatusServiceImpl::addRegistrationStatus()::exit");
@@ -214,7 +208,7 @@ public class RegistrationStatusServiceImpl
 					: EventType.SYSTEM.toString();
 
 			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
-					registrationStatusDto.getRegistrationId());
+					registrationStatusDto.getRegistrationId(), ApiName.AUDIT);
 
 		}
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
@@ -258,7 +252,7 @@ public class RegistrationStatusServiceImpl
 			eventType = eventId.equalsIgnoreCase(EventId.RPR_401.toString()) ? EventType.BUSINESS.toString()
 					: EventType.SYSTEM.toString();
 			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
-					AuditLogConstant.MULTIPLE_ID.toString());
+					AuditLogConstant.MULTIPLE_ID.toString(), ApiName.AUDIT);
 		}
 
 	}
@@ -277,6 +271,7 @@ public class RegistrationStatusServiceImpl
 				"", "RegistrationStatusServiceImpl::getByIds()::entry");
 		try {
 			List<String> registrationIds =new ArrayList<>();
+
 			for (RegistrationStatusSubRequestDto registrationStatusSubRequestDto : requestIds) {
 				registrationIds.add(registrationStatusSubRequestDto.getRegistrationId());
 			}
@@ -305,7 +300,7 @@ public class RegistrationStatusServiceImpl
 			eventType = eventId.equalsIgnoreCase(EventId.RPR_401.toString()) ? EventType.BUSINESS.toString()
 					: EventType.SYSTEM.toString();
 			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
-					AuditLogConstant.MULTIPLE_ID.toString());
+					AuditLogConstant.MULTIPLE_ID.toString(), ApiName.AUDIT);
 		}
 	}
 
@@ -340,11 +335,8 @@ public class RegistrationStatusServiceImpl
 		registrationStatusDto.setRegistrationId(entity.getId());
 		String statusCode = entity.getStatusCode();
 		Integer retryCount = entity.getRetryCount() != null ? entity.getRetryCount() : 0;
-		// get the mapped value for the entity StatusCode
-		RegistrationExternalStatusCode mappedValue = registrationStatusMapUtil.getExternalStatus(statusCode,
-				retryCount);
 		registrationStatusDto.setRetryCount(retryCount);
-		registrationStatusDto.setStatusCode(mappedValue.toString());
+		registrationStatusDto.setStatusCode(statusCode);
 		return registrationStatusDto;
 	}
 

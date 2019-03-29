@@ -35,6 +35,7 @@ import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.core.Appender;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
+import io.mosip.registration.processor.core.code.ApiName;
 import io.mosip.registration.processor.core.code.EventId;
 import io.mosip.registration.processor.core.code.EventName;
 import io.mosip.registration.processor.core.code.EventType;
@@ -134,12 +135,12 @@ public class PacketReceiverServiceTest {
 		regEntity.setStatusComment("registration begins");
 
 		registrationStatusDto.setStatusCode(RegistrationStatusCode.VIRUS_SCAN_FAILED.toString());
-		registrationStatusDto.setRetryCount(2);
+		registrationStatusDto.setRetryCount(4);
 		registrationStatusDto.setRegistrationId("12345");
 		registrations.add(registrationStatusDto);
 		Mockito.when(registrationStatusService.getByIds(anyList())).thenReturn(registrations);
 		Mockito.when(registrationStatusMapUtil.getExternalStatus(anyString(), anyInt()))
-				.thenReturn(RegistrationExternalStatusCode.RESEND);
+				.thenReturn(RegistrationExternalStatusCode.REREGISTER);
 
 		try {
 			ClassLoader classLoader = getClass().getClassLoader();
@@ -168,7 +169,7 @@ public class PacketReceiverServiceTest {
 			AuditResponseDto auditResponseDto = new AuditResponseDto();
 			Mockito.doReturn(auditResponseDto).when(auditLogRequestBuilder).createAuditRequestBuilder(
 					"test case description", EventId.RPR_401.toString(), EventName.ADD.toString(),
-					EventType.BUSINESS.toString(), "1234testcase");
+					EventType.BUSINESS.toString(), "1234testcase", ApiName.DMZAUDIT);
 
 		}
 

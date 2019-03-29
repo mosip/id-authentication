@@ -30,7 +30,7 @@ public class RetryStage extends MosipVerticleManager {
 	@Value("${registration.processor.wait.period}")
 	private int waitPeriod;
 
-	@Value("${vertx.ignite.configuration}")
+	@Value("${vertx.cluster.configuration}")
 	private String clusterManagerUrl;
 
 	private MosipEventBus mosipEventBus;
@@ -39,7 +39,7 @@ public class RetryStage extends MosipVerticleManager {
 	 * method to deploy retry-stage.
 	 */
 	public void deployVerticle() {
-		this.mosipEventBus = this.getEventBus(this.getClass(), clusterManagerUrl);
+		this.mosipEventBus = this.getEventBus(this, clusterManagerUrl);
 		this.consume(this.mosipEventBus, MessageBusAddress.RETRY_BUS);
 
 	}

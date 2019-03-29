@@ -20,6 +20,7 @@ import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 @Repository
 public interface LocationRepository extends BaseRepository<Location, CodeAndLanguageCodeID> {
 
+	@Query("FROM Location WHERE (isDeleted is null OR isDeleted = false) AND isActive = true")
 	List<Location> findLocationHierarchyByIsDeletedIsNullOrIsDeletedFalse();
 
 	@Query(value = "FROM Location l where l.code=?1 and l.langCode=?2 and (l.isDeleted is null or l.isDeleted=false)")
@@ -52,14 +53,16 @@ public interface LocationRepository extends BaseRepository<Location, CodeAndLang
 	 * @return List of Locations
 	 * 
 	 */
-	@Query(value = "FROM Location l where l.langCode=?1 and l.hierarchyLevel >=?2 and (l.isDeleted is null or l.isDeleted=false)")
-	List<Location> getAllLocationsByLangCodeAndLevel(String langCode, Integer level);
+	@Query(value = "FROM Location l where l.langCode=?1 and l.hierarchyLevel >=?2 and (l.isDeleted is null or l.isDeleted=false) and l.isActive = true")
+	List<Location> getAllLocationsByLangCodeAndLevel(String langCode, Short level);
 
 	/**
 	 * checks whether the location name is valid location or not
+	 * 
 	 * @param locationName
-	 * @return boolean
+	 *            location name
+	 * @return {@link Boolean} true or false
 	 */
-	@Query(value="SELECT EXISTS(select name FROM master.location where (LOWER(name)=LOWER(?1)) and (is_active=true) and (is_deleted is null or is_deleted =false))",nativeQuery=true)
-    boolean isLocationNamePresent(String locationName);
+	@Query(value = "SELECT EXISTS(select name FROM master.location where (LOWER(name)=LOWER(?1)) and (is_active=true) and (is_deleted is null or is_deleted =false))", nativeQuery = true)
+	boolean isLocationNamePresent(String locationName);
 }

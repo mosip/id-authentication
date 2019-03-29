@@ -3,6 +3,7 @@ package io.mosip.preregistration.batchjobservices.test.service;
 import static org.junit.Assert.assertEquals;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,6 +13,7 @@ import org.mockito.Mockito;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -23,11 +25,13 @@ import io.mosip.preregistration.batchjobservices.repository.DemographicRepositor
 import io.mosip.preregistration.batchjobservices.repository.RegAppointmentRepository;
 import io.mosip.preregistration.batchjobservices.repository.dao.BatchServiceDAO;
 import io.mosip.preregistration.batchjobservices.service.ExpiredStatusService;
+import io.mosip.preregistration.batchjobservices.test.BatchJobApplicationTest;
 import io.mosip.preregistration.core.code.StatusCodes;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
 
+@SpringBootTest(classes = { BatchJobApplicationTest.class })
 @RunWith(SpringRunner.class)
-@SpringBootTest
+@AutoConfigureMockMvc
 public class ExpiredStatusServiceTest {
 
 	@Autowired
@@ -54,12 +58,15 @@ public class ExpiredStatusServiceTest {
 	public void expiredAppointmentTest() {
 
 		MainResponseDTO<String> response = new MainResponseDTO<>();
-
+ 
 		demographicEntity.setPreRegistrationId("12345678909876");
+		demographicEntity.setStatusCode(StatusCodes.BOOKED.getCode());
 
 		bookingPK.setPreregistrationId("12345678909876");
 		bookingEntity.setBookingPK(bookingPK);
-		bookingEntity.setStatusCode(StatusCodes.BOOKED.getCode());
+		bookingEntity.setRegDate(LocalDate.parse("2018-12-04"));
+		bookingEntity.setSlotFromTime(LocalTime.parse("09:00"));
+		
 		bookedPreIdList.add(bookingEntity);
 		logger.info("demographicEntity " + demographicEntity);
 		logger.info("bookingEntity " + bookingEntity);

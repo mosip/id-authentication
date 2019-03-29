@@ -1,0 +1,9 @@
+{
+  "authRequest": "ewogICJpZCI6ICJtb3NpcC5pZGVudGl0eS5hdXRoIiwKICAidmVyIjogIjEuMCIsCiAgInJlcVRpbWUiOiAiMjAxOS0wMS0yNFQxMDowMTo1Ny4wODYrMDU6MzAiLAogICJ0eG5JRCI6ICIxMjM0NTY3ODkwIiwKICAibXVhQ29kZSI6ICIxMjM0NTY3ODkwIiwKICAiaWR2SWQiOiAiMjg0MTY5MDQyMDU4IiwKICAiaWR2SWRUeXBlIjogIkQiLAogICJ0c3BJRCI6ICJUU1AwMDAwMDA1IiwKICAiYXV0aFR5cGUiOiB7CiAgICAiYWRkcmVzcyI6IGZhbHNlLAogICAgImJpbyI6IGZhbHNlLAogICAgIm90cCI6IGZhbHNlLAogICAgInBlcnNvbmFsSWRlbnRpdHkiOiBmYWxzZSwKICAgICJwaW4iOiB0cnVlCiAgfSwKICAicGluSW5mbyI6IFsKICAgIHsKICAgICAgInR5cGUiOiAicGluIiwKICAgICAgInZhbHVlIjogIjEyMzQ4NSIKICAgIH0KICBdCn0",
+  "consentReq": true,
+  "ekycAuthType": "O",
+  "eprintReq": false,
+  "id": "mosip.identity.kyc",
+  "secLangReq": true,
+  "ver": "$version$"
+}

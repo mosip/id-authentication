@@ -1,12 +1,14 @@
 package io.mosip.authentication.service.impl.otpgen.service;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeParseException;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.TimeZone;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
@@ -15,12 +17,12 @@ import org.springframework.stereotype.Service;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.constant.RequestType;
 import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
+import io.mosip.authentication.core.dto.otpgen.MaskedResponseDTO;
 import io.mosip.authentication.core.dto.otpgen.OtpRequestDTO;
 import io.mosip.authentication.core.dto.otpgen.OtpResponseDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.id.service.IdAuthService;
-import io.mosip.authentication.core.spi.id.service.IdRepoService;
 import io.mosip.authentication.core.spi.notification.service.NotificationService;
 import io.mosip.authentication.core.spi.otpgen.service.OTPService;
 import io.mosip.authentication.core.util.MaskUtil;
@@ -31,6 +33,7 @@ import io.mosip.authentication.service.impl.indauth.service.demo.DemoMatchType;
 import io.mosip.authentication.service.integration.NotificationManager;
 import io.mosip.authentication.service.integration.OTPManager;
 import io.mosip.authentication.service.repository.AutnTxnRepository;
+import io.mosip.kernel.core.exception.ParseException;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.core.util.UUIDUtils;
@@ -39,7 +42,7 @@ import io.mosip.kernel.core.util.UUIDUtils;
  * Service implementation of OtpTriggerService.
  * 
  * @author Rakesh Roshan
- * @author Dineshkaruppiah Thiagarajan
+ * @author Dinesh Karuppiah.T
  */
 @Service
 public class OTPServiceImpl implements OTPService {
@@ -54,6 +57,9 @@ public class OTPServiceImpl implements OTPService {
 	private static final String SESSION_ID = "SessionID";
 
 	private static final String IDA = "IDA";
+
+	/** The Constant UTC. */
+	private static final String UTC = "UTC";
 
 	/** The id auth service. */
 	@Autowired
@@ -71,9 +77,6 @@ public class OTPServiceImpl implements OTPService {
 
 	@Autowired
 	private IdInfoHelper idInfoHelper;
-
-	@Autowired
-	IdRepoService idInfoService;
 
 	@Autowired
 	private NotificationService notificationService;
@@ -95,38 +98,54 @@ public class OTPServiceImpl implements OTPService {
 	 *                                           exception
 	 */
 	@Override
-	public OtpResponseDTO generateOtp(OtpRequestDTO otpRequestDto) throws IdAuthenticationBusinessException {
+	public OtpResponseDTO generateOtp(OtpRequestDTO otpRequestDto, String partnerId)
+			throws IdAuthenticationBusinessException {
 		String otpKey = null;
 		String otp = null;
 		String mobileNumber = null;
 		String email = null;
 		String comment = null;
 		String status = null;
-		String idvId = otpRequestDto.getIdvId();
-		String idvIdType = otpRequestDto.getIdvIdType();
-		String reqTime = otpRequestDto.getReqTime();
-		String txnId = otpRequestDto.getTxnID();
-		String tspID = otpRequestDto.getTspID();
+		String id = otpRequestDto.getId();
+		String idvId = otpRequestDto.getIndividualId();
+		String idvIdType = otpRequestDto.getIndividualIdType();
+		String reqTime = otpRequestDto.getRequestTime();
+		String txnId = otpRequestDto.getTransactionID();
 		Map<String, Object> idResDTO = idAuthService.processIdType(idvIdType, idvId, false);
 		Map<String, List<IdentityInfoDTO>> idInfo = idAuthService.getIdInfo(idResDTO);
-		mobileNumber = getMobileNumber(idInfo);
-		email = getEmail(idInfo);
+		if (otpRequestDto.getOtpChannel().isPhone()) {
+			mobileNumber = getMobileNumber(idInfo);
+		}
+		if (otpRequestDto.getOtpChannel().isEmail()) {
+			email = getEmail(idInfo);
+		}
+
 		String uin = String.valueOf(idResDTO.get("uin"));
-		if (!checkIsEmptyorNull(email) && !checkIsEmptyorNull(mobileNumber)) {
+
+		if (!otpRequestDto.getOtpChannel().isEmail() && !otpRequestDto.getOtpChannel().isPhone()) {
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.OTP_CHANNEL_NOT_PROVIDED);
+		}
+
+		if (otpRequestDto.getOtpChannel().isEmail() && !checkIsEmptyorNull(email)) {
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.PHONE_EMAIL_NOT_REGISTERED);
 		}
+
+		if (otpRequestDto.getOtpChannel().isPhone() && !checkIsEmptyorNull(mobileNumber)) {
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.PHONE_EMAIL_NOT_REGISTERED);
+		}
+
 		if (isOtpFlooded(otpRequestDto)) {
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.OTP_REQUEST_FLOODED);
 		} else {
 			String productid = env.getProperty("application.id");
-			otpKey = OTPUtil.generateKey(productid, uin, txnId, tspID);
+			otpKey = OTPUtil.generateKey(productid, uin, txnId, partnerId);
 			try {
 				otp = generateOtp(otpKey);
 			} catch (IdAuthenticationBusinessException e) {
 				mosipLogger.error(SESSION_ID, this.getClass().getName(), e.getClass().getName(), e.getMessage());
 			}
 		}
-		mosipLogger.info(SESSION_ID, "NA", "generated OTP", otp);
+		mosipLogger.info(SESSION_ID, this.getClass().getName(), "generated OTP", otp);
 		OtpResponseDTO otpResponseDTO = new OtpResponseDTO();
 		if (otp == null || otp.trim().isEmpty()) {
 			status = "N";
@@ -138,21 +157,24 @@ public class OTPServiceImpl implements OTPService {
 					"OTP Generation failed");
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.OTP_GENERATION_FAILED);
 		} else {
-			mosipLogger.error(SESSION_ID, this.getClass().getName(), this.getClass().getName(),
+			mosipLogger.info(SESSION_ID, this.getClass().getName(), this.getClass().getName(),
 					"generated OTP is: " + otp);
-			otpResponseDTO.setStatus("Y");
-			otpResponseDTO.setErr(Collections.emptyList());
-			otpResponseDTO.setTxnID(txnId);
+			otpResponseDTO.setId(id);
+			otpResponseDTO.setErrors(Collections.emptyList());
+			otpResponseDTO.setTransactionID(txnId);
 			status = "Y";
 			comment = "OTP_GENERATED";
 			String responseTime = formatDate(new Date(), env.getProperty(DATETIME_PATTERN));
-			otpResponseDTO.setResTime(responseTime);
-			if (checkIsEmptyorNull(email)) {
-				otpResponseDTO.setMaskedEmail(MaskUtil.maskEmail(email));
+			otpResponseDTO.setResponseTime(responseTime);
+			MaskedResponseDTO responseDTO = new MaskedResponseDTO();
+			if (checkIsEmptyorNull(email) && otpRequestDto.getOtpChannel().isEmail()) {
+				responseDTO.setMaskedEmail(MaskUtil.maskEmail(email));
 			}
-			if (checkIsEmptyorNull(mobileNumber)) {
-				otpResponseDTO.setMaskedMobile(MaskUtil.maskMobile(mobileNumber));
+			if (checkIsEmptyorNull(mobileNumber) && otpRequestDto.getOtpChannel().isPhone()) {
+				responseDTO.setMaskedMobile(MaskUtil.maskMobile(mobileNumber));
+
 			}
+			otpResponseDTO.setResponse(responseDTO);
 			notificationService.sendOtpNotification(otpRequestDto, otp, uin, email, mobileNumber, idInfo);
 			AutnTxn authTxn = createAuthTxn(idvId, idvIdType, uin, reqTime, txnId, status, comment,
 					RequestType.OTP_REQUEST);
@@ -196,7 +218,7 @@ public class OTPServiceImpl implements OTPService {
 			// TODO check
 			autnTxn.setCrBy(IDA);
 			autnTxn.setCrDTimes(DateUtils.getUTCCurrentDateTime());
-			String strUTCDate = idInfoHelper.getUTCTime(reqTime);
+			String strUTCDate = getUTCTime(reqTime);
 			autnTxn.setRequestDTtimes(DateUtils.parseToLocalDateTime(strUTCDate));
 			autnTxn.setResponseDTimes(DateUtils.getUTCCurrentDateTime()); // TODO check this
 			autnTxn.setAuthTypeCode(otpRequest.getRequestType());
@@ -206,10 +228,9 @@ public class OTPServiceImpl implements OTPService {
 			// FIXME
 			autnTxn.setLangCode(env.getProperty("mosip.primary.lang-code"));
 			return autnTxn;
-		} catch (ParseException | java.time.format.DateTimeParseException e) {
+		} catch (ParseException | DateTimeParseException e) {
 			mosipLogger.error(SESSION_ID, this.getClass().getName(), e.getClass().getName(), e.getMessage());
-			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST_TIMESTAMP,
-					e);
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
 		}
 	}
 
@@ -235,16 +256,15 @@ public class OTPServiceImpl implements OTPService {
 	 */
 	private boolean isOtpFlooded(OtpRequestDTO otpRequestDto) throws IdAuthenticationBusinessException {
 		boolean isOtpFlooded = false;
-		String uniqueID = otpRequestDto.getIdvId();
+		String uniqueID = otpRequestDto.getIndividualId();
 		Date requestTime;
 		LocalDateTime reqTime;
 		try {
-			requestTime = DateUtils.parseToDate(otpRequestDto.getReqTime(), env.getProperty(DATETIME_PATTERN));
+			requestTime = DateUtils.parseToDate(otpRequestDto.getRequestTime(), env.getProperty(DATETIME_PATTERN));
 			reqTime = DateUtils.parseDateToLocalDateTime(requestTime);
-		} catch (java.text.ParseException e) {
-			mosipLogger.error(SESSION_ID, null, null, e.getMessage());
-			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST_TIMESTAMP,
-					e);
+		} catch (ParseException e) {
+			mosipLogger.error(SESSION_ID, this.getClass().getName(), e.getClass().getName(), e.getMessage());
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
 		}
 		// TODO make minutes and value configurable
 		int addMinutes = Integer.parseInt(env.getProperty(OTP_REQUEST_ADD_MINUTES));
@@ -322,13 +342,26 @@ public class OTPServiceImpl implements OTPService {
 			otp = otpManager.generateOTP(otpKey);
 
 			if (otp == null || otp.trim().isEmpty()) {
-				mosipLogger.error("NA", "NA", "NA", "generated OTP is: " + otp);
-				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.OTP_NOT_PRESENT);
+				mosipLogger.error(SESSION_ID, this.getClass().getName(), " generateOtp", " generated OTP is: " + otp);
+				throw new IdAuthenticationBusinessException(
+						IdAuthenticationErrorConstants.OTP_GENERATION_FAILED.getErrorCode(),
+						String.format(IdAuthenticationErrorConstants.OTP_GENERATION_FAILED.getErrorMessage()));
 			}
 
-			mosipLogger.info("NA", "NA", "NA", " generated OTP is: " + otp);
+			mosipLogger.info(SESSION_ID, this.getClass().getName(), " generateOtp", " generated OTP is: " + otp);
 		}
 
 		return otp;
+	}
+
+	/**
+	 * @param reqTime
+	 * @return
+	 */
+	public String getUTCTime(String reqTime) {
+		Date reqDate = DateUtils.parseToDate(reqTime, env.getProperty(DATETIME_PATTERN));
+		SimpleDateFormat dateFormatter = new SimpleDateFormat(env.getProperty(DATETIME_PATTERN));
+		dateFormatter.setTimeZone(TimeZone.getTimeZone(ZoneId.of(UTC)));
+		return dateFormatter.format(reqDate);
 	}
 }

@@ -30,7 +30,7 @@ public class DemodedupeStage extends MosipVerticleManager {
 	@Value("${registration.processor.vertx.localhost}")
 	private String localhost;
 
-	@Value("${vertx.ignite.configuration}")
+	@Value("${vertx.cluster.configuration}")
 	private String clusterManagerUrl;
 
 	@Autowired
@@ -42,7 +42,7 @@ public class DemodedupeStage extends MosipVerticleManager {
 	 * Deploy verticle.
 	 */
 	public void deployVerticle() {
-		MosipEventBus mosipEventBus = this.getEventBus(this.getClass(),clusterManagerUrl);
+		MosipEventBus mosipEventBus = this.getEventBus(this,clusterManagerUrl, 50);
 		this.consumeAndSend(mosipEventBus, MessageBusAddress.DEMO_DEDUPE_BUS_IN,MessageBusAddress.DEMO_DEDUPE_BUS_OUT);
 	}
 

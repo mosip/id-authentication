@@ -24,12 +24,12 @@ public class IdAuthenticationBusinessExceptionTest {
 	
 	@Test(expected=IdAuthenticationBusinessException.class)
 	public void IdAuthenticationBusinessExceptionEnum() throws IdAuthenticationBusinessException {
-		throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.OTP_NOT_PRESENT);
+		throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.OTP_GENERATION_FAILED);
 	}
 	
 	@Test(expected=IdAuthenticationBusinessException.class)
 	public void IdAuthenticationBusinessExceptionEnumThrowable() throws IdAuthenticationBusinessException {
-		throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.OTP_NOT_PRESENT, null);
+		throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.OTP_GENERATION_FAILED, null);
 	}
 
 }
