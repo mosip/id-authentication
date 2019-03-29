@@ -25,7 +25,8 @@ public class DemoDedupe {
 
 	public boolean demoDedupeStage (File dummyDecryptFile) throws FileNotFoundException, IOException, ParseException{
 
-		boolean isDemoDedupe = false;		
+		boolean isDemoDedupe = false;	
+		boolean isAuth = false; 
 		String regId = dummyDecryptFile.getName();
 		RegProcStageDb dbConnect = new RegProcStageDb();
 		List<DemoDedupeDto> applicantDemoDto = dbConnect.regproc_IndividualDemoghraphicDedupe(regId);
@@ -36,7 +37,7 @@ public class DemoDedupe {
 					demoDto.getGenderCode(), demoDto.getDob(), demoDto.getLangCode()));
 		}
 		logger.info("applicantDemoDto : "+applicantDemoDto.toString());
-		logger.info("demographicInfoDtos : "+duplicateDtos.toString());
+		logger.info("duplicateDtos : "+duplicateDtos.toString());
 
 		Set<String> uniqueUins = new HashSet<>();
 		Set<String> uniqueMatchedRefIds = new HashSet<>();
@@ -55,27 +56,40 @@ public class DemoDedupe {
 			String dob = null;
 			File[] folders = dummyDecryptFile.listFiles();
 			for (int j = 0; j < folders.length; j++) {
-				if (folders[j].isDirectory()) {
-					if(folders[j].getName().matches("Demographic")){
-						File[] listOfDocsInDemographics = folders[j].listFiles();
-						for (File d : listOfDocsInDemographics){
-							if(d.getName().matches("ID.json")){
-								JSONObject idData = (JSONObject) new JSONParser().parse(new FileReader(d.getPath()));
-								JSONObject identity = (JSONObject) idData.get("identity");
-								JSONObject dateOfBirth = (JSONObject) identity.get("dateOfBirth");
-								dob = dateOfBirth.get("value").toString();
-								logger.info("dob : "+dob);
-							}	
+				if(folders[j].getName().matches("Demographic")){
+					File[] listOfDocsInDemographics = folders[j].listFiles();
+					for (File d : listOfDocsInDemographics){
+						if(d.getName().matches("ID.json")){
+							JSONObject idData = (JSONObject) new JSONParser().parse(new FileReader(d.getPath()));
+							JSONObject identity = (JSONObject) idData.get("identity");
+							dob =  (String) identity.get("dateOfBirth");
+							logger.info("dob : "+dob);
 						}
 					}
 				}
-				int year =Integer.parseInt(dob);
-				logger.info("Year : "+year);
-
-				if(year%2 ==0)
-					isDemoDedupe = true;
+				
 			}
+			//mocked logic for auth, if year in dob is even,
+			//auth is validated, else not validated 
+			int year =Integer.parseInt(dob.substring(0,4));
+			logger.info("Year : "+year);
+
+			
+			if(year%2 ==0)
+				isAuth = true;
+			
+			if(!isAuth)
+				isDemoDedupe = true;
+			else{
+				logger.info("POTENTIAL MATCH");
+				isDemoDedupe = false;
+			}							
+		}else{
+			logger.info("DUPLICATE RECORD IS NOT THERE");
+			isDemoDedupe = true;
 		}
+			isDemoDedupe = true;
+		logger.info("isDemoDedupe : "+isDemoDedupe);
 		return isDemoDedupe;
 	}
 
