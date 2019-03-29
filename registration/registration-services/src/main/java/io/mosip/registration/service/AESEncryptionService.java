@@ -12,11 +12,15 @@ import io.mosip.registration.exception.RegBaseCheckedException;
 public interface AESEncryptionService {
 
 	/**
-	 * The API method to encrypt the data using AES Algorithm
+	 * The API method to encrypt the data using AES Algorithm. Then encrypts the AES
+	 * Session Key using RSA and combine the RSA encrypted data and AES encrypted
+	 * data.
 	 * 
 	 * @param dataToEncrypt
+	 *            the data to be encrypted in bytes
 	 * @return encrypted data as byte array
 	 * @throws RegBaseCheckedException
+	 *             if any error occurs during encryption
 	 */
 	byte[] encrypt(final byte[] dataToEncrypt) throws RegBaseCheckedException;
 }
