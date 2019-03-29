@@ -9,7 +9,7 @@ import lombok.Data;
 
 
 /**
- * EmbeddedId for {@link CenterMachine}
+ * EmbeddedId for Center Machine
  * @author Dinesh Ashokan
  *
  */

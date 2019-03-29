@@ -14,8 +14,9 @@ import io.mosip.registration.entity.id.CenterMachineId;
 public interface CenterMachineRepository extends BaseRepository<CenterMachine, CenterMachineId> {
 	
 	/**
-	 * Find center id based on {@link CenterMachine} station id
-	 * @param id
+	 * Find center id based on {@link CenterMachine} station id.
+	 *
+	 * @param userId the user id
 	 * @return center id
 	 */
 	CenterMachine findByIsActiveTrueAndCenterMachineIdId(String userId);

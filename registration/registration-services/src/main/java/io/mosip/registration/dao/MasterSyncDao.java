@@ -58,6 +58,7 @@ public interface MasterSyncDao {
 	/**
 	 * Gets the all reason catogery.
 	 *
+	 * @param langCode the lang code
 	 * @return the all reason catogery
 	 */
 	List<ReasonCategory> getAllReasonCatogery(String langCode);
@@ -65,6 +66,7 @@ public interface MasterSyncDao {
 	/**
 	 * Gets the reason list.
 	 *
+	 * @param langCode the lang code
 	 * @param reasonCat the reason cat
 	 * @return the reason list
 	 */
@@ -98,6 +100,7 @@ public interface MasterSyncDao {
 	/**
 	 * Gets the valid documets.
 	 *
+	 * @param docCategoryCode the doc category code
 	 * @param langCode the lang code
 	 * @return the valid documets
 	 */

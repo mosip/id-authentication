@@ -8,7 +8,7 @@ import javax.persistence.Embeddable;
 import lombok.Data;
 
 /**
- * contains the composite primary key of {@link RegCenterDevice}
+ * contains the composite primary key of Registration Center Device
  * 
  * @author Brahmananda Reddy
  * @since 1.0.0

@@ -12,9 +12,10 @@ import io.mosip.registration.entity.id.RegMachineSpecId;
 public interface MachineMasterRepository extends BaseRepository<MachineMaster, RegMachineSpecId>{
 	
 	/**
-	 * Find the station id based on macAddress
+	 * Find the station id based on macAddress.
+	 *
 	 * @param macAddress macAddress to get {@link MachineMaster}
-	 * @return
+	 * @return the machine master
 	 */
 	MachineMaster findByIsActiveTrueAndMacAddress(String macAddress);
 

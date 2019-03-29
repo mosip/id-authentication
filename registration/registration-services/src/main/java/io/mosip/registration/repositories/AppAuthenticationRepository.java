@@ -20,9 +20,11 @@ public interface AppAuthenticationRepository
 
 	/**
 	 * This method returns the list of {@link AppAuthenticationDetails} based on
-	 * status
-	 * 
-	 * @return the list of {@link AppAuthenticationDetails}
+	 * status.
+	 *
+	 * @param processId the process id
+	 * @param roleCode the role code
+	 * @return the list of AppAuthenticationDetails
 	 */
 	List<AppAuthenticationDetails> findByIsActiveTrueAndAppAuthenticationMethodIdProcessIdAndAppAuthenticationMethodIdRoleCodeOrderByMethodSequence(String processId, String roleCode);
 
