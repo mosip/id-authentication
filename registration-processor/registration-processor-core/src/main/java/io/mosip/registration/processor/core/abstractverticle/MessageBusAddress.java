@@ -92,10 +92,10 @@ public class MessageBusAddress implements Serializable {
 	public static final MessageBusAddress PACKET_RECEIVER_OUT = new MessageBusAddress("packet-receiver-bus-out");
 
 	/** The Constant STRUCTURE_BUS_IN. */
-	public static final MessageBusAddress OSI_BUS_IN = new MessageBusAddress("osi-validator-bus-in");
+	public static final MessageBusAddress OSI_BUS_IN = new MessageBusAddress("o-s-i-validator-bus-in");
 
 	/** The Constant STRUCTURE_BUS_OUT. */
-	public static final MessageBusAddress OSI_BUS_OUT = new MessageBusAddress("osi-validator-bus-out");
+	public static final MessageBusAddress OSI_BUS_OUT = new MessageBusAddress("o-s-i-validator-bus-out");
 
 	/** The Constant DEMODEDUPE_BUS_IN. */
 	public static final MessageBusAddress DEMO_DEDUPE_BUS_IN = new MessageBusAddress("demo-dedupe-bus-in");
