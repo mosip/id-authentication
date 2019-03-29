@@ -483,11 +483,8 @@ public class IrisCaptureController extends BaseController {
 					if (RegistrationConstants.ENABLE.equalsIgnoreCase(String
 							.valueOf(ApplicationContext.map().get(RegistrationConstants.FINGERPRINT_DISABLE_FLAG)))) {
 						SessionContext.map().put("fingerPrintCapture", true);
-					} else if (RegistrationConstants.ENABLE.equalsIgnoreCase(
-							String.valueOf(ApplicationContext.map().get(RegistrationConstants.DOC_DISABLE_FLAG)))) {
-						SessionContext.map().put("documentScan", true);
 					} else {
-						SessionContext.map().put("demographicDetail", true);
+						SessionContext.map().put("documentScan", true);
 					}
 					registrationController.showUINUpdateCurrentPage();
 				} else {

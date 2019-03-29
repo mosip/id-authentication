@@ -414,12 +414,7 @@ public class BiometricExceptionController extends BaseController implements Init
 			exceptionDTOCreation();
 			if (getRegistrationDTOFromSession().getSelectionListDTO() != null) {
 				SessionContext.map().put("biometricException", false);
-				if (!RegistrationConstants.DISABLE.equalsIgnoreCase(
-						String.valueOf(ApplicationContext.map().get(RegistrationConstants.DOC_DISABLE_FLAG)))) {
-					SessionContext.map().put("documentScan", true);
-				} else {
-					SessionContext.map().put("demographicDetail", true);
-				}
+				SessionContext.map().put("documentScan", true);
 				registrationController.showUINUpdateCurrentPage();
 			} else {
 				registrationController.showCurrentPage(RegistrationConstants.BIOMETRIC_EXCEPTION,

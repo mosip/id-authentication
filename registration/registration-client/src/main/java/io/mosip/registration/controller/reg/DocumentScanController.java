@@ -278,6 +278,13 @@ public class DocumentScanController extends BaseController {
 		} else if (documentVBoxes.isEmpty() && documentsMap != null) {
 			documentsMap.clear();
 		}
+		
+		if (getRegistrationDTOFromSession().getSelectionListDTO() != null
+				&& RegistrationConstants.DISABLE.equalsIgnoreCase(
+						String.valueOf(ApplicationContext.map().get(RegistrationConstants.DOC_DISABLE_FLAG)))) {
+			documentPane.setVisible(false);
+		}
+		
 	}
 
 	private Map<String, DocumentDetailsDTO> getDocumentsMapFromSession() {

@@ -10,6 +10,11 @@ import io.mosip.registration.dto.AuthenticationValidatorDTO;
 import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
 import io.mosip.registration.service.AuthenticationService;
 
+/**
+ * The FingerPrintCaptureServiceImpl class.
+ * 
+ * @author Saravana Kumar
+ */
 @Service
 public class FingerPrintCaptureServiceImpl {
 
@@ -17,8 +22,10 @@ public class FingerPrintCaptureServiceImpl {
 	private AuthenticationService authenticationService;
 
 	/**
-	 * Validate the scanned fingers
-	 * @param fingerprintDetailsDTOs
+	 * Validate the scanned fingers.
+	 *
+	 * @param fingerprintDetailsDTOs 
+	 * 				the fingerprint details DT os
 	 * @return Boolean isMatched
 	 */
 	public boolean validateFingerprint(List<FingerprintDetailsDTO> fingerprintDetailsDTOs) {

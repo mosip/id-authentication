@@ -107,7 +107,7 @@ public class RegistrationAppHealthCheckUtil {
 		FileSystem fileSystem = operatingSystem.getFileSystem();
 		String currentDirectory = System.getProperty("user.dir").substring(0, 3);
 		OSFileStore[] fileStores = fileSystem.getFileStores();
-		Long diskSpaceThreshold = Long.valueOf(AppConfig.getApplicationProperty("DISK_SPACE"));
+		Long diskSpaceThreshold = 80000L;
 		for (OSFileStore fs : fileStores) {
 			if (currentDirectory.equalsIgnoreCase(fs.getMount())) {
 				if (fs.getUsableSpace() > diskSpaceThreshold) {

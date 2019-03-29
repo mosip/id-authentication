@@ -44,6 +44,11 @@ import io.mosip.registration.service.BaseService;
 import io.mosip.registration.service.sync.PacketSynchService;
 import io.mosip.registration.util.restclient.ServiceDelegateUtil;
 
+/**
+ * The PacketSynchServiceImpl class is to sync the packets to server.
+ * 
+ * @author Saravana Kumar
+ */
 @Service
 public class PacketSynchServiceImpl extends BaseService implements PacketSynchService {
 
@@ -70,10 +75,13 @@ public class PacketSynchServiceImpl extends BaseService implements PacketSynchSe
 	 */
 
 	/**
-	 * This method is used to synch the local packets with the server
-	 * 
-	 * @throws RegBaseCheckedException
-	 * 
+	 * This method is used to synch the local packets with the server.
+	 *
+	 * @param packetsToBeSynched 
+	 * 				the packets to be synched
+	 * @return the string
+	 * @throws RegBaseCheckedException 
+	 * 				the reg base checked exception
 	 */
 	@Override
 	public String packetSync(List<PacketStatusDTO> packetsToBeSynched) throws RegBaseCheckedException {
@@ -145,6 +153,9 @@ public class PacketSynchServiceImpl extends BaseService implements PacketSynchSe
 		return syncErrorStatus;
 	}
 
+	/* (non-Javadoc)
+	 * @see io.mosip.registration.service.sync.PacketSynchService#fetchPacketsToBeSynched()
+	 */
 	@Override
 	public List<PacketStatusDTO> fetchPacketsToBeSynched() {
 		LOGGER.info("REGISTRATION - FETCH_PACKETS_TO_BE_SYNCHED - PACKET_SYNC_SERVICE", APPLICATION_NAME,
@@ -270,6 +281,9 @@ public class PacketSynchServiceImpl extends BaseService implements PacketSynchSe
 		return packetSync(packetsToBeSynched);
 	}
 
+	/* (non-Javadoc)
+	 * @see io.mosip.registration.service.sync.PacketSynchService#syncAllPackets()
+	 */
 	@Override
 	public void syncAllPackets() throws RegBaseCheckedException {
 		List<PacketStatusDTO> packetsToBeSynched = fetchPacketsToBeSynched();

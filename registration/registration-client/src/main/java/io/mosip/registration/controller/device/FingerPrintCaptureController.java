@@ -1059,11 +1059,8 @@ public class FingerPrintCaptureController extends BaseController implements Init
 					if ((boolean) SessionContext.getInstance().getUserContext().getUserMap()
 							.get(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION)) {
 						SessionContext.map().put("biometricException", true);
-					} else if (!RegistrationConstants.DISABLE.equalsIgnoreCase(
-							String.valueOf(ApplicationContext.map().get(RegistrationConstants.DOC_DISABLE_FLAG)))) {
-						SessionContext.map().put("documentScan", true);
 					} else {
-						SessionContext.map().put("demographicDetail", true);
+						SessionContext.map().put("documentScan", true);
 					}
 					registrationController.showUINUpdateCurrentPage();
 

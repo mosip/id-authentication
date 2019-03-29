@@ -282,11 +282,8 @@ public class FaceCaptureController extends BaseController implements Initializab
 					} else if (updateUINNextPage(RegistrationConstants.FINGERPRINT_DISABLE_FLAG)
 							|| fingerPrintCount > 0 || fingerPrintExceptionCount > 0) {
 						SessionContext.map().put("fingerPrintCapture", true);
-					} else if (!RegistrationConstants.DISABLE.equalsIgnoreCase(
-							String.valueOf(ApplicationContext.map().get(RegistrationConstants.DOC_DISABLE_FLAG)))) {
-						SessionContext.map().put("documentScan", true);
 					} else {
-						SessionContext.map().put("demographicDetail", true);
+						SessionContext.map().put("documentScan", true);
 					}
 					registrationController.showUINUpdateCurrentPage();
 				} else {

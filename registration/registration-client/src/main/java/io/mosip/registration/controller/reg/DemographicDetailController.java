@@ -1769,14 +1769,9 @@ public class DemographicDetailController extends BaseController {
 						AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
 
 				if (getRegistrationDTOFromSession().getSelectionListDTO() != null) {
-					SessionContext.map().put("demographicDetail", false);
-					if (!RegistrationConstants.DISABLE.equalsIgnoreCase(
-							String.valueOf(ApplicationContext.map().get(RegistrationConstants.DOC_DISABLE_FLAG)))) {
+						SessionContext.map().put("demographicDetail", false);
 						SessionContext.map().put("documentScan", true);
-					} else {
-						updateUINMethodFlow();
-					}
-					registrationController.showUINUpdateCurrentPage();
+						registrationController.showUINUpdateCurrentPage();
 				} else {
 					registrationController.showCurrentPage(RegistrationConstants.DEMOGRAPHIC_DETAIL,
 							getPageDetails(RegistrationConstants.DEMOGRAPHIC_DETAIL, RegistrationConstants.NEXT));
