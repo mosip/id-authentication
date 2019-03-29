@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,7 +49,7 @@ public class OtpValidationsTest {
 		mockMvc.perform(get("/otp/validate?key=testKey&otp=1234").contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk()).andReturn();
 	}
-
+	@Ignore
 	@Test
 	public void testOtpValidatorServiceExpiredOTPCase() throws Exception {
 		Random randomKey = new Random();
