@@ -206,7 +206,7 @@ public class RegistrationConstants {
 
 	// Lost UIN
 	public static final String PACKET_TYPE_LOST = "Lost";
-	public static final String LOST_UIN_CONFIG_FLAG = "mosip.registration.lost_uin_config_flag";
+	public static final String LOST_UIN_CONFIG_FLAG = "mosip.registration.lost_uin_disable_flag";
 
 	// update UIN
 	public static final String UIN_NAV_LABEL = "/ UIN Update";

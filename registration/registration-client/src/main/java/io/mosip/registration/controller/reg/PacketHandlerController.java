@@ -195,12 +195,11 @@ public class PacketHandlerController extends BaseController implements Initializ
 			uinUpdateImage.setVisible(false);
 			uinUpdateGridPane.setVisible(false);
 		}
-		lostUINPane.setVisible(false);
-		// if
-		// (!(String.valueOf(ApplicationContext.map().get(RegistrationConstants.LOST_UIN_CONFIG_FLAG)))
-		// .equalsIgnoreCase(RegistrationConstants.ENABLE)) {
-		// lostUINPane.setVisible(false);
-		// }
+		
+		if (!(String.valueOf(ApplicationContext.map().get(RegistrationConstants.LOST_UIN_CONFIG_FLAG)))
+				.equalsIgnoreCase(RegistrationConstants.ENABLE)) {
+			lostUINPane.setVisible(false);
+		}
 
 	}
 
