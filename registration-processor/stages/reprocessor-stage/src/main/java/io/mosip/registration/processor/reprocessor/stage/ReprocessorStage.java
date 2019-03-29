@@ -95,7 +95,10 @@ public class ReprocessorStage extends MosipVerticleManager {
 	 */
 	public void deployVerticle() {
 		mosipEventBus = this.getEventBus(this, clusterManagerUrl);
-		deployScheduler(mosipEventBus.getEventbus());
+		// deployScheduler(mosipEventBus.getEventbus());
+		MessageDTO object = new MessageDTO();
+
+		process(object);
 
 	}
 
@@ -193,8 +196,8 @@ public class ReprocessorStage extends MosipVerticleManager {
 						description = "";
 						isTransactionSuccessful = true;
 						String stageName = MessageBusUtil.getMessageBusAdress(dto.getRegistrationStageName());
-						if (dto.getLatestTransactionStatusCode() == RegistrationTransactionStatusCode.REPROCESS
-								.name()) {
+						if (RegistrationTransactionStatusCode.REPROCESS.name()
+								.equalsIgnoreCase(dto.getLatestTransactionStatusCode())) {
 							stageName = stageName.concat(BUS_IN);
 						} else {
 							stageName = stageName.concat(BUS_OUT);
@@ -206,7 +209,7 @@ public class ReprocessorStage extends MosipVerticleManager {
 								? dto.getReProcessRetryCount() + 1
 								: 1;
 						dto.setReProcessRetryCount(reprocessRetryCount);
-						registrationStatusService.updateRegistrationStatus(dto);
+						// registrationStatusService.updateRegistrationStatus(dto);
 						if (reprocessRetryCount > reprocessCount) {
 							object.setIsValid(false);
 						}
