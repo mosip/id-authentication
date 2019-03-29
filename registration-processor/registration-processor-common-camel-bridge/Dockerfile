@@ -31,8 +31,8 @@ ENV spring_config_url_env=${spring_config_url}
 VOLUME /home/logs
 
 # copying shaded jar into docker image
-COPY ./target/registration-processor-camel-bridge-*.jar registration-processor-camel-bridge.jar
+COPY ./target/registration-processor-common-camel-bridge-*.jar registration-processor-common-camel-bridge.jar
 
 
 # running java jar
-CMD java -jar -Dspring.cloud.config.label=${spring_config_label_env} -Dspring.profiles.active=${active_profile_env} -Dspring.cloud.config.uri=${spring_config_url_env} -Dregistration.processor.zone=${zone_env} registration-processor-camel-bridge.jar
+CMD java -jar -Dspring.cloud.config.label=${spring_config_label_env} -Dspring.profiles.active=${active_profile_env} -Dspring.cloud.config.uri=${spring_config_url_env} -Dregistration.processor.zone=${zone_env} registration-processor-common-camel-bridge.jar
