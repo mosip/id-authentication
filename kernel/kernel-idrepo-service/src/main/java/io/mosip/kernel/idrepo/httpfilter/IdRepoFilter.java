@@ -25,14 +25,13 @@ import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 
 import io.mosip.kernel.core.exception.ExceptionUtils;
+import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.idrepo.constant.IdRepoConstants;
 import io.mosip.kernel.core.idrepo.constant.IdRepoErrorConstants;
+import io.mosip.kernel.core.idrepo.dto.IdResponseDTO;
 import io.mosip.kernel.core.idrepo.exception.IdRepoAppUncheckedException;
 import io.mosip.kernel.core.logger.spi.Logger;
-import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.idrepo.config.IdRepoLogger;
-import io.mosip.kernel.idrepo.dto.ErrorDTO;
-import io.mosip.kernel.idrepo.dto.IdResponseDTO;
 
 /**
  * The Class IdRepoFilter.
@@ -154,13 +153,9 @@ public class IdRepoFilter extends OncePerRequestFilter {
 			IdResponseDTO response = new IdResponseDTO();
 			response.setId(id.get(READ));
 			response.setVersion(env.getProperty(IdRepoConstants.APPLICATION_VERSION.getValue()));
-			response.setResponsetime(DateUtils.getUTCCurrentDateTimeString(
-					env.getProperty(IdRepoConstants.DATETIME_PATTERN.getValue())));
-			ErrorDTO errors = new ErrorDTO(IdRepoErrorConstants.INVALID_REQUEST.getErrorCode(),
+			ServiceError errors = new ServiceError(IdRepoErrorConstants.INVALID_REQUEST.getErrorCode(),
 					IdRepoErrorConstants.INVALID_REQUEST.getErrorMessage());
 			response.setErrors(Collections.singletonList(errors));
-			mapper.setFilterProvider(new SimpleFilterProvider().addFilter("responseFilter",
-					SimpleBeanPropertyFilter.serializeAllExcept("registrationId", "status", "response", "metadata")));
 			return mapper.writeValueAsString(response);
 		} catch (IOException e) {
 			mosipLogger.error(uin, ID_REPO, ID_REPO_FILTER, "\n" + ExceptionUtils.getStackTrace(e));

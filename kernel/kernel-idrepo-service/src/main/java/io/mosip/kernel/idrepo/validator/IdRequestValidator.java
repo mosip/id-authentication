@@ -30,6 +30,7 @@ import com.jayway.jsonpath.Option;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.idrepo.constant.IdRepoConstants;
 import io.mosip.kernel.core.idrepo.constant.IdRepoErrorConstants;
+import io.mosip.kernel.core.idrepo.dto.IdRequestDTO;
 import io.mosip.kernel.core.idrepo.exception.IdRepoAppException;
 import io.mosip.kernel.core.idvalidator.exception.InvalidIDException;
 import io.mosip.kernel.core.idvalidator.spi.RidValidator;
@@ -47,7 +48,6 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.core.util.StringUtils;
 import io.mosip.kernel.idrepo.config.IdRepoLogger;
-import io.mosip.kernel.idrepo.dto.IdRequestDTO;
 import net.minidev.json.JSONArray;
 
 /**
@@ -411,24 +411,17 @@ public class IdRequestValidator implements Validator {
 	/**
 	 * Validate req time.
 	 *
-	 * @param timestamp
+	 * @param reqTime
 	 *            the timestamp
 	 * @param errors
 	 *            the errors
 	 */
-	private void validateReqTime(String timestamp, Errors errors) {
-		if (Objects.isNull(timestamp)) {
+	private void validateReqTime(LocalDateTime reqTime, Errors errors) {
+		if (Objects.isNull(reqTime)) {
 			errors.rejectValue(REQUEST_TIME, IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
 					String.format(IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(), REQUEST_TIME));
 		} else {
-			try {
-				if (DateUtils.after(DateUtils.parseToLocalDateTime(timestamp), DateUtils.getUTCCurrentDateTime())) {
-					errors.rejectValue(REQUEST_TIME, IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
-							String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), REQUEST_TIME));
-				}
-			} catch (DateTimeParseException | io.mosip.kernel.core.exception.IllegalArgumentException e) {
-				mosipLogger.error(IdRepoLogger.getUin(), "IdRequestValidator", "validateReqTime",
-						"\n" + ExceptionUtils.getStackTrace(e));
+			if (DateUtils.after(reqTime, DateUtils.getUTCCurrentDateTime())) {
 				errors.rejectValue(REQUEST_TIME, IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
 						String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), REQUEST_TIME));
 			}
