@@ -654,8 +654,8 @@ public class DemographicServiceTest {
 
 	}
 
-	@Test(expected = RecordFailedToDeleteException.class)
-	public void deleteRecordFailedToDeleteException1() throws Exception {
+	@Test(expected = DocumentFailedToDeleteException.class)
+	public void documentFailedToDeleteExceptionTest() throws Exception {
 		String preRegId = "98746563542672";
 		ExceptionJSONInfoDTO err = new ExceptionJSONInfoDTO("PRG_PAM_DOC_015", "");
 		Mockito.when(demographicRepository.findBypreRegistrationId(preRegId)).thenReturn(preRegistrationEntity);
@@ -1155,6 +1155,29 @@ public class DemographicServiceTest {
 		Mockito.when(demographicRepository.findByStatusCodeAndPreRegistrationIdIn(StatusCodes.BOOKED.getCode(), preIds))
 				.thenReturn(userEntityDetails);
 		preRegistrationService.getUpdatedDateTimeForPreIds(preRegIdsByRegCenterIdDTO);
+
+	}
+	
+	@Test
+	public void getPreRegistrationByDateEntityCheckSuccessTest() {
+		DemographicEntity demoEntity=new DemographicEntity();
+		demoEntity.setDemogDetailHash("E0B6CBDAC6D896BCB5061846A054CD1373397D02A9F83CEFDBC912317E6E0331");
+		demoEntity.setApplicantDetailJson("MOSIP".getBytes());
+		demoEntity.setPreRegistrationId("123456");
+		List<DemographicEntity> list=new ArrayList<>();
+		list.add(demoEntity);
+		List<String> resList=preRegistrationService.getPreRegistrationByDateEntityCheck(list);
+		assertEquals(resList.get(0),"123456");
+	}
+	@Test(expected=HashingException.class)
+	public void getPreRegistrationByDateEntityCheckExceptionTest() {
+		DemographicEntity demoEntity=new DemographicEntity();
+		demoEntity.setDemogDetailHash("");
+		demoEntity.setApplicantDetailJson("MOSIP".getBytes());
+		demoEntity.setPreRegistrationId("123456");
+		List<DemographicEntity> list=new ArrayList<>();
+		list.add(demoEntity);
+		List<String> resList=preRegistrationService.getPreRegistrationByDateEntityCheck(list);
 
 	}
 
