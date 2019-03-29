@@ -39,12 +39,7 @@
               <rowConstraints>
                 <RowConstraints percentHeight="10.0" valignment="CENTER" vgrow="ALWAYS" />
                   <RowConstraints percentHeight="7.0" valignment="CENTER" vgrow="ALWAYS" />
-                  <RowConstraints percentHeight="15.0" valignment="CENTER" vgrow="ALWAYS" />
-                  <RowConstraints percentHeight="5.0" valignment="CENTER" vgrow="ALWAYS" />
-                <RowConstraints percentHeight="15.0" valignment="CENTER" vgrow="ALWAYS" />
-                <RowConstraints percentHeight="5.0" valignment="CENTER" vgrow="ALWAYS" />
-                <RowConstraints percentHeight="15.0" valignment="CENTER" vgrow="ALWAYS" />
-                <RowConstraints percentHeight="28.0" valignment="CENTER" vgrow="ALWAYS" />
+                <RowConstraints percentHeight="83.0" valignment="CENTER" vgrow="ALWAYS" />
               </rowConstraints>
                <children>
                   <Label styleClass="optionHeaderStyle" text="%registrationTasks" GridPane.halignment="LEFT" GridPane.rowIndex="1" GridPane.valignment="CENTER">
@@ -52,66 +47,64 @@
                         <Insets left="40.0" />
                      </GridPane.margin>
                   </Label>
-                  <GridPane onMouseClicked="#createPacket" styleClass="newRegBtnStyle" GridPane.rowIndex="2">
-                    <columnConstraints>
-                      <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" percentWidth="40.0" />
-                      <ColumnConstraints halignment="LEFT" hgrow="ALWAYS" percentWidth="60.0" />
-                    </columnConstraints>
-                    <rowConstraints>
-                      <RowConstraints percentHeight="100.0" valignment="CENTER" vgrow="ALWAYS" />
-                    </rowConstraints>
+                  <VBox fx:id="vHolder" managed="true" spacing="20.0" GridPane.rowIndex="2">
                      <children>
-                        <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@../images/NewRegistration.png" />
-                           </image>
-                        </ImageView>
-                        <Label styleClass="newRegBtnStyle" text="%newregistration" GridPane.columnIndex="1" />
+                        <GridPane onMouseClicked="#createPacket" prefHeight="${vHolder.height/6}" styleClass="newRegBtnStyle">
+                           <children>
+                              <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../images/NewRegistration.png" />
+                                 </image>
+                              </ImageView>
+                              <Label styleClass="newRegBtnStyle" text="%newregistration" GridPane.columnIndex="1" />
+                           </children>
+                           <columnConstraints>
+                              <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" percentWidth="40.0" />
+                              <ColumnConstraints halignment="LEFT" hgrow="ALWAYS" percentWidth="60.0" />
+                           </columnConstraints>
+                           <rowConstraints>
+                              <RowConstraints percentHeight="100.0" valignment="CENTER" vgrow="ALWAYS" />
+                           </rowConstraints>
+                        </GridPane>
+                        <GridPane fx:id="uinUpdateGridPane" onMouseClicked="#updateUIN" prefHeight="${vHolder.height/6}" styleClass="uinUpdateStyle">
+                           <children>
+                              <ImageView fx:id="uinUpdateImage" fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../images/UINUpdate.png" />
+                                 </image>
+                              </ImageView>
+                              <Label styleClass="uinUpdateBtnStyle" text="%uinupdate" GridPane.columnIndex="1" />
+                           </children>
+                           <columnConstraints>
+                              <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" percentWidth="40.0" />
+                              <ColumnConstraints halignment="LEFT" hgrow="ALWAYS" percentWidth="60.0" />
+                           </columnConstraints>
+                           <rowConstraints>
+                              <RowConstraints percentHeight="100.0" valignment="CENTER" vgrow="ALWAYS" />
+                           </rowConstraints>
+                        </GridPane>
+                        <GridPane fx:id="lostUINPane" onMouseClicked="#lostUIN" prefHeight="${vHolder.height/6}" styleClass="uinUpdateStyle">
+                           <children>
+                              <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../images/LostUIN.png" />
+                                 </image>
+                              </ImageView>
+                              <Label styleClass="uinUpdateBtnStyle" text="%lostuin" GridPane.columnIndex="1" />
+                           </children>
+                           <columnConstraints>
+                              <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" percentWidth="40.0" />
+                              <ColumnConstraints halignment="LEFT" hgrow="ALWAYS" percentWidth="60.0" />
+                           </columnConstraints>
+                           <rowConstraints>
+                              <RowConstraints percentHeight="100.0" valignment="CENTER" vgrow="ALWAYS" />
+                           </rowConstraints>
+                        </GridPane>
                      </children>
                      <GridPane.margin>
-                        <Insets left="30.0" />
+                        <Insets left="20.0" />
                      </GridPane.margin>
-                  </GridPane>
-                  <GridPane fx:id="uinUpdateGridPane" onMouseClicked="#updateUIN" styleClass="uinUpdateStyle" GridPane.rowIndex="4">
-                     <children>
-                        <ImageView fx:id="uinUpdateImage" fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@../images/UINUpdate.png" />
-                           </image>
-                        </ImageView>
-                        <Label styleClass="uinUpdateBtnStyle" text="%uinupdate" GridPane.columnIndex="1" />
-                     </children>
-                     <columnConstraints>
-                        <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" percentWidth="40.0" />
-                        <ColumnConstraints halignment="LEFT" hgrow="ALWAYS" percentWidth="60.0" />
-                     </columnConstraints>
-                     <rowConstraints>
-                        <RowConstraints percentHeight="100.0" valignment="CENTER" vgrow="ALWAYS" />
-                     </rowConstraints>
-                     <GridPane.margin>
-                        <Insets left="30.0" />
-                     </GridPane.margin>
-                  </GridPane>
-                  <GridPane fx:id="lostUINPane" onMouseClicked="#lostUIN" styleClass="uinUpdateStyle" GridPane.rowIndex="6">
-                     <children>
-                        <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@../images/LostUIN.png" />
-                           </image>
-                        </ImageView>
-                        <Label styleClass="uinUpdateBtnStyle" text="%lostuin" GridPane.columnIndex="1" />
-                     </children>
-                     <columnConstraints>
-                        <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" percentWidth="40.0" />
-                        <ColumnConstraints halignment="LEFT" hgrow="ALWAYS" percentWidth="60.0" />
-                     </columnConstraints>
-                     <rowConstraints>
-                        <RowConstraints percentHeight="100.0" valignment="CENTER" vgrow="ALWAYS" />
-                     </rowConstraints>
-                     <GridPane.margin>
-                        <Insets left="30.0" />
-                     </GridPane.margin>
-                  </GridPane>
+                  </VBox>
                </children>
             </GridPane>
             <GridPane GridPane.columnIndex="2">

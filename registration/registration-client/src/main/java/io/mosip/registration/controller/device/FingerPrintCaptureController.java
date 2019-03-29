@@ -1143,13 +1143,11 @@ public class FingerPrintCaptureController extends BaseController implements Init
 
 			if (getRegistrationDTOFromSession() != null && getRegistrationDTOFromSession().getSelectionListDTO() != null
 
-					&& (getRegistrationDTOFromSession().getSelectionListDTO().isBiometrics() && isleftHandSlapCaptured
+					&& ((getRegistrationDTOFromSession().getSelectionListDTO().isBiometrics() && isleftHandSlapCaptured
 							&& isrightHandSlapCaptured && isthumbsCaptured)
 
-					|| RegistrationConstants.DISABLE.equalsIgnoreCase(
-							String.valueOf(ApplicationContext.map().get(RegistrationConstants.IRIS_DISABLE_FLAG)))
-							&& !getRegistrationDTOFromSession().getSelectionListDTO().isBiometrics()
-							&& (isleftHandSlapCaptured || isrightHandSlapCaptured || isthumbsCaptured)) {
+					||  !getRegistrationDTOFromSession().getSelectionListDTO().isBiometrics()
+							&& (isleftHandSlapCaptured || isrightHandSlapCaptured || isthumbsCaptured))) {
 
 				isValid = fingerdeduplicationCheck(segmentedFingerprintDetailsDTOs, isValid, fingerprintDetailsDTOs);
 

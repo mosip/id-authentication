@@ -71,6 +71,7 @@ import javafx.scene.control.ProgressIndicator;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.VBox;
 
 /**
  * Class for Registration Packet operations
@@ -107,6 +108,9 @@ public class PacketHandlerController extends BaseController implements Initializ
 
 	@FXML
 	private GridPane lostUINPane;
+	
+	@FXML
+	private VBox vHolder;
 
 	@FXML
 	public ProgressIndicator reMapProgressIndicator;
@@ -191,14 +195,19 @@ public class PacketHandlerController extends BaseController implements Initializ
 		if (!(String.valueOf(ApplicationContext.map().get(RegistrationConstants.UIN_UPDATE_CONFIG_FLAG)))
 				.equalsIgnoreCase(RegistrationConstants.ENABLE)
 				|| configuredFieldsfromDB.get(RegistrationConstants.PARAM_ZERO).isEmpty()) {
-			uinUpdateBtn.setVisible(false);
-			uinUpdateImage.setVisible(false);
-			uinUpdateGridPane.setVisible(false);
+			vHolder.getChildren().forEach(btnNode ->{
+				if( btnNode instanceof GridPane && btnNode.getId()!=null && btnNode.getId().equals(uinUpdateGridPane.getId())) {
+					btnNode.setVisible(false);
+					btnNode.setManaged(false);
+				}
+			});
+			
 		}
 		
 		if (!(String.valueOf(ApplicationContext.map().get(RegistrationConstants.LOST_UIN_CONFIG_FLAG)))
 				.equalsIgnoreCase(RegistrationConstants.ENABLE)) {
 			lostUINPane.setVisible(false);
+			vHolder.setManaged(false);
 		}
 
 	}
