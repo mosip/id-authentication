@@ -6,7 +6,7 @@
 	<packaging>jar</packaging>
 	<parent>
 		<groupId>io.mosip.registrationprocessor</groupId>
-		<artifactId>stages</artifactId>
+		<artifactId>post-processor</artifactId>
 		<version>0.10.1</version>
 	</parent>
 

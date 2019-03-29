@@ -24,7 +24,7 @@ ENV spring_config_label_env=${spring_config_label}
 # change volume to whichever storage directory you want to use for this container.
 VOLUME /home/ftp1/VIRUS_SCAN/encrypted /home/ftp1/ARCHIVE_PACKET_LOCATION  /home/ftp1/VIRUS_SCAN/decrypted /home/ftp1/VIRUS_SCAN/unpacked
 
-COPY ./target/packet-uploader-stage-*.jar packet-uploader-stage.jar
+COPY ./target/registration-processor-packet-uploader-stage-*.jar registration-processor-packet-uploader-stage.jar
 
-CMD ["java","-Dspring.cloud.config.label=${spring_config_label_env}","-Dspring.profiles.active=${active_profile_env}","-Dspring.cloud.config.uri=${spring_config_url_env}","-jar","packet-uploader-stage.jar"]
+CMD ["java","-Dspring.cloud.config.label=${spring_config_label_env}","-Dspring.profiles.active=${active_profile_env}","-Dspring.cloud.config.uri=${spring_config_url_env}","-jar","registration-processor-packet-uploader-stage.jar"]
 

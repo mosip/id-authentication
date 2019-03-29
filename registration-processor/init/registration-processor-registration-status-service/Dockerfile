@@ -24,8 +24,8 @@ ENV spring_config_label_env=${spring_config_label}
 # change volume to whichever storage directory you want to use for this container.
 VOLUME /home/logs
 
-COPY ./target/registration-status-service-*.jar registration-status-service.jar
+COPY ./target/registration-processor-registration-status-service-*.jar registration-processor-registration-status-service.jar
 
 EXPOSE 8083
 
-CMD ["java","-Dspring.cloud.config.label=${spring_config_label_env}","-Dspring.profiles.active=${active_profile_env}","-Dspring.cloud.config.uri=${spring_config_url_env}","-jar","registration-status-service.jar"]
+CMD ["java","-Dspring.cloud.config.label=${spring_config_label_env}","-Dspring.profiles.active=${active_profile_env}","-Dspring.cloud.config.uri=${spring_config_url_env}","-jar","registration-processor-registration-status-service.jar"]
