@@ -89,7 +89,8 @@ public class EncrypterDecrypter {
 		  Response response=applnMethods.postRequestToDecrypt(decryptedFileBody, encrypterURL);
 		  try {
 			  JSONObject data= (JSONObject) new JSONParser().parse(response.asString());
-			byte[] encryptedPacket = CryptoUtil.decodeBase64(data.get("data").toString());
+			//  String encryptedPacketString= CryptoUtil.encodeBase64(data.get("data").toString().getBytes());
+			byte[] encryptedPacket = data.get("data").toString().getBytes();
 			outstream = new ByteArrayInputStream(encryptedPacket); 
 			logger.info("Outstream is "+ outstream);
 			FileOutputStream fos= new FileOutputStream(destinationPath+"/"+fileName+".zip");
@@ -187,7 +188,7 @@ public class EncrypterDecrypter {
 			cryptographicRequest.put("timeStamp",decrypterDto.getTimeStamp().atOffset(ZoneOffset.UTC).toString());
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.info("Could Not ");
 		} catch (IOException e) {
 			
 			// TODO Auto-generated catch block
