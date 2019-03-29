@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.kernel.core.http.ResponseFilter;
+import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.masterdata.dto.getresponse.MachineHistoryResponseDto;
 import io.mosip.kernel.masterdata.service.MachineHistoryService;
 import io.swagger.annotations.Api;
@@ -50,14 +51,16 @@ public class MachineHistoryController {
 	 */
 	@ResponseFilter
 	@GetMapping(value = "/{id}/{langcode}/{effdatetimes}")
-	@ApiOperation(value = "Retrieve all Machine History Details for the given Languge Code, ID and Effective date time", notes = "Retrieve all Machine Detail for given Languge Code and ID", response = MachineHistoryResponseDto.class)
+	@ApiOperation(value = "Retrieve all Machine History Details for the given Languge Code, ID and Effective date time", notes = "Retrieve all Machine Detail for given Languge Code and ID")
 	@ApiResponses({
-			@ApiResponse(code = 200, message = "When Machine History Details retrieved from database for the given Languge Code, ID and Effective date time", response = MachineHistoryResponseDto.class),
+			@ApiResponse(code = 200, message = "When Machine History Details retrieved from database for the given Languge Code, ID and Effective date time"),
 			@ApiResponse(code = 404, message = "When No Machine History Details found for the given Languge Code, ID and Effective date time"),
 			@ApiResponse(code = 500, message = "While retrieving Machine History Details any error occured") })
-	public MachineHistoryResponseDto getMachineHistoryIdLangEff(@PathVariable("id") String id,
+	public ResponseWrapper<MachineHistoryResponseDto> getMachineHistoryIdLangEff(@PathVariable("id") String id,
 			@PathVariable("langcode") String langCode, @PathVariable("effdatetimes") String dateAndTime) {
 
-		return macHistoryService.getMachineHistroyIdLangEffDTime(id, langCode, dateAndTime);
+		ResponseWrapper<MachineHistoryResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(macHistoryService.getMachineHistroyIdLangEffDTime(id, langCode, dateAndTime));
+		return responseWrapper;
 	}
 }

@@ -3,8 +3,6 @@ package io.mosip.kernel.masterdata.controller;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,6 +18,7 @@ import io.mosip.kernel.masterdata.dto.HolidayIdDeleteDto;
 import io.mosip.kernel.masterdata.dto.HolidayUpdateDto;
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseFilter;
+import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.masterdata.dto.getresponse.HolidayResponseDto;
 import io.mosip.kernel.masterdata.service.HolidayService;
 import io.swagger.annotations.Api;
@@ -48,8 +47,10 @@ public class HolidayController {
 	 */
 	@ResponseFilter
 	@GetMapping
-	public HolidayResponseDto getAllHolidays() {
-		return holidayService.getAllHolidays();
+	public ResponseWrapper<HolidayResponseDto> getAllHolidays() {
+		ResponseWrapper<HolidayResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(holidayService.getAllHolidays());
+		return responseWrapper;
 	}
 
 	/**
@@ -61,8 +62,11 @@ public class HolidayController {
 	 */
 	@ResponseFilter
 	@GetMapping("/{holidayid}")
-	public HolidayResponseDto getAllHolidayById(@PathVariable("holidayid") int holidayId) {
-		return holidayService.getHolidayById(holidayId);
+	public ResponseWrapper<HolidayResponseDto> getAllHolidayById(@PathVariable("holidayid") int holidayId) {
+
+		ResponseWrapper<HolidayResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(holidayService.getHolidayById(holidayId));
+		return responseWrapper;
 	}
 
 	/**
@@ -77,9 +81,11 @@ public class HolidayController {
 	 */
 	@ResponseFilter
 	@GetMapping("/{holidayid}/{langcode}")
-	public HolidayResponseDto getAllHolidayByIdAndLangCode(@PathVariable("holidayid") int holidayId,
+	public ResponseWrapper<HolidayResponseDto> getAllHolidayByIdAndLangCode(@PathVariable("holidayid") int holidayId,
 			@PathVariable("langcode") String langCode) {
-		return holidayService.getHolidayByIdAndLanguageCode(holidayId, langCode);
+		ResponseWrapper<HolidayResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(holidayService.getHolidayByIdAndLanguageCode(holidayId, langCode));
+		return responseWrapper;
 	}
 
 	/**
@@ -91,9 +97,10 @@ public class HolidayController {
 	 */
 	@ResponseFilter
 	@PostMapping
-	public ResponseEntity<HolidayIDDto> saveHoliday(@Valid @RequestBody RequestWrapper<HolidayDto> holiday) {
-		return new ResponseEntity<>(holidayService.saveHoliday(holiday.getRequest()), HttpStatus.OK);
-
+	public ResponseWrapper<HolidayIDDto> saveHoliday(@Valid @RequestBody RequestWrapper<HolidayDto> holiday) {
+		ResponseWrapper<HolidayIDDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(holidayService.saveHoliday(holiday.getRequest()));
+		return responseWrapper;
 	}
 
 	/**
@@ -106,22 +113,27 @@ public class HolidayController {
 	@ResponseFilter
 	@PutMapping
 	@ApiOperation(value = "to update a holiday", response = HolidayIDDto.class)
-	public HolidayIDDto updateHoliday(@Valid @RequestBody RequestWrapper<HolidayUpdateDto> holiday) {
-		return holidayService.updateHoliday(holiday.getRequest());
+	public ResponseWrapper<HolidayIDDto> updateHoliday(@Valid @RequestBody RequestWrapper<HolidayUpdateDto> holiday) {
+		ResponseWrapper<HolidayIDDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(holidayService.updateHoliday(holiday.getRequest()));
+		return responseWrapper;
 	}
 
 	/**
 	 * Method to delete holidays
 	 * 
 	 * @param request
-	 *            input values to delete 
+	 *            input values to delete
 	 * @return id of the deleted Holiday data
 	 */
 	@ResponseFilter
 	@DeleteMapping
 	@ApiOperation(value = "to delete a holiday", response = HolidayIdDeleteDto.class)
-	public HolidayIdDeleteDto deleteHoliday(@Valid @RequestBody RequestWrapper<HolidayIdDeleteDto> request) {
-		return holidayService.deleteHoliday(request);
+	public ResponseWrapper<HolidayIdDeleteDto> deleteHoliday(
+			@Valid @RequestBody RequestWrapper<HolidayIdDeleteDto> request) {
+		ResponseWrapper<HolidayIdDeleteDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(holidayService.deleteHoliday(request));
+		return responseWrapper;
 	}
 
 }
