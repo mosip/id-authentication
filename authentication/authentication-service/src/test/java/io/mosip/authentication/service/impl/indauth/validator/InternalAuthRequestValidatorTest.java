@@ -141,6 +141,7 @@ public class InternalAuthRequestValidatorTest {
 		MockEnvironment mockenv = new MockEnvironment();
 		mockenv.merge(((AbstractEnvironment) mockenv));
 		mockenv.setProperty("internal.allowed.auth.type", "fulladdress");
+		mockenv.setProperty("mosip.idtype.allowed", "UIN,VID");
 		mockenv.setProperty("datetime.pattern", "yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
 		ReflectionTestUtils.setField(internalAuthRequestValidator, "env", mockenv);
 		/*

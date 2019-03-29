@@ -130,7 +130,7 @@ public class AuthFacadeImpl implements AuthFacade {
 
 	/** The TokenId Generator */
 	@Autowired
-	private TokenIdGenerator<String, String> tokenIdGenerator;
+	private TokenIdGenerator<String> tokenIdGenerator;
 
 	@Autowired
 	private IdInfoFetcher idInfoFetcher;
@@ -163,7 +163,9 @@ public class AuthFacadeImpl implements AuthFacade {
 			idInfo = idInfoService.getIdInfo(idResDTO);
 			authResponseBuilder.setTxnID(authRequestDTO.getTransactionID());
 			Boolean staticTokenRequired = env.getProperty(STATIC_TOKEN_ENABLE, Boolean.class);
-			String staticTokenId = staticTokenRequired ? tokenIdGenerator.generateId(tspId, uin) : "";
+			//FIXME temporary fix for the api change
+//			String staticTokenId = staticTokenRequired ? tokenIdGenerator.generateId(tspId, uin) : "";
+			String staticTokenId = staticTokenRequired ? tokenIdGenerator.generateId() : "";
 			List<AuthStatusInfo> authStatusList = processAuthType(authRequestDTO, idInfo, uin, isAuth, staticTokenId,
 					partnerId);
 			authStatusList.forEach(authResponseBuilder::addAuthStatusInfo);

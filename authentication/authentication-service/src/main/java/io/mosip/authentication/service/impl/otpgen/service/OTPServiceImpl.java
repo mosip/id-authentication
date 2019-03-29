@@ -31,7 +31,6 @@ import io.mosip.authentication.core.util.OTPUtil;
 import io.mosip.authentication.service.entity.AutnTxn;
 import io.mosip.authentication.service.helper.IdInfoHelper;
 import io.mosip.authentication.service.impl.indauth.match.IdaIdMapping;
-import io.mosip.authentication.service.impl.indauth.service.demo.DemoAuthType;
 import io.mosip.authentication.service.impl.indauth.service.demo.DemoMatchType;
 import io.mosip.authentication.service.integration.NotificationManager;
 import io.mosip.authentication.service.integration.OTPManager;
@@ -141,7 +140,7 @@ public class OTPServiceImpl implements OTPService {
 				}
 
 				if (otpRequestDto.getOtpChannel().isPhone() && isNotNullorEmpty(phoneNumber)) {
-					maskedResponseDTO.setMaskedEmail(MaskUtil.maskEmail(phoneNumber));
+					maskedResponseDTO.setMaskedMobile(MaskUtil.maskMobile(phoneNumber));
 				} else {
 					throw new IdAuthenticationBusinessException(
 							IdAuthenticationErrorConstants.PHONE_EMAIL_NOT_REGISTERED.getErrorCode(),
