@@ -9,11 +9,11 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.multipart.MultipartFile;
 
+import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.emailnotification.NotificationEmailBootApplication;
 import io.mosip.kernel.emailnotification.controller.EmailNotificationController;
 import io.mosip.kernel.emailnotification.dto.ResponseDto;
@@ -43,6 +43,6 @@ public class MailNotifierControllerTest {
 		dto.setMessage("");
 		dto.setStatus("");
 		when(service.sendEmail(mailTo, mailCc, mailSubject, mailContent, arr)).thenReturn(dto);
-		assertThat(controller.sendMail(mailTo, mailCc, mailSubject, mailContent, arr), isA(ResponseEntity.class));
+		assertThat(controller.sendMail(mailTo, mailCc, mailSubject, mailContent, arr), isA(ResponseWrapper.class));
 	}
 }
