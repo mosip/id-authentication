@@ -272,9 +272,7 @@ public class Validations extends BaseController {
 										.filter(word -> blackListedWords.contains(word)).collect(Collectors.toList()));
 						if (bWords.length() > 0) {
 							if (!showAlert) {
-								generateAlert(parentPane, id,
-										bWords.concat(
-												" " + messageBundle.getString(RegistrationConstants.IS_BLOCKED_WORD)),
+								generateAlert(parentPane, id,bWords+" "+messageBundle.getString(RegistrationConstants.BLACKLISTED_1)+" "+labelBundle.getString(label)+" "+messageBundle.getString(RegistrationConstants.BLACKLISTED_2),
 										isConsolidated, validationMessage);
 								return false;
 							}

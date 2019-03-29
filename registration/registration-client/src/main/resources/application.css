@@ -10,6 +10,13 @@
 	-fx-font-size:10.0px;
 }
 
+.toolTip{
+	-fx-font: normal bold 10 Langdon;
+	-fx-base: #AE3522;
+	-fx-text-fill: red;
+	-fx-background-color : white;
+}
+
 #toggleLabel1{
 	-fx-background-radius: 21.0,21.0,21.0,21.0;	
 	-fx-background-color: #FF4081;

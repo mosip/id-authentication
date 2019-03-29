@@ -165,6 +165,8 @@ public class RegistrationConstants {
 	public static final String REG_LGN_001 = "REG_LGN_001";
 	public static final String REG_DDC_002_1 = "REG_DDC_002_1";
 	public static final String IS_BLOCKED_WORD = "IS_BLOCKED_WORD";
+	public static final String BLACKLISTED_1 = "BLACKLISTED_1";
+	public static final String BLACKLISTED_2 = "BLACKLISTED_2";
 	public static final String REG_DDC_002_2 = "REG_DDC_002_2";
 	public static final String REG_DDC_003_1 = "REG_DDC_003_1";
 	public static final String REG_DDC_003_2 = "REG_DDC_003_2";

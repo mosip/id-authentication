@@ -70,6 +70,7 @@ import javafx.scene.control.Control;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -299,6 +300,9 @@ public class BaseController extends BaseService {
 					.lookup(RegistrationConstants.HASH + id + RegistrationConstants.MESSAGE)));
 			if (!label.isVisible()) {
 				label.setText(context);
+				Tooltip tool = new Tooltip(context);
+				tool.getStyleClass().add("toolTip");
+				label.setTooltip(tool);
 				label.setVisible(true);
 			}
 		} else {
