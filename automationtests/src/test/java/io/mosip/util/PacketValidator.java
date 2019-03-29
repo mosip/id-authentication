@@ -34,10 +34,13 @@ public class PacketValidator {
 	final String configPath= "src/test/resources/regProc/StageValidation";
 	final String fileName = "/DummyDecryptedPacket/10011100110002020190326090045";
 		
-	ConnectionUtils connectionUtil = new ConnectionUtils();
-	FileSystemAdapter adapter = new HDFSAdapterImpl(connectionUtil);
-
-
+	public FileSystemAdapter establishHDFSConnection(){
+		ConnectionUtils connectionUtil = new ConnectionUtils();
+		FileSystemAdapter adapter = new HDFSAdapterImpl(connectionUtil);
+		return adapter;
+	}
+	
+	final FileSystemAdapter adapter = establishHDFSConnection();
 
 	/**
 	 * This method is used for validation of packet validation stage, which
@@ -160,7 +163,7 @@ public class PacketValidator {
 		}
 
 		//CheckSum generation
-		byte[] hashCodeGenerated = checksumGeneration(listOfFiles, regId);
+		byte[] hashCodeGenerated = checksumGeneration(listOfFiles, regId, adapter);
 		//CheckSum Validation
 		InputStream packetDataHashStream = adapter.getFile(regId, "PACKET_DATA_HASH");
 		byte[] packetDataHashByte = IOUtils.toByteArray(packetDataHashStream);
@@ -192,7 +195,7 @@ public class PacketValidator {
 	 * @throws ParseException
 	 * @throws FileNotFoundException
 	 */
-	private byte[] checksumGeneration(File[] listOfFiles, String regId) throws IOException, ParseException, FileNotFoundException {
+	public byte[] checksumGeneration(File[] listOfFiles, String regId, FileSystemAdapter adapter) throws IOException, ParseException, FileNotFoundException {
  		JSONArray hashSequence1;
 		byte[] hashCodeGenerated = null;
 		for(File f : listOfFiles){
@@ -206,13 +209,13 @@ public class PacketValidator {
 					logger.info("obj : "+label.get("label"));
 					if(label.get("label").equals("applicantBiometricSequence")){
 						List<String> docs = (List<String>) label.get("value");
-						generateBiometricsHash(docs, regId);
+						generateBiometricsHash(docs, regId, adapter);
 					}else if(label.get("label").equals("introducerBiometricSequence")){
 						List<String> docs = (List<String>) label.get("value");
-						generateBiometricsHash(docs, regId);
+						generateBiometricsHash(docs, regId, adapter);
 					}else if(label.get("label").equals("applicantDemographicSequence")){
 						List<String> docs = (List<String>) label.get("value");
-						generateDemographicHash(docs, regId);
+						generateDemographicHash(docs, regId, adapter);
 					}
 				}	
 				hashCodeGenerated = HMACUtils.digestAsPlainText(HMACUtils.updatedHash()).getBytes();
@@ -227,7 +230,7 @@ public class PacketValidator {
 	 * @param docs
 	 * @param regId2
 	 */
-	private void generateDemographicHash(List<String> docs, String regId2) {
+	private void generateDemographicHash(List<String> docs, String regId2, FileSystemAdapter adapter) {
 		docs.forEach(document -> {
 			byte[] filebyte = null;
 			InputStream fileStream = adapter.getFile(regId2,
@@ -249,7 +252,7 @@ public class PacketValidator {
 	 * @param docs
 	 * @param regId
 	 */
-	private void generateBiometricsHash(List<String> docs, String regId) {
+	private void generateBiometricsHash(List<String> docs, String regId, FileSystemAdapter adapter) {
 		docs.forEach(file -> {
 			byte[] filebyte = null;
 			InputStream fileStream = adapter.getFile(regId,
