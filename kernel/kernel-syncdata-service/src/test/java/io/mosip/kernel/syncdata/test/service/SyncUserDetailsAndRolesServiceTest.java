@@ -1,4 +1,4 @@
-package io.mosip.kernel.syncdata.test.integration;
+package io.mosip.kernel.syncdata.test.service;
 
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
@@ -38,7 +38,7 @@ import io.mosip.kernel.syncdata.service.SyncUserDetailsService;
 
 @SpringBootTest
 @RunWith(SpringRunner.class)
-public class SyncUserDetailsAndRolesIntegrationTest {
+public class SyncUserDetailsAndRolesServiceTest {
 	@Autowired
 	private SyncUserDetailsService syncUserDetailsService;
 
