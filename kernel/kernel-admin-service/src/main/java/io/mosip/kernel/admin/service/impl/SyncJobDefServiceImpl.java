@@ -12,7 +12,6 @@ import io.mosip.kernel.admin.dto.SyncJobDefDto;
 import io.mosip.kernel.admin.dto.response.SyncJobDefResponseDto;
 import io.mosip.kernel.admin.entity.SyncJobDef;
 import io.mosip.kernel.admin.exception.AdminServiceException;
-import io.mosip.kernel.admin.exception.DataNotFoundException;
 import io.mosip.kernel.admin.repository.SyncJobDefRepository;
 import io.mosip.kernel.admin.service.SyncJobDefService;
 import io.mosip.kernel.admin.utils.MapperUtils;
@@ -37,7 +36,7 @@ public class SyncJobDefServiceImpl implements SyncJobDefService {
 			LocalDateTime currentTimeStamp) {
 		List<SyncJobDefDto> syncJobDefDtos = null;
 		List<SyncJobDef> syncJobDefs = null;
-		SyncJobDefResponseDto syncJobResponseDto = new SyncJobDefResponseDto();
+		SyncJobDefResponseDto syncJobResponseDto = null;
 		try {
 			syncJobDefs = syncJobDefRepository.findLatestByLastUpdatedTimeAndCurrentTimeStamp(lastUpdatedTime,
 					currentTimeStamp);
@@ -45,12 +44,11 @@ public class SyncJobDefServiceImpl implements SyncJobDefService {
 			throw new AdminServiceException(AdminServiceErrorCode.SYNC_JOB_DEF_FETCH_EXCEPTION.getErrorCode(),
 					AdminServiceErrorCode.SYNC_JOB_DEF_FETCH_EXCEPTION.getErrorMessage());
 		}
+		if(syncJobDefs!=null && !syncJobDefs.isEmpty()) {
 		syncJobDefDtos = MapperUtils.mapAll(syncJobDefs, SyncJobDefDto.class);
-		if (syncJobDefDtos.isEmpty()) {
-			throw new DataNotFoundException(AdminServiceErrorCode.DATA_NOT_FOUND_EXCEPTION.getErrorCode(),
-					AdminServiceErrorCode.DATA_NOT_FOUND_EXCEPTION.getErrorMessage());
-		}
+		syncJobResponseDto = new SyncJobDefResponseDto();
 		syncJobResponseDto.setSyncJobDefinitions(syncJobDefDtos);
+		}
 		return syncJobResponseDto;
 	}
 

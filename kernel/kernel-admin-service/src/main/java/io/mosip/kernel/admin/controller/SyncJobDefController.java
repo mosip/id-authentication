@@ -5,8 +5,8 @@ import java.time.ZoneOffset;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.kernel.admin.dto.response.SyncJobDefResponseDto;
@@ -14,8 +14,6 @@ import io.mosip.kernel.admin.service.SyncJobDefService;
 import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.core.util.DateUtils;
 import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
 
 /**
  * SyncJobDefController class.
@@ -35,11 +33,10 @@ public class SyncJobDefController {
 	 *            the last updated
 	 * @return list of {@link SyncJobDefResponseDto}
 	 */
-	@GetMapping
+	@GetMapping("/{lastupdatedtimestamp}")
 	@ApiOperation(value = "Sync job definition ")
     @ResponseFilter
-	public SyncJobDefResponseDto getSyncJobDef(
-			@RequestParam(value = "lastupdated", required = false) String lastUpdated) {
+	public SyncJobDefResponseDto getSyncJobDef(@PathVariable("lastupdatedtimestamp") String lastUpdated) {
 		LocalDateTime currentTimeStamp = LocalDateTime.now(ZoneOffset.UTC);
 		LocalDateTime lastUpdatedTimeStamp = DateUtils.parseToLocalDateTime(lastUpdated);
 		return syncJobDefService.getLatestSyncJobDefDetails(lastUpdatedTimeStamp, currentTimeStamp);
