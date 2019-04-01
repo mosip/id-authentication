@@ -32,6 +32,7 @@ import io.mosip.authentication.service.entity.VIDEntity;
 import io.mosip.authentication.service.factory.AuditRequestFactory;
 import io.mosip.authentication.service.factory.RestRequestFactory;
 import io.mosip.authentication.service.helper.RestHelper;
+import io.mosip.authentication.service.integration.IdRepoManager;
 import io.mosip.authentication.service.repository.AutnTxnRepository;
 import io.mosip.authentication.service.repository.VIDRepository;
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -215,7 +216,7 @@ public class IdAuthServiceImpl implements IdAuthService<AutnTxn> {
 	/**
 	 * Fetch data from Identity info value based on Identity response
 	 */
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public Map<String, List<IdentityInfoDTO>> getIdInfo(Map<String, Object> idResponseDTO)
 			throws IdAuthenticationBusinessException {
 		return idResponseDTO.entrySet().stream()

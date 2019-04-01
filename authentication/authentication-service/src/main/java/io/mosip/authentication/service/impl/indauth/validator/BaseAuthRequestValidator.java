@@ -58,18 +58,27 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 
 	private static final String OTP = "otp";
 
+	/** The Constant UNKNOWN. */
+	private static final String UNKNOWN = "UNKNOWN";
+
+	/** The Constant MOSIP_ID_VALIDATION_IDENTITY_EMAIL. */
 	private static final String MOSIP_ID_VALIDATION_IDENTITY_EMAIL = "mosip.id.validation.identity.email";
 
+	/** The Constant MOSIP_ID_VALIDATION_IDENTITY_PHONE. */
 	private static final String MOSIP_ID_VALIDATION_IDENTITY_PHONE = "mosip.id.validation.identity.phone";
 
+	/** The Constant OTP2. */
 	private static final String OTP2 = "OTP";
 
+	/** The Constant PIN. */
 	private static final String PIN = "PIN";
 
 //	private static final String REQUEST_ADDITIONAL_FACTORS_STATIC_PIN = "request/additionalFactors/staticPin";
 
-	private static final String REQUEST_ADDITIONAL_FACTORS_TOTP = "request/additionalFactors/totp";
+	/** The Constant REQUEST_ADDITIONAL_FACTORS_TOTP. */
+private static final String REQUEST_ADDITIONAL_FACTORS_TOTP = "request/additionalFactors/totp";
 
+	/** The Constant BIO_TYPE. */
 	private static final String BIO_TYPE = "biotype";
 
 	/** The Final Constant For PIN_VALUE */
@@ -380,7 +389,8 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	}
 
 	private boolean hasDuplicate(Map<String, Long> countsMap) {
-		return countsMap.entrySet().stream().anyMatch(entry -> entry.getValue() > 1);
+		return countsMap.entrySet().stream().anyMatch(entry -> (entry.getKey().equalsIgnoreCase(UNKNOWN) && entry.getValue() > 2) 
+				|| (!entry.getKey().equalsIgnoreCase(UNKNOWN) && entry.getValue() > 1));
 	}
 
 	private Map<String, Long> getBioSubtypeCounts(AuthRequestDTO authRequestDTO, String type) {
@@ -575,8 +585,8 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	private void validateIrisRequestCount(AuthRequestDTO authRequestDTO, Errors errors) {
 		Map<String, Long> irisSubtypeCounts = getBioSubtypeCounts(authRequestDTO, BioAuthType.IRIS_IMG.getType());
 		if (irisSubtypeCounts.entrySet().stream()
-				.anyMatch(map -> (map.getKey().equalsIgnoreCase("UNKNOWN") && map.getValue() > 2)
-						|| (!map.getKey().equalsIgnoreCase("UNKNOWN") && map.getValue() > 1))) {
+				.anyMatch(map -> (map.getKey().equalsIgnoreCase(UNKNOWN) && map.getValue() > 2)
+						|| (!map.getKey().equalsIgnoreCase(UNKNOWN) && map.getValue() > 1))) {
 			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE,
 					"Iris : either left eye or right eye count is more than 1.");
 			errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.IRIS_EXCEEDING.getErrorCode(),

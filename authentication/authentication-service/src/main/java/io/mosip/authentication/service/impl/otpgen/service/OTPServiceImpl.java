@@ -142,7 +142,7 @@ public class OTPServiceImpl implements OTPService {
 				}
 
 				if (otpRequestDto.getOtpChannel().isPhone() && isNotNullorEmpty(phoneNumber)) {
-					maskedResponseDTO.setMaskedEmail(MaskUtil.maskEmail(phoneNumber));
+					maskedResponseDTO.setMaskedMobile(MaskUtil.maskMobile(phoneNumber));
 				} else {
 					throw new IdAuthenticationBusinessException(
 							IdAuthenticationErrorConstants.PHONE_EMAIL_NOT_REGISTERED.getErrorCode(),

@@ -67,8 +67,10 @@ import io.mosip.preregistration.application.errorcodes.ErrorCodes;
 import io.mosip.preregistration.application.errorcodes.ErrorMessages;
 import io.mosip.preregistration.application.exception.BookingDeletionFailedException;
 import io.mosip.preregistration.application.exception.DocumentFailedToDeleteException;
+import io.mosip.preregistration.application.exception.RecordFailedToDeleteException;
 import io.mosip.preregistration.application.exception.RecordFailedToUpdateException;
 import io.mosip.preregistration.application.exception.RecordNotFoundException;
+import io.mosip.preregistration.application.exception.RecordNotFoundForPreIdsException;
 import io.mosip.preregistration.application.exception.system.DateParseException;
 import io.mosip.preregistration.application.exception.system.JsonValidationException;
 import io.mosip.preregistration.application.exception.system.SystemUnsupportedEncodingException;
@@ -119,8 +121,8 @@ public class DemographicServiceTest {
 	/**
 	 * Mocking the RestTemplateBuilder bean
 	 */
-	@MockBean
-	RestTemplateBuilder restTemplateBuilder;
+	@MockBean(name="restTemplateConfig")
+	RestTemplate restTemplate;
 
 	/**
 	 * Mocking the PridGenerator bean
@@ -194,7 +196,7 @@ public class DemographicServiceTest {
 	 * @throws ParseException
 	 * @throws FileNotFoundException
 	 * @throws IOException
-	 * @throws                       org.json.simple.parser.ParseException
+	 * @throws org.json.simple.parser.ParseException
 	 * @throws URISyntaxException
 	 */
 	@Before
@@ -275,7 +277,7 @@ public class DemographicServiceTest {
 		responseDTO = new MainListResponseDTO<DemographicResponseDTO>();
 
 		responseDTO.setResponsetime(serviceUtil.getCurrentResponseTime());
-		//responseDTO.setStatus(Boolean.TRUE);
+		// responseDTO.setStatus(Boolean.TRUE);
 
 		responseDTO.setErr(null);
 
@@ -311,7 +313,7 @@ public class DemographicServiceTest {
 
 		preRegistrationEntity.setApplicantDetailJson(encryptedDemographicDetails);
 		Mockito.when(pridGenerator.generateId()).thenReturn("67547447647457");
-		Mockito.when(jsonValidator.validateJson(jsonObject.toString(), "mosip-prereg-identity-json-schema.json"))
+		Mockito.when(jsonValidator.validateJson(jsonObject.toString()))
 				.thenReturn(null);
 		Mockito.when(demographicRepository.save(Mockito.any())).thenReturn(preRegistrationEntity);
 		demographicResponseDTO = new DemographicResponseDTO();
@@ -349,7 +351,7 @@ public class DemographicServiceTest {
 		Mockito.when(cryptoUtil.encrypt(Mockito.any(), Mockito.any())).thenReturn(encryptedDemographicDetails);
 
 		preRegistrationEntity.setApplicantDetailJson(encryptedDemographicDetails);
-		Mockito.when(jsonValidator.validateJson(jsonObject.toString(), "mosip-prereg-identity-json-schema.json"))
+		Mockito.when(jsonValidator.validateJson(jsonObject.toString()))
 				.thenReturn(null);
 		Mockito.when(cryptoUtil.decrypt(Mockito.any(), Mockito.any())).thenReturn(jsonObject.toString().getBytes());
 		Mockito.when(demographicRepository.save(Mockito.any())).thenThrow(exception);
@@ -370,8 +372,8 @@ public class DemographicServiceTest {
 
 		preRegistrationEntity.setApplicantDetailJson(encryptedDemographicDetails);
 		preRegistrationEntity
-				.setDemogDetailHash(new String(HashUtill.hashUtill(preRegistrationEntity.getApplicantDetailJson())));
-		Mockito.when(jsonValidator.validateJson(jsonTestObject.toString(), "mosip-prereg-identity-json-schema.json"))
+				.setDemogDetailHash(HashUtill.hashUtill(preRegistrationEntity.getApplicantDetailJson()));
+		Mockito.when(jsonValidator.validateJson(jsonTestObject.toString()))
 				.thenReturn(null);
 		Mockito.when(demographicRepository.findBypreRegistrationId("98746563542672")).thenReturn(preRegistrationEntity);
 		Mockito.when(cryptoUtil.decrypt(Mockito.any(), Mockito.any())).thenReturn(jsonObject.toString().getBytes());
@@ -398,7 +400,7 @@ public class DemographicServiceTest {
 		Mockito.when(cryptoUtil.encrypt(Mockito.any(), Mockito.any())).thenReturn(encryptedDemographicDetails);
 
 		preRegistrationEntity.setApplicantDetailJson(encryptedDemographicDetails);
-		Mockito.when(jsonValidator.validateJson(jsonTestObject.toString(), "mosip-prereg-identity-json-schema.json"))
+		Mockito.when(jsonValidator.validateJson(jsonTestObject.toString()))
 				.thenReturn(null);
 		Mockito.when(cryptoUtil.decrypt(Mockito.any(), Mockito.any())).thenReturn(jsonObject.toString().getBytes());
 		Mockito.when(demographicRepository.findBypreRegistrationId("98746563542672")).thenReturn(preRegistrationEntity);
@@ -420,7 +422,7 @@ public class DemographicServiceTest {
 		InvalidRequestParameterException exception = new InvalidRequestParameterException(
 				ErrorCodes.PRG_PAM_APP_012.toString(), ErrorMessages.MISSING_REQUEST_PARAMETER.toString());
 		jsonObject = (JSONObject) parser.parse(new FileReader(fileCr));
-		Mockito.when(jsonValidator.validateJson(jsonObject.toString(), "mosip-prereg-identity-json-schema.json"))
+		Mockito.when(jsonValidator.validateJson(jsonObject.toString()))
 				.thenReturn(null);
 
 		preRegistrationEntity.setCreateDateTime(null);
@@ -456,7 +458,7 @@ public class DemographicServiceTest {
 		jsonObject = (JSONObject) parser.parse(new FileReader(fileUp));
 		Mockito.when(demographicRepository.findBypreRegistrationId(prid)).thenReturn(preRegistrationEntity);
 
-		Mockito.when(jsonValidator.validateJson(jsonObject.toString(), "mosip-prereg-identity-json-schema.json"))
+		Mockito.when(jsonValidator.validateJson(jsonObject.toString()))
 				.thenThrow(exception);
 		MainListResponseDTO<DemographicResponseDTO> res = preRegistrationService
 				.addPreRegistration(demographicRequestDTO);
@@ -470,8 +472,6 @@ public class DemographicServiceTest {
 		Mockito.when(cryptoUtil.encrypt(Mockito.any(), Mockito.any())).thenReturn(encryptedDemographicDetails);
 
 		preRegistrationEntity.setApplicantDetailJson(encryptedDemographicDetails);
-		RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
-		Mockito.when(restTemplateBuilder.build()).thenReturn(restTemplate);
 		String userId = "9988905444";
 		MainListResponseDTO<PreRegistrationViewDTO> response = new MainListResponseDTO<>();
 		List<PreRegistrationViewDTO> viewList = new ArrayList<>();
@@ -528,7 +528,7 @@ public class DemographicServiceTest {
 
 		preRegistrationEntity.setApplicantDetailJson(encryptedDemographicDetails);
 		preRegistrationEntity
-				.setDemogDetailHash(new String(HashUtill.hashUtill(preRegistrationEntity.getApplicantDetailJson())));
+				.setDemogDetailHash(HashUtill.hashUtill(preRegistrationEntity.getApplicantDetailJson()));
 		MainListResponseDTO<PreRegistartionStatusDTO> response = new MainListResponseDTO<>();
 		List<PreRegistartionStatusDTO> statusList = new ArrayList<PreRegistartionStatusDTO>();
 		PreRegistartionStatusDTO statusDto = new PreRegistartionStatusDTO();
@@ -603,8 +603,6 @@ public class DemographicServiceTest {
 	public void deleteRecordNotFoundTest() {
 		RecordNotFoundException exception = new RecordNotFoundException(ErrorCodes.PRG_PAM_APP_005.name(),
 				ErrorMessages.UNABLE_TO_FETCH_THE_PRE_REGISTRATION.name());
-		RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
-		Mockito.when(restTemplateBuilder.build()).thenReturn(restTemplate);
 		String preRegId = "98746563542672";
 
 		DocumentDeleteDTO deleteDTO = new DocumentDeleteDTO();
@@ -631,8 +629,6 @@ public class DemographicServiceTest {
 
 	// @Test(expected = RecordFailedToDeleteException.class)
 	public void deleteRecordFailedToDeleteException() throws Exception {
-		RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
-		Mockito.when(restTemplateBuilder.build()).thenReturn(restTemplate);
 		String preRegId = "98746563542672";
 
 		DocumentDeleteDTO deleteDTO = new DocumentDeleteDTO();
@@ -659,9 +655,7 @@ public class DemographicServiceTest {
 	}
 
 	@Test(expected = DocumentFailedToDeleteException.class)
-	public void deleteRecordFailedToDeleteException1() throws Exception {
-		RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
-		Mockito.when(restTemplateBuilder.build()).thenReturn(restTemplate);
+	public void documentFailedToDeleteExceptionTest() throws Exception {
 		String preRegId = "98746563542672";
 		ExceptionJSONInfoDTO err = new ExceptionJSONInfoDTO("PRG_PAM_DOC_015", "");
 		Mockito.when(demographicRepository.findBypreRegistrationId(preRegId)).thenReturn(preRegistrationEntity);
@@ -705,8 +699,6 @@ public class DemographicServiceTest {
 
 	@Test(expected = BookingDeletionFailedException.class)
 	public void deleteRecordRestCallException() throws Exception {
-		RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
-		Mockito.when(restTemplateBuilder.build()).thenReturn(restTemplate);
 		String preRegId = "98746563542672";
 		ExceptionJSONInfoDTO err = new ExceptionJSONInfoDTO("PRG_PAM_DOC_015", "");
 		Mockito.when(demographicRepository.findBypreRegistrationId(preRegId)).thenReturn(preRegistrationEntity);
@@ -754,14 +746,11 @@ public class DemographicServiceTest {
 
 	}
 
-
 	@MockBean
 	private RestTemplate restTemplate1;
 
 	@Test
 	public void deleteIndividualSuccessTest() {
-		RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
-		Mockito.when(restTemplateBuilder.build()).thenReturn(restTemplate1);
 		String preRegId = "98746563542672";
 		preRegistrationEntity.setCreateDateTime(times);
 		preRegistrationEntity.setCreatedBy("9988905444");
@@ -824,46 +813,50 @@ public class DemographicServiceTest {
 		preRegistrationService.addPreRegistration(demographicRequestDTO);
 	}
 
-//	@Test(expected=RestClientException.class)
-//	public void deleteIndividualRestExceptionTest() {
-//		RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
-//		Mockito.when(restTemplateBuilder.build()).thenReturn(restTemplate);
-//		String preRegId = "98746563542672";
-//		preRegistrationEntity.setCreateDateTime(times);
-//		preRegistrationEntity.setCreatedBy("9988905444");
-//		preRegistrationEntity.setStatusCode("Booked");
-//		preRegistrationEntity.setUpdateDateTime(times);
-//		preRegistrationEntity.setApplicantDetailJson(jsonTestObject.toJSONString().getBytes());
-//		preRegistrationEntity.setPreRegistrationId("98746563542672");
-//
-//		DocumentDeleteDTO deleteDTO = new DocumentDeleteDTO();
-//		deleteDTO.setDocumnet_Id(String.valueOf("1"));
-//		List<DocumentDeleteDTO> deleteAllList = new ArrayList<>();
-//		deleteAllList.add(deleteDTO);
-//
-//		MainListResponseDTO<DocumentDeleteDTO> delResponseDto = new MainListResponseDTO<>();
-//		delResponseDto.setStatus(Boolean.TRUE);
-//		delResponseDto.setErr(null);
-//		delResponseDto.setResponse(deleteAllList);
-//		delResponseDto.setResTime(serviceUtil.getCurrentResponseTime());
-//
-//		Mockito.when(demographicRepository.findBypreRegistrationId(preRegId)).thenReturn(preRegistrationEntity);
-//
-//		ResponseEntity<MainListResponseDTO> res = new ResponseEntity<>(delResponseDto, HttpStatus.OK);
-//
-//		HttpHeaders headers = new HttpHeaders();
-//		headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
-//	Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.DELETE), Mockito.any(),
-//				Mockito.eq(MainListResponseDTO.class))).thenReturn(res);
-//
-//		Mockito.when(demographicRepository.deleteByPreRegistrationId(preRegistrationEntity.getPreRegistrationId()))
-//				.thenReturn(1);
-//
-//		MainListResponseDTO<DeletePreRegistartionDTO> actualres = preRegistrationService.deleteIndividual(preRegId);
-//
-//		//assertEquals(true, actualres.isStatus());
-//
-//	}
+	// @Test(expected=RestClientException.class)
+	// public void deleteIndividualRestExceptionTest() {
+	// RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
+	// Mockito.when(restTemplateBuilder.build()).thenReturn(restTemplate);
+	// String preRegId = "98746563542672";
+	// preRegistrationEntity.setCreateDateTime(times);
+	// preRegistrationEntity.setCreatedBy("9988905444");
+	// preRegistrationEntity.setStatusCode("Booked");
+	// preRegistrationEntity.setUpdateDateTime(times);
+	// preRegistrationEntity.setApplicantDetailJson(jsonTestObject.toJSONString().getBytes());
+	// preRegistrationEntity.setPreRegistrationId("98746563542672");
+	//
+	// DocumentDeleteDTO deleteDTO = new DocumentDeleteDTO();
+	// deleteDTO.setDocumnet_Id(String.valueOf("1"));
+	// List<DocumentDeleteDTO> deleteAllList = new ArrayList<>();
+	// deleteAllList.add(deleteDTO);
+	//
+	// MainListResponseDTO<DocumentDeleteDTO> delResponseDto = new
+	// MainListResponseDTO<>();
+	// delResponseDto.setStatus(Boolean.TRUE);
+	// delResponseDto.setErr(null);
+	// delResponseDto.setResponse(deleteAllList);
+	// delResponseDto.setResTime(serviceUtil.getCurrentResponseTime());
+	//
+	// Mockito.when(demographicRepository.findBypreRegistrationId(preRegId)).thenReturn(preRegistrationEntity);
+	//
+	// ResponseEntity<MainListResponseDTO> res = new
+	// ResponseEntity<>(delResponseDto, HttpStatus.OK);
+	//
+	// HttpHeaders headers = new HttpHeaders();
+	// headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
+	// Mockito.when(restTemplate.exchange(Mockito.anyString(),
+	// Mockito.eq(HttpMethod.DELETE), Mockito.any(),
+	// Mockito.eq(MainListResponseDTO.class))).thenReturn(res);
+	//
+	// Mockito.when(demographicRepository.deleteByPreRegistrationId(preRegistrationEntity.getPreRegistrationId()))
+	// .thenReturn(1);
+	//
+	// MainListResponseDTO<DeletePreRegistartionDTO> actualres =
+	// preRegistrationService.deleteIndividual(preRegId);
+	//
+	// //assertEquals(true, actualres.isStatus());
+	//
+	// }
 
 	@Test(expected = RecordNotFoundException.class)
 	public void RecordNotFoundExceptionTest() {
@@ -889,7 +882,7 @@ public class DemographicServiceTest {
 
 		preRegistrationEntity.setApplicantDetailJson(encryptedDemographicDetails);
 		preRegistrationEntity
-				.setDemogDetailHash(new String(HashUtill.hashUtill(preRegistrationEntity.getApplicantDetailJson())));
+				.setDemogDetailHash(HashUtill.hashUtill(preRegistrationEntity.getApplicantDetailJson()));
 		Mockito.when(demographicRepository.findBypreRegistrationId("98746563542672")).thenReturn(preRegistrationEntity);
 		Mockito.when(cryptoUtil.decrypt(Mockito.any(), Mockito.any())).thenReturn(jsonObject.toString().getBytes());
 		MainListResponseDTO<DemographicResponseDTO> res = preRegistrationService.getDemographicData("98746563542672");
@@ -1070,8 +1063,6 @@ public class DemographicServiceTest {
 		Mockito.when(cryptoUtil.encrypt(Mockito.any(), Mockito.any())).thenReturn(encryptedDemographicDetails);
 
 		preRegistrationEntity.setApplicantDetailJson(encryptedDemographicDetails);
-		RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
-		Mockito.when(restTemplateBuilder.build()).thenReturn(restTemplate);
 		String userId = "9988905444";
 		MainListResponseDTO<PreRegistrationViewDTO> response = new MainListResponseDTO<>();
 		List<PreRegistrationViewDTO> viewList = new ArrayList<>();
@@ -1104,9 +1095,7 @@ public class DemographicServiceTest {
 
 	@Test
 	public void callGetUpdatedDateTimeRestServiceTest() throws ParseException, org.json.simple.parser.ParseException {
-		RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
 		MainResponseDTO<Map<String, String>> dto = new MainResponseDTO<>();
-		Mockito.when(restTemplateBuilder.build()).thenReturn(restTemplate);
 		List<String> preIds = new ArrayList<>();
 		preIds.add("98746563542672");
 		PreRegIdsByRegCenterIdDTO preRegIdsByRegCenterIdDTO = new PreRegIdsByRegCenterIdDTO();
@@ -1131,7 +1120,7 @@ public class DemographicServiceTest {
 
 	}
 
-	@Test(expected = RecordNotFoundException.class)
+	@Test(expected = RecordNotFoundForPreIdsException.class)
 	public void invalidPreidFailureTest() {
 		List<String> preIds = new ArrayList<>();
 		preIds.add("");
@@ -1143,7 +1132,7 @@ public class DemographicServiceTest {
 
 	}
 
-	@Test(expected = RecordNotFoundException.class)
+	@Test(expected = RecordNotFoundForPreIdsException.class)
 	public void recordeNotFoundTest() {
 		List<String> preIds = new ArrayList<>();
 		preIds.add("userEntityDetails");
@@ -1156,7 +1145,7 @@ public class DemographicServiceTest {
 
 	}
 
-	@Test(expected = RecordNotFoundException.class)
+	@Test(expected = RecordNotFoundForPreIdsException.class)
 	public void recordeNotForPreIdFoundTest() {
 		List<String> preIds = new ArrayList<>();
 		preIds.add("userEntityDetails");
@@ -1166,6 +1155,29 @@ public class DemographicServiceTest {
 		Mockito.when(demographicRepository.findByStatusCodeAndPreRegistrationIdIn(StatusCodes.BOOKED.getCode(), preIds))
 				.thenReturn(userEntityDetails);
 		preRegistrationService.getUpdatedDateTimeForPreIds(preRegIdsByRegCenterIdDTO);
+
+	}
+	
+	@Test
+	public void getPreRegistrationByDateEntityCheckSuccessTest() {
+		DemographicEntity demoEntity=new DemographicEntity();
+		demoEntity.setDemogDetailHash("E0B6CBDAC6D896BCB5061846A054CD1373397D02A9F83CEFDBC912317E6E0331");
+		demoEntity.setApplicantDetailJson("MOSIP".getBytes());
+		demoEntity.setPreRegistrationId("123456");
+		List<DemographicEntity> list=new ArrayList<>();
+		list.add(demoEntity);
+		List<String> resList=preRegistrationService.getPreRegistrationByDateEntityCheck(list);
+		assertEquals(resList.get(0),"123456");
+	}
+	@Test(expected=HashingException.class)
+	public void getPreRegistrationByDateEntityCheckExceptionTest() {
+		DemographicEntity demoEntity=new DemographicEntity();
+		demoEntity.setDemogDetailHash("");
+		demoEntity.setApplicantDetailJson("MOSIP".getBytes());
+		demoEntity.setPreRegistrationId("123456");
+		List<DemographicEntity> list=new ArrayList<>();
+		list.add(demoEntity);
+		List<String> resList=preRegistrationService.getPreRegistrationByDateEntityCheck(list);
 
 	}
 

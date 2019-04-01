@@ -11,7 +11,8 @@ import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
 import io.mosip.authentication.core.spi.irisauth.provider.IrisProvider;
 
 /**
- * The Enum CompositeIrisMatchingStrategy.
+ * The Enum CompositeIrisMatchingStrategy - used to compare and
+ * evaluate the IRIS value received from the request and entity
  * 
  * @author Sanjay Murali
  */
@@ -36,6 +37,7 @@ public enum CompositeIrisMatchingStrategy implements MatchingStrategy {
 		return 0;
 	});
 
+	/** The Constant IDVID. */
 	private static final String IDVID = "idvid";
 
 	/** The match strategy type. */

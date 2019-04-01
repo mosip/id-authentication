@@ -16,7 +16,7 @@ import io.mosip.kernel.masterdata.dto.HolidayDto;
 import io.mosip.kernel.masterdata.dto.HolidayIDDto;
 import io.mosip.kernel.masterdata.dto.HolidayIdDeleteDto;
 import io.mosip.kernel.masterdata.dto.HolidayUpdateDto;
-import io.mosip.kernel.masterdata.dto.RequestDto;
+import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.masterdata.dto.getresponse.HolidayResponseDto;
 import io.mosip.kernel.masterdata.entity.Holiday;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
@@ -138,8 +138,8 @@ public class HolidayServiceImpl implements HolidayService {
 	 * .masterdata.dto.RequestDto)
 	 */
 	@Override
-	public HolidayIDDto saveHoliday(RequestDto<HolidayDto> holidayDto) {
-		Holiday entity = MetaDataUtils.setCreateMetaData(holidayDto.getRequest(), Holiday.class);
+	public HolidayIDDto saveHoliday(HolidayDto holidayDto) {
+		Holiday entity = MetaDataUtils.setCreateMetaData(holidayDto, Holiday.class);
 		Holiday holiday;
 		try {
 			holiday = holidayRepository.create(entity);
@@ -160,14 +160,13 @@ public class HolidayServiceImpl implements HolidayService {
 	 * kernel.masterdata.dto.RequestDto)
 	 */
 	@Override
-	public HolidayIDDto updateHoliday(RequestDto<HolidayUpdateDto> holidayDto) {
+	public HolidayIDDto updateHoliday(HolidayUpdateDto holidayDto) {
 		HolidayIDDto idDto = null;
-		HolidayUpdateDto dto = holidayDto.getRequest();
-		Map<String, Object> params = bindDtoToMap(dto);
+		Map<String, Object> params = bindDtoToMap(holidayDto);
 		try {
 			int noOfRowAffected = holidayRepository.createQueryUpdateOrDelete(UPDATE_HOLIDAY_QUERY, params);
 			if (noOfRowAffected != 0)
-				idDto = mapToHolidayIdDto(dto);
+				idDto = mapToHolidayIdDto(holidayDto);
 			else
 				throw new RequestException(HolidayErrorCode.HOLIDAY_NOTFOUND.getErrorCode(),
 						HolidayErrorCode.HOLIDAY_NOTFOUND.getErrorMessage());
@@ -187,7 +186,7 @@ public class HolidayServiceImpl implements HolidayService {
 	 * kernel.masterdata.entity.id.HolidayID)
 	 */
 	@Override
-	public HolidayIdDeleteDto deleteHoliday(RequestDto<HolidayIdDeleteDto> request) {
+	public HolidayIdDeleteDto deleteHoliday(RequestWrapper<HolidayIdDeleteDto> request) {
 		HolidayIdDeleteDto idDto = request.getRequest();
 		try {
 			int affectedRows = holidayRepository.deleteHolidays(LocalDateTime.now(ZoneId.of("UTC")),

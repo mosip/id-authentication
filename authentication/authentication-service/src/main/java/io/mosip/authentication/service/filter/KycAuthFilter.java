@@ -19,7 +19,8 @@ import io.mosip.authentication.service.policy.AuthPolicy;
 import io.mosip.kernel.core.util.CryptoUtil;
 
 /**
- * The Class KycAuthFilter.
+ * The Class KycAuthFilter - used to authenticate the request 
+ * and manipulate response received for KYC request
  * 
  * @author Sanjay Murali
  */
@@ -60,6 +61,13 @@ public class KycAuthFilter extends IdAuthFilter {
 		}
 	}
 
+	/**
+	 * encryptKycResponse method is used to encode and encipher the
+	 * response
+	 *
+	 * @param response the response
+	 * @throws JsonProcessingException the json processing exception
+	 */
 	private void encryptKycResponse(Map<String, Object> response) throws JsonProcessingException {
 		byte[] symmetricDataEncrypt = null;
 		byte[] asymmetricKeyEncrypt = null;
@@ -75,6 +83,13 @@ public class KycAuthFilter extends IdAuthFilter {
 		}
 	}
 
+	/**
+	 * toJsonString method converts a object to a JSON string
+	 *
+	 * @param map the map
+	 * @return the string
+	 * @throws JsonProcessingException the json processing exception
+	 */
 	private String toJsonString(Object map) throws JsonProcessingException {
 		return mapper.writerFor(Map.class).writeValueAsString(map);
 	}
@@ -96,6 +111,13 @@ public class KycAuthFilter extends IdAuthFilter {
 		return responseParams;
 	}
 
+	/**
+	 * setKycParams method used to constructs the KYC response
+	 * and removes null and empty value
+	 *
+	 * @param response the response
+	 * @return the map
+	 */
 	@SuppressWarnings("unchecked")
 	private Map<String, Object> setKycParams(Map<String, Object> response) {
 		Object kyc = response.get(RESPONSE);
@@ -112,6 +134,13 @@ public class KycAuthFilter extends IdAuthFilter {
 		return kycDetails;
 	}
 
+	/**
+	 * constructKycInfo method used to manipulate the
+	 * identity information check null or empty value
+	 *
+	 * @param identity the identity
+	 * @return the map
+	 */
 	@SuppressWarnings("unchecked")
 	private Map<String, Object> constructKycInfo(Map<String, Object> identity) {
 		return identity.entrySet().stream().filter(entry -> entry.getValue() instanceof List)
@@ -127,11 +156,17 @@ public class KycAuthFilter extends IdAuthFilter {
 
 	}
 
+	/* (non-Javadoc)
+	 * @see io.mosip.authentication.service.filter.IdAuthFilter#validateSignature(java.lang.String, byte[])
+	 */
 	@Override
 	protected boolean validateSignature(String signature, byte[] requestAsByte) throws IdAuthenticationAppException {
 		return true;
 	}
 
+	/* (non-Javadoc)
+	 * @see io.mosip.authentication.service.filter.IdAuthFilter#checkAllowedAuthTypeBasedOnPolicy(java.util.Map, java.util.List)
+	 */
 	@Override
 	protected void checkAllowedAuthTypeBasedOnPolicy(Map<String, Object> requestBody, List<AuthPolicy> authPolicies)
 			throws IdAuthenticationAppException {

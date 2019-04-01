@@ -1,6 +1,7 @@
 package io.mosip.authentication.core.spi.fingerprintauth.provider;
 
 import java.util.Base64;
+import java.util.HashMap;
 import java.util.Map;
 
 import com.google.gson.JsonSyntaxException;
@@ -123,18 +124,33 @@ public abstract class FingerprintProvider implements MosipFingerprintProvider {
 	public double matchMultiMinutae(Map<String, String> reqInfo, Map<String, String> entityInfo) {
 		if (reqInfo.keySet().stream().noneMatch(key -> key.startsWith(UNKNOWN))) {
 			double matchScore = 0;
-			for (Map.Entry<String, String> e : reqInfo.entrySet()) {
-				String key = e.getKey();
-				String value1 = e.getValue();
-				String value2 = entityInfo.get(key);
-				matchScore += matchMinutiae(value1, value2);
-			} 
+			matchScore = matchMultiMinutaeKnownFinger(reqInfo, entityInfo, matchScore); 
 			return matchScore;
 		} else {
-			double maxMatchScore = 0;
-			double individualScore=0;
-			double matchScore = 0;
-			for (Map.Entry<String, String> reqInfoEntry : reqInfo.entrySet()) {
+			return matchMultiMinutaeUnKnownFinger(reqInfo, entityInfo);
+		}
+	}
+
+	/**
+	 * Match multi minutae un known finger.
+	 *
+	 * @param reqInfo the req info
+	 * @param entityInfo the entity info
+	 * @param maxMatchScore the max match score
+	 * @param matchScore the match score
+	 * @return the double
+	 */
+	private double matchMultiMinutaeUnKnownFinger(Map<String, String> reqInfo, Map<String, String> entityInfo) {
+		double maxMatchScore = 0;
+		double matchScore = 0;
+		double individualScore;
+		for (Map.Entry<String, String> reqInfoEntry : reqInfo.entrySet()) {
+			if (!reqInfoEntry.getKey().startsWith(UNKNOWN)) {
+				Map<String, String> reqMap = new HashMap<>();
+				reqMap.put(reqInfoEntry.getKey(), reqInfoEntry.getValue());
+				matchScore = matchMultiMinutaeKnownFinger(reqMap, entityInfo,
+						matchScore);
+			} else {
 				for (Map.Entry<String, String> e : entityInfo.entrySet()) {
 					String value1 = e.getValue();
 					String value2 = reqInfoEntry.getValue();
@@ -143,10 +159,29 @@ public abstract class FingerprintProvider implements MosipFingerprintProvider {
 						matchScore = individualScore;
 					}
 				}
-				maxMatchScore += matchScore;
 			}
-			return maxMatchScore;
+			maxMatchScore += matchScore;
+			matchScore = 0;
 		}
+		return maxMatchScore;
+	}
+
+	/**
+	 * Match multi minutae known finger.
+	 *
+	 * @param reqInfo the req info
+	 * @param entityInfo the entity info
+	 * @param matchScore the match score
+	 * @return the double
+	 */
+	private double matchMultiMinutaeKnownFinger(Map<String, String> reqInfo, Map<String, String> entityInfo, double matchScore) {
+		for (Map.Entry<String, String> e : reqInfo.entrySet()) {
+			String key = e.getKey();
+			String value1 = e.getValue();
+			String value2 = entityInfo.get(key);
+			matchScore += matchMinutiae(value1, value2);
+		}
+		return matchScore;
 	}
 
 	/*
