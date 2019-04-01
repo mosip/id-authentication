@@ -6,7 +6,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>io.mosip.registrationprocessor</groupId>
-		<artifactId>stages</artifactId>
+		<artifactId>core-processor</artifactId>
 		<version>0.10.1</version>
 	</parent>
 	<artifactId>registration-processor-reprocessor-stage</artifactId>
@@ -30,16 +30,11 @@
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-tx</artifactId>
 			</dependency>
+			
 		<dependency>
 			<groupId>io.vertx</groupId>
 			<artifactId>vertx-core</artifactId>
-			<version>3.4.1</version>
-			<exclusions>
-				<exclusion>
-					<groupId>org.ceylon-lang</groupId>
-					<artifactId>ceylon-complete</artifactId>
-				</exclusion>
-			</exclusions>
+			<version>${vertx.version}</version>
 		</dependency>
 		<dependency>
 			<!-- Ceylon lang dependency is required to have CeylonVerticleFactory 
@@ -77,4 +72,44 @@
 		</dependency>
 		
 	</dependencies>
+	<dependencyManagement>
+		<dependencies>
+		    <dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-config</artifactId>
+			<version>${spring-cloud-config.version}</version>
+		</dependency>
+			<dependency>
+				<groupId>org.mockito</groupId>
+				<artifactId>mockito-core</artifactId>
+				<version>${mockito.version}</version>
+				<scope>test</scope>
+			</dependency>
+			<dependency>
+				<groupId>com.h2database</groupId>
+				<artifactId>h2</artifactId>
+				<version>1.4.195</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+				<version>${spring.boot.version}</version>
+				<configuration>
+					<executable>true</executable>
+				</configuration>
+				<executions>
+					<execution>
+						<goals>
+							<goal>build-info</goal>
+							<goal>repackage</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build> 
 </project>

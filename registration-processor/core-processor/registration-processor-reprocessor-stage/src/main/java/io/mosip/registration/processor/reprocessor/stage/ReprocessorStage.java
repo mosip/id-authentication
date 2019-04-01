@@ -96,6 +96,7 @@ public class ReprocessorStage extends MosipVerticleManager {
 	public void deployVerticle() {
 		mosipEventBus = this.getEventBus(this, clusterManagerUrl);
 		// deployScheduler(mosipEventBus.getEventbus());
+
 		MessageDTO object = new MessageDTO();
 
 		process(object);
@@ -209,7 +210,7 @@ public class ReprocessorStage extends MosipVerticleManager {
 								? dto.getReProcessRetryCount() + 1
 								: 1;
 						dto.setReProcessRetryCount(reprocessRetryCount);
-						// registrationStatusService.updateRegistrationStatus(dto);
+						registrationStatusService.updateRegistrationStatus(dto);
 						if (reprocessRetryCount > reprocessCount) {
 							object.setIsValid(false);
 						}
