@@ -31,7 +31,6 @@ import io.mosip.authentication.core.util.OTPUtil;
 import io.mosip.authentication.service.entity.AutnTxn;
 import io.mosip.authentication.service.helper.IdInfoHelper;
 import io.mosip.authentication.service.impl.indauth.match.IdaIdMapping;
-import io.mosip.authentication.service.impl.indauth.service.demo.DemoAuthType;
 import io.mosip.authentication.service.impl.indauth.service.demo.DemoMatchType;
 import io.mosip.authentication.service.integration.NotificationManager;
 import io.mosip.authentication.service.integration.OTPManager;
@@ -50,13 +49,15 @@ import io.mosip.kernel.core.util.UUIDUtils;
 @Service
 public class OTPServiceImpl implements OTPService {
 
+	private static final String MOSIP_PRIMARY_LANGUAGE = "mosip.primary-language";
+
 	private static final String OTP_GENERATION_FAILED_DESC = "OTP_GENERATION_FAILED";
 
 	private static final String OTP_GENERATION_FAILED_STATUS = "N";
 
-	private static final String OTP_REQUEST_MAX_COUNT = "otp.request.max-count";
+	private static final String OTP_REQUEST_MAX_COUNT = "otp.request.flooding.max-count";
 
-	private static final String OTP_REQUEST_ADD_MINUTES = "otp.request.add-minutes";
+	private static final String OTP_REQUEST_ADD_MINUTES = "otp.request.flooding.duration";
 
 	private static final String DATETIME_PATTERN = "datetime.pattern";
 
@@ -229,7 +230,7 @@ public class OTPServiceImpl implements OTPService {
 			autnTxn.setStatusCode(status);
 			autnTxn.setStatusComment(comment);
 			// FIXME
-			autnTxn.setLangCode(env.getProperty("mosip.primary.lang-code"));
+			autnTxn.setLangCode(env.getProperty(MOSIP_PRIMARY_LANGUAGE));
 			return autnTxn;
 		} catch (ParseException | DateTimeParseException e) {
 			mosipLogger.error(SESSION_ID, this.getClass().getName(), e.getClass().getName(), e.getMessage());

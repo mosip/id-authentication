@@ -54,10 +54,6 @@ import io.mosip.kernel.core.logger.spi.Logger;
 @Service
 public class NotificationServiceImpl implements NotificationService {
 
-	private static final String MOSIP_SECONDARY_LANG_CODE = "mosip.secondary.lang-code";
-
-	private static final String MOSIP_PRIMARY_LANG_CODE = "mosip.primary.lang-code";
-	
 	private static final String DATETIME_PATTERN = "datetime.pattern";
 	/** The Constant AUTH_TYPE. */
 	private static final String AUTH_TYPE = "authType";
@@ -170,9 +166,10 @@ public class NotificationServiceImpl implements NotificationService {
 		email = infoHelper.getEntityInfoAsString(DemoMatchType.EMAIL, idInfo);
 		String notificationType = null;
 		if (isAuth) {
-			notificationType = env.getProperty("auth.notification.type");
+			notificationType = env.getProperty("mosip.notificationtype");
 		} else {
-			notificationType = env.getProperty("internal.auth.notification.type");
+			//For internal auth no notification is done
+			notificationType = NotificationType.NONE.getName();
 		}
 
 		sendNotification(values, email, phoneNumber, SenderType.AUTH, notificationType);
@@ -195,10 +192,13 @@ public class NotificationServiceImpl implements NotificationService {
 			}
 			values.put("uin", maskedUin);
 			values.put("otp", otp);
-			values.put("validTime", env.getProperty("otp.expiring.time"));
+			Integer timeInSeconds = env.getProperty("mosip.kernel.otp.expiry-time",Integer.class);
+			int timeInMinutes = (timeInSeconds % 3600) / 60;
+			values.put("validTime", String.valueOf(timeInMinutes));
 			values.put(DATE, date);
 			values.put(TIME, time);
 
+			
 			String priLang = idInfoFetcher.getLanguageCode(LanguageType.PRIMARY_LANG);
 			String namePri = infoHelper.getEntityInfoAsString(DemoMatchType.NAME, priLang, idInfo);
 			values.put(NAME, namePri);
@@ -207,7 +207,7 @@ public class NotificationServiceImpl implements NotificationService {
 			String nameSec = infoHelper.getEntityInfoAsString(DemoMatchType.NAME,  secLang, idInfo);
 			values.put(NAME + "_" + secLang, nameSec);
 
-			sendNotification(values, email, mobileNumber, SenderType.OTP, env.getProperty("otp.notification.type"));
+			sendNotification(values, email, mobileNumber, SenderType.OTP, env.getProperty("mosip.notificationtype"));
 		} catch (BaseCheckedException e) {
 			mosipLogger.error(SESSION_ID, "send OTP notification to : ", email, "and " + mobileNumber);
 		}
@@ -233,8 +233,8 @@ public class NotificationServiceImpl implements NotificationService {
 
 		if (isNotNullorEmpty(notificationtypeconfig)
 				&& !notificationtypeconfig.equalsIgnoreCase(NotificationType.NONE.getName())) {
-			if (notificationtypeconfig.contains(",")) {
-				String value[] = notificationtypeconfig.split(",");
+			if (notificationtypeconfig.contains("|")) {
+				String value[] = notificationtypeconfig.split("\\|");
 				for (int i = 0; i < 2; i++) {
 					String nvalue = "";
 					nvalue = value[i];

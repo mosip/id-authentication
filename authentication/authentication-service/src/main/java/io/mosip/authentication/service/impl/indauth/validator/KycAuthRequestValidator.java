@@ -32,7 +32,7 @@ import io.mosip.kernel.core.logger.spi.Logger;
 public class KycAuthRequestValidator extends BaseAuthRequestValidator {
 
 
-	private static final String EKYC_ALLOWED_AUTH_TYPE = "ekyc.allowed.auth.type";
+	private static final String EKYC_ALLOWED_AUTH_TYPE = "ekyc.auth.types.allowed";
 
 	/** The auth request validator. */
 	@Autowired

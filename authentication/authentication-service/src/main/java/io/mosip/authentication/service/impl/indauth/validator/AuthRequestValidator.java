@@ -39,7 +39,7 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 
 	private static final String REQUEST_TIME = "requestTime";
 
-	private static final String ALLOWED_AUTH_TYPE = "allowed.auth.type";
+	private static final String ALLOWED_AUTH_TYPE = "auth.types.allowed";
 
 	/** The Constant AUTH_REQUEST. */
 	private static final String AUTH_REQUEST = "authRequest";

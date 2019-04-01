@@ -83,8 +83,8 @@ public class IdInfoHelperTest {
 
 	@Test
 	public void TestgetLanguageCode() {
-		String priLangCode = "mosip.primary.lang-code";
-		String secLangCode = "mosip.secondary.lang-code";
+		String priLangCode = "mosip.primary-language";
+		String secLangCode = "mosip.secondary-language";
 		MockEnvironment mockenv = new MockEnvironment();
 		mockenv.merge(((AbstractEnvironment) environment));
 		mockenv.setProperty(priLangCode, "ara");

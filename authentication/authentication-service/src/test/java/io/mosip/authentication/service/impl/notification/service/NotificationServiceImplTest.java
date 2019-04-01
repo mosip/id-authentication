@@ -145,7 +145,6 @@ public class NotificationServiceImplTest {
 		Mockito.when(idInfoFetcher.getLanguageCode(LanguageType.SECONDARY_LANG)).thenReturn("ara");
 		MockEnvironment mockenv = new MockEnvironment();
 		mockenv.merge(((AbstractEnvironment) mockenv));
-		mockenv.setProperty("internal.auth.notification.type", "email,sms");
 		mockenv.setProperty("datetime.pattern", "yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
 		mockenv.setProperty("mosip.auth.sms.template", "test");
 		mockenv.setProperty("uin.masking.required", "true");
@@ -156,8 +155,8 @@ public class NotificationServiceImplTest {
 		mockenv.setProperty("mosip.auth.mail.subject.template", "test");
 		mockenv.setProperty("mosip.otp.mail.content.template", "test");
 		mockenv.setProperty("mosip.auth.mail.content.template", "test");
-		mockenv.setProperty("mosip.primary.lang-code", "fra");
-		mockenv.setProperty("mosip.secondary.lang-code", "ara");
+		mockenv.setProperty("mosip.primary-language", "fra");
+		mockenv.setProperty("mosip.secondary-language", "ara");
 		mockenv.setProperty("mosip.otp.sms.template", "test");
 		ReflectionTestUtils.setField(notificationService, "env", mockenv);
 		notificationService.sendAuthNotification(authRequestDTO, uin, authResponseDTO, idInfo, false);
@@ -203,7 +202,7 @@ public class NotificationServiceImplTest {
 				.thenThrow(idAuthenticationBusinessException.getCause());
 		MockEnvironment mockenv = new MockEnvironment();
 		mockenv.merge(((AbstractEnvironment) mockenv));
-		mockenv.setProperty("auth.notification.type", "email,sms");
+		mockenv.setProperty("mosip.notificationtype", "email|sms");
 		mockenv.setProperty("datetime.pattern", "yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
 		mockenv.setProperty("mosip.auth.sms.template", "test");
 		mockenv.setProperty("notification.date.format", "dd-MM-yyyy");
@@ -213,8 +212,8 @@ public class NotificationServiceImplTest {
 		mockenv.setProperty("mosip.auth.mail.content.template", "test");
 		mockenv.setProperty("mosip.otp.mail.content.template", "test");
 		mockenv.setProperty("mosip.otp.sms.template", "test");
-		mockenv.setProperty("mosip.primary.lang-code", "fra");
-		mockenv.setProperty("mosip.secondary.lang-code", "ara");
+		mockenv.setProperty("mosip.primary-language", "fra");
+		mockenv.setProperty("mosip.secondary-language", "ara");
 		ReflectionTestUtils.setField(notificationService, "env", mockenv);
 		notificationService.sendAuthNotification(authRequestDTO, uin, authResponseDTO, idInfo, true);
 	}
@@ -259,10 +258,10 @@ public class NotificationServiceImplTest {
 				.thenThrow(idAuthenticationBusinessException.getCause());
 		MockEnvironment mockenv = new MockEnvironment();
 		mockenv.merge(((AbstractEnvironment) mockenv));
-		mockenv.setProperty("otp.notification.type", "email,sms");
+		mockenv.setProperty("mosip.notificationtype", "email|sms");
 		mockenv.setProperty("uin.masking.charcount", "8");
 		mockenv.setProperty("mosip.auth.sms.template", "test");
-		mockenv.setProperty("otp.expiring.time", "3");
+		mockenv.setProperty("mosip.kernel.otp.expiry-time", "120");
 		mockenv.setProperty("datetime.pattern", "yyyy-MM-dd'T'HH:mm:ss.SSSZ");
 		mockenv.setProperty("mosip.otp.mail.content.template", "test");
 		mockenv.setProperty("mosip.otp.mail.subject.template", "test");

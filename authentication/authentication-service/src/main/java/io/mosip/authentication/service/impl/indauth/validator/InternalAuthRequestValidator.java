@@ -23,7 +23,7 @@ public class InternalAuthRequestValidator extends BaseAuthRequestValidator {
 
 
 	/** The Final Constant For allowed Internal auth type */
-	private static final String INTERNAL_ALLOWED_AUTH_TYPE = "internal.allowed.auth.type";
+	private static final String INTERNAL_ALLOWED_AUTH_TYPE = "internal.auth.types.allowed";
 	
 	/** The Constant REQ_TIME. */
 	private static final String REQ_TIME = "requestTime";
