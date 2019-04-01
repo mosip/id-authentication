@@ -17,6 +17,12 @@ import org.hibernate.annotations.NotFoundAction;
 
 import io.mosip.registration.entity.id.UserMachineMappingID;
 
+/**
+ * The Entity Class for User Machine Mapping.
+ * 
+ * @author Sreekar Chukka
+ * @since 1.0.0
+ */
 @Entity
 @Table(schema = "reg", name = "reg_center_user_machine")
 public class UserMachineMapping extends RegistrationCommonFields implements Serializable {

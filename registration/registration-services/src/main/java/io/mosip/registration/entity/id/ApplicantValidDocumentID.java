@@ -8,9 +8,9 @@ import javax.persistence.Embeddable;
 import lombok.Data;
 
 /**
- * 
- * @author Sreekar Chukka
+ * Composite key for {@link ApplicantValidDocument}
  *
+ * @author Sreekar Chukka
  */
 @Embeddable
 @Data

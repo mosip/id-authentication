@@ -14,6 +14,8 @@ import javax.persistence.Table;
 import io.mosip.registration.entity.id.RegMachineSpecId;
 
 /**
+ * The Entity Class for Reg Machine Spec.
+ *
  * @author Sreekar chukka
  * @since 1.0.0
  */

@@ -17,7 +17,7 @@ import javax.persistence.Table;
 import io.mosip.registration.entity.id.ValidDocumentID;
 
 /**
- * Entity class for valid document.
+ * The Entity Class for valid document.
  * 
  * @author Sreekar chukka
  * @since 1.0.0

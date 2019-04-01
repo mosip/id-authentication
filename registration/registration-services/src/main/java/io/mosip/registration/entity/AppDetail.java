@@ -16,7 +16,8 @@ import lombok.NoArgsConstructor;
 
 
 /**
- * Class AppDetail.
+ * The Entity Class for AppDetail.
+ * 
  * @author Sreekar Chukka
  * @since 1.0.0
  */

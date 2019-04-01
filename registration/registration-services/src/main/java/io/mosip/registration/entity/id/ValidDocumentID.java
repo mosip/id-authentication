@@ -5,7 +5,11 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
+import io.mosip.registration.entity.ValidDocument;
+
 /**
+ * composite key for {@link ValidDocument}
+ *
  * @author Sreekar Chukka
  * @since 1.0.0
  */

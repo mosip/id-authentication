@@ -15,7 +15,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 /**
- * The Class ProcessList.
+ * The Entity Class for ProcessList.
  *
  * @author Sreekar Chukka
  * @since 1.0.0

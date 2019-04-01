@@ -5,10 +5,11 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
+import io.mosip.registration.entity.UserBiometric;
 import lombok.Data;
 
 /**
- * Composite key for UserBiometric entity
+ * composite key for {@link UserBiometric}
  * 
  * @author Sravya Surampalli
  * @since 1.0.0
