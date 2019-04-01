@@ -9,23 +9,48 @@ import org.junit.Test;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 
+/**
+ * The Class RestServiceExceptionTest.
+ *
+ * @author Manoj SP
+ */
 public class RestServiceExceptionTest {
 
+    /**
+     * Test rest service exception default cons.
+     *
+     * @throws RestServiceException the rest service exception
+     */
     @Test(expected = RestServiceException.class)
     public void testRestServiceExceptionDefaultCons() throws RestServiceException {
 	throw new RestServiceException();
     }
 
+    /**
+     * Test rest service exception.
+     *
+     * @throws RestServiceException the rest service exception
+     */
     @Test(expected = RestServiceException.class)
     public void testRestServiceException() throws RestServiceException {
 	throw new RestServiceException(IdAuthenticationErrorConstants.OTP_GENERATION_FAILED);
     }
 
+    /**
+     * Test rest service exception throwable.
+     *
+     * @throws RestServiceException the rest service exception
+     */
     @Test(expected = RestServiceException.class)
     public void testRestServiceExceptionThrowable() throws RestServiceException {
 	throw new RestServiceException(IdAuthenticationErrorConstants.OTP_GENERATION_FAILED, new RestServiceException());
     }
 
+    /**
+     * Test rest service exception object.
+     *
+     * @throws RestServiceException the rest service exception
+     */
     @Test(expected = RestServiceException.class)
     public void testRestServiceExceptionObject() throws RestServiceException {
 	AuthRequestDTO authRequestDTO = new AuthRequestDTO();
@@ -33,6 +58,9 @@ public class RestServiceExceptionTest {
 		Optional.of(authRequestDTO));
     }
 
+    /**
+     * Test get response body.
+     */
     @Test
     public void testGetResponseBody() {
 	AuthRequestDTO authRequestDTO = new AuthRequestDTO();

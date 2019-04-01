@@ -25,23 +25,36 @@ import io.mosip.authentication.core.constant.AuditModules;
 import io.mosip.authentication.core.dto.indauth.IdType;
 import io.mosip.authentication.core.util.dto.AuditRequestDto;
 
+/**
+ * The Class AuditRequestFactoryTest.
+ *
+ * @author Manoj SP
+ */
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
 @RunWith(SpringRunner.class)
 @WebMvcTest
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class AuditRequestFactoryTest {
 	
+	/** The audit factory. */
 	@InjectMocks
 	AuditRequestFactory auditFactory;
 
+	/** The env. */
 	@Autowired
 	Environment env;
 	
+	/**
+	 * Before.
+	 */
 	@Before
 	public void before() {
 		ReflectionTestUtils.setField(auditFactory, "env", env);
 	}
 	
+	/**
+	 * Test build request.
+	 */
 	@Test
 	public void testBuildRequest() {
 		AuditRequestDto actualRequest = auditFactory.buildRequest(AuditModules.FINGERPRINT_AUTH, AuditEvents.AUTH_REQUEST_RESPONSE, "id", IdType.UIN, "desc");
