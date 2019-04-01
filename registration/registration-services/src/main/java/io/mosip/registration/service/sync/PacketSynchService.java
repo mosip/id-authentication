@@ -9,6 +9,12 @@ import io.mosip.registration.dto.RegistrationPacketSyncDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
 
+/**
+ * Service class for Packet Sync
+ * 
+ * @author saravanakumar gnanaguru
+ *
+ */
 public interface PacketSynchService {
 
 	/**

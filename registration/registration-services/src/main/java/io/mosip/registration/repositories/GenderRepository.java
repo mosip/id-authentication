@@ -6,6 +6,7 @@ import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
 import io.mosip.registration.entity.Gender;
 
 /**
+ * Interface for {@link Gender}
  * 
  * @author Brahmananda Reddy
  *

@@ -2,6 +2,12 @@ package io.mosip.registration.service.packet;
 
 import io.mosip.registration.dto.ResponseDTO;
 
+/**
+ * Service class for Packet Scan Virus
+ * 
+ * @author saravanakumar gnanaguru
+ *
+ */
 public interface RegistrationPacketVirusScanService {
 
 	/**

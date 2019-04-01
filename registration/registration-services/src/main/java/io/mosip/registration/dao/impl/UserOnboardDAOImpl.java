@@ -40,6 +40,8 @@ import io.mosip.registration.repositories.MachineMasterRepository;
 import io.mosip.registration.repositories.UserBiometricRepository;
 
 /**
+ * The implementation class of {@link UserOnboardDAO}
+ * 
  * @author Sreekar Chukka
  *
  * @since 1.0.0

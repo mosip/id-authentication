@@ -7,6 +7,7 @@ import io.mosip.registration.entity.ApplicantValidDocument;
 import io.mosip.registration.entity.id.ApplicantValidDocumentID;
 
 /**
+ * Interface for {@link ApplicantValidDocument} 
  * 
  * @author Brahmananda Reddy
  *

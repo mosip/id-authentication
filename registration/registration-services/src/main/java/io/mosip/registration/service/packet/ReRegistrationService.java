@@ -5,6 +5,12 @@ import java.util.Map;
 
 import io.mosip.registration.dto.PacketStatusDTO;
 
+/**
+ * Service class for ReRegistration
+ * 
+ * @author saravanakumar gnanaguru
+ *
+ */
 public interface ReRegistrationService {
 
 	/**

@@ -32,6 +32,7 @@ import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
 import io.mosip.registration.util.restclient.ServiceDelegateUtil;
 
 /**
+ * Implementation for {@link UserMachineMappingService} 
  * 
  * @author Brahmananda Reddy
  *

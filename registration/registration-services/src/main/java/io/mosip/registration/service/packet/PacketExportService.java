@@ -5,6 +5,12 @@ import java.util.List;
 import io.mosip.registration.dto.PacketStatusDTO;
 import io.mosip.registration.dto.ResponseDTO;
 
+/**
+ * Service class for PacketExport
+ * 
+ * @author saravanakumar gnanaguru
+ *
+ */
 public interface PacketExportService {
 
 	/**

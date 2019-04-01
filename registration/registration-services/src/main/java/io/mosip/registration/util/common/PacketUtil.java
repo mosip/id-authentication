@@ -4,6 +4,12 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * class for Packet Util
+ * 
+ * @author saravanakumar gnanaguru
+ *
+ */
 public class PacketUtil {
 
 	public List<String> getPacketNames(List<File> packets) {

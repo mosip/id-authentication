@@ -1,5 +1,12 @@
 package io.mosip.registration.service.impl;
 
+/**
+ * Service class for Center Machine Remapping
+ * 
+ * @author balamurugan ramamoorthy
+ * @since 1.0.0
+ *
+ */
 public interface CenterMachineReMapService {
 
 	/**

@@ -5,6 +5,7 @@ import java.util.List;
 import io.mosip.registration.dto.mastersync.DocumentCategoryDto;
 
 /**
+ * Service class for Documents
  * 
  * @author balamurugan.ramamoorthy
  *

@@ -8,6 +8,9 @@ import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.util.common.OTPManager;
 
 /**
+ * 
+ * This class is for validating OTP Authentication
+ * 
  * @author SaravanaKumar G
  *
  */

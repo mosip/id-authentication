@@ -33,6 +33,12 @@ import io.mosip.registration.service.UserDetailService;
 import io.mosip.registration.service.UserOnboardService;
 import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
 
+/**
+ * Implementation for {@link UserDetailService} 
+ * 
+ * @author chukka sreekar
+ *
+ */
 @Service
 public class UserDetailServiceImpl extends BaseService implements UserDetailService {
 

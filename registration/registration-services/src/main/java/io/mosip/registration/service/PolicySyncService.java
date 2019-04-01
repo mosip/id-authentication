@@ -3,6 +3,7 @@ package io.mosip.registration.service;
 import io.mosip.registration.dto.ResponseDTO;
 
 /**
+ * Service class for Policy Sync
  * 
  * @author Brahmananda Reddy
  * @since 1.0.0

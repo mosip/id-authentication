@@ -9,6 +9,8 @@ import io.mosip.registration.dto.AuthenticationValidatorDTO;
 import io.mosip.registration.validator.AuthenticationBaseValidator;
 
 /**
+ * Service class for Authentication
+ * 
  * @author SaravanaKumar G
  *
  */

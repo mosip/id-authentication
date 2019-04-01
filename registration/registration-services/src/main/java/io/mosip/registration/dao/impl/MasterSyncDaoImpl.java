@@ -148,6 +148,7 @@ import io.mosip.registration.repositories.ValidDocumentRepository;
 import io.mosip.registration.util.mastersync.MetaDataUtils;
 
 /**
+ * The implementation class of {@link MasterSyncDao}
  * @author Sreekar Chukka
  *
  * @since 1.0.0

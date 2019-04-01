@@ -3,6 +3,8 @@ package io.mosip.registration.validator;
 import io.mosip.registration.dto.AuthenticationValidatorDTO;
 
 /**
+ * This class is for validating authentications
+ * 
  * @author Saravanakumar G
  *
  */

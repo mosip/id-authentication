@@ -54,6 +54,12 @@ import io.mosip.registration.service.external.PreRegZipHandlingService;
 import io.mosip.registration.service.sync.PreRegistrationDataSyncService;
 import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
 
+/**
+ * Implementation for {@link PreRegistrationDataSyncService}
+ * 
+ * @author YASWANTH S
+ * @since 1.0.0
+ */
 @Service
 public class PreRegistrationDataSyncServiceImpl extends BaseService implements PreRegistrationDataSyncService {
 
