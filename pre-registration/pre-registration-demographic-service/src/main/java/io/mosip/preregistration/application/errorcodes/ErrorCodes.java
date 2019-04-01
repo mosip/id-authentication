@@ -60,6 +60,9 @@ public enum ErrorCodes {
 	/* ErrorCode for RECORD_NOT_FOUND */
 	PRG_PAM_APP_013,
 	
+	/* ErrorCode for SCHEMA_VALIDATION_EXCEPTION */
+	PRG_PAM_APP_014,
+	
 	/* ErrorCode for MISSING_DOCUMENT */
 	PRG_PAM_DOC_005;
 }

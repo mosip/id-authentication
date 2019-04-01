@@ -16,6 +16,9 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 
 import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
@@ -147,6 +150,22 @@ public class DemographicService {
 	@Value("${ver}")
 	private String ver;
 
+	@Value("${mosip.id.validation.identity.email}")
+	private String emailRegex;
+
+	@Value("${mosip.id.validation.identity.phone}")
+	private String phoneRegex;
+
+	@Value("${mosip.id.validation.identity.postalCode}")
+	private String postalRegex;
+
+	@Value("${mosip.id.validation.identity.dateOfBirth}")
+	private String dobRegex;
+
+	@Value("${mosip.id.validation.identity.CNIENumber}")
+	private String cnieRegex;
+
+	Map<String, String> idValidationFields = new HashMap<>();
 	/**
 	 * Reference for ${appointmentResourse.url} from property file
 	 */
@@ -216,6 +235,7 @@ public class DemographicService {
 				jsonValidator.validateJson(demographicRequest.getRequest().getDemographicDetails().toJSONString());
 				log.info("sessionId", "idType", "id",
 						"JSON validator end time : " + DateUtils.getUTCCurrentDateTimeString());
+				serviceUtil.validation(idValidation(), demographicRequest.getRequest().getDemographicDetails());
 				mainListResponseDTO = createOrUpdate(demographicRequest.getRequest(), demographicRequest.getId());
 			}
 			isSuccess = true;
@@ -261,8 +281,9 @@ public class DemographicService {
 					for (DemographicEntity demographicEntity : demographicEntityList) {
 						byte[] decryptedString = cryptoUtil.decrypt(demographicEntity.getApplicantDetailJson(),
 								DateUtils.getUTCCurrentDateTime());
-						String postalcode = serviceUtil.getPostalCode(decryptedString,
-								RequestCodes.POSTAL_CODE.getCode());
+						JSONParser jsonParser = new JSONParser();
+						JSONObject jsonObj = (JSONObject) jsonParser.parse(new String(decryptedString));
+						String postalcode = serviceUtil.getIdJSONValue(jsonObj, RequestCodes.POSTAL_CODE.getCode());
 						JSONArray identityValue = serviceUtil.getValueFromIdentity(decryptedString,
 								RequestCodes.FULLNAME.getCode());
 						viewDto = new PreRegistrationViewDTO();
@@ -379,7 +400,7 @@ public class DemographicService {
 				DemographicEntity demographicEntity = demographicRepository.findBypreRegistrationId(preregId);
 				if (!serviceUtil.isNull(demographicEntity)) {
 					if (serviceUtil.checkStatusForDeletion(demographicEntity.getStatusCode())) {
-						if(!(demographicEntity.getStatusCode().equals(StatusCodes.PENDING_APPOINTMENT.getCode()))) {
+						if (!(demographicEntity.getStatusCode().equals(StatusCodes.PENDING_APPOINTMENT.getCode()))) {
 							callDocumentServiceToDeleteAllByPreId(preregId);
 						}
 						if (!(demographicEntity.getStatusCode().equals(StatusCodes.PENDING_APPOINTMENT.getCode()))) {
@@ -576,8 +597,7 @@ public class DemographicService {
 		List<String> preIds = new ArrayList<>();
 		if (demographicEntityList != null && !demographicEntityList.isEmpty()) {
 			for (DemographicEntity entity : demographicEntityList) {
-				if (entity.getDemogDetailHash()
-						.equals(HashUtill.hashUtill(entity.getApplicantDetailJson()))) {
+				if (entity.getDemogDetailHash().equals(HashUtill.hashUtill(entity.getApplicantDetailJson()))) {
 					preIds.add(entity.getPreRegistrationId());
 				} else {
 
@@ -811,6 +831,16 @@ public class DemographicService {
 			new DemographicExceptionCatcher().handle(ex);
 		}
 		return mainResponseDTO;
+
+	}
+
+	public Map<String, String> idValidation() throws ParseException {
+		idValidationFields.put(RequestCodes.EMAIL.getCode(), emailRegex);
+		idValidationFields.put(RequestCodes.PHONE.getCode(), phoneRegex);
+		idValidationFields.put(RequestCodes.DOB.getCode(), dobRegex);
+		idValidationFields.put(RequestCodes.CNIE_NUMBER.getCode(), cnieRegex);
+		idValidationFields.put(RequestCodes.POSTAL_CODE.getCode(), postalRegex);
+		return idValidationFields;
 
 	}
 

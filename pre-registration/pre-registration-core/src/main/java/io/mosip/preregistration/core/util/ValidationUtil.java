@@ -65,6 +65,10 @@ public class ValidationUtil {
 	public static boolean phoneValidator(String phone) {
 		return phone.matches(phoneRegex);
 	}
+	
+	public static boolean idValidation(String value,String regex) {
+		return value.matches(regex);
+	}
 
 	public static boolean requestValidator(MainRequestDTO<?> mainRequest) {
 		log.info("sessionId", "idType", "id", "In requestValidator method of pre-registration core with mainRequest "

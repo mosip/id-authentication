@@ -30,6 +30,7 @@ import io.mosip.preregistration.application.errorcodes.ErrorCodes;
 import io.mosip.preregistration.application.errorcodes.ErrorMessages;
 import io.mosip.preregistration.application.exception.MissingRequestParameterException;
 import io.mosip.preregistration.application.exception.OperationNotAllowedException;
+import io.mosip.preregistration.application.exception.SchemaValidationException;
 import io.mosip.preregistration.application.exception.system.DateParseException;
 import io.mosip.preregistration.application.exception.system.JsonParseException;
 import io.mosip.preregistration.core.code.StatusCodes;
@@ -39,6 +40,7 @@ import io.mosip.preregistration.core.config.LoggerConfiguration;
 import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
 import io.mosip.preregistration.core.util.CryptoUtil;
 import io.mosip.preregistration.core.util.HashUtill;
+import io.mosip.preregistration.core.util.ValidationUtil;
 
 /**
  * This class provides the utility methods for DemographicService
@@ -217,12 +219,10 @@ public class DemographicServiceUtil {
 	 * @throws org.json.simple.parser.ParseException 
 	 * 
 	 */
-	public String getPostalCode(byte[] demographicData, String postalcode) throws  org.json.simple.parser.ParseException {
+	public String getIdJSONValue(JSONObject demographicData, String value)  {
 		log.info("sessionId", "idType", "id", "In getValueFromIdentity method of pe-registration service util to get postalcode ");
-		JSONParser jsonParser = new JSONParser();
-		JSONObject jsonObj = (JSONObject) jsonParser.parse(new String(demographicData));
-		JSONObject identityObj = (JSONObject) jsonObj.get(RequestCodes.IDENTITY.getCode());
-		return  (String) identityObj.get(postalcode);
+		JSONObject identityObj = (JSONObject) demographicData.get(RequestCodes.IDENTITY.getCode());
+		return  (String) identityObj.get(value);
 	}
 
 	/**
@@ -332,6 +332,22 @@ public class DemographicServiceUtil {
 	public String getLocalDateString(LocalDateTime date) {
 		DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(utcDateTimePattern);
 		return date.format(dateTimeFormatter);
+	}
+	
+	/**
+	 * 
+	 * @param idValidationFields is a map with key and regex
+	 * @param demoDetails 
+	 * @return boolean
+	 */
+	public boolean validation(Map<String,String> idValidationFields,JSONObject demoDetails ) {
+		for (Map.Entry<String, String> entry : idValidationFields.entrySet()) {
+			if (!ValidationUtil.idValidation(getIdJSONValue(demoDetails, entry.getKey()),
+					entry.getValue())) {
+            throw new SchemaValidationException(ErrorCodes.PRG_PAM_APP_014.name(), entry.getKey()+entry.getValue());
+			}
+		}
+		return true;
 	}
 
 	public boolean isStatusValid(String status) {
