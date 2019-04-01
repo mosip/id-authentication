@@ -143,7 +143,7 @@ public class AssertKernel {
 					 for(int j=0;j<keys.length;j++) {
 						 if(!passedAttributes.get(keys[j]).equals(object.get(keys[j]).toString()))
 						 {
-							 System.err.println("passed data to fetch does not match with Reponse data");
+							 logger.error("passed data to fetch does not match with Reponse data");
 							 return false;
 						 }
 					 }
@@ -152,7 +152,7 @@ public class AssertKernel {
 					 String key = attributesToValidate.get(j);
 				 if (!object.containsKey(key) || object.get(key)==null) 
 				        {
-					 System.err.println(key+"  is not present in Response data");
+					 logger.error(key+"  is not present in Response data");
 					 		return false;
 				        }
 				 }

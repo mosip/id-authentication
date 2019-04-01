@@ -1,8 +1,10 @@
 package io.mosip.dbaccess;
 
+import java.math.BigInteger;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -233,4 +235,42 @@ public class KernelMasterDataR {
 		    return true;
 			
 		} 
+		
+		
+		/**
+		 * @param queryStr containing query to obtain data count in table
+		 * @return count obtained from db
+		 */
+		@SuppressWarnings("deprecation")
+		public static long validateDBCount(String queryStr)
+		{
+			long flag=0;
+			
+			try {
+				if(BaseTestCase.environment.equalsIgnoreCase("integration"))
+					factory = new Configuration().configure("masterdatainteg.cfg.xml").buildSessionFactory();
+				else 
+					if(BaseTestCase.environment.equalsIgnoreCase("qa"))
+						factory = new Configuration().configure("masterdataqa.cfg.xml").buildSessionFactory();
+				
+				session = factory.getCurrentSession();
+				session.beginTransaction();
+			} catch (HibernateException e) {
+				logger.info("Exception recived in DB Connection");
+				e.printStackTrace();
+				return 0;
+			}
+			
+			
+			flag=((BigInteger)session.createSQLQuery(queryStr).getSingleResult()).longValue();
+			
+			// commit the transaction
+					session.getTransaction().commit();
+					session.close();
+					factory.close();
+			logger.info("obtained objects count from DB is : " +flag);
+			return flag;
+			
+
+		}
 }
