@@ -88,7 +88,7 @@ public class VirusScannerStage extends MosipVerticleManager {
 	/** The is transaction successful. */
 	boolean isTransactionSuccessful = false;
 
-	RegistrationStatusMapperUtil registrationStatusMapperUtil;
+	RegistrationStatusMapperUtil registrationStatusMapperUtil = new RegistrationStatusMapperUtil();
 
 	/**
 	 * Deploy verticle.

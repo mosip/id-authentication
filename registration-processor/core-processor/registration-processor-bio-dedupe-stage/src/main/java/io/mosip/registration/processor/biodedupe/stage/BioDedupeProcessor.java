@@ -27,7 +27,10 @@ import io.mosip.registration.processor.core.code.EventId;
 import io.mosip.registration.processor.core.code.EventName;
 import io.mosip.registration.processor.core.code.EventType;
 import io.mosip.registration.processor.core.code.ModuleName;
+import io.mosip.registration.processor.core.code.RegistrationTransactionStatusCode;
+import io.mosip.registration.processor.core.code.RegistrationTransactionTypeCode;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
+import io.mosip.registration.processor.core.constant.RegistrationStageName;
 import io.mosip.registration.processor.core.constant.ResponseStatusCode;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
@@ -36,6 +39,7 @@ import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.spi.biodedupe.BioDedupeService;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
+import io.mosip.registration.processor.core.util.RegistrationStatusMapperUtil;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
 import io.mosip.registration.processor.status.code.RegistrationStatusCode;
@@ -74,6 +78,9 @@ public class BioDedupeProcessor {
 	@Autowired
 	private BioDedupeService bioDedupeService;
 
+	@Autowired
+	RegistrationStatusMapperUtil registrationStatusMapperUtil;
+	
 	/** The packet info manager. */
 	@Autowired
 	private PacketInfoManager<Identity, ApplicantInfoDto> packetInfoManager;
@@ -92,6 +99,10 @@ public class BioDedupeProcessor {
 
 		InternalRegistrationStatusDto registrationStatusDto = registrationStatusService
 				.getRegistrationStatus(registrationId);
+		registrationStatusDto.setLatestTransactionTypeCode(RegistrationTransactionTypeCode.BIOGRAPHIC_VERIFICATION.toString());
+		registrationStatusDto.setRegistrationStageName(RegistrationStageName.BIO_DEDUPE_STAGE);
+		
+		
 		try {
 			String insertionResult = bioDedupeService.insertBiometrics(registrationId);
 			if (insertionResult.equalsIgnoreCase(ResponseStatusCode.SUCCESS.name())) {
@@ -113,6 +124,7 @@ public class BioDedupeProcessor {
 			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
 					code + " - " + LoggerFileConstant.REGISTRATIONID.toString(), registrationId, description);
 		} catch (ABISInternalError e) {
+			
 			code = PlatformErrorMessages.RPR_ABIS_INTERNAL_ERROR.getCode();
 			description = PlatformErrorMessages.RPR_ABIS_INTERNAL_ERROR.getMessage();
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
@@ -192,6 +204,8 @@ public class BioDedupeProcessor {
 			object.setIsValid(Boolean.FALSE);
 			registrationStatusDto.setStatusComment(StatusMessage.PACKET_BIOMETRIC_POTENTIAL_MATCH);
 			registrationStatusDto.setStatusCode(RegistrationStatusCode.PACKET_BIO_POTENTIAL_MATCH.toString());
+			registrationStatusDto.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.FAILED.toString());
+			
 			code= PlatformSuccessMessages.RPR_BIO_METRIC_POTENTIAL_MATCH.getCode();
 			description =PlatformSuccessMessages.RPR_BIO_METRIC_POTENTIAL_MATCH.getMessage();
             packetInfoManager.saveManualAdjudicationData(matchedRegIds, registrationId, DedupeSourceName.BIO);
@@ -199,8 +213,12 @@ public class BioDedupeProcessor {
 			object.setIsValid(Boolean.TRUE);
 			registrationStatusDto.setStatusComment(StatusMessage.PACKET_BIODEDUPE_SUCCESS);
 			registrationStatusDto.setStatusCode(RegistrationStatusCode.PACKET_BIO_DEDUPE_SUCCESS.toString());
+			registrationStatusDto.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.SUCCESS.toString());
+			
+			
 			code= PlatformSuccessMessages.RPR_BIO_DEDUPE_SUCCESS.getCode();
 			description =PlatformSuccessMessages.RPR_BIO_DEDUPE_SUCCESS.getMessage();
+			
 		}
 	}
 

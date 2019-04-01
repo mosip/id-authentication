@@ -397,10 +397,10 @@ public class InternalRegistrationStatusDto implements Serializable {
 	/**
 	 * Sets the latest transaction type code.
 	 *
-	 * @param latestTransactionTypeCode the new latest transaction type code
+	 * @param string the new latest transaction type code
 	 */
-	public void setLatestTransactionTypeCode(String latestTransactionTypeCode) {
-		this.latestTransactionTypeCode = latestTransactionTypeCode;
+	public void setLatestTransactionTypeCode(String string) {
+		this.latestTransactionTypeCode = string;
 	}
 
 	/**
@@ -415,7 +415,7 @@ public class InternalRegistrationStatusDto implements Serializable {
 	/**
 	 * Sets the latest transaction status code.
 	 *
-	 * @param latestTransactionStatusCode the new latest transaction status code
+	 * @param string the new latest transaction status code
 	 */
 	public void setLatestTransactionStatusCode(String latestTransactionStatusCode) {
 		this.latestTransactionStatusCode = latestTransactionStatusCode;
