@@ -3,11 +3,16 @@ package io.mosip.registration.processor.camel.bridge;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.camel.CamelContext;
 import org.apache.camel.component.vertx.VertxComponent;
 import org.apache.camel.impl.DefaultCamelContext;
+import org.apache.camel.impl.JndiRegistry;
 import org.apache.camel.model.RoutesDefinition;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
@@ -91,7 +96,19 @@ public class MosipBridgeFactory extends AbstractVerticle {
 
     @Override
     public void start() throws Exception {
-        CamelContext camelContext = new DefaultCamelContext();
+    	@SuppressWarnings("resource")
+		ApplicationContext classPathXmlApplicationContext = new ClassPathXmlApplicationContext("spring.xml");
+		JndiRegistry registry=null;
+		    String[] beanNames=classPathXmlApplicationContext.getBeanDefinitionNames();
+		    if (beanNames != null) {
+		      Map<String,String> enviroment= new HashMap<>();
+		      enviroment.put("java.naming.factory.initial", "org.apache.camel.util.jndi.CamelInitialContextFactory");
+		      registry= new JndiRegistry(enviroment);
+		      for (String name : beanNames) {
+		            registry.bind(name,classPathXmlApplicationContext.getBean(name));
+		      }
+		    }
+        CamelContext camelContext = new DefaultCamelContext(registry);
         VertxComponent vertxComponent = new VertxComponent();
         vertxComponent.setVertx(vertx);
         RestTemplate restTemplate = new RestTemplate();

@@ -244,6 +244,8 @@
         <module>pre-processor</module>
         <module>core-processor</module>
         <module>post-processor</module>
+        <module>external</module>
+        <module>dummyRestService</module>
   </modules>
 
 	<profiles>

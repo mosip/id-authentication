@@ -1,13 +1,10 @@
-package io.mosip.registration.processor.core.abstractverticle;
+package io.mosip.registrationprocessor.dummyservice.entity;
 
 import java.io.Serializable;
 
 /**
  * This class contains the address values to be used in Registration process.
  *
- * @author Pranav Kumar
- * @author Mukul Puspam
- * @since 0.0.1
  */
 public class MessageBusAddress implements Serializable {
 
@@ -128,8 +125,10 @@ public class MessageBusAddress implements Serializable {
 	/** The Constant PRINTING_BUS_IN. */
 	public static final MessageBusAddress PRINTING_BUS = new MessageBusAddress("printing-bus");
 
-	public static final MessageBusAddress EXTERNAL_STAGE_BUS_IN = new MessageBusAddress("external-stage-bus-in");
+	public static final MessageBusAddress EXTERNAL_HTTP_STAGE_BUS_OUT = new MessageBusAddress("external-http-bus-out");
 
-	public static final MessageBusAddress EXTERNAL_STAGE_BUS_OUT = new MessageBusAddress("external-stage-bus-out");
+	public static final MessageBusAddress EXTERNAL_STAGE_BUS_IN = new MessageBusAddress("external-bus-in");
+
+	public static final MessageBusAddress EXTERNAL_STAGE_BUS_OUT =  new MessageBusAddress("external-bus-out");;
 
 }
