@@ -15,7 +15,7 @@ public interface PacketExportService {
 
 	/**
 	 * Update the exported packet status
-	 * @param exportedPackets
+	 * @param exportedPackets The list of exported packets
 	 * @return Return the response based on the success or failure response
 	 */
 	ResponseDTO updateRegistrationStatus(List<PacketStatusDTO> exportedPackets);
