@@ -97,7 +97,8 @@ public class ConnectionUtils {
 				Configuration configuration = prepareConfiguration();
 				if (isAuthEnable) {
 					configuration = initSecurityConfiguration(configuration);
-					loginUser(userName + "@" + kdcDomain, userPass);
+					// loginUser(userName + "@" + kdcDomain, userPass);
+					loginWithKeyTab(userName + "@" + kdcDomain);
 					configuredFileSystem = FileSystem.get(configuration);
 				} else {
 					configuredFileSystem = getDefaultConfiguredFileSystem(configuration);
@@ -161,6 +162,7 @@ public class ConnectionUtils {
 				}
 			}, javax.security.auth.login.Configuration.getInstance("JavaLoginConfig", uriParameter));
 			loginContext.login();
+			UserGroupInformation.setShouldRenewImmediatelyForTests(true);
 			UserGroupInformation.loginUserFromSubject(loginContext.getSubject());
 		} catch (LoginException e) {
 			throw new FSAdapterException(HDFSAdapterErrorCode.LOGIN_EXCEPTION.getErrorCode(),
@@ -204,7 +206,6 @@ public class ConnectionUtils {
 			configuration.set("fs.defaultFS", nameNodeUrl);
 			configuration.set("dfs.client.use.datanode.hostname", "true");
 			configuration.set("fs.hdfs.impl", DistributedFileSystem.class.getName());
-			//configuration.set("fs.file.impl", LocalFileSystem.class.getName());
 			hadoopLibPath = Files.createTempDirectory(HADOOP_HOME);
 			if (SystemUtils.IS_OS_WINDOWS) {
 				Path binPath = Files.createDirectory(Paths.get(hadoopLibPath.toString(), "bin"));
@@ -218,5 +219,16 @@ public class ConnectionUtils {
 					HDFSAdapterErrorCode.HDFS_ADAPTER_EXCEPTION.getErrorMessage(), e);
 		}
 		return configuration;
+	}
+
+	private Configuration loginWithKeyTab(String user) {
+		String path = this.getClass().getClassLoader().getResource("mosip.keytab").getPath();
+		try {
+			UserGroupInformation.loginUserFromKeytab(user, path);
+		} catch (IOException e) {
+			throw new FSAdapterException(HDFSAdapterErrorCode.HDFS_ADAPTER_EXCEPTION.getErrorCode(),
+					HDFSAdapterErrorCode.HDFS_ADAPTER_EXCEPTION.getErrorMessage(), e);
+		}
+		return null;
 	}
 }
