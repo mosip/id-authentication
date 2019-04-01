@@ -1,6 +1,6 @@
 /**
  * 
- */
+ *//*
 package io.mosip.registration.processor.print.stage;
 
 import java.io.IOException;
@@ -44,66 +44,66 @@ import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
 import io.vertx.core.Vertx;
 
-/**
+*//**
  * @author Ranjitha Siddegowda
  *
- */
+ *//*
 public class ConsumerStage extends MosipVerticleAPIManager {
 
-	/** The mosip event bus. */
+	*//** The mosip event bus. *//*
 	public static MosipEventBus mosipEventBus;
 
-	/** The cluster manager url. */
+	*//** The cluster manager url. *//*
 	@Value("${vertx.cluster.configuration}")
 	private String clusterManagerUrl;
 
-	/** The mosip queue manager. */
+	*//** The mosip queue manager. *//*
 	@Autowired
 	private MosipQueueManager<MosipQueue, byte[]> mosipQueueManager;
 
-	/** The mosip connection factory. */
+	*//** The mosip connection factory. *//*
 	@Autowired
 	private MosipQueueConnectionFactory<MosipQueue> mosipConnectionFactory;
 
-	/** The username. */
+	*//** The username. *//*
 	@Value("${registration.processor.queue.username}")
 	private String username;
 
-	/** The password. */
+	*//** The password. *//*
 	@Value("${registration.processor.queue.password}")
 	private String password;
 
-	/** The url. */
+	*//** The url. *//*
 	@Value("${registration.processor.queue.url}")
 	private String url;
 
-	/** The type of queue. */
+	*//** The type of queue. *//*
 	@Value("${registration.processor.queue.typeOfQueue}")
 	private String typeOfQueue;
 
-	/** The address. */
+	*//** The address. *//*
 	@Value("${registration.processor.queue.address}")
 	private String address;
 
-	/** The print & postal service provider address. */
+	*//** The print & postal service provider address. *//*
 	private String printPostalAddress = "postal-service";
 
-	/** The registration status service. */
+	*//** The registration status service. *//*
 	@Autowired
 	RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> registrationStatusService;
 
 	private String registrationId;
 
-	/** The is transactional. */
+	*//** The is transactional. *//*
 	private boolean isTransactionSuccessful = false;
 
-	/** The core audit request builder. */
+	*//** The core audit request builder. *//*
 	@Autowired
 	private AuditLogRequestBuilder auditLogRequestBuilder;
 
 	String description = null;
 
-	/** The Constant USER. */
+	*//** The Constant USER. *//*
 	private static final String USER = "MOSIP_SYSTEM";
 
 	private static final String SUCCESS = "Success";
@@ -198,3 +198,4 @@ public class ConsumerStage extends MosipVerticleAPIManager {
 
 	}
 }
+*/

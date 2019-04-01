@@ -1,4 +1,4 @@
-package io.mosip.registrationprocessor.print.stage.test;
+/*package io.mosip.registrationprocessor.print.stage.test;
 
 import static org.junit.Assert.assertTrue;
 
@@ -134,3 +134,4 @@ public class ConsumerStageTest {
 	}
 
 }
+*/
