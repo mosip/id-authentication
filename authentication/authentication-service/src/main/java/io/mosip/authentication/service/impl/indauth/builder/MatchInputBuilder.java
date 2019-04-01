@@ -45,7 +45,7 @@ public class MatchInputBuilder {
 	private Environment environment;
 
 	/** The Constant DEFAULT_MATCH_VALUE. */
-	public static final String DEFAULT_MATCH_VALUE = "demo.min.match.value";
+	public static final String DEFAULT_MATCH_VALUE = "demo.threshold";
 
 	/**
 	 * Construct match input.

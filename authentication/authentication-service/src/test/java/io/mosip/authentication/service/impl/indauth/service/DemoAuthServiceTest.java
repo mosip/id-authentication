@@ -106,7 +106,7 @@ public class DemoAuthServiceTest {
 
 	@Test
 	public void test() {
-		System.err.println(environment.getProperty("mosip.secondary.lang-code"));
+		System.err.println(environment.getProperty("mosip.secondary-language"));
 	}
 
 	@Test
@@ -493,8 +493,8 @@ public class DemoAuthServiceTest {
 		String uin = "274390482564";
 		MockEnvironment mockenv = new MockEnvironment();
 		mockenv.merge(((AbstractEnvironment) mockenv));
-		mockenv.setProperty("mosip.primary.lang-code", "fre");
-		mockenv.setProperty("mosip.secondary.lang-code", "ara");
+		mockenv.setProperty("mosip.primary-language", "fre");
+		mockenv.setProperty("mosip.secondary-language", "ara");
 		mockenv.setProperty("mosip.supported-languages", "eng,ara,fre");
 		ReflectionTestUtils.setField(idInfoHelper, "environment", mockenv);
 		Mockito.when(masterDataManager.fetchTitles()).thenReturn(createFetcher());

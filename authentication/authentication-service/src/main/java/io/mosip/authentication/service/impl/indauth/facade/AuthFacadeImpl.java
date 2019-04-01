@@ -71,7 +71,7 @@ public class AuthFacadeImpl implements AuthFacade {
 	private static final String UTC = "UTC";
 
 	/** The Constant MOSIP_PRIMARY_LANG_CODE. */
-	private static final String MOSIP_PRIMARY_LANG_CODE = "mosip.primary.lang-code";
+	private static final String MOSIP_PRIMARY_LANG_CODE = "mosip.primary-language";
 
 	/** The Constant DATETIME_PATTERN. */
 	private static final String DATETIME_PATTERN = "datetime.pattern";
