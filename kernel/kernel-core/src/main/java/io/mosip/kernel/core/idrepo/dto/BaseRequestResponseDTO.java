@@ -1,4 +1,4 @@
-package io.mosip.kernel.idrepo.dto;
+package io.mosip.kernel.core.idrepo.dto;
 
 import java.util.List;
 
@@ -11,6 +11,9 @@ import lombok.Data;
  */
 @Data
 public class BaseRequestResponseDTO {
+	
+	/** The status. */
+	private String status;
 	
 	/** The identity. */
 	private Object identity;
