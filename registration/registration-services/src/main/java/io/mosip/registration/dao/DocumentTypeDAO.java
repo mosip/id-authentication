@@ -23,7 +23,7 @@ public interface DocumentTypeDAO {
 	 * 
 	 * @param docTypeName
 	 *            - Doc Type Name
-	 * @return List<DocumentType> - list of fetched doc types
+	 * @return List - list of fetched doc types
 	 */
 	List<DocumentType> getDocTypeByName(String docTypeName);
 

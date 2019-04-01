@@ -21,6 +21,7 @@ public interface PreRegZipHandlingService {
 	 * @return RegistrationDTO - This holds the extracted demographic data and other
 	 *         values
 	 * @throws RegBaseCheckedException
+	 *             - holds the checked exception
 	 */
 	RegistrationDTO extractPreRegZipFile(byte[] preREgZipFile) throws RegBaseCheckedException;
 

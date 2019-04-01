@@ -17,8 +17,8 @@ public interface PreRegistrationDataSyncDAO {
 	 * To get pre registration
 	 * 
 	 * @param preRegId
-	 *            is a id
-	 * @return pre registartion entity
+	 *            pre registration id
+	 * @return PreRegistrationList pre registartion entity
 	 */
 	public PreRegistrationList get(String preRegId);
 
@@ -26,8 +26,8 @@ public interface PreRegistrationDataSyncDAO {
 	 * To save new Pre registration
 	 * 
 	 * @param preRegistration
-	 *            is a entity
-	 * @return saved pre registartion
+	 *            pre reg entity object
+	 * @return PreRegistrationList saved pre registartion
 	 */
 	public PreRegistrationList save(PreRegistrationList preRegistration);
 
@@ -35,7 +35,8 @@ public interface PreRegistrationDataSyncDAO {
 	 * Fetch the Pre-Reg Records that needs to be deleted
 	 * 
 	 * @param startDate
-	 * @return
+	 *            - start date to fetch pre reg data
+	 * @return List - pre reg list to be deleted
 	 */
 	public List<PreRegistrationList> fetchRecordsToBeDeleted(Date startDate);
 
@@ -43,7 +44,8 @@ public interface PreRegistrationDataSyncDAO {
 	 * Update the Deleted Pre-Reg Records in the table
 	 * 
 	 * @param preReg
-	 * @return
+	 *            - pre reg entity object
+	 * @return PreRegistrationList - pre reg entity
 	 */
 	public PreRegistrationList update(PreRegistrationList preReg);
 
@@ -51,14 +53,14 @@ public interface PreRegistrationDataSyncDAO {
 	 * Delete list of Pre-Registartions
 	 * 
 	 * @param preRegistrationList
-	 *            registation list
+	 *            pre registation list
 	 */
 	public void deleteAll(List<PreRegistrationList> preRegistrationList);
 
 	/**
 	 * Fetches all the pre registration packets available in the db
 	 * 
-	 * @return List<PreRegistrationList>
+	 * @return List - pre reg list
 	 */
 	List<PreRegistrationList> getAllPreRegPackets();
 }

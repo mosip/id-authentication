@@ -15,7 +15,7 @@ public interface DocumentCategoryService {
 	 * 
 	 * This method is used to fetch all the document categories
 	 * 
-	 * @return List<DocumentCategory>
+	 * @return List - list of doc categories
 	 */
 	List<DocumentCategory> getDocumentCategories();
 
@@ -24,7 +24,9 @@ public interface DocumentCategoryService {
 	 * This method is used to fetch all the document categories for a specific
 	 * langcode
 	 * 
-	 * @return List<DocumentCategory>
+	 * @param langCode
+	 *            - language code
+	 * @return List - list of doc categories
 	 */
 	List<DocumentCategory> getDocumentCategoriesByLangCode(String langCode);
 
