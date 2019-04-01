@@ -32,7 +32,6 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
-import io.mosip.authentication.core.constant.RequestType;
 import io.mosip.authentication.core.dto.otpgen.OtpRequestDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.spi.id.service.IdAuthService;
@@ -42,7 +41,7 @@ import io.mosip.authentication.service.factory.AuditRequestFactory;
 import io.mosip.authentication.service.factory.RestRequestFactory;
 import io.mosip.authentication.service.helper.RestHelper;
 import io.mosip.authentication.service.impl.id.service.impl.IdAuthServiceImpl;
-import io.mosip.authentication.service.impl.id.service.impl.IdRepoManager;
+import io.mosip.authentication.service.integration.IdRepoManager;
 import io.mosip.authentication.service.repository.AutnTxnRepository;
 import io.mosip.authentication.service.repository.VIDRepository;
 
@@ -139,6 +138,7 @@ public class IdAuthServiceImplTest {
 		ReflectionTestUtils.invokeMethod(idAuthServiceImpl, "processIdType", idvIdType, idvId, false);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Test
 	public void testProcessIdType_IdTypeIsV() throws IdAuthenticationBusinessException {
 		String idvIdType = "V";
@@ -194,14 +194,9 @@ public class IdAuthServiceImplTest {
 	@Test
 	public void testSaveAutnTxn() {
 		OtpRequestDTO otpRequestDto = getOtpRequestDTO();
-		String reqTime = otpRequestDto.getRequestTime();
-		String txnId = otpRequestDto.getTransactionID();
+		otpRequestDto.getRequestTime();
+		otpRequestDto.getTransactionID();
 
-		RequestType requestType = RequestType.OTP_AUTH;
-
-		String uin = "8765";
-		String status = "Y";
-		String comment = "OTP_GENERATED";
 		ReflectionTestUtils.invokeMethod(autntxnrepository, "saveAndFlush", autnTxn);
 		ReflectionTestUtils.invokeMethod(idAuthServiceImpl, "saveAutnTxn", autnTxn);
 	}
@@ -307,8 +302,6 @@ public class IdAuthServiceImplTest {
 	@Test(expected = IdAuthenticationBusinessException.class)
 	public void testIdRepoServiceException_UINDeActivated() throws Throwable {
 		try {
-			String idvIdType = "UIN";
-			String idvId = "875948796";
 			Map<String, Object> idRepo = new HashMap<>();
 			idRepo.put("uin", "476567");
 			VIDEntity vidEntity = new VIDEntity();
@@ -321,7 +314,7 @@ public class IdAuthServiceImplTest {
 			Mockito.when(idRepoManager.getIdenity(Mockito.anyString(), Mockito.anyBoolean()))
 					.thenThrow(idBusinessException);
 			Mockito.when(vidRepository.findUinByVid(Mockito.any())).thenReturn(optVID);
-			Object invokeMethod = ReflectionTestUtils.invokeMethod(idAuthServiceImpl, "getIdRepoByVidAsRequest",
+			ReflectionTestUtils.invokeMethod(idAuthServiceImpl, "getIdRepoByVidAsRequest",
 					Mockito.anyString(), false);
 
 		} catch (UndeclaredThrowableException e) {
@@ -345,7 +338,7 @@ public class IdAuthServiceImplTest {
 			Mockito.when(idRepoManager.getIdenity(Mockito.anyString(), Mockito.anyBoolean()))
 					.thenThrow(idBusinessException);
 			Mockito.when(vidRepository.findUinByVid(Mockito.any())).thenReturn(optVID);
-			Object invokeMethod = ReflectionTestUtils.invokeMethod(idAuthServiceImpl, "getIdRepoByVidAsRequest",
+			ReflectionTestUtils.invokeMethod(idAuthServiceImpl, "getIdRepoByVidAsRequest",
 					Mockito.anyString(), false);
 
 		} catch (UndeclaredThrowableException e) {

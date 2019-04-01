@@ -11,8 +11,6 @@ import org.mockito.Mockito;
 import org.springframework.core.env.Environment;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import io.mosip.authentication.core.spi.irisauth.provider.IrisProvider;
-
 public class FaceProviderTest {
 
 	private FaceProvider face;
@@ -66,11 +64,11 @@ public class FaceProviderTest {
 	public void testmatchIrisImageforOdd() {
 		Map<String, String> reqInfo = new HashMap<>();
 		String faceValue = "Rk1SACAyMAAAAADkAAABPAFiAMUAxQEAAAAoIYCiANo5ZICOAMKzUECuALHAZEDSAMHGZECaASQqZEDpAM7OZED/APlQZEDdAT4KKIC5AVEHV4B3AG0TZED3AVeCG4CVAN08ZEDTAPK3V0DbAN3IXYCAALOnUIBgAN8pZICFAJ77UEClAUkTPECgAHniZECIAVAKIUDnAVcCNUChAFPxV4CQAPmtZECTALS/UECFARkrXUDeAQHEV0BjAMYoZIDCAT8bV0DZAJXPZIBZAJcjZIBrAUkONUBQAVAKG0BeAFQZZAAA";
-		reqInfo.put("face", faceValue);
+		reqInfo.put("FACE", faceValue);
 		String uin = "749763540713";
 		reqInfo.put("idvid", uin);
 		Map<String, String> entityInfo = new HashMap<>();
-		entityInfo.put("face", faceValue);
+		entityInfo.put("FACE", faceValue);
 		entityInfo.put("idvid", "749763540713");
 		Mockito.when(environment.getProperty("odduin.faceimg.match.value", Double.class)).thenReturn(40D);
 		double score = face.matchImage(reqInfo, entityInfo);
@@ -81,7 +79,7 @@ public class FaceProviderTest {
 	public void testmatchIrisImageforEven() {
 		Map<String, String> reqInfo = new HashMap<>();
 		String faceValue = "Rk1SACAyMAAAAADkAAABPAFiAMUAxQEAAAAoIYCiANo5ZICOAMKzUECuALHAZEDSAMHGZECaASQqZEDpAM7OZED/APlQZEDdAT4KKIC5AVEHV4B3AG0TZED3AVeCG4CVAN08ZEDTAPK3V0DbAN3IXYCAALOnUIBgAN8pZICFAJ77UEClAUkTPECgAHniZECIAVAKIUDnAVcCNUChAFPxV4CQAPmtZECTALS/UECFARkrXUDeAQHEV0BjAMYoZIDCAT8bV0DZAJXPZIBZAJcjZIBrAUkONUBQAVAKG0BeAFQZZAAA";
-		reqInfo.put("face", faceValue);
+		reqInfo.put("FACE", faceValue);
 		String uin = "2812936908";
 		reqInfo.put("idvid", uin);
 		Map<String, String> entityInfo = new HashMap<>();

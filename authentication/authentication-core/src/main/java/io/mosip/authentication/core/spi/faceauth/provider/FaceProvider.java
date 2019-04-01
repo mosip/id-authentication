@@ -25,7 +25,7 @@ public abstract class FaceProvider implements MosipFaceProvider {
 	private static final String FACE_MATCH_VALUE = ".faceimg.match.value";
 
 	/** The Constant LEFTTEYE. */
-	static final String FACE = "face"; // FIXME Hardcoded
+	static final String FACE = "FACE"; // FIXME Hardcoded
 
 	/** The environment. */
 	private Environment environment;
