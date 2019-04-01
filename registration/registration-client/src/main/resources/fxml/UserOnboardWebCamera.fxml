@@ -179,7 +179,7 @@
                                                     <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                                   </rowConstraints>
                                                    <children>
-                                                      <GridPane>
+                                                      <GridPane visible="false" GridPane.columnIndex="1" GridPane.rowIndex="1">
                                                         <columnConstraints>
                                                           <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                                                         </columnConstraints>
@@ -195,19 +195,19 @@
                                                             </VBox>
                                                          </children>
                                                       </GridPane>
-                                                      <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="1">
+                                                      <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" visible="false" GridPane.columnIndex="1">
                                                          <children>
                                                             <Label styleClass="qualityLabel" text="%quality" />
                                                             <Label fx:id="rightIrisQualityScore" styleClass="qualityLabel" text="-" />
                                                          </children>
                                                       </VBox>
-                                                      <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" GridPane.rowIndex="1">
+                                                      <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" visible="false" GridPane.rowIndex="1">
                                                          <children>
                                                             <Label styleClass="attemptsLabel" text="%attempts" />
                                                             <Label styleClass="attemptsLabel" text="-" />
                                                          </children>
                                                       </VBox>
-                                                      <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                                      <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
                                                          <children>
                                                             <Label styleClass="exceptionLabel" text="%exceptions" />
                                                             <Label styleClass="exceptionLabel" text="-" />

@@ -231,7 +231,7 @@
                                                     <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                                   </rowConstraints>
                                                    <children>
-                                                      <GridPane>
+                                                      <GridPane visible="false" GridPane.columnIndex="1" GridPane.rowIndex="1">
                                                         <columnConstraints>
                                                           <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                                                         </columnConstraints>
@@ -247,19 +247,19 @@
                                                             </VBox>
                                                          </children>
                                                       </GridPane>
-                                                      <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="1">
+                                                      <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" visible="false" GridPane.columnIndex="1">
                                                          <children>
                                                             <Label styleClass="qualityLabel" text="%quality" />
                                                             <Label fx:id="rightSlapQualityScore" styleClass="qualityLabel" text="-" />
                                                          </children>
                                                       </VBox>
-                                                      <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" GridPane.rowIndex="1">
+                                                      <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" visible="false" GridPane.rowIndex="1">
                                                          <children>
                                                             <Label styleClass="attemptsLabel" text="%attempts" />
                                                             <Label fx:id="rightSlapAttempt" styleClass="attemptsLabel" text="-" />
                                                          </children>
                                                       </VBox>
-                                                      <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                                      <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
                                                          <children>
                                                             <Label styleClass="exceptionLabel" text="%exceptions" />
                                                             <Label fx:id="rightSlapException" styleClass="exceptionLabel" text="-" />
@@ -285,7 +285,7 @@
                                                    <children>
                                                       <GridPane GridPane.columnIndex="1">
                                                          <children>
-                                                            <GridPane>
+                                                            <GridPane visible="false" GridPane.columnIndex="1" GridPane.rowIndex="1">
                                                                <children>
                                                                   <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
                                                                      <children>
@@ -301,19 +301,19 @@
                                                                   <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                                                </rowConstraints>
                                                             </GridPane>
-                                                            <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="1">
+                                                            <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" visible="false" GridPane.columnIndex="1">
                                                                <children>
                                                                   <Label styleClass="qualityLabel" text="%quality" />
                                                                   <Label fx:id="thumbsQualityScore" styleClass="qualityLabel" text="-" />
                                                                </children>
                                                             </VBox>
-                                                            <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" GridPane.rowIndex="1">
+                                                            <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" visible="false" GridPane.rowIndex="1">
                                                                <children>
                                                                   <Label styleClass="attemptsLabel" text="%attempts" />
                                                                   <Label fx:id="thumbSlapAttempt" styleClass="attemptsLabel" text="-" />
                                                                </children>
                                                             </VBox>
-                                                            <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                                            <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
                                                                <children>
                                                                   <Label styleClass="exceptionLabel" text="%exceptions" />
                                                                   <Label fx:id="thumbSlapException" styleClass="exceptionLabel" text="-" />
@@ -433,7 +433,7 @@
                                        <children>
                                           <GridPane GridPane.columnIndex="1">
                                              <children>
-                                                <GridPane>
+                                                <GridPane visible="false" GridPane.columnIndex="1" GridPane.rowIndex="1">
                                                    <children>
                                                       <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
                                                          <children>
@@ -449,19 +449,19 @@
                                                       <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                                    </rowConstraints>
                                                 </GridPane>
-                                                <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="1">
+                                                <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" visible="false" GridPane.columnIndex="1">
                                                    <children>
                                                       <Label styleClass="qualityLabel" text="%quality" />
                                                       <Label fx:id="leftSlapQualityScore" styleClass="qualityLabel" text="-" />
                                                    </children>
                                                 </VBox>
-                                                <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" GridPane.rowIndex="1">
+                                                <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" visible="false" GridPane.rowIndex="1">
                                                    <children>
                                                       <Label styleClass="attemptsLabel" text="%attempts" />
                                                       <Label fx:id="leftSlapAttempt" styleClass="attemptsLabel" text="-" />
                                                    </children>
                                                 </VBox>
-                                                <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                                <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
                                                    <children>
                                                       <Label styleClass="exceptionLabel" text="%exceptions" />
                                                       <Label fx:id="leftSlapException" styleClass="exceptionLabel" text="-" />
@@ -527,7 +527,7 @@
                                           </Button>
                                        </children>
                                     </GridPane>
-                                    <GridPane>
+                                    <GridPane visible="false">
                                       <columnConstraints>
                                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="40.0" prefWidth="100.0" />
                                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="80.0" prefWidth="100.0" />
