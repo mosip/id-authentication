@@ -78,6 +78,12 @@ public class TemplateGenerator extends BaseService {
 	 *            generate acknowledgement
 	 * @param registration
 	 *            - RegistrationDTO to display required fields on the template
+	 * @param templateManagerBuilder
+	 *            - The Builder which generates template by mapping values to
+	 *            respective place-holders in template
+	 * @param templateType
+	 *            - The type of template that is required (like
+	 *            email/sms/acknowledgement)
 	 * @return writer - After mapping all the fields into the template, it is
 	 *         written into a StringWriter and returned
 	 */
@@ -109,9 +115,11 @@ public class TemplateGenerator extends BaseService {
 					.getIdentity();
 
 			if (templateType.equals(RegistrationConstants.ACKNOWLEDGEMENT_TEMPLATE)) {
+				/* Set-up Registration Acknowledgement related content */
 				setUpAcknowledgementContent(registration, templateValues, response, applicationLanguageProperties,
 						localProperties, fingerPrintDisableFlag, irisDisableFlag, moroccoIdentity);
 			} else {
+				/* Set-up Registration Preview related content */
 				setUpPreviewContent(registration, templateValues, response, applicationLanguageProperties,
 						localProperties, fingerPrintDisableFlag);
 			}
@@ -133,20 +141,26 @@ public class TemplateGenerator extends BaseService {
 				templateValues = countMissingIrises(templateValues, registration, templateType);
 			}
 
+			/* Set-up demographic information related content */
 			setUpDemographicInfo(templateValues, applicationLanguageProperties, localProperties, moroccoIdentity);
 
+			/* Set-up the list of documents submitted by the applicant */
 			setUpDocuments(templateValues, applicationLanguageProperties, localProperties, moroccoIdentity,
 					documentDisableFlag);
 
+			/* Set-up captured biometrics count */
 			setUpBiometricsCount(templateValues, registration, applicationLanguageProperties, localProperties,
 					fingerPrintDisableFlag, irisDisableFlag, faceDisableFlag);
 
+			/* Set-up captured images of applicant */
 			setUpCapturedImages(templateValues, registration, applicationLanguageProperties, localProperties,
 					faceDisableFlag);
 
+			/* Set-up Biometrics related content */
 			setUpBiometricContent(templateValues, registration, applicationLanguageProperties, localProperties,
 					fingerPrintDisableFlag, irisDisableFlag, faceDisableFlag);
 
+			/* Set-up Registration Office and Officer related content */
 			setUpROContent(templateValues, registration, applicationLanguageProperties, localProperties);
 
 			Writer writer = new StringWriter();
@@ -981,6 +995,9 @@ public class TemplateGenerator extends BaseService {
 	 *            generate notification
 	 * @param registration
 	 *            - RegistrationDTO to display required fields on the template
+	 * @param templateManagerBuilder
+	 *            - The Builder which generates template by mapping values to
+	 *            respective place-holders in template
 	 * @return writer - After mapping all the fields into the template, it is
 	 *         written into a StringWriter and returned
 	 */

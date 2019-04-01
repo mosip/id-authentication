@@ -516,9 +516,6 @@ public class PacketHandlerController extends BaseController implements Initializ
 
 	/**
 	 * Sync data through batch jobs.
-	 *
-	 * @param event
-	 *            the event
 	 */
 	public void syncData() {
 		if (isMachineRemapProcessStarted()) {
@@ -549,8 +546,6 @@ public class PacketHandlerController extends BaseController implements Initializ
 
 	/**
 	 * This method is to trigger the Pre registration sync service
-	 * 
-	 * @param event
 	 */
 	@FXML
 	public void downloadPreRegData() {
@@ -583,10 +578,6 @@ public class PacketHandlerController extends BaseController implements Initializ
 
 	/**
 	 * change On-Board user Perspective
-	 * 
-	 * @param event
-	 *            is an action event
-	 * @throws IOException
 	 */
 	public void onBoardUser() {
 

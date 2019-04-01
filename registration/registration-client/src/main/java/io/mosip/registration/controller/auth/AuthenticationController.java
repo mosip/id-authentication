@@ -851,7 +851,7 @@ public class AuthenticationController extends BaseController implements Initiali
 	/**
 	 * event class to exit from authentication window. pop up window.
 	 * 
-	 * @param event
+	 * @param event - the action event 
 	 */
 	public void exitWindow(ActionEvent event) {
 		Stage primaryStage = (Stage) ((Node) event.getSource()).getParent().getScene().getWindow();
@@ -862,7 +862,8 @@ public class AuthenticationController extends BaseController implements Initiali
 	/**
 	 * Setting the init method to the Basecontroller
 	 * 
-	 * @param parentControllerObj
+	 * @param parentControllerObj - Parent Controller name
+	 * @param authType - Authentication Type
 	 * @throws RegBaseCheckedException
 	 */
 	public void init(BaseController parentControllerObj, String authType) throws RegBaseCheckedException {

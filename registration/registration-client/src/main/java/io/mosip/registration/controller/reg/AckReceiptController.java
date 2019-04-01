@@ -113,6 +113,8 @@ public class AckReceiptController extends BaseController implements Initializabl
 	/**
 	 * To print the acknowledgement receipt after packet creation when the user
 	 * clicks on print button.
+	 * 
+	 * @param event - the event that happens on click of print button
 	 */
 	@FXML
 	public void printReceipt(ActionEvent event) {
@@ -125,7 +127,7 @@ public class AckReceiptController extends BaseController implements Initializabl
 			webView.getEngine().print(job);
 			job.endJob();
 		}
-		generateAlert(RegistrationConstants.SUCCESS, RegistrationUIConstants.PRINT_INITIATION_SUCCESS);
+		generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.PRINT_INITIATION_SUCCESS);
 		goToHomePageFromRegistration();
 	}
 

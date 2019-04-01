@@ -37,6 +37,7 @@ public interface RegPacketStatusService {
 	/**
 	 * Delete Registrations
 	 * @param registrations
+	 * 			- the list of registrations that are to be deleted
 	 */
 	void deleteRegistrations(List<Registration> registrations);
 
