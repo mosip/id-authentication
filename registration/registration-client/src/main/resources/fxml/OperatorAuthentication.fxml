@@ -1163,14 +1163,14 @@
                         <Label styleClass="headerTexts" alignment="BOTTOM_CENTER" contentDisplay="TOP" text="%biometricDetails" />
                      </children>
                   </HBox>
-                  <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="10.0" GridPane.columnIndex="6">
+                  <HBox styleClass="trackerHighlighter" alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="10.0" GridPane.columnIndex="6">
                      <children>
                         <ImageView fitHeight="18.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
                            <image>
                               <Image url="@../images/activeAuthentication.png" />
                            </image>
                         </ImageView>
-                        <Label alignment="BOTTOM_CENTER"  styleClass="trackerHighlighter" text="%authentication" />
+                        <Label alignment="BOTTOM_CENTER"   text="%authentication" />
                      </children>
                   </HBox>
                </children>

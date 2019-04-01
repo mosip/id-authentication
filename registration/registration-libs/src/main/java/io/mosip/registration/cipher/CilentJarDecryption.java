@@ -121,7 +121,12 @@ public class CilentJarDecryption {
 			boolean update = true;
 
 			if (update) {
-				registrationUpdate.getWithLatestJars();
+				try {
+					registrationUpdate.getWithLatestJars();
+				} catch (io.mosip.kernel.core.exception.IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			} else {
 				registrationUpdate.getJars();
 			}
