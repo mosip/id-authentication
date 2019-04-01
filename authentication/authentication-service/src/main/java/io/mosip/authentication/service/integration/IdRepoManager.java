@@ -1,4 +1,4 @@
-package io.mosip.authentication.service.impl.id.service.impl;
+package io.mosip.authentication.service.integration;
 
 import java.util.Arrays;
 import java.util.HashMap;

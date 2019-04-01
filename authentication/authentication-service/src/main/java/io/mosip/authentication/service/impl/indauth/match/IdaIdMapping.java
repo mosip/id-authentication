@@ -61,7 +61,7 @@ public enum IdaIdMapping implements IdMapping {
 	LEFTEYE("LEFT"), RIGHTIRIS("RIGHT"), 
 	UNKNOWN_IRIS("UNKNOWN", setOf(RIGHTIRIS, LEFTEYE)),
 	IRIS("iris", setOf(RIGHTIRIS, LEFTEYE, UNKNOWN_IRIS)),
-	FACE("face");
+	FACE("FACE");
 
 	private String idname;
 
