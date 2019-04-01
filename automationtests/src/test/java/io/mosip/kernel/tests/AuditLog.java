@@ -51,7 +51,7 @@ public class AuditLog extends BaseTestCase implements ITest {
 	}
 
 	private static Logger logger = Logger.getLogger(AuditLog.class);
-	private static final String jiraID = "MOS-9284";
+	private static final String jiraID = "MOS-8/441/829";
 	private static final String moduleName = "kernel";
 	private static final String apiName = "AuditLog";
 	private static final String requestJsonName = "AuditLogRequest";
