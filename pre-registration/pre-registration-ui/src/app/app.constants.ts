@@ -10,6 +10,7 @@ export const ERROR = 'error';
 export const NESTED_ERROR = 'err';
 export const ERROR_CODE = 'errorCode';
 export const PRE_REGISTRATION_ID = 'pre_registration_id';
+export const APPENDER = '/';
 // export const ALLOWED_BOOKING_TIME = 24;
 
 export const YEAR_PATTERN = '(\\d{4})';
@@ -31,8 +32,8 @@ export const IDS = {
 export const APPEND_URL = {
   config: 'config',
   send_otp: 'sendotp',
-  verify_otp: 'useridotp',
-  invalid_token: 'invalidatetoken',
+  login: 'login',
+  logout: 'logout',
   location_metadata: 'v1.0/locations/locationhierarchy/',
   location_immediate_children: 'v1.0/locations/immediatechildren/',
   applicants: 'demographic/applications',

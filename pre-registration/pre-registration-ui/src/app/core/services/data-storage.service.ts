@@ -18,27 +18,12 @@ export class DataStorageService {
     private configService: ConfigService
   ) {}
 
-  // BASE_URL = environment.BASE_URL;
-  // BASE_URL2 = 'https://integ.mosip.io/';
   BASE_URL = this.appConfigService.getConfig()['BASE_URL'];
   PRE_REG_URL = this.appConfigService.getConfig()['PRE_REG_URL'];
-  // SEND_FILE_URL = this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.document;
-  // DELETE_FILE_URL = this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.document;
-  // GET_FILE_URL = this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.document;
-  // MASTER_DATA_URL = this.BASE_URL + appConstants.APPEND_URL.master_data;
-  // AVAILABILITY_URL = this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.booking_availability;
-  // BOOKING_URL = this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.booking_appointment;
-  // DELETE_REGISTRATION_URL = this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.applicants;
-  // COPY_DOCUMENT_URL = this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.document_copy;
-  // QR_CODE_URL = this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.qr_code;
-  // NOTIFICATION_URL = this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.notification;
-  // APPLICANNT_TYPE_URL =
-  //   this.BASE_URL + appConstants.APPEND_URL.applicantType + appConstants.APPEND_URL.getApplicantType;
-  // APPLICANT_VALID_DOCUMENTS_URL =
-  //   this.BASE_URL + appConstants.APPEND_URL.location + appConstants.APPEND_URL.validDocument;
-  // AUTH_URL = this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.auth;
 
+  //here
   getUsers(value: string) {
+    // const url = this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.applicants + appConstants.APPENDER + value;
     return this.httpClient.get<Applicant[]>(this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.applicants, {
       observe: 'body',
       responseType: 'json',
@@ -46,7 +31,9 @@ export class DataStorageService {
     });
   }
 
+  //here
   getUser(preRegId: string) {
+    // const url = this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.get_applicant + appConstants.APPENDER + preRegId;
     return this.httpClient.get(this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.get_applicant, {
       observe: 'body',
       responseType: 'json',
@@ -92,12 +79,26 @@ export class DataStorageService {
     return this.httpClient.post(this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.applicants, obj);
   }
 
+  updateUser(identity: any) {
+    const obj = {
+      id: appConstants.IDS.newUser,
+      version: appConstants.VERSION,
+      requesttime: Utils.getCurrentDate(),
+      request: identity
+    };
+    console.log('data being sent', obj);
+
+    return this.httpClient.put(this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.applicants, obj);
+  }
+
   sendFile(formdata: FormData) {
     return this.httpClient.post(this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.document, formdata);
     // console.log('servvice called', formdata);
   }
 
+  //here
   deleteRegistration(preId: string) {
+    // const url = this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.applicants + appConstants.APPENDER + preId;
     return this.httpClient.delete(this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.applicants, {
       observe: 'body',
       responseType: 'json',
@@ -320,16 +321,13 @@ export class DataStorageService {
     };
 
     return this.httpClient.post(
-      this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.auth + appConstants.APPEND_URL.verify_otp,
+      this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.auth + appConstants.APPEND_URL.login,
       requestObj
     );
   }
 
   onLogout() {
-    const auth =
-      this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.auth + appConstants.APPEND_URL.invalid_token;
-    // 'https://dev.mosip.io/pre-registration/v1.0/auth/invalidatetoken';
-    // this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.auth+'invalidatetoken'
+    const auth = this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.auth + appConstants.APPEND_URL.logout;
     return this.httpClient.post(auth, '');
   }
 }
