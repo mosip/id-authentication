@@ -24,6 +24,7 @@ import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.status.api.controller.RegistrationSyncController;
+import io.mosip.registration.processor.status.dto.SyncErrorDTO;
 import io.mosip.registration.processor.status.exception.RegStatusAppException;
 import io.mosip.registration.processor.status.exception.TablenotAccessibleException;
 import io.mosip.registration.processor.status.sync.response.dto.RegStatusResponseDTO;
@@ -97,7 +98,7 @@ public class RegistrationSyncExceptionHandler {
 			List<String> errorCodes = ((BaseCheckedException) e).getCodes();
 			List<String> errorTexts = ((BaseCheckedException) e).getErrorTexts();
 
-			List<ErrorDTO> errors = errorTexts.parallelStream().map(errMsg -> new ErrorDTO(errorCodes.get(errorTexts.indexOf(errMsg)), errMsg)).distinct().collect(Collectors.toList());
+			List<SyncErrorDTO> errors = errorTexts.parallelStream().map(errMsg -> new SyncErrorDTO(errorCodes.get(errorTexts.indexOf(errMsg)), errMsg)).distinct().collect(Collectors.toList());
 
 			response.setErrors(errors);
 		}
@@ -105,8 +106,8 @@ public class RegistrationSyncExceptionHandler {
 			List<String> errorCodes = ((BaseUncheckedException) e).getCodes();
 			List<String> errorTexts = ((BaseUncheckedException) e).getErrorTexts();
 
-			List<ErrorDTO> errors = errorTexts.parallelStream()
-					.map(errMsg -> new ErrorDTO(errorCodes.get(errorTexts.indexOf(errMsg)), errMsg)).distinct()
+			List<SyncErrorDTO> errors = errorTexts.parallelStream()
+					.map(errMsg -> new SyncErrorDTO(errorCodes.get(errorTexts.indexOf(errMsg)), errMsg)).distinct()
 					.collect(Collectors.toList());
 
 			response.setErrors(errors);
