@@ -43,7 +43,6 @@ public class CryptomanagerConfig {
 			SSLConnectionSocketFactory csf = new SSLConnectionSocketFactory(sslContext);
 
 			CloseableHttpClient httpClient = HttpClients.custom().setSSLSocketFactory(csf).build();
-
 			HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory();
 
 			requestFactory.setHttpClient(httpClient);

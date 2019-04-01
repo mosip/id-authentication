@@ -42,6 +42,14 @@ node {
     {
       "pattern": "${branch}/registration/registration-client/target/*.zip",
       "target": "libs-release-local/io/mosip/registration/registration-client/${version}/"
+    },
+    {
+      "pattern": "${branch}/registration/registration-client/target/MANIFEST.MF",
+      "target": "libs-release-local/io/mosip/registration/registration-client/${version}/"
+    },
+    {
+      "pattern": "${branch}/registration/registration-client/target/lib/*.jar",
+      "target": "libs-release-local/io/mosip/registration/registration-client/${version}/lib/"
     }
  ]
  }"""
