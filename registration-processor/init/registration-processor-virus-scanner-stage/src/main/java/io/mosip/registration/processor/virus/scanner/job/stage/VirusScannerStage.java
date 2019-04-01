@@ -88,7 +88,7 @@ public class VirusScannerStage extends MosipVerticleManager {
 	/** The is transaction successful. */
 	boolean isTransactionSuccessful = false;
 
-	RegistrationStatusMapperUtil registrationStatusMapperUtil;
+	RegistrationStatusMapperUtil registrationStatusMapperUtil = new RegistrationStatusMapperUtil();
 
 	/**
 	 * Deploy verticle.
@@ -166,7 +166,7 @@ public class VirusScannerStage extends MosipVerticleManager {
 		} catch (VirusScanFailedException e) {
 
 			registrationStatusDto.setLatestTransactionStatusCode(registrationStatusMapperUtil
-					.getStatusCode(RegistrationExceptionTypeCode.VIRUS_SCAN_FAILED_EXCEPTION).toString());
+					.getStatusCode(RegistrationExceptionTypeCode.VIRUS_SCAN_FAILED_EXCEPTION));
 
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationStatusDto.getRegistrationId(),
@@ -175,7 +175,7 @@ public class VirusScannerStage extends MosipVerticleManager {
 			description = "virus scan failed for registrationId " + registrationId + "::" + e.getMessage();
 		} catch (IOException | io.mosip.kernel.core.exception.IOException e) {
 			registrationStatusDto.setLatestTransactionStatusCode(
-					registrationStatusMapperUtil.getStatusCode(RegistrationExceptionTypeCode.IOEXCEPTION).toString());
+					registrationStatusMapperUtil.getStatusCode(RegistrationExceptionTypeCode.IOEXCEPTION));
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationStatusDto.getRegistrationId(),
 					VIRUS_SCAN_FAILED + " " + e.getMessage() + ExceptionUtils.getStackTrace(e));
@@ -183,7 +183,7 @@ public class VirusScannerStage extends MosipVerticleManager {
 			description = "virus scan failed for registrationId " + registrationId + "::" + e.getMessage();
 		} catch (PacketDecryptionFailureException e) {
 			registrationStatusDto.setLatestTransactionStatusCode(registrationStatusMapperUtil
-					.getStatusCode(RegistrationExceptionTypeCode.PACKET_DECRYPTION_FAILURE_EXCEPTION).toString());
+					.getStatusCode(RegistrationExceptionTypeCode.PACKET_DECRYPTION_FAILURE_EXCEPTION));
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					e.getErrorCode(), e.getErrorText());
 			registrationStatusDto.setStatusCode(RegistrationStatusCode.PACKET_DECRYPTION_FAILED.toString());
@@ -196,7 +196,7 @@ public class VirusScannerStage extends MosipVerticleManager {
 					+ e.getErrorText();
 		} catch (Exception ex) {
 			registrationStatusDto.setLatestTransactionStatusCode(
-					registrationStatusMapperUtil.getStatusCode(RegistrationExceptionTypeCode.EXCEPTION).toString());
+					registrationStatusMapperUtil.getStatusCode(RegistrationExceptionTypeCode.EXCEPTION));
 
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationId, PlatformErrorMessages.RPR_PSJ_VIRUS_SCAN_FAILED.getMessage() + ex.getMessage()
