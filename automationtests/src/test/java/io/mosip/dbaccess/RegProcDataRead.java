@@ -30,8 +30,8 @@ public class RegProcDataRead {
 	{
 		boolean flag=false;
 		try {	
-			if(BaseTestCase.environment.equalsIgnoreCase("integration"))	
-				factory = new Configuration().configure("regprocinteg.cfg.xml")
+			if(BaseTestCase.environment.equalsIgnoreCase("dev"))	
+				factory = new Configuration().configure("regprocdev.cfg.xml")
 						.addAnnotatedClass(OtpEntity.class).buildSessionFactory();	
 				else
 				{
@@ -68,8 +68,8 @@ public class RegProcDataRead {
 	{
 		boolean flag=false;
 
-		if(BaseTestCase.environment.equalsIgnoreCase("integration"))	
-			factory = new Configuration().configure("regprocinteg.cfg.xml")
+		if(BaseTestCase.environment.equalsIgnoreCase("dev"))	
+			factory = new Configuration().configure("regprocdev.cfg.xml")
 					.addAnnotatedClass(OtpEntity.class).buildSessionFactory();	
 			else
 			{
@@ -99,8 +99,8 @@ public class RegProcDataRead {
 	{
 		boolean flag=false;
 
-		if(BaseTestCase.environment.equalsIgnoreCase("integration"))	
-			factory = new Configuration().configure("regprocinteg.cfg.xml")
+		if(BaseTestCase.environment.equalsIgnoreCase("dev"))	
+			factory = new Configuration().configure("regprocdev.cfg.xml")
 					.addAnnotatedClass(OtpEntity.class).buildSessionFactory();	
 			else
 			{
@@ -274,8 +274,8 @@ public class RegProcDataRead {
     {
           boolean flag=false;
 
-          if(BaseTestCase.environment.equalsIgnoreCase("integration"))	
-				factory = new Configuration().configure("regprocinteg.cfg.xml")
+          if(BaseTestCase.environment.equalsIgnoreCase("dev"))	
+				factory = new Configuration().configure("regprocdev.cfg.xml")
 						.addAnnotatedClass(OtpEntity.class).buildSessionFactory();	
 				else
 				{
@@ -305,8 +305,8 @@ public class RegProcDataRead {
     {
           boolean flag=false;
 
-          if(BaseTestCase.environment.equalsIgnoreCase("integration"))	
-				factory = new Configuration().configure("regprocinteg.cfg.xml")
+          if(BaseTestCase.environment.equalsIgnoreCase("dev"))	
+				factory = new Configuration().configure("regprocdev.cfg.xml")
 						.addAnnotatedClass(OtpEntity.class).buildSessionFactory();	
 				else
 				{

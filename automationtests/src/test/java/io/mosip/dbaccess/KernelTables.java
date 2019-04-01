@@ -26,12 +26,12 @@ public class KernelTables {
 	{
 		boolean flag=false;
 		try {	
-			if(BaseTestCase.environment.equalsIgnoreCase("integration"))
-				factory = new Configuration().configure("masterdatainteg.cfg.xml")
+			if(BaseTestCase.environment.equalsIgnoreCase("dev"))
+				factory = new Configuration().configure("masterdatadev.cfg.xml")
 			.addAnnotatedClass(OtpEntity.class).buildSessionFactory();	
 					else
 					{
-						if(BaseTestCase.environment.equalsIgnoreCase("integration"))
+						if(BaseTestCase.environment.equalsIgnoreCase("qa"))
 							factory = new Configuration().configure("masterdataqa.cfg.xml")
 						.addAnnotatedClass(OtpEntity.class).buildSessionFactory();	
 					}
@@ -64,12 +64,12 @@ public class KernelTables {
 	{
 		boolean flag=false;
 		
-		if(BaseTestCase.environment.equalsIgnoreCase("integration"))
-			factory = new Configuration().configure("kernelinteg.cfg.xml")
+		if(BaseTestCase.environment.equalsIgnoreCase("dev"))
+			factory = new Configuration().configure("kerneldev.cfg.xml")
 		.addAnnotatedClass(OtpEntity.class).buildSessionFactory();	
 				else
 				{
-					if(BaseTestCase.environment.equalsIgnoreCase("integration"))
+					if(BaseTestCase.environment.equalsIgnoreCase("qa"))
 						factory = new Configuration().configure("kernelqa.cfg.xml")
 					.addAnnotatedClass(OtpEntity.class).buildSessionFactory();	
 				}

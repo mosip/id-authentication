@@ -34,8 +34,8 @@ public class KernelMasterDataR {
 			/*
 			 * Based on the environemnt configuration file is set
 			 */
-			if(BaseTestCase.environment.equalsIgnoreCase("integration"))
-				factory = new Configuration().configure("masterdatainteg.cfg.xml")
+			if(BaseTestCase.environment.equalsIgnoreCase("dev"))
+				factory = new Configuration().configure("masterdatadev.cfg.xml")
 			.addAnnotatedClass(OtpEntity.class).buildSessionFactory();	
 					else
 					{
@@ -74,8 +74,8 @@ public class KernelMasterDataR {
 	{
 		boolean flag=false;
 
-		if(BaseTestCase.environment.equalsIgnoreCase("integration"))
-			factory = new Configuration().configure("masterdatainteg.cfg.xml")
+		if(BaseTestCase.environment.equalsIgnoreCase("dev"))
+			factory = new Configuration().configure("masterdatadev.cfg.xml")
 		.addAnnotatedClass(OtpEntity.class).buildSessionFactory();	
 				else
 				{
@@ -121,8 +121,8 @@ public class KernelMasterDataR {
 		{
 			boolean flag=false;
 
-			if(BaseTestCase.environment.equalsIgnoreCase("integration"))
-				factory = new Configuration().configure("masterdatainteg.cfg.xml")
+			if(BaseTestCase.environment.equalsIgnoreCase("dev"))
+				factory = new Configuration().configure("masterdatadev.cfg.xml")
 			.addAnnotatedClass(OtpEntity.class).buildSessionFactory();	
 					else
 					{
@@ -178,8 +178,8 @@ public class KernelMasterDataR {
 		{
 			boolean flag=false;
 			
-			if(BaseTestCase.environment.equalsIgnoreCase("integration"))
-				factory = new Configuration().configure("masterdatainteg.cfg.xml")
+			if(BaseTestCase.environment.equalsIgnoreCase("dev"))
+				factory = new Configuration().configure("masterdatadev.cfg.xml")
 			.addAnnotatedClass(OtpEntity.class).buildSessionFactory();	
 					else
 					{
