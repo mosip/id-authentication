@@ -47,6 +47,7 @@ export class FileUploadComponent implements OnInit {
   documentIndex;
   LOD: DocumentCategory[];
   fileIndex = -1;
+  secondaryLanguagelabels: any;
 
   sameAs;
 
@@ -84,6 +85,11 @@ export class FileUploadComponent implements OnInit {
     this.allApplicants = this.getApplicantsName(applicants);
 
     console.log('applicants', this.allApplicants);
+
+    this.dataStroage.getSecondaryLanguageLabels(localStorage.getItem('langCode')).subscribe(response => {
+      if (response['message']) this.secondaryLanguagelabels = response['message'];
+      console.log(response,this.secondaryLanguagelabels);
+    });
 
     if (this.registration.getUsers().length > 0) {
       this.users[0] = this.registration.getUser(this.registration.getUsers().length - 1);
@@ -243,13 +249,13 @@ export class FileUploadComponent implements OnInit {
           this.setJsonString(event);
           this.sendFile(event);
         } else {
-          alert('file too big');
+          alert(this.secondaryLanguagelabels.uploadDocuments.msg4);
         }
       } else {
-        alert('File name should not be more thaan 50 characters');
+        alert(this.secondaryLanguagelabels.uploadDocuments.msg5);
       }
     } else {
-      alert('Wrong file type, please upload again');
+      alert(this.secondaryLanguagelabels.uploadDocuments.msg6);
     }
   }
 
@@ -313,7 +319,7 @@ export class FileUploadComponent implements OnInit {
         this.updateUsers(response, event);
       },
       error => {
-        alert('The file coul not be uploaded, please try again.');
+        alert(this.secondaryLanguagelabels.uploadDocuments.msg7);
         console.log(error);
       },
       () => {
@@ -369,12 +375,12 @@ export class FileUploadComponent implements OnInit {
           if (response['err'] == null) {
             this.removePOADocument();
           } else {
-            alert('could not copy document');
+            alert(this.secondaryLanguagelabels.uploadDocuments.msg8);
           }
         },
         err => {
           console.log('error in copy document', err);
-          alert('could not copy document');
+          alert(this.secondaryLanguagelabels.uploadDocuments.msg8);
         }
       );
       this.sameAsselected = true;

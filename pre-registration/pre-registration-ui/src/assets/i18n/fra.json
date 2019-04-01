@@ -140,18 +140,23 @@
   },
   "message": {
     "login": {
-      "msg1": "Email ID is not valid",
-      "msg2": "Phone number is not valid",
-      "msg3": "OTP enter is not valid",
-      "msg4": "Login Successful"
+      "msg1": "L'identifiant email n'est pas valide",
+      "msg2": "Le numéro de téléphone n'est pas valide",
+      "msg3": "OTP enter n'est pas valide",
+      "msg4": "Connexion réussie"
     },
     "demographicDetails": {
       "msg1": "Black listed word entered"
     },
     "uploadDocuments": {
-      "msg1": "Document exceeding permitted size",
-      "msg2": "Virus scan failed",
-      "msg3": "File type not supported"
+      "msg1": "Document dépassant la taille autorisée",
+      "msg2": "Echec de l'analyse antivirus",
+      "msg3": "Type de fichier non supporté",
+      "msg4": "Le fichier est trop gros",
+      "msg5": "Le nom du fichier ne doit pas dépasser 50 caractères",
+      "msg6": "Mauvais type de fichier, veuillez télécharger à nouveau",
+      "msg7": "Le fichier n'a pas pu être téléchargé. Veuillez réessayer.",
+      "msg8": "Impossible de copier le document"
     },
     "appointmentCentreSearch": {
       "msg1": "No result found",
