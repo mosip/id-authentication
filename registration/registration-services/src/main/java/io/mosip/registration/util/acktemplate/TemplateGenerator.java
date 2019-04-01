@@ -274,8 +274,7 @@ public class TemplateGenerator extends BaseService {
 		}
 
 		if (RegistrationConstants.ENABLE.equalsIgnoreCase(fingerPrintDisableFlag)
-				&& ((registration.getSelectionListDTO() != null
-						&& registration.getBiometricDTO().getApplicantBiometricDTO().getFingerprintDetailsDTO() != null)
+				&& ((registration.getSelectionListDTO() != null && registration.getSelectionListDTO().isBiometrics())
 						|| (registration.getSelectionListDTO() == null))) {
 			templateValues.put(RegistrationConstants.TEMPLATE_FINGERPRINTS_CAPTURED, null);
 			templateValues.put(RegistrationConstants.TEMPLATE_LEFT_PALM_USER_LANG_LABEL,
