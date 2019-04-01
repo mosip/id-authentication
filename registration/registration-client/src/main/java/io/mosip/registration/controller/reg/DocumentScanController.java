@@ -54,6 +54,7 @@ import javafx.geometry.NodeOrientation;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
@@ -67,7 +68,7 @@ import javafx.stage.Stage;
 import javafx.util.StringConverter;
 
 /**
- * This controller class is to handle the screen of the Demographic document
+ * {@code DocumentScanController} is to handle the screen of the Demographic document
  * section details
  * 
  * @author M1045980
@@ -173,6 +174,11 @@ public class DocumentScanController extends BaseController {
 
 	private int totalDocument;
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see javafx.fxml.Initializable#initialize()
+	 */
 	@FXML
 	private void initialize() {
 		LOGGER.info(RegistrationConstants.DOCUMNET_SCAN_CONTROLLER, APPLICATION_NAME,
@@ -214,6 +220,10 @@ public class DocumentScanController extends BaseController {
 		}
 	}
 
+
+	/**
+	 * To populate the document categories
+	 */
 	protected <T> void populateDocumentCategories() throws InvalidApplicantArgumentException, ParseException {
 
 		/* clearing all the previously added fields */
@@ -262,6 +272,10 @@ public class DocumentScanController extends BaseController {
 		return getRegistrationDTOFromSession().getDemographicDTO().getApplicantDocumentDTO().getDocuments();
 	}
 
+
+	/**
+	 * To prepare the document section
+	 */
 	@SuppressWarnings("unchecked")
 	private <T> void prepareDocumentScanSection(List<DocumentCategory> documentCategories) {
 		for (DocumentCategory documentCategory : documentCategories) {
@@ -346,6 +360,10 @@ public class DocumentScanController extends BaseController {
 		}
 	}
 
+
+	/**
+	 * To find te applicant type
+	 */
 	private String findApplicantType(String gender, Integer age, String individualType) {
 		String applicantType = null;
 		String male = "MLE";
@@ -387,10 +405,18 @@ public class DocumentScanController extends BaseController {
 		return applicantType;
 	}
 
+
+	/**
+	 * To find if applicant is child
+	 */
 	private boolean isChild(Integer age) {
 		return age <= Integer.valueOf(String.valueOf(ApplicationContext.map().get(RegistrationConstants.MIN_AGE)));
 	}
 
+
+	/**
+	 * Getting the identity dto
+	 */
 	private MoroccoIdentity getIdentityDto() {
 		return (MoroccoIdentity) getRegistrationDTOFromSession().getDemographicDTO().getDemographicInfoDTO()
 				.getIdentity();
@@ -479,6 +505,10 @@ public class DocumentScanController extends BaseController {
 
 	}
 
+
+	/**
+	 * This method will get the stubbed data for the scan
+	 */
 	private void scanFromStubbed(Stage popupStage) throws IOException {
 		byte[] byteArray = documentScanFacade.getScannedDocument();
 
@@ -509,6 +539,10 @@ public class DocumentScanController extends BaseController {
 		}
 	}
 
+
+	/**
+	 * This method is to scan from  the scanner
+	 */
 	private void scanFromScanner() throws IOException {
 
 		/* setting the scanner factory */
@@ -543,6 +577,10 @@ public class DocumentScanController extends BaseController {
 		scanPopUpViewController.getScanningMsg().setVisible(false);
 	}
 
+
+	/**
+	 * This method is to attach the document to the screen
+	 */
 	public void attachScannedDocument(Stage popupStage) throws IOException {
 
 		LOGGER.info(RegistrationConstants.DOCUMNET_SCAN_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
@@ -612,6 +650,10 @@ public class DocumentScanController extends BaseController {
 
 	}
 
+
+	/**
+	 * This method will add document to the screen
+	 */
 	private void addDocumentsToScreen(String document, String documentFormat, VBox vboxElement) {
 
 		GridPane gridPane = new GridPane();
@@ -670,6 +712,10 @@ public class DocumentScanController extends BaseController {
 				RegistrationConstants.APPLICATION_ID, "Scanned document displayed succesfully");
 	}
 
+
+	/**
+	 * This method will preview the next document
+	 */
 	public void previewNextPage() {
 
 		if (isDocsNotEmpty()) {
@@ -684,6 +730,10 @@ public class DocumentScanController extends BaseController {
 		}
 	}
 
+
+	/**
+	 * This method will preview the previous document
+	 */
 	public void previewPrevPage() {
 		if (isDocsNotEmpty()) {
 			int pageNumber = Integer.parseInt(docPageNumber.getText());
@@ -697,10 +747,20 @@ public class DocumentScanController extends BaseController {
 		}
 	}
 
+
+	/**
+	 * This method will determine if the document is empty
+	 */
 	private boolean isDocsNotEmpty() {
 		return StringUtils.isNotEmpty(docPageNumber.getText()) && docPages != null && !docPages.isEmpty();
 	}
 
+
+	/**
+	 * This method will set the inde and page number for the document
+	 * @param index - index of the preview section
+	 * @param pageNumber - page number for the preview section
+	 */
 	private void setDocPreview(int index, int pageNumber) {
 		docPreviewImgView.setImage(SwingFXUtils.toFXImage(docPages.get(index), null));
 		docPageNumber.setText(String.valueOf(pageNumber));
@@ -708,6 +768,8 @@ public class DocumentScanController extends BaseController {
 
 	/**
 	 * This method will create Image to delete scanned document
+	 * @param field
+	 *            the {@link VBox}
 	 */
 	private ImageView createImageView(VBox vboxElement) {
 
@@ -748,6 +810,8 @@ public class DocumentScanController extends BaseController {
 
 	/**
 	 * This method will create Hyperlink to view scanned document
+	 * @param field
+	 *            the {@link String}
 	 */
 	private Hyperlink createHyperLink(String document) {
 
@@ -784,6 +848,10 @@ public class DocumentScanController extends BaseController {
 		return hyperLink;
 	}
 
+
+	/**
+	 * This method will prepare the edit page content
+	 */
 	protected void prepareEditPageContent() {
 
 		if (getRegistrationDTOFromSession().getDemographicDTO() != null) {
@@ -807,11 +875,19 @@ public class DocumentScanController extends BaseController {
 
 	}
 
+
+	/**
+	 * This method will clear the document section
+	 */
 	public void clearDocSection() {
 		clearAllDocs();
 		initializePreviewSection();
 	}
 
+
+	/**
+	 * This method will clear for all the documents
+	 */
 	private void clearAllDocs() {
 
 		for (String docCategoryKey : documentVBoxes.keySet()) {
@@ -821,6 +897,10 @@ public class DocumentScanController extends BaseController {
 
 	}
 
+
+	/**
+	 * This method will intialize the preview section
+	 */
 	public void initializePreviewSection() {
 
 		docPreviewLabel.setVisible(false);
@@ -922,6 +1002,10 @@ public class DocumentScanController extends BaseController {
 		}
 	}
 
+
+	/**
+	 * This method is to go to previous page
+	 */
 	@FXML
 	private void back() {
 		auditFactory.audit(AuditEvent.REG_DOC_BACK, Components.REG_DOCUMENTS, SessionContext.userId(),
@@ -931,20 +1015,9 @@ public class DocumentScanController extends BaseController {
 				getPageDetails(RegistrationConstants.DOCUMENT_SCAN, RegistrationConstants.PREVIOUS));
 	}
 
-	@FXML
-	private void skip() {
-
-		if (getRegistrationDTOFromSession().getSelectionListDTO() != null) {
-			SessionContext.map().put("documentScan", false);
-			updateUINMethodFlow();
-			registrationController.showUINUpdateCurrentPage();
-		} else {
-			registrationController.showCurrentPage(RegistrationConstants.DOCUMENT_SCAN,
-					getPageDetails(RegistrationConstants.DOCUMENT_SCAN, RegistrationConstants.NEXT));
-		}
-
-	}
-
+	/**
+	 * This method is to go to next page
+	 */
 	@FXML
 	private void next() {
 
