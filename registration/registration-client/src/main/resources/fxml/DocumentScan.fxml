@@ -448,14 +448,14 @@
                         <Label styleClass="headerTexts" text="%demograhpicDetails" />
                      </children>
                   </HBox>
-                  <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="10.0" GridPane.columnIndex="2">
+                  <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="10.0" styleClass="trackerHighlighter" GridPane.columnIndex="2">
                      <children>
                         <ImageView fitHeight="24.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
                            <image>
                               <Image url="@../images/activeUploadDocument.png" />
                            </image>
                         </ImageView>
-                        <Label styleClass="trackerHighlighter" alignment="BOTTOM_CENTER" contentDisplay="TOP"  text="%uploadDocuments" />
+                        <Label alignment="BOTTOM_CENTER" contentDisplay="TOP" text="%uploadDocuments" />
                      </children>
                   </HBox>
                   <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="10.0" GridPane.columnIndex="4">
