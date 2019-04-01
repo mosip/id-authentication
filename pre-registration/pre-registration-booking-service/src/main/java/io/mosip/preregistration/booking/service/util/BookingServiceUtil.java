@@ -25,6 +25,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClientException;
@@ -33,6 +34,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import io.mosip.kernel.auth.adapter.AuthUserDetails;
 import io.mosip.kernel.core.exception.ErrorResponse;
 import io.mosip.kernel.core.exception.IOException;
 import io.mosip.kernel.core.exception.ServiceError;
@@ -123,6 +125,10 @@ public class BookingServiceUtil {
 	private String utcDateTimePattern;
 
 	private Logger log = LoggerConfiguration.logConfig(BookingServiceUtil.class);
+	
+	public AuthUserDetails authUserDetails() {
+		return (AuthUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+	}
 
 	/**
 	 * This method will call kernel service for registration center date.
@@ -705,8 +711,8 @@ public class BookingServiceUtil {
 				new RegistrationBookingPK(preRegistrationId, DateUtils.parseDateToLocalDateTime(new Date())));
 		entity.setRegistrationCenterId(bookingRegistrationDTO.getRegistrationCenterId());
 		entity.setId(UUIDGeneratorUtil.generateId());
-		entity.setLangCode("12L");
-		entity.setCrBy("987654321");
+		entity.setLangCode("eng");
+		entity.setCrBy(authUserDetails().getUserId());
 		entity.setCrDate(DateUtils.parseDateToLocalDateTime(new Date()));
 		entity.setRegDate(LocalDate.parse(bookingRegistrationDTO.getRegDate()));
 		entity.setSlotFromTime(LocalTime.parse(bookingRegistrationDTO.getSlotFromTime()));
