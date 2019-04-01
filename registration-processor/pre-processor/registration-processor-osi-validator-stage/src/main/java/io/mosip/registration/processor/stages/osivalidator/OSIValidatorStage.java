@@ -74,8 +74,12 @@ public class OSIValidatorStage extends MosipVerticleManager {
 	 */
 	public void deployVerticle() {
 		MosipEventBus mosipEventBus = this.getEventBus(this, clusterManagerUrl);
-		this.consumeAndSend(mosipEventBus, MessageBusAddress.OSI_BUS_IN, MessageBusAddress.OSI_BUS_OUT);
-
+		///this.consumeAndSend(mosipEventBus, MessageBusAddress.OSI_BUS_IN, MessageBusAddress.OSI_BUS_OUT);
+		MessageDTO dto = new MessageDTO();
+		dto.setRid("10011100110015620190305172945");
+		dto.setIsValid(false);
+		MessageDTO dto2= process(dto);
+		this.send(mosipEventBus ,MessageBusAddress.OSI_BUS_OUT,dto2);
 	}
 
 	/*
@@ -100,7 +104,7 @@ public class OSIValidatorStage extends MosipVerticleManager {
 		osiValidator.registrationStatusDto = registrationStatusDto;
 		umcValidator.setRegistrationStatusDto(registrationStatusDto);
 		try {
-			isValidUMC = umcValidator.isValidUMC(registrationId);
+			isValidUMC = true; //umcValidator.isValidUMC(registrationId);
 			if (isValidUMC) {
 				isValidOSI = osiValidator.isValidOSI(registrationId);
 			}

@@ -41,7 +41,6 @@ import io.mosip.registration.processor.core.packet.dto.FieldValue;
 import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.packet.dto.PacketMetaInfo;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.identify.RegistrationProcessorIdentity;
-import io.mosip.registration.processor.core.packet.dto.idjson.Document;
 import io.mosip.registration.processor.core.packet.dto.packetvalidator.MainRequestDTO;
 import io.mosip.registration.processor.core.packet.dto.packetvalidator.MainResponseDTO;
 import io.mosip.registration.processor.core.packet.dto.packetvalidator.ReverseDataSyncRequestDTO;
@@ -53,7 +52,6 @@ import io.mosip.registration.processor.core.util.JsonUtil;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.packet.storage.utils.Utilities;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
-import io.mosip.registration.processor.stages.utils.ApplicantDocumentValidation;
 import io.mosip.registration.processor.stages.utils.CheckSumValidation;
 import io.mosip.registration.processor.stages.utils.DocumentUtility;
 import io.mosip.registration.processor.stages.utils.FilesValidation;
@@ -159,7 +157,6 @@ public class PacketValidateProcessor {
 			description = "";
 			isTransactionSuccessful = false;
 			boolean isCheckSumValidated = false;
-			boolean isApplicantDocumentValidation = false;
 			boolean isFilesValidated = false;
 			boolean isMasterDataValidated = false;
 
@@ -180,43 +177,27 @@ public class PacketValidateProcessor {
 
 				ValidationReport isSchemaValidated = jsonValidator.validateJson(jsonString);
 
-				InputStream documentInfoStream = null;
-				List<Document> documentList = null;
 
 				if (isSchemaValidated.isValid()) {
 					FilesValidation filesValidation = new FilesValidation(adapter, registrationStatusDto);
 					isFilesValidated = filesValidation.filesValidation(registrationId, packetMetaInfo.getIdentity());
 
-					byte[] bytes = null;
+					
 					if (isFilesValidated) {
-						documentInfoStream = adapter.getFile(registrationId,
-								PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR + PacketFiles.ID.name());
-						bytes = IOUtils.toByteArray(documentInfoStream);
-						if (!regTypeCheck) {
-							documentList = documentUtility.getDocumentList(bytes);
-						}
 						CheckSumValidation checkSumValidation = new CheckSumValidation(adapter, registrationStatusDto);
-
 						isCheckSumValidated = checkSumValidation.checksumvalidation(registrationId,
 								packetMetaInfo.getIdentity());
 
 						if (isCheckSumValidated && !(regTypeCheck)) {
-							ApplicantDocumentValidation applicantDocumentValidation = new ApplicantDocumentValidation(
-									registrationStatusDto);
-							isApplicantDocumentValidation = applicantDocumentValidation
-									.validateDocument(packetMetaInfo.getIdentity(), documentList, registrationId);
-
-							if (isApplicantDocumentValidation) {
-								MasterDataValidation masterDataValidation = new MasterDataValidation(
+							MasterDataValidation masterDataValidation = new MasterDataValidation(
 										registrationStatusDto, env, registrationProcessorRestService, utility);
 								isMasterDataValidated = masterDataValidation.validateMasterData(jsonString);
-							}
 						}
 					}
 				}
 
 				if ((isSchemaValidated.isValid() && isFilesValidated && isCheckSumValidated
-						&& isApplicantDocumentValidation && isMasterDataValidated)
+						 && isMasterDataValidated)
 						|| (isSchemaValidated.isValid() && isFilesValidated && isCheckSumValidated && regTypeCheck)) {
 					object.setIsValid(Boolean.TRUE);
 					registrationStatusDto.setStatusComment(StatusMessage.PACKET_STRUCTURAL_VALIDATION_SUCCESS);
@@ -243,8 +224,7 @@ public class PacketValidateProcessor {
 							? registrationStatusDto.getRetryCount() + 1
 							: 1;
 					description = "File validation(" + isFilesValidated + ")/Checksum validation(" + isCheckSumValidated
-							+ ")/Applicant Document Validation(" + isApplicantDocumentValidation
-							+ ") failed for registrationId " + registrationId;
+							+ ") /failed for registrationId " + registrationId;
 					isTransactionSuccessful = false;
 					registrationStatusDto.setRetryCount(retryCount);
 					registrationStatusDto.setStatusCode(RegistrationStatusCode.STRUCTURE_VALIDATION_FAILED.toString());
