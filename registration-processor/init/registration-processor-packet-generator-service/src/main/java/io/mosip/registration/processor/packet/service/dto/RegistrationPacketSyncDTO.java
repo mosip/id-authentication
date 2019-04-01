@@ -1,15 +1,24 @@
 package io.mosip.registration.processor.packet.service.dto;
 
+import java.io.Serializable;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import lombok.Data;
 
 /**
  * The Class RegistrationPacketSyncDTO.
  * 
  * @author Sowmya
  */
-public class RegistrationPacketSyncDTO {
+@Data
+public class RegistrationPacketSyncDTO implements Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -5472421964614022195L;
 
 	/** The id. */
 	private String id;
