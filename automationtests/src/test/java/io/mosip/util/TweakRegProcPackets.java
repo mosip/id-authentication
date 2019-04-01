@@ -6,6 +6,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Properties;
@@ -27,8 +28,6 @@ import net.lingala.zip4j.exception.ZipException;
  */
 public class TweakRegProcPackets {
 	private static Logger logger = Logger.getLogger(TweakRegProcPackets.class);
-	ConnectionUtils connectionUtil = new ConnectionUtils();
-	FileSystemAdapter adapter = new HDFSAdapterImpl(connectionUtil);
 
 	static String filesToBeDestroyed = null;
 	String centerId = "";
@@ -36,7 +35,8 @@ public class TweakRegProcPackets {
 	String packetName = "";
 	EncrypterDecrypter encryptDecrypt = new EncrypterDecrypter();
 	DecrypterDto decrypterDto = new DecrypterDto();
-	PacketValidator validate=new PacketValidator();
+	PacketValidator validate = new PacketValidator();
+
 	/**
 	 * 
 	 * @param testCaseName
@@ -201,19 +201,24 @@ public class TweakRegProcPackets {
 		String configPath = System.getProperty("user.dir") + "/" + "src/test/resources/regProc/Packets/ValidPackets/";
 		String invalidPacketsPath = System.getProperty("user.dir") + "/"
 				+ "src/test/resources/regProc/Packets/InvalidPackets/" + testCaseName;
+		filesToBeDestroyed = configPath;
 		File file = new File(configPath);
 		File[] listOfFiles = file.listFiles();
 		for (File f : listOfFiles) {
-			String regId = generateRegID(centerId, machineId);
+
 			if (f.getName().contains(".zip")) {
 				centerId = f.getName().substring(0, 5);
 				machineId = f.getName().substring(5, 10);
+				String regId = generateRegID(centerId, machineId);
 				JSONObject requestBody = encryptDecrypt.generateCryptographicData(f);
 				try {
-					
+
 					decryptedPacket = encryptDecrypt.decryptFile(requestBody, configPath, f.getName());
-					/*FileSystemAdapter adapter=validate.establishHDFSConnection();
-					byte[] checksum= validate.checksumGeneration(decryptedPacket.listFiles(), regId,adapter);*/
+
+					byte[] checksum = encryptDecrypt.generateCheckSum(decryptedPacket.listFiles());
+
+					String str = new String(checksum, StandardCharsets.UTF_8);
+					logger.info("checksum is  :: " + str);
 					for (File info : decryptedPacket.listFiles()) {
 						if (info.getName().equals("Demographic")) {
 							File[] demographic = info.listFiles();
@@ -224,16 +229,31 @@ public class TweakRegProcPackets {
 									metaFileReader.close();
 									identity = (JSONObject) metaInfo.get("identity");
 									identity.put("dateOfBirth", property);
+									logger.info("Identity is :: " + identity.get("dateOfBirth"));
+									try (FileWriter updatedFile = new FileWriter(metaFile.getAbsolutePath())) {
+										try {
+											updatedFile.write(metaInfo.toString());
+											updatedFile.close();
+										} catch (IOException e) {
+											e.printStackTrace();
+										}
+										logger.info("Successfully updated json object to file...!!");
+
+									} catch (IOException e1) {
+
+										e1.printStackTrace();
+									}
+
 								}
 
 							}
 						}
-					/*	if(info.getName().equals("packet_data_hash.txt")) {
-							PrintWriter writer= new PrintWriter(info);
+						if (info.getName().equals("packet_data_hash.txt")) {
+							PrintWriter writer = new PrintWriter(info);
 							writer.print("");
-							writer.print(checksum.toString());
+							writer.print(str);
 							writer.close();
-						}*/
+						}
 					}
 					encryptDecrypt.encryptFile(decryptedPacket, configPath, invalidPacketsPath, regId);
 				} catch (IOException | ZipException | ParseException e) {
@@ -242,11 +262,7 @@ public class TweakRegProcPackets {
 				}
 			}
 		}
-		logger.info("Identity is :: " + identity.get("dateOfBirth"));
-	
-			
-			
-		
+
 	}
 
 	public void demoDedupePropertyFileReader(String propertyFiles) {
@@ -266,6 +282,12 @@ public class TweakRegProcPackets {
 		} catch (IOException exc) {
 			// TODO Auto-generated catch block
 			exc.printStackTrace();
+		}
+		try {
+			encryptDecrypt.destroyFiles(filesToBeDestroyed);
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
 		}
 	}
 

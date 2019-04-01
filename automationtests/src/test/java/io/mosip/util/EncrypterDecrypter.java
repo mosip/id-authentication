@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
@@ -13,6 +14,7 @@ import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.util.Base64;
 import java.util.Date;
+import java.util.List;
 import java.util.Random;
 import java.util.zip.ZipInputStream;
 
@@ -21,6 +23,7 @@ import org.apache.commons.io.FileDeleteStrategy;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -47,6 +50,11 @@ public class EncrypterDecrypter {
 	private final String encrypterURL="https://qa.mosip.io/cryptomanager/v1.0/encrypt";
 	private String applicationId="REGISTRATION";	
 	InputStream outstream = null;
+	public void generateHash(byte[] fileByte) {
+		if (fileByte != null) {
+			HMACUtils.update(fileByte);
+		}	
+	}
 	/**
 	 * 
 	 * @param file
@@ -156,6 +164,7 @@ public class EncrypterDecrypter {
 				e.printStackTrace();
 			}
 	}*/
+	@SuppressWarnings("unchecked")
 	public JSONObject generateCryptographicData(File file) {
 		JSONObject cryptographicRequest=new JSONObject();
 		SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd'T'HHmmssSSS");
@@ -200,6 +209,7 @@ public class EncrypterDecrypter {
 		return cryptographicRequest;
 	}
 	
+	@SuppressWarnings("unchecked")
 	public JSONObject generateCryptographicDataEncryption(File file) {
 		JSONObject cryptographicRequest=new JSONObject();
 		SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd'T'HHmmssSSS");
@@ -243,4 +253,85 @@ public class EncrypterDecrypter {
 		}
 		return cryptographicRequest;
 	}
+	public byte[] generateCheckSum(File[] listOfFiles) throws FileNotFoundException, IOException, ParseException {
+		JSONArray hashSequence1;
+		byte[] hashCodeGenerated = null;
+		for(File f : listOfFiles){
+			if(f.getName().contains("packet_meta_info.json")){
+				FileReader metaFileReader = new FileReader(f.getPath());
+				JSONObject objectData = (JSONObject) new JSONParser().parse(metaFileReader);
+				JSONObject identity = (JSONObject) objectData.get("identity");
+				metaFileReader.close();
+				hashSequence1 = (JSONArray) identity.get("hashSequence1");
+				logger.info("hashSequence1....... : "+hashSequence1);
+				for(Object obj : hashSequence1){
+					JSONObject label = (JSONObject) obj;
+					logger.info("obj : "+label.get("label"));
+					if(label.get("label").equals("applicantBiometricSequence")){
+						@SuppressWarnings("unchecked")
+						List<String> docs = (List<String>) label.get("value");
+						logger.info("list of documents :: "+ docs);
+						generateBiometricsHash(docs,listOfFiles);
+					}else if(label.get("label").equals("introducerBiometricSequence")){
+						@SuppressWarnings("unchecked")
+						List<String> docs = (List<String>) label.get("value");
+						logger.info("list of documents :: "+ docs);
+						generateBiometricsHash(docs,listOfFiles);
+					}else if(label.get("label").equals("applicantDemographicSequence")){
+						@SuppressWarnings("unchecked")
+						List<String> docs = (List<String>) label.get("value");
+						logger.info("list of documents :: "+ docs);
+						generateDemographicsHash(docs,listOfFiles);
+					}
+				}	
+				hashCodeGenerated = HMACUtils.digestAsPlainText(HMACUtils.updatedHash()).getBytes();
+			}
+		}
+		return hashCodeGenerated;
+	}
+	private void generateBiometricsHash(List<String> docs,File[] listOfFiles ) {
+		byte[] fileByte=null;
+	for(File file:listOfFiles) {
+		if(file.getName().equalsIgnoreCase("Biometric")) {
+			File [] demographicFiles=file.listFiles();
+			for(File demoFiles: demographicFiles) {
+				for(String fileName: docs) {
+					if(fileName.equals(demoFiles.getName().substring(0,demoFiles.getName().lastIndexOf('.')))) {
+				try {
+					FileInputStream inputStream= new FileInputStream(demoFiles);
+					fileByte=IOUtils.toByteArray(inputStream);
+					generateHash(fileByte);
+					inputStream.close();
+				} catch ( IOException e) {
+					e.printStackTrace();
+				}
+				}
+			}
+			}
+		}
+	}
+	}
+	
+	private void generateDemographicsHash(List<String> docs,File[] listOfFiles) {
+		byte[] fileByte=null;
+		for(File file:listOfFiles) {
+			if(file.getName().equalsIgnoreCase("Demographic")) {
+				File [] demographicFiles=file.listFiles();
+				for(File demoFiles: demographicFiles) {
+					for(String fileName: docs) {
+						if(fileName.equals(demoFiles.getName().substring(0,demoFiles.getName().lastIndexOf('.')))) {
+					try {
+						FileInputStream inputStream= new FileInputStream(demoFiles);
+						fileByte=IOUtils.toByteArray(inputStream);
+						generateHash(fileByte);
+						inputStream.close();
+					} catch ( IOException e) {
+						e.printStackTrace();
+					}
+					}
+				}
+				}
+			}
+		}
+}
 }
