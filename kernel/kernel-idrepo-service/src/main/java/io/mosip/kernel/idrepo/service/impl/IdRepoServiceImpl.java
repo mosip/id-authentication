@@ -55,6 +55,9 @@ import io.mosip.kernel.core.fsadapter.exception.FSAdapterException;
 import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
 import io.mosip.kernel.core.idrepo.constant.IdRepoConstants;
 import io.mosip.kernel.core.idrepo.constant.IdRepoErrorConstants;
+import io.mosip.kernel.core.idrepo.dto.Documents;
+import io.mosip.kernel.core.idrepo.dto.IdRequestDTO;
+import io.mosip.kernel.core.idrepo.dto.RequestDTO;
 import io.mosip.kernel.core.idrepo.exception.IdRepoAppException;
 import io.mosip.kernel.core.idrepo.exception.IdRepoAppUncheckedException;
 import io.mosip.kernel.core.idrepo.spi.IdRepoService;
@@ -65,9 +68,6 @@ import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.core.util.UUIDUtils;
 import io.mosip.kernel.fsadapter.hdfs.constant.HDFSAdapterErrorCode;
 import io.mosip.kernel.idrepo.config.IdRepoLogger;
-import io.mosip.kernel.idrepo.dto.Documents;
-import io.mosip.kernel.idrepo.dto.IdRequestDTO;
-import io.mosip.kernel.idrepo.dto.RequestDTO;
 import io.mosip.kernel.idrepo.entity.Uin;
 import io.mosip.kernel.idrepo.entity.UinBiometric;
 import io.mosip.kernel.idrepo.entity.UinBiometricHistory;
@@ -202,7 +202,7 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, Uin> {
 				.toString();
 		byte[] identityInfo = convertToBytes(request.getRequest().getIdentity());
 
-		if (!uinRepo.existsByRegId(request.getRegistrationId()) && !uinRepo.existsByUin(uin)) {
+		if (!uinRepo.existsByRegId(request.getRequest().getRegistrationId()) && !uinRepo.existsByUin(uin)) {
 			List<UinDocument> docList = new ArrayList<>();
 			List<UinBiometric> bioList = new ArrayList<>();
 			if (Objects.nonNull(request.getRequest().getDocuments())
@@ -210,14 +210,14 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, Uin> {
 				addDocuments(uin, identityInfo, request.getRequest().getDocuments(), uinRefId, docList, bioList);
 
 				uinRepo.save(new Uin(uinRefId, uin, identityInfo, securityManager.hash(identityInfo),
-						request.getRegistrationId(), env.getProperty(IdRepoConstants.ACTIVE_STATUS.getValue()),
+						request.getRequest().getRegistrationId(), env.getProperty(IdRepoConstants.ACTIVE_STATUS.getValue()),
 						env.getProperty(IdRepoConstants.MOSIP_PRIMARY_LANGUAGE.getValue()), CREATED_BY, now(),
 						UPDATED_BY, now(), false, now(), bioList, docList));
 				mosipLogger.debug(IdRepoLogger.getUin(), ID_REPO_SERVICE_IMPL, ADD_IDENTITY,
 						"Record successfully saved in db with documents");
 			} else {
 				uinRepo.save(new Uin(uinRefId, uin, identityInfo, securityManager.hash(identityInfo),
-						request.getRegistrationId(), env.getProperty(IdRepoConstants.ACTIVE_STATUS.getValue()),
+						request.getRequest().getRegistrationId(), env.getProperty(IdRepoConstants.ACTIVE_STATUS.getValue()),
 						env.getProperty(IdRepoConstants.MOSIP_PRIMARY_LANGUAGE.getValue()), CREATED_BY, now(),
 						UPDATED_BY, now(), false, now(), null, null));
 				mosipLogger.debug(IdRepoLogger.getUin(), ID_REPO_SERVICE_IMPL, ADD_IDENTITY,
@@ -225,7 +225,7 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, Uin> {
 			}
 
 			uinHistoryRepo.save(new UinHistory(uinRefId, now(), uin, identityInfo, securityManager.hash(identityInfo),
-					request.getRegistrationId(), env.getProperty(IdRepoConstants.ACTIVE_STATUS.getValue()),
+					request.getRequest().getRegistrationId(), env.getProperty(IdRepoConstants.ACTIVE_STATUS.getValue()),
 					env.getProperty(IdRepoConstants.MOSIP_PRIMARY_LANGUAGE.getValue()), CREATED_BY, now(), UPDATED_BY,
 					now(), false, now()));
 
@@ -427,10 +427,10 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, Uin> {
 	public Uin updateIdentity(IdRequestDTO request, String uin) throws IdRepoAppException {
 		try {
 			Uin uinObject = retrieveIdentity(uin, null);
-			uinObject.setRegId(request.getRegistrationId());
-			if (Objects.nonNull(request.getStatus())
-					&& !StringUtils.equals(uinObject.getStatusCode(), request.getStatus())) {
-				uinObject.setStatusCode(request.getStatus());
+			uinObject.setRegId(request.getRequest().getRegistrationId());
+			if (Objects.nonNull(request.getRequest().getStatus())
+					&& !StringUtils.equals(uinObject.getStatusCode(), request.getRequest().getStatus())) {
+				uinObject.setStatusCode(request.getRequest().getStatus());
 				uinObject.setUpdatedDateTime(now());
 			}
 			if (Objects.nonNull(request.getRequest()) && Objects.nonNull(request.getRequest().getIdentity())) {

@@ -1,4 +1,4 @@
-package io.mosip.kernel.idrepo.dto;
+package io.mosip.kernel.core.idrepo.dto;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -12,4 +12,6 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper=true)
 public class RequestDTO extends BaseRequestResponseDTO {
 	
+	/** The registration id. */
+	private String registrationId;
 }

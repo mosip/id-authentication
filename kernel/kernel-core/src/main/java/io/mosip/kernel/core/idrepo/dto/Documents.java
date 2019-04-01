@@ -1,4 +1,4 @@
-package io.mosip.kernel.idrepo.dto;
+package io.mosip.kernel.core.idrepo.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

@@ -1,5 +1,6 @@
 package io.mosip.registration.processor.packet.service.dto;
 
+import java.io.Serializable;
 import java.util.List;
 
 import io.mosip.registration.processor.core.common.rest.dto.BaseRestResponseDTO;
@@ -14,7 +15,12 @@ import lombok.EqualsAndHashCode;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class PacketGeneratorResponseDto extends BaseRestResponseDTO {
+public class PacketGeneratorResponseDto extends BaseRestResponseDTO implements Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3175031923383376039L;
 
 	/** The response. */
 	private PacketGeneratorResDto response;
