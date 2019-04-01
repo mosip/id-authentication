@@ -708,7 +708,7 @@ public class RegistrationConstants {
 	public static final String DOC_SCAN_DPI = "mosip.registration.document_scanner_dpi";
 	public static final String DOC_SCAN_CONTRAST = "mosip.registration.document_scanner_contrast";
 	public static final String DOC_SCAN_BRIGHTNESS = "mosip.registration.document_scanner_brightness";
-	public static final String IDENTITY_CLASS_NAME = "mosip.registration.identity-class-name";
+	public static final String IDENTITY_CLASS_NAME = "mosip.registration.identity_class_name";
 	public static final String KEY_SPLITTER = "mosip.kernel.data-key-splitter";
 	public static final String ASYMMETRIC_ALG_NAME = "mosip.kernel.keygenerator.asymmetric-algorithm-name";
 	public static final String CBEFF_UNQ_TAG = "mosip.registration.cbeff_only_unique_tags";

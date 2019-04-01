@@ -54,6 +54,9 @@ public class GlobalParamDAOImpl implements GlobalParamDAO {
 		return globalParamMap;
 	}
 
+	/* (non-Javadoc)
+	 * @see io.mosip.registration.dao.GlobalParamDAO#saveAll(java.util.List)
+	 */
 	@Override
 	public void saveAll(List<GlobalParam> globalParamList) {
 

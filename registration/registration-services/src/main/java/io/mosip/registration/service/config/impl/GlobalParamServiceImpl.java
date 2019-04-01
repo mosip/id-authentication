@@ -82,7 +82,7 @@ public class GlobalParamServiceImpl extends BaseService implements GlobalParamSe
 			/* If unable to fetch from server and no data in DB create error response */
 			if (responseDTO.getSuccessResponseDTO() == null && getGlobalParams().isEmpty()) {
 				setErrorResponse(responseDTO, RegistrationConstants.POLICY_SYNC_ERROR_MESSAGE, null);
-			} else {
+			} else if (responseDTO.getSuccessResponseDTO() != null){
 				setSuccessResponse(responseDTO, RegistrationConstants.POLICY_SYNC_SUCCESS_MESSAGE, responseDTO.getSuccessResponseDTO().getOtherAttributes());
 			}
 		}
@@ -182,8 +182,6 @@ public class GlobalParamServiceImpl extends BaseService implements GlobalParamSe
 		} else {
 			LOGGER.error(LoggerConstants.GLOBAL_PARAM_SERVICE_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
 					" Unable to synch config data as no internet connection and no data in DB");
-			setErrorResponse(responseDTO, RegistrationConstants.POLICY_SYNC_ERROR_MESSAGE, null);
-
 		}
 	}
 

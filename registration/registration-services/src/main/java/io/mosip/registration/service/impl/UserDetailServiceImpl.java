@@ -1,5 +1,6 @@
 package io.mosip.registration.service.impl;
 
+import static io.mosip.registration.constants.LoggerConstants.LOG_REG_MASTER_SYNC;
 import static io.mosip.registration.constants.LoggerConstants.LOG_REG_USER_DETAIL;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
@@ -30,6 +31,7 @@ import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.service.BaseService;
 import io.mosip.registration.service.UserDetailService;
 import io.mosip.registration.service.UserOnboardService;
+import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
 
 @Service
 public class UserDetailServiceImpl extends BaseService implements UserDetailService {
@@ -68,42 +70,50 @@ public class UserDetailServiceImpl extends BaseService implements UserDetailServ
 
 		LOGGER.info(LOG_REG_USER_DETAIL, APPLICATION_NAME, APPLICATION_ID, "Registration center id...." + regCenterId);
 
-		try {
+		if (RegistrationAppHealthCheckUtil.isNetworkAvailable()) {
+			try {
 
-			Object userDetail = getUsrDetails(regCenterId, triggerPoint);
+				Object userDetail = getUsrDetails(regCenterId, triggerPoint);
 
-			LinkedHashMap<String, Object> userDetailSyncResponse = (LinkedHashMap<String, Object>) userDetail;
+				LinkedHashMap<String, Object> userDetailSyncResponse = (LinkedHashMap<String, Object>) userDetail;
 
-			if (null != userDetailSyncResponse.get(RegistrationConstants.PACKET_STATUS_READER_RESPONSE)) {
+				if (null != userDetailSyncResponse.get(RegistrationConstants.PACKET_STATUS_READER_RESPONSE)) {
 
-				String jsonString = new ObjectMapper().writeValueAsString(
-						userDetailSyncResponse.get(RegistrationConstants.PACKET_STATUS_READER_RESPONSE));
+					String jsonString = new ObjectMapper().writeValueAsString(
+							userDetailSyncResponse.get(RegistrationConstants.PACKET_STATUS_READER_RESPONSE));
 
-				UserDetailResponseDto userDtlsSyncDto = objectMapper.readValue(jsonString, UserDetailResponseDto.class);
+					UserDetailResponseDto userDtlsSyncDto = objectMapper.readValue(jsonString,
+							UserDetailResponseDto.class);
 
-				if (!userDtlsSyncDto.getUserDetails().isEmpty()) {
+					if (!userDtlsSyncDto.getUserDetails().isEmpty()) {
 
-					userDetailDAO.save(userDtlsSyncDto);
-					responseDTO = setSuccessResponse(responseDTO, RegistrationConstants.SUCCESS, null);
-					LOGGER.info(LOG_REG_USER_DETAIL, APPLICATION_NAME, APPLICATION_ID,
-							"User Detail Sync SuccessFull......");
+						userDetailDAO.save(userDtlsSyncDto);
+						responseDTO = setSuccessResponse(responseDTO, RegistrationConstants.SUCCESS, null);
+						LOGGER.info(LOG_REG_USER_DETAIL, APPLICATION_NAME, APPLICATION_ID,
+								"User Detail Sync SuccessFull......");
+					} else {
+
+						LOGGER.info(LOG_REG_USER_DETAIL, APPLICATION_NAME, APPLICATION_ID,
+								"User Detail Sync Fail......");
+						responseDTO = getErrorResponse(responseDTO, RegistrationConstants.ERROR, null);
+
+					}
+
 				} else {
 
 					LOGGER.info(LOG_REG_USER_DETAIL, APPLICATION_NAME, APPLICATION_ID, "User Detail Sync Fail......");
 					responseDTO = getErrorResponse(responseDTO, RegistrationConstants.ERROR, null);
-
 				}
 
-			} else {
-
-				LOGGER.info(LOG_REG_USER_DETAIL, APPLICATION_NAME, APPLICATION_ID, "User Detail Sync Fail......");
+			} catch (RegBaseCheckedException | IOException exRegBaseCheckedException) {
+				LOGGER.error(LOG_REG_USER_DETAIL, APPLICATION_NAME, APPLICATION_ID,
+						exRegBaseCheckedException.getMessage()
+								+ ExceptionUtils.getStackTrace(exRegBaseCheckedException));
 				responseDTO = getErrorResponse(responseDTO, RegistrationConstants.ERROR, null);
 			}
-
-		} catch (RegBaseCheckedException | IOException exRegBaseCheckedException) {
-			LOGGER.error(LOG_REG_USER_DETAIL, APPLICATION_NAME, APPLICATION_ID,
-					exRegBaseCheckedException.getMessage() + ExceptionUtils.getStackTrace(exRegBaseCheckedException));
-			responseDTO = getErrorResponse(responseDTO, RegistrationConstants.ERROR, null);
+		} else {
+			LOGGER.error(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID,
+					" Unable to sync user detail data as there is no internet connection");
 		}
 
 		LOGGER.info(LOG_REG_USER_DETAIL, APPLICATION_NAME, APPLICATION_ID, "Leaving into user detail save method");
