@@ -5,6 +5,7 @@ import java.util.List;
 import io.mosip.registration.entity.DocumentCategory;
 
 /**
+ * Handles the Document categories related functions
  * 
  * @author Brahmnanda Reddy
  *

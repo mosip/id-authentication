@@ -5,6 +5,7 @@ import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
 
 /**
+ * Handles the pre-registration packet zip files
  * 
  * @author balamurugan ramamoorthy
  * @since 1.0.0

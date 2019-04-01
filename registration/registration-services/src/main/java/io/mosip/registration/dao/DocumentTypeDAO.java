@@ -5,6 +5,7 @@ import java.util.List;
 import io.mosip.registration.entity.DocumentType;
 
 /**
+ * Handles the Doc types related details
  * 
  * @author Brahmanada Reddy
  *
