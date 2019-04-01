@@ -9,6 +9,12 @@ import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.entity.Registration;
 import io.mosip.registration.exception.RegBaseCheckedException;
 
+/**
+ * Service class for Packet Upload
+ * 
+ * @author saravanakumar gnanaguru
+ *
+ */
 public interface PacketUploadService {
 	
 	/**

@@ -1067,8 +1067,8 @@ public class LoginController extends BaseController implements Initializable {
 								ResponseDTO userResponseDTO = userDetailService
 										.save(RegistrationConstants.JOB_TRIGGER_POINT_USER);
 								
-								if (masterResponseDTO.getSuccessResponseDTO() == null
-										|| userResponseDTO.getSuccessResponseDTO() == null) {
+								if ((null != masterResponseDTO && masterResponseDTO.getErrorResponseDTOs() != null)
+										|| userResponseDTO.getErrorResponseDTOs() != null) {
 									return RegistrationConstants.FAILURE;
 								}
 

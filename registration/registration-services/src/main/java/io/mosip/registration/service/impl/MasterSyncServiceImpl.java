@@ -96,60 +96,63 @@ public class MasterSyncServiceImpl implements MasterSyncService {
 
 		SyncControl masterSyncDetails;
 
-		if (!RegistrationAppHealthCheckUtil.isNetworkAvailable()) {
 
-			responseDTO = buildErrorRespone(RegistrationConstants.MASTER_SYNC_OFFLINE_FAILURE_MSG_CODE,
-					RegistrationConstants.MASTER_SYNC_OFFLINE_FAILURE_MSG);
-			return responseDTO;
-
-		}
-
-		LOGGER.info(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID,
-				"Fetching the last sync  and machine Id details from databse Starts");
-		try {
-
-			// getting Last Sync date from Data from sync table
-			masterSyncDetails = masterSyncDao.syncJobDetails(masterSyncDtls);
-
-			LocalDateTime masterLastSyncTime = null;
-
-			if (masterSyncDetails != null) {
-				masterLastSyncTime = LocalDateTime.ofInstant(masterSyncDetails.getLastSyncDtimes().toInstant(),
-						ZoneOffset.ofHours(0));
-			}
-
-			// Getting machineID from data base
-
+		if (RegistrationAppHealthCheckUtil.isNetworkAvailable()) {
 			LOGGER.info(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID,
-					"Fetching the last sync and machine Id details from databse Ends");
+					"Fetching the last sync  and machine Id details from database Starts");
+			try {
 
-			Object masterSyncJson = getMasterSyncJson(machineId, masterLastSyncTime, triggerPoint);
-			
-			LinkedHashMap<String, Object> masterSyncResponse= (LinkedHashMap<String, Object>) masterSyncJson;
+				// getting Last Sync date from Data from sync table
+				masterSyncDetails = masterSyncDao.syncJobDetails(masterSyncDtls);
 
-			if (null != masterSyncResponse.get(RegistrationConstants.PACKET_STATUS_READER_RESPONSE)) {
+				LocalDateTime masterLastSyncTime = null;
 
-				LOGGER.info(RegistrationConstants.MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID,
-						"master sync json ======>" + masterSyncJson.toString());
+				if (masterSyncDetails != null) {
+					masterLastSyncTime = LocalDateTime.ofInstant(masterSyncDetails.getLastSyncDtimes().toInstant(),
+							ZoneOffset.ofHours(0));
+				}
 
-				String jsonString = new ObjectMapper().writeValueAsString(
-						masterSyncResponse.get(RegistrationConstants.PACKET_STATUS_READER_RESPONSE));
+				// Getting machineID from data base
 
-				// Mapping json object to respective dto's
-				MasterDataResponseDto masterSyncDto = objectMapper.readValue(jsonString, MasterDataResponseDto.class);
+				LOGGER.info(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID,
+						"Fetching the last sync and machine Id details from databse Ends");
 
-				resoponse = masterSyncDao.save(masterSyncDto);
+				Object masterSyncJson = getMasterSyncJson(machineId, masterLastSyncTime, triggerPoint);
 
-				if (resoponse.equals(RegistrationConstants.SUCCESS)) {
+				LinkedHashMap<String, Object> masterSyncResponse = (LinkedHashMap<String, Object>) masterSyncJson;
 
-					LOGGER.info(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID,
-							RegistrationConstants.MASTER_SYNC_SUCCESS);
+				if (null != masterSyncResponse.get(RegistrationConstants.PACKET_STATUS_READER_RESPONSE)) {
 
-					sucessResponse.setCode(RegistrationConstants.MASTER_SYNC_SUCESS_MSG_CODE);
-					sucessResponse.setInfoType(RegistrationConstants.ALERT_INFORMATION);
-					sucessResponse.setMessage(resoponse);
-					responseDTO = new ResponseDTO();
-					responseDTO.setSuccessResponseDTO(sucessResponse);
+					LOGGER.info(RegistrationConstants.MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID,
+							"master sync json ======>" + masterSyncJson.toString());
+
+					String jsonString = new ObjectMapper().writeValueAsString(
+							masterSyncResponse.get(RegistrationConstants.PACKET_STATUS_READER_RESPONSE));
+
+					// Mapping json object to respective dto's
+					MasterDataResponseDto masterSyncDto = objectMapper.readValue(jsonString,
+							MasterDataResponseDto.class);
+
+					resoponse = masterSyncDao.save(masterSyncDto);
+
+					if (resoponse.equals(RegistrationConstants.SUCCESS)) {
+
+						LOGGER.info(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID,
+								RegistrationConstants.MASTER_SYNC_SUCCESS);
+
+						sucessResponse.setCode(RegistrationConstants.MASTER_SYNC_SUCESS_MSG_CODE);
+						sucessResponse.setInfoType(RegistrationConstants.ALERT_INFORMATION);
+						sucessResponse.setMessage(resoponse);
+						responseDTO = new ResponseDTO();
+						responseDTO.setSuccessResponseDTO(sucessResponse);
+
+					} else {
+
+						LOGGER.info(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID,
+								RegistrationConstants.MASTER_SYNC_FAILURE_MSG_INFO);
+						responseDTO = buildErrorRespone(RegistrationConstants.MASTER_SYNC_FAILURE_MSG_CODE,
+								RegistrationConstants.MASTER_SYNC_FAILURE_MSG);
+					}
 
 				} else {
 
@@ -159,28 +162,25 @@ public class MasterSyncServiceImpl implements MasterSyncService {
 							RegistrationConstants.MASTER_SYNC_FAILURE_MSG);
 				}
 
-			} else {
-				
-				LOGGER.info(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID,
-						RegistrationConstants.MASTER_SYNC_FAILURE_MSG_INFO);
+			} catch (RegBaseUncheckedException | RegBaseCheckedException regBaseUncheckedException) {
+				LOGGER.error(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID,
+						regBaseUncheckedException.getMessage() + resoponse
+								+ ExceptionUtils.getStackTrace(regBaseUncheckedException));
+
 				responseDTO = buildErrorRespone(RegistrationConstants.MASTER_SYNC_FAILURE_MSG_CODE,
 						RegistrationConstants.MASTER_SYNC_FAILURE_MSG);
+
+			} catch (RuntimeException | IOException runtimeException) {
+				LOGGER.error(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID,
+						runtimeException.getMessage() + resoponse + ExceptionUtils.getStackTrace(runtimeException));
+
+				responseDTO = buildErrorRespone(RegistrationConstants.MASTER_SYNC_FAILURE_MSG_CODE,
+						RegistrationConstants.MASTER_SYNC_FAILURE_MSG);
+
 			}
-
-		} catch (RegBaseUncheckedException | RegBaseCheckedException regBaseUncheckedException) {
-			LOGGER.error(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID, regBaseUncheckedException.getMessage()
-					+ resoponse + ExceptionUtils.getStackTrace(regBaseUncheckedException));
-
-			responseDTO = buildErrorRespone(RegistrationConstants.MASTER_SYNC_FAILURE_MSG_CODE,
-					RegistrationConstants.MASTER_SYNC_FAILURE_MSG);
-
-		} catch (RuntimeException | IOException runtimeException) {
+		} else {
 			LOGGER.error(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID,
-					runtimeException.getMessage() + resoponse + ExceptionUtils.getStackTrace(runtimeException));
-
-			responseDTO = buildErrorRespone(RegistrationConstants.MASTER_SYNC_FAILURE_MSG_CODE,
-					RegistrationConstants.MASTER_SYNC_FAILURE_MSG);
-
+					" Unable to sync master data as there is no internet connection");
 		}
 
 		return responseDTO;

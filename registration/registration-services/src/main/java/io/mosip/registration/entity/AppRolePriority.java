@@ -10,7 +10,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * AppRolePriority entity details
+ * The Entity Class for AppRolePriority
  * 
  * @author Sravya Surampalli
  * @since 1.0.0

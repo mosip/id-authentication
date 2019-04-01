@@ -12,7 +12,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * ScreenAuthorization entity details
+ * The Entity Class for Screen Authorization details
  * 
  * @author Sravya Surampalli
  * @since 1.0.0

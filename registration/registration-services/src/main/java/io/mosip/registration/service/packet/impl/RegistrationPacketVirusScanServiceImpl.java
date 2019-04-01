@@ -25,6 +25,12 @@ import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.SuccessResponseDTO;
 import io.mosip.registration.service.packet.RegistrationPacketVirusScanService;
 
+/**
+ * Implementation class for {@link RegistrationPacketVirusScanService}
+ * 
+ * @author saravanakumar gnanaguru
+ *
+ */
 @Service
 public class RegistrationPacketVirusScanServiceImpl implements RegistrationPacketVirusScanService {
 

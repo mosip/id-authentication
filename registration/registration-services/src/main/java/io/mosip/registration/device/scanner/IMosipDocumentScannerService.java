@@ -62,7 +62,7 @@ public interface IMosipDocumentScannerService {
 	 * 
 	 * @param pdfBytes
 	 *            - pdf file in bytes
-	 * @return List<BufferedImage> - holds the list of buffered images
+	 * @return List - holds the list of buffered images
 	 * @throws IOException
 	 *             - holds the ioexception
 	 */

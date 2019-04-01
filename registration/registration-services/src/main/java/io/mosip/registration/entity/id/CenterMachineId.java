@@ -9,9 +9,10 @@ import lombok.Data;
 
 
 /**
- * EmbeddedId for Center Machine
- * @author Dinesh Ashokan
+ * Composite key for {@link CenterMachine}
  *
+ * @author Dinesh Ashokan
+ * @version 1.0.0
  */
 @Embeddable
 @Data

@@ -92,7 +92,7 @@ import javafx.scene.layout.VBox;
 import javafx.util.StringConverter;
 
 /**
- * Class for Demographic Detail Page Controller
+ * {@code DemographicDetailController} is to capture the demographic details
  * 
  * @author Taleev.Aalam
  * @since 1.0.0
@@ -631,6 +631,11 @@ public class DemographicDetailController extends BaseController {
 
 	private boolean lostUIN = false;
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see javafx.fxml.Initializable#initialize()
+	 */
 	@FXML
 	private void initialize() {
 
@@ -676,13 +681,18 @@ public class DemographicDetailController extends BaseController {
 		}
 	}
 
+	/**
+	 * setting the registration navigation label to lost uin
+	 */
 	protected void lostUIN() {
 		lostUIN = true;
 		registrationNavlabel.setText(ApplicationContext.applicationLanguageBundle().getString("/lostuin"));
 	}
 
-	/*
+	/**
 	 * TO change the orientation based on language
+	 *
+	 * @param NodeOrientation
 	 */
 	private void changeOrientation(NodeOrientation orientation) {
 		if ((boolean) applicationContext.isPrimaryLanguageRightToLeft()) {
@@ -747,6 +757,9 @@ public class DemographicDetailController extends BaseController {
 		}
 	}
 
+	/**
+	 * Disabe local language fields
+	 */
 	private void disableLocalFields() {
 		localGender.setDisable(true);
 		regionLocalLanguagePane.setDisable(true);
@@ -827,6 +840,11 @@ public class DemographicDetailController extends BaseController {
 		}
 	}
 
+	/**
+	 * method action when national button is pressed
+	 * @param ActionEvent
+	 *          the action event
+	 */
 	@FXML
 	private void national(ActionEvent event) {
 		List<IndividualTypeDto> applicantType = masterSyncService
@@ -846,6 +864,11 @@ public class DemographicDetailController extends BaseController {
 		foreigner.getStyleClass().addAll("residence", "button");
 	}
 
+	/**
+	 * method action when foriegner button is pressed
+	 * @param ActionEvent
+	 *          the action event
+	 */
 	@FXML
 	private void foreigner(ActionEvent event) {
 		List<IndividualTypeDto> applicantType = masterSyncService.getIndividualType(RegistrationConstants.ATTR_FORINGER,
@@ -966,7 +989,6 @@ public class DemographicDetailController extends BaseController {
 	}
 
 	/**
-	 * 
 	 * Loading the the labels of local language fields
 	 * 
 	 */
@@ -1024,9 +1046,6 @@ public class DemographicDetailController extends BaseController {
 					runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
 		}
 	}
-
-	@FXML
-	private ScrollPane parentScrollPane;
 
 	/**
 	 * Loading the virtual keyboard
@@ -1185,6 +1204,10 @@ public class DemographicDetailController extends BaseController {
 		}
 	}
 
+
+	/**
+	 * Building demographic info dto
+	 */
 	@SuppressWarnings("unchecked")
 	public DemographicInfoDTO buildDemographicInfo() {
 
@@ -1388,6 +1411,11 @@ public class DemographicDetailController extends BaseController {
 				.get();
 	}
 
+
+	/**
+	 * Method will be called for uin Update
+	 *
+	 */
 	public void uinUpdate() {
 		if (getRegistrationDTOFromSession().getSelectionListDTO() != null) {
 
@@ -1516,6 +1544,11 @@ public class DemographicDetailController extends BaseController {
 
 	}
 
+
+	/**
+	 * Method to populate the local field value
+	 *
+	 */
 	private void populateFieldValue(Node nodeForPlatformLang, Node nodeForLocalLang, List<ValuesDTO> fieldValues) {
 		if (fieldValues != null) {
 			String platformLanguageCode = applicationContext.getApplicationLanguage();
@@ -1543,6 +1576,10 @@ public class DemographicDetailController extends BaseController {
 		}
 	}
 
+
+	/**
+	 * Method to fetch the pre-Registration details
+	 */
 	@FXML
 	private void fetchPreRegistration() {
 		String preRegId = preRegistrationId.getText();
@@ -1707,7 +1744,11 @@ public class DemographicDetailController extends BaseController {
 		registrationController.displayValidationMessage(validation.getValidationMessage().toString());
 		SessionContext.map().put(RegistrationConstants.IS_CONSOLIDATED, RegistrationConstants.DISABLE);
 	}
+	
 
+	/**
+	 * Method to go back to previous page
+	 */
 	@FXML
 	private void back() {
 		try {
@@ -1727,6 +1768,9 @@ public class DemographicDetailController extends BaseController {
 		}
 	}
 
+	/**
+	 * Method to go back to next page
+	 */
 	@FXML
 	private void next() throws InvalidApplicantArgumentException, ParseException {
 
@@ -1770,6 +1814,10 @@ public class DemographicDetailController extends BaseController {
 		}
 	}
 
+
+	/**
+	 * Method to validate the details entered
+	 */
 	public boolean validateThisPane() {
 		boolean isValid = true;
 		isValid = registrationController.validateDemographicPane(parentFlowPane);
@@ -1799,6 +1847,9 @@ public class DemographicDetailController extends BaseController {
 		return isValid;
 	}
 
+	/**
+	 * Fetching the combobox details
+	 */
 	@SuppressWarnings("unchecked")
 	private <T> void renderComboBoxes() {
 		LOGGER.info("REGISTRATION - INDIVIDUAL_REGISTRATION - RENDER_COMBOBOXES", RegistrationConstants.APPLICATION_ID,
@@ -1825,6 +1876,10 @@ public class DemographicDetailController extends BaseController {
 				RegistrationConstants.APPLICATION_NAME, "Rendering of comboboxes ended");
 	}
 
+
+	/**
+	 * Retrieving and populating the location by hierarchy
+	 */
 	private void retrieveAndPopulateLocationByHierarchy(ComboBox<LocationDto> srcLocationHierarchy,
 			ComboBox<LocationDto> destLocationHierarchy, ComboBox<LocationDto> destLocationHierarchyInLocal) {
 		LOGGER.info("REGISTRATION - INDIVIDUAL_REGISTRATION - RETRIEVE_AND_POPULATE_LOCATION_BY_HIERARCHY",
@@ -1851,6 +1906,9 @@ public class DemographicDetailController extends BaseController {
 				"Retrieving and populating of location by selected hirerachy ended");
 	}
 
+	/**
+	 * Populating the gender combobox
+	 */
 	private void populateGender() {
 		LOGGER.info("REGISTRATION - INDIVIDUAL_REGISTRATION - POPULATE_GENDER", RegistrationConstants.APPLICATION_ID,
 				RegistrationConstants.APPLICATION_NAME, "Fetching Gender based on Application Language started");

@@ -8,7 +8,7 @@ import javax.persistence.Embeddable;
 import lombok.Data;
 
 /**
- * The Class RegMachineSpecId.
+ * composite key for {@link RegMachineSpec}
  */
 @Embeddable
 @Data

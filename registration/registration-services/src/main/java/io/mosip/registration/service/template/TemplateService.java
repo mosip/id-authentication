@@ -12,6 +12,8 @@ public interface TemplateService {
 	 * 
 	 * @param templateName 
 	 *            to define the template name
+	 * @param langCode
+	 * 				the language code in which the template is required          
 	 * 
 	 * @return String which contains the template data
 	 */

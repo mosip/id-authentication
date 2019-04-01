@@ -8,7 +8,7 @@ import javax.persistence.Embeddable;
 import lombok.Data;
 
 /**
- * Composite key for AppAuthenticationMethod entity
+ * Composite key for {@link AppAuthenticationMethod}
  * 
  * @author Sravya Surampalli
  * @since 1.0.0

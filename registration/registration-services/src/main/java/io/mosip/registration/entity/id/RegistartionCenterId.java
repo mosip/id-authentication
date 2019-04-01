@@ -8,7 +8,7 @@ import javax.persistence.Embeddable;
 import lombok.Data;
 
 /**
- * Registration center Id entity details
+ * composite key for {@link RegistartionCenter}
  * 
  * @author Sreekar Chukka
  * @since 1.0.0

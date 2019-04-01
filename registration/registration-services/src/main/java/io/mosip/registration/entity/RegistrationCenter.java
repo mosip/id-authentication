@@ -16,7 +16,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * RegistrationCenter entity details
+ * The Entity Class for Registration Center details
  * 
  * @author Sravya Surampalli
  * @since 1.0.0

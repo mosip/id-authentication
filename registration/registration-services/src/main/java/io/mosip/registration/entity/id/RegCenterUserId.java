@@ -8,7 +8,7 @@ import javax.persistence.Embeddable;
 import lombok.Data;
 
 /**
- * Composite key for RegCenterUser entity
+ * Composite key for for {@link RegCenterUser}
  * 
  * @author Sravya Surampalli
  * @since 1.0.0

@@ -159,9 +159,9 @@ public class DocumentScanFacade {
 	 * converts single pdf file into list of images in order show it in the doc
 	 * preview
 	 * 
-	 * @param byte[]
+	 * @param pdfBytes
 	 *            - pdf in bytes
-	 * @return List<BufferedImage> - list of image files
+	 * @return List - list of image files
 	 * @throws IOException
 	 *             - holds the ioexception
 	 */
@@ -173,7 +173,7 @@ public class DocumentScanFacade {
 	/**
 	 * checks the scanner connectivity
 	 * 
-	 * @return boolean- true if connected or else false
+	 * @return boolean - true if connected or else false
 	 */
 	public boolean isConnected() {
 		return documentScannerService.isConnected();

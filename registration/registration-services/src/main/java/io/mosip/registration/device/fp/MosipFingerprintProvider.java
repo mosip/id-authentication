@@ -31,15 +31,57 @@ public interface MosipFingerprintProvider {
 	 */
 	double scoreCalculator(String fingerImage1, String fingerImage2);
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.authentication.core.spi.fingerprintauth.provider.
+	 * MosipFingerprintProvider#captureFingerprint(java.lang.Integer, java.lang.Integer, java.lang.String)
+	 * 
+	 */
 	int captureFingerprint(int qualityScore, int captureTimeOut, String outputType);
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.authentication.core.spi.fingerprintauth.provider.
+	 * MosipFingerprintProvider#uninitFingerPrintDevice()
+	 * 
+	 */
 	void uninitFingerPrintDevice();
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.authentication.core.spi.fingerprintauth.provider.
+	 * MosipFingerprintProvider#getMinutia()
+	 * 
+	 */
 	String getMinutia();
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.authentication.core.spi.fingerprintauth.provider.
+	 * MosipFingerprintProvider#getIsoTemplate()
+	 * 
+	 */
 	byte[] getIsoTemplate();
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.authentication.core.spi.fingerprintauth.provider.
+	 * MosipFingerprintProvider#getErrorMessage()
+	 * 
+	 */
 	String getErrorMessage();
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.authentication.core.spi.fingerprintauth.provider.
+	 * MosipFingerprintProvider#getFingerPrintImage()
+	 * 
+	 */
 	WritableImage getFingerPrintImage()throws IOException;
 }

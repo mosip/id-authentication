@@ -13,6 +13,13 @@ import io.mosip.registration.dto.mastersync.DocumentCategoryDto;
 import io.mosip.registration.entity.ApplicantValidDocument;
 import io.mosip.registration.entity.DocumentType;
 
+/**
+ * Implementation for {@link ValidDocumentService} 
+ * 
+ * @author balamurugan.ramamoorthy
+ *
+ * @since 1.0.0
+ */
 @Service
 public class ValidDocumentServiceImpl implements ValidDocumentService {
 

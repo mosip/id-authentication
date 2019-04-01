@@ -10,7 +10,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * AppAuthenticationMethod entity details
+ * The Entity Class for AppAuthenticationMethod
  * 
  * @author Sravya Surampalli
  * @since 1.0.0

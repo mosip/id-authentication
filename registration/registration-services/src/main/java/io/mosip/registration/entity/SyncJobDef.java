@@ -9,7 +9,7 @@ import javax.persistence.Table;
 
 import io.mosip.kernel.core.util.DateUtils;
 /**
- * Entity class for sync_job_def
+ * The Entity class for sync job def
  * 
  * @author Dinesh Ashokan
  * @since 1.0.0

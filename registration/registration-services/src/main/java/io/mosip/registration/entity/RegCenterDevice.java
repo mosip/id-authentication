@@ -13,11 +13,10 @@ import javax.persistence.Table;
 import io.mosip.registration.entity.id.RegCenterDeviceId;
 
 /**
- * RegCenterDevice entity details
- * 
+ * The Entity Class for Reg Center Device .
+ *
  * @author Brahmananda Reddy
  * @since 1.0.0
- *
  */
 @Entity
 @Table(name = "reg_center_device", schema = "reg")
