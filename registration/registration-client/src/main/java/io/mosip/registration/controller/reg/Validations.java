@@ -267,7 +267,19 @@ public class Validations extends BaseController {
 					applicationMessageBundle, applicationLanguageblackListedWords);
 		}
 	}
-
+	/**
+	 * Language specific validation of text field
+	 *
+	 * @param parentPane
+	 *            the {@link Pane} containing the fields
+	 * @param node
+	 *            the {@link Node} to be validated
+	 * @param id
+	 *            the id of the UI field
+	 * @param isConsolidated
+	 *            the flag to indicate for displaying consolidated message
+	 * @return true, if successful
+	 */
 	private boolean languageSpecificValidation(Pane parentPane, TextField node, String id, String isConsolidated,
 			ResourceBundle labelBundle, ResourceBundle messageBundle, List<String> blackListedWords) {
 		boolean isInputValid = false;
@@ -452,6 +464,15 @@ public class Validations extends BaseController {
 		validationMessage.delete(0, validationMessage.length());
 	}
 
+	/**
+	 * This method will get the validations property from the global param
+	 *
+	 * @param id
+	 *            the id of the UI field
+	 * @param isLostUIN
+	 *            the flag to indicate for lost UIN
+	 * @return String[]
+	 */
 	private String[] getValidationProperties(String id, boolean isLostUIN) {
 		String[] validation = new String[2];
 
