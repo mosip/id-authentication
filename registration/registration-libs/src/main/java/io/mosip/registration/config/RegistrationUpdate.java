@@ -160,18 +160,22 @@ public class RegistrationUpdate {
 		}
 	}
 
-	private Path backUpCurrentApplication() {
+	private Path backUpCurrentApplication() throws IOException {
 
 		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 		String date = timestamp.toString().replace(":", "-") + "Z";
 
-		File currentFolder = new File(System.getProperty("user.dir"));
-		File backUpFolder = new File(backUpPath + SLASH + date + SLASH + currentFolder.getName());
+		File backUpFolder = new File(backUpPath + SLASH + getCurrentVersion() + "_" + date);
 
+		// bin backup folder
 		File bin = new File(backUpFolder.getAbsolutePath() + SLASH + binFolder);
 		bin.mkdirs();
+
+		// lib backup folder
 		File lib = new File(backUpFolder.getAbsolutePath() + SLASH + libFolder);
 		lib.mkdirs();
+
+		// manifest backup file
 		File manifest = new File(backUpFolder.getAbsolutePath() + SLASH + manifestFile);
 
 		try {
@@ -289,8 +293,22 @@ public class RegistrationUpdate {
 
 	}
 
-	public void getJars() throws IOException {
+	public void getJars()
+			throws IOException, ParserConfigurationException, SAXException, io.mosip.kernel.core.exception.IOException {
 
+		if (new File(libFolder).list().length == 0 || new File(binFolder).list().length == 0) {
+			if (hasUpdate()) {
+				getWithLatestJars();
+			} else {
+				checkJars();
+			}
+		} else {
+			checkJars();
+		}
+
+	}
+
+	private void checkJars() throws IOException {
 		Manifest manifest = getLocalManifest();
 
 		if (manifest != null) {
@@ -313,6 +331,7 @@ public class RegistrationUpdate {
 
 		File manifest = new File(manifestFile);
 
+		setServerManifest(null);
 		try (FileOutputStream fileOutputStream = new FileOutputStream(manifest)) {
 			getServerManifest().write(fileOutputStream);
 
