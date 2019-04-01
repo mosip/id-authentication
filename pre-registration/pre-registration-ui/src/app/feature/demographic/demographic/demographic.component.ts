@@ -302,24 +302,24 @@ export class DemographicComponent implements OnInit, OnDestroy {
         this.formControlValues.localAdministrativeAuthority,
         Validators.required
       ),
-      [this.formControlNames.email]: new FormControl(
-        this.formControlValues.email,
-        Validators.pattern(this.EMAIL_PATTERN)
-      ),
+      [this.formControlNames.email]: new FormControl(this.formControlValues.email, [
+        Validators.pattern(this.EMAIL_PATTERN),
+        Validators.maxLength(Number(this.EMAIL_LENGTH))
+      ]),
       [this.formControlNames.postalCode]: new FormControl(this.formControlValues.postalCode, [
         Validators.required,
-        Validators.maxLength(6),
-        Validators.minLength(6),
+        Validators.maxLength(Number(this.POSTALCODE_LENGTH)),
+        Validators.minLength(Number(this.POSTALCODE_LENGTH)),
         Validators.pattern(this.POSTALCODE_PATTERN)
       ]),
       [this.formControlNames.phone]: new FormControl(this.formControlValues.phone, [
-        Validators.maxLength(10),
-        Validators.minLength(10),
+        Validators.maxLength(Number(this.MOBILE_LENGTH)),
+        Validators.minLength(Number(this.MOBILE_LENGTH)),
         Validators.pattern(this.MOBILE_PATTERN)
       ]),
       [this.formControlNames.CNIENumber]: new FormControl(this.formControlValues.CNIENumber, [
         Validators.required,
-        Validators.maxLength(30),
+        Validators.maxLength(Number(this.CNIE_LENGTH)),
         Validators.pattern(this.CNIE_PATTERN)
       ])
     });
