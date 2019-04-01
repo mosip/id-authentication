@@ -158,7 +158,6 @@ public class AuthFacadeImpl implements AuthFacade {
 		AuthResponseBuilder authResponseBuilder = AuthResponseBuilder.newInstance(env.getProperty(DATETIME_PATTERN));
 		Map<String, List<IdentityInfoDTO>> idInfo = null;
 		String uin = String.valueOf(idResDTO.get("uin"));
-		String tspId = partnerId;
 		try {
 			idInfo = idInfoService.getIdInfo(idResDTO);
 			authResponseBuilder.setTxnID(authRequestDTO.getTransactionID());
