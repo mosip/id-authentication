@@ -244,7 +244,7 @@ export class DemographicComponent implements OnInit, OnDestroy {
     this.userForm = new FormGroup({
       [this.formControlNames.fullName]: new FormControl(this.formControlValues.fullName.trim(), [
         Validators.required,
-        Validators.maxLength(50),
+        Validators.maxLength(Number(this.FULLNAME_LENGTH)),
         this.noWhitespaceValidator
       ]),
       [this.formControlNames.gender]: new FormControl(this.formControlValues.gender, Validators.required),
@@ -280,15 +280,16 @@ export class DemographicComponent implements OnInit, OnDestroy {
       ]),
       [this.formControlNames.addressLine1]: new FormControl(this.formControlValues.addressLine1, [
         Validators.required,
+        Validators.maxLength(Number(this.ADDRESS_LENGTH)),
         this.noWhitespaceValidator
       ]),
       [this.formControlNames.addressLine2]: new FormControl(
         this.formControlValues.addressLine2,
-        Validators.maxLength(50)
+        Validators.maxLength(Number(this.ADDRESS_LENGTH))
       ),
       [this.formControlNames.addressLine3]: new FormControl(
         this.formControlValues.addressLine3,
-        Validators.maxLength(50)
+        Validators.maxLength(Number(this.ADDRESS_LENGTH))
       ),
       [this.formControlNames.region]: new FormControl(this.formControlValues.region, Validators.required),
       [this.formControlNames.province]: new FormControl(this.formControlValues.province, Validators.required),
@@ -684,28 +685,73 @@ export class DemographicComponent implements OnInit, OnDestroy {
     if (this.userForm.valid && this.transUserForm.valid) {
       const request = this.createRequestJSON();
       this.dataUploadComplete = false;
-      this.dataStorageService.addUser(request).subscribe(
-        response => {
-          console.log(response);
-          if (response[appConstants.NESTED_ERROR] === null && response[appConstants.RESPONSE] === null) {
+
+      if (this.dataModification) {
+        this.dataStorageService.updateUser(request).subscribe(
+          response => {
+            console.log(response);
+            if (response[appConstants.NESTED_ERROR] === null && response[appConstants.RESPONSE] === null) {
+              this.router.navigate(['error']);
+              return;
+            }
+            if (response[appConstants.NESTED_ERROR] !== null) {
+              this.router.navigate(['error']);
+              return;
+            } else {
+              this.onModification(request);
+            }
+            this.onSubmission();
+          },
+          error => {
+            console.log(error);
             this.router.navigate(['error']);
-            return;
           }
-          if (response[appConstants.NESTED_ERROR] !== null) {
+        );
+      } else {
+        this.dataStorageService.addUser(request).subscribe(
+          response => {
+            console.log(response);
+            if (response[appConstants.NESTED_ERROR] === null && response[appConstants.RESPONSE] === null) {
+              this.router.navigate(['error']);
+              return;
+            }
+            if (response[appConstants.NESTED_ERROR] !== null) {
+              this.router.navigate(['error']);
+              return;
+            } else {
+              this.onAddition(response, request);
+            }
+            this.onSubmission();
+          },
+          error => {
+            console.log(error);
             this.router.navigate(['error']);
-            return;
-          } else if (this.dataModification) {
-            this.onModification(request);
-          } else {
-            this.onAddition(response, request);
           }
-          this.onSubmission();
-        },
-        error => {
-          console.log(error);
-          this.router.navigate(['error']);
-        }
-      );
+        );
+      }
+
+      // this.dataStorageService.addUser(request).subscribe(
+      //   response => {
+      //     console.log(response);
+      //     if (response[appConstants.NESTED_ERROR] === null && response[appConstants.RESPONSE] === null) {
+      //       this.router.navigate(['error']);
+      //       return;
+      //     }
+      //     if (response[appConstants.NESTED_ERROR] !== null) {
+      //       this.router.navigate(['error']);
+      //       return;
+      //     } else if (this.dataModification) {
+      //       this.onModification(request);
+      //     } else {
+      //       this.onAddition(response, request);
+      //     }
+      //     this.onSubmission();
+      //   },
+      //   error => {
+      //     console.log(error);
+      //     this.router.navigate(['error']);
+      //   }
+      // );
     }
   }
 
