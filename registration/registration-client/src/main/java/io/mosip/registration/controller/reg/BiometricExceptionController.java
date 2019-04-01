@@ -116,6 +116,10 @@ public class BiometricExceptionController extends BaseController implements Init
 	@FXML
 	private GridPane spliterLine;
 	@FXML
+	private GridPane onboardTrackerImg;
+	@FXML
+	private GridPane registrationTrackerImg;
+	@FXML
 	private TableView<ExceptionListDTO> exceptionTable;
 	@FXML 
 	private TableColumn<ExceptionListDTO, String> exceptionTableColumn;
@@ -183,7 +187,8 @@ public class BiometricExceptionController extends BaseController implements Init
 				irisPane.setManaged(false);
 				irisPane.setVisible(false);
 			}
-
+			onboardTrackerImg.setVisible(true);
+			registrationTrackerImg.setVisible(false);
 			registrationExceptionHeader.setVisible(false);
 			exceptionDocProof.setVisible(false);
 			registrationFooter.setVisible(false);
@@ -211,6 +216,8 @@ public class BiometricExceptionController extends BaseController implements Init
 				irisPane.setManaged(false);
 				irisPane.setVisible(false);
 			}
+			onboardTrackerImg.setVisible(false);
+			registrationTrackerImg.setVisible(true);
 			exceptionDocProof.setVisible(true);
 			registrationFooter.setVisible(true);
 			registrationExceptionHeader.setVisible(true);

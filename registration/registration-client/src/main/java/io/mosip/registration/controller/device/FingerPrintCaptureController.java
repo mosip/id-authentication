@@ -202,7 +202,14 @@ public class FingerPrintCaptureController extends BaseController implements Init
 	/** The registration navlabel. */
 	@FXML
 	private Label registrationNavlabel;
-
+	
+	@FXML
+	private AnchorPane lefhPalmTrackerImg;
+	@FXML
+	private AnchorPane rightPalmTrackerImg;
+	@FXML
+	private AnchorPane thumbTrackerImg;
+	
 	/** The left slap count. */
 	private int leftSlapCount;
 	
@@ -278,14 +285,23 @@ public class FingerPrintCaptureController extends BaseController implements Init
 
 						String fpThreshold = "";
 						if (leftHandPalmPane.getId().equals(selectedPane.getId())) {
+							lefhPalmTrackerImg.setVisible(true);
+							rightPalmTrackerImg.setVisible(false);
+							thumbTrackerImg.setVisible(false);
 							fpThreshold = getValueFromApplicationContext(
 									RegistrationConstants.LEFTSLAP_FINGERPRINT_THRESHOLD);
 							thresholdLabel.setText("");
 						} else if (rightHandPalmPane.getId().equals(selectedPane.getId())) {
+							rightPalmTrackerImg.setVisible(true);
+							lefhPalmTrackerImg.setVisible(false);
+							thumbTrackerImg.setVisible(false);
 							fpThreshold = getValueFromApplicationContext(
 									RegistrationConstants.RIGHTSLAP_FINGERPRINT_THRESHOLD);
 							thresholdLabel.setText("");
 						} else if (thumbPane.getId().equals(selectedPane.getId())) {
+							thumbTrackerImg.setVisible(true);
+							rightPalmTrackerImg.setVisible(false);
+							lefhPalmTrackerImg.setVisible(false);
 							fpThreshold = getValueFromApplicationContext(
 									RegistrationConstants.THUMBS_FINGERPRINT_THRESHOLD);
 							thresholdLabel.setText("");

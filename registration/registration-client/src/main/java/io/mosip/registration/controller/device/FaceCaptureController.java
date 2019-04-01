@@ -56,6 +56,7 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Modality;
@@ -87,6 +88,10 @@ public class FaceCaptureController extends BaseController implements Initializab
 	public Button biometricPrevBtn;
 	@FXML
 	public Button saveBiometricDetailsBtn;
+	@FXML
+	private AnchorPane applicantFaceTrackerImg;
+	@FXML
+	private AnchorPane exceptionFaceTrackerImg;
 
 	@Autowired
 	private RegistrationController registrationController;
@@ -477,6 +482,11 @@ public class FaceCaptureController extends BaseController implements Initializab
 
 		takePhoto.setDisable(true);
 		if (selectedPhoto.getId().equals(RegistrationConstants.APPLICANT_PHOTO_PANE)) {
+			if (!(boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
+			applicantFaceTrackerImg.setVisible(true);
+			exceptionFaceTrackerImg.setVisible(false);
+			}
+			
 			if (validatePhotoTimer(lastPhotoCaptured,
 					Integer.parseInt(
 							String.valueOf(ApplicationContext.map().get(RegistrationConstants.FACE_RECAPTURE_TIME))),
@@ -489,6 +499,8 @@ public class FaceCaptureController extends BaseController implements Initializab
 						Integer.parseInt(String
 								.valueOf(ApplicationContext.map().get(RegistrationConstants.FACE_RECAPTURE_TIME))),
 						photoAlert)) {
+			applicantFaceTrackerImg.setVisible(false);
+			exceptionFaceTrackerImg.setVisible(true);
 			takePhoto.setDisable(false);
 			photoAlert.setVisible(false);
 		}

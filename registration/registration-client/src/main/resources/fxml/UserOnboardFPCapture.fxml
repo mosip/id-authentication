@@ -592,6 +592,41 @@
                               <RowConstraints minHeight="10.0" percentHeight="20.0" prefHeight="30.0" vgrow="SOMETIMES" />
                            </rowConstraints>
                         </GridPane>
+                        <GridPane GridPane.columnIndex="2">
+                          <columnConstraints>
+                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                          </columnConstraints>
+                          <rowConstraints>
+                            <RowConstraints maxHeight="73.0" minHeight="10.0" percentHeight="15.0" prefHeight="28.0" vgrow="SOMETIMES" />
+                              <RowConstraints maxHeight="211.0" minHeight="10.0" prefHeight="210.0" vgrow="SOMETIMES" />
+                              <RowConstraints maxHeight="146.0" minHeight="10.0" percentHeight="40.0" prefHeight="127.0" vgrow="SOMETIMES" />
+                          </rowConstraints>
+                           <children>                              
+                              <GridPane fx:id="trackerImage" GridPane.rowIndex="1">
+                                <columnConstraints>
+                                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                </columnConstraints>
+                                <rowConstraints>
+                                    <RowConstraints />
+                                </rowConstraints>
+                                <children>
+                                	<AnchorPane prefHeight="200" prefWidth="200">
+                                 		<children>
+                                    		<ImageView fitHeight="180.0" layoutX="5.0" pickOnBounds="true" preserveRatio="false">
+                                   				<image>
+                                        			<Image url="@../images/userOnboardFingerPrintTracker.png" />
+                                   				</image>
+                              				</ImageView>
+                                    		<Label layoutX="40.0" layoutY="-3.0" styleClass="completedPage" text="%exceptionTracker" />
+                                    		<Label layoutX="40.0" layoutY="55.0" styleClass="currentPage" text="%fingerPrintTracker" />
+                                    		<Label layoutX="40.0" layoutY="111.0" styleClass="pendingPage" text="%irisTracker" />
+                                    		<Label layoutX="40.0" layoutY="161.0" styleClass="pendingPage" text="%photoTracker" />
+                                		 </children>
+                             		 </AnchorPane>
+                                </children>
+                              </GridPane>
+                           </children>
+                        </GridPane>
                      </children>
                      <columnConstraints>
                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="10.0" prefWidth="100.0" />

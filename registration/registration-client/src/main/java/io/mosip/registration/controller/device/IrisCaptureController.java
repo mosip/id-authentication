@@ -40,6 +40,7 @@ import javafx.scene.control.ProgressBar;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -91,6 +92,10 @@ public class IrisCaptureController extends BaseController {
 	private ColumnConstraints thresholdPane2;
 	@FXML
 	private Label thresholdLabel;
+	@FXML
+	private AnchorPane rightEyeTrackerImg;
+	@FXML
+	private AnchorPane leftEyeTrackerImg;
 
 	@Autowired
 	private RegistrationController registrationController;
@@ -212,8 +217,16 @@ public class IrisCaptureController extends BaseController {
 			sourcePane.requestFocus();
 			selectedIris = sourcePane;
 			scanIris.setDisable(true);
-
+			
 			if (!(boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
+				
+				if(getSelectedIris().equals(RegistrationConstants.LEFT)) {
+					leftEyeTrackerImg.setVisible(true);
+					rightEyeTrackerImg.setVisible(false);
+				}else {
+					rightEyeTrackerImg.setVisible(true);
+					leftEyeTrackerImg.setVisible(false);
+				}
 				irisProgress.setProgress(0);
 
 				for (int attempt = 0; attempt < Integer
@@ -612,11 +625,13 @@ public class IrisCaptureController extends BaseController {
 	}
 
 	private Stream<IrisDetailsDTO> getIrisBySelectedPane() {
-		return getIrises().stream()
-				.filter(iris -> iris.getIrisType()
-						.contains(StringUtils.containsIgnoreCase(selectedIris.getId(), RegistrationConstants.LEFT)
-								? RegistrationConstants.LEFT
-								: RegistrationConstants.RIGHT));
+		return getIrises().stream().filter(iris -> iris.getIrisType().contains(getSelectedIris()));
+	}
+
+	private String getSelectedIris() {
+		return StringUtils.containsIgnoreCase(selectedIris.getId(), RegistrationConstants.LEFT)
+				? RegistrationConstants.LEFT
+				: RegistrationConstants.RIGHT;
 	}
 
 	private BiometricDTO getBiometricDTOFromSession() {
