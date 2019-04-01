@@ -42,6 +42,8 @@ public interface LoginService {
 	 * 
 	 * @param centerId
 	 *            centerId corresponding to entered userId
+	 * @param langCode
+	 *            language code
 	 * @return RegistrationCenterDetailDTO center details
 	 */
 	RegistrationCenterDetailDTO getRegistrationCenterDetails(String centerId, String langCode);
