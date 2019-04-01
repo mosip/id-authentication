@@ -22,7 +22,8 @@ import io.mosip.authentication.service.impl.indauth.match.IdaIdMapping;
 import io.mosip.authentication.service.impl.indauth.service.demo.OtpMatchingStrategy;
 
 /**
- * The Enum PinMatchType.
+ * The Enum PinMatchType - used to construct the 
+ * Match input for Pin based authentication
  * 
  * @author Sanjay Murali
  */

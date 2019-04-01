@@ -19,7 +19,10 @@ import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
 import io.mosip.authentication.core.spi.indauth.match.ValidateOtpFunction;
 
 /**
- * The Enum PinAuthType.
+ * The Enum PinAuthType - used to construct the Auth type
+ * for pin based authentication to determine whether particular
+ * Auth information is available and to get respective
+ * match properties
  * 
  * @author Sanjay Murali
  */

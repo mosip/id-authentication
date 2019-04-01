@@ -23,15 +23,19 @@ import io.mosip.authentication.core.dto.indauth.AuthTypeDTO;
 import io.mosip.authentication.core.dto.indauth.BioIdentityInfoDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.authentication.core.spi.indauth.match.MatchType;
+import io.mosip.authentication.service.impl.indauth.controller.AuthController;
 import io.mosip.authentication.service.policy.AuthPolicy;
 import io.mosip.authentication.service.policy.KYCAttributes;
 import io.mosip.authentication.service.policy.Policies;
 import io.mosip.kernel.core.util.DateUtils;
 
 /**
- * The Class IdAuthFilter.
+ * The Class IdAuthFilter - the implementation for deciphering
+ * and validation of the authenticating partner done for request
+ * as AUTH and KYC {@link AuthController}
  *
  * @author Manoj SP
+ * @author Sanjay Murali
  */
 @Component
 public class IdAuthFilter extends BaseAuthFilter {

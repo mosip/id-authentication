@@ -13,7 +13,8 @@ import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 
 /**
- * The Enum AgeMatchingStrategy.
+ * The Enum AgeMatchingStrategy - used to compare and
+ * evaluate the AGE value received from the request and entity
  *
  * @author Sanjay Murali
  */
@@ -57,6 +58,11 @@ public enum AgeMatchingStrategy implements TextMatchingStrategy {
 		this.matchStrategyType = matchStrategyType;
 	}
 
+	/**
+	 * Log error.
+	 *
+	 * @param e the e
+	 */
 	private static void logError(NumberFormatException e) {
 		mosipLogger.error(DEFAULT_SESSION_ID, TYPE, "Inside AgeMathing Strategy", ExceptionUtils.getStackTrace(e));
 	}

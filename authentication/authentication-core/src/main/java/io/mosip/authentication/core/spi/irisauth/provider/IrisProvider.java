@@ -88,12 +88,12 @@ public abstract class IrisProvider implements MosipIrisProvider {
 			Map<String, String> reqInfoMap = (Map<String, String>) reqInfo;
 			String uin = reqInfoMap.get(IDVID);
 			String uinType = checkEvenOrOddUIN(uin);
+			
+			Map<String, String> entityInfoMap = (Map<String, String>) entityInfo;
 
-			if (reqInfoMap.containsKey(IrisProvider.RIGHTEYE)) {
+			if (entityInfoMap.containsKey(IrisProvider.RIGHTEYE)) {
 				return environment.getProperty(uinType + IRISIMG_RIGHT_MATCH_VALUE, Double.class);
-			} else if (reqInfoMap.containsKey(IrisProvider.LEFTTEYE)) {
-				return environment.getProperty(uinType + IRISIMG_LEFT_MATCH_VALUE, Double.class);
-			} else if (reqInfoMap.keySet().stream().anyMatch(key -> key.startsWith(UNKNOWNEYE))) {
+			} else if (entityInfoMap.containsKey(IrisProvider.LEFTTEYE)) {
 				return environment.getProperty(uinType + IRISIMG_LEFT_MATCH_VALUE, Double.class);
 			}
 		}

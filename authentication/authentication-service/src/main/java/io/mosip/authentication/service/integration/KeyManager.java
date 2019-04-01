@@ -29,6 +29,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.constant.RestServicesConstants;
+import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
+import io.mosip.authentication.core.dto.indauth.RequestDTO;
 import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
@@ -44,19 +46,25 @@ import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.keygenerator.bouncycastle.KeyGenerator;
 
 /**
- * The Class KeyManager.
+ * The Class KeyManager is used to decipher the request
+ * and returning the decipher request to the filter
+ * to do further authentication.
  * 
  * @author Sanjay Murali
  */
 @Component
 public class KeyManager {
 
+	/** The Constant SECRET_KEY. */
 	private static final String SECRET_KEY = "secretKey";
 
+	/** The Constant AESPADDING. */
 	private static final String AESPADDING = "AES/CBC/PKCS5Padding";
 
+	/** The Constant SYMMETRIC_ALGORITHM_NAME. */
 	private static final String SYMMETRIC_ALGORITHM_NAME = "AES";
 
+	/** The Constant SESSION_ID. */
 	private static final String SESSION_ID = "SESSION_ID";
 
 	/** The Constant SESSION_KEY. */
@@ -65,8 +73,7 @@ public class KeyManager {
 	/** The Constant REQUEST. */
 	private static final String REQUEST = "request";
 	
-	
-	
+	/** The secure random. */
 	private static  SecureRandom secureRandom;
 
 	/** KeySplitter. */
@@ -85,9 +92,11 @@ public class KeyManager {
 	@Autowired
 	private RestRequestFactory restRequestFactory;
 
+	/** The key generator. */
 	@Autowired
 	private KeyGenerator keyGenerator;
 
+	/** The environment. */
 	@Autowired
 	private Environment environment;
 
@@ -95,7 +104,8 @@ public class KeyManager {
 	private static Logger logger = IdaLogger.getLogger(KeyManager.class);
 
 	/**
-	 * Request data.
+	 * requestData method used to decipher the request block {@link RequestDTO}
+	 * present in AuthRequestDTO {@link AuthRequestDTO}
 	 *
 	 * @param requestBody the request body
 	 * @param mapper      the mapper
@@ -171,6 +181,14 @@ public class KeyManager {
 		return request;
 	}
 	
+	/**
+	 * symmetricDecrypt method used to decrypt the session key present.
+	 *
+	 * @param secretKey the secret key
+	 * @param encryptedDataByteArr the encrypted data byte arr
+	 * @return the byte[]
+	 * @throws IdAuthenticationAppException the id authentication app exception
+	 */
 	public byte[] symmetricDecrypt(SecretKey secretKey, byte[] encryptedDataByteArr) throws IdAuthenticationAppException  {
 		  Cipher cipher=null;;
 		try {
@@ -185,6 +203,12 @@ public class KeyManager {
 		 
 		}
 
+	/**
+	 * getSymmetricKey method used to generate a 
+	 * symmetric key
+	 *
+	 * @return the symmetric key
+	 */
 	public SecretKey getSymmetricKey() {
 		return keyGenerator.getSymmetricKey();
 	}

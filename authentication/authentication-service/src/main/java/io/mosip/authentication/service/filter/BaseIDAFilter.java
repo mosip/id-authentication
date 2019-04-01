@@ -48,7 +48,9 @@ import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.core.util.StringUtils;
 
 /**
- * The Class BaseIDAFilter.
+ * The Class BaseIDAFilter - The Base IDA Filter that does all necessary
+ * authentication/authorization before allowing the request to the respective
+ * controllers.
  * 
  * @author Sanjay Murali
  */
@@ -157,14 +159,16 @@ public abstract class BaseIDAFilter implements Filter {
 	}
 
 	/**
-	 * Send error response.
+	 * sendErrorResponse method is used to construct error response
+	 * when any exception is thrown while deciphering or validating
+	 * the authenticating partner 
 	 *
-	 * @param response        the response
-	 * @param responseWrapper
-	 * @param chain           the chain
-	 * @param requestWrapper  the request wrapper
-	 * @param authError
-	 * @return the char response wrapper
+	 * @param response        where the response are written
+	 * @param responseWrapper {@link CharResponseWrapper}
+	 * @param chain           the chain used to link the request wrapper and response wrapper
+	 * @param requestWrapper  {@link ResettableStreamHttpServletRequest}
+	 * @param authError 	  the AUTH error is used to set the error details if any
+	 * @return the charResponseWrapper which consists of the response
 	 * @throws IOException      Signals that an I/O exception has occurred.
 	 * @throws ServletException the servlet exception
 	 */
@@ -213,10 +217,11 @@ public abstract class BaseIDAFilter implements Filter {
 	}
 
 	/**
-	 * Construct response.
+	 * removeNullOrEmptyFieldsInResponse method is used to remove
+	 * all the empty and null values present in the response
 	 *
-	 * @param responseMap the response map
-	 * @return the map
+	 * @param responseMap the response got after the authentication
+	 * @return the map consists of filter response without null or empty
 	 */
 	protected Map<String, Object> removeNullOrEmptyFieldsInResponse(Map<String, Object> responseMap) {
 		return responseMap.entrySet().stream().filter(map -> Objects.nonNull(map.getValue()))
@@ -226,10 +231,11 @@ public abstract class BaseIDAFilter implements Filter {
 	}
 
 	/**
-	 * Log data size.
+	 * logDataSize method is used to log the size of the
+	 * request and response data
 	 *
-	 * @param data the data
-	 * @param type the type
+	 * @param data the request or response boby
+	 * @param type wither request or response
 	 */
 	private void logDataSize(String data, String type) {
 		double size = ((double) data.length()) / 1024;
@@ -238,10 +244,11 @@ public abstract class BaseIDAFilter implements Filter {
 	}
 
 	/**
-	 * Log time.
+	 * logTime method is used to log the response time
+	 * between the request and response processed
 	 *
-	 * @param time the time
-	 * @param type the type
+	 * @param time the response time
+	 * @param type the type is response
 	 */
 	private void logTime(String time, String type) {
 		mosipLogger.info(SESSION_ID, EVENT_FILTER, BASE_IDA_FILTER, type + " at : " + time);
@@ -256,7 +263,7 @@ public abstract class BaseIDAFilter implements Filter {
 	}
 
 	/**
-	 * Gets the response body.
+	 * getResponseBody method used to retrieve the response body
 	 *
 	 * @param responseBody the output
 	 * @return the response body
@@ -273,9 +280,11 @@ public abstract class BaseIDAFilter implements Filter {
 	}
 
 	/**
-	 * Consume request.
+	 * consumeRequest method is used to manipulate the request
+	 * where the request is first reached and along this all 
+	 * validation are done further after successful decipher
 	 *
-	 * @param requestWrapper the request wrapper
+	 * @param requestWrapper {@link ResettableStreamHttpServletRequest}
 	 * @throws IdAuthenticationAppException the id authentication app exception
 	 */
 	protected void consumeRequest(ResettableStreamHttpServletRequest requestWrapper)
@@ -293,10 +302,11 @@ public abstract class BaseIDAFilter implements Filter {
 	}
 
 	/**
-	 * Validate request.
+	 * validateRequest method is used to validate the version and
+	 * the ID passed for the each request 
 	 *
-	 * @param requestWrapper the request wrapper
-	 * @param requestBody    the request body
+	 * @param requestWrapper {@link ResettableStreamHttpServletRequest}
+	 * @param requestBody    the request body is the request body fetched from input stream
 	 * @throws IdAuthenticationAppException the id authentication app exception
 	 */
 	protected void validateRequest(ResettableStreamHttpServletRequest requestWrapper, Map<String, Object> requestBody)
@@ -317,11 +327,12 @@ public abstract class BaseIDAFilter implements Filter {
 	}
 
 	/**
-	 * Validate version.
+	 * validateVersion method is used to validate the version
+	 * present in the request body and URL
 	 *
-	 * @param requestBody the request body
-	 * @param id the id
-	 * @param verFromUrl the ver from url
+	 * @param requestBody the request body is the request body fetched from input stream
+	 * @param id the id present in the request in the request
+	 * @param verFromUrl the version from URL
 	 * @throws IdAuthenticationAppException the id authentication app exception
 	 */
 	private void validateVersion(Map<String, Object> requestBody, String id, String verFromUrl)
@@ -329,14 +340,21 @@ public abstract class BaseIDAFilter implements Filter {
 		String verFromRequest = (String) requestBody.get(VERSION);
 		String idFromRequest = (String) requestBody.get(ID);
 		if (!env.getProperty(id).equals(idFromRequest)) {
-			exceptionhandling(ID);
+			exceptionHandling(ID);
 		}
 		if (!VERSION_PATTERN.matcher(verFromRequest).matches() || !verFromRequest.equals(verFromUrl)) {
-			exceptionhandling(VERSION);
+			exceptionHandling(VERSION);
 		}
 	}
 
-	private void exceptionhandling(String type) throws IdAuthenticationAppException {
+	/**
+	 * exceptionHandling used to handle the exception when validation
+	 * of version and ID fails
+	 *
+	 * @param type the type is either ID or Version
+	 * @throws IdAuthenticationAppException the id authentication app exception
+	 */
+	private void exceptionHandling(String type) throws IdAuthenticationAppException {
 		mosipLogger.error(SESSION_ID, EVENT_FILTER, BASE_IDA_FILTER,
 				IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
 		throw new IdAuthenticationAppException(
@@ -345,11 +363,12 @@ public abstract class BaseIDAFilter implements Filter {
 	}
 
 	/**
-	 * Map response.
+	 * mapResponse method is used to construct the response
+	 * for the successful authentication
 	 *
-	 * @param requestWrapper  the request wrapper
-	 * @param responseWrapper the response wrapper
-	 * @return the string
+	 * @param requestWrapper  {@link ResettableStreamHttpServletRequest} 
+	 * @param responseWrapper {@link CharResponseWrapper}
+	 * @return the string response finally built
 	 * @throws IdAuthenticationAppException the id authentication app exception
 	 */
 	protected String mapResponse(ResettableStreamHttpServletRequest requestWrapper, CharResponseWrapper responseWrapper)
@@ -377,6 +396,12 @@ public abstract class BaseIDAFilter implements Filter {
 		}
 	}
 
+	/**
+	 * getVersionFromUrl method is used to fetch the version from URL
+	 *
+	 * @param requestWrapper {@link ResettableStreamHttpServletRequest}
+	 * @return the version from url
+	 */
 	protected String getVersionFromUrl(ResettableStreamHttpServletRequest requestWrapper) {
 		String ver = null;
 		String url = requestWrapper.getRequestURL().toString();
@@ -397,7 +422,8 @@ public abstract class BaseIDAFilter implements Filter {
 	
 
 	/**
-	 * Sets the response params.
+	 * setResponseParams method is set the transaction ID and
+	 * response time based on the request time zone
 	 *
 	 * @param requestBody  the request body
 	 * @param responseBody the response body
@@ -425,9 +451,9 @@ public abstract class BaseIDAFilter implements Filter {
 	}
 
 	/**
-	 * Transform response.
+	 * transformResponse used to manipulate the response if any
 	 *
-	 * @param response the response
+	 * @param response the response body
 	 * @return the map
 	 * @throws IdAuthenticationAppException
 	 */
@@ -436,6 +462,13 @@ public abstract class BaseIDAFilter implements Filter {
 		return responseMap;
 	}
 
+	/**
+	 * getRequestBody used to get the request body from the raw input stream
+	 *
+	 * @param requestBody {@link ResettableStreamHttpServletRequest} get request as input stream
+	 * @return the request body
+	 * @throws IdAuthenticationAppException the id authentication app exception
+	 */
 	protected Map<String, Object> getRequestBody(InputStream requestBody) throws IdAuthenticationAppException {
 		try {
 			return mapper.readValue(requestBody, new TypeReference<Map<String, Object>>() {});
@@ -462,9 +495,10 @@ public abstract class BaseIDAFilter implements Filter {
 	}
 
 	/**
-	 * Authenticate request.
+	 * authenticateRequest method used to validate the JSON signature
+	 * pay load and the certificate
 	 *
-	 * @param requestWrapper the request wrapper
+	 * @param requestWrapper {@link ResettableStreamHttpServletRequest}
 	 * @throws IdAuthenticationAppException the id authentication app exception
 	 */
 	protected abstract void authenticateRequest(ResettableStreamHttpServletRequest requestWrapper)
