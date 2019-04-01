@@ -1,5 +1,7 @@
 package io.mosip.registrationProcessor.tests;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -10,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
@@ -20,6 +23,7 @@ import org.testng.ITestResult;
 import org.testng.Reporter;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -61,7 +65,6 @@ public class PacketStatus extends BaseTestCase implements ITest {
 	static Response actualResponse = null;
 	static JSONObject expectedResponse = null;
 	private static ApplicationLibrary applicationLibrary = new ApplicationLibrary();
-	private static final String regProc_URI = "/registrationstatus/registration-processor/registrationstatus/v1.0";
 	String finalStatus = "";
 	static SoftAssert softAssert=new SoftAssert();
 	static 	String regIds="";
@@ -69,6 +72,7 @@ public class PacketStatus extends BaseTestCase implements ITest {
 	static String folderPath = "regProc/PacketStatus";
 	static String outputFile = "PacketStatusOutput.json";
 	static String requestKeyFile = "PacketStatusRequest.json";
+	Properties pro =  new Properties();
 
 	/**
 	 * This method is use for reading data for packet status
@@ -106,7 +110,7 @@ public class PacketStatus extends BaseTestCase implements ITest {
 		expectedResponse = ResponseRequestMapper.mapResponse(testSuite, object);
 		try {
 
-			actualResponse = applicationLibrary.getRequestAsQueryParam(regProc_URI,actualRequest);
+			actualResponse = applicationLibrary.getRequestAsQueryParam(pro.getProperty("packetStatusApi"),actualRequest);
 
 		} catch (Exception e) {
 			logger.info(e);
@@ -200,6 +204,16 @@ public class PacketStatus extends BaseTestCase implements ITest {
 		}
 	}
 
+	@BeforeClass
+	public void setUp() throws IOException
+	{
+		  // Create  FileInputStream object 
+		  FileInputStream fis=new FileInputStream(new File("src\\config\\registrationProcessorAPI.properties"));
+ 
+		  // Load file so we can use into our script 
+		  pro.load(fis);
+		
+	}
 	@BeforeMethod
 	public static void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
 		JSONObject object = (JSONObject) testdata[2];

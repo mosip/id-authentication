@@ -1,0 +1,12 @@
+{
+  "response": [
+    {
+      "registrationId": "20916100110014920190218154630",
+      "status": "SUCCESS",
+      "message": "Registartion Id's are successfully synched in Sync table"
+    }
+  ],
+  "id": "mosip.registration.sync",
+  "version": "1.0",
+  "responsetime": "2019-03-07T06:52:29.994Z"
+}

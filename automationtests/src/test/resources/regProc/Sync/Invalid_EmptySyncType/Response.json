@@ -1,0 +1,13 @@
+{
+  "response": [
+    {
+      "errorCode": "RPR-RGS-003",
+      "registrationId": "20916100110014920190218154630",
+      "status": "FAILURE",
+      "message": "Invalid syncType. Available types are NEW, CORRECTION, UPDATE, LOST_UIN, UPDATE_UIN, ACTIVATE_UIN, DEACTIVATE_UIN"
+    }
+  ],
+  "id": "mosip.registration.sync",
+  "version": "1.0",
+  "responsetime": "2019-03-07T07:00:09.610Z"
+}

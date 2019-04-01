@@ -1,5 +1,7 @@
 package io.mosip.util;
 
+import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
@@ -9,6 +11,7 @@ import java.nio.file.Paths;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivilegedExceptionAction;
 import java.security.URIParameter;
+import java.util.Properties;
 
 import javax.security.auth.Subject;
 import javax.security.auth.callback.Callback;
@@ -42,13 +45,13 @@ public class ConnectionUtils {
 	 * Field for name-node url
 	 */
 	//@Value("${mosip.kernel.fsadapter.hdfs.name-node-url}")
-	private String nameNodeUrl = "hdfs://13.71.115.204:51000";
-
+	//private String nameNodeUrl = "hdfs://13.71.115.204:51000";
+	
 	/**
 	 * Field for kdc domain
 	 */
 	//@Value("${mosip.kernel.fsadapter.hdfs.kdc-domain}")
-	private String kdcDomain = "NODE-MASTER.SOUTHINDIA.CLOUDAPP.AZURE.COM";
+	//private String kdcDomain = "NODE-MASTER.SOUTHINDIA.CLOUDAPP.AZURE.COM";
 
 	/**
 	 * Field for username
@@ -96,7 +99,7 @@ public class ConnectionUtils {
 				Configuration configuration = prepareConfiguration();
 				if (isAuthEnable) {
 					configuration = initSecurityConfiguration(configuration);
-					loginUser(userName + "@" + kdcDomain, userPass);
+					loginUser(readProperty().getProperty("userName") + "@" + readProperty().getProperty("kdcDomain"), readProperty().getProperty("userPass"));
 					configuredFileSystem = FileSystem.get(configuration);
 				} else {
 					configuredFileSystem = getDefaultConfiguredFileSystem(configuration);
@@ -200,7 +203,7 @@ public class ConnectionUtils {
 		Configuration configuration = null;
 		try {
 			configuration = new Configuration();
-			configuration.set("fs.defaultFS", nameNodeUrl);
+			configuration.set("fs.defaultFS", readProperty().getProperty("nameNodeUrl"));
 			configuration.set("dfs.client.use.datanode.hostname", "true");
 			configuration.set("fs.hdfs.impl", DistributedFileSystem.class.getName());
 			//configuration.set("fs.file.impl", LocalFileSystem.class.getName());
@@ -217,5 +220,17 @@ public class ConnectionUtils {
 					HDFSAdapterErrorCode.HDFS_ADAPTER_EXCEPTION.getErrorMessage(), e);*/
 		}
 		return configuration;
+	}
+	
+	private Properties readProperty(){
+		String propertyFilePath=System.getProperty("user.dir")+"\\"+"src\\config\\RegistrationProcessorApi.properties";
+		Properties p = new Properties();
+		try {
+			p.load(new FileReader(new File(propertyFilePath)));
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		return p;
 	}
 }
