@@ -21,6 +21,8 @@ import Utils from 'src/app/app.util';
 import { DialougComponent } from 'src/app/shared/dialoug/dialoug.component';
 import { ConfigService } from 'src/app/core/services/config.service';
 import { AttributeModel } from 'src/app/shared/models/demographic-model/attribute.modal';
+import {AppComponent} from 'src/app/app.component';
+
 
 @Component({
   selector: 'app-demographic',
@@ -148,7 +150,8 @@ export class DemographicComponent implements OnInit, OnDestroy {
     private sharedService: SharedService,
     private configService: ConfigService,
     private translate: TranslateService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private appcomp: AppComponent
   ) {
     this.translate.use(localStorage.getItem('langCode'));
     this.regService.getMessage().subscribe(message => (this.message = message));
@@ -160,6 +163,7 @@ export class DemographicComponent implements OnInit, OnDestroy {
     // this.regService.currentMessage.subscribe(message => (this.message = message));
     this.setConfig();
     this.initForm();
+    //this.appcomp.keepWatching();
     await this.getPrimaryLabels();
     this.dataStorageService.getSecondaryLanguageLabels(this.secondaryLang).subscribe(response => {
       this.secondaryLanguagelabels = response['demographic'];
