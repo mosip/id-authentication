@@ -26,7 +26,7 @@ mosip.kernel.fsadapter.hdfs.user-name=mosipuser
 mosip.kernel.fsadapter.hdfs.authentication-enabled=false 
 
 # If HDFS is security is configured with Kerberos, Key Distribution Center domain
-mosip.kernel.fsadapter.hdfs.kdc-domain=NODE-MASTER.SOUTHINDIA.CLOUDAPP.AZURE.COM
+mosip.kernel.fsadapter.hdfs.kdc-domain=NODE-MASTER.EXAMPLE.COM
 
 # Password for hdfs user
 mosip.kernel.fsadapter.hdfs.user-pass=Mosip@dev123

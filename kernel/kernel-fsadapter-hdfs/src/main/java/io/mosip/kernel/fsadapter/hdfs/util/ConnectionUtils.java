@@ -20,7 +20,6 @@ import javax.security.auth.login.LoginException;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
-import org.apache.hadoop.fs.LocalFileSystem;
 import org.apache.hadoop.hdfs.DistributedFileSystem;
 import org.apache.hadoop.security.SaslRpcServer.AuthMethod;
 import org.apache.hadoop.security.UserGroupInformation;
@@ -34,6 +33,7 @@ import io.mosip.kernel.fsadapter.hdfs.constant.HDFSAdapterErrorCode;
  * This class gets connection to DFS.
  *
  * @author Dharmesh Khandelwal
+ * @author Abhishek Kumar
  * @since 1.0.0
  */
 @Component
@@ -46,9 +46,9 @@ public class ConnectionUtils {
 	private String nameNodeUrl;
 
 	/**
-	 * Field for kdc domain
+	 * Field for kdc domain, default is empty
 	 */
-	@Value("${mosip.kernel.fsadapter.hdfs.kdc-domain}")
+	@Value("${mosip.kernel.fsadapter.hdfs.kdc-domain:}")
 	private String kdcDomain;
 
 	/**
@@ -58,13 +58,29 @@ public class ConnectionUtils {
 	private String userName;
 
 	/**
-	 * Field for userPass
+	 * Field for userPass,default is empty
 	 */
-	@Value("${mosip.kernel.fsadapter.hdfs.user-pass}")
+	@Value("${mosip.kernel.fsadapter.hdfs.user-pass:}")
 	private String userPass;
 
+	/**
+	 * Field for verify Authentication is enable, default is false.
+	 */
 	@Value("${mosip.kernel.fsadapter.hdfs.authentication-enabled:false}")
 	private boolean isAuthEnable;
+
+	/**
+	 * Field for authentication mode, supported mode- keytab and password, default
+	 * is keytab
+	 */
+	@Value("${mosip.kernel.fsadapter.hdfs.authentication-mode:keytab}")
+	private String authenticationMode;
+
+	/**
+	 * Field for keytab
+	 */
+	@Value("${mosip.kernel.fsadapter.hdfs.keytab:}")
+	private String keytabPath;
 
 	/**
 	 * Field for hadoop FileSystem
@@ -73,6 +89,8 @@ public class ConnectionUtils {
 
 	private static final String HADOOP_HOME = "hadoop-lib";
 	private static final String WIN_UTIL = "winutils.exe";
+	private static final String AUTH_KEYTAB = "keytab";
+	private static final String AUTH_PASS = "password";
 
 	/**
 	 * hadoop lib path
@@ -97,12 +115,9 @@ public class ConnectionUtils {
 				Configuration configuration = prepareConfiguration();
 				if (isAuthEnable) {
 					configuration = initSecurityConfiguration(configuration);
-					// loginUser(userName + "@" + kdcDomain, userPass);
-					loginWithKeyTab(userName + "@" + kdcDomain);
 					configuredFileSystem = FileSystem.get(configuration);
 				} else {
 					configuredFileSystem = getDefaultConfiguredFileSystem(configuration);
-					return configuredFileSystem;
 				}
 
 			} catch (IOException e) {
@@ -127,6 +142,15 @@ public class ConnectionUtils {
 		Files.copy(krbStream, krbPath);
 		System.setProperty("java.security.krb5.conf", krbPath.toString());
 		UserGroupInformation.setConfiguration(configuration);
+		String user = userName + "@" + kdcDomain;
+		if (AUTH_PASS.equalsIgnoreCase(authenticationMode))
+			loginUser(user, userPass);
+		else if (AUTH_KEYTAB.equalsIgnoreCase(authenticationMode))
+			loginWithKeyTab(user, keytabPath);
+		else {
+			throw new FSAdapterException(HDFSAdapterErrorCode.NO_SUCH_AUTH_MODE_EXCEPTION.getErrorCode(),
+					HDFSAdapterErrorCode.NO_SUCH_AUTH_MODE_EXCEPTION.getErrorMessage() + authenticationMode);
+		}
 		return configuration;
 	}
 
@@ -162,7 +186,6 @@ public class ConnectionUtils {
 				}
 			}, javax.security.auth.login.Configuration.getInstance("JavaLoginConfig", uriParameter));
 			loginContext.login();
-			UserGroupInformation.setShouldRenewImmediatelyForTests(true);
 			UserGroupInformation.loginUserFromSubject(loginContext.getSubject());
 		} catch (LoginException e) {
 			throw new FSAdapterException(HDFSAdapterErrorCode.LOGIN_EXCEPTION.getErrorCode(),
@@ -199,6 +222,11 @@ public class ConnectionUtils {
 		return configuredFileSystem;
 	}
 
+	/**
+	 * preparing default hdfs configuration
+	 * 
+	 * @return {@link Configuration}
+	 */
 	private Configuration prepareConfiguration() {
 		Configuration configuration = null;
 		try {
@@ -221,14 +249,21 @@ public class ConnectionUtils {
 		return configuration;
 	}
 
-	private Configuration loginWithKeyTab(String user) {
-		String path = this.getClass().getClassLoader().getResource("mosip.keytab").getPath();
+	/**
+	 * Login User with keytab
+	 * 
+	 * @param user
+	 *            username with the kdc, eg. test@kdc.example.com
+	 * @param keytabPath
+	 *            path of the keytab file
+	 */
+	private void loginWithKeyTab(String user, String keytabPath) {
+		String path = this.getClass().getClassLoader().getResource(keytabPath).getPath();
 		try {
 			UserGroupInformation.loginUserFromKeytab(user, path);
 		} catch (IOException e) {
 			throw new FSAdapterException(HDFSAdapterErrorCode.HDFS_ADAPTER_EXCEPTION.getErrorCode(),
 					HDFSAdapterErrorCode.HDFS_ADAPTER_EXCEPTION.getErrorMessage(), e);
 		}
-		return null;
 	}
 }
