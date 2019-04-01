@@ -15,7 +15,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,7 +25,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.mosip.kernel.auth.adapter.AuthUserDetails;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.preregistration.application.dto.DeletePreRegistartionDTO;
 import io.mosip.preregistration.application.dto.DemographicRequestDTO;
@@ -84,9 +82,6 @@ public class DemographicController {
 			@RequestBody(required = true) MainRequestDTO<DemographicRequestDTO> jsonObject) {
 		log.info("sessionId", "idType", "id",
 				"In pre-registration controller for registration with json object" + jsonObject);
-//		AuthUserDetails authUserDetails = (AuthUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-//    	System.out.println(authUserDetails.getUserId()); 
-// 
 		return ResponseEntity.status(HttpStatus.OK).body(preRegistrationService.addPreRegistration(jsonObject));
 	}
 
@@ -97,7 +92,7 @@ public class DemographicController {
 	 *            the pre reg id
 	 * @return the application data for a pre-id
 	 */
-	@PreAuthorize("hasAnyRole('individual')")
+	@PreAuthorize("hasAnyRole('individual','REGISTRATION_OFFICER','REGISTRATION_SUPERVISOR')")
 	@GetMapping(path = "/applications/details", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Get Pre-Registartion data")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Demographic data successfully retrieved"),
@@ -161,7 +156,7 @@ public class DemographicController {
 	 *            the pre id
 	 * @return status of application
 	 */
-	@PreAuthorize("hasAnyRole('individual')")
+	@PreAuthorize("hasAnyRole('individual','REGISTRATION_OFFICER','REGISTRATION_SUPERVISOR')")
 	@GetMapping(path = "/applications/status", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Fetch the status of a application")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "All applications status fetched successfully"),
@@ -216,8 +211,8 @@ public class DemographicController {
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(preRegistrationService.getPreRegistrationByDate(fromDate, toDate));
 	}
-	
-	@PreAuthorize("hasAnyRole('individual')")
+
+	@PreAuthorize("hasAnyRole('individual','REGISTRATION_OFFICER','REGISTRATION_SUPERVISOR')")
 	@PostMapping(path = "/applications/updatedTime", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Get Updated Date Time for List of Pre-Registration Id")
 	@ApiResponses(value = {
@@ -225,8 +220,8 @@ public class DemographicController {
 			@ApiResponse(code = 400, message = "Unable to the Updated Date Time") })
 	public ResponseEntity<MainResponseDTO<Map<String, String>>> getUpdatedDateTimeByPreIds(
 			@RequestBody MainRequestDTO<PreRegIdsByRegCenterIdDTO> mainRequestDTO) {
-		return ResponseEntity.status(HttpStatus.OK).body(
-				preRegistrationService.getUpdatedDateTimeForPreIds(mainRequestDTO.getRequest()));
+		return ResponseEntity.status(HttpStatus.OK)
+				.body(preRegistrationService.getUpdatedDateTimeForPreIds(mainRequestDTO.getRequest()));
 	}
 
 }

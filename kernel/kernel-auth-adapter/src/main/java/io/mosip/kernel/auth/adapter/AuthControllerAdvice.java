@@ -16,43 +16,33 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
  * @since 1.0.0
  **********************************************************************************************************************/
 
-
 @RestControllerAdvice
 public class AuthControllerAdvice implements ResponseBodyAdvice<Object> {
 
-    private AuthUserDetails getAuthUserDetails() {
-    	AuthUserDetails authUserDetails = null;
-    	Object details = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-    	if(details instanceof String){
-    		
-    	}
-    	else 
-    	{
-    		 authUserDetails = (AuthUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-    	}
-        return authUserDetails;
-    }
+	private AuthUserDetails getAuthUserDetails() {
+		AuthUserDetails authUserDetails = null;
+		Object details = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		if (details instanceof String) {
 
-    @Override
-    public boolean supports(MethodParameter returnType, Class<? extends HttpMessageConverter<?>> converterType) {
-        return true;
-    }
+		} else {
+			authUserDetails = (AuthUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		}
+		return authUserDetails;
+	}
 
-    @Override
-    public Object beforeBodyWrite(Object body,
-                                  MethodParameter returnType,
-                                  MediaType selectedContentType,
-                                  Class<? extends HttpMessageConverter<?>> selectedConverterType,
-                                  ServerHttpRequest request,
-                                  ServerHttpResponse response) {
-    	if(getAuthUserDetails()!=null)
-    	{
-        response.getHeaders().add(AuthAdapterConstant.AUTH_HEADER_SET_COOKIE, AuthAdapterConstant.AUTH_COOOKIE_HEADER+getAuthUserDetails().getToken());
-        return body;
-    	}
-    	else
-    	{
-    		return null;
-    	}    
-    }
+	@Override
+	public boolean supports(MethodParameter returnType, Class<? extends HttpMessageConverter<?>> converterType) {
+		return true;
+	}
+
+	@Override
+	public Object beforeBodyWrite(Object body, MethodParameter returnType, MediaType selectedContentType,
+			Class<? extends HttpMessageConverter<?>> selectedConverterType, ServerHttpRequest request,
+			ServerHttpResponse response) {
+		if (getAuthUserDetails() != null) {
+			response.getHeaders().add(AuthAdapterConstant.AUTH_HEADER_SET_COOKIE,
+					AuthAdapterConstant.AUTH_COOOKIE_HEADER + getAuthUserDetails().getToken());
+		}
+		return body;
+	}
 }

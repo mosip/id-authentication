@@ -19,7 +19,7 @@ import io.mosip.kernel.masterdata.dto.LanguageDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterDeviceDto;
 import io.mosip.kernel.masterdata.entity.Language;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterDevice;
-import io.mosip.kernel.masterdata.utils.EmptyCheckUtils;
+import io.mosip.kernel.core.util.EmptyCheckUtils;
 import io.mosip.kernel.masterdata.utils.MapperUtils;
 
 /**
