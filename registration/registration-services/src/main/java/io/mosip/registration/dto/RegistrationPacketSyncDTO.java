@@ -4,6 +4,12 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+/**
+ * The DTO Class RegistrationPacketSyncDTO.
+ * 
+ * @author Sreekar Chukka
+ * @version 1.0.0
+ */
 public class RegistrationPacketSyncDTO {
 
 	private String id;

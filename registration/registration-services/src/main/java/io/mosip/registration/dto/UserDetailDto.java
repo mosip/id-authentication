@@ -7,11 +7,10 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import io.mosip.registration.dto.mastersync.MasterSyncBaseDto;
 
 /**
- * Service class for user detail dto
- * 
+ * The DTO Class UserDetailDto.
+ *
  * @author Sreekar Chukka
  * @since 1.0.0
- *
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class UserDetailDto extends MasterSyncBaseDto {

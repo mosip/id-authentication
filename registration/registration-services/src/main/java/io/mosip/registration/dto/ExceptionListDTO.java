@@ -2,6 +2,12 @@ package io.mosip.registration.dto;
 
 import javafx.beans.property.SimpleStringProperty;
 
+/**
+ * The DTO Class ExceptionListDTO.
+ * 
+ * @author Sreekar Chukka
+ * @since 1.0.0
+ */
 public class ExceptionListDTO {
 	
 	private SimpleStringProperty exceptionItem;

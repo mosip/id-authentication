@@ -6,6 +6,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ * The DTO Class MainResponseDTO.
+ * 
+ * @author Sreekar Chukka
+ * @since 1.0.0
+ */
 @Getter
 @Setter
 @NoArgsConstructor

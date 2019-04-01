@@ -3,7 +3,7 @@ package io.mosip.registration.dto;
 import lombok.Data;
 
 /**
- * The Class SelectionListDTO will contain all the updatable fields for update UIN.
+ * The DTO Class SelectionListDTO will contain all the updatable fields for update UIN.
  * 
  * @author Mahesh Kumar
  */

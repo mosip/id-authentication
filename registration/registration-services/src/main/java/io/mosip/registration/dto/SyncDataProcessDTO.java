@@ -7,8 +7,8 @@ import javafx.beans.property.SimpleStringProperty;
 import lombok.Data;
 
 /**
- * Sync Data Process DTO
- * 
+ * The DTO Class SyncData Process.
+ *
  * @author YASWANTH S
  * @since 1.0.0
  */

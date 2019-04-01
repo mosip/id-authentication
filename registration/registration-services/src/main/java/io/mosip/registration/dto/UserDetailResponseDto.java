@@ -5,11 +5,10 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 /**
- * Service class for user detail response dto
- * 
+ * The DTO Class UserDetailResponseDto.
+ *
  * @author Sreekar Chukka
  * @since 1.0.0
- *
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class UserDetailResponseDto {

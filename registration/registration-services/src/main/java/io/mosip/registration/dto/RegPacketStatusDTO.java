@@ -1,5 +1,11 @@
 package io.mosip.registration.dto;
 
+/**
+ * The DTO Class RegPacketStatusDTO.
+ * 
+ * @author Sreekar Chukka
+ * @version 1.0.0
+ */
 public class RegPacketStatusDTO {
 
 	private String packetId;

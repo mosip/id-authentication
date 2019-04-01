@@ -5,7 +5,8 @@ import java.io.Serializable;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
- * PreRegistrationDataSync RequestDTO
+ * The DTO Class PreRegistration Data Sync Request.
+ *
  * @author YASWANTH S
  * @since 1.0.0
  */

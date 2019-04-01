@@ -6,6 +6,13 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+/**
+ * The DTO Class PublicKeyResponse.
+ * 
+ * @author Brahmananda reddy
+ *
+ * @param <T> the generic type
+ */
 public class PublicKeyResponse<T> {
 
 	/**

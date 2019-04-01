@@ -3,9 +3,10 @@ package io.mosip.registration.dto;
 import javafx.beans.property.SimpleStringProperty;
 
 /**
- * User machine mapping DTO.
+ * The DTO Class UserMachineMappingDTO.
  *
  * @author Dinesh Ashokan
+ * @version 1.0.0
  */
 public class UserMachineMappingDTO {
 	private SimpleStringProperty userID;

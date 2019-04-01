@@ -6,6 +6,12 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+/**
+ * The DTO Class PacketStatusReaderDTO.
+ * 
+ * @author Sreekar Chukka
+ * @since 1.0.0
+ */
 @Getter
 @Setter
 @ToString
