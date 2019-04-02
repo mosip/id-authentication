@@ -6,20 +6,16 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 
 import io.mosip.kernel.core.applicanttype.exception.InvalidApplicantArgumentException;
-import io.mosip.kernel.core.applicanttype.spi.ApplicantType;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.StringUtils;
@@ -37,7 +33,6 @@ import io.mosip.registration.controller.FXUtils;
 import io.mosip.registration.controller.device.FaceCaptureController;
 import io.mosip.registration.controller.device.ScanPopUpViewController;
 import io.mosip.registration.dto.demographic.DocumentDetailsDTO;
-import io.mosip.registration.dto.demographic.MoroccoIdentity;
 import io.mosip.registration.dto.mastersync.DocumentCategoryDto;
 import io.mosip.registration.entity.DocumentCategory;
 import io.mosip.registration.service.MasterSyncService;
@@ -54,7 +49,6 @@ import javafx.geometry.NodeOrientation;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
 import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
@@ -108,9 +102,6 @@ public class DocumentScanController extends BaseController {
 	@Autowired
 	private DocumentScanFacade documentScanFacade;
 
-	@Autowired
-	private DemographicDetailController demographicDetailController;
-
 	@FXML
 	protected GridPane documentScan;
 
@@ -154,13 +145,7 @@ public class DocumentScanController extends BaseController {
 	@Autowired
 	private BiometricExceptionController biometricExceptionController;
 
-	@Value("${DOCUMENT_SCANNER_ENABLED}")
-	private String isScannerEnabled;
-
 	private List<BufferedImage> docPages;
-
-	@Autowired
-	private ApplicantType applicantTypeService;
 
 	@FXML
 	private Label registrationNavlabel;
@@ -360,68 +345,6 @@ public class DocumentScanController extends BaseController {
 		}
 	}
 
-
-	/**
-	 * To find te applicant type
-	 */
-	private String findApplicantType(String gender, Integer age, String individualType) {
-		String applicantType = null;
-		String male = "MLE";
-		String female = "FLE";
-		if ("National".equalsIgnoreCase(individualType)) {
-
-			if (male.equalsIgnoreCase(gender)) {
-				if (isChild(age)) {
-					applicantType = "005";
-				} else {
-					applicantType = "006";
-				}
-
-			} else if (female.equalsIgnoreCase(gender)) {
-				if (isChild(age)) {
-					applicantType = "008";
-				} else {
-					applicantType = "007";
-				}
-			}
-		} else {
-
-			if (male.equalsIgnoreCase(gender)) {
-				if (isChild(age)) {
-					applicantType = "001";
-				} else {
-					applicantType = "002";
-				}
-
-			} else if (female.equalsIgnoreCase(gender)) {
-				if (isChild(age)) {
-					applicantType = "003";
-				} else {
-					applicantType = "004";
-				}
-			}
-
-		}
-		return applicantType;
-	}
-
-
-	/**
-	 * To find if applicant is child
-	 */
-	private boolean isChild(Integer age) {
-		return age <= Integer.valueOf(String.valueOf(ApplicationContext.map().get(RegistrationConstants.MIN_AGE)));
-	}
-
-
-	/**
-	 * Getting the identity dto
-	 */
-	private MoroccoIdentity getIdentityDto() {
-		return (MoroccoIdentity) getRegistrationDTOFromSession().getDemographicDTO().getDemographicInfoDTO()
-				.getIdentity();
-	}
-
 	/**
 	 * This method scans and uploads documents
 	 */
@@ -461,7 +384,7 @@ public class DocumentScanController extends BaseController {
 	 * This method will display Scan window to scan and upload documents
 	 */
 	private void scanWindow() {
-		if ("yes".equalsIgnoreCase(isScannerEnabled)) {
+		if ("yes".equalsIgnoreCase(getGlobalConfigValueOf(RegistrationConstants.DOC_SCANNER_ENABLED))) {
 			scanPopUpViewController.setDocumentScan(true);
 		}
 		scanPopUpViewController.init(this, RegistrationUIConstants.SCAN_DOC_TITLE);
@@ -480,7 +403,7 @@ public class DocumentScanController extends BaseController {
 
 			// TODO this check has to removed after when the stubbed data is no
 			// more needed
-			if ("yes".equalsIgnoreCase(isScannerEnabled)) {
+			if ("yes".equalsIgnoreCase(getGlobalConfigValueOf(RegistrationConstants.DOC_SCANNER_ENABLED))) {
 				scanFromScanner();
 			} else {
 				scanFromStubbed(popupStage);
