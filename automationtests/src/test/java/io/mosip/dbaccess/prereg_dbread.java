@@ -30,8 +30,8 @@ public class prereg_dbread {
 	{
 		boolean flag=false;
 		try {	
-			if(BaseTestCase.environment.equalsIgnoreCase("integration"))
-				factory = new Configuration().configure("prereginteg.cfg.xml")
+			if(BaseTestCase.environment.equalsIgnoreCase("dev"))
+				factory = new Configuration().configure("preregdev.cfg.xml")
 			.addAnnotatedClass(OtpEntity.class).buildSessionFactory();	
 					else
 					{
@@ -68,8 +68,8 @@ public class prereg_dbread {
 		{
 			boolean flag=false;
 		
-			if(BaseTestCase.environment.equalsIgnoreCase("integration"))
-				factory = new Configuration().configure("prereginteg.cfg.xml")
+			if(BaseTestCase.environment.equalsIgnoreCase("dev"))
+				factory = new Configuration().configure("preregdev.cfg.xml")
 			.addAnnotatedClass(OtpEntity.class).buildSessionFactory();	
 					else
 					{
@@ -162,8 +162,8 @@ public class prereg_dbread {
 		boolean flag=false;
 		//String preId;
 		
-		if(BaseTestCase.environment.equalsIgnoreCase("integration"))
-			factory = new Configuration().configure("prereginteg.cfg.xml")
+		if(BaseTestCase.environment.equalsIgnoreCase("dev"))
+			factory = new Configuration().configure("preregdev.cfg.xml")
 		.addAnnotatedClass(OtpEntity.class).buildSessionFactory();	
 				else
 				{
@@ -227,8 +227,8 @@ public class prereg_dbread {
 		boolean flag=false;
 		//String preId;
 		
-		if(BaseTestCase.environment.equalsIgnoreCase("integration"))
-			factory = new Configuration().configure("prereginteg.cfg.xml")
+		if(BaseTestCase.environment.equalsIgnoreCase("dev"))
+			factory = new Configuration().configure("preregdev.cfg.xml")
 		.addAnnotatedClass(OtpEntity.class).buildSessionFactory();	
 				else
 				{

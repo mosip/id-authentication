@@ -5,14 +5,17 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -28,6 +31,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.exception.ServiceError;
+import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.templatemanager.spi.TemplateManager;
 import io.mosip.kernel.otpnotification.constant.OtpNotificationErrorConstant;
 import io.mosip.kernel.otpnotification.constant.OtpNotificationPropertyConstant;
@@ -43,6 +47,7 @@ import io.mosip.kernel.otpnotification.exception.OtpNotifierServiceException;
  * @author Ritesh Sinha
  * @since 1.0.0
  */
+@RefreshScope
 @Component
 public class OtpNotificationUtil {
 
@@ -51,6 +56,12 @@ public class OtpNotificationUtil {
 	 */
 	@Value("${mosip.kernel.otpnotification.otp.api}")
 	private String otpServiceApi;
+
+	@Value("${mosip.kernel.otpnotification.request_id}")
+	private String wrapperRequestID;
+
+	@Value("${mosip.kernel.otpnotification.request_version}")
+	private String wrapperRequestVersion;
 
 	/**
 	 * Sms service api.
@@ -87,6 +98,7 @@ public class OtpNotificationUtil {
 	 * 
 	 * @param otp      the otp generated.
 	 * @param template the template provided.
+	 * @param notificationType notification type
 	 * @return the merged template.
 	 */
 	public String templateMerger(String otp, String template, String notificationType) {
@@ -120,10 +132,17 @@ public class OtpNotificationUtil {
 	/**
 	 * This method send SMS notification to the number provided with given template.
 	 * 
-	 * @param number      the mobile number.
-	 * @param smsTemplate the sms template provided.
+	 * @param number
+	 *            the mobile number.
+	 * @param smsTemplate
+	 *            the sms template provided.
 	 */
 	public void sendSmsNotification(String number, String smsTemplate) {
+		RequestWrapper<SmsRequestDto> reqWrapper = new RequestWrapper<>();
+		reqWrapper.setId(wrapperRequestID);
+		reqWrapper.setMetadata(null);
+		reqWrapper.setRequesttime(LocalDateTime.now());
+		reqWrapper.setVersion(wrapperRequestVersion);
 
 		SmsRequestDto smsRequest = new SmsRequestDto();
 
@@ -131,10 +150,12 @@ public class OtpNotificationUtil {
 
 		smsRequest.setMessage(smsTemplate);
 
+		reqWrapper.setRequest(smsRequest);
+
 		HttpHeaders smsHeaders = new HttpHeaders();
 		smsHeaders.setContentType(MediaType.APPLICATION_JSON);
 
-		HttpEntity<SmsRequestDto> smsEntity = new HttpEntity<>(smsRequest, smsHeaders);
+		HttpEntity<RequestWrapper<SmsRequestDto>> smsEntity = new HttpEntity<>(reqWrapper, smsHeaders);
 
 		ResponseEntity<String> response = restTemplate.exchange(smsServiceApi, HttpMethod.POST, smsEntity,
 				String.class);
@@ -154,9 +175,12 @@ public class OtpNotificationUtil {
 	 * This method send email notification to the emailid provided with given
 	 * template.
 	 * 
-	 * @param emailId              the email id provided.
-	 * @param emailBodyTemplate    the email body template provided.
-	 * @param emailSubjectTemplate the email subject template.
+	 * @param emailId
+	 *            the email id provided.
+	 * @param emailBodyTemplate
+	 *            the email body template provided.
+	 * @param emailSubjectTemplate
+	 *            the email subject template.
 	 */
 	public void sendEmailNotification(String emailId, String emailBodyTemplate, String emailSubjectTemplate) {
 		HttpHeaders emailHeaders = new HttpHeaders();
@@ -174,9 +198,8 @@ public class OtpNotificationUtil {
 		String responseBody = response.getBody();
 
 		List<ServiceError> validationErrorsList = null;
-		
-			validationErrorsList = ExceptionUtils.getServiceErrorList(responseBody);
-		
+
+		validationErrorsList = ExceptionUtils.getServiceErrorList(responseBody);
 
 		if (!validationErrorsList.isEmpty()) {
 			throw new OtpNotificationInvalidArgumentException(validationErrorsList);
@@ -186,50 +209,49 @@ public class OtpNotificationUtil {
 	/**
 	 * This method generate OTP agains provided key.
 	 * 
-	 * @param request the dto with key.
+	 * @param request
+	 *            the dto with key.
 	 * @return the generated OTP.
 	 */
-	public String generateOtp(OtpRequestDto request) {
-
+	public String generateOtp(RequestWrapper<OtpRequestDto> request) {
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
-
-		HttpEntity<OtpRequestDto> entity = new HttpEntity<>(request, headers);
-
+		HttpEntity<RequestWrapper<OtpRequestDto>> entity = new HttpEntity<>(request, headers);
 		ResponseEntity<String> response = restTemplate.exchange(otpServiceApi, HttpMethod.POST, entity, String.class);
-
 		String responseBody = response.getBody();
-
 		List<ServiceError> validationErrorsList = null;
-
 		validationErrorsList = ExceptionUtils.getServiceErrorList(responseBody);
-
 		if (!validationErrorsList.isEmpty()) {
 			throw new OtpNotificationInvalidArgumentException(validationErrorsList);
 		}
-
 		JsonNode otpResponse = null;
 		String otp = null;
 		try {
 			otpResponse = mapper.readTree(responseBody);
-
-			otp = otpResponse.get(OtpNotificationPropertyConstant.NOTIFICATION_OTP_VALUE.getProperty()).asText();
-
+			Iterator<JsonNode> iter = otpResponse.iterator();
+			while (iter.hasNext()) {
+				JsonNode parameterNode = iter.next();
+				if (parameterNode.get("otp") != null) {
+					otp = parameterNode.get("otp").asText();
+				}
+			}
 		} catch (IOException e) {
 			throw new OtpNotifierServiceException(
 					OtpNotificationErrorConstant.NOTIFIER_OTP_IO_RETRIVAL_ERROR.getErrorCode(),
 					OtpNotificationErrorConstant.NOTIFIER_OTP_IO_RETRIVAL_ERROR.getErrorMessage());
 		}
-
 		return otp;
 	}
 
 	/**
 	 * This method provide key as per notification channel type mentions.
 	 * 
-	 * @param notificationflag the notification types.
-	 * @param number           the mobile number of user.
-	 * @param emailId          the email id of user.
+	 * @param notificationflag
+	 *            the notification types.
+	 * @param number
+	 *            the mobile number of user.
+	 * @param emailId
+	 *            the email id of user.
 	 * @return the key.
 	 */
 	public String getKey(List<String> notificationflag, String number, String emailId) {
@@ -257,7 +279,8 @@ public class OtpNotificationUtil {
 	/**
 	 * This method validates notification channel type is valid or not.
 	 * 
-	 * @param types the notification channel type.
+	 * @param types
+	 *            the notification channel type.
 	 * @return the true if type is valid.
 	 */
 	public boolean containsNotificationTypes(String types) {
@@ -274,7 +297,8 @@ public class OtpNotificationUtil {
 	/**
 	 * This method validate request dto with valid notification types mention.
 	 * 
-	 * @param request the request dto for OTP notification.
+	 * @param request
+	 *            the request dto for OTP notification.
 	 * @return the list of {@link ServiceError}.
 	 */
 	public List<ServiceError> validationRequestArguments(OtpNotificationRequestDto request) {

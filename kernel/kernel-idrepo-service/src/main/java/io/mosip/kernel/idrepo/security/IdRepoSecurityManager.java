@@ -1,6 +1,7 @@
 package io.mosip.kernel.idrepo.security;
 
 import java.util.Date;
+import java.util.Objects;
 
 import javax.annotation.PostConstruct;
 
@@ -60,20 +61,6 @@ public class IdRepoSecurityManager {
 	@Autowired
 	private ObjectMapper mapper;
 
-	/** The request. */
-	private ObjectNode request;
-
-	/**
-	 * Builds the requet.
-	 */
-	@PostConstruct
-	public void buildRequest() {
-		request = new ObjectNode(mapper.getNodeFactory());
-		request.put("applicationId", env.getProperty(IdRepoConstants.APPLICATION_ID.getValue()));
-		request.put("timeStamp",
-				DateUtils.formatDate(new Date(), env.getProperty(IdRepoConstants.DATETIME_PATTERN.getValue())));
-	}
-
 	/**
 	 * Hash.
 	 *
@@ -81,7 +68,7 @@ public class IdRepoSecurityManager {
 	 *            the identity info
 	 * @return the string
 	 */
-	public String hash(byte[] identityInfo) {
+	public String hash(final byte[] identityInfo) {
 		return HMACUtils.digestAsPlainText(HMACUtils.generateHash(identityInfo));
 	}
 
@@ -92,11 +79,21 @@ public class IdRepoSecurityManager {
 	 * @return the byte[]
 	 * @throws IdRepoAppException the id repo app exception
 	 */
-	public byte[] encrypt(byte[] dataToEncrypt) throws IdRepoAppException {
+	public byte[] encrypt(final byte[] dataToEncrypt) throws IdRepoAppException {
 		try {
+			ObjectNode baseRequest = new ObjectNode(mapper.getNodeFactory());
+			baseRequest.put("id", "string");
+			baseRequest.put("requesttime",
+					DateUtils.formatDate(new Date(), env.getProperty(IdRepoConstants.DATETIME_PATTERN.getValue())));
+			baseRequest.put("version", "1.0");
+			ObjectNode request = new ObjectNode(mapper.getNodeFactory());
+			request.put("applicationId", env.getProperty(IdRepoConstants.APPLICATION_ID.getValue()));
+			request.put("timeStamp",
+					DateUtils.formatDate(new Date(), env.getProperty(IdRepoConstants.DATETIME_PATTERN.getValue())));
 			request.put("data", CryptoUtil.encodeBase64(dataToEncrypt));
+			baseRequest.set("request", request);
 			return encryptDecryptData(
-					restBuilder.buildRequest(RestServicesConstants.CRYPTO_MANAGER_ENCRYPT, request, ObjectNode.class));
+					restBuilder.buildRequest(RestServicesConstants.CRYPTO_MANAGER_ENCRYPT, baseRequest, ObjectNode.class));
 		} catch (IdRepoAppException e) {
 			mosipLogger.error(IdRepoLogger.getUin(), ID_REPO_SECURITY_MANAGER, ENCRYPT_DECRYPT_DATA,
 					e.getErrorText());
@@ -111,11 +108,21 @@ public class IdRepoSecurityManager {
 	 * @return the byte[]
 	 * @throws IdRepoAppException the id repo app exception
 	 */
-	public byte[] decrypt(byte[] dataToDecrypt) throws IdRepoAppException {
+	public byte[] decrypt(final byte[] dataToDecrypt) throws IdRepoAppException {
 		try {
+			ObjectNode baseRequest = new ObjectNode(mapper.getNodeFactory());
+			baseRequest.put("id", "string");
+			baseRequest.put("requesttime",
+					DateUtils.formatDate(new Date(), env.getProperty(IdRepoConstants.DATETIME_PATTERN.getValue())));
+			baseRequest.put("version", "1.0");
+			ObjectNode request = new ObjectNode(mapper.getNodeFactory());
+			request.put("applicationId", env.getProperty(IdRepoConstants.APPLICATION_ID.getValue()));
+			request.put("timeStamp",
+					DateUtils.formatDate(new Date(), env.getProperty(IdRepoConstants.DATETIME_PATTERN.getValue())));
 			request.put("data", CryptoUtil.encodeBase64(dataToDecrypt));
+			baseRequest.set("request", request);
 			return encryptDecryptData(
-					restBuilder.buildRequest(RestServicesConstants.CRYPTO_MANAGER_DECRYPT, request, ObjectNode.class));
+					restBuilder.buildRequest(RestServicesConstants.CRYPTO_MANAGER_DECRYPT, baseRequest, ObjectNode.class));
 		} catch (IdRepoAppException e) {
 			mosipLogger.error(IdRepoLogger.getUin(), ID_REPO_SECURITY_MANAGER, ENCRYPT_DECRYPT_DATA,
 					e.getErrorText());
@@ -130,12 +137,13 @@ public class IdRepoSecurityManager {
 	 * @return the byte[]
 	 * @throws IdRepoAppException the id repo app exception
 	 */
-	private byte[] encryptDecryptData(RestRequestDTO restRequest) throws IdRepoAppException {
+	private byte[] encryptDecryptData(final RestRequestDTO restRequest) throws IdRepoAppException {
 		try {
 			ObjectNode response = restHelper.requestSync(restRequest);
 
-			if (response.has("data")) {
-				return response.get("data").asText().getBytes();
+			if (response.has("response") && Objects.nonNull(response.get("response"))
+					&& response.get("response").has("data") && Objects.nonNull(response.get("response").get("data"))) {
+				return response.get("response").get("data").asText().getBytes();
 			} else {
 				mosipLogger.error(IdRepoLogger.getUin(), ID_REPO_SECURITY_MANAGER, ENCRYPT_DECRYPT_DATA,
 						"No data block found in response");

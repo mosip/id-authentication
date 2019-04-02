@@ -1,6 +1,5 @@
 package io.mosip.kernel.uingenerator.generator;
 
-import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceException;
@@ -26,7 +25,7 @@ public class UinWriter {
 	/**
 	 * The Logger instance
 	 */
-	private static final Logger LOGGER = LoggerFactory.getLogger(UinWriter.class);
+	//private static final Logger LOGGER = LoggerFactory.getLogger(UinWriter.class);
 
 	/**
 	 * Interface used to interact with the persistence context.
@@ -39,27 +38,12 @@ public class UinWriter {
 	 */
 	private Session session;
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.springframework.batch.item.ItemWriter#write(java.util.List)
-	 */
-
-	public void write(List<UinEntity> uins) {
-		setSession();
-		LOGGER.info("Persisting generated uins in database");
-
-		uins.stream().forEach(this::persistUin);
-
-		LOGGER.info("Persisted generated uins in database");
-	}
-
 	/**
 	 * Persist a uin in database. If that uin already exists than rollback
 	 * 
 	 * @param item
 	 */
-	private void persistUin(UinEntity item) {
+	public void persistUin(UinEntity item) {
 		Session currentSession = getSession();
 		if (!currentSession.getTransaction().isActive()) {
 			currentSession.getTransaction().begin();
@@ -78,7 +62,7 @@ public class UinWriter {
 	/**
 	 * Function to set {@link #session} from {@link #entityManager}
 	 */
-	private void setSession() {
+	public void setSession() {
 		entityManager = entityManager.getEntityManagerFactory().createEntityManager();
 		this.session = entityManager.unwrap(Session.class);
 	}
@@ -89,6 +73,15 @@ public class UinWriter {
 	 * @return {@link #session}
 	 */
 	private Session getSession() {
+		if (session == null) {
+			setSession();
+		}
 		return session;
+	}
+
+	public void closeSession() {
+		if (session != null) {
+			session.clear();
+		}
 	}
 }

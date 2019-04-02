@@ -23,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import io.mosip.kernel.auth.adapter.AuthUserDetails;
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.preregistration.booking.codes.RequestCodes;
 import io.mosip.preregistration.booking.dto.AvailabilityDto;
 import io.mosip.preregistration.booking.dto.BookingRequestDTO;
@@ -116,13 +117,13 @@ public class BookingService {
 
 	}
 
-	private Logger log =  LoggerConfiguration.logConfig(BookingService.class);
+	private Logger log = LoggerConfiguration.logConfig(BookingService.class);
 
 	@Autowired
 	private AuditLogUtil auditLogUtil;
-	
-	 public AuthUserDetails  authUserDetails() {
-			return (AuthUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal(); 
+
+	public AuthUserDetails authUserDetails() {
+		return (AuthUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 	}
 
 	/**
@@ -153,10 +154,12 @@ public class BookingService {
 			if (isSaveSuccess) {
 				setAuditValues(EventId.PRE_407.toString(), EventName.PERSIST.toString(), EventType.SYSTEM.toString(),
 						"Availability for booking successfully saved in the database",
-						AuditLogVariables.MULTIPLE_ID.toString(),authUserDetails().getUserId(),authUserDetails().getUsername());
+						AuditLogVariables.MULTIPLE_ID.toString(), authUserDetails().getUserId(),
+						authUserDetails().getUsername());
 			} else {
 				setAuditValues(EventId.PRE_405.toString(), EventName.EXCEPTION.toString(), EventType.SYSTEM.toString(),
-						"addAvailability failed", AuditLogVariables.NO_ID.toString(),authUserDetails().getUserId(),authUserDetails().getUsername());
+						"addAvailability failed", AuditLogVariables.NO_ID.toString(), authUserDetails().getUserId(),
+						authUserDetails().getUsername());
 			}
 		}
 		response.setResponsetime(serviceUtil.getCurrentResponseTime());
@@ -201,11 +204,12 @@ public class BookingService {
 		} finally {
 			if (isSaveSuccess) {
 				setAuditValues(EventId.PRE_401.toString(), EventName.RETRIEVE.toString(), EventType.SYSTEM.toString(),
-						"  Availability retrieved successfully for booking  ",
-						AuditLogVariables.MULTIPLE_ID.toString(),authUserDetails().getUserId(),authUserDetails().getUsername());
+						"  Availability retrieved successfully for booking  ", AuditLogVariables.MULTIPLE_ID.toString(),
+						authUserDetails().getUserId(), authUserDetails().getUsername());
 			} else {
 				setAuditValues(EventId.PRE_405.toString(), EventName.EXCEPTION.toString(), EventType.SYSTEM.toString(),
-						"Availability failed to get", AuditLogVariables.NO_ID.toString(),authUserDetails().getUserId(),authUserDetails().getUsername());
+						"Availability failed to get", AuditLogVariables.NO_ID.toString(), authUserDetails().getUserId(),
+						authUserDetails().getUsername());
 			}
 		}
 		response.setResponsetime(serviceUtil.getCurrentResponseTime());
@@ -299,10 +303,12 @@ public class BookingService {
 		} finally {
 			if (isSaveSuccess) {
 				setAuditValues(EventId.PRE_407.toString(), EventName.PERSIST.toString(), EventType.SYSTEM.toString(),
-						"  Appointment booked successfully    ", AuditLogVariables.MULTIPLE_ID.toString(),authUserDetails().getUserId(),authUserDetails().getUsername());
+						"  Appointment booked successfully    ", AuditLogVariables.MULTIPLE_ID.toString(),
+						authUserDetails().getUserId(), authUserDetails().getUsername());
 			} else {
 				setAuditValues(EventId.PRE_405.toString(), EventName.EXCEPTION.toString(), EventType.SYSTEM.toString(),
-						"Appointment failed to book", AuditLogVariables.NO_ID.toString(),authUserDetails().getUserId(),authUserDetails().getUsername());
+						"Appointment failed to book", AuditLogVariables.NO_ID.toString(), authUserDetails().getUserId(),
+						authUserDetails().getUsername());
 			}
 		}
 		responseDTO.setResponsetime(serviceUtil.getCurrentResponseTime());
@@ -374,68 +380,19 @@ public class BookingService {
 		} finally {
 			if (isSaveSuccess) {
 				setAuditValues(EventId.PRE_403.toString(), EventName.DELETE.toString(), EventType.SYSTEM.toString(),
-						"  Appointment canceled successfully for booking  ", AuditLogVariables.MULTIPLE_ID.toString(),authUserDetails().getUserId(),authUserDetails().getUsername());
+						"  Appointment canceled successfully for booking  ", AuditLogVariables.MULTIPLE_ID.toString(),
+						authUserDetails().getUserId(), authUserDetails().getUsername());
 			} else {
 				setAuditValues(EventId.PRE_405.toString(), EventName.EXCEPTION.toString(), EventType.SYSTEM.toString(),
-						"cancelAppointment failed", AuditLogVariables.NO_ID.toString(),authUserDetails().getUserId(),authUserDetails().getUsername());
+						"cancelAppointment failed", AuditLogVariables.NO_ID.toString(), authUserDetails().getUserId(),
+						authUserDetails().getUsername());
 			}
 		}
 		responseDto.setResponsetime(serviceUtil.getCurrentResponseTime());
 		return responseDto;
 	}
 
-	/**
-	 * This method will get Pre registration Id based on registration center Id.
-	 * 
-	 * @param requestDTO
-	 * @return
-	 */
-	public MainListResponseDTO<PreRegIdsByRegCenterIdResponseDTO> getPreIdsByRegCenterId(
-			MainRequestDTO<PreRegIdsByRegCenterIdDTO> requestDTO) {
-		log.info("sessionId", "idType", "id", "In getPreIdsByRegCenterId method of Booking Service");
-		MainListResponseDTO<PreRegIdsByRegCenterIdResponseDTO> responseDto = new MainListResponseDTO<>();
-		PreRegIdsByRegCenterIdResponseDTO preRegIdsByRegCenterIdResponseDTO = new PreRegIdsByRegCenterIdResponseDTO();
-		List<PreRegIdsByRegCenterIdResponseDTO> preRegIdsByRegCenterIdResponseDTOList = new ArrayList<>();
-		try {
-			if (ValidationUtil.requestValidator(requestDTO)) {
-				String regCenterId = requestDTO.getRequest().getRegistrationCenterId();
-				List<RegistrationBookingEntity> bookingEntities = bookingDAO
-						.findByRegistrationCenterId(regCenterId.trim());
-				Iterator<RegistrationBookingEntity> iterate = bookingEntities.iterator();
-				while (iterate.hasNext()) {
-					String preRegStatusCode = serviceUtil
-							.callGetStatusRestService(iterate.next().getBookingPK().getPreregistrationId());
-					if (!preRegStatusCode.equals(StatusCodes.BOOKED.getCode())) {
-						bookingEntities.remove(bookingEntities.indexOf(iterate.next()));
-					}
-				}
-				List<String> preRegIdList = requestDTO.getRequest().getPreRegistrationIds();
-				List<String> entityPreRegIdList = new LinkedList<>();
-				for (RegistrationBookingEntity bookingEntity : bookingEntities) {
-					entityPreRegIdList.add(bookingEntity.getBookingPK().getPreregistrationId());
-				}
-				preRegIdList.retainAll(entityPreRegIdList);
-				if (!preRegIdList.isEmpty()) {
-					preRegIdsByRegCenterIdResponseDTO.setRegistrationCenterId(regCenterId);
-					preRegIdsByRegCenterIdResponseDTO.setPreRegistrationIds(preRegIdList);
-					preRegIdsByRegCenterIdResponseDTOList.add(preRegIdsByRegCenterIdResponseDTO);
-
-					responseDto.setResponsetime(serviceUtil.getCurrentResponseTime());
-					responseDto.setResponse(preRegIdsByRegCenterIdResponseDTOList);
-				} else {
-					throw new BookingDataNotFoundException(ErrorCodes.PRG_BOOK_RCI_013.toString(),
-							ErrorMessages.BOOKING_DATA_NOT_FOUND.toString());
-				}
-			}
-		} catch (Exception ex) {
-			log.error("sessionId", "idType", "id",
-					"In getPreIdsByRegCenterId method of Booking Service for Exception- " + ex.getMessage());
-			new BookingExceptionCatcher().handle(ex);
-		}
-
-		return responseDto;
-	}
-
+	
 	/**
 	 * 
 	 * This booking API will be called by bookAppointment.
@@ -538,10 +495,12 @@ public class BookingService {
 		} finally {
 			if (isSaveSuccess) {
 				setAuditValues(EventId.PRE_402.toString(), EventName.UPDATE.toString(), EventType.SYSTEM.toString(),
-						"  Booking cancel successfully ", AuditLogVariables.MULTIPLE_ID.toString(),authUserDetails().getUserId(),authUserDetails().getUsername());
+						"  Booking cancel successfully ", AuditLogVariables.MULTIPLE_ID.toString(),
+						authUserDetails().getUserId(), authUserDetails().getUsername());
 			} else {
 				setAuditValues(EventId.PRE_405.toString(), EventName.EXCEPTION.toString(), EventType.SYSTEM.toString(),
-						" Booking failed to cancel ", AuditLogVariables.NO_ID.toString(),authUserDetails().getUserId(),authUserDetails().getUsername());
+						" Booking failed to cancel ", AuditLogVariables.NO_ID.toString(), authUserDetails().getUserId(),
+						authUserDetails().getUsername());
 			}
 		}
 		return cancelBookingResponseDTO;
@@ -652,7 +611,8 @@ public class BookingService {
 	 * @param description
 	 * @param idType
 	 */
-	public void setAuditValues(String eventId, String eventName, String eventType, String description, String idType,String userId,String userName) {
+	public void setAuditValues(String eventId, String eventName, String eventType, String description, String idType,
+			String userId, String userName) {
 		AuditRequestDto auditRequestDto = new AuditRequestDto();
 		auditRequestDto.setEventId(eventId);
 		auditRequestDto.setEventName(eventName);
@@ -665,30 +625,30 @@ public class BookingService {
 		auditRequestDto.setModuleName(AuditLogVariables.BOOKING_SERVICE.toString());
 		auditLogUtil.saveAuditDetails(auditRequestDto);
 	}
-   
-	
-	/**
-	This Method
-	is used
-	to retrieve
-	booked PreIds
-	by date
-	and regCenterId**
-	@param fromDate
-	 *            pass fromDate*
-	@param toDate
-	 *            pass toDate*@return
-	response List
-	of Booked preRegIds***/
 
-	public MainResponseDTO<PreRegIdsByRegCenterIdResponseDTO> getBookedPreRegistrationByDate(LocalDate fromDate,
-			LocalDate toDate, String regCenterId) {
+	/**
+	 * This Method is used to retrieve booked PreIds by date and regCenterId**
+	 * 
+	 * @param fromDate
+	 *            pass fromDate*
+	 * @param toDate
+	 *            pass toDate*@return response List of Booked preRegIds
+	 ***/
+
+	public MainResponseDTO<PreRegIdsByRegCenterIdResponseDTO> getBookedPreRegistrationByDate(String fromDateStr,
+			String toDateStr, String regCenterId) {
 		log.info("sessionId", "idType", "id", "In getBookedPreRegistrationByDate method of booking service ");
 		MainResponseDTO<PreRegIdsByRegCenterIdResponseDTO> response = new MainResponseDTO<>();
 		try {
-			if (toDate == null) {
-				toDate = fromDate;
+
+			if (toDateStr == null || toDateStr.isEmpty()) {
+				toDateStr = fromDateStr;
 			}
+			LocalDate fromDate = DateUtils
+					.parseDateToLocalDateTime(DateUtils.parseToDate(fromDateStr.trim(), "yyyy-MM-dd")).toLocalDate();
+			LocalDate toDate = DateUtils.parseDateToLocalDateTime(DateUtils.parseToDate(toDateStr.trim(), "yyyy-MM-dd"))
+					.toLocalDate();
+
 			LocalDateTime fromLocaldate = fromDate.atStartOfDay();
 			LocalDateTime toLocaldate = toDate.atTime(23, 59, 59);
 
@@ -699,7 +659,9 @@ public class BookingService {
 			responseDTO.setRegistrationCenterId(regCenterId);
 
 			response.setResponse(responseDTO);
-		} catch (Exception ex) {
+		} catch (
+
+		Exception ex) {
 			log.error("sessionId", "idType", "id",
 					"In getPreRegistrationByDate method of pre-registration service - " + ex.getMessage());
 			new BookingExceptionCatcher().handle(ex);

@@ -6,6 +6,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.time.LocalDateTime;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +19,11 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.smsnotification.SmsNotificationBootApplication;
+import io.mosip.kernel.smsnotification.dto.SmsRequestDto;
 import io.mosip.kernel.smsnotification.dto.SmsResponseDto;
 import io.mosip.kernel.smsnotification.service.impl.SmsNotificationServiceImpl;
 
@@ -30,6 +36,9 @@ public class SmsNotificationControllerTest {
 	@Autowired
 	private MockMvc mockMvc;
 
+	@Autowired
+	private ObjectMapper objectMapper;
+
 	@MockBean
 	SmsNotificationServiceImpl service;
 
@@ -40,12 +49,22 @@ public class SmsNotificationControllerTest {
 
 		responseDto.setStatus("success");
 
-		String json = "{\"number\":\"8987672341\",\"message\":\"hello..your otp is 342891\"}";
+		SmsRequestDto requestDto = new SmsRequestDto();
+		requestDto.setMessage("hello..your otp is 342891");
+		requestDto.setNumber("8987672341");
+
+		RequestWrapper<SmsRequestDto> reqWrapperDTO = new RequestWrapper<>();
+		reqWrapperDTO.setId("ID");
+		reqWrapperDTO.setMetadata(null);
+		reqWrapperDTO.setRequest(requestDto);
+		reqWrapperDTO.setRequesttime(LocalDateTime.now());
+		reqWrapperDTO.setVersion("v1.0");
+		String json = objectMapper.writeValueAsString(reqWrapperDTO);
 
 		when(service.sendSmsNotification("8987672341", "hello..your otp is 342891")).thenReturn(responseDto);
 
-		mockMvc.perform(post("/v1.0/sms/send").contentType(MediaType.APPLICATION_JSON).content(json))
-				.andExpect(status().isOk()).andExpect(jsonPath("$.status", is("success")));
+		mockMvc.perform(post("/sms/send").contentType(MediaType.APPLICATION_JSON).content(json))
+				.andExpect(status().isOk()).andExpect(jsonPath("$.response.status", is("success")));
 	}
 
 }

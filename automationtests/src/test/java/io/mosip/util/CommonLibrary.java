@@ -678,6 +678,14 @@ public class CommonLibrary extends BaseTestCase{
                return getResponse;
              }
 
-    
+	public Response get_Request_Path_queryParamString(String url,HashMap<String, String> path_value,HashMap<String, String> query_value) {
+        logger.info("REST-ASSURED: Sending a GET request to " + url);
+        Response getResponse = given().relaxedHTTPSValidation().pathParameters(path_value).queryParams(query_value)
+                    .log().all().when().get(url).then().log().all().extract().response();
+        // log then response
+        logger.info("REST-ASSURED: The response from the request is: " + getResponse.asString());
+        logger.info("REST-ASSURED: The response Time is: " + getResponse.time());
+        return getResponse;
+  } // end GET_REQUEST 
 
 }

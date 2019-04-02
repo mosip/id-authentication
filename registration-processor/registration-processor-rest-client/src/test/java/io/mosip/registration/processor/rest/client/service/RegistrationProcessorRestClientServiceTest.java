@@ -115,5 +115,57 @@ public class RegistrationProcessorRestClientServiceTest {
 		registrationProcessorRestClientService.postApi(ApiName.AUDIT, pathSegments, "query1", "12345", auditRequestDto,
 				AuditResponseDto.class);
 	}
+	
+	@Test
+	public void patchObjectSuccessTest() throws Exception {
+		AuditRequestDto auditRequestDto = new AuditRequestDto();
+		Mockito.when(env.getProperty(ArgumentMatchers.any())).thenReturn("AUDIT");
+		Mockito.when(restApiClient.patchApi(ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any()))
+				.thenReturn(auditResponseDto);
+		List<String> pathSegments = new ArrayList<>();
+		pathSegments.add("test");
+		AuditResponseDto resultDto = (AuditResponseDto) registrationProcessorRestClientService.patchApi(ApiName.AUDIT,
+				pathSegments, "query1", "12345", auditRequestDto, AuditResponseDto.class);
+		assertEquals(true, resultDto.isStatus());
+	}
+	
+	@Test(expected = ApisResourceAccessException.class)
+	public void patchObjectTestFailureTest() throws Exception {
+		AuditRequestDto auditRequestDto = new AuditRequestDto();
+		Mockito.when(env.getProperty(ArgumentMatchers.any())).thenReturn("AUDIT");
+		ResourceAccessException exp = new ResourceAccessException("errorMessage");
+		List<String> pathSegments = new ArrayList<>();
+		pathSegments.add("test");
+		Mockito.when(restApiClient.patchApi(ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any()))
+				.thenThrow(exp);
+		registrationProcessorRestClientService.patchApi(ApiName.AUDIT, pathSegments, "query1", "12345", auditRequestDto,
+				AuditResponseDto.class);
+	}
+	
+	@Test
+	public void putObjectSuccessTest() throws Exception {
+		AuditRequestDto auditRequestDto = new AuditRequestDto();
+		Mockito.when(env.getProperty(ArgumentMatchers.any())).thenReturn("AUDIT");
+		Mockito.when(restApiClient.putApi(ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any()))
+				.thenReturn(auditResponseDto);
+		List<String> pathSegments = new ArrayList<>();
+		pathSegments.add("test");
+		AuditResponseDto resultDto = (AuditResponseDto) registrationProcessorRestClientService.putApi(ApiName.AUDIT,
+				pathSegments, "query1", "12345", auditRequestDto, AuditResponseDto.class);
+		assertEquals(true, resultDto.isStatus());
+	}
+	
+	@Test(expected = ApisResourceAccessException.class)
+	public void putObjectTestFailureTest() throws Exception {
+		AuditRequestDto auditRequestDto = new AuditRequestDto();
+		Mockito.when(env.getProperty(ArgumentMatchers.any())).thenReturn("AUDIT");
+		ResourceAccessException exp = new ResourceAccessException("errorMessage");
+		List<String> pathSegments = new ArrayList<>();
+		pathSegments.add("test");
+		Mockito.when(restApiClient.putApi(ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any()))
+				.thenThrow(exp);
+		registrationProcessorRestClientService.putApi(ApiName.AUDIT, pathSegments, "query1", "12345", auditRequestDto,
+				AuditResponseDto.class);
+	}
 
 }

@@ -4,20 +4,14 @@
 	xmlns="http://maven.apache.org/POM/4.0.0"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<modelVersion>4.0.0</modelVersion>
-
 	<parent>
 		<groupId>io.mosip.kernel</groupId>
 		<artifactId>kernel-parent</artifactId>
-		<version>0.9.9</version>
+		<version>0.10.1</version>
 	</parent>
-
 	<artifactId>kernel-otpnotification-service</artifactId>
-
 	<name>kernel-otpnotification-service</name>
-
 	<dependencies>
-
-
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
@@ -34,7 +28,6 @@
 			<version>${spring.boot.version}</version>
 			<scope>test</scope>
 		</dependency>
-
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-templatemanager-velocity</artifactId>
@@ -45,20 +38,22 @@
 			<artifactId>spring-cloud-starter-config</artifactId>
 			<version>${spring-cloud-config.version}</version>
 		</dependency>
-
 		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>
 			<artifactId>httpclient</artifactId>
 			<version>${apache.httpcomponents.version}</version>
 		</dependency>
-
 		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
 			<version>${h2.version}</version>
 			<scope>test</scope>
 		</dependency>
-
+		<dependency>
+			<groupId>io.mosip.kernel</groupId>
+			<artifactId>kernel-logger-logback</artifactId>
+			<version>${project.version}</version>
+		</dependency>
 		<dependency>
 			<groupId>io.springfox</groupId>
 			<artifactId>springfox-swagger-ui</artifactId>
@@ -74,10 +69,6 @@
 			<artifactId>kernel-core</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-
-
-
-
 	</dependencies>
 	<build>
 		<plugins>
