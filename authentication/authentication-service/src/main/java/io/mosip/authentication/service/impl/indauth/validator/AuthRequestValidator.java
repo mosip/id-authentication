@@ -103,14 +103,14 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 				validateAllowedAuthTypes(authRequestDto, errors, ALLOWED_AUTH_TYPE);
 			}
 			if (!errors.hasErrors()) {
-			validateReqTime(authRequestDto.getRequestTime(), errors, REQUEST_TIME);
-			//Validation for Time Stamp in the RequestDTO.
-			validateReqTime(authRequestDto.getRequest().getTimestamp(),errors,REQUEST_REQUEST_TIME );
+				validateReqTime(authRequestDto.getRequestTime(), errors, REQUEST_TIME);
+				// Validation for Time Stamp in the RequestDTO.
+				validateReqTime(authRequestDto.getRequest().getTimestamp(), errors, REQUEST_REQUEST_TIME);
 			}
 			if (!errors.hasErrors()) {
-			validateTxnId(authRequestDto.getTransactionID(), errors,TRANSACTION_ID);
-			//Validation for TransaactionId in the RequestDTO.
-			validateTxnId(authRequestDto.getRequest().getTransactionID(),errors,REQUEST_TRANSACTION_ID);
+				validateTxnId(authRequestDto.getTransactionID(), errors, TRANSACTION_ID);
+				// Validation for TransaactionId in the RequestDTO.
+				validateTxnId(authRequestDto.getRequest().getTransactionID(), errors, REQUEST_TRANSACTION_ID);
 			}
 			if (!errors.hasErrors()) {
 				validateAuthType(authRequestDto.getRequestedAuth(), errors);
@@ -123,13 +123,9 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 				super.validate(target, errors);
 				String individualId = authRequestDto.getIndividualId();
 				String individualIdType = authRequestDto.getIndividualIdType();
-				
-				if(!individualId.isEmpty()) {
-					validateIdvId(individualId, individualIdType, errors);
-				}
-				 else {
-					// TODO Missing UIN/VID
-				}
+
+				validateIdvId(individualId, individualIdType, errors);
+
 				if (!errors.hasErrors()) {
 					checkAuthRequest(authRequestDto, errors);
 				}
