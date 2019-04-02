@@ -80,8 +80,8 @@ public class KernelMasterDataR {
 				else
 				{
 					if(BaseTestCase.environment.equalsIgnoreCase("qa"))
-						factory = new Configuration().configure("masterdataqa.cfg.xml")
-					.addAnnotatedClass(OtpEntity.class).buildSessionFactory();	
+						factory = new Configuration().configure("masterdatainteg.cfg.xml")
+					.addAnnotatedClass(dtoClass).buildSessionFactory();	
 				}
 		session = factory.getCurrentSession();
 		session.beginTransaction();
@@ -127,7 +127,7 @@ public class KernelMasterDataR {
 					else
 					{
 						if(BaseTestCase.environment.equalsIgnoreCase("qa"))
-							factory = new Configuration().configure("masterdataqa.cfg.xml")
+							factory = new Configuration().configure("masterdatainteg.cfg.xml")
 						.addAnnotatedClass(OtpEntity.class).buildSessionFactory();	
 					}
 			session = factory.getCurrentSession();
@@ -234,13 +234,14 @@ public class KernelMasterDataR {
 			
 		} 
 		
+
 		@SuppressWarnings("deprecation")
 		public static List<String> getDataFromDB(Class dtoClass,String query)
 		{
 			List<String> flag=null;
 
-			if(BaseTestCase.environment.equalsIgnoreCase("integration"))
-				factory = new Configuration().configure("kernelinteg.cfg.xml")
+			if(BaseTestCase.environment.equalsIgnoreCase("dev"))
+				factory = new Configuration().configure("kerneldev.cfg.xml")
 			.addAnnotatedClass(dtoClass).buildSessionFactory();	
 					else
 					{
@@ -278,4 +279,5 @@ public class KernelMasterDataR {
 			return objs;
 				
 		}
+
 }

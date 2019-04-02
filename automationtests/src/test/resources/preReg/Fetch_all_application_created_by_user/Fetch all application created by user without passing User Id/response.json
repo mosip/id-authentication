@@ -1,9 +1,10 @@
 {
+    "id": null,
+    "version": null,
     "err": {
         "errorCode": "PRG_CORE_REQ_001",
         "message": "INVALID_REQUEST_USER_ID"
     },
-    "status": false,
-    "resTime": "2019-02-06T15:02:39.862Z",
+    "responsetime": "2019-03-25T14:10:49.061Z",
     "response": null
 }

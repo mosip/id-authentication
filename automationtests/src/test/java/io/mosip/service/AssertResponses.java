@@ -45,6 +45,7 @@ public class AssertResponses {
 		if (obj1.hashCode() == obj2.hashCode()) {
 			logger.info("both object are equal");
 			softAssert.assertTrue(obj1.equals(obj2));
+			logger.info("both object are equal");
 			softAssert.assertAll();
 			return true;
 

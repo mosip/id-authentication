@@ -4,18 +4,18 @@
 <suite name="Mosip API Suite">
 	<!-- Passing Group as parmeter unsing "testType" Possible Groups are: smoke 
 		regression smokeAndRegression -->
-	<listeners>
+<!-- 	<listeners>
 		<listener class-name="io.mosip.util.CustomTestNGReporter" />
-	</listeners>
+	</listeners> -->
 
-
-<!--   Passing Group as parmeter unsing "testType"
+<!-- 
+  Passing Group as parmeter unsing "testType"
   Possible Groups are:
   						smoke
   						regression
   						smokeAndRegression -->
  
-                 <test name="Kernel Tests">
+                  <test name="Kernel Tests">
                      <parameter name="testType" value="smokeandregression" />
                      <classes>
                          <class name="io.mosip.kernel.tests.AuditLog" />
@@ -88,7 +88,7 @@
 	
 		
 	
-	 <test name="PreRegistration Tests">
+	  <test name="PreRegistration Tests">
 
 		<parameter name="testType" value="smoke" />
 
@@ -125,8 +125,9 @@
 
 		</classes>
 
-	</test>
+	</test> 
  
+
 
 
 
@@ -197,6 +198,7 @@
 	</test> 
  -->
 	
+
 
 	
 </suite>

@@ -92,7 +92,7 @@ public class DeleteDocumentByDocId extends BaseTestCase implements ITest {
 	@DataProvider(name = "DeleteDocumentByDocId")
 	public static Object[][] readData(ITestContext context) throws Exception {
 		String testParam = context.getCurrentXmlTest().getParameter("testType");
-		switch ("smokeAndRegression") {
+		switch (testParam) {
 		case "smoke":
 			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
 		case "regression":
@@ -123,12 +123,13 @@ public class DeleteDocumentByDocId extends BaseTestCase implements ITest {
 		Response docUploadResponse = preRegLib.documentUpload(createApplicationResponse);
 		
 		//Document Id of Uploaded document
-		String docId=docUploadResponse.jsonPath().get("response[0].documnetId").toString();
+		String docId=docUploadResponse.jsonPath().get("response[0].documentId").toString();
 		
 		//Delete All Document by Document Id
 		Response delAllDocByPreId = preRegLib.deleteAllDocumentByDocId(docId);
 		
-		outerKeys.add("resTime");
+		
+		outerKeys.add("responsetime");
 		innerKeys.add("documnet_Id");
 		
 		
@@ -174,7 +175,7 @@ public class DeleteDocumentByDocId extends BaseTestCase implements ITest {
          * Delete document by Document Id Resource URI           
          */
         
-        preReg_URI = commonLibrary.fetch_IDRepo("prereg_DeleteDocumentByDocIdURI");
+        preReg_URI = commonLibrary.fetch_IDRepo().get("prereg_DeleteDocumentByDocIdURI");
 		
 		
 	}
