@@ -21,14 +21,14 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import io.mosip.registration.config.RegistrationApp;
+import io.mosip.registration.config.RegistrationUpdate;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ RegistrationApp.class })
+@PrepareForTest({ RegistrationUpdate.class })
 public class RegistrationAppTest {
 
 	@InjectMocks
-	private RegistrationApp registrationApp;
+	private RegistrationUpdate registrationApp;
 
 	@Rule
 	public MockitoRule mockitoRule = MockitoJUnit.rule();
