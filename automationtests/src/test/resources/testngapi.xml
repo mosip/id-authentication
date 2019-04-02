@@ -18,7 +18,7 @@
                  <test name="Kernel Tests">
                      <parameter name="testType" value="smokeandregression" />
                      <classes>
-                           <class name="io.mosip.kernel.tests.AuditLog" />
+                         <class name="io.mosip.kernel.tests.AuditLog" />
                            <class name="io.mosip.kernel.tests.CentetMachineUserMappingToMasterData" />
                            <class name="io.mosip.kernel.tests.EmailNotification" />
                            <class name="io.mosip.kernel.tests.EncrptionDecryption" />
@@ -62,7 +62,12 @@
                            <class name="io.mosip.kernel.tests.SyncPublicKeyToRegClient" />
                            <class name="io.mosip.kernel.tests.UINGeneration" />
                            <class name="io.mosip.kernel.tests.ValidateGenderByName" />
-                           <class name="io.mosip.kernel.tests.ValidateLocationByName" />
+                           <class name="io.mosip.kernel.tests.ValidateLocationByName" />  
+                           <class name="io.mosip.kernel.tests.SyncMasterDataWithoutRegID" />
+                           <class name="io.mosip.kernel.tests.SyncMasterDataWithRegID" />
+                           <class name="io.mosip.kernel.tests.UINStatusCheck" />
+                           <class name="io.mosip.kernel.tests.UINStatusUpdate" />
+                           <class name="io.mosip.kernel.tests.GetAllTemplateByTemplateTypeCode" />
                      </classes>
               </test> 
 
@@ -113,7 +118,7 @@
                            <class name="io.mosip.preregistration.tests.RetrivePreRegistration" />
                            <class name="io.mosip.preregistration.tests.UpdatePreRegistrationStatus" />
                            
-                         <!--   <class name="io.mosip.preregistration.tests.SyncMasterData" /> -->
+                           <class name="io.mosip.preregistration.tests.SyncMasterData" />
 			
 
 			
@@ -121,12 +126,11 @@
 		</classes>
 
 	</test>
+ 
 
 
 
-
-	
-<!-- 	<test name="Authentication Tests">
+	<!-- <test name="Authentication Tests">
 		<parameter name="testType" value="smokeandregression" />
 		<classes>
 		
@@ -190,11 +194,10 @@
 				<class
 				name="io.mosip.authentication.idrepo.tests.UpdateIdentityDetailIDRepoNegativeScenario" />
 		</classes>
-	</test>  -->
-
+	</test> 
+ -->
 	
 
-	
 	
 </suite>
 	

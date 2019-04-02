@@ -233,4 +233,49 @@ public class KernelMasterDataR {
 		    return true;
 			
 		} 
+		
+		@SuppressWarnings("deprecation")
+		public static List<String> getDataFromDB(Class dtoClass,String query)
+		{
+			List<String> flag=null;
+
+			if(BaseTestCase.environment.equalsIgnoreCase("integration"))
+				factory = new Configuration().configure("kernelinteg.cfg.xml")
+			.addAnnotatedClass(dtoClass).buildSessionFactory();	
+					else
+					{
+						if(BaseTestCase.environment.equalsIgnoreCase("qa"))
+							factory = new Configuration().configure("kernelqa.cfg.xml")
+						.addAnnotatedClass(dtoClass).buildSessionFactory();	
+					}
+			session = factory.getCurrentSession();
+			session.beginTransaction();
+			flag=getData(session, query);
+			//logger.info("flag is : " +flag);
+			return flag;
+			
+			//session.close();
+		}
+		
+		
+
+		@SuppressWarnings("unchecked")
+		private static List<String> getData(Session session, String queryString)
+		{
+		  int size;
+			Query query = session.createSQLQuery(queryString); 
+			
+		
+			List<String> objs = (List<String>) query.list();
+			size=objs.size();
+			logger.info("Size is : " +size);
+				// commit the transaction
+						session.getTransaction().commit();
+							
+							factory.close();
+
+		
+			return objs;
+				
+		}
 }
