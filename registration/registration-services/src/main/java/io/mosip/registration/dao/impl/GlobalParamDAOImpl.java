@@ -1,5 +1,6 @@
 package io.mosip.registration.dao.impl;
 
+import java.sql.Timestamp;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -8,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dao.GlobalParamDAO;
@@ -108,5 +110,31 @@ public class GlobalParamDAOImpl implements GlobalParamDAO {
 	@Override
 	public List<GlobalParam> getAllEntries() {
 		return globalParamRepository.findAll();
+	}
+
+	/* (non-Javadoc)
+	 * @see io.mosip.registration.dao.GlobalParamDAO#updateSoftwareUpdateStatus(java.lang.String)
+	 */
+	@Override
+	public GlobalParam updateSoftwareUpdateStatus(String status) {
+		
+		LOGGER.info("REGISTRATION - GLOBALPARAMS - GLOBAL_PARAM_DAO_IMPL", RegistrationConstants.APPLICATION_NAME,
+				RegistrationConstants.APPLICATION_ID, "Updating the SoftwareUpdate flag started.");
+
+		Timestamp time = Timestamp.valueOf(DateUtils.getUTCCurrentDateTime());
+
+		GlobalParamId globalParamId = new GlobalParamId();
+		globalParamId.setCode(RegistrationConstants.IS_SOFTWARE_UPDATE_AVAILABLE);
+		globalParamId.setLangCode(RegistrationConstants.ENGLISH_LANG_CODE);
+		
+		GlobalParam globalParam = get(globalParamId);
+		
+		globalParam.setVal(status);
+		globalParam.setUpdBy(RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM);
+		globalParam.setUpdDtimes(time);
+		
+		LOGGER.info("REGISTRATION - GLOBALPARAMS - GLOBAL_PARAM_DAO_IMPL", RegistrationConstants.APPLICATION_NAME,
+				RegistrationConstants.APPLICATION_ID, "Updating the SoftwareUpdate flag ended.");
+		return globalParamRepository.update(globalParam);
 	}
 }

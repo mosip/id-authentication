@@ -5,6 +5,7 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 
 import java.net.SocketTimeoutException;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,7 +25,9 @@ import io.mosip.registration.constants.LoggerConstants;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.dao.GlobalParamDAO;
+import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.ResponseDTO;
+import io.mosip.registration.dto.SuccessResponseDTO;
 import io.mosip.registration.entity.GlobalParam;
 import io.mosip.registration.entity.id.GlobalParamId;
 import io.mosip.registration.exception.RegBaseCheckedException;
@@ -216,5 +219,38 @@ public class GlobalParamServiceImpl extends BaseService implements GlobalParamSe
 		globalParam.setVal(value);
 		globalParam.setGlobalParamId(globalParamId);
 		globalParamList.add(globalParam);
+	}
+
+	/* (non-Javadoc)
+	 * @see io.mosip.registration.service.config.GlobalParamService#updateSoftwareUpdateStatus(boolean)
+	 */
+	@Override
+	public ResponseDTO updateSoftwareUpdateStatus() {
+
+		LOGGER.info(LoggerConstants.GLOBAL_PARAM_SERVICE_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
+				"Updating the SoftwareUpdate flag started.");
+
+		ResponseDTO responseDTO = new ResponseDTO();
+
+		GlobalParam globalParam = globalParamDAO.updateSoftwareUpdateStatus(RegistrationConstants.ENABLE);
+
+		if (globalParam.getVal().equalsIgnoreCase(RegistrationConstants.ENABLE)) {
+
+			SuccessResponseDTO successResponseDTO = new SuccessResponseDTO();
+			successResponseDTO.setMessage(RegistrationConstants.SOFTWARE_UPDATE_SUCCESS_MSG);
+			responseDTO.setSuccessResponseDTO(successResponseDTO);
+
+		} else {
+
+			List<ErrorResponseDTO> errorResponseDTOs = new ArrayList<>();
+			ErrorResponseDTO errorResponseDTO = new ErrorResponseDTO();
+			errorResponseDTO.setMessage(RegistrationConstants.SOFTWARE_UPDATE_FAILURE_MSG);
+			errorResponseDTOs.add(errorResponseDTO);
+			responseDTO.setErrorResponseDTOs(errorResponseDTOs);
+
+		}
+		LOGGER.info(LoggerConstants.GLOBAL_PARAM_SERVICE_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
+				"Updating the SoftwareUpdate flag ended.");
+		return responseDTO;
 	}
 }

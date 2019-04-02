@@ -591,6 +591,7 @@ public class RegistrationConstants {
 	public static final String ICS_CODE_SEVEN = "REG-ICS‌-007";
 	public static final String PAK_APPRVL_MAX_CNT = "REG-ICS‌-008";
 	public static final String PAK_APPRVL_MAX_TIME = "REG-ICS‌-009";
+	public static final String REG_REC_SEVEN = "REG-REC‌-007";
 	public static final String OPT_TO_REG_LAST_CAPTURED_TIME = "lastCapturedTime";
 	public static final String LATITUDE = "latitude";
 	public static final String OPT_TO_REG_MDS_J00001 = "MDS_J00001";
@@ -612,6 +613,9 @@ public class RegistrationConstants {
 	public static final String REG_PAK_MAX_CNT_OFFLINE_FREQ = "mosip.registration.packet.maximum.count.offline.frequency";
 	public static final String MOSIP_REGISTRATION = "mosip.registration.";
 	public static final String FREQUENCY = "frequency";
+	public static final String SOFTWARE_UPDATE_SUCCESS_MSG = "SoftWareUpdate Flag Updated Successfully!";
+	public static final String SOFTWARE_UPDATE_FAILURE_MSG = "Error in Updating SoftWareUpdate Flag!";
+	public static final String SOFTWARE_UPDATE_MAX_CONFIGURED_FREQ = "mosip.registration.softwareUpdateCheck_configured_frequency";
 
 	/** Packet Status Sync Constants */
 	public static final String PACKET_STATUS_SYNC_RESPONSE_ENTITY = "registrations";
@@ -720,6 +724,8 @@ public class RegistrationConstants {
 	public static final String GPS_DEVICE_MODEL = "mosip.registration.gps_device_model";
 	public static final String GPS_DEVICE_DISABLE_FLAG = "mosip.registration.gps_device_enable_flag";
 	public static final String PRE_REG_PACKET_LOCATION = "mosip.registration.registration_pre_reg_packet_location";
+	public static final String IS_SOFTWARE_UPDATE_AVAILABLE = "mosip.registration.is_software_update_available";
+	
 	// Spring Batch-Jobs
 	public static final String JOB_TRIGGER_STARTED = "Trigger started";
 	public static final String JOB_TRIGGER_COMPLETED = "Trigger completed";
@@ -1044,6 +1050,7 @@ public class RegistrationConstants {
 	public static final String OPT_TO_REG_WEAK_GPS = "OPT_TO_REG_WEAK_GPS";
 	public static final String OPT_TO_REG_INSERT_GPS = "OPT_TO_REG_INSERT_GPS";
 	public static final String OPT_TO_REG_GPS_PORT_MISMATCH = "OPT_TO_REG_GPS_PORT_MISMATCH";
+	public static final String OPT_TO_REG_LAST_SOFTWAREUPDATE_CHECK = "OPT_TO_REG_LAST_SOFTWAREUPDATE_CHECK";
 
 	public static final String POLICY_SYNC_SERVICE = "policysync";
 	public static final String KEY_NAME = "mosip.registration.key_policy_sync_threshold_value";

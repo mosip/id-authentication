@@ -59,6 +59,7 @@ import io.mosip.registration.service.LoginService;
 import io.mosip.registration.service.MasterSyncService;
 import io.mosip.registration.service.UserDetailService;
 import io.mosip.registration.service.UserOnboardService;
+import io.mosip.registration.service.config.GlobalParamService;
 import io.mosip.registration.util.common.OTPManager;
 import io.mosip.registration.util.common.PageFlow;
 import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
@@ -166,6 +167,9 @@ public class LoginController extends BaseController implements Initializable {
 	@Autowired
 	private FaceFacade faceFacade;
 
+	@Autowired
+	private GlobalParamService globalParamService;
+
 	private boolean isNewUser = false;
 
 	@Autowired
@@ -192,14 +196,38 @@ public class LoginController extends BaseController implements Initializable {
 
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
-		otpValidity.setText("Valid for " + otpValidityImMins + " minutes");
-		stopTimer();
-		password.textProperty().addListener((obsValue, oldValue, newValue) -> {
-			if (newValue.length() > Integer
-					.parseInt(String.valueOf(ApplicationContext.map().get(RegistrationConstants.PWORD_LENGTH)))) {
-				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.PWORD_LENGTH);
+
+		try {
+			// TODO : replacing the below condition with hasUpdate() in reg-client.
+			if (true) {
+
+				ResponseDTO responseDTO = globalParamService.updateSoftwareUpdateStatus();
+
+				if (responseDTO != null && responseDTO.getSuccessResponseDTO() != null) {
+					LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
+							responseDTO.getSuccessResponseDTO().getMessage());
+				} else if (responseDTO != null && responseDTO.getErrorResponseDTOs() != null
+						&& !responseDTO.getErrorResponseDTOs().isEmpty()) {
+					LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
+							responseDTO.getErrorResponseDTOs().get(0).getMessage());
+				}
 			}
-		});
+
+			otpValidity.setText("Valid for " + otpValidityImMins + " minutes");
+			stopTimer();
+			password.textProperty().addListener((obsValue, oldValue, newValue) -> {
+				if (newValue.length() > Integer
+						.parseInt(String.valueOf(ApplicationContext.map().get(RegistrationConstants.PWORD_LENGTH)))) {
+					generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.PWORD_LENGTH);
+				}
+			});
+
+		} catch (RuntimeException exception) {
+
+			LOGGER.error(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
+					exception.getMessage() + ExceptionUtils.getStackTrace(exception));
+
+		}
 	}
 
 	private List<String> loginList = new ArrayList<>();
@@ -255,8 +283,7 @@ public class LoginController extends BaseController implements Initializable {
 	/**
 	 * Validate user id.
 	 *
-	 * @param event
-	 *            the event
+	 * @param event the event
 	 */
 	public void validateUserId(ActionEvent event) {
 
@@ -627,8 +654,7 @@ public class LoginController extends BaseController implements Initializable {
 	/**
 	 * Load login screen depending on Loginmode
 	 * 
-	 * @param loginMode
-	 *            login screen to be loaded
+	 * @param loginMode login screen to be loaded
 	 */
 	public void loadLoginScreen(String loginMode) {
 
@@ -660,8 +686,7 @@ public class LoginController extends BaseController implements Initializable {
 	/**
 	 * Validating User role and Machine mapping during login
 	 * 
-	 * @param userId
-	 *            entered userId
+	 * @param userId entered userId
 	 * @throws RegBaseCheckedException
 	 */
 	private boolean setInitialLoginInfo(String userId) {
@@ -690,8 +715,7 @@ public class LoginController extends BaseController implements Initializable {
 	/**
 	 * Fetching and Validating machine and center id
 	 * 
-	 * @param userDetail
-	 *            the userDetail
+	 * @param userDetail the userDetail
 	 * @return boolean
 	 * @throws RegBaseCheckedException
 	 */
@@ -716,12 +740,9 @@ public class LoginController extends BaseController implements Initializable {
 	 * Setting values for Session context and User context and Initial info for
 	 * Login
 	 * 
-	 * @param userId
-	 *            entered userId
-	 * @param userDetail
-	 *            userdetails
-	 * @param roleList
-	 *            list of user roles
+	 * @param userId     entered userId
+	 * @param userDetail userdetails
+	 * @param roleList   list of user roles
 	 * @throws RegBaseCheckedException
 	 */
 	private boolean setSessionContext(String authInfo, UserDetail userDetail, List<String> roleList) {
@@ -764,10 +785,8 @@ public class LoginController extends BaseController implements Initializable {
 	/**
 	 * Loading next login screen in case of multifactor authentication
 	 * 
-	 * @param userDetail
-	 *            the userDetail
-	 * @param loginMode
-	 *            the loginMode
+	 * @param userDetail the userDetail
+	 * @param loginMode  the loginMode
 	 */
 	private void loadNextScreen(UserDetail userDetail, String loginMode) {
 
@@ -790,7 +809,7 @@ public class LoginController extends BaseController implements Initializable {
 					schedulerUtil.startSchedulerUtil();
 					loginList.clear();
 					BaseController.load(getClass().getResource(RegistrationConstants.HOME_PAGE));
-					//to add events to the stage
+					// to add events to the stage
 					getStage();
 					userDetail.setLastLoginMethod(loginMode);
 					userDetail.setLastLoginDtimes(Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()));
@@ -919,10 +938,8 @@ public class LoginController extends BaseController implements Initializable {
 	/**
 	 * Validating invalid number of login attempts
 	 * 
-	 * @param userDetail
-	 *            user details
-	 * @param userId
-	 *            entered userId
+	 * @param userDetail user details
+	 * @param userId     entered userId
 	 * @return boolean
 	 */
 	private boolean validateInvalidLogin(UserDetail userDetail, String errorMessage) {
@@ -1005,14 +1022,10 @@ public class LoginController extends BaseController implements Initializable {
 	/**
 	 * Validating login time and count
 	 * 
-	 * @param loginCount
-	 *            number of invalid attempts
-	 * @param invalidLoginCount
-	 *            count from global param
-	 * @param loginTime
-	 *            login time from table
-	 * @param invalidLoginTime
-	 *            login time from global param
+	 * @param loginCount        number of invalid attempts
+	 * @param invalidLoginCount count from global param
+	 * @param loginTime         login time from table
+	 * @param invalidLoginTime  login time from global param
 	 * @return boolean
 	 */
 	private boolean validateLoginTime(int loginCount, int invalidLoginCount, Timestamp loginTime,
@@ -1054,7 +1067,7 @@ public class LoginController extends BaseController implements Initializable {
 
 						LOGGER.info("REGISTRATION - HANDLE_PACKET_UPLOAD_START - PACKET_UPLOAD_CONTROLLER",
 								APPLICATION_NAME, APPLICATION_ID, "Handling all the packet upload activities");
-					
+
 						ResponseDTO responseDTO = getSyncConfigData();
 						if (responseDTO != null) {
 							SuccessResponseDTO successResponseDTO = responseDTO.getSuccessResponseDTO();
@@ -1067,7 +1080,7 @@ public class LoginController extends BaseController implements Initializable {
 
 								ResponseDTO userResponseDTO = userDetailService
 										.save(RegistrationConstants.JOB_TRIGGER_POINT_USER);
-								
+
 								if ((null != masterResponseDTO && masterResponseDTO.getErrorResponseDTOs() != null)
 										|| userResponseDTO.getErrorResponseDTOs() != null) {
 									return RegistrationConstants.FAILURE;
@@ -1092,10 +1105,10 @@ public class LoginController extends BaseController implements Initializable {
 
 				if (RegistrationConstants.RESTART.equalsIgnoreCase(taskService.getValue())) {
 					Platform.runLater(new Runnable() {
-					    @Override
-					    public void run() {
-					    	restartController.restart();
-					    }
+						@Override
+						public void run() {
+							restartController.restart();
+						}
 					});
 				} else if (RegistrationConstants.FAILURE.equalsIgnoreCase(taskService.getValue())) {
 					generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.SYNC_CONFIG_DATA_FAILURE);

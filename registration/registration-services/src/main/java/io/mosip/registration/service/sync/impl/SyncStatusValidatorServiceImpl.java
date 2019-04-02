@@ -25,15 +25,18 @@ import io.mosip.registration.constants.LoggerConstants;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
+import io.mosip.registration.dao.GlobalParamDAO;
 import io.mosip.registration.dao.SyncJobConfigDAO;
 import io.mosip.registration.dao.SyncJobControlDAO;
 import io.mosip.registration.dao.SyncJobControlDAO.SyncJobInfo;
 import io.mosip.registration.device.gps.GPSFacade;
 import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.ResponseDTO;
+import io.mosip.registration.entity.GlobalParam;
 import io.mosip.registration.entity.Registration;
 import io.mosip.registration.entity.SyncControl;
 import io.mosip.registration.entity.SyncJobDef;
+import io.mosip.registration.entity.id.GlobalParamId;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.service.BaseService;
 import io.mosip.registration.service.sync.SyncStatusValidatorService;
@@ -61,6 +64,9 @@ public class SyncStatusValidatorServiceImpl extends BaseService implements SyncS
 	private SyncJobConfigDAO jobConfigDAO;
 	/** Object for Logger. */
 
+	@Autowired
+	private GlobalParamDAO globalParamDAO;
+	
 	private static final Logger LOGGER = AppConfig.getLogger(SyncStatusValidatorServiceImpl.class);
 
 	/**
@@ -86,7 +92,8 @@ public class SyncStatusValidatorServiceImpl extends BaseService implements SyncS
 			validatingRegisteredPacketCountAndDuration(errorResponseDTOList);
 			validatingSyncJobsConfigAndYetToExportPacketCountAndDuration(errorResponseDTOList);
 			validatingCenterToMachineDistance(errorResponseDTOList);
-
+			validatingLastSoftwareUpdateDuration (errorResponseDTOList);
+			
 			LOGGER.info(LoggerConstants.OPT_TO_REG_LOGGER_SESSION_ID, APPLICATION_NAME, APPLICATION_ID,
 					"Validating the sync status ended");
 
@@ -103,6 +110,31 @@ public class SyncStatusValidatorServiceImpl extends BaseService implements SyncS
 
 		return responseDTO;
 
+	}
+
+	/**
+	 * Validating last software update duration.
+	 *
+	 * @param errorResponseDTOList 
+	 * 				the error response DTO list
+	 */
+	private void validatingLastSoftwareUpdateDuration (List<ErrorResponseDTO> errorResponseDTOList) {
+		String isSoftwareAvailable = getGlobalConfigValueOf(RegistrationConstants.IS_SOFTWARE_UPDATE_AVAILABLE);
+
+		GlobalParamId globalParamId=new GlobalParamId();
+		globalParamId.setCode(RegistrationConstants.IS_SOFTWARE_UPDATE_AVAILABLE);
+		globalParamId.setLangCode(RegistrationConstants.ENGLISH_LANG_CODE);
+		GlobalParam globalParam = globalParamDAO.get(globalParamId);
+		
+		Date lastSoftwareUpdatedTime = new Date(globalParam.getUpdDtimes().getTime());
+		
+		if (isSoftwareAvailable!=null && isSoftwareAvailable.equalsIgnoreCase(RegistrationConstants.ENABLE) && Double.parseDouble(
+				getGlobalConfigValueOf(RegistrationConstants.SOFTWARE_UPDATE_MAX_CONFIGURED_FREQ)) <= getActualDays(
+						lastSoftwareUpdatedTime)) {
+
+			getErrorResponse(RegistrationConstants.REG_REC_SEVEN, RegistrationConstants.OPT_TO_REG_LAST_SOFTWAREUPDATE_CHECK,
+					RegistrationConstants.ERROR, errorResponseDTOList);
+		}
 	}
 
 	/**

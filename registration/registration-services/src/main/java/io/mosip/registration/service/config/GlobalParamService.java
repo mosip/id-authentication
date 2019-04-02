@@ -28,5 +28,13 @@ public interface GlobalParamService {
 	 * @return response
 	 */
 	ResponseDTO synchConfigData(boolean isJob);
+	
+	/**
+	 * Update software update status.
+	 *
+	 * @return the response DTO
+	 */
+	ResponseDTO updateSoftwareUpdateStatus();
+	
 
 }

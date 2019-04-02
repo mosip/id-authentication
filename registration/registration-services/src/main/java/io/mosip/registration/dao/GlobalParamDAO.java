@@ -49,5 +49,14 @@ public interface GlobalParamDAO {
 	 */
 
 	List<GlobalParam> getAllEntries();
+	
+	/**
+	 * Update software update status.
+	 *
+	 * @param status 
+	 * 				the status
+	 * @return the global param
+	 */
+	GlobalParam updateSoftwareUpdateStatus(String status);
 
 }

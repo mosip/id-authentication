@@ -161,6 +161,7 @@ public class RegistrationUIConstants {
 	public static final String OPT_TO_REG_WEAK_GPS = bundle.getString("OPT_TO_REG_WEAK_GPS");
 	public static final String OPT_TO_REG_INSERT_GPS = bundle.getString("OPT_TO_REG_INSERT_GPS");
 	public static final String OPT_TO_REG_GPS_PORT_MISMATCH = bundle.getString("OPT_TO_REG_GPS_PORT_MISMATCH");
+	public static final String OPT_TO_REG_LAST_SOFTWAREUPDATE_CHECK = bundle.getString("OPT_TO_REG_LAST_SOFTWAREUPDATE_CHECK");
 
 	// PACKET EXPORT
 	public static final String PACKET_EXPORT_SUCCESS_MESSAGE = bundle.getString("PACKET_EXPORT_SUCCESS_MESSAGE");
