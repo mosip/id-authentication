@@ -164,7 +164,7 @@ public class ReprocessorStage extends MosipVerticleManager {
 	 *            the to address
 	 */
 	public void sendMessage(MessageDTO message, MessageBusAddress toAddress) {
-		this.send(mosipEventBus, toAddress, message);
+		this.send(this.mosipEventBus, toAddress, message);
 	}
 
 	/*

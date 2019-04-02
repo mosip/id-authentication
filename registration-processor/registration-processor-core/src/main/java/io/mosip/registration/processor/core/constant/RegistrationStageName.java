@@ -28,7 +28,7 @@ public class RegistrationStageName {
 	public static final String OSI_VALIDATOR_STAGE = "OSIValidatorStage";
 
 	/** The Constant DEMO_DEDUPE_STAGE. */
-	public static final String DEMO_DEDUPE_STAGE = "DemodedupeStage";
+	public static final String DEMO_DEDUPE_STAGE = "DemoDedupeStage";
 
 	/** The Constant MANUAL_VERIFICATION_STAGE. */
 	public static final String MANUAL_VERIFICATION_STAGE = "ManualVerificationStage";
