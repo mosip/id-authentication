@@ -41,7 +41,7 @@ import io.mosip.registration.processor.core.code.EventName;
 import io.mosip.registration.processor.core.code.EventType;
 import io.mosip.registration.processor.core.code.RegistrationExceptionTypeCode;
 import io.mosip.registration.processor.core.spi.filesystem.manager.FileManager;
-import io.mosip.registration.processor.core.util.RegistrationStatusMapperUtil;
+import io.mosip.registration.processor.core.util.RegistrationExceptionMapperUtil;
 import io.mosip.registration.processor.packet.manager.dto.DirectoryPathDto;
 import io.mosip.registration.processor.packet.receiver.exception.DuplicateUploadRequestException;
 import io.mosip.registration.processor.packet.receiver.exception.FileSizeExceedException;
@@ -93,7 +93,7 @@ public class PacketReceiverServiceTest {
 	private RegistrationStatusMapUtil registrationStatusMapUtil;
 	
 	@Mock
-	RegistrationStatusMapperUtil registrationStatusMapperUtil;
+	RegistrationExceptionMapperUtil registrationStatusMapperUtil;
 
 	@InjectMocks
 	private PacketReceiverService<File, MessageDTO> packetReceiverService = new PacketReceiverServiceImpl(){

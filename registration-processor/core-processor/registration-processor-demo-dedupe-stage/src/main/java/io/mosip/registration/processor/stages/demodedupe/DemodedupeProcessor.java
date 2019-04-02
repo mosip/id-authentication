@@ -42,7 +42,7 @@ import io.mosip.registration.processor.core.packet.dto.PacketMetaInfo;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.DemographicInfoDto;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.util.JsonUtil;
-import io.mosip.registration.processor.core.util.RegistrationStatusMapperUtil;
+import io.mosip.registration.processor.core.util.RegistrationExceptionMapperUtil;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.packet.storage.entity.IndividualDemographicDedupeEntity;
 import io.mosip.registration.processor.packet.storage.repository.BasePacketRepository;
@@ -92,8 +92,7 @@ public class DemodedupeProcessor {
 	@Autowired
 	private FileSystemAdapter adapter;
 
-	@Autowired
-	RegistrationStatusMapperUtil registrationStatusMapperUtil;
+	RegistrationExceptionMapperUtil registrationExceptionMapperUtil=new RegistrationExceptionMapperUtil();
 	
 	InputStream demographicInfoStream = null;
 
@@ -186,7 +185,7 @@ public class DemodedupeProcessor {
 			isTransactionSuccessful = true;
 
 		} catch (IOException  e) {
-			registrationStatusDto.setLatestTransactionStatusCode(registrationStatusMapperUtil
+			registrationStatusDto.setLatestTransactionStatusCode(registrationExceptionMapperUtil
 					.getStatusCode(RegistrationExceptionTypeCode.IOEXCEPTION).toString());
 
 			code =  PlatformErrorMessages.PACKET_DEMO_DEDUPE_FAILED.getCode();
@@ -195,7 +194,7 @@ public class DemodedupeProcessor {
 			object.setInternalError(Boolean.TRUE);
 
 		} catch ( ApisResourceAccessException e) {
-			registrationStatusDto.setLatestTransactionStatusCode(registrationStatusMapperUtil
+			registrationStatusDto.setLatestTransactionStatusCode(registrationExceptionMapperUtil
 					.getStatusCode(RegistrationExceptionTypeCode.APIS_RESOURCE_ACCESS_EXCEPTION).toString());
 
 			
@@ -206,7 +205,7 @@ public class DemodedupeProcessor {
 
 		}
 		catch (FSAdapterException e) {
-			registrationStatusDto.setLatestTransactionStatusCode(registrationStatusMapperUtil
+			registrationStatusDto.setLatestTransactionStatusCode(registrationExceptionMapperUtil
 					.getStatusCode(RegistrationExceptionTypeCode.FSADAPTER_EXCEPTION).toString());
 
 			code =  PlatformErrorMessages.PACKET_DEMO_PACKET_STORE_NOT_ACCESSIBLE.getCode();
@@ -214,7 +213,7 @@ public class DemodedupeProcessor {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), code,registrationId, description+ ExceptionUtils.getStackTrace(e));
 			object.setInternalError(Boolean.TRUE);
 		} catch (Exception ex) {
-			registrationStatusDto.setLatestTransactionStatusCode(registrationStatusMapperUtil
+			registrationStatusDto.setLatestTransactionStatusCode(registrationExceptionMapperUtil
 					.getStatusCode(RegistrationExceptionTypeCode.EXCEPTION).toString());
 
 			code =  PlatformErrorMessages.PACKET_DEMO_DEDUPE_FAILED.getCode();

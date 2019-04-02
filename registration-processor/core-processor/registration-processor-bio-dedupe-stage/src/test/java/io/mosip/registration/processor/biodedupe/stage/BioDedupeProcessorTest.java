@@ -35,7 +35,7 @@ import io.mosip.registration.processor.core.exception.ApisResourceAccessExceptio
 import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.spi.biodedupe.BioDedupeService;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
-import io.mosip.registration.processor.core.util.RegistrationStatusMapperUtil;
+import io.mosip.registration.processor.core.util.RegistrationExceptionMapperUtil;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
 import io.mosip.registration.processor.rest.client.audit.dto.AuditResponseDto;
@@ -80,7 +80,7 @@ public class BioDedupeProcessorTest {
 	List<String> matchedRegIds = new ArrayList<String>();
 
 	@Mock
-	RegistrationStatusMapperUtil registrationStatusMapperUtil;
+	RegistrationExceptionMapperUtil registrationStatusMapperUtil;
 	
 	@InjectMocks
 	private BioDedupeProcessor bioDedupeProcessor;

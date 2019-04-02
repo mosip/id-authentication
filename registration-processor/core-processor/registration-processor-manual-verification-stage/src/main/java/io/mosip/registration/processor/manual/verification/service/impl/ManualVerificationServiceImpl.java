@@ -30,7 +30,7 @@ import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.packet.dto.PacketMetaInfo;
 import io.mosip.registration.processor.core.util.JsonUtil;
-import io.mosip.registration.processor.core.util.RegistrationStatusMapperUtil;
+import io.mosip.registration.processor.core.util.RegistrationExceptionMapperUtil;
 import io.mosip.registration.processor.manual.verification.dto.ManualVerificationDTO;
 import io.mosip.registration.processor.manual.verification.dto.ManualVerificationStatus;
 import io.mosip.registration.processor.manual.verification.dto.UserDto;
@@ -83,8 +83,7 @@ public class ManualVerificationServiceImpl implements ManualVerificationService 
 	@Autowired
 	private ManualVerificationStage manualVerificationStage;
 
-	@Autowired
-	RegistrationStatusMapperUtil registrationStatusMapperUtil;
+	RegistrationExceptionMapperUtil registrationExceptionMapperUtil = new RegistrationExceptionMapperUtil();
 
 	/*	 * (non-Javadoc)
 	 * 
@@ -302,7 +301,7 @@ public class ManualVerificationServiceImpl implements ManualVerificationService 
 		} catch (TablenotAccessibleException e) {
 
 			registrationStatusDto.setLatestTransactionStatusCode(
-					registrationStatusMapperUtil.getStatusCode(RegistrationExceptionTypeCode.TABLE_NOT_ACCESSIBLE_EXCEPTION));
+					registrationExceptionMapperUtil.getStatusCode(RegistrationExceptionTypeCode.TABLE_NOT_ACCESSIBLE_EXCEPTION));
 
 
 			description = "TablenotAccessibleException in Manual verification for registrationId: "+registrationId + "::" + e.getMessage();

@@ -28,7 +28,7 @@ import io.mosip.registration.processor.core.constant.RegistrationStageName;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.spi.filesystem.manager.FileManager;
-import io.mosip.registration.processor.core.util.RegistrationStatusMapperUtil;
+import io.mosip.registration.processor.core.util.RegistrationExceptionMapperUtil;
 import io.mosip.registration.processor.packet.manager.dto.DirectoryPathDto;
 import io.mosip.registration.processor.packet.receiver.exception.DuplicateUploadRequestException;
 import io.mosip.registration.processor.packet.receiver.exception.FileSizeExceedException;
@@ -95,8 +95,7 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 	@Autowired
 	private RegistrationStatusMapUtil registrationStatusMapUtil;
 
-	@Autowired
-	RegistrationStatusMapperUtil registrationStatusMapperUtil;
+	RegistrationExceptionMapperUtil registrationExceptionMapperUtil=new RegistrationExceptionMapperUtil();
 
 
 	/*
@@ -203,7 +202,7 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 				}
 				catch (  IOException e) {
 					dto.setLatestTransactionStatusCode(
-							registrationStatusMapperUtil.getStatusCode(RegistrationExceptionTypeCode.IOEXCEPTION));
+							registrationExceptionMapperUtil.getStatusCode(RegistrationExceptionTypeCode.IOEXCEPTION));
 
 					description = " IOException in packet receiver for registrationId"
 							+ registrationId + "::" + e.getMessage();
@@ -213,7 +212,7 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 				}
 				catch (DataAccessException  e) {
 					dto.setLatestTransactionStatusCode(
-							registrationStatusMapperUtil.getStatusCode(RegistrationExceptionTypeCode.DATA_ACCESS_EXCEPTION));
+							registrationExceptionMapperUtil.getStatusCode(RegistrationExceptionTypeCode.DATA_ACCESS_EXCEPTION));
 
 					description = "DataAccessException in packet receiver for registrationId"
 							+ registrationId + "::" + e.getMessage();
