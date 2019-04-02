@@ -1,9 +1,14 @@
 package io.mosip.registration.processor.packet.service.dto;
 
+import java.io.Serializable;
+
+import lombok.Data;
+
 /**
  * The Class SelectionListDTO.
  */
-public class SelectionListDTO {
+@Data
+public class SelectionListDTO implements Serializable {
 
 	/** The uin id. */
 	private String uinId;
@@ -43,139 +48,6 @@ public class SelectionListDTO {
 
 	/** The foreigner. */
 	private boolean foreigner;
-
-	/**
-	 * Checks if is child.
-	 *
-	 * @return the isChild
-	 */
-	public boolean isChild() {
-		return isChild;
-	}
-
-	/**
-	 * Sets the child.
-	 *
-	 * @param isChild
-	 *            the isChild to set
-	 */
-	public void setChild(boolean isChild) {
-		this.isChild = isChild;
-	}
-
-	/**
-	 * Checks if is name.
-	 *
-	 * @return the name
-	 */
-	public boolean isName() {
-		return name;
-	}
-
-	/**
-	 * Sets the name.
-	 *
-	 * @param name
-	 *            the name to set
-	 */
-	public void setName(boolean name) {
-		this.name = name;
-	}
-
-	/**
-	 * Checks if is age.
-	 *
-	 * @return the age
-	 */
-	public boolean isAge() {
-		return age;
-	}
-
-	/**
-	 * Sets the age.
-	 *
-	 * @param age
-	 *            the age to set
-	 */
-	public void setAge(boolean age) {
-		this.age = age;
-	}
-
-	/**
-	 * Checks if is gender.
-	 *
-	 * @return the gender
-	 */
-	public boolean isGender() {
-		return gender;
-	}
-
-	/**
-	 * Sets the gender.
-	 *
-	 * @param gender
-	 *            the gender to set
-	 */
-	public void setGender(boolean gender) {
-		this.gender = gender;
-	}
-
-	/**
-	 * Checks if is address.
-	 *
-	 * @return the address
-	 */
-	public boolean isAddress() {
-		return address;
-	}
-
-	/**
-	 * Sets the address.
-	 *
-	 * @param address
-	 *            the address to set
-	 */
-	public void setAddress(boolean address) {
-		this.address = address;
-	}
-
-	/**
-	 * Checks if is contact details.
-	 *
-	 * @return the contactDetails
-	 */
-	public boolean isContactDetails() {
-		return contactDetails;
-	}
-
-	/**
-	 * Sets the contact details.
-	 *
-	 * @param contactDetails
-	 *            the contactDetails to set
-	 */
-	public void setContactDetails(boolean contactDetails) {
-		this.contactDetails = contactDetails;
-	}
-
-	/**
-	 * Checks if is biometric exception.
-	 *
-	 * @return the biometricException
-	 */
-	public boolean isBiometricException() {
-		return biometricException;
-	}
-
-	/**
-	 * Sets the biometric exception.
-	 *
-	 * @param biometricException
-	 *            the biometricException to set
-	 */
-	public void setBiometricException(boolean biometricException) {
-		this.biometricException = biometricException;
-	}
 
 	/**
 	 * Checks if is biometric iris.

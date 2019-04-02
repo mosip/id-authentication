@@ -178,6 +178,7 @@
 		<module>kernel-licensekeymanager-service</module>
 		<module>kernel-applicanttype-service</module>
 		<module>kernel-config-server</module>
+		<module>kernel-ridgenerator-service</module>
 		
 	
 		<!-- <module>kernel-idvalidator</module> -->

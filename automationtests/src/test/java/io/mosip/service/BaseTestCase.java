@@ -84,12 +84,12 @@ public class BaseTestCase {
 		//	ApplnURI = prop.getProperty("testEnvironment");
 			environment = System.getProperty("env.user");
 			logger.info("Environemnt is  ==== :" +environment);
-			if (environment.equalsIgnoreCase("integration"))
-				ApplnURI="https://integ.mosip.io";
+			if (environment.equalsIgnoreCase("dev"))
+				ApplnURI="https://dev.mosip.io";
 			if (environment.equalsIgnoreCase("qa"))
 				ApplnURI="https://qa.mosip.io";
-			else
-				ApplnURI="https://integ.mosip.io";
+			/*else
+				ApplnURI="https://qa.mosip.io";*/
 			/*environment ="integration";
 			ApplnURI="https://integ.mosip.io";*/
 

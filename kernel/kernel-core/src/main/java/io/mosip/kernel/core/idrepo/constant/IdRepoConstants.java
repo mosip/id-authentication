@@ -37,6 +37,9 @@ public enum IdRepoConstants {
 	/** The application id. */
 	APPLICATION_ID("mosip.kernel.idrepo.application.id"),
 	
+	/** The application name. */
+	APPLICATION_NAME("mosip.kernel.idrepo.application.name"),
+	
 	/** The mosip primary language. */
 	MOSIP_PRIMARY_LANGUAGE("mosip.primary-language"),
 	

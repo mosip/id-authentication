@@ -120,7 +120,9 @@ public class ApplicationLibrary extends BaseTestCase {
 	 public Response getRequestPathQueryPara(String Resource_URI, HashMap<String, String> path_value,HashMap<String, List<String>> query_value) {
 	        return commonLibrary.get_Request_Path_queryParam(ApplnURI + Resource_URI , path_value,query_value);
 	    } 
-
+	 public Response getRequestPathQueryParaString(String Resource_URI, HashMap<String, String> path_value,HashMap<String, String> query_value) {
+	        return commonLibrary.get_Request_Path_queryParamString(ApplnURI + Resource_URI , path_value,query_value);
+	    } 
 	  //Notify
 	    public Response putFileAndJsonParam(String Resource_Uri,Object body,File file,String langCodeKey,String value) {
 	    	
