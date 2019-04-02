@@ -790,7 +790,8 @@ public class LoginController extends BaseController implements Initializable {
 					schedulerUtil.startSchedulerUtil();
 					loginList.clear();
 					BaseController.load(getClass().getResource(RegistrationConstants.HOME_PAGE));
-
+					//to add events to the stage
+					getStage();
 					userDetail.setLastLoginMethod(loginMode);
 					userDetail.setLastLoginDtimes(Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()));
 					userDetail.setUnsuccessfulLoginCount(RegistrationConstants.PARAM_ZERO);

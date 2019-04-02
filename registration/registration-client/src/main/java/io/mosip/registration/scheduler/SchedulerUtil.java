@@ -27,33 +27,38 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.layout.BorderPane;
 
 /**
- * @author M1047595
+ * The Class SchedulerUtil.
  *
+ * @author Dinesh Ashokan
  */
 @Component
 public class SchedulerUtil extends BaseController {
 
-	/**
-	 * Instance of {@link Logger}
-	 */
+	/** Instance of {@link Logger}. */
 	private static final Logger LOGGER = AppConfig.getLogger(SchedulerUtil.class);
 
+	/** The start time. */
 	private static long startTime = System.currentTimeMillis();
+	
+	/** The refresh time. */
 	private static long refreshTime;
+	
+	/** The session time out. */
 	private static long sessionTimeOut;
+	
+	/** The alert. */
 	private static Alert alert;
+	
+	/** The timer. */
 	private static Timer timer;
+	
+	
 	private static Optional<ButtonType> res = Optional.empty();
 
-	@FXML
-	private static BorderPane content;
-
 	/**
-	 * Constructor to invoke scheduler method once login success
-	 * 
-	 * @throws IDISBaseCheckedException
-	 * 
-	 * @throws RegistrationBaseCheckedException
+	 * Constructor to invoke scheduler method once login success.
+	 *
+	 * @throws RegBaseCheckedException the reg base checked exception
 	 */
 	public void startSchedulerUtil() throws RegBaseCheckedException {
 		LOGGER.info("REGISTRATION - UI", APPLICATION_NAME, APPLICATION_ID,
@@ -66,11 +71,7 @@ public class SchedulerUtil extends BaseController {
 	}
 
 	/**
-	 * Scheduling the task for session timeout
-	 * 
-	 * @throws IDISBaseCheckedException
-	 * 
-	 * @throws RegistrationBaseCheckedException
+	 * Scheduling the task for session timeout.
 	 */
 	private void startTimerForSession() {
 		try {
@@ -83,7 +84,7 @@ public class SchedulerUtil extends BaseController {
 
 						if ((endTime - startTime) >= refreshTime && (endTime - startTime) < sessionTimeOut) {
 							LOGGER.info("REGISTRATION - UI", APPLICATION_NAME, APPLICATION_ID,
-									"The time task alert is called at interval of seconds "
+									"The time task remainder alert is called at interval of seconds "
 											+ TimeUnit.MILLISECONDS.toSeconds(endTime - startTime));
 							alert();
 							if (res.isPresent())
@@ -94,7 +95,7 @@ public class SchedulerUtil extends BaseController {
 								}
 						} else if ((endTime - startTime) >= sessionTimeOut) {
 							LOGGER.info("REGISTRATION - UI", APPLICATION_NAME, APPLICATION_ID,
-									"The time task login called at interval of seconds "
+									"The time task auto logout login called at interval of seconds "
 											+ TimeUnit.MILLISECONDS.toSeconds(endTime - startTime));
 							alert.close();
 							stopScheduler();
@@ -114,22 +115,21 @@ public class SchedulerUtil extends BaseController {
 	}
 
 	/**
-	 * To find the scheduler duration to run the scheduler period
-	 * 
-	 * @param refreshTime
-	 * @param sessionTimeOut
-	 * @return
+	 * To find the scheduler duration to run the scheduler period.
+	 *
+	 * @param refreshTime the refresh time
+	 * @param sessionTimeOut the session time out
+	 * @return the int
 	 */
 	private static int findPeriod(long refreshTime, long sessionTimeOut) {
 		BigInteger b1 = BigInteger.valueOf(refreshTime);
 		BigInteger b2 = BigInteger.valueOf(sessionTimeOut);
 		BigInteger gcd = b1.gcd(b2);
-		int schedulerTime = (int) ((gcd.intValue()) * 0.001);
-		return schedulerTime;
+		return ((int) ((gcd.intValue()) * 0.001));
 	}
 
 	/**
-	 * To show the warning alert to user about session expire
+	 * To show the warning alert to user about session expire.
 	 */
 	private static void alert() {
 		alert.setTitle(RegistrationUIConstants.TIMEOUT_TITLE);
@@ -140,12 +140,15 @@ public class SchedulerUtil extends BaseController {
 		}
 	}
 
+	/**
+	 * Sets the current time to start time when any event triggered to stage.
+	 */
 	public static void setCurrentTimeToStartTime() {
 		startTime = System.currentTimeMillis();
 	}
 
 	/**
-	 * stop the scheduler
+	 * stop the scheduler.
 	 */
 	public static void stopScheduler() {
 		if (timer != null) {
