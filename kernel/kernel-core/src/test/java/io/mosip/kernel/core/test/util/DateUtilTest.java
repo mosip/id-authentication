@@ -530,7 +530,7 @@ public final class DateUtilTest {
 	public void parseToDate() {
 		DateUtils.parseToDate(LocalDateTime.now().toString(), "dd.MM.yyyy", TimeZone.getDefault());
 	}
-	
+
 	@Test
 	public void getUTCTimeFromDateTest() {
 		Date date = new Date();
