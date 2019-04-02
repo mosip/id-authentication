@@ -336,7 +336,7 @@ public class DemographicServiceUtil {
 	
 	/**
 	 * 
-	 * @param idValidationFields is a map with key and regex
+	 * @param idValidationFields is a map with key and regex as value
 	 * @param demoDetails 
 	 * @return boolean
 	 */

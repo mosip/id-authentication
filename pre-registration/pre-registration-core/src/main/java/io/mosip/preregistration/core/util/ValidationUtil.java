@@ -1,6 +1,7 @@
 package io.mosip.preregistration.core.util;
 
 import java.text.SimpleDateFormat;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -62,7 +63,11 @@ public class ValidationUtil {
 	}
 
 	public static boolean idValidation(String value,String regex){
-		return value.matches(regex);
+		if(!isNull(value)) {
+			return value.matches(regex);
+		}
+		else
+			return false;
 		 
 		
 	}
@@ -149,5 +154,28 @@ public class ValidationUtil {
 		}
 		return true;
 	}
+	
+	/**
+	 * This method is used as Null checker for different input keys.
+	 *
+	 * @param key
+	 *            pass the key
+	 * @return true if key not null and return false if key is null.
+	 */
+	public static boolean isNull(Object key) {
+		if (key instanceof String) {
+			if (key.equals(""))
+				return true;
+		} else if (key instanceof List<?>) {
+			if (((List<?>) key).isEmpty())
+				return true;
+		} else {
+			if (key == null)
+				return true;
+		}
+		return false;
+
+	}
+
 
 }
