@@ -5,9 +5,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.Comparator;
-
-import javax.ws.rs.client.Invocation;
 
 import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
@@ -26,13 +23,12 @@ import org.testng.asserts.SoftAssert;
 import org.testng.internal.BaseTestMethod;
 import org.testng.internal.TestResult;
 
-import com.google.common.collect.Ordering;
-
 import io.mosip.service.ApplicationLibrary;
 import io.mosip.service.AssertKernel;
 import io.mosip.service.BaseTestCase;
 import io.mosip.util.ReadFolder;
 import io.mosip.util.ResponseRequestMapper;
+import io.mosip.util.UIN_Assertions;
 import io.restassured.response.Response;
 /**
  * @author Arunakumar Rati
@@ -62,6 +58,7 @@ public class UINGeneration extends BaseTestCase implements ITest{
 	static JSONObject Expectedresponse = null;
 	String finalStatus = "";
 	static String testParam="";
+	String alphanumeric_regEx="^[a-zA-Z0-9]*$";
 	/*
 	 * Data Providers to read the input json files from the folders
 	 */
@@ -121,11 +118,14 @@ public class UINGeneration extends BaseTestCase implements ITest{
 		 for(int j=second_half.length()-1;j>=0;j--){
 			 rev_half=rev_half+second_half.charAt(j);
 		 }
+		 boolean isAscending = UIN_Assertions.ascendingMethod(uin);
+     	boolean isDescending = UIN_Assertions.ascendingMethod(uin);
+     	boolean alpanumeric = UIN_Assertions.asserUinWithPattern(uin, alphanumeric_regEx);
 		if(uin_length==10){
         	   if(first_half.equals(second_half)){ 
         		   finalStatus="fail";
         	   }else {
-        		   if(first_half.equals(rev_half)){
+        		   if(first_half.equals(rev_half)&&isAscending&&isDescending&&alpanumeric){
         			   finalStatus="fail";
         		   }else{
         			   String first2=uin.substring(0,1);int count =1;
@@ -139,12 +139,8 @@ public class UINGeneration extends BaseTestCase implements ITest{
         					finalStatus="pass";
         		   }
            }   
-        	boolean isAscending = UINGeneration.ascendingMethod(uin);
-        	boolean isDescending = UINGeneration.ascendingMethod(uin);
-        	   if(isAscending&&isDescending)
-        		   finalStatus="fail";
-   				else
-   					finalStatus="pass";   
+        	
+        	  
            }
 		else
 			finalStatus="fail";
@@ -194,43 +190,6 @@ public class UINGeneration extends BaseTestCase implements ITest{
 		}
 
 		
-		public static boolean ascendingMethod(String uin){
-		 	   char first_char=uin.charAt(0); 
-		 	   String latest_uin="";
-		 	   for(int i=0;i<uin.length();i++){
-		 		   if(first_char>'9'){
-		 			  first_char='0';
-		 		   }
-		 		   
-		 		   
-		 		  latest_uin=latest_uin+first_char;
-		 	 	   first_char++;
-		 	   }
-		 	   
-		 	   if(uin.equals(latest_uin)){
-		 		   return true;
-		 	   }else{
-		 		   return false;
-		 	   }
-			}
-		public static boolean descendingMethod(String uin){
-		 	   char first_char=uin.charAt(0); 
-		 	   String latest_uin="";
-		 	   for(int i=0;i<uin.length();i++){
-		 		   if(first_char<'0'){
-		 			  first_char='9';
-		 		   }
-		 		   
-		 		   
-		 		  latest_uin=latest_uin+first_char;
-		 	 	   first_char--;
-		 	   }
-		 	   
-		 	   if(uin.equals(latest_uin)){
-		 		   return true;
-		 	   }else{
-		 		   return false;
-		 	   }
-			}
+		
 	
 }

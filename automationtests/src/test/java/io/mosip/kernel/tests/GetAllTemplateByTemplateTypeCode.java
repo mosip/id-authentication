@@ -126,7 +126,7 @@ public class GetAllTemplateByTemplateTypeCode extends BaseTestCase implements IT
 //    	  {
 //    		        String id = actualRequest.get("id").toString();
 //	                String queryStr = "SELECT master.device_master_h.* FROM master.device_master_h WHERE id='"+id+"'";
-//					boolean valid = KernelMasterDataR.masterDataDBConnection(DeviceHistoryDto.class,queryStr);         
+//				boolean valid = KernelMasterDataR.masterDataDBConnection(DeviceHistoryDto.class,queryStr);         
 //			if(valid)
 //					{
 //						finalStatus ="Pass";

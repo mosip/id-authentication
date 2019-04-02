@@ -76,12 +76,12 @@ public class KernelMasterDataR {
 
 		if(BaseTestCase.environment.equalsIgnoreCase("integration"))
 			factory = new Configuration().configure("masterdatainteg.cfg.xml")
-		.addAnnotatedClass(OtpEntity.class).buildSessionFactory();	
+		.addAnnotatedClass(dtoClass).buildSessionFactory();	
 				else
 				{
 					if(BaseTestCase.environment.equalsIgnoreCase("qa"))
 						factory = new Configuration().configure("masterdataqa.cfg.xml")
-					.addAnnotatedClass(OtpEntity.class).buildSessionFactory();	
+					.addAnnotatedClass(dtoClass).buildSessionFactory();	
 				}
 		session = factory.getCurrentSession();
 		session.beginTransaction();
@@ -123,12 +123,12 @@ public class KernelMasterDataR {
 
 			if(BaseTestCase.environment.equalsIgnoreCase("integration"))
 				factory = new Configuration().configure("masterdatainteg.cfg.xml")
-			.addAnnotatedClass(OtpEntity.class).buildSessionFactory();	
+			.addAnnotatedClass(dtoClass).buildSessionFactory();	
 					else
 					{
 						if(BaseTestCase.environment.equalsIgnoreCase("qa"))
 							factory = new Configuration().configure("masterdataqa.cfg.xml")
-						.addAnnotatedClass(OtpEntity.class).buildSessionFactory();	
+						.addAnnotatedClass(dtoClass).buildSessionFactory();	
 					}
 			session = factory.getCurrentSession();
 			session.beginTransaction();
@@ -180,12 +180,12 @@ public class KernelMasterDataR {
 			
 			if(BaseTestCase.environment.equalsIgnoreCase("integration"))
 				factory = new Configuration().configure("masterdatainteg.cfg.xml")
-			.addAnnotatedClass(OtpEntity.class).buildSessionFactory();	
+			.addAnnotatedClass(dtoClass).buildSessionFactory();	
 					else
 					{
 						if(BaseTestCase.environment.equalsIgnoreCase("qa"))
 							factory = new Configuration().configure("masterdataqa.cfg.xml")
-						.addAnnotatedClass(OtpEntity.class).buildSessionFactory();	
+						.addAnnotatedClass(dtoClass).buildSessionFactory();	
 					}
 			session = factory.getCurrentSession();
 			Transaction txn=session.beginTransaction();
