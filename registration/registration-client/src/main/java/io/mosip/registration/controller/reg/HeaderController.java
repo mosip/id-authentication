@@ -6,8 +6,11 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 import java.io.IOException;
 import java.util.TimerTask;
 
+import javax.xml.parsers.ParserConfigurationException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.xml.sax.SAXException;
 
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -30,6 +33,7 @@ import io.mosip.registration.scheduler.SchedulerUtil;
 import io.mosip.registration.service.MasterSyncService;
 import io.mosip.registration.service.config.JobConfigurationService;
 import io.mosip.registration.service.sync.PreRegistrationDataSyncService;
+import io.mosip.registration.update.RegistrationUpdate;
 import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -98,6 +102,9 @@ public class HeaderController extends BaseController {
 
 	@Autowired
 	private RestartController restartController;
+
+	@Autowired
+	private RegistrationUpdate registrationUpdate;
 
 	/**
 	 * Mapping Registration Officer details
@@ -180,7 +187,8 @@ public class HeaderController extends BaseController {
 	/**
 	 * Sync data through batch jobs.
 	 *
-	 * @param event the event
+	 * @param event
+	 *            the event
 	 */
 	public void syncData(ActionEvent event) {
 
@@ -268,7 +276,8 @@ public class HeaderController extends BaseController {
 	/**
 	 * Redirects to Device On-Boarding UI Page.
 	 * 
-	 * @param actionEvent is an action event
+	 * @param actionEvent
+	 *            is an action event
 	 */
 	public void onBoardDevice(ActionEvent actionEvent) {
 		if (isMachineRemapProcessStarted()) {
@@ -358,6 +367,26 @@ public class HeaderController extends BaseController {
 			generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.REMAP_NOT_APPLICABLE);
 		}
 
+	}
+
+	@FXML
+	public void updateApp(ActionEvent event) {
+		boolean hasUpdate=false;
+		try {
+			hasUpdate = registrationUpdate.hasUpdate();
+
+		} catch (RuntimeException | IOException | ParserConfigurationException | SAXException runtimeException) {
+			generateAlert(RegistrationConstants.ERROR, "Unable to check for updates");
+		}
+		
+		if(hasUpdate) {
+			try {
+				registrationUpdate.getWithLatestJars();
+			} catch (RuntimeException | io.mosip.kernel.core.exception.IOException | IOException | ParserConfigurationException
+					| SAXException e) {
+				generateAlert(RegistrationConstants.ERROR, "Unable to update");
+			}
+		}
 	}
 
 }

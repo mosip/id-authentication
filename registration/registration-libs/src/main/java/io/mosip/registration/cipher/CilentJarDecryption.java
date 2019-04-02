@@ -31,6 +31,10 @@ public class CilentJarDecryption {
 	private static final String SLASH = "/";
 	private static final String AES_ALGORITHM = "AES";
 	private static final String REGISTRATION = "registration";
+	private static final String MOSIP_CLIENT = "mosip-client.jar";
+	private static final String MOSIP_SERVICES = "mosip-services.jar";
+	private static String libFolder = "lib/";
+	private static String binFolder = "bin/";
 
 	static {
 		String tempPath = System.getProperty("java.io.tmpdir");
@@ -68,23 +72,24 @@ public class CilentJarDecryption {
 	public static void main(String[] args) throws IOException, InterruptedException {
 
 		CilentJarDecryption aesDecrypt = new CilentJarDecryption();
+		RegistrationUpdate registrationUpdate = new RegistrationUpdate();
 
-		//TODO Check Internet Connectivity
+		// TODO Check Internet Connectivity
 		try {
-			
+
 			checkForJars();
 		} catch (ParserConfigurationException | SAXException | io.mosip.kernel.core.exception.IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
-		File encryptedClientJar = new File(
-				new File(System.getProperty("user.dir")).getAbsolutePath() + "/" + "mosip-client.jar");
+		File encryptedClientJar = new File(binFolder + MOSIP_CLIENT);
 
-		File encryptedServicesJar = new File(new File(System.getProperty("user.dir")).getParent() + "/" + "lib/"
-				+ "registration-services-" + "0.9.6" + ".jar");
+		File encryptedServicesJar = new File(binFolder + MOSIP_SERVICES);
 
 		String tempPath = FileUtils.getTempDirectoryPath();
+		
+		System.out.println(tempPath);
 
 		System.out.println("Decrypt File Name====>" + encryptedClientJar.getName());
 		byte[] decryptedRegFileBytes = aesDecrypt.decrypt(FileUtils.readFileToByteArray(encryptedClientJar),
@@ -114,7 +119,8 @@ public class CilentJarDecryption {
 		}
 	}
 
-	private static void checkForJars() throws IOException, ParserConfigurationException, SAXException, io.mosip.kernel.core.exception.IOException {
+	private static void checkForJars()
+			throws IOException, ParserConfigurationException, SAXException, io.mosip.kernel.core.exception.IOException {
 		RegistrationUpdate registrationUpdate = new RegistrationUpdate();
 
 		if (registrationUpdate.hasUpdate()) {
