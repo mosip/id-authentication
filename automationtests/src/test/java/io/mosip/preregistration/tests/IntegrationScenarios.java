@@ -1524,7 +1524,7 @@ public class IntegrationScenarios extends BaseTestCase {
 
 			}
 
-			Response retriveAllPreregId = lib.retriveAllPreIdByRegId();
+		/*	Response retriveAllPreregId = lib.retriveAllPreIdByRegId();
 
 			// Assertion for Retrieve PreId By Reg Center Id
 			lib.compareValues(retriveAllPreregId.jsonPath().get("response[0].preRegistrationId").toString(), preRegID);
@@ -1535,7 +1535,7 @@ public class IntegrationScenarios extends BaseTestCase {
 			lib.compareValues(retriveAllPreregId.jsonPath().get("response[0].pre_registration_ids[1]").toString(),
 					"65180632596528");
 			lib.compareValues(retriveAllPreregId.jsonPath().get("response[0].pre_registration_ids[2]").toString(),
-					"82378490340132");
+					"82378490340132");*/
 
 		} catch (Exception e) {
 			// TODO Auto-generated catch block

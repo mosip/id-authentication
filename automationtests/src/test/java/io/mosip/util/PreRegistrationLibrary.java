@@ -1689,7 +1689,42 @@ public class PreRegistrationLibrary extends BaseTestCase {
 	 * Generic method to Retrieve All PreId By Registration Center Id
 	 * 
 	 */
-	public Response retriveAllPreIdByRegId() throws FileNotFoundException, IOException, ParseException {
+	
+	
+	public Response retriveAllPreIdByRegId(String regCenterId,String preId) throws FileNotFoundException, IOException, ParseException {
+		testSuite = "RetrivePreIdByRegCenterId/RetrivePreIdByRegCenterId_smoke";
+		
+		String configPath = "src/test/resources/" + folder + "/" + testSuite;
+		File folder = new File(configPath);
+		File[] listOfFiles = folder.listFiles();
+		JSONObject object = null;
+		for (File f : listOfFiles) {
+			if (f.getName().toLowerCase().contains("request")) {
+				request = (JSONObject) new JSONParser().parse(new FileReader(f.getPath()));
+
+			}
+		}
+		
+		ObjectNode setRegCenterId = JsonPath.using(config).parse(request.toJSONString())
+				.set("$.request.registartion_center_id", regCenterId).json();
+		
+		ObjectNode setPreRegId = JsonPath.using(config).parse(setRegCenterId.toString())
+				.set("$.request.pre_registration_ids[0]",
+						preId)
+				.json();
+		
+		String retPreIdDetStr = setPreRegId.toString();
+		
+		JSONObject retriveAllPreIdByRegIdjson = (JSONObject) parser.parse(retPreIdDetStr);
+		
+		response = applnLib.postRequest(retriveAllPreIdByRegIdjson, preReg_FetchBookedPreIdByRegIdURI);
+		return response;
+	}
+	
+	
+	
+	
+	/*public Response retriveAllPreIdByRegId() throws FileNotFoundException, IOException, ParseException {
 		testSuite = "RetrivePreIdByRegCenterId/RetrivePreIdByRegCenterId_smoke";
 		// preReg_URI = commonLibrary.fetch_IDRepo("preReg_FetchBookedPreIdByRegId_URI
 		// ");
@@ -1706,7 +1741,7 @@ public class PreRegistrationLibrary extends BaseTestCase {
 		JSONObject retriveAllPreIdByRegIdjson = (JSONObject) parser.parse(request.toString());
 		response = applnLib.postRequest(retriveAllPreIdByRegIdjson, preReg_FetchBookedPreIdByRegIdURI);
 		return response;
-	}
+	}*/
 
 	/*
 	 * Generic function to fetch the random registration centerId
