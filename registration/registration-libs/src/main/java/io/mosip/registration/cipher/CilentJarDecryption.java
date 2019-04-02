@@ -69,9 +69,11 @@ public class CilentJarDecryption {
 
 		CilentJarDecryption aesDecrypt = new CilentJarDecryption();
 
+		//TODO Check Internet Connectivity
 		try {
+			
 			checkForJars();
-		} catch (ParserConfigurationException | SAXException e) {
+		} catch (ParserConfigurationException | SAXException | io.mosip.kernel.core.exception.IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -112,7 +114,7 @@ public class CilentJarDecryption {
 		}
 	}
 
-	private static void checkForJars() throws IOException, ParserConfigurationException, SAXException {
+	private static void checkForJars() throws IOException, ParserConfigurationException, SAXException, io.mosip.kernel.core.exception.IOException {
 		RegistrationUpdate registrationUpdate = new RegistrationUpdate();
 
 		if (registrationUpdate.hasUpdate()) {
