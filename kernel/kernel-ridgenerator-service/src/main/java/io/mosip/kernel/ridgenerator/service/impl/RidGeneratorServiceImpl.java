@@ -104,7 +104,7 @@ public class RidGeneratorServiceImpl implements RidGeneratorService<RidGenerator
 			entity = repository.findRid(centerId, machineId);
 		} catch (DataAccessException | DataAccessLayerException e) {
 			throw new RidException(RidGeneratorExceptionConstant.RID_FETCH_EXCEPTION.getErrorCode(),
-					RidGeneratorExceptionConstant.RID_FETCH_EXCEPTION.errorMessage, e);
+					RidGeneratorExceptionConstant.RID_FETCH_EXCEPTION.getErrorMessage(), e);
 		}
 		try {
 
