@@ -208,7 +208,7 @@ public class GlobalParamServiceImpl extends BaseService implements GlobalParamSe
 
 		GlobalParamId globalParamId = new GlobalParamId();
 		globalParamId.setCode(code);
-		globalParamId.setLangCode("ENG");
+		globalParamId.setLangCode(RegistrationConstants.ENGLISH_LANG_CODE);
 
 		/* TODO Need to Add Description not key (CODE) */
 		globalParam.setName(code);
