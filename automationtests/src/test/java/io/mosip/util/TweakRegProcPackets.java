@@ -12,6 +12,8 @@ import java.util.Date;
 import java.util.Properties;
 import java.util.Random;
 
+import org.apache.commons.io.FileDeleteStrategy;
+import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -36,6 +38,7 @@ public class TweakRegProcPackets {
 	EncrypterDecrypter encryptDecrypt = new EncrypterDecrypter();
 	DecrypterDto decrypterDto = new DecrypterDto();
 	PacketValidator validate = new PacketValidator();
+	
 
 	/**
 	 * 
@@ -59,7 +62,7 @@ public class TweakRegProcPackets {
 		for (File f : listOfFiles) {
 			if (f.getName().contains(".zip")) {
 				JSONObject jsonObject = encryptDecrypt.generateCryptographicData(f);
-
+				
 				decryptedFile = encryptDecrypt.decryptFile(jsonObject, configPath, f.getName());
 				filesToBeDestroyed = configPath;
 				File[] packetFiles = decryptedFile.listFiles();
@@ -117,6 +120,7 @@ public class TweakRegProcPackets {
 				machineId = labels.get("value").toString();
 				logger.info("machineId :: " + machineId);
 			}
+			
 			if (labels.get("label").equals(parameter)) {
 				labels.put("value", value);
 			}
@@ -173,29 +177,106 @@ public class TweakRegProcPackets {
 		return regID;
 	}
 
-	public void generateInvalidPacketForPacketValidator(String regId, String testCaseName) {
+	public void generateInvalidPacketForPacketValidator(String fileName) {
 		File decryptedPacket = null;
+		JSONObject metaInfo=null;
 		String configPath = System.getProperty("user.dir") + "/" + "src/test/resources/regProc/Packets/ValidPackets/";
+		filesToBeDestroyed = configPath;
 		File file = new File(configPath);
 		File[] listOfFiles = file.listFiles();
+		String invalidPacketsPath = System.getProperty("user.dir") + "/"
+				+ "src/test/resources/regProc/Packets/InvalidPackets/";
 		for (File f : listOfFiles) {
 			if (f.getName().contains(".zip")) {
+				centerId = f.getName().substring(0, 5);
+				machineId = f.getName().substring(5, 10);
+				String regId = generateRegID(centerId, machineId);
 				JSONObject requestBody = encryptDecrypt.generateCryptographicData(f);
 				try {
 					decryptedPacket = encryptDecrypt.decryptFile(requestBody, configPath, f.getName());
-					for (File info : decryptedPacket.listFiles()) {
+					for(File info: decryptedPacket.listFiles()) {
+						if (info.getName().toLowerCase().equals("packet_meta_info.json")) {
+							try {
+								FileReader metaFileReader = new FileReader(info.getPath());
+								metaInfo = (JSONObject) new JSONParser().parse(metaFileReader);
+								metaFileReader.close();
+							} catch (IOException | ParseException e) {
+								e.printStackTrace();
+							}
+							JSONObject identity = (JSONObject) metaInfo.get("identity");
+							JSONArray metaData = (JSONArray) identity.get("metaData");
+							JSONArray updatedData =updateRegId(metaData, regId);
+							metaInfo.put("identity", identity);
+							try (FileWriter updatedFile = new FileWriter(info.getAbsolutePath())) {
+								try {
+									updatedFile.write(metaInfo.toString());
+									updatedFile.close();
+								} catch (IOException e) {
+									e.printStackTrace();
+								}
+								logger.info("Successfully updated json object to file...!!");
 
+							} catch (IOException e1) {
+
+								e1.printStackTrace();
+							}
+						}
 					}
+					String fileDeleted="";
+					String str="";
+					for(File info: decryptedPacket.listFiles()) {
+						if(info.getName().equalsIgnoreCase("Demographic")) {
+							for(File demographicFiles: info.listFiles()) {
+								if(demographicFiles.getName().equals(fileName)) {
+									fileDeleted=demographicFiles.getName()+"DeletedPacket";
+									FileDeleteStrategy.FORCE.delete(demographicFiles);
+									byte[] checkSum=encryptDecrypt.generateCheckSum(decryptedPacket.listFiles());
+									str = new String(checkSum, StandardCharsets.UTF_8);
+				
+								}
+							}
+						}
+						else if(info.getName().equalsIgnoreCase(fileName)) {
+							if(info.isDirectory()) {
+								fileDeleted=info.getName()+"Deletedpacket";
+								FileUtils.deleteDirectory(info);
+								byte[] checkSum=encryptDecrypt.generateCheckSum(decryptedPacket.listFiles());
+								str = new String(checkSum, StandardCharsets.UTF_8);
+								
+							}
+							else if(info.isFile()) {
+								fileDeleted=info.getName()+"Deletedpacket";
+								FileDeleteStrategy.FORCE.delete(info);
+								byte[] checkSum=encryptDecrypt.generateCheckSum(decryptedPacket.listFiles());
+								str = new String(checkSum, StandardCharsets.UTF_8);
+								
+							}
+						}
+					}
+					for(File info: decryptedPacket.listFiles()) {
+						if (info.getName().equals("packet_data_hash.txt")) {
+							PrintWriter writer = new PrintWriter(info);
+							writer.print("");
+							writer.print(str);
+							writer.close();
+							encryptDecrypt.encryptFile(decryptedPacket, configPath, invalidPacketsPath+"/"+fileDeleted, regId);
+						}
+					}
+					
+					
 				} catch (IOException | ZipException | ParseException e) {
 
 					e.printStackTrace();
 				}
 			}
 		}
+
 	}
+
 
 	public void generatInvalidPacketForDemoDedupe(String testCaseName, String property) {
 		JSONObject metaInfo = null;
+		JSONObject metaInfoBio=null;
 		File decryptedPacket = null;
 		JSONObject identity = null;
 		String configPath = System.getProperty("user.dir") + "/" + "src/test/resources/regProc/Packets/ValidPackets/";
@@ -214,11 +295,6 @@ public class TweakRegProcPackets {
 				try {
 
 					decryptedPacket = encryptDecrypt.decryptFile(requestBody, configPath, f.getName());
-
-					byte[] checksum = encryptDecrypt.generateCheckSum(decryptedPacket.listFiles());
-
-					String str = new String(checksum, StandardCharsets.UTF_8);
-					logger.info("checksum is  :: " + str);
 					for (File info : decryptedPacket.listFiles()) {
 						if (info.getName().equals("Demographic")) {
 							File[] demographic = info.listFiles();
@@ -248,14 +324,49 @@ public class TweakRegProcPackets {
 
 							}
 						}
+						else if (info.getName().toLowerCase().equals("packet_meta_info.json")) {
+							try {
+								FileReader metaFileReader = new FileReader(info.getPath());
+								metaInfoBio = (JSONObject) new JSONParser().parse(metaFileReader);
+								metaFileReader.close();
+							} catch (IOException | ParseException e) {
+								e.printStackTrace();
+							}
+							JSONObject identityObject = (JSONObject) metaInfoBio.get("identity");
+							JSONArray metaData = (JSONArray) identityObject.get("metaData");
+							JSONArray updatedData = updateRegId(metaData, regId);
+							metaInfoBio.put("identity", identityObject);
+							try (FileWriter updatedFile = new FileWriter(info.getAbsolutePath())) {
+								try {
+									updatedFile.write(metaInfoBio.toString());
+									updatedFile.close();
+								} catch (IOException e) {
+									e.printStackTrace();
+								}
+								logger.info("Successfully updated json object to file...!!");
+
+							} catch (IOException e1) {
+
+								e1.printStackTrace();
+							}
+						}
+			
+					}
+					for(File info: decryptedPacket.listFiles()) {
+						byte[] checksum = encryptDecrypt.generateCheckSum(decryptedPacket.listFiles());
+
+						String str = new String(checksum, StandardCharsets.UTF_8);
+						logger.info("checksum is  :: " + str);
 						if (info.getName().equals("packet_data_hash.txt")) {
 							PrintWriter writer = new PrintWriter(info);
 							writer.print("");
 							writer.print(str);
 							writer.close();
+							encryptDecrypt.encryptFile(decryptedPacket, configPath, invalidPacketsPath, regId);
 						}
+						
 					}
-					encryptDecrypt.encryptFile(decryptedPacket, configPath, invalidPacketsPath, regId);
+					
 				} catch (IOException | ZipException | ParseException e) {
 
 					e.printStackTrace();
@@ -290,12 +401,52 @@ public class TweakRegProcPackets {
 			e1.printStackTrace();
 		}
 	}
+	
+	public JSONArray updateRegId(JSONArray metaData, String regID) {
+		
+		for (int i = 0; i < metaData.size(); i++) {
+			JSONObject labels = (JSONObject) metaData.get(i);
+			if (labels.get("label").equals("registrationId")) {
+				labels.put("value", regID);
+			}
+		}
+		
+		return metaData;
+	}
+	public void readPacketValidatorProperties(String propertyFile) {
+		Properties prop = new Properties();
+		TweakRegProcPackets e = new TweakRegProcPackets();
+		String propertyFilePath = System.getProperty("user.dir") + "/src/config/" + propertyFile;
+		try {
+			FileReader readFile = new FileReader(new File(propertyFilePath));
+			prop.load(readFile);
+			for (String property : prop.stringPropertyNames()) {
+				logger.info(prop.getProperty(property));
+
+				e.generateInvalidPacketForPacketValidator(prop.getProperty(property));
+			}
+			readFile.close();
+		} catch (IOException exc) {
+			// TODO Auto-generated catch block
+			exc.printStackTrace();
+		}
+		try {
+			encryptDecrypt.destroyFiles(filesToBeDestroyed);
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+	}
 
 	public static void main(String[] args)
 			throws IOException, ZipException, InterruptedException, java.text.ParseException, ParseException {
 		TweakRegProcPackets e = new TweakRegProcPackets();
+		for(int i=0;i<2;i++) {
 		e.demoDedupePropertyFileReader("IDjson.properties");
+		}
 		// e.generatInvalidPacketForDemoDedupe(e.generateRegID("10011",
 		// "10011"),"PotentialMatch");
+		//e.invalidPacketGenerator("packetProperties.properties");
+	//e.readPacketValidatorProperties("packetValidator.properties");
 	}
 }
