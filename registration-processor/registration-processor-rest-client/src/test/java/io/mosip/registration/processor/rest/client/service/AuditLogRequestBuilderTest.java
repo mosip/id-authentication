@@ -1,4 +1,4 @@
-package io.mosip.registration.processor.rest.client.service;
+/*package io.mosip.registration.processor.rest.client.service;
 
 
 import static org.junit.Assert.assertTrue;
@@ -64,3 +64,4 @@ public class AuditLogRequestBuilderTest {
 		.containsExactly(Tuple.tuple( Level.ERROR, "RPR-RCT-001 --> errorMessage")); 
 	}
 }
+*/

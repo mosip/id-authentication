@@ -1,4 +1,4 @@
-package io.mosip.registration.processor.packet.archiver.util.test;
+/*package io.mosip.registration.processor.packet.archiver.util.test;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
@@ -31,22 +31,22 @@ import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequest
 import io.mosip.registration.processor.rest.client.audit.dto.AuditRequestDto;
 import io.mosip.registration.processor.rest.client.audit.dto.AuditResponseDto;
 
-/**
+*//**
  * @author M1039285
  *
- */
+ *//*
 @RunWith(SpringRunner.class)
 public class PacketArchiverTest {
 
-	/** The filesystem adapter impl. */
+	*//** The filesystem adapter impl. *//*
 	@Mock
 	private FileSystemAdapter filesystemAdapterImpl;
 
-	/** The filemanager. */
+	*//** The filemanager. *//*
 	@Mock
 	protected FileManager<DirectoryPathDto, InputStream> filemanager;
 
-	/** The audit request builder. */
+	*//** The audit request builder. *//*
 	// private AuditRequestBuilder auditRequestBuilder;
 	@Mock
 	private AuditLogRequestBuilder auditLogRequestBuilder;
@@ -59,17 +59,17 @@ public class PacketArchiverTest {
 
 	AuditResponseDto auditResponseDto = null;
 
-	/** The packet archiver. */
+	*//** The packet archiver. *//*
 	@InjectMocks
 	private PacketArchiver packetArchiver;
 
-	/** The source. */
+	*//** The source. *//*
 	private String source = "Sample input Steam";
 
-	/** The registration id. */
+	*//** The registration id. *//*
 	private String registrationId = "1001";
 
-	/**
+	*//**
 	 * Setup.
 	 *
 	 * @throws NoSuchFieldException
@@ -80,7 +80,7 @@ public class PacketArchiverTest {
 	 *             the illegal argument exception
 	 * @throws IllegalAccessException
 	 *             the illegal access exception
-	 */
+	 *//*
 	@Before
 	public void setup()
 			throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
@@ -114,7 +114,7 @@ public class PacketArchiverTest {
 
 	}
 
-	/**
+	*//**
 	 * Archive packet success check.
 	 *
 	 * @throws IOException
@@ -131,7 +131,7 @@ public class PacketArchiverTest {
 	 *             the unable to access path exception
 	 * @throws PacketNotFoundException
 	 *             the packet not found exception
-	 */
+	 *//*
 	@Test
 	public void archivePacketSuccessCheck() throws IOException, IllegalArgumentException, IllegalAccessException,
 			NoSuchFieldException, SecurityException, PacketNotFoundException {
@@ -145,7 +145,7 @@ public class PacketArchiverTest {
 
 	}
 
-	/**
+	*//**
 	 * Archive packet adapted failure check.
 	 *
 	 * @throws UnableToAccessPathException
@@ -154,7 +154,7 @@ public class PacketArchiverTest {
 	 *             the packet not found exception
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
-	 */
+	 *//*
 	@Test(expected = PacketNotFoundException.class)
 	public void archivePacketAdaptedFailureCheck() throws PacketNotFoundException, IOException {
 		registrationId = "1000";
@@ -163,3 +163,4 @@ public class PacketArchiverTest {
 	}
 
 }
+*/
