@@ -32,7 +32,6 @@ import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.dto.indauth.IdType;
 import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
 import io.mosip.authentication.core.dto.spinstore.PinRequestDTO;
-import io.mosip.authentication.core.dto.spinstore.StaticPinIdentityDTO;
 import io.mosip.authentication.core.dto.spinstore.StaticPinRequestDTO;
 import io.mosip.authentication.core.dto.vid.VIDResponseDTO;
 import io.mosip.authentication.core.exception.IDDataValidationException;
@@ -143,8 +142,6 @@ public class StaticPinFacadeImplTest {
 				.toString();
 		staticPinRequestDTO.setRequestTime(reqTime);
 		staticPinRequestDTO.setVersion("1.0");
-		StaticPinIdentityDTO dto = new StaticPinIdentityDTO();
-		dto.setUin(uin);
 		PinRequestDTO pinRequestDTO = new PinRequestDTO();
 		String pin = "123454";
 		pinRequestDTO.setStaticPin(pin);
@@ -196,8 +193,6 @@ public class StaticPinFacadeImplTest {
 				.toString();
 		staticPinRequestDTO.setRequestTime(reqTime);
 		staticPinRequestDTO.setVersion("1.0");
-		StaticPinIdentityDTO dto = new StaticPinIdentityDTO();
-		dto.setVid(vid);
 		PinRequestDTO pinRequestDTO = new PinRequestDTO();
 		String pin = "123454";
 		pinRequestDTO.setStaticPin(pin);
@@ -249,8 +244,6 @@ public class StaticPinFacadeImplTest {
 				.toString();
 		staticPinRequestDTO.setRequestTime(reqTime);
 		staticPinRequestDTO.setVersion("1.0");
-		StaticPinIdentityDTO dto = new StaticPinIdentityDTO();
-		dto.setVid(vid);
 		PinRequestDTO pinRequestDTO = new PinRequestDTO();
 		String pin = "123454";
 		pinRequestDTO.setStaticPin(pin);

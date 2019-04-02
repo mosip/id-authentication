@@ -50,6 +50,11 @@ public class StaticPinController {
 	@Autowired
 	private StaticPinRequestValidator staticPinRequestValidator;
 
+	/**
+	 * This method will bind StaticPinRequestValidator
+	 * 
+	 * @param binder
+	 */
 	@InitBinder
 	private void initBinder(WebDataBinder binder) {
 		binder.setValidator(staticPinRequestValidator);
@@ -70,9 +75,9 @@ public class StaticPinController {
 			@ApiIgnore Errors errors) throws IdAuthenticationAppException {
 		try {
 			DataValidationUtil.validate(errors);
-			return  staticPinService.storeSpin(staticPinRequestDTO);
+			return staticPinService.storeSpin(staticPinRequestDTO);
 		} catch (IDDataValidationException e) {
-			logger.error(DEAFULT_SESSION_ID,this.getClass().getSimpleName(), e.getClass().getName(), e.getErrorText());
+			logger.error(DEAFULT_SESSION_ID, this.getClass().getSimpleName(), e.getClass().getName(), e.getErrorText());
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.DATA_VALIDATION_FAILED, e);
 		} catch (IdAuthenticationBusinessException e) {
 			logger.error(DEAFULT_SESSION_ID, e.getClass().toString(), e.getErrorCode(), e.getErrorText());

@@ -14,7 +14,10 @@ import lombok.Data;
 
 @Data
 public class KycResponseDTO {
-	
+
+	/** The Variable to hold value of ttl */
 	private String ttl;
+
+	/** The Variable to hold value of identity */
 	private Map<String, ? extends Object> identity;
 }

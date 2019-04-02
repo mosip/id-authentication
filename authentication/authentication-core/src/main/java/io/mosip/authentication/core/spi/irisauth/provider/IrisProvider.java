@@ -14,9 +14,11 @@ import org.springframework.core.env.Environment;
  * 
  */
 public abstract class IrisProvider implements MosipIrisProvider {
-
+	
+	/** The constant ODD_UIN */
 	private static final String ODD_UIN = "odduin";
 
+	/** The constant EVEN_UIN */
 	private static final String EVEN_UIN = "evenuin";
 
 	/** The environment. */
@@ -43,10 +45,10 @@ public abstract class IrisProvider implements MosipIrisProvider {
 	/** The Constant RIGHTEYE. */
 	static final String RIGHTEYE = "RIGHT"; //FIXME Hardcoded
 	
-	/** The Constant RIGHTEYE. */
+	/** The Constant UNKNOWNEYE. */
 	static final String UNKNOWNEYE = "UNKNOWN"; //FIXME Hardcoded
 
-	/** The Constant idvid. */
+	/** The Constant IDVID. */
 	private static final String IDVID = "idvid";
 
 	/*

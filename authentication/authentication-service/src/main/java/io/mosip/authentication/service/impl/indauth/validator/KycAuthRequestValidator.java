@@ -19,19 +19,19 @@ import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.kernel.core.logger.spi.Logger;
 
 /**
- * The Class KycAuthRequestValidator.
+ * The Class For KycAuthRequestValidator extending the
+ * BaseAuthRequestValidator{@link BaseAuthRequestValidator}}
  *
  * @author Prem Kumar
  * @author Dinesh Karuppiah.T
  * 
- *         The Class For KycAuthRequestValidator extending the
- *         BaseAuthRequestValidator
+ * 
  */
 
 @Component
 public class KycAuthRequestValidator extends BaseAuthRequestValidator {
 
-
+	/** The Constant EKYC_ALLOWED_AUTH_TYPE. */
 	private static final String EKYC_ALLOWED_AUTH_TYPE = "ekyc.auth.types.allowed";
 
 	/** The auth request validator. */
@@ -53,12 +53,10 @@ public class KycAuthRequestValidator extends BaseAuthRequestValidator {
 	/** The Constant SESSION_ID. */
 	private static final String SESSION_ID = "SESSION_ID";
 
-
-
 	/** The Constant eKycAuthType. */
 	private static final String REQUESTEDAUTH = "requestedAuth";
 
-	/** The env. */
+	/** The environment. */
 	@Autowired
 	private Environment environment;
 
@@ -73,11 +71,12 @@ public class KycAuthRequestValidator extends BaseAuthRequestValidator {
 		return KycAuthRequestDTO.class.equals(clazz);
 	}
 
-	/**
-	 * Validates the KycAuthRequest.
-	 *
-	 * @param target the target
-	 * @param errors the errors
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.authentication.service.impl.indauth.validator.
+	 * BaseAuthRequestValidator#validate(java.lang.Object,
+	 * org.springframework.validation.Errors)
 	 */
 	@Override
 	public void validate(Object target, Errors errors) {

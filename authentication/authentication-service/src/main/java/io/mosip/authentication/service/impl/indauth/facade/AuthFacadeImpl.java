@@ -54,7 +54,8 @@ import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.core.util.UUIDUtils;
 
 /**
- * This class provides the implementation of AuthFacade.
+ * This class provides the implementation of AuthFacade, provides the
+ * authentication for individual by calling the respective Service Classes{@link AuthFacade}.
  *
  * @author Arun Bose
  * 
@@ -63,8 +64,10 @@ import io.mosip.kernel.core.util.UUIDUtils;
 @Service
 public class AuthFacadeImpl implements AuthFacade {
 
+	/** The Constant STATIC_TOKEN_ENABLE. */
 	private static final String STATIC_TOKEN_ENABLE = "static.token.enable";
 
+	/** The Constant FAILED. */
 	private static final String FAILED = "N";
 
 	/** The Constant UTC. */
@@ -102,12 +105,15 @@ public class AuthFacadeImpl implements AuthFacade {
 	/** The Kyc Service */
 	@Autowired
 	private KycService kycService;
+
 	/** The Environment */
 	@Autowired
 	private Environment env;
+
 	/** The Id Info Service */
 	@Autowired
 	private IdAuthService<AutnTxn> idInfoService;
+
 	/** The Demo Auth Service */
 	@Autowired
 	private DemoAuthService demoAuthService;
@@ -132,17 +138,16 @@ public class AuthFacadeImpl implements AuthFacade {
 	@Autowired
 	private TokenIdGenerator<String> tokenIdGenerator;
 
+	/** The Id Info Fetcher */
 	@Autowired
 	private IdInfoFetcher idInfoFetcher;
 
-	/**
-	 * Process the authorization type and authorization response is returned.
-	 *
-	 * @param authRequestDTO the auth request DTO
-	 * @param isAuth         boolean i.e is auth type request.
-	 * @return AuthResponseDTO the auth response DTO
-	 * @throws IdAuthenticationBusinessException the id authentication business
-	 *                                           exception.
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.authentication.core.spi.indauth.facade.AuthFacade#
+	 * authenticateApplicant(io.mosip.authentication.core.dto.indauth.
+	 * AuthRequestDTO, boolean, java.lang.String)
 	 */
 	@Override
 	public AuthResponseDTO authenticateApplicant(AuthRequestDTO authRequestDTO, boolean isAuth, String partnerId)
@@ -158,11 +163,12 @@ public class AuthFacadeImpl implements AuthFacade {
 		AuthResponseBuilder authResponseBuilder = AuthResponseBuilder.newInstance(env.getProperty(DATETIME_PATTERN));
 		Map<String, List<IdentityInfoDTO>> idInfo = null;
 		String uin = String.valueOf(idResDTO.get("uin"));
+		// String tspId = partnerId;
 		try {
 			idInfo = idInfoService.getIdInfo(idResDTO);
 			authResponseBuilder.setTxnID(authRequestDTO.getTransactionID());
 			Boolean staticTokenRequired = env.getProperty(STATIC_TOKEN_ENABLE, Boolean.class);
-			//FIXME temporary fix for the api change
+			// FIXME temporary fix for the api change
 //			String staticTokenId = staticTokenRequired ? tokenIdGenerator.generateId(tspId, uin) : "";
 			String staticTokenId = staticTokenRequired ? tokenIdGenerator.generateId() : "";
 			List<AuthStatusInfo> authStatusList = processAuthType(authRequestDTO, idInfo, uin, isAuth, staticTokenId,
@@ -460,14 +466,13 @@ public class AuthFacadeImpl implements AuthFacade {
 		return isAuth ? AuditEvents.AUTH_REQUEST_RESPONSE : AuditEvents.INTERNAL_REQUEST_RESPONSE;
 	}
 
-	/**
-	 * Process the KycAuthRequestDTO to integrate with KycService.
-	 *
-	 * @param kycAuthRequestDTO is DTO of KycAuthRequestDTO
-	 * @param authResponseDTO   the auth response DTO
-	 * @return the kyc auth response DTO
-	 * @throws IdAuthenticationBusinessException the id authentication business
-	 *                                           exception
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.authentication.core.spi.indauth.facade.AuthFacade#processKycAuth(io.
+	 * mosip.authentication.core.dto.indauth.KycAuthRequestDTO,
+	 * io.mosip.authentication.core.dto.indauth.AuthResponseDTO, java.lang.String)
 	 */
 	@Override
 	public KycAuthResponseDTO processKycAuth(KycAuthRequestDTO kycAuthRequestDTO, AuthResponseDTO authResponseDTO,
@@ -520,6 +525,8 @@ public class AuthFacadeImpl implements AuthFacade {
 	}
 
 	/**
+	 * This method Accepts the time in String and returns utcTime in String.
+	 * 
 	 * @param reqTime
 	 * @return
 	 */

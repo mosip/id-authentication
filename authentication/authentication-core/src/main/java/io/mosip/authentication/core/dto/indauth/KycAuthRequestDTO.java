@@ -17,6 +17,7 @@ public class KycAuthRequestDTO extends AuthRequestDTO {
 	/** The value for secondary language code. */
 	private String secondaryLangCode;
 
+	/** The value for allowed Kyc Attributes. */
 	@ApiModelProperty(required = false, hidden = true)
 	private List<String> allowedKycAttributes;
 
