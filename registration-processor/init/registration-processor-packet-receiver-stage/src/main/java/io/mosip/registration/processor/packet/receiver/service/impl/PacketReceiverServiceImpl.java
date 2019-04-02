@@ -28,7 +28,7 @@ import io.mosip.registration.processor.core.constant.RegistrationStageName;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.spi.filesystem.manager.FileManager;
-import io.mosip.registration.processor.core.util.RegistrationStatusMapperUtil;
+import io.mosip.registration.processor.core.util.RegistrationExceptionMapperUtil;
 import io.mosip.registration.processor.packet.manager.dto.DirectoryPathDto;
 import io.mosip.registration.processor.packet.receiver.exception.DuplicateUploadRequestException;
 import io.mosip.registration.processor.packet.receiver.exception.FileSizeExceedException;
@@ -95,8 +95,7 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 	@Autowired
 	private RegistrationStatusMapUtil registrationStatusMapUtil;
 
-	@Autowired
-	RegistrationStatusMapperUtil registrationStatusMapperUtil;
+	RegistrationExceptionMapperUtil registrationExceptionMapperUtil=new RegistrationExceptionMapperUtil();
 
 
 	/*
@@ -128,15 +127,7 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 			SyncRegistrationEntity regEntity = syncRegistrationService.findByRegistrationId(registrationId);
 
 			dto= registrationStatusService.getRegistrationStatus(registrationId);
-			dto= registrationStatusService
-					.getRegistrationStatus(registrationId);
-			if(dto == null)
-				dto = new InternalRegistrationStatusDto();
-			else {
-				int retryCount = dto.getRetryCount() != null? dto.getRetryCount() + 1: 1;
-				dto.setRetryCount(retryCount);
 
-			}
 			if (regEntity == null) {
 				description = "PacketNotSync exception in packet receiver for registartionId " + registrationId + "::"
 						+ PlatformErrorMessages.RPR_PKR_PACKET_NOT_YET_SYNC.getMessage();
@@ -170,16 +161,31 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 
 			else   {
 				try {
+					
+					dto= registrationStatusService
+							.getRegistrationStatus(registrationId);
+					if(dto == null)
+						dto = new InternalRegistrationStatusDto();
+					else {
+						int retryCount = dto.getRetryCount() != null? dto.getRetryCount() + 1: 1;
+						dto.setRetryCount(retryCount);
+
+					}
 					fileManager.put(registrationId, new FileInputStream(file.getAbsolutePath()),
 							DirectoryPathDto.VIRUS_SCAN_ENC);
 					
-				
+					
+					dto.setLatestTransactionTypeCode(RegistrationTransactionTypeCode.PACKET_RECEIVER.toString());
+					dto.setRegistrationStageName(RegistrationStageName.PACKET_RECEIVER_STAGE);
+					
 					dto.setRegistrationId(registrationId);
 					dto.setRegistrationType(regEntity.getRegistrationType());
 					dto.setReferenceRegistrationId(null);
 					dto.setStatusCode(RegistrationStatusCode.PACKET_UPLOADED_TO_VIRUS_SCAN.toString());
 					dto.setLangCode("eng");
 					dto.setStatusComment(StatusMessage.PACKET_UPLOADED_VIRUS_SCAN);
+					dto.setReProcessRetryCount(0);
+					dto.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.SUCCESS.toString());
 					dto.setIsActive(true);
 					dto.setCreatedBy(USER);
 					dto.setIsDeleted(false);
@@ -196,7 +202,7 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 				}
 				catch (  IOException e) {
 					dto.setLatestTransactionStatusCode(
-							registrationStatusMapperUtil.getStatusCode(RegistrationExceptionTypeCode.IOEXCEPTION).toString());
+							registrationExceptionMapperUtil.getStatusCode(RegistrationExceptionTypeCode.IOEXCEPTION));
 
 					description = " IOException in packet receiver for registrationId"
 							+ registrationId + "::" + e.getMessage();
@@ -206,7 +212,7 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 				}
 				catch (DataAccessException  e) {
 					dto.setLatestTransactionStatusCode(
-							registrationStatusMapperUtil.getStatusCode(RegistrationExceptionTypeCode.DATA_ACCESS_EXCEPTION).toString());
+							registrationExceptionMapperUtil.getStatusCode(RegistrationExceptionTypeCode.DATA_ACCESS_EXCEPTION));
 
 					description = "DataAccessException in packet receiver for registrationId"
 							+ registrationId + "::" + e.getMessage();

@@ -30,7 +30,7 @@ import io.mosip.registration.processor.core.constant.RegistrationStageName;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.spi.filesystem.manager.FileManager;
-import io.mosip.registration.processor.core.util.RegistrationStatusMapperUtil;
+import io.mosip.registration.processor.core.util.RegistrationExceptionMapperUtil;
 import io.mosip.registration.processor.packet.manager.dto.DirectoryPathDto;
 import io.mosip.registration.processor.packet.uploader.archiver.util.PacketArchiver;
 import io.mosip.registration.processor.packet.uploader.exception.PacketNotFoundException;
@@ -94,7 +94,7 @@ public class PacketUploaderStage extends MosipVerticleManager {
 	private boolean isTransactionSuccessful;
 
 	String description = "";
-	RegistrationStatusMapperUtil registrationStatusMapperUtil = new RegistrationStatusMapperUtil();
+	RegistrationExceptionMapperUtil registrationStatusMapperUtil = new RegistrationExceptionMapperUtil();
 
 	/*
 	 * (non-Javadoc)
@@ -108,9 +108,9 @@ public class PacketUploaderStage extends MosipVerticleManager {
 		this.registrationId = object.getRid();
 
 		isTransactionSuccessful = false;
-		InternalRegistrationStatusDto dto = registrationStatusService.getRegistrationStatus(registrationId);
+		InternalRegistrationStatusDto dto = new InternalRegistrationStatusDto();
 		try {
-
+			dto = registrationStatusService.getRegistrationStatus(registrationId);
 			int retrycount = (dto.getRetryCount() == null) ? 0 : dto.getRetryCount() + 1;
 			dto.setRetryCount(retrycount);
 			dto.setLatestTransactionTypeCode(RegistrationTransactionTypeCode.UPLOAD_PACKET.toString());
@@ -141,7 +141,6 @@ public class PacketUploaderStage extends MosipVerticleManager {
 				dto.setStatusCode(RegistrationStatusCode.PACKET_UPLOAD_TO_PACKET_STORE_FAILED.toString());
 				dto.setStatusComment("Packet upload to packet store failed for " + registrationId);
 				dto.setUpdatedBy(USER);
-				registrationStatusService.updateRegistrationStatus(dto);
 			}
 		} catch (TablenotAccessibleException e) {
 			dto.setLatestTransactionStatusCode(registrationStatusMapperUtil
@@ -150,7 +149,7 @@ public class PacketUploaderStage extends MosipVerticleManager {
 			object.setIsValid(false);
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationId, PlatformErrorMessages.RPR_RGS_REGISTRATION_TABLE_NOT_ACCESSIBLE.name()
-							+ ExceptionUtils.getStackTrace(e));
+					+ ExceptionUtils.getStackTrace(e));
 
 			description = "Registration status TablenotAccessibleException for registrationId " + this.registrationId
 					+ "::" + e.getMessage();
@@ -264,10 +263,7 @@ public class PacketUploaderStage extends MosipVerticleManager {
 
 			entry.setStatusCode(RegistrationStatusCode.PACKET_UPLOADED_TO_FILESYSTEM.toString());
 			entry.setStatusComment("Packet " + registrationId + " is uploaded in file system.");
-
 			entry.setUpdatedBy(USER);
-			registrationStatusService.updateRegistrationStatus(entry);
-
 			object.setInternalError(false);
 			object.setIsValid(true);
 			object.setRid(registrationId);

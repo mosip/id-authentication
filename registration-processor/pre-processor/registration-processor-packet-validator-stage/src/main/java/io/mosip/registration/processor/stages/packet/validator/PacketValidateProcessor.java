@@ -30,9 +30,12 @@ import io.mosip.registration.processor.core.code.EventId;
 import io.mosip.registration.processor.core.code.EventName;
 import io.mosip.registration.processor.core.code.EventType;
 import io.mosip.registration.processor.core.code.ModuleName;
+import io.mosip.registration.processor.core.code.RegistrationExceptionTypeCode;
+import io.mosip.registration.processor.core.code.RegistrationTransactionTypeCode;
 import io.mosip.registration.processor.core.constant.JsonConstant;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.constant.PacketFiles;
+import io.mosip.registration.processor.core.constant.RegistrationStageName;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.exception.util.PlatformSuccessMessages;
@@ -50,6 +53,7 @@ import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.core.util.IdentityIteratorUtil;
 import io.mosip.registration.processor.core.util.JsonUtil;
+import io.mosip.registration.processor.core.util.RegistrationExceptionMapperUtil;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.packet.storage.utils.Utilities;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
@@ -139,6 +143,8 @@ public class PacketValidateProcessor {
 
 	JSONObject demographicIdentity = null;
 
+	RegistrationExceptionMapperUtil registrationStatusMapperUtil = new RegistrationExceptionMapperUtil();
+
 	/** The is transaction successful. */
 	private boolean isTransactionSuccessful;
 	private static final String PRE_REG_ID = "mosip.pre-registration.datasync";
@@ -149,7 +155,9 @@ public class PacketValidateProcessor {
 		String preRegId = null;
 		InternalRegistrationStatusDto registrationStatusDto = new InternalRegistrationStatusDto();
 		try {
-
+			registrationStatusDto
+					.setLatestTransactionTypeCode(RegistrationTransactionTypeCode.VALIDATE_PACKET.toString());
+			registrationStatusDto.setRegistrationStageName(RegistrationStageName.PACKET_VALIDATOR_STAGE);
 			object.setMessageBusAddress(MessageBusAddress.PACKET_VALIDATOR_BUS_IN);
 			object.setIsValid(Boolean.FALSE);
 			object.setInternalError(Boolean.FALSE);
@@ -268,6 +276,8 @@ public class PacketValidateProcessor {
 				registrationStatusService.updateRegistrationStatus(registrationStatusDto);
 				isTransactionSuccessful = true;
 			} catch (FSAdapterException e) {
+				registrationStatusDto.setLatestTransactionStatusCode(
+						registrationStatusMapperUtil.getStatusCode(RegistrationExceptionTypeCode.FSADAPTER_EXCEPTION));
 				isTransactionSuccessful = false;
 				description = PlatformErrorMessages.RPR_PVM_PACKET_STORE_NOT_ACCESSIBLE.getMessage();
 				code = PlatformErrorMessages.RPR_PVM_PACKET_STORE_NOT_ACCESSIBLE.getCode();
@@ -277,6 +287,8 @@ public class PacketValidateProcessor {
 				object.setInternalError(Boolean.TRUE);
 				object.setRid(registrationStatusDto.getRegistrationId());
 			} catch (DataAccessException e) {
+				registrationStatusDto.setLatestTransactionStatusCode(registrationStatusMapperUtil
+						.getStatusCode(RegistrationExceptionTypeCode.DATA_ACCESS_EXCEPTION));
 				isTransactionSuccessful = false;
 				description = PlatformErrorMessages.RPR_RGS_REGISTRATION_TABLE_NOT_ACCESSIBLE.getMessage();
 				code = PlatformErrorMessages.RPR_RGS_REGISTRATION_TABLE_NOT_ACCESSIBLE.getCode();
@@ -287,6 +299,8 @@ public class PacketValidateProcessor {
 				object.setInternalError(Boolean.TRUE);
 				object.setRid(registrationStatusDto.getRegistrationId());
 			} catch (IOException exc) {
+				registrationStatusDto.setLatestTransactionStatusCode(
+						registrationStatusMapperUtil.getStatusCode(RegistrationExceptionTypeCode.IOEXCEPTION));
 				isTransactionSuccessful = false;
 				description = PlatformErrorMessages.STRUCTURAL_VALIDATION_FAILED.getMessage();
 				code = PlatformErrorMessages.STRUCTURAL_VALIDATION_FAILED.getCode();
@@ -298,6 +312,8 @@ public class PacketValidateProcessor {
 				object.setRid(registrationStatusDto.getRegistrationId());
 
 			} catch (TablenotAccessibleException e) {
+				registrationStatusDto.setLatestTransactionStatusCode(registrationStatusMapperUtil
+						.getStatusCode(RegistrationExceptionTypeCode.TABLE_NOT_ACCESSIBLE_EXCEPTION));
 				object.setInternalError(Boolean.TRUE);
 				description = PlatformErrorMessages.RPR_RGS_REGISTRATION_TABLE_NOT_ACCESSIBLE.getMessage();
 				code = PlatformErrorMessages.RPR_RGS_REGISTRATION_TABLE_NOT_ACCESSIBLE.getCode();
@@ -305,6 +321,8 @@ public class PacketValidateProcessor {
 						PlatformErrorMessages.RPR_RGS_REGISTRATION_TABLE_NOT_ACCESSIBLE.getMessage(), e.toString());
 
 			} catch (Exception ex) {
+				registrationStatusDto.setLatestTransactionStatusCode(
+						registrationStatusMapperUtil.getStatusCode(RegistrationExceptionTypeCode.EXCEPTION));
 				isTransactionSuccessful = false;
 				description = PlatformErrorMessages.STRUCTURAL_VALIDATION_FAILED.getMessage();
 				code = PlatformErrorMessages.STRUCTURAL_VALIDATION_FAILED.getCode();
@@ -316,6 +334,7 @@ public class PacketValidateProcessor {
 				object.setRid(registrationStatusDto.getRegistrationId());
 
 			} finally {
+				registrationStatusService.updateRegistrationStatus(registrationStatusDto);
 				regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
 						LoggerFileConstant.REGISTRATIONID.toString(), registrationId, description);
 				if (object.getInternalError()) {
