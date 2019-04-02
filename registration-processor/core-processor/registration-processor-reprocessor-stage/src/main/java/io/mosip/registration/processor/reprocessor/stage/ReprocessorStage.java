@@ -24,7 +24,6 @@ import io.mosip.registration.processor.core.exception.util.PlatformSuccessMessag
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.util.MessageBusUtil;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
-import io.mosip.registration.processor.status.code.RegistrationType;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
 import io.mosip.registration.processor.status.exception.TablenotAccessibleException;
@@ -193,7 +192,7 @@ public class ReprocessorStage extends MosipVerticleManager {
 						this.registrationId = dto.getRegistrationId();
 						object.setRid(registrationId);
 						object.setIsValid(true);
-						object.setReg_type(RegistrationType.NEW.name());
+						object.setReg_type(dto.getRegistrationType());
 						description = "";
 						isTransactionSuccessful = true;
 						String stageName = MessageBusUtil.getMessageBusAdress(dto.getRegistrationStageName());
@@ -211,9 +210,9 @@ public class ReprocessorStage extends MosipVerticleManager {
 								: 1;
 						dto.setReProcessRetryCount(reprocessRetryCount);
 						registrationStatusService.updateRegistrationStatus(dto);
-						if (reprocessRetryCount > reprocessCount) {
-							object.setIsValid(false);
-						}
+						// if (reprocessRetryCount >= reprocessCount) {
+						// object.setIsValid(false);
+						// }
 					});
 					totalUnprocessesPackets = totalUnprocessesPackets - fetchSize;
 				}
