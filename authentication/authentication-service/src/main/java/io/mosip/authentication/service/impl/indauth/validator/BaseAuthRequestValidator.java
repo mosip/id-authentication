@@ -56,6 +56,8 @@ import io.mosip.kernel.core.util.DateUtils;
  */
 public class BaseAuthRequestValidator extends IdAuthValidator {
 
+	private static final String OTP = "otp";
+
 	/** The Constant UNKNOWN. */
 	private static final String UNKNOWN = "UNKNOWN";
 
@@ -102,16 +104,13 @@ private static final String REQUEST_ADDITIONAL_FACTORS_TOTP = "request/additiona
 	private static final String VALIDATE = "VALIDATE";
 
 	/** The Constant PRIMARY_LANG_CODE. */
-	private static final String PRIMARY_LANG_CODE = "mosip.primary.lang-code";
+	private static final String PRIMARY_LANG_CODE = "mosip.primary-language";
 
 	/** The Constant INVALID_INPUT_PARAMETER. */
 	private static final String INVALID_INPUT_PARAMETER = "INVALID_INPUT_PARAMETER - ";
 
 	/** The Constant REQUEST. */
 	private static final String REQUEST = "request";
-
-	/** The Constant OTP_LENGTH. */
-	private static final Integer OTP_LENGTH = 6;
 
 	private static final Integer STATIC_PIN_LENGTH = 6;
 
@@ -127,13 +126,10 @@ private static final String REQUEST_ADDITIONAL_FACTORS_TOTP = "request/additiona
 	/** The Constant IdentityInfoDTO. */
 	private static final String IDENTITY_INFO_DTO = "IdentityInfoDTO";
 
-	/** The Constant PATTERN. */
-	private static final Pattern STATIC_PIN_PATTERN = Pattern.compile("^[0-9]{" + STATIC_PIN_LENGTH + "}");
-
-	private static final Pattern OTP_PIN_PATTERN = Pattern.compile("^[0-9]{" + OTP_LENGTH + "}");
-
 	/** The Constant AUTH_TYPE. */
 	private static final String AUTH_TYPE = "requestedAuth";
+
+	private static final String STATICPIN = "staticPin";
 
 	/** The id info helper. */
 	@Autowired
@@ -200,7 +196,7 @@ private static final String REQUEST_ADDITIONAL_FACTORS_TOTP = "request/additiona
 				errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.MISSING_AUTHTYPE.getErrorCode(),
 						new Object[] { PIN }, IdAuthenticationErrorConstants.MISSING_AUTHTYPE.getErrorMessage());
 			} else {
-				checkAdditionalFactorsValue(pinOpt, PIN_VALUE, errors, STATIC_PIN_PATTERN);
+				checkAdditionalFactorsValue(pinOpt, PIN_VALUE, errors, getPattern(STATICPIN));
 			}
 		} else if ((authTypeDTO != null && authTypeDTO.isOtp() && isMatchtypeEnabled(PinMatchType.OTP))) {
 			Optional<String> otp = Optional.ofNullable(authRequestDTO.getRequest()).map(RequestDTO::getOtp);
@@ -212,7 +208,7 @@ private static final String REQUEST_ADDITIONAL_FACTORS_TOTP = "request/additiona
 						new Object[] { REQUEST_ADDITIONAL_FACTORS_TOTP },
 						IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
 			} else {
-				checkAdditionalFactorsValue(otp, OTP2, errors, OTP_PIN_PATTERN);
+				checkAdditionalFactorsValue(otp, OTP2, errors, getPattern(OTP));
 			}
 		}
 	}
@@ -1015,5 +1011,17 @@ private static final String REQUEST_ADDITIONAL_FACTORS_TOTP = "request/additiona
 	private Set<String> getAllowedAuthTypes(String configKey) {
 		String intAllowedAuthType = env.getProperty(configKey);
 		return Stream.of(intAllowedAuthType.split(",")).filter(str -> !str.isEmpty()).collect(Collectors.toSet());
+	}
+	
+	private Pattern getPattern(String type) {
+		Pattern pattern =null;
+		if(type.equals(STATICPIN)) {
+			//TODO add property for staticpin.
+			pattern= Pattern.compile("^[0-9]{" + STATIC_PIN_LENGTH+ "}");
+		}else if(type.equals(OTP)){
+			pattern= Pattern.compile("^[0-9]{" + env.getProperty("mosip.kernel.otp.default-length")+ "}");
+		}
+		return pattern;
+		
 	}
 }

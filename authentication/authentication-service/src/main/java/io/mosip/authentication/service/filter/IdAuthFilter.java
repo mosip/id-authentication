@@ -252,7 +252,7 @@ public class IdAuthFilter extends BaseAuthFilter {
 			policies = mapper.readValue(policyJson.getBytes(UTF_8), Policies.class);
 			List<AuthPolicy> authPolicies = policies.getPolicies().getAuthPolicies();
 			List<KYCAttributes> allowedKycAttributes = policies.getPolicies().getAllowedKycAttributes();
-			List<String> allowedTypeList = allowedKycAttributes.stream().map(KYCAttributes::getAttributeName)
+			List<String> allowedTypeList = allowedKycAttributes.stream().filter(KYCAttributes::isRequired).map(KYCAttributes::getAttributeName)
 					.collect(Collectors.toList());
 			if (allowedTypeList == null) {
 				allowedTypeList = Collections.emptyList();

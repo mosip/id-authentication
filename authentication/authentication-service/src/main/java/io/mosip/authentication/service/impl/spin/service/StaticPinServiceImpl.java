@@ -35,7 +35,8 @@ import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.core.util.HMACUtils;
 
 /**
- * This Class will provide service for storing the Static Pin.
+ * This Class will provide service for storing the Static Pin
+ * {@link StaticPinService}}.
  * 
  * @author Prem Kumar
  *
@@ -90,38 +91,39 @@ public class StaticPinServiceImpl implements StaticPinService {
 	@Override
 	public StaticPinResponseDTO storeSpin(StaticPinRequestDTO staticPinRequestDTO)
 			throws IdAuthenticationBusinessException {
-			String idvId = staticPinRequestDTO.getIndividualId();
-			String idTypedto = staticPinRequestDTO.getIndividualIdType();
-			String idTypeStr = null;
-			IdType idType = IdType.UIN;
-			if (idTypedto.equals(IdType.UIN.getType())) {
-				idType = IdType.UIN;
-				idTypeStr = idType.getType();
-			} else if (idTypedto.equals(IdType.VID.getType())) {
-				idType = IdType.VID;
-				idTypeStr = idType.getType();
-			}
-			Map<String, Object> idResDTO = idAuthService.processIdType(idTypeStr, idvId, false);
-			Optional<String> uinValue = getUINValue(idResDTO);
-			if (uinValue.isPresent()) {
-				storeSpin(staticPinRequestDTO, uinValue.get());
-			}
-			String dateTimePattern = env.getProperty(DATETIME_PATTERN);
-			DateTimeFormatter isoPattern = DateTimeFormatter.ofPattern(dateTimePattern);
-			String reqTime = staticPinRequestDTO.getRequestTime();
-			ZonedDateTime zonedDateTime2 = ZonedDateTime.parse(reqTime, isoPattern);
-			ZoneId zone = zonedDateTime2.getZone();
-			String resTime = DateUtils.formatDate(new Date(), dateTimePattern, TimeZone.getTimeZone(zone));
-			StaticPinResponseDTO staticPinResponseDTO = new StaticPinResponseDTO();
-			auditHelper.audit(AuditModules.STATIC_PIN_STORAGE, AuditEvents.STATIC_PIN_STORAGE_REQUEST_RESPONSE, idvId,
-					idType, AuditModules.STATIC_PIN_STORAGE.getDesc());
-			staticPinResponseDTO.setStatus(true);
-			staticPinResponseDTO.setErrors(Collections.emptyList());
-			staticPinResponseDTO.setId(staticPinRequestDTO.getId());
-			staticPinResponseDTO.setVersion(staticPinRequestDTO.getVersion());
-			staticPinResponseDTO.setResponseTime(resTime);
-			return staticPinResponseDTO;
-		
+		String idvId = staticPinRequestDTO.getIndividualId();
+		String idTypedto = staticPinRequestDTO.getIndividualIdType();
+		String idTypeStr = null;
+		IdType idType = IdType.UIN;
+		if (idTypedto.equals(IdType.UIN.getType())) {
+			idType = IdType.UIN;
+			idTypeStr = idType.getType();
+		} else if (idTypedto.equals(IdType.VID.getType())) {
+			idType = IdType.VID;
+			idTypeStr = idType.getType();
+		}
+		Map<String, Object> idResDTO = idAuthService.processIdType(idTypeStr, idvId, false);
+		Optional<String> uinValue = getUINValue(idResDTO);
+		if (uinValue.isPresent()) {
+			storeSpin(staticPinRequestDTO, uinValue.get());
+		}
+		String dateTimePattern = env.getProperty(DATETIME_PATTERN);
+		DateTimeFormatter isoPattern = DateTimeFormatter.ofPattern(dateTimePattern);
+		String reqTime = staticPinRequestDTO.getRequestTime();
+		ZonedDateTime zonedDateTime2 = ZonedDateTime.parse(reqTime, isoPattern);
+		ZoneId zone = zonedDateTime2.getZone();
+		String resTime = DateUtils.formatDate(new Date(), dateTimePattern, TimeZone.getTimeZone(zone));
+		StaticPinResponseDTO staticPinResponseDTO = new StaticPinResponseDTO();
+		logger.info(SESSION_ID, this.getClass().getSimpleName(), "STATICPIN STORE--", "AUDIT REQUESTED");
+		auditHelper.audit(AuditModules.STATIC_PIN_STORAGE, AuditEvents.STATIC_PIN_STORAGE_REQUEST_RESPONSE, idvId,
+				idType, AuditModules.STATIC_PIN_STORAGE.getDesc());
+		staticPinResponseDTO.setStatus(true);
+		staticPinResponseDTO.setErrors(Collections.emptyList());
+		staticPinResponseDTO.setId(staticPinRequestDTO.getId());
+		staticPinResponseDTO.setVersion(staticPinRequestDTO.getVersion());
+		staticPinResponseDTO.setResponseTime(resTime);
+		return staticPinResponseDTO;
+
 	}
 
 	private Optional<String> getUINValue(Map<String, Object> idResDTO) {

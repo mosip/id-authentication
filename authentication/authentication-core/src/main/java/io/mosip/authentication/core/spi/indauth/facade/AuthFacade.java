@@ -19,19 +19,26 @@ import io.mosip.authentication.core.exception.IdAuthenticationDaoException;
 public interface AuthFacade {
 
 	/**
-	 * Authenticate applicant.
+	 * Process the authorization type and authorization response is returned.
 	 *
-	 * @param authRequest the auth request
-	 * @param request the flag for InternalAuthRequest or AuthRequest 
-	 * @return the auth response DTO
+	 * @param authRequestDTO the auth request DTO
+	 * @param isAuth         boolean i.e is auth type request.
+	 * @return AuthResponseDTO the auth response DTO
 	 * @throws IdAuthenticationBusinessException the id authentication business
-	 *                                           exception
-	 * @throws IdAuthenticationDaoException the Id authentication Dao Exception
+	 *                                           exception.
 	 */
 	AuthResponseDTO authenticateApplicant(AuthRequestDTO authRequest, boolean request,String partnerId)
 			throws IdAuthenticationBusinessException, IdAuthenticationDaoException;
 
-
+	/**
+	 * Process the KycAuthRequestDTO to integrate with KycService.
+	 *
+	 * @param kycAuthRequestDTO is DTO of KycAuthRequestDTO
+	 * @param authResponseDTO   the auth response DTO
+	 * @return the kyc auth response DTO
+	 * @throws IdAuthenticationBusinessException the id authentication business
+	 *                                           exception
+	 */
 	KycAuthResponseDTO processKycAuth(KycAuthRequestDTO kycAuthRequestDTO, AuthResponseDTO authResponseDTO,String partnerId)
 			throws IdAuthenticationBusinessException;
 

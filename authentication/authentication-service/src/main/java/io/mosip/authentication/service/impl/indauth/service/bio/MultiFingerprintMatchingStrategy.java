@@ -46,16 +46,23 @@ public enum MultiFingerprintMatchingStrategy implements MatchingStrategy {
 		this.matchFunction = matchFunction;
 	}
 
-	/**
-	 * get Method for MatchingStrategyType
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.authentication.core.spi.indauth.match.MatchingStrategy#getType()
 	 */
 	@Override
 	public MatchingStrategyType getType() {
 		return matchStrategyType;
 	}
 
-	/**
-	 * get Method for MatchFunction
+	/*
+	 * 
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.authentication.core.spi.indauth.match.MatchingStrategy#
+	 * getMatchFunction()
 	 */
 	@Override
 	public MatchFunction getMatchFunction() {

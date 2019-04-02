@@ -110,10 +110,10 @@ public class InternalAuthRequestValidatorTest {
 		authTypeDTO.setOtp(true);
 		authTypeDTO.setBio(true);
 		IdentityInfoDTO idInfoDTO = new IdentityInfoDTO();
-		idInfoDTO.setLanguage(env.getProperty("mosip.primary.lang-code"));
+		idInfoDTO.setLanguage(env.getProperty("mosip.primary-language"));
 		idInfoDTO.setValue("John");
 		IdentityInfoDTO idInfoDTO1 = new IdentityInfoDTO();
-		idInfoDTO1.setLanguage(env.getProperty("mosip.secondary.lang-code"));
+		idInfoDTO1.setLanguage(env.getProperty("mosip.secondary-language"));
 		idInfoDTO1.setValue("Mike");
 		List<IdentityInfoDTO> idInfoList = new ArrayList<>();
 		idInfoList.add(idInfoDTO);
@@ -123,7 +123,7 @@ public class InternalAuthRequestValidatorTest {
 		idDTO.setDob("25/11/1990");
 		idDTO.setAge("25");
 		IdentityInfoDTO idInfoDTOs = new IdentityInfoDTO();
-		idInfoDTOs.setLanguage(env.getProperty("mosip.secondary.lang-code"));
+		idInfoDTOs.setLanguage(env.getProperty("mosip.secondary-language"));
 		idInfoDTOs.setValue("V");
 		List<IdentityInfoDTO> idInfoLists = new ArrayList<>();
 		idInfoLists.add(idInfoDTOs);
@@ -140,7 +140,7 @@ public class InternalAuthRequestValidatorTest {
 		authRequestDTO.setConsentObtained(true);
 		MockEnvironment mockenv = new MockEnvironment();
 		mockenv.merge(((AbstractEnvironment) mockenv));
-		mockenv.setProperty("internal.allowed.auth.type", "fulladdress");
+		mockenv.setProperty("internal.auth.types.allowed", "fulladdress");
 		mockenv.setProperty("mosip.idtype.allowed", "UIN,VID");
 		mockenv.setProperty("datetime.pattern", "yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
 		ReflectionTestUtils.setField(internalAuthRequestValidator, "env", mockenv);
@@ -165,10 +165,10 @@ public class InternalAuthRequestValidatorTest {
 		authTypeDTO.setOtp(true);
 		authTypeDTO.setBio(true);
 		IdentityInfoDTO idInfoDTO = new IdentityInfoDTO();
-		idInfoDTO.setLanguage(env.getProperty("mosip.primary.lang-code"));
+		idInfoDTO.setLanguage(env.getProperty("mosip.primary-language"));
 		idInfoDTO.setValue("John");
 		IdentityInfoDTO idInfoDTO1 = new IdentityInfoDTO();
-		idInfoDTO1.setLanguage(env.getProperty("mosip.secondary.lang-code"));
+		idInfoDTO1.setLanguage(env.getProperty("mosip.secondary-language"));
 		idInfoDTO1.setValue("Mike");
 		List<IdentityInfoDTO> idInfoList = new ArrayList<>();
 		idInfoList.add(idInfoDTO);
@@ -178,7 +178,7 @@ public class InternalAuthRequestValidatorTest {
 		idDTO.setDob("25/11/1990");
 		idDTO.setAge("25");
 		IdentityInfoDTO idInfoDTOs = new IdentityInfoDTO();
-		idInfoDTOs.setLanguage(env.getProperty("mosip.secondary.lang-code"));
+		idInfoDTOs.setLanguage(env.getProperty("mosip.secondary-language"));
 		idInfoDTOs.setValue("V");
 		List<IdentityInfoDTO> idInfoLists = new ArrayList<>();
 		idInfoLists.add(idInfoDTOs);
@@ -214,10 +214,10 @@ public class InternalAuthRequestValidatorTest {
 		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
 		authTypeDTO.setDemo(true);
 		IdentityInfoDTO idInfoDTO = new IdentityInfoDTO();
-		idInfoDTO.setLanguage(env.getProperty("mosip.primary.lang-code"));
+		idInfoDTO.setLanguage(env.getProperty("mosip.primary-language"));
 		idInfoDTO.setValue("John");
 		IdentityInfoDTO idInfoDTO1 = new IdentityInfoDTO();
-		idInfoDTO1.setLanguage(env.getProperty("mosip.secondary.lang-code"));
+		idInfoDTO1.setLanguage(env.getProperty("mosip.secondary-language"));
 		idInfoDTO1.setValue("Mike");
 		List<IdentityInfoDTO> idInfoList = new ArrayList<>();
 		idInfoList.add(idInfoDTO);
@@ -227,7 +227,7 @@ public class InternalAuthRequestValidatorTest {
 		idDTO.setDob("25/11/1990");
 		idDTO.setAge("25");
 		IdentityInfoDTO idInfoDTOs = new IdentityInfoDTO();
-		idInfoDTOs.setLanguage(env.getProperty("mosip.secondary.lang-code"));
+		idInfoDTOs.setLanguage(env.getProperty("mosip.secondary-language"));
 		idInfoDTOs.setValue("V");
 		List<IdentityInfoDTO> idInfoLists = new ArrayList<>();
 		idInfoLists.add(idInfoDTOs);
@@ -262,10 +262,10 @@ public class InternalAuthRequestValidatorTest {
 		authTypeDTO.setDemo(true);
 		authTypeDTO.setOtp(true);
 		IdentityInfoDTO idInfoDTO = new IdentityInfoDTO();
-		idInfoDTO.setLanguage(env.getProperty("mosip.primary.lang-code"));
+		idInfoDTO.setLanguage(env.getProperty("mosip.primary-language"));
 		idInfoDTO.setValue("John");
 		IdentityInfoDTO idInfoDTO1 = new IdentityInfoDTO();
-		idInfoDTO1.setLanguage(env.getProperty("mosip.secondary.lang-code"));
+		idInfoDTO1.setLanguage(env.getProperty("mosip.secondary-language"));
 		idInfoDTO1.setValue("Mike");
 		List<IdentityInfoDTO> idInfoList = new ArrayList<>();
 		idInfoList.add(idInfoDTO);
@@ -275,7 +275,7 @@ public class InternalAuthRequestValidatorTest {
 		idDTO.setDob("25/11/1990");
 		idDTO.setAge("25");
 		IdentityInfoDTO idInfoDTOs = new IdentityInfoDTO();
-		idInfoDTOs.setLanguage(env.getProperty("mosip.secondary.lang-code"));
+		idInfoDTOs.setLanguage(env.getProperty("mosip.secondary-language"));
 		idInfoDTOs.setValue("V");
 		List<IdentityInfoDTO> idInfoLists = new ArrayList<>();
 		idInfoLists.add(idInfoDTOs);
@@ -400,7 +400,7 @@ public class InternalAuthRequestValidatorTest {
 		idDTO.setDob("25/11/1990");
 		idDTO.setAge("25");
 		IdentityInfoDTO idInfoDTOs = new IdentityInfoDTO();
-		idInfoDTOs.setLanguage(env.getProperty("mosip.secondary.lang-code"));
+		idInfoDTOs.setLanguage(env.getProperty("mosip.secondary-language"));
 		idInfoDTOs.setValue("V");
 		List<IdentityInfoDTO> idInfoLists = new ArrayList<>();
 		idInfoLists.add(idInfoDTOs);
@@ -444,7 +444,7 @@ public class InternalAuthRequestValidatorTest {
 		idDTO.setDob("25/11/1990");
 		idDTO.setAge("25");
 		IdentityInfoDTO idInfoDTOs = new IdentityInfoDTO();
-		idInfoDTOs.setLanguage(env.getProperty("mosip.secondary.lang-code"));
+		idInfoDTOs.setLanguage(env.getProperty("mosip.secondary-language"));
 		idInfoDTOs.setValue("V");
 		List<IdentityInfoDTO> idInfoLists = new ArrayList<>();
 		idInfoLists.add(idInfoDTOs);
@@ -485,10 +485,10 @@ public class InternalAuthRequestValidatorTest {
 		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
 		authTypeDTO.setDemo(true);
 		IdentityInfoDTO idInfoDTO = new IdentityInfoDTO();
-		idInfoDTO.setLanguage(env.getProperty("mosip.primary.lang-code"));
+		idInfoDTO.setLanguage(env.getProperty("mosip.primary-language"));
 		idInfoDTO.setValue("John");
 		IdentityInfoDTO idInfoDTO1 = new IdentityInfoDTO();
-		idInfoDTO1.setLanguage(env.getProperty("mosip.secondary.lang-code"));
+		idInfoDTO1.setLanguage(env.getProperty("mosip.secondary-language"));
 		idInfoDTO1.setValue("Mike");
 		List<IdentityInfoDTO> idInfoList = new ArrayList<>();
 		idInfoList.add(idInfoDTO);
@@ -498,7 +498,7 @@ public class InternalAuthRequestValidatorTest {
 		idDTO.setDob("25/11/1990");
 		idDTO.setAge("25");
 		IdentityInfoDTO idInfoDTOs = new IdentityInfoDTO();
-		idInfoDTOs.setLanguage(env.getProperty("mosip.secondary.lang-code"));
+		idInfoDTOs.setLanguage(env.getProperty("mosip.secondary-language"));
 		idInfoDTOs.setValue("V");
 		List<IdentityInfoDTO> idInfoLists = new ArrayList<>();
 		idInfoLists.add(idInfoDTOs);

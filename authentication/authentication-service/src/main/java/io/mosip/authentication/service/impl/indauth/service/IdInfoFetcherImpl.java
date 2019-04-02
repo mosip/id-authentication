@@ -44,10 +44,10 @@ public class IdInfoFetcherImpl implements IdInfoFetcher {
 	private static final String INDIVIDUAL_BIOMETRICS = "individualBiometrics";
 
 	/** The Constant PRIMARY_LANG_CODE. */
-	private static final String PRIMARY_LANG_CODE = "mosip.primary.lang-code";
+	private static final String PRIMARY_LANG_CODE = "mosip.primary-language";
 
 	/** The Constant SECONDARY_LANG_CODE. */
-	private static final String SECONDARY_LANG_CODE = "mosip.secondary.lang-code";
+	private static final String SECONDARY_LANG_CODE = "mosip.secondary-language";
 
 	/** The BiometricProviderFactory value */
 	@Autowired

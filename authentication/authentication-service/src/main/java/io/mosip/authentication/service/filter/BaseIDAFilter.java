@@ -8,6 +8,7 @@ import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.Temporal;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -92,9 +93,6 @@ public abstract class BaseIDAFilter implements Filter {
 	/** The Constant SESSION_ID. */
 	private static final String SESSION_ID = "SessionId";
 
-	/** The request time. */
-	private LocalDateTime requestTime;
-
 	/** The Constant EMPTY_JSON_OBJ_STRING. */
 	private static final String EMPTY_JSON_OBJ_STRING = "{";
 	
@@ -120,12 +118,10 @@ public abstract class BaseIDAFilter implements Filter {
 	 */
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException {
-		requestTime = DateUtils.getUTCCurrentDateTime();
 		WebApplicationContext context = WebApplicationContextUtils
 				.getRequiredWebApplicationContext(filterConfig.getServletContext());
 		env = context.getBean(Environment.class);
 		mapper = context.getBean(ObjectMapper.class);
-		mosipLogger.info(SESSION_ID, EVENT_FILTER, BASE_IDA_FILTER, REQUEST + " at : " + requestTime);
 	}
 
 	/*
@@ -137,13 +133,16 @@ public abstract class BaseIDAFilter implements Filter {
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
+		LocalDateTime requestTime = DateUtils.getUTCCurrentDateTime();
+		mosipLogger.info(SESSION_ID, EVENT_FILTER, BASE_IDA_FILTER, REQUEST + " at : " + requestTime);
+
 		ResettableStreamHttpServletRequest requestWrapper = new ResettableStreamHttpServletRequest(
 				(HttpServletRequest) request);
 		CharResponseWrapper responseWrapper = new CharResponseWrapper((HttpServletResponse) response);
 		try {
 			consumeRequest(requestWrapper);
 			chain.doFilter(requestWrapper, responseWrapper);
-			String responseAsString = mapResponse(requestWrapper, responseWrapper);
+			String responseAsString = mapResponse(requestWrapper, responseWrapper, requestTime);
 			response.getWriter().write(responseAsString);
 		} catch (IdAuthenticationAppException e) {
 			mosipLogger.error(SESSION_ID, EVENT_FILTER, BASE_IDA_FILTER, "\n" + ExceptionUtils.getStackTrace(e));
@@ -151,7 +150,7 @@ public abstract class BaseIDAFilter implements Filter {
 			AuthError authError = new AuthError();
 			authError.setErrorCode(e.getErrorCode());
 			authError.setErrorMessage(e.getErrorText());
-			sendErrorResponse(response, responseWrapper, requestWrapper, authError);
+			sendErrorResponse(response, responseWrapper, requestWrapper, authError, requestTime);
 		} finally {
 			logDataSize(responseWrapper.toString(), RESPONSE);
 		}
@@ -168,12 +167,13 @@ public abstract class BaseIDAFilter implements Filter {
 	 * @param chain           the chain used to link the request wrapper and response wrapper
 	 * @param requestWrapper  {@link ResettableStreamHttpServletRequest}
 	 * @param authError 	  the AUTH error is used to set the error details if any
+	 * @param requestTime 
 	 * @return the charResponseWrapper which consists of the response
 	 * @throws IOException      Signals that an I/O exception has occurred.
 	 * @throws ServletException the servlet exception
 	 */
 	private CharResponseWrapper sendErrorResponse(ServletResponse response, CharResponseWrapper responseWrapper,
-			ResettableStreamHttpServletRequest requestWrapper, AuthError authError) throws IOException {
+			ResettableStreamHttpServletRequest requestWrapper, AuthError authError, Temporal requestTime) throws IOException {
 		AuthResponseDTO authResponseDTO = new AuthResponseDTO();
 		authResponseDTO.setErrors(Collections.singletonList(authError));
 		Map<String, Object> requestMap = null;
@@ -212,7 +212,7 @@ public abstract class BaseIDAFilter implements Filter {
 		response.getWriter().write(mapper.writeValueAsString(resultMap));
 		responseWrapper.setResponse(response);
 		responseWrapper.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
-		logTime(authResponseDTO.getResponseTime(), RESPONSE);
+		logTime(authResponseDTO.getResponseTime(), RESPONSE, requestTime);
 		return responseWrapper;
 	}
 
@@ -249,8 +249,9 @@ public abstract class BaseIDAFilter implements Filter {
 	 *
 	 * @param time the response time
 	 * @param type the type is response
+	 * @param requestTime 
 	 */
-	private void logTime(String time, String type) {
+	private void logTime(String time, String type, Temporal requestTime) {
 		mosipLogger.info(SESSION_ID, EVENT_FILTER, BASE_IDA_FILTER, type + " at : " + time);
 			long duration = Duration
 					.between(
@@ -368,10 +369,11 @@ public abstract class BaseIDAFilter implements Filter {
 	 *
 	 * @param requestWrapper  {@link ResettableStreamHttpServletRequest} 
 	 * @param responseWrapper {@link CharResponseWrapper}
+	 * @param requestTime 
 	 * @return the string response finally built
 	 * @throws IdAuthenticationAppException the id authentication app exception
 	 */
-	protected String mapResponse(ResettableStreamHttpServletRequest requestWrapper, CharResponseWrapper responseWrapper)
+	protected String mapResponse(ResettableStreamHttpServletRequest requestWrapper, CharResponseWrapper responseWrapper, Temporal requestTime)
 			throws IdAuthenticationAppException {
 		try {
 			requestWrapper.resetInputStream();
@@ -385,10 +387,11 @@ public abstract class BaseIDAFilter implements Filter {
 				version = getVersionFromUrl(requestWrapper);
 			}
 			responseMap.replace(VERSION, version);
-
+			String idType = Objects.nonNull(requestBody)? (String) requestBody.get(ID) : null;
+			responseMap.put(ID, idType);
 			Map<String, Object> resultMap = removeNullOrEmptyFieldsInResponse(responseMap);
 			String responseAsString = mapper.writeValueAsString(transformResponse(resultMap));
-			logTime((String) getResponseBody(responseAsString).get(RES_TIME), RESPONSE);
+			logTime((String) getResponseBody(responseAsString).get(RES_TIME), RESPONSE, requestTime);
 			return responseAsString;
 		} catch (IdAuthenticationAppException | IOException e) {
 			mosipLogger.error(SESSION_ID, EVENT_FILTER, BASE_IDA_FILTER, e.getMessage());

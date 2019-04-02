@@ -5,10 +5,11 @@ import java.util.List;
 import lombok.Data;
 
 /**
+ * The Class for BaseAuthResponseDTO
  * 
  * @author Prem Kumar
  *
- *The Class for BaseAuthResponseDTO
+ *
  */
 
 @Data

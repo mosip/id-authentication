@@ -35,10 +35,10 @@ import io.mosip.authentication.service.impl.indauth.match.IdaIdMapping;
 public class KycServiceImpl implements KycService {
 
 	/** The Constant MOSIP_SECONDARY_LANG_CODE. */
-	private static final String MOSIP_SECONDARY_LANG_CODE = "mosip.secondary.lang-code";
+	private static final String MOSIP_SECONDARY_LANG_CODE = "mosip.secondary-language";
 
 	/** The Constant MOSIP_PRIMARY_LANG_CODE. */
-	private static final String MOSIP_PRIMARY_LANG_CODE = "mosip.primary.lang-code";
+	private static final String MOSIP_PRIMARY_LANG_CODE = "mosip.primary-language";
 
 	/** The env. */
 	@Autowired
