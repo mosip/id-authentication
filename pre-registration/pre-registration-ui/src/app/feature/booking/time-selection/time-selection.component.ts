@@ -233,7 +233,7 @@ export class TimeSelectionComponent implements OnInit {
     this.dataService.makeBooking(request).subscribe(
       response => {
         console.log(response);
-        if (!response['err']) {
+        if (!response['errors']) {
           const data = {
             case: 'MESSAGE',
             title: this.secondaryLanguagelabels.title_success,
@@ -289,7 +289,7 @@ export class TimeSelectionComponent implements OnInit {
 
   navigateDashboard() {
     const routeParams = this.router.url.split('/');
-    this.router.navigate(['dashboard', routeParams[2]]);
+    this.router.navigate(['dashboard']);
   }
 
   navigateBack() {

@@ -31,7 +31,7 @@ export default class Utils {
       (Number(time[0]) > 12 ? Number(time[0]) - 12 : Number(time[0])) +
       ':' +
       time[1] +
-      (Number(time[0]) > 12 ? ' PM' : ' AM');
+      (Number(time[0]) >= 12 ? ' PM' : ' AM');
     return appointmentDateTime;
   }
 }
