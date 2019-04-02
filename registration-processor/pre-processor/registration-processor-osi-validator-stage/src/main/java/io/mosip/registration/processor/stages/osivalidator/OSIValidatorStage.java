@@ -16,16 +16,20 @@ import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.abstractverticle.MosipEventBus;
 import io.mosip.registration.processor.core.abstractverticle.MosipVerticleManager;
-import io.mosip.registration.processor.core.code.ApiName;
 import io.mosip.registration.processor.core.code.EventId;
 import io.mosip.registration.processor.core.code.EventName;
 import io.mosip.registration.processor.core.code.EventType;
 import io.mosip.registration.processor.core.code.ModuleName;
+import io.mosip.registration.processor.core.code.RegistrationExceptionTypeCode;
+import io.mosip.registration.processor.core.code.RegistrationTransactionStatusCode;
+import io.mosip.registration.processor.core.code.RegistrationTransactionTypeCode;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
+import io.mosip.registration.processor.core.constant.RegistrationStageName;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.exception.util.PlatformSuccessMessages;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
+import io.mosip.registration.processor.core.util.RegistrationStatusMapperUtil;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
 import io.mosip.registration.processor.stages.osivalidator.utils.StatusMessage;
 import io.mosip.registration.processor.status.code.RegistrationStatusCode;
@@ -69,6 +73,8 @@ public class OSIValidatorStage extends MosipVerticleManager {
 
 	private static final String OSI_VALIDATOR_FAILED = "OSI validation failed for registrationId ";
 
+	RegistrationStatusMapperUtil registrationStatusMapperUtil = new RegistrationStatusMapperUtil();
+
 	/**
 	 * Deploy verticle.
 	 */
@@ -93,10 +99,14 @@ public class OSIValidatorStage extends MosipVerticleManager {
 		boolean isTransactionSuccessful = false;
 		boolean isValidUMC = false;
 		String registrationId = object.getRid();
-		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),registrationId, "OSIValidatorStage::process()::entry");
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+				registrationId, "OSIValidatorStage::process()::entry");
 		boolean isValidOSI = false;
-		InternalRegistrationStatusDto registrationStatusDto = registrationStatusService.getRegistrationStatus(registrationId);
+		InternalRegistrationStatusDto registrationStatusDto = registrationStatusService
+				.getRegistrationStatus(registrationId);
 
+		registrationStatusDto.setLatestTransactionTypeCode(RegistrationTransactionTypeCode.OSI_VALIDATE.toString());
+		registrationStatusDto.setRegistrationStageName(RegistrationStageName.OSI_VALIDATOR_STAGE);
 		osiValidator.registrationStatusDto = registrationStatusDto;
 		umcValidator.setRegistrationStatusDto(registrationStatusDto);
 		try {
@@ -105,74 +115,110 @@ public class OSIValidatorStage extends MosipVerticleManager {
 				isValidOSI = osiValidator.isValidOSI(registrationId);
 			}
 			if (isValidUMC && isValidOSI) {
+				registrationStatusDto
+						.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.SUCCESS.toString());
 				object.setIsValid(Boolean.TRUE);
 				registrationStatusDto.setStatusComment(StatusMessage.OSI_VALIDATION_SUCCESS);
 				registrationStatusDto.setStatusCode(RegistrationStatusCode.PACKET_OSI_VALIDATION_SUCCESS.toString());
 				isTransactionSuccessful = true;
-				code =  PlatformSuccessMessages.RPR_PKR_OSI_VALIDATE.getCode();
-				description =  PlatformSuccessMessages.RPR_PKR_OSI_VALIDATE.getMessage();
+				code = PlatformSuccessMessages.RPR_PKR_OSI_VALIDATE.getCode();
+				description = PlatformSuccessMessages.RPR_PKR_OSI_VALIDATE.getMessage();
 			} else {
 				object.setIsValid(Boolean.FALSE);
-				int retryCount = registrationStatusDto.getRetryCount() != null? registrationStatusDto.getRetryCount() + 1: 1;
+				int retryCount = registrationStatusDto.getRetryCount() != null
+						? registrationStatusDto.getRetryCount() + 1
+						: 1;
+				registrationStatusDto.setLatestTransactionStatusCode(registrationStatusMapperUtil
+						.getStatusCode(RegistrationExceptionTypeCode.PACKET_OSI_VALIDATION_FAILED));
 				registrationStatusDto.setRetryCount(retryCount);
 
 				registrationStatusDto.setStatusComment(osiValidator.registrationStatusDto.getStatusComment());
 				registrationStatusDto.setStatusCode(RegistrationStatusCode.PACKET_OSI_VALIDATION_FAILED.toString());
 
-				code =  PlatformSuccessMessages.RPR_PKR_OSI_VALIDATE.getCode();
-				description =  PlatformSuccessMessages.RPR_PKR_OSI_VALIDATE.getMessage() + registrationId + "::" + "either UMC("+ isValidUMC + ")/OSI(" + isValidOSI + ") is not valid";
+				code = PlatformSuccessMessages.RPR_PKR_OSI_VALIDATE.getCode();
+				description = PlatformSuccessMessages.RPR_PKR_OSI_VALIDATE.getMessage() + registrationId + "::"
+						+ "either UMC(" + isValidUMC + ")/OSI(" + isValidOSI + ") is not valid";
 			}
 			registrationStatusDto.setUpdatedBy(USER);
 			registrationStatusService.updateRegistrationStatus(registrationStatusDto);
-			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),code+" -- "+registrationId, "OSIValidatorStage::process()::exit");
-			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),code+" -- "+registrationId, description);
+			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					code + " -- " + registrationId, "OSIValidatorStage::process()::exit");
+			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					code + " -- " + registrationId, description);
 		} catch (FSAdapterException e) {
-			code =  PlatformErrorMessages.OSI_VALIDATION_PACKET_STORE_NOT_ACCESSIBLE.getCode();
-			description =  PlatformErrorMessages.OSI_VALIDATION_PACKET_STORE_NOT_ACCESSIBLE.getMessage();
-			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), code, registrationId, description + e.getMessage() + ExceptionUtils.getStackTrace(e));
+			registrationStatusDto.setLatestTransactionStatusCode(
+					registrationStatusMapperUtil.getStatusCode(RegistrationExceptionTypeCode.FSADAPTER_EXCEPTION));
+			code = PlatformErrorMessages.OSI_VALIDATION_PACKET_STORE_NOT_ACCESSIBLE.getCode();
+			description = PlatformErrorMessages.OSI_VALIDATION_PACKET_STORE_NOT_ACCESSIBLE.getMessage();
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), code, registrationId,
+					description + e.getMessage() + ExceptionUtils.getStackTrace(e));
 			object.setInternalError(Boolean.TRUE);
 		} catch (DataAccessException e) {
-			code =  PlatformErrorMessages.OSI_VALIDATION_FAILED.getCode();
-			description =  PlatformErrorMessages.OSI_VALIDATION_FAILED.getMessage();
-			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),code, registrationId,description + e.getMessage()+ ExceptionUtils.getStackTrace(e));
+			registrationStatusDto.setLatestTransactionStatusCode(
+					registrationStatusMapperUtil.getStatusCode(RegistrationExceptionTypeCode.DATA_ACCESS_EXCEPTION));
+			code = PlatformErrorMessages.OSI_VALIDATION_FAILED.getCode();
+			description = PlatformErrorMessages.OSI_VALIDATION_FAILED.getMessage();
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), code, registrationId,
+					description + e.getMessage() + ExceptionUtils.getStackTrace(e));
 			object.setInternalError(Boolean.TRUE);
 
-		} catch (IOException | ApisResourceAccessException e) {
+		} catch (ApisResourceAccessException e) {
+			registrationStatusDto.setLatestTransactionStatusCode(registrationStatusMapperUtil
+					.getStatusCode(RegistrationExceptionTypeCode.APIS_RESOURCE_ACCESS_EXCEPTION));
 			object.setInternalError(Boolean.TRUE);
-			code =  PlatformErrorMessages.OSI_VALIDATION_FAILED.getCode();
+			code = PlatformErrorMessages.OSI_VALIDATION_FAILED.getCode();
 			description = PlatformErrorMessages.OSI_VALIDATION_FAILED.getMessage();
 
 			if (e.getCause() instanceof HttpClientErrorException) {
 				HttpClientErrorException httpClientException = (HttpClientErrorException) e.getCause();
-				description = PlatformErrorMessages.OSI_VALIDATION_FAILED.getMessage()+ "::"+ httpClientException.getResponseBodyAsString();
-				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),code, registrationId, description + e.getMessage()+ ExceptionUtils.getStackTrace(e));
+				description = PlatformErrorMessages.OSI_VALIDATION_FAILED.getMessage() + "::"
+						+ httpClientException.getResponseBodyAsString();
+				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), code, registrationId,
+						description + e.getMessage() + ExceptionUtils.getStackTrace(e));
 
 			} else if (e.getCause() instanceof HttpServerErrorException) {
 				HttpServerErrorException httpServerException = (HttpServerErrorException) e.getCause();
-				description = PlatformErrorMessages.OSI_VALIDATION_FAILED.getMessage()+ "::"+ httpServerException.getResponseBodyAsString();
-				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),code, registrationId, description + e.getMessage()+ ExceptionUtils.getStackTrace(e));
+				description = PlatformErrorMessages.OSI_VALIDATION_FAILED.getMessage() + "::"
+						+ httpServerException.getResponseBodyAsString();
+				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), code, registrationId,
+						description + e.getMessage() + ExceptionUtils.getStackTrace(e));
 
 			} else {
-				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),code, registrationId, description + e.getMessage()+ ExceptionUtils.getStackTrace(e));
+				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), code, registrationId,
+						description + e.getMessage() + ExceptionUtils.getStackTrace(e));
 
 			}
 
-		} catch (Exception ex) {
-			code =  PlatformErrorMessages.OSI_VALIDATION_FAILED.getCode();
+		} catch (IOException e) {
+			registrationStatusDto.setLatestTransactionStatusCode(
+					registrationStatusMapperUtil.getStatusCode(RegistrationExceptionTypeCode.IOEXCEPTION));
+			object.setInternalError(Boolean.TRUE);
+			code = PlatformErrorMessages.OSI_VALIDATION_FAILED.getCode();
 			description = PlatformErrorMessages.OSI_VALIDATION_FAILED.getMessage();
-			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),code,registrationId,description + ex.getMessage()+ ExceptionUtils.getStackTrace(ex));
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), code, registrationId,
+					description + e.getMessage() + ExceptionUtils.getStackTrace(e));
+			object.setInternalError(Boolean.TRUE);
+		} catch (Exception ex) {
+			registrationStatusDto.setLatestTransactionStatusCode(
+					registrationStatusMapperUtil.getStatusCode(RegistrationExceptionTypeCode.EXCEPTION));
+			code = PlatformErrorMessages.OSI_VALIDATION_FAILED.getCode();
+			description = PlatformErrorMessages.OSI_VALIDATION_FAILED.getMessage();
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), code, registrationId,
+					description + ex.getMessage() + ExceptionUtils.getStackTrace(ex));
 			object.setInternalError(Boolean.TRUE);
 		} finally {
-
-			description = isTransactionSuccessful?PlatformSuccessMessages.RPR_PKR_OSI_VALIDATE.getMessage():description;
-			String eventId = isTransactionSuccessful?EventId.RPR_402.toString():EventId.RPR_405.toString();
-			String eventName = isTransactionSuccessful?EventName.UPDATE.toString():EventName.EXCEPTION.toString();
-			String eventType = isTransactionSuccessful?EventType.BUSINESS.toString():EventType.SYSTEM.toString();
+			registrationStatusService.updateRegistrationStatus(registrationStatusDto);
+			description = isTransactionSuccessful ? PlatformSuccessMessages.RPR_PKR_OSI_VALIDATE.getMessage()
+					: description;
+			String eventId = isTransactionSuccessful ? EventId.RPR_402.toString() : EventId.RPR_405.toString();
+			String eventName = isTransactionSuccessful ? EventName.UPDATE.toString() : EventName.EXCEPTION.toString();
+			String eventType = isTransactionSuccessful ? EventType.BUSINESS.toString() : EventType.SYSTEM.toString();
 
 			/** Module-Id can be Both Succes/Error code */
-			String moduleId = isTransactionSuccessful? PlatformSuccessMessages.RPR_PKR_OSI_VALIDATE.getCode():code;
-			String moduleName= ModuleName.OSI_VALIDATOR.toString();
-			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,moduleId,moduleName,registrationId);
+			String moduleId = isTransactionSuccessful ? PlatformSuccessMessages.RPR_PKR_OSI_VALIDATE.getCode() : code;
+			String moduleName = ModuleName.OSI_VALIDATOR.toString();
+			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType, moduleId,
+					moduleName, registrationId);
 		}
 
 		return object;

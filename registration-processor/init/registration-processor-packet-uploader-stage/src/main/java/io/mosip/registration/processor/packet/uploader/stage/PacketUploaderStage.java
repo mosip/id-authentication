@@ -108,9 +108,9 @@ public class PacketUploaderStage extends MosipVerticleManager {
 		this.registrationId = object.getRid();
 
 		isTransactionSuccessful = false;
-		InternalRegistrationStatusDto dto = registrationStatusService.getRegistrationStatus(registrationId);
+		InternalRegistrationStatusDto dto = new InternalRegistrationStatusDto();
 		try {
-
+			dto = registrationStatusService.getRegistrationStatus(registrationId);
 			int retrycount = (dto.getRetryCount() == null) ? 0 : dto.getRetryCount() + 1;
 			dto.setRetryCount(retrycount);
 			dto.setLatestTransactionTypeCode(RegistrationTransactionTypeCode.UPLOAD_PACKET.toString());
@@ -141,7 +141,6 @@ public class PacketUploaderStage extends MosipVerticleManager {
 				dto.setStatusCode(RegistrationStatusCode.PACKET_UPLOAD_TO_PACKET_STORE_FAILED.toString());
 				dto.setStatusComment("Packet upload to packet store failed for " + registrationId);
 				dto.setUpdatedBy(USER);
-				registrationStatusService.updateRegistrationStatus(dto);
 			}
 		} catch (TablenotAccessibleException e) {
 			dto.setLatestTransactionStatusCode(registrationStatusMapperUtil
