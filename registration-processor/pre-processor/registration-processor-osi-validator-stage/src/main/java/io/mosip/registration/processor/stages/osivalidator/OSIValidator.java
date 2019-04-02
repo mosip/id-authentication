@@ -327,9 +327,7 @@ public class OSIValidator {
 		return true;
 	}
 	
-	private int getApplicantAge(String registrationId) {
-		int applicantAge=0;
-		try {
+	private int getApplicantAge(String registrationId) throws IOException {
 			InputStream documentInfoStream = adapter.getFile(registrationId,
 					PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR + PacketFiles.ID.name());
 
@@ -349,12 +347,7 @@ public class OSIValidator {
 					utility.getGetRegProcessorDemographicIdentity());
 			if (demographicIdentity == null)
 				throw new IdentityNotFoundException(PlatformErrorMessages.RPR_PIS_IDENTITY_NOT_FOUND.getMessage());
-			int ageValue = JsonUtil.getJSONValue(demographicIdentity, ageKey);
-			applicantAge = ageValue;
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return applicantAge;
+		return JsonUtil.getJSONValue(demographicIdentity, ageKey);
 	}
 
 	/**
