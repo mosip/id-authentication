@@ -177,16 +177,4 @@ public class IdRepoTest {
 		assertNull(idRepoMock.jsonSchemaValidator(objectNode));
 	}
 	
-	/**
-	 * Multi part resolver test.
-	 *
-	 * @throws JsonValidationProcessingException the json validation processing exception
-	 * @throws JsonIOException the json IO exception
-	 * @throws JsonSchemaIOException the json schema IO exception
-	 * @throws FileIOException the file IO exception
-	 */
-	@Test
-	public void multiPartResolverTest() throws JsonValidationProcessingException, JsonIOException, JsonSchemaIOException, FileIOException {
-		idRepoMock.multipartResolver();
-	}
 }
