@@ -39,7 +39,9 @@ import io.mosip.registration.processor.core.code.ApiName;
 import io.mosip.registration.processor.core.code.EventId;
 import io.mosip.registration.processor.core.code.EventName;
 import io.mosip.registration.processor.core.code.EventType;
+import io.mosip.registration.processor.core.code.RegistrationExceptionTypeCode;
 import io.mosip.registration.processor.core.spi.filesystem.manager.FileManager;
+import io.mosip.registration.processor.core.util.RegistrationStatusMapperUtil;
 import io.mosip.registration.processor.packet.manager.dto.DirectoryPathDto;
 import io.mosip.registration.processor.packet.receiver.exception.DuplicateUploadRequestException;
 import io.mosip.registration.processor.packet.receiver.exception.FileSizeExceedException;
@@ -89,6 +91,9 @@ public class PacketReceiverServiceTest {
 
 	@Mock
 	private RegistrationStatusMapUtil registrationStatusMapUtil;
+	
+	@Mock
+	RegistrationStatusMapperUtil registrationStatusMapperUtil;
 
 	@InjectMocks
 	private PacketReceiverService<File, MessageDTO> packetReceiverService = new PacketReceiverServiceImpl(){
@@ -294,7 +299,7 @@ public class PacketReceiverServiceTest {
 		Mockito.when(syncRegistrationService.findByRegistrationId(anyString())).thenReturn(regEntity);
 		Mockito.doReturn(null).when(registrationStatusService).getRegistrationStatus("0000");
 		Mockito.doThrow(new IOException()).when(fileManager).put(any(), any(), any());
-
+Mockito.when(registrationStatusMapperUtil.getStatusCode(any())).thenReturn("ERROR");
 		MessageDTO result = packetReceiverService.storePacket(mockMultipartFile);
 
 		assertFalse(result.getIsValid());

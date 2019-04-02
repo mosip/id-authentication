@@ -288,6 +288,8 @@ public class ManualVerificationServiceImpl implements ManualVerificationService 
 			} else {
 				registrationStatusDto.setStatusCode(RegistrationStatusCode.MANUAL_ADJUDICATION_FAILED.toString());
 				registrationStatusDto.setStatusComment(StatusMessage.MANUAL_VERFICATION_PACKET_REJECTED);
+				registrationStatusDto.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.FAILED.toString());
+
 				description = "Manual verification rejected for registration id : " + registrationId;
 			}
 			ManualVerificationEntity maVerificationEntity = basePacketRepository.update(manualVerificationEntity);
@@ -300,7 +302,7 @@ public class ManualVerificationServiceImpl implements ManualVerificationService 
 		} catch (TablenotAccessibleException e) {
 
 			registrationStatusDto.setLatestTransactionStatusCode(
-					registrationStatusMapperUtil.getStatusCode(RegistrationExceptionTypeCode.IOEXCEPTION).toString());
+					registrationStatusMapperUtil.getStatusCode(RegistrationExceptionTypeCode.TABLE_NOT_ACCESSIBLE_EXCEPTION));
 
 
 			description = "TablenotAccessibleException in Manual verification for registrationId: "+registrationId + "::" + e.getMessage();

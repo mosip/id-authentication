@@ -27,6 +27,7 @@ import io.mosip.registration.processor.core.code.EventId;
 import io.mosip.registration.processor.core.code.EventName;
 import io.mosip.registration.processor.core.code.EventType;
 import io.mosip.registration.processor.core.code.ModuleName;
+import io.mosip.registration.processor.core.code.RegistrationExceptionTypeCode;
 import io.mosip.registration.processor.core.code.RegistrationTransactionStatusCode;
 import io.mosip.registration.processor.core.code.RegistrationTransactionTypeCode;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
@@ -184,7 +185,20 @@ public class DemodedupeProcessor {
 			registrationStatusDto.setUpdatedBy(USER);
 			isTransactionSuccessful = true;
 
-		} catch (IOException | ApisResourceAccessException e) {
+		} catch (IOException  e) {
+			registrationStatusDto.setLatestTransactionStatusCode(registrationStatusMapperUtil
+					.getStatusCode(RegistrationExceptionTypeCode.IOEXCEPTION).toString());
+
+			code =  PlatformErrorMessages.PACKET_DEMO_DEDUPE_FAILED.getCode();
+			description = PlatformErrorMessages.PACKET_DEMO_DEDUPE_FAILED.getMessage();
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), code,registrationId,description + ExceptionUtils.getStackTrace(e));
+			object.setInternalError(Boolean.TRUE);
+
+		} catch ( ApisResourceAccessException e) {
+			registrationStatusDto.setLatestTransactionStatusCode(registrationStatusMapperUtil
+					.getStatusCode(RegistrationExceptionTypeCode.APIS_RESOURCE_ACCESS_EXCEPTION).toString());
+
+			
 			code =  PlatformErrorMessages.PACKET_DEMO_DEDUPE_FAILED.getCode();
 			description = PlatformErrorMessages.PACKET_DEMO_DEDUPE_FAILED.getMessage();
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), code,registrationId,description + ExceptionUtils.getStackTrace(e));
@@ -192,11 +206,17 @@ public class DemodedupeProcessor {
 
 		}
 		catch (FSAdapterException e) {
+			registrationStatusDto.setLatestTransactionStatusCode(registrationStatusMapperUtil
+					.getStatusCode(RegistrationExceptionTypeCode.FSADAPTER_EXCEPTION).toString());
+
 			code =  PlatformErrorMessages.PACKET_DEMO_PACKET_STORE_NOT_ACCESSIBLE.getCode();
 			description = PlatformErrorMessages.PACKET_DEMO_PACKET_STORE_NOT_ACCESSIBLE.getMessage();
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), code,registrationId, description+ ExceptionUtils.getStackTrace(e));
 			object.setInternalError(Boolean.TRUE);
 		} catch (Exception ex) {
+			registrationStatusDto.setLatestTransactionStatusCode(registrationStatusMapperUtil
+					.getStatusCode(RegistrationExceptionTypeCode.EXCEPTION).toString());
+
 			code =  PlatformErrorMessages.PACKET_DEMO_DEDUPE_FAILED.getCode();
 			description = PlatformErrorMessages.PACKET_DEMO_DEDUPE_FAILED.getMessage();
 
