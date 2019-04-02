@@ -96,9 +96,12 @@ public class BatchJob extends BaseTestCase implements ITest {
 		lib.BookAppointment(documentResponse, avilibityResponse, preID);
 		preRegistrationId.add(preID);
 		lib.reverseDataSync(preRegistrationId);
-		lib.consumedStatus();
-		lib.getPreRegistrationData(preID);
-
+		Response consumedResponse = lib.consumedStatus();
+		String message = consumedResponse.jsonPath().get("response").toString();
+		lib.compareValues(message, "Demographic status to consumed updated successfully");
+		Response getPreRegistrationDataResponse = lib.getPreRegistrationData(preID);
+		message = getPreRegistrationDataResponse.jsonPath().get("err.message").toString();
+		lib.compareValues(message, "UNABLE_TO_FETCH_THE_PRE_REGISTRATION");
 	}
 
 	@Override

@@ -318,6 +318,27 @@ public class prereg_dbread {
 		
 
 	}
+	@SuppressWarnings("deprecation")
+	public static List<Object> getConsumedStatus(String queryStr, Class dtoClass,String intdbConfig,String qadbConfig )
+	{
+		List<Object> objs =null;
+		if(BaseTestCase.environment.equalsIgnoreCase("integration"))
+			factory = new Configuration().configure(intdbConfig)
+		.addAnnotatedClass(dtoClass).buildSessionFactory();	
+				else
+				{
+					if(BaseTestCase.environment.equalsIgnoreCase("qa"))
+						factory = new Configuration().configure(qadbConfig)
+					.addAnnotatedClass(dtoClass).buildSessionFactory();	
+				}
+		session = factory.getCurrentSession();
+		session.beginTransaction();
+		objs=fetchingOTPData(session, queryStr);
+		
+		return objs;
+		
+
+	}
 	
 	@SuppressWarnings("unchecked")
 	private static List<Object> fetchingOTPData(Session session, String queryStr)

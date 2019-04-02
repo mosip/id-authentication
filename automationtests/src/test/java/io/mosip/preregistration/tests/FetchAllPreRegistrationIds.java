@@ -47,6 +47,7 @@ import io.mosip.service.AssertResponses;
 import io.mosip.service.BaseTestCase;
 import io.mosip.util.CommonLibrary;
 import io.mosip.util.GetHeader;
+import io.mosip.util.PreRegistrationLibrary;
 import io.mosip.util.ReadFolder;
 import io.mosip.util.ResponseRequestMapper;
 import io.restassured.response.Response;
@@ -88,7 +89,7 @@ public class FetchAllPreRegistrationIds extends BaseTestCase implements ITest{
 	@DataProvider(name = "Fetch_all_PreRegistration_Ids")
 	public Object[][] readData(ITestContext context) throws JsonParseException, JsonMappingException, IOException, ParseException {
 		 String testParam = context.getCurrentXmlTest().getParameter("testType");
-		 switch ("regression") {
+		 switch (testParam) {
 		case "smoke":
 			return ReadFolder.readFolders(folderPath, outputFile,requestKeyFile,"smoke");
 			
@@ -112,6 +113,7 @@ public class FetchAllPreRegistrationIds extends BaseTestCase implements ITest{
 	
 		List<String> outerKeys = new ArrayList<String>();
 		List<String> innerKeys = new ArrayList<String>();
+		PreRegistrationLibrary lib=new PreRegistrationLibrary();
 		JSONObject actualRequest = ResponseRequestMapper.mapRequest(testSuite, object);
 		Expectedresponse = ResponseRequestMapper.mapResponse(testSuite, object);
 		try {

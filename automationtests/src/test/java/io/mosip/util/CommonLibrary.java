@@ -540,8 +540,8 @@ public class CommonLibrary extends BaseTestCase{
    
       
     public Response post_Request_WithQueryParams(String url, Object body, String contentHeader, String acceptHeader,HashMap<String, String> valueMap) {
-
-  		Response postResponse = given().relaxedHTTPSValidation().body(body).queryParams(valueMap).contentType(contentHeader)
+    	Cookie.Builder builder = new Cookie.Builder("Authorization",authToken);
+  		Response postResponse = given().cookie(builder.build()).relaxedHTTPSValidation().body(body).queryParams(valueMap).contentType(contentHeader)
   				.accept(acceptHeader).log().all().when().post(url).then().log().all().extract().response();
   		// log then response
   		logger.info("REST-ASSURED: The response from the request is: " + postResponse.asString());

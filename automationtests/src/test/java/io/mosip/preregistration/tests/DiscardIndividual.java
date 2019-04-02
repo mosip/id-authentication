@@ -92,7 +92,7 @@ public class DiscardIndividual extends BaseTestCase implements ITest{
 	@DataProvider(name = "Discard_Individual")
 	public Object[][] readData(ITestContext context) throws JsonParseException, JsonMappingException, IOException, ParseException {
 		 String testParam = context.getCurrentXmlTest().getParameter("testType");
-		 switch (testParam) {
+		 switch ("smokeAndRegression") {
 		case "smoke":
 			return ReadFolder.readFolders(folderPath, outputFile,requestKeyFile,"smoke");
 			
@@ -118,12 +118,16 @@ public class DiscardIndividual extends BaseTestCase implements ITest{
 		JSONObject actualRequest = ResponseRequestMapper.mapRequest(testSuite, object);
 		Expectedresponse = ResponseRequestMapper.mapResponse(testSuite, object);
 		if (testCaseName.toLowerCase().contains("smoke")) {
-			Response createPregResponse = prl.CreatePreReg();
+			//Response createPregResponse = prl.CreatePreReg();
+			testSuite = "Create_PreRegistration/createPreRegistration_smoke";
+			JSONObject createPregRequest = prl.createRequest(testSuite);
+			Response createPregResponse = prl.CreatePreReg(createPregRequest);
 			String preReg_Id = createPregResponse.jsonPath().get("response[0].preRegistrationId").toString();
-			Expectedresponse = ResponseRequestMapper.mapResponse(testSuite, object);
 			Actualresponse=prl.discardApplication(preReg_Id);
 			preId = Actualresponse.jsonPath().get("response[0].preRegistrationId").toString();
 			Response getPreRegistrationDataResponse = prl.getPreRegistrationData(preReg_Id);
+			String message = getPreRegistrationDataResponse.jsonPath().get("err.message").toString();
+			prl.compareValues(message, "UNABLE_TO_FETCH_THE_PRE_REGISTRATION");
 			Assert.assertEquals(preId, preReg_Id);
 			status=true;
 		}
@@ -161,8 +165,6 @@ public class DiscardIndividual extends BaseTestCase implements ITest{
 			logger.info("Successfully updated Results to Retrive_PreRegistrationOutput.json file.......................!!");
 		
 		}
-		//CommonLibrary.backUpFiles(configPaths, dest);
-		//Add generated PreRegistrationId to list to be Deleted from DB AfterSuite 
 				preIds.add(preId);
 	}
 	@AfterMethod(alwaysRun = true)

@@ -83,14 +83,14 @@ public class Translitration extends BaseTestCase implements ITest {
 		String expectedto_field_value = translitrationResponse.jsonPath().get("response.to_field_value").toString();
 		lib.compareValues(from_value, expectedto_field_value);
 	}
-	/*@Test
+	@Test
 	public void translitrationFromFranchToArabic() {
 		testSuite = "Translitration/Translitration_smoke";
 		JSONObject translitrationRequest = null;
-		String fromLang="ara";
-		String toLang="fra";
+		String fromLang="fra";
+		String toLang="ara";
 		String from_value = "assurance mensuelle";
-		translitrationRequest=lib.translitrationRequest(testSuite,toLang, from_value, fromLang);
+		translitrationRequest=lib.translitrationRequest(testSuite,fromLang, from_value, toLang);
 		Response translitrationResponse = lib.translitration(translitrationRequest);
 		String to_field_value = translitrationResponse.jsonPath().get("response.to_field_value").toString();
 		translitrationRequest=lib.translitrationRequest(testSuite, toLang, to_field_value,fromLang );
@@ -98,7 +98,7 @@ public class Translitration extends BaseTestCase implements ITest {
 		String expectedto_field_value = translitrationResponse.jsonPath().get("response.to_field_value").toString();
 		lib.compareValues(from_value, expectedto_field_value);
 	}
-*/
+
 	@Override
 	public String getTestName() {
 		return this.testCaseName;

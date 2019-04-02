@@ -52,6 +52,7 @@ import com.jayway.jsonpath.spi.mapper.JacksonMappingProvider;
 import io.mosip.dbaccess.prereg_dbread;
 import io.mosip.dbentity.AccessToken;
 import io.mosip.dbentity.OtpEntity;
+import io.mosip.dbentity.PreRegEntity;
 import io.mosip.service.ApplicationLibrary;
 import io.mosip.service.BaseTestCase;
 import io.mosip.util.GetHeader;
@@ -206,7 +207,7 @@ public class PreRegistrationLibrary extends BaseTestCase {
 	 */
 	public static Response generateOTP(JSONObject request) {
 		response = applnLib.postRequest(request, otpSend_URI);
-		return createPregResponse;
+		return response;
 	}
 	
 	public String getToken()
@@ -229,6 +230,39 @@ public class PreRegistrationLibrary extends BaseTestCase {
 		return auth_token;
 	
 	}
+	/**
+	 * Fetching status of consumed application
+	 * @param PreID-PRID of the consumed application  
+	 * @return
+	 */
+	public String getConsumedStatus(String PreID)
+	{
+		String query="SELECT c.status_code FROM prereg.applicant_demographic_consumed c where c.prereg_id='"+PreID+"'";
+		List<Object> preId_status = prereg_dbread.getConsumedStatus(query, PreRegEntity.class, "prereginteg.cfg.xml", "preregqa.cfg.xml");
+		String status=preId_status.get(0).toString();
+		return status;
+	}
+	/**
+	 * Get Document Id for Consumed Application
+	 * @param PreID
+	 * @return
+	 */
+	public String getDocumentIdOfConsumedApplication(String PreID)
+	{
+		String query="SELECT c.id FROM prereg.applicant_document_consumed c where c.prereg_id='"+PreID+"'";
+		List<Object> preId_status = prereg_dbread.getConsumedStatus(query, PreRegEntity.class, "prereginteg.cfg.xml", "preregqa.cfg.xml");
+		String documentId=preId_status.get(0).toString();
+		return documentId;
+	}
+	
+	public String getRegCenterIdOfConsumedApplication(String PreID)
+	{
+		String query="SELECT c.regcntr_id FROM prereg.reg_appointment_consumed c where c.prereg_id='"+PreID+"'";
+		List<Object> preId_status = prereg_dbread.getConsumedStatus(query, PreRegEntity.class, "prereginteg.cfg.xml", "preregqa.cfg.xml");
+		String regCenterId=preId_status.get(0).toString();
+		return regCenterId;
+	}
+	
 	/**
 	 * VALIDATING OTP
 	 * @param request
@@ -495,6 +529,8 @@ public class PreRegistrationLibrary extends BaseTestCase {
 					reverseDataSyncRequest.get(key);
 					JSONObject innerKey = (JSONObject) reverseDataSyncRequest.get(key);
 					innerKey.put("preRegistrationIds", preRegistrationIds);
+					innerKey.put("createdBy", userId);
+					innerKey.put("updateBy", userId);
 
 				} catch (ClassCastException e) {
 					continue;
@@ -502,7 +538,7 @@ public class PreRegistrationLibrary extends BaseTestCase {
 			}
 
 			try {
-				response = applnLib.postRequest(reverseDataSyncRequest.toJSONString(), preReg_ReverseDataSyncURI);
+				response = applnLib.dataSyncPostRequest(reverseDataSyncRequest.toJSONString(), preReg_ReverseDataSyncURI);
 			} catch (Exception e) {
 				logger.info(e);
 			}
@@ -686,13 +722,13 @@ public class PreRegistrationLibrary extends BaseTestCase {
 		List<String> appointmentDetails = new ArrayList<>();
 		String date = getDate(-1);
 
-		fetchCenterResponse.jsonPath().get("response.centerDetails[1].timeSlots[2].fromTime");
+		fetchCenterResponse.jsonPath().get("response.centerDetails[1].timeSlots[20].fromTime");
 		appointmentDetails.add(fetchCenterResponse.jsonPath().get("response.regCenterId").toString());
 		appointmentDetails.add(date);
 		appointmentDetails
-				.add(fetchCenterResponse.jsonPath().get("response.centerDetails[1].timeSlots[2].fromTime").toString());
+				.add(fetchCenterResponse.jsonPath().get("response.centerDetails[1].timeSlots[20].fromTime").toString());
 		appointmentDetails
-				.add(fetchCenterResponse.jsonPath().get("response.centerDetails[1].timeSlots[2].toTime").toString());
+				.add(fetchCenterResponse.jsonPath().get("response.centerDetails[1].timeSlots[20].toTime").toString());
 		return appointmentDetails;
 	}
 
@@ -921,8 +957,8 @@ public class PreRegistrationLibrary extends BaseTestCase {
 			if (key.equals("request")) {
 				object = (JSONObject) createPregRequest.get(key);
 				object.put("preRegistrationId", preRegID);
-				object.put("updatedBy", updatedBy);
-				object.put("createdBy", updatedBy);
+				object.put("updatedBy", userId);
+				object.put("createdBy", userId);
 				object.put("updatedDateTime", "2019-01-08T17:05:48.953Z");
 				createPregRequest.replace(key, object);
 			}
@@ -1209,6 +1245,42 @@ public class PreRegistrationLibrary extends BaseTestCase {
 		ObjectNode fetchAvailabilityrequest = null;
 		String regCenterId = randomRegistrationCenterId();
 
+		File folder = new File(configPath);
+		File[] listOfFiles = folder.listFiles();
+		for (File f : listOfFiles) {
+			if (f.getName().toLowerCase().contains("request")) {
+				try {
+					request = (JSONObject) new JSONParser().parse(new FileReader(f.getPath()));
+					fetchAvailabilityrequest = JsonPath.using(config).parse(request.toJSONString())
+							.set("$.registration_center_id", regCenterId).json();
+
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+
+		String fetchCenterReq = fetchAvailabilityrequest.toString();
+		JSONObject fetchCenterReqjson = null;
+		try {
+			fetchCenterReqjson = (JSONObject) parser.parse(fetchCenterReq);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+
+		try {
+			response = applnLib.getRequest(preReg_FetchCenterIDURI, GetHeader.getHeader(fetchCenterReqjson));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return response;
+	}
+	
+	public Response fetchCentreWithCerterId(String regCenterId) {
+		testSuite = "FetchAvailabilityDataOfRegCenters/FetchAvailabilityDataOfRegCenters_smoke";
+		String configPath = "src/test/resources/" + folder + "/" + testSuite;
+		ObjectNode fetchAvailabilityrequest = null;
 		File folder = new File(configPath);
 		File[] listOfFiles = folder.listFiles();
 		for (File f : listOfFiles) {
@@ -1604,7 +1676,7 @@ public class PreRegistrationLibrary extends BaseTestCase {
 	public Response consumedStatus() {
 		try {
 
-			response = applnLib.putRequest_WithoutBody(preReg_ConsumedURI);
+			response = applnLib.adminputRequest_WithoutBody(preReg_ConsumedURI);
 		} catch (Exception e) {
 			logger.info(e);
 		}
@@ -1910,6 +1982,28 @@ public class PreRegistrationLibrary extends BaseTestCase {
 				otpRequest.replace(key, object);
 			}
 		}	
+		return otpRequest;
+	}
+	public JSONObject getOtpRequest(String testSuite)
+	{
+		JSONObject otpRequest = null;
+		/**
+		 * Reading request body from configpath
+		 */
+		String configPath = "src/test/resources/" + folder + "/" + testSuite;
+		File folder = new File(configPath);
+		File[] listOfFiles = folder.listFiles();
+		for (File f : listOfFiles) {
+			if (f.getName().contains("request")) {
+				try {
+					otpRequest = (JSONObject) new JSONParser().parse(new FileReader(f.getPath()));
+				} catch (Exception e) {
+					e.printStackTrace();
+					logger.error(e.getMessage());
+				}
+				
+			}
+		}
 		return otpRequest;
 	}
 
