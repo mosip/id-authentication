@@ -14,12 +14,9 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.ssl.TrustStrategy;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.filter.CommonsRequestLoggingFilter;
-
-import io.mosip.kernel.admin.filter.CorsFilter;
 
 /**
  * Config class with beans for modelmapper and request logging
@@ -28,7 +25,7 @@ import io.mosip.kernel.admin.filter.CorsFilter;
  * @since 1.0.0
  *
  */
-//@Configuration
+// @Configuration
 public class Config {
 
 	/**
@@ -64,26 +61,14 @@ public class Config {
 		return new RestTemplate(requestFactory);
 
 	}
-	
+
 	@Bean
 	public FilterRegistrationBean<Filter> registerReqResFilter() {
 		FilterRegistrationBean<Filter> filterRegistrationBean = new FilterRegistrationBean<>();
 		filterRegistrationBean.setOrder(1);
 		return filterRegistrationBean;
 	}
-	
-	@Bean
-	public FilterRegistrationBean<Filter> registerCORSFilterBean() {
-		FilterRegistrationBean<Filter> corsBean = new FilterRegistrationBean<>();
-		corsBean.setFilter(registerCORSFilter());
-		corsBean.setOrder(1);
-		return corsBean;
-	}
 
-	@Bean
-	public Filter registerCORSFilter() {
-		return new CorsFilter();
-	}
 	
 
 }
