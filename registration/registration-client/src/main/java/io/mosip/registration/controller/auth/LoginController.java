@@ -301,7 +301,9 @@ public class LoginController extends BaseController implements Initializable {
 
 				UserDetail userDetail = loginService.getUserDetail(userId.getText());
 
-				String centerId = userOnboardService.getMachineCenterId().get(RegistrationConstants.USER_CENTER_ID);
+				Map<String,String> centerAndMachineId =userOnboardService.getMachineCenterId();
+
+				String centerId = centerAndMachineId.get(RegistrationConstants.USER_CENTER_ID);
 
 				if (userDetail != null
 						&& userDetail.getRegCenterUser().getRegCenterUserId().getRegcntrId().equals(centerId)) {
@@ -338,7 +340,7 @@ public class LoginController extends BaseController implements Initializable {
 							Map<String, Object> sessionContextMap = SessionContext.getInstance().getMapObject();
 
 							ApplicationContext.map().put(RegistrationConstants.USER_STATION_ID,
-									userOnboardService.getMachineCenterId().get(RegistrationConstants.USER_STATION_ID));
+									centerAndMachineId.get(RegistrationConstants.USER_STATION_ID));
 
 							if (getCenterMachineStatus(userDetail)) {
 								sessionContextMap.put(RegistrationConstants.ONBOARD_USER, isNewUser);
