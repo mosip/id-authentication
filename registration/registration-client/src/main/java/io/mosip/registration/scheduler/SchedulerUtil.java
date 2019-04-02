@@ -15,16 +15,17 @@ import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
+import io.mosip.registration.constants.AuditEvent;
+import io.mosip.registration.constants.AuditReferenceIdTypes;
+import io.mosip.registration.constants.Components;
 import io.mosip.registration.constants.RegistrationUIConstants;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import javafx.application.Platform;
-import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
-import javafx.scene.layout.BorderPane;
 
 /**
  * The Class SchedulerUtil.
@@ -86,6 +87,8 @@ public class SchedulerUtil extends BaseController {
 							LOGGER.info("REGISTRATION - UI", APPLICATION_NAME, APPLICATION_ID,
 									"The time task remainder alert is called at interval of seconds "
 											+ TimeUnit.MILLISECONDS.toSeconds(endTime - startTime));
+							auditFactory.audit(AuditEvent.SCHEDULER_REFRESHED_TIMEOUT, Components.REFRESH_TIMEOUT, APPLICATION_NAME,
+									AuditReferenceIdTypes.APPLICATION_ID.getReferenceTypeId());
 							alert();
 							if (res.isPresent())
 								if (res.get().getText().equals("OK")) {
@@ -97,6 +100,8 @@ public class SchedulerUtil extends BaseController {
 							LOGGER.info("REGISTRATION - UI", APPLICATION_NAME, APPLICATION_ID,
 									"The time task auto logout login called at interval of seconds "
 											+ TimeUnit.MILLISECONDS.toSeconds(endTime - startTime));
+							auditFactory.audit(AuditEvent.SCHEDULER_SESSION_TIMEOUT, Components.SESSION_TIMEOUT, APPLICATION_NAME,
+									AuditReferenceIdTypes.APPLICATION_ID.getReferenceTypeId());
 							alert.close();
 							stopScheduler();
 							// to clear the session object
@@ -107,7 +112,7 @@ public class SchedulerUtil extends BaseController {
 					});
 				}
 			};
-			timer.schedule(task, 1000, findPeriod(refreshTime, sessionTimeOut));
+			timer.schedule(task, 1000, findTimeInterval(refreshTime, sessionTimeOut));
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error("REGISTRATION - UI", APPLICATION_NAME, APPLICATION_ID,
 					runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
@@ -115,13 +120,13 @@ public class SchedulerUtil extends BaseController {
 	}
 
 	/**
-	 * To find the scheduler duration to run the scheduler period.
+	 * To find the scheduler duration to run the scheduler interval.
 	 *
 	 * @param refreshTime the refresh time
 	 * @param sessionTimeOut the session time out
 	 * @return the int
 	 */
-	private static int findPeriod(long refreshTime, long sessionTimeOut) {
+	private static int findTimeInterval(long refreshTime, long sessionTimeOut) {
 		BigInteger b1 = BigInteger.valueOf(refreshTime);
 		BigInteger b2 = BigInteger.valueOf(sessionTimeOut);
 		BigInteger gcd = b1.gcd(b2);

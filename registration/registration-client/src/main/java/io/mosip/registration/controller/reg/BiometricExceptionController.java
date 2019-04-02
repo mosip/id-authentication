@@ -177,6 +177,7 @@ public class BiometricExceptionController extends BaseController implements Init
 			regCenterID
 					.setText(SessionContext.userContext().getRegistrationCenterDetailDTO().getRegistrationCenterId());
 			employeeCode.setText(SessionContext.userContext().getUserId());
+			machineID.setText((String)ApplicationContext.map().get(RegistrationConstants.USER_STATION_ID));
 			if (!((Map<String, Map<String, Boolean>>) ApplicationContext.map().get(RegistrationConstants.ONBOARD_MAP))
 					.get(RegistrationConstants.BIOMETRIC_EXCEPTION).get(RegistrationConstants.FINGER_PANE)) {
 				fingerPane.setManaged(false);
@@ -339,8 +340,10 @@ public class BiometricExceptionController extends BaseController implements Init
 			if (getRegistrationDTOFromSession().getSelectionListDTO() != null) {
 
 				SessionContext.map().put("biometricException", false);
-
-				if (RegistrationConstants.ENABLE.equalsIgnoreCase(
+				
+				if(fingerList.size()==10 && irisList.size()==2) {
+					SessionContext.map().put("faceCapture", true);
+				}else if (RegistrationConstants.ENABLE.equalsIgnoreCase(
 						String.valueOf(ApplicationContext.map().get(RegistrationConstants.FINGERPRINT_DISABLE_FLAG)))) {
 					SessionContext.map().put("fingerPrintCapture", true);
 				} else if(RegistrationConstants.ENABLE.equalsIgnoreCase(

@@ -282,7 +282,9 @@ public class FaceCaptureController extends BaseController implements Initializab
 
 					long irisExceptionCount = biomerticExceptionCount(RegistrationConstants.IRIS);
 
-					if (updateUINNextPage(RegistrationConstants.IRIS_DISABLE_FLAG) || irisCount > 0 || irisExceptionCount > 0) {
+					if(fingerPrintExceptionCount==10 && irisExceptionCount==2) {
+						SessionContext.map().put("biometricException", true);
+					} else if (updateUINNextPage(RegistrationConstants.IRIS_DISABLE_FLAG) || irisCount > 0 || irisExceptionCount > 0) {
 						SessionContext.map().put("irisCapture", true);
 					} else if (updateUINNextPage(RegistrationConstants.FINGERPRINT_DISABLE_FLAG)
 							|| fingerPrintCount > 0 || fingerPrintExceptionCount > 0) {

@@ -75,7 +75,7 @@
                                           <Label fx:id="employeeName" styleClass="onboardOperatorDetails" GridPane.rowIndex="1" />
                                           <Label fx:id="employeeCode" styleClass="onboardOperatorDetails" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                                           <Label fx:id="regCenterID" styleClass="onboardOperatorDetails" GridPane.columnIndex="2" GridPane.rowIndex="1" />
-                                          <Label fx:id="machineID" styleClass="onboardOperatorDetails" text="machineID" GridPane.columnIndex="3" GridPane.rowIndex="1" />
+                                          <Label fx:id="machineID" styleClass="onboardOperatorDetails" GridPane.columnIndex="3" GridPane.rowIndex="1" />
                                        </children>
                                     </GridPane>
                                     <GridPane GridPane.halignment="CENTER" GridPane.rowIndex="3" GridPane.valignment="CENTER">
@@ -563,14 +563,14 @@
                                     <Label alignment="BOTTOM_CENTER" contentDisplay="TOP" styleClass="headerTexts" text="%uploadDocuments" />
                                  </children>
                               </HBox>
-                              <HBox styleClass="trackerHighlighter"  alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="10.0" GridPane.columnIndex="4">
+                              <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="10.0" styleClass="trackerHighlighter" GridPane.columnIndex="4">
                                  <children>
                                     <ImageView fitHeight="18.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
                                           <Image url="@../images/activeBiometricDetail.png" />
                                        </image>
                                     </ImageView>
-                                    <Label alignment="BOTTOM_CENTER" contentDisplay="TOP"  text="%biometricDetails" />
+                                    <Label alignment="BOTTOM_CENTER" contentDisplay="TOP" text="%biometricDetails" />
                                  </children>
                               </HBox>
                               <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="10.0" GridPane.columnIndex="6">
