@@ -91,7 +91,7 @@ public interface MatchType {
 	/**
 	 * Get the Identity Info Function
 	 *
-	 * @return
+	 * @return the Identity Info Function
 	 */
 	public Function<RequestDTO, Map<String, List<IdentityInfoDTO>>> getIdentityInfoFunction();
 
@@ -141,7 +141,7 @@ public interface MatchType {
 	/**
 	 * Flag to fetch Request Entity Info
 	 * 
-	 * @return
+	 * @return the flag
 	 */
 	public default boolean hasRequestEntityInfo() {
 		return false;
@@ -150,7 +150,7 @@ public interface MatchType {
 	/**
 	 * Flag to check MultiLanguage
 	 * 
-	 * @return
+	 * @return the flag
 	 */
 	public default boolean isMultiLanguage() {
 		return false;
