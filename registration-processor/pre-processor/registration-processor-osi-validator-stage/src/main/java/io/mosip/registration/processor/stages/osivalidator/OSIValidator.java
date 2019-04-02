@@ -6,9 +6,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.InvocationTargetException;
+import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -127,6 +130,9 @@ public class OSIValidator {
 	
 	@Value("${mosip.kernel.applicant.type.age.limit}")
 	private String ageLimit;
+	
+	@Value("${registration.processor.applicant.dob.format}")
+	private String dobFormat;
 	
 
 	@Autowired
@@ -342,12 +348,32 @@ public class OSIValidator {
 			RegistrationProcessorIdentity regProcessorIdentityJson = mapIdentityJsonStringToObject
 					.readValue(getIdentityJsonString, RegistrationProcessorIdentity.class);
 			String ageKey = regProcessorIdentityJson.getIdentity().getAge().getValue();
-
+			String dobKey = regProcessorIdentityJson.getIdentity().getDob().getValue();
 			JSONObject demographicIdentity = JsonUtil.getJSONObject(demographicJson,
 					utility.getGetRegProcessorDemographicIdentity());
 			if (demographicIdentity == null)
 				throw new IdentityNotFoundException(PlatformErrorMessages.RPR_PIS_IDENTITY_NOT_FOUND.getMessage());
-		return JsonUtil.getJSONValue(demographicIdentity, ageKey);
+			int	applicantAge = JsonUtil.getJSONValue(demographicIdentity, ageKey);
+			String applicantDob = JsonUtil.getJSONValue(demographicIdentity, dobKey);
+		try {
+			if (applicantDob != null) {
+				DateFormat sdf = new SimpleDateFormat(dobFormat);
+				Date birthDate = sdf.parse(applicantDob);
+				Calendar birthDay = Calendar.getInstance();
+				birthDay.setTimeInMillis(birthDate.getTime());
+
+				long currentTime = System.currentTimeMillis();
+				Calendar now = Calendar.getInstance();
+				now.setTimeInMillis(currentTime);
+				// Get difference between years
+				applicantAge = now.get(Calendar.YEAR) - birthDay.get(Calendar.YEAR);
+			}
+		} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+				
+				return applicantAge;
 	}
 
 	/**
