@@ -20,6 +20,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.springframework.stereotype.Component;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
@@ -31,6 +32,7 @@ import io.mosip.kernel.core.util.FileUtils;
  * @author YASWANTH S
  *
  */
+@Component
 public class RegistrationUpdate {
 
 	private static String backUpPath = "D://mosip/AutoBackUp";
@@ -54,15 +56,16 @@ public class RegistrationUpdate {
 
 	private static Manifest serverManifest;
 
-	private String registration = "registration";
+	private String mosip = "mosip";
 
 	private String versionTag = "version";
 
-	public boolean hasUpdate() throws IOException, ParserConfigurationException, SAXException {
+	public boolean hasUpdate() throws IOException, ParserConfigurationException, SAXException,NullPointerException {
 		return !getCurrentVersion().equals(getLatestVersion());
 	}
 
 	private String getLatestVersion() throws IOException, ParserConfigurationException, SAXException {
+		System.out.println("Getting latest Version");
 		if (latestVersion != null) {
 			return latestVersion;
 		} else {
@@ -97,6 +100,7 @@ public class RegistrationUpdate {
 				setCurrentVersion((String) localManifest.getMainAttributes().get(Attributes.Name.MANIFEST_VERSION));
 			}
 		}
+		System.out.println("Getting current Version  " + currentVersion);
 		return currentVersion;
 	}
 
@@ -160,13 +164,14 @@ public class RegistrationUpdate {
 		}
 	}
 
-	private Path backUpCurrentApplication() throws IOException {
+	private Path backUpCurrentApplication() throws IOException, io.mosip.kernel.core.exception.IOException {
 
 		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 		String date = timestamp.toString().replace(":", "-") + "Z";
 
 		File backUpFolder = new File(backUpPath + SLASH + getCurrentVersion() + "_" + date);
 
+		
 		// bin backup folder
 		File bin = new File(backUpFolder.getAbsolutePath() + SLASH + binFolder);
 		bin.mkdirs();
@@ -186,6 +191,13 @@ public class RegistrationUpdate {
 			FileUtils.copyFile(new File(manifestFile), manifest);
 		} catch (io.mosip.kernel.core.exception.IOException ioException) {
 			throw new RuntimeException();
+		}
+		
+		
+		for(File backUpFile : new File(backUpPath).listFiles()) {
+			if(!backUpFile.getAbsolutePath().equals(backUpFolder.getAbsolutePath())) {
+				FileUtils.deleteDirectory(backUpFile);
+			}
 		}
 		return backUpFolder.toPath();
 
@@ -208,7 +220,7 @@ public class RegistrationUpdate {
 			deleteJars(checkableJars);
 		}
 		for (String jarFile : checkableJars) {
-			if (jarFile.contains(registration)) {
+			if (jarFile.contains(mosip)) {
 				checkForJarFile(version, binFolder, jarFile);
 			} else {
 				checkForJarFile(version, libFolder, jarFile);
@@ -231,6 +243,7 @@ public class RegistrationUpdate {
 	}
 
 	private static InputStream getInputStreamOfJar(String version, String jarName) throws IOException {
+		System.out.println("Downloading " + jarName);
 		return new URL(serverRegClientURL + version + SLASH + libFolder + jarName).openStream();
 
 	}
@@ -248,7 +261,7 @@ public class RegistrationUpdate {
 
 	private void deleteJar(String jarName) throws IOException {
 		File deleteFile = null;
-		if (jarName.contains(registration)) {
+		if (jarName.contains(mosip)) {
 			deleteFile = new File(binFolder + jarName);
 		} else {
 			deleteFile = new File(libFolder + jarName);

@@ -52,6 +52,7 @@ public class ClientJarEncryption {
 	private static final String MOSIP_LOG = "log";
 	private static final String MOSIP_SERVICES = "mosip-services.jar";
 	private static final String MOSIP_CLIENT = "mosip-client.jar";
+
 	/**
 	 * Encrypt the bytes
 	 * 
@@ -99,7 +100,8 @@ public class ClientJarEncryption {
 
 					String zipFilename = file.getParent() + SLASH + "mosip-sw-" + args[3] + MOSIP_ZIP;
 
-					byte[] propertiesBytes = (MOSIP_LOG_PARAM + MOSIP_LOG_PATH + "\n" + MOSIP_DB_PARAM + MOSIP_DB_PATH).getBytes();
+					byte[] propertiesBytes = (MOSIP_LOG_PARAM + MOSIP_LOG_PATH + "\n" + MOSIP_DB_PARAM + MOSIP_DB_PATH)
+							.getBytes();
 					byte[] runExecutbale = FileUtils
 							.readFileToByteArray(new File(args[4] + MOSIP_REG_LIBS + args[3] + MOSIP_JAR));
 					File listOfJars = new File(file.getParent() + SLASH + MOSIP_LIB).getAbsoluteFile();
@@ -124,14 +126,16 @@ public class ClientJarEncryption {
 					byte[] clientJarEncryptedBytes = aes.getEncryptedBytes(Files.readAllBytes(clientJar.toPath()),
 							Base64.getDecoder().decode(args[2].getBytes()));
 
-					String filePath = listOfJars.getAbsolutePath()+SLASH+MOSIP_CLIENT;
-					
+					String filePath = listOfJars.getAbsolutePath() + SLASH + MOSIP_CLIENT;
+
 					try (FileOutputStream regFileOutputStream = new FileOutputStream(new File(filePath))) {
 						regFileOutputStream.write(clientJarEncryptedBytes);
 
 					}
 					/* Add To Manifest */
 					addToManifest(MOSIP_CLIENT, clientJarEncryptedBytes, manifest);
+
+					boolean isAssistSaved = false;
 
 					// /* Save Client jar to registration-libs */
 					// saveLibJars(clientJarEncryptedBytes, clientJar.getName(), regLibFile);
@@ -140,39 +144,43 @@ public class ClientJarEncryption {
 					for (File files : listOfJars.listFiles()) {
 
 						if (files.getName().contains(REGISTRATION)) {
-							
-							String regpath = files.getParentFile().getAbsolutePath()+SLASH;
-							if(files.getName().contains("client")) {
-								regpath +=MOSIP_CLIENT;
+
+							String regpath = files.getParentFile().getAbsolutePath() + SLASH;
+							if (files.getName().contains("client")) {
+								regpath += MOSIP_CLIENT;
 							} else {
-								regpath +=MOSIP_SERVICES;
+								regpath += MOSIP_SERVICES;
 							}
 							byte[] encryptedRegFileBytes = aes.encyrpt(FileUtils.readFileToByteArray(files),
 									Base64.getDecoder().decode(args[2].getBytes()));
 							// fileNameByBytes.put(libraries + files.getName(), encryptedRegFileBytes);
 
-							
 							File servicesJar = new File(regpath);
 							try (FileOutputStream regFileOutputStream = new FileOutputStream(servicesJar)) {
 								regFileOutputStream.write(encryptedRegFileBytes);
 								files.deleteOnExit();
 
 							}
-							
 
 							/* Add To Manifest */
 							addToManifest(servicesJar.getName(), encryptedRegFileBytes, manifest);
 
 							// saveLibJars(encryptedRegFileBytes, files.getName(), regLibFile);
+						} else if (files.getName().contains("pom")
+								|| (files.getName().contains("javassist") && isAssistSaved)) {
+							FileUtils.forceDelete(files);
+
 						} else {
 							// fileNameByBytes.put(libraries + files.getName(),
 							// FileUtils.readFileToByteArray(files));
 
+							if (files.getName().contains("javassist")) {
+								isAssistSaved = true;
+							}
 							/* Add To Manifest */
 							addToManifest(files.getName(), Files.readAllBytes(files.toPath()), manifest);
 
 							// saveLibJars(files, regLibFile);
-
 						}
 					}
 
