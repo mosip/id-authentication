@@ -1,6 +1,6 @@
-# kernel-idgenerator-tspid
+# kernel-idgenerator-mispid
 
-[Background & Design](../../docs/design/kernel/Kernel-idgenerator-tspid.md)
+[Background & Design](../../docs/design/kernel/Kernel-idgenerator-mispid.md)
 
 API Documentation
 
@@ -13,7 +13,7 @@ mvn javadoc:javadoc
  **Properties to be added in Spring application environment using this component**
  
  ```
- mosip.kernel.tspid.length=4
+ mosip.kernel.mispid.length=3
  ```
  
  [application-dev.properties](../../config/application-dev.properties)
@@ -31,7 +31,7 @@ table:tspid_seq
 ```
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
-			<artifactId>kernel-idgenerator-tspid</artifactId>
+			<artifactId>kernel-idgenerator-mispid</artifactId>
 			<version>${project.version}</version>
 	</dependency>
 
@@ -46,14 +46,14 @@ For example-
 
 ```
 @Autowired
-TspIdGenerator <String> tspIdGenerator;
+TspIdGenerator <String> mispIdGenerator;
 
-String tspId = tspIdGenerator.generateId();
+String mispId = mispIdGenerator.generateId();
 
 ```
  
 
-**Sample TSPID:**
+**Sample MISPID:**
 
-GENERATED TSPID = 1000
+GENERATED MISPID = 100
  
