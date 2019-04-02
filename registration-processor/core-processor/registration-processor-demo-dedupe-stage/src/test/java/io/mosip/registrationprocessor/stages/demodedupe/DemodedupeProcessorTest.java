@@ -9,8 +9,11 @@ import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+import java.beans.IntrospectionException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.InvocationTargetException;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -289,10 +292,15 @@ Mockito.when(registrationStatusMapperUtil.getStatusCode(any())).thenReturn("ERRO
 	 *             the apis resource access exception
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
+	 * @throws IntrospectionException 
+	 * @throws ParseException 
+	 * @throws InvocationTargetException 
+	 * @throws IllegalArgumentException 
+	 * @throws IllegalAccessException 
 	 */
 	@SuppressWarnings("unchecked")
 	@Test
-	public void testDemoDedupeFailure() throws ApisResourceAccessException, IOException {
+	public void testDemoDedupeFailure() throws ApisResourceAccessException, IOException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, ParseException, IntrospectionException {
 		InternalRegistrationStatusDto registrationStatusDto = new InternalRegistrationStatusDto();
 
 		Mockito.when(demoDedupe.performDedupe(anyString())).thenReturn(duplicateDtos);
@@ -314,10 +322,15 @@ Mockito.when(registrationStatusMapperUtil.getStatusCode(any())).thenReturn("ERRO
 	 *             the apis resource access exception
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
+	 * @throws IntrospectionException 
+	 * @throws ParseException 
+	 * @throws InvocationTargetException 
+	 * @throws IllegalArgumentException 
+	 * @throws IllegalAccessException 
 	 */
 	@SuppressWarnings("unchecked")
 	@Test
-	public void testResourceException() throws ApisResourceAccessException, IOException {
+	public void testResourceException() throws ApisResourceAccessException, IOException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, ParseException, IntrospectionException {
 		Mockito.when(demoDedupe.performDedupe(anyString())).thenReturn(duplicateDtos);
 
 		ApisResourceAccessException exp = new ApisResourceAccessException("errorMessage");
@@ -334,10 +347,15 @@ Mockito.when(registrationStatusMapperUtil.getStatusCode(any())).thenReturn("ERRO
 	 *             the apis resource access exception
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
+	 * @throws IntrospectionException 
+	 * @throws ParseException 
+	 * @throws InvocationTargetException 
+	 * @throws IllegalArgumentException 
+	 * @throws IllegalAccessException 
 	 */
 	@SuppressWarnings("unchecked")
 	@Test
-	public void testException() throws ApisResourceAccessException, IOException {
+	public void testException() throws ApisResourceAccessException, IOException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, ParseException, IntrospectionException {
 		Mockito.when(demoDedupe.performDedupe(anyString())).thenReturn(duplicateDtos);
 
 		ApisResourceAccessException exp = new ApisResourceAccessException("errorMessage");
@@ -351,7 +369,7 @@ Mockito.when(registrationStatusMapperUtil.getStatusCode(any())).thenReturn("ERRO
 
 	@SuppressWarnings("unchecked")
 	@Test
-	public void testFSAdapterExceptionException() throws ApisResourceAccessException, IOException {
+	public void testFSAdapterExceptionException() throws ApisResourceAccessException, IOException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, ParseException, IntrospectionException {
 		Mockito.when(demoDedupe.performDedupe(anyString())).thenReturn(duplicateDtos);
 
 		FSAdapterException exp = new FSAdapterException("errorMessage","test");

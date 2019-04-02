@@ -74,6 +74,11 @@ public class RegistrationExceptionMapperUtil {
 				RegistrationTransactionStatusCode.ERROR);
 		statusMap.put(RegistrationExceptionTypeCode.CLASS_NOT_FOUND_EXCEPTION, RegistrationTransactionStatusCode.ERROR);
 
+		
+		statusMap.put(RegistrationExceptionTypeCode.INVOCATION_TARGET_EXCEPTION, RegistrationTransactionStatusCode.ERROR);
+		statusMap.put(RegistrationExceptionTypeCode.INTROSPECTION_EXCEPTION, RegistrationTransactionStatusCode.ERROR);
+	
+		
 		statusMap.put(RegistrationExceptionTypeCode.TABLE_NOT_ACCESSIBLE_EXCEPTION,
 				RegistrationTransactionStatusCode.REPROCESS);
 		statusMap.put(RegistrationExceptionTypeCode.INTERNAL_SERVER_ERROR, RegistrationTransactionStatusCode.REPROCESS);
@@ -115,3 +120,4 @@ public class RegistrationExceptionMapperUtil {
 		return mapStatus.get(RegistrationExceptionTypeCode.valueOf(exceptionCode.toString())).toString();
 	}
 }
+
