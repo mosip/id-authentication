@@ -1,5 +1,7 @@
 package io.mosip.registration.config;
 
+import java.io.IOException;
+import java.util.Properties;
 import java.util.ResourceBundle;
 
 import javax.sql.DataSource;
@@ -51,7 +53,8 @@ public class AppConfig {
 	private DataSource datasource;
 
 	static {
-		ResourceBundle resourceBundle = ResourceBundle.getBundle("log4j");
+		
+		ResourceBundle resourceBundle = ResourceBundle.getBundle("reg_log4j");
 		MOSIP_ROLLING_APPENDER.setAppend(true);
 		MOSIP_ROLLING_APPENDER.setAppenderName(resourceBundle.getString("log4j.appender.Appender"));
 		MOSIP_ROLLING_APPENDER.setFileName(resourceBundle.getString("log4j.appender.Appender.file"));

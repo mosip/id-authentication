@@ -1,8 +1,10 @@
 package io.mosip.registration.cipher;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Base64;
@@ -38,7 +40,8 @@ public class CilentJarDecryption {
 
 	static {
 		String tempPath = System.getProperty("java.io.tmpdir");
-		System.setProperty("java.ext.dirs", "D:/ManifestTesting/mosip-sw-0.9.6/lib/;" + tempPath + "/mosip/");
+		System.setProperty("java.ext.dirs",
+				"C:\\Users\\M1046564\\Desktop\\mosip-sw-0.10.0\\lib;" + tempPath + "/mosip/");
 
 		System.out.println(System.getProperty("java.ext.dirs"));
 	}
@@ -88,7 +91,7 @@ public class CilentJarDecryption {
 		File encryptedServicesJar = new File(binFolder + MOSIP_SERVICES);
 
 		String tempPath = FileUtils.getTempDirectoryPath();
-		
+
 		System.out.println(tempPath);
 
 		System.out.println("Decrypt File Name====>" + encryptedClientJar.getName());
@@ -104,19 +107,40 @@ public class CilentJarDecryption {
 
 		FileUtils.writeByteArrayToFile(new File(tempPath + "/mosip/" + encryptedServicesJar.getName()),
 				decryptedRegServiceBytes);
+		try {
+			
+			String libPath = new File("lib").getAbsolutePath();
+			Process process = Runtime.getRuntime().exec(
+					"java -Dspring.profiles.active=qa -Djava.ext.dirs="+libPath+" -jar "
+							+ tempPath + "/mosip/mosip-client.jar");
+			System.out.println("the output stream is " + process.getOutputStream().getClass());
+			BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+			String s;
+			while ((s = bufferedReader.readLine()) != null) {
+				System.out.println("The stream is : " + s);
+			}
 
-		ProcessBuilder clientBuilder = new ProcessBuilder("java", "-jar", tempPath + "/mosip/mosip-client.jar");
+			if (0 == process.waitFor()) {
 
-		Process process = clientBuilder.start();
+				process.destroy();
 
-		System.out.println("Invoked suuceessfully");
-
-		int status = process.waitFor();
-		if (status == 0) {
-			System.out.println("Registration Client stopped with the status: " + status);
-			process.destroy();
-			FileUtils.deleteDirectory(new File(tempPath + "mosip\\"));
+			}
+		} catch (Exception e2) {
+			e2.printStackTrace();
 		}
+		/*
+		 * ProcessBuilder clientBuilder = new ProcessBuilder("java", "-jar", tempPath +
+		 * "/mosip/mosip-client.jar");
+		 * 
+		 * Process process = clientBuilder.start();
+		 * 
+		 * System.out.println("Invoked suuceessfully");
+		 * 
+		 * int status = process.waitFor(); if (status == 0) {
+		 * System.out.println("Registration Client stopped with the status: " + status);
+		 * process.destroy(); FileUtils.deleteDirectory(new File(tempPath + "mosip\\"));
+		 * }
+		 */
 	}
 
 	private static void checkForJars()
