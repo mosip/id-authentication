@@ -46,6 +46,7 @@ import io.mosip.preregistration.core.common.dto.AuditRequestDto;
 import io.mosip.preregistration.core.common.dto.DemographicResponseDTO;
 import io.mosip.preregistration.core.common.dto.DocumentDeleteResponseDTO;
 import io.mosip.preregistration.core.common.dto.DocumentMultipartResponseDTO;
+import io.mosip.preregistration.core.common.dto.ExceptionJSONInfoDTO;
 import io.mosip.preregistration.core.common.dto.MainListResponseDTO;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
 import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
@@ -58,6 +59,8 @@ import io.mosip.preregistration.documents.dto.DocumentCopyResponseDTO;
 import io.mosip.preregistration.documents.dto.DocumentRequestDTO;
 import io.mosip.preregistration.documents.dto.DocumentResponseDTO;
 import io.mosip.preregistration.documents.entity.DocumentEntity;
+import io.mosip.preregistration.documents.errorcodes.ErrorMessages;
+import io.mosip.preregistration.documents.exception.DemographicGetDetailsException;
 import io.mosip.preregistration.documents.exception.DocumentFailedToCopyException;
 import io.mosip.preregistration.documents.exception.DocumentFailedToUploadException;
 import io.mosip.preregistration.documents.exception.DocumentNotFoundException;
@@ -211,18 +214,18 @@ public class DocumentUploadServiceTest {
         Mockito.when(SecurityContextHolder.getContext().getAuthentication().getPrincipal()).thenReturn(applicationUser);
 	}
 
-	//@Test
+	@Test
 	public void uploadDocumentSuccessTest() throws IOException {
 		List<DocumentResponseDTO> responseUploadList = new ArrayList<>();
-		MainResponseDTO<DemographicResponseDTO> restRes = new MainResponseDTO<DemographicResponseDTO>();
+		MainListResponseDTO<DemographicResponseDTO> restRes = new MainListResponseDTO<DemographicResponseDTO>();
 		DemographicResponseDTO dto= new DemographicResponseDTO();
 		
 		docResp.setResMsg(DocumentStatusMessages.DOCUMENT_UPLOAD_SUCCESSFUL.toString());
 		responseUploadList.add(docResp);
 		responseUpload.setResponse(responseUploadList);
-		ResponseEntity<MainResponseDTO<DemographicResponseDTO>> rescenter = new ResponseEntity<>(restRes, HttpStatus.OK);
+		ResponseEntity<MainListResponseDTO<DemographicResponseDTO>> rescenter = new ResponseEntity<>(restRes, HttpStatus.OK);
 		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
-				Mockito.eq(new ParameterizedTypeReference<MainResponseDTO<DemographicResponseDTO>>() {
+				Mockito.eq(new ParameterizedTypeReference<MainListResponseDTO<DemographicResponseDTO>>() {
 				}))).thenReturn(rescenter);
 		Mockito.when(virusScan.scanDocument(mockMultipartFile.getBytes())).thenReturn(true);
 		Mockito.doReturn(true).when(fs).storeFile(Mockito.any(), Mockito.any(), Mockito.any());
@@ -235,6 +238,33 @@ public class DocumentUploadServiceTest {
 		assertEquals(responseDto.getResponse().get(0).getResMsg(), responseUpload.getResponse().get(0).getResMsg());
 	}
 
+	@Test(expected=DemographicGetDetailsException.class)
+	public void DemographicGetDetailsExceptionTest() throws IOException {
+		DemographicGetDetailsException ex = new DemographicGetDetailsException(null, null);
+		List<DocumentResponseDTO> responseUploadList = new ArrayList<>();
+		MainListResponseDTO<DemographicResponseDTO> restRes = new MainListResponseDTO<DemographicResponseDTO>();
+		DemographicResponseDTO dto= new DemographicResponseDTO();
+		ExceptionJSONInfoDTO exception = new ExceptionJSONInfoDTO();
+		exception.setMessage(ErrorMessages.DEMOGRAPHIC_GET_RECORD_FAILED.toString());
+		restRes.setErr(exception);
+		responseUploadList.add(docResp);
+		responseUpload.setResponse(responseUploadList);
+		ResponseEntity<MainListResponseDTO<DemographicResponseDTO>> rescenter = new ResponseEntity<>(restRes, HttpStatus.OK);
+		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
+				Mockito.eq(new ParameterizedTypeReference<MainListResponseDTO<DemographicResponseDTO>>() {
+				}))).thenReturn(rescenter);
+		Mockito.when(virusScan.scanDocument(mockMultipartFile.getBytes())).thenReturn(true);
+		Mockito.doReturn(true).when(fs).storeFile(Mockito.any(), Mockito.any(), Mockito.any());
+		Mockito.when(documentRepository.findSingleDocument(Mockito.anyString(), Mockito.anyString()))
+				.thenReturn(entity);
+		Mockito.when(cryptoUtil.encrypt(Mockito.any(), Mockito.any())).thenReturn(mockMultipartFileSizeCheck.toString().getBytes());
+		Mockito.when(documentRepository.save(Mockito.any())).thenReturn(entity);
+		MainListResponseDTO<DocumentResponseDTO> responseDto = documentUploadService.uploadDocument(mockMultipartFile,
+				docJson);
+		assertEquals(responseDto.getResponse().get(0).getResMsg(), responseUpload.getResponse().get(0).getResMsg());
+	}
+
+	
 	@Test(expected = InvalidRequestParameterException.class)
 	public void mandatoryFeildNotPresentTest() throws IOException {
 		Mockito.when(virusScan.scanDocument(mockMultipartFile.getBytes())).thenReturn(true);
@@ -343,9 +373,9 @@ public class DocumentUploadServiceTest {
 		DocumentCopyResponseDTO copyDcoResDto = new DocumentCopyResponseDTO();
 		MainListResponseDTO restRes = new MainListResponseDTO<>();
 		copyDcoResDto.setSourcePreRegId("48690172097498");
-		copyDcoResDto.setSourceDocumnetId("1");
+		copyDcoResDto.setSourceDocumentId("1");
 		copyDcoResDto.setDestPreRegId("48690172097499");
-		copyDcoResDto.setDestDocumnetId("2");
+		copyDcoResDto.setDestDocumentId("2");
 		docCopyList.add(copyDcoResDto);
 		responseCopy.setResponse(docCopyList);
 		responseCopy.setResponsetime(serviceUtil.getCurrentResponseTime());
@@ -362,8 +392,8 @@ public class DocumentUploadServiceTest {
 		Mockito.doReturn(sourceFile).when(fs).getFile(Mockito.anyString(), Mockito.anyString());
 		MainListResponseDTO<DocumentCopyResponseDTO> responseDto = documentUploadService.copyDocument("POA",
 				"48690172097498", "48690172097499");
-		assertEquals(responseDto.getResponse().get(0).getDestDocumnetId(),
-				responseCopy.getResponse().get(0).getDestDocumnetId());
+		assertEquals(responseDto.getResponse().get(0).getDestDocumentId(),
+				responseCopy.getResponse().get(0).getDestDocumentId());
 	}
 
 	@Test(expected = DocumentNotFoundException.class)
@@ -411,12 +441,12 @@ public class DocumentUploadServiceTest {
 	
 	@Test(expected = InvalidRequestParameterException.class)
 	public void InvalidRequestParameterExceptionTest1() throws Exception {
-		documentUploadService.copyDocument("POA", "486", "48690172097499");
+		documentUploadService.copyDocument("POA", "", "48690172097499");
 	}
 	
 	@Test(expected = InvalidRequestParameterException.class)
 	public void InvalidRequestParameterExceptionTest2() throws Exception {
-		documentUploadService.copyDocument("POA", "48690172097499", "48");
+		documentUploadService.copyDocument("POA", "48690172097499", "");
 	}
 	
 	@Test(expected = InvalidRequestParameterException.class)
@@ -482,7 +512,7 @@ public class DocumentUploadServiceTest {
 	public void deleteDocumentSuccessTest() {
 		List<DocumentDeleteResponseDTO> deleteresponseList = new ArrayList<>();
 		documentDeleteDTO = new DocumentDeleteResponseDTO();
-		documentDeleteDTO.setDocumnet_Id("1");
+		documentDeleteDTO.setDocument_Id("1");
 		documentDeleteDTO.setResMsg(DocumentStatusMessages.DOCUMENT_DELETE_SUCCESSFUL.toString());
 		deleteresponseList.add(documentDeleteDTO);
 
@@ -505,7 +535,7 @@ public class DocumentUploadServiceTest {
 	public void deleteAllByPreIdSuccessTest() {
 		List<DocumentDeleteResponseDTO> deleteresponseList = new ArrayList<>();
 		documentDeleteDTO = new DocumentDeleteResponseDTO();
-		documentDeleteDTO.setDocumnet_Id("1");
+		documentDeleteDTO.setDocument_Id("1");
 		documentDeleteDTO.setResMsg(DocumentStatusMessages.DOCUMENT_DELETE_SUCCESSFUL.toString());
 		deleteresponseList.add(documentDeleteDTO);
 
@@ -515,8 +545,8 @@ public class DocumentUploadServiceTest {
 		Mockito.when(documentRepository.findBypreregId(preId)).thenReturn(docEntity);
 		Mockito.when(documentRepository.deleteAllBypreregId(preId)).thenReturn(1);
 		MainListResponseDTO<DocumentDeleteResponseDTO> responseDto = documentUploadService.deleteAllByPreId(preId);
-		assertEquals(responseDto.getResponse().get(0).getDocumnet_Id(),
-				delResponseDto.getResponse().get(0).getDocumnet_Id());
+		assertEquals(responseDto.getResponse().get(0).getDocument_Id(),
+				delResponseDto.getResponse().get(0).getDocument_Id());
 	}
 
 	@Test(expected = TableNotAccessibleException.class)
@@ -535,7 +565,7 @@ public class DocumentUploadServiceTest {
 	public void deleteDocumentTest() throws Exception {
 		List<DocumentDeleteResponseDTO> deleteresponseList = new ArrayList<>();
 		documentDeleteDTO = new DocumentDeleteResponseDTO();
-		documentDeleteDTO.setDocumnet_Id("1");
+		documentDeleteDTO.setDocument_Id("1");
 		documentDeleteDTO.setResMsg(DocumentStatusMessages.DOCUMENT_DELETE_SUCCESSFUL.toString());
 		deleteresponseList.add(documentDeleteDTO);
 

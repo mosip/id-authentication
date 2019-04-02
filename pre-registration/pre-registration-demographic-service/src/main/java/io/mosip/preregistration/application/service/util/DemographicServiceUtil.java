@@ -220,9 +220,9 @@ public class DemographicServiceUtil {
 	 * 
 	 */
 	public String getIdJSONValue(JSONObject demographicData, String value)  {
-		log.info("sessionId", "idType", "id", "In getValueFromIdentity method of pe-registration service util to get postalcode ");
+		log.info("sessionId", "idType", "id", "In getValueFromIdentity method of pe-registration service util to get getIdJSONValue ");
 		JSONObject identityObj = (JSONObject) demographicData.get(RequestCodes.IDENTITY.getCode());
-		return  (String) identityObj.get(value);
+		return  identityObj.get(value).toString();
 	}
 
 	/**

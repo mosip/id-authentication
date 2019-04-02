@@ -71,6 +71,7 @@ import io.mosip.preregistration.application.exception.RecordFailedToDeleteExcept
 import io.mosip.preregistration.application.exception.RecordFailedToUpdateException;
 import io.mosip.preregistration.application.exception.RecordNotFoundException;
 import io.mosip.preregistration.application.exception.RecordNotFoundForPreIdsException;
+import io.mosip.preregistration.application.exception.RestCallException;
 import io.mosip.preregistration.application.exception.system.DateParseException;
 import io.mosip.preregistration.application.exception.system.JsonValidationException;
 import io.mosip.preregistration.application.exception.system.SystemUnsupportedEncodingException;
@@ -458,11 +459,10 @@ public class DemographicServiceTest {
 		jsonObject = (JSONObject) parser.parse(new FileReader(fileUp));
 		Mockito.when(demographicRepository.findBypreRegistrationId(prid)).thenReturn(preRegistrationEntity);
 
-		Mockito.when(jsonValidator.validateJson(jsonObject.toString()))
+		Mockito.when(jsonValidator.validateJson(Mockito.anyString()))
 				.thenThrow(exception);
 		MainListResponseDTO<DemographicResponseDTO> res = preRegistrationService
 				.addPreRegistration(demographicRequestDTO);
-		assertEquals(1.0, res.getVersion());
 	}
 
 	@Test
@@ -606,7 +606,7 @@ public class DemographicServiceTest {
 		String preRegId = "98746563542672";
 
 		DocumentDeleteDTO deleteDTO = new DocumentDeleteDTO();
-		deleteDTO.setDocumnet_Id(String.valueOf("1"));
+		deleteDTO.setDocument_Id(String.valueOf("1"));
 		List<DocumentDeleteDTO> deleteAllList = new ArrayList<>();
 		deleteAllList.add(deleteDTO);
 
@@ -632,7 +632,7 @@ public class DemographicServiceTest {
 		String preRegId = "98746563542672";
 
 		DocumentDeleteDTO deleteDTO = new DocumentDeleteDTO();
-		deleteDTO.setDocumnet_Id(String.valueOf("1"));
+		deleteDTO.setDocument_Id(String.valueOf("1"));
 		List<DocumentDeleteDTO> deleteAllList = new ArrayList<>();
 		deleteAllList.add(deleteDTO);
 
@@ -654,13 +654,13 @@ public class DemographicServiceTest {
 
 	}
 
-	@Test(expected = RecordFailedToDeleteException.class)
-	public void deleteRecordFailedToDeleteException1() throws Exception {
+	@Test(expected = DocumentFailedToDeleteException.class)
+	public void documentFailedToDeleteExceptionTest() throws Exception {
 		String preRegId = "98746563542672";
 		ExceptionJSONInfoDTO err = new ExceptionJSONInfoDTO("PRG_PAM_DOC_015", "");
 		Mockito.when(demographicRepository.findBypreRegistrationId(preRegId)).thenReturn(preRegistrationEntity);
 		DocumentDeleteResponseDTO deleteDTO = new DocumentDeleteResponseDTO();
-		deleteDTO.setDocumnet_Id(String.valueOf("1"));
+		deleteDTO.setDocument_Id(String.valueOf("1"));
 		List<DocumentDeleteResponseDTO> deleteAllList = new ArrayList<>();
 		deleteAllList.add(deleteDTO);
 		MainListResponseDTO<DeleteBookingDTO> delBookingResponseDTO = new MainListResponseDTO<>();
@@ -710,7 +710,7 @@ public class DemographicServiceTest {
 		preRegistrationEntity.setPreRegistrationId("98746563542672");
 
 		DocumentDeleteResponseDTO deleteDTO = new DocumentDeleteResponseDTO();
-		deleteDTO.setDocumnet_Id(String.valueOf("1"));
+		deleteDTO.setDocument_Id(String.valueOf("1"));
 		List<DocumentDeleteResponseDTO> deleteAllList = new ArrayList<>();
 		deleteAllList.add(deleteDTO);
 		MainListResponseDTO<DeleteBookingDTO> delBookingResponseDTO = new MainListResponseDTO<>();
@@ -760,7 +760,7 @@ public class DemographicServiceTest {
 		preRegistrationEntity.setPreRegistrationId("98746563542672");
 
 		DocumentDeleteResponseDTO deleteDTO = new DocumentDeleteResponseDTO();
-		deleteDTO.setDocumnet_Id(String.valueOf("1"));
+		deleteDTO.setDocument_Id(String.valueOf("1"));
 		List<DocumentDeleteResponseDTO> deleteAllList = new ArrayList<>();
 		deleteAllList.add(deleteDTO);
 		MainListResponseDTO<DeleteBookingDTO> delBookingResponseDTO = new MainListResponseDTO<>();
@@ -813,50 +813,47 @@ public class DemographicServiceTest {
 		preRegistrationService.addPreRegistration(demographicRequestDTO);
 	}
 
-	// @Test(expected=RestClientException.class)
-	// public void deleteIndividualRestExceptionTest() {
-	// RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
-	// Mockito.when(restTemplateBuilder.build()).thenReturn(restTemplate);
-	// String preRegId = "98746563542672";
-	// preRegistrationEntity.setCreateDateTime(times);
-	// preRegistrationEntity.setCreatedBy("9988905444");
-	// preRegistrationEntity.setStatusCode("Booked");
-	// preRegistrationEntity.setUpdateDateTime(times);
-	// preRegistrationEntity.setApplicantDetailJson(jsonTestObject.toJSONString().getBytes());
-	// preRegistrationEntity.setPreRegistrationId("98746563542672");
-	//
-	// DocumentDeleteDTO deleteDTO = new DocumentDeleteDTO();
-	// deleteDTO.setDocumnet_Id(String.valueOf("1"));
-	// List<DocumentDeleteDTO> deleteAllList = new ArrayList<>();
-	// deleteAllList.add(deleteDTO);
-	//
-	// MainListResponseDTO<DocumentDeleteDTO> delResponseDto = new
-	// MainListResponseDTO<>();
-	// delResponseDto.setStatus(Boolean.TRUE);
-	// delResponseDto.setErr(null);
-	// delResponseDto.setResponse(deleteAllList);
-	// delResponseDto.setResTime(serviceUtil.getCurrentResponseTime());
-	//
-	// Mockito.when(demographicRepository.findBypreRegistrationId(preRegId)).thenReturn(preRegistrationEntity);
-	//
-	// ResponseEntity<MainListResponseDTO> res = new
-	// ResponseEntity<>(delResponseDto, HttpStatus.OK);
-	//
-	// HttpHeaders headers = new HttpHeaders();
-	// headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
-	// Mockito.when(restTemplate.exchange(Mockito.anyString(),
-	// Mockito.eq(HttpMethod.DELETE), Mockito.any(),
-	// Mockito.eq(MainListResponseDTO.class))).thenReturn(res);
-	//
-	// Mockito.when(demographicRepository.deleteByPreRegistrationId(preRegistrationEntity.getPreRegistrationId()))
-	// .thenReturn(1);
-	//
-	// MainListResponseDTO<DeletePreRegistartionDTO> actualres =
-	// preRegistrationService.deleteIndividual(preRegId);
-	//
-	// //assertEquals(true, actualres.isStatus());
-	//
-	// }
+	 @Test(expected=RestCallException.class)
+	 public void deleteIndividualRestExceptionTest() throws Exception{
+	 String preRegId = "98746563542672";
+	 preRegistrationEntity.setCreateDateTime(times);
+	 preRegistrationEntity.setCreatedBy("9988905444");
+	 preRegistrationEntity.setStatusCode("Booked");
+	 preRegistrationEntity.setUpdateDateTime(times);
+	 preRegistrationEntity.setApplicantDetailJson(jsonTestObject.toJSONString().getBytes());
+	 preRegistrationEntity.setPreRegistrationId("98746563542672");
+	
+	 DocumentDeleteResponseDTO deleteDTO = new DocumentDeleteResponseDTO();
+	 deleteDTO.setDocument_Id(String.valueOf("1"));
+	 List<DocumentDeleteResponseDTO> deleteAllList = new ArrayList<>();
+	 deleteAllList.add(deleteDTO);
+	
+	 MainListResponseDTO<DocumentDeleteResponseDTO> delResponseDto = new
+	 MainListResponseDTO<>();
+	 delResponseDto.setErr(null);
+	 delResponseDto.setResponse(deleteAllList);
+	
+	 Mockito.when(demographicRepository.findBypreRegistrationId(preRegId)).thenReturn(preRegistrationEntity);
+	
+	 ResponseEntity<MainListResponseDTO<DocumentDeleteResponseDTO>> res = new
+	 ResponseEntity<>(delResponseDto, HttpStatus.OK);
+
+	 HttpHeaders headers = new HttpHeaders();
+	 headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
+	 Mockito.when(restTemplate.exchange(Mockito.anyString(),
+	 Mockito.eq(HttpMethod.DELETE), Mockito.any(),
+	 Mockito.eq(new ParameterizedTypeReference<MainListResponseDTO<DocumentDeleteResponseDTO>>() {
+		}))).thenThrow(RestClientException.class);
+	
+	 Mockito.when(demographicRepository.deleteByPreRegistrationId(preRegistrationEntity.getPreRegistrationId()))
+	 .thenReturn(1);
+	
+	 MainListResponseDTO<DeletePreRegistartionDTO> actualres =
+	 preRegistrationService.deleteIndividual(preRegId);
+	
+	 //assertEquals(true, actualres.isStatus());
+	
+	 }
 
 	@Test(expected = RecordNotFoundException.class)
 	public void RecordNotFoundExceptionTest() {
@@ -1155,6 +1152,29 @@ public class DemographicServiceTest {
 		Mockito.when(demographicRepository.findByStatusCodeAndPreRegistrationIdIn(StatusCodes.BOOKED.getCode(), preIds))
 				.thenReturn(userEntityDetails);
 		preRegistrationService.getUpdatedDateTimeForPreIds(preRegIdsByRegCenterIdDTO);
+
+	}
+	
+	@Test
+	public void getPreRegistrationByDateEntityCheckSuccessTest() {
+		DemographicEntity demoEntity=new DemographicEntity();
+		demoEntity.setDemogDetailHash("E0B6CBDAC6D896BCB5061846A054CD1373397D02A9F83CEFDBC912317E6E0331");
+		demoEntity.setApplicantDetailJson("MOSIP".getBytes());
+		demoEntity.setPreRegistrationId("123456");
+		List<DemographicEntity> list=new ArrayList<>();
+		list.add(demoEntity);
+		List<String> resList=preRegistrationService.getPreRegistrationByDateEntityCheck(list);
+		assertEquals(resList.get(0),"123456");
+	}
+	@Test(expected=HashingException.class)
+	public void getPreRegistrationByDateEntityCheckExceptionTest() {
+		DemographicEntity demoEntity=new DemographicEntity();
+		demoEntity.setDemogDetailHash("");
+		demoEntity.setApplicantDetailJson("MOSIP".getBytes());
+		demoEntity.setPreRegistrationId("123456");
+		List<DemographicEntity> list=new ArrayList<>();
+		list.add(demoEntity);
+		List<String> resList=preRegistrationService.getPreRegistrationByDateEntityCheck(list);
 
 	}
 
