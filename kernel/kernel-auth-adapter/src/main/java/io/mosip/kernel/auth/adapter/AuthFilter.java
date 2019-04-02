@@ -4,6 +4,8 @@
 package io.mosip.kernel.auth.adapter;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -11,12 +13,22 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
+import org.springframework.web.util.ContentCachingRequestWrapper;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+
+import io.mosip.kernel.core.exception.ServiceError;
+import io.mosip.kernel.core.http.ResponseWrapper;
+import io.mosip.kernel.core.util.EmptyCheckUtils;
 
 /**
  * @author M1049825
@@ -25,14 +37,14 @@ import org.springframework.security.web.util.matcher.RequestMatcher;
 public class AuthFilter extends AbstractAuthenticationProcessingFilter {
 
 	private String[] allowedEndPoints() {
-		return new String[] { "/**/assets/**", "/**/icons/**", "/**/screenshots/**", "/favicon**", "/**/favicon**", "/**/css/**",
-				"/**/js/**", "/**/error**", "/**/webjars/**", "/**/v2/api-docs", "/**/configuration/ui",
-				"/**/configuration/security", "/**/swagger-resources/**", "/**/swagger-ui.html", "/**/csrf","/*/" };
+		return new String[] { "/**/assets/**", "/**/icons/**", "/**/screenshots/**", "/favicon**", "/**/favicon**",
+				"/**/css/**", "/**/js/**", "/**/error**", "/**/webjars/**", "/**/v2/api-docs", "/**/configuration/ui",
+				"/**/configuration/security", "/**/swagger-resources/**", "/**/swagger-ui.html", "/**/csrf", "/*/" };
 	}
 
 	protected AuthFilter(RequestMatcher requiresAuthenticationRequestMatcher) {
 		super(requiresAuthenticationRequestMatcher);
-		//this.requestMatcher = requiresAuthenticationRequestMatcher;
+		// this.requestMatcher = requiresAuthenticationRequestMatcher;
 	}
 
 	@Override
@@ -49,7 +61,7 @@ public class AuthFilter extends AbstractAuthenticationProcessingFilter {
 
 	@Override
 	public Authentication attemptAuthentication(HttpServletRequest httpServletRequest,
-			HttpServletResponse httpServletResponse) throws AuthenticationException {
+			HttpServletResponse httpServletResponse) throws AuthenticationException, JsonProcessingException, IOException {
 		String token = null;
 		Cookie[] cookies = httpServletRequest.getCookies();
 		if (cookies != null) {
@@ -60,7 +72,14 @@ public class AuthFilter extends AbstractAuthenticationProcessingFilter {
 			}
 		}
 		if (token == null) {
-			throw new BadCredentialsException(AuthAdapterConstant.AUTH_INVALID_TOKEN);
+			ResponseWrapper<ServiceError> errorResponse = setErrors(httpServletRequest);
+			ServiceError error = new ServiceError("ATH-401", "Authentication Failed");
+			errorResponse.getErrors().add(error);
+			httpServletResponse.setStatus(HttpStatus.UNAUTHORIZED.value());
+			httpServletResponse.setContentType("application/json");
+			httpServletResponse.setCharacterEncoding("UTF-8");
+			httpServletResponse.getWriter().write(convertObjectToJson(errorResponse));
+			return null;
 		}
 		AuthToken authToken = new AuthToken(token);
 		return getAuthenticationManager().authenticate(authToken);
@@ -79,4 +98,32 @@ public class AuthFilter extends AbstractAuthenticationProcessingFilter {
 		super.unsuccessfulAuthentication(request, response, failed);
 
 	}
+
+	private ResponseWrapper<ServiceError> setErrors(HttpServletRequest httpServletRequest) throws IOException {
+		ResponseWrapper<ServiceError> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponsetime(LocalDateTime.now(ZoneId.of("UTC")));
+		String requestBody = null;
+		if (httpServletRequest instanceof ContentCachingRequestWrapper) {
+			requestBody = new String(((ContentCachingRequestWrapper) httpServletRequest).getContentAsByteArray());
+		}
+		if (EmptyCheckUtils.isNullEmpty(requestBody)) {
+			return responseWrapper;
+		}
+		ObjectMapper objectMapper = new ObjectMapper();
+		objectMapper.registerModule(new JavaTimeModule());
+		JsonNode reqNode = objectMapper.readTree(requestBody);
+		responseWrapper.setId(reqNode.path("id").asText());
+		responseWrapper.setVersion(reqNode.path("version").asText());
+		return responseWrapper;
+	}
+	
+	private String convertObjectToJson(Object object) throws JsonProcessingException {
+		if (object == null) {
+			return null;
+		}
+		ObjectMapper mapper = new ObjectMapper();
+		mapper.registerModule(new JavaTimeModule());
+		return mapper.writeValueAsString(object);
+	}
+
 }
