@@ -26,11 +26,15 @@ localhost:8096/ridgenerator/swagger-ui.html
  RID Generator Request:
  
  ```
-HttpResponse<String> response = Unirest.get("http://localhost:8080/ridgenerator/generate/rid/21234/43267")
-  .header("content-type", "application/json")
-  .header("cache-control", "no-cache")
-  .header("postman-token", "16196521-5e9d-7d61-ae46-8fda4e3220ca")
-  .asString();
+OkHttpClient client = new OkHttpClient();
+
+Request request = new Request.Builder()
+  .url("http://localhost:8080/ridgenerator/generate/rid/21234/43267")
+  .get()
+  .build();
+
+Response response = client.newCall(request).execute();
+
  ```
  
 RID Generator Responses :
