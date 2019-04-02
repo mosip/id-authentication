@@ -169,15 +169,6 @@ public class OSIValidatorTest {
 		PowerMockito.mockStatic(Utilities.class);
 		PowerMockito.when(Utilities.class, "getJson", anyString(), anyString()).thenReturn(value);
 		
-/*		JSONObject demoJson = new JSONObject();
-		demoJson.put("age", "10");
-		PowerMockito.mockStatic(JsonUtil.class);
-		PowerMockito.when(JsonUtil.class, "objectMapperReadValue", anyString(), anyObject()).thenReturn(demoJson);
-		PowerMockito.when(JsonUtil.class, "getJSONObject", anyObject(), anyString()).thenReturn(demoJson);
-*/		
-		
-		
-		
 		
 		demographicInfoDto.setUin("1234");
 		osiValidator.registrationStatusDto = registrationStatusDto;
