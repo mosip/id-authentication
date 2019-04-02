@@ -96,7 +96,7 @@ public class AuthController {
 
 		try {
 			DataValidationUtil.validate(errors);
-			authResponsedto = authFacade.authenticateApplicant(authrequestdto, true,partnerId,mispLK);
+			authResponsedto = authFacade.authenticateApplicant(authrequestdto, true,partnerId);
 		} catch (IDDataValidationException e) {
 			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), "authenticateApplication",
 					e.getErrorTexts().isEmpty() ? "" : e.getErrorText());
@@ -132,7 +132,7 @@ public class AuthController {
 		KycAuthResponseDTO kycAuthResponseDTO = new KycAuthResponseDTO();
 		try {
 			DataValidationUtil.validate(errors);
-			authResponseDTO = authFacade.authenticateApplicant(kycAuthRequestDTO, true,partnerId,mispLK);
+			authResponseDTO = authFacade.authenticateApplicant(kycAuthRequestDTO, true,partnerId);
 			if (authResponseDTO != null) {
 				kycAuthResponseDTO = authFacade.processKycAuth(kycAuthRequestDTO, authResponseDTO,partnerId);
 			}

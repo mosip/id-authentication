@@ -38,7 +38,6 @@ import io.mosip.authentication.core.dto.vid.VIDResponseDTO;
 import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.spi.id.service.IdAuthService;
-import io.mosip.authentication.core.spi.id.service.IdRepoService;
 import io.mosip.authentication.service.entity.AutnTxn;
 import io.mosip.authentication.service.entity.StaticPin;
 import io.mosip.authentication.service.entity.StaticPinHistory;
@@ -46,6 +45,7 @@ import io.mosip.authentication.service.entity.VIDEntity;
 import io.mosip.authentication.service.factory.RestRequestFactory;
 import io.mosip.authentication.service.helper.AuditHelper;
 import io.mosip.authentication.service.helper.RestHelper;
+import io.mosip.authentication.service.impl.id.service.impl.IdRepoManager;
 import io.mosip.authentication.service.impl.id.service.impl.VIDServiceImpl;
 import io.mosip.authentication.service.impl.spin.service.StaticPinServiceImpl;
 import io.mosip.authentication.service.repository.StaticPinHistoryRepository;
@@ -101,7 +101,7 @@ public class StaticPinFacadeImplTest {
 
 	/** The Id Repo Service */
 	@Mock
-	private IdRepoService idRepoService;
+	private IdRepoManager idRepoManager;
 
 	/** The Rest Helper */
 	@InjectMocks
@@ -174,7 +174,7 @@ public class StaticPinFacadeImplTest {
 		idInfo.put("email", list);
 		idInfo.put("phone", list);
 		Mockito.when(idAuthService.processIdType(IdType.UIN.getType(), uin, false)).thenReturn(idRepo);
-		Mockito.when(idRepoService.getIdenity(Mockito.anyString(), Mockito.anyBoolean())).thenReturn(idRepo);
+		Mockito.when(idRepoManager.getIdenity(Mockito.anyString(), Mockito.anyBoolean())).thenReturn(idRepo);
 		Mockito.when(idAuthService.getIdRepoByUIN(Mockito.anyString(), Mockito.anyBoolean()))
 				.thenReturn(repoDetails(uin));
 
@@ -227,7 +227,7 @@ public class StaticPinFacadeImplTest {
 		idInfo.put("email", list);
 		idInfo.put("phone", list);
 		Mockito.when(idAuthService.processIdType(IdType.VID.getType(), vid, false)).thenReturn(idRepo);
-		Mockito.when(idRepoService.getIdenity(Mockito.anyString(), Mockito.anyBoolean())).thenReturn(idRepo);
+		Mockito.when(idRepoManager.getIdenity(Mockito.anyString(), Mockito.anyBoolean())).thenReturn(idRepo);
 		Mockito.when(idAuthService.getIdRepoByUIN(Mockito.anyString(), Mockito.anyBoolean()))
 				.thenReturn(repoDetails(vid));
 
@@ -280,7 +280,7 @@ public class StaticPinFacadeImplTest {
 		idInfo.put("email", list);
 		idInfo.put("phone", list);
 		Mockito.when(idAuthService.processIdType(IdType.VID.getType(), vid, false)).thenReturn(idRepo);
-		Mockito.when(idRepoService.getIdenity(Mockito.anyString(), Mockito.anyBoolean())).thenReturn(idRepo);
+		Mockito.when(idRepoManager.getIdenity(Mockito.anyString(), Mockito.anyBoolean())).thenReturn(idRepo);
 		Mockito.when(idAuthService.getIdRepoByUIN(Mockito.anyString(), Mockito.anyBoolean()))
 				.thenReturn(repoDetails(vid));
 

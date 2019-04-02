@@ -11,7 +11,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 
@@ -48,10 +47,6 @@ import io.mosip.authentication.service.helper.IdInfoHelper;
 import io.mosip.authentication.service.impl.indauth.service.bio.BioAuthType;
 import io.mosip.authentication.service.impl.otpgen.validator.OTPRequestValidator;
 import io.mosip.authentication.service.integration.MasterDataManager;
-import io.mosip.kernel.core.datavalidator.exception.InvalidPhoneNumberException;
-import io.mosip.kernel.core.datavalidator.exception.InvalideEmailException;
-import io.mosip.kernel.datavalidator.email.impl.EmailValidatorImpl;
-import io.mosip.kernel.datavalidator.phone.impl.PhoneValidatorImpl;
 import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderImpl;
 
 /**
@@ -82,14 +77,6 @@ public class BaseAuthRequestValidatorTest {
 	@InjectMocks
 	BaseAuthRequestValidator baseAuthRequestValidator;
 
-	/** The email validator impl. */
-	@Mock
-	EmailValidatorImpl emailValidatorImpl;
-
-	/** The phone validator impl. */
-	@Mock
-	PhoneValidatorImpl phoneValidatorImpl;
-
 	/** The id info helper. */
 	@InjectMocks
 	IdInfoHelper idInfoHelper;
@@ -110,13 +97,12 @@ public class BaseAuthRequestValidatorTest {
 	@Before
 	public void before() {
 		error = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
-		ReflectionTestUtils.setField(baseAuthRequestValidator, "emailValidatorImpl", emailValidatorImpl);
-		ReflectionTestUtils.setField(baseAuthRequestValidator, "phoneValidatorImpl", phoneValidatorImpl);
 		ReflectionTestUtils.setField(baseAuthRequestValidator, "idInfoHelper", idInfoHelper);
 		ReflectionTestUtils.setField(baseAuthRequestValidator, "env", environment);
 		ReflectionTestUtils.setField(idInfoHelper, "environment", environment);
 		ReflectionTestUtils.setField(idInfoHelper, "idMappingConfig", idMappingConfig);
 		ReflectionTestUtils.setField(baseAuthRequestValidator, "masterDataManager", masterDataManager);
+		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "initialize");
 
 	}
 
@@ -1173,8 +1159,6 @@ public class BaseAuthRequestValidatorTest {
 		request.setDemographics(identity);
 		authRequestDTO.setRequest(request);
 
-		Mockito.when(emailValidatorImpl.validateEmail(Mockito.anyString())).thenReturn(true);
-
 		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "validateEmail", authRequestDTO, error);
 		assertFalse(error.hasErrors());
 	}
@@ -1195,9 +1179,6 @@ public class BaseAuthRequestValidatorTest {
 		request.setDemographics(identity);
 		authRequestDTO.setRequest(request);
 
-		Mockito.when(emailValidatorImpl.validateEmail(Mockito.anyString()))
-				.thenThrow(new InvalideEmailException("", ""));
-
 		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "validateEmail", authRequestDTO, error);
 		assertTrue(error.hasErrors());
 	}
@@ -1209,14 +1190,13 @@ public class BaseAuthRequestValidatorTest {
 	public void testValidatePhone_ValidatePhone_IsTrue() {
 
 		IdentityDTO phone = new IdentityDTO();
-		phone.setPhoneNumber("89754765987676");
+		phone.setPhoneNumber("8975476599");
 
 		RequestDTO phoneRequest = new RequestDTO();
 		phoneRequest.setDemographics(phone);
 		AuthRequestDTO authRequestDTO = getAuthRequestDTO();
 		authRequestDTO.setRequest(phoneRequest);
 
-		Mockito.when(phoneValidatorImpl.validatePhone(Mockito.anyString())).thenReturn(true);
 		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "validatePhone", authRequestDTO, error);
 		assertFalse(error.hasErrors());
 
@@ -1236,8 +1216,6 @@ public class BaseAuthRequestValidatorTest {
 		AuthRequestDTO authRequestDTO = getAuthRequestDTO();
 		authRequestDTO.setRequest(phoneRequest);
 
-		Mockito.when(phoneValidatorImpl.validatePhone(Mockito.anyString()))
-				.thenThrow(new InvalidPhoneNumberException("", ""));
 		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "validatePhone", authRequestDTO, error);
 		assertTrue(error.hasErrors());
 

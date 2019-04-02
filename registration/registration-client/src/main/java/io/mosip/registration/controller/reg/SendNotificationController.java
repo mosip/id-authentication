@@ -215,7 +215,7 @@ public class SendNotificationController extends BaseController implements Initia
 			}
 		}
 		if (contents.size() > 5) {
-			generateAlert(RegistrationUIConstants.NOTIFICATION_LIMIT_EXCEEDED);
+			generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.NOTIFICATION_LIMIT_EXCEEDED);
 		} else {
 			for (String content : contents) {
 				if (RegistrationConstants.CONTENT_TYPE_EMAIL.equalsIgnoreCase(contentType) ? validateMail(content)

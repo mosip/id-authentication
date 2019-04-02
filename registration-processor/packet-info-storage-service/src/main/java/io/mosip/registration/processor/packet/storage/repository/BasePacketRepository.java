@@ -94,8 +94,8 @@ public interface BasePacketRepository<E extends BasePacketEntity<?>, T> extends 
 	 * @return {@link ManualVerificationEntity}
 	 */
 	@Query(value = "SELECT mve FROM ManualVerificationEntity mve WHERE mve.crDtimes in "
-			+ "(SELECT min(mve2.crDtimes) FROM ManualVerificationEntity mve2 where mve2.statusCode=:statusCode AND mve2.sourceName=:source_name) and mve.statusCode=:statusCode")
-	public List<E> getFirstApplicantDetails(@Param("statusCode") String statusCode, @Param("source_name") String matchType);
+			+ "(SELECT min(mve2.crDtimes) FROM ManualVerificationEntity mve2 where mve2.statusCode=:statusCode AND mve2.trnTypCode=:trntyp_code) and mve.statusCode=:statusCode")
+	public List<E> getFirstApplicantDetails(@Param("statusCode") String statusCode, @Param("trntyp_code") String matchType);
 
 	/**
 	 * This method gets the first created registration record for source name as ALL

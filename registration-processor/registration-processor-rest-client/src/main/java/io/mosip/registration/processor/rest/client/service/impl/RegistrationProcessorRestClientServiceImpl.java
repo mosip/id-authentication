@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
+import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import io.mosip.kernel.core.exception.ExceptionUtils;
@@ -55,9 +56,10 @@ public class RegistrationProcessorRestClientServiceImpl implements RegistrationP
 		String apiHostIpPort = env.getProperty(apiName.name());
 
 		UriComponentsBuilder builder = null;
+		UriComponents uriComponents = null;
 		if (apiHostIpPort != null) {
-			builder = UriComponentsBuilder.fromUriString(apiHostIpPort);
 
+			builder = UriComponentsBuilder.fromUriString(apiHostIpPort);
 			if (!((pathsegments == null) || (pathsegments.isEmpty()))) {
 				for (String segment : pathsegments) {
 					if (!((segment == null) || (("").equals(segment)))) {
@@ -78,7 +80,9 @@ public class RegistrationProcessorRestClientServiceImpl implements RegistrationP
 			}
 
 			try {
-				obj = restApiClient.getApi(builder.toUriString(), responseType);
+
+				uriComponents = builder.build(false).encode();
+				obj = restApiClient.getApi(uriComponents.toUri(), responseType);
 
 			} catch (Exception e) {
 				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),

@@ -268,11 +268,13 @@ public class UMCValidator {
 			RegistrationCenterUserMachineMappingHistoryResponseDto userDto = (RegistrationCenterUserMachineMappingHistoryResponseDto) registrationProcessorRestService
 					.getApi(ApiName.CENTERUSERMACHINEHISTORY, pathsegments, "", "",
 							RegistrationCenterUserMachineMappingHistoryResponseDto.class);
-			if(userDto != null && userDto.getErrors() == null) {
+			if(userDto != null) {
+			if(userDto.getErrors() == null) {
 				isValidUser = userDto.getRegistrationCenters().get(0).getIsActive();
 			}else {
 				ErrorDTO error = userDto.getErrors().get(0);
 				this.registrationStatusDto.setStatusComment(error.getErrorMessage());
+			}
 			}
 		} catch (ApisResourceAccessException e) {
 			if (e.getCause() instanceof HttpClientErrorException) {

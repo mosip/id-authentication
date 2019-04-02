@@ -12,7 +12,14 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 import java.util.List;
+
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -60,8 +67,8 @@ public class RegistrationAppHealthCheckUtil {
 				APPLICATION_ID, "Registration Network Checker had been called.");
 		boolean isNWAvailable = false;
 		try {
-			RestClientUtil.turnOffSslChecking();
-
+			//RestClientUtil.turnOffSslChecking();
+			acceptAnySSLCerticficate();
 			System.setProperty("java.net.useSystemProxies", "true");
 			URL url = new URL("https://www.mosip.io/");
 			List<Proxy> proxyList = ProxySelector.getDefault().select(new URI(url.toString()));
@@ -115,6 +122,28 @@ public class RegistrationAppHealthCheckUtil {
 				APPLICATION_ID, "Registration Disk Space Checker had been ended.");
 		return isSpaceAvailable;
 	}
+	
+	public static void acceptAnySSLCerticficate() throws NoSuchAlgorithmException, KeyManagementException {
+		// Install the all-trusting trust manager
+		final SSLContext sc = SSLContext.getInstance("SSL");
+		sc.init(null, UNQUESTIONING_TRUST_MANAGER, null);
+		HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
+	}
+	
+	public static final TrustManager[] UNQUESTIONING_TRUST_MANAGER = new TrustManager[] { new X509TrustManager() {
+		public X509Certificate[] getAcceptedIssuers() {
+			return null;
+		}
+
+		@Override
+		public void checkClientTrusted(X509Certificate[] arg0, String arg1) throws CertificateException {
+		}
+
+		@Override
+		public void checkServerTrusted(X509Certificate[] arg0, String arg1) throws CertificateException {
+		}
+
+	} };
 
 	public static boolean isWindows() {
 		return operatingSystem instanceof WindowsOperatingSystem;

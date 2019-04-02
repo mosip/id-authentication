@@ -8,8 +8,8 @@ import io.mosip.kernel.cbeffutil.impl.CbeffImpl;
 import io.mosip.kernel.core.cbeffutil.spi.CbeffUtil;
 import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
 import io.mosip.kernel.core.idvalidator.spi.RidValidator;
-import io.mosip.kernel.fsadapter.hdfs.impl.HDFSAdapter;
-import io.mosip.kernel.fsadapter.hdfs.util.ConnectionUtil;
+import io.mosip.kernel.fsadapter.hdfs.impl.HDFSAdapterImpl;
+import io.mosip.kernel.fsadapter.hdfs.util.ConnectionUtils;
 import io.mosip.kernel.idvalidator.rid.impl.RidValidatorImpl;
 
 @Configuration
@@ -24,13 +24,13 @@ public class KernelConfig {
 	@Bean
 	@Primary
 	public FileSystemAdapter getFileSystemAdapter() {
-		return new HDFSAdapter(this.getConnectionUtil());
+		return new HDFSAdapterImpl(this.getConnectionUtil());
 	}
 
 	@Bean
 	@Primary
-	public ConnectionUtil getConnectionUtil() {
-		return new ConnectionUtil();
+	public ConnectionUtils getConnectionUtil() {
+		return new ConnectionUtils();
 	}
 
 	@Bean

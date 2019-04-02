@@ -23,10 +23,12 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.RequestBuilder;
@@ -34,7 +36,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import io.mosip.preregistration.core.common.dto.MainRequestDTO;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
-import io.mosip.preregistration.datasync.controller.DataSyncController;
+import io.mosip.preregistration.datasync.DataSyncApplicationTest;
 import io.mosip.preregistration.datasync.dto.DataSyncRequestDTO;
 import io.mosip.preregistration.datasync.dto.PreRegArchiveDTO;
 import io.mosip.preregistration.datasync.dto.PreRegistrationIdsDTO;
@@ -43,8 +45,9 @@ import io.mosip.preregistration.datasync.dto.ReverseDatasyncReponseDTO;
 import io.mosip.preregistration.datasync.errorcodes.ErrorMessages;
 import io.mosip.preregistration.datasync.service.DataSyncService;
 
+@SpringBootTest(classes = { DataSyncApplicationTest.class })
 @RunWith(SpringRunner.class)
-@WebMvcTest(DataSyncController.class)
+@AutoConfigureMockMvc
 public class DataSyncControllerTest {
 
 	@Autowired
@@ -106,6 +109,7 @@ public class DataSyncControllerTest {
 
 	}
 
+	@WithUserDetails("reg-officer")
 	@Test
 	public void successRetrievePreidsTest() throws Exception {
 		preRegArchiveDTO.setAppointmentDate("2019-01-12");
@@ -124,7 +128,7 @@ public class DataSyncControllerTest {
 		mockMvc.perform(requestBuilder).andExpect(status().isOk());
 
 	}
-
+	@WithUserDetails("reg-officer")
 	@Test
 	public void retrieveAllpregIdSuccessTest() throws Exception {
 
@@ -146,7 +150,8 @@ public class DataSyncControllerTest {
 
 		mockMvc.perform(requestBuilder).andExpect(status().isOk());
 	}
-
+	
+	@WithUserDetails("reg-officer")
 	@Test
 	public void reverseDatasyncSuccessTest() throws Exception {
 

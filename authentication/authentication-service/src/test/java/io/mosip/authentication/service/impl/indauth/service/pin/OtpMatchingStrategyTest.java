@@ -33,11 +33,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.RestServiceException;
+import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
 import io.mosip.authentication.core.spi.indauth.match.MatchFunction;
 import io.mosip.authentication.core.spi.indauth.match.ValidateOtpFunction;
 import io.mosip.authentication.service.factory.RestRequestFactory;
 import io.mosip.authentication.service.helper.IdInfoHelper;
 import io.mosip.authentication.service.helper.RestHelper;
+import io.mosip.authentication.service.impl.indauth.service.IdInfoFetcherImpl;
 import io.mosip.authentication.service.impl.indauth.service.demo.OtpMatchingStrategy;
 import io.mosip.authentication.service.integration.OTPManager;
 import io.mosip.authentication.service.integration.dto.OTPValidateResponseDTO;
@@ -52,7 +54,7 @@ import reactor.ipc.netty.tcp.BlockingNettyContext;
 public class OtpMatchingStrategyTest {
 
 	@InjectMocks
-	IdInfoHelper idInfoHelper;
+	IdInfoFetcherImpl idInfoFetcherImpl;
 
 	@InjectMocks
 	private OTPManager otpManager;
@@ -72,7 +74,7 @@ public class OtpMatchingStrategyTest {
 
 	@Before
 	public void before() {
-		ReflectionTestUtils.setField(idInfoHelper, "otpManager", otpManager);
+		ReflectionTestUtils.setField(idInfoFetcherImpl, "otpManager", otpManager);
 		ReflectionTestUtils.setField(otpManager, "restRequestFactory", restRequestFactory);
 		ReflectionTestUtils.setField(otpManager, "restHelper", restHelper);
 		ReflectionTestUtils.setField(restRequestFactory, "env", environment);
@@ -82,7 +84,7 @@ public class OtpMatchingStrategyTest {
 	public void TestValidOtpwithInvalidOtp() throws IdAuthenticationBusinessException {
 		MatchFunction matchFunction = OtpMatchingStrategy.EXACT.getMatchFunction();
 		Map<String, Object> matchProperties = new HashMap<>();
-		ValidateOtpFunction func = idInfoHelper.getValidateOTPFunction();
+		ValidateOtpFunction func = idInfoFetcherImpl.getValidateOTPFunction();
 		matchProperties.put(ValidateOtpFunction.class.getSimpleName(), func);
 		int value = matchFunction.match("123456", "IDA_asdEEFAER", matchProperties);
 		assertEquals(0, value);
@@ -92,9 +94,9 @@ public class OtpMatchingStrategyTest {
 	public void TestValidOtpMatchingStrategy() throws IdAuthenticationBusinessException, RestServiceException {
 		MatchFunction matchFunction = OtpMatchingStrategy.EXACT.getMatchFunction();
 		Map<String, Object> matchProperties = new HashMap<>();
-		ValidateOtpFunction func = idInfoHelper.getValidateOTPFunction();
+		ValidateOtpFunction func = idInfoFetcherImpl.getValidateOTPFunction();
 		matchProperties.put(ValidateOtpFunction.class.getSimpleName(), func);
-		Map<String,Object> otpResponseDTO = new HashMap();
+		Map<String, Object> otpResponseDTO = new HashMap();
 		otpResponseDTO.put("status", "success");
 		Mockito.when(restHelper.requestSync(Mockito.any())).thenReturn(otpResponseDTO);
 		int value = matchFunction.match("123456", "IDA_asdEEFAER", matchProperties);

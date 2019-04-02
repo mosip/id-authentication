@@ -94,7 +94,7 @@ spec:
         backend:
           serviceName: pre-registration-batchjob-service
           servicePort: 9096
-      - path: /pre-registration/v1.0/translitration
+      - path: /pre-registration/v1.0/transliteration
         backend:
           serviceName: pre-registration-translitration-service
           servicePort: 9098

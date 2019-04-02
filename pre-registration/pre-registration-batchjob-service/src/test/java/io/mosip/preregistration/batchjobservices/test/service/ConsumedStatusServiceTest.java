@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -35,11 +36,13 @@ import io.mosip.preregistration.batchjobservices.repository.RegAppointmentConsum
 import io.mosip.preregistration.batchjobservices.repository.RegAppointmentRepository;
 import io.mosip.preregistration.batchjobservices.repository.dao.BatchServiceDAO;
 import io.mosip.preregistration.batchjobservices.service.ConsumedStatusService;
+import io.mosip.preregistration.batchjobservices.test.BatchJobApplicationTest;
 import io.mosip.preregistration.core.code.StatusCodes;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
 
+@SpringBootTest(classes = { BatchJobApplicationTest.class })
 @RunWith(SpringRunner.class)
-@SpringBootTest
+@AutoConfigureMockMvc
 public class ConsumedStatusServiceTest {
 
 	@Autowired

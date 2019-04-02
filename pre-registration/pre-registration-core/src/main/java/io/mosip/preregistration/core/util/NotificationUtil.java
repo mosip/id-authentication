@@ -55,6 +55,7 @@ public class NotificationUtil {
 	
 	@Autowired
 	RestTemplate restTemplate;
+	
 	private String dateTimeFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
 	
 	public MainListResponseDTO<NotificationResponseDTO> notify(String notificationType,NotificationDTO acknowledgementDTO,
@@ -116,7 +117,7 @@ public class NotificationUtil {
 			notifierResponse.setStatus(resp.getBody().getStatus());
 			list.add(notifierResponse);
 			response.setResponse(list);
-			response.setResTime(getCurrentResponseTime());
+			response.setResponsetime(getCurrentResponseTime());
 		
 		return response;
 	}
@@ -165,7 +166,7 @@ public class NotificationUtil {
 			notifierResponse.setStatus(resp.getBody().getStatus());
 			list.add(notifierResponse);
 			response.setResponse(list);
-			response.setResTime(getCurrentResponseTime());
+			response.setResponsetime(getCurrentResponseTime());
 		
 		return response;
 

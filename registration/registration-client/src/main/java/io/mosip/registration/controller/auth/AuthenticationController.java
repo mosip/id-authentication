@@ -54,6 +54,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
 /**
@@ -74,17 +75,17 @@ public class AuthenticationController extends BaseController implements Initiali
 	@FXML
 	private AnchorPane temporaryLogin;
 	@FXML
-	private AnchorPane pwdBasedLogin;
+	private GridPane pwdBasedLogin;
 	@FXML
-	private AnchorPane otpBasedLogin;
+	private GridPane otpBasedLogin;
 	@FXML
-	private AnchorPane fingerprintBasedLogin;
+	private GridPane fingerprintBasedLogin;
 	@FXML
-	private AnchorPane irisBasedLogin;
+	private GridPane irisBasedLogin;
 	@FXML
-	private AnchorPane faceBasedLogin;
+	private GridPane faceBasedLogin;
 	@FXML
-	private AnchorPane errorPane;
+	private GridPane errorPane;
 	@FXML
 	private Label errorLabel;
 	@FXML
@@ -114,7 +115,7 @@ public class AuthenticationController extends BaseController implements Initiali
 	@FXML
 	private TextField otp;
 	@FXML
-	private AnchorPane operatorAuthenticationPane;
+	private GridPane operatorAuthenticationPane;
 	@FXML
 	private Button operatorAuthContinue;
 	
@@ -187,11 +188,11 @@ public class AuthenticationController extends BaseController implements Initiali
 				// Enable submit button
 				// Generate alert to show OTP
 				SuccessResponseDTO successResponseDTO = responseDTO.getSuccessResponseDTO();
-				generateAlert(RegistrationConstants.ALERT_INFORMATION, successResponseDTO.getMessage());
+				generateAlertLanguageSpecific(RegistrationConstants.ALERT_INFORMATION, successResponseDTO.getMessage());
 			} else if (responseDTO.getErrorResponseDTOs() != null) {
 				// Generate Alert to show INVALID USERNAME
 				ErrorResponseDTO errorResponseDTO = responseDTO.getErrorResponseDTOs().get(0);
-				generateAlert(RegistrationConstants.ERROR, errorResponseDTO.getMessage());
+				generateAlertLanguageSpecific(RegistrationConstants.ERROR, errorResponseDTO.getMessage());
 			}
 
 		} else {
@@ -562,7 +563,7 @@ public class AuthenticationController extends BaseController implements Initiali
 		errorText1.setText(RegistrationUIConstants.BIOMETRIC_DISABLE_SCREEN_1);
 		errorText2.setText(RegistrationUIConstants.BIOMETRIC_DISABLE_SCREEN_2);
 		if (isSupervisor) {
-			errorLabel.setText(RegistrationConstants.SUPERVISOR_VERIFICATION);
+			errorLabel.setText(RegistrationUIConstants.SUPERVISOR_VERIFICATION);
 		}
 	}
 
@@ -578,7 +579,7 @@ public class AuthenticationController extends BaseController implements Initiali
 		otpUserId.clear();
 		otpUserId.setEditable(false);
 		if (isSupervisor) {
-			otpLabel.setText(RegistrationConstants.SUPERVISOR_VERIFICATION);
+			otpLabel.setText(RegistrationUIConstants.SUPERVISOR_VERIFICATION);
 			if (authCount > 1 && !userNameField.isEmpty()) {
 				otpUserId.setText(userNameField);
 			} else {
@@ -601,7 +602,7 @@ public class AuthenticationController extends BaseController implements Initiali
 		password.clear();
 		username.setEditable(false);
 		if (isSupervisor) {
-			passwdLabel.setText(RegistrationConstants.SUPERVISOR_VERIFICATION);
+			passwdLabel.setText(RegistrationUIConstants.SUPERVISOR_VERIFICATION);
 			if (authCount > 1 && !userNameField.isEmpty()) {
 				username.setText(userNameField);
 			} else {
@@ -645,7 +646,7 @@ public class AuthenticationController extends BaseController implements Initiali
 		fpUserId.clear();
 		fpUserId.setEditable(false);
 		if (isSupervisor) {
-			irisLabel.setText(RegistrationConstants.SUPERVISOR_VERIFICATION);
+			irisLabel.setText(RegistrationUIConstants.SUPERVISOR_VERIFICATION);
 			if (authCount > 1 && !userNameField.isEmpty()) {
 				fpUserId.setText(userNameField);
 			} else {
@@ -667,7 +668,7 @@ public class AuthenticationController extends BaseController implements Initiali
 		fpUserId.clear();
 		fpUserId.setEditable(false);
 		if (isSupervisor) {
-			faceLabel.setText(RegistrationConstants.SUPERVISOR_VERIFICATION);
+			faceLabel.setText(RegistrationUIConstants.SUPERVISOR_VERIFICATION);
 			if (authCount > 1 && !userNameField.isEmpty()) {
 				fpUserId.setText(userNameField);
 			} else {
@@ -894,8 +895,15 @@ public class AuthenticationController extends BaseController implements Initiali
 	public void goToPreviousPage() {
 		auditFactory.audit(AuditEvent.REG_PREVIEW_BACK, Components.REG_PREVIEW, SessionContext.userId(),
 				AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
+		if (getRegistrationDTOFromSession().getSelectionListDTO() != null) {
+			SessionContext.map().put("operatorAuthenticationPane", false);
+			SessionContext.map().put("registrationPreview", true);
+			registrationController.showUINUpdateCurrentPage();
 
-		registrationController.showCurrentPage(RegistrationConstants.OPERATOR_AUTHENTICATION, getPageDetails(RegistrationConstants.OPERATOR_AUTHENTICATION,RegistrationConstants.PREVIOUS));
+		} else {
+			registrationController.showCurrentPage(RegistrationConstants.OPERATOR_AUTHENTICATION,
+					getPageDetails(RegistrationConstants.OPERATOR_AUTHENTICATION, RegistrationConstants.PREVIOUS));
+		}
 	}
 	
 	public void goToNextPage() {

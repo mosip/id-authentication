@@ -5,10 +5,10 @@
 	<parent>
 		<groupId>io.mosip.authentication</groupId>
 		<artifactId>authentication-parent</artifactId>
-		<version>0.9.8</version>
+		<version>0.9.9</version>
 	</parent>
 
-	<artifactId>id-authentication-demo</artifactId>
+	<artifactId>authentication-demo</artifactId>
 	<packaging>jar</packaging>
 	
 	<repositories>
@@ -121,8 +121,11 @@
 			<artifactId>commons-codec</artifactId>
 			<version>1.9</version>
 		</dependency>
-
-
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-config</artifactId>
+			<version>${spring-cloud-config.version}</version>
+		</dependency>
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-jsonvalidator</artifactId>

@@ -106,7 +106,7 @@ public class SyncDataProcessController extends BaseController implements Initial
 		} else if (responseDTO.getErrorResponseDTOs() != null) {
 
 			ErrorResponseDTO errorresponse = responseDTO.getErrorResponseDTOs().get(0);
-			generateAlert(errorresponse.getCode(), errorresponse.getMessage());
+			generateAlertLanguageSpecific(errorresponse.getCode(), errorresponse.getMessage());
 
 		}
 
@@ -128,7 +128,7 @@ public class SyncDataProcessController extends BaseController implements Initial
 			syncDataTableViewId.setItems(syncDataProcessDTOsObservableList);
 		} else if (responseDTO.getErrorResponseDTOs() != null) {
 			ErrorResponseDTO errorResponseDTO = responseDTO.getErrorResponseDTOs().get(0);
-			generateAlert(errorResponseDTO.getMessage());
+			generateAlertLanguageSpecific(RegistrationConstants.ALERT_INFORMATION, errorResponseDTO.getMessage());
 		}
 
 	}
@@ -149,7 +149,7 @@ public class SyncDataProcessController extends BaseController implements Initial
 			syncDataTableViewId.setItems(syncDataProcessDTOsObservableList);
 		} else if (responseDTO.getErrorResponseDTOs() != null) {
 			ErrorResponseDTO errorResponseDTO = responseDTO.getErrorResponseDTOs().get(0);
-			generateAlert(errorResponseDTO.getMessage());
+			generateAlertLanguageSpecific(RegistrationConstants.ALERT_INFORMATION, errorResponseDTO.getMessage());
 		}
 	}
 
@@ -161,10 +161,10 @@ public class SyncDataProcessController extends BaseController implements Initial
 
 		if (responseDTO.getErrorResponseDTOs() != null) {
 			ErrorResponseDTO errorresponse = responseDTO.getErrorResponseDTOs().get(0);
-			generateAlert(errorresponse.getCode(), errorresponse.getMessage());
+			generateAlertLanguageSpecific(errorresponse.getCode(), errorresponse.getMessage());
 		} else if (responseDTO.getSuccessResponseDTO() != null) {
 			SuccessResponseDTO successResponseDTO = responseDTO.getSuccessResponseDTO();
-			generateAlert(successResponseDTO.getCode(), successResponseDTO.getMessage());
+			generateAlertLanguageSpecific(successResponseDTO.getCode(), successResponseDTO.getMessage());
 		}
 
 	}
@@ -177,10 +177,10 @@ public class SyncDataProcessController extends BaseController implements Initial
 
 		if (responseDTO.getErrorResponseDTOs() != null) {
 			ErrorResponseDTO errorresponse = responseDTO.getErrorResponseDTOs().get(0);
-			generateAlert(errorresponse.getCode(), errorresponse.getMessage());
+			generateAlertLanguageSpecific(errorresponse.getCode(), errorresponse.getMessage());
 		} else if (responseDTO.getSuccessResponseDTO() != null) {
 			SuccessResponseDTO successResponseDTO = responseDTO.getSuccessResponseDTO();
-			generateAlert(successResponseDTO.getCode(), successResponseDTO.getMessage());
+			generateAlertLanguageSpecific(successResponseDTO.getCode(), successResponseDTO.getMessage());
 		}
 
 	}

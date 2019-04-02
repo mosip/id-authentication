@@ -40,7 +40,7 @@ import io.mosip.registration.processor.core.constant.PacketFiles;
 import io.mosip.registration.processor.core.packet.dto.Applicant;
 import io.mosip.registration.processor.core.packet.dto.Biometric;
 import io.mosip.registration.processor.core.packet.dto.BiometricDetails;
-import io.mosip.registration.processor.core.packet.dto.BiometricException;
+import io.mosip.registration.processor.core.packet.dto.BiometricExceptionDTO;
 
 import io.mosip.registration.processor.core.packet.dto.FieldValue;
 import io.mosip.registration.processor.core.packet.dto.FieldValueArray;
@@ -332,28 +332,28 @@ public class PacketInfoManagerImplTest {
 		checksum.add(registrationUi);
 		identity.setCheckSum(checksum);
 
-		BiometricException thumb = new BiometricException();
+		BiometricExceptionDTO thumb = new BiometricExceptionDTO();
 		thumb.setExceptionDescription("Lost in accident");
 		thumb.setExceptionType("Permanent");
 		thumb.setLanguage("eng");
 		thumb.setMissingBiometric("LeftThumb");
 		thumb.setType("fingerprint");
 
-		BiometricException leftForefinger = new BiometricException();
+		BiometricExceptionDTO leftForefinger = new BiometricExceptionDTO();
 		leftForefinger.setExceptionDescription("Lost in accident");
 		leftForefinger.setExceptionType("Permanent");
 		leftForefinger.setLanguage("eng");
 		leftForefinger.setMissingBiometric("LeftForefinger");
 		leftForefinger.setType("fingerprint");
 
-		BiometricException rightEyeexp = new BiometricException();
+		BiometricExceptionDTO rightEyeexp = new BiometricExceptionDTO();
 		rightEyeexp.setExceptionDescription("By birth");
 		rightEyeexp.setExceptionType("Permanent");
 		rightEyeexp.setLanguage("eng");
 		rightEyeexp.setMissingBiometric("LeftThumb");
 		rightEyeexp.setType("iris");
 
-		List<BiometricException> excptionBiometrics = new ArrayList<>();
+		List<BiometricExceptionDTO> excptionBiometrics = new ArrayList<>();
 		excptionBiometrics.add(rightEyeexp);
 		excptionBiometrics.add(leftForefinger);
 		excptionBiometrics.add(thumb);

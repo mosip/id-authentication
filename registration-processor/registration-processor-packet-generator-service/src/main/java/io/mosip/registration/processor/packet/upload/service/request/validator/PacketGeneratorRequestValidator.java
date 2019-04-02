@@ -67,7 +67,7 @@ public class PacketGeneratorRequestValidator implements Validator {
 	 */
 	@Override
 	public boolean supports(Class<?> clazz) {
-		id.put("status", "mosip.registration.processor.registration.packetgenerator.id");
+		id.put("status", "mosip.registration.packetgenerator");
 		return clazz.isAssignableFrom(PacketGeneratorRequestDto.class);
 
 	}

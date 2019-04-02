@@ -1,11 +1,11 @@
 package io.mosip.registration.processor.cbeffutil.test;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,15 +25,27 @@ import io.mosip.kernel.core.cbeffutil.jaxbclasses.SingleType;
 import io.mosip.kernel.core.cbeffutil.spi.CbeffUtil;
 import io.mosip.registration.processor.core.util.CbeffToBiometricUtil;
 
+/**
+ * The Class CbeffToBiometricUtilTest.
+ * 
+ * @author M1048358 Alok
+ */
 @RunWith(SpringRunner.class)
 public class CbeffToBiometricUtilTest {
 	
+	/** The util. */
 	@InjectMocks
 	private CbeffToBiometricUtil util;
 	
+	/** The cbeff util. */
 	@Mock
 	private CbeffUtil cbeffUtil;
 	
+	/**
+	 * Setup.
+	 *
+	 * @throws Exception the exception
+	 */
 	@Before
 	public void setup() throws Exception {
 		byte[] bioBytes = "individual biometric value".getBytes();
@@ -51,27 +63,38 @@ public class CbeffToBiometricUtilTest {
 		Mockito.when(cbeffUtil.getBIRDataFromXML(any())).thenReturn(birtypeList);
 	}
 	
+	/**
+	 * Test image bytes success.
+	 *
+	 * @throws Exception the exception
+	 */
 	@Test
-	public void getPhotoSuccess() throws Exception {
+	public void testImageBytesSuccess() throws Exception {
 		ClassLoader classLoader = getClass().getClassLoader();
 		File cbeffFile = new File(classLoader.getResource("TestCbeff.xml").getFile());
 		InputStream inputStream = new FileInputStream(cbeffFile);
 		String cbeff = IOUtils.toString(inputStream, "UTF-8");
 		List<String> subtype = new ArrayList<>();
-		byte[] photo = util.getPhoto(cbeff, "FACE", subtype);
-		
-		File OutPutPdfFile = new File("face.png");
-		FileOutputStream op = new FileOutputStream(OutPutPdfFile);
-		op.write(photo);
-		op.flush();
-		assertTrue(OutPutPdfFile.exists());
-		if (op != null) {
-			op.close();
-		}
-		OutPutPdfFile.delete();
-		
+		byte[] photo = util.getImageBytes(cbeff, "FACE", subtype);
+	
+		assertTrue(photo != null);
 	}
 	
+	/**
+	 * Test image bytes failure.
+	 *
+	 * @throws Exception the exception
+	 */
+	@Test
+	public void testImageBytesFailure() throws Exception {
+		ClassLoader classLoader = getClass().getClassLoader();
+		File cbeffFile = new File(classLoader.getResource("TestCbeff.xml").getFile());
+		InputStream inputStream = new FileInputStream(cbeffFile);
+		String cbeff = IOUtils.toString(inputStream, "UTF-8");
+		List<String> subtype = new ArrayList<>();
+		byte[] photo = util.getImageBytes(cbeff, "", subtype);
+		
+		assertFalse(photo != null);
+	}
 	
-
 }

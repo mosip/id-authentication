@@ -44,6 +44,7 @@ import io.mosip.registration.processor.message.sender.utility.NotificationTempla
 import io.mosip.registration.processor.message.sender.utility.NotificationTemplateType;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
 import io.mosip.registration.processor.status.code.RegistrationStatusCode;
+import io.mosip.registration.processor.status.code.RegistrationType;
 import io.mosip.registration.processor.status.code.TransactionTypeCode;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
@@ -81,12 +82,18 @@ public class MessageSenderStage extends MosipVerticleManager {
 	private AuditLogRequestBuilder auditLogRequestBuilder;
 
 	/** The notification emails. */
-	@Value("${registration.processor.notification.emails}")
-	private String notificationEmails;
+	//@Value("${registration.processor.notification.emails}")
+	private String notificationEmails = "Alok.Ranjan2@mindtree.com | Sowmya.Banakar@mindtree.com";
 	
 	/** The uin generated subject. */
 	@Value("${registration.processor.uin.generated.subject}")
 	private String uinGeneratedSubject;
+	
+	@Value("${registration.processor.uin.activated.subject}")
+	private String uinActivateSubject;
+	
+	@Value("${registration.processor.uin.deactivated.subject}")
+	private String uinDeactivateSubject;
 
 	/** The duplicate uin subject. */
 	@Value("${registration.processor.duplicate.uin.subject}")
@@ -154,6 +161,7 @@ public class MessageSenderStage extends MosipVerticleManager {
 		object.setMessageBusAddress(MessageBusAddress.MESSAGE_SENDER_BUS);
 		boolean isTransactionSuccessful = false;
 		String id = object.getRid();
+		String regType = object.getReg_type();
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), id,
 				"MessageSenderStage::process()::entry");
 		InternalRegistrationStatusDto registrationStatusDto = registrationStatusService.getRegistrationStatus(id);
@@ -162,7 +170,7 @@ public class MessageSenderStage extends MosipVerticleManager {
 			StatusNotificationTypeMapUtil map = new StatusNotificationTypeMapUtil();
 			NotificationTemplateType type = map.getTemplateType(registrationStatusDto.getStatusCode());
 			if (type != null) {
-				setTemplateAndSubject(type);
+				setTemplateAndSubject(type, regType);
 			}
 
 			Map<String, Object> attributes = new HashMap<>();
@@ -180,7 +188,8 @@ public class MessageSenderStage extends MosipVerticleManager {
 				ccEMailList = notificationEmails.split("\\|");
 			}
 
-			sendNotification(id, attributes, ccEMailList, allNotificationTypes);
+			sendNotification(id, attributes, ccEMailList, allNotificationTypes, regType);
+			
 			isTransactionSuccessful = true;
             description = "Notification sent successfully for registrationId " + id;
             
@@ -199,27 +208,28 @@ public class MessageSenderStage extends MosipVerticleManager {
 			transactionDto.setReferenceId(registrationStatusDto.getRegistrationId());
 			transactionDto.setReferenceIdType("updated registration record");
 			transcationStatusService.addRegistrationTransaction(transactionDto);
+			
+			object.setIsValid(Boolean.TRUE);
 
 		} catch (EmailIdNotFoundException | PhoneNumberNotFoundException | TemplateGenerationFailedException
 				| ConfigurationNotFoundException e) {
-
+			object.setInternalError(Boolean.TRUE);
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					id, e.getMessage() + ExceptionUtils.getStackTrace(e));
 			description = "Email/phone/template/notification type is missing for registrationId " + id + "::"
 					+ e.getMessage();
-			throw new TemplateGenerationFailedException(PlatformErrorMessages.RPR_TEM_PROCESSING_FAILURE.getCode());
 		} catch (TemplateNotFoundException tnf) {
-
+			object.setInternalError(Boolean.TRUE);
             regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
                     id, tnf.getMessage() + ExceptionUtils.getStackTrace(tnf));
-            description = "template not found for notification with registrationId " + id + "::" + tnf.getMessage();
+            description = "Template not found for notification with registrationId " + id + "::" + tnf.getMessage();
         } catch (FSAdapterException e) {
+        	object.setInternalError(Boolean.TRUE);
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.UIN.toString(), id,
 					PlatformErrorMessages.RPR_TEM_PACKET_STORE_NOT_ACCESSIBLE.getMessage() + e.getMessage());
 			description = "The Packet store set by the System is not accessible" + id;
-
 		} catch (Exception ex) {
-
+			object.setInternalError(Boolean.TRUE);
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					id, ex.getMessage() + ExceptionUtils.getStackTrace(ex));
 			description = "Internal error occured while processing registrationId " + id + "::" + ex.getMessage();
@@ -231,7 +241,6 @@ public class MessageSenderStage extends MosipVerticleManager {
 					: EventType.SYSTEM.toString();
 
 			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType, id, ApiName.AUDIT);
-
 		}
 
 		return object;
@@ -248,23 +257,24 @@ public class MessageSenderStage extends MosipVerticleManager {
 	 *            the cc E mail list
 	 * @param allNotificationTypes
 	 *            the all notification types
+	 * @param regType 
 	 * @throws Exception
 	 *             the exception
 	 */
 	private void sendNotification(String id, Map<String, Object> attributes, String[] ccEMailList,
-			String[] allNotificationTypes) throws Exception {
+			String[] allNotificationTypes, String regType) throws Exception {
 		for (String notificationType : allNotificationTypes) {
 
 			if (notificationType.equalsIgnoreCase(SMS_TYPE) && isTemplateAvailable(smsTemplateCode.name())) {
 
-				service.sendSmsNotification(smsTemplateCode.name(), id, idType, attributes);
+				service.sendSmsNotification(smsTemplateCode.name(), id, idType, attributes, regType);
 				regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.UIN.toString(), id,
 						MessageSenderStatusMessage.SMS_NOTIFICATION_SUCCESS);
 
 			} else if (notificationType.equalsIgnoreCase(EMAIL_TYPE) && isTemplateAvailable(emailTemplateCode.name())) {
 
 				service.sendEmailNotification(emailTemplateCode.name(), id, idType, attributes, ccEMailList, subject,
-						null);
+						null, regType);
 				regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.UIN.toString(), id,
 						MessageSenderStatusMessage.EMAIL_NOTIFICATION_SUCCESS);
 
@@ -279,8 +289,9 @@ public class MessageSenderStage extends MosipVerticleManager {
 	 *
 	 * @param templatetype
 	 *            the new template and subject
+	 * @param regType 
 	 */
-	private void setTemplateAndSubject(NotificationTemplateType templatetype) {
+	private void setTemplateAndSubject(NotificationTemplateType templatetype, String regType) {
 		switch (templatetype) {
 		case UIN_CREATED:
 			smsTemplateCode = NotificationTemplateCode.RPR_UIN_GEN_SMS;
@@ -289,10 +300,22 @@ public class MessageSenderStage extends MosipVerticleManager {
 			subject = uinGeneratedSubject;
 			break;
 		case UIN_UPDATE:
-			smsTemplateCode = NotificationTemplateCode.RPR_UIN_UPD_SMS;
-			emailTemplateCode = NotificationTemplateCode.RPR_UIN_UPD_EMAIL;
-			idType = IdType.UIN;
-			subject = uinGeneratedSubject;
+			if(regType == null || regType.equalsIgnoreCase(RegistrationType.NEW.name()) ) {
+				smsTemplateCode = NotificationTemplateCode.RPR_UIN_UPD_SMS;
+				emailTemplateCode = NotificationTemplateCode.RPR_UIN_UPD_EMAIL;
+				idType = IdType.UIN;
+				subject = uinGeneratedSubject;
+			} else if(regType.equalsIgnoreCase(RegistrationType.ACTIVATED.name())) {
+				smsTemplateCode = NotificationTemplateCode.RPR_UIN_REAC_SMS;
+				emailTemplateCode = NotificationTemplateCode.RPR_UIN_REAC_EMAIL;
+				idType = IdType.UIN;
+				subject = uinActivateSubject;
+			} else if(regType.equalsIgnoreCase(RegistrationType.DEACTIVATED.name())) {
+				smsTemplateCode = NotificationTemplateCode.RPR_UIN_DEAC_SMS;
+				emailTemplateCode = NotificationTemplateCode.RPR_UIN_DEAC_EMAIL;
+				idType = IdType.UIN;
+				subject = uinDeactivateSubject;
+			} 
 			break;
 		case DUPLICATE_UIN:
 			smsTemplateCode = NotificationTemplateCode.RPR_DUP_UIN_SMS;
