@@ -14,6 +14,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+
+
 import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -44,38 +46,41 @@ import io.mosip.util.ResponseRequestMapper;
 import io.restassured.response.Response;
 
 /**
- * Test script for syncing packet
+ * This class is used for testing the Sync API
  * 
  * @author Sayeri Mishra
  *
  */
 
 public class Sync extends BaseTestCase implements ITest {
-	//implement,IInvokedMethodListener
-	public Sync() {
-
-	}
 
 	protected static String testCaseName = "";
 	private static Logger logger = Logger.getLogger(Sync.class);
 	boolean status = false;
 	String finalStatus = "";
 	Properties pro =  new Properties();
-	public static JSONArray arr = new JSONArray();
+	JSONArray arr = new JSONArray();
 	ObjectMapper mapper = new ObjectMapper();
-	static Response Actualresponse = null;
-	static JSONObject Expectedresponse = null;
-	private static ApplicationLibrary applicationLibrary = new ApplicationLibrary();
-	static 	String regIds="";
-	static SoftAssert softAssert=new SoftAssert();
+	Response actualresponse = null;
+	JSONObject expectedresponse = null;
+	ApplicationLibrary applicationLibrary = new ApplicationLibrary();
+	String regIds="";
+	SoftAssert softAssert=new SoftAssert();
 	static String dest = "";
 	static String folderPath = "regProc/Sync";
 	static String outputFile = "SyncOutput.json";
 	static String requestKeyFile = "SyncRequest.json";
 
 
+	/**
+	 *This method is used for reading the test data based on the test case name passed
+	 *
+	 * @param context
+	 * @return Object[][]
+	 * @throws Exception
+	 */
 	@DataProvider(name = "syncPacket")
-	public static Object[][] readData1(ITestContext context) throws Exception {
+	public static Object[][] readData(ITestContext context) throws Exception { 
 		String testParam = context.getCurrentXmlTest().getParameter("testType");
 		switch (testParam) {
 		case "smoke":
@@ -87,56 +92,58 @@ public class Sync extends BaseTestCase implements ITest {
 		}
 	}
 
+	/**
+	 * This method is used for generating actual response and comparing it with expected response
+	 * along with db check and audit log check
+	 *  
+	 * @param testSuite
+	 * @param i
+	 * @param object
+	 * @throws Exception
+	 */
 	@Test(dataProvider = "syncPacket")
-	public void generate_Response1(String testSuite, Integer i, JSONObject object) throws Exception {
+	public void generate_Response(String testSuite, Integer i, JSONObject object) throws Exception {
 		List<String> outerKeys = new ArrayList<String>();
 		List<String> innerKeys = new ArrayList<String>();
+		
 		JSONObject actualRequest = ResponseRequestMapper.mapRequest(testSuite, object);
-		Expectedresponse = ResponseRequestMapper.mapResponse(testSuite, object);
+		// Expected response generation
+		expectedresponse = ResponseRequestMapper.mapResponse(testSuite, object);
 		try {
-			Actualresponse = applicationLibrary.postRequest(actualRequest.toJSONString(),pro.getProperty("syncListApi") );
+			// Actual response generation
+			actualresponse = applicationLibrary.postRequest(actualRequest.toJSONString(),pro.getProperty("syncListApi"));
 		} catch (Exception e) {
 			logger.info(e);
 		}
-		//String statusCode = Actualresponse.jsonPath().get("status").toString();
 
-		List<Map<String,String>> response = Actualresponse.jsonPath().get("response"); 
+		List<Map<String,String>> response = actualresponse.jsonPath().get("response"); 
 		logger.info("response : "+response );
-		/*if(statusCode.equals("true")) {
-			regId=(Actualresponse.jsonPath().get("response[0].registrationId")).toString();
-		}*/
-		outerKeys.add("resTime");
-		outerKeys.add("timestamp");
+		
+		//outer and inner keys which are dynamic in the actual response
 		outerKeys.add("requesttime");
 		outerKeys.add("responsetime");
-		innerKeys.add("preRegistrationId");
-		innerKeys.add("updatedBy");
 		innerKeys.add("createdDateTime");
 		innerKeys.add("updatedDateTime");
 
-
-		status = AssertResponses.assertResponses(Actualresponse, Expectedresponse, outerKeys, innerKeys);
+		//Assertion of actual and expected response
+		status = AssertResponses.assertResponses(actualresponse, expectedresponse, outerKeys, innerKeys);
 
 		logger.info("Status after assertion : "+status);
 
 		if (status) {
-			JSONArray expected = (JSONArray) Expectedresponse.get("response");
+			JSONArray expected = (JSONArray) expectedresponse.get("response");
 			List<String> expectedRegIds = new ArrayList<>();
 			String expectedRegId = null;
 			logger.info("expected: "+expected);
 			String expectedErrorCode = "";
 			Iterator<Object> iterator = expected.iterator();
+			//extracting reg ids from the expected response
 			while(iterator.hasNext()){
 				JSONObject jsonObject = (JSONObject) iterator.next();
 				expectedRegId = jsonObject.get("registrationId").toString().trim();
 				logger.info("expectedRegId: "+expectedRegId);
 				expectedRegIds.add(expectedRegId);
-				
-				/*expectedErrorCode = jsonObject.get("errorCode").toString().trim();
-				logger.info("expectedErrorCode: "+expectedErrorCode);*/
-				//String timestamp = jsonObject.get("timestamp").toString().trim();
 			}
-
 
 			for(Map<String,String> res : response){
 				String statusCode = res.get("status");
@@ -145,15 +152,13 @@ public class Sync extends BaseTestCase implements ITest {
 				regIds=res.get("registrationId").toString();
 				logger.info("Reg Id is : " +regIds);
 
-
-
-
+				//If status code is success, reg id is checked in the db tables
 				if(statusCode.matches(".*SUCCESS*.")) {
 
 					SyncRegistrationDto dbDto = RegProcDataRead.regproc_dbDataInRegistrationList(regIds);	
 					logger.info("dbDto :" +dbDto);
 
-
+					//Checking audit logs (not yet implemented)
 					LocalDateTime logTime = LocalDateTime.of(2019,Month.JANUARY,30,10,15,51,270000000);   //2019-01-30 10:15:51.27					
 					logger.info("log time : "+logTime);
 					AuditRequestDto auditDto = RegProcDataRead.regproc_dbDataInAuditLog(regIds, "REGISTRATION_ID", "REGISTRATION_PROCESSOR", "GET",logTime);
@@ -162,6 +167,7 @@ public class Sync extends BaseTestCase implements ITest {
 
 
 					if(dbDto != null /*&& auditDto != null*/) {
+						//if reg id present in response and reg id fetched from table matches, then it is validated
 						if (expectedRegIds.contains(dbDto.getRegistrationId())/*&& expectedRegIds.contains(auditDto.getId())*/){
 
 							logger.info("Validated in DB.......");
@@ -169,75 +175,89 @@ public class Sync extends BaseTestCase implements ITest {
 							softAssert.assertTrue(true);
 						} 
 
+						/*//remove this block of code after checking the updated response
+						if(dbDto != null) {
 
-					if(dbDto != null) {
+							Iterator<Object> iteratorNew = ((List) Expectedresponse).iterator();
+							while(iterator.hasNext()){
+								JSONObject jsonObject = (JSONObject) iterator.next();
+								logger.info("regidtrationId" + ":" + jsonObject.get("registrationId"));
+								String expectedRegIdNew = jsonObject.get("registrationId").toString().trim();
+								logger.info("expectedRegId: "+expectedRegIdNew);
 
-						Iterator<Object> iteratorNew = ((List) Expectedresponse).iterator();
-						while(iterator.hasNext()){
-							JSONObject jsonObject = (JSONObject) iterator.next();
-							logger.info("regidtrationId" + ":" + jsonObject.get("registrationId"));
-							String expectedRegIdNew = jsonObject.get("registrationId").toString().trim();
-							logger.info("expectedRegId: "+expectedRegIdNew);
-							
-							if (expectedRegIdNew.matches(dbDto.getRegistrationId())){
-								
-								logger.info("Validated in DB.......");
-								finalStatus = "Pass";
-							} 
+								if (expectedRegIdNew.matches(dbDto.getRegistrationId())){
+
+									logger.info("Validated in DB.......");
+									finalStatus = "Pass";
+								} 
+							}
+
+						}*/
+
+					}else if (statusCode.matches(".*FAILURE.*")){
+						String errorCode = res.get("errorCode").toString();
+						logger.info("errorCode : "+errorCode);
+						String regID = res.get("registrationId").toString();
+						logger.info("regID : "+regID);
+						Iterator<Object> iterator1 = expected.iterator();
+						while(iterator1.hasNext()){
+							JSONObject jsonObject = (JSONObject) iterator1.next();
+							expectedErrorCode = jsonObject.get("errorCode").toString().trim();
+							logger.info("expectedErrorCode: "+expectedErrorCode);
+						}
+						if(expectedErrorCode.matches(errorCode)){
+							finalStatus = "Pass";
+							softAssert.assertTrue(true);
 						}
 
+					}else {
+						finalStatus="Fail";
+						softAssert.assertTrue(false);
 					}
-
-				}else if (statusCode.matches(".*FAILURE.*")){
-					String errorCode = res.get("errorCode").toString();
-					logger.info("errorCode : "+errorCode);
-					String regID = res.get("registrationId").toString();
-					logger.info("regID : "+regID);
-					Iterator<Object> iterator1 = expected.iterator();
-					while(iterator1.hasNext()){
-						JSONObject jsonObject = (JSONObject) iterator1.next();
-						expectedErrorCode = jsonObject.get("errorCode").toString().trim();
-						logger.info("expectedErrorCode: "+expectedErrorCode);
-					}
-					if(expectedErrorCode.matches(errorCode)){
-						finalStatus = "Pass";
-						softAssert.assertTrue(true);
-					}
-						
-				}else {
-					finalStatus="Fail";
-					softAssert.assertTrue(false);
 				}
-			}
 
-		}}else {
-			finalStatus="Fail";
-			softAssert.assertTrue(false);
-		}
+			}}else {
+				finalStatus="Fail";
+				softAssert.assertTrue(false);
+			}
 
 		softAssert.assertAll();
 		object.put("status", finalStatus);
 		arr.add(object);
 
 	}
+	/**
+	 * This method is used for reading and loading the property file
+	 * @throws IOException
+	 */
 	@BeforeClass
-	public void setUp() throws IOException
-	{
-		  // Create  FileInputStream object 
-		  FileInputStream fis=new FileInputStream(new File("src\\config\\registrationProcessorAPI.properties"));
- 
-		  // Load file so we can use into our script 
-		  pro.load(fis);
-		
+	public void setUp() throws IOException {
+		// Create  FileInputStream object 
+		FileInputStream fis=new FileInputStream(new File("src\\config\\registrationProcessorAPI.properties"));
+
+		// Load file so we can use into our script 
+		pro.load(fis);
+
 	}  
 
+	/**
+	 * This method is used for fetching test case name
+	 * @param method
+	 * @param testdata
+	 * @param ctx
+	 * @throws Exception
+	 */
 	@BeforeMethod
 	public static void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
 		JSONObject object = (JSONObject) testdata[2];
-		//	testName.set(object.get("testCaseName").toString());
 		testCaseName = object.get("testCaseName").toString();
 	}
 
+	/**
+	 * This method is used for generating report
+	 * 
+	 * @param result
+	 */
 	@AfterMethod(alwaysRun = true)
 	public void setResultTestName(ITestResult result) {
 		try {
@@ -254,6 +274,14 @@ public class Sync extends BaseTestCase implements ITest {
 		}
 	}
 
+	/**
+	 * This method is used for generating output file with the test case result
+	 * @throws IOException
+	 * @throws NoSuchFieldException
+	 * @throws SecurityException
+	 * @throws IllegalArgumentException
+	 * @throws IllegalAccessException
+	 */
 	@AfterClass
 	public void statusUpdate() throws IOException, NoSuchFieldException, SecurityException, IllegalArgumentException,
 	IllegalAccessException {
@@ -264,33 +292,10 @@ public class Sync extends BaseTestCase implements ITest {
 			logger.info("Successfully updated Results to " + outputFile);
 		}
 		String source = "src/test/resources/" + folderPath + "/";
-		//CommonLibrary.backUpFiles(source, folderPath);
 	}
 
 	@Override
 	public String getTestName() {
 		return this.testCaseName;
 	}
-
-	/*	@Override
-	public void beforeInvocation(IInvokedMethod method, ITestResult testResult) {
-		// TODO Auto-generated method stub
-		  logger.info("beforeInvocation: runs before every method in the Test Class");
-	}
-
-	@Override
-	public void afterInvocation(IInvokedMethod method, ITestResult testResult) {
-		// TODO Auto-generated method stub
-		if(testResult.getMethod().isTest()) {
-			if(testResult.getStatus() == ITestResult.SUCCESS) {
-			    ITestContext tc = Reporter.getCurrentTestResult().getTestContext();
-	            tc.getPassedTests().addResult(testResult, Reporter.getCurrentTestResult().getMethod());
-	            tc.getPassedTests().getAllMethods().remove(Reporter.getCurrentTestResult().getMethod());
-	            Reporter.getCurrentTestResult().setStatus(ITestResult.FAILURE);
-	            Reporter.getCurrentTestResult().setThrowable(new Exception("test Fail"));
-	            tc.getSkippedTests().addResult(testResult, Reporter.getCurrentTestResult().getMethod());
-			}
-		}
-
-	}*/
 }

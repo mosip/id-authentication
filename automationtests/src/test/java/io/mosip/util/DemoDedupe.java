@@ -13,25 +13,43 @@ import org.apache.log4j.Logger;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import org.testng.annotations.Test;
 
 import io.mosip.dbaccess.RegProcStageDb;
 import io.mosip.dbdto.DemoDedupeDto;
 
+/**
+ * This class is use for demo dedupe stage validations
+ * 
+ * @author Sayeri Mishra
+ *
+ */
 public class DemoDedupe {
 
 	private static Logger logger = Logger.getLogger(DemoDedupe.class);
 	final static String configPath= "src/test/resources/regProc/StageValidation";
 	final static String fileName = "/DummyDecryptedPacket/10011100110002020190326090045";
 
+	/**
+	 * This method contains the validation steps for demo dedupe stage
+	 * @param dummyDecryptFile
+	 * @return
+	 * @throws FileNotFoundException
+	 * @throws IOException
+	 * @throws ParseException
+	 */
 	public boolean demoDedupeStage (File dummyDecryptFile) throws FileNotFoundException, IOException, ParseException{
 
 		boolean isDemoDedupe = false;	
 		boolean isAuth = false; 
 		String regId = dummyDecryptFile.getName();
 		RegProcStageDb dbConnect = new RegProcStageDb();
+		
+		//fetching individual record from db based on regId
 		List<DemoDedupeDto> applicantDemoDto = dbConnect.regproc_IndividualDemoghraphicDedupe(regId);
-
 		List<DemoDedupeDto> duplicateDtos = new ArrayList<>();
+		
+		//Fetching duplicate records for same name, gender, dob and lang code
 		for (DemoDedupeDto demoDto : applicantDemoDto) {
 			duplicateDtos.addAll(dbConnect.regproc_AllIndividualDemoghraphicDedupe(demoDto.getName(),
 					demoDto.getGenderCode(), demoDto.getDob(), demoDto.getLangCode()));
@@ -93,7 +111,9 @@ public class DemoDedupe {
 		return isDemoDedupe;
 	}
 
-	public static void main(String arg[]){
+	
+	@Test
+	public void testRun(){
 		DemoDedupe dd= new DemoDedupe();
 		File dummyDecryptFile = new File(configPath+fileName);
 		try {

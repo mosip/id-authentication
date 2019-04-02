@@ -44,7 +44,7 @@ import io.mosip.util.ResponseRequestMapper;
 import io.restassured.response.Response;
 
 /**
- * Test script for packet receiver
+ * This class is used for testing Packet Receiver API
  * 
  * @author Sayeri Mishra
  *
@@ -56,23 +56,22 @@ public class PacketReceiver extends  BaseTestCase implements ITest {
 	protected static String testCaseName = "";
 	boolean status = false;
 	String finalStatus = "";	
-	public static JSONArray arr = new JSONArray();	
+	JSONArray arr = new JSONArray();	
 	ObjectMapper mapper = new ObjectMapper();
-	private static ApplicationLibrary applicationLibrary = new ApplicationLibrary();
-	static SoftAssert softAssert=new SoftAssert();
-	static Response actualResponse = null;
-	static JSONObject expectedResponse = null;
-	static String dest = "";
+	ApplicationLibrary applicationLibrary = new ApplicationLibrary();
+	SoftAssert softAssert=new SoftAssert();
+	Response actualResponse = null;
+	JSONObject expectedResponse = null;
+	String dest = "";
 	static String folderPath = "regProc/PacketReceiver";
 	static String outputFile = "PacketReceiverOutput.json";
 	static String requestKeyFile = "PacketReceiverRequest.json";
 	String rId = null;
 	Properties pro =  new Properties();
-
-	static String testParam = null;
+	String testParam = null;
 
 	/**
-	 * This method is use for reading data
+	 * This method is used for reading the test data based on the test case name passed
 	 * 
 	 * @param context
 	 * @return object[][]
@@ -93,7 +92,8 @@ public class PacketReceiver extends  BaseTestCase implements ITest {
 	}
 
 	/**
-	 * This method is use for receiving a packet and uploading it
+	 * This method is used for generating actual response and comparing it with expected response
+	 * along with db check and audit log check
 	 * @param testSuite
 	 * @param i
 	 * @param object
@@ -108,18 +108,16 @@ public class PacketReceiver extends  BaseTestCase implements ITest {
 		JSONObject actualRequest = ResponseRequestMapper.mapRequest(testSuite, object);
 		expectedResponse = ResponseRequestMapper.mapResponse(testSuite, object);
 		JSONObject objectData = new JSONObject();
-
-		outerKeys.add("resTime");
-		outerKeys.add("timestamp");
-		outerKeys.add("requestTimestamp");
+		String configPath = "src/test/resources/" + testSuite + "/";
+		File folder = new File(configPath);
+		
+		//outer and inner keys which are dynamic in the actual response
+		outerKeys.add("requesttimestamp");
 		outerKeys.add("responsetime");
-		innerKeys.add("preRegistrationId");
-		innerKeys.add("updatedBy");
 		innerKeys.add("createdDateTime");
 		innerKeys.add("updatedDateTime");
 
-		String configPath = "src/test/resources/" + testSuite + "/";
-		File folder = new File(configPath);
+		
 		File[] listOfFolders = folder.listFiles();
 		for (int j = 0; j < listOfFolders.length; j++) {
 			if (listOfFolders[j].isDirectory()) {
@@ -137,6 +135,7 @@ public class PacketReceiver extends  BaseTestCase implements ITest {
 			}
 		}
 		try {
+			//generation of actual response
 			actualResponse = applicationLibrary.putMultipartFile(file, pro.getProperty("packetReceiverApi"));
 
 		} catch (Exception e) {
@@ -147,6 +146,7 @@ public class PacketReceiver extends  BaseTestCase implements ITest {
 		Map<String,String> response  = actualResponse.jsonPath().get("response");
 		Map<String,String> error  = actualResponse.jsonPath().get("error");
 
+		//Asserting actual and expected response
 		status = AssertResponses.assertResponses(actualResponse, expectedResponse, outerKeys, innerKeys);
 		if (status) {
 			switch ("smokeAndRegression"){
@@ -245,6 +245,10 @@ public class PacketReceiver extends  BaseTestCase implements ITest {
 		arr.add(object);
 	}
 	
+	/**
+	 * This method is used for reading and loading the property file
+	 * @throws IOException
+	 */
 	@BeforeClass
 	public void setUp() throws IOException
 	{
@@ -256,6 +260,13 @@ public class PacketReceiver extends  BaseTestCase implements ITest {
 		
 	}  
 
+	/**
+	 * This method is used for fetching test case name
+	 * @param method
+	 * @param testdata
+	 * @param ctx
+	 * @throws Exception
+	 */
 	@BeforeMethod
 	public static void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
 		JSONObject object = (JSONObject) testdata[2];
@@ -263,15 +274,15 @@ public class PacketReceiver extends  BaseTestCase implements ITest {
 		testCaseName = object.get("testCaseName").toString();
 	}
 
+	/**
+	 * This method is used for generating report
+	 * 
+	 * @param result
+	 */
 	@AfterMethod(alwaysRun = true)
 	public void setResultTestName(ITestResult result) {
-		boolean flag_reg_transaction = false;
-		boolean flag_reg = false;
 		try {
-			/*flag_reg_transaction = RegProcDataRead.regproc_dbDeleteRecordInRegistrationTransaction(rId);
-			logger.info("FLAG INSIDE AFTER METHOD FOR REGISTRATION TRANSACTION : "+flag_reg);
-			flag_reg = RegProcDataRead.regproc_dbDeleteRecordInRegistration(rId);
-			logger.info("FLAG INSIDE AFTER METHOD FOR REGISTRATION: "+flag_reg);*/
+			
 			Field method = TestResult.class.getDeclaredField("m_method");
 			method.setAccessible(true);
 			method.set(result, result.getMethod().clone());
@@ -284,6 +295,14 @@ public class PacketReceiver extends  BaseTestCase implements ITest {
 		}
 	}
 
+	/**
+	 * This method is used for generating output file with the test case result
+	 * @throws IOException
+	 * @throws NoSuchFieldException
+	 * @throws SecurityException
+	 * @throws IllegalArgumentException
+	 * @throws IllegalAccessException
+	 */
 	@AfterClass
 	public void statusUpdate() throws IOException, NoSuchFieldException, SecurityException, IllegalArgumentException,
 	IllegalAccessException {
@@ -294,7 +313,6 @@ public class PacketReceiver extends  BaseTestCase implements ITest {
 			logger.info("Successfully updated Results to " + outputFile);
 		}
 		String source =  "src/test/resources/" + folderPath + "/";
-		//CommonLibrary.backUpFiles(source, folderPath);
 	}
 
 	@Override

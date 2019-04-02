@@ -60,14 +60,14 @@ public class PacketStatus extends BaseTestCase implements ITest {
 
 	boolean status = false;
 	String[] regId = null;
-	public static JSONArray arr = new JSONArray();
+	JSONArray arr = new JSONArray();
 	ObjectMapper mapper = new ObjectMapper();
-	static Response actualResponse = null;
-	static JSONObject expectedResponse = null;
-	private static ApplicationLibrary applicationLibrary = new ApplicationLibrary();
+	Response actualResponse = null;
+	JSONObject expectedResponse = null;
+	ApplicationLibrary applicationLibrary = new ApplicationLibrary();
 	String finalStatus = "";
-	static SoftAssert softAssert=new SoftAssert();
-	static 	String regIds="";
+	SoftAssert softAssert=new SoftAssert();
+	String regIds="";
 	static String dest = "";
 	static String folderPath = "regProc/PacketStatus";
 	static String outputFile = "PacketStatusOutput.json";
@@ -75,14 +75,13 @@ public class PacketStatus extends BaseTestCase implements ITest {
 	Properties pro =  new Properties();
 
 	/**
-	 * This method is use for reading data for packet status
+	 * This method is use for reading data for packet status based on test case name
 	 * @param context
 	 * @return
 	 * @throws Exception
 	 */
 	@DataProvider(name = "packetStatus")
 	public static Object[][] readDataForPacketStatus(ITestContext context) throws Exception {
-		//CommonLibrary.configFileWriter(folderPath,requestKeyFile,"DemographicCreate","smokePreReg");
 		String testParam = context.getCurrentXmlTest().getParameter("testType");
 		switch (testParam) {
 		case "smoke":
@@ -95,7 +94,8 @@ public class PacketStatus extends BaseTestCase implements ITest {
 	}
 
 	/**
-	 * This method is use for getting packet status based on registration id
+	 * This method is used for generating actual response and comparing it with expected response
+	 * along with db check and audit log check
 	 * @param testSuite
 	 * @param i
 	 * @param object
@@ -109,28 +109,23 @@ public class PacketStatus extends BaseTestCase implements ITest {
 		JSONObject actualRequest = ResponseRequestMapper.mapRequest(testSuite, object);
 		expectedResponse = ResponseRequestMapper.mapResponse(testSuite, object);
 		try {
-
+			//generation of actual response
 			actualResponse = applicationLibrary.getRequestAsQueryParam(pro.getProperty("packetStatusApi"),actualRequest);
 
 		} catch (Exception e) {
 			logger.info(e);
 		}
 
-
-		/*if(statusCode.equals("true")) {
-			regId=(Actualresponse.jsonPath().get("response[0].registrationId")).toString();
-		}*/
-		outerKeys.add("resTime");
+		//outer and inner keys which are dynamic in the actual response
 		outerKeys.add("requesttime");
 		outerKeys.add("responsetime");
-		innerKeys.add("preRegistrationId");
-		innerKeys.add("updatedBy");
 		innerKeys.add("createdDateTime");
 		innerKeys.add("updatedDateTime");
 
-
+		//Asserting actual and expected response
 		status = AssertResponses.assertResponses(actualResponse, expectedResponse, outerKeys, innerKeys);
 		List<Map<String,String>> response = actualResponse.jsonPath().get("response");
+
 
 		if (status) {
 
@@ -139,6 +134,7 @@ public class PacketStatus extends BaseTestCase implements ITest {
 				List<String> expectedRegIds = new ArrayList<>();
 				String expectedRegId = null;
 				logger.info("expected: "+expected);
+				//extracting reg ids from the expected response
 				Iterator<Object> iterator = expected.iterator();
 				while(iterator.hasNext()){
 					JSONObject jsonObject = (JSONObject) iterator.next();
@@ -154,66 +150,77 @@ public class PacketStatus extends BaseTestCase implements ITest {
 					regIds=res.get("registrationId").toString();
 					logger.info("Reg Id is : " +regIds);
 
+					//If status code is processing, rsend or processed, reg id is checked in the db tables
 					if(statusCode.matches(".*PROCESSING*.")|| statusCode.matches(".*RESEND*.")||statusCode.matches(".*PROCESSED*.")) {
 						logger.info("inside statuscode loop...................");
 
+						//audit log check(not yet implemented)
 						LocalDateTime logTime = LocalDateTime.of(2019,Month.JANUARY,30,10,15,51,270000000);   //2019-01-30 10:15:51.27					
 						logger.info("log time : "+logTime);
-
-						RegistrationStatusEntity dbDto = RegProcDataRead.regproc_dbDataInRegistration(regIds);	
 						AuditRequestDto auditDto = RegProcDataRead.regproc_dbDataInAuditLog(regIds, "REGISTRATION_ID", "REGISTRATION_PROCESSOR", "GET",logTime);
-
 						logger.info("AUDIT DTO : "+auditDto.getApplicationName());
 						//rest of the validations will be added 
 
+						RegistrationStatusEntity dbDto = RegProcDataRead.regproc_dbDataInRegistration(regIds);	
 						logger.info("dbDto :" +dbDto);
 
-						if(dbDto != null && auditDto != null) {
+						if(dbDto != null /*&& auditDto != null*/) {
+							//if reg id present in response and reg id fetched from table matches, then it is validated
 							if (expectedRegIds.contains(dbDto.getId())/*&& expectedRegIds.contains(auditDto.getId())*/){
+								Iterator<Object> iteratorNew = ((List) expectedResponse).iterator();
+								while(iterator.hasNext()){
+									JSONObject jsonObject = (JSONObject) iterator.next();
+									logger.info("regidtrationId" + ":" + jsonObject.get("registrationId"));
+									String expectedRegIdNew = jsonObject.get("registrationId").toString().trim();
+									logger.info("expectedRegId: "+expectedRegIdNew);
 
+									if (expectedRegIdNew.matches(dbDto.getId())){							
 
-						Iterator<Object> iteratorNew = ((List) expectedResponse).iterator();
-						while(iterator.hasNext()){
-							JSONObject jsonObject = (JSONObject) iterator.next();
-							logger.info("regidtrationId" + ":" + jsonObject.get("registrationId"));
-							String expectedRegIdNew = jsonObject.get("registrationId").toString().trim();
-							logger.info("expectedRegId: "+expectedRegIdNew);
-							
-							if (expectedRegIdNew.matches(dbDto.getId())){							
-
-								logger.info("Validated in DB.......");
-								finalStatus = "Pass";
-							} 
+										logger.info("Validated in DB.......");
+										finalStatus = "Pass";
+									} 
+								}
+							}else {
+								finalStatus="Fail";
+							}
 						}
 					}else {
-						finalStatus="Fail";
+						finalStatus="Pass";
 					}
+					softAssert.assertTrue(true);
+				}}else {
+					finalStatus="Fail";
+					//softAssert.assertTrue(false);
 				}
-			}else {
-				finalStatus="Pass";
-			}
-			softAssert.assertTrue(true);
-		}}else {
-			finalStatus="Fail";
-			//softAssert.assertTrue(false);
-		}
 
-		softAssert.assertAll();
-		object.put("status", finalStatus);
-		arr.add(object);
+			softAssert.assertAll();
+			object.put("status", finalStatus);
+			arr.add(object);
 		}
 	}
 
+	/**
+	 * This method is used for reading and loading the property file
+	 * @throws IOException
+	 */
 	@BeforeClass
 	public void setUp() throws IOException
 	{
-		  // Create  FileInputStream object 
-		  FileInputStream fis=new FileInputStream(new File("src\\config\\registrationProcessorAPI.properties"));
- 
-		  // Load file so we can use into our script 
-		  pro.load(fis);
-		
+		// Create  FileInputStream object 
+		FileInputStream fis=new FileInputStream(new File("src\\config\\registrationProcessorAPI.properties"));
+
+		// Load file so we can use into our script 
+		pro.load(fis);
+
 	}
+	
+	/**
+	 * This method is used for fetching test case name
+	 * @param method
+	 * @param testdata
+	 * @param ctx
+	 * @throws Exception
+	 */
 	@BeforeMethod
 	public static void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
 		JSONObject object = (JSONObject) testdata[2];
@@ -221,22 +228,14 @@ public class PacketStatus extends BaseTestCase implements ITest {
 		testCaseName = object.get("testCaseName").toString();
 	}
 
+	/**
+	 * This method is used for generating report
+	 * 
+	 * @param result
+	 */
 	@AfterMethod(alwaysRun = true)
 	public void setResultTestName(ITestResult result) {
-		boolean flag = false;
-		boolean flag_reg = false;
-
-
-
 		try {
-		/*	for(String rId : regId){
-				//	flag = RegProcDataRead.regproc_dbDeleteRecordInRegistrationList(rId);
-				logger.info("FLAG INSIDE AFTER METHOD FOR REGISTRATION LIST: "+flag);
-				//	flag_reg = RegProcDataRead.regproc_dbDeleteRecordInRegistration(rId);
-				logger.info("FLAG INSIDE AFTER METHOD FOR REGISTRATION LIST: "+flag_reg);
-
-			}*/
-
 			Field method = TestResult.class.getDeclaredField("m_method");
 			method.setAccessible(true);
 			method.set(result, result.getMethod().clone());
@@ -249,6 +248,14 @@ public class PacketStatus extends BaseTestCase implements ITest {
 		}
 	}
 
+	/**
+	 * This method is used for generating output file with the test case result
+	 * @throws IOException
+	 * @throws NoSuchFieldException
+	 * @throws SecurityException
+	 * @throws IllegalArgumentException
+	 * @throws IllegalAccessException
+	 */
 	@AfterClass
 	public void statusUpdate() throws IOException, NoSuchFieldException, SecurityException, IllegalArgumentException,
 	IllegalAccessException {

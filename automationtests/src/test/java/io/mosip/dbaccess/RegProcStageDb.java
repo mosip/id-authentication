@@ -18,13 +18,26 @@ import org.hibernate.cfg.Configuration;
 import io.mosip.dbdto.DemoDedupeDto;
 import io.mosip.dbdto.IndividualDemoghraphicDedupeEntity;
 
+/**
+ * This class is use for stage validation related data operations 
+ * 
+ * @author Sayeri Mishra
+ *
+ */
 public class RegProcStageDb {
-	public static SessionFactory factory;
-	static Session session;
+	SessionFactory factory;
+	Session session;
 	private static Logger logger = Logger.getLogger(RegProcStageDb.class);
-	static String registrationListConfigFilePath=System.getProperty("user.dir")+"\\"+"src\\test\\resources\\regproc_qa.cfg.xml";
-	static File registrationListConfigFile=new File(registrationListConfigFilePath);
+	String registrationListConfigFilePath=System.getProperty("user.dir")+"\\"+"src\\test\\resources\\regproc_qa.cfg.xml";
+	File registrationListConfigFile=new File(registrationListConfigFilePath);
 
+	/**
+	 * This method is use for fetching list of DemoDedupeDto from individual_demoghraphic_dedupe
+	 * table based on reg id
+	 * 
+	 * @param regId
+	 * @return List<DemoDedupeDto>
+	 */
 	@SuppressWarnings("deprecation")
 	public List<DemoDedupeDto> regproc_IndividualDemoghraphicDedupe(String regId)
 	{
@@ -42,6 +55,14 @@ public class RegProcStageDb {
 		return null;
 	}
 
+	/**
+	 * This method is use for fetching list of DemoDedupeDto from individual_demoghraphic_dedupe
+	 * table based on reg id and session
+	 * 
+	 * @param session2
+	 * @param regId
+	 * @return List<DemoDedupeDto>
+	 */
 	private List<DemoDedupeDto> getDemoById(Session session2, String regId) {
 		DemoDedupeDto demoDedupeDto = null;
 		List<DemoDedupeDto> demoDedupeDtoList = null;
@@ -76,6 +97,16 @@ public class RegProcStageDb {
 		return demoDedupeDtoList;
 	}
 
+	/**
+	 * This method is use for fetching list of DemoDedupeDto having duplicate name, dob, gender,
+	 * langCode from individual_demoghraphic_dedupe table
+	 * 
+	 * @param name
+	 * @param genderCode
+	 * @param dob
+	 * @param langCode
+	 * @return List<DemoDedupeDto>
+	 */
 	public List<DemoDedupeDto> regproc_AllIndividualDemoghraphicDedupe(String name, String genderCode, String dob,
 			String langCode) {
 
@@ -93,6 +124,17 @@ public class RegProcStageDb {
 		return null;
 	}
 
+	/**
+	 * This method is use for fetching list of DemoDedupeDto having duplicate name, dob, gender,
+	 * langCode from individual_demoghraphic_dedupe table
+	 * 
+	 * @param session2
+	 * @param name
+	 * @param genderCode
+	 * @param dob
+	 * @param langCode
+	 * @return
+	 */
 	private List<DemoDedupeDto> getAllDemo(Session session2, String name, String genderCode, String dob,
 			String langCode) {
 		DemoDedupeDto demoDedupeDto = null;
