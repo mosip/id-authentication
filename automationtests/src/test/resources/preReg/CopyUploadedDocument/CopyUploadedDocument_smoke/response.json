@@ -1,13 +1,15 @@
 {
-  "err": null,
-  "status": true,
-  "resTime": "2019-01-31T08:57:44.070Z",
-  "response": [
-    {
-      "sourcePreRegId": "53294159863958",
-      "sourceDocumnetId": "2c9180836833c1240168a32065a15b81",
-      "destPreRegId": "72645741039023",
-      "destDocumnetId": "2c9180836833c1240168a320d2ef5b82"
-    }
-  ]
+"id":"mosip.pre-registration.document.upload",
+"version":"1.0",
+"err":null,
+"responsetime":"2019-03-31T03:04:58.148Z",
+"response":
+[
+{
+"sourcePreRegId":"54693582057293",
+"sourceDocumnetId":"c31f1d82-5361-11e9-8ee2-152b4bde5dca",
+"destPreRegId":"45784514504105",
+"destDocumnetId":"c42bf9a3-5361-11e9-8ee2-2381698b262a"
+}
+]
 }

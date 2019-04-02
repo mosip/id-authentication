@@ -44,6 +44,7 @@ public class BaseTestCase {
 	// GLOBAL CLASS VARIABLES
 	private Properties prop;
 	public static String ApplnURI;	
+	public static String authToken;
 	public static String environment;
 	public static String SEPRATOR="";
 	public  static String getOSType(){
@@ -118,6 +119,7 @@ public class BaseTestCase {
 			logger.info("Done with BeforeSuite and test case setup! BEGINNING TEST EXECUTION!\n\n");
 			PreRegistrationLibrary pil=new PreRegistrationLibrary();
 			pil.PreRegistrationResourceIntialize();
+			authToken=pil.getToken();
 			
 		} // End suiteSetup
 
