@@ -20,9 +20,6 @@ import io.mosip.registration.processor.status.repositary.RegistrationRepositary;
 @Component
 public class RegistrationStatusDao {
 
-	/** The Constant LIMIT. */
-	private static final String LIMIT = "LIMIT";
-
 	/** The registration status repositary. */
 	@Autowired
 	RegistrationRepositary<RegistrationStatusEntity, String> registrationStatusRepositary;
