@@ -50,7 +50,7 @@ export class FileUploadComponent implements OnInit {
   secondaryLanguagelabels: any;
 
   sameAs;
-
+  disableNavigation = false;
   JsonString = appConstants.DOCUMENT_UPLOAD_REQUEST_DTO;
 
   browseDisabled = true;
@@ -88,7 +88,7 @@ export class FileUploadComponent implements OnInit {
 
     this.dataStroage.getSecondaryLanguageLabels(localStorage.getItem('langCode')).subscribe(response => {
       if (response['message']) this.secondaryLanguagelabels = response['message'];
-      console.log(response,this.secondaryLanguagelabels);
+      console.log(response, this.secondaryLanguagelabels);
     });
 
     if (this.registration.getUsers().length > 0) {
@@ -239,6 +239,7 @@ export class FileUploadComponent implements OnInit {
   }
 
   handleFileInput(event) {
+    this.disableNavigation = true;
     if (event.target.files[0].type === 'application/pdf') {
       if (event.target.files[0].name.length < 46) {
         if (event.target.files[0].size < 1000000) {
@@ -250,13 +251,17 @@ export class FileUploadComponent implements OnInit {
           this.sendFile(event);
         } else {
           alert(this.secondaryLanguagelabels.uploadDocuments.msg4);
+          this.disableNavigation = false;
         }
       } else {
         alert(this.secondaryLanguagelabels.uploadDocuments.msg5);
+        this.disableNavigation = false;
       }
     } else {
       alert(this.secondaryLanguagelabels.uploadDocuments.msg6);
+      this.disableNavigation = false;
     }
+    // this.disableNavigation = false;
   }
 
   getBase64(file) {
@@ -324,6 +329,7 @@ export class FileUploadComponent implements OnInit {
       },
       () => {
         this.fileInputVariable.nativeElement.value = '';
+        this.disableNavigation = false;
       }
     );
     this.formData = new FormData();

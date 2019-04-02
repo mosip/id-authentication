@@ -32,8 +32,8 @@ export const IDS = {
 export const APPEND_URL = {
   config: 'config',
   send_otp: 'sendotp',
-  login: 'login',
-  logout: 'logout',
+  login: 'useridotp',
+  logout: 'invalidatetoken',
   location_metadata: 'v1.0/locations/locationhierarchy/',
   location_immediate_children: 'v1.0/locations/immediatechildren/',
   applicants: 'demographic/applications',
