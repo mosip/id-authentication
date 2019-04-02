@@ -268,6 +268,12 @@ public class PacketHandlerController extends BaseController implements Initializ
 	 * Validating screen authorization and Creating Packet in case of Lost UIN
 	 */
 	public void lostUIN() {
+		if (isMachineRemapProcessStarted()) {
+
+			LOGGER.info("REGISTRATION - lost UIN - REGISTRATION_OFFICER_PACKET_CONTROLLER", APPLICATION_NAME,
+					APPLICATION_ID, RegistrationConstants.MACHINE_CENTER_REMAP_MSG);
+			return;
+		}
 		String fingerPrintDisableFlag = String
 				.valueOf(ApplicationContext.map().get(RegistrationConstants.FINGERPRINT_DISABLE_FLAG));
 		String irisDisableFlag = String.valueOf(ApplicationContext.map().get(RegistrationConstants.IRIS_DISABLE_FLAG));
