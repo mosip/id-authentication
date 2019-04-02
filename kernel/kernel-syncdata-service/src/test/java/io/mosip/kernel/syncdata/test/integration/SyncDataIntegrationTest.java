@@ -22,6 +22,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.dao.DataRetrievalFailureException;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
@@ -567,6 +568,7 @@ public class SyncDataIntegrationTest {
 		screenDetail.setLangCode("eng");
 		screenDetailList= new ArrayList<>();
 		screenDetailList.add(screenDetail);
+		
 	}
 
 	private void mockSuccess() {
@@ -702,7 +704,7 @@ public class SyncDataIntegrationTest {
 		when(processListRepository.findByLastUpdatedTimeAndCurrentTimeStamp(Mockito.any(), Mockito.any()))
 				.thenReturn(processList);
 		when(screenDetailRepo.findByLastUpdatedAndCurrentTimeStamp(Mockito.any(), Mockito.any())).thenReturn(screenDetailList);
-		when(restTemplate.getForEntity(baseUri, Mockito.any())).thenReturn(ResponseEntity<JSON_SYNC_JOB_DEF>);
+		when(restTemplate.getForEntity(baseUri, Mockito.any())).thenReturn();
 	}
 
 	@Test
