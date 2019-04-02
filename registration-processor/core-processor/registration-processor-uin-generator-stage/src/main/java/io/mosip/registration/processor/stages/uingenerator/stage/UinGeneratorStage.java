@@ -233,7 +233,7 @@ public class UinGeneratorStage extends MosipVerticleManager {
 					isTransactionSuccessful = true;
 					description = "UIN updated succesfully for registrationId " + registrationId;
 					registrationStatusDto
-							.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.SUCCESS.toString());
+							.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.PROCESSED.toString());
 					regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
 							LoggerFileConstant.REGISTRATIONID.toString(), registrationId,
 							"UinGeneratorStage::process()::exit");
