@@ -73,6 +73,7 @@ public class TransliterationExceptionHandler {
 		ExceptionJSONInfoDTO errorDetails=new ExceptionJSONInfoDTO(e.getErrorCode(),e.getErrorText());
 		MainResponseDTO<?> errorRes=new MainResponseDTO<>();
 		List<ExceptionJSONInfoDTO> errorList = new ArrayList<>();
+		errorList.add(errorDetails);
 		errorRes.setErrors(errorList);
 		errorRes.setId(idUrl);
 		errorRes.setVersion(versionUrl);
@@ -92,6 +93,7 @@ public class TransliterationExceptionHandler {
 		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getMessage());
 		MainResponseDTO<?> errorRes=new MainResponseDTO<>();
 		List<ExceptionJSONInfoDTO> errorList = new ArrayList<>();
+		errorList.add(errorDetails);
 		errorRes.setErrors(errorList);
 		errorRes.setId(idUrl);
 		errorRes.setVersion(versionUrl);
@@ -110,6 +112,7 @@ public class TransliterationExceptionHandler {
 		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getMessage());
 		MainResponseDTO<?> errorRes=new MainResponseDTO<>();
 		List<ExceptionJSONInfoDTO> errorList = new ArrayList<>();
+		errorList.add(errorDetails);
 		errorRes.setErrors(errorList);
 		errorRes.setId(idUrl);
 		errorRes.setVersion(versionUrl);
@@ -129,6 +132,7 @@ public class TransliterationExceptionHandler {
 		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getMessage());
 		MainResponseDTO<?> errorRes=new MainResponseDTO<>();
 		List<ExceptionJSONInfoDTO> errorList = new ArrayList<>();
+		errorList.add(errorDetails);
 		errorRes.setErrors(errorList);
 		errorRes.setId(idUrl);
 		errorRes.setVersion(versionUrl);

@@ -95,10 +95,8 @@ public class TransliterationServiceTest {
 		
 		transliterationRequest=new TransliterationDTO();
 		transliterationRequest.setFromFieldLang("eng");
-		transliterationRequest.setFromFieldName("Name1");
 		transliterationRequest.setFromFieldValue("Kishan");
 		transliterationRequest.setToFieldLang("ara");
-		transliterationRequest.setToFieldName("Name2");
 		transliterationRequest.setToFieldValue("");
 		
 		responseDTO = new MainResponseDTO<TransliterationDTO>();
@@ -111,10 +109,8 @@ public class TransliterationServiceTest {
 		Mockito.when(idRepository.findByFromLangAndToLang(Mockito.any(), Mockito.any())).thenReturn(idEntity);
 		TransliterationDTO transliterationRequest2=new TransliterationDTO();
 		transliterationRequest2.setFromFieldLang("eng");
-		transliterationRequest2.setFromFieldName("Name1");
 		transliterationRequest2.setFromFieldValue("Kishan");
 		transliterationRequest2.setToFieldLang("ara");
-		transliterationRequest2.setToFieldName("Name2");
 		transliterationRequest2.setToFieldValue("كِسهَن");
 		requestDto=new MainRequestDTO<TransliterationDTO>();
 		requestDto.setId("mosip.pre-registration.transliteration.transliterate");
@@ -136,10 +132,8 @@ public class TransliterationServiceTest {
 		Mockito.when(idRepository.findByFromLangAndToLang(Mockito.any(), Mockito.any())).thenThrow(exception);
 		TransliterationDTO transliterationRequest2=new TransliterationDTO();
 		transliterationRequest2.setFromFieldLang("eng");
-		transliterationRequest2.setFromFieldName("Name1");
 		transliterationRequest2.setFromFieldValue("Kishan");
 		transliterationRequest2.setToFieldLang("ara");
-		transliterationRequest2.setToFieldName("Name2");
 		transliterationRequest2.setToFieldValue("كِسهَن");
 		requestDto=new MainRequestDTO<TransliterationDTO>();
 		requestDto.setRequest(transliterationRequest);
@@ -156,10 +150,8 @@ public class TransliterationServiceTest {
 		TransliterationDTO transliterationRequest2=new TransliterationDTO();
 		TransliterationDTO request=new TransliterationDTO();
 		request.setFromFieldLang("");
-		request.setFromFieldName("Name1");
 		request.setFromFieldValue("Kishan");
 		request.setToFieldLang("ara");
-		request.setToFieldName("Name2");
 		request.setToFieldValue("");
 		requestDto=new MainRequestDTO<TransliterationDTO>();
 		requestDto.setId("mosip.pre-registration.transliteration.transliterate");
@@ -178,10 +170,8 @@ public class TransliterationServiceTest {
 		TransliterationDTO transliterationRequest=new TransliterationDTO();
 		transliterationRequest=new TransliterationDTO();
 		transliterationRequest.setFromFieldLang("enl");
-		transliterationRequest.setFromFieldName("Name1");
 		transliterationRequest.setFromFieldValue("Kishan");
 		transliterationRequest.setToFieldLang("ara");
-		transliterationRequest.setToFieldName("Name2");
 		transliterationRequest.setToFieldValue("");
 		requestDto=new MainRequestDTO<TransliterationDTO>();
 		requestDto.setId("mosip.pre-registration.transliteration.transliterate");

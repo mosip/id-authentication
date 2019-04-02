@@ -21,6 +21,8 @@ import Utils from 'src/app/app.util';
 import { DialougComponent } from 'src/app/shared/dialoug/dialoug.component';
 import { ConfigService } from 'src/app/core/services/config.service';
 import { AttributeModel } from 'src/app/shared/models/demographic-model/attribute.modal';
+import {AppComponent} from 'src/app/app.component';
+
 
 @Component({
   selector: 'app-demographic',
@@ -148,7 +150,8 @@ export class DemographicComponent implements OnInit, OnDestroy {
     private sharedService: SharedService,
     private configService: ConfigService,
     private translate: TranslateService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private appcomp: AppComponent
   ) {
     this.translate.use(localStorage.getItem('langCode'));
     this.regService.getMessage().subscribe(message => (this.message = message));
@@ -160,6 +163,7 @@ export class DemographicComponent implements OnInit, OnDestroy {
     // this.regService.currentMessage.subscribe(message => (this.message = message));
     this.setConfig();
     this.initForm();
+    //this.appcomp.keepWatching();
     await this.getPrimaryLabels();
     this.dataStorageService.getSecondaryLanguageLabels(this.secondaryLang).subscribe(response => {
       this.secondaryLanguagelabels = response['demographic'];
@@ -244,7 +248,7 @@ export class DemographicComponent implements OnInit, OnDestroy {
     this.userForm = new FormGroup({
       [this.formControlNames.fullName]: new FormControl(this.formControlValues.fullName.trim(), [
         Validators.required,
-        Validators.maxLength(50),
+        Validators.maxLength(Number(this.FULLNAME_LENGTH)),
         this.noWhitespaceValidator
       ]),
       [this.formControlNames.gender]: new FormControl(this.formControlValues.gender, Validators.required),
@@ -280,15 +284,16 @@ export class DemographicComponent implements OnInit, OnDestroy {
       ]),
       [this.formControlNames.addressLine1]: new FormControl(this.formControlValues.addressLine1, [
         Validators.required,
+        Validators.maxLength(Number(this.ADDRESS_LENGTH)),
         this.noWhitespaceValidator
       ]),
       [this.formControlNames.addressLine2]: new FormControl(
         this.formControlValues.addressLine2,
-        Validators.maxLength(50)
+        Validators.maxLength(Number(this.ADDRESS_LENGTH))
       ),
       [this.formControlNames.addressLine3]: new FormControl(
         this.formControlValues.addressLine3,
-        Validators.maxLength(50)
+        Validators.maxLength(Number(this.ADDRESS_LENGTH))
       ),
       [this.formControlNames.region]: new FormControl(this.formControlValues.region, Validators.required),
       [this.formControlNames.province]: new FormControl(this.formControlValues.province, Validators.required),
@@ -297,24 +302,24 @@ export class DemographicComponent implements OnInit, OnDestroy {
         this.formControlValues.localAdministrativeAuthority,
         Validators.required
       ),
-      [this.formControlNames.email]: new FormControl(
-        this.formControlValues.email,
-        Validators.pattern(this.EMAIL_PATTERN)
-      ),
+      [this.formControlNames.email]: new FormControl(this.formControlValues.email, [
+        Validators.pattern(this.EMAIL_PATTERN),
+        Validators.maxLength(Number(this.EMAIL_LENGTH))
+      ]),
       [this.formControlNames.postalCode]: new FormControl(this.formControlValues.postalCode, [
         Validators.required,
-        Validators.maxLength(6),
-        Validators.minLength(6),
+        Validators.maxLength(Number(this.POSTALCODE_LENGTH)),
+        Validators.minLength(Number(this.POSTALCODE_LENGTH)),
         Validators.pattern(this.POSTALCODE_PATTERN)
       ]),
       [this.formControlNames.phone]: new FormControl(this.formControlValues.phone, [
-        Validators.maxLength(10),
-        Validators.minLength(10),
+        Validators.maxLength(Number(this.MOBILE_LENGTH)),
+        Validators.minLength(Number(this.MOBILE_LENGTH)),
         Validators.pattern(this.MOBILE_PATTERN)
       ]),
       [this.formControlNames.CNIENumber]: new FormControl(this.formControlValues.CNIENumber, [
         Validators.required,
-        Validators.maxLength(30),
+        Validators.maxLength(Number(this.CNIE_LENGTH)),
         Validators.pattern(this.CNIE_PATTERN)
       ])
     });
@@ -684,28 +689,73 @@ export class DemographicComponent implements OnInit, OnDestroy {
     if (this.userForm.valid && this.transUserForm.valid) {
       const request = this.createRequestJSON();
       this.dataUploadComplete = false;
-      this.dataStorageService.addUser(request).subscribe(
-        response => {
-          console.log(response);
-          if (response[appConstants.NESTED_ERROR] === null && response[appConstants.RESPONSE] === null) {
+
+      if (this.dataModification) {
+        this.dataStorageService.updateUser(request).subscribe(
+          response => {
+            console.log(response);
+            if (response[appConstants.NESTED_ERROR] === null && response[appConstants.RESPONSE] === null) {
+              this.router.navigate(['error']);
+              return;
+            }
+            if (response[appConstants.NESTED_ERROR] !== null) {
+              this.router.navigate(['error']);
+              return;
+            } else {
+              this.onModification(request);
+            }
+            this.onSubmission();
+          },
+          error => {
+            console.log(error);
             this.router.navigate(['error']);
-            return;
           }
-          if (response[appConstants.NESTED_ERROR] !== null) {
+        );
+      } else {
+        this.dataStorageService.addUser(request).subscribe(
+          response => {
+            console.log(response);
+            if (response[appConstants.NESTED_ERROR] === null && response[appConstants.RESPONSE] === null) {
+              this.router.navigate(['error']);
+              return;
+            }
+            if (response[appConstants.NESTED_ERROR] !== null) {
+              this.router.navigate(['error']);
+              return;
+            } else {
+              this.onAddition(response, request);
+            }
+            this.onSubmission();
+          },
+          error => {
+            console.log(error);
             this.router.navigate(['error']);
-            return;
-          } else if (this.dataModification) {
-            this.onModification(request);
-          } else {
-            this.onAddition(response, request);
           }
-          this.onSubmission();
-        },
-        error => {
-          console.log(error);
-          this.router.navigate(['error']);
-        }
-      );
+        );
+      }
+
+      // this.dataStorageService.addUser(request).subscribe(
+      //   response => {
+      //     console.log(response);
+      //     if (response[appConstants.NESTED_ERROR] === null && response[appConstants.RESPONSE] === null) {
+      //       this.router.navigate(['error']);
+      //       return;
+      //     }
+      //     if (response[appConstants.NESTED_ERROR] !== null) {
+      //       this.router.navigate(['error']);
+      //       return;
+      //     } else if (this.dataModification) {
+      //       this.onModification(request);
+      //     } else {
+      //       this.onAddition(response, request);
+      //     }
+      //     this.onSubmission();
+      //   },
+      //   error => {
+      //     console.log(error);
+      //     this.router.navigate(['error']);
+      //   }
+      // );
     }
   }
 

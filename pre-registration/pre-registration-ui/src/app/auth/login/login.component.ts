@@ -10,6 +10,7 @@ import { ConfigService } from 'src/app/core/services/config.service';
 import * as appConstants from '../../app.constants';
 // import { UserIdleService } from "angular-user-idle";
 
+
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',

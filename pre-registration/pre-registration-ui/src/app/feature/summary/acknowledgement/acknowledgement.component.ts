@@ -176,7 +176,7 @@ export class AcknowledgementComponent implements OnInit {
       console.log(notificationDto);
       this.notificationRequest.append(appConstants.notificationDtoKeys.notificationDto, JSON.stringify(notificationDto));
       this.notificationRequest.append(appConstants.notificationDtoKeys.langCode, localStorage.getItem('langCode'));
-      this.notificationRequest.append(appConstants.notificationDtoKeys.langCode, this.fileBlob, `${user.preRegId}.pdf`);
+      this.notificationRequest.append(appConstants.notificationDtoKeys.file, this.fileBlob, `${user.preRegId}.pdf`);
       this.dataStorageService.sendNotification(this.notificationRequest).subscribe(response => {
         console.log(response);
         this.notificationRequest = new FormData();

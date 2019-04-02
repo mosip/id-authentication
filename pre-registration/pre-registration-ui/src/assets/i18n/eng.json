@@ -138,7 +138,12 @@
     "uploadDocuments": {
       "msg1": "Document exceeding permitted size",
       "msg2": "Virus scan failed",
-      "msg3": "File type not supported"
+      "msg3": "File type not supported",
+      "msg4": "File is too big",
+      "msg5": "File name should not be more than 50 characters",
+      "msg6": "Wrong file type, please upload again",
+      "msg7": "The file could not be uploaded, please try again.",
+      "msg8": "Could not copy document"
     },
     "appointmentCentreSearch": {
       "msg1": "No result found",

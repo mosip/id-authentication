@@ -55,8 +55,7 @@ public class TransliterationServiceUtil {
 	
 	public boolean isEntryFieldsNull(TransliterationDTO requestFields) {
 		return (!requestFields.getFromFieldLang().equals("") && !requestFields.getFromFieldValue().equals("")
-				&& !requestFields.getFromFieldName().equals("") && !requestFields.getToFieldLang().equals("")
-				&& !requestFields.getToFieldName().equals(""));
+				 && !requestFields.getToFieldLang().equals(""));
 	}
 	
 	/**
@@ -85,10 +84,8 @@ public class TransliterationServiceUtil {
 	public TransliterationDTO responseSetter(String value,
 			TransliterationDTO transliterationRequestDTO) {
 		TransliterationDTO transliterationResponseDTO = new TransliterationDTO();
-		transliterationResponseDTO.setFromFieldName(transliterationRequestDTO.getFromFieldName());
 		transliterationResponseDTO.setFromFieldValue(transliterationRequestDTO.getFromFieldValue());
 		transliterationResponseDTO.setFromFieldLang(transliterationRequestDTO.getFromFieldLang());
-		transliterationResponseDTO.setToFieldName(transliterationRequestDTO.getToFieldName());
 		transliterationResponseDTO.setToFieldValue(value);
 		transliterationResponseDTO.setToFieldLang(transliterationRequestDTO.getToFieldLang());
 		return transliterationResponseDTO;

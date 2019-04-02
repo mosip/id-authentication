@@ -116,6 +116,7 @@ export class CenterSelectionComponent implements OnInit {
 
   showResults() {
     console.log(this.locationType, this.searchText);
+    this.REGISTRATION_CENTRES = [];
     if (this.locationType !== null && this.searchText !== null) {
       this.showMap = false;
       this.dataService
