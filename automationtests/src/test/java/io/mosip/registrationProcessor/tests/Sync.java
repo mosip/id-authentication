@@ -1,5 +1,7 @@
 package io.mosip.registrationProcessor.tests;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -10,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
@@ -20,6 +23,7 @@ import org.testng.ITestResult;
 import org.testng.Reporter;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -29,17 +33,15 @@ import org.testng.internal.TestResult;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import io.mosip.dbaccess.RegProcDataRead;
 import io.mosip.dbdto.AuditRequestDto;
 import io.mosip.dbdto.SyncRegistrationDto;
-import io.mosip.dbaccess.RegProcDataRead;
 import io.mosip.service.ApplicationLibrary;
 import io.mosip.service.AssertResponses;
 import io.mosip.service.BaseTestCase;
-import io.mosip.util.CommonLibrary;
 import io.mosip.util.ReadFolder;
 import io.mosip.util.ResponseRequestMapper;
 import io.restassured.response.Response;
-import io.restassured.response.ResponseBodyExtractionOptions;
 
 /**
  * Test script for syncing packet
@@ -58,12 +60,12 @@ public class Sync extends BaseTestCase implements ITest {
 	private static Logger logger = Logger.getLogger(Sync.class);
 	boolean status = false;
 	String finalStatus = "";
+	Properties pro =  new Properties();
 	public static JSONArray arr = new JSONArray();
 	ObjectMapper mapper = new ObjectMapper();
 	static Response Actualresponse = null;
 	static JSONObject Expectedresponse = null;
 	private static ApplicationLibrary applicationLibrary = new ApplicationLibrary();
-	private static final String regProc_URI = "/registrationstatus/registration-processor/sync/v1.0";
 	static 	String regIds="";
 	static SoftAssert softAssert=new SoftAssert();
 	static String dest = "";
@@ -74,7 +76,6 @@ public class Sync extends BaseTestCase implements ITest {
 
 	@DataProvider(name = "syncPacket")
 	public static Object[][] readData1(ITestContext context) throws Exception {
-		//CommonLibrary.configFileWriter(folderPath,requestKeyFile,"DemographicCreate","smokePreReg");
 		String testParam = context.getCurrentXmlTest().getParameter("testType");
 		switch (testParam) {
 		case "smoke":
@@ -88,13 +89,12 @@ public class Sync extends BaseTestCase implements ITest {
 
 	@Test(dataProvider = "syncPacket")
 	public void generate_Response1(String testSuite, Integer i, JSONObject object) throws Exception {
-
 		List<String> outerKeys = new ArrayList<String>();
 		List<String> innerKeys = new ArrayList<String>();
 		JSONObject actualRequest = ResponseRequestMapper.mapRequest(testSuite, object);
 		Expectedresponse = ResponseRequestMapper.mapResponse(testSuite, object);
 		try {
-			Actualresponse = applicationLibrary.postRequest(actualRequest.toJSONString(), regProc_URI);
+			Actualresponse = applicationLibrary.postRequest(actualRequest.toJSONString(),pro.getProperty("syncListApi") );
 		} catch (Exception e) {
 			logger.info(e);
 		}
@@ -220,6 +220,16 @@ public class Sync extends BaseTestCase implements ITest {
 		arr.add(object);
 
 	}
+	@BeforeClass
+	public void setUp() throws IOException
+	{
+		  // Create  FileInputStream object 
+		  FileInputStream fis=new FileInputStream(new File("src\\config\\registrationProcessorAPI.properties"));
+ 
+		  // Load file so we can use into our script 
+		  pro.load(fis);
+		
+	}  
 
 	@BeforeMethod
 	public static void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {

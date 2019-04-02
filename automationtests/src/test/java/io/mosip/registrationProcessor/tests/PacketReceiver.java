@@ -1,6 +1,7 @@
 package io.mosip.registrationProcessor.tests;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -22,6 +23,7 @@ import org.testng.ITestResult;
 import org.testng.Reporter;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -57,7 +59,6 @@ public class PacketReceiver extends  BaseTestCase implements ITest {
 	public static JSONArray arr = new JSONArray();	
 	ObjectMapper mapper = new ObjectMapper();
 	private static ApplicationLibrary applicationLibrary = new ApplicationLibrary();
-	private static final String regProc_URI = "/packetreceiver/registration-processor/registrationpackets/v1.0";
 	static SoftAssert softAssert=new SoftAssert();
 	static Response actualResponse = null;
 	static JSONObject expectedResponse = null;
@@ -66,6 +67,7 @@ public class PacketReceiver extends  BaseTestCase implements ITest {
 	static String outputFile = "PacketReceiverOutput.json";
 	static String requestKeyFile = "PacketReceiverRequest.json";
 	String rId = null;
+	Properties pro =  new Properties();
 
 	static String testParam = null;
 
@@ -135,7 +137,7 @@ public class PacketReceiver extends  BaseTestCase implements ITest {
 			}
 		}
 		try {
-			actualResponse = applicationLibrary.putMultipartFile(file, regProc_URI);
+			actualResponse = applicationLibrary.putMultipartFile(file, pro.getProperty("packetReceiverApi"));
 
 		} catch (Exception e) {
 			logger.info(e);
@@ -242,6 +244,17 @@ public class PacketReceiver extends  BaseTestCase implements ITest {
 		object.put("status", finalStatus);
 		arr.add(object);
 	}
+	
+	@BeforeClass
+	public void setUp() throws IOException
+	{
+		  // Create  FileInputStream object 
+		  FileInputStream fis=new FileInputStream(new File("src\\config\\registrationProcessorAPI.properties"));
+ 
+		  // Load file so we can use into our script 
+		  pro.load(fis);
+		
+	}  
 
 	@BeforeMethod
 	public static void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {

@@ -17,11 +17,6 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.testng.annotations.Test;
 
-import com.amazonaws.AmazonServiceException;
-import com.amazonaws.SdkClientException;
-
-import io.mosip.dbaccess.RegProcTransactionDb;
-
 /**
  * This class is used for packet validator stage validations
  * 
@@ -31,9 +26,11 @@ import io.mosip.dbaccess.RegProcTransactionDb;
 public class PacketValidator {
 
 	private static Logger logger = Logger.getLogger(PacketValidator.class);
+	//hardcorded folder name for running this class separately
+	//it will be replaced after packet creation
 	final String configPath= "src/test/resources/regProc/StageValidation";
 	final String fileName = "/DummyDecryptedPacket/10011100110002020190326090045";
-		
+	
 	public FileSystemAdapter establishHDFSConnection(){
 		ConnectionUtils connectionUtil = new ConnectionUtils();
 		FileSystemAdapter adapter = new HDFSAdapterImpl(connectionUtil);
@@ -312,6 +309,5 @@ public class PacketValidator {
 	public void testMethod() throws IOException, ParseException {
 		File dummyDecryptFile = new File(configPath+fileName);
 		packetValidatorStage(dummyDecryptFile);
-		
 	}
 }
