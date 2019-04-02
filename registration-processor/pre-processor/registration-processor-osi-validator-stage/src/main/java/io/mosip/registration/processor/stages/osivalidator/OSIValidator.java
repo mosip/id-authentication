@@ -9,6 +9,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.Period;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -334,46 +336,41 @@ public class OSIValidator {
 	}
 	
 	private int getApplicantAge(String registrationId) throws IOException {
-			InputStream documentInfoStream = adapter.getFile(registrationId,
-					PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR + PacketFiles.ID.name());
+		InputStream documentInfoStream = adapter.getFile(registrationId,
+				PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR + PacketFiles.ID.name());
 
-			byte[] bytes = IOUtils.toByteArray(documentInfoStream);
-			String demographicJsonString = new String(bytes);
-			JSONObject demographicJson = (JSONObject) JsonUtil.objectMapperReadValue(demographicJsonString,
-					JSONObject.class);
+		byte[] bytes = IOUtils.toByteArray(documentInfoStream);
+		String demographicJsonString = new String(bytes);
+		JSONObject demographicJson = (JSONObject) JsonUtil.objectMapperReadValue(demographicJsonString,
+				JSONObject.class);
 
-			String getIdentityJsonString = Utilities.getJson(utility.getConfigServerFileStorageURL(),
-					utility.getGetRegProcessorIdentityJson());
-			ObjectMapper mapIdentityJsonStringToObject = new ObjectMapper();
-			RegistrationProcessorIdentity regProcessorIdentityJson = mapIdentityJsonStringToObject
-					.readValue(getIdentityJsonString, RegistrationProcessorIdentity.class);
-			String ageKey = regProcessorIdentityJson.getIdentity().getAge().getValue();
-			String dobKey = regProcessorIdentityJson.getIdentity().getDob().getValue();
-			JSONObject demographicIdentity = JsonUtil.getJSONObject(demographicJson,
-					utility.getGetRegProcessorDemographicIdentity());
-			if (demographicIdentity == null)
-				throw new IdentityNotFoundException(PlatformErrorMessages.RPR_PIS_IDENTITY_NOT_FOUND.getMessage());
-			int	applicantAge = JsonUtil.getJSONValue(demographicIdentity, ageKey);
-			String applicantDob = JsonUtil.getJSONValue(demographicIdentity, dobKey);
+		String getIdentityJsonString = Utilities.getJson(utility.getConfigServerFileStorageURL(),
+				utility.getGetRegProcessorIdentityJson());
+		ObjectMapper mapIdentityJsonStringToObject = new ObjectMapper();
+		RegistrationProcessorIdentity regProcessorIdentityJson = mapIdentityJsonStringToObject
+				.readValue(getIdentityJsonString, RegistrationProcessorIdentity.class);
+		String ageKey = regProcessorIdentityJson.getIdentity().getAge().getValue();
+		String dobKey = regProcessorIdentityJson.getIdentity().getDob().getValue();
+		JSONObject demographicIdentity = JsonUtil.getJSONObject(demographicJson,
+				utility.getGetRegProcessorDemographicIdentity());
+		if (demographicIdentity == null)
+			throw new IdentityNotFoundException(PlatformErrorMessages.RPR_PIS_IDENTITY_NOT_FOUND.getMessage());
+		String applicantDob = JsonUtil.getJSONValue(demographicIdentity, dobKey);
 		try {
 			if (applicantDob != null) {
 				DateFormat sdf = new SimpleDateFormat(dobFormat);
 				Date birthDate = sdf.parse(applicantDob);
-				Calendar birthDay = Calendar.getInstance();
-				birthDay.setTimeInMillis(birthDate.getTime());
-
-				long currentTime = System.currentTimeMillis();
-				Calendar now = Calendar.getInstance();
-				now.setTimeInMillis(currentTime);
-				// Get difference between years
-				applicantAge = now.get(Calendar.YEAR) - birthDay.get(Calendar.YEAR);
-			}
+				LocalDate ld = new java.sql.Date(birthDate.getTime()).toLocalDate();
+				Period p = Period.between(ld, LocalDate.now());
+				return p.getYears();
+			} else {
+				return JsonUtil.getJSONValue(demographicIdentity, ageKey);
+			} 
 		} catch (ParseException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-				
-				return applicantAge;
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					registrationId, e.getMessage());
+		}
+		return 0;
 	}
 
 	/**
