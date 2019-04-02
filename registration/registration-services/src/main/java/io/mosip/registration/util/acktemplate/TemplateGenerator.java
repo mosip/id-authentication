@@ -808,7 +808,7 @@ public class TemplateGenerator extends BaseService {
 		qrCodeString.append("\n");
 		qrCodeString.append(getValue(moroccoIdentity.getAddressLine2(), platformLanguageCode));
 		qrCodeString.append("\n");
-		qrCodeString.append(applicationLanguageProperties.getString("uinId")).append(" : ")
+		qrCodeString.append(applicationLanguageProperties.getString("registrationid")).append(" : ")
 				.append(registration.getRegistrationId());
 		qrCodeString.append("\n");
 		qrCodeString.append(applicationLanguageProperties.getString("gender")).append(" : ")
