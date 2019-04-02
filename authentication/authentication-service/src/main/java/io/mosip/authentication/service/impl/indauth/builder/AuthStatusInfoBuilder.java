@@ -219,54 +219,6 @@ public class AuthStatusInfoBuilder {
 	}
 
 	/**
-	 * Adds the match info to AuthStatusInfo.
-	 *
-	 * @param authType          the auth type
-	 * @param matchingStrategy  the matching strategy
-	 * @param matchingThreshold the mt
-	 * @param language          the language
-	 * @return the auth status info builder
-	 */
-	/*
-	 * public AuthStatusInfoBuilder addMatchInfo(String authType, String
-	 * matchingStrategy, Integer matchingThreshold, String language) {
-	 * assertNotBuilt(); if (authStatusInfo.getMatchInfos() == null) {
-	 * authStatusInfo.setMatchInfos(new ArrayList<>()); }
-	 * authStatusInfo.getMatchInfos().add(new MatchInfo(authType, language,
-	 * matchingStrategy, matchingThreshold)); return this; }
-	 */
-
-	/**
-	 * Adds the bio info to AuthStatusInfo.
-	 *
-	 * @param bioType    the bio type
-	 * @param deviceInfo the device info
-	 * @return the auth status info builder
-	 */
-	/*
-	 * public AuthStatusInfoBuilder addBioInfo(String bioType,DeviceInfo deviceInfo)
-	 * { assertNotBuilt(); if (authStatusInfo.getBioInfos() == null) {
-	 * authStatusInfo.setBioInfos(new ArrayList<>()); }
-	 * authStatusInfo.getBioInfos().add(new BioInfo(bioType,deviceInfo)); return
-	 * this; }
-	 */
-
-	/**
-	 * Adds the auth usage data bits to AuthStatusInfo.
-	 *
-	 * @param usageDataBits the usage data bits
-	 * @return the auth status info builder
-	 */
-	/*
-	 * public AuthStatusInfoBuilder addAuthUsageDataBits(AuthUsageDataBit...
-	 * usageDataBits) { assertNotBuilt(); if (authStatusInfo.getUsageDataBits() ==
-	 * null) { authStatusInfo.setUsageDataBits(new ArrayList<>()); }
-	 * 
-	 * authStatusInfo.getUsageDataBits().addAll(Arrays.asList(usageDataBits));
-	 * return this; }
-	 */
-
-	/**
 	 * Adds the errors to the AuthStatusInfo.
 	 *
 	 * @param errors the errors

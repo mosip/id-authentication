@@ -46,18 +46,6 @@ public class IdRepo {
 	private JsonValidator jsonValidator;
 
 	/**
-	 * Multipart resolver.
-	 *
-	 * @return the commons multipart resolver
-	 */
-	@Bean(name = "multipartResolver")
-	public CommonsMultipartResolver multipartResolver() {
-		CommonsMultipartResolver multipartResolver = new CommonsMultipartResolver();
-		multipartResolver.setMaxUploadSize(100000);
-		return multipartResolver;
-	}
-
-	/**
 	 * This method is used to validate the IdRepo Json format.
 	 * @param object the object
 	 * @return the string

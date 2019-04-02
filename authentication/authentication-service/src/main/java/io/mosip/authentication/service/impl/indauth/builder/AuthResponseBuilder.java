@@ -25,9 +25,6 @@ public class AuthResponseBuilder {
 	/** The built flag. */
 	private boolean built;
 
-	/** The Constant DEFAULT_USAGE_DATA_HEX_COUNT. */
-	private static final int DEFAULT_USAGE_DATA_HEX_COUNT = 16;
-	
 	/** The Auth response DTO. */
 	private final AuthResponseDTO responseDTO;
 	
@@ -41,8 +38,6 @@ public class AuthResponseBuilder {
 	 */
 	private AuthResponseBuilder(String dateTimePattern) {
 		responseDTO = new AuthResponseDTO();
-		/*AuthResponseInfo authResponseInfo = new AuthResponseInfo();
-		responseDTO.setInfo(authResponseInfo);*/
 		authStatusInfos = new ArrayList<>();
 		dateFormat = new SimpleDateFormat(dateTimePattern);
 	}
@@ -87,33 +82,12 @@ public class AuthResponseBuilder {
 		return this;
 	}
 
-	/**
-	 * Sets the id type.
-	 *
-	 * @param idType the id type
-	 * @return the auth response builder
-	 */
-	/*public AuthResponseBuilder setIdType(String idType) {
-		responseDTO.getInfo().setIdType(idType);
-		return this;
-	}*/
-	
 	public AuthResponseBuilder setId(String idType) {
-	responseDTO.setId("mosip.identity.auth");
-	return this;
-}
-
-
-	/**
-	 * Sets the req time.
-	 *
-	 * @param reqTime the req time
-	 * @return the auth response builder
-	 */
-	/*public AuthResponseBuilder setReqTime(String reqTime) {
-		responseDTO.getInfo().setReqTime(reqTime);
+		responseDTO.setId("mosip.identity.auth");
 		return this;
-	}*/
+	}
+
+
 	/**
 	 * Sets the Static Token Id
 	 * @param staticTokenId
@@ -153,30 +127,6 @@ public class AuthResponseBuilder {
 	    AuthError[] authErrors = authStatusInfos.stream().flatMap(statusInfo -> Optional.ofNullable(statusInfo.getErr())
 				.map(List<AuthError>::stream).orElseGet(Stream::empty)).toArray(size -> new AuthError[size]);
 		addErrors(authErrors);
-
-		/*List<MatchInfo> matchInfos = authStatusInfos.stream().flatMap(statusInfo -> Optional
-				.ofNullable(statusInfo.getMatchInfos())
-				.map(List<MatchInfo>::stream)
-				.orElseGet(Stream::empty))
-				.collect(Collectors.toList());
-		responseDTO.getInfo().setMatchInfos(matchInfos);
-		
-		List<BioInfo> bioInfos = authStatusInfos.stream().flatMap(statusInfo -> Optional
-				.ofNullable(statusInfo.getBioInfos())
-				.map(List<BioInfo>::stream)
-				.orElseGet(Stream::empty))
-				.collect(Collectors.toList());
-		responseDTO.getInfo().setBioInfos(bioInfos);
-
-		BitwiseInfo bitwiseInfo = new BitwiseInfo(DEFAULT_USAGE_DATA_HEX_COUNT);
-
-		authStatusInfos.stream()
-				.flatMap(statusInfo -> Optional.ofNullable(statusInfo.getUsageDataBits())
-						.map(List<AuthUsageDataBit>::stream).orElseGet(Stream::empty))
-				.collect(Collectors.toList())
-				.forEach(usageDataBit -> bitwiseInfo.setBit(usageDataBit.getHexNum(), usageDataBit.getBitIndex()));
-
-		responseDTO.getInfo().setUsageData(bitwiseInfo.toString());*/
 
 		built = true;
 		return responseDTO;
