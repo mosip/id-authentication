@@ -189,7 +189,7 @@ public class VirusScannerStage extends MosipVerticleManager {
 			registrationStatusDto.setStatusCode(RegistrationStatusCode.PACKET_DECRYPTION_FAILED.toString());
 			registrationStatusDto.setStatusComment(StatusMessage.PACKET_DECRYPTION_FAILURE);
 			registrationStatusDto.setUpdatedBy(USER);
-			registrationStatusService.updateRegistrationStatus(registrationStatusDto);
+			
 			isTransactionSuccessful = false;
 			object.setInternalError(Boolean.TRUE);
 			description = "Packet decryption failed for registrationId " + registrationId + "::" + e.getErrorCode()

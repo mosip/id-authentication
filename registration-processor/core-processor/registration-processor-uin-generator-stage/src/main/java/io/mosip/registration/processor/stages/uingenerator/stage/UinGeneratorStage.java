@@ -270,7 +270,6 @@ public class UinGeneratorStage extends MosipVerticleManager {
 				}
 			}
 			registrationStatusDto.setUpdatedBy(USER);
-			registrationStatusService.updateRegistrationStatus(registrationStatusDto);
 		} catch (FSAdapterException e) {
 			registrationStatusDto.setLatestTransactionStatusCode(registrationStatusMapperUtil
 					.getStatusCode(RegistrationExceptionTypeCode.TABLE_NOT_ACCESSIBLE_EXCEPTION));

@@ -149,7 +149,7 @@ public class PacketUploaderStage extends MosipVerticleManager {
 			object.setIsValid(false);
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationId, PlatformErrorMessages.RPR_RGS_REGISTRATION_TABLE_NOT_ACCESSIBLE.name()
-							+ ExceptionUtils.getStackTrace(e));
+					+ ExceptionUtils.getStackTrace(e));
 
 			description = "Registration status TablenotAccessibleException for registrationId " + this.registrationId
 					+ "::" + e.getMessage();
@@ -263,10 +263,7 @@ public class PacketUploaderStage extends MosipVerticleManager {
 
 			entry.setStatusCode(RegistrationStatusCode.PACKET_UPLOADED_TO_FILESYSTEM.toString());
 			entry.setStatusComment("Packet " + registrationId + " is uploaded in file system.");
-
 			entry.setUpdatedBy(USER);
-			registrationStatusService.updateRegistrationStatus(entry);
-
 			object.setInternalError(false);
 			object.setIsValid(true);
 			object.setRid(registrationId);
