@@ -563,14 +563,14 @@
                                     <Label alignment="BOTTOM_CENTER" contentDisplay="TOP" styleClass="headerTexts" text="%uploadDocuments" />
                                  </children>
                               </HBox>
-                              <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="10.0" styleClass="trackerHighlighter" GridPane.columnIndex="4">
+                              <HBox fx:id="trackerHolder" alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="5.0" GridPane.columnIndex="4">
                                  <children>
-                                    <ImageView fitHeight="18.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                                    <ImageView fitHeight="18.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
                                           <Image url="@../images/activeBiometricDetail.png" />
                                        </image>
                                     </ImageView>
-                                    <Label alignment="BOTTOM_CENTER" contentDisplay="TOP" text="%biometricDetails" />
+                                    <Label alignment="CENTER" contentDisplay="TOP" minWidth="${trackerHolder.width/1.5}" styleClass="trackerHighlighter" text="%biometricDetails" />
                                  </children>
                               </HBox>
                               <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="10.0" GridPane.columnIndex="6">
