@@ -96,7 +96,7 @@ public class CopyUploadedDocument extends BaseTestCase implements ITest {
 	@DataProvider(name = "CopyUploadedDocument")
 	public static Object[][] readData(ITestContext context) throws Exception {
 		String testParam = context.getCurrentXmlTest().getParameter("testType");
-		switch ("smoke") {
+		switch (testParam) {
 		case "smoke":
 			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
 		case "regression":
@@ -132,9 +132,9 @@ public class CopyUploadedDocument extends BaseTestCase implements ITest {
 		//Copy uploaded document from Source PreId to Destination PreId
 		 Response copyDocresponse=preRegLib.copyUploadedDocuments(srcPreID, destPreId);
 		 
+		
 		 
-		 
-		outerKeys.add("resTime");
+		outerKeys.add("responsetime");
 		innerKeys.add("sourcePreRegId");
 		innerKeys.add("sourceDocumnetId");
 		innerKeys.add("destPreRegId");

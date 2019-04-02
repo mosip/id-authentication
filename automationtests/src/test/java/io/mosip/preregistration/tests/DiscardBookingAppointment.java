@@ -135,14 +135,16 @@ public class DiscardBookingAppointment extends BaseTestCase implements ITest {
 			/*Discard Book Appointment*/
 			Response discardBookAppointmentResponse =preRegLib.discardBooking(preId);
 			
+			
 			preRegLib.compareValues(discardBookAppointmentResponse.jsonPath().get("response[0].preRegistrationId").toString(), preId);
 			
 			/*removing the keys for assertion*/
-			outerKeys.add("resTime");
+			outerKeys.add("responsetime");
 			innerKeys.add("preRegistrationId");
 			innerKeys.add("deletedBy");
 			innerKeys.add("deletedDateTime");
 			status = AssertResponses.assertResponses(discardBookAppointmentResponse, Expectedresponse, outerKeys, innerKeys);
+		
 		}
 		else
 	{
