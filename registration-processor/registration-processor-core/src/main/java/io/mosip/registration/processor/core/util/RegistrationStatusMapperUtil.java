@@ -102,6 +102,8 @@ public class RegistrationStatusMapperUtil {
 		statusMap.put(RegistrationExceptionTypeCode.PACKET_STRUCTURAL_VALIDATION_FAILED,
 				RegistrationTransactionStatusCode.FAILED);
 		statusMap.put(RegistrationExceptionTypeCode.PACKET_UPLOADER_FAILED, RegistrationTransactionStatusCode.FAILED);
+		statusMap.put(RegistrationExceptionTypeCode.PACKET_UIN_GENERATION_FAILED,
+				RegistrationTransactionStatusCode.FAILED);
 		return unmodifiableMap;
 
 	}
