@@ -71,8 +71,6 @@ import reactor.ipc.netty.tcp.BlockingNettyContext;
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class RestHelperTest {
 
-	private static final int PORT = 9538;
-
 	/** The rest helper. */
 	@InjectMocks
 	RestHelper restHelper;
@@ -581,7 +579,7 @@ public class RestHelperTest {
 
 		RestRequestDTO restRequest = restFactory.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditRequest,
 				AuditResponseDto.class);
-		restRequest.setUri("https://localhost:" + PORT + "/auditmanager/v1.0/audits");
+		restRequest.setUri("https://localhost:8082/auditmanager/v1.0/audits");
 		restRequest.setTimeout(100);
 
 		restHelper.requestSync(restRequest);
