@@ -78,6 +78,10 @@ spec:
         backend:
           serviceName: kernel-ridgenerator-service
           servicePort: 8096
+      - path: /admin
+        backend:
+          serviceName: kernel-admin-service
+          servicePort: 8095
       - path: /pre-registration/v1.0/auth
         backend:
           serviceName: pre-registration-auth-service

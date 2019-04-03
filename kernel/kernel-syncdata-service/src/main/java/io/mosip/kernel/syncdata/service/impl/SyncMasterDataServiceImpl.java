@@ -49,6 +49,8 @@ import io.mosip.kernel.syncdata.dto.RegistrationCenterUserHistoryDto;
 import io.mosip.kernel.syncdata.dto.RegistrationCenterUserMachineMappingDto;
 import io.mosip.kernel.syncdata.dto.RegistrationCenterUserMachineMappingHistoryDto;
 import io.mosip.kernel.syncdata.dto.ScreenAuthorizationDto;
+import io.mosip.kernel.syncdata.dto.ScreenDetailDto;
+import io.mosip.kernel.syncdata.dto.SyncJobDefDto;
 import io.mosip.kernel.syncdata.dto.TemplateDto;
 import io.mosip.kernel.syncdata.dto.TemplateFileFormatDto;
 import io.mosip.kernel.syncdata.dto.TemplateTypeDto;
@@ -151,6 +153,8 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 		CompletableFuture<List<RegistrationCenterMachineDeviceHistoryDto>> registrationCenterMachineDeviceHistoryList = null;
 		CompletableFuture<List<RegistrationCenterDeviceHistoryDto>> registrationCenterDeviceHistoryList = null;
 		CompletableFuture<List<RegistrationCenterMachineHistoryDto>> registrationCenterMachineHistoryList = null;
+		CompletableFuture<List<SyncJobDefDto>> syncJobDefDtos;
+		CompletableFuture<List<ScreenDetailDto>> screenDetails;
 
 		applications = serviceHelper.getApplications(lastUpdated, currentTimeStamp);
 		machineDetails = serviceHelper.getMachines(regCenterId, lastUpdated, currentTimeStamp);
@@ -204,7 +208,8 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 				lastUpdated, currentTimeStamp);
 		registrationCenterMachineHistoryList = serviceHelper.getRegistrationCenterMachineHistoryDetails(regCenterId,
 				lastUpdated, currentTimeStamp);
-
+		syncJobDefDtos=serviceHelper.getSyncJobDefDetails(lastUpdated, currentTimeStamp);
+        screenDetails=serviceHelper.getScreenDetails(lastUpdated, currentTimeStamp);
 		CompletableFuture
 				.allOf(machineDetails, applications, registrationCenterTypes, registrationCenters, templates,
 						templateFileFormats, reasonCategory, reasonList, holidays, blacklistedWords, biometricTypes,
@@ -215,7 +220,7 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 						registrationCenterUserHistoryList, registrationCenterUserMachineMappingHistoryList,
 						registrationCenterMachineDeviceHistoryList, registrationCenterDeviceHistoryList,
 						registrationCenterMachineHistoryList, applicantValidDocumentList, individualTypeList,
-						appAuthenticationMethods, appDetails, appRolePriorities, processList, screenAuthorizations)
+						appAuthenticationMethods, appDetails, appRolePriorities, processList, screenAuthorizations,syncJobDefDtos,screenDetails)
 				.join();
 
 		response.setMachineDetails(machineDetails.get());
@@ -251,7 +256,8 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 		response.setAppRolePriorities(appRolePriorities.get());
 		response.setProcessList(processList.get());
 		response.setScreenAuthorizations(screenAuthorizations.get());
-
+        response.setSyncJobDefinitions(syncJobDefDtos.get());
+        response.setScreenDetails(screenDetails.get());
 		response.setRegistrationCenterMachines(registrationCenterMachines.get());
 		response.setRegistrationCenterDevices(registrationCenterDevices.get());
 		response.setRegistrationCenterMachineDevices(registrationCenterMachineDevices.get());

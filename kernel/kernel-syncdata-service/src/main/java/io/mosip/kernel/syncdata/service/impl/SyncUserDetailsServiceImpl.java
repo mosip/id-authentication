@@ -39,8 +39,8 @@ import io.mosip.kernel.syncdata.utils.MapperUtils;
 
 /**
  * This class will fetch all user details from the LDAP server through
- * auth-service
- * 
+ * auth-service.
+ *
  * @author Srinivasan
  * @author Megha Tanga
  * @since 1.0.0
@@ -49,42 +49,84 @@ import io.mosip.kernel.syncdata.utils.MapperUtils;
 @Service
 public class SyncUserDetailsServiceImpl implements SyncUserDetailsService {
 
+	/** The rest template. */
 	@Autowired
 	RestTemplate restTemplate;
 
+	/** The object mapper. */
 	@Autowired
 	ObjectMapper objectMapper;
 
+	/** The registration center user service. */
 	@Autowired
 	RegistrationCenterUserService registrationCenterUserService;
 
+	/** The auth user details base uri. */
 	@Value("${mosip.kernel.syncdata.auth-manager-base-uri:https://dev.mosip.io/authmanager/v1.0}")
 	private String authUserDetailsBaseUri;
 
+	/** The auth user details uri. */
 	@Value("${mosip.kernel.syncdata.auth-user-details:/userdetails}")
 	private String authUserDetailsUri;
 
+	/** The sync data request id. */
 	@Value("${mosip.kernel.syncdata.syncdata-request-id:SYNCDATA.REQUEST}")
 	private String syncDataRequestId;
 
+	/** The sync data version id. */
 	@Value("${mosip.kernel.syncdata.syncdata-version-id:v1.0}")
 	private String syncDataVersionId;
 
-	/**
+	/*
+	 * (non-Javadoc)
 	 * 
+	 * @see
+	 * io.mosip.kernel.syncdata.service.SyncUserDetailsService#getAllUserDetail(java
+	 * .lang.String)
 	 */
 	@Override
 	public SyncUserDetailDto getAllUserDetail(String regId) {
 		StringBuilder userDetailsUri = new StringBuilder();
 		userDetailsUri.append(authUserDetailsBaseUri).append(authUserDetailsUri);
-		UserDetailResponseDto data = null;
 		SyncUserDetailDto syncUserDetailDto = null;
+		ResponseEntity<String> response = null;
 		RegistrationCenterUserResponseDto registrationCenterResponseDto = registrationCenterUserService
 				.getUsersBasedOnRegistrationCenterId(regId);
 		List<RegistrationCenterUserDto> registrationCenterUserDtos = registrationCenterResponseDto
 				.getRegistrationCenterUsers();
 		List<String> userIds = registrationCenterUserDtos.stream().map(RegistrationCenterUserDto::getUserId)
 				.collect(Collectors.toList());
+		HttpEntity<RequestWrapper<?>> userDetailReqEntity = getHttpRequest(userIds);
+
+		try {
+
+			response = restTemplate.postForEntity(userDetailsUri.toString()+ "/registrationclient",
+					userDetailReqEntity, String.class);
+		} catch (HttpServerErrorException | HttpClientErrorException e) {
+
+			throw new SyncDataServiceException(UserDetailsErrorCode.USER_DETAILS_FETCH_EXCEPTION.getErrorCode(),
+					UserDetailsErrorCode.USER_DETAILS_FETCH_EXCEPTION.getErrorMessage(), e);
+		}
+		String responseBody = response.getBody();
+		UserDetailResponseDto userDetailResponseDto = getUserDetailFromResponse(responseBody);
+		if (userDetailResponseDto != null && userDetailResponseDto.getMosipUserDtoList() != null) {
+			List<UserDetailMapDto> userDetails = MapperUtils
+					.mapUserDetailsToUserDetailMap(userDetailResponseDto.getMosipUserDtoList());
+			syncUserDetailDto = new SyncUserDetailDto();
+			syncUserDetailDto.setUserDetails(userDetails);
+		}
+		return syncUserDetailDto;
+
+	}
+
+	/**
+	 * Gets the http request.
+	 *
+	 * @param userIds
+	 *            the user ids
+	 * @return {@link HttpEntity}
+	 */
+	private HttpEntity<RequestWrapper<?>> getHttpRequest(List<String> userIds) {
 		RequestWrapper<UserDetailRequestDto> requestWrapper = new RequestWrapper<>();
 		requestWrapper.setId(syncDataRequestId);
 		requestWrapper.setVersion(syncDataVersionId);
@@ -93,52 +135,38 @@ public class SyncUserDetailsServiceImpl implements SyncUserDetailsService {
 		UserDetailRequestDto userDetailsDto = new UserDetailRequestDto();
 		userDetailsDto.setUserDetails(userIds);
 		requestWrapper.setRequest(userDetailsDto);
-		HttpEntity<RequestWrapper<?>> userDetailRequestEntity = new HttpEntity<>(requestWrapper,
-				syncDataRequestHeaders);
+		return new HttpEntity<>(requestWrapper, syncDataRequestHeaders);
 
+	}
+
+	/**
+	 * Gets the user detail from response.
+	 *
+	 * @param responseBody
+	 *            the response body
+	 * @return {@link UserDetailResponseDto}
+	 */
+	private UserDetailResponseDto getUserDetailFromResponse(String responseBody) {
+		List<ServiceError> validationErrorsList = null;
+		validationErrorsList = ExceptionUtils.getServiceErrorList(responseBody);
+		UserDetailResponseDto userDetailResponseDto = null;
+		if (!validationErrorsList.isEmpty()) {
+			throw new AuthManagerServiceException(validationErrorsList);
+		}
+		ResponseWrapper<UserDetailResponseDto> responseObject = null;
 		try {
-
-			ResponseEntity<String> response = restTemplate.postForEntity(
-					userDetailsUri.toString() + "/registrationclient", userDetailRequestEntity, String.class);
-			/*
-			 * ResponseEntity<String> response = restTemplate.postForEntity(
-			 * "https://dev.mosip.io/authmanager/userdetails/registrationclient",
-			 * userDetailRequestEntity, String.class);
-			 */
-
-			String responseBody = response.getBody();
-			List<ServiceError> validationErrorsList = null;
-			validationErrorsList = ExceptionUtils.getServiceErrorList(responseBody);
-
-			if (!validationErrorsList.isEmpty()) {
-				throw new AuthManagerServiceException(validationErrorsList);
-			}
-			ResponseWrapper<UserDetailResponseDto> responseObject = null;
-			try {
-				responseObject = objectMapper.readValue(response.getBody(),
-						new TypeReference<ResponseWrapper<UserDetailResponseDto>>() {
-						});
-				data = responseObject.getResponse();
-			} catch (IOException | NullPointerException exception) {
-				throw new ParseResponseException(UserDetailsErrorCode.USER_DETAILS_PARSE_ERROR.getErrorCode(),
-						UserDetailsErrorCode.USER_DETAILS_PARSE_ERROR.getErrorMessage() + exception.getMessage(),
-						exception);
-			}
-
-			if (data != null && data.getMosipUserDtoList() != null) {
-				List<UserDetailMapDto> userDetails = MapperUtils
-						.mapUserDetailsToUserDetailMap(data.getMosipUserDtoList());
-				syncUserDetailDto = new SyncUserDetailDto();
-				syncUserDetailDto.setUserDetails(userDetails);
-			}
-			return syncUserDetailDto;
-
-		} catch (HttpServerErrorException | HttpClientErrorException e) {
-			System.out.println(e.getResponseBodyAsString());
-			throw new SyncDataServiceException(UserDetailsErrorCode.USER_DETAILS_FETCH_EXCEPTION.getErrorCode(),
-					UserDetailsErrorCode.USER_DETAILS_FETCH_EXCEPTION.getErrorMessage(), e);
+			
+			responseObject = objectMapper.readValue(responseBody,
+					new TypeReference<ResponseWrapper<UserDetailResponseDto>>() {
+					});
+			userDetailResponseDto = responseObject.getResponse();
+		} catch (IOException | NullPointerException exception) {
+			throw new ParseResponseException(UserDetailsErrorCode.USER_DETAILS_PARSE_ERROR.getErrorCode(),
+					UserDetailsErrorCode.USER_DETAILS_PARSE_ERROR.getErrorMessage() + exception.getMessage(),
+					exception);
 		}
 
+		return userDetailResponseDto;
 	}
 
 }
