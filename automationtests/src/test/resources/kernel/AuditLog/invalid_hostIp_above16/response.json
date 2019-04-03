@@ -1,0 +1,10 @@
+{
+  "timestamp": 1549879103761,
+  "status": 200,
+  "errors": [
+    {
+      "errorCode": "KER-AUD-001",
+      "errorMessage": "HostIp size must be between 1 and 16"
+    }
+  ]
+}

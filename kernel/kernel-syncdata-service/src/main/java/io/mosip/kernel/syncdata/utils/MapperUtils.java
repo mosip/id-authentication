@@ -328,7 +328,7 @@ public class MapperUtils {
 
 		for (UserDetailDto userDetail : userDetails) {
 			UserDetailMapDto userDetailMapDto = new UserDetailMapDto();
-			userDetailMapDto.setUserName(userDetail.getUserName());
+			userDetailMapDto.setUserName(userDetail.getUserId());
 			userDetailMapDto.setMail(userDetail.getMail());
 			userDetailMapDto.setMobile(userDetail.getMobile());
 			userDetailMapDto.setLangCode(userDetail.getLangCode());

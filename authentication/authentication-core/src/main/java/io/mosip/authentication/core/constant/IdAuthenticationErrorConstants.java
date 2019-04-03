@@ -19,7 +19,7 @@ public enum IdAuthenticationErrorConstants {
 	// OTP
 	PHONE_EMAIL_NOT_REGISTERED("IDA-OTA-001",
 			"Phone no or e-mail not registered. Individual has to register and try again", "A0105"),
-	INVALID_OTP_REQUEST_TIMESTAMP("IDA-OTA-002", "Request to be received at MOSIP within 20 minutes", "A0106"),
+	INVALID_OTP_REQUEST_TIMESTAMP("IDA-OTA-002", "Request to be received at MOSIP within 20 min", "A0106"),
 	OTP_REQUEST_FLOODED("IDA-OTA-003", "Innumerous OTP requests received"),
 	OTP_GENERATION_FAILED("IDA-OTA-004", "Could not generate/send OTP"),
 	EXPIRED_OTP("IDA-OTA-005", "OTP has expired", "A0107"),

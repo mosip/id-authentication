@@ -3,14 +3,14 @@ package io.mosip.kernel.otpnotification.controller;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cloud.context.config.annotation.RefreshScope;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.mosip.kernel.core.http.RequestWrapper;
+import io.mosip.kernel.core.http.ResponseFilter;
+import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.otpnotification.spi.OtpNotification;
 import io.mosip.kernel.otpnotification.dto.OtpNotificationRequestDto;
 import io.mosip.kernel.otpnotification.dto.OtpNotificationResponseDto;
@@ -22,7 +22,6 @@ import io.swagger.annotations.ApiOperation;
  * @author Ritesh Sinha
  * @since 1.0.0
  */
-@RefreshScope
 @RestController
 @CrossOrigin
 public class OtpNotificationController {
@@ -34,18 +33,19 @@ public class OtpNotificationController {
 	private OtpNotification<OtpNotificationResponseDto, OtpNotificationRequestDto> otpNotificationService;
 
 	/**
-	 * Api to notify with OTP to user.
+	 * API to notify with OTP to user.
 	 * 
-	 * @param request
+	 * @param otpNotificationRequestDto
 	 *            the request dto.
 	 * @return the response entity.
 	 */
-	@PostMapping(value = "/v1.0/otp/send")
-	@ApiOperation(value = "Service to send OTP notification", response = OtpNotificationResponseDto.class)
-	public ResponseEntity<OtpNotificationResponseDto> sendOtpNotification(
-			@Valid @RequestBody OtpNotificationRequestDto request) {
-
-		return new ResponseEntity<>(otpNotificationService.sendOtpNotification(request), HttpStatus.OK);
+	@ResponseFilter
+	@PostMapping(value = "/otp/send")
+	@ApiOperation(value = "Service to send OTP notification")
+	public ResponseWrapper<OtpNotificationResponseDto> sendOtpNotification(
+			@Valid @RequestBody RequestWrapper<OtpNotificationRequestDto> otpNotificationRequestDto) {
+		ResponseWrapper<OtpNotificationResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(otpNotificationService.sendOtpNotification(otpNotificationRequestDto.getRequest()));
+		return responseWrapper;
 	}
-
 }

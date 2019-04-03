@@ -3,7 +3,6 @@ package io.mosip.kernel.masterdata.controller;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,10 +12,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.mosip.kernel.masterdata.dto.RequestDto;
+import io.mosip.kernel.core.http.RequestWrapper;
+import io.mosip.kernel.core.http.ResponseFilter;
+import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.masterdata.dto.TemplateFileFormatDto;
 import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
-import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.service.TemplateFileFormatService;
 import io.swagger.annotations.Api;
@@ -32,7 +32,7 @@ import io.swagger.annotations.ApiResponses;
  *
  */
 @RestController
-@RequestMapping("/v1.0/templatefileformats")
+@RequestMapping("/templatefileformats")
 @Api(tags = { "TemplateFileFormat" })
 public class TemplateFileFormatController {
 
@@ -47,12 +47,15 @@ public class TemplateFileFormatController {
 	 * 
 	 * @return {@link CodeAndLanguageCodeID}
 	 */
+	@ResponseFilter
 	@PostMapping
-	public ResponseEntity<CodeAndLanguageCodeID> createTemplateFileFormat(
-			@Valid @RequestBody RequestDto<TemplateFileFormatDto> templateFileFormatRequestDto) {
-		return new ResponseEntity<>(templateFileFormatService.createTemplateFileFormat(templateFileFormatRequestDto),
-				HttpStatus.OK);
+	public ResponseWrapper<CodeAndLanguageCodeID> createTemplateFileFormat(
+			@Valid @RequestBody RequestWrapper<TemplateFileFormatDto> templateFileFormatRequestDto) {
 
+		ResponseWrapper<CodeAndLanguageCodeID> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(
+				templateFileFormatService.createTemplateFileFormat(templateFileFormatRequestDto.getRequest()));
+		return responseWrapper;
 	}
 
 	/**
@@ -64,18 +67,20 @@ public class TemplateFileFormatController {
 	 * @return ResponseEntity TemplateFileFormat Code and LangCode which is updated
 	 *         successfully {@link ResponseEntity}
 	 */
+	@ResponseFilter
 	@PutMapping
-	@ApiOperation(value = "Service to update TemplateFileFormat", notes = "Update TemplateFileFormat and return TemplateFileFormat id", response = CodeAndLanguageCodeID.class)
-	@ApiResponses({
-			@ApiResponse(code = 200, message = "When TemplateFileFormat updated successfully", response = IdResponseDto.class),
+	@ApiOperation(value = "Service to update TemplateFileFormat", notes = "Update TemplateFileFormat and return TemplateFileFormat id")
+	@ApiResponses({ @ApiResponse(code = 200, message = "When TemplateFileFormat updated successfully"),
 			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
 			@ApiResponse(code = 404, message = "When TemplateFileFormat is not found"),
 			@ApiResponse(code = 500, message = "While updating TemplateFileFormat any error occured") })
-	public ResponseEntity<CodeAndLanguageCodeID> updateDevice(
-			@Valid @RequestBody RequestDto<TemplateFileFormatDto> templateFileFormatRequestDto) {
+	public ResponseWrapper<CodeAndLanguageCodeID> updateDevice(
+			@Valid @RequestBody RequestWrapper<TemplateFileFormatDto> templateFileFormatRequestDto) {
 
-		return new ResponseEntity<>(templateFileFormatService.updateTemplateFileFormat(templateFileFormatRequestDto),
-				HttpStatus.OK);
+		ResponseWrapper<CodeAndLanguageCodeID> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(
+				templateFileFormatService.updateTemplateFileFormat(templateFileFormatRequestDto.getRequest()));
+		return responseWrapper;
 	}
 
 	/**
@@ -85,14 +90,17 @@ public class TemplateFileFormatController {
 	 *            the TemplateFileFormat code
 	 * @return the code of templatefileformat
 	 */
+	@ResponseFilter
 	@DeleteMapping("/{code}")
-	@ApiOperation(value = "Service to delete TemplateFileFormat", notes = "Delete TemplateFileFormat and return code", response = CodeResponseDto.class)
-	@ApiResponses({
-			@ApiResponse(code = 200, message = "When TemplateFileFormat successfully deleted", response = CodeResponseDto.class),
+	@ApiOperation(value = "Service to delete TemplateFileFormat", notes = "Delete TemplateFileFormat and return code")
+	@ApiResponses({ @ApiResponse(code = 200, message = "When TemplateFileFormat successfully deleted"),
 			@ApiResponse(code = 400, message = "When path is invalid"),
 			@ApiResponse(code = 404, message = "When No document category found"),
 			@ApiResponse(code = 500, message = "While deleting document category any error occured") })
-	public ResponseEntity<CodeResponseDto> deleteDocumentCategory(@PathVariable("code") String code) {
-		return new ResponseEntity<>(templateFileFormatService.deleteTemplateFileFormat(code), HttpStatus.OK);
+	public ResponseWrapper<CodeResponseDto> deleteDocumentCategory(@PathVariable("code") String code) {
+
+		ResponseWrapper<CodeResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(templateFileFormatService.deleteTemplateFileFormat(code));
+		return responseWrapper;
 	}
 }

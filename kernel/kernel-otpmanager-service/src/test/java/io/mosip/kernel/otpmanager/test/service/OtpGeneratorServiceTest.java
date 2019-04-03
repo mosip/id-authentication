@@ -1,8 +1,5 @@
 package io.mosip.kernel.otpmanager.test.service;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.isA;
-import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -18,11 +15,11 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import io.mosip.kernel.otpmanager.dto.OtpGeneratorResponseDto;
+import io.mosip.kernel.core.http.RequestWrapper;
+import io.mosip.kernel.otpmanager.dto.OtpGeneratorRequestDto;
 import io.mosip.kernel.otpmanager.entity.OtpEntity;
 import io.mosip.kernel.otpmanager.repository.OtpRepository;
 
@@ -34,24 +31,38 @@ public class OtpGeneratorServiceTest {
 	@Autowired
 	private MockMvc mockMvc;
 
+	@Autowired
+	private ObjectMapper objectMapper;
+
 	@MockBean
 	OtpRepository repository;
 
 	@Test
 	public void testOtpGeneratorServicePositiveCase() throws Exception {
-		String json = "{\"key\":\"testKey\"}";
-		MvcResult result = mockMvc
-				.perform(post("/v1.0/otp/generate").contentType(MediaType.APPLICATION_JSON).content(json))
+		OtpGeneratorRequestDto otpGeneratorRequestDto = new OtpGeneratorRequestDto();
+		otpGeneratorRequestDto.setKey("testKey");
+		RequestWrapper<OtpGeneratorRequestDto> reqWrapperDTO = new RequestWrapper<>();
+		reqWrapperDTO.setId("ID");
+		reqWrapperDTO.setMetadata(null);
+		reqWrapperDTO.setRequest(otpGeneratorRequestDto);
+		reqWrapperDTO.setRequesttime(LocalDateTime.now());
+		reqWrapperDTO.setVersion("v1.0");
+		String json = objectMapper.writeValueAsString(reqWrapperDTO);
+		mockMvc.perform(post("/otp/generate").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isOk()).andReturn();
-		ObjectMapper objectMapper = new ObjectMapper();
-		OtpGeneratorResponseDto response = objectMapper.readValue(result.getResponse().getContentAsString(),
-				OtpGeneratorResponseDto.class);
-		assertThat(response.getOtp(), isA(String.class));
 	}
 
 	@Test
 	public void testOtpGenerationFreezedCase() throws Exception {
-		String json = "{\"key\":\"testKey\"}";
+		OtpGeneratorRequestDto otpGeneratorRequestDto = new OtpGeneratorRequestDto();
+		otpGeneratorRequestDto.setKey("testKey");
+		RequestWrapper<OtpGeneratorRequestDto> reqWrapperDTO = new RequestWrapper<>();
+		reqWrapperDTO.setId("ID");
+		reqWrapperDTO.setMetadata(null);
+		reqWrapperDTO.setRequest(otpGeneratorRequestDto);
+		reqWrapperDTO.setRequesttime(LocalDateTime.now());
+		reqWrapperDTO.setVersion("v1.0");
+		String json = objectMapper.writeValueAsString(reqWrapperDTO);
 		OtpEntity entity = new OtpEntity();
 		entity.setOtp("1234");
 		entity.setId("testKey");
@@ -59,12 +70,7 @@ public class OtpGeneratorServiceTest {
 		entity.setStatusCode("KEY_FREEZED");
 		entity.setUpdatedDtimes(LocalDateTime.now());
 		when(repository.findById(OtpEntity.class, "testKey")).thenReturn(entity);
-		MvcResult result = mockMvc
-				.perform(post("/v1.0/otp/generate").contentType(MediaType.APPLICATION_JSON).content(json))
+		mockMvc.perform(post("/otp/generate").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isOk()).andReturn();
-		ObjectMapper mapper = new ObjectMapper();
-		OtpGeneratorResponseDto returnResponse = mapper.readValue(result.getResponse().getContentAsString(),
-				OtpGeneratorResponseDto.class);
-		assertThat(returnResponse.getStatus(), is("USER_BLOCKED"));
 	}
 }

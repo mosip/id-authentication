@@ -24,6 +24,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.mosip.kernel.auditmanager.dto.AuditResponseDto;
 import io.mosip.kernel.auditmanager.request.AuditRequestDto;
 import io.mosip.kernel.auditmanager.service.impl.AuditManagerServiceImpl;
+import io.mosip.kernel.core.http.RequestWrapper;
 
 @RunWith(SpringRunner.class)
 @AutoConfigureMockMvc
@@ -64,11 +65,12 @@ public class AuditControllerTest {
 		auditResponseDto.setStatus(true);
 		when(service.addAudit(ArgumentMatchers.any())).thenReturn(auditResponseDto);
 
-		mockMvc.perform(post("/v1.0/audits").contentType(MediaType.APPLICATION_JSON)
-				.content(objectMapper.writeValueAsString(auditRequestDto))).andExpect(status().isOk())
-				.andExpect(jsonPath("$.status", is(true)));
+		RequestWrapper<AuditRequestDto> request = new RequestWrapper<>();
+		request.setRequest(auditRequestDto);
 
-
+		mockMvc.perform(post("/audits").contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(request))).andExpect(status().isOk())
+				.andExpect(jsonPath("$.response.status", is(true)));
 	}
 
 }

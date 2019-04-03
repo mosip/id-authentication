@@ -14,7 +14,6 @@ import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.masterdata.constant.ApplicationErrorCode;
 import io.mosip.kernel.masterdata.constant.RegistrationCenterTypeErrorCode;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterTypeDto;
-import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
 import io.mosip.kernel.masterdata.entity.RegistrationCenter;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterType;
@@ -59,8 +58,8 @@ public class RegistrationCenterTypeServiceImpl implements RegistrationCenterType
 	 */
 	@Override
 	public CodeAndLanguageCodeID createRegistrationCenterType(
-			RequestDto<RegistrationCenterTypeDto> registrationCenterTypeRequestDto) {
-		RegistrationCenterType entity = MetaDataUtils.setCreateMetaData(registrationCenterTypeRequestDto.getRequest(),
+			RegistrationCenterTypeDto registrationCenterTypeRequestDto) {
+		RegistrationCenterType entity = MetaDataUtils.setCreateMetaData(registrationCenterTypeRequestDto,
 				RegistrationCenterType.class);
 		RegistrationCenterType registrationCenterType;
 		try {
@@ -82,18 +81,15 @@ public class RegistrationCenterTypeServiceImpl implements RegistrationCenterType
 	 * updateRegistrationCenterType(io.mosip.kernel.masterdata.dto.RequestDto)
 	 */
 	@Override
-	public CodeAndLanguageCodeID updateRegistrationCenterType(
-			RequestDto<RegistrationCenterTypeDto> registrationCenterTypeDto) {
-		RegistrationCenterTypeDto registrationCenterType = registrationCenterTypeDto.getRequest();
+	public CodeAndLanguageCodeID updateRegistrationCenterType(RegistrationCenterTypeDto registrationCenterTypeDto) {
 		CodeAndLanguageCodeID registrationCenterTypeId = new CodeAndLanguageCodeID();
-		MapperUtils.mapFieldValues(registrationCenterType, registrationCenterTypeId);
+		MapperUtils.mapFieldValues(registrationCenterTypeDto, registrationCenterTypeId);
 		try {
 			RegistrationCenterType registrationCenterTypeEntity = registrationCenterTypeRepository
-					.findByCodeAndLangCodeAndIsDeletedFalseOrIsDeletedIsNull(
-							registrationCenterTypeDto.getRequest().getCode(),
-							registrationCenterTypeDto.getRequest().getLangCode());
+					.findByCodeAndLangCodeAndIsDeletedFalseOrIsDeletedIsNull(registrationCenterTypeDto.getCode(),
+							registrationCenterTypeDto.getLangCode());
 			if (registrationCenterTypeEntity != null) {
-				MetaDataUtils.setUpdateMetaData(registrationCenterType, registrationCenterTypeEntity, false);
+				MetaDataUtils.setUpdateMetaData(registrationCenterTypeDto, registrationCenterTypeEntity, false);
 				registrationCenterTypeRepository.update(registrationCenterTypeEntity);
 			} else {
 				throw new RequestException(

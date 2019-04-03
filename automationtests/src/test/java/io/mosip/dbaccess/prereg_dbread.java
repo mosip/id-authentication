@@ -30,8 +30,8 @@ public class prereg_dbread {
 	{
 		boolean flag=false;
 		try {	
-			if(BaseTestCase.environment.equalsIgnoreCase("integration"))
-				factory = new Configuration().configure("prereginteg.cfg.xml")
+			if(BaseTestCase.environment.equalsIgnoreCase("dev"))
+				factory = new Configuration().configure("preregdev.cfg.xml")
 			.addAnnotatedClass(OtpEntity.class).buildSessionFactory();	
 					else
 					{
@@ -68,8 +68,8 @@ public class prereg_dbread {
 		{
 			boolean flag=false;
 		
-			if(BaseTestCase.environment.equalsIgnoreCase("integration"))
-				factory = new Configuration().configure("prereginteg.cfg.xml")
+			if(BaseTestCase.environment.equalsIgnoreCase("dev"))
+				factory = new Configuration().configure("preregdev.cfg.xml")
 			.addAnnotatedClass(OtpEntity.class).buildSessionFactory();	
 					else
 					{
@@ -162,8 +162,8 @@ public class prereg_dbread {
 		boolean flag=false;
 		//String preId;
 		
-		if(BaseTestCase.environment.equalsIgnoreCase("integration"))
-			factory = new Configuration().configure("prereginteg.cfg.xml")
+		if(BaseTestCase.environment.equalsIgnoreCase("dev"))
+			factory = new Configuration().configure("preregdev.cfg.xml")
 		.addAnnotatedClass(OtpEntity.class).buildSessionFactory();	
 				else
 				{
@@ -227,8 +227,8 @@ public class prereg_dbread {
 		boolean flag=false;
 		//String preId;
 		
-		if(BaseTestCase.environment.equalsIgnoreCase("integration"))
-			factory = new Configuration().configure("prereginteg.cfg.xml")
+		if(BaseTestCase.environment.equalsIgnoreCase("dev"))
+			factory = new Configuration().configure("preregdev.cfg.xml")
 		.addAnnotatedClass(OtpEntity.class).buildSessionFactory();	
 				else
 				{
@@ -273,6 +273,96 @@ public class prereg_dbread {
           
     }
 	
+	
+	@SuppressWarnings("unchecked")
+	private static List<Object> fetchingData(Session session, String queryStr)
+	{
+		int size;
+				
+		String queryString=queryStr;
+		
+		Query query = session.createSQLQuery(queryString);
+	
+		List<Object> objs = (List<Object>) query.list();
+		size=objs.size();
+		logger.info("Size is : " +size);
+		
+		// commit the transaction
+		session.getTransaction().commit();
+			
+			factory.close();
+		
+		
+			return objs;
+		
+	
+	}
+	@SuppressWarnings("deprecation")
+	public static List<Object> fetchOTPFromDB(String queryStr, Class dtoClass)
+	{
+		List<Object> objs =null;
+		if(BaseTestCase.environment.equalsIgnoreCase("integration"))
+			factory = new Configuration().configure("kernelinteg.cfg.xml")
+		.addAnnotatedClass(OtpEntity.class).buildSessionFactory();	
+				else
+				{
+					if(BaseTestCase.environment.equalsIgnoreCase("qa"))
+						factory = new Configuration().configure("kernelqa.cfg.xml")
+					.addAnnotatedClass(dtoClass).buildSessionFactory();	
+				}
+		session = factory.getCurrentSession();
+		session.beginTransaction();
+		objs=fetchingOTPData(session, queryStr);
+		
+		return objs;
+		
+
+	}
+	@SuppressWarnings("deprecation")
+	public static List<Object> getConsumedStatus(String queryStr, Class dtoClass,String intdbConfig,String qadbConfig )
+	{
+		List<Object> objs =null;
+		if(BaseTestCase.environment.equalsIgnoreCase("integration"))
+			factory = new Configuration().configure(intdbConfig)
+		.addAnnotatedClass(dtoClass).buildSessionFactory();	
+				else
+				{
+					if(BaseTestCase.environment.equalsIgnoreCase("qa"))
+						factory = new Configuration().configure(qadbConfig)
+					.addAnnotatedClass(dtoClass).buildSessionFactory();	
+				}
+		session = factory.getCurrentSession();
+		session.beginTransaction();
+		objs=fetchingOTPData(session, queryStr);
+		
+		return objs;
+		
+
+	}
+	
+	@SuppressWarnings("unchecked")
+	private static List<Object> fetchingOTPData(Session session, String queryStr)
+	{
+		int size;
+				
+		String queryString=queryStr;
+		
+		Query query = session.createSQLQuery(queryString);
+	
+		List<Object> objs = (List<Object>) query.list();
+		size=objs.size();
+		logger.info("Size is : " +size);
+		
+		// commit the transaction
+		session.getTransaction().commit();
+			
+			factory.close();
+		
+		
+			return objs;
+		
+	
+	}
 	
 
 
