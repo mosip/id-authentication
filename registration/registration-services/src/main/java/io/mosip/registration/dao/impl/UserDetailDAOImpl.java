@@ -158,7 +158,7 @@ public class UserDetailDAOImpl implements UserDetailDAO {
 				usrPwd.setPwd(new String(userDtals.getUserPassword(), StandardCharsets.UTF_8));
 				usrPwd.setStatusCode("00");
 				usrPwd.setIsActive(true);
-				usrPwd.setLangCode("eng");
+				usrPwd.setLangCode(RegistrationConstants.ENGLISH_LANG_CODE);
 				if (SessionContext.isSessionContextAvailable()) {
 					usrPwd.setCrBy(SessionContext.userContext().getUserId());
 				} else {
@@ -172,7 +172,7 @@ public class UserDetailDAOImpl implements UserDetailDAO {
 				userDtls.setEmail(userDtals.getMail());
 				userDtls.setMobile(userDtals.getMobile());
 				userDtls.setName(userDtals.getName());
-				userDtls.setLangCode("eng");
+				userDtls.setLangCode(RegistrationConstants.ENGLISH_LANG_CODE);
 				if (SessionContext.isSessionContextAvailable()) {
 					userDtls.setCrBy(SessionContext.userContext().getUserId());
 				} else {
@@ -189,7 +189,7 @@ public class UserDetailDAOImpl implements UserDetailDAO {
 
 				UserRole roles = new UserRole();
 				roles.setIsActive(true);
-				roles.setLangCode("eng");
+				roles.setLangCode(RegistrationConstants.ENGLISH_LANG_CODE);
 				if (SessionContext.isSessionContextAvailable()) {
 					roles.setCrBy(SessionContext.userContext().getUserId());
 				} else {
