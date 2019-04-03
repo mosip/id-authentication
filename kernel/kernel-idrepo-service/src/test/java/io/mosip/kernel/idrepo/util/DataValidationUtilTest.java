@@ -7,8 +7,8 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.validation.BindException;
 import org.springframework.validation.Errors;
 
+import io.mosip.kernel.core.idrepo.dto.IdRequestDTO;
 import io.mosip.kernel.core.idrepo.exception.IdRepoDataValidationException;
-import io.mosip.kernel.idrepo.dto.IdRequestDTO;
 import io.mosip.kernel.idrepo.util.DataValidationUtil;
 
 /**

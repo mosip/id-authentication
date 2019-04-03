@@ -18,13 +18,12 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.multipart.MultipartFile;
 
-import io.mosip.kernel.core.notification.spi.EmailNotification;
-import io.mosip.kernel.emailnotification.NotificationEmailBootApplication;
-import io.mosip.kernel.emailnotification.dto.ResponseDto;
+import io.mosip.kernel.emailnotification.service.impl.EmailNotificationServiceImpl;
+import io.mosip.kernel.emailnotification.test.NotificationEmailTestBootApplication;
 import io.mosip.kernel.emailnotification.util.EmailNotificationUtils;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = NotificationEmailBootApplication.class)
+@SpringBootTest(classes = NotificationEmailTestBootApplication.class)
 public class MailNotifierServiceTest {
 
 	@Autowired
@@ -34,7 +33,7 @@ public class MailNotifierServiceTest {
 	EmailNotificationUtils utils;
 
 	@Autowired
-	EmailNotification<MultipartFile[], ResponseDto> service;
+	EmailNotificationServiceImpl service;
 
 	@Test
 	public void verifyAddAttachmentFunctionality() throws Exception {

@@ -1,11 +1,13 @@
 {
-   "err": null,
-   "status": true,
-   "resTime": "2019-01-14T04:49:55.904Z",
-   "response":    {
-      "registration_center_id": "10004",
-      "appointment_date": "2019-01-16",
-      "time_slot_from": "09:00",
-      "time_slot_to": "09:13"
-   }
+"id":"mosip.pre-registration.booking.book",
+"version":"1.0",
+"responsetime":"2019-04-01T05:14:48.346Z",
+"response":
+{
+"registration_center_id":"10004",
+"appointment_date":"2019-04-03",
+"time_slot_from":"09:00",
+"time_slot_to":"09:15"
+},
+"errors":null
 }

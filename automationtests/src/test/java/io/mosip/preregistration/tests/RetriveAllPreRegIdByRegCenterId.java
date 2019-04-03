@@ -71,6 +71,7 @@ public class RetriveAllPreRegIdByRegCenterId extends BaseTestCase implements ITe
 	static String requestKeyFile = "RetrivePreIdByRegCenterIdRequest.json";
 	PreRegistrationLibrary preRegLib=new PreRegistrationLibrary();
 	private static CommonLibrary commonLibrary = new CommonLibrary();
+	private static ApplicationLibrary applicationLibrary = new ApplicationLibrary();
 	private static String preReg_URI ;
 	
 	//implement,IInvokedMethodListener
@@ -83,7 +84,7 @@ public class RetriveAllPreRegIdByRegCenterId extends BaseTestCase implements ITe
 		
 		
 		String testParam = context.getCurrentXmlTest().getParameter("testType");
-		switch ("smoke") {
+		switch (testParam) {
 		case "smoke":
 			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
 		case "regression":
@@ -101,37 +102,70 @@ public class RetriveAllPreRegIdByRegCenterId extends BaseTestCase implements ITe
 		
 		
 		Expectedresponse = ResponseRequestMapper.mapResponse(testSuite, object);
-	
+		JSONObject actualRequest = ResponseRequestMapper.mapRequest(testSuite, object);
+		String testCase = object.get("testCaseName").toString();
 		
 		
-		//Retrieve all pre-registration ids by registration center id
-		Response retrivePreIDFromRegCenId = preRegLib.retriveAllPreIdByRegId();
+		if (testCase.contains("smoke")) {
+
+			/* Creating the Pre-Registration Application */
+			Response createApplicationResponse = preRegLib.CreatePreReg();
+
+			/* Document Upload for created application */
+			Response docUploadResponse = preRegLib.documentUpload(createApplicationResponse);
+
+			/* PreId of Uploaded document */
+			preId = docUploadResponse.jsonPath().get("response[0].preRegistrationId").toString();
+
+			/* Fetch availability[or]center details */
+			Response fetchCenter = preRegLib.FetchCentre();
+
+			String regCenterId = fetchCenter.jsonPath().get("response.regCenterId").toString();
+
+			/* Book An Appointment for the available data */
+			Response bookAppointmentResponse = preRegLib.BookAppointment(docUploadResponse, fetchCenter,
+					preId.toString());
+
+			// Retrieve all pre-registration ids by registration center id
+			Response retrivePreIDFromRegCenId = preRegLib.retriveAllPreIdByRegId(regCenterId, preId);
+			
+			
+
+			outerKeys.add("resTime");
+			innerKeys.add("registartion_center_id");
+			innerKeys.add("pre_registration_ids");
+
+			status = AssertResponses.assertResponses(retrivePreIDFromRegCenId, Expectedresponse, outerKeys, innerKeys);
+
+		} else {
+			// Actualresponse=applicationLibrary.getRequest(preReg_URI,GetHeader.getHeader(actualRequest));
+
+			Actualresponse = applicationLibrary.postRequest(actualRequest, preReg_URI);
+
+			outerKeys.add("resTime");
+			innerKeys.add("registartion_center_id");
+			innerKeys.add("pre_registration_ids");
+
+			status = AssertResponses.assertResponses(Actualresponse, Expectedresponse, outerKeys, innerKeys);
+
+		}
 		
-	
 		
-		outerKeys.add("resTime");
-		innerKeys.add("preRegistrationId");
-		
-		
-		
-		status = AssertResponses.assertResponses(retrivePreIDFromRegCenId, Expectedresponse, outerKeys, innerKeys);
 		if (status) {
-			finalStatus="Pass";		
+			finalStatus = "Pass";
+			softAssert.assertAll();
+			object.put("status", finalStatus);
+			arr.add(object);
+		} else {
+			finalStatus = "Fail";
+		}
+
+		boolean setFinalStatus = false;
+
+		setFinalStatus = finalStatus.equals("Pass") ? true : false;
+
+		Verify.verify(setFinalStatus);
 		softAssert.assertAll();
-		object.put("status", finalStatus);
-		arr.add(object);
-		}
-		else {
-			finalStatus="Fail";
-		}
-		boolean setFinalStatus=false;
-        if(finalStatus.equals("Fail"))
-              setFinalStatus=false;
-        else if(finalStatus.equals("Pass"))
-              setFinalStatus=true;
-        Verify.verify(setFinalStatus);
-        softAssert.assertAll();
-		
 		
 	}
 
@@ -142,7 +176,7 @@ public class RetriveAllPreRegIdByRegCenterId extends BaseTestCase implements ITe
 		testCaseName = object.get("testCaseName").toString();
 		
 		
-		preReg_URI = commonLibrary.fetch_IDRepo("preReg_RetriveBookedPreIdsByRegId");
+		preReg_URI = commonLibrary.fetch_IDRepo().get("preReg_RetriveBookedPreIdsByRegId");
 		
 	}
 

@@ -27,7 +27,6 @@ import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessor
 import io.mosip.registration.processor.core.util.JsonUtil;
 import io.mosip.registration.processor.packet.storage.exception.IdentityNotFoundException;
 import io.mosip.registration.processor.packet.storage.utils.Utilities;
-import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 
 /**
  * The Class MasterDataValidation.
@@ -40,9 +39,6 @@ public class MasterDataValidation {
 
 	/** The reg proc logger. */
 	private static Logger regProcLogger = RegProcessorLogger.getLogger(MasterDataValidation.class);
-
-	/** The registration status dto. */
-	InternalRegistrationStatusDto registrationStatusDto;
 
 	/** The registration processor rest service. */
 	RegistrationProcessorRestClientService<Object> registrationProcessorRestService;
@@ -62,6 +58,12 @@ public class MasterDataValidation {
 	/** The Constant VALUE. */
 	private static final String VALUE = "value";
 
+	private static final String PRIMARY_LANGUAGE = "primary.language";
+
+	private static final String SECONDARY_LANGUAGE = "secondary.language";
+
+	private static final String ATTRIBUTES = "registration.processor.masterdata.validation.attributes";
+
 	/**
 	 * Instantiates a new master data validation.
 	 *
@@ -74,9 +76,8 @@ public class MasterDataValidation {
 	 * @param utility
 	 *            the utility
 	 */
-	public MasterDataValidation(InternalRegistrationStatusDto registrationStatusDto, Environment env,
+	public MasterDataValidation(Environment env,
 			RegistrationProcessorRestClientService<Object> registrationProcessorRestService, Utilities utility) {
-		this.registrationStatusDto = registrationStatusDto;
 		this.env = env;
 		this.registrationProcessorRestService = registrationProcessorRestService;
 		this.utility = utility;
@@ -92,13 +93,13 @@ public class MasterDataValidation {
 	 */
 	public Boolean validateMasterData(String jsonString) {
 		boolean isValid = false;
-		String primaryLanguage = env.getProperty("primary.language");
-		String secondaryLanguage = env.getProperty("secondary.language");
+		String primaryLanguage = env.getProperty(PRIMARY_LANGUAGE);
+		String secondaryLanguage = env.getProperty(SECONDARY_LANGUAGE);
 		try {
 
 			demographicIdentity = getDemographicJson(jsonString);
 
-			String[] attributes = env.getProperty("registration.processor.idjson.attributes").split(",");
+			String[] attributes = env.getProperty(ATTRIBUTES).split(",");
 			List<String> list = new ArrayList<>(Arrays.asList(attributes));
 
 			Iterator<String> it = list.iterator();
@@ -130,18 +131,17 @@ public class MasterDataValidation {
 						isValid = false;
 						regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
 								LoggerFileConstant.REGISTRATIONID.toString(), "",
-								PlatformErrorMessages.RPR_PVM_IDENTITY_INVALID.getMessage());
-						this.registrationStatusDto
-								.setStatusComment(StatusMessage.MASTERDATA_VALIDATION_FAILURE_INVALID_ATTRIBUTES + key);
+								PlatformErrorMessages.RPR_PVM_IDENTITY_INVALID.getMessage() + " " + key
+										+ "and for values are" + engValue + " " + araValue);
+
 						break;
 					}
 				} else {
 					isValid = false;
 					regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
 							LoggerFileConstant.REGISTRATIONID.toString(), "",
-							PlatformErrorMessages.RPR_PVM_RESOURCE_NOT_FOUND.getMessage());
-					this.registrationStatusDto
-							.setStatusComment(StatusMessage.MASTERDATA_VALIDATION_FAILED_RESOURCE_NOT_FOUND + key);
+							PlatformErrorMessages.RPR_PVM_RESOURCE_NOT_FOUND.getMessage() + " " + key);
+
 					break;
 
 				}
@@ -151,14 +151,14 @@ public class MasterDataValidation {
 			isValid = false;
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					"", PlatformErrorMessages.RPR_PVM_IDENTITY_NOT_FOUND.getMessage() + e.getMessage());
-			this.registrationStatusDto.setStatusComment(StatusMessage.MASTERDATA_VALIDATION_FAILED);
+
 		}
 
 		catch (Exception e) {
 			isValid = false;
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					"", PlatformErrorMessages.STRUCTURAL_VALIDATION_FAILED.getMessage() + e.getMessage());
-			this.registrationStatusDto.setStatusComment(StatusMessage.MASTERDATA_VALIDATION_FAILED);
+
 		}
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), "",
 				"MasterDataValidation::validateMasterData::exit");
@@ -201,7 +201,6 @@ public class MasterDataValidation {
 					regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
 							LoggerFileConstant.REGISTRATIONID.toString(), "",
 							PlatformErrorMessages.RPR_PVM_API_RESOUCE_ACCESS_FAILED.getMessage() + ex.getMessage());
-					this.registrationStatusDto.setStatusComment(error.getErrorMessage());
 
 				}
 			}

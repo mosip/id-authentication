@@ -1,9 +1,10 @@
 {
-  "err": {
-    "errorCode": "PRG_DATA_SYNC_009",
-    "message": "INVALID_REGISTRATION_CENTER_ID"
-  },
-  "status": false,
-  "resTime": "2019-01-30T09:53:27.015Z",
-  "response": null
+    "id": null,
+    "version": null,
+    "err": {
+        "errorCode": "PRG_DATA_SYNC_009",
+        "message": "INVALID_REGISTRATION_CENTER_ID"
+    },
+    "responsetime": "2019-03-29T09:19:49.500Z",
+    "response": null
 }

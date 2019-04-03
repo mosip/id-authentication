@@ -3,77 +3,27 @@
  */
 package io.mosip.registration.processor.packet.service.dto.demographic;
 
+import java.io.Serializable;
+
 import io.mosip.registration.processor.packet.service.dto.BaseDTO;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  * @author Sowmya
  * @since 1.0.0
  */
-public class LocationDTO extends BaseDTO {
+@Data
+@EqualsAndHashCode(callSuper = true)
+public class LocationDTO extends BaseDTO implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -5199989198801823468L;
 	protected String region;
 	protected String city;
 	protected String province;
 	protected String postalCode;
-
-	/**
-	 * @return the region
-	 */
-	public String getRegion() {
-		return region;
-	}
-
-	/**
-	 * @param region
-	 *            the region to set
-	 */
-	public void setRegion(String region) {
-		this.region = region;
-	}
-
-	/**
-	 * @return the province
-	 */
-	public String getProvince() {
-		return province;
-	}
-
-	/**
-	 * @param province
-	 *            the province to set
-	 */
-	public void setProvince(String province) {
-		this.province = province;
-	}
-
-	/**
-	 * @return the city
-	 */
-	public String getCity() {
-		return city;
-	}
-
-	/**
-	 * @param city
-	 *            the city to set
-	 */
-	public void setCity(String city) {
-		this.city = city;
-	}
-
-	/**
-	 * @return the postalCode
-	 */
-	public String getPostalCode() {
-		return postalCode;
-	}
-
-	/**
-	 * @param postalCode
-	 *            the postalCode to set
-	 */
-	public void setPostalCode(String postalCode) {
-		this.postalCode = postalCode;
-	}
 
 }

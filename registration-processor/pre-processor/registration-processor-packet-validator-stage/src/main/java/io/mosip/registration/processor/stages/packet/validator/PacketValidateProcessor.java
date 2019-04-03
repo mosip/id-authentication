@@ -182,7 +182,7 @@ public class PacketValidateProcessor {
 					FilesValidation filesValidation = new FilesValidation(adapter, registrationStatusDto);
 					isFilesValidated = filesValidation.filesValidation(registrationId, packetMetaInfo.getIdentity());
 
-					
+
 					if (isFilesValidated) {
 						CheckSumValidation checkSumValidation = new CheckSumValidation(adapter, registrationStatusDto);
 						isCheckSumValidated = checkSumValidation.checksumvalidation(registrationId,
@@ -381,13 +381,6 @@ public class PacketValidateProcessor {
 				code = PlatformErrorMessages.REVERSE_DATA_SYNC_FAILED.getCode();
 			}
 
-		} catch (BaseUncheckedException e) {
-			object.setInternalError(Boolean.TRUE);
-
-			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), registrationId,
-					PlatformErrorMessages.STRUCTURAL_VALIDATION_FAILED.getMessage(), e.toString());
-
-			description = "Schema Validation Failed";
 		} finally {
 			description = isTransactionSuccessful ? "Reverse data sync of Pre-RegistrationIds sucessful" : description;
 			String eventId = isTransactionSuccessful ? EventId.RPR_402.toString() : EventId.RPR_405.toString();
@@ -407,8 +400,8 @@ public class PacketValidateProcessor {
 	}
 
 	private void setApplicant(Identity identity, InternalRegistrationStatusDto registrationStatusDto) {
-		IdentityIteratorUtil identityIteratorUtil = new IdentityIteratorUtil();
-		String applicantType = identityIteratorUtil.getFieldValue(identity.getMetaData(), APPLICANT_TYPE);
+		IdentityIteratorUtil identityIterator = new IdentityIteratorUtil();
+		String applicantType = identityIterator.getFieldValue(identity.getMetaData(), APPLICANT_TYPE);
 		registrationStatusDto.setApplicantType(applicantType);
 
 	}
