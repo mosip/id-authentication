@@ -92,7 +92,7 @@ public class SyncStatusValidatorServiceImpl extends BaseService implements SyncS
 			validatingRegisteredPacketCountAndDuration(errorResponseDTOList);
 			validatingSyncJobsConfigAndYetToExportPacketCountAndDuration(errorResponseDTOList);
 			validatingCenterToMachineDistance(errorResponseDTOList);
-			validatingLastSoftwareUpdateDuration (errorResponseDTOList);
+			//validatingLastSoftwareUpdateDuration (errorResponseDTOList);
 			
 			LOGGER.info(LoggerConstants.OPT_TO_REG_LOGGER_SESSION_ID, APPLICATION_NAME, APPLICATION_ID,
 					"Validating the sync status ended");
