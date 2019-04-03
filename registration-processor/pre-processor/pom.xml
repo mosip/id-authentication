@@ -18,6 +18,6 @@
 		<module>registration-processor-packet-validator-stage</module>
 		<module>registration-processor-osi-validator-stage</module>
 		<module>registration-processor-connector-stage</module>
-
+		<module>external-stage</module>
 	</modules>
 </project>
