@@ -1,3 +1,4 @@
+
 package io.mosip.preregistration.application.test.controller;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -16,6 +17,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentMatchers;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,6 +35,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import io.mosip.kernel.auth.adapter.AuthUserDetails;
 import io.mosip.preregistration.application.DemographicTestApplication;
 import io.mosip.preregistration.application.dto.DeletePreRegistartionDTO;
 import io.mosip.preregistration.application.dto.DemographicRequestDTO;
@@ -78,6 +81,8 @@ public class DemographicControllerTest {
 	@MockBean
 	private DemographicService preRegistrationService;
 
+	@Mock
+	private AuthUserDetails authUserDetails;
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	private Object jsonObject = null;
@@ -178,7 +183,6 @@ public class DemographicControllerTest {
 	@WithUserDetails("individual")
 	@Test
 	public void getAllApplicationTest() throws Exception {
-
 		String userId = "9988905333";
 		MainListResponseDTO<PreRegistrationViewDTO> response = new MainListResponseDTO<>();
 		List<PreRegistrationViewDTO> viewList = new ArrayList<>();
@@ -187,12 +191,13 @@ public class DemographicControllerTest {
 		viewDto.setStatusCode("Pending_Appointment");
 		viewList.add(viewDto);
 		response.setResponse(viewList);
-
+		Mockito.when(preRegistrationService.authUserDetails()).thenReturn(authUserDetails);
+		Mockito.when(authUserDetails.getUserId()).thenReturn(userId);
 		Mockito.when(preRegistrationService.getAllApplicationDetails(Mockito.anyString())).thenReturn(response);
-
-		RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/applications/")
+		RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/applications")
 				.contentType(MediaType.APPLICATION_JSON_VALUE).characterEncoding("UTF-8")
-				.accept(MediaType.APPLICATION_JSON_VALUE).param("user_id", userId);
+				.accept(MediaType.APPLICATION_JSON_VALUE);
+
 
 		mockMvc.perform(requestBuilder).andExpect(status().isOk());
 
@@ -215,9 +220,11 @@ public class DemographicControllerTest {
 		response.setResponse(statusList);
 
 		Mockito.when(preRegistrationService.getApplicationStatus(Mockito.anyString())).thenReturn(response);
-		RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/applications/status/")
+
+		RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/applications/status/{preRegistrationId}",preId)
 				.contentType(MediaType.APPLICATION_JSON_VALUE).characterEncoding("UTF-8")
-				.accept(MediaType.APPLICATION_JSON_VALUE).param("pre_registration_id", preId);
+				.accept(MediaType.APPLICATION_JSON_VALUE);
+
 
 		mockMvc.perform(requestBuilder).andExpect(status().isOk());
 	}
@@ -240,9 +247,11 @@ public class DemographicControllerTest {
 		response.setResponse(DeleteList);
 		Mockito.when(preRegistrationService.deleteIndividual(ArgumentMatchers.any())).thenReturn(response);
 
-		RequestBuilder requestBuilder = MockMvcRequestBuilders.delete("/applications")
+
+		RequestBuilder requestBuilder = MockMvcRequestBuilders.delete("/applications/{preRegistrationId}",preId)
 				.contentType(MediaType.APPLICATION_JSON_VALUE).characterEncoding("UTF-8")
-				.accept(MediaType.APPLICATION_JSON_VALUE).param("pre_registration_id", preId);
+				.accept(MediaType.APPLICATION_JSON_VALUE);
+
 		mockMvc.perform(requestBuilder).andExpect(status().isOk());
 	}
 
@@ -261,12 +270,13 @@ public class DemographicControllerTest {
 		saveList.add(createDto);
 		response.setResponse(saveList);
 
-		Mockito.when(preRegistrationService.getDemographicData("1234")).thenReturn(response);
 
-		RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/applications/details")
+		Mockito.when(preRegistrationService.getDemographicData(Mockito.any())).thenReturn(response);
+
+		RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/applications/{preRegistrationId}",createDto.getPreRegistrationId())
 				.contentType(MediaType.APPLICATION_JSON_VALUE).characterEncoding("UTF-8")
-				.accept(MediaType.APPLICATION_JSON_VALUE)
-				.param("pre_registration_id", createDto.getPreRegistrationId());
+				.accept(MediaType.APPLICATION_JSON_VALUE);
+
 
 		mockMvc.perform(requestBuilder).andExpect(status().isOk());
 	}
@@ -285,41 +295,16 @@ public class DemographicControllerTest {
 
 		Mockito.when(preRegistrationService.updatePreRegistrationStatus("1234", "Booked")).thenReturn(response);
 
-		RequestBuilder requestBuilder = MockMvcRequestBuilders.put("/applications")
+		RequestBuilder requestBuilder = MockMvcRequestBuilders.put("/applications/{preRegistrationId}","1234")
 				.contentType(MediaType.APPLICATION_JSON_VALUE).characterEncoding("UTF-8")
-				.accept(MediaType.APPLICATION_JSON_VALUE).param("pre_registration_id", "1234")
-				.param("status_code", "Booked");
+				.accept(MediaType.APPLICATION_JSON_VALUE)
+				.param("statusCode", "Booked");
+
 
 		mockMvc.perform(requestBuilder).andExpect(status().isOk());
 	}
 
-	/**
-	 * @throws Exception
-	 *             on error
-	 */
-	@WithUserDetails("individual")
-	@Test
-	public void getAllApplicationByDateTest() throws Exception {
-
-		String fromDate = "2018-12-06";
-		String toDate = "2018-12-06";
-		MainListResponseDTO<String> response = new MainListResponseDTO<>();
-		List<String> preIds = new ArrayList<>();
-		preIds.add("1234");
-		response.setResponse(preIds);
-
-		Mockito.when(preRegistrationService.getPreRegistrationByDate(Mockito.any(), Mockito.any()))
-				.thenReturn(response);
-
-		RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/applications/byDateTime/")
-				.contentType(MediaType.APPLICATION_JSON_VALUE).characterEncoding("UTF-8")
-				.accept(MediaType.APPLICATION_JSON_VALUE).param("from_date", fromDate)
-				.accept(MediaType.APPLICATION_JSON_VALUE).param("to_date", toDate);
-
-		mockMvc.perform(requestBuilder).andExpect(status().isOk());
-
-	}
-
+	
 	/**
 	 * @throws Exception
 	 *             on error
@@ -353,4 +338,7 @@ public class DemographicControllerTest {
 		mockMvc.perform(requestBuilder).andExpect(status().isOk());
 	}
 
+
 }
+
+

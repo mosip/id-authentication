@@ -399,7 +399,9 @@ public class DataSyncServiceUtilTest {
 				HttpStatus.OK);
 		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
 				Mockito.eq(new ParameterizedTypeReference<MainListResponseDTO<DemographicResponseDTO>>() {
-				}))).thenReturn(respEntity);
+
+				}),Mockito.anyMap())).thenReturn(respEntity);
+
 
 		DemographicResponseDTO response = serviceUtil.callGetPreRegInfoRestService(preId);
 		assertEquals(demographicResponseDTO.getPreRegistrationId(), response.getPreRegistrationId());
@@ -531,6 +533,7 @@ public class DataSyncServiceUtilTest {
 				HttpStatus.OK);
 		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.POST), Mockito.any(),
 				Mockito.eq(new ParameterizedTypeReference<MainResponseDTO<Map<String, String>>>() {
+
 				}))).thenReturn(respEntity);
 
 		serviceUtil.getLastUpdateTimeStamp(preRegDTO);
@@ -571,3 +574,5 @@ public class DataSyncServiceUtilTest {
 	}
 
 }
+
+
