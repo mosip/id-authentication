@@ -136,33 +136,19 @@
 		</choice>
 	</route>
 	<route id="external-stage-->demo-dedupe route">
-		<from uri="vertx:external-stage-bus-out" />
-		
+		<from uri="vertx:external-stage-bus-out" />	
 		<log
 			message="external-stage-->demo-dedupe route ${bodyAs(String)}" />
-		<choice>
-				
+		<choice>			
 			<when>	
 				<simple>${bodyAs(String)} contains '"isValid":true'</simple>
-				<convertBodyTo type="java.lang.String"/>
-				<process ref="messageProcessor"/>
 				<to uri="vertx:demo-dedupe-bus-in" />
-			</when>
-			<when>
-				<simple>${bodyAs(String)} contains '"isValid":false'</simple>
-				<convertBodyTo type="java.lang.String"/>
-				<process ref="messageProcessor"/>
-				<to uri="vertx:message-sender-bus" />
-			</when>
+			</when>	
 			<when>
 				<simple>${bodyAs(String)} contains '"internalError":true'</simple>
-				<convertBodyTo type="java.lang.String"/>
-				<process ref="messageProcessor"/>
 				<to uri="vertx:retry" />
 			</when>
 			<otherwise>
-				<convertBodyTo type="java.lang.String"/>
-				<process ref="messageProcessor"/>
 				<to uri="vertx:error" />
 			</otherwise>
 		</choice>

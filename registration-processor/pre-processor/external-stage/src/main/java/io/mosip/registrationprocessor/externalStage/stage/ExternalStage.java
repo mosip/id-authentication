@@ -18,7 +18,6 @@ import io.mosip.registration.processor.core.exception.ApisResourceAccessExceptio
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registrationprocessor.externalStage.entity.MessageRequestDTO;
-import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonObject;
 
 
@@ -64,8 +63,8 @@ public class ExternalStage extends MosipVerticleAPIManager{
 	public MessageDTO process(MessageDTO object) {
 		MessageRequestDTO requestdto= new MessageRequestDTO();
 		requestdto.setId(ID);
-		List<MessageDTO> list= new ArrayList<MessageDTO>();
-		list.add(object);
+		List<String> list= new ArrayList<String>();
+		list.add(object.getRid());
 		requestdto.setRequest(list);
 		requestdto.setRequesttime(LocalDateTime.now().toString());
 		requestdto.setVersion(VERSION);

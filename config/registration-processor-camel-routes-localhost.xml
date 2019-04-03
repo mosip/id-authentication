@@ -54,7 +54,7 @@
 				<setBody>
 					<simple>${bodyAs(String)}</simple>
 				</setBody>
-				<to uri="http://localhost:8091/registration-connector/registration-processor/connector/v1.0" />
+				<to uri="https://dev.mosip.io/registration-connector/registration-processor/connector/v1.0" />
 			</when>
 			<when>
 				<simple>${bodyAs(String)} contains '"internalError":true'</simple>
@@ -90,9 +90,15 @@
 		<log
 			message="packet-validator-->osi-validator route ${bodyAs(String)}" />
 		<choice>
-			<when>
+			  <when>
 				<simple>${bodyAs(String)} contains '"isValid":true'</simple>
-				<to uri="vertx:osi-validator-bus-in" />
+				<when>
+				      <simple>${bodyAs(String)} contains '"reg_type":"ACTIVATED"' or ${bodyAs(String)} contains '"reg_type":"DEACTIVATED"'</simple>
+					  <to uri="vertx:uin-generation-bus-in" />
+				 </when>
+				 <otherwise>
+                   <to uri="vertx:osi-validator-bus-in" />
+				 </otherwise>
 			</when>
 			<when>
 				<simple>${bodyAs(String)} contains '"isValid":false'</simple>
@@ -130,33 +136,19 @@
 		</choice>
 	</route>
 	<route id="external-stage-->demo-dedupe route">
-		<from uri="vertx:external-stage-bus-out" />
-		
+		<from uri="vertx:external-stage-bus-out" />	
 		<log
 			message="external-stage-->demo-dedupe route ${bodyAs(String)}" />
-		<choice>
-				
+		<choice>			
 			<when>	
 				<simple>${bodyAs(String)} contains '"isValid":true'</simple>
-				<convertBodyTo type="java.lang.String"/>
-				<process ref="messageProcessor"/>
 				<to uri="vertx:demo-dedupe-bus-in" />
-			</when>
-			<when>
-				<simple>${bodyAs(String)} contains '"isValid":false'</simple>
-				<convertBodyTo type="java.lang.String"/>
-				<process ref="messageProcessor"/>
-				<to uri="vertx:message-sender-bus" />
-			</when>
+			</when>	
 			<when>
 				<simple>${bodyAs(String)} contains '"internalError":true'</simple>
-				<convertBodyTo type="java.lang.String"/>
-				<process ref="messageProcessor"/>
 				<to uri="vertx:retry" />
 			</when>
 			<otherwise>
-				<convertBodyTo type="java.lang.String"/>
-				<process ref="messageProcessor"/>
 				<to uri="vertx:error" />
 			</otherwise>
 		</choice>
@@ -166,6 +158,10 @@
 		<log
 			message="demo-dedupe-->bio-dedupe route ${bodyAs(String)}" />
 		<choice>
+			<when>
+				<simple>${bodyAs(String)} contains '"isValid":false'</simple>
+				<to uri="vertx:manual-verification-bus"/>
+			</when>
 			<when>
 				<simple>${bodyAs(String)} contains '"isValid":true'</simple>
 				<to uri="vertx:bio-dedupe-bus-in" />

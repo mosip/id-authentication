@@ -23,7 +23,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
 import io.mosip.registrationprocessor.dummyservice.controller.DummyController;
-import io.mosip.registrationprocessor.dummyservice.entity.MessageDTO;
 import io.mosip.registrationprocessor.dummyservice.entity.MessageRequestDTO;
 
 @RunWith(SpringRunner.class)
@@ -40,13 +39,8 @@ public class DummyControllerTest {
 		messageRequestDTO.setId("io.mosip.registrationprocessor");
 		messageRequestDTO.setRequesttime(LocalDateTime.now().toString());
 		messageRequestDTO.setVersion("1.0");
-		MessageDTO dto=new MessageDTO();
-		dto.setInternalError(false);
-		dto.setIsValid(true);
-		dto.setRetryCount(0);
-		dto.setRid("1010100298229");
-		dto.setReg_type("NEW");
-		messageRequestDTO.setRequest(Arrays.asList(dto));
+		
+		messageRequestDTO.setRequest(Arrays.asList("robb","3142"));
 		ObjectMapper objectMapper = new ObjectMapper();
 		objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
 		arrayToJson = objectMapper.writeValueAsString(messageRequestDTO);

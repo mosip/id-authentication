@@ -18,5 +18,5 @@ public class MessageRequestDTO extends BaseRestRequestDTO {
 	 */
 	private static final long serialVersionUID = 7914304502765754692L;
 	/** The request. */
-	private List<MessageDTO> request;
+	private List<String> request;
 }

@@ -25,15 +25,30 @@ public class MessageProcessor implements Processor {
                 LoggerFileConstant.APPLICATIONID.toString(), "Message recieved is", jsonMessage);
 		
 		JsonObject object=new JsonObject(jsonMessage);
-		JsonObject address=object.getJsonObject("messageBusAddress");
+		
 		
 		MessageDTO messageDto = new MessageDTO();
+		if(object.containsKey("internalError")) {
 		messageDto.setInternalError(object.getBoolean("internalError"));
+		}
+		if(object.containsKey("isValid")) {
 		messageDto.setIsValid(object.getBoolean("isValid"));
+		}
+		if(object.containsKey("reg_type")) {
 		messageDto.setReg_type(object.getString("reg_type"));
+		}
+		if(object.containsKey("retryCount")) {
 		messageDto.setRetryCount(object.getInteger("retryCount"));
+		}
+		if(object.containsKey("rid")) {
 		messageDto.setRid(object.getString("rid"));
-		messageDto.setMessageBusAddress(new MessageBusAddress(address.getString("address")));
+		}
+		if(object.containsKey("messageBusAddress")) {
+			JsonObject address=object.getJsonObject("messageBusAddress");
+			if(address.containsKey("address")) {
+				messageDto.setMessageBusAddress(new MessageBusAddress(address.getString("address")));
+			}
+		}
 		JsonObject jsonObject = JsonObject.mapFrom(messageDto);
 		exchange.getIn().setBody(jsonObject);
 		
