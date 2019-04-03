@@ -144,7 +144,7 @@ public class Encrypt {
 			NoSuchPaddingException, InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException,
 			InvalidKeySpecException {
 		String identityBlock = objMapper.writeValueAsString(encryptionRequestDto.getIdentityRequest());
-		CryptoUtility cryptoUtil = new CryptoUtility();
+		CryptoUtility cryptoUtil = new CryptoUtility(); //TODO FIXME
 		SecretKey secretKey = cryptoUtil.genSecKey();
 		EncryptionResponseDto encryptionResponseDto = new EncryptionResponseDto();
 		byte[] encryptedIdentityBlock = cryptoUtil.symmetricEncrypt(identityBlock.getBytes(), secretKey);

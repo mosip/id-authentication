@@ -1,10 +1,12 @@
 package io.mosip.authentication.demo.service;
 
+import org.apache.velocity.app.VelocityEngine;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Import;
 
 import io.mosip.kernel.jsonvalidator.impl.JsonValidatorImpl;
+import io.mosip.kernel.templatemanager.velocity.impl.TemplateManagerImpl;
 
 /**
  * Spring-boot class for ID Authentication Application.
@@ -12,7 +14,7 @@ import io.mosip.kernel.jsonvalidator.impl.JsonValidatorImpl;
  * @author Dinesh Karuppiah
  */
 @SpringBootApplication
-@Import (JsonValidatorImpl.class)
+@Import (value = {JsonValidatorImpl.class,TemplateManagerImpl.class,VelocityEngine.class})
 public class IdAuthenticationDemoApplication {
 	
 	/**
