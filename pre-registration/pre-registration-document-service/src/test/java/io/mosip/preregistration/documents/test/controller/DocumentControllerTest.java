@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -28,6 +29,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.web.bind.annotation.PutMapping;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -110,8 +112,8 @@ public class DocumentControllerTest {
 	@Before
 	public void setUp() throws IOException {
 
-		documentDto = new DocumentRequestDTO("59276903416082", "POA", "address", "ENG");
-
+		documentDto = new DocumentRequestDTO("POA", "address", "ENG");
+//"59276903416082",
 		json = "{\r\n" + "	\"id\": \"osip.pre-registration.document.upload\",\r\n" + "	\"ver\": \"1.0\",\r\n"
 				+ "	\"reqTime\": \"2018-10-17T07:22:57.086Z\",\r\n" + "	\"request\": {\r\n"
 				+ "		\"pre_registartion_id\": \"59276903416082\",\r\n" + "\"doc_cat_code\": \"POA\",\r\n"
@@ -195,8 +197,9 @@ public class DocumentControllerTest {
 	@WithUserDetails("individual")
 	@Test
 	public void successDelete() throws Exception {
-		Mockito.when(service.deleteDocument(documentId)).thenReturn(responseCopy);
-		RequestBuilder requestBuilder = MockMvcRequestBuilders.delete("/documents")
+		String preRegistrationId="1234567847847";
+		Mockito.when(service.deleteDocument(documentId,preRegistrationId)).thenReturn(responseCopy);
+		RequestBuilder requestBuilder = MockMvcRequestBuilders.delete("/documents/preRegistration/")
 				.contentType(MediaType.APPLICATION_JSON_VALUE).characterEncoding("UTF-8")
 				.accept(MediaType.APPLICATION_JSON_VALUE).param("documentId", documentId);
 		mockMvc.perform(requestBuilder).andExpect(status().isOk());
@@ -233,9 +236,14 @@ public class DocumentControllerTest {
 	@Test
 	public void copyDocumentTest() throws Exception {
 		Mockito.when(service.copyDocument("POA", "48690172097498", "1234567891")).thenReturn(responseCopy);
-		mockMvc.perform(post("/documents/copy").contentType(MediaType.APPLICATION_JSON_VALUE)
-				.param("catCode", "POA").param("sourcePrId", "48690172097498").param("destinationPreId", "1234567891"))
-				.andExpect(status().isOk());
+		// mockMvc.perform(post("/documents/").contentType(MediaType.APPLICATION_JSON_VALUE).param("destinationPreId",
+		// "1234567891").param("catCode", "POA").param("sourcePrId",
+		// "48690172097498")).andExpect(status().isOk());
+		RequestBuilder requestBuilder = MockMvcRequestBuilders.put("/documents/")
+				.contentType(MediaType.APPLICATION_JSON_VALUE).characterEncoding("UTF-8")
+				.accept(MediaType.APPLICATION_JSON_VALUE).param("preRegistrationId", "1234567891")
+				.param("catCode", "POA").param("sourcePrId", "48690172097498");
+		mockMvc.perform(requestBuilder).andExpect(status().isOk());
 	}
 
 	/**
@@ -243,7 +251,7 @@ public class DocumentControllerTest {
 	 */
 	@WithUserDetails("individual")
 	@Test(expected = Exception.class)
-	public void FailuregetAllDocumentforPreidTest() throws Exception {
+	public void failureGetAllDocumentforPreidTest() throws Exception {
 		Mockito.when(service.getAllDocumentForPreId("2")).thenThrow(Exception.class);
 		mockMvc.perform(get("/documents").contentType(MediaType.APPLICATION_JSON_VALUE)
 				.param("preId", "2")).andExpect(status().isInternalServerError());

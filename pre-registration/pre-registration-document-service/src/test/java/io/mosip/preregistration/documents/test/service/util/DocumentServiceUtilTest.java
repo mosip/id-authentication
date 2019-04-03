@@ -44,7 +44,8 @@ public class DocumentServiceUtilTest {
 	
 	private MockMultipartFile mockMultipartFile;
 	
-	DocumentRequestDTO documentDto = new DocumentRequestDTO("48690172097498", "address", "POA", "ENG");
+	String preRegistrationId="48690172097498";
+	DocumentRequestDTO documentDto = new DocumentRequestDTO("address", "POA", "ENG");
 	File file;
 	
 	@Before
@@ -77,21 +78,20 @@ public class DocumentServiceUtilTest {
 	
 	@Test(expected=InvalidRequestParameterException.class)
 	public void inValidPreIDTest() throws Exception {
-		documentDto.setPreregId(null);
-		serviceUtil.isValidRequest(documentDto);
+		serviceUtil.isValidRequest(documentDto,null);
 	}
 	
 	
 	@Test(expected=InvalidRequestParameterException.class)
 	public void inValidDocTypeTest() throws Exception {
 		documentDto.setDocTypeCode(null);
-		serviceUtil.isValidRequest(documentDto);
+		serviceUtil.isValidRequest(documentDto,preRegistrationId);
 	}
 	
 	@Test(expected=InvalidRequestParameterException.class)
 	public void inValidLangCodeTest() throws Exception {
 		documentDto.setLangCode(null);
-		serviceUtil.isValidRequest(documentDto);
+		serviceUtil.isValidRequest(documentDto,preRegistrationId);
 	}
 	
 	@Test(expected=VirusScannerException.class)

@@ -126,14 +126,16 @@ public class DocumentServiceUtil {
 	 * @throws ParseException
 	 *             on parsing error
 	 */
-	public MainRequestDTO<DocumentRequestDTO> createUploadDto(String documentJsonString)
+	public MainRequestDTO<DocumentRequestDTO> createUploadDto(String documentJsonString, String preRegistrationId)
 			throws JSONException, JsonParseException, JsonMappingException, IOException, ParseException {
 		log.info("sessionId", "idType", "id", "In createUploadDto method of document service util");
 		MainRequestDTO<DocumentRequestDTO> uploadReqDto = new MainRequestDTO<>();
 		JSONObject documentData = new JSONObject(documentJsonString);
 		JSONObject docDTOData = (JSONObject) documentData.get("request");
+		System.out.println("docDTOData "+docDTOData);
 		DocumentRequestDTO documentDto = (DocumentRequestDTO) JsonUtils.jsonStringToJavaObject(DocumentRequestDTO.class,
 				docDTOData.toString());
+		System.out.println("documentDto "+documentDto);
 		uploadReqDto.setId(documentData.get("id").toString());
 		uploadReqDto.setVersion(documentData.get("version").toString());
 		uploadReqDto.setRequesttime(new SimpleDateFormat(utcDateTimePattern).parse(documentData.get("requesttime").toString()));
@@ -148,15 +150,15 @@ public class DocumentServiceUtil {
 	 *            pass the document dto
 	 * @return DocumentEntity
 	 */
-	public DocumentEntity dtoToEntity(MultipartFile file,DocumentRequestDTO dto,String userId) {
+	public DocumentEntity dtoToEntity(MultipartFile file,DocumentRequestDTO dto,String userId,String preRegistrationId) {
 		log.info("sessionId", "idType", "id", "In dtoToEntity method of document service util");
 		DocumentEntity documentEntity = new DocumentEntity();
 		documentEntity.setDocumentId(UUIDGeneratorUtil.generateId());
-		documentEntity.setDocId("");
-		documentEntity.setPreregId(dto.getPreregId());
+		documentEntity.setDocId(preRegistrationId+"/"+dto.getDocCatCode()+"_"+documentEntity.getDocumentId());
+		documentEntity.setPreregId(preRegistrationId);
 		documentEntity.setDocCatCode(dto.getDocCatCode());
-		documentEntity.setDocTypeCode(dto.getDocTypeCode());
-		documentEntity.setDocFileFormat(FilenameUtils.getExtension(file.getName()));
+		documentEntity.setDocTypeCode(dto.getDocTypCode());
+		documentEntity.setDocFileFormat(FilenameUtils.getExtension(file.getOriginalFilename()));
 		documentEntity.setStatusCode(StatusCodes.DOCUMENT_UPLOADED.getCode());
 		documentEntity.setLangCode(dto.getLangCode());
 		documentEntity.setCrDtime(LocalDateTime.now(ZoneId.of("UTC")));
@@ -252,7 +254,7 @@ public class DocumentServiceUtil {
 			copyDocumentEntity.setDocumentId(UUIDGeneratorUtil.generateId());
 		}
 		copyDocumentEntity.setPreregId(destinationPreId);
-		copyDocumentEntity.setDocId("");
+		copyDocumentEntity.setDocId(sourceEntity.getDocId());
 		String key = sourceEntity.getDocCatCode() + "_" + sourceEntity.getDocumentId();
 		InputStream file=fs.getFile(sourceEntity.getPreregId(), key);
 
@@ -313,13 +315,13 @@ public class DocumentServiceUtil {
 	 * @return boolean
 	 */
 	
-	public boolean isValidRequest(DocumentRequestDTO dto) {
+	public boolean isValidRequest(DocumentRequestDTO dto, String preRegistrationId) {
 		log.info("sessionId", "idType", "id", "In isValidRequest method of document service util");
-		if(isNull(dto.getPreregId())) {
+		if(isNull(preRegistrationId)) {
 			throw new InvalidRequestParameterException(ErrorCodes.PRG_PAM_DOC_018.toString(), ErrorMessages.INVALID_PRE_ID.toString());
 		}else if(isNull(dto.getDocCatCode())) {
 			throw new InvalidRequestParameterException(ErrorCodes.PRG_PAM_DOC_018.toString(), ErrorMessages.INVALID_DOC_CAT_CODE.toString());
-		}else if(isNull(dto.getDocTypeCode())) {
+		}else if(isNull(dto.getDocTypCode())) {
 			throw new InvalidRequestParameterException(ErrorCodes.PRG_PAM_DOC_018.toString(), ErrorMessages.INVALID_DOC_TYPE_CODE.toString());
 		}else if(isNull(dto.getLangCode())) {
 			throw new InvalidRequestParameterException(ErrorCodes.PRG_PAM_DOC_018.toString(), ErrorMessages.INVALID_LANG_CODE.toString());

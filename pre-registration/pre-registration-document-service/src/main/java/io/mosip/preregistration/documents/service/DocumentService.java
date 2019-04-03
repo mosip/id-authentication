@@ -16,6 +16,7 @@ import java.util.Map;
 
 import javax.annotation.PostConstruct;
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -149,17 +150,17 @@ public class DocumentService {
 	 * @return ResponseDTO
 	 */
 	@Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = Exception.class)
-	public MainListResponseDTO<DocumentResponseDTO> uploadDocument(MultipartFile file, String documentJsonString) {
+	public MainListResponseDTO<DocumentResponseDTO> uploadDocument(MultipartFile file, String documentJsonString ,String preRegistrationId) {
 		log.info("sessionId", "idType", "id", "In uploadDocument method of document service");
 		MainListResponseDTO<DocumentResponseDTO> responseDto = new MainListResponseDTO<>();
 		boolean isUploadSuccess = false;
 		try {
-			MainRequestDTO<DocumentRequestDTO> docReqDto = serviceUtil.createUploadDto(documentJsonString);
+			MainRequestDTO<DocumentRequestDTO> docReqDto = serviceUtil.createUploadDto(documentJsonString,preRegistrationId);
 			if (ValidationUtil.requestValidator(docReqDto)) {
 				if (serviceUtil.isVirusScanSuccess(file) && serviceUtil.fileSizeCheck(file.getSize())
 						&& serviceUtil.fileExtensionCheck(file)) {
-					serviceUtil.isValidRequest(docReqDto.getRequest());
-					List<DocumentResponseDTO> docResponseDtos = createDoc(docReqDto.getRequest(), file);
+					serviceUtil.isValidRequest(docReqDto.getRequest(),preRegistrationId);
+					List<DocumentResponseDTO> docResponseDtos = createDoc(docReqDto.getRequest(), file, preRegistrationId);
 					responseDto.setResponsetime(serviceUtil.getCurrentResponseTime());
 					responseDto.setResponse(docResponseDtos);
 				} else {
@@ -203,13 +204,13 @@ public class DocumentService {
 	 *             on input errors
 	 */
 	@Transactional(propagation = Propagation.MANDATORY)
-	public List<DocumentResponseDTO> createDoc(DocumentRequestDTO document, MultipartFile file) throws IOException {
+	public List<DocumentResponseDTO> createDoc(DocumentRequestDTO document, MultipartFile file,String preRegistrationId) throws IOException {
 		log.info("sessionId", "idType", "id", "In createDoc method of document service");
 		DocumentResponseDTO docResponseDto = new DocumentResponseDTO();
 		List<DocumentResponseDTO> docResponseDtos = new LinkedList<>();
-		if (serviceUtil.callGetPreRegInfoRestService(document.getPreregId())) {
-			DocumentEntity getentity = documnetDAO.findSingleDocument(document.getPreregId(), document.getDocCatCode());
-			DocumentEntity documentEntity = serviceUtil.dtoToEntity(file, document, authUserDetails().getUserId());
+		if (serviceUtil.callGetPreRegInfoRestService(preRegistrationId)) {
+			DocumentEntity getentity = documnetDAO.findSingleDocument(preRegistrationId, document.getDocCatCode());
+			DocumentEntity documentEntity = serviceUtil.dtoToEntity(file, document, authUserDetails().getUserId(),preRegistrationId);
 			if (getentity != null) {
 				documentEntity.setDocumentId(String.valueOf(getentity.getDocumentId()));
 			}
@@ -229,10 +230,10 @@ public class DocumentService {
 				}
 				docResponseDto.setPreRegistrationId(documentEntity.getPreregId());
 				docResponseDto.setDocumentId(String.valueOf(documentEntity.getDocumentId()));
-				docResponseDto.setDocumentName(documentEntity.getDocName());
-				docResponseDto.setDocumentCat(documentEntity.getDocCatCode());
-				docResponseDto.setDocumentType(documentEntity.getDocTypeCode());
-				docResponseDto.setResMsg(DocumentStatusMessages.DOCUMENT_UPLOAD_SUCCESSFUL.toString());
+				docResponseDto.setDocName(documentEntity.getDocName());
+				docResponseDto.setDocCatCode(documentEntity.getDocCatCode());
+				docResponseDto.setDocTypCode(documentEntity.getDocTypeCode());
+				docResponseDto.setDocFileFormat(FilenameUtils.getExtension(documentEntity.getDocName()));
 				docResponseDtos.add(docResponseDto);
 			} else {
 				throw new DocumentFailedToUploadException(ErrorCodes.PRG_PAM_DOC_009.toString(),
@@ -255,13 +256,13 @@ public class DocumentService {
 	 * @return ResponseDTO
 	 */
 	@Transactional(rollbackFor = Exception.class)
-	public MainListResponseDTO<DocumentCopyResponseDTO> copyDocument(String catCode, String sourcePreId,
+	public MainListResponseDTO<DocumentResponseDTO> copyDocument(String catCode, String sourcePreId,
 			String destinationPreId) {
 		log.info("sessionId", "idType", "id", "In copyDocument method of document service");
 		String sourceBucketName;
 		String sourceKey;
-		MainListResponseDTO<DocumentCopyResponseDTO> responseDto = new MainListResponseDTO<>();
-		List<DocumentCopyResponseDTO> copyDocumentList = new ArrayList<>();
+		MainListResponseDTO<DocumentResponseDTO> responseDto = new MainListResponseDTO<>();
+		List<DocumentResponseDTO> copyDocumentList = new ArrayList<>();
 		boolean isCopySuccess = false;
 		try {
 			if (sourcePreId == null || sourcePreId.isEmpty() || destinationPreId == null
@@ -281,12 +282,18 @@ public class DocumentService {
 					sourceKey = documentEntity.getDocCatCode() + "_" + documentEntity.getDocumentId();
 					sourceBucketName = documentEntity.getPreregId();
 					copyFile(copyDocumentEntity, sourceBucketName, sourceKey);
-					DocumentCopyResponseDTO copyDcoResDto = new DocumentCopyResponseDTO();
-					copyDcoResDto.setSourcePreRegId(sourcePreId);
-					copyDcoResDto.setSourceDocumnetId(String.valueOf(documentEntity.getDocumentId()));
-					copyDcoResDto.setDestPreRegId(destinationPreId);
-					copyDcoResDto.setDestDocumnetId(String.valueOf(copyDocumentEntity.getDocumentId()));
-					copyDocumentList.add(copyDcoResDto);
+					DocumentResponseDTO documentResponseDTO = new DocumentResponseDTO();
+//					copyDcoResDto.setSourcePreRegId(sourcePreId);
+//					copyDcoResDto.setSourceDocumentId(String.valueOf(documentEntity.getDocumentId()));
+//					copyDcoResDto.setDestPreRegId(destinationPreId);
+//					copyDcoResDto.setDestDocumentId(String.valueOf(copyDocumentEntity.getDocumentId()));
+					documentResponseDTO.setPreRegistrationId(destinationPreId);
+					documentResponseDTO.setDocumentId(copyDocumentEntity.getDocumentId());
+					documentResponseDTO.setDocName(copyDocumentEntity.getDocName());
+					documentResponseDTO.setDocCatCode(copyDocumentEntity.getDocCatCode());
+					documentResponseDTO.setDocTypCode(copyDocumentEntity.getDocTypeCode());
+					documentResponseDTO.setDocFileFormat(copyDocumentEntity.getDocFileFormat());
+					copyDocumentList.add(documentResponseDTO);
 					responseDto.setResponsetime(serviceUtil.getCurrentResponseTime());
 					responseDto.setResponse(copyDocumentList);
 				} else {

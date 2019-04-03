@@ -17,140 +17,153 @@ public enum ErrorMessages {
 	/**
 	 * ErrorMessage for PRG_PAM_DOC_001
 	 */
-	DOCUMENT_FAILED_IN_QUALITY_CHECK,
+	DOCUMENT_FAILED_IN_QUALITY_CHECK(""),
 	/**
 	 * ErrorMessage for PRG_PAM_DOC_002
 	 */
-	DOCUMENT_FAILED_IN_ENCRYPTION,
+	DOCUMENT_FAILED_IN_ENCRYPTION(""),
 	/**
 	 * ErrorMessage for PRG_PAM_DOC_003
 	 */
-	DOCUMENT_FAILED_IN_DECRYPTION,
+	DOCUMENT_FAILED_IN_DECRYPTION(""),
 	/**
 	 * ErrorMessage for PRG_PAM_DOC_004
 	 */
-	DOCUMENT_INVALID_FORMAT,
+	DOCUMENT_INVALID_FORMAT(""),
 	/**
 	 * ErrorMessage for PRG_PAM_DOC_005
 	 */
-	DOCUMENT_NOT_PRESENT,
+	DOCUMENT_NOT_PRESENT(""),
 	/**
 	 * ErrorMessage for PRG_PAM_DOC_005
 	 */
-	DOCUMENT_FAILED_TO_FETCH,
+	DOCUMENT_FAILED_TO_FETCH(""),
 	/**
 	 * ErrorMessage for PRG_PAM_DOC_006
 	 */
-	DOCUMENT_FAILED_TO_DELETE,
+	DOCUMENT_FAILED_TO_DELETE(""),
 	/**
 	 * ErrorMessage for PRG_PAM_DOC_007
 	 */
-	DOCUMENT_EXCEEDING_PREMITTED_SIZE,
+	DOCUMENT_EXCEEDING_PREMITTED_SIZE(""),
 	/**
 	 * ErrorMessage for PRG_PAM_DOC_008
 	 */
-	DOCUMENT_TYPE_NOT_SUPPORTED,
+	DOCUMENT_TYPE_NOT_SUPPORTED(""),
 	/**
 	 * ErrorMessage for PRG_PAM_DOC_009
 	 */
-	DOCUMENT_FAILED_TO_UPLOAD,
+	DOCUMENT_FAILED_TO_UPLOAD(""),
 	/**
 	 * ErrorMessage for PRG_PAM_DOC_010
 	 */
-	DOCUMENT_FAILED_IN_VIRUS_SCAN,
+	DOCUMENT_FAILED_IN_VIRUS_SCAN(""),
 	/**
 	 * ErrorMessage for PRG_PAM_DOC_011
 	 */
-	DOCUMENT_FAILED_TO_COPY,
+	DOCUMENT_FAILED_TO_COPY(""),
 	/**
 	 * ErrorMessage for PRG_PAM_DOC_012
 	 */
-	DOCUMENT_TABLE_NOTACCESSIBLE,
+	DOCUMENT_TABLE_NOTACCESSIBLE(""),
 	/**
 	 * ErrorMessage for PRG_PAM_DOC_013
 	 */
-	DOCUMENT_IO_EXCEPTION,
+	DOCUMENT_IO_EXCEPTION(""),
 	/**
 	 * ErrorMessage for PRG_PAM_DOC_014
 	 */
-	MANDATORY_FIELD_NOT_FOUND,
+	MANDATORY_FIELD_NOT_FOUND(""),
 	/**
 	 * ErrorMessage for PRG_PAM_DOC_015
 	 */
-	JSON_EXCEPTION,
+	JSON_EXCEPTION(""),
 	/**
 	 * ErrorMessage for PRG_PAM_DOC_016
 	 */
-	INVALID_CEPH_CONNECTION,
+	INVALID_CEPH_CONNECTION(""),
 	/**
 	 * ErrorMessage for PRG_PAM_DOC_017
 	 */
-	CONNECTION_UNAVAILABLE,
+	CONNECTION_UNAVAILABLE(""),
 	/**
 	 * ErrorMessage for PRG_PAM_DOC_018
 	 */
-	INVALID_REQUEST_PARAMETER,
+	INVALID_REQUEST_PARAMETER(""),
 
 	/**
 	 * ErrorMessage for PRG_PAM_DOC_019
 	 */
-	INVALID_DOCUMENT_ID,
+	INVALID_DOCUMENT_ID(""),
 	/**
 	 * ErrorMessage for PRG_PAM_DOC_019
 	 */
-	INVALID_DOCUMENT_CATEGORY_CODE,
+	INVALID_DOCUMENT_CATEGORY_CODE(""),
 	
 	/**
 	 * ErrorMessage for PRG_PAM_DOC_019
 	 */
-	DEMOGRAPHIC_DATA_NOT_FOUND,
+	DEMOGRAPHIC_DATA_NOT_FOUND(""),
 	/**
 	 * ErrorMessage for PRG_PAM_DOC_019
 	 */
-	DEMOGRAPHIC_GET_RECORD_FAILED,
+	DEMOGRAPHIC_GET_RECORD_FAILED(""),
 	
 	/**
 	 * ErrorMessage for PRG_PAM_DOC_018
 	 */
-	INVALID_PRE_ID,
+	INVALID_PRE_ID(""),
 	
 	/**
 	 * ErrorMessage for PRG_PAM_DOC_018
 	 */
-	INVALID_DOC_CAT_CODE,
+	INVALID_DOC_CAT_CODE(""),
 	
 	/**
 	 * ErrorMessage for PRG_PAM_DOC_018
 	 */
-	INVALID_DOC_TYPE_CODE,
+	INVALID_DOC_TYPE_CODE(""),
 	
 	/**
 	 * ErrorMessage for PRG_PAM_DOC_018
 	 */
-	INVALID_DOC_FILE_FORMAT,
+	INVALID_DOC_FILE_FORMAT(""),
 	
 	/**
 	 * ErrorMessage for PRG_PAM_DOC_018
 	 */
-	INVALID_STATUS_CODE,
+	INVALID_STATUS_CODE(""),
 	
 	/**
 	 * ErrorMessage for PRG_PAM_DOC_018
 	 */
-	INVALID_UPLOAD_BY,
+	INVALID_UPLOAD_BY(""),
 	
 	/**
 	 * ErrorMessage for PRG_PAM_DOC_018
 	 */
-	INVALID_LANG_CODE,
+	INVALID_LANG_CODE(""),
 	
 	/**
 	 * ErrorMessage for PRG_PAM_DOC_018
 	 */
-	INVALID_UPLOAD_DATE_TIME,
+	INVALID_UPLOAD_DATE_TIME(""),
 	
 	/**
 	 * ErrorMessage for PRG_PAM_DOC_021
 	 */
-	DOCUMENT_ALREADY_PRESENT;
+	DOCUMENT_ALREADY_PRESENT("");
+	
+	private ErrorMessages(String message) {
+		this.message = message;
+	}
+
+	private final String message;
+
+	/**
+	 * @return message
+	 */
+	public String getMessage() {
+		return message;
+	}
 }
