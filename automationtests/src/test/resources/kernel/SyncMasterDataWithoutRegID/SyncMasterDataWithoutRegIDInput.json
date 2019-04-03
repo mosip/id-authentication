@@ -1,0 +1,9 @@
+{
+	"empty_lastupdated":"string",
+	"macaddress":"string",
+	"serialnumber":"string",
+	"serialNumber_anotherMachine":"string",
+	"anotherMachine_macId":"string",
+	"only_macId":"string",
+	"only_serialNumber":"string"
+}

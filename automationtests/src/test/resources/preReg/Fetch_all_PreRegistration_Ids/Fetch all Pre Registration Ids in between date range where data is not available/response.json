@@ -1,9 +1,10 @@
 {
-  "err": {
-    "errorCode": "PRG_PAM_APP_005",
-    "message": "RECORD_NOT_FOUND_FOR_DATE_RANGE"
-  },
-  "status": false,
-  "resTime": "2019-02-13T10:41:38.874Z",
-  "response": null
+    "id": null,
+    "version": null,
+    "err": {
+        "errorCode": "PRG_BOOK_RCI_032",
+        "message": "RECORD_NOT_FOUND_FOR_DATE_RANGE_AND_REG_CENTER_ID"
+    },
+    "responsetime": "2019-03-29T07:38:24.780Z",
+    "response": null
 }

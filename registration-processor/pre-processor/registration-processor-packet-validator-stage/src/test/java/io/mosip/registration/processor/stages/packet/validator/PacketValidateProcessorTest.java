@@ -30,6 +30,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import org.springframework.core.env.Environment;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 
@@ -37,8 +38,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
+import io.mosip.kernel.core.exception.BaseUncheckedException;
 import io.mosip.kernel.core.fsadapter.exception.FSAdapterException;
 import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
+import io.mosip.kernel.core.jsonvalidator.exception.FileIOException;
+import io.mosip.kernel.core.jsonvalidator.exception.JsonIOException;
+import io.mosip.kernel.core.jsonvalidator.exception.JsonSchemaIOException;
+import io.mosip.kernel.core.jsonvalidator.exception.JsonValidationProcessingException;
 import io.mosip.kernel.core.jsonvalidator.model.ValidationReport;
 import io.mosip.kernel.core.jsonvalidator.spi.JsonValidator;
 import io.mosip.kernel.core.util.HMACUtils;
@@ -80,6 +86,7 @@ import io.mosip.registration.processor.status.service.RegistrationStatusService;
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ JsonUtil.class, IOUtils.class, HMACUtils.class, Utilities.class, MasterDataValidation.class })
 @PowerMockIgnore({ "javax.management.*", "javax.net.ssl.*" })
+@TestPropertySource(locations = "classpath:application.properties")
 public class PacketValidateProcessorTest {
 
 	/** The input stream. */
@@ -161,6 +168,22 @@ public class PacketValidateProcessorTest {
 
 	private static final String CONFIG_SERVER_URL = "url";
 	private String identityMappingjsonString;
+
+	private static final String PRIMARY_LANGUAGE = "primary.language";
+
+	private static final String SECONDARY_LANGUAGE = "secondary.language";
+
+	private static final String ATTRIBUTES = "registration.processor.masterdata.validation.attributes";
+
+	private String VALIDATESCHEMA = "registration.processor.validateSchema";
+
+	private String VALIDATEFILE = "registration.processor.validateFile";
+
+	private String VALIDATECHECKSUM = "registration.processor.validateChecksum";
+
+	private String VALIDATEAPPLICANTDOCUMENT = "registration.processor.validateApplicantDocument";
+
+	private String VALIDATEMASTERDATA = "registration.processor.validateMasterData";
 
 	/**
 	 * Sets the up.
@@ -296,14 +319,23 @@ public class PacketValidateProcessorTest {
 		validationReport.setValid(true);
 
 		when(env.getProperty(anyString())).thenReturn("gender");
-		when(env.getProperty("primary.language")).thenReturn("eng");
-		when(env.getProperty("secondary.language")).thenReturn("ara");
-		when(env.getProperty("registration.processor.idjson.attributes"))
-				.thenReturn("gender,region,province,city,postalcode");
+		when(env.getProperty(PRIMARY_LANGUAGE)).thenReturn("eng");
+		when(env.getProperty(SECONDARY_LANGUAGE)).thenReturn("ara");
+		when(env.getProperty(ATTRIBUTES)).thenReturn("gender,region,province,city");
+		when(env.getProperty(VALIDATESCHEMA)).thenReturn("true");
+		when(env.getProperty(VALIDATEFILE)).thenReturn("true");
+		when(env.getProperty(VALIDATECHECKSUM)).thenReturn("true");
+		when(env.getProperty(VALIDATEAPPLICANTDOCUMENT)).thenReturn("true");
+		when(env.getProperty(VALIDATEMASTERDATA)).thenReturn("true");
 		Mockito.when(jsonValidatorImpl.validateJson(any())).thenReturn(validationReport);
 
 		JSONObject demographicIdentity = new JSONObject();
 		PowerMockito.when(JsonUtil.getJSONObject(any(), any())).thenReturn(demographicIdentity);
+
+		statusResponseDto = new StatusResponseDto();
+		statusResponseDto.setStatus("VALID");
+		Mockito.when(registrationProcessorRestService.getApi(any(), any(), any(), any(), any()))
+				.thenReturn(statusResponseDto);
 
 	}
 
@@ -319,6 +351,29 @@ public class PacketValidateProcessorTest {
 		MessageDTO messageDto = packetValidateProcessor.process(dto);
 		assertTrue("Test for successful Structural Validation", messageDto.getIsValid());
 
+	}
+
+	@Test
+	public void testStructuralValidationForConfigValues() throws Exception {
+		when(env.getProperty(VALIDATESCHEMA)).thenReturn("false");
+		when(env.getProperty(VALIDATEFILE)).thenReturn("false");
+		when(env.getProperty(VALIDATECHECKSUM)).thenReturn("false");
+		when(env.getProperty(VALIDATEAPPLICANTDOCUMENT)).thenReturn("false");
+		when(env.getProperty(VALIDATEMASTERDATA)).thenReturn("false");
+		MessageDTO messageDto = packetValidateProcessor.process(dto);
+		assertTrue("Test for successful Structural Validation", messageDto.getIsValid());
+
+	}
+
+	@Test
+	public void testSchemaValidationFailure()
+			throws JsonValidationProcessingException, JsonIOException, JsonSchemaIOException, FileIOException {
+		validationReport = new ValidationReport();
+		validationReport.setValid(false);
+
+		Mockito.when(jsonValidatorImpl.validateJson(any())).thenReturn(validationReport);
+		MessageDTO messageDto = packetValidateProcessor.process(dto);
+		assertFalse(messageDto.getIsValid());
 	}
 
 	/**
@@ -561,6 +616,16 @@ public class PacketValidateProcessorTest {
 		Mockito.when(registrationStatusService.getRegistrationStatus(anyString())).thenReturn(registrationStatusDto);
 		Mockito.doNothing().when(registrationStatusService).updateRegistrationStatus(registrationStatusDto);
 		Mockito.when(filesystemCephAdapterImpl.checkFileExistence(anyString(), anyString())).thenReturn(Boolean.TRUE);
+
+		MessageDTO messageDto = packetValidateProcessor.process(dto);
+
+		assertEquals(true, messageDto.getInternalError());
+
+	}
+
+	@Test
+	public void testBAseUncheckedExceptions() throws Exception {
+		Mockito.when(jsonValidatorImpl.validateJson(any())).thenThrow(new BaseUncheckedException());
 
 		MessageDTO messageDto = packetValidateProcessor.process(dto);
 

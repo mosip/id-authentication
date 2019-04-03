@@ -1,9 +1,10 @@
 {
+    "id": null,
+    "version": null,
     "err": {
         "errorCode": "PRG_PAM_APP_005",
         "message": "RECORD_NOT_FOUND_FOR_DATE_RANGE"
     },
-    "status": false,
-    "resTime": "2019-02-05T10:20:40.437Z",
+    "responsetime": "2019-03-26T06:57:03.918Z",
     "response": null
 }

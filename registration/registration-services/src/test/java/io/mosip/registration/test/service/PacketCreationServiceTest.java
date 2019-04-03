@@ -110,7 +110,7 @@ public class PacketCreationServiceTest {
 		when(zipCreationService.createPacket(Mockito.any(RegistrationDTO.class), Mockito.anyMap()))
 				.thenReturn("zip".getBytes());
 		when(cbeffI.createXML(Mockito.anyList(), Mockito.anyString().getBytes())).thenReturn("cbeffXML".getBytes());
-		when(jsonValidator.validateJson(Mockito.anyString(), Mockito.anyString()))
+		when(jsonValidator.validateJson(Mockito.anyString()))
 				.thenReturn(new ValidationReport());
 		when(auditLogControlDAO.getLatestRegistrationAuditDates()).thenReturn(null);
 		when(auditDAO.getAudits(Mockito.any(RegistrationAuditDates.class))).thenReturn(getAudits());
@@ -149,7 +149,7 @@ public class PacketCreationServiceTest {
 		when(zipCreationService.createPacket(Mockito.any(RegistrationDTO.class), Mockito.anyMap()))
 				.thenReturn("zip".getBytes());
 		when(cbeffI.createXML(Mockito.anyList(), Mockito.anyString().getBytes())).thenThrow(new Exception("Invalid BIR"));
-		when(jsonValidator.validateJson(Mockito.anyString(), Mockito.anyString()))
+		when(jsonValidator.validateJson(Mockito.anyString()))
 				.thenReturn(new ValidationReport());
 		when(machineMappingDAO.getDevicesMappedToRegCenter(Mockito.anyString())).thenReturn(new ArrayList<>());
 
@@ -164,7 +164,7 @@ public class PacketCreationServiceTest {
 		when(zipCreationService.createPacket(Mockito.any(RegistrationDTO.class), Mockito.anyMap()))
 				.thenReturn("zip".getBytes());
 		when(cbeffI.createXML(Mockito.anyList(), Mockito.anyString().getBytes())).thenReturn("cbeffXML".getBytes());
-		when(jsonValidator.validateJson(Mockito.anyString(), Mockito.anyString()))
+		when(jsonValidator.validateJson(Mockito.anyString()))
 				.thenThrow(new JsonValidationProcessingException("errorCode", "errorMessage"));
 		when(machineMappingDAO.getDevicesMappedToRegCenter(Mockito.anyString())).thenReturn(new ArrayList<>());
 
@@ -179,7 +179,7 @@ public class PacketCreationServiceTest {
 		when(zipCreationService.createPacket(Mockito.any(RegistrationDTO.class), Mockito.anyMap()))
 				.thenReturn("zip".getBytes());
 		when(cbeffI.createXML(Mockito.anyList(), Mockito.anyString().getBytes())).thenReturn("cbeffXML".getBytes());
-		when(jsonValidator.validateJson(Mockito.anyString(), Mockito.anyString()))
+		when(jsonValidator.validateJson(Mockito.anyString()))
 				.thenReturn(new ValidationReport());
 		when(auditLogControlDAO.getLatestRegistrationAuditDates()).thenReturn(registrationAuditDates);
 		when(auditDAO.getAudits(Mockito.any(RegistrationAuditDates.class))).thenReturn(getAudits());
@@ -214,7 +214,7 @@ public class PacketCreationServiceTest {
 		when(zipCreationService.createPacket(Mockito.any(RegistrationDTO.class), Mockito.anyMap()))
 				.thenReturn("zip".getBytes());
 		when(cbeffI.createXML(Mockito.anyList(), Mockito.anyString().getBytes())).thenReturn("cbeffXML".getBytes());
-		when(jsonValidator.validateJson(Mockito.anyString(), Mockito.anyString()))
+		when(jsonValidator.validateJson(Mockito.anyString()))
 				.thenReturn(new ValidationReport());
 		when(auditLogControlDAO.getLatestRegistrationAuditDates()).thenReturn(registrationAuditDates);
 		when(auditDAO.getAudits(Mockito.any(RegistrationAuditDates.class))).thenReturn(getAudits());

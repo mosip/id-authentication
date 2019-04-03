@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
       - name: registration-processor-printing-stage
-        image: docker-registry.mosip.io:5000/printing-stage
+        image: docker-registry.mosip.io:5000/registration-processor-printing-stage
         ports:
           - name: eventbus-port
             containerPort: 5722

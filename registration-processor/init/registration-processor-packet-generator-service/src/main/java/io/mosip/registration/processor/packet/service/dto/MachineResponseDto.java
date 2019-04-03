@@ -1,5 +1,6 @@
 package io.mosip.registration.processor.packet.service.dto;
 
+import java.io.Serializable;
 import java.util.List;
 
 import lombok.Data;
@@ -10,8 +11,11 @@ import lombok.Data;
  * 
  */
 @Data
-
-public class MachineResponseDto {
+public class MachineResponseDto implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4266319575132486164L;
 	private List<MachineDto> machines;
 	private List<ErrorDTO> errors;
 }

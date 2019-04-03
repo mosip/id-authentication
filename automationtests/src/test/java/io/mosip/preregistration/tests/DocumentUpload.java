@@ -102,6 +102,14 @@ public class DocumentUpload extends BaseTestCase implements ITest {
 		
 	}
 	
+	/*
+	 * Given Document Upload valid request when I Send POST request to /pre-registration/v1.0/document/documents
+	 * Then I should get success response with elements defined as per specifications
+	 * Given Invalid request when I send POST request to /pre-registration/v1.0/document/documents
+	 * Then I should get Error response along with Error Code and Error messages as per Specification
+	 * 
+	 */
+	
 	@SuppressWarnings("unchecked")
 	@Test(dataProvider = "documentUpload")
 	public void bookingAppointment(String testSuite, Integer i, JSONObject object) throws Exception {
@@ -117,8 +125,9 @@ public class DocumentUpload extends BaseTestCase implements ITest {
 		if(testCase.contains("smoke"))
 		{
 			//Creating the Pre-Registration Application
-			Response createApplicationResponse = preRegLib.CreatePreReg();
+			Response createApplicationResponse = PreRegistrationLibrary.CreatePreReg();
 			
+			String preRegIdCreateAPI=createApplicationResponse.jsonPath().get("response[0].preRegistrationId").toString();
 			//Document Upload for created application
 			Response docUploadResponse = preRegLib.documentUpload(createApplicationResponse);
 			
@@ -126,14 +135,10 @@ public class DocumentUpload extends BaseTestCase implements ITest {
 			//PreId of Uploaded document
 			preId=docUploadResponse.jsonPath().get("response[0].preRegistrationId").toString();
 			
-			
-			
-			
-			outerKeys.add("resTime");
-			innerKeys.add("updatedDateTime");
-			innerKeys.add("createdDateTime");
+			outerKeys.add("responsetime");
 			innerKeys.add("preRegistrationId");
-			innerKeys.add("documnetId");
+			innerKeys.add("documentId");
+		    preRegLib.compareValues(preId, preRegIdCreateAPI);
 			
 			status = AssertResponses.assertResponses(docUploadResponse, Expectedresponse, outerKeys, innerKeys);
 			
@@ -147,7 +152,7 @@ public class DocumentUpload extends BaseTestCase implements ITest {
 			testSuite = "DocumentUpload/DocumentUpload_smoke";
 			
 			String configPath = "src/test/resources/" + folder + "/" + testSuite;
-			String fileName = "ProofOfAddress.PDF";
+			String fileName = "AadhaarCard_POA.pdf";
 			File file = new File(configPath + "/"+fileName);
 			
 			Actualresponse =applicationLibrary.putFileAndJson(preReg_URI, actualRequest, file);
@@ -157,7 +162,10 @@ public class DocumentUpload extends BaseTestCase implements ITest {
 		} catch (Exception e) {
 			logger.info(e);
 		}
-				
+				outerKeys.add("responsetime");
+				innerKeys.add("preRegistrationId");
+				innerKeys.add("documentId");
+	   
 				status = AssertResponses.assertResponses(Actualresponse, Expectedresponse, outerKeys, innerKeys);		
 			}
 		
@@ -180,9 +188,6 @@ public class DocumentUpload extends BaseTestCase implements ITest {
 		
 		
 		
-		
-	            
-	           
 	}
 	/**
 	 * Writing output into configpath
@@ -239,11 +244,11 @@ public class DocumentUpload extends BaseTestCase implements ITest {
            * Document Upload Resource URI            
            */
           
-          preReg_URI = commonLibrary.fetch_IDRepo("preReg_DocumentUploadURI");
+          preReg_URI = commonLibrary.fetch_IDRepo().get("preReg_DocumentUploadURI");
           
     }
 	@Override
     public String getTestName() {
-          return this.testCaseName;
+          return DocumentUpload.testCaseName;
     }
 }

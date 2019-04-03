@@ -30,11 +30,11 @@ import org.springframework.web.context.request.ServletWebRequest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.idrepo.constant.IdRepoErrorConstants;
+import io.mosip.kernel.core.idrepo.dto.IdResponseDTO;
 import io.mosip.kernel.core.idrepo.exception.IdRepoAppException;
 import io.mosip.kernel.core.idrepo.exception.IdRepoAppUncheckedException;
-import io.mosip.kernel.idrepo.dto.ErrorDTO;
-import io.mosip.kernel.idrepo.dto.IdResponseDTO;
 
 /**
  * The Class IdRepoExceptionHandlerTest.
@@ -95,10 +95,10 @@ public class IdRepoExceptionHandlerTest {
 		ResponseEntity<Object> handleAllExceptions = ReflectionTestUtils.invokeMethod(handler, "handleAllExceptions",
 				new RuntimeException("Runtime Exception"), request);
 		IdResponseDTO response = (IdResponseDTO) handleAllExceptions.getBody();
-		List<ErrorDTO> errorCode = response.getErrors();
+		List<ServiceError> errorCode = response.getErrors();
 		errorCode.forEach(e -> {
 			assertEquals(IdRepoErrorConstants.UNKNOWN_ERROR.getErrorCode(), e.getErrorCode());
-			assertEquals(IdRepoErrorConstants.UNKNOWN_ERROR.getErrorMessage(), e.getErrorMessage());
+			assertEquals(IdRepoErrorConstants.UNKNOWN_ERROR.getErrorMessage(), e.getMessage());
 		});
 	}
 
@@ -113,10 +113,10 @@ public class IdRepoExceptionHandlerTest {
 				new HttpMediaTypeNotSupportedException("Http Media Type Not Supported Exception"), null, null,
 				HttpStatus.EXPECTATION_FAILED, request);
 		IdResponseDTO response = (IdResponseDTO) handleExceptionInternal.getBody();
-		List<ErrorDTO> errorCode = response.getErrors();
+		List<ServiceError> errorCode = response.getErrors();
 		errorCode.forEach(e -> {
 			assertEquals(IdRepoErrorConstants.INVALID_REQUEST.getErrorCode(), e.getErrorCode());
-			assertEquals(IdRepoErrorConstants.INVALID_REQUEST.getErrorMessage(), e.getErrorMessage());
+			assertEquals(IdRepoErrorConstants.INVALID_REQUEST.getErrorMessage(), e.getMessage());
 		});
 	}
 
@@ -129,10 +129,10 @@ public class IdRepoExceptionHandlerTest {
 		ResponseEntity<Object> handleIdAppException = ReflectionTestUtils.invokeMethod(handler, "handleIdAppException",
 				new IdRepoAppException(IdRepoErrorConstants.INVALID_UIN), request);
 		IdResponseDTO response = (IdResponseDTO) handleIdAppException.getBody();
-		List<ErrorDTO> errorCode = response.getErrors();
+		List<ServiceError> errorCode = response.getErrors();
 		errorCode.forEach(e -> {
 			assertEquals(IdRepoErrorConstants.INVALID_UIN.getErrorCode(), e.getErrorCode());
-			assertEquals(IdRepoErrorConstants.INVALID_UIN.getErrorMessage(), e.getErrorMessage());
+			assertEquals(IdRepoErrorConstants.INVALID_UIN.getErrorMessage(), e.getMessage());
 		});
 	}
 
@@ -147,10 +147,10 @@ public class IdRepoExceptionHandlerTest {
 		ResponseEntity<Object> handleIdAppException = ReflectionTestUtils.invokeMethod(handler, "handleIdAppException",
 				ex, request);
 		IdResponseDTO response = (IdResponseDTO) handleIdAppException.getBody();
-		List<ErrorDTO> errorCode = response.getErrors();
+		List<ServiceError> errorCode = response.getErrors();
 		errorCode.forEach(e -> {
 			assertEquals(IdRepoErrorConstants.INVALID_UIN.getErrorCode(), e.getErrorCode());
-			assertEquals(IdRepoErrorConstants.INVALID_UIN.getErrorMessage(), e.getErrorMessage());
+			assertEquals(IdRepoErrorConstants.INVALID_UIN.getErrorMessage(), e.getMessage());
 		});
 	}
 	
@@ -163,10 +163,10 @@ public class IdRepoExceptionHandlerTest {
 		ResponseEntity<Object> handleIdAppException = ReflectionTestUtils.invokeMethod(handler, "handleIdAppUncheckedException",
 				ex, request);
 		IdResponseDTO response = (IdResponseDTO) handleIdAppException.getBody();
-		List<ErrorDTO> errorCode = response.getErrors();
+		List<ServiceError> errorCode = response.getErrors();
 		errorCode.forEach(e -> {
 			assertEquals(IdRepoErrorConstants.INVALID_UIN.getErrorCode(), e.getErrorCode());
-			assertEquals(IdRepoErrorConstants.INVALID_UIN.getErrorMessage(), e.getErrorMessage());
+			assertEquals(IdRepoErrorConstants.INVALID_UIN.getErrorMessage(), e.getMessage());
 		});
 	}
 
@@ -178,10 +178,10 @@ public class IdRepoExceptionHandlerTest {
 		ResponseEntity<Object> handleIdAppUncheckedException = ReflectionTestUtils.invokeMethod(handler,
 				"handleIdAppUncheckedException", ex, request);
 		IdResponseDTO response = (IdResponseDTO) handleIdAppUncheckedException.getBody();
-		List<ErrorDTO> errorCode = response.getErrors();
+		List<ServiceError> errorCode = response.getErrors();
 		errorCode.forEach(e -> {
 			assertEquals(IdRepoErrorConstants.INVALID_UIN.getErrorCode(), e.getErrorCode());
-			assertEquals(IdRepoErrorConstants.INVALID_UIN.getErrorMessage(), e.getErrorMessage());
+			assertEquals(IdRepoErrorConstants.INVALID_UIN.getErrorMessage(), e.getMessage());
 		});
 	}
 
