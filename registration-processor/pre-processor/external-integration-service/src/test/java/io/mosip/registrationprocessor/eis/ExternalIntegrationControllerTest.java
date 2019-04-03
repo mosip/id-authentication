@@ -1,4 +1,4 @@
-package io.mosip.registrationprocessor.dummyservice;
+package io.mosip.registrationprocessor.eis;
 
 import static org.junit.Assert.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -22,12 +22,12 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
-import io.mosip.registrationprocessor.dummyservice.controller.DummyController;
-import io.mosip.registrationprocessor.dummyservice.entity.MessageRequestDTO;
+import io.mosip.registrationprocessor.eis.controller.ExternalController;
+import io.mosip.registrationprocessor.eis.entity.MessageRequestDTO;
 
 @RunWith(SpringRunner.class)
-@WebMvcTest(DummyController.class)
-public class DummyControllerTest {
+@WebMvcTest(ExternalController.class)
+public class ExternalIntegrationControllerTest {
 
 	@Autowired
 	private MockMvc mockMvc;
@@ -48,7 +48,7 @@ public class DummyControllerTest {
 	@Test
 	public void dummyControllerSuccessTest() throws Exception {
 
-		MvcResult result=mockMvc.perform(post("/registration-processor/dummy/v1.0")
+		MvcResult result=mockMvc.perform(post("/registration-processor/external-integration-service/v1.0")
 				.accept(MediaType.APPLICATION_JSON_VALUE).contentType(MediaType.APPLICATION_JSON).content(arrayToJson))
 				.andExpect(status().isOk()).andReturn();
 		String success=result.getResponse().getContentAsString();
@@ -57,7 +57,7 @@ public class DummyControllerTest {
 	@Test
 	public void dummyControllerControllerFailureTest() throws Exception {
 
-		mockMvc.perform(post("/registration-processor/dummy/v1.0")
+		mockMvc.perform(post("/registration-processor/external-integration-service/v1.0")
 				.accept(MediaType.APPLICATION_JSON_VALUE).contentType(MediaType.APPLICATION_JSON).content(""))
 				.andExpect(MockMvcResultMatchers.status().isBadRequest());
 	}
@@ -67,7 +67,7 @@ public class DummyControllerTest {
 		ObjectMapper objectMapper = new ObjectMapper();
 		objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
 		arrayToJson = objectMapper.writeValueAsString(messageRequestDTO);
-		MvcResult result=mockMvc.perform(post("/registration-processor/dummy/v1.0")
+		MvcResult result=mockMvc.perform(post("/registration-processor/external-integration-service/v1.0")
 				.accept(MediaType.APPLICATION_JSON_VALUE).contentType(MediaType.APPLICATION_JSON).content(arrayToJson))
 				.andExpect(status().isOk()).andReturn();
 		String failure=result.getResponse().getContentAsString();

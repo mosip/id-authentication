@@ -19,5 +19,6 @@
 		<module>registration-processor-osi-validator-stage</module>
 		<module>registration-processor-connector-stage</module>
 		<module>external-stage</module>
+		<module>external-integration-service</module>
 	</modules>
 </project>

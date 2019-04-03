@@ -1,23 +1,22 @@
-package io.mosip.registrationprocessor.dummyservice;
+package io.mosip.registrationprocessor.eis;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.PropertySource;
 
 /**
- * Dummy Rest service application
+ * external integration service application
  *
  */
 @SpringBootApplication
 @PropertySource("classpath:bootstrap.properties")
-public class DummyRestServiceApplication {
+public class ExternalIntegrationServiceApplication {
 
 	/**
-	 * main method to load dummy service
-	 * @param args
+	 *load main external integration service
 	 */
 	public static void main(String[] args) {
-		SpringApplication.run(DummyRestServiceApplication.class, args);
+		SpringApplication.run(ExternalIntegrationServiceApplication.class, args);
 	}
 
 }

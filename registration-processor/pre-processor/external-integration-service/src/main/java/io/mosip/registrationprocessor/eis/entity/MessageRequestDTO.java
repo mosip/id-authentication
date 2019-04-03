@@ -1,4 +1,4 @@
-package io.mosip.registrationprocessor.dummyservice.entity;
+package io.mosip.registrationprocessor.eis.entity;
 
 import java.util.List;
 import lombok.Data;
