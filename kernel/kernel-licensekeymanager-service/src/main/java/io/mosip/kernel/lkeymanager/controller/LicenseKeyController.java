@@ -78,6 +78,8 @@ public class LicenseKeyController {
 	/**
 	 * This method will fetch the mapped permissions for a license key.
 	 * 
+	 * @param tspId
+	 *            tsp id
 	 * @param licenseKey
 	 *            the license key of which the permissions need to be fetched.
 	 * @return the permissions fetched.

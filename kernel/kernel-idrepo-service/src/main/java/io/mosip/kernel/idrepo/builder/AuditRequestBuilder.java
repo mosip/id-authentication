@@ -44,8 +44,6 @@ public class AuditRequestBuilder {
 	 *            the event
 	 * @param id
 	 *            the id
-	 * @param idType
-	 *            the id type
 	 * @param desc
 	 *            the desc
 	 * @return the audit request dto

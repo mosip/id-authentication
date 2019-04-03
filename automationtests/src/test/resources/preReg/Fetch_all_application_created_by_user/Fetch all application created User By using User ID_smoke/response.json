@@ -1,13 +1,24 @@
 {
+    "id": "mosip.pre-registration.demographic.create",
+    "version": "1.0",
     "err": null,
-    "status": true,
-    "resTime": "2019-02-06T15:02:38.372Z",
+    "responsetime": "2019-03-26T05:10:13.071Z",
     "response": [
         {
-            "preRegistrationId": "97693172390396",
-            "fullname": "Mohammed Karim Lamrani",
+            "preRegistrationId": "39180268379627",
+            "fullname": [
+                {
+                    "language": "eng",
+                    "value": "Sanober"
+                },
+                {
+                    "language": "ara",
+                    "value": "Sanober"
+                }
+            ],
             "statusCode": "Pending_Appointment",
-            "bookingRegistrationDTO": null
+            "bookingRegistrationDTO": null,
+            "postalCode": "ASG21"
         }
     ]
 }

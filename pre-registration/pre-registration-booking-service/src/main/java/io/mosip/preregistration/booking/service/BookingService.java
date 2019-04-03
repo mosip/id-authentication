@@ -392,58 +392,7 @@ public class BookingService {
 		return responseDto;
 	}
 
-	/**
-	 * This method will get Pre registration Id based on registration center Id.
-	 * 
-	 * @param requestDTO
-	 * @return
-	 */
-	public MainListResponseDTO<PreRegIdsByRegCenterIdResponseDTO> getPreIdsByRegCenterId(
-			MainRequestDTO<PreRegIdsByRegCenterIdDTO> requestDTO) {
-		log.info("sessionId", "idType", "id", "In getPreIdsByRegCenterId method of Booking Service");
-		MainListResponseDTO<PreRegIdsByRegCenterIdResponseDTO> responseDto = new MainListResponseDTO<>();
-		PreRegIdsByRegCenterIdResponseDTO preRegIdsByRegCenterIdResponseDTO = new PreRegIdsByRegCenterIdResponseDTO();
-		List<PreRegIdsByRegCenterIdResponseDTO> preRegIdsByRegCenterIdResponseDTOList = new ArrayList<>();
-		try {
-			if (ValidationUtil.requestValidator(requestDTO)) {
-				String regCenterId = requestDTO.getRequest().getRegistrationCenterId();
-				List<RegistrationBookingEntity> bookingEntities = bookingDAO
-						.findByRegistrationCenterId(regCenterId.trim());
-				Iterator<RegistrationBookingEntity> iterate = bookingEntities.iterator();
-				while (iterate.hasNext()) {
-					String preRegStatusCode = serviceUtil
-							.callGetStatusRestService(iterate.next().getBookingPK().getPreregistrationId());
-					if (!preRegStatusCode.equals(StatusCodes.BOOKED.getCode())) {
-						bookingEntities.remove(bookingEntities.indexOf(iterate.next()));
-					}
-				}
-				List<String> preRegIdList = requestDTO.getRequest().getPreRegistrationIds();
-				List<String> entityPreRegIdList = new LinkedList<>();
-				for (RegistrationBookingEntity bookingEntity : bookingEntities) {
-					entityPreRegIdList.add(bookingEntity.getBookingPK().getPreregistrationId());
-				}
-				preRegIdList.retainAll(entityPreRegIdList);
-				if (!preRegIdList.isEmpty()) {
-					preRegIdsByRegCenterIdResponseDTO.setRegistrationCenterId(regCenterId);
-					preRegIdsByRegCenterIdResponseDTO.setPreRegistrationIds(preRegIdList);
-					preRegIdsByRegCenterIdResponseDTOList.add(preRegIdsByRegCenterIdResponseDTO);
-
-					responseDto.setResponsetime(serviceUtil.getCurrentResponseTime());
-					responseDto.setResponse(preRegIdsByRegCenterIdResponseDTOList);
-				} else {
-					throw new BookingDataNotFoundException(ErrorCodes.PRG_BOOK_RCI_013.toString(),
-							ErrorMessages.BOOKING_DATA_NOT_FOUND.toString());
-				}
-			}
-		} catch (Exception ex) {
-			log.error("sessionId", "idType", "id",
-					"In getPreIdsByRegCenterId method of Booking Service for Exception- " + ex.getMessage());
-			new BookingExceptionCatcher().handle(ex);
-		}
-
-		return responseDto;
-	}
-
+	
 	/**
 	 * 
 	 * This booking API will be called by bookAppointment.

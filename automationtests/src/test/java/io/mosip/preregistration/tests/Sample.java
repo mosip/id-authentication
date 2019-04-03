@@ -12,7 +12,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
 import org.apache.log4j.Logger;
-import org.apache.maven.plugins.assembly.io.AssemblyReadException;
+//import org.apache.maven.plugins.assembly.io.AssemblyReadException;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -27,6 +27,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.JsonObject;
 
+import io.mosip.dbaccess.prereg_dbread;
+import io.mosip.dbentity.PreRegEntity;
 import io.mosip.service.ApplicationLibrary;
 import io.mosip.service.BaseTestCase;
 import io.mosip.util.CommonLibrary;
@@ -60,19 +62,16 @@ public class Sample extends BaseTestCase {
 		lib.PreRegistrationResourceIntialize();
 	}
 
+
 	@Test(groups = { "IntegrationScenarios" })
-	public void getStatusOfBookedAppointment() {
+	public void uploadDocumentForDiscardedApplication() {
 		testSuite = "Create_PreRegistration/createPreRegistration_smoke";
 		JSONObject createPregRequest = lib.createRequest(testSuite);
 		Response createResponse = lib.CreatePreReg(createPregRequest);
 		String preID = createResponse.jsonPath().get("response[0].preRegistrationId").toString();
 		Response documentResponse = lib.documentUpload(createResponse);
-		Response avilibityResponse = lib.FetchCentre();
-		lib.BookAppointment(documentResponse, avilibityResponse, preID);
-		Response getPreRegistrationStatus = lib.getPreRegistrationStatus(preID);
-		Assert.assertEquals(getPreRegistrationStatus.jsonPath().get("response[0].statusCode"), "Booked");
-		Assert.assertEquals(getPreRegistrationStatus.jsonPath().get("response[0].preRegistartionId"), preID);
+		
+		
+
 	}
-
-
 }

@@ -148,10 +148,12 @@ public class CbeffValidator {
 	 * @param bir
 	 *            BIR type
 	 * @param xsd
-	 *            byte array
+	 *            xml schema definition
 	 * @return byte[] byte array of XML data
-	 * @throws Exception
-	 *             while validating XML
+	 * 
+	 * @exception Exception
+	 *                exception
+	 * 
 	 */
 	public static byte[] createXMLBytes(BIRType bir, byte[] xsd) throws Exception {
 		CbeffValidator.validateXML(bir);

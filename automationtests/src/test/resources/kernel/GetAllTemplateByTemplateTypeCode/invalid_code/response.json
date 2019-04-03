@@ -1,0 +1,10 @@
+{
+  "timestamp": 1552976557759,
+  "status": 200,
+  "errors": [
+    {
+      "errorCode": "KER-MSD-046",
+      "errorMessage": "Template not found."
+    }
+  ]
+}

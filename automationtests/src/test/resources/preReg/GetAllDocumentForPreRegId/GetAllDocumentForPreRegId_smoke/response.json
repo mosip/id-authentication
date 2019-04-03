@@ -1,7 +1,8 @@
 {
+"id":"mosip.pre-registration.document.upload",
+"version":"1.0",
   "err": null,
-  "status": true,
-  "resTime": "2019-01-30T16:57:31.959Z",
+  "responsetime": "2019-01-30T16:57:31.959Z",
   "response": [
     {
       "prereg_id": "41360981649352",
@@ -9,7 +10,7 @@
       "doc_id": "2c9180836833c12401689fb188505b5a",
       "doc_cat_code": "POA",
       "doc_typ_code": "address",
-      "doc_file_format": "pdf",
+      "doc_file_format": "",
       "multipartFile": "zUgZg0KMDAwMDAwMDAxNyAwMDAw"
 	  }
 	 ]

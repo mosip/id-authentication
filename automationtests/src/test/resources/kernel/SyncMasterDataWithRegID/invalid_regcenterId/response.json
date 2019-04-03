@@ -1,0 +1,10 @@
+{
+  "timestamp": 1553175766048,
+  "status": 200,
+  "errors": [
+    {
+      "errorCode": "KER-SNC-141",
+      "errorMessage": "Registration center not found"
+    }
+  ]
+}

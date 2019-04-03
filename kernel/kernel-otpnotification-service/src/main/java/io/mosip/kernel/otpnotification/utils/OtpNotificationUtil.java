@@ -96,10 +96,9 @@ public class OtpNotificationUtil {
 	/**
 	 * This method merge template with otp provided.
 	 * 
-	 * @param otp
-	 *            the otp generated.
-	 * @param template
-	 *            the template provided.
+	 * @param otp      the otp generated.
+	 * @param template the template provided.
+	 * @param notificationType notification type
 	 * @return the merged template.
 	 */
 	public String templateMerger(String otp, String template, String notificationType) {
@@ -156,7 +155,7 @@ public class OtpNotificationUtil {
 		HttpHeaders smsHeaders = new HttpHeaders();
 		smsHeaders.setContentType(MediaType.APPLICATION_JSON);
 
-		HttpEntity<SmsRequestDto> smsEntity = new HttpEntity<>(smsRequest, smsHeaders);
+		HttpEntity<RequestWrapper<SmsRequestDto>> smsEntity = new HttpEntity<>(reqWrapper, smsHeaders);
 
 		ResponseEntity<String> response = restTemplate.exchange(smsServiceApi, HttpMethod.POST, smsEntity,
 				String.class);
