@@ -208,10 +208,10 @@ public class DemoDedupe {
 	 */
 	private void setFingerBiometricDto(Object obj, String fieldName, Object value) throws  IllegalAccessException, IllegalArgumentException, InvocationTargetException, IntrospectionException {
 		PropertyDescriptor pd;
-		
+		if(fieldName != null ) {
 			pd = new PropertyDescriptor(fieldName, obj.getClass());
 			pd.getWriteMethod().invoke(obj, value);
-		
+		}
 	}
 
 	/**
