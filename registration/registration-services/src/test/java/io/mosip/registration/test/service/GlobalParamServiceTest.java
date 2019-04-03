@@ -9,6 +9,8 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import javax.validation.constraints.AssertTrue;
+
 import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
@@ -22,8 +24,10 @@ import org.springframework.web.client.HttpClientErrorException;
 import io.mosip.registration.audit.AuditFactoryImpl;
 import io.mosip.registration.constants.AuditEvent;
 import io.mosip.registration.constants.Components;
+import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dao.UserOnboardDAO;
 import io.mosip.registration.dao.impl.GlobalParamDAOImpl;
+import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.entity.GlobalParam;
 import io.mosip.registration.entity.id.GlobalParamId;
 import io.mosip.registration.exception.RegBaseCheckedException;
@@ -146,5 +150,38 @@ public class GlobalParamServiceTest {
 		gloablContextParamServiceImpl.synchConfigData(false);
 	}
 
+	@Test
+	public void updateSoftwareUpdateStatusSuccessCaseTest() {
+		
+		GlobalParamId globalParamId=new GlobalParamId();
+		globalParamId.setCode(RegistrationConstants.IS_SOFTWARE_UPDATE_AVAILABLE);
+		globalParamId.setLangCode("eng");
+		
+		GlobalParam globalParam = new GlobalParam();
+		globalParam.setName(RegistrationConstants.IS_SOFTWARE_UPDATE_AVAILABLE);
+		globalParam.setGlobalParamId(globalParamId);
+		globalParam.setVal("Y");
+		
+		Mockito.when(globalParamDAOImpl.updateSoftwareUpdateStatus(Mockito.anyBoolean())).thenReturn(globalParam);
+		ResponseDTO responseDTO = gloablContextParamServiceImpl.updateSoftwareUpdateStatus(true);
+		assertEquals(responseDTO.getSuccessResponseDTO().getMessage(), RegistrationConstants.SOFTWARE_UPDATE_SUCCESS_MSG);
+	}
+	
+	@Test
+	public void updateSoftwareUpdateStatusFailureCaseTest() {
+		
+		GlobalParamId globalParamId=new GlobalParamId();
+		globalParamId.setCode(RegistrationConstants.IS_SOFTWARE_UPDATE_AVAILABLE);
+		globalParamId.setLangCode("eng");
+		
+		GlobalParam globalParam = new GlobalParam();
+		globalParam.setName(RegistrationConstants.IS_SOFTWARE_UPDATE_AVAILABLE);
+		globalParam.setGlobalParamId(globalParamId);
+		globalParam.setVal("N"); 
+		
+		Mockito.when(globalParamDAOImpl.updateSoftwareUpdateStatus(Mockito.anyBoolean())).thenReturn(globalParam);
+		ResponseDTO responseDTO = gloablContextParamServiceImpl.updateSoftwareUpdateStatus(false);
+		assertEquals(responseDTO.getErrorResponseDTOs().get(0).getMessage(), RegistrationConstants.SOFTWARE_UPDATE_FAILURE_MSG);
+	}
 
 }
