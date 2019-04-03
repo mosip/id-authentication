@@ -33,4 +33,13 @@ public class SyncJobDefDto {
 
 	private String lockDuration;
 
+	/** The is active. */
+	private Boolean isActive;
+
+	/** The is deleted. */
+	private Boolean isDeleted;
+
+	/** The lang code. */
+	private String langCode;
+
 }

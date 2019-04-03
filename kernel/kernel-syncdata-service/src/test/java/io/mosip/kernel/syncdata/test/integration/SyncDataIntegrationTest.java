@@ -275,7 +275,7 @@ public class SyncDataIntegrationTest {
 	@MockBean
 	private ScreenDetailRepository screenDetailRepo;
 
-	@Value("${mosip.kernel.syncdata.admin-base-url:http://localhost:8099/admin/syncjobdef}")
+	@Value("${mosip.kernel.syncdata.admin-base-url:http://localhost:8095/admin/syncjobdef}")
 	private String baseUri;
 	/*
 	 * @MockBean private RestTemplate restTemplateM;
