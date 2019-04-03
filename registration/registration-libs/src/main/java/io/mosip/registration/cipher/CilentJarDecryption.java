@@ -21,6 +21,21 @@ import org.xml.sax.SAXException;
 import io.mosip.kernel.crypto.jce.constant.SecurityMethod;
 import io.mosip.kernel.crypto.jce.processor.SymmetricProcessor;
 import io.mosip.registration.config.RegistrationUpdate;
+import javafx.application.Application;
+import javafx.concurrent.Service;
+import javafx.concurrent.Task;
+import javafx.concurrent.WorkerStateEvent;
+import javafx.event.EventHandler;
+import javafx.geometry.Pos;
+import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ProgressBar;
+import javafx.scene.control.ProgressIndicator;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Region;
+import javafx.scene.layout.StackPane;
+import javafx.stage.Stage;
 
 /**
  * Decryption the Client Jar with Symmetric Key
@@ -28,7 +43,7 @@ import io.mosip.registration.config.RegistrationUpdate;
  * @author Omsai Eswar M.
  *
  */
-public class CilentJarDecryption {
+public class CilentJarDecryption extends Application {
 
 	private static final String SLASH = "/";
 	private static final String AES_ALGORITHM = "AES";
@@ -38,6 +53,7 @@ public class CilentJarDecryption {
 	private static String libFolder = "lib/";
 	private static String binFolder = "bin/";
 
+	private Service<String> taskService;
 	static {
 		String tempPath = System.getProperty("java.io.tmpdir");
 		System.setProperty("java.ext.dirs",
@@ -74,60 +90,7 @@ public class CilentJarDecryption {
 	 */
 	public static void main(String[] args) throws IOException, InterruptedException {
 
-		CilentJarDecryption aesDecrypt = new CilentJarDecryption();
-		RegistrationUpdate registrationUpdate = new RegistrationUpdate();
-
-		// TODO Check Internet Connectivity
-		try {
-
-			checkForJars();
-		} catch (ParserConfigurationException | SAXException | io.mosip.kernel.core.exception.IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		File encryptedClientJar = new File(binFolder + MOSIP_CLIENT);
-
-		File encryptedServicesJar = new File(binFolder + MOSIP_SERVICES);
-
-		String tempPath = FileUtils.getTempDirectoryPath();
-
-		System.out.println(tempPath);
-
-		System.out.println("Decrypt File Name====>" + encryptedClientJar.getName());
-		byte[] decryptedRegFileBytes = aesDecrypt.decrypt(FileUtils.readFileToByteArray(encryptedClientJar),
-				Base64.getDecoder().decode("bBQX230Wskq6XpoZ1c+Ep1D+znxfT89NxLQ7P4KFkc4="));
-
-		FileUtils.writeByteArrayToFile(new File(tempPath + "/mosip/" + encryptedClientJar.getName()),
-				decryptedRegFileBytes);
-
-		System.out.println("Decrypt File Name====>" + encryptedServicesJar.getName());
-		byte[] decryptedRegServiceBytes = aesDecrypt.decrypt(FileUtils.readFileToByteArray(encryptedServicesJar),
-				Base64.getDecoder().decode("bBQX230Wskq6XpoZ1c+Ep1D+znxfT89NxLQ7P4KFkc4="));
-
-		FileUtils.writeByteArrayToFile(new File(tempPath + "/mosip/" + encryptedServicesJar.getName()),
-				decryptedRegServiceBytes);
-		try {
-			
-			String libPath = new File("lib").getAbsolutePath();
-			Process process = Runtime.getRuntime().exec(
-					"java -Dspring.profiles.active=qa -Djava.ext.dirs="+libPath+" -jar "
-							+ tempPath + "/mosip/mosip-client.jar");
-			System.out.println("the output stream is " + process.getOutputStream().getClass());
-			BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-			String s;
-			while ((s = bufferedReader.readLine()) != null) {
-				System.out.println("The stream is : " + s);
-			}
-
-			if (0 == process.waitFor()) {
-
-				process.destroy();
-
-			}
-		} catch (Exception e2) {
-			e2.printStackTrace();
-		}
+		launch(null);
 		/*
 		 * ProcessBuilder clientBuilder = new ProcessBuilder("java", "-jar", tempPath +
 		 * "/mosip/mosip-client.jar");
@@ -167,9 +130,9 @@ public class CilentJarDecryption {
 		}
 	}
 
-	private void setProperties() throws IOException {
+	private static boolean setProperties() throws IOException {
 
-		String propsFilePath = new File(System.getProperty("user.dir")).getParentFile()
+		String propsFilePath = new File(System.getProperty("user.dir"))
 				+ "/props/mosip-application.properties";
 
 		FileInputStream fileInputStream = new FileInputStream(propsFilePath);
@@ -177,6 +140,134 @@ public class CilentJarDecryption {
 		properties.load(fileInputStream);
 
 		System.setProperty("reg.db.path", properties.getProperty("mosip.dbpath"));
+		
+		String dbpath = new File(System.getProperty("user.dir"))+properties.getProperty("mosip.dbpath");
+		
+		if(new File(dbpath).exists()) {
+			System.setProperty("reg.db.path", properties.getProperty("mosip.dbpath"));
+			return true;
+		} else {
+			return false;			
+		}
 
+	}
+	
+	@Override
+	public void start(Stage primaryStage) throws Exception {
+//		StackPane stackPane= new StackPane();
+//		stackPane.setAlignment(Pos.CENTER);
+//		ProgressBar progressBar = new ProgressBar();
+//		stackPane.getChildren().add(progressBar);
+//		progressBar.setVisible(false);
+//		Scene scene = new Scene(stackPane,400,500);
+//		
+//		primaryStage.setScene(scene);
+//		primaryStage.show();	
+		
+		/**
+		 * This anonymous service class will do the pre application launch task
+		 * progress.
+		 * 
+		 */
+		taskService = new Service<String>() {
+			@Override
+			protected Task<String> createTask() {
+				return 
+				new Task<String>() {
+					/*
+					 * (non-Javadoc)
+					 * 
+					 * @see javafx.concurrent.Task#call()
+					 */
+					@Override
+					protected String call() throws IOException, InterruptedException {
+						//progressBar.setVisible(true);
+						System.out.println("before Decryption");
+						CilentJarDecryption aesDecrypt = new CilentJarDecryption();
+						RegistrationUpdate registrationUpdate = new RegistrationUpdate();
+						
+						if(!setProperties()) {
+							return "NOTEXISTS";
+						}
+
+						// TODO Check Internet Connectivity
+						try {
+
+							checkForJars();
+						} catch (ParserConfigurationException | SAXException | io.mosip.kernel.core.exception.IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+
+						File encryptedClientJar = new File(binFolder + MOSIP_CLIENT);
+
+						File encryptedServicesJar = new File(binFolder + MOSIP_SERVICES);
+
+						String tempPath = FileUtils.getTempDirectoryPath();
+
+						System.out.println(tempPath);
+
+						System.out.println("Decrypt File Name====>" + encryptedClientJar.getName());
+						byte[] decryptedRegFileBytes = aesDecrypt.decrypt(FileUtils.readFileToByteArray(encryptedClientJar),
+								Base64.getDecoder().decode("bBQX230Wskq6XpoZ1c+Ep1D+znxfT89NxLQ7P4KFkc4="));
+
+						FileUtils.writeByteArrayToFile(new File(tempPath + "/mosip/" + encryptedClientJar.getName()),
+								decryptedRegFileBytes);
+
+						System.out.println("Decrypt File Name====>" + encryptedServicesJar.getName());
+						byte[] decryptedRegServiceBytes = aesDecrypt.decrypt(FileUtils.readFileToByteArray(encryptedServicesJar),
+								Base64.getDecoder().decode("bBQX230Wskq6XpoZ1c+Ep1D+znxfT89NxLQ7P4KFkc4="));
+
+						FileUtils.writeByteArrayToFile(new File(tempPath + "/mosip/" + encryptedServicesJar.getName()),
+								decryptedRegServiceBytes);
+						try {
+							
+							String libPath = new File("lib").getAbsolutePath();
+						
+							Process process = Runtime.getRuntime().exec(
+									"java -Dspring.profiles.active=qa -Djava.ext.dirs="+libPath+" -jar "
+											+ tempPath + "/mosip/mosip-client.jar");
+							System.out.println("the output stream is " + process.getOutputStream().getClass());
+							BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+							String s;
+							while ((s = bufferedReader.readLine()) != null) {
+								System.out.println("The stream is : " + s);
+							}
+
+							if (0 == process.waitFor()) {
+
+								process.destroy();
+
+							}
+						} catch (Exception e2) {
+							e2.printStackTrace();
+						}
+						return "";
+						}
+					};
+			}
+		};
+		//progressBar.progressProperty().bind(taskService.progressProperty());
+		taskService.start();
+		taskService.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+			@Override
+			public void handle(WorkerStateEvent t) {
+//				progressBar.setVisible(false);
+//				primaryStage.close();
+//			
+			if("NOTEXISTS".equalsIgnoreCase(taskService.getValue())) {
+				System.out.println("coming alert");
+				Alert alert = new Alert(AlertType.INFORMATION);
+				alert.setHeaderText(null);
+				alert.setContentText("Please provide correct path for Database");
+				alert.setTitle("INFO");
+				alert.setGraphic(null);
+				alert.setResizable(true);
+				alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
+				alert.showAndWait();
+			}
+			}
+		});
+		
 	}
 }
