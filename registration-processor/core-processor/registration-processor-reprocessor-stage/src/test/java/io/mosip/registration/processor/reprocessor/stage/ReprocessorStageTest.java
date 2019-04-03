@@ -122,11 +122,4 @@ public class ReprocessorStageTest {
 
 	}
 
-	/**
-	 * Test deploy verticle.
-	 */
-	@Test
-	public void testDeployVerticle() {
-		reprocessorStage.deployVerticle();
-	}
 }

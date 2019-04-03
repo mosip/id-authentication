@@ -94,11 +94,11 @@ public class ReprocessorStage extends MosipVerticleManager {
 	 */
 	public void deployVerticle() {
 		mosipEventBus = this.getEventBus(this, clusterManagerUrl);
-		// deployScheduler(mosipEventBus.getEventbus());
+		deployScheduler(mosipEventBus.getEventbus());
 
-		MessageDTO object = new MessageDTO();
+		// MessageDTO object = new MessageDTO();
 
-		process(object);
+		// process(object);
 
 	}
 
