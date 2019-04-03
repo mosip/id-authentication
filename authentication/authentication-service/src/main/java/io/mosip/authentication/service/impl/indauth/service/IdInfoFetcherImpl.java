@@ -38,9 +38,14 @@ import io.mosip.authentication.service.integration.OTPManager;
 import io.mosip.kernel.core.cbeffutil.spi.CbeffUtil;
 import io.mosip.kernel.core.util.CryptoUtil;
 
+/**
+ * @author Dinesh Karuppiah.T
+ *
+ */
 @Service
 public class IdInfoFetcherImpl implements IdInfoFetcher {
 
+	/** The Constant INDIVIDUAL BIOMETRICS. */
 	private static final String INDIVIDUAL_BIOMETRICS = "individualBiometrics";
 
 	/** The Constant PRIMARY_LANG_CODE. */
@@ -57,9 +62,15 @@ public class IdInfoFetcherImpl implements IdInfoFetcher {
 	@Autowired
 	private OTPManager otpManager;
 
+	/**
+	 * The Cbeff Util
+	 */
 	@Autowired
 	private CbeffUtil cbeffUtil;
 
+	/**
+	 * The Master Data Manager
+	 */
 	@Autowired
 	private MasterDataManager masterDataManager;
 
@@ -154,11 +165,8 @@ public class IdInfoFetcherImpl implements IdInfoFetcher {
 	}
 
 	/*
-	 * (non-Javadoc)
+	 * Get Iris Provider
 	 * 
-	 * @see
-	 * io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher#getIrisProvider(
-	 * io.mosip.authentication.core.dto.indauth.BioInfo)
 	 */
 	@Override
 	public MosipBiometricProvider getIrisProvider(DataDTO bioinfovalue) {
@@ -176,16 +184,37 @@ public class IdInfoFetcherImpl implements IdInfoFetcher {
 		return biometricProviderFactory.getBiometricProvider(bioinfovalue);
 	}
 
+	/*
+	 * Get the Face provider
+	 * 
+	 * @see
+	 * io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher#getFaceProvider(
+	 * io.mosip.authentication.core.dto.indauth.DataDTO)
+	 */
 	@Override
 	public MosipBiometricProvider getFaceProvider(DataDTO bioinfovalue) {
 		return biometricProviderFactory.getBiometricProvider(bioinfovalue);
 	}
 
+	/*
+	 * Get Validataed Otp Function
+	 * 
+	 * @see io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher#
+	 * getValidateOTPFunction()
+	 */
 	@Override
 	public ValidateOtpFunction getValidateOTPFunction() {
 		return otpManager::validateOtp;
 	}
 
+	/*
+	 * To get the valid Cbeff for Entity Info
+	 * 
+	 * @see
+	 * io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher#getCbeffValues(
+	 * java.util.Map, io.mosip.authentication.core.spi.bioauth.CbeffDocType,
+	 * io.mosip.authentication.core.spi.indauth.match.MatchType)
+	 */
 	@Override
 	public Map<String, Entry<String, List<IdentityInfoDTO>>> getCbeffValues(Map<String, List<IdentityInfoDTO>> idEntity,
 			CbeffDocType type, MatchType matchType) throws IdAuthenticationBusinessException {
@@ -233,6 +262,13 @@ public class IdInfoFetcherImpl implements IdInfoFetcher {
 		return Stream.empty();
 	}
 
+	/**
+	 * Get the Cbeff Name mapped on ID Repo based on Ida Mapping
+	 * 
+	 * @param cbeffName
+	 * @param matchType
+	 * @return
+	 */
 	private String getNameForCbeffName(String cbeffName, MatchType matchType) {
 		return Stream.of(IdaIdMapping.values()).filter(cfg -> matchType.getIdMapping().equals(cfg)
 				|| matchType.getIdMapping().getSubIdMappings().contains(cfg)).map(cfg -> {

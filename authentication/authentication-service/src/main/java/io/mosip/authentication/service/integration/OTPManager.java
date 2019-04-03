@@ -150,6 +150,12 @@ public class OTPManager {
 		return isValidOtp;
 	}
 
+	/**
+	 * Throws KeyNotFound Exception when otp key is Invalid
+	 * 
+	 * @param e
+	 * @throws IdAuthenticationBusinessException
+	 */
 	private void throwKeyNotFound(RestServiceException e) throws IdAuthenticationBusinessException {
 		Optional<String> errorCode = e.getResponseBodyAsString().flatMap(this::getErrorCode);
 		// Do not throw server error for OTP not generated, throw invalid OTP error

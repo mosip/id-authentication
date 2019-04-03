@@ -25,6 +25,9 @@ import io.mosip.kernel.core.logger.spi.Logger;
 @Component
 public class NotificationManager {
 
+	/**
+	 * The Session id constant
+	 */
 	private static final String SESSION_ID = "SESSION_ID";
 
 	/** Rest Helper */
