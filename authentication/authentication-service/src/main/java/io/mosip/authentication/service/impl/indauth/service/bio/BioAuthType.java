@@ -359,4 +359,17 @@ public enum BioAuthType implements AuthType {
 	public static Set<MatchType> setOf(MatchType... supportedMatchTypes) {
 		return Stream.of(supportedMatchTypes).collect(Collectors.toSet());
 	}
+
+	/**
+	 * This method accepts the bioType and it will return Optional of BioAuthType
+	 * only when the count is single.
+	 * 
+	 * @param type
+	 * @return
+	 */
+	public static Optional<BioAuthType> getSingleBioAuthTypeForType(String type) {
+		BioAuthType[] values = BioAuthType.values();
+		return Stream.of(values)
+				.filter(authType -> authType.getType().equalsIgnoreCase(type) && authType.getCount() == 1).findAny();
+	}
 }

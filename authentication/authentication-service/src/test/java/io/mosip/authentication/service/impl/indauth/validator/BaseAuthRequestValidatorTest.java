@@ -248,22 +248,23 @@ public class BaseAuthRequestValidatorTest {
 		BioIdentityInfoDTO fingerValue = new BioIdentityInfoDTO();
 		DataDTO dataDTO = new DataDTO();
 		dataDTO.setBioValue("finger");
-		dataDTO.setBioSubType("Thumb");
+		dataDTO.setBioSubType("LEFT_THUMB");
 		dataDTO.setBioType("FIR");
 		dataDTO.setDeviceProviderID("provider001");
 		fingerValue.setData(dataDTO);
 		BioIdentityInfoDTO irisValue = new BioIdentityInfoDTO();
-		dataDTO.setBioValue("iris img");
-		dataDTO.setBioSubType("left");
-		dataDTO.setBioType("IIR");
-		dataDTO.setDeviceProviderID("provider001");
-		irisValue.setData(dataDTO);
+		DataDTO dataDTO1 = new DataDTO();
+		dataDTO1.setBioValue("iris img");
+		dataDTO1.setBioSubType("LEFT");
+		dataDTO1.setBioType("IIR");
+		dataDTO1.setDeviceProviderID("provider001");
+		irisValue.setData(dataDTO1);
 		BioIdentityInfoDTO faceValue = new BioIdentityInfoDTO();
-		dataDTO.setBioValue("face img");
-		dataDTO.setBioSubType("Thumb");
-		dataDTO.setBioType("FID");
-		dataDTO.setDeviceProviderID("provider001");
-		faceValue.setData(dataDTO);
+		DataDTO dataDTO2 = new DataDTO();
+		dataDTO2.setBioValue("face img");
+		dataDTO2.setBioType("FID");
+		dataDTO2.setDeviceProviderID("provider001");
+		faceValue.setData(dataDTO2);
 
 		List<BioIdentityInfoDTO> fingerIdentityInfoDtoList = new ArrayList<BioIdentityInfoDTO>();
 		fingerIdentityInfoDtoList.add(fingerValue);
@@ -278,6 +279,7 @@ public class BaseAuthRequestValidatorTest {
 		authRequestDTO.setRequest(requestDTO);
 
 		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "validateBioMetadataDetails", authRequestDTO, error);
+		System.err.println(error);
 		assertFalse(error.hasErrors());
 
 	}
@@ -298,7 +300,7 @@ public class BaseAuthRequestValidatorTest {
 		fingerValue.setData(dataDTO);
 		BioIdentityInfoDTO irisValue = new BioIdentityInfoDTO();
 		dataDTO.setBioValue("iris img");
-		dataDTO.setBioSubType("left");
+		dataDTO.setBioSubType("LEFT");
 		dataDTO.setBioType("IIR");
 		dataDTO.setDeviceProviderID("provider001");
 		irisValue.setData(dataDTO);
@@ -344,7 +346,7 @@ public class BaseAuthRequestValidatorTest {
 		fingerValue.setData(dataDTO);
 		BioIdentityInfoDTO irisValue = new BioIdentityInfoDTO();
 		dataDTO.setBioValue("iris img");
-		dataDTO.setBioSubType("left");
+		dataDTO.setBioSubType("LEFT");
 		dataDTO.setBioType("IIR");
 		dataDTO.setDeviceProviderID("provider001");
 		irisValue.setData(dataDTO);

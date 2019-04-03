@@ -59,7 +59,7 @@ public enum IdAuthenticationErrorConstants {
 	MISSING_BIOMETRICDATA("IDA-BIA-010", "Missing biometric data"),
 	BIOMETRIC_MISSING("IDA-BIA-006", "Missing biometric data in MOSIP database for the given UIN/Virtual ID", "A0116"),
 	BIOTYPE_MISSING("IDA-BIA-012", "Missing or empty value for bioType"),
-	INVALID_BIOTYPE("IDA-BIA-013", "Invalid bioType"),
+	INVALID_BIOTYPE("IDA-BIA-013", "Invalid bioType - %s"),
 	
 	INDIVIDUAL_DATA_MISSING("IDA-EKA-001", "Individuals data currently not available"),
 	
