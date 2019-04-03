@@ -186,7 +186,9 @@ public class DemoDedupeTest {
 		List<String> duplicateIds = new ArrayList<>();
 		duplicateIds.add("123456789");
 		duplicateIds.add("987654321");
+		
 		Mockito.when(biometricValidation.validateBiometric(anyString(),anyString())).thenReturn(true);
+		
 		
 		boolean result = demoDedupe.authenticateDuplicates(regId, duplicateIds);
 

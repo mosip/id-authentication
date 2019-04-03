@@ -256,8 +256,8 @@ Mockito.when(registrationStatusMapperUtil.getStatusCode(any())).thenReturn("ERRO
 		registrationStatusDto.setRegistrationType("TEST");
 		Mockito.when(registrationStatusService.getRegistrationStatus(anyString())).thenReturn(registrationStatusDto);
 		MessageDTO messageDto = demodedupeProcessor.process(dto);
-//		assertTrue(messageDto.getIsValid());
-		assertEquals(false, messageDto.getIsValid());
+		assertTrue(messageDto.getIsValid());
+	//	assertEquals(false, messageDto.getIsValid());
 
 		}
 
