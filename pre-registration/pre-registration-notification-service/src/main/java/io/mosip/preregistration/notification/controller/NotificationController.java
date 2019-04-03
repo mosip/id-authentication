@@ -56,7 +56,7 @@ public class NotificationController {
 	 *            the file to send.
 	 * @return the response entity.
 	 */
-	@PreAuthorize("hasAnyRole('individual')")
+	@PreAuthorize("hasAnyRole('INDIVIDUAL')")
 	@PostMapping(path = "/notify", consumes = {
 			"multipart/form-data" }, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Trigger notification")
@@ -73,7 +73,7 @@ public class NotificationController {
 	 * @param Json Stirng data
 	 * @return the response entity
 	 */
-	@PreAuthorize("hasAnyRole('individual')")
+	@PreAuthorize("hasAnyRole('INDIVIDUAL')")
 	@PostMapping(path="/generateQRCode")
 	public ResponseEntity<MainResponseDTO<QRCodeResponseDTO>> generateQRCode(@RequestBody String data) {
 		log.info("sessionId", "idType", "id",

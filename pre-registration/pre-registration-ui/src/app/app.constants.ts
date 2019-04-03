@@ -19,6 +19,7 @@ export const DATE_PATTERN = '([0-2]\\d|3[01])';
 
 export const IDS = {
   newUser: 'mosip.pre-registration.demographic.create',
+  updateUser: 'mosip.pre-registration.demographic.update',
   transliteration: 'mosip.pre-registration.transliteration.transliterate'
 };
 
@@ -32,14 +33,23 @@ export const IDS = {
 export const APPEND_URL = {
   config: 'config',
   send_otp: 'sendotp',
+<<<<<<< Updated upstream
   login: 'useridotp',
   logout: 'invalidatetoken',
   location_metadata: 'v1.0/locations/locationhierarchy/',
   location_immediate_children: 'v1.0/locations/immediatechildren/',
+=======
+  // login: 'login',
+  // logout: 'logout',
+  login: 'useridotp',
+  logout: 'invalidatetoken',
+  location_metadata: 'locations/locationhierarchy/',
+  location_immediate_children: 'locations/immediatechildren/',
+>>>>>>> Stashed changes
   applicants: 'demographic/applications',
   get_applicant: 'demographic/applications/details',
   location: 'masterdata/',
-  gender: 'masterdata/v1.0/gendertypes',
+  gender: 'masterdata/gendertypes',
   transliteration: 'transliteration/transliterate',
   applicantType: 'applicanttype/',
   validDocument: 'v1.0/applicanttype/',

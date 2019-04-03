@@ -87,7 +87,7 @@ public class NotificationServiceTest {
 		//mapper.registerModule(new JavaTimeModule());
 		notificationDTO = new NotificationDTO();
 		notificationDTO.setName("sanober Noor");
-		notificationDTO.setPreId("1234567890");
+		notificationDTO.setPreRegistrationId("1234567890");
 		notificationDTO.setMobNum("1234567890");
 		notificationDTO.setEmailID("sanober.noor2@mindtree.com");
 		notificationDTO.setAppointmentDate("2019-01-22");
@@ -117,7 +117,7 @@ public class NotificationServiceTest {
 	 * @throws IOException
 	 * @throws java.io.IOException
 	 */
-	@Test
+//	@Test
 	public void sendNotificationSuccessTest()
 			throws JsonParseException, JsonMappingException, IOException, java.io.IOException {
 		String stringjson = mapper.writeValueAsString(mainReqDto);
@@ -149,7 +149,7 @@ public class NotificationServiceTest {
 	public void sendNotificationFailureTest() throws JsonProcessingException {
 		notificationDTO = new NotificationDTO();
 		notificationDTO.setName("sanober Noor");
-		notificationDTO.setPreId("1234567890");
+		notificationDTO.setPreRegistrationId("1234567890");
 		notificationDTO.setMobNum("");
 		notificationDTO.setEmailID("");
 		notificationDTO.setAppointmentDate("2019-01-22");
@@ -174,7 +174,7 @@ public class NotificationServiceTest {
 	public void sendNotificationExceptionTest() throws JsonProcessingException {
 		notificationDTO = new NotificationDTO();
 		notificationDTO.setName("sanober Noor");
-		notificationDTO.setPreId("1234567890");
+		notificationDTO.setPreRegistrationId("1234567890");
 		notificationDTO.setMobNum(null);
 		notificationDTO.setEmailID(null);
 		notificationDTO.setAppointmentDate("2019-01-22");
