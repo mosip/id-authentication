@@ -1537,6 +1537,7 @@ public class DemographicDetailController extends BaseController {
 			populateFieldValue(region, regionLocalLanguage, moroccoIdentity.getRegion());
 			populateFieldValue(province, provinceLocalLanguage, moroccoIdentity.getProvince());
 			populateFieldValue(city, cityLocalLanguage, moroccoIdentity.getCity());
+			populateFieldValue(genderValue, genderValueLocalLanguage, moroccoIdentity.getGender());
 			Boolean isSwitchedOn = (Boolean) SessionContext.map().get(RegistrationConstants.DOB_TOGGLE);
 			switchedOn.set(isSwitchedOn == null ? false : isSwitchedOn);
 			postalCode.setText(moroccoIdentity.getPostalCode() + "");
