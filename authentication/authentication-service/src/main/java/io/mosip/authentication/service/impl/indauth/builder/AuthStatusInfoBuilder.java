@@ -214,7 +214,7 @@ public class AuthStatusInfoBuilder {
 			String... params) {
 		return new ActionableAuthError(idAuthenticationErrorConstants.getErrorCode(),
 				String.format(idAuthenticationErrorConstants.getErrorMessage(), params),
-				idAuthenticationErrorConstants.getActionCode() != null ? idAuthenticationErrorConstants.getActionCode()
+				idAuthenticationErrorConstants.getActionMessage() != null ? idAuthenticationErrorConstants.getActionMessage()
 						: null);
 	}
 

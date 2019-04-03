@@ -217,7 +217,7 @@ public class IDAuthExceptionHandlerTest {
 		expectedResponse.setErrors(Collections
 				.singletonList(new ActionableAuthError(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(),
 						IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorMessage(),
-						IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getActionCode())));
+						IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getActionMessage())));
 		ResponseEntity<Object> handleExceptionInternal = handler.handleIdAppException(
 				new IdAuthenticationBaseException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS), null);
 		BaseAuthResponseDTO actualResponse = (BaseAuthResponseDTO) handleExceptionInternal.getBody();
@@ -235,7 +235,7 @@ public class IDAuthExceptionHandlerTest {
 		expectedResponse.setErrors(Collections
 				.singletonList(new ActionableAuthError(IdAuthenticationErrorConstants.EXPIRED_OTP.getErrorCode(),
 						IdAuthenticationErrorConstants.EXPIRED_OTP.getErrorMessage(),
-						IdAuthenticationErrorConstants.EXPIRED_OTP.getActionCode())));
+						IdAuthenticationErrorConstants.EXPIRED_OTP.getActionMessage())));
 		ResponseEntity<Object> handleExceptionInternal = handler.handleIdAppException(
 				new IdAuthenticationBaseException(IdAuthenticationErrorConstants.EXPIRED_OTP), null);
 		BaseAuthResponseDTO actualResponse = (BaseAuthResponseDTO) handleExceptionInternal.getBody();

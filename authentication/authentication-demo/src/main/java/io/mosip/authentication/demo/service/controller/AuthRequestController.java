@@ -68,8 +68,6 @@ public class AuthRequestController {
 
 	private static final String IDA_API_VERSION = "ida.api.version";
 
-	private static final String KYC = "kyc";
-
 	private static final String AUTH_TYPE = "authType";
 
 	private static final String UIN = "UIN";
@@ -126,7 +124,7 @@ public class AuthRequestController {
 	public String createAuthRequest(@RequestParam(name=ID,required=true) @Nullable String id, 
 			@RequestParam(name=ID_TYPE,required=false) @Nullable String idType,
 			@RequestParam(name="isKyc",required=false) @Nullable Boolean isKyc,
-			@RequestParam(name="Auth type",required=false) @Nullable String reqAuth,
+			@RequestParam(name="Authtype",required=false) @Nullable String reqAuth,
 			  @RequestBody Map<String,Object> request) throws KeyManagementException, InvalidKeyException, NoSuchAlgorithmException, InvalidKeySpecException, NoSuchPaddingException, InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException, IOException, JSONException, IdAuthenticationAppException, IdAuthenticationBusinessException {
 		String authRequestTemplate=environment.getProperty(IDA_AUTH_REQUEST_TEMPLATE);
 		Map<String,Object> reqValues=new HashMap<>();

@@ -32,6 +32,7 @@ import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.indauth.match.AuthType;
 import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
+import io.mosip.authentication.core.spi.indauth.match.IdMapping;
 import io.mosip.authentication.core.spi.indauth.match.MatchType;
 import io.mosip.authentication.service.helper.IdInfoHelper;
 import io.mosip.authentication.service.impl.indauth.service.bio.BioAuthType;
@@ -55,7 +56,10 @@ import io.mosip.kernel.core.util.DateUtils;
  * 
  */
 public class BaseAuthRequestValidator extends IdAuthValidator {
+	
+	private static final String BIO_SUB_TYPE = "bioSubType";
 
+	/** The Constant OTP. */
 	private static final String OTP = "otp";
 
 	/** The Constant UNKNOWN. */
@@ -76,7 +80,7 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 //	private static final String REQUEST_ADDITIONAL_FACTORS_STATIC_PIN = "request/additionalFactors/staticPin";
 
 	/** The Constant REQUEST_ADDITIONAL_FACTORS_TOTP. */
-private static final String REQUEST_ADDITIONAL_FACTORS_TOTP = "request/additionalFactors/totp";
+	private static final String REQUEST_ADDITIONAL_FACTORS_TOTP = "request/additionalFactors/totp";
 
 	/** The Constant BIO_TYPE. */
 	private static final String BIO_TYPE = "biotype";
@@ -139,12 +143,16 @@ private static final String REQUEST_ADDITIONAL_FACTORS_TOTP = "request/additiona
 	@Autowired
 	protected IdInfoFetcher idInfoFetcher;
 
+	/** The master Data Manager. */
 	@Autowired
 	private MasterDataManager masterDataManager;
-
+	
+	/** The email Pattern. */
 	private Pattern emailPattern;
+	
+	/** The phone Pattern. */
 	private Pattern phonePattern;
-
+	
 	@PostConstruct
 	private void initialize() {
 		emailPattern = Pattern.compile(env.getProperty(MOSIP_ID_VALIDATION_IDENTITY_EMAIL));
@@ -277,24 +285,58 @@ private static final String REQUEST_ADDITIONAL_FACTORS_TOTP = "request/additiona
 	 * @param bioInfo
 	 * @param errors
 	 */
-	private void validateBioType(List<DataDTO> bioInfo, Errors errors) {
+	private void validateBioType(List<DataDTO> bioInfos, Errors errors) {
 		AuthType[] authTypes = BioAuthType.values();
 		Set<String> availableAuthTypeInfos = new HashSet<>();
 		for (AuthType authType : authTypes) {
 			availableAuthTypeInfos.add(authType.getType());
 		}
-		for (DataDTO bioInfos : bioInfo) {
-			if (bioInfos.getBioType() == null || bioInfos.getBioType().isEmpty()) {
+		for (DataDTO bioInfo : bioInfos) {
+			String bioType = bioInfo.getBioType();
+			if (bioType == null || bioType.isEmpty()) {
 				errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
 						new Object[] { BIO_TYPE },
 						IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
-			} else if (!availableAuthTypeInfos.contains(bioInfos.getBioType())) {
+			} else if (!availableAuthTypeInfos.contains(bioType)) {
 				errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.INVALID_BIOTYPE.getErrorCode(),
-						new Object[] { bioInfos.getBioType() },
+						new Object[] { bioType },
 						IdAuthenticationErrorConstants.INVALID_BIOTYPE.getErrorMessage());
+			}  else {
+				String bioSubType = bioInfo.getBioSubType();
+				if(bioSubType != null) {
+				// Valid bio type
+				Optional<BioAuthType> bioAuthTypeOpt = BioAuthType.getSingleBioAuthTypeForType(bioType);
+				if(bioAuthTypeOpt.isPresent()) {
+					BioAuthType bioAuthType = bioAuthTypeOpt.get();
+					Set<MatchType> associatedMatchTypes = bioAuthType.getAssociatedMatchTypes();
+					boolean invalidBioType = associatedMatchTypes
+								.stream()
+								.filter(matchType -> matchType instanceof BioMatchType)
+								.map(matchType -> (BioMatchType)matchType)
+								.map(BioMatchType::getIdMapping)
+								.map(IdMapping::getIdname)
+								.distinct()
+								.noneMatch(idName -> idName.equalsIgnoreCase(bioSubType));
+					if(invalidBioType) {
+						errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+								new Object[] { BIO_SUB_TYPE + " - " + bioSubType + " for bioType " + bioType },
+								IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
+					}
+								
+				}
+				} else {
+					if (!bioType.equalsIgnoreCase(BioAuthType.FACE_IMG.getType())) {
+						errors.rejectValue(REQUEST,
+								IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
+								new Object[] { BIO_SUB_TYPE + " for bioType " + bioType },
+								IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
+					}
+				}
 			}
-
 		}
+		
+		
+		
 
 	}
 

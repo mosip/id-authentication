@@ -21,7 +21,7 @@ public class IdAuthenticationBaseExceptionTest {
     public void testIdAuthenticationBaseExceptionActionCode() throws IdAuthenticationBaseException {
 	IdAuthenticationBaseException ex = new IdAuthenticationBaseException(
 		IdAuthenticationErrorConstants.INVALID_OTP_REQUEST_TIMESTAMP);
-	assertEquals(IdAuthenticationErrorConstants.INVALID_OTP_REQUEST_TIMESTAMP.getActionCode(), ex.getActionCode());
+	assertEquals(IdAuthenticationErrorConstants.INVALID_OTP_REQUEST_TIMESTAMP.getActionMessage(), ex.getActionMessage());
 	
     }
 }

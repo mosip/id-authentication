@@ -189,6 +189,8 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 			IdAuthenticationBaseException baseException = (IdAuthenticationBaseException) ex;
 			Locale locale = LocaleContextHolder.getLocale();
 			List<String> errorCodes = ((BaseCheckedException) ex).getCodes();
+			List<String> errorMessages = ((BaseCheckedException) ex).getErrorTexts();
+			
 			Collections.reverse(errorCodes);
 			try {
 				if (ex instanceof IDDataValidationException) {
@@ -196,13 +198,13 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 					List<Object[]> args = validationException.getArgs();
 					List<AuthError> errors = IntStream.range(0, errorCodes.size())
 							.mapToObj(i -> createAuthError(validationException, errorCodes.get(i),
-									messageSource.getMessage(errorCodes.get(i), args.get(i), locale)))
+									errorMessages.get(i)))
 							.distinct().collect(Collectors.toList());
 					authResp.setErrors(errors);
 				} else {
 					List<AuthError> errors = IntStream.range(0, errorCodes.size())
 							.mapToObj(i -> createAuthError(baseException, errorCodes.get(i),
-									messageSource.getMessage(errorCodes.get(i), null, locale)))
+									errorMessages.get(i)))
 							.distinct().collect(Collectors.toList());
 					authResp.setErrors(errors);
 				}
@@ -230,17 +232,11 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 	 */
 	private AuthError createAuthError(IdAuthenticationBaseException authException, String errorCode,
 			String errorMessage) {
-		String actionCode = authException.getActionCode();
+		String actionMessage = authException.getActionMessage();
 		AuthError err;
-		if (actionCode == null || actionCode.isEmpty()) {
+		if (actionMessage == null || actionMessage.isEmpty()) {
 			err = new AuthError(errorCode, errorMessage);
 		} else {
-			String actionMessage = "";
-			Optional<String> optionalActionMessage = Optional
-					.ofNullable(messageSource.getMessage(actionCode, null, LocaleContextHolder.getLocale()));
-			if (optionalActionMessage.isPresent()) {
-				actionMessage = optionalActionMessage.get();
-			}
 			err = new ActionableAuthError(errorCode, errorMessage, actionMessage);
 		}
 
