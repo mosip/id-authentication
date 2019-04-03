@@ -54,6 +54,7 @@ public class JsonValidatorApplicationContextTest {
 		PowerMockito.when(JsonLoader.fromResource(Mockito.anyString())).thenCallRealMethod();
 		ReflectionTestUtils.setField(schemaLoader, "configServerFileStorageURL", "http://1.1.1.1:51000/");
 		ReflectionTestUtils.setField(schemaLoader, "schemaName", "schemaName");
+		ReflectionTestUtils.setField(schemaLoader, "propertySource", "APPLICATION_CONTEXT");
 		ReflectionTestUtils.setField(jsonValidator, "propertySource", "APPLICATION_CONTEXT");
 		ReflectionTestUtils.setField(jsonValidator, "configServerFileStorageURL", "http://1.1.1.1:51000/");
 		ReflectionTestUtils.setField(jsonValidator, "schemaName", "schemaName");
