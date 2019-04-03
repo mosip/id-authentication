@@ -186,7 +186,6 @@ public abstract class IdAuthValidator implements Validator {
 		if (reqDateAndTime != null && DateUtils.after(reqDateAndTime, new Date())) {
 			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE, "Invalid Date");
 			errors.rejectValue(REQ_TIME, IdAuthenticationErrorConstants.INVALID_TIMESTAMP.getErrorCode(),
-					new Object[] { env.getProperty(REQUESTDATE_RECEIVED_IN_MAX_TIME_MINS, Integer.class) },
 					IdAuthenticationErrorConstants.INVALID_TIMESTAMP.getErrorMessage());
 		}
 	}

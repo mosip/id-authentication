@@ -118,9 +118,8 @@ public class OTPRequestValidator extends IdAuthValidator {
 						"INVALID_OTP_REQUEST_TIMESTAMP -- " + String.format(
 								IdAuthenticationErrorConstants.INVALID_OTP_REQUEST_TIMESTAMP.getErrorMessage(),
 								Duration.between(reqTimeInstance, now).toMinutes() - Long.parseLong(maxTimeInMinutes)));
-				errors.rejectValue(REQ_TIME, IdAuthenticationErrorConstants.INVALID_TIMESTAMP.getErrorCode(),
-						new Object[] { Duration.between(reqTimeInstance, now).toMinutes() },
-						IdAuthenticationErrorConstants.INVALID_TIMESTAMP.getErrorMessage());
+				errors.rejectValue(REQ_TIME, IdAuthenticationErrorConstants.INVALID_OTP_REQUEST_TIMESTAMP.getErrorCode(),
+						IdAuthenticationErrorConstants.INVALID_OTP_REQUEST_TIMESTAMP.getErrorMessage());
 			}
 		} catch (DateTimeParseException | ParseException e) {
 			mosipLogger.error(SESSION_ID, OTP_VALIDATOR, VALIDATE_REQUEST_TIMED_OUT,
