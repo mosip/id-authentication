@@ -300,7 +300,7 @@ public class BaseService {
 	 */
 	public String getGlobalConfigValueOf(String key) {
 
-		if (applicationMap == null) {
+		if (applicationMap == null || applicationMap.isEmpty()) {
 
 			if (applicationContext == null) {
 
