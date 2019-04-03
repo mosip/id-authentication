@@ -1009,8 +1009,7 @@ public class DemographicDetailController extends BaseController {
 			demographicInfoDTO = buildDemographicInfo();
 
 			try {
-				jsonValidator.validateJson(JsonUtils.javaObjectToJsonString(demographicInfoDTO),
-						RegistrationConstants.IDENTITY_JSON_FILE_NAME);
+				jsonValidator.validateJson(JsonUtils.javaObjectToJsonString(demographicInfoDTO));
 			} catch (JsonValidationProcessingException | JsonIOException | JsonSchemaIOException | FileIOException
 					| JsonProcessingException exception) {
 				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.REG_ID_JSON_VALIDATION_FAILED);
