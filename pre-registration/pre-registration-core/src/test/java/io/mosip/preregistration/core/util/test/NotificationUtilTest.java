@@ -75,7 +75,7 @@ public class NotificationUtilTest {
 		
 		notificationDTO = new NotificationDTO();
 		notificationDTO.setName("sanober Noor");
-		notificationDTO.setPreId("1234567890");
+		notificationDTO.setPreRegistrationId("1234567890");
 		notificationDTO.setMobNum("1234567890");
 		notificationDTO.setEmailID("sanober,noor2@mindtree.com");
 		notificationDTO.setAppointmentDate("2019-01-22");
