@@ -112,6 +112,7 @@
 								<argument>bBQX230Wskq6XpoZ1c+Ep1D+znxfT89NxLQ7P4KFkc4=</argument>
 								<argument>${project.version}</argument>
 								<argument>${main.basedir}/registration-libs/target/</argument>
+								<argument>${main.basedir}/registration-services/src/main/resources/certificate/mosip_cer.cer</argument>
 							</arguments>
 						</configuration>
 					</execution>

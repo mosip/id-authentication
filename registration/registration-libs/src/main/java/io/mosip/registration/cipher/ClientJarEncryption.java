@@ -54,6 +54,8 @@ public class ClientJarEncryption {
 	private static final String MOSIP_LOG = "log";
 	private static final String MOSIP_SERVICES = "mosip-services.jar";
 	private static final String MOSIP_CLIENT = "mosip-client.jar";
+	private static final String MOSIP_CER = "cer";
+	
 
 	/**
 	 * Encrypt the bytes
@@ -117,8 +119,15 @@ public class ClientJarEncryption {
 					fileNameByBytes.put(MOSIP_LIB + SLASH, new byte[] {});
 					fileNameByBytes.put(MOSIP_BIN + SLASH, new byte[] {});
 					fileNameByBytes.put(MOSIP_LOG + SLASH, new byte[] {});
-
+				
 					fileNameByBytes.put(MOSIP_EXE_JAR, runExecutbale);
+					
+					//Certificate file
+					File mosipCertificateFile = new File(args[5]);
+					
+					if(mosipCertificateFile.exists()) {
+						fileNameByBytes.put(MOSIP_CER + SLASH+ mosipCertificateFile.getName(), FileUtils.readFileToByteArray(mosipCertificateFile));
+					}
 
 					String path = new File(args[4]).getPath();
 
