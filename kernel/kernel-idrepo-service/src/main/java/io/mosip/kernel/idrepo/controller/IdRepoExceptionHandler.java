@@ -17,6 +17,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageConversionException;
 import org.springframework.lang.Nullable;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.ServletWebRequest;
@@ -72,10 +73,6 @@ public class IdRepoExceptionHandler extends ResponseEntityExceptionHandler {
 	/** The env. */
 	@Autowired
 	private Environment env;
-
-	/** The mapper. */
-	@Autowired
-	private ObjectMapper mapper;
 	
 	@Resource
 	private Map<String, String> id;
@@ -98,7 +95,16 @@ public class IdRepoExceptionHandler extends ResponseEntityExceptionHandler {
 				buildExceptionResponse((BaseCheckedException) e, ((ServletWebRequest) request).getHttpMethod()),
 				HttpStatus.OK);
 	}
-
+	
+	@ExceptionHandler(AccessDeniedException.class)
+	protected ResponseEntity<Object> handleAccessDeniedException(Exception ex, WebRequest request) {
+		mosipLogger.error(IdRepoLogger.getUin(), ID_REPO, ID_REPO_EXCEPTION_HANDLER,
+				"handleAccessDeniedException - \n" + ExceptionUtils.getStackTrace(ex));
+		IdRepoUnknownException e = new IdRepoUnknownException(IdRepoErrorConstants.UNAUTHORIZED);
+		return new ResponseEntity<>(
+				buildExceptionResponse((BaseCheckedException) e, ((ServletWebRequest) request).getHttpMethod()),
+				HttpStatus.OK);
+	}
 	/*
 	 * (non-Javadoc)
 	 * 
