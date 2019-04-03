@@ -8,25 +8,21 @@ import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfigurat
 import org.springframework.scheduling.annotation.EnableAsync;
 
 /**
- * -------------------------------------------------------------------------
- * EMAIL-NOTIFICATION-SERVICE APPLICATION
- * -------------------------------------------------------------------------
- * This service serves the functionality of sending email.
- * -------------------------------------------------------------------------
+ * Mail notifier application
  * 
  * @author Sagar Mahapatra
  * @since 1.0.0
  *
  */
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages= {"io.mosip.kernel.emailnotification.*","io.mosip.kernel.auth.*"})
 @EnableAutoConfiguration(exclude = { DataSourceAutoConfiguration.class, HibernateJpaAutoConfiguration.class })
 @EnableAsync
 public class NotificationEmailBootApplication {
+	
 	/**
 	 * Main method to run spring boot application
 	 * 
-	 * @param args
-	 *            the argument
+	 * @param args the argument
 	 */
 	public static void main(String[] args) {
 		SpringApplication.run(NotificationEmailBootApplication.class, args);

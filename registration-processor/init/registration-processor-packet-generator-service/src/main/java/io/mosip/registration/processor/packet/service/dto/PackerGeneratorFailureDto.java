@@ -1,9 +1,16 @@
 package io.mosip.registration.processor.packet.service.dto;
 
+import java.io.Serializable;
+
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
 /**
  * @author Sowmya The Class PackerGeneratorFailureDto.
  */
-public class PackerGeneratorFailureDto extends PacketGeneratorResDto {
+@Data
+@EqualsAndHashCode(callSuper = true)
+public class PackerGeneratorFailureDto extends PacketGeneratorResDto implements Serializable {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = -5397672054150780651L;
@@ -17,25 +24,6 @@ public class PackerGeneratorFailureDto extends PacketGeneratorResDto {
 	public PackerGeneratorFailureDto() {
 		super();
 
-	}
-
-	/**
-	 * Gets the error code.
-	 *
-	 * @return the error code
-	 */
-	public String getErrorCode() {
-		return errorCode;
-	}
-
-	/**
-	 * Sets the error code.
-	 *
-	 * @param errorCode
-	 *            the new error code
-	 */
-	public void setErrorCode(String errorCode) {
-		this.errorCode = errorCode;
 	}
 
 }

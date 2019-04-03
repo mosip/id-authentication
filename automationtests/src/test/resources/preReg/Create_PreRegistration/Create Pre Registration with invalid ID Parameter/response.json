@@ -1,9 +1,0 @@
-{
-  "err": {
-    "errorCode": "PRG_CORE_REQ_001",
-    "message": "INVALID_REQUEST_ID"
-  },
-  "status": false,
-  "resTime": "2019-02-05T09:04:05.676Z",
-  "response": null
-}

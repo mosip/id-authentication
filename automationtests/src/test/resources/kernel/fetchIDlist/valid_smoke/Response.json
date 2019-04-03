@@ -34,13 +34,6 @@
       "name": "Token ID",
       "langCode": "eng",
       "isActive": true
-    },
-    {
-      "code": "TIN",
-      "descr": "Temporary ID Number",
-      "name": "Identity Number",
-      "langCode": "eng",
-      "isActive": true
     }
   ]
 }

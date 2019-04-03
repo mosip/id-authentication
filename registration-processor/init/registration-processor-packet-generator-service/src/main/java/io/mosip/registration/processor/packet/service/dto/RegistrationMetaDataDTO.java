@@ -1,5 +1,9 @@
 package io.mosip.registration.processor.packet.service.dto;
 
+import java.io.Serializable;
+
+import lombok.Data;
+
 /**
  * This class contains the meta-information of the Registration
  * 
@@ -7,8 +11,13 @@ package io.mosip.registration.processor.packet.service.dto;
  * 
  *
  */
-public class RegistrationMetaDataDTO extends BaseDTO {
+@Data
+public class RegistrationMetaDataDTO extends BaseDTO implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3536354184046165658L;
 	private double geoLatitudeLoc;
 	private double geoLongitudeLoc;
 	// New , update , correction, lost UIN

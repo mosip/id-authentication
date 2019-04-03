@@ -3,6 +3,8 @@
  */
 package io.mosip.registration.processor.packet.service.dto;
 
+import java.io.Serializable;
+
 import lombok.Data;
 
 /**
@@ -10,7 +12,12 @@ import lombok.Data;
  *
  */
 @Data
-public class ErrorDTO {
+public class ErrorDTO implements Serializable {
+
+	/**
+	 *
+	 */
+	private static final long serialVersionUID = 6381068666467968031L;
 
 	private String errorCode;
 

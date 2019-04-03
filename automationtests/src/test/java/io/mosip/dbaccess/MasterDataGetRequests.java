@@ -28,7 +28,7 @@ public class MasterDataGetRequests {
 		long flag=0;
 		
 		try {
-			factory = new Configuration().configure("masterdatanteg.cfg.xml").buildSessionFactory();	
+			factory = new Configuration().configure("masterdatainteg.cfg.xml").buildSessionFactory();	
 			session = factory.getCurrentSession();
 			session.beginTransaction();
 		} catch (HibernateException e) {
@@ -103,4 +103,5 @@ public class MasterDataGetRequests {
 
 	
 	*/
+
 
