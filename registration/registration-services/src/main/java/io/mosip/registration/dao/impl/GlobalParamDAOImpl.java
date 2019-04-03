@@ -116,7 +116,7 @@ public class GlobalParamDAOImpl implements GlobalParamDAO {
 	 * @see io.mosip.registration.dao.GlobalParamDAO#updateSoftwareUpdateStatus(java.lang.String)
 	 */
 	@Override
-	public GlobalParam updateSoftwareUpdateStatus(String status) {
+	public GlobalParam updateSoftwareUpdateStatus(boolean isUpdateAvailable) {
 		
 		LOGGER.info("REGISTRATION - GLOBALPARAMS - GLOBAL_PARAM_DAO_IMPL", RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Updating the SoftwareUpdate flag started.");
@@ -129,7 +129,11 @@ public class GlobalParamDAOImpl implements GlobalParamDAO {
 		
 		GlobalParam globalParam = get(globalParamId);
 		
-		globalParam.setVal(status);
+		if (isUpdateAvailable) {
+			globalParam.setVal(RegistrationConstants.ENABLE);
+		} else {
+			globalParam.setVal(RegistrationConstants.DISABLE);
+		}
 		globalParam.setUpdBy(RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM);
 		globalParam.setUpdDtimes(time);
 		

@@ -92,7 +92,7 @@ public class SyncStatusValidatorServiceImpl extends BaseService implements SyncS
 			validatingRegisteredPacketCountAndDuration(errorResponseDTOList);
 			validatingSyncJobsConfigAndYetToExportPacketCountAndDuration(errorResponseDTOList);
 			validatingCenterToMachineDistance(errorResponseDTOList);
-			//validatingLastSoftwareUpdateDuration (errorResponseDTOList);
+			validatingLastSoftwareUpdateDuration (errorResponseDTOList);
 			
 			LOGGER.info(LoggerConstants.OPT_TO_REG_LOGGER_SESSION_ID, APPLICATION_NAME, APPLICATION_ID,
 					"Validating the sync status ended");
@@ -119,13 +119,13 @@ public class SyncStatusValidatorServiceImpl extends BaseService implements SyncS
 	 * 				the error response DTO list
 	 */
 	private void validatingLastSoftwareUpdateDuration (List<ErrorResponseDTO> errorResponseDTOList) {
-		String isSoftwareAvailable = getGlobalConfigValueOf(RegistrationConstants.IS_SOFTWARE_UPDATE_AVAILABLE);
 
 		GlobalParamId globalParamId=new GlobalParamId();
 		globalParamId.setCode(RegistrationConstants.IS_SOFTWARE_UPDATE_AVAILABLE);
 		globalParamId.setLangCode(RegistrationConstants.ENGLISH_LANG_CODE);
 		GlobalParam globalParam = globalParamDAO.get(globalParamId);
 		
+		String isSoftwareAvailable = globalParam.getVal();
 		Date lastSoftwareUpdatedTime = new Date(globalParam.getUpdDtimes().getTime());
 		
 		if (isSoftwareAvailable!=null && isSoftwareAvailable.equalsIgnoreCase(RegistrationConstants.ENABLE) && Double.parseDouble(

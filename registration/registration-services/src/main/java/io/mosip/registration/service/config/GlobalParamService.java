@@ -34,7 +34,7 @@ public interface GlobalParamService {
 	 *
 	 * @return the response DTO
 	 */
-	ResponseDTO updateSoftwareUpdateStatus();
+	ResponseDTO updateSoftwareUpdateStatus(boolean isUpdateAvailable);
 	
 
 }

@@ -17,9 +17,12 @@ import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
+import javax.xml.parsers.ParserConfigurationException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
+import org.xml.sax.SAXException;
 
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -60,6 +63,7 @@ import io.mosip.registration.service.MasterSyncService;
 import io.mosip.registration.service.UserDetailService;
 import io.mosip.registration.service.UserOnboardService;
 import io.mosip.registration.service.config.GlobalParamService;
+import io.mosip.registration.update.RegistrationUpdate;
 import io.mosip.registration.util.common.OTPManager;
 import io.mosip.registration.util.common.PageFlow;
 import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
@@ -193,15 +197,15 @@ public class LoginController extends BaseController implements Initializable {
 	private ProgressIndicator progressIndicator;
 
 	private Service<String> taskService;
+	
+	@Autowired
+	private RegistrationUpdate registrationUpdate;
 
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 
-		try {
-			// TODO : replacing the below condition with hasUpdate() in reg-client.
-			if (true) {
-
-				ResponseDTO responseDTO = globalParamService.updateSoftwareUpdateStatus();
+		try {		
+				ResponseDTO responseDTO = globalParamService.updateSoftwareUpdateStatus(registrationUpdate.hasUpdate());
 
 				if (responseDTO != null && responseDTO.getSuccessResponseDTO() != null) {
 					LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
@@ -211,7 +215,6 @@ public class LoginController extends BaseController implements Initializable {
 					LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
 							responseDTO.getErrorResponseDTOs().get(0).getMessage());
 				}
-			}
 
 			otpValidity.setText("Valid for " + otpValidityImMins + " minutes");
 			stopTimer();
@@ -221,12 +224,12 @@ public class LoginController extends BaseController implements Initializable {
 					generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.PWORD_LENGTH);
 				}
 			});
-
-		} catch (RuntimeException exception) {
-
+		} catch (IOException | ParserConfigurationException | SAXException exception) {
 			LOGGER.error(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
 					exception.getMessage() + ExceptionUtils.getStackTrace(exception));
-
+		} catch (RuntimeException runtimeExceptionexception) {
+			LOGGER.error(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
+					runtimeExceptionexception.getMessage() + ExceptionUtils.getStackTrace(runtimeExceptionexception));
 		}
 	}
 

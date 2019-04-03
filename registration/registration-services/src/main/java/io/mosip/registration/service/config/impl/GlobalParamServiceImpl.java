@@ -225,14 +225,14 @@ public class GlobalParamServiceImpl extends BaseService implements GlobalParamSe
 	 * @see io.mosip.registration.service.config.GlobalParamService#updateSoftwareUpdateStatus(boolean)
 	 */
 	@Override
-	public ResponseDTO updateSoftwareUpdateStatus() {
+	public ResponseDTO updateSoftwareUpdateStatus(boolean isUpdateAvailable) {
 
 		LOGGER.info(LoggerConstants.GLOBAL_PARAM_SERVICE_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
 				"Updating the SoftwareUpdate flag started.");
 
 		ResponseDTO responseDTO = new ResponseDTO();
 
-		GlobalParam globalParam = globalParamDAO.updateSoftwareUpdateStatus(RegistrationConstants.ENABLE);
+		GlobalParam globalParam = globalParamDAO.updateSoftwareUpdateStatus(isUpdateAvailable);
 
 		if (globalParam.getVal().equalsIgnoreCase(RegistrationConstants.ENABLE)) {
 

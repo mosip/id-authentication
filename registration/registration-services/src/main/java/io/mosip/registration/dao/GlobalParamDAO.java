@@ -57,6 +57,6 @@ public interface GlobalParamDAO {
 	 * 				the status
 	 * @return the global param
 	 */
-	GlobalParam updateSoftwareUpdateStatus(String status);
+	GlobalParam updateSoftwareUpdateStatus(boolean isUpdateAvailable);
 
 }
