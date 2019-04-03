@@ -69,7 +69,7 @@ public class ExternalStage extends MosipVerticleAPIManager{
 		requestdto.setRequesttime(LocalDateTime.now().toString());
 		requestdto.setVersion(VERSION);
 		try {
-			Boolean temp=(Boolean) registrationProcessorRestService.postApi(ApiName.DUMMYSERVICE,
+			Boolean temp=(Boolean) registrationProcessorRestService.postApi(ApiName.EISERVICE,
 					"", "", requestdto, Boolean.class);
 			if(temp) {
 				object.setIsValid(true);

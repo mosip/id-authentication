@@ -1,4 +1,4 @@
-package io.mosip.registrationprocessor.dummyservice.config;
+package io.mosip.registrationprocessor.eis.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -10,7 +10,7 @@ import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 /**
- * Dummy Configuration
+ * external Configuration
  *
  */
 @Configuration
@@ -22,8 +22,8 @@ public class SwaggerConfig {
 	 */
 	@Bean
 	public Docket DummyBean() {
-		return new Docket(DocumentationType.SWAGGER_2).groupName("DummyService").select()
-				.apis(RequestHandlerSelectors.basePackage("io.mosip.registrationprocessor.dummyservice.controller"))
+		return new Docket(DocumentationType.SWAGGER_2).groupName("external-integration-service").select()
+				.apis(RequestHandlerSelectors.basePackage("io.mosip.registrationprocessor.eis.controller"))
 				.paths(PathSelectors.ant("/registration-processor/*/*")).build();
 	}
 
