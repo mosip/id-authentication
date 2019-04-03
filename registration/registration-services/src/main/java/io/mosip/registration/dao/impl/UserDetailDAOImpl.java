@@ -106,14 +106,14 @@ public class UserDetailDAOImpl implements UserDetailDAO {
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * org.mosip.registration.dao.RegistrationUserDetailDAO#getAllActiveUsers(java.lang.
-	 * String)
+	 * org.mosip.registration.dao.RegistrationUserDetailDAO#getAllActiveUsers(java.
+	 * lang. String)
 	 */
 	public List<UserBiometric> getAllActiveUsers(String attrCode) {
-		
-		LOGGER.info("REGISTRATION - ACTIVE_USERS - REGISTRATION_USER_DETAIL_DAO_IMPL", APPLICATION_NAME,
-				APPLICATION_ID, "Fetching all active users");
-		
+
+		LOGGER.info("REGISTRATION - ACTIVE_USERS - REGISTRATION_USER_DETAIL_DAO_IMPL", APPLICATION_NAME, APPLICATION_ID,
+				"Fetching all active users");
+
 		return userBiometricRepository.findByUserBiometricIdBioAttributeCodeAndIsActiveTrue(attrCode);
 
 	}
@@ -121,20 +121,18 @@ public class UserDetailDAOImpl implements UserDetailDAO {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * org.mosip.registration.dao.RegistrationUserDetailDAO#getUserSpecificBioDetails(java.lang.
-	 * String, java.lang.String)
+	 * @see org.mosip.registration.dao.RegistrationUserDetailDAO#
+	 * getUserSpecificBioDetails(java.lang. String, java.lang.String)
 	 */
 	public List<UserBiometric> getUserSpecificBioDetails(String userId, String bioType) {
-		
+
 		LOGGER.info("REGISTRATION - USER_SPECIFIC_BIO - REGISTRATION_USER_DETAIL_DAO_IMPL", APPLICATION_NAME,
 				APPLICATION_ID, "Fetching user specific biometric details");
-		
+
 		return userBiometricRepository
 				.findByUserBiometricIdUsrIdAndIsActiveTrueAndUserBiometricIdBioTypeCodeIgnoreCase(userId, bioType);
 	}
 
-	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -154,7 +152,7 @@ public class UserDetailDAOImpl implements UserDetailDAO {
 				UserDetail userDtls = new UserDetail();
 				UserPassword usrPwd = new UserPassword();
 				// password details
-				usrPwd.setUsrId(userDtals.getName());
+				usrPwd.setUsrId(userDtals.getUserName());
 				usrPwd.setPwd(new String(userDtals.getUserPassword(), StandardCharsets.UTF_8));
 				usrPwd.setStatusCode("00");
 				usrPwd.setIsActive(true);
@@ -167,7 +165,7 @@ public class UserDetailDAOImpl implements UserDetailDAO {
 				usrPwd.setCrDtime(Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()));
 				userPassword.add(usrPwd);
 
-				userDtls.setId(userDtals.getName());
+				userDtls.setId(userDtals.getUserName());
 				userDtls.setUserPassword(usrPwd);
 				userDtls.setEmail(userDtals.getMail());
 				userDtls.setMobile(userDtals.getMobile());
@@ -196,11 +194,10 @@ public class UserDetailDAOImpl implements UserDetailDAO {
 					roles.setCrBy(RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM);
 				}
 				roles.setCrDtime(Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()));
-				String uName = role.getName();
 				role.getRoles().forEach(rol -> {
 					UserRoleID roleId = new UserRoleID();
 					roleId.setRoleCode(rol);
-					roleId.setUsrId(uName);
+					roleId.setUsrId(role.getUserName());
 					roles.setUserRoleID(roleId);
 					userRoleRepository.save(roles);
 				});
