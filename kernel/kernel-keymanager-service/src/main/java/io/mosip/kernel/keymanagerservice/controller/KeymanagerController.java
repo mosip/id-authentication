@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseFilter;
+import io.mosip.kernel.keymanagerservice.dto.KeyPairResponseDto;
 import io.mosip.kernel.keymanagerservice.dto.PublicKeyResponse;
 import io.mosip.kernel.keymanagerservice.dto.SymmetricKeyRequestDto;
 import io.mosip.kernel.keymanagerservice.dto.SymmetricKeyResponseDto;
@@ -89,5 +90,13 @@ public class KeymanagerController {
 	@GetMapping(value = "/alias")
 	public ResponseEntity<List<String>> getAllAlias() {
 		return new ResponseEntity<>(keymanagerService.getAllAlias(), HttpStatus.OK);
+	}
+	
+	@GetMapping("/keypair/{applicationid}")
+	public ResponseEntity<KeyPairResponseDto<String>> getKeyPair(@ApiParam("Id of application") @PathVariable("applicationId") String applicationId,
+			@ApiParam("Timestamp as metadata") @RequestParam("timeStamp") String timeStamp,
+			@ApiParam("Refrence Id as metadata") @RequestParam("referenceId") Optional<String> referenceId){
+				return new ResponseEntity<>(keymanagerService.getKeyPair(applicationId, timeStamp, referenceId),HttpStatus.OK);
+		
 	}
 }

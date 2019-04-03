@@ -34,6 +34,7 @@ import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.keygenerator.bouncycastle.KeyGenerator;
 import io.mosip.kernel.keymanagerservice.constant.KeymanagerConstant;
 import io.mosip.kernel.keymanagerservice.constant.KeymanagerErrorConstant;
+import io.mosip.kernel.keymanagerservice.dto.KeyPairResponseDto;
 import io.mosip.kernel.keymanagerservice.dto.PublicKeyResponse;
 import io.mosip.kernel.keymanagerservice.dto.SymmetricKeyRequestDto;
 import io.mosip.kernel.keymanagerservice.dto.SymmetricKeyResponseDto;
@@ -498,9 +499,102 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 		keyStoreRepository.save(keymanagerUtil.setMetaData(dbKeyStore));
 	}
 
-	//TODO: To be removed added for debugging
+	// TODO: To be removed added for debugging
 	@Override
 	public List<String> getAllAlias() {
 		return keyStore.getAllAlias();
+	}
+
+	@Override
+	public KeyPairResponseDto<String> getKeyPair(String applicationId, String timeStamp,
+			Optional<String> referenceId) {
+		LocalDateTime localDateTimeStamp = keymanagerUtil.parseToLocalDateTime(timeStamp);
+		KeyPairResponseDto<byte[]> keyPairObj = null;
+		KeyPairResponseDto<String> keyPairResponse= new KeyPairResponseDto<>();
+		if (referenceId.isPresent()) {
+			keyPairObj = getKeyPairFromDBStore(applicationId, localDateTimeStamp, referenceId.get());
+			keyPairResponse.setPrivateKey(CryptoUtil.encodeBase64(keyPairObj.getPublicKey()));
+			keyPairResponse.setPublicKey(CryptoUtil.encodeBase64(keyPairObj.getPrivateKey()));
+			keyPairResponse.setExpiryAt(keyPairObj.getExpiryAt());
+			keyPairResponse.setIssuedAt(keyPairObj.getIssuedAt());
+			
+		}
+
+		return keyPairResponse;
+	}
+
+	/**
+	 * Function to get keypair from DB store. On first request for an applicationId,
+	 * referenceId and duration, will create a new keypair.
+	 * 
+	 * @param applicationId
+	 *            applicationId
+	 * @param timeStamp
+	 *            timeStamp
+	 * @param referenceId
+	 *            referenceId
+	 * @return {@link PublicKeyResponse} instance
+	 */
+	private KeyPairResponseDto<byte[]> getKeyPairFromDBStore(String applicationId, LocalDateTime timeStamp,
+			String referenceId) {
+		LOGGER.info(KeymanagerConstant.SESSIONID, KeymanagerConstant.APPLICATIONID, applicationId,
+				KeymanagerConstant.GETPUBLICKEYDB);
+		LOGGER.info(KeymanagerConstant.SESSIONID, KeymanagerConstant.TIMESTAMP, timeStamp.toString(),
+				KeymanagerConstant.GETPUBLICKEYDB);
+		LOGGER.info(KeymanagerConstant.SESSIONID, KeymanagerConstant.REFERENCEID, referenceId,
+				KeymanagerConstant.GETPUBLICKEYDB);
+
+		String alias = null;
+		byte[] publicKey = null;
+		byte[] privateKey = null;
+		LocalDateTime generationDateTime = null;
+		LocalDateTime expiryDateTime = null;
+		Map<String, List<KeyAlias>> keyAliasMap = getKeyAliases(applicationId, referenceId, timeStamp);
+		List<KeyAlias> currentKeyAlias = keyAliasMap.get(KeymanagerConstant.CURRENTKEYALIAS);
+
+		if (currentKeyAlias.size() > 1) {
+			LOGGER.info(KeymanagerConstant.SESSIONID, KeymanagerConstant.CURRENTKEYALIAS,
+					String.valueOf(currentKeyAlias.size()), "CurrentKeyAlias size more than one. Throwing exception");
+			throw new NoUniqueAliasException(KeymanagerErrorConstant.NO_UNIQUE_ALIAS.getErrorCode(),
+					KeymanagerErrorConstant.NO_UNIQUE_ALIAS.getErrorMessage());
+		} else if (currentKeyAlias.size() == 1) {
+			LOGGER.info(KeymanagerConstant.SESSIONID, KeymanagerConstant.CURRENTKEYALIAS,
+					currentKeyAlias.get(0).getAlias(),
+					"CurrentKeyAlias size is one. Will fetch keypair using this alias");
+			Optional<io.mosip.kernel.keymanagerservice.entity.KeyStore> keyFromDBStore = keyStoreRepository
+					.findByAlias(currentKeyAlias.get(0).getAlias());
+			if (!keyFromDBStore.isPresent()) {
+				LOGGER.info(KeymanagerConstant.SESSIONID, KeymanagerConstant.KEYFROMDB, keyFromDBStore.toString(),
+						"Key in DBStore does not exist for this alias. Throwing exception");
+				throw new NoUniqueAliasException(KeymanagerErrorConstant.NO_UNIQUE_ALIAS.getErrorCode(),
+						KeymanagerErrorConstant.NO_UNIQUE_ALIAS.getErrorMessage());
+			} else {
+				LOGGER.info(KeymanagerConstant.SESSIONID, KeymanagerConstant.KEYFROMDB,
+						currentKeyAlias.get(0).getAlias(), "Key in DBStore exists for this alias. Fetching public key");
+				KeyAlias fetchedKeyAlias = currentKeyAlias.get(0);
+				publicKey = keyFromDBStore.get().getPublicKey();
+				generationDateTime = fetchedKeyAlias.getKeyGenerationTime();
+				expiryDateTime = fetchedKeyAlias.getKeyExpiryTime();
+			}
+		} else if (currentKeyAlias.isEmpty()) {
+			LOGGER.info(KeymanagerConstant.SESSIONID, KeymanagerConstant.CURRENTKEYALIAS,
+					String.valueOf(currentKeyAlias.size()),
+					"CurrentKeyAlias size is zero. Will create new Keypair for this applicationId, referenceId and timestamp");
+
+			alias = UUID.randomUUID().toString();
+			KeyPair keypair = keyGenerator.getAsymmetricKey();
+
+			publicKey = keypair.getPublic().getEncoded();
+			privateKey = keypair.getPrivate().getEncoded();
+			generationDateTime = timeStamp;
+			expiryDateTime = getExpiryPolicy(applicationId, generationDateTime,
+					keyAliasMap.get(KeymanagerConstant.KEYALIAS));
+
+			storeKeyInDBStore(alias, null, publicKey, privateKey);
+			storeKeyInAlias(applicationId, generationDateTime, referenceId, alias, expiryDateTime);
+		}
+
+		return new KeyPairResponseDto<>(publicKey, privateKey, generationDateTime, expiryDateTime);
+
 	}
 }

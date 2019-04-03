@@ -1,9 +1,9 @@
 package io.mosip.kernel.keymanagerservice.service;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+import io.mosip.kernel.keymanagerservice.dto.KeyPairResponseDto;
 import io.mosip.kernel.keymanagerservice.dto.PublicKeyResponse;
 import io.mosip.kernel.keymanagerservice.dto.SymmetricKeyRequestDto;
 import io.mosip.kernel.keymanagerservice.dto.SymmetricKeyResponseDto;
@@ -37,10 +37,22 @@ public interface KeymanagerService {
 	 *            referenceId
 	 * @return {@link PublicKeyResponse} instance
 	 */
-	public PublicKeyResponse<String> getPublicKey(String applicationId, String timeStamp,
-			Optional<String> referenceId);
+	public PublicKeyResponse<String> getPublicKey(String applicationId, String timeStamp, Optional<String> referenceId);
 
-	//TODO: To be removed added for debugging
+	// TODO: To be removed added for debugging
 	List<String> getAllAlias();
+
+	/**
+	 * service method which would return key-pair
+	 * 
+	 * @param applicationId
+	 *            - applicationId
+	 * @param timeStamp
+	 *            - timeStamp
+	 * @param referenceId
+	 *            - referenceId
+	 * @return {@link KeyPairResponseDto}
+	 */
+	public KeyPairResponseDto<String> getKeyPair(String applicationId, String timeStamp, Optional<String> referenceId);
 
 }
