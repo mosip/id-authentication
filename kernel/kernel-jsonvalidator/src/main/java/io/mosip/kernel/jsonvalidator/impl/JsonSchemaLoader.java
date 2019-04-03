@@ -15,6 +15,7 @@ import com.github.fge.jackson.JsonLoader;
 
 import io.mosip.kernel.core.jsonvalidator.exception.JsonSchemaIOException;
 import io.mosip.kernel.jsonvalidator.constant.JsonValidatorErrorConstant;
+import io.mosip.kernel.jsonvalidator.constant.JsonValidatorPropertySourceConstant;
 
 /**
  * @author Manoj SP
@@ -30,12 +31,17 @@ public class JsonSchemaLoader {
 	@Value("${mosip.kernel.jsonvalidator.schema-name}")
 	private String schemaName;
 	
+	@Value("${mosip.kernel.jsonvalidator.property-source}")
+	private String propertySource;
+	
 	private JsonNode schema;
 
 	@PostConstruct
 	public void loadSchema() throws JsonSchemaIOException {
 		try {
-			schema = JsonLoader.fromURL(new URL(configServerFileStorageURL + schemaName));
+			if (JsonValidatorPropertySourceConstant.APPLICATION_CONTEXT.getPropertySource().equals(propertySource)) {
+				schema = JsonLoader.fromURL(new URL(configServerFileStorageURL + schemaName));
+			}
 		} catch (IOException e) {
 			throw new JsonSchemaIOException(JsonValidatorErrorConstant.JSON_SCHEMA_IO_EXCEPTION.getErrorCode(),
 					JsonValidatorErrorConstant.JSON_SCHEMA_IO_EXCEPTION.getMessage(), e);
