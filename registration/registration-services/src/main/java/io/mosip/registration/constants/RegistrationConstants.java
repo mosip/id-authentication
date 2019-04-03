@@ -525,8 +525,10 @@ public class RegistrationConstants {
 	public static final String APPLICANT_PHOTO_PANE = "applicantImagePane";
 	public static final String EXCEPTION_PHOTO_PANE = "exceptionImagePane";
 	public static final String WEB_CAMERA_PAGE_TITLE = "Applicant Biometrics";
+	public static final String WEBCAM_NAME = "mosip.registration.webcam_name";
+	public static final String WEBCAM_LIBRARY_NAME = "mosip.registration.webcam_library_name";
 
-	// Acknowledement Form
+	// Acknowledgement Form
 	public static final String ACKNOWLEDGEMENT_FORM_TITLE = "Registration Acknowledgement";
 
 	// logos for new registration
