@@ -1,7 +1,5 @@
 package io.mosip.authentication.core.dto.otpgen;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import lombok.Data;
 
 /**

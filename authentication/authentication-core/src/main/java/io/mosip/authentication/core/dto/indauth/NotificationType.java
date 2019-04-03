@@ -6,7 +6,19 @@ package io.mosip.authentication.core.dto.indauth;
  */
 public enum NotificationType {
 
-	EMAIL("email"), SMS("sms"), NONE("none");
+	/**
+	 * Enum for Email
+	 */
+	EMAIL("email"),
+	/**
+	 * Enum for SMS
+	 */
+	SMS("sms"),
+
+	/**
+	 * Enum for None
+	 */
+	NONE("none");
 
 	/**
 	 * Variable to hold name

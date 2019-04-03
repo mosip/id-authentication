@@ -25,31 +25,17 @@ import io.mosip.kernel.core.cbeffutil.jaxbclasses.SingleType;
 
 public enum IdaIdMapping implements IdMapping {
 
-	NAME("name", MappingConfig::getName), 
-	DOB("dob", MappingConfig::getDob),
-	DOBTYPE("dobType", MappingConfig::getDobType), 
-	AGE("age", MappingConfig::getAge),
-	GENDER("gender", MappingConfig::getGender), 
-	PHONE("phoneNumber", MappingConfig::getPhoneNumber),
-	EMAIL("emailId", MappingConfig::getEmailId), 
-	ADDRESSLINE1("addressLine1", MappingConfig::getAddressLine1),
+	NAME("name", MappingConfig::getName), DOB("dob", MappingConfig::getDob),
+	DOBTYPE("dobType", MappingConfig::getDobType), AGE("age", MappingConfig::getAge),
+	GENDER("gender", MappingConfig::getGender), PHONE("phoneNumber", MappingConfig::getPhoneNumber),
+	EMAIL("emailId", MappingConfig::getEmailId), ADDRESSLINE1("addressLine1", MappingConfig::getAddressLine1),
 	ADDRESSLINE2("addressLine2", MappingConfig::getAddressLine2),
-	ADDRESSLINE3("addressLine3", MappingConfig::getAddressLine3), 
-	LOCATION1("location1", MappingConfig::getLocation1),
-	LOCATION2("location2", MappingConfig::getLocation2), 
-	LOCATION3("location3", MappingConfig::getLocation3),
-	PINCODE("postalCode", MappingConfig::getPostalCode),
-	FULLADDRESS("fullAddress", MappingConfig::getFullAddress),
-	OTP("otp", MappingConfig::getOtp), PIN("pin", MappingConfig::getPin), 
-	LEFTINDEX("LEFT_INDEX"),
-	LEFTLITTLE("LEFT_LITTLE"), 
-	LEFTMIDDLE("LEFT_MIDDLE"), 
-	LEFTRING("LEFT_RING"), 
-	LEFTTHUMB("LEFT_THUMB"),
-	RIGHTINDEX("RIGHT_INDEX"), 
-	RIGHTLITTLE("RIGHT_LITTLE"), 
-	RIGHTMIDDLE("RIGHT_MIDDLE"), 
-	RIGHTRING("RIGHT_RING"),
+	ADDRESSLINE3("addressLine3", MappingConfig::getAddressLine3), LOCATION1("location1", MappingConfig::getLocation1),
+	LOCATION2("location2", MappingConfig::getLocation2), LOCATION3("location3", MappingConfig::getLocation3),
+	PINCODE("postalCode", MappingConfig::getPostalCode), FULLADDRESS("fullAddress", MappingConfig::getFullAddress),
+	OTP("otp", MappingConfig::getOtp), PIN("pin", MappingConfig::getPin), LEFTINDEX("LEFT_INDEX"),
+	LEFTLITTLE("LEFT_LITTLE"), LEFTMIDDLE("LEFT_MIDDLE"), LEFTRING("LEFT_RING"), LEFTTHUMB("LEFT_THUMB"),
+	RIGHTINDEX("RIGHT_INDEX"), RIGHTLITTLE("RIGHT_LITTLE"), RIGHTMIDDLE("RIGHT_MIDDLE"), RIGHTRING("RIGHT_RING"),
 	RIGHTTHUMB("RIGHT_THUMB"),
 	UNKNOWN_FINGER("UNKNOWN",
 			setOf(LEFTINDEX, LEFTLITTLE, LEFTMIDDLE, LEFTRING, LEFTTHUMB, RIGHTINDEX, RIGHTLITTLE, RIGHTMIDDLE,
@@ -58,10 +44,8 @@ public enum IdaIdMapping implements IdMapping {
 	FINGERPRINT("fingerprint",
 			setOf(LEFTINDEX, LEFTLITTLE, LEFTMIDDLE, LEFTRING, LEFTTHUMB, RIGHTINDEX, RIGHTLITTLE, RIGHTMIDDLE,
 					RIGHTRING, RIGHTTHUMB, UNKNOWN_FINGER)),
-	LEFTEYE("LEFT"), RIGHTIRIS("RIGHT"), 
-	UNKNOWN_IRIS("UNKNOWN", setOf(RIGHTIRIS, LEFTEYE)),
-	IRIS("iris", setOf(RIGHTIRIS, LEFTEYE, UNKNOWN_IRIS)),
-	FACE("FACE");
+	LEFTEYE("LEFT"), RIGHTIRIS("RIGHT"), UNKNOWN_IRIS("UNKNOWN", setOf(RIGHTIRIS, LEFTEYE)),
+	IRIS("iris", setOf(RIGHTIRIS, LEFTEYE, UNKNOWN_IRIS)), FACE("FACE");
 
 	private String idname;
 
@@ -104,6 +88,12 @@ public enum IdaIdMapping implements IdMapping {
 		return subIdMappings;
 	}
 
+	/**
+	 * Fetch Cbeff Mapping based on Match Type
+	 * 
+	 * @param matchType
+	 * @return
+	 */
 	private static List<String> getCbeffMapping(MatchType matchType) {
 		if (matchType instanceof BioMatchType) {
 			BioMatchType bioMatchType = (BioMatchType) matchType;
@@ -113,6 +103,15 @@ public enum IdaIdMapping implements IdMapping {
 		return Collections.emptyList();
 	}
 
+	/**
+	 * To get Cbeff mapping based on Single and SubType on Cbeff
+	 * 
+	 * @param singleType
+	 * @param subType
+	 * @param singleSubType
+	 * @param matchType
+	 * @return
+	 */
 	private static List<String> getCbeffMapping(SingleType singleType, SingleAnySubtypeType subType,
 			SingleAnySubtypeType singleSubType, BioMatchType matchType) {
 		String formatType = "";
@@ -142,6 +141,13 @@ public enum IdaIdMapping implements IdMapping {
 
 	}
 
+	/**
+	 * Fetch Id name for Mapping
+	 * 
+	 * @param mappingName
+	 * @param mappingConfig
+	 * @return
+	 */
 	public static Optional<String> getIdNameForMapping(String mappingName, MappingConfig mappingConfig) {
 		return Stream.of(IdaIdMapping.values()).filter(mapping -> mapping.getSubIdMappings().isEmpty())
 				.filter(mapping -> mapping.getMappingFunction().apply(mappingConfig, null).contains(mappingName))

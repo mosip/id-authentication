@@ -70,6 +70,13 @@ public class IdInfoHelper {
 	@Autowired
 	private IdInfoFetcher idInfoFetcher;
 
+	/**
+	 * Get Authrequest Info
+	 * 
+	 * @param matchType
+	 * @param authRequestDTO
+	 * @return
+	 */
 	public Map<String, String> getAuthReqestInfo(MatchType matchType, AuthRequestDTO authRequestDTO) {
 		return matchType.getReqestInfoFunction().apply(authRequestDTO);
 	}
@@ -126,6 +133,8 @@ public class IdInfoHelper {
 	}
 
 	/**
+	 * To check Whether Match type is Enabled
+	 * 
 	 * @param idMapping
 	 * @param matchType
 	 * @return

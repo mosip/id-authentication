@@ -17,8 +17,13 @@ import com.google.gson.JsonSyntaxException;
  */
 public abstract class FaceProvider implements MosipFaceProvider {
 
+	/**
+	 * The Odd Uin constant
+	 */
 	private static final String ODD_UIN = "odduin";
-
+	/**
+	 * The Even Uin constant
+	 */
 	private static final String EVEN_UIN = "evenuin";
 
 	/** The Constant IRISIMG_RIGHT_MATCH_VALUE. */

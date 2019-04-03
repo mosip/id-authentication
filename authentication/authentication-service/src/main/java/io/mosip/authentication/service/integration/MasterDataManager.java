@@ -26,6 +26,10 @@ import io.mosip.authentication.service.factory.RestRequestFactory;
 import io.mosip.authentication.service.helper.RestHelper;
 import io.mosip.kernel.core.logger.spi.Logger;
 
+/**
+ * @author Dinesh Karuppiah.T
+ *
+ */
 @Component
 public class MasterDataManager {
 
@@ -115,6 +119,8 @@ public class MasterDataManager {
 	}
 
 	/**
+	 * Fetch templates based on Language code and Template Name
+	 * 
 	 * @param langCode
 	 * @param templateName
 	 * @return

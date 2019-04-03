@@ -72,15 +72,35 @@ public class MatchInputBuilder {
 
 	}
 
+	/**
+	 * Add MatchInput
+	 * 
+	 * @param authRequestDTO
+	 * @param authTypes
+	 * @param matchType
+	 * @param matchInputs
+	 * @param language
+	 */
 	private void addMatchInput(AuthRequestDTO authRequestDTO, AuthType[] authTypes, MatchType matchType,
 			List<MatchInput> matchInputs, String language) {
 		Map<String, String> infoFromAuthRequest = matchType.getReqestInfoFunction().apply(authRequestDTO);
 		Optional<AuthType> authTypeOpt = AuthType.getAuthTypeForMatchType(matchType, authTypes);
 		if (authTypeOpt.isPresent()) {
-			matchInputs.add(buildMatchInput(authRequestDTO, matchType, infoFromAuthRequest, authTypeOpt.get(), language));
+			matchInputs
+					.add(buildMatchInput(authRequestDTO, matchType, infoFromAuthRequest, authTypeOpt.get(), language));
 		}
 	}
 
+	/**
+	 * Build Match Input
+	 * 
+	 * @param authRequestDTO
+	 * @param matchType
+	 * @param infoFromAuthRequest
+	 * @param authType
+	 * @param language
+	 * @return
+	 */
 	private MatchInput buildMatchInput(AuthRequestDTO authRequestDTO, MatchType matchType,
 			Map<String, String> infoFromAuthRequest, AuthType authType, String language) {
 		if (infoFromAuthRequest.isEmpty()) {

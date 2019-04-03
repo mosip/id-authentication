@@ -5,6 +5,11 @@ import java.util.List;
 import lombok.Data;
 
 /**
+ * @author Dinesh Karuppiah.T
+ *
+ */
+
+/**
  * Instantiates a new auth status info.
  */
 @Data
