@@ -123,7 +123,7 @@ public class AuthRequestController {
 	public String createAuthRequest(@RequestParam(name=ID,required=true) @Nullable String id, 
 			@RequestParam(name=ID_TYPE,required=false) @Nullable String idType,
 			@RequestParam(name="isKyc",required=false) @Nullable Boolean isKyc,
-			@RequestParam(name="Auth type") @Nullable String reqAuth,
+			@RequestParam(name="Authtype") @Nullable String reqAuth,
 			  @RequestBody Map<String,Object> identity) throws KeyManagementException, InvalidKeyException, NoSuchAlgorithmException, InvalidKeySpecException, NoSuchPaddingException, InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException, IOException, JSONException, IdAuthenticationAppException, IdAuthenticationBusinessException {
 		String authRequestTemplate=environment.getProperty(IDA_AUTH_REQUEST_TEMPLATE);
 		Map<String,Object> reqValues=new HashMap<>();
@@ -150,7 +150,6 @@ public class AuthRequestController {
 	}
 
 	private void getAuthTypeMap(String reqAuth, Map<String, Object> reqValues) {
-	    reqAuth=reqAuth.trim();
 		if(reqAuth.contains(","))	{
 	   String reqAuthArr[]=reqAuth.split(",");
 	   for(String authType : reqAuthArr) {

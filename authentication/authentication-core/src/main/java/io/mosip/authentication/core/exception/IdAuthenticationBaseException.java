@@ -11,7 +11,7 @@ public class IdAuthenticationBaseException extends BaseCheckedException {
 	 */
 	private static final long serialVersionUID = -1163954411549137376L;
 	
-	private String actionCode;
+	private String actionMessage;
 
 	public IdAuthenticationBaseException() {
 		super();
@@ -37,7 +37,7 @@ public class IdAuthenticationBaseException extends BaseCheckedException {
 	 */
 	public IdAuthenticationBaseException(IdAuthenticationErrorConstants exceptionConstant) {
 		this(exceptionConstant.getErrorCode(), exceptionConstant.getErrorMessage());
-		this.actionCode = exceptionConstant.getActionCode();
+		this.actionMessage= exceptionConstant.getActionMessage();
 	}
 
 	/**
@@ -49,11 +49,11 @@ public class IdAuthenticationBaseException extends BaseCheckedException {
 	 */
 	public IdAuthenticationBaseException(IdAuthenticationErrorConstants exceptionConstant, Throwable rootCause) {
 		this(exceptionConstant.getErrorCode(), exceptionConstant.getErrorMessage(), rootCause);
-		this.actionCode = exceptionConstant.getActionCode();
+		this.actionMessage = exceptionConstant.getActionMessage();
 	}
 	
-	public String getActionCode() {
-		return actionCode;
+	public String getActionMessage() {
+		return actionMessage;
 	}
 
 }
