@@ -32,6 +32,7 @@ import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
 import io.mosip.registration.processor.status.exception.TablenotAccessibleException;
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
+import io.vertx.core.Vertx;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ReprocessorStageTest {
@@ -39,6 +40,14 @@ public class ReprocessorStageTest {
 	MessageDTO dto = new MessageDTO();
 	@InjectMocks
 	private ReprocessorStage reprocessorStage = new ReprocessorStage() {
+		@Override
+		public MosipEventBus getEventBus(Object verticleName, String url, int instanceNumber) {
+			vertx = Vertx.vertx();
+
+			return new MosipEventBus(vertx) {
+			};
+		}
+
 		@Override
 		public void send(MosipEventBus mosipEventBus, MessageBusAddress toAddress, MessageDTO message) {
 		}
@@ -113,4 +122,11 @@ public class ReprocessorStageTest {
 
 	}
 
+	/**
+	 * Test deploy verticle.
+	 */
+	@Test
+	public void testDeployVerticle() {
+		reprocessorStage.deployVerticle();
+	}
 }
