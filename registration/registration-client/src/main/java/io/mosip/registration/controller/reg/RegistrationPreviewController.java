@@ -76,20 +76,16 @@ public class RegistrationPreviewController extends BaseController implements Ini
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		
-		
-		yesRadio.selectedProperty().addListener((abs,old, newValue)->{
-				noRadio.setSelected(!newValue.booleanValue());
+		yesRadio.selectedProperty().addListener((abs, old, newValue) -> {
+			noRadio.setSelected(!newValue.booleanValue());
 		});
-		
-		noRadio.selectedProperty().addListener((abs,old, newValue)->{
-				yesRadio.setSelected(!newValue.booleanValue());
+
+		noRadio.selectedProperty().addListener((abs, old, newValue) -> {
+			yesRadio.setSelected(!newValue.booleanValue());
 		});
-		
-		
-		
+
 		String key = "mosip.registration.consent_" + applicationContext.getApplicationLanguage();
-        System.out.println(key);
-        System.out.println(applicationContext.getApplicationMap().get("mosip.registration.softwareUpdateCheck_configured_frequency"));
+
 		consent.setText((String) applicationContext.getApplicationMap().get(key));
 		if (getRegistrationDTOFromSession() != null && getRegistrationDTOFromSession().getSelectionListDTO() != null) {
 			registrationNavlabel.setText(RegistrationConstants.UIN_NAV_LABEL);
