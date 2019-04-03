@@ -8,6 +8,7 @@ import { Component, OnInit } from '@angular/core';
 export class AboutUsComponent implements OnInit {
 
   langCode = '';
+  panelOpenState = -1;
 
   constructor() { }
 
