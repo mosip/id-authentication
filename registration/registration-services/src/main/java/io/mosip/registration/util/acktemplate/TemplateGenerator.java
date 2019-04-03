@@ -673,7 +673,7 @@ public class TemplateGenerator extends BaseService {
 		}
 
 		// QR Code Generation
-		generateQRCode(registration, templateValues, response, applicationLanguageProperties, moroccoIdentity);
+		generateQRCode(registration, templateValues, response, applicationLanguageProperties);
 
 		if (RegistrationConstants.ENABLE.equalsIgnoreCase(irisDisableFlag)) {
 			try {
@@ -786,48 +786,13 @@ public class TemplateGenerator extends BaseService {
 	}
 
 	private void generateQRCode(RegistrationDTO registration, Map<String, Object> templateValues, ResponseDTO response,
-			ResourceBundle applicationLanguageProperties, MoroccoIdentity moroccoIdentity) {
-		String platformLanguageCode = ApplicationContext.applicationLanguage();
-		String dob = getValue(moroccoIdentity.getDateOfBirth());
-
+			ResourceBundle applicationLanguageProperties) {
 		StringBuilder qrCodeString = new StringBuilder();
-		qrCodeString.append(applicationLanguageProperties.getString("fullName")).append(" : ")
-				.append(getValue(moroccoIdentity.getFullName(), platformLanguageCode));
-		qrCodeString.append("\n");
-		qrCodeString.append(applicationLanguageProperties.getString("age/dob")).append(" : ");
 
-		if (dob == "") {
-			qrCodeString.append(getValue(moroccoIdentity.getAge()));
-		} else {
-			qrCodeString.append(DateUtils.formatDate(DateUtils.parseToDate(dob, "yyyy/MM/dd"), "dd-MM-YYYY"));
-		}
-
-		qrCodeString.append("\n");
-		qrCodeString.append(applicationLanguageProperties.getString("address")).append(" : ");
-		qrCodeString.append(getValue(moroccoIdentity.getAddressLine1(), platformLanguageCode));
-		qrCodeString.append("\n");
-		qrCodeString.append(getValue(moroccoIdentity.getAddressLine2(), platformLanguageCode));
-		qrCodeString.append("\n");
-		qrCodeString.append(applicationLanguageProperties.getString("registrationid")).append(" : ")
+		qrCodeString.append(applicationLanguageProperties.getString("registrationid")).append(" : ").append("\n")
 				.append(registration.getRegistrationId());
-		qrCodeString.append("\n");
-		qrCodeString.append(applicationLanguageProperties.getString("gender")).append(" : ")
-				.append(getValue(moroccoIdentity.getGender(), platformLanguageCode));
-		qrCodeString.append("\n");
-
 		try {
-			byte[] qrCodeInBytes;
-			if (registration.getDemographicDTO().getApplicantDocumentDTO().getCompressedFacePhoto() != null) {
-				byte[] applicantPhoto = registration.getDemographicDTO().getApplicantDocumentDTO()
-						.getCompressedFacePhoto();
-
-				qrCodeString.append(applicationLanguageProperties.getString("image")).append(" : ")
-						.append(CryptoUtil.encodeBase64(applicantPhoto));
-
-				qrCodeInBytes = qrCodeGenerator.generateQrCode(qrCodeString.toString(), QrVersion.V35);
-			} else {
-				qrCodeInBytes = qrCodeGenerator.generateQrCode(qrCodeString.toString(), QrVersion.V25);
-			}
+			byte[] qrCodeInBytes = qrCodeGenerator.generateQrCode(qrCodeString.toString(), QrVersion.V25);
 
 			String qrCodeImageEncodedBytes = CryptoUtil.encodeBase64(qrCodeInBytes);
 			templateValues.put(RegistrationConstants.TEMPLATE_QRCODE_SOURCE,
