@@ -6,11 +6,11 @@
 	<parent>
 		<groupId>io.mosip</groupId>
 		<artifactId>mosip-parent</artifactId>
-		<version>0.10.0</version>
+		<version>0.10.1</version>
 	</parent>
 
 	<groupId>io.mosip.registration</groupId>
-	<version>0.10.0</version>
+	<version>0.10.1</version>
 	<artifactId>registration-parent</artifactId>
 	<packaging>pom</packaging>
 	<name>registration</name>
@@ -52,7 +52,7 @@
 		<jackson.version>2.8.8</jackson.version>
 		<jackson.mapper.asl.version>1.7.1</jackson.mapper.asl.version>
 
-		<mosip.core.kernel.version>0.10.0</mosip.core.kernel.version>
+		<mosip.core.kernel.version>0.10.1</mosip.core.kernel.version>
 		<!-- Derby Version -->
 		<apache.derby.version>10.13.1.1</apache.derby.version>
 
@@ -294,17 +294,6 @@
 	</dependencyManagement>
 
 	<build>
-	
-    <resources>
-        <resource>
-            <directory>${project.basedir}/src/main/resources/</directory>
-            <excludes>
-                <exclude>fx_lib/*.jar</exclude>
-            </excludes>
-            <filtering>false</filtering>
-        </resource>
-    </resources>
-
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -322,13 +311,6 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
 				<version>${maven.javadoc.version}</version>
-				<executions>
-				<execution>
-						<goals>
-							<goal>javadoc</goal>
-						</goals>
-					</execution>
-				</executions>
 				<configuration>
 					<aggregate>true</aggregate>
 				</configuration>

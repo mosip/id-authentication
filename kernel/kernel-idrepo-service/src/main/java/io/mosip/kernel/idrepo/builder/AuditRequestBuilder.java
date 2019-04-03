@@ -8,8 +8,10 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.core.exception.ExceptionUtils;
+import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.idrepo.constant.AuditEvents;
 import io.mosip.kernel.core.idrepo.constant.AuditModules;
+import io.mosip.kernel.core.idrepo.constant.IdRepoConstants;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.idrepo.config.IdRepoLogger;
@@ -42,14 +44,13 @@ public class AuditRequestBuilder {
 	 *            the event
 	 * @param id
 	 *            the id
-	 * @param idType
-	 *            the id type
 	 * @param desc
 	 *            the desc
 	 * @return the audit request dto
 	 */
-	public AuditRequestDto buildRequest(AuditModules module, AuditEvents event, String id, String desc) {
-		AuditRequestDto request = new AuditRequestDto();
+	public RequestWrapper<AuditRequestDto> buildRequest(AuditModules module, AuditEvents event, String id, String desc) {
+		RequestWrapper<AuditRequestDto> request = new RequestWrapper<>();
+		AuditRequestDto auditRequest = new AuditRequestDto();
 		String hostName;
 		String hostAddress;
 
@@ -64,22 +65,29 @@ public class AuditRequestBuilder {
 			hostAddress = env.getProperty("audit.defaultHostAddress");
 		}
 
-		request.setEventId(event.getEventId());
-		request.setEventName(event.getEventName());
-		request.setEventType(event.getEventType());
-		request.setActionTimeStamp(DateUtils.getUTCCurrentDateTime());
-		request.setHostName(hostName);
-		request.setHostIp(hostAddress);
-		request.setApplicationId(env.getProperty("application.id"));
-		request.setApplicationName(env.getProperty("application.name"));
-		request.setSessionUserId("sessionUserId");
-		request.setSessionUserName("sessionUserName");
-		request.setId(id);
-		request.setIdType("UIN");
-		request.setCreatedBy(env.getProperty("user.name"));
-		request.setModuleName(module.getModuleName());
-		request.setModuleId(module.getModuleId());
-		request.setDescription(desc);
+		auditRequest.setEventId(event.getEventId());
+		auditRequest.setEventName(event.getEventName());
+		auditRequest.setEventType(event.getEventType());
+		auditRequest.setActionTimeStamp(DateUtils.parseUTCToLocalDateTime(DateUtils.getUTCCurrentDateTimeString(),
+				env.getProperty("mosip.utc-datetime-pattern")));
+		auditRequest.setHostName(hostName);
+		auditRequest.setHostIp(hostAddress);
+		auditRequest.setApplicationId(env.getProperty(IdRepoConstants.APPLICATION_ID.getValue()));
+		auditRequest.setApplicationName(env.getProperty(IdRepoConstants.APPLICATION_NAME.getValue()));
+		auditRequest.setSessionUserId("sessionUserId");
+		auditRequest.setSessionUserName("sessionUserName");
+		auditRequest.setId(id);
+		auditRequest.setIdType("UIN");
+		auditRequest.setCreatedBy(env.getProperty("user.name"));
+		auditRequest.setModuleName(module.getModuleName());
+		auditRequest.setModuleId(module.getModuleId());
+		auditRequest.setDescription(desc);
+		
+		request.setId("audit");
+		request.setRequest(auditRequest);
+		request.setVersion("1.0");
+		request.setRequesttime(DateUtils.parseUTCToLocalDateTime(DateUtils.getUTCCurrentDateTimeString(),
+				env.getProperty("mosip.utc-datetime-pattern")));
 
 		return request;
 	}

@@ -7,7 +7,7 @@
 	<parent>
 		<groupId>io.mosip</groupId>
 		<artifactId>mosip-parent</artifactId>
-		<version>0.10.0</version>
+		<version>0.10.1</version>
 	</parent>
 
 
@@ -128,7 +128,7 @@
 	</properties>
 
 	<modules>
-		<module>kernel-core</module>
+ 		<module>kernel-core</module>
 		<module>kernel-auth-adapter</module>
 		<module>kernel-auditmanager-api</module>
 		<module>kernel-logger-logback</module>
@@ -138,13 +138,13 @@
 		<module>kernel-idgenerator-tokenid</module>
 		<module>kernel-idgenerator-machineid</module>
 		<module>kernel-idgenerator-regcenterid</module>
-		<module>kernel-idgenerator-tspid</module>
+		<module>kernel-idgenerator-mispid</module>
 		<module>kernel-idgenerator-rid</module>
 		<module>kernel-idvalidator-prid</module>
 		<module>kernel-idvalidator-rid</module>
 		<module>kernel-idvalidator-uin</module>
 		<module>kernel-idvalidator-vid</module>
-		<module>kernel-idvalidator-tspid</module>
+		<module>kernel-idvalidator-mispid</module>
 		<module>kernel-datavalidator</module>
 		<module>kernel-jsonvalidator</module>
 		<module>kernel-pinvalidator</module>
@@ -160,7 +160,7 @@
 		<module>kernel-fsadapter-ceph</module>
 		<module>kernel-fsadapter-hdfs</module>
 		<module>kernel-transliteration-icu4j</module>
-		<module>kernel-applicanttype-api</module>
+		<module>kernel-applicanttype-api</module> 
 
 		<module>kernel-uingenerator-service</module>
 		<module>kernel-masterdata-service</module>
@@ -178,6 +178,7 @@
 		<module>kernel-licensekeymanager-service</module>
 		<module>kernel-applicanttype-service</module>
 		<module>kernel-config-server</module>
+		<module>kernel-ridgenerator-service</module>
 		
 	
 		<!-- <module>kernel-idvalidator</module> -->

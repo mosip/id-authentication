@@ -57,13 +57,13 @@ import io.mosip.kernel.core.fsadapter.exception.FSAdapterException;
 import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
 import io.mosip.kernel.core.idrepo.constant.IdRepoConstants;
 import io.mosip.kernel.core.idrepo.constant.IdRepoErrorConstants;
+import io.mosip.kernel.core.idrepo.dto.IdRequestDTO;
+import io.mosip.kernel.core.idrepo.dto.RequestDTO;
 import io.mosip.kernel.core.idrepo.exception.IdRepoAppException;
 import io.mosip.kernel.core.idrepo.exception.IdRepoDataValidationException;
 import io.mosip.kernel.core.idrepo.exception.RestServiceException;
 import io.mosip.kernel.fsadapter.hdfs.constant.HDFSAdapterErrorCode;
 import io.mosip.kernel.idrepo.builder.RestRequestBuilder;
-import io.mosip.kernel.idrepo.dto.IdRequestDTO;
-import io.mosip.kernel.idrepo.dto.RequestDTO;
 import io.mosip.kernel.idrepo.dto.RestRequestDTO;
 import io.mosip.kernel.idrepo.entity.Uin;
 import io.mosip.kernel.idrepo.entity.UinBiometric;
@@ -194,12 +194,11 @@ public class IdRepoServiceTest {
 	public void setup() throws FileNotFoundException, IOException, IdRepoDataValidationException, RestServiceException {
 		ReflectionTestUtils.setField(securityManager, "env", env);
 		ReflectionTestUtils.setField(securityManager, "mapper", mapper);
-		ReflectionTestUtils.invokeMethod(securityManager, "buildRequest");
 		ReflectionTestUtils.setField(service, "securityManager", securityManager);
 		ReflectionTestUtils.setField(proxyService, "securityManager", securityManager);
 		when(restBuilder.buildRequest(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(new RestRequestDTO());
 		when(restHelper.requestSync(Mockito.any()))
-				.thenReturn(mapper.readValue("{\"data\":\"1234\"}".getBytes(), ObjectNode.class));
+				.thenReturn(mapper.readValue("{\"response\":{\"data\":\"1234\"}}".getBytes(), ObjectNode.class));
 		ReflectionTestUtils.setField(proxyService, "mapper", mapper);
 		ReflectionTestUtils.setField(proxyService, "env", env);
 		ReflectionTestUtils.setField(proxyService, "id", id);
@@ -210,8 +209,9 @@ public class IdRepoServiceTest {
 				Collections.singletonList("individualBiometrics"));
 		ReflectionTestUtils.setField(service, "bioAttributes",
 				Lists.newArrayList("individualBiometrics", "parentOrGuardianBiometrics"));
-		request.setRegistrationId("registrationId");
-		request.setRequest(null);
+		RequestDTO req = new RequestDTO();
+		req.setRegistrationId("registrationId");
+		request.setRequest(req);
 		uin.setUin("1234");
 		uin.setUinRefId("uinRefId");
 		uin.setUinData(mapper.writeValueAsBytes(request));
@@ -711,12 +711,12 @@ public class IdRepoServiceTest {
 
 	@Test
 	public void testUpdateIdentity() throws IdRepoAppException, JsonParseException, JsonMappingException, IOException {
-		request.setStatus("REGISTERED");
 		Object obj = mapper.readValue(
 				"{\"identity\":{\"firstName\":[{\"language\":\"AR\",\"value\":\"Manoj\",\"label\":\"string\"}]}}"
 						.getBytes(),
 				Object.class);
 		RequestDTO req = new RequestDTO();
+		req.setStatus("REGISTERED");
 		req.setIdentity(obj);
 		request.setRequest(req);
 		Uin uinObj = new Uin();
@@ -736,13 +736,13 @@ public class IdRepoServiceTest {
 	@Test(expected = IdRepoAppException.class)
 	public void testUpdateIdentityInvalidJsonException()
 			throws IdRepoAppException, JsonParseException, JsonMappingException, IOException {
-		request.setStatus("REGISTERED");
 		Object obj = mapper.readValue(
 				"{\"identity\":{\"firstName\":[{\"language\":\"AR\",\"value\":\"Mano\",\"label\":\"string\"},{\"language\":\"FR\",\"value\":\"Mano\",\"label\":\"string\"}]}}"
 						.getBytes(),
 				Object.class);
 
 		RequestDTO req = new RequestDTO();
+		req.setStatus("REGISTERED");
 		req.setIdentity(obj);
 		request.setRequest(req);
 		Uin uinObj = new Uin();
@@ -761,13 +761,13 @@ public class IdRepoServiceTest {
 	@Test
 	public void testUpdateIdentityWithDiff()
 			throws IdRepoAppException, JsonParseException, JsonMappingException, IOException {
-		request.setStatus("REGISTERED");
 		Object obj = mapper.readValue(
 				"{\"request\" : {\"age\" : 45}, \"UIN\" : 819431539502, \"identity\":{ \"fullName\" : [ {\"language\" : \"ara\"} ],\"IDSchemaVersion\" : 1.0, \"firstName\":[{\"language\":\"AR\",\"value\":\"Mano\",\"label\":\"string\"}], \"lastName\":[{\"language\":\"EN\",\"value\":\"Mano\",\"label\":\"string\"},{\"language\":\"FR\",\"value\":\"Mano\",\"label\":\"string\"}]}}"
 						.getBytes(),
 				Object.class);
 
 		RequestDTO req = new RequestDTO();
+		req.setStatus("REGISTERED");
 		req.setIdentity(obj);
 		request.setRequest(req);
 		Uin uinObj = new Uin();
@@ -826,7 +826,9 @@ public class IdRepoServiceTest {
 	public void testUpdateIdentityInvalidRegId() throws IdRepoAppException {
 		when(uinRepo.existsByUin(Mockito.any())).thenReturn(true);
 		when(uinRepo.existsByRegId(Mockito.any())).thenReturn(true);
-		proxyService.updateIdentity(new IdRequestDTO(), "12343");
+		IdRequestDTO idRequestDTO = new IdRequestDTO();
+		idRequestDTO.setRequest(new RequestDTO());
+		proxyService.updateIdentity(idRequestDTO, "12343");
 	}
 
 	@Test(expected = IdRepoAppException.class)
@@ -854,7 +856,9 @@ public class IdRepoServiceTest {
 		when(uinRepo.existsByUin(Mockito.any())).thenReturn(true);
 		when(uinRepo.existsByRegId(Mockito.any())).thenReturn(false);
 		IdRequestDTO request = new IdRequestDTO();
-		request.setStatus("status");
+		RequestDTO req = new RequestDTO();
+		req.setStatus("status");
+		request.setRequest(req);
 		proxyService.updateIdentity(request, "12343");
 	}
 

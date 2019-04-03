@@ -213,7 +213,7 @@ public class DocumentService {
 			}
 			documentEntity.setDocName(file.getOriginalFilename());
 			byte[] encryptedDocument = cryptoUtil.encrypt(file.getBytes(), DateUtils.getUTCCurrentDateTime());
-			documentEntity.setDocHash(new String(HashUtill.hashUtill(encryptedDocument)));
+			documentEntity.setDocHash(HashUtill.hashUtill(encryptedDocument));
 			documentEntity = documnetDAO.saveDocument(documentEntity);
 			if (documentEntity != null) {
 				String key = documentEntity.getDocCatCode() + "_" + documentEntity.getDocumentId();
@@ -393,7 +393,7 @@ public class DocumentService {
 							ErrorMessages.DOCUMENT_FAILED_TO_FETCH.toString());
 				}
 				byte[] cephBytes = IOUtils.toByteArray(file);
-				if (doc.getDocHash().equals(new String(HashUtill.hashUtill(cephBytes)))) {
+				if (doc.getDocHash().equals(HashUtill.hashUtill(cephBytes))) {
 
 					LocalDateTime decryptionDateTime = DateUtils.getUTCCurrentDateTime();
 
@@ -491,6 +491,8 @@ public class DocumentService {
 
 	public MainListResponseDTO<DocumentDeleteResponseDTO> deleteFile(List<DocumentEntity> documentEntityList,
 			String preregId) {
+		log.info("sessionId", "idType", "id",
+				"In pre-registration service inside delete File method "+ preregId);
 		List<DocumentDeleteResponseDTO> deleteAllList = new ArrayList<>();
 		MainListResponseDTO<DocumentDeleteResponseDTO> delResponseDto = new MainListResponseDTO<>();
 		if (documnetDAO.deleteAllBypreregId(preregId) >= 0) {

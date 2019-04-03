@@ -12,7 +12,6 @@ import io.mosip.kernel.masterdata.constant.PacketRejectionReasonErrorCode;
 import io.mosip.kernel.masterdata.dto.PostReasonCategoryDto;
 import io.mosip.kernel.masterdata.dto.ReasonCategoryDto;
 import io.mosip.kernel.masterdata.dto.ReasonListDto;
-import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.getresponse.PacketRejectionReasonResponseDto;
 import io.mosip.kernel.masterdata.entity.ReasonCategory;
 import io.mosip.kernel.masterdata.entity.ReasonList;
@@ -120,8 +119,8 @@ public class PacketRejectionReasonServiceImpl implements PacketRejectionReasonSe
 	 */
 	@Override
 	@Transactional
-	public CodeAndLanguageCodeID createReasonCategories(RequestDto<PostReasonCategoryDto> reasonRequestDto) {
-		ReasonCategory reasonCategories = MetaDataUtils.setCreateMetaData(reasonRequestDto.getRequest(),
+	public CodeAndLanguageCodeID createReasonCategories(PostReasonCategoryDto reasonRequestDto) {
+		ReasonCategory reasonCategories = MetaDataUtils.setCreateMetaData(reasonRequestDto,
 				ReasonCategory.class);
 
 		CodeAndLanguageCodeID codeAndLanguageCodeId = new CodeAndLanguageCodeID();
@@ -153,8 +152,8 @@ public class PacketRejectionReasonServiceImpl implements PacketRejectionReasonSe
 	 */
 	@Override
 	@Transactional
-	public CodeLangCodeAndRsnCatCodeID createReasonList(RequestDto<ReasonListDto> reasonRequestDto) {
-		ReasonList reasonList = MetaDataUtils.setCreateMetaData(reasonRequestDto.getRequest(), ReasonList.class);
+	public CodeLangCodeAndRsnCatCodeID createReasonList(ReasonListDto reasonRequestDto) {
+		ReasonList reasonList = MetaDataUtils.setCreateMetaData(reasonRequestDto, ReasonList.class);
 
 		CodeLangCodeAndRsnCatCodeID codeLangCodeAndRsnCatCodeId = new CodeLangCodeAndRsnCatCodeID();
 		ReasonList resultantReasonList;

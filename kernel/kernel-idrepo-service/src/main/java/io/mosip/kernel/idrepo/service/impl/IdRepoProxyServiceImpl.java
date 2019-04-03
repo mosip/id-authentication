@@ -7,11 +7,9 @@ import java.io.IOException;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
 
 import javax.annotation.Resource;
 
@@ -25,8 +23,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.TransactionException;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
-import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 
 import io.mosip.kernel.core.fsadapter.exception.FSAdapterException;
 import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
@@ -34,6 +30,10 @@ import io.mosip.kernel.core.idrepo.constant.AuditEvents;
 import io.mosip.kernel.core.idrepo.constant.AuditModules;
 import io.mosip.kernel.core.idrepo.constant.IdRepoConstants;
 import io.mosip.kernel.core.idrepo.constant.IdRepoErrorConstants;
+import io.mosip.kernel.core.idrepo.dto.Documents;
+import io.mosip.kernel.core.idrepo.dto.IdRequestDTO;
+import io.mosip.kernel.core.idrepo.dto.IdResponseDTO;
+import io.mosip.kernel.core.idrepo.dto.ResponseDTO;
 import io.mosip.kernel.core.idrepo.exception.IdRepoAppException;
 import io.mosip.kernel.core.idrepo.exception.IdRepoAppUncheckedException;
 import io.mosip.kernel.core.idrepo.spi.IdRepoService;
@@ -45,10 +45,6 @@ import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.fsadapter.hdfs.constant.HDFSAdapterErrorCode;
 import io.mosip.kernel.idrepo.config.IdRepoLogger;
 import io.mosip.kernel.idrepo.controller.IdRepoController;
-import io.mosip.kernel.idrepo.dto.Documents;
-import io.mosip.kernel.idrepo.dto.IdRequestDTO;
-import io.mosip.kernel.idrepo.dto.IdResponseDTO;
-import io.mosip.kernel.idrepo.dto.ResponseDTO;
 import io.mosip.kernel.idrepo.entity.Uin;
 import io.mosip.kernel.idrepo.helper.AuditHelper;
 import io.mosip.kernel.idrepo.repository.UinRepo;
@@ -79,9 +75,6 @@ public class IdRepoProxyServiceImpl implements IdRepoService<IdRequestDTO, IdRes
 	/** The Constant ID_REPO_SERVICE. */
 	private static final String ID_REPO_SERVICE = "IdRepoService";
 
-	/** The Constant DOCUMENTS. */
-	private static final String DOCUMENTS = "documents";
-
 	/** The Constant TYPE. */
 	private static final String TYPE = "type";
 
@@ -90,15 +83,6 @@ public class IdRepoProxyServiceImpl implements IdRepoService<IdRequestDTO, IdRes
 
 	/** The Constant RETRIEVE_IDENTITY. */
 	private static final String RETRIEVE_IDENTITY = "retrieveIdentity";
-
-	/** The Constant ENTITY. */
-	private static final String ENTITY = "entity";
-
-	/** The Constant ERR. */
-	private static final String ERRORS = "errors";
-
-	/** The Constant RESPONSE_FILTER. */
-	private static final String RESPONSE_FILTER = "responseFilter";
 
 	/** The Constant BIOMETRICS. */
 	private static final String BIOMETRICS = "Biometrics";
@@ -120,9 +104,6 @@ public class IdRepoProxyServiceImpl implements IdRepoService<IdRequestDTO, IdRes
 
 	/** The Constant UPDATE. */
 	private static final String UPDATE = "update";
-
-	/** The Constant IDENTITY. */
-	private static final String IDENTITY = "identity";
 
 	/** The Constant ALL. */
 	private static final String ALL = "all";
@@ -398,7 +379,7 @@ public class IdRepoProxyServiceImpl implements IdRepoService<IdRequestDTO, IdRes
 		try {
 			ShardDataSourceResolver.setCurrentShard(shardResolver.getShard(uin));
 			if (uinRepo.existsByUin(uin)) {
-				if (uinRepo.existsByRegId(request.getRegistrationId())) {
+				if (uinRepo.existsByRegId(request.getRequest().getRegistrationId())) {
 					mosipLogger.error(ID_REPO_SERVICE, ID_REPO_SERVICE_IMPL, GET_FILES,
 							IdRepoErrorConstants.RECORD_EXISTS.getErrorMessage());
 					throw new IdRepoAppException(IdRepoErrorConstants.RECORD_EXISTS);
@@ -435,39 +416,24 @@ public class IdRepoProxyServiceImpl implements IdRepoService<IdRequestDTO, IdRes
 	 */
 	private IdResponseDTO constructIdResponse(String id, Uin uin, List<Documents> documents) throws IdRepoAppException {
 		IdResponseDTO idResponse = new IdResponseDTO();
-		Set<String> ignoredProperties = new HashSet<>();
 
 		idResponse.setId(id);
 
 		idResponse.setVersion(env.getProperty(IdRepoConstants.APPLICATION_VERSION.getValue()));
 
-		idResponse.setTimestamp(
-				DateUtils.getUTCCurrentDateTimeString(env.getProperty(IdRepoConstants.DATETIME_PATTERN.getValue())));
-
-		idResponse.setStatus(uin.getStatusCode());
-
 		ResponseDTO response = new ResponseDTO();
 
-		if (id.equals(this.id.get(CREATE)) || id.equals(this.id.get(UPDATE))) {
-			response.setEntity(
-					linkTo(methodOn(IdRepoController.class).retrieveIdentity(uin.getUin().trim(), null)).toUri()
-							.toString());
-			mapper.setFilterProvider(new SimpleFilterProvider().addFilter(RESPONSE_FILTER,
-					SimpleBeanPropertyFilter.serializeAllExcept(IDENTITY, ERRORS, DOCUMENTS)));
-		} else {
-			ignoredProperties.add(ENTITY);
-			ignoredProperties.add(ERRORS);
+		response.setStatus(uin.getStatusCode());
 
-			if (Objects.isNull(documents)) {
-				ignoredProperties.add(DOCUMENTS);
-			} else {
+		if (id.equals(this.id.get(CREATE)) || id.equals(this.id.get(UPDATE))) {
+			response.setEntity(linkTo(methodOn(IdRepoController.class).retrieveIdentity(uin.getUin().trim(), null))
+					.toUri().toString());
+		} else {
+			if (!Objects.isNull(documents)) {
 				response.setDocuments(documents);
 			}
 
 			response.setIdentity(convertToObject(uin.getUinData(), Object.class));
-
-			mapper.setFilterProvider(new SimpleFilterProvider().addFilter(RESPONSE_FILTER,
-					SimpleBeanPropertyFilter.serializeAllExcept(ignoredProperties)));
 		}
 
 		idResponse.setResponse(response);

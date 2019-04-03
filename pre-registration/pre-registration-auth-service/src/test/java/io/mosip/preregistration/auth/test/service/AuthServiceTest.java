@@ -2,7 +2,11 @@ package io.mosip.preregistration.auth.test.service;
 
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -16,6 +20,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.RestClientException;
+import org.springframework.web.client.RestTemplate;
 
 import io.mosip.preregistration.auth.dto.MainRequestDTO;
 import io.mosip.preregistration.auth.dto.MainResponseDTO;
@@ -25,6 +30,7 @@ import io.mosip.preregistration.auth.dto.OtpUserDTO;
 import io.mosip.preregistration.auth.dto.User;
 import io.mosip.preregistration.auth.errorcodes.ErrorCodes;
 import io.mosip.preregistration.auth.errorcodes.ErrorMessages;
+import io.mosip.preregistration.auth.exceptions.ConfigFileNotFoundException;
 import io.mosip.preregistration.auth.exceptions.InvalidateTokenException;
 import io.mosip.preregistration.auth.exceptions.SendOtpFailedException;
 import io.mosip.preregistration.auth.exceptions.UserIdOtpFaliedException;
@@ -32,6 +38,7 @@ import io.mosip.preregistration.auth.service.AuthService;
 import io.mosip.preregistration.auth.util.AuthCommonUtil;
 import io.mosip.preregistration.core.common.dto.AuthNResponse;
 import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
+import io.mosip.preregistration.core.util.AuditLogUtil;
 import junit.framework.Assert;
 
 import static org.junit.Assert.*;
@@ -63,10 +70,12 @@ public class AuthServiceTest {
 	@Autowired
 	@InjectMocks
 	private AuthService authService;
+	private AuthService spyAuthService;
 	private List<String> list;
 	@Before
 	public void setUp() {
 		 list=new ArrayList<>();
+		 spyAuthService=Mockito.spy(authService);
 		 //responseEntity=new ResponseEntity<AuthNResponse>(authNResposne, HttpStatus.OK);
 		 
 	}
@@ -80,9 +89,10 @@ public class AuthServiceTest {
 		Mockito.doReturn(responseEntity).when(authCommonUtil).getResponseEntity(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(),Mockito.any(), Mockito.any());
 		Mockito.doReturn(mainResponseDTO).when(authCommonUtil).getMainResponseDto(Mockito.any());
 		Mockito.when(responseEntity.getBody()).thenReturn("authNResposne");
+		Mockito.doNothing().when(spyAuthService).setAuditValues(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any());
 		authNResposne.setMessage("success");
 		Mockito.doNothing().when(mainResponseDTO).setResponse(Mockito.any());
-		assertNotNull(authService.sendOTP(otpRequest));
+		assertNotNull(spyAuthService.sendOTP(otpRequest));
 	}
 	
 	@Test(expected=InvalidRequestParameterException.class)
@@ -94,9 +104,10 @@ public class AuthServiceTest {
 		Mockito.doThrow(new InvalidRequestParameterException("errorCode", "errorMessage")).when(authCommonUtil).getResponseEntity(Mockito.any(), Mockito.any(), Mockito.any(),Mockito.any(), Mockito.any(), Mockito.any());
 		Mockito.doReturn(mainResponseDTO).when(authCommonUtil).getMainResponseDto(Mockito.any());
 		Mockito.when(responseEntity.getBody()).thenReturn("authNResposne");
+		Mockito.doNothing().when(spyAuthService).setAuditValues(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any());
 		authNResposne.setMessage("success");
 		Mockito.doNothing().when(mainResponseDTO).setResponse(Mockito.any());
-		authService.sendOTP(otpRequest);
+		spyAuthService.sendOTP(otpRequest);
 	}
 	
 	@Test(expected=InvalidRequestParameterException.class)
@@ -108,9 +119,10 @@ public class AuthServiceTest {
 		Mockito.doThrow(new InvalidRequestParameterException("errorCode","errorMessage")).when(authCommonUtil).getResponseEntity(Mockito.any(), Mockito.any(), Mockito.any(),Mockito.any(), Mockito.any(), Mockito.any());
 		Mockito.doReturn(mainResponseDTO).when(authCommonUtil).getMainResponseDto(Mockito.any());
 		Mockito.when(responseEntity.getBody()).thenReturn("authNResposne");
+		Mockito.doNothing().when(spyAuthService).setAuditValues(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any());
 		authNResposne.setMessage("success");
 		Mockito.doNothing().when(mainResponseDTO).setResponse(Mockito.any());
-		authService.sendOTP(otpRequest);
+		spyAuthService.sendOTP(otpRequest);
 	}
 	@Test
 	public void validateWithUserIdOtp() {
@@ -119,7 +131,8 @@ public class AuthServiceTest {
 		Mockito.doReturn(mainResponseDTO).when(authCommonUtil).getMainResponseDto(userRequest);
 		Mockito.doReturn(responseEntity).when(authCommonUtil).getResponseEntity(Mockito.any(),Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any());
 		Mockito.when(responseEntity.getBody()).thenReturn("authNResposne");
-		assertNotNull(authService.validateWithUserIdOtp(userRequest));
+		Mockito.doNothing().when(spyAuthService).setAuditValues(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any());
+		assertNotNull(spyAuthService.validateWithUserIdOtp(userRequest));
 	}
 	
 	@Test(expected=InvalidRequestParameterException.class)
@@ -128,7 +141,8 @@ public class AuthServiceTest {
 		Mockito.when(userRequest.getRequest()).thenReturn(user);
 		Mockito.doReturn(mainResponseDTO).when(authCommonUtil).getMainResponseDto(userRequest);
 		Mockito.doThrow(new InvalidRequestParameterException("errorCode","errorMessage")).when(authCommonUtil).getResponseEntity(Mockito.any(),Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any());
-		authService.validateWithUserIdOtp(userRequest);
+		Mockito.doNothing().when(spyAuthService).setAuditValues(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any());
+		spyAuthService.validateWithUserIdOtp(userRequest);
 	}
 	
 	@Test
@@ -138,7 +152,8 @@ public class AuthServiceTest {
 		authNResposne.setMessage("Success");
 		Mockito.when(responseEntity.getBody()).thenReturn("authNResposne");
 		Mockito.when(authCommonUtil.requestBodyExchange(Mockito.any())).thenReturn(authNResposne);
-		assertNotNull(authService.invalidateToken(authHeader));
+		Mockito.doNothing().when(spyAuthService).setAuditValues(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any());
+		assertNotNull(spyAuthService.invalidateToken(authHeader));
 	}
 	
 	@Test(expected=InvalidateTokenException.class)
@@ -147,6 +162,64 @@ public class AuthServiceTest {
 		Mockito.doThrow(new RestClientException("Rest Client exception Occurred")).when(authCommonUtil).getResponseEntity(Mockito.any(),Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any());
 		authNResposne.setMessage("Success");
 		Mockito.when(responseEntity.getBody()).thenReturn("authNResposne");
-		assertNotNull(authService.invalidateToken(authHeader));
+		Mockito.doNothing().when(spyAuthService).setAuditValues(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any());
+		assertNotNull(spyAuthService.invalidateToken(authHeader));
 	}
+	
+	/**
+	 * This test method is for succes case of getConfig
+	 * 
+	 * @throws JsonParseException
+	 * @throws JsonMappingException
+	 * @throws IOException
+	 * @throws java.io.IOException
+	 */
+	
+	@MockBean
+	private RestTemplate restTemplate;
+	
+	  @Test public void getConfigSuccessTest() throws Exception {
+	  Properties prop=new Properties();
+	  ResponseEntity<String> res = new
+	  ResponseEntity<String>("mosip.secondary-language=fra", HttpStatus.OK);
+	  Map<String, String> configParams = new HashMap<>();
+	  configParams.put("mosip.secondary-language","fra");
+	  MainResponseDTO<Map<String, String>> response = new MainResponseDTO<>();
+	  Mockito.when(restTemplate.getForEntity(Mockito.anyString(),
+	  Mockito.eq(String.class))).thenReturn(res); 
+	  Mockito.when(authCommonUtil.configRestCall(Mockito.any())).thenReturn("fileReturn");
+	  Mockito.doNothing().when(authCommonUtil).getConfigParams(Mockito.any(), Mockito.any(), Mockito.any());
+	  Mockito.when(authCommonUtil.parsePropertiesString(Mockito.any())).thenReturn(prop);
+	  response = authService.getConfig();
+	  assertNotNull(response.getResponse());
+	  //assertEquals(response.getResponse().get("mosip.secondary-language"), "fra");
+	  }
+	  
+	  
+	  @Test(expected=ConfigFileNotFoundException.class)
+	  public void getConfigExceptionTest() throws Exception {
+		  Properties prop=new Properties();
+		  ResponseEntity<String> res = new
+		  ResponseEntity<String>("mosip.secondary-language=fra", HttpStatus.OK);
+		  Map<String, String> configParams = new HashMap<>();
+		  configParams.put("mosip.secondary-language","fra");
+		  MainResponseDTO<Map<String, String>> response = new MainResponseDTO<>();
+		  Mockito.when(restTemplate.getForEntity(Mockito.anyString(),
+		  Mockito.eq(String.class))).thenReturn(res); 
+		  Mockito.doThrow(new ConfigFileNotFoundException(ErrorCodes.PRG_AUTH_012.name(),
+					ErrorMessages.CONFIG_FILE_NOT_FOUND_EXCEPTION.name())).when(authCommonUtil).configRestCall(Mockito.any());
+		  Mockito.doNothing().when(authCommonUtil).getConfigParams(Mockito.any(), Mockito.any(), Mockito.any());
+		  Mockito.when(authCommonUtil.parsePropertiesString(Mockito.any())).thenReturn(prop);
+		  response = authService.getConfig();
+		  }
+	 
+	  @MockBean
+	  private  AuditLogUtil auditLogUtil;
+	  @Test
+	  public void setAuditValuesTest() {
+		  Mockito.doNothing().when(auditLogUtil).saveAuditDetails(Mockito.any());
+		  spyAuthService.setAuditValues("eventId", "eventName", "eventType", "description", "idType", "userId", "userName");
+		  
+	  }
+
 }

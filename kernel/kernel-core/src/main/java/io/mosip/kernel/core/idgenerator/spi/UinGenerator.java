@@ -4,18 +4,16 @@ package io.mosip.kernel.core.idgenerator.spi;
  * Interface having a function to generate an Id
  * 
  * @author Dharmesh Khandelwal
+ * @author Megha Tanga
  * @since 1.0.0
  *
- * @param <T>
- *            Type of Id
  */
-public interface UinGenerator<T> {
+public interface UinGenerator {
 
 	/**
 	 * Function to generate an Id
 	 * 
-	 * @return The generated id
 	 */
-	T generateId();
+	void generateId();
 
 }

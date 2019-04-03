@@ -31,11 +31,11 @@ import org.springframework.web.context.WebApplicationContext;
 import com.google.common.collect.Lists;
 
 import io.mosip.kernel.core.idrepo.constant.IdRepoErrorConstants;
+import io.mosip.kernel.core.idrepo.dto.IdRequestDTO;
+import io.mosip.kernel.core.idrepo.dto.IdResponseDTO;
 import io.mosip.kernel.core.idrepo.exception.IdRepoAppException;
 import io.mosip.kernel.core.idrepo.spi.IdRepoService;
 import io.mosip.kernel.core.idvalidator.exception.InvalidIDException;
-import io.mosip.kernel.idrepo.dto.IdRequestDTO;
-import io.mosip.kernel.idrepo.dto.IdResponseDTO;
 import io.mosip.kernel.idrepo.validator.IdRequestValidator;
 import io.mosip.kernel.idvalidator.uin.impl.UinValidatorImpl;
 
