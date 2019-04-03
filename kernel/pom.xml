@@ -189,6 +189,7 @@
 		<!-- <module>kernel-batch-framework</module> -->
 		<!-- <module>kernel-batch-server</module> -->
 		<!--<module>kernel-crypto-bouncycastle</module> -->
+		<module>kernel-idgenerator-partnerid</module>
 	</modules>
 
 	<dependencies>
