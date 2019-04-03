@@ -25,7 +25,7 @@ public class ConnectionUtilTest {
 		ReflectionTestUtils.setField(connectionUtil, "nameNodeUrl", "hdfs://127.0.0.1:51000");
 		ReflectionTestUtils.setField(connectionUtil, "kdcDomain", "EXAMPLE.COM");
 		ReflectionTestUtils.setField(connectionUtil, "userName", "testuser");
-		ReflectionTestUtils.setField(connectionUtil, "userPass", "testpass");
+		ReflectionTestUtils.setField(connectionUtil, "keytabPath", "test.keytab");
 	}
 
 	@Test

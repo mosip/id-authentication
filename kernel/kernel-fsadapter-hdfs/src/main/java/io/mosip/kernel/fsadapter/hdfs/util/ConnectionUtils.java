@@ -37,7 +37,7 @@ public class ConnectionUtils {
 	private String nameNodeUrl;
 
 	/**
-	 * Field for kdc domain, default is empty
+	 * Field for kdc domain, default is 'NOTSET'
 	 */
 	@Value("${mosip.kernel.fsadapter.hdfs.kdc-domain:NOTSET}")
 	private String kdcDomain;
