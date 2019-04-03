@@ -12,7 +12,7 @@ public enum ErrorMessages {
 //	INVALID_REQUEST_USER_ID("INVALID_REQUEST_USER_ID"),
 	INVALID_REQUEST_ID("Request id is invalid"), // PRG_CORE_REQ_001
 	INVALID_REQUEST_VERSION("Request version is invalid"), //  PRG_CORE_REQ_002
-	INVALID_REQUEST_DATETIME("Request timestamp should be in ISO 8601 format yyyy-MM-ddTHH::mm:ss.SZ"), //  PRG_CORE_REQ_003
+	INVALID_REQUEST_DATETIME("Request timestamp is invalid"), //  PRG_CORE_REQ_003
 	INVALID_REQUEST_BODY("Request body is invalid"),// PRG_CORE_REQ_004
 //	INVALID_PRE_REGISTRATION_ID("INVALID_PRE_REGISTRATION_ID"),
 	INVALID_STATUS_CODE("INVALID_STATUS_CODE"),
