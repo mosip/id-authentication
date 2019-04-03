@@ -53,10 +53,6 @@ public class IdRepoExceptionHandlerTest {
 	@Autowired
 	Environment env;
 
-	/** The mapper. */
-	@Autowired
-	private ObjectMapper mapper;
-
 	/** The errors. */
 	@Mock
 	private Errors errors;
@@ -82,7 +78,6 @@ public class IdRepoExceptionHandlerTest {
 	@Before
 	public void before() {
 		ReflectionTestUtils.setField(handler, "env", env);
-		ReflectionTestUtils.setField(handler, "mapper", mapper);
 		ReflectionTestUtils.setField(handler, "id", id);
 	}
 
