@@ -8,9 +8,13 @@ package io.mosip.kernel.cryptomanager.utils;
 
 import java.io.IOException;
 import java.security.KeyFactory;
+import java.security.KeyPair;
 import java.security.NoSuchAlgorithmException;
+import java.security.PrivateKey;
 import java.security.PublicKey;
+import java.security.interfaces.RSAPrivateKey;
 import java.security.spec.InvalidKeySpecException;
+import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 import java.time.ZoneOffset;
 import java.util.HashMap;
@@ -32,6 +36,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.core.crypto.exception.InvalidKeyException;
@@ -43,6 +48,7 @@ import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.cryptomanager.constant.CryptomanagerErrorCode;
 import io.mosip.kernel.cryptomanager.dto.CryptomanagerRequestDto;
+import io.mosip.kernel.cryptomanager.dto.KeyManagerKeyPairResponseDto;
 import io.mosip.kernel.cryptomanager.dto.KeymanagerPublicKeyResponseDto;
 import io.mosip.kernel.cryptomanager.dto.KeymanagerSymmetricKeyRequestDto;
 import io.mosip.kernel.cryptomanager.dto.KeymanagerSymmetricKeyResponseDto;
@@ -82,6 +88,12 @@ public class CryptomanagerUtil {
 	private String getPublicKeyUrl;
 
 	/**
+	 * Keymanager URL to Get PublicKey
+	 */
+	@Value("${mosip.kernel.keymanager-service-keypair-url:http://localhost:8088/keymanager/keypair/{applicationId}}")
+	private String getKeyPairUrl;
+
+	/**
 	 * Keymanager URL to Decrypt Symmetric key
 	 */
 	@Value("${mosip.kernel.keymanager-service-decrypt-url}")
@@ -92,11 +104,10 @@ public class CryptomanagerUtil {
 	 */
 	@Value("${mosip.kernel.data-key-splitter}")
 	private String keySplitter;
-	
-	
+
 	@Value("${mosip.kernel.cryptomanager.request_id}")
 	private String cryptomanagerRequestID;
-	
+
 	@Value("${mosip.kernel.cryptomanager.request_version}")
 	private String cryptomanagerRequestVersion;
 	/**
@@ -181,8 +192,8 @@ public class CryptomanagerUtil {
 		HttpHeaders keyManagerRequestHeaders = new HttpHeaders();
 		keyManagerRequestHeaders.setContentType(MediaType.APPLICATION_JSON);
 
-		HttpEntity<RequestWrapper<KeymanagerSymmetricKeyRequestDto>> keyManagerRequestEntity = new HttpEntity<>(requestWrapper,
-				keyManagerRequestHeaders);
+		HttpEntity<RequestWrapper<KeymanagerSymmetricKeyRequestDto>> keyManagerRequestEntity = new HttpEntity<>(
+				requestWrapper, keyManagerRequestHeaders);
 
 		ResponseEntity<String> response = restTemplate.exchange(decryptSymmetricKeyUrl, HttpMethod.POST,
 				keyManagerRequestEntity, String.class);
@@ -195,7 +206,7 @@ public class CryptomanagerUtil {
 			throw new KeymanagerServiceException(validationErrorsList);
 		}
 		KeymanagerSymmetricKeyResponseDto keyManagerSymmetricKeyResponseDto;
-		ResponseWrapper<?> responseObject=null;
+		ResponseWrapper<?> responseObject = null;
 		try {
 			responseObject = objectMapper.readValue(response.getBody(), ResponseWrapper.class);
 			keyManagerSymmetricKeyResponseDto = objectMapper.readValue(
@@ -207,6 +218,65 @@ public class CryptomanagerUtil {
 		}
 		byte[] symmetricKey = CryptoUtil.decodeBase64(keyManagerSymmetricKeyResponseDto.getSymmetricKey());
 		return new SecretKeySpec(symmetricKey, 0, symmetricKey.length, symmetricAlgorithmName);
+	}
+
+	public KeyPair getKeyPairKey(CryptomanagerRequestDto cryptomanagerRequestDto) {
+		PublicKey publicKey = null;
+		PrivateKey privateKey = null;
+		KeyPair keyPair = null;
+		Map<String, String> uriParams = new HashMap<>();
+		uriParams.put("applicationId", cryptomanagerRequestDto.getApplicationId());
+		UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(getKeyPairUrl)
+				.queryParam("timeStamp", cryptomanagerRequestDto.getTimeStamp().atOffset(ZoneOffset.UTC))
+				.queryParam("referenceId", cryptomanagerRequestDto.getReferenceId());
+
+		ResponseEntity<String> response = restTemplate.exchange(builder.buildAndExpand(uriParams).toUri(),
+				HttpMethod.GET, null, String.class);
+
+		String responseBody = response.getBody();
+		List<ServiceError> validationErrorsList = null;
+		validationErrorsList = ExceptionUtils.getServiceErrorList(responseBody);
+
+		if (!validationErrorsList.isEmpty()) {
+			throw new KeymanagerServiceException(validationErrorsList);
+		}
+		KeyManagerKeyPairResponseDto keyManagerResponseDto;
+		ResponseWrapper<KeyManagerKeyPairResponseDto> responseObject;
+		try {
+			// responseObject = objectMapper.readValue(response.getBody(),
+			// ResponseWrapper.class);
+			responseObject = objectMapper.readValue(response.getBody(),
+					new TypeReference<ResponseWrapper<KeyManagerKeyPairResponseDto>>() {
+					});
+			/*
+			 * responseObject = objectMapper.readValue(
+			 * objectMapper.writeValueAsString(responseObject.getResponse()),
+			 * KeyManagerKeyPairResponseDto.class);
+			 */
+			keyManagerResponseDto = responseObject.getResponse();
+		} catch (IOException | NullPointerException exception) {
+			throw new ParseResponseException(CryptomanagerErrorCode.RESPONSE_PARSE_ERROR.getErrorCode(),
+					CryptomanagerErrorCode.RESPONSE_PARSE_ERROR.getErrorMessage() + exception.getMessage(), exception);
+		}
+
+		try {
+			publicKey = KeyFactory.getInstance(asymmetricAlgorithmName).generatePublic(
+					new X509EncodedKeySpec(CryptoUtil.decodeBase64(keyManagerResponseDto.getPublicKey())));
+
+			PKCS8EncodedKeySpec spec = new PKCS8EncodedKeySpec(
+					CryptoUtil.decodeBase64(keyManagerResponseDto.getPrivateKey()));
+			KeyFactory kf = KeyFactory.getInstance(asymmetricAlgorithmName);
+			RSAPrivateKey privateKey1 = (RSAPrivateKey)kf.generatePrivate(spec);
+			keyPair = new KeyPair(publicKey, privateKey1);
+		} catch (InvalidKeySpecException e) {
+			throw new InvalidKeyException(CryptomanagerErrorCode.INVALID_SPEC_PUBLIC_KEY.getErrorCode(),
+					CryptomanagerErrorCode.INVALID_SPEC_PUBLIC_KEY.getErrorMessage());
+		} catch (NoSuchAlgorithmException e) {
+			throw new io.mosip.kernel.core.exception.NoSuchAlgorithmException(
+					CryptomanagerErrorCode.NO_SUCH_ALGORITHM_EXCEPTION.getErrorCode(),
+					CryptomanagerErrorCode.NO_SUCH_ALGORITHM_EXCEPTION.getErrorMessage());
+		}
+		return keyPair;
 	}
 
 }

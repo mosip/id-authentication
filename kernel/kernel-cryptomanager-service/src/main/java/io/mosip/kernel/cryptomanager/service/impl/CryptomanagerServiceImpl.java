@@ -8,10 +8,12 @@ package io.mosip.kernel.cryptomanager.service.impl;
 
 import static java.util.Arrays.copyOfRange;
 
+import java.security.KeyPair;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 
 import javax.crypto.SecretKey;
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,6 +22,7 @@ import org.springframework.stereotype.Service;
 import io.mosip.kernel.core.crypto.spi.Decryptor;
 import io.mosip.kernel.core.crypto.spi.Encryptor;
 import io.mosip.kernel.core.util.CryptoUtil;
+import io.mosip.kernel.cryptomanager.dto.CryptoPublicResponseDto;
 import io.mosip.kernel.cryptomanager.dto.CryptomanagerRequestDto;
 import io.mosip.kernel.cryptomanager.dto.CryptomanagerResponseDto;
 import io.mosip.kernel.cryptomanager.service.CryptomanagerService;
@@ -107,6 +110,21 @@ public class CryptomanagerServiceImpl implements CryptomanagerService {
 		cryptoResponseDto
 				.setData(CryptoUtil.encodeBase64(decryptor.symmetricDecrypt(decryptedSymmetricKey, encryptedData)));
 		return cryptoResponseDto;
+	}
+
+	/* (non-Javadoc)
+	 * @see io.mosip.kernel.cryptomanager.service.CryptomanagerService#enncyptWithPrivate(io.mosip.kernel.cryptomanager.dto.CryptomanagerRequestDto)
+	 */
+	@Override
+	public CryptoPublicResponseDto encryptWithPrivate(@Valid CryptomanagerRequestDto cryptoRequestDto) {
+		KeyPair keyPair = cryptomanagerUtil.getKeyPairKey(cryptoRequestDto);
+		PrivateKey privateKey = keyPair.getPrivate();
+		byte[] encryptedData = encryptor.asymmetricPrivateEncrypt(privateKey,
+				CryptoUtil.decodeBase64(cryptoRequestDto.getData()));
+		CryptoPublicResponseDto cryptoPublicResponseDto = new CryptoPublicResponseDto();
+		cryptoPublicResponseDto.setData(CryptoUtil.encodeBase64(encryptedData));
+		cryptoPublicResponseDto.setPublicKey(keyPair.getPublic().toString());
+		return cryptoPublicResponseDto;
 	}
 
 }

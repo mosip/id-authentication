@@ -3,7 +3,8 @@ package io.mosip.kernel.keymanagerservice.service;
 import java.util.List;
 import java.util.Optional;
 
-import io.mosip.kernel.keymanagerservice.dto.KeyPairResponseDto;
+import io.mosip.kernel.keymanagerservice.dto.EncryptDataRequestDto;
+import io.mosip.kernel.keymanagerservice.dto.EncryptDataResponseDto;
 import io.mosip.kernel.keymanagerservice.dto.PublicKeyResponse;
 import io.mosip.kernel.keymanagerservice.dto.SymmetricKeyRequestDto;
 import io.mosip.kernel.keymanagerservice.dto.SymmetricKeyResponseDto;
@@ -42,17 +43,14 @@ public interface KeymanagerService {
 	// TODO: To be removed added for debugging
 	List<String> getAllAlias();
 
+	
+	
 	/**
-	 * service method which would return key-pair
-	 * 
-	 * @param applicationId
-	 *            - applicationId
-	 * @param timeStamp
-	 *            - timeStamp
-	 * @param referenceId
-	 *            - referenceId
-	 * @return {@link KeyPairResponseDto}
+	 * encrypt the data with private key.
+	 *
+	 * @param encryptDataRequestDto the encrypt data request dto
+	 * @return the encrypt
 	 */
-	public KeyPairResponseDto<String> getKeyPair(String applicationId, String timeStamp, Optional<String> referenceId);
+	public EncryptDataResponseDto encrypt(EncryptDataRequestDto encryptDataRequestDto);
 
 }
