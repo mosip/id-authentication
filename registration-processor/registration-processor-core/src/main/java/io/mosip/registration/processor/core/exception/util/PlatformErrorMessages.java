@@ -276,6 +276,9 @@ public enum PlatformErrorMessages {
 	RPR_PSJ_FTP_FOLDER_NOT_ACCESSIBLE(PlatformConstants.RPR_PACKET_SCANNER_JOB_MODULE + "007",
 			"The FTP folder set by the System is not accessible"),
 
+	RPR_PSJ_API_RESOUCE_ACCESS_FAILED(PlatformConstants.RPR_PACKET_SCANNER_JOB_MODULE + "008",
+			"Not able to access the API resource"),
+
 	/** The rpr pdj packet not available. */
 	// packet decryption job Exception error code and message
 	RPR_PDJ_PACKET_NOT_AVAILABLE(PlatformConstants.RPR_PACKET_DECRYPTION_JOB_MODULE + "001", "Packet not available"),

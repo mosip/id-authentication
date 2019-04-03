@@ -27,6 +27,7 @@ import io.mosip.registration.processor.core.code.RegistrationTransactionStatusCo
 import io.mosip.registration.processor.core.code.RegistrationTransactionTypeCode;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.constant.RegistrationStageName;
+import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.spi.filesystem.manager.FileManager;
@@ -119,12 +120,13 @@ public class VirusScannerStage extends MosipVerticleManager {
 		File encryptedFile = new File(encryptedPacketPath);
 		boolean isEncryptedFileCleaned;
 		boolean isUnpackedFileCleaned;
-		registrationStatusDto.setLatestTransactionTypeCode(RegistrationTransactionTypeCode.VIRUS_SCAN.toString());
-		registrationStatusDto.setRegistrationStageName(RegistrationStageName.VIRUS_SCANNER_STAGE);
+
 		InputStream decryptedData = null;
 
 		// To avoid sonar issue
 		try (InputStream encryptedPacket = new FileInputStream(encryptedFile)) {
+			registrationStatusDto.setLatestTransactionTypeCode(RegistrationTransactionTypeCode.VIRUS_SCAN.toString());
+			registrationStatusDto.setRegistrationStageName(RegistrationStageName.VIRUS_SCANNER_STAGE);
 
 			isEncryptedFileCleaned = virusScannerService.scanFile(encryptedPacketPath);
 			if (isEncryptedFileCleaned) {
@@ -141,7 +143,14 @@ public class VirusScannerStage extends MosipVerticleManager {
 
 				if (isUnpackedFileCleaned) {
 					sendToPacketUploaderStage(registrationStatusDto);
+					registrationStatusDto
+							.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.SUCCESS.toString());
+
+					description = "virus scan successful for registrationId " + registrationId;
+					isTransactionSuccessful = true;
 				} else {
+					registrationStatusDto.setLatestTransactionStatusCode(registrationStatusMapperUtil
+							.getStatusCode(RegistrationExceptionTypeCode.VIRUS_SCAN_FAILED_EXCEPTION));
 					fileManager.deletePacket(DirectoryPathDto.VIRUS_SCAN_ENC, registrationId);
 					fileManager.deletePacket(DirectoryPathDto.VIRUS_SCAN_DEC, registrationId);
 					// unpacked file doesn't contain extension
@@ -150,15 +159,13 @@ public class VirusScannerStage extends MosipVerticleManager {
 				}
 
 			} else {
+				registrationStatusDto.setLatestTransactionStatusCode(registrationStatusMapperUtil
+						.getStatusCode(RegistrationExceptionTypeCode.VIRUS_SCAN_FAILED_EXCEPTION));
 				fileManager.deletePacket(DirectoryPathDto.VIRUS_SCAN_ENC, registrationId);
 				processVirusScanFailure(registrationStatusDto);
 
 			}
 
-			registrationStatusDto.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.SUCCESS.toString());
-
-			description = "virus scan successful for registrationId " + registrationId;
-			isTransactionSuccessful = true;
 			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationId, "VirusScannerStage::process()::exit");
 			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
@@ -173,6 +180,14 @@ public class VirusScannerStage extends MosipVerticleManager {
 					VIRUS_SCAN_FAILED + " " + e.getMessage() + ExceptionUtils.getStackTrace(e));
 			object.setInternalError(Boolean.TRUE);
 			description = "virus scan failed for registrationId " + registrationId + "::" + e.getMessage();
+		} catch (ApisResourceAccessException e) {
+			registrationStatusDto.setLatestTransactionStatusCode(registrationStatusMapperUtil
+					.getStatusCode(RegistrationExceptionTypeCode.APIS_RESOURCE_ACCESS_EXCEPTION));
+			description = PlatformErrorMessages.RPR_PSJ_API_RESOUCE_ACCESS_FAILED.getMessage();
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					registrationStatusDto.getRegistrationId(),
+					VIRUS_SCAN_FAILED + " " + e.getMessage() + ExceptionUtils.getStackTrace(e));
+			object.setInternalError(Boolean.TRUE);
 		} catch (IOException | io.mosip.kernel.core.exception.IOException e) {
 			registrationStatusDto.setLatestTransactionStatusCode(
 					registrationStatusMapperUtil.getStatusCode(RegistrationExceptionTypeCode.IOEXCEPTION));
@@ -189,7 +204,7 @@ public class VirusScannerStage extends MosipVerticleManager {
 			registrationStatusDto.setStatusCode(RegistrationStatusCode.PACKET_DECRYPTION_FAILED.toString());
 			registrationStatusDto.setStatusComment(StatusMessage.PACKET_DECRYPTION_FAILURE);
 			registrationStatusDto.setUpdatedBy(USER);
-			
+
 			isTransactionSuccessful = false;
 			object.setInternalError(Boolean.TRUE);
 			description = "Packet decryption failed for registrationId " + registrationId + "::" + e.getErrorCode()

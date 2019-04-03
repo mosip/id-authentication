@@ -14,8 +14,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
@@ -185,7 +185,7 @@ public class UinGeneratorStage extends MosipVerticleManager {
 	private static final String UIN_GENERATION_FAILED = "UIN Generation failed :";
 
 	/** The registration status dto. */
-	InternalRegistrationStatusDto registrationStatusDto=null;
+	InternalRegistrationStatusDto registrationStatusDto = null;
 
 	/** The Constant UIN. */
 	private static final String UIN = "UIN";
@@ -196,7 +196,8 @@ public class UinGeneratorStage extends MosipVerticleManager {
 	/** The Constant UIN_UNASSIGNED. */
 	private static final String UIN_UNASSIGNED = "UNASSIGNED";
 
-    RegistrationExceptionMapperUtil registrationStatusMapperUtil = new RegistrationExceptionMapperUtil();
+	RegistrationExceptionMapperUtil registrationStatusMapperUtil = new RegistrationExceptionMapperUtil();
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -256,8 +257,8 @@ public class UinGeneratorStage extends MosipVerticleManager {
 					registrationStatusDto.setStatusComment(statusComment);
 					object.setInternalError(Boolean.TRUE);
 					registrationStatusDto.setStatusCode(RegistrationStatusCode.PACKET_UIN_UPDATION_FAILURE.toString());
-                    registrationStatusDto.setLatestTransactionStatusCode(registrationStatusMapperUtil
-                            .getStatusCode(RegistrationExceptionTypeCode.PACKET_UIN_GENERATION_FAILED));
+					registrationStatusDto.setLatestTransactionStatusCode(registrationStatusMapperUtil
+							.getStatusCode(RegistrationExceptionTypeCode.PACKET_UIN_GENERATION_FAILED));
 					sendResponseToUinGenerator(uinResponseDto.getUin(), UIN_UNASSIGNED);
 					isTransactionSuccessful = false;
 					description = UIN_FAILURE + registrationId + "::" + idResponseDTO != null
@@ -391,7 +392,7 @@ public class UinGeneratorStage extends MosipVerticleManager {
 						httpServerException);
 			} else {
 				description = UIN_GENERATION_FAILED + registrationId + "::" + e.getMessage();
-				throw new ApisResourceAccessException(UIN_GENERATION_FAILED, e);
+				throw e;
 			}
 
 		}
@@ -433,7 +434,7 @@ public class UinGeneratorStage extends MosipVerticleManager {
 	 * @throws JsonMappingException
 	 * @throws JsonParseException
 	 */
-	private Documents addBiometricDetails(String regId) throws JsonParseException, JsonMappingException, IOException {
+	private Documents addBiometricDetails(String regId) throws IOException {
 		Documents document = new Documents();
 
 		byte[] biometricDocument = getFile(regId);
@@ -664,7 +665,7 @@ public class UinGeneratorStage extends MosipVerticleManager {
 						httpServerException);
 			} else {
 				description = UIN_GENERATION_FAILED + registrationId + "::" + e.getMessage();
-				throw new ApisResourceAccessException(UIN_GENERATION_FAILED, e);
+				throw e;
 			}
 		}
 		return response;
@@ -673,10 +674,15 @@ public class UinGeneratorStage extends MosipVerticleManager {
 	/**
 	 * Send response to uin generator.
 	 *
-	 * @param uin the uin
-	 * @param uinStatus the uin status
+	 * @param uin
+	 *            the uin
+	 * @param uinStatus
+	 *            the uin status
+	 * @throws ApisResourceAccessException
+	 * @throws JsonProcessingException
 	 */
-	private void sendResponseToUinGenerator(String uin, String uinStatus) {
+	private void sendResponseToUinGenerator(String uin, String uinStatus)
+			throws ApisResourceAccessException, JsonProcessingException {
 		UinRequestDto uinRequest = new UinRequestDto();
 		uinRequest.setUin(uin);
 		uinRequest.setStatus(uinStatus);
@@ -685,8 +691,8 @@ public class UinGeneratorStage extends MosipVerticleManager {
 		try {
 			jsonString = objMapper.writeValueAsString(uinRequest);
 			String response;
-				response = (String) registrationProcessorRestClientService.putApi(ApiName.UINGENERATOR, null, "", "",
-						jsonString, String.class);
+			response = (String) registrationProcessorRestClientService.putApi(ApiName.UINGENERATOR, null, "", "",
+					jsonString, String.class);
 			Gson gsonValue = new Gson();
 			UinDto uinresponse = gsonValue.fromJson(response, UinDto.class);
 			if (uinresponse.getUin() != null) {
@@ -704,13 +710,16 @@ public class UinGeneratorStage extends MosipVerticleManager {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationId, PlatformErrorMessages.RPR_SYS_JSON_PARSING_EXCEPTION.getMessage() + e.getMessage()
 							+ ExceptionUtils.getStackTrace(e));
+			throw e;
 		} catch (ApisResourceAccessException e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					registrationId, PlatformErrorMessages.RPR_PVM_API_RESOUCE_ACCESS_FAILED.getMessage() + e.getMessage()
-							+ ExceptionUtils.getStackTrace(e));
+					registrationId, PlatformErrorMessages.RPR_PVM_API_RESOUCE_ACCESS_FAILED.getMessage()
+							+ e.getMessage() + ExceptionUtils.getStackTrace(e));
+			throw e;
 		}
 
 	}
+
 	/**
 	 * Deploy verticle.
 	 */
