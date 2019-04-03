@@ -32,6 +32,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
@@ -49,6 +51,8 @@ import io.mosip.kernel.core.util.DateUtils;
 @RestController
 public class AuthRequestController {
 	
+	private static final String SECONDARY_LANG_CODE = "secondaryLangCode";
+
 	/** The Constant TEMPLATE. */
 	private static final String TEMPLATE = "Template";
 	
@@ -93,6 +97,9 @@ public class AuthRequestController {
 	
 	@Autowired
 	private TemplateManager templateManager;
+	
+	@Autowired
+	private ObjectMapper mapper;
 	
 	@PostConstruct
 	public void idTemplateManagerPostConstruct() {
@@ -140,9 +147,16 @@ public class AuthRequestController {
 		InputStream templateValue;
 		templateValue = templateManager
 				.merge(new ByteArrayInputStream(authRequestTemplate.getBytes(StandardCharsets.UTF_8)), reqValues);
+		
 		if (templateValue != null) {
 			IOUtils.copy(templateValue, writer, StandardCharsets.UTF_8);
-			return writer.toString();
+			String res = writer.toString();
+			if(reqValues.containsKey(SECONDARY_LANG_CODE)) {
+				Map<String, Object> resMap = mapper.readValue(res.getBytes(StandardCharsets.UTF_8), Map.class);
+				resMap.put(SECONDARY_LANG_CODE, reqValues.get(SECONDARY_LANG_CODE));
+				return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(resMap);
+			}
+			return res;
 		} else {
 			throw new IdAuthenticationBusinessException(
 					IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
@@ -223,7 +237,7 @@ public class AuthRequestController {
 		}
 		if (isKyc != null && isKyc) {
 			reqValues.put(AUTH_TYPE, "kyc");
-			reqValues.put("secondaryLangCode", environment.getProperty("mosip.secondary-language"));
+			reqValues.put(SECONDARY_LANG_CODE, environment.getProperty("mosip.secondary-language"));
 			
 		} else {
 			reqValues.put(AUTH_TYPE, "auth");
