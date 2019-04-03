@@ -67,9 +67,19 @@ public class Sample extends BaseTestCase {
 	public void uploadDocumentForDiscardedApplication() {
 		testSuite = "Create_PreRegistration/createPreRegistration_smoke";
 		JSONObject createPregRequest = lib.createRequest(testSuite);
-		Response createResponse = lib.CreatePreReg(createPregRequest);
-		String preID = createResponse.jsonPath().get("response[0].preRegistrationId").toString();
-		Response documentResponse = lib.documentUpload(createResponse);
+		List<String> prid=new ArrayList<String>();
+		for(int i=1;i<=5;i++)
+		{
+			Response createPregResponse = lib.CreatePreReg(createPregRequest);
+			String PreID = createPregResponse.jsonPath().get("response[0].preRegistrationId").toString();
+			Response documentUploadResponse = lib.documentUpload(createPregResponse);
+			Response fetchCentreResponse = lib.FetchCentre();
+			lib.BookAppointment(documentUploadResponse, fetchCentreResponse, PreID);
+			prid.add(PreID);
+		}
+		
+		System.out.println("====================="+prid.toString());
+			
 		
 		
 

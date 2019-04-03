@@ -308,6 +308,37 @@ public class PreRegistrationLibrary extends BaseTestCase {
 		}	
 		return otpRequest;
 	}
+	public JSONObject validateOTPRequest(String testSuite,String userID,String OTP)
+	{
+		JSONObject otpRequest = null;
+		/**
+		 * Reading request body from configpath
+		 */
+		String configPath = "src/test/resources/" + folder + "/" + testSuite;
+		File folder = new File(configPath);
+		File[] listOfFiles = folder.listFiles();
+		for (File f : listOfFiles) {
+			if (f.getName().contains("request")) {
+				try {
+					otpRequest = (JSONObject) new JSONParser().parse(new FileReader(f.getPath()));
+				} catch (Exception e) {
+					e.printStackTrace();
+					logger.error(e.getMessage());
+				}
+				
+			}
+		}
+		JSONObject object = null;
+		for (Object key : otpRequest.keySet()) {
+			if (key.equals("request")) {
+				object = (JSONObject) otpRequest.get(key);
+				object.put("userId", userID);
+				object.put("otp", OTP);
+				otpRequest.replace(key, object);
+			}
+		}	
+		return otpRequest;
+	}
 
 	/*
 	 * Function to generate the random created by data
@@ -2006,6 +2037,7 @@ public class PreRegistrationLibrary extends BaseTestCase {
 				
 			}
 		}
+		
 		double d = (Math.random()*1000000000);
 		long l= (long)d;
 		userId = "9"+l ;
@@ -2019,6 +2051,7 @@ public class PreRegistrationLibrary extends BaseTestCase {
 		}	
 		return otpRequest;
 	}
+	
 	public JSONObject getOtpRequest(String testSuite)
 	{
 		JSONObject otpRequest = null;

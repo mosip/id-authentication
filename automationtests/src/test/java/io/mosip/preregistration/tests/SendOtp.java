@@ -1,5 +1,6 @@
 package io.mosip.preregistration.tests;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -40,19 +41,21 @@ public class SendOtp extends BaseTestCase implements ITest {
 	}
 
 	/**
-	 * Batch job service for expired application
+	 * Scripting for send OTP API
 	 */
-	/*@Test
+	@Test
 	public void sendOtpToEmailId() {
-		testSuite = "SendOtp/SendOtp+JSONObject sendOtpRequest = lib.getOtpRequest(testSuite);
+		testSuite = "SendOtp/SendOtpToEmail";
+		JSONObject sendOtpRequest = lib.getOtpRequest(testSuite);
 		Map request = (Map) sendOtpRequest.get("request");
 		String userId = request.get("userId").toString();
 		response = lib.generateOTP(sendOtpRequest);
 		String otpQueryStr = "SELECT E.otp FROM kernel.otp_transaction E WHERE id='" + userId + "'";
 		List<Object> otpData = prereg_dbread.fetchOTPFromDB(otpQueryStr, OtpEntity.class);
 		String otp = otpData.get(0).toString();
-	}*/
-	/*@Test
+		lib.compareValues(response.jsonPath().get("response.message").toString(), "OTP sent successfully to specified channel");
+	}
+	@Test
 	public void sendOtpToMobile() {
 		testSuite = "SendOtp/SendOtpMobile";
 		JSONObject sendOtpRequest = lib.getOtpRequest(testSuite);
@@ -62,7 +65,8 @@ public class SendOtp extends BaseTestCase implements ITest {
 		String otpQueryStr = "SELECT E.otp FROM kernel.otp_transaction E WHERE id='" + userId + "'";
 		List<Object> otpData = prereg_dbread.fetchOTPFromDB(otpQueryStr, OtpEntity.class);
 		String otp = otpData.get(0).toString();
-	}*/
+		lib.compareValues(response.jsonPath().get("response.message").toString(), "OTP sent successfully to specified channel");
+	}
 	@Test
 	public void sendOtpToInvalidEmailId() {
 		testSuite = "SendOtp/SendOtpToInvalid_Email_Id";
@@ -99,7 +103,27 @@ public class SendOtp extends BaseTestCase implements ITest {
 		lib.compareValues(errorCode, "PRG_AUTH_008");
 		lib.compareValues(message, "INVALID_REQUEST_USERID");
 	}
-
+	@Test
+	public void sendOtpToBlockedUser() {
+		List<String> otps=new ArrayList<String>();
+		testSuite = "SendOtp/SendOtpMobile";
+		String validateTestSuite = "validateOTP/validateOTP_smoke";
+		JSONObject sendOtpRequest = lib.otpRequest(testSuite);
+		Map request = (Map) sendOtpRequest.get("request");
+		String userId = request.get("userId").toString();
+		response = lib.generateOTP(sendOtpRequest);
+		String otpQueryStr = "SELECT E.otp FROM kernel.otp_transaction E WHERE id='" + userId + "'";
+		List<Object> otpData = prereg_dbread.fetchOTPFromDB(otpQueryStr, OtpEntity.class);
+		String otp = otpData.get(0).toString();
+		JSONObject validateOTPRequest = lib.validateOTPRequest(validateTestSuite, userId, "236578");
+		for(int i=1;i<=3;i++)
+		{
+			lib.validateOTP(validateOTPRequest);
+		}
+		Response generateOTP  = lib.generateOTP(sendOtpRequest);
+		String message = generateOTP.jsonPath().get("response.message").toString();
+		lib.compareValues(message, "USER_BLOCKED");
+	}
 	@Override
 	public String getTestName() {
 		return this.testCaseName;
