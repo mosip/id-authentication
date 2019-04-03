@@ -190,7 +190,7 @@ public class PacketValidateProcessor {
 
 						if (isCheckSumValidated && !(regTypeCheck)) {
 							MasterDataValidation masterDataValidation = new MasterDataValidation(
-										registrationStatusDto, env, registrationProcessorRestService, utility);
+										 env, registrationProcessorRestService, utility);
 								isMasterDataValidated = masterDataValidation.validateMasterData(jsonString);
 						}
 					}
