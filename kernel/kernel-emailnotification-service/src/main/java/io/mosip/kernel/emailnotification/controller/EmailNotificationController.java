@@ -47,7 +47,7 @@ public class EmailNotificationController {
     @PreAuthorize("hasAnyRole('INDIVIDUAL','REGISTRATION_PROCESSOR','REGISTRATION_ADMIN','REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','ID_AUTHENTICATION')")
 	@ResponseFilter
 	@PostMapping(value = "/email/send", consumes = "multipart/form-data")
-	public @ResponseBody ResponseWrapper<ResponseDto> sendMail(String[] mailTo, String[] mailCc, String mailSubject,
+	public @ResponseBody ResponseWrapper<ResponseDto> sendEMail(String[] mailTo, String[] mailCc, String mailSubject,
 			String mailContent, MultipartFile[] attachments) {
 		ResponseWrapper<ResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper
