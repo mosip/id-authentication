@@ -1133,7 +1133,7 @@ public class FingerPrintCaptureController extends BaseController implements Init
 			}
 
 			for (FingerprintDetailsDTO fingerprintDetailsDTO : fingerprintDetailsDTOs) {
-				if (validateQualityScore(fingerprintDetailsDTO)) {
+				if (validateQualityScore(fingerprintDetailsDTO) || (boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
 					if (fingerprintDetailsDTO.getFingerType().equalsIgnoreCase(RegistrationConstants.LEFTPALM)
 							|| leftSlapCount >= 4) {
 						isleftHandSlapCaptured = true;
