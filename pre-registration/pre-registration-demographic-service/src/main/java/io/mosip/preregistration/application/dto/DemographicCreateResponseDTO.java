@@ -25,10 +25,21 @@ import lombok.ToString;
 @Setter
 @NoArgsConstructor
 @ToString
-public class DemographicRequestDTO implements Serializable {
+public class DemographicCreateResponseDTO implements Serializable {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 6705845720255847210L;
+
+	/** The pre-registration-Id. */
+	private String preRegistrationId;
+
+	/** The create date time. */
+	private String createdDateTime;
+
+	/**
+	 * status code
+	 */
+	private String statusCode;
 
 	/**
 	 * language code
