@@ -180,8 +180,10 @@ public class IDAuthExceptionHandlerTest {
 		expectedResponse.setErrors(
 				Collections.singletonList(new AuthError(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(),
 						IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorMessage())));
-		ResponseEntity<Object> handleExceptionInternal = handler
-				.handleIdAppException(new IdAuthenticationAppException("1234", "1234"), null);
+		ResponseEntity<Object> handleExceptionInternal = handler.handleIdAppException(
+				new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(),
+						IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorMessage()),
+				null);
 		BaseAuthResponseDTO actualResponse = (BaseAuthResponseDTO) handleExceptionInternal.getBody();
 		actualResponse.setResponseTime(null);
 		assertEquals(expectedResponse, actualResponse);
