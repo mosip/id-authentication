@@ -368,11 +368,13 @@ public class IdRequestValidator implements Validator {
 			Object data = path.read(request,
 					Configuration.defaultConfiguration().addOptions(Option.SUPPRESS_EXCEPTIONS));
 			if (Objects.nonNull(data)) {
-				if (data instanceof String && !pattern.matcher((CharSequence) data).matches()) {
+				if ((data instanceof String || data instanceof Integer)
+						&& !pattern.matcher(String.valueOf(data)).matches()) {
 					mosipLogger.error(IdRepoLogger.getUin(), ID_REPO, ID_REQUEST_VALIDATOR,
 							(VALIDATE_REQUEST + entry.getValue() + " -> " + data));
 					errors.rejectValue(REQUEST, IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(), String
-							.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), entry.getKey()));
+							.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), 
+									"/" + StringUtils.replaceChars(entry.getKey(), ".", "/")));
 				} else if (data instanceof JSONArray) {
 					IntStream.range(0, ((JSONArray) data).size())
 					.filter(index -> !pattern.matcher((CharSequence) ((JSONArray) data).get(index)).matches())
@@ -381,7 +383,9 @@ public class IdRequestValidator implements Validator {
 										(VALIDATE_REQUEST + entry.getValue() + " -> " + data));
 								errors.rejectValue(REQUEST, IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
 										String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(),
-												StringUtils.replace(entry.getKey(), "*", String.valueOf(index))));
+												"/" + StringUtils.replace(
+														StringUtils.replaceChars(entry.getKey(), ".", "/"), "*",
+														String.valueOf(index))));
 					});
 				}
 			}
