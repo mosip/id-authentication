@@ -83,7 +83,7 @@ public class NotificationControllerTest {
 	 * This test method is for success sendNotification method
 	 * @throws Exception
 	 */
-	@WithUserDetails("individual")
+	@WithUserDetails("INDIVIDUAL")
 	@Test
 	public void sendNotificationTest() throws Exception {
 		String stringjson = mapper.writeValueAsString(notificationDTO);
