@@ -36,6 +36,8 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.RadioButton;
 import javafx.scene.text.Text;
 import javafx.scene.web.WebView;
 
@@ -48,7 +50,7 @@ public class RegistrationPreviewController extends BaseController implements Ini
 	private WebView webView;
 
 	@FXML
-	private CheckBox consentOfApplicant;
+	private Label consent;
 
 	@Autowired
 	private TemplateManagerBuilder templateManagerBuilder;
@@ -64,9 +66,31 @@ public class RegistrationPreviewController extends BaseController implements Ini
 
 	@FXML
 	private Text registrationNavlabel;
+	
+	@FXML
+	private RadioButton noRadio;
+	
+	@FXML
+	private RadioButton yesRadio;
 
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
+		
+		
+		yesRadio.selectedProperty().addListener((abs,old, newValue)->{
+				noRadio.setSelected(!newValue.booleanValue());
+		});
+		
+		noRadio.selectedProperty().addListener((abs,old, newValue)->{
+				yesRadio.setSelected(!newValue.booleanValue());
+		});
+		
+		
+		
+		String key = "mosip.registration.consent_" + applicationContext.getApplicationLanguage();
+        System.out.println(key);
+        System.out.println(applicationContext.getApplicationMap().get("mosip.registration.softwareUpdateCheck_configured_frequency"));
+		consent.setText((String) applicationContext.getApplicationMap().get(key));
 		if (getRegistrationDTOFromSession() != null && getRegistrationDTOFromSession().getSelectionListDTO() != null) {
 			registrationNavlabel.setText(RegistrationConstants.UIN_NAV_LABEL);
 		}
@@ -119,7 +143,7 @@ public class RegistrationPreviewController extends BaseController implements Ini
 		auditFactory.audit(AuditEvent.REG_PREVIEW_SUBMIT, Components.REG_PREVIEW, SessionContext.userId(),
 				AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
 
-		if (consentOfApplicant.isSelected()) {
+		if (yesRadio.isSelected()) {
 			getRegistrationDTOFromSession().getRegistrationMetaDataDTO()
 					.setConsentOfApplicant(RegistrationConstants.CONCENT_OF_APPLICANT_SELECTED);
 		} else {

@@ -24,22 +24,6 @@
             <GridPane GridPane.columnIndex="1">
                <children>
                   <GridPane GridPane.rowIndex="1">
-                     <children>
-                        <GridPane>
-                           <children>
-                              <CheckBox fx:id="consentOfApplicant" mnemonicParsing="false" prefHeight="27.0" prefWidth="595.0" text="%consent" GridPane.columnIndex="1" GridPane.columnSpan="2" />
-                           </children>
-                           <columnConstraints>
-                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                           </columnConstraints>
-                           <rowConstraints>
-                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                           </rowConstraints>
-                        </GridPane>
-                     </children>
                      <columnConstraints>
                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -47,6 +31,19 @@
                      <rowConstraints>
                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                      </rowConstraints>
+                     <children>
+                        <VBox prefHeight="200.0" prefWidth="100.0" spacing="15.0">
+                           <children>
+                              <Label fx:id="consent" text="%consent" />
+                              <HBox prefHeight="100.0" prefWidth="200.0" spacing="10.0">
+                                 <children>
+                                    <RadioButton fx:id="yesRadio" mnemonicParsing="false" text="Yes" />
+                                    <RadioButton fx:id="noRadio" mnemonicParsing="false" text="No" />
+                                 </children>
+                              </HBox>
+                           </children>
+                        </VBox>
+                     </children>
                   </GridPane>
                   <GridPane fx:id="mainContent">
                      <children>
@@ -64,8 +61,8 @@
                   <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                </columnConstraints>
                <rowConstraints>
-                  <RowConstraints minHeight="10.0" percentHeight="95.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                  <RowConstraints minHeight="10.0" percentHeight="5.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="10.0" percentHeight="80.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="10.0" percentHeight="20.0" prefHeight="30.0" vgrow="SOMETIMES" />
                </rowConstraints>
             </GridPane>
          </children>
