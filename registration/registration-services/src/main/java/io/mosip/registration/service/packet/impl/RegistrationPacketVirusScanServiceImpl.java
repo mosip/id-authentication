@@ -23,6 +23,7 @@ import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.SuccessResponseDTO;
+import io.mosip.registration.service.BaseService;
 import io.mosip.registration.service.packet.RegistrationPacketVirusScanService;
 
 /**
@@ -32,7 +33,7 @@ import io.mosip.registration.service.packet.RegistrationPacketVirusScanService;
  *
  */
 @Service
-public class RegistrationPacketVirusScanServiceImpl implements RegistrationPacketVirusScanService {
+public class RegistrationPacketVirusScanServiceImpl extends BaseService implements RegistrationPacketVirusScanService {
 
 	@Autowired
 	private VirusScanner<Boolean, String> virusScanner;
@@ -91,11 +92,9 @@ public class RegistrationPacketVirusScanServiceImpl implements RegistrationPacke
 					virusScannerException.getMessage());
 			LOGGER.debug("REGISTRATION - PACKET_SCAN_EXCEPTION_DEBUG", APPLICATION_NAME, APPLICATION_ID,
 					virusScannerException.getMessage() + ExceptionUtils.getStackTrace(virusScannerException));
-			ErrorResponseDTO errorResponseDTO = new ErrorResponseDTO();
-			errorResponseDTO.setCode("ServiceException");
-			errorResponseDTO.setMessage(RegistrationConstants.ANTIVIRUS_SERVICE_NOT_ACCESSIBLE);
-			errorList.add(errorResponseDTO);
-			responseDTO.setErrorResponseDTOs(errorList);
+			
+			setSuccessResponse(responseDTO, RegistrationConstants.ANTIVIRUS_SERVICE_NOT_ACCESSIBLE, null);
+			
 		} catch (IOException ioException) {
 			LOGGER.error("REGISTRATION - PACKET_SCAN_IOEXCEPTION", APPLICATION_NAME, APPLICATION_ID,
 					ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));
