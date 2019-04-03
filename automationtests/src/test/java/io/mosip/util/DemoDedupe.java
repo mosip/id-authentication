@@ -129,5 +129,22 @@ public class DemoDedupe {
 			e.printStackTrace();
 		}
 	}
+	
+	public static void main(String[] args) {
+		DemoDedupe dd= new DemoDedupe();
+		File dummyDecryptFile = new File(configPath+fileName);
+		try {
+			dd.demoDedupeStage(dummyDecryptFile);
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 
 }
