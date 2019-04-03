@@ -114,7 +114,7 @@ public class DemodedupeProcessor {
 				PacketMetaInfo packetMetaInfo = (PacketMetaInfo) JsonUtil.inputStreamtoJavaObject(packetMetaInfoStream, PacketMetaInfo.class);
 				demographicInfoStream = adapter.getFile(registrationId,PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR + PacketFiles.ID.name());
 				bytesArray = IOUtils.toByteArray(demographicInfoStream);
-				packetInfoManager.saveDemographicInfoJson(bytesArray,packetMetaInfo.getIdentity().getMetaData());
+				packetInfoManager.saveDemographicInfoJson(bytesArray,registrationId,packetMetaInfo.getIdentity().getMetaData());
 			}
 
 
