@@ -67,6 +67,7 @@ public class AuthFilter extends AbstractAuthenticationProcessingFilter {
 			HttpServletResponse httpServletResponse)
 			throws AuthenticationException, JsonProcessingException, IOException {
 		String token = null;
+		System.out.println("Look for Autherization Cookie");
 		Cookie[] cookies = httpServletRequest.getCookies();
 		if (cookies != null) {
 			for (Cookie cookie : cookies) {
@@ -76,6 +77,7 @@ public class AuthFilter extends AbstractAuthenticationProcessingFilter {
 			}
 		}
 		if (token == null) {
+			System.out.println("Autherization Cookie Not Found");
 			ResponseWrapper<ServiceError> errorResponse = setErrors(httpServletRequest);
 			ServiceError error = new ServiceError(AuthAdapterErrorCode.UNAUTHORIZED.getErrorCode(),
 					"Authentication Failed");
@@ -84,6 +86,7 @@ public class AuthFilter extends AbstractAuthenticationProcessingFilter {
 			httpServletResponse.setContentType("application/json");
 			httpServletResponse.setCharacterEncoding("UTF-8");
 			httpServletResponse.getWriter().write(convertObjectToJson(errorResponse));
+			System.out.println("Return UNAUTHORIZED error");
 			return null;
 		}
 		AuthToken authToken = new AuthToken(token);
