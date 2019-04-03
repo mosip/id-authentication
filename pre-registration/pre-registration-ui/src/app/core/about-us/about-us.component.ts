@@ -7,9 +7,12 @@ import { Component, OnInit } from '@angular/core';
 })
 export class AboutUsComponent implements OnInit {
 
+  langCode = '';
+
   constructor() { }
 
   ngOnInit() {
+    this.langCode = localStorage.getItem('langCode');
   }
 
 }

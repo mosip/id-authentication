@@ -90,15 +90,15 @@ export class AppComponent implements OnInit {
 
   @HostListener("mouseover") onMouseOver() {
     this.userActive = true;
-    console.log(this.userActive);
+ //   console.log(this.userActive);
   }
   @HostListener("click") onMouseClick() {
     this.userActive = true;
-    console.log(this.userActive);
+ //   console.log(this.userActive);
   }
   @HostListener("keypress") onKeyPress() {
     this.userActive = true;
-    console.log(this.userActive);
+ //   console.log(this.userActive);
   }
   @HostListener('document:mousemove', ['$event'])
   onMouseMove(e) {
