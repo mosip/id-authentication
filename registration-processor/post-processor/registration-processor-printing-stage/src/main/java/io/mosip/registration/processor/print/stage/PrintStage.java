@@ -212,14 +212,6 @@ public class PrintStage extends MosipVerticleAPIManager {
 
 			Map<String, byte[]> documentBytesMap = printService.getDocuments(IdType.RID, regId);
 
-			queue = mosipConnectionFactory.createConnection(typeOfQueue, username, password, url);
-			if (queue == null) {
-				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
-						LoggerFileConstant.REGISTRATIONID.toString(), regId,
-						PlatformErrorMessages.RPR_PRT_QUEUE_CONNECTION_NULL.name());
-				throw new QueueConnectionNotFound(PlatformErrorMessages.RPR_PRT_QUEUE_CONNECTION_NULL.getCode());
-			}
-
 			boolean isAddedToQueue = sendToQueue(queue, documentBytesMap, 0, uin);
 
 			if (isAddedToQueue) {
