@@ -7,8 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.HttpServerErrorException;
 
 import io.mosip.kernel.core.fsadapter.exception.FSAdapterException;
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -153,6 +151,14 @@ public class OSIValidatorStage extends MosipVerticleManager {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), code, registrationId,
 					description + e.getMessage() + ExceptionUtils.getStackTrace(e));
 			object.setInternalError(Boolean.TRUE);
+		} catch (ApisResourceAccessException e) {
+			registrationStatusDto.setLatestTransactionStatusCode(registrationStatusMapperUtil
+					.getStatusCode(RegistrationExceptionTypeCode.APIS_RESOURCE_ACCESS_EXCEPTION));
+			code = PlatformErrorMessages.OSI_VALIDATION_PACKE_API_RESOUCE_ACCESS_FAILED.getCode();
+			description = PlatformErrorMessages.OSI_VALIDATION_PACKE_API_RESOUCE_ACCESS_FAILED.getMessage();
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), code, registrationId,
+					description + e.getMessage() + ExceptionUtils.getStackTrace(e));
+			object.setInternalError(Boolean.TRUE);
 		} catch (DataAccessException e) {
 			registrationStatusDto.setLatestTransactionStatusCode(
 					registrationStatusMapperUtil.getStatusCode(RegistrationExceptionTypeCode.DATA_ACCESS_EXCEPTION));
@@ -161,33 +167,6 @@ public class OSIValidatorStage extends MosipVerticleManager {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), code, registrationId,
 					description + e.getMessage() + ExceptionUtils.getStackTrace(e));
 			object.setInternalError(Boolean.TRUE);
-
-		} catch (ApisResourceAccessException e) {
-			registrationStatusDto.setLatestTransactionStatusCode(registrationStatusMapperUtil
-					.getStatusCode(RegistrationExceptionTypeCode.APIS_RESOURCE_ACCESS_EXCEPTION));
-			object.setInternalError(Boolean.TRUE);
-			code = PlatformErrorMessages.OSI_VALIDATION_FAILED.getCode();
-			description = PlatformErrorMessages.OSI_VALIDATION_FAILED.getMessage();
-
-			if (e.getCause() instanceof HttpClientErrorException) {
-				HttpClientErrorException httpClientException = (HttpClientErrorException) e.getCause();
-				description = PlatformErrorMessages.OSI_VALIDATION_FAILED.getMessage() + "::"
-						+ httpClientException.getResponseBodyAsString();
-				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), code, registrationId,
-						description + e.getMessage() + ExceptionUtils.getStackTrace(e));
-
-			} else if (e.getCause() instanceof HttpServerErrorException) {
-				HttpServerErrorException httpServerException = (HttpServerErrorException) e.getCause();
-				description = PlatformErrorMessages.OSI_VALIDATION_FAILED.getMessage() + "::"
-						+ httpServerException.getResponseBodyAsString();
-				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), code, registrationId,
-						description + e.getMessage() + ExceptionUtils.getStackTrace(e));
-
-			} else {
-				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), code, registrationId,
-						description + e.getMessage() + ExceptionUtils.getStackTrace(e));
-
-			}
 
 		} catch (IOException e) {
 			registrationStatusDto.setLatestTransactionStatusCode(

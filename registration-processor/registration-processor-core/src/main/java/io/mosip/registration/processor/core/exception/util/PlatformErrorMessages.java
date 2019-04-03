@@ -225,6 +225,9 @@ public enum PlatformErrorMessages {
 	OSI_VALIDATION_PACKET_STORE_NOT_ACCESSIBLE(PlatformConstants.RPR_OSI_VALIDATOR_MODULE + "005",
 			"The Packet store set by the System is not accessible"),
 
+	OSI_VALIDATION_PACKE_API_RESOUCE_ACCESS_FAILED(PlatformConstants.RPR_OSI_VALIDATOR_MODULE + "006",
+			"Not able to access the API resource"),
+
 	/** The packet demo dedupe failed. */
 	// Stages - Demo-Dedupe error code and message
 	PACKET_DEMO_DEDUPE_FAILED("", "Demo dedupe Failed"),
@@ -502,8 +505,7 @@ public enum PlatformErrorMessages {
 			"Error while getting response from Print and Postal Service Provider"),
 
 	/** The print validation failed. */
-	RPR_PRT_DATA_VALIDATION_FAILED(PlatformConstants.RPR_PRINTING_MODULE + "011",
-			"Error while print data validation"),
+	RPR_PRT_DATA_VALIDATION_FAILED(PlatformConstants.RPR_PRINTING_MODULE + "011", "Error while print data validation"),
 
 	/** The rpr rgs registration connector not accessible. */
 	RPR_RGS_REGISTRATION_CONNECTOR_NOT_ACCESSIBLE("", "Registration connector stage is not accessible "),
@@ -560,7 +562,7 @@ public enum PlatformErrorMessages {
 	/** The data validation failed. */
 	RPR_PGS_DATA_VALIDATION_FAILED(PlatformConstants.RPR_PACKET_GENERATOR_MODULE + "012",
 			"Input Data Validation Failed"),
-	
+
 	REPROCESSOR_STAGE_FAILED("", "Reprocessor Stage Failed");
 
 	/** The error message. */
