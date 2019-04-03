@@ -6,7 +6,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
@@ -55,7 +54,8 @@ public class ClientJarEncryption {
 	private static final String MOSIP_SERVICES = "mosip-services.jar";
 	private static final String MOSIP_CLIENT = "mosip-client.jar";
 	private static final String MOSIP_CER = "cer";
-	
+	private static final String MOSIP_CER_PARAM = "mosip.cerpath= ";
+	private static final String MOSIP_CER_PATH = "/cer/";
 
 	/**
 	 * Encrypt the bytes
@@ -104,8 +104,6 @@ public class ClientJarEncryption {
 
 					String zipFilename = file.getParent() + SLASH + "mosip-sw-" + args[3] + MOSIP_ZIP;
 
-					byte[] propertiesBytes = (MOSIP_LOG_PARAM + MOSIP_LOG_PATH + "\n" + MOSIP_DB_PARAM + MOSIP_DB_PATH
-							+ "\n" + MOSIP_PACKET_STORE_PARAM + MOSIP_PACKET_STORE_PATH).getBytes();
 					byte[] runExecutbale = FileUtils
 							.readFileToByteArray(new File(args[4] + MOSIP_REG_LIBS + args[3] + MOSIP_JAR));
 					File listOfJars = new File(file.getParent() + SLASH + MOSIP_LIB).getAbsoluteFile();
@@ -114,20 +112,29 @@ public class ClientJarEncryption {
 					Map<String, byte[]> fileNameByBytes = new HashMap<>();
 
 					// fileNameByBytes.put(encryptedFileToSave, encryptedFileBytes);
-					fileNameByBytes.put(propertiesFile, propertiesBytes);
-					fileNameByBytes.put(MOSIP_DB + SLASH, new byte[] {});
 					fileNameByBytes.put(MOSIP_LIB + SLASH, new byte[] {});
 					fileNameByBytes.put(MOSIP_BIN + SLASH, new byte[] {});
 					fileNameByBytes.put(MOSIP_LOG + SLASH, new byte[] {});
-				
+
 					fileNameByBytes.put(MOSIP_EXE_JAR, runExecutbale);
-					
-					//Certificate file
+
+					// Certificate file
 					File mosipCertificateFile = new File(args[5]);
-					
-					if(mosipCertificateFile.exists()) {
-						fileNameByBytes.put(MOSIP_CER + SLASH+ mosipCertificateFile.getName(), FileUtils.readFileToByteArray(mosipCertificateFile));
+
+					if (mosipCertificateFile.exists()) {
+						fileNameByBytes.put(MOSIP_CER + SLASH + mosipCertificateFile.getName(),
+								FileUtils.readFileToByteArray(mosipCertificateFile));
 					}
+
+					byte[] propertiesBytes = (MOSIP_LOG_PARAM + MOSIP_LOG_PATH + "\n" + MOSIP_DB_PARAM + MOSIP_DB_PATH
+							+ "\n" + MOSIP_PACKET_STORE_PARAM + MOSIP_PACKET_STORE_PATH + "\n" + MOSIP_CER_PARAM
+							+ MOSIP_CER_PATH + SLASH + mosipCertificateFile.getName()).getBytes();
+
+					fileNameByBytes.put(propertiesFile, propertiesBytes);
+
+					// DB file
+					File regFolder = new File(args[6]);
+					readDirectoryToByteArray(MOSIP_DB, regFolder, fileNameByBytes);
 
 					String path = new File(args[4]).getPath();
 
@@ -283,5 +290,33 @@ public class ClientJarEncryption {
 
 	private byte[] getEncryptedBytes(byte[] jarBytes, byte[] decodeBytes) {
 		return encyrpt(jarBytes, decodeBytes);
+	}
+
+	private static void readDirectoryToByteArray(String directory, File srcFile, Map<String, byte[]> fileNameByBytes)
+			throws IOException {
+		if (srcFile.isDirectory()) {
+
+			File[] listFiles = srcFile.listFiles();
+			if (listFiles.length == 0) {
+				fileNameByBytes.put(directory + SLASH + srcFile.getName()+SLASH, new byte[] {});
+			} else {
+				for (File file : srcFile.listFiles()) {
+					if (file.isDirectory()) {
+						readDirectoryToByteArray(directory + SLASH + srcFile.getName(), file, fileNameByBytes);
+					} else {
+						byte[] fileBytes = FileUtils.readFileToByteArray(file);
+						fileBytes = fileBytes.length > 0 ? fileBytes : new byte[] {};
+						fileNameByBytes.put(directory + SLASH + srcFile.getName() + SLASH + file.getName(), fileBytes);
+					}
+				}
+			}
+
+		} else {
+			byte[] fileBytes = FileUtils.readFileToByteArray(srcFile);
+			fileBytes = fileBytes.length > 0 ? fileBytes : new byte[] {};
+
+			fileNameByBytes.put(directory + SLASH + srcFile.getName(), fileBytes);
+		}
+
 	}
 }
