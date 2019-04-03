@@ -63,6 +63,7 @@ public class AuthFilter extends AbstractAuthenticationProcessingFilter {
 	public Authentication attemptAuthentication(HttpServletRequest httpServletRequest,
 			HttpServletResponse httpServletResponse) throws AuthenticationException, JsonProcessingException, IOException {
 		String token = null;
+		System.out.println("Look for Autheriztaion Cookie");
 		Cookie[] cookies = httpServletRequest.getCookies();
 		if (cookies != null) {
 			for (Cookie cookie : cookies) {
@@ -72,6 +73,7 @@ public class AuthFilter extends AbstractAuthenticationProcessingFilter {
 			}
 		}
 		if (token == null) {
+			System.out.println("Autheriztaion Cookie Not Found");
 			ResponseWrapper<ServiceError> errorResponse = setErrors(httpServletRequest);
 			ServiceError error = new ServiceError("ATH-401", "Authentication Failed");
 			errorResponse.getErrors().add(error);
@@ -79,6 +81,7 @@ public class AuthFilter extends AbstractAuthenticationProcessingFilter {
 			httpServletResponse.setContentType("application/json");
 			httpServletResponse.setCharacterEncoding("UTF-8");
 			httpServletResponse.getWriter().write(convertObjectToJson(errorResponse));
+			System.out.println("Return 401 Error");
 			return null;
 		}
 		AuthToken authToken = new AuthToken(token);
