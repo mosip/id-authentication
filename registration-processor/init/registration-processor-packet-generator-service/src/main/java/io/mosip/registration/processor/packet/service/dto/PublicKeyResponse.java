@@ -1,8 +1,11 @@
 package io.mosip.registration.processor.packet.service.dto;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import lombok.Data;
 
 /**
  * The Class PublicKeyResponse.
@@ -10,7 +13,13 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  * @param <T>
  *            the generic type
  */
-public class PublicKeyResponse<T> {
+@Data
+public class PublicKeyResponse<T> implements Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2552709003515289394L;
 
 	/** The string alias. */
 	@JsonIgnore

@@ -23,7 +23,6 @@ import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.syncdata.constant.RolesErrorCode;
 import io.mosip.kernel.syncdata.constant.UserDetailsErrorCode;
-import io.mosip.kernel.syncdata.dto.SyncUserDetailDto;
 import io.mosip.kernel.syncdata.dto.response.RolesResponseDto;
 import io.mosip.kernel.syncdata.exception.AuthManagerServiceException;
 import io.mosip.kernel.syncdata.exception.ParseResponseException;

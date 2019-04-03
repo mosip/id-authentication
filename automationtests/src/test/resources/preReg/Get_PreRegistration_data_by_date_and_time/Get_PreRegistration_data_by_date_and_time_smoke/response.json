@@ -1,8 +1,9 @@
 {
-  "err": null,
-  "status": true,
-  "resTime": "2019-02-05T10:18:13.008Z",
-  "response": [
+    "id": "mosip.pre-registration.demographic.create",
+    "version": "1.0",
+    "err": null,
+    "responsetime": "2019-03-26T06:53:30.282Z",
+  	"response": [
     "49758245369132",
     "93104739025972",
     "72359208562542",

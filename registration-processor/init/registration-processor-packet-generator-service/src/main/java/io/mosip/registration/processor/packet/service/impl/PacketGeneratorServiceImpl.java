@@ -1,6 +1,7 @@
 package io.mosip.registration.processor.packet.service.impl;
 
-import java.io.File;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,8 +24,10 @@ import io.mosip.registration.processor.core.exception.ApisResourceAccessExceptio
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.packet.dto.Identity;
+import io.mosip.registration.processor.core.spi.filesystem.manager.FileManager;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
+import io.mosip.registration.processor.packet.manager.dto.DirectoryPathDto;
 import io.mosip.registration.processor.packet.service.PacketCreationService;
 import io.mosip.registration.processor.packet.service.PacketGeneratorService;
 import io.mosip.registration.processor.packet.service.dto.ErrorDTO;
@@ -39,7 +42,6 @@ import io.mosip.registration.processor.packet.service.dto.demographic.Demographi
 import io.mosip.registration.processor.packet.service.dto.demographic.DemographicInfoDTO;
 import io.mosip.registration.processor.packet.service.dto.demographic.MoroccoIdentity;
 import io.mosip.registration.processor.packet.service.exception.RegBaseCheckedException;
-import io.mosip.registration.processor.packet.service.external.StorageService;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.packet.upload.service.SyncUploadEncryptionService;
 import io.mosip.registration.processor.status.code.RegistrationType;
@@ -58,10 +60,6 @@ public class PacketGeneratorServiceImpl implements PacketGeneratorService {
 	@Autowired
 	private PacketCreationService packetCreationService;
 
-	/** The storage service. */
-	@Autowired
-	private StorageService storageService;
-
 	/** The sync upload encryption service. */
 	@Autowired
 	SyncUploadEncryptionService syncUploadEncryptionService;
@@ -78,9 +76,13 @@ public class PacketGeneratorServiceImpl implements PacketGeneratorService {
 	private UinValidator<String> uinValidatorImpl;
 
 	private static Logger regProcLogger = RegProcessorLogger.getLogger(PacketCreationServiceImpl.class);
-	
+
 	@Autowired
 	private PacketInfoManager<Identity, ApplicantInfoDto> packetInfoManager;
+
+	/** The filemanager. */
+	@Autowired
+	protected FileManager<DirectoryPathDto, InputStream> filemanager;
 
 	/*
 	 * (non-Javadoc)
@@ -103,13 +105,12 @@ public class PacketGeneratorServiceImpl implements PacketGeneratorService {
 						request.getRegistrationType(), request.getCenterId(), request.getMachineId());
 				packetZipBytes = packetCreationService.create(registrationDTO);
 				String creationTime = packetCreationService.getCreationTime();
-				String filePath = storageService.storeToDisk(registrationDTO.getRegistrationId(), packetZipBytes,
-						false);
 
-				File decryptedFile = new File(filePath);
+				filemanager.put(registrationDTO.getRegistrationId(), new ByteArrayInputStream(packetZipBytes),
+						DirectoryPathDto.PACKET_GENERATED_DECRYPTED);
 
-				packerGeneratorResDto = syncUploadEncryptionService.uploadUinPacket(decryptedFile,
-						registrationDTO.getRegistrationId(), creationTime);
+				packerGeneratorResDto = syncUploadEncryptionService.uploadUinPacket(registrationDTO.getRegistrationId(),
+						creationTime, request.getRegistrationType());
 				return packerGeneratorResDto;
 			} catch (Exception e) {
 				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
@@ -143,11 +144,12 @@ public class PacketGeneratorServiceImpl implements PacketGeneratorService {
 		boolean isValidUIN = false;
 		try {
 			isValidUIN = uinValidatorImpl.validateId(uin);
-			List<String> regIdList=packetInfoManager.getRegIdByUIN(uin);
-			if(isValidUIN && ((regIdList!=null)&& !regIdList.isEmpty())){
-				isValidUIN=true;
-			}else {
-				throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION, "UIN is not valid", new Throwable());
+			List<String> regIdList = packetInfoManager.getRegIdByUIN(uin);
+			if (isValidUIN && ((regIdList != null) && !regIdList.isEmpty())) {
+				isValidUIN = true;
+			} else {
+				throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION, "UIN is not valid",
+						new Throwable());
 
 			}
 		} catch (InvalidIDException ex) {

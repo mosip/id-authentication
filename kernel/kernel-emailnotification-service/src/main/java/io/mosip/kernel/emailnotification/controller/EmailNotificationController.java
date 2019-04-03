@@ -1,6 +1,9 @@
 package io.mosip.kernel.emailnotification.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -41,9 +44,10 @@ public class EmailNotificationController {
 	 *            the attachments.
 	 * @return the dto response.
 	 */
+    @PreAuthorize("hasAnyRole('INDIVIDUAL','REGISTRATION_PROCESSOR','REGISTRATION_ADMIN','REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','ID_AUTHENTICATION')")
 	@ResponseFilter
 	@PostMapping(value = "/email/send", consumes = "multipart/form-data")
-	public @ResponseBody ResponseWrapper<ResponseDto> sendMail(String[] mailTo, String[] mailCc, String mailSubject,
+	public @ResponseBody ResponseWrapper<ResponseDto> sendEMail(String[] mailTo, String[] mailCc, String mailSubject,
 			String mailContent, MultipartFile[] attachments) {
 		ResponseWrapper<ResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper

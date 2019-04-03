@@ -1,0 +1,8 @@
+{
+   "timestamp": 1553511774021,
+   "status": 200,
+   "errors": [   {
+      "errorCode": "KER-UIG-004",
+      "errorMessage": "Given UIN is not in ISSUED status"
+   }]
+}

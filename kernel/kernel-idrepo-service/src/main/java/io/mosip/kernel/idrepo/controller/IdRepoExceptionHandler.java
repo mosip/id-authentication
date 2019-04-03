@@ -30,16 +30,15 @@ import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import io.mosip.kernel.core.exception.BaseCheckedException;
 import io.mosip.kernel.core.exception.BaseUncheckedException;
 import io.mosip.kernel.core.exception.ExceptionUtils;
+import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.idrepo.constant.IdRepoConstants;
 import io.mosip.kernel.core.idrepo.constant.IdRepoErrorConstants;
+import io.mosip.kernel.core.idrepo.dto.IdResponseDTO;
 import io.mosip.kernel.core.idrepo.exception.IdRepoAppException;
 import io.mosip.kernel.core.idrepo.exception.IdRepoAppUncheckedException;
 import io.mosip.kernel.core.idrepo.exception.IdRepoUnknownException;
 import io.mosip.kernel.core.logger.spi.Logger;
-import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.idrepo.config.IdRepoLogger;
-import io.mosip.kernel.idrepo.dto.ErrorDTO;
-import io.mosip.kernel.idrepo.dto.IdResponseDTO;
 
 /**
  * The Class IdRepoExceptionHandler.
@@ -190,8 +189,8 @@ public class IdRepoExceptionHandler extends ResponseEntityExceptionHandler {
 			List<String> errorCodes = ((BaseCheckedException) e).getCodes();
 			List<String> errorTexts = ((BaseCheckedException) e).getErrorTexts();
 
-			List<ErrorDTO> errors = errorTexts.parallelStream()
-					.map(errMsg -> new ErrorDTO(errorCodes.get(errorTexts.indexOf(errMsg)), errMsg)).distinct()
+			List<ServiceError> errors = errorTexts.parallelStream()
+					.map(errMsg -> new ServiceError(errorCodes.get(errorTexts.indexOf(errMsg)), errMsg)).distinct()
 					.collect(Collectors.toList());
 
 			response.setErrors(errors);
@@ -201,20 +200,14 @@ public class IdRepoExceptionHandler extends ResponseEntityExceptionHandler {
 			List<String> errorCodes = ((BaseUncheckedException) e).getCodes();
 			List<String> errorTexts = ((BaseUncheckedException) e).getErrorTexts();
 
-			List<ErrorDTO> errors = errorTexts.parallelStream()
-					.map(errMsg -> new ErrorDTO(errorCodes.get(errorTexts.indexOf(errMsg)), errMsg)).distinct()
+			List<ServiceError> errors = errorTexts.parallelStream()
+					.map(errMsg -> new ServiceError(errorCodes.get(errorTexts.indexOf(errMsg)), errMsg)).distinct()
 					.collect(Collectors.toList());
 
 			response.setErrors(errors);
 		}
 
-		response.setTimestamp(
-				DateUtils.getUTCCurrentDateTimeString(env.getProperty(IdRepoConstants.DATETIME_PATTERN.getValue())));
-
 		response.setVersion(env.getProperty(IdRepoConstants.APPLICATION_VERSION.getValue()));
-
-		mapper.setFilterProvider(new SimpleFilterProvider().addFilter("responseFilter",
-				SimpleBeanPropertyFilter.serializeAllExcept("registrationId", "status", "response")));
 
 		return response;
 	}
