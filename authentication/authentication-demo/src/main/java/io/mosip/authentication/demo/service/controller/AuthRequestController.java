@@ -125,16 +125,17 @@ public class AuthRequestController {
 			@RequestParam(name=ID_TYPE,required=false) @Nullable String idType,
 			@RequestParam(name="isKyc",required=false) @Nullable Boolean isKyc,
 			@RequestParam(name="Authtype",required=false) @Nullable String reqAuth,
+			@RequestParam(name="transactionId",required=false) @Nullable String transactionId,
 			  @RequestBody Map<String,Object> request) throws KeyManagementException, InvalidKeyException, NoSuchAlgorithmException, InvalidKeySpecException, NoSuchPaddingException, InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException, IOException, JSONException, IdAuthenticationAppException, IdAuthenticationBusinessException {
 		String authRequestTemplate=environment.getProperty(IDA_AUTH_REQUEST_TEMPLATE);
 		Map<String,Object> reqValues=new HashMap<>();
-		idValuesMap(id, idType, isKyc, reqValues);
+		idValuesMap(id, idType, isKyc, reqValues, transactionId);
 		encryptValuesMap(request, reqValues);
 		reqValues.put(OTP,false);
 		 reqValues.put(DEMO,false);
 		 reqValues.put(BIO,false);
 		 reqValues.put(PIN,false);
-		getAuthTypeMap(reqAuth,reqValues);
+		getAuthTypeMap(reqAuth,reqValues, request);
 		StringWriter writer = new StringWriter();
 		InputStream templateValue;
 		templateValue = templateManager
@@ -155,11 +156,12 @@ public class AuthRequestController {
 	 *
 	 * @param reqAuth 
 	 * @param reqValues 
+	 * @param request 
 	 */
-	private void getAuthTypeMap(String reqAuth, Map<String, Object> reqValues) {
+	private void getAuthTypeMap(String reqAuth, Map<String, Object> reqValues, Map<String, Object> request) {
 		String[] reqAuthArr;
 		if (reqAuth == null) {
-			BiFunction<String, String, Optional<String>> authTypeMapFunction = (key, authType) -> Optional.ofNullable(reqValues).filter(map -> map.containsKey("demographics")).map(map -> "demo");
+			BiFunction<String, String, Optional<String>> authTypeMapFunction = (key, authType) -> Optional.ofNullable(request).filter(map -> map.containsKey(key)).map(map -> authType);
 			reqAuthArr = Stream.of(
 					authTypeMapFunction.apply("demographics",  "demo"),
 					authTypeMapFunction.apply("biometrics",  "bio"),
@@ -211,23 +213,24 @@ public class AuthRequestController {
 	}
 
 
-	private void idValuesMap(String id, String idType, Boolean isKyc, Map<String, Object> reqValues) {
-		reqValues.put(ID,id);
-		if(null!=idType) {
-			reqValues.put(ID_TYPE,idType);
+	private void idValuesMap(String id, String idType, Boolean isKyc, Map<String, Object> reqValues,
+			String transactionId) {
+		reqValues.put(ID, id);
+		if (null != idType) {
+			reqValues.put(ID_TYPE, idType);
+		} else {
+			reqValues.put(ID_TYPE, UIN);
 		}
-		else {
-			reqValues.put(ID_TYPE,UIN);
-		}
-		if(isKyc != null && isKyc) {
-			reqValues.put(AUTH_TYPE,"kyc");
-		}
-		else {
-			reqValues.put(AUTH_TYPE,"auth");
+		if (isKyc != null && isKyc) {
+			reqValues.put(AUTH_TYPE, "kyc");
+			reqValues.put("secondaryLangCode", environment.getProperty("mosip.secondary-language"));
+			
+		} else {
+			reqValues.put(AUTH_TYPE, "auth");
 		}
 		reqValues.put(TIMESTAMP, DateUtils.getUTCCurrentDateTimeString(environment.getProperty("datetime.pattern")));
-		reqValues.put(TXN,"1234567890");
-		reqValues.put(VER,environment.getProperty(IDA_API_VERSION));
+		reqValues.put(TXN, transactionId == null ? "1234567890" : transactionId);
+		reqValues.put(VER, environment.getProperty(IDA_API_VERSION));
 	}
 
 }
