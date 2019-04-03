@@ -199,6 +199,7 @@ public class GlobalParamServiceImpl extends BaseService implements GlobalParamSe
 	private void updateIsDeleted(GlobalParam globalParam) {
 		globalParam.setIsActive(false);
 		globalParam.setIsDeleted(true);
+		globalParam.setDelDtimes(Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()));
 		globalParam.setUpdBy(getUserIdFromSession());
 		globalParam.setUpdDtimes(Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()));
 	}
@@ -228,7 +229,7 @@ public class GlobalParamServiceImpl extends BaseService implements GlobalParamSe
 	public ResponseDTO updateSoftwareUpdateStatus(boolean isUpdateAvailable) {
 
 		LOGGER.info(LoggerConstants.GLOBAL_PARAM_SERVICE_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
-				"Updating the SoftwareUpdate flag started.");
+				"Updating the SoftwareUpdate flag started."); 
 
 		ResponseDTO responseDTO = new ResponseDTO();
 
