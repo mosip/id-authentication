@@ -325,8 +325,11 @@ public class DocumentScanController extends BaseController {
 					@Override
 					public void handle(ActionEvent event) {
 
-						auditFactory.audit(AuditEvent.REG_DOC_POA_SCAN, Components.REG_DOCUMENTS,
-								SessionContext.userId(), AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
+						auditFactory.audit(
+								AuditEvent.valueOf(
+										String.format("REG_DOC_%S_SCAN", ((Button) event.getSource()).getId())),
+								Components.REG_DOCUMENTS, SessionContext.userId(),
+								AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
 
 						Button clickedBtn = (Button) event.getSource();
 						clickedBtn.getId();
@@ -337,7 +340,6 @@ public class DocumentScanController extends BaseController {
 				});
 				hBox.getChildren().addAll(indicatorImage, comboBox, documentVBox, scanButton);
 				docScanVbox.getChildren().addAll(documentLabel, hBox);
-				// System.out.println("D"+docScanVbox.getWidth());
 				documentLabel.setPrefWidth(docScanVbox.getWidth() / 2.2);
 				comboBox.getItems().addAll(documentCategoryDtos);
 			}
@@ -708,7 +710,10 @@ public class DocumentScanController extends BaseController {
 				RegistrationConstants.APPLICATION_ID, "Creating Image to delete the attached document");
 
 		imageView.setOnMouseClicked((event) -> {
-			auditFactory.audit(AuditEvent.REG_DOC_POA_DELETE, Components.REG_DOCUMENTS, SessionContext.userId(),
+			auditFactory.audit(
+					AuditEvent.valueOf(String.format("REG_DOC_%S_DELETE",
+							((ImageView) event.getSource()).getParent().getParent().getId())),
+					Components.REG_DOCUMENTS, SessionContext.userId(),
 					AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
 
 			((ImageView) ((HBox) vboxElement.getParent()).getChildren().get(0)).setImage(new Image(
@@ -751,12 +756,14 @@ public class DocumentScanController extends BaseController {
 
 		hyperLink.setOnAction((actionEvent) -> {
 
-			auditFactory.audit(AuditEvent.REG_DOC_POA_VIEW, Components.REG_DOCUMENTS, SessionContext.userId(),
+			GridPane pane = (GridPane) ((Hyperlink) actionEvent.getSource()).getParent();
+			String documentKey = ((VBox) pane.getParent()).getId();
+
+			auditFactory.audit(
+					AuditEvent.valueOf(String.format("REG_DOC_%S_VIEW", documentKey)),
+					Components.REG_DOCUMENTS, SessionContext.userId(),
 					AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
 
-			GridPane pane = (GridPane) ((Hyperlink) actionEvent.getSource()).getParent();
-
-			String documentKey = ((VBox) pane.getParent()).getId();
 			DocumentDetailsDTO selectedDocumentToDisplay = getDocumentsMapFromSession().get(documentKey);
 
 			if (selectedDocumentToDisplay != null) {

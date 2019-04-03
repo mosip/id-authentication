@@ -69,8 +69,6 @@ import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.service.MasterSyncService;
 import io.mosip.registration.service.sync.PreRegistrationDataSyncService;
 import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.NodeOrientation;
@@ -1384,7 +1382,7 @@ public class DemographicDetailController extends BaseController {
 												getRegistrationDTOFromSession().getRegistrationMetaDataDTO().getUin())))
 						.with(identity -> identity.setIndividualBiometrics(applicantBiometric.getFingerprintDetailsDTO()
 								.isEmpty() && applicantBiometric.getIrisDetailsDTO().isEmpty()
-								&& applicantDocumentDTO.getPhoto() != null
+								&& applicantDocumentDTO.getPhoto() == null
 										? null
 										: (CBEFFFilePropertiesDTO) Builder.build(CBEFFFilePropertiesDTO.class)
 												.with(cbeffProperties -> cbeffProperties
@@ -1397,7 +1395,7 @@ public class DemographicDetailController extends BaseController {
 						.with(identity -> identity.setParentOrGuardianBiometrics(introducerBiometric
 								.getFingerprintDetailsDTO().isEmpty()
 								&& introducerBiometric.getIrisDetailsDTO().isEmpty()
-								&& introducerBiometric.getFaceDetailsDTO().getFace() != null
+								&& introducerBiometric.getFaceDetailsDTO().getFace() == null
 										? null
 										: (CBEFFFilePropertiesDTO) Builder.build(CBEFFFilePropertiesDTO.class)
 												.with(cbeffProperties -> cbeffProperties

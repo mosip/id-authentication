@@ -712,8 +712,8 @@ public class FingerPrintCaptureController extends BaseController implements Init
 					.parseInt(getValueFromApplicationContext(RegistrationConstants.FINGERPRINT_RETRIES_COUNT)))
 					|| ((boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER))) {
 
-				auditFactory.audit(AuditEvent.REG_BIO_THUMBS_SCAN, Components.REG_BIOMETRICS, SessionContext.userId(),
-						AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
+				auditFactory.audit(getAuditEventForScan(selectedPane.getId()), Components.REG_BIOMETRICS,
+						SessionContext.userId(), AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
 
 				scanPopUpViewController.init(this, RegistrationUIConstants.FINGERPRINT);
 			}
@@ -729,6 +729,19 @@ public class FingerPrintCaptureController extends BaseController implements Init
 
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_LOAD_FINGERPRINT_SCAN_POPUP);
 		}
+	}
+
+	private AuditEvent getAuditEventForScan(String selectedPaneId) {
+		AuditEvent auditEvent;
+		if (StringUtils.containsIgnoreCase(selectedPane.getId(), RegistrationConstants.LEFT)) {
+			auditEvent = AuditEvent.REG_BIO_LEFT_SLAP_SCAN;
+		} else if (StringUtils.containsIgnoreCase(selectedPane.getId(), RegistrationConstants.RIGHT)) {
+			auditEvent = AuditEvent.REG_BIO_RIGHT_SLAP_SCAN;
+		} else {
+			auditEvent = AuditEvent.REG_BIO_THUMBS_SCAN;
+		}
+
+		return auditEvent;
 	}
 
 	/* (non-Javadoc)

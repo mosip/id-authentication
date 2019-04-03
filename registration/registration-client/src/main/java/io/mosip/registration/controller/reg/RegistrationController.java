@@ -388,13 +388,13 @@ public class RegistrationController extends BaseController {
 		registrationDTO.setRegistrationMetaDataDTO(registrationMetaDataDTO);
 
 		// Set RID
-		String registrtaionID = ridGeneratorImpl.generateId(registrationMetaDataDTO.getCenterId(),
+		String registrationID = ridGeneratorImpl.generateId(registrationMetaDataDTO.getCenterId(),
 				registrationMetaDataDTO.getMachineId());
 
 		LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
-				RegistrationConstants.APPLICATION_ID, "Registrtaion Started for RID  : [ " + registrtaionID + " ] ");
+				RegistrationConstants.APPLICATION_ID, "Registration Started for RID  : [ " + registrationID + " ] ");
 
-		registrationDTO.setRegistrationId(registrtaionID);
+		registrationDTO.setRegistrationId(registrationID);
 		// Put the RegistrationDTO object to SessionContext Map
 		SessionContext.map().put(RegistrationConstants.REGISTRATION_DATA, registrationDTO);
 	}
