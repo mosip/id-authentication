@@ -207,17 +207,6 @@ public class DemographicDetailController extends BaseController {
 
 	private SimpleBooleanProperty switchedOn;
 
-	private SimpleBooleanProperty toggleSwitchForResidence;
-
-	@FXML
-	private ComboBox<GenderDto> gender;
-
-	@FXML
-	private Label genderMessage;
-
-	@FXML
-	private ComboBox<GenderDto> genderLocalLanguage;
-
 	@FXML
 	private TextField addressLine1;
 
@@ -503,10 +492,6 @@ public class DemographicDetailController extends BaseController {
 	@FXML
 	private AnchorPane dateAnchorPane;
 	@FXML
-	private AnchorPane residentStatusLocalLanguage;
-	@FXML
-	private AnchorPane residentStatus;
-	@FXML
 	private GridPane residenceParentpane;
 	@FXML
 	private AnchorPane dateAnchorPaneLocalLanguage;
@@ -537,6 +522,14 @@ public class DemographicDetailController extends BaseController {
 	@FXML
 	private Button national;
 	@FXML
+	private Button male;
+	@FXML
+	private Button female;
+	@FXML
+	private Button maleLocalLanguage;
+	@FXML
+	private Button femaleLocalLanguage;
+	@FXML
 	private GridPane demographicDetail;
 	@FXML
 	private GridPane dobParentPane;
@@ -556,6 +549,10 @@ public class DemographicDetailController extends BaseController {
 	private Button foreigner;
 	@FXML
 	private TextField residence;
+	@FXML
+	private TextField genderValue;
+	@FXML
+	private TextField genderValueLocalLanguage;
 	@FXML
 	private Button nationalLocalLanguage;
 	@FXML
@@ -629,6 +626,12 @@ public class DemographicDetailController extends BaseController {
 
 	private boolean lostUIN = false;
 
+	GenderDto maleDto ;
+	GenderDto femaleDto;
+	GenderDto localMaleDto;
+	GenderDto localFemaleDto;
+
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -647,7 +650,6 @@ public class DemographicDetailController extends BaseController {
 			SessionContext.map().put(RegistrationConstants.IS_CONSOLIDATED, RegistrationConstants.DISABLE);
 			switchedOn = new SimpleBooleanProperty(true);
 			switchedOn.setValue(true);
-			toggleSwitchForResidence = new SimpleBooleanProperty(true);
 			isChild = false;
 			toggleFunction();
 			ageFieldValidations();
@@ -759,6 +761,7 @@ public class DemographicDetailController extends BaseController {
 	 * Disabe local language fields
 	 */
 	private void disableLocalFields() {
+		localResidence.setDisable(true);
 		localGender.setDisable(true);
 		regionLocalLanguagePane.setDisable(true);
 		provinceLocalLanguagePane.setDisable(true);
@@ -861,6 +864,26 @@ public class DemographicDetailController extends BaseController {
 		national.getStyleClass().addAll("selectedResidence", "button");
 		foreigner.getStyleClass().addAll("residence", "button");
 	}
+	
+	
+	/**
+	 * method action when mail button is pressed
+	 * @param ActionEvent
+	 *          the action event
+	 */
+	@FXML
+	private void male(ActionEvent event) {
+		genderValue.setText(maleDto.getGenderName());
+		genderValueLocalLanguage.setText(localMaleDto.getGenderName());
+		male.getStyleClass().clear();
+		female.getStyleClass().clear();
+		maleLocalLanguage.getStyleClass().clear();
+		femaleLocalLanguage.getStyleClass().clear();
+		maleLocalLanguage.getStyleClass().addAll("selectedResidence", "button");
+		femaleLocalLanguage.getStyleClass().addAll("residence", "button");
+		male.getStyleClass().addAll("selectedResidence", "button");
+		female.getStyleClass().addAll("residence", "button");
+	}
 
 	/**
 	 * method action when foriegner button is pressed
@@ -886,6 +909,25 @@ public class DemographicDetailController extends BaseController {
 		national.getStyleClass().addAll("residence", "button");
 	}
 
+	/**
+	 * method action when female button is pressed
+	 * @param ActionEvent
+	 *          the action event
+	 */
+	@FXML
+	private void female(ActionEvent event) {
+		genderValue.setText(femaleDto.getGenderName());
+		genderValueLocalLanguage.setText(localFemaleDto.getGenderName());
+		male.getStyleClass().clear();
+		female.getStyleClass().clear();
+		maleLocalLanguage.getStyleClass().clear();
+		femaleLocalLanguage.getStyleClass().clear();
+		maleLocalLanguage.getStyleClass().addAll("residence", "button");
+		femaleLocalLanguage.getStyleClass().addAll("selectedResidence", "button");
+		male.getStyleClass().addAll("residence", "button");
+		female.getStyleClass().addAll("selectedResidence", "button");
+	}
+	
 	/**
 	 * To restrict the user not to enter any values other than integer values.
 	 */
@@ -963,7 +1005,6 @@ public class DemographicDetailController extends BaseController {
 			fxUtils.validateOnFocusOut(parentFlowPane, emailId, validation, emailIdLocalLanguage);
 			fxUtils.validateOnFocusOut(parentFlowPane, cniOrPinNumber, validation, cniOrPinNumberLocalLanguage);
 
-			fxUtils.populateLocalComboBox(parentFlowPane, gender, genderLocalLanguage);
 			fxUtils.populateLocalComboBox(parentFlowPane, city, cityLocalLanguage);
 			fxUtils.populateLocalComboBox(parentFlowPane, region, regionLocalLanguage);
 			fxUtils.populateLocalComboBox(parentFlowPane, province, provinceLocalLanguage);
@@ -1025,7 +1066,6 @@ public class DemographicDetailController extends BaseController {
 			residenceLblLocalLanguage.setText(localProperties.getString("residence"));
 			nationalLocalLanguage.setText(localProperties.getString("national"));
 			foreignerLocalLanguage.setText(localProperties.getString("foreigner"));
-			genderLocalLanguage.setPromptText(localProperties.getString("select"));
 			localAdminAuthorityLocalLanguage.setPromptText(localProperties.getString("select"));
 			cityLocalLanguage.setPromptText(localProperties.getString("select"));
 			regionLocalLanguage.setPromptText(localProperties.getString("select"));
@@ -1207,7 +1247,7 @@ public class DemographicDetailController extends BaseController {
 	 * Building demographic info dto
 	 */
 	@SuppressWarnings("unchecked")
-	public DemographicInfoDTO buildDemographicInfo() {
+	private DemographicInfoDTO buildDemographicInfo() {
 
 		String platformLanguageCode = ApplicationContext.applicationLanguage();
 		String localLanguageCode = ApplicationContext.localLanguage();
@@ -1240,16 +1280,6 @@ public class DemographicDetailController extends BaseController {
 						.with(identity -> identity
 								.setAge(applicationAge.isDisable() || ageField.getText().isEmpty() ? null
 										: Integer.parseInt(ageField.getText())))
-						.with(identity -> identity.setGender(gender.isDisabled() || gender.getValue() == null ? null
-								: (List<ValuesDTO>) Builder.build(LinkedList.class).with(values -> values.add(Builder
-										.build(ValuesDTO.class).with(value -> value.setLanguage(platformLanguageCode))
-										.with(value -> value.setValue(gender.getValue().getGenderName())).get())).with(
-												values -> values.add(Builder.build(ValuesDTO.class)
-														.with(value -> value.setLanguage(localLanguageCode))
-														.with(value -> value.setValue(
-																genderLocalLanguage.getValue().getGenderName()))
-														.get()))
-										.get()))
 						.with(identity -> identity
 								.setResidenceStatus(residence.isDisabled() || residence.getText().isEmpty() ? null
 										: (List<ValuesDTO>) Builder.build(LinkedList.class)
@@ -1259,6 +1289,17 @@ public class DemographicDetailController extends BaseController {
 												.with(values -> values.add(Builder.build(ValuesDTO.class)
 														.with(value -> value.setLanguage(localLanguageCode))
 														.with(value -> value.setValue(residenceLocalLanguage.getText()))
+														.get()))
+												.get()))
+						.with(identity -> identity
+								.setGender(genderValue.isDisabled() || genderValue.getText().isEmpty() ? null
+										: (List<ValuesDTO>) Builder.build(LinkedList.class)
+												.with(values -> values.add(Builder.build(ValuesDTO.class)
+														.with(value -> value.setLanguage(platformLanguageCode))
+														.with(value -> value.setValue(genderValue.getText())).get()))
+												.with(values -> values.add(Builder.build(ValuesDTO.class)
+														.with(value -> value.setLanguage(localLanguageCode))
+														.with(value -> value.setValue(genderValueLocalLanguage.getText()))
 														.get()))
 												.get()))
 						.with(identity -> identity
@@ -1487,14 +1528,12 @@ public class DemographicDetailController extends BaseController {
 					.getDemographicInfoDTO().getIdentity();
 
 			populateFieldValue(fullName, fullNameLocalLanguage, moroccoIdentity.getFullName());
-			populateFieldValue(gender, genderLocalLanguage, moroccoIdentity.getGender());
 			populateFieldValue(addressLine1, addressLine1LocalLanguage, moroccoIdentity.getAddressLine1());
 			populateFieldValue(addressLine2, addressLine2LocalLanguage, moroccoIdentity.getAddressLine2());
 			populateFieldValue(addressLine3, addressLine3LocalLanguage, moroccoIdentity.getAddressLine3());
 			populateFieldValue(region, regionLocalLanguage, moroccoIdentity.getRegion());
 			populateFieldValue(province, provinceLocalLanguage, moroccoIdentity.getProvince());
 			populateFieldValue(city, cityLocalLanguage, moroccoIdentity.getCity());
-			populateFieldValue(gender, genderLocalLanguage, moroccoIdentity.getGender());
 			Boolean isSwitchedOn = (Boolean) SessionContext.map().get(RegistrationConstants.DOB_TOGGLE);
 			switchedOn.set(isSwitchedOn == null ? false : isSwitchedOn);
 			postalCode.setText(moroccoIdentity.getPostalCode() + "");
@@ -1713,11 +1752,6 @@ public class DemographicDetailController extends BaseController {
 		int age = 27;
 		switchedOn.set(false);
 		ageField.setText("" + age);
-		populateGender();
-		if (!gender.getItems().isEmpty()) {
-			gender.getSelectionModel().select(0);
-			genderLocalLanguage.getSelectionModel().select(0);
-		}
 		addressLine1.setText("٣٠ ر أم عربية");
 		addressLine2.setText("عربية");
 		if (!region.getItems().isEmpty()) {
@@ -1860,12 +1894,10 @@ public class DemographicDetailController extends BaseController {
 			province.setConverter((StringConverter<LocationDto>) uiRenderForComboBox);
 			city.setConverter((StringConverter<LocationDto>) uiRenderForComboBox);
 			localAdminAuthority.setConverter((StringConverter<LocationDto>) uiRenderForComboBox);
-			gender.setConverter((StringConverter<GenderDto>) uiRenderForComboBox);
 			regionLocalLanguage.setConverter((StringConverter<LocationDto>) uiRenderForComboBox);
 			provinceLocalLanguage.setConverter((StringConverter<LocationDto>) uiRenderForComboBox);
 			cityLocalLanguage.setConverter((StringConverter<LocationDto>) uiRenderForComboBox);
 			localAdminAuthorityLocalLanguage.setConverter((StringConverter<LocationDto>) uiRenderForComboBox);
-			genderLocalLanguage.setConverter((StringConverter<GenderDto>) uiRenderForComboBox);
 		} catch (RuntimeException runtimeException) {
 			throw new RegBaseUncheckedException(RegistrationConstants.REGISTRATION_CONTROLLER,
 					runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException), runtimeException);
@@ -1903,7 +1935,6 @@ public class DemographicDetailController extends BaseController {
 				RegistrationConstants.APPLICATION_ID, RegistrationConstants.APPLICATION_NAME,
 				"Retrieving and populating of location by selected hirerachy ended");
 	}
-
 	/**
 	 * Populating the gender combobox
 	 */
@@ -1912,21 +1943,19 @@ public class DemographicDetailController extends BaseController {
 				RegistrationConstants.APPLICATION_NAME, "Fetching Gender based on Application Language started");
 
 		try {
-			gender.getItems().clear();
-			genderLocalLanguage.getItems().clear();
-			gender.getItems().addAll(masterSync.getGenderDtls(ApplicationContext.applicationLanguage()));
-			genderLocalLanguage.getItems().addAll(masterSync.getGenderDtls(ApplicationContext.localLanguage()));
+			List<GenderDto> applicationGender = masterSync.getGenderDtls(ApplicationContext.applicationLanguage());
+			List<GenderDto> localGender = masterSync.getGenderDtls(ApplicationContext.localLanguage());
+			maleDto = applicationGender.get(0);
+			femaleDto = applicationGender.get(1);
+			localMaleDto = localGender.get(0);
+			localFemaleDto = localGender.get(1);
+			
 		} catch (RuntimeException runtimeException) {
 			throw new RegBaseUncheckedException(RegistrationConstants.REGISTRATION_CONTROLLER,
 					runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException), runtimeException);
 		}
 		LOGGER.info("REGISTRATION - INDIVIDUAL_REGISTRATION - POPULATE_GENDER", RegistrationConstants.APPLICATION_ID,
 				RegistrationConstants.APPLICATION_NAME, "Fetching Gender based on Application Language ended");
-	}
-
-	protected String getSelectedGenderCode() {
-		return gender.getValue() != null ? gender.getValue().getCode() : null;
-
 	}
 
 	protected String getSelectedNationalityCode() {

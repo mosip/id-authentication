@@ -332,6 +332,7 @@
                                                                </columnConstraints>
                                                                <rowConstraints>
                                                                   <RowConstraints minHeight="10.0" percentHeight="100.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                                  <RowConstraints minHeight="10.0" percentHeight="100.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                                                </rowConstraints>
                                                             </GridPane>
                                                             <GridPane fx:id="localAge" GridPane.columnIndex="1">
@@ -439,59 +440,109 @@
                                                       <GridPane fx:id="genderParentPane" prefHeight="100" prefWidth="${scrollParentPane.width}">
                                                          <children>
                                                             <GridPane fx:id="applicationGender">
-                                                               <children>
-                                                                  <VBox prefHeight="200.0" prefWidth="100.0" spacing="5.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
-                                                                     <children>
-                                                                        <Label fx:id="genderLabel" styleClass="demoGraphicFieldLabel" text="%gender" visible="false" />
-                                                                        <ComboBox fx:id="gender" promptText="%gender" styleClass="demographicCombobox">
-                                                                           <items>
-                                                                              <FXCollections fx:factory="observableArrayList">
-                                                                                 <String fx:value="Male" />
-                                                                                 <String fx:value="Female" />
-                                                                                 <String fx:value="Unidentified" />
-                                                                              </FXCollections>
-                                                                           </items>
-                                                                        </ComboBox>
-                                                                        <Label fx:id="genderMessage" styleClass="demoGraphicFieldMessageLabel" text="gender message" visible="false" />
-                                                                     </children>
-                                                                  </VBox>
-                                                               </children>
                                                                <columnConstraints>
                                                                   <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="10.0" prefWidth="100.0" />
-                                                                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="50.0" prefWidth="100.0" />
-                                                                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="40.0" prefWidth="100.0" />
+                                                                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="80.0" prefWidth="100.0" />
+                                                                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="10.0" prefWidth="100.0" />
                                                                </columnConstraints>
                                                                <rowConstraints>
-                                                                  <RowConstraints minHeight="10.0" percentHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                                                  <RowConstraints minHeight="10.0" percentHeight="90.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                                  <RowConstraints minHeight="10.0" percentHeight="30.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                                  <RowConstraints minHeight="10.0" percentHeight="70.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                                                </rowConstraints>
+                                                               <children>
+                                                                  <GridPane GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                                                    <columnConstraints>
+                                                                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="30.0" prefWidth="100.0" />
+                                                                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="5.0" prefWidth="100.0" />
+                                                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="40.0" prefWidth="100.0" />
+                                                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="25.0" prefWidth="100.0" />
+                                                                    </columnConstraints>
+                                                                    <rowConstraints>
+                                                                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                                    </rowConstraints>
+                                                                     <children>
+                                                                        <GridPane fx:id="genderHolder" alignment="TOP_CENTER" GridPane.columnIndex="2">
+                                                                          <columnConstraints>
+                                                                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="45.0" prefWidth="100.0" />
+                                                                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="10.0" prefWidth="100.0" />
+                                                                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="45.0" prefWidth="100.0" />
+                                                                          </columnConstraints>
+                                                                          <rowConstraints>
+                                                                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                                          </rowConstraints>
+                                                                           <children>
+                                                                              <Button id="National" fx:id="male" minWidth="${genderHolder.width/2}" mnemonicParsing="true" onAction="#male" styleClass="selectedResidence" text="%male" />
+                                                                              <Button id="Foreigner" fx:id="female" minWidth="${genderHolder.width/2}" mnemonicParsing="true" onAction="#female" styleClass="residence" text="%female" GridPane.columnIndex="2" />
+                                                                              <TextField fx:id="genderValue" styleClass="demographicMiscTexts" visible="false" GridPane.rowIndex="1" />
+                                                                           </children>
+                                                                        </GridPane>
+                                                                        <GridPane GridPane.halignment="CENTER" GridPane.valignment="BOTTOM">
+                                                                          <columnConstraints>
+                                                                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                                                          </columnConstraints>
+                                                                          <rowConstraints>
+                                                                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                                          </rowConstraints>
+                                                                           <children>
+                                                                              <Label fx:id="genderLabel" alignment="TOP_CENTER" contentDisplay="TOP" styleClass="demographicMiscTexts" text="%gender" GridPane.halignment="LEFT" GridPane.valignment="TOP" />
+                                                                           </children>
+                                                                        </GridPane>
+                                                                     </children>
+                                                                  </GridPane>
+                                                               </children>
                                                             </GridPane>
                                                             <GridPane fx:id="localGender" GridPane.columnIndex="1">
                                                                <children>
-                                                                  <VBox prefHeight="200.0" prefWidth="100.0" spacing="5.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                                                  <GridPane GridPane.columnIndex="1" GridPane.rowIndex="1">
                                                                      <children>
-                                                                        <Label fx:id="genderLocalLanguageLabel" styleClass="demoGraphicFieldLabel" text="%gender" visible="false" />
-                                                                        <ComboBox fx:id="genderLocalLanguage" promptText="%gender" styleClass="demographicCombobox">
-                                                                           <items>
-                                                                              <FXCollections fx:factory="observableArrayList">
-                                                                                 <String fx:value="Male" />
-                                                                                 <String fx:value="Female" />
-                                                                                 <String fx:value="Unidentified" />
-                                                                              </FXCollections>
-                                                                           </items>
-                                                                        </ComboBox>
-                                                                        <Label fx:id="genderLocalLanguageMessage" styleClass="demoGraphicFieldMessageLabel" text="gender message" visible="false" />
+                                                                        <GridPane fx:id="genderHolder1" alignment="TOP_CENTER" GridPane.columnIndex="2">
+                                                                           <children>
+                                                                              <Button id="National" fx:id="maleLocalLanguage" minWidth="${genderHolder.width/2}" mnemonicParsing="true" onAction="#male" styleClass="selectedResidence" text="%male" />
+                                                                              <Button id="Foreigner" fx:id="femaleLocalLanguage" minWidth="${genderHolder.width/2}" mnemonicParsing="true" onAction="#female" styleClass="residence" text="%female" GridPane.columnIndex="2" />
+                                                                              <TextField fx:id="genderValueLocalLanguage" styleClass="demographicMiscTexts" visible="false" GridPane.rowIndex="1" />
+                                                                           </children>
+                                                                           <columnConstraints>
+                                                                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="45.0" prefWidth="100.0" />
+                                                                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="10.0" prefWidth="100.0" />
+                                                                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="45.0" prefWidth="100.0" />
+                                                                           </columnConstraints>
+                                                                           <rowConstraints>
+                                                                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                                           </rowConstraints>
+                                                                        </GridPane>
+                                                                        <GridPane GridPane.halignment="CENTER" GridPane.valignment="BOTTOM">
+                                                                           <children>
+                                                                              <Label fx:id="genderLocalLanguageLabel" alignment="TOP_CENTER" contentDisplay="TOP" styleClass="demographicMiscTexts" text="%gender" GridPane.halignment="LEFT" GridPane.valignment="TOP" />
+                                                                           </children>
+                                                                           <columnConstraints>
+                                                                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                                                           </columnConstraints>
+                                                                           <rowConstraints>
+                                                                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                                           </rowConstraints>
+                                                                        </GridPane>
                                                                      </children>
-                                                                  </VBox>
+                                                                     <columnConstraints>
+                                                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="30.0" prefWidth="100.0" />
+                                                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="5.0" prefWidth="100.0" />
+                                                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="40.0" prefWidth="100.0" />
+                                                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="25.0" prefWidth="100.0" />
+                                                                     </columnConstraints>
+                                                                     <rowConstraints>
+                                                                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                                     </rowConstraints>
+                                                                  </GridPane>
                                                                </children>
                                                                <columnConstraints>
                                                                   <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="10.0" prefWidth="100.0" />
-                                                                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="50.0" prefWidth="100.0" />
-                                                                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="40.0" prefWidth="100.0" />
+                                                                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="80.0" prefWidth="100.0" />
+                                                                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="10.0" prefWidth="100.0" />
                                                                </columnConstraints>
                                                                <rowConstraints>
-                                                                  <RowConstraints minHeight="10.0" percentHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                                                  <RowConstraints minHeight="10.0" percentHeight="90.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                                  <RowConstraints minHeight="10.0" percentHeight="30.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                                  <RowConstraints minHeight="10.0" percentHeight="70.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                                                </rowConstraints>
                                                             </GridPane>
                                                          </children>
@@ -504,66 +555,6 @@
                                                          </rowConstraints>
                                                       </GridPane>
                                                       <GridPane fx:id="residenceParentpane" prefHeight="70.0" prefWidth="${scrollParentPane.width}">
-                                                         <children>
-                                                            <GridPane fx:id="applicationResidence">
-                                                               <children>
-                                                                  <VBox prefHeight="44.0" prefWidth="224.0" spacing="1.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
-                                                                     <children>
-                                                                        <HBox spacing="70.0">
-                                                                           <children>
-                                                                              <Label styleClass="demographicMiscTexts" text="%residence" />
-                                                                              <HBox spacing="10.0">
-                                                                                 <children>
-                                                                                    <Button id="National" fx:id="national" mnemonicParsing="true" onAction="#national" styleClass="selectedResidence" text="%national" />
-                                                                                    <Button id="Foreigner" fx:id="foreigner" mnemonicParsing="true" onAction="#foreigner" styleClass="residence" text="%foreigner" />
-                                                                                 </children>
-                                                                              </HBox>
-                                                                           </children>
-                                                                        </HBox>
-                                                                        <TextField fx:id="residence" styleClass="demographicMiscTexts" visible="false" />
-                                                                     </children>
-                                                                  </VBox>
-                                                               </children>
-                                                               <columnConstraints>
-                                                                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="10.0" prefWidth="100.0" />
-                                                                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="80.0" prefWidth="100.0" />
-                                                                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="10.0" prefWidth="100.0" />
-                                                               </columnConstraints>
-                                                               <rowConstraints>
-                                                                  <RowConstraints minHeight="10.0" percentHeight="30.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                                                  <RowConstraints minHeight="10.0" percentHeight="70.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                                               </rowConstraints>
-                                                            </GridPane>
-                                                            <GridPane fx:id="localResidence" GridPane.columnIndex="1">
-                                                               <children>
-                                                                  <VBox spacing="1.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
-                                                                     <children>
-                                                                        <HBox spacing="70.0">
-                                                                           <children>
-                                                                              <Label fx:id="residenceLblLocalLanguage" styleClass="demographicMiscTexts" text="%residence" />
-                                                                              <HBox spacing="10.0">
-                                                                                 <children>
-                                                                                    <Button id="National" fx:id="nationalLocalLanguage" mnemonicParsing="true" onAction="#national" styleClass="selectedResidence" text="%national" />
-                                                                                    <Button id="Foreigner" fx:id="foreignerLocalLanguage" mnemonicParsing="true" onAction="#foreigner" styleClass="residence" text="%foreigner" />
-                                                                                 </children>
-                                                                              </HBox>
-                                                                           </children>
-                                                                        </HBox>
-                                                                        <TextField fx:id="residenceLocalLanguage" styleClass="demographicMiscTexts" visible="false" />
-                                                                     </children>
-                                                                  </VBox>
-                                                               </children>
-                                                               <columnConstraints>
-                                                                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="10.0" prefWidth="100.0" />
-                                                                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="70.0" prefWidth="100.0" />
-                                                                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="20.0" prefWidth="100.0" />
-                                                               </columnConstraints>
-                                                               <rowConstraints>
-                                                                  <RowConstraints minHeight="10.0" percentHeight="30.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                                                  <RowConstraints minHeight="10.0" percentHeight="70.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                                               </rowConstraints>
-                                                            </GridPane>
-                                                         </children>
                                                          <columnConstraints>
                                                             <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="50.0" prefWidth="100.0" />
                                                             <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="50.0" prefWidth="100.0" />
@@ -571,6 +562,114 @@
                                                          <rowConstraints>
                                                             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                                          </rowConstraints>
+                                                         <children>
+                                                            <GridPane fx:id="applicationResidence">
+                                                              <columnConstraints>
+                                                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="10.0" prefWidth="100.0" />
+                                                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="80.0" prefWidth="100.0" />
+                                                                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="10.0" prefWidth="100.0" />
+                                                              </columnConstraints>
+                                                              <rowConstraints>
+                                                                <RowConstraints minHeight="10.0" percentHeight="30.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                                <RowConstraints minHeight="10.0" percentHeight="70.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                              </rowConstraints>
+                                                               <children>
+                                                                  <GridPane GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                                                     <children>
+                                                                        <GridPane fx:id="genderHolder2" alignment="TOP_CENTER" GridPane.columnIndex="2">
+                                                                           <children>
+                                                                              <Button id="National" fx:id="national" minWidth="${genderHolder.width/2}" mnemonicParsing="true" onAction="#national" styleClass="selectedResidence" text="%national" />
+                                                                              <Button id="Foreigner" fx:id="foreigner" minWidth="${genderHolder.width/2}" mnemonicParsing="true" onAction="#foreigner" styleClass="residence" text="%foreigner" GridPane.columnIndex="2" />
+                                                                              <TextField fx:id="residence" styleClass="demographicMiscTexts" visible="false" GridPane.rowIndex="1" />
+                                                                           </children>
+                                                                           <columnConstraints>
+                                                                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="45.0" prefWidth="100.0" />
+                                                                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="10.0" prefWidth="100.0" />
+                                                                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="45.0" prefWidth="100.0" />
+                                                                           </columnConstraints>
+                                                                           <rowConstraints>
+                                                                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                                           </rowConstraints>
+                                                                        </GridPane>
+                                                                        <GridPane GridPane.halignment="CENTER" GridPane.valignment="BOTTOM">
+                                                                           <children>
+                                                                              <Label fx:id="residenceLabel" alignment="TOP_CENTER" contentDisplay="TOP" styleClass="demographicMiscTexts" text="%residence" GridPane.halignment="LEFT" GridPane.valignment="TOP" />
+                                                                           </children>
+                                                                           <columnConstraints>
+                                                                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                                                           </columnConstraints>
+                                                                           <rowConstraints>
+                                                                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                                           </rowConstraints>
+                                                                        </GridPane>
+                                                                     </children>
+                                                                     <columnConstraints>
+                                                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="30.0" prefWidth="100.0" />
+                                                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="5.0" prefWidth="100.0" />
+                                                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="40.0" prefWidth="100.0" />
+                                                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="25.0" prefWidth="100.0" />
+                                                                     </columnConstraints>
+                                                                     <rowConstraints>
+                                                                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                                     </rowConstraints>
+                                                                  </GridPane>
+                                                               </children>
+                                                            </GridPane>
+                                                            <GridPane fx:id="localResidence" GridPane.columnIndex="1">
+                                                              <columnConstraints>
+                                                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="10.0" prefWidth="100.0" />
+                                                                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="80.0" prefWidth="100.0" />
+                                                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="10.0" prefWidth="100.0" />
+                                                              </columnConstraints>
+                                                              <rowConstraints>
+                                                                <RowConstraints minHeight="10.0" percentHeight="30.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                                <RowConstraints minHeight="10.0" percentHeight="70.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                              </rowConstraints>
+                                                               <children>
+                                                                  <GridPane GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                                                     <children>
+                                                                        <GridPane fx:id="residenceHolder" alignment="TOP_CENTER" GridPane.columnIndex="2">
+                                                                           <children>
+                                                                              <Button id="National" fx:id="nationalLocalLanguage" minWidth="${residenceHolder.width/2}" mnemonicParsing="true" onAction="#national" styleClass="selectedResidence" text="%national" />
+                                                                              <Button id="Foreigner" fx:id="foreignerLocalLanguage" minWidth="${residenceHolder.width/2}" mnemonicParsing="true" onAction="#foreigner" styleClass="residence" text="%foreigner" GridPane.columnIndex="2" />
+                                                                              <TextField fx:id="residenceLocalLanguage" styleClass="demographicMiscTexts" visible="false" GridPane.rowIndex="1" />
+                                                                           </children>
+                                                                           <columnConstraints>
+                                                                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="45.0" prefWidth="100.0" />
+                                                                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="10.0" prefWidth="100.0" />
+                                                                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="45.0" prefWidth="100.0" />
+                                                                           </columnConstraints>
+                                                                           <rowConstraints>
+                                                                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                                           </rowConstraints>
+                                                                        </GridPane>
+                                                                        <GridPane GridPane.halignment="CENTER" GridPane.valignment="BOTTOM">
+                                                                           <children>
+                                                                              <Label fx:id="residenceLblLocalLanguage" alignment="TOP_CENTER" contentDisplay="TOP" styleClass="demographicMiscTexts" text="%residence" GridPane.halignment="LEFT" GridPane.valignment="TOP" />
+                                                                           </children>
+                                                                           <columnConstraints>
+                                                                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                                                           </columnConstraints>
+                                                                           <rowConstraints>
+                                                                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                                           </rowConstraints>
+                                                                        </GridPane>
+                                                                     </children>
+                                                                     <columnConstraints>
+                                                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="30.0" prefWidth="100.0" />
+                                                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="5.0" prefWidth="100.0" />
+                                                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="40.0" prefWidth="100.0" />
+                                                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="25.0" prefWidth="100.0" />
+                                                                     </columnConstraints>
+                                                                     <rowConstraints>
+                                                                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                                     </rowConstraints>
+                                                                  </GridPane>
+                                                               </children>
+                                                            </GridPane>
+                                                         </children>
                                                       </GridPane>
                                                       <GridPane fx:id="addressParentPane" prefHeight="550.0" prefWidth="${scrollParentPane.width}">
                                                          <children>
@@ -1165,7 +1264,7 @@
                   </GridPane>
                   <GridPane GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="TOP">
                      <children>
-                        <Button minWidth="${backButton.width/2}" mnemonicParsing="false" onAction="#next" styleClass="contiuneButton" text="%continue" GridPane.halignment="RIGHT" GridPane.valignment="TOP" >
+                        <Button minWidth="${backButton.width/2}" mnemonicParsing="false" onAction="#next" styleClass="contiuneButton" text="%continue" GridPane.halignment="RIGHT" GridPane.valignment="TOP">
                         <graphic>
                               <ImageView fitHeight="20.0" fitWidth="27.0" pickOnBounds="true" preserveRatio="true">
                                  <image>

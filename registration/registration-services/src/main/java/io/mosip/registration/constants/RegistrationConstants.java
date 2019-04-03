@@ -1128,6 +1128,8 @@ public class RegistrationConstants {
 		fieldToExclude.add("NFR");
 		fieldToExclude.add("FR");
 		fieldToExclude.add("residenceLocalLanguage");
+		fieldToExclude.add("genderValue");
+		fieldToExclude.add("genderValueLocalLanguage");
 		fieldToExclude.add("updateUinId");
 
 		return fieldToExclude;
