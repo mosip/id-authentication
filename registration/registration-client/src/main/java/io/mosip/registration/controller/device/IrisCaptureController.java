@@ -544,7 +544,7 @@ public class IrisCaptureController extends BaseController {
 			}
 
 			for (IrisDetailsDTO irisDetailsDTO : getIrises()) {
-				if (validateIrisCapture(irisDetailsDTO)) {
+				if (validateIrisCapture(irisDetailsDTO) || (boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
 					if (irisDetailsDTO.getIrisType()
 							.equalsIgnoreCase(RegistrationConstants.LEFT.concat(RegistrationConstants.EYE))) {
 						isLeftEyeCaptured = true;
