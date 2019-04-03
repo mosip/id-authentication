@@ -23,7 +23,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.preregistration.application.dto.DeletePreRegistartionDTO;
+import io.mosip.preregistration.application.dto.DemographicCreateResponseDTO;
 import io.mosip.preregistration.application.dto.DemographicRequestDTO;
+import io.mosip.preregistration.application.dto.DemographicUpdateResponseDTO;
 import io.mosip.preregistration.application.dto.PreRegistrationViewDTO;
 import io.mosip.preregistration.application.service.DemographicService;
 import io.mosip.preregistration.core.common.dto.DemographicResponseDTO;
@@ -72,13 +74,34 @@ public class DemographicController {
 	@PreAuthorize("hasAnyRole('individual')")
 	@PostMapping(path = "/applications", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Create form data")
-	@ApiResponses(value = { @ApiResponse(code = 200, message = "Demographic data successfully Created"),
-			@ApiResponse(code = 400, message = "Unable to create the demographic data") })
-	public ResponseEntity<MainListResponseDTO<DemographicResponseDTO>> register(
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "Pre-Registration successfully Created"),
+			@ApiResponse(code = 400, message = "Unable to create the Pre-Registration data") })
+	public ResponseEntity<MainListResponseDTO<DemographicCreateResponseDTO>> register(
 			@RequestBody(required = true) MainRequestDTO<DemographicRequestDTO> jsonObject) {
 		log.info("sessionId", "idType", "id",
-				"In pre-registration controller for registration with json object" + jsonObject);
+				"In pre-registration controller for add preregistration with json object" + jsonObject);
 		return ResponseEntity.status(HttpStatus.OK).body(preRegistrationService.addPreRegistration(jsonObject));
+	}
+
+	/**
+	 * Put API to update a pre-registation application.
+	 *
+	 * @param jsonObject
+	 *            the json object
+	 * @return List of response dto containing pre-id and group-id
+	 */
+	@PreAuthorize("hasAnyRole('individual')")
+	@PutMapping(path = "/applications/{preRegistrationId}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@ApiOperation(value = "Update form data")
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "Demographic data successfully Updated"),
+			@ApiResponse(code = 400, message = "Unable to update the demographic data") })
+	public ResponseEntity<MainListResponseDTO<DemographicUpdateResponseDTO>> update(
+			@PathVariable("preRegistrationId") String preRegistrationId,
+			@RequestBody(required = true) MainRequestDTO<DemographicRequestDTO> jsonObject) {
+		log.info("sessionId", "idType", "id",
+				"In pre-registration controller for Update preregistration with json object" + jsonObject);
+		return ResponseEntity.status(HttpStatus.OK)
+				.body(preRegistrationService.updatePreRegistration(jsonObject, preRegistrationId));
 	}
 
 	/**
