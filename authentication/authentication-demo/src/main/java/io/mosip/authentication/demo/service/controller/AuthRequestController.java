@@ -12,6 +12,9 @@ import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
+import java.util.function.BiFunction;
+import java.util.stream.Stream;
 
 import javax.annotation.PostConstruct;
 import javax.crypto.BadPaddingException;
@@ -123,12 +126,12 @@ public class AuthRequestController {
 	public String createAuthRequest(@RequestParam(name=ID,required=true) @Nullable String id, 
 			@RequestParam(name=ID_TYPE,required=false) @Nullable String idType,
 			@RequestParam(name="isKyc",required=false) @Nullable Boolean isKyc,
-			@RequestParam(name="Auth type") @Nullable String reqAuth,
-			  @RequestBody Map<String,Object> identity) throws KeyManagementException, InvalidKeyException, NoSuchAlgorithmException, InvalidKeySpecException, NoSuchPaddingException, InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException, IOException, JSONException, IdAuthenticationAppException, IdAuthenticationBusinessException {
+			@RequestParam(name="Auth type",required=false) @Nullable String reqAuth,
+			  @RequestBody Map<String,Object> request) throws KeyManagementException, InvalidKeyException, NoSuchAlgorithmException, InvalidKeySpecException, NoSuchPaddingException, InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException, IOException, JSONException, IdAuthenticationAppException, IdAuthenticationBusinessException {
 		String authRequestTemplate=environment.getProperty(IDA_AUTH_REQUEST_TEMPLATE);
 		Map<String,Object> reqValues=new HashMap<>();
 		idValuesMap(id, idType, isKyc, reqValues);
-		encryptValuesMap(identity, reqValues);
+		encryptValuesMap(request, reqValues);
 		reqValues.put(OTP,false);
 		 reqValues.put(DEMO,false);
 		 reqValues.put(BIO,false);
@@ -149,34 +152,49 @@ public class AuthRequestController {
 		
 	}
 
+	/**
+	 * 
+	 *
+	 * @param reqAuth 
+	 * @param reqValues 
+	 */
 	private void getAuthTypeMap(String reqAuth, Map<String, Object> reqValues) {
-	    reqAuth=reqAuth.trim();
-		if(reqAuth.contains(","))	{
-	   String reqAuthArr[]=reqAuth.split(",");
-	   for(String authType : reqAuthArr) {
-		   authTypeSelectionMap(reqValues, authType);
-	   }
-	}
-	  else {
-		  authTypeSelectionMap(reqValues, reqAuth);
-	  }
+		String[] reqAuthArr;
+		if (reqAuth == null) {
+			BiFunction<String, String, Optional<String>> authTypeMapFunction = (key, authType) -> Optional.ofNullable(reqValues).filter(map -> map.containsKey("demographics")).map(map -> "demo");
+			reqAuthArr = Stream.of(
+					authTypeMapFunction.apply("demographics",  "demo"),
+					authTypeMapFunction.apply("biometrics",  "bio"),
+					authTypeMapFunction.apply("otp",  "otp"),
+					authTypeMapFunction.apply("staticPin",  "pin")
+					).filter(Optional::isPresent)
+					.map(Optional::get)
+					.toArray(size -> new String[size]);
+		} else {
+			reqAuth = reqAuth.trim();
+			if (reqAuth.contains(",")) {
+				reqAuthArr = reqAuth.split(",");
+			} else {
+				reqAuthArr = new String[] { reqAuth };
+			}
+		}
+		
+		for (String authType : reqAuthArr) {
+			authTypeSelectionMap(reqValues, authType);
+		}
 	}
 
 	private void authTypeSelectionMap(Map<String, Object> reqValues, String authType) {
-		
-		if(authType.equalsIgnoreCase(MatchType.Category.OTP.getType())) {
-			   reqValues.put(OTP,true);
-		   }
-		   else if(authType.equalsIgnoreCase(MatchType.Category.DEMO.getType())) {
-			   reqValues.put(DEMO,true);
-		   }
-		   else if(authType.equalsIgnoreCase(MatchType.Category.BIO.getType())) {
-			   reqValues.put(BIO,true);
-		   }
-		   //TODO FIXME PIN needs to be added.
-		  /* else if(authType.equalsIgnoreCase(MatchType.Category.)) {
-			   reqValues.put("pin",true);
-		   }*/
+
+		if (authType.equalsIgnoreCase(MatchType.Category.OTP.getType())) {
+			reqValues.put(OTP, true);
+		} else if (authType.equalsIgnoreCase(MatchType.Category.DEMO.getType())) {
+			reqValues.put(DEMO, true);
+		} else if (authType.equalsIgnoreCase(MatchType.Category.BIO.getType())) {
+			reqValues.put(BIO, true);
+		} else if (authType.equalsIgnoreCase(MatchType.Category.SPIN.getType())) {
+			reqValues.put("pin", true);
+		}
 	}
 
 

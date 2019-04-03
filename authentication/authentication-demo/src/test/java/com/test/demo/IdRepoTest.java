@@ -138,7 +138,7 @@ public class IdRepoTest {
 	public void jsonValidateSuccess() throws JsonValidationProcessingException, JsonIOException, JsonSchemaIOException, FileIOException {
 		ValidationReport report = Mockito.mock(ValidationReport.class);
 		Mockito.when(report.isValid()).thenReturn(true);
-		Mockito.when(jsonValidator.validateJson(Mockito.anyString(),Mockito.anyString())).thenReturn(report);
+		Mockito.when(jsonValidator.validateJson(Mockito.anyString())).thenReturn(report);
 		ObjectNode objectNode=new ObjectNode(null);
 		idRepoMock.jsonSchemaValidator(objectNode);
 	}
@@ -155,7 +155,7 @@ public class IdRepoTest {
 	public void jsonValidateFailure() throws JsonValidationProcessingException, JsonIOException, JsonSchemaIOException, FileIOException {
 		ValidationReport report = Mockito.mock(ValidationReport.class);
 		Mockito.when(report.isValid()).thenReturn(false);
-		Mockito.when(jsonValidator.validateJson(Mockito.anyString(),Mockito.anyString())).thenReturn(report);
+		Mockito.when(jsonValidator.validateJson(Mockito.anyString())).thenReturn(report);
 		ObjectNode objectNode=new ObjectNode(null);
 		idRepoMock.jsonSchemaValidator(objectNode);
 	}
@@ -172,7 +172,7 @@ public class IdRepoTest {
 	public void jsonValidateException() throws JsonValidationProcessingException, JsonIOException, JsonSchemaIOException, FileIOException {
 		ValidationReport report = Mockito.mock(ValidationReport.class);
 		Mockito.when(report.isValid()).thenReturn(false);
-		Mockito.when(jsonValidator.validateJson(Mockito.anyString(),Mockito.anyString())).thenThrow(JsonSchemaIOException.class);
+		Mockito.when(jsonValidator.validateJson(Mockito.anyString())).thenThrow(JsonSchemaIOException.class);
 		ObjectNode objectNode=new ObjectNode(null);
 		assertNull(idRepoMock.jsonSchemaValidator(objectNode));
 	}
