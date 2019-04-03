@@ -1,7 +1,7 @@
 /**
  * 
  */
-package io.mosip.kernel.auth.adapter;
+package io.mosip.kernel.auth.adapter.filter;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -26,6 +26,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
+import io.mosip.kernel.auth.adapter.constant.AuthAdapterConstant;
+import io.mosip.kernel.auth.adapter.constant.AuthAdapterErrorCode;
+import io.mosip.kernel.auth.adapter.model.AuthToken;
 import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.util.EmptyCheckUtils;
@@ -39,10 +42,10 @@ public class AuthFilter extends AbstractAuthenticationProcessingFilter {
 	private String[] allowedEndPoints() {
 		return new String[] { "/**/assets/**", "/**/icons/**", "/**/screenshots/**", "/favicon**", "/**/favicon**",
 				"/**/css/**", "/**/js/**", "/**/error**", "/**/webjars/**", "/**/v2/api-docs", "/**/configuration/ui",
-				"/**/configuration/security", "/**/swagger-resources/**", "/**/swagger-ui.html", "/**/csrf", "/*/" };
+				"/**/configuration/security", "/**/swagger-resources/**", "/**/swagger-ui.html", "/**/csrf", "/*/","**/authenticate/**" };
 	}
 
-	protected AuthFilter(RequestMatcher requiresAuthenticationRequestMatcher) {
+	public AuthFilter(RequestMatcher requiresAuthenticationRequestMatcher) {
 		super(requiresAuthenticationRequestMatcher);
 		// this.requestMatcher = requiresAuthenticationRequestMatcher;
 	}
@@ -61,9 +64,9 @@ public class AuthFilter extends AbstractAuthenticationProcessingFilter {
 
 	@Override
 	public Authentication attemptAuthentication(HttpServletRequest httpServletRequest,
-			HttpServletResponse httpServletResponse) throws AuthenticationException, JsonProcessingException, IOException {
+			HttpServletResponse httpServletResponse)
+			throws AuthenticationException, JsonProcessingException, IOException {
 		String token = null;
-		System.out.println("Look for Autheriztaion Cookie");
 		Cookie[] cookies = httpServletRequest.getCookies();
 		if (cookies != null) {
 			for (Cookie cookie : cookies) {
@@ -73,15 +76,14 @@ public class AuthFilter extends AbstractAuthenticationProcessingFilter {
 			}
 		}
 		if (token == null) {
-			System.out.println("Autheriztaion Cookie Not Found");
 			ResponseWrapper<ServiceError> errorResponse = setErrors(httpServletRequest);
-			ServiceError error = new ServiceError("ATH-401", "Authentication Failed");
+			ServiceError error = new ServiceError(AuthAdapterErrorCode.UNAUTHORIZED.getErrorCode(),
+					"Authentication Failed");
 			errorResponse.getErrors().add(error);
 			httpServletResponse.setStatus(HttpStatus.UNAUTHORIZED.value());
 			httpServletResponse.setContentType("application/json");
 			httpServletResponse.setCharacterEncoding("UTF-8");
 			httpServletResponse.getWriter().write(convertObjectToJson(errorResponse));
-			System.out.println("Return 401 Error");
 			return null;
 		}
 		AuthToken authToken = new AuthToken(token);
@@ -98,7 +100,14 @@ public class AuthFilter extends AbstractAuthenticationProcessingFilter {
 	@Override
 	protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response,
 			AuthenticationException failed) throws IOException, ServletException {
-		super.unsuccessfulAuthentication(request, response, failed);
+		ResponseWrapper<ServiceError> errorResponse = setErrors(request);
+		ServiceError error = new ServiceError(AuthAdapterErrorCode.UNAUTHORIZED.getErrorCode(),
+				"Authentication Failed");
+		errorResponse.getErrors().add(error);
+		response.setStatus(HttpStatus.UNAUTHORIZED.value());
+		response.setContentType("application/json");
+		response.setCharacterEncoding("UTF-8");
+		response.getWriter().write(convertObjectToJson(errorResponse));
 
 	}
 
@@ -119,7 +128,7 @@ public class AuthFilter extends AbstractAuthenticationProcessingFilter {
 		responseWrapper.setVersion(reqNode.path("version").asText());
 		return responseWrapper;
 	}
-	
+
 	private String convertObjectToJson(Object object) throws JsonProcessingException {
 		if (object == null) {
 			return null;

@@ -1,7 +1,7 @@
 /**
  * 
  */
-package io.mosip.kernel.auth.adapter;
+package io.mosip.kernel.auth.adapter.exception;
 
 import org.springframework.security.core.AuthenticationException;
 

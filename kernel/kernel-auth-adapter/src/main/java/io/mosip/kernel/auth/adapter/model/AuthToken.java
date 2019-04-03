@@ -1,4 +1,4 @@
-package io.mosip.kernel.auth.adapter;
+package io.mosip.kernel.auth.adapter.model;
 
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 
@@ -11,18 +11,18 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 
 public class AuthToken extends UsernamePasswordAuthenticationToken {
 
-    private String token;
+	private String token;
 
-    public AuthToken(String token) {
-        super(null, null);
-        this.token = token;
-    }
+	public AuthToken(String token) {
+		super(null, null);
+		this.token = token;
+	}
 
-    public String getToken() {
-        return token;
-    }
+	public String getToken() {
+		return token;
+	}
 
-    public void setToken(String token) {
-        this.token = token;
-    }
+	public void setToken(String token) {
+		this.token = token;
+	}
 }
