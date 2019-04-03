@@ -30,12 +30,6 @@
 			<artifactId>spring-core</artifactId>
 			<version>5.1.6.RELEASE</version>
 		</dependency>
-
-		<dependency>
-			<groupId>io.mosip.kernel</groupId>
-			<artifactId>kernel-core</artifactId>
-			<version>${project.version}</version>
-		</dependency>
 		<dependency>
 			<groupId>org.json</groupId>
 			<artifactId>json</artifactId>
