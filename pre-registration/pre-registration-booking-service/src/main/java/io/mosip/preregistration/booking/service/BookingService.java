@@ -7,8 +7,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -23,7 +21,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import io.mosip.kernel.auth.adapter.AuthUserDetails;
 import io.mosip.kernel.core.logger.spi.Logger;
-import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.preregistration.booking.codes.RequestCodes;
 import io.mosip.preregistration.booking.dto.AvailabilityDto;
 import io.mosip.preregistration.booking.dto.BookingRequestDTO;
@@ -55,7 +52,6 @@ import io.mosip.preregistration.core.common.dto.MainListRequestDTO;
 import io.mosip.preregistration.core.common.dto.MainListResponseDTO;
 import io.mosip.preregistration.core.common.dto.MainRequestDTO;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
-import io.mosip.preregistration.core.common.dto.PreRegIdsByRegCenterIdDTO;
 import io.mosip.preregistration.core.common.dto.PreRegIdsByRegCenterIdResponseDTO;
 import io.mosip.preregistration.core.config.LoggerConfiguration;
 import io.mosip.preregistration.core.util.AuditLogUtil;
@@ -392,7 +388,6 @@ public class BookingService {
 		return responseDto;
 	}
 
-	
 	/**
 	 * 
 	 * This booking API will be called by bookAppointment.
@@ -644,10 +639,19 @@ public class BookingService {
 			if (toDateStr == null || toDateStr.isEmpty()) {
 				toDateStr = fromDateStr;
 			}
-			LocalDate fromDate = DateUtils
-					.parseDateToLocalDateTime(DateUtils.parseToDate(fromDateStr.trim(), "yyyy-MM-dd")).toLocalDate();
-			LocalDate toDate = DateUtils.parseDateToLocalDateTime(DateUtils.parseToDate(toDateStr.trim(), "yyyy-MM-dd"))
-					.toLocalDate();
+
+			DateTimeFormatter parseFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+			/*
+			 * LocalDate fromDate = DateUtils
+			 * .parseDateToLocalDateTime(DateUtils.parseToDate(fromDateStr.trim(),
+			 * "yyyy-MM-dd")).toLocalDate(); LocalDate toDate =
+			 * DateUtils.parseDateToLocalDateTime(DateUtils.parseToDate(toDateStr.trim(),
+			 * "yyyy-MM-dd")) .toLocalDate();
+			 */
+
+			LocalDate fromDate = LocalDate.parse(fromDateStr, parseFormatter);
+			LocalDate toDate = LocalDate.parse(toDateStr, parseFormatter);
 
 			LocalDateTime fromLocaldate = fromDate.atStartOfDay();
 			LocalDateTime toLocaldate = toDate.atTime(23, 59, 59);

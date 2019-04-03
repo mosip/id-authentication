@@ -198,7 +198,7 @@
           <!-- <span class="preview__file-span" *ngFor="let file of files">
             <img src="assets/pdf.png" />&nbsp;&nbsp;{{ file.doc_name }}
           </span> -->
-          <table *ngIf="documentMapObject">
+          <table style="width:100%" *ngIf="documentMapObject">
             <tr class="preview__file__table__header">
               <td *ngFor="let object of documentMapObject">{{object.name}}</td>
             </tr>

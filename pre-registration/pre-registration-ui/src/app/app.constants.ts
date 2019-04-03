@@ -10,6 +10,7 @@ export const ERROR = 'error';
 export const NESTED_ERROR = 'err';
 export const ERROR_CODE = 'errorCode';
 export const PRE_REGISTRATION_ID = 'pre_registration_id';
+export const APPENDER = '/';
 // export const ALLOWED_BOOKING_TIME = 24;
 
 export const YEAR_PATTERN = '(\\d{4})';
@@ -18,6 +19,7 @@ export const DATE_PATTERN = '([0-2]\\d|3[01])';
 
 export const IDS = {
   newUser: 'mosip.pre-registration.demographic.create',
+  updateUser: 'mosip.pre-registration.demographic.update',
   transliteration: 'mosip.pre-registration.transliteration.transliterate'
 };
 
@@ -31,14 +33,23 @@ export const IDS = {
 export const APPEND_URL = {
   config: 'config',
   send_otp: 'sendotp',
-  verify_otp: 'useridotp',
-  invalid_token: 'invalidatetoken',
+<<<<<<< Updated upstream
+  login: 'useridotp',
+  logout: 'invalidatetoken',
   location_metadata: 'v1.0/locations/locationhierarchy/',
   location_immediate_children: 'v1.0/locations/immediatechildren/',
+=======
+  // login: 'login',
+  // logout: 'logout',
+  login: 'useridotp',
+  logout: 'invalidatetoken',
+  location_metadata: 'locations/locationhierarchy/',
+  location_immediate_children: 'locations/immediatechildren/',
+>>>>>>> Stashed changes
   applicants: 'demographic/applications',
   get_applicant: 'demographic/applications/details',
   location: 'masterdata/',
-  gender: 'masterdata/v1.0/gendertypes',
+  gender: 'masterdata/gendertypes',
   transliteration: 'transliteration/transliterate',
   applicantType: 'applicanttype/',
   validDocument: 'v1.0/applicanttype/',

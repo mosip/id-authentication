@@ -33,6 +33,7 @@ import io.mosip.preregistration.core.code.AuditLogVariables;
 import io.mosip.preregistration.core.code.EventId;
 import io.mosip.preregistration.core.code.EventName;
 import io.mosip.preregistration.core.code.EventType;
+import io.mosip.preregistration.core.code.RequestCodes;
 import io.mosip.preregistration.core.common.dto.AuditRequestDto;
 import io.mosip.preregistration.core.common.dto.DocumentDeleteResponseDTO;
 import io.mosip.preregistration.core.common.dto.DocumentMultipartResponseDTO;
@@ -40,6 +41,7 @@ import io.mosip.preregistration.core.common.dto.MainListResponseDTO;
 import io.mosip.preregistration.core.common.dto.MainRequestDTO;
 import io.mosip.preregistration.core.config.LoggerConfiguration;
 import io.mosip.preregistration.core.exception.HashingException;
+import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
 import io.mosip.preregistration.core.util.AuditLogUtil;
 import io.mosip.preregistration.core.util.CryptoUtil;
 import io.mosip.preregistration.core.util.HashUtill;
@@ -90,8 +92,6 @@ public class DocumentService {
 	@Value("${ver}")
 	private String ver;
 
-	private boolean responseStatus = true;
-
 	/**
 	 * Autowired reference for {@link #FileSystemAdapter}
 	 */
@@ -123,7 +123,6 @@ public class DocumentService {
 	 * Logger configuration for document service
 	 */
 	private static Logger log = LoggerConfiguration.logConfig(DocumentService.class);
-	
 
 	/**
 	 * This method acts as a post constructor to initialize the required request
@@ -135,9 +134,10 @@ public class DocumentService {
 		requiredRequestMap.put("ver", ver);
 	}
 
-	 public AuthUserDetails  authUserDetails() {
-			return (AuthUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal(); 
+	public AuthUserDetails authUserDetails() {
+		return (AuthUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 	}
+
 	/**
 	 * This method is used to upload the document by accepting the JsonString and
 	 * MultipartFile
@@ -178,14 +178,16 @@ public class DocumentService {
 			if (isUploadSuccess) {
 				setAuditValues(EventId.PRE_404.toString(), EventName.UPLOAD.toString(), EventType.BUSINESS.toString(),
 						"Document uploaded & the respective Pre-Registration data is saved in the document table",
-						AuditLogVariables.NO_ID.toString(),authUserDetails().getUserId(),authUserDetails().getUsername());
+						AuditLogVariables.NO_ID.toString(), authUserDetails().getUserId(),
+						authUserDetails().getUsername());
 			} else {
 				setAuditValues(EventId.PRE_405.toString(), EventName.EXCEPTION.toString(), EventType.SYSTEM.toString(),
 						"Document upload failed & the respective Pre-Registration data save unsuccessfull ",
-						AuditLogVariables.NO_ID.toString(),authUserDetails().getUserId(),authUserDetails().getUsername());
+						AuditLogVariables.NO_ID.toString(), authUserDetails().getUserId(),
+						authUserDetails().getUsername());
 			}
 		}
-		
+
 		return responseDto;
 	}
 
@@ -207,7 +209,7 @@ public class DocumentService {
 		List<DocumentResponseDTO> docResponseDtos = new LinkedList<>();
 		if (serviceUtil.callGetPreRegInfoRestService(document.getPreregId())) {
 			DocumentEntity getentity = documnetDAO.findSingleDocument(document.getPreregId(), document.getDocCatCode());
-			DocumentEntity documentEntity = serviceUtil.dtoToEntity(file, document,authUserDetails().getUserId());
+			DocumentEntity documentEntity = serviceUtil.dtoToEntity(file, document, authUserDetails().getUserId());
 			if (getentity != null) {
 				documentEntity.setDocumentId(String.valueOf(getentity.getDocumentId()));
 			}
@@ -262,8 +264,12 @@ public class DocumentService {
 		List<DocumentCopyResponseDTO> copyDocumentList = new ArrayList<>();
 		boolean isCopySuccess = false;
 		try {
-			if (ValidationUtil.isvalidPreRegId(sourcePreId) && ValidationUtil.isvalidPreRegId(destinationPreId)
-					&& serviceUtil.isValidCatCode(catCode)) {
+			if (sourcePreId == null || sourcePreId.isEmpty() || destinationPreId == null
+					|| destinationPreId.isEmpty()) {
+				throw new InvalidRequestParameterException(
+						io.mosip.preregistration.core.errorcodes.ErrorCodes.PRG_CORE_REQ_001.toString(),
+						io.mosip.preregistration.core.errorcodes.ErrorMessages.MISSING_REQUEST_PARAMETER.toString());
+			} else if (serviceUtil.isValidCatCode(catCode)) {
 				boolean sourceStatus = serviceUtil.callGetPreRegInfoRestService(sourcePreId);
 				boolean destinationStatus = serviceUtil.callGetPreRegInfoRestService(destinationPreId);
 
@@ -277,9 +283,9 @@ public class DocumentService {
 					copyFile(copyDocumentEntity, sourceBucketName, sourceKey);
 					DocumentCopyResponseDTO copyDcoResDto = new DocumentCopyResponseDTO();
 					copyDcoResDto.setSourcePreRegId(sourcePreId);
-					copyDcoResDto.setSourceDocumnetId(String.valueOf(documentEntity.getDocumentId()));
+					copyDcoResDto.setSourceDocumentId(String.valueOf(documentEntity.getDocumentId()));
 					copyDcoResDto.setDestPreRegId(destinationPreId);
-					copyDcoResDto.setDestDocumnetId(String.valueOf(copyDocumentEntity.getDocumentId()));
+					copyDcoResDto.setDestDocumentId(String.valueOf(copyDocumentEntity.getDocumentId()));
 					copyDocumentList.add(copyDcoResDto);
 					responseDto.setResponsetime(serviceUtil.getCurrentResponseTime());
 					responseDto.setResponse(copyDocumentList);
@@ -297,11 +303,13 @@ public class DocumentService {
 			if (isCopySuccess) {
 				setAuditValues(EventId.PRE_409.toString(), EventName.COPY.toString(), EventType.BUSINESS.toString(),
 						"Document copied from source PreId to destination PreId is successfully saved in the document table",
-						AuditLogVariables.MULTIPLE_ID.toString(),authUserDetails().getUserId(),authUserDetails().getUsername());
+						AuditLogVariables.MULTIPLE_ID.toString(), authUserDetails().getUserId(),
+						authUserDetails().getUsername());
 			} else {
 				setAuditValues(EventId.PRE_405.toString(), EventName.EXCEPTION.toString(), EventType.SYSTEM.toString(),
 						"Document failed to copy from source PreId to destination PreId ",
-						AuditLogVariables.NO_ID.toString(),authUserDetails().getUserId(),authUserDetails().getUsername());
+						AuditLogVariables.NO_ID.toString(), authUserDetails().getUserId(),
+						authUserDetails().getUsername());
 			}
 		}
 		return responseDto;
@@ -344,8 +352,10 @@ public class DocumentService {
 		log.info("sessionId", "idType", "id", "In getAllDocumentForPreId method of document service");
 		MainListResponseDTO<DocumentMultipartResponseDTO> responseDto = new MainListResponseDTO<>();
 		boolean isRetrieveSuccess = false;
+		Map<String, String> requestParamMap = new HashMap<>();
 		try {
-			if (ValidationUtil.isvalidPreRegId(preId)) {
+			requestParamMap.put(RequestCodes.PRE_REGISTRATION_ID, preId);
+			if (ValidationUtil.requstParamValidator(requestParamMap)) {
 				List<DocumentEntity> documentEntities = documnetDAO.findBypreregId(preId);
 				responseDto.setResponse(dtoSetter(documentEntities));
 				responseDto.setResponsetime(serviceUtil.getCurrentResponseTime());
@@ -360,10 +370,12 @@ public class DocumentService {
 		} finally {
 			if (isRetrieveSuccess) {
 				setAuditValues(EventId.PRE_401.toString(), EventName.RETRIEVE.toString(), EventType.BUSINESS.toString(),
-						"Retrieval of document is successfull", AuditLogVariables.MULTIPLE_ID.toString(),authUserDetails().getUserId(),authUserDetails().getUsername());
+						"Retrieval of document is successfull", AuditLogVariables.MULTIPLE_ID.toString(),
+						authUserDetails().getUserId(), authUserDetails().getUsername());
 			} else {
 				setAuditValues(EventId.PRE_405.toString(), EventName.EXCEPTION.toString(), EventType.SYSTEM.toString(),
-						"Retrieval of document is failed", AuditLogVariables.NO_ID.toString(),authUserDetails().getUserId(),authUserDetails().getUsername());
+						"Retrieval of document is failed", AuditLogVariables.NO_ID.toString(),
+						authUserDetails().getUserId(), authUserDetails().getUsername());
 			}
 		}
 		return responseDto;
@@ -437,7 +449,7 @@ public class DocumentService {
 							ErrorMessages.DOCUMENT_FAILED_TO_DELETE.toString());
 				}
 				DocumentDeleteResponseDTO deleteDTO = new DocumentDeleteResponseDTO();
-				deleteDTO.setDocumnet_Id(documentId);
+				deleteDTO.setDocument_Id(documentId);
 				deleteDTO.setResMsg(DocumentStatusMessages.DOCUMENT_DELETE_SUCCESSFUL.toString());
 				deleteDocList.add(deleteDTO);
 				delResponseDto.setResponse(deleteDocList);
@@ -464,8 +476,10 @@ public class DocumentService {
 		log.info("sessionId", "idType", "id", "In deleteAllByPreId method of document service");
 		boolean isDeleteSuccess = false;
 		MainListResponseDTO<DocumentDeleteResponseDTO> deleteRes = new MainListResponseDTO<>();
+		Map<String, String> requestParamMap = new HashMap<>();
 		try {
-			if (ValidationUtil.isvalidPreRegId(preregId)) {
+			requestParamMap.put(RequestCodes.PRE_REGISTRATION_ID, preregId);
+			if (ValidationUtil.requstParamValidator(requestParamMap)) {
 				List<DocumentEntity> documentEntityList = documnetDAO.findBypreregId(preregId);
 				deleteRes = deleteFile(documentEntityList, preregId);
 			}
@@ -480,10 +494,12 @@ public class DocumentService {
 			if (isDeleteSuccess) {
 				setAuditValues(EventId.PRE_403.toString(), EventName.DELETE.toString(), EventType.BUSINESS.toString(),
 						"Document successfully deleted from the document table",
-						AuditLogVariables.MULTIPLE_ID.toString(),authUserDetails().getUserId(),authUserDetails().getUsername());
+						AuditLogVariables.MULTIPLE_ID.toString(), authUserDetails().getUserId(),
+						authUserDetails().getUsername());
 			} else {
 				setAuditValues(EventId.PRE_405.toString(), EventName.EXCEPTION.toString(), EventType.SYSTEM.toString(),
-						"Document deletion failed", AuditLogVariables.NO_ID.toString(),authUserDetails().getUserId(),authUserDetails().getUsername());
+						"Document deletion failed", AuditLogVariables.NO_ID.toString(), authUserDetails().getUserId(),
+						authUserDetails().getUsername());
 			}
 		}
 		return deleteRes;
@@ -491,6 +507,8 @@ public class DocumentService {
 
 	public MainListResponseDTO<DocumentDeleteResponseDTO> deleteFile(List<DocumentEntity> documentEntityList,
 			String preregId) {
+		log.info("sessionId", "idType", "id",
+				"In pre-registration service inside delete File method "+ preregId);
 		List<DocumentDeleteResponseDTO> deleteAllList = new ArrayList<>();
 		MainListResponseDTO<DocumentDeleteResponseDTO> delResponseDto = new MainListResponseDTO<>();
 		if (documnetDAO.deleteAllBypreregId(preregId) >= 0) {
@@ -498,7 +516,7 @@ public class DocumentService {
 				DocumentDeleteResponseDTO deleteDTO = new DocumentDeleteResponseDTO();
 				String key = documentEntity.getDocCatCode() + "_" + documentEntity.getDocumentId();
 				fs.deleteFile(documentEntity.getPreregId(), key);
-				deleteDTO.setDocumnet_Id(String.valueOf(documentEntity.getDocumentId()));
+				deleteDTO.setDocument_Id(String.valueOf(documentEntity.getDocumentId()));
 				deleteDTO.setResMsg(DocumentStatusMessages.DOCUMENT_DELETE_SUCCESSFUL.toString());
 				deleteAllList.add(deleteDTO);
 			}
@@ -519,7 +537,8 @@ public class DocumentService {
 	 * @param description
 	 * @param idType
 	 */
-	public void setAuditValues(String eventId, String eventName, String eventType, String description, String idType,String userId,String userName) {
+	public void setAuditValues(String eventId, String eventName, String eventType, String description, String idType,
+			String userId, String userName) {
 		AuditRequestDto auditRequestDto = new AuditRequestDto();
 		auditRequestDto.setEventId(eventId);
 		auditRequestDto.setEventName(eventName);
@@ -530,4 +549,5 @@ public class DocumentService {
 		auditRequestDto.setModuleName(AuditLogVariables.DOCUMENT_SERVICE.toString());
 		auditLogUtil.saveAuditDetails(auditRequestDto);
 	}
+
 }

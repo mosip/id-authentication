@@ -373,9 +373,9 @@ public class DocumentUploadServiceTest {
 		DocumentCopyResponseDTO copyDcoResDto = new DocumentCopyResponseDTO();
 		MainListResponseDTO restRes = new MainListResponseDTO<>();
 		copyDcoResDto.setSourcePreRegId("48690172097498");
-		copyDcoResDto.setSourceDocumnetId("1");
+		copyDcoResDto.setSourceDocumentId("1");
 		copyDcoResDto.setDestPreRegId("48690172097499");
-		copyDcoResDto.setDestDocumnetId("2");
+		copyDcoResDto.setDestDocumentId("2");
 		docCopyList.add(copyDcoResDto);
 		responseCopy.setResponse(docCopyList);
 		responseCopy.setResponsetime(serviceUtil.getCurrentResponseTime());
@@ -392,8 +392,8 @@ public class DocumentUploadServiceTest {
 		Mockito.doReturn(sourceFile).when(fs).getFile(Mockito.anyString(), Mockito.anyString());
 		MainListResponseDTO<DocumentCopyResponseDTO> responseDto = documentUploadService.copyDocument("POA",
 				"48690172097498", "48690172097499");
-		assertEquals(responseDto.getResponse().get(0).getDestDocumnetId(),
-				responseCopy.getResponse().get(0).getDestDocumnetId());
+		assertEquals(responseDto.getResponse().get(0).getDestDocumentId(),
+				responseCopy.getResponse().get(0).getDestDocumentId());
 	}
 
 	@Test(expected = DocumentNotFoundException.class)
@@ -441,12 +441,12 @@ public class DocumentUploadServiceTest {
 	
 	@Test(expected = InvalidRequestParameterException.class)
 	public void InvalidRequestParameterExceptionTest1() throws Exception {
-		documentUploadService.copyDocument("POA", "486", "48690172097499");
+		documentUploadService.copyDocument("POA", "", "48690172097499");
 	}
 	
 	@Test(expected = InvalidRequestParameterException.class)
 	public void InvalidRequestParameterExceptionTest2() throws Exception {
-		documentUploadService.copyDocument("POA", "48690172097499", "48");
+		documentUploadService.copyDocument("POA", "48690172097499", "");
 	}
 	
 	@Test(expected = InvalidRequestParameterException.class)
@@ -512,7 +512,7 @@ public class DocumentUploadServiceTest {
 	public void deleteDocumentSuccessTest() {
 		List<DocumentDeleteResponseDTO> deleteresponseList = new ArrayList<>();
 		documentDeleteDTO = new DocumentDeleteResponseDTO();
-		documentDeleteDTO.setDocumnet_Id("1");
+		documentDeleteDTO.setDocument_Id("1");
 		documentDeleteDTO.setResMsg(DocumentStatusMessages.DOCUMENT_DELETE_SUCCESSFUL.toString());
 		deleteresponseList.add(documentDeleteDTO);
 
@@ -535,7 +535,7 @@ public class DocumentUploadServiceTest {
 	public void deleteAllByPreIdSuccessTest() {
 		List<DocumentDeleteResponseDTO> deleteresponseList = new ArrayList<>();
 		documentDeleteDTO = new DocumentDeleteResponseDTO();
-		documentDeleteDTO.setDocumnet_Id("1");
+		documentDeleteDTO.setDocument_Id("1");
 		documentDeleteDTO.setResMsg(DocumentStatusMessages.DOCUMENT_DELETE_SUCCESSFUL.toString());
 		deleteresponseList.add(documentDeleteDTO);
 
@@ -545,8 +545,8 @@ public class DocumentUploadServiceTest {
 		Mockito.when(documentRepository.findBypreregId(preId)).thenReturn(docEntity);
 		Mockito.when(documentRepository.deleteAllBypreregId(preId)).thenReturn(1);
 		MainListResponseDTO<DocumentDeleteResponseDTO> responseDto = documentUploadService.deleteAllByPreId(preId);
-		assertEquals(responseDto.getResponse().get(0).getDocumnet_Id(),
-				delResponseDto.getResponse().get(0).getDocumnet_Id());
+		assertEquals(responseDto.getResponse().get(0).getDocument_Id(),
+				delResponseDto.getResponse().get(0).getDocument_Id());
 	}
 
 	@Test(expected = TableNotAccessibleException.class)
@@ -565,7 +565,7 @@ public class DocumentUploadServiceTest {
 	public void deleteDocumentTest() throws Exception {
 		List<DocumentDeleteResponseDTO> deleteresponseList = new ArrayList<>();
 		documentDeleteDTO = new DocumentDeleteResponseDTO();
-		documentDeleteDTO.setDocumnet_Id("1");
+		documentDeleteDTO.setDocument_Id("1");
 		documentDeleteDTO.setResMsg(DocumentStatusMessages.DOCUMENT_DELETE_SUCCESSFUL.toString());
 		deleteresponseList.add(documentDeleteDTO);
 

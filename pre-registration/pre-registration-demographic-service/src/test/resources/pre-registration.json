@@ -1,14 +1,5 @@
 {
-	"id": "mosip.pre-registration.demographic.create",
-	"ver": "1.0",
-	"reqTime": "2019-01-22T07:22:57.086Z",
-	"request": {
-		"preRegistrationId": "",
-		"createdBy": "",
-		"updatedBy": "",
-		"langCode": "ENG",
-		"demographicDetails": {
-			"identity": {
+		"identity": {
 				"dateOfBirth": "1995/03/24",
 				"gender": [
 					{
@@ -106,8 +97,4 @@
 				"postalCode": "570000",
 				"email": "sanober@gmail.com"
 			}
-		},
-		"createdDateTime": "2019-01-08T17:05:48.953Z",
-		"updatedDateTime": ""
-	}
 }

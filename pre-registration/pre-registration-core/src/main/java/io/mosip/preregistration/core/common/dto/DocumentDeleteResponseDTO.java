@@ -27,7 +27,7 @@ public class DocumentDeleteResponseDTO implements Serializable {
 	/**
 	 * Document Id
 	 */
-	private String documnet_Id;
+	private String document_Id;
 	/**
 	 * Delete response Message
 	 */

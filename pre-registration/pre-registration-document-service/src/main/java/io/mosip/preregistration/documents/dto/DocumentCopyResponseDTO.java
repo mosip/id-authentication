@@ -36,7 +36,7 @@ public class DocumentCopyResponseDTO implements Serializable {
 	 * source Document Id 
 	 */
 	@ApiModelProperty(value = "Source Documnet ID", position = 2)
-	private String sourceDocumnetId;
+	private String sourceDocumentId;
 	/**
 	 * destination PreRegistration Id
 	 */
@@ -46,6 +46,6 @@ public class DocumentCopyResponseDTO implements Serializable {
 	 * destination Document Id
 	 */
 	@ApiModelProperty(value = "Destination Documnet ID", position = 4)
-	private String destDocumnetId;
+	private String destDocumentId;
 
 }

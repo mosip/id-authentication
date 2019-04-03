@@ -211,9 +211,6 @@ public class DataSyncServiceUtil {
 		log.info("sessionId", "idType", "id", "In callGetPreIdsRestService method of datasync service util");
 		PreRegIdsByRegCenterIdResponseDTO preRegIdsByRegCenterIdResponseDTO = null;
 		try {
-			if (isNull(toDate)) {
-				toDate = fromDate;
-			}
 			UriComponentsBuilder builder = UriComponentsBuilder
 					.fromHttpUrl(bookingResourceUrl + "/appointment/byDateAndRegCenterId")
 					.queryParam("from_date", fromDate).queryParam("to_date", toDate)
