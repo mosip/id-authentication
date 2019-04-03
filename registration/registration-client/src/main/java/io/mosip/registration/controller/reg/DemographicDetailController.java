@@ -623,15 +623,11 @@ public class DemographicDetailController extends BaseController {
 	private Label registrationNavlabel;
 	@FXML
 	private AnchorPane keyboardPane;
-
 	private boolean lostUIN = false;
-
-	GenderDto maleDto ;
-	GenderDto femaleDto;
-	GenderDto localMaleDto;
-	GenderDto localFemaleDto;
-
-
+	private String textMale;
+	private String textFemale;
+	private String textMaleLocalLanguage;
+	private String textFemaleLocalLanguage;
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -660,7 +656,6 @@ public class DemographicDetailController extends BaseController {
 			ageFieldLocalLanguage.setDisable(true);
 			renderComboBoxes();
 			addRegions();
-			populateGender();
 			minAge = Integer.parseInt(String.valueOf(ApplicationContext.map().get(RegistrationConstants.MIN_AGE)));
 			maxAge = Integer.parseInt(String.valueOf(ApplicationContext.map().get(RegistrationConstants.MAX_AGE)));
 			applicationLabelBundle = ApplicationContext.getInstance().getApplicationLanguageBundle();
@@ -672,6 +667,12 @@ public class DemographicDetailController extends BaseController {
 			List<IndividualTypeDto> applicantTypeLocal = masterSyncService
 					.getIndividualType(RegistrationConstants.ATTR_NON_FORINGER, ApplicationContext.localLanguage());
 			residenceLocalLanguage.setText(applicantTypeLocal.get(0).getName());
+			textMale=applicationLabelBundle.getString("male");
+			textFemale=applicationLabelBundle.getString("female");
+			textMaleLocalLanguage=localLabelBundle.getString("male");
+			textFemaleLocalLanguage=localLabelBundle.getString("female");
+			genderValue.setText(textMale);
+			genderValueLocalLanguage.setText(textMaleLocalLanguage);
 			disableLocalFields();
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error("REGISTRATION - CONTROLLER", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
@@ -873,8 +874,8 @@ public class DemographicDetailController extends BaseController {
 	 */
 	@FXML
 	private void male(ActionEvent event) {
-		genderValue.setText(maleDto.getGenderName());
-		genderValueLocalLanguage.setText(localMaleDto.getGenderName());
+		genderValue.setText(textMale);
+		genderValueLocalLanguage.setText(textMaleLocalLanguage);
 		male.getStyleClass().clear();
 		female.getStyleClass().clear();
 		maleLocalLanguage.getStyleClass().clear();
@@ -916,8 +917,8 @@ public class DemographicDetailController extends BaseController {
 	 */
 	@FXML
 	private void female(ActionEvent event) {
-		genderValue.setText(femaleDto.getGenderName());
-		genderValueLocalLanguage.setText(localFemaleDto.getGenderName());
+		genderValue.setText(textFemale);
+		genderValueLocalLanguage.setText(textFemaleLocalLanguage);
 		male.getStyleClass().clear();
 		female.getStyleClass().clear();
 		maleLocalLanguage.getStyleClass().clear();
@@ -1047,6 +1048,8 @@ public class DemographicDetailController extends BaseController {
 			ageFieldLocalLanguageLabel.setText(localProperties.getString("ageField"));
 			ageFieldLocalLanguage.setPromptText(localProperties.getString("ageField"));
 			genderLocalLanguageLabel.setText(localProperties.getString("gender"));
+			maleLocalLanguage.setText(localProperties.getString("male"));
+			femaleLocalLanguage.setText(localProperties.getString("female"));
 			regionLocalLanguageLabel.setText(localProperties.getString("region"));
 			cityLocalLanguageLabel.setText(localProperties.getString("city"));
 			provinceLocalLanguageLabel.setText(localProperties.getString("province"));
@@ -1934,28 +1937,6 @@ public class DemographicDetailController extends BaseController {
 		LOGGER.info("REGISTRATION - INDIVIDUAL_REGISTRATION - RETRIEVE_AND_POPULATE_LOCATION_BY_HIERARCHY",
 				RegistrationConstants.APPLICATION_ID, RegistrationConstants.APPLICATION_NAME,
 				"Retrieving and populating of location by selected hirerachy ended");
-	}
-	/**
-	 * Populating the gender combobox
-	 */
-	private void populateGender() {
-		LOGGER.info("REGISTRATION - INDIVIDUAL_REGISTRATION - POPULATE_GENDER", RegistrationConstants.APPLICATION_ID,
-				RegistrationConstants.APPLICATION_NAME, "Fetching Gender based on Application Language started");
-
-		try {
-			List<GenderDto> applicationGender = masterSync.getGenderDtls(ApplicationContext.applicationLanguage());
-			List<GenderDto> localGender = masterSync.getGenderDtls(ApplicationContext.localLanguage());
-			maleDto = applicationGender.get(0);
-			femaleDto = applicationGender.get(1);
-			localMaleDto = localGender.get(0);
-			localFemaleDto = localGender.get(1);
-			
-		} catch (RuntimeException runtimeException) {
-			throw new RegBaseUncheckedException(RegistrationConstants.REGISTRATION_CONTROLLER,
-					runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException), runtimeException);
-		}
-		LOGGER.info("REGISTRATION - INDIVIDUAL_REGISTRATION - POPULATE_GENDER", RegistrationConstants.APPLICATION_ID,
-				RegistrationConstants.APPLICATION_NAME, "Fetching Gender based on Application Language ended");
 	}
 
 	protected String getSelectedNationalityCode() {
