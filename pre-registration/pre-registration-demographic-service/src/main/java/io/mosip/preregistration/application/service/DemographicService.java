@@ -538,7 +538,7 @@ public class DemographicService {
 				DemographicEntity demographicEntity = demographicRepository.findBypreRegistrationId(preregId);
 				if (!serviceUtil.isNull(demographicEntity)) {
 					if (serviceUtil.checkStatusForDeletion(demographicEntity.getStatusCode())) {
-						callDocumentServiceToDeleteAllByPreId(preregId);
+						//callDocumentServiceToDeleteAllByPreId(preregId);
 						if (!(demographicEntity.getStatusCode().equals(StatusCodes.PENDING_APPOINTMENT.getCode()))) {
 							callBookingServiceToDeleteAllByPreId(preregId);
 						}
@@ -768,11 +768,13 @@ public class DemographicService {
 
 		BookingRegistrationDTO bookingRegistrationDTO = null;
 		try {
-			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(appointmentResourseUrl)
-					.queryParam("pre_registration_id", preId);
+			Map<String, Object> params = new HashMap<>();
+			params.put("preRegistrationId", preId);
+			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(appointmentResourseUrl);
 			HttpHeaders headers = new HttpHeaders();
 			HttpEntity<MainResponseDTO<BookingRegistrationDTO>> httpEntity = new HttpEntity<>(headers);
 			String uriBuilder = builder.build().encode().toUriString();
+			uriBuilder += "{preRegistrationId}";
 			log.info("sessionId", "idType", "id", "In callGetAppointmentDetailsRestService method URL- " + uriBuilder);
 
 			ResponseEntity<MainResponseDTO<BookingRegistrationDTO>> respEntity = restTemplate.exchange(uriBuilder,
