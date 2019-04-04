@@ -88,7 +88,7 @@ public class SyncRolesServiceImpl implements SyncRolesService {
 			syncDataRequestHeaders.setContentType(MediaType.APPLICATION_JSON);
 			HttpEntity<RequestWrapper<?>> userRolesRequestEntity = new HttpEntity<>(requestWrapper,
 					syncDataRequestHeaders);
-			response = restTemplate.exchange("https://dev.mosip.io/authmanager/roles/registrationclient",
+			response = restTemplate.exchange("https://dev.mosip.io/v1/authmanager/roles/registrationclient",
 					HttpMethod.GET, userRolesRequestEntity, String.class);// (uriBuilder.toString() +
 																			// "/registrationclient",
 			// String.class);

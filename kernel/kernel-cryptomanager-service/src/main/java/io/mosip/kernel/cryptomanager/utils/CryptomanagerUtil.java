@@ -8,13 +8,9 @@ package io.mosip.kernel.cryptomanager.utils;
 
 import java.io.IOException;
 import java.security.KeyFactory;
-import java.security.KeyPair;
 import java.security.NoSuchAlgorithmException;
-import java.security.PrivateKey;
 import java.security.PublicKey;
-import java.security.interfaces.RSAPrivateKey;
 import java.security.spec.InvalidKeySpecException;
-import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 import java.time.ZoneOffset;
 import java.util.HashMap;
@@ -47,8 +43,10 @@ import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.cryptomanager.constant.CryptomanagerErrorCode;
+import io.mosip.kernel.cryptomanager.dto.CryptoEncryptRequestDto;
 import io.mosip.kernel.cryptomanager.dto.CryptomanagerRequestDto;
-import io.mosip.kernel.cryptomanager.dto.KeyManagerKeyPairResponseDto;
+import io.mosip.kernel.cryptomanager.dto.KeyManagerEncryptDataRequestDto;
+import io.mosip.kernel.cryptomanager.dto.KeyManagerEncryptResponseDto;
 import io.mosip.kernel.cryptomanager.dto.KeymanagerPublicKeyResponseDto;
 import io.mosip.kernel.cryptomanager.dto.KeymanagerSymmetricKeyRequestDto;
 import io.mosip.kernel.cryptomanager.dto.KeymanagerSymmetricKeyResponseDto;
@@ -90,8 +88,8 @@ public class CryptomanagerUtil {
 	/**
 	 * Keymanager URL to Get PublicKey
 	 */
-	@Value("${mosip.kernel.keymanager-service-keypair-url:http://localhost:8088/keymanager/keypair/{applicationId}}")
-	private String getKeyPairUrl;
+	@Value("${mosip.kernel.keymanager-service-keypair-url:http://localhost:8088/keymanager/encrypt}")
+	private String encryptUrl;
 
 	/**
 	 * Keymanager URL to Decrypt Symmetric key
@@ -219,18 +217,27 @@ public class CryptomanagerUtil {
 		return new SecretKeySpec(symmetricKey, 0, symmetricKey.length, symmetricAlgorithmName);
 	}
 
-	public KeyPair getKeyPairKey(CryptomanagerRequestDto cryptomanagerRequestDto) {
-		PublicKey publicKey = null;
-		PrivateKey privateKey = null;
-		KeyPair keyPair = null;
-		Map<String, String> uriParams = new HashMap<>();
-		uriParams.put("applicationId", cryptomanagerRequestDto.getApplicationId());
-		UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(getKeyPairUrl)
-				.queryParam("timeStamp", cryptomanagerRequestDto.getTimeStamp().atOffset(ZoneOffset.UTC))
-				.queryParam("referenceId", cryptomanagerRequestDto.getReferenceId());
+	/**
+	 * Gets the encrypted data.
+	 *
+	 * @param cryptomanagerRequestDto
+	 *            the cryptomanager request dto
+	 * @return {@link String} encrypted data
+	 */
+	public String getEncryptedData(CryptoEncryptRequestDto cryptomanagerRequestDto) {
+		String encryptedData = null;
+		RequestWrapper<KeyManagerEncryptDataRequestDto> requestWrapper = new RequestWrapper<>();
+		requestWrapper.setId(cryptomanagerRequestID);
+		requestWrapper.setVersion(cryptomanagerRequestVersion);
 
-		ResponseEntity<String> response = restTemplate.exchange(builder.buildAndExpand(uriParams).toUri(),
-				HttpMethod.GET, null, String.class);
+		KeyManagerEncryptDataRequestDto keyManagerEncryptDataRequestDto = new KeyManagerEncryptDataRequestDto();
+		keyManagerEncryptDataRequestDto.setApplicationId(cryptomanagerRequestDto.getApplicationId());
+		keyManagerEncryptDataRequestDto.setReferenceId(cryptomanagerRequestDto.getReferenceId());
+		keyManagerEncryptDataRequestDto.setHashedData(cryptomanagerRequestDto.getData());
+		keyManagerEncryptDataRequestDto.setTimeStamp(cryptomanagerRequestDto.getTimeStamp());
+		requestWrapper.setRequest(keyManagerEncryptDataRequestDto);
+
+		ResponseEntity<String> response = restTemplate.postForEntity(encryptUrl, requestWrapper, String.class);
 
 		String responseBody = response.getBody();
 		List<ServiceError> validationErrorsList = null;
@@ -239,43 +246,23 @@ public class CryptomanagerUtil {
 		if (!validationErrorsList.isEmpty()) {
 			throw new KeymanagerServiceException(validationErrorsList);
 		}
-		KeyManagerKeyPairResponseDto keyManagerResponseDto;
-		ResponseWrapper<KeyManagerKeyPairResponseDto> responseObject;
+		KeyManagerEncryptResponseDto keyManagerResponseDto;
+		ResponseWrapper<KeyManagerEncryptResponseDto> responseObject;
 		try {
-			// responseObject = objectMapper.readValue(response.getBody(),
-			// ResponseWrapper.class);
+
 			responseObject = objectMapper.readValue(response.getBody(),
-					new TypeReference<ResponseWrapper<KeyManagerKeyPairResponseDto>>() {
+					new TypeReference<ResponseWrapper<KeyManagerEncryptResponseDto>>() {
 					});
-			/*
-			 * responseObject = objectMapper.readValue(
-			 * objectMapper.writeValueAsString(responseObject.getResponse()),
-			 * KeyManagerKeyPairResponseDto.class);
-			 */
+
 			keyManagerResponseDto = responseObject.getResponse();
 		} catch (IOException | NullPointerException exception) {
 			throw new ParseResponseException(CryptomanagerErrorCode.RESPONSE_PARSE_ERROR.getErrorCode(),
 					CryptomanagerErrorCode.RESPONSE_PARSE_ERROR.getErrorMessage() + exception.getMessage(), exception);
 		}
 
-		try {
-			publicKey = KeyFactory.getInstance(asymmetricAlgorithmName).generatePublic(
-					new X509EncodedKeySpec(CryptoUtil.decodeBase64(keyManagerResponseDto.getPublicKey())));
+		encryptedData = keyManagerResponseDto.getEncryptedData();
 
-			PKCS8EncodedKeySpec spec = new PKCS8EncodedKeySpec(
-					CryptoUtil.decodeBase64(keyManagerResponseDto.getPrivateKey()));
-			KeyFactory kf = KeyFactory.getInstance(asymmetricAlgorithmName);
-			RSAPrivateKey privateKey1 = (RSAPrivateKey)kf.generatePrivate(spec);
-			keyPair = new KeyPair(publicKey, privateKey1);
-		} catch (InvalidKeySpecException e) {
-			throw new InvalidKeyException(CryptomanagerErrorCode.INVALID_SPEC_PUBLIC_KEY.getErrorCode(),
-					CryptomanagerErrorCode.INVALID_SPEC_PUBLIC_KEY.getErrorMessage());
-		} catch (NoSuchAlgorithmException e) {
-			throw new io.mosip.kernel.core.exception.NoSuchAlgorithmException(
-					CryptomanagerErrorCode.NO_SUCH_ALGORITHM_EXCEPTION.getErrorCode(),
-					CryptomanagerErrorCode.NO_SUCH_ALGORITHM_EXCEPTION.getErrorMessage());
-		}
-		return keyPair;
+		return encryptedData;
 	}
 
 }

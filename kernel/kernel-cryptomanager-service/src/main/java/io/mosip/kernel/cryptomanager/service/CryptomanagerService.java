@@ -10,7 +10,8 @@ import javax.validation.Valid;
 
 import org.springframework.stereotype.Service;
 
-import io.mosip.kernel.cryptomanager.dto.CryptoPublicResponseDto;
+import io.mosip.kernel.cryptomanager.dto.CryptoEncryptRequestDto;
+import io.mosip.kernel.cryptomanager.dto.CryptoEncryptResponseDto;
 import io.mosip.kernel.cryptomanager.dto.CryptomanagerRequestDto;
 import io.mosip.kernel.cryptomanager.dto.CryptomanagerResponseDto;
 
@@ -44,9 +45,9 @@ public interface CryptomanagerService {
 	/**
 	 * Enncypt with private.
 	 *
-	 * @param cryptoRequestDto the crypto request dto
-	 * @return the cryptomanager response dto
+	 * @param {@link CryptoEncryptRequestDto}cryptoRequestDto the crypto request dto
+	 * @return the cryptomanager response dto {@link CryptoEncryptResponseDto}
 	 */
-	public CryptoPublicResponseDto encryptWithPrivate(@Valid CryptomanagerRequestDto cryptoRequestDto );
+	public CryptoEncryptResponseDto encryptWithPrivate(@Valid CryptoEncryptRequestDto cryptoRequestDto );
 
 }

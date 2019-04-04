@@ -502,7 +502,7 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 		PrivateKey privateKey = getPrivateKeyFromRequestData(encryptDataRequestDto.getApplicationId(),
 				encryptDataRequestDto.getReferenceId(), timeStamp);
 		byte[] encryptedData = encryptor.asymmetricPrivateEncrypt(privateKey,
-				CryptoUtil.decodeBase64(encryptDataRequestDto.getHashedData()));
+				encryptDataRequestDto.getHashedData().getBytes());
 		encryptDataResponseDto.setEncryptedData(CryptoUtil.encodeBase64(encryptedData));
 		return encryptDataResponseDto;
 

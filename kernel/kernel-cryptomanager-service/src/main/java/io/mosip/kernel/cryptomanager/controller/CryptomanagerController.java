@@ -9,7 +9,6 @@ package io.mosip.kernel.cryptomanager.controller;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,7 +16,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseFilter;
-import io.mosip.kernel.cryptomanager.dto.CryptoPublicResponseDto;
+import io.mosip.kernel.cryptomanager.dto.CryptoEncryptRequestDto;
+import io.mosip.kernel.cryptomanager.dto.CryptoEncryptResponseDto;
 import io.mosip.kernel.cryptomanager.dto.CryptomanagerRequestDto;
 import io.mosip.kernel.cryptomanager.dto.CryptomanagerResponseDto;
 import io.mosip.kernel.cryptomanager.service.CryptomanagerService;
@@ -61,13 +61,13 @@ public class CryptomanagerController {
 	/**
 	 * 
 	 * @param cryptomanagerRequestDto
-	 * @return {@link CryptoPublicResponseDto }
+	 * @return {@link CryptoEncryptResponseDto }
 	 */
 	@ResponseFilter
 	@ApiOperation(value = "Encrypt the data", response = CryptomanagerResponseDto.class)
 	@PostMapping(value = "/encrypt/private", produces = "application/json")
-	public CryptoPublicResponseDto encryptWithPrivate(
-			@ApiParam("Data to encrypt in BASE64 encoding with meta-data") @RequestBody @Valid RequestWrapper<CryptomanagerRequestDto> cryptomanagerRequestDto) {
+	public CryptoEncryptResponseDto encryptWithPrivate(
+			@ApiParam("Data to encrypt in BASE64 encoding with meta-data") @RequestBody @Valid RequestWrapper<CryptoEncryptRequestDto> cryptomanagerRequestDto) {
 		return cryptomanagerService.encryptWithPrivate(cryptomanagerRequestDto.getRequest());
 	}
 

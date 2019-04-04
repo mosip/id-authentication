@@ -8,7 +8,6 @@ package io.mosip.kernel.cryptomanager.service.impl;
 
 import static java.util.Arrays.copyOfRange;
 
-import java.security.KeyPair;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 
@@ -22,7 +21,8 @@ import org.springframework.stereotype.Service;
 import io.mosip.kernel.core.crypto.spi.Decryptor;
 import io.mosip.kernel.core.crypto.spi.Encryptor;
 import io.mosip.kernel.core.util.CryptoUtil;
-import io.mosip.kernel.cryptomanager.dto.CryptoPublicResponseDto;
+import io.mosip.kernel.cryptomanager.dto.CryptoEncryptRequestDto;
+import io.mosip.kernel.cryptomanager.dto.CryptoEncryptResponseDto;
 import io.mosip.kernel.cryptomanager.dto.CryptomanagerRequestDto;
 import io.mosip.kernel.cryptomanager.dto.CryptomanagerResponseDto;
 import io.mosip.kernel.cryptomanager.service.CryptomanagerService;
@@ -112,18 +112,19 @@ public class CryptomanagerServiceImpl implements CryptomanagerService {
 		return cryptoResponseDto;
 	}
 
-	/* (non-Javadoc)
-	 * @see io.mosip.kernel.cryptomanager.service.CryptomanagerService#enncyptWithPrivate(io.mosip.kernel.cryptomanager.dto.CryptomanagerRequestDto)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.kernel.cryptomanager.service.CryptomanagerService#enncyptWithPrivate
+	 * (io.mosip.kernel.cryptomanager.dto.CryptomanagerRequestDto)
 	 */
 	@Override
-	public CryptoPublicResponseDto encryptWithPrivate(@Valid CryptomanagerRequestDto cryptoRequestDto) {
-		KeyPair keyPair = cryptomanagerUtil.getKeyPairKey(cryptoRequestDto);
-		PrivateKey privateKey = keyPair.getPrivate();
-		byte[] encryptedData = encryptor.asymmetricPrivateEncrypt(privateKey,
-				CryptoUtil.decodeBase64(cryptoRequestDto.getData()));
-		CryptoPublicResponseDto cryptoPublicResponseDto = new CryptoPublicResponseDto();
-		cryptoPublicResponseDto.setData(CryptoUtil.encodeBase64(encryptedData));
-		cryptoPublicResponseDto.setPublicKey(keyPair.getPublic().toString());
+	public CryptoEncryptResponseDto encryptWithPrivate(@Valid CryptoEncryptRequestDto cryptoRequestDto) {
+		String encryptedData = cryptomanagerUtil.getEncryptedData(cryptoRequestDto);
+		CryptoEncryptResponseDto cryptoPublicResponseDto = new CryptoEncryptResponseDto();
+		cryptoPublicResponseDto.setData(encryptedData);
+
 		return cryptoPublicResponseDto;
 	}
 

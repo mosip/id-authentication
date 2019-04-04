@@ -1,4 +1,5 @@
-package io.mosip.kernel.keymanagerservice.dto;
+package io.mosip.kernel.cryptomanager.dto;
+
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
@@ -6,11 +7,16 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
+/**
+ * 
+ * @author Srinivasan
+ * @since 1.0.0
+ *
+ */
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
-public class EncryptDataRequestDto {
+@AllArgsConstructor
+public class KeyManagerEncryptDataRequestDto {
 
 	/**
 	 * The string applicationID

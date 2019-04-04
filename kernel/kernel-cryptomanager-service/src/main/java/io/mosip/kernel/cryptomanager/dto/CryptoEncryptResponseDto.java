@@ -7,7 +7,9 @@ import lombok.NoArgsConstructor;
 
 /**
  * Instantiates a new crypto public response dto.
- *
+ * 
+ * @author Srinivasan
+ * @since 1.0.0
  * @param data
  *            the data
  * @param publicKey
@@ -17,12 +19,10 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class CryptoPublicResponseDto {
+public class CryptoEncryptResponseDto {
 
 	/** Data Encrypted/Decrypted in BASE64 encoding. */
 	@ApiModelProperty(notes = "Data encrypted/decrypted in BASE64 encoding")
 	private String data;
 
-	/** The public key. */
-	private String publicKey;
 }
