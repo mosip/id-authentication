@@ -440,6 +440,8 @@ public class IrisCaptureController extends BaseController {
 				}
 			} else {
 				faceCaptureController.disableNextButton();
+				rightEyeTrackerImg.setVisible(false);
+				leftEyeTrackerImg.setVisible(true);
 				if (getRegistrationDTOFromSession().getSelectionListDTO() != null) {
 
 					SessionContext.getInstance().getMapObject().put("irisCapture", false);

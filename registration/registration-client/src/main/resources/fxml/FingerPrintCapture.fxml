@@ -52,7 +52,7 @@
                                   <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                 </rowConstraints>
                                 <children>
-                                	 <AnchorPane fx:id="lefhPalmTrackerImg" visible="false">
+                                	 <AnchorPane fx:id="lefhPalmTrackerImg">
                                  		<children>
                                     		<ImageView fitHeight="400.0" layoutX="5.0" pickOnBounds="true" preserveRatio="false">
                                    				<image>
@@ -777,7 +777,7 @@
                   </GridPane>
                   <GridPane GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="TOP">
                      <children>
-                        <Button fx:id="continueBtn" minWidth="${backButton.width/2}" mnemonicParsing="false" onAction="#goToNextPage" styleClass="contiuneButton" text="%continue" GridPane.halignment="RIGHT" GridPane.valignment="TOP" >
+                        <Button fx:id="continueBtn" minWidth="${backButton.width/2}" mnemonicParsing="false" onAction="#goToNextPage" styleClass="contiuneButton" text="%continue" GridPane.halignment="RIGHT" GridPane.valignment="TOP">
                         <graphic>
                               <ImageView fitHeight="20.0" fitWidth="27.0" pickOnBounds="true" preserveRatio="true">
                                  <image>

@@ -358,6 +358,8 @@ public class FaceCaptureController extends BaseController implements Initializab
 			saveBiometricDetailsBtn.setDisable(false);
 
 		} else if (validateApplicantImage()) {
+			applicantFaceTrackerImg.setVisible(false);
+			exceptionFaceTrackerImg.setVisible(true);
 			saveBiometricDetailsBtn.setDisable(false);
 		}
 	}

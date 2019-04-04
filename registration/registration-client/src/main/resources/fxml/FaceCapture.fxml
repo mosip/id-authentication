@@ -407,7 +407,7 @@
                                   <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                 </rowConstraints>
                                 <children>
-                                	 <AnchorPane fx:id="applicantFaceTrackerImg" visible="false">
+                                	 <AnchorPane fx:id="applicantFaceTrackerImg">
                                  		<children>
                                     		<ImageView fitHeight="400.0" layoutX="5.0" pickOnBounds="true" preserveRatio="false">
                                    				<image>

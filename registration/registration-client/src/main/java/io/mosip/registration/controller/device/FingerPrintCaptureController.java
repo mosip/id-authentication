@@ -1026,6 +1026,9 @@ public class FingerPrintCaptureController extends BaseController implements Init
 				userOnboardParentController.showCurrentPage(RegistrationConstants.FINGERPRINT_CAPTURE,
 						getOnboardPageDetails(RegistrationConstants.FINGERPRINT_CAPTURE, RegistrationConstants.NEXT));
 			} else {
+				lefhPalmTrackerImg.setVisible(false);
+				rightPalmTrackerImg.setVisible(false);
+				thumbTrackerImg.setVisible(true);
 				if (getRegistrationDTOFromSession().getSelectionListDTO() != null) {
 					SessionContext.map().remove(RegistrationConstants.DUPLICATE_FINGER);
 

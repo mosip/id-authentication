@@ -52,7 +52,7 @@
                                   <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                 </rowConstraints>
                                 <children>                                	                           		 
-                             		 <AnchorPane fx:id="rightEyeTrackerImg" visible="false">
+                             		 <AnchorPane fx:id="rightEyeTrackerImg">
                                  		<children>
                                     		<ImageView fitHeight="400.0" layoutX="5.0" pickOnBounds="true" preserveRatio="false">
                                    				<image>
