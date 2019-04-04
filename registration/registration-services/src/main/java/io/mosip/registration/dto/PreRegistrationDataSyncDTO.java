@@ -15,8 +15,10 @@ public class PreRegistrationDataSyncDTO implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private String id;
-	private String ver;
-	private String reqTime;
+	@JsonProperty("version")
+	private String version;
+	@JsonProperty("requesttime")
+	private String requesttime;
 	
 	/**
 	 * object to accept json
@@ -33,19 +35,19 @@ public class PreRegistrationDataSyncDTO implements Serializable {
 	}
 
 	public String getVer() {
-		return ver;
+		return version;
 	}
 
-	public void setVer(String ver) {
-		this.ver = ver;
+	public void setVer(String version) {
+		this.version = version;
 	}
 
 	public String getReqTime() {
-		return reqTime;
+		return requesttime;
 	}
 
-	public void setReqTime(String reqTime) {
-		this.reqTime = reqTime;
+	public void setReqTime(String requesttime) {
+		this.requesttime = requesttime;
 	}
 
 	public PreRegistrationDataSyncRequestDTO getDataSyncRequestDto() {

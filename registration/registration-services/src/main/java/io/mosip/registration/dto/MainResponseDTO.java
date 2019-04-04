@@ -2,6 +2,8 @@ package io.mosip.registration.dto;
 
 import java.io.Serializable;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -23,9 +25,17 @@ public class MainResponseDTO<T> implements Serializable {
 	/** The error details. */
 	private PreRegistrationExceptionJSONInfoDTO err;
 
+	/*TODO- to be removed  */
+	private PreRegistrationExceptionJSONInfoDTO errors;
+	
 	private boolean status;
 
+	@JsonProperty("responsetime")
 	private String resTime;
+	
+	private String id;
+	
+	private String version;
 
 	private T response;
 

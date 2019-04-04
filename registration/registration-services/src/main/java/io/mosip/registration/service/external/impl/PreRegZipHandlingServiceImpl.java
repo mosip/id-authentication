@@ -132,7 +132,8 @@ public class PreRegZipHandlingServiceImpl implements PreRegZipHandlingService {
 		documentDetailsDTO.setType(docCatgory);
 		documentDetailsDTO.setFormat(fileName.substring(fileName.lastIndexOf(RegistrationConstants.DOT) + 1));
 		
-		String docTypeName = fileName.substring(fileName.lastIndexOf("_") + 1, fileName.lastIndexOf("."));
+		/*name after the first '_' considered as the doc type and before '_' as doc category*/
+		String docTypeName = fileName.substring(fileName.indexOf("_") + 1, fileName.lastIndexOf("."));
 
 		/*
 		 * checking and setting the doc type name based on the reg client primary

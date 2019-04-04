@@ -35,6 +35,7 @@ import io.mosip.kernel.keygenerator.bouncycastle.KeyGenerator;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
+import io.mosip.registration.dao.DocumentTypeDAO;
 import io.mosip.registration.dto.OSIDataDTO;
 import io.mosip.registration.dto.PreRegistrationDTO;
 import io.mosip.registration.dto.RegistrationDTO;
@@ -59,6 +60,9 @@ public class PreRegZipHandlingServiceTest {
 
 	@Mock
 	private JsonValidator jsonValidator;
+	
+	@Mock
+	private DocumentTypeDAO documentTypeDAO;
 
 	@InjectMocks
 	private PreRegZipHandlingServiceImpl preRegZipHandlingServiceImpl;
@@ -89,6 +93,9 @@ public class PreRegZipHandlingServiceTest {
 			JsonValidationProcessingException, JsonIOException, JsonSchemaIOException, FileIOException {
 		Mockito.when(jsonValidator.validateJson(Mockito.anyString())).thenReturn(new ValidationReport());
 		
+		
+		Mockito.when(documentTypeDAO.getDocTypeByName(Mockito.anyString())).thenReturn(new ArrayList<>());
+		
 		Map<String,Object> appMap = new HashMap<>();
 		appMap.put(RegistrationConstants.IDENTITY_CLASS_NAME, "io.mosip.registration.dto.demographic.MoroccoIdentity");
 		ApplicationContext.getInstance().setApplicationMap(appMap);
@@ -103,6 +110,7 @@ public class PreRegZipHandlingServiceTest {
 	public void extractPreRegZipFileTestNegative() throws RegBaseCheckedException, IOException,
 			JsonValidationProcessingException, JsonIOException, JsonSchemaIOException, FileIOException {
 		Mockito.when(jsonValidator.validateJson(Mockito.anyString())).thenThrow(new JsonValidationProcessingException("", ""));
+		Mockito.when(documentTypeDAO.getDocTypeByName(Mockito.anyString())).thenReturn(new ArrayList<>());
 		preRegZipHandlingServiceImpl.extractPreRegZipFile(preRegPacket);
 
 	}
