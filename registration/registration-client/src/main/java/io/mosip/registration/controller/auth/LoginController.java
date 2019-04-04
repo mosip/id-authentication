@@ -205,7 +205,8 @@ public class LoginController extends BaseController implements Initializable {
 	public void initialize(URL arg0, ResourceBundle arg1) {
 
 		try {		
-				ResponseDTO responseDTO = globalParamService.updateSoftwareUpdateStatus(registrationUpdate.hasUpdate());
+			//TODO to replace false with registrationUpdate.hasUpdate() method.
+				ResponseDTO responseDTO = globalParamService.updateSoftwareUpdateStatus(false);
 
 				if (responseDTO != null && responseDTO.getSuccessResponseDTO() != null) {
 					LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
@@ -224,10 +225,10 @@ public class LoginController extends BaseController implements Initializable {
 					generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.PWORD_LENGTH);
 				}
 			});
-		} catch (IOException | ParserConfigurationException | SAXException exception) {
+		} /*catch (IOException | ParserConfigurationException | SAXException exception) {
 			LOGGER.error(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
 					exception.getMessage() + ExceptionUtils.getStackTrace(exception));
-		} catch (RuntimeException runtimeExceptionexception) {
+		}*/ catch (RuntimeException runtimeExceptionexception) {
 			LOGGER.error(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
 					runtimeExceptionexception.getMessage() + ExceptionUtils.getStackTrace(runtimeExceptionexception));
 		}

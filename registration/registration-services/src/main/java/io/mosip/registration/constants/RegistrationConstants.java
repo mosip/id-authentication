@@ -614,8 +614,8 @@ public class RegistrationConstants {
 	public static final String REG_PAK_MAX_CNT_OFFLINE_FREQ = "mosip.registration.packet.maximum.count.offline.frequency";
 	public static final String MOSIP_REGISTRATION = "mosip.registration.";
 	public static final String FREQUENCY = "frequency";
-	public static final String SOFTWARE_UPDATE_SUCCESS_MSG = "SoftWareUpdate Flag Updated Successfully!";
-	public static final String SOFTWARE_UPDATE_FAILURE_MSG = "Error in Updating SoftWareUpdate Flag!";
+	public static final String SOFTWARE_UPDATE_SUCCESS_MSG = "SoftWareUpdate Flag Updated to Y!";
+	public static final String SOFTWARE_UPDATE_FAILURE_MSG = "SoftWareUpdate Flag Updated to N!";
 	public static final String SOFTWARE_UPDATE_MAX_CONFIGURED_FREQ = "mosip.registration.softwareUpdateCheck_configured_frequency";
 
 	/** Packet Status Sync Constants */
