@@ -30,7 +30,7 @@
                      <graphic>
                         <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
                            <image>
-                              <Image url="@../images/infoSymbol.png" />
+                              <Image url="@../images/Close.png" />
                            </image>
                         </ImageView>
                      </graphic>
@@ -44,12 +44,11 @@
                   <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="10.0" prefWidth="100.0" />
               </columnConstraints>
               <rowConstraints>
-                <RowConstraints minHeight="10.0" percentHeight="20.0" prefHeight="30.0" vgrow="SOMETIMES" />
                 <RowConstraints minHeight="10.0" percentHeight="60.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                <RowConstraints minHeight="10.0" percentHeight="20.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" percentHeight="40.0" prefHeight="30.0" vgrow="SOMETIMES" />
               </rowConstraints>
                <children>
-                  <GridPane GridPane.columnIndex="1" GridPane.rowIndex="1">
+                  <GridPane GridPane.columnIndex="1">
                     <columnConstraints>
                       <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="65.0" prefWidth="100.0" />
                       <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="10.0" prefWidth="100.0" />
@@ -75,13 +74,14 @@
                             <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                           </columnConstraints>
                           <rowConstraints>
-                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" percentHeight="20.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                            <RowConstraints minHeight="10.0" percentHeight="80.0" prefHeight="30.0" vgrow="SOMETIMES" />
                           </rowConstraints>
                            <children>
-                              <VBox alignment="TOP_RIGHT" spacing="15.0" GridPane.halignment="CENTER" GridPane.valignment="TOP">
+                              <VBox alignment="TOP_RIGHT" spacing="15.0" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="TOP">
                                  <children>
-                                    <Text fx:id="scanningMsg" text="%scanning"  styleClass="scanPageLabel" />
-                                    <Label fx:id="scannedPagesLabel" text="%totalpages" styleClass="scanButton" />
+                                    <Text fx:id="scanningMsg" styleClass="scanPageLabel" text="%scanning" />
+                                    <Label fx:id="scannedPagesLabel" styleClass="scanButton" text="%totalpages" />
                                     <Text fx:id="totalScannedPages" strokeType="OUTSIDE" strokeWidth="0.0" text="0" />
                                     <Button fx:id="saveBtn" mnemonicParsing="false" onAction="#save" styleClass="scanButton" text="%save">
                                     </Button>

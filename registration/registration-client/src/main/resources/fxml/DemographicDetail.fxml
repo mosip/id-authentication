@@ -675,7 +675,7 @@
                                                          <children>
                                                             <GridPane fx:id="applicatoinAddressPane">
                                                                <children>
-                                                                  <VBox fx:id="addressVBox" prefHeight="632.0" prefWidth="223.0" spacing="5.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                                                  <VBox fx:id="addressVBox" prefHeight="632.0" prefWidth="223.0" spacing="6.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
                                                                      <children>
                                                                         <VBox fx:id="applicationLanguageAddressPane">
                                                                            <children>

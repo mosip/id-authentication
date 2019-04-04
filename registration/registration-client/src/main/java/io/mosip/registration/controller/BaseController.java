@@ -66,6 +66,8 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Control;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
@@ -248,6 +250,10 @@ public class BaseController extends BaseService {
 		alert.setContentText(context);
 		alert.setTitle(RegistrationUIConstants.getMessageLanguageSpecific(title));
 		alert.setGraphic(null);
+		alert.getDialogPane().getStylesheets().add(
+				ClassLoader.getSystemClassLoader().getResource(RegistrationConstants.CSS_FILE_PATH).toExternalForm());
+		Button button = (Button) alert.getDialogPane().lookupButton(ButtonType.OK);
+		button.setText(RegistrationUIConstants.getMessageLanguageSpecific("ok"));
 		alert.setResizable(true);
 		alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
 		alert.showAndWait();
@@ -266,6 +272,10 @@ public class BaseController extends BaseService {
 		alert.setHeaderText(null);
 		alert.setContentText(RegistrationUIConstants.getMessageLanguageSpecific(context));
 		alert.setTitle(RegistrationUIConstants.getMessageLanguageSpecific(title));
+		alert.getDialogPane().getStylesheets().add(
+				ClassLoader.getSystemClassLoader().getResource(RegistrationConstants.CSS_FILE_PATH).toExternalForm());
+		Button button = (Button) alert.getDialogPane().lookupButton(ButtonType.OK);
+		button.setText(RegistrationUIConstants.getMessageLanguageSpecific("ok"));
 		alert.setGraphic(null);
 		alert.setResizable(true);
 		alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);

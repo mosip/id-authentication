@@ -537,7 +537,7 @@ Working on new Css by taleev
 	-fx-border-color: #FF4081;
 	-fx-background-color : #FFFFFF;
 	-fx-border-radius: 3,3,3,3;
-	-fx-font-size : 15px;
+	-fx-font-size : 1.1em;
 	 
 }
 
@@ -1605,3 +1605,19 @@ Working on new Css by taleev
 	-fx-font-weight: lighter;
 }
 /*Tracker Style ends */
+
+ 
+ .dialog-pane{
+  -fx-background-color : #FFFFFF;
+ }
+ 
+ .dialog-pane .button{
+   -fx-background-color:#FF4081;
+   -fx-text-fill:white;
+   -fx-wrap-text: true;
+   -fx-cursor:hand;
+ }
+ 
+ .dialog-pane:header .header-panel {
+  -fx-background-color: #FFFFFF;
+}
