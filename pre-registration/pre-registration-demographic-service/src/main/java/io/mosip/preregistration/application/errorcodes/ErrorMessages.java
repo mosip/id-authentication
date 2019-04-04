@@ -37,7 +37,7 @@ public enum ErrorMessages {
 	/**
 	 * ErrorMessage for PRG_PAM_APP_005
 	 */
-	UNABLE_TO_FETCH_THE_PRE_REGISTRATION("UNABLE_TO_FETCH_THE_PRE_REGISTRATION"),
+	UNABLE_TO_FETCH_THE_PRE_REGISTRATION("No data found for the requested pre-registration id"),
 
 	/**
 	 * ErrorMessage for PRG_PAM_APP_005
