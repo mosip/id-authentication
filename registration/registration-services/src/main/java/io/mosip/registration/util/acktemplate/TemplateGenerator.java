@@ -252,7 +252,9 @@ public class TemplateGenerator extends BaseService {
 			ResourceBundle applicationLanguageProperties, ResourceBundle localProperties, String fingerPrintDisableFlag,
 			String irisDisableFlag, String faceDisableFlag) {
 		// iris is configured
-		if (RegistrationConstants.ENABLE.equalsIgnoreCase(irisDisableFlag)) {
+		if (RegistrationConstants.ENABLE.equalsIgnoreCase(irisDisableFlag)
+				&& (registration.getSelectionListDTO() == null || (registration.getSelectionListDTO() != null
+						&& registration.getSelectionListDTO().isBiometrics()))) {
 			templateValues.put(RegistrationConstants.TEMPLATE_LEFT_EYE_USER_LANG_LABEL,
 					applicationLanguageProperties.getString("lefteye"));
 			templateValues.put(RegistrationConstants.TEMPLATE_LEFT_EYE_LOCAL_LANG_LABEL,
