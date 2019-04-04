@@ -170,7 +170,7 @@ public class RegistrationPreviewController extends BaseController implements Ini
 		LOGGER.info("REGISTRATION - UI - REGISTRATION_PREVIEW_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
 				"Setting up preview content has been started");
 
-		StringBuilder templateContent = new StringBuilder();
+		StringBuilder templateContent = new StringBuilder(); 
 		String platformLanguageCode = ApplicationContext.applicationLanguage();
 		templateContent.append(templateService.getHtmlTemplate(ACKNOWLEDGEMENT_TEMPLATE_PART_1, platformLanguageCode));
 		templateContent.append(templateService.getHtmlTemplate(ACKNOWLEDGEMENT_TEMPLATE_PART_2, platformLanguageCode));

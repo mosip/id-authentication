@@ -251,7 +251,7 @@ public class TemplateGenerator extends BaseService {
 	private void setUpBiometricContent(Map<String, Object> templateValues, RegistrationDTO registration,
 			ResourceBundle applicationLanguageProperties, ResourceBundle localProperties, String fingerPrintDisableFlag,
 			String irisDisableFlag, String faceDisableFlag) {
-		// iris is configured
+		/* iris is configured */
 		if (RegistrationConstants.ENABLE.equalsIgnoreCase(irisDisableFlag)
 				&& (registration.getSelectionListDTO() == null || (registration.getSelectionListDTO() != null
 						&& registration.getSelectionListDTO().isBiometrics()))) {
