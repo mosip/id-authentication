@@ -21,6 +21,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 
 import io.mosip.kernel.core.crypto.spi.Encryptor;
@@ -31,6 +35,8 @@ import io.mosip.kernel.keygenerator.bouncycastle.KeyGenerator;
 import io.mosip.registration.processor.core.code.ApiName;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
+import io.mosip.registration.processor.core.http.ResponseWrapper;
+import io.mosip.registration.processor.core.notification.template.generator.dto.TemplateResponseDto;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.packet.service.dto.PublicKeyResponseDto;
 import io.mosip.registration.processor.packet.service.exception.RegBaseCheckedException;
@@ -74,6 +80,8 @@ public class EncryptorUtil {
 	@Value("${mosip.kernel.rid.centerid-length}")
 	private int centerIdLength;
 
+	private ObjectMapper mapper=new ObjectMapper();
+
 	/**
 	 * Encrypt uin update packet.
 	 *
@@ -100,7 +108,7 @@ public class EncryptorUtil {
 			RegBaseCheckedException {
 		try (InputStream decryptedPacketStream = new BufferedInputStream(decryptedFile);
 				InputStream encryptPacketStream = encrypt(decryptedPacketStream, regId, creationTime)) {// close input
-																										// stream
+			// stream
 			byte[] bytes = IOUtils.toByteArray(encryptPacketStream);
 
 			return storageService.storeToDisk(regId, bytes, true);
@@ -141,16 +149,12 @@ public class EncryptorUtil {
 
 			// Enable AES 256 bit encryption
 			Security.setProperty("crypto.policy", "unlimited");
-			System.out.println("1");
 			// Generate AES Session Key
 			final SecretKey symmetricKey = keyGenerator.getSymmetricKey();
-			System.out.println("2");
 			// Encrypt the Data using AES
 			final byte[] encryptedData = encryptor.symmetricEncrypt(symmetricKey, dataToEncrypt);
-			System.out.println("3");
 			// Encrypt the AES Session Key using RSA
 			final byte[] rsaEncryptedKey = encryptRSA(symmetricKey.getEncoded(), centerId, creationTime);
-			System.out.println("4");
 			return new ByteArrayInputStream(CryptoUtil
 					.encodeBase64(CryptoUtil.combineByteArray(encryptedData, rsaEncryptedKey, AES_KEY_CIPHER_SPLITTER))
 					.getBytes());
@@ -184,20 +188,28 @@ public class EncryptorUtil {
 	 *             the invalid key spec exception
 	 * @throws NoSuchAlgorithmException
 	 *             the no such algorithm exception
+	 * @throws IOException 
+	 * @throws JsonProcessingException 
+	 * @throws JsonMappingException 
+	 * @throws JsonParseException 
 	 */
 	private byte[] encryptRSA(final byte[] sessionKey, String centerId, String creationTime)
-			throws ApisResourceAccessException, InvalidKeySpecException, java.security.NoSuchAlgorithmException {
+			throws ApisResourceAccessException, InvalidKeySpecException, java.security.NoSuchAlgorithmException, IOException {
 
 		// encrypt AES Session Key using RSA public key
 		List<String> pathsegments = new ArrayList<>();
-
 		pathsegments.add(APPLICATION_ID);
+		String publicKeytest=null;
+		ResponseWrapper<?> responseWrapper;
+		PublicKeyResponseDto publicKeyResponsedto=null;
 
-		String publicKeytest = (String) registrationProcessorRestClientService.getApi(ApiName.ENCRYPTIONSERVICE,
-				pathsegments, "timeStamp,referenceId", creationTime + ',' + centerId, String.class);
+		responseWrapper = (ResponseWrapper<?>) registrationProcessorRestClientService.getApi(ApiName.ENCRYPTIONSERVICE,
+				pathsegments, "timeStamp,referenceId", creationTime + ',' + centerId, ResponseWrapper.class);
+		publicKeyResponsedto = mapper.readValue(mapper.writeValueAsString(responseWrapper.getResponse()), PublicKeyResponseDto.class);
 
-		Gson gsonObj = new Gson();
-		PublicKeyResponseDto publicKeyResponsedto = gsonObj.fromJson(publicKeytest, PublicKeyResponseDto.class);
+		//Gson gsonObj = new Gson();
+		//	PublicKeyResponseDto publicKeyResponsedto = gsonObj.fromJson(publicKeytest, PublicKeyResponseDto.class);
+
 		PublicKey publicKey = KeyFactory.getInstance(RSA)
 				.generatePublic(new X509EncodedKeySpec(CryptoUtil.decodeBase64(publicKeyResponsedto.getPublicKey())));
 

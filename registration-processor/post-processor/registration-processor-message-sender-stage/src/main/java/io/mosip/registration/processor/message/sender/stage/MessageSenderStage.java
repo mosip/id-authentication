@@ -357,7 +357,7 @@ public class MessageSenderStage extends MosipVerticleManager {
 	 * @throws JsonMappingException 
 	 * @throws JsonParseException 
 	 */
-	public boolean isTemplateAvailable(String templateCode) throws ApisResourceAccessException, IOException{
+	private boolean isTemplateAvailable(String templateCode) throws ApisResourceAccessException, IOException{
 
 		List<String> pathSegments = new ArrayList<>();
 		pathSegments.add(TEMPLATES);
