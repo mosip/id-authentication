@@ -45,6 +45,7 @@ import io.mosip.authentication.service.integration.OTPManager;
 import io.mosip.authentication.service.integration.dto.OtpGeneratorRequestDto;
 import io.mosip.authentication.service.integration.dto.OtpGeneratorResponseDto;
 import io.mosip.authentication.service.repository.AutnTxnRepository;
+import io.mosip.kernel.core.http.ResponseWrapper;
 
 /**
  * Test class for OTPServiceImpl.
@@ -111,6 +112,7 @@ public class OTPServiceImplTest {
 		ReflectionTestUtils.setField(otpServiceImpl, "idAuthService", idAuthService);
 	}
 
+	@SuppressWarnings("rawtypes")
 	@Test
 	public void TestgenerateOtp() throws IdAuthenticationBusinessException, RestServiceException {
 		OtpRequestDTO otpRequestDto = getOtpRequestDTO();
@@ -124,14 +126,17 @@ public class OTPServiceImplTest {
 		Mockito.when(autntxnrepository.countRequestDTime(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(1);
 		RestRequestDTO value = getRestDto();
 		Mockito.when(restRequestFactory.buildRequest(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(value);
-		OtpGeneratorResponseDto otpGeneratorResponseDto = new OtpGeneratorResponseDto();
-		otpGeneratorResponseDto.setStatus("success");
-		otpGeneratorResponseDto.setMessage("otp_generated");
-		otpGeneratorResponseDto.setOtp("123456");
-		Mockito.when(restHelper.requestSync(Mockito.any())).thenReturn(otpGeneratorResponseDto);
+		ResponseWrapper<Map> response = new ResponseWrapper<>();
+		Map<String, Object> map = new HashMap<>();
+		map.put("otp", "123456");
+		map.put("status", "success");
+		map.put("messaage", "otp_generated");
+		response.setResponse(map);
+		Mockito.when(restHelper.requestSync(Mockito.any())).thenReturn(response);
 		otpServiceImpl.generateOtp(otpRequestDto, "1234567890");
 	}
 
+	@SuppressWarnings("rawtypes")
 	@Test(expected = IdAuthenticationBusinessException.class)
 	public void TestOtpisNull() throws RestServiceException, IdAuthenticationBusinessException {
 		OtpRequestDTO otpRequestDto = getOtpRequestDTO();
@@ -139,10 +144,15 @@ public class OTPServiceImplTest {
 		Mockito.when(restRequestFactory.buildRequest(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(value);
 		OtpGeneratorResponseDto otpGeneratorResponseDto = new OtpGeneratorResponseDto();
 		otpGeneratorResponseDto.setOtp(null);
-		Mockito.when(restHelper.requestSync(Mockito.any())).thenReturn(otpGeneratorResponseDto);
+		ResponseWrapper<Map> response = new ResponseWrapper<>();
+		Map<String, Object> map = new HashMap<>();
+		map.put("otp", null);
+		response.setResponse(map);
+		Mockito.when(restHelper.requestSync(Mockito.any())).thenReturn(response);
 		otpServiceImpl.generateOtp(otpRequestDto, "1234567890");
 	}
 
+	@SuppressWarnings("rawtypes")
 	@Test(expected = IdAuthenticationBusinessException.class)
 	public void TestPhoneorEmailisNull() throws IdAuthenticationBusinessException, RestServiceException {
 		OtpRequestDTO otpRequestDto = getOtpRequestDTO();
@@ -156,9 +166,11 @@ public class OTPServiceImplTest {
 		Mockito.when(autntxnrepository.countRequestDTime(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(1);
 		RestRequestDTO value = getRestDto();
 		Mockito.when(restRequestFactory.buildRequest(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(value);
-		OtpGeneratorResponseDto otpGeneratorResponseDto = new OtpGeneratorResponseDto();
-		otpGeneratorResponseDto.setOtp("123456");
-		Mockito.when(restHelper.requestSync(Mockito.any())).thenReturn(otpGeneratorResponseDto);
+		ResponseWrapper<Map> response = new ResponseWrapper<>();
+		Map<String, Object> map = new HashMap<>();
+		map.put("otp", "123456");
+		response.setResponse(map);
+		Mockito.when(restHelper.requestSync(Mockito.any())).thenReturn(response);
 		otpServiceImpl.generateOtp(otpRequestDto, "1234567890");
 	}
 
@@ -176,6 +188,7 @@ public class OTPServiceImplTest {
 		otpServiceImpl.generateOtp(otpRequestDTO, "1234567890");
 	}
 
+	@SuppressWarnings("rawtypes")
 	@Test(expected = IdAuthenticationBusinessException.class)
 	public void TestPhonenumberisNull() throws IdAuthenticationBusinessException, RestServiceException {
 		OtpRequestDTO otpRequestDto = getOtpRequestDTO();
@@ -194,9 +207,11 @@ public class OTPServiceImplTest {
 		Mockito.when(autntxnrepository.countRequestDTime(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(1);
 		RestRequestDTO value = getRestDto();
 		Mockito.when(restRequestFactory.buildRequest(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(value);
-		OtpGeneratorResponseDto otpGeneratorResponseDto = new OtpGeneratorResponseDto();
-		otpGeneratorResponseDto.setOtp("123456");
-		Mockito.when(restHelper.requestSync(Mockito.any())).thenReturn(otpGeneratorResponseDto);
+		ResponseWrapper<Map> response = new ResponseWrapper<>();
+		Map<String, Object> map = new HashMap<>();
+		map.put("otp", "123456");
+		response.setResponse(map);
+		Mockito.when(restHelper.requestSync(Mockito.any())).thenReturn(response);
 		otpServiceImpl.generateOtp(otpRequestDto, "1234567890");
 
 	}

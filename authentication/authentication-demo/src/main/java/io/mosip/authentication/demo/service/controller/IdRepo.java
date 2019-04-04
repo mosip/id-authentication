@@ -2,12 +2,7 @@ package io.mosip.authentication.demo.service.controller;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.nio.charset.Charset;
 
-import org.apache.commons.text.StringEscapeUtils;
-import org.apache.commons.text.translate.AggregateTranslator;
-import org.apache.commons.text.translate.EntityArrays;
-import org.apache.commons.text.translate.LookupTranslator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.io.InputStreamResource;
@@ -22,9 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.google.common.collect.ImmutableMap;
 
 import io.mosip.kernel.core.exception.BaseUncheckedException;
 import io.mosip.kernel.core.jsonvalidator.exception.FileIOException;
@@ -65,7 +58,7 @@ public class IdRepo {
 	@PostMapping(path = "/validateJson", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.TEXT_PLAIN_VALUE)
 	public String jsonSchemaValidator(@RequestBody ObjectNode object) {
 		try {
-			if (jsonValidator.validateJson(object.toString(), "mosip-identity-json-schema.json").isValid()) {
+			if (jsonValidator.validateJson(object.toString()).isValid()) {
 				return "success";
 			} else {
 				return "failed";

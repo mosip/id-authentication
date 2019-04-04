@@ -54,7 +54,7 @@ public class NotificationManager {
 			smsRequestDto.setNumber(notificationMobileNo);
 			RestRequestDTO restRequestDTO = null;
 			restRequestDTO = restRequestFactory.buildRequest(RestServicesConstants.SMS_NOTIFICATION_SERVICE,
-					smsRequestDto, String.class);
+					RestRequestFactory.createRequest(smsRequestDto), String.class);
 			restHelper.requestAsync(restRequestDTO);
 		} catch (IDDataValidationException e) {
 			logger.error(SESSION_ID, "Inside SMS Notification >>>>>", e.getErrorCode(), e.getErrorText());

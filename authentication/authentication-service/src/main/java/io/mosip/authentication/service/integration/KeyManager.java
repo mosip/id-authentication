@@ -40,7 +40,7 @@ import io.mosip.authentication.core.util.dto.RestRequestDTO;
 import io.mosip.authentication.service.factory.RestRequestFactory;
 import io.mosip.authentication.service.helper.RestHelper;
 import io.mosip.authentication.service.integration.dto.SymmetricKeyRequestDto;
-import io.mosip.authentication.service.integration.dto.SymmetricKeyResponseDto;
+import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.keygenerator.bouncycastle.KeyGenerator;
@@ -126,7 +126,7 @@ public class KeyManager {
 			if (encryptedSessionKey.isPresent()) {
 				RestRequestDTO restRequestDTO = null;
 				SymmetricKeyRequestDto symmetricKeyRequestDto = new SymmetricKeyRequestDto();
-				SymmetricKeyResponseDto symmetricKeyResponseDto = null;
+				ResponseWrapper<Map<String,Object>> symmetricKeyResponseDto = null;
 				byte[] decryptedSymmetricKey = null;
 				try {
 					symmetricKeyRequestDto.setApplicationId(appId);
@@ -136,9 +136,10 @@ public class KeyManager {
 					// cryptoManagerRequestDto.setTimeStamp("2031-03-07T12:58:41.762Z");
 					symmetricKeyRequestDto.setEncryptedSymmetricKey(encryptedSessionKey.get());
 					restRequestDTO = restRequestFactory.buildRequest(RestServicesConstants.DECRYPTION_SERVICE,
-							symmetricKeyRequestDto, SymmetricKeyResponseDto.class);
+							RestRequestFactory.createRequest(symmetricKeyRequestDto), ResponseWrapper.class);
 					symmetricKeyResponseDto = restHelper.requestSync(restRequestDTO);
-					decryptedSymmetricKey = Base64.decodeBase64(symmetricKeyResponseDto.getSymmetricKey());
+					Object symmetricKeyValue = symmetricKeyResponseDto.getResponse().get("symmetricKey");
+					decryptedSymmetricKey = Base64.decodeBase64(symmetricKeyValue instanceof String ? (String) symmetricKeyValue : "");
 					secretKey=new SecretKeySpec(decryptedSymmetricKey, 0, decryptedSymmetricKey.length, SYMMETRIC_ALGORITHM_NAME);
 						decryptedData=symmetricDecrypt(secretKey, encryptedRequest);
 				}
