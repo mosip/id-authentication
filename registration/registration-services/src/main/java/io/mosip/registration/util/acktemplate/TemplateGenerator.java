@@ -142,7 +142,8 @@ public class TemplateGenerator extends BaseService {
 			}
 
 			/* Set-up demographic information related content */
-			setUpDemographicInfo(templateValues, applicationLanguageProperties, localProperties, moroccoIdentity);
+			setUpDemographicInfo(registration, templateValues, applicationLanguageProperties, localProperties,
+					moroccoIdentity);
 
 			/* Set-up the list of documents submitted by the applicant */
 			setUpDocuments(templateValues, applicationLanguageProperties, localProperties, moroccoIdentity,
@@ -410,8 +411,9 @@ public class TemplateGenerator extends BaseService {
 		}
 	}
 
-	private void setUpDemographicInfo(Map<String, Object> templateValues, ResourceBundle applicationLanguageProperties,
-			ResourceBundle localProperties, MoroccoIdentity moroccoIdentity) {
+	private void setUpDemographicInfo(RegistrationDTO registration, Map<String, Object> templateValues,
+			ResourceBundle applicationLanguageProperties, ResourceBundle localProperties,
+			MoroccoIdentity moroccoIdentity) {
 		String platformLanguageCode = ApplicationContext.applicationLanguage();
 		String localLanguageCode = ApplicationContext.localLanguage();
 		String dob = getValue(moroccoIdentity.getDateOfBirth());
@@ -550,12 +552,19 @@ public class TemplateGenerator extends BaseService {
 					localProperties.getString("parentName"));
 			templateValues.put(RegistrationConstants.TEMPLATE_PARENT_NAME_LOCAL_LANG,
 					getValue(moroccoIdentity.getParentOrGuardianName(), localLanguageCode));
-			templateValues.put(RegistrationConstants.TEMPLATE_PARENT_UIN_USER_LANG_LABEL,
-					applicationLanguageProperties.getString("parentUIN"));
+			if (registration.getSelectionListDTO() != null) {
+				templateValues.put(RegistrationConstants.TEMPLATE_PARENT_UIN_USER_LANG_LABEL,
+						applicationLanguageProperties.getString("uinUpdateParentUIN"));
+				templateValues.put(RegistrationConstants.TEMPLATE_PARENT_UIN_LOCAL_LANG_LABEL,
+						localProperties.getString("uinUpdateParentUIN"));
+			} else {
+				templateValues.put(RegistrationConstants.TEMPLATE_PARENT_UIN_USER_LANG_LABEL,
+						applicationLanguageProperties.getString("parentUIN"));
+				templateValues.put(RegistrationConstants.TEMPLATE_PARENT_UIN_LOCAL_LANG_LABEL,
+						localProperties.getString("parentUIN"));
+			}
 			templateValues.put(RegistrationConstants.TEMPLATE_PARENT_UIN,
 					getValue(moroccoIdentity.getParentOrGuardianRIDOrUIN()));
-			templateValues.put(RegistrationConstants.TEMPLATE_PARENT_UIN_LOCAL_LANG_LABEL,
-					localProperties.getString("parentUIN"));
 		} else {
 			templateValues.put(RegistrationConstants.TEMPLATE_WITH_PARENT,
 					RegistrationConstants.TEMPLATE_STYLE_HIDE_PROPERTY);
