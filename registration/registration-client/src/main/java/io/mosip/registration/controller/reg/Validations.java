@@ -400,12 +400,16 @@ public class Validations extends BaseController {
 							invalidUinException.getMessage() + ExceptionUtils.getStackTrace(invalidUinException));
 				}
 			} else {
-				try {
-					isIdValid = ridValidator.validateId(field.getText());
-				} catch (InvalidIDException invalidRidException) {
-					generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.RID_INVALID);
-					LOGGER.error("RID VALIDATOIN FAILED", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
-							invalidRidException.getMessage() + ExceptionUtils.getStackTrace(invalidRidException));
+				if (getRegistrationDTOFromSession().getSelectionListDTO() == null) {
+					try {
+						isIdValid = ridValidator.validateId(field.getText());
+					} catch (InvalidIDException invalidRidException) {
+						generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.RID_INVALID);
+						LOGGER.error("RID VALIDATOIN FAILED", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
+								invalidRidException.getMessage() + ExceptionUtils.getStackTrace(invalidRidException));
+					}
+				}else {
+					generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UIN_INVALID);
 				}
 			}
 		} else {
