@@ -185,7 +185,7 @@ public enum BioAuthType implements AuthType {
 			return BioAuthType.getIrisValuesCountInIdentity(reqDTO, helper);
 		}
 	},
-	FACE_IMG("FID", setOf(BioMatchType.FACE), "face", 1) {
+	FACE_IMG("FID", setOf(BioMatchType.FACE, BioMatchType.FACE_UNKNOWN), "face", 1) {
 
 		@Override
 		public Map<String, Object> getMatchProperties(AuthRequestDTO authRequestDTO, IdInfoFetcher idInfoFetcher,

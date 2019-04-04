@@ -107,7 +107,8 @@ public enum BioMatchType implements MatchType {
 	IRIS_UNKNOWN(IdaIdMapping.UNKNOWN_IRIS, CbeffDocType.IRIS, null, null,
 			setOf(CompositeIrisMatchingStrategy.PARTIAL)),
 
-	FACE(IdaIdMapping.FACE, setOf(FaceMatchingStrategy.PARTIAL), CbeffDocType.FACE, null, null);
+	FACE(IdaIdMapping.FACE, setOf(FaceMatchingStrategy.PARTIAL), CbeffDocType.FACE, null, null),
+	FACE_UNKNOWN(IdaIdMapping.UNKNOWN_FACE, setOf(FaceMatchingStrategy.PARTIAL), CbeffDocType.FACE, null, null);
 
 	/** The allowed matching strategy. */
 	private Set<MatchingStrategy> allowedMatchingStrategy;

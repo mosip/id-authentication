@@ -204,12 +204,13 @@ public abstract class BaseIDAFilter implements Filter {
 		}
 		authResponseDTO.setResponseTime(resTime);
 		requestWrapper.resetInputStream();
+		authResponseDTO.setId(env.getProperty(fetchId(requestWrapper)));
+		requestWrapper.resetInputStream();
 		authResponseDTO.setVersion(getVersionFromUrl(requestWrapper));
 		Map<String, Object> responseMap = mapper.convertValue(authResponseDTO,
 				new TypeReference<Map<String, Object>>() {
 				});
-		Map<String, Object> resultMap = removeNullOrEmptyFieldsInResponse(responseMap);
-		response.getWriter().write(mapper.writeValueAsString(resultMap));
+		response.getWriter().write(mapper.writeValueAsString(responseMap));
 		responseWrapper.setResponse(response);
 		responseWrapper.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
 		logTime(authResponseDTO.getResponseTime(), RESPONSE, requestTime);
@@ -312,19 +313,33 @@ public abstract class BaseIDAFilter implements Filter {
 	 */
 	protected void validateRequest(ResettableStreamHttpServletRequest requestWrapper, Map<String, Object> requestBody)
 			throws IdAuthenticationAppException {
-		String url = requestWrapper.getRequestURL().toString();
-		String contextPath = requestWrapper.getContextPath();
-
-		if ((StringUtils.isEmpty(url)) && (StringUtils.isEmpty(contextPath))) {
-			String[] splitedUrlByContext = url.split(contextPath);
-			String id = MOSIP_IDA_API_IDS + splitedUrlByContext[1].split("/")[1];
+		
+			String id = fetchId(requestWrapper);
 			requestWrapper.resetInputStream();
 			String verFromUrl = getVersionFromUrl(requestWrapper);
 			if (Objects.nonNull(requestBody) && !requestBody.isEmpty() && requestBody.containsKey(ID)
 					&& requestBody.containsKey(VERSION)) {
-				validateVersion(requestBody, id, verFromUrl);
+				validateId(requestBody, id);
+				validateVersion(requestBody, verFromUrl);
 			}
+		
+	}
+	
+	/**
+	 * fetchId used to fetch and determine the id of request
+	 *
+	 * @param requestWrapper the {@link ResettableStreamHttpServletRequest}
+	 * @return the string
+	 */
+	private String fetchId(ResettableStreamHttpServletRequest requestWrapper) {
+		String id = null;
+		String url = requestWrapper.getRequestURL().toString();
+		String contextPath = requestWrapper.getContextPath();
+		if ((!StringUtils.isEmpty(url)) && (!StringUtils.isEmpty(contextPath))) {
+			String[] splitedUrlByContext = url.split(contextPath);
+			id = MOSIP_IDA_API_IDS + splitedUrlByContext[1].split("/")[1];
 		}
+		return id;
 	}
 
 	/**
@@ -336,15 +351,25 @@ public abstract class BaseIDAFilter implements Filter {
 	 * @param verFromUrl the version from URL
 	 * @throws IdAuthenticationAppException the id authentication app exception
 	 */
-	private void validateVersion(Map<String, Object> requestBody, String id, String verFromUrl)
+	private void validateVersion(Map<String, Object> requestBody, String verFromUrl)
 			throws IdAuthenticationAppException {
 		String verFromRequest = (String) requestBody.get(VERSION);
-		String idFromRequest = (String) requestBody.get(ID);
-		if (!env.getProperty(id).equals(idFromRequest)) {
-			exceptionHandling(ID);
-		}
 		if (!VERSION_PATTERN.matcher(verFromRequest).matches() || !verFromRequest.equals(verFromUrl)) {
 			exceptionHandling(VERSION);
+		}
+	}
+
+	/**
+	 * validateId is used to validate the id present in the request
+	 *
+	 * @param requestBody the request body
+	 * @param id the id
+	 * @throws IdAuthenticationAppException the id authentication app exception
+	 */
+	private void validateId(Map<String, Object> requestBody, String id) throws IdAuthenticationAppException {
+		String idFromRequest = (String) requestBody.get(ID);
+		if (Objects.isNull(id) || !env.getProperty(id).equals(idFromRequest)) {
+			exceptionHandling(ID);
 		}
 	}
 
@@ -389,8 +414,7 @@ public abstract class BaseIDAFilter implements Filter {
 			responseMap.replace(VERSION, version);
 			String idType = Objects.nonNull(requestBody)? (String) requestBody.get(ID) : null;
 			responseMap.put(ID, idType);
-			Map<String, Object> resultMap = removeNullOrEmptyFieldsInResponse(responseMap);
-			String responseAsString = mapper.writeValueAsString(transformResponse(resultMap));
+			String responseAsString = mapper.writeValueAsString(transformResponse(responseMap));
 			logTime((String) getResponseBody(responseAsString).get(RES_TIME), RESPONSE, requestTime);
 			return responseAsString;
 		} catch (IdAuthenticationAppException | IOException e) {

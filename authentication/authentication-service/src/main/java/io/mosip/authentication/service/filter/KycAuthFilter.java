@@ -148,7 +148,7 @@ public class KycAuthFilter extends IdAuthFilter {
 					List<Map<String, Object>> listOfMap = (List<Map<String, Object>>) entry.getValue();
 					return listOfMap.stream()
 							.map((Map<String, Object> map) -> map.entrySet().stream()
-									.filter(innerEntry -> innerEntry.getValue() != null).collect(Collectors.toMap(
+									.filter(innerEntry -> innerEntry.getValue() != null || !innerEntry.getKey().equals("language")).collect(Collectors.toMap(
 											Entry::getKey, Entry::getValue, (map1, map2) -> map1, LinkedHashMap::new)))
 							.collect(Collectors.toList());
 
