@@ -129,22 +129,20 @@ public class ConnectionUtils {
 	 * @return configured filesystem
 	 */
 	private FileSystem getDefaultConfiguredFileSystem(Configuration configuration) {
-		if (configuredFileSystem == null) {
-			try {
-				configuredFileSystem = UserGroupInformation.createRemoteUser(userName, AuthMethod.TOKEN)
-						.doAs(new PrivilegedExceptionAction<FileSystem>() {
-							public FileSystem run() throws IOException {
-								return FileSystem.get(configuration);
-							}
-						});
-			} catch (IOException e) {
-				throw new FSAdapterException(HDFSAdapterErrorCode.HDFS_ADAPTER_EXCEPTION.getErrorCode(),
-						HDFSAdapterErrorCode.HDFS_ADAPTER_EXCEPTION.getErrorMessage(), e);
-			} catch (InterruptedException e) {
-				Thread.currentThread().interrupt();
-				throw new FSAdapterException(HDFSAdapterErrorCode.HDFS_ADAPTER_EXCEPTION.getErrorCode(),
-						HDFSAdapterErrorCode.HDFS_ADAPTER_EXCEPTION.getErrorMessage(), e);
-			}
+		try {
+			configuredFileSystem = UserGroupInformation.createRemoteUser(userName, AuthMethod.TOKEN)
+					.doAs(new PrivilegedExceptionAction<FileSystem>() {
+						public FileSystem run() throws IOException {
+							return FileSystem.get(configuration);
+						}
+					});
+		} catch (IOException e) {
+			throw new FSAdapterException(HDFSAdapterErrorCode.HDFS_ADAPTER_EXCEPTION.getErrorCode(),
+					HDFSAdapterErrorCode.HDFS_ADAPTER_EXCEPTION.getErrorMessage(), e);
+		} catch (InterruptedException e) {
+			Thread.currentThread().interrupt();
+			throw new FSAdapterException(HDFSAdapterErrorCode.HDFS_ADAPTER_EXCEPTION.getErrorCode(),
+					HDFSAdapterErrorCode.HDFS_ADAPTER_EXCEPTION.getErrorMessage(), e);
 		}
 		return configuredFileSystem;
 	}
