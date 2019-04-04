@@ -949,9 +949,7 @@ Working on new Css by taleev
 	-fx-font-family: Roboto;
 }
 
-.reRegTableId{
-	-fx-pref-width : 450;
-}
+
 
 /*
  *	rejection page 
@@ -977,6 +975,10 @@ Working on new Css by taleev
   -fx-pref-heigth : 150;
   -fx-pref-width : 400;
   
+}
+
+.dfd{
+ -fx-background-color : red;
 }
 
 .rejectionParentPane{
