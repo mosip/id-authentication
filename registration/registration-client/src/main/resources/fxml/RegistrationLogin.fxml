@@ -34,7 +34,7 @@
 	<right>
 		<AnchorPane layoutX="10" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="550.0" prefWidth="489.0">
 			<children>
-            <AnchorPane fx:id="userIdPane" layoutX="37.0" layoutY="188.0" styleClass="loginAnchorPaneStyle" visible="false">
+            <AnchorPane fx:id="userIdPane" layoutX="37.0" layoutY="188.0" styleClass="loginAnchorPaneStyle" visible="true">
                <children>
                <Label layoutX="57.0" layoutY="41.0" styleClass="higlightedLoginLable" text="%registrationlogin" AnchorPane.leftAnchor="57.0" AnchorPane.topAnchor="41.0" />
       			 <TextField fx:id="userId" layoutX="57.0" layoutY="116.0" promptText="%withusername" styleClass="loginTextStyle" AnchorPane.leftAnchor="53.0" />
@@ -84,7 +84,7 @@
       				</ImageView>
                </children>
             </AnchorPane>
-            <AnchorPane fx:id="facePane" layoutX="55.0" layoutY="232.0" styleClass="loginAnchorPaneStyle" visible="true"> 
+            <AnchorPane fx:id="facePane" layoutX="55.0" layoutY="232.0" styleClass="loginAnchorPaneStyle" visible="false"> 
                <children>
                <Label layoutX="57.0" layoutY="31.0" styleClass="higlightedLoginLable" text="%registrationlogin" AnchorPane.leftAnchor="57.0" AnchorPane.topAnchor="31.0" />
                   <Label layoutX="57.0" layoutY="75.0" text="%withface" />
