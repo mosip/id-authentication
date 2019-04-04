@@ -168,9 +168,8 @@ public class DemodedupeProcessor {
 					registrationStatusDto.setStatusComment(StatusMessage.DEMO_DEDUPE_SUCCESS);
 					registrationStatusDto.setStatusCode(RegistrationStatusCode.DEMO_DEDUPE_SUCCESS.toString());
 
-					code = PlatformSuccessMessages.RPR_PKR_DEMO_DE_DUP_POTENTIAL_DUPLICATION_FOUND.getCode();
-					description = PlatformSuccessMessages.RPR_PKR_DEMO_DE_DUP_POTENTIAL_DUPLICATION_FOUND.getMessage()
-							+ " -- " + registrationId;
+					code=  PlatformSuccessMessages.RPR_PKR_DEMO_DE_DUP_POTENTIAL_DUPLICATION_FOUND.getCode();
+					description = PlatformSuccessMessages.RPR_PKR_DEMO_DE_DUP_POTENTIAL_DUPLICATION_FOUND.getMessage()+" -- " + registrationId;
 
 				}
 
