@@ -1478,7 +1478,7 @@ public class DemographicDetailController extends BaseController {
 
 			keyboardNode.setDisable(false);
 
-			copyPrevious.setDisable(false);
+			copyPrevious.setDisable(true);
 			autoFillBtn.setVisible(false);
 			registrationNavlabel.setText(applicationLabelBundle.getString("uinUpdateNavLbl"));
 			parentFlowPane.setDisable(false);
@@ -1527,10 +1527,12 @@ public class DemographicDetailController extends BaseController {
 
 			switchedOn.set(true);
 
-			parentDetailPane.setDisable(!isChild);
-			parentDetailPane.setVisible(isChild);
-			parentNameKeyboardImage.setDisable(!isChild);
+			parentDetailPane.setDisable(!getRegistrationDTOFromSession().getSelectionListDTO().isParentOrGuardianDetails());
+			parentDetailPane.setVisible(getRegistrationDTOFromSession().getSelectionListDTO().isParentOrGuardianDetails());
+			parentNameKeyboardImage.setDisable(!getRegistrationDTOFromSession().getSelectionListDTO().isParentOrGuardianDetails());
 
+			isChild = getRegistrationDTOFromSession().getSelectionListDTO().isParentOrGuardianDetails();
+			
 			if (SessionContext.map().get(RegistrationConstants.IS_Child) != null) {
 				isChild = (boolean) SessionContext.map().get(RegistrationConstants.IS_Child);
 				parentDetailPane.setDisable(!isChild);

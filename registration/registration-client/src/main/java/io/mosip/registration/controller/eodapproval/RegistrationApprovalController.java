@@ -245,12 +245,19 @@ public class RegistrationApprovalController extends BaseController implements In
 	private void populateTable() {
 		LOGGER.info(LOG_REG_PENDING_APPROVAL, APPLICATION_NAME, APPLICATION_ID, "table population has been started");
 		List<RegistrationApprovalDTO> listData = null;
+		
+		List<RegistrationApprovalDTO> approvalListData = new ArrayList<>();
 
 		listData = registration.getEnrollmentByStatus(RegistrationClientStatusCode.CREATED.getCode());
 
+		listData.forEach(approvalDTO ->
+
+		approvalListData.add(new RegistrationApprovalDTO(approvalDTO.getId(), approvalDTO.getAcknowledgementFormPath(),
+				RegistrationUIConstants.PENDING)));
+
 		if (!listData.isEmpty()) {
 
-			ObservableList<RegistrationApprovalDTO> oList = FXCollections.observableArrayList(listData);
+			ObservableList<RegistrationApprovalDTO> oList = FXCollections.observableArrayList(approvalListData);
 			table.setItems(oList);
 		} else {
 			approveRegistrationRootSubPane.disableProperty().set(true);
