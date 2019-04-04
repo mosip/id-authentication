@@ -37,5 +37,9 @@ public class RegistrationCenterUserMachineMappingHistoryDto {
 	
 	/** The is active. */
 	private Boolean isActive;
+	
+	private String langCode;
+	
+	private String effectivetimes;
 
 }

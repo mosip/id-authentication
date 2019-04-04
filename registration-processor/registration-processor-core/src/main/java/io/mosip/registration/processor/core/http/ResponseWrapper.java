@@ -10,7 +10,7 @@ import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
-import io.mosip.kernel.core.exception.ServiceError;
+import io.mosip.registration.processor.core.common.rest.dto.ErrorDTO;
 import lombok.Data;
 
 @Data
@@ -24,6 +24,6 @@ public class ResponseWrapper<T> {
 	@Valid
 	private T response;
 
-	private List<ServiceError> errors = new ArrayList<>();
+	private List<ErrorDTO> errors = new ArrayList<>();
 
 }

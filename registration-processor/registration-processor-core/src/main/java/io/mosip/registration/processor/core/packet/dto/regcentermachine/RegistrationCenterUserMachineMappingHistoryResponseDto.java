@@ -30,5 +30,5 @@ public class RegistrationCenterUserMachineMappingHistoryResponseDto {
 	/** List of registration centers. */
 	private List<RegistrationCenterUserMachineMappingHistoryDto> registrationCenters;
 
-	private List<ErrorDTO> errors;
+//	private List<ErrorDTO> errors;
 }

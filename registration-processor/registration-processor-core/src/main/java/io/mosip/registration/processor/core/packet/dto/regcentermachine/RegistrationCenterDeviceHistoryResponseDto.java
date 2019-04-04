@@ -22,5 +22,5 @@ public class RegistrationCenterDeviceHistoryResponseDto {
 	private RegistrationCenterDeviceHistoryDto registrationCenterDeviceHistoryDetails;
 
 	/** The errors. */
-	private List<ErrorDTO> errors;
+	//private List<ErrorDTO> errors;
 }
