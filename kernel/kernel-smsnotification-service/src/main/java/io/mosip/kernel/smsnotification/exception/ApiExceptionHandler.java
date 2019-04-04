@@ -43,11 +43,13 @@ public class ApiExceptionHandler {
 	/**
 	 * This method handles MethodArgumentNotValidException type of exceptions.
 	 * 
+	 * @param httpServletRequest
+	 *            the request
 	 * @param exception
 	 *            The exception
 	 * @return The response entity.
 	 * @throws IOException
-	 * 
+	 *             the IOException
 	 */
 	@ExceptionHandler(MethodArgumentNotValidException.class)
 	public ResponseEntity<ResponseWrapper<ServiceError>> smsInvalidInputsFound(
@@ -67,10 +69,13 @@ public class ApiExceptionHandler {
 	/**
 	 * This method handles MosipInvalidNumberException type of exceptions.
 	 * 
+	 * @param httpServletRequest
+	 *            the request
 	 * @param e
 	 *            The exception
 	 * @return The response entity.
 	 * @throws IOException
+	 *             the IOException
 	 */
 	@ExceptionHandler(InvalidNumberException.class)
 	public ResponseEntity<ResponseWrapper<ServiceError>> smsNotificationInvalidNumber(
