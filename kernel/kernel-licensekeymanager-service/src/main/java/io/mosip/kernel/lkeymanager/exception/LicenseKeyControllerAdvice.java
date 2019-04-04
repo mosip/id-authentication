@@ -54,12 +54,14 @@ public class LicenseKeyControllerAdvice {
 	/**
 	 * Method to handle {@link LicenseKeyServiceException}.
 	 * 
+	 * @param httpServletRequest
+	 *            the request
 	 * @param exception
 	 *            the exception.
 	 * @return {@link ErrorResponse}.
 	 * @throws IOException
+	 *             the IO exception
 	 */
-
 	@ExceptionHandler(LicenseKeyServiceException.class)
 	public ResponseEntity<ResponseWrapper<ServiceError>> handleServiceException(HttpServletRequest httpServletRequest,
 			final LicenseKeyServiceException exception) throws IOException {
@@ -71,11 +73,14 @@ public class LicenseKeyControllerAdvice {
 	/**
 	 * Method to handle {@link HttpMessageNotReadableException}.
 	 * 
+	 * @param httpServletRequest
+	 *            the request
 	 * @param exception
 	 *            the exception.
 	 * 
 	 * @return {@link ErrorResponse}.
 	 * @throws IOException
+	 *             the IO exception
 	 */
 	@ExceptionHandler(HttpMessageNotReadableException.class)
 	public ResponseEntity<ResponseWrapper<ServiceError>> onHttpMessageNotReadable(
@@ -91,12 +96,14 @@ public class LicenseKeyControllerAdvice {
 	/**
 	 * Method to handle {@link RuntimeException}.
 	 * 
-	 * @param request
-	 *            the servlet request.
+	 * @param httpServletRequest
+	 *            the request
+	 * 
 	 * @param exception
 	 *            the exception.
 	 * @return {@link ErrorResponse}.
 	 * @throws IOException
+	 *             the IO exception
 	 */
 	@ExceptionHandler(value = { Exception.class, RuntimeException.class })
 	public ResponseEntity<ResponseWrapper<ServiceError>> defaultErrorHandler(HttpServletRequest httpServletRequest,

@@ -5,16 +5,11 @@ package io.mosip.kernel.core.idgenerator.spi;
  * 
  * @author Dharmesh Khandelwal
  * @since 1.0.0
- *
- * @param <T>
- *            Type of Id
  */
 public interface UinGenerator {
 
 	/**
 	 * Function to generate an Id
-	 * 
-	 * @return The generated id
 	 */
 	void generateId();
 
