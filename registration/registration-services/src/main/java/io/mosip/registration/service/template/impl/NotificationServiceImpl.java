@@ -9,7 +9,6 @@ import static io.mosip.registration.constants.RegistrationConstants.SMS_SERVICE;
 
 import java.net.SocketTimeoutException;
 import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -105,15 +104,12 @@ public class NotificationServiceImpl implements NotificationService {
 		try {
 			Map<String, List<Map<String, String>>> response = (Map<String, List<Map<String, String>>>) serviceDelegateUtil
 					.post(service, object, RegistrationConstants.JOB_TRIGGER_POINT_USER);
-			if (!response.isEmpty() && null != response.get(RegistrationConstants.PACKET_STATUS_READER_RESPONSE)) {
+			if (response!= null && response.get(RegistrationConstants.PACKET_STATUS_READER_RESPONSE) != null) {
 				Map<String, Object> resMap = (Map<String, Object>) response
 						.get(RegistrationConstants.PACKET_STATUS_READER_RESPONSE);
 				String res = (String) resMap.get(RegistrationConstants.UPLOAD_STATUS);
-				if (res.contains(expectedStatus)) {
-					Map<String, Object> resultMap = (Map<String, Object>) response
-							.get(RegistrationConstants.PACKET_STATUS_READER_RESPONSE);
-					String errorMessage = (String) resultMap.get(RegistrationConstants.ERROR_MSG);
-					LOGGER.info(NOTIFICATION_SERVICE, APPLICATION_NAME, APPLICATION_ID, errorMessage);
+				if (res.contains(expectedStatus)) {					
+					LOGGER.info(NOTIFICATION_SERVICE, APPLICATION_NAME, APPLICATION_ID, resMap.toString());
 					auditFactory.audit(AuditEvent.NOTIFICATION_STATUS, Components.NOTIFICATION_SERVICE,
 							SessionContext.userContext().getUserId(),
 							AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
@@ -122,7 +118,7 @@ public class NotificationServiceImpl implements NotificationService {
 					successResponseDTO.setMessage(RegistrationConstants.OTP_VALIDATION_SUCCESS);
 					responseDTO.setSuccessResponseDTO(successResponseDTO);
 				}
-			} else {
+			} else if(response!= null) {
 				String errorMessage = Optional.ofNullable(response.get(RegistrationConstants.ERRORS))
 						.filter(list -> !list.isEmpty()).flatMap(list -> list.stream()
 								.filter(map -> map.containsKey(RegistrationConstants.ERROR_MSG)).findAny())
