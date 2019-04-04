@@ -116,7 +116,7 @@ public class NotificationServiceImpl implements NotificationService {
 		boolean ismaskRequired = Boolean.parseBoolean(env.getProperty("uin.masking.required"));
 
 		Map<String, Object> values = new HashMap<>();
-
+		
 		String priLang = idInfoFetcher.getLanguageCode(LanguageType.PRIMARY_LANG);
 		String namePri = infoHelper.getEntityInfoAsString(DemoMatchType.NAME, priLang, idInfo);
 		values.put(NAME, namePri);
@@ -154,7 +154,7 @@ public class NotificationServiceImpl implements NotificationService {
 				.filter(authType -> authType.isAuthTypeEnabled(authRequestDTO, idInfoFetcher))
 				.map(AuthType::getDisplayName).distinct().collect(Collectors.joining(","));
 		values.put(AUTH_TYPE, authTypeStr);
-		if (authResponseDTO.isStatus()) {
+		if (authResponseDTO.getResponse().isAuthStatus()) {
 			values.put(STATUS, "Passed");
 		} else {
 			values.put(STATUS, "Failed");

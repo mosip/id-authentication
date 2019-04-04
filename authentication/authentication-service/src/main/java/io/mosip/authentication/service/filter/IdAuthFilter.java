@@ -492,8 +492,8 @@ public class IdAuthFilter extends BaseAuthFilter {
 				String[] paramsArray = Stream.of(splitedUrlByContext[1].split("/")).filter(str -> !str.isEmpty())
 						.toArray(size -> new String[size]);
 
-				params.put(PARTNER_ID, paramsArray[2]);
-				params.put(MISPLICENSE_KEY, paramsArray[3]);
+				params.put(PARTNER_ID, paramsArray[1]);
+				params.put(MISPLICENSE_KEY, paramsArray[2]);
 			}
 		}
 		return params;

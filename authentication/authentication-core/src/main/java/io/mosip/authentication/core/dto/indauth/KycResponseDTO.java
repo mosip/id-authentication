@@ -15,6 +15,12 @@ import lombok.Data;
 @Data
 public class KycResponseDTO {
 
+	/** The Variable to hold value of kyc Status */
+	private boolean kycStatus;
+
+	/** The Variable to hold value of static Token */
+	private String staticToken;
+
 	/** The Variable to hold value of ttl */
 	private String ttl;
 

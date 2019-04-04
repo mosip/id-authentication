@@ -14,9 +14,15 @@ import lombok.Data;
 
 @Data
 public class BaseAuthResponseDTO {
-	
-	/** The boolean value for status */
-	private boolean status;
+
+	/** The txnID value. */
+	private String transactionID;
+
+	/** Version. */
+	private String version;
+
+	/** The id. */
+	private String id;
 	
 	/** The error List */
 	private List<AuthError> errors;

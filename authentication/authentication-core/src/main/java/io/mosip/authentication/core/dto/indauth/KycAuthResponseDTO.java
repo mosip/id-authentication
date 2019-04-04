@@ -13,7 +13,7 @@ import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode(callSuper=true	)
-public class KycAuthResponseDTO extends AuthResponseDTO {
+public class KycAuthResponseDTO extends BaseAuthResponseDTO {
 	
 	/** The KycResponseDTO */
 	private KycResponseDTO response;

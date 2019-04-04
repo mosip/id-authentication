@@ -3,13 +3,16 @@ package io.mosip.authentication.service.impl.otpgen.validator;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.format.DateTimeParseException;
+import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
-import io.mosip.authentication.core.dto.otpgen.ChannelDTO;
+import io.mosip.authentication.core.dto.indauth.NotificationType;
 import io.mosip.authentication.core.dto.otpgen.OtpRequestDTO;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.service.validator.IdAuthValidator;
@@ -89,10 +92,16 @@ public class OTPRequestValidator extends IdAuthValidator {
 		// validateVer(otpRequestDto.getVer(), errors);
 	}
 
-	private void validateOtpChannel(ChannelDTO otpChannel, Errors errors) {
-		if (!otpChannel.isEmail() && !otpChannel.isPhone()) {
-			errors.reject(IdAuthenticationErrorConstants.OTP_CHANNEL_NOT_PROVIDED.getErrorCode(), String
-					.format(IdAuthenticationErrorConstants.OTP_CHANNEL_NOT_PROVIDED.getErrorMessage(), "Phone/E-Mail"));
+	private void validateOtpChannel(List<String> otpChannel, Errors errors) {
+		if (!(otpChannel == null || otpChannel.isEmpty())) {
+			String channels = otpChannel.stream()
+				.filter(channel -> !NotificationType.getNotificationTypeForChannel(channel).isPresent())
+				.collect(Collectors.joining(","));
+			if (!channels.isEmpty()) {
+				errors.reject(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+						String.format(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(),
+								"otpChannel - " + channels));
+			}
 		}
 	}
 
@@ -118,7 +127,8 @@ public class OTPRequestValidator extends IdAuthValidator {
 						"INVALID_OTP_REQUEST_TIMESTAMP -- " + String.format(
 								IdAuthenticationErrorConstants.INVALID_OTP_REQUEST_TIMESTAMP.getErrorMessage(),
 								Duration.between(reqTimeInstance, now).toMinutes() - Long.parseLong(maxTimeInMinutes)));
-				errors.rejectValue(REQ_TIME, IdAuthenticationErrorConstants.INVALID_OTP_REQUEST_TIMESTAMP.getErrorCode(),
+				errors.rejectValue(REQ_TIME,
+						IdAuthenticationErrorConstants.INVALID_OTP_REQUEST_TIMESTAMP.getErrorCode(),
 						IdAuthenticationErrorConstants.INVALID_OTP_REQUEST_TIMESTAMP.getErrorMessage());
 			}
 		} catch (DateTimeParseException | ParseException e) {

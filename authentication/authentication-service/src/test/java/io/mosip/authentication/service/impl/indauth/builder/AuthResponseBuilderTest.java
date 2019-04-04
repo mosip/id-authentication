@@ -21,13 +21,9 @@ import io.mosip.authentication.core.dto.indauth.AuthStatusInfo;
  * @author Loganathan Sekar
  */
 public class AuthResponseBuilderTest {
-
-	private static final String PRIMARY_LANG_CODE = "fre";
-	private static final String STATUS_SUCCESS = "Y";
 	@Autowired
 	Environment env;
 	private static String dateTimePattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX";
-	
 
 	@Test
 	public void testAuthStatusInfoBuilder() {
@@ -70,73 +66,56 @@ public class AuthResponseBuilderTest {
 		statusInfoBuilder.setStatus(true);
 		statusInfoBuilder.build();
 		statusInfoBuilder.setStatus(false);
-		//statusInfoBuilder.addAuthUsageDataBits(AuthUsageDataBit.USED_PI_DOB);
+		// statusInfoBuilder.addAuthUsageDataBits(AuthUsageDataBit.USED_PI_DOB);
 	}
 
 	@Test
 	public void testAuthResponseInfoBuilder() {
-		assertTrue(AuthResponseBuilder
-					.newInstance(dateTimePattern )
-					.addAuthStatusInfo(AuthStatusInfoBuilder
-							.newInstance()
-							.setStatus(true)
-							.build())
-					.build()
-					.isStatus());
-		assertFalse(AuthResponseBuilder
-				.newInstance(dateTimePattern )
-				.addAuthStatusInfo(AuthStatusInfoBuilder
-						.newInstance()
-						.setStatus(false)
-						.build())
-				.build()
-				.isStatus());
-		
-		assertEquals(AuthResponseBuilder
-				.newInstance(dateTimePattern )
-				.setTxnID("1234567890")
-				.build()
-				.getTransactionID(), "1234567890");
-		
-		AuthResponseDTO authResponseDTO = AuthResponseBuilder
-				.newInstance(dateTimePattern)
-					.addErrors(new AuthError("101", "Error1"))
-					.addErrors(new AuthError("102", "Error2"), new AuthError("103", "Error3"))
-					.build();
-		
-		assertTrue(authResponseDTO.getErrors().size() == 3 && authResponseDTO.getErrors()
-				.stream()
-				.map(AuthError::getErrorCode)
-				.collect(Collectors.toList())
-				.containsAll(Arrays.asList("101", "102", "103")));
-		
-		
-		
-		AuthStatusInfo authStatusInfo1 = AuthStatusInfoBuilder.newInstance()
-				//.addMatchInfo(DemoAuthType.PERSONAL_IDENTITY.getType(), "P", 60, PRIMARY_LANG_CODE)
-				//.addAuthUsageDataBits(AuthUsageDataBit.USED_OTP, AuthUsageDataBit.MATCHED_OTP)
+		assertTrue(AuthResponseBuilder.newInstance(dateTimePattern)
+				.addAuthStatusInfo(AuthStatusInfoBuilder.newInstance().setStatus(true).build()).build("123456789").getResponse()
+				.isAuthStatus());
+		assertFalse(AuthResponseBuilder.newInstance(dateTimePattern)
+				.addAuthStatusInfo(AuthStatusInfoBuilder.newInstance().setStatus(false).build()).build("123456789").getResponse()
+				.isAuthStatus());
+
+		assertEquals(AuthResponseBuilder.newInstance(dateTimePattern).setTxnID("1234567890").build("123456789").getTransactionID(),
+				"1234567890");
+
+		AuthResponseDTO authResponseDTO = AuthResponseBuilder.newInstance(dateTimePattern)
 				.addErrors(new AuthError("101", "Error1"))
-				.build();
-		
-		AuthStatusInfo authStatusInfo2 = AuthStatusInfoBuilder
-				.newInstance()
-				//.addMatchInfo(DemoAuthType.FULL_ADDRESS.getType(), "E", 100, PRIMARY_LANG_CODE)
-				//.addAuthUsageDataBits(AuthUsageDataBit.USED_PI_NAME, AuthUsageDataBit.MATCHED_PI_NAME)
-				//.addAuthUsageDataBits(AuthUsageDataBit.USED_PI_EMAIL, AuthUsageDataBit.MATCHED_PI_EMAIL)
-				.addErrors(new AuthError("102", "Error2"), new AuthError("103", "Error3"))
-				.build();
-		
-		
-		AuthResponseDTO authResponseDTO2 = AuthResponseBuilder
-				.newInstance(dateTimePattern)
-				.addAuthStatusInfo(authStatusInfo1)
-				.addAuthStatusInfo(authStatusInfo2)
-				.build();
-		
-	/*	assertEquals(authResponseDTO2.getInfo().getMatchInfos().get(0).getAuthType(), DemoAuthType.PERSONAL_IDENTITY.getType());
-		assertEquals(authResponseDTO2.getInfo().getMatchInfos().get(1).getAuthType(), DemoAuthType.FULL_ADDRESS.getType());
-		assertEquals("0xc2000000c2000000", authResponseDTO2.getInfo().getUsageData());*/
-		
+				.addErrors(new AuthError("102", "Error2"), new AuthError("103", "Error3")).build("123456789");
+
+		assertTrue(authResponseDTO.getErrors().size() == 3
+				&& authResponseDTO.getErrors().stream().map(AuthError::getErrorCode).collect(Collectors.toList())
+						.containsAll(Arrays.asList("101", "102", "103")));
+
+		AuthStatusInfo authStatusInfo1 = AuthStatusInfoBuilder.newInstance()
+				// .addMatchInfo(DemoAuthType.PERSONAL_IDENTITY.getType(), "P", 60,
+				// PRIMARY_LANG_CODE)
+				// .addAuthUsageDataBits(AuthUsageDataBit.USED_OTP,
+				// AuthUsageDataBit.MATCHED_OTP)
+				.addErrors(new AuthError("101", "Error1")).build();
+
+		AuthStatusInfo authStatusInfo2 = AuthStatusInfoBuilder.newInstance()
+				// .addMatchInfo(DemoAuthType.FULL_ADDRESS.getType(), "E", 100,
+				// PRIMARY_LANG_CODE)
+				// .addAuthUsageDataBits(AuthUsageDataBit.USED_PI_NAME,
+				// AuthUsageDataBit.MATCHED_PI_NAME)
+				// .addAuthUsageDataBits(AuthUsageDataBit.USED_PI_EMAIL,
+				// AuthUsageDataBit.MATCHED_PI_EMAIL)
+				.addErrors(new AuthError("102", "Error2"), new AuthError("103", "Error3")).build();
+
+		AuthResponseDTO authResponseDTO2 = AuthResponseBuilder.newInstance(dateTimePattern)
+				.addAuthStatusInfo(authStatusInfo1).addAuthStatusInfo(authStatusInfo2).build("123456789");
+
+		/*
+		 * assertEquals(authResponseDTO2.getInfo().getMatchInfos().get(0).getAuthType(),
+		 * DemoAuthType.PERSONAL_IDENTITY.getType());
+		 * assertEquals(authResponseDTO2.getInfo().getMatchInfos().get(1).getAuthType(),
+		 * DemoAuthType.FULL_ADDRESS.getType()); assertEquals("0xc2000000c2000000",
+		 * authResponseDTO2.getInfo().getUsageData());
+		 */
+
 		assertEquals(3, authResponseDTO2.getErrors().size());
 
 		assertTrue(authResponseDTO2.getErrors().stream().map(AuthError::getErrorCode).collect(Collectors.toList())
@@ -146,12 +125,11 @@ public class AuthResponseBuilderTest {
 
 	@Test(expected = IllegalStateException.class)
 	public void testAuthResponseBuilderMultipleTimes() {
-		AuthResponseBuilder statusInfoBuilder = AuthResponseBuilder
-				.newInstance(dateTimePattern);
+		AuthResponseBuilder statusInfoBuilder = AuthResponseBuilder.newInstance(dateTimePattern);
 		statusInfoBuilder.setTxnID("1234567890");
-		statusInfoBuilder.build();
+		statusInfoBuilder.build("123456789");
 
-		statusInfoBuilder.build();
+		statusInfoBuilder.build("123456789");
 	}
 
 }

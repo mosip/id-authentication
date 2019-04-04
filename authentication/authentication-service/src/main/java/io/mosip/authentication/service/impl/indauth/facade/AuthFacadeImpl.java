@@ -163,25 +163,29 @@ public class AuthFacadeImpl implements AuthFacade {
 		AuthResponseBuilder authResponseBuilder = AuthResponseBuilder.newInstance(env.getProperty(DATETIME_PATTERN));
 		Map<String, List<IdentityInfoDTO>> idInfo = null;
 		String uin = String.valueOf(idResDTO.get("uin"));
-		// String tspId = partnerId;
+		String staticTokenId =null;
+		Boolean staticTokenRequired = env.getProperty(STATIC_TOKEN_ENABLE, Boolean.class);
 		try {
 			idInfo = idInfoService.getIdInfo(idResDTO);
 			authResponseBuilder.setTxnID(authRequestDTO.getTransactionID());
-			Boolean staticTokenRequired = env.getProperty(STATIC_TOKEN_ENABLE, Boolean.class);
 			// FIXME temporary fix for the api change
 //			String staticTokenId = staticTokenRequired ? tokenIdGenerator.generateId(tspId, uin) : "";
-			String staticTokenId = staticTokenRequired ? tokenIdGenerator.generateId() : "";
+			staticTokenId=staticTokenRequired ? tokenIdGenerator.generateId() : "";
 			List<AuthStatusInfo> authStatusList = processAuthType(authRequestDTO, idInfo, uin, isAuth, staticTokenId,
 					partnerId);
 			authStatusList.forEach(authResponseBuilder::addAuthStatusInfo);
-			// Set static token
-			if (staticTokenRequired) {
-				authResponseBuilder.setStaticTokenId(staticTokenId);
-			}
+			
 		} finally {
-			authResponseDTO = authResponseBuilder.build();
+			// Set static token
+						if (staticTokenRequired) {
+							authResponseDTO = authResponseBuilder.build(staticTokenId);
+						}else {
+							authResponseDTO = authResponseBuilder.build(null);
+						}
+
+			
 			logger.info(DEFAULT_SESSION_ID, IDA, AUTH_FACADE,
-					"authenticateApplicant status : " + authResponseDTO.isStatus());
+					"authenticateApplicant status : " + authResponseDTO.getResponse().isAuthStatus());
 		}
 
 		if (idInfo != null && uin != null) {
@@ -506,20 +510,20 @@ public class AuthFacadeImpl implements AuthFacade {
 		}
 		Map<String, List<IdentityInfoDTO>> idInfo = idInfoService.getIdInfo(idResDTO);
 		KycResponseDTO response = null;
-		if (idResDTO != null && authResponseDTO.isStatus()) {
+		if (idResDTO != null && authResponseDTO.getResponse().isAuthStatus()) {
 			response = kycService.retrieveKycInfo(String.valueOf(idResDTO.get("uin")),
 					kycAuthRequestDTO.getAllowedKycAttributes(), kycAuthRequestDTO.getSecondaryLangCode(), idInfo);
 			response.setTtl(env.getProperty("ekyc.ttl.hours"));
 		}
 
 		KycAuthResponseDTO kycAuthResponseDTO = new KycAuthResponseDTO();
+		response.setKycStatus(authResponseDTO.getResponse().isAuthStatus());
+		response.setStaticToken(authResponseDTO.getResponse().getStaticToken());
 		kycAuthResponseDTO.setResponse(response);
 		kycAuthResponseDTO.setId(authResponseDTO.getId());
-		kycAuthResponseDTO.setStaticToken(authResponseDTO.getStaticToken());
 		kycAuthResponseDTO.setTransactionID(authResponseDTO.getTransactionID());
 		kycAuthResponseDTO.setVersion(authResponseDTO.getVersion());
 		kycAuthResponseDTO.setErrors(authResponseDTO.getErrors());
-		kycAuthResponseDTO.setStatus(authResponseDTO.isStatus());
 		kycAuthResponseDTO.setResponseTime(resTime);
 		return kycAuthResponseDTO;
 	}

@@ -35,7 +35,7 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 
 	private static final String TRANSACTION_ID = "transactionID";
 
-	private static final String REQUEST_REQUEST_TIME = "request/requestTime";
+	private static final String REQUEST_REQUEST_TIME = "request/timestamp";
 
 	private static final String REQUEST_TIME = "requestTime";
 

@@ -68,7 +68,7 @@ public class StaticPinController {
 	 * @return staticPinResponseDTO
 	 * @throws IdAuthenticationAppException
 	 */
-	@PostMapping(path = "/staticpin/${ida.api.version}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@PostMapping(path = "/staticpin", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Static Pin Store Request", response = IdAuthenticationAppException.class)
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Request Stored successfully") })
 	public StaticPinResponseDTO storeSpin(@Valid @RequestBody StaticPinRequestDTO staticPinRequestDTO,

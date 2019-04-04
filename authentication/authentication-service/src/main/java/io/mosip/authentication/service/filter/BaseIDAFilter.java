@@ -40,6 +40,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.dto.indauth.AuthError;
 import io.mosip.authentication.core.dto.indauth.AuthResponseDTO;
+import io.mosip.authentication.core.dto.indauth.ResponseDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.kernel.core.exception.ExceptionUtils;
@@ -189,7 +190,9 @@ public abstract class BaseIDAFilter implements Filter {
 				DateUtils.parseToDate(DateUtils.getUTCCurrentDateTimeString(), env.getProperty(DATETIME_PATTERN),
 						TimeZone.getTimeZone(ZoneOffset.UTC)),
 				env.getProperty(DATETIME_PATTERN), TimeZone.getTimeZone(ZoneOffset.UTC));
-		authResponseDTO.setStatus(Boolean.FALSE);
+		ResponseDTO res=new ResponseDTO();
+		res.setAuthStatus(Boolean.FALSE);
+		authResponseDTO.setResponse(res);
 		if (Objects.nonNull(requestMap) && Objects.nonNull(requestMap.get(REQ_TIME))
 				&& isDate((String) requestMap.get(REQ_TIME))) {
 			ZoneId zone = ZonedDateTime

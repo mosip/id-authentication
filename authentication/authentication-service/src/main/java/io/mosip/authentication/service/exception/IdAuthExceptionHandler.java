@@ -33,7 +33,7 @@ import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.dto.indauth.ActionableAuthError;
 import io.mosip.authentication.core.dto.indauth.AuthError;
 import io.mosip.authentication.core.dto.indauth.AuthResponseDTO;
-import io.mosip.authentication.core.dto.indauth.BaseAuthResponseDTO;
+import io.mosip.authentication.core.dto.indauth.ResponseDTO;
 import io.mosip.authentication.core.exception.IDAuthenticationUnknownException;
 import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
@@ -183,8 +183,10 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 	private Object buildExceptionResponse(Exception ex) {
 		mosipLogger.debug(DEFAULT_SESSION_ID, "Building exception response", "Entered buildExceptionResponse",
 				PREFIX_HANDLING_EXCEPTION + ex.getClass().toString());
-		BaseAuthResponseDTO authResp = new BaseAuthResponseDTO();
-		authResp.setStatus(Boolean.FALSE);
+		AuthResponseDTO authResp = new AuthResponseDTO();
+		ResponseDTO res=new ResponseDTO();
+		res.setAuthStatus(Boolean.FALSE);
+		authResp.setResponse(res);
 		if (ex instanceof IdAuthenticationBaseException) {
 			IdAuthenticationBaseException baseException = (IdAuthenticationBaseException) ex;
 			Locale locale = LocaleContextHolder.getLocale();

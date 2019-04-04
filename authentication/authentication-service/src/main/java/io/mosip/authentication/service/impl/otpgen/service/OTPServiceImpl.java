@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.constant.RequestType;
 import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
+import io.mosip.authentication.core.dto.indauth.NotificationType;
 import io.mosip.authentication.core.dto.otpgen.MaskedResponseDTO;
 import io.mosip.authentication.core.dto.otpgen.OtpRequestDTO;
 import io.mosip.authentication.core.dto.otpgen.OtpResponseDTO;
@@ -131,24 +132,12 @@ public class OTPServiceImpl implements OTPService {
 				String email = getEmail(idInfo);
 				String phoneNumber = getPhoneNumber(idInfo);
 				MaskedResponseDTO maskedResponseDTO = new MaskedResponseDTO();
-
-				if (otpRequestDto.getOtpChannel().isEmail() && isNotNullorEmpty(email)) {
-					maskedResponseDTO.setMaskedEmail(MaskUtil.maskEmail(email));
-				} else {
-					throw new IdAuthenticationBusinessException(
-							IdAuthenticationErrorConstants.PHONE_EMAIL_NOT_REGISTERED.getErrorCode(),
-							String.format(IdAuthenticationErrorConstants.PHONE_EMAIL_NOT_REGISTERED.getErrorMessage(),
-									IdaIdMapping.EMAIL.name()));
+				List<String> otpChannels = otpRequestDto.getOtpChannel();
+				
+				for (String channel : otpChannels) {
+					processChannel(channel,phoneNumber,email,maskedResponseDTO);
 				}
-
-				if (otpRequestDto.getOtpChannel().isPhone() && isNotNullorEmpty(phoneNumber)) {
-					maskedResponseDTO.setMaskedMobile(MaskUtil.maskMobile(phoneNumber));
-				} else {
-					throw new IdAuthenticationBusinessException(
-							IdAuthenticationErrorConstants.PHONE_EMAIL_NOT_REGISTERED.getErrorCode(),
-							String.format(IdAuthenticationErrorConstants.PHONE_EMAIL_NOT_REGISTERED.getErrorMessage(),
-									IdaIdMapping.PHONE.name()));
-				}
+				
 				otpResponseDTO.setResponse(maskedResponseDTO);
 				AutnTxn authTxn = createAuthTxn(individualId, individualIdType, uin, requestTime, transactionId, "Y",
 						"OTP_GENERATED", RequestType.OTP_REQUEST);
@@ -166,6 +155,28 @@ public class OTPServiceImpl implements OTPService {
 			}
 		}
 		return otpResponseDTO;
+
+	}
+
+	private void processChannel(String value,String phone,String email,MaskedResponseDTO maskedResponseDTO) throws IdAuthenticationBusinessException {
+		if (isNotNullorEmpty(value)) {
+			if (value.equalsIgnoreCase(NotificationType.SMS.getChannel())) {
+				maskedResponseDTO.setMaskedMobile(MaskUtil.maskMobile(phone));
+			}
+			else if (value.equalsIgnoreCase(NotificationType.EMAIL.getChannel())) {
+				maskedResponseDTO.setMaskedEmail(MaskUtil.maskEmail(email));
+			} else {
+				throw new IdAuthenticationBusinessException(
+						IdAuthenticationErrorConstants.PHONE_EMAIL_NOT_REGISTERED.getErrorCode(),
+						String.format(IdAuthenticationErrorConstants.PHONE_EMAIL_NOT_REGISTERED.getErrorMessage(),
+								IdaIdMapping.EMAIL.name()));
+			}
+		}else {
+			throw new IdAuthenticationBusinessException(
+					IdAuthenticationErrorConstants.PHONE_EMAIL_NOT_REGISTERED.getErrorCode(),
+					String.format(IdAuthenticationErrorConstants.PHONE_EMAIL_NOT_REGISTERED.getErrorMessage(),
+							IdaIdMapping.EMAIL.name()));
+		}
 
 	}
 

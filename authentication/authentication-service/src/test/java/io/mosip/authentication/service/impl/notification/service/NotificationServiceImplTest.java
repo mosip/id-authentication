@@ -14,7 +14,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.function.Supplier;
 
@@ -42,6 +41,7 @@ import io.mosip.authentication.core.dto.indauth.AuthTypeDTO;
 import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
 import io.mosip.authentication.core.dto.indauth.LanguageType;
 import io.mosip.authentication.core.dto.indauth.NotificationType;
+import io.mosip.authentication.core.dto.indauth.ResponseDTO;
 import io.mosip.authentication.core.dto.indauth.SenderType;
 import io.mosip.authentication.core.dto.otpgen.OtpRequestDTO;
 import io.mosip.authentication.core.exception.IDDataValidationException;
@@ -49,6 +49,7 @@ import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.IdAuthenticationDaoException;
 import io.mosip.authentication.core.spi.id.service.IdAuthService;
 import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
+import io.mosip.authentication.service.entity.AutnTxn;
 import io.mosip.authentication.service.factory.AuditRequestFactory;
 import io.mosip.authentication.service.factory.RestRequestFactory;
 import io.mosip.authentication.service.helper.IdInfoHelper;
@@ -83,7 +84,7 @@ public class NotificationServiceImplTest {
 	private IdTemplateManager idTemplateManager;
 
 	@Mock
-	private IdAuthService idInfoService;
+	private IdAuthService<AutnTxn> idInfoService;
 
 	@Mock
 	private IdInfoHelper demoHelper;
@@ -116,14 +117,16 @@ public class NotificationServiceImplTest {
 		authRequestDTO.setRequestedAuth(authType);
 
 		AuthResponseDTO authResponseDTO = new AuthResponseDTO();
-		ZoneOffset offset = ZoneOffset.MAX;
 
 		authRequestDTO.setRequestTime(Instant.now().atOffset(ZoneOffset.of("+0530"))
 				.format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSXXX")).toString());
 
 		// authRequestDTO.setReqTime(Instant.now().atOffset(offset)
 		// .format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
-		authResponseDTO.setStatus(Boolean.FALSE);
+		ResponseDTO res=new ResponseDTO();
+		res.setAuthStatus(Boolean.TRUE);
+		res.setStaticToken("234567890");
+		authResponseDTO.setResponse(res);
 		authResponseDTO.setResponseTime(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX").format(new Date()));
 		Supplier<Object> Supplier = () -> new String("Success");
 		Mockito.when(restHelper.requestAsync(Mockito.any())).thenReturn(Supplier);
@@ -135,7 +138,6 @@ public class NotificationServiceImplTest {
 		idInfo.put("email", list);
 		idInfo.put("phone", list);
 		Mockito.when(idInfoService.getIdInfo(repoDetails())).thenReturn(idInfo);
-		Optional<String> uinOpt = Optional.of("426789089018");
 		Mockito.when(idTemplateManager.applyTemplate(Mockito.anyString(), Mockito.any())).thenReturn("test");
 		Mockito.when(idInfoService.getIdInfo(repoDetails())).thenReturn(idInfo);
 		Mockito.when(demoHelper.getEntityInfoAsString(DemoMatchType.NAME, idInfo)).thenReturn("mosip");
@@ -173,7 +175,10 @@ public class NotificationServiceImplTest {
 		AuthTypeDTO authType = new AuthTypeDTO();
 		authType.setDemo(true);
 		authRequestDTO.setRequestedAuth(authType);
-		authResponseDTO.setStatus(Boolean.TRUE);
+		ResponseDTO res=new ResponseDTO();
+		res.setAuthStatus(Boolean.TRUE);
+		res.setStaticToken("234567890");
+		authResponseDTO.setResponse(res);
 		authResponseDTO.setResponseTime(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX").format(new Date()));
 		Supplier<Object> Supplier = () -> new String("Success");
 		Mockito.when(restHelper.requestAsync(Mockito.any())).thenReturn(Supplier);
@@ -185,7 +190,6 @@ public class NotificationServiceImplTest {
 		idInfo.put("email", list);
 		idInfo.put("phone", list);
 		Mockito.when(idInfoService.getIdInfo(repoDetails())).thenReturn(idInfo);
-		Optional<String> uinOpt = Optional.of("");
 		Mockito.when(idInfoService.getIdInfo(repoDetails())).thenReturn(idInfo);
 		Mockito.when(demoHelper.getEntityInfoAsString(DemoMatchType.NAME, idInfo)).thenReturn("mosip");
 		Mockito.when(demoHelper.getEntityInfoAsString(DemoMatchType.EMAIL, idInfo)).thenReturn(" mosip ");
@@ -194,7 +198,6 @@ public class NotificationServiceImplTest {
 		Mockito.when(idInfoFetcher.getLanguageCode(LanguageType.SECONDARY_LANG)).thenReturn("ara");
 		Set<NotificationType> notificationtype = new HashSet<>();
 		notificationtype.add(NotificationType.EMAIL);
-		Map<String, Object> values = new HashMap<>();
 		IDDataValidationException e = new IDDataValidationException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS);
 		IdAuthenticationBusinessException idAuthenticationBusinessException = new IdAuthenticationBusinessException(
 				IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
@@ -231,8 +234,6 @@ public class NotificationServiceImplTest {
 //		otpRequestDto.getIdentity().setUin("8765");
 		String otp = "987654";
 		String uin = "274390482564";
-		String date = "";
-		String time = "";
 		String email = "abc@gmail.cpm";
 		String mobileNumber = "";
 
@@ -250,7 +251,6 @@ public class NotificationServiceImplTest {
 		Mockito.when(demoHelper.getEntityInfoAsString(DemoMatchType.NAME, idInfo)).thenReturn("mosip");
 
 		Mockito.when(idInfoService.getIdInfo(repoDetails())).thenReturn(idInfo);
-		Optional<String> uinOpt = Optional.of("426789089018");
 		IDDataValidationException e = new IDDataValidationException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS);
 		IdAuthenticationBusinessException idAuthenticationBusinessException = new IdAuthenticationBusinessException(
 				IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
