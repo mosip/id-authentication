@@ -160,10 +160,10 @@ public class OTPServiceImpl implements OTPService {
 
 	private void processChannel(String value,String phone,String email,MaskedResponseDTO maskedResponseDTO) throws IdAuthenticationBusinessException {
 		if (isNotNullorEmpty(value)) {
-			if (value.equalsIgnoreCase(NotificationType.PHONE.getName())) {
+			if (value.equalsIgnoreCase(NotificationType.SMS.getChannel())) {
 				maskedResponseDTO.setMaskedMobile(MaskUtil.maskMobile(phone));
 			}
-			else if (value.equalsIgnoreCase(NotificationType.EMAIL.getName())) {
+			else if (value.equalsIgnoreCase(NotificationType.EMAIL.getChannel())) {
 				maskedResponseDTO.setMaskedEmail(MaskUtil.maskEmail(email));
 			} else {
 				throw new IdAuthenticationBusinessException(
