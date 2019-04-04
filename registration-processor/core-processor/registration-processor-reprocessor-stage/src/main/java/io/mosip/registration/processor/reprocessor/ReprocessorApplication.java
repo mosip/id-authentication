@@ -4,6 +4,13 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 
 import io.mosip.registration.processor.reprocessor.stage.ReprocessorStage;
 
+/**
+ * Main class for Reprocessor Application
+ * 
+ * @author Pranav kumar
+ * @since 0.10.0
+ *
+ */
 public class ReprocessorApplication {
 
 	public static void main(String[] args) {

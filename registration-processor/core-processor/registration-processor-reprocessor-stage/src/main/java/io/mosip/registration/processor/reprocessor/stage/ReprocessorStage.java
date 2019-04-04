@@ -33,7 +33,15 @@ import io.vertx.core.eventbus.EventBus;
 import io.vertx.core.json.JsonObject;
 
 /**
- * The Class ReprocessorStage.
+ * The Reprocessor Stage to deploy the scheduler and implement re-processing
+ * logic
+ * 
+ * @author Alok Ranjan
+ * @author Sowmya
+ * @author Pranav Kumar
+ * 
+ * @since 0.10.0
+ *
  */
 public class ReprocessorStage extends MosipVerticleManager {
 
@@ -103,10 +111,9 @@ public class ReprocessorStage extends MosipVerticleManager {
 	}
 
 	/**
-	 * Deploy scheduler.
+	 * This method deploys the chime scheduler
 	 *
-	 * @param vertx
-	 *            the vertx
+	 * @param vertx the vertx
 	 */
 	private void deployScheduler(Vertx vertx) {
 		vertx.deployVerticle("ceylon:herd.schedule.chime/0.2.0", res -> {
@@ -120,10 +127,10 @@ public class ReprocessorStage extends MosipVerticleManager {
 	}
 
 	/**
-	 * Cron scheduling.
+	 * This method does the cron scheduling by fetchin cron expression from config
+	 * server
 	 *
-	 * @param vertx
-	 *            the vertx
+	 * @param vertx the vertx
 	 */
 	private void cronScheduling(Vertx vertx) {
 
@@ -158,10 +165,8 @@ public class ReprocessorStage extends MosipVerticleManager {
 	/**
 	 * Send message.
 	 *
-	 * @param message
-	 *            the message
-	 * @param toAddress
-	 *            the to address
+	 * @param message   the message
+	 * @param toAddress the to address
 	 */
 	public void sendMessage(MessageDTO message, MessageBusAddress toAddress) {
 		this.send(this.mosipEventBus, toAddress, message);

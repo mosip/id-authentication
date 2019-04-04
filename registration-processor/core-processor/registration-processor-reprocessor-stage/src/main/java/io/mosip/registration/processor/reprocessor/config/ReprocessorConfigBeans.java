@@ -17,12 +17,20 @@ import org.springframework.core.io.support.ResourcePropertySource;
 
 import io.mosip.registration.processor.reprocessor.stage.ReprocessorStage;
 
+/**
+ * Config class to get configurations and beans for Reprocessor stage
+ * 
+ * @author Pranav Kumar
+ * @since 0.10.0
+ *
+ */
 @PropertySource("classpath:bootstrap.properties")
 @Configuration
 public class ReprocessorConfigBeans {
-	
+
 	@Bean
-	public PropertySourcesPlaceholderConfigurer getPropertySourcesPlaceholderConfigurer(Environment env) throws IOException {
+	public PropertySourcesPlaceholderConfigurer getPropertySourcesPlaceholderConfigurer(Environment env)
+			throws IOException {
 
 		PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
 		PropertySourcesPlaceholderConfigurer pspc = new PropertySourcesPlaceholderConfigurer();
@@ -35,15 +43,17 @@ public class ReprocessorConfigBeans {
 					+ "/" + applicationNames.get(i) + "-" + env.getProperty("spring.profiles.active") + ".properties";
 			appResources[i] = resolver.getResources(loc)[0];
 			((AbstractEnvironment) env).getPropertySources()
-            .addLast(new ResourcePropertySource(applicationNames.get(i), loc));
+					.addLast(new ResourcePropertySource(applicationNames.get(i), loc));
 		}
 		pspc.setLocations(appResources);
 		return pspc;
 	}
+
 	public List<String> getAppNames(Environment env) {
 		String names = env.getProperty("spring.application.name");
 		return Stream.of(names.split(",")).collect(Collectors.toList());
 	}
+
 	@Bean
 	public ReprocessorStage getReprocessorStage() {
 		return new ReprocessorStage();
