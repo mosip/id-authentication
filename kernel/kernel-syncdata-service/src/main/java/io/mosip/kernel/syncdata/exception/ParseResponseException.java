@@ -2,7 +2,7 @@ package io.mosip.kernel.syncdata.exception;
 
 import io.mosip.kernel.core.exception.BaseUncheckedException;
 
-public class ParseResponseException extends BaseUncheckedException{
+public class ParseResponseException extends BaseUncheckedException {
 
 	/**
 	 * 
@@ -11,12 +11,12 @@ public class ParseResponseException extends BaseUncheckedException{
 
 	public ParseResponseException(String errorCode, String errorMessage, Throwable rootCause) {
 		super(errorCode, errorMessage, rootCause);
-		
+
 	}
 
 	public ParseResponseException(String errorCode, String errorMessage) {
 		super(errorCode, errorMessage);
-		
+
 	}
 
 }

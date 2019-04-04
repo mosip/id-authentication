@@ -42,8 +42,7 @@ public class PacketRejectionReasonController {
 	/**
 	 * This API handles creation of reason categories
 	 * 
-	 * @param requestDto-
-	 *            reasoncategoryObject
+	 * @param requestDto- reasoncategoryObject
 	 * @return CodeAndLanguageCodeId
 	 */
 	@ResponseFilter
@@ -59,8 +58,7 @@ public class PacketRejectionReasonController {
 	/**
 	 * This API handles creation of reason list
 	 * 
-	 * @param requestDto
-	 *            -reasonListObject
+	 * @param requestDto -reasonListObject
 	 * @return CodeLangCodeAndRsnCatCodeId
 	 */
 	@ResponseFilter
@@ -89,10 +87,8 @@ public class PacketRejectionReasonController {
 
 	/**
 	 * 
-	 * @param reasonCategoryCode
-	 *            - reason category code
-	 * @param langCode
-	 *            - language code
+	 * @param reasonCategoryCode - reason category code
+	 * @param langCode           - language code
 	 * @return ReasonCategory- Reason category with reason list
 	 */
 	@ResponseFilter

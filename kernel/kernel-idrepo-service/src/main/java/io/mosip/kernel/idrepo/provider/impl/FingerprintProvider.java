@@ -38,27 +38,18 @@ public class FingerprintProvider implements MosipFingerprintProvider<BIRType, BI
 	public List<BIR> convertFIRtoFMR(List<BIRType> listOfBIR) {
 		Map<String, LocalDateTime> latestcreationDate = filterTimestamp(listOfBIR);
 		return listOfBIR.parallelStream()
-				.filter(bir -> Objects.nonNull(bir.getBDBInfo())
-						&& bir.getBDBInfo().getFormatType().equals(7l)
+				.filter(bir -> Objects.nonNull(bir.getBDBInfo()) && bir.getBDBInfo().getFormatType().equals(7l)
 						&& bir.getBDBInfo().getFormatOwner().equals(257l)
 						&& Objects.nonNull(latestcreationDate.get(bir.getBDBInfo().getSubtype().toString()))
 						&& DateUtils.isSameInstant(latestcreationDate.get(bir.getBDBInfo().getSubtype().toString()),
 								bir.getBDBInfo().getCreationDate()))
-				.map(bir -> new BIR.BIRBuilder()
-						.withBdb(convertToFMR(bir.getBDB()))
-						.withBirInfo(new BIRInfo.BIRInfoBuilder()
-								.withIntegrity(false)
-								.build())
+				.map(bir -> new BIR.BIRBuilder().withBdb(convertToFMR(bir.getBDB()))
+						.withBirInfo(new BIRInfo.BIRInfoBuilder().withIntegrity(false).build())
 						.withBdbInfo(Optional.ofNullable(bir.getBDBInfo())
-								.map(bdbInfo -> new BDBInfo.BDBInfoBuilder()
-										.withFormatOwner(257l)
-										.withFormatType(2l)
-										.withQuality(bdbInfo.getQuality())
-										.withType(bdbInfo.getType())
-										.withSubtype(bdbInfo.getSubtype())
-										.withPurpose(PurposeType.IDENTIFY)
-										.withLevel(ProcessedLevelType.PROCESSED)
-										.withCreationDate(LocalDateTime.now())
+								.map(bdbInfo -> new BDBInfo.BDBInfoBuilder().withFormatOwner(257l).withFormatType(2l)
+										.withQuality(bdbInfo.getQuality()).withType(bdbInfo.getType())
+										.withSubtype(bdbInfo.getSubtype()).withPurpose(PurposeType.IDENTIFY)
+										.withLevel(ProcessedLevelType.PROCESSED).withCreationDate(LocalDateTime.now())
 										.build())
 								.orElseGet(() -> null))
 						.build())
@@ -74,9 +65,8 @@ public class FingerprintProvider implements MosipFingerprintProvider<BIRType, BI
 	private Map<String, LocalDateTime> filterTimestamp(List<BIRType> listOfBIR) {
 		Map<String, LocalDateTime> latestcreationDate = new HashMap<>();
 		listOfBIR.stream()
-				.filter(bir -> Objects.nonNull(bir.getBDBInfo()) && 
-						bir.getBDBInfo().getFormatType().equals(7l) &&
-						bir.getBDBInfo().getFormatOwner().equals(257l))
+				.filter(bir -> Objects.nonNull(bir.getBDBInfo()) && bir.getBDBInfo().getFormatType().equals(7l)
+						&& bir.getBDBInfo().getFormatOwner().equals(257l))
 				.forEach(bir -> Optional.ofNullable(bir.getBDBInfo()).ifPresent(bdbInfo -> {
 					if (latestcreationDate.containsKey(bdbInfo.getSubtype().toString())) {
 						latestcreationDate.compute(bdbInfo.getSubtype().toString(),
@@ -93,8 +83,7 @@ public class FingerprintProvider implements MosipFingerprintProvider<BIRType, BI
 	/**
 	 * Convert to FMR.
 	 *
-	 * @param bdb
-	 *            the bdb
+	 * @param bdb the bdb
 	 * @return the byte[]
 	 */
 	private byte[] convertToFMR(byte[] bdb) {

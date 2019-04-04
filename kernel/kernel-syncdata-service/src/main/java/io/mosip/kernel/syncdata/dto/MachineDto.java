@@ -20,7 +20,7 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode(callSuper = true)
 @AllArgsConstructor
 @NoArgsConstructor
-public class MachineDto extends BaseDto{
+public class MachineDto extends BaseDto {
 
 	/**
 	 * Field for machine id
@@ -46,7 +46,7 @@ public class MachineDto extends BaseDto{
 	 * Field for machine specification Id
 	 */
 	private String machineSpecId;
-	
+
 	/**
 	 * Field for is validity of the Device
 	 */

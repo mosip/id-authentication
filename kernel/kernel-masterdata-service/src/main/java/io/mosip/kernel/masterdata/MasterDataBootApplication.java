@@ -11,14 +11,13 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * @since 1.0.0
  *
  */
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = { "io.mosip.kernel.masterdata.*", "io.mosip.kernel.auth.*" })
 public class MasterDataBootApplication {
 
 	/**
 	 * Function to run the Master-Data-Service application
 	 * 
-	 * @param args
-	 *            The arguments to pass will executing the main function
+	 * @param args The arguments to pass will executing the main function
 	 */
 	public static void main(String[] args) {
 		SpringApplication.run(MasterDataBootApplication.class, args);

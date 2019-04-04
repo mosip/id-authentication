@@ -40,25 +40,23 @@ public class RegistrationCenterMachineController {
 	@ResponseFilter
 	@PostMapping
 	@ApiOperation(value = "Map provided registration center and machine", notes = "Map provided registration center id and machine id")
-	@ApiResponses({
-			@ApiResponse(code = 201, message = "When registration center and machine mapped"),
+	@ApiResponses({ @ApiResponse(code = 201, message = "When registration center and machine mapped"),
 			@ApiResponse(code = 400, message = "When Request body passed  is invalid"),
 			@ApiResponse(code = 500, message = "While mapping registration center and machine") })
 	public ResponseWrapper<ResponseRrgistrationCenterMachineDto> createRegistrationCenterAndMachine(
 			@Valid @RequestBody RequestWrapper<RegistrationCenterMachineDto> requestDto) {
-		
+
 		ResponseWrapper<ResponseRrgistrationCenterMachineDto> responseWrapper = new ResponseWrapper<>();
-		responseWrapper.setResponse(registrationCenterMachineService.createRegistrationCenterAndMachine(requestDto.getRequest()));
+		responseWrapper.setResponse(
+				registrationCenterMachineService.createRegistrationCenterAndMachine(requestDto.getRequest()));
 		return responseWrapper;
 	}
 
 	/**
 	 * Delete the mapping of registration center and machine
 	 * 
-	 * @param regCenterId
-	 *            Registration center id to be deleted
-	 * @param machineId
-	 *            MachineId id to be deleted
+	 * @param regCenterId Registration center id to be deleted
+	 * @param machineId   MachineId id to be deleted
 	 * @return {@link RegistrationCenterMachineID}
 	 */
 	@ResponseFilter
@@ -67,10 +65,10 @@ public class RegistrationCenterMachineController {
 	public ResponseWrapper<RegistrationCenterMachineID> deleteRegistrationCenterMachineMapping(
 			@ApiParam("Registration center id to be deleted") @PathVariable String regCenterId,
 			@ApiParam("MachineId id to be deleted") @PathVariable String machineId) {
-		
+
 		ResponseWrapper<RegistrationCenterMachineID> responseWrapper = new ResponseWrapper<>();
-		responseWrapper.setResponse(registrationCenterMachineService
-				.deleteRegistrationCenterMachineMapping(regCenterId, machineId));
+		responseWrapper.setResponse(
+				registrationCenterMachineService.deleteRegistrationCenterMachineMapping(regCenterId, machineId));
 		return responseWrapper;
 	}
 }

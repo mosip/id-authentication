@@ -19,24 +19,19 @@ public class FSAdapterException extends BaseUncheckedException {
 	/**
 	 * Constructor for HDFSAdapterException
 	 * 
-	 * @param errorCode
-	 *            The errorcode
-	 * @param errorMessage
-	 *            The errormessage
-	 * @param cause
-	 *            The cause
+	 * @param errorCode    The errorcode
+	 * @param errorMessage The errormessage
+	 * @param cause        The cause
 	 */
 	public FSAdapterException(String errorCode, String errorMessage, Throwable cause) {
 		super(errorCode, errorMessage, cause);
 	}
-	
+
 	/**
 	 * Constructor for HDFSAdapterException
 	 * 
-	 * @param errorCode
-	 *            The errorcode
-	 * @param errorMessage
-	 *            The errormessage
+	 * @param errorCode    The errorcode
+	 * @param errorMessage The errormessage
 	 */
 	public FSAdapterException(String errorCode, String errorMessage) {
 		super(errorCode, errorMessage);

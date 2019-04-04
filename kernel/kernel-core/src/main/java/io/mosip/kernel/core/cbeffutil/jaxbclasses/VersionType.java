@@ -5,7 +5,6 @@
 // Generated on: 2018.12.06 at 02:49:01 PM IST 
 //
 
-
 package io.mosip.kernel.core.cbeffutil.jaxbclasses;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -14,11 +13,13 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
- * <p>Java class for VersionType complex type.
+ * <p>
+ * Java class for VersionType complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within
+ * this class.
  * 
  * <pre>
  * &lt;complexType name="VersionType"&gt;
@@ -36,66 +37,55 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.NONE)
-@XmlType(name = "VersionType", propOrder = {
-    "major",
-    "minor"
-})
+@XmlType(name = "VersionType", propOrder = { "major", "minor" })
 public class VersionType {
 
-    @XmlElement(name = "Major", required = true)
-    @XmlSchemaType(name = "nonNegativeInteger")
-    protected int major;
-    @XmlElement(name = "Minor", required = true)
-    @XmlSchemaType(name = "nonNegativeInteger")
-    protected int minor;
+	@XmlElement(name = "Major", required = true)
+	@XmlSchemaType(name = "nonNegativeInteger")
+	protected int major;
+	@XmlElement(name = "Minor", required = true)
+	@XmlSchemaType(name = "nonNegativeInteger")
+	protected int minor;
 
-    /**
-     * Gets the value of the major property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link int }
-     *     
-     */
-    public int getMajor() {
-        return major;
-    }
+	/**
+	 * Gets the value of the major property.
+	 * 
+	 * @return possible object is {@link int }
+	 * 
+	 */
+	public int getMajor() {
+		return major;
+	}
 
-    /**
-     * Sets the value of the major property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link int }
-     *     
-     */
-    public void setMajor(int value) {
-        this.major = value;
-    }
+	/**
+	 * Sets the value of the major property.
+	 * 
+	 * @param value allowed object is {@link int }
+	 * 
+	 */
+	public void setMajor(int value) {
+		this.major = value;
+	}
 
-    /**
-     * Gets the value of the minor property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link int }
-     *     
-     */
-    public int getMinor() {
-        return minor;
-    }
+	/**
+	 * Gets the value of the minor property.
+	 * 
+	 * @return possible object is {@link int }
+	 * 
+	 */
+	public int getMinor() {
+		return minor;
+	}
 
-    /**
-     * Sets the value of the minor property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link int }
-     *     
-     */
-    public void setMinor(int value) {
-        this.minor = value;
-    }
+	/**
+	 * Sets the value of the minor property.
+	 * 
+	 * @param value allowed object is {@link int }
+	 * 
+	 */
+	public void setMinor(int value) {
+		this.minor = value;
+	}
 
 	@Override
 	public int hashCode() {

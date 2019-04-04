@@ -10,24 +10,21 @@ import java.io.FileInputStream;
 import io.mosip.kernel.core.cbeffutil.constant.CbeffConstant;
 import io.mosip.kernel.core.cbeffutil.exception.CbeffException;
 
-
-
 /**
  * @author Ramadurai Pandian
  * 
- * Class to read the ISO Image and Identify the format identifier
+ *         Class to read the ISO Image and Identify the format identifier
  *
  */
 public class CbeffISOReader {
-	
-	
+
 	/**
 	 * Method used for reading ISO Image
 	 * 
 	 * @param path of the ISO image
 	 * 
 	 * @param type of ISO image
-	 *        
+	 * 
 	 * @return return byte array of image data
 	 * 
 	 * @exception Exception exception
@@ -57,8 +54,8 @@ public class CbeffISOReader {
 	 * 
 	 * @param format id
 	 * 
-	 * @param type of image
-	 *        
+	 * @param type   of image
+	 * 
 	 * @return boolean value if identifier matches with id
 	 * 
 	 */

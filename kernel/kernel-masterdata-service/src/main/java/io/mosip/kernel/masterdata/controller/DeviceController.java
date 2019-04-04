@@ -13,10 +13,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.mosip.kernel.masterdata.dto.DeviceDto;
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.core.http.ResponseWrapper;
+import io.mosip.kernel.masterdata.dto.DeviceDto;
 import io.mosip.kernel.masterdata.dto.getresponse.DeviceLangCodeResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.DeviceResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
@@ -51,8 +51,7 @@ public class DeviceController {
 	/**
 	 * Get api to fetch a all device details based on language code
 	 * 
-	 * @param langCode
-	 *            pass language code as String
+	 * @param langCode pass language code as String
 	 * 
 	 * @return DeviceResponseDto all device details based on given language code
 	 *         {@link DeviceResponseDto}
@@ -74,11 +73,9 @@ public class DeviceController {
 	/**
 	 * Get api to fetch a all device details based on device type and language code
 	 * 
-	 * @param langCode
-	 *            pass language code as String
+	 * @param langCode   pass language code as String
 	 * 
-	 * @param deviceType
-	 *            pass device Type id as String
+	 * @param deviceType pass device Type id as String
 	 * 
 	 * @return DeviceLangCodeResponseDto all device details based on given device
 	 *         type and language code {@link DeviceLangCodeResponseDto}
@@ -101,8 +98,7 @@ public class DeviceController {
 	/**
 	 * Post API to insert a new row of Device data
 	 * 
-	 * @param deviceRequestDto
-	 *            input parameter deviceRequestDto
+	 * @param deviceRequestDto input parameter deviceRequestDto
 	 * 
 	 * @return ResponseEntity Device Id which is inserted successfully
 	 *         {@link ResponseEntity}
@@ -124,8 +120,7 @@ public class DeviceController {
 	/**
 	 * API to update an existing row of Device data
 	 * 
-	 * @param deviceRequestDto
-	 *            input parameter deviceRequestDto
+	 * @param deviceRequestDto input parameter deviceRequestDto
 	 * 
 	 * @return ResponseEntity Device Id which is updated successfully
 	 *         {@link ResponseEntity}
@@ -148,8 +143,7 @@ public class DeviceController {
 	/**
 	 * API to delete Device
 	 * 
-	 * @param id
-	 *            The Device Id
+	 * @param id The Device Id
 	 * 
 	 * @return {@link ResponseEntity} The id of the Device which is deleted
 	 */

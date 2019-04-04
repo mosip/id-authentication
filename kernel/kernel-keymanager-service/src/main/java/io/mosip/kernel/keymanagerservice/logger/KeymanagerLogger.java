@@ -37,8 +37,7 @@ public final class KeymanagerLogger {
 	/**
 	 * Method to get the rolling file logger for the class provided.
 	 *
-	 * @param clazz
-	 *            the clazz
+	 * @param clazz the clazz
 	 * @return the logger
 	 */
 	public static Logger getLogger(Class<?> clazz) {

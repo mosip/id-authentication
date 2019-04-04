@@ -19,5 +19,5 @@ public class Person {
 	private String name;
 	private String nickName;
 	private LocalDate dob;
-	
+
 }

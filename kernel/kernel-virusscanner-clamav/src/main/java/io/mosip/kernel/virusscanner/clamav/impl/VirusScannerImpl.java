@@ -105,7 +105,7 @@ public class VirusScannerImpl implements VirusScanner<Boolean, String> {
 		for (File file : files) {
 			try {
 				ScanResult scanResult = this.clamavClient.scan(new FileInputStream(file));
-				if(scanResult.getStatus() != Status.OK) {
+				if (scanResult.getStatus() != Status.OK) {
 					result = Boolean.FALSE;
 					break;
 				}
@@ -122,8 +122,7 @@ public class VirusScannerImpl implements VirusScanner<Boolean, String> {
 	/**
 	 * This Method is used to scan byte array
 	 * 
-	 * @param docArray
-	 *            array
+	 * @param docArray array
 	 * 
 	 * @return a true if file is virus free and false if file is infected
 	 */
@@ -158,8 +157,7 @@ public class VirusScannerImpl implements VirusScanner<Boolean, String> {
 	/**
 	 * This Method is used to scan File
 	 * 
-	 * @param doc
-	 *            object
+	 * @param doc object
 	 * 
 	 * @return a true if file is virus free and false if file is infected
 	 */

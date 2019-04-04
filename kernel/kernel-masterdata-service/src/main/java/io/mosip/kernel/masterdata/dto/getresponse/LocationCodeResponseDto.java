@@ -7,7 +7,6 @@ import lombok.Data;
 
 @Data
 
-
 public class LocationCodeResponseDto {
 
 	List<PostLocationCodeResponseDto> locations;

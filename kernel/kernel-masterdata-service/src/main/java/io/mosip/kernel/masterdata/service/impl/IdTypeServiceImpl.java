@@ -80,8 +80,7 @@ public class IdTypeServiceImpl implements IdTypeService {
 			idType = idRepository.create(entity);
 		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(IdTypeErrorCode.ID_TYPE_INSERT_EXCEPTION.getErrorCode(),
-					IdTypeErrorCode.ID_TYPE_INSERT_EXCEPTION.getErrorMessage()
-							+ ExceptionUtils.parseException(e));
+					IdTypeErrorCode.ID_TYPE_INSERT_EXCEPTION.getErrorMessage() + ExceptionUtils.parseException(e));
 		}
 		CodeAndLanguageCodeID codeAndLanguageCodeID = new CodeAndLanguageCodeID();
 		MapperUtils.map(idType, codeAndLanguageCodeID);

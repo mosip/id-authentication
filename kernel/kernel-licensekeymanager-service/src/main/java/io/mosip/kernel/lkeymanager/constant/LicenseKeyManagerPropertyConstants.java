@@ -8,9 +8,7 @@ package io.mosip.kernel.lkeymanager.constant;
  *
  */
 public enum LicenseKeyManagerPropertyConstants {
-	TIME_ZONE("UTC"), 
-	DEFAULT_CREATED_BY("defaultadmin@mosip.io"),
-	MAPPED_STATUS("Mapped License with the permissions");
+	TIME_ZONE("UTC"), DEFAULT_CREATED_BY("defaultadmin@mosip.io"), MAPPED_STATUS("Mapped License with the permissions");
 
 	/**
 	 * The value.
@@ -20,8 +18,7 @@ public enum LicenseKeyManagerPropertyConstants {
 	/**
 	 * Constructor with value as the argument.
 	 * 
-	 * @param value
-	 *            the value.
+	 * @param value the value.
 	 */
 	private LicenseKeyManagerPropertyConstants(String value) {
 		this.value = value;

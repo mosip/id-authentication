@@ -8,7 +8,6 @@ import java.util.List;
 import io.mosip.kernel.auth.entities.AuthNResponseDto;
 import io.mosip.kernel.auth.entities.MosipUserDto;
 import io.mosip.kernel.auth.entities.MosipUserDtoToken;
-import io.mosip.kernel.auth.entities.MosipUserWithToken;
 
 /**
  * @author Ramadurai Pandian
@@ -16,8 +15,8 @@ import io.mosip.kernel.auth.entities.MosipUserWithToken;
  */
 
 public interface OTPService {
-	
-	AuthNResponseDto sendOTP(MosipUserDto mosipUserDto,List<String> channel, String appId);
+
+	AuthNResponseDto sendOTP(MosipUserDto mosipUserDto, List<String> channel, String appId);
 
 	MosipUserDtoToken validateOTP(MosipUserDto mosipUser, String otp);
 

@@ -5,10 +5,6 @@ package io.mosip.kernel.core.cbeffutil.entity;
 
 import java.util.List;
 
-import javax.xml.bind.JAXBElement;
-
-import org.w3c.dom.Element;
-
 import io.mosip.kernel.core.cbeffutil.jaxbclasses.BIRType;
 
 /**
@@ -26,7 +22,7 @@ public class BIR {
 	private BDBInfo bdbInfo;
 	private byte[] bdb;
 	private byte[] sb;
-	private SBInfo sbInfo; 
+	private SBInfo sbInfo;
 	private List<Object> element;
 
 	public BIR(BIRBuilder birBuilder) {
@@ -96,8 +92,6 @@ public class BIR {
 		return sbInfo;
 	}
 
-
-
 	public static class BIRBuilder {
 		private BIRVersion version;
 		private BIRVersion cbeffversion;
@@ -107,7 +101,7 @@ public class BIR {
 		private byte[] sb;
 		private SBInfo sbInfo;
 		private List<Object> element;
-		
+
 		public BIRBuilder withElement(List<Object> element) {
 			this.element = element;
 			return this;
@@ -164,9 +158,9 @@ public class BIR {
 			bIRType.setBIRInfo(bir.getBirInfo().toBIRInfo());
 		if (bir.getBdbInfo() != null)
 			bIRType.setBDBInfo(bir.getBdbInfo().toBDBInfo());
-		if(bir.getSbInfo()!=null)
+		if (bir.getSbInfo() != null)
 			bIRType.setSBInfo(bir.getSbInfo().toSBInfoType());
-		if(bir.getElement()!=null)
+		if (bir.getElement() != null)
 			bIRType.setAny(getElement());
 		return bIRType;
 	}

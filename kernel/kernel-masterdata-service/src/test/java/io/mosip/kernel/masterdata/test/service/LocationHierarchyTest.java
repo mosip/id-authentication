@@ -24,7 +24,7 @@ import io.mosip.kernel.masterdata.service.impl.LocationServiceImpl;
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(LocationServiceImpl.class)
 public class LocationHierarchyTest {
-    
+
 	@Mock
 	List<Location> mockList;
 	@Autowired
@@ -39,7 +39,7 @@ public class LocationHierarchyTest {
 		Location locationHierarchy = new Location();
 		locationHierarchy.setCode("IND");
 		locationHierarchy.setName("INDIA");
-		locationHierarchy.setHierarchyLevel((short)0);
+		locationHierarchy.setHierarchyLevel((short) 0);
 		locationHierarchy.setHierarchyName(null);
 		locationHierarchy.setParentLocCode(null);
 		locationHierarchy.setLangCode("HIN");
@@ -50,7 +50,7 @@ public class LocationHierarchyTest {
 		Location locationHierarchy1 = new Location();
 		locationHierarchy1.setCode("KAR");
 		locationHierarchy1.setName("KARNATAKA");
-		locationHierarchy1.setHierarchyLevel((short)1);
+		locationHierarchy1.setHierarchyLevel((short) 1);
 		locationHierarchy1.setHierarchyName(null);
 		locationHierarchy1.setParentLocCode("TEST");
 		locationHierarchy1.setLangCode("KAN");
@@ -74,15 +74,14 @@ public class LocationHierarchyTest {
 
 		@SuppressWarnings("unchecked")
 		List<Location> mockPoint = mock(List.class);
-		
+
 		LocationServiceImpl hierarchyImplSpy = PowerMockito.spy(new LocationServiceImpl());
-		FieldSetter.setField(hierarchyImplSpy, LocationServiceImpl.class.getDeclaredField("parentHierarchyList"), mockList);
+		FieldSetter.setField(hierarchyImplSpy, LocationServiceImpl.class.getDeclaredField("parentHierarchyList"),
+				mockList);
 		PowerMockito.doReturn(mockPoint).when(hierarchyImplSpy, "getLocationHierarchyList", ArgumentMatchers.any(),
 				ArgumentMatchers.any());
-		
-		//PowerMockito.whenNew(Locat)
-		
-		
+
+		// PowerMockito.whenNew(Locat)
 
 		// PowerMockito.doReturn(locationHierarchies).when(
 		// locationRepo.findLocationHierarchyByCodeAndLanguageCode(Mockito.anyString(),
@@ -90,7 +89,5 @@ public class LocationHierarchyTest {
 
 		Whitebox.invokeMethod(hierarchyImplSpy, "getParentList", "KAR", "KAN");
 	}
-	
-	
-}
 
+}

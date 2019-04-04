@@ -14,9 +14,9 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-
 /**
  * Class AppDetail.
+ * 
  * @author Srinivasan
  * @since 1.0.0
  */
@@ -31,14 +31,16 @@ import lombok.NoArgsConstructor;
 /**
  * Instantiates a new app detail.
  *
- * @param id the id
- * @param name the name
- * @param descr the descr
+ * @param id       the id
+ * @param name     the name
+ * @param descr    the descr
  * @param langCode the lang code
  */
 @AllArgsConstructor
 
-/* (non-Javadoc)
+/*
+ * (non-Javadoc)
+ * 
  * @see io.mosip.kernel.syncdata.entity.BaseEntity#hashCode()
  */
 @EqualsAndHashCode(callSuper = false)
@@ -55,17 +57,15 @@ public class AppDetail extends BaseEntity implements Serializable {
 	private String id;
 
 	/** The name. */
-	@Column(name="name",length=64,nullable=false)
+	@Column(name = "name", length = 64, nullable = false)
 	private String name;
-	
+
 	/** The descr. */
-	@Column(name="descr",length=256)
+	@Column(name = "descr", length = 256)
 	private String descr;
-	
+
 	/** The lang code. */
 	@Id
 	private String langCode;
-	
-	
 
 }

@@ -9,10 +9,10 @@ package io.mosip.kernel.smsnotification.constant;
  */
 public enum SmsExceptionConstant {
 
-	SMS_ILLEGAL_INPUT("KER-NOS-001", "Number and message can't be empty, null"), SMS_INVALID_CONTACT_NUMBER(
-			"KER-NOS-002",
-			"Contact number cannot contains alphabet,special character or less than or more than "), INTERNAL_SERVER_ERROR(
-					"KER-NOS-500", "Internal server error");
+	SMS_ILLEGAL_INPUT("KER-NOS-001", "Number and message can't be empty, null"),
+	SMS_INVALID_CONTACT_NUMBER("KER-NOS-002",
+			"Contact number cannot contains alphabet,special character or less than or more than "),
+	INTERNAL_SERVER_ERROR("KER-NOS-500", "Internal server error");
 
 	/**
 	 * The error code.
@@ -25,10 +25,8 @@ public enum SmsExceptionConstant {
 	private String errorMessage;
 
 	/**
-	 * @param errorCode
-	 *            The error code to be set.
-	 * @param errorMessage
-	 *            The error message to be set.
+	 * @param errorCode    The error code to be set.
+	 * @param errorMessage The error message to be set.
 	 */
 	private SmsExceptionConstant(String errorCode, String errorMessage) {
 		this.errorCode = errorCode;

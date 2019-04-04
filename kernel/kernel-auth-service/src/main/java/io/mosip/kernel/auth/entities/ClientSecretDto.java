@@ -12,9 +12,9 @@ import lombok.EqualsAndHashCode;
  */
 
 @Data
-@EqualsAndHashCode(callSuper=true)
-public class ClientSecretDto extends BaseRequestResponseDTO{
-	
+@EqualsAndHashCode(callSuper = true)
+public class ClientSecretDto extends BaseRequestResponseDTO {
+
 	private ClientSecret request;
 
 }

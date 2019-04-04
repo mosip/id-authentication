@@ -16,18 +16,17 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode(callSuper = true)
 @AllArgsConstructor
 @NoArgsConstructor
-public class IdTypeDto extends BaseDto{
+public class IdTypeDto extends BaseDto {
 	/**
 	 * The id code.
 	 */
 	private String code;
-	
+
 	private String name;
-		
+
 	/**
 	 * The id description.
 	 */
 	private String descr;
-	
-}
 
+}

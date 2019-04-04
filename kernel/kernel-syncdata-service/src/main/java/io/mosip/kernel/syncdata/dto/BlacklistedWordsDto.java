@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode(callSuper = true)
 @AllArgsConstructor
 @NoArgsConstructor
-public class BlacklistedWordsDto extends BaseDto{
+public class BlacklistedWordsDto extends BaseDto {
 	/**
 	 * The blacklisted word.
 	 */
@@ -24,5 +24,5 @@ public class BlacklistedWordsDto extends BaseDto{
 	 * The description of the word.
 	 */
 	private String description;
-	
+
 }

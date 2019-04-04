@@ -55,7 +55,7 @@ public class VidValidatorTest {
 
 	@Value("${mosip.kernel.vid.test.invalid-admin-risticted-digits-vid}")
 	private String invalidAdminRestrictedDigitsVid;
-	
+
 	@Autowired
 	private VidValidator<String> vidValidatorImpl;
 
@@ -92,12 +92,10 @@ public class VidValidatorTest {
 	}
 
 	/*
-	@Test(expected = InvalidIDException.class)
-	public void alphaNumericTest() {
-
-		vidValidatorImpl.validateId(invalidAlphaNumericVid);
-	}
-	*/
+	 * @Test(expected = InvalidIDException.class) public void alphaNumericTest() {
+	 * 
+	 * vidValidatorImpl.validateId(invalidAlphaNumericVid); }
+	 */
 
 	@Test(expected = InvalidIDException.class)
 	public void repeatingBlockTest() {
@@ -127,7 +125,7 @@ public class VidValidatorTest {
 	public void idStartWithZeroTest() {
 		vidValidatorImpl.validateId(invalidVidStartWith);
 	}
-	
+
 	@Test(expected = InvalidIDException.class)
 	public void restrictedAdminFilterTest() {
 		vidValidatorImpl.validateId(invalidAdminRestrictedDigitsVid);

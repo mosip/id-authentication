@@ -26,12 +26,15 @@ import io.mosip.kernel.masterdata.utils.MetaDataUtils;
 @Service
 public class TemplateTypeServiceImpl implements TemplateTypeService {
 
-
 	@Autowired
 	private TemplateTypeRepository templateTypeRepository;
 
-	/* (non-Javadoc)
-	 * @see io.mosip.kernel.masterdata.service.TemplateTypeService#createTemplateType(io.mosip.kernel.masterdata.dto.TemplateTypeDto)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.kernel.masterdata.service.TemplateTypeService#createTemplateType(io.
+	 * mosip.kernel.masterdata.dto.TemplateTypeDto)
 	 */
 	@Override
 	public CodeAndLanguageCodeID createTemplateType(TemplateTypeDto tempalteType) {
@@ -40,7 +43,7 @@ public class TemplateTypeServiceImpl implements TemplateTypeService {
 		try {
 			templateType = templateTypeRepository.create(entity);
 
-		} catch (DataAccessLayerException  | DataAccessException   e) {
+		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(TemplateTypeErrorCode.TEMPLATE_TYPE_INSERT_EXCEPTION.getErrorCode(),
 					TemplateTypeErrorCode.TEMPLATE_TYPE_INSERT_EXCEPTION.getErrorMessage()
 							+ ExceptionUtils.parseException(e));

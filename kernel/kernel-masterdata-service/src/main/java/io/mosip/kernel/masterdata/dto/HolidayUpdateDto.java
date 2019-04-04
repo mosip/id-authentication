@@ -10,6 +10,7 @@ import io.mosip.kernel.masterdata.validator.ValidLangCode;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
 /**
  * 
  * @author Abhishek Kumar
@@ -28,7 +29,7 @@ public class HolidayUpdateDto {
 
 	@NotNull
 	private LocalDate holidayDate;
-	
+
 	@NotBlank
 	@Size(min = 1, max = 64)
 	private String holidayName;

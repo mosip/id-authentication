@@ -18,5 +18,5 @@ public class Personne {
 	private String nom;
 	private String surnom;
 	private int age;
-	
+
 }

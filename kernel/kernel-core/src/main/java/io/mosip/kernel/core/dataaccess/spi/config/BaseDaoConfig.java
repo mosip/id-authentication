@@ -72,8 +72,7 @@ public interface BaseDaoConfig {
 	 * Typically, applications will work with either TransactionTemplate or
 	 * declarative transaction demarcation through AOP.
 	 * 
-	 * @param entityManagerFactory
-	 *            The {@link #entityManagerFactory()}
+	 * @param entityManagerFactory The {@link #entityManagerFactory()}
 	 * @return The PlatformTransactionManager bean
 	 */
 	PlatformTransactionManager transactionManager(EntityManagerFactory entityManagerFactory);

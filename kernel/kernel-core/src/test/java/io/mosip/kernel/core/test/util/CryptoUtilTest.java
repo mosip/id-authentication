@@ -11,12 +11,14 @@ public class CryptoUtilTest {
 
 	@Test
 	public void testCombineByteArray() {
-		assertThat(CryptoUtil.combineByteArray("data".getBytes(), "key".getBytes(), "#KEY_SPLITTER#"), isA(byte[].class));
+		assertThat(CryptoUtil.combineByteArray("data".getBytes(), "key".getBytes(), "#KEY_SPLITTER#"),
+				isA(byte[].class));
 	}
 
 	@Test
 	public void testGetSplitterIndex() {
-		assertThat(CryptoUtil.getSplitterIndex("data#KEY_SPLITTER#data".getBytes(), 0, "#KEY_SPLITTER#"), isA(int.class));
+		assertThat(CryptoUtil.getSplitterIndex("data#KEY_SPLITTER#data".getBytes(), 0, "#KEY_SPLITTER#"),
+				isA(int.class));
 	}
 
 	@Test

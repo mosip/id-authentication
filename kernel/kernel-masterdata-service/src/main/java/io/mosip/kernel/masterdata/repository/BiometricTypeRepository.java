@@ -20,18 +20,16 @@ public interface BiometricTypeRepository extends BaseRepository<BiometricType, S
 	/**
 	 * Get all Biometric types
 	 * 
-	 * @param entityClass
-	 *            class of type {@link BiometricType}
+	 * @param entityClass class of type {@link BiometricType}
 	 * @return list of {@link BiometricType}
 	 */
-	@Query("FROM BiometricType where (isDeleted is null OR isDeleted = false) AND isActive = true" )
+	@Query("FROM BiometricType where (isDeleted is null OR isDeleted = false) AND isActive = true")
 	List<BiometricType> findAllByIsDeletedFalseOrIsDeletedIsNull(Class<BiometricType> entityClass);
 
 	/**
 	 * Get all Biometric types of a specific language using language code
 	 * 
-	 * @param langCode
-	 *            is of type {@link String}
+	 * @param langCode is of type {@link String}
 	 * @return list of {@link BiometricType}
 	 */
 	@Query("FROM BiometricType WHERE langCode =?1 AND (isDeleted is null OR isDeleted = false) AND isActive = true")
@@ -40,10 +38,8 @@ public interface BiometricTypeRepository extends BaseRepository<BiometricType, S
 	/**
 	 * Get Biometric type by specific id and language code
 	 * 
-	 * @param code
-	 *            biometric type code
-	 * @param langCode
-	 *            is of type {@link String}
+	 * @param code     biometric type code
+	 * @param langCode is of type {@link String}
 	 * @return object of {@link BiometricType}
 	 */
 	@Query("FROM BiometricType WHERE code =?1 AND langCode =?2 AND (isDeleted is null OR isDeleted = false) AND isActive = true")

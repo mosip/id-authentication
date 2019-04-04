@@ -9,21 +9,20 @@ import lombok.Data;
 
 @Data
 
-
 public class LocationHierarchyDto implements Serializable {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 4552110961570300174L;
-	
+
 	@NotBlank
 	private Short locationHierarchylevel;
-	
+
 	@NotBlank
-	@Size(min=1,max=64)
+	@Size(min = 1, max = 64)
 	private String locationHierarchyName;
-	
+
 	@NotBlank
 	private Boolean isActive;
 

@@ -23,7 +23,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(callSuper=false)
+@EqualsAndHashCode(callSuper = false)
 @IdClass(IdAndLanguageCodeID.class)
 @Entity
 @Table(name = "process_list", schema = "master")
@@ -33,19 +33,19 @@ public class ProcessList extends BaseEntity implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 5669845046061622990L;
-	
+
 	/** The id. */
 	@Id
 	private String id;
 
 	/** The name. */
-	@Column(name="name",length=64,nullable=false)
+	@Column(name = "name", length = 64, nullable = false)
 	private String name;
-	
+
 	/** The descr. */
-	@Column(name="descr",length=256)
+	@Column(name = "descr", length = 256)
 	private String descr;
-	
+
 	/** The lang code. */
 	@Id
 	private String langCode;

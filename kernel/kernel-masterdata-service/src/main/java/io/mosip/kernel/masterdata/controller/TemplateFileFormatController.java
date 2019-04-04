@@ -42,8 +42,7 @@ public class TemplateFileFormatController {
 	/**
 	 * API to create a templatefileformat
 	 * 
-	 * @param templateFileFormatRequestDto
-	 *            {@link TemplateFileFormatDto} instance
+	 * @param templateFileFormatRequestDto {@link TemplateFileFormatDto} instance
 	 * 
 	 * @return {@link CodeAndLanguageCodeID}
 	 */
@@ -61,8 +60,8 @@ public class TemplateFileFormatController {
 	/**
 	 * API to update an existing row of Templatefileformat data
 	 * 
-	 * @param templateFileFormatRequestDto
-	 *            input parameter templateFileFormatRequestDto
+	 * @param templateFileFormatRequestDto input parameter
+	 *                                     templateFileFormatRequestDto
 	 * 
 	 * @return ResponseEntity TemplateFileFormat Code and LangCode which is updated
 	 *         successfully {@link ResponseEntity}
@@ -86,8 +85,7 @@ public class TemplateFileFormatController {
 	/**
 	 * Api to delete TemplateFileFormat
 	 * 
-	 * @param code
-	 *            the TemplateFileFormat code
+	 * @param code the TemplateFileFormat code
 	 * @return the code of templatefileformat
 	 */
 	@ResponseFilter

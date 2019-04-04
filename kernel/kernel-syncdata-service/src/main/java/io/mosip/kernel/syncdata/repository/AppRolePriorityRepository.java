@@ -10,7 +10,6 @@ import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
 import io.mosip.kernel.syncdata.entity.AppRolePriority;
 import io.mosip.kernel.syncdata.entity.id.IdAndLanguageCodeID;
 
-
 /**
  * AppRolePriorityRepository.
  *
@@ -23,7 +22,7 @@ public interface AppRolePriorityRepository extends BaseRepository<AppRolePriorit
 	/**
 	 * Find by last updated and current time stamp.
 	 *
-	 * @param lastUpdatedTime the last updated time
+	 * @param lastUpdatedTime  the last updated time
 	 * @param currentTimeStamp the current time stamp
 	 * @return {@link AppRolePriority}
 	 */

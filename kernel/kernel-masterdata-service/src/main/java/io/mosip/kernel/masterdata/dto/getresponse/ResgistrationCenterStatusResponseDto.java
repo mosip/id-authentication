@@ -3,7 +3,7 @@ package io.mosip.kernel.masterdata.dto.getresponse;
 import lombok.Data;
 
 @Data
-public class ResgistrationCenterStatusResponseDto  {
+public class ResgistrationCenterStatusResponseDto {
 
 	private String status;
 }

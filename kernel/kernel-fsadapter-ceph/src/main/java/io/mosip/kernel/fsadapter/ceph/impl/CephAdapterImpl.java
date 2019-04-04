@@ -47,8 +47,7 @@ public class CephAdapterImpl implements FileSystemAdapter {
 	/**
 	 * Constructor to get Connection to CEPH instance.
 	 *
-	 * @param connectionUtil
-	 *            the connection util
+	 * @param connectionUtil the connection util
 	 */
 	public CephAdapterImpl(ConnectionUtils connectionUtil) {
 		if (conn == null) {
@@ -82,10 +81,8 @@ public class CephAdapterImpl implements FileSystemAdapter {
 	/**
 	 * This method stores a packet in DFS.
 	 *
-	 * @param enrolmentId
-	 *            The enrolment ID for the packet
-	 * @param file
-	 *            packet as InputStream
+	 * @param enrolmentId The enrolment ID for the packet
+	 * @param file        packet as InputStream
 	 * @return True if packet is stored
 	 */
 	@Override
@@ -133,12 +130,9 @@ public class CephAdapterImpl implements FileSystemAdapter {
 	/**
 	 * This method stores a document in DFS
 	 *
-	 * @param enrolmentId
-	 *            The enrolment ID for the document
-	 * @param key
-	 *            The key for the document
-	 * @param document
-	 *            document as InputStream
+	 * @param enrolmentId The enrolment ID for the document
+	 * @param key         The key for the document
+	 * @param document    document as InputStream
 	 * @return True if document is stored
 	 */
 
@@ -162,17 +156,13 @@ public class CephAdapterImpl implements FileSystemAdapter {
 	/**
 	 * This method copy document from one bucket to another
 	 *
-	 * @param sourceBucketName
-	 *            source bucket name
+	 * @param sourceBucketName      source bucket name
 	 *
-	 * @param sourceKey
-	 *            source key
+	 * @param sourceKey             source key
 	 *
-	 * @param destinationBucketName
-	 *            destination bucket name
+	 * @param destinationBucketName destination bucket name
 	 *
-	 * @param destinationKey
-	 *            destination key
+	 * @param destinationKey        destination key
 	 *
 	 * @return True if document copy is successful
 	 */

@@ -18,6 +18,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class RegCenterMachineUserResponseDto {
 	private List<RegistrationCenterMachineUserID> mapped = new ArrayList<>();
-	private List<RegistrationCenterMachineUserID> notmapped=new ArrayList<>();
-	
+	private List<RegistrationCenterMachineUserID> notmapped = new ArrayList<>();
+
 }

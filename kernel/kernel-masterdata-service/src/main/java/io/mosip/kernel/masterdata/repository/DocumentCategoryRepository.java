@@ -23,8 +23,7 @@ public interface DocumentCategoryRepository extends BaseRepository<DocumentCateg
 	/**
 	 * Get all DocumentCategory types
 	 *
-	 * @param entityClass
-	 *            is class of type DocumentCategory
+	 * @param entityClass is class of type DocumentCategory
 	 * @return list of {@link DocumentCategory}
 	 */
 	@Query("FROM DocumentCategory where (isDeleted is null OR isDeleted = false) AND isActive = true")
@@ -33,8 +32,7 @@ public interface DocumentCategoryRepository extends BaseRepository<DocumentCateg
 	/**
 	 * Get all Document category of a specific language using language code
 	 * 
-	 * @param langCode
-	 *            is the language code present in database
+	 * @param langCode is the language code present in database
 	 * @return list of {@link DocumentCategory}
 	 */
 	@Query("FROM DocumentCategory WHERE langCode =?1 AND (isDeleted is null OR isDeleted = false) AND isActive = true")
@@ -43,10 +41,8 @@ public interface DocumentCategoryRepository extends BaseRepository<DocumentCateg
 	/**
 	 * Get Document Category by specific id and language code
 	 * 
-	 * @param code
-	 *            for document category
-	 * @param langCode
-	 *            is the language code present in database
+	 * @param code     for document category
+	 * @param langCode is the language code present in database
 	 * @return object of {@link DocumentCategory}
 	 */
 	@Query("FROM DocumentCategory WHERE code =?1 AND langCode =?2 AND (isDeleted is null OR isDeleted = false) and isActive = true")
@@ -55,12 +51,9 @@ public interface DocumentCategoryRepository extends BaseRepository<DocumentCateg
 	/**
 	 * Delete Document Category based on code provided.
 	 * 
-	 * @param deletedDateTime
-	 *            the Date and time of deletion.
-	 * @param code
-	 *            the document category code.
-	 * @param updatedBy
-	 *            the updatedby user name.
+	 * @param deletedDateTime the Date and time of deletion.
+	 * @param code            the document category code.
+	 * @param updatedBy       the updatedby user name.
 	 * @return the integer.
 	 */
 	@Modifying

@@ -27,8 +27,7 @@ public class RequiredKeyNotFoundException extends BaseUncheckedException {
 	/**
 	 * Constructor for MosipRequiredKeyNotFoundExceptionHandler class.
 	 * 
-	 * @param list
-	 *            The error list.
+	 * @param list The error list.
 	 */
 	public RequiredKeyNotFoundException(List<ServiceError> list) {
 		this.list = list;

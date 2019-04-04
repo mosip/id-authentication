@@ -8,8 +8,8 @@ package io.mosip.kernel.masterdata.constant;
  */
 public enum ApplicantTypeErrorCode {
 	APPLICANT_TYPE_FETCH_EXCEPTION("KER-MSD-149",
-			"Error occurred while fetching Applicant Type-Document Category-Document Type Mapping details"), APPLICANT_TYPE_NOT_FOUND_EXCEPTION("KER-MSD-150",
-					"Document Category- Document Type mapping not found");
+			"Error occurred while fetching Applicant Type-Document Category-Document Type Mapping details"),
+	APPLICANT_TYPE_NOT_FOUND_EXCEPTION("KER-MSD-150", "Document Category- Document Type mapping not found");
 
 	private final String errorCode;
 	private final String errorMessage;

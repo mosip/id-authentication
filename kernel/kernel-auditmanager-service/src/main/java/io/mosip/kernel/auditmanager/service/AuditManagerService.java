@@ -19,8 +19,8 @@ public interface AuditManagerService {
 	/**
 	 * Function to add new audit
 	 * 
-	 * @param auditRequestDto
-	 *            The {@link AuditRequestDto} having required field to audit
+	 * @param auditRequestDto The {@link AuditRequestDto} having required field to
+	 *                        audit
 	 * @return The {@link AuditResponseDto} having status of audit
 	 */
 	AuditResponseDto addAudit(AuditRequestDto auditRequestDto);

@@ -38,9 +38,8 @@ public class LicenseKeyController {
 	/**
 	 * This method will generate license key against a certain TSP ID.
 	 * 
-	 * @param licenseKeyGenerationDto
-	 *            the LicenseKeyGenerationResponseDto request object wrapped in
-	 *            {@link RequestWrapper}.
+	 * @param licenseKeyGenerationDto the LicenseKeyGenerationResponseDto request
+	 *                                object wrapped in {@link RequestWrapper}.
 	 * @return the response entity.
 	 */
 	@ResponseFilter
@@ -59,8 +58,7 @@ public class LicenseKeyController {
 	 * This method will map license key to several permissions. The permissions
 	 * provided must be present in the master list.
 	 * 
-	 * @param licenseKeyMappingDto
-	 *            the {@link LicenseKeyMappingDto}.
+	 * @param licenseKeyMappingDto the {@link LicenseKeyMappingDto}.
 	 * @return the response entity.
 	 */
 	@ResponseFilter
@@ -78,10 +76,9 @@ public class LicenseKeyController {
 	/**
 	 * This method will fetch the mapped permissions for a license key.
 	 * 
-	 * @param tspId
-	 *            tsp id
-	 * @param licenseKey
-	 *            the license key of which the permissions need to be fetched.
+	 * @param tspId      tsp id
+	 * @param licenseKey the license key of which the permissions need to be
+	 *                   fetched.
 	 * @return the permissions fetched.
 	 */
 	@ResponseFilter

@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
-public class ValidDocumentDto extends BaseDto{
+public class ValidDocumentDto extends BaseDto {
 
 	@NotNull
 	@Size(min = 1, max = 36)

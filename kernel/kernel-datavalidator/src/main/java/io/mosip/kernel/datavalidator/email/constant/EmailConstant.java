@@ -9,10 +9,11 @@ package io.mosip.kernel.datavalidator.email.constant;
  */
 public enum EmailConstant {
 
-	EMAIL_INVALID_NULL("KER-EMV-001", "Email  should not be empty or null."), EMAIL_INVALID_LENGTH("KER-EMV-002",
-			"Email length should be specified number of characters."), EMAIL_INVALID_DOMAIN_LENGTH("KER-EMV-003",
-					"Email Domain extension length should be specified number of characters."), EMAIL_INVALID_CHAR(
-							"KER-EMV-004", "Invalid Email Id");
+	EMAIL_INVALID_NULL("KER-EMV-001", "Email  should not be empty or null."),
+	EMAIL_INVALID_LENGTH("KER-EMV-002", "Email length should be specified number of characters."),
+	EMAIL_INVALID_DOMAIN_LENGTH("KER-EMV-003",
+			"Email Domain extension length should be specified number of characters."),
+	EMAIL_INVALID_CHAR("KER-EMV-004", "Invalid Email Id");
 
 	/**
 	 * This variable holds the error code.
@@ -27,10 +28,8 @@ public enum EmailConstant {
 	/**
 	 * Constructor for EmailErrorConstants Enum.
 	 * 
-	 * @param errorCode
-	 *            the error code.
-	 * @param errorMessage
-	 *            the error message.
+	 * @param errorCode    the error code.
+	 * @param errorMessage the error message.
 	 */
 	EmailConstant(String errorCode, String errorMessage) {
 		this.errorCode = errorCode;

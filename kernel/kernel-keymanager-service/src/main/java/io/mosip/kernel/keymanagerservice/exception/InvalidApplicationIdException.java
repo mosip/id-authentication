@@ -19,10 +19,8 @@ public class InvalidApplicationIdException extends BaseUncheckedException {
 	/**
 	 * Constructor the initialize Handler exception
 	 * 
-	 * @param errorCode
-	 *            The errorcode for this exception
-	 * @param errorMessage
-	 *            The error message for this exception
+	 * @param errorCode    The errorcode for this exception
+	 * @param errorMessage The error message for this exception
 	 */
 	public InvalidApplicationIdException(String errorCode, String errorMessage) {
 		super(errorCode, errorMessage);

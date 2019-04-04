@@ -1,4 +1,5 @@
 package io.mosip.kernel.cryptomanager.test.config;
+
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
@@ -17,24 +18,24 @@ import org.springframework.web.client.RestTemplate;
 
 @Configuration
 public class TestConfig {
-	
+
 	@Bean
 	public RestTemplate restTemplateConfig()
 			throws KeyManagementException, NoSuchAlgorithmException, KeyStoreException {
-		
-			TrustStrategy acceptingTrustStrategy = (X509Certificate[] chain, String authType) -> true;
 
-			SSLContext sslContext = org.apache.http.ssl.SSLContexts.custom()
-					.loadTrustMaterial(null, acceptingTrustStrategy).build();
+		TrustStrategy acceptingTrustStrategy = (X509Certificate[] chain, String authType) -> true;
 
-			SSLConnectionSocketFactory csf = new SSLConnectionSocketFactory(sslContext);
+		SSLContext sslContext = org.apache.http.ssl.SSLContexts.custom().loadTrustMaterial(null, acceptingTrustStrategy)
+				.build();
 
-			CloseableHttpClient httpClient = HttpClients.custom().setSSLSocketFactory(csf).build();
-			HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory();
+		SSLConnectionSocketFactory csf = new SSLConnectionSocketFactory(sslContext);
 
-			requestFactory.setHttpClient(httpClient);
-			return new RestTemplate(requestFactory);
-		
+		CloseableHttpClient httpClient = HttpClients.custom().setSSLSocketFactory(csf).build();
+		HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory();
+
+		requestFactory.setHttpClient(httpClient);
+		return new RestTemplate(requestFactory);
+
 	}
 
 }

@@ -121,8 +121,7 @@ public class BlacklistedWordsServiceImpl implements BlacklistedWordsService {
 	 */
 	@Override
 	public WordAndLanguageCodeID createBlackListedWord(BlacklistedWordsDto blackListedWordsRequestDto) {
-		BlacklistedWords entity = MetaDataUtils.setCreateMetaData(blackListedWordsRequestDto,
-				BlacklistedWords.class);
+		BlacklistedWords entity = MetaDataUtils.setCreateMetaData(blackListedWordsRequestDto, BlacklistedWords.class);
 		BlacklistedWords blacklistedWords;
 		entity.setWord(entity.getWord().toLowerCase());
 		try {

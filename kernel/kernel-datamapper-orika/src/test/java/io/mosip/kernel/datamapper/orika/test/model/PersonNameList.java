@@ -17,5 +17,5 @@ import lombok.NoArgsConstructor;
 public class PersonNameList {
 
 	private List<String> nameList;
-	
+
 }

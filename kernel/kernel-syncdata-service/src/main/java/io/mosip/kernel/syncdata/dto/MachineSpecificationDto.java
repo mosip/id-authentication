@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
-public class MachineSpecificationDto extends BaseDto{
+public class MachineSpecificationDto extends BaseDto {
 	private String id;
 	private String name;
 	private String brand;
@@ -17,6 +17,5 @@ public class MachineSpecificationDto extends BaseDto{
 	private String machineTypeCode;
 	private String minDriverversion;
 	private String description;
-	
 
 }

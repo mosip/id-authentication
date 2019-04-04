@@ -13,36 +13,29 @@ import io.mosip.kernel.core.exception.BaseUncheckedException;
  * @since 1.0.0
  *
  */
-public class DataNotFoundException extends BaseUncheckedException{
+public class DataNotFoundException extends BaseUncheckedException {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 8797529819064607765L;
 
-
 	/**
 	 * Constructor to initialize handler exception
 	 * 
-	 * @param errorCode
-	 *            The error code for this exception
-	 * @param errorMessage
-	 *            The error message for this exception
+	 * @param errorCode    The error code for this exception
+	 * @param errorMessage The error message for this exception
 	 */
 	public DataNotFoundException(String errorCode, String errorMessage) {
 		super(errorCode, errorMessage);
 	}
-	
-	
+
 	/**
 	 * Constructor the initialize Handler exception
 	 * 
-	 * @param errorCode
-	 *            The error code for this exception
-	 * @param errorMessage
-	 *            The error message for this exception
-	 * @param rootCause
-	 *            the specified cause
+	 * @param errorCode    The error code for this exception
+	 * @param errorMessage The error message for this exception
+	 * @param rootCause    the specified cause
 	 */
 	public DataNotFoundException(String errorCode, String errorMessage, Throwable rootCause) {
 		super(errorCode, errorMessage, rootCause);

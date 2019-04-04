@@ -9,11 +9,9 @@ package io.mosip.kernel.core.datavalidator.spi;
  * @author Megha Tanga
  * @since 1.0.0
  *
- * @param <T>
- *            Type of Email
+ * @param <T> Type of Email
  */
 public interface EmailValidator<T> {
-
 
 	boolean validateEmail(T email);
 

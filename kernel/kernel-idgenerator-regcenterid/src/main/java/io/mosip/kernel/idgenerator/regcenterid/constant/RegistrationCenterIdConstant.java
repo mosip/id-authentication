@@ -8,9 +8,8 @@ package io.mosip.kernel.idgenerator.regcenterid.constant;
  *
  */
 public enum RegistrationCenterIdConstant {
-	ID_BASE(10), 
-	REG_CEN_ID_FETCH_EXCEPTION("KER-RCG-001","Error occured while fetching id"), 
-	REG_CEN_ID_INSERT_EXCEPTION("KER-RCG-002","Error occured while inserting id");
+	ID_BASE(10), REG_CEN_ID_FETCH_EXCEPTION("KER-RCG-001", "Error occured while fetching id"),
+	REG_CEN_ID_INSERT_EXCEPTION("KER-RCG-002", "Error occured while inserting id");
 
 	/**
 	 * The value.
@@ -28,8 +27,7 @@ public enum RegistrationCenterIdConstant {
 	/**
 	 * Constructor with value as the argument.
 	 * 
-	 * @param value
-	 *            - the value
+	 * @param value - the value
 	 */
 	private RegistrationCenterIdConstant(int value) {
 		this.value = value;
@@ -38,10 +36,8 @@ public enum RegistrationCenterIdConstant {
 	/**
 	 * Constructor with errorCode and errorMessage as the argument.
 	 * 
-	 * @param errorCode
-	 *            - the error code.
-	 * @param errorMessage
-	 *            - the error message.
+	 * @param errorCode    - the error code.
+	 * @param errorMessage - the error message.
 	 */
 	private RegistrationCenterIdConstant(String errorCode, String errorMessage) {
 		this.errorCode = errorCode;

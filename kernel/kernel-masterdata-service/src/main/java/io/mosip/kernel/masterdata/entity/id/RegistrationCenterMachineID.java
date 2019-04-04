@@ -1,4 +1,5 @@
 package io.mosip.kernel.masterdata.entity.id;
+
 import java.io.Serializable;
 
 import javax.persistence.Column;

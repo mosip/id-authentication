@@ -18,12 +18,9 @@ public class RegistrationCenterIdServiceException extends BaseUncheckedException
 	/**
 	 * Constructor with errorcode, errormessage and rootcause as the arguments.
 	 * 
-	 * @param errorCode
-	 *            the error code.
-	 * @param errorMessage
-	 *            the error message.
-	 * @param rootCause
-	 *            the root cause of the exception.
+	 * @param errorCode    the error code.
+	 * @param errorMessage the error message.
+	 * @param rootCause    the root cause of the exception.
 	 */
 	public RegistrationCenterIdServiceException(String errorCode, String errorMessage, Throwable rootCause) {
 		super(errorCode, errorMessage, rootCause);

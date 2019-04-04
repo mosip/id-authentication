@@ -10,6 +10,6 @@ import lombok.Data;
 public class UserDetailResponseDto {
 
 	private List<UserDetailDto> mosipUserDtoList;
-	
+
 	private LocalDateTime lastSyncTime;
 }

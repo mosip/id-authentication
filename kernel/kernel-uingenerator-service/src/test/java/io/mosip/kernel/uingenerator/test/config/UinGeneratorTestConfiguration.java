@@ -39,7 +39,7 @@ import io.mosip.kernel.uingenerator.constant.UinGeneratorConstant;
 @Configuration
 @EnableJpaRepositories(basePackages = { "io.mosip.kernel.uingenerator.repository" })
 @TestPropertySource(value = { "classpath:bootstrap.properties" })
-@ComponentScan("io.mosip.kernel.uingenerator")
+@ComponentScan(basePackages = { "io.mosip.kernel.uingenerator" })
 public class UinGeneratorTestConfiguration implements EnvironmentAware {
 
 	/**
@@ -62,8 +62,7 @@ public class UinGeneratorTestConfiguration implements EnvironmentAware {
 	/**
 	 * Loads config server values
 	 *
-	 * @param env
-	 *            env
+	 * @param env env
 	 * @return PropertySourcesPlaceholderConfigurer
 	 * @throws IOException
 	 */
@@ -98,8 +97,7 @@ public class UinGeneratorTestConfiguration implements EnvironmentAware {
 	/**
 	 * Gets list of application name mentioned in bootstrap.properties
 	 * 
-	 * @param env
-	 *            env
+	 * @param env env
 	 * @return AppNames
 	 */
 	public List<String> getAppNames() {
@@ -127,8 +125,7 @@ public class UinGeneratorTestConfiguration implements EnvironmentAware {
 	/**
 	 * Set up a shared JPA EntityManagerFactory in a Spring application context
 	 * 
-	 * @param dataSource
-	 *            dataSource
+	 * @param dataSource dataSource
 	 * @return LocalContainerEntityManagerFactoryBean
 	 */
 	@Bean
@@ -152,8 +149,7 @@ public class UinGeneratorTestConfiguration implements EnvironmentAware {
 	/**
 	 * This is the central interface in Spring's transaction infrastructure.
 	 * 
-	 * @param entityManagerFactory
-	 *            entityManagerFactory
+	 * @param entityManagerFactory entityManagerFactory
 	 * @return PlatformTransactionManager
 	 */
 	@Bean

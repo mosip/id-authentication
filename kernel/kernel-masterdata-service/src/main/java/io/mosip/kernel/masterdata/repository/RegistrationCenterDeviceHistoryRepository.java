@@ -27,13 +27,10 @@ public interface RegistrationCenterDeviceHistoryRepository
 	 * This method trigger query to fetch Registration center device History Details
 	 * based on registration center id, device id,and effective date time
 	 * 
-	 * @param regCenterId
-	 *            input Registration Center Id from User
-	 * @param deviceId
-	 *            input Device Id from user
-	 * @param effectDtimes
-	 *            effective Date and time provided by user in the format
-	 *            "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
+	 * @param regCenterId  input Registration Center Id from User
+	 * @param deviceId     input Device Id from user
+	 * @param effectDtimes effective Date and time provided by user in the format
+	 *                     "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
 	 * @return RegistrationCenterDeviceHistory fetched from database
 	 */
 

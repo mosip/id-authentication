@@ -43,8 +43,7 @@ public class ApiExceptionHandler {
 	/**
 	 * This method handles MethodArgumentNotValidException type of exceptions.
 	 * 
-	 * @param exception
-	 *            The exception
+	 * @param exception The exception
 	 * @return The response entity.
 	 * @throws IOException
 	 * 
@@ -67,8 +66,7 @@ public class ApiExceptionHandler {
 	/**
 	 * This method handles MosipInvalidNumberException type of exceptions.
 	 * 
-	 * @param e
-	 *            The exception
+	 * @param e The exception
 	 * @return The response entity.
 	 * @throws IOException
 	 */

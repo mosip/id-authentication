@@ -13,7 +13,6 @@ public class NullJsonSchemaException extends BaseUncheckedException {
 
 	private static final long serialVersionUID = -821123709407658107L;
 
-
 	public NullJsonSchemaException(String errorCode, String errorMessage) {
 		super(errorCode, errorMessage);
 	}

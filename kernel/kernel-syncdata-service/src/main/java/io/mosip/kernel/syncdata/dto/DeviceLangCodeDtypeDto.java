@@ -45,8 +45,8 @@ public class DeviceLangCodeDtypeDto extends BaseDto {
 	 * Field for device mac address
 	 */
 	private String macAddress;
-	
-    /**
+
+	/**
 	 * Field for device type
 	 */
 	private String deviceTypeCode;

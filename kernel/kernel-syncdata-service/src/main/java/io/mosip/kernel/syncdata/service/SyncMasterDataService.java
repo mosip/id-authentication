@@ -16,21 +16,14 @@ public interface SyncMasterDataService {
 
 	/**
 	 * 
-	 * @param regCenterId
-	 *            - registration center id
-	 * @param macAddress
-	 *            - MAC address of the machine
-	 * @param serialNumber
-	 *            - serial number for either desktop or dongle
-	 * @param lastUpdated
-	 *            - last updated time stamp
-	 * @param currentTimestamp
-	 *            - current time stamp
+	 * @param regCenterId      - registration center id
+	 * @param macAddress       - MAC address of the machine
+	 * @param serialNumber     - serial number for either desktop or dongle
+	 * @param lastUpdated      - last updated time stamp
+	 * @param currentTimestamp - current time stamp
 	 * @return {@link MasterDataResponseDto}
-	 * @throws InterruptedException
-	 *             - this method will throw execution exception
-	 * @throws ExecutionException
-	 *             -this method will throw interrupted exception
+	 * @throws InterruptedException - this method will throw execution exception
+	 * @throws ExecutionException   -this method will throw interrupted exception
 	 */
 	MasterDataResponseDto syncData(String regCenterId, String macAddress, String serialNumber,
 			LocalDateTime lastUpdated, LocalDateTime currentTimestamp) throws InterruptedException, ExecutionException;

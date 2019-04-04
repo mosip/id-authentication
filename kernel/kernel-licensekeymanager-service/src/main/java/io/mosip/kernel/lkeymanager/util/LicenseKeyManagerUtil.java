@@ -42,8 +42,7 @@ public class LicenseKeyManagerUtil {
 	/**
 	 * This method adds all the permissions into a single row separated by comma.
 	 * 
-	 * @param permissionsList
-	 *            the list of permissions.
+	 * @param permissionsList the list of permissions.
 	 * @return the resultant string.
 	 */
 	public String concatPermissionsIntoASingleRow(List<String> permissionsList) {
@@ -63,8 +62,7 @@ public class LicenseKeyManagerUtil {
 	 * This method validates whether the input permissions are from the master list
 	 * or not.
 	 * 
-	 * @param inputPermissions
-	 *            the list of input permissions.
+	 * @param inputPermissions the list of input permissions.
 	 * @return true if all the input permissions are valid.
 	 */
 	public boolean areValidPermissions(List<String> inputPermissions) {
@@ -107,8 +105,7 @@ public class LicenseKeyManagerUtil {
 	/**
 	 * Method to validate TSP ID.
 	 * 
-	 * @param tspID
-	 *            the TSP ID to be validated.
+	 * @param tspID the TSP ID to be validated.
 	 */
 	public void validateTSP(String tspID) {
 		List<ServiceError> errorList = new ArrayList<>();
@@ -124,10 +121,8 @@ public class LicenseKeyManagerUtil {
 	/**
 	 * Method to validate TSP ID and License Key.
 	 * 
-	 * @param tspID
-	 *            the TSP ID to be validated.
-	 * @param licenseKey
-	 *            the license key to be validated.
+	 * @param tspID      the TSP ID to be validated.
+	 * @param licenseKey the license key to be validated.
 	 */
 	public void validateTSPAndLicenseKey(String tspID, String licenseKey) {
 		List<ServiceError> errorList = new ArrayList<>();
@@ -147,12 +142,9 @@ public class LicenseKeyManagerUtil {
 	/**
 	 * Method to validate TSP ID, License Key, and the list of permissions.
 	 * 
-	 * @param tspID
-	 *            the TSP ID.
-	 * @param licenseKey
-	 *            the license Key.
-	 * @param permissions
-	 *            the list of permissions.
+	 * @param tspID       the TSP ID.
+	 * @param licenseKey  the license Key.
+	 * @param permissions the list of permissions.
 	 */
 	public void validateRequestParameters(String tspID, String licenseKey, List<String> permissions) {
 		List<ServiceError> errorList = new ArrayList<>();

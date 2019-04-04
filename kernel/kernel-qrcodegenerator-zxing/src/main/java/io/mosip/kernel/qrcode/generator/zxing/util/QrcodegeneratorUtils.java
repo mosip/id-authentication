@@ -23,10 +23,8 @@ public class QrcodegeneratorUtils {
 	/**
 	 * Verify the input send by user
 	 * 
-	 * @param data
-	 *            data send by user
-	 * @param version
-	 *            {@link QrVersion} send by user
+	 * @param data    data send by user
+	 * @param version {@link QrVersion} send by user
 	 */
 	public static void verifyInput(String data, QrVersion version) {
 		if (data == null) {

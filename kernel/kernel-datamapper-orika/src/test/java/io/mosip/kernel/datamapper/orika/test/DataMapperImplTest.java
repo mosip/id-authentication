@@ -39,23 +39,23 @@ public class DataMapperImplTest {
 	@Qualifier("personneToPersonDestinationMapper")
 	@Autowired
 	DataMapper<Personne, PersonDestination> personneToPersonDestinationMapper;
-	
+
 	@Qualifier("personneToPersonDestinationMapper2")
 	@Autowired
 	DataMapper<Personne, PersonDestination> personneToPersonDestinationMapper2;
-	
+
 	@Qualifier("personneToPersonDestinationMapper3")
 	@Autowired
 	DataMapper<Personne, PersonDestination> personneToPersonDestinationMapper3;
-	
+
 	@Qualifier("personneToPersonDestinationMapper4")
 	@Autowired
 	DataMapper<Personne, PersonDestination> personneToPersonDestinationMapper4;
-	
+
 	@Qualifier("personneToPersonDestinationMapper5")
 	@Autowired
 	DataMapper<Personne, PersonDestination> personneToPersonDestinationMapper5;
-	
+
 	@Qualifier("personneToPersonDestinationMapper6")
 	@Autowired
 	DataMapper<Personne, PersonDestination> personneToPersonDestinationMapper6;
@@ -63,35 +63,35 @@ public class DataMapperImplTest {
 	@Qualifier("personNameListToPersonNamePartsMapper")
 	@Autowired
 	DataMapper<PersonNameList, PersonNameParts> personNameListToPersonNamePartsMapper;
-	
+
 	@Qualifier("personNameMapToPersonNamePartsMapper")
 	@Autowired
 	DataMapper<PersonNameMap, PersonNameParts> personNameMapToPersonNamePartsMapper;
-	
+
 	@Qualifier("sourceModelToDestinationModelMapper")
 	@Autowired
 	DataMapper<SourceModel, DestinationModel> sourceModelToDestinationModelMapper;
-	
+
 	@Qualifier("sourceModelToDestinationModelMapper2")
 	@Autowired
 	DataMapper<SourceModel, DestinationModel> sourceModelToDestinationModelMapper2;
-	
+
 	@Qualifier("personneToPersonMapper")
 	@Autowired
 	DataMapper<Personne, Person> personneToPersonMapper;
-	
+
 	@Qualifier("personneToPersonInterface")
 	@Autowired
 	DataMapper<Personne, PersonInterface> personneToPersonInterface;
-	
+
 	@Qualifier("personListToPersonneListMapper")
 	@Autowired
 	DataMapper<List<Person>, List<Personne>> personListToPersonneListMapper;
-	
+
 	@Qualifier("sourceModelToDestinationModelMapper3")
 	@Autowired
 	DataMapper<SourceModel, DestinationModel> sourceModelToDestinationModelMapper3;
-	
+
 	@Test
 	public void personConverterListTest() {
 		PersonListConverter personListConverter = new PersonListConverter();
@@ -102,9 +102,10 @@ public class DataMapperImplTest {
 		personList.add(person);
 		List<Personne> personneList = new ArrayList<Personne>();
 		personListToPersonneListMapper.map(personList, personneList, personListConverter);
-		assertEquals(Period.between(LocalDate.of(1994, Month.JANUARY, 1), LocalDate.now()).getYears(), personneList.get(0).getAge());
+		assertEquals(Period.between(LocalDate.of(1994, Month.JANUARY, 1), LocalDate.now()).getYears(),
+				personneList.get(0).getAge());
 	}
-	
+
 	@Test(expected = DataMapperException.class)
 	public void personConverterListFailureTest() {
 		Person person = new Person();
@@ -115,7 +116,7 @@ public class DataMapperImplTest {
 		List<Personne> personneList = new ArrayList<Personne>();
 		personListToPersonneListMapper.map(personList, personneList, null);
 	}
-	
+
 	@Test(expected = DataMapperException.class)
 	public void personConverterListFailureMappingTest() {
 		PersonListConverter personListConverter = new PersonListConverter();
@@ -126,7 +127,7 @@ public class DataMapperImplTest {
 		personList.add(person);
 		personListToPersonneListMapper.map(personList, null, personListConverter);
 	}
-	
+
 	@Test
 	public void givenSrcAndDest_whenCanExcludeField_thenCorrect() {
 		Personne french = new Personne("Claire", "cla", 2);
@@ -142,7 +143,7 @@ public class DataMapperImplTest {
 
 		List<String> nameList = Arrays.asList(new String[] { "Sylvester", "Stallone" });
 		PersonNameList src = new PersonNameList(nameList);
-		
+
 		PersonNameParts dest = personNameListToPersonNamePartsMapper.map(src);
 
 		assertEquals("Sylvester", dest.getFirstName());
@@ -172,7 +173,7 @@ public class DataMapperImplTest {
 		assertEquals(src.getAge(), dest.getAge());
 		assertEquals(src.getName(), dest.getName());
 	}
-	
+
 	@Test
 	public void givenSrcWithNullField_whenMapsThenCorrect() {
 
@@ -182,7 +183,7 @@ public class DataMapperImplTest {
 		assertEquals(src.getAge(), dest.getAge());
 		assertEquals(src.getName(), dest.getName());
 	}
-	
+
 	@Test
 	public void givenSrcWithNullField_whenMapsByDefaultFalseThenCorrect() {
 
@@ -277,7 +278,7 @@ public class DataMapperImplTest {
 	public void givenSrcWithFieldDestAsNull_whenMapsExlcudingField_thenFails() {
 
 		Personne french = new Personne(null, "cla", 2);
-		Person english = null; 
+		Person english = null;
 		personneToPersonMapper.map(french, english);
 		assertNull(english);
 	}

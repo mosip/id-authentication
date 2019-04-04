@@ -18,7 +18,7 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
-public class DocumentTypeDto extends BaseDto{
+public class DocumentTypeDto extends BaseDto {
 
 	@NotNull
 	@Size(min = 1, max = 36)
@@ -30,7 +30,5 @@ public class DocumentTypeDto extends BaseDto{
 
 	@Size(min = 1, max = 128)
 	private String description;
-
-	
 
 }

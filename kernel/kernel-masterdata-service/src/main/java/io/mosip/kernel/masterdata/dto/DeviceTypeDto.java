@@ -32,7 +32,6 @@ public class DeviceTypeDto {
 	@ApiModelProperty(value = "langCode", required = true, dataType = "java.lang.String")
 	private String langCode;
 
-	
 	@NotBlank
 	@Size(min = 1, max = 64)
 	@ApiModelProperty(value = "name", required = true, dataType = "java.lang.String")
@@ -41,7 +40,7 @@ public class DeviceTypeDto {
 	@Size(min = 1, max = 128)
 	@ApiModelProperty(value = "description", required = true, dataType = "java.lang.String")
 	private String description;
-	
+
 	@NotNull
 	@ApiModelProperty(value = "isActive", required = true, dataType = "java.lang.Boolean")
 	private Boolean isActive;

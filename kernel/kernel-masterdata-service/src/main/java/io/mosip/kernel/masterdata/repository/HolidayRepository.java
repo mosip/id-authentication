@@ -25,8 +25,7 @@ public interface HolidayRepository extends BaseRepository<Holiday, Integer> {
 	/**
 	 * Get all the holidays for a specific id
 	 * 
-	 * @param id
-	 *            holiday id input from user
+	 * @param id holiday id input from user
 	 * @return list of holidays for a particular id
 	 */
 	@Query("FROM Holiday where id=?1 and (isDeleted = false or isDeleted is null) and isActive = true")
@@ -43,12 +42,9 @@ public interface HolidayRepository extends BaseRepository<Holiday, Integer> {
 	/**
 	 * Get all the holidays for a specific location code
 	 * 
-	 * @param locationCode
-	 *            - location code Eg: IND
-	 * @param langCode
-	 *            - language code Eg:ENG
-	 * @param year
-	 *            - Eg:1971
+	 * @param locationCode - location code Eg: IND
+	 * @param langCode     - language code Eg:ENG
+	 * @param year         - Eg:1971
 	 * @return list of holidays
 	 */
 
@@ -58,10 +54,8 @@ public interface HolidayRepository extends BaseRepository<Holiday, Integer> {
 	/**
 	 * Get specific holiday by holiday id and language code
 	 * 
-	 * @param holidayId
-	 *            input from user
-	 * @param langCode
-	 *            input from user
+	 * @param holidayId input from user
+	 * @param langCode  input from user
 	 * @return list of holidays for the particular holiday id and language code
 	 */
 	@Query("FROM Holiday where id=?1 and holidayId.langCode = ?2 and (isDeleted = false or isDeleted is null) and isActive = true")
@@ -70,12 +64,9 @@ public interface HolidayRepository extends BaseRepository<Holiday, Integer> {
 	/**
 	 * Method to get the list of holiday by name,date and location code
 	 * 
-	 * @param holidayName
-	 *            name of the holiday to be search
-	 * @param holidayDate
-	 *            date of the holiday to be search
-	 * @param locationCode
-	 *            location code of the holiday to be search
+	 * @param holidayName  name of the holiday to be search
+	 * @param holidayDate  date of the holiday to be search
+	 * @param locationCode location code of the holiday to be search
 	 * @return list of holidays
 	 */
 	@Query("FROM Holiday WHERE holidayId.holidayName = ?1 AND holidayId.holidayDate = ?2 AND holidayId.locationCode = ?3 AND (isDeleted is null or isDeleted=false) AND isActive = true")
@@ -85,10 +76,8 @@ public interface HolidayRepository extends BaseRepository<Holiday, Integer> {
 	/**
 	 * Fetch the holiday by id and location code
 	 * 
-	 * @param id
-	 *            id of the holiday
-	 * @param locationCode
-	 *            location code of the holiday
+	 * @param id           id of the holiday
+	 * @param locationCode location code of the holiday
 	 * @return {@link Holiday}
 	 */
 	@Query("FROM Holiday where id=?1 and holidayId.locationCode = ?2 and (isDeleted = false or isDeleted is null) and isActive = true")
@@ -97,14 +86,10 @@ public interface HolidayRepository extends BaseRepository<Holiday, Integer> {
 	/**
 	 * Method to delete the holiday
 	 * 
-	 * @param deletedTime
-	 *            input for deleted timeStamp
-	 * @param holidayName
-	 *            name of the holiday to be deleted
-	 * @param holidayDate
-	 *            date of the holiday to be deleted
-	 * @param locationCode
-	 *            location of the holiday to be deleted
+	 * @param deletedTime  input for deleted timeStamp
+	 * @param holidayName  name of the holiday to be deleted
+	 * @param holidayDate  date of the holiday to be deleted
+	 * @param locationCode location of the holiday to be deleted
 	 * @return no. of rows deleted
 	 */
 	@Modifying

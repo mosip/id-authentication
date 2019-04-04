@@ -16,34 +16,34 @@ import io.mosip.kernel.masterdata.entity.id.WordAndLanguageCodeID;
 @Configuration
 public class MapperConfig {
 
-	@Bean(name="applicationtoToApplicationDtoDefaultMapper")
-	public DataMapper<Application, ApplicationDto> applicationtoToApplicationDtoMapper(){
+	@Bean(name = "applicationtoToApplicationDtoDefaultMapper")
+	public DataMapper<Application, ApplicationDto> applicationtoToApplicationDtoMapper() {
 		return new DataMapperBuilderImpl<>(Application.class, ApplicationDto.class).build();
 	}
-	
-	@Bean(name="biometricTypeTobiometricTypeDtoDefaultMapper")
-	public DataMapper<BiometricType, BiometricTypeDto> biometricTypeTobiometricTypeDtoDefaultMapper(){
+
+	@Bean(name = "biometricTypeTobiometricTypeDtoDefaultMapper")
+	public DataMapper<BiometricType, BiometricTypeDto> biometricTypeTobiometricTypeDtoDefaultMapper() {
 		return new DataMapperBuilderImpl<>(BiometricType.class, BiometricTypeDto.class).build();
 	}
-	
-	@Bean(name="biometricTypeToCodeandlanguagecodeDefaultMapper")
-	public DataMapper<BiometricType, CodeAndLanguageCodeID> biometricTypeToCodeandlanguagecodeDefaultMapper(){
+
+	@Bean(name = "biometricTypeToCodeandlanguagecodeDefaultMapper")
+	public DataMapper<BiometricType, CodeAndLanguageCodeID> biometricTypeToCodeandlanguagecodeDefaultMapper() {
 		return new DataMapperBuilderImpl<>(BiometricType.class, CodeAndLanguageCodeID.class).build();
 	}
-	
-	@Bean(name="blacklistedWordsToWordAndLanguageCodeIDDefaultMapper")
-	public DataMapper<BlacklistedWords, WordAndLanguageCodeID> blacklistedWordsToWordAndLanguageCodeIDDefaultMapper(){
+
+	@Bean(name = "blacklistedWordsToWordAndLanguageCodeIDDefaultMapper")
+	public DataMapper<BlacklistedWords, WordAndLanguageCodeID> blacklistedWordsToWordAndLanguageCodeIDDefaultMapper() {
 		return new DataMapperBuilderImpl<>(BlacklistedWords.class, WordAndLanguageCodeID.class).build();
 	}
-	
-	@Bean(name="applicationDtoToApplicationDefaultMapper")
-	public DataMapper<ApplicationDto,Application> applicationDtoToApplicationDefaultMapper(){
+
+	@Bean(name = "applicationDtoToApplicationDefaultMapper")
+	public DataMapper<ApplicationDto, Application> applicationDtoToApplicationDefaultMapper() {
 		return new DataMapperBuilderImpl<>(ApplicationDto.class, Application.class).build();
 	}
-	
-	@Bean(name="applicationToCodeandlanguagecodeDefaultMapper")
-	public DataMapper<Application, CodeAndLanguageCodeID> applicationToCodeandlanguagecodeDefaultMapper(){
+
+	@Bean(name = "applicationToCodeandlanguagecodeDefaultMapper")
+	public DataMapper<Application, CodeAndLanguageCodeID> applicationToCodeandlanguagecodeDefaultMapper() {
 		return new DataMapperBuilderImpl<>(Application.class, CodeAndLanguageCodeID.class).build();
 	}
-	
+
 }

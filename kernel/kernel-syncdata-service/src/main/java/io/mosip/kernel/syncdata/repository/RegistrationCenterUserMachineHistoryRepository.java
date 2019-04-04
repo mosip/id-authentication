@@ -23,14 +23,11 @@ public interface RegistrationCenterUserMachineHistoryRepository
 
 	/**
 	 * 
-	 * @param regId
-	 *            - registration center id
-	 * @param lastUpdated
-	 *            - last updated time stamp
-	 * @param currentTimeStamp
-	 *            - current time stamp
-	 * @return list of {@link RegistrationCenterUserMachineHistory} - list of registration center user
-	 *         machine history
+	 * @param regId            - registration center id
+	 * @param lastUpdated      - last updated time stamp
+	 * @param currentTimeStamp - current time stamp
+	 * @return list of {@link RegistrationCenterUserMachineHistory} - list of
+	 *         registration center user machine history
 	 */
 	@Query("FROM RegistrationCenterUserMachineHistory rcumh WHERE rcumh.cntrId=?1 AND ((rcumh.createdDateTime > ?2 AND rcumh.createdDateTime<=?3) OR (rcumh.updatedDateTime > ?2 AND rcumh.updatedDateTime <=?3) OR (rcumh.deletedDateTime > ?2 AND rcumh.deletedDateTime<=?3))")
 	List<RegistrationCenterUserMachineHistory> findLatestRegistrationCenterUserMachineHistory(String regId,

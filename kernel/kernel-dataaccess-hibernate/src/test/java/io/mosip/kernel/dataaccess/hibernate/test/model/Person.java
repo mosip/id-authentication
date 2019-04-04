@@ -20,13 +20,13 @@ public class Person {
 
 	private String name;
 
-	
 	/**
 	 * No args constructor
 	 */
 	public Person() {
 		super();
 	}
+
 	/**
 	 * @param string
 	 */
@@ -42,8 +42,7 @@ public class Person {
 	}
 
 	/**
-	 * @param name
-	 *            the name to set
+	 * @param name the name to set
 	 */
 	public void setName(String name) {
 		this.name = name;
@@ -57,14 +56,15 @@ public class Person {
 	}
 
 	/**
-	 * @param id
-	 *            the id to set
+	 * @param id the id to set
 	 */
 	public void setId(int id) {
 		Id = id;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#toString()
 	 */
 	@Override

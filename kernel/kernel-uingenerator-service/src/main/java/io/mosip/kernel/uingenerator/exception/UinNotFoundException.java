@@ -19,10 +19,8 @@ public class UinNotFoundException extends BaseUncheckedException {
 	/**
 	 * Constructor the initialize UinNotFoundException
 	 * 
-	 * @param errorCode
-	 *            The errorcode for this exception
-	 * @param errorMessage
-	 *            The error message for this exception
+	 * @param errorCode    The errorcode for this exception
+	 * @param errorMessage The error message for this exception
 	 */
 	public UinNotFoundException(String errorCode, String errorMessage) {
 		super(errorCode, errorMessage);

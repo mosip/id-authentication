@@ -92,11 +92,10 @@ public class CryptomanagerUtil {
 	 */
 	@Value("${mosip.kernel.data-key-splitter}")
 	private String keySplitter;
-	
-	
+
 	@Value("${mosip.kernel.cryptomanager.request_id}")
 	private String cryptomanagerRequestID;
-	
+
 	@Value("${mosip.kernel.cryptomanager.request_version}")
 	private String cryptomanagerRequestVersion;
 	/**
@@ -114,8 +113,7 @@ public class CryptomanagerUtil {
 	/**
 	 * Calls Key-Manager-Service to get public key of an application
 	 * 
-	 * @param cryptomanagerRequestDto
-	 *            {@link CryptomanagerRequestDto} instance
+	 * @param cryptomanagerRequestDto {@link CryptomanagerRequestDto} instance
 	 * @return {@link PublicKey} returned by Key Manager Service
 	 */
 	public PublicKey getPublicKey(CryptomanagerRequestDto cryptomanagerRequestDto) {
@@ -165,8 +163,7 @@ public class CryptomanagerUtil {
 	/**
 	 * Calls Key-Manager-Service to decrypt symmetric key
 	 * 
-	 * @param cryptomanagerRequestDto
-	 *            {@link CryptomanagerRequestDto} instance
+	 * @param cryptomanagerRequestDto {@link CryptomanagerRequestDto} instance
 	 * @return Decrypted {@link SecretKey} from Key Manager Service
 	 */
 	public SecretKey getDecryptedSymmetricKey(CryptomanagerRequestDto cryptomanagerRequestDto) {
@@ -181,8 +178,8 @@ public class CryptomanagerUtil {
 		HttpHeaders keyManagerRequestHeaders = new HttpHeaders();
 		keyManagerRequestHeaders.setContentType(MediaType.APPLICATION_JSON);
 
-		HttpEntity<RequestWrapper<KeymanagerSymmetricKeyRequestDto>> keyManagerRequestEntity = new HttpEntity<>(requestWrapper,
-				keyManagerRequestHeaders);
+		HttpEntity<RequestWrapper<KeymanagerSymmetricKeyRequestDto>> keyManagerRequestEntity = new HttpEntity<>(
+				requestWrapper, keyManagerRequestHeaders);
 
 		ResponseEntity<String> response = restTemplate.exchange(decryptSymmetricKeyUrl, HttpMethod.POST,
 				keyManagerRequestEntity, String.class);
@@ -195,7 +192,7 @@ public class CryptomanagerUtil {
 			throw new KeymanagerServiceException(validationErrorsList);
 		}
 		KeymanagerSymmetricKeyResponseDto keyManagerSymmetricKeyResponseDto;
-		ResponseWrapper<?> responseObject=null;
+		ResponseWrapper<?> responseObject = null;
 		try {
 			responseObject = objectMapper.readValue(response.getBody(), ResponseWrapper.class);
 			keyManagerSymmetricKeyResponseDto = objectMapper.readValue(

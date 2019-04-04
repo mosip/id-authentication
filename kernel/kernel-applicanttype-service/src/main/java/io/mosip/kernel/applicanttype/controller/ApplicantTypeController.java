@@ -3,6 +3,7 @@ package io.mosip.kernel.applicanttype.controller;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -29,6 +30,7 @@ public class ApplicantTypeController {
 	@Autowired
 	private ApplicantTypeService applicantTypeService;
 
+	@PreAuthorize("hasRole('INDIVIDUAL')")
 	@ResponseFilter
 	@PostMapping(value = "/getApplicantType")
 	public ResponseWrapper<ResponseDTO> getApplicantType(@Valid @RequestBody RequestWrapper<RequestDTO> dto) {

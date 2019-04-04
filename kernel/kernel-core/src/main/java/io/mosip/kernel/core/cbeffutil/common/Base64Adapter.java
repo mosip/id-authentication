@@ -11,12 +11,11 @@ package io.mosip.kernel.core.cbeffutil.common;
  *
  */
 import javax.xml.bind.annotation.adapters.XmlAdapter;
+
 import io.mosip.kernel.core.util.CryptoUtil;
 
 public class Base64Adapter extends XmlAdapter<String, byte[]> {
 
-	
-	
 	/**
 	 * @param data biometrics image data
 	 * @return base64 decoded data after unmarshalling
@@ -26,7 +25,6 @@ public class Base64Adapter extends XmlAdapter<String, byte[]> {
 		return CryptoUtil.decodeBase64(data);
 	}
 
-	
 	/**
 	 * @param data biometrics image data
 	 * @return base64 encoded data after marshalling

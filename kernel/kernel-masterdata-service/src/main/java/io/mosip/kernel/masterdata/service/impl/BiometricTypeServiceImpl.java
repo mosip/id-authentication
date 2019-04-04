@@ -142,8 +142,7 @@ public class BiometricTypeServiceImpl implements BiometricTypeService {
 	 */
 	@Override
 	public CodeAndLanguageCodeID createBiometricType(BiometricTypeDto biometricTypeRequestDto) {
-		BiometricType entity = MetaDataUtils.setCreateMetaData(biometricTypeRequestDto,
-				BiometricType.class);
+		BiometricType entity = MetaDataUtils.setCreateMetaData(biometricTypeRequestDto, BiometricType.class);
 		BiometricType biometricType;
 		try {
 			biometricType = biometricTypeRepository.create(entity);

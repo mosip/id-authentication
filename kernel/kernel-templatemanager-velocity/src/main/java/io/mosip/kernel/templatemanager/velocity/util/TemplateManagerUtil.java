@@ -19,9 +19,8 @@ public class TemplateManagerUtil {
 	/**
 	 * Method to bind the map of values into VelocityContext
 	 * 
-	 * @param input
-	 *            as Map&lt;String,Object&gt; where key will be placeholder name and
-	 *            Object is the actual value for the placeholder
+	 * @param input as Map&lt;String,Object&gt; where key will be placeholder name
+	 *              and Object is the actual value for the placeholder
 	 * @return VelocityContext
 	 */
 	public static VelocityContext bindInputToContext(Map<String, Object> input) {

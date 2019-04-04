@@ -116,7 +116,7 @@ public class UinValidatorImpl implements UinValidator<String> {
 	 * Compiled regex pattern of {@link #conjugativeEvenDigitsLimitRegEx}
 	 */
 	private Pattern conjugativeEvenDigitsLimitPattern = null;
-	
+
 	/**
 	 * Method to prepare regular expressions for checking UIN has only digits.
 	 */
@@ -155,7 +155,6 @@ public class UinValidatorImpl implements UinValidator<String> {
 
 		String conjugativeEvenDigitsLimitRegEx = "[2468]{" + conjugativeEvenDigitsLimit + "}";
 
-
 		repeatingPattern = Pattern.compile(repeatingRegEx);
 		repeatingBlockPattern = Pattern.compile(repeatingBlockRegEx);
 		conjugativeEvenDigitsLimitPattern = Pattern.compile(conjugativeEvenDigitsLimitRegEx);
@@ -174,23 +173,17 @@ public class UinValidatorImpl implements UinValidator<String> {
 	 * Method used for Validate UIN against acceptance Criteria
 	 * 
 	 * 
-	 * @param id
-	 *            pass a UIN in String format example : String inputFile =
-	 *            "201308710214"
+	 * @param id pass a UIN in String format example : String inputFile =
+	 *           "201308710214"
 	 * @return boolean True If entered is Valid else it will throw an error
-	 * @throws InvalidIDException
-	 *             If entered UIN is empty or null.
-	 * @throws InvalidIDException
-	 *             If entered UIN contain any sequential and repeated block of
-	 *             number for 2 or more than two digits",
-	 * @throws InvalidIDException
-	 *             If entered UIN length should be specified number of digit.
-	 * @throws InvalidIDException
-	 *             If entered UIN contain any alphanumeric characters
-	 * @throws InvalidIDException
-	 *             If entered UIN should not match with checksum
-	 * @throws InvalidIDException
-	 *             If entered UIN contain Zero or One as first Digit.
+	 * @throws InvalidIDException If entered UIN is empty or null.
+	 * @throws InvalidIDException If entered UIN contain any sequential and repeated
+	 *                            block of number for 2 or more than two digits",
+	 * @throws InvalidIDException If entered UIN length should be specified number
+	 *                            of digit.
+	 * @throws InvalidIDException If entered UIN contain any alphanumeric characters
+	 * @throws InvalidIDException If entered UIN should not match with checksum
+	 * @throws InvalidIDException If entered UIN contain Zero or One as first Digit.
 	 */
 
 	public boolean validateId(String id) {
@@ -306,8 +299,7 @@ public class UinValidatorImpl implements UinValidator<String> {
 	 * {@link #sequenceLimit} filter, {@link #repeatingLimit} filter and
 	 * {@link #repeatingBlockLimit} filters
 	 * 
-	 * @param id
-	 *            The input id to validate
+	 * @param id The input id to validate
 	 * @return true if the input id is valid
 	 */
 	private boolean isValidId(String id) {
@@ -319,8 +311,7 @@ public class UinValidatorImpl implements UinValidator<String> {
 	/**
 	 * Checks the input id for {@link #SEQUENCE_LIMIT} filter
 	 * 
-	 * @param id
-	 *            The input id to validate
+	 * @param id The input id to validate
 	 * @return true if the id matches the filter
 	 */
 	private boolean sequenceFilter(String id) {
@@ -333,10 +324,8 @@ public class UinValidatorImpl implements UinValidator<String> {
 	 * Checks the input id if it matched the given regex pattern
 	 * ({@link #repeatingPattern}, {@link #repeatingBlockPattern})
 	 * 
-	 * @param id
-	 *            The input id to validate
-	 * @param pattern
-	 *            The input regex Pattern
+	 * @param id      The input id to validate
+	 * @param pattern The input regex Pattern
 	 * @return true if the id matches the given regex pattern
 	 */
 	private boolean regexFilter(String id, Pattern pattern) {
@@ -347,10 +336,8 @@ public class UinValidatorImpl implements UinValidator<String> {
 	 * Checks the input UIN whether digits from first to limit is equal to reverse
 	 * of Digits from last digit of UIN to given Limit.
 	 * 
-	 * @param id
-	 *            The input UIN id to validate
-	 * @param reverseLimit
-	 *            Number of digits to reverse from last Digit of Id
+	 * @param id           The input UIN id to validate
+	 * @param reverseLimit Number of digits to reverse from last Digit of Id
 	 * @return true if Digits of UIN from first Digit to reverseLimit digit is equal
 	 *         to reverse of digits from last digit to reverseLimit digit. Example
 	 *         if UIN=4345665434 and reverseLimit is 5 Then from first digit to
@@ -361,7 +348,7 @@ public class UinValidatorImpl implements UinValidator<String> {
 	 */
 	private boolean firstAndLastDigitsReverseValidation(String id, int reverseLimit) {
 
-		StringBuilder rev = new StringBuilder(id.substring(id.length()-reverseLimit, id.length()));
+		StringBuilder rev = new StringBuilder(id.substring(id.length() - reverseLimit, id.length()));
 		rev = rev.reverse();
 
 		return (id.substring(0, reverseLimit).equals(rev.toString()));
@@ -372,10 +359,8 @@ public class UinValidatorImpl implements UinValidator<String> {
 	 * from last digit of UIN to given Limit.
 	 * 
 	 * 
-	 * @param id
-	 *            The input UIN id to validate
-	 * @param limit
-	 *            Number of digits from fist digit to given limit
+	 * @param id    The input UIN id to validate
+	 * @param limit Number of digits from fist digit to given limit
 	 * @return true if digits from first to given limit are Equal to last digits of
 	 *         UIN of length limit Example if UIN=4345643456 and limit is 5 Then
 	 *         from first 5 digits will be 43446 and last 5 digits will be 43446 So
@@ -384,15 +369,14 @@ public class UinValidatorImpl implements UinValidator<String> {
 
 	private boolean firstAndLastDigitsValidation(String id, int limit) {
 
-		return (id.substring(0, limit).equals(id.substring(id.length()-limit, id.length())));
+		return (id.substring(0, limit).equals(id.substring(id.length() - limit, id.length())));
 
 	}
-	
+
 	/**
 	 * Checks the input id for {@link #restrictedNumbers} filter
 	 * 
-	 * @param id
-	 *            The input id to validate
+	 * @param id The input id to validate
 	 * @return true if the id matches the filter
 	 */
 	private boolean restrictedAdminFilter(String id) {

@@ -29,7 +29,7 @@ public class RegistrationCenterMachineDeviceHistoryID implements Serializable {
 
 	@Column(name = "machine_id", unique = true, nullable = false, length = 10)
 	private String machineId;
-	
+
 	@Column(name = "eff_dtimes", nullable = false)
 	private LocalDateTime effectivetimes;
 }

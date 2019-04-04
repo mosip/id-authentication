@@ -1,35 +1,35 @@
 package io.mosip.kernel.ldap.dto;
 
 /**
- *  @author Sabbu Uday Kumar
- *  @since 1.0.0
+ * @author Sabbu Uday Kumar
+ * @since 1.0.0
  */
 public class OtpUserDto {
-    private String email;
-    private String phone;
-    private String langCode;
+	private String email;
+	private String phone;
+	private String langCode;
 
-    public String getEmail() {
-        return email;
-    }
+	public String getEmail() {
+		return email;
+	}
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
+	public void setEmail(String email) {
+		this.email = email;
+	}
 
-    public String getPhone() {
-        return phone;
-    }
+	public String getPhone() {
+		return phone;
+	}
 
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
+	public void setPhone(String phone) {
+		this.phone = phone;
+	}
 
-    public String getLangCode() {
-        return langCode;
-    }
+	public String getLangCode() {
+		return langCode;
+	}
 
-    public void setLangCode(String langCode) {
-        this.langCode = langCode;
-    }
+	public void setLangCode(String langCode) {
+		this.langCode = langCode;
+	}
 }

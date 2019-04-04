@@ -7,10 +7,8 @@ import lombok.Data;
 
 @Data
 
-
 public class PacketRejectionReasonResponseDto {
-	
+
 	private List<ReasonCategoryDto> reasonCategories;
-	
 
 }

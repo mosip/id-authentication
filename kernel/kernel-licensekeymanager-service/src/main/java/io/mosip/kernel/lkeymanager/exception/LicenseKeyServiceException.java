@@ -22,8 +22,7 @@ public class LicenseKeyServiceException extends BaseUncheckedException {
 	private final List<ServiceError> list;
 
 	/**
-	 * @param list
-	 *            The error list.
+	 * @param list The error list.
 	 */
 	public LicenseKeyServiceException(List<ServiceError> list) {
 		this.list = list;

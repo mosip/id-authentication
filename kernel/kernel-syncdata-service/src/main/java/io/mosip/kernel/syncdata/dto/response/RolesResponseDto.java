@@ -4,6 +4,7 @@ import java.util.List;
 
 import io.mosip.kernel.syncdata.dto.RoleDto;
 import lombok.Data;
+
 /**
  * 
  * @author Srinivasan

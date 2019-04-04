@@ -16,5 +16,5 @@ public class PersonNameParts {
 
 	private String firstName;
 	private String lastName;
-	
+
 }

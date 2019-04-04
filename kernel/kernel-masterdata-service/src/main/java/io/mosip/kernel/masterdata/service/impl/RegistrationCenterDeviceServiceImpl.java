@@ -46,7 +46,7 @@ public class RegistrationCenterDeviceServiceImpl implements RegistrationCenterDe
 	 */
 	@Autowired
 	private RegistrationCenterDeviceHistoryRepository registrationCenterDeviceHistoryRepository;
-	
+
 	/**
 	 * (non-Javadoc)
 	 * 
@@ -116,7 +116,7 @@ public class RegistrationCenterDeviceServiceImpl implements RegistrationCenterDe
 			throw new MasterDataServiceException(
 					RegistrationCenterDeviceErrorCode.REGISTRATION_CENTER_DEVICE_DELETE_EXCEPTION.getErrorCode(),
 					RegistrationCenterDeviceErrorCode.REGISTRATION_CENTER_DEVICE_DELETE_EXCEPTION.getErrorMessage()
-					+ExceptionUtils.parseException(e));
+							+ ExceptionUtils.parseException(e));
 		}
 		return registrationCenterDeviceID;
 	}

@@ -23,13 +23,10 @@ public interface MachineHistoryRepository extends BaseRepository<MachineHistory,
 	 * This method trigger query to fetch Machine History Details based on Machine
 	 * History Id, language code and effective date time
 	 * 
-	 * @param id
-	 *            Machine History id provided by user
-	 * @param langCode
-	 *            language code provided by user
-	 * @param effectDtimes
-	 *            effective Date and time provided by user in the format
-	 *            "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
+	 * @param id           Machine History id provided by user
+	 * @param langCode     language code provided by user
+	 * @param effectDtimes effective Date and time provided by user in the format
+	 *                     "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
 	 * @return List Machine History Details fetched from database
 	 */
 

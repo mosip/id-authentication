@@ -24,12 +24,11 @@ package io.mosip.kernel.core.datamapper.spi;
  * @since 1.0.0
  * 
  */
-public interface DataMapper<S,D> {
-
+public interface DataMapper<S, D> {
 
 	public D map(S source);
 
-    public void map(S source, D destination);
+	public void map(S source, D destination);
 
 	public void map(S source, D destination, DataConverter<S, D> dataConverter);
 }

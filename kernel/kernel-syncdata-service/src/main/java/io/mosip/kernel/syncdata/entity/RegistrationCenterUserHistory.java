@@ -38,7 +38,7 @@ public class RegistrationCenterUserHistory extends BaseEntity implements Seriali
 	@Id
 	private LocalDateTime effectDateTimes;
 
-	@Column(name="lang_code")
+	@Column(name = "lang_code")
 	private String langCode;
 
 }

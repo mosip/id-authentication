@@ -17,22 +17,17 @@ public class NullPointerException extends BaseUncheckedException {
 	/**
 	 * Constructor with errorCode, and rootCause
 	 * 
-	 * @param errorCode
-	 *            The error code for this exception
-	 * @param errorMessage
-	 *            The error message for this exception
+	 * @param errorCode    The error code for this exception
+	 * @param errorMessage The error message for this exception
 	 */
 	public NullPointerException(String errorCode, String errorMessage) {
 		super(errorCode, errorMessage);
 	}
-	
+
 	/**
-	 * @param arg0
-	 *            Error Code Corresponds to Particular Exception
-	 * @param arg1
-	 *            Message providing the specific context of the error.
-	 * @param arg2
-	 *            Cause of exception
+	 * @param arg0 Error Code Corresponds to Particular Exception
+	 * @param arg1 Message providing the specific context of the error.
+	 * @param arg2 Cause of exception
 	 */
 	public NullPointerException(String arg0, String arg1, Throwable arg2) {
 		super(arg0, arg1, arg2);

@@ -18,7 +18,7 @@ public class IdAndLanguageCodeID implements Serializable {
 	* 
 	*/
 	private static final long serialVersionUID = 1L;
-	
+
 	@Column(name = "id", nullable = false)
 	private String id;
 

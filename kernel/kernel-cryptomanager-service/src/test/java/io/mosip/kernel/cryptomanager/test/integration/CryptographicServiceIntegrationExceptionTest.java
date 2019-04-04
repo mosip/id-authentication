@@ -28,7 +28,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-
+import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.test.web.servlet.MockMvc;
@@ -111,16 +111,16 @@ public class CryptographicServiceIntegrationExceptionTest {
 
 	}
 
-	//@WithUserDetails("reg-processor")
+	@WithUserDetails("reg-processor")
 	@Test
 	public void testInvalidSpecEncrypt() throws Exception {
 		KeymanagerPublicKeyResponseDto keymanagerPublicKeyResponseDto = new KeymanagerPublicKeyResponseDto(
 				CryptoUtil.encodeBase64("badprivatekey".getBytes()), LocalDateTime.now(),
 				LocalDateTime.now().plusDays(100));
-		ResponseWrapper<KeymanagerPublicKeyResponseDto> response= new ResponseWrapper<>();
+		ResponseWrapper<KeymanagerPublicKeyResponseDto> response = new ResponseWrapper<>();
 		response.setResponse(keymanagerPublicKeyResponseDto);
-		server.expect(requestTo(builder.buildAndExpand(uriParams).toUriString())).andRespond(withSuccess(
-				objectMapper.writeValueAsString(response), MediaType.APPLICATION_JSON));
+		server.expect(requestTo(builder.buildAndExpand(uriParams).toUriString()))
+				.andRespond(withSuccess(objectMapper.writeValueAsString(response), MediaType.APPLICATION_JSON));
 
 		requestDto = new CryptomanagerRequestDto();
 		requestWrapper.setRequest(requestDto);
@@ -136,7 +136,7 @@ public class CryptographicServiceIntegrationExceptionTest {
 				.andExpect(status().isOk());
 	}
 
-	//@WithUserDetails("reg-processor")
+	@WithUserDetails("reg-processor")
 	@Test
 	public void testMethodArgumentNotValidException() throws Exception {
 		requestDto = new CryptomanagerRequestDto();
@@ -152,26 +152,18 @@ public class CryptographicServiceIntegrationExceptionTest {
 				.andExpect(status().isOk());
 	}
 
-	//@WithUserDetails("reg-processor")
+	@WithUserDetails("reg-processor")
 	@Test
 	public void testInvalidFormatException() throws Exception {
-		String requestBody = "{\r\n" + 
-				"\"id\":\"\",\r\n" + 
-				"\"version\":\"\",\r\n" + 
-				"\"requesttime\":\"\",\r\n" + 
-				"\"metadata\":{},\r\n" + 
-				"\"request\":{\r\n" + 
-				"  \"applicationId\": \"REGISTRATION\",\r\n" + 
-				"  \"data\": \"dXJ2aWwKCgoKam9zaGk=\",\r\n" + 
-				"  \"referenceId\": \"REF01\",\r\n" + 
-				"  \"timeStamp\": \"2018-12-1\"\r\n" + 
-				"}\r\n" + 
-				"}";
+		String requestBody = "{\r\n" + "\"id\":\"\",\r\n" + "\"version\":\"\",\r\n" + "\"requesttime\":\"\",\r\n"
+				+ "\"metadata\":{},\r\n" + "\"request\":{\r\n" + "  \"applicationId\": \"REGISTRATION\",\r\n"
+				+ "  \"data\": \"dXJ2aWwKCgoKam9zaGk=\",\r\n" + "  \"referenceId\": \"REF01\",\r\n"
+				+ "  \"timeStamp\": \"2018-12-1\"\r\n" + "}\r\n" + "}";
 		mockMvc.perform(post("/encrypt").contentType(MediaType.APPLICATION_JSON).content(requestBody))
 				.andExpect(status().isOk());
 	}
 
-	//@WithUserDetails("reg-processor")
+	@WithUserDetails("reg-processor")
 	@Test
 	public void testIllegalArgumentException() throws Exception {
 		requestDto = new CryptomanagerRequestDto();
@@ -187,8 +179,7 @@ public class CryptographicServiceIntegrationExceptionTest {
 				.andExpect(status().isOk());
 	}
 
-	
-	//@WithUserDetails("reg-processor")
+	@WithUserDetails("reg-processor")
 	@Test
 	public void testEncryptKeymanagerErrorsTest() throws Exception {
 		ResponseWrapper<ServiceError> errorResponse = new ResponseWrapper<>();
@@ -212,7 +203,7 @@ public class CryptographicServiceIntegrationExceptionTest {
 
 	}
 
-	//@WithUserDetails("reg-processor")
+	@WithUserDetails("reg-processor")
 	@Test
 	public void testDecryptKeymanagerErrorsTest() throws Exception {
 		ResponseWrapper<ServiceError> errorResponse = new ResponseWrapper<>();

@@ -19,11 +19,10 @@ public enum KeymanagerErrorConstant {
 
 	INVALID_REQUEST("KER-KMS-005", "Invalid request"),
 
-	DATE_TIME_PARSE_EXCEPTION("KER-KMS-006",
-			"timestamp should be in ISO 8601 format yyyy-MM-ddTHH::mm:ss.SSSZ"),
+	DATE_TIME_PARSE_EXCEPTION("KER-KMS-006", "timestamp should be in ISO 8601 format yyyy-MM-ddTHH::mm:ss.SSSZ"),
 
-	CRYPTO_EXCEPTION("KER-KMS-007", "Exception occured in cypto library: "), INTERNAL_SERVER_ERROR("KER-KMS-500",
-			"Internal server error");
+	CRYPTO_EXCEPTION("KER-KMS-007", "Exception occured in cypto library: "),
+	INTERNAL_SERVER_ERROR("KER-KMS-500", "Internal server error");
 
 	/**
 	 * The error code.
@@ -36,10 +35,8 @@ public enum KeymanagerErrorConstant {
 	private final String errorMessage;
 
 	/**
-	 * @param errorCode
-	 *            The error code to be set.
-	 * @param errorMessage
-	 *            The error message to be set.
+	 * @param errorCode    The error code to be set.
+	 * @param errorMessage The error message to be set.
 	 */
 	private KeymanagerErrorConstant(String errorCode, String errorMessage) {
 		this.errorCode = errorCode;

@@ -12,10 +12,8 @@ public interface OtpValidator<D> {
 	 * This method can be used to validate OTP against an existing key and a given
 	 * OTP.
 	 * 
-	 * @param key
-	 *            the key against which the given OTP needs to be validated.
-	 * @param otp
-	 *            the given OTP that will be validated against the generated OTP.
+	 * @param key the key against which the given OTP needs to be validated.
+	 * @param otp the given OTP that will be validated against the generated OTP.
 	 * @return returns true if the given OTP matches against the existing OTP.
 	 *         returns false if the given OTP doesn't matches against the existing
 	 *         OTP. returns false if the given OTP matches against the existing OTP

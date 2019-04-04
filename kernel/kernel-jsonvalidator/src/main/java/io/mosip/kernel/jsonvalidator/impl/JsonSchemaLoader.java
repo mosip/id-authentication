@@ -7,7 +7,6 @@ import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -23,13 +22,13 @@ import io.mosip.kernel.jsonvalidator.constant.JsonValidatorErrorConstant;
 @Component
 @RefreshScope
 public class JsonSchemaLoader {
-	
+
 	@Value("${mosip.kernel.jsonvalidator.file-storage-uri}")
 	private String configServerFileStorageURL;
-	
+
 	@Value("${mosip.kernel.jsonvalidator.schema-name}")
 	private String schemaName;
-	
+
 	private JsonNode schema;
 
 	@PostConstruct
@@ -41,7 +40,7 @@ public class JsonSchemaLoader {
 					JsonValidatorErrorConstant.JSON_SCHEMA_IO_EXCEPTION.getMessage(), e);
 		}
 	}
-	
+
 	public JsonNode getSchema() {
 		return schema;
 	}

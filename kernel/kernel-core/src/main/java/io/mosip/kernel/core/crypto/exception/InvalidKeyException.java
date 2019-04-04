@@ -27,10 +27,8 @@ public class InvalidKeyException extends BaseUncheckedException {
 	/**
 	 * Constructor with errorCode and errorMessage
 	 * 
-	 * @param errorCode
-	 *            The error code for this exception
-	 * @param errorMessage
-	 *            The error message for this exception
+	 * @param errorCode    The error code for this exception
+	 * @param errorMessage The error message for this exception
 	 */
 	public InvalidKeyException(String errorCode, String errorMessage) {
 		super(errorCode, errorMessage);
@@ -39,15 +37,11 @@ public class InvalidKeyException extends BaseUncheckedException {
 	/**
 	 * Constructor with errorCode, errorMessage, and rootCause
 	 * 
-	 * @param errorCode
-	 *            The error code for this exception
-	 * @param errorMessage
-	 *            The error message for this exception
-	 * @param rootCause
-	 *            Cause of this exception
+	 * @param errorCode    The error code for this exception
+	 * @param errorMessage The error message for this exception
+	 * @param rootCause    Cause of this exception
 	 */
-	public InvalidKeyException(String errorCode, String errorMessage,
-			Throwable rootCause) {
+	public InvalidKeyException(String errorCode, String errorMessage, Throwable rootCause) {
 		super(errorCode, errorMessage, rootCause);
 	}
 }

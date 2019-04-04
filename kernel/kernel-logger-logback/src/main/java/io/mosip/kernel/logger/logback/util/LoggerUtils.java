@@ -25,10 +25,8 @@ public class LoggerUtils {
 	/**
 	 * Unmarshall object from XML file
 	 * 
-	 * @param file
-	 *            XML file provided by user
-	 * @param clazz
-	 *            clazz whose object is to be extracted
+	 * @param file  XML file provided by user
+	 * @param clazz clazz whose object is to be extracted
 	 * @return unmarshalled object
 	 */
 	public static Object unmarshall(File file, Class<?> clazz) {
@@ -37,9 +35,8 @@ public class LoggerUtils {
 			Unmarshaller unmarshaller = context.createUnmarshaller();
 			return unmarshaller.unmarshal(file);
 		} catch (JAXBException e) {
-			throw new XMLConfigurationParseException(
-					LogExeptionCodeConstant.MOSIPCONFIGURATIONXMLPARSE.getValue(),
-					LogExeptionCodeConstant.MOSIPCONFIGURATIONXMLPARSEMESSAGE.getValue(),e);
+			throw new XMLConfigurationParseException(LogExeptionCodeConstant.MOSIPCONFIGURATIONXMLPARSE.getValue(),
+					LogExeptionCodeConstant.MOSIPCONFIGURATIONXMLPARSEMESSAGE.getValue(), e);
 		}
 
 	}

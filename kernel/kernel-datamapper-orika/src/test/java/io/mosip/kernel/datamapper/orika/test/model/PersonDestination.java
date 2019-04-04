@@ -17,5 +17,5 @@ public class PersonDestination {
 	private String name;
 	private String nickName;
 	private int age;
-	
+
 }

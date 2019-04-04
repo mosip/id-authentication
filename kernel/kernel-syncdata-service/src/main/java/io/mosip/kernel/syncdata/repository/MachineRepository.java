@@ -8,7 +8,6 @@ import org.springframework.stereotype.Repository;
 
 import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
 import io.mosip.kernel.syncdata.entity.Machine;
-import io.mosip.kernel.syncdata.entity.RegistrationCenterUser;
 
 /**
  * Repository function to fetching machine details
@@ -24,12 +23,9 @@ public interface MachineRepository extends BaseRepository<Machine, String> {
 	 * Method to Machine details if the machine details is recently
 	 * created,updated,deleted after lastUpdated timeStamp.
 	 * 
-	 * @param regCenterId
-	 *            registration center id
-	 * @param lastUpdated
-	 *            timeStamp - last updated time
-	 * @param currentTimeStamp
-	 *            - currentTimestamp
+	 * @param regCenterId      registration center id
+	 * @param lastUpdated      timeStamp - last updated time
+	 * @param currentTimeStamp - currentTimestamp
 	 * @return list of {@link Machine} - list of machine
 	 */
 	@Query(value = "SELECT mm.id, mm.name, mm.mac_address, mm.serial_num, mm.ip_address, mm.mspec_id, mm.lang_code, mm.is_active, mm.cr_by, mm.cr_dtimes, mm.upd_by, mm.upd_dtimes, mm.is_deleted, mm.del_dtimes, mm.validity_end_dtimes from master.machine_master mm inner join master.reg_center_machine rcm on rcm.machine_id = mm.id where rcm.regcntr_id = ?1 and ((mm.cr_dtimes >?2 AND mm.cr_dtimes <=?3) or (mm.upd_dtimes >?2 AND mm.upd_dtimes<=?3) or (mm.del_dtimes >?2 AND mm.del_dtimes<=?3))", nativeQuery = true)
@@ -39,8 +35,7 @@ public interface MachineRepository extends BaseRepository<Machine, String> {
 	/**
 	 * Method to fetch Machine by id
 	 * 
-	 * @param machineId
-	 *            id of the machine
+	 * @param machineId id of the machine
 	 * @return {@link Machine} - list of machine
 	 */
 	@Query(value = "SELECT mm.id, mm.name, mm.mac_address, mm.serial_num, mm.ip_address, mm.mspec_id, mm.lang_code, mm.is_active, mm.cr_by, mm.cr_dtimes, mm.upd_by, mm.upd_dtimes, mm.is_deleted, mm.del_dtimes, mm.validity_end_dtimes FROM master.machine_master mm where mm.id=?1 ", nativeQuery = true)
@@ -48,8 +43,7 @@ public interface MachineRepository extends BaseRepository<Machine, String> {
 
 	/**
 	 * 
-	 * @param machineId
-	 *            - machine id
+	 * @param machineId - machine id
 	 * @return list of {@link Machine} - list of machine
 	 */
 	@Query(value = "SELECT mm.id, mm.name, mm.mac_address, mm.serial_num, mm.ip_address, mm.mspec_id, mm.lang_code, mm.is_active, mm.cr_by, mm.cr_dtimes, mm.upd_by, mm.upd_dtimes, mm.is_deleted, mm.del_dtimes, mm.validity_end_dtimes FROM master.machine_master mm where mm.id=?1 and mm.is_active=true ", nativeQuery = true)

@@ -52,7 +52,7 @@ public class SyncRolesServiceImpl implements SyncRolesService {
 	 */
 	@Value("${mosip.kernel.syncdata.auth-manager-base-uri}")
 	private String authBaseUrl;
-	
+
 	@Autowired
 	private ObjectMapper objectMapper;
 
@@ -61,7 +61,7 @@ public class SyncRolesServiceImpl implements SyncRolesService {
 	 */
 	@Value("${mosip.kernel.syncdata.auth-manager-roles}")
 	private String authServiceName;
-	
+
 	@Value("${mosip.kernel.syncdata.syncdata-request-id:SYNCDATA.REQUEST}")
 	private String syncDataRequestId;
 
@@ -76,7 +76,7 @@ public class SyncRolesServiceImpl implements SyncRolesService {
 	@Override
 	public RolesResponseDto getAllRoles() {
 		RolesResponseDto rolesDtos = null;
-		ResponseEntity<String> response=null;
+		ResponseEntity<String> response = null;
 		try {
 
 			StringBuilder uriBuilder = new StringBuilder();
@@ -88,8 +88,9 @@ public class SyncRolesServiceImpl implements SyncRolesService {
 			syncDataRequestHeaders.setContentType(MediaType.APPLICATION_JSON);
 			HttpEntity<RequestWrapper<?>> userRolesRequestEntity = new HttpEntity<>(requestWrapper,
 					syncDataRequestHeaders);
-			response = restTemplate.exchange(uriBuilder.toString()+"/registrationclient",HttpMethod.GET , userRolesRequestEntity, String.class);//(uriBuilder.toString() + "/registrationclient",
-					//String.class);
+			response = restTemplate.exchange(uriBuilder.toString() + "/registrationclient", HttpMethod.GET,
+					userRolesRequestEntity, String.class);// (uriBuilder.toString() + "/registrationclient",
+			// String.class);
 		} catch (RestClientException ex) {
 			throw new SyncDataServiceException(RolesErrorCode.ROLES_FETCH_EXCEPTION.getErrorCode(),
 					RolesErrorCode.ROLES_FETCH_EXCEPTION.getErrorMessage());
@@ -103,8 +104,8 @@ public class SyncRolesServiceImpl implements SyncRolesService {
 		ResponseWrapper<?> responseObject = null;
 		try {
 			responseObject = objectMapper.readValue(response.getBody(), ResponseWrapper.class);
-			rolesDtos = objectMapper.readValue(
-					objectMapper.writeValueAsString(responseObject.getResponse()), RolesResponseDto.class);
+			rolesDtos = objectMapper.readValue(objectMapper.writeValueAsString(responseObject.getResponse()),
+					RolesResponseDto.class);
 		} catch (IOException | NullPointerException exception) {
 			throw new ParseResponseException(UserDetailsErrorCode.USER_DETAILS_PARSE_ERROR.getErrorCode(),
 					UserDetailsErrorCode.USER_DETAILS_PARSE_ERROR.getErrorMessage() + exception.getMessage(),

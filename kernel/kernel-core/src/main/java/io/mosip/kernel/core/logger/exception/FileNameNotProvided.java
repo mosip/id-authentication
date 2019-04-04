@@ -30,10 +30,8 @@ public class FileNameNotProvided extends BaseUncheckedException {
 	private static final long serialVersionUID = 105555532L;
 
 	/**
-	 * @param errorCode
-	 *            unique exception code
-	 * @param errorMessage
-	 *            exception message
+	 * @param errorCode    unique exception code
+	 * @param errorMessage exception message
 	 */
 	public FileNameNotProvided(String errorCode, String errorMessage) {
 		super(errorCode, errorMessage);

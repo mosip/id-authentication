@@ -20,7 +20,6 @@ import javax.security.auth.login.LoginException;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
-import org.apache.hadoop.fs.LocalFileSystem;
 import org.apache.hadoop.hdfs.DistributedFileSystem;
 import org.apache.hadoop.security.SaslRpcServer.AuthMethod;
 import org.apache.hadoop.security.UserGroupInformation;
@@ -133,12 +132,9 @@ public class ConnectionUtils {
 	 * Instantiate a new LoginContext object with user principal and user passkey
 	 * and performs authentication
 	 * 
-	 * @param principal
-	 *            the user principal
-	 * @param passkey
-	 *            the user passkey
-	 * @throws IOException
-	 *             if login fails
+	 * @param principal the user principal
+	 * @param passkey   the user passkey
+	 * @throws IOException if login fails
 	 */
 	private void loginUser(final String principal, final String passkey) throws IOException {
 		URIParameter uriParameter = null;
@@ -204,7 +200,7 @@ public class ConnectionUtils {
 			configuration.set("fs.defaultFS", nameNodeUrl);
 			configuration.set("dfs.client.use.datanode.hostname", "true");
 			configuration.set("fs.hdfs.impl", DistributedFileSystem.class.getName());
-			//configuration.set("fs.file.impl", LocalFileSystem.class.getName());
+			// configuration.set("fs.file.impl", LocalFileSystem.class.getName());
 			hadoopLibPath = Files.createTempDirectory(HADOOP_HOME);
 			if (SystemUtils.IS_OS_WINDOWS) {
 				Path binPath = Files.createDirectory(Paths.get(hadoopLibPath.toString(), "bin"));

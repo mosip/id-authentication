@@ -20,12 +20,9 @@ public class DataMapperException extends BaseUncheckedException {
 	/**
 	 * Constructor for DataMapperException
 	 * 
-	 * @param errorCode
-	 *            The error code
-	 * @param errorMessage
-	 *            The error message
-	 * @param rootCause
-	 *            the specified cause
+	 * @param errorCode    The error code
+	 * @param errorMessage The error message
+	 * @param rootCause    the specified cause
 	 */
 	public DataMapperException(String errorCode, String errorMessage, Throwable rootCause) {
 		super(errorCode, errorMessage, rootCause);
@@ -34,10 +31,8 @@ public class DataMapperException extends BaseUncheckedException {
 	/**
 	 * Constructor for DataMapperException
 	 * 
-	 * @param errorCode
-	 *            The error code
-	 * @param errorMessage
-	 *            The error message
+	 * @param errorCode    The error code
+	 * @param errorMessage The error message
 	 */
 	public DataMapperException(String errorCode, String errorMessage) {
 		super(errorCode, errorMessage);
@@ -46,8 +41,7 @@ public class DataMapperException extends BaseUncheckedException {
 	/**
 	 * Constructor for DataMapperException
 	 * 
-	 * @param errorMessage
-	 *            The error message
+	 * @param errorMessage The error message
 	 */
 	public DataMapperException(String errorMessage) {
 		super(errorMessage);

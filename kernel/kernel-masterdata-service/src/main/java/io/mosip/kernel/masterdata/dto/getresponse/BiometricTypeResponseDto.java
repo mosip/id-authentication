@@ -7,9 +7,8 @@ import lombok.Data;
 
 @Data
 
-
 public class BiometricTypeResponseDto {
 
 	private List<BiometricTypeDto> biometrictypes;
-	
+
 }

@@ -18,10 +18,8 @@ public class NoSuchAliasException extends BaseUncheckedException {
 	/**
 	 * Constructor initialize NoSuchAliasException
 	 * 
-	 * @param errorCode
-	 *            The errorcode for this exception
-	 * @param errorMessage
-	 *            The error message for this exception
+	 * @param errorCode    The errorcode for this exception
+	 * @param errorMessage The error message for this exception
 	 */
 	public NoSuchAliasException(String errorCode, String errorMessage) {
 		super(errorCode, errorMessage);

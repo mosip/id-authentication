@@ -18,10 +18,8 @@ public class KeystoreProcessingException extends BaseUncheckedException {
 	/**
 	 * Constructor initialize NoSuchSecurityProviderException
 	 * 
-	 * @param errorCode
-	 *            The errorcode for this exception
-	 * @param errorMessage
-	 *            The error message for this exception
+	 * @param errorCode    The errorcode for this exception
+	 * @param errorMessage The error message for this exception
 	 */
 	public KeystoreProcessingException(String errorCode, String errorMessage) {
 		super(errorCode, errorMessage);

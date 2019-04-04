@@ -18,7 +18,8 @@ package io.mosip.kernel.crypto.jce.constant;
  * @since 1.0.0
  */
 public enum SecurityExceptionCodeConstant {
-	MOSIP_INVALID_KEY_EXCEPTION("KER-FSE-001", "invalid Key (null key,invalid encoding, wronglength, uninitialized, etc)."),
+	MOSIP_INVALID_KEY_EXCEPTION("KER-FSE-001",
+			"invalid Key (null key,invalid encoding, wronglength, uninitialized, etc)."),
 	MOSIP_INVALID_DATA_LENGTH_EXCEPTION("KER-FSE-02", "check input data length"),
 	MOSIP_INVALID_DATA_EXCEPTION("KER-FSE-003", "data not valid (currupted,length is not valid etc.)"),
 	MOSIP_INVALID_ENCRYPTED_DATA_CORRUPT_EXCEPTION("KER-FSE-004", "encrypted data is corrupted"),

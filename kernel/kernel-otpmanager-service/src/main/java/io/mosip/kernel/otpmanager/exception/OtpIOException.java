@@ -18,12 +18,9 @@ public class OtpIOException extends BaseUncheckedException {
 	/**
 	 * Constructor for OtpIOException.
 	 * 
-	 * @param errorCode
-	 *            the error code.
-	 * @param errorMessage
-	 *            the error message.
-	 * @param rootCause
-	 *            the root cause.
+	 * @param errorCode    the error code.
+	 * @param errorMessage the error message.
+	 * @param rootCause    the root cause.
 	 */
 	public OtpIOException(String errorCode, String errorMessage, Throwable rootCause) {
 		super(errorCode, errorMessage, rootCause);

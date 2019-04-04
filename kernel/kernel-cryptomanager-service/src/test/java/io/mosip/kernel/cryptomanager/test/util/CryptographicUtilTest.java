@@ -51,7 +51,7 @@ public class CryptographicUtilTest {
 
 	@Value("${mosip.kernel.keymanager-service-decrypt-url}")
 	private String symmetricKeyUrl;
-	
+
 	@Autowired
 	private CryptomanagerUtil cryptomanagerUtil;
 
@@ -88,7 +88,7 @@ public class CryptographicUtilTest {
 				.queryParam("referenceId", "ref123");
 	}
 
-	@Test(expected=ParseResponseException.class)
+	@Test(expected = ParseResponseException.class)
 	public void testEncrypt() throws Exception {
 		KeymanagerPublicKeyResponseDto keymanagerPublicKeyResponseDto = new KeymanagerPublicKeyResponseDto(
 				CryptoUtil.encodeBase64(keyPair.getPublic().getEncoded()), LocalDateTime.now(),
@@ -97,10 +97,11 @@ public class CryptographicUtilTest {
 				withSuccess(map.writeValueAsString(keymanagerPublicKeyResponseDto), MediaType.APPLICATION_JSON));
 		when(objectMapper.readValue(Mockito.anyString(), Mockito.eq(KeymanagerPublicKeyResponseDto.class)))
 				.thenThrow(new IOException("IOEXCEPTION"));
-		cryptomanagerUtil.getPublicKey(new CryptomanagerRequestDto("REGISTRATION","ref123",LocalDateTime.parse("2018-12-06T12:07:44.403"),"dXJ2aWw"));
+		cryptomanagerUtil.getPublicKey(new CryptomanagerRequestDto("REGISTRATION", "ref123",
+				LocalDateTime.parse("2018-12-06T12:07:44.403"), "dXJ2aWw"));
 	}
 
-	@Test(expected=ParseResponseException.class)
+	@Test(expected = ParseResponseException.class)
 	public void testDecrypt() throws Exception {
 		KeymanagerSymmetricKeyResponseDto keymanagerSymmetricKeyResponseDto = new KeymanagerSymmetricKeyResponseDto(
 				CryptoUtil.encodeBase64(generator.getSymmetricKey().getEncoded()));
@@ -109,7 +110,8 @@ public class CryptographicUtilTest {
 		when(objectMapper.readValue(Mockito.anyString(), Mockito.eq(KeymanagerSymmetricKeyResponseDto.class)))
 				.thenThrow(new IOException("IOEXCEPTION"));
 		when(decryptor.symmetricDecrypt(Mockito.any(), Mockito.any())).thenReturn("dXJ2aWw".getBytes());
-		cryptomanagerUtil.getDecryptedSymmetricKey(new CryptomanagerRequestDto("REGISTRATION","ref123",LocalDateTime.parse("2018-12-06T12:07:44.403"),"dXJ2aWwjS0VZX1NQTElUVEVSI3Vydmls"));
+		cryptomanagerUtil.getDecryptedSymmetricKey(new CryptomanagerRequestDto("REGISTRATION", "ref123",
+				LocalDateTime.parse("2018-12-06T12:07:44.403"), "dXJ2aWwjS0VZX1NQTElUVEVSI3Vydmls"));
 	}
 
 }

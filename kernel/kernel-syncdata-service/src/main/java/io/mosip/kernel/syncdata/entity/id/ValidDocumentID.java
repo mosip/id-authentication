@@ -25,7 +25,5 @@ public class ValidDocumentID implements Serializable {
 
 	@Column(name = "doccat_code", nullable = false, length = 36)
 	private String docCategoryCode;
-	
-
 
 }

@@ -13,10 +13,9 @@ import lombok.Data;
  */
 @Data
 
-
 public class RegistrationCenterUserMachineMappingHistoryResponseDto {
 	/**
-	 *  List of registration centers
+	 * List of registration centers
 	 */
 	private List<RegistrationCenterUserMachineMappingHistoryDto> registrationCenters;
 }

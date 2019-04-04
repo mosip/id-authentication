@@ -51,14 +51,14 @@ public class ApplicationController {
 	/**
 	 * API to fetch all Application details by language code
 	 * 
-	 * @param langCode
-	 *            the language code
+	 * @param langCode the language code
 	 * 
 	 * @return All Application details
 	 */
 	@ResponseFilter
 	@GetMapping("/{langcode}")
-	public ResponseWrapper<ApplicationResponseDto> getAllApplicationByLanguageCode(@PathVariable("langcode") String langCode) {
+	public ResponseWrapper<ApplicationResponseDto> getAllApplicationByLanguageCode(
+			@PathVariable("langcode") String langCode) {
 		ResponseWrapper<ApplicationResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(applicationService.getAllApplicationByLanguageCode(langCode));
 		return responseWrapper;
@@ -67,18 +67,16 @@ public class ApplicationController {
 	/**
 	 * API to fetch all Application details by language code
 	 * 
-	 * @param code
-	 *            the code
+	 * @param code     the code
 	 * 
-	 * @param langCode
-	 *            the language code
+	 * @param langCode the language code
 	 * 
 	 * @return Application detail
 	 */
 	@ResponseFilter
 	@GetMapping("/{code}/{langcode}")
-	public ResponseWrapper<ApplicationResponseDto> getApplicationByCodeAndLanguageCode(@PathVariable("code") String code,
-			@PathVariable("langcode") String langCode) {
+	public ResponseWrapper<ApplicationResponseDto> getApplicationByCodeAndLanguageCode(
+			@PathVariable("code") String code, @PathVariable("langcode") String langCode) {
 		ResponseWrapper<ApplicationResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(applicationService.getApplicationByCodeAndLanguageCode(code, langCode));
 		return responseWrapper;
@@ -87,8 +85,7 @@ public class ApplicationController {
 	/**
 	 * API to create Application detail
 	 * 
-	 * @param application
-	 *            the application detail
+	 * @param application the application detail
 	 * 
 	 * @return {@linkplain CodeAndLanguageCodeID}
 	 */

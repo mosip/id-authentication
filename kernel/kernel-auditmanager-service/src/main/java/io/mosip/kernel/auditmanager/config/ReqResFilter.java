@@ -19,7 +19,8 @@ import io.mosip.kernel.core.logger.spi.Logger;
 /**
  * This class is for input logging of all parameters in HTTP requests
  * 
- * @author Bal Vikash Sharma
+ * @author Sagar Mahapatra
+ * @since 1.0.0
  *
  */
 public class ReqResFilter implements Filter {

@@ -9,8 +9,8 @@ package io.mosip.kernel.masterdata.constant;
  */
 public enum IndividualTypeErrorCode {
 
-	NO_INDIVIDUAL_TYPE_FOUND_EXCEPTION("KER-MSD-151", "Individual Type not found"), INDIVIDUAL_TYPE_FETCH_EXCEPTION("KER-MSD-152",
-			"Error occured while fetching Individual Type");
+	NO_INDIVIDUAL_TYPE_FOUND_EXCEPTION("KER-MSD-151", "Individual Type not found"),
+	INDIVIDUAL_TYPE_FETCH_EXCEPTION("KER-MSD-152", "Error occured while fetching Individual Type");
 
 	private final String errorCode;
 	private final String errorMessage;

@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
-public class TemplateDto extends BaseDto{
+public class TemplateDto extends BaseDto {
 
 	private String id;
 

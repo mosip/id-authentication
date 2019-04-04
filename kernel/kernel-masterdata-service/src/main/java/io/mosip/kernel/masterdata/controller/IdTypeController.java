@@ -41,8 +41,7 @@ public class IdTypeController {
 	 * This method returns the list of id types present for a specific language
 	 * code.
 	 * 
-	 * @param langCode
-	 *            the language code against which id types are to be fetched.
+	 * @param langCode the language code against which id types are to be fetched.
 	 * @return the list of id types.
 	 */
 	@ResponseFilter
@@ -62,8 +61,7 @@ public class IdTypeController {
 	/**
 	 * This method creates id types.
 	 * 
-	 * @param idTypeRequestDto
-	 *            the request of idtype to be added.
+	 * @param idTypeRequestDto the request of idtype to be added.
 	 * @return the response.
 	 */
 	@ResponseFilter

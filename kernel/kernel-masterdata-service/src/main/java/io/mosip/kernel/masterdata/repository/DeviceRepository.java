@@ -22,8 +22,7 @@ public interface DeviceRepository extends BaseRepository<Device, String> {
 	/**
 	 * This method trigger query to fetch the Device detail for the given id.
 	 * 
-	 * @param id
-	 *            the id of device
+	 * @param id the id of device
 	 * @return the device detail
 	 */
 	@Query("FROM Device d where d.id = ?1 AND (d.isDeleted is null or d.isDeleted = false) AND d.isActive = true")
@@ -34,8 +33,7 @@ public interface DeviceRepository extends BaseRepository<Device, String> {
 	 * code.
 	 * 
 	 * 
-	 * @param langCode
-	 *            language code provided by user
+	 * @param langCode language code provided by user
 	 * 
 	 * @return List Device Details fetched from database
 	 */
@@ -48,10 +46,8 @@ public interface DeviceRepository extends BaseRepository<Device, String> {
 	 * code and Device Type code.
 	 * 
 	 * 
-	 * @param langCode
-	 *            language code provided by user
-	 * @param deviceTypeCode
-	 *            device Type Code provided by user
+	 * @param langCode       language code provided by user
+	 * @param deviceTypeCode device Type Code provided by user
 	 * @return List Device Details fetched from database
 	 * 
 	 */
@@ -61,26 +57,23 @@ public interface DeviceRepository extends BaseRepository<Device, String> {
 	/**
 	 * This method trigger query to fetch the Machine detail for the given id code.
 	 * 
-	 * @param deviceSpecId
-	 *            machineSpecId provided by user
+	 * @param deviceSpecId machineSpecId provided by user
 	 * 
 	 * @return MachineDetail fetched from database
 	 */
 
 	@Query("FROM Device d where d.deviceSpecId = ?1 and (d.isDeleted is null or d.isDeleted = false) and d.isActive = true")
 	List<Device> findDeviceByDeviceSpecIdAndIsDeletedFalseorIsDeletedIsNull(String deviceSpecId);
-	
+
 	/**
-	 * This method trigger query to fetch the Device detail for the given id and language code.
+	 * This method trigger query to fetch the Device detail for the given id and
+	 * language code.
 	 * 
-	 * @param id
-	 *            the id of device
-	 * @param langCode
-	 *            language code from user
+	 * @param id       the id of device
+	 * @param langCode language code from user
 	 * @return the device detail
 	 */
 	@Query("FROM Device d where d.id = ?1 and d.langCode = ?2 AND (d.isDeleted is null or d.isDeleted = false) and d.isActive = true")
 	Device findByIdAndLangCodeAndIsDeletedFalseOrIsDeletedIsNull(String id, String langCode);
-	
 
 }

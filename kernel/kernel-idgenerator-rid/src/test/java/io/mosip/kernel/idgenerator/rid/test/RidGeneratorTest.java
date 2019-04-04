@@ -139,7 +139,7 @@ public class RidGeneratorTest {
 	}
 
 	@SuppressWarnings("unchecked")
-	//@Test(expected = RidException.class)
+	// @Test(expected = RidException.class)
 	public void generateIdUpdateExceptionTest() {
 		Rid entity = new Rid();
 		entity.setCurrentSequenceNo(00001);

@@ -21,8 +21,7 @@ public interface TemplateRepository extends BaseRepository<Template, String> {
 	/**
 	 * Get all Template types
 	 *
-	 * @param entityClass
-	 *            the entity class type
+	 * @param entityClass the entity class type
 	 * @return All the {@link Template}
 	 */
 	@Query("FROM Template WHERE (isDeleted is null or isDeleted =false) and isActive = true")
@@ -31,8 +30,7 @@ public interface TemplateRepository extends BaseRepository<Template, String> {
 	/**
 	 * To fetch all the {@link Template} based on language code
 	 * 
-	 * @param code
-	 *            the code
+	 * @param code the code
 	 * @return All the {@link Template}
 	 */
 	@Query("FROM Template WHERE code =?1 AND (isDeleted is null OR isDeleted = false) and isActive = true")
@@ -41,8 +39,7 @@ public interface TemplateRepository extends BaseRepository<Template, String> {
 	/**
 	 * To fetch all the {@link Template} based on language file format code
 	 * 
-	 * @param fileFormatCode
-	 *            format code the file format code
+	 * @param fileFormatCode format code the file format code
 	 * @return All the {@link Template}
 	 */
 	@Query("FROM Template WHERE fileFormatCode =?1 AND (isDeleted is null OR isDeleted = false) and isActive = true")
@@ -51,8 +48,7 @@ public interface TemplateRepository extends BaseRepository<Template, String> {
 	/**
 	 * To fetch all the {@link Template} based on language code
 	 * 
-	 * @param langCode
-	 *            the language code
+	 * @param langCode the language code
 	 * @return All the {@link Template}
 	 */
 	@Query("FROM Template WHERE langCode =?1 AND (isDeleted is null OR isDeleted = false) and isActive = true")
@@ -62,10 +58,8 @@ public interface TemplateRepository extends BaseRepository<Template, String> {
 	 * To fetch all the {@link Template} based on language code and template type
 	 * code
 	 * 
-	 * @param langCode
-	 *            the language code
-	 * @param templateTypeCode
-	 *            the template type code
+	 * @param langCode         the language code
+	 * @param templateTypeCode the template type code
 	 * @return All the {@link Template}
 	 */
 	@Query("FROM Template WHERE langCode =?1 AND templateTypeCode =?2 AND (isDeleted is null OR isDeleted = false) and isActive = true")
@@ -75,8 +69,7 @@ public interface TemplateRepository extends BaseRepository<Template, String> {
 	/**
 	 * To fetch the template by id
 	 * 
-	 * @param id
-	 *            the id of template
+	 * @param id the id of template
 	 * @return {@link Template}
 	 */
 	@Query("FROM Template WHERE id =?1 AND (isDeleted is null OR isDeleted = false) and isActive = true")
@@ -85,10 +78,8 @@ public interface TemplateRepository extends BaseRepository<Template, String> {
 	/**
 	 * To fetch the template by id
 	 * 
-	 * @param id
-	 *            the id of template
-	 * @param langCode
-	 *            language code
+	 * @param id       the id of template
+	 * @param langCode language code
 	 * @return {@link Template}
 	 */
 	@Query("FROM Template WHERE id =?1 AND langCode=?2 AND (isDeleted is null OR isDeleted = false) and isActive = true")
@@ -97,12 +88,9 @@ public interface TemplateRepository extends BaseRepository<Template, String> {
 	/**
 	 * Update Gender Type by code provided.
 	 * 
-	 * @param id
-	 *            id of the template.
-	 * @param deletedDateTime
-	 *            metadata Deleted Date time
-	 * @param updatedBy
-	 *            updatedBy
+	 * @param id              id of the template.
+	 * @param deletedDateTime metadata Deleted Date time
+	 * @param updatedBy       updatedBy
 	 * @return rows modified
 	 */
 
@@ -113,8 +101,7 @@ public interface TemplateRepository extends BaseRepository<Template, String> {
 	/**
 	 * To fetch all the {@link Template} based on template type code
 	 * 
-	 * @param templateTypeCode
-	 *            the template type code
+	 * @param templateTypeCode the template type code
 	 * @return All the {@link Template}
 	 */
 	@Query("FROM Template WHERE  templateTypeCode =?1 AND (isDeleted is null OR isDeleted = false) and isActive = true")

@@ -3,6 +3,7 @@ package io.mosip.kernel.masterdata.controller;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,10 +13,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.mosip.kernel.masterdata.dto.LocationDto;
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.core.http.ResponseWrapper;
+import io.mosip.kernel.masterdata.dto.LocationDto;
 import io.mosip.kernel.masterdata.dto.getresponse.LocationHierarchyResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.LocationResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
@@ -30,7 +31,6 @@ import io.swagger.annotations.Api;
  * {@link LocationService} is called wherein the business logics are handled.
  * 
  * @author Srinivasan
- * @author Tapaswini
  * @since 1.0.0
  *
  */
@@ -48,10 +48,10 @@ public class LocationController {
 	/**
 	 * This API fetches all location hierachy details irrespective of the arguments.
 	 * 
-	 * @param langcode
-	 *            language code
+	 * @param langcode language code
 	 * @return list of location hierarchies
 	 */
+	@PreAuthorize("hasAnyRole('INDIVIDUAL')")
 	@ResponseFilter
 	@GetMapping(value = "/{langcode}")
 	public ResponseWrapper<LocationHierarchyResponseDto> getLocationHierarchyDetails(@PathVariable String langcode) {
@@ -72,10 +72,8 @@ public class LocationController {
 
 	/**
 	 * 
-	 * @param locationCode
-	 *            location code
-	 * @param langCode
-	 *            language code
+	 * @param locationCode location code
+	 * @param langCode     language code
 	 * @return list of location hierarchies
 	 */
 	@ResponseFilter
@@ -89,10 +87,10 @@ public class LocationController {
 	}
 
 	/**
-	 * @param hierarchyName
-	 *            hierarchy Name
+	 * @param hierarchyName hierarchy Name
 	 * @return list of location hierarchies
 	 */
+	@PreAuthorize("hasAnyRole('INDIVIDUAL')")
 	@ResponseFilter
 	@GetMapping(value = "/locationhierarchy/{hierarchyname}")
 	public ResponseWrapper<LocationResponseDto> getLocationDataByHierarchyName(
@@ -106,8 +104,7 @@ public class LocationController {
 
 	/**
 	 * 
-	 * @param locationRequestDto
-	 *            - location request DTO
+	 * @param locationRequestDto - location request DTO
 	 * @return PostLocationCodeResponseDto
 	 */
 	@ResponseFilter
@@ -123,8 +120,7 @@ public class LocationController {
 	/**
 	 * This API call would update isDeleted to true when called.
 	 * 
-	 * @param locationCode
-	 *            -location code
+	 * @param locationCode -location code
 	 * @return CodeResponseDto
 	 */
 	@ResponseFilter
@@ -138,12 +134,11 @@ public class LocationController {
 
 	/**
 	 * 
-	 * @param locationCode
-	 *            location code
-	 * @param langCode
-	 *            language code
+	 * @param locationCode location code
+	 * @param langCode     language code
 	 * @return list of location hierarchies
 	 */
+	@PreAuthorize("hasAnyRole('INDIVIDUAL')")
 	@ResponseFilter
 	@GetMapping(value = "immediatechildren/{locationcode}/{langcode}")
 	public ResponseWrapper<LocationResponseDto> getImmediateChildrenByLocCodeAndLangCode(
@@ -159,9 +154,9 @@ public class LocationController {
 	 * checks whether the given location name is valid or not
 	 * 
 	 * @param locationName
-	 *            location name
-	 * @return {@link StatusResponseDto} StatusResponseDto
+	 * @return StatusResponseCode
 	 */
+	@PreAuthorize("hasAnyRole('REGISTRATION_PROCESSOR')")
 	@ResponseFilter
 	@GetMapping(value = "/validate/{locationname}")
 	public ResponseWrapper<StatusResponseDto> validateLocationName(@PathVariable("locationname") String locationName) {

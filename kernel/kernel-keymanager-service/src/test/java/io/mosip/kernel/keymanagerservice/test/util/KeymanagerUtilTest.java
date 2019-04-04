@@ -25,7 +25,7 @@ import io.mosip.kernel.keymanagerservice.util.KeymanagerUtil;
 @SpringBootTest
 @RunWith(SpringRunner.class)
 public class KeymanagerUtilTest {
-	
+
 	@MockBean
 	private KeyStore keyStore;
 
@@ -37,33 +37,28 @@ public class KeymanagerUtilTest {
 
 	@MockBean
 	private KeyStoreRepository keyStoreRepository;
-	
 
 	@Autowired
 	private KeymanagerUtil keymanagerUtil;
-	
+
 	private KeyPair keyPairMaster;
-	
+
 	private KeyPair keyPair;
-	
+
 	@Before
-      public void setupKey() throws NoSuchAlgorithmException {
+	public void setupKey() throws NoSuchAlgorithmException {
 		KeyPairGenerator keyGen = KeyPairGenerator.getInstance(KeymanagerConstant.RSA);
 		keyGen.initialize(1024);
 		keyPairMaster = keyGen.generateKeyPair();
-		keyPair=keyGen.generateKeyPair();
+		keyPair = keyGen.generateKeyPair();
 	}
-	
-	
+
 	@Test
 	public void encryptdecryptPrivateKeyTest() {
-    byte[] key=keymanagerUtil.encryptKey(keyPair.getPrivate(), keyPairMaster.getPublic());
-	assertThat(key,isA(byte[].class));
-	assertThat(keymanagerUtil.decryptKey(key, keyPairMaster.getPrivate()),isA(byte[].class));
-	
+		byte[] key = keymanagerUtil.encryptKey(keyPair.getPrivate(), keyPairMaster.getPublic());
+		assertThat(key, isA(byte[].class));
+		assertThat(keymanagerUtil.decryptKey(key, keyPairMaster.getPrivate()), isA(byte[].class));
+
 	}
-	
-	
-	
-	
+
 }

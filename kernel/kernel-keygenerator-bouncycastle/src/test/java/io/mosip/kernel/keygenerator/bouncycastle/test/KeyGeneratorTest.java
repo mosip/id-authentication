@@ -14,13 +14,14 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import io.mosip.kernel.keygenerator.bouncycastle.KeyGenerator;
+
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class KeyGeneratorTest {
 
 	@Autowired
-	KeyGenerator keyGenerator; 
-	
+	KeyGenerator keyGenerator;
+
 	@Test
 	public void testGetSymmetricKey() {
 		assertThat(keyGenerator.getSymmetricKey(), isA(SecretKey.class));
@@ -29,7 +30,7 @@ public class KeyGeneratorTest {
 	@Test
 	public void testGetAsymmetricKey() {
 		assertThat(keyGenerator.getAsymmetricKey(), isA(KeyPair.class));
-		
+
 	}
 
 }

@@ -19,17 +19,16 @@ public interface RegistrationCenterDeviceService {
 	/**
 	 * This method is used to create mapping between Registration center and Device.
 	 * 
-	 * @param requestDto
-	 *            this object must contains registration center id and device. id
-	 *            with status.
+	 * @param requestDto this object must contains registration center id and
+	 *                   device. id with status.
 	 * 
 	 * @return {@link ResponseRegistrationCenterDeviceDto} which contains the mapped
 	 *         registration center id and device id.
 	 * 
-	 * @throws MasterDataServiceException
-	 *             if any error occurs while mapping registration center id and
-	 *             device id. Like if registration center id or device id is not
-	 *             valid or not present in database.
+	 * @throws MasterDataServiceException if any error occurs while mapping
+	 *                                    registration center id and device id. Like
+	 *                                    if registration center id or device id is
+	 *                                    not valid or not present in database.
 	 */
 	public ResponseRegistrationCenterDeviceDto createRegistrationCenterAndDevice(
 			RegistrationCenterDeviceDto requestDto);
@@ -37,10 +36,8 @@ public interface RegistrationCenterDeviceService {
 	/**
 	 * Delete the mapping of registration center and device
 	 * 
-	 * @param regCenterId
-	 *            Registration center id to be deleted
-	 * @param deviceId
-	 *            DeviceId id to be deleted
+	 * @param regCenterId Registration center id to be deleted
+	 * @param deviceId    DeviceId id to be deleted
 	 * @return {@link RegistrationCenterDeviceID}
 	 */
 	public RegistrationCenterDeviceID deleteRegistrationCenterDeviceMapping(String regCenterId, String deviceId);

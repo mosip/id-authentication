@@ -37,26 +37,21 @@ public class SecurityUtil {
 	/**
 	 * {@link AsymmetricKeyParameter} from encoded private key
 	 * 
-	 * @param privateKey
-	 *            private Key for processing
+	 * @param privateKey private Key for processing
 	 * @return {@link AsymmetricKeyParameter} from encoded private key
-	 * @throws MosipInvalidKeyException
-	 *             if key is not valid (length or form)
+	 * @throws MosipInvalidKeyException if key is not valid (length or form)
 	 */
-	public static AsymmetricKeyParameter bytesToPrivateKey(byte[] privateKey)
-			throws MosipInvalidKeyException {
+	public static AsymmetricKeyParameter bytesToPrivateKey(byte[] privateKey) throws MosipInvalidKeyException {
 		AsymmetricKeyParameter keyParameter = null;
 		try {
 			keyParameter = PrivateKeyFactory.createKey(privateKey);
 		} catch (NullPointerException e) {
-			throw new MosipNullKeyException(
-					MosipSecurityExceptionCodeConstants.MOSIP_NULL_KEY_EXCEPTION);
+			throw new MosipNullKeyException(MosipSecurityExceptionCodeConstants.MOSIP_NULL_KEY_EXCEPTION);
 		} catch (ClassCastException e) {
 			throw new MosipInvalidKeyException(
 					MosipSecurityExceptionCodeConstants.MOSIP_INVALID_ASYMMETRIC_PRIVATE_KEY_EXCEPTION);
 		} catch (IOException e) {
-			throw new MosipInvalidKeyException(
-					MosipSecurityExceptionCodeConstants.MOSIP_INVALID_KEY_CORRUPT_EXCEPTION);
+			throw new MosipInvalidKeyException(MosipSecurityExceptionCodeConstants.MOSIP_INVALID_KEY_CORRUPT_EXCEPTION);
 		}
 		return keyParameter;
 	}
@@ -64,26 +59,21 @@ public class SecurityUtil {
 	/**
 	 * {@link AsymmetricKeyParameter} from encoded public key
 	 * 
-	 * @param publicKey
-	 *            private Key for processing
+	 * @param publicKey private Key for processing
 	 * @return {@link AsymmetricKeyParameter} from encoded public key
-	 * @throws MosipInvalidKeyException
-	 *             if key is not valid (length or form)
+	 * @throws MosipInvalidKeyException if key is not valid (length or form)
 	 */
-	public static AsymmetricKeyParameter bytesToPublicKey(byte[] publicKey)
-			throws MosipInvalidKeyException {
+	public static AsymmetricKeyParameter bytesToPublicKey(byte[] publicKey) throws MosipInvalidKeyException {
 		AsymmetricKeyParameter keyParameter = null;
 		try {
 			keyParameter = PublicKeyFactory.createKey(publicKey);
 		} catch (NullPointerException e) {
-			throw new MosipNullKeyException(
-					MosipSecurityExceptionCodeConstants.MOSIP_NULL_KEY_EXCEPTION);
+			throw new MosipNullKeyException(MosipSecurityExceptionCodeConstants.MOSIP_NULL_KEY_EXCEPTION);
 		} catch (IllegalArgumentException e) {
 			throw new MosipInvalidKeyException(
 					MosipSecurityExceptionCodeConstants.MOSIP_INVALID_ASYMMETRIC_PUBLIC_KEY_EXCEPTION);
 		} catch (IOException e) {
-			throw new MosipInvalidKeyException(
-					MosipSecurityExceptionCodeConstants.MOSIP_INVALID_KEY_CORRUPT_EXCEPTION);
+			throw new MosipInvalidKeyException(MosipSecurityExceptionCodeConstants.MOSIP_INVALID_KEY_CORRUPT_EXCEPTION);
 		}
 		return keyParameter;
 	}
@@ -91,13 +81,11 @@ public class SecurityUtil {
 	/**
 	 * This method verifies mosip security method
 	 * 
-	 * @param mosipSecurityMethod
-	 *            mosipSecurityMethod given by user
+	 * @param mosipSecurityMethod mosipSecurityMethod given by user
 	 */
 	public static void checkMethod(MosipSecurityMethod mosipSecurityMethod) {
 		if (mosipSecurityMethod == null) {
-			throw new MosipNullMethodException(
-					MosipSecurityExceptionCodeConstants.MOSIP_NULL_METHOD_EXCEPTION);
+			throw new MosipNullMethodException(MosipSecurityExceptionCodeConstants.MOSIP_NULL_METHOD_EXCEPTION);
 		}
 	}
 }

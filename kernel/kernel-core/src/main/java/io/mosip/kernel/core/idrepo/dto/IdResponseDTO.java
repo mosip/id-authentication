@@ -12,5 +12,5 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class IdResponseDTO extends ResponseWrapper<ResponseDTO> {
-	
+
 }

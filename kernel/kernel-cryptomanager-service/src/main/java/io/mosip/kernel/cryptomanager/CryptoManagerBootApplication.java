@@ -16,7 +16,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  *
  * @since 1.0.0
  */
-@SpringBootApplication(scanBasePackages= {"io.mosip.kernel.cryptomanager.*","io.mosip.kernel.auth.*"})
+@SpringBootApplication(scanBasePackages = { "io.mosip.kernel.cryptomanager.*", "io.mosip.kernel.auth.*" })
 public class CryptoManagerBootApplication {
 
 	/**

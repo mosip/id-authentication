@@ -38,10 +38,10 @@ public class OtpManagerUtils {
 	 * This method returns the difference between two LocalDateTime objects in
 	 * seconds.
 	 * 
-	 * @param fromDateTime
-	 *            The time from which the difference needs to be calculated.
-	 * @param toDateTime
-	 *            The time till which the difference needs to be calculated.
+	 * @param fromDateTime The time from which the difference needs to be
+	 *                     calculated.
+	 * @param toDateTime   The time till which the difference needs to be
+	 *                     calculated.
 	 * @return The difference in seconds.
 	 */
 	public static int timeDifferenceInSeconds(LocalDateTime fromDateTime, LocalDateTime toDateTime) {
@@ -60,10 +60,8 @@ public class OtpManagerUtils {
 	/**
 	 * This method validates the input arguments provided for validation.
 	 * 
-	 * @param key
-	 *            The key.
-	 * @param otp
-	 *            The OTP to be validated against the given key.
+	 * @param key The key.
+	 * @param otp The OTP to be validated against the given key.
 	 */
 
 	public void validateOtpRequestArguments(String key, String otp) {

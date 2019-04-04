@@ -26,12 +26,9 @@ public class OtpProvider {
 	/**
 	 * This method compute OTP against provided key and macAlgo.
 	 * 
-	 * @param key
-	 *            the key against which OTP generates.
-	 * @param otpLength
-	 *            the length of OTP.
-	 * @param macAlgorithm
-	 *            the crypto algorithm.
+	 * @param key          the key against which OTP generates.
+	 * @param otpLength    the length of OTP.
+	 * @param macAlgorithm the crypto algorithm.
 	 * @return the string OTP.
 	 */
 	public String computeOtp(String key, int otpLength, String macAlgorithm) {
@@ -47,10 +44,8 @@ public class OtpProvider {
 	/**
 	 * Method to generate Signer for provided key.
 	 * 
-	 * @param secret
-	 *            the key for which signer generates.
-	 * @param macAlgo
-	 *            the crypto algorithm.
+	 * @param secret  the key for which signer generates.
+	 * @param macAlgo the crypto algorithm.
 	 * @return the signer.
 	 */
 	static Signer getSigning(String secret, String macAlgo) {

@@ -18,8 +18,7 @@ public interface UinRepository extends JpaRepository<UinEntity, String> {
 	/**
 	 * Finds the number of free uins,
 	 * 
-	 * @param status 
-	 *          status of the uin
+	 * @param status status of the uin
 	 * 
 	 * @return the number of free uins
 	 */
@@ -28,8 +27,7 @@ public interface UinRepository extends JpaRepository<UinEntity, String> {
 	/**
 	 * Finds an unused uin
 	 * 
-	 * @param status 
-	 *          status of the uin
+	 * @param status status of the uin
 	 * 
 	 * @return an unused uin
 	 */
@@ -38,8 +36,7 @@ public interface UinRepository extends JpaRepository<UinEntity, String> {
 	/**
 	 * find a UIN in pool
 	 * 
-	 * @param uin
-	 *         pass uin as param
+	 * @param uin pass uin as param
 	 * 
 	 * @return an unused uin
 	 */

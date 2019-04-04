@@ -4,5 +4,5 @@ import lombok.Data;
 
 @Data
 public class OtpRequestDto {
-private String key;
+	private String key;
 }

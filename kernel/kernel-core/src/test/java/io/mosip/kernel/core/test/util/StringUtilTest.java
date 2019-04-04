@@ -14,6 +14,7 @@ import io.mosip.kernel.core.util.StringUtils;
 
 /**
  * Test classes for String Util
+ * 
  * @author Sidhant Agarwal
  * @since 1.0.0
  *
@@ -401,6 +402,7 @@ public class StringUtilTest {
 	public void replacePatternTest() {
 		assertThat(StringUtils.replacePattern("ABCabc123", "[a-z]", "_"), is("ABC___123"));
 	}
+
 	@Test(expected = PatternSyntaxException.class)
 	public void replacePatternTestWithException() {
 		StringUtils.replacePattern("ABCabc123", "[", "_");
@@ -410,6 +412,7 @@ public class StringUtilTest {
 	public void removePatternTest() {
 		assertThat(StringUtils.removePattern("ABCabc123", "[a-z]"), is("ABC123"));
 	}
+
 	@Test(expected = PatternSyntaxException.class)
 	public void removePatternTestWithException() {
 		StringUtils.removePattern("ABCabc123", "[");

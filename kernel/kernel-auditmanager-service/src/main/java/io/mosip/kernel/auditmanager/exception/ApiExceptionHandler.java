@@ -47,8 +47,7 @@ public class ApiExceptionHandler {
 	/**
 	 * This method handle MethodArgumentNotValidException.
 	 * 
-	 * @param e
-	 *            the exception
+	 * @param e the exception
 	 * @return the response entity.
 	 * @throws IOException
 	 */

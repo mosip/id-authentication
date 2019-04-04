@@ -42,7 +42,7 @@ import io.mosip.kernel.cryptomanager.utils.CryptomanagerUtil;
 @SpringBootTest(classes = CryptoManagerTestBootApplication.class)
 @RunWith(SpringRunner.class)
 @AutoConfigureMockMvc
-@DirtiesContext(classMode=ClassMode.AFTER_EACH_TEST_METHOD)
+@DirtiesContext(classMode = ClassMode.AFTER_EACH_TEST_METHOD)
 public class CryptographicUtilExceptionTest {
 
 	@Value("${mosip.kernel.keymanager-service-publickey-url}")
@@ -61,7 +61,7 @@ public class CryptographicUtilExceptionTest {
 	Decryptor<PrivateKey, PublicKey, SecretKey> decryptor;
 
 	private MockRestServiceServer server;
-	
+
 	private UriComponentsBuilder builder;
 
 	private Map<String, String> uriParams;
@@ -76,15 +76,15 @@ public class CryptographicUtilExceptionTest {
 				.queryParam("referenceId", "ref123");
 	}
 
-	@Test(expected=NoSuchAlgorithmException.class)
+	@Test(expected = NoSuchAlgorithmException.class)
 	public void testNoSuchAlgorithmEncrypt() throws Exception {
 		KeymanagerPublicKeyResponseDto keymanagerPublicKeyResponseDto = new KeymanagerPublicKeyResponseDto(
 				CryptoUtil.encodeBase64("badprivatekey".getBytes()), LocalDateTime.now(),
 				LocalDateTime.now().plusDays(100));
-		server.expect(requestTo(builder.buildAndExpand(uriParams).toUriString()))
-				.andRespond(withSuccess(objectMapper.writeValueAsString(keymanagerPublicKeyResponseDto),
-						MediaType.APPLICATION_JSON));
-		CryptomanagerRequestDto cryptomanagerRequestDto= new CryptomanagerRequestDto("REGISTRATION","ref123",LocalDateTime.parse("2018-12-06T12:07:44.403Z",DateTimeFormatter.ISO_DATE_TIME),"test");
-	cryptomanagerUtil.getPublicKey(cryptomanagerRequestDto);
+		server.expect(requestTo(builder.buildAndExpand(uriParams).toUriString())).andRespond(withSuccess(
+				objectMapper.writeValueAsString(keymanagerPublicKeyResponseDto), MediaType.APPLICATION_JSON));
+		CryptomanagerRequestDto cryptomanagerRequestDto = new CryptomanagerRequestDto("REGISTRATION", "ref123",
+				LocalDateTime.parse("2018-12-06T12:07:44.403Z", DateTimeFormatter.ISO_DATE_TIME), "test");
+		cryptomanagerUtil.getPublicKey(cryptomanagerRequestDto);
 	}
 }

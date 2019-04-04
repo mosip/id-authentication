@@ -3,6 +3,7 @@ package io.mosip.kernel.masterdata.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,12 +25,13 @@ public class ApplicantValidDocumentController {
 	@Autowired
 	private ApplicantValidDocumentService applicantValidDocumentService;
 
+	@PreAuthorize("hasAnyRole('INDIVIDUAL')")
 	@ResponseFilter
 	@GetMapping(value = "/{applicantId}/languages")
 	@ApiOperation(value = "get value from Category for the given id", notes = "get value from Category for the given id")
 	public ResponseWrapper<ApplicantValidDocumentDto> getApplicantValidDocument(@PathVariable String applicantId,
 			@RequestParam("languages") List<String> languages) {
-		
+
 		ResponseWrapper<ApplicantValidDocumentDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(applicantValidDocumentService.getDocumentCategoryAndTypes(applicantId, languages));
 		return responseWrapper;

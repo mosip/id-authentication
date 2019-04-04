@@ -4,7 +4,8 @@ import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
 import io.mosip.kernel.masterdata.entity.ReasonList;
 
 /**
- * This class will handle the CRUD operation of reason list 
+ * This class will handle the CRUD operation of reason list
+ * 
  * @author Srinivasan
  *
  */

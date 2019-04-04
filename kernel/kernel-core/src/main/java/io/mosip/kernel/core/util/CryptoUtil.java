@@ -23,12 +23,9 @@ public class CryptoUtil {
 	/**
 	 * Combine data,key and key splitter
 	 * 
-	 * @param data
-	 *            encrypted Data
-	 * @param key
-	 *            encrypted Key
-	 * @param keySplitter
-	 *            keySplitter
+	 * @param data        encrypted Data
+	 * @param key         encrypted Key
+	 * @param keySplitter keySplitter
 	 * @return byte array consisting data,key and key splitter
 	 */
 	public static byte[] combineByteArray(byte[] data, byte[] key, String keySplitter) {
@@ -43,12 +40,9 @@ public class CryptoUtil {
 	/**
 	 * Get splitter index for detaching key splitter from key and data
 	 * 
-	 * @param encryptedData
-	 *            whole encrypted data
-	 * @param keyDemiliterIndex
-	 *            keySplitterindex initialization value
-	 * @param keySplitter
-	 *            keysplitter value
+	 * @param encryptedData     whole encrypted data
+	 * @param keyDemiliterIndex keySplitterindex initialization value
+	 * @param keySplitter       keysplitter value
 	 * @return keyDemiliterIndex
 	 */
 	public static int getSplitterIndex(byte[] encryptedData, int keyDemiliterIndex, String keySplitter) {
@@ -70,19 +64,17 @@ public class CryptoUtil {
 	/**
 	 * Encodes to BASE64 URL Safe
 	 * 
-	 * @param data
-	 *            data to encode
+	 * @param data data to encode
 	 * @return encoded data
 	 */
 	public static String encodeBase64(byte[] data) {
 		return Base64.encodeBase64URLSafeString(data);
 	}
-	
+
 	/**
 	 * Encodes to BASE64 String
 	 * 
-	 * @param data
-	 *            data to encode
+	 * @param data data to encode
 	 * @return encoded data
 	 */
 	public static String encodeBase64String(byte[] data) {
@@ -92,8 +84,7 @@ public class CryptoUtil {
 	/**
 	 * Decodes from BASE64
 	 * 
-	 * @param data
-	 *            data to decode
+	 * @param data data to decode
 	 * @return decoded data
 	 */
 	public static byte[] decodeBase64(String data) {

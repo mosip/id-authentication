@@ -38,8 +38,7 @@ public class BaseUncheckedException extends RuntimeException {
 	/**
 	 * Constructs a new checked exception with errorMessage
 	 * 
-	 * @param errorMessage
-	 *            the detail message.
+	 * @param errorMessage the detail message.
 	 */
 	public BaseUncheckedException(String errorMessage) {
 		super(errorMessage);
@@ -49,10 +48,8 @@ public class BaseUncheckedException extends RuntimeException {
 	 * Constructs a new unchecked exception with the specified detail message and
 	 * error code.
 	 *
-	 * @param errorMessage
-	 *            the detail message.
-	 * @param errorCode
-	 *            the error code.
+	 * @param errorMessage the detail message.
+	 * @param errorCode    the error code.
 	 * 
 	 */
 	public BaseUncheckedException(String errorCode, String errorMessage) {
@@ -65,12 +62,9 @@ public class BaseUncheckedException extends RuntimeException {
 	 * error code and error cause.
 	 *
 	 * 
-	 * @param errorCode
-	 *            the error code
-	 * @param errorMessage
-	 *            the detail message.
-	 * @param rootCause
-	 *            the specified cause
+	 * @param errorCode    the error code
+	 * @param errorMessage the detail message.
+	 * @param rootCause    the specified cause
 	 */
 	public BaseUncheckedException(String errorCode, String errorMessage, Throwable rootCause) {
 		super(errorCode + " --> " + errorMessage, rootCause);
@@ -94,10 +88,8 @@ public class BaseUncheckedException extends RuntimeException {
 	/**
 	 * This method add the information of error code and error message.
 	 * 
-	 * @param errorCode
-	 *            the error code
-	 * @param errorText
-	 *            the detail message.
+	 * @param errorCode the error code
+	 * @param errorText the detail message.
 	 * @return the instance of current BaseCheckedException
 	 */
 	public BaseUncheckedException addInfo(String errorCode, String errorText) {

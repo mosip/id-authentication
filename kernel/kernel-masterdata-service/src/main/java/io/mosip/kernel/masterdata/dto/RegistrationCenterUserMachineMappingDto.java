@@ -8,6 +8,7 @@ import io.mosip.kernel.masterdata.validator.ValidLangCode;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+
 /**
  * Dto for response to user for user machine mappings
  * 
@@ -33,7 +34,7 @@ public class RegistrationCenterUserMachineMappingDto {
 	@Size(min = 1, max = 10)
 	@ApiModelProperty(notes = "Machine Id for request", example = "MC001", required = true)
 	private String machineId;
-	
+
 	/**
 	 * User Id for request
 	 */
@@ -41,14 +42,14 @@ public class RegistrationCenterUserMachineMappingDto {
 	@Size(min = 1, max = 36)
 	@ApiModelProperty(notes = "User Id for request", example = "QC001", required = true)
 	private String usrId;
-	
+
 	/**
 	 * Is active for request
 	 */
 	@NotNull
 	@ApiModelProperty(notes = "mapping is active or not", required = true)
 	private Boolean isActive;
-	
+
 	/**
 	 * Field for language code
 	 */

@@ -22,12 +22,9 @@ public interface RegistrationCenterHistoryRepository extends BaseRepository<Regi
 	/**
 	 * Function to fetch registration center by id language code and effective time
 	 * 
-	 * @param id
-	 *            The registration center id
-	 * @param langCode
-	 *            The language code
-	 * @param effectivetimes
-	 *            The effective time
+	 * @param id             The registration center id
+	 * @param langCode       The language code
+	 * @param effectivetimes The effective time
 	 * @return Registration center history
 	 */
 	@Query("FROM RegistrationCenterHistory WHERE id =?1 and langCode =?2 and effectivetimes <=?3 and (isDeleted is null or isDeleted =false)")

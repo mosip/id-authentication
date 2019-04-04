@@ -23,13 +23,13 @@ import lombok.ToString;
  */
 @Getter
 @Setter
-@ToString(exclude = {"uin"})
+@ToString(exclude = { "uin" })
 @Entity
 @NoArgsConstructor
 @IdClass(DocumentPK.class)
 @Table(schema = "idrepo")
 public class UinDocument {
-	
+
 	public UinDocument(String uinRefId, String doccatCode, String doctypCode, String docId, String docName,
 			String docfmtCode, String docHash, String langCode, String createdBy, LocalDateTime createdDateTime,
 			String updatedBy, LocalDateTime updatedDateTime, Boolean isDeleted, LocalDateTime deletedDateTime) {
@@ -53,53 +53,53 @@ public class UinDocument {
 	/** The uin ref id. */
 	@Id
 	private String uinRefId;
-	
+
 	/** The doccat code. */
 	@Id
 	private String doccatCode;
-	
+
 	/** The doctyp code. */
 	@Id
 	private String doctypCode;
-	
+
 	/** The doc id. */
 	private String docId;
-	
+
 	/** The doc name. */
 	private String docName;
-	
+
 	/** The docfmt code. */
 	private String docfmtCode;
-	
+
 	/** The doc hash. */
 	private String docHash;
-	
+
 	/** The lang code. */
 	private String langCode;
 
 	/** The created by. */
 	@Column(name = "cr_by")
 	private String createdBy;
-	
+
 	/** The created date time. */
 	@Column(name = "cr_dtimes")
 	private LocalDateTime createdDateTime;
-	
+
 	/** The updated by. */
 	@Column(name = "upd_by")
 	private String updatedBy;
-	
+
 	/** The updated date time. */
 	@Column(name = "upd_dtimes")
 	private LocalDateTime updatedDateTime;
-	
+
 	/** The is deleted. */
 	private Boolean isDeleted;
-	
+
 	/** The deleted date time. */
 	@Column(name = "del_dtimes")
 	private LocalDateTime deletedDateTime;
-	
+
 	@ManyToOne
 	@JoinColumn(name = "uinRefId", insertable = false, updatable = false)
 	@Setter(value = AccessLevel.NONE)

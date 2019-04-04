@@ -6,8 +6,7 @@ package io.mosip.kernel.core.idgenerator.spi;
  * @author Sagar Mahapatra
  * @since 1.0.0
  *
- * @param <T>
- *            the id type.
+ * @param <T> the id type.
  */
 public interface RegistrationCenterIdGenerator<T> {
 	/**

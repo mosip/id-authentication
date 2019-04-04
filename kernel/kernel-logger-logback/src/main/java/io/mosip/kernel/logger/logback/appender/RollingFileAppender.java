@@ -21,21 +21,21 @@ public class RollingFileAppender extends FileAppender {
 
 	/**
 	 * RollingFileAppender for mosip The name of the rolled-over (archived) log
-	 * files.Its value should consist of the name of the file,<b> plus a
-	 * suitably placed %d</b> conversion specifier. The %d conversion specifier
-	 * may contain a date-and-time pattern as specified by the
-	 * java.text.SimpleDateFormat class;<b>Mandatory field to pass</b>
+	 * files.Its value should consist of the name of the file,<b> plus a suitably
+	 * placed %d</b> conversion specifier. The %d conversion specifier may contain a
+	 * date-and-time pattern as specified by the java.text.SimpleDateFormat
+	 * class;<b>Mandatory field to pass</b>
 	 */
 	private String fileNamePattern;
 	/**
-	 * Controls the maximum number of archive files to keep, asynchronously
-	 * deleting older files;default this restriction will not apply
+	 * Controls the maximum number of archive files to keep, asynchronously deleting
+	 * older files;default this restriction will not apply
 	 */
 	private int maxHistory = ConfigurationDefault.DEFAULMAXFILEHISTORY;
 	/**
 	 * Controls the total size of all archive files. Oldest archives are deleted
-	 * asynchronously when the total size cap is exceeded;default this
-	 * restriction will not apply
+	 * asynchronously when the total size cap is exceeded;default this restriction
+	 * will not apply
 	 */
 	private String totalCap = ConfigurationDefault.DEFAULTTOTALCAP;
 	/**
@@ -55,13 +55,12 @@ public class RollingFileAppender extends FileAppender {
 	/**
 	 * Setter for fileNamepattern
 	 * 
-	 * @param fileNamePattern
-	 *            the name of the rolled-over (archived) log files.Its value
-	 *            should consist of the name of the file,<b> plus a suitably
-	 *            placed %d</b> conversion specifier. The %d conversion
-	 *            specifier may contain a date-and-time pattern as specified by
-	 *            the java.text.SimpleDateFormat class;<b>Mandatory field to
-	 *            pass</b>
+	 * @param fileNamePattern the name of the rolled-over (archived) log files.Its
+	 *                        value should consist of the name of the file,<b> plus
+	 *                        a suitably placed %d</b> conversion specifier. The %d
+	 *                        conversion specifier may contain a date-and-time
+	 *                        pattern as specified by the java.text.SimpleDateFormat
+	 *                        class;<b>Mandatory field to pass</b>
 	 */
 	@XmlElement
 	public void setFileNamePattern(String fileNamePattern) {
@@ -80,10 +79,9 @@ public class RollingFileAppender extends FileAppender {
 	/**
 	 * Setter for maxHistory
 	 * 
-	 * @param maxHistory
-	 *            controls the maximum number of archive files to keep,
-	 *            asynchronously deleting older files;default this restriction
-	 *            will not apply
+	 * @param maxHistory controls the maximum number of archive files to keep,
+	 *                   asynchronously deleting older files;default this
+	 *                   restriction will not apply
 	 */
 	@XmlElement
 	public void setMaxHistory(int maxHistory) {
@@ -102,10 +100,9 @@ public class RollingFileAppender extends FileAppender {
 	/**
 	 * Setter for totalCap
 	 * 
-	 * @param totalCap
-	 *            controls the total size of all archive files. Oldest archives
-	 *            are deleted asynchronously when the total size cap is
-	 *            exceeded;default this restriction will not apply
+	 * @param totalCap controls the total size of all archive files. Oldest archives
+	 *                 are deleted asynchronously when the total size cap is
+	 *                 exceeded;default this restriction will not apply
 	 */
 	@XmlElement
 	public void setTotalCap(String totalCap) {
@@ -124,9 +121,8 @@ public class RollingFileAppender extends FileAppender {
 	/**
 	 * Setter for maxFileSize
 	 * 
-	 * @param maxFileSize
-	 *            limit the size of each log file;default this restriction will
-	 *            not apply
+	 * @param maxFileSize limit the size of each log file;default this restriction
+	 *                    will not apply
 	 */
 	@XmlElement
 	public void setMaxFileSize(String maxFileSize) {

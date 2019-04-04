@@ -20,7 +20,7 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
-public class DocumentCategoryDto extends BaseDto{
+public class DocumentCategoryDto extends BaseDto {
 
 	/**
 	 * Document category code.
@@ -41,7 +41,5 @@ public class DocumentCategoryDto extends BaseDto{
 	 */
 	@Size(min = 1, max = 128)
 	private String description;
-
-	
 
 }

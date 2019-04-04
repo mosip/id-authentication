@@ -16,10 +16,8 @@ import org.springframework.data.repository.NoRepositoryBean;
  * @author Shashank Agrawal
  * @since 1.0.0
  * 
- * @param <E>
- *            the type of the entity to handle
- * @param <T>
- *            the type of the entity's identifier
+ * @param <E> the type of the entity to handle
+ * @param <T> the type of the entity's identifier
  */
 @NoRepositoryBean
 public interface BaseRepository<E, T> extends JpaRepository<E, T> {
@@ -28,8 +26,7 @@ public interface BaseRepository<E, T> extends JpaRepository<E, T> {
 	 * Make an instance managed and persistent and synchronize the persistence
 	 * context to the underlying database.
 	 * 
-	 * @param entity
-	 *            entity instance
+	 * @param entity entity instance
 	 * @return the managed instance
 	 */
 	E create(E entity);
@@ -37,8 +34,7 @@ public interface BaseRepository<E, T> extends JpaRepository<E, T> {
 	/**
 	 * Merge the state of the given entity into the current persistence context.
 	 * 
-	 * @param entity
-	 *            entity instance
+	 * @param entity entity instance
 	 * @return the managed instance that the state was merged to
 	 */
 	E update(E entity);
@@ -48,10 +44,8 @@ public interface BaseRepository<E, T> extends JpaRepository<E, T> {
 	 * key. If the entity instance is contained in the persistence context, it is
 	 * returned from there.
 	 * 
-	 * @param entityClass
-	 *            The entityClass
-	 * @param id
-	 *            primary key
+	 * @param entityClass The entityClass
+	 * @param id          primary key
 	 * @return the found entity instance or null if the entity does not exist
 	 */
 	E findById(Class<E> entityClass, T id);
@@ -59,8 +53,7 @@ public interface BaseRepository<E, T> extends JpaRepository<E, T> {
 	/**
 	 * Find all entities for the specified class
 	 * 
-	 * @param entityClass
-	 *            The entityClass
+	 * @param entityClass The entityClass
 	 * @return List of all entities found
 	 */
 	List<E> findAll(Class<E> entityClass);
@@ -68,10 +61,8 @@ public interface BaseRepository<E, T> extends JpaRepository<E, T> {
 	/**
 	 * Remove the entity instance of the specified primary key
 	 * 
-	 * @param entityClass
-	 *            The entityClass
-	 * @param id
-	 *            primary key
+	 * @param entityClass The entityClass
+	 * @param id          primary key
 	 * @return primary key for which entity was removed
 	 */
 	T delete(Class<E> entityClass, T id);
@@ -81,10 +72,8 @@ public interface BaseRepository<E, T> extends JpaRepository<E, T> {
 	 * statement and execute the query and return the query results as an untyped
 	 * List.
 	 * 
-	 * @param qlString
-	 *            a Java Persistence query string
-	 * @param params
-	 *            Map of parameters to bind an argument to a named parameter.
+	 * @param qlString a Java Persistence query string
+	 * @param params   Map of parameters to bind an argument to a named parameter.
 	 * @return a list of the results
 	 */
 	List<E> createQuerySelect(String qlString, Map<String, Object> params);
@@ -94,12 +83,9 @@ public interface BaseRepository<E, T> extends JpaRepository<E, T> {
 	 * statement and execute the query and return the query results as an untyped
 	 * List.
 	 * 
-	 * @param qlString
-	 *            a Java Persistence query string
-	 * @param params
-	 *            Map of parameters to bind an argument to a named parameter
-	 * @param limit
-	 *            The maximum number of results to retrieve.
+	 * @param qlString a Java Persistence query string
+	 * @param params   Map of parameters to bind an argument to a named parameter
+	 * @param limit    The maximum number of results to retrieve.
 	 * @return a list of the results
 	 */
 	List<E> createQuerySelect(String qlString, Map<String, Object> params, int limit);
@@ -108,10 +94,8 @@ public interface BaseRepository<E, T> extends JpaRepository<E, T> {
 	 * Create an update or delete Query for executing a Java Persistence query
 	 * language statement and execute the statement.
 	 * 
-	 * @param qlString
-	 *            a Java Persistence query string
-	 * @param params
-	 *            Map of parameters to bind an argument to a named parameter
+	 * @param qlString a Java Persistence query string
+	 * @param params   Map of parameters to bind an argument to a named parameter
 	 * @return the number of entities updated or deleted
 	 */
 	int createQueryUpdateOrDelete(String qlString, Map<String, Object> params);
@@ -122,12 +106,9 @@ public interface BaseRepository<E, T> extends JpaRepository<E, T> {
 	 * which must be assignable to the type specified by the resultClass argument.
 	 * Execute the query and return the query results as an untyped List.
 	 * 
-	 * @param name
-	 *            the name of a query defined in metadata
-	 * @param entityClass
-	 *            the type of the query result
-	 * @param params
-	 *            Map of parameters to bind an argument to a named parameter
+	 * @param name        the name of a query defined in metadata
+	 * @param entityClass the type of the query result
+	 * @param params      Map of parameters to bind an argument to a named parameter
 	 * @return a list of the results
 	 */
 	List<E> createNamedQuerySelect(String name, Class<E> entityClass, Map<String, Object> params);
@@ -138,12 +119,9 @@ public interface BaseRepository<E, T> extends JpaRepository<E, T> {
 	 * item, which must be assignable to the type specified by the resultClass
 	 * argument. Execute the statement.
 	 * 
-	 * @param name
-	 *            the name of a query defined in metadata
-	 * @param entityClass
-	 *            the type of the query result
-	 * @param params
-	 *            Map of parameters to bind an argument to a named parameter
+	 * @param name        the name of a query defined in metadata
+	 * @param entityClass the type of the query result
+	 * @param params      Map of parameters to bind an argument to a named parameter
 	 * @return the number of entities updated or deleted
 	 */
 	int createNamedQueryUpdateOrDelete(String name, Class<E> entityClass, Map<String, Object> params);

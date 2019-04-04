@@ -32,7 +32,7 @@ public class PhoneValidatorImplTest {
 
 	@Autowired
 	PhoneValidator<String> phonevalidatorImpl;
-	
+
 	@Value("${mosip.kernel.phone.test.null}")
 	String phoneNull;
 

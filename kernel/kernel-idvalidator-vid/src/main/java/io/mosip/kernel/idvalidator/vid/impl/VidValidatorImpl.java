@@ -28,13 +28,12 @@ import io.mosip.kernel.idvalidator.vid.constant.VidExceptionConstant;
  */
 @Component
 public class VidValidatorImpl implements VidValidator<String> {
-	
+
 	/**
 	 * List of restricted numbers
 	 */
 	@Value("#{'${mosip.kernel.vid.restricted-numbers}'.split(',')}")
 	private List<String> restrictedAdminDigits;
-
 
 	@Value("${mosip.kernel.vid.length}")
 	private int vidLength;
@@ -147,24 +146,18 @@ public class VidValidatorImpl implements VidValidator<String> {
 	 * Method used for Validate VID against acceptance Criteria
 	 * 
 	 * 
-	 * @param id
-	 *            pass a VID in String format example : String inputFile =
-	 *            "426789089018"
+	 * @param id pass a VID in String format example : String inputFile =
+	 *           "426789089018"
 	 * @return true if entered VID is valid
 	 * 
-	 * @throws InvalidIDException
-	 *             If entered VID is empty or null.
-	 * @throws InvalidIDException
-	 *             If entered VID contain any sequential and repeated block of
-	 *             number for 2 or more than two digits",
-	 * @throws InvalidIDException
-	 *             If entered VID length should be specified number of digits.
-	 * @throws InvalidIDException
-	 *             If entered VID contain any alphanumeric characters
-	 * @throws InvalidIDException
-	 *             If entered VID should not match with checksum
-	 * @throws InvalidIDException
-	 *             If entered VID contain Zero or One as first Digit.
+	 * @throws InvalidIDException If entered VID is empty or null.
+	 * @throws InvalidIDException If entered VID contain any sequential and repeated
+	 *                            block of number for 2 or more than two digits",
+	 * @throws InvalidIDException If entered VID length should be specified number
+	 *                            of digits.
+	 * @throws InvalidIDException If entered VID contain any alphanumeric characters
+	 * @throws InvalidIDException If entered VID should not match with checksum
+	 * @throws InvalidIDException If entered VID contain Zero or One as first Digit.
 	 */
 
 	public boolean validateId(String id) {
@@ -207,8 +200,9 @@ public class VidValidatorImpl implements VidValidator<String> {
 		 */
 
 		if (id.charAt(0) == CHAR_ZERO || id.charAt(0) == CHAR_ONE) {
-			//throw new InvalidIDException(VidExceptionConstant.VID_VAL_INVALID_ZERO_ONE.getErrorCode(),
-			//		VidExceptionConstant.VID_VAL_INVALID_ZERO_ONE.getErrorMessage());
+			// throw new
+			// InvalidIDException(VidExceptionConstant.VID_VAL_INVALID_ZERO_ONE.getErrorCode(),
+			// VidExceptionConstant.VID_VAL_INVALID_ZERO_ONE.getErrorMessage());
 		}
 
 		/**
@@ -257,8 +251,7 @@ public class VidValidatorImpl implements VidValidator<String> {
 	 * {@link #sequenceLimit} filter, {@link #repeatingLimit} filter and
 	 * {@link #repeatingBlockLimit} filters
 	 * 
-	 * @param id
-	 *            The input id to validate
+	 * @param id The input id to validate
 	 * @return true if the input id is valid
 	 */
 	private boolean isValidId(String id) {
@@ -266,21 +259,21 @@ public class VidValidatorImpl implements VidValidator<String> {
 		return !(sequenceFilter(id) || regexFilter(id, repeatingPattern) || regexFilter(id, repeatingBlockPattern)
 				|| validateNotStartWith(id) || restrictedAdminFilter(id));
 	}
+
 	/**
 	 * Checks the input id for {@link #restrictedNumbers} filter
 	 * 
-	 * @param id
-	 *            The input id to validate
+	 * @param id The input id to validate
 	 * @return true if the id matches the filter
 	 */
 	private boolean restrictedAdminFilter(String id) {
 		return restrictedAdminDigits.parallelStream().anyMatch(id::contains);
 	}
+
 	/**
 	 * Checks the input id for {@link #SEQUENCE_LIMIT} filter
 	 * 
-	 * @param id
-	 *            The input id to validate
+	 * @param id The input id to validate
 	 * @return true if the id matches the filter
 	 */
 	private boolean sequenceFilter(String id) {
@@ -295,10 +288,8 @@ public class VidValidatorImpl implements VidValidator<String> {
 	 * Checks the input id if it matched the given regex pattern
 	 * ({@link #repeatingPattern}, {@link #repeatingBlockPattern})
 	 * 
-	 * @param id
-	 *            The input id to validate
-	 * @param pattern
-	 *            The input regex Pattern
+	 * @param id      The input id to validate
+	 * @param pattern The input regex Pattern
 	 * @return true if the id matches the given regex pattern
 	 */
 	private boolean regexFilter(String id, Pattern pattern) {
@@ -311,8 +302,7 @@ public class VidValidatorImpl implements VidValidator<String> {
 	 * Method to validate that the vid should not contains the specified digit at
 	 * first index
 	 * 
-	 * @param id
-	 *            The input id to validate
+	 * @param id The input id to validate
 	 * @return true if found otherwise false
 	 */
 	private boolean validateNotStartWith(String id) {

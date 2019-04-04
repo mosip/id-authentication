@@ -20,14 +20,13 @@ public class RegistrationCenterUserHistoryID implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 1432161975437589419L;
-	
+
 	@Column(name = "regcntr_id", nullable = false)
 	private String regCntrId;
 
 	@Column(name = "eff_dtimes", nullable = false)
 	private LocalDateTime effectDateTimes;
 
-	
 	@Column(name = "usr_id", nullable = false, length = 3)
 	private String userId;
 

@@ -4,7 +4,6 @@
 package io.mosip.kernel.core.cbeffutil.entity;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 
 import io.mosip.kernel.core.cbeffutil.jaxbclasses.BIRInfoType;
 

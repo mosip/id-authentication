@@ -31,6 +31,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -49,6 +50,7 @@ import io.mosip.kernel.keymanagerservice.entity.KeyPolicy;
 import io.mosip.kernel.keymanagerservice.repository.KeyAliasRepository;
 import io.mosip.kernel.keymanagerservice.repository.KeyPolicyRepository;
 import io.mosip.kernel.keymanagerservice.repository.KeyStoreRepository;
+import io.mosip.kernel.keymanagerservice.test.KeymanagerTestBootApplication;
 import io.mosip.kernel.keymanagerservice.util.KeymanagerUtil;
 
 /**
@@ -56,7 +58,7 @@ import io.mosip.kernel.keymanagerservice.util.KeymanagerUtil;
  * @since 1.0.0
  *
  */
-@SpringBootTest
+@SpringBootTest(classes = { KeymanagerTestBootApplication.class })
 @RunWith(SpringRunner.class)
 @AutoConfigureMockMvc
 public class KeymanagerIntegrationTest {
@@ -145,6 +147,7 @@ public class KeymanagerIntegrationTest {
 		key = keyGen.generateKeyPair();
 	}
 
+	@WithUserDetails("reg-processor")
 	@Test
 	public void getPublicKeyFromHSMMultipleAlias() throws Exception {
 		setupMultipleKeyAlias();
@@ -155,6 +158,7 @@ public class KeymanagerIntegrationTest {
 		// System.out.println(result.getResponse().getContentAsString());
 	}
 
+	@WithUserDetails("reg-processor")
 	@Test
 	public void getPublicKeyFromHSMMultipleAliasReference() throws Exception {
 		setupMultipleKeyAlias();
@@ -165,6 +169,7 @@ public class KeymanagerIntegrationTest {
 		// System.out.println(result.getResponse().getContentAsString());
 	}
 
+	@WithUserDetails("reg-processor")
 	@Test
 	public void getPublicKeyFromHSMSingleAlias() throws Exception {
 		setupSingleKeyAlias();
@@ -175,6 +180,7 @@ public class KeymanagerIntegrationTest {
 		// System.out.println(result.getResponse().getContentAsString());
 	}
 
+	@WithUserDetails("reg-processor")
 	@Test
 	public void getPublicKeyFromHSMEmptyAliasException() throws Exception {
 		when(keyStore.getPublicKey(Mockito.any())).thenReturn(publicKey);
@@ -185,6 +191,7 @@ public class KeymanagerIntegrationTest {
 
 	}
 
+	@WithUserDetails("reg-processor")
 	@Test
 	public void getPublicKeyFromHSMEmptyAlias() throws Exception {
 		setupExpiryPolicy();
@@ -198,6 +205,7 @@ public class KeymanagerIntegrationTest {
 		// System.out.println(result.getResponse().getContentAsString());
 	}
 
+	@WithUserDetails("reg-processor")
 	@Test
 	public void getPublicKeyFromHSMEmptyAliasNotOverlapping() throws Exception {
 		setupExpiryPolicy();
@@ -211,6 +219,7 @@ public class KeymanagerIntegrationTest {
 		// System.out.println(result.getResponse().getContentAsString());
 	}
 
+	@WithUserDetails("reg-processor")
 	@Test
 	public void getPublicKeyFromDBMultipleAlias() throws Exception {
 		setupMultipleKeyAlias();
@@ -221,6 +230,7 @@ public class KeymanagerIntegrationTest {
 		// System.out.println(result.getResponse().getContentAsString());
 	}
 
+	@WithUserDetails("reg-processor")
 	@Test
 	public void getPublicKeyFromDBSingleAliasException() throws Exception {
 		setupSingleKeyAlias();
@@ -232,6 +242,7 @@ public class KeymanagerIntegrationTest {
 		// System.out.println(result.getResponse().getContentAsString());
 	}
 
+	@WithUserDetails("reg-processor")
 	@Test
 	public void getPublicKeyFromDBSingleAlias() throws Exception {
 		setupSingleKeyAlias();
@@ -244,6 +255,7 @@ public class KeymanagerIntegrationTest {
 		// System.out.println(result.getResponse().getContentAsString());
 	}
 
+	@WithUserDetails("reg-processor")
 	@Test
 	public void getPublicKeyFromDBEmptyAliasCryptoException() throws Exception {
 		setupExpiryPolicy();
@@ -256,6 +268,7 @@ public class KeymanagerIntegrationTest {
 		// System.out.println(result.getResponse().getContentAsString());
 	}
 
+	@WithUserDetails("reg-processor")
 	@Test
 	public void getPublicKeyFromDBEmptyAlias() throws Exception {
 		setupExpiryPolicy();
@@ -270,6 +283,7 @@ public class KeymanagerIntegrationTest {
 		// System.out.println(result.getResponse().getContentAsString());
 	}
 
+	@WithUserDetails("reg-processor")
 	@Test
 	public void decryptSymmetricKeyException() throws Exception {
 		when(keyAliasRepository.findByApplicationIdAndReferenceId(Mockito.any(), Mockito.any())).thenReturn(keyalias);
@@ -283,6 +297,7 @@ public class KeymanagerIntegrationTest {
 		// System.out.println(result.getResponse().getContentAsString());
 	}
 
+	@WithUserDetails("reg-processor")
 	@Test
 	public void decryptSymmetricKey() throws Exception {
 		setupSingleKeyAlias();
@@ -297,6 +312,7 @@ public class KeymanagerIntegrationTest {
 		// System.out.println(result.getResponse().getContentAsString());
 	}
 
+	@WithUserDetails("reg-processor")
 	@Test
 	public void decryptSymmetricKeyWithReferenceIdException() throws Exception {
 		when(keyAliasRepository.findByApplicationIdAndReferenceId(Mockito.any(), Mockito.any())).thenReturn(keyalias);
@@ -312,6 +328,7 @@ public class KeymanagerIntegrationTest {
 		// System.out.println(result.getResponse().getContentAsString());
 	}
 
+	@WithUserDetails("reg-processor")
 	@Test
 	public void decryptSymmetricKeyWithReferenceIdMultipleAliasException() throws Exception {
 		setupMultipleKeyAlias();
@@ -327,6 +344,7 @@ public class KeymanagerIntegrationTest {
 		// System.out.println(result.getResponse().getContentAsString());
 	}
 
+	@WithUserDetails("reg-processor")
 	@Test
 	public void decryptSymmetricKeyWithReferenceIdDBException() throws Exception {
 		setupSingleKeyAlias();
@@ -342,6 +360,7 @@ public class KeymanagerIntegrationTest {
 		// System.out.println(result.getResponse().getContentAsString());
 	}
 
+	@WithUserDetails("reg-processor")
 	@Test
 	public void decryptSymmetricKeyWithReferenceIdCryptoException() throws Exception {
 		setupSingleKeyAlias();
@@ -360,6 +379,7 @@ public class KeymanagerIntegrationTest {
 		// System.out.println(result.getResponse().getContentAsString());
 	}
 
+	@WithUserDetails("reg-processor")
 	@Test
 	public void decryptSymmetricKeyWithReferenceId() throws Exception {
 		setupSingleKeyAlias();

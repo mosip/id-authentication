@@ -22,10 +22,8 @@ public interface BiometricTypeRepository extends BaseRepository<BiometricType, S
 	 * Method to find list of BiometricType created , updated or deleted time is
 	 * greater than lastUpdated timeStamp.
 	 * 
-	 * @param lastUpdated
-	 *            timeStamp - last updated time stamp
-	 * @param currentTimeStamp
-	 *            - currentTimestamp
+	 * @param lastUpdated      timeStamp - last updated time stamp
+	 * @param currentTimeStamp - currentTimestamp
 	 * @return list of {@link BiometricType} - list of biometric type
 	 */
 	@Query("FROM BiometricType WHERE (createdDateTime > ?1 and createdDateTime <=?2) OR (updatedDateTime > ?1 and updatedDateTime <=?2)  OR (deletedDateTime > ?1 and deletedDateTime <=?2)")

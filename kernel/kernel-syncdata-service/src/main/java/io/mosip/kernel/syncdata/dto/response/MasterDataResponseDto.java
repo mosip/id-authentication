@@ -91,9 +91,8 @@ public class MasterDataResponseDto {
 	private List<AppRolePriorityDto> appRolePriorities;
 	private List<ScreenAuthorizationDto> screenAuthorizations;
 	private List<ProcessListDto> processList;
-	//private List<SyncJobDefDto> syncJobDefinitions;
-	
-	
+	// private List<SyncJobDefDto> syncJobDefinitions;
+
 	private List<RegistrationCenterMachineDto> registrationCenterMachines;
 	private List<RegistrationCenterDeviceDto> registrationCenterDevices;
 	private List<RegistrationCenterMachineDeviceDto> registrationCenterMachineDevices;
@@ -104,6 +103,5 @@ public class MasterDataResponseDto {
 	private List<RegistrationCenterMachineDeviceHistoryDto> registrationCenterMachineDeviceHistory;
 	private List<RegistrationCenterUserMachineMappingHistoryDto> registrationCenterUserMachineMappingHistory;
 	private List<RegistrationCenterUserHistoryDto> registrationCenterUserHistory;
-	
 
 }

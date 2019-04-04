@@ -24,7 +24,7 @@ import io.mosip.kernel.idvalidator.prid.constant.PridExceptionConstant;
  */
 @Component
 public class PridValidatorImpl implements PridValidator<String> {
-	
+
 	/**
 	 * List of restricted numbers
 	 */
@@ -64,7 +64,6 @@ public class PridValidatorImpl implements PridValidator<String> {
 	@Value("#{'${mosip.kernel.prid.not-start-with}'.split(',')}")
 	private List<String> notStartWith;
 
-
 	/**
 	 * Ascending digits which will be checked for sequence in id
 	 */
@@ -88,22 +87,18 @@ public class PridValidatorImpl implements PridValidator<String> {
 	/**
 	 * Method used to validate PRID against acceptance Criteria
 	 * 
-	 * @param id
-	 *            the id to validate, pass a PRID in String format example : String
-	 *            inputFile = "426789089018"
-	 * @throws InvalidIDException
-	 *             If entered PRID is empty or null.
-	 * @throws InvalidIDException
-	 *             If entered PRID contain any sequential and repeated block of
-	 *             number for 2 or more than two digits",
-	 * @throws InvalidIDException
-	 *             If entered PRID length should be 14 digit.
-	 * @throws InvalidIDException
-	 *             If entered PRID contain any alphanumeric characters
-	 * @throws InvalidIDException
-	 *             If entered PRID should not match with checksum
-	 * @throws InvalidIDException
-	 *             If entered PRID contain Zero or One as first Digit.
+	 * @param id the id to validate, pass a PRID in String format example : String
+	 *           inputFile = "426789089018"
+	 * @throws InvalidIDException If entered PRID is empty or null.
+	 * @throws InvalidIDException If entered PRID contain any sequential and
+	 *                            repeated block of number for 2 or more than two
+	 *                            digits",
+	 * @throws InvalidIDException If entered PRID length should be 14 digit.
+	 * @throws InvalidIDException If entered PRID contain any alphanumeric
+	 *                            characters
+	 * @throws InvalidIDException If entered PRID should not match with checksum
+	 * @throws InvalidIDException If entered PRID contain Zero or One as first
+	 *                            Digit.
 	 */
 
 	public boolean validateId(String id) {
@@ -115,31 +110,24 @@ public class PridValidatorImpl implements PridValidator<String> {
 	 * Method used to validate PRID against acceptance Criteria
 	 * 
 	 * 
-	 * @param id
-	 *            pass a PRID in String format example : String inputFile =
-	 *            "426789089018"@param pridLength prid length to validate
-	 * @param sequenceLimit
-	 *            sequence in prid to limit
-	 * @param repeatingLimit
-	 *            repeating limit
-	 * @param blockLimit
-	 *            repeating block limit
-	 * @throws InvalidIDException
-	 *             If entered PRID is empty or null.
-	 * @throws InvalidIDException
-	 *             If entered PRID contain any sequential and repeated block of
-	 *             number for 2 or more than two digits",
-	 * @throws InvalidIDException
-	 *             If entered PRID length should be 14 digit.
-	 * @throws InvalidIDException
-	 *             If entered PRID contain any alphanumeric characters
-	 * @throws InvalidIDException
-	 *             If entered PRID should not match with checksum
-	 * @throws InvalidIDException
-	 *             If entered PRID contain Zero or One as first Digit.
-	 * @throws InvalidIDException
-	 *             If entered prid length,sequence length,repeat limit and block
-	 *             limit is equal or less than Zero.
+	 * @param id             pass a PRID in String format example : String inputFile
+	 *                       = "426789089018"@param pridLength prid length to
+	 *                       validate
+	 * @param sequenceLimit  sequence in prid to limit
+	 * @param repeatingLimit repeating limit
+	 * @param blockLimit     repeating block limit
+	 * @throws InvalidIDException If entered PRID is empty or null.
+	 * @throws InvalidIDException If entered PRID contain any sequential and
+	 *                            repeated block of number for 2 or more than two
+	 *                            digits",
+	 * @throws InvalidIDException If entered PRID length should be 14 digit.
+	 * @throws InvalidIDException If entered PRID contain any alphanumeric
+	 *                            characters
+	 * @throws InvalidIDException If entered PRID should not match with checksum
+	 * @throws InvalidIDException If entered PRID contain Zero or One as first
+	 *                            Digit.
+	 * @throws InvalidIDException If entered prid length,sequence length,repeat
+	 *                            limit and block limit is equal or less than Zero.
 	 */
 
 	public boolean validateId(String id, int pridLength, int sequenceLimit, int repeatingLimit, int blockLimit) {
@@ -150,17 +138,13 @@ public class PridValidatorImpl implements PridValidator<String> {
 	/**
 	 * Method to validate prid with given inputs
 	 * 
-	 * @param id
-	 *            pass a PRID in String format example : String inputFile =
-	 *            "426789089018"@param pridLength prid length to validate
-	 * @param pridLength
-	 *            the length of the prid
-	 * @param sequenceLimit
-	 *            sequence in prid to limit
-	 * @param repeatLimit
-	 *            repeating limit
-	 * @param blockLimit
-	 *            repeating block limit
+	 * @param id            pass a PRID in String format example : String inputFile
+	 *                      = "426789089018"@param pridLength prid length to
+	 *                      validate
+	 * @param pridLength    the length of the prid
+	 * @param sequenceLimit sequence in prid to limit
+	 * @param repeatLimit   repeating limit
+	 * @param blockLimit    repeating block limit
 	 */
 	private void validateInputs(String id, int pridLength, int sequenceLimit, int repeatLimit, int blockLimit) {
 		/**
@@ -284,35 +268,30 @@ public class PridValidatorImpl implements PridValidator<String> {
 	 * {@link #sequenceLimit} filter, {@link #repeatLimit} filter and
 	 * {@link #blockLimit} filters
 	 * 
-	 * @param id
-	 *            The input id to validate
+	 * @param id                  The input id to validate
 	 * 
-	 * @param sequenceLimit
-	 *            sequence in prid to limit
-	 * @param repeatingLimit
-	 *            repeating limit
-	 * @param repeatingBlockLimit
-	 *            repeating block limit
+	 * @param sequenceLimit       sequence in prid to limit
+	 * @param repeatingLimit      repeating limit
+	 * @param repeatingBlockLimit repeating block limit
 	 * @return true if the input id is valid
 	 */
 	private boolean isValidId(String id, int sequenceLimit, int repeatingLimit, int repeatingBlockLimit) {
 		initializeRegEx(repeatingLimit, repeatingBlockLimit);
 		return !(sequenceFilter(id, sequenceLimit) || regexFilter(id, repeatingPattern)
-				|| regexFilter(id, repeatingBlockpattern) || validateNotStartWith(id) ||restrictedAdminFilter(id));
+				|| regexFilter(id, repeatingBlockpattern) || validateNotStartWith(id) || restrictedAdminFilter(id));
 	}
 
 	/**
 	 * Checks the input id for {@link #sequenceLimit} filter
 	 * 
-	 * @param id
-	 *            The input id to validate
+	 * @param id The input id to validate
 	 * @return true if the id matches the filter
 	 */
 	private boolean sequenceFilter(String id, int sequenceLimit) {
 		if (sequenceLimit > 0)
 			return IntStream.rangeClosed(0, id.length() - sequenceLimit).parallel()
 					.mapToObj(index -> id.subSequence(index, index + sequenceLimit))
-					.anyMatch(idSubSequence -> SEQ_ASC.contains(idSubSequence)|| SEQ_DEC.contains(idSubSequence));
+					.anyMatch(idSubSequence -> SEQ_ASC.contains(idSubSequence) || SEQ_DEC.contains(idSubSequence));
 		return false;
 	}
 
@@ -320,10 +299,8 @@ public class PridValidatorImpl implements PridValidator<String> {
 	 * Checks the input id if it matched the given regex pattern
 	 * ({@link #REPEATING_PATTERN}, {@link #repeatingBlockpattern})
 	 * 
-	 * @param id
-	 *            The input id to validate
-	 * @param pattern
-	 *            The input regex Pattern
+	 * @param id      The input id to validate
+	 * @param pattern The input regex Pattern
 	 * @return true if the id matches the given regex pattern
 	 */
 	private boolean regexFilter(String id, Pattern pattern) {
@@ -348,8 +325,7 @@ public class PridValidatorImpl implements PridValidator<String> {
 	 * Method to validate that the prid should not contains the specified digit at
 	 * first index
 	 * 
-	 * @param id
-	 *            The input id to validate
+	 * @param id The input id to validate
 	 * @return true if found otherwise false
 	 */
 	private boolean validateNotStartWith(String id) {
@@ -361,12 +337,11 @@ public class PridValidatorImpl implements PridValidator<String> {
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Checks the input id for {@link #restrictedNumbers} filter
 	 * 
-	 * @param id
-	 *            The input id to validate
+	 * @param id The input id to validate
 	 * @return true if the id matches the filter
 	 */
 	private boolean restrictedAdminFilter(String id) {

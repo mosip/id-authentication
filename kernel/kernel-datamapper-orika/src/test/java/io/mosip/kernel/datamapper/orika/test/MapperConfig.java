@@ -93,33 +93,32 @@ public class MapperConfig {
 	DataMapper<SourceModel, DestinationModel> sourceModelToDestinationModelMapper() {
 		return new DataMapperBuilderImpl<>(SourceModel.class, DestinationModel.class).build();
 	}
-	
+
 	@Bean(name = "sourceModelToDestinationModelMapper2")
 	DataMapper<SourceModel, DestinationModel> sourceModelToDestinationModelMapper2() {
-		return new DataMapperBuilderImpl<>(SourceModel.class,
-				DestinationModel.class).mapNulls(true).build();
+		return new DataMapperBuilderImpl<>(SourceModel.class, DestinationModel.class).mapNulls(true).build();
 	}
-	
+
 	@Bean(name = "sourceModelToDestinationModelMapper3")
 	DataMapper<SourceModel, DestinationModel> sourceModelToDestinationModelMapper3() {
 		List<IncludeDataField> includeField = Arrays.asList(new IncludeDataField("name", "name", true));
-		return new DataMapperBuilderImpl<>(SourceModel.class, DestinationModel.class).includeFields(includeField).byDefault(false).build();
+		return new DataMapperBuilderImpl<>(SourceModel.class, DestinationModel.class).includeFields(includeField)
+				.byDefault(false).build();
 	}
-	
+
 	@Bean(name = "personneToPersonMapper")
 	DataMapper<Personne, Person> personneToPersonMapper() {
 		List<String> excludeField = Arrays.asList("nom");
 		List<IncludeDataField> includeField = Arrays.asList(new IncludeDataField("surnom", "nickName", true));
-		return new DataMapperBuilderImpl<>(Personne.class, Person.class)
-				.includeFields(includeField).includeFields(includeField).excludeFields(excludeField).build();
+		return new DataMapperBuilderImpl<>(Personne.class, Person.class).includeFields(includeField)
+				.includeFields(includeField).excludeFields(excludeField).build();
 	}
-	
+
 	@Bean(name = "personneToPersonInterface")
 	DataMapper<Personne, PersonInterface> personneToPersonInterface() {
-		return new DataMapperBuilderImpl<>(Personne.class,
-				PersonInterface.class).build();
+		return new DataMapperBuilderImpl<>(Personne.class, PersonInterface.class).build();
 	}
-	
+
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Bean(name = "personListToPersonneListMapper")
 	DataMapper<List<Person>, List<Personne>> personListToPersonneListMapper() {

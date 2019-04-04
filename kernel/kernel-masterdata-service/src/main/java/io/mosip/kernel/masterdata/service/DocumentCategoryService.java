@@ -26,8 +26,7 @@ public interface DocumentCategoryService {
 	/**
 	 * Method to fetch all Document category details based on language code
 	 * 
-	 * @param langCode
-	 *            The language code
+	 * @param langCode The language code
 	 * 
 	 * @return DocumentCategoryDTO list
 	 */
@@ -36,10 +35,8 @@ public interface DocumentCategoryService {
 	/**
 	 * Method to fetch A Document category details based on id and language code
 	 * 
-	 * @param code
-	 *            The Id of Document Category
-	 * @param langCode
-	 *            The language code
+	 * @param code     The Id of Document Category
+	 * @param langCode The language code
 	 * @return DocumentCategoryDTO
 	 */
 	public DocumentCategoryResponseDto getDocumentCategoryByCodeAndLangCode(String code, String langCode);
@@ -47,8 +44,7 @@ public interface DocumentCategoryService {
 	/**
 	 * Method to create Document Categories based on list provided
 	 * 
-	 * @param category
-	 *            dto with document categories list.
+	 * @param category dto with document categories list.
 	 * @return {@linkplain CodeAndLanguageCodeID}
 	 */
 	public CodeAndLanguageCodeID createDocumentCategory(DocumentCategoryDto category);
@@ -56,8 +52,7 @@ public interface DocumentCategoryService {
 	/**
 	 * Method to update Document Category based on data provided.
 	 * 
-	 * @param category
-	 *            the request dto.
+	 * @param category the request dto.
 	 * @return {@link CodeAndLanguageCodeID}
 	 */
 	public CodeAndLanguageCodeID updateDocumentCategory(DocumentCategoryDto category);
@@ -65,8 +60,7 @@ public interface DocumentCategoryService {
 	/**
 	 * Method to delete Document Category based on id provided.
 	 * 
-	 * @param code
-	 *            the document category code.
+	 * @param code the document category code.
 	 * 
 	 * @return {@link CodeResponseDto}
 	 */

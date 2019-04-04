@@ -20,10 +20,8 @@ public final class DataValidationUtil {
 	/**
 	 * Get list of errors from error object
 	 *
-	 * @param errors
-	 *            the errors
-	 * @throws IdRepoDataValidationException
-	 *             the IdRepoDataValidationException
+	 * @param errors the errors
+	 * @throws IdRepoDataValidationException the IdRepoDataValidationException
 	 */
 	public static void validate(Errors errors) throws IdRepoDataValidationException {
 		if (errors.hasErrors()) {

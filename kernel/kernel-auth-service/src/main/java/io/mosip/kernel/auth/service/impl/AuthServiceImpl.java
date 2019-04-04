@@ -68,13 +68,11 @@ public class AuthServiceImpl implements AuthService {
 	/**
 	 * Method used for validating Auth token
 	 * 
-	 * @param token
-	 *            token
+	 * @param token token
 	 * 
 	 * @return mosipUserDtoToken is of type {@link MosipUserDtoToken}
 	 * 
-	 * @throws Exception
-	 *             exception
+	 * @throws Exception exception
 	 * 
 	 */
 
@@ -117,13 +115,11 @@ public class AuthServiceImpl implements AuthService {
 	/**
 	 * Method used for Authenticating User based on username and password
 	 * 
-	 * @param loginUser
-	 *            is of type {@link LoginUser}
+	 * @param loginUser is of type {@link LoginUser}
 	 * 
 	 * @return authNResponseDto is of type {@link AuthNResponseDto}
 	 * 
-	 * @throws Exception
-	 *             exception
+	 * @throws Exception exception
 	 * 
 	 */
 
@@ -147,13 +143,11 @@ public class AuthServiceImpl implements AuthService {
 	/**
 	 * Method used for sending OTP
 	 * 
-	 * @param otpUser
-	 *            is of type {@link OtpUser}
+	 * @param otpUser is of type {@link OtpUser}
 	 * 
 	 * @return authNResponseDto is of type {@link AuthNResponseDto}
 	 * 
-	 * @throws Exception
-	 *             exception
+	 * @throws Exception exception
 	 * 
 	 */
 
@@ -177,13 +171,11 @@ public class AuthServiceImpl implements AuthService {
 	/**
 	 * Method used for Authenticating User based with username and OTP
 	 * 
-	 * @param userOtp
-	 *            is of type {@link UserOtp}
+	 * @param userOtp is of type {@link UserOtp}
 	 * 
 	 * @return authNResponseDto is of type {@link AuthNResponseDto}
 	 * 
-	 * @throws Exception
-	 *             exception
+	 * @throws Exception exception
 	 * 
 	 */
 
@@ -210,13 +202,11 @@ public class AuthServiceImpl implements AuthService {
 	/**
 	 * Method used for Authenticating User based with secretkey and password
 	 * 
-	 * @param clientSecret
-	 *            is of type {@link ClientSecret}
+	 * @param clientSecret is of type {@link ClientSecret}
 	 * 
 	 * @return authNResponseDto is of type {@link AuthNResponseDto}
 	 * 
-	 * @throws Exception
-	 *             exception
+	 * @throws Exception exception
 	 * 
 	 */
 
@@ -240,13 +230,11 @@ public class AuthServiceImpl implements AuthService {
 	/**
 	 * Method used for generating refresh token
 	 * 
-	 * @param existingToken
-	 *            existing token
+	 * @param existingToken existing token
 	 * 
 	 * @return mosipUserDtoToken is of type {@link MosipUserDtoToken}
 	 * 
-	 * @throws Exception
-	 *             exception
+	 * @throws Exception exception
 	 * 
 	 */
 
@@ -276,13 +264,11 @@ public class AuthServiceImpl implements AuthService {
 	/**
 	 * Method used for invalidate token
 	 * 
-	 * @param token
-	 *            token
+	 * @param token token
 	 * 
 	 * @return authNResponse is of type {@link AuthNResponse}
 	 * 
-	 * @throws Exception
-	 *             exception
+	 * @throws Exception exception
 	 * 
 	 */
 

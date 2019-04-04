@@ -4,7 +4,7 @@ package io.mosip.kernel.applicanttype.exception;
 import io.mosip.kernel.core.exception.BaseUncheckedException;
 
 /**
- * Thrown when invalid request passed. 
+ * Thrown when invalid request passed.
  * 
  * @see io.mosip.kernel.core.exception.BaseUncheckedException
  * 
@@ -23,25 +23,19 @@ public class RequestException extends BaseUncheckedException {
 	/**
 	 * Constructor to initialize handler exception
 	 * 
-	 * @param errorCode
-	 *            The error code for this exception
-	 * @param errorMessage
-	 *            The error message for this exception
+	 * @param errorCode    The error code for this exception
+	 * @param errorMessage The error message for this exception
 	 */
 	public RequestException(String errorCode, String errorMessage) {
 		super(errorCode, errorMessage);
 	}
-	
-	
+
 	/**
 	 * Constructor the initialize Handler exception
 	 * 
-	 * @param errorCode
-	 *            The error code for this exception
-	 * @param errorMessage
-	 *            The error message for this exception
-	 * @param rootCause
-	 *            the specified cause
+	 * @param errorCode    The error code for this exception
+	 * @param errorMessage The error message for this exception
+	 * @param rootCause    the specified cause
 	 */
 	public RequestException(String errorCode, String errorMessage, Throwable rootCause) {
 		super(errorCode, errorMessage, rootCause);

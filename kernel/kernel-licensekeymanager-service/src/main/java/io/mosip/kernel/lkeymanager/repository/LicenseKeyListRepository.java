@@ -17,8 +17,7 @@ public interface LicenseKeyListRepository extends BaseRepository<LicenseKeyList,
 	/**
 	 * Method to extract licensekey list details by license key.
 	 * 
-	 * @param licenseKey
-	 *            the license key.
+	 * @param licenseKey the license key.
 	 * @return the entity response.
 	 */
 	public LicenseKeyList findByLicenseKey(String licenseKey);

@@ -45,16 +45,13 @@ public class SBInfo {
 			return new SBInfo(this);
 		}
 	}
-	
-	public SBInfoType toSBInfoType()
-	{
+
+	public SBInfoType toSBInfoType() {
 		SBInfoType sBInfoType = new SBInfoType();
-		if(getFormatType()>0)
-		{
+		if (getFormatType() > 0) {
 			sBInfoType.setFormatType(getFormatType());
 		}
-		if(getFormatOwner()>0)
-		{
+		if (getFormatOwner() > 0) {
 			sBInfoType.setFormatOwner(getFormatOwner());
 		}
 		return sBInfoType;

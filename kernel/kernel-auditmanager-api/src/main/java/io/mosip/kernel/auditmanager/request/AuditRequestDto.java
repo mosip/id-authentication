@@ -12,8 +12,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * The Audit Request class with required fields to be captured
- * and recorded
+ * The Audit Request class with required fields to be captured and recorded
  * 
  * @author Dharmesh Khandelwal
  * @since 1.0.0

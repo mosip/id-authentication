@@ -22,7 +22,7 @@ public class IdRepoUnknownException extends IdRepoAppException {
 	/**
 	 * Instantiates a new id repo unknown exception.
 	 *
-	 * @param errorCode the error code
+	 * @param errorCode    the error code
 	 * @param errorMessage the error message
 	 */
 	public IdRepoUnknownException(String errorCode, String errorMessage) {
@@ -32,9 +32,9 @@ public class IdRepoUnknownException extends IdRepoAppException {
 	/**
 	 * Instantiates a new id repo unknown exception.
 	 *
-	 * @param errorCode the error code
+	 * @param errorCode    the error code
 	 * @param errorMessage the error message
-	 * @param rootCause the root cause
+	 * @param rootCause    the root cause
 	 */
 	public IdRepoUnknownException(String errorCode, String errorMessage, Throwable rootCause) {
 		super(errorCode, errorMessage, rootCause);
@@ -53,7 +53,7 @@ public class IdRepoUnknownException extends IdRepoAppException {
 	 * Instantiates a new id repo unknown exception.
 	 *
 	 * @param exceptionConstant the exception constant
-	 * @param rootCause the root cause
+	 * @param rootCause         the root cause
 	 */
 	public IdRepoUnknownException(IdRepoErrorConstants exceptionConstant, Throwable rootCause) {
 		super(exceptionConstant, rootCause);

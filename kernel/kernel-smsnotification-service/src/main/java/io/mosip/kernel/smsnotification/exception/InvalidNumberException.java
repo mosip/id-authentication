@@ -19,10 +19,8 @@ public class InvalidNumberException extends BaseUncheckedException {
 	/**
 	 * Constructor for MosipInvalidNumberException class.
 	 * 
-	 * @param errorCode
-	 *            the error code
-	 * @param errorMessage
-	 *            the error message
+	 * @param errorCode    the error code
+	 * @param errorMessage the error message
 	 */
 	public InvalidNumberException(String errorCode, String errorMessage) {
 		super(errorCode, errorMessage);

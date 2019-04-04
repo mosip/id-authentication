@@ -43,8 +43,7 @@ public class OtpControllerAdvice {
 	/**
 	 * This method handles MethodArgumentNotValidException.
 	 * 
-	 * @param e
-	 *            The exception
+	 * @param e The exception
 	 * @return The response entity.
 	 * @throws IOException
 	 */
@@ -65,8 +64,7 @@ public class OtpControllerAdvice {
 	/**
 	 * This method handles OtpInvalidArgumentException.
 	 * 
-	 * @param exception
-	 *            The exception.
+	 * @param exception The exception.
 	 * @return The response entity.
 	 * @throws IOException
 	 */
@@ -82,8 +80,7 @@ public class OtpControllerAdvice {
 	/**
 	 * This method handles RequiredKeyNotFoundException.
 	 * 
-	 * @param exception
-	 *            The exception.
+	 * @param exception The exception.
 	 * @return The response entity.
 	 * @throws IOException
 	 */

@@ -21,8 +21,7 @@ public interface BlacklistedWordsRepository extends BaseRepository<BlacklistedWo
 	/**
 	 * Method to fetch list of blacklisted words by language code
 	 * 
-	 * @param langCode
-	 *            language code
+	 * @param langCode language code
 	 * @return {@link List of BlacklistedWords }
 	 */
 
@@ -40,10 +39,8 @@ public interface BlacklistedWordsRepository extends BaseRepository<BlacklistedWo
 	/**
 	 * Method to fetch word by word and langCode
 	 * 
-	 * @param word
-	 *            word to fetch
-	 * @param langCode
-	 *            language code of the word
+	 * @param word     word to fetch
+	 * @param langCode language code of the word
 	 * @return word detail
 	 */
 
@@ -53,10 +50,8 @@ public interface BlacklistedWordsRepository extends BaseRepository<BlacklistedWo
 	/**
 	 * Method to delete the blacklisted word
 	 * 
-	 * @param word
-	 *            input word to be deleted
-	 * @param deletedDateTime
-	 *            input deleted timeStamp
+	 * @param word            input word to be deleted
+	 * @param deletedDateTime input deleted timeStamp
 	 * @return no of rows deleted
 	 */
 	@Modifying

@@ -14,7 +14,7 @@ public class ResponseDto {
 	 * The status.
 	 */
 	private String status;
-	
+
 	/**
 	 * The message.
 	 */

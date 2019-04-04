@@ -16,7 +16,7 @@ public class SmsResponseDto {
 	 * Response status.
 	 */
 	private String status;
-	
+
 	/**
 	 * Response message
 	 */

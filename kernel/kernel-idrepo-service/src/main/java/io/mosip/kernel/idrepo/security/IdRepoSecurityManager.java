@@ -3,8 +3,6 @@ package io.mosip.kernel.idrepo.security;
 import java.util.Date;
 import java.util.Objects;
 
-import javax.annotation.PostConstruct;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
@@ -36,7 +34,7 @@ public class IdRepoSecurityManager {
 
 	/** The mosip logger. */
 	private Logger mosipLogger = IdRepoLogger.getLogger(IdRepoSecurityManager.class);
-	
+
 	private static final String ENCRYPT_DECRYPT_DATA = "encryptDecryptData";
 
 	/** The Constant ID_REPO_SERVICE. */
@@ -64,8 +62,7 @@ public class IdRepoSecurityManager {
 	/**
 	 * Hash.
 	 *
-	 * @param identityInfo
-	 *            the identity info
+	 * @param identityInfo the identity info
 	 * @return the string
 	 */
 	public String hash(final byte[] identityInfo) {
@@ -92,11 +89,10 @@ public class IdRepoSecurityManager {
 					DateUtils.formatDate(new Date(), env.getProperty(IdRepoConstants.DATETIME_PATTERN.getValue())));
 			request.put("data", CryptoUtil.encodeBase64(dataToEncrypt));
 			baseRequest.set("request", request);
-			return encryptDecryptData(
-					restBuilder.buildRequest(RestServicesConstants.CRYPTO_MANAGER_ENCRYPT, baseRequest, ObjectNode.class));
+			return encryptDecryptData(restBuilder.buildRequest(RestServicesConstants.CRYPTO_MANAGER_ENCRYPT,
+					baseRequest, ObjectNode.class));
 		} catch (IdRepoAppException e) {
-			mosipLogger.error(IdRepoLogger.getUin(), ID_REPO_SECURITY_MANAGER, ENCRYPT_DECRYPT_DATA,
-					e.getErrorText());
+			mosipLogger.error(IdRepoLogger.getUin(), ID_REPO_SECURITY_MANAGER, ENCRYPT_DECRYPT_DATA, e.getErrorText());
 			throw new IdRepoAppException(IdRepoErrorConstants.ENCRYPTION_DECRYPTION_FAILED, e);
 		}
 	}
@@ -121,11 +117,10 @@ public class IdRepoSecurityManager {
 					DateUtils.formatDate(new Date(), env.getProperty(IdRepoConstants.DATETIME_PATTERN.getValue())));
 			request.put("data", CryptoUtil.encodeBase64(dataToDecrypt));
 			baseRequest.set("request", request);
-			return encryptDecryptData(
-					restBuilder.buildRequest(RestServicesConstants.CRYPTO_MANAGER_DECRYPT, baseRequest, ObjectNode.class));
+			return encryptDecryptData(restBuilder.buildRequest(RestServicesConstants.CRYPTO_MANAGER_DECRYPT,
+					baseRequest, ObjectNode.class));
 		} catch (IdRepoAppException e) {
-			mosipLogger.error(IdRepoLogger.getUin(), ID_REPO_SECURITY_MANAGER, ENCRYPT_DECRYPT_DATA,
-					e.getErrorText());
+			mosipLogger.error(IdRepoLogger.getUin(), ID_REPO_SECURITY_MANAGER, ENCRYPT_DECRYPT_DATA, e.getErrorText());
 			throw new IdRepoAppException(IdRepoErrorConstants.ENCRYPTION_DECRYPTION_FAILED, e);
 		}
 	}
@@ -150,8 +145,7 @@ public class IdRepoSecurityManager {
 				throw new IdRepoAppException(IdRepoErrorConstants.ENCRYPTION_DECRYPTION_FAILED);
 			}
 		} catch (RestServiceException e) {
-			mosipLogger.error(IdRepoLogger.getUin(), ID_REPO_SECURITY_MANAGER, ENCRYPT_DECRYPT_DATA,
-					e.getErrorText());
+			mosipLogger.error(IdRepoLogger.getUin(), ID_REPO_SECURITY_MANAGER, ENCRYPT_DECRYPT_DATA, e.getErrorText());
 			throw new IdRepoAppException(IdRepoErrorConstants.ENCRYPTION_DECRYPTION_FAILED, e);
 		}
 	}

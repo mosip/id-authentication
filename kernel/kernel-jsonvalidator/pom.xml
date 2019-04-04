@@ -10,6 +10,11 @@
 	</parent>
 	<dependencies>
 		<dependency>
+			<groupId>net.bytebuddy</groupId>
+			<artifactId>byte-buddy</artifactId>
+			<version>${byte.buddy.version}</version>
+		</dependency>
+         <dependency>
 			<groupId>org.json</groupId>
 			<artifactId>json</artifactId>
 			<version>${json.utility.version}</version>

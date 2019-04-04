@@ -7,9 +7,8 @@ import lombok.Data;
 
 @Data
 
-
 public class ApplicationResponseDto {
 
 	private List<ApplicationDto> applicationtypes;
-	
+
 }

@@ -88,9 +88,7 @@ public class LogfactoryTest {
 		mosipConsoleAppender.setAppenderName("testConsoleappender");
 		mosipConsoleAppender.setImmediateFlush(true);
 		mosipConsoleAppender.setTarget("System.out");
-		assertThat(
-				Logfactory.getDefaultConsoleLogger(
-						mosipConsoleAppender, LogfactoryTest.class,LogLevel.DEBUG),
+		assertThat(Logfactory.getDefaultConsoleLogger(mosipConsoleAppender, LogfactoryTest.class, LogLevel.DEBUG),
 				isA(Logger.class));
 	}
 
@@ -99,9 +97,7 @@ public class LogfactoryTest {
 		mosipConsoleAppender.setAppenderName("testConsoleappender");
 		mosipConsoleAppender.setImmediateFlush(true);
 		mosipConsoleAppender.setTarget("System.out");
-		assertThat(
-				Logfactory.getDefaultConsoleLogger(
-						mosipConsoleAppender, "LogfactoryTest",LogLevel.DEBUG),
+		assertThat(Logfactory.getDefaultConsoleLogger(mosipConsoleAppender, "LogfactoryTest", LogLevel.DEBUG),
 				isA(Logger.class));
 
 	}
@@ -175,8 +171,8 @@ public class LogfactoryTest {
 		mosipFileAppender.setFileName(FILENAME);
 		mosipFileAppender.setImmediateFlush(true);
 		mosipFileAppender.setPrudent(false);
-		assertThat(Logfactory.getDefaultFileLogger(mosipFileAppender,
-				LogfactoryTest.class,LogLevel.DEBUG), isA(Logger.class));
+		assertThat(Logfactory.getDefaultFileLogger(mosipFileAppender, LogfactoryTest.class, LogLevel.DEBUG),
+				isA(Logger.class));
 	}
 
 	@Test
@@ -186,8 +182,8 @@ public class LogfactoryTest {
 		mosipFileAppender.setFileName(FILENAME);
 		mosipFileAppender.setImmediateFlush(true);
 		mosipFileAppender.setPrudent(false);
-		assertThat(Logfactory.getDefaultFileLogger(mosipFileAppender,
-				"LogfactoryTest",LogLevel.DEBUG), isA(Logger.class));
+		assertThat(Logfactory.getDefaultFileLogger(mosipFileAppender, "LogfactoryTest", LogLevel.DEBUG),
+				isA(Logger.class));
 	}
 
 	@Test
@@ -297,13 +293,11 @@ public class LogfactoryTest {
 		mosipRollingFileAppender.setFileName(FILENAME);
 		mosipRollingFileAppender.setImmediateFlush(true);
 		mosipRollingFileAppender.setPrudent(false);
-		mosipRollingFileAppender
-				.setFileNamePattern("src/test/resources/test/testFileappender-%d{ss}.txt");
+		mosipRollingFileAppender.setFileNamePattern("src/test/resources/test/testFileappender-%d{ss}.txt");
 		mosipRollingFileAppender.setMaxHistory(5);
 		mosipRollingFileAppender.setTotalCap("100KB");
 		assertThat(
-				Logfactory.getDefaultRollingFileLogger(
-						mosipRollingFileAppender, LogfactoryTest.class,LogLevel.DEBUG),
+				Logfactory.getDefaultRollingFileLogger(mosipRollingFileAppender, LogfactoryTest.class, LogLevel.DEBUG),
 				isA(Logger.class));
 	}
 
@@ -314,13 +308,10 @@ public class LogfactoryTest {
 		mosipRollingFileAppender.setFileName(FILENAME);
 		mosipRollingFileAppender.setImmediateFlush(true);
 		mosipRollingFileAppender.setPrudent(false);
-		mosipRollingFileAppender
-				.setFileNamePattern("src/test/resources/test/testFileappender-%d{ss}.txt");
+		mosipRollingFileAppender.setFileNamePattern("src/test/resources/test/testFileappender-%d{ss}.txt");
 		mosipRollingFileAppender.setMaxHistory(5);
 		mosipRollingFileAppender.setTotalCap("100KB");
-		assertThat(
-				Logfactory.getDefaultRollingFileLogger(
-						mosipRollingFileAppender, "LogfactoryTest",LogLevel.DEBUG),
+		assertThat(Logfactory.getDefaultRollingFileLogger(mosipRollingFileAppender, "LogfactoryTest", LogLevel.DEBUG),
 				isA(Logger.class));
 	}
 
@@ -376,7 +367,7 @@ public class LogfactoryTest {
 		mosipRollingFileAppender.setFileNamePattern("src/test/resources/test/testFileappender-%d{ss}.txt");
 		mosipRollingFileAppender.setMaxHistory(5);
 		mosipRollingFileAppender.setTotalCap("100KB");
-        Logfactory.getRollingFileLogger(mosipRollingFileAppender, null, "LogfactoryTest");
+		Logfactory.getRollingFileLogger(mosipRollingFileAppender, null, "LogfactoryTest");
 
 	}
 

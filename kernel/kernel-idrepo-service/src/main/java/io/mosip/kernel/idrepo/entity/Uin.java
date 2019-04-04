@@ -128,8 +128,7 @@ public class Uin {
 	/**
 	 * Sets the uin data.
 	 *
-	 * @param uinData
-	 *            the new uin data
+	 * @param uinData the new uin data
 	 */
 	public void setUinData(byte[] uinData) {
 		this.uinData = uinData.clone();

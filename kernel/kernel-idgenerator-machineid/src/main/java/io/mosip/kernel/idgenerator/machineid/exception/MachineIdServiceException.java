@@ -19,12 +19,9 @@ public class MachineIdServiceException extends BaseUncheckedException {
 	 * Constructor for the exception class with the arguments errorCode,
 	 * errorMessage, rootCause.
 	 * 
-	 * @param errorCode
-	 *            the error code.
-	 * @param errorMessage
-	 *            the error message.
-	 * @param rootCause
-	 *            the root cause.
+	 * @param errorCode    the error code.
+	 * @param errorMessage the error message.
+	 * @param rootCause    the root cause.
 	 */
 	public MachineIdServiceException(String errorCode, String errorMessage, Throwable rootCause) {
 		super(errorCode, errorMessage, rootCause);

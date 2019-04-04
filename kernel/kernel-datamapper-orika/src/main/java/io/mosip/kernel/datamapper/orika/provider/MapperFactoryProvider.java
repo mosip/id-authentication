@@ -11,13 +11,13 @@ import ma.glasnost.orika.impl.DefaultMapperFactory;
  *
  * @since 1.0.0
  */
-public class MapperFactoryProvider  {
-	
+public class MapperFactoryProvider {
+
 	/**
 	 * Constructor for this class
 	 */
 	private MapperFactoryProvider() {
-		
+
 	}
 
 	/**
@@ -25,6 +25,5 @@ public class MapperFactoryProvider  {
 	 */
 	@Getter
 	private static DefaultMapperFactory mapperFactory = new DefaultMapperFactory.Builder().build();
-
 
 }

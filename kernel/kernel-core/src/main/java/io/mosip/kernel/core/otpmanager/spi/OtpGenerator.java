@@ -12,8 +12,7 @@ public interface OtpGenerator<S, D> {
 	 * This method can be used to generate OTP against a particular key. OTP against
 	 * a particular key is generated only if the key is not freezed.
 	 * 
-	 * @param otpDto
-	 *            the OTP generation DTO.
+	 * @param otpDto the OTP generation DTO.
 	 * @return the generated OTP.
 	 */
 	public D getOtp(S otpDto);

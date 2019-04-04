@@ -39,8 +39,7 @@ public final class ChecksumUtils {
 	/**
 	 * Generates the Verhoeff checksum digit for the provided numeric string.
 	 * 
-	 * @param num
-	 *            Number input
+	 * @param num Number input
 	 * @return The generated Verhoeff checksum digit for the provided numeric
 	 *         string.
 	 */
@@ -57,8 +56,7 @@ public final class ChecksumUtils {
 	 * Validates that an entered number is Verhoeff checksum compliant. Make sure
 	 * the check digit is the last one.
 	 * 
-	 * @param num
-	 *            The numeric string data for Verhoeff checksum compliance check.
+	 * @param num The numeric string data for Verhoeff checksum compliance check.
 	 * @return true if the provided number is Verhoeff checksum compliant.
 	 */
 	public static boolean validateChecksum(String num) {
@@ -73,8 +71,7 @@ public final class ChecksumUtils {
 	/**
 	 * Converts a string to a reversed integer array.
 	 * 
-	 * @param num
-	 *            The numeric string data converted to reversed int array.
+	 * @param num The numeric string data converted to reversed int array.
 	 * @return Integer array containing the digits in the numeric string provided in
 	 *         reverse.
 	 */
@@ -90,8 +87,7 @@ public final class ChecksumUtils {
 	/**
 	 * Reverses an int array.
 	 * 
-	 * @param myArray
-	 *            The input array which needs to be reversed
+	 * @param myArray The input array which needs to be reversed
 	 * @return The array provided in reverse order.
 	 */
 	private static int[] reverse(int[] myArray) {

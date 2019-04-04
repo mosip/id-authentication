@@ -31,14 +31,10 @@ public interface RegistrationCenterRepository extends BaseRepository<Registratio
 	 * This method trigger query to fetch registration centers based on
 	 * latitude,longitude,proximity distance and language code
 	 * 
-	 * @param latitude
-	 *            latitude provided by user
-	 * @param longitude
-	 *            longitude provided by user
-	 * @param proximityDistance
-	 *            proximityDistance provided by user as a radius
-	 * @param langCode
-	 *            langCode provided by user
+	 * @param latitude          latitude provided by user
+	 * @param longitude         longitude provided by user
+	 * @param proximityDistance proximityDistance provided by user as a radius
+	 * @param langCode          langCode provided by user
 	 * @return list of {@link RegistrationCenter} fetched from database
 	 */
 	@Query
@@ -50,10 +46,8 @@ public interface RegistrationCenterRepository extends BaseRepository<Registratio
 	 * This method trigger query to fetch registration centers based on id and
 	 * language code.
 	 * 
-	 * @param id
-	 *            the centerId
-	 * @param langCode
-	 *            the languageCode
+	 * @param id       the centerId
+	 * @param langCode the languageCode
 	 * @return the RegistrationCenter
 	 */
 	@Query("FROM RegistrationCenter WHERE id= ?1 and  langCode =?2 and (isDeleted is null or isDeleted =false) and isActive = true")
@@ -63,11 +57,10 @@ public interface RegistrationCenterRepository extends BaseRepository<Registratio
 	 * This method triggers query to find registration center holiday location code
 	 * based on id and language code.
 	 * 
-	 * @param id
-	 *            the id against which the holiday location code needs to be found.
-	 * @param langCode
-	 *            the language code against which the holiday location code needs to
-	 *            be found.
+	 * @param id       the id against which the holiday location code needs to be
+	 *                 found.
+	 * @param langCode the language code against which the holiday location code
+	 *                 needs to be found.
 	 * @return the holiday location code fetched.
 	 */
 	String findRegistrationCenterHolidayLocationCodeByIdAndLangCode(String id, String langCode);
@@ -76,10 +69,8 @@ public interface RegistrationCenterRepository extends BaseRepository<Registratio
 	 * This method trigger query to fetch registration centers based on locationCode
 	 * and language code.
 	 * 
-	 * @param locationCode
-	 *            locationCode provided by user
-	 * @param langCode
-	 *            languageCode provided by user
+	 * @param locationCode locationCode provided by user
+	 * @param langCode     languageCode provided by user
 	 * @return list of {@link RegistrationCenter} fetched from database
 	 */
 	@Query("FROM RegistrationCenter WHERE locationCode= ?1 and  langCode =?2 and (isDeleted is null or isDeleted =false) and isActive = true")
@@ -98,8 +89,7 @@ public interface RegistrationCenterRepository extends BaseRepository<Registratio
 	 * This method triggers query to find registration centers based on center type
 	 * code.
 	 * 
-	 * @param code
-	 *            the code against which registration centers need to be found.
+	 * @param code the code against which registration centers need to be found.
 	 * @return the list of registration centers.
 	 */
 	@Query("FROM RegistrationCenter WHERE centerTypeCode= ?1 and (isDeleted is null or isDeleted =false) and isActive = true")
@@ -111,8 +101,7 @@ public interface RegistrationCenterRepository extends BaseRepository<Registratio
 	/**
 	 * This method triggers query to find registration centers based on id.
 	 * 
-	 * @param id
-	 *            - id of the registration center.
+	 * @param id - id of the registration center.
 	 * @return - the fetched registration center entity.
 	 */
 	@Query("FROM RegistrationCenter WHERE id= ?1 and (isDeleted is null or isDeleted =false) and isActive = true")
@@ -122,12 +111,10 @@ public interface RegistrationCenterRepository extends BaseRepository<Registratio
 	 * This method triggers query to set the isDeleted to true for a registration
 	 * center based on id given.
 	 * 
-	 * @param deletedDateTime
-	 *            the time at which the center is set to be deleted.
-	 * @param id
-	 *            the id of the registration center which is to be deleted.
-	 * @param updatedBy
-	 *            updated by
+	 * @param deletedDateTime the time at which the center is set to be deleted.
+	 * @param id              the id of the registration center which is to be
+	 *                        deleted.
+	 * @param updatedBy       updated by
 	 * @return the number of id deleted.
 	 */
 	@Modifying
@@ -138,10 +125,8 @@ public interface RegistrationCenterRepository extends BaseRepository<Registratio
 	 * This method trigger query to fetch registration centers based on hierarchy
 	 * List of location_code
 	 * 
-	 * @param codes
-	 *            provided by user
-	 * @param langCode
-	 *            language code
+	 * @param codes    provided by user
+	 * @param langCode language code
 	 * @return list of {@link RegistrationCenter} fetched from database
 	 */
 
@@ -152,8 +137,7 @@ public interface RegistrationCenterRepository extends BaseRepository<Registratio
 	/**
 	 * This method triggers query to find registration centers based on id.
 	 * 
-	 * @param id
-	 *            - id of the registration center.
+	 * @param id - id of the registration center.
 	 * @return - the fetched registration center entity.
 	 */
 	@Query("FROM RegistrationCenter WHERE id= ?1 and (isDeleted is null or isDeleted =false) and isActive=true")

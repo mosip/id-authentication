@@ -20,10 +20,8 @@ public class TemplateResourceNotFoundException extends BaseUncheckedException {
 	/**
 	 * Constructor for set error code and message
 	 * 
-	 * @param errorCode
-	 *            the error code
-	 * @param errorMessage
-	 *            the error message
+	 * @param errorCode    the error code
+	 * @param errorMessage the error message
 	 */
 	public TemplateResourceNotFoundException(String errorCode, String errorMessage) {
 		super(errorCode, errorMessage);

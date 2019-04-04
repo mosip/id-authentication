@@ -36,18 +36,14 @@ public class Gender extends BaseEntity implements Serializable {
 
 	@Id
 	@AttributeOverrides({
-			@AttributeOverride(name = "code", column = @Column(name = "code", nullable = false,length = 16)),
-			@AttributeOverride(name = "langCode", column = @Column(name = "lang_code", nullable = false, length = 3))})
-
+			@AttributeOverride(name = "code", column = @Column(name = "code", nullable = false, length = 16)),
+			@AttributeOverride(name = "langCode", column = @Column(name = "lang_code", nullable = false, length = 3)) })
 
 	private String code;
-    
+
 	private String langCode;
-	
+
 	@Column(name = "name", unique = true, nullable = false, length = 64)
 	private String genderName;
-
-	
-	
 
 }

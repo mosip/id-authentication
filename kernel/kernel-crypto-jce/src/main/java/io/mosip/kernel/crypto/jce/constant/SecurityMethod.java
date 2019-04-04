@@ -35,8 +35,7 @@ public enum SecurityMethod {
 	/**
 	 * Constructor for this class
 	 * 
-	 * @param value
-	 *            value of security method
+	 * @param value value of security method
 	 */
 	private SecurityMethod(String value) {
 		this.setValue(value);
@@ -50,8 +49,7 @@ public enum SecurityMethod {
 	/**
 	 * Setter for {@link #value}
 	 * 
-	 * @param algorithm
-	 *            {@link #value}
+	 * @param algorithm {@link #value}
 	 */
 	private void setValue(String value) {
 		this.value = value;

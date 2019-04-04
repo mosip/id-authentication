@@ -26,8 +26,7 @@ public class ConsoleAppender {
 	 */
 	private String appenderName;
 	/**
-	 * It ensures that logging events are immediately written out; with default
-	 * true
+	 * It ensures that logging events are immediately written out; with default true
 	 */
 	private boolean immediateFlush = ConfigurationDefault.DEFAULTIMMEDIATEFLUSH;
 	/**
@@ -48,8 +47,7 @@ public class ConsoleAppender {
 	/**
 	 * Setter for appenderName
 	 * 
-	 * @param appenderName
-	 *            name of the Appender
+	 * @param appenderName name of the Appender
 	 */
 	@XmlAttribute
 	public void setAppenderName(String appenderName) {
@@ -68,9 +66,8 @@ public class ConsoleAppender {
 	/**
 	 * Setter for immediateFlush
 	 * 
-	 * @param immediateFlush
-	 *            it ensures that logging events are immediately written out;
-	 *            with default true
+	 * @param immediateFlush it ensures that logging events are immediately written
+	 *                       out; with default true
 	 */
 	@XmlElement
 	public void setImmediateFlush(boolean immediateFlush) {
@@ -89,9 +86,8 @@ public class ConsoleAppender {
 	/**
 	 * Setter for target
 	 * 
-	 * @param target
-	 *            target of Logging either System.out or System.err; default
-	 *            target is System.out.
+	 * @param target target of Logging either System.out or System.err; default
+	 *               target is System.out.
 	 */
 	@XmlElement
 	public void setTarget(String target) {

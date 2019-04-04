@@ -19,10 +19,8 @@ public class JsonValidationProcessingException extends BaseCheckedException {
 	/**
 	 * Constructor for JsonValidationProcessingException class.
 	 * 
-	 * @param errorCode
-	 *            the error code of the exception.
-	 * @param errorMessage
-	 *            the error message associated with the exception.
+	 * @param errorCode    the error code of the exception.
+	 * @param errorMessage the error message associated with the exception.
 	 */
 	public JsonValidationProcessingException(String errorCode, String errorMessage) {
 		super(errorCode, errorMessage);

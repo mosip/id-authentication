@@ -12,7 +12,6 @@ package io.mosip.kernel.core.security.exception;
 import io.mosip.kernel.core.exception.BaseUncheckedException;
 import io.mosip.kernel.core.security.constants.MosipSecurityExceptionCodeConstants;
 
-
 /**
  * {@link Exception} to be thrown when key is null
  * 
@@ -29,8 +28,7 @@ public class MosipNullMethodException extends BaseUncheckedException {
 	/**
 	 * Constructor for this class
 	 * 
-	 * @param exceptionCodeConstants
-	 *            exception code constant
+	 * @param exceptionCodeConstants exception code constant
 	 */
 	public MosipNullMethodException(MosipSecurityExceptionCodeConstants exceptionCodeConstants) {
 		super(exceptionCodeConstants.getErrorCode(), exceptionCodeConstants.getErrorMessage());

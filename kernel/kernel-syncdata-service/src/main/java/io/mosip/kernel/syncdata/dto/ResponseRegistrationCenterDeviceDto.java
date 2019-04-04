@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode(callSuper = true)
 @AllArgsConstructor
 @NoArgsConstructor
-public class ResponseRegistrationCenterDeviceDto extends BaseDto{
+public class ResponseRegistrationCenterDeviceDto extends BaseDto {
 
 	private String regCenterId;
 

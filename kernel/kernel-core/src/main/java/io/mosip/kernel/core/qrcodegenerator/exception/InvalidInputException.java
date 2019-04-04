@@ -19,10 +19,8 @@ public class InvalidInputException extends BaseUncheckedException {
 	/**
 	 * Constructor with errorCode, and errorMessage
 	 * 
-	 * @param errorCode
-	 *            The error code for this exception
-	 * @param errorMessage
-	 *            The error message for this exception
+	 * @param errorCode    The error code for this exception
+	 * @param errorMessage The error message for this exception
 	 */
 	public InvalidInputException(String errorCode, String errorMessage) {
 		super(errorCode, errorMessage);

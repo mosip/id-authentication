@@ -23,7 +23,7 @@ public class ShardDataSourceResolverTest {
 		ShardDataSourceResolver.setCurrentShard("shard1");
 		assertEquals("shard1", ReflectionTestUtils.invokeMethod(shardResolver, "determineCurrentLookupKey"));
 	}
-	
+
 	@Test
 	public void testResetShardConfig() {
 		ShardDataSourceResolver.setCurrentShard("shard1");

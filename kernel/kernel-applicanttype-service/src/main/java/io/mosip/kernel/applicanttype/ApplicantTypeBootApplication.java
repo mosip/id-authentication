@@ -8,7 +8,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * @author Bal Vikash Sharma
  *
  */
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = { "io.mosip.kernel.applicanttype.*", "io.mosip.kernel.auth.*" })
 public class ApplicantTypeBootApplication {
 
 	public static void main(String[] args) {

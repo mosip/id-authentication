@@ -1,9 +1,17 @@
 package io.mosip.kernel.ldap;
 
-import io.mosip.kernel.ldap.config.MosipEnvironment;
-import io.mosip.kernel.ldap.dto.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import org.apache.directory.api.ldap.model.cursor.EntryCursor;
-import org.apache.directory.api.ldap.model.entry.*;
+import org.apache.directory.api.ldap.model.entry.DefaultEntry;
+import org.apache.directory.api.ldap.model.entry.DefaultModification;
+import org.apache.directory.api.ldap.model.entry.Entry;
+import org.apache.directory.api.ldap.model.entry.Modification;
+import org.apache.directory.api.ldap.model.entry.ModificationOperation;
 import org.apache.directory.api.ldap.model.message.SearchScope;
 import org.apache.directory.api.ldap.model.name.Dn;
 import org.apache.directory.ldap.client.api.LdapConnection;
@@ -11,7 +19,13 @@ import org.apache.directory.ldap.client.api.LdapNetworkConnection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.*;
+import io.mosip.kernel.ldap.config.MosipEnvironment;
+import io.mosip.kernel.ldap.dto.LoginUserDto;
+import io.mosip.kernel.ldap.dto.MosipUserDto;
+import io.mosip.kernel.ldap.dto.MosipUserListDto;
+import io.mosip.kernel.ldap.dto.OtpUserDto;
+import io.mosip.kernel.ldap.dto.RoleDto;
+import io.mosip.kernel.ldap.dto.RolesListDto;
 
 /**
  * @author Sabbu Uday Kumar

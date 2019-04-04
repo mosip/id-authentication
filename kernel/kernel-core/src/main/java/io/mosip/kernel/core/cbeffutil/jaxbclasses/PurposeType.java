@@ -5,18 +5,20 @@
 // Generated on: 2018.12.06 at 02:49:01 PM IST 
 //
 
-
 package io.mosip.kernel.core.cbeffutil.jaxbclasses;
 
 import javax.xml.bind.annotation.XmlEnum;
 import javax.xml.bind.annotation.XmlEnumValue;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
- * <p>Java class for PurposeType.
+ * <p>
+ * Java class for PurposeType.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within
+ * this class.
+ * 
  * <pre>
  * &lt;simpleType name="PurposeType"&gt;
  *   &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string"&gt;
@@ -35,35 +37,30 @@ import javax.xml.bind.annotation.XmlType;
 @XmlEnum
 public enum PurposeType {
 
-    @XmlEnumValue("Verify")
-    VERIFY("Verify"),
-    @XmlEnumValue("Identify")
-    IDENTIFY("Identify"),
-    @XmlEnumValue("Enroll")
-    ENROLL("Enroll"),
-    @XmlEnumValue("EnrollVerify")
-    ENROLL_VERIFY("EnrollVerify"),
-    @XmlEnumValue("EnrollIdentify")
-    ENROLL_IDENTIFY("EnrollIdentify"),
-    @XmlEnumValue("Audit")
-    AUDIT("Audit");
-    private final String value;
+	@XmlEnumValue("Verify")
+	VERIFY("Verify"), @XmlEnumValue("Identify")
+	IDENTIFY("Identify"), @XmlEnumValue("Enroll")
+	ENROLL("Enroll"), @XmlEnumValue("EnrollVerify")
+	ENROLL_VERIFY("EnrollVerify"), @XmlEnumValue("EnrollIdentify")
+	ENROLL_IDENTIFY("EnrollIdentify"), @XmlEnumValue("Audit")
+	AUDIT("Audit");
+	private final String value;
 
-    PurposeType(String v) {
-        value = v;
-    }
+	PurposeType(String v) {
+		value = v;
+	}
 
-    public String value() {
-        return value;
-    }
+	public String value() {
+		return value;
+	}
 
-    public static PurposeType fromValue(String v) {
-        for (PurposeType c: PurposeType.values()) {
-            if (c.value.equals(v)) {
-                return c;
-            }
-        }
-        throw new IllegalArgumentException(v);
-    }
+	public static PurposeType fromValue(String v) {
+		for (PurposeType c : PurposeType.values()) {
+			if (c.value.equals(v)) {
+				return c;
+			}
+		}
+		throw new IllegalArgumentException(v);
+	}
 
 }

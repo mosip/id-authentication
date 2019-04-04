@@ -3,6 +3,7 @@ package io.mosip.kernel.masterdata.controller;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -43,10 +44,10 @@ public class BlacklistedWordsController {
 	/**
 	 * Fetch the list of blacklisted words based on language code.
 	 * 
-	 * @param langCode
-	 *            language code
+	 * @param langCode language code
 	 * @return {@link BlacklistedWordsResponseDto}
 	 */
+	@PreAuthorize("hasAnyRole('INDIVIDUAL')")
 	@ResponseFilter
 	@GetMapping("/{langcode}")
 	public ResponseWrapper<BlacklistedWordsResponseDto> getAllBlackListedWordByLangCode(
@@ -61,8 +62,7 @@ public class BlacklistedWordsController {
 	 * Takes the list of string as an argument and checks if the list contains any
 	 * blacklisted words.
 	 * 
-	 * @param blacklistedwords
-	 *            list of blacklisted words
+	 * @param blacklistedwords list of blacklisted words
 	 * @return Valid if word does not belongs to black listed word and Invalid if
 	 *         word belongs to black listed word
 	 */
@@ -88,8 +88,8 @@ public class BlacklistedWordsController {
 	/**
 	 * Method to add blacklisted word.
 	 * 
-	 * @param blackListedWordsRequestDto
-	 *            the request dto that holds the blacklisted word to be added.
+	 * @param blackListedWordsRequestDto the request dto that holds the blacklisted
+	 *                                   word to be added.
 	 * @return the response entity i.e. the word and language code of the word
 	 *         added.
 	 */
@@ -107,8 +107,8 @@ public class BlacklistedWordsController {
 	/**
 	 * Method to update the blacklisted word
 	 * 
-	 * @param blackListedWordsRequestDto
-	 *            the request dto that holds the blacklisted word to be updated .
+	 * @param blackListedWordsRequestDto the request dto that holds the blacklisted
+	 *                                   word to be updated .
 	 * @return the response entity i.e. the word and language code of the word
 	 *         updated.
 	 */
@@ -127,8 +127,7 @@ public class BlacklistedWordsController {
 	/**
 	 * Method to deleted blacklisted word.
 	 * 
-	 * @param word
-	 *            input blacklisted word to be deleted.
+	 * @param word input blacklisted word to be deleted.
 	 * @return deleted word.
 	 */
 	@ResponseFilter

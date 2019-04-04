@@ -23,7 +23,7 @@ public class IdRepoAppException extends BaseCheckedException {
 	/**
 	 * Instantiates a new id repo app exception.
 	 *
-	 * @param errorCode the error code
+	 * @param errorCode    the error code
 	 * @param errorMessage the error message
 	 */
 	public IdRepoAppException(String errorCode, String errorMessage) {
@@ -33,9 +33,9 @@ public class IdRepoAppException extends BaseCheckedException {
 	/**
 	 * Instantiates a new id repo app exception.
 	 *
-	 * @param errorCode the error code
+	 * @param errorCode    the error code
 	 * @param errorMessage the error message
-	 * @param rootCause the root cause
+	 * @param rootCause    the root cause
 	 */
 	public IdRepoAppException(String errorCode, String errorMessage, Throwable rootCause) {
 		super(errorCode, errorMessage, rootCause);
@@ -54,7 +54,7 @@ public class IdRepoAppException extends BaseCheckedException {
 	 * Instantiates a new id repo app exception.
 	 *
 	 * @param exceptionConstant the exception constant
-	 * @param rootCause the root cause
+	 * @param rootCause         the root cause
 	 */
 	public IdRepoAppException(IdRepoErrorConstants exceptionConstant, Throwable rootCause) {
 		this(exceptionConstant.getErrorCode(), exceptionConstant.getErrorMessage(), rootCause);

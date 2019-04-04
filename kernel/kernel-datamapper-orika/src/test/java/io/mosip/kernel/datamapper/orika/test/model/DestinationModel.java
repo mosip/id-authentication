@@ -16,5 +16,5 @@ public class DestinationModel {
 
 	private String name;
 	private int age;
-	
+
 }

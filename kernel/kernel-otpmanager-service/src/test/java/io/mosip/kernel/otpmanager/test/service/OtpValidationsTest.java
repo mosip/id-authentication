@@ -21,6 +21,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -28,10 +29,11 @@ import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.otpmanager.entity.OtpEntity;
 import io.mosip.kernel.otpmanager.exception.OtpInvalidArgumentException;
 import io.mosip.kernel.otpmanager.repository.OtpRepository;
+import io.mosip.kernel.otpmanager.test.OtpmanagerTestBootApplication;
 
 @RunWith(SpringRunner.class)
 @AutoConfigureMockMvc
-@SpringBootTest
+@SpringBootTest(classes = OtpmanagerTestBootApplication.class)
 public class OtpValidationsTest {
 
 	@Autowired
@@ -43,12 +45,15 @@ public class OtpValidationsTest {
 	@MockBean
 	private OtpRepository otpRepository;
 
+	@WithUserDetails("individual")
 	@Test
 	public void testNullKey() throws Exception {
 		when(otpRepository.findById(OtpEntity.class, "testKey")).thenReturn(null);
 		mockMvc.perform(get("/otp/validate?key=testKey&otp=1234").contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk()).andReturn();
 	}
+
+	@WithUserDetails("individual")
 	@Ignore
 	@Test
 	public void testOtpValidatorServiceExpiredOTPCase() throws Exception {
@@ -66,6 +71,7 @@ public class OtpValidationsTest {
 
 	}
 
+	@WithUserDetails("individual")
 	@Test
 	public void testOtpValidatorServiceKeyEmptyCase() throws Exception {
 		ServiceError serviceError = new ServiceError("TESTCODE", "TESTMESSAGE");
@@ -77,6 +83,7 @@ public class OtpValidationsTest {
 				.andExpect(status().isOk()).andReturn();
 	}
 
+	@WithUserDetails("individual")
 	@Test
 	public void testOtpValidatorServiceOtpEmptyCase() throws Exception {
 		ServiceError serviceError = new ServiceError("TESTCODE", "TESTMESSAGE");
@@ -88,6 +95,7 @@ public class OtpValidationsTest {
 				.andExpect(status().isOk()).andReturn();
 	}
 
+	@WithUserDetails("individual")
 	@Test
 	public void testOtpValidatorServiceKeyLengthLessThanRequiredCase() throws Exception {
 		ServiceError serviceError = new ServiceError("TESTCODE", "TESTMESSAGE");
@@ -100,6 +108,7 @@ public class OtpValidationsTest {
 				.andExpect(status().isOk()).andReturn();
 	}
 
+	@WithUserDetails("individual")
 	@Test
 	public void testOtpValidatorServiceKeyLengthMoreThanRequiredCase() throws Exception {
 		ServiceError serviceError = new ServiceError("TESTCODE", "TESTMESSAGE");
@@ -112,6 +121,7 @@ public class OtpValidationsTest {
 				.param("otp", "123456").contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk()).andReturn();
 	}
 
+	@WithUserDetails("individual")
 	@Test
 	public void testOtpValidatorServiceOtpIsCharacter() throws Exception {
 		ServiceError serviceError = new ServiceError("TESTCODE", "TESTMESSAGE");

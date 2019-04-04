@@ -18,10 +18,8 @@ public interface LicenseKeyTspMapRepository extends BaseRepository<LicenseKeyTsp
 	/**
 	 * Method to extract LicenseKeyTspMap entity based on license key and TSP ID.
 	 * 
-	 * @param licenseKey
-	 *            the license key.
-	 * @param tspID
-	 *            the TSP ID.
+	 * @param licenseKey the license key.
+	 * @param tspID      the TSP ID.
 	 * @return the entity response.
 	 */
 	public LicenseKeyTspMap findByLKeyAndTspId(String licenseKey, String tspID);

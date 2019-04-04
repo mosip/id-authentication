@@ -48,7 +48,7 @@ public class SyncConfigDetailsServiceImpl implements SyncConfigDetailsService {
 
 	@Autowired
 	private RestTemplate restTemplate;
-	
+
 	@Autowired
 	private ObjectMapper objectMapper;
 
@@ -90,7 +90,7 @@ public class SyncConfigDetailsServiceImpl implements SyncConfigDetailsService {
 		JSONObject regConfig = getConfigDetailsResponse(regCenterfileName);
 		config.put("globalConfiguration", globalConfig);
 		config.put("registrationConfiguration", regConfig);
-		ConfigDto configDto= new ConfigDto();
+		ConfigDto configDto = new ConfigDto();
 		configDto.setConfigDetail(config);
 		LOGGER.info("getConfigDetails() completed");
 		return configDto;
@@ -133,8 +133,7 @@ public class SyncConfigDetailsServiceImpl implements SyncConfigDetailsService {
 	/**
 	 * This method will consume a REST API based on the filename passed.
 	 * 
-	 * @param fileName
-	 *            - name of the file
+	 * @param fileName - name of the file
 	 * @return JSONObject
 	 */
 	private JSONObject getConfigDetailsResponse(String fileName) {
@@ -190,7 +189,7 @@ public class SyncConfigDetailsServiceImpl implements SyncConfigDetailsService {
 	public PublicKeyResponse<String> getPublicKey(String applicationId, String timeStamp,
 			Optional<String> referenceId) {
 		ResponseEntity<String> publicKeyResponseEntity = null;
-		
+
 		PublicKeyResponse publicKeyResponseMapped = null;
 		Map<String, String> uriParams = new HashMap<>();
 		uriParams.put("applicationId", applicationId);
@@ -220,7 +219,7 @@ public class SyncConfigDetailsServiceImpl implements SyncConfigDetailsService {
 			objectMapper.registerModule(new JavaTimeModule());
 			publicKeyResponseMapped = objectMapper.readValue(publicKeyResponseEntity.getBody(),
 					PublicKeyResponse.class);
-			
+
 		} catch (IOException e) {
 			throw new SyncDataServiceException(SyncConfigDetailsErrorCode.SYNC_IO_EXCEPTION.getErrorCode(),
 					SyncConfigDetailsErrorCode.SYNC_IO_EXCEPTION.getErrorMessage());

@@ -23,7 +23,7 @@ public class IdRepoAppUncheckedException extends BaseUncheckedException {
 	/**
 	 * Instantiates a new id repo app unchecked exception.
 	 *
-	 * @param errorCode the error code
+	 * @param errorCode    the error code
 	 * @param errorMessage the error message
 	 */
 	public IdRepoAppUncheckedException(String errorCode, String errorMessage) {
@@ -33,9 +33,9 @@ public class IdRepoAppUncheckedException extends BaseUncheckedException {
 	/**
 	 * Instantiates a new id repo app unchecked exception.
 	 *
-	 * @param errorCode the error code
+	 * @param errorCode    the error code
 	 * @param errorMessage the error message
-	 * @param rootCause the root cause
+	 * @param rootCause    the root cause
 	 */
 	public IdRepoAppUncheckedException(String errorCode, String errorMessage, Throwable rootCause) {
 		super(errorCode, errorMessage, rootCause);
@@ -54,7 +54,7 @@ public class IdRepoAppUncheckedException extends BaseUncheckedException {
 	 * Instantiates a new id repo app unchecked exception.
 	 *
 	 * @param exceptionConstant the exception constant
-	 * @param rootCause the root cause
+	 * @param rootCause         the root cause
 	 */
 	public IdRepoAppUncheckedException(IdRepoErrorConstants exceptionConstant, Throwable rootCause) {
 		this(exceptionConstant.getErrorCode(), exceptionConstant.getErrorMessage(), rootCause);

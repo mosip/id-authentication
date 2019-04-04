@@ -12,13 +12,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.mosip.kernel.core.http.RequestWrapper;
+import io.mosip.kernel.core.http.ResponseFilter;
+import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.masterdata.dto.HolidayDto;
 import io.mosip.kernel.masterdata.dto.HolidayIDDto;
 import io.mosip.kernel.masterdata.dto.HolidayIdDeleteDto;
 import io.mosip.kernel.masterdata.dto.HolidayUpdateDto;
-import io.mosip.kernel.core.http.RequestWrapper;
-import io.mosip.kernel.core.http.ResponseFilter;
-import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.masterdata.dto.getresponse.HolidayResponseDto;
 import io.mosip.kernel.masterdata.service.HolidayService;
 import io.swagger.annotations.Api;
@@ -56,8 +56,7 @@ public class HolidayController {
 	/**
 	 * This method returns list of holidays for a particular holiday id
 	 * 
-	 * @param holidayId
-	 *            input parameter holiday id
+	 * @param holidayId input parameter holiday id
 	 * @return list of holidays for a particular holiday id
 	 */
 	@ResponseFilter
@@ -73,10 +72,8 @@ public class HolidayController {
 	 * This method returns a list of holidays containing a particular language code
 	 * and holiday id
 	 * 
-	 * @param holidayId
-	 *            input parameter holiday id
-	 * @param langCode
-	 *            input parameter language code
+	 * @param holidayId input parameter holiday id
+	 * @param langCode  input parameter language code
 	 * @return {@link HolidayResponseDto}
 	 */
 	@ResponseFilter
@@ -91,8 +88,7 @@ public class HolidayController {
 	/**
 	 * This method creates a new row of holiday data
 	 * 
-	 * @param holiday
-	 *            input values to add a new row of data
+	 * @param holiday input values to add a new row of data
 	 * @return primary key of inserted Holiday data
 	 */
 	@ResponseFilter
@@ -106,8 +102,7 @@ public class HolidayController {
 	/**
 	 * Method to update a holiday
 	 * 
-	 * @param holiday
-	 *            input values to update the data
+	 * @param holiday input values to update the data
 	 * @return id of updated Holiday data
 	 */
 	@ResponseFilter
@@ -122,8 +117,7 @@ public class HolidayController {
 	/**
 	 * Method to delete holidays
 	 * 
-	 * @param request
-	 *            input values to delete
+	 * @param request input values to delete
 	 * @return id of the deleted Holiday data
 	 */
 	@ResponseFilter

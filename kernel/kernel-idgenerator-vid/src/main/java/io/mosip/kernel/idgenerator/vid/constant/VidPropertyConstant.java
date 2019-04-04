@@ -18,8 +18,7 @@ public enum VidPropertyConstant {
 	/**
 	 * Constructor for PridPropertyConstant.
 	 * 
-	 * @param property
-	 *            the property.
+	 * @param property the property.
 	 */
 	VidPropertyConstant(String property) {
 		this.property = property;

@@ -9,7 +9,7 @@ package io.mosip.kernel.keymanager.softhsm.constant;
  */
 public enum KeymanagerErrorCode {
 	INVALID_CONFIG_FILE("KER-KMA-001", "Config file invalid"),
-	
+
 	NO_SUCH_SECURITY_PROVIDER("KER-KMA-002", "No such security provider"),
 
 	KEYSTORE_PROCESSING_ERROR("KER-KMA-003", "Error occured in processing Keystore: "),
@@ -30,10 +30,8 @@ public enum KeymanagerErrorCode {
 	/**
 	 * Constructor to set error code and message
 	 * 
-	 * @param errorCode
-	 *            the error code
-	 * @param errorMessage
-	 *            the error message
+	 * @param errorCode    the error code
+	 * @param errorMessage the error message
 	 */
 	private KeymanagerErrorCode(final String errorCode, final String errorMessage) {
 		this.errorCode = errorCode;

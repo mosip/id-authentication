@@ -21,10 +21,8 @@ public interface KeyAliasRepository extends BaseRepository<KeyAlias, String> {
 	/**
 	 * Function to find keyalias by applicationId and referenceId
 	 * 
-	 * @param applicationId
-	 *            applicationId
-	 * @param referenceId
-	 *            referenceId
+	 * @param applicationId applicationId
+	 * @param referenceId   referenceId
 	 * @return list of keyalias
 	 */
 	List<KeyAlias> findByApplicationIdAndReferenceId(String applicationId, String referenceId);

@@ -15,8 +15,7 @@ public interface ValidDocumentService {
 	/**
 	 * This method create valid document in table.
 	 * 
-	 * @param document
-	 *            the dto.
+	 * @param document the dto.
 	 * @return {@link ValidDocumentID}
 	 */
 	public ValidDocumentID createValidDocument(ValidDocumentDto document);
@@ -24,10 +23,8 @@ public interface ValidDocumentService {
 	/**
 	 * This method delete valid document.
 	 * 
-	 * @param docCatCode
-	 *            the document category code.
-	 * @param docTypeCode
-	 *            the docuemnt type code.
+	 * @param docCatCode  the document category code.
+	 * @param docTypeCode the docuemnt type code.
 	 * @return {@link DocCategoryAndTypeResponseDto}.
 	 */
 	public DocCategoryAndTypeResponseDto deleteValidDocuemnt(String docCatCode, String docTypeCode);

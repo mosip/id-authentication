@@ -28,6 +28,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.test.web.servlet.MockMvc;
@@ -109,16 +110,16 @@ public class CryptographicServiceIntegrationTest {
 				.queryParam("referenceId", "ref123");
 	}
 
-	//@WithUserDetails("reg-processor")
+	@WithUserDetails("reg-processor")
 	@Test
 	public void testEncrypt() throws Exception {
 		KeymanagerPublicKeyResponseDto keymanagerPublicKeyResponseDto = new KeymanagerPublicKeyResponseDto(
 				CryptoUtil.encodeBase64(keyPair.getPublic().getEncoded()), LocalDateTime.now(),
 				LocalDateTime.now().plusDays(100));
-		ResponseWrapper<KeymanagerPublicKeyResponseDto> response= new ResponseWrapper<>();
+		ResponseWrapper<KeymanagerPublicKeyResponseDto> response = new ResponseWrapper<>();
 		response.setResponse(keymanagerPublicKeyResponseDto);
-		server.expect(requestTo(builder.buildAndExpand(uriParams).toUriString())).andRespond(withSuccess(
-				objectMapper.writeValueAsString(response), MediaType.APPLICATION_JSON));
+		server.expect(requestTo(builder.buildAndExpand(uriParams).toUriString()))
+				.andRespond(withSuccess(objectMapper.writeValueAsString(response), MediaType.APPLICATION_JSON));
 
 		/* Request body START */
 		requestDto = new CryptomanagerRequestDto();
@@ -154,15 +155,15 @@ public class CryptographicServiceIntegrationTest {
 		assertThat(cryptomanagerResponseDto.getData(), isA(String.class));
 	}
 
-	//@WithUserDetails("reg-processor")
+	@WithUserDetails("reg-processor")
 	@Test
 	public void testDecrypt() throws Exception {
 		KeymanagerSymmetricKeyResponseDto keymanagerSymmetricKeyResponseDto = new KeymanagerSymmetricKeyResponseDto(
 				CryptoUtil.encodeBase64(generator.getSymmetricKey().getEncoded()));
-		ResponseWrapper<KeymanagerSymmetricKeyResponseDto> response= new ResponseWrapper<>();
+		ResponseWrapper<KeymanagerSymmetricKeyResponseDto> response = new ResponseWrapper<>();
 		response.setResponse(keymanagerSymmetricKeyResponseDto);
-		server.expect(requestTo(symmetricKeyUrl)).andRespond(withSuccess(
-				objectMapper.writeValueAsString(response), MediaType.APPLICATION_JSON));
+		server.expect(requestTo(symmetricKeyUrl))
+				.andRespond(withSuccess(objectMapper.writeValueAsString(response), MediaType.APPLICATION_JSON));
 		when(decryptor.symmetricDecrypt(Mockito.any(), Mockito.any())).thenReturn("dXJ2aWw".getBytes());
 
 		/* Request body START */
@@ -174,7 +175,7 @@ public class CryptographicServiceIntegrationTest {
 		requestDto.setData("dXJ2aWwjS0VZX1NQTElUVEVSI3Vydmls");
 		requestDto.setReferenceId("ref123");
 		requestDto.setTimeStamp(DateUtils.parseToLocalDateTime("2018-12-06T12:07:44.403Z"));
-		 String requestBody = objectMapper.writeValueAsString(requestWrapper); 
+		String requestBody = objectMapper.writeValueAsString(requestWrapper);
 		/* Request body END */
 
 		/*

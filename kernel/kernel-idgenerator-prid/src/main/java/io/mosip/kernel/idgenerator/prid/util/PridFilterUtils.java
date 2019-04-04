@@ -129,8 +129,7 @@ public class PridFilterUtils {
 	 * {@link #sequenceLimit} filter, {@link #repeatingLimit} filter and
 	 * {@link #repeatingBlockLimit} filters
 	 * 
-	 * @param id
-	 *            The input id to validate
+	 * @param id The input id to validate
 	 * @return true if the input id is valid
 	 */
 	public boolean isValidId(String id) {
@@ -142,8 +141,7 @@ public class PridFilterUtils {
 	/**
 	 * Checks the input id for {@link #restrictedNumbers} filter
 	 * 
-	 * @param id
-	 *            The input id to validate
+	 * @param id The input id to validate
 	 * @return true if the id matches the filter
 	 */
 	private boolean restrictedAdminFilter(String id) {
@@ -153,8 +151,7 @@ public class PridFilterUtils {
 	/**
 	 * Checks the input id for {@link #sequenceLimit} filter
 	 * 
-	 * @param id
-	 *            The input id to validate
+	 * @param id The input id to validate
 	 * @return true if the id matches the filter
 	 */
 	private boolean sequenceFilter(String id) {
@@ -170,10 +167,8 @@ public class PridFilterUtils {
 	 * Checks the input id if it matched the given regex pattern
 	 * ({@link #REPEATING_PATTERN}, {@link #repeatingBlockpattern})
 	 * 
-	 * @param id
-	 *            The input id to validate
-	 * @param pattern
-	 *            The input regex Pattern
+	 * @param id      The input id to validate
+	 * @param pattern The input regex Pattern
 	 * @return true if the id matches the given regex pattern
 	 */
 	private static boolean regexFilter(String id, Pattern pattern) {
@@ -186,8 +181,7 @@ public class PridFilterUtils {
 	 * Method to validate that the prid should not contains the specified digit at
 	 * first index
 	 * 
-	 * @param id
-	 *            The input id to validate
+	 * @param id The input id to validate
 	 * @return true if found otherwise false
 	 */
 	private boolean validateNotStartWith(String id) {

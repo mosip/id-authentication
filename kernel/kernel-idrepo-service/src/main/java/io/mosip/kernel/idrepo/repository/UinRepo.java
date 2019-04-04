@@ -12,7 +12,7 @@ import io.mosip.kernel.idrepo.entity.Uin;
  * @author Manoj SP
  */
 public interface UinRepo extends JpaRepository<Uin, String> {
-	
+
 	/**
 	 * Gets the uin ref id by uin.
 	 *
@@ -21,7 +21,7 @@ public interface UinRepo extends JpaRepository<Uin, String> {
 	 */
 	@Query("select uinRefId from Uin where uin = :uin")
 	String getUinRefIdByUin(@Param("uin") String uin);
-	
+
 	/**
 	 * Find by uin.
 	 *
@@ -37,7 +37,7 @@ public interface UinRepo extends JpaRepository<Uin, String> {
 	 * @return true, if successful
 	 */
 	boolean existsByUin(String uin);
-	
+
 	/**
 	 * Exists by reg id.
 	 *

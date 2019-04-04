@@ -9,8 +9,8 @@ package io.mosip.kernel.applicanttype.api.constant;
  */
 public enum ApplicantTypeErrorCode {
 
-	INVALID_QUERY_EXCEPTION("KER-MSD-147", "Invalid query passed for applicant type"), INVALID_DATE_STRING_EXCEPTION(
-			"KER-MSD-148", "Date string can not be parsed");
+	INVALID_QUERY_EXCEPTION("KER-MSD-147", "Invalid query passed for applicant type"),
+	INVALID_DATE_STRING_EXCEPTION("KER-MSD-148", "Date string can not be parsed");
 
 	private final String errorCode;
 	private final String errorMessage;

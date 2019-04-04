@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+
 /**
  * 
  * @author Abhishek Kumar
@@ -15,7 +16,7 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode(callSuper = true)
 @AllArgsConstructor
 @NoArgsConstructor
-public class RegistrationCenterHolidayDto extends BaseDto{
+public class RegistrationCenterHolidayDto extends BaseDto {
 	private RegistrationCenterDto registrationCenter;
 	private List<HolidayDto> holidays;
 }

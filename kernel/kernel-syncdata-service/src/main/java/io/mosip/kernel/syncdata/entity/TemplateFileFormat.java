@@ -38,7 +38,7 @@ public class TemplateFileFormat extends BaseEntity implements Serializable {
 			@AttributeOverride(name = "langCode", column = @Column(name = "lang_code", nullable = false, length = 3)) })
 	private String code;
 	private String langCode;
-	
+
 	@Column(name = "descr")
 	private String description;
 

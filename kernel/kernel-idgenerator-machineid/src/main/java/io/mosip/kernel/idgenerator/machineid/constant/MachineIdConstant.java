@@ -8,8 +8,7 @@ package io.mosip.kernel.idgenerator.machineid.constant;
  *
  */
 public enum MachineIdConstant {
-	ID_BASE(10),
-	MID_FETCH_EXCEPTION("KER-MNG-001", "Error occured while fetching id"),
+	ID_BASE(10), MID_FETCH_EXCEPTION("KER-MNG-001", "Error occured while fetching id"),
 	MID_INSERT_EXCEPTION("KER-MNG-002", "Error occured while inserting id");
 
 	/**
@@ -30,8 +29,7 @@ public enum MachineIdConstant {
 	/**
 	 * Constructor with the value argument.
 	 * 
-	 * @param value
-	 *            the value.
+	 * @param value the value.
 	 */
 	private MachineIdConstant(int value) {
 		this.value = value;
@@ -40,10 +38,8 @@ public enum MachineIdConstant {
 	/**
 	 * Constructor with errorCode and errorMessage as the arguments.
 	 * 
-	 * @param errorCode
-	 *            the error code.
-	 * @param errorMessage
-	 *            the error message.
+	 * @param errorCode    the error code.
+	 * @param errorMessage the error message.
 	 */
 	private MachineIdConstant(String errorCode, String errorMessage) {
 		this.errorCode = errorCode;

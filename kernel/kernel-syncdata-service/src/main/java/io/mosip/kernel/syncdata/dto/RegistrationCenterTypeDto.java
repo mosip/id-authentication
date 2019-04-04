@@ -13,7 +13,7 @@ import lombok.EqualsAndHashCode;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class RegistrationCenterTypeDto extends BaseDto{
+public class RegistrationCenterTypeDto extends BaseDto {
 	/**
 	 * the code.
 	 */
@@ -26,5 +26,5 @@ public class RegistrationCenterTypeDto extends BaseDto{
 	 * the description.
 	 */
 	private String descr;
-	
+
 }

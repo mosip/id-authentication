@@ -11,23 +11,22 @@ import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.encoder.PatternLayoutEncoder;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.Appender;
-
 import ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy;
 import ch.qos.logback.core.rolling.TimeBasedRollingPolicy;
 import ch.qos.logback.core.util.FileSize;
 import io.mosip.kernel.core.exception.IllegalArgumentException;
 import io.mosip.kernel.core.exception.IllegalStateException;
+import io.mosip.kernel.core.exception.PatternSyntaxException;
 import io.mosip.kernel.core.logger.exception.ClassNameNotFoundException;
 import io.mosip.kernel.core.logger.exception.EmptyPatternException;
 import io.mosip.kernel.core.logger.exception.FileNameNotProvided;
-import io.mosip.kernel.core.exception.PatternSyntaxException;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.logger.logback.appender.ConsoleAppender;
 import io.mosip.kernel.logger.logback.appender.FileAppender;
 import io.mosip.kernel.logger.logback.appender.RollingFileAppender;
+import io.mosip.kernel.logger.logback.constant.ConfigurationDefault;
 import io.mosip.kernel.logger.logback.constant.LogExeptionCodeConstant;
 import io.mosip.kernel.logger.logback.constant.LogLevel;
-import io.mosip.kernel.logger.logback.constant.ConfigurationDefault;
 
 /**
  * Logback implementation class for mosip
@@ -52,10 +51,9 @@ public class LoggerImpl implements Logger {
 	/**
 	 * Builds a logger instance
 	 * 
-	 * @param mosipConsoleAppender
-	 *            {@link ConsoleAppender} instance which contains all configurations
-	 * @param name
-	 *            name of calling class to get logger
+	 * @param mosipConsoleAppender {@link ConsoleAppender} instance which contains
+	 *                             all configurations
+	 * @param name                 name of calling class to get logger
 	 */
 	private LoggerImpl(ConsoleAppender mosipConsoleAppender, String name, LogLevel logLevel) {
 
@@ -81,10 +79,9 @@ public class LoggerImpl implements Logger {
 	/**
 	 * Builds a logger instance
 	 * 
-	 * @param mosipFileAppender
-	 *            {@link FileAppender} instance which contains all configurations
-	 * @param name
-	 *            name of calling class to get logger
+	 * @param mosipFileAppender {@link FileAppender} instance which contains all
+	 *                          configurations
+	 * @param name              name of calling class to get logger
 	 */
 	private LoggerImpl(FileAppender mosipFileAppender, String name, LogLevel logLevel) {
 
@@ -119,11 +116,9 @@ public class LoggerImpl implements Logger {
 	/**
 	 * Builds a logger instance
 	 * 
-	 * @param mosipRollingFileAppender
-	 *            {@link RollingFileAppender} instance which contains all
-	 *            configurations
-	 * @param name
-	 *            name of calling class to get logger
+	 * @param mosipRollingFileAppender {@link RollingFileAppender} instance which
+	 *                                 contains all configurations
+	 * @param name                     name of calling class to get logger
 	 */
 	private LoggerImpl(RollingFileAppender mosipRollingFileAppender, String name, LogLevel logLevel) {
 
@@ -164,13 +159,11 @@ public class LoggerImpl implements Logger {
 	/**
 	 * Configures size and time based policy
 	 * 
-	 * @param mosipRollingFileAppender
-	 *            {@link RollingFileAppender} instance to get values'p
-	 * @param context
-	 *            context of logger
-	 * @param rollingFileAppender
-	 *            {@link RollingFileAppender} instance by which this policy will
-	 *            attach
+	 * @param mosipRollingFileAppender {@link RollingFileAppender} instance to get
+	 *                                 values'p
+	 * @param context                  context of logger
+	 * @param rollingFileAppender      {@link RollingFileAppender} instance by which
+	 *                                 this policy will attach
 	 */
 	private void configureSizeAndTimeBasedPolicy(RollingFileAppender mosipRollingFileAppender, LoggerContext context,
 			ch.qos.logback.core.rolling.RollingFileAppender<ILoggingEvent> rollingFileAppender) {
@@ -194,13 +187,11 @@ public class LoggerImpl implements Logger {
 	/**
 	 * Configures time based policy
 	 * 
-	 * @param mosipRollingFileAppender
-	 *            {@link RollingFileAppender} instance to get values
-	 * @param context
-	 *            context of logger
-	 * @param rollingFileAppender
-	 *            {@link RollingFileAppender} instance by which this policy will
-	 *            attach
+	 * @param mosipRollingFileAppender {@link RollingFileAppender} instance to get
+	 *                                 values
+	 * @param context                  context of logger
+	 * @param rollingFileAppender      {@link RollingFileAppender} instance by which
+	 *                                 this policy will attach
 	 */
 	private void configureTimeBasedRollingPolicy(RollingFileAppender mosipRollingFileAppender, LoggerContext context,
 			ch.qos.logback.core.rolling.RollingFileAppender<ILoggingEvent> rollingFileAppender) {
@@ -224,12 +215,10 @@ public class LoggerImpl implements Logger {
 	/**
 	 * Verifies configurations
 	 * 
-	 * @param consoleAppender
-	 *            {@link ConsoleAppender} instance which contains all configurations
-	 * @param name
-	 *            name of the calling class
-	 * @param loglevel
-	 *            log level
+	 * @param consoleAppender {@link ConsoleAppender} instance which contains all
+	 *                        configurations
+	 * @param name            name of the calling class
+	 * @param loglevel        log level
 	 * @return Configured {@link Logger} instance
 	 */
 	public static Logger getConsoleLogger(ConsoleAppender consoleAppender, String name, LogLevel loglevel) {
@@ -244,12 +233,10 @@ public class LoggerImpl implements Logger {
 	/**
 	 * Verifies configurations
 	 * 
-	 * @param fileAppender
-	 *            {@link FileAppender} instance which contains all configurations
-	 * @param name
-	 *            name of the calling class
-	 * @param loglevel
-	 *            log level
+	 * @param fileAppender {@link FileAppender} instance which contains all
+	 *                     configurations
+	 * @param name         name of the calling class
+	 * @param loglevel     log level
 	 * @return Configured {@link Logger} instance
 	 */
 	public static Logger getFileLogger(FileAppender fileAppender, String name, LogLevel loglevel) {
@@ -271,13 +258,10 @@ public class LoggerImpl implements Logger {
 	/**
 	 * Verifies configurations
 	 * 
-	 * @param rollingFileAppender
-	 *            {@link RollingFileAppender} instance which contains all
-	 *            configurations
-	 * @param name
-	 *            name of the calling class
-	 * @param loglevel
-	 *            log level
+	 * @param rollingFileAppender {@link RollingFileAppender} instance which
+	 *                            contains all configurations
+	 * @param name                name of the calling class
+	 * @param loglevel            log level
 	 * @return Configured {@link Logger} instance
 	 */
 	public static Logger getRollingFileLogger(RollingFileAppender rollingFileAppender, String name, LogLevel loglevel) {
@@ -377,8 +361,7 @@ public class LoggerImpl implements Logger {
 	/**
 	 * Configures Layout for Mosip
 	 * 
-	 * @param context
-	 *            {@link LoggerContext} instance
+	 * @param context {@link LoggerContext} instance
 	 * @return {@link PatternLayoutEncoder} instance
 	 */
 	private PatternLayoutEncoder getdefaultPattern(LoggerContext context) {
@@ -392,8 +375,7 @@ public class LoggerImpl implements Logger {
 	/**
 	 * Stop an appender
 	 * 
-	 * @param appenderName
-	 *            name of the appender
+	 * @param appenderName name of the appender
 	 */
 	public static void stop(String appenderName) {
 		if (fileAppenders.containsKey(appenderName)) {

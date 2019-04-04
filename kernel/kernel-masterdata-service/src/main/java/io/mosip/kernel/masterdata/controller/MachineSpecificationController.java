@@ -43,8 +43,7 @@ public class MachineSpecificationController {
 	/**
 	 * Post API to insert a new row of Machine Specification data
 	 * 
-	 * @param machineSpecification
-	 *            input Machine specification DTO from user
+	 * @param machineSpecification input Machine specification DTO from user
 	 * @return ResponseEntity Machine Specification ID which is successfully
 	 *         inserted
 	 */
@@ -66,8 +65,7 @@ public class MachineSpecificationController {
 	/**
 	 * Put API to update a new row of Machine Specification data
 	 * 
-	 * @param machineSpecification
-	 *            input Machine specification DTO from user
+	 * @param machineSpecification input Machine specification DTO from user
 	 * @return ResponseEntity Machine Specification ID which is successfully updated
 	 */
 	@ResponseFilter
@@ -89,8 +87,7 @@ public class MachineSpecificationController {
 	/**
 	 * Put API to delete a new row of Machine Specification data
 	 * 
-	 * @param id
-	 *            input Machine specification id
+	 * @param id input Machine specification id
 	 * @return ResponseEntity Machine Specification ID which is successfully deleted
 	 */
 	@ResponseFilter

@@ -14,8 +14,8 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode(callSuper = true)
 @AllArgsConstructor
 @NoArgsConstructor
-public class MachineSpecIdAndId extends BaseDto{
-	
+public class MachineSpecIdAndId extends BaseDto {
+
 	/**
 	 * Field for machine id
 	 */

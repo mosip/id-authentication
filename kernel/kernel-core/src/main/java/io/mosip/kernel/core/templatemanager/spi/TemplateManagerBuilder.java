@@ -13,9 +13,8 @@ public interface TemplateManagerBuilder {
 	/**
 	 * Method for overriding the resourceLoader, default is classPath
 	 * 
-	 * @param resourceLoader
-	 *            the resourceLoader will specify from where to load templates
-	 *            ,default value is classPath
+	 * @param resourceLoader the resourceLoader will specify from where to load
+	 *                       templates ,default value is classPath
 	 * @return {@link TemplateManagerBuilder}
 	 */
 	TemplateManagerBuilder resourceLoader(String resourceLoader);
@@ -23,8 +22,7 @@ public interface TemplateManagerBuilder {
 	/**
 	 * Method for overriding the template location
 	 * 
-	 * @param templatePath
-	 *            as String , template location
+	 * @param templatePath as String , template location
 	 * @return {@link TemplateManagerBuilder}
 	 */
 	TemplateManagerBuilder resourcePath(String templatePath);
@@ -32,8 +30,7 @@ public interface TemplateManagerBuilder {
 	/**
 	 * Method to disable or enable cache
 	 * 
-	 * @param cache
-	 *            cache template in memory , default is true
+	 * @param cache cache template in memory , default is true
 	 * @return {@link TemplateManagerBuilder}
 	 */
 	TemplateManagerBuilder enableCache(boolean cache);
@@ -41,8 +38,7 @@ public interface TemplateManagerBuilder {
 	/**
 	 * Method for setting up encoding type
 	 * 
-	 * @param defaultEncoding
-	 *            template encoding type, default is UTF-8
+	 * @param defaultEncoding template encoding type, default is UTF-8
 	 * @return {@link TemplateManagerBuilder}
 	 */
 	TemplateManagerBuilder encodingType(String defaultEncoding);

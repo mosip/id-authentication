@@ -21,10 +21,8 @@ public interface BiometricAttributeRepository extends BaseRepository<BiometricAt
 	 * Method to find list of BiometricAttribute created , updated or deleted time
 	 * is greater than lastUpdated timeStamp.
 	 * 
-	 * @param lastUpdated
-	 *            timeStamp - last updated time
-	 * @param currentTimeStamp
-	 *            - currentTimestamp
+	 * @param lastUpdated      timeStamp - last updated time
+	 * @param currentTimeStamp - currentTimestamp
 	 * @return list of {@link BiometricAttribute} - list of biometric attribute
 	 */
 	@Query("FROM BiometricAttribute WHERE (createdDateTime > ?1 AND createdDateTime <=?2) OR (updatedDateTime > ?1 AND updatedDateTime <=?2)  OR (deletedDateTime > ?1 AND deletedDateTime <=?2)")

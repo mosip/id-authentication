@@ -9,31 +9,25 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.uingenerator.dto.UinResponseDto;
 import io.mosip.kernel.uingenerator.dto.UinStatusUpdateReponseDto;
-import io.mosip.kernel.uingenerator.entity.UinEntity;
 import io.mosip.kernel.uingenerator.test.config.UinGeneratorTestConfiguration;
 import io.mosip.kernel.uingenerator.verticle.UinGeneratorServerVerticle;
 import io.mosip.kernel.uingenerator.verticle.UinGeneratorVerticle;
 import io.vertx.core.DeploymentOptions;
 import io.vertx.core.Verticle;
 import io.vertx.core.Vertx;
-import io.vertx.core.json.Json;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.unit.Async;
 import io.vertx.ext.unit.TestContext;
@@ -75,25 +69,23 @@ public class UinStausUpdateVerticleUinNotFoundExpTest {
 				Arrays.asList(new MediaType[] { MediaType.APPLICATION_JSON, MediaType.APPLICATION_OCTET_STREAM }));
 
 		RestTemplate restTemplate = new RestTemplateBuilder().defaultMessageConverters()
-				.additionalMessageConverters(converter)
-				.build();
+				.additionalMessageConverters(converter).build();
 
-		ResponseWrapper<UinResponseDto> uinResp = restTemplate.getForObject("http://localhost:" + port + "/uingenerator/uin", ResponseWrapper.class);
-		UinResponseDto dto = mapper.convertValue(uinResp.getResponse(),UinResponseDto.class);
-		
-		
-		
+		ResponseWrapper<UinResponseDto> uinResp = restTemplate
+				.getForObject("http://localhost:" + port + "/uingenerator/uin", ResponseWrapper.class);
+		UinResponseDto dto = mapper.convertValue(uinResp.getResponse(), UinResponseDto.class);
+
 		UinStatusUpdateReponseDto requestDto = new UinStatusUpdateReponseDto();
 		requestDto.setUin("9451763261");
 		requestDto.setStatus("ASSIGNED");
-		
+
 		RequestWrapper<UinStatusUpdateReponseDto> requestWrp = new RequestWrapper<>();
 		requestWrp.setId("mosip.kernel.uinservice");
 		requestWrp.setVersion("1.0");
 		requestWrp.setRequest(requestDto);
 
 		String reqJson = mapper.writeValueAsString(requestWrp);
-				
+
 		final String length = Integer.toString(reqJson.length());
 		vertx.createHttpClient().put(port, "localhost", "/uingenerator/uin")
 				.putHeader("content-type", "application/json").putHeader("content-length", length).handler(response -> {
@@ -103,7 +95,6 @@ public class UinStausUpdateVerticleUinNotFoundExpTest {
 						async.complete();
 					});
 				}).write(reqJson).end();
-		 
 
 	}
 

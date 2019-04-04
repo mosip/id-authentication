@@ -215,7 +215,7 @@ public class DeviceServiceImpl implements DeviceService {
 					List<RegistrationCenterDevice> registrationCenterDeviceList = registrationCenterDeviceRepository
 							.findByDeviceIdAndIsDeletedFalseOrIsDeletedIsNull(foundDevice.getId());
 					if (registrationCenterMachineDeviceList.isEmpty() && registrationCenterDeviceList.isEmpty()) {
-						
+
 						MetaDataUtils.setDeleteMetaData(foundDevice);
 						deletedDevice = deviceRepository.update(foundDevice);
 

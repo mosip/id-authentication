@@ -25,8 +25,7 @@ public class MosipInvalidDataException extends BaseUncheckedException {
 	/**
 	 * Constructor for this class
 	 * 
-	 * @param exceptionCodeConstants
-	 *            exception code constant
+	 * @param exceptionCodeConstants exception code constant
 	 */
 	public MosipInvalidDataException(MosipSecurityExceptionCodeConstants exceptionCodeConstants) {
 		super(exceptionCodeConstants.getErrorCode(), exceptionCodeConstants.getErrorMessage());

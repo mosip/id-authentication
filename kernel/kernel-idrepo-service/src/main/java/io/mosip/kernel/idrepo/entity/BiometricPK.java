@@ -18,9 +18,9 @@ public class BiometricPK implements Serializable {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = -1124172782509039861L;
-	
+
 	private String uinRefId;
-	
+
 	private String biometricFileType;
 
 }

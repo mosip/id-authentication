@@ -30,8 +30,7 @@ public class AuditUtils {
 	/**
 	 * Function to validate {@link AuditRequestDto}
 	 * 
-	 * @param auditRequest
-	 *            The audit request
+	 * @param auditRequest The audit request
 	 */
 	public static void validateAuditRequest(AuditRequestDto auditRequest) {
 		ValidatorFactory factory = null;

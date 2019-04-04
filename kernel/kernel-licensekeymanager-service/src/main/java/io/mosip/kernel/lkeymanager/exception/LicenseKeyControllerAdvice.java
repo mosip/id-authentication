@@ -38,8 +38,7 @@ public class LicenseKeyControllerAdvice {
 	/**
 	 * Method to handle {@link InvalidArgumentsException}.
 	 * 
-	 * @param exception
-	 *            the exception.
+	 * @param exception the exception.
 	 * @return {@link ErrorResponse}.
 	 * @throws IOException
 	 */
@@ -54,8 +53,7 @@ public class LicenseKeyControllerAdvice {
 	/**
 	 * Method to handle {@link LicenseKeyServiceException}.
 	 * 
-	 * @param exception
-	 *            the exception.
+	 * @param exception the exception.
 	 * @return {@link ErrorResponse}.
 	 * @throws IOException
 	 */
@@ -71,8 +69,7 @@ public class LicenseKeyControllerAdvice {
 	/**
 	 * Method to handle {@link HttpMessageNotReadableException}.
 	 * 
-	 * @param exception
-	 *            the exception.
+	 * @param exception the exception.
 	 * 
 	 * @return {@link ErrorResponse}.
 	 * @throws IOException
@@ -91,10 +88,8 @@ public class LicenseKeyControllerAdvice {
 	/**
 	 * Method to handle {@link RuntimeException}.
 	 * 
-	 * @param request
-	 *            the servlet request.
-	 * @param exception
-	 *            the exception.
+	 * @param request   the servlet request.
+	 * @param exception the exception.
 	 * @return {@link ErrorResponse}.
 	 * @throws IOException
 	 */

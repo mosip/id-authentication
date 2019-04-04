@@ -18,8 +18,7 @@ public enum TransliterationPropertyConstant {
 	/**
 	 * Constructor for TransliterationPropertyConstant.
 	 * 
-	 * @param property
-	 *            the property.
+	 * @param property the property.
 	 */
 	TransliterationPropertyConstant(String property) {
 		this.property = property;

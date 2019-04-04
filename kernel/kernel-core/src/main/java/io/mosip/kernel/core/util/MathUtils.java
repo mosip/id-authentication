@@ -58,15 +58,11 @@ public final class MathUtils {
 	/**
 	 * Raise an int to an int power.
 	 * 
-	 * @param num
-	 *            Number to raise.
-	 * @param exp
-	 *            exponent (must be positive or zero)
+	 * @param num Number to raise.
+	 * @param exp exponent (must be positive or zero)
 	 * @return num^exp
-	 * @throws NotPositiveException
-	 *             if exp is less than 0.
-	 * @throws ArithmeticException
-	 *             if the result would overflow.
+	 * @throws NotPositiveException if exp is less than 0.
+	 * @throws ArithmeticException  if the result would overflow.
 	 */
 	public static int getPow(final int num, int exp) {
 		try {
@@ -87,10 +83,8 @@ public final class MathUtils {
 	/**
 	 * Power function. Compute num^exp.
 	 * 
-	 * @param num
-	 *            a double
-	 * @param exp
-	 *            a double
+	 * @param num a double
+	 * @param exp a double
 	 * @return double
 	 */
 	public static double getPow(double num, double exp) {
@@ -102,15 +96,11 @@ public final class MathUtils {
 	/**
 	 * Raise a long to an int power.
 	 * 
-	 * @param num
-	 *            Number to raise.
-	 * @param exp
-	 *            Exponent (must be positive or zero).
+	 * @param num Number to raise.
+	 * @param exp Exponent (must be positive or zero).
 	 * @return num^exp
-	 * @throws NotPositiveException
-	 *             if exp is less than 0.
-	 * @throws ArithmeticException
-	 *             if the result would overflow.
+	 * @throws NotPositiveException if exp is less than 0.
+	 * @throws ArithmeticException  if the result would overflow.
 	 */
 	public static long getPow(long num, int exp) {
 		try {
@@ -125,13 +115,10 @@ public final class MathUtils {
 	}
 
 	/**
-	 * @param num
-	 *            Number to raise.
-	 * @param exp
-	 *            Exponent (must be positive or zero).
+	 * @param num Number to raise.
+	 * @param exp Exponent (must be positive or zero).
 	 * @return num^exp
-	 * @throws NotPositiveException
-	 *             if exp is less than 0.
+	 * @throws NotPositiveException if exp is less than 0.
 	 */
 	public static BigInteger getPow(BigInteger num, int exp) {
 		try {
@@ -149,13 +136,10 @@ public final class MathUtils {
 	/**
 	 * Raise a BigInteger to a BigInteger power.
 	 * 
-	 * @param num
-	 *            Number to raise.
-	 * @param exp
-	 *            Exponent (must be positive or zero).
+	 * @param num Number to raise.
+	 * @param exp Exponent (must be positive or zero).
 	 * @return num^exp
-	 * @throws NotPositiveException
-	 *             if exp is less than 0.
+	 * @throws NotPositiveException if exp is less than 0.
 	 */
 	public static BigInteger getPow(BigInteger num, BigInteger exp) {
 		try {
@@ -172,13 +156,10 @@ public final class MathUtils {
 	/**
 	 * Generate random number
 	 * 
-	 * @param lowerlimit
-	 *            starting value
-	 * @param upperlimit
-	 *            maximum value
+	 * @param lowerlimit starting value
+	 * @param upperlimit maximum value
 	 * @return random number between lowerlimit and upperlimit.
-	 * @throws NumberIsTooLargeException
-	 *             -if lower is greater than or equal to upper
+	 * @throws NumberIsTooLargeException -if lower is greater than or equal to upper
 	 */
 	public static int getRandom(final int lowerlimit, final int upperlimit) {
 		try {
@@ -193,13 +174,10 @@ public final class MathUtils {
 	/**
 	 * Generate random number
 	 * 
-	 * @param lowerlimit
-	 *            starting value
-	 * @param upperlimit
-	 *            maximum value
+	 * @param lowerlimit starting value
+	 * @param upperlimit maximum value
 	 * @return random number between lowerlimit and upperlimit.
-	 * @throws NumberIsTooLargeException
-	 *             -if lower is greater than or equal to upper
+	 * @throws NumberIsTooLargeException -if lower is greater than or equal to upper
 	 */
 	public static long getRandom(final long lowerlimit, final long upperlimit) {
 		try {
@@ -213,17 +191,12 @@ public final class MathUtils {
 	/**
 	 * Generate random number
 	 * 
-	 * @param lowerlimit
-	 *            starting value
-	 * @param upperlimit
-	 *            maximum value
+	 * @param lowerlimit starting value
+	 * @param upperlimit maximum value
 	 * @return random number between lowerlimit and upperlimit
-	 * @throws NumberIsTooLargeException
-	 *             -if lower is greater than or equal to upper
-	 * @throws NotFiniteNumberException
-	 *             if one of the bounds is infinite
-	 * @throws NotANumberException
-	 *             if one of the bounds is NaN
+	 * @throws NumberIsTooLargeException -if lower is greater than or equal to upper
+	 * @throws NotFiniteNumberException  if one of the bounds is infinite
+	 * @throws NotANumberException       if one of the bounds is NaN
 	 */
 	public static double getRandom(final double lowerlimit, final double upperlimit) {
 		try {
@@ -243,10 +216,8 @@ public final class MathUtils {
 	/**
 	 * Generate random number
 	 * 
-	 * @param lowerlimit
-	 *            starting value
-	 * @param upperlimit
-	 *            maximum value
+	 * @param lowerlimit starting value
+	 * @param upperlimit maximum value
 	 * @return random number between lowerlimit and upperlimit
 	 */
 	public static float getRandom(final float lowerlimit, final float upperlimit) {
@@ -258,8 +229,7 @@ public final class MathUtils {
 	/**
 	 * Compute the square root of a number.
 	 * 
-	 * @param num
-	 *            number on which evaluation is done
+	 * @param num number on which evaluation is done
 	 * @return square root of num.
 	 */
 	public static final double getSqrt(final double num) {
@@ -269,10 +239,8 @@ public final class MathUtils {
 	/**
 	 * Compute the maximum of two values
 	 * 
-	 * @param firstnumber
-	 *            first value
-	 * @param secondnumber
-	 *            second value
+	 * @param firstnumber  first value
+	 * @param secondnumber second value
 	 * @return secondnumber if firstnumber is lesser or equal to secondnumber,
 	 *         firstnumber otherwise
 	 */
@@ -283,10 +251,8 @@ public final class MathUtils {
 	/**
 	 * Compute the maximum of two values
 	 * 
-	 * @param firstnumber
-	 *            first value
-	 * @param secondnumber
-	 *            second value
+	 * @param firstnumber  first value
+	 * @param secondnumber second value
 	 * @return secondnumber if firstnumber is lesser or equal to secondnumber,
 	 *         firstnumber otherwise
 	 */
@@ -297,10 +263,8 @@ public final class MathUtils {
 	/**
 	 * Rounds the given value to the specified number of decimal places.
 	 * 
-	 * @param num
-	 *            Value to round.
-	 * @param place
-	 *            Number of digits to the right of the decimal point.
+	 * @param num   Value to round.
+	 * @param place Number of digits to the right of the decimal point.
 	 * @return the rounded value.
 	 */
 	public static final double getRound(double num, int place) {
@@ -310,10 +274,8 @@ public final class MathUtils {
 	/**
 	 * Rounds the given value to the specified number of decimal places.
 	 * 
-	 * @param num
-	 *            Value to round.
-	 * @param place
-	 *            Number of digits to the right of the decimal point.
+	 * @param num   Value to round.
+	 * @param place Number of digits to the right of the decimal point.
 	 * @return the rounded value.
 	 */
 	public static final float getRound(float num, int place) {
@@ -323,8 +285,7 @@ public final class MathUtils {
 	/**
 	 * Get the closest long to num.
 	 * 
-	 * @param num
-	 *            number from which closest long is requested
+	 * @param num number from which closest long is requested
 	 * @return closest long to num
 	 */
 	public static final long getRound(double num) {
@@ -334,8 +295,7 @@ public final class MathUtils {
 	/**
 	 * Absolute value.
 	 * 
-	 * @param num
-	 *            number from which absolute value is requested.
+	 * @param num number from which absolute value is requested.
 	 * @return abs(num)
 	 */
 	public static final double getAbs(double num) {
@@ -345,8 +305,7 @@ public final class MathUtils {
 	/**
 	 * Absolute value.
 	 * 
-	 * @param num
-	 *            number from which absolute value is requested.
+	 * @param num number from which absolute value is requested.
 	 * @return abs(num)
 	 */
 	public static final float getAbs(float num) {
@@ -356,8 +315,7 @@ public final class MathUtils {
 	/**
 	 * Absolute value.
 	 * 
-	 * @param num
-	 *            number from which absolute value is requested.
+	 * @param num number from which absolute value is requested.
 	 * @return abs(num)
 	 */
 	public static final long getAbs(long num) {
@@ -367,8 +325,7 @@ public final class MathUtils {
 	/**
 	 * Absolute value.
 	 * 
-	 * @param num
-	 *            number from which absolute value is requested.
+	 * @param num number from which absolute value is requested.
 	 * @return abs(num)
 	 */
 	public static final int getAbs(int num) {
@@ -378,14 +335,11 @@ public final class MathUtils {
 	/**
 	 * Evaluate Factorial
 	 * 
-	 * @param number
-	 *            argument
+	 * @param number argument
 	 * @return n!
-	 * @throws NotPositiveException
-	 *             -If number is not positive
-	 * @throws ArithmeticException
-	 *             -If number is greator than 20 and result is too large to fit in
-	 *             long type.
+	 * @throws NotPositiveException -If number is not positive
+	 * @throws ArithmeticException  -If number is greator than 20 and result is too
+	 *                              large to fit in long type.
 	 */
 	public static final long getFactorial(final int number) {
 		try {
@@ -403,14 +357,11 @@ public final class MathUtils {
 	 * Computes the greatest common divisor of the absolute value of two numbers,
 	 * using a modified version of the "binary gcd" method.
 	 * 
-	 * @param firstnumber
-	 *            Number.
-	 * @param secondnumber
-	 *            Number.
+	 * @param firstnumber  Number.
+	 * @param secondnumber Number.
 	 * @return the greatest common divisor (never negative).
-	 * @throws ArithmeticException
-	 *             if the result cannot be represented as a non-negative integer
-	 *             value.
+	 * @throws ArithmeticException if the result cannot be represented as a
+	 *                             non-negative integer value.
 	 */
 	public static final int getGcd(int firstnumber, int secondnumber) {
 		try {
@@ -425,14 +376,11 @@ public final class MathUtils {
 	 * Gets the greatest common divisor of the absolute value of two numbers, using
 	 * the "binary gcd" method which avoids division and modulo operations
 	 * 
-	 * @param firstnumber
-	 *            Number.
-	 * @param secondnumber
-	 *            Number.
+	 * @param firstnumber  Number.
+	 * @param secondnumber Number.
 	 * @return the greatest common divisor, never negative.
-	 * @throws ArithmeticException
-	 *             if the result cannot be represented as a non-negative long type
-	 *             value.
+	 * @throws ArithmeticException if the result cannot be represented as a
+	 *                             non-negative long type value.
 	 */
 	public static final long getGcd(long firstnumber, long secondnumber) {
 		try {
@@ -446,8 +394,7 @@ public final class MathUtils {
 	/**
 	 * Natural logarithm.
 	 * 
-	 * @param num
-	 *            a double
+	 * @param num a double
 	 * @return log(x)
 	 */
 	public static final double getLog(double num) {
@@ -457,8 +404,7 @@ public final class MathUtils {
 	/**
 	 * Compute the base 10 logarithm.
 	 * 
-	 * @param num
-	 *            a number
+	 * @param num a number
 	 * @return log10(x)
 	 */
 	public static final double getLog10(double num) {
@@ -468,8 +414,7 @@ public final class MathUtils {
 	/**
 	 * Creates a copy of source array
 	 * 
-	 * @param source
-	 *            Array to be copied.
+	 * @param source Array to be copied.
 	 * @return the copied array.
 	 */
 	public static int[] getCopyOfArray(int[] source) {
@@ -479,11 +424,10 @@ public final class MathUtils {
 	/**
 	 * Creates a copy of source array.
 	 * 
-	 * @param source
-	 *            Array to be copied.
-	 * @param length
-	 *            Number of entries to copy. If smaller then the source length, the
-	 *            copy will be truncated, if larger it will padded with zeroes.
+	 * @param source Array to be copied.
+	 * @param length Number of entries to copy. If smaller then the source length,
+	 *               the copy will be truncated, if larger it will padded with
+	 *               zeroes.
 	 * @return the copied array.
 	 */
 	public static int[] getCopyOfArray(int[] source, int length) {
@@ -493,8 +437,7 @@ public final class MathUtils {
 	/**
 	 * Creates a copy of source array
 	 * 
-	 * @param source
-	 *            Array to be copied.
+	 * @param source Array to be copied.
 	 * @return the copied array.
 	 */
 	public static double[] getCopyOfArray(double[] source) {
@@ -504,11 +447,10 @@ public final class MathUtils {
 	/**
 	 * Creates a copy of source array
 	 * 
-	 * @param source
-	 *            Array to be copied.
-	 * @param length
-	 *            Number of entries to copy. If smaller then the source length, the
-	 *            copy will be truncated, if larger it will padded with zeroes.
+	 * @param source Array to be copied.
+	 * @param length Number of entries to copy. If smaller then the source length,
+	 *               the copy will be truncated, if larger it will padded with
+	 *               zeroes.
 	 * @return the copied array.
 	 */
 	public static double[] getCopyOfArray(double[] source, int length) {
@@ -519,11 +461,9 @@ public final class MathUtils {
 	 * Returns the maximum of the entries in the input array, or
 	 * <code>Double.NaN</code> if the array is empty.
 	 * 
-	 * @param arr
-	 *            the input array
+	 * @param arr the input array
 	 * @return the maximum of the values or Double.NaN if the array is empty
-	 * @throws IllegalArgumentException
-	 *             if the array is null
+	 * @throws IllegalArgumentException if the array is null
 	 */
 	public static double getArrayMaxValue(double[] arr) {
 		try {
@@ -538,15 +478,12 @@ public final class MathUtils {
 	 * Returns the maximum of the entries in the specified portion of the input
 	 * array, or <code>Double.NaN</code> if the designated subarray is empty
 	 * 
-	 * @param arr
-	 *            the input array
-	 * @param startindex
-	 *            index of the first array element to include
-	 * @param length
-	 *            the number of elements to include
+	 * @param arr        the input array
+	 * @param startindex index of the first array element to include
+	 * @param length     the number of elements to include
 	 * @return the maximum of the values or Double.NaN if length = 0
-	 * @throws IllegalArgumentException
-	 *             if the array is null or the array index parameters are not valid
+	 * @throws IllegalArgumentException if the array is null or the array index
+	 *                                  parameters are not valid
 	 */
 	public static double getArrayMaxValue(double[] arr, int startindex, int length) {
 		try {
@@ -561,11 +498,9 @@ public final class MathUtils {
 	 * Returns the minimum of the entries in the input array, or
 	 * <code>Double.NaN</code> if the array is empty.
 	 * 
-	 * @param arr
-	 *            the input array
+	 * @param arr the input array
 	 * @return the minimum of the values or Double.NaN if the array is empty
-	 * @throws IllegalArgumentException
-	 *             if the array is null
+	 * @throws IllegalArgumentException if the array is null
 	 */
 	public static double getArrayMinValue(double[] arr) {
 		try {
@@ -580,15 +515,12 @@ public final class MathUtils {
 	 * Returns the minimum of the entries in the specified portion of the input
 	 * array, or <code>Double.NaN</code> if the designated subarray is empty.
 	 * 
-	 * @param arr
-	 *            the input array
-	 * @param startindex
-	 *            index of the first array element to include
-	 * @param length
-	 *            the number of elements to include
+	 * @param arr        the input array
+	 * @param startindex index of the first array element to include
+	 * @param length     the number of elements to include
 	 * @return the minimum of the values or Double.NaN if length = 0
-	 * @throws IllegalArgumentException
-	 *             if the array is null or the array index parameters are not valid
+	 * @throws IllegalArgumentException if the array is null or the array index
+	 *                                  parameters are not valid
 	 */
 	public static double getArrayMinValue(double[] arr, int startindex, int length) {
 		try {
@@ -604,12 +536,10 @@ public final class MathUtils {
 	 * Returns the sum of the values in the input array, or <code>Double.NaN</code>
 	 * if the array is empty.
 	 * 
-	 * @param arr
-	 *            array of values to sum
+	 * @param arr array of values to sum
 	 * @return the sum of the values or <code>Double.NaN</code> if the array is
 	 *         empty
-	 * @throws IllegalArgumentException
-	 *             if the array is null
+	 * @throws IllegalArgumentException if the array is null
 	 */
 	public static double getArrayValuesSum(double[] arr) {
 		try {
@@ -625,15 +555,12 @@ public final class MathUtils {
 	 * Returns the sum of the entries in the specified portion of the input array,
 	 * or <code>Double.NaN</code> if the designated subarray is empty.
 	 * 
-	 * @param arr
-	 *            the input array
-	 * @param startindex
-	 *            index of the first array element to include
-	 * @param length
-	 *            the number of elements to include
+	 * @param arr        the input array
+	 * @param startindex index of the first array element to include
+	 * @param length     the number of elements to include
 	 * @return the sum of the values or Double.NaN if length = 0
-	 * @throws IllegalArgumentException
-	 *             if the array is null or the array index parameters are not valid
+	 * @throws IllegalArgumentException if the array is null or the array index
+	 *                                  parameters are not valid
 	 */
 	public static double getArrayValuesSum(double[] arr, int startindex, int length) {
 		try {
@@ -649,11 +576,9 @@ public final class MathUtils {
 	 * Returns the product of the entries in the input array, or
 	 * <code>Double.NaN</code> if the array is empty.
 	 * 
-	 * @param arr
-	 *            the input array
+	 * @param arr the input array
 	 * @return the product of the values or Double.NaN if the array is empty
-	 * @throws IllegalArgumentException
-	 *             if the array is null
+	 * @throws IllegalArgumentException if the array is null
 	 */
 	public static double getArrayValuesProduct(double[] arr) {
 		try {
@@ -668,15 +593,12 @@ public final class MathUtils {
 	 * Returns the product of the entries in the specified portion of the input
 	 * array, or <code>Double.NaN</code> if the designated subarray is empty.
 	 * 
-	 * @param arr
-	 *            the input array
-	 * @param startindex
-	 *            index of the first array element to include
-	 * @param length
-	 *            the number of elements to include
+	 * @param arr        the input array
+	 * @param startindex index of the first array element to include
+	 * @param length     the number of elements to include
 	 * @return the product of the values or Double.NaN if length = 0
-	 * @throws IllegalArgumentException
-	 *             if the array is null or the array index parameters are not valid
+	 * @throws IllegalArgumentException if the array is null or the array index
+	 *                                  parameters are not valid
 	 */
 	public static double getArrayValuesProduct(double[] arr, int startindex, int length) {
 		try {
@@ -691,11 +613,9 @@ public final class MathUtils {
 	 * Returns the arithmetic mean of the entries in the input array, or
 	 * <code>Double.NaN</code> if the array is empty.
 	 * 
-	 * @param arr
-	 *            the input array
+	 * @param arr the input array
 	 * @return the mean of the values or Double.NaN if the array is empty
-	 * @throws IllegalArgumentException
-	 *             if the array is null
+	 * @throws IllegalArgumentException if the array is null
 	 */
 	public static double getArrayValuesMean(double[] arr) {
 		try {
@@ -707,15 +627,12 @@ public final class MathUtils {
 	}
 
 	/**
-	 * @param arr
-	 *            the input array
-	 * @param startindex
-	 *            index of the first array element to include
-	 * @param length
-	 *            the number of elements to include
+	 * @param arr        the input array
+	 * @param startindex index of the first array element to include
+	 * @param length     the number of elements to include
 	 * @return the mean of the values or Double.NaN if length = 0
-	 * @throws IllegalArgumentException
-	 *             if the array is null or the array index parameters are not valid
+	 * @throws IllegalArgumentException if the array is null or the array index
+	 *                                  parameters are not valid
 	 */
 	public static double getArrayValuesMean(double[] arr, int startindex, int length) {
 		try {
@@ -729,8 +646,7 @@ public final class MathUtils {
 	/**
 	 * Primality test: tells if the argument is a (provable) prime or not.
 	 * 
-	 * @param num
-	 *            number to test.
+	 * @param num number to test.
 	 * @return true if num is prime.
 	 */
 	public static boolean isPrimeOrNot(int num) {
@@ -740,11 +656,9 @@ public final class MathUtils {
 	/**
 	 * Return the smallest prime greater than or equal to n.
 	 * 
-	 * @param num
-	 *            a positive number.
+	 * @param num a positive number.
 	 * @return the smallest prime greater than or equal to n.
-	 * @throws IllegalArgumentException
-	 *             if num is less than 0.
+	 * @throws IllegalArgumentException if num is less than 0.
 	 */
 	public static int nextPrimeNumber(int num) {
 		try {
@@ -758,11 +672,9 @@ public final class MathUtils {
 	/**
 	 * Prime factors decomposition
 	 * 
-	 * @param num
-	 *            number to factorize: must be &ge; 2
+	 * @param num number to factorize: must be &ge; 2
 	 * @return list of prime factors of num
-	 * @throws IllegalArgumentException
-	 *             if num is less than 2.
+	 * @throws IllegalArgumentException if num is less than 2.
 	 */
 	public static List<Integer> getPrimeFactors(int num) {
 		try {
@@ -776,8 +688,7 @@ public final class MathUtils {
 	/**
 	 * Get the smallest whole number larger than number.
 	 * 
-	 * @param num
-	 *            number from which ceil is requested
+	 * @param num number from which ceil is requested
 	 * @return a double number c such that c is an integer is greator than equal to
 	 *         num and num is greator than c-1.0
 	 */
@@ -788,8 +699,7 @@ public final class MathUtils {
 	/**
 	 * Get the largest whole number smaller than number.
 	 * 
-	 * @param num
-	 *            number from which floor is requested
+	 * @param num number from which floor is requested
 	 * @return a double number f such that f is an integer f is less than or equal
 	 *         to num and num is less than f + 1.0
 	 */

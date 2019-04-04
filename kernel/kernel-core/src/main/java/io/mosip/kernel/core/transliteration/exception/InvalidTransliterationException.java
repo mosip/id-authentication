@@ -18,12 +18,9 @@ public class InvalidTransliterationException extends BaseUncheckedException {
 	/**
 	 * Constructor for InvalidTransliterationException.
 	 * 
-	 * @param errorCode
-	 *            the error code.
-	 * @param errorMessage
-	 *            the error message.
-	 * @param rootCause
-	 *            the cause.
+	 * @param errorCode    the error code.
+	 * @param errorMessage the error message.
+	 * @param rootCause    the cause.
 	 */
 	public InvalidTransliterationException(String errorCode, String errorMessage, Throwable rootCause) {
 		super(errorCode, errorMessage, rootCause);
@@ -32,10 +29,8 @@ public class InvalidTransliterationException extends BaseUncheckedException {
 	/**
 	 * Constructor for InvalidTransliterationException.
 	 * 
-	 * @param errorCode
-	 *            the error code.
-	 * @param errorMessage
-	 *            the error message.
+	 * @param errorCode    the error code.
+	 * @param errorMessage the error message.
 	 */
 	public InvalidTransliterationException(String errorCode, String errorMessage) {
 		super(errorCode, errorMessage);

@@ -30,15 +30,14 @@ public class LocationDto {
 	@NotBlank
 	private String name;
 
-	@JsonDeserialize(using=CustomIntegerDeserializer.class)
-	@Range(min=0)
-    private int hierarchyLevel;
+	@JsonDeserialize(using = CustomIntegerDeserializer.class)
+	@Range(min = 0)
+	private int hierarchyLevel;
 
 	@Size(min = 1, max = 64)
 	@NotBlank
 	private String hierarchyName;
 
-	
 	private String parentLocCode;
 
 	@ValidLangCode

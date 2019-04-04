@@ -39,8 +39,7 @@ public class ValidDocumentController {
 	/**
 	 * Api to create valid document.
 	 * 
-	 * @param document
-	 *            the DTO for valid document.
+	 * @param document the DTO for valid document.
 	 * @return ValidDocumentID.
 	 */
 	@ResponseFilter
@@ -57,10 +56,8 @@ public class ValidDocumentController {
 	/**
 	 * Api to delete valid docuemnt.
 	 * 
-	 * @param docCatCode
-	 *            the document category code.
-	 * @param docTypeCode
-	 *            the document type code.
+	 * @param docCatCode  the document category code.
+	 * @param docTypeCode the document type code.
 	 * @return the PostValidDocumentResponseDto.
 	 */
 	@ResponseFilter

@@ -11,15 +11,14 @@ import javax.persistence.Query;
 import javax.persistence.criteria.CriteriaQuery;
 
 import org.hibernate.HibernateException;
+import org.springframework.data.jpa.repository.support.JpaEntityInformation;
+import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
+import org.springframework.transaction.annotation.Transactional;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
 import io.mosip.kernel.dataaccess.hibernate.constant.HibernateErrorCode;
 import io.mosip.kernel.dataaccess.hibernate.constant.HibernatePersistenceConstant;
-
-import org.springframework.data.jpa.repository.support.JpaEntityInformation;
-import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Hibernate implementation of the {@link BaseRepository} interface.
@@ -28,10 +27,8 @@ import org.springframework.transaction.annotation.Transactional;
  * @author Shashank Agrawal
  * @since 1.0.0
  * 
- * @param <E>
- *            the type of the entity to handle
- * @param <T>
- *            the type of the entity's identifier
+ * @param <E> the type of the entity to handle
+ * @param <T> the type of the entity's identifier
  */
 @Transactional
 @SuppressWarnings({ "unchecked", "rawtypes" })
@@ -47,10 +44,8 @@ public class HibernateRepositoryImpl<E, T> extends SimpleJpaRepository<E, T> imp
 	 * Constructor for HibernateRepositoryImpl having JpaEntityInformation and
 	 * EntityManager
 	 * 
-	 * @param entityInformation
-	 *            The entityInformation
-	 * @param entityManager
-	 *            The entityManager
+	 * @param entityInformation The entityInformation
+	 * @param entityManager     The entityManager
 	 */
 	public HibernateRepositoryImpl(JpaEntityInformation<E, ?> entityInformation, EntityManager entityManager) {
 		super(entityInformation, entityManager);
@@ -69,11 +64,11 @@ public class HibernateRepositoryImpl<E, T> extends SimpleJpaRepository<E, T> imp
 			entityManager.persist(entity);
 			entityManager.flush();
 		} catch (HibernateException hibernateException) {
-			throw new DataAccessLayerException(HibernateErrorCode.HIBERNATE_EXCEPTION.getErrorCode(), hibernateException.getMessage(),
-					hibernateException);
+			throw new DataAccessLayerException(HibernateErrorCode.HIBERNATE_EXCEPTION.getErrorCode(),
+					hibernateException.getMessage(), hibernateException);
 		} catch (RuntimeException runtimeException) {
-			throw new DataAccessLayerException(HibernateErrorCode.ERR_DATABASE.getErrorCode(), runtimeException.getMessage(),
-					runtimeException);
+			throw new DataAccessLayerException(HibernateErrorCode.ERR_DATABASE.getErrorCode(),
+					runtimeException.getMessage(), runtimeException);
 		}
 		return entity;
 	}
@@ -90,11 +85,11 @@ public class HibernateRepositoryImpl<E, T> extends SimpleJpaRepository<E, T> imp
 			entity = entityManager.merge(entity);
 			entityManager.flush();
 		} catch (HibernateException hibernateException) {
-			throw new DataAccessLayerException(HibernateErrorCode.HIBERNATE_EXCEPTION.getErrorCode(), hibernateException.getMessage(),
-					hibernateException);
+			throw new DataAccessLayerException(HibernateErrorCode.HIBERNATE_EXCEPTION.getErrorCode(),
+					hibernateException.getMessage(), hibernateException);
 		} catch (RuntimeException runtimeException) {
-			throw new DataAccessLayerException(HibernateErrorCode.ERR_DATABASE.getErrorCode(), runtimeException.getMessage(),
-					runtimeException);
+			throw new DataAccessLayerException(HibernateErrorCode.ERR_DATABASE.getErrorCode(),
+					runtimeException.getMessage(), runtimeException);
 		}
 		return entity;
 	}
@@ -111,11 +106,11 @@ public class HibernateRepositoryImpl<E, T> extends SimpleJpaRepository<E, T> imp
 		try {
 			return entityManager.find(entityClass, id);
 		} catch (HibernateException hibernateException) {
-			throw new DataAccessLayerException(HibernateErrorCode.HIBERNATE_EXCEPTION.getErrorCode(), hibernateException.getMessage(),
-					hibernateException);
+			throw new DataAccessLayerException(HibernateErrorCode.HIBERNATE_EXCEPTION.getErrorCode(),
+					hibernateException.getMessage(), hibernateException);
 		} catch (RuntimeException runtimeException) {
-			throw new DataAccessLayerException(HibernateErrorCode.ERR_DATABASE.getErrorCode(), runtimeException.getMessage(),
-					runtimeException);
+			throw new DataAccessLayerException(HibernateErrorCode.ERR_DATABASE.getErrorCode(),
+					runtimeException.getMessage(), runtimeException);
 		}
 	}
 
@@ -135,11 +130,11 @@ public class HibernateRepositoryImpl<E, T> extends SimpleJpaRepository<E, T> imp
 			query.setHint(HibernatePersistenceConstant.CACHE_QUERY_PROPERTY, CacheStoreMode.REFRESH);
 			entityList = query.getResultList();
 		} catch (HibernateException hibernateException) {
-			throw new DataAccessLayerException(HibernateErrorCode.HIBERNATE_EXCEPTION.getErrorCode(), hibernateException.getMessage(),
-					hibernateException);
+			throw new DataAccessLayerException(HibernateErrorCode.HIBERNATE_EXCEPTION.getErrorCode(),
+					hibernateException.getMessage(), hibernateException);
 		} catch (RuntimeException runtimeException) {
-			throw new DataAccessLayerException(HibernateErrorCode.ERR_DATABASE.getErrorCode(), runtimeException.getMessage(),
-					runtimeException);
+			throw new DataAccessLayerException(HibernateErrorCode.ERR_DATABASE.getErrorCode(),
+					runtimeException.getMessage(), runtimeException);
 		}
 		return entityList;
 	}
@@ -158,11 +153,11 @@ public class HibernateRepositoryImpl<E, T> extends SimpleJpaRepository<E, T> imp
 			entityManager.remove(entityToBeDeleted);
 			return id;
 		} catch (HibernateException hibernateException) {
-			throw new DataAccessLayerException(HibernateErrorCode.HIBERNATE_EXCEPTION.getErrorCode(), hibernateException.getMessage(),
-					hibernateException);
+			throw new DataAccessLayerException(HibernateErrorCode.HIBERNATE_EXCEPTION.getErrorCode(),
+					hibernateException.getMessage(), hibernateException);
 		} catch (RuntimeException runtimeException) {
-			throw new DataAccessLayerException(HibernateErrorCode.ERR_DATABASE.getErrorCode(), runtimeException.getMessage(),
-					runtimeException);
+			throw new DataAccessLayerException(HibernateErrorCode.ERR_DATABASE.getErrorCode(),
+					runtimeException.getMessage(), runtimeException);
 		}
 	}
 
@@ -184,14 +179,14 @@ public class HibernateRepositoryImpl<E, T> extends SimpleJpaRepository<E, T> imp
 			}
 			entityList = query.getResultList();
 		} catch (NoResultException noResultException) {
-			throw new DataAccessLayerException(HibernateErrorCode.NO_RESULT_EXCEPTION.getErrorCode(), noResultException.getMessage(),
-					noResultException);
+			throw new DataAccessLayerException(HibernateErrorCode.NO_RESULT_EXCEPTION.getErrorCode(),
+					noResultException.getMessage(), noResultException);
 		} catch (HibernateException hibernateException) {
-			throw new DataAccessLayerException(HibernateErrorCode.HIBERNATE_EXCEPTION.getErrorCode(), hibernateException.getMessage(),
-					hibernateException);
+			throw new DataAccessLayerException(HibernateErrorCode.HIBERNATE_EXCEPTION.getErrorCode(),
+					hibernateException.getMessage(), hibernateException);
 		} catch (RuntimeException runtimeException) {
-			throw new DataAccessLayerException(HibernateErrorCode.ERR_DATABASE.getErrorCode(), runtimeException.getMessage(),
-					runtimeException);
+			throw new DataAccessLayerException(HibernateErrorCode.ERR_DATABASE.getErrorCode(),
+					runtimeException.getMessage(), runtimeException);
 		}
 		return entityList;
 	}
@@ -215,14 +210,14 @@ public class HibernateRepositoryImpl<E, T> extends SimpleJpaRepository<E, T> imp
 			query.setMaxResults(limit);
 			entityList = query.getResultList();
 		} catch (NoResultException noResultException) {
-			throw new DataAccessLayerException(HibernateErrorCode.NO_RESULT_EXCEPTION.getErrorCode(), noResultException.getMessage(),
-					noResultException);
+			throw new DataAccessLayerException(HibernateErrorCode.NO_RESULT_EXCEPTION.getErrorCode(),
+					noResultException.getMessage(), noResultException);
 		} catch (HibernateException hibernateException) {
-			throw new DataAccessLayerException(HibernateErrorCode.HIBERNATE_EXCEPTION.getErrorCode(), hibernateException.getMessage(),
-					hibernateException);
+			throw new DataAccessLayerException(HibernateErrorCode.HIBERNATE_EXCEPTION.getErrorCode(),
+					hibernateException.getMessage(), hibernateException);
 		} catch (RuntimeException runtimeException) {
-			throw new DataAccessLayerException(HibernateErrorCode.ERR_DATABASE.getErrorCode(), runtimeException.getMessage(),
-					runtimeException);
+			throw new DataAccessLayerException(HibernateErrorCode.ERR_DATABASE.getErrorCode(),
+					runtimeException.getMessage(), runtimeException);
 		}
 		return entityList;
 	}
@@ -244,14 +239,14 @@ public class HibernateRepositoryImpl<E, T> extends SimpleJpaRepository<E, T> imp
 			}
 			entitiesCount = query.executeUpdate();
 		} catch (NoResultException noResultException) {
-			throw new DataAccessLayerException(HibernateErrorCode.NO_RESULT_EXCEPTION.getErrorCode(), noResultException.getMessage(),
-					noResultException);
+			throw new DataAccessLayerException(HibernateErrorCode.NO_RESULT_EXCEPTION.getErrorCode(),
+					noResultException.getMessage(), noResultException);
 		} catch (HibernateException hibernateException) {
-			throw new DataAccessLayerException(HibernateErrorCode.HIBERNATE_EXCEPTION.getErrorCode(), hibernateException.getMessage(),
-					hibernateException);
+			throw new DataAccessLayerException(HibernateErrorCode.HIBERNATE_EXCEPTION.getErrorCode(),
+					hibernateException.getMessage(), hibernateException);
 		} catch (RuntimeException runtimeException) {
-			throw new DataAccessLayerException(HibernateErrorCode.ERR_DATABASE.getErrorCode(), runtimeException.getMessage(),
-					runtimeException);
+			throw new DataAccessLayerException(HibernateErrorCode.ERR_DATABASE.getErrorCode(),
+					runtimeException.getMessage(), runtimeException);
 		}
 		return entitiesCount;
 	}
@@ -274,14 +269,14 @@ public class HibernateRepositoryImpl<E, T> extends SimpleJpaRepository<E, T> imp
 			}
 			entityList = query.getResultList();
 		} catch (NoResultException noResultException) {
-			throw new DataAccessLayerException(HibernateErrorCode.NO_RESULT_EXCEPTION.getErrorCode(), noResultException.getMessage(),
-					noResultException);
+			throw new DataAccessLayerException(HibernateErrorCode.NO_RESULT_EXCEPTION.getErrorCode(),
+					noResultException.getMessage(), noResultException);
 		} catch (HibernateException hibernateException) {
-			throw new DataAccessLayerException(HibernateErrorCode.HIBERNATE_EXCEPTION.getErrorCode(), hibernateException.getMessage(),
-					hibernateException);
+			throw new DataAccessLayerException(HibernateErrorCode.HIBERNATE_EXCEPTION.getErrorCode(),
+					hibernateException.getMessage(), hibernateException);
 		} catch (RuntimeException runtimeException) {
-			throw new DataAccessLayerException(HibernateErrorCode.ERR_DATABASE.getErrorCode(), runtimeException.getMessage(),
-					runtimeException);
+			throw new DataAccessLayerException(HibernateErrorCode.ERR_DATABASE.getErrorCode(),
+					runtimeException.getMessage(), runtimeException);
 		}
 		return entityList;
 	}
@@ -303,14 +298,14 @@ public class HibernateRepositoryImpl<E, T> extends SimpleJpaRepository<E, T> imp
 			}
 			entitiesCount = query.executeUpdate();
 		} catch (NoResultException noResultException) {
-			throw new DataAccessLayerException(HibernateErrorCode.NO_RESULT_EXCEPTION.getErrorCode(), noResultException.getMessage(),
-					noResultException);
+			throw new DataAccessLayerException(HibernateErrorCode.NO_RESULT_EXCEPTION.getErrorCode(),
+					noResultException.getMessage(), noResultException);
 		} catch (HibernateException hibernateException) {
-			throw new DataAccessLayerException(HibernateErrorCode.HIBERNATE_EXCEPTION.getErrorCode(), hibernateException.getMessage(),
-					hibernateException);
+			throw new DataAccessLayerException(HibernateErrorCode.HIBERNATE_EXCEPTION.getErrorCode(),
+					hibernateException.getMessage(), hibernateException);
 		} catch (RuntimeException runtimeException) {
-			throw new DataAccessLayerException(HibernateErrorCode.ERR_DATABASE.getErrorCode(), runtimeException.getMessage(),
-					runtimeException);
+			throw new DataAccessLayerException(HibernateErrorCode.ERR_DATABASE.getErrorCode(),
+					runtimeException.getMessage(), runtimeException);
 		}
 		return entitiesCount;
 	}

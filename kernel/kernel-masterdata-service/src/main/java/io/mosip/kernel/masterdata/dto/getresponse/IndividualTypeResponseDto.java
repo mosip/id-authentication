@@ -7,6 +7,6 @@ import io.mosip.kernel.masterdata.dto.IndividualTypeDto;
 import lombok.Data;
 
 @Data
-public class IndividualTypeResponseDto{
+public class IndividualTypeResponseDto {
 	private List<IndividualTypeDto> individualTypes = new ArrayList<>();
 }

@@ -10,8 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
-import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.util.ContentCachingRequestWrapper;
@@ -71,26 +69,6 @@ public class ApiExceptionHandler {
 				exception.getMessage());
 		responseWrapper.getErrors().add(error);
 		return new ResponseEntity<>(responseWrapper, HttpStatus.OK);
-	}
-
-	@ExceptionHandler(AuthenticationException.class)
-	public ResponseEntity<ResponseWrapper<ServiceError>> onAuthenticationException(
-			final HttpServletRequest httpServletRequest, final AuthenticationException e) throws IOException {
-		ResponseWrapper<ServiceError> errorResponse = setErrors(httpServletRequest);
-		ServiceError error = new ServiceError(MailNotifierArgumentErrorConstants.UNAUTHORIZED.getErrorCode(),
-				e.getMessage());
-		errorResponse.getErrors().add(error);
-		return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
-	}
-
-	@ExceptionHandler(AccessDeniedException.class)
-	public ResponseEntity<ResponseWrapper<ServiceError>> onAccessDeniedException(
-			final HttpServletRequest httpServletRequest, final AccessDeniedException e) throws IOException {
-		ResponseWrapper<ServiceError> errorResponse = setErrors(httpServletRequest);
-		ServiceError error = new ServiceError(MailNotifierArgumentErrorConstants.FORBIDDEN.getErrorCode(),
-				e.getMessage());
-		errorResponse.getErrors().add(error);
-		return new ResponseEntity<>(errorResponse, HttpStatus.FORBIDDEN);
 	}
 
 	/**

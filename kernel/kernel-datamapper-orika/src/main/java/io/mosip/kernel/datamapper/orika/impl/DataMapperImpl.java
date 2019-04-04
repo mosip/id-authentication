@@ -31,25 +31,25 @@ public class DataMapperImpl<S, D> implements DataMapper<S, D> {
 
 	public DataMapperImpl(Class<S> sourceClass, Class<D> destinationClass, boolean mapNull, boolean byDefault,
 			List<IncludeDataField> includeDataField, List<String> excludeDataField) {
-			DefaultMapperFactory mapperFactory = MapperFactoryProvider.getMapperFactory();
-			MapperKey mapperKey = new MapperKey(TypeFactory.valueOf(sourceClass), TypeFactory.valueOf(destinationClass));
-			ClassMapBuilder<?, ?> classMapBuilder = mapperFactory.classMap(mapperKey.getAType(), mapperKey.getBType());
-			classMapBuilder.mapNulls(mapNull);
-			if (excludeDataField != null && !(excludeDataField.isEmpty())) {
-				excludeDataField.forEach(classMapBuilder::exclude);
-			}
+		DefaultMapperFactory mapperFactory = MapperFactoryProvider.getMapperFactory();
+		MapperKey mapperKey = new MapperKey(TypeFactory.valueOf(sourceClass), TypeFactory.valueOf(destinationClass));
+		ClassMapBuilder<?, ?> classMapBuilder = mapperFactory.classMap(mapperKey.getAType(), mapperKey.getBType());
+		classMapBuilder.mapNulls(mapNull);
+		if (excludeDataField != null && !(excludeDataField.isEmpty())) {
+			excludeDataField.forEach(classMapBuilder::exclude);
+		}
 
-			if (includeDataField != null && !(includeDataField.isEmpty())) {
-				includeDataField.forEach(includedField -> classMapBuilder.mapNulls(includedField.isMapIncludeFieldNull())
-						.field(includedField.getSourceField(), includedField.getDestinationField()));
-			}
+		if (includeDataField != null && !(includeDataField.isEmpty())) {
+			includeDataField.forEach(includedField -> classMapBuilder.mapNulls(includedField.isMapIncludeFieldNull())
+					.field(includedField.getSourceField(), includedField.getDestinationField()));
+		}
 
-			if (byDefault) {
-				classMapBuilder.byDefault().register();
-			} else {
-				classMapBuilder.register();
-			}
-			this.mapper = mapperFactory.getMapperFacade(sourceClass, destinationClass, false);
+		if (byDefault) {
+			classMapBuilder.byDefault().register();
+		} else {
+			classMapBuilder.register();
+		}
+		this.mapper = mapperFactory.getMapperFacade(sourceClass, destinationClass, false);
 	}
 
 	/*

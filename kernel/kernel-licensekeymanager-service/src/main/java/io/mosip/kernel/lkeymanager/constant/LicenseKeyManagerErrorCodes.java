@@ -8,8 +8,7 @@ package io.mosip.kernel.lkeymanager.constant;
  *
  */
 public enum LicenseKeyManagerErrorCodes {
-	HTTP_MESSAGE_NOT_READABLE("KER-LKM-999"), 
-	RUNTIME_EXCEPTION("KER-LKM-500");
+	HTTP_MESSAGE_NOT_READABLE("KER-LKM-999"), RUNTIME_EXCEPTION("KER-LKM-500");
 
 	/**
 	 * The error code.
@@ -19,8 +18,7 @@ public enum LicenseKeyManagerErrorCodes {
 	/**
 	 * Constructor with error code as the argument.
 	 * 
-	 * @param errorCode
-	 *            the error code.
+	 * @param errorCode the error code.
 	 */
 	private LicenseKeyManagerErrorCodes(String errorCode) {
 		this.errorCode = errorCode;

@@ -36,17 +36,19 @@ public class EmailNotificationAsyncHandler implements AsyncUncaughtExceptionHand
 		Logger mosipLogger = LoggerConfiguration.logConfig(EmailNotificationAsyncHandler.class);
 		switch (ex.getClass().toString()) {
 		case MailNotifierExceptionClassNameConstants.MAIL_AUTH_EXCEPTION_CLASS_NAME:
-			mosipLogger.error(MailNotifierConstants.EMPTY_STRING.getValue(), MailNotifierConstants.ERROR_CODE.getValue(),
-					MailNotifierArgumentErrorConstants.MAIL_AUTHENTICATION_EXCEPTION_CODE.getErrorCode()
-					, ex.getMessage());
-			break;
-		case MailNotifierExceptionClassNameConstants.MAIL_SENDMAIL_SEND_EXCEPTION_CLASS_NAME:
-			mosipLogger.error(MailNotifierConstants.EMPTY_STRING.getValue(), MailNotifierConstants.ERROR_CODE.getValue(),
-					MailNotifierArgumentErrorConstants.MAIL_SEND_EXCEPTION_CODE.getErrorCode(),
+			mosipLogger.error(MailNotifierConstants.EMPTY_STRING.getValue(),
+					MailNotifierConstants.ERROR_CODE.getValue(),
+					MailNotifierArgumentErrorConstants.MAIL_AUTHENTICATION_EXCEPTION_CODE.getErrorCode(),
 					ex.getMessage());
 			break;
+		case MailNotifierExceptionClassNameConstants.MAIL_SENDMAIL_SEND_EXCEPTION_CLASS_NAME:
+			mosipLogger.error(MailNotifierConstants.EMPTY_STRING.getValue(),
+					MailNotifierConstants.ERROR_CODE.getValue(),
+					MailNotifierArgumentErrorConstants.MAIL_SEND_EXCEPTION_CODE.getErrorCode(), ex.getMessage());
+			break;
 		default:
-			mosipLogger.error(MailNotifierConstants.EMPTY_STRING.getValue(), MailNotifierConstants.ERROR_CODE.getValue(),
+			mosipLogger.error(MailNotifierConstants.EMPTY_STRING.getValue(),
+					MailNotifierConstants.ERROR_CODE.getValue(),
 					MailNotifierArgumentErrorConstants.MAIL_EXCEPTION_CODE.getErrorCode(), ex.getMessage());
 			break;
 		}

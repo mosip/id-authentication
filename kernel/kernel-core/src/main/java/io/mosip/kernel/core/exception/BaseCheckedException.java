@@ -39,8 +39,7 @@ public class BaseCheckedException extends Exception {
 	/**
 	 * Constructs a new checked exception with errorMessage
 	 * 
-	 * @param errorMessage
-	 *            the detail message.
+	 * @param errorMessage the detail message.
 	 */
 	public BaseCheckedException(String errorMessage) {
 		super(errorMessage);
@@ -50,10 +49,8 @@ public class BaseCheckedException extends Exception {
 	 * Constructs a new checked exception with the specified detail message and
 	 * error code.
 	 * 
-	 * @param errorCode
-	 *            the error code
-	 * @param errorMessage
-	 *            the detail message.
+	 * @param errorCode    the error code
+	 * @param errorMessage the detail message.
 	 */
 	public BaseCheckedException(String errorCode, String errorMessage) {
 		super(errorCode + " --> " + errorMessage);
@@ -64,12 +61,9 @@ public class BaseCheckedException extends Exception {
 	 * Constructs a new checked exception with the specified detail message and
 	 * error code and specified cause.
 	 * 
-	 * @param errorCode
-	 *            the error code
-	 * @param errorMessage
-	 *            the detail message.
-	 * @param rootCause
-	 *            the specified cause
+	 * @param errorCode    the error code
+	 * @param errorMessage the detail message.
+	 * @param rootCause    the specified cause
 	 * 
 	 */
 	public BaseCheckedException(String errorCode, String errorMessage, Throwable rootCause) {
@@ -84,10 +78,8 @@ public class BaseCheckedException extends Exception {
 	/**
 	 * This method add error code and error message.
 	 * 
-	 * @param errorCode
-	 *            the error code
-	 * @param errorText
-	 *            the detail message.
+	 * @param errorCode the error code
+	 * @param errorText the detail message.
 	 * 
 	 * @return the current instance of BaseCheckedException
 	 */

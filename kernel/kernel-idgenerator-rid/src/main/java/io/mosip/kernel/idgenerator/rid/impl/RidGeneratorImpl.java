@@ -85,10 +85,8 @@ public class RidGeneratorImpl implements RidGenerator<String> {
 	/**
 	 * This method is used to validate the input given by user
 	 * 
-	 * @param centreId
-	 *            input by user
-	 * @param machineId
-	 *            input by user
+	 * @param centreId  input by user
+	 * @param machineId input by user
 	 */
 	private void validateInput(String centreId, String machineId, int centerIdLength, int machineIdLength,
 			int timeStampLength) {
@@ -168,10 +166,8 @@ public class RidGeneratorImpl implements RidGenerator<String> {
 	/**
 	 * This method appends the different strings to generate the RID
 	 * 
-	 * @param randomDigitRid
-	 *            5 digit no. generated
-	 * @param currentTimeStamp
-	 *            current timestamp generated
+	 * @param randomDigitRid   5 digit no. generated
+	 * @param currentTimeStamp current timestamp generated
 	 * @return generated RID
 	 */
 	private String appendString(String randomDigitRid, String currentTimeStamp, String centreId, String dongleId) {
