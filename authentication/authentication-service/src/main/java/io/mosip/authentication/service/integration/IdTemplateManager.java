@@ -20,7 +20,7 @@ import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.dto.indauth.LanguageType;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.logger.IdaLogger;
-import io.mosip.authentication.service.helper.IdInfoHelper;
+import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.pdfgenerator.spi.PDFGenerator;
 import io.mosip.kernel.core.templatemanager.spi.TemplateManager;
@@ -68,11 +68,8 @@ public class IdTemplateManager {
 	@Autowired
 	private Environment environment;
 
-	/**
-	 * Id Info Helper
-	 */
 	@Autowired
-	private IdInfoHelper idInfoHelper;
+	private IdInfoFetcher idInfoFetcher;
 
 	/**
 	 * Id template manager post construct.
@@ -130,12 +127,12 @@ public class IdTemplateManager {
 		StringBuilder stringBuilder = new StringBuilder();
 		if (languageRequired.equalsIgnoreCase("secondary")) {
 			stringBuilder.append(masterDataManager
-					.fetchTemplate(idInfoHelper.getLanguageCode(LanguageType.PRIMARY_LANG), templateName) + "\n\n");
+					.fetchTemplate(idInfoFetcher.getLanguageCode(LanguageType.PRIMARY_LANG), templateName) + "\n\n");
 			stringBuilder.append(masterDataManager
-					.fetchTemplate(idInfoHelper.getLanguageCode(LanguageType.SECONDARY_LANG), templateName));
+					.fetchTemplate(idInfoFetcher.getLanguageCode(LanguageType.SECONDARY_LANG), templateName));
 		} else if (languageRequired.equalsIgnoreCase("primary")) {
 			stringBuilder.append(masterDataManager
-					.fetchTemplate(idInfoHelper.getLanguageCode(LanguageType.PRIMARY_LANG), templateName));
+					.fetchTemplate(idInfoFetcher.getLanguageCode(LanguageType.PRIMARY_LANG), templateName));
 		} else {
 			// TODO throw exception
 		}

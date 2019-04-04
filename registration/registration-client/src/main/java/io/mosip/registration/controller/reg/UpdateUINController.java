@@ -38,6 +38,7 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 
 /**
@@ -100,7 +101,7 @@ public class UpdateUINController extends BaseController implements Initializable
 	@FXML
 	private HBox demographicHBox;
 	@FXML
-	private AnchorPane uinUpdateRoot;
+	private GridPane uinUpdateRoot;
 	private SimpleBooleanProperty switchedOn;
 	private boolean isChild;
 

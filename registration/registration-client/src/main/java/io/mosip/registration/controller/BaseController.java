@@ -75,6 +75,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -218,7 +219,7 @@ public class BaseController extends BaseService{
 		Alert alert = new Alert(AlertType.INFORMATION);
 		alert.setHeaderText(null);
 		alert.setContentText(context);
-		alert.setTitle(title);
+		alert.setTitle(RegistrationUIConstants.getMessageLanguageSpecific(title));
 		alert.setGraphic(null);
 		alert.setResizable(true);
 		alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
@@ -233,10 +234,11 @@ public class BaseController extends BaseService{
 	 * @param header    alert header
 	 * @param context   alert context
 	 */
-	protected void generateAlert(String context) {
+	protected void generateAlertLanguageSpecific(String title, String context) {
 		Alert alert = new Alert(AlertType.INFORMATION);
 		alert.setHeaderText(null);
-		alert.setContentText(context);
+		alert.setContentText(RegistrationUIConstants.getMessageLanguageSpecific(context));
+		alert.setTitle(RegistrationUIConstants.getMessageLanguageSpecific(title));
 		alert.setGraphic(null);
 		alert.setResizable(true);
 		alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
@@ -250,12 +252,18 @@ public class BaseController extends BaseService{
 	 * @param alertType type of alert
 	 * @param context   alert context
 	 */
-	protected void generateAlert(AnchorPane parentPane, String id, String context, String isConsolidated,
+	protected void generateAlert(Pane parentPane, String id, String context, String isConsolidated,
 			StringBuilder validationMessage) {
-		if (RegistrationConstants.DD.equalsIgnoreCase(id) || RegistrationConstants.MM.equalsIgnoreCase(id)
-				|| RegistrationConstants.YYYY.equalsIgnoreCase(id)) {
+		if (id.matches("dd|mm|yyyy|ddLocalLanguage|mmLocalLanguage|yyyyLocalLanguage")) {
 			id = RegistrationConstants.DOB;
+			parentPane = (Pane) parentPane.getParent().getParent();
 		}
+		if(id.contains("ontype")) {
+			id=id.replaceAll("_ontype", "");
+		}
+		if(id.equals("mobileNo")) {
+			System.out.println("Hello");
+		}	
 		if (RegistrationConstants.DISABLE.equalsIgnoreCase(isConsolidated)) {
 			Label label = ((Label) (parentPane
 					.lookup(RegistrationConstants.HASH + id + RegistrationConstants.MESSAGE)));
@@ -342,6 +350,9 @@ public class BaseController extends BaseService{
 	public void goToHomePage() {
 		try {
 			BaseController.load(getClass().getResource(RegistrationConstants.HOME_PAGE));
+			if (!(boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
+			clearOnboardData();
+			}
 		} catch (IOException ioException) {
 			LOGGER.error("REGISTRATION - REDIRECTHOME - BASE_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
 					ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));
@@ -381,10 +392,21 @@ public class BaseController extends BaseService{
 				RegistrationConstants.APPLICATION_ID, "Going to home page");
 
 		clearRegistrationData();
-
+		clearOnboardData();
 		goToHomePage();
 	}
-
+	/**
+	 * This method is used clear all the new onboard related mapm values and
+	 * navigates to the home page
+	 * 
+	 * 
+	 */
+	public void goToHomePageFromOnboard() {
+		LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+				RegistrationConstants.APPLICATION_ID, "Going to home page");	
+		
+		goToHomePage();
+	}
 	@SuppressWarnings("unchecked")
 	protected void clearRegistrationData() {
 
@@ -600,7 +622,6 @@ public class BaseController extends BaseService{
 				faceCaptureController.clearPhoto(RegistrationConstants.APPLICANT_IMAGE);
 				faceCaptureController.clearPhoto(RegistrationConstants.EXCEPTION_IMAGE);
 			}
-			
 		}
 	}
 
@@ -628,9 +649,6 @@ public class BaseController extends BaseService{
 						registrationDTO, templateManagerBuilder);
 			}
 
-		} catch (RegBaseCheckedException regBaseCheckedException) {
-			LOGGER.error("REGISTRATION - UI - GENERATE_NOTIFICATION", APPLICATION_NAME, APPLICATION_ID,
-					regBaseCheckedException.getMessage() + ExceptionUtils.getStackTrace(regBaseCheckedException));
 		} catch (RegBaseUncheckedException regBaseUncheckedException) {
 			LOGGER.error("REGISTRATION - UI - GENERATE_NOTIFICATION", APPLICATION_NAME, APPLICATION_ID,
 					regBaseUncheckedException.getMessage() + ExceptionUtils.getStackTrace(regBaseUncheckedException));
@@ -749,14 +767,13 @@ public class BaseController extends BaseService{
 				LOGGER.info(LoggerConstants.LOG_REG_BASE, APPLICATION_NAME, APPLICATION_ID,
 						"Displaying Alert if validation is not success");
 
-				generateAlert(RegistrationConstants.ERROR, response.getErrorResponseDTOs().get(0).getMessage());
+				generateAlertLanguageSpecific(RegistrationConstants.ERROR, response.getErrorResponseDTOs().get(0).getMessage());
 			} else if (response != null && response.getSuccessResponseDTO() != null) {
 
 				LOGGER.info(LoggerConstants.LOG_REG_BASE, APPLICATION_NAME, APPLICATION_ID,
 						"User Onboard is success and clearing Onboard data");
-
-				generateAlert(RegistrationConstants.SUCCESS, RegistrationUIConstants.USER_ONBOARD_SUCCESS);
-				popupStatge("Onboarding Successful", "images/tick.png", "onboardAlertMsg");
+			
+				popupStatge(RegistrationUIConstants.USER_ONBOARD_SUCCESS,RegistrationConstants.ONBOARD_IMG_PATH, RegistrationConstants.ONBOARD_STYLE_CLASS);
 				clearOnboardData();
 				goToHomePage();
 
@@ -784,15 +801,15 @@ public class BaseController extends BaseService{
 	 * @param show       - Id of Anchorpane which has to be shown
 	 * 
 	 */
-	protected void getCurrentPage(AnchorPane pageId, String notTosShow, String show) {
+	protected void getCurrentPage(Pane pageId, String notTosShow, String show) {
 
 		LOGGER.info(LoggerConstants.LOG_REG_BASE, APPLICATION_NAME, APPLICATION_ID, "Navigating to next page");
 
 		if (notTosShow != null) {
-			((AnchorPane) pageId.lookup("#" + notTosShow)).setVisible(false);
+			((Pane) pageId.lookup("#" + notTosShow)).setVisible(false);
 		}
 		if (show != null) {
-			((AnchorPane) pageId.lookup("#" + show)).setVisible(true);
+			((Pane) pageId.lookup("#" + show)).setVisible(true);
 		}
 
 		LOGGER.info(LoggerConstants.LOG_REG_BASE, APPLICATION_NAME, APPLICATION_ID, "Navigated to next page");
@@ -823,7 +840,7 @@ public class BaseController extends BaseService{
 				message += "\n" + RegistrationUIConstants.REMAP_EOD_PROCESS_MESSAGE;
 			}
 			message += "\n" + RegistrationUIConstants.REMAP_CLICK_OK;
-			generateAlert(RegistrationConstants.INFO, message);
+			generateAlert(RegistrationConstants.ALERT_INFORMATION, message);
 
 			packetHandlerController.reMapProgressIndicator.progressProperty().bind(service.progressProperty());
 
@@ -835,7 +852,13 @@ public class BaseController extends BaseService{
 				public void handle(WorkerStateEvent t) {
 					service.reset();
 					packetHandlerController.reMapProgressIndicator.setVisible(false);
-					generateAlert(RegistrationConstants.INFO, RegistrationUIConstants.REMAP_PROCESS_SUCCESS);
+					if (!centerMachineReMapService.isPacketsPendingForProcessing()) {
+						generateAlert(RegistrationConstants.ALERT_INFORMATION,
+								RegistrationUIConstants.REMAP_PROCESS_SUCCESS);
+					} else {
+						generateAlert(RegistrationConstants.ALERT_INFORMATION,
+								RegistrationUIConstants.REMAP_PROCESS_STILL_PENDING);
+					}
 
 				}
 			});

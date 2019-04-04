@@ -17,7 +17,6 @@ import javax.net.ssl.X509TrustManager;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
@@ -28,6 +27,7 @@ import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.exception.RegBaseCheckedException;
 
 /**
  * This is a general method which gives the response for all httpmethod
@@ -57,14 +57,15 @@ public class RestClientUtil {
 	 * @throws HttpServerErrorException when server exception from server
 	 */
 	public Map<String, Object> invoke(RequestHTTPDTO requestHTTPDTO)
-			throws HttpClientErrorException, HttpServerErrorException, SocketTimeoutException, ResourceAccessException {
+			throws RegBaseCheckedException, HttpClientErrorException, HttpServerErrorException, SocketTimeoutException, ResourceAccessException {
 		LOGGER.debug("REGISTRATION - REST_CLIENT_UTIL - INVOKE", APPLICATION_NAME, APPLICATION_ID,
 				"invoke method called");
 
 		ResponseEntity<?> responseEntity = null;
 		Map<String, Object> responseMap = null;
 		restTemplate.setRequestFactory(requestHTTPDTO.getSimpleClientHttpRequestFactory());
-		try {
+		//To-do need to be removed after checking this properly
+		/*try {
 			if (requestHTTPDTO.getUri().toString().contains("https"))
 				turnOffSslChecking();
 		} catch (KeyManagementException keyManagementException) {
@@ -73,7 +74,7 @@ public class RestClientUtil {
 		} catch (NoSuchAlgorithmException noSuchAlgorithmException) {
 			LOGGER.error("REGISTRATION - REST_CLIENT_UTIL - INVOKE", APPLICATION_NAME, APPLICATION_ID,
 					noSuchAlgorithmException.getMessage() + ExceptionUtils.getStackTrace(noSuchAlgorithmException));
-		}
+		}*/
 		responseEntity = restTemplate.exchange(requestHTTPDTO.getUri(), requestHTTPDTO.getHttpMethod(),
 				requestHTTPDTO.getHttpEntity(), requestHTTPDTO.getClazz());
 

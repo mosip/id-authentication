@@ -2,6 +2,7 @@ package io.mosip.authentication.core.dto.indauth;
 
 import java.util.List;
 
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 /**
@@ -18,6 +19,7 @@ public class RequestDTO {
 	private String otp;
 
 	/** variable to hold staticPin value */
+	@ApiModelProperty(required = false, hidden = true)
 	private String staticPin;
 
 	/** variable to hold timestamp value */

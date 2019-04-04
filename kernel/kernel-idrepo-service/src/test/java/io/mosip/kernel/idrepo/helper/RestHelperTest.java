@@ -522,7 +522,7 @@ public class RestHelperTest {
 
 		RestRequestDTO restRequest = restBuilder.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditRequest,
 				AuditResponseDto.class);
-		restRequest.setUri("https://localhost:8082/auditmanager/v1.0/audits");
+		restRequest.setUri("https://localhost:8082/auditmanager/audits");
 		restRequest.setTimeout(100);
 
 		restHelper.requestSync(restRequest);

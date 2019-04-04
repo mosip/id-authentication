@@ -42,8 +42,6 @@ import io.mosip.authentication.service.helper.IdInfoHelper;
 import io.mosip.authentication.service.helper.RestHelper;
 import io.mosip.authentication.service.impl.indauth.service.demo.DOBType;
 import io.mosip.authentication.service.integration.MasterDataManager;
-import io.mosip.kernel.datavalidator.email.impl.EmailValidatorImpl;
-import io.mosip.kernel.datavalidator.phone.impl.PhoneValidatorImpl;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest
@@ -52,13 +50,6 @@ public class IdMappingValidationTest {
 
 	@InjectMocks
 	private AuthRequestValidator authRequestValidator;
-
-	@Mock
-	EmailValidatorImpl emailValidatorImpl;
-
-	/** phone Validator */
-	@Mock
-	PhoneValidatorImpl phoneValidatorImpl;
 
 	@Mock
 	private IdInfoHelper idinfoHelper;
@@ -89,6 +80,7 @@ public class IdMappingValidationTest {
 		ReflectionTestUtils.setField(authRequestValidator, "env", env);
 		ReflectionTestUtils.setField(authRequestValidator, "idInfoHelper", idinfoHelper);
 		ReflectionTestUtils.setField(idinfoHelper, "environment", env);
+		ReflectionTestUtils.invokeMethod(authRequestValidator, "initialize");
 	}
 
 	@Test
@@ -114,9 +106,8 @@ public class IdMappingValidationTest {
 		valueList.add("MLE");
 		valueMap.put("ara", valueList);
 		Mockito.when(masterDataManager.fetchGenderType()).thenReturn(valueMap);
-		Mockito.when(emailValidatorImpl.validateEmail(Mockito.any())).thenReturn(true);
-		Mockito.when(phoneValidatorImpl.validatePhone(Mockito.any())).thenReturn(true);
 		ReflectionTestUtils.invokeMethod(authRequestValidator, "checkAuthRequest", authRequestDTO, errors);
+		System.err.println(errors);
 		assertFalse(errors.hasErrors());
 	}
 
@@ -378,7 +369,7 @@ public class IdMappingValidationTest {
 		genderList.add(gender);
 		identity.setGender(genderList);
 		/* Phone Number */
-		identity.setPhoneNumber("2002020012");
+		identity.setPhoneNumber("9002020012");
 		/* Pin code */
 		List<IdentityInfoDTO> pincodeList = new ArrayList<>();
 		IdentityInfoDTO pincode = new IdentityInfoDTO();

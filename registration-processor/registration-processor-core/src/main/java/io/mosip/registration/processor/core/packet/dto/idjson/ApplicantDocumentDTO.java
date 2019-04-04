@@ -1,5 +1,7 @@
 package io.mosip.registration.processor.core.packet.dto.idjson;
 
+import java.util.Arrays;
+
 /**
  * This class used to capture the documents, photograph, exceptional photograph
  * and Acknowledgement Receipt of the Individual.
@@ -58,7 +60,9 @@ public class ApplicantDocumentDTO{
 	 * @return the photo
 	 */
 	public byte[] getPhoto() {
-		return photo;
+		if(photo!=null)
+			return Arrays.copyOf(photo, photo.length);
+		return null;
 	}
 
 	/**
@@ -66,14 +70,16 @@ public class ApplicantDocumentDTO{
 	 *            the photo to set
 	 */
 	public void setPhoto(byte[] photo) {
-		this.photo = photo;
+		this.photo=photo!=null?photo:null;
 	}
 	
 	/**
 	 * @return the compressedFacePhoto
 	 */
 	public byte[] getCompressedFacePhoto() {
-		return compressedFacePhoto;
+		if(compressedFacePhoto!=null)
+			return Arrays.copyOf(compressedFacePhoto, compressedFacePhoto.length);
+		return null;
 	}
 
 	/**
@@ -81,7 +87,7 @@ public class ApplicantDocumentDTO{
 	 *            the compressed face photo to set
 	 */
 	public void setCompressedFacePhoto(byte[] compressedFacePhoto) {
-		this.compressedFacePhoto = compressedFacePhoto;
+		this.compressedFacePhoto=compressedFacePhoto!=null?compressedFacePhoto:null;
 	}
 
 	/**
@@ -103,7 +109,10 @@ public class ApplicantDocumentDTO{
 	 * @return the exceptionPhoto
 	 */
 	public byte[] getExceptionPhoto() {
-		return exceptionPhoto;
+		if(exceptionPhoto!=null)
+			return Arrays.copyOf(exceptionPhoto, exceptionPhoto.length);
+		return null;
+		
 	}
 
 	/**
@@ -111,7 +120,7 @@ public class ApplicantDocumentDTO{
 	 *            the exceptionPhoto to set
 	 */
 	public void setExceptionPhoto(byte[] exceptionPhoto) {
-		this.exceptionPhoto = exceptionPhoto;
+		this.exceptionPhoto=exceptionPhoto!=null?exceptionPhoto:null;
 	}
 
 	/**
@@ -163,7 +172,9 @@ public class ApplicantDocumentDTO{
 	 * @return the acknowledgeReceipt
 	 */
 	public byte[] getAcknowledgeReceipt() {
-		return acknowledgeReceipt;
+		if(acknowledgeReceipt!=null)
+			return Arrays.copyOf(acknowledgeReceipt, acknowledgeReceipt.length);
+		return null;
 	}
 
 	/**
@@ -171,7 +182,7 @@ public class ApplicantDocumentDTO{
 	 *            the acknowledgeReceipt to set
 	 */
 	public void setAcknowledgeReceipt(byte[] acknowledgeReceipt) {
-		this.acknowledgeReceipt = acknowledgeReceipt;
+		this.acknowledgeReceipt=acknowledgeReceipt!=null?acknowledgeReceipt:null;
 	}
 
 	/**

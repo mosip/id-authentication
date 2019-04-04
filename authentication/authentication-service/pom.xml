@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>io.mosip.authentication</groupId>
 		<artifactId>authentication-parent</artifactId>
-		<version>0.9.8</version>
+		<version>0.10.1</version>
 	</parent>
 
 	<artifactId>authentication-service</artifactId>
@@ -19,7 +19,7 @@
 		<dependency>
 			<groupId>io.mosip.authentication</groupId>
 			<artifactId>authentication-core</artifactId>
-			<version>0.9.8</version>
+			<version>0.10.1</version>
 		</dependency>
 
 		<!-- Kernel Template -->
@@ -67,12 +67,6 @@
 			<version>${kernel.core.version}</version>
 		</dependency>
 
-		<!-- Kernel Data Validator -->
-		<dependency>
-			<groupId>io.mosip.kernel</groupId>
-			<artifactId>kernel-datavalidator</artifactId>
-			<version>${kernel.core.version}</version>
-		</dependency>
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-cryptomanager-service</artifactId>

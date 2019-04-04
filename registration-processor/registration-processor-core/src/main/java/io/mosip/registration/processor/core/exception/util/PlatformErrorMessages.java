@@ -197,6 +197,21 @@ public enum PlatformErrorMessages {
 	// Stages - Packet validator Exception error code and message
 	STRUCTURAL_VALIDATION_FAILED("", "Structural Validation Failed"),
 
+	RPR_PVM_DATA_NOT_AVAILABLE(PlatformConstants.RPR_PACKET_VALIDATOR_MODULE + "002",
+			"Data not available in Master DB"),
+
+	RPR_PVM_IDENTITY_NOT_FOUND(PlatformConstants.RPR_PACKET_VALIDATOR_MODULE + "003",
+			"Attribute unAvailable in DemographicInfo Json for Master Data Validation"),
+
+	RPR_PVM_RESOURCE_NOT_FOUND(PlatformConstants.RPR_PACKET_VALIDATOR_MODULE + "004",
+			"Resource not found for the Attribute specified in Msster Data Validation"),
+
+	RPR_PVM_IDENTITY_INVALID(PlatformConstants.RPR_PACKET_VALIDATOR_MODULE + "005",
+			"Attribute Value Invalid in Master Data Validation"),
+
+	RPR_PVM_API_RESOUCE_ACCESS_FAILED(PlatformConstants.RPR_PACKET_VALIDATOR_MODULE + "005",
+			"Not able to access the API resource"),
+
 	/** The unsupported encoding. */
 	// UIN check - JSON file encoding failed.
 	UNSUPPORTED_ENCODING("", "json object parsing failed"),
@@ -316,6 +331,7 @@ public enum PlatformErrorMessages {
 
 	RPR_MVS_DECODE_EXCEPTION(PlatformConstants.RPR_MANUAL_VERIFICATION_MODULE + "013", "Request Decoding Exception"),
 
+	RPR_MVS_NO_USER_ID_PRESENT(PlatformConstants.RPR_MANUAL_VERIFICATION_MODULE + "014", "User Id can not empty"),
 	/** The rpr tem not found. */
 	// Registration processor Message sender Exception error code
 	RPR_TEM_NOT_FOUND(PlatformConstants.RPR_MESSAGE_SENDER_TEMPLATE + "001", "Template was Not Found"),
@@ -483,6 +499,10 @@ public enum PlatformErrorMessages {
 	/** The print and postal acknowledment generation failed. */
 	RPR_PRT_PRINT_POST_ACK_FAILED(PlatformConstants.RPR_PRINTING_MODULE + "010",
 			"Error while getting response from Print and Postal Service Provider"),
+
+	/** The print validation failed. */
+	RPR_PRT_DATA_VALIDATION_FAILED(PlatformConstants.RPR_PRINTING_MODULE + "011",
+			"Error while print data validation"),
 
 	/** The rpr rgs registration connector not accessible. */
 	RPR_RGS_REGISTRATION_CONNECTOR_NOT_ACCESSIBLE("", "Registration connector stage is not accessible "),

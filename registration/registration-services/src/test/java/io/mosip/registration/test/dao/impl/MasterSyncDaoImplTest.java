@@ -249,7 +249,7 @@ public class MasterSyncDaoImplTest {
 	public static void beforeClass() {
 
 		ReflectionTestUtils.setField(SessionContext.class, "sessionContext", null);
-		applicationContext.setApplicationMessagesBundle();
+		//applicationContext.setApplicationMessagesBundle();
 
 		SessionContext.getInstance().userContext().setUserId("mosip");
 

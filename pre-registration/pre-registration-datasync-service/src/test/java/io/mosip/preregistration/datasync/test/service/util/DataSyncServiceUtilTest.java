@@ -27,7 +27,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -48,6 +47,7 @@ import io.mosip.preregistration.core.common.dto.PreRegIdsByRegCenterIdResponseDT
 import io.mosip.preregistration.core.config.LoggerConfiguration;
 import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
 import io.mosip.preregistration.core.util.AuditLogUtil;
+import io.mosip.preregistration.datasync.DataSyncApplicationTest;
 import io.mosip.preregistration.datasync.dto.DataSyncRequestDTO;
 import io.mosip.preregistration.datasync.dto.PreRegArchiveDTO;
 import io.mosip.preregistration.datasync.dto.ReverseDataSyncRequestDTO;
@@ -63,7 +63,7 @@ import io.mosip.preregistration.datasync.repository.ProcessedDataSyncRepo;
 import io.mosip.preregistration.datasync.service.util.DataSyncServiceUtil;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest
+@SpringBootTest(classes = { DataSyncApplicationTest.class })
 public class DataSyncServiceUtilTest {
 
 	/**
@@ -81,14 +81,14 @@ public class DataSyncServiceUtilTest {
 	/**
 	 * Autowired reference for {@link #RestTemplateBuilder}
 	 */
-	@MockBean
-	RestTemplateBuilder restTemplateBuilder;
-
 	@Autowired
 	DataSyncServiceUtil serviceUtil;
 
 	@MockBean
 	AuditLogUtil auditLogUtil;
+
+	@MockBean
+	RestTemplate restTemplate;
 
 	@Value("${ver}")
 	String versionUrl;
@@ -293,8 +293,6 @@ public class DataSyncServiceUtilTest {
 		mainResponseDTO.setResponse(byRegCenterIdResponseDTO);
 		ResponseEntity<MainResponseDTO<PreRegIdsByRegCenterIdResponseDTO>> respEntity = new ResponseEntity<>(
 				mainResponseDTO, HttpStatus.OK);
-		RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
-		Mockito.when(restTemplateBuilder.build()).thenReturn(restTemplate);
 		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
 				Mockito.eq(new ParameterizedTypeReference<MainResponseDTO<PreRegIdsByRegCenterIdResponseDTO>>() {
 				}))).thenReturn(respEntity);
@@ -321,8 +319,6 @@ public class DataSyncServiceUtilTest {
 		mainResponseDTO.setResponse(byRegCenterIdResponseDTO);
 		ResponseEntity<MainResponseDTO<PreRegIdsByRegCenterIdResponseDTO>> respEntity = new ResponseEntity<>(
 				mainResponseDTO, HttpStatus.OK);
-		RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
-		Mockito.when(restTemplateBuilder.build()).thenReturn(restTemplate);
 		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
 				Mockito.eq(new ParameterizedTypeReference<MainResponseDTO<PreRegIdsByRegCenterIdResponseDTO>>() {
 				}))).thenReturn(respEntity);
@@ -334,8 +330,6 @@ public class DataSyncServiceUtilTest {
 		String fromDate = "2018-01-17";
 		String toDate = null;
 		preRegIds.add("23587986034785");
-		RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
-		Mockito.when(restTemplateBuilder.build()).thenReturn(restTemplate);
 		MainResponseDTO<PreRegIdsByRegCenterIdResponseDTO> mainResponseDTO = new MainResponseDTO<>();
 		PreRegIdsByRegCenterIdResponseDTO byRegCenterIdResponseDTO = new PreRegIdsByRegCenterIdResponseDTO();
 		byRegCenterIdResponseDTO.setPreRegistrationIds(preRegIds);
@@ -358,8 +352,6 @@ public class DataSyncServiceUtilTest {
 	// String fromDate="2018-01-17 00:00:00";
 	// String toDate="2019-01-17 00:00:00";
 	// preRegIds.add("23587986034785");
-	// RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
-	// Mockito.when(restTemplateBuilder.build()).thenReturn(restTemplate);
 	// MainListResponseDTO mainResponseDTO=new MainListResponseDTO();
 	// mainResponseDTO.setStatus(false);
 	// mainResponseDTO.setResTime(resTime);
@@ -382,14 +374,11 @@ public class DataSyncServiceUtilTest {
 		responsestatusDto.add(multipartResponseDTOs);
 
 		MainListResponseDTO<DocumentMultipartResponseDTO> mainListResponseDTO = new MainListResponseDTO<>();
-		mainListResponseDTO.setResTime(resTime);
+		mainListResponseDTO.setResponsetime(resTime);
 		mainListResponseDTO.setErr(null);
 		mainListResponseDTO.setResponse(responsestatusDto);
 		ResponseEntity<MainListResponseDTO<DocumentMultipartResponseDTO>> respEntity = new ResponseEntity<>(
 				mainListResponseDTO, HttpStatus.OK);
-
-		RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
-		Mockito.when(restTemplateBuilder.build()).thenReturn(restTemplate);
 		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
 				Mockito.eq(new ParameterizedTypeReference<MainListResponseDTO<DocumentMultipartResponseDTO>>() {
 				}))).thenReturn(respEntity);
@@ -402,10 +391,8 @@ public class DataSyncServiceUtilTest {
 		demographicResponseDTO.setPreRegistrationId(preId);
 		List<DemographicResponseDTO> list = new ArrayList<>();
 		list.add(demographicResponseDTO);
-		RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
-		Mockito.when(restTemplateBuilder.build()).thenReturn(restTemplate);
 		MainListResponseDTO<DemographicResponseDTO> mainResponseDTO = new MainListResponseDTO<>();
-		mainResponseDTO.setResTime(resTime);
+		mainResponseDTO.setResponsetime(resTime);
 		mainResponseDTO.setErr(null);
 		mainResponseDTO.setResponse(list);
 		ResponseEntity<MainListResponseDTO<DemographicResponseDTO>> respEntity = new ResponseEntity<>(mainResponseDTO,
@@ -421,8 +408,6 @@ public class DataSyncServiceUtilTest {
 	@Test
 	public void callGetAppointmentDetailsRestServiceTest() {
 		bookingRegistrationDTO.setRegistrationCenterId("1005");
-		RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
-		Mockito.when(restTemplateBuilder.build()).thenReturn(restTemplate);
 		MainResponseDTO<BookingRegistrationDTO> responseDTO = new MainResponseDTO<>();
 		responseDTO.setResponsetime(resTime);
 		responseDTO.setErrors(null);
@@ -440,8 +425,6 @@ public class DataSyncServiceUtilTest {
 	@Test(expected = DemographicGetDetailsException.class)
 	public void callGetAppointmentDetailsRestServiceTest1() {
 		bookingRegistrationDTO.setRegistrationCenterId("1005");
-		RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
-		Mockito.when(restTemplateBuilder.build()).thenReturn(restTemplate);
 		MainResponseDTO<BookingRegistrationDTO> responseDTO = new MainResponseDTO<>();
 		responseDTO.setResponsetime(resTime);
 		List<ExceptionJSONInfoDTO> exceptionJSONInfoDTOs = new ArrayList<>();
@@ -511,8 +494,6 @@ public class DataSyncServiceUtilTest {
 		preRegDTO.setPreRegistrationIds(preIdList);
 		MainRequestDTO<PreRegIdsByRegCenterIdDTO> mainRequestDTO = new MainRequestDTO<>();
 		mainRequestDTO.setRequest(preRegDTO);
-		RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
-		Mockito.when(restTemplateBuilder.build()).thenReturn(restTemplate);
 		MainResponseDTO<Map<String, String>> mainResponseDTO = new MainResponseDTO<>();
 		Map<String, String> preIdMap = new HashMap<>();
 		preIdMap.put(preId, LocalDateTime.now().toString());
@@ -540,8 +521,6 @@ public class DataSyncServiceUtilTest {
 		preRegDTO.setPreRegistrationIds(preIdList);
 		MainRequestDTO<PreRegIdsByRegCenterIdDTO> mainRequestDTO = new MainRequestDTO<>();
 		mainRequestDTO.setRequest(preRegDTO);
-		RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
-		Mockito.when(restTemplateBuilder.build()).thenReturn(restTemplate);
 		MainResponseDTO<Map<String, String>> mainResponseDTO = new MainResponseDTO<>();
 		Map<String, String> preIdMap = new HashMap<>();
 		preIdMap.put(preId, LocalDateTime.now().toString());

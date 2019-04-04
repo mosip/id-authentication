@@ -35,7 +35,6 @@ import com.google.common.base.Verify;
 import com.google.gson.Gson;
 
 import io.mosip.dbaccess.KernelMasterDataR;
-import io.mosip.dbaccess.MasterDataGetRequests;
 import io.mosip.dbdto.DeviceDto;
 import io.mosip.service.ApplicationLibrary;
 import io.mosip.service.AssertKernel;
@@ -175,7 +174,9 @@ public class FetchGenderType extends BaseTestCase implements ITest{
 			if (objectData != null) {
 				query = queryPart + " where lang_code = '" + objectData.get("langcode") + "'";
 			}
-			long obtainedObjectsCount = MasterDataGetRequests.validateDB(query);
+
+			long obtainedObjectsCount = KernelMasterDataR.validateDBCount(query);
+
 
 			// fetching json object from response
 			JSONObject responseJson = (JSONObject) new JSONParser().parse(response.asString());

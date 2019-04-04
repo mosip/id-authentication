@@ -13,7 +13,6 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -34,17 +33,16 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.constant.RequestType;
-import io.mosip.authentication.core.dto.indauth.IdType;
 import io.mosip.authentication.core.dto.otpgen.OtpRequestDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.spi.id.service.IdAuthService;
-import io.mosip.authentication.core.spi.id.service.IdRepoService;
 import io.mosip.authentication.service.entity.AutnTxn;
 import io.mosip.authentication.service.entity.VIDEntity;
 import io.mosip.authentication.service.factory.AuditRequestFactory;
 import io.mosip.authentication.service.factory.RestRequestFactory;
 import io.mosip.authentication.service.helper.RestHelper;
 import io.mosip.authentication.service.impl.id.service.impl.IdAuthServiceImpl;
+import io.mosip.authentication.service.impl.id.service.impl.IdRepoManager;
 import io.mosip.authentication.service.repository.AutnTxnRepository;
 import io.mosip.authentication.service.repository.VIDRepository;
 
@@ -59,7 +57,7 @@ import io.mosip.authentication.service.repository.VIDRepository;
 public class IdAuthServiceImplTest {
 
 	@Mock
-	private IdRepoService idRepoService;
+	private IdRepoManager idRepoManager;
 	@Mock
 	private AuditRequestFactory auditFactory;
 	@Mock
@@ -76,7 +74,7 @@ public class IdAuthServiceImplTest {
 	IdAuthServiceImpl idAuthServiceImplMock;
 
 	@Mock
-	IdAuthService idAuthService;
+	IdAuthService<AutnTxn> idAuthService;
 
 	@Mock
 	AutnTxnRepository autntxnrepository;
@@ -88,14 +86,12 @@ public class IdAuthServiceImplTest {
 
 	@Before
 	public void before() {
-		ReflectionTestUtils.setField(idAuthServiceImpl, "idRepoService", idRepoService);
+		ReflectionTestUtils.setField(idAuthServiceImpl, "idRepoManager", idRepoManager);
 		ReflectionTestUtils.setField(idAuthServiceImpl, "auditFactory", auditFactory);
 		ReflectionTestUtils.setField(idAuthServiceImpl, "restFactory", restFactory);
 		ReflectionTestUtils.setField(idAuthServiceImpl, "vidRepository", vidRepository);
 
 	}
-
-
 
 	@Test
 	public void testAuditData() {
@@ -122,9 +118,9 @@ public class IdAuthServiceImplTest {
 		vidEntity.setUin("476567");
 		Optional<VIDEntity> optVID = Optional.of(vidEntity);
 		Mockito.when(vidRepository.findUinByVid(Mockito.any())).thenReturn(optVID);
-		Mockito.when(idRepoService.getIdenity(Mockito.anyString(), Mockito.anyBoolean())).thenReturn(idRepo);
+		Mockito.when(idRepoManager.getIdenity(Mockito.anyString(), Mockito.anyBoolean())).thenReturn(idRepo);
 		Object invokeMethod = ReflectionTestUtils.invokeMethod(idAuthServiceImpl, "getIdRepoByVidAsRequest",
-				Mockito.anyString(),false);
+				Mockito.anyString(), false);
 		assertNotNull(invokeMethod);
 	}
 
@@ -155,7 +151,7 @@ public class IdAuthServiceImplTest {
 		vidEntity.setUin("476567");
 		Optional<VIDEntity> optVID = Optional.of(vidEntity);
 		Mockito.when(vidRepository.findUinByVid(Mockito.any())).thenReturn(optVID);
-		Mockito.when(idRepoService.getIdenity(Mockito.any(), Mockito.anyBoolean())).thenReturn(idRepo);
+		Mockito.when(idRepoManager.getIdenity(Mockito.any(), Mockito.anyBoolean())).thenReturn(idRepo);
 		Map<String, Object> idResponseMap = (Map<String, Object>) ReflectionTestUtils.invokeMethod(idAuthServiceImpl,
 				"processIdType", idvIdType, idvId, false);
 		assertEquals("476567", idResponseMap.get("uin"));
@@ -169,7 +165,7 @@ public class IdAuthServiceImplTest {
 		IdAuthenticationBusinessException idBusinessException = new IdAuthenticationBusinessException(
 				IdAuthenticationErrorConstants.INVALID_VID);
 
-		Mockito.when(idRepoService.getIdenity(Mockito.anyString(), Mockito.anyBoolean()))
+		Mockito.when(idRepoManager.getIdenity(Mockito.anyString(), Mockito.anyBoolean()))
 				.thenThrow(idBusinessException);
 
 		Mockito.when(idAuthService.getIdRepoByVID(Mockito.anyString(), Mockito.anyBoolean()))
@@ -186,7 +182,7 @@ public class IdAuthServiceImplTest {
 		IdAuthenticationBusinessException idBusinessException = new IdAuthenticationBusinessException(
 				IdAuthenticationErrorConstants.INVALID_UIN);
 
-		Mockito.when(idRepoService.getIdenity(Mockito.anyString(), Mockito.anyBoolean()))
+		Mockito.when(idRepoManager.getIdenity(Mockito.anyString(), Mockito.anyBoolean()))
 				.thenThrow(idBusinessException);
 
 		Mockito.when(idAuthService.getIdRepoByVID(Mockito.anyString(), Mockito.anyBoolean()))
@@ -360,34 +356,35 @@ public class IdAuthServiceImplTest {
 		Map<String, Object> idResponseDTO = mapper.readValue(value, Map.class);
 		ReflectionTestUtils.invokeMethod(idAuthServiceImpl, "getIdInfo", idResponseDTO);
 	}
-	
-	@Test(expected = IdAuthenticationBusinessException.class)
-	public void  testIdRepoServiceException_UINDeActivated() throws Throwable {
-		try {
-		String idvIdType = "UIN";
-		String idvId = "875948796";
-		Map<String, Object> idRepo = new HashMap<>();
-		idRepo.put("uin", "476567");
-		VIDEntity vidEntity = new VIDEntity();
-		vidEntity.setExpiryDate(LocalDateTime.of(2100, 12, 31, 6, 45));
-		vidEntity.setActive(true);
-		vidEntity.setUin("476567");
-		Optional<VIDEntity> optVID = Optional.of(vidEntity);
-		IdAuthenticationBusinessException idBusinessException = new IdAuthenticationBusinessException(
-				IdAuthenticationErrorConstants.UIN_DEACTIVATED);
 
-		Mockito.when(idRepoService.getIdenity(Mockito.anyString(), Mockito.anyBoolean()))
-				.thenThrow(idBusinessException);
-		Mockito.when(vidRepository.findUinByVid(Mockito.any())).thenReturn(optVID);
-		Object invokeMethod = ReflectionTestUtils.invokeMethod(idAuthServiceImpl, "getIdRepoByVidAsRequest",
-				Mockito.anyString(),false);
-		
+	@Test(expected = IdAuthenticationBusinessException.class)
+	public void testIdRepoServiceException_UINDeActivated() throws Throwable {
+		try {
+			String idvIdType = "UIN";
+			String idvId = "875948796";
+			Map<String, Object> idRepo = new HashMap<>();
+			idRepo.put("uin", "476567");
+			VIDEntity vidEntity = new VIDEntity();
+			vidEntity.setExpiryDate(LocalDateTime.of(2100, 12, 31, 6, 45));
+			vidEntity.setActive(true);
+			vidEntity.setUin("476567");
+			Optional<VIDEntity> optVID = Optional.of(vidEntity);
+			IdAuthenticationBusinessException idBusinessException = new IdAuthenticationBusinessException(
+					IdAuthenticationErrorConstants.UIN_DEACTIVATED);
+
+			Mockito.when(idRepoManager.getIdenity(Mockito.anyString(), Mockito.anyBoolean()))
+					.thenThrow(idBusinessException);
+			Mockito.when(vidRepository.findUinByVid(Mockito.any())).thenReturn(optVID);
+			Object invokeMethod = ReflectionTestUtils.invokeMethod(idAuthServiceImpl, "getIdRepoByVidAsRequest",
+					Mockito.anyString(), false);
+
 		} catch (UndeclaredThrowableException e) {
 			throw e.getCause();
 		}
 	}
+
 	@Test(expected = IdAuthenticationBusinessException.class)
-	public void  testIdRepoServiceException_InvalidUIN() throws Throwable {
+	public void testIdRepoServiceException_InvalidUIN() throws Throwable {
 		try {
 			Map<String, Object> idRepo = new HashMap<>();
 			idRepo.put("uin", "476567");
@@ -398,13 +395,13 @@ public class IdAuthServiceImplTest {
 			Optional<VIDEntity> optVID = Optional.of(vidEntity);
 			IdAuthenticationBusinessException idBusinessException = new IdAuthenticationBusinessException(
 					IdAuthenticationErrorConstants.INVALID_UIN);
-			
-			Mockito.when(idRepoService.getIdenity(Mockito.anyString(), Mockito.anyBoolean()))
-			.thenThrow(idBusinessException);
+
+			Mockito.when(idRepoManager.getIdenity(Mockito.anyString(), Mockito.anyBoolean()))
+					.thenThrow(idBusinessException);
 			Mockito.when(vidRepository.findUinByVid(Mockito.any())).thenReturn(optVID);
 			Object invokeMethod = ReflectionTestUtils.invokeMethod(idAuthServiceImpl, "getIdRepoByVidAsRequest",
-					Mockito.anyString(),false);
-			
+					Mockito.anyString(), false);
+
 		} catch (UndeclaredThrowableException e) {
 			throw e.getCause();
 		}

@@ -3,7 +3,7 @@ package io.mosip.registration.processor.message.sender.utility;
 /**
  * The Enum NotificationTemplateCode.
  * 
- * @author M1048358
+ * @author M1048358 Alok
  */
 public enum NotificationTemplateCode {
 
@@ -29,6 +29,18 @@ public enum NotificationTemplateCode {
 	RPR_UIN_UPD_EMAIL,
 
 	/** The rpr uin upd sms. */
-	RPR_UIN_UPD_SMS
+	RPR_UIN_UPD_SMS,
+	
+	/** The rpr uin reac sms. */
+	RPR_UIN_REAC_SMS,
+	
+	/** The rpr uin reac email. */
+	RPR_UIN_REAC_EMAIL,
+	
+	/** The rpr uin deac sms. */
+	RPR_UIN_DEAC_SMS,
+	
+	/** The rpr uin deac email. */
+	RPR_UIN_DEAC_EMAIL
 
 }

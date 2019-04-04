@@ -32,7 +32,7 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.google.common.base.Verify;
 
-import io.mosip.dbaccess.MasterDataGetRequests;
+import io.mosip.dbaccess.KernelMasterDataR;
 import io.mosip.service.ApplicationLibrary;
 import io.mosip.service.AssertKernel;
 import io.mosip.service.BaseTestCase;
@@ -147,7 +147,9 @@ public class FetchBiometricAttribute extends BaseTestCase implements ITest {
 
 			String query = "select count(*) from master.biometric_attribute where lang_code = '" + objectData.get("langcode") + "' and bmtyp_code = '" + objectData.get("biometrictypecode") + "'";
 			
-			long obtainedObjectsCount = MasterDataGetRequests.validateDB(query);
+
+			long obtainedObjectsCount = KernelMasterDataR.validateDBCount(query);
+
 
 			// fetching json object from response
 			JSONObject responseJson = (JSONObject) new JSONParser().parse(response.asString());

@@ -2,17 +2,18 @@ package io.mosip.preregistration.notification.service;
 
 import static org.junit.Assert.assertEquals;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
@@ -34,11 +35,13 @@ import io.mosip.kernel.core.qrcodegenerator.spi.QrCodeGenerator;
 import io.mosip.kernel.core.util.exception.JsonMappingException;
 import io.mosip.kernel.core.util.exception.JsonParseException;
 import io.mosip.kernel.qrcode.generator.zxing.constant.QrVersion;
+import io.mosip.preregistration.core.common.dto.MainRequestDTO;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
 import io.mosip.preregistration.core.common.dto.NotificationDTO;
 import io.mosip.preregistration.core.common.dto.NotificationResponseDTO;
 import io.mosip.preregistration.core.common.dto.TemplateResponseDTO;
 import io.mosip.preregistration.core.common.dto.TemplateResponseListDTO;
+import io.mosip.preregistration.notification.NotificationApplicationTest;
 import io.mosip.preregistration.notification.dto.QRCodeResponseDTO;
 import io.mosip.preregistration.notification.exception.MandatoryFieldException;
 import io.mosip.preregistration.notification.service.util.NotificationServiceUtil;
@@ -48,7 +51,7 @@ import io.mosip.preregistration.notification.service.util.NotificationServiceUti
  * @since 1.0.0
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest
+@SpringBootTest(classes= {NotificationApplicationTest.class})
 public class NotificationServiceTest {
 
 	@Autowired
@@ -60,11 +63,14 @@ public class NotificationServiceTest {
 	@Autowired
 	private ObjectMapper mapper;
 
-	@MockBean(name="restTemplate")
+	@MockBean(name = "restTemplate")
 	private RestTemplate restTemplate;
 
 	@MockBean
 	private QrCodeGenerator<QrVersion> qrCodeGenerator;
+
+	@Value("${mosip.utc-datetime-pattern}")
+	private String utcDateTimePattern;
 
 	private NotificationDTO notificationDTO;
 	boolean requestValidatorFlag = false;
@@ -72,17 +78,27 @@ public class NotificationServiceTest {
 	MainResponseDTO<NotificationDTO> responseDTO = new MainResponseDTO<>();
 	MainResponseDTO<QRCodeResponseDTO> qrCodeResponseDTO = new MainResponseDTO<>();
 	NotificationResponseDTO notificationResponseDTO = new NotificationResponseDTO();
+	MainRequestDTO<NotificationDTO> mainReqDto = new MainRequestDTO<>();
 	List<TemplateResponseDTO> tepmlateList = new ArrayList<>();
 
 	@Before
-	public void beforeSet() {
+	public void beforeSet() throws ParseException {
+
+		//mapper.registerModule(new JavaTimeModule());
 		notificationDTO = new NotificationDTO();
 		notificationDTO.setName("sanober Noor");
 		notificationDTO.setPreId("1234567890");
 		notificationDTO.setMobNum("1234567890");
-		notificationDTO.setEmailID("sanober,noor2@mindtree.com");
+		notificationDTO.setEmailID("sanober.noor2@mindtree.com");
 		notificationDTO.setAppointmentDate("2019-01-22");
 		notificationDTO.setAppointmentTime("22:57");
+		mainReqDto.setId("mosip.pre-registration.demographic.create");
+		mainReqDto.setVersion("1.0");
+		DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+		mapper.setDateFormat(df);
+
+		mainReqDto.setRequesttime(df.parse("2019-01-22T07:22:57.186Z"));
+		mainReqDto.setRequest(notificationDTO);
 		responseDTO = new MainResponseDTO<>();
 		responseDTO.setResponse(notificationDTO);
 		responseDTO.setResponsetime(serviceUtil.getCurrentResponseTime());
@@ -104,7 +120,7 @@ public class NotificationServiceTest {
 	@Test
 	public void sendNotificationSuccessTest()
 			throws JsonParseException, JsonMappingException, IOException, java.io.IOException {
-		String stringjson = mapper.writeValueAsString(notificationDTO);
+		String stringjson = mapper.writeValueAsString(mainReqDto);
 		String langCode = "eng";
 		MultipartFile file = new MockMultipartFile("test.txt", "test.txt", null, new byte[1100]);
 		TemplateResponseListDTO templateResponseListDTO = new TemplateResponseListDTO();
@@ -119,6 +135,7 @@ public class NotificationServiceTest {
 				notificationResponseDTO, HttpStatus.OK);
 		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.POST), Mockito.any(),
 				Mockito.eq(NotificationResponseDTO.class))).thenReturn(resp);
+		System.out.println(stringjson);
 		MainResponseDTO<NotificationDTO> response = service.sendNotification(stringjson, langCode, file);
 		assertEquals(responseDTO.getResponse(), response.getResponse());
 	}
@@ -137,10 +154,11 @@ public class NotificationServiceTest {
 		notificationDTO.setEmailID("");
 		notificationDTO.setAppointmentDate("2019-01-22");
 		notificationDTO.setAppointmentTime("22:57");
+		mainReqDto.setRequest(notificationDTO);
 		responseDTO = new MainResponseDTO<>();
 		responseDTO.setResponse(notificationDTO);
 		responseDTO.setResponsetime(serviceUtil.getCurrentResponseTime());
-		String stringjson = mapper.writeValueAsString(notificationDTO);
+		String stringjson = mapper.writeValueAsString(mainReqDto);
 		MultipartFile file = new MockMultipartFile("test.txt", "test.txt", null, new byte[1100]);
 		MainResponseDTO<NotificationDTO> response = service.sendNotification(stringjson, "eng", file);
 		assertEquals("MOBILE_NUMBER_OR_EMAIL_ADDRESS_NOT_FILLED", response.getResponse());
@@ -161,10 +179,11 @@ public class NotificationServiceTest {
 		notificationDTO.setEmailID(null);
 		notificationDTO.setAppointmentDate("2019-01-22");
 		notificationDTO.setAppointmentTime("22:57");
+		mainReqDto.setRequest(notificationDTO);
 		responseDTO = new MainResponseDTO<>();
 		responseDTO.setResponse(notificationDTO);
 		responseDTO.setResponsetime(serviceUtil.getCurrentResponseTime());
-		String stringjson = mapper.writeValueAsString(notificationDTO);
+		String stringjson = mapper.writeValueAsString(mainReqDto);
 		MultipartFile file = new MockMultipartFile("test.txt", "test.txt", null, new byte[1100]);
 		MainResponseDTO<NotificationDTO> response = service.sendNotification(stringjson, "eng", file);
 		assertEquals("MOBILE_NUMBER_OR_EMAIL_ADDRESS_NOT_FILLED", response.getResponse());
@@ -192,16 +211,16 @@ public class NotificationServiceTest {
 	}
 
 	@Test
-	public void generateQRCodeFailureTest() throws java.io.IOException, QrcodeGenerationException  {
+	public void generateQRCodeFailureTest() throws java.io.IOException, QrcodeGenerationException {
 		String stringjson = mapper.writeValueAsString(notificationDTO);
-       
+
 		Mockito.when(qrCodeGenerator.generateQrCode(null, QrVersion.V25)).thenThrow(QrcodeGenerationException.class);
 		service.generateQRCode(stringjson);
 
 		assertEquals(null, qrCodeResponseDTO.getResponse());
 
 	}
-	
+
 	/**
 	 * This test method is for succes case of getConfig
 	 * 
@@ -210,16 +229,16 @@ public class NotificationServiceTest {
 	 * @throws IOException
 	 * @throws java.io.IOException
 	 */
-	/*@Test
-	public void getConfigSuccessTest() throws Exception {
-		ResponseEntity<String> res = new ResponseEntity<String>(
-				"mosip.secondary-language=fra", HttpStatus.OK);
-		Map<String, String> configParams = new HashMap<>();
-		MainResponseDTO<Map<String, String>> response = new MainResponseDTO<>();
-        Mockito.when(restTemplate.getForEntity(Mockito.anyString(), Mockito.eq(String.class)))
-				.thenReturn(res);
-		response=service.getConfig();
-		assertEquals(response.getResponse().get("mosip.secondary-language"), "fra");
-	}*/
+	/*
+	 * @Test public void getConfigSuccessTest() throws Exception {
+	 * ResponseEntity<String> res = new
+	 * ResponseEntity<String>("mosip.secondary-language=fra", HttpStatus.OK);
+	 * Map<String, String> configParams = new HashMap<>();
+	 * MainResponseDTO<Map<String, String>> response = new MainResponseDTO<>();
+	 * Mockito.when(restTemplate.getForEntity(Mockito.anyString(),
+	 * Mockito.eq(String.class))).thenReturn(res); response = service.getConfig();
+	 * assertEquals(response.getResponse().get("mosip.secondary-language"), "fra");
+	 * }
+	 */
 
 }

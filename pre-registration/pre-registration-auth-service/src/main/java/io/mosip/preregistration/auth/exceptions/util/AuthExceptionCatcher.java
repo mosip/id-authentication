@@ -6,6 +6,7 @@ import io.mosip.kernel.core.exception.BaseUncheckedException;
 import io.mosip.preregistration.auth.errorcodes.ErrorCodes;
 import io.mosip.preregistration.auth.errorcodes.ErrorMessages;
 import io.mosip.preregistration.auth.exceptions.AuthServiceException;
+import io.mosip.preregistration.auth.exceptions.ConfigFileNotFoundException;
 import io.mosip.preregistration.auth.exceptions.InvalidateTokenException;
 import io.mosip.preregistration.auth.exceptions.ParseResponseException;
 import io.mosip.preregistration.auth.exceptions.SendOtpFailedException;
@@ -40,6 +41,9 @@ public class AuthExceptionCatcher {
 		}
 		else if (ex instanceof ParseResponseException) {
 			throw new ParseResponseException(((ParseResponseException) ex).getErrorCode(),((ParseResponseException) ex).getErrorText());
+		}
+		else if (ex instanceof ConfigFileNotFoundException) {
+			throw new ConfigFileNotFoundException(((ConfigFileNotFoundException) ex).getErrorCode(),((ConfigFileNotFoundException) ex).getErrorText());
 		}
 		
 		

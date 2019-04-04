@@ -64,13 +64,12 @@ public class SwaggerConfig {
 			}
 		}
 		Docket docket = new Docket(DocumentationType.SWAGGER_2).select().apis(RequestHandlerSelectors.any())
-				.paths(PathSelectors.regex("(?!/(error|actuator).*).*")).build();
+				.paths(PathSelectors.regex("(?!/(error).*).*")).build();
 
 		if (swaggerBaseUrlSet) {
 			docket.protocols(protocols()).host(hostWithPort);
 			System.out.println("\nSwagger Base URL: " + proto + "://" + hostWithPort + "\n");
 		}
-
 		return docket;
 	}
 
