@@ -21,8 +21,7 @@ import Utils from 'src/app/app.util';
 import { DialougComponent } from 'src/app/shared/dialoug/dialoug.component';
 import { ConfigService } from 'src/app/core/services/config.service';
 import { AttributeModel } from 'src/app/shared/models/demographic-model/attribute.modal';
-import {AppComponent} from 'src/app/app.component';
-
+import { AppComponent } from 'src/app/app.component';
 
 @Component({
   selector: 'app-demographic',
@@ -451,7 +450,7 @@ export class DemographicComponent implements OnInit, OnDestroy {
   private getGenderDetails() {
     return new Promise((resolve, reject) => {
       this.dataStorageService.getGenderDetails().subscribe(response => {
-        this.genders = response[appConstants.DEMOGRAPHIC_RESPONSE_KEYS.genderTypes];
+        this.genders = response[appConstants.RESPONSE][appConstants.DEMOGRAPHIC_RESPONSE_KEYS.genderTypes];
         resolve(true);
       });
     });
@@ -482,7 +481,7 @@ export class DemographicComponent implements OnInit, OnDestroy {
     return new Promise((resolve, reject) => {
       this.dataStorageService.getLocationMetadataHirearchy(appConstants.COUNTRY_HIERARCHY).subscribe(
         response => {
-          const countryHirearchy = response[appConstants.DEMOGRAPHIC_RESPONSE_KEYS.locations];
+          const countryHirearchy = response[appConstants.RESPONSE][appConstants.DEMOGRAPHIC_RESPONSE_KEYS.locations];
           if (countryHirearchy) {
             const uppermostLocationHierarchy = countryHirearchy.filter(
               (element: any) => element.name === appConstants.COUNTRY_NAME
@@ -539,7 +538,7 @@ export class DemographicComponent implements OnInit, OnDestroy {
     return new Promise((resolve, reject) => {
       this.dataStorageService.getLocationImmediateHierearchy(languageCode, parentLocationCode).subscribe(
         response => {
-          response[appConstants.DEMOGRAPHIC_RESPONSE_KEYS.locations].forEach(element => {
+          response[appConstants.RESPONSE][appConstants.DEMOGRAPHIC_RESPONSE_KEYS.locations].forEach(element => {
             let codeValueModal: CodeValueModal = {
               valueCode: element.code,
               valueName: element.name,
