@@ -45,7 +45,7 @@ export const APPEND_URL = {
   gender: 'masterdata/v1/gendertypes',
   transliteration: 'transliteration/transliterate',
   applicantType: 'applicanttype/v1/',
-  validDocument: 'v1.0/applicanttype/',
+  validDocument: 'applicanttype/',
   getApplicantType: 'getApplicantType',
   document: 'document/documents',
   document_copy: 'document/documents/copy',
@@ -148,24 +148,26 @@ export const DOCUMENT_UPLOAD_REQUEST_DTO = {
 };
 
 export const DOCUMENT_CATEGORY_DTO = {
-  attributes: [
-    {
-      attribute: 'individualTypeCode',
-      value: 'FR'
-    },
-    {
-      attribute: 'dateofbirth',
-      value: '2012-03-08T11:46:12.640Z'
-    },
-    {
-      attribute: 'genderCode',
-      value: 'MLE'
-    },
-    {
-      attribute: 'biometricAvailable',
-      value: false
-    }
-  ],
+  request: {
+    attributes: [
+      {
+        attribute: 'individualTypeCode',
+        value: 'FR'
+      },
+      {
+        attribute: 'dateofbirth',
+        value: '2012-03-08T11:46:12.640Z'
+      },
+      {
+        attribute: 'genderCode',
+        value: 'MLE'
+      },
+      {
+        attribute: 'biometricAvailable',
+        value: false
+      }
+    ]
+  },
   id: 'mosip.applicanttype.fetch',
   requestTime: '2012-03-08T11:46:12.640Z',
   metadata: {},

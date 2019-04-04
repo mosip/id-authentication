@@ -146,19 +146,19 @@ export class FileUploadComponent implements OnInit {
 
     for (let language of this.users[0].request.demographicDetails.identity.residenceStatus) {
       if (language.language === localStorage.getItem('langCode')) {
-        DOCUMENT_CATEGORY_DTO.attributes[0].value = language.value;
+        DOCUMENT_CATEGORY_DTO.request.attributes[0].value = language.value;
       }
     }
-    DOCUMENT_CATEGORY_DTO.attributes[2].value = this.users[0].request.demographicDetails.identity.gender[0].value;
+    DOCUMENT_CATEGORY_DTO.request.attributes[2].value = this.users[0].request.demographicDetails.identity.gender[0].value;
     // DOB = DOB + 'T11:46:12.640Z';
     // DOB.replace('1', '-');
 
-    DOCUMENT_CATEGORY_DTO.attributes[1].value = DOB.replace(/\//g, '-') + 'T11:46:12.640Z';
+    DOCUMENT_CATEGORY_DTO.request.attributes[1].value = DOB.replace(/\//g, '-') + 'T11:46:12.640Z';
     console.log('document catergory dto', DOCUMENT_CATEGORY_DTO);
 
     await this.dataStroage.getApplicantType(DOCUMENT_CATEGORY_DTO).subscribe(response => {
       console.log('response from applicant type', response);
-      this.getDocumentCategories(response['response'].applicantTypeCode);
+      this.getDocumentCategories(response['response'].applicantType.applicantTypeCode);
       this.setApplicantType(response);
     });
   }
@@ -170,12 +170,14 @@ export class FileUploadComponent implements OnInit {
   }
 
   async getDocumentCategories(applicantcode) {
+    console.log('applicantCode', applicantcode);
+
     await this.dataStroage.getDocumentCategories(applicantcode).subscribe(res => {
-      console.log('response form  document categories', res['documentCategories']);
+      console.log('response form  document categories', res);
       console.log(this.LOD);
-      this.LOD = res['documentCategories'];
+      this.LOD = res['response'].documentCategories;
       console.log(this.applicantType);
-      this.registration.setDocumentCategories(res['documentCategories']);
+      this.registration.setDocumentCategories(res['response'].documentCategories);
     });
   }
 
