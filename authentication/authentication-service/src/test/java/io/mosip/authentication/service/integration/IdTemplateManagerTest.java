@@ -58,6 +58,8 @@ import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderIm
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class, TemplateManagerBuilderImpl.class })
 public class IdTemplateManagerTest {
 
+
+
 	private static final String OTP_SMS_TEMPLATE_TXT = "otp-sms-template";
 
 	@InjectMocks
@@ -145,7 +147,7 @@ public class IdTemplateManagerTest {
 	public void TestfetchTemplate() throws IdAuthenticationBusinessException, RestServiceException {
 		MockEnvironment mockenv = new MockEnvironment();
 		mockenv.merge(((AbstractEnvironment) environment));
-		mockenv.setProperty("notification.language.support", "primary");
+		mockenv.setProperty("mosip.notification.language-type", "primary");
 		ReflectionTestUtils.setField(idTemplateManager, "environment", mockenv);
 		mockRestCalls();
 		idTemplateManager.fetchTemplate("test");
@@ -154,7 +156,7 @@ public class IdTemplateManagerTest {
 	public void TestfetchTemplate_LangSecondary() throws IdAuthenticationBusinessException, RestServiceException {
 		MockEnvironment mockenv = new MockEnvironment();
 		mockenv.merge(((AbstractEnvironment) environment));
-		mockenv.setProperty("notification.language.support", "secondary");
+		mockenv.setProperty("mosip.notification.language-type", "BOTH");
 		ReflectionTestUtils.setField(idTemplateManager, "environment", mockenv);
 		mockRestCalls();
 		idTemplateManager.fetchTemplate("otp-sms-template");
@@ -164,7 +166,7 @@ public class IdTemplateManagerTest {
 	public void TestInvalidLangtype() throws IdAuthenticationBusinessException, RestServiceException {
 		MockEnvironment mockenv = new MockEnvironment();
 		mockenv.merge(((AbstractEnvironment) environment));
-		mockenv.setProperty("notification.language.support", "invalid");
+		mockenv.setProperty("mosip.notification.language-type", "invalid");
 		ReflectionTestUtils.setField(idTemplateManager, "environment", mockenv);
 		mockRestCalls();
 		idTemplateManager.fetchTemplate("test");
