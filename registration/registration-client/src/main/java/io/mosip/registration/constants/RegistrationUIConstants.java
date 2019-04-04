@@ -294,4 +294,13 @@ public class RegistrationUIConstants {
 	//Notification
 	public static final String EMAIL_ERROR_MSG = bundle.getString("EMAIL_ERROR_MSG");
 	public static final String SMS_ERROR_MSG = bundle.getString("SMS_ERROR_MSG");
+	
+	//Application Updates
+	public static final String NO_UPDATES_FOUND = bundle.getString("NO_UPDATES_FOUND");
+	public static final String UNABLE_FIND_UPDATES = bundle.getString("UNABLE_FIND_UPDATES");
+	public static final String NO_INTERNET_CONNECTION = bundle.getString("NO_INTERNET_CONNECTION");
+	public static final String UPDATE_AVAILABLE = bundle.getString("UPDATE_AVAILABLE");
+	public static final String CONFIRM_UPDATE = bundle.getString("CONFIRM_UPDATE");
+	public static final String UPDATE_COMPLETED = bundle.getString("UPDATE_COMPLETED");
+	public static final String UNABLE_TO_UPDATE = bundle.getString("UNABLE_TO_UPDATE");
 }

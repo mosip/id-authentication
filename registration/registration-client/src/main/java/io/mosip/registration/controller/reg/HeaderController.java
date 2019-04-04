@@ -391,7 +391,7 @@ public class HeaderController extends BaseController {
 				if (registrationUpdate.hasUpdate()) {
 					hasUpdate = true;
 				} else {
-					generateAlert(RegistrationConstants.ALERT_INFORMATION, "No Updates found");
+					generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.NO_UPDATES_FOUND);
 
 				}
 
@@ -399,18 +399,19 @@ public class HeaderController extends BaseController {
 				LOGGER.error(LoggerConstants.LOG_REG_HEADER, APPLICATION_NAME, APPLICATION_ID,
 						exception.getMessage() + ExceptionUtils.getStackTrace(exception));
 
-				generateAlert(RegistrationConstants.ERROR, "Unable to check for updates");
+				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_FIND_UPDATES);
 			}
 
 		} else {
-			generateAlert(RegistrationConstants.ERROR, "No Internet Connection");
+			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.NO_INTERNET_CONNECTION);
 		}
 		return hasUpdate;
 	}
 
 	private void update() {
 		try {
-			Alert updateAlert = createAlert(AlertType.CONFIRMATION, "UPDATE AVAILABLE", "", "CONFIRM TO UPDATE");
+			Alert updateAlert = createAlert(AlertType.CONFIRMATION, RegistrationUIConstants.UPDATE_AVAILABLE,
+					RegistrationConstants.EMPTY, RegistrationUIConstants.CONFIRM_UPDATE);
 
 			updateAlert.showAndWait();
 
@@ -421,7 +422,7 @@ public class HeaderController extends BaseController {
 				registrationUpdate.getWithLatestJars();
 
 				// Update completed Re-Launch application
-				generateAlert(RegistrationConstants.ALERT_INFORMATION, "UPDATE Completed");
+				generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.UPDATE_COMPLETED);
 
 				System.exit(0);
 			}
@@ -429,7 +430,7 @@ public class HeaderController extends BaseController {
 				| ParserConfigurationException | SAXException exception) {
 			LOGGER.error(LoggerConstants.LOG_REG_HEADER, APPLICATION_NAME, APPLICATION_ID,
 					exception.getMessage() + ExceptionUtils.getStackTrace(exception));
-			generateAlert(RegistrationConstants.ERROR, "Unable to update");
+			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_TO_UPDATE);
 		}
 	}
 

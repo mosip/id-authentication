@@ -216,7 +216,7 @@
 							onAction="#intiateRemapProcess" text="%remap" />
 						<SeparatorMenuItem />
 						<MenuItem mnemonicParsing="false" onAction="#hasUpdate"
-							text="Check Updates" />
+							text="%checkUpdates" />
 						<SeparatorMenuItem />
 						<MenuItem mnemonicParsing="false"
 							onAction="#redirectHome" text="%home" />
