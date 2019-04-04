@@ -65,7 +65,7 @@ public class TransliterationService {
 	 * Reference for ${ver} from property file
 	 */
 	@Value("${ver}")
-	private String ver;
+	private String version;
 
 	/**
 	 * Request map to store the id and version and this is to be passed to request
@@ -80,7 +80,7 @@ public class TransliterationService {
 	@PostConstruct
 	public void setup() {
 		requiredRequestMap.put("id", id);
-		requiredRequestMap.put("ver", ver);
+		requiredRequestMap.put("version", version);
 	}
 
 	/**
@@ -93,7 +93,7 @@ public class TransliterationService {
 	public MainResponseDTO<TransliterationDTO> translitratorService(MainRequestDTO<TransliterationDTO> requestDTO) {
 		MainResponseDTO<TransliterationDTO> responseDTO = new MainResponseDTO<>();
 		try {
-			if (ValidationUtil.requestValidator(requestDTO)) {
+			if (ValidationUtil.requestValidator(serviceUtil.prepareRequestParamMap(requestDTO),requiredRequestMap)) {
 				TransliterationDTO transliterationRequestDTO = requestDTO.getRequest();
 				if (serviceUtil.isEntryFieldsNull(transliterationRequestDTO)) {
 					if(serviceUtil.supportedLanguageCheck(transliterationRequestDTO)) {
@@ -106,7 +106,7 @@ public class TransliterationService {
 						responseDTO.setResponse(serviceUtil.responseSetter(toFieldValue, transliterationRequestDTO));
 						responseDTO.setResponsetime(serviceUtil.getCurrentResponseTime());
 						responseDTO.setId(id);
-						responseDTO.setVersion(ver);
+						responseDTO.setVersion(version);
 					}
 					else {
 						throw new UnSupportedLanguageException(ErrorCodes.PRG_TRL_APP_008.getCode(), 

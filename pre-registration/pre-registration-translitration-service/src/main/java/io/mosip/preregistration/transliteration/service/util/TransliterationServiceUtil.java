@@ -4,6 +4,8 @@
  */
 package io.mosip.preregistration.transliteration.service.util;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -47,8 +49,9 @@ public class TransliterationServiceUtil {
 		Map<String, String> inputValidation = new HashMap<>();
 		inputValidation.put(RequestCodes.ID.getCode(), requestDTO.getId());
 		inputValidation.put(RequestCodes.VER.getCode(), requestDTO.getVersion());
+		LocalDate date = requestDTO.getRequesttime().toInstant().atZone(ZoneId.of("UTC")).toLocalDate();
 		inputValidation.put(RequestCodes.REQ_TIME.getCode(),
-				getDateString(requestDTO.getRequesttime()));
+				date.toString());
 		inputValidation.put(RequestCodes.REQUEST.getCode(), requestDTO.getRequest().toString());
 		return inputValidation;
 	}
@@ -98,5 +101,7 @@ public class TransliterationServiceUtil {
 	public boolean supportedLanguageCheck(TransliterationDTO dto) {
 		return supportedLang.contains(dto.getFromFieldLang())&&supportedLang.contains(dto.getToFieldLang());
 	}
+	
+
 
 }
