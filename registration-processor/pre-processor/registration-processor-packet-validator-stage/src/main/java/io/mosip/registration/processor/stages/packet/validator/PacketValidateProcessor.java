@@ -177,9 +177,7 @@ public class PacketValidateProcessor {
 		String preRegId = null;
 		InternalRegistrationStatusDto registrationStatusDto = new InternalRegistrationStatusDto();
 		try {
-			registrationStatusDto
-					.setLatestTransactionTypeCode(RegistrationTransactionTypeCode.VALIDATE_PACKET.toString());
-			registrationStatusDto.setRegistrationStageName(RegistrationStageName.PACKET_VALIDATOR_STAGE);
+
 			object.setMessageBusAddress(MessageBusAddress.PACKET_VALIDATOR_BUS_IN);
 			object.setIsValid(Boolean.FALSE);
 			object.setInternalError(Boolean.FALSE);
@@ -190,6 +188,9 @@ public class PacketValidateProcessor {
 			isTransactionSuccessful = false;
 
 			registrationStatusDto = registrationStatusService.getRegistrationStatus(registrationId);
+			registrationStatusDto
+					.setLatestTransactionTypeCode(RegistrationTransactionTypeCode.VALIDATE_PACKET.toString());
+			registrationStatusDto.setRegistrationStageName(RegistrationStageName.PACKET_VALIDATOR_STAGE);
 			InputStream packetMetaInfoStream = adapter.getFile(registrationId, PacketFiles.PACKET_META_INFO.name());
 			PacketMetaInfo packetMetaInfo = (PacketMetaInfo) JsonUtil.inputStreamtoJavaObject(packetMetaInfoStream,
 					PacketMetaInfo.class);
