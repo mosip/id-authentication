@@ -209,7 +209,6 @@ public class RegistrationConstants {
 	public static final String LOST_UIN_CONFIG_FLAG = "mosip.registration.lost_uin_disable_flag";
 
 	// update UIN
-	public static final String UIN_NAV_LABEL = "/ UIN Update";
 	public static final String UIN_LABEL = "UIN";
 	public static final String FIRST_TOGGLE_LABEL = "toggleLabel1";
 	public static final String SECOND_TOGGLE_LABEL = "toggleLabel2";
@@ -234,7 +233,7 @@ public class RegistrationConstants {
 	public static final String ONBOARD_IMG_PATH = "images/tick.png";
 
 	// RegistrationApproval
-	public static final String PLACEHOLDER_LABEL = "No Packets for approval";
+	public static final String PLACEHOLDER_LABEL = "PLACEHOLDER_LABEL";
 	public static final String REGISTRATIONID = "registrationID";
 	public static final String STATUSCODE = "statusCode";
 	public static final String STATUSCOMMENT = "statusComment";
