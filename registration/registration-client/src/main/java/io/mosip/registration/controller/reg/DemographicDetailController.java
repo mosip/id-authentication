@@ -1000,19 +1000,19 @@ public class DemographicDetailController extends BaseController {
 			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, "Populating the local language fields");
 			boolean hasToBeTransliterated = true;
-			fxUtils.validateOnType(parentFlowPane, fullName, validation, fullNameLocalLanguage, hasToBeTransliterated);
-			fxUtils.validateOnType(parentFlowPane, addressLine1, validation, addressLine1LocalLanguage, hasToBeTransliterated);
-			fxUtils.validateOnType(parentFlowPane, addressLine2, validation, addressLine2LocalLanguage, hasToBeTransliterated);
-			fxUtils.validateOnType(parentFlowPane, addressLine3, validation, addressLine3LocalLanguage, hasToBeTransliterated);
+			fxUtils.validateOnFocusOut(parentFlowPane, fullName, validation, fullNameLocalLanguage, hasToBeTransliterated);
+			fxUtils.validateOnFocusOut(parentFlowPane, addressLine1, validation, addressLine1LocalLanguage, hasToBeTransliterated);
+			fxUtils.validateOnFocusOut(parentFlowPane, addressLine2, validation, addressLine2LocalLanguage, hasToBeTransliterated);
+			fxUtils.validateOnFocusOut(parentFlowPane, addressLine3, validation, addressLine3LocalLanguage, hasToBeTransliterated);
 			fxUtils.validateOnType(parentFlowPane, parentName, validation, parentNameLocalLanguage, hasToBeTransliterated);
 			fxUtils.validateOnType(parentFlowPane, uinId, validation, uinIdLocalLanguage, !hasToBeTransliterated);
 
 			fxUtils.validateOnType(parentFlowPane, fullNameLocalLanguage, validation);
 
-			fxUtils.validateOnFocusOut(parentFlowPane, mobileNo, validation, mobileNoLocalLanguage);
-			fxUtils.validateOnFocusOut(parentFlowPane, postalCode, validation, postalCodeLocalLanguage);
-			fxUtils.validateOnFocusOut(parentFlowPane, emailId, validation, emailIdLocalLanguage);
-			fxUtils.validateOnFocusOut(parentFlowPane, cniOrPinNumber, validation, cniOrPinNumberLocalLanguage);
+			fxUtils.validateOnFocusOut(parentFlowPane, mobileNo, validation, mobileNoLocalLanguage, !hasToBeTransliterated);
+			fxUtils.validateOnFocusOut(parentFlowPane, postalCode, validation, postalCodeLocalLanguage, !hasToBeTransliterated);
+			fxUtils.validateOnFocusOut(parentFlowPane, emailId, validation, emailIdLocalLanguage, !hasToBeTransliterated);
+			fxUtils.validateOnFocusOut(parentFlowPane, cniOrPinNumber, validation, cniOrPinNumberLocalLanguage, !hasToBeTransliterated);
 
 			fxUtils.populateLocalComboBox(parentFlowPane, city, cityLocalLanguage);
 			fxUtils.populateLocalComboBox(parentFlowPane, region, regionLocalLanguage);

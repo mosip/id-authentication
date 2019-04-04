@@ -226,8 +226,11 @@ public class FXUtils {
 	 *            the instance of {@link Validations}
 	 * @param localField
 	 *            the local or secondary language {@link TextField}
+	 * @param haveToTransliterate
+	 *            the flag to know whether the field value has to be transliterated
 	 */
-	public void validateOnFocusOut(Pane parentPane, TextField field, Validations validation, TextField localField) {
+	public void validateOnFocusOut(Pane parentPane, TextField field, Validations validation, TextField localField,
+			boolean haveToTransliterate) {
 
 		field.focusedProperty().addListener((obsValue, oldValue, newValue) -> {
 			if (oldValue) {
@@ -235,7 +238,12 @@ public class FXUtils {
 					hideLabel(parentPane, field);
 					hideErrorMessageLabel(parentPane, field);
 					if (localField != null) {
-						localField.setText(field.getText());
+						if (haveToTransliterate) {
+							localField.setText(transliteration.transliterate(ApplicationContext.applicationLanguage(),
+									ApplicationContext.localLanguage(), field.getText()));
+						} else {
+							localField.setText(field.getText());
+						}
 					}
 				} else {
 					toggleUIField(parentPane, field.getId() + RegistrationConstants.MESSAGE, true);

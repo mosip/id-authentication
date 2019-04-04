@@ -505,6 +505,31 @@ public class Validations extends BaseController {
 						.valueOf(ApplicationContext.map().get(RegistrationConstants.POSTAL_CODE_VALIDATION_REGEX));
 				validation[1] = RegistrationConstants.TRUE;
 				break;
+			case "fullName":
+				validation[0] = String
+				.valueOf(ApplicationContext.map().get(RegistrationConstants.ID_FULL_NAME_REGEX));
+				validation[1] = RegistrationConstants.TRUE;
+				break;
+			case "age":
+				validation[0] = String
+				.valueOf(ApplicationContext.map().get(RegistrationConstants.AGE_REGEX));
+				validation[1] = RegistrationConstants.TRUE;
+				break;
+			case "addressLine1":
+				validation[0] = String
+				.valueOf(ApplicationContext.map().get(RegistrationConstants.ADDRESS_LINE_1_REGEX));
+				validation[1] = RegistrationConstants.TRUE;
+				break;
+			case "addressLine2":
+				validation[0] = String
+				.valueOf(ApplicationContext.map().get(RegistrationConstants.ADDRESS_LINE_2_REGEX));
+				validation[1] = RegistrationConstants.FALSE;
+				break;
+			case "addressLine3":
+				validation[0] = String
+				.valueOf(ApplicationContext.map().get(RegistrationConstants.ADDRESS_LINE_3_REGEX));
+				validation[1] = RegistrationConstants.FALSE;
+				break;
 			default:
 				validation[0] = ".*";
 				validation[1] = RegistrationConstants.FALSE;
