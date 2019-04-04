@@ -667,12 +667,7 @@ public class DemographicDetailController extends BaseController {
 			List<IndividualTypeDto> applicantTypeLocal = masterSyncService
 					.getIndividualType(RegistrationConstants.ATTR_NON_FORINGER, ApplicationContext.localLanguage());
 			residenceLocalLanguage.setText(applicantTypeLocal.get(0).getName());
-			textMale=applicationLabelBundle.getString("male");
-			textFemale=applicationLabelBundle.getString("female");
-			textMaleLocalLanguage=localLabelBundle.getString("male");
-			textFemaleLocalLanguage=localLabelBundle.getString("female");
-			genderValue.setText(textMale);
-			genderValueLocalLanguage.setText(textMaleLocalLanguage);
+			genderSettings();
 			disableLocalFields();
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error("REGISTRATION - CONTROLLER", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
@@ -680,6 +675,14 @@ public class DemographicDetailController extends BaseController {
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_LOAD_DEMOGRAPHIC_PAGE);
 
 		}
+	}
+
+	private void genderSettings() {
+		textMale=applicationLabelBundle.getString("male");
+		textFemale=applicationLabelBundle.getString("female");
+		textMaleLocalLanguage=localLabelBundle.getString("male");
+		textFemaleLocalLanguage=localLabelBundle.getString("female");
+		male(null);
 	}
 
 	/**
@@ -1537,7 +1540,6 @@ public class DemographicDetailController extends BaseController {
 			populateFieldValue(region, regionLocalLanguage, moroccoIdentity.getRegion());
 			populateFieldValue(province, provinceLocalLanguage, moroccoIdentity.getProvince());
 			populateFieldValue(city, cityLocalLanguage, moroccoIdentity.getCity());
-			populateFieldValue(genderValue, genderValueLocalLanguage, moroccoIdentity.getGender());
 			Boolean isSwitchedOn = (Boolean) SessionContext.map().get(RegistrationConstants.DOB_TOGGLE);
 			switchedOn.set(isSwitchedOn == null ? false : isSwitchedOn);
 			postalCode.setText(moroccoIdentity.getPostalCode() + "");
@@ -1551,6 +1553,16 @@ public class DemographicDetailController extends BaseController {
 			emailIdLocalLanguage.setText(moroccoIdentity.getEmail());
 			cniOrPinNumberLocalLanguage.setText(moroccoIdentity.getCnieNumber() + "");
 
+			populateFieldValue(genderValue, genderValueLocalLanguage, moroccoIdentity.getGender());
+			
+			if(moroccoIdentity.getGender()!=null && moroccoIdentity.getGender().size()>0)
+			{
+				if(moroccoIdentity.getGender().get(0).getValue().equals(textMale)||moroccoIdentity.getGender().get(0).getValue().equals(textMaleLocalLanguage)) {
+					male(null);
+				}else {
+					female(null);
+				}
+			}
 			if (switchedOn.get()) {
 				if (moroccoIdentity.getDateOfBirth() != null) {
 					String[] date = moroccoIdentity.getDateOfBirth().split("/");
