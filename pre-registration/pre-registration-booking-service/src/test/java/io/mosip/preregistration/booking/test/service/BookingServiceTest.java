@@ -932,7 +932,9 @@ public class BookingServiceTest {
 
 	@Test(expected = BookingDataNotFoundException.class)
 	public void getAppointmentDetailsTestFail() {
-		Mockito.when(bookingDAO.findByPreRegistrationId("23587986034785")).thenReturn(bookingEntity);
+		BookingDataNotFoundException exception=new BookingDataNotFoundException(ErrorCodes.PRG_BOOK_RCI_013.toString(),
+				ErrorMessages.BOOKING_DATA_NOT_FOUND.toString());
+		Mockito.when(bookingDAO.findByPreRegistrationId("23587986034785")).thenThrow(exception);
 		// RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
 		// Mockito.when(restTemplateBuilder.build()).thenReturn(restTemplate);
 		ResponseEntity<MainListResponseDTO<PreRegistartionStatusDTO>> respEntity = new ResponseEntity<>(preRegResponse,
