@@ -162,6 +162,8 @@ public class UserOnboardDAOImpl implements UserOnboardDAO {
 
 			bioMetricsList.add(bioMetrics);
 
+			userBiometricRepository.deleteByUserBiometricIdUsrId(SessionContext.userContext().getUserId());
+
 			userBiometricRepository.saveAll(bioMetricsList);
 
 			LOGGER.info(LOG_REG_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID,
@@ -186,7 +188,7 @@ public class UserOnboardDAOImpl implements UserOnboardDAO {
 			user.setIsActive(true);
 			user.setLangCode("eng");
 
-			machineMappingDAO.save(user);
+			//machineMappingDAO.save(user);
 
 			LOGGER.info(LOG_REG_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID,
 					"User and machine information insertion sucessful");

@@ -18,4 +18,6 @@ public interface UserBiometricRepository extends BaseRepository<UserBiometric, U
 	public List<UserBiometric> findByUserBiometricIdBioAttributeCodeAndIsActiveTrue(String attrCode);
 	
 	public List<UserBiometric> findByUserBiometricIdUsrIdAndIsActiveTrueAndUserBiometricIdBioTypeCodeIgnoreCase(String userId, String bioType);
+	
+	void deleteByUserBiometricIdUsrId(String userID);
 }
