@@ -955,7 +955,7 @@ public class DemographicDetailController extends BaseController {
 				}
 				int age = 0;
 				if (newValue.matches("\\d{1,3}")) {
-					if (Integer.parseInt(ageField.getText()) >= maxAge) {
+					if (Integer.parseInt(ageField.getText()) > maxAge) {
 						ageField.setText(oldValue);
 						generateAlert(RegistrationConstants.ERROR,
 								RegistrationUIConstants.MAX_AGE_WARNING + " " + maxAge);
