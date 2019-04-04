@@ -209,7 +209,7 @@ public abstract class BaseIDAFilter implements Filter {
 		requestWrapper.resetInputStream();
 		authResponseDTO.setId(env.getProperty(fetchId(requestWrapper)));
 		requestWrapper.resetInputStream();
-		authResponseDTO.setVersion(getVersionFromUrl(requestWrapper));
+		authResponseDTO.setVersion(Objects.nonNull(requestMap) && requestMap.get(VERSION) instanceof String ? (String) requestMap.get(VERSION) : null);
 		Map<String, Object> responseMap = mapper.convertValue(authResponseDTO,
 				new TypeReference<Map<String, Object>>() {
 				});
@@ -319,11 +319,10 @@ public abstract class BaseIDAFilter implements Filter {
 		
 			String id = fetchId(requestWrapper);
 			requestWrapper.resetInputStream();
-			String verFromUrl = getVersionFromUrl(requestWrapper);
 			if (Objects.nonNull(requestBody) && !requestBody.isEmpty() && requestBody.containsKey(ID)
 					&& requestBody.containsKey(VERSION)) {
 				validateId(requestBody, id);
-				validateVersion(requestBody, verFromUrl);
+				validateVersion(requestBody);
 			}
 		
 	}
@@ -354,10 +353,10 @@ public abstract class BaseIDAFilter implements Filter {
 	 * @param verFromUrl the version from URL
 	 * @throws IdAuthenticationAppException the id authentication app exception
 	 */
-	private void validateVersion(Map<String, Object> requestBody, String verFromUrl)
+	private void validateVersion(Map<String, Object> requestBody)
 			throws IdAuthenticationAppException {
 		String verFromRequest = (String) requestBody.get(VERSION);
-		if (!VERSION_PATTERN.matcher(verFromRequest).matches() || !verFromRequest.equals(verFromUrl)) {
+		if (!VERSION_PATTERN.matcher(verFromRequest).matches()) {
 			exceptionHandling(VERSION);
 		}
 	}
@@ -408,11 +407,9 @@ public abstract class BaseIDAFilter implements Filter {
 			Map<String, Object> requestBody = getRequestBody(requestWrapper.getInputStream());
 			Map<String, Object> responseMap = setResponseParams(requestBody,
 					getResponseBody(responseWrapper.toString()));
-			String version;
+			String version = null;
 			if (Objects.nonNull(requestBody) && requestBody.get(VERSION) instanceof String) {
 				version = (String) requestBody.get(VERSION);
-			} else {
-				version = getVersionFromUrl(requestWrapper);
 			}
 			responseMap.replace(VERSION, version);
 			String idType = Objects.nonNull(requestBody)? (String) requestBody.get(ID) : null;
@@ -425,31 +422,6 @@ public abstract class BaseIDAFilter implements Filter {
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
 		}
 	}
-
-	/**
-	 * getVersionFromUrl method is used to fetch the version from URL
-	 *
-	 * @param requestWrapper {@link ResettableStreamHttpServletRequest}
-	 * @return the version from url
-	 */
-	protected String getVersionFromUrl(ResettableStreamHttpServletRequest requestWrapper) {
-		String ver = null;
-		String url = requestWrapper.getRequestURL().toString();
-		String contextPath = requestWrapper.getContextPath();
-
-		if ((StringUtils.isEmpty(url)) && (StringUtils.isEmpty(contextPath))) {
-			String[] splitedUrlByContext = url.split(contextPath);
-			String[] contextValues = splitedUrlByContext[1].split("/");
-			for (String path : contextValues) {
-				if (VERSION_PATTERN.matcher(path).matches()) {
-					return path;
-				}
-			}
-		}
-		return ver;
-	}
-	
-	
 
 	/**
 	 * setResponseParams method is set the transaction ID and

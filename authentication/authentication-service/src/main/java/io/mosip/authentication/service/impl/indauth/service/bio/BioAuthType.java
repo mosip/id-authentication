@@ -109,7 +109,7 @@ public enum BioAuthType implements AuthType {
 
 			String bioType = getType();
 			Integer threshold = null;
-			String key = bioType.toLowerCase().concat(MULTI_MIN_MATCH_VALUE_SUFFIX);
+			String key = bioType.toLowerCase().concat(COMPOSITE_THRESHOLD);
 			String property = environment.getProperty(key);
 			if (property != null && !property.isEmpty()) {
 				threshold = Integer.parseInt(property);
@@ -144,7 +144,7 @@ public enum BioAuthType implements AuthType {
 
 			String bioType = getType();
 			Integer threshold = null;
-			String key = bioType.toLowerCase().concat(MULTI_MIN_MATCH_VALUE_SUFFIX);
+			String key = bioType.toLowerCase().concat(COMPOSITE_THRESHOLD);
 			String property = environment.getProperty(key);
 			if (property != null && !property.isEmpty()) {
 				threshold = Integer.parseInt(property);
@@ -207,10 +207,13 @@ public enum BioAuthType implements AuthType {
 		}
 	};
 
-	private static final String MIN_MATCH_VALUE_SUFFIX = ".min.match.value";
+	/** The Constant SINGLE_THRESHOLD. */
+	private static final String SINGLE_THRESHOLD = ".single.threshold";
 
-	private static final String MULTI_MIN_MATCH_VALUE_SUFFIX = ".multi" + MIN_MATCH_VALUE_SUFFIX;
+	/** The Constant COMPOSITE_THRESHOLD. */
+	private static final String COMPOSITE_THRESHOLD = ".composite.threshold";
 
+	/** The Constant FINGERPRINT. */
 	private static final String FINGERPRINT = "Fingerprint";
 
 	/** The type. */
@@ -319,7 +322,7 @@ public enum BioAuthType implements AuthType {
 
 		String bioType = getType();
 		Integer threshold = null;
-		String key = bioType.toLowerCase().concat(MIN_MATCH_VALUE_SUFFIX);
+		String key = bioType.toLowerCase().concat(SINGLE_THRESHOLD);
 		String property = environment.getProperty(key);
 		if (property != null && !property.isEmpty()) {
 			threshold = Integer.parseInt(property);

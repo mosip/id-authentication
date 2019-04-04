@@ -47,9 +47,6 @@ public abstract class IdAuthValidator implements Validator {
 	/** The Constant VALIDATE. */
 	private static final String VALIDATE = "VALIDATE";
 
-	/** The Constant ID_AUTH_VALIDATOR. */
-	private static final String ID_AUTH_VALIDATOR = "ID_AUTH_VALIDATOR";
-
 	/** The Constant SESSION_ID. */
 	private static final String SESSION_ID = "SESSION_ID";
 
@@ -70,9 +67,6 @@ public abstract class IdAuthValidator implements Validator {
 
 	/** The mosip logger. */
 	private static Logger mosipLogger = IdaLogger.getLogger(IdAuthValidator.class);
-
-	/** The Constant REQUESTDATE_RECEIVED_IN_MAX_TIME_MINS. */
-	private static final String REQUESTDATE_RECEIVED_IN_MAX_TIME_MINS = "authrequest.received-time-allowed.in-hours";
 
 	private static final String CONSENT_OBTAINED = "consentObtained";
 	/** The uin validator. */
