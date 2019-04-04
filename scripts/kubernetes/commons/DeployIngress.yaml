@@ -26,7 +26,7 @@ spec:
         backend:
           serviceName: kernel-auditmanager-service
           servicePort: 8081
-      - path: /otpnotifier
+      - path: /v1/otpnotifier
         backend:
           serviceName: kernel-otpnotification-service
           servicePort: 8082
@@ -34,7 +34,7 @@ spec:
         backend:
           serviceName: kernel-emailnotification-service
           servicePort: 8083
-      - path: /smsnotifier
+      - path: /v1/smsnotifier
         backend:
           serviceName: kernel-smsnotification-service
           servicePort: 8084
