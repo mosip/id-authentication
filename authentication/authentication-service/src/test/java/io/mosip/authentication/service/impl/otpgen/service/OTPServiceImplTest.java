@@ -25,7 +25,6 @@ import org.springframework.web.context.WebApplicationContext;
 
 import io.mosip.authentication.core.dto.indauth.IdType;
 import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
-import io.mosip.authentication.core.dto.otpgen.ChannelDTO;
 import io.mosip.authentication.core.dto.otpgen.OtpRequestDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.RestServiceException;
@@ -145,10 +144,30 @@ public class OTPServiceImplTest {
 
 	@Test(expected = IdAuthenticationBusinessException.class)
 	public void TestPhoneorEmailisNull() throws IdAuthenticationBusinessException, RestServiceException {
-		OtpRequestDTO otpRequestDto = getOtpRequestDTO();
+		OtpRequestDTO otpRequestDto = new OtpRequestDTO();
+		otpRequestDto.setId("id");
+		otpRequestDto.setRequestTime(new SimpleDateFormat(env.getProperty("datetime.pattern")).format(new Date()));
+		otpRequestDto.setTransactionID("1234567890");
+		ArrayList<String> channelList = new ArrayList<String>();
+		channelList.add(null);
+		otpRequestDto.setOtpChannel(channelList);
+		otpRequestDto.setIndividualId("2345678901234");
+		otpRequestDto.setIndividualIdType(IdType.UIN.getType());
+		otpRequestDto.setRequestTime("2019-02-18T18:17:48.923+05:30");
 		Map<String, Object> valueMap = new HashMap<>();
 		Map<String, List<IdentityInfoDTO>> idInfo = new HashMap<>();
+		List<IdentityInfoDTO> mailList = new ArrayList<>();
+		IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
+		identityInfoDTO.setValue("abc@bc.com");
+		mailList.add(identityInfoDTO);
+		List<IdentityInfoDTO> phoneList = new ArrayList<>();
+		IdentityInfoDTO identityInfoDTO1 = new IdentityInfoDTO();
+		identityInfoDTO1.setValue("9876543210");
+		phoneList.add(identityInfoDTO1);
+		idInfo.put("email", mailList);
+		idInfo.put("phone", phoneList);
 		valueMap.put("uin", "426789089018");
+		valueMap.put("phone", "426789089018");
 		valueMap.put("response", idInfo);
 		Mockito.when(idAuthService.processIdType(Mockito.any(), Mockito.any(), Mockito.anyBoolean()))
 				.thenReturn(valueMap);
@@ -178,7 +197,16 @@ public class OTPServiceImplTest {
 
 	@Test(expected = IdAuthenticationBusinessException.class)
 	public void TestPhonenumberisNull() throws IdAuthenticationBusinessException, RestServiceException {
-		OtpRequestDTO otpRequestDto = getOtpRequestDTO();
+		OtpRequestDTO otpRequestDto = new OtpRequestDTO();
+		otpRequestDto.setId("id");
+		otpRequestDto.setRequestTime(new SimpleDateFormat(env.getProperty("datetime.pattern")).format(new Date()));
+		otpRequestDto.setTransactionID("1234567890");
+		ArrayList<String> channelList = new ArrayList<String>();
+		channelList.add(null);
+		otpRequestDto.setOtpChannel(channelList);
+		otpRequestDto.setIndividualId("2345678901234");
+		otpRequestDto.setIndividualIdType(IdType.UIN.getType());
+		otpRequestDto.setRequestTime("2019-02-18T18:17:48.923+05:30");
 		Map<String, Object> valueMap = new HashMap<>();
 		Map<String, List<IdentityInfoDTO>> idInfo = new HashMap<>();
 		List<IdentityInfoDTO> mailList = new ArrayList<>();
@@ -218,10 +246,10 @@ public class OTPServiceImplTest {
 		otpRequestDto.setId("id");
 		otpRequestDto.setRequestTime(new SimpleDateFormat(env.getProperty("datetime.pattern")).format(new Date()));
 		otpRequestDto.setTransactionID("1234567890");
-		ChannelDTO otpChannel = new ChannelDTO();
-		otpChannel.setPhone(true);
-		otpChannel.setEmail(true);
-		otpRequestDto.setOtpChannel(otpChannel);
+		ArrayList<String> channelList = new ArrayList<String>();
+		channelList.add("PHONE");
+		channelList.add("EMAIL");
+		otpRequestDto.setOtpChannel(channelList);
 		otpRequestDto.setIndividualId("2345678901234");
 		otpRequestDto.setIndividualIdType(IdType.UIN.getType());
 		otpRequestDto.setRequestTime("2019-02-18T18:17:48.923+05:30");

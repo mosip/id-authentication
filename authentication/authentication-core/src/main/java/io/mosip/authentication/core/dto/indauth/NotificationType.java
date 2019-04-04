@@ -10,6 +10,8 @@ public enum NotificationType {
 	 * Enum for Email
 	 */
 	EMAIL("email"),
+	
+	PHONE("phone"),
 	/**
 	 * Enum for SMS
 	 */

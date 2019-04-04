@@ -1,5 +1,7 @@
 package io.mosip.authentication.core.dto.otpgen;
 
+import java.util.List;
+
 import lombok.Data;
 
 /**
@@ -30,6 +32,6 @@ public class OtpRequestDTO {
 	/** Variable to hold partnerID */
 	private String individualIdType;
 
-	private ChannelDTO otpChannel;
+	private List<String> otpChannel;
 
 }

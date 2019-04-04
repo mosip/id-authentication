@@ -11,6 +11,7 @@ import java.util.stream.Stream;
 import io.mosip.authentication.core.dto.indauth.AuthError;
 import io.mosip.authentication.core.dto.indauth.AuthResponseDTO;
 import io.mosip.authentication.core.dto.indauth.AuthStatusInfo;
+import io.mosip.authentication.core.dto.indauth.ResponseDTO;
 
 /**
  * The builder class of AuthResponseDTO.
@@ -18,8 +19,8 @@ import io.mosip.authentication.core.dto.indauth.AuthStatusInfo;
  * @author Loganathan Sekar
  */
 public class AuthResponseBuilder {
-	
-	/**  The date format to use*/
+
+	/** The date format to use */
 	private SimpleDateFormat dateFormat;
 
 	/** The built flag. */
@@ -27,8 +28,8 @@ public class AuthResponseBuilder {
 
 	/** The Auth response DTO. */
 	private final AuthResponseDTO responseDTO;
-	
-	/** The auth status infos. */ 
+
+	/** The auth status infos. */
 	private List<AuthStatusInfo> authStatusInfos;
 
 	/**
@@ -87,14 +88,16 @@ public class AuthResponseBuilder {
 		return this;
 	}
 
-
 	/**
 	 * Sets the Static Token Id
+	 * 
 	 * @param staticTokenId
 	 * @return
 	 */
 	public AuthResponseBuilder setStaticTokenId(String staticTokenId) {
-		responseDTO.setStaticToken(staticTokenId);
+		ResponseDTO res = new ResponseDTO();
+		res.setStaticToken(staticTokenId);
+		responseDTO.setResponse(res);
 		return this;
 	}
 
@@ -114,17 +117,23 @@ public class AuthResponseBuilder {
 	 *
 	 * @return the auth response DTO
 	 */
-	public AuthResponseDTO build() {
+	public AuthResponseDTO build(String staticTokenID) {
 		assertNotBuilt();
 		boolean status = !authStatusInfos.isEmpty() && authStatusInfos.stream().allMatch(AuthStatusInfo::isStatus);
-		if(status) {
-			responseDTO.setStatus(Boolean.TRUE);
+		if (status) {
+			ResponseDTO res = new ResponseDTO();
+			res.setAuthStatus(Boolean.TRUE);
+			res.setStaticToken(staticTokenID);
+			responseDTO.setResponse(res);
 		} else {
-			responseDTO.setStatus(Boolean.FALSE);
+			ResponseDTO res = new ResponseDTO();
+			res.setAuthStatus(Boolean.FALSE);
+			res.setStaticToken(null);
+			responseDTO.setResponse(res);
 		}
 
 		responseDTO.setResponseTime(dateFormat.format(new Date()));
-	    AuthError[] authErrors = authStatusInfos.stream().flatMap(statusInfo -> Optional.ofNullable(statusInfo.getErr())
+		AuthError[] authErrors = authStatusInfos.stream().flatMap(statusInfo -> Optional.ofNullable(statusInfo.getErr())
 				.map(List<AuthError>::stream).orElseGet(Stream::empty)).toArray(size -> new AuthError[size]);
 		addErrors(authErrors);
 

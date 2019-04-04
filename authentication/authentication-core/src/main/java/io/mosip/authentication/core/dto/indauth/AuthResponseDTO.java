@@ -18,26 +18,15 @@ import lombok.EqualsAndHashCode;
 /**
  * Instantiates a new auth response DTO.
  */
-@Data
-
 /*
  * (non-Javadoc)
  * 
  * @see io.mosip.authentication.core.dto.indauth.BaseAuthResponseDTO#hashCode()
  */
+@Data
 @EqualsAndHashCode(callSuper = true)
 public class AuthResponseDTO extends BaseAuthResponseDTO {
 
-	/** The txnID value. */
-	private String transactionID;
-
-	/** Version. */
-	private String version;
-
-	/** Static token. */
-	private String staticToken;
-
-	/** The id. */
-	private String id;
-
+	/** The Variable to hold response */
+	private ResponseDTO response;
 }
