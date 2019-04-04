@@ -1,4 +1,4 @@
-package io.mosip.util;
+package io.mosip.registrationProcessor.util;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -33,22 +33,19 @@ public class DemoDedupe {
 	/**
 	 * This method contains the validation steps for demo dedupe stage
 	 * @param dummyDecryptFile
-	 * @return
-	 * @throws FileNotFoundException
-	 * @throws IOException
-	 * @throws ParseException
+	 * @return boolean true if demo dedupe is success, else false
 	 */
-	public boolean demoDedupeStage (File dummyDecryptFile) throws FileNotFoundException, IOException, ParseException{
+	public boolean demoDedupeStage (File dummyDecryptFile){
 
 		boolean isDemoDedupe = false;	
 		boolean isAuth = false; 
 		String regId = dummyDecryptFile.getName();
 		RegProcStageDb dbConnect = new RegProcStageDb();
-		
+
 		//fetching individual record from db based on regId
 		List<DemoDedupeDto> applicantDemoDto = dbConnect.regproc_IndividualDemoghraphicDedupe(regId);
 		List<DemoDedupeDto> duplicateDtos = new ArrayList<>();
-		
+
 		//Fetching duplicate records for same name, gender, dob and lang code
 		for (DemoDedupeDto demoDto : applicantDemoDto) {
 			duplicateDtos.addAll(dbConnect.regproc_AllIndividualDemoghraphicDedupe(demoDto.getName(),
@@ -69,82 +66,51 @@ public class DemoDedupe {
 
 		//authentication of biometric is not implemented, as of now, validation of biometric
 		//is mocked
-
-		if (!duplicateDtos.isEmpty()) {
-			String dob = null;
-			File[] folders = dummyDecryptFile.listFiles();
-			for (int j = 0; j < folders.length; j++) {
-				if(folders[j].getName().matches("Demographic")){
-					File[] listOfDocsInDemographics = folders[j].listFiles();
-					for (File d : listOfDocsInDemographics){
-						if(d.getName().matches("ID.json")){
-							JSONObject idData = (JSONObject) new JSONParser().parse(new FileReader(d.getPath()));
-							JSONObject identity = (JSONObject) idData.get("identity");
-							dob =  (String) identity.get("dateOfBirth");
-							logger.info("dob : "+dob);
+		try {
+			if (!duplicateDtos.isEmpty()) {
+				String dob = null;
+				File[] folders = dummyDecryptFile.listFiles();
+				for (int j = 0; j < folders.length; j++) {
+					if(folders[j].getName().matches("Demographic")){
+						File[] listOfDocsInDemographics = folders[j].listFiles();
+						for (File d : listOfDocsInDemographics){
+							if(d.getName().matches("ID.json")){
+								JSONObject idData = (JSONObject) new JSONParser().parse(new FileReader(d.getPath()));
+								JSONObject identity = (JSONObject) idData.get("identity");
+								dob =  (String) identity.get("dateOfBirth");
+								logger.info("dob : "+dob);
+							}
 						}
 					}
 				}
-				
-			}
-			//mocked logic for auth, if year in dob is even,
-			//auth is validated, else not validated 
-			int year =Integer.parseInt(dob.substring(0,4));
-			logger.info("Year : "+year);
+				//mocked logic for auth, if year in dob is even,
+				//auth is validated, else not validated 
+				int year =Integer.parseInt(dob.substring(0,4));
+				logger.info("Year : "+year);
+				if(year%2 ==0)
+					isAuth = true;
 
-			
-			if(year%2 ==0)
-				isAuth = true;
-			
-			if(!isAuth)
+				if(!isAuth)
+					isDemoDedupe = true;
+				else{
+					logger.info("POTENTIAL MATCH");
+					isDemoDedupe = false;
+				}							
+			}else{
+				logger.info("DUPLICATE RECORD IS NOT THERE");
 				isDemoDedupe = true;
-			else{
-				logger.info("POTENTIAL MATCH");
-				isDemoDedupe = false;
-			}							
-		}else{
-			logger.info("DUPLICATE RECORD IS NOT THERE");
-			isDemoDedupe = true;
+			}
+		} catch (IOException | ParseException e) {
+			logger.error("Exception occurred in DemoDedupe class in demoDedupeStage method "+e);
 		}
-			isDemoDedupe = true;
 		logger.info("isDemoDedupe : "+isDemoDedupe);
 		return isDemoDedupe;
 	}
 
-	
 	@Test
 	public void testRun(){
 		DemoDedupe dd= new DemoDedupe();
 		File dummyDecryptFile = new File(configPath+fileName);
-		try {
-			dd.demoDedupeStage(dummyDecryptFile);
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		dd.demoDedupeStage(dummyDecryptFile);
 	}
-	
-	public static void main(String[] args) {
-		DemoDedupe dd= new DemoDedupe();
-		File dummyDecryptFile = new File(configPath+fileName);
-		try {
-			dd.demoDedupeStage(dummyDecryptFile);
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-
 }

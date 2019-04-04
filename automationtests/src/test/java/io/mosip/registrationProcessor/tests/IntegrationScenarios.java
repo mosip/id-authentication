@@ -6,8 +6,8 @@ import java.io.IOException;
 import org.json.simple.parser.ParseException;
 import org.testng.annotations.Test;
 
+import io.mosip.registrationProcessor.service.IntegMethods;
 import io.mosip.service.BaseTestCase;
-import io.mosip.service.IntegMethods;
 import io.restassured.response.Response;
 /**
  * 

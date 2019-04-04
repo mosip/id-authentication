@@ -11,16 +11,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.testng.ITest;
 import org.testng.ITestContext;
 import org.testng.ITestResult;
-import org.testng.Reporter;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -33,12 +32,11 @@ import org.testng.internal.TestResult;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import io.mosip.dbentity.RegistrationStatusEntity;
 import io.mosip.dbaccess.RegProcDataRead;
+import io.mosip.dbentity.RegistrationStatusEntity;
 import io.mosip.service.ApplicationLibrary;
 import io.mosip.service.AssertResponses;
 import io.mosip.service.BaseTestCase;
-import io.mosip.util.CommonLibrary;
 import io.mosip.util.ReadFolder;
 import io.mosip.util.ResponseRequestMapper;
 import io.restassured.response.Response;
@@ -77,18 +75,24 @@ public class PacketReceiver extends  BaseTestCase implements ITest {
 	 * @return object[][]
 	 * @throws Exception
 	 */
-	@DataProvider(name = "documentUpload")
-	public Object[][] readData(ITestContext context) throws Exception {
+	@DataProvider(name = "PacketReceiver")
+	public Object[][] readData(ITestContext context){
 
 		testParam = context.getCurrentXmlTest().getParameter("testType");
-		switch (testParam) {
-		case "smoke":
-			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
-		case "regression":
-			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "regression");
-		default:
-			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smokeAndRegression");
+		Object[][] readFolder = null;
+		try {
+			switch (testParam) {
+			case "smoke":
+				readFolder = ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
+			case "regression":
+				readFolder = ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "regression");
+			default:
+				readFolder = ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smokeAndRegression");
+			}
+		}catch (IOException | ParseException e) {
+			logger.error("Exception occurred in Packet Receiver class in readData method"+e);
 		}
+		return readFolder;
 	}
 
 	/**
@@ -97,29 +101,28 @@ public class PacketReceiver extends  BaseTestCase implements ITest {
 	 * @param testSuite
 	 * @param i
 	 * @param object
-	 * @throws Exception
 	 */
-	@Test(dataProvider="documentUpload")
-	public void packetReceiver(String testSuite, Integer i, JSONObject object) throws Exception {
+	@Test(dataProvider="PacketReceiver")
+	public void packetReceiver(String testSuite, Integer i, JSONObject object){
 
 		File file = null;
 		List<String> outerKeys = new ArrayList<String>();
 		List<String> innerKeys = new ArrayList<String>();
-		JSONObject actualRequest = ResponseRequestMapper.mapRequest(testSuite, object);
-		expectedResponse = ResponseRequestMapper.mapResponse(testSuite, object);
-		JSONObject objectData = new JSONObject();
 		String configPath = "src/test/resources/" + testSuite + "/";
 		File folder = new File(configPath);
-		
+		File[] listOfFolders = folder.listFiles();
+		JSONObject objectData = new JSONObject();
+		try {
+			JSONObject actualRequest = ResponseRequestMapper.mapRequest(testSuite, object);	
+			expectedResponse = ResponseRequestMapper.mapResponse(testSuite, object);
+
 		//outer and inner keys which are dynamic in the actual response
 		outerKeys.add("requesttimestamp");
 		outerKeys.add("responsetime");
 		innerKeys.add("createdDateTime");
 		innerKeys.add("updatedDateTime");
 
-		
-		File[] listOfFolders = folder.listFiles();
-		for (int j = 0; j < listOfFolders.length; j++) {
+	for (int j = 0; j < listOfFolders.length; j++) {
 			if (listOfFolders[j].isDirectory()) {
 				if (listOfFolders[j].getName().equals(object.get("testCaseName").toString())) {
 					logger.info("Testcase name is" + listOfFolders[j].getName());
@@ -134,13 +137,11 @@ public class PacketReceiver extends  BaseTestCase implements ITest {
 				}
 			}
 		}
-		try {
-			//generation of actual response
-			actualResponse = applicationLibrary.putMultipartFile(file, pro.getProperty("packetReceiverApi"));
+		
+		//generation of actual response
+		actualResponse = applicationLibrary.putMultipartFile(file, pro.getProperty("packetReceiverApi"));
 
-		} catch (Exception e) {
-			logger.info(e);
-		}
+
 		String statusCode = null;
 		String errorCode = null;
 		Map<String,String> response  = actualResponse.jsonPath().get("response");
@@ -191,7 +192,7 @@ public class PacketReceiver extends  BaseTestCase implements ITest {
 					finalStatus="Fail";
 					softAssert.assertTrue(false);
 				}
-				
+
 			default : 
 				statusCode = response.get("status");
 				logger.info("statusCode : "+statusCode);
@@ -208,7 +209,7 @@ public class PacketReceiver extends  BaseTestCase implements ITest {
 					finalStatus="Fail";
 					softAssert.assertTrue(false);
 				}
-				
+
 				errorCode = error.get("errorcode");
 				logger.info("errorCode in switch : "+errorCode);
 
@@ -231,7 +232,7 @@ public class PacketReceiver extends  BaseTestCase implements ITest {
 					finalStatus="Fail";
 					softAssert.assertTrue(false);
 				}
-				
+
 			}
 
 			softAssert.assertTrue(true);
@@ -243,21 +244,29 @@ public class PacketReceiver extends  BaseTestCase implements ITest {
 		softAssert.assertAll();
 		object.put("status", finalStatus);
 		arr.add(object);
+		
+		} catch (IOException | ParseException e) {
+			logger.error("Exception occcurred in Packet Receiver class in packetReceiver method "+e);
+		}
 	}
-	
+
 	/**
 	 * This method is used for reading and loading the property file
-	 * @throws IOException
 	 */
 	@BeforeClass
-	public void setUp() throws IOException
-	{
-		  // Create  FileInputStream object 
-		  FileInputStream fis=new FileInputStream(new File("src\\config\\registrationProcessorAPI.properties"));
- 
-		  // Load file so we can use into our script 
-		  pro.load(fis);
-		
+	public void setUp(){
+		// Create  FileInputStream object 
+		FileInputStream fis;
+		try {
+			fis = new FileInputStream(new File("src\\config\\registrationProcessorAPI.properties"));
+			// Load file so we can use into our script 
+			pro.load(fis);
+			fis.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 	}  
 
 	/**
@@ -265,12 +274,10 @@ public class PacketReceiver extends  BaseTestCase implements ITest {
 	 * @param method
 	 * @param testdata
 	 * @param ctx
-	 * @throws Exception
 	 */
 	@BeforeMethod
-	public static void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
+	public static void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) {
 		JSONObject object = (JSONObject) testdata[2];
-		//	testName.set(object.get("testCaseName").toString());
 		testCaseName = object.get("testCaseName").toString();
 	}
 
@@ -281,38 +288,36 @@ public class PacketReceiver extends  BaseTestCase implements ITest {
 	 */
 	@AfterMethod(alwaysRun = true)
 	public void setResultTestName(ITestResult result) {
+
+		Field method = null;
 		try {
-			
-			Field method = TestResult.class.getDeclaredField("m_method");
+			method = TestResult.class.getDeclaredField("m_method");
 			method.setAccessible(true);
 			method.set(result, result.getMethod().clone());
 			BaseTestMethod baseTestMethod = (BaseTestMethod) result.getMethod();
 			Field f = baseTestMethod.getClass().getSuperclass().getDeclaredField("m_methodName");
 			f.setAccessible(true);
 			f.set(baseTestMethod, PacketReceiver.testCaseName);
-		} catch (Exception e) {
-			Reporter.log("Exception : " + e.getMessage());
+		} catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException e) {
+			logger.error("Exception occurred in PacketReceiver class in setResultTestName "+e);
 		}
+
 	}
 
 	/**
 	 * This method is used for generating output file with the test case result
-	 * @throws IOException
-	 * @throws NoSuchFieldException
-	 * @throws SecurityException
-	 * @throws IllegalArgumentException
-	 * @throws IllegalAccessException
 	 */
 	@AfterClass
-	public void statusUpdate() throws IOException, NoSuchFieldException, SecurityException, IllegalArgumentException,
-	IllegalAccessException {
+	public void statusUpdate() {
 		String configPath =  "src/test/resources/" + folderPath + "/"
 				+ outputFile;
 		try (FileWriter file = new FileWriter(configPath)) {
 			file.write(arr.toString());
 			logger.info("Successfully updated Results to " + outputFile);
+			file.close();
+		} catch (IOException e) {
+			logger.error("Exception occurred in PacketReceiver class in statusUpdate "+e);
 		}
-		String source =  "src/test/resources/" + folderPath + "/";
 	}
 
 	@Override

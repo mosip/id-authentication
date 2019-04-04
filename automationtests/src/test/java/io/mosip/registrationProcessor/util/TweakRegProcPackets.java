@@ -1,4 +1,4 @@
-package io.mosip.util;
+package io.mosip.registrationProcessor.util;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -21,6 +21,7 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import io.mosip.dbdto.DecrypterDto;
+import io.mosip.util.EncrypterDecrypter;
 import net.lingala.zip4j.exception.ZipException;
 
 /**
@@ -441,12 +442,12 @@ public class TweakRegProcPackets {
 	public static void main(String[] args)
 			throws IOException, ZipException, InterruptedException, java.text.ParseException, ParseException {
 		TweakRegProcPackets e = new TweakRegProcPackets();
-		for(int i=0;i<2;i++) {
+		/*for(int i=0;i<2;i++) {
 		e.demoDedupePropertyFileReader("IDjson.properties");
-		}
+		}*/
 		// e.generatInvalidPacketForDemoDedupe(e.generateRegID("10011",
 		// "10011"),"PotentialMatch");
 		//e.invalidPacketGenerator("packetProperties.properties");
-	//e.readPacketValidatorProperties("packetValidator.properties");
+	e.readPacketValidatorProperties("packetValidator.properties");
 	}
 }

@@ -7,19 +7,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 import org.testng.Assert;
-import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterTest;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
 
+import io.mosip.registrationProcessor.util.StageValidationMethods;
 import io.mosip.util.SetStageStatusCode;
-import io.mosip.util.StageValidationMethods;
 
 public class StageValidationTests {
 	StageValidationMethods scenario = new StageValidationMethods();
