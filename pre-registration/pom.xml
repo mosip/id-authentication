@@ -93,6 +93,7 @@
 		<module>pre-registration-batchjob-service</module>
 		<module>pre-registration-translitration-service</module>
 		<module>pre-registration-notification-service</module>
+		<module>pre-registration-generateQRcode-service</module>
 	</modules>
 
 	<profiles>

@@ -8,8 +8,6 @@ import { DataStorageService } from 'src/app/core/services/data-storage.service';
 import { RegistrationService } from 'src/app/core/services/registration.service';
 import { ConfigService } from 'src/app/core/services/config.service';
 import * as appConstants from '../../app.constants';
-// import { UserIdleService } from "angular-user-idle";
-
 
 @Component({
   selector: 'app-login',
@@ -53,7 +51,7 @@ export class LoginComponent implements OnInit {
     private dialog: MatDialog,
     private dataService: DataStorageService,
     private regService: RegistrationService,
-    private configService: ConfigService // private userIdle: UserIdleService
+    private configService: ConfigService
   ) {
     const loggedOut = localStorage.getItem('loggedOut');
     this.loggedOutLang = localStorage.getItem('loggedOutLang');
@@ -75,18 +73,6 @@ export class LoginComponent implements OnInit {
     }
     localStorage.setItem('loggedIn', 'false');
     this.loadConfigs();
-    //     this.userIdle.startWatching();
-    //     this.userIdle.onTimerStart().subscribe(count => console.log(count));
-    //     this.userIdle.onTimeout().subscribe(
-    //       res =>{
-    //         this.doLogOut();
-    //       },
-    //       err =>{},
-    //       () => console.log('Time is up!'));
-
-    // }
-    // doLogOut(){
-    //   alert('you have been logged out due to inactivity');
   }
 
   loginIdValidator() {
@@ -223,28 +209,6 @@ export class LoginComponent implements OnInit {
     }
 
     this.translate.use(localStorage.getItem('langCode'));
-
-    // if (this.selectedLanguage === 'English') {
-    //   this.langCode = 'eng';
-    //   this.secondaryLangCode = 'ara';
-    //   this.dir = 'ltr';
-    //   this.secondaryDir = 'rtl';
-    // } else if (this.selectedLanguage === 'French') {
-    //   this.langCode = 'fra';
-    //   this.dir = 'ltr';
-    //   this.secondaryLangCode = 'ara';
-    //   this.secondaryDir = 'rtl';
-    // } else if (this.selectedLanguage === 'Arabic') {
-    //   this.langCode = 'ara';
-    //   this.dir = 'rtl';
-    //   this.secondaryLangCode = 'fra';
-    //   this.secondaryDir = 'ltr';
-    // }
-    // this.translate.use(this.langCode);
-    // localStorage.setItem('langCode', this.langCode);
-    // localStorage.setItem('secondaryLangCode', this.secondaryLangCode);
-    // localStorage.setItem('dir', this.dir);
-    // localStorage.setItem('secondaryDir', this.secondaryDir);
   }
 
   showVerifyBtn() {

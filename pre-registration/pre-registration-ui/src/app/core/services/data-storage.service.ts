@@ -7,6 +7,7 @@ import Utils from '../../app.util';
 import { AppConfigService } from '../../app-config.service';
 import { Applicant } from '../../shared/models/dashboard-model/dashboard.modal';
 import { ConfigService } from './config.service';
+import { RequestModel } from 'src/app/shared/models/request-model/RequestModel';
 
 @Injectable({
   providedIn: 'root'
@@ -18,43 +19,40 @@ export class DataStorageService {
     private configService: ConfigService
   ) {}
 
+  //need to remove
+  // BASE_URL2 = 'https://dev.mosip.io/';
+  // BASE_URL_LOCAL = 'http://A2ML29862:9092/demographic/applications';
+
   BASE_URL = this.appConfigService.getConfig()['BASE_URL'];
   PRE_REG_URL = this.appConfigService.getConfig()['PRE_REG_URL'];
 
   //here
-  getUsers(value: string) {
-    // const url = this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.applicants + appConstants.APPENDER + value;
-    return this.httpClient.get<Applicant[]>(this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.applicants, {
-      observe: 'body',
-      responseType: 'json',
-      params: new HttpParams().append(appConstants.PARAMS_KEYS.getUsers, value)
-    });
+  getUsers(userId: string) {
+    // const url = this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.applicants + appConstants.APPENDER + userId;
+    let url = this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.applicants;
+    // url = this.BASE_URL_LOCAL;
+    return this.httpClient.get<Applicant[]>(url);
   }
 
   //here
   getUser(preRegId: string) {
-    // const url = this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.get_applicant + appConstants.APPENDER + preRegId;
-    return this.httpClient.get(this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.get_applicant, {
-      observe: 'body',
-      responseType: 'json',
-      params: new HttpParams().append(appConstants.PARAMS_KEYS.getUser, preRegId)
-    });
+    let url =
+      this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.get_applicant + appConstants.APPENDER + preRegId;
+    // url = this.BASE_URL_LOCAL + appConstants.APPENDER + preRegId;
+    // console.log('URL', url);
+    // const url = this.BASE_URL_LOCAL + this.PRE_REG_URL + appConstants.APPEND_URL.get_applicant;
+    return this.httpClient.get(url);
   }
 
   getGenderDetails() {
-   // return this.httpClient.get('https://integ.mosip.io/' + appConstants.APPEND_URL.gender);
-     return this.httpClient.get(this.BASE_URL + appConstants.APPEND_URL.gender);
+    const url = this.BASE_URL + appConstants.APPEND_URL.gender;
+    return this.httpClient.get(url);
   }
 
   getTransliteration(request: any) {
-    const obj = {
-      id: appConstants.IDS.transliteration,
-      requesttime: Utils.getCurrentDate(),
-      version: appConstants.VERSION,
-      request: request
-    };
-
-    return this.httpClient.post(this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.transliteration, obj);
+    const obj = new RequestModel(appConstants.IDS.transliteration, request);
+    const url = this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.transliteration;
+    return this.httpClient.post(url, obj);
   }
 
   getUserDocuments(preRegId) {
@@ -68,27 +66,21 @@ export class DataStorageService {
   }
 
   addUser(identity: any) {
-    const obj = {
-      id: appConstants.IDS.newUser,
-      version: appConstants.VERSION,
-      requesttime: Utils.getCurrentDate(),
-      request: identity
-    };
-    console.log('data being sent', obj);
-
-    return this.httpClient.post(this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.applicants, obj);
+    const obj = new RequestModel(appConstants.IDS.newUser, identity);
+    let url = this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.applicants;
+    // url = this.BASE_URL_LOCAL;
+    console.log('data being sent', JSON.stringify(obj));
+    return this.httpClient.post(url, obj);
   }
 
-  updateUser(identity: any) {
-    const obj = {
-      id: appConstants.IDS.newUser,
-      version: appConstants.VERSION,
-      requesttime: Utils.getCurrentDate(),
-      request: identity
-    };
-    console.log('data being sent', obj);
-
-    return this.httpClient.put(this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.applicants, obj);
+  //here
+  updateUser(identity: any, preRegId: string) {
+    let url = this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.applicants + appConstants.APPENDER + preRegId;
+    // const url = this.BASE_URL_LOCAL + this.PRE_REG_URL + appConstants.APPEND_URL.applicants;
+    // url = this.BASE_URL_LOCAL + appConstants.APPENDER + preRegId;
+    const obj = new RequestModel(appConstants.IDS.updateUser, identity);
+    console.log('data being update', JSON.stringify(obj));
+    return this.httpClient.put(url, obj);
   }
 
   sendFile(formdata: FormData) {
@@ -99,7 +91,8 @@ export class DataStorageService {
   //here
   deleteRegistration(preId: string) {
     // const url = this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.applicants + appConstants.APPENDER + preId;
-    return this.httpClient.delete(this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.applicants, {
+    const url = this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.applicants;
+    return this.httpClient.delete(url, {
       observe: 'body',
       responseType: 'json',
       params: new HttpParams().append(appConstants.PARAMS_KEYS.deleteUser, preId)
@@ -162,25 +155,22 @@ export class DataStorageService {
   }
 
   getLocationMetadataHirearchy(value: string) {
-    return this.httpClient.get(
-      this.BASE_URL + appConstants.APPEND_URL.location + appConstants.APPEND_URL.location_metadata + value,
-      // this.BASE_URL2 + appConstants.APPEND_URL.location + appConstants.APPEND_URL.location_metadata + value,
-      {
-        params: new HttpParams().append(appConstants.PARAMS_KEYS.locationHierarchyName, value)
-      }
-    );
+    const url = this.BASE_URL + appConstants.APPEND_URL.location + appConstants.APPEND_URL.location_metadata + value;
+    // const url = this.BASE_URL + appConstants.APPEND_URL.location + appConstants.APPEND_URL.location_metadata + value;
+    return this.httpClient.get(url, {
+      // params: new HttpParams().append(appConstants.PARAMS_KEYS.locationHierarchyName, value)
+    });
   }
 
   getLocationImmediateHierearchy(lang: string, location: string) {
-    return this.httpClient.get(
-      // this.BASE_URL2 +
+    const url =
       this.BASE_URL +
-        appConstants.APPEND_URL.location +
-        appConstants.APPEND_URL.location_immediate_children +
-        location +
-        '/' +
-        lang
-    );
+      appConstants.APPEND_URL.location +
+      appConstants.APPEND_URL.location_immediate_children +
+      location +
+      appConstants.APPENDER +
+      lang;
+    return this.httpClient.get(url);
   }
 
   deleteFile(documentId) {
@@ -231,7 +221,7 @@ export class DataStorageService {
 
   recommendedCenters(langCode: string, locationHierarchyCode: number, data: string[]) {
     let url =
-    this.BASE_URL +
+      this.BASE_URL +
       appConstants.APPEND_URL.master_data +
       'registrationcenters/' +
       langCode +
@@ -258,7 +248,7 @@ export class DataStorageService {
 
   getGuidelineTemplate() {
     const url =
-    this.BASE_URL +
+      this.BASE_URL +
       appConstants.APPEND_URL.master_data +
       'templates/' +
       localStorage.getItem('langCode') +
@@ -276,7 +266,7 @@ export class DataStorageService {
 
   getDocumentCategories(applicantCode) {
     const APPLICANT_VALID_DOCUMENTS_URL =
-    this.BASE_URL +
+      this.BASE_URL +
       appConstants.APPEND_URL.location +
       appConstants.APPEND_URL.validDocument +
       applicantCode +
@@ -288,9 +278,8 @@ export class DataStorageService {
 
   getConfig() {
     //    return this.httpClient.get('./assets/configs.json');
-    return this.httpClient.get(
-      this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.auth + appConstants.APPEND_URL.config
-    );
+    const url = this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.auth + appConstants.APPEND_URL.config;
+    return this.httpClient.get(url);
   }
 
   sendOtp(userId: string) {
@@ -308,10 +297,8 @@ export class DataStorageService {
       request: req
     };
 
-    return this.httpClient.post(
-      this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.auth + appConstants.APPEND_URL.send_otp,
-      obj
-    );
+    const url = this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.auth + appConstants.APPEND_URL.send_otp;
+    return this.httpClient.post(url, obj);
   }
 
   verifyOtp(userId: string, otp: string) {
@@ -319,7 +306,6 @@ export class DataStorageService {
       otp: otp,
       userId: userId
     };
-
     const requestObj = {
       id: appConstants.IDS.newUser,
       version: appConstants.VERSION,
@@ -327,14 +313,12 @@ export class DataStorageService {
       request: request
     };
 
-    return this.httpClient.post(
-      this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.auth + appConstants.APPEND_URL.login,
-      requestObj
-    );
+    const url = this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.auth + appConstants.APPEND_URL.login;
+    return this.httpClient.post(url, requestObj);
   }
 
   onLogout() {
-    const auth = this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.auth + appConstants.APPEND_URL.logout;
-    return this.httpClient.post(auth, '');
+    const url = this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.auth + appConstants.APPEND_URL.logout;
+    return this.httpClient.post(url, '');
   }
 }
