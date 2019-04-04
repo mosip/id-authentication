@@ -41,10 +41,10 @@ export const APPEND_URL = {
   location_immediate_children: 'locations/immediatechildren/',
   applicants: 'demographic/applications',
   get_applicant: 'demographic/applications/details',
-  location: 'masterdata/',
-  gender: 'masterdata/gendertypes',
+  location: 'masterdata/v1/',
+  gender: 'masterdata/v1/gendertypes',
   transliteration: 'transliteration/transliterate',
-  applicantType: 'applicanttype/',
+  applicantType: 'applicanttype/v1/',
   validDocument: 'v1.0/applicanttype/',
   getApplicantType: 'getApplicantType',
   document: 'document/documents',
@@ -56,7 +56,7 @@ export const APPEND_URL = {
   qr_code: 'notification/generateQRCode',
   notification: 'notification/',
   send_notification: 'notify',
-  master_data: 'masterdata/',
+  master_data: 'masterdata/v1/',
   auth: 'auth/'
 };
 
@@ -168,6 +168,7 @@ export const DOCUMENT_CATEGORY_DTO = {
   ],
   id: 'mosip.applicanttype.fetch',
   requestTime: '2012-03-08T11:46:12.640Z',
+  metadata: {},
   version: 'V1.0'
 };
 
