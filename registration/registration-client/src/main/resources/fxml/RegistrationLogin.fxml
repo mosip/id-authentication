@@ -47,7 +47,7 @@
                <children>
                 	<Label layoutX="57.0" layoutY="41.0" styleClass="higlightedLoginLable" text="%registrationlogin" AnchorPane.leftAnchor="57.0" AnchorPane.topAnchor="41.0" />
                		<Label layoutX="57.0" layoutY="80.0" text="%withpword" />
-      				<PasswordField fx:id="password" layoutX="57.0" layoutY="116.0" promptText="%password" styleClass="loginTextStyle" AnchorPane.leftAnchor="53.0" />
+      				<PasswordField fx:id="password" layoutX="57.0" layoutY="116.0" promptText="%withpword" styleClass="loginTextStyle" AnchorPane.leftAnchor="53.0" />
       				<Button layoutX="52.0" layoutY="171.0" mnemonicParsing="false" onAction="#validateCredentials" styleClass="loginSubmitStyle" text="%submit" />
                   <Button layoutX="52.0" layoutY="222.0" mnemonicParsing="false" styleClass="loginSubmitStyle" text="%resetPassword" />
                </children>
