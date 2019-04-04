@@ -421,6 +421,8 @@ public class HeaderController extends BaseController {
 				registrationUpdate.getWithLatestJars();
 
 				// Update completed Re-Launch application
+				generateAlert(RegistrationConstants.ALERT_INFORMATION, "UPDATE Completed");
+
 				System.exit(0);
 			}
 		} catch (RuntimeException | io.mosip.kernel.core.exception.IOException | IOException
