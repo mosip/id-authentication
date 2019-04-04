@@ -132,38 +132,37 @@ public class CilentJarDecryption extends Application {
 
 	private static boolean setProperties() throws IOException {
 
-		String propsFilePath = new File(System.getProperty("user.dir"))
-				+ "/props/mosip-application.properties";
+		String propsFilePath = new File(System.getProperty("user.dir")) + "/props/mosip-application.properties";
 
 		FileInputStream fileInputStream = new FileInputStream(propsFilePath);
 		Properties properties = new Properties();
 		properties.load(fileInputStream);
 
 		System.setProperty("reg.db.path", properties.getProperty("mosip.dbpath"));
-		
-		String dbpath = new File(System.getProperty("user.dir"))+properties.getProperty("mosip.dbpath");
-		
-		if(new File(dbpath).exists()) {
+
+		String dbpath = new File(System.getProperty("user.dir")) + properties.getProperty("mosip.dbpath");
+
+		if (new File(dbpath).exists()) {
 			System.setProperty("reg.db.path", properties.getProperty("mosip.dbpath"));
 			return true;
 		} else {
-			return false;			
+			return false;
 		}
 
 	}
-	
+
 	@Override
 	public void start(Stage primaryStage) throws Exception {
-//		StackPane stackPane= new StackPane();
-//		stackPane.setAlignment(Pos.CENTER);
-//		ProgressBar progressBar = new ProgressBar();
-//		stackPane.getChildren().add(progressBar);
-//		progressBar.setVisible(false);
-//		Scene scene = new Scene(stackPane,400,500);
-//		
-//		primaryStage.setScene(scene);
-//		primaryStage.show();	
+		 StackPane stackPane= new StackPane();
+		 stackPane.setAlignment(Pos.CENTER);
+		 ProgressBar progressBar = new ProgressBar();
+		 stackPane.getChildren().add(progressBar);
+		 progressBar.setVisible(false);
+		 Scene scene = new Scene(stackPane,400,500);
 		
+		 primaryStage.setScene(scene);
+		 primaryStage.show();
+
 		/**
 		 * This anonymous service class will do the pre application launch task
 		 * progress.
@@ -172,8 +171,7 @@ public class CilentJarDecryption extends Application {
 		taskService = new Service<String>() {
 			@Override
 			protected Task<String> createTask() {
-				return 
-				new Task<String>() {
+				return new Task<String>() {
 					/*
 					 * (non-Javadoc)
 					 * 
@@ -181,12 +179,12 @@ public class CilentJarDecryption extends Application {
 					 */
 					@Override
 					protected String call() throws IOException, InterruptedException {
-						//progressBar.setVisible(true);
+						 progressBar.setVisible(true);
 						System.out.println("before Decryption");
 						CilentJarDecryption aesDecrypt = new CilentJarDecryption();
 						RegistrationUpdate registrationUpdate = new RegistrationUpdate();
-						
-						if(!setProperties()) {
+
+						if (!setProperties()) {
 							return "NOTEXISTS";
 						}
 
@@ -194,7 +192,8 @@ public class CilentJarDecryption extends Application {
 						try {
 
 							checkForJars();
-						} catch (ParserConfigurationException | SAXException | io.mosip.kernel.core.exception.IOException e) {
+						} catch (ParserConfigurationException | SAXException
+								| io.mosip.kernel.core.exception.IOException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
@@ -208,27 +207,30 @@ public class CilentJarDecryption extends Application {
 						System.out.println(tempPath);
 
 						System.out.println("Decrypt File Name====>" + encryptedClientJar.getName());
-						byte[] decryptedRegFileBytes = aesDecrypt.decrypt(FileUtils.readFileToByteArray(encryptedClientJar),
+						byte[] decryptedRegFileBytes = aesDecrypt.decrypt(
+								FileUtils.readFileToByteArray(encryptedClientJar),
 								Base64.getDecoder().decode("bBQX230Wskq6XpoZ1c+Ep1D+znxfT89NxLQ7P4KFkc4="));
 
 						FileUtils.writeByteArrayToFile(new File(tempPath + "/mosip/" + encryptedClientJar.getName()),
 								decryptedRegFileBytes);
 
 						System.out.println("Decrypt File Name====>" + encryptedServicesJar.getName());
-						byte[] decryptedRegServiceBytes = aesDecrypt.decrypt(FileUtils.readFileToByteArray(encryptedServicesJar),
+						byte[] decryptedRegServiceBytes = aesDecrypt.decrypt(
+								FileUtils.readFileToByteArray(encryptedServicesJar),
 								Base64.getDecoder().decode("bBQX230Wskq6XpoZ1c+Ep1D+znxfT89NxLQ7P4KFkc4="));
 
 						FileUtils.writeByteArrayToFile(new File(tempPath + "/mosip/" + encryptedServicesJar.getName()),
 								decryptedRegServiceBytes);
 						try {
-							
+
 							String libPath = new File("lib").getAbsolutePath();
-						
-							Process process = Runtime.getRuntime().exec(
-									"java -Dspring.profiles.active=qa -Djava.ext.dirs="+libPath+" -jar "
-											+ tempPath + "/mosip/mosip-client.jar");
+
+							Process process = Runtime.getRuntime()
+									.exec("java -Dspring.profiles.active=qa -Djava.ext.dirs=" + libPath + ";" + tempPath
+											+ "/mosip" + " -jar " + tempPath + "/mosip/mosip-client.jar");
 							System.out.println("the output stream is " + process.getOutputStream().getClass());
-							BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+							BufferedReader bufferedReader = new BufferedReader(
+									new InputStreamReader(process.getInputStream()));
 							String s;
 							while ((s = bufferedReader.readLine()) != null) {
 								System.out.println("The stream is : " + s);
@@ -236,38 +238,40 @@ public class CilentJarDecryption extends Application {
 
 							if (0 == process.waitFor()) {
 
-								process.destroy();
+								process.destroyForcibly();
+
+								FileUtils.deleteDirectory(new File(tempPath + SLASH + "mosip"));
 
 							}
 						} catch (Exception e2) {
 							e2.printStackTrace();
 						}
 						return "";
-						}
-					};
+					}
+				};
 			}
 		};
-		//progressBar.progressProperty().bind(taskService.progressProperty());
+		progressBar.progressProperty().bind(taskService.progressProperty());
 		taskService.start();
 		taskService.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
 			@Override
 			public void handle(WorkerStateEvent t) {
-//				progressBar.setVisible(false);
-//				primaryStage.close();
-//			
-			if("NOTEXISTS".equalsIgnoreCase(taskService.getValue())) {
-				System.out.println("coming alert");
-				Alert alert = new Alert(AlertType.INFORMATION);
-				alert.setHeaderText(null);
-				alert.setContentText("Please provide correct path for Database");
-				alert.setTitle("INFO");
-				alert.setGraphic(null);
-				alert.setResizable(true);
-				alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
-				alert.showAndWait();
-			}
+				 progressBar.setVisible(false);
+				 primaryStage.close();
+				
+				if ("NOTEXISTS".equalsIgnoreCase(taskService.getValue())) {
+					System.out.println("coming alert");
+					Alert alert = new Alert(AlertType.INFORMATION);
+					alert.setHeaderText(null);
+					alert.setContentText("Please provide correct path for Database");
+					alert.setTitle("INFO");
+					alert.setGraphic(null);
+					alert.setResizable(true);
+					alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
+					alert.showAndWait();
+				}
 			}
 		});
-		
+
 	}
 }

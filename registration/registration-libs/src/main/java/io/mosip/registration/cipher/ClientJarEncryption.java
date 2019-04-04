@@ -153,7 +153,6 @@ public class ClientJarEncryption {
 					/* Add To Manifest */
 					addToManifest(MOSIP_CLIENT, clientJarEncryptedBytes, manifest);
 
-					boolean isAssistSaved = false;
 
 					// /* Save Client jar to registration-libs */
 					// saveLibJars(clientJarEncryptedBytes, clientJar.getName(), regLibFile);
@@ -185,16 +184,13 @@ public class ClientJarEncryption {
 
 							// saveLibJars(encryptedRegFileBytes, files.getName(), regLibFile);
 						} else if (files.getName().contains("pom")
-								|| (files.getName().contains("javassist") && isAssistSaved)) {
+								|| (files.getName().contains("javassist-3.12.1.GA"))) {
 							FileUtils.forceDelete(files);
 
 						} else {
 							// fileNameByBytes.put(libraries + files.getName(),
 							// FileUtils.readFileToByteArray(files));
 
-							if (files.getName().contains("javassist")) {
-								isAssistSaved = true;
-							}
 							/* Add To Manifest */
 							addToManifest(files.getName(), Files.readAllBytes(files.toPath()), manifest);
 
