@@ -251,7 +251,10 @@ public class DemographicDetailController extends BaseController {
 
 	@FXML
 	private Label addressLine3Message;
-
+	
+	@FXML
+	private Label uinIdLabel;
+	
 	@FXML
 	private TextField addressLine3LocalLanguage;
 
@@ -432,6 +435,9 @@ public class DemographicDetailController extends BaseController {
 
 	@FXML
 	protected Button autoFillBtn;
+	
+	@FXML
+	protected Button copyPrevious;
 
 	@FXML
 	protected Button fetchBtn;
@@ -610,7 +616,6 @@ public class DemographicDetailController extends BaseController {
 
 	private FXUtils fxUtils;
 	private Date dateOfBirth;
-	ResourceBundle applicationLabelBundle;
 	ResourceBundle localLabelBundle;
 	private int minAge;
 	private int maxAge;
@@ -624,6 +629,7 @@ public class DemographicDetailController extends BaseController {
 	@FXML
 	private AnchorPane keyboardPane;
 	private boolean lostUIN = false;
+	ResourceBundle applicationLabelBundle;
 	private String textMale;
 	private String textFemale;
 	private String textMaleLocalLanguage;
@@ -1466,10 +1472,17 @@ public class DemographicDetailController extends BaseController {
 
 			keyboardNode.setDisable(false);
 
+			copyPrevious.setDisable(false);
 			autoFillBtn.setVisible(false);
-			registrationNavlabel.setText(RegistrationConstants.UIN_NAV_LABEL);
+			registrationNavlabel.setText(applicationLabelBundle.getString("uinUpdateNavLbl"));
 			parentFlowPane.setDisable(false);
 			fetchBtn.setVisible(false);
+			
+			uinIdLabel.setText(applicationLabelBundle.getString("uinIdUinUpdate"));
+			uinIdLocalLanguageLabel.setText(localLabelBundle.getString("uinIdUinUpdate"));
+			uinId.setPromptText(applicationLabelBundle.getString("uinIdUinUpdate"));
+			uinIdLocalLanguage.setPromptText(localLabelBundle.getString("uinIdUinUpdate"));
+			
 			preRegistrationLabel.setText(RegistrationConstants.UIN_LABEL);
 			updateUinId.setVisible(true);
 			updateUinId.setDisable(true);

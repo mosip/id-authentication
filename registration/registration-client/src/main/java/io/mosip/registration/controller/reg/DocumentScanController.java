@@ -171,7 +171,7 @@ public class DocumentScanController extends BaseController {
 		try {
 			if (getRegistrationDTOFromSession() != null
 					&& getRegistrationDTOFromSession().getSelectionListDTO() != null) {
-				registrationNavlabel.setText(RegistrationConstants.UIN_NAV_LABEL);
+				registrationNavlabel.setText(ApplicationContext.applicationLanguageBundle().getString("uinUpdateNavLbl"));
 			}
 			totalDocument = 0;
 			scannedField = new TextField();

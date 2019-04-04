@@ -93,7 +93,7 @@ public class AckReceiptController extends BaseController implements Initializabl
 		}
 
 		if (getRegistrationData().getSelectionListDTO() != null) {
-			registrationNavLabel.setText(RegistrationConstants.UIN_NAV_LABEL);
+			registrationNavLabel.setText(ApplicationContext.applicationLanguageBundle().getString("uinUpdateNavLbl"));
 			newRegistration.setVisible(false);
 		}
 		
