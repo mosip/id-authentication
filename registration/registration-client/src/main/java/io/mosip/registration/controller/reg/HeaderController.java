@@ -375,20 +375,37 @@ public class HeaderController extends BaseController {
 	@FXML
 	public void hasUpdate(ActionEvent event) {
 
-		try {
-			if (registrationUpdate.hasUpdate()) {
-				update();
-			} else {
-				generateAlert(RegistrationConstants.ALERT_INFORMATION, "No Updates found");
-			}
+		// Check for updates
+		if (hasUpdate()) {
 
-		} catch (RuntimeException | IOException | ParserConfigurationException | SAXException exception) {
-			LOGGER.error(LoggerConstants.LOG_REG_HEADER, APPLICATION_NAME, APPLICATION_ID,
-					exception.getMessage() + ExceptionUtils.getStackTrace(exception));
-
-			generateAlert(RegistrationConstants.ERROR, "Unable to check for updates");
+			// Update the application
+			update();
 		}
 
+	}
+
+	private boolean hasUpdate() {
+		boolean hasUpdate = false;
+		if (RegistrationAppHealthCheckUtil.isNetworkAvailable()) {
+			try {
+				if (registrationUpdate.hasUpdate()) {
+					hasUpdate = true;
+				} else {
+					generateAlert(RegistrationConstants.ALERT_INFORMATION, "No Updates found");
+
+				}
+
+			} catch (RuntimeException | IOException | ParserConfigurationException | SAXException exception) {
+				LOGGER.error(LoggerConstants.LOG_REG_HEADER, APPLICATION_NAME, APPLICATION_ID,
+						exception.getMessage() + ExceptionUtils.getStackTrace(exception));
+
+				generateAlert(RegistrationConstants.ERROR, "Unable to check for updates");
+			}
+
+		} else {
+			generateAlert(RegistrationConstants.ERROR, "No Internet Connection");
+		}
+		return hasUpdate;
 	}
 
 	private void update() {
