@@ -25,12 +25,12 @@
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context</artifactId>
-			</dependency>
+		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-tx</artifactId>
-			</dependency>
-			
+		</dependency>
+
 		<dependency>
 			<groupId>io.vertx</groupId>
 			<artifactId>vertx-core</artifactId>
@@ -76,14 +76,44 @@
 			<version>${vertx.version}</version>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+				<groupId>org.junit.jupiter</groupId>
+				<artifactId>junit-jupiter-engine</artifactId>
+				<version>5.3.1</version>
+				<scope>test</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.mockito</groupId>
+				<artifactId>mockito-core</artifactId>
+				<version>2.21.0</version>
+				<scope>test</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.junit.platform</groupId>
+				<artifactId>junit-platform-runner</artifactId>
+				<version>1.2.0</version>
+				<scope>test</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.junit.vintage</groupId>
+				<artifactId>junit-vintage-engine</artifactId>
+				<version>5.2.0</version>
+				<scope>test</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.mockito</groupId>
+				<artifactId>mockito-junit-jupiter</artifactId>
+				<version>2.23.0</version>
+				<scope>test</scope>
+			</dependency>
 	</dependencies>
 	<dependencyManagement>
 		<dependencies>
-		    <dependency>
-			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-starter-config</artifactId>
-			<version>${spring-cloud-config.version}</version>
-		</dependency>
+			<dependency>
+				<groupId>org.springframework.cloud</groupId>
+				<artifactId>spring-cloud-starter-config</artifactId>
+				<version>${spring-cloud-config.version}</version>
+			</dependency>
 			<dependency>
 				<groupId>org.mockito</groupId>
 				<artifactId>mockito-core</artifactId>
@@ -95,7 +125,6 @@
 				<artifactId>h2</artifactId>
 				<version>1.4.195</version>
 			</dependency>
-			
 		</dependencies>
 	</dependencyManagement>
 	<build>
@@ -117,5 +146,5 @@
 				</executions>
 			</plugin>
 		</plugins>
-	</build> 
+	</build>
 </project>
