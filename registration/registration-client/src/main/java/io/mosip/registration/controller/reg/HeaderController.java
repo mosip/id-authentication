@@ -39,6 +39,9 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.NodeOrientation;
 import javafx.scene.Node;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
@@ -370,22 +373,44 @@ public class HeaderController extends BaseController {
 	}
 
 	@FXML
-	public void updateApp(ActionEvent event) {
-		boolean hasUpdate=false;
-		try {
-			hasUpdate = registrationUpdate.hasUpdate();
+	public void hasUpdate(ActionEvent event) {
 
-		} catch (RuntimeException | IOException | ParserConfigurationException | SAXException runtimeException) {
+		try {
+			if (registrationUpdate.hasUpdate()) {
+				update();
+			} else {
+				generateAlert(RegistrationConstants.ALERT_INFORMATION, "No Updates found");
+			}
+
+		} catch (RuntimeException | IOException | ParserConfigurationException | SAXException exception) {
+			LOGGER.error(LoggerConstants.LOG_REG_HEADER, APPLICATION_NAME, APPLICATION_ID,
+					exception.getMessage() + ExceptionUtils.getStackTrace(exception));
+
 			generateAlert(RegistrationConstants.ERROR, "Unable to check for updates");
 		}
-		
-		if(hasUpdate) {
-			try {
+
+	}
+
+	private void update() {
+		try {
+			Alert updateAlert = createAlert(AlertType.CONFIRMATION, "UPDATE AVAILABLE", "", "CONFIRM TO UPDATE");
+
+			updateAlert.showAndWait();
+
+			/* Get Option from user */
+			ButtonType result = updateAlert.getResult();
+			if (result == ButtonType.OK) {
+
 				registrationUpdate.getWithLatestJars();
-			} catch (RuntimeException | io.mosip.kernel.core.exception.IOException | IOException | ParserConfigurationException
-					| SAXException e) {
-				generateAlert(RegistrationConstants.ERROR, "Unable to update");
+
+				// Update completed Re-Launch application
+				System.exit(0);
 			}
+		} catch (RuntimeException | io.mosip.kernel.core.exception.IOException | IOException
+				| ParserConfigurationException | SAXException exception) {
+			LOGGER.error(LoggerConstants.LOG_REG_HEADER, APPLICATION_NAME, APPLICATION_ID,
+					exception.getMessage() + ExceptionUtils.getStackTrace(exception));
+			generateAlert(RegistrationConstants.ERROR, "Unable to update");
 		}
 	}
 

@@ -215,8 +215,8 @@
 						<MenuItem fx:id="remap" mnemonicParsing="false"
 							onAction="#intiateRemapProcess" text="%remap" />
 						<SeparatorMenuItem />
-						<MenuItem mnemonicParsing="false" onAction="#updateApp"
-							text="Update Application" />
+						<MenuItem mnemonicParsing="false" onAction="#hasUpdate"
+							text="Check Updates" />
 						<SeparatorMenuItem />
 						<MenuItem mnemonicParsing="false"
 							onAction="#redirectHome" text="%home" />

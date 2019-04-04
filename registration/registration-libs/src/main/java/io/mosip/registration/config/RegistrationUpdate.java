@@ -60,7 +60,7 @@ public class RegistrationUpdate {
 
 	private String versionTag = "version";
 
-	public boolean hasUpdate() throws IOException, ParserConfigurationException, SAXException,NullPointerException {
+	public boolean hasUpdate() throws IOException, ParserConfigurationException, SAXException, NullPointerException {
 		return !getCurrentVersion().equals(getLatestVersion());
 	}
 
@@ -161,6 +161,8 @@ public class RegistrationUpdate {
 		} catch (RuntimeException exception) {
 
 			replaceBackupWithCurrentApplication(backUpPath);
+
+			throw exception;
 		}
 	}
 
@@ -171,7 +173,6 @@ public class RegistrationUpdate {
 
 		File backUpFolder = new File(backUpPath + SLASH + getCurrentVersion() + "_" + date);
 
-		
 		// bin backup folder
 		File bin = new File(backUpFolder.getAbsolutePath() + SLASH + binFolder);
 		bin.mkdirs();
@@ -190,12 +191,11 @@ public class RegistrationUpdate {
 
 			FileUtils.copyFile(new File(manifestFile), manifest);
 		} catch (io.mosip.kernel.core.exception.IOException ioException) {
-			throw new RuntimeException();
+			throw ioException;
 		}
-		
-		
-		for(File backUpFile : new File(backUpPath).listFiles()) {
-			if(!backUpFile.getAbsolutePath().equals(backUpFolder.getAbsolutePath())) {
+
+		for (File backUpFile : new File(backUpPath).listFiles()) {
+			if (!backUpFile.getAbsolutePath().equals(backUpFolder.getAbsolutePath())) {
 				FileUtils.deleteDirectory(backUpFile);
 			}
 		}
@@ -215,7 +215,8 @@ public class RegistrationUpdate {
 
 	}
 
-	private void checkJars(String version, List<String> checkableJars, boolean isToBeDownloaded) throws IOException {
+	private void checkJars(String version, List<String> checkableJars, boolean isToBeDownloaded)
+			throws IOException, io.mosip.kernel.core.exception.IOException {
 		if (isToBeDownloaded) {
 			deleteJars(checkableJars);
 		}
@@ -234,16 +235,15 @@ public class RegistrationUpdate {
 		File jarInFolder = new File(folderName + jarFileName);
 		if (!jarInFolder.exists()) {
 
-			// TODO Temporary fix to get rid of Client jar
-			if (!(jarFileName.contains("client") || jarFileName.contains("pom"))) {
-				// get input stream
-				Files.copy(getInputStreamOfJar(version, jarFileName), jarInFolder.toPath());
-			}
+			// Download Jar
+			Files.copy(getInputStreamOfJar(version, jarFileName), jarInFolder.toPath());
+
 		}
 	}
 
 	private static InputStream getInputStreamOfJar(String version, String jarName) throws IOException {
 		System.out.println("Downloading " + jarName);
+		// TODO No Internet Connection Please Try Again
 		return new URL(serverRegClientURL + version + SLASH + libFolder + jarName).openStream();
 
 	}
@@ -252,14 +252,14 @@ public class RegistrationUpdate {
 		deletableJars.forEach(jarName -> {
 			try {
 				deleteJar(jarName);
-			} catch (IOException e) {
+			} catch (io.mosip.kernel.core.exception.IOException ioException) {
 				throw new RuntimeException();
 			}
 		});
 
 	}
 
-	private void deleteJar(String jarName) throws IOException {
+	private void deleteJar(String jarName) throws io.mosip.kernel.core.exception.IOException {
 		File deleteFile = null;
 		if (jarName.contains(mosip)) {
 			deleteFile = new File(binFolder + jarName);
@@ -272,7 +272,7 @@ public class RegistrationUpdate {
 			try {
 				FileUtils.forceDelete(deleteFile);
 			} catch (io.mosip.kernel.core.exception.IOException ioException) {
-				throw new IOException();
+				throw ioException;
 			}
 		}
 	}
@@ -310,6 +310,8 @@ public class RegistrationUpdate {
 			throws IOException, ParserConfigurationException, SAXException, io.mosip.kernel.core.exception.IOException {
 
 		if (new File(libFolder).list().length == 0 || new File(binFolder).list().length == 0) {
+
+			// TODO Mandatory Internet Required
 			if (hasUpdate()) {
 				getWithLatestJars();
 			} else {
@@ -321,7 +323,7 @@ public class RegistrationUpdate {
 
 	}
 
-	private void checkJars() throws IOException {
+	private void checkJars() throws IOException, io.mosip.kernel.core.exception.IOException {
 		Manifest manifest = getLocalManifest();
 
 		if (manifest != null) {
