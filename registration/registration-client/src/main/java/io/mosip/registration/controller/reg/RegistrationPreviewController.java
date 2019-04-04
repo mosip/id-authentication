@@ -93,7 +93,7 @@ public class RegistrationPreviewController extends BaseController implements Ini
 
 		consent.setText((String) applicationContext.getApplicationMap().get(key));
 		if (getRegistrationDTOFromSession() != null && getRegistrationDTOFromSession().getSelectionListDTO() != null) {
-			registrationNavlabel.setText(RegistrationConstants.UIN_NAV_LABEL);
+			registrationNavlabel.setText(ApplicationContext.applicationLanguageBundle().getString("uinUpdateNavLbl"));
 		}
 		if (getRegistrationDTOFromSession() != null
 				&& getRegistrationDTOFromSession().getRegistrationMetaDataDTO().getRegistrationCategory() != null

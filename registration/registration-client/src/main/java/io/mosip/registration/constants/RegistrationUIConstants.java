@@ -149,6 +149,7 @@ public class RegistrationUIConstants {
 	public static final String IS_BLOCKED_WORD= bundle.getString("IS_BLOCKED_WORD");
 	public static final String THRESHOLD = bundle.getString("THRESHOLD");
 	public static final String INVALID_DATE_OF_BIRTH=bundle.getString("INVALID_DATE_OF_BIRTH");
+	public static final String PLACEHOLDER_LABEL=bundle.getString("PLACEHOLDER_LABEL");
 
 
 	// OPT TO REGISTER

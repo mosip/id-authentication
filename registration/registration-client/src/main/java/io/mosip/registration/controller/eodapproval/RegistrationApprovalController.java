@@ -254,7 +254,7 @@ public class RegistrationApprovalController extends BaseController implements In
 			table.setItems(oList);
 		} else {
 			approveRegistrationRootSubPane.disableProperty().set(true);
-			table.setPlaceholder(new Label(RegistrationConstants.PLACEHOLDER_LABEL));
+			table.setPlaceholder(new Label(RegistrationUIConstants.PLACEHOLDER_LABEL));
 			table.getItems().clear();
 		}
 

@@ -133,7 +133,7 @@ public class IrisCaptureController extends BaseController {
 					"Initializing Iris Capture page for user registration");
 			if (getRegistrationDTOFromSession() != null
 					&& getRegistrationDTOFromSession().getSelectionListDTO() != null) {
-				registrationNavlabel.setText(RegistrationConstants.UIN_NAV_LABEL);
+				registrationNavlabel.setText(ApplicationContext.applicationLanguageBundle().getString("uinUpdateNavLbl"));
 			}
 			if (getRegistrationDTOFromSession() != null
 					&& getRegistrationDTOFromSession().getRegistrationMetaDataDTO().getRegistrationCategory() != null
