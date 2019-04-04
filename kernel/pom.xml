@@ -128,6 +128,7 @@
 		<module>kernel-idgenerator-machineid</module>
 		<module>kernel-idgenerator-regcenterid</module>
 		<module>kernel-idgenerator-mispid</module>
+		<module>kernel-licensekeygenerator-misp</module>
 		<module>kernel-idgenerator-rid</module>
 		<module>kernel-idgenerator-partnerid</module>
 		<module>kernel-idvalidator-prid</module>
