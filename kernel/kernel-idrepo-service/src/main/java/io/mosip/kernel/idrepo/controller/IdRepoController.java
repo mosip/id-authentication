@@ -152,8 +152,7 @@ public class IdRepoController {
 	 *            the uin
 	 * @param type
 	 *            the type
-	 * @param request
-	 *            the request
+	 *
 	 * @return the response entity
 	 * @throws IdRepoAppException
 	 *             the id repo app exception

@@ -38,10 +38,13 @@ public class LicenseKeyControllerAdvice {
 	/**
 	 * Method to handle {@link InvalidArgumentsException}.
 	 * 
+	 * @param httpServletRequest
+	 *            the request
 	 * @param exception
 	 *            the exception.
 	 * @return {@link ErrorResponse}.
 	 * @throws IOException
+	 *             the IO exception
 	 */
 	@ExceptionHandler(InvalidArgumentsException.class)
 	public ResponseEntity<ResponseWrapper<ServiceError>> validateInputArguments(HttpServletRequest httpServletRequest,
