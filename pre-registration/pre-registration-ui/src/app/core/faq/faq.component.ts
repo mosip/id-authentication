@@ -10,13 +10,15 @@ export class FaqComponent implements OnInit {
 
   langCode = '';
   data = {};
+  answerTranslation = '';
 
   constructor(private dataStorageService: DataStorageService) { }
 
   ngOnInit() {
     this.langCode = localStorage.getItem('langCode');
     this.dataStorageService.getSecondaryLanguageLabels(this.langCode).subscribe(response => {
-      this.data = response['faq'];
+      this.data = response['faq']['questions'];
+      this.answerTranslation = response['faq']['answer'];
     })
   }
 

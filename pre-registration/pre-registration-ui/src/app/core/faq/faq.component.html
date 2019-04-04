@@ -9,9 +9,9 @@
 
 <div [ngClass]="langCode === 'ara' ? 'body-container text-direction': 'body-container'">
   <mat-card>
-    <div *ngFor="let item of data.questions">
+    <div *ngFor="let item of data">
       <p>{{item.question}}</p>
-      <p><b>{{data.answer}}:</b>&nbsp;&nbsp;&nbsp;{{item.answer}}</p>
+      <p><b>{{answerTranslation}}:</b>&nbsp;&nbsp;&nbsp;{{item.answer}}</p>
       <br />
     </div>
   </mat-card>
