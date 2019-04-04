@@ -19,7 +19,8 @@ export const DATE_PATTERN = '([0-2]\\d|3[01])';
 
 export const IDS = {
   newUser: 'mosip.pre-registration.demographic.create',
-  transliteration: 'mosip.pre-registration.transliteration.transliterate'
+  transliteration: 'mosip.pre-registration.transliteration.transliterate',
+  notification: 'mosip.pre-registration.notification.notify'
 };
 
 // export const LANGUAGE_CODE = {
@@ -32,14 +33,16 @@ export const IDS = {
 export const APPEND_URL = {
   config: 'config',
   send_otp: 'sendotp',
-  login: 'login',
-  logout: 'logout',
-  location_metadata: 'v1.0/locations/locationhierarchy/',
-  location_immediate_children: 'v1.0/locations/immediatechildren/',
+  login: 'useridotp',
+  logout: 'invalidatetoken',
+  // login: 'login',
+  // logout: 'logout',
+  location_metadata: 'locations/locationhierarchy/',
+  location_immediate_children: 'locations/immediatechildren/',
   applicants: 'demographic/applications',
   get_applicant: 'demographic/applications/details',
   location: 'masterdata/',
-  gender: 'masterdata/v1.0/gendertypes',
+  gender: 'masterdata/gendertypes',
   transliteration: 'transliteration/transliterate',
   applicantType: 'applicanttype/',
   validDocument: 'v1.0/applicanttype/',
@@ -53,7 +56,7 @@ export const APPEND_URL = {
   qr_code: 'notification/generateQRCode',
   notification: 'notification/',
   send_notification: 'notify',
-  master_data: 'masterdata/v1.0/',
+  master_data: 'masterdata/',
   auth: 'auth/'
 };
 

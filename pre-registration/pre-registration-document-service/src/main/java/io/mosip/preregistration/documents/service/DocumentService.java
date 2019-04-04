@@ -165,7 +165,7 @@ public class DocumentService {
 					responseDto.setResponse(docResponseDtos);
 				} else {
 					throw new DocumentVirusScanException(ErrorCodes.PRG_PAM_DOC_010.toString(),
-							ErrorMessages.DOCUMENT_FAILED_IN_VIRUS_SCAN.toString());
+							ErrorMessages.DOCUMENT_FAILED_IN_VIRUS_SCAN.getMessage());
 				}
 			}
 			isUploadSuccess = true;
@@ -226,7 +226,7 @@ public class DocumentService {
 
 				if (!isStoreSuccess) {
 					throw new FSServerException(ErrorCodes.PRG_PAM_DOC_009.toString(),
-							ErrorMessages.DOCUMENT_FAILED_TO_UPLOAD.toString());
+							ErrorMessages.DOCUMENT_FAILED_TO_UPLOAD.getMessage());
 				}
 				docResponseDto.setPreRegistrationId(documentEntity.getPreregId());
 				docResponseDto.setDocumentId(String.valueOf(documentEntity.getDocumentId()));
@@ -237,7 +237,7 @@ public class DocumentService {
 				docResponseDtos.add(docResponseDto);
 			} else {
 				throw new DocumentFailedToUploadException(ErrorCodes.PRG_PAM_DOC_009.toString(),
-						ErrorMessages.DOCUMENT_FAILED_TO_UPLOAD.toString());
+						ErrorMessages.DOCUMENT_FAILED_TO_UPLOAD.getMessage());
 			}
 		}
 		return docResponseDtos;
@@ -269,7 +269,7 @@ public class DocumentService {
 					|| destinationPreId.isEmpty()) {
 				throw new InvalidRequestParameterException(
 						io.mosip.preregistration.core.errorcodes.ErrorCodes.PRG_CORE_REQ_001.toString(),
-						io.mosip.preregistration.core.errorcodes.ErrorMessages.MISSING_REQUEST_PARAMETER.toString());
+						io.mosip.preregistration.core.errorcodes.ErrorMessages.MISSING_REQUEST_PARAMETER.getMessage());
 			} else if (serviceUtil.isValidCatCode(catCode)) {
 				boolean sourceStatus = serviceUtil.callGetPreRegInfoRestService(sourcePreId);
 				boolean destinationStatus = serviceUtil.callGetPreRegInfoRestService(destinationPreId);
@@ -297,7 +297,7 @@ public class DocumentService {
 					responseDto.setResponsetime(serviceUtil.getCurrentResponseTime());
 					responseDto.setResponse(copyDocumentList);
 				} else {
-					throw new DocumentNotFoundException(DocumentStatusMessages.DOCUMENT_IS_MISSING.toString());
+					throw new DocumentNotFoundException(DocumentStatusMessages.DOCUMENT_IS_MISSING.getMessage());
 				}
 			}
 			isCopySuccess = true;
@@ -339,12 +339,12 @@ public class DocumentService {
 			boolean isStoreSuccess = fs.copyFile(sourceBucketName, sourceKey, destinationBucketName, destinationKey);
 			if (!isStoreSuccess) {
 				throw new FSServerException(ErrorCodes.PRG_PAM_DOC_009.toString(),
-						ErrorMessages.DOCUMENT_FAILED_TO_UPLOAD.toString());
+						ErrorMessages.DOCUMENT_FAILED_TO_UPLOAD.getMessage());
 			}
 
 		} else {
 			throw new DocumentFailedToCopyException(ErrorCodes.PRG_PAM_DOC_011.toString(),
-					ErrorMessages.DOCUMENT_FAILED_TO_COPY.toString());
+					ErrorMessages.DOCUMENT_FAILED_TO_COPY.getMessage());
 		}
 	}
 
@@ -409,7 +409,7 @@ public class DocumentService {
 				InputStream file = fs.getFile(doc.getPreregId(), key);
 				if (file == null) {
 					throw new FSServerException(ErrorCodes.PRG_PAM_DOC_005.toString(),
-							ErrorMessages.DOCUMENT_FAILED_TO_FETCH.toString());
+							ErrorMessages.DOCUMENT_FAILED_TO_FETCH.getMessage());
 				}
 				byte[] cephBytes = IOUtils.toByteArray(file);
 				if (doc.getDocHash().equals(HashUtill.hashUtill(cephBytes))) {
@@ -453,11 +453,10 @@ public class DocumentService {
 				boolean isDeleted = fs.deleteFile(documentEntity.getPreregId(), key);
 				if (!isDeleted) {
 					throw new FSServerException(ErrorCodes.PRG_PAM_DOC_006.toString(),
-							ErrorMessages.DOCUMENT_FAILED_TO_DELETE.toString());
+							ErrorMessages.DOCUMENT_FAILED_TO_DELETE.getMessage());
 				}
 				DocumentDeleteResponseDTO deleteDTO = new DocumentDeleteResponseDTO();
-				deleteDTO.setDocumnet_Id(documentId);
-				deleteDTO.setResMsg(DocumentStatusMessages.DOCUMENT_DELETE_SUCCESSFUL.toString());
+				deleteDTO.setResMsg(DocumentStatusMessages.DOCUMENT_DELETE_SUCCESSFUL.getMessage());
 				deleteDocList.add(deleteDTO);
 				delResponseDto.setResponse(deleteDocList);
 			}
@@ -523,8 +522,7 @@ public class DocumentService {
 				DocumentDeleteResponseDTO deleteDTO = new DocumentDeleteResponseDTO();
 				String key = documentEntity.getDocCatCode() + "_" + documentEntity.getDocumentId();
 				fs.deleteFile(documentEntity.getPreregId(), key);
-				deleteDTO.setDocumnet_Id(String.valueOf(documentEntity.getDocumentId()));
-				deleteDTO.setResMsg(DocumentStatusMessages.DOCUMENT_DELETE_SUCCESSFUL.toString());
+				deleteDTO.setResMsg(DocumentStatusMessages.DOCUMENT_DELETE_SUCCESSFUL.getMessage());
 				deleteAllList.add(deleteDTO);
 			}
 

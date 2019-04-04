@@ -42,8 +42,8 @@ export class DataStorageService {
   }
 
   getGenderDetails() {
-    return this.httpClient.get(this.BASE_URL + appConstants.APPEND_URL.gender);
-    // return this.httpClient.get(this.BASE_URL + appConstants.APPEND_URL.gender);
+   // return this.httpClient.get('https://integ.mosip.io/' + appConstants.APPEND_URL.gender);
+     return this.httpClient.get(this.BASE_URL + appConstants.APPEND_URL.gender);
   }
 
   getTransliteration(request: any) {
@@ -213,6 +213,13 @@ export class DataStorageService {
   }
 
   sendNotification(data: FormData) {
+    // const obj = {
+    //   id: appConstants.IDS.notification,
+    //   requesttime: Utils.getCurrentDate(),
+    //   version: appConstants.VERSION,
+    //   request: data
+    // };
+
     return this.httpClient.post(
       this.BASE_URL +
         this.PRE_REG_URL +
@@ -224,7 +231,7 @@ export class DataStorageService {
 
   recommendedCenters(langCode: string, locationHierarchyCode: number, data: string[]) {
     let url =
-      this.BASE_URL +
+    this.BASE_URL +
       appConstants.APPEND_URL.master_data +
       'registrationcenters/' +
       langCode +
@@ -251,7 +258,7 @@ export class DataStorageService {
 
   getGuidelineTemplate() {
     const url =
-      this.BASE_URL +
+    this.BASE_URL +
       appConstants.APPEND_URL.master_data +
       'templates/' +
       localStorage.getItem('langCode') +
@@ -269,7 +276,7 @@ export class DataStorageService {
 
   getDocumentCategories(applicantCode) {
     const APPLICANT_VALID_DOCUMENTS_URL =
-      this.BASE_URL +
+    this.BASE_URL +
       appConstants.APPEND_URL.location +
       appConstants.APPEND_URL.validDocument +
       applicantCode +

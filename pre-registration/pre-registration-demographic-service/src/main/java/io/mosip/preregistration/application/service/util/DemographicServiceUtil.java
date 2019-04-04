@@ -9,7 +9,6 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -24,21 +23,22 @@ import org.springframework.stereotype.Component;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.preregistration.application.code.RequestCodes;
+import io.mosip.preregistration.application.dto.DemographicCreateResponseDTO;
 import io.mosip.preregistration.application.dto.DemographicRequestDTO;
+import io.mosip.preregistration.application.dto.DemographicUpdateResponseDTO;
 import io.mosip.preregistration.application.entity.DemographicEntity;
 import io.mosip.preregistration.application.errorcodes.ErrorCodes;
 import io.mosip.preregistration.application.errorcodes.ErrorMessages;
-import io.mosip.preregistration.application.exception.MissingRequestParameterException;
 import io.mosip.preregistration.application.exception.OperationNotAllowedException;
+import io.mosip.preregistration.application.exception.SchemaValidationException;
 import io.mosip.preregistration.application.exception.system.DateParseException;
 import io.mosip.preregistration.application.exception.system.JsonParseException;
 import io.mosip.preregistration.core.code.StatusCodes;
 import io.mosip.preregistration.core.common.dto.DemographicResponseDTO;
-import io.mosip.preregistration.core.common.dto.MainRequestDTO;
 import io.mosip.preregistration.core.config.LoggerConfiguration;
-import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
 import io.mosip.preregistration.core.util.CryptoUtil;
 import io.mosip.preregistration.core.util.HashUtill;
+import io.mosip.preregistration.core.util.ValidationUtil;
 
 /**
  * This class provides the utility methods for DemographicService
@@ -49,10 +49,9 @@ import io.mosip.preregistration.core.util.HashUtill;
  */
 @Component
 public class DemographicServiceUtil {
-	
+
 	@Value("${mosip.utc-datetime-pattern}")
-	private String utcDateTimePattern ;
-	
+	private String utcDateTimePattern;
 
 	/**
 	 * Logger instance
@@ -61,8 +60,6 @@ public class DemographicServiceUtil {
 
 	@Autowired
 	CryptoUtil cryptoUtil;
-	
-
 
 	/**
 	 * This setter method is used to assign the initial demographic entity values to
@@ -96,6 +93,62 @@ public class DemographicServiceUtil {
 	}
 
 	/**
+	 * This setter method is used to assign the initial demographic entity values to
+	 * the createDTO
+	 * 
+	 * @param demographicEntity
+	 *            pass the demographicEntity
+	 * @return createDTO with the values
+	 */
+	public DemographicCreateResponseDTO setterForCreatePreRegistration(DemographicEntity demographicEntity) {
+		log.info("sessionId", "idType", "id", "In setterForCreateDTO method of pre-registration service util");
+		JSONParser jsonParser = new JSONParser();
+		DemographicCreateResponseDTO createDto = new DemographicCreateResponseDTO();
+		try {
+			createDto.setPreRegistrationId(demographicEntity.getPreRegistrationId());
+			createDto.setDemographicDetails((JSONObject) jsonParser.parse(new String(cryptoUtil
+					.decrypt(demographicEntity.getApplicantDetailJson(), demographicEntity.getEncryptedDateTime()))));
+			createDto.setStatusCode(demographicEntity.getStatusCode());
+			createDto.setLangCode(demographicEntity.getLangCode());
+			createDto.setCreatedDateTime(getLocalDateString(demographicEntity.getCreateDateTime()));
+		} catch (ParseException ex) {
+			log.error("sessionId", "idType", "id",
+					"In setterForCreateDTO method of pre-registration service- " + ex.getMessage());
+			throw new JsonParseException(ErrorCodes.PRG_PAM_APP_007.toString(),
+					ErrorMessages.JSON_PARSING_FAILED.toString(), ex.getCause());
+		}
+		return createDto;
+	}
+
+	/**
+	 * This setter method is used to assign the initial demographic entity values to
+	 * the createDTO
+	 * 
+	 * @param demographicEntity
+	 *            pass the demographicEntity
+	 * @return createDTO with the values
+	 */
+	public DemographicUpdateResponseDTO setterForUpdatePreRegistration(DemographicEntity demographicEntity) {
+		log.info("sessionId", "idType", "id", "In setterForCreateDTO method of pre-registration service util");
+		JSONParser jsonParser = new JSONParser();
+		DemographicUpdateResponseDTO createDto = new DemographicUpdateResponseDTO();
+		try {
+			createDto.setPreRegistrationId(demographicEntity.getPreRegistrationId());
+			createDto.setDemographicDetails((JSONObject) jsonParser.parse(new String(cryptoUtil
+					.decrypt(demographicEntity.getApplicantDetailJson(), demographicEntity.getEncryptedDateTime()))));
+			createDto.setStatusCode(demographicEntity.getStatusCode());
+			createDto.setLangCode(demographicEntity.getLangCode());
+			createDto.setUpdatedDateTime(getLocalDateString(demographicEntity.getCreateDateTime()));
+		} catch (ParseException ex) {
+			log.error("sessionId", "idType", "id",
+					"In setterForCreateDTO method of pre-registration service- " + ex.getMessage());
+			throw new JsonParseException(ErrorCodes.PRG_PAM_APP_007.toString(),
+					ErrorMessages.JSON_PARSING_FAILED.toString(), ex.getCause());
+		}
+		return createDto;
+	}
+
+	/**
 	 * This method is used to set the values from the request to the
 	 * demographicEntity entity fields.
 	 * 
@@ -107,79 +160,81 @@ public class DemographicServiceUtil {
 	 *            pass entityType
 	 * @return demographic entity with values
 	 */
-	public DemographicEntity prepareDemographicEntity(DemographicRequestDTO demographicRequest, String requestId,
-			String entityType, String statuscode) {
+	public DemographicEntity prepareDemographicEntityForCreate(DemographicRequestDTO demographicRequest,
+			String statuscode, String userId, String preRegistrationId) {
 		log.info("sessionId", "idType", "id", "In prepareDemographicEntity method of pre-registration service util");
 		DemographicEntity demographicEntity = new DemographicEntity();
-		demographicEntity.setPreRegistrationId(demographicRequest.getPreRegistrationId());
+		demographicEntity.setPreRegistrationId(preRegistrationId);
 		LocalDateTime encryptionDateTime = DateUtils.getUTCCurrentDateTime();
-		log.info("sessionId", "idType", "id", "Encryption start time : "+DateUtils.getUTCCurrentDateTimeString());
+		log.info("sessionId", "idType", "id", "Encryption start time : " + DateUtils.getUTCCurrentDateTimeString());
 		byte[] encryptedDemographicDetails = cryptoUtil
 				.encrypt(demographicRequest.getDemographicDetails().toJSONString().getBytes(), encryptionDateTime);
-		log.info("sessionId", "idType", "id", "Encryption end time : "+DateUtils.getUTCCurrentDateTimeString());
+		log.info("sessionId", "idType", "id", "Encryption end time : " + DateUtils.getUTCCurrentDateTimeString());
 		demographicEntity.setApplicantDetailJson(encryptedDemographicDetails);
 		demographicEntity.setLangCode(demographicRequest.getLangCode());
-		demographicEntity.setCrAppuserId(requestId);
-		demographicEntity.setCreatedBy(demographicRequest.getCreatedBy());
+		demographicEntity.setCrAppuserId(userId);
+		demographicEntity.setCreatedBy(userId);
 		demographicEntity.setCreateDateTime(LocalDateTime.now(ZoneId.of("UTC")));
 		demographicEntity.setStatusCode(statuscode);
-		log.info("sessionId", "idType", "id", "Hashing start time : "+DateUtils.getUTCCurrentDateTimeString());
+		log.info("sessionId", "idType", "id", "Hashing start time : " + DateUtils.getUTCCurrentDateTimeString());
 		demographicEntity.setDemogDetailHash(HashUtill.hashUtill(demographicEntity.getApplicantDetailJson()));
-		log.info("sessionId", "idType", "id", "Hashing end time : "+DateUtils.getUTCCurrentDateTimeString());
-		try {
-			if (entityType.equals(RequestCodes.SAVE.getCode())) {
-				if (!isNull(demographicRequest.getCreatedBy()) && !isNull(demographicRequest.getCreatedDateTime())
-						&& isNull(demographicRequest.getUpdatedBy()) && isNull(demographicEntity.getUpdateDateTime())) {
-					
-					demographicEntity.setUpdatedBy(null);
-					demographicEntity.setUpdateDateTime(LocalDateTime.now(ZoneId.of("UTC")));
-					demographicEntity.setEncryptedDateTime(encryptionDateTime);
-					
-				} else {
-					throw new InvalidRequestParameterException(ErrorCodes.PRG_PAM_APP_012.toString(),
-							ErrorMessages.MISSING_REQUEST_PARAMETER.toString());
-				}
-			} else if (entityType.equals(RequestCodes.UPDATE.getCode())) {
-				if (!isNull(demographicRequest.getCreatedBy()) && !isNull(demographicRequest.getCreatedDateTime())
-						&& !isNull(demographicRequest.getUpdatedBy())
-						&& !isNull(demographicRequest.getUpdatedDateTime())) {
-					demographicEntity.setUpdatedBy(demographicRequest.getUpdatedBy());
-					demographicEntity.setUpdateDateTime(LocalDateTime.now(ZoneId.of("UTC")));
-					demographicEntity.setEncryptedDateTime(encryptionDateTime);
-					
-					
-				} else {
-					throw new InvalidRequestParameterException(ErrorCodes.PRG_PAM_APP_012.toString(),
-							ErrorMessages.MISSING_REQUEST_PARAMETER.toString());
-				}
-			}
-		} catch (NullPointerException ex) {
-			log.error("sessionId", "idType", "id",
-					"In prepareDemographicEntity method of pre-registration service- " + ex.getCause());
-			throw new MissingRequestParameterException(ErrorCodes.PRG_PAM_APP_012.toString(),
-					ErrorMessages.MISSING_REQUEST_PARAMETER.toString());
-		}
+		log.info("sessionId", "idType", "id", "Hashing end time : " + DateUtils.getUTCCurrentDateTimeString());
+		demographicEntity.setUpdatedBy(userId);
+		demographicEntity.setUpdateDateTime(LocalDateTime.now(ZoneId.of("UTC")));
+		demographicEntity.setEncryptedDateTime(encryptionDateTime);
 		return demographicEntity;
 	}
 
 	/**
-	 * This method is used to add the initial request values into a map for input
-	 * validations.
+	 * This method is used to set the values from the request to the
+	 * demographicEntity entity fields.
 	 * 
-	 * @param demographicRequestDTO
-	 *            pass demographicRequestDTO
-	 * @return a map for request input validation
+	 * @param demographicRequest
+	 *            pass demographicRequest
+	 * @param requestId
+	 *            pass requestId
+	 * @param entityType
+	 *            pass entityType
+	 * @return demographic entity with values
 	 */
-	public Map<String, String> prepareRequestParamMap(MainRequestDTO<DemographicRequestDTO> demographicRequestDTO) {
-		log.info("sessionId", "idType", "id", "In prepareRequestParamMap method of pre-registration service util");
-		Map<String, String> inputValidation = new HashMap<>();
-		inputValidation.put(RequestCodes.ID.getCode(), demographicRequestDTO.getId());
-		inputValidation.put(RequestCodes.VER.getCode(), demographicRequestDTO.getVersion());
-		inputValidation.put(RequestCodes.REQ_TIME.getCode(),
-				new SimpleDateFormat(utcDateTimePattern).format(demographicRequestDTO.getRequesttime()));
-		inputValidation.put(RequestCodes.REQUEST.getCode(), demographicRequestDTO.getRequest().toString());
-		return inputValidation;
+	public DemographicEntity prepareDemographicEntityForUpdate(DemographicEntity demographicEntity,
+			DemographicRequestDTO demographicRequest, String statuscode, String userId, String preRegistrationId) {
+		log.info("sessionId", "idType", "id", "In prepareDemographicEntity method of pre-registration service util");
+		demographicEntity.setPreRegistrationId(preRegistrationId);
+		LocalDateTime encryptionDateTime = DateUtils.getUTCCurrentDateTime();
+		log.info("sessionId", "idType", "id", "Encryption start time : " + DateUtils.getUTCCurrentDateTimeString());
+		byte[] encryptedDemographicDetails = cryptoUtil
+				.encrypt(demographicRequest.getDemographicDetails().toJSONString().getBytes(), encryptionDateTime);
+		log.info("sessionId", "idType", "id", "Encryption end time : " + DateUtils.getUTCCurrentDateTimeString());
+		demographicEntity.setApplicantDetailJson(encryptedDemographicDetails);
+		demographicEntity.setLangCode(demographicRequest.getLangCode());
+		demographicEntity.setStatusCode(statuscode);
+		log.info("sessionId", "idType", "id", "Hashing start time : " + DateUtils.getUTCCurrentDateTimeString());
+		demographicEntity.setDemogDetailHash(HashUtill.hashUtill(demographicEntity.getApplicantDetailJson()));
+		log.info("sessionId", "idType", "id", "Hashing end time : " + DateUtils.getUTCCurrentDateTimeString());
+		demographicEntity.setUpdateDateTime(LocalDateTime.now(ZoneId.of("UTC")));
+		demographicEntity.setEncryptedDateTime(encryptionDateTime);
+		return demographicEntity;
 	}
+
+//	/**
+//	 * This method is used to add the initial request values into a map for input
+//	 * validations.
+//	 * 
+//	 * @param demographicRequestDTO
+//	 *            pass demographicRequestDTO
+//	 * @return a map for request input validation
+//	 */
+//	public Map<String, String> prepareRequestParamMap(MainRequestDTO<DemographicRequestDTO> demographicRequestDTO) {
+//		log.info("sessionId", "idType", "id", "In prepareRequestParamMap method of pre-registration service util");
+//		Map<String, String> inputValidation = new HashMap<>();
+//		inputValidation.put(RequestCodes.ID.getCode(), demographicRequestDTO.getId());
+//		inputValidation.put(RequestCodes.VER.getCode(), demographicRequestDTO.getVersion());
+//		inputValidation.put(RequestCodes.REQ_TIME.getCode(),
+//				new SimpleDateFormat(utcDateTimePattern).format(demographicRequestDTO.getRequesttime()));
+//		inputValidation.put(RequestCodes.REQUEST.getCode(), demographicRequestDTO.getRequest().toString());
+//		return inputValidation;
+//	}
 
 	/**
 	 * This method is used to set the JSON values to RequestCodes constants.
@@ -192,17 +247,18 @@ public class DemographicServiceUtil {
 	 * 
 	 * @throws ParseException
 	 *             On json Parsing Failed
-	 * @throws org.json.simple.parser.ParseException 
+	 * @throws org.json.simple.parser.ParseException
 	 * 
 	 */
-	public JSONArray getValueFromIdentity(byte[] demographicData, String identityKey) throws ParseException, org.json.simple.parser.ParseException {
+	public JSONArray getValueFromIdentity(byte[] demographicData, String identityKey)
+			throws ParseException, org.json.simple.parser.ParseException {
 		log.info("sessionId", "idType", "id", "In getValueFromIdentity method of pre-registration service util ");
 		JSONParser jsonParser = new JSONParser();
 		JSONObject jsonObj = (JSONObject) jsonParser.parse(new String(demographicData));
 		JSONObject identityObj = (JSONObject) jsonObj.get(RequestCodes.IDENTITY.getCode());
 		return (JSONArray) identityObj.get(identityKey);
 	}
-	
+
 	/**
 	 * This method is used to set the JSON values to RequestCodes constants.
 	 * 
@@ -214,15 +270,14 @@ public class DemographicServiceUtil {
 	 * 
 	 * @throws ParseException
 	 *             On json Parsing Failed
-	 * @throws org.json.simple.parser.ParseException 
+	 * @throws org.json.simple.parser.ParseException
 	 * 
 	 */
-	public String getPostalCode(byte[] demographicData, String postalcode) throws  org.json.simple.parser.ParseException {
-		log.info("sessionId", "idType", "id", "In getValueFromIdentity method of pe-registration service util to get postalcode ");
-		JSONParser jsonParser = new JSONParser();
-		JSONObject jsonObj = (JSONObject) jsonParser.parse(new String(demographicData));
-		JSONObject identityObj = (JSONObject) jsonObj.get(RequestCodes.IDENTITY.getCode());
-		return  (String) identityObj.get(postalcode);
+
+	public String getIdJSONValue(JSONObject demographicData, String value)  {
+		log.info("sessionId", "idType", "id", "In getValueFromIdentity method of pe-registration service util to get getIdJSONValue ");
+		JSONObject identityObj = (JSONObject) demographicData.get(RequestCodes.IDENTITY.getCode());
+		return  identityObj.get(value).toString();
 	}
 
 	/**
@@ -274,44 +329,53 @@ public class DemographicServiceUtil {
 	 *            pass Date format
 	 * @return map with formatted fromDate and toDate
 	 */
-//	public Map<String, LocalDateTime> dateSetter(Map<String, String> dateMap, String format) {
-//		log.info("sessionId", "idType", "id", "In dateSetter method of pre-registration service util ");
-//		Map<String, LocalDateTime> localDateTimeMap = new HashMap<>();
-//		try {
-//			  
-//			Date fromDate = DateUtils
-//					.parseToDate(URLDecoder.decode(dateMap.get(RequestCodes.FROM_DATE.getCode()), "UTF-8"), format);
-//          
-//			Date toDate;
-//			if (dateMap.get(RequestCodes.TO_DATE.getCode()) == null
-//					|| isNull(dateMap.get(RequestCodes.TO_DATE.getCode()))) {
-//				toDate = fromDate;
-//				Calendar cal = Calendar.getInstance();
-//				cal.setTime(toDate);
-//				cal.set(Calendar.HOUR_OF_DAY, 23);
-//				cal.set(Calendar.MINUTE, 59);
-//				cal.set(Calendar.SECOND, 59);
-//				toDate = cal.getTime();
-//			} else {
-//				toDate = DateUtils.parseToDate(URLDecoder.decode(dateMap.get(RequestCodes.TO_DATE.getCode()), "UTF-8"),
-//						format);
-//			}
-//			localDateTimeMap.put(RequestCodes.FROM_DATE.getCode(), DateUtils.parseDateToLocalDateTime(fromDate));
-//			localDateTimeMap.put(RequestCodes.TO_DATE.getCode(), DateUtils.parseDateToLocalDateTime(toDate));
-//
-//		} catch (java.text.ParseException | io.mosip.kernel.core.exception.ParseException ex) {
-//			log.error("sessionId", "idType", "id",
-//					"In dateSetter method of pre-registration service- " + ex.getCause());
-//			throw new DateParseException(ErrorCodes.PRG_PAM_APP_011.toString(),
-//					ErrorMessages.UNSUPPORTED_DATE_FORMAT.toString(), ex.getCause());
-//		} catch (UnsupportedEncodingException ex) {
-//			log.error("sessionId", "idType", "id",
-//					"In dateSetter method of pre-registration service- " + ex.getCause());
-//			throw new SystemUnsupportedEncodingException(ErrorCodes.PRG_PAM_APP_009.toString(),
-//					ErrorMessages.UNSUPPORTED_ENCODING_CHARSET.toString(), ex.getCause());
-//		}
-//		return localDateTimeMap;
-//	}
+	// public Map<String, LocalDateTime> dateSetter(Map<String, String> dateMap,
+	// String format) {
+	// log.info("sessionId", "idType", "id", "In dateSetter method of
+	// pre-registration service util ");
+	// Map<String, LocalDateTime> localDateTimeMap = new HashMap<>();
+	// try {
+	//
+	// Date fromDate = DateUtils
+	// .parseToDate(URLDecoder.decode(dateMap.get(RequestCodes.FROM_DATE.getCode()),
+	// "UTF-8"), format);
+	//
+	// Date toDate;
+	// if (dateMap.get(RequestCodes.TO_DATE.getCode()) == null
+	// || isNull(dateMap.get(RequestCodes.TO_DATE.getCode()))) {
+	// toDate = fromDate;
+	// Calendar cal = Calendar.getInstance();
+	// cal.setTime(toDate);
+	// cal.set(Calendar.HOUR_OF_DAY, 23);
+	// cal.set(Calendar.MINUTE, 59);
+	// cal.set(Calendar.SECOND, 59);
+	// toDate = cal.getTime();
+	// } else {
+	// toDate =
+	// DateUtils.parseToDate(URLDecoder.decode(dateMap.get(RequestCodes.TO_DATE.getCode()),
+	// "UTF-8"),
+	// format);
+	// }
+	// localDateTimeMap.put(RequestCodes.FROM_DATE.getCode(),
+	// DateUtils.parseDateToLocalDateTime(fromDate));
+	// localDateTimeMap.put(RequestCodes.TO_DATE.getCode(),
+	// DateUtils.parseDateToLocalDateTime(toDate));
+	//
+	// } catch (java.text.ParseException |
+	// io.mosip.kernel.core.exception.ParseException ex) {
+	// log.error("sessionId", "idType", "id",
+	// "In dateSetter method of pre-registration service- " + ex.getCause());
+	// throw new DateParseException(ErrorCodes.PRG_PAM_APP_011.toString(),
+	// ErrorMessages.UNSUPPORTED_DATE_FORMAT.toString(), ex.getCause());
+	// } catch (UnsupportedEncodingException ex) {
+	// log.error("sessionId", "idType", "id",
+	// "In dateSetter method of pre-registration service- " + ex.getCause());
+	// throw new
+	// SystemUnsupportedEncodingException(ErrorCodes.PRG_PAM_APP_009.toString(),
+	// ErrorMessages.UNSUPPORTED_ENCODING_CHARSET.toString(), ex.getCause());
+	// }
+	// return localDateTimeMap;
+	// }
 
 	public String getCurrentResponseTime() {
 		return DateUtils.formatDate(new Date(System.currentTimeMillis()), utcDateTimePattern);
@@ -333,6 +397,22 @@ public class DemographicServiceUtil {
 		DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(utcDateTimePattern);
 		return date.format(dateTimeFormatter);
 	}
+	
+	/**
+	 * 
+	 * @param idValidationFields is a map with key and regex as value
+	 * @param demoDetails 
+	 * @return boolean
+	 */
+	public boolean validation(Map<String,String> idValidationFields,JSONObject demoDetails ) {
+		for (Map.Entry<String, String> entry : idValidationFields.entrySet()) {
+			if (!ValidationUtil.idValidation(getIdJSONValue(demoDetails, entry.getKey()),
+					entry.getValue())) {
+            throw new SchemaValidationException(ErrorCodes.PRG_PAM_APP_014.name(), entry.getKey()+entry.getValue());
+			}
+		}
+		return true;
+	}
 
 	public boolean isStatusValid(String status) {
 		for (StatusCodes choice : StatusCodes.values())
@@ -340,6 +420,5 @@ public class DemographicServiceUtil {
 				return true;
 		return false;
 	}
-
 
 }

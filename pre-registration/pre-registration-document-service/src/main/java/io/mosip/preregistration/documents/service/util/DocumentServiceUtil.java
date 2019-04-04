@@ -10,7 +10,9 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
@@ -229,7 +231,7 @@ public class DocumentServiceUtil {
 					"In parseDocumentId method of document service util- " + ex.getMessage());
 
 			throw new InvalidDocumnetIdExcepion(ErrorCodes.PRG_PAM_DOC_019.toString(),
-					ErrorMessages.INVALID_DOCUMENT_ID.toString());
+					ErrorMessages.INVALID_DOCUMENT_ID.getMessage());
 		}
 
 	}
@@ -240,7 +242,7 @@ public class DocumentServiceUtil {
 			return true;
 		} else {
 			throw new InvalidRequestParameterException(ErrorCodes.PRG_PAM_DOC_018.toString(),
-					ErrorMessages.INVALID_DOCUMENT_CATEGORY_CODE.toString());
+					ErrorMessages.INVALID_DOCUMENT_CATEGORY_CODE.getMessage());
 		}
 	}
 
@@ -287,7 +289,7 @@ public class DocumentServiceUtil {
 			return true;
 		} else {
 			throw new DocumentSizeExceedException(ErrorCodes.PRG_PAM_DOC_007.toString(),
-					ErrorMessages.DOCUMENT_EXCEEDING_PREMITTED_SIZE.toString());
+					ErrorMessages.DOCUMENT_EXCEEDING_PREMITTED_SIZE.getMessage());
 		}
 	}
 
@@ -305,7 +307,7 @@ public class DocumentServiceUtil {
 			return true;
 		} else {
 			throw new DocumentNotValidException(ErrorCodes.PRG_PAM_DOC_004.toString(),
-					ErrorMessages.DOCUMENT_INVALID_FORMAT.toString());
+					ErrorMessages.DOCUMENT_INVALID_FORMAT.getMessage());
 		}
 
 	}
@@ -318,13 +320,13 @@ public class DocumentServiceUtil {
 	public boolean isValidRequest(DocumentRequestDTO dto, String preRegistrationId) {
 		log.info("sessionId", "idType", "id", "In isValidRequest method of document service util");
 		if(isNull(preRegistrationId)) {
-			throw new InvalidRequestParameterException(ErrorCodes.PRG_PAM_DOC_018.toString(), ErrorMessages.INVALID_PRE_ID.toString());
+			throw new InvalidRequestParameterException(ErrorCodes.PRG_PAM_DOC_018.toString(), ErrorMessages.INVALID_PRE_ID.getMessage());
 		}else if(isNull(dto.getDocCatCode())) {
-			throw new InvalidRequestParameterException(ErrorCodes.PRG_PAM_DOC_018.toString(), ErrorMessages.INVALID_DOC_CAT_CODE.toString());
+			throw new InvalidRequestParameterException(ErrorCodes.PRG_PAM_DOC_018.toString(), ErrorMessages.INVALID_DOC_CAT_CODE.getMessage());
 		}else if(isNull(dto.getDocTypCode())) {
-			throw new InvalidRequestParameterException(ErrorCodes.PRG_PAM_DOC_018.toString(), ErrorMessages.INVALID_DOC_TYPE_CODE.toString());
+			throw new InvalidRequestParameterException(ErrorCodes.PRG_PAM_DOC_018.toString(), ErrorMessages.INVALID_DOC_TYPE_CODE.getMessage());
 		}else if(isNull(dto.getLangCode())) {
-			throw new InvalidRequestParameterException(ErrorCodes.PRG_PAM_DOC_018.toString(), ErrorMessages.INVALID_LANG_CODE.toString());
+			throw new InvalidRequestParameterException(ErrorCodes.PRG_PAM_DOC_018.toString(), ErrorMessages.INVALID_LANG_CODE.getMessage());
 
 		}
 		return true;
@@ -345,7 +347,7 @@ public class DocumentServiceUtil {
 		} catch (java.io.IOException e) {
            log.error("sessionId", "idType", "id", e.getMessage());
            throw new VirusScannerException(ErrorCodes.PRG_PAM_DOC_010.toString(),
-					ErrorMessages.DOCUMENT_FAILED_IN_VIRUS_SCAN.toString());
+					ErrorMessages.DOCUMENT_FAILED_IN_VIRUS_SCAN.getMessage());
 		}
 	}
 
@@ -353,15 +355,17 @@ public class DocumentServiceUtil {
 		log.info("sessionId", "idType", "id", "In callGetPreRegInfoRestService method of document service util");
 		try {
 //			RestTemplate restTemplate = restTemplateBuilder.build();
-			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(demographicResourceUrl + "/applications/details")
-					.queryParam("pre_registration_id", preId);
+			Map<String, Object> params = new HashMap<>();
+			params.put("preRegistrationId", preId);
+			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(demographicResourceUrl + "/applications/");
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
 			HttpEntity<MainListResponseDTO<DemographicResponseDTO>> httpEntity = new HttpEntity<>(headers);
 			String uriBuilder = builder.build().encode().toUriString();
+			uriBuilder+="{preRegistrationId}";
 			log.info("sessionId", "idType", "id", "In callGetPreRegInfoRestService method of document service util url "+uriBuilder);
 			ResponseEntity<MainListResponseDTO<DemographicResponseDTO>> respEntity = restTemplate.exchange(uriBuilder, HttpMethod.GET,httpEntity
-					,new ParameterizedTypeReference<MainListResponseDTO<DemographicResponseDTO>>() {});
+					,new ParameterizedTypeReference<MainListResponseDTO<DemographicResponseDTO>>() {},params);
 			if (respEntity.getBody().getErr()!=null) {
 				throw new DemographicGetDetailsException(respEntity.getBody().getErr().getErrorCode(),
 						respEntity.getBody().getErr().getMessage());
@@ -372,7 +376,7 @@ public class DocumentServiceUtil {
 					"In callGetPreRegInfoRestService method of document service util- " + ex.getMessage());
 
 			throw new DemographicGetDetailsException(ErrorCodes.PRG_PAM_DOC_020.toString(),
-					ErrorMessages.DEMOGRAPHIC_GET_RECORD_FAILED.toString(), ex.getCause());
+					ErrorMessages.DEMOGRAPHIC_GET_RECORD_FAILED.getMessage(), ex.getCause());
 		}
 		return true;
 	}

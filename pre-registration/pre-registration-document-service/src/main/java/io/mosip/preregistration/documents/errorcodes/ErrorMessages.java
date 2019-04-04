@@ -17,51 +17,51 @@ public enum ErrorMessages {
 	/**
 	 * ErrorMessage for PRG_PAM_DOC_001
 	 */
-	DOCUMENT_FAILED_IN_QUALITY_CHECK(""),
+	DOCUMENT_FAILED_IN_QUALITY_CHECK("Document failde in quality check"),
 	/**
 	 * ErrorMessage for PRG_PAM_DOC_002
 	 */
-	DOCUMENT_FAILED_IN_ENCRYPTION(""),
+	DOCUMENT_FAILED_IN_ENCRYPTION("Document failed to encrypt"),
 	/**
 	 * ErrorMessage for PRG_PAM_DOC_003
 	 */
-	DOCUMENT_FAILED_IN_DECRYPTION(""),
+	DOCUMENT_FAILED_IN_DECRYPTION("Document failed to decrypt"),
 	/**
 	 * ErrorMessage for PRG_PAM_DOC_004
 	 */
-	DOCUMENT_INVALID_FORMAT(""),
+	DOCUMENT_INVALID_FORMAT("Invalid document format supported"),
 	/**
 	 * ErrorMessage for PRG_PAM_DOC_005
 	 */
-	DOCUMENT_NOT_PRESENT(""),
+	DOCUMENT_NOT_PRESENT("Document not found for the source pre-registration Id"),
 	/**
 	 * ErrorMessage for PRG_PAM_DOC_005
 	 */
-	DOCUMENT_FAILED_TO_FETCH(""),
+	DOCUMENT_FAILED_TO_FETCH("Failed to fetch from File System server"),
 	/**
 	 * ErrorMessage for PRG_PAM_DOC_006
 	 */
-	DOCUMENT_FAILED_TO_DELETE(""),
+	DOCUMENT_FAILED_TO_DELETE("Documents failed to delete"),
 	/**
 	 * ErrorMessage for PRG_PAM_DOC_007
 	 */
-	DOCUMENT_EXCEEDING_PREMITTED_SIZE(""),
+	DOCUMENT_EXCEEDING_PREMITTED_SIZE("Document exceeding permited size"),
 	/**
 	 * ErrorMessage for PRG_PAM_DOC_008
 	 */
-	DOCUMENT_TYPE_NOT_SUPPORTED(""),
+	DOCUMENT_TYPE_NOT_SUPPORTED("Document type not supported"),
 	/**
 	 * ErrorMessage for PRG_PAM_DOC_009
 	 */
-	DOCUMENT_FAILED_TO_UPLOAD(""),
+	DOCUMENT_FAILED_TO_UPLOAD("Document upload failed"),
 	/**
 	 * ErrorMessage for PRG_PAM_DOC_010
 	 */
-	DOCUMENT_FAILED_IN_VIRUS_SCAN(""),
+	DOCUMENT_FAILED_IN_VIRUS_SCAN("Document virus scan failed"),
 	/**
 	 * ErrorMessage for PRG_PAM_DOC_011
 	 */
-	DOCUMENT_FAILED_TO_COPY(""),
+	DOCUMENT_FAILED_TO_COPY("Document copy failed from source to destination"),
 	/**
 	 * ErrorMessage for PRG_PAM_DOC_012
 	 */

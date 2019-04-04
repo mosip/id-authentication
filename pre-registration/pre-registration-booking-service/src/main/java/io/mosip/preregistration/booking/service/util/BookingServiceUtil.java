@@ -231,17 +231,19 @@ public class BookingServiceUtil {
 		log.info("sessionId", "idType", "id", "In callUpdateStatusRestService method of Booking Service Util");
 		try {
 			//RestTemplate restTemplate = restTemplateBuilder.build();
-
-			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(preRegResourceUrl + "/applications")
-					.queryParam("pre_registration_id", preId).queryParam("status_code", status);
+			Map<String, Object> params = new HashMap<>();
+			params.put("preRegistrationId", preId);
+			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(preRegResourceUrl + "/applications/")
+											.queryParam("statusCode", status);
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
 			HttpEntity<MainResponseDTO<String>> httpEntity = new HttpEntity<>(headers);
 			String uriBuilder = builder.build().encode().toUriString();
+			uriBuilder+="{preRegistrationId}";
 			log.info("sessionId", "idType", "id", "Call Update Status in demographic URL : " + uriBuilder);
 			ResponseEntity<MainResponseDTO<String>> bookingResponse = restTemplate.exchange(uriBuilder, HttpMethod.PUT,
 					httpEntity, new ParameterizedTypeReference<MainResponseDTO<String>>() {
-					});
+					},params);
 			if (bookingResponse.getBody().getErrors() != null) {
 				throw new DemographicStatusUpdationException(
 						bookingResponse.getBody().getErrors().get(0).getErrorCode(),
@@ -271,17 +273,19 @@ public class BookingServiceUtil {
 		String statusCode = "";
 		try {
 			//RestTemplate restTemplate = restTemplateBuilder.build();
-			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(preRegResourceUrl + "/applications/status")
-					.queryParam("pre_registration_id", preId);
+			Map<String, Object> params = new HashMap<>();
+			params.put("preRegistrationId", preId);
+			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(preRegResourceUrl + "/applications/status/");
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
 			HttpEntity<MainListResponseDTO<PreRegistartionStatusDTO>> httpEntity = new HttpEntity<>(headers);
 			String uriBuilder = builder.build().encode().toUriString();
+			uriBuilder+="{preRegistrationId}";
 			log.info("sessionId", "idType", "id", "Call Get Status from demographic URL : " + uriBuilder);
 			ResponseEntity<MainListResponseDTO<PreRegistartionStatusDTO>> respEntity = restTemplate.exchange(uriBuilder,
 					HttpMethod.GET, httpEntity,
 					new ParameterizedTypeReference<MainListResponseDTO<PreRegistartionStatusDTO>>() {
-					});
+					},params);
 
 			if (respEntity.getBody().getErr()==null) {
 				ObjectMapper mapper = new ObjectMapper();
@@ -314,19 +318,21 @@ public class BookingServiceUtil {
 		log.info("sessionId", "idType", "id", "In callGetStatusForCancelRestService method of Booking Service Util");
 		try {
 			//RestTemplate restTemplate = restTemplateBuilder.build();
-			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(preRegResourceUrl + "/applications/status")
-					.queryParam("pre_registration_id", preId);
+			Map<String, Object> params = new HashMap<>();
+			params.put("preRegistrationId", preId);
+			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(preRegResourceUrl + "/applications/status/");
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
 			HttpEntity<MainListResponseDTO<PreRegistartionStatusDTO>> httpEntity = new HttpEntity<>(headers);
 			String uriBuilder = builder.build().encode().toUriString();
+			uriBuilder+="{preRegistrationId}";
 			log.info("sessionId", "idType", "id",
 					"In callGetStatusForCancelRestService method of Booking Service URL- " + uriBuilder);
 
 			ResponseEntity<MainListResponseDTO<PreRegistartionStatusDTO>> respEntity = restTemplate.exchange(uriBuilder,
 					HttpMethod.GET, httpEntity,
 					new ParameterizedTypeReference<MainListResponseDTO<PreRegistartionStatusDTO>>() {
-					});
+					},params);
 
 			if (respEntity.getBody().getErr() == null) {
 				ObjectMapper mapper = new ObjectMapper();

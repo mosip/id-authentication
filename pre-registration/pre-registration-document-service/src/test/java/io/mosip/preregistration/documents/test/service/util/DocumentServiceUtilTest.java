@@ -84,7 +84,7 @@ public class DocumentServiceUtilTest {
 	
 	@Test(expected=InvalidRequestParameterException.class)
 	public void inValidDocTypeTest() throws Exception {
-		documentDto.setDocTypeCode(null);
+		documentDto.setDocTypCode(null);
 		serviceUtil.isValidRequest(documentDto,preRegistrationId);
 	}
 	

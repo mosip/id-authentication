@@ -2,7 +2,6 @@ package io.mosip.preregistration.application.test.service.util;
 
 import java.io.File;
 import java.io.FileReader;
-import java.time.LocalDateTime;
 
 import org.apache.commons.codec.binary.Base64;
 import org.json.simple.JSONObject;
@@ -19,7 +18,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import io.mosip.preregistration.application.DemographicTestApplication;
 import io.mosip.preregistration.application.dto.DemographicRequestDTO;
 import io.mosip.preregistration.application.entity.DemographicEntity;
-import io.mosip.preregistration.application.exception.MissingRequestParameterException;
 import io.mosip.preregistration.application.exception.OperationNotAllowedException;
 import io.mosip.preregistration.application.exception.system.DateParseException;
 import io.mosip.preregistration.application.exception.system.JsonParseException;
@@ -73,52 +71,16 @@ public class DemographicServiceUtilTest {
 		jsonObject = (JSONObject) parser.parse(new FileReader(file));
 
 		saveDemographicRequest = new DemographicRequestDTO();
-		saveDemographicRequest.setPreRegistrationId(null);
 		saveDemographicRequest.setLangCode("ENG");
-		saveDemographicRequest.setCreatedBy("9900806086");
-		saveDemographicRequest.setCreatedDateTime(demographicServiceUtil.getLocalDateString(LocalDateTime.now()));
-		saveDemographicRequest.setUpdatedBy(null);
-		saveDemographicRequest.setUpdatedDateTime(demographicServiceUtil.getLocalDateString(LocalDateTime.now()));
 		saveDemographicRequest.setDemographicDetails(jsonObject);
 
 		updateDemographicRequest = new DemographicRequestDTO();
-		updateDemographicRequest.setPreRegistrationId("35760478648170");
 		updateDemographicRequest.setLangCode("ENG");
-		updateDemographicRequest.setCreatedBy("9900806086");
-		updateDemographicRequest.setCreatedDateTime(demographicServiceUtil.getLocalDateString(LocalDateTime.now()));
-		updateDemographicRequest.setUpdatedBy("9900806086");
-		updateDemographicRequest.setUpdatedDateTime(demographicServiceUtil.getLocalDateString(LocalDateTime.now()));
 		updateDemographicRequest.setDemographicDetails(jsonObject);
 
 		demographicEntity = new DemographicEntity();
 		demographicEntity.setPreRegistrationId("35760478648170");
 		demographicEntity.setApplicantDetailJson((jsonObject.toJSONString() + "623744").getBytes());
-	}
-
-	@Test(expected = InvalidRequestParameterException.class)
-	public void prepareDemographicEntityFailureTest1() {
-		byte[] encryptedDemographicDetails = { 1, 0, 1, 0, 1, 0 };
-
-		Mockito.when(cryptoUtil.encrypt(Mockito.any(), Mockito.any())).thenReturn(encryptedDemographicDetails);
-
-		demographicEntity.setApplicantDetailJson(encryptedDemographicDetails);
-		Mockito.when(cryptoUtil.decrypt(Mockito.any(), Mockito.any())).thenReturn(jsonObject.toString().getBytes());
-		saveDemographicRequest.setCreatedBy(null);
-		demographicServiceUtil.prepareDemographicEntity(saveDemographicRequest, requestId, "save",
-				"Pending_Appointment");
-	}
-
-	@Test(expected = MissingRequestParameterException.class)
-	public void prepareDemographicEntityFailureTest2() {
-		String type = null;
-		byte[] encryptedDemographicDetails = { 1, 0, 1, 0, 1, 0 };
-
-		Mockito.when(cryptoUtil.encrypt(Mockito.any(), Mockito.any())).thenReturn(encryptedDemographicDetails);
-
-		demographicEntity.setApplicantDetailJson(encryptedDemographicDetails);
-		Mockito.when(cryptoUtil.decrypt(Mockito.any(), Mockito.any())).thenReturn(jsonObject.toString().getBytes());
-		Mockito.when(demographicServiceUtil.prepareDemographicEntity(saveDemographicRequest, requestId, type,
-				"Pending_Appointment")).thenThrow(MissingRequestParameterException.class);
 	}
 
 	@Test(expected = JsonParseException.class)
