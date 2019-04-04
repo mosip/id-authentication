@@ -63,7 +63,6 @@ import io.mosip.registration.dto.demographic.DocumentDetailsDTO;
 import io.mosip.registration.dto.demographic.LocationDTO;
 import io.mosip.registration.dto.demographic.MoroccoIdentity;
 import io.mosip.registration.dto.demographic.ValuesDTO;
-import io.mosip.registration.dto.mastersync.GenderDto;
 import io.mosip.registration.dto.mastersync.LocationDto;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.service.MasterSyncService;
@@ -1223,14 +1222,14 @@ public class DemographicDetailController extends BaseController {
 			} catch (JsonValidationProcessingException | JsonIOException | JsonSchemaIOException | FileIOException
 					| JsonProcessingException exception) {
 				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.REG_ID_JSON_VALIDATION_FAILED);
-				LOGGER.error("JASON VALIDATOIN FAILED ", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
+				LOGGER.error("JSON VALIDATION FAILED ", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
 						exception.getMessage() + ExceptionUtils.getStackTrace(exception));
-				return;
+				throw exception;
 			} catch (RuntimeException runtimeException) {
 				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.REG_ID_JSON_VALIDATION_FAILED);
-				LOGGER.error("JASON VALIDATOIN FAILED ", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
+				LOGGER.error("JSON VALIDATION FAILED ", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
 						runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
-				return;
+				throw runtimeException;
 			}
 
 			if (isChild) {
@@ -1247,10 +1246,10 @@ public class DemographicDetailController extends BaseController {
 			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, "Saved the demographic fields to DTO");
 
-		} catch (RuntimeException runtimeException) {
+		} catch (Exception exception) {
 			LOGGER.error("REGISTRATION - SAVING THE DETAILS FAILED ", APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID,
-					runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
+					exception.getMessage() + ExceptionUtils.getStackTrace(exception));
 		}
 	}
 
@@ -1272,6 +1271,12 @@ public class DemographicDetailController extends BaseController {
 				.getIntroducerBiometricDTO();
 		ApplicantDocumentDTO applicantDocumentDTO = getRegistrationDTOFromSession().getDemographicDTO()
 				.getApplicantDocumentDTO();
+
+		boolean isParentOrGuradianUINOrRIDAvail = !(uinId.isDisabled() || uinId.getText().isEmpty());
+		boolean isParentOrGuardianUIN = isParentOrGuradianUINOrRIDAvail && uinId.getText().length() == Integer
+				.parseInt(String.valueOf(ApplicationContext.map().get(RegistrationConstants.UIN_LENGTH)));
+		boolean isParentOrGuardianRID = isParentOrGuradianUINOrRIDAvail && uinId.getText().length() != Integer
+				.parseInt(String.valueOf(ApplicationContext.map().get(RegistrationConstants.UIN_LENGTH)));
 
 		return Builder.build(DemographicInfoDTO.class).with(demographicInfo -> demographicInfo.setIdentity(
 				(MoroccoIdentity) Builder.build(MoroccoIdentity.class)
@@ -1407,8 +1412,9 @@ public class DemographicDetailController extends BaseController {
 														.get()))
 												.get()))
 						.with(identity -> identity
-								.setParentOrGuardianRIDOrUIN(uinId.isDisabled() || uinId.getText().isEmpty() ? null
-										: new BigInteger(uinId.getText())))
+								.setParentOrGuardianRID(isParentOrGuardianRID ? new BigInteger(uinId.getText()) : null))
+						.with(identity -> identity
+								.setParentOrGuardianUIN(isParentOrGuardianUIN ? new BigInteger(uinId.getText()) : null))
 						.with(identity -> identity.setParentOrGuardianName(
 								parentName.isDisabled() || parentName.getText().isEmpty() ? null
 										: (List<ValuesDTO>) Builder.build(LinkedList.class)
@@ -1596,9 +1602,11 @@ public class DemographicDetailController extends BaseController {
 				parentDetailPane.setDisable(!isChild);
 				parentDetailPane.setVisible(isChild);
 			}
-			if (moroccoIdentity.getParentOrGuardianRIDOrUIN() != null) {
+			if (!(moroccoIdentity.getParentOrGuardianRID() == null && moroccoIdentity.getParentOrGuardianUIN()== null)) {
 				populateFieldValue(parentName, parentNameLocalLanguage, moroccoIdentity.getParentOrGuardianName());
-				uinId.setText(moroccoIdentity.getParentOrGuardianRIDOrUIN() + "");
+				uinId.setText(moroccoIdentity.getParentOrGuardianRID() == null
+						? moroccoIdentity.getParentOrGuardianUIN().toString()
+						: moroccoIdentity.getParentOrGuardianRID().toString());
 			}
 			preRegistrationId.setText(getRegistrationDTOFromSession().getPreRegistrationId());
 

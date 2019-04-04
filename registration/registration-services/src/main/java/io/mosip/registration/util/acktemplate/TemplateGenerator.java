@@ -541,7 +541,7 @@ public class TemplateGenerator extends BaseService {
 		templateValues.put(RegistrationConstants.TEMPLATE_CNIE_LOCAL_LANG_LABEL,
 				localProperties.getString("cniOrPinNumber"));
 		templateValues.put(RegistrationConstants.TEMPLATE_CNIE_NUMBER, getValue(moroccoIdentity.getCnieNumber()));
-		boolean isChild = moroccoIdentity.getParentOrGuardianRIDOrUIN() != null;
+		boolean isChild = moroccoIdentity.getParentOrGuardianName() != null;
 
 		if (isChild) {
 			templateValues.put(RegistrationConstants.TEMPLATE_PARENT_NAME_USER_LANG_LABEL,
@@ -564,7 +564,8 @@ public class TemplateGenerator extends BaseService {
 						localProperties.getString("parentUIN"));
 			}
 			templateValues.put(RegistrationConstants.TEMPLATE_PARENT_UIN,
-					getValue(moroccoIdentity.getParentOrGuardianRIDOrUIN()));
+					getValue(moroccoIdentity.getParentOrGuardianRID() == null ? moroccoIdentity.getParentOrGuardianUIN()
+							: moroccoIdentity.getParentOrGuardianRID()));
 		} else {
 			templateValues.put(RegistrationConstants.TEMPLATE_WITH_PARENT,
 					RegistrationConstants.TEMPLATE_STYLE_HIDE_PROPERTY);
