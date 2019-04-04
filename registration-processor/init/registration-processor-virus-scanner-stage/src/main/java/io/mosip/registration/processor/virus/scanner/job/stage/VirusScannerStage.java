@@ -26,7 +26,6 @@ import io.mosip.registration.processor.core.code.RegistrationExceptionTypeCode;
 import io.mosip.registration.processor.core.code.RegistrationTransactionStatusCode;
 import io.mosip.registration.processor.core.code.RegistrationTransactionTypeCode;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
-import io.mosip.registration.processor.core.constant.RegistrationStageName;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
@@ -126,7 +125,7 @@ public class VirusScannerStage extends MosipVerticleManager {
 		// To avoid sonar issue
 		try (InputStream encryptedPacket = new FileInputStream(encryptedFile)) {
 			registrationStatusDto.setLatestTransactionTypeCode(RegistrationTransactionTypeCode.VIRUS_SCAN.toString());
-			registrationStatusDto.setRegistrationStageName(RegistrationStageName.VIRUS_SCANNER_STAGE);
+			registrationStatusDto.setRegistrationStageName(this.getClass().getSimpleName());
 
 			isEncryptedFileCleaned = virusScannerService.scanFile(encryptedPacketPath);
 			if (isEncryptedFileCleaned) {

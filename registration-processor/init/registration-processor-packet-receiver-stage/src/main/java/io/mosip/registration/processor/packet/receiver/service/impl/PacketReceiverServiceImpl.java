@@ -20,11 +20,9 @@ import io.mosip.registration.processor.core.code.ApiName;
 import io.mosip.registration.processor.core.code.EventId;
 import io.mosip.registration.processor.core.code.EventName;
 import io.mosip.registration.processor.core.code.EventType;
-import io.mosip.registration.processor.core.code.RegistrationExceptionTypeCode;
 import io.mosip.registration.processor.core.code.RegistrationTransactionStatusCode;
 import io.mosip.registration.processor.core.code.RegistrationTransactionTypeCode;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
-import io.mosip.registration.processor.core.constant.RegistrationStageName;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.spi.filesystem.manager.FileManager;
@@ -95,8 +93,7 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 	@Autowired
 	private RegistrationStatusMapUtil registrationStatusMapUtil;
 
-	RegistrationExceptionMapperUtil registrationExceptionMapperUtil=new RegistrationExceptionMapperUtil();
-
+	RegistrationExceptionMapperUtil registrationExceptionMapperUtil = new RegistrationExceptionMapperUtil();
 
 	/*
 	 * (non-Javadoc)
@@ -106,7 +103,7 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 	 * java.lang.Object)
 	 */
 	@Override
-	public MessageDTO storePacket(File file) {
+	public MessageDTO storePacket(File file, String stageName) {
 
 		MessageDTO messageDTO = new MessageDTO();
 		messageDTO.setInternalError(false);
@@ -126,7 +123,7 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 			boolean isTransactionSuccessful = false;
 			SyncRegistrationEntity regEntity = syncRegistrationService.findByRegistrationId(registrationId);
 
-			dto= registrationStatusService.getRegistrationStatus(registrationId);
+			dto = registrationStatusService.getRegistrationStatus(registrationId);
 
 			if (regEntity == null) {
 				description = "PacketNotSync exception in packet receiver for registartionId " + registrationId + "::"
@@ -152,32 +149,28 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 				description = "PacketNotValidException in packet receiver for registartionId " + registrationId + "::"
 						+ PlatformErrorMessages.RPR_PKR_INVALID_PACKET_FORMAT.getMessage();
 				throw new PacketNotValidException(PlatformErrorMessages.RPR_PKR_INVALID_PACKET_FORMAT.getMessage());
-			} 
-			else if (isDuplicatePacket(registrationId) && !isExternalStatusResend(registrationId)) {
+			} else if (isDuplicatePacket(registrationId) && !isExternalStatusResend(registrationId)) {
 				throw new DuplicateUploadRequestException(
 						PlatformErrorMessages.RPR_PKR_DUPLICATE_PACKET_RECIEVED.getMessage());
-			} 
+			}
 
-
-			else   {
+			else {
 				try {
-					
-					dto= registrationStatusService
-							.getRegistrationStatus(registrationId);
-					if(dto == null)
+
+					dto = registrationStatusService.getRegistrationStatus(registrationId);
+					if (dto == null)
 						dto = new InternalRegistrationStatusDto();
 					else {
-						int retryCount = dto.getRetryCount() != null? dto.getRetryCount() + 1: 1;
+						int retryCount = dto.getRetryCount() != null ? dto.getRetryCount() + 1 : 1;
 						dto.setRetryCount(retryCount);
 
 					}
 					fileManager.put(registrationId, new FileInputStream(file.getAbsolutePath()),
 							DirectoryPathDto.VIRUS_SCAN_ENC);
-					
-					
+
 					dto.setLatestTransactionTypeCode(RegistrationTransactionTypeCode.PACKET_RECEIVER.toString());
-					dto.setRegistrationStageName(RegistrationStageName.PACKET_RECEIVER_STAGE);
-					
+					dto.setRegistrationStageName(stageName);
+
 					dto.setRegistrationId(registrationId);
 					dto.setRegistrationType(regEntity.getRegistrationType());
 					dto.setReferenceRegistrationId(null);
@@ -199,23 +192,17 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 					regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
 							LoggerFileConstant.REGISTRATIONID.toString(), registrationId,
 							"Registration Packet is successfully sync in Sync table.");
-				}
-				catch (  IOException e) {
-					dto.setLatestTransactionStatusCode(
-							registrationExceptionMapperUtil.getStatusCode(RegistrationExceptionTypeCode.IOEXCEPTION));
+				} catch (IOException e) {
 
-					description = " IOException in packet receiver for registrationId"
-							+ registrationId + "::" + e.getMessage();
+					description = " IOException in packet receiver for registrationId" + registrationId + "::"
+							+ e.getMessage();
 					regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
 							LoggerFileConstant.REGISTRATIONID.toString(), registrationId,
 							"Error while updating status : " + e.getMessage());
-				}
-				catch (DataAccessException  e) {
-					dto.setLatestTransactionStatusCode(
-							registrationExceptionMapperUtil.getStatusCode(RegistrationExceptionTypeCode.DATA_ACCESS_EXCEPTION));
+				} catch (DataAccessException e) {
 
-					description = "DataAccessException in packet receiver for registrationId"
-							+ registrationId + "::" + e.getMessage();
+					description = "DataAccessException in packet receiver for registrationId" + registrationId + "::"
+							+ e.getMessage();
 					regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
 							LoggerFileConstant.REGISTRATIONID.toString(), registrationId,
 							"Error while updating status : " + e.getMessage());
@@ -234,7 +221,7 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 					auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
 							registrationId, ApiName.DMZAUDIT);
 				}
-			} 
+			}
 		}
 		if (storageFlag) {
 			messageDTO.setIsValid(true);
@@ -279,7 +266,7 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 	}
 
 	public Boolean isExternalStatusResend(String registrationId) {
-		List<RegistrationStatusSubRequestDto> regIds=new ArrayList<RegistrationStatusSubRequestDto>();
+		List<RegistrationStatusSubRequestDto> regIds = new ArrayList<RegistrationStatusSubRequestDto>();
 		RegistrationStatusSubRequestDto registrationStatusSubRequestDto = new RegistrationStatusSubRequestDto();
 		registrationStatusSubRequestDto.setRegistrationId(registrationId);
 		regIds.add(registrationStatusSubRequestDto);
@@ -287,7 +274,9 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 				registrationId, "PacketReceiverServiceImpl::isExternalStatusResend()::entry");
 
 		List<RegistrationStatusDto> registrationInternalStatusDto = registrationStatusService.getByIds(regIds);
-		RegistrationExternalStatusCode registrationExternalStatusCode = registrationStatusMapUtil.getExternalStatus(registrationInternalStatusDto.get(0).getStatusCode(), registrationInternalStatusDto.get(0).getRetryCount());
+		RegistrationExternalStatusCode registrationExternalStatusCode = registrationStatusMapUtil.getExternalStatus(
+				registrationInternalStatusDto.get(0).getStatusCode(),
+				registrationInternalStatusDto.get(0).getRetryCount());
 		String mappedValue = registrationExternalStatusCode.toString();
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 				registrationId, "PacketReceiverServiceImpl::isExternalStatusResend()::exit");

@@ -40,7 +40,6 @@ import io.mosip.registration.processor.core.constant.EventType;
 import io.mosip.registration.processor.core.constant.JsonConstant;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.constant.PacketFiles;
-import io.mosip.registration.processor.core.constant.RegistrationStageName;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.exception.util.PacketStructure;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
@@ -220,7 +219,7 @@ public class UinGeneratorStage extends MosipVerticleManager {
 		try {
 			registrationStatusDto
 					.setLatestTransactionTypeCode(RegistrationTransactionTypeCode.UIN_GENERATOR.toString());
-			registrationStatusDto.setRegistrationStageName(RegistrationStageName.UIN_GENERATOR_STAGE);
+			registrationStatusDto.setRegistrationStageName(this.getClass().getSimpleName());
 			InputStream idJsonStream = adapter.getFile(registrationId,
 					PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR + PacketFiles.ID.name());
 			byte[] idJsonBytes = IOUtils.toByteArray(idJsonStream);

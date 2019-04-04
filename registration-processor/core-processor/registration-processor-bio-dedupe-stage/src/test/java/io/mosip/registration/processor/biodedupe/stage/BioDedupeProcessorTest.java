@@ -81,9 +81,11 @@ public class BioDedupeProcessorTest {
 
 	@Mock
 	RegistrationExceptionMapperUtil registrationStatusMapperUtil;
-	
+
 	@InjectMocks
 	private BioDedupeProcessor bioDedupeProcessor;
+
+	private String stageName = "BioDedupeStage";
 
 	/**
 	 * Sets the up.
@@ -101,7 +103,7 @@ public class BioDedupeProcessorTest {
 		dto.setRid("reg1234");
 		registrationStatusDto.setRegistrationId("reg1234");
 
-Mockito.when(registrationStatusMapperUtil.getStatusCode(any())).thenReturn("ERROR");
+		Mockito.when(registrationStatusMapperUtil.getStatusCode(any())).thenReturn("ERROR");
 	}
 
 	/**
@@ -116,10 +118,9 @@ Mockito.when(registrationStatusMapperUtil.getStatusCode(any())).thenReturn("ERRO
 		Mockito.when(bioDedupeService.insertBiometrics(anyString())).thenReturn(ResponseStatusCode.SUCCESS.name());
 		Mockito.when(bioDedupeService.performDedupe(anyString())).thenReturn(matchedRegIds);
 
-		doNothing().when(packetInfoManager).saveManualAdjudicationData(matchedRegIds, "reg1234",DedupeSourceName.BIO);
+		doNothing().when(packetInfoManager).saveManualAdjudicationData(matchedRegIds, "reg1234", DedupeSourceName.BIO);
 
-
-		MessageDTO messageDto = bioDedupeProcessor.process(dto);
+		MessageDTO messageDto = bioDedupeProcessor.process(dto, stageName);
 
 		assertTrue(messageDto.getIsValid());
 
@@ -138,10 +139,9 @@ Mockito.when(registrationStatusMapperUtil.getStatusCode(any())).thenReturn("ERRO
 		Mockito.when(bioDedupeService.insertBiometrics(anyString())).thenReturn(ResponseStatusCode.SUCCESS.name());
 		Mockito.when(bioDedupeService.performDedupe(anyString())).thenReturn(matchedRegIds);
 
-		doNothing().when(packetInfoManager).saveManualAdjudicationData(matchedRegIds, "reg1234",DedupeSourceName.BIO);
+		doNothing().when(packetInfoManager).saveManualAdjudicationData(matchedRegIds, "reg1234", DedupeSourceName.BIO);
 
-
-		MessageDTO messageDto = bioDedupeProcessor.process(dto);
+		MessageDTO messageDto = bioDedupeProcessor.process(dto, stageName);
 
 		assertFalse(messageDto.getIsValid());
 
@@ -160,10 +160,9 @@ Mockito.when(registrationStatusMapperUtil.getStatusCode(any())).thenReturn("ERRO
 		Mockito.when(bioDedupeService.insertBiometrics(anyString())).thenReturn(ResponseStatusCode.FAILURE.name());
 		Mockito.when(bioDedupeService.performDedupe(anyString())).thenReturn(matchedRegIds);
 
-		doNothing().when(packetInfoManager).saveManualAdjudicationData(matchedRegIds, "reg1234",DedupeSourceName.BIO);
+		doNothing().when(packetInfoManager).saveManualAdjudicationData(matchedRegIds, "reg1234", DedupeSourceName.BIO);
 
-
-		MessageDTO messageDto = bioDedupeProcessor.process(dto);
+		MessageDTO messageDto = bioDedupeProcessor.process(dto, stageName);
 
 		assertFalse(messageDto.getIsValid());
 
@@ -181,7 +180,7 @@ Mockito.when(registrationStatusMapperUtil.getStatusCode(any())).thenReturn("ERRO
 		ApisResourceAccessException exp = new ApisResourceAccessException("errorMessage");
 		Mockito.doThrow(exp).when(bioDedupeService).insertBiometrics(anyString());
 
-		MessageDTO messageDto = bioDedupeProcessor.process(dto);
+		MessageDTO messageDto = bioDedupeProcessor.process(dto, stageName);
 
 		assertEquals(true, messageDto.getInternalError());
 
@@ -200,7 +199,7 @@ Mockito.when(registrationStatusMapperUtil.getStatusCode(any())).thenReturn("ERRO
 		matchedRegIds.add("4567");
 		Mockito.when(bioDedupeService.insertBiometrics(anyString())).thenReturn(ResponseStatusCode.SUCCESS.name());
 		Mockito.doThrow(exp).when(bioDedupeService).performDedupe(anyString());
-		MessageDTO messageDto = bioDedupeProcessor.process(dto);
+		MessageDTO messageDto = bioDedupeProcessor.process(dto, stageName);
 
 		assertEquals(true, messageDto.getInternalError());
 
@@ -219,7 +218,7 @@ Mockito.when(registrationStatusMapperUtil.getStatusCode(any())).thenReturn("ERRO
 		matchedRegIds.add("4567");
 		Mockito.when(bioDedupeService.insertBiometrics(anyString())).thenReturn(ResponseStatusCode.SUCCESS.name());
 		Mockito.doThrow(exp).when(bioDedupeService).performDedupe(anyString());
-		MessageDTO messageDto = bioDedupeProcessor.process(dto);
+		MessageDTO messageDto = bioDedupeProcessor.process(dto, stageName);
 
 		assertEquals(true, messageDto.getInternalError());
 
@@ -238,7 +237,7 @@ Mockito.when(registrationStatusMapperUtil.getStatusCode(any())).thenReturn("ERRO
 		matchedRegIds.add("4567");
 		Mockito.when(bioDedupeService.insertBiometrics(anyString())).thenReturn(ResponseStatusCode.SUCCESS.name());
 		Mockito.doThrow(exp).when(bioDedupeService).performDedupe(anyString());
-		MessageDTO messageDto = bioDedupeProcessor.process(dto);
+		MessageDTO messageDto = bioDedupeProcessor.process(dto, stageName);
 
 		assertEquals(true, messageDto.getInternalError());
 
@@ -257,7 +256,7 @@ Mockito.when(registrationStatusMapperUtil.getStatusCode(any())).thenReturn("ERRO
 		matchedRegIds.add("4567");
 		Mockito.when(bioDedupeService.insertBiometrics(anyString())).thenReturn(ResponseStatusCode.SUCCESS.name());
 		Mockito.doThrow(exp).when(bioDedupeService).performDedupe(anyString());
-		MessageDTO messageDto = bioDedupeProcessor.process(dto);
+		MessageDTO messageDto = bioDedupeProcessor.process(dto, stageName);
 
 		assertEquals(true, messageDto.getInternalError());
 
@@ -275,7 +274,7 @@ Mockito.when(registrationStatusMapperUtil.getStatusCode(any())).thenReturn("ERRO
 		Mockito.when(bioDedupeService.insertBiometrics(anyString())).thenThrow(new DataAccessException("") {
 		});
 
-		MessageDTO messageDto = bioDedupeProcessor.process(dto);
+		MessageDTO messageDto = bioDedupeProcessor.process(dto, stageName);
 
 		assertEquals(true, messageDto.getInternalError());
 
@@ -285,7 +284,7 @@ Mockito.when(registrationStatusMapperUtil.getStatusCode(any())).thenReturn("ERRO
 	public void exceptionTest() throws Exception {
 		Mockito.when(registrationStatusService.getRegistrationStatus(anyString())).thenReturn(registrationStatusDto);
 		Mockito.when(bioDedupeService.insertBiometrics(anyString())).thenThrow(new NullPointerException());
-		MessageDTO messageDto = bioDedupeProcessor.process(dto);
+		MessageDTO messageDto = bioDedupeProcessor.process(dto, stageName);
 
 		assertEquals(true, messageDto.getInternalError());
 

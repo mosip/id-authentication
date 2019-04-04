@@ -26,7 +26,6 @@ import io.mosip.registration.processor.core.code.RegistrationExceptionTypeCode;
 import io.mosip.registration.processor.core.code.RegistrationTransactionStatusCode;
 import io.mosip.registration.processor.core.code.RegistrationTransactionTypeCode;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
-import io.mosip.registration.processor.core.constant.RegistrationStageName;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.spi.filesystem.manager.FileManager;
@@ -114,7 +113,7 @@ public class PacketUploaderStage extends MosipVerticleManager {
 			int retrycount = (dto.getRetryCount() == null) ? 0 : dto.getRetryCount() + 1;
 			dto.setRetryCount(retrycount);
 			dto.setLatestTransactionTypeCode(RegistrationTransactionTypeCode.UPLOAD_PACKET.toString());
-			dto.setRegistrationStageName(RegistrationStageName.PACKET_UPLOADER_STAGE);
+			dto.setRegistrationStageName(this.getClass().getSimpleName());
 			if (retrycount < getMaxRetryCount()) {
 				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
 						LoggerFileConstant.REGISTRATIONID.toString(), registrationId,
@@ -149,7 +148,7 @@ public class PacketUploaderStage extends MosipVerticleManager {
 			object.setIsValid(false);
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationId, PlatformErrorMessages.RPR_RGS_REGISTRATION_TABLE_NOT_ACCESSIBLE.name()
-					+ ExceptionUtils.getStackTrace(e));
+							+ ExceptionUtils.getStackTrace(e));
 
 			description = "Registration status TablenotAccessibleException for registrationId " + this.registrationId
 					+ "::" + e.getMessage();
