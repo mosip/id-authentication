@@ -7,6 +7,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { DataStorageService } from 'src/app/core/services/data-storage.service';
 import { RegistrationService } from 'src/app/core/services/registration.service';
 import { SharedService } from '../../booking/booking.service';
+import {AutoLogoutService} from  'src/app/core/services/auto-logout.service';
 
 import { DialougComponent } from 'src/app/shared/dialoug/dialoug.component';
 import { BookingModelRequest } from 'src/app/shared/booking-request.model';
@@ -17,7 +18,6 @@ import { UserModel } from 'src/app/shared/models/demographic-model/user.modal';
 import * as appConstants from '../../../app.constants';
 import Utils from 'src/app/app.util';
 import { ConfigService } from 'src/app/core/services/config.service';
-import { AppComponent } from 'src/app/app.component';
 import { Message } from '@angular/compiler/src/i18n/i18n_ast';
 
 @Component({
@@ -49,9 +49,9 @@ export class DashBoardComponent implements OnInit {
     private dataStorageService: DataStorageService,
     private regService: RegistrationService,
     private sharedService: SharedService,
-    private configService: ConfigService,
+    private autoLogout: AutoLogoutService,
     private translate: TranslateService,
-    private appComp: AppComponent
+    private configService: ConfigService
   ) {
     this.translate.use(localStorage.getItem('langCode'));
     localStorage.setItem('modifyDocument', 'false');
@@ -61,9 +61,9 @@ export class DashBoardComponent implements OnInit {
     this.loginId = this.regService.getLoginId();
     this.initUsers();
 
-    this.configService.currentMessageAutoLogout.subscribe(message => (this.message = message));
+    this.autoLogout.currentMessageAutoLogout.subscribe(message => (this.message = message));
     if (!this.message['timerFired']) {
-      this.appComp.keepWatching();
+      this.autoLogout.keepWatching();
     }
 
     this.dataStorageService.getSecondaryLanguageLabels(localStorage.getItem('langCode')).subscribe(response => {
