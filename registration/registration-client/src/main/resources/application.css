@@ -1186,6 +1186,10 @@ Working on new Css by taleev
 	-fx-text-fill: white;
 	-fx-font-family: Roboto;
 }
+.ackMenu{
+	-fx-border-width: 0 0 1 0;
+	-fx-border-color: #E8E7E7;
+}
 /*Acknowledgement page design ends */
 
 /*Header page design starts here*/
@@ -1600,4 +1604,4 @@ Working on new Css by taleev
 	-fx-text-fill: #E43391;
 	-fx-font-weight: lighter;
 }
-/* */
+/*Tracker Style ends */

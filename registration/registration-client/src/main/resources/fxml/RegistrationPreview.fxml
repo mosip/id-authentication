@@ -103,7 +103,7 @@
                            <children>
                               <GridPane fx:id="continueButtonPane" GridPane.columnIndex="2">
                                  <children>
-                                    <Button mnemonicParsing="false" onAction="#goToNextPage" prefHeight="${continueButtonPane.height-10}" prefWidth="${continueButtonPane.width-10}" styleClass="contiuneButton" text="%continue" />
+                                    <Button fx:id="nextButton" mnemonicParsing="false" onAction="#goToNextPage" prefHeight="${continueButtonPane.height-10}" prefWidth="${continueButtonPane.width-10}" styleClass="contiuneButton" text="%continue" />
                                  </children>
                                  <columnConstraints>
                                     <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />

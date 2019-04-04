@@ -41,7 +41,7 @@
                     <fx:include fx:id="Header" source="Header.fxml" />
                </children>
             </GridPane>
-            <GridPane id="ackScreen-anchor-pane" styleClass="headerFooter" GridPane.rowIndex="1">
+            <GridPane id="ackScreen-anchor-pane" styleClass="ackMenu" GridPane.rowIndex="1">
               <columnConstraints>
                 <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="40.0" prefWidth="100.0" />
                   <ColumnConstraints hgrow="SOMETIMES" maxWidth="328.0" minWidth="10.0" percentWidth="20.0" prefWidth="288.0" />
@@ -126,6 +126,9 @@
                      </children>
                   </GridPane>
                </children>
+               <GridPane.margin>
+                  <Insets top="1.0" />
+               </GridPane.margin>
             </GridPane>
             <GridPane id="ackScreen-anchor-pane" styleClass="headerFooter" GridPane.rowIndex="3">
               <columnConstraints>

@@ -35,6 +35,7 @@ import io.mosip.registration.util.acktemplate.TemplateGenerator;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
@@ -66,22 +67,27 @@ public class RegistrationPreviewController extends BaseController implements Ini
 
 	@FXML
 	private Text registrationNavlabel;
-	
+
 	@FXML
 	private RadioButton noRadio;
-	
+
 	@FXML
 	private RadioButton yesRadio;
+	
+	@FXML
+	private Button nextButton;
 
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
-		
+		nextButton.setDisable(true);
 		yesRadio.selectedProperty().addListener((abs, old, newValue) -> {
 			noRadio.setSelected(!newValue.booleanValue());
+			nextButton.setDisable(false);
 		});
 
 		noRadio.selectedProperty().addListener((abs, old, newValue) -> {
 			yesRadio.setSelected(!newValue.booleanValue());
+			nextButton.setDisable(false);
 		});
 
 		String key = "mosip.registration.consent_" + applicationContext.getApplicationLanguage();
@@ -138,24 +144,27 @@ public class RegistrationPreviewController extends BaseController implements Ini
 	public void goToNextPage(ActionEvent event) {
 		auditFactory.audit(AuditEvent.REG_PREVIEW_SUBMIT, Components.REG_PREVIEW, SessionContext.userId(),
 				AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
+		if (yesRadio.isSelected() || noRadio.isSelected()) {
+			if (yesRadio.isSelected()) {
+				getRegistrationDTOFromSession().getRegistrationMetaDataDTO()
+						.setConsentOfApplicant(RegistrationConstants.CONCENT_OF_APPLICANT_SELECTED);
+			} else {
+				getRegistrationDTOFromSession().getRegistrationMetaDataDTO()
+						.setConsentOfApplicant(RegistrationConstants.CONCENT_OF_APPLICANT_UNSELECTED);
+			}
 
-		if (yesRadio.isSelected()) {
-			getRegistrationDTOFromSession().getRegistrationMetaDataDTO()
-					.setConsentOfApplicant(RegistrationConstants.CONCENT_OF_APPLICANT_SELECTED);
+			if (getRegistrationDTOFromSession().getSelectionListDTO() != null) {
+				SessionContext.map().put("registrationPreview", false);
+				SessionContext.map().put("operatorAuthenticationPane", true);
+				registrationController.showUINUpdateCurrentPage();
+			} else {
+				registrationController.showCurrentPage(RegistrationConstants.REGISTRATION_PREVIEW,
+						getPageDetails(RegistrationConstants.REGISTRATION_PREVIEW, RegistrationConstants.NEXT));
+			}
+			registrationController.goToAuthenticationPage();
 		} else {
-			getRegistrationDTOFromSession().getRegistrationMetaDataDTO()
-					.setConsentOfApplicant(RegistrationConstants.CONCENT_OF_APPLICANT_UNSELECTED);
+			nextButton.setDisable(true);
 		}
-
-		if (getRegistrationDTOFromSession().getSelectionListDTO() != null) {
-			SessionContext.map().put("registrationPreview", false);
-			SessionContext.map().put("operatorAuthenticationPane", true);
-			registrationController.showUINUpdateCurrentPage();
-		} else {
-			registrationController.showCurrentPage(RegistrationConstants.REGISTRATION_PREVIEW,
-					getPageDetails(RegistrationConstants.REGISTRATION_PREVIEW, RegistrationConstants.NEXT));
-		}
-		registrationController.goToAuthenticationPage();
 	}
 
 	public void setUpPreviewContent() {
