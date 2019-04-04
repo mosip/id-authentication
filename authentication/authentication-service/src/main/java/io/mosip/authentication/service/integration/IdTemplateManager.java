@@ -34,20 +34,22 @@ import io.mosip.kernel.core.templatemanager.spi.TemplateManagerBuilder;
 @Component
 public class IdTemplateManager {
 
+	private static final String MOSIP_NOTIFICATION_LANGUAGE_TYPE = "mosip.notification.language-type";
+
+
+	private static final String BOTH = "BOTH";
+
+
 	/** The Constant TEMPLATE. */
 	private static final String TEMPLATE = "Template";
 
 	/** The Constant PRIMARY. */
 	private static final String PRIMARY = "primary";
 
-	/** The Constant SECONDARY. */
-	private static final String SECONDARY = "secondary";
-
 	/** The Constant SESSION_ID. */
 	private static final String SESSION_ID = "SESSION_ID";
 
 	/** The Constant NOTIFICATION_LANGUAGE_SUPPORT. */
-	private static final String NOTIFICATION_LANGUAGE_SUPPORT = "notification.language.support";
 
 	/** Class path. */
 	private static final String CLASSPATH = "classpath";
@@ -134,9 +136,9 @@ public class IdTemplateManager {
 	 * @throws IdAuthenticationBusinessException
 	 */
 	public String fetchTemplate(String templateName) throws IdAuthenticationBusinessException {
-		String languageRequired = environment.getProperty(NOTIFICATION_LANGUAGE_SUPPORT);
+		String languageRequired = environment.getProperty(MOSIP_NOTIFICATION_LANGUAGE_TYPE);
 		StringBuilder stringBuilder = new StringBuilder();
-		if (languageRequired.equalsIgnoreCase(SECONDARY)) {
+		if (languageRequired.equalsIgnoreCase(BOTH)) {
 			stringBuilder.append(masterDataManager.fetchTemplate(templateName));
 		} else if (languageRequired.equalsIgnoreCase(PRIMARY)) {
 			stringBuilder.append(masterDataManager
