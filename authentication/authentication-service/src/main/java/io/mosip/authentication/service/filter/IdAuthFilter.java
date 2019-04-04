@@ -1,6 +1,7 @@
 package io.mosip.authentication.service.filter;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -103,7 +104,7 @@ public class IdAuthFilter extends BaseAuthFilter {
 					SecretKey secretKey = (SecretKey) request.get(SECRET_KEY);
 					byte[] reqHMAC = keyManager.symmetricDecrypt(secretKey, (byte[]) requestBody.get(REQUEST_HMAC));
 					request.remove(SECRET_KEY);
-					validateRequestHMAC(new String(reqHMAC), mapper.writeValueAsString(request));
+					validateRequestHMAC(new String(reqHMAC, StandardCharsets.UTF_8), mapper.writeValueAsString(request));
 
 				}
 				requestBody.replace(REQUEST, request);
@@ -221,10 +222,9 @@ public class IdAuthFilter extends BaseAuthFilter {
 	private String validMISPPartnerMapping(String partnerId, String mispId) throws IdAuthenticationAppException {
 		Map<String, String> partnerIdMap = null;
 		String policyId = null;
-		boolean mispPartnerMappingJson = env.getProperty(MISP_PARTNER_MAPPING + mispId + "." + partnerId,
+		Boolean mispPartnerMappingJson = env.getProperty(MISP_PARTNER_MAPPING + mispId + "." + partnerId,
 				boolean.class);
-		if (!mispPartnerMappingJson) {
-
+		if (null==mispPartnerMappingJson ||!mispPartnerMappingJson  ) {
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.PARTNER_NOT_MAPPED);
 		}
 		String partnerIdJson = env.getProperty(PARTNER_KEY + partnerId);
@@ -321,12 +321,7 @@ public class IdAuthFilter extends BaseAuthFilter {
 	@SuppressWarnings("unchecked")
 	private void checkAllowedAuthTypeForBio(Map<String, Object> requestBody, List<AuthPolicy> authPolicies)
 			throws IdAuthenticationAppException, IOException {
-		if (!isAllowedAuthType(MatchType.Category.BIO.getType(), authPolicies)) {
-			throw new IdAuthenticationAppException(
-					IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorCode(),
-					String.format(IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorMessage(),
-							MatchType.Category.BIO.name()));
-		} else {
+		
 			Object value = Optional.ofNullable(requestBody.get(REQUEST)).filter(obj -> obj instanceof Map)
 					.map(obj -> ((Map<String, Object>) obj).get("biometrics"))
 					.filter(obj -> obj instanceof List).orElse(Collections.emptyList());
@@ -334,24 +329,27 @@ public class IdAuthFilter extends BaseAuthFilter {
 					new TypeReference<List<BioIdentityInfoDTO>>() {
 					});
 
-			List<String> bioTypeList = listBioInfo.stream().map(s -> s.getData().getBioType())
+			List<String> bioTypeList = listBioInfo.stream()
+					.filter(s ->  s.getData() != null && s.getData().getBioType() != null)
+					.map(s -> s.getData().getBioType())
 					.collect(Collectors.toList());
 			for (String bioType : bioTypeList) {
 				if (bioType.equalsIgnoreCase("FIR") || bioType.equalsIgnoreCase("FMR")) {
-					bioType = "FINGER";
+					bioType = "Finger";
 				} else if (bioType.equalsIgnoreCase("FID")) {
-					bioType = "FACE";
+					bioType = "Face";
 				} else if (bioType.equalsIgnoreCase("IIR")) {
-					bioType = "IRIS";
+					bioType = "Iris";
 				}
 				if (!isAllowedAuthType(MatchType.Category.BIO.getType(), bioType, authPolicies)) {
+					String bioSubtype=MatchType.Category.BIO.name() + "-" + bioType;
 					throw new IdAuthenticationAppException(
 							IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorCode(),
 							String.format(IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorMessage(),
-									MatchType.Category.BIO.name() + "-" + bioType));
+									bioSubtype));
 				}
 			}
-		}
+		
 	}
 
 	/**
