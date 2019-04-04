@@ -56,7 +56,7 @@ export const APPEND_URL = {
   qr_code: 'notification/generateQRCode',
   notification: 'notification/',
   send_notification: 'notify',
-  master_data: 'masterdata/v1/',
+  master_data: 'v1/masterdata/',
   auth: 'auth/'
 };
 
