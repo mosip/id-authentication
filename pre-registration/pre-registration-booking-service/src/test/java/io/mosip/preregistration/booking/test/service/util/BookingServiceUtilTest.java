@@ -30,6 +30,7 @@ import org.springframework.web.client.RestTemplate;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.preregistration.booking.dto.BookingRequestDTO;
 import io.mosip.preregistration.booking.dto.CancelBookingDTO;
 import io.mosip.preregistration.booking.dto.RegistrationCenterResponseDto;
 import io.mosip.preregistration.booking.entity.AvailibityEntity;
@@ -83,75 +84,65 @@ public class BookingServiceUtilTest {
 	@Test
 	public void mandatoryParameterCheckTest() {
 		String preRegistrationId = "23587986034785";
-		BookingRegistrationDTO oldBooking = new BookingRegistrationDTO();
-		oldBooking.setRegistrationCenterId("1");
-		oldBooking.setSlotFromTime("09:00");
-		oldBooking.setSlotToTime("09:13");
-		oldBooking.setRegDate("2018-12-06");
-		BookingRegistrationDTO newBooking = new BookingRegistrationDTO();
-		newBooking.setRegistrationCenterId("10");
-		newBooking.setSlotFromTime("09:00");
-		newBooking.setSlotToTime("09:13");
-		newBooking.setRegDate("2018-12-06");
+		BookingRequestDTO bookingRequestDTO=new BookingRequestDTO();
+		bookingRequestDTO.setRegistrationCenterId("1");
+		bookingRequestDTO.setSlotFromTime("09:00");
+		bookingRequestDTO.setSlotToTime("09:13");
+		bookingRequestDTO.setRegDate("2018-12-06");
 
-		boolean flag = serviceUtil.mandatoryParameterCheck(preRegistrationId, oldBooking, newBooking);
+		boolean flag = serviceUtil.mandatoryParameterCheck(preRegistrationId, bookingRequestDTO);
 		assertEquals(true, flag);
 	}
 
 	@Test(expected = BookingPreIdNotFoundException.class)
 	public void regIdNullCheckTest() {
 		String preRegistrationId = null;
-		BookingRegistrationDTO oldBooking = new BookingRegistrationDTO();
-		oldBooking.setRegistrationCenterId("1");
-		oldBooking.setSlotFromTime("09:00");
-		oldBooking.setSlotToTime("09:13");
-		oldBooking.setRegDate("2018-12-06");
-		BookingRegistrationDTO newBooking = new BookingRegistrationDTO();
-		newBooking.setRegistrationCenterId("10");
-		newBooking.setSlotFromTime("09:00");
-		newBooking.setSlotToTime("09:13");
-		newBooking.setRegDate("2018-12-06");
+		BookingRequestDTO bookingRequestDTO=new BookingRequestDTO();
+		bookingRequestDTO.setRegistrationCenterId("1");
+		bookingRequestDTO.setSlotFromTime("09:00");
+		bookingRequestDTO.setSlotToTime("09:13");
+		bookingRequestDTO.setRegDate("2018-12-06");
 
-		serviceUtil.mandatoryParameterCheck(preRegistrationId, oldBooking, newBooking);
+		serviceUtil.mandatoryParameterCheck(preRegistrationId,bookingRequestDTO);
 
 	}
 
 	@Test(expected = BookingRegistrationCenterIdNotFoundException.class)
 	public void regCenterNullinOldBookingCheckTest() {
 		String preRegistrationId = "23587986034785";
-		BookingRegistrationDTO oldBooking = new BookingRegistrationDTO();
-		oldBooking.setRegistrationCenterId(null);
-		oldBooking.setSlotFromTime("09:00");
-		oldBooking.setSlotToTime("09:13");
-		oldBooking.setRegDate("2018-12-06");
+		BookingRequestDTO bookingRequestDTO=new BookingRequestDTO();
+		bookingRequestDTO.setRegistrationCenterId(null);
+		bookingRequestDTO.setSlotFromTime("09:00");
+		bookingRequestDTO.setSlotToTime("09:13");
+		bookingRequestDTO.setRegDate("2018-12-06");
 
-		serviceUtil.mandatoryParameterCheck(preRegistrationId, oldBooking, null);
+		serviceUtil.mandatoryParameterCheck(preRegistrationId, bookingRequestDTO);
 
 	}
 
 	@Test(expected = BookingTimeSlotNotSeletectedException.class)
 	public void slotNullinOldBookingCheckTest() {
 		String preRegistrationId = "23587986034785";
-		BookingRegistrationDTO oldBooking = new BookingRegistrationDTO();
-		oldBooking.setRegistrationCenterId("1");
-		oldBooking.setSlotFromTime(null);
-		oldBooking.setSlotToTime(null);
-		oldBooking.setRegDate("2018-12-06");
+		BookingRequestDTO bookingRequestDTO=new BookingRequestDTO();
+		bookingRequestDTO.setRegistrationCenterId("1");
+		bookingRequestDTO.setSlotFromTime(null);
+		bookingRequestDTO.setSlotToTime(null);
+		bookingRequestDTO.setRegDate("2018-12-06");
 
-		serviceUtil.mandatoryParameterCheck(preRegistrationId, oldBooking, null);
+		serviceUtil.mandatoryParameterCheck(preRegistrationId,bookingRequestDTO);
 
 	}
 	
 	@Test(expected = BookingDateNotSeletectedException.class)
 	public void regDateNullinOldBookingCheckTest() {
 		String preRegistrationId = "23587986034785";
-		BookingRegistrationDTO oldBooking = new BookingRegistrationDTO();
-		oldBooking.setRegistrationCenterId("1");
-		oldBooking.setSlotFromTime("09:00");
-		oldBooking.setSlotToTime("09:13");
-		oldBooking.setRegDate(null);
+		BookingRequestDTO bookingRequestDTO=new BookingRequestDTO();
+		bookingRequestDTO.setRegistrationCenterId("1");
+		bookingRequestDTO.setSlotFromTime("09:00");
+		bookingRequestDTO.setSlotToTime("09:13");
+		bookingRequestDTO.setRegDate(null);
 
-		serviceUtil.mandatoryParameterCheck(preRegistrationId, oldBooking, null);
+		serviceUtil.mandatoryParameterCheck(preRegistrationId, bookingRequestDTO);
 
 	}
 
@@ -159,57 +150,40 @@ public class BookingServiceUtilTest {
 	public void regCenterNullinNewBookingCheckTest() {
 		String preRegistrationId = "23587986034785";
 
-		BookingRegistrationDTO newBooking = new BookingRegistrationDTO();
-		newBooking.setRegistrationCenterId(null);
-		newBooking.setSlotFromTime("09:00");
-		newBooking.setSlotToTime("09:13");
-		newBooking.setRegDate("2018-12-06");
+		BookingRequestDTO bookingRequestDTO=new BookingRequestDTO();
+		bookingRequestDTO.setRegistrationCenterId(null);
+		bookingRequestDTO.setSlotFromTime("09:00");
+		bookingRequestDTO.setSlotToTime("09:13");
+		bookingRequestDTO.setRegDate("2018-12-06");
 
-		serviceUtil.mandatoryParameterCheck(preRegistrationId, null, newBooking);
+		serviceUtil.mandatoryParameterCheck(preRegistrationId,bookingRequestDTO);
 
 	}
 
 	@Test(expected = BookingTimeSlotNotSeletectedException.class)
 	public void slotNullinNewBookingCheckTest() {
 		String preRegistrationId = "23587986034785";
-		BookingRegistrationDTO newBooking = new BookingRegistrationDTO();
-		newBooking.setRegistrationCenterId("10");
-		newBooking.setSlotFromTime(null);
-		newBooking.setSlotToTime(null);
-		newBooking.setRegDate("2018-12-06");
+		BookingRequestDTO bookingRequestDTO=new BookingRequestDTO();
+		bookingRequestDTO.setRegistrationCenterId("10");
+		bookingRequestDTO.setSlotFromTime(null);
+		bookingRequestDTO.setSlotToTime(null);
+		bookingRequestDTO.setRegDate("2018-12-06");
 
-		serviceUtil.mandatoryParameterCheck(preRegistrationId, null, newBooking);
+		serviceUtil.mandatoryParameterCheck(preRegistrationId,bookingRequestDTO);
 
 	}
 	
 	@Test(expected = BookingDateNotSeletectedException.class)
 	public void bookingDateNotSeletectedExceptionTest() {
 		String preRegistrationId = "23587986034785";
-		BookingRegistrationDTO newBooking = new BookingRegistrationDTO();
-		newBooking.setRegistrationCenterId("10");
-		newBooking.setSlotFromTime("09:00");
-		newBooking.setSlotToTime("09:13");
-		newBooking.setRegDate(null);
+		BookingRequestDTO bookingRequestDTO=new BookingRequestDTO();
+		bookingRequestDTO.setRegistrationCenterId("10");
+		bookingRequestDTO.setSlotFromTime("09:00");
+		bookingRequestDTO.setSlotToTime("09:13");
+		bookingRequestDTO.setRegDate(null);
 
-		serviceUtil.mandatoryParameterCheck(preRegistrationId, null, newBooking);
+		serviceUtil.mandatoryParameterCheck(preRegistrationId,bookingRequestDTO);
 
-	}
-
-	@Test
-	public void isNotDuplicateCheckSuccessTest() {
-		BookingRegistrationDTO oldBooking = new BookingRegistrationDTO();
-		oldBooking.setRegistrationCenterId("1");
-		oldBooking.setSlotFromTime("09:00");
-		oldBooking.setSlotToTime("09:13");
-		oldBooking.setRegDate("2018-12-06");
-		BookingRegistrationDTO newBooking = new BookingRegistrationDTO();
-		newBooking.setRegistrationCenterId("10");
-		newBooking.setSlotFromTime("09:00");
-		newBooking.setSlotToTime("09:13");
-		newBooking.setRegDate("2018-12-06");
-
-		boolean flag = serviceUtil.isNotDuplicate(oldBooking, newBooking);
-		assertEquals(true, flag);
 	}
 
 	@Test(expected = AppointmentReBookingFailedException.class)
@@ -240,7 +214,7 @@ public class BookingServiceUtilTest {
 
 		CancelBookingDTO cancelBookingDTO = serviceUtil.cancelBookingDtoSetter(preRegistrationId,
 				bookingRegistrationDTO);
-		assertEquals(cancelBookingDTO.getPreRegistrationId(), preRegistrationId);
+		assertEquals("1", bookingRegistrationDTO.getRegistrationCenterId());
 	}
 
 	@Test(expected=AvailablityNotFoundException.class)
@@ -259,8 +233,7 @@ public class BookingServiceUtilTest {
 	public void bookingPreIdNotFoundExceptionforCancelTest() {
 		
 		CancelBookingDTO cancelBookingDTO = new CancelBookingDTO();
-		cancelBookingDTO.setPreRegistrationId(null);
-		serviceUtil.mandatoryParameterCheckforCancel(cancelBookingDTO);
+		serviceUtil.mandatoryParameterCheckforCancel(cancelBookingDTO,null);
 		
 	}
 	
@@ -268,9 +241,8 @@ public class BookingServiceUtilTest {
 	public void bookingRegistrationCenterIdNotFoundExceptionforCancelTest() {
 		
 		CancelBookingDTO cancelBookingDTO = new CancelBookingDTO();
-		cancelBookingDTO.setPreRegistrationId("23587986034785");
 		cancelBookingDTO.setRegistrationCenterId(null);
-		serviceUtil.mandatoryParameterCheckforCancel(cancelBookingDTO);
+		serviceUtil.mandatoryParameterCheckforCancel(cancelBookingDTO,"23587986034785");
 		
 	}
 	
@@ -278,12 +250,11 @@ public class BookingServiceUtilTest {
 	public void bookingDateNotSeletectedExceptionforCancelTest() {
 		
 		CancelBookingDTO cancelBookingDTO = new CancelBookingDTO();
-		cancelBookingDTO.setPreRegistrationId("23587986034785");
 		cancelBookingDTO.setRegistrationCenterId("1");
 		cancelBookingDTO.setSlotFromTime("09:00");
 		cancelBookingDTO.setSlotToTime("09:13");
 		cancelBookingDTO.setRegDate(null);
-		serviceUtil.mandatoryParameterCheckforCancel(cancelBookingDTO);
+		serviceUtil.mandatoryParameterCheckforCancel(cancelBookingDTO,"23587986034785");
 		
 	}
 	
@@ -291,12 +262,11 @@ public class BookingServiceUtilTest {
 	public void bookingTimeSlotNotSeletectedExceptionforCancelTest() {
 		
 		CancelBookingDTO cancelBookingDTO = new CancelBookingDTO();
-		cancelBookingDTO.setPreRegistrationId("23587986034785");
 		cancelBookingDTO.setRegistrationCenterId("1");
 		cancelBookingDTO.setRegDate("2018-12-06");
 		cancelBookingDTO.setSlotFromTime(null);
 		cancelBookingDTO.setSlotToTime(null);
-		serviceUtil.mandatoryParameterCheckforCancel(cancelBookingDTO);
+		serviceUtil.mandatoryParameterCheckforCancel(cancelBookingDTO,"23587986034785");
 		
 	}
 	
