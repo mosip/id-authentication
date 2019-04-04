@@ -48,8 +48,9 @@ public class ApiExceptionalHandler {
 	 * @param e
 	 *            the exception.
 	 * @return the response entity.
+	 * 
 	 * @throws IOException
-	 *             the IOException
+	 *             the IO Exception
 	 */
 	@ExceptionHandler(HttpClientErrorException.class)
 	public ResponseEntity<ResponseWrapper<ServiceError>> httpClientErrorException(
