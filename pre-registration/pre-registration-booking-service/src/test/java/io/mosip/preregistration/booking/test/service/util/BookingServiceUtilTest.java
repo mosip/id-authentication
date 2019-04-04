@@ -5,11 +5,9 @@ import static org.junit.Assert.assertEquals;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -17,7 +15,6 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -348,7 +345,7 @@ public class BookingServiceUtilTest {
 		statusList.add(preRegistartionStatusDTO);
 
 		preRegResponse.setResponse(statusList);
-		preRegResponse.setErr(null);
+		preRegResponse.setErrors(null);
 		preRegResponse.setResponsetime(serviceUtil.getCurrentResponseTime());		
 		ResponseEntity<MainListResponseDTO<PreRegistartionStatusDTO>> res = new ResponseEntity<>(preRegResponse, HttpStatus.OK);
 		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
@@ -374,7 +371,7 @@ public class BookingServiceUtilTest {
 		ExceptionJSONInfoDTO err = new ExceptionJSONInfoDTO();
 		err.setErrorCode(ErrorCodes.PRG_BOOK_RCI_011.name());
 		err.setMessage(ErrorMessages.DEMOGRAPHIC_STATUS_UPDATION_FAILED.getMessage());
-		preRegResponse.setErr(err);
+		preRegResponse.setErrors(err);
 		preRegResponse.setResponsetime(serviceUtil.getCurrentResponseTime());
 		@SuppressWarnings("unchecked")
 		ResponseEntity<MainListResponseDTO<PreRegistartionStatusDTO>> res = new ResponseEntity<>(preRegResponse, HttpStatus.OK);
@@ -392,7 +389,7 @@ public class BookingServiceUtilTest {
 		ExceptionJSONInfoDTO err = new ExceptionJSONInfoDTO();
 		err.setErrorCode(ErrorCodes.PRG_BOOK_RCI_011.name());
 		err.setMessage(ErrorMessages.DEMOGRAPHIC_STATUS_UPDATION_FAILED.getMessage());
-		preRegResponse.setErr(err);
+		preRegResponse.setErrors(err);
 		preRegResponse.setResponsetime(serviceUtil.getCurrentResponseTime());
 		@SuppressWarnings("unchecked")
 		ResponseEntity<MainListResponseDTO<PreRegistartionStatusDTO>> res = new ResponseEntity<>(preRegResponse, HttpStatus.OK);

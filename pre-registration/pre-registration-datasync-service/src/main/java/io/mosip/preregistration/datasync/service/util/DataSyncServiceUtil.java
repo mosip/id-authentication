@@ -115,10 +115,9 @@ public class DataSyncServiceUtil {
 
 	public boolean validateDataSyncRequest(DataSyncRequestDTO dataSyncRequest) {
 		log.info("sessionId", "idType", "id", "In validateDataSyncRequest method of datasync service util");
-		String regId = dataSyncRequest.getRegClientId();
+		String regId = dataSyncRequest.getRegistrationCenterId();
 		String fromDate = dataSyncRequest.getFromDate();
 		String toDate = dataSyncRequest.getToDate();
-		String userId = dataSyncRequest.getUserId();
 		String format = "dd-MM-yyyy";
 
 		if (isNull(regId)) {
@@ -137,72 +136,16 @@ public class DataSyncServiceUtil {
 					ErrorMessages.INVALID_REQUESTED_DATE.toString());
 		}
 
-		if (isNull(userId)) {
-			throw new InvalidRequestParameterException(ErrorCodes.PRG_DATA_SYNC_003.toString(),
-					ErrorMessages.INVALID_USER_ID.toString());
-		}
-
 		return true;
 	}
 
 	public boolean validateReverseDataSyncRequest(ReverseDataSyncRequestDTO reverseDataSyncRequest) {
 		log.info("sessionId", "idType", "id", "In validateReverseDataSyncRequest method of datasync service util");
 		List<String> preRegIdsList = reverseDataSyncRequest.getPreRegistrationIds();
-		String langCode = reverseDataSyncRequest.getLangCode();
-		String createdBy = reverseDataSyncRequest.getCreatedBy();
-		Date createdDateTime = reverseDataSyncRequest.getCreatedDateTime();
-		String updatedBy = reverseDataSyncRequest.getUpdateBy();
-		Date updatedDateTime = reverseDataSyncRequest.getUpdateDateTime();
-
 		if (preRegIdsList == null || isNull(preRegIdsList)) {
 			throw new InvalidRequestParameterException(ErrorCodes.PRG_DATA_SYNC_011.toString(),
 					ErrorMessages.INVALID_REQUESTED_PRE_REG_ID_LIST.toString());
 		}
-
-		if (langCode == null || isNull(langCode)) {
-			throw new InvalidRequestParameterException(ErrorCodes.PRG_DATA_SYNC_012.toString(),
-					ErrorMessages.INVALID_REQUESTED_LANG_CODE.toString());
-		}
-
-		if (createdBy == null || isNull(createdBy)) {
-			throw new InvalidRequestParameterException(ErrorCodes.PRG_DATA_SYNC_003.toString(),
-					ErrorMessages.INVALID_CREATED_USER_ID.toString());
-		}
-
-		if (createdDateTime == null) {
-			throw new InvalidRequestParameterException(ErrorCodes.PRG_DATA_SYNC_010.toString(),
-					ErrorMessages.INVALID_REQUESTED_CREATED_DATE.toString());
-		} else {
-			try {
-				new SimpleDateFormat(dateTimeFormat).parse(getDateString(createdDateTime));
-			} catch (Exception ex) {
-				log.error("sessionId", "idType", "id",
-						"In validateReverseDataSyncRequest method of datasync service util - " + ex.getMessage());
-				throw new InvalidRequestParameterException(ErrorCodes.PRG_DATA_SYNC_010.toString(),
-						ErrorMessages.INVALID_REQUESTED_CREATED_DATE.toString());
-			}
-		}
-
-		if (updatedBy == null) {
-			throw new InvalidRequestParameterException(ErrorCodes.PRG_DATA_SYNC_003.toString(),
-					ErrorMessages.INVALID_UPDATE_USER_ID.toString());
-		}
-
-		if (updatedDateTime == null) {
-			throw new InvalidRequestParameterException(ErrorCodes.PRG_DATA_SYNC_010.toString(),
-					ErrorMessages.INVALID_REQUESTED_CREATED_DATE.toString());
-		} else {
-			try {
-				new SimpleDateFormat(dateTimeFormat).parse(getDateString(updatedDateTime));
-			} catch (Exception ex) {
-				log.error("sessionId", "idType", "id",
-						"In validateReverseDataSyncRequest method of datasync service util - " + ex.getMessage());
-
-				throw new InvalidRequestParameterException(ErrorCodes.PRG_DATA_SYNC_010.toString(),
-						ErrorMessages.INVALID_REQUESTED_UPDATED_DATE.toString());
-			}
-		}
-
 		return true;
 	}
 
@@ -247,7 +190,7 @@ public class DataSyncServiceUtil {
 		List<DocumentMultipartResponseDTO> responsestatusDto = new ArrayList<>();
 		try {
 
-			//RestTemplate restTemplate = restTemplateBuilder.build();
+			// RestTemplate restTemplate = restTemplateBuilder.build();
 
 			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(documentResourceUrl + "/documents")
 					.queryParam("pre_registration_id", preId);
@@ -260,7 +203,7 @@ public class DataSyncServiceUtil {
 					uriBuilder, HttpMethod.GET, httpEntity,
 					new ParameterizedTypeReference<MainListResponseDTO<DocumentMultipartResponseDTO>>() {
 					});
-			if (respEntity.getBody().getErr() != null) {
+			if (respEntity.getBody().getErrors() != null) {
 				log.info("sessionId", "idType", "id",
 						"In callGetDocRestService method of datasync service util - Document not found for the pre_registration_id");
 			} else {
@@ -283,26 +226,24 @@ public class DataSyncServiceUtil {
 		DemographicResponseDTO responsestatusDto = new DemographicResponseDTO();
 		try {
 
-
-			//RestTemplate restTemplate = restTemplateBuilder.build();
+			// RestTemplate restTemplate = restTemplateBuilder.build();
 			Map<String, Object> params = new HashMap<>();
 			params.put("preRegistrationId", preId);
 
-			UriComponentsBuilder builder = UriComponentsBuilder
-					.fromHttpUrl(demographicResourceUrl + "/applications/");
+			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(demographicResourceUrl + "/applications/");
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
 			HttpEntity<MainListResponseDTO<DemographicResponseDTO>> httpEntity = new HttpEntity<>(headers);
 			String uriBuilder = builder.build().encode().toUriString();
-			uriBuilder+="{preRegistrationId}";
+			uriBuilder += "{preRegistrationId}";
 			log.info("sessionId", "idType", "id", "In callGetPreRegInfoRestService method URL- " + uriBuilder);
 			ResponseEntity<MainListResponseDTO<DemographicResponseDTO>> respEntity = restTemplate.exchange(uriBuilder,
 					HttpMethod.GET, httpEntity,
 					new ParameterizedTypeReference<MainListResponseDTO<DemographicResponseDTO>>() {
-					},params);
-			if (respEntity.getBody().getErr() != null) {
-				throw new DemographicGetDetailsException(respEntity.getBody().getErr().getErrorCode(),
-						respEntity.getBody().getErr().getMessage());
+					}, params);
+			if (respEntity.getBody().getErrors() != null) {
+				throw new DemographicGetDetailsException(respEntity.getBody().getErrors().getErrorCode(),
+						respEntity.getBody().getErrors().getMessage());
 			} else {
 				responsestatusDto = mapper.convertValue(respEntity.getBody().getResponse().get(0),
 						DemographicResponseDTO.class);
@@ -330,7 +271,7 @@ public class DataSyncServiceUtil {
 		BookingRegistrationDTO bookingRegistrationDTO = null;
 		try {
 
-			//RestTemplate restTemplate = restTemplateBuilder.build();
+			// RestTemplate restTemplate = restTemplateBuilder.build();
 
 			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(bookingResourceUrl + "/appointment")
 					.queryParam("pre_registration_id", preId);
@@ -502,7 +443,7 @@ public class DataSyncServiceUtil {
 			MainRequestDTO<PreRegIdsByRegCenterIdDTO> mainRequestDTO = new MainRequestDTO<>();
 			mainRequestDTO.setRequest(preRegIdsDTO);
 
-			//RestTemplate restTemplate = restTemplateBuilder.build();
+			// RestTemplate restTemplate = restTemplateBuilder.build();
 
 			UriComponentsBuilder builder = UriComponentsBuilder
 					.fromHttpUrl(demographicResourceUrl + "/applications/updatedTime");
@@ -540,7 +481,8 @@ public class DataSyncServiceUtil {
 		return preRegistrationIdsDTO;
 	}
 
-	public ReverseDatasyncReponseDTO reverseDateSyncSave(Date reqDateTime, ReverseDataSyncRequestDTO request) {
+	public ReverseDatasyncReponseDTO reverseDateSyncSave(Date reqDateTime, ReverseDataSyncRequestDTO request,
+			String userId) {
 		log.info("sessionId", "idType", "id", "In reverseDateSyncSave method of datasync service util");
 		List<InterfaceDataSyncEntity> entityList = new ArrayList<>();
 		List<ProcessedPreRegEntity> processedEntityList = new ArrayList<>();
@@ -557,12 +499,10 @@ public class DataSyncServiceUtil {
 				ipprlstPK.setPreregId(preRegId);
 				ipprlstPK.setReceivedDtimes(DateUtils.parseDateToLocalDateTime(reqDateTime));
 				interfaceDataSyncEntity.setIpprlst_PK(ipprlstPK);
-				interfaceDataSyncEntity.setLangCode(request.getLangCode());
-				interfaceDataSyncEntity.setCreatedBy(request.getCreatedBy());
-				interfaceDataSyncEntity
-						.setCreatedDate(DateUtils.parseDateToLocalDateTime(request.getCreatedDateTime()));
-				interfaceDataSyncEntity
-						.setUpdatedDate(DateUtils.parseDateToLocalDateTime(request.getCreatedDateTime()));
+				interfaceDataSyncEntity.setLangCode("eng");
+				interfaceDataSyncEntity.setCreatedBy(userId);
+				interfaceDataSyncEntity.setCreatedDate(DateUtils.parseToLocalDateTime(getCurrentResponseTime()));
+				interfaceDataSyncEntity.setUpdatedDate(DateUtils.parseToLocalDateTime(getCurrentResponseTime()));
 				entityList.add(interfaceDataSyncEntity);
 
 				ProcessedPreRegEntity processedPreRegEntity = new ProcessedPreRegEntity();
@@ -570,10 +510,10 @@ public class DataSyncServiceUtil {
 				processedPreRegEntity.setReceivedDTime(DateUtils.parseDateToLocalDateTime(reqDateTime));
 				processedPreRegEntity.setStatusCode(StatusCodes.CONSUMED.getCode());
 				processedPreRegEntity.setStatusComments("Processed by registration processor");
-				processedPreRegEntity.setLangCode(request.getLangCode());
-				processedPreRegEntity.setCrBy(request.getCreatedBy());
-				processedPreRegEntity.setCrDate(DateUtils.parseDateToLocalDateTime(request.getCreatedDateTime()));
-				processedPreRegEntity.setUpdDate(DateUtils.parseDateToLocalDateTime(request.getCreatedDateTime()));
+				processedPreRegEntity.setLangCode("eng");
+				processedPreRegEntity.setCrBy(userId);
+				processedPreRegEntity.setCrDate(DateUtils.parseToLocalDateTime(getCurrentResponseTime()));
+				processedPreRegEntity.setUpdDate(DateUtils.parseToLocalDateTime(getCurrentResponseTime()));
 				processedEntityList.add(processedPreRegEntity);
 			}
 		}
@@ -584,7 +524,7 @@ public class DataSyncServiceUtil {
 			List<ProcessedPreRegEntity> processedEntityList) {
 		log.info("sessionId", "idType", "id", "In storeReverseDataSync method of datasync service util");
 		int savedListSize = 0;
-		int alreadyProcessedSize = 0;
+		List<String> preIds = new ArrayList<>();
 		ReverseDatasyncReponseDTO reponseDTO = new ReverseDatasyncReponseDTO();
 		try {
 			if (entityList.size() == processedEntityList.size()) {
@@ -593,13 +533,11 @@ public class DataSyncServiceUtil {
 					savedListSize = savedList.size();
 					for (ProcessedPreRegEntity processedEntity : processedEntityList) {
 						if (!processedDataSyncRepo.existsById(processedEntity.getPreRegistrationId())) {
-							processedDataSyncRepo.save(processedEntity);
-						} else {
-							alreadyProcessedSize++;
+							preIds.add(processedDataSyncRepo.save(processedEntity).getPreRegistrationId());
 						}
 					}
 					reponseDTO.setCountOfStoredPreRegIds(String.valueOf(savedListSize));
-					reponseDTO.setAlreadyStoredPreRegIds(String.valueOf(alreadyProcessedSize));
+					reponseDTO.setPreRegistrationIds(preIds);
 					reponseDTO.setTransactionId(UUIDGeneratorUtil.generateId());
 				}
 			}

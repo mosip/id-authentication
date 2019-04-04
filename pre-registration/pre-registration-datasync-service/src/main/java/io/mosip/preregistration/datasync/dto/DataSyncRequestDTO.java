@@ -18,28 +18,24 @@ import lombok.ToString;
 @Setter
 @NoArgsConstructor
 @ToString
-public class DataSyncRequestDTO implements Serializable{
-	
+public class DataSyncRequestDTO implements Serializable {
+
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
 	/** The Registration-client-Id. */
-	@JsonProperty("registration-client-id")
+	@JsonProperty("registrationCenterId")
 	@ApiModelProperty(value = "Registration client id", position = 1)
-	private String regClientId;
-	
+	private String registrationCenterId;
+
 	/** The from-date. */
-	@JsonProperty("from-date")
+	@JsonProperty("fromDate")
 	@ApiModelProperty(value = "From date", position = 2)
 	private String fromDate;
-	
+
 	/** The To-date. */
-	@JsonProperty("to-date")
+	@JsonProperty("toDate")
 	@ApiModelProperty(value = "To date", position = 3)
 	private String toDate;
-	
-	/** The UserId. */
-	@JsonProperty("user-id")
-	@ApiModelProperty(value = "Registration client user Id", position = 4)
-	private String userId;
+
 }

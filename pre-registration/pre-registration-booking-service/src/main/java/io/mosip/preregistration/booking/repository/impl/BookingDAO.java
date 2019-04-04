@@ -297,7 +297,7 @@ public class BookingDAO {
 		try {
 			if (regCenterId != null && !regCenterId.isEmpty()) {
 				List<RegistrationBookingEntity> entities = registrationBookingRepository
-						.findByBookingDateTimeBetweenAndRegistrationCenterId(fromLocaldate, toLocaldate, regCenterId);
+						.findByRegDateBetweenAndRegistrationCenterId(fromLocaldate, toLocaldate, regCenterId);
 				if (entities != null && !entities.isEmpty()) {
 					for (RegistrationBookingEntity entity : entities) {
 						listOfPreIds.add(entity.getBookingPK().getPreregistrationId());

@@ -643,14 +643,6 @@ public class BookingService {
 
 			DateTimeFormatter parseFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
-			/*
-			 * LocalDate fromDate = DateUtils
-			 * .parseDateToLocalDateTime(DateUtils.parseToDate(fromDateStr.trim(),
-			 * "yyyy-MM-dd")).toLocalDate(); LocalDate toDate =
-			 * DateUtils.parseDateToLocalDateTime(DateUtils.parseToDate(toDateStr.trim(),
-			 * "yyyy-MM-dd")) .toLocalDate();
-			 */
-
 			LocalDate fromDate = LocalDate.parse(fromDateStr, parseFormatter);
 			LocalDate toDate = LocalDate.parse(toDateStr, parseFormatter);
 

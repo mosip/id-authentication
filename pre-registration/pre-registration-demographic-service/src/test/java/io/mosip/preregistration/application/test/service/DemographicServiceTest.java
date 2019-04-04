@@ -326,9 +326,9 @@ public class DemographicServiceTest {
 		responseDTO.setResponsetime(serviceUtil.getCurrentResponseTime());
 		// responseDTO.setStatus(Boolean.TRUE);
 
-		responseDTO.setErr(null);
+		responseDTO.setErrors(null);
 		responseCreateDTO.setResponsetime(serviceUtil.getCurrentResponseTime());
-		responseCreateDTO.setErr(null);
+		responseCreateDTO.setErrors(null);
 
 		auditRequestDto.setActionTimeStamp(LocalDateTime.now(ZoneId.of("UTC")));
 		auditRequestDto.setApplicationId(AuditLogVariables.MOSIP_1.toString());
@@ -711,7 +711,7 @@ public class DemographicServiceTest {
 
 		MainListResponseDTO<DocumentDeleteDTO> delResponseDto = new MainListResponseDTO<>();
 		// delResponseDto.setStatus(Boolean.TRUE);
-		delResponseDto.setErr(null);
+		delResponseDto.setErrors(null);
 		delResponseDto.setResponse(deleteAllList);
 		delResponseDto.setResponsetime(serviceUtil.getCurrentResponseTime());
 
@@ -745,7 +745,7 @@ public class DemographicServiceTest {
 		List<ExceptionJSONInfoDTO> exceptionJSONInfoDTOs = new ArrayList<>();
 		exceptionJSONInfoDTOs.add(err);
 
-		delResponseDto.setErr(null);
+		delResponseDto.setErrors(null);
 		delResponseDto.setResponse(deleteAllList);
 		delResponseDto.setResponsetime(serviceUtil.getCurrentResponseTime());
 
@@ -784,7 +784,7 @@ public class DemographicServiceTest {
 		List<ExceptionJSONInfoDTO> exceptionJSONInfoDTOs = new ArrayList<>();
 		exceptionJSONInfoDTOs.add(err);
 
-		delResponseDto.setErr(err);
+		delResponseDto.setErrors(err);
 		delResponseDto.setResponse(deleteAllList);
 		delResponseDto.setResponsetime(serviceUtil.getCurrentResponseTime());
 
@@ -829,10 +829,10 @@ public class DemographicServiceTest {
 		List<DeleteBookingDTO> list = new ArrayList<>();
 		list.add(deleteBookingDTO);
 		delBookingResponseDTO.setResponse(list);
-		delBookingResponseDTO.setErr(err);
+		delBookingResponseDTO.setErrors(err);
 		MainListResponseDTO<DocumentDeleteResponseDTO> delResponseDto = new MainListResponseDTO<>();
 
-		delResponseDto.setErr(null);
+		delResponseDto.setErrors(null);
 		delResponseDto.setResponse(deleteAllList);
 		delResponseDto.setResponsetime(serviceUtil.getCurrentResponseTime());
 
@@ -880,7 +880,7 @@ public class DemographicServiceTest {
 		delBookingResponseDTO.setResponse(list);
 		MainListResponseDTO<DocumentDeleteResponseDTO> delResponseDto = new MainListResponseDTO<>();
 		// delResponseDto.setStatus(Boolean.TRUE);
-		delResponseDto.setErr(null);
+		delResponseDto.setErrors(null);
 		delResponseDto.setResponse(deleteAllList);
 		delResponseDto.setResponsetime(serviceUtil.getCurrentResponseTime());
 
@@ -932,7 +932,7 @@ public class DemographicServiceTest {
 		deleteAllList.add(deleteDTO);
 
 		MainListResponseDTO<DocumentDeleteResponseDTO> delResponseDto = new MainListResponseDTO<>();
-		delResponseDto.setErr(null);
+		delResponseDto.setErrors(null);
 		delResponseDto.setResponse(deleteAllList);
 
 		Mockito.when(demographicRepository.findBypreRegistrationId(preRegId)).thenReturn(preRegistrationEntity);

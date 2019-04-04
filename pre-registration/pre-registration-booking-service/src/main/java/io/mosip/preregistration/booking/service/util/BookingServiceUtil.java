@@ -297,15 +297,15 @@ public class BookingServiceUtil {
 					new ParameterizedTypeReference<MainListResponseDTO<PreRegistartionStatusDTO>>() {
 					}, params);
 
-			if (respEntity.getBody().getErr() == null) {
+			if (respEntity.getBody().getErrors() == null) {
 				ObjectMapper mapper = new ObjectMapper();
 				PreRegistartionStatusDTO preRegResponsestatusDto = mapper
 						.convertValue(respEntity.getBody().getResponse().get(0), PreRegistartionStatusDTO.class);
 
 				statusCode = preRegResponsestatusDto.getStatusCode().trim();
 			} else {
-				throw new DemographicGetStatusException(respEntity.getBody().getErr().getErrorCode(),
-						respEntity.getBody().getErr().getMessage());
+				throw new DemographicGetStatusException(respEntity.getBody().getErrors().getErrorCode(),
+						respEntity.getBody().getErrors().getMessage());
 			}
 		} catch (RestClientException ex) {
 			log.error("sessionId", "idType", "id",
@@ -346,7 +346,7 @@ public class BookingServiceUtil {
 					new ParameterizedTypeReference<MainListResponseDTO<PreRegistartionStatusDTO>>() {
 					}, params);
 
-			if (respEntity.getBody().getErr() == null) {
+			if (respEntity.getBody().getErrors() == null) {
 				ObjectMapper mapper = new ObjectMapper();
 				PreRegistartionStatusDTO preRegResponsestatusDto = mapper
 						.convertValue(respEntity.getBody().getResponse().get(0), PreRegistartionStatusDTO.class);
@@ -359,8 +359,8 @@ public class BookingServiceUtil {
 							ErrorMessages.APPOINTMENT_CANNOT_BE_CANCELED.getMessage());
 				}
 			} else {
-				throw new DemographicGetStatusException(respEntity.getBody().getErr().getErrorCode(),
-						respEntity.getBody().getErr().getMessage());
+				throw new DemographicGetStatusException(respEntity.getBody().getErrors().getErrorCode(),
+						respEntity.getBody().getErrors().getMessage());
 			}
 		} catch (RestClientException ex) {
 			log.error("sessionId", "idType", "id",
