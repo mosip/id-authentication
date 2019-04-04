@@ -4,6 +4,7 @@
  */
 package io.mosip.preregistration.booking.service.util;
 
+import java.net.URI;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -239,19 +240,21 @@ public class BookingServiceUtil {
 			// RestTemplate restTemplate = restTemplateBuilder.build();
 			Map<String, Object> params = new HashMap<>();
 			params.put("preRegistrationId", preId);
-			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(preRegResourceUrl + "/applications/")
-					.queryParam("statusCode", status);
-
+			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(preRegResourceUrl + "/applications/status/{preRegistrationId}");
+			
+			URI uri=builder.buildAndExpand(params).toUri();
+			UriComponentsBuilder uriBuilder=UriComponentsBuilder.fromUri(uri).queryParam("statusCode", status);
+			
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
 			HttpEntity<MainResponseDTO<String>> httpEntity = new HttpEntity<>(headers);
-			String uriBuilder = builder.build().encode().toUriString();
-			uriBuilder += "{preRegistrationId}";
-			log.info("sessionId", "idType", "id", "Call Update Status in demographic URL : " + uriBuilder);
-			ResponseEntity<MainResponseDTO<String>> bookingResponse = restTemplate.exchange(uriBuilder, HttpMethod.PUT,
+			String uriBuilderString = uriBuilder.build().encode().toUriString(); 
+			//uriBuilder += "{preRegistrationId}";
+			log.info("sessionId", "idType", "id", "Call Update Status in demographic URL : " + uriBuilderString);
+			ResponseEntity<MainResponseDTO<String>> bookingResponse = restTemplate.exchange(uriBuilderString, HttpMethod.PUT,
 					httpEntity, new ParameterizedTypeReference<MainResponseDTO<String>>() {
 					}, params);
-			if (bookingResponse.getBody().getErrors() != null) {
+			if (bookingResponse.getBody().getErrors() != null) { 
 				throw new DemographicStatusUpdationException(
 						bookingResponse.getBody().getErrors().get(0).getErrorCode(),
 						bookingResponse.getBody().getErrors().get(0).getMessage());
