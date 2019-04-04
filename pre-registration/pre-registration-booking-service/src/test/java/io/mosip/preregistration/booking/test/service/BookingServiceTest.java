@@ -382,8 +382,11 @@ public class BookingServiceTest {
 		ResponseEntity<MainListResponseDTO<PreRegistartionStatusDTO>> respEntity = new ResponseEntity<>(preRegResponse,
 				HttpStatus.OK);
 		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
-				Mockito.eq(new ParameterizedTypeReference<MainListResponseDTO<PreRegistartionStatusDTO>>() {
-				}))).thenReturn(respEntity);
+
+
+				Mockito.eq(new ParameterizedTypeReference<MainListResponseDTO<PreRegistartionStatusDTO>>() {}),Mockito.anyMap())).thenReturn(respEntity);
+
+
 
 		MainResponseDTO<List<BookingStatusDTO>> response = service.bookAppointment(bookingDto);
 		assertEquals(1, response.getResponse().size());
@@ -455,8 +458,11 @@ public class BookingServiceTest {
 		ResponseEntity<MainListResponseDTO<PreRegistartionStatusDTO>> respEntity = new ResponseEntity<>(
 				preRegResponseRebook, HttpStatus.OK);
 		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
-				Mockito.eq(new ParameterizedTypeReference<MainListResponseDTO<PreRegistartionStatusDTO>>() {
-				}))).thenReturn(respEntity);
+
+
+				Mockito.eq(new ParameterizedTypeReference<MainListResponseDTO<PreRegistartionStatusDTO>>() {}),Mockito.anyMap())).thenReturn(respEntity);
+
+
 		Mockito.when(mapper.convertValue(respEntity.getBody().getResponse().get(0), PreRegistartionStatusDTO.class))
 				.thenReturn(preRegistartionStatus);
 
@@ -542,7 +548,7 @@ public class BookingServiceTest {
 				preRegResponseRebook, HttpStatus.OK);
 		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
 				Mockito.eq(new ParameterizedTypeReference<MainListResponseDTO<PreRegistartionStatusDTO>>() {
-				}))).thenReturn(respEntity);
+				}),Mockito.anyMap())).thenReturn(respEntity);
 		Mockito.when(mapper.convertValue(respEntity.getBody().getResponse().get(0), PreRegistartionStatusDTO.class))
 				.thenReturn(preRegistartionStatus);
 
@@ -669,8 +675,10 @@ public class BookingServiceTest {
 				HttpStatus.OK);
 
 		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
-				Mockito.eq(new ParameterizedTypeReference<MainListResponseDTO<PreRegistartionStatusDTO>>() {
-				}))).thenReturn(res);
+
+
+				Mockito.eq(new ParameterizedTypeReference<MainListResponseDTO<PreRegistartionStatusDTO>>() {}),Mockito.anyMap())).thenReturn(res);
+
 
 		Mockito.when(bookingDAO.findByFromTimeAndToTimeAndRegDateAndRegcntrId(Mockito.any(), Mockito.any(),
 				Mockito.any(), Mockito.any())).thenReturn(availableEntity);
@@ -684,8 +692,11 @@ public class BookingServiceTest {
 		mainResponseDTO.setResponse(bookingEntity);
 		ResponseEntity<MainResponseDTO<String>> resp = new ResponseEntity<>(mainResponseDTO, HttpStatus.OK);
 		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.PUT), Mockito.any(),
-				Mockito.eq(new ParameterizedTypeReference<MainResponseDTO<String>>() {
-				}))).thenReturn(resp);
+
+
+				Mockito.eq(new ParameterizedTypeReference<MainResponseDTO<String>>() {}),Mockito.anyMap())).thenReturn(resp);
+
+
 		availableEntity.setAvailableKiosks(availableEntity.getAvailableKiosks() + 1);
 		Mockito.when(bookingDAO.updateAvailibityEntity(availableEntity)).thenReturn(availableEntity);
 		MainResponseDTO<CancelBookingResponseDTO> responseDto = service.cancelAppointment(cancelRequestdto);
@@ -754,8 +765,11 @@ public class BookingServiceTest {
 		ResponseEntity<MainListResponseDTO<PreRegistartionStatusDTO>> respEntity = new ResponseEntity<>(
 				preRegResponseRebook, HttpStatus.OK);
 		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
-				Mockito.eq(new ParameterizedTypeReference<MainListResponseDTO<PreRegistartionStatusDTO>>() {
-				}))).thenReturn(respEntity);
+
+
+				Mockito.eq(new ParameterizedTypeReference<MainListResponseDTO<PreRegistartionStatusDTO>>() {}),Mockito.anyMap())).thenReturn(respEntity);
+
+
 		MainResponseDTO<BookingRegistrationDTO> responseDto = service.getAppointmentDetails("12345678909876");
 		assertEquals("1", responseDto.getResponse().getRegistrationCenterId());
 	}
@@ -768,8 +782,11 @@ public class BookingServiceTest {
 		ResponseEntity<MainListResponseDTO<PreRegistartionStatusDTO>> respEntity = new ResponseEntity<>(preRegResponse,
 				HttpStatus.OK);
 		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
-				Mockito.eq(new ParameterizedTypeReference<MainListResponseDTO<PreRegistartionStatusDTO>>() {
-				}))).thenReturn(respEntity);
+
+
+				Mockito.eq(new ParameterizedTypeReference<MainListResponseDTO<PreRegistartionStatusDTO>>() {}),Mockito.anyMap())).thenReturn(respEntity);
+
+
 		MainResponseDTO<BookingRegistrationDTO> responseDto = service.getAppointmentDetails("23587986034785");
 	}
 
@@ -780,8 +797,11 @@ public class BookingServiceTest {
 		ResponseEntity<MainListResponseDTO<PreRegistartionStatusDTO>> respEntity = new ResponseEntity<>(preRegResponse,
 				HttpStatus.OK);
 		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
-				Mockito.eq(new ParameterizedTypeReference<MainListResponseDTO<PreRegistartionStatusDTO>>() {
-				}))).thenReturn(respEntity);
+
+
+				Mockito.eq(new ParameterizedTypeReference<MainListResponseDTO<PreRegistartionStatusDTO>>() {}),Mockito.anyMap())).thenReturn(respEntity);
+
+
 		Mockito.when(bookingDAO.findByPreRegistrationId(Mockito.anyString()))
 				.thenThrow(new DataAccessLayerException("", "", new Throwable()));
 		service.getAppointmentDetails("23587986034785");
@@ -803,8 +823,10 @@ public class BookingServiceTest {
 
 		ResponseEntity<MainResponseDTO<String>> resp2 = new ResponseEntity<>(mainResponseDTO, HttpStatus.OK);
 		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.PUT), Mockito.any(),
-				Mockito.eq(new ParameterizedTypeReference<MainResponseDTO<String>>() {
-				}))).thenReturn(resp2);
+
+				Mockito.eq(new ParameterizedTypeReference<MainResponseDTO<String>>() {}),Mockito.anyMap())).thenReturn(resp2);
+
+
 		BookingStatusDTO response = service.book("23587986034785", newBooking);
 		assertEquals("APPOINTMENT_SUCCESSFULLY_BOOKED", response.getBookingMessage());
 	}
@@ -826,8 +848,10 @@ public class BookingServiceTest {
 				HttpStatus.OK);
 
 		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
-				Mockito.eq(new ParameterizedTypeReference<MainListResponseDTO<PreRegistartionStatusDTO>>() {
-				}))).thenReturn(res);
+
+
+				Mockito.eq(new ParameterizedTypeReference<MainListResponseDTO<PreRegistartionStatusDTO>>() {}),Mockito.anyMap())).thenReturn(res);
+
 		Mockito.when(bookingDAO.findByFromTimeAndToTimeAndRegDateAndRegcntrId(Mockito.any(), Mockito.any(),
 				Mockito.any(), Mockito.any())).thenThrow(new DataAccessLayerException("", "", new Throwable()));
 		service.cancelBooking(cancelbookingDto);
@@ -875,8 +899,11 @@ public class BookingServiceTest {
 
 		Mockito.when(bookingDAO.findByPreRegistrationId("23587986034785")).thenReturn(bookingEntity);
 		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
-				Mockito.eq(new ParameterizedTypeReference<MainListResponseDTO<PreRegistartionStatusDTO>>() {
-				}))).thenReturn(res);
+
+
+				Mockito.eq(new ParameterizedTypeReference<MainListResponseDTO<PreRegistartionStatusDTO>>() {}),Mockito.anyMap())).thenReturn(res);
+
+
 		Mockito.when(bookingDAO.findByFromTimeAndToTimeAndRegDateAndRegcntrId(Mockito.any(), Mockito.any(),
 				Mockito.any(), Mockito.any())).thenReturn(availableEntity);
 		service.cancelBooking(cancelbookingDto);
@@ -1011,3 +1038,6 @@ public class BookingServiceTest {
 		service.increaseAvailability(newBooking);
 	}
 }
+
+
+

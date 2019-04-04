@@ -19,8 +19,8 @@ export const DATE_PATTERN = '([0-2]\\d|3[01])';
 
 export const IDS = {
   newUser: 'mosip.pre-registration.demographic.create',
-  updateUser: 'mosip.pre-registration.demographic.update',
-  transliteration: 'mosip.pre-registration.transliteration.transliterate'
+  transliteration: 'mosip.pre-registration.transliteration.transliterate',
+  notification: 'mosip.pre-registration.notification.notify'
 };
 
 // export const LANGUAGE_CODE = {
@@ -33,25 +33,18 @@ export const IDS = {
 export const APPEND_URL = {
   config: 'config',
   send_otp: 'sendotp',
-<<<<<<< Updated upstream
   login: 'useridotp',
   logout: 'invalidatetoken',
-  location_metadata: 'v1.0/locations/locationhierarchy/',
-  location_immediate_children: 'v1.0/locations/immediatechildren/',
-=======
   // login: 'login',
   // logout: 'logout',
-  login: 'useridotp',
-  logout: 'invalidatetoken',
   location_metadata: 'locations/locationhierarchy/',
   location_immediate_children: 'locations/immediatechildren/',
->>>>>>> Stashed changes
   applicants: 'demographic/applications',
   get_applicant: 'demographic/applications/details',
-  location: 'masterdata/',
-  gender: 'masterdata/gendertypes',
+  location: 'masterdata/v1/',
+  gender: 'masterdata/v1/gendertypes',
   transliteration: 'transliteration/transliterate',
-  applicantType: 'applicanttype/',
+  applicantType: 'applicanttype/v1/',
   validDocument: 'v1.0/applicanttype/',
   getApplicantType: 'getApplicantType',
   document: 'document/documents',
@@ -63,7 +56,7 @@ export const APPEND_URL = {
   qr_code: 'notification/generateQRCode',
   notification: 'notification/',
   send_notification: 'notify',
-  master_data: 'masterdata/v1.0/',
+  master_data: 'masterdata/v1/',
   auth: 'auth/'
 };
 
@@ -175,6 +168,7 @@ export const DOCUMENT_CATEGORY_DTO = {
   ],
   id: 'mosip.applicanttype.fetch',
   requestTime: '2012-03-08T11:46:12.640Z',
+  metadata: {},
   version: 'V1.0'
 };
 

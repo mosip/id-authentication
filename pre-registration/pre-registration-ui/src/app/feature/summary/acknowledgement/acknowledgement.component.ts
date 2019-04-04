@@ -82,21 +82,21 @@ export class AcknowledgementComponent implements OnInit {
 
   getRegistrationCenterInSecondaryLanguage(centerId: string, langCode: string) {
     this.dataStorageService.getRegistrationCenterByIdAndLangCode(centerId, langCode).subscribe(response => {
-      this.secondaryLanguageRegistrationCenter = response['registrationCenters'][0];
+      this.secondaryLanguageRegistrationCenter = response['response']['registrationCenters'][0];
       console.log(this.secondaryLanguageRegistrationCenter);
     })
   }
 
   getRegistrationCenterInPrimaryLanguage(centerId: string, langCode: string) {
     this.dataStorageService.getRegistrationCenterByIdAndLangCode(centerId, langCode).subscribe(response => {
-      this.usersInfo[0].registrationCenter = response['registrationCenters'][0];
+      this.usersInfo[0].registrationCenter = response['response']['registrationCenters'][0];
       console.log(this.usersInfo);
     })
   }
 
   getTemplate() {
     this.dataStorageService.getGuidelineTemplate().subscribe(response => {
-      this.guidelines = response['templates'][0].fileText.split('\n');
+      this.guidelines = response['response']['templates'][0].fileText.split('\n');
     })
   }
 

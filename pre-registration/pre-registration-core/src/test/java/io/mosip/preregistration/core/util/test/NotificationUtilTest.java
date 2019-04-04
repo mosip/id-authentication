@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -29,6 +30,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import io.mosip.preregistration.core.common.dto.BookingRegistrationDTO;
 import io.mosip.preregistration.core.common.dto.MainListResponseDTO;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
 import io.mosip.preregistration.core.common.dto.NotificationDTO;
@@ -97,19 +99,24 @@ public class NotificationUtilTest {
 		
 		String langCode = "eng";
 		MultipartFile file = new MockMultipartFile("test.txt", "test.txt", null, new byte[1100]);
-		TemplateResponseListDTO templateResponseListDTO = new TemplateResponseListDTO();
-		templateResponseListDTO.setTemplates(tepmlateList);
-		ResponseEntity<TemplateResponseListDTO> res = new ResponseEntity<TemplateResponseListDTO>(
+		MainResponseDTO<TemplateResponseListDTO> templateResponseListDTO = new MainResponseDTO<>();
+		TemplateResponseListDTO templates= new TemplateResponseListDTO();
+		templates.setTemplates(tepmlateList);
+		templateResponseListDTO.setResponse(templates);
+		ResponseEntity<MainResponseDTO<TemplateResponseListDTO>> res = new ResponseEntity<>(
 				templateResponseListDTO, HttpStatus.OK);
-		Mockito.when(restTemplate.getForEntity(Mockito.anyString(), Mockito.eq(TemplateResponseListDTO.class)))
+		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
+				Mockito.eq(new ParameterizedTypeReference<MainResponseDTO<TemplateResponseListDTO>>() {})))
 				.thenReturn(res);
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.MULTIPART_FORM_DATA);
-		ResponseEntity<NotificationResponseDTO> resp = new ResponseEntity<NotificationResponseDTO>(
-				notificationResponseDTO, HttpStatus.OK);
+		MainResponseDTO<NotificationResponseDTO> notificationres= new MainResponseDTO<>();
+		notificationres.setResponse(notificationResponseDTO);
+		ResponseEntity<MainResponseDTO<NotificationResponseDTO>> resp = new ResponseEntity<>(
+				notificationres, HttpStatus.OK);
 		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.POST), Mockito.any(),
-				Mockito.eq(NotificationResponseDTO.class))).thenReturn(resp);
-		
+				Mockito.eq(new ParameterizedTypeReference<MainResponseDTO<NotificationResponseDTO>>() {
+				}))).thenReturn(resp);
 		MainListResponseDTO<NotificationResponseDTO> response=notificationUtil.notify("email", notificationDTO, langCode, file);
 		assertEquals(notificationResponseDTO.getMessage(), response.getResponse().get(0).getMessage());
 	}
@@ -119,18 +126,24 @@ public class NotificationUtilTest {
 		
 		String langCode = "eng";
 		MultipartFile file = new MockMultipartFile("test.txt", "test.txt", null, new byte[1100]);
-		TemplateResponseListDTO templateResponseListDTO = new TemplateResponseListDTO();
-		templateResponseListDTO.setTemplates(tepmlateList);
-		ResponseEntity<TemplateResponseListDTO> res = new ResponseEntity<TemplateResponseListDTO>(
+		MainResponseDTO<TemplateResponseListDTO> templateResponseListDTO = new MainResponseDTO<>();
+		TemplateResponseListDTO templates= new TemplateResponseListDTO();
+		templates.setTemplates(tepmlateList);
+		templateResponseListDTO.setResponse(templates);
+		ResponseEntity<MainResponseDTO<TemplateResponseListDTO>> res = new ResponseEntity<>(
 				templateResponseListDTO, HttpStatus.OK);
-		Mockito.when(restTemplate.getForEntity(Mockito.anyString(), Mockito.eq(TemplateResponseListDTO.class)))
+		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
+				Mockito.eq(new ParameterizedTypeReference<MainResponseDTO<TemplateResponseListDTO>>() {})))
 				.thenReturn(res);
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.MULTIPART_FORM_DATA);
-		ResponseEntity<NotificationResponseDTO> resp = new ResponseEntity<NotificationResponseDTO>(
-				notificationResponseDTO, HttpStatus.OK);
+		MainResponseDTO<NotificationResponseDTO> notificationres= new MainResponseDTO<>();
+		notificationres.setResponse(notificationResponseDTO);
+		ResponseEntity<MainResponseDTO<NotificationResponseDTO>> resp = new ResponseEntity<>(
+				notificationres, HttpStatus.OK);
 		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.POST), Mockito.any(),
-				Mockito.eq(NotificationResponseDTO.class))).thenReturn(resp);
+				Mockito.eq(new ParameterizedTypeReference<MainResponseDTO<NotificationResponseDTO>>() {
+				}))).thenReturn(resp);
 		
 		MainListResponseDTO<NotificationResponseDTO> response=notificationUtil.notify("sms", notificationDTO, langCode, file);
 		assertEquals(notificationResponseDTO.getMessage(), response.getResponse().get(0).getMessage());
