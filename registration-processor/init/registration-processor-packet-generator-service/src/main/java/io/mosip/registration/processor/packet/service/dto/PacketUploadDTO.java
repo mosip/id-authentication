@@ -1,11 +1,21 @@
 package io.mosip.registration.processor.packet.service.dto;
 
+import java.io.Serializable;
+
+import lombok.Data;
+
 /**
  * The Class PacketUploadDTO.
  * 
  * @author Rishabh Keshari
  */
-public class PacketUploadDTO {
+@Data
+public class PacketUploadDTO implements Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 594317554990368301L;
 
 	/** The userid. */
 	private String userid;

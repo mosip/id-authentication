@@ -4,12 +4,14 @@ import org.apache.activemq.ActiveMQConnectionFactory;
 
 public class MosipActiveMq extends MosipQueue{
 
+	private String queueName;
 	private String username;
 	private String password;
 	private String brokerUrl;
 	private ActiveMQConnectionFactory activeMQConnectionFactory;
 
-	public MosipActiveMq(String username, String password, String brokerUrl) {
+	public MosipActiveMq(String queueName, String username, String password, String brokerUrl) {
+		this.queueName = queueName;
 		this.username = username;
 		this.password = password;
 		this.brokerUrl = brokerUrl;
@@ -35,5 +37,14 @@ public class MosipActiveMq extends MosipQueue{
 	@Override
 	public void createConnection(String username, String password, String brokerUrl) {
 		this.activeMQConnectionFactory = new ActiveMQConnectionFactory(username, password, brokerUrl);
+	}
+
+	@Override
+	public String getQueueName() {
+		return queueName;
+	}
+
+	public void setQueueName(String queueName) {
+		this.queueName = queueName;
 	}
 }

@@ -136,11 +136,12 @@
 			<version>1.8.2</version>
 		</dependency>
 		<!-- Encryption Decryption Util Jar -->
-		<dependency>
+
+	<!-- 	<dependency>
 			<groupId>io.mosip</groupId>
 			<artifactId>testing</artifactId>
 			<version>demoApp</version>
-		</dependency>
+		</dependency> -->
 		<dependency>
 			<groupId>javax.validation</groupId>
 			<artifactId>validation-api</artifactId>

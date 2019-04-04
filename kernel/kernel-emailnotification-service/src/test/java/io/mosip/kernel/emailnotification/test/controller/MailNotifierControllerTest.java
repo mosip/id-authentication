@@ -18,9 +18,10 @@ import io.mosip.kernel.emailnotification.NotificationEmailBootApplication;
 import io.mosip.kernel.emailnotification.controller.EmailNotificationController;
 import io.mosip.kernel.emailnotification.dto.ResponseDto;
 import io.mosip.kernel.emailnotification.service.impl.EmailNotificationServiceImpl;
+import io.mosip.kernel.emailnotification.test.NotificationEmailTestBootApplication;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = NotificationEmailBootApplication.class)
+@SpringBootTest(classes = NotificationEmailTestBootApplication.class)
 public class MailNotifierControllerTest {
 	@Mock
 	EmailNotificationServiceImpl service;
@@ -43,6 +44,6 @@ public class MailNotifierControllerTest {
 		dto.setMessage("");
 		dto.setStatus("");
 		when(service.sendEmail(mailTo, mailCc, mailSubject, mailContent, arr)).thenReturn(dto);
-		assertThat(controller.sendMail(mailTo, mailCc, mailSubject, mailContent, arr), isA(ResponseWrapper.class));
+		assertThat(controller.sendEMail(mailTo, mailCc, mailSubject, mailContent, arr), isA(ResponseWrapper.class));
 	}
 }

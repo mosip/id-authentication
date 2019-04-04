@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
       - name: registration-processor-osi-validator-stage
-        image: docker-registry.mosip.io:5000/osi-validator-stage
+        image: docker-registry.mosip.io:5000/registration-processor-osi-validator-stage
         ports:
           - name: eventbus-port
             containerPort: 5716

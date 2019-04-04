@@ -35,12 +35,13 @@ import io.mosip.kernel.keygenerator.bouncycastle.KeyGenerator;
 import io.mosip.registration.processor.core.code.ApiName;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
+import io.mosip.registration.processor.core.spi.filesystem.manager.FileManager;
 import io.mosip.registration.processor.core.http.ResponseWrapper;
 import io.mosip.registration.processor.core.notification.template.generator.dto.TemplateResponseDto;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
+import io.mosip.registration.processor.packet.manager.dto.DirectoryPathDto;
 import io.mosip.registration.processor.packet.service.dto.PublicKeyResponseDto;
 import io.mosip.registration.processor.packet.service.exception.RegBaseCheckedException;
-import io.mosip.registration.processor.packet.service.external.StorageService;
 
 /**
  * 
@@ -72,13 +73,12 @@ public class EncryptorUtil {
 	@Autowired
 	RegistrationProcessorRestClientService<Object> registrationProcessorRestClientService;
 
-	/** The storage service. */
-	@Autowired
-	private StorageService storageService;
-
 	/** The center id length. */
 	@Value("${mosip.kernel.rid.centerid-length}")
 	private int centerIdLength;
+
+	@Autowired
+	protected FileManager<DirectoryPathDto, InputStream> filemanager;
 
 	private ObjectMapper mapper=new ObjectMapper();
 
@@ -103,15 +103,14 @@ public class EncryptorUtil {
 	 * @throws RegBaseCheckedException
 	 *             the reg base checked exception
 	 */
-	public String encryptUinUpdatePacket(InputStream decryptedFile, String regId, String creationTime)
-			throws IOException, ApisResourceAccessException, InvalidKeySpecException, NoSuchAlgorithmException,
-			RegBaseCheckedException {
+	public void encryptUinUpdatePacket(InputStream decryptedFile, String regId, String creationTime) throws IOException,
+			ApisResourceAccessException, InvalidKeySpecException, NoSuchAlgorithmException, RegBaseCheckedException {
 		try (InputStream decryptedPacketStream = new BufferedInputStream(decryptedFile);
 				InputStream encryptPacketStream = encrypt(decryptedPacketStream, regId, creationTime)) {// close input
-			// stream
+																										// stream
 			byte[] bytes = IOUtils.toByteArray(encryptPacketStream);
 
-			return storageService.storeToDisk(regId, bytes, true);
+			filemanager.put(regId, new ByteArrayInputStream(bytes), DirectoryPathDto.PACKET_GENERATED_ENCRYPTED);
 
 		}
 	}
@@ -188,10 +187,10 @@ public class EncryptorUtil {
 	 *             the invalid key spec exception
 	 * @throws NoSuchAlgorithmException
 	 *             the no such algorithm exception
-	 * @throws IOException 
-	 * @throws JsonProcessingException 
-	 * @throws JsonMappingException 
-	 * @throws JsonParseException 
+	 * @throws IOException
+	 * @throws JsonProcessingException
+	 * @throws JsonMappingException
+	 * @throws JsonParseException
 	 */
 	private byte[] encryptRSA(final byte[] sessionKey, String centerId, String creationTime)
 			throws ApisResourceAccessException, InvalidKeySpecException, java.security.NoSuchAlgorithmException, IOException {
