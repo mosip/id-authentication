@@ -188,7 +188,6 @@ public class CryptomanagerUtil {
 		dataMapper.map(cryptomanagerRequestDto, keyManagerSymmetricKeyRequestDto,
 				new KeymanagerSymmetricKeyConverter());
 		requestWrapper.setRequest(keyManagerSymmetricKeyRequestDto);
-
 		HttpHeaders keyManagerRequestHeaders = new HttpHeaders();
 		keyManagerRequestHeaders.setContentType(MediaType.APPLICATION_JSON);
 

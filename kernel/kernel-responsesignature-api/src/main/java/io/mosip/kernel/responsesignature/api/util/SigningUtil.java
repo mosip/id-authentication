@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
+import io.mosip.kernel.core.crypto.spi.Decryptor;
 import io.mosip.kernel.core.crypto.spi.Encryptor;
 import io.mosip.kernel.keygenerator.bouncycastle.KeyGenerator;
 
@@ -20,33 +21,38 @@ import io.mosip.kernel.keygenerator.bouncycastle.KeyGenerator;
  *  @author Srinivasan
  *  @since 1.0.0
  */
-@Component
+//@Component
 public class SigningUtil {
 
-	/** instance of rest template. */
+	/** instance of rest template. *//*
 	@Autowired
 	private RestTemplate restTemplate;
 
-	/** instance of keygenerator. */
+	*//** instance of keygenerator. *//*
 	@Autowired
 	KeyGenerator keygenerator;
 
-	/** instance of encryptor. */
+	*//** instance of encryptor. *//*
 	@Autowired
 	Encryptor<PrivateKey, PublicKey, SecretKey> encryptor;
+	
+	Decryptor<PrivateKey, PublicKey, SecretKey> decryptor;
 
-	/**  crypto encypt url. */
+	*//**  crypto encypt url. *//*
 	@Value("{io.mosip.kernel.crytpomanager-service-url:https://dev.mosip.io/cryptomanager/encrypt}")
 	private String cryptoEncyptUrl;
 
-	/**
+	*//**
 	 * Generate key pair.
 	 *
 	 * @param response the response
 	 * @return the key pair
-	 */
+	 *//*
 	public KeyPair generateKeyPair(String response) {
 		return keygenerator.getAsymmetricKey();
 	}
+	*/
+	
+	
 
 }
