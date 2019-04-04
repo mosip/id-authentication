@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { DataStorageService } from '../services/data-storage.service';
 
 @Component({
   selector: 'app-faq',
@@ -7,9 +8,16 @@ import { Component, OnInit } from '@angular/core';
 })
 export class FaqComponent implements OnInit {
 
-  constructor() { }
+  langCode = '';
+  data = {};
+
+  constructor(private dataStorageService: DataStorageService) { }
 
   ngOnInit() {
+    this.langCode = localStorage.getItem('langCode');
+    this.dataStorageService.getSecondaryLanguageLabels(this.langCode).subscribe(response => {
+      this.data = response['faq'];
+    })
   }
 
 }

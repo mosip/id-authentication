@@ -180,6 +180,79 @@
       "line": "Connectez-vous avec le même numéro de téléphone portable ou le même identifiant de messagerie pour accéder aux applications enregistrées."
     }
   },
+  "faq": {
+    "breadcrumb": {
+      "home": "Accueil",
+      "getting_started": "FAQ"
+    },
+    "answer": "Réponse",
+    "questions": [
+      {
+        "question": "Je n'ai pas de numéro de téléphone mobile ni d'identifiant email. Comment créer l'application de pré-inscription?",
+        "answer": "Vous pouvez utiliser le numéro de portable d'un ami ou d'un membre de la famille ou un identifiant de messagerie pour vous connecter à l'application de pré-inscription."
+      },
+      {
+        "question": "J'ai perdu le numéro de téléphone mobile / l'ID de messagerie électronique que j'ai utilisé pour créer l'application de pré-inscription. Que devrais-je faire?",
+        "answer": "Créez un nouveau compte en utilisant un nouveau numéro de mobile ou un nouvel identifiant de messagerie."
+      },
+      {
+        "question": "Que se passe-t-il lorsque je sélectionne la langue spécifique sur l'écran de connexion?",
+        "answer": "Sélectionnez la langue que vous pouvez facilement lire et écrire car le formulaire complet sera affiché dans la langue que vous avez choisie."
+      },
+      {
+        "question": "Que se passe-t-il si je ne dispose pas du (des) document (s) requis lors de la préparation de la demande de pré-inscription?",
+        "answer": "Remplissez les données démographiques et enregistrez l'application. Vous pouvez télécharger les documents ultérieurement."
+      },
+      {
+        "question": "Puis-je réserver un rendez-vous pour seulement deux personnes sur cinq dans la demande de pré-inscription?",
+        "answer": "Oui, vous pouvez prendre rendez-vous pour un nombre quelconque de personnes sur le total des candidats."
+      },
+      {
+        "question": "Que se passe-t-il si je manque une date de rendez-vous?",
+        "answer": "Essayez de ne pas manquer une date de rendez-vous. Si vous le manquez toujours, replanifiez le rendez-vous à l'aide de l'option «Modifier»."
+      },
+      {
+        "question": "J'ai pris rendez-vous le 10 février. Puis-je changer ma date de rendez-vous au 18 février?",
+        "answer": "Oui. Si votre rendez-vous a expiré, vous pouvez prendre un nouveau rendez-vous avec une date ultérieure."
+      },
+      {
+        "question": "J'ai pris rendez-vous au centre d'inscription de Casablanca. Puis-je changer mon centre d'enregistrement de rendez-vous à Rabat?",
+        "answer": "Non, mais vous pouvez annuler le rendez-vous en cours et prendre un nouveau rendez-vous à un nouvel emplacement de votre choix."
+      },
+      {
+        "question": "J'ai modifié mes informations après avoir reçu un accusé de réception. Dois-je télécharger ou imprimer à nouveau l'accusé de réception?",
+        "answer": "La page d'accusé de réception n'est qu'un document de référence permettant de mémoriser le lieu et l'heure du rendez-vous, etc. Au centre d'inscription, vos dernières informations seront automatiquement disponibles. Ainsi, il n’est pas officiellement nécessaire de réimprimer ou de télécharger"
+      },
+      {
+        "question": "J'ai reporté un rendez-vous après avoir reçu un accusé de réception. Dois-je télécharger ou imprimer à nouveau l'accusé de réception?",
+        "answer": "La page d'accusé de réception n'est qu'un document de référence permettant de mémoriser le lieu et l'heure du rendez-vous, etc. Vous pouvez réimprimer ou télécharger l'accusé de réception pour vous rappeler le moment de votre rendez-vous, mais cela n'est pas officiellement nécessaire."
+      },
+      {
+        "question": "Est-ce que quelqu'un d'autre peut soumettre une demande en mon nom pendant le processus d'inscription?",
+        "answer": "Non, le processus d'enregistrement nécessite une capture biométrique et photo. Par conséquent, vous devez être présent en personne au centre d'inscription."
+      },
+      {
+        "question": "Je reste loin de ma résidence permanente pendant deux ans. Quelle preuve de résidence dois-je fournir?",
+        "answer": "Le MdM décide de la pertinence de la question et des réponses"
+      },
+      {
+        "question": "Je n'ai pas de preuve de résidence pour mon adresse actuelle. Que devrais-je faire?",
+        "answer": "Le MdM décide de la pertinence de la question et des réponses"
+      },
+      {
+        "question": "Je n'ai aucun document. Que devrais-je faire?",
+        "answer": "Le MdM décide de la pertinence de la question et des réponses"
+      },
+      {
+        "question": "Combien de jours avant puis-je annuler ou réserver un rendez-vous?",
+        "answer": "Le MdM décide de la pertinence de la question et des réponses"
+      },
+      {
+        "question": "Dois-je porter des documents originaux ou des copies de documents certifiés lors de ma visite au centre d'inscription?",
+        "answer": "Le MdM décide de la pertinence de la question et des réponses"
+      }
+    ]
+  },
   "header": {
     "link_about": "Commencer",
     "link_faq": "FAQ",

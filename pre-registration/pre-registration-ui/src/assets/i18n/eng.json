@@ -180,6 +180,79 @@
       "line": "Login with the same mobile number or email id to access the saved applications."
     }
   },
+  "faq": {
+    "breadcrumb": {
+      "home": "Home",
+      "getting_started": "FAQ"
+    },
+    "answer": "Answer",
+    "questions": [
+      {
+        "question": "I do not have a mobile number or email ID. How can I create the pre-registration application?",
+        "answer": "You can use a friend or relative’s mobile number or an email ID to login to the pre-registration application."
+      },
+      {
+        "question": "I have lost the mobile number/email ID that I used to create the pre-registration application. What should I do?",
+        "answer": "Create a new account using a new mobile number or email ID."
+      },
+      {
+        "question": "What happens when I select the specific language on the login screen?",
+        "answer": "Select the language that you can easily read and write because the entire form will be displayed in the specific language you have chosen."
+      },
+      {
+        "question": "What if I do not have the required document(s) available while filling the pre-registration application?",
+        "answer": "Fill the demographic data and save the application. You can upload the documents later."
+      },
+      {
+        "question": "Can I only book an appointment for only two people out of five applicants in the pre-registration application?",
+        "answer": "Yes, you can book an appointment for any number of people out of the total applicants."
+      },
+      {
+        "question": "What happens if I miss an appointment date?",
+        "answer": "Try not to miss an appointment date. If you still miss it, reschedule the appointment by using the “Modify” option."
+      },
+      {
+        "question": "I have booked an appointment on 10th of February. Can I change my appointment date to 18th of February?",
+        "answer": "Yes. If your appointment has expired, you can book a new appointment with a future date."
+      },
+      {
+        "question": "I have booked an appointment at Casablanca registration center. Can I change my appointment registration center to Rabat?",
+        "answer": "No, but you can cancel the current appointment and book a new appointment at a new location of your choice."
+      },
+      {
+        "question": "I have modified my information after I received an acknowledgment. Do I have to download or print the acknowledgement again?",
+        "answer": "The acknowledgement page is only a reference document to remember the location and time of appointment, etc. At the registration center, your latest information will be automatically available. Thus, there is no official need to re-print or download"
+      },
+      {
+        "question": "I have rescheduled an appointment after I received an acknowledgment. Do I have to download or print the acknowledgement again?",
+        "answer": "The acknowledgement page is only a reference document to remember the location and time of appointment, etc. You can re-print or download the acknowledgment to help you remember when your appointment is but there is no official need to do so."
+      },
+      {
+        "question": "Can someone else submit an application on my behalf during the registration process?",
+        "answer": "No, the registration process requires biometric and photo capture. Therefore, you must be present in person at the registration center."
+      },
+      {
+        "question": "I am staying away from my permanent residence for two years. What proof of residence do I have to provide?",
+        "answer": "GoM to decide suitability of question and answers"
+      },
+      {
+        "question": "I do not have proof of residence for my present address. What should I do?",
+        "answer": "GoM to decide suitability of question and answers."
+      },
+      {
+        "question": "I do not have any documents. What should I do?",
+        "answer": "GoM to decide suitability of question and answers."
+      },
+      {
+        "question": "How many days before can I cancel or re-book an appointment?",
+        "answer": "GoM to decide suitability of question and answers."
+      },
+      {
+        "question": "Do I have to carry original documents or certified document copies when I visit registration center?",
+        "answer": "GoM to decide suitability of question and answers."
+      }
+    ]
+  },
   "header": {
     "link_about": "GETTING STARTED",
     "link_faq": "FAQ",
