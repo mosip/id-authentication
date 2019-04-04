@@ -61,7 +61,7 @@ public class GlobalParamServiceTest {
 
 	@Mock
 	ServiceDelegateUtil serviceDelegateUtil;
- 
+
 	@Test
 	public void getGlobalParamsTest() {
 
@@ -73,33 +73,64 @@ public class GlobalParamServiceTest {
 		assertEquals(globalParamMap, gloablContextParamServiceImpl.getGlobalParams());
 	}
 
-	@Ignore
 	@Test
 	public void syncConfigDataTest() throws RegBaseCheckedException, HttpClientErrorException, SocketTimeoutException {
 
 		HashMap<String, Object> globalParamJsonMap = new HashMap<>();
 		globalParamJsonMap.put("retryAttempts", "3");
+		globalParamJsonMap.put("kernel", "5");
 		HashMap<String, Object> globalParamJsonMap2 = new HashMap<>();
 		globalParamJsonMap2.put("loginSequence1", "OTP");
+		globalParamJsonMap.put("response", globalParamJsonMap2);
 
 		globalParamJsonMap.put("map", globalParamJsonMap2);
 
 		Mockito.when(serviceDelegateUtil.get(Mockito.anyString(), Mockito.anyMap(), Mockito.anyBoolean(),
 				Mockito.anyString())).thenReturn(globalParamJsonMap);
 		Mockito.doNothing().when(globalParamDAOImpl).saveAll(Mockito.anyList());
- 
+
 		Map<String, Object> globalParamMap = new LinkedHashMap<>();
 		globalParamMap.put("ANY", "ANY");
 		Mockito.when(globalParamDAOImpl.getGlobalParams()).thenReturn(globalParamMap);
-        java.util.List<GlobalParam> globalParamList=new ArrayList<>();
-        GlobalParam globalParam=new GlobalParam();
-        globalParam.setVal("2");
-        GlobalParamId globalParamId=new GlobalParamId();
-        globalParamId.setCode("retryAttempts");
-        globalParam.setGlobalParamId(globalParamId);
-        globalParamList.add(globalParam);
+		java.util.List<GlobalParam> globalParamList = new ArrayList<>();
+		GlobalParam globalParam = new GlobalParam();
+		globalParam.setVal("2");
+		GlobalParamId globalParamId = new GlobalParamId();
+		globalParamId.setCode("retryAttempts");
+		globalParam.setGlobalParamId(globalParamId);
+		globalParamList.add(globalParam);
 		Mockito.when(globalParamDAOImpl.getAllEntries()).thenReturn(globalParamList);
-		
+
+		gloablContextParamServiceImpl.synchConfigData(false);
+	}
+
+	@Test
+	public void syncConfigData() throws RegBaseCheckedException, HttpClientErrorException, SocketTimeoutException {
+
+		HashMap<String, Object> globalParamJsonMap = new HashMap<>();
+
+		globalParamJsonMap.put("kernel", "5");
+		HashMap<String, Object> globalParamJsonMap2 = new HashMap<>();
+		globalParamJsonMap2.put("loginSequence1", "OTP");
+		globalParamJsonMap.put("response", globalParamJsonMap2);
+
+		globalParamJsonMap.put("map", globalParamJsonMap2);
+
+		Mockito.when(serviceDelegateUtil.get(Mockito.anyString(), Mockito.anyMap(), Mockito.anyBoolean(),
+				Mockito.anyString())).thenReturn(globalParamJsonMap);
+		Mockito.doNothing().when(globalParamDAOImpl).saveAll(Mockito.anyList());
+
+		Map<String, Object> globalParamMap = new LinkedHashMap<>();
+		globalParamMap.put("ANY", "ANY");
+		Mockito.when(globalParamDAOImpl.getGlobalParams()).thenReturn(globalParamMap);
+		java.util.List<GlobalParam> globalParamList = new ArrayList<>();
+		GlobalParam globalParam = new GlobalParam();
+		globalParam.setVal("2");
+		GlobalParamId globalParamId = new GlobalParamId();
+		globalParamId.setCode("retryAttempts");
+		globalParam.setGlobalParamId(globalParamId);
+		globalParamList.add(globalParam);
+		Mockito.when(globalParamDAOImpl.getAllEntries()).thenReturn(globalParamList);
 
 		gloablContextParamServiceImpl.synchConfigData(false);
 	}
@@ -117,71 +148,71 @@ public class GlobalParamServiceTest {
 
 		gloablContextParamServiceImpl.synchConfigData(false);
 	}
-	
-	@Ignore
+
 	@Test
 	public void syncConfigTest() throws RegBaseCheckedException, HttpClientErrorException, SocketTimeoutException {
 
 		HashMap<String, Object> globalParamJsonMap = new HashMap<>();
 		globalParamJsonMap.put("retryAttempts", "3");
-		globalParamJsonMap.put("kernel","5");
+		globalParamJsonMap.put("kernel", "5");
 		HashMap<String, Object> globalParamJsonMap2 = new HashMap<>();
-		globalParamJsonMap2.put("loginSequence1", "OTP"); 
+		globalParamJsonMap2.put("loginSequence1", "OTP");
 
 		globalParamJsonMap.put("map", globalParamJsonMap2);
 
 		Mockito.when(serviceDelegateUtil.get(Mockito.anyString(), Mockito.anyMap(), Mockito.anyBoolean(),
 				Mockito.anyString())).thenReturn(globalParamJsonMap);
 		Mockito.doNothing().when(globalParamDAOImpl).saveAll(Mockito.anyList());
- 
+
 		Map<String, Object> globalParamMap = new LinkedHashMap<>();
 		globalParamMap.put("ANY", "ANY");
 		Mockito.when(globalParamDAOImpl.getGlobalParams()).thenReturn(globalParamMap);
-        java.util.List<GlobalParam> globalParamList=new ArrayList<>();
-        GlobalParam globalParam=new GlobalParam();
-        globalParam.setVal("ANY");
-        GlobalParamId globalParamId=new GlobalParamId();
-        globalParamId.setCode("ANY");
-        globalParam.setGlobalParamId(globalParamId);
-        globalParamList.add(globalParam);
+		java.util.List<GlobalParam> globalParamList = new ArrayList<>();
+		GlobalParam globalParam = new GlobalParam();
+		globalParam.setVal("ANY");
+		GlobalParamId globalParamId = new GlobalParamId();
+		globalParamId.setCode("ANY");
+		globalParam.setGlobalParamId(globalParamId);
+		globalParamList.add(globalParam);
 		Mockito.when(globalParamDAOImpl.getAllEntries()).thenReturn(globalParamList);
-		
 
 		gloablContextParamServiceImpl.synchConfigData(false);
 	}
 
 	@Test
 	public void updateSoftwareUpdateStatusSuccessCaseTest() {
-		
-		GlobalParamId globalParamId=new GlobalParamId();
+
+		GlobalParamId globalParamId = new GlobalParamId();
 		globalParamId.setCode(RegistrationConstants.IS_SOFTWARE_UPDATE_AVAILABLE);
 		globalParamId.setLangCode("eng");
-		
+
 		GlobalParam globalParam = new GlobalParam();
 		globalParam.setName(RegistrationConstants.IS_SOFTWARE_UPDATE_AVAILABLE);
 		globalParam.setGlobalParamId(globalParamId);
 		globalParam.setVal("Y");
-		
+
 		Mockito.when(globalParamDAOImpl.updateSoftwareUpdateStatus(Mockito.anyBoolean())).thenReturn(globalParam);
 		ResponseDTO responseDTO = gloablContextParamServiceImpl.updateSoftwareUpdateStatus(true);
-		assertEquals(responseDTO.getSuccessResponseDTO().getMessage(), RegistrationConstants.SOFTWARE_UPDATE_SUCCESS_MSG);
+		assertEquals(responseDTO.getSuccessResponseDTO().getMessage(),
+				RegistrationConstants.SOFTWARE_UPDATE_SUCCESS_MSG);
 	}
-	
+
 	@Test
 	public void updateSoftwareUpdateStatusFailureCaseTest() {
-		
-		GlobalParamId globalParamId=new GlobalParamId();
+
+		GlobalParamId globalParamId = new GlobalParamId();
 		globalParamId.setCode(RegistrationConstants.IS_SOFTWARE_UPDATE_AVAILABLE);
 		globalParamId.setLangCode("eng");
-		
+
 		GlobalParam globalParam = new GlobalParam();
 		globalParam.setName(RegistrationConstants.IS_SOFTWARE_UPDATE_AVAILABLE);
 		globalParam.setGlobalParamId(globalParamId);
-		globalParam.setVal("N"); 
-		
+		globalParam.setVal("N");
+
 		Mockito.when(globalParamDAOImpl.updateSoftwareUpdateStatus(Mockito.anyBoolean())).thenReturn(globalParam);
 		ResponseDTO responseDTO = gloablContextParamServiceImpl.updateSoftwareUpdateStatus(false);
-		assertEquals(responseDTO.getErrorResponseDTOs().get(0).getMessage(), RegistrationConstants.SOFTWARE_UPDATE_FAILURE_MSG);
+		assertEquals(responseDTO.getErrorResponseDTOs().get(0).getMessage(),
+				RegistrationConstants.SOFTWARE_UPDATE_FAILURE_MSG);
 	}
 
 }
