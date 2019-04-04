@@ -4,12 +4,10 @@ import java.util.List;
 
 import io.mosip.registration.processor.core.constant.JsonConstant;
 import io.mosip.registration.processor.core.constant.PacketFiles;
-
 import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.packet.dto.idjson.Document;
 import io.mosip.registration.processor.core.util.IdentityIteratorUtil;
 import io.mosip.registration.processor.stages.packet.validator.code.DocumentCategory;
-import io.mosip.registration.processor.status.code.ApplicantType;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.SyncTypeDto;
 
@@ -53,14 +51,10 @@ public class ApplicantDocumentValidation {
 		regId = registrationId;
 
 		String applicantType = identityIterator.getFieldValue(identity.getMetaData(), JsonConstant.APPLICANTTYPE);
-
-		if (applicantType.equalsIgnoreCase(ApplicantType.CHILD.name())
-				&& checkDocumentAvailability(identity, documentList, DocumentCategory.PROOFOFRELATIONSHIP.name())) {
+		//TODO Check applicant is child or adult by his DOB or Age field from ID.json
+		if (applicantType=="CHILD" && checkDocumentAvailability(identity, documentList, DocumentCategory.PROOFOFRELATIONSHIP.name())) {
 			isApplicantDocumentVerified = true;
-		}
-
-		else if (applicantType.equalsIgnoreCase(ApplicantType.ADULT.name())
-				&& checkDocumentAvailability(identity, documentList, DocumentCategory.PROOFOFIDENTITY.name())
+		}else if (checkDocumentAvailability(identity, documentList, DocumentCategory.PROOFOFIDENTITY.name())
 				&& checkDocumentAvailability(identity, documentList, DocumentCategory.PROOFOFADDRESS.name()))
 			isApplicantDocumentVerified = true;
 

@@ -54,7 +54,7 @@
 				<setBody>
 					<simple>${bodyAs(String)}</simple>
 				</setBody>
-				<to uri="http://integ.mosip.io/registration-connector/registration-processor/connector/v1.0" />
+				<to uri="https://integ.mosip.io/registration-connector/registration-processor/connector/v1.0" />
 			</when>
 			<when>
 				<simple>${bodyAs(String)} contains '"internalError":true'</simple>
@@ -113,14 +113,14 @@
 			</otherwise>
 		</choice>
 	</route>
-	<route id="osi-validator-->demo-dedupe route">
+	<route id="osi-validator-->external-stage route">
 		<from uri="vertx:o-s-i-validator-bus-out" />
 		<log
-			message="osi-validator-->demo-dedupe route ${bodyAs(String)}" />
+			message="osi-validator-->external-stage route ${bodyAs(String)}" />
 		<choice>
 			<when>
 				<simple>${bodyAs(String)} contains '"isValid":true'</simple>
-				<to uri="vertx:demo-dedupe-bus-in" />
+				<to uri="vertx:external-stage-bus-in" />
 			</when>
 			<when>
 				<simple>${bodyAs(String)} contains '"isValid":false'</simple>
@@ -132,6 +132,24 @@
 			</when>
 			<otherwise>
 				<to uri="vertx:error-bus-in" />
+			</otherwise>
+		</choice>
+	</route>
+	<route id="external-stage-->demo-dedupe route">
+		<from uri="vertx:external-stage-bus-out" />
+		<log
+			message="external-stage-->demo-dedupe route ${bodyAs(String)}" />
+		<choice>
+			<when>
+				<simple>${bodyAs(String)} contains '"isValid":true'</simple>
+				<to uri="vertx:demo-dedupe-bus-in" />
+			</when>
+			<when>
+				<simple>${bodyAs(String)} contains '"internalError":true'</simple>
+				<to uri="vertx:retry" />
+			</when>
+			<otherwise>
+				<to uri="vertx:error" />
 			</otherwise>
 		</choice>
 	</route>
