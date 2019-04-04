@@ -327,7 +327,7 @@ public class BookingService {
 		MainResponseDTO<BookingRegistrationDTO> responseDto = new MainResponseDTO<>();
 		RegistrationBookingEntity entity = new RegistrationBookingEntity();
 		try {
-			/* Getting Status From Demographic */
+			/* Checking Status From Demographic */
 			serviceUtil.callGetStatusRestService(preRegID);
 			entity = bookingDAO.findByPreRegistrationId(preRegID);
 
