@@ -38,14 +38,14 @@
                <children>
                <Label layoutX="57.0" layoutY="41.0" styleClass="higlightedLoginLable" text="%registrationlogin" AnchorPane.leftAnchor="57.0" AnchorPane.topAnchor="41.0" />
                  <Label layoutX="57.0" layoutY="80.0" text="%withusername" />
-      			 <TextField fx:id="userId" layoutX="57.0" layoutY="116.0" promptText="%username" styleClass="loginTextStyle" AnchorPane.leftAnchor="53.0" />
+      			 <TextField fx:id="userId" layoutX="57.0" layoutY="116.0" promptText="%withusername" styleClass="loginTextStyle" AnchorPane.leftAnchor="53.0" />
                   <Button layoutX="52.0" layoutY="171.0" mnemonicParsing="false" onAction="#validateUserId" styleClass="loginSubmitStyle" text="%submit" />
                   <ProgressIndicator fx:id="progressIndicator" visible="false" layoutX="130.0" layoutY="50.0" progress="0.0" />
                </children>
             </AnchorPane>
             <AnchorPane fx:id="credentialsPane" layoutX="37.0" layoutY="188.0" styleClass="loginAnchorPaneExtendedStyle" visible="false">
                <children>
-                <Label layoutX="57.0" layoutY="41.0" styleClass="higlightedLoginLable" text="%registrationlogin" AnchorPane.leftAnchor="57.0" AnchorPane.topAnchor="41.0" />
+                	<Label layoutX="57.0" layoutY="41.0" styleClass="higlightedLoginLable" text="%registrationlogin" AnchorPane.leftAnchor="57.0" AnchorPane.topAnchor="41.0" />
                		<Label layoutX="57.0" layoutY="80.0" text="%withpword" />
       				<PasswordField fx:id="password" layoutX="57.0" layoutY="116.0" promptText="%password" styleClass="loginTextStyle" AnchorPane.leftAnchor="53.0" />
       				<Button layoutX="52.0" layoutY="171.0" mnemonicParsing="false" onAction="#validateCredentials" styleClass="loginSubmitStyle" text="%submit" />
