@@ -70,7 +70,12 @@
 			<artifactId>registration-processor-registration-status-service-impl</artifactId>
 			<version>${registration.status.service.version}</version>
 		</dependency>
-		
+		<dependency>
+			<groupId>io.vertx</groupId>
+			<artifactId>vertx-unit</artifactId>
+			<version>${vertx.version}</version>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 	<dependencyManagement>
 		<dependencies>
@@ -90,6 +95,7 @@
 				<artifactId>h2</artifactId>
 				<version>1.4.195</version>
 			</dependency>
+			
 		</dependencies>
 	</dependencyManagement>
 	<build>
