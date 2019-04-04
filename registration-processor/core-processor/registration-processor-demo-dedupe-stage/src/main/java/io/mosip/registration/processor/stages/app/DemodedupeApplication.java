@@ -2,7 +2,7 @@ package io.mosip.registration.processor.stages.app;
 
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
-import io.mosip.registration.processor.stages.demodedupe.DemodedupeStage;
+import io.mosip.registration.processor.stages.demodedupe.DemoDedupeStage;
 
 public class DemodedupeApplication {
 
@@ -19,7 +19,7 @@ public class DemodedupeApplication {
 				"io.mosip.registration.processor.packet.storage.config", "io.mosip.registration.processor.core.config",
 				"io.mosip.registration.processor.core.kernel.beans");
 		configApplicationContext.refresh();
-		DemodedupeStage demodedupeStage = configApplicationContext.getBean(DemodedupeStage.class);
+		DemoDedupeStage demodedupeStage = configApplicationContext.getBean(DemoDedupeStage.class);
 		demodedupeStage.deployVerticle();
 	
 	}

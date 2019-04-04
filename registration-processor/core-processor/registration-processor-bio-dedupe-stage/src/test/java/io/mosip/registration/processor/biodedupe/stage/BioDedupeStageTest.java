@@ -4,6 +4,7 @@
 package io.mosip.registration.processor.biodedupe.stage;
 
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -28,6 +29,8 @@ public class BioDedupeStageTest {
 
 	@Mock
 	private BioDedupeProcessor bioDedupeProcessor;
+
+	private String stageName = "BioDedupeStage";
 
 	@InjectMocks
 	private BioDedupeStage bioDedupeStage = new BioDedupeStage() {
@@ -57,7 +60,7 @@ public class BioDedupeStageTest {
 	public void testProcess() {
 		MessageDTO result = new MessageDTO();
 		result.setIsValid(true);
-		Mockito.when(bioDedupeProcessor.process(dto)).thenReturn(result);
+		Mockito.when(bioDedupeProcessor.process(any(), any())).thenReturn(result);
 		dto = bioDedupeStage.process(dto);
 		assertTrue(dto.getIsValid());
 	}

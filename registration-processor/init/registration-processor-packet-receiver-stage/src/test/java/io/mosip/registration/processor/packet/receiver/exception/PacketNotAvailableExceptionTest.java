@@ -18,7 +18,6 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.multipart.MultipartFile;
 
-import io.mosip.registration.processor.core.exception.util.PlatformConstants;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.packet.receiver.service.PacketReceiverService;
 
@@ -26,14 +25,15 @@ import io.mosip.registration.processor.packet.receiver.service.PacketReceiverSer
 public class PacketNotAvailableExceptionTest {
 
 	private static final Logger log = LoggerFactory.getLogger(PacketNotAvailableExceptionTest.class);
-
+	private String stageName = "PacketReceiverStage";
 	@Mock
 	private PacketReceiverService<MultipartFile, Boolean> packetHandlerService;
 
 	@Test
 	public void TestPacketNotAvailableException() {
 
-		PacketNotAvailableException ex = new PacketNotAvailableException(PlatformErrorMessages.RPR_PKR_PACKET_NOT_AVAILABLE.getMessage());
+		PacketNotAvailableException ex = new PacketNotAvailableException(
+				PlatformErrorMessages.RPR_PKR_PACKET_NOT_AVAILABLE.getMessage());
 
 		Path path = Paths.get("src/test/resource/Client.zip");
 		String name = "Client.zip";
@@ -47,9 +47,9 @@ public class PacketNotAvailableExceptionTest {
 		}
 		MultipartFile file = new MockMultipartFile(name, originalFileName, contentType, content);
 
-		Mockito.when(packetHandlerService.storePacket(file)).thenThrow(ex);
+		Mockito.when(packetHandlerService.storePacket(file, stageName)).thenThrow(ex);
 		try {
-			packetHandlerService.storePacket(file);
+			packetHandlerService.storePacket(file, stageName);
 			fail();
 		} catch (PacketNotAvailableException e) {
 			assertThat("Should throw packet_not_available exception with correct error codes",

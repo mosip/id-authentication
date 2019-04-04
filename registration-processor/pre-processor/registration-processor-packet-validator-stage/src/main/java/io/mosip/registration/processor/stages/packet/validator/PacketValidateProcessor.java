@@ -40,7 +40,6 @@ import io.mosip.registration.processor.core.code.RegistrationTransactionTypeCode
 import io.mosip.registration.processor.core.constant.JsonConstant;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.constant.PacketFiles;
-import io.mosip.registration.processor.core.constant.RegistrationStageName;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.exception.util.PlatformSuccessMessages;
@@ -173,7 +172,7 @@ public class PacketValidateProcessor {
 	boolean isMasterDataValidation = false;
 	RegistrationExceptionMapperUtil registrationStatusMapperUtil = new RegistrationExceptionMapperUtil();
 
-	public MessageDTO process(MessageDTO object) {
+	public MessageDTO process(MessageDTO object, String stageName) {
 		String preRegId = null;
 		InternalRegistrationStatusDto registrationStatusDto = new InternalRegistrationStatusDto();
 		try {
@@ -190,7 +189,7 @@ public class PacketValidateProcessor {
 			registrationStatusDto = registrationStatusService.getRegistrationStatus(registrationId);
 			registrationStatusDto
 					.setLatestTransactionTypeCode(RegistrationTransactionTypeCode.VALIDATE_PACKET.toString());
-			registrationStatusDto.setRegistrationStageName(RegistrationStageName.PACKET_VALIDATOR_STAGE);
+			registrationStatusDto.setRegistrationStageName(stageName);
 			InputStream packetMetaInfoStream = adapter.getFile(registrationId, PacketFiles.PACKET_META_INFO.name());
 			PacketMetaInfo packetMetaInfo = (PacketMetaInfo) JsonUtil.inputStreamtoJavaObject(packetMetaInfoStream,
 					PacketMetaInfo.class);

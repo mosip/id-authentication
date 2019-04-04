@@ -18,7 +18,7 @@ import io.mosip.registration.processor.core.abstractverticle.MosipVerticleManage
 
 @RefreshScope
 @Service
-public class DemodedupeStage extends MosipVerticleManager {
+public class DemoDedupeStage extends MosipVerticleManager {
 
 	/** The reg proc logger. */
 
@@ -42,8 +42,8 @@ public class DemodedupeStage extends MosipVerticleManager {
 	 * Deploy verticle.
 	 */
 	public void deployVerticle() {
-		MosipEventBus mosipEventBus = this.getEventBus(this,clusterManagerUrl, 50);
-		this.consumeAndSend(mosipEventBus, MessageBusAddress.DEMO_DEDUPE_BUS_IN,MessageBusAddress.DEMO_DEDUPE_BUS_OUT);
+		MosipEventBus mosipEventBus = this.getEventBus(this, clusterManagerUrl, 50);
+		this.consumeAndSend(mosipEventBus, MessageBusAddress.DEMO_DEDUPE_BUS_IN, MessageBusAddress.DEMO_DEDUPE_BUS_OUT);
 	}
 
 	/*
@@ -55,7 +55,7 @@ public class DemodedupeStage extends MosipVerticleManager {
 	 */
 	@Override
 	public MessageDTO process(MessageDTO object) {
-		return demodedupeProcessor.process(object);
+		return demodedupeProcessor.process(object, this.getClass().getSimpleName());
 
 	}
 

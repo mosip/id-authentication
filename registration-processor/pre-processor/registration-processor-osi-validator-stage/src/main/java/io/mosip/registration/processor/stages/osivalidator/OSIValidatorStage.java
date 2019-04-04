@@ -22,7 +22,6 @@ import io.mosip.registration.processor.core.code.RegistrationExceptionTypeCode;
 import io.mosip.registration.processor.core.code.RegistrationTransactionStatusCode;
 import io.mosip.registration.processor.core.code.RegistrationTransactionTypeCode;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
-import io.mosip.registration.processor.core.constant.RegistrationStageName;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.exception.util.PlatformSuccessMessages;
@@ -104,7 +103,7 @@ public class OSIValidatorStage extends MosipVerticleManager {
 				.getRegistrationStatus(registrationId);
 
 		registrationStatusDto.setLatestTransactionTypeCode(RegistrationTransactionTypeCode.OSI_VALIDATE.toString());
-		registrationStatusDto.setRegistrationStageName(RegistrationStageName.OSI_VALIDATOR_STAGE);
+		registrationStatusDto.setRegistrationStageName(this.getClass().getSimpleName());
 		osiValidator.registrationStatusDto = registrationStatusDto;
 		umcValidator.setRegistrationStatusDto(registrationStatusDto);
 		try {
