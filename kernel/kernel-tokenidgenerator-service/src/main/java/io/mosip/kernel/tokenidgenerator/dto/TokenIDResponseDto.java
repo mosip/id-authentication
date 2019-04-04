@@ -17,8 +17,8 @@ import lombok.NoArgsConstructor;
 public class TokenIDResponseDto {
 
 	/**
-	 * The vod
+	 * The tokenid
 	 */
-	private String vid;
+	private String tokenID;
 
 }

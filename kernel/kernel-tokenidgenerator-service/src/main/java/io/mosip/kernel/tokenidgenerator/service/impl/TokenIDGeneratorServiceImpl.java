@@ -31,7 +31,7 @@ public class TokenIDGeneratorServiceImpl implements TokenIDGeneratorService {
 					TokenIDGeneratorErrorCode.EMPTY_UIN_OR_PARTNERCODE_EXCEPTION.getErrorMessage());
 		}
 		TokenIDResponseDto tokenIDResponseDto = new TokenIDResponseDto();
-		tokenIDResponseDto.setVid(tokenIDGenerator.generateTokenID(uin, partnerCode));
+		tokenIDResponseDto.setTokenID(tokenIDGenerator.generateTokenID(uin, partnerCode));
 		return tokenIDResponseDto;
 	}
 }

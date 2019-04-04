@@ -25,7 +25,7 @@ public class TokenIdGeneratorIntegrationTest {
 	@Test
 	public void generateTokenIDTest() throws Exception {
 		TokenIDResponseDto response = new TokenIDResponseDto();
-		response.setVid("123456");
+		response.setTokenID("123456");
 		mockMvc.perform(get("/1234/1234").contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk());
 
 	}
