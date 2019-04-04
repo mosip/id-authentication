@@ -416,7 +416,6 @@ public class PacketHandlerController extends BaseController implements Initializ
 			if (!validateScreenAuthorization(root.getId())) {
 				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.AUTHORIZATION_ERROR);
 			} else {
-				homeController.getMainBox().getChildren().remove(homeController.getMainBox().getChildren().size() - 1);
 				homeController.getMainBox().add(root, 0, 1);
 			}
 		} catch (IOException ioException) {
@@ -452,7 +451,6 @@ public class PacketHandlerController extends BaseController implements Initializ
 			if (!validateScreenAuthorization(uploadRoot.getId())) {
 				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.AUTHORIZATION_ERROR);
 			} else {
-				homeController.getMainBox().getChildren().remove(homeController.getMainBox().getChildren().size() - 1);
 				homeController.getMainBox().add(uploadRoot, 0, 1);
 			}
 		} catch (IOException ioException) {
@@ -504,8 +502,6 @@ public class PacketHandlerController extends BaseController implements Initializ
 							generateAlertLanguageSpecific(RegistrationConstants.ERROR, errorMessage.toString().trim());
 
 						} else {
-							homeController.getMainBox().getChildren()
-									.remove(homeController.getMainBox().getChildren().size() - 1);
 							homeController.getMainBox().add(root, 0, 1);
 						}
 					}
@@ -722,7 +718,6 @@ public class PacketHandlerController extends BaseController implements Initializ
 			LOGGER.info("REGISTRATION - LOAD_REREGISTRATION_SCREEN - REGISTRATION_OFFICER_PACKET_CONTROLLER",
 					APPLICATION_NAME, APPLICATION_ID, "Loading reregistration screen");
 
-			homeController.getMainBox().getChildren().remove(homeController.getMainBox().getChildren().size() - 1);
 			homeController.getMainBox().add(root, 0, 1);
 		} catch (IOException ioException) {
 			LOGGER.error("REGISTRATION - LOAD_REREGISTRATION_SCREEN - REGISTRATION_OFFICER_PACKET_CONTROLLER",

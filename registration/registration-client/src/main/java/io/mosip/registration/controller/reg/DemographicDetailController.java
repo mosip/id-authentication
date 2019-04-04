@@ -1827,7 +1827,6 @@ public class DemographicDetailController extends BaseController {
 				clearRegistrationData();
 				Parent root = BaseController.load(getClass().getResource(RegistrationConstants.HOME_PAGE));
 				Parent uinUpdate = BaseController.load(getClass().getResource(RegistrationConstants.UIN_UPDATE));
-				homeController.getMainBox().getChildren().remove(homeController.getMainBox().getChildren().size() - 1);
 				homeController.getMainBox().add(uinUpdate, 0, 1);
 				getScene(root);
 			} else {
