@@ -30,7 +30,9 @@ public enum PlatformSuccessMessages {
 	RPR_BIO_METRIC_POTENTIAL_MATCH(PlatformConstants.RPR_BIO_DEDUPE_SERVICE_MODULE + "000",
 			"Potential match found while processing bio dedupe"),
 
-	RPR_RE_PROCESS_SUCCESS(PlatformConstants.RPR_REPROCESSOR_STAGE + "000", "Reprocessor Success");
+	RPR_RE_PROCESS_SUCCESS(PlatformConstants.RPR_REPROCESSOR_STAGE + "000", "Reprocessor Success"),
+
+	RPR_SENT_TO_REPROCESS_SUCCESS(PlatformConstants.RPR_REPROCESSOR_STAGE + "001", "sent to reprocess Success");
 
 	/** The success message. */
 	private final String successMessage;

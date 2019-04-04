@@ -104,24 +104,24 @@ public class ReprocessorStage extends MosipVerticleManager {
 		mosipEventBus = this.getEventBus(this, clusterManagerUrl);
 		deployScheduler(mosipEventBus.getEventbus());
 
-		// MessageDTO object = new MessageDTO();
-
-		// process(object);
-
 	}
 
 	/**
 	 * This method deploys the chime scheduler
 	 *
-	 * @param vertx the vertx
+	 * @param vertx
+	 *            the vertx
 	 */
 	private void deployScheduler(Vertx vertx) {
 		vertx.deployVerticle("ceylon:herd.schedule.chime/0.2.0", res -> {
 			if (res.succeeded()) {
-				System.out.println("+++++++++++Scheduler deployed successfully++++++++++++");
+				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
+						LoggerFileConstant.REGISTRATIONID.toString(), "", "ReprocessorStage::schedular()::deployed");
 				cronScheduling(vertx);
 			} else {
-				System.out.println("Failed");
+				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
+						LoggerFileConstant.REGISTRATIONID.toString(), "",
+						"ReprocessorStage::schedular()::deploymemnt failure");
 			}
 		});
 	}
@@ -130,14 +130,15 @@ public class ReprocessorStage extends MosipVerticleManager {
 	 * This method does the cron scheduling by fetchin cron expression from config
 	 * server
 	 *
-	 * @param vertx the vertx
+	 * @param vertx
+	 *            the vertx
 	 */
 	private void cronScheduling(Vertx vertx) {
 
 		EventBus eventBus = vertx.eventBus();
 		// listen the timer events
 		eventBus.consumer(("scheduler:stage_timer"), message -> {
-			System.out.println(((JsonObject) message.body()).encodePrettily());
+			// System.out.println(((JsonObject) message.body()).encodePrettily());
 			process(new MessageDTO());
 		});
 
@@ -153,9 +154,13 @@ public class ReprocessorStage extends MosipVerticleManager {
 		eventBus.send("chime", (new JsonObject()).put("operation", "create").put("name", "scheduler:stage_timer")
 				.put("description", timer), ar -> {
 					if (ar.succeeded()) {
-						System.out.println("Scheduling started: " + ar.result().body());
+						regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
+								LoggerFileConstant.REGISTRATIONID.toString(), "",
+								"ReprocessorStage::schedular()::started");
 					} else {
-						System.out.println("Scheduling failed: " + ar.cause());
+						regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
+								LoggerFileConstant.REGISTRATIONID.toString(), "",
+								"ReprocessorStage::schedular()::failed");
 						vertx.close();
 					}
 				});
@@ -165,8 +170,10 @@ public class ReprocessorStage extends MosipVerticleManager {
 	/**
 	 * Send message.
 	 *
-	 * @param message   the message
-	 * @param toAddress the to address
+	 * @param message
+	 *            the message
+	 * @param toAddress
+	 *            the to address
 	 */
 	public void sendMessage(MessageDTO message, MessageBusAddress toAddress) {
 		this.send(this.mosipEventBus, toAddress, message);
@@ -185,6 +192,8 @@ public class ReprocessorStage extends MosipVerticleManager {
 		List<String> statusList = new ArrayList<>();
 		statusList.add(RegistrationTransactionStatusCode.SUCCESS.toString());
 		statusList.add(RegistrationTransactionStatusCode.REPROCESS.toString());
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), "",
+				"ReprocessorStage::process()::entry");
 		try {
 			Integer totalUnprocessesPackets = registrationStatusService.getUnProcessedPacketsCount(elapseTime,
 					reprocessCount, statusList);
@@ -215,13 +224,23 @@ public class ReprocessorStage extends MosipVerticleManager {
 								: 1;
 						dto.setReProcessRetryCount(reprocessRetryCount);
 						registrationStatusService.updateRegistrationStatus(dto);
-						// if (reprocessRetryCount >= reprocessCount) {
-						// object.setIsValid(false);
-						// }
+
+						description = PlatformSuccessMessages.RPR_SENT_TO_REPROCESS_SUCCESS.getMessage();
+						String eventId = EventId.RPR_402.toString();
+						String eventName = EventName.UPDATE.toString();
+						String eventType = EventType.BUSINESS.toString();
+
+						/** Module-Id can be Both Success/Error code */
+						String moduleId = PlatformSuccessMessages.RPR_SENT_TO_REPROCESS_SUCCESS.getCode();
+						String moduleName = ModuleName.RE_PROCESSOR.toString();
+						auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
+								moduleId, moduleName, registrationId);
 					});
 					totalUnprocessesPackets = totalUnprocessesPackets - fetchSize;
 				}
 			}
+			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					code, "PacketValidatorStage::process()::exit");
 
 		} catch (TablenotAccessibleException e) {
 			isTransactionSuccessful = false;
