@@ -565,10 +565,6 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 	 */
 	private void getRegistrationId(List<FieldValue> metaData) {
 		for (int i = 0; i < metaData.size(); i++) {
-			if ("registrationId".equals(metaData.get(i).getLabel())) {
-				regId = metaData.get(i).getValue();
-
-			}
 			if ("preRegistrationId".equals(metaData.get(i).getLabel())) {
 				preRegId = metaData.get(i).getValue();
 
@@ -625,10 +621,11 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 	 * saveDemographicInfoJson(java.io.InputStream, java.util.List)
 	 */
 	@Override
-	public void saveDemographicInfoJson(byte[] bytes, List<FieldValue> metaData) {
+	public void saveDemographicInfoJson(byte[] bytes,String registrationId, List<FieldValue> metaData) {
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
 				"PacketInfoManagerImpl::saveDemographicInfoJson()::entry");
 		DemographicInfoJson demoJson = new DemographicInfoJson();
+		regId=registrationId;
 		getRegistrationId(metaData);
 		boolean isTransactionSuccessful = false;
 		if (bytes == null)
@@ -640,7 +637,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 			demoJson.setDemographicDetails(bytes);
 			demoJson.setLangCode("eng");
 			demoJson.setPreRegId(preRegId);
-			demoJson.setRegId(regId);
+			demoJson.setRegId(registrationId);
 			demoJson.setStatusCode("DemographicJson saved");
 			ApplicantDemographicInfoJsonEntity entity = PacketInfoMapper.convertDemographicInfoJsonToEntity(demoJson);
 			demographicJsonRepository.save(entity);

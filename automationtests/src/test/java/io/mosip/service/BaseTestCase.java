@@ -44,6 +44,7 @@ public class BaseTestCase {
 	// GLOBAL CLASS VARIABLES
 	private Properties prop;
 	public static String ApplnURI;	
+	public static String authToken;
 	public static String environment;
 	public static String SEPRATOR="";
 	public  static String getOSType(){
@@ -84,12 +85,13 @@ public class BaseTestCase {
 		//	ApplnURI = prop.getProperty("testEnvironment");
 			environment = System.getProperty("env.user");
 			logger.info("Environemnt is  ==== :" +environment);
-			if (environment.equalsIgnoreCase("integration"))
-				ApplnURI="https://integ.mosip.io";
+			ApplnURI="https://" +environment+ ".mosip.io";
+			/*if (environment.equalsIgnoreCase("dev"))
+				ApplnURI="https://dev.mosip.io";
 			if (environment.equalsIgnoreCase("qa"))
-				ApplnURI="https://qa.mosip.io";
-			else
-				ApplnURI="https://integ.mosip.io";
+				ApplnURI="https://qa.mosip.io";*/
+			/*else
+				ApplnURI="https://qa.mosip.io";*/
 			/*environment ="integration";
 			ApplnURI="https://integ.mosip.io";*/
 
@@ -118,6 +120,7 @@ public class BaseTestCase {
 			logger.info("Done with BeforeSuite and test case setup! BEGINNING TEST EXECUTION!\n\n");
 			PreRegistrationLibrary pil=new PreRegistrationLibrary();
 			pil.PreRegistrationResourceIntialize();
+			authToken=pil.getToken();
 			
 		} // End suiteSetup
 

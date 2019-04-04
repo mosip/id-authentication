@@ -1,9 +1,19 @@
 package io.mosip.registration.processor.packet.service.dto;
 
+import java.io.Serializable;
+
+import lombok.Data;
+
 /**
  * @author Sowmya The Class PacketGeneratorDto.
  */
-public class PacketGeneratorDto {
+@Data
+public class PacketGeneratorDto implements Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -1587235057041204701L;
 
 	/** The reason. */
 	private String reason;

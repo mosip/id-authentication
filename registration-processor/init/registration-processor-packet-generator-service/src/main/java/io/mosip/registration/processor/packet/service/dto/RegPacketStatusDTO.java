@@ -1,11 +1,21 @@
 package io.mosip.registration.processor.packet.service.dto;
 
+import java.io.Serializable;
+
+import lombok.Data;
+
 /**
  * The Class RegPacketStatusDTO.
  * 
  * @author Rishab
  */
-public class RegPacketStatusDTO {
+@Data
+public class RegPacketStatusDTO implements Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2877422595155239292L;
 
 	/** The packet id. */
 	private String packetId;

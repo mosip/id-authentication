@@ -166,6 +166,9 @@ public enum ApiName {
 	CENTERDETAILS,
 
 	/** The machinedetails. */
-	MACHINEDETAILS;
+	MACHINEDETAILS, 
+	
+	/** The dummy service. */
+	DUMMYSERVICE;
 
 }

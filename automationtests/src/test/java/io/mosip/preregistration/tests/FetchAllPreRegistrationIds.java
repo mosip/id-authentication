@@ -47,6 +47,7 @@ import io.mosip.service.AssertResponses;
 import io.mosip.service.BaseTestCase;
 import io.mosip.util.CommonLibrary;
 import io.mosip.util.GetHeader;
+import io.mosip.util.PreRegistrationLibrary;
 import io.mosip.util.ReadFolder;
 import io.mosip.util.ResponseRequestMapper;
 import io.restassured.response.Response;
@@ -112,20 +113,21 @@ public class FetchAllPreRegistrationIds extends BaseTestCase implements ITest{
 	
 		List<String> outerKeys = new ArrayList<String>();
 		List<String> innerKeys = new ArrayList<String>();
+		PreRegistrationLibrary lib=new PreRegistrationLibrary();
 		JSONObject actualRequest = ResponseRequestMapper.mapRequest(testSuite, object);
 		Expectedresponse = ResponseRequestMapper.mapResponse(testSuite, object);
 		try {
-			Actualresponse = applicationLibrary.postRequest(actualRequest.toJSONString(), preReg_URI);
+			Actualresponse = applicationLibrary.dataSyncPostRequest(actualRequest.toJSONString(), preReg_URI);
 			
 		} catch (Exception e) {
 			logger.info(e);
 		}
-		String statusCode = Actualresponse.jsonPath().get("status").toString();
+		//String statusCode = Actualresponse.jsonPath().get("status").toString();
 		
 		/**
 		 * Removing dynamic element from actual and expected response
 		 */
-				outerKeys.add("resTime");
+				outerKeys.add("responsetime");
 				innerKeys.add("transactionId");
 				innerKeys.add("preRegistrationIds");
 				innerKeys.add("countOfPreRegIds");
@@ -187,7 +189,7 @@ public class FetchAllPreRegistrationIds extends BaseTestCase implements ITest{
           JSONObject object = (JSONObject) testdata[2];
           testCaseName = object.get("testCaseName").toString();
    
-          preReg_URI = commonLibrary.fetch_IDRepo("preReg_FetchAllPreRegistrationIdsURI");
+          preReg_URI = commonLibrary.fetch_IDRepo().get("preReg_FetchAllPreRegistrationIdsURI");
     }
 
 
