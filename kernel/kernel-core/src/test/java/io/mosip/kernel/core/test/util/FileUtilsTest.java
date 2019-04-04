@@ -5,6 +5,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.doThrow;
 
 import java.io.File;
 
@@ -26,6 +27,10 @@ import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
+import org.junit.runner.RunWith;
+import org.mockito.Mockito;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
 
 import io.mosip.kernel.core.exception.FileExistsException;
 import io.mosip.kernel.core.exception.FileNotFoundException;
@@ -39,7 +44,10 @@ import io.mosip.kernel.core.util.FileUtils;
  * @author Priya Soni
  *
  */
+//@SpringBootTest
+//@RunWith(SpringRunner.class)
 public class FileUtilsTest {
+	
 	FileUtils fileutils;
 
 	@Test
@@ -160,6 +168,13 @@ public class FileUtilsTest {
 		} catch (java.io.IOException e) {
 			throw new IOException(null, null, e.getCause());
 		}
+
+	}
+	
+	@Test(expected = IllegalArgumentException.class)
+	public void cleanDirectoryIOExceptionTest() throws IOException {
+		File dir1 = new File("");
+		FileUtils.cleanDirectory(dir1);
 
 	}
 
