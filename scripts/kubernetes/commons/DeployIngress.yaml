@@ -138,10 +138,11 @@ spec:
         backend:
           serviceName: registration-processor-external-integration-service
           servicePort: 8201
+      - path: /config
+        backend:
+          serviceName: kernel-config-server
+          servicePort: 51000
       - path: /nginx
         backend:
           serviceName: sample-nginx
-          servicePort: 80 
-          
-      
-          
+          servicePort: 80
