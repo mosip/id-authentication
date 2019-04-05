@@ -12,6 +12,10 @@ import org.json.simple.JSONObject;
 import org.springframework.core.env.Environment;
 import org.springframework.web.client.HttpClientErrorException;
 
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -19,6 +23,7 @@ import io.mosip.registration.processor.core.code.ApiName;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
+import io.mosip.registration.processor.core.http.ResponseWrapper;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.JsonValue;
 import io.mosip.registration.processor.core.packet.dto.masterdata.StatusResponseDto;
@@ -167,10 +172,15 @@ public class MasterDataValidation {
 	 * @param value
 	 *            the value
 	 * @return true, if successful
-	 * @throws ApisResourceAccessException
+	 * @throws IOException
+	 * @throws JsonProcessingException
+	 * @throws JsonMappingException
+	 * @throws JsonParseException
 	 */
-	private boolean validateIdentityValues(String key, String value) throws ApisResourceAccessException {
+	@SuppressWarnings("unchecked")
+	private boolean validateIdentityValues(String key, String value) throws JsonParseException, JsonMappingException, JsonProcessingException, IOException, ApisResourceAccessException {
 		StatusResponseDto statusResponseDto;
+		ObjectMapper mapper=new ObjectMapper();
 		boolean isvalidateIdentity = false;
 		if (value != null) {
 			try {
@@ -178,10 +188,10 @@ public class MasterDataValidation {
 				List<String> pathsegmentsEng = new ArrayList<>();
 
 				pathsegmentsEng.add(value);
-
-				statusResponseDto = (StatusResponseDto) registrationProcessorRestService
-						.getApi(ApiName.valueOf(key.toUpperCase()), pathsegmentsEng, "", "", StatusResponseDto.class);
-
+				ResponseWrapper<StatusResponseDto> responseWrapper = new ResponseWrapper<>();
+				responseWrapper =  (ResponseWrapper<StatusResponseDto>) registrationProcessorRestService
+						.getApi(ApiName.valueOf(key.toUpperCase()), pathsegmentsEng, "", "", ResponseWrapper.class);
+				statusResponseDto = mapper.readValue(mapper.writeValueAsString(responseWrapper.getResponse()), StatusResponseDto.class);
 				if (statusResponseDto.getStatus().equalsIgnoreCase(VALID))
 					isvalidateIdentity = true;
 			} catch (ApisResourceAccessException ex) {

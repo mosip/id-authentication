@@ -3,11 +3,12 @@ package io.mosip.registration.processor.message.sender.service.impl;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.json.simple.JSONArray;
@@ -22,13 +23,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.UriComponentsBuilder;
-
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.registration.processor.core.code.ApiName;
 import io.mosip.registration.processor.core.constant.IdType;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
@@ -36,6 +36,8 @@ import io.mosip.registration.processor.core.constant.PacketFiles;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.exception.TemplateProcessingFailureException;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
+import io.mosip.registration.processor.core.http.RequestWrapper;
+import io.mosip.registration.processor.core.http.ResponseWrapper;
 import io.mosip.registration.processor.core.idrepo.dto.IdResponseDTO;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.notification.template.generator.dto.ResponseDto;
@@ -119,6 +121,11 @@ public class MessageNotificationServiceImpl
 	/** The phone number. */
 	private String phoneNumber;
 
+	private static final String SMS_SERVICE_ID = "mosip.registration.processor.sms.id";
+	private static final String REG_PROC_APPLICATION_VERSION = "mosip.registration.processor.application.version";
+	private static final String DATETIME_PATTERN = "mosip.registration.processor.datetime.pattern";
+	private ObjectMapper mapper = new ObjectMapper();
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -132,11 +139,13 @@ public class MessageNotificationServiceImpl
 			Map<String, Object> attributes, String regType) throws ApisResourceAccessException, IOException {
 		SmsResponseDto response = null;
 		SmsRequestDto smsDto = new SmsRequestDto();
+		RequestWrapper<SmsRequestDto> requestWrapper = new RequestWrapper<>();
+		ResponseWrapper<?> responseWrapper;
+
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), id,
 				"MessageNotificationServiceImpl::sendSmsNotification()::entry");
 		try {
 			setAttributes(id, idType, attributes, regType);
-
 			InputStream in = templateGenerator.getTemplate(templateTypeCode, attributes, langCode);
 			String artifact = IOUtils.toString(in, ENCODING);
 
@@ -146,8 +155,17 @@ public class MessageNotificationServiceImpl
 			smsDto.setNumber(phoneNumber);
 			smsDto.setMessage(artifact);
 
-			response = (SmsResponseDto) restClientService.postApi(ApiName.SMSNOTIFIER, "", "", smsDto,
-					SmsResponseDto.class);
+			requestWrapper.setId(env.getProperty(SMS_SERVICE_ID));
+			requestWrapper.setVersion(env.getProperty(REG_PROC_APPLICATION_VERSION));
+			DateTimeFormatter format = DateTimeFormatter.ofPattern(env.getProperty(DATETIME_PATTERN));
+			LocalDateTime localdatetime = LocalDateTime
+					.parse(DateUtils.getUTCCurrentDateTimeString(env.getProperty(DATETIME_PATTERN)), format);
+			requestWrapper.setRequesttime(localdatetime);
+			requestWrapper.setRequest(smsDto);
+
+			responseWrapper = (ResponseWrapper<?>) restClientService.postApi(ApiName.SMSNOTIFIER, "", "",
+					requestWrapper, ResponseWrapper.class);
+			response = mapper.readValue(mapper.writeValueAsString(responseWrapper.getResponse()), SmsResponseDto.class);
 
 		} catch (TemplateNotFoundException | TemplateProcessingFailureException e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
@@ -223,7 +241,8 @@ public class MessageNotificationServiceImpl
 	private ResponseDto sendEmail(String[] mailTo, String[] mailCc, String subject, String artifact,
 			MultipartFile[] attachment) throws Exception {
 		LinkedMultiValueMap<String, Object> params = new LinkedMultiValueMap<>();
-
+		ResponseWrapper<?> responseWrapper;
+		ResponseDto responseDto = null;
 		String apiHost = env.getProperty(ApiName.EMAILNOTIFIER.name());
 		UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(apiHost);
 
@@ -246,10 +265,11 @@ public class MessageNotificationServiceImpl
 		headers.setContentType(MediaType.MULTIPART_FORM_DATA);
 
 		HttpEntity<LinkedMultiValueMap<String, Object>> requestEntity = new HttpEntity<>(params, headers);
+		responseWrapper = (ResponseWrapper<?>) resclient.postApi(builder.build().toUriString(), requestEntity,
+				ResponseWrapper.class);
+		responseDto = mapper.readValue(mapper.writeValueAsString(responseWrapper.getResponse()), ResponseDto.class);
 
-		Object response = resclient.postApi(builder.build().toUriString(), requestEntity, ResponseDto.class);
-
-		return (ResponseDto) response;
+		return responseDto;
 	}
 
 	/**
@@ -270,7 +290,7 @@ public class MessageNotificationServiceImpl
 	private Map<String, Object> setAttributes(String id, IdType idType, Map<String, Object> attributes, String regType)
 			throws IOException {
 		InputStream demographicInfoStream = null;
-		Integer uin = null;
+		Long uin = null;
 		if (idType.toString().equalsIgnoreCase(UIN)) {
 			InputStream idJsonStream = adapter.getFile(id,
 					PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR + PacketFiles.ID.name());
@@ -278,7 +298,8 @@ public class MessageNotificationServiceImpl
 			JSONObject identityJson = JsonUtil.objectMapperReadValue(getJsonStringFromBytes, JSONObject.class);
 			JSONObject demographicIdentity = JsonUtil.getJSONObject(identityJson,
 					utility.getGetRegProcessorDemographicIdentity());
-			uin = JsonUtil.getJSONValue(demographicIdentity, UIN);
+			Number num = JsonUtil.getJSONValue(demographicIdentity, UIN);
+			uin = num.longValue();
 			attributes.put("RID", id);
 			attributes.put("UIN", uin);
 		} else {
@@ -312,11 +333,10 @@ public class MessageNotificationServiceImpl
 	 *             Signals that an I/O exception has occurred.
 	 */
 	@SuppressWarnings("rawtypes")
-	private Map<String, Object> setAttributesFromIdRepo(Integer uin, Map<String, Object> attributes, String regType)
+	private Map<String, Object> setAttributesFromIdRepo(Long uin, Map<String, Object> attributes, String regType)
 			throws IOException {
 		List<String> pathsegments = new ArrayList<>();
 		pathsegments.add(uin.toString());
-
 		IdResponseDTO response = null;
 		try {
 			response = (IdResponseDTO) restClientService.getApi(ApiName.IDREPOSITORY, pathsegments, "", "",

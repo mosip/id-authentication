@@ -33,7 +33,9 @@ public class RegistrationCenterDeviceHistoryDto {
 	/**
 	 * Field to hold Effective Date and time
 	 */
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
-	private LocalDateTime effectivetimes;
+//	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+	private String effectivetimes;
+	
+	private String langCode;
 
 }

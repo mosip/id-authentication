@@ -32,6 +32,7 @@ import io.mosip.registration.processor.core.code.ApiName;
 import io.mosip.registration.processor.core.code.EventId;
 import io.mosip.registration.processor.core.code.EventName;
 import io.mosip.registration.processor.core.code.EventType;
+import io.mosip.registration.processor.core.http.ResponseWrapper;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.core.util.JsonUtil;
@@ -111,8 +112,8 @@ public class OSIValidatorStageTest {
 		Field auditLog = AuditLogRequestBuilder.class.getDeclaredField("registrationProcessorRestService");
 		auditLog.setAccessible(true);
 		auditLog.set(auditLogRequestBuilder, mockObj);
-		AuditResponseDto auditResponseDto = new AuditResponseDto();
-		Mockito.doReturn(auditResponseDto).when(auditLogRequestBuilder).createAuditRequestBuilder(
+		ResponseWrapper<AuditResponseDto> responseWrapper = new ResponseWrapper<>();
+		Mockito.doReturn(responseWrapper).when(auditLogRequestBuilder).createAuditRequestBuilder(
 				"test case description", EventId.RPR_401.toString(), EventName.ADD.toString(),
 				EventType.BUSINESS.toString(), "1234testcase", ApiName.AUDIT);
 

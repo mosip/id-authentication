@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 
 import io.mosip.kernel.core.exception.ExceptionUtils;
@@ -17,9 +19,11 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.exception.JsonMappingException;
 import io.mosip.kernel.core.util.exception.JsonParseException;
 import io.mosip.registration.processor.core.code.ApiName;
+import io.mosip.registration.processor.core.common.rest.dto.ErrorDTO;
 import io.mosip.registration.processor.core.constant.JsonConstant;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
+import io.mosip.registration.processor.core.http.ResponseWrapper;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.packet.dto.FieldValue;
 import io.mosip.registration.processor.core.packet.dto.Identity;
@@ -27,7 +31,6 @@ import io.mosip.registration.processor.core.packet.dto.RegOsiDto;
 import io.mosip.registration.processor.core.packet.dto.RegistrationCenterMachineDto;
 import io.mosip.registration.processor.core.packet.dto.regcentermachine.DeviceHistoryDto;
 import io.mosip.registration.processor.core.packet.dto.regcentermachine.DeviceHistoryResponseDto;
-import io.mosip.registration.processor.core.packet.dto.regcentermachine.ErrorDTO;
 import io.mosip.registration.processor.core.packet.dto.regcentermachine.MachineHistoryDto;
 import io.mosip.registration.processor.core.packet.dto.regcentermachine.MachineHistoryResponseDto;
 import io.mosip.registration.processor.core.packet.dto.regcentermachine.RegistartionCenterTimestampResponseDto;
@@ -92,6 +95,8 @@ public class UMCValidator {
 
 	private static final String IS_DEVICE_MAPPED_WITH_CENTER = "no center found for device : ";
 
+	ObjectMapper mapper=new ObjectMapper();
+
 	/** The identity. */
 	Identity identity;
 
@@ -111,48 +116,59 @@ public class UMCValidator {
 	 * @return true, if successful
 	 * @throws ApisResourceAccessException
 	 *             the apis resource access exception
+	 * @throws IOException
+	 * @throws JsonProcessingException
+	 * @throws com.fasterxml.jackson.databind.JsonMappingException
+	 * @throws com.fasterxml.jackson.core.JsonParseException
+
 	 */
-	private boolean isValidRegistrationCenter(String registrationCenterId, String langCode, String effectiveDate)
-			throws ApisResourceAccessException {
-		boolean activeRegCenter = false;
-		List<String> pathsegments = new ArrayList<>();
-		pathsegments.add(registrationCenterId);
-		pathsegments.add(langCode);
-		pathsegments.add(effectiveDate);
-		RegistrationCenterResponseDto rcpdto;
-		try {
-			rcpdto = (RegistrationCenterResponseDto) registrationProcessorRestService.getApi(ApiName.CENTERHISTORY,
-					pathsegments, "", "", RegistrationCenterResponseDto.class);
+	@SuppressWarnings("unchecked")
+    private boolean isValidRegistrationCenter(String registrationCenterId, String langCode, String effectiveDate) throws ApisResourceAccessException, IOException {
+          boolean activeRegCenter = false;
+          List<String> pathsegments = new ArrayList<>();
+          pathsegments.add(registrationCenterId);
+          pathsegments.add(langCode);
+          pathsegments.add(effectiveDate);
+          RegistrationCenterResponseDto rcpdto=null;
+          ResponseWrapper<?> responseWrapper=null;
 
-			if (rcpdto.getErrors() == null) {
-				activeRegCenter = rcpdto.getRegistrationCentersHistory().get(0).getIsActive();
-				if (!activeRegCenter) {
-					this.registrationStatusDto.setStatusComment(StatusMessage.CENTER_NOT_ACTIVE);
-				}
-			} else {
-				ErrorDTO error = rcpdto.getErrors().get(0);
-				this.registrationStatusDto.setStatusComment(error.getErrorMessage());
-			}
+          try {
+        	  responseWrapper = (ResponseWrapper<?>) registrationProcessorRestService.getApi(ApiName.CENTERHISTORY,
+                              pathsegments, "", "", ResponseWrapper.class);
+        	  rcpdto = mapper.readValue(mapper.writeValueAsString(responseWrapper.getResponse()), RegistrationCenterResponseDto.class);
 
-		} catch (ApisResourceAccessException e) {
-			if (e.getCause() instanceof HttpClientErrorException) {
-				HttpClientErrorException httpClientException = (HttpClientErrorException) e.getCause();
-				String result = httpClientException.getResponseBodyAsString();
-				Gson gsonObj = new Gson();
-				rcpdto = gsonObj.fromJson(result, RegistrationCenterResponseDto.class);
-				ErrorDTO error = rcpdto.getErrors().get(0);
-				activeRegCenter = false;
+                 if(responseWrapper.getErrors()==null) {
+                       activeRegCenter = rcpdto.getRegistrationCentersHistory().get(0).getIsActive();
+                       if (!activeRegCenter) {
+                       this.registrationStatusDto.setStatusComment(StatusMessage.CENTER_NOT_ACTIVE);
+                       }
+                 }else {
+                	 List<ErrorDTO> error = responseWrapper.getErrors();
+	               	    this.registrationStatusDto.setStatusComment(error.get(0).getMessage());
+                 }
 
-				this.registrationStatusDto.setStatusComment(error.getErrorMessage());
+
+          } catch (ApisResourceAccessException e) {
+                 if (e.getCause() instanceof HttpClientErrorException) {
+                       HttpClientErrorException httpClientException = (HttpClientErrorException) e.getCause();
+                       String result = httpClientException.getResponseBodyAsString();
+                       Gson gsonObj = new Gson();
+                       rcpdto = gsonObj.fromJson(result, RegistrationCenterResponseDto.class);
+                    //   ErrorDTO error = rcpdto.getErrors().get(0);
+                       List<ErrorDTO> error = responseWrapper.getErrors();
+                       activeRegCenter = false;
+
+                       this.registrationStatusDto.setStatusComment(error.get(0).getMessage());
 
 			} else {
 				throw e;
 			}
 
-		}
-		return activeRegCenter;
+          }
+          return activeRegCenter;
 
-	}
+    }
+
 
 	/**
 	 * Validate machine.
@@ -166,9 +182,14 @@ public class UMCValidator {
 	 * @return true, if successful
 	 * @throws ApisResourceAccessException
 	 *             the apis resource access exception
+	 * @throws IOException
+	 * @throws JsonProcessingException
+	 * @throws com.fasterxml.jackson.databind.JsonMappingException
+	 * @throws com.fasterxml.jackson.core.JsonParseException
 	 */
+	@SuppressWarnings("unchecked")
 	private boolean isValidMachine(String machineId, String langCode, String effdatetimes)
-			throws ApisResourceAccessException {
+			throws ApisResourceAccessException, IOException {
 
 		boolean isActiveMachine = false;
 
@@ -177,12 +198,14 @@ public class UMCValidator {
 		pathsegments.add(langCode);
 		pathsegments.add(effdatetimes);
 		MachineHistoryResponseDto mhrdto;
+		 ResponseWrapper<?> responseWrapper = new ResponseWrapper<>();
 		try {
-			mhrdto = (MachineHistoryResponseDto) registrationProcessorRestService.getApi(ApiName.MACHINEHISTORY,
-					pathsegments, "", "", MachineHistoryResponseDto.class);
+			responseWrapper = (ResponseWrapper<?>) registrationProcessorRestService.getApi(ApiName.MACHINEHISTORY,
+					pathsegments, "", "", ResponseWrapper.class);
+			mhrdto = mapper.readValue(mapper.writeValueAsString(responseWrapper.getResponse()), MachineHistoryResponseDto.class);
 
-			if (mhrdto.getErrors() == null) {
-				MachineHistoryDto dto = mhrdto.getMachineHistoryDetails().get(0);
+			if(responseWrapper.getErrors()==null) {
+			MachineHistoryDto dto =mhrdto.getMachineHistoryDetails().get(0);
 
 				if (dto.getId() != null && dto.getId().matches(machineId)) {
 					isActiveMachine = dto.getIsActive();
@@ -190,12 +213,12 @@ public class UMCValidator {
 						this.registrationStatusDto.setStatusComment(StatusMessage.MACHINE_NOT_ACTIVE);
 					}
 
-				} else {
-					this.registrationStatusDto.setStatusComment(StatusMessage.MACHINE_ID_NOT_FOUND);
-				}
 			} else {
-				ErrorDTO error = mhrdto.getErrors().get(0);
-				this.registrationStatusDto.setStatusComment(error.getErrorMessage());
+				this.registrationStatusDto.setStatusComment(StatusMessage.MACHINE_ID_NOT_FOUND);
+			    }
+			}else {
+				List<ErrorDTO> error = responseWrapper.getErrors();
+           	    this.registrationStatusDto.setStatusComment(error.get(0).getMessage());
 			}
 		} catch (ApisResourceAccessException e) {
 			if (e.getCause() instanceof HttpClientErrorException) {
@@ -203,11 +226,9 @@ public class UMCValidator {
 				String result = httpClientException.getResponseBodyAsString();
 				Gson gsonObj = new Gson();
 				mhrdto = gsonObj.fromJson(result, MachineHistoryResponseDto.class);
-				ErrorDTO error = mhrdto.getErrors().get(0);
+				List<ErrorDTO> error = responseWrapper.getErrors();
+           	    this.registrationStatusDto.setStatusComment(error.get(0).getMessage());
 				isActiveMachine = false;
-
-				this.registrationStatusDto.setStatusComment(error.getErrorMessage());
-
 			} else {
 				throw e;
 			}
@@ -232,9 +253,10 @@ public class UMCValidator {
 	 * @return true, if successful
 	 * @throws ApisResourceAccessException
 	 *             the apis resource access exception
+	 * @throws IOException
 	 */
 	private boolean isValidUMCmapping(String effectiveTimestamp, String registrationCenterId, String machineId,
-			String superviserId, String officerId) throws ApisResourceAccessException {
+			String superviserId, String officerId) throws ApisResourceAccessException, IOException {
 
 		boolean supervisorActive = false;
 		boolean officerActive = false;
@@ -258,19 +280,26 @@ public class UMCValidator {
 		return supervisorActive || officerActive;
 	}
 
-	private boolean validateMapping(List<String> pathsegments) throws ApisResourceAccessException {
+
+
+
+
+	private boolean validateMapping(List<String> pathsegments) throws  IOException, ApisResourceAccessException {
 		boolean isValidUser = false;
+		ResponseWrapper<?> responseWrapper = new ResponseWrapper<>();
+		RegistrationCenterUserMachineMappingHistoryResponseDto userDto =null;
 		try {
-			RegistrationCenterUserMachineMappingHistoryResponseDto userDto = (RegistrationCenterUserMachineMappingHistoryResponseDto) registrationProcessorRestService
+			responseWrapper = (ResponseWrapper<?>)registrationProcessorRestService
 					.getApi(ApiName.CENTERUSERMACHINEHISTORY, pathsegments, "", "",
-							RegistrationCenterUserMachineMappingHistoryResponseDto.class);
-			if (userDto != null) {
-				if (userDto.getErrors() == null) {
-					isValidUser = userDto.getRegistrationCenters().get(0).getIsActive();
-				} else {
-					ErrorDTO error = userDto.getErrors().get(0);
-					this.registrationStatusDto.setStatusComment(error.getErrorMessage());
-				}
+							ResponseWrapper.class);
+			userDto = mapper.readValue(mapper.writeValueAsString(responseWrapper.getResponse()), RegistrationCenterUserMachineMappingHistoryResponseDto.class);
+			if(userDto != null) {
+			if(responseWrapper.getErrors() == null) {
+				isValidUser = userDto.getRegistrationCenters().get(0).getIsActive();
+			}else {
+				List<ErrorDTO> error = responseWrapper.getErrors();
+           	    this.registrationStatusDto.setStatusComment(error.get(0).getMessage());
+			}
 			}
 		} catch (ApisResourceAccessException e) {
 			if (e.getCause() instanceof HttpClientErrorException) {
@@ -422,8 +451,9 @@ public class UMCValidator {
 	 * @return true, if is valid device
 	 * @throws ApisResourceAccessException
 	 *             the apis resource access exception
+	 * @throws IOException
 	 */
-	private boolean isValidDevice(RegistrationCenterMachineDto rcmDto) throws ApisResourceAccessException {
+	private boolean isValidDevice(RegistrationCenterMachineDto rcmDto) throws ApisResourceAccessException, IOException {
 		boolean isValidDevice = false;
 		if (isDeviceActive(rcmDto) && isDeviceMappedWithCenter(rcmDto)) {
 			isValidDevice = true;
@@ -439,64 +469,69 @@ public class UMCValidator {
 	 * @return true, if is device mapped with center
 	 * @throws ApisResourceAccessException
 	 *             the apis resource access exception
+	 * @throws IOException
+	 * @throws JsonProcessingException
+	 * @throws com.fasterxml.jackson.databind.JsonMappingException
+	 * @throws com.fasterxml.jackson.core.JsonParseException
 	 */
-	private boolean isDeviceMappedWithCenter(RegistrationCenterMachineDto rcmDto) throws ApisResourceAccessException {
+
+	private boolean isDeviceMappedWithCenter(RegistrationCenterMachineDto rcmDto) throws ApisResourceAccessException, IOException {
 		boolean isDeviceMappedWithCenter = false;
 		List<FieldValue> registreredDeviceIds = identity.getCapturedRegisteredDevices();
-		if (registreredDeviceIds != null && !registreredDeviceIds.isEmpty()) {
-			for (FieldValue fieldValue : registreredDeviceIds) {
-				String deviceId = null;
-				deviceId = fieldValue.getValue();
-				RegistrationCenterDeviceHistoryResponseDto registrationCenterDeviceHistoryResponseDto;
-				try {
-					List<String> pathsegments = new ArrayList<>();
-					pathsegments.add(rcmDto.getRegcntrId());
-					pathsegments.add(deviceId);
-					pathsegments.add(rcmDto.getPacketCreationDate());
+		if(registreredDeviceIds!=null && !registreredDeviceIds.isEmpty()) {
+		for (FieldValue fieldValue : registreredDeviceIds) {
+			String deviceId = null;
+			deviceId = fieldValue.getValue();
+			ResponseWrapper<?> responseWrapper = new ResponseWrapper<>();
+			RegistrationCenterDeviceHistoryResponseDto registrationCenterDeviceHistoryResponseDto;
+			try {
+				List<String> pathsegments = new ArrayList<>();
+				pathsegments.add(rcmDto.getRegcntrId());
+				pathsegments.add(deviceId);
+				pathsegments.add(rcmDto.getPacketCreationDate());
 
-					registrationCenterDeviceHistoryResponseDto = (RegistrationCenterDeviceHistoryResponseDto) registrationProcessorRestService
-							.getApi(ApiName.REGISTRATIONCENTERDEVICEHISTORY, pathsegments, "", "",
-									RegistrationCenterDeviceHistoryResponseDto.class);
-					if (registrationCenterDeviceHistoryResponseDto.getErrors() == null) {
-						isDeviceMappedWithCenter = validateDeviceMappedWithCenterResponse(
-								registrationCenterDeviceHistoryResponseDto, deviceId, rcmDto.getRegcntrId(),
-								rcmDto.getRegId());
-						if (!isDeviceMappedWithCenter) {
-							registrationStatusDto.setStatusComment(
-									StatusMessage.OSI_VALIDATION_FAILURE + IS_DEVICE_MAPPED_WITH_CENTER + deviceId);
-							break;
-						}
-					} else {
-						isDeviceMappedWithCenter = false;
-						ErrorDTO error = registrationCenterDeviceHistoryResponseDto.getErrors().get(0);
-						this.registrationStatusDto.setStatusComment(error.getErrorMessage());
-						break;
-					}
-				} catch (ApisResourceAccessException e) {
-					if (e.getCause() instanceof HttpClientErrorException) {
-						HttpClientErrorException httpClientException = (HttpClientErrorException) e.getCause();
-						String result = httpClientException.getResponseBodyAsString();
-						Gson gsonObj = new Gson();
-						registrationCenterDeviceHistoryResponseDto = gsonObj.fromJson(result,
-								RegistrationCenterDeviceHistoryResponseDto.class);
-						ErrorDTO error = registrationCenterDeviceHistoryResponseDto.getErrors().get(0);
-						isDeviceMappedWithCenter = false;
-						if (error.getErrorCode().equalsIgnoreCase("KER-MSD-133")) {
-							this.registrationStatusDto.setStatusComment(StatusMessage.DEVICE_ID + " " + deviceId
-									+ StatusMessage.CENTER_ID + " " + rcmDto.getRegcntrId()
-									+ StatusMessage.DEVICE_NOT_FOUND + " " + rcmDto.getRegId());
-						} else {
-							this.registrationStatusDto.setStatusComment(error.getErrorMessage());
-						}
-					} else {
-						throw e;
-					}
-					break;
+				responseWrapper = (ResponseWrapper<?>)  registrationProcessorRestService
+						.getApi(ApiName.REGISTRATIONCENTERDEVICEHISTORY, pathsegments, "", "",
+								ResponseWrapper.class);
+				registrationCenterDeviceHistoryResponseDto = mapper.readValue(mapper.writeValueAsString(responseWrapper.getResponse()), RegistrationCenterDeviceHistoryResponseDto.class);
+				if(responseWrapper.getErrors()==null) {
+				  isDeviceMappedWithCenter = validateDeviceMappedWithCenterResponse(
+						registrationCenterDeviceHistoryResponseDto, deviceId, rcmDto.getRegcntrId(), rcmDto.getRegId());
+                 if(!isDeviceMappedWithCenter) {
+	                 registrationStatusDto.setStatusComment(StatusMessage.OSI_VALIDATION_FAILURE+IS_DEVICE_MAPPED_WITH_CENTER+deviceId);
+	                 break;
+                   }
+				}else {
+					    isDeviceMappedWithCenter=false;
+					    List<ErrorDTO> error = responseWrapper.getErrors();
+	               	    this.registrationStatusDto.setStatusComment(error.get(0).getMessage());
+	               	    break;
 				}
+			} catch (ApisResourceAccessException e) {
+				if (e.getCause() instanceof HttpClientErrorException) {
+					HttpClientErrorException httpClientException = (HttpClientErrorException) e.getCause();
+					String result = httpClientException.getResponseBodyAsString();
+					Gson gsonObj = new Gson();
+					registrationCenterDeviceHistoryResponseDto = gsonObj.fromJson(result,
+							RegistrationCenterDeviceHistoryResponseDto.class);
+					List<ErrorDTO> error = responseWrapper.getErrors();
+					isDeviceMappedWithCenter = false;
+					if (error.get(0).getErrorcode().equalsIgnoreCase("KER-MSD-133")) {
+						this.registrationStatusDto.setStatusComment(StatusMessage.DEVICE_ID + " " + deviceId
+								+ StatusMessage.CENTER_ID + " " + rcmDto.getRegcntrId() + StatusMessage.DEVICE_NOT_FOUND
+								+ " " + rcmDto.getRegId());
+					} else {
+						this.registrationStatusDto.setStatusComment(error.get(0).getErrorcode());
+					}
+				}  else {
+                    throw e;
+                }
+				break;
 			}
-		} else {
-			isDeviceMappedWithCenter = true;
 		}
+	}else {
+		isDeviceMappedWithCenter=true;
+	}
 		return isDeviceMappedWithCenter;
 	}
 
@@ -532,56 +567,63 @@ public class UMCValidator {
 	 * @param rcmDto
 	 *            the rcm dto
 	 * @return true, if is device active
+	 * @throws IOException
+	 * @throws JsonProcessingException
+	 * @throws com.fasterxml.jackson.databind.JsonMappingException
+	 * @throws com.fasterxml.jackson.core.JsonParseException
 	 * @throws ApisResourceAccessException
 	 *             the apis resource access exception
 	 */
-	private boolean isDeviceActive(RegistrationCenterMachineDto rcmDto) throws ApisResourceAccessException {
+
+
+	private boolean isDeviceActive(RegistrationCenterMachineDto rcmDto) throws JsonProcessingException, IOException, ApisResourceAccessException {
 		boolean isDeviceActive = false;
 
+
 		List<FieldValue> registreredDeviceIds = identity.getCapturedRegisteredDevices();
-		if (registreredDeviceIds != null && !registreredDeviceIds.isEmpty()) {
-			for (FieldValue fieldValue : registreredDeviceIds) {
-				String deviceId = null;
-				deviceId = fieldValue.getValue();
-				DeviceHistoryResponseDto deviceHistoryResponsedto;
-				try {
-					List<String> pathsegments = new ArrayList<>();
+		if(registreredDeviceIds!=null && !registreredDeviceIds.isEmpty()) {
+		for (FieldValue fieldValue : registreredDeviceIds) {
+			String deviceId = null;
+			deviceId = fieldValue.getValue();
+			DeviceHistoryResponseDto deviceHistoryResponsedto;
+			ResponseWrapper<?> responseWrapper = new ResponseWrapper<>();
+			try {
+				List<String> pathsegments = new ArrayList<>();
 
-					pathsegments.add(deviceId);
-					pathsegments.add(primaryLanguagecode);
-					pathsegments.add(rcmDto.getPacketCreationDate());
+				pathsegments.add(deviceId);
+				pathsegments.add(primaryLanguagecode);
+				pathsegments.add(rcmDto.getPacketCreationDate());
+						responseWrapper = (ResponseWrapper<?>) registrationProcessorRestService
+						.getApi(ApiName.DEVICESHISTORIES, pathsegments, "", "", ResponseWrapper.class);
+			deviceHistoryResponsedto = mapper.readValue(mapper.writeValueAsString(responseWrapper.getResponse()), DeviceHistoryResponseDto.class);
+               if(deviceHistoryResponsedto.getErrors()==null) {
+				isDeviceActive = validateDeviceResponse(deviceHistoryResponsedto, deviceId, rcmDto.getRegId());
+				  if(!isDeviceActive) {
+					registrationStatusDto.setStatusComment(StatusMessage.OSI_VALIDATION_FAILURE+NO_DEVICE_HISTORY_FOUND+deviceId);
+					break;
 
-					deviceHistoryResponsedto = (DeviceHistoryResponseDto) registrationProcessorRestService
-							.getApi(ApiName.DEVICESHISTORIES, pathsegments, "", "", DeviceHistoryResponseDto.class);
-					if (deviceHistoryResponsedto.getErrors() == null) {
-						isDeviceActive = validateDeviceResponse(deviceHistoryResponsedto, deviceId, rcmDto.getRegId());
-						if (!isDeviceActive) {
-							registrationStatusDto.setStatusComment(
-									StatusMessage.OSI_VALIDATION_FAILURE + NO_DEVICE_HISTORY_FOUND + deviceId);
-							break;
+				}
+               }else {
+            	    isDeviceActive=false;
+            	    List<ErrorDTO> error = responseWrapper.getErrors();
+               	    this.registrationStatusDto.setStatusComment(error.get(0).getMessage());
+               	    break;
+               }
 
-						}
+			} catch (ApisResourceAccessException e) {
+				if (e.getCause() instanceof HttpClientErrorException) {
+					HttpClientErrorException httpClientException = (HttpClientErrorException) e.getCause();
+					String result = httpClientException.getResponseBodyAsString();
+					Gson gsonObj = new Gson();
+					deviceHistoryResponsedto = gsonObj.fromJson(result, DeviceHistoryResponseDto.class);
+					  List<ErrorDTO> error = responseWrapper.getErrors();
+					isDeviceActive = false;
+					if (error.get(0).getErrorcode().equalsIgnoreCase("KER-MSD-129")) {
+						this.registrationStatusDto.setStatusComment(StatusMessage.DEVICE_ID + " " + deviceId
+								+ StatusMessage.DEVICE_NOT_FOUND + " " + rcmDto.getRegId());
 					} else {
-						isDeviceActive = false;
-						ErrorDTO error = deviceHistoryResponsedto.getErrors().get(0);
-						this.registrationStatusDto.setStatusComment(error.getErrorMessage());
-						break;
+						this.registrationStatusDto.setStatusComment(error.get(0).getErrorcode());
 					}
-
-				} catch (ApisResourceAccessException e) {
-					if (e.getCause() instanceof HttpClientErrorException) {
-						HttpClientErrorException httpClientException = (HttpClientErrorException) e.getCause();
-						String result = httpClientException.getResponseBodyAsString();
-						Gson gsonObj = new Gson();
-						deviceHistoryResponsedto = gsonObj.fromJson(result, DeviceHistoryResponseDto.class);
-						ErrorDTO error = deviceHistoryResponsedto.getErrors().get(0);
-						isDeviceActive = false;
-						if (error.getErrorCode().equalsIgnoreCase("KER-MSD-129")) {
-							this.registrationStatusDto.setStatusComment(StatusMessage.DEVICE_ID + " " + deviceId
-									+ StatusMessage.DEVICE_NOT_FOUND + " " + rcmDto.getRegId());
-						} else {
-							this.registrationStatusDto.setStatusComment(error.getErrorMessage());
-						}
 
 					} else {
 						throw e;
@@ -635,11 +677,16 @@ public class UMCValidator {
 	 * @return true, if is valid center id timestamp
 	 * @throws ApisResourceAccessException
 	 *             the apis resource access exception
+	 * @throws IOException
+	 * @throws JsonProcessingException
+	 * @throws com.fasterxml.jackson.databind.JsonMappingException
+	 * @throws com.fasterxml.jackson.core.JsonParseException
 	 * @throws UMCValidationException
 	 * 
 	 */
+
 	private boolean validateCenterIdAndTimestamp(RegistrationCenterMachineDto rcmDto)
-			throws ApisResourceAccessException {
+			throws ApisResourceAccessException, IOException {
 		boolean isValid = false;
 		try {
 			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
@@ -648,12 +695,15 @@ public class UMCValidator {
 			pathsegments.add(rcmDto.getRegcntrId());
 			pathsegments.add(primaryLanguagecode);
 			pathsegments.add(rcmDto.getPacketCreationDate());
-
-			RegistartionCenterTimestampResponseDto result = (RegistartionCenterTimestampResponseDto) registrationProcessorRestService
+			RegistartionCenterTimestampResponseDto result;
+			ResponseWrapper<?> responseWrapper = new ResponseWrapper<>();
+			responseWrapper = (ResponseWrapper<?>) registrationProcessorRestService
 					.getApi(ApiName.REGISTRATIONCENTERTIMESTAMP, pathsegments, "", "",
-							RegistartionCenterTimestampResponseDto.class);
+							ResponseWrapper.class);
 
-			if (result.getErrors() == null) {
+			result = mapper.readValue(mapper.writeValueAsString(responseWrapper.getResponse()), RegistartionCenterTimestampResponseDto.class);
+
+			if (responseWrapper.getErrors() == null) {
 				if (result.getStatus().equals(VALID)) {
 					isValid = true;
 				} else {
@@ -661,8 +711,8 @@ public class UMCValidator {
 							+ rcmDto.getRegId() + StatusMessage.TIMESTAMP_VALIDATION2 + " " + rcmDto.getRegcntrId());
 				}
 			} else {
-				ErrorDTO error = result.getErrors().get(0);
-				this.registrationStatusDto.setStatusComment(error.getErrorMessage());
+				  List<ErrorDTO> error = responseWrapper.getErrors();
+             	    this.registrationStatusDto.setStatusComment(error.get(0).getMessage());
 			}
 			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					rcmDto.getRegId(), "UMCValidator::validateCenterIdAndTimestamp()::exit");

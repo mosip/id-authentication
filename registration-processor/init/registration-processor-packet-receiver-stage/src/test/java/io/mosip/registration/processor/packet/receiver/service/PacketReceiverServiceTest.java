@@ -42,6 +42,7 @@ import io.mosip.registration.processor.core.code.ApiName;
 import io.mosip.registration.processor.core.code.EventId;
 import io.mosip.registration.processor.core.code.EventName;
 import io.mosip.registration.processor.core.code.EventType;
+import io.mosip.registration.processor.core.http.ResponseWrapper;
 import io.mosip.registration.processor.core.spi.filesystem.manager.FileManager;
 import io.mosip.registration.processor.core.util.RegistrationExceptionMapperUtil;
 import io.mosip.registration.processor.packet.manager.dto.DirectoryPathDto;
@@ -178,7 +179,8 @@ public class PacketReceiverServiceTest {
 
 			when(syncRegistrationService.isPresent(anyString())).thenReturn(true);
 			AuditResponseDto auditResponseDto = new AuditResponseDto();
-			Mockito.doReturn(auditResponseDto).when(auditLogRequestBuilder).createAuditRequestBuilder(
+			ResponseWrapper<AuditResponseDto> responseWrapper = new ResponseWrapper<>();
+			Mockito.doReturn(responseWrapper).when(auditLogRequestBuilder).createAuditRequestBuilder(
 					"test case description", EventId.RPR_401.toString(), EventName.ADD.toString(),
 					EventType.BUSINESS.toString(), "1234testcase", ApiName.DMZAUDIT);
 
@@ -187,10 +189,10 @@ public class PacketReceiverServiceTest {
 		/*
 		 * Mockito.doReturn(auditRequestDto).when(auditRequestBuilder).build();
 		 * Mockito.doReturn(true).when(auditHandler).writeAudit(ArgumentMatchers.any());
-		 * 
+		 *
 		 * AuditRequestBuilder auditRequestBuilder = new AuditRequestBuilder();
 		 * AuditRequestDto auditRequest1 = new AuditRequestDto();
-		 * 
+		 *
 		 * Field f
 		 * =CoreAuditRequestBuilder.class.getDeclaredField("auditRequestBuilder");
 		 * f.setAccessible(true); f.set(coreAuditRequestBuilder, auditRequestBuilder);

@@ -1,9 +1,6 @@
 
 package io.mosip.registration.processor.packet.service.dto;
 
-import java.io.Serializable;
-import java.time.LocalDateTime;
-
 import lombok.Data;
 
 /**
@@ -15,12 +12,8 @@ import lombok.Data;
  */
 
 @Data
-public class MachineDto implements Serializable {
+public class MachineDto {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -5757105331008865504L;
 	private String id;
 	/**
 	 * Field for machine name
@@ -61,6 +54,8 @@ public class MachineDto implements Serializable {
 	 * Field for is validity of the Device
 	 */
 
-	private LocalDateTime validityDateTime;
+	private String validityDateTime;
+	
+
 
 }

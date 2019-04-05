@@ -25,6 +25,7 @@ import org.springframework.web.client.HttpClientErrorException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
+import io.mosip.registration.processor.core.http.ResponseWrapper;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.identify.Identity;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.identify.RegistrationProcessorIdentity;
 import io.mosip.registration.processor.core.packet.dto.masterdata.StatusResponseDto;
@@ -81,7 +82,8 @@ public class MasterDataValidationTest {
 
 		statusResponseDto = new StatusResponseDto();
 		statusResponseDto.setStatus("valid");
-
+		ResponseWrapper<StatusResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(statusResponseDto);
 		PowerMockito.mockStatic(Utilities.class);
 
 		Mockito.when(utility.getGetRegProcessorDemographicIdentity()).thenReturn("identity");
@@ -94,7 +96,7 @@ public class MasterDataValidationTest {
 		when(env.getProperty(SECONDARY_LANGUAGE)).thenReturn("ara");
 		when(env.getProperty(ATTRIBUTES)).thenReturn("gender,region,province,city,postalcode");
 		Mockito.when(registrationProcessorRestService.getApi(any(), any(), any(), any(), any()))
-				.thenReturn(statusResponseDto);
+				.thenReturn(responseWrapper);
 		masterDataValidation = new MasterDataValidation(env, registrationProcessorRestService, utility);
 	}
 
