@@ -24,8 +24,7 @@ public class OtpNotificationInvalidArgumentException extends BaseUncheckedExcept
 	private final List<ServiceError> list;
 
 	/**
-	 * @param list
-	 *            The error list.
+	 * @param list The error list.
 	 */
 	public OtpNotificationInvalidArgumentException(List<ServiceError> list) {
 		this.list = list;
