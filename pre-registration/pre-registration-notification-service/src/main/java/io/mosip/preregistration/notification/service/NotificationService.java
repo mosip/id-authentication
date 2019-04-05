@@ -13,7 +13,6 @@ import io.mosip.preregistration.core.common.dto.NotificationDTO;
 import io.mosip.preregistration.core.config.LoggerConfiguration;
 import io.mosip.preregistration.core.util.NotificationUtil;
 import io.mosip.preregistration.core.util.ValidationUtil;
-import io.mosip.preregistration.notification.dto.QRCodeResponseDTO;
 import io.mosip.preregistration.notification.error.ErrorCodes;
 import io.mosip.preregistration.notification.error.ErrorMessages;
 import io.mosip.preregistration.notification.exception.MandatoryFieldException;
@@ -95,35 +94,6 @@ public class NotificationService {
 		return response;
 	}
 
-	/**
-	 * This method will generate qrcode
-	 * 
-	 * @param data
-	 * @return
-	 */
-	public MainResponseDTO<QRCodeResponseDTO> generateQRCode(String data) {
-		byte[] qrCode = null;
-		log.info("sessionId", "idType", "id",
-				"In notification service of generateQRCode ");
-		QRCodeResponseDTO responsedto = new QRCodeResponseDTO();
-		MainResponseDTO<QRCodeResponseDTO> response = new MainResponseDTO<>();
-		try {
-			qrCode = qrCodeGenerator.generateQrCode(data, QrVersion.V25);
-
-			responsedto.setQrcode(qrCode);
-
-		} catch (Exception ex) {
-			log.error("sessionId", "idType", "id",
-					"In notification service of generateQRCode "+ex.getMessage());
-			new NotificationExceptionCatcher().handle(ex);
-		}
-		response.setResponse(responsedto);
-		response.setResponsetime(serviceUtil.getCurrentResponseTime());
-		
-
-		return response;
-	}
-
-
+	
 	
 }

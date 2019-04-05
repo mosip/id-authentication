@@ -28,6 +28,6 @@ public class DocumentDeleteResponseDTO implements Serializable {
 	/**
 	 * Delete response Message
 	 */
-	private String resMsg;
+	private String message;
 
 }

@@ -59,6 +59,7 @@ import io.mosip.preregistration.documents.exception.DocumentFailedToUploadExcept
 import io.mosip.preregistration.documents.exception.DocumentNotFoundException;
 import io.mosip.preregistration.documents.exception.DocumentVirusScanException;
 import io.mosip.preregistration.documents.exception.FSServerException;
+import io.mosip.preregistration.documents.exception.InvalidDocumentIdExcepion;
 import io.mosip.preregistration.documents.exception.util.DocumentExceptionCatcher;
 import io.mosip.preregistration.documents.repository.util.DocumentDAO;
 import io.mosip.preregistration.documents.service.util.DocumentServiceUtil;
@@ -150,17 +151,20 @@ public class DocumentService {
 	 * @return ResponseDTO
 	 */
 	@Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = Exception.class)
-	public MainListResponseDTO<DocumentResponseDTO> uploadDocument(MultipartFile file, String documentJsonString ,String preRegistrationId) {
+	public MainListResponseDTO<DocumentResponseDTO> uploadDocument(MultipartFile file, String documentJsonString,
+			String preRegistrationId) {
 		log.info("sessionId", "idType", "id", "In uploadDocument method of document service");
 		MainListResponseDTO<DocumentResponseDTO> responseDto = new MainListResponseDTO<>();
 		boolean isUploadSuccess = false;
 		try {
-			MainRequestDTO<DocumentRequestDTO> docReqDto = serviceUtil.createUploadDto(documentJsonString,preRegistrationId);
+			MainRequestDTO<DocumentRequestDTO> docReqDto = serviceUtil.createUploadDto(documentJsonString,
+					preRegistrationId);
 			if (ValidationUtil.requestValidator(docReqDto)) {
 				if (serviceUtil.isVirusScanSuccess(file) && serviceUtil.fileSizeCheck(file.getSize())
 						&& serviceUtil.fileExtensionCheck(file)) {
-					serviceUtil.isValidRequest(docReqDto.getRequest(),preRegistrationId);
-					List<DocumentResponseDTO> docResponseDtos = createDoc(docReqDto.getRequest(), file, preRegistrationId);
+					serviceUtil.isValidRequest(docReqDto.getRequest(), preRegistrationId);
+					List<DocumentResponseDTO> docResponseDtos = createDoc(docReqDto.getRequest(), file,
+							preRegistrationId);
 					responseDto.setResponsetime(serviceUtil.getCurrentResponseTime());
 					responseDto.setResponse(docResponseDtos);
 				} else {
@@ -204,13 +208,15 @@ public class DocumentService {
 	 *             on input errors
 	 */
 	@Transactional(propagation = Propagation.MANDATORY)
-	public List<DocumentResponseDTO> createDoc(DocumentRequestDTO document, MultipartFile file,String preRegistrationId) throws IOException {
+	public List<DocumentResponseDTO> createDoc(DocumentRequestDTO document, MultipartFile file,
+			String preRegistrationId) throws IOException {
 		log.info("sessionId", "idType", "id", "In createDoc method of document service");
 		DocumentResponseDTO docResponseDto = new DocumentResponseDTO();
 		List<DocumentResponseDTO> docResponseDtos = new LinkedList<>();
 		if (serviceUtil.callGetPreRegInfoRestService(preRegistrationId)) {
 			DocumentEntity getentity = documnetDAO.findSingleDocument(preRegistrationId, document.getDocCatCode());
-			DocumentEntity documentEntity = serviceUtil.dtoToEntity(file, document, authUserDetails().getUserId(),preRegistrationId);
+			DocumentEntity documentEntity = serviceUtil.dtoToEntity(file, document, authUserDetails().getUserId(),
+					preRegistrationId);
 			if (getentity != null) {
 				documentEntity.setDocumentId(String.valueOf(getentity.getDocumentId()));
 			}
@@ -283,10 +289,10 @@ public class DocumentService {
 					sourceBucketName = documentEntity.getPreregId();
 					copyFile(copyDocumentEntity, sourceBucketName, sourceKey);
 					DocumentResponseDTO documentResponseDTO = new DocumentResponseDTO();
-//					copyDcoResDto.setSourcePreRegId(sourcePreId);
-//					copyDcoResDto.setSourceDocumentId(String.valueOf(documentEntity.getDocumentId()));
-//					copyDcoResDto.setDestPreRegId(destinationPreId);
-//					copyDcoResDto.setDestDocumentId(String.valueOf(copyDocumentEntity.getDocumentId()));
+					// copyDcoResDto.setSourcePreRegId(sourcePreId);
+					// copyDcoResDto.setSourceDocumentId(String.valueOf(documentEntity.getDocumentId()));
+					// copyDcoResDto.setDestPreRegId(destinationPreId);
+					// copyDcoResDto.setDestDocumentId(String.valueOf(copyDocumentEntity.getDocumentId()));
 					documentResponseDTO.setPreRegistrationId(destinationPreId);
 					documentResponseDTO.setDocumentId(copyDocumentEntity.getDocumentId());
 					documentResponseDTO.setDocName(copyDocumentEntity.getDocName());
@@ -400,11 +406,10 @@ public class DocumentService {
 		try {
 			for (DocumentEntity doc : entityList) {
 				DocumentMultipartResponseDTO allDocDto = new DocumentMultipartResponseDTO();
-				allDocDto.setDoc_cat_code(doc.getDocCatCode());
-				allDocDto.setDoc_file_format(doc.getDocFileFormat());
-				allDocDto.setDoc_name(doc.getDocName());
-				allDocDto.setDoc_id(doc.getDocumentId());
-				allDocDto.setDoc_typ_code(doc.getDocTypeCode());
+				allDocDto.setDocCatCode(doc.getDocCatCode());
+				allDocDto.setDocName(doc.getDocName());
+				allDocDto.setDocumentId(doc.getDocumentId());
+				allDocDto.setDocTypCode(doc.getDocTypeCode());
 				String key = doc.getDocCatCode() + "_" + doc.getDocumentId();
 				InputStream file = fs.getFile(doc.getPreregId(), key);
 				if (file == null) {
@@ -417,7 +422,6 @@ public class DocumentService {
 					LocalDateTime decryptionDateTime = DateUtils.getUTCCurrentDateTime();
 
 					allDocDto.setMultipartFile(cryptoUtil.decrypt(cephBytes, decryptionDateTime));
-					allDocDto.setPrereg_id(doc.getPreregId());
 					allDocRes.add(allDocDto);
 				} else {
 					log.error("sessionId", "idType", "id", "In dtoSetter method of document service - "
@@ -442,12 +446,16 @@ public class DocumentService {
 	 * @return ResponseDTO
 	 */
 	@Transactional(rollbackFor = Exception.class)
-	public MainListResponseDTO<DocumentDeleteResponseDTO> deleteDocument(String documentId) {
+	public MainListResponseDTO<DocumentDeleteResponseDTO> deleteDocument(String documentId, String preRegistrationId) {
 		log.info("sessionId", "idType", "id", "In deleteDocument method of document service");
 		List<DocumentDeleteResponseDTO> deleteDocList = new ArrayList<>();
 		MainListResponseDTO<DocumentDeleteResponseDTO> delResponseDto = new MainListResponseDTO<>();
 		try {
 			DocumentEntity documentEntity = documnetDAO.findBydocumentId(documentId);
+			if (!documentEntity.getPreregId().equals(preRegistrationId)) {
+				throw new InvalidDocumentIdExcepion(ErrorCodes.PRG_PAM_DOC_022.name(),
+						ErrorMessages.INVALID_DOCUMENT_ID.getMessage());
+			}
 			if (documnetDAO.deleteAllBydocumentId(documentId) > 0) {
 				String key = documentEntity.getDocCatCode() + "_" + documentEntity.getDocumentId();
 				boolean isDeleted = fs.deleteFile(documentEntity.getPreregId(), key);
@@ -456,7 +464,7 @@ public class DocumentService {
 							ErrorMessages.DOCUMENT_FAILED_TO_DELETE.getMessage());
 				}
 				DocumentDeleteResponseDTO deleteDTO = new DocumentDeleteResponseDTO();
-				deleteDTO.setResMsg(DocumentStatusMessages.DOCUMENT_DELETE_SUCCESSFUL.getMessage());
+				deleteDTO.setMessage(DocumentStatusMessages.DOCUMENT_DELETE_SUCCESSFUL.getMessage());
 				deleteDocList.add(deleteDTO);
 				delResponseDto.setResponse(deleteDocList);
 			}
@@ -513,8 +521,7 @@ public class DocumentService {
 
 	public MainListResponseDTO<DocumentDeleteResponseDTO> deleteFile(List<DocumentEntity> documentEntityList,
 			String preregId) {
-		log.info("sessionId", "idType", "id",
-				"In pre-registration service inside delete File method "+ preregId);
+		log.info("sessionId", "idType", "id", "In pre-registration service inside delete File method " + preregId);
 		List<DocumentDeleteResponseDTO> deleteAllList = new ArrayList<>();
 		MainListResponseDTO<DocumentDeleteResponseDTO> delResponseDto = new MainListResponseDTO<>();
 		if (documnetDAO.deleteAllBypreregId(preregId) >= 0) {
@@ -522,7 +529,7 @@ public class DocumentService {
 				DocumentDeleteResponseDTO deleteDTO = new DocumentDeleteResponseDTO();
 				String key = documentEntity.getDocCatCode() + "_" + documentEntity.getDocumentId();
 				fs.deleteFile(documentEntity.getPreregId(), key);
-				deleteDTO.setResMsg(DocumentStatusMessages.DOCUMENT_DELETE_SUCCESSFUL.getMessage());
+				deleteDTO.setMessage(DocumentStatusMessages.ALL_DOCUMENT_DELETE_SUCCESSFUL.getMessage());
 				deleteAllList.add(deleteDTO);
 			}
 

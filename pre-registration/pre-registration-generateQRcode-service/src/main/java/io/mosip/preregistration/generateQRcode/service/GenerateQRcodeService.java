@@ -42,10 +42,10 @@ public class GenerateQRcodeService {
 	
 	Map<String, String> requiredRequestMap = new HashMap<>();
 	
-	@Value("${id}")
+	@Value("${mosip.pre-registration.qrcode.generate.id}")
 	private String Id;
 	
-	@Value("${version}")
+	@Value("${mosip.pre-registration.qrcode.service.version}")
 	private String version;
 	
 	@Value("${qrversion}")

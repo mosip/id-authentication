@@ -1,19 +1,19 @@
-import { Component, OnInit, Inject } from "@angular/core";
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from "@angular/material";
-import { Router } from "@angular/router";
-import { AuthService } from "src/app/auth/auth.service";
-import { Location } from "@angular/common";
-import { SharedService } from "src/app/feature/booking/booking.service";
-import { RegistrationService } from "src/app/core/services/registration.service";
+import { Component, OnInit, Inject } from '@angular/core';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { Router } from '@angular/router';
+import { AuthService } from 'src/app/auth/auth.service';
+import { Location } from '@angular/common';
+import { SharedService } from 'src/app/feature/booking/booking.service';
+import { RegistrationService } from 'src/app/core/services/registration.service';
 
 export interface DialogData {
   case: number;
 }
 
 @Component({
-  selector: "app-dialoug",
-  templateUrl: "./dialoug.component.html",
-  styleUrls: ["./dialoug.component.css"]
+  selector: 'app-dialoug',
+  templateUrl: './dialoug.component.html',
+  styleUrls: ['./dialoug.component.css']
 })
 export class DialougComponent implements OnInit {
   input;
@@ -41,7 +41,7 @@ export class DialougComponent implements OnInit {
   // tslint:disable-next-line:use-life-cycle-interface
   ngOnInit() {
     this.input = this.data;
-    console.log("input", this.input);
+    console.log('input', this.input);
   }
 
   onNoClick(): void {
@@ -50,7 +50,7 @@ export class DialougComponent implements OnInit {
 
   onSubmit(): void {
     this.onNoClick();
-    console.log("button clicked", this.selectedOption);
+    console.log('button clicked', this.selectedOption);
   }
 
   validateMobile() {
@@ -77,25 +77,25 @@ export class DialougComponent implements OnInit {
   }
 
   userRedirection() {
-    if (localStorage.getItem("newApplicant") === "true") {
+    if (localStorage.getItem('newApplicant') === 'true') {
       alert(this.input.alertMessageFirst);
       // this if for first time user, if he does not provide consent he will be logged out.
       this.authService.removeToken();
       this.location.back();
-    } else if (localStorage.getItem("newApplicant") === "false") {
+    } else if (localStorage.getItem('newApplicant') === 'false') {
       this.regService.currentMessage.subscribe(
         message => (this.message = message)
         //second case is when an existing applicant enters the application.
       );
-      this.checkCondition = this.message["modifyUserFromPreview"];
+      this.checkCondition = this.message['modifyUserFromPreview'];
 
-    if (this.checkCondition === "false") {
-      alert(this.input.alertMessageThird);
-      this.location.back();
-    } else {
-      alert(this.input.alertMessageSecond);
-      this.location.back();
+      if (this.checkCondition === 'false') {
+        alert(this.input.alertMessageThird);
+        this.location.back();
+      } else {
+        alert(this.input.alertMessageSecond);
+        this.location.back();
+      }
     }
   }
-}
 }

@@ -28,7 +28,7 @@ import io.mosip.preregistration.documents.exception.DocumentNotFoundException;
 import io.mosip.preregistration.documents.exception.DocumentNotValidException;
 import io.mosip.preregistration.documents.exception.DocumentSizeExceedException;
 import io.mosip.preregistration.documents.exception.DocumentVirusScanException;
-import io.mosip.preregistration.documents.exception.InvalidDocumnetIdExcepion;
+import io.mosip.preregistration.documents.exception.InvalidDocumentIdExcepion;
 import io.mosip.preregistration.documents.exception.MandatoryFieldNotFoundException;
 import io.mosip.preregistration.documents.exception.ParsingException;
 import io.mosip.preregistration.documents.exception.PrimaryKeyValidationException;
@@ -47,16 +47,16 @@ public class DocumentExceptionCatcher {
 			throw new DocumentFailedToUploadException(((DocumentFailedToUploadException) ex).getErrorCode(),((DocumentFailedToUploadException) ex).getErrorText());
 		} else if (ex instanceof IOException) {
 			// kernel exception
-			throw new DTOMappigException(((IOException) ex).getErrorCode(), ex.getMessage(), ex.getCause());
+			throw new DTOMappigException(((IOException) ex).getErrorCode(), ((IOException) ex).getErrorText(), ex.getCause());
 
 		} else if (ex instanceof JsonMappingException) {
-			throw new DTOMappigException(((JsonMappingException) ex).getErrorCode(), ex.getMessage(), ex.getCause());
+			throw new DTOMappigException(((JsonMappingException) ex).getErrorCode(), ((JsonMappingException) ex).getErrorText(), ex.getCause());
 			// kernel exception
 		} else if (ex instanceof JsonParseException) {
 			// kernel exception
-			throw new DTOMappigException(((JsonParseException) ex).getErrorCode(), ex.getMessage(), ex.getCause());
+			throw new DTOMappigException(((JsonParseException) ex).getErrorCode(), ((JsonParseException) ex).getErrorText(), ex.getCause());
 		} else if (ex instanceof JSONException || ex instanceof ParseException) {
-			throw new ParsingException(ErrorCodes.PRG_PAM_DOC_015.toString(), ErrorMessages.JSON_EXCEPTION.toString(),
+			throw new ParsingException(ErrorCodes.PRG_PAM_DOC_015.toString(), ErrorMessages.JSON_EXCEPTION.getMessage(),
 					ex.getCause());
 
 		} else if (ex instanceof InvalidRequestParameterException) {
@@ -77,18 +77,18 @@ public class DocumentExceptionCatcher {
 			throw new DocumentNotFoundException(((DocumentNotFoundException) ex).getErrorCode(),((DocumentNotFoundException) ex).getErrorText());
 		} else if (ex instanceof DocumentFailedToCopyException) {
 			throw new DocumentFailedToCopyException(((DocumentFailedToCopyException) ex).getErrorCode(),((DocumentFailedToCopyException) ex).getErrorText());
-		} else if (ex instanceof InvalidDocumnetIdExcepion) {
-			throw new InvalidDocumnetIdExcepion(((InvalidDocumnetIdExcepion) ex).getErrorCode(),((InvalidDocumnetIdExcepion) ex).getErrorText());
+		} else if (ex instanceof InvalidDocumentIdExcepion) {
+			throw new InvalidDocumentIdExcepion(((InvalidDocumentIdExcepion) ex).getErrorCode(),((InvalidDocumentIdExcepion) ex).getErrorText());
 		} else if (ex instanceof DemographicGetDetailsException) {
 			throw new DemographicGetDetailsException(((DemographicGetDetailsException) ex).getErrorCode(),
-					ex.getMessage());
+					((DemographicGetDetailsException) ex).getErrorText());
 		}else if(ex instanceof FSServerException) {
 			throw new FSServerException(((FSServerException) ex).getErrorCode(),
-					ex.getMessage());
+					((FSServerException) ex).getErrorText());
 		}else if(ex instanceof TableNotAccessibleException) {
 			throw new TableNotAccessibleException(((TableNotAccessibleException) ex).getErrorCode(),((TableNotAccessibleException) ex).getErrorText());
 		}else if(ex instanceof PSQLException) {
-			throw new PrimaryKeyValidationException(ErrorCodes.PRG_PAM_DOC_021.toString(),ErrorMessages.DOCUMENT_ALREADY_PRESENT.toString());
+			throw new PrimaryKeyValidationException(ErrorCodes.PRG_PAM_DOC_021.toString(),ErrorMessages.DOCUMENT_ALREADY_PRESENT.getMessage());
 		}
 		else if(ex instanceof FSAdapterException) {
 			throw new FSAdapterException(((FSAdapterException) ex).getErrorCode(), ((FSAdapterException) ex).getErrorText());

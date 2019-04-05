@@ -347,9 +347,11 @@ public class DataSyncServiceUtilTest {
 
 	@Test
 	public void callGetDocRestServiceTest() {
-		multipartResponseDTOs.setDoc_name("Address.pdf");
-		multipartResponseDTOs.setDoc_id("1234");
-		multipartResponseDTOs.setDoc_cat_code("POA");
+
+		multipartResponseDTOs.setDocName("Address.pdf");
+		multipartResponseDTOs.setDocumentId("1234");
+		multipartResponseDTOs.setDocCatCode("POA");
+
 		responsestatusDto.add(multipartResponseDTOs);
 
 		MainListResponseDTO<DocumentMultipartResponseDTO> mainListResponseDTO = new MainListResponseDTO<>();
@@ -362,7 +364,7 @@ public class DataSyncServiceUtilTest {
 				Mockito.eq(new ParameterizedTypeReference<MainListResponseDTO<DocumentMultipartResponseDTO>>() {
 				}))).thenReturn(respEntity);
 		List<DocumentMultipartResponseDTO> response = serviceUtil.callGetDocRestService(preId);
-		assertEquals(multipartResponseDTOs.getDoc_name(), response.get(0).getDoc_name());
+		assertEquals(multipartResponseDTOs.getDocName(), response.get(0).getDocName());
 	}
 
 	@Test
@@ -451,9 +453,11 @@ public class DataSyncServiceUtilTest {
 		bookingRegistrationDTO.setRegistrationCenterId("1005");
 		bookingRegistrationDTO.setRegDate(resTime);
 
-		multipartResponseDTOs.setDoc_name("Address.pdf");
-		multipartResponseDTOs.setDoc_id("1234");
-		multipartResponseDTOs.setDoc_cat_code("POA");
+
+		multipartResponseDTOs.setDocName("Address.pdf");
+		multipartResponseDTOs.setDocumentId("1234");
+		multipartResponseDTOs.setDocCatCode("POA");
+
 		multipartResponseDTOs.setMultipartFile(file.toString().getBytes());
 		responsestatusDto.add(multipartResponseDTOs);
 		serviceUtil.archivingFiles(demographicResponseDTO, bookingRegistrationDTO, responsestatusDto);

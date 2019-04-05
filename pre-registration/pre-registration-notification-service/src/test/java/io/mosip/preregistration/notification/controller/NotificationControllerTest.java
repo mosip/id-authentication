@@ -1,7 +1,5 @@
 package io.mosip.preregistration.notification.controller;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.nio.charset.Charset;
@@ -15,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -99,18 +96,18 @@ String langCode="eng";
 
 	}
 
-	/**
-	 * This test method is for success qrCodeGeneration 
-	 * @throws Exception
-	 */
-	@WithUserDetails("individual")
-	@Test
-	public void qrCodeGenerationTest() throws Exception {
-		String stringjson = mapper.writeValueAsString(notificationDTO);
-		Mockito.when(service.sendNotification(stringjson, "eng", null)).thenReturn(responseDTO);
-		
-		mockMvc.perform(post("/generateQRCode").contentType(MediaType.APPLICATION_JSON)
-			.content(stringjson)).andExpect(status().isOk());
-
-	}
+//	/**
+//	 * This test method is for success qrCodeGeneration 
+//	 * @throws Exception
+//	 */
+//	@WithUserDetails("individual")
+//	@Test
+//	public void qrCodeGenerationTest() throws Exception {
+//		String stringjson = mapper.writeValueAsString(notificationDTO);
+//		Mockito.when(service.sendNotification(stringjson, "eng", null)).thenReturn(responseDTO);
+//		
+//		mockMvc.perform(post("/generateQRCode").contentType(MediaType.APPLICATION_JSON)
+//			.content(stringjson)).andExpect(status().isOk());
+//
+//	}
 }

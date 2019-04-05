@@ -863,17 +863,19 @@ public class DemographicService {
 				"In callDocumentServiceToDeleteAllByPreId method of pre-registration service ");
 		ResponseEntity<MainListResponseDTO<DocumentDeleteResponseDTO>> responseEntity = null;
 		try {
-			UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(resourceUrl + "/documents/byPreRegId")
-					.queryParam("pre_registration_id", preregId);
+			Map<String, Object> params = new HashMap<>();
+			params.put("preRegistrationId", preregId);
+			UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(resourceUrl + "/documents/preregistration/");
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
 			HttpEntity<MainListResponseDTO<DocumentDeleteResponseDTO>> httpEntity = new HttpEntity<>(headers);
 			String strUriBuilder = uriBuilder.build().encode().toUriString();
+			strUriBuilder+="{preRegistrationId}";
 			log.info("sessionId", "idType", "id",
 					"In callDocumentServiceToDeleteAllByPreId method URL- " + strUriBuilder);
 			responseEntity = restTemplate.exchange(strUriBuilder, HttpMethod.DELETE, httpEntity,
 					new ParameterizedTypeReference<MainListResponseDTO<DocumentDeleteResponseDTO>>() {
-					});
+					} ,params);
 
 			if (responseEntity.getBody().getErrors() != null) {
 				if (!responseEntity.getBody().getErrors().getMessage()

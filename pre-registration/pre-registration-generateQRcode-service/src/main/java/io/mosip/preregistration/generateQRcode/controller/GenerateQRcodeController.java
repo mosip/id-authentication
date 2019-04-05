@@ -3,6 +3,7 @@ package io.mosip.preregistration.generateQRcode.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -33,7 +34,7 @@ public class GenerateQRcodeController {
 	 * @param Json Stirng data
 	 * @return the response entity
 	 */
-//	@PreAuthorize("hasAnyRole('individual')")
+	@PreAuthorize("hasAnyRole('INDIVIDUAL')")
 	@PostMapping(path="/generate")
 	public ResponseEntity<MainResponseDTO<QRCodeResponseDTO>> generateQRCode(@RequestBody String data) {
 		log.info("sessionId", "idType", "id",
