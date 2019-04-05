@@ -3,6 +3,7 @@ package io.mosip.kernel.otpnotification.controller;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -35,10 +36,10 @@ public class OtpNotificationController {
 	/**
 	 * API to notify with OTP to user.
 	 * 
-	 * @param otpNotificationRequestDto
-	 *            the request dto.
+	 * @param otpNotificationRequestDto the request dto.
 	 * @return the response entity.
 	 */
+	@PreAuthorize("hasAnyRole('INDIVIDUAL','REGISTRATION_ADMIN','REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER')")
 	@ResponseFilter
 	@PostMapping(value = "/otp/send")
 	@ApiOperation(value = "Service to send OTP notification")
