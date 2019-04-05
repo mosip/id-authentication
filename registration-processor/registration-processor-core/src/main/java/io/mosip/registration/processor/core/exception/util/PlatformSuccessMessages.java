@@ -32,7 +32,9 @@ public enum PlatformSuccessMessages {
 
 	RPR_RE_PROCESS_SUCCESS(PlatformConstants.RPR_REPROCESSOR_STAGE + "000", "Reprocessor Success"),
 
-	RPR_SENT_TO_REPROCESS_SUCCESS(PlatformConstants.RPR_REPROCESSOR_STAGE + "001", "sent to reprocess Success");
+	RPR_SENT_TO_REPROCESS_SUCCESS(PlatformConstants.RPR_REPROCESSOR_STAGE + "001", "sent to reprocess Success"),
+
+	RPR_EXTERNAL_STAGE_SUCCESS(PlatformConstants.RPR_EXTERNAL_STAGE + "000", "External stage  Success");
 
 	/** The success message. */
 	private final String successMessage;

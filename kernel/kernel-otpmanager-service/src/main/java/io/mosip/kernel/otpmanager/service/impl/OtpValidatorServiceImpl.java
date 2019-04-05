@@ -111,7 +111,8 @@ public class OtpValidatorServiceImpl implements OtpValidator<ResponseEntity<OtpV
 		 * This condition freezes the key for a certain time, if the validation attempt
 		 * reaches the maximum allowed limit.
 		 */
-		if (attemptCount == Integer.parseInt(numberOfValidationAttemptsAllowed)) {
+		if ((attemptCount == Integer.parseInt(numberOfValidationAttemptsAllowed) - 1)
+				&& (!otp.equals(otpResponse.getOtp()))) {
 			updateString = SqlQueryConstants.UPDATE.getProperty() + " " + OtpEntity.class.getSimpleName()
 					+ " SET status_code = :newOtpStatus," + "upd_dtimes = :newValidationTime,"
 					+ "validation_retry_count = :newNumOfAttempt WHERE id=:id";

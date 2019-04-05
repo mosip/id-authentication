@@ -78,6 +78,14 @@ spec:
         backend:
           serviceName: kernel-ridgenerator-service
           servicePort: 8096
+      - path: /v1/tokenidgenerator
+        backend:
+          serviceName: kernel-tokenidgenerator-service
+          servicePort: 8097
+      - path: /v1/admin
+        backend:
+          serviceName: kernel-admin-service
+          servicePort: 8099    
       - path: /pre-registration/v1.0/auth
         backend:
           serviceName: pre-registration-auth-service

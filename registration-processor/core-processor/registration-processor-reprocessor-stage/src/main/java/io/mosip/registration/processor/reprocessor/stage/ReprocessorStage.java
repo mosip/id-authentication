@@ -142,17 +142,19 @@ public class ReprocessorStage extends MosipVerticleManager {
 		EventBus eventBus = vertx.eventBus();
 		// listen the timer events
 		eventBus.consumer(("scheduler:stage_timer"), message -> {
-			// System.out.println(((JsonObject) message.body()).encodePrettily());
+
 			process(new MessageDTO());
 		});
 
 		// description of timers
-		JsonObject timer = (new JsonObject()).put("type", environment.getProperty("type"))
-				.put("seconds", environment.getProperty("seconds")).put("minutes", environment.getProperty("minutes"))
-				.put("hours", environment.getProperty("hours"))
-				.put("days of month", environment.getProperty("days_of_month"))
-				.put("months", environment.getProperty("months"))
-				.put("days of week", environment.getProperty("days_of_week"));
+		JsonObject timer = (new JsonObject())
+				.put("type", environment.getProperty("registration.processor.reprocess.type"))
+				.put("seconds", environment.getProperty("registration.processor.reprocess.seconds"))
+				.put("minutes", environment.getProperty("registration.processor.reprocess.minutes"))
+				.put("hours", environment.getProperty("registration.processor.reprocess.hours"))
+				.put("days of month", environment.getProperty("registration.processor.reprocess.days_of_month"))
+				.put("months", environment.getProperty("registration.processor.reprocess.months"))
+				.put("days of week", environment.getProperty("registration.processor.reprocess.days_of_week"));
 
 		// create scheduler
 		eventBus.send("chime", (new JsonObject()).put("operation", "create").put("name", "scheduler:stage_timer")
