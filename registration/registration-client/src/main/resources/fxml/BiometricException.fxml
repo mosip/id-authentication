@@ -87,7 +87,7 @@
                                         <RowConstraints percentHeight="100.0" valignment="CENTER" vgrow="ALWAYS" />
                                       </rowConstraints>
                                        <children>
-                                          <Label styleClass="onboardPageBioTitle" text="%exception" GridPane.halignment="CENTER" />
+                                          <Label styleClass="onboardPageBioTitle" text="%fingerprintexception" GridPane.halignment="CENTER" />
                                           <Label styleClass="onboardPageBioTitle" text="%irisexception" GridPane.columnIndex="1" GridPane.halignment="CENTER" />
                                        </children>
                                     </GridPane>
