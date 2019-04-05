@@ -92,6 +92,11 @@
 			<version>${registration.processor.print.service.impl.version}</version>
 		</dependency>
 		<dependency>
+			<groupId>io.mosip.kernel</groupId>
+			<artifactId>kernel-idvalidator-uin</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<scope>test</scope>
