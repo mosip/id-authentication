@@ -1,5 +1,6 @@
 package io.mosip.registration.processor.packet.service.controller;
 
+import java.io.IOException;
 import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -81,6 +82,7 @@ public class PacketGeneratorController {
 	 *            the errors
 	 * @return the status
 	 * @throws RegBaseCheckedException
+	 * @throws IOException 
 	 */
 	@PostMapping(path = "/packetgenerator/v1.0", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Get the status of packet", response = String.class)
@@ -89,18 +91,18 @@ public class PacketGeneratorController {
 			@ApiResponse(code = 500, message = "Internal Server Error") })
 	public ResponseEntity<Object> getStatus(
 			@Validated @RequestBody(required = true) PacketGeneratorRequestDto packerGeneratorRequestDto,
-			@ApiIgnore Errors errors) throws RegBaseCheckedException {
+			@ApiIgnore Errors errors) throws RegBaseCheckedException, IOException {
 
-		try {
-			PacketGeneratorValidationUtil.validate(errors);
-			PacketGeneratorResDto packerGeneratorResDto;
-			packerGeneratorResDto = packetGeneratorService.createPacket(packerGeneratorRequestDto.getRequest());
-			return ResponseEntity.ok().body(buildPacketGeneratorResponse(packerGeneratorResDto));
-		} catch (PacketGeneratorValidationException e) {
-			throw new RegBaseCheckedException(PlatformErrorMessages.RPR_RGS_DATA_VALIDATION_FAILED, e);
+				try {
+					PacketGeneratorValidationUtil.validate(errors);
+					PacketGeneratorResDto packerGeneratorResDto;
+					packerGeneratorResDto = packetGeneratorService.createPacket(packerGeneratorRequestDto.getRequest());
+					return ResponseEntity.ok().body(buildPacketGeneratorResponse(packerGeneratorResDto));
+				} catch (PacketGeneratorValidationException e) {
+					throw new RegBaseCheckedException(PlatformErrorMessages.RPR_RGS_DATA_VALIDATION_FAILED, e);
 
-		}
-	}
+				}
+			}
 
 	/**
 	 * Builds the packet generator response.

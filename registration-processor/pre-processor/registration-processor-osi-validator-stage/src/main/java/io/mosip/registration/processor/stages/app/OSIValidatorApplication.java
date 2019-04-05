@@ -29,10 +29,6 @@ public class OSIValidatorApplication {
 		OSIValidatorStage validatebean = ctx.getBean(OSIValidatorStage.class);
 		validatebean.deployVerticle();
 		
-		MessageDTO m=new MessageDTO();
-		m.setRid("10011100110002420190403095805");
-		validatebean.process(m);
-		
 	}
 
 }

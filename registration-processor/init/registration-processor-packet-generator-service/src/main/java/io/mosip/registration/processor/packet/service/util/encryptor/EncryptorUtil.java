@@ -206,9 +206,6 @@ public class EncryptorUtil {
 				pathsegments, "timeStamp,referenceId", creationTime + ',' + centerId, ResponseWrapper.class);
 		publicKeyResponsedto = mapper.readValue(mapper.writeValueAsString(responseWrapper.getResponse()), PublicKeyResponseDto.class);
 
-		//Gson gsonObj = new Gson();
-		//	PublicKeyResponseDto publicKeyResponsedto = gsonObj.fromJson(publicKeytest, PublicKeyResponseDto.class);
-
 		PublicKey publicKey = KeyFactory.getInstance(RSA)
 				.generatePublic(new X509EncodedKeySpec(CryptoUtil.decodeBase64(publicKeyResponsedto.getPublicKey())));
 
