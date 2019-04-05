@@ -81,11 +81,18 @@ public class KycServiceImpl implements KycService {
 		}
 		if (Objects.nonNull(filteredIdentityInfo)) {
 			Map<String, Object> idMappingIdentityInfo = filteredIdentityInfo.entrySet().stream()
+					.filter(entry -> entry.getKey() != null)
 					.map(entry -> new SimpleEntry<>(
 							IdaIdMapping.getIdNameForMapping(entry.getKey(), mappingConfig).orElse(""),
 							entry.getValue()))
 					.filter(entry -> !entry.getKey().isEmpty())
 					.collect(Collectors.toMap(Entry::getKey, Entry::getValue));
+			for(String kycAttribute : allowedkycAttributes) {
+				String idname = IdaIdMapping.getIdNameForMapping(kycAttribute, mappingConfig).orElse("");
+				if(!idname.isEmpty() && !idMappingIdentityInfo.containsKey(idname)) {
+					idMappingIdentityInfo.put(idname, null);
+				}
+			}
 			kycResponseDTO.setIdentity(idMappingIdentityInfo);
 		}
 		return kycResponseDTO;

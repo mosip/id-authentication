@@ -1,5 +1,6 @@
 package io.mosip.authentication.service.filter;
 
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -143,16 +144,17 @@ public class KycAuthFilter extends IdAuthFilter {
 	 */
 	@SuppressWarnings("unchecked")
 	private Map<String, Object> constructKycInfo(Map<String, Object> identity) {
-		return identity.entrySet().stream().filter(entry -> entry.getValue() instanceof List)
-				.collect(Collectors.toMap(Entry::getKey, entry -> {
-					List<Map<String, Object>> listOfMap = (List<Map<String, Object>>) entry.getValue();
-					return listOfMap.stream()
-							.map((Map<String, Object> map) -> map.entrySet().stream()
-									.filter(innerEntry -> innerEntry.getValue() != null || !innerEntry.getKey().equals("language")).collect(Collectors.toMap(
-											Entry::getKey, Entry::getValue, (map1, map2) -> map1, LinkedHashMap::new)))
-							.collect(Collectors.toList());
-
-				}));
+		Map<String, Object> responseMap = new HashMap<>();
+		identity.entrySet().stream().forEach(entry -> {
+			List<Map<String, Object>> listOfMap = (List<Map<String, Object>>) entry.getValue();
+			Object value = Objects.isNull(listOfMap) ? listOfMap : listOfMap.stream().map((Map<String, Object> map) -> map.entrySet().stream()
+					.filter(innerEntry -> innerEntry.getValue() != null || !innerEntry.getKey().equals("language"))
+					.collect(
+							Collectors.toMap(Entry::getKey, Entry::getValue, (map1, map2) -> map1, LinkedHashMap::new)))
+					.collect(Collectors.toList());
+			responseMap.put(entry.getKey(), value);
+		});
+		return responseMap;
 
 	}
 
