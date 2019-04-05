@@ -136,7 +136,7 @@
 		</choice>
 	</route>
 	<route id="external-stage-->demo-dedupe route">
-		<from uri="vertx:external-stage-out" />
+		<from uri="vertx:external-bus-out" />
 		<log
 			message="external-stage-->demo-dedupe route ${bodyAs(String)}" />
 		<choice>
