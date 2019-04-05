@@ -100,6 +100,12 @@ public enum ErrorCodes {
 	/**
 	 * ErrorCode for DOCUMENT_ALREADY_PRESENT
 	 */
-	PRG_PAM_DOC_021;
+	PRG_PAM_DOC_021,
+	
+	/**
+	 * ErrorCode for INVALID_DOCUMENT_ID
+	 */
+	PRG_PAM_DOC_022
+	;
 
 }

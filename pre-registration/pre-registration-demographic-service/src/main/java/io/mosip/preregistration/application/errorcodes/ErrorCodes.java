@@ -61,8 +61,15 @@ public enum ErrorCodes {
 	PRG_PAM_APP_013,
 	
 	/* ErrorCode for DOCUMENT_SERVICE_FAILED_TO_CALL */
+
 	PRG_PAM_APP_014,
 	
 	/* ErrorCode for MISSING_DOCUMENT */
-	PRG_PAM_DOC_005;
+	PRG_PAM_DOC_005,
+	
+	
+	/**
+	 * ErrorCode for DOCUMENT_INVALID_FOR_PREID 
+	 */
+	PRG_PAM_DOC_006;
 }

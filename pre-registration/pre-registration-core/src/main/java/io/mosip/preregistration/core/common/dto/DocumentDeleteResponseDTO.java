@@ -24,13 +24,10 @@ public class DocumentDeleteResponseDTO implements Serializable {
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 7070542323407937205L;
 
-	/**
-	 * Document Id
-	 */
-	private String documnet_Id;
+	
 	/**
 	 * Delete response Message
 	 */
-	private String resMsg;
+	private String message;
 
 }

@@ -63,7 +63,7 @@ export class CenterSelectionComponent implements OnInit {
     this.selectedCentre = null;
     //  this.getLocation();
     this.dataService.getLocationTypeData().subscribe(response => {
-      this.locationTypes = response['locations'];
+      this.locationTypes = response['response']['locations'];
       console.log(this.locationTypes);
     });
     this.users = this.service.getNameList();
@@ -83,7 +83,7 @@ export class CenterSelectionComponent implements OnInit {
       )
       .subscribe(response => {
         console.log(response);
-        if (!response['errors']) this.displayResults(response);
+        if (!response['errors']) this.displayResults(response['response']);
       });
   }
 
@@ -116,6 +116,7 @@ export class CenterSelectionComponent implements OnInit {
 
   showResults() {
     console.log(this.locationType, this.searchText);
+    this.REGISTRATION_CENTRES = [];
     if (this.locationType !== null && this.searchText !== null) {
       this.showMap = false;
       this.dataService
@@ -124,7 +125,7 @@ export class CenterSelectionComponent implements OnInit {
           response => {
             console.log(response);
             if (!response['errors']) {
-              this.displayResults(response);
+              this.displayResults(response['response']);
             } else {
               this.showMessage = true;
             }
@@ -160,8 +161,8 @@ export class CenterSelectionComponent implements OnInit {
         this.dataService.getNearbyRegistrationCenters(position.coords).subscribe(
           response => {
             console.log(response);
-            if (response['errors'].length === 0 && response['registrationCenters'].length !== 0) {
-              this.displayResults(response);
+            if (response['errors'].length === 0 && response['response']['registrationCenters'].length !== 0) {
+              this.displayResults(response['response']);
             } else {
               this.showMessage = true;
             }

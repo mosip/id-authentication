@@ -2,27 +2,17 @@ import { TestBed, ComponentFixture, async } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { DemographicComponent } from './demographic.component';
 import { DataStorageService } from 'src/app/core/services/data-storage.service';
-import { of, Observable } from 'rxjs';
+import { of } from 'rxjs';
 import { HttpLoaderFactory } from 'src/app/i18n.module';
 import { HttpClientModule, HttpClient } from '@angular/common/http';
 import { TranslateModule, TranslateLoader, TranslateService } from '@ngx-translate/core';
 import { MaterialModule } from 'src/app/material.module';
-import {
-  MatCheckboxChange,
-  MatSlideToggleChange,
-  MatDialog,
-  MatSlideToggle,
-  MatButtonToggle,
-  MatButtonToggleChange
-} from '@angular/material';
+import { MatDialog, MatButtonToggleChange } from '@angular/material';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RegistrationService } from 'src/app/core/services/registration.service';
 import { SharedService } from '../../booking/booking.service';
 import { Router } from '@angular/router';
 import { MatKeyboardModule } from 'ngx7-material-keyboard';
-import { componentFactoryName } from '@angular/compiler';
-import { CodeValueModal } from 'src/app/shared/models/demographic-model/code.value.modal';
-import { Button } from 'protractor';
 
 class MockService {
   use() {}
@@ -45,8 +35,8 @@ let router = {
 describe('Demographic Component', () => {
   let component: DemographicComponent;
   let fixture: ComponentFixture<DemographicComponent>;
-  let locationData = [
-    {
+  let locationData = {
+    response: {
       acceptButton: 'Acceptez',
       alertMessageFirst: "Vous serez déconnecté car vous n'acceptez pas les conditions générales",
       alertMessageSecond:
@@ -60,26 +50,15 @@ describe('Demographic Component', () => {
       subtitle: 'Votre accord',
       title: 'Termes et conditions'
     }
-  ];
+  };
   let locationMessage = 'modifyUser';
 
-  let service: DataStorageService,
-    mockUser = {
-      getPrimaryLabels: jasmine.createSpy('getPrimaryLabels').and.returnValue(of(locationData)),
-      getSecondaryLanguageLabels: jasmine.createSpy('getSecondaryLanguageLabels').and.returnValue(of(locationData)),
-      getLocationMetadataHirearchy: jasmine.createSpy('getLocationMetadataHirearchy').and.returnValue(of(locationData)),
-      getGenderDetails: jasmine.createSpy('getGenderDetails').and.returnValue(of(locationData))
-    };
-
-  let regservice: RegistrationService,
-    mockuserreg = {
-      // currentMessage: jasmine.createSpy('currentMessage').and.returnValue(of({ as: 'as' })),
-      // currentMessage: jasmine.createSpy('currentMessage').and.returnValue(),
-      // currentMessage: 'asd',
-      getUsers: jasmine.createSpy('getUsers').and.returnValue(of(locationMessage)),
-      getLoginId: jasmine.createSpy('getLoginId').and.returnValue(of(locationMessage)),
-      getMessage: jasmine.createSpy('getMessage').and.returnValue(of({ id: 1 }))
-    };
+  let mockUser = {
+    getPrimaryLabels: jasmine.createSpy('getPrimaryLabels').and.returnValue(of(locationData)),
+    getSecondaryLanguageLabels: jasmine.createSpy('getSecondaryLanguageLabels').and.returnValue(of(locationData)),
+    getLocationMetadataHirearchy: jasmine.createSpy('getLocationMetadataHirearchy').and.returnValue(of(locationData)),
+    getGenderDetails: jasmine.createSpy('getGenderDetails').and.returnValue(of(locationData))
+  };
 
   const regServiceStub = {
     getMessage() {
@@ -138,7 +117,6 @@ describe('Demographic Component', () => {
 
   it('will change a boolean value on the result of preference change method..', () => {
     component.isReadOnly = true;
-    const event = true;
     fixture.detectChanges();
     // component.message = 'dsa';
     // spyOn(regservice, 'currentMessage').and.returnValue(of('response'"21"));

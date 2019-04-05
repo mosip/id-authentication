@@ -14,6 +14,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
+import io.mosip.preregistration.booking.dto.DemographicBookingRightJoin;
 import io.mosip.preregistration.booking.entity.RegistrationBookingEntity;
 
 /**
@@ -61,7 +62,9 @@ public interface RegistrationBookingRepository extends BaseRepository<Registrati
 	 * @return list of booked preregistration data between start and end date
 	 */
 	@Query(getPreIdQuery)
-	public List<RegistrationBookingEntity> findByBookingDateTimeBetweenAndRegistrationCenterId(LocalDateTime start,
+	public List<RegistrationBookingEntity> findByRegDateBetweenAndRegistrationCenterId(LocalDateTime start,
 			LocalDateTime end, String regCenterId);
-
+	/*@Query("SELECT new io.mosip.preregistration.booking.dto.DemographicBookingRightJoin(d.statusCode,b.registrationCenterId,b.slotFromTime,b.slotToTime,b.regDate)"+" FROM RegistrationBookingEntity b JOIN DemographicEntity d ON b.bookingPK.preregistrationId=d.preRegistrationId where d.preRegistrationId= ?1")
+	public DemographicBookingRightJoin getDemographiBookingRightJoin( String preid);
+*/
 }

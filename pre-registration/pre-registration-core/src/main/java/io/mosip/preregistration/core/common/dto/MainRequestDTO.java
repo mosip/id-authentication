@@ -7,6 +7,8 @@ package io.mosip.preregistration.core.common.dto;
 import java.io.Serializable;
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -41,7 +43,9 @@ public class MainRequestDTO<T> implements Serializable {
 	/**
 	 * Request Date Time
 	 */
+	
 	@ApiModelProperty(value = "request time", position = 3)
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'") 
 	private Date requesttime;
 	/**
 	 * Request Object

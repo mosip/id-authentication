@@ -55,8 +55,8 @@ public class DocumentSizeExceedTest {
 
 		DocumentSizeExceedException exceedException = new DocumentSizeExceedException(
 				DOCUMENT_EXCEEDING_PERMITTED_SIZE);
-
-		DocumentRequestDTO documentDto = new DocumentRequestDTO("48690172097498", "address", "POA", "ENG");
+		String preRegistrationId ="48690172097498";
+		DocumentRequestDTO documentDto = new DocumentRequestDTO("address", "POA", "ENG");
 		ClassLoader classLoader = getClass().getClassLoader();
 
 		URI uri = new URI(classLoader.getResource("Doc.pdf").getFile().trim().replaceAll("\\u0020", "%20"));
@@ -64,10 +64,10 @@ public class DocumentSizeExceedTest {
 
 		this.multiPartFile = new MockMultipartFile("file", "Doc.pdf", "mixed/multipart", new FileInputStream(file));
 
-		Mockito.when(documentUploadService.uploadDocument(multiPartFile, json)).thenThrow(exceedException);
+		Mockito.when(documentUploadService.uploadDocument(multiPartFile, json, preRegistrationId)).thenThrow(exceedException);
 		try {
 
-			documentUploadService.uploadDocument(multiPartFile, json);
+			documentUploadService.uploadDocument(multiPartFile, json, preRegistrationId);
 			fail();
 
 		} catch (DocumentSizeExceedException e) {
