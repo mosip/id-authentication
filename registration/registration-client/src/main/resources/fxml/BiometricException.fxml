@@ -100,7 +100,7 @@
                                         <RowConstraints percentHeight="100.0" valignment="CENTER" vgrow="ALWAYS" />
                                       </rowConstraints>
                                        <children>
-                                          <GridPane fx:id="fingerPane" alignment="BOTTOM_CENTER" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
+                                          <GridPane fx:id="fingerPane" alignment="BOTTOM_CENTER" styleClass="fingerIrisSeparator" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
                                             <columnConstraints>
                                               <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" percentWidth="50.0" />
                                               <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" percentWidth="50.0" />
