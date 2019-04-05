@@ -21,8 +21,8 @@ ENV spring_config_label_env=${spring_config_label}
 # environment variable to pass spring configuration url, at docker runtime
 ENV spring_config_url_env=${spring_config_url}
 
-copy ./target/pre-registration-generateQRcode-service-*.jar pre-registration-generateQRcode-service.jar
+copy ./target/pre-registration-generateqrcode-service-*.jar pre-registration-generateqrcode-service.jar
 
 EXPOSE 9091
 
-CMD ["java","-jar","-Dspring.cloud.config.label=${spring_config_label_env}","-Dspring.profiles.active=${active_profile_env}","-Dspring.cloud.config.uri=${spring_config_url_env}","pre-registration-generateQRcode-service.jar"]
+CMD ["java","-jar","-Dspring.cloud.config.label=${spring_config_label_env}","-Dspring.profiles.active=${active_profile_env}","-Dspring.cloud.config.uri=${spring_config_url_env}","pre-registration-generateqrcode-service.jar"]

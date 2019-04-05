@@ -9,9 +9,9 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
 		<version>0.10.0</version>
 	</parent>
 	
-	<artifactId>pre-registration-generateQRcode-service</artifactId>
+	<artifactId>pre-registration-generateqrcode-service</artifactId>
 	
-	<name>pre-registration-generateQRcode-service</name>
+	<name>pre-registration-generateqrcode-service</name>
 	
 
 	<properties>
