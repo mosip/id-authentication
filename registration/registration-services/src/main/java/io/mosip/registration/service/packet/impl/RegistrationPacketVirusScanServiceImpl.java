@@ -10,7 +10,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.exception.ExceptionUtils;
@@ -38,9 +37,6 @@ public class RegistrationPacketVirusScanServiceImpl extends BaseService implemen
 	@Autowired
 	private VirusScanner<Boolean, String> virusScanner;
 
-	@Value("${PRE_REG_PACKET_LOCATION}")
-	private String preRegPacketLocation;
-
 	private static final Logger LOGGER = AppConfig.getLogger(RegistrationPacketVirusScanServiceImpl.class);
 
 	/*
@@ -58,7 +54,8 @@ public class RegistrationPacketVirusScanServiceImpl extends BaseService implemen
 		ResponseDTO responseDTO = new ResponseDTO();
 		SuccessResponseDTO successResponseDTO = new SuccessResponseDTO();
 		List<String> pathList = Arrays.asList(
-				String.valueOf(ApplicationContext.map().get(RegistrationConstants.PKT_STORE_LOC)), preRegPacketLocation,
+				String.valueOf(ApplicationContext.map().get(RegistrationConstants.PKT_STORE_LOC)), 
+				String.valueOf(ApplicationContext.map().get(RegistrationConstants.PRE_REG_PACKET_LOCATION)),
 				String.valueOf(ApplicationContext.map().get(RegistrationConstants.LOGS_PATH)),
 				String.valueOf(ApplicationContext.map().get(RegistrationConstants.DB_PATH)),
 				String.valueOf(ApplicationContext.map().get(RegistrationConstants.CLIENT_PATH)));
