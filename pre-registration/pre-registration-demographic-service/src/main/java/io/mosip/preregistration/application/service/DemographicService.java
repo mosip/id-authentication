@@ -421,7 +421,10 @@ public class DemographicService {
 								DateUtils.getUTCCurrentDateTime());
 						JSONParser jsonParser = new JSONParser();
 						JSONObject jsonObj = (JSONObject) jsonParser.parse(new String(decryptedString));
-						String postalcode = serviceUtil.getIdJSONValue(jsonObj.toJSONString(), RequestCodes.POSTAL_CODE.getCode());
+
+						String postalcode = serviceUtil.getIdJSONValue(jsonObj.toJSONString(),
+								RequestCodes.POSTAL_CODE.getCode());
+
 						JSONArray identityValue = serviceUtil.getValueFromIdentity(decryptedString,
 								RequestCodes.FULLNAME.getCode());
 						viewDto = new PreRegistrationViewDTO();
@@ -865,17 +868,18 @@ public class DemographicService {
 		try {
 			Map<String, Object> params = new HashMap<>();
 			params.put("preRegistrationId", preregId);
-			UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(resourceUrl + "/documents/preregistration/");
+			UriComponentsBuilder uriBuilder = UriComponentsBuilder
+					.fromHttpUrl(resourceUrl + "/documents/preregistration/");
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
 			HttpEntity<MainListResponseDTO<DocumentDeleteResponseDTO>> httpEntity = new HttpEntity<>(headers);
 			String strUriBuilder = uriBuilder.build().encode().toUriString();
-			strUriBuilder+="{preRegistrationId}";
+			strUriBuilder += "{preRegistrationId}";
 			log.info("sessionId", "idType", "id",
 					"In callDocumentServiceToDeleteAllByPreId method URL- " + strUriBuilder);
 			responseEntity = restTemplate.exchange(strUriBuilder, HttpMethod.DELETE, httpEntity,
 					new ParameterizedTypeReference<MainListResponseDTO<DocumentDeleteResponseDTO>>() {
-					} ,params);
+					}, params);
 
 			if (responseEntity.getBody().getErrors() != null) {
 				if (!responseEntity.getBody().getErrors().getMessage()
@@ -958,8 +962,13 @@ public class DemographicService {
 			if (preRegIdsByRegCenterIdDTO.getPreRegistrationIds() != null
 					&& !preRegIdsByRegCenterIdDTO.getPreRegistrationIds().isEmpty()) {
 				List<String> preIds = preRegIdsByRegCenterIdDTO.getPreRegistrationIds();
+
+				List<String> statusCodes = new ArrayList<>();
+				statusCodes.add(StatusCodes.BOOKED.getCode());
+				statusCodes.add(StatusCodes.EXPIRED.getCode());
+
 				List<DemographicEntity> demographicEntities = demographicRepository
-						.findByStatusCodeAndPreRegistrationIdIn(StatusCodes.BOOKED.getCode(), preIds);
+						.findByStatusCodeInAndPreRegistrationIdIn(statusCodes, preIds);
 				if (demographicEntities != null && !demographicEntities.isEmpty()) {
 					for (DemographicEntity demographicEntity : demographicEntities) {
 						preIdMap.put(demographicEntity.getPreRegistrationId(),

@@ -2,6 +2,7 @@ package io.mosip.preregistration.datasync.service.util;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -154,10 +155,15 @@ public class DataSyncServiceUtil {
 		log.info("sessionId", "idType", "id", "In callGetPreIdsRestService method of datasync service util");
 		PreRegIdsByRegCenterIdResponseDTO preRegIdsByRegCenterIdResponseDTO = null;
 		try {
-			UriComponentsBuilder builder = UriComponentsBuilder
-					.fromHttpUrl(bookingResourceUrl + "/appointment/byDateAndRegCenterId")
-					.queryParam("from_date", fromDate).queryParam("to_date", toDate)
-					.queryParam("reg_center_id", regCenterId);
+			Map<String, String> params = new HashMap<>();
+			params.put("registrationCenterId", regCenterId);
+			UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder
+					.fromHttpUrl(bookingResourceUrl + "/appointment/preRegistrationId/{registrationCenterId}");
+
+			URI uri = uriComponentsBuilder.buildAndExpand(params).toUri();
+			UriComponentsBuilder builder = UriComponentsBuilder.fromUri(uri).queryParam("from_date", fromDate)
+					.queryParam("to_date", toDate);
+
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
 			HttpEntity<MainListResponseDTO<PreRegIdsByRegCenterIdResponseDTO>> httpEntity = new HttpEntity<>(headers);
@@ -166,7 +172,7 @@ public class DataSyncServiceUtil {
 			ResponseEntity<MainResponseDTO<PreRegIdsByRegCenterIdResponseDTO>> respEntity = restTemplate.exchange(
 					uriBuilder, HttpMethod.GET, httpEntity,
 					new ParameterizedTypeReference<MainResponseDTO<PreRegIdsByRegCenterIdResponseDTO>>() {
-					});
+					}, params);
 			if (respEntity.getBody().getErrors() != null) {
 				throw new RecordNotFoundForDateRange(respEntity.getBody().getErrors().get(0).getErrorCode(),
 						respEntity.getBody().getErrors().get(0).getMessage());
@@ -189,9 +195,8 @@ public class DataSyncServiceUtil {
 		log.info("sessionId", "idType", "id", "In callGetDocRestService method of datasync service util");
 		List<DocumentMultipartResponseDTO> responsestatusDto = new ArrayList<>();
 		try {
-
-			// RestTemplate restTemplate = restTemplateBuilder.build();
-
+			Map<String, String> params = new HashMap<>();
+			params.put("preRegistrationId", preId);
 			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(documentResourceUrl + "/documents")
 					.queryParam("pre_registration_id", preId);
 			HttpHeaders headers = new HttpHeaders();
@@ -202,7 +207,7 @@ public class DataSyncServiceUtil {
 			ResponseEntity<MainListResponseDTO<DocumentMultipartResponseDTO>> respEntity = restTemplate.exchange(
 					uriBuilder, HttpMethod.GET, httpEntity,
 					new ParameterizedTypeReference<MainListResponseDTO<DocumentMultipartResponseDTO>>() {
-					});
+					}, params);
 			if (respEntity.getBody().getErrors() != null) {
 				log.info("sessionId", "idType", "id",
 						"In callGetDocRestService method of datasync service util - Document not found for the pre_registration_id");
@@ -225,8 +230,6 @@ public class DataSyncServiceUtil {
 		log.info("sessionId", "idType", "id", "In callGetPreRegInfoRestService method of datasync service util");
 		DemographicResponseDTO responsestatusDto = new DemographicResponseDTO();
 		try {
-
-			// RestTemplate restTemplate = restTemplateBuilder.build();
 			Map<String, Object> params = new HashMap<>();
 			params.put("preRegistrationId", preId);
 
@@ -270,11 +273,9 @@ public class DataSyncServiceUtil {
 				"In callGetAppointmentDetailsRestService method of datasync service util");
 		BookingRegistrationDTO bookingRegistrationDTO = null;
 		try {
-
-			// RestTemplate restTemplate = restTemplateBuilder.build();
-
-			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(bookingResourceUrl + "/appointment")
-					.queryParam("pre_registration_id", preId);
+			Map<String, String> params = new HashMap<>();
+			params.put("preRegistrationId", preId);
+			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(bookingResourceUrl + "/appointment");
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
 			HttpEntity<MainResponseDTO<BookingRegistrationDTO>> httpEntity = new HttpEntity<>(headers);
@@ -283,7 +284,7 @@ public class DataSyncServiceUtil {
 			ResponseEntity<MainResponseDTO<BookingRegistrationDTO>> respEntity = restTemplate.exchange(uriBuilder,
 					HttpMethod.GET, httpEntity,
 					new ParameterizedTypeReference<MainResponseDTO<BookingRegistrationDTO>>() {
-					});
+					}, params);
 			if (respEntity.getBody().getErrors() != null) {
 				throw new DemographicGetDetailsException(respEntity.getBody().getErrors().get(0).getErrorCode(),
 						respEntity.getBody().getErrors().get(0).getMessage());
@@ -442,9 +443,6 @@ public class DataSyncServiceUtil {
 		try {
 			MainRequestDTO<PreRegIdsByRegCenterIdDTO> mainRequestDTO = new MainRequestDTO<>();
 			mainRequestDTO.setRequest(preRegIdsDTO);
-
-			// RestTemplate restTemplate = restTemplateBuilder.build();
-
 			UriComponentsBuilder builder = UriComponentsBuilder
 					.fromHttpUrl(demographicResourceUrl + "/applications/updatedTime");
 			HttpHeaders headers = new HttpHeaders();
@@ -532,8 +530,9 @@ public class DataSyncServiceUtil {
 				if (!savedList.isEmpty()) {
 					savedListSize = savedList.size();
 					for (ProcessedPreRegEntity processedEntity : processedEntityList) {
+						preIds.add(processedEntity.getPreRegistrationId());
 						if (!processedDataSyncRepo.existsById(processedEntity.getPreRegistrationId())) {
-							preIds.add(processedDataSyncRepo.save(processedEntity).getPreRegistrationId());
+							processedDataSyncRepo.save(processedEntity).getPreRegistrationId();
 						}
 					}
 					reponseDTO.setCountOfStoredPreRegIds(String.valueOf(savedListSize));

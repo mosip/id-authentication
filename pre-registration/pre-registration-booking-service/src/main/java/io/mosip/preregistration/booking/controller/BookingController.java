@@ -134,7 +134,7 @@ public class BookingController {
 	@ApiOperation(value = "Fetch Appointment details")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Appointment Booked Successfully"),
 			@ApiResponse(code = 400, message = "Unable to Book the appointment") })
-	public ResponseEntity<MainResponseDTO<BookingRegistrationDTO>> appointmentDetails(
+	public ResponseEntity<MainResponseDTO<BookingRegistrationDTO>> getAppointments(
 			@PathVariable("preRegistrationId") String preRegistrationId) {
 		log.info("sessionId", "idType", "id",
 				"In appointmentDetails method of Booking controller to fetch appointment details for preRegID: "
