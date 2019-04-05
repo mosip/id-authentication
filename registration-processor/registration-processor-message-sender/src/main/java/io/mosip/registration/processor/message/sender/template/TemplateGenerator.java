@@ -89,7 +89,6 @@ public class TemplateGenerator {
 		ResponseWrapper<?> responseWrapper;
 		TemplateResponseDto template=null;
 		
-		
 		try {
 			List<String> pathSegments = new ArrayList<>();
 			pathSegments.add(TEMPLATES);
