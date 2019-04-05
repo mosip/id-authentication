@@ -56,4 +56,25 @@ public class RegistrationApprovalDTO {
 	public String getStatusComment() {
 		return statusComment.get();
 	}
+
+	/**
+	 * @param id the id to set
+	 */
+	public void setId(String id) {
+		this.id = new SimpleStringProperty(id);
+	}
+
+	/**
+	 * @param acknowledgementFormPath the acknowledgementFormPath to set
+	 */
+	public void setAcknowledgementFormPath(String acknowledgementFormPath) {
+		this.acknowledgementFormPath = new SimpleStringProperty(acknowledgementFormPath);
+	}
+
+	/**
+	 * @param statusComment the statusComment to set
+	 */
+	public void setStatusComment(String statusComment) {
+		this.statusComment = new SimpleStringProperty(statusComment);
+	}
 }
