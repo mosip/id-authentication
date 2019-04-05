@@ -65,14 +65,10 @@ public class IDAuthExceptionHandlerTest {
 	@InjectMocks
 	private IdAuthExceptionHandler handler;
 
-	@Mock
-	private MessageSource messageSource;
-
 	@Before
 	public void before() {
 		ResourceBundleMessageSource source = new ResourceBundleMessageSource();
 		source.setBasename("errormessages");
-		ReflectionTestUtils.setField(handler, "messageSource", source);
 		ReflectionTestUtils.setField(handler, "mapper", mapper);
 	}
 
@@ -139,7 +135,7 @@ public class IDAuthExceptionHandlerTest {
 	@Test
 	public void testHandleDataException() {
 		AuthResponseDTO expectedResponse = new AuthResponseDTO();
-		ResponseDTO res=new ResponseDTO();
+		ResponseDTO res = new ResponseDTO();
 		res.setAuthStatus(Boolean.FALSE);
 		expectedResponse.setResponse(res);
 		expectedResponse.setErrors(
@@ -163,7 +159,7 @@ public class IDAuthExceptionHandlerTest {
 	@Test
 	public void testAsyncRequestTimeoutException() {
 		AuthResponseDTO expectedResponse = new AuthResponseDTO();
-		ResponseDTO res=new ResponseDTO();
+		ResponseDTO res = new ResponseDTO();
 		res.setAuthStatus(Boolean.FALSE);
 		expectedResponse.setResponse(res);
 		expectedResponse.setErrors(
@@ -182,7 +178,7 @@ public class IDAuthExceptionHandlerTest {
 	@Test
 	public void testNoSuchMessageException() {
 		AuthResponseDTO expectedResponse = new AuthResponseDTO();
-		ResponseDTO res=new ResponseDTO();
+		ResponseDTO res = new ResponseDTO();
 		res.setAuthStatus(Boolean.FALSE);
 		expectedResponse.setResponse(res);
 		expectedResponse.setErrors(
@@ -194,10 +190,10 @@ public class IDAuthExceptionHandlerTest {
 				null);
 		AuthResponseDTO actualResponse = (AuthResponseDTO) handleExceptionInternal.getBody();
 		actualResponse.setResponseTime(null);
-		ResponseDTO response=new ResponseDTO();
+		ResponseDTO response = new ResponseDTO();
 		response.setAuthStatus(Boolean.FALSE);
 		actualResponse.setResponse(response);
-actualResponse.setErrors(
+		actualResponse.setErrors(
 				Collections.singletonList(new AuthError(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(),
 						IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorMessage())));
 		assertEquals(expectedResponse, actualResponse);
@@ -206,7 +202,7 @@ actualResponse.setErrors(
 	@Test
 	public void testhandleAllExceptionsUnknownError() {
 		AuthResponseDTO expectedResponse = new AuthResponseDTO();
-		ResponseDTO res=new ResponseDTO();
+		ResponseDTO res = new ResponseDTO();
 		res.setAuthStatus(Boolean.FALSE);
 		expectedResponse.setResponse(res);
 		expectedResponse.setErrors(
@@ -231,7 +227,7 @@ actualResponse.setErrors(
 	@Test
 	public void testCreateAuthError() {
 		AuthResponseDTO expectedResponse = new AuthResponseDTO();
-		ResponseDTO res=new ResponseDTO();
+		ResponseDTO res = new ResponseDTO();
 		res.setAuthStatus(Boolean.FALSE);
 		expectedResponse.setResponse(res);
 		expectedResponse.setErrors(Collections
@@ -248,10 +244,8 @@ actualResponse.setErrors(
 	@Ignore
 	@Test
 	public void testCreateAuthErrorwithActionCode() {
-		Mockito.when(messageSource.getMessage(Mockito.any(), Mockito.any(), Mockito.any()))
-				.thenReturn("Please regenerate OTP and try again after sometime");
 		AuthResponseDTO expectedResponse = new AuthResponseDTO();
-		ResponseDTO res=new ResponseDTO();
+		ResponseDTO res = new ResponseDTO();
 		res.setAuthStatus(Boolean.FALSE);
 		expectedResponse.setResponse(res);
 		expectedResponse.setErrors(Collections
