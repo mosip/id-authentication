@@ -382,8 +382,8 @@ public class PacketValidateProcessor {
 				|| object.getReg_type().equalsIgnoreCase(RegistrationType.DEACTIVATED.toString()));
 
 		if (!regTypeCheck) {
-			if (!applicantDocumentValidation(identity, registrationStatusDto))
-				return false;
+			//if (!applicantDocumentValidation(identity, registrationStatusDto))
+				//return false;
 			if (!masterDataValidation(jsonString, registrationStatusDto))
 				return false;
 
