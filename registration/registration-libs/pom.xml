@@ -114,6 +114,8 @@
 								<argument>${main.basedir}/registration-libs/target/</argument>
 								<argument>${main.basedir}/registration-libs/src/main/resources/certificate/mosip_cer.cer</argument>
 								<argument>${main.basedir}/registration-libs/src/main/resources/db/reg</argument>
+								<argument>${main.basedir}/registration-client/target/registration-client.jar</argument>
+
 							</arguments>
 						</configuration>
 					</execution>

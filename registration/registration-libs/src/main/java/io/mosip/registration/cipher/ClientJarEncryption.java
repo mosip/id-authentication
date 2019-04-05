@@ -136,6 +136,17 @@ public class ClientJarEncryption {
 					File regFolder = new File(args[6]);
 					readDirectoryToByteArray(MOSIP_DB, regFolder, fileNameByBytes);
 
+					// TODO temporary zip file
+					System.out.println("Shaded Zip Started");
+					String shadedzipFilename = file.getParent() + SLASH + "mosip-sw-shaded-" + args[3] + MOSIP_ZIP;
+					Map<String, byte[]> shadedZipFileBytes = new HashMap<>();
+					readDirectoryToByteArray(null, regFolder, shadedZipFileBytes);
+					File shadedJar = args[1] != null && new File(args[1]).exists() ? new File(args[1]) : new File(args[7]);
+					shadedZipFileBytes.put(shadedJar.getName(), FileUtils.readFileToByteArray(shadedJar));
+					aes.writeFileToZip(shadedZipFileBytes, shadedzipFilename);
+
+					System.out.println("Shaded Zip Created");
+
 					String path = new File(args[4]).getPath();
 
 					File regLibFile = new File(path + SLASH + libraries);
@@ -152,7 +163,6 @@ public class ClientJarEncryption {
 					}
 					/* Add To Manifest */
 					addToManifest(MOSIP_CLIENT, clientJarEncryptedBytes, manifest);
-
 
 					// /* Save Client jar to registration-libs */
 					// saveLibJars(clientJarEncryptedBytes, clientJar.getName(), regLibFile);
@@ -290,19 +300,21 @@ public class ClientJarEncryption {
 
 	private static void readDirectoryToByteArray(String directory, File srcFile, Map<String, byte[]> fileNameByBytes)
 			throws IOException {
+
+		directory = directory != null ? directory + SLASH : "";
 		if (srcFile.isDirectory()) {
 
 			File[] listFiles = srcFile.listFiles();
 			if (listFiles.length == 0) {
-				fileNameByBytes.put(directory + SLASH + srcFile.getName()+SLASH, new byte[] {});
+				fileNameByBytes.put(directory + srcFile.getName() + SLASH, new byte[] {});
 			} else {
 				for (File file : srcFile.listFiles()) {
 					if (file.isDirectory()) {
-						readDirectoryToByteArray(directory + SLASH + srcFile.getName(), file, fileNameByBytes);
+						readDirectoryToByteArray(directory + srcFile.getName(), file, fileNameByBytes);
 					} else {
 						byte[] fileBytes = FileUtils.readFileToByteArray(file);
 						fileBytes = fileBytes.length > 0 ? fileBytes : new byte[] {};
-						fileNameByBytes.put(directory + SLASH + srcFile.getName() + SLASH + file.getName(), fileBytes);
+						fileNameByBytes.put(directory + srcFile.getName() + SLASH + file.getName(), fileBytes);
 					}
 				}
 			}
@@ -311,7 +323,7 @@ public class ClientJarEncryption {
 			byte[] fileBytes = FileUtils.readFileToByteArray(srcFile);
 			fileBytes = fileBytes.length > 0 ? fileBytes : new byte[] {};
 
-			fileNameByBytes.put(directory + SLASH + srcFile.getName(), fileBytes);
+			fileNameByBytes.put(directory + srcFile.getName(), fileBytes);
 		}
 
 	}
