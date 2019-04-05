@@ -13,18 +13,15 @@ public class IdRequestDto {
 	/** The id. */
 	private String id;
 	
-	/** The registration id. */
-	private String registrationId;
-	
 	/** The request. */
 	private RequestDto request;
 	
 	/** The time stamp. */
-	private String timestamp;
+	private String requesttime;
 	
 	/** The version. */
 	private String version;
 	
-	private String status;
-
+	private Object metadata;
+	
 }

@@ -162,7 +162,7 @@ public class UinGeneratorStageTest {
 				.mock(RegistrationProcessorRestClientService.class);
 		auditLog.set(auditLogRequestBuilder, mockObj);
 		AuditResponseDto auditResponseDto = new AuditResponseDto();
-		ResponseWrapper<AuditResponseDto> responseWrapper=new ResponseWrapper<AuditResponseDto>();
+		ResponseWrapper<AuditResponseDto>  responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(auditResponseDto);
 		Mockito.doReturn(responseWrapper).when(auditLogRequestBuilder).createAuditRequestBuilder(
 				"test case description", EventId.RPR_401.toString(), EventName.ADD.toString(),
@@ -227,17 +227,19 @@ public class UinGeneratorStageTest {
 		IdResponseDTO idResponseDTO = new IdResponseDTO();
 		ResponseDTO responseDTO = new ResponseDTO();
 		responseDTO.setEntity("https://dev.mosip.io/idrepo/v1.0/identity/203560486746");
+		responseDTO.setStatus("ACTIVATED");
 		idResponseDTO.setErrors(null);
 		idResponseDTO.setId("mosip.id.create");
 		idResponseDTO.setResponse(responseDTO);
-		idResponseDTO.setStatus("ACTIVATED");
-		idResponseDTO.setTimestamp("2019-01-17T06:29:01.940Z");
+		idResponseDTO.setResponsetime("2019-01-17T06:29:01.940Z");
 		idResponseDTO.setVersion("1.0");
+
 
 		Mockito.when(registrationProcessorRestClientService.postApi(any(), any(), any(), any(), any(), any()))
 				.thenReturn(idResponseDTO);
 
 		MessageDTO result = uinGeneratorStage.process(messageDTO);
+		System.out.println(result.getInternalError());
 		assertFalse(result.getInternalError());
 
 	}
@@ -272,9 +274,9 @@ public class UinGeneratorStageTest {
 		responseDTO.setEntity("https://dev.mosip.io/idrepo/v1.0/identity/203560486746");
 		idResponseDTO.setErrors(null);
 		idResponseDTO.setId("mosip.id.create");
+		responseDTO.setStatus("ACTIVATED");
 		idResponseDTO.setResponse(responseDTO);
-		idResponseDTO.setStatus("ACTIVATED");
-		idResponseDTO.setTimestamp("2019-01-17T06:29:01.940Z");
+		idResponseDTO.setResponsetime("2019-01-17T06:29:01.940Z");
 		idResponseDTO.setVersion("1.0");
 
 		Mockito.when(registrationProcessorRestClientService.postApi(any(), any(), any(), any(), any(), any()))
@@ -297,9 +299,9 @@ public class UinGeneratorStageTest {
 		responseDTO.setEntity("https://dev.mosip.io/idrepo/v1.0/identity/203560486746");
 		idResponseDTO.setErrors(null);
 		idResponseDTO.setId("mosip.id.update");
+		responseDTO.setStatus("ACTIVATED");
 		idResponseDTO.setResponse(responseDTO);
-		idResponseDTO.setStatus("ACTIVATED");
-		idResponseDTO.setTimestamp("2019-01-17T06:29:01.940Z");
+		idResponseDTO.setResponsetime("2019-01-17T06:29:01.940Z");
 		idResponseDTO.setVersion("1.0");
 
 
@@ -332,9 +334,9 @@ public class UinGeneratorStageTest {
 		responseDTO.setEntity("https://dev.mosip.io/idrepo/v1.0/identity/203560486746");
 		idResponseDTO.setErrors(null);
 		idResponseDTO.setId("mosip.id.update");
+		responseDTO.setStatus("ANY");
 		idResponseDTO.setResponse(responseDTO);
-		idResponseDTO.setStatus("ANY");
-		idResponseDTO.setTimestamp("2019-01-17T06:29:01.940Z");
+		idResponseDTO.setResponsetime("2019-01-17T06:29:01.940Z");
 		idResponseDTO.setVersion("1.0");
 
 
@@ -344,9 +346,10 @@ public class UinGeneratorStageTest {
 		responseDTO1.setEntity("https://dev.mosip.io/idrepo/v1.0/identity/203560486746");
 		idResponseDTO1.setErrors(null);
 		idResponseDTO1.setId("mosip.id.update");
+		responseDTO1.setStatus("ACTIVATED");
 		idResponseDTO1.setResponse(responseDTO1);
-		idResponseDTO1.setStatus("ACTIVATED");
-		idResponseDTO1.setTimestamp("2019-01-17T06:29:01.940Z");
+
+		idResponseDTO1.setResponsetime("2019-01-17T06:29:01.940Z");
 		idResponseDTO1.setVersion("1.0");
 
 
@@ -379,9 +382,9 @@ public class UinGeneratorStageTest {
 		responseDTO.setEntity("https://dev.mosip.io/idrepo/v1.0/identity/203560486746");
 		idResponseDTO.setErrors(null);
 		idResponseDTO.setId("mosip.id.update");
+		responseDTO.setStatus("ANY");
 		idResponseDTO.setResponse(responseDTO);
-		idResponseDTO.setStatus("ANY");
-		idResponseDTO.setTimestamp("2019-01-17T06:29:01.940Z");
+		idResponseDTO.setResponsetime("2019-01-17T06:29:01.940Z");
 		idResponseDTO.setVersion("1.0");
 
 
@@ -391,9 +394,9 @@ public class UinGeneratorStageTest {
 		responseDTO1.setEntity("https://dev.mosip.io/idrepo/v1.0/identity/203560486746");
 		idResponseDTO1.setErrors(null);
 		idResponseDTO1.setId("mosip.id.update");
+		responseDTO1.setStatus("ANY");
 		idResponseDTO1.setResponse(responseDTO1);
-		idResponseDTO1.setStatus("ANY");
-		idResponseDTO1.setTimestamp("2019-01-17T06:29:01.940Z");
+		idResponseDTO1.setResponsetime("2019-01-17T06:29:01.940Z");
 		idResponseDTO1.setVersion("1.0");
 
 
@@ -426,9 +429,9 @@ public class UinGeneratorStageTest {
 		responseDTO.setEntity("https://dev.mosip.io/idrepo/v1.0/identity/203560486746");
 		idResponseDTO.setErrors(null);
 		idResponseDTO.setId("mosip.id.update");
+		responseDTO.setStatus("ANY");
 		idResponseDTO.setResponse(responseDTO);
-		idResponseDTO.setStatus("ANY");
-		idResponseDTO.setTimestamp("2019-01-17T06:29:01.940Z");
+		idResponseDTO.setResponsetime("2019-01-17T06:29:01.940Z");
 		idResponseDTO.setVersion("1.0");
 
 
@@ -439,8 +442,8 @@ public class UinGeneratorStageTest {
 		idResponseDTO1.setErrors(errors);
 		idResponseDTO1.setId("mosip.id.update");
 		idResponseDTO1.setResponse(null);
-		idResponseDTO1.setStatus("ANY");
-		idResponseDTO1.setTimestamp("2019-01-17T06:29:01.940Z");
+//		idResponseDTO1.setStatus("ANY");
+		idResponseDTO1.setResponsetime("2019-01-17T06:29:01.940Z");
 		idResponseDTO1.setVersion("1.0");
 
 
@@ -469,14 +472,14 @@ public class UinGeneratorStageTest {
 		ResponseDTO responseDTO = new ResponseDTO();
 		ErrorDTO errorDto = new ErrorDTO();
 		errorDto.setErrorCode("KER-IDR-001");
-		errorDto.setErrorMessage("Record already Exists in DB");
+		errorDto.setMessage("Record already Exists in DB");
 		responseDTO.setEntity("https://dev.mosip.io/idrepo/v1.0/identity/203560486746");
 		List<ErrorDTO> errors = new ArrayList<>();
 		errors.add(errorDto);
 		idResponseDTO.setErrors(errors);
 		idResponseDTO.setId("mosip.id.error");
 		idResponseDTO.setResponse(null);
-		idResponseDTO.setTimestamp("2019-01-17T06:29:01.940Z");
+		idResponseDTO.setResponsetime("2019-01-17T06:29:01.940Z");
 		idResponseDTO.setVersion("1.0");
 
 		// String response = new String(
@@ -586,7 +589,7 @@ public class UinGeneratorStageTest {
 		messageDTO.setReg_type("DEACTIVATED");
 
 		IdResponseDTO responsedto = new IdResponseDTO();
-		responsedto.setStatus("ACTIVATED");
+		//responsedto.setStatus("ACTIVATED");
 
 		String idJson = "{\"identity\":{\"IDSchemaVersion\":1.0,\"UIN\":4215839851}}";
 		InputStream idJsonStream1 = new ByteArrayInputStream(idJson.getBytes(StandardCharsets.UTF_8));
@@ -596,9 +599,9 @@ public class UinGeneratorStageTest {
 		responseDTO.setEntity("https://dev.mosip.io/idrepo/v1.0/identity/203560486746");
 		idResponseDTO.setErrors(null);
 		idResponseDTO.setId("mosip.id.update");
-		idResponseDTO.setStatus("DEACTIVATED");
+		responseDTO.setStatus("DEACTIVATED");
 		idResponseDTO.setResponse(responseDTO);
-		idResponseDTO.setTimestamp("2019-03-12T06:49:30.779Z");
+		idResponseDTO.setResponsetime("2019-03-12T06:49:30.779Z");
 		idResponseDTO.setVersion("1.0");
 
 		Mockito.when(adapter.getFile("10031100110005020190313110030",
@@ -623,9 +626,9 @@ public class UinGeneratorStageTest {
 		responseDTO.setEntity("https://dev.mosip.io/idrepo/v1.0/identity/203560486746");
 		InputStream idJsonStream1 = new ByteArrayInputStream(idJson.getBytes(StandardCharsets.UTF_8));
 
+		responseDTO.setStatus("DEACTIVATED");
 		IdResponseDTO responsedto = new IdResponseDTO();
 		responsedto.setResponse(responseDTO);
-		responsedto.setStatus("DEACTIVATED");
 
 		Mockito.when(adapter.getFile("10031100110005020190313110030",
 				PacketFiles.DEMOGRAPHIC.name() + "\\" + PacketFiles.ID.name())).thenReturn(idJsonStream1);
@@ -647,7 +650,7 @@ public class UinGeneratorStageTest {
 
 		ErrorDTO errorDto = new ErrorDTO();
 		errorDto.setErrorCode("KER-IDR-001");
-		errorDto.setErrorMessage("Record already Exists in DB");
+		errorDto.setMessage("Record already Exists in DB");
 
 		List<ErrorDTO> errors = new ArrayList<>();
 		errors.add(errorDto);
@@ -657,9 +660,10 @@ public class UinGeneratorStageTest {
 		responseDTO.setEntity("https://dev.mosip.io/idrepo/v1.0/identity/203560486746");
 		idResponseDTO.setErrors(errors);
 		idResponseDTO.setId("mosip.id.update");
-		idResponseDTO.setStatus("DEACTIVATED");
-		idResponseDTO.setResponse(null);
-		idResponseDTO.setTimestamp("2019-03-12T06:49:30.779Z");
+		ResponseDTO responseDTO1 = new ResponseDTO();
+		responseDTO1.setStatus("DEACTIVATED");
+		idResponseDTO.setResponse(responseDTO1);
+		idResponseDTO.setResponsetime("2019-03-12T06:49:30.779Z");
 		idResponseDTO.setVersion("1.0");
 
 		Mockito.when(adapter.getFile("10031100110005020190313110030",
@@ -688,7 +692,7 @@ public class UinGeneratorStageTest {
 
 		ErrorDTO errorDto = new ErrorDTO();
 		errorDto.setErrorCode("KER-IDR-001");
-		errorDto.setErrorMessage("Record already Exists in DB");
+		errorDto.setMessage("Record already Exists in DB");
 
 		List<ErrorDTO> errors = new ArrayList<>();
 		errors.add(errorDto);
@@ -698,9 +702,9 @@ public class UinGeneratorStageTest {
 		responseDTO.setEntity("https://dev.mosip.io/idrepo/v1.0/identity/203560486746");
 		idResponseDTO.setErrors(errors);
 		idResponseDTO.setId("mosip.id.update");
-		idResponseDTO.setStatus("DEACTIVATED");
-		idResponseDTO.setResponse(null);
-		idResponseDTO.setTimestamp("2019-03-12T06:49:30.779Z");
+		responseDTO.setStatus("DEACTIVATED");
+		idResponseDTO.setResponse(responseDTO);
+		idResponseDTO.setResponsetime("2019-03-12T06:49:30.779Z");
 		idResponseDTO.setVersion("1.0");
 
 		Mockito.when(adapter.getFile("10031100110005020190313110030",
