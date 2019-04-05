@@ -6,18 +6,16 @@ import java.io.InputStream;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
-
+import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
-
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
-
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.idgenerator.spi.RidGenerator;
 import io.mosip.kernel.core.idvalidator.exception.InvalidIDException;
@@ -181,14 +179,15 @@ public class PacketGeneratorServiceImpl implements PacketGeneratorService {
 	 * @param machineId
 	 *            the machine id
 	 * @return the registration DTO
+	 * @throws RegBaseCheckedException 
 	 */
 	private RegistrationDTO createRegistrationDTOObject(String uin, String registrationType, String centerId,
-			String machineId) {
+			String machineId) throws RegBaseCheckedException {
 		RegistrationDTO registrationDTO = new RegistrationDTO();
 		registrationDTO.setDemographicDTO(getDemographicDTO(uin));
 		RegistrationMetaDataDTO registrationMetaDataDTO = getRegistrationMetaDataDTO(registrationType, uin, centerId,
 				machineId);
-		String registrationId =ridGeneratorImpl.generateId(registrationMetaDataDTO.getCenterId(),registrationMetaDataDTO.getMachineId());
+		String registrationId =generateRegistrationId(registrationMetaDataDTO.getCenterId(),registrationMetaDataDTO.getMachineId());
 		registrationDTO.setRegistrationId(registrationId);
 		registrationDTO.setRegistrationMetaDataDTO(registrationMetaDataDTO);
 		return registrationDTO;
@@ -270,7 +269,7 @@ public class PacketGeneratorServiceImpl implements PacketGeneratorService {
 				isValidCenter = true;
 			} else {
 				List<ErrorDTO> error = responseWrapper.getErrors();
-           	 
+
 
 				throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION,
 						error.get(0).getMessage(), new Throwable());
@@ -291,7 +290,7 @@ public class PacketGeneratorServiceImpl implements PacketGeneratorService {
 		}
 		return isValidCenter;
 	}
-	
+
 
 	/**
 	 * Checks if is valid machine.
@@ -342,5 +341,39 @@ public class PacketGeneratorServiceImpl implements PacketGeneratorService {
 		}
 		return isValidMachine;
 
+	}
+	
+	
+	private String generateRegistrationId(String centerId,String machineId) throws RegBaseCheckedException {
+
+		List<String> pathsegments = new ArrayList<>();
+		pathsegments.add(centerId);
+		pathsegments.add(machineId);
+		String rid=null;
+		ResponseWrapper<?> responseWrapper = new ResponseWrapper<>();
+		JSONObject ridJson=new JSONObject();
+		try {
+			responseWrapper = (ResponseWrapper<?>) restClientService.getApi(ApiName.RIDGENERATION, pathsegments, "",
+					"", ResponseWrapper.class);
+			if (responseWrapper.getErrors() == null) {
+				ridJson = mapper.readValue(mapper.writeValueAsString(responseWrapper.getResponse()), JSONObject.class);
+				rid=(String) ridJson.get("rid");
+
+			} else {
+				List<ErrorDTO> error = responseWrapper.getErrors();
+				throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION,
+						error.get(0).getErrorcode(), new Throwable());
+			}
+
+		} catch (ApisResourceAccessException e) {
+			if (e.getCause() instanceof HttpClientErrorException) {
+				throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION,
+						e.getMessage(), e);
+			}
+		}catch (IOException e) {
+			throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION,
+					e.getMessage(), e);
+		}
+		return rid;
 	}
 }
