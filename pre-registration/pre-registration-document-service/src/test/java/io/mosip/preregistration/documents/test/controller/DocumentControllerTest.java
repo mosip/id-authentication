@@ -37,7 +37,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import io.mosip.kernel.auth.adapter.AuthProvider;
+import io.mosip.kernel.auth.adapter.handler.AuthHandler;
 import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
 import io.mosip.preregistration.core.common.dto.MainListResponseDTO;
 import io.mosip.preregistration.documents.code.DocumentStatusMessages;
@@ -73,7 +73,9 @@ public class DocumentControllerTest {
 	private MockMvc mockMvc;
 
 	@MockBean
-	private AuthProvider authProvider;
+
+	private  AuthHandler authProvider;
+
 
 	private MockMultipartFile mockMultipartFile;
 
@@ -170,7 +172,7 @@ public class DocumentControllerTest {
 	/**
 	 * @throws Exception
 	 */
-	@WithUserDetails("individual")
+	@WithUserDetails("INDIVIDUAL")
 	@Test
 	public void successDelete() throws Exception {
 		String preRegistrationId = "1234567847847";
@@ -185,7 +187,8 @@ public class DocumentControllerTest {
 	/**
 	 * @throws Exception
 	 */
-	@WithUserDetails("individual")
+
+	@WithUserDetails("INDIVIDUAL")
 	@Test
 	public void getAllDocumentforPreidTest() throws Exception {
 		String preRegistrationId = "48690172097498";
@@ -195,10 +198,19 @@ public class DocumentControllerTest {
 				.andExpect(status().isOk());
 	}
 
+//	@WithUserDetails("INDIVIDUAL")
+//	@Test
+//	public void getAllDocumentforPreidTest() throws Exception {
+//		Mockito.when(service.getAllDocumentForPreId("48690172097498")).thenReturn(responseCopy);
+//		mockMvc.perform(get("/documents").contentType(MediaType.APPLICATION_JSON_VALUE)
+//				.param("preRegistrationId", "48690172097498")).andExpect(status().isOk());
+//	}
+
+
 	/**
 	 * @throws Exception
 	 */
-	@WithUserDetails("individual")
+	@WithUserDetails("INDIVIDUAL")
 	@Test
 	public void deletetAllDocumentByPreidTest() throws Exception {
 		String preRegistrationId = "48690172097498";
@@ -213,7 +225,8 @@ public class DocumentControllerTest {
 	/**
 	 * @throws Exception
 	 */
-	@WithUserDetails("individual")
+
+	@WithUserDetails("INDIVIDUAL")
 	@Test
 	public void copyDocumentTest() throws Exception {
 		Mockito.when(service.copyDocument("POA", "48690172097498", "1234567891")).thenReturn(responseCopy);
@@ -225,10 +238,25 @@ public class DocumentControllerTest {
 		mockMvc.perform(requestBuilder).andExpect(status().isOk());
 	}
 
+//	@WithUserDetails("INDIVIDUAL")
+//	@Test
+//	public void copyDocumentTest() throws Exception {
+//		Mockito.when(service.copyDocument("POA", "48690172097498", "1234567891")).thenReturn(responseCopy);
+//		// mockMvc.perform(post("/documents/").contentType(MediaType.APPLICATION_JSON_VALUE).param("destinationPreId",
+//		// "1234567891").param("catCode", "POA").param("sourcePrId",
+//		// "48690172097498")).andExpect(status().isOk());
+//		RequestBuilder requestBuilder = MockMvcRequestBuilders.put("/documents/")
+//				.contentType(MediaType.APPLICATION_JSON_VALUE).characterEncoding("UTF-8")
+//				.accept(MediaType.APPLICATION_JSON_VALUE).param("preRegistrationId", "1234567891")
+//				.param("catCode", "POA").param("sourcePrId", "48690172097498");
+//		mockMvc.perform(requestBuilder).andExpect(status().isOk());
+//	}
+
+
 	/**
 	 * @throws Exception
 	 */
-	@WithUserDetails("individual")
+	@WithUserDetails("INDIVIDUAL")
 	@Test(expected = Exception.class)
 	public void failureGetAllDocumentforPreidTest() throws Exception {
 		Mockito.when(service.getAllDocumentForPreId("2")).thenThrow(Exception.class);
@@ -240,7 +268,7 @@ public class DocumentControllerTest {
 	/**
 	 * @throws Exception
 	 */
-	@WithUserDetails("individual")
+	@WithUserDetails("INDIVIDUAL")
 	@Test(expected = Exception.class)
 	public void FailurecopyDocumentTest() throws Exception {
 		Mockito.when(service.copyDocument(Mockito.anyString(), Mockito.anyString(), Mockito.anyString()))

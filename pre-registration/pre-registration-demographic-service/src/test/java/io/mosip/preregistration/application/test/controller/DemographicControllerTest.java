@@ -32,7 +32,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import io.mosip.kernel.auth.adapter.AuthUserDetails;
+import io.mosip.kernel.auth.adapter.model.AuthUserDetails;
 import io.mosip.preregistration.application.DemographicTestApplication;
 import io.mosip.preregistration.application.dto.DeletePreRegistartionDTO;
 import io.mosip.preregistration.application.dto.DemographicCreateResponseDTO;
@@ -110,7 +110,7 @@ public class DemographicControllerTest {
 	 * @throws Exception
 	 *             on error
 	 */
-	@WithUserDetails("individual")
+	@WithUserDetails("INDIVIDUAL")
 	@Test
 	public void successSave() throws Exception {
 		logger.info("----------Successful save of application-------");
@@ -139,7 +139,7 @@ public class DemographicControllerTest {
 	 * @throws Exception
 	 *             on error
 	 */
-	@WithUserDetails("individual")
+	@WithUserDetails("INDIVIDUAL")
 	@Test
 	public void failureSave() throws Exception {
 		logger.info("----------Unsuccessful save of application-------");
@@ -158,7 +158,7 @@ public class DemographicControllerTest {
 	 */
 
 	@Test
-	@WithUserDetails("individual")
+	@WithUserDetails("INDIVIDUAL")
 	public void successUpdate() throws Exception {
 		logger.info("----------Successful save of application-------");
 
@@ -189,7 +189,7 @@ public class DemographicControllerTest {
 	 * @throws Exception
 	 *             on error
 	 */
-	@WithUserDetails("individual")
+	@WithUserDetails("INDIVIDUAL")
 	@Test
 	public void getAllApplicationTest() throws Exception {
 		String userId = "9988905333";
@@ -215,7 +215,7 @@ public class DemographicControllerTest {
 	 * @throws Exception
 	 *             on error
 	 */
-	@WithUserDetails("individual")
+	@WithUserDetails("INDIVIDUAL")
 	@Test
 	public void getApplicationStatusTest() throws Exception {
 		String preId = "14532456789";
@@ -240,7 +240,7 @@ public class DemographicControllerTest {
 	 * @throws Exception
 	 *             on error
 	 */
-	@WithUserDetails("individual")
+	@WithUserDetails("INDIVIDUAL")
 	@Test
 	public void discardIndividualTest() throws Exception {
 		String preId = "3";
@@ -265,7 +265,7 @@ public class DemographicControllerTest {
 	 * @throws Exception
 	 *             on error
 	 */
-	@WithUserDetails("individual")
+	@WithUserDetails("INDIVIDUAL")
 	@Test
 	public void getApplicationSuccessTest() throws Exception {
 		MainListResponseDTO<DemographicResponseDTO> response = new MainListResponseDTO<>();
@@ -290,7 +290,7 @@ public class DemographicControllerTest {
 	 * @throws Exception
 	 *             on error
 	 */
-	@WithUserDetails("individual")
+	@WithUserDetails("INDIVIDUAL")
 	@Test
 	public void updateApplicationStatusTest() throws Exception {
 		MainResponseDTO<String> response = new MainResponseDTO<>();
@@ -311,7 +311,7 @@ public class DemographicControllerTest {
 	 * @throws Exception
 	 *             on error
 	 */
-	@WithUserDetails("individual")
+	@WithUserDetails("INDIVIDUAL")
 	@Test
 	public void getUpdatedDateTimeTest() throws Exception {
 		MainRequestDTO<PreRegIdsByRegCenterIdDTO> mainRequestDTO = new MainRequestDTO<>();

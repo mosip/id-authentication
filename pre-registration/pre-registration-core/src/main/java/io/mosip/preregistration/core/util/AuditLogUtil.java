@@ -10,7 +10,10 @@ import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -22,6 +25,8 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.preregistration.core.code.AuditLogVariables;
 import io.mosip.preregistration.core.common.dto.AuditRequestDto;
 import io.mosip.preregistration.core.common.dto.AuditResponseDto;
+import io.mosip.preregistration.core.common.dto.RequestWrapper;
+import io.mosip.preregistration.core.common.dto.ResponseWrapper;
 import io.mosip.preregistration.core.config.LoggerConfiguration;
 
 /**
@@ -121,14 +126,18 @@ public class AuditLogUtil {
 		boolean auditFlag = false;
 		try {
 			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(auditUrl);
+			RequestWrapper<AuditRequestDto> requestKernel=new RequestWrapper<>();
+			requestKernel.setRequest(auditRequestDto);
 			HttpHeaders headers = new HttpHeaders();
-			headers.setContentType(MediaType.APPLICATION_JSON);
+			headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
+			HttpEntity<RequestWrapper<AuditRequestDto>> requestEntity = new HttpEntity<>(requestKernel,headers);
 			String uriBuilder = builder.build().encode(StandardCharsets.UTF_8).toUriString();
+
 			log.info("sessionId", "idType", "id",
-					"In callAuditManager method of AugitLogUtil service auditUrl: " + uriBuilder);
-			ResponseEntity<AuditResponseDto> respEntity = restTemplate.postForEntity(uriBuilder, auditRequestDto,
-					AuditResponseDto.class);
-			auditFlag = respEntity.getBody().isStatus();
+					"In callAuditManager method of AugitLogUtil service auditUrl: " + uriBuilder);			
+			ResponseEntity<ResponseWrapper<AuditResponseDto>> responseEntity2 = restTemplate.exchange(uriBuilder,
+					HttpMethod.POST, requestEntity, new ParameterizedTypeReference<ResponseWrapper<AuditResponseDto>>() {} );
+			auditFlag = responseEntity2.getBody().getResponse().isStatus();
 		} catch (HttpClientErrorException ex) {
 			log.error("sessionId", "idType", "id",
 					"In callAuditManager method of AugitLogUtil Util for HttpClientErrorException- "

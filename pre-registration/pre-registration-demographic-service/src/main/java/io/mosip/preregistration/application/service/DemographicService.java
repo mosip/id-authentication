@@ -36,7 +36,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 
-import io.mosip.kernel.auth.adapter.AuthUserDetails;
+import io.mosip.kernel.auth.adapter.model.AuthUserDetails;
 import io.mosip.kernel.core.idgenerator.spi.PridGenerator;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
@@ -421,7 +421,7 @@ public class DemographicService {
 								DateUtils.getUTCCurrentDateTime());
 						JSONParser jsonParser = new JSONParser();
 						JSONObject jsonObj = (JSONObject) jsonParser.parse(new String(decryptedString));
-						String postalcode = serviceUtil.getIdJSONValue(jsonObj, RequestCodes.POSTAL_CODE.getCode());
+						String postalcode = serviceUtil.getIdJSONValue(jsonObj.toJSONString(), RequestCodes.POSTAL_CODE.getCode());
 						JSONArray identityValue = serviceUtil.getValueFromIdentity(decryptedString,
 								RequestCodes.FULLNAME.getCode());
 						viewDto = new PreRegistrationViewDTO();

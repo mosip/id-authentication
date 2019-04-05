@@ -274,10 +274,14 @@ public class DemographicServiceUtil {
 	 * 
 	 */
 
-	public String getIdJSONValue(JSONObject demographicData, String value)  {
+	public String getIdJSONValue(String demographicData, String value) throws ParseException  {
 		log.info("sessionId", "idType", "id", "In getValueFromIdentity method of pe-registration service util to get getIdJSONValue ");
-		JSONObject identityObj = (JSONObject) demographicData.get(RequestCodes.IDENTITY.getCode());
-		return  identityObj.get(value).toString();
+		JSONParser jsonParser = new JSONParser();
+		JSONObject jsonObj = (JSONObject) jsonParser.parse(demographicData);
+		JSONObject identityObj = (JSONObject) jsonObj.get(RequestCodes.IDENTITY.getCode());
+		if (identityObj.get(value) != null)
+			return identityObj.get(value).toString();
+		return ""; 
 	}
 
 	/**
@@ -403,10 +407,11 @@ public class DemographicServiceUtil {
 	 * @param idValidationFields is a map with key and regex as value
 	 * @param demoDetails 
 	 * @return boolean
+	 * @throws ParseException 
 	 */
-	public boolean validation(Map<String,String> idValidationFields,JSONObject demoDetails ) {
+	public boolean validation(Map<String,String> idValidationFields,JSONObject demoDetails ) throws ParseException {
 		for (Map.Entry<String, String> entry : idValidationFields.entrySet()) {
-			if (!ValidationUtil.idValidation(getIdJSONValue(demoDetails, entry.getKey()),
+			if (!ValidationUtil.idValidation(getIdJSONValue(demoDetails.toJSONString(), entry.getKey()),
 					entry.getValue())) {
             throw new SchemaValidationException(ErrorCodes.PRG_PAM_APP_014.name(), entry.getKey()+entry.getValue());
 			}

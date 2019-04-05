@@ -71,7 +71,7 @@ public class DocumentController {
 	 * @return response in a format specified in API document
 	 * 
 	 */
-	@PreAuthorize("hasAnyRole('individual')")
+	@PreAuthorize("hasAnyRole('INDIVIDUAL')")
 	@PostMapping(path = "/documents/{preRegistrationId}", consumes = { "multipart/form-data" })
 	@ApiOperation(value = "Document Upload")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Document uploaded successfully"),
@@ -100,7 +100,7 @@ public class DocumentController {
 	 *            pass destination_preId
 	 * @return response in a format specified in API document
 	 */
-	@PreAuthorize("hasAnyRole('individual')")
+	@PreAuthorize("hasAnyRole('INDIVIDUAL')")
 	@PutMapping(path = "/documents/{preRegistrationId}", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Copy uploaded document")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Document successfully copied"),
@@ -124,7 +124,7 @@ public class DocumentController {
 	 *            pass preRegistrationId
 	 * @return response in a format specified in API document
 	 */
-	@PreAuthorize("hasAnyRole('individual','REGISTRATION_OFFICER','REGISTRATION_SUPERVISOR','REGISTRATION_ ADMIN')")
+	@PreAuthorize("hasAnyRole('INDIVIDUAL','REGISTRATION_OFFICER','REGISTRATION_SUPERVISOR','REGISTRATION_ ADMIN')")
 	@GetMapping(path = "/documents/{preRegistrationId}", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Get All Document for Pre-Registration Id")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Documents reterived successfully"),
@@ -146,8 +146,10 @@ public class DocumentController {
 	 *            pass documentId
 	 * @return response in a format specified in API document
 	 */
-	@PreAuthorize("hasAnyRole('individual')")
+
+	@PreAuthorize("hasAnyRole('INDIVIDUAL')")
 	@DeleteMapping(path = "/documents/{documentId}", produces = MediaType.APPLICATION_JSON_VALUE)
+
 	@ApiOperation(value = "Delete document by document Id")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Document successfully deleted"),
 			@ApiResponse(code = 400, message = "Document failed to delete") })
@@ -167,8 +169,10 @@ public class DocumentController {
 	 *            pass preregistrationId
 	 * @return response in a format specified in API document
 	 */
-	@PreAuthorize("hasAnyRole('individual')")
+
+	@PreAuthorize("hasAnyRole('INDIVIDUAL')")
 	@DeleteMapping(path = "/documents/preregistration/{preRegistrationId}", produces = MediaType.APPLICATION_JSON_VALUE)
+
 	@ApiOperation(value = "Delete all documents by pre-registration Id")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Documents successfully deleted"),
 			@ApiResponse(code = 400, message = "Documents failed to delete") })

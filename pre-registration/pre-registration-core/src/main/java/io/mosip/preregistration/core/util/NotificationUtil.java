@@ -26,6 +26,8 @@ import io.mosip.preregistration.core.common.dto.MainRequestDTO;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
 import io.mosip.preregistration.core.common.dto.NotificationDTO;
 import io.mosip.preregistration.core.common.dto.NotificationResponseDTO;
+import io.mosip.preregistration.core.common.dto.RequestWrapper;
+import io.mosip.preregistration.core.common.dto.ResponseWrapper;
 import io.mosip.preregistration.core.common.dto.SMSRequestDTO;
 import io.mosip.preregistration.core.common.dto.TemplateResponseListDTO;
 import io.mosip.preregistration.core.config.LoggerConfiguration;
@@ -99,7 +101,7 @@ public class NotificationUtil {
 		    HttpEntity<byte[]> doc = new HttpEntity<>(file.getBytes(), pdfHeaderMap); 
 
 
-		ResponseEntity<MainResponseDTO<NotificationResponseDTO>> resp = null;
+		ResponseEntity<ResponseWrapper<NotificationResponseDTO>> resp = null;
 		MainListResponseDTO<NotificationResponseDTO> response = new MainListResponseDTO<>();
 		String merseTemplate = null;
 			String fileText = templateUtil.getTemplate(langCode, emailAcknowledgement);
@@ -113,7 +115,7 @@ public class NotificationUtil {
 			emailMap.add("mailTo", acknowledgementDTO.getEmailID());
 			HttpEntity<MultiValueMap<Object, Object>> httpEntity = new HttpEntity<>(emailMap, headers);
 			log.info("sessionId", "idType", "id", "In emailNotification method of NotificationUtil service emailResourseUrl: "+emailResourseUrl);
-			resp = restTemplate.exchange(emailResourseUrl, HttpMethod.POST, httpEntity, new ParameterizedTypeReference<MainResponseDTO<NotificationResponseDTO>>() {});
+			resp = restTemplate.exchange(emailResourseUrl, HttpMethod.POST, httpEntity, new ParameterizedTypeReference<ResponseWrapper<NotificationResponseDTO>>() {});
 			
 			List<NotificationResponseDTO> list = new ArrayList<>();
 			NotificationResponseDTO notifierResponse = new NotificationResponseDTO();
@@ -150,21 +152,21 @@ public class NotificationUtil {
 			String langCode) throws IOException {
 		log.info("sessionId", "idType", "id", "In smsNotification method of NotificationUtil service");
 		MainListResponseDTO<NotificationResponseDTO> response = new MainListResponseDTO<>();
-		ResponseEntity<MainResponseDTO<NotificationResponseDTO>> resp = null;
+		ResponseEntity<ResponseWrapper<NotificationResponseDTO>> resp = null;
 
 			String mergeTemplate = templateUtil.templateMerge(templateUtil.getTemplate(langCode, smsAcknowledgement),
 					acknowledgementDTO);
 			SMSRequestDTO smsRequestDTO = new SMSRequestDTO();
 			smsRequestDTO.setMessage(mergeTemplate);
 			smsRequestDTO.setNumber(acknowledgementDTO.getMobNum());
-			MainRequestDTO<SMSRequestDTO> req=new MainRequestDTO<>();
+			RequestWrapper<SMSRequestDTO> req=new RequestWrapper<>();
 			req.setRequest(smsRequestDTO);
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON);
 
-			HttpEntity<MainRequestDTO<SMSRequestDTO>> httpEntity = new HttpEntity<>(req, headers);
+			HttpEntity<RequestWrapper<SMSRequestDTO>> httpEntity = new HttpEntity<>(req, headers);
 			log.info("sessionId", "idType", "id", "In smsNotification method of NotificationUtil service smsResourseUrl: "+smsResourseUrl);
-			resp = restTemplate.exchange(smsResourseUrl, HttpMethod.POST, httpEntity, new ParameterizedTypeReference<MainResponseDTO<NotificationResponseDTO>>() {});
+			resp = restTemplate.exchange(smsResourseUrl, HttpMethod.POST, httpEntity, new ParameterizedTypeReference<ResponseWrapper<NotificationResponseDTO>>() {});
 
 			List<NotificationResponseDTO> list = new ArrayList<>();
 			NotificationResponseDTO notifierResponse = new NotificationResponseDTO();
