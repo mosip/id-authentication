@@ -181,6 +181,8 @@ public class MasterSyncServiceImpl implements MasterSyncService {
 		} else {
 			LOGGER.error(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID,
 					" Unable to sync master data as there is no internet connection");
+			responseDTO = buildErrorRespone(RegistrationConstants.MASTER_SYNC_FAILURE_MSG_CODE,
+					RegistrationConstants.MASTER_SYNC_FAILURE_MSG);
 		}
 
 		return responseDTO;

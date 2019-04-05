@@ -24,6 +24,7 @@ import javax.net.ssl.X509TrustManager;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
+import io.mosip.registration.util.restclient.RestClientUtil;
 import oshi.SystemInfo;
 import oshi.software.os.FileSystem;
 import oshi.software.os.OSFileStore;
@@ -69,8 +70,8 @@ public class RegistrationAppHealthCheckUtil {
 				APPLICATION_ID, "Registration Network Checker had been called.");
 		boolean isNWAvailable = false;
 		try {
-			//RestClientUtil.turnOffSslChecking();
-			acceptAnySSLCerticficate();
+			RestClientUtil.turnOffSslChecking();
+			//acceptAnySSLCerticficate();
 			System.setProperty("java.net.useSystemProxies", "true");
 			URL url = new URL("https://www.mosip.io/");
 			List<Proxy> proxyList = ProxySelector.getDefault().select(new URI(url.toString()));
