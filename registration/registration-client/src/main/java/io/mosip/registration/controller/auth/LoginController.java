@@ -17,12 +17,9 @@ import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
-import javax.xml.parsers.ParserConfigurationException;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
-import org.xml.sax.SAXException;
 
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -48,7 +45,6 @@ import io.mosip.registration.device.iris.IrisFacade;
 import io.mosip.registration.dto.AuthenticationValidatorDTO;
 import io.mosip.registration.dto.LoginUserDTO;
 import io.mosip.registration.dto.ResponseDTO;
-import io.mosip.registration.dto.SuccessResponseDTO;
 import io.mosip.registration.dto.biometric.FaceDetailsDTO;
 import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
 import io.mosip.registration.dto.biometric.IrisDetailsDTO;
@@ -141,9 +137,6 @@ public class LoginController extends BaseController implements Initializable {
 	@FXML
 	private Label otpValidity;
 
-	@Value("${otp_validity_in_mins}")
-	private long otpValidityImMins;
-
 	@Value("${PROVIDER_NAME}")
 	private String deviceName;
 
@@ -197,27 +190,30 @@ public class LoginController extends BaseController implements Initializable {
 	private ProgressIndicator progressIndicator;
 
 	private Service<String> taskService;
-	
+
 	@Autowired
 	private RegistrationUpdate registrationUpdate;
 
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 
-		try {		
-			//TODO to replace false with registrationUpdate.hasUpdate() method.
-				ResponseDTO responseDTO = globalParamService.updateSoftwareUpdateStatus(false);
+		try {
+			// TODO to replace false with registrationUpdate.hasUpdate() method.
+			ResponseDTO responseDTO = globalParamService.updateSoftwareUpdateStatus(false);
 
-				if (responseDTO != null && responseDTO.getSuccessResponseDTO() != null) {
-					LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
-							responseDTO.getSuccessResponseDTO().getMessage());
-				} else if (responseDTO != null && responseDTO.getErrorResponseDTOs() != null
-						&& !responseDTO.getErrorResponseDTOs().isEmpty()) {
-					LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
-							responseDTO.getErrorResponseDTOs().get(0).getMessage());
-				}
+			if (responseDTO != null && responseDTO.getSuccessResponseDTO() != null) {
+				LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
+						responseDTO.getSuccessResponseDTO().getMessage());
+			} else if (responseDTO != null && responseDTO.getErrorResponseDTOs() != null
+					&& !responseDTO.getErrorResponseDTOs().isEmpty()) {
+				LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
+						responseDTO.getErrorResponseDTOs().get(0).getMessage());
+			}
 
-			otpValidity.setText("Valid for " + otpValidityImMins + " minutes");
+			otpValidity.setText("Valid for " + Integer.parseInt(
+					((String) applicationContext.getApplicationMap().get(RegistrationConstants.OTP_EXPIRY_TIME)).trim())
+					/ 60 + " minutes");
+			stopTimer();
 			stopTimer();
 			password.textProperty().addListener((obsValue, oldValue, newValue) -> {
 				if (newValue.length() > Integer
@@ -225,10 +221,11 @@ public class LoginController extends BaseController implements Initializable {
 					generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.PWORD_LENGTH);
 				}
 			});
-		} /*catch (IOException | ParserConfigurationException | SAXException exception) {
-			LOGGER.error(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
-					exception.getMessage() + ExceptionUtils.getStackTrace(exception));
-		}*/ catch (RuntimeException runtimeExceptionexception) {
+		} /*
+			 * catch (IOException | ParserConfigurationException | SAXException exception) {
+			 * LOGGER.error(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
+			 * exception.getMessage() + ExceptionUtils.getStackTrace(exception)); }
+			 */ catch (RuntimeException runtimeExceptionexception) {
 			LOGGER.error(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
 					runtimeExceptionexception.getMessage() + ExceptionUtils.getStackTrace(runtimeExceptionexception));
 		}
@@ -265,7 +262,7 @@ public class LoginController extends BaseController implements Initializable {
 			primaryStage.setScene(scene);
 			primaryStage.show();
 
-		//	executePreLaunchTask(loginRoot);
+			executePreLaunchTask(loginRoot);
 
 		} catch (
 
@@ -287,7 +284,8 @@ public class LoginController extends BaseController implements Initializable {
 	/**
 	 * Validate user id.
 	 *
-	 * @param event the event
+	 * @param event
+	 *            the event
 	 */
 	public void validateUserId(ActionEvent event) {
 
@@ -305,7 +303,7 @@ public class LoginController extends BaseController implements Initializable {
 
 				UserDetail userDetail = loginService.getUserDetail(userId.getText());
 
-				Map<String,String> centerAndMachineId =userOnboardService.getMachineCenterId();
+				Map<String, String> centerAndMachineId = userOnboardService.getMachineCenterId();
 
 				String centerId = centerAndMachineId.get(RegistrationConstants.USER_CENTER_ID);
 
@@ -660,7 +658,8 @@ public class LoginController extends BaseController implements Initializable {
 	/**
 	 * Load login screen depending on Loginmode
 	 * 
-	 * @param loginMode login screen to be loaded
+	 * @param loginMode
+	 *            login screen to be loaded
 	 */
 	public void loadLoginScreen(String loginMode) {
 
@@ -692,7 +691,8 @@ public class LoginController extends BaseController implements Initializable {
 	/**
 	 * Validating User role and Machine mapping during login
 	 * 
-	 * @param userId entered userId
+	 * @param userId
+	 *            entered userId
 	 * @throws RegBaseCheckedException
 	 */
 	private boolean setInitialLoginInfo(String userId) {
@@ -721,7 +721,8 @@ public class LoginController extends BaseController implements Initializable {
 	/**
 	 * Fetching and Validating machine and center id
 	 * 
-	 * @param userDetail the userDetail
+	 * @param userDetail
+	 *            the userDetail
 	 * @return boolean
 	 * @throws RegBaseCheckedException
 	 */
@@ -746,9 +747,12 @@ public class LoginController extends BaseController implements Initializable {
 	 * Setting values for Session context and User context and Initial info for
 	 * Login
 	 * 
-	 * @param userId     entered userId
-	 * @param userDetail userdetails
-	 * @param roleList   list of user roles
+	 * @param userId
+	 *            entered userId
+	 * @param userDetail
+	 *            userdetails
+	 * @param roleList
+	 *            list of user roles
 	 * @throws RegBaseCheckedException
 	 */
 	private boolean setSessionContext(String authInfo, UserDetail userDetail, List<String> roleList) {
@@ -791,8 +795,10 @@ public class LoginController extends BaseController implements Initializable {
 	/**
 	 * Loading next login screen in case of multifactor authentication
 	 * 
-	 * @param userDetail the userDetail
-	 * @param loginMode  the loginMode
+	 * @param userDetail
+	 *            the userDetail
+	 * @param loginMode
+	 *            the loginMode
 	 */
 	private void loadNextScreen(UserDetail userDetail, String loginMode) {
 
@@ -944,8 +950,10 @@ public class LoginController extends BaseController implements Initializable {
 	/**
 	 * Validating invalid number of login attempts
 	 * 
-	 * @param userDetail user details
-	 * @param userId     entered userId
+	 * @param userDetail
+	 *            user details
+	 * @param userId
+	 *            entered userId
 	 * @return boolean
 	 */
 	private boolean validateInvalidLogin(UserDetail userDetail, String errorMessage) {
@@ -1028,10 +1036,14 @@ public class LoginController extends BaseController implements Initializable {
 	/**
 	 * Validating login time and count
 	 * 
-	 * @param loginCount        number of invalid attempts
-	 * @param invalidLoginCount count from global param
-	 * @param loginTime         login time from table
-	 * @param invalidLoginTime  login time from global param
+	 * @param loginCount
+	 *            number of invalid attempts
+	 * @param invalidLoginCount
+	 *            count from global param
+	 * @param loginTime
+	 *            login time from table
+	 * @param invalidLoginTime
+	 *            login time from global param
 	 * @return boolean
 	 */
 	private boolean validateLoginTime(int loginCount, int invalidLoginCount, Timestamp loginTime,
@@ -1074,28 +1086,24 @@ public class LoginController extends BaseController implements Initializable {
 						LOGGER.info("REGISTRATION - HANDLE_PACKET_UPLOAD_START - PACKET_UPLOAD_CONTROLLER",
 								APPLICATION_NAME, APPLICATION_ID, "Handling all the packet upload activities");
 
-						/*ResponseDTO responseDTO = getSyncConfigData();
-						if (responseDTO != null) {
-							SuccessResponseDTO successResponseDTO = responseDTO.getSuccessResponseDTO();
-							if (successResponseDTO != null && successResponseDTO.getOtherAttributes() != null) {
-								return RegistrationConstants.RESTART;
-							} else {
-								ResponseDTO masterResponseDTO = masterSyncService.getMasterSync(
-										RegistrationConstants.OPT_TO_REG_MDS_J00001,
-										RegistrationConstants.JOB_TRIGGER_POINT_USER);
-
-								ResponseDTO userResponseDTO = userDetailService
-										.save(RegistrationConstants.JOB_TRIGGER_POINT_USER);
-
-								if ((null != masterResponseDTO && masterResponseDTO.getErrorResponseDTOs() != null)
-										|| userResponseDTO.getErrorResponseDTOs() != null) {
-									return RegistrationConstants.FAILURE;
-								}
-
-							}
-						} else {
-							return RegistrationConstants.FAILURE;
-						}*/
+						/*
+						 * ResponseDTO responseDTO = getSyncConfigData(); if (responseDTO != null) {
+						 * SuccessResponseDTO successResponseDTO = responseDTO.getSuccessResponseDTO();
+						 * if (successResponseDTO != null && successResponseDTO.getOtherAttributes() !=
+						 * null) { return RegistrationConstants.RESTART; } else { ResponseDTO
+						 * masterResponseDTO = masterSyncService.getMasterSync(
+						 * RegistrationConstants.OPT_TO_REG_MDS_J00001,
+						 * RegistrationConstants.JOB_TRIGGER_POINT_USER);
+						 * 
+						 * ResponseDTO userResponseDTO = userDetailService
+						 * .save(RegistrationConstants.JOB_TRIGGER_POINT_USER);
+						 * 
+						 * if ((null != masterResponseDTO && masterResponseDTO.getErrorResponseDTOs() !=
+						 * null) || userResponseDTO.getErrorResponseDTOs() != null) { return
+						 * RegistrationConstants.FAILURE; }
+						 * 
+						 * } } else { return RegistrationConstants.FAILURE; }
+						 */
 
 						return RegistrationConstants.SUCCESS;
 					}
