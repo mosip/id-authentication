@@ -210,10 +210,13 @@ public class DocumentScanController extends BaseController {
 		}
 	}
 
+	int counter=0;
 	/**
 	 * To populate the document categories
 	 */
 	protected <T> void populateDocumentCategories() {
+		
+		counter++;
 
 		/* clearing all the previously added fields */
 		docScanVbox.getChildren().clear();
@@ -315,8 +318,10 @@ public class DocumentScanController extends BaseController {
 				}
 				if (!documentsUploaded && (docCategoryCode.equalsIgnoreCase(RegistrationConstants.POI_DOCUMENT)
 						|| docCategoryCode.equalsIgnoreCase(RegistrationConstants.POA_DOCUMENT))) {
-					totalDocument++;
-					scannedField.setText("" + (totalDocument));
+						if(counter==1) {
+							totalDocument++;
+							scannedField.setText("" + (totalDocument));
+						}
 				}
 
 				/*
