@@ -36,7 +36,7 @@
                      <children>
                         <GridPane styleClass="subMainComponent" GridPane.columnIndex="1">
                            <children>
-                              <GridPane alignment="CENTER" GridPane.rowIndex="1">
+                              <GridPane alignment="CENTER" GridPane.rowIndex="1" styleClass="dividerTypeOne">
                                  <children>
                                     <GridPane GridPane.columnIndex="1">
                                       <columnConstraints>

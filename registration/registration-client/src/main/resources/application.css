@@ -10,6 +10,11 @@
 	-fx-font-size:10.0px;
 }
 
+.dividerTypeOne{
+	-fx-border-width : 0 0 1 0;
+	-fx-border-color : #C9C9C9;
+}
+
 .toolTip{
 	-fx-font: normal bold 10 Langdon;
 	-fx-base: #AE3522;
