@@ -180,7 +180,7 @@
                                                                   <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                                                </rowConstraints>
                                                                <children>
-                                                                  <Label fx:id="docPageNumber" prefHeight="${docPageNumberPane.height}" prefWidth="${docPageNumberPane.width}" styleClass="contiuneButton" />
+                                                                  <Label fx:id="docPageNumber" prefHeight="${docPageNumberPane.height}" prefWidth="${docPageNumberPane.width}" />
                                                                </children>
                                                             </GridPane>
                                                             <GridPane fx:id="docPreviewNextPane" GridPane.columnIndex="5" GridPane.rowIndex="1">
@@ -439,7 +439,7 @@
                   </GridPane>
                   <GridPane GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="TOP">
                      <children>
-                        <Button fx:id="continueBtn" minWidth="${backButton.width/2}" mnemonicParsing="false" onAction="#next" styleClass="contiuneButton" text="%continue" GridPane.halignment="RIGHT" GridPane.valignment="TOP">
+                        <Button fx:id="continueBtn" minWidth="${backButton.width/2}" mnemonicParsing="false" onAction="#next" styleClass="contiuneButton" text="%continue" GridPane.halignment="RIGHT" GridPane.valignment="TOP" disable="true">
                                               <graphic>
                               <ImageView fitHeight="20.0" fitWidth="27.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
