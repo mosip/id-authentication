@@ -769,13 +769,13 @@ public class MasterSyncDaoImpl implements MasterSyncDao {
 
 			List<AppRolePriority> masterAppRolePriority = MetaDataUtils.setCreateMetaData(appRolePriority,
 					AppRolePriority.class);
-			appRolePriorityRepository.saveAll(masterAppRolePriority);
+			//appRolePriorityRepository.saveAll(masterAppRolePriority);
 
 			LOGGER.info(RegistrationConstants.MASTER_SYNC_JOD_DETAILS, APPLICATION_NAME, APPLICATION_ID,
 					"App details syncing....");
 
 			List<AppDetail> masterAppDetails = MetaDataUtils.setCreateMetaData(appDetails, AppDetail.class);
-			appDetailRepository.saveAll(masterAppDetails);
+			//appDetailRepository.saveAll(masterAppDetails);
 
 			LOGGER.info(RegistrationConstants.MASTER_SYNC_JOD_DETAILS, APPLICATION_NAME, APPLICATION_ID,
 					"process list details syncing....");
@@ -788,14 +788,14 @@ public class MasterSyncDaoImpl implements MasterSyncDao {
 
 			List<AppAuthenticationMethod> masterAppLoginMethod = MetaDataUtils.setCreateMetaData(appAuthMethods,
 					AppAuthenticationMethod.class);
-			appAuthenticationRepository.saveAll(masterAppLoginMethod);
+			//appAuthenticationRepository.saveAll(masterAppLoginMethod);
 
 			LOGGER.info(RegistrationConstants.MASTER_SYNC_JOD_DETAILS, APPLICATION_NAME, APPLICATION_ID,
 					"screen autherization details syncing....");
 
 			List<ScreenAuthorization> masterScreenAuth = MetaDataUtils.setCreateMetaData(screenAuth,
 					ScreenAuthorization.class);
-			screenAuthorizationRepository.saveAll(masterScreenAuth);
+			//screenAuthorizationRepository.saveAll(masterScreenAuth);
 
 			sucessResponse = RegistrationConstants.SUCCESS;
 
