@@ -54,8 +54,8 @@ import org.springframework.web.util.UrlPathHelper;
  */
 public class ForwardedHeaderFilter extends OncePerRequestFilter {
 
-	private static final Set<String> FORWARDED_HEADER_NAMES =
-			Collections.newSetFromMap(new LinkedCaseInsensitiveMap<Boolean>(5, Locale.ENGLISH));
+	private static final Set<String> FORWARDED_HEADER_NAMES = Collections
+			.newSetFromMap(new LinkedCaseInsensitiveMap<Boolean>(5, Locale.ENGLISH));
 
 	static {
 		FORWARDED_HEADER_NAMES.add("Forwarded");
@@ -65,15 +65,15 @@ public class ForwardedHeaderFilter extends OncePerRequestFilter {
 		FORWARDED_HEADER_NAMES.add("X-Forwarded-Prefix");
 	}
 
-
 	private final UrlPathHelper pathHelper = new UrlPathHelper();
-
 
 	@Override
 	protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
 		Enumeration<String> names = request.getHeaderNames();
+		System.out.println("\nInside Filter Check\n");		
 		while (names.hasMoreElements()) {
 			String name = names.nextElement();
+			System.out.println(name +" : "+request.getHeader(name));
 			if (FORWARDED_HEADER_NAMES.contains(name)) {
 				return false;
 			}
@@ -92,12 +92,11 @@ public class ForwardedHeaderFilter extends OncePerRequestFilter {
 	}
 
 	@Override
-	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
-			FilterChain filterChain) throws ServletException, IOException {
+	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+			throws ServletException, IOException {
 
 		filterChain.doFilter(new ForwardedHeaderRequestWrapper(request, this.pathHelper), response);
 	}
-
 
 	private static class ForwardedHeaderRequestWrapper extends HttpServletRequestWrapper {
 
@@ -132,8 +131,8 @@ public class ForwardedHeaderFilter extends OncePerRequestFilter {
 			String prefix = getForwardedPrefix(request);
 			this.contextPath = (prefix != null ? prefix : request.getContextPath());
 			this.requestUri = this.contextPath + pathHelper.getPathWithinApplication(request);
-			this.requestUrl = new StringBuffer(this.scheme + "://" + this.host +
-					(port == -1 ? "" : ":" + port) + this.requestUri);
+			this.requestUrl = new StringBuffer(
+					this.scheme + "://" + this.host + (port == -1 ? "" : ":" + port) + this.requestUri);
 			this.headers = initHeaders(request);
 		}
 
