@@ -1,4 +1,4 @@
-/*package io.mosip.registrationprocessor.externalstage.stage;
+package io.mosip.registrationprocessor.externalstage.stage;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -54,7 +54,7 @@ public class ExternalStageTest {
 	@Mock
 	private RegistrationProcessorRestClientService<Object> registrationProcessorRestService;
 	
-	*//** The dto. *//*
+	/** The dto. */
 	MessageDTO dto = new MessageDTO();
 	InternalRegistrationStatusDto registrationStatusDto=new InternalRegistrationStatusDto();
 	@Before
@@ -66,6 +66,7 @@ public class ExternalStageTest {
 		dto.setRetryCount(5);
 		dto.setMessageBusAddress(MessageBusAddress.EXTERNAL_STAGE_BUS_IN);
 		registrationStatusDto.setRegistrationId("2758415120462");
+		registrationStatusDto.setRetryCount(0);
 		Mockito.when(registrationStatusService.getRegistrationStatus(anyString())).thenReturn(registrationStatusDto);
 	}
 	
@@ -103,4 +104,3 @@ public class ExternalStageTest {
 
 	}
 }
-*/

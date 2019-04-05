@@ -101,6 +101,7 @@ public class ExternalStage extends MosipVerticleAPIManager {
 	public MessageDTO process(MessageDTO object) {
 
 		String registrationId = object.getRid();
+		object.setMessageBusAddress(MessageBusAddress.EXTERNAL_STAGE_BUS_IN);
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 				registrationId, "ExternalStage::process()::entry");
 		InternalRegistrationStatusDto registrationStatusDto = registrationStatusService
@@ -141,6 +142,7 @@ public class ExternalStage extends MosipVerticleAPIManager {
 		} catch (ApisResourceAccessException e) {
 			registrationStatusDto.setLatestTransactionStatusCode(registrationStatusMapperUtil
 					.getStatusCode(RegistrationExceptionTypeCode.APIS_RESOURCE_ACCESS_EXCEPTION));
+			object.setInternalError(true);
 			object.setIsValid(false);
 			regProcLogger.debug("", "", "sent to next stage --> ", ExceptionUtils.getStackTrace(e));
 		} finally {

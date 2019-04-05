@@ -17,8 +17,11 @@ public class ExternalStageApplication {
 	public static void main(String[] args) {
 		AnnotationConfigApplicationContext configApplicationContext = new AnnotationConfigApplicationContext();
 		configApplicationContext.scan(
-				  "io.mosip.registrationprocessor.externalStage.config",
+				  "io.mosip.registrationprocessor.externalstage.config",
 				  "io.mosip.registration.processor.core.config",
+				  "io.mosip.registration.processor.status.config",
+				  "io.mosip.registration.processor.core.config",
+				  "io.mosip.registration.processor.core.kernel.beans",
 				  "io.mosip.registration.processor.rest.client.config");
 		configApplicationContext.refresh();
 		ExternalStage externalStage = (ExternalStage) configApplicationContext.getBean(ExternalStage.class);
