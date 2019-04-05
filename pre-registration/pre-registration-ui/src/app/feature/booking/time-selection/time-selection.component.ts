@@ -4,7 +4,6 @@ import { MatDialog } from '@angular/material';
 import { DialougComponent } from '../../../shared/dialoug/dialoug.component';
 import { DataStorageService } from 'src/app/core/services/data-storage.service';
 import { Router, ActivatedRoute } from '@angular/router';
-import { BookingModelRequest } from 'src/app/shared/booking-request.model';
 import { BookingModel } from '../center-selection/booking.model';
 
 import { NameList } from 'src/app/shared/models/demographic-model/name-list.modal';
@@ -14,6 +13,7 @@ import { TranslateService } from '@ngx-translate/core';
 import Utils from 'src/app/app.util';
 import * as appConstants from '../../../app.constants';
 import { ConfigService } from 'src/app/core/services/config.service';
+import { RequestModel } from 'src/app/shared/models/request-model/RequestModel';
 
 @Component({
   selector: 'app-time-selection',
@@ -42,6 +42,9 @@ export class TimeSelectionComponent implements OnInit {
   secondaryLanguagelabels: any;
   showMorning: boolean;
   showAfternoon: boolean;
+
+  //quickfix to be removed
+  preID = [];
 
   constructor(
     private sharedService: SharedService,
@@ -207,6 +210,7 @@ export class TimeSelectionComponent implements OnInit {
 
   makeBooking(): void {
     this.bookingDataList = [];
+    this.preID = [];
     this.availabilityData.forEach(data => {
       data.timeSlots.forEach(slot => {
         if (slot.names.length !== 0) {
@@ -218,19 +222,20 @@ export class TimeSelectionComponent implements OnInit {
               slot.toTime
             );
             console.log(name);
-            const requestObject = {
-              newBookingDetails: bookingData,
-              oldBookingDetails: name.status ? (name.status.toLowerCase() !== 'booked' ? null : name.regDto) : null,
-              preRegistrationId: name.preRegId
-            };
-            this.bookingDataList.push(requestObject);
+            this.preID.push(name.preRegId);
+            // const requestObject = {
+            //   newBookingDetails: bookingData,
+            //   oldBookingDetails: name.status ? (name.status.toLowerCase() !== 'booked' ? null : name.regDto) : null,
+            //   preRegistrationId: name.preRegId
+            // };
+            this.bookingDataList.push(bookingData);
           });
         }
       });
     });
-    const request = new BookingModelRequest(this.bookingDataList);
+    const request = new RequestModel(appConstants.IDS.booking, this.bookingDataList);
     console.log('request being sent from time selection', request);
-    this.dataService.makeBooking(request).subscribe(
+    this.dataService.makeBooking(request, this.preID).subscribe(
       response => {
         console.log(response);
         if (!response['errors']) {

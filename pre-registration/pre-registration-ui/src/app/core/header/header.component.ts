@@ -27,7 +27,6 @@ export class HeaderComponent implements OnInit {
       // this.doLogout();
     } else {
       console.log('ELSE');
-
       this.router.navigate(['/']);
       // window.location.reload();
     }
