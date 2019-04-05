@@ -948,13 +948,8 @@ public class DemographicDetailController extends BaseController {
 			fxUtils.focusUnfocusListener(dobParentPane, ageField, ageFieldLocalLanguage);
 			fxUtils.onTypeFocusUnfocusListener(dobParentPane, ageFieldLocalLanguage);
 			ageField.textProperty().addListener((obsValue, oldValue, newValue) -> {
-				ageFieldLocalLanguage.setText(newValue);
-				if (!validation.validateTextField(parentFlowPane, ageField, ageField.getId() + "_ontype",
-						RegistrationConstants.DISABLE)) {
-					ageField.setText(oldValue);
-				}
-				int age = 0;
-				if (newValue.matches("\\d{1,3}")) {
+			int age = 0;
+				if (newValue.matches("\\d+")) {
 					if (Integer.parseInt(ageField.getText()) > maxAge) {
 						ageField.setText(oldValue);
 						generateAlert(RegistrationConstants.ERROR,

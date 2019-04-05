@@ -18,17 +18,18 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.multipart.MultipartFile;
 
-import io.mosip.registration.processor.core.exception.util.PlatformConstants;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.packet.receiver.service.PacketReceiverService;
 
 @RunWith(SpringRunner.class)
 public class FileSizeExceedExceptionTest {
-	
+
 	private static final Logger log = LoggerFactory.getLogger(FileSizeExceedExceptionTest.class);
 
 	@Mock
 	private PacketReceiverService<MultipartFile, Boolean> packetHandlerService;
+
+	private String stageName = "PacketReceiverStage";
 
 	@Test
 	public void TestFileSizeExceedException() {
@@ -40,6 +41,7 @@ public class FileSizeExceedExceptionTest {
 		String name = "Client.zip";
 		String originalFileName = "Client.zip";
 		String contentType = "text/zip";
+
 		byte[] content = null;
 		try {
 			content = Files.readAllBytes(path);
@@ -48,10 +50,10 @@ public class FileSizeExceedExceptionTest {
 		}
 		MultipartFile file = new MockMultipartFile(name, originalFileName, contentType, content);
 
-		Mockito.when(packetHandlerService.storePacket(file)).thenThrow(ex);
+		Mockito.when(packetHandlerService.storePacket(file, stageName)).thenThrow(ex);
 		try {
 
-			packetHandlerService.storePacket(file);
+			packetHandlerService.storePacket(file, stageName);
 			fail();
 
 		} catch (FileSizeExceedException e) {

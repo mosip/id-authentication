@@ -2,16 +2,16 @@ package io.mosip.authentication.service.impl.indauth.service.demo;
 
 import java.util.Map;
 
-import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
-import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.spi.indauth.match.MatchFunction;
 import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
 import io.mosip.authentication.core.spi.indauth.match.TextMatchingStrategy;
 import io.mosip.authentication.core.util.DemoMatcherUtil;
 
 /**
- * @author Sanjay Murali
+ * The Enum PhoneNoMatchingStrategy - used to compare and
+ * evaluate the PHONE value received from the request and entity
  *
+ * @author Sanjay Murali
  */
 public enum PhoneNoMatchingStrategy implements TextMatchingStrategy {
 
@@ -23,26 +23,34 @@ public enum PhoneNoMatchingStrategy implements TextMatchingStrategy {
 		}
 	});
 
+	/** The match function. */
 	private final MatchFunction matchFunction;
 
+	/** The match strategy type. */
 	private final MatchingStrategyType matchStrategyType;
 
 	/**
-	 * 
-	 * @param matchStrategyType
-	 * @param matchValue
-	 * @param matchFunction
+	 * Instantiates a new phone no matching strategy.
+	 *
+	 * @param matchStrategyType the match strategy type
+	 * @param matchFunction the match function
 	 */
 	PhoneNoMatchingStrategy(MatchingStrategyType matchStrategyType, MatchFunction matchFunction) {
 		this.matchFunction = matchFunction;
 		this.matchStrategyType = matchStrategyType;
 	}
 
+	/* (non-Javadoc)
+	 * @see io.mosip.authentication.core.spi.indauth.match.MatchingStrategy#getType()
+	 */
 	@Override
 	public MatchingStrategyType getType() {
 		return matchStrategyType;
 	}
 
+	/* (non-Javadoc)
+	 * @see io.mosip.authentication.core.spi.indauth.match.MatchingStrategy#getMatchFunction()
+	 */
 	@Override
 	public MatchFunction getMatchFunction() {
 		return matchFunction;

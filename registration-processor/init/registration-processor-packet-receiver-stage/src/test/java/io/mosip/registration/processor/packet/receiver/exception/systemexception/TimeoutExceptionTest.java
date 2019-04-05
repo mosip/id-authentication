@@ -25,9 +25,10 @@ import io.mosip.registration.processor.packet.receiver.service.PacketReceiverSer
 public class TimeoutExceptionTest {
 
 	private static final Logger log = LoggerFactory.getLogger(TimeoutExceptionTest.class);
-	
+
 	@Mock
 	private PacketReceiverService<MultipartFile, Boolean> packetHandlerService;
+	private String stageName = "PacketReceiverStage";
 
 	@Test
 	public void TestTimeoutException() {
@@ -47,10 +48,10 @@ public class TimeoutExceptionTest {
 		}
 		MultipartFile file = new MockMultipartFile(name, originalFileName, contentType, content);
 
-		Mockito.when(packetHandlerService.storePacket(file)).thenThrow(ex);
+		Mockito.when(packetHandlerService.storePacket(file, stageName)).thenThrow(ex);
 		try {
 
-			packetHandlerService.storePacket(file);
+			packetHandlerService.storePacket(file, stageName);
 			fail();
 
 		} catch (TimeoutException e) {

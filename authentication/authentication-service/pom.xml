@@ -21,6 +21,12 @@
 			<artifactId>authentication-core</artifactId>
 			<version>0.10.1</version>
 		</dependency>
+		
+		<dependency>
+			<groupId>io.mosip.kernel</groupId>
+			<artifactId>kernel-core</artifactId>
+			<version>${kernel.core.version}</version>
+		</dependency>
 
 		<!-- Kernel Template -->
 		<dependency>

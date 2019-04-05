@@ -27,6 +27,8 @@ public class ApplicantDocumentValidation {
 	/** The reg id. */
 	String regId;
 
+	private static final String APPLICANTTYPECHILD = "Child";
+
 	/**
 	 * Instantiates a new applicant document validation.
 	 *
@@ -51,10 +53,11 @@ public class ApplicantDocumentValidation {
 		regId = registrationId;
 
 		String applicantType = identityIterator.getFieldValue(identity.getMetaData(), JsonConstant.APPLICANTTYPE);
-		//TODO Check applicant is child or adult by his DOB or Age field from ID.json
-		if (applicantType=="CHILD" && checkDocumentAvailability(identity, documentList, DocumentCategory.PROOFOFRELATIONSHIP.name())) {
+		// TODO Check applicant is child or adult by his DOB or Age field from ID.json
+		if (applicantType.equalsIgnoreCase(APPLICANTTYPECHILD)
+				&& checkDocumentAvailability(identity, documentList, DocumentCategory.PROOFOFRELATIONSHIP.name())) {
 			isApplicantDocumentVerified = true;
-		}else if (checkDocumentAvailability(identity, documentList, DocumentCategory.PROOFOFIDENTITY.name())
+		} else if (checkDocumentAvailability(identity, documentList, DocumentCategory.PROOFOFIDENTITY.name())
 				&& checkDocumentAvailability(identity, documentList, DocumentCategory.PROOFOFADDRESS.name()))
 			isApplicantDocumentVerified = true;
 

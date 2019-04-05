@@ -14,7 +14,7 @@ public final class PlatformConstants {
 
 	/** The constant RPR_PACKET_GENERATOR_MODULE. */
 
-	public static final String RPR_PACKET_GENERATOR_MODULE =RPR_REGISTRATION_PROCESSOR_PREFIX + "PGS-";
+	public static final String RPR_PACKET_GENERATOR_MODULE = RPR_REGISTRATION_PROCESSOR_PREFIX + "PGS-";
 
 	/** The Constant RPR_PACKET_RECEIVER_MODULE. */
 	public static final String RPR_PACKET_RECEIVER_MODULE = RPR_REGISTRATION_PROCESSOR_PREFIX + "PKR-";
@@ -66,11 +66,11 @@ public final class PlatformConstants {
 
 	/** The Constant RPR_BIO_DEDUPE_SERVICE_MODULE. */
 	public static final String RPR_BIO_DEDUPE_SERVICE_MODULE = RPR_REGISTRATION_PROCESSOR_PREFIX + "BDD-";
-	
+
 	/** The Constant RPR_PRINTING_MODULE. */
 	public static final String RPR_PRINTING_MODULE = RPR_REGISTRATION_PROCESSOR_PREFIX + "PRT-";
-	
-	/**  The Constant RPR_MOSIP_QUEUE_MODULE. */
+
+	/** The Constant RPR_MOSIP_QUEUE_MODULE. */
 	public static final String RPR_MOSIP_QUEUE_MODULE = RPR_REGISTRATION_PROCESSOR_PREFIX + "MQI-";
 
 	/** The Constant RPR_PACKET_VALIDATOR_MODULE. */
@@ -78,6 +78,10 @@ public final class PlatformConstants {
 
 	/** The Constant RPR_UIN_GENERATOR_STAGE. */
 	public static final String RPR_UIN_GENERATOR_STAGE = RPR_REGISTRATION_PROCESSOR_PREFIX + "UGS-";
+
+	public static final String RPR_REPROCESSOR_STAGE = RPR_REGISTRATION_PROCESSOR_PREFIX + "RS-";
+
+	public static final String RPR_EXTERNAL_STAGE = RPR_REGISTRATION_PROCESSOR_PREFIX + "EX-";
 
 	/**
 	 * Instantiates a new RPR platform error codes.

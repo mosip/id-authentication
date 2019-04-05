@@ -5,7 +5,8 @@ import java.util.stream.IntStream;
 import io.mosip.kernel.core.util.StringUtils;
 
 /**
- * Method to generate masking the values.
+ * The Class MaskUtil is used to mask a value
+ * to a particular char set as configured
  *
  * @author Sanjay Murali
  */
@@ -19,10 +20,10 @@ public class MaskUtil {
 	}
 
 	/**
-	 * masked the email/mobile with mask number.
+	 * generateMaskValue method is used to mask the email/mobile with mask number.
 	 *
-	 * @param maskValue the mask value
-	 * @param maskNo the mask no
+	 * @param maskValue the value to be masked
+	 * @param maskNo the number of char set to the masked
 	 * @return the string
 	 */
 	public static String generateMaskValue(String maskValue, int maskNo) {
@@ -34,7 +35,7 @@ public class MaskUtil {
 	}
 
 	/**
-	 * Mask email.
+	 * maskEmail method used to mask email
 	 *
 	 * @param email the email
 	 * @return the string
@@ -47,7 +48,7 @@ public class MaskUtil {
 	}
 
 	/**
-	 * Mask mobile number.
+	 * maskMobile method used to mask mobile number
 	 *
 	 * @param mobileNumber the mobile number
 	 * @return the string

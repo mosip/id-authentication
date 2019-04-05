@@ -1,14 +1,20 @@
 package io.mosip.authentication.core.logger;
 
-import static org.junit.Assert.*;
-
 import org.junit.Test;
 
+/**
+ * The Class IdaLoggerTest.
+ *
+ * @author Manoj SP
+ */
 public class IdaLoggerTest {
 
-    @Test
-    public void test() {
-	IdaLogger.getLogger(IdaLoggerTest.class);
-    }
+	/**
+	 * Test.
+	 */
+	@Test
+	public void test() {
+		IdaLogger.getLogger(IdaLoggerTest.class);
+	}
 
 }

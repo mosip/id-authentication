@@ -6,8 +6,11 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 
+import java.beans.IntrospectionException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.InvocationTargetException;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -169,16 +172,23 @@ public class DemoDedupeTest {
 	 *             the apis resource access exception
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
+	 * @throws ParseException 
+	 * @throws IntrospectionException 
+	 * @throws InvocationTargetException 
+	 * @throws IllegalArgumentException 
+	 * @throws IllegalAccessException 
 	 */
 	@Test
-	public void testDemoDedupeAutheticationSucess() throws ApisResourceAccessException, IOException {
+	public void testDemoDedupeAutheticationSucess() throws ApisResourceAccessException, IOException, ParseException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, IntrospectionException {
 
 		String regId = "1234567890";
 
 		List<String> duplicateIds = new ArrayList<>();
 		duplicateIds.add("123456789");
 		duplicateIds.add("987654321");
+		
 		Mockito.when(biometricValidation.validateBiometric(anyString(),anyString())).thenReturn(true);
+		
 		
 		boolean result = demoDedupe.authenticateDuplicates(regId, duplicateIds);
 
@@ -192,9 +202,14 @@ public class DemoDedupeTest {
 	 *             the apis resource access exception
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
+	 * @throws IntrospectionException 
+	 * @throws ParseException 
+	 * @throws InvocationTargetException 
+	 * @throws IllegalArgumentException 
+	 * @throws IllegalAccessException 
 	 */
 	@Test
-	public void testDemoDedupeAutheticationFailure() throws ApisResourceAccessException, IOException {
+	public void testDemoDedupeAutheticationFailure() throws ApisResourceAccessException, IOException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, ParseException, IntrospectionException {
 
 		String regId = "1234567890";
 
@@ -219,9 +234,14 @@ public class DemoDedupeTest {
 	 *             the apis resource access exception
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
+	 * @throws ParseException 
+	 * @throws IntrospectionException 
+	 * @throws InvocationTargetException 
+	 * @throws IllegalArgumentException 
+	 * @throws IllegalAccessException 
 	 */
 	@Test
-	public void testDemoDedupeAutheticationIrisSucess() throws ApisResourceAccessException, IOException {
+	public void testDemoDedupeAutheticationIrisSucess() throws ApisResourceAccessException, IOException, ParseException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, IntrospectionException {
 
 		String regId = "1234567890";
 

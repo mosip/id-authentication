@@ -23,10 +23,8 @@ import io.mosip.kernel.core.logger.spi.Logger;
 @Component
 public class StaticPinRequestValidator extends IdAuthValidator {
 
+	/** The Constant UIN_VID. */
 	private static final String UIN_VID = "UIN/VID";
-
-	/** The Constant ID_AUTH_VALIDATOR2. */
-	private static final String ID_AUTH_VALIDATOR2 = "IdAuthValidator";
 
 	/** The Constant IDV_ID_TYPE. */
 	private static final String IDV_ID_TYPE = "individualIdType";
@@ -37,16 +35,13 @@ public class StaticPinRequestValidator extends IdAuthValidator {
 	/** The Constant SESSION_ID. */
 	private static final String SESSION_ID = "SESSION_ID";
 
-	/** The Constant SPIN_VALIDATE. */
-	private static final String SPIN_VALIDATE = "STATIC PIN_VALIDATOR";
-
 	/** The Constant MISSING_INPUT_PARAMETER. */
 	private static final int MISSING_INPUT_PARAMETER = 0;
 
 	/** The Constant REQUEST. */
 	private static final String REQUEST = "request";
 
-	/** The Constant REQUEST. */
+	/** The Constant INDIVIDUAL_ID. */
 	private static final String INDIVIDUAL_ID = "individualId";
 
 	/** The Constant PINVALUE. */

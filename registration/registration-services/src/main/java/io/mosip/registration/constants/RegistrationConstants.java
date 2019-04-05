@@ -107,8 +107,8 @@ public class RegistrationConstants {
 	public static final String SUCCESS = "Success";
 	public static final String FAILURE = "Fail";
 	public static final String RESTART = "Restart";
-	public static final String SUPERVISOR = "SUPERVISOR";
-	public static final String OFFICER = "OFFICER";
+	public static final String SUPERVISOR = "REGISTRATION_SUPERVISOR";
+	public static final String OFFICER = "REGISTRATION_OFFICER";
 	public static final String IRIS_STUB = "leftIris";
 	public static final String FACE_STUB = "face";
 
@@ -132,7 +132,7 @@ public class RegistrationConstants {
 	public static final String FINGER_TYPE_MINUTIA = "minutia";
 
 	// Authorization Info
-	public static final String ADMIN_ROLE = "SUPERADMIN";
+	public static final String ADMIN_ROLE = "REGISTRATION_ADMIN";
 	public static final String ROLES_EMPTY = "RolesEmpty";
 	public static final String MACHINE_MAPPING = "MachineMapping";
 
@@ -1210,5 +1210,6 @@ public class RegistrationConstants {
 	public static final String REFRESHED_LOGIN_TIME = "mosip.registration.refreshed_login_time";
 	
 	public static final String USER_DETAILS="userDetails";
-
+	
+	public static final String OTP_EXPIRY_TIME = "mosip.kernel.otp.expiry-time";
 }
