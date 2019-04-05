@@ -54,8 +54,8 @@
         </span>
         <div class="file-upload__body__document-name">
           <div *ngFor="let file of users[0].files[0]; let j = index">
-            <div *ngIf="file.doc_cat_code == document.code">
-              <span>{{ file.doc_name }}</span>
+            <div *ngIf="file.docCatCode == document.code">
+              <span>{{ file.docName }}</span>
               <span class="file-uplaoad__body__document-name__view" (click)="viewFile(file)">
                 <img src="assets\view.png" class="view-img" />
               </span>

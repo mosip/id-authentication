@@ -23,7 +23,9 @@ export const IDS = {
   booking: 'mosip.pre-registration.booking.book',
   qrCode: 'mosip.pre-registration.qrcode.generate',
   sendOtp: 'mosip.pre-registration.login.sendotp',
-  validateOtp: 'mosip.pre-registration.login.useridotp'
+  validateOtp: 'mosip.pre-registration.login.useridotp',
+  documentUpload: 'mosip.pre-registration.document.upload',
+  applicantTypeId: 'mosip.applicanttype.fetch'
 };
 
 export const APPEND_URL = {
@@ -40,10 +42,10 @@ export const APPEND_URL = {
   location: 'v1/masterdata/',
   gender: 'v1/masterdata/gendertypes',
   transliteration: 'transliteration/transliterate',
-  applicantType: 'applicanttype/v1/',
+  applicantType: 'v1/applicanttype/',
   validDocument: 'applicanttype/',
   getApplicantType: 'getApplicantType',
-  document: 'document/documents',
+  document: 'documents/',
   document_copy: 'document/documents/copy',
   nearby_registration_centers: 'getcoordinatespecificregistrationcenters/',
   registration_centers_by_name: 'registrationcenters/',
@@ -65,7 +67,10 @@ export const PARAMS_KEYS = {
   getDocument: PRE_REGISTRATION_ID,
   getDocumentCategories: 'languages',
   deleteFile: 'documentId',
-  getAvailabilityData: 'registration_center_id'
+  getAvailabilityData: 'registration_center_id',
+  catCode: 'catCode',
+  sourcePrId: 'sourcePrId',
+  POA: 'POA'
 };
 
 export const ERROR_CODES = {
@@ -131,44 +136,50 @@ export const APPLICATION_STATUS_CODES = {
   expired: 'Expired'
 };
 
-export const DOCUMENT_UPLOAD_REQUEST_DTO = {
-  id: 'mosip.pre-registration.document.upload',
-  version: '1.0',
-  requesttime: '2018-12-28T05:23:08.019Z',
-  request: {
-    pre_registartion_id: '',
-    doc_cat_code: '',
-    doc_typ_code: 'address',
-    lang_code: 'ENG'
-  }
+export const APPLICANT_TYPE_ATTRIBUTES = {
+  individualTypeCode: 'individualTypeCode',
+  dateofbirth: 'dateofbirth',
+  genderCode: 'genderCode',
+  biometricAvailable: 'biometricAvailable'
 };
+// export const DOCUMENT_UPLOAD_REQUEST_DTO = {
+//   id: 'mosip.pre-registration.document.upload',
+//   version: '1.0',
+//   requesttime: '2018-12-28T05:23:08.019Z',
+//   request: {
+//     pre_registartion_id: '',
+//     doc_cat_code: '',
+//     doc_typ_code: 'address',
+//     lang_code: 'ENG'
+//   }
+// };
 
-export const DOCUMENT_CATEGORY_DTO = {
-  request: {
-    attributes: [
-      {
-        attribute: 'individualTypeCode',
-        value: 'FR'
-      },
-      {
-        attribute: 'dateofbirth',
-        value: '2012-03-08T11:46:12.640Z'
-      },
-      {
-        attribute: 'genderCode',
-        value: 'MLE'
-      },
-      {
-        attribute: 'biometricAvailable',
-        value: false
-      }
-    ]
-  },
-  id: 'mosip.applicanttype.fetch',
-  requestTime: '2012-03-08T11:46:12.640Z',
-  metadata: {},
-  version: 'V1.0'
-};
+// export const DOCUMENT_CATEGORY_DTO = {
+//   request: {
+//     attributes: [
+//       {
+//         attribute: 'individualTypeCode',
+//         value: 'FR'
+//       },
+//       {
+//         attribute: 'dateofbirth',
+//         value: '2012-03-08T11:46:12.640Z'
+//       },
+//       {
+//         attribute: 'genderCode',
+//         value: 'MLE'
+//       },
+//       {
+//         attribute: 'biometricAvailable',
+//         value: false
+//       }
+//     ]
+//   },
+//   id: 'mosip.applicanttype.fetch',
+//   requestTime: '2012-03-08T11:46:12.640Z',
+//   metadata: {},
+//   version: 'V1.0'
+// };
 
 export const virtual_keyboard_languages = {
   eng: 'en',

@@ -18,10 +18,11 @@ export class DataStorageService {
   ) {}
 
   //need to remove
-  // BASE_URL2 = 'https://dev.mosip.io/';
+  // BASE_URL = 'https://dev.mosip.io/';
   // BASE_URL_LOCAL = 'http://A2ML29862:9092/demographic/applications';
 
   BASE_URL = this.appConfigService.getConfig()['BASE_URL'];
+  // BASE_URL = 'https://dev.mosip.io/';
   PRE_REG_URL = this.appConfigService.getConfig()['PRE_REG_URL'];
 
   getUsers(userId: string) {
@@ -49,11 +50,14 @@ export class DataStorageService {
   getUserDocuments(preRegId) {
     console.log('documents fetched for : ', preRegId);
 
-    return this.httpClient.get(this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.document, {
-      observe: 'body',
-      responseType: 'json',
-      params: new HttpParams().append(appConstants.PARAMS_KEYS.getDocument, preRegId)
-    });
+    return this.httpClient.get(
+      this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.document + preRegId
+      //   ,{
+      //   observe: 'body',
+      //   responseType: 'json',
+      //   params: new HttpParams().append(appConstants.PARAMS_KEYS.getDocument, preRegId)
+      // }
+    );
   }
 
   addUser(identity: any) {
@@ -70,19 +74,29 @@ export class DataStorageService {
     return this.httpClient.put(url, obj);
   }
 
-  sendFile(formdata: FormData) {
-    return this.httpClient.post(this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.document, formdata);
+  sendFile(formdata: FormData, preRegId) {
+    console.log('formData', formdata);
+
+    return this.httpClient.post(
+      this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.document + preRegId,
+      formdata
+    );
     // console.log('servvice called', formdata);
   }
 
   deleteRegistration(preId: string) {
     // const url = this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.applicants + appConstants.APPENDER + preId;
-    return this.httpClient.delete(this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.delete_application + preId );
+    return this.httpClient.delete(
+      this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.delete_application + preId
+    );
   }
 
   cancelAppointment(data: RequestModel, preRegId: string) {
     console.log('cancel appointment data', data);
-    return this.httpClient.put(this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.booking_appointment + preRegId, data);
+    return this.httpClient.put(
+      this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.booking_appointment + preRegId,
+      data
+    );
   }
 
   getNearbyRegistrationCenters(coords: any) {
@@ -120,7 +134,9 @@ export class DataStorageService {
   }
 
   getAvailabilityData(registrationCenterId) {
-    return this.httpClient.get(this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.booking_availability + registrationCenterId );
+    return this.httpClient.get(
+      this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.booking_availability + registrationCenterId
+    );
   }
 
   makeBooking(request: RequestModel, preId) {
@@ -160,20 +176,19 @@ export class DataStorageService {
   }
 
   copyDocument(sourceId: string, destinationId: string) {
-    const url =
-      this.BASE_URL +
-      this.PRE_REG_URL +
-      appConstants.APPEND_URL.document_copy +
-      '?catCode=POA&destinationPreId=' +
-      destinationId +
-      '&sourcePrId=' +
-      sourceId;
+    const url = this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.document + destinationId;
     console.log('copy document URL', url);
-    return this.httpClient.post(url, '');
+    return this.httpClient.put(url, {
+      observe: 'body',
+      responseType: 'json',
+      params: new HttpParams()
+        .append(appConstants.PARAMS_KEYS.catCode, appConstants.PARAMS_KEYS.POA)
+        .append(appConstants.PARAMS_KEYS.sourcePrId, sourceId)
+    });
   }
 
   generateQRCode(data: string) {
-    const obj = new RequestModel(appConstants.IDS.qrCode, data)
+    const obj = new RequestModel(appConstants.IDS.qrCode, data);
     return this.httpClient.post(this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.qr_code, obj);
   }
 
@@ -259,7 +274,7 @@ export class DataStorageService {
       userId: userId
     };
 
-    const obj = new RequestModel(appConstants.IDS.sendOtp, req); 
+    const obj = new RequestModel(appConstants.IDS.sendOtp, req);
 
     const url = this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.auth + appConstants.APPEND_URL.send_otp;
     return this.httpClient.post(url, obj);
@@ -271,7 +286,7 @@ export class DataStorageService {
       userId: userId
     };
 
-    const obj = new RequestModel(appConstants.IDS.validateOtp, request); 
+    const obj = new RequestModel(appConstants.IDS.validateOtp, request);
 
     const url = this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.auth + appConstants.APPEND_URL.login;
     return this.httpClient.post(url, obj);
