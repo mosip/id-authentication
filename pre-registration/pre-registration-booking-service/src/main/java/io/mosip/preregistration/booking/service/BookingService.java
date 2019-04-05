@@ -327,13 +327,10 @@ public class BookingService {
 		MainResponseDTO<BookingRegistrationDTO> responseDto = new MainResponseDTO<>();
 		RegistrationBookingEntity entity = new RegistrationBookingEntity();
 		try {
-			/* Getting Status From Demographic */
-			String preRegStatusCode = serviceUtil.callGetStatusRestService(preRegID);
+			/* Checking Status From Demographic */
+			serviceUtil.callGetStatusRestService(preRegID);
 			entity = bookingDAO.findByPreRegistrationId(preRegID);
-			if (!preRegStatusCode.equals(StatusCodes.BOOKED.getCode())) {
-				throw new BookingDataNotFoundException(ErrorCodes.PRG_BOOK_RCI_030.getCode(),
-						ErrorMessages.CANNOT_GET_DETAILS_FOR + "_" + preRegStatusCode.toUpperCase() + "_STATUS");
-			}
+
 			bookingRegistrationDTO.setRegDate(entity.getRegDate().toString());
 			bookingRegistrationDTO.setRegistrationCenterId(entity.getRegistrationCenterId());
 			bookingRegistrationDTO.setSlotFromTime(entity.getSlotFromTime().toString());

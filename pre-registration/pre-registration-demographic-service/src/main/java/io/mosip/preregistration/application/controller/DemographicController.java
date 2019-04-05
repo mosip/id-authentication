@@ -137,7 +137,7 @@ public class DemographicController {
 	 */
 
 	@PreAuthorize("hasAnyRole('individual')")
-	@PutMapping(path = "/applications/{preRegistrationId}", produces = MediaType.APPLICATION_JSON_VALUE)
+	@PutMapping(path = "/applications/status/{preRegistrationId}", produces = MediaType.APPLICATION_JSON_VALUE)
 
 	@ApiOperation(value = "Update Pre-Registartion status")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Pre-Registration Status successfully updated"),

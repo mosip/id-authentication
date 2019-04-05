@@ -1,5 +1,6 @@
 package io.mosip.preregistration.login.service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -32,6 +33,8 @@ import io.mosip.preregistration.core.code.EventName;
 import io.mosip.preregistration.core.code.EventType;
 import io.mosip.preregistration.core.common.dto.AuditRequestDto;
 import io.mosip.preregistration.core.common.dto.AuthNResponse;
+import io.mosip.preregistration.core.common.dto.RequestWrapper;
+import io.mosip.preregistration.core.common.dto.ResponseWrapper;
 import io.mosip.preregistration.core.config.LoggerConfiguration;
 import io.mosip.preregistration.core.util.AuditLogUtil;
 import io.mosip.preregistration.core.util.ValidationUtil;
@@ -135,21 +138,23 @@ public class LoginService {
 		try {
 			if(ValidationUtil.requestValidator(loginCommonUtil.prepareRequestMap(userOtpRequest),requiredRequestMap)/*authCommonUtil.validateRequest(userOtpRequest)*/) {
 				
-				
+				auditUserId=otp.getUserId();
 				otpChannel=loginCommonUtil.validateUserIdAndLangCode(otp.getUserId(),otp.getLangCode());
 				OtpUser user=new OtpUser(otp.getUserId(), otp.getLangCode(), otpChannel, appId, useridtype);
-				OtpUserDTO otpUserDTO=new OtpUserDTO();
-				auditUserId=otp.getUserId();
-				otpUserDTO.setRequest(user);
+				RequestWrapper<OtpUser> requestSendOtpKernel=new RequestWrapper<>();
+				requestSendOtpKernel.setRequest(user);
+				requestSendOtpKernel.setRequesttime(LocalDateTime.now());
 				response  =	(MainResponseDTO<AuthNResponse>) loginCommonUtil.getMainResponseDto(userOtpRequest);
-				String url=sendOtpResourceUrl+"/v1.0/authenticate/sendotp";
-				ResponseEntity<String> responseEntity=(ResponseEntity<String>) loginCommonUtil.getResponseEntity(url,HttpMethod.POST,MediaType.APPLICATION_JSON,otpUserDTO,null,String.class);
+				String url=sendOtpResourceUrl+"/authenticate/sendotp";
+				ResponseEntity<String> responseEntity=(ResponseEntity<String>) loginCommonUtil.getResponseEntity(url,HttpMethod.POST,MediaType.APPLICATION_JSON,requestSendOtpKernel,null,String.class);
 				List<ServiceError> validationErrorList=ExceptionUtils.getServiceErrorList(responseEntity.getBody());
 				if(!validationErrorList.isEmpty()) {
 					throw new LoginServiceException(validationErrorList,response);
 				}
 				response.setResponsetime(loginCommonUtil.getCurrentResponseTime());
-				response.setResponse(loginCommonUtil.requestBodyExchange(responseEntity.getBody()));
+				ResponseWrapper<?> responseKernel=loginCommonUtil.requestBodyExchange(responseEntity.getBody());
+				
+				response.setResponse((AuthNResponse) loginCommonUtil.requestBodyExchangeObject(loginCommonUtil.responseToString(responseKernel.getResponse()),AuthNResponse.class));
 			}
 			isRetrieveSuccess = true;
 		}
@@ -190,10 +195,13 @@ public class LoginService {
 				UserOtp userOtp=new UserOtp(user.getUserId(), user.getOtp(), appId);
 				UserOtpDTO userOtpDTO=new UserOtpDTO();
 				userOtpDTO.setRequest(userOtp);
+				RequestWrapper<UserOtp> requestSendOtpKernel=new RequestWrapper<>();
+				requestSendOtpKernel.setRequest(userOtp);
+				requestSendOtpKernel.setRequesttime(LocalDateTime.now());
 				response  =	(MainResponseDTO<ResponseEntity<String>>) loginCommonUtil.getMainResponseDto(userIdOtpRequest);
 				ResponseEntity<String> responseEntity = null;
-				String url=sendOtpResourceUrl+"/v1.0/authenticate/useridOTP";
-				responseEntity=(ResponseEntity<String>) loginCommonUtil.getResponseEntity(url,HttpMethod.POST,MediaType.APPLICATION_JSON_UTF8,userOtpDTO,null,String.class);
+				String url=sendOtpResourceUrl+"/authenticate/useridOTP";
+				responseEntity=(ResponseEntity<String>) loginCommonUtil.getResponseEntity(url,HttpMethod.POST,MediaType.APPLICATION_JSON_UTF8,requestSendOtpKernel,null,String.class);
 				List<ServiceError> validationErrorList=null;
 				validationErrorList=ExceptionUtils.getServiceErrorList(responseEntity.getBody());
 				if(!validationErrorList.isEmpty()) {
@@ -228,14 +236,15 @@ public class LoginService {
 		try {
 			Map<String,String> headersMap=new HashMap<>();
 			headersMap.put("Cookie",authHeader);
-			String url=sendOtpResourceUrl+"/v1.0/authorize/invalidateToken";
+			String url=sendOtpResourceUrl+"/authorize/invalidateToken";
 			responseEntity=(ResponseEntity<String>) loginCommonUtil.getResponseEntity(url,HttpMethod.POST,MediaType.APPLICATION_JSON,null,headersMap,String.class);
 			List<ServiceError> validationErrorList=null;
 			validationErrorList=ExceptionUtils.getServiceErrorList(responseEntity.getBody());
 			if(!validationErrorList.isEmpty()) {
 				throw new LoginServiceException(validationErrorList,null);
 			}
-			authNResponse = loginCommonUtil.requestBodyExchange(responseEntity.getBody());
+			ResponseWrapper<?> responseKernel=loginCommonUtil.requestBodyExchange(responseEntity.getBody());
+			authNResponse = (AuthNResponse) loginCommonUtil.requestBodyExchangeObject(loginCommonUtil.responseToString(responseKernel.getResponse()), AuthNResponse.class);
 			isRetrieveSuccess = true;
 		}
 		catch(Exception ex) {	

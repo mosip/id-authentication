@@ -25,11 +25,14 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.preregistration.core.common.dto.AuthNResponse;
+import io.mosip.preregistration.core.common.dto.ResponseWrapper;
 import io.mosip.preregistration.core.config.LoggerConfiguration;
 import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
 import io.mosip.preregistration.core.util.ValidationUtil;
@@ -67,7 +70,8 @@ public class LoginCommonUtil {
 	 */
 	private Logger log = LoggerConfiguration.logConfig(LoginCommonUtil.class);
 	
-	private final ObjectMapper objectMapper=new ObjectMapper();
+	@Autowired
+	private  ObjectMapper objectMapper;
 	
 	
 	@Value("${otpChannel.mobile}")
@@ -199,13 +203,31 @@ public class LoginCommonUtil {
 	 * @param serviceResponseBody
 	 * @return
 	 */
-	public AuthNResponse requestBodyExchange(String serviceResponseBody) {
+	public ResponseWrapper<?> requestBodyExchange(String serviceResponseBody) {
 		try {
-			return objectMapper.readValue(serviceResponseBody, AuthNResponse.class);
+			return objectMapper.readValue(serviceResponseBody, ResponseWrapper.class);
 		} catch (IOException e) {
 			throw new ParseResponseException(ErrorCodes.PRG_AUTH_011.getCode(), ErrorMessages.ERROR_WHILE_PARSING.getMessage());
 			
 		} 
+	}
+	
+	public Object requestBodyExchangeObject(String serviceResponseBody,Class<?> responseClass) {
+		try {
+			return objectMapper.readValue(serviceResponseBody,responseClass);
+		} catch (IOException e) {
+			throw new ParseResponseException(ErrorCodes.PRG_AUTH_011.getCode(), ErrorMessages.ERROR_WHILE_PARSING.getMessage());
+			
+		} 
+	}
+	
+	public String responseToString(Object response) {
+		try {
+			return objectMapper.writeValueAsString(response);
+		} catch (JsonProcessingException e) {
+			
+			throw new ParseResponseException("","");
+		}
 	}
 	
 	public Properties parsePropertiesString(String s) throws IOException {
@@ -242,7 +264,7 @@ public class LoginCommonUtil {
 		Map<String, String> requestMap = new HashMap<>();
 		requestMap.put("id", requestDto.getId());
 		requestMap.put("version", requestDto.getVersion());
-		LocalDate date = requestDto.getRequesttime().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+		LocalDate date = requestDto.getRequesttime().toInstant().atZone(ZoneId.of("UTC")).toLocalDate();
 		requestMap.put("requesttime",date.toString());
 		requestMap.put("request", requestDto.getRequest().toString());
 		return requestMap;

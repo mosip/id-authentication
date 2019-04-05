@@ -27,6 +27,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.preregistration.core.common.dto.AuthNResponse;
+import io.mosip.preregistration.core.common.dto.ResponseWrapper;
 import io.mosip.preregistration.core.config.LoggerConfiguration;
 import io.mosip.preregistration.login.dto.MainRequestDTO;
 import io.mosip.preregistration.login.dto.MainResponseDTO;
@@ -55,9 +56,9 @@ public class LoginController {
 
 	/** Autowired reference for {@link #authService}. */
 	@Autowired
-	private LoginService authService;
+	private LoginService loginService;
 	@Autowired
-	private LoginCommonUtil authCommonUtil;
+	private LoginCommonUtil loginCommonUtil;
 	
 	
 	private Logger log = LoggerConfiguration.logConfig(LoginController.class);
@@ -73,7 +74,7 @@ public class LoginController {
 	public ResponseEntity<MainResponseDTO<AuthNResponse>> sendOTP(@RequestBody MainRequestDTO<OtpRequestDTO> userOtpRequest ){
 		log.info("sessionId", "idType", "id",
 				"In sendOtp method of Login controller for sending Otp ");
-		return ResponseEntity.status(HttpStatus.OK).body(authService.sendOTP(userOtpRequest));
+		return ResponseEntity.status(HttpStatus.OK).body(loginService.sendOTP(userOtpRequest));
 		}
 	
 	/**
@@ -87,13 +88,14 @@ public class LoginController {
 	public ResponseEntity<MainResponseDTO<AuthNResponse>> validateWithUserIdOtp(@RequestBody MainRequestDTO<User> userIdOtpRequest,HttpServletResponse res){
 		log.info("sessionId", "idType", "id",
 				"In validateWithUserIdotp method of Login controller for validating user and Otp and providing the access token ");
-		MainResponseDTO<ResponseEntity<String>> serviceResponse=authService.validateWithUserIdOtp(userIdOtpRequest);
+		MainResponseDTO<ResponseEntity<String>> serviceResponse=loginService.validateWithUserIdOtp(userIdOtpRequest);
 		MainResponseDTO<AuthNResponse> responseBody=new MainResponseDTO<>();
 		responseBody.setId(serviceResponse.getId());
 		responseBody.setResponsetime(serviceResponse.getResponsetime());
 		responseBody.setVersion(serviceResponse.getVersion());
 		ResponseEntity<String> response=serviceResponse.getResponse();
-		responseBody.setResponse(authCommonUtil.requestBodyExchange(response.getBody()));
+		ResponseWrapper<?> responseWrapped=loginCommonUtil.requestBodyExchange(response.getBody());
+		responseBody.setResponse((AuthNResponse) loginCommonUtil.requestBodyExchangeObject(loginCommonUtil.responseToString(responseWrapped.getResponse()),AuthNResponse.class));
 		HttpHeaders headers=response.getHeaders();
 		String content=headers.get("Set-Cookie").get(0);
 		List<HttpCookie> httpCookies=HttpCookie.parse(content);
@@ -115,7 +117,7 @@ public class LoginController {
 		String authHeader=req.getHeader("Cookie");
 		System.out.println(authHeader);
 		//List<HttpCookie> authCookie=HttpCookie.parse(authHeader);
-		return ResponseEntity.status(HttpStatus.OK).body(authService.invalidateToken(authHeader));
+		return ResponseEntity.status(HttpStatus.OK).body(loginService.invalidateToken(authHeader));
 		
 	}
 	/**
@@ -143,7 +145,7 @@ public class LoginController {
 	public ResponseEntity<MainResponseDTO<Map<String,String>>> configParams() {
 		log.info("sessionId", "idType", "id",
 				"In Login controller for getting config values ");
-		return  new ResponseEntity<>( authService.getConfig(),HttpStatus.OK);
+		return  new ResponseEntity<>( loginService.getConfig(),HttpStatus.OK);
 		
 	}
 

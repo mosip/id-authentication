@@ -23,6 +23,7 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import io.mosip.preregistration.core.common.dto.AuthNResponse;
+import io.mosip.preregistration.core.common.dto.ResponseWrapper;
 import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
 import io.mosip.preregistration.core.util.AuditLogUtil;
 import io.mosip.preregistration.login.dto.MainRequestDTO;
@@ -152,13 +153,18 @@ public class LoginServiceTest {
 		spyAuthService.validateWithUserIdOtp(userRequest);
 	}
 	
+	@Mock
+	private ResponseWrapper responseWrapped;
 	@Test
 	public void invalidateToken() {
 		String authHeader="Authorization=Mosip-TokeneyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI5NzQ4MTA3Mzg2IiwibW9iaWxlIjoiOTc0ODEwNzM4NiIsIm1haWwiOiIiLCJuYW1lIjoiOTc0ODEwNzM4NiIsImlzT3RwUmVxdWlyZWQiOnRydWUsImlzT3RwVmVyaWZpZWQiOnRydWUsImlhdCI6MTU1MjM4NDk1NCwiZXhwIjoxNTUyMzkwOTU0fQ.burEVnDRF4YVyRGMdx0vYP2DkZbiCKnUdl-7YDlBgcy3u40W5iE9_P8q9kdrlt2xjk4NuXnjPkb7uaFbzYcHog; Max-Age=6000000; Expires=Mon, 20-May-2019 20:42:34 GMT; Path=/; Secure; HttpOnly";
 		Mockito.doReturn(responseEntity).when(authCommonUtil).getResponseEntity(Mockito.any(),Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any());
 		authNResposne.setMessage("Success");
 		Mockito.when(responseEntity.getBody()).thenReturn("authNResposne");
-		Mockito.when(authCommonUtil.requestBodyExchange(Mockito.any())).thenReturn(authNResposne);
+		Mockito.when(authCommonUtil.requestBodyExchange(Mockito.any())).thenReturn(responseWrapped);
+		Mockito.when(responseWrapped.getResponse()).thenReturn(authNResposne);
+		//Mockito.when(authCommonUtil.responseToString(Mockito.any())).thenReturn(authNResposne.toString());
+		Mockito.when(authCommonUtil.requestBodyExchangeObject(Mockito.any(), Mockito.any())).thenReturn(authNResposne);
 		Mockito.doNothing().when(spyAuthService).setAuditValues(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any());
 		assertNotNull(spyAuthService.invalidateToken(authHeader));
 	}
