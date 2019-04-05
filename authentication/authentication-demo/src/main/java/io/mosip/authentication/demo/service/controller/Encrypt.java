@@ -24,7 +24,6 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
 import org.apache.commons.codec.binary.Base64;
-import org.bouncycastle.util.Arrays;
 import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -46,8 +45,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.mosip.authentication.demo.service.dto.CryptomanagerRequestDto;
 import io.mosip.authentication.demo.service.dto.EncryptionRequestDto;
 import io.mosip.authentication.demo.service.dto.EncryptionResponseDto;
-import io.mosip.authentication.demo.service.dto.PublicKeyResponseDTO;
 import io.mosip.authentication.demo.service.helper.CryptoUtility;
+import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.core.util.HMACUtils;
@@ -180,6 +179,7 @@ public class Encrypt {
 	 * @throws JSONException
 	 *             the JSON exception
 	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public String getPublicKey(String data)
 			throws IOException, KeyManagementException, NoSuchAlgorithmException, RestClientException, JSONException {
 		turnOffSslChecking();
@@ -195,9 +195,9 @@ public class Encrypt {
 		UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(publicKeyURL)
 				.queryParam("timeStamp", DateUtils.getUTCCurrentDateTimeString())
 				.queryParam("referenceId", publicKeyId);
-		ResponseEntity<PublicKeyResponseDTO> response = restTemplate.exchange(builder.build(uriParams), HttpMethod.GET,
-				null, PublicKeyResponseDTO.class);
-		return (String) response.getBody().getPublicKey();
+		ResponseEntity<ResponseWrapper> response = restTemplate.exchange(builder.build(uriParams), HttpMethod.GET,
+				null, ResponseWrapper.class);
+		return (String) ((Map<String, Object>) response.getBody()).get("publicKey");
 	}
 
 	/**
