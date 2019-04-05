@@ -167,8 +167,9 @@ public class KycAuthRequestValidator extends BaseAuthRequestValidator {
 		if (!isValidAuthtype) {
 			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE,
 					INVALID_INPUT_PARAMETER + REQUESTEDAUTH);
-			errors.rejectValue(REQUESTEDAUTH, IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorCode(), String
-					.format(IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorMessage(), REQUESTEDAUTH));
+			String notAllowedAuthTypesStr = notAllowedAuthTypes.stream().map(at -> at.getType()).collect(Collectors.joining(","));
+			errors.rejectValue(REQUESTEDAUTH, IdAuthenticationErrorConstants.AUTH_TYPE_NOT_SUPPORTED.getErrorCode(), String
+					.format(IdAuthenticationErrorConstants.AUTH_TYPE_NOT_SUPPORTED.getErrorMessage(), notAllowedAuthTypesStr));
 		}
 
 	}
