@@ -4,7 +4,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.doNothing;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -20,7 +19,6 @@ import java.util.List;
 import org.apache.commons.io.IOUtils;
 import org.json.simple.JSONObject;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -48,6 +46,7 @@ import io.mosip.registration.processor.core.code.EventName;
 import io.mosip.registration.processor.core.code.EventType;
 import io.mosip.registration.processor.core.constant.PacketFiles;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
+import io.mosip.registration.processor.core.http.ResponseWrapper;
 import io.mosip.registration.processor.core.packet.dto.ApplicantDocument;
 import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.packet.dto.PacketMetaInfo;
@@ -163,7 +162,9 @@ public class UinGeneratorStageTest {
 				.mock(RegistrationProcessorRestClientService.class);
 		auditLog.set(auditLogRequestBuilder, mockObj);
 		AuditResponseDto auditResponseDto = new AuditResponseDto();
-		Mockito.doReturn(auditResponseDto).when(auditLogRequestBuilder).createAuditRequestBuilder(
+		ResponseWrapper<AuditResponseDto> responseWrapper=new ResponseWrapper<AuditResponseDto>();
+		responseWrapper.setResponse(auditResponseDto);
+		Mockito.doReturn(responseWrapper).when(auditLogRequestBuilder).createAuditRequestBuilder(
 				"test case description", EventId.RPR_401.toString(), EventName.ADD.toString(),
 				EventType.BUSINESS.toString(), "1234testcase", ApiName.AUDIT);
 
@@ -204,10 +205,9 @@ public class UinGeneratorStageTest {
 	public void testUinGenerationSuccessWithoutUIN() throws Exception {
 		MessageDTO messageDTO = new MessageDTO();
 		messageDTO.setRid("27847657360002520181210094052");
-
-		String Str = "{\"uin\":\"6517036426\"}";
+		String str="{\"id\":\"mosip.id.read\",\"version\":\"1.0\",\"responsetime\":\"2019-04-05\",\"metadata\":null,\"response\":{\"uin\":\"2812936908\"},\"errors\":[{\"errorCode\":null,\"errorMessage\":null}]}";
 		String response = "{\"uin\":\"6517036426\",\"status\":\"ASSIGNED\"}";
-		Mockito.when(registrationProcessorRestClientService.getApi(any(), any(), any(), any(), any())).thenReturn(Str);
+		Mockito.when(registrationProcessorRestClientService.getApi(any(), any(), any(), any(), any())).thenReturn(str);
 		Mockito.when(registrationProcessorRestClientService.putApi(any(), any(), any(), any(), any(), any())).thenReturn(response);
 
 		ClassLoader classLoader = getClass().getClassLoader();
@@ -247,10 +247,10 @@ public class UinGeneratorStageTest {
 		MessageDTO messageDTO = new MessageDTO();
 		messageDTO.setRid("27847657360002520181210094052");
 
-		String Str = "{\"uin\":\"6517036426\"}";
+		String str="{\"id\":\"mosip.id.read\",\"version\":\"1.0\",\"responsetime\":\"2019-04-05\",\"metadata\":null,\"response\":{\"uin\":\"2812936908\"},\"errors\":[{\"errorCode\":null,\"errorMessage\":null}]}";
 		String response = "{\"timestamp\":1553771083721,\"status\":404,\"errors\":[{\"errorCode\":\"KER-UIG-004\",\"errorMessage\":\"Given UIN is not in ISSUED status\"}]}";
 
-		Mockito.when(registrationProcessorRestClientService.getApi(any(), any(), any(), any(), any())).thenReturn(Str);
+		Mockito.when(registrationProcessorRestClientService.getApi(any(), any(), any(), any(), any())).thenReturn(str);
 		Mockito.when(registrationProcessorRestClientService.putApi(any(), any(), any(), any(), any(), any())).thenReturn(response);
 
 		ClassLoader classLoader = getClass().getClassLoader();
@@ -286,7 +286,6 @@ public class UinGeneratorStageTest {
 	}
 
 	@Test
-	@Ignore
 	public void testUinReActivationifAlreadyActivatedSuccess() throws Exception {
 
 		MessageDTO messageDTO = new MessageDTO();
@@ -369,7 +368,6 @@ public class UinGeneratorStageTest {
 
 
 	@Test
-	@Ignore
 	public void testUinReActivationIfNotGotActivatedStaus() throws Exception {
 
 		MessageDTO messageDTO = new MessageDTO();
@@ -416,7 +414,6 @@ public class UinGeneratorStageTest {
 	}
 
 	@Test
-	@Ignore
 	public void testUinReActivationFailure() throws Exception {
 
 		MessageDTO messageDTO = new MessageDTO();
@@ -616,7 +613,6 @@ public class UinGeneratorStageTest {
 	}
 
 	@Test
-	@Ignore
 	public void checkIsUinDeactivatedSuccess() throws ApisResourceAccessException {
 		MessageDTO messageDTO = new MessageDTO();
 		messageDTO.setRid("10031100110005020190313110030");
@@ -641,7 +637,6 @@ public class UinGeneratorStageTest {
 	}
 
 	@Test
-	@Ignore
 	public void deactivateTestForExistingUinTestSuccess() throws ApisResourceAccessException {
 		MessageDTO messageDTO = new MessageDTO();
 		messageDTO.setRid("10031100110005020190313110030");

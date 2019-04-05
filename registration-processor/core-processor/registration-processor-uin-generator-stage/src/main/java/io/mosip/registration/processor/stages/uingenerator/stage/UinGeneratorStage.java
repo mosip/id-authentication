@@ -56,7 +56,6 @@ import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequest
 import io.mosip.registration.processor.stages.uingenerator.dto.UinDto;
 import io.mosip.registration.processor.stages.uingenerator.dto.UinGenResponseDto;
 import io.mosip.registration.processor.stages.uingenerator.dto.UinRequestDto;
-import io.mosip.registration.processor.stages.uingenerator.dto.UinResponseDto;
 import io.mosip.registration.processor.stages.uingenerator.idrepo.dto.Documents;
 import io.mosip.registration.processor.stages.uingenerator.idrepo.dto.IdRequestDto;
 import io.mosip.registration.processor.stages.uingenerator.idrepo.dto.IdResponseDTO;
@@ -67,9 +66,6 @@ import io.mosip.registration.processor.status.code.RegistrationType;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 
 /**
  * The Class UinGeneratorStage.
@@ -223,10 +219,9 @@ public class UinGeneratorStage extends MosipVerticleManager {
 			if (uinFieldCheck == null) {
 				String test = (String) registrationProcessorRestClientService.getApi(ApiName.UINGENERATOR, null, "", "",
 						String.class);
-				System.out.println(test);
 				Gson gsonObj = new Gson();
 				uinResponseDto = gsonObj.fromJson(test, UinGenResponseDto.class);
-				long uinInLong = Long.parseLong(uinResponseDto.getResponse().getUin());//<--
+				long uinInLong = Long.parseLong(uinResponseDto.getResponse().getUin());
 				demographicIdentity.put("UIN", uinInLong);
 				idResponseDTO = sendIdRepoWithUin(registrationId, uinResponseDto.getResponse().getUin());
 				if (idResponseDTO != null && idResponseDTO.getResponse() != null) {
