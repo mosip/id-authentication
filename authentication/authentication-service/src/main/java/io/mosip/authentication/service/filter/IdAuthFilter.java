@@ -333,20 +333,29 @@ public class IdAuthFilter extends BaseAuthFilter {
 					.filter(s ->  s.getData() != null && s.getData().getBioType() != null)
 					.map(s -> s.getData().getBioType())
 					.collect(Collectors.toList());
-			for (String bioType : bioTypeList) {
-				if (bioType.equalsIgnoreCase("FIR") || bioType.equalsIgnoreCase("FMR")) {
-					bioType = "Finger";
-				} else if (bioType.equalsIgnoreCase("FID")) {
-					bioType = "Face";
-				} else if (bioType.equalsIgnoreCase("IIR")) {
-					bioType = "Iris";
-				}
-				if (!isAllowedAuthType(MatchType.Category.BIO.getType(), bioType, authPolicies)) {
-					String bioSubtype=MatchType.Category.BIO.name() + "-" + bioType;
+			if(bioTypeList.isEmpty()) { 
+				if (!isAllowedAuthType(MatchType.Category.BIO.getType(), authPolicies)) {
 					throw new IdAuthenticationAppException(
 							IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorCode(),
 							String.format(IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorMessage(),
-									bioSubtype));
+									"bio"));
+				}
+			} else {
+				for (String bioType : bioTypeList) {
+					if (bioType.equalsIgnoreCase("FIR") || bioType.equalsIgnoreCase("FMR")) {
+						bioType = "Finger";
+					} else if (bioType.equalsIgnoreCase("FID")) {
+						bioType = "Face";
+					} else if (bioType.equalsIgnoreCase("IIR")) {
+						bioType = "Iris";
+					}
+					if (!isAllowedAuthType(MatchType.Category.BIO.getType(), bioType, authPolicies)) {
+						String bioSubtype=MatchType.Category.BIO.name() + "-" + bioType;
+						throw new IdAuthenticationAppException(
+								IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorCode(),
+								String.format(IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorMessage(),
+										bioSubtype));
+					}
 				}
 			}
 		
