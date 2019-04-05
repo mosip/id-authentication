@@ -641,10 +641,10 @@ export class DemographicComponent implements OnInit, OnDestroy {
     if (fromControl.value) {
       const request: any = {
         from_field_lang: this.primaryLang,
-        from_field_name: toControl,
+        // from_field_name: toControl,
         from_field_value: fromControl.value,
         to_field_lang: this.secondaryLang,
-        to_field_name: toControl,
+        // to_field_name: toControl,
         to_field_value: ''
       };
 

@@ -10,6 +10,7 @@ import { RegistrationService } from 'src/app/core/services/registration.service'
 import { DataStorageService } from 'src/app/core/services/data-storage.service';
 import { TranslateService } from '@ngx-translate/core';
 import { SharedService } from '../../booking/booking.service';
+import { RequestModel } from 'src/app/shared/models/request-model/RequestModel';
 
 @Component({
   selector: 'app-file-upload',
@@ -51,12 +52,23 @@ export class FileUploadComponent implements OnInit {
 
   sameAs;
   disableNavigation = false;
-  JsonString = appConstants.DOCUMENT_UPLOAD_REQUEST_DTO;
+  // JsonString = appConstants.DOCUMENT_UPLOAD_REQUEST_DTO;
 
   browseDisabled = true;
 
   // disabled = true;
+  documentUploadRequestBody: DocumentUploadRequestDTO = {
+    doc_cat_code: '',
+    doc_typ_code: '',
+    lang_code: ''
+  };
 
+  documentCategoryDto: DocumentCategoryDTO = {
+    attribute: '',
+    value: ''
+  };
+  documentCategoryrequestDto: DocumentCategoryDTO[];
+  documentRequest: RequestModel;
   step = 0;
   multipleApplicants = false;
   allApplicants: any[] = [];
@@ -140,24 +152,46 @@ export class FileUploadComponent implements OnInit {
     return applicants;
   }
   async getApplicantTypeID() {
-    let DOCUMENT_CATEGORY_DTO = appConstants.DOCUMENT_CATEGORY_DTO;
+    // let DOCUMENT_CATEGORY_DTO = appConstants.DOCUMENT_CATEGORY_DTO;
+    let requestDTO: DocumentCategoryDTO;
+    let requestArray = {
+      attributes: []
+    };
+    let DOCUMENT_CATEGORY_DTO: RequestModel;
     let re = /\//g;
     let DOB = this.users[0].request.demographicDetails.identity.dateOfBirth;
 
+    requestDTO.attribute = appConstants.APPLICANT_TYPE_ATTRIBUTES.individualTypeCode;
     for (let language of this.users[0].request.demographicDetails.identity.residenceStatus) {
       if (language.language === localStorage.getItem('langCode')) {
-        DOCUMENT_CATEGORY_DTO.request.attributes[0].value = language.value;
+        requestDTO.value = language.value;
       }
     }
-    DOCUMENT_CATEGORY_DTO.request.attributes[2].value = this.users[0].request.demographicDetails.identity.gender[0].value;
+
+    requestArray.attributes.push(requestDTO);
+
+    requestDTO.attribute = appConstants.APPLICANT_TYPE_ATTRIBUTES.dateofbirth;
+    requestDTO.value = DOB.replace(/\//g, '-') + 'T11:46:12.640Z';
+
+    requestArray.attributes.push(requestDTO);
+
+    requestDTO.attribute = appConstants.APPLICANT_TYPE_ATTRIBUTES.genderCode;
+    requestDTO.value = this.users[0].request.demographicDetails.identity.gender[0].value;
+
+    requestArray.attributes.push(requestDTO);
+
+    requestDTO.attribute = appConstants.APPLICANT_TYPE_ATTRIBUTES.biometricAvailable;
+    requestDTO.value = false;
+
+    requestArray.attributes.push(requestDTO);
+
+    // DOCUMENT_CATEGORY_DTO.request.attributes[2].value =
     // DOB = DOB + 'T11:46:12.640Z';
     // DOB.replace('1', '-');
 
-    DOCUMENT_CATEGORY_DTO.request.attributes[1].value = DOB.replace(/\//g, '-') + 'T11:46:12.640Z';
-    console.log('document catergory dto', DOCUMENT_CATEGORY_DTO);
+    DOCUMENT_CATEGORY_DTO = new RequestModel(appConstants.IDS.applicantTypeId, requestArray, {});
 
     await this.dataStroage.getApplicantType(DOCUMENT_CATEGORY_DTO).subscribe(response => {
-      console.log('response from applicant type', response);
       this.getDocumentCategories(response['response'].applicantType.applicantTypeCode);
       this.setApplicantType(response);
     });
@@ -312,14 +346,19 @@ export class FileUploadComponent implements OnInit {
     this.fileUrl = this.domSanitizer.bypassSecurityTrustResourceUrl('');
   }
   setJsonString(event) {
-    this.JsonString.request.doc_cat_code = this.documentType;
-    this.JsonString.request.pre_registartion_id = this.users[0].preRegId;
+    this.documentUploadRequestBody.doc_cat_code = this.documentType;
+    this.documentUploadRequestBody.lang_code = localStorage.getItem('langCode');
+    this.documentUploadRequestBody.doc_typ_code = this.documentType;
+    this.documentRequest = new RequestModel(appConstants.IDS.documentUpload, this.documentUploadRequestBody, {});
+    // this.documentRequest.doc_cat_code = this.documentType;
+    // this.documentRequest.pre_registartion_id = this.users[0].preRegId;
   }
 
   sendFile(event) {
-    this.formData.append(appConstants.DOCUMENT_UPLOAD_REQUEST_DTO_KEY, JSON.stringify(this.JsonString));
+    // this.formData.append(appConstants.DOCUMENT_UPLOAD_REQUEST_DTO_KEY, JSON.stringify(this.JsonString));
+    this.formData.append(appConstants.DOCUMENT_UPLOAD_REQUEST_DTO_KEY, JSON.stringify(this.documentRequest));
     this.formData.append(appConstants.DOCUMENT_UPLOAD_REQUEST_DOCUMENT_KEY, event.target.files.item(0));
-    this.dataStroage.sendFile(this.formData).subscribe(
+    this.dataStroage.sendFile(this.formData, this.users[0].preRegId).subscribe(
       response => {
         console.log('document response', response);
 
@@ -339,15 +378,15 @@ export class FileUploadComponent implements OnInit {
 
   updateUsers(fileResponse, event) {
     let i = 0;
-    this.userFiles.doc_cat_code = fileResponse.response[0].documentCat;
+    this.userFiles.docCatCode = fileResponse.response[0].documentCat;
     this.userFiles.doc_file_format = event.target.files[0].type;
-    this.userFiles.doc_id = fileResponse.response[0].documnetId;
-    this.userFiles.doc_name = event.target.files[0].name;
-    this.userFiles.doc_typ_code = fileResponse.response[0].documentType;
+    this.userFiles.documentId = fileResponse.response[0].documnetId;
+    this.userFiles.docName = event.target.files[0].name;
+    this.userFiles.docTypCode = fileResponse.response[0].documentType;
     this.userFiles.multipartFile = this.fileByteArray;
     this.userFiles.prereg_id = this.users[0].preRegId;
     for (let file of this.users[0].files[0]) {
-      if (file.doc_cat_code == this.userFiles.doc_cat_code) {
+      if (file.doc_cat_code == this.userFiles.docCatCode) {
         this.removeFilePreview();
         this.users[this.step].files[0][i] = this.userFiles;
         this.fileIndex--;
@@ -377,7 +416,7 @@ export class FileUploadComponent implements OnInit {
       this.sameAsselected = false;
     } else {
       this.registration.setSameAs(event.value);
-      this.dataStroage.copyDocument('POA', event.value, this.users[0].preRegId).subscribe(
+      this.dataStroage.copyDocument(event.value, this.users[0].preRegId).subscribe(
         response => {
           console.log('copy document', response);
           if (response['err'] == null) {
@@ -441,6 +480,17 @@ export class FileUploadComponent implements OnInit {
     this.fileIndex--;
     this.viewFileByIndex(this.fileIndex);
   }
+}
+
+export interface DocumentUploadRequestDTO {
+  doc_cat_code: string;
+  doc_typ_code: string;
+  lang_code: string;
+}
+
+export interface DocumentCategoryDTO {
+  attribute: string;
+  value: any;
 }
 
 export interface DocumentCategory {
