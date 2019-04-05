@@ -30,15 +30,31 @@ import io.vertx.core.eventbus.MessageConsumer;
 import io.vertx.core.eventbus.MessageProducer;
 import io.vertx.core.eventbus.SendContext;
 
+/**
+ * Test class for scheduler
+ * 
+ * @author Pranav Kumar
+ * @since 0.10.0
+ *
+ */
 @RunWith(MockitoJUnitRunner.class)
 public class ReprocessingSchedulerTest {
 
+	/**
+	 * Mocked Vertx instance
+	 */
 	@Mock
 	public Vertx vertx;
 
+	/**
+	 * Mocked Vertx Async Handler
+	 */
 	@Mock
 	AsyncResult<String> res;
 
+	/**
+	 * Mocked Spring Environment
+	 */
 	@Mock
 	Environment env;
 
@@ -46,26 +62,41 @@ public class ReprocessingSchedulerTest {
 
 	private ListAppender<ILoggingEvent> listAppender;
 
+	/**
+	 * Setup for test
+	 */
 	@Before
 	public void setup() {
 		fooLogger = (Logger) LoggerFactory.getLogger(ReprocessorStage.class);
 		listAppender = new ListAppender<>();
 	}
 
+	/**
+	 * Mocked instance of Reprocessor stage
+	 */
 	@InjectMocks
 	ReprocessorStage reprocessorStage = new ReprocessorStage() {
+		/* (non-Javadoc)
+		 * @see io.mosip.registration.processor.core.abstractverticle.MosipVerticleManager#getEventBus(java.lang.Object, java.lang.String)
+		 */
 		@Override
 		public MosipEventBus getEventBus(Object verticleName, String clusterManagerUrl) {
 			return new MosipEventBus(vertx);
 		}
 	};
 
+	/**
+	 * Success Test for deployment of ReprocessorStage 
+	 */
 	@Test
 	public void testDeploySuccess() {
 		reprocessorStage.deployVerticle();
 		assertNotNull(reprocessorStage.mosipEventBus);
 	}
 
+	/**
+	 * Success Test for Chime Scheduler deployment
+	 */
 	@Test
 	public void testDeploySchedulerTest() {
 		listAppender.start();
@@ -78,6 +109,10 @@ public class ReprocessingSchedulerTest {
 						"SESSIONID - REGISTRATIONID -  - ReprocessorStage::schedular()::deployed"));
 	}
 
+	/**
+	 * Returns dummy eventbus instance
+	 * @return Eventbus
+	 */
 	public EventBus getMockEventBus() {
 		return new EventBus() {
 
