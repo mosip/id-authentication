@@ -32,36 +32,54 @@ import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.util.dto.AuditRequestDto;
 import io.mosip.authentication.core.util.dto.AuditResponseDto;
 import io.mosip.authentication.core.util.dto.RestRequestDTO;
+import io.mosip.kernel.core.http.RequestWrapper;
 
+/**
+ * The Class RestRequestFactoryTest.
+ *
+ * @author Manoj SP
+ */
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
 @RunWith(SpringRunner.class)
 @WebMvcTest
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class RestRequestFactoryTest {
 
+	/** The rest factory. */
 	@InjectMocks
 	RestRequestFactory restFactory;
 
+	/** The env. */
 	@Autowired
 	ConfigurableEnvironment env;
 
+	/** The mock mvc. */
 	@Autowired
 	MockMvc mockMvc;
 
+	/** The audit factory. */
 	@InjectMocks
 	AuditRequestFactory auditFactory;
 
+	/**
+	 * Before.
+	 */
 	@Before
 	public void before() {
 		ReflectionTestUtils.setField(auditFactory, "env", env);
 		ReflectionTestUtils.setField(restFactory, "env", env);
 	}
 
+	/**
+	 * Test build request.
+	 *
+	 * @throws IDDataValidationException the ID data validation exception
+	 */
 	@Test
 	public void testBuildRequest() throws IDDataValidationException {
-		AuditRequestDto auditRequest = auditFactory.buildRequest(AuditModules.OTP_AUTH,
+		RequestWrapper<AuditRequestDto> auditRequest = auditFactory.buildRequest(AuditModules.OTP_AUTH,
 				AuditEvents.AUTH_REQUEST_RESPONSE, "id", IdType.UIN, "desc");
-		auditRequest.setActionTimeStamp(null);
+		auditRequest.getRequest().setActionTimeStamp(null);
 
 		RestRequestDTO request = restFactory.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditRequest,
 				AuditResponseDto.class);
@@ -89,6 +107,11 @@ public class RestRequestFactoryTest {
 
 	}
 	
+	/**
+	 * Test build request with multi value map.
+	 *
+	 * @throws IDDataValidationException the ID data validation exception
+	 */
 	@Test(expected=IDDataValidationException.class)
 	public void testBuildRequestWithMultiValueMap() throws IDDataValidationException {
 	    
@@ -97,9 +120,9 @@ public class RestRequestFactoryTest {
 		environment.setProperty("audit.rest.headers.mediaType", "multipart/form-data");
 
 		ReflectionTestUtils.setField(restFactory, "env", environment);
-		AuditRequestDto auditRequest = auditFactory.buildRequest(AuditModules.OTP_AUTH,
+		RequestWrapper<AuditRequestDto> auditRequest = auditFactory.buildRequest(AuditModules.OTP_AUTH,
 				AuditEvents.AUTH_REQUEST_RESPONSE, "id", IdType.UIN, "desc");
-		auditRequest.setActionTimeStamp(null);
+		auditRequest.getRequest().setActionTimeStamp(null);
 
 		restFactory.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditRequest,
 				AuditResponseDto.class);
@@ -107,6 +130,11 @@ public class RestRequestFactoryTest {
 
 	}
 
+	/**
+	 * Test build request empty uri.
+	 *
+	 * @throws IDDataValidationException the ID data validation exception
+	 */
 	@Test(expected = IDDataValidationException.class)
 	public void testBuildRequestEmptyUri() throws IDDataValidationException {
 
@@ -121,6 +149,11 @@ public class RestRequestFactoryTest {
 				AuditResponseDto.class);
 	}
 
+	/**
+	 * Test build request null properties.
+	 *
+	 * @throws IDDataValidationException the ID data validation exception
+	 */
 	@Test(expected = IDDataValidationException.class)
 	@DirtiesContext
 	public void testBuildRequestNullProperties() throws IDDataValidationException {
@@ -134,6 +167,11 @@ public class RestRequestFactoryTest {
 				AuditResponseDto.class);
 	}
 
+	/**
+	 * Test build request empty http method.
+	 *
+	 * @throws IDDataValidationException the ID data validation exception
+	 */
 	@Test(expected = IDDataValidationException.class)
 	public void testBuildRequestEmptyHttpMethod() throws IDDataValidationException {
 
@@ -148,6 +186,11 @@ public class RestRequestFactoryTest {
 				AuditResponseDto.class);
 	}
 
+	/**
+	 * Test build request empty response type.
+	 *
+	 * @throws IDDataValidationException the ID data validation exception
+	 */
 	@Test(expected = IDDataValidationException.class)
 	public void testBuildRequestEmptyResponseType() throws IDDataValidationException {
 
@@ -155,6 +198,11 @@ public class RestRequestFactoryTest {
 				auditFactory.buildRequest(AuditModules.OTP_AUTH, AuditEvents.AUTH_REQUEST_RESPONSE, "id", IdType.UIN, "desc"), null);
 	}
 
+	/**
+	 * Test build request empty timeout.
+	 *
+	 * @throws IDDataValidationException the ID data validation exception
+	 */
 	@Test
 	public void testBuildRequestEmptyTimeout() throws IDDataValidationException {
 
@@ -171,6 +219,11 @@ public class RestRequestFactoryTest {
 		// TODO Assert response
 	}
 
+	/**
+	 * Test build request headers.
+	 *
+	 * @throws IDDataValidationException the ID data validation exception
+	 */
 	@Test
 	public void testBuildRequestHeaders() throws IDDataValidationException {
 
@@ -185,6 +238,11 @@ public class RestRequestFactoryTest {
 				AuditResponseDto.class);
 	}
 	
+	/**
+	 * Test build request multi value map.
+	 *
+	 * @throws IDDataValidationException the ID data validation exception
+	 */
 	@Test
 	public void testBuildRequestMultiValueMap() throws IDDataValidationException {
 		MockEnvironment environment = new MockEnvironment();

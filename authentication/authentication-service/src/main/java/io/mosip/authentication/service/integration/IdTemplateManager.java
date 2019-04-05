@@ -34,9 +34,22 @@ import io.mosip.kernel.core.templatemanager.spi.TemplateManagerBuilder;
 @Component
 public class IdTemplateManager {
 
+	private static final String MOSIP_NOTIFICATION_LANGUAGE_TYPE = "mosip.notification.language-type";
+
+
+	private static final String BOTH = "BOTH";
+
+
+	/** The Constant TEMPLATE. */
+	private static final String TEMPLATE = "Template";
+
+	/** The Constant PRIMARY. */
+	private static final String PRIMARY = "primary";
+
+	/** The Constant SESSION_ID. */
 	private static final String SESSION_ID = "SESSION_ID";
 
-	private static final String NOTIFICATION_LANGUAGE_SUPPORT = "notification.language.support";
+	/** The Constant NOTIFICATION_LANGUAGE_SUPPORT. */
 
 	/** Class path. */
 	private static final String CLASSPATH = "classpath";
@@ -110,8 +123,8 @@ public class IdTemplateManager {
 			return writer.toString();
 		} else {
 			throw new IdAuthenticationBusinessException(
-					IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(), String.format(
-							IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(), "Template"));
+					IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
+					String.format(IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(), TEMPLATE));
 		}
 	}
 
@@ -123,14 +136,11 @@ public class IdTemplateManager {
 	 * @throws IdAuthenticationBusinessException
 	 */
 	public String fetchTemplate(String templateName) throws IdAuthenticationBusinessException {
-		String languageRequired = environment.getProperty(NOTIFICATION_LANGUAGE_SUPPORT);
+		String languageRequired = environment.getProperty(MOSIP_NOTIFICATION_LANGUAGE_TYPE);
 		StringBuilder stringBuilder = new StringBuilder();
-		if (languageRequired.equalsIgnoreCase("secondary")) {
-			stringBuilder.append(masterDataManager
-					.fetchTemplate(idInfoFetcher.getLanguageCode(LanguageType.PRIMARY_LANG), templateName) + "\n\n");
-			stringBuilder.append(masterDataManager
-					.fetchTemplate(idInfoFetcher.getLanguageCode(LanguageType.SECONDARY_LANG), templateName));
-		} else if (languageRequired.equalsIgnoreCase("primary")) {
+		if (languageRequired.equalsIgnoreCase(BOTH)) {
+			stringBuilder.append(masterDataManager.fetchTemplate(templateName));
+		} else if (languageRequired.equalsIgnoreCase(PRIMARY)) {
 			stringBuilder.append(masterDataManager
 					.fetchTemplate(idInfoFetcher.getLanguageCode(LanguageType.PRIMARY_LANG), templateName));
 		} else {

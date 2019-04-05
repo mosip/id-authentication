@@ -89,7 +89,7 @@ public class IrisProviderTest {
 		Mockito.when(environment.getProperty("evenuin.irisimg.right.match.value", Double.class)).thenReturn(70D);
 		Mockito.when(environment.getProperty("evenuin.irisimg.left.match.value", Double.class)).thenReturn(40D);
 		double score = iris.matchMultiImage(reqInfo, entityInfo);
-		assertEquals(110D, score, 0);
+		assertEquals(140D, score, 0);
 	}
 	
 	@Test
@@ -107,7 +107,7 @@ public class IrisProviderTest {
 		Mockito.when(environment.getProperty("evenuin.irisimg.right.match.value", Double.class)).thenReturn(70D);
 		Mockito.when(environment.getProperty("evenuin.irisimg.left.match.value", Double.class)).thenReturn(40D);
 		double score = iris.matchMultiImage(reqInfo, entityInfo);
-		assertEquals(40D, score, 0);
+		assertEquals(70D, score, 0);
 	}
 	
 	@Test

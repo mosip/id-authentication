@@ -23,7 +23,8 @@ public class IDAMappingFactory implements PropertySourceFactory {
 	@Override
 	public PropertySource<?> createPropertySource(String name, EncodedResource resource) throws IOException {
 		Map<?, ?> readValue = new ObjectMapper().readValue(resource.getInputStream(), Map.class);
-		Map<String, Object> unmodifiableMap = Collections.unmodifiableMap((Map<String, ?>) readValue.get("ida-mapping"));
+		Map<String, Object> unmodifiableMap = Collections
+				.unmodifiableMap((Map<String, ?>) readValue.get("ida-mapping"));
 		return new MapPropertySource("json-property", unmodifiableMap);
 	}
 }

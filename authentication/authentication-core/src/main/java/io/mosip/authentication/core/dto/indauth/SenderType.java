@@ -6,7 +6,14 @@ package io.mosip.authentication.core.dto.indauth;
  */
 public enum SenderType {
 
-	AUTH("auth"), OTP("otp");
+	/**
+	 * Enum for Auth
+	 */
+	AUTH("auth"),
+	/**
+	 * Enum for Otp
+	 */
+	OTP("otp");
 
 	/**
 	 * Variable to hold name
