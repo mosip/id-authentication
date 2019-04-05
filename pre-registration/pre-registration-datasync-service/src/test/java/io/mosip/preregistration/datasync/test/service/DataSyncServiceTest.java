@@ -175,10 +175,9 @@ public class DataSyncServiceTest {
 		requiredRequestMap.put("id", idUrl);
 		requiredRequestMap.put("ver", versionUrl);
 
-		multipartResponseDTOs.setPrereg_id("23587986034785");
-		multipartResponseDTOs.setDoc_name("Address.pdf");
-		multipartResponseDTOs.setDoc_id("1234");
-		multipartResponseDTOs.setDoc_cat_code("POA");
+		multipartResponseDTOs.setDocName("Address.pdf");
+		multipartResponseDTOs.setDocumentId("1234");
+		multipartResponseDTOs.setDocCatCode("POA");
 
 		list2.add(multipartResponseDTOs);
 

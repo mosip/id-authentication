@@ -398,8 +398,8 @@ public class DataSyncServiceUtil {
 			if (documentEntityList != null && !documentEntityList.isEmpty()) {
 				for (int i = 0; i < documentEntityList.size(); i++) {
 					idJson.put(
-							documentEntityList.get(i).getDoc_cat_code().concat("_")
-									.concat(documentEntityList.get(i).getDoc_name()),
+							documentEntityList.get(i).getDocCatCode().concat("_")
+									.concat(documentEntityList.get(i).getDocCatCode()),
 							documentEntityList.get(i).getMultipartFile());
 				}
 			}

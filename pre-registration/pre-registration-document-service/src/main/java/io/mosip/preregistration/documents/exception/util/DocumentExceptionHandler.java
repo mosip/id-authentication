@@ -34,7 +34,7 @@ import io.mosip.preregistration.documents.exception.DocumentSizeExceedException;
 import io.mosip.preregistration.documents.exception.DocumentVirusScanException;
 import io.mosip.preregistration.documents.exception.FSServerException;
 import io.mosip.preregistration.documents.exception.FileNotFoundException;
-import io.mosip.preregistration.documents.exception.InvalidDocumnetIdExcepion;
+import io.mosip.preregistration.documents.exception.InvalidDocumentIdExcepion;
 import io.mosip.preregistration.documents.exception.MandatoryFieldNotFoundException;
 import io.mosip.preregistration.documents.exception.ParsingException;
 import io.mosip.preregistration.documents.exception.PrimaryKeyValidationException;
@@ -347,8 +347,8 @@ public class DocumentExceptionHandler {
 	 *            pass the request
 	 * @return response for InvalidDocumnetIdExcepion
 	 */
-	@ExceptionHandler(InvalidDocumnetIdExcepion.class)
-	public ResponseEntity<MainListResponseDTO> invalidDocumnetIdExcepion(final InvalidDocumnetIdExcepion e,
+	@ExceptionHandler(InvalidDocumentIdExcepion.class)
+	public ResponseEntity<MainListResponseDTO> invalidDocumnetIdExcepion(final InvalidDocumentIdExcepion e,
 			WebRequest request) {
 		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getErrorText());
 		MainListResponseDTO<?> errorRes = new MainListResponseDTO<>();

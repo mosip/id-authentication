@@ -65,14 +65,14 @@ public class ValidationUtil {
 		return phone.matches(phoneRegex);
 	}
 
-	public static boolean idValidation(String value,String regex){
-		if(!isNull(value)) {
+	public static boolean idValidation(String value, String regex) {
+		if (!isNull(value)) {
 			return value.matches(regex);
-		}
+		} else if (value == "")
+			return true;
 		else
 			return false;
-		 
-		
+
 	}
 
 	public static boolean requestValidator(MainRequestDTO<?> mainRequest) {
@@ -112,42 +112,41 @@ public class ValidationUtil {
 		}
 		return true;
 	}
-	
-	public static boolean requestValidator(Map<String, String> requestMap, Map<String, String> requiredRequestMap) {
-        log.info("sessionId", "idType", "id", "In requestValidator method of pre-registration core with requestMap "
-                                     + requestMap + " againt requiredRequestMap " + requiredRequestMap);
-        for (String key : requestMap.keySet()) {
-                      if (key.equals(RequestCodes.ID) && (requestMap.get(RequestCodes.ID) == null
-                                                   || !requestMap.get(RequestCodes.ID).equals(requiredRequestMap.get(RequestCodes.ID)))) {
-                                     throw new InvalidRequestParameterException(ErrorCodes.PRG_CORE_REQ_001.getCode(),
-                                                                 ErrorMessages.INVALID_REQUEST_ID.getMessage());
-                      } else if (key.equals(RequestCodes.VER) && (requestMap.get(RequestCodes.VER) == null
-                                                   || !requestMap.get(RequestCodes.VER).equals(requiredRequestMap.get(RequestCodes.VER)))) {
-                                     throw new InvalidRequestParameterException(ErrorCodes.PRG_CORE_REQ_002.getCode(),
-                                                                 ErrorMessages.INVALID_REQUEST_VERSION.getMessage());
-                      } else if (key.equals(RequestCodes.REQ_TIME) && requestMap.get(RequestCodes.REQ_TIME) == null) {
-                                     throw new InvalidRequestParameterException(ErrorCodes.PRG_CORE_REQ_003.getCode(),
-                                                                 ErrorMessages.INVALID_REQUEST_DATETIME.getMessage());
-                      } else if (key.equals(RequestCodes.REQ_TIME) && requestMap.get(RequestCodes.REQ_TIME) != null) {
-                                     try {
-                                         LocalDate localDate=LocalDate.parse(requestMap.get(RequestCodes.REQ_TIME));
-                                         if(localDate.isBefore(LocalDate.now())) {
-                                        	 throw new Exception();
-                                         }
-                        
-                                     } catch (Exception ex) {
-                                                   throw new InvalidRequestParameterException(ErrorCodes.PRG_CORE_REQ_003.getCode(),
-                                                                               ErrorMessages.INVALID_REQUEST_DATETIME.getMessage());
-                                     }
-                      } else if (key.equals(RequestCodes.REQUEST) && (requestMap.get(RequestCodes.REQUEST) == null
-                                                   || requestMap.get(RequestCodes.REQUEST).equals(""))) {
-                                     throw new InvalidRequestParameterException(ErrorCodes.PRG_CORE_REQ_004.getCode(),
-                                                                 ErrorMessages.INVALID_REQUEST_BODY.getMessage());
-                      }
-        }
-        return true;
-}
 
+	public static boolean requestValidator(Map<String, String> requestMap, Map<String, String> requiredRequestMap) {
+		log.info("sessionId", "idType", "id", "In requestValidator method of pre-registration core with requestMap "
+				+ requestMap + " againt requiredRequestMap " + requiredRequestMap);
+		for (String key : requestMap.keySet()) {
+			if (key.equals(RequestCodes.ID) && (requestMap.get(RequestCodes.ID) == null
+					|| !requestMap.get(RequestCodes.ID).equals(requiredRequestMap.get(RequestCodes.ID)))) {
+				throw new InvalidRequestParameterException(ErrorCodes.PRG_CORE_REQ_001.getCode(),
+						ErrorMessages.INVALID_REQUEST_ID.getMessage());
+			} else if (key.equals(RequestCodes.VER) && (requestMap.get(RequestCodes.VER) == null
+					|| !requestMap.get(RequestCodes.VER).equals(requiredRequestMap.get(RequestCodes.VER)))) {
+				throw new InvalidRequestParameterException(ErrorCodes.PRG_CORE_REQ_002.getCode(),
+						ErrorMessages.INVALID_REQUEST_VERSION.getMessage());
+			} else if (key.equals(RequestCodes.REQ_TIME) && requestMap.get(RequestCodes.REQ_TIME) == null) {
+				throw new InvalidRequestParameterException(ErrorCodes.PRG_CORE_REQ_003.getCode(),
+						ErrorMessages.INVALID_REQUEST_DATETIME.getMessage());
+			} else if (key.equals(RequestCodes.REQ_TIME) && requestMap.get(RequestCodes.REQ_TIME) != null) {
+				try {
+					LocalDate localDate = LocalDate.parse(requestMap.get(RequestCodes.REQ_TIME));
+					if (localDate.isBefore(LocalDate.now())) {
+						throw new Exception();
+					}
+
+				} catch (Exception ex) {
+					throw new InvalidRequestParameterException(ErrorCodes.PRG_CORE_REQ_003.getCode(),
+							ErrorMessages.INVALID_REQUEST_DATETIME.getMessage());
+				}
+			} else if (key.equals(RequestCodes.REQUEST) && (requestMap.get(RequestCodes.REQUEST) == null
+					|| requestMap.get(RequestCodes.REQUEST).equals(""))) {
+				throw new InvalidRequestParameterException(ErrorCodes.PRG_CORE_REQ_004.getCode(),
+						ErrorMessages.INVALID_REQUEST_BODY.getMessage());
+			}
+		}
+		return true;
+	}
 
 	public static boolean requstParamValidator(Map<String, String> requestMap) {
 		log.info("sessionId", "idType", "id",
@@ -193,7 +192,7 @@ public class ValidationUtil {
 		}
 		return true;
 	}
-	
+
 	/**
 	 * This method is used as Null checker for different input keys.
 	 *
@@ -215,6 +214,5 @@ public class ValidationUtil {
 		return false;
 
 	}
-
 
 }

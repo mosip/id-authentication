@@ -22,7 +22,7 @@ import io.mosip.kernel.core.virusscanner.spi.VirusScanner;
 import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
 import io.mosip.preregistration.documents.dto.DocumentRequestDTO;
 import io.mosip.preregistration.documents.entity.DocumentEntity;
-import io.mosip.preregistration.documents.exception.InvalidDocumnetIdExcepion;
+import io.mosip.preregistration.documents.exception.InvalidDocumentIdExcepion;
 import io.mosip.preregistration.documents.service.util.DocumentServiceUtil;
 
 
@@ -66,7 +66,7 @@ public class DocumentServiceUtilTest {
 		serviceUtil.parseDocumentId("1234");
 	}
 
-	@Test(expected=InvalidDocumnetIdExcepion.class)
+	@Test(expected=InvalidDocumentIdExcepion.class)
 	public void parseDocumentIdFailureTest() throws Exception {
 		serviceUtil.parseDocumentId("1234!@#$&^$$~~~~~~#@!$^%");
 	}

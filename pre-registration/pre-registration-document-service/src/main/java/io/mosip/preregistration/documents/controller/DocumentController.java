@@ -77,13 +77,14 @@ public class DocumentController {
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Document uploaded successfully"),
 			@ApiResponse(code = 400, message = "Document uploaded failed") })
 	public ResponseEntity<MainListResponseDTO<DocumentResponseDTO>> fileUpload(
-			@PathVariable(value="preRegistrationId") String preRegistrationId,
+			@PathVariable(value = "preRegistrationId") String preRegistrationId,
 			@RequestPart(value = "Document request", required = true) String reqDto,
 			@RequestPart(value = "file", required = true) MultipartFile file) {
 
 		log.info("sessionId", "idType", "id",
 				"In fileUpload method of document controller to upload the document for request " + reqDto);
-		return ResponseEntity.status(HttpStatus.OK).body(documentUploadService.uploadDocument(file, reqDto ,preRegistrationId));
+		return ResponseEntity.status(HttpStatus.OK)
+				.body(documentUploadService.uploadDocument(file, reqDto, preRegistrationId));
 	}
 
 	/**
@@ -105,7 +106,7 @@ public class DocumentController {
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Document successfully copied"),
 			@ApiResponse(code = 400, message = "Document copying failed") })
 	public ResponseEntity<MainListResponseDTO<DocumentResponseDTO>> copyDocument(
-			@Valid @PathVariable(required = true, value="preRegistrationId") String preRegistrationId,
+			@Valid @PathVariable(required = true, value = "preRegistrationId") String preRegistrationId,
 			@Valid @RequestParam(required = true) String catCode,
 			@Valid @RequestParam(required = true) String sourcePrId) {
 
@@ -146,15 +147,16 @@ public class DocumentController {
 	 * @return response in a format specified in API document
 	 */
 	@PreAuthorize("hasAnyRole('individual')")
-	@DeleteMapping(path = "/documents/preRegistration/{documentId}", produces = MediaType.APPLICATION_JSON_VALUE)
+	@DeleteMapping(path = "/documents/{documentId}", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Delete document by document Id")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Document successfully deleted"),
 			@ApiResponse(code = 400, message = "Document failed to delete") })
 	public ResponseEntity<MainListResponseDTO<DocumentDeleteResponseDTO>> deleteDocument(
-			@Valid @PathVariable(required = true) String documentId) {
+			@Valid @PathVariable(required = true) String documentId,
+			@Valid @RequestParam(required = true, value = "preRegistrationId") String preRegistrationId) {
 		log.info("sessionId", "idType", "id",
 				"In deleteDocument method of document controller to delete the document for documentId " + documentId);
-		return ResponseEntity.status(HttpStatus.OK).body(documentUploadService.deleteDocument(documentId));
+		return ResponseEntity.status(HttpStatus.OK).body(documentUploadService.deleteDocument(documentId,preRegistrationId));
 
 	}
 
@@ -166,7 +168,7 @@ public class DocumentController {
 	 * @return response in a format specified in API document
 	 */
 	@PreAuthorize("hasAnyRole('individual')")
-	@DeleteMapping(path = "/documents/{preRegistrationId}", produces = MediaType.APPLICATION_JSON_VALUE)
+	@DeleteMapping(path = "/documents/preregistration/{preRegistrationId}", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Delete all documents by pre-registration Id")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Documents successfully deleted"),
 			@ApiResponse(code = 400, message = "Documents failed to delete") })

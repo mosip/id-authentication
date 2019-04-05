@@ -65,94 +65,94 @@ public enum ErrorMessages {
 	/**
 	 * ErrorMessage for PRG_PAM_DOC_012
 	 */
-	DOCUMENT_TABLE_NOTACCESSIBLE(""),
+	DOCUMENT_TABLE_NOTACCESSIBLE("Document table not accessible"),
 	/**
 	 * ErrorMessage for PRG_PAM_DOC_013
 	 */
-	DOCUMENT_IO_EXCEPTION(""),
+	DOCUMENT_IO_EXCEPTION("Document I/O exception"),
 	/**
 	 * ErrorMessage for PRG_PAM_DOC_014
 	 */
-	MANDATORY_FIELD_NOT_FOUND(""),
+	MANDATORY_FIELD_NOT_FOUND("Mandatory field not found"),
 	/**
 	 * ErrorMessage for PRG_PAM_DOC_015
 	 */
-	JSON_EXCEPTION(""),
+	JSON_EXCEPTION("Json exception"),
 	/**
 	 * ErrorMessage for PRG_PAM_DOC_016
 	 */
-	INVALID_CEPH_CONNECTION(""),
+	INVALID_CEPH_CONNECTION("CEPH connection is invalid"),
 	/**
 	 * ErrorMessage for PRG_PAM_DOC_017
 	 */
-	CONNECTION_UNAVAILABLE(""),
+	CONNECTION_UNAVAILABLE("Connection is not available"),
 	/**
 	 * ErrorMessage for PRG_PAM_DOC_018
 	 */
-	INVALID_REQUEST_PARAMETER(""),
+	INVALID_REQUEST_PARAMETER("Invalid request parameter"),
 
 	/**
 	 * ErrorMessage for PRG_PAM_DOC_019
 	 */
-	INVALID_DOCUMENT_ID(""),
+	INVALID_DOCUMENT_ID("DocumentId is not belongs to the pre-registration Id"),
 	/**
 	 * ErrorMessage for PRG_PAM_DOC_019
 	 */
-	INVALID_DOCUMENT_CATEGORY_CODE(""),
+	INVALID_DOCUMENT_CATEGORY_CODE("Catagory code is invalid"),
 	
 	/**
 	 * ErrorMessage for PRG_PAM_DOC_019
 	 */
-	DEMOGRAPHIC_DATA_NOT_FOUND(""),
+	DEMOGRAPHIC_DATA_NOT_FOUND("Demographic data not found for the preRegistrationId"),
 	/**
 	 * ErrorMessage for PRG_PAM_DOC_019
 	 */
-	DEMOGRAPHIC_GET_RECORD_FAILED(""),
+	DEMOGRAPHIC_GET_RECORD_FAILED("Demographic record failed to fetch"),
 	
 	/**
 	 * ErrorMessage for PRG_PAM_DOC_018
 	 */
-	INVALID_PRE_ID(""),
+	INVALID_PRE_ID("PreRegistrationId is invalid"),
 	
 	/**
 	 * ErrorMessage for PRG_PAM_DOC_018
 	 */
-	INVALID_DOC_CAT_CODE(""),
+	INVALID_DOC_CAT_CODE("Document Catagory code is invalid"),
 	
 	/**
 	 * ErrorMessage for PRG_PAM_DOC_018
 	 */
-	INVALID_DOC_TYPE_CODE(""),
+	INVALID_DOC_TYPE_CODE("Document type code is invalid"),
 	
 	/**
 	 * ErrorMessage for PRG_PAM_DOC_018
 	 */
-	INVALID_DOC_FILE_FORMAT(""),
+	INVALID_DOC_FILE_FORMAT("Document file format is invalid"),
 	
 	/**
 	 * ErrorMessage for PRG_PAM_DOC_018
 	 */
-	INVALID_STATUS_CODE(""),
+	INVALID_STATUS_CODE("Status code is invalid"),
 	
 	/**
 	 * ErrorMessage for PRG_PAM_DOC_018
 	 */
-	INVALID_UPLOAD_BY(""),
+	INVALID_UPLOAD_BY("Uploaded by is invalid"),
 	
 	/**
 	 * ErrorMessage for PRG_PAM_DOC_018
 	 */
-	INVALID_LANG_CODE(""),
+	INVALID_LANG_CODE("Language code is invalid"),
 	
 	/**
 	 * ErrorMessage for PRG_PAM_DOC_018
 	 */
-	INVALID_UPLOAD_DATE_TIME(""),
+	INVALID_UPLOAD_DATE_TIME("Updated date and time is invalid"),
 	
 	/**
 	 * ErrorMessage for PRG_PAM_DOC_021
 	 */
-	DOCUMENT_ALREADY_PRESENT("");
+	DOCUMENT_ALREADY_PRESENT("Document is alredy present");
 	
 	private ErrorMessages(String message) {
 		this.message = message;
