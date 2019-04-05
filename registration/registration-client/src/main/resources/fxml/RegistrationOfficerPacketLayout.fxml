@@ -237,7 +237,7 @@
                       <RowConstraints percentHeight="34.0" valignment="CENTER" vgrow="ALWAYS" />
                     </rowConstraints>
                      <children>
-                        <GridPane onMouseClicked="#syncData" styleClass="operationalPaneDetailsSync">
+                        <GridPane styleClass="operationalPaneDetailsSync">
                            <children>
                               <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
                                  <image>
