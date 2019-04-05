@@ -315,6 +315,12 @@
 
 		</test>  
 		
+		<test name="RIDGenerator">
+			<parameter name="testType" value="smokeandregression" />
+			<classes>
+				<class name="io.mosip.kernel.tests.RIDGenerator" />
+			</classes>
+		</test>
 
 </suite> <!-- Suite -->
 
