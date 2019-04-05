@@ -1,24 +1,18 @@
 package io.mosip.preregistration.notification.service.util;
 
-import java.io.IOException;
-import java.io.StringReader;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Properties;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestTemplate;
 
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
@@ -82,4 +76,14 @@ public class NotificationServiceUtil {
 
 	}
 
+	public Map<String, String> prepareRequestMap(MainRequestDTO<?> requestDto) {
+		log.info("sessionId", "idType", "id", "In prepareRequestMap method of Login Service Util");
+		Map<String, String> requestMap = new HashMap<>();
+		requestMap.put("id", requestDto.getId());
+		requestMap.put("version", requestDto.getVersion());
+		LocalDate date = requestDto.getRequesttime().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+		requestMap.put("requesttime",date.toString());
+		requestMap.put("request", requestDto.getRequest().toString());
+		return requestMap;
+	}
 }

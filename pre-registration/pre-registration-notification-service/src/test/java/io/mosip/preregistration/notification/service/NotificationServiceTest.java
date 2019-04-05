@@ -91,7 +91,7 @@ public class NotificationServiceTest {
 		notificationDTO.setEmailID("sanober.noor2@mindtree.com");
 		notificationDTO.setAppointmentDate("2019-01-22");
 		notificationDTO.setAppointmentTime("22:57");
-		mainReqDto.setId("mosip.pre-registration.demographic.create");
+		mainReqDto.setId("mosip.pre-registration.notification.notify");
 		mainReqDto.setVersion("1.0");
 		DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
 		mapper.setDateFormat(df);

@@ -45,7 +45,7 @@ public class GenerateQRcodeService {
 	@Value("${mosip.pre-registration.qrcode.generate.id}")
 	private String Id;
 	
-	@Value("${mosip.pre-registration.qrcode.service.version}")
+	@Value("${version}")
 	private String version;
 	
 	@Value("${qrversion}")

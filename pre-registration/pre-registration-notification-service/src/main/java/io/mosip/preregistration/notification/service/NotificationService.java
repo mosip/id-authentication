@@ -1,12 +1,16 @@
 package io.mosip.preregistration.notification.service;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.annotation.PostConstruct;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import io.mosip.kernel.core.logger.spi.Logger;
-import io.mosip.kernel.core.qrcodegenerator.spi.QrCodeGenerator;
-import io.mosip.kernel.qrcode.generator.zxing.constant.QrVersion;
 import io.mosip.preregistration.core.common.dto.MainRequestDTO;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
 import io.mosip.preregistration.core.common.dto.NotificationDTO;
@@ -43,10 +47,23 @@ public class NotificationService {
 	
 	private Logger log = LoggerConfiguration.logConfig(NotificationService.class);
 
-	@Autowired
-	private QrCodeGenerator<QrVersion> qrCodeGenerator;
+	Map<String, String> requiredRequestMap = new HashMap<>();
+	
+	@Value("${mosip.pre-registration.notification.id}")
+	private String Id;
+	
+	@Value("${version}")
+	private String version;
+	
+//	@Autowired
+//	private QrCodeGenerator<QrVersion> qrCodeGenerator;
 
+	@PostConstruct
+	public void setupBookingService() {
+		requiredRequestMap.put("version", version);
+		requiredRequestMap.put("id", Id);
 
+	}
 
 	/**
 	 * Method to send notification.
@@ -67,8 +84,7 @@ public class NotificationService {
 		try {
 			MainRequestDTO<NotificationDTO> notificationReqDTO = serviceUtil.createNotificationDetails(jsonString);
 			NotificationDTO notififcationDto=notificationReqDTO.getRequest();
-			if (ValidationUtil.requestValidator(notificationReqDTO)) {
-			
+				if (ValidationUtil.requestValidator(serviceUtil.prepareRequestMap(notificationReqDTO),requiredRequestMap)) {
 			
 			if (notififcationDto.getMobNum() != null && !notififcationDto.getMobNum().isEmpty()) {
 				notificationUtil.notify("sms", notififcationDto, langCode, file);
