@@ -20,6 +20,7 @@ import java.util.zip.ZipInputStream;
 
 import javax.crypto.SecretKey;
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -263,7 +264,8 @@ public class PreRegZipHandlingServiceImpl implements PreRegZipHandlingService {
 			String filePath = String.valueOf(ApplicationContext.map().get(RegistrationConstants.PRE_REG_PACKET_LOCATION)).concat(separator).concat(PreRegistrationId)
 					.concat(ZIP_FILE_EXTENSION);
 			// Storing the Encrypted Registration Packet as zip
-			FileUtils.copyToFile(new ByteArrayInputStream(encryptedPacket), new File(filePath));
+			FileUtils.copyToFile(new ByteArrayInputStream(encryptedPacket),
+					new File(FilenameUtils.getFullPath(filePath) + FilenameUtils.getName(filePath)));
 
 			LOGGER.info(LOG_PKT_STORAGE, APPLICATION_NAME, APPLICATION_ID, "Pre Registration Encrypted packet saved");
 
