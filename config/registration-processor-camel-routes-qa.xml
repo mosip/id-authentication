@@ -120,7 +120,7 @@
 		<choice>
 			<when>
 				<simple>${bodyAs(String)} contains '"isValid":true'</simple>
-				<to uri="vertx:external-stage-bus-in" />
+				<to uri="vertx:external-bus-in" />
 			</when>
 			<when>
 				<simple>${bodyAs(String)} contains '"isValid":false'</simple>
@@ -136,14 +136,9 @@
 		</choice>
 	</route>
 	<route id="external-stage-->demo-dedupe route">
-		<from uri="vertx:external-stage-bus-out" />
+		<from uri="vertx:external-bus-out" />
 		<log
-			message="demo-dedupe-->bio-dedupe route ${bodyAs(String)}" />
-		<choice>
-			<when>
-				<simple>${bodyAs(String)} contains '"isValid":false'</simple>
-				<to uri="vertx:manual-verification-bus-in"/>
-			message="external-stage-->demo-dedupe route ${bodyAs(String)}" />
+				message="external-stage-->demo-dedupe route ${bodyAs(String)}" />
 		<choice>
 			<when>
 				<simple>${bodyAs(String)} contains '"isValid":true'</simple>
