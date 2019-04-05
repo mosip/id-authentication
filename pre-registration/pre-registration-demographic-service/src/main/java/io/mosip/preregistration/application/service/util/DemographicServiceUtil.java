@@ -217,24 +217,31 @@ public class DemographicServiceUtil {
 		return demographicEntity;
 	}
 
-//	/**
-//	 * This method is used to add the initial request values into a map for input
-//	 * validations.
-//	 * 
-//	 * @param demographicRequestDTO
-//	 *            pass demographicRequestDTO
-//	 * @return a map for request input validation
-//	 */
-//	public Map<String, String> prepareRequestParamMap(MainRequestDTO<DemographicRequestDTO> demographicRequestDTO) {
-//		log.info("sessionId", "idType", "id", "In prepareRequestParamMap method of pre-registration service util");
-//		Map<String, String> inputValidation = new HashMap<>();
-//		inputValidation.put(RequestCodes.ID.getCode(), demographicRequestDTO.getId());
-//		inputValidation.put(RequestCodes.VER.getCode(), demographicRequestDTO.getVersion());
-//		inputValidation.put(RequestCodes.REQ_TIME.getCode(),
-//				new SimpleDateFormat(utcDateTimePattern).format(demographicRequestDTO.getRequesttime()));
-//		inputValidation.put(RequestCodes.REQUEST.getCode(), demographicRequestDTO.getRequest().toString());
-//		return inputValidation;
-//	}
+	// /**
+	// * This method is used to add the initial request values into a map for input
+	// * validations.
+	// *
+	// * @param demographicRequestDTO
+	// * pass demographicRequestDTO
+	// * @return a map for request input validation
+	// */
+	// public Map<String, String>
+	// prepareRequestParamMap(MainRequestDTO<DemographicRequestDTO>
+	// demographicRequestDTO) {
+	// log.info("sessionId", "idType", "id", "In prepareRequestParamMap method of
+	// pre-registration service util");
+	// Map<String, String> inputValidation = new HashMap<>();
+	// inputValidation.put(RequestCodes.ID.getCode(),
+	// demographicRequestDTO.getId());
+	// inputValidation.put(RequestCodes.VER.getCode(),
+	// demographicRequestDTO.getVersion());
+	// inputValidation.put(RequestCodes.REQ_TIME.getCode(),
+	// new
+	// SimpleDateFormat(utcDateTimePattern).format(demographicRequestDTO.getRequesttime()));
+	// inputValidation.put(RequestCodes.REQUEST.getCode(),
+	// demographicRequestDTO.getRequest().toString());
+	// return inputValidation;
+	// }
 
 	/**
 	 * This method is used to set the JSON values to RequestCodes constants.
@@ -274,10 +281,17 @@ public class DemographicServiceUtil {
 	 * 
 	 */
 
-	public String getIdJSONValue(JSONObject demographicData, String value)  {
-		log.info("sessionId", "idType", "id", "In getValueFromIdentity method of pe-registration service util to get getIdJSONValue ");
-		JSONObject identityObj = (JSONObject) demographicData.get(RequestCodes.IDENTITY.getCode());
-		return  identityObj.get(value).toString();
+	public String getIdJSONValue(String demographicData, String value) throws ParseException {
+		log.info("sessionId", "idType", "id",
+				"In getValueFromIdentity method of pe-registration service util to get getIdJSONValue ");
+
+		JSONParser jsonParser = new JSONParser();
+		JSONObject jsonObj = (JSONObject) jsonParser.parse(demographicData);
+		JSONObject identityObj = (JSONObject) jsonObj.get(RequestCodes.IDENTITY.getCode());
+		if (identityObj.get(value) != null)
+			return identityObj.get(value).toString();
+		return "";
+
 	}
 
 	/**
@@ -397,18 +411,21 @@ public class DemographicServiceUtil {
 		DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(utcDateTimePattern);
 		return date.format(dateTimeFormatter);
 	}
-	
+
 	/**
 	 * 
-	 * @param idValidationFields is a map with key and regex as value
-	 * @param demoDetails 
+	 * @param idValidationFields
+	 *            is a map with key and regex as value
+	 * @param demoDetails
 	 * @return boolean
+	 * @throws ParseException 
 	 */
-	public boolean validation(Map<String,String> idValidationFields,JSONObject demoDetails ) {
+	public boolean validation(Map<String, String> idValidationFields, JSONObject demoDetails) throws ParseException {
 		for (Map.Entry<String, String> entry : idValidationFields.entrySet()) {
-			if (!ValidationUtil.idValidation(getIdJSONValue(demoDetails, entry.getKey()),
+			if (!ValidationUtil.idValidation(getIdJSONValue(demoDetails.toJSONString(), entry.getKey()),
 					entry.getValue())) {
-            throw new SchemaValidationException(ErrorCodes.PRG_PAM_APP_014.name(), entry.getKey()+entry.getValue());
+				throw new SchemaValidationException(ErrorCodes.PRG_PAM_APP_014.name(),
+						entry.getKey() + entry.getValue());
 			}
 		}
 		return true;

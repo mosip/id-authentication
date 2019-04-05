@@ -1160,8 +1160,10 @@ public class DemographicServiceTest {
 		map.put("98746563542672", LocalDateTime.now().toString());
 
 		dto.setResponse(map);
-
-		Mockito.when(demographicRepository.findByStatusCodeAndPreRegistrationIdIn(StatusCodes.BOOKED.getCode(), preIds))
+		List<String> statusCodes = new ArrayList<>();
+		statusCodes.add(StatusCodes.BOOKED.getCode());
+		statusCodes.add(StatusCodes.EXPIRED.getCode());
+		Mockito.when(demographicRepository.findByStatusCodeInAndPreRegistrationIdIn(statusCodes, preIds))
 				.thenReturn(userEntityDetails);
 		ResponseEntity<MainResponseDTO> respEntity = new ResponseEntity<>(dto, HttpStatus.OK);
 		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.POST), Mockito.any(),
@@ -1178,7 +1180,10 @@ public class DemographicServiceTest {
 		preIds.add("");
 		PreRegIdsByRegCenterIdDTO preRegIdsByRegCenterIdDTO = new PreRegIdsByRegCenterIdDTO();
 		preRegIdsByRegCenterIdDTO.setPreRegistrationIds(null);
-		Mockito.when(demographicRepository.findByStatusCodeAndPreRegistrationIdIn(StatusCodes.BOOKED.getCode(), preIds))
+		List<String> statusCodes = new ArrayList<>();
+		statusCodes.add(StatusCodes.BOOKED.getCode());
+		statusCodes.add(StatusCodes.EXPIRED.getCode());
+		Mockito.when(demographicRepository.findByStatusCodeInAndPreRegistrationIdIn(statusCodes, preIds))
 				.thenReturn(userEntityDetails);
 		preRegistrationService.getUpdatedDateTimeForPreIds(preRegIdsByRegCenterIdDTO);
 
@@ -1191,7 +1196,10 @@ public class DemographicServiceTest {
 		PreRegIdsByRegCenterIdDTO preRegIdsByRegCenterIdDTO = new PreRegIdsByRegCenterIdDTO();
 		preRegIdsByRegCenterIdDTO.setPreRegistrationIds(preIds);
 		userEntityDetails = null;
-		Mockito.when(demographicRepository.findByStatusCodeAndPreRegistrationIdIn(StatusCodes.BOOKED.getCode(), preIds))
+		List<String> statusCodes = new ArrayList<>();
+		statusCodes.add(StatusCodes.BOOKED.getCode());
+		statusCodes.add(StatusCodes.EXPIRED.getCode());
+		Mockito.when(demographicRepository.findByStatusCodeInAndPreRegistrationIdIn(statusCodes, preIds))
 				.thenReturn(userEntityDetails);
 		preRegistrationService.getUpdatedDateTimeForPreIds(preRegIdsByRegCenterIdDTO);
 
@@ -1204,7 +1212,10 @@ public class DemographicServiceTest {
 		PreRegIdsByRegCenterIdDTO preRegIdsByRegCenterIdDTO = new PreRegIdsByRegCenterIdDTO();
 		preRegIdsByRegCenterIdDTO.setPreRegistrationIds(null);
 		userEntityDetails = null;
-		Mockito.when(demographicRepository.findByStatusCodeAndPreRegistrationIdIn(StatusCodes.BOOKED.getCode(), preIds))
+		List<String> statusCodes = new ArrayList<>();
+		statusCodes.add(StatusCodes.BOOKED.getCode());
+		statusCodes.add(StatusCodes.EXPIRED.getCode());
+		Mockito.when(demographicRepository.findByStatusCodeInAndPreRegistrationIdIn(statusCodes, preIds))
 				.thenReturn(userEntityDetails);
 		preRegistrationService.getUpdatedDateTimeForPreIds(preRegIdsByRegCenterIdDTO);
 

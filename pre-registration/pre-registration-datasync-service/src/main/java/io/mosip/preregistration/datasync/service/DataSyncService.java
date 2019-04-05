@@ -194,7 +194,7 @@ public class DataSyncService {
 			if (ValidationUtil.requestValidator(reverseDataSyncRequest)
 					&& serviceUtil.validateReverseDataSyncRequest(reverseDataSyncRequest.getRequest())) {
 				reverseDatasyncReponse = serviceUtil.reverseDateSyncSave(reverseDataSyncRequest.getRequesttime(),
-						reverseDataSyncRequest.getRequest(), authUserDetails().getUserId());
+						reverseDataSyncRequest.getRequest(), "user");
 				responseDto.setResponse(reverseDatasyncReponse);
 				responseDto.setResponsetime(serviceUtil.getCurrentResponseTime());
 				responseDto.setErrors(null);

@@ -1,9 +1,7 @@
 package io.mosip.preregistration.core.util;
 
 import java.text.SimpleDateFormat;
-
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 
@@ -71,8 +69,7 @@ public class ValidationUtil {
 		} else if (value == "")
 			return true;
 		else
-			return false;
-
+			return false;	
 	}
 
 	public static boolean requestValidator(MainRequestDTO<?> mainRequest) {

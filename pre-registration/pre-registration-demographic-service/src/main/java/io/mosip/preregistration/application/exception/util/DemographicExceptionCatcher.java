@@ -26,6 +26,7 @@ import io.mosip.preregistration.application.exception.RecordFailedToUpdateExcept
 import io.mosip.preregistration.application.exception.RecordNotFoundException;
 import io.mosip.preregistration.application.exception.RecordNotFoundForPreIdsException;
 import io.mosip.preregistration.application.exception.RestCallException;
+import io.mosip.preregistration.application.exception.SchemaValidationException;
 import io.mosip.preregistration.application.exception.system.DateParseException;
 import io.mosip.preregistration.application.exception.system.JsonParseException;
 import io.mosip.preregistration.application.exception.system.JsonValidationException;
@@ -130,8 +131,12 @@ public class DemographicExceptionCatcher {
 					((JsonMappingException) ex).getErrorText());
 		} else if (ex instanceof IOException) {
 			throw new JsonValidationException(((IOException) ex).getErrorCode(), ((IOException) ex).getErrorText());
-		} else if(ex instanceof RestCallException) {
-			throw new RestCallException(((RestCallException) ex).getErrorCode(),((RestCallException) ex).getErrorText());
+		} else if (ex instanceof RestCallException) {
+			throw new RestCallException(((RestCallException) ex).getErrorCode(),
+					((RestCallException) ex).getErrorText());
+		} else if (ex instanceof SchemaValidationException) {
+			throw new SchemaValidationException(((SchemaValidationException) ex).getErrorCode(),
+					((SchemaValidationException) ex).getErrorText());
 		}
 	}
 

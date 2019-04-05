@@ -282,7 +282,7 @@ public class DataSyncServiceUtilTest {
 	}
 
 	@Test(expected = RecordNotFoundForDateRange.class)
-	public void callGetPreIdsRestServiceFailureTest() {
+	public void callGetBookedPreIdsRestServiceFailureTest() {
 		String fromDate = "2018-01-17";
 		String toDate = "2019-01-17";
 		preRegIds.add("23587986034785");
@@ -297,11 +297,13 @@ public class DataSyncServiceUtilTest {
 		exceptionJSONInfoDTOs.add(exceptionJSONInfo);
 		mainResponseDTO.setErrors(exceptionJSONInfoDTOs);
 		mainResponseDTO.setResponse(byRegCenterIdResponseDTO);
+		Map<String, String> params = new HashMap<>();
+		params.put("registrationCenterId", "10001");
 		ResponseEntity<MainResponseDTO<PreRegIdsByRegCenterIdResponseDTO>> respEntity = new ResponseEntity<>(
 				mainResponseDTO, HttpStatus.OK);
 		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
 				Mockito.eq(new ParameterizedTypeReference<MainResponseDTO<PreRegIdsByRegCenterIdResponseDTO>>() {
-				}))).thenReturn(respEntity);
+				}), params)).thenReturn(respEntity);
 		serviceUtil.callBookedPreIdsByDateAndRegCenterIdRestService(fromDate, toDate, "10001");
 	}
 
@@ -360,6 +362,8 @@ public class DataSyncServiceUtilTest {
 		mainListResponseDTO.setResponse(responsestatusDto);
 		ResponseEntity<MainListResponseDTO<DocumentMultipartResponseDTO>> respEntity = new ResponseEntity<>(
 				mainListResponseDTO, HttpStatus.OK);
+		Map<String, String> params = new HashMap<>();
+		params.put("preRegistrationId", preId);
 		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
 				Mockito.eq(new ParameterizedTypeReference<MainListResponseDTO<DocumentMultipartResponseDTO>>() {
 				}))).thenReturn(respEntity);
@@ -378,10 +382,13 @@ public class DataSyncServiceUtilTest {
 		mainResponseDTO.setResponse(list);
 		ResponseEntity<MainListResponseDTO<DemographicResponseDTO>> respEntity = new ResponseEntity<>(mainResponseDTO,
 				HttpStatus.OK);
+		Map<String, Object> params = new HashMap<>();
+		params.put("preRegistrationId", preId);
 		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
 				Mockito.eq(new ParameterizedTypeReference<MainListResponseDTO<DemographicResponseDTO>>() {
 
 				}), Mockito.anyMap())).thenReturn(respEntity);
+
 
 		DemographicResponseDTO response = serviceUtil.callGetPreRegInfoRestService(preId);
 		assertEquals(demographicResponseDTO.getPreRegistrationId(), response.getPreRegistrationId());

@@ -19,6 +19,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
@@ -421,7 +422,8 @@ public class DemographicService {
 								DateUtils.getUTCCurrentDateTime());
 						JSONParser jsonParser = new JSONParser();
 						JSONObject jsonObj = (JSONObject) jsonParser.parse(new String(decryptedString));
-						String postalcode = serviceUtil.getIdJSONValue(jsonObj, RequestCodes.POSTAL_CODE.getCode());
+						String postalcode = serviceUtil.getIdJSONValue(jsonObj.toJSONString(),
+								RequestCodes.POSTAL_CODE.getCode());
 						JSONArray identityValue = serviceUtil.getValueFromIdentity(decryptedString,
 								RequestCodes.FULLNAME.getCode());
 						viewDto = new PreRegistrationViewDTO();
@@ -956,8 +958,13 @@ public class DemographicService {
 			if (preRegIdsByRegCenterIdDTO.getPreRegistrationIds() != null
 					&& !preRegIdsByRegCenterIdDTO.getPreRegistrationIds().isEmpty()) {
 				List<String> preIds = preRegIdsByRegCenterIdDTO.getPreRegistrationIds();
+
+				List<String> statusCodes = new ArrayList<>();
+				statusCodes.add(StatusCodes.BOOKED.getCode());
+				statusCodes.add(StatusCodes.EXPIRED.getCode());
+
 				List<DemographicEntity> demographicEntities = demographicRepository
-						.findByStatusCodeAndPreRegistrationIdIn(StatusCodes.BOOKED.getCode(), preIds);
+						.findByStatusCodeInAndPreRegistrationIdIn(statusCodes, preIds);
 				if (demographicEntities != null && !demographicEntities.isEmpty()) {
 					for (DemographicEntity demographicEntity : demographicEntities) {
 						preIdMap.put(demographicEntity.getPreRegistrationId(),
