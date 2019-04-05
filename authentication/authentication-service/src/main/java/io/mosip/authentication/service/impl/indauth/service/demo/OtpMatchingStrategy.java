@@ -24,7 +24,11 @@ public enum OtpMatchingStrategy implements TextMatchingStrategy {
 			if (object instanceof ValidateOtpFunction) {
 				ValidateOtpFunction func = (ValidateOtpFunction) object;
 				boolean otpValid = func.validateOtp((String) reqInfo, (String) entityInfo);
-				return otpValid ? 100 : 0;
+				if(!otpValid) {
+					throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_OTP);
+				} else {
+					return 100;
+				}
 			} else {
 				logError(IdAuthenticationErrorConstants.INVALID_OTP);
 				throw new IdAuthenticationBusinessException(
