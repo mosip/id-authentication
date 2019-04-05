@@ -573,6 +573,8 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 
 	private Set<String> getLocationCode(Map<Short, List<Location>> levelToListOfLocationMap, Short hierarchyLevel,
 			String text) {
+		validateLocationName(levelToListOfLocationMap, hierarchyLevel, text);
+
 		Set<String> uniqueLocCode = new TreeSet<>();
 		boolean isParent = false;
 		for (Entry<Short, List<Location>> data : levelToListOfLocationMap.entrySet()) {
@@ -593,6 +595,23 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 			}
 		}
 		return uniqueLocCode;
+	}
+
+	private void validateLocationName(Map<Short, List<Location>> levelToListOfLocationMap, Short hierarchyLevel,
+			String text) {
+		// bug fix start
+		List<Location> rootLocation = levelToListOfLocationMap.get(hierarchyLevel);
+		boolean isRootLocation = false;
+		for (Location location : rootLocation) {
+			if (location.getName().trim().equalsIgnoreCase(text)) {
+				isRootLocation = true;
+			}
+		}
+		if (!isRootLocation) {
+			throw new DataNotFoundException(RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorCode(),
+					RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorMessage());
+		}
+		// bug fix end
 	}
 
 }
