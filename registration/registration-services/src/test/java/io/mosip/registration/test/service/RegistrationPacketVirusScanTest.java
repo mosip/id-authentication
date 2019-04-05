@@ -9,7 +9,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -25,7 +24,6 @@ import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.service.packet.impl.RegistrationPacketVirusScanServiceImpl;
 
-@Ignore
 public class RegistrationPacketVirusScanTest {
 
 	@Rule
