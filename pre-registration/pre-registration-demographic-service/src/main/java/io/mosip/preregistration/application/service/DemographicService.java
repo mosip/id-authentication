@@ -19,7 +19,6 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
@@ -37,7 +36,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 
-import io.mosip.kernel.auth.adapter.AuthUserDetails;
+import io.mosip.kernel.auth.adapter.model.AuthUserDetails;
 import io.mosip.kernel.core.idgenerator.spi.PridGenerator;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
@@ -422,8 +421,10 @@ public class DemographicService {
 								DateUtils.getUTCCurrentDateTime());
 						JSONParser jsonParser = new JSONParser();
 						JSONObject jsonObj = (JSONObject) jsonParser.parse(new String(decryptedString));
+
 						String postalcode = serviceUtil.getIdJSONValue(jsonObj.toJSONString(),
 								RequestCodes.POSTAL_CODE.getCode());
+
 						JSONArray identityValue = serviceUtil.getValueFromIdentity(decryptedString,
 								RequestCodes.FULLNAME.getCode());
 						viewDto = new PreRegistrationViewDTO();
@@ -865,17 +866,20 @@ public class DemographicService {
 				"In callDocumentServiceToDeleteAllByPreId method of pre-registration service ");
 		ResponseEntity<MainListResponseDTO<DocumentDeleteResponseDTO>> responseEntity = null;
 		try {
-			UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(resourceUrl + "/documents/byPreRegId")
-					.queryParam("pre_registration_id", preregId);
+			Map<String, Object> params = new HashMap<>();
+			params.put("preRegistrationId", preregId);
+			UriComponentsBuilder uriBuilder = UriComponentsBuilder
+					.fromHttpUrl(resourceUrl + "/documents/preregistration/");
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
 			HttpEntity<MainListResponseDTO<DocumentDeleteResponseDTO>> httpEntity = new HttpEntity<>(headers);
 			String strUriBuilder = uriBuilder.build().encode().toUriString();
+			strUriBuilder += "{preRegistrationId}";
 			log.info("sessionId", "idType", "id",
 					"In callDocumentServiceToDeleteAllByPreId method URL- " + strUriBuilder);
 			responseEntity = restTemplate.exchange(strUriBuilder, HttpMethod.DELETE, httpEntity,
 					new ParameterizedTypeReference<MainListResponseDTO<DocumentDeleteResponseDTO>>() {
-					});
+					}, params);
 
 			if (responseEntity.getBody().getErrors() != null) {
 				if (!responseEntity.getBody().getErrors().getMessage()

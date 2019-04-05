@@ -18,13 +18,18 @@ export const IDS = {
   newUser: 'mosip.pre-registration.demographic.create',
   updateUser: 'mosip.pre-registration.demographic.update',
   transliteration: 'mosip.pre-registration.transliteration.transliterate',
-  notification: 'mosip.pre-registration.notification.notify'
+  notification: 'mosip.pre-registration.notification.notify',
+  cancelAppointment: 'mosip.pre-registration.appointment.cancel',
+  booking: 'mosip.pre-registration.booking.book',
+  qrCode: 'mosip.pre-registration.qrcode.generate',
+  sendOtp: 'mosip.pre-registration.login.sendotp',
+  validateOtp: 'mosip.pre-registration.login.useridotp'
 };
 
 export const APPEND_URL = {
   config: 'config',
-  send_otp: 'sendotp',
-  login: 'useridotp',
+  send_otp: 'sendOtp',
+  login: 'validateOtp',
   logout: 'invalidatetoken',
   // login: 'login',
   // logout: 'logout',
@@ -42,13 +47,14 @@ export const APPEND_URL = {
   document_copy: 'document/documents/copy',
   nearby_registration_centers: 'getcoordinatespecificregistrationcenters/',
   registration_centers_by_name: 'registrationcenters/',
-  booking_appointment: 'booking/appointment',
-  booking_availability: 'booking/appointment/availability',
-  qr_code: 'notification/generateQRCode',
+  booking_appointment: 'appointment/',
+  booking_availability: 'appointment/availability/',
+  delete_application: 'applications/',
+  qr_code: 'qrCode/generate',
   notification: 'notification/',
   send_notification: 'notify',
   master_data: 'v1/masterdata/',
-  auth: 'auth/'
+  auth: 'login/'
 };
 
 export const PARAMS_KEYS = {

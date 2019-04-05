@@ -7,10 +7,9 @@ import { TranslateService } from '@ngx-translate/core';
 import { DataStorageService } from 'src/app/core/services/data-storage.service';
 import { RegistrationService } from 'src/app/core/services/registration.service';
 import { SharedService } from '../../booking/booking.service';
-import {AutoLogoutService} from  'src/app/core/services/auto-logout.service';
+import { AutoLogoutService } from 'src/app/core/services/auto-logout.service';
 
 import { DialougComponent } from 'src/app/shared/dialoug/dialoug.component';
-import { BookingModelRequest } from 'src/app/shared/booking-request.model';
 
 import { FileModel } from 'src/app/shared/models/demographic-model/file.model';
 import { Applicant } from 'src/app/shared/models/dashboard-model/dashboard.modal';
@@ -18,7 +17,7 @@ import { UserModel } from 'src/app/shared/models/demographic-model/user.modal';
 import * as appConstants from '../../../app.constants';
 import Utils from 'src/app/app.util';
 import { ConfigService } from 'src/app/core/services/config.service';
-import { Message } from '@angular/compiler/src/i18n/i18n_ast';
+import { RequestModel } from 'src/app/shared/models/request-model/RequestModel';
 
 @Component({
   selector: 'app-registration',
@@ -226,9 +225,9 @@ export class DashBoardComponent implements OnInit {
 
   cancelAppointment(element: any) {
     element.regDto.pre_registration_id = element.applicationID;
-    this.dataStorageService.cancelAppointment(new BookingModelRequest(element.regDto)).subscribe(
+    this.dataStorageService.cancelAppointment(new RequestModel(appConstants.IDS.cancelAppointment, element.regDto), element.applicationID).subscribe(
       response => {
-        if (!response['err']) {
+        if (!response['errors']) {
           this.displayMessage(this.secondaryLanguagelabels.title_success, this.secondaryLanguagelabels.msg_deleted);
           const index = this.users.indexOf(element);
           this.users[index].status = 'Pending Appointment';
@@ -301,8 +300,14 @@ export class DashBoardComponent implements OnInit {
     this.addtoNameList(user);
     console.log(this.sharedService.getNameList());
 
+    console.log('preid', preId);
+
     this.dataStorageService.getUser(preId).subscribe(
-      response => this.onModification(response, preId),
+      response => {
+        console.log('RESPONSE [Modify Information]', response);
+
+        this.onModification(response, preId);
+      },
       error => {
         console.log('error', error);
         return this.router.navigate(['error']);
@@ -325,11 +330,8 @@ export class DashBoardComponent implements OnInit {
       this.selectedUsers.splice(this.selectedUsers.indexOf(user));
     }
     if (this.selectedUsers.length > 0) {
-      console.log('idhar hai');
-
       this.disableModifyAppointmentButton = false;
     } else {
-      console.log('else idhar hai');
       this.disableModifyAppointmentButton = true;
     }
   }

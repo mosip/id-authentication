@@ -29,6 +29,8 @@ import io.mosip.kernel.core.templatemanager.spi.TemplateManager;
 import io.mosip.preregistration.core.common.dto.BookingRegistrationDTO;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
 import io.mosip.preregistration.core.common.dto.NotificationDTO;
+import io.mosip.preregistration.core.common.dto.RequestWrapper;
+import io.mosip.preregistration.core.common.dto.ResponseWrapper;
 import io.mosip.preregistration.core.common.dto.TemplateResponseDTO;
 import io.mosip.preregistration.core.common.dto.TemplateResponseListDTO;
 import io.mosip.preregistration.core.config.LoggerConfiguration;
@@ -72,9 +74,9 @@ public class TemplateUtil {
 	public String getTemplate(String langCode,String templatetypecode)  {
 		String url = resourceUrl + "/" + langCode + "/" + templatetypecode;
 		HttpHeaders headers = new HttpHeaders();
-		HttpEntity<MainResponseDTO<TemplateResponseListDTO>> httpEntity = new HttpEntity<>(headers);
+		HttpEntity<RequestWrapper<TemplateResponseListDTO>> httpEntity = new HttpEntity<>(headers);
 		log.info("sessionId", "idType", "id", "In getTemplate method of TemplateUtil service url: "+url);
-		ResponseEntity<MainResponseDTO<TemplateResponseListDTO>> respEntity = restTemplate.exchange(url,HttpMethod.GET,httpEntity,new ParameterizedTypeReference<MainResponseDTO<TemplateResponseListDTO>>() {
+		ResponseEntity<ResponseWrapper<TemplateResponseListDTO>> respEntity = restTemplate.exchange(url,HttpMethod.GET,httpEntity,new ParameterizedTypeReference<ResponseWrapper<TemplateResponseListDTO>>() {
 		});
 
 		List<TemplateResponseDTO> response = respEntity.getBody().getResponse().getTemplates();

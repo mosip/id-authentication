@@ -32,7 +32,7 @@ const appInitialization = (appConfig: AppConfigService) => {
     AuthModule,
     SharedModule,
     NgxPrintModule,
-    UserIdleModule.forRoot({idle: 10, timeout: 10, ping: 14})
+    UserIdleModule.forRoot({idle: 3600, timeout: 60, ping: 14})
   ],
   providers: [
     // AuthService,

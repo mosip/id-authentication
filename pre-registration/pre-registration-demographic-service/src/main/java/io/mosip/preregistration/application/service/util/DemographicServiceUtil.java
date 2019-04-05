@@ -290,6 +290,7 @@ public class DemographicServiceUtil {
 		JSONObject identityObj = (JSONObject) jsonObj.get(RequestCodes.IDENTITY.getCode());
 		if (identityObj.get(value) != null)
 			return identityObj.get(value).toString();
+
 		return "";
 
 	}
@@ -418,8 +419,9 @@ public class DemographicServiceUtil {
 	 *            is a map with key and regex as value
 	 * @param demoDetails
 	 * @return boolean
-	 * @throws ParseException 
+	 * @throws ParseException
 	 */
+
 	public boolean validation(Map<String, String> idValidationFields, JSONObject demoDetails) throws ParseException {
 		for (Map.Entry<String, String> entry : idValidationFields.entrySet()) {
 			if (!ValidationUtil.idValidation(getIdJSONValue(demoDetails.toJSONString(), entry.getKey()),

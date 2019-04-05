@@ -34,7 +34,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import io.mosip.kernel.auth.adapter.AuthUserDetails;
+import io.mosip.kernel.auth.adapter.model.AuthUserDetails;
 import io.mosip.kernel.core.exception.ErrorResponse;
 import io.mosip.kernel.core.exception.IOException;
 import io.mosip.kernel.core.exception.ServiceError;
@@ -75,7 +75,10 @@ import io.mosip.preregistration.core.common.dto.MainListRequestDTO;
 import io.mosip.preregistration.core.common.dto.MainListResponseDTO;
 import io.mosip.preregistration.core.common.dto.MainRequestDTO;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
+import io.mosip.preregistration.core.common.dto.NotificationResponseDTO;
 import io.mosip.preregistration.core.common.dto.PreRegistartionStatusDTO;
+import io.mosip.preregistration.core.common.dto.RequestWrapper;
+import io.mosip.preregistration.core.common.dto.ResponseWrapper;
 import io.mosip.preregistration.core.config.LoggerConfiguration;
 import io.mosip.preregistration.core.util.UUIDGeneratorUtil;
 
@@ -143,13 +146,13 @@ public class BookingServiceUtil {
 			UriComponentsBuilder regbuilder = UriComponentsBuilder.fromHttpUrl(regCenterUrl);
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
-			HttpEntity<RegistrationCenterResponseDto> entity = new HttpEntity<>(headers);
+			HttpEntity<RequestWrapper<RegistrationCenterResponseDto>> entity = new HttpEntity<>(headers);
 			String uriBuilder = regbuilder.build().encode().toUriString();
 			log.info("sessionId", "idType", "id",
 					"In callRegCenterDateRestService method of Booking Service URL- " + uriBuilder);
-			ResponseEntity<RegistrationCenterResponseDto> responseEntity = restTemplate.exchange(uriBuilder,
-					HttpMethod.GET, entity, RegistrationCenterResponseDto.class);
-			regCenter = responseEntity.getBody().getRegistrationCenters();
+			ResponseEntity<ResponseWrapper<RegistrationCenterResponseDto>> responseEntity = restTemplate.exchange(uriBuilder,
+					HttpMethod.GET, entity, new ParameterizedTypeReference<ResponseWrapper<RegistrationCenterResponseDto>>() {});
+			regCenter = responseEntity.getBody().getResponse().getRegistrationCenters();
 			if (regCenter == null || regCenter.isEmpty()) {
 				throw new MasterDataNotAvailableException(ErrorCodes.PRG_BOOK_RCI_020.getCode(),
 						ErrorMessages.MASTER_DATA_NOT_FOUND.getMessage());
@@ -163,7 +166,7 @@ public class BookingServiceUtil {
 				ErrorResponse<ServiceError> errorResponse = (ErrorResponse<ServiceError>) JsonUtils
 						.jsonStringToJavaObject(ErrorResponse.class, ex.getResponseBodyAsString());
 				throw new RestCallException(errorResponse.getErrors().get(0).getErrorCode(),
-						errorResponse.getErrors().get(0).getErrorMessage());
+						errorResponse.getErrors().get(0).getMessage());
 			} catch (JsonParseException | JsonMappingException | IOException e1) {
 				log.error("sessionId", "idType", "id",
 						"In callRegCenterDateRestService method of Booking Service Util for JsonParseException- "
@@ -191,15 +194,15 @@ public class BookingServiceUtil {
 			UriComponentsBuilder builder2 = UriComponentsBuilder.fromHttpUrl(holidayUrl);
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
-			HttpEntity<RegistrationCenterHolidayDto> httpHolidayEntity = new HttpEntity<>(headers);
+			HttpEntity<RequestWrapper<RegistrationCenterHolidayDto>> httpHolidayEntity = new HttpEntity<>(headers);
 			String uriBuilder = builder2.build().encode().toUriString();
 			log.info("sessionId", "idType", "id",
 					"In callGetHolidayListRestService method of Booking Service URL- " + uriBuilder);
-			ResponseEntity<RegistrationCenterHolidayDto> responseEntity2 = restTemplate.exchange(uriBuilder,
-					HttpMethod.GET, httpHolidayEntity, RegistrationCenterHolidayDto.class);
+			ResponseEntity<ResponseWrapper<RegistrationCenterHolidayDto>> responseEntity2 = restTemplate.exchange(uriBuilder,
+					HttpMethod.GET, httpHolidayEntity, new ParameterizedTypeReference<ResponseWrapper<RegistrationCenterHolidayDto>>() {} );
 			holidaylist = new ArrayList<>();
-			if (!responseEntity2.getBody().getHolidays().isEmpty()) {
-				for (HolidayDto holiday : responseEntity2.getBody().getHolidays()) {
+			if (!responseEntity2.getBody().getResponse().getHolidays().isEmpty()) {
+				for (HolidayDto holiday : responseEntity2.getBody().getResponse().getHolidays()) {
 					holidaylist.add(holiday.getHolidayDate());
 				}
 			}
@@ -214,7 +217,7 @@ public class BookingServiceUtil {
 				ErrorResponse<ServiceError> errorResponse = (ErrorResponse<ServiceError>) JsonUtils
 						.jsonStringToJavaObject(ErrorResponse.class, ex.getResponseBodyAsString());
 				throw new RestCallException(errorResponse.getErrors().get(0).getErrorCode(),
-						errorResponse.getErrors().get(0).getErrorMessage());
+						errorResponse.getErrors().get(0).getMessage());
 			} catch (JsonParseException | JsonMappingException | IOException e1) {
 				log.error("sessionId", "idType", "id",
 						"In callGetHolidayListRestService method of Booking Service Util for JsonParseException- "

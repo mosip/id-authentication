@@ -530,8 +530,9 @@ public class DataSyncServiceUtil {
 				if (!savedList.isEmpty()) {
 					savedListSize = savedList.size();
 					for (ProcessedPreRegEntity processedEntity : processedEntityList) {
+						preIds.add(processedEntity.getPreRegistrationId());
 						if (!processedDataSyncRepo.existsById(processedEntity.getPreRegistrationId())) {
-							preIds.add(processedDataSyncRepo.save(processedEntity).getPreRegistrationId());
+							processedDataSyncRepo.save(processedEntity).getPreRegistrationId();
 						}
 					}
 					reponseDTO.setCountOfStoredPreRegIds(String.valueOf(savedListSize));

@@ -62,6 +62,7 @@ import io.mosip.preregistration.documents.exception.InvalidDocumentIdExcepion;
  * This class provides the utility methods for DocumentService
  * 
  * @author Rajath KR
+ * @author Tapaswini
  * @since 1.0.0
  */
 @Component
