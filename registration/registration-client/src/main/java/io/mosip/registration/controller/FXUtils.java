@@ -239,8 +239,13 @@ public class FXUtils {
 					hideErrorMessageLabel(parentPane, field);
 					if (localField != null) {
 						if (haveToTransliterate) {
+							try {
 							localField.setText(transliteration.transliterate(ApplicationContext.applicationLanguage(),
 									ApplicationContext.localLanguage(), field.getText()));
+							}catch(RuntimeException runtimeException) {
+								LOGGER.error("REGISTRATION - TRANSLITRATION ERROR ", APPLICATION_NAME,
+										RegistrationConstants.APPLICATION_ID, runtimeException.getMessage());
+							}
 						} else {
 							localField.setText(field.getText());
 						}

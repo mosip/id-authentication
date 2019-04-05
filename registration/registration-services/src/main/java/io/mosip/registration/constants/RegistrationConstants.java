@@ -1210,5 +1210,6 @@ public class RegistrationConstants {
 	public static final String REFRESHED_LOGIN_TIME = "mosip.registration.refreshed_login_time";
 	
 	public static final String USER_DETAILS="userDetails";
-
+	
+	public static final String OTP_EXPIRY_TIME = "mosip.kernel.otp.expiry-time";
 }
