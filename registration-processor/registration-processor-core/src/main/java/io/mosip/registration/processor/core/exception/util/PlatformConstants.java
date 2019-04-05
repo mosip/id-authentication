@@ -81,6 +81,8 @@ public final class PlatformConstants {
 
 	public static final String RPR_REPROCESSOR_STAGE = RPR_REGISTRATION_PROCESSOR_PREFIX + "RS-";
 
+	public static final String RPR_EXTERNAL_STAGE = RPR_REGISTRATION_PROCESSOR_PREFIX + "EX-";
+
 	/**
 	 * Instantiates a new RPR platform error codes.
 	 */

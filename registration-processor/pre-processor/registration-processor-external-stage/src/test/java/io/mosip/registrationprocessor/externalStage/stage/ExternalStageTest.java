@@ -18,6 +18,7 @@ import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.abstractverticle.MosipEventBus;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
+import io.mosip.registrationprocessor.externalStage.stage.ExternalStage;
 import io.vertx.core.Vertx;
 import io.vertx.core.eventbus.EventBus;
 

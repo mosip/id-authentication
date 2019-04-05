@@ -566,7 +566,9 @@ public enum PlatformErrorMessages {
 	RPR_PGS_DATA_VALIDATION_FAILED(PlatformConstants.RPR_PACKET_GENERATOR_MODULE + "012",
 			"Input Data Validation Failed"),
 
-	REPROCESSOR_STAGE_FAILED("", "Reprocessor Stage Failed");
+	REPROCESSOR_STAGE_FAILED("", "Reprocessor Stage Failed"),
+
+	EXTERNAL_STAGE_FAILED("", "External Stage Failed");
 
 	/** The error message. */
 	private final String errorMessage;

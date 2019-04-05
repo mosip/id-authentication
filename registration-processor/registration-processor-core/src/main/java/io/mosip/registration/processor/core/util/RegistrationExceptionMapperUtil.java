@@ -109,6 +109,10 @@ public class RegistrationExceptionMapperUtil {
 		statusMap.put(RegistrationExceptionTypeCode.PACKET_UIN_GENERATION_FAILED,
 				RegistrationTransactionStatusCode.FAILED);
 		statusMap.put(RegistrationExceptionTypeCode.BASE_UNCHECKED_EXCEPTION, RegistrationTransactionStatusCode.ERROR);
+
+		statusMap.put(RegistrationExceptionTypeCode.EXTERNAL_INTEGRATION_FAILED,
+				RegistrationTransactionStatusCode.FAILED);
+
 		return unmodifiableMap;
 
 	}

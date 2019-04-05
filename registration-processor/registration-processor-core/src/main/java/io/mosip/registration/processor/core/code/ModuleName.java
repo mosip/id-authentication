@@ -21,5 +21,7 @@ public enum ModuleName {
 	BIO_DEDUPE,
 
 	/** The re processor. */
-	RE_PROCESSOR;
+	RE_PROCESSOR,
+
+	EXTERNAL;
 }
