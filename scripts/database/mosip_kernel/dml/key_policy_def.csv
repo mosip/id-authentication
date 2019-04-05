@@ -1,6 +1,0 @@
-﻿app_id,key_validity_duration,is_active,cr_by,cr_dtimes
-PRE_REGISTRATION,365,TRUE,mosipadmin,now()
-REGISTRATION,365,TRUE,mosipadmin,now()
-REGISTRATION_PROCESSOR,365,TRUE,mosipadmin,now()
-IDA,365,TRUE,mosipadmin,now()
-ID_REPO,365,TRUE,mosipadmin,now()

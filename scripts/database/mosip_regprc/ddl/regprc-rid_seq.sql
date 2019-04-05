@@ -1,6 +1,6 @@
 -- create table section --------------------------------------------------------
 -- schema 		: regprc  		- Registration Processor schema
--- table 		: rid_seq 		-Registration tables to keep the current Registration ID sequence
+-- table 		: rid_seq 		-Registration tables to keep the current Registration ID sequence, Machine ID and Registration Center ID
 -- table alias  : ridseq
 
 -- schemas section ---------------------------------------------------------------
@@ -12,20 +12,22 @@ create schema if not exists regprc
 -- table section -------------------------------------------------------------------------------
 
 	create table regprc.rid_seq (
-	
-		curr_seq_no integer NOT NULL, 
 
+		regcntr_id 		character varying (10) not null,	-- no fk.  only populate dummy value.
+		machine_id 		character varying (10) not null,	-- no fk.  only populate dummy value.
+		curr_seq_no 	integer NOT NULL, 
+		
 		cr_by 		character varying (32) not null,
 		cr_dtimes 	timestamp  not null,
 		upd_by  	character varying (32),
-		upd_dtimes timestamp
+		upd_dtimes 	timestamp
 		
 	)
 ;
 		
 
 -- keys section -------------------------------------------------------------------------------
-alter table regprc.rid_seq add constraint pk_ridseq_id primary key (curr_seq_no)
+alter table regprc.rid_seq add constraint pk_ridseq_id primary key (regcntr_id, machine_id)
  ;
 
 -- indexes section -----------------------------------------------------------------------
@@ -33,6 +35,6 @@ alter table regprc.rid_seq add constraint pk_ridseq_id primary key (curr_seq_no)
 -- ;
 
 -- comments section -------------------------------------------------------------------------- 
-comment on table regprc.rid_seq is 'regprc tables to keep the current Registration ID sequence'
+comment on table regprc.rid_seq is 'regprc tables to keep the current Registration ID sequence, Machine ID and Registration Center ID'
 ;
 

@@ -17,7 +17,6 @@
 \ir ddl/prereg-reg_appointment_consumed.sql
 \ir ddl/prereg-reg_available_slot.sql
 \ir ddl/prereg-transaction_type.sql
-\ir ddl/prereg-user_login.sql
 \ir ddl/prereg-language_transliteration.sql
 \ir ddl/prereg-prid_seed.sql
 \ir ddl/prereg-prid_seq.sql
