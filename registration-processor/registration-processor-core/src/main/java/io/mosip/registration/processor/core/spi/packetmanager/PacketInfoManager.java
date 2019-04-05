@@ -40,7 +40,7 @@ public interface PacketInfoManager<T, /** D, M, */
 	 * @param metaData
 	 *            the meta data
 	 */
-	public void saveDemographicInfoJson(byte[] bytes, List<FieldValue> metaData);
+	public void saveDemographicInfoJson(byte[] bytes,String regId, List<FieldValue> metaData);
 
 	/**
 	 * Gets the OsiData for QC user.
