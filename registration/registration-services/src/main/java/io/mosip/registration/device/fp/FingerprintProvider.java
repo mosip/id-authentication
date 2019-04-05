@@ -19,6 +19,12 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
+
+/**
+ * This will capture the fingerprint based on the device type
+ * @author SaravanaKumar G
+ *
+ */ 
 @Component
 public abstract class FingerprintProvider implements MosipFingerprintProvider {
 

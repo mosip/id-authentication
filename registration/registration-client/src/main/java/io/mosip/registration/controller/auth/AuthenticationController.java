@@ -118,15 +118,14 @@ public class AuthenticationController extends BaseController implements Initiali
 	private GridPane operatorAuthenticationPane;
 	@FXML
 	private Button operatorAuthContinue;
+	@FXML
+	private Label registrationNavlabel;
 	
 	@Autowired
 	private FingerprintFacade fingerprintFacade;
 
 	@Value("${PROVIDER_NAME}")
 	private String providerName;
-
-	@Value("${capture_photo_using_device}")
-	public String capturePhotoUsingDevice;
 
 	@Value("${otp_validity_in_mins}")
 	private long otpValidityInMins;
@@ -846,13 +845,13 @@ public class AuthenticationController extends BaseController implements Initiali
 		LOGGER.info("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
 				"Submit Registration after Operator Authentication");
 
-		packetHandlerController.showReciept(capturePhotoUsingDevice);
+		packetHandlerController.showReciept();
 	}
 
 	/**
 	 * event class to exit from authentication window. pop up window.
 	 * 
-	 * @param event
+	 * @param event - the action event 
 	 */
 	public void exitWindow(ActionEvent event) {
 		Stage primaryStage = (Stage) ((Node) event.getSource()).getParent().getScene().getWindow();
@@ -863,7 +862,8 @@ public class AuthenticationController extends BaseController implements Initiali
 	/**
 	 * Setting the init method to the Basecontroller
 	 * 
-	 * @param parentControllerObj
+	 * @param parentControllerObj - Parent Controller name
+	 * @param authType - Authentication Type
 	 * @throws RegBaseCheckedException
 	 */
 	public void init(BaseController parentControllerObj, String authType) throws RegBaseCheckedException {
@@ -890,6 +890,12 @@ public class AuthenticationController extends BaseController implements Initiali
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		otpValidity.setText("Valid for " + otpValidityInMins + " minutes");
+		if (getRegistrationDTOFromSession() != null
+				&& getRegistrationDTOFromSession().getRegistrationMetaDataDTO().getRegistrationCategory() != null
+				&& getRegistrationDTOFromSession().getRegistrationMetaDataDTO().getRegistrationCategory()
+						.equals(RegistrationConstants.PACKET_TYPE_LOST)) {
+			registrationNavlabel.setText(ApplicationContext.applicationLanguageBundle().getString("/lostuin"));
+		}
 	}
 	
 	public void goToPreviousPage() {

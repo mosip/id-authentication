@@ -3,6 +3,12 @@ package io.mosip.registration.dto;
 import java.util.Map;
 
 
+/**
+ * The Class SuccessResponseDTO.
+ * 
+ * @author Sreekar Chukka
+ * @version 1.0.0
+ */
 public class SuccessResponseDTO {
 	private String code;
 	private String message;

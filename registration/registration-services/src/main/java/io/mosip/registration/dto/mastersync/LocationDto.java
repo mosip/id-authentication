@@ -1,6 +1,6 @@
 package io.mosip.registration.dto.mastersync;
 /**
- * 
+ * This class will contains the location code and value for the field
  * @author Sreekar Chukka
  * @since 1.0.0
  *

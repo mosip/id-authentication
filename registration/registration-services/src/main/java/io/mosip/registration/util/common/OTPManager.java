@@ -1,8 +1,11 @@
 package io.mosip.registration.util.common;
 
 import java.net.SocketTimeoutException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
 
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
@@ -51,6 +54,7 @@ public class OTPManager extends BaseService {
 	 * @return the {@link ResponseDTO} object. Sends {@link SuccessResponseDTO} if
 	 *         OTP is sent to the user, else {@link ErrorResponseDTO}
 	 */
+	@SuppressWarnings("unchecked")
 	public ResponseDTO getOTP(final String userId) {
 
 		LOGGER.info(LoggerConstants.OTP_MANAGER_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
@@ -58,6 +62,7 @@ public class OTPManager extends BaseService {
 
 		// Create Response to return to UI layer
 		ResponseDTO response = new ResponseDTO();
+		List<ErrorResponseDTO> erResponseDTOs = new ArrayList<>();
 
 		try {
 			/* Check Network Connectivity */
@@ -67,7 +72,7 @@ public class OTPManager extends BaseService {
 				authNSendOTPDTO.setAppId(RegistrationConstants.REGISTRATION_CLIENT);
 				authNSendOTPDTO.setLangCode(RegistrationConstants.ENGLISH_LANG_CODE);
 				authNSendOTPDTO.setOtpChannel(Arrays.asList(
-						ApplicationContext.map().get(RegistrationConstants.OTP_CHANNELS).toString().split(",")));
+						ApplicationContext.map().get(RegistrationConstants.OTP_CHANNELS).toString().toLowerCase().split(",")));
 				authNSendOTPDTO.setUserId(userId);
 				authNSendOTPDTO.setUseridtype(RegistrationConstants.USER_ID_CODE);
 				authNRequestDTO.setRequest(authNSendOTPDTO);
@@ -78,15 +83,25 @@ public class OTPManager extends BaseService {
 
 				// obtain otpGeneratorResponseDto from serviceDelegateUtil
 				@SuppressWarnings("unchecked")
-				HashMap<String, String> responseMap = (HashMap<String, String>) serviceDelegateUtil.post("send_otp",
+				HashMap<String, Object> responseMap = (HashMap<String, Object>) serviceDelegateUtil.post("send_otp",
 						authNRequestDTO, RegistrationConstants.JOB_TRIGGER_POINT_USER);
-				if (responseMap != null && responseMap.get("message") != null) {
+				if (responseMap.get("response") != null) {
+
+					LinkedHashMap<String, String> otpMessage = (LinkedHashMap<String, String>) responseMap
+							.get("response");
 
 					// create Success Response
 					setSuccessResponse(response,
-							RegistrationConstants.OTP_GENERATION_SUCCESS_MESSAGE + responseMap.get("message"), null);
+							RegistrationConstants.OTP_GENERATION_SUCCESS_MESSAGE + otpMessage.get("message"), null);
 				} else {
 					// create Error Response
+
+					String errMsg = ((List<LinkedHashMap<String, String>>) responseMap
+							.get(RegistrationConstants.ERRORS)).get(0).get(RegistrationConstants.ERROR_MSG);
+
+					LOGGER.info(LoggerConstants.OTP_MANAGER_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
+							RegistrationConstants.APPLICATION_ID, errMsg);
+
 					setErrorResponse(response, RegistrationConstants.OTP_GENERATION_ERROR_MESSAGE, null);
 				}
 

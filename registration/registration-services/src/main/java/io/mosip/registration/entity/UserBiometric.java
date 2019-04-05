@@ -15,7 +15,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * UserBiometric entity details
+ * The Entity Class for UserBiometric details
  * 
  * @author Sravya Surampalli
  * @since 1.0.0

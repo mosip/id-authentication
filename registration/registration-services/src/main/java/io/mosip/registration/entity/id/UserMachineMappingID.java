@@ -5,8 +5,15 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
+import io.mosip.registration.entity.UserMachineMapping;
 import lombok.Data;
 
+/**
+ * composite key for {@link UserMachineMapping}
+ * 
+ * @author Sreekar Chukka
+ * @since 1.0.0
+ */
 @Embeddable
 @Data
 public class UserMachineMappingID implements Serializable {
@@ -28,8 +35,7 @@ public class UserMachineMappingID implements Serializable {
 	}
 
 	/**
-	 * @param userID
-	 *            the userID to set
+	 * @param userID the userID to set
 	 */
 	public void setUserID(String userID) {
 		this.userID = userID;
@@ -43,8 +49,7 @@ public class UserMachineMappingID implements Serializable {
 	}
 
 	/**
-	 * @param centreID
-	 *            the centreID to set
+	 * @param centreID the centreID to set
 	 */
 	public void setCentreID(String centreID) {
 		this.centreID = centreID;
@@ -58,8 +63,7 @@ public class UserMachineMappingID implements Serializable {
 	}
 
 	/**
-	 * @param machineID
-	 *            the machineID to set
+	 * @param machineID the machineID to set
 	 */
 	public void setMachineID(String machineID) {
 		this.machineID = machineID;

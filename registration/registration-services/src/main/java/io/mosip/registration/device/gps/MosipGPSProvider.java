@@ -16,21 +16,20 @@ public interface MosipGPSProvider {
 	/**
 	 * This method connect to the GPS device in the mentioned port and wait for
 	 * certain time to receive the data from the device.
-	 * 
-	 * 
-	 * @param comPortNo
-	 * @param portReadWaitTime
-	 * @return
-	 * @throws RegBaseCheckedException
+	 *
+	 * @param comPortNo the com port no
+	 * @param portReadWaitTime the port read wait time
+	 * @return the com port GPS data
+	 * @throws RegBaseCheckedException the reg base checked exception
 	 */
 	String getComPortGPSData(String comPortNo, int portReadWaitTime) throws RegBaseCheckedException;
 
 	/**
-	 * This method parse GPS data and get latitude and logitude from gps information
-	 * 
-	 * @param comPortNo
-	 * @param portReadWaitTime
-	 * @return
+	 * This method parse GPS data and get latitude and logitude from gps information.
+	 *
+	 * @param tokens the tokens
+	 * @param position the position
+	 * @return true, if successful
 	 */
 	boolean parse(String[] tokens, GPSPosition position);
 	
@@ -39,7 +38,7 @@ public interface MosipGPSProvider {
 	 *
 	 * @param line the line
 	 * @return the GPS position
-	 * @throws RegBaseCheckedException
+	 * @throws RegBaseCheckedException the reg base checked exception
 	 */
 	GPSPosition signlaParser(String line) throws RegBaseCheckedException;
 

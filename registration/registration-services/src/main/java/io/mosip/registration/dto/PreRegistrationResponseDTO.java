@@ -5,9 +5,9 @@ import java.util.List;
 
 
 /**
- * Pre Registration Response DTO
- * @author YASWANTH S
+ * The DTO Class PreRegistration Response.
  *
+ * @author YASWANTH S
  * @param <T>  is a ReseponseDataSyncDTO class type
  */
 public class PreRegistrationResponseDTO<T> {

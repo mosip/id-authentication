@@ -7,10 +7,14 @@ import javax.persistence.MappedSuperclass;
 
 import io.mosip.kernel.core.util.DateUtils;
 
+/**
+ * The Entity Class for RegistrationCommonFields.
+ * 
+ * @author Sreekar Chukka
+ * @since 1.0.0
+ */
 @MappedSuperclass
 public class RegistrationCommonFields {
-	
-	
 
 	@Column(name = "IS_ACTIVE")
 	private Boolean isActive;
@@ -31,8 +35,7 @@ public class RegistrationCommonFields {
 	}
 
 	/**
-	 * @param isActive
-	 *            the isActive to set
+	 * @param isActive the isActive to set
 	 */
 	public void setIsActive(Boolean isActive) {
 		this.isActive = isActive;
@@ -46,8 +49,7 @@ public class RegistrationCommonFields {
 	}
 
 	/**
-	 * @param crBy
-	 *            the crBy to set
+	 * @param crBy the crBy to set
 	 */
 	public void setCrBy(String crBy) {
 		this.crBy = crBy;
@@ -61,8 +63,7 @@ public class RegistrationCommonFields {
 	}
 
 	/**
-	 * @param crDtime
-	 *            the crDtime to set
+	 * @param crDtime the crDtime to set
 	 */
 	public void setCrDtime(Timestamp crDtime) {
 		this.crDtime = Timestamp.valueOf(DateUtils.getUTCCurrentDateTime());
@@ -76,8 +77,7 @@ public class RegistrationCommonFields {
 	}
 
 	/**
-	 * @param updBy
-	 *            the updBy to set
+	 * @param updBy the updBy to set
 	 */
 	public void setUpdBy(String updBy) {
 		this.updBy = updBy;
@@ -91,8 +91,7 @@ public class RegistrationCommonFields {
 	}
 
 	/**
-	 * @param updDtimes
-	 *            the updDtimes to set
+	 * @param updDtimes the updDtimes to set
 	 */
 	public void setUpdDtimes(Timestamp updDtimes) {
 		this.updDtimes = Timestamp.valueOf(DateUtils.getUTCCurrentDateTime());

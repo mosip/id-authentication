@@ -9,6 +9,7 @@ import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -21,14 +22,15 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import io.mosip.registration.config.RegistrationApp;
+import io.mosip.registration.config.RegistrationUpdate;
 
+@Ignore
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ RegistrationApp.class })
+@PrepareForTest({ RegistrationUpdate.class })
 public class RegistrationAppTest {
 
 	@InjectMocks
-	private RegistrationApp registrationApp;
+	private RegistrationUpdate registrationApp;
 
 	@Rule
 	public MockitoRule mockitoRule = MockitoJUnit.rule();

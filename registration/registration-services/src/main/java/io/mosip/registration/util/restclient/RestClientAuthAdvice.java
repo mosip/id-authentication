@@ -46,8 +46,9 @@ public class RestClientAuthAdvice {
 	 * 
 	 * @param joinPoint
 	 *            the join point of the advice
-	 * @return the response
+	 * @return the response from the web-service
 	 * @throws RegBaseCheckedException
+	 *             the checked exception
 	 */
 	@Around("execution(* io.mosip.registration.util.restclient.RestClientUtil.invoke(..))")
 	public Object addAuthZToken(ProceedingJoinPoint joinPoint) throws RegBaseCheckedException {

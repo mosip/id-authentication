@@ -38,23 +38,35 @@ public class IrisFacade {
 
 	private static final Logger LOGGER = AppConfig.getLogger(IrisFacade.class);
 
+	/**
+	 * Gets the iris stub image as DTO.
+	 *
+	 * @param irisDetailsDTO the iris details DTO
+	 * @param irisType       the iris type
+	 * @throws RegBaseCheckedException the reg base checked exception
+	 */
 	public void getIrisImageAsDTO(IrisDetailsDTO irisDetailsDTO, String irisType) throws RegBaseCheckedException {
 		try {
 			LOGGER.info(LOG_REG_IRIS_FACADE, APPLICATION_NAME, APPLICATION_ID,
 					"Stubbing iris details for user registration");
 
 			Map<String, Object> scannedIrisMap = getIrisScannedImage(irisType);
+			double qualityScore = 0;
+			if (!(boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
+				qualityScore = (double) scannedIrisMap.get(RegistrationConstants.IMAGE_SCORE_KEY);
+			}
 
-			double qualityScore = (double) scannedIrisMap.get(RegistrationConstants.IMAGE_SCORE_KEY);
-
-			if (Double.compare(irisDetailsDTO.getQualityScore(), qualityScore) < 0) {
+			if ((boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)
+					|| Double.compare(irisDetailsDTO.getQualityScore(), qualityScore) < 0) {
 				// Set the values in IrisDetailsDTO object
 				irisDetailsDTO.setIris((byte[]) scannedIrisMap.get(RegistrationConstants.IMAGE_BYTE_ARRAY_KEY));
 				irisDetailsDTO.setForceCaptured(false);
-				irisDetailsDTO.setQualityScore(qualityScore);
 				irisDetailsDTO.setIrisImageName(irisType.concat(RegistrationConstants.DOT)
 						.concat((String) scannedIrisMap.get(RegistrationConstants.IMAGE_FORMAT_KEY)));
 				irisDetailsDTO.setIrisType(irisType);
+				if (!(boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
+					irisDetailsDTO.setQualityScore(qualityScore);
+				}
 				if (irisDetailsDTO.getNumOfIrisRetry() > 1) {
 					irisDetailsDTO.setQualityScore(91.0);
 				}
@@ -85,18 +97,16 @@ public class IrisFacade {
 			if (irisType.equalsIgnoreCase("LeftEye")) {
 				qualityScore = 90.5;
 			} else {
-				if ((boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
-					qualityScore = 90.0;
-				}else {
-					qualityScore = 50.0;
-				}
+				qualityScore = 50.0;
 			}
 
 			// Add image format, image and quality score in bytes array to map
 			Map<String, Object> scannedIris = new WeakHashMap<>();
 			scannedIris.put(RegistrationConstants.IMAGE_FORMAT_KEY, "png");
 			scannedIris.put(RegistrationConstants.IMAGE_BYTE_ARRAY_KEY, scannedIrisBytes);
-			scannedIris.put(RegistrationConstants.IMAGE_SCORE_KEY, qualityScore);
+			if (!(boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
+				scannedIris.put(RegistrationConstants.IMAGE_SCORE_KEY, qualityScore);
+			}
 
 			LOGGER.info(LOG_REG_IRIS_FACADE, APPLICATION_NAME, APPLICATION_ID,
 					"Scanning of iris details for user registration completed");
@@ -127,7 +137,12 @@ public class IrisFacade {
 	/**
 	 * Validate Iris
 	 * 
-	 * @return boolean of captured Iris
+	 * @param irisDetailsDTO  the {@link IrisDetailsDTO} to be validated
+	 * @param userIrisDetails the list of {@link IrisDetailsDTO} available in
+	 *                        database
+	 * 
+	 * @return the validation result. <code>true</code> if match is found, else
+	 *         <code>false</code>
 	 */
 	public boolean validateIris(IrisDetailsDTO irisDetailsDTO, List<UserBiometric> userIrisDetails) {
 

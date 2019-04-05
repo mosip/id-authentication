@@ -9,11 +9,17 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * Composite key for GlobalParamId.
+ * 
+ * @author Sreekar Chukka
+ * @since 1.0.0
+ */
 @Embeddable
 @Data
 @Getter
 @Setter
-public class GlobalParamId implements Serializable{		
+public class GlobalParamId implements Serializable {
 	/**
 	 * 
 	 */

@@ -24,8 +24,7 @@ public class RegistrationSystemPropertiesChecker {
 	/**
 	 * Get Ethernet MAC Address
 	 * 
-	 * @return
-	 * @throws IOException
+	 * @return machine ID
 	 */
 	public static String getMachineId() {
 		String machineId = "";

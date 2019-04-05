@@ -28,7 +28,7 @@ public interface AuditLogControlRepository extends BaseRepository<AuditLogContro
 	 * 
 	 * @param req
 	 *            upto Audit logs to be retrieved
-	 * @return
+	 * @return list of audit log controls
 	 */
 	List<AuditLogControl> findByCrDtimeBefore(Timestamp req);
 

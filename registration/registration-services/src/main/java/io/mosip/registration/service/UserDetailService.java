@@ -14,6 +14,7 @@ public interface UserDetailService {
 	/**
 	 * Gets the user detail.
 	 *
+	 * @param triggerpoint the triggerpoint
 	 * @return the user detail
 	 */
 	public ResponseDTO save(String triggerpoint);

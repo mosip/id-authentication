@@ -7,10 +7,15 @@ import java.io.IOException;
 import java.security.KeyManagementException;
 import java.sql.Timestamp;
 import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -25,6 +30,7 @@ import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.dao.PolicySyncDAO;
+import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.PublicKeyResponse;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.entity.KeyStore;
@@ -105,22 +111,43 @@ public class PolicySyncServiceImpl extends BaseService implements PolicySyncServ
 		LOGGER.debug("REGISTRATION_KEY_POLICY_SYNC", APPLICATION_NAME, APPLICATION_ID,
 				getCenterId(getStationId(getMacAddress())));
 		KeyStore keyStore = new KeyStore();
+		List<ErrorResponseDTO> erResponseDTOs = new ArrayList<>();
 		Map<String, String> requestParams = new HashMap<String, String>();
-		requestParams.put("timeStamp", Instant.now().toString());
+		requestParams.put("timeStamp",Instant.now().toString());
 		requestParams.put("referenceId", getCenterId(getStationId(getMacAddress())));
 		try {
+			@SuppressWarnings("unchecked")
 			PublicKeyResponse<String> publicKeyResponse = (PublicKeyResponse<String>) serviceDelegateUtil
-					.get("policysync", requestParams, false,RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM);
-			keyStore.setId(UUID.randomUUID().toString());
-			keyStore.setPublicKey(((String) publicKeyResponse.getPublicKey()).getBytes());
-			keyStore.setValidFromDtimes(Timestamp.valueOf(publicKeyResponse.getIssuedAt()));
-			keyStore.setValidTillDtimes(Timestamp.valueOf(publicKeyResponse.getExpiryAt()));
-			keyStore.setCreatedBy(getUserIdFromSession());
-			keyStore.setCreatedDtimes(Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()));
-			policySyncDAO.updatePolicy(keyStore);
-			responseDTO = setSuccessResponse(responseDTO, RegistrationConstants.POLICY_SYNC_SUCCESS_MESSAGE, null);
-			LOGGER.debug("REGISTRATION_KEY_POLICY_SYNC", APPLICATION_NAME, APPLICATION_ID,
-					"synch the public key is completed");
+					.get("policysync", requestParams, false, RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM);
+			
+			if (null != publicKeyResponse.getResponse() && !publicKeyResponse.getResponse().isEmpty()
+					&& publicKeyResponse.getResponse().size() > 0) {
+
+				keyStore.setId(UUID.randomUUID().toString());
+				keyStore.setPublicKey(publicKeyResponse.getResponse().get("publicKey").toString().getBytes());
+				LocalDateTime issuedAt = DateUtils.parseToLocalDateTime(publicKeyResponse.getResponse().get("issuedAt").toString());
+				LocalDateTime expiryAt = DateUtils.parseToLocalDateTime(publicKeyResponse.getResponse().get("expiryAt").toString());
+				keyStore.setValidFromDtimes(
+						Timestamp.valueOf(issuedAt));
+				keyStore.setValidTillDtimes(
+						Timestamp.valueOf(expiryAt));
+				keyStore.setCreatedBy(getUserIdFromSession());
+				keyStore.setCreatedDtimes(Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()));
+				policySyncDAO.updatePolicy(keyStore);
+				responseDTO = setSuccessResponse(responseDTO, RegistrationConstants.POLICY_SYNC_SUCCESS_MESSAGE, null);
+				LOGGER.info("REGISTRATION_KEY_POLICY_SYNC", APPLICATION_NAME, APPLICATION_ID,
+						"synch the public key is completed");
+			} else {
+				List<LinkedHashMap<String, Object>> errorKey = publicKeyResponse.getErrors();
+				ErrorResponseDTO errorResponseDTO = new ErrorResponseDTO();
+				errorResponseDTO.setCode(RegistrationConstants.ERRORS);
+				errorResponseDTO.setMessage((String) errorKey.get(0).get(RegistrationConstants.ERROR_MSG));
+				erResponseDTOs.add(errorResponseDTO);
+				responseDTO.setErrorResponseDTOs(erResponseDTOs);
+				LOGGER.info("REGISTRATION_KEY_POLICY_SYNC", APPLICATION_NAME, APPLICATION_ID,
+						(String) errorKey.get(0).get(RegistrationConstants.ERROR_MSG));
+
+			}
 
 		} catch (HttpClientErrorException | RegBaseCheckedException exception) {
 			LOGGER.error("REGISTRATION_KEY_POLICY_SYNC", APPLICATION_NAME, APPLICATION_ID, exception.getMessage());
@@ -130,6 +157,11 @@ public class PolicySyncServiceImpl extends BaseService implements PolicySyncServ
 
 	}
 
+	/**
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.registration.service.PolicySyncService#checkKeyValidation()
+	 */
 	@Override
 	public ResponseDTO checkKeyValidation() {
 
@@ -140,8 +172,8 @@ public class PolicySyncServiceImpl extends BaseService implements PolicySyncServ
 		try {
 
 			KeyStore keyStore = policySyncDAO.findByMaxExpireTime();
-			
-			if(keyStore != null) {
+
+			if (keyStore != null) {
 				String val = getGlobalConfigValueOf(RegistrationConstants.KEY_NAME);
 				if (val != null) {
 
