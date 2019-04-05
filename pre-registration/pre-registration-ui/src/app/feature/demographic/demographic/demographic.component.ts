@@ -21,7 +21,7 @@ import Utils from 'src/app/app.util';
 import { DialougComponent } from 'src/app/shared/dialoug/dialoug.component';
 import { ConfigService } from 'src/app/core/services/config.service';
 import { AttributeModel } from 'src/app/shared/models/demographic-model/attribute.modal';
-import { AppComponent } from 'src/app/app.component';
+import { ResponseModel } from 'src/app/shared/models/demographic-model/response.model';
 
 @Component({
   selector: 'app-demographic',
@@ -149,8 +149,7 @@ export class DemographicComponent implements OnInit, OnDestroy {
     private sharedService: SharedService,
     private configService: ConfigService,
     private translate: TranslateService,
-    private dialog: MatDialog,
-    private appcomp: AppComponent
+    private dialog: MatDialog
   ) {
     this.translate.use(localStorage.getItem('langCode'));
     this.regService.getMessage().subscribe(message => (this.message = message));
@@ -159,17 +158,13 @@ export class DemographicComponent implements OnInit, OnDestroy {
 
   async ngOnInit() {
     this.config = this.configService.getConfig();
-    // this.regService.currentMessage.subscribe(message => (this.message = message));
     this.setConfig();
     this.initForm();
-    //this.appcomp.keepWatching();
     await this.getPrimaryLabels();
     this.dataStorageService.getSecondaryLanguageLabels(this.secondaryLang).subscribe(response => {
       this.secondaryLanguagelabels = response['demographic'];
     });
     if (!this.dataModification) this.consentDeclaration();
-    // this.regService.currentMessage.subscribe(message => (this.message = message));
-    // console.log(this.primaryLanguagelabels);
   }
 
   setConfig() {
@@ -227,7 +222,6 @@ export class DemographicComponent implements OnInit, OnDestroy {
         alertMessageFirst: this.primaryLanguagelabels.consent.alertMessageFirst,
         alertMessageSecond: this.primaryLanguagelabels.consent.alertMessageSecond,
         alertMessageThird: this.primaryLanguagelabels.consent.alertMessageThird
-        //adding consent parameters as per language selected by user form language json..
       };
       this.dialog.open(DialougComponent, {
         width: '550px',
@@ -403,7 +397,6 @@ export class DemographicComponent implements OnInit, OnDestroy {
     } else {
       let index = 0;
       let secondaryIndex = 1;
-
       if (this.user.request.demographicDetails.identity.fullName[0].language !== this.primaryLang) {
         index = 1;
         secondaryIndex = 0;
@@ -450,6 +443,8 @@ export class DemographicComponent implements OnInit, OnDestroy {
   private getGenderDetails() {
     return new Promise((resolve, reject) => {
       this.dataStorageService.getGenderDetails().subscribe(response => {
+        console.log(response);
+
         this.genders = response[appConstants.RESPONSE][appConstants.DEMOGRAPHIC_RESPONSE_KEYS.genderTypes];
         resolve(true);
       });
@@ -458,8 +453,6 @@ export class DemographicComponent implements OnInit, OnDestroy {
 
   private filterOnLangCode(langCode: string, genderEntity = [], entityArray: any) {
     if (entityArray) {
-      console.log('genderEntity', genderEntity);
-
       entityArray.filter((element: any) => {
         if (element.langCode === langCode) genderEntity.push(element);
       });
@@ -568,11 +561,7 @@ export class DemographicComponent implements OnInit, OnDestroy {
 
   onEntityChange(entity: any, event?: MatButtonToggleChange) {
     if (event) {
-      console.log('entity', entity);
-
       entity.forEach(element => {
-        console.log('elem:', element);
-
         element.filter((element: any) => {
           if (event.value === element.code) {
             const codeValue: CodeValueModal = {
@@ -686,11 +675,13 @@ export class DemographicComponent implements OnInit, OnDestroy {
     this.markFormGroupTouched(this.userForm);
     this.markFormGroupTouched(this.transUserForm);
     if (this.userForm.valid && this.transUserForm.valid) {
-      const request = this.createRequestJSON();
+      const identity = this.createIdentityJSONDynamic();
+      const request = this.createRequestJSON(identity);
+      const responseJSON = this.createResponseJSON(identity);
       this.dataUploadComplete = false;
-
       if (this.dataModification) {
-        this.dataStorageService.updateUser(request).subscribe(
+        let preRegistrationId = this.user.preRegId;
+        this.dataStorageService.updateUser(request, preRegistrationId).subscribe(
           response => {
             console.log(response);
             if (response[appConstants.NESTED_ERROR] === null && response[appConstants.RESPONSE] === null) {
@@ -701,7 +692,7 @@ export class DemographicComponent implements OnInit, OnDestroy {
               this.router.navigate(['error']);
               return;
             } else {
-              this.onModification(request);
+              this.onModification(responseJSON);
             }
             this.onSubmission();
           },
@@ -722,7 +713,7 @@ export class DemographicComponent implements OnInit, OnDestroy {
               this.router.navigate(['error']);
               return;
             } else {
-              this.onAddition(response, request);
+              this.onAddition(response, responseJSON);
             }
             this.onSubmission();
           },
@@ -732,33 +723,10 @@ export class DemographicComponent implements OnInit, OnDestroy {
           }
         );
       }
-
-      // this.dataStorageService.addUser(request).subscribe(
-      //   response => {
-      //     console.log(response);
-      //     if (response[appConstants.NESTED_ERROR] === null && response[appConstants.RESPONSE] === null) {
-      //       this.router.navigate(['error']);
-      //       return;
-      //     }
-      //     if (response[appConstants.NESTED_ERROR] !== null) {
-      //       this.router.navigate(['error']);
-      //       return;
-      //     } else if (this.dataModification) {
-      //       this.onModification(request);
-      //     } else {
-      //       this.onAddition(response, request);
-      //     }
-      //     this.onSubmission();
-      //   },
-      //   error => {
-      //     console.log(error);
-      //     this.router.navigate(['error']);
-      //   }
-      // );
     }
   }
 
-  private onModification(request: RequestModel) {
+  private onModification(request: ResponseModel) {
     this.regService.updateUser(
       this.step,
       new UserModel(this.preRegId, request, this.regService.getUserFiles(this.step), this.codeValue)
@@ -772,7 +740,7 @@ export class DemographicComponent implements OnInit, OnDestroy {
     });
   }
 
-  private onAddition(response: any, request: RequestModel) {
+  private onAddition(response: any, request: ResponseModel) {
     this.preRegId = response[appConstants.RESPONSE][0][appConstants.DEMOGRAPHIC_RESPONSE_KEYS.preRegistrationId];
     this.regService.addUser(new UserModel(this.preRegId, request, [], this.codeValue));
     this.sharedService.addNameList({
@@ -841,27 +809,55 @@ export class DemographicComponent implements OnInit, OnDestroy {
     return identity;
   }
 
-  private createRequestJSON() {
-    const identity = this.createIdentityJSONDynamic();
+  private createRequestJSON(identity: IdentityModel) {
+    // const identity = this.createIdentityJSONDynamic();
+    // let preRegistrationId = '';
+    // let createdBy = this.loginId;
+    // let createdDateTime = Utils.getCurrentDate();
+    // let updatedBy = '';
+    // let updatedDateTime = '';
+    let langCode = this.primaryLang;
+    if (this.user) {
+      // preRegistrationId = this.user.preRegId;
+      // createdBy = this.user.request.createdBy;
+      // createdDateTime = this.user.request.createdDateTime;
+      // updatedBy = this.loginId;
+      // updatedDateTime = Utils.getCurrentDate();
+      langCode = this.user.request.langCode;
+    }
+    const req: RequestModel = {
+      // preRegistrationId: preRegistrationId,
+      // createdBy: createdBy,
+      // createdDateTime: createdDateTime,
+      // updatedBy: updatedBy,
+      // updatedDateTime: updatedDateTime,
+      langCode: langCode,
+      demographicDetails: new DemoIdentityModel(identity)
+    };
+    return req;
+  }
+
+  private createResponseJSON(identity: IdentityModel) {
+    // const identity = this.createIdentityJSONDynamic();
     let preRegistrationId = '';
     let createdBy = this.loginId;
     let createdDateTime = Utils.getCurrentDate();
-    let updatedBy = '';
+    // let updatedBy = '';
     let updatedDateTime = '';
     let langCode = this.primaryLang;
     if (this.user) {
       preRegistrationId = this.user.preRegId;
       createdBy = this.user.request.createdBy;
       createdDateTime = this.user.request.createdDateTime;
-      updatedBy = this.loginId;
+      // updatedBy = this.loginId;
       updatedDateTime = Utils.getCurrentDate();
       langCode = this.user.request.langCode;
     }
-    const req: RequestModel = {
+    const req: ResponseModel = {
       preRegistrationId: preRegistrationId,
       createdBy: createdBy,
       createdDateTime: createdDateTime,
-      updatedBy: updatedBy,
+      // updatedBy: updatedBy,
       updatedDateTime: updatedDateTime,
       langCode: langCode,
       demographicDetails: new DemoIdentityModel(identity)

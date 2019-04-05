@@ -3,25 +3,21 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FaqComponent } from './faq.component';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { HttpLoaderFactory } from 'src/app/i18n.module';
-import { HttpClient } from 'selenium-webdriver/http';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HttpClient } from '@angular/common/http';
 import { MaterialModule } from 'src/app/material.module';
 import { DataStorageService } from '../services/data-storage.service';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { of } from 'rxjs';
+import { RouterTestingModule } from '@angular/router/testing';
 
 class MockService {
   use() {}
   url = 'some/url/here';
-}
 
-let service2: DataStorageService,
-  mockService = {
-    url: 'some/url/here',
-    getSecondaryLanguageLabels: jasmine
-      .createSpy('getSecondaryLanguageLabels')
-      .and.returnValue(of({ timeSelection: { booking: { label1: 'hello' } } }))
-  };
+  getSecondaryLanguageLabels() {
+    return of({});
+  }
+}
 
 describe('FaqComponent', () => {
   let component: FaqComponent;
@@ -40,9 +36,10 @@ describe('FaqComponent', () => {
           }
         }),
         HttpClientModule,
+        RouterTestingModule,
         MaterialModule
       ],
-      providers: [{ provide: DataStorageService, useValue: mockService }]
+      providers: [{ provide: DataStorageService, useValue: MockService }]
     }).compileComponents();
   }));
 
