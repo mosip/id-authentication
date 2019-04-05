@@ -265,7 +265,7 @@ public class LoginController extends BaseController implements Initializable {
 			primaryStage.setScene(scene);
 			primaryStage.show();
 
-			executePreLaunchTask(loginRoot);
+		//	executePreLaunchTask(loginRoot);
 
 		} catch (
 
