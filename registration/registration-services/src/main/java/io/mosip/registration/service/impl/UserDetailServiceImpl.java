@@ -34,7 +34,7 @@ import io.mosip.registration.service.UserOnboardService;
 import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
 
 /**
- * Implementation for {@link UserDetailService} 
+ * Implementation for {@link UserDetailService}
  * 
  * @author chukka sreekar
  *
@@ -120,6 +120,7 @@ public class UserDetailServiceImpl extends BaseService implements UserDetailServ
 		} else {
 			LOGGER.error(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID,
 					" Unable to sync user detail data as there is no internet connection");
+			responseDTO = getErrorResponse(responseDTO, RegistrationConstants.ERROR, null);
 		}
 
 		LOGGER.info(LOG_REG_USER_DETAIL, APPLICATION_NAME, APPLICATION_ID, "Leaving into user detail save method");
@@ -157,7 +158,7 @@ public class UserDetailServiceImpl extends BaseService implements UserDetailServ
 
 			LinkedHashMap<String, Object> userDetailResponse = (LinkedHashMap<String, Object>) userDetail;
 
-			if (null!=userDetailResponse.get(RegistrationConstants.PACKET_STATUS_READER_RESPONSE)) {
+			if (null != userDetailResponse.get(RegistrationConstants.PACKET_STATUS_READER_RESPONSE)) {
 
 				SuccessResponseDTO successResponseDTO = new SuccessResponseDTO();
 				successResponseDTO.setCode(RegistrationConstants.SUCCESS);
