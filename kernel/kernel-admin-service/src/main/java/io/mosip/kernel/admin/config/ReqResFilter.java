@@ -1,4 +1,4 @@
-package io.mosip.kernel.admin.filter;
+package io.mosip.kernel.admin.config;
 
 import java.io.IOException;
 
@@ -14,7 +14,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.web.util.ContentCachingRequestWrapper;
 import org.springframework.web.util.ContentCachingResponseWrapper;
 
-import io.mosip.kernel.admin.config.LoggerConfiguration;
 import io.mosip.kernel.core.logger.spi.Logger;
 
 public class ReqResFilter implements Filter {

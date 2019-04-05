@@ -1,4 +1,4 @@
-package io.mosip.kernel.admin.filter;
+package io.mosip.kernel.admin.config;
 
 import java.io.IOException;
 import java.util.List;
