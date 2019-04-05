@@ -1,4 +1,4 @@
-package io.mosip.registrationprocessor.externalStage.stage;
+package io.mosip.registrationprocessor.externalstage.stage;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -34,8 +34,8 @@ import io.mosip.registration.processor.status.code.RegistrationStatusCode;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
-import io.mosip.registrationprocessor.externalStage.entity.MessageRequestDTO;
-import io.mosip.registrationprocessor.externalStage.utils.StatusMessage;
+import io.mosip.registrationprocessor.externalstage.entity.MessageRequestDTO;
+import io.mosip.registrationprocessor.externalstage.utils.StatusMessage;
 
 /**
  * External stage verticle class

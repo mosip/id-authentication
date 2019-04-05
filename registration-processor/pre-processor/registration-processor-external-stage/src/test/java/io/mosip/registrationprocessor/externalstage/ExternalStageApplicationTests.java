@@ -1,4 +1,4 @@
-package io.mosip.registrationprocessor.externalStage;
+package io.mosip.registrationprocessor.externalstage;
 
 /*import junit.framework.TestCase;
 

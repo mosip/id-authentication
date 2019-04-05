@@ -1,4 +1,4 @@
-package io.mosip.registrationprocessor.externalStage.utils;
+package io.mosip.registrationprocessor.externalstage.utils;
 
 /**
  * The Class StatusMessage.

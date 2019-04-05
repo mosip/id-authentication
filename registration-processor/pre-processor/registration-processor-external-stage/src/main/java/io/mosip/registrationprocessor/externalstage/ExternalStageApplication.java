@@ -1,8 +1,8 @@
-package io.mosip.registrationprocessor.externalStage;
+package io.mosip.registrationprocessor.externalstage;
 
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
-import io.mosip.registrationprocessor.externalStage.stage.ExternalStage;
+import io.mosip.registrationprocessor.externalstage.stage.ExternalStage;
 
 /**
  * External Stage application
