@@ -143,8 +143,6 @@ public class BiometricExceptionController extends BaseController implements Init
 
 	@FXML
 	private Button continueBtn;
-	@FXML
-	private Button backBtn;
 
 	private List<String> fingerList = new ArrayList<>();
 	private List<String> irisList = new ArrayList<>();
@@ -157,7 +155,6 @@ public class BiometricExceptionController extends BaseController implements Init
 		applicationLabelBundle = ApplicationContext.getInstance().getApplicationLanguageBundle();
 
 		continueBtn.setDisable(true);
-		backBtn.setDisable(true);
 
 		setExceptionImage();		
 		fingerExceptionListener(rightLittle);
@@ -262,7 +259,6 @@ public class BiometricExceptionController extends BaseController implements Init
 					fingerImage.setOpacity(0.0);
 				}
 				continueBtn.setDisable((fingerList.isEmpty() && irisList.isEmpty()));
-				backBtn.setDisable((fingerList.isEmpty() && irisList.isEmpty()));
 			}
 		});
 
@@ -303,7 +299,6 @@ public class BiometricExceptionController extends BaseController implements Init
 					}					
 				}
 				continueBtn.setDisable((fingerList.isEmpty() && irisList.isEmpty()));
-				backBtn.setDisable((fingerList.isEmpty() && irisList.isEmpty()));
 
 			}
 		});
@@ -485,13 +480,8 @@ public class BiometricExceptionController extends BaseController implements Init
 	}
 
 	private void loadPage(String page) {
-		VBox mainBox = new VBox();
 		try {
-			HBox headerRoot = BaseController.load(getClass().getResource(RegistrationConstants.HEADER_PAGE));
-			mainBox.getChildren().add(headerRoot);
-			Parent createRoot = BaseController.load(getClass().getResource(page));
-			mainBox.getChildren().add(createRoot);
-			getScene(mainBox).setRoot(mainBox);
+			BaseController.load(getClass().getResource(RegistrationConstants.HOME_PAGE));
 		} catch (IOException exception) {
 			LOGGER.error("REGISTRATION - USERONBOARD CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
 					exception.getMessage() + ExceptionUtils.getStackTrace(exception));
@@ -504,7 +494,6 @@ public class BiometricExceptionController extends BaseController implements Init
 	 */
 	public void disableNextBtn() {
 		continueBtn.setDisable((fingerList.isEmpty() && irisList.isEmpty()));
-		backBtn.setDisable((fingerList.isEmpty() && irisList.isEmpty()));
 	}
 		
 	/**
