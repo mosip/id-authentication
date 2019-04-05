@@ -643,33 +643,47 @@
                       <RowConstraints percentHeight="100.0" vgrow="SOMETIMES" />
                     </rowConstraints>
                      <children>
-                        <Button fx:id="previousBtn" mnemonicParsing="false" onAction="#goToPreviousPage" styleClass="backButton" text="%back" GridPane.columnIndex="1">
-                           <graphic>
-                              <ImageView fitHeight="20.0" fitWidth="27.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@../images/arrowLeft.png" />
-                                 </image>
-                              </ImageView>
-                           </graphic>
-                           <GridPane.margin>
-                              <Insets left="10.0" />
-                           </GridPane.margin>
-                        </Button>
-                        <Button fx:id="nextBtn" mnemonicParsing="false" onAction="#goToNextPage" styleClass="contiuneButton" text="%continue" GridPane.columnIndex="3" GridPane.halignment="RIGHT">
-                           <graphic>
-                              <ImageView fitHeight="20.0" fitWidth="27.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@../images/arrowRight.png" />
-                                 </image>
-                              </ImageView>
-                           </graphic>
-                           <GridPane.margin>
-                              <Insets right="10.0" />
-                           </GridPane.margin>
-                        </Button>
+                        <GridPane fx:id="previousButton" GridPane.columnIndex="1">
+                          <columnConstraints>
+                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                          </columnConstraints>
+                          <rowConstraints>
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                          </rowConstraints>
+                           <children>
+                              <Button fx:id="previousBtn" minWidth="${previousButton.width}" mnemonicParsing="false" onAction="#goToPreviousPage" styleClass="backButton" text="%back">
+                                 <graphic>
+                                    <ImageView fitHeight="20.0" fitWidth="27.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../images/arrowLeft.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic>
+                              </Button>
+                           </children>
+                        </GridPane>
+                        <GridPane fx:id="continousButton" GridPane.columnIndex="3">
+                          <columnConstraints>
+                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                          </columnConstraints>
+                          <rowConstraints>
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                          </rowConstraints>
+                           <children>
+                              <Button fx:id="nextBtn" minWidth="${continousButton.width}" mnemonicParsing="false" onAction="#goToNextPage" styleClass="contiuneButton" text="%continue" GridPane.halignment="RIGHT">
+                                 <graphic>
+                                    <ImageView fitHeight="20.0" fitWidth="27.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../images/arrowRight.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic>
+                              </Button>
+                           </children>
+                        </GridPane>
                      </children>
                   </GridPane>
-                  <GridPane fx:id="registrationFooter" styleClass="registrationFooter">
+                  <GridPane fx:id="registrationFooter" styleClass="registrationFooter" visible="false">
                      <children>
                         <GridPane hgap="10.0" GridPane.columnIndex="1">
                            <children>
@@ -702,7 +716,15 @@
                                        <children>
                                           <GridPane fx:id="continueButtonPane" GridPane.columnIndex="2">
                                              <children>
-                                                <Button fx:id="continueBtn" mnemonicParsing="false" onAction="#goToNextPage" styleClass="contiuneButton" text="%continue" />
+	                                             <Button fx:id="continueBtn" minWidth="${continueButtonPane.width}" mnemonicParsing="false" onAction="#goToNextPage" styleClass="contiuneButton" text="%continue" GridPane.halignment="RIGHT">
+					                                 <graphic>
+					                                    <ImageView fitHeight="20.0" fitWidth="27.0" pickOnBounds="true" preserveRatio="true">
+					                                       <image>
+					                                          <Image url="@../images/arrowRight.png" />
+					                                       </image>
+					                                    </ImageView>
+					                                 </graphic>
+					                              </Button>
                                              </children>
                                              <columnConstraints>
                                                 <ColumnConstraints hgrow="SOMETIMES" percentWidth="100.0" />
