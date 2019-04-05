@@ -156,6 +156,8 @@ public class DocumentScanController extends BaseController {
 	private TextField scannedField;
 
 	private int totalDocument;
+	
+	private boolean documentsUploaded;
 
 	/*
 	 * (non-Javadoc)
@@ -175,7 +177,7 @@ public class DocumentScanController extends BaseController {
 			totalDocument = 0;
 			scannedField = new TextField();
 			scannedField.setVisible(false);
-			continueBtn.setDisable(true);
+			documentsUploaded = false;
 
 			switchedOnForBiometricException = new SimpleBooleanProperty(false);
 			toggleFunctionForBiometricException();
@@ -190,10 +192,14 @@ public class DocumentScanController extends BaseController {
 			}
 
 			scannedField.textProperty().addListener((absValue, oldValue, newValue) -> {
-				if (Integer.parseInt(newValue) <= 0)
+				if (Integer.parseInt(newValue) <= 0) {
 					continueBtn.setDisable(false);
-				else
+					documentsUploaded = true;
+				}
+				else {
 					continueBtn.setDisable(true);
+					documentsUploaded = false;
+				}
 			});
 
 			// populateDocumentCategories();
@@ -307,8 +313,8 @@ public class DocumentScanController extends BaseController {
 					comboBox.setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
 					documentLabel.setAlignment(Pos.CENTER_RIGHT);
 				}
-				if (docCategoryCode.equalsIgnoreCase(RegistrationConstants.POI_DOCUMENT)
-						|| docCategoryCode.equalsIgnoreCase(RegistrationConstants.POA_DOCUMENT)) {
+				if (!documentsUploaded && (docCategoryCode.equalsIgnoreCase(RegistrationConstants.POI_DOCUMENT)
+						|| docCategoryCode.equalsIgnoreCase(RegistrationConstants.POA_DOCUMENT))) {
 					totalDocument++;
 					scannedField.setText("" + (totalDocument));
 				}
@@ -356,7 +362,6 @@ public class DocumentScanController extends BaseController {
 			}
 
 		}
-		System.out.println(totalDocument);
 	}
 
 	/**
