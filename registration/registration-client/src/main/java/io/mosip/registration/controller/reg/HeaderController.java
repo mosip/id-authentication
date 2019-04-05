@@ -49,6 +49,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 
 /**
@@ -83,10 +84,10 @@ public class HeaderController extends BaseController {
 	private ImageView availableIcon;
 
 	@FXML
-	private Label online;
+	private GridPane online;
 
 	@FXML
-	private Label offline;
+	private GridPane offline;
 
 	@FXML
 	private Menu homeSelectionMenu;
