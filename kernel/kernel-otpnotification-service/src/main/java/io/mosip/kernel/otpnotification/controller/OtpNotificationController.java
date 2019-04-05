@@ -1,5 +1,8 @@
 package io.mosip.kernel.otpnotification.controller;
 
+import java.util.Enumeration;
+
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,7 +47,16 @@ public class OtpNotificationController {
 	@PostMapping(value = "/otp/send")
 	@ApiOperation(value = "Service to send OTP notification")
 	public ResponseWrapper<OtpNotificationResponseDto> sendOtpNotification(
-			@Valid @RequestBody RequestWrapper<OtpNotificationRequestDto> otpNotificationRequestDto) {
+			@Valid @RequestBody RequestWrapper<OtpNotificationRequestDto> otpNotificationRequestDto,
+			HttpServletRequest request) {
+		Enumeration<String> names = request.getHeaderNames();
+		System.out.println("\n\n ***** Inside Filter Check ***** \n\n");
+		System.out.println("URL : " + request.getRequestURL());
+		while (names.hasMoreElements()) {
+			String name = names.nextElement();
+			System.out.println(name + " : " + request.getHeader(name));
+		}
+		System.out.println("\n\n");
 		ResponseWrapper<OtpNotificationResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(otpNotificationService.sendOtpNotification(otpNotificationRequestDto.getRequest()));
 		return responseWrapper;
