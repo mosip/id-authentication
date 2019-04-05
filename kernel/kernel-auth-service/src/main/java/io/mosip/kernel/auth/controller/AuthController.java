@@ -76,11 +76,14 @@ public class AuthController {
 	/**
 	 * API to authenticate using userName and password
 	 * 
-	 * request is of type {@link LoginUser}
-	 * 
+	 * @param request
+	 *            request is of type {@link LoginUser}
+	 * @param res
+	 *            the response
 	 * @return ResponseEntity Cookie value with Auth token
+	 * @throws Exception
+	 *             throws exception
 	 */
-
 	@ResponseFilter
 	@PostMapping(value = "/authenticate/useridPwd")
 	public ResponseWrapper<AuthNResponse> authenticateUseridPwd(@RequestBody @Valid RequestWrapper<LoginUser> request,
@@ -117,9 +120,11 @@ public class AuthController {
 	/**
 	 * API to send OTP
 	 * 
-	 * otpUser is of type {@link OtpUser}
-	 * 
+	 * @param otpUserDto
+	 *            otpUser is of type {@link OtpUser}
 	 * @return ResponseEntity with OTP Sent message
+	 * @throws Exception
+	 *             the exception
 	 */
 	@ResponseFilter
 	@PostMapping(value = "/authenticate/sendotp")
@@ -140,9 +145,16 @@ public class AuthController {
 	/**
 	 * API to validate OTP with user Id
 	 * 
-	 * userOtp is of type {@link UserOtp}
+	 * @param userOtpDto
+	 *            userOtp is of type {@link UserOtp}
+	 * 
+	 * @param res
+	 *            the response
 	 * 
 	 * @return ResponseEntity with Cookie value with Auth token
+	 * 
+	 * @throws Exception
+	 *             the exception
 	 */
 	@ResponseFilter
 	@PostMapping(value = "/authenticate/useridOTP")
@@ -172,9 +184,14 @@ public class AuthController {
 	/**
 	 * API to authenticate using clientId and secretKey
 	 * 
-	 * clientSecretDto is of type {@link ClientSecretDto}
-	 * 
+	 * @param clientSecretDto
+	 *            clientSecretDto is of type {@link ClientSecretDto}
+	 * @param res
+	 *            the response
 	 * @return ResponseEntity with Cookie value with Auth token
+	 * 
+	 * @throws Exception
+	 *             the exception
 	 */
 	@ResponseFilter
 	@PostMapping(value = "/authenticate/clientidsecretkey")
@@ -199,8 +216,16 @@ public class AuthController {
 	/**
 	 * API to validate token
 	 * 
+	 * @param request
+	 *            the request
+	 * @param res
+	 *            the response
 	 * 
 	 * @return ResponseEntity with MosipUserDto
+	 * @throws AuthManagerException
+	 *             the AuthManager Exception
+	 * @throws Exception
+	 *             the exception
 	 */
 	@ResponseFilter
 	@PostMapping(value = "/authorize/validateToken")
@@ -235,8 +260,13 @@ public class AuthController {
 	/**
 	 * API to retry token when auth token expires
 	 * 
-	 * 
+	 * @param request
+	 *            the request
+	 * @param res
+	 *            the response
 	 * @return ResponseEntity with MosipUserDto
+	 * @throws Exception
+	 *             the exception
 	 */
 	@ResponseFilter
 	@PostMapping(value = "/authorize/refreshToken")
@@ -260,8 +290,13 @@ public class AuthController {
 	/**
 	 * API to invalidate token when both refresh and auth token expires
 	 * 
-	 * 
+	 * @param request
+	 *            the request
+	 * @param res
+	 *            the response
 	 * @return ResponseEntity with MosipUserDto
+	 * @throws Exception
+	 *             the exception
 	 */
 	@ResponseFilter
 	@PostMapping(value = "/authorize/invalidateToken")

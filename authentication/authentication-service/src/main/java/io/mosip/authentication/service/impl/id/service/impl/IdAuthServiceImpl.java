@@ -25,7 +25,6 @@ import io.mosip.authentication.core.exception.IdValidationFailedException;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.id.service.IdAuthService;
 import io.mosip.authentication.core.util.dto.AuditRequestDto;
-import io.mosip.authentication.core.util.dto.AuditResponseDto;
 import io.mosip.authentication.core.util.dto.RestRequestDTO;
 import io.mosip.authentication.service.entity.AutnTxn;
 import io.mosip.authentication.service.entity.VIDEntity;
@@ -35,6 +34,8 @@ import io.mosip.authentication.service.helper.RestHelper;
 import io.mosip.authentication.service.integration.IdRepoManager;
 import io.mosip.authentication.service.repository.AutnTxnRepository;
 import io.mosip.authentication.service.repository.VIDRepository;
+import io.mosip.kernel.core.http.RequestWrapper;
+import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
 
@@ -198,13 +199,13 @@ public class IdAuthServiceImpl implements IdAuthService<AutnTxn> {
 	 *                                           exception
 	 */
 	private void auditData() throws IdAuthenticationBusinessException {
-		AuditRequestDto auditRequest = auditFactory.buildRequest(AuditModules.OTP_AUTH,
+		RequestWrapper<AuditRequestDto> auditRequest = auditFactory.buildRequest(AuditModules.OTP_AUTH,
 				AuditEvents.AUTH_REQUEST_RESPONSE, "id", IdType.UIN, "desc");
 
 		RestRequestDTO restRequest;
 		try {
 			restRequest = restFactory.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditRequest,
-					AuditResponseDto.class);
+					ResponseWrapper.class);
 		} catch (IDDataValidationException e) {
 			logger.error(DEFAULT_SESSION_ID, this.getClass().getSimpleName(), e.getErrorCode(), e.getErrorText());
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_UIN, e);

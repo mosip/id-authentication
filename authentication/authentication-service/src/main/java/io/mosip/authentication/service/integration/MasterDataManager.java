@@ -27,8 +27,10 @@ import io.mosip.authentication.service.helper.RestHelper;
 import io.mosip.kernel.core.logger.spi.Logger;
 
 /**
+ * The Class MasterDataManager.
+ * 
  * @author Dinesh Karuppiah.T
- *
+ * @author Sanjay Murali
  */
 @Component
 public class MasterDataManager {
@@ -88,6 +90,7 @@ public class MasterDataManager {
 	 */
 	private static Logger logger = IdaLogger.getLogger(MasterDataManager.class);
 
+	@SuppressWarnings("unchecked")
 	private Map<String, Map<String, String>> fetchMasterData(RestServicesConstants type, Map<String, String> params,
 			String masterDataListName, String keyAttribute, String valueAttribute)
 			throws IdAuthenticationBusinessException {
@@ -96,9 +99,16 @@ public class MasterDataManager {
 			if (params != null && !params.isEmpty()) {
 				buildRequest.setPathVariables(params);
 			}
-			Map<String, List<Map<String, Object>>> response = restHelper.requestSync(buildRequest);
-			List<Map<String, Object>> masterDataList = response.get(masterDataListName);
-			Map<String, Map<String, String>> masterDataMap = new HashMap<String, Map<String, String>>();
+			Map<String, Object> response = restHelper.requestSync(buildRequest);
+			
+			Map<String, List<Map<String, Object>>> fetchResponse;
+			if (response.get("response") instanceof Map) {
+				fetchResponse =  (Map<String, List<Map<String, Object>>>) response.get("response");
+			} else {
+				fetchResponse = Collections.emptyMap();
+			}
+			List<Map<String, Object>> masterDataList = fetchResponse.get(masterDataListName);
+			Map<String, Map<String, String>> masterDataMap = new HashMap<>();
 			for (Map<String, Object> map : masterDataList) {
 				String langCode = String.valueOf(map.get(LANG_CODE));
 				String key = String.valueOf(map.get(keyAttribute));

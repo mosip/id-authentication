@@ -1,6 +1,5 @@
 package com.test.demo;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
 import java.io.File;
@@ -23,7 +22,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
-import io.mosip.authentication.demo.service.controller.FingerPrint;
 import io.mosip.authentication.demo.service.controller.IdRepo;
 import io.mosip.kernel.core.jsonvalidator.exception.FileIOException;
 import io.mosip.kernel.core.jsonvalidator.exception.JsonIOException;

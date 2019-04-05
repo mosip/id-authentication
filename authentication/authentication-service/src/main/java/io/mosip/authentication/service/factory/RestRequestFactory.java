@@ -22,7 +22,9 @@ import io.mosip.authentication.core.constant.RestServicesConstants;
 import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.util.dto.RestRequestDTO;
+import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.util.DateUtils;
 import lombok.NoArgsConstructor;
 
 /**
@@ -30,6 +32,7 @@ import lombok.NoArgsConstructor;
  * rest-services.properties
  * 
  * @author Manoj SP
+ * @param <T>
  *
  */
 @Component
@@ -251,5 +254,13 @@ public class RestRequestFactory {
 	    result = true;
 	}
 	return result;
+    }
+    
+    public static <T> RequestWrapper<T> createRequest(T t){
+    	RequestWrapper<T> request = new RequestWrapper<>();
+    	request.setRequest(t);
+    	request.setId("ida");
+    	request.setRequesttime(DateUtils.getUTCCurrentDateTime());
+    	return request;
     }
 }
