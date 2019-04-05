@@ -92,7 +92,7 @@ public class RetrivePreRegistration extends BaseTestCase implements ITest {
 	@DataProvider(name = "Retrive_PreRegistration")
 	public Object[][] readData(ITestContext context) throws JsonParseException, JsonMappingException, IOException, ParseException {
 		 String testParam = context.getCurrentXmlTest().getParameter("testType");
-		 switch ("smokeAndRegression") {
+		 switch (testParam) {
 		case "smoke":
 			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
 
@@ -120,13 +120,15 @@ public class RetrivePreRegistration extends BaseTestCase implements ITest {
 		JSONObject actualRequest = ResponseRequestMapper.mapRequest(testSuite, object);
 		Expectedresponse = ResponseRequestMapper.mapResponse(testSuite, object);
 		if (testCaseName.toLowerCase().contains("smoke")) {
-			Response createResponse = lib.CreatePreReg();
+			testSuite = "Create_PreRegistration/createPreRegistration_smoke";
+			JSONObject createPregRequest = lib.createRequest(testSuite);
+			Response createResponse = lib.CreatePreReg(createPregRequest);
 			String preID = createResponse.jsonPath().get("response[0].preRegistrationId").toString();
 			Response documentResponse = lib.documentUpload(createResponse);
 			Response avilibityResponse = lib.FetchCentre();
 			lib.BookAppointment(documentResponse, avilibityResponse, preID);
-			lib.retrivePreRegistrationData(preID);
-			status = true;
+			Response retrivePreRegistrationDataresponse = lib.retrivePreRegistrationData(preID);
+			status = lib.validateRetrivePreRegistrationData(retrivePreRegistrationDataresponse, preID, createResponse);
 		} else {
 			try {
 				Actualresponse = applicationLibrary.getRequestDataSync(preReg_URI, GetHeader.getHeader(actualRequest));

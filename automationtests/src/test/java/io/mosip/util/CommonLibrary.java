@@ -372,6 +372,16 @@ public class CommonLibrary extends BaseTestCase{
           logger.info("REST-ASSURED: The response Time is: " + getResponse.time());
           return getResponse;
     } // end GET_REQUEST
+public Response putRequestWithPathParameter(String url, HashMap<String, String> path_value,JSONObject body, String contentHeader, String acceptHeader) {
+		
+		Cookie.Builder builder = new Cookie.Builder("Authorization",authToken);
+		Response putResponse = given().cookie(builder.build()).relaxedHTTPSValidation().pathParameters(path_value).body(body).contentType(contentHeader)
+				.accept(acceptHeader).log().all().when().put(url).then().log().all().extract().response();
+		// log then response
+		logger.info("REST-ASSURED: The response from the request is: " + putResponse.asString());
+		logger.info("REST-ASSURED: The response Time is: " + putResponse.time());
+		return putResponse;
+	}
     
     /**
      * REST ASSURED GET request method

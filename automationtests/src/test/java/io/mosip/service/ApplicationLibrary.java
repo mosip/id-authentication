@@ -44,6 +44,10 @@ public class ApplicationLibrary extends BaseTestCase {
 		return commonLibrary.put_Request(ApplnURI + Resource_URI, body, MediaType.APPLICATION_JSON,
 				MediaType.APPLICATION_JSON);
 	}
+	public Response putRequestWithParameter( String Resource_URI,HashMap<String, String> path_value,JSONObject body) {
+		return commonLibrary.putRequestWithPathParameter(ApplnURI + Resource_URI, path_value,body, MediaType.APPLICATION_JSON,
+				MediaType.APPLICATION_JSON);
+	}
 
 	public Response getRequestParam2(String Resource_URI, String id, String keyId, String timestamp,
 			String Keytimestamp) {

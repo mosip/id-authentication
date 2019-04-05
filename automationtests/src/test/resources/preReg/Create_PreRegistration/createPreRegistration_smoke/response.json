@@ -6,18 +6,14 @@
     "response": [
         {
             "preRegistrationId": "47539189405873",
-            "createdBy": "9876453738",
-            "createdDateTime": "2019-03-25T08:10:29.815Z",
-            "updatedBy": null,
-            "updatedDateTime": "2019-03-25T08:10:29.815Z",
             "statusCode": "Pending_Appointment",
-            "langCode": "ENG",
+            "langCode": "fra",
             "demographicDetails": {
                 "identity": {
                     "CNIENumber": "6789545678912",
                     "gender": [
                         {
-                            "language": "eng",
+                            "language": "fra",
                             "value": "male"
                         },
                         {
@@ -27,7 +23,7 @@
                     ],
                     "city": [
                         {
-                            "language": "eng",
+                            "language": "fra",
                             "value": "Bangalore"
                         },
                         {
@@ -38,7 +34,7 @@
                     "postalCode": "ASG21",
                     "localAdministrativeAuthority": [
                         {
-                            "language": "eng",
+                            "language": "fra",
                             "value": "Bangalore"
                         },
                         {
@@ -48,19 +44,19 @@
                     ],
                     "fullName": [
                         {
-                            "language": "eng",
-                            "value": "Sanober"
+                            "language": "fra",
+                            "value": "Ashish Rastogi"
                         },
                         {
                             "language": "ara",
-                            "value": "Sanober"
+                            "value": "Ashish Rastogi"
                         }
                     ],
                     "dateOfBirth": "1995/03/24",
                     "IDSchemaVersion": 1.0,
                     "province": [
                         {
-                            "language": "eng",
+                            "language": "fra",
                             "value": "Bangalore"
                         },
                         {
@@ -71,7 +67,7 @@
                     "phone": "9480548558",
                     "addressLine1": [
                         {
-                            "language": "eng",
+                            "language": "fra",
                             "value": "c-63 South Extension Part-2 New Delhi"
                         },
                         {
@@ -81,7 +77,7 @@
                     ],
                     "addressLine2": [
                         {
-                            "language": "eng",
+                            "language": "fra",
                             "value": "Jammu"
                         },
                         {
@@ -101,7 +97,7 @@
                     ],
                     "addressLine3": [
                         {
-                            "language": "eng",
+                            "language": "fra",
                             "value": "Kashmir"
                         },
                         {
@@ -111,7 +107,7 @@
                     ],
                     "region": [
                         {
-                            "language": "eng",
+                            "language": "fra",
                             "value": "Bangalore"
                         },
                         {
@@ -119,7 +115,7 @@
                             "value": "BLR"
                         }
                     ],
-                    "email": "sanober@gmail.com"
+                    "email": "Ashish.Rastogi@gmail.com"
                 }
             }
         }

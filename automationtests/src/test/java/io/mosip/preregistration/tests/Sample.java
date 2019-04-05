@@ -4,7 +4,12 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import javax.swing.plaf.ActionMapUIResource;
+
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
@@ -12,40 +17,37 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
 import org.apache.log4j.Logger;
-//import org.apache.maven.plugins.assembly.io.AssemblyReadException;
+import org.apache.maven.plugins.assembly.io.AssemblyReadException;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.testng.Assert;
 import org.testng.ITest;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
-import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.gson.JsonObject;
 
-import io.mosip.dbaccess.prereg_dbread;
-import io.mosip.dbentity.PreRegEntity;
 import io.mosip.service.ApplicationLibrary;
+import io.mosip.service.AssertResponses;
 import io.mosip.service.BaseTestCase;
-import io.mosip.util.CommonLibrary;
 import io.mosip.util.PreRegistrationLibrary;
 import io.restassured.response.Response;
 
 /**
- * @author Vidya Shankar N S
- *
+ * ByteToZip Class Covert Byte Array to zip and unzip and store in folder
+ * 
+ * @author Ashish Rastogi
+ * @since 1.0.0
  */
 
 public class Sample extends BaseTestCase {
 	Logger logger = Logger.getLogger(Sample.class);
 	PreRegistrationLibrary lib = new PreRegistrationLibrary();
 	String testSuite;
-	private static String preReg_CreateApplnURI;
-	private static String preReg_ReverseDataSyncURI;
+
 	String expectedMessageDeleteDoc = "DOCUMENT_DELETE_SUCCESSFUL";
 	String docMissingMessage = "DOCUMENT_IS_MISSING";
 	String preRegID = null;
@@ -54,34 +56,28 @@ public class Sample extends BaseTestCase {
 	String preID = null;
 	static String folder = "preReg";
 	Rebook rb = new Rebook();
-	private static CommonLibrary commonLibrary = new CommonLibrary();
-	ApplicationLibrary applnLib = new ApplicationLibrary();
 
-	@BeforeClass
-	public void intializ() {
-		lib.PreRegistrationResourceIntialize();
+	@BeforeTest
+	public void readPropertiesFile() {
+		initialize();
 	}
 
-
+	/**
+	 * Data Providers to read the input json files from the folders
+	 * @param context
+	 * @return input request file
+	 * @throws JsonParseException
+	 * @throws JsonMappingException
+	 * @throws IOException
+	 * @throws ParseException
+	 */
 	@Test(groups = { "IntegrationScenarios" })
-	public void uploadDocumentForDiscardedApplication() {
+	public void dataOfDiscardedApplication() throws FileNotFoundException, IOException, ParseException {
 		testSuite = "Create_PreRegistration/createPreRegistration_smoke";
-		JSONObject createPregRequest = lib.createRequest(testSuite);
-		List<String> prid=new ArrayList<String>();
-		for(int i=1;i<=5;i++)
-		{
-			Response createPregResponse = lib.CreatePreReg(createPregRequest);
-			String PreID = createPregResponse.jsonPath().get("response[0].preRegistrationId").toString();
-			Response documentUploadResponse = lib.documentUpload(createPregResponse);
-			Response fetchCentreResponse = lib.FetchCentre();
-			lib.BookAppointment(documentUploadResponse, fetchCentreResponse, PreID);
-			prid.add(PreID);
-		}
-		
-		System.out.println("====================="+prid.toString());
-			
+		JSONObject createRequest = lib.createRequest(testSuite);
+		System.out.println(createRequest);
 		
 		
-
 	}
+
 }

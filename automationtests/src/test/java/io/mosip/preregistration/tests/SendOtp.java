@@ -55,7 +55,7 @@ public class SendOtp extends BaseTestCase implements ITest {
 		String otp = otpData.get(0).toString();
 		lib.compareValues(response.jsonPath().get("response.message").toString(), "OTP sent successfully to specified channel");
 	}
-	@Test
+	/*@Test
 	public void sendOtpToMobile() {
 		testSuite = "SendOtp/SendOtpMobile";
 		JSONObject sendOtpRequest = lib.getOtpRequest(testSuite);
@@ -123,7 +123,7 @@ public class SendOtp extends BaseTestCase implements ITest {
 		Response generateOTP  = lib.generateOTP(sendOtpRequest);
 		String message = generateOTP.jsonPath().get("response.message").toString();
 		lib.compareValues(message, "USER_BLOCKED");
-	}
+	}*/
 	@Override
 	public String getTestName() {
 		return this.testCaseName;

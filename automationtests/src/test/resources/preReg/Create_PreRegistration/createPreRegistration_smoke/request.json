@@ -3,18 +3,13 @@
   "version": "1.0",
   "requesttime": "2019-01-22T07:22:57.086Z",
   "request": {
-    "preRegistrationId": "",
-    "createdBy": "9876453738",
-    "updatedBy": "",
-    "langCode": "ENG",
-    "createdDateTime": "2019-01-08T17:05:48.953Z",
-    "updatedDateTime": "",
+    "langCode": "fra",
     "demographicDetails": {
       "identity": {
         "dateOfBirth": "1995/03/24",
         "gender": [
           {
-            "language": "eng",
+            "language": "fra",
             "value": "male"
           },
           {
@@ -24,7 +19,7 @@
         ],
         "addressLine1": [
           {
-            "language": "eng",
+            "language": "fra",
             "value": "c-63 South Extension Part-2 New Delhi"
           },
           {
@@ -34,7 +29,7 @@
         ],
         "addressLine2": [
           {
-            "language": "eng",
+            "language": "fra",
             "value": "Jammu"
           },
           {
@@ -44,7 +39,7 @@
         ],
         "addressLine3": [
           {
-            "language": "eng",
+            "language": "fra",
             "value": "Kashmir"
           },
           {
@@ -54,7 +49,7 @@
         ],
         "region": [
           {
-            "language": "eng",
+            "language": "fra",
             "value": "Bangalore"
           },
           {
@@ -64,7 +59,7 @@
         ],
         "province": [
           {
-            "language": "eng",
+            "language": "fra",
             "value": "Bangalore"
           },
           {
@@ -74,7 +69,7 @@
         ],
         "city": [
           {
-            "language": "eng",
+            "language": "fra",
             "value": "Bangalore"
           },
           {
@@ -84,7 +79,7 @@
         ],
         "localAdministrativeAuthority": [
           {
-            "language": "eng",
+            "language": "fra",
             "value": "Bangalore"
           },
           {
@@ -105,18 +100,18 @@
         "IDSchemaVersion": 1.0,
         "fullName": [
           {
-            "language": "eng",
-            "value": "Sanober"
+            "language": "fra",
+            "value": "Ashish Rastogi"
           },
           {
             "language": "ara",
-            "value": "Sanober"
+            "value": "Ashish Rastogi"
           }
         ],
         "phone": "9480548558",
         "CNIENumber": "6789545678912",
         "postalCode": "ASG21",
-        "email": "sanober@gmail.com"
+        "email": "Ashish.Rastogi@gmail.com"
       }
     } 
   }
