@@ -207,7 +207,7 @@ public class PacketHandlerController extends BaseController implements Initializ
 		if (!(String.valueOf(ApplicationContext.map().get(RegistrationConstants.LOST_UIN_CONFIG_FLAG)))
 				.equalsIgnoreCase(RegistrationConstants.ENABLE)) {
 			lostUINPane.setVisible(false);
-			vHolder.setManaged(false);
+			//vHolder.setManaged(false);
 		}
 
 	}
