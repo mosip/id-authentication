@@ -501,8 +501,8 @@ public class FXUtils {
 		if (!comboBoxValues.isEmpty()) {
 			IntPredicate findIndexOfSelectedItem = null;
 			if (comboBoxValues.get(0) instanceof LocationDto) {
-				findIndexOfSelectedItem = index -> ((LocationDto) comboBoxValues.get(index)).getName()
-						.equals(selectedValue);
+				findIndexOfSelectedItem = index -> ((LocationDto) comboBoxValues.get(index)).getName().equals(
+						selectedValue) || ((LocationDto) comboBoxValues.get(index)).getCode().equals(selectedValue);
 			} else if (comboBoxValues.get(0) instanceof GenderDto) {
 				findIndexOfSelectedItem = index -> ((GenderDto) comboBoxValues.get(index)).getGenderName()
 						.equals(selectedValue);

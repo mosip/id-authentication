@@ -45,6 +45,7 @@ import io.mosip.registration.device.iris.IrisFacade;
 import io.mosip.registration.dto.AuthenticationValidatorDTO;
 import io.mosip.registration.dto.LoginUserDTO;
 import io.mosip.registration.dto.ResponseDTO;
+import io.mosip.registration.dto.SuccessResponseDTO;
 import io.mosip.registration.dto.biometric.FaceDetailsDTO;
 import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
 import io.mosip.registration.dto.biometric.IrisDetailsDTO;
@@ -1086,24 +1087,30 @@ public class LoginController extends BaseController implements Initializable {
 						LOGGER.info("REGISTRATION - HANDLE_PACKET_UPLOAD_START - PACKET_UPLOAD_CONTROLLER",
 								APPLICATION_NAME, APPLICATION_ID, "Handling all the packet upload activities");
 
-						/*
-						 * ResponseDTO responseDTO = getSyncConfigData(); if (responseDTO != null) {
-						 * SuccessResponseDTO successResponseDTO = responseDTO.getSuccessResponseDTO();
-						 * if (successResponseDTO != null && successResponseDTO.getOtherAttributes() !=
-						 * null) { return RegistrationConstants.RESTART; } else { ResponseDTO
-						 * masterResponseDTO = masterSyncService.getMasterSync(
-						 * RegistrationConstants.OPT_TO_REG_MDS_J00001,
-						 * RegistrationConstants.JOB_TRIGGER_POINT_USER);
-						 * 
-						 * ResponseDTO userResponseDTO = userDetailService
-						 * .save(RegistrationConstants.JOB_TRIGGER_POINT_USER);
-						 * 
-						 * if ((null != masterResponseDTO && masterResponseDTO.getErrorResponseDTOs() !=
-						 * null) || userResponseDTO.getErrorResponseDTOs() != null) { return
-						 * RegistrationConstants.FAILURE; }
-						 * 
-						 * } } else { return RegistrationConstants.FAILURE; }
-						 */
+						
+						ResponseDTO responseDTO = getSyncConfigData();
+						if (responseDTO != null) {
+							SuccessResponseDTO successResponseDTO = responseDTO.getSuccessResponseDTO();
+							if (successResponseDTO != null && successResponseDTO.getOtherAttributes() != null) {
+								return RegistrationConstants.RESTART;
+							} else {
+								ResponseDTO masterResponseDTO = masterSyncService.getMasterSync(
+										RegistrationConstants.OPT_TO_REG_MDS_J00001,
+										RegistrationConstants.JOB_TRIGGER_POINT_USER);
+
+								ResponseDTO userResponseDTO = userDetailService
+										.save(RegistrationConstants.JOB_TRIGGER_POINT_USER);
+
+								if ((null != masterResponseDTO && masterResponseDTO.getErrorResponseDTOs() != null)
+										|| userResponseDTO.getErrorResponseDTOs() != null) {
+									return RegistrationConstants.FAILURE;
+								}
+
+							}
+						} else {
+							return RegistrationConstants.FAILURE;
+						}
+						 
 
 						return RegistrationConstants.SUCCESS;
 					}
