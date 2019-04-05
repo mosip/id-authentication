@@ -35,11 +35,11 @@ public class CorsFilter implements Filter {
 			response.setHeader("Access-Control-Allow-Origin", origin);
 		}
 		response.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE, PUT, PATCH");
-	   response.setHeader("Access-Control-Allow-Headers",
+		response.setHeader("Access-Control-Allow-Headers",
 				"Date, Content-Type, Accept, X-Requested-With, Authorization, From, X-Auth-Token, Request-Id");
 		response.setHeader("Access-Control-Expose-Headers", "Set-Cookie");
 		response.setHeader("Access-Control-Allow-Credentials", "true");
-		
+
 		if (!"OPTIONS".equalsIgnoreCase(request.getMethod())) {
 			chain.doFilter(req, res);
 		}
