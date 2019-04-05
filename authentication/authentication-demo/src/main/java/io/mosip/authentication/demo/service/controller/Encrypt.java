@@ -48,6 +48,7 @@ import io.mosip.authentication.demo.service.dto.EncryptionRequestDto;
 import io.mosip.authentication.demo.service.dto.EncryptionResponseDto;
 import io.mosip.authentication.demo.service.dto.PublicKeyResponseDTO;
 import io.mosip.authentication.demo.service.helper.CryptoUtility;
+import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.core.util.HMACUtils;
@@ -195,9 +196,9 @@ public class Encrypt {
 		UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(publicKeyURL)
 				.queryParam("timeStamp", DateUtils.getUTCCurrentDateTimeString())
 				.queryParam("referenceId", publicKeyId);
-		ResponseEntity<PublicKeyResponseDTO> response = restTemplate.exchange(builder.build(uriParams), HttpMethod.GET,
-				null, PublicKeyResponseDTO.class);
-		return (String) response.getBody().getPublicKey();
+		ResponseEntity<Map> response = restTemplate.exchange(builder.build(uriParams), HttpMethod.GET,
+				null, Map.class);
+		return (String) ((Map<String, Object>) response.getBody().get("response")).get("publicKey");
 	}
 
 	/**
@@ -207,10 +208,10 @@ public class Encrypt {
 	 *            the req
 	 * @return the headers
 	 */
-	private HttpEntity getHeaders(CryptomanagerRequestDto req) {
+	private HttpEntity<CryptomanagerRequestDto> getHeaders(CryptomanagerRequestDto req) {
 		HttpHeaders headers = new HttpHeaders();
 		headers.set("Accept", MediaType.APPLICATION_JSON_VALUE);
-		return new HttpEntity(req, headers);
+		return new HttpEntity<CryptomanagerRequestDto>(req, headers);
 	}
 
 	/**

@@ -519,7 +519,7 @@ public class BaseIDAFilterTest {
 	public void sendErrorResponseTest() throws NoSuchMethodException, SecurityException, IllegalAccessException,
 			IllegalArgumentException, InvocationTargetException, IOException {
 		String req = "{\"id\":\"mosip.identity.auth\",\"individualId\":\"2410478395\",\"individualIdType\":\"D\",\"request\":\"TAYl52pSVnojUJaNSfZ7f4ItGcC71r_qj9ZxCZQfSO8ELfIohJSFZB_wlwVqkZgK9A1AIBtG-xni5f5WJrOXth_tRGZJTIRbM9Nxcs_tb9yfspTloMstYnzsQXdwyqKGraJHjpfDn6NIhpZpZ5QJ1g\",\"requestTime\":\"2019-03-13T10:01:57.086+05:30\",\"requestedAuth\":{\"bio\":false,\"demo\":true,\"otp\":false,\"pin\":false},\"requestSessionKey\":\"cCsi1_ImvFMkLKfAhq13DYDOx6Ibri78JJnp3ktd4ZdJRTuIdWKv31wb3Ys7WHBfRzyBVwmBe5ybb-zIgdTOCKIZrMc1xKY9TORdKFJHLWwvDHP94UZVa-TIHDJPKxWNzk0sVJeOpPAbe6tmTbm8TsLs7WPBxCxCBhuBoArwSAIZ9Sll9qoNR3-YwgBIMAsDMXDiP3kSI_89YOyZxSb3ZPCGaU8HWkgv1FUMvD67u2lv75sWJ_v55jQJYUOng94_6P8iElnLvUeR8Y9AEJk3txmj47FWos4Nd90vBXW79qvpON5pIuTjiyP_rMZZAhH1jPkAhYXJLjwpAQUrvGRQDA\",\"transactionID\":\"1234567890\",\"version\":\"0.8\"}";
-		String responsewrapper = "{\"response\":{\"status\":\"Y\",\"staticToken\":null},\"errors\":[],\"responseTime\":\"2019-03-14T16:52:02.973+05:30\",\"transactionID\":\"1234567890\",\"version\":null,\"id\":null}";
+		String responsewrapper = "{\"status\":\"Y\",\"errors\":[],\"responseTime\":\"2019-03-14T16:52:02.973+05:30\",\"transactionID\":\"1234567890\",\"version\":null,\"staticToken\":null,\"id\":null}";
 		ByteArrayInputStream bais = new ByteArrayInputStream(req.getBytes());
 		ServletInputStream servletInputStream = new ServletInputStream() {
 
@@ -650,7 +650,7 @@ public class BaseIDAFilterTest {
 	public void testDoFilterInvalid() throws NoSuchMethodException, SecurityException, IllegalAccessException,
 			IllegalArgumentException, InvocationTargetException, IOException {
 		String req = "{\"id\":\"mosip.identity.auth\",\"individualId\":\"2410478395\",\"individualIdType\":\"D\",\"request\":\"TAYl52pSVnojUJaNSfZ7f4ItGcC71r_qj9ZxCZQfSO8ELfIohJSFZB_wlwVqkZgK9A1AIBtG-xni5f5WJrOXth_tRGZJTIRbM9Nxcs_tb9yfspTloMstYnzsQXdwyqKGraJHjpfDn6NIhpZpZ5QJ1g\",\"requestTime\":\"2019-03-13T10:01:57.086+05:30\",\"requestedAuth\":{\"bio\":false,\"demo\":true,\"otp\":false,\"pin\":false},\"requestSessionKey\":\"cCsi1_ImvFMkLKfAhq13DYDOx6Ibri78JJnp3ktd4ZdJRTuIdWKv31wb3Ys7WHBfRzyBVwmBe5ybb-zIgdTOCKIZrMc1xKY9TORdKFJHLWwvDHP94UZVa-TIHDJPKxWNzk0sVJeOpPAbe6tmTbm8TsLs7WPBxCxCBhuBoArwSAIZ9Sll9qoNR3-YwgBIMAsDMXDiP3kSI_89YOyZxSb3ZPCGaU8HWkgv1FUMvD67u2lv75sWJ_v55jQJYUOng94_6P8iElnLvUeR8Y9AEJk3txmj47FWos4Nd90vBXW79qvpON5pIuTjiyP_rMZZAhH1jPkAhYXJLjwpAQUrvGRQDA\",\"transactionID\":\"1234567890\",\"version\":\"0.8\"}";
-		String responsewrapper = "{\"response\":{\"status\":\"Y\",\"staticToken\":null},\"errors\":[],\"responseTime\":\"2019-03-14T16:52:02.973+05:30\",\"transactionID\":\"1234567890\",\"version\":null,\"id\":null}";
+		String responsewrapper = "{\"status\":\"Y\",\"errors\":[],\"responseTime\":\"2019-03-14T16:52:02.973+05:30\",\"transactionID\":\"1234567890\",\"version\":null,\"staticToken\":null,\"id\":null}";
 		ByteArrayInputStream bais = new ByteArrayInputStream(req.getBytes());
 		ServletInputStream servletInputStream = new ServletInputStream() {
 
