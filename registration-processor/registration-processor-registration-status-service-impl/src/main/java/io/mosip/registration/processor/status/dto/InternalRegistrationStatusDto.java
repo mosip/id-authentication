@@ -59,6 +59,21 @@ public class InternalRegistrationStatusDto implements Serializable {
 	/** The retry count. */
 	private String applicantType;
 
+	/** The latest transaction type code. */
+	private String latestTransactionTypeCode;
+
+	/** The latest transaction status code. */
+	private String latestTransactionStatusCode;
+
+	/** The latest transaction times. */
+	private LocalDateTime latestTransactionTimes;
+
+	/** The registration stage name. */
+	private String registrationStageName;
+
+	/** The reg process retry count. */
+	private Integer reProcessRetryCount;
+
 	/**
 	 * Instantiates a new registration status dto.
 	 */
@@ -368,6 +383,97 @@ public class InternalRegistrationStatusDto implements Serializable {
 	 */
 	public void setApplicantType(String applicantType) {
 		this.applicantType = applicantType;
+	}
+
+	/**
+	 * Gets the latest transaction type code.
+	 *
+	 * @return the latest transaction type code
+	 */
+	public String getLatestTransactionTypeCode() {
+		return latestTransactionTypeCode;
+	}
+
+	/**
+	 * Sets the latest transaction type code.
+	 *
+	 * @param string the new latest transaction type code
+	 */
+	public void setLatestTransactionTypeCode(String string) {
+		this.latestTransactionTypeCode = string;
+	}
+
+	/**
+	 * Gets the latest transaction status code.
+	 *
+	 * @return the latest transaction status code
+	 */
+	public String getLatestTransactionStatusCode() {
+		return latestTransactionStatusCode;
+	}
+
+	/**
+	 * Sets the latest transaction status code.
+	 *
+	 * @param string the new latest transaction status code
+	 */
+	public void setLatestTransactionStatusCode(String latestTransactionStatusCode) {
+		this.latestTransactionStatusCode = latestTransactionStatusCode;
+	}
+
+	/**
+	 * Gets the latest transaction times.
+	 *
+	 * @return the latest transaction times
+	 */
+	public LocalDateTime getLatestTransactionTimes() {
+		return latestTransactionTimes;
+	}
+
+	/**
+	 * Sets the latest transaction times.
+	 *
+	 * @param latestTransactionTimes the new latest transaction times
+	 */
+	public void setLatestTransactionTimes(LocalDateTime latestTransactionTimes) {
+		this.latestTransactionTimes = latestTransactionTimes;
+	}
+
+	/**
+	 * Gets the registration stage name.
+	 *
+	 * @return the registration stage name
+	 */
+	public String getRegistrationStageName() {
+		return registrationStageName;
+	}
+
+	/**
+	 * Sets the registration stage name.
+	 *
+	 * @param registrationStageName the new registration stage name
+	 */
+	public void setRegistrationStageName(String registrationStageName) {
+		this.registrationStageName = registrationStageName;
+	}
+
+	/**
+	 * Gets the re process retry count.
+	 *
+	 * @return the re process retry count
+	 */
+	public Integer getReProcessRetryCount() {
+		return reProcessRetryCount;
+	}
+
+	/**
+	 * Sets the re process retry count.
+	 *
+	 * @param reProcessRetryCount
+	 *            the new re process retry count
+	 */
+	public void setReProcessRetryCount(Integer reProcessRetryCount) {
+		this.reProcessRetryCount = reProcessRetryCount;
 	}
 
 }
