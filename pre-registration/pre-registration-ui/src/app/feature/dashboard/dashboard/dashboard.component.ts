@@ -371,6 +371,8 @@ export class DashBoardComponent implements OnInit {
   }
 
   setUserFiles(response) {
+    console.log('user files', response);
+
     this.userFile = response[appConstants.RESPONSE];
     this.userFiles.push(this.userFile);
   }
