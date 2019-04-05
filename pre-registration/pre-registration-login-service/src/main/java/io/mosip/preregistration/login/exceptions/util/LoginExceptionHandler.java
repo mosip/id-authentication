@@ -95,7 +95,7 @@ public class LoginExceptionHandler {
 	@ExceptionHandler(LoginServiceException.class)
 	public ResponseEntity<MainResponseDTO<?>> authServiceException(final LoginServiceException e,WebRequest request){
 		List<ExceptionJSONInfoDTO> errorList = new ArrayList<>();
-		e.getValidationErrorList().stream().forEach(serviceError->errorList.add(new ExceptionJSONInfoDTO(serviceError.getErrorCode(),serviceError.getErrorMessage())));
+		e.getValidationErrorList().stream().forEach(serviceError->errorList.add(new ExceptionJSONInfoDTO(serviceError.getErrorCode(),serviceError.getMessage())));
 		MainResponseDTO<?> errorRes = new MainResponseDTO<>();
 		errorRes.setId(e.getMainResposneDTO().getId());
 		errorRes.setVersion(e.getMainResposneDTO().getVersion());
