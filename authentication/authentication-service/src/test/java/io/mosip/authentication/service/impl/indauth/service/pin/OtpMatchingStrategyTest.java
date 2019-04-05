@@ -99,7 +99,7 @@ public class OtpMatchingStrategyTest {
 		assertEquals(0, value);
 	}
 
-	@Test(expected = IdAuthenticationBusinessException.class)
+	@Test
 	public void TestInValidreqInfo() throws IdAuthenticationBusinessException {
 		MatchFunction matchFunction = OtpMatchingStrategy.EXACT.getMatchFunction();
 		Map<String, Object> matchProperties = new HashMap<>();
@@ -108,7 +108,7 @@ public class OtpMatchingStrategyTest {
 		assertEquals(0, value);
 	}
 
-	@Test(expected = IdAuthenticationBusinessException.class)
+	@Test
 	public void TestInValidEntityInfo() throws IdAuthenticationBusinessException {
 		MatchFunction matchFunction = OtpMatchingStrategy.EXACT.getMatchFunction();
 		Map<String, Object> matchProperties = new HashMap<>();

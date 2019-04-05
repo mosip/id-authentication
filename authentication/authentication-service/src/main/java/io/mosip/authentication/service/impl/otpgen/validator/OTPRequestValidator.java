@@ -5,7 +5,6 @@ import java.time.Instant;
 import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Component;
@@ -93,10 +92,10 @@ public class OTPRequestValidator extends IdAuthValidator {
 	}
 
 	private void validateOtpChannel(List<String> otpChannel, Errors errors) {
-		if (!(otpChannel == null || otpChannel.isEmpty())) {
+		if (otpChannel != null && !otpChannel.isEmpty()) {
 			String channels = otpChannel.stream()
-				.filter(channel -> !NotificationType.getNotificationTypeForChannel(channel).isPresent())
-				.collect(Collectors.joining(","));
+					.filter(channel -> !NotificationType.getNotificationTypeForChannel(channel).isPresent())
+					.collect(Collectors.joining(","));
 			if (!channels.isEmpty()) {
 				errors.reject(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
 						String.format(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(),

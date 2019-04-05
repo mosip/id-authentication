@@ -24,7 +24,7 @@ public enum OtpMatchingStrategy implements TextMatchingStrategy {
 			if (object instanceof ValidateOtpFunction) {
 				ValidateOtpFunction func = (ValidateOtpFunction) object;
 				boolean otpValid = func.validateOtp((String) reqInfo, (String) entityInfo);
-				if(!otpValid) {
+				if (!otpValid) {
 					throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_OTP);
 				} else {
 					return 100;
@@ -37,8 +37,7 @@ public enum OtpMatchingStrategy implements TextMatchingStrategy {
 								PinAuthType.OTP.getType()));
 			}
 		} else {
-			logError(IdAuthenticationErrorConstants.INVALID_OTP);
-			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_OTP);
+			return 0;
 		}
 	});
 
