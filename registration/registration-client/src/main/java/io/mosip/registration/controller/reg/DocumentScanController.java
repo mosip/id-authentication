@@ -996,5 +996,14 @@ public class DocumentScanController extends BaseController {
 		}
 
 	}
+	
+	public List<BufferedImage> getScannedPages() {
+		return scannedPages;
+	}
+
+	public void setScannedPages(List<BufferedImage> scannedPages) {
+		this.scannedPages = scannedPages;
+	}
+	
 
 }
