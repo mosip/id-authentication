@@ -184,7 +184,7 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 		mosipLogger.debug(DEFAULT_SESSION_ID, "Building exception response", "Entered buildExceptionResponse",
 				PREFIX_HANDLING_EXCEPTION + ex.getClass().toString());
 		AuthResponseDTO authResp = new AuthResponseDTO();
-		ResponseDTO res=new ResponseDTO();
+		ResponseDTO res = new ResponseDTO();
 		res.setAuthStatus(Boolean.FALSE);
 		authResp.setResponse(res);
 		if (ex instanceof IdAuthenticationBaseException) {
@@ -192,21 +192,25 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 			Locale locale = LocaleContextHolder.getLocale();
 			List<String> errorCodes = ((BaseCheckedException) ex).getCodes();
 			List<String> errorMessages = ((BaseCheckedException) ex).getErrorTexts();
-			
+
 			Collections.reverse(errorCodes);
 			try {
 				if (ex instanceof IDDataValidationException) {
 					IDDataValidationException validationException = (IDDataValidationException) ex;
 					List<Object[]> args = validationException.getArgs();
+					List<String> actionArgs = validationException.getActionargs();
 					List<AuthError> errors = IntStream.range(0, errorCodes.size())
-							.mapToObj(i -> createAuthError(validationException, errorCodes.get(i),
-									errorMessages.get(i)))
+							.mapToObj(
+									i -> createAuthError(validationException, errorCodes.get(i),
+											args != null ? String.format(errorMessages.get(i), args)
+													: errorMessages.get(i),
+											actionArgs.get(i)))
 							.distinct().collect(Collectors.toList());
 					authResp.setErrors(errors);
 				} else {
 					List<AuthError> errors = IntStream.range(0, errorCodes.size())
-							.mapToObj(i -> createAuthError(baseException, errorCodes.get(i),
-									errorMessages.get(i)))
+							.mapToObj(
+									i -> createAuthError(baseException, errorCodes.get(i), errorMessages.get(i), null))
 							.distinct().collect(Collectors.toList());
 					authResp.setErrors(errors);
 				}
@@ -215,7 +219,7 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 						"\n" + ExceptionUtils.getStackTrace(e));
 				authResp.setErrors(Arrays.<AuthError>asList(
 						createAuthError(baseException, IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(),
-								IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorMessage())));
+								IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorMessage(), null)));
 			}
 		}
 
@@ -233,13 +237,17 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 	 * @return the auth error
 	 */
 	private AuthError createAuthError(IdAuthenticationBaseException authException, String errorCode,
-			String errorMessage) {
-		String actionMessage = authException.getActionMessage();
+			String errorMessage, String actionMessage) {
+		String actionMessageEx = authException.getActionMessage();
 		AuthError err;
-		if (actionMessage == null || actionMessage.isEmpty()) {
+		if(actionMessageEx == null ) {
+			actionMessageEx = actionMessage;
+		}
+		
+		if (actionMessageEx == null || actionMessageEx.isEmpty()) {
 			err = new AuthError(errorCode, errorMessage);
 		} else {
-			err = new ActionableAuthError(errorCode, errorMessage, actionMessage);
+			err = new ActionableAuthError(errorCode, errorMessage, actionMessageEx);
 		}
 
 		return err;
