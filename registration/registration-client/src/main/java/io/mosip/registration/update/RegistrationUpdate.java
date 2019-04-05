@@ -35,37 +35,36 @@ import io.mosip.kernel.core.util.FileUtils;
 @Component
 public class RegistrationUpdate {
 
-	private static String backUpPath = "D://mosip/AutoBackUp";
+	private String backUpPath = "D://mosip/AutoBackUp";
 
 	private static String SLASH = "/";
 
-	private static String manifestFile = "MANIFEST.MF";
+	private String manifestFile = "MANIFEST.MF";
 
 	// TODO move to application.properties
 	private static String serverRegClientURL = "http://13.71.87.138:8040/artifactory/libs-release/io/mosip/registration/registration-client/";
-	private static String serverMosipXmlFileUrl = "http://13.71.87.138:8040/artifactory/libs-release/io/mosip/registration/registration-client/maven-metadata.xml";
+	private String serverMosipXmlFileUrl = "http://13.71.87.138:8040/artifactory/libs-release/io/mosip/registration/registration-client/maven-metadata.xml";
 
 	private static String libFolder = "lib/";
-	private static String binFolder = "bin/";
+	private String binFolder = "bin/";
 
-	private static String currentVersion;
+	private String currentVersion;
 
-	private static String latestVersion;
+	private String latestVersion;
 
-	private static Manifest localManifest;
+	private Manifest localManifest;
 
-	private static Manifest serverManifest;
+	private Manifest serverManifest;
 
 	private String mosip = "mosip";
 
 	private String versionTag = "version";
 
-	public boolean hasUpdate() throws IOException, ParserConfigurationException, SAXException, NullPointerException {
+	public boolean hasUpdate() throws IOException, ParserConfigurationException, SAXException {
 		return !getCurrentVersion().equals(getLatestVersion());
 	}
 
 	private String getLatestVersion() throws IOException, ParserConfigurationException, SAXException {
-		System.out.println("Getting latest Version");
 		if (latestVersion != null) {
 			return latestVersion;
 		} else {
@@ -95,12 +94,10 @@ public class RegistrationUpdate {
 			return currentVersion;
 		} else {
 			// Get Local manifest file
-			Manifest localManifest = getLocalManifest();
-			if (localManifest != null) {
+			if (getLocalManifest() != null) {
 				setCurrentVersion((String) localManifest.getMainAttributes().get(Attributes.Name.MANIFEST_VERSION));
 			}
 		}
-		System.out.println("Getting current Version  " + currentVersion);
 		return currentVersion;
 	}
 
@@ -143,7 +140,7 @@ public class RegistrationUpdate {
 			downloadJars.add(jar.getKey());
 		}
 
-		Path backUpPath = backUpCurrentApplication();
+		Path backUp = backUpCurrentApplication();
 
 		try {
 			deleteJars(deletableJars);
@@ -160,7 +157,7 @@ public class RegistrationUpdate {
 
 		} catch (RuntimeException exception) {
 
-			replaceBackupWithCurrentApplication(backUpPath);
+			replaceBackupWithCurrentApplication(backUp);
 
 			throw exception;
 		}
@@ -269,11 +266,9 @@ public class RegistrationUpdate {
 
 		// Delete Jars
 		if (deleteFile.exists()) {
-			try {
-				FileUtils.forceDelete(deleteFile);
-			} catch (io.mosip.kernel.core.exception.IOException ioException) {
-				throw ioException;
-			}
+
+			FileUtils.forceDelete(deleteFile);
+
 		}
 	}
 
@@ -363,18 +358,18 @@ public class RegistrationUpdate {
 	}
 
 	private void setLocalManifest(Manifest localManifest) {
-		RegistrationUpdate.localManifest = localManifest;
+		this.localManifest = localManifest;
 	}
 
 	private void setServerManifest(Manifest serverManifest) {
-		RegistrationUpdate.serverManifest = serverManifest;
+		this.serverManifest = serverManifest;
 	}
 
 	public void setCurrentVersion(String currentVersion) {
-		RegistrationUpdate.currentVersion = currentVersion;
+		this.currentVersion = currentVersion;
 	}
 
 	public void setLatestVersion(String latestVersion) {
-		RegistrationUpdate.latestVersion = latestVersion;
+		this.latestVersion = latestVersion;
 	}
 }
