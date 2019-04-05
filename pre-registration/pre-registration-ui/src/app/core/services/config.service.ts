@@ -1,16 +1,13 @@
-import { Injectable } from '@angular/core';
-import {  BehaviorSubject } from 'rxjs';
+import { Injectable } from "@angular/core";
+import { BehaviorSubject } from "rxjs";
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root"
 })
 export class ConfigService {
-
-  isActive
+  isActive;
 
   configs = {};
-  private messageAutoLogout = new BehaviorSubject({});
-  currentMessageAutoLogout = this.messageAutoLogout.asObservable();
 
   public setConfig(configJson: any) {
     this.configs = configJson.response;
@@ -24,8 +21,4 @@ export class ConfigService {
   public getConfig() {
     return { ...this.configs };
   }
-  changeMessage(message : object){
-    this.messageAutoLogout.next(message);
-  }
-
 }

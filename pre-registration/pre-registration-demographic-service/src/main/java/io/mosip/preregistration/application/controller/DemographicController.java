@@ -112,12 +112,8 @@ public class DemographicController {
 	 * @return the application data for a pre-id
 	 */
 
-
-
 	@PreAuthorize("hasAnyRole('individual')")
 	@GetMapping(path = "/applications/{preRegistrationId}", produces = MediaType.APPLICATION_JSON_VALUE)
-
-
 
 	@ApiOperation(value = "Get Pre-Registartion data")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Demographic data successfully retrieved"),
@@ -140,16 +136,15 @@ public class DemographicController {
 	 * @return the updation status of application for a pre-id
 	 */
 
-
 	@PreAuthorize("hasAnyRole('individual')")
-	@PutMapping(path = "/applications/{preRegistrationId}", produces = MediaType.APPLICATION_JSON_VALUE)
+	@PutMapping(path = "/applications/status/{preRegistrationId}", produces = MediaType.APPLICATION_JSON_VALUE)
 
 	@ApiOperation(value = "Update Pre-Registartion status")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Pre-Registration Status successfully updated"),
 			@ApiResponse(code = 400, message = "Unable to update the Pre-Registration") })
 	public ResponseEntity<MainResponseDTO<String>> updateApplicationStatus(
 			@PathVariable("preRegistrationId") String preRegId,
-			 @RequestParam(value = "statusCode", required = true) String status) {
+			@RequestParam(value = "statusCode", required = true) String status) {
 		log.info("sessionId", "idType", "id",
 				"In pre-registration controller for fetching all demographic data with preRegId " + preRegId
 						+ " and status " + status);
@@ -165,16 +160,14 @@ public class DemographicController {
 	 * @return List of applications created by User
 	 */
 
-
 	@PreAuthorize("hasAnyRole('individual')")
 	@GetMapping(path = "/applications", produces = MediaType.APPLICATION_JSON_VALUE)
-
 
 	@ApiOperation(value = "Fetch all the applications created by user")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "All applications fetched successfully"),
 			@ApiResponse(code = 400, message = "Unable to fetch applications ") })
-	public ResponseEntity<MainListResponseDTO<PreRegistrationViewDTO>> getAllApplications( HttpServletRequest res) {
-		String userId=preRegistrationService.authUserDetails().getUserId();
+	public ResponseEntity<MainListResponseDTO<PreRegistrationViewDTO>> getAllApplications(HttpServletRequest res) {
+		String userId = preRegistrationService.authUserDetails().getUserId();
 		log.info("sessionId", "idType", "id",
 				"In pre-registration controller for fetching all applications with userId " + userId + " Header "
 						+ res.getHeader("Authorization"));
@@ -189,11 +182,8 @@ public class DemographicController {
 	 * @return status of application
 	 */
 
-
-
 	@PreAuthorize("hasAnyRole('individual')")
 	@GetMapping(path = "/applications/status/{preRegistrationId}", produces = MediaType.APPLICATION_JSON_VALUE)
-
 
 	@ApiOperation(value = "Fetch the status of a application")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "All applications status fetched successfully"),
@@ -214,10 +204,8 @@ public class DemographicController {
 	 * @return the deletion status of application for a pre-id
 	 */
 
-
 	@PreAuthorize("hasAnyRole('individual')")
 	@DeleteMapping(path = "/applications/{preRegistrationId}", produces = MediaType.APPLICATION_JSON_VALUE)
-
 
 	@ApiOperation(value = "Discard individual")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Deletion of individual is successfully"),
@@ -230,7 +218,7 @@ public class DemographicController {
 		return ResponseEntity.status(HttpStatus.OK).body(preRegistrationService.deleteIndividual(preId));
 	}
 
-	@PreAuthorize("hasAnyRole('individual','REGISTRATION_OFFICER','REGISTRATION_SUPERVISOR')")
+	@PreAuthorize("hasAnyRole('individual','REGISTRATION_OFFICER','REGISTRATION_SUPERVISOR','REGISTRATION_ ADMIN')")
 	@PostMapping(path = "/applications/updatedTime", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Get Updated Date Time for List of Pre-Registration Id")
 	@ApiResponses(value = {

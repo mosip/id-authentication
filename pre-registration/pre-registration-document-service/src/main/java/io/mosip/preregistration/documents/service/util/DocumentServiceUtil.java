@@ -20,7 +20,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -46,7 +45,6 @@ import io.mosip.preregistration.core.code.StatusCodes;
 import io.mosip.preregistration.core.common.dto.DemographicResponseDTO;
 import io.mosip.preregistration.core.common.dto.MainListResponseDTO;
 import io.mosip.preregistration.core.common.dto.MainRequestDTO;
-import io.mosip.preregistration.core.common.dto.MainResponseDTO;
 import io.mosip.preregistration.core.config.LoggerConfiguration;
 import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
 import io.mosip.preregistration.core.util.HashUtill;
@@ -366,9 +364,9 @@ public class DocumentServiceUtil {
 			log.info("sessionId", "idType", "id", "In callGetPreRegInfoRestService method of document service util url "+uriBuilder);
 			ResponseEntity<MainListResponseDTO<DemographicResponseDTO>> respEntity = restTemplate.exchange(uriBuilder, HttpMethod.GET,httpEntity
 					,new ParameterizedTypeReference<MainListResponseDTO<DemographicResponseDTO>>() {},params);
-			if (respEntity.getBody().getErr()!=null) {
-				throw new DemographicGetDetailsException(respEntity.getBody().getErr().getErrorCode(),
-						respEntity.getBody().getErr().getMessage());
+			if (respEntity.getBody().getErrors()!=null) {
+				throw new DemographicGetDetailsException(respEntity.getBody().getErrors().getErrorCode(),
+						respEntity.getBody().getErrors().getMessage());
 			} 
 			
 		} catch (RestClientException ex) {

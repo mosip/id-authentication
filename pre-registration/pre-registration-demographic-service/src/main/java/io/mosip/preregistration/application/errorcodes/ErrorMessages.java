@@ -134,7 +134,11 @@ public enum ErrorMessages {
 	 */
 	DOCUMENT_SERVICE_FAILED_TO_CALL("DOCUMENT_SERVICE_FAILED_TO_CALL"),
 
+	/**
+	 * PRG_PAM_DOC_005
+	 */
 	DOCUMENT_IS_MISSING("Documents is not found for the requested pre-registration id");
+
 
 	private ErrorMessages(String message) {
 		this.message = message;

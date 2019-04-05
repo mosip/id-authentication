@@ -4,8 +4,6 @@
  */
 package io.mosip.preregistration.booking.controller;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -96,7 +94,8 @@ public class BookingController {
 	public ResponseEntity<MainResponseDTO<AvailabilityDto>> getAvailability(
 			@PathVariable("registrationCenterId") String registrationCenterId) {
 		log.info("sessionId", "idType", "id",
-				"In getAvailability method of Booking controller to fetch the availability for regID: " + registrationCenterId);
+				"In getAvailability method of Booking controller to fetch the availability for regID: "
+						+ registrationCenterId);
 		return ResponseEntity.status(HttpStatus.OK).body(bookingService.getAvailability(registrationCenterId));
 	}
 
@@ -113,11 +112,12 @@ public class BookingController {
 	@ApiOperation(value = "Booking Appointment")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Appointment Booked Successfully"),
 			@ApiResponse(code = 400, message = "Unable to Book the appointment") })
-	public ResponseEntity<MainResponseDTO<BookingStatusDTO>> bookAppoinment(@PathVariable("preRegistrationId") String preRegistrationId,
+	public ResponseEntity<MainResponseDTO<BookingStatusDTO>> bookAppoinment(
+			@PathVariable("preRegistrationId") String preRegistrationId,
 			@RequestBody(required = true) MainListRequestDTO<BookingRequestDTO> bookingDTO) {
 		log.info("sessionId", "idType", "id",
 				"In bookAppoinment method of Booking controller to book an appointment for object: " + bookingDTO);
-		return ResponseEntity.status(HttpStatus.OK).body(bookingService.bookAppointment(bookingDTO,preRegistrationId));
+		return ResponseEntity.status(HttpStatus.OK).body(bookingService.bookAppointment(bookingDTO, preRegistrationId));
 	}
 
 	/**
@@ -128,7 +128,8 @@ public class BookingController {
 	 * @throws ParseException
 	 * @throws java.text.ParseException
 	 */
-	@PreAuthorize("hasAnyRole('individual','REGISTRATION_OFFICER','REGISTRATION_SUPERVISOR')")
+
+	@PreAuthorize("hasAnyRole('individual','REGISTRATION_OFFICER','REGISTRATION_SUPERVISOR','REGISTRATION_ ADMIN')")
 	@GetMapping(path = "/appointment/{preRegistrationId}", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Fetch Appointment details")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Appointment Booked Successfully"),
@@ -156,10 +157,12 @@ public class BookingController {
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Appointment canceled successfully"),
 			@ApiResponse(code = 400, message = "Unable to cancel the appointment") })
 	public ResponseEntity<MainResponseDTO<CancelBookingResponseDTO>> cancelBook(
-			@RequestBody MainRequestDTO<CancelBookingDTO> requestDTO,@PathVariable("preRegistrationId") String preRegistrationId) {
+			@RequestBody MainRequestDTO<CancelBookingDTO> requestDTO,
+			@PathVariable("preRegistrationId") String preRegistrationId) {
 		log.info("sessionId", "idType", "id",
 				"In cancelBook method of Booking controller to cancel the appointment for object: " + requestDTO);
-		return ResponseEntity.status(HttpStatus.OK).body(bookingService.cancelAppointment(requestDTO,preRegistrationId));
+		return ResponseEntity.status(HttpStatus.OK)
+				.body(bookingService.cancelAppointment(requestDTO, preRegistrationId));
 	}
 
 	/**
@@ -190,7 +193,7 @@ public class BookingController {
 	 *            the to date
 	 * @return the booked pre-ids for date range
 	 */
-	@PreAuthorize("hasAnyRole('individual','REGISTRATION_OFFICER','REGISTRATION_SUPERVISOR')")
+	@PreAuthorize("hasAnyRole('individual','REGISTRATION_OFFICER','REGISTRATION_SUPERVISOR','REGISTRATION_ ADMIN')")
 	@GetMapping(path = "/appointment/preRegistrationId/{registrationCenterId}", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Get Pre-Registartion ids By Booked Date Time And Registration center id")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Booked data successfully retrieved"),

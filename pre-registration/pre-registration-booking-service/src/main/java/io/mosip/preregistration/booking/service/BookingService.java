@@ -226,8 +226,8 @@ public class BookingService {
 	 * @return
 	 */
 	@Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = Exception.class)
-	public MainResponseDTO<BookingStatusDTO> bookAppointment(
-			MainListRequestDTO<BookingRequestDTO> bookingRequestDTOs, String preRegistrationId) {
+	public MainResponseDTO<BookingStatusDTO> bookAppointment(MainListRequestDTO<BookingRequestDTO> bookingRequestDTOs,
+			String preRegistrationId) {
 		log.info("sessionId", "idType", "id", "In bookAppointment method of Booking Service");
 		MainResponseDTO<BookingStatusDTO> responseDTO = new MainResponseDTO<>();
 		boolean isSaveSuccess = false;
@@ -237,11 +237,9 @@ public class BookingService {
 				for (BookingRequestDTO bookingRequestDTO : bookingRequestDTOs.getRequest()) {
 
 					/* Getting Status From Demographic */
-					String preRegStatusCode = serviceUtil
-							.callGetStatusRestService(preRegistrationId);
+					String preRegStatusCode = serviceUtil.callGetStatusRestService(preRegistrationId);
 
-					if (serviceUtil.mandatoryParameterCheck(preRegistrationId,
-							bookingRequestDTO)) {
+					if (serviceUtil.mandatoryParameterCheck(preRegistrationId, bookingRequestDTO)) {
 
 						/* Checking the availability of slots */
 						checkSlotAvailability(bookingRequestDTO);
@@ -252,12 +250,12 @@ public class BookingService {
 							response = book(preRegistrationId, bookingRequestDTO);
 
 						} else if (preRegStatusCode.equals(StatusCodes.BOOKED.getCode())) {
-												
+
 							/* Concatenating Booking date and slot from time */
 							RegistrationBookingEntity bookingEntity = bookingDAO
 									.findByPreRegistrationId(preRegistrationId);
-							
-							BookingRequestDTO oldBooking=new BookingRequestDTO();
+
+							BookingRequestDTO oldBooking = new BookingRequestDTO();
 							oldBooking.setRegDate(bookingEntity.getRegDate().toString());
 							oldBooking.setRegistrationCenterId(bookingEntity.getRegistrationCenterId());
 							oldBooking.setSlotFromTime(bookingEntity.getSlotFromTime().toString());
@@ -329,13 +327,10 @@ public class BookingService {
 		MainResponseDTO<BookingRegistrationDTO> responseDto = new MainResponseDTO<>();
 		RegistrationBookingEntity entity = new RegistrationBookingEntity();
 		try {
-			/* Getting Status From Demographic */
-			String preRegStatusCode = serviceUtil.callGetStatusRestService(preRegID);
+			/* Checking Status From Demographic */
+			serviceUtil.callGetStatusRestService(preRegID);
 			entity = bookingDAO.findByPreRegistrationId(preRegID);
-			if (!preRegStatusCode.equals(StatusCodes.BOOKED.getCode())) {
-				throw new BookingDataNotFoundException(ErrorCodes.PRG_BOOK_RCI_030.getCode(),
-						ErrorMessages.CANNOT_GET_DETAILS_FOR + "_" + preRegStatusCode.toUpperCase() + "_STATUS");
-			}
+
 			bookingRegistrationDTO.setRegDate(entity.getRegDate().toString());
 			bookingRegistrationDTO.setRegistrationCenterId(entity.getRegistrationCenterId());
 			bookingRegistrationDTO.setSlotFromTime(entity.getSlotFromTime().toString());
@@ -363,30 +358,15 @@ public class BookingService {
 	 * @return MainResponseDTO
 	 */
 	@Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = Exception.class)
-	public MainResponseDTO<CancelBookingResponseDTO> cancelAppointment(MainRequestDTO<CancelBookingDTO> requestdto,String preRegistrationId) {
+	public MainResponseDTO<CancelBookingResponseDTO> cancelAppointment(MainRequestDTO<CancelBookingDTO> requestdto,
+			String preRegistrationId) {
 		log.info("sessionId", "idType", "id", "In cancelAppointment method of Booking Service");
 		MainResponseDTO<CancelBookingResponseDTO> responseDto = new MainResponseDTO<>();
-		boolean isSaveSuccess = false;
-		try {
-			if (ValidationUtil.requestValidator(requestdto)) {
-				responseDto.setResponse(cancelBooking(requestdto.getRequest(),preRegistrationId));
-			}
-			isSaveSuccess = true;
-		} catch (Exception ex) {
-			log.error("sessionId", "idType", "id",
-					"In cancelAppointment method of Booking Service- " + ex.getMessage());
-			new BookingExceptionCatcher().handle(ex);
-		} finally {
-			if (isSaveSuccess) {
-				setAuditValues(EventId.PRE_403.toString(), EventName.DELETE.toString(), EventType.SYSTEM.toString(),
-						"  Appointment canceled successfully for booking  ", AuditLogVariables.MULTIPLE_ID.toString(),
-						authUserDetails().getUserId(), authUserDetails().getUsername());
-			} else {
-				setAuditValues(EventId.PRE_405.toString(), EventName.EXCEPTION.toString(), EventType.SYSTEM.toString(),
-						"cancelAppointment failed", AuditLogVariables.NO_ID.toString(), authUserDetails().getUserId(),
-						authUserDetails().getUsername());
-			}
+
+		if (ValidationUtil.requestValidator(requestdto)) {
+			responseDto.setResponse(cancelBooking(requestdto.getRequest(), preRegistrationId));
 		}
+
 		responseDto.setResponsetime(serviceUtil.getCurrentResponseTime());
 		return responseDto;
 	}
@@ -411,8 +391,7 @@ public class BookingService {
 				availableEntity = bookingDAO.findByFromTimeAndToTimeAndRegDateAndRegcntrId(
 						LocalTime.parse(bookingRequestDTO.getSlotFromTime()),
 						LocalTime.parse(bookingRequestDTO.getSlotToTime()),
-						LocalDate.parse(bookingRequestDTO.getRegDate()),
-						bookingRequestDTO.getRegistrationCenterId());
+						LocalDate.parse(bookingRequestDTO.getRegDate()), bookingRequestDTO.getRegistrationCenterId());
 				if (serviceUtil.isKiosksAvailable(availableEntity)) {
 					/* Updating booking */
 					bookingDAO.saveRegistrationEntityForBooking(
@@ -442,13 +421,13 @@ public class BookingService {
 	 * @param cancelBookingDTO
 	 * @return response with status code
 	 */
-	public CancelBookingResponseDTO cancelBooking(CancelBookingDTO cancelBookingDTO,String preRegistrationId) {
+	public CancelBookingResponseDTO cancelBooking(CancelBookingDTO cancelBookingDTO, String preRegistrationId) {
 		log.info("sessionId", "idType", "id", "In cancelBooking method of Booking Service");
 		CancelBookingResponseDTO cancelBookingResponseDTO = new CancelBookingResponseDTO();
 		boolean isSaveSuccess = false;
 		AvailibityEntity availableEntity;
 		try {
-			if (serviceUtil.mandatoryParameterCheckforCancel(cancelBookingDTO,preRegistrationId)) {
+			if (serviceUtil.mandatoryParameterCheckforCancel(cancelBookingDTO, preRegistrationId)) {
 				if (serviceUtil.callGetStatusForCancelRestService(preRegistrationId)) {
 					availableEntity = bookingDAO.findByFromTimeAndToTimeAndRegDateAndRegcntrId(
 							LocalTime.parse(cancelBookingDTO.getSlotFromTime()),
@@ -457,15 +436,13 @@ public class BookingService {
 					/* Getting Status From Demographic */
 					serviceUtil.callGetStatusRestService(preRegistrationId);
 
-					RegistrationBookingEntity bookingEntity = bookingDAO
-							.findByPreRegistrationId(preRegistrationId);
+					RegistrationBookingEntity bookingEntity = bookingDAO.findByPreRegistrationId(preRegistrationId);
 
 					String str = bookingEntity.getRegDate() + " " + bookingEntity.getSlotFromTime();
 					DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 					LocalDateTime bookedDateTime = LocalDateTime.parse(str, formatter);
 
 					serviceUtil.timeSpanCheckForCancle(bookedDateTime);
-					
 
 					/* Deleting the canceled booking */
 					bookingDAO.deleteRegistrationEntity(bookingEntity);
@@ -547,8 +524,7 @@ public class BookingService {
 		try {
 			AvailibityEntity entity = bookingDAO.findByFromTimeAndToTimeAndRegDateAndRegcntrId(
 					LocalTime.parse(bookingRequestDTO.getSlotFromTime()),
-					LocalTime.parse(bookingRequestDTO.getSlotToTime()),
-					LocalDate.parse(bookingRequestDTO.getRegDate()),
+					LocalTime.parse(bookingRequestDTO.getSlotToTime()), LocalDate.parse(bookingRequestDTO.getRegDate()),
 					bookingRequestDTO.getRegistrationCenterId());
 
 			log.info("sessionId", "idType", "id", "In checkSlotAvailability method of Booking Service");
@@ -642,14 +618,6 @@ public class BookingService {
 			}
 
 			DateTimeFormatter parseFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-
-			/*
-			 * LocalDate fromDate = DateUtils
-			 * .parseDateToLocalDateTime(DateUtils.parseToDate(fromDateStr.trim(),
-			 * "yyyy-MM-dd")).toLocalDate(); LocalDate toDate =
-			 * DateUtils.parseDateToLocalDateTime(DateUtils.parseToDate(toDateStr.trim(),
-			 * "yyyy-MM-dd")) .toLocalDate();
-			 */
 
 			LocalDate fromDate = LocalDate.parse(fromDateStr, parseFormatter);
 			LocalDate toDate = LocalDate.parse(toDateStr, parseFormatter);

@@ -244,7 +244,7 @@ public class DocumentUploadServiceTest {
 		DemographicResponseDTO dto= new DemographicResponseDTO();
 		ExceptionJSONInfoDTO exception = new ExceptionJSONInfoDTO();
 		exception.setMessage(ErrorMessages.DEMOGRAPHIC_GET_RECORD_FAILED.toString());
-		restRes.setErr(exception);
+		restRes.setErrors(exception);
 		responseUploadList.add(docResp);
 		responseUpload.setResponse(responseUploadList);
 		ResponseEntity<MainListResponseDTO<DemographicResponseDTO>> rescenter = new ResponseEntity<>(restRes, HttpStatus.OK);

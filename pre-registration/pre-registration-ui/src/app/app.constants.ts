@@ -1,7 +1,5 @@
 export const NUMBER_PATTERN = '^[0-9]+[0-9]*$';
-// export const MOBILE_PATTERN = '^([6-9]{1})([0-9]{9})$';
 export const TEXT_PATTERN = '^[a-zA-Z ]*$';
-// export const CNIE_PATTERN = '^([0-9]{10,30})$';
 export const COUNTRY_NAME = 'Morroco';
 export const COUNTRY_HIERARCHY = 'Country';
 export const VERSION = '1.0';
@@ -11,7 +9,6 @@ export const NESTED_ERROR = 'err';
 export const ERROR_CODE = 'errorCode';
 export const PRE_REGISTRATION_ID = 'pre_registration_id';
 export const APPENDER = '/';
-// export const ALLOWED_BOOKING_TIME = 24;
 
 export const YEAR_PATTERN = '(\\d{4})';
 export const MONTH_PATTERN = '([0]\\d|1[0-2])';
@@ -19,16 +16,10 @@ export const DATE_PATTERN = '([0-2]\\d|3[01])';
 
 export const IDS = {
   newUser: 'mosip.pre-registration.demographic.create',
+  updateUser: 'mosip.pre-registration.demographic.update',
   transliteration: 'mosip.pre-registration.transliteration.transliterate',
   notification: 'mosip.pre-registration.notification.notify'
 };
-
-// export const LANGUAGE_CODE = {
-//   primary: 'eng',
-//   secondary: 'ara',
-//   primaryKeyboardLang: 'en',
-//   secondaryKeyboardLang: 'ar'
-// };
 
 export const APPEND_URL = {
   config: 'config',
@@ -41,8 +32,8 @@ export const APPEND_URL = {
   location_immediate_children: 'locations/immediatechildren/',
   applicants: 'demographic/applications',
   get_applicant: 'demographic/applications/details',
-  location: 'masterdata/v1/',
-  gender: 'masterdata/v1/gendertypes',
+  location: 'v1/masterdata/',
+  gender: 'v1/masterdata/gendertypes',
   transliteration: 'transliteration/transliterate',
   applicantType: 'applicanttype/v1/',
   validDocument: 'applicanttype/',
@@ -56,7 +47,7 @@ export const APPEND_URL = {
   qr_code: 'notification/generateQRCode',
   notification: 'notification/',
   send_notification: 'notify',
-  master_data: 'masterdata/v1/',
+  master_data: 'v1/masterdata/',
   auth: 'auth/'
 };
 
@@ -126,7 +117,6 @@ export const DEMOGRAPHIC_RESPONSE_KEYS = {
   locations: 'locations',
   preRegistrationId: 'preRegistrationId',
   genderTypes: 'genderType'
-  // residentTypes: 'residentType'
 };
 
 export const APPLICATION_STATUS_CODES = {

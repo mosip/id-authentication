@@ -30,6 +30,7 @@ import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import io.mosip.preregistration.core.common.dto.AuthNResponse;
+import io.mosip.preregistration.core.common.dto.ResponseWrapper;
 import io.mosip.preregistration.login.controller.LoginController;
 import io.mosip.preregistration.login.dto.MainResponseDTO;
 import io.mosip.preregistration.login.service.LoginService;
@@ -95,6 +96,8 @@ public class LoginControllerTest {
 		 mockMvc.perform(requestBuilder).andExpect(status().isOk());
 	}
 	
+	@Mock
+	private ResponseWrapper responseWrapped;
 	@Test
 	public void validateWithUseridOtpTest() throws Exception {
 		//AuthNResponse authNResposne=new AuthNResponse();
@@ -107,7 +110,8 @@ public class LoginControllerTest {
 		serviceResponse.setId("id");
 		serviceResponse.setResponse(responseEntity);
 		serviceResponse.setResponsetime("responseTime");
-		
+		Mockito.when(authCommonUtil.requestBodyExchange(Mockito.any())).thenReturn(responseWrapped);
+		Mockito.when(authCommonUtil.requestBodyExchangeObject(Mockito.any(), Mockito.any())).thenReturn(authNResposne);
 		
 		Mockito.when(authService.validateWithUserIdOtp(Mockito.any())).thenReturn(serviceResponse);		
 		 RequestBuilder requestBuilder=MockMvcRequestBuilders

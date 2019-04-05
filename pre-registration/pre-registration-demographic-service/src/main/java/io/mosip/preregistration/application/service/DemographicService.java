@@ -624,7 +624,7 @@ public class DemographicService {
 		response.setResponsetime(serviceUtil.getCurrentResponseTime());
 		response.setId(retrieveDetailsId);
 		response.setVersion(ver);
-		response.setErr(null);
+		response.setErrors(null);
 		return response;
 	}
 
@@ -717,7 +717,7 @@ public class DemographicService {
 		response.setResponsetime(serviceUtil.getCurrentResponseTime());
 		response.setId(dateId);
 		response.setVersion(ver);
-		response.setErr(null);
+		response.setErrors(null);
 		return response;
 	}
 
@@ -768,11 +768,13 @@ public class DemographicService {
 
 		BookingRegistrationDTO bookingRegistrationDTO = null;
 		try {
-			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(appointmentResourseUrl)
-					.queryParam("pre_registration_id", preId);
+			Map<String, Object> params = new HashMap<>();
+			params.put("preRegistrationId", preId);
+			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(appointmentResourseUrl);
 			HttpHeaders headers = new HttpHeaders();
 			HttpEntity<MainResponseDTO<BookingRegistrationDTO>> httpEntity = new HttpEntity<>(headers);
 			String uriBuilder = builder.build().encode().toUriString();
+			uriBuilder += "{preRegistrationId}";
 			log.info("sessionId", "idType", "id", "In callGetAppointmentDetailsRestService method URL- " + uriBuilder);
 
 			ResponseEntity<MainResponseDTO<BookingRegistrationDTO>> respEntity = restTemplate.exchange(uriBuilder,
@@ -873,11 +875,11 @@ public class DemographicService {
 					new ParameterizedTypeReference<MainListResponseDTO<DocumentDeleteResponseDTO>>() {
 					});
 
-			if (responseEntity.getBody().getErr() != null) {
-				if (!responseEntity.getBody().getErr().getMessage()
+			if (responseEntity.getBody().getErrors() != null) {
+				if (!responseEntity.getBody().getErrors().getMessage()
 						.equalsIgnoreCase(ErrorMessages.DOCUMENT_IS_MISSING.getMessage())) {
-					throw new DocumentFailedToDeleteException(responseEntity.getBody().getErr().getErrorCode(),
-							responseEntity.getBody().getErr().getMessage());
+					throw new DocumentFailedToDeleteException(responseEntity.getBody().getErrors().getErrorCode(),
+							responseEntity.getBody().getErrors().getMessage());
 				}
 			}
 		} catch (RestClientException ex) {
@@ -931,7 +933,7 @@ public class DemographicService {
 					new ParameterizedTypeReference<MainListResponseDTO<DeleteBookingDTO>>() {
 					});
 
-			if (responseEntity.getBody().getErr() != null) {
+			if (responseEntity.getBody().getErrors() != null) {
 				throw new BookingDeletionFailedException(ErrorCodes.PRG_PAM_DOC_016.name(),
 						ErrorMessages.BOOKING_FAILED_TO_DELETE.name());
 

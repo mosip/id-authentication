@@ -175,9 +175,11 @@ public class DataSyncServiceTest {
 		requiredRequestMap.put("id", idUrl);
 		requiredRequestMap.put("ver", versionUrl);
 
+
 		multipartResponseDTOs.setDocName("Address.pdf");
 		multipartResponseDTOs.setDocumentId("1234");
 		multipartResponseDTOs.setDocCatCode("POA");
+
 
 		list2.add(multipartResponseDTOs);
 
@@ -210,10 +212,9 @@ public class DataSyncServiceTest {
 		preRegIdsByRegCenterIdResponseDTO.setPreRegistrationIds(preregIds);
 		preRegIdsByRegCenterIdResponseDTO.setRegistrationCenterId("1005");
 
-		dataSyncRequestDTO.setRegClientId("1005");
+		dataSyncRequestDTO.setRegistrationCenterId("1005");
 		dataSyncRequestDTO.setFromDate("2018-01-17 00:00:00");
 		dataSyncRequestDTO.setToDate("2018-12-17 00:00:00");
-		dataSyncRequestDTO.setUserId("256752365832");
 
 		datasyncReqDto.setId(idUrl);
 		datasyncReqDto.setVersion(versionUrl);
@@ -240,9 +241,6 @@ public class DataSyncServiceTest {
 		List<String> preRegistrationIds = new ArrayList<>();
 		preRegistrationIds.add(preid);
 		reverseDataSyncRequestDTO.setPreRegistrationIds(preRegistrationIds);
-		reverseDataSyncRequestDTO.setLangCode("AR");
-		reverseDataSyncRequestDTO.setCreatedBy("5766477466");
-		reverseDataSyncRequestDTO.setUpdateBy("5766477466");
 
 		reverseRequestDTO.setRequest(reverseDataSyncRequestDTO);
 		reverseRequestDTO.setRequesttime(new Timestamp(System.currentTimeMillis()));
@@ -250,7 +248,9 @@ public class DataSyncServiceTest {
 		reverseRequestDTO.setVersion(versionUrl);
 
 		reverseDatasyncReponse.setTransactionId("1111");
-		reverseDatasyncReponse.setAlreadyStoredPreRegIds(preId);
+		List<String> preids = new ArrayList<>();
+		preids.add("23587986034785");
+		reverseDatasyncReponse.setPreRegistrationIds(preids);
 		reverseDatasyncReponse.setCountOfStoredPreRegIds("1");
 	}
 
@@ -300,11 +300,12 @@ public class DataSyncServiceTest {
 	@Test
 	public void successStoreConsumedPreRegistrationsTest() throws Exception {
 		Mockito.when(serviceUtil.validateReverseDataSyncRequest(Mockito.any())).thenReturn(true);
-		Mockito.when(serviceUtil.reverseDateSyncSave(Mockito.any(), Mockito.any())).thenReturn(reverseDatasyncReponse);
+		Mockito.when(serviceUtil.reverseDateSyncSave(Mockito.any(), Mockito.any(), Mockito.anyString()))
+				.thenReturn(reverseDatasyncReponse);
 		reverseResponseDTO = dataSyncService.storeConsumedPreRegistrations(reverseRequestDTO);
 
-		assertEquals(reverseDatasyncReponse.getAlreadyStoredPreRegIds(),
-				reverseResponseDTO.getResponse().getAlreadyStoredPreRegIds());
+		assertEquals(reverseDatasyncReponse.getPreRegistrationIds().size(),
+				reverseResponseDTO.getResponse().getPreRegistrationIds().size());
 	}
 
 }

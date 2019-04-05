@@ -300,7 +300,7 @@ public class DemographicControllerTest {
 
 		Mockito.when(preRegistrationService.updatePreRegistrationStatus("1234", "Booked")).thenReturn(response);
 
-		RequestBuilder requestBuilder = MockMvcRequestBuilders.put("/applications/{preRegistrationId}", "1234")
+		RequestBuilder requestBuilder = MockMvcRequestBuilders.put("/applications/status/{preRegistrationId}", "1234")
 				.contentType(MediaType.ALL).characterEncoding("UTF-8")
 				.accept(MediaType.ALL).param("statusCode", "Booked");
 
