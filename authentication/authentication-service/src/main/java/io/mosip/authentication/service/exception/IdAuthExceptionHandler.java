@@ -4,7 +4,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -13,9 +12,7 @@ import javax.servlet.ServletException;
 
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.MessageSource;
 import org.springframework.context.NoSuchMessageException;
-import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -55,10 +52,6 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 
 	/** The Constant ID_AUTHENTICATION_APP_EXCEPTION. */
 	private static final String ID_AUTHENTICATION_APP_EXCEPTION = "IdAuthenticationAppException";
-
-	/** The message source. */
-	@Autowired
-	private MessageSource messageSource;
 
 	/** The mapper. */
 	@Autowired
@@ -132,15 +125,9 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 						+ ExceptionUtils.getStackTrace(ex));
 
 		if (ex instanceof ServletException || ex instanceof BeansException
-				|| ex instanceof HttpMessageConversionException) {
+				|| ex instanceof HttpMessageConversionException || ex instanceof AsyncRequestTimeoutException) {
 			ex = new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(),
 					IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorMessage());
-
-			return new ResponseEntity<>(buildExceptionResponse(ex), HttpStatus.OK);
-		} else if (ex instanceof AsyncRequestTimeoutException) {
-			ex = new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(),
-					IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorMessage());
-
 			return new ResponseEntity<>(buildExceptionResponse(ex), HttpStatus.OK);
 		} else {
 			return handleAllExceptions(ex, request);
@@ -189,7 +176,6 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 		authResp.setResponse(res);
 		if (ex instanceof IdAuthenticationBaseException) {
 			IdAuthenticationBaseException baseException = (IdAuthenticationBaseException) ex;
-			Locale locale = LocaleContextHolder.getLocale();
 			List<String> errorCodes = ((BaseCheckedException) ex).getCodes();
 			List<String> errorMessages = ((BaseCheckedException) ex).getErrorTexts();
 
@@ -240,10 +226,10 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 			String errorMessage, String actionMessage) {
 		String actionMessageEx = authException.getActionMessage();
 		AuthError err;
-		if(actionMessageEx == null ) {
+		if (actionMessageEx == null) {
 			actionMessageEx = actionMessage;
 		}
-		
+
 		if (actionMessageEx == null || actionMessageEx.isEmpty()) {
 			err = new AuthError(errorCode, errorMessage);
 		} else {

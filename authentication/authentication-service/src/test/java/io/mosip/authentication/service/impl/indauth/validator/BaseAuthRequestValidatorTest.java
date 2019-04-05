@@ -263,6 +263,7 @@ public class BaseAuthRequestValidatorTest {
 		DataDTO dataDTO2 = new DataDTO();
 		dataDTO2.setBioValue("face img");
 		dataDTO2.setBioType("FID");
+		dataDTO2.setBioSubType("Face");
 		dataDTO2.setDeviceProviderID("provider001");
 		faceValue.setData(dataDTO2);
 
@@ -466,6 +467,47 @@ public class BaseAuthRequestValidatorTest {
 
 		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "validateFace", authRequestDTO, bioInfoList, error);
 		assertFalse(error.hasErrors());
+
+	}
+	
+	
+	
+	/**
+	 * Test validate face if more than one face data is present.
+	 */
+	@Test
+	public void testValidateFaceReq() {
+
+		authRequestDTO = getAuthRequestDTO();
+		
+		BioIdentityInfoDTO faceValue = new BioIdentityInfoDTO();
+		DataDTO faceData = new DataDTO();
+		faceData.setBioValue("face img");
+		faceData.setBioSubType("face");
+		faceData.setBioType("FID");
+		faceData.setDeviceProviderID("provider001");
+		faceValue.setData(faceData);
+		
+		BioIdentityInfoDTO faceValue1 = new BioIdentityInfoDTO();
+		
+		faceData.setBioValue("face img");
+		faceData.setBioSubType("face");
+		faceData.setBioType("FID");
+		faceData.setDeviceProviderID("provider001");
+		faceValue1.setData(faceData);
+		List<BioIdentityInfoDTO> faceIdentityInfoDtoList = new ArrayList<BioIdentityInfoDTO>();
+		faceIdentityInfoDtoList.add(faceValue);
+		faceIdentityInfoDtoList.add(faceValue1);
+		IdentityDTO identitydto = new IdentityDTO();
+		RequestDTO requestDTO = new RequestDTO();
+		requestDTO.setDemographics(identitydto);
+		requestDTO.setBiometrics(faceIdentityInfoDtoList);
+		authRequestDTO.setRequest(requestDTO);
+        List<DataDTO> bioInfoList = new ArrayList<DataDTO>();
+		bioInfoList.add(faceData);
+
+		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "validateFace", authRequestDTO, bioInfoList, error);
+		assertTrue(error.hasErrors());
 
 	}
 

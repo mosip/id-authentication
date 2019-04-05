@@ -18,14 +18,13 @@ import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfigurat
  * @since 1.0.0
  *
  */
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = { "io.mosip.kernel.otpnotification.*", "io.mosip.kernel.auth.*" })
 @EnableAutoConfiguration(exclude = { DataSourceAutoConfiguration.class, HibernateJpaAutoConfiguration.class })
 public class OtpNotificationBootApplication {
 	/**
 	 * Main method to run spring boot application
 	 * 
-	 * @param args
-	 *            the argument
+	 * @param args the argument
 	 */
 	public static void main(String[] args) {
 		SpringApplication.run(OtpNotificationBootApplication.class, args);

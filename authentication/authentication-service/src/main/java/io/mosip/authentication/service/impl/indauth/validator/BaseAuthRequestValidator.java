@@ -467,6 +467,20 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 				&& isDuplicateBioType(authRequestDTO, BioAuthType.FACE_IMG)) {
 
 			checkAtleastOneFaceRequestAvailable(authRequestDTO, errors);
+			if (!errors.hasErrors()) {
+			validateFaceBioType(authRequestDTO, errors);
+			validateFaceRequestSubTypeCount(authRequestDTO, errors);
+			}
+		}
+	}
+
+	private void validateFaceBioType(AuthRequestDTO authRequestDTO, Errors errors) {
+		List<BioIdentityInfoDTO> listBioIdentity=getBioIds(authRequestDTO, BioAuthType.FACE_IMG.getType());
+		if(listBioIdentity.size()>1) {
+			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE,
+					"Face : face count is more than 1.");
+			errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.FACE_EXCEEDING.getErrorCode(),
+					new Object[] { FACE }, IdAuthenticationErrorConstants.FACE_EXCEEDING.getErrorMessage());
 		}
 	}
 
@@ -636,7 +650,20 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 		}
 
 	}
+    
+	
+	private void validateFaceRequestSubTypeCount(AuthRequestDTO authRequestDTO, Errors errors) {
+		Map<String, Long> faceSubtypeCounts = getBioSubtypeCounts(authRequestDTO, BioAuthType.FACE_IMG.getType());
+		if (faceSubtypeCounts.entrySet().stream()
+				.anyMatch(map -> (map.getKey().equalsIgnoreCase(UNKNOWN) && map.getValue() > 1)
+						|| (!map.getKey().equalsIgnoreCase(UNKNOWN) && map.getValue() > 1))) {
+			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE,
+					"Face : face count is more than 1.");
+			errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.FACE_EXCEEDING.getErrorCode(),
+					new Object[] { FACE }, IdAuthenticationErrorConstants.FACE_EXCEEDING.getErrorMessage());
+		}
 
+	}
 	/**
 	 * Check demo auth.
 	 *
