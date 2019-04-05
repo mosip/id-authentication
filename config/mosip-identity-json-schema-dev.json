@@ -27,8 +27,7 @@
 					"type": "string"
 				},
 				"age": {
-					"type": "integer",
-					"minimum": 0
+					"type": "integer"
 				},
 				"gender": {
 					"$ref": "#/definitions/simpleType"
@@ -72,7 +71,11 @@
 				"parentOrGuardianName": {
 					"$ref": "#/definitions/simpleType"
 				},
-				"parentOrGuardianRIDOrUIN": {
+				"parentOrGuardianRID": {
+					"type": "integer",
+					"minimum": 0
+				},
+				"parentOrGuardianUIN": {
 					"type": "integer",
 					"minimum": 0
 				},
@@ -86,6 +89,9 @@
 					"$ref": "#/definitions/documentType"
 				},
 				"proofOfDateOfBirth": {
+					"$ref": "#/definitions/documentType"
+				},
+				"proofOfException": {
 					"$ref": "#/definitions/documentType"
 				},
 				"individualBiometrics": {

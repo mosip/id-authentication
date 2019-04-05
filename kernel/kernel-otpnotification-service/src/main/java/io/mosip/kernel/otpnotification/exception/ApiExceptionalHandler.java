@@ -43,10 +43,14 @@ public class ApiExceptionalHandler {
 	/**
 	 * This method handles HttpClientErrorException.
 	 * 
+	 * @param httpServletRequest
+	 *            the request
 	 * @param e
 	 *            the exception.
 	 * @return the response entity.
+	 * 
 	 * @throws IOException
+	 *             the IO Exception
 	 */
 	@ExceptionHandler(HttpClientErrorException.class)
 	public ResponseEntity<ResponseWrapper<ServiceError>> httpClientErrorException(
@@ -61,10 +65,13 @@ public class ApiExceptionalHandler {
 	/**
 	 * This method handles OtpInvalidArgumentException.
 	 * 
+	 * @param httpServletRequest
+	 *            the request
 	 * @param exception
 	 *            The exception.
 	 * @return The response entity.
 	 * @throws IOException
+	 *             the IOException
 	 */
 	@ExceptionHandler(OtpNotificationInvalidArgumentException.class)
 	public ResponseEntity<ResponseWrapper<ServiceError>> otpValidationArgumentValidity(
@@ -78,10 +85,13 @@ public class ApiExceptionalHandler {
 	/**
 	 * This method handles MethodArgumentNotValidException.
 	 * 
+	 * @param httpServletRequest
+	 *            the request
 	 * @param e
 	 *            The exception.
 	 * @return The response entity.
 	 * @throws IOException
+	 *             the IO Exception
 	 */
 	@ExceptionHandler(MethodArgumentNotValidException.class)
 	public ResponseEntity<ResponseWrapper<ServiceError>> methodArgumentNotValidException(
@@ -102,10 +112,14 @@ public class ApiExceptionalHandler {
 	/**
 	 * This method handles OtpNotifierServiceException.
 	 * 
+	 * @param httpServletRequest
+	 *            the request
+	 * 
 	 * @param e
 	 *            the exception.
 	 * @return the response entity.
 	 * @throws IOException
+	 *             the IO Exception
 	 */
 	@ExceptionHandler(OtpNotifierServiceException.class)
 	public ResponseEntity<ResponseWrapper<ServiceError>> controlDataServiceException(
@@ -119,10 +133,14 @@ public class ApiExceptionalHandler {
 	/**
 	 * Method to handle {@link HttpMessageNotReadableException}.
 	 * 
+	 * @param httpServletRequest
+	 *            the request
+	 * 
 	 * @param exception
 	 *            the exception.
 	 * @return {@link ErrorResponse}.
 	 * @throws IOException
+	 *             the IO Exception
 	 */
 	@ExceptionHandler(HttpMessageNotReadableException.class)
 	public ResponseEntity<ResponseWrapper<ServiceError>> onHttpMessageNotReadable(
@@ -139,12 +157,13 @@ public class ApiExceptionalHandler {
 	/**
 	 * Method to handle {@link RuntimeException}.
 	 * 
-	 * @param request
+	 * @param httpServletRequest
 	 *            the servlet request.
 	 * @param exception
 	 *            the exception.
 	 * @return {@link ErrorResponse}.
 	 * @throws IOException
+	 *             the IO Exception
 	 */
 	@ExceptionHandler(value = { Exception.class, RuntimeException.class })
 	public ResponseEntity<ResponseWrapper<ServiceError>> defaultErrorHandler(
