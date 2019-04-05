@@ -76,16 +76,16 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
 			<artifactId>httpclient</artifactId>
 			<version>${apache.httpclient.version}</version>
 		</dependency>
-		<!-- <dependency>
+		<dependency>
 		    <groupId>io.mosip.kernel</groupId>
 		    <artifactId>kernel-auth-adapter</artifactId>
 		    <version>${kernel.core.version}</version>
-		</dependency>  -->
-		<!-- <dependency>
+		</dependency> 
+		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-security</artifactId>
 			<version>${spring.boot.version}</version>
-		</dependency> -->
+		</dependency>
 		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-test</artifactId>
