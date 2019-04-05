@@ -157,7 +157,7 @@ public class SmsNotification extends BaseTestCase implements ITest {
 				String id = (response.jsonPath().get("id")).toString();
 				logger.info("id is : " + id);
 				String queryStr = "SELECT * FROM master.machine_spec WHERE id='" + id + "'";
-				boolean valid = KernelMasterDataR.validateDB(queryStr, MachineSpecificationDto.class);
+				boolean valid = KernelMasterDataR.masterDataDBConnection( MachineSpecificationDto.class,queryStr);
 				if (valid) {
 					finalStatus = "Pass";
 				} else {

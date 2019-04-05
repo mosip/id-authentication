@@ -38,6 +38,7 @@ import io.mosip.registration.processor.status.dto.RegistrationStatusRequestDTO;
 import io.mosip.registration.processor.status.dto.RegistrationSyncRequestDTO;
 import io.mosip.registration.processor.status.dto.SyncRegistrationDto;
 import io.mosip.registration.processor.status.dto.SyncResponseDto;
+import io.mosip.registration.processor.status.dto.SyncResponseFailureDto;
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
 import io.mosip.registration.processor.status.service.SyncRegistrationService;
 import io.mosip.registration.processor.status.validator.RegistrationSyncRequestValidator;
@@ -126,14 +127,20 @@ public class RegistrationSyncControllerTest {
 		registrationSyncRequestDTO.setRequesttime(DateUtils.getUTCCurrentDateTimeString("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"));
 		arrayToJson=gson.toJson(registrationSyncRequestDTO);
 		SyncResponseDto syncResponseDto = new SyncResponseDto();
-
+		SyncResponseFailureDto syncResponseFailureDto = new SyncResponseFailureDto();
 		syncResponseDto.setRegistrationId("1001");
 		syncResponseDto.setParentRegistrationId("12334");
 		syncResponseDto.setMessage("Registartion Id's are successfully synched in Sync table");
-		syncResponseDto.setStatus("Success");
-
+		syncResponseDto.setStatus("SUCCESS");
+		syncResponseFailureDto.setRegistrationId("1001");
+		syncResponseFailureDto.setParentRegistrationId("12334");
+		syncResponseFailureDto.setMessage("Registartion Id's are successfully synched in Sync table");
+		syncResponseFailureDto.setStatus("FAILURE");
+		syncResponseFailureDto.setErrorCode("Test");
 		syncResponseDtoList = new ArrayList<>();
 		syncResponseDtoList.add(syncResponseDto);
+		syncResponseDtoList.add(syncResponseFailureDto);
+
 	}
 
 	/**

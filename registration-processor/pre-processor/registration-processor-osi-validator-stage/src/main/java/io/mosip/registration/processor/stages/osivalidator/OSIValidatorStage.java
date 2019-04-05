@@ -75,7 +75,6 @@ public class OSIValidatorStage extends MosipVerticleManager {
 	public void deployVerticle() {
 		MosipEventBus mosipEventBus = this.getEventBus(this, clusterManagerUrl);
 		this.consumeAndSend(mosipEventBus, MessageBusAddress.OSI_BUS_IN, MessageBusAddress.OSI_BUS_OUT);
-
 	}
 
 	/*

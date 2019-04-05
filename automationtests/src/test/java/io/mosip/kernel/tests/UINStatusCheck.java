@@ -35,7 +35,7 @@ import io.mosip.util.ReadFolder;
 import io.mosip.util.ResponseRequestMapper;
 import io.restassured.response.Response;
 
-public class UINStatusCheck extends BaseTestCase implements ITest{
+public class UINStatusCheck extends KernelMasterDataR implements ITest{
 
 	public UINStatusCheck() {
 		// TODO Auto-generated constructor stub
@@ -61,6 +61,7 @@ public class UINStatusCheck extends BaseTestCase implements ITest{
 	static JSONObject Expectedresponse = null;
 	String finalStatus = "";
 	static String testParam="";
+	public KernelMasterDataR dbConnection=new KernelMasterDataR();
 	/*
 	 * Data Providers to read the input json files from the folders
 	 */
@@ -110,7 +111,7 @@ public class UINStatusCheck extends BaseTestCase implements ITest{
 		 * Calling the GET method with no parameters
 		 */
 		String query="select u.uin from kernel.uin u where u.uin_status='UNUSED'";
-		List<String>list=KernelMasterDataR.getDataFromDB(UinEntity.class, query);
+		List<String>list=dbConnection.getData(query);
 		
 		int total=list.size();
 		
@@ -121,13 +122,14 @@ public class UINStatusCheck extends BaseTestCase implements ITest{
 		
 		String query1="select uin_status from kernel.uin where uin='"+uin_number+"'";
 		
-		List<String> status_list = KernelMasterDataR.getDataFromDB(UinEntity.class, query1);
+		List<String> status_list = dbConnection.getData(query1);
 		String status=status_list.get(0);
 		for(String uin:list)
 		{
 			if(uin.equals(uin_number))
 			{
 				finalStatus="pass";
+				System.out.println(uin+"----------------------");
 			
 				if(status.equals("ISSUED"))
 				{

@@ -144,7 +144,7 @@ public class PreRegZipHandlingServiceImpl implements PreRegZipHandlingService {
 
 			if (!StringUtils.isEmpty(jsonString)) {
 				/* validate id json schema */
-				jsonValidator.validateJson(jsonString.toString(), RegistrationConstants.IDENTITY_JSON_FILE_NAME);
+				jsonValidator.validateJson(jsonString.toString());
 				getRegistrationDtoContent().getDemographicDTO().getDemographicInfoDTO()
 						.setIdentity(validateJSONAndConvertToIdentity(jsonString));
 			}

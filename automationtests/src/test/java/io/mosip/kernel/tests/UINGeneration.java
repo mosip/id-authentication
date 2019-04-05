@@ -59,6 +59,7 @@ public class UINGeneration extends BaseTestCase implements ITest{
 	String finalStatus = "";
 	static String testParam="";
 	String alphanumeric_regEx="^[a-zA-Z0-9]*$";
+	
 	/*
 	 * Data Providers to read the input json files from the folders
 	 */
@@ -110,7 +111,7 @@ public class UINGeneration extends BaseTestCase implements ITest{
 		Response res=applicationLibrary.GetRequestNoParameter(uingenerator);
 		
 		 String uin = res.jsonPath().get("uin").toString();
-		 char[] list = uin.toCharArray();
+		 
 		 int uin_length=uin.length();
 		 String first_half=uin.substring(0, uin_length/2);
 		 String second_half=uin.substring(uin_length/2);
@@ -118,9 +119,10 @@ public class UINGeneration extends BaseTestCase implements ITest{
 		 for(int j=second_half.length()-1;j>=0;j--){
 			 rev_half=rev_half+second_half.charAt(j);
 		 }
-		 boolean isAscending = UIN_Assertions.ascendingMethod(uin);
+		boolean isAscending = UIN_Assertions.ascendingMethod(uin);
      	boolean isDescending = UIN_Assertions.ascendingMethod(uin);
      	boolean alpanumeric = UIN_Assertions.asserUinWithPattern(uin, alphanumeric_regEx);
+     	
 		if(uin_length==10){
         	   if(first_half.equals(second_half)){ 
         		   finalStatus="fail";

@@ -52,7 +52,7 @@ public class OtpGenerate extends BaseTestCase implements ITest{
 	/**
 	 *  Declaration of all variables
 	 */
-	private static Logger logger = Logger.getLogger(GetRegCenterByIDTimestamp.class);
+	private static Logger logger = Logger.getLogger(OtpGenerate.class);
 	protected static String testCaseName = "";
 	static SoftAssert softAssert=new SoftAssert();
 	public static JSONArray arr = new JSONArray();
@@ -84,7 +84,6 @@ public class OtpGenerate extends BaseTestCase implements ITest{
 	 */
 	@DataProvider(name = "otpGenerate")
 	public static Object[][] readData1(ITestContext context) throws Exception {
-		//CommonLibrary.configFileWriter(folderPath,requestKeyFile,"DemographicCreate","smokePreReg");
 		 testParam = context.getCurrentXmlTest().getParameter("testType");
 		switch (testParam) {
 		case "smoke":

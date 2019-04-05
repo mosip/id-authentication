@@ -12,15 +12,16 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
-import io.mosip.kernel.emailnotification.NotificationEmailBootApplication;
+import io.mosip.kernel.emailnotification.test.NotificationEmailTestBootApplication;
 import io.mosip.kernel.emailnotification.util.EmailNotificationUtils;
 
 @RunWith(SpringRunner.class)
 @AutoConfigureMockMvc
-@SpringBootTest(classes = NotificationEmailBootApplication.class)
+@SpringBootTest(classes = NotificationEmailTestBootApplication.class)
 public class MailnotificationExceptionTest {
 	@Autowired
 	MockMvc mockMvc;
@@ -28,6 +29,7 @@ public class MailnotificationExceptionTest {
 	@MockBean
 	EmailNotificationUtils utils;
 
+	@WithUserDetails("individual")
 	@Test
 	public void testToRaiseExceptionForNullContent() throws Exception {
 		mockMvc.perform(post("/email/send").contentType(MediaType.MULTIPART_FORM_DATA)
@@ -35,6 +37,7 @@ public class MailnotificationExceptionTest {
 				.andExpect(jsonPath("$.errors[0].errorCode", isA(String.class)));
 	}
 
+	@WithUserDetails("individual")
 	@Test
 	public void testToRaiseExceptionForNullSubject() throws Exception {
 		mockMvc.perform(post("/email/send").contentType(MediaType.MULTIPART_FORM_DATA)
@@ -42,6 +45,7 @@ public class MailnotificationExceptionTest {
 				.andExpect(jsonPath("$.errors[0].errorCode", isA(String.class)));
 	}
 
+	@WithUserDetails("individual")
 	@Test
 	public void testToRaiseExceptionForNullTo() throws Exception {
 		mockMvc.perform(post("/email/send").contentType(MediaType.MULTIPART_FORM_DATA)
@@ -49,6 +53,7 @@ public class MailnotificationExceptionTest {
 				.andExpect(jsonPath("$.errors[0].errorCode", isA(String.class)));
 	}
 
+	@WithUserDetails("individual")
 	@Test
 	public void testToRaiseExceptionForEmptySubject() throws Exception {
 		mockMvc.perform(post("/email/send").contentType(MediaType.MULTIPART_FORM_DATA).param("mailTo", "values")
@@ -56,6 +61,7 @@ public class MailnotificationExceptionTest {
 				.andExpect(jsonPath("$.errors[0].errorCode", isA(String.class)));
 	}
 
+	@WithUserDetails("individual")
 	@Test
 	public void testToRaiseExceptionForEmptyContent() throws Exception {
 		mockMvc.perform(post("/email/send").contentType(MediaType.MULTIPART_FORM_DATA).param("mailTo", "values")
@@ -63,6 +69,7 @@ public class MailnotificationExceptionTest {
 				.andExpect(jsonPath("$.errors[0].errorCode", isA(String.class)));
 	}
 
+	@WithUserDetails("individual")
 	@Test
 	public void testToRaiseExceptionForEmptyWithMultipleTo() throws Exception {
 		mockMvc.perform(post("/email/send").contentType(MediaType.MULTIPART_FORM_DATA)
@@ -71,6 +78,7 @@ public class MailnotificationExceptionTest {
 				.andExpect(jsonPath("$.errors[0].errorCode", isA(String.class)));
 	}
 
+	@WithUserDetails("individual")
 	@Test
 	public void testToRaiseExceptionForEmptyWithMultipleToAndMultipleEmpty() throws Exception {
 		mockMvc.perform(post("/email/send").contentType(MediaType.MULTIPART_FORM_DATA)
@@ -79,6 +87,7 @@ public class MailnotificationExceptionTest {
 				.andExpect(jsonPath("$.errors[0].errorCode", isA(String.class)));
 	}
 
+	@WithUserDetails("individual")
 	@Test
 	public void testToRaiseExceptionForEmptyTo() throws Exception {
 		mockMvc.perform(post("/email/send").contentType(MediaType.MULTIPART_FORM_DATA).param("mailTo", "")

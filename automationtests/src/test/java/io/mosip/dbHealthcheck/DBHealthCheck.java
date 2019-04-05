@@ -35,8 +35,8 @@ public class DBHealthCheck {
 	{
 	
 	
-		boolean dbpreregConnectivity=KernelMasterDataR.kernelMasterData_dbconnectivityCheck();
-		Assert.assertEquals(dbpreregConnectivity, true);
+		boolean dbMasterDataConnectivity=KernelMasterDataR.kernelMasterData_dbconnectivityCheck();
+		Assert.assertEquals(dbMasterDataConnectivity, true);
 		logger.info("kernelMasterData DB is Connected Successfully");
 		
 	
