@@ -86,9 +86,13 @@ public class OTPManager {
 
 			Optional<Object> responseBody = e.getResponseBody();
 			if (responseBody.isPresent()) {
-				otpGeneratorResponsetDto = (ResponseWrapper<OtpGeneratorResponseDto>) responseBody.get();
-				String status = otpGeneratorResponsetDto.getResponse().getStatus();
-				String message = otpGeneratorResponsetDto.getResponse().getMessage();
+				Map<String, Object> res = (Map<String, Object>) responseBody.get();
+				String status = res.get("response") instanceof Map
+						? (String) ((Map<String, Object>) res.get("response")).get(STATUS)
+						: null;
+				String message = res.get("response") instanceof Map
+						? (String) ((Map<String, Object>) res.get("response")).get("message")
+						: null;
 				if (status != null && status.equalsIgnoreCase(STATUS_FAILURE)
 						&& message.equalsIgnoreCase(USER_BLOCKED)) {
 					throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.BLOCKED_OTP_GENERATE);
@@ -138,8 +142,8 @@ public class OTPManager {
 			Optional<Object> responseBody = e.getResponseBody();
 			if (responseBody.isPresent()) {
 				Map<String, Object> res = (Map<String, Object>) responseBody.get();
-				Object status = res.get(STATUS);
-				Object message = res.get("message");
+				Object status = res.get("response") instanceof Map ? ((Map<String, Object>) res.get("response")).get(STATUS) : null;
+				Object message = res.get("response") instanceof Map ? ((Map<String, Object>) res.get("response")).get("message") : null;
 				if (status instanceof String && message instanceof String) {
 					if (((String) status).equalsIgnoreCase(STATUS_FAILURE)) {
 						throwOtpException((String) message);

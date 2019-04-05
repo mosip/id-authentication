@@ -32,6 +32,7 @@ import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
 import io.mosip.authentication.core.dto.indauth.KycAuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.KycAuthResponseDTO;
 import io.mosip.authentication.core.dto.indauth.KycResponseDTO;
+import io.mosip.authentication.core.dto.indauth.ResponseDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.id.service.IdAuthService;
@@ -55,7 +56,8 @@ import io.mosip.kernel.core.util.UUIDUtils;
 
 /**
  * This class provides the implementation of AuthFacade, provides the
- * authentication for individual by calling the respective Service Classes{@link AuthFacade}.
+ * authentication for individual by calling the respective Service
+ * Classes{@link AuthFacade}.
  *
  * @author Arun Bose
  * 
@@ -163,27 +165,26 @@ public class AuthFacadeImpl implements AuthFacade {
 		AuthResponseBuilder authResponseBuilder = AuthResponseBuilder.newInstance(env.getProperty(DATETIME_PATTERN));
 		Map<String, List<IdentityInfoDTO>> idInfo = null;
 		String uin = String.valueOf(idResDTO.get("uin"));
-		String staticTokenId =null;
+		String staticTokenId = null;
 		Boolean staticTokenRequired = env.getProperty(STATIC_TOKEN_ENABLE, Boolean.class);
 		try {
 			idInfo = idInfoService.getIdInfo(idResDTO);
 			authResponseBuilder.setTxnID(authRequestDTO.getTransactionID());
 			// FIXME temporary fix for the api change
 //			String staticTokenId = staticTokenRequired ? tokenIdGenerator.generateId(tspId, uin) : "";
-			staticTokenId=staticTokenRequired ? tokenIdGenerator.generateId() : "";
+			staticTokenId = staticTokenRequired ? tokenIdGenerator.generateId() : "";
 			List<AuthStatusInfo> authStatusList = processAuthType(authRequestDTO, idInfo, uin, isAuth, staticTokenId,
 					partnerId);
 			authStatusList.forEach(authResponseBuilder::addAuthStatusInfo);
-			
+
 		} finally {
 			// Set static token
-						if (staticTokenRequired) {
-							authResponseDTO = authResponseBuilder.build(staticTokenId);
-						}else {
-							authResponseDTO = authResponseBuilder.build(null);
-						}
+			if (staticTokenRequired) {
+				authResponseDTO = authResponseBuilder.build(staticTokenId);
+			} else {
+				authResponseDTO = authResponseBuilder.build(null);
+			}
 
-			
 			logger.info(DEFAULT_SESSION_ID, IDA, AUTH_FACADE,
 					"authenticateApplicant status : " + authResponseDTO.getResponse().isAuthStatus());
 		}
@@ -481,6 +482,7 @@ public class AuthFacadeImpl implements AuthFacade {
 	@Override
 	public KycAuthResponseDTO processKycAuth(KycAuthRequestDTO kycAuthRequestDTO, AuthResponseDTO authResponseDTO,
 			String partnerId) throws IdAuthenticationBusinessException {
+		KycAuthResponseDTO kycAuthResponseDTO = new KycAuthResponseDTO();
 		Map<String, Object> idResDTO = null;
 		String resTime = null;
 		IdType idType = null;
@@ -510,21 +512,21 @@ public class AuthFacadeImpl implements AuthFacade {
 		}
 		Map<String, List<IdentityInfoDTO>> idInfo = idInfoService.getIdInfo(idResDTO);
 		KycResponseDTO response = null;
-		if (idResDTO != null && authResponseDTO.getResponse().isAuthStatus()) {
+		ResponseDTO authResponse = authResponseDTO.getResponse();
+		if (idResDTO != null && authResponse != null && authResponse.isAuthStatus()) {
 			response = kycService.retrieveKycInfo(String.valueOf(idResDTO.get("uin")),
 					kycAuthRequestDTO.getAllowedKycAttributes(), kycAuthRequestDTO.getSecondaryLangCode(), idInfo);
 			response.setTtl(env.getProperty("ekyc.ttl.hours"));
-		}
 
-		KycAuthResponseDTO kycAuthResponseDTO = new KycAuthResponseDTO();
-		response.setKycStatus(authResponseDTO.getResponse().isAuthStatus());
-		response.setStaticToken(authResponseDTO.getResponse().getStaticToken());
-		kycAuthResponseDTO.setResponse(response);
-		kycAuthResponseDTO.setId(authResponseDTO.getId());
-		kycAuthResponseDTO.setTransactionID(authResponseDTO.getTransactionID());
-		kycAuthResponseDTO.setVersion(authResponseDTO.getVersion());
-		kycAuthResponseDTO.setErrors(authResponseDTO.getErrors());
-		kycAuthResponseDTO.setResponseTime(resTime);
+			response.setKycStatus(authResponse.isAuthStatus());
+			response.setStaticToken(authResponse.getStaticToken());
+			kycAuthResponseDTO.setResponse(response);
+			kycAuthResponseDTO.setId(authResponseDTO.getId());
+			kycAuthResponseDTO.setTransactionID(authResponseDTO.getTransactionID());
+			kycAuthResponseDTO.setVersion(authResponseDTO.getVersion());
+			kycAuthResponseDTO.setErrors(authResponseDTO.getErrors());
+			kycAuthResponseDTO.setResponseTime(resTime);
+		}
 		return kycAuthResponseDTO;
 	}
 

@@ -79,7 +79,6 @@ public class OTPManagerTest {
 
 	private static final String USER_BLOCKED = "USER_BLOCKED";
 
-	
 	@SuppressWarnings("rawtypes")
 	@Test
 	public void otpTest() throws RestServiceException, IdAuthenticationBusinessException {
@@ -111,16 +110,17 @@ public class OTPManagerTest {
 		OtpGeneratorResponseDto otpGeneratorResponsetDto = new OtpGeneratorResponseDto();
 		otpGeneratorResponsetDto.setStatus("failure");
 		otpGeneratorResponsetDto.setMessage("USER_BLOCKED");
-		
-		ResponseWrapper<OtpGeneratorResponseDto> response = new ResponseWrapper<>();
-		response.setResponse(otpGeneratorResponsetDto);
 
+		Map<String, String> valueMap = new HashMap();
+		valueMap.put("status", "failure");
+		valueMap.put("message", "USER_BLOCKED");
+		Map<String, Object> wrapperMap = new HashMap();
+		wrapperMap.put("response", valueMap);
 		RestRequestDTO restRequestDTO = getRestRequestDTO();
 		Mockito.when(restRequestFactory.buildRequest(RestServicesConstants.OTP_GENERATE_SERVICE, null,
 				OTPValidateResponseDTO.class)).thenReturn(restRequestDTO);
-
 		Mockito.when(restHelper.requestSync(Mockito.any())).thenThrow(new RestServiceException(
-				IdAuthenticationErrorConstants.BLOCKED_OTP_VALIDATE, "failure", response));
+				IdAuthenticationErrorConstants.BLOCKED_OTP_VALIDATE, wrapperMap.toString(), wrapperMap));
 		otpManager.generateOTP("123456");
 	}
 
