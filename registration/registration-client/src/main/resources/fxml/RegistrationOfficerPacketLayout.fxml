@@ -130,7 +130,7 @@
                               <GridPane GridPane.columnIndex="1">
                                  <children>
                                     <Label styleClass="operationalTitle" text="%pendingapproval" GridPane.rowIndex="1" />
-                                    <Label fx:id="pendingApprovalCountLbl" styleClass="operationalDetails" text="18 Applications" GridPane.rowIndex="2" />
+                                    <Label fx:id="pendingApprovalCountLbl" styleClass="operationalDetails" text="%applications" GridPane.rowIndex="2" />
                                  </children>
                                  <columnConstraints>
                                     <ColumnConstraints halignment="LEFT" hgrow="ALWAYS" percentWidth="100.0" />
@@ -161,7 +161,7 @@
                               <GridPane GridPane.columnIndex="1">
                                  <children>
                                     <Label styleClass="operationalTitle" text="%reRegistration" GridPane.rowIndex="1" />
-                                    <Label fx:id="reRegistrationCountLbl" styleClass="operationalDetails" text="8 Applications" GridPane.rowIndex="2" />
+                                    <Label fx:id="reRegistrationCountLbl" styleClass="operationalDetails" text="%applications" GridPane.rowIndex="2" />
                                  </children>
                                  <columnConstraints>
                                     <ColumnConstraints halignment="LEFT" hgrow="ALWAYS" percentWidth="100.0" />
@@ -250,7 +250,7 @@
                               <GridPane GridPane.columnIndex="1">
                                  <children>
                                     <Label styleClass="operationalTitle" text="%synchronizeData" GridPane.rowIndex="1" />
-                                    <Label styleClass="operationalDetails" text="Last Sync - on Monday 10 Jan 2:300 PM" GridPane.rowIndex="2" />
+                                    <Label styleClass="operationalDetails" text="%lastsynctemp" GridPane.rowIndex="2" />
                                  </children>
                                  <columnConstraints>
                                     <ColumnConstraints halignment="LEFT" hgrow="ALWAYS" percentWidth="100.0" />
@@ -284,7 +284,7 @@
                               <GridPane GridPane.columnIndex="1">
                                  <children>
                                     <Label styleClass="operationalTitle" text="%downloadPreregistrationData" GridPane.rowIndex="1" />
-                                    <Label styleClass="operationalDetails" text="Downloaded on Monday 10 Jan 8:00 AM; Size 564 MB" GridPane.rowIndex="2" />
+                                    <Label styleClass="operationalDetails" text="%downloadedtemp" GridPane.rowIndex="2" />
                                  </children>
                                  <columnConstraints>
                                     <ColumnConstraints halignment="LEFT" hgrow="ALWAYS" percentWidth="100.0" />
@@ -318,7 +318,7 @@
                               <GridPane GridPane.columnIndex="1">
                                  <children>
                                     <Label styleClass="operationalTitle" text="%updateOperatorBiometrics" GridPane.rowIndex="1" />
-                                    <Label styleClass="operationalDetails" text="Not uploaded yet" GridPane.rowIndex="2" />
+                                    <Label styleClass="operationalDetails" text="%notuploadedtemp" GridPane.rowIndex="2" />
                                  </children>
                                  <columnConstraints>
                                     <ColumnConstraints halignment="LEFT" hgrow="ALWAYS" percentWidth="100.0" />
