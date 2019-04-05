@@ -50,6 +50,11 @@ public class StaticPinController {
 	@Autowired
 	private StaticPinRequestValidator staticPinRequestValidator;
 
+	/**
+	 * This method will bind StaticPinRequestValidator
+	 * 
+	 * @param binder
+	 */
 	@InitBinder
 	private void initBinder(WebDataBinder binder) {
 		binder.setValidator(staticPinRequestValidator);
@@ -63,16 +68,16 @@ public class StaticPinController {
 	 * @return staticPinResponseDTO
 	 * @throws IdAuthenticationAppException
 	 */
-	@PostMapping(path = "/staticpin/${ida.api.version}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@PostMapping(path = "/staticpin", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Static Pin Store Request", response = IdAuthenticationAppException.class)
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Request Stored successfully") })
 	public StaticPinResponseDTO storeSpin(@Valid @RequestBody StaticPinRequestDTO staticPinRequestDTO,
 			@ApiIgnore Errors errors) throws IdAuthenticationAppException {
 		try {
 			DataValidationUtil.validate(errors);
-			return  staticPinService.storeSpin(staticPinRequestDTO);
+			return staticPinService.storeSpin(staticPinRequestDTO);
 		} catch (IDDataValidationException e) {
-			logger.error(DEAFULT_SESSION_ID,this.getClass().getSimpleName(), e.getClass().getName(), e.getErrorText());
+			logger.error(DEAFULT_SESSION_ID, this.getClass().getSimpleName(), e.getClass().getName(), e.getErrorText());
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.DATA_VALIDATION_FAILED, e);
 		} catch (IdAuthenticationBusinessException e) {
 			logger.error(DEAFULT_SESSION_ID, e.getClass().toString(), e.getErrorCode(), e.getErrorText());

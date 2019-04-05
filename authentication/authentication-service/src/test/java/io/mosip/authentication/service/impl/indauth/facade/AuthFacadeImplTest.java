@@ -44,6 +44,7 @@ import io.mosip.authentication.core.dto.indauth.KycAuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.KycAuthResponseDTO;
 import io.mosip.authentication.core.dto.indauth.KycResponseDTO;
 import io.mosip.authentication.core.dto.indauth.RequestDTO;
+import io.mosip.authentication.core.dto.indauth.ResponseDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.IdAuthenticationDaoException;
 import io.mosip.authentication.core.spi.id.service.IdAuthService;
@@ -59,12 +60,12 @@ import io.mosip.authentication.service.factory.RestRequestFactory;
 import io.mosip.authentication.service.helper.AuditHelper;
 import io.mosip.authentication.service.helper.IdInfoHelper;
 import io.mosip.authentication.service.helper.RestHelper;
-import io.mosip.authentication.service.impl.id.service.impl.IdRepoManager;
 import io.mosip.authentication.service.impl.indauth.builder.AuthStatusInfoBuilder;
 import io.mosip.authentication.service.impl.indauth.service.KycServiceImpl;
 import io.mosip.authentication.service.impl.indauth.service.bio.BioAuthType;
 import io.mosip.authentication.service.impl.indauth.service.demo.DemoMatchType;
 import io.mosip.authentication.service.impl.notification.service.NotificationServiceImpl;
+import io.mosip.authentication.service.integration.IdRepoManager;
 import io.mosip.authentication.service.integration.IdTemplateManager;
 import io.mosip.authentication.service.integration.NotificationManager;
 import io.mosip.authentication.service.integration.OTPManager;
@@ -86,6 +87,8 @@ import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderIm
 
 public class AuthFacadeImplTest {
 
+	private static final String MOSIP_SECONDARY_LANGUAGE = "mosip.secondary-language";
+	private static final String MOSIP_PRIMARY_LANGUAGE = "mosip.primary-language";
 	/** The auth facade impl. */
 	@InjectMocks
 	private AuthFacadeImpl authFacadeImpl;
@@ -155,7 +158,7 @@ public class AuthFacadeImplTest {
 	private PinAuthService pinAuthService;
 
 	@Mock
-	private TokenIdGenerator<String, String> tokenIdGenerator;
+	private TokenIdGenerator<String> tokenIdGenerator;
 
 	/**
 	 * Before.
@@ -263,7 +266,10 @@ public class AuthFacadeImplTest {
 		Mockito.when(idAuthService.getIdRepoByUIN(Mockito.anyString(), Mockito.anyBoolean())).thenReturn(repoDetails());
 		Mockito.when(idInfoService.getIdInfo(Mockito.any())).thenReturn(idInfo);
 		AuthResponseDTO authResponseDTO = new AuthResponseDTO();
-		authResponseDTO.setStatus(Boolean.TRUE);
+		ResponseDTO res=new ResponseDTO();
+		res.setAuthStatus(Boolean.TRUE);
+		res.setStaticToken("234567890");
+		authResponseDTO.setResponse(res);
 
 		authResponseDTO.setResponseTime(ZonedDateTime.now()
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
@@ -272,7 +278,7 @@ public class AuthFacadeImplTest {
 		Mockito.when(idInfoHelper.getEntityInfoAsString(DemoMatchType.NAME, idInfo)).thenReturn("mosip");
 		Mockito.when(idInfoHelper.getEntityInfoAsString(DemoMatchType.EMAIL, idInfo)).thenReturn("mosip");
 		Mockito.when(idInfoHelper.getEntityInfoAsString(DemoMatchType.PHONE, idInfo)).thenReturn("mosip");
-		Mockito.when(tokenIdGenerator.generateId(Mockito.anyString(), Mockito.anyString()))
+		Mockito.when(tokenIdGenerator.generateId())
 				.thenReturn("247334310780728918141754192454591343");
 		Optional<String> value = Optional.of("12345678");
 		Mockito.when(idInfoFetcher.getUinOrVid(authRequestDTO)).thenReturn(value);
@@ -306,10 +312,10 @@ public class AuthFacadeImplTest {
 		authRequestDTO.setId("id");
 		authRequestDTO.setVersion("1.1");
 		IdentityInfoDTO idInfoDTO = new IdentityInfoDTO();
-		idInfoDTO.setLanguage(env.getProperty("mosip.primary.lang-code"));
+		idInfoDTO.setLanguage(env.getProperty(MOSIP_PRIMARY_LANGUAGE));
 		idInfoDTO.setValue("John");
 		IdentityInfoDTO idInfoDTO1 = new IdentityInfoDTO();
-		idInfoDTO1.setLanguage(env.getProperty("mosip.secondary.lang-code"));
+		idInfoDTO1.setLanguage(env.getProperty(MOSIP_SECONDARY_LANGUAGE));
 		idInfoDTO1.setValue("Mike");
 		List<IdentityInfoDTO> idInfoList = new ArrayList<>();
 		idInfoList.add(idInfoDTO);
@@ -481,7 +487,8 @@ public class AuthFacadeImplTest {
 		kycAuthResponseDTO.setTransactionID("34567");
 		kycAuthResponseDTO.setErrors(null);
 		kycResponseDTO.setTtl(env.getProperty("ekyc.ttl.hours"));
-		kycAuthResponseDTO.setStatus(Boolean.TRUE);
+		kycResponseDTO.setStaticToken("2345678");
+		kycResponseDTO.setKycStatus(Boolean.TRUE);
 
 		kycAuthResponseDTO.setResponseTime(ZonedDateTime.now()
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
@@ -494,10 +501,12 @@ public class AuthFacadeImplTest {
 		kycResponseDTO.setIdentity(idInfo);
 		kycAuthResponseDTO.setResponse(kycResponseDTO);
 		AuthResponseDTO authResponseDTO = new AuthResponseDTO();
-		authResponseDTO.setStatus(Boolean.TRUE);
+		ResponseDTO res=new ResponseDTO();
+		res.setAuthStatus(Boolean.TRUE);
+		res.setStaticToken("234567890");
+		authResponseDTO.setResponse(res);
 		authResponseDTO.setResponseTime(ZonedDateTime.now()
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
-		authResponseDTO.setStaticToken("234567890");
 		authResponseDTO.setErrors(null);
 		authResponseDTO.setTransactionID("123456789");
 		authResponseDTO.setVersion("1.0");
@@ -550,7 +559,8 @@ public class AuthFacadeImplTest {
 		kycAuthResponseDTO.setTransactionID("34567");
 		kycAuthResponseDTO.setErrors(null);
 		kycResponseDTO.setTtl(env.getProperty("ekyc.ttl.hours"));
-		kycAuthResponseDTO.setStatus(Boolean.TRUE);
+		kycResponseDTO.setStaticToken("2345678");
+		kycResponseDTO.setKycStatus(Boolean.TRUE);
 
 		kycAuthResponseDTO.setResponseTime(ZonedDateTime.now()
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
@@ -563,10 +573,12 @@ public class AuthFacadeImplTest {
 		kycResponseDTO.setIdentity(idInfo);
 		kycAuthResponseDTO.setResponse(kycResponseDTO);
 		AuthResponseDTO authResponseDTO = new AuthResponseDTO();
-		authResponseDTO.setStatus(Boolean.TRUE);
+		ResponseDTO res=new ResponseDTO();
+		res.setAuthStatus(Boolean.TRUE);
+		res.setStaticToken("234567890");
+		authResponseDTO.setResponse(res);
 		authResponseDTO.setResponseTime(ZonedDateTime.now()
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
-		authResponseDTO.setStaticToken("234567890");
 		authResponseDTO.setErrors(null);
 		authResponseDTO.setTransactionID("123456789");
 		authResponseDTO.setVersion("1.0");
@@ -621,7 +633,8 @@ public class AuthFacadeImplTest {
 		kycAuthResponseDTO.setTransactionID("34567");
 		kycAuthResponseDTO.setErrors(null);
 		kycResponseDTO.setTtl(env.getProperty("ekyc.ttl.hours"));
-		kycAuthResponseDTO.setStatus(Boolean.TRUE);
+		kycResponseDTO.setStaticToken("2345678");
+		kycResponseDTO.setKycStatus(Boolean.TRUE);
 
 		kycAuthResponseDTO.setResponseTime(ZonedDateTime.now()
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
@@ -634,10 +647,12 @@ public class AuthFacadeImplTest {
 		kycResponseDTO.setIdentity(idInfo);
 		kycAuthResponseDTO.setResponse(kycResponseDTO);
 		AuthResponseDTO authResponseDTO = new AuthResponseDTO();
-		authResponseDTO.setStatus(Boolean.TRUE);
+		ResponseDTO res=new ResponseDTO();
+		res.setAuthStatus(Boolean.TRUE);
+		res.setStaticToken("234567890");
+		authResponseDTO.setResponse(res);
 		authResponseDTO.setResponseTime(ZonedDateTime.now()
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
-		authResponseDTO.setStaticToken("234567890");
 		authResponseDTO.setErrors(null);
 		authResponseDTO.setTransactionID("123456789");
 		authResponseDTO.setVersion("1.0");
@@ -726,7 +741,10 @@ public class AuthFacadeImplTest {
 		Mockito.when(idAuthService.getIdRepoByUIN(Mockito.anyString(), Mockito.anyBoolean())).thenReturn(repoDetails());
 		Mockito.when(idInfoService.getIdInfo(Mockito.any())).thenReturn(idInfo);
 		AuthResponseDTO authResponseDTO = new AuthResponseDTO();
-		authResponseDTO.setStatus(Boolean.TRUE);
+		ResponseDTO res=new ResponseDTO();
+		res.setAuthStatus(Boolean.TRUE);
+		res.setStaticToken("234567890");
+		authResponseDTO.setResponse(res);
 
 		authResponseDTO.setResponseTime(ZonedDateTime.now()
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
@@ -735,7 +753,7 @@ public class AuthFacadeImplTest {
 		Mockito.when(idInfoHelper.getEntityInfoAsString(DemoMatchType.NAME, idInfo)).thenReturn("mosip");
 		Mockito.when(idInfoHelper.getEntityInfoAsString(DemoMatchType.EMAIL, idInfo)).thenReturn("mosip");
 		Mockito.when(idInfoHelper.getEntityInfoAsString(DemoMatchType.PHONE, idInfo)).thenReturn("mosip");
-		Mockito.when(tokenIdGenerator.generateId(Mockito.anyString(), Mockito.anyString()))
+		Mockito.when(tokenIdGenerator.generateId())
 				.thenReturn("247334310780728918141754192454591343");
 		Mockito.when(authFacadeMock.getUTCTime(Mockito.anyString())).thenReturn("2019-02-18T12:28:17.078");
 		Optional<String> value = Optional.of("12345678");
@@ -811,7 +829,10 @@ public class AuthFacadeImplTest {
 		Mockito.when(idAuthService.getIdRepoByUIN(Mockito.anyString(), Mockito.anyBoolean())).thenReturn(repoDetails());
 		Mockito.when(idInfoService.getIdInfo(Mockito.any())).thenReturn(idInfo);
 		AuthResponseDTO authResponseDTO = new AuthResponseDTO();
-		authResponseDTO.setStatus(Boolean.TRUE);
+		ResponseDTO res=new ResponseDTO();
+		res.setAuthStatus(Boolean.TRUE);
+		res.setStaticToken("234567890");
+		authResponseDTO.setResponse(res);
 
 		authResponseDTO.setResponseTime(ZonedDateTime.now()
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
@@ -820,7 +841,7 @@ public class AuthFacadeImplTest {
 		Mockito.when(idInfoHelper.getEntityInfoAsString(DemoMatchType.NAME, idInfo)).thenReturn("mosip");
 		Mockito.when(idInfoHelper.getEntityInfoAsString(DemoMatchType.EMAIL, idInfo)).thenReturn("mosip");
 		Mockito.when(idInfoHelper.getEntityInfoAsString(DemoMatchType.PHONE, idInfo)).thenReturn("mosip");
-		Mockito.when(tokenIdGenerator.generateId(Mockito.anyString(), Mockito.anyString()))
+		Mockito.when(tokenIdGenerator.generateId())
 				.thenReturn("247334310780728918141754192454591343");
 		Mockito.when(authFacadeMock.getUTCTime(Mockito.anyString())).thenReturn("2019-02-18T12:28:17.078");
 		Optional<String> value = Optional.of("12345678");

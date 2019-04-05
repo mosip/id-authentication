@@ -2,6 +2,8 @@ package io.mosip.authentication.service.filter;
 
 import java.io.IOException;
 import java.security.InvalidKeyException;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.PublicKey;
@@ -71,6 +73,9 @@ public abstract class BaseAuthFilter extends BaseIDAFilter {
 	/** The key manager. */
 	protected KeyManager keyManager;
 
+	/* (non-Javadoc)
+	 * @see io.mosip.authentication.service.filter.BaseIDAFilter#init(javax.servlet.FilterConfig)
+	 */
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException {
 		super.init(filterConfig);
@@ -108,6 +113,15 @@ public abstract class BaseAuthFilter extends BaseIDAFilter {
 
 	}
 
+	/**
+	 * validateDecipheredRequest - Method used to validate the input stream request
+	 * by validating the policy, partner and MISP id of the authenticating partner
+	 * once the request is decoded and deciphered
+	 *
+	 * @param requestWrapper {@link ResettableStreamHttpServletRequest}
+	 * @param decipherRequest the request got after decode and decipher the input stream
+	 * @throws IdAuthenticationAppException the id authentication app exception
+	 */
 	protected abstract void validateDecipheredRequest(ResettableStreamHttpServletRequest requestWrapper,
 			Map<String, Object> decipherRequest) throws IdAuthenticationAppException;
 
@@ -136,11 +150,13 @@ public abstract class BaseAuthFilter extends BaseIDAFilter {
 	}
 
 	/**
-	 * Validate signature.
+	 * validateSignature method is used to authenticate the request
+	 * received from the authenticating partner from the pay load received
+	 * which consists of the JSON signature and certificate 
 	 *
-	 * @param signature     the signature
-	 * @param requestAsByte the request as byte
-	 * @return true, if successful
+	 * @param signature     the JWS serialization received through the request
+	 * @param requestAsByte the byte array of the request got after decipher 
+	 * @return true, if successful once the signature is validated
 	 * @throws IdAuthenticationAppException the id authentication app exception
 	 */
 	protected boolean validateSignature(String signature, byte[] requestAsByte) throws IdAuthenticationAppException {
@@ -152,6 +168,9 @@ public abstract class BaseAuthFilter extends BaseIDAFilter {
 			if (certificateChainHeaderValue.size() == NumberUtils.INTEGER_ONE
 					&& jws.getAlgorithmHeaderValue().equals(env.getProperty(MOSIP_JWS_CERTIFICATE_ALGM))) {
 				X509Certificate certificate = certificateChainHeaderValue.get(0);
+				KeyStore keyStore = KeyStore.getInstance(KeyStore.getDefaultType());
+				keyStore.load(null);
+				keyStore.setCertificateEntry("password", certificate);
 				certificate.checkValidity();
 				publicKey = certificate.getPublicKey();
 				certificate.verify(publicKey);
@@ -162,7 +181,7 @@ public abstract class BaseAuthFilter extends BaseIDAFilter {
 				throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.INVALID_CERTIFICATE);
 			}
 		} catch (JoseException | InvalidKeyException | CertificateException | NoSuchAlgorithmException
-				| NoSuchProviderException | SignatureException e) {
+				| NoSuchProviderException | SignatureException | KeyStoreException | IOException e) {
 			mosipLogger.error(SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER, "Invalid certificate");
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.INVALID_CERTIFICATE, e);
 		}
@@ -170,12 +189,14 @@ public abstract class BaseAuthFilter extends BaseIDAFilter {
 	}
 
 	/**
-	 * Check valid sign.
+	 * checkValidSign method used to check if all the parameters in 
+	 * the signature are valid and returns true or false once
+	 * validation is performed
 	 *
-	 * @param requestAsByte the request as byte
-	 * @param isSigned      the is signed
-	 * @param certificate   the certificate
-	 * @param jws           the jws
+	 * @param requestAsByte the byte array of the request got after decipher
+	 * @param isSigned      the final result which determines is the validation successful or not
+	 * @param certificate   the certificate received from the signature pay load
+	 * @param jws           the JSON Web Signature received through request
 	 * @return true, if successful
 	 * @throws JoseException the jose exception
 	 */
@@ -189,9 +210,10 @@ public abstract class BaseAuthFilter extends BaseIDAFilter {
 	}
 
 	/**
-	 * Validate org.
+	 * validateOrg method used to validate the organization
+	 * present in the certificate
 	 *
-	 * @param certNew the cert new
+	 * @param certNew the X509 certificate fetched from the signature
 	 * @return true, if successful
 	 */
 	private boolean validateOrg(X509Certificate certNew) {
@@ -202,10 +224,10 @@ public abstract class BaseAuthFilter extends BaseIDAFilter {
 	}
 
 	/**
-	 * Decode.
+	 * Decode method is used to decode the encoded string
 	 *
-	 * @param stringToDecode the string to decode
-	 * @return the object
+	 * @param stringToDecode the encoded string
+	 * @return the object the decoded string
 	 * @throws IdAuthenticationAppException the id authentication app exception
 	 */
 	protected static Object decode(String stringToDecode) throws IdAuthenticationAppException {
@@ -222,10 +244,11 @@ public abstract class BaseAuthFilter extends BaseIDAFilter {
 	}
 
 	/**
-	 * Encode.
+	 * Encode method is used to encode the string which
+	 * is passed through it
 	 *
-	 * @param stringToEncode the string to encode
-	 * @return the string
+	 * @param stringToEncode the string to be encoded
+	 * @return the string the encoded string
 	 * @throws IdAuthenticationAppException the id authentication app exception
 	 */
 	protected static String encode(String stringToEncode) throws IdAuthenticationAppException {
@@ -242,10 +265,12 @@ public abstract class BaseAuthFilter extends BaseIDAFilter {
 	}
 
 	/**
-	 * Decipher request.
+	 * decipherRequest method is used to get the deciphered request
+	 * from the encoded and enciphered request passed by the 
+	 * authenticating partner
 	 *
-	 * @param requestBody the request body
-	 * @return the map
+	 * @param requestBody the encoded and enciphered request body
+	 * @return the map the decoded and deciphered request body
 	 * @throws IdAuthenticationAppException the id authentication app exception
 	 */
 	protected Map<String, Object> decipherRequest(Map<String, Object> requestBody) throws IdAuthenticationAppException {
@@ -253,10 +278,11 @@ public abstract class BaseAuthFilter extends BaseIDAFilter {
 	}
 
 	/**
-	 * Encipher response.
+	 * encipherResponse method is used to encoded and encrypt 
+	 * the response received while returning the KYC response
 	 *
-	 * @param responseBody the response body
-	 * @return the map
+	 * @param responseBody the response received after authentication
+	 * @return the map the final encoded and enciphered response
 	 * @throws IdAuthenticationAppException the id authentication app exception
 	 */
 	protected Map<String, Object> encipherResponse(Map<String, Object> responseBody)
@@ -277,6 +303,15 @@ public abstract class BaseAuthFilter extends BaseIDAFilter {
 		return encipherResponse(responseMap);
 	}
 
+	/**
+	 * validateRequestHMAC method is used to validate the HMAC 
+	 * of the request with the deciphered request block and 
+	 * requestHMAC received in the request body
+	 *
+	 * @param requestHMAC the requestHMAC received in the request body
+	 * @param generatedHMAC the generated HMAC computed once the request is decoded and deciphered
+	 * @throws IdAuthenticationAppException the id authentication app exception
+	 */
 	protected void validateRequestHMAC(String requestHMAC, String generatedHMAC) throws IdAuthenticationAppException {
 		if (!requestHMAC.equals(HMACUtils.digestAsPlainText(HMACUtils.generateHash(generatedHMAC.getBytes())))) {
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.HMAC_VALIDATION_FAILED);

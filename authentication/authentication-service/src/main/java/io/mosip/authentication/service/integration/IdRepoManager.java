@@ -1,4 +1,4 @@
-package io.mosip.authentication.service.impl.id.service.impl;
+package io.mosip.authentication.service.integration;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -29,21 +29,40 @@ import io.mosip.kernel.core.idrepo.constant.IdRepoErrorConstants;
 @Component
 public class IdRepoManager {
 
+	/**
+	 * The Constant Id Repo Errors
+	 */
 	private static final List<String> ID_REPO_ERRORS_INVALID_UIN = Arrays.asList(
 			IdRepoErrorConstants.NO_RECORD_FOUND.getErrorCode(), IdRepoErrorConstants.INVALID_UIN.getErrorCode());
+	/**
+	 * The Constant status
+	 */
 	private static final String STATUS_KEY = "status";
+	/**
+	 * The Rest Helper
+	 */
 	@Autowired
 	private RestHelper restHelper;
 
+	/**
+	 * The Restrequest Factory
+	 */
 	@Autowired
 	private RestRequestFactory restRequestFactory;
 
+	/**
+	 * The Environment
+	 */
 	@Autowired
 	private Environment environment;
 
 	/**
 	 * Fetch data from Id Repo based on Individual's UIN / VID value and all UIN
-	 * scenarios
+	 * 
+	 * @param uin
+	 * @param isBio
+	 * @return
+	 * @throws IdAuthenticationBusinessException
 	 */
 	@SuppressWarnings("unchecked")
 	public Map<String, Object> getIdenity(String uin, boolean isBio) throws IdAuthenticationBusinessException {
@@ -63,7 +82,7 @@ public class IdRepoManager {
 			buildRequest.setPathVariables(params);
 			response = restHelper.requestSync(buildRequest);
 			if (environment.getProperty("mosip.kernel.idrepo.status.registered")
-					.equalsIgnoreCase((String) response.get(STATUS_KEY))) {
+					.equalsIgnoreCase((String) ((Map<String, Object>)response.get("response")).get(STATUS_KEY))) {
 				response.put("uin", uin);
 			} else {
 				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UIN_DEACTIVATED);
@@ -80,7 +99,8 @@ public class IdRepoManager {
 									&& ID_REPO_ERRORS_INVALID_UIN.contains(map.get("errCode")))) {
 						throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_UIN, e);
 					} else {
-						throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
+						throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS,
+								e);
 					}
 				}
 			}

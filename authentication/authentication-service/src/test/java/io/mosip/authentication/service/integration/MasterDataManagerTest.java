@@ -3,6 +3,7 @@ package io.mosip.authentication.service.integration;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -138,7 +139,8 @@ public class MasterDataManagerTest {
 		masterDataManager.fetchTitles();
 	}
 	
-	private Map<String, List<Map<String, Object>>> getGender() throws JsonParseException, JsonMappingException, IOException{
+	private Map<String, Map<String, List<Map<String, Object>>>> getGender() throws JsonParseException, JsonMappingException, IOException{
+		Map<String, Map<String, List<Map<String, Object>>>> resultMap = new HashMap<>();
 		Map<String, List<Map<String, Object>>> readValue = mapper.readValue("{\r\n" + 
 				"  \"genderType\": [\r\n" + 
 				"    {\r\n" + 
@@ -180,12 +182,13 @@ public class MasterDataManagerTest {
 				"  ]\r\n" + 
 				"}", new TypeReference<Map<String, List<Map<String, Object>>>>() {
 				});
-		
-		return readValue;
+		resultMap.put("response", readValue);
+		return resultMap;
 		
 	}
 	
-	private Map<String, List<Map<String, String>>> getTitles() throws JsonParseException, JsonMappingException, IOException{
+	private Map<String, Map<String, List<Map<String, String>>>> getTitles() throws JsonParseException, JsonMappingException, IOException{
+		Map<String, Map<String, List<Map<String, String>>>> resultMap = new HashMap<>();
 		Map<String, List<Map<String, String>>> readValue = mapper.readValue("{\r\n" + 
 				"  \"titleList\": [\r\n" + 
 				"    {\r\n" + 
@@ -254,8 +257,8 @@ public class MasterDataManagerTest {
 				"  ]\r\n" + 
 				"}", new TypeReference<Map<String, List<Map<String, String>>>>() {
 				});
-		
-		return readValue;
+		resultMap.put("response", readValue);
+		return resultMap;
 		
 	}
 

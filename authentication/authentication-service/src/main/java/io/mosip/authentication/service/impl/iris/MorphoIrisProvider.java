@@ -3,7 +3,6 @@ package io.mosip.authentication.service.impl.iris;
 import java.util.Map;
 
 import org.springframework.core.env.Environment;
-import org.springframework.stereotype.Component;
 
 import io.mosip.authentication.core.spi.irisauth.provider.IrisProvider;
 
