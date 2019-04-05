@@ -354,9 +354,7 @@ public class Validations extends BaseController {
 			if (isLostUIN) {
 				return true;
 			}
-			if (id.equalsIgnoreCase(RegistrationConstants.DOCUMENT_SCAN_PANE)) {
-				return true;
-			}
+			
 			if (node.getValue() == null) {
 				generateAlert(parentPane, id,
 						applicationLabelBundle.getString(id).concat(" ")
