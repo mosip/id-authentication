@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Optional;
 
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
+import io.mosip.authentication.core.dto.indauth.ActionableAuthError;
 import io.mosip.authentication.core.dto.indauth.AuthError;
 import io.mosip.authentication.core.dto.indauth.AuthStatusInfo;
 import io.mosip.authentication.core.spi.indauth.match.AuthType;
@@ -138,12 +139,10 @@ public class AuthStatusInfoBuilder {
 					|| name.equalsIgnoreCase(IdaIdMapping.DOB.getIdname())
 					|| name.equalsIgnoreCase(IdaIdMapping.DOBTYPE.getIdname())
 					|| name.equalsIgnoreCase(IdaIdMapping.AGE.getIdname())) {
-				errors = new AuthError(IdAuthenticationErrorConstants.DEMO_DATA_MISMATCH.getErrorCode(),
-						String.format(IdAuthenticationErrorConstants.DEMO_DATA_MISMATCH.getErrorMessage(), name));
+				errors = createActionableAuthError(IdAuthenticationErrorConstants.DEMO_DATA_MISMATCH, name);
 			} else {
-				errors = new AuthError(IdAuthenticationErrorConstants.DEMOGRAPHIC_DATA_MISMATCH.getErrorCode(),
-						String.format(IdAuthenticationErrorConstants.DEMOGRAPHIC_DATA_MISMATCH.getErrorMessage(), name,
-								matchOutput.getLanguage()));
+				errors = createActionableAuthError(IdAuthenticationErrorConstants.DEMOGRAPHIC_DATA_MISMATCH, name,
+						matchOutput.getLanguage());
 			}
 
 			statusInfoBuilder.addErrors(errors);
@@ -157,8 +156,7 @@ public class AuthStatusInfoBuilder {
 		authTypeForMatchType = AuthType.getAuthTypeForMatchType(matchOutput.getMatchType(), authTypes);
 
 		if (authTypeForMatchType.isPresent()) {
-			AuthError errors = new AuthError(IdAuthenticationErrorConstants.INVALID_OTP.getErrorCode(),
-					IdAuthenticationErrorConstants.INVALID_OTP.getErrorMessage());
+			AuthError errors = createActionableAuthError(IdAuthenticationErrorConstants.INVALID_OTP, null);
 			statusInfoBuilder.addErrors(errors);
 		}
 	}
@@ -181,8 +179,7 @@ public class AuthStatusInfoBuilder {
 			AuthError errors = null;
 
 			if (authType.getDisplayName().equals(PinAuthType.SPIN.getDisplayName())) {
-				errors = new AuthError(IdAuthenticationErrorConstants.PIN_MISMATCH.getErrorCode(),
-						IdAuthenticationErrorConstants.PIN_MISMATCH.getErrorMessage());
+				errors = createActionableAuthError(IdAuthenticationErrorConstants.PIN_MISMATCH, null);
 			}
 			statusInfoBuilder.addErrors(errors);
 		}
@@ -196,76 +193,31 @@ public class AuthStatusInfoBuilder {
 	 */
 	private static void constructBioError(MatchOutput matchOutput, AuthStatusInfoBuilder statusInfoBuilder) {
 		Optional<AuthType> authTypeForMatchType;
-		AuthType authType;
 		AuthType[] authTypes;
 		authTypes = BioAuthType.values();
 		authTypeForMatchType = AuthType.getAuthTypeForMatchType(matchOutput.getMatchType(), authTypes);
-
 		if (authTypeForMatchType.isPresent()) {
-			authType = authTypeForMatchType.get();
-			AuthError errors = null;
-
-			if (authType.getDisplayName().equals(BioAuthType.FGR_MIN.getDisplayName())) {
-				errors = new AuthError(IdAuthenticationErrorConstants.BIO_MISMATCH.getErrorCode(),
-						IdAuthenticationErrorConstants.BIO_MISMATCH.getErrorMessage());
-			}
-
-			else if (authType.getDisplayName().equals(BioAuthType.IRIS_IMG.getDisplayName())) {
-				errors = new AuthError(IdAuthenticationErrorConstants.IRISIMG_MISMATCH.getErrorCode(),
-						IdAuthenticationErrorConstants.IRISIMG_MISMATCH.getErrorMessage());
-
-			}
+			AuthError errors = createActionableAuthError(IdAuthenticationErrorConstants.BIO_MISMATCH,
+					authTypeForMatchType.get().getType());
 			statusInfoBuilder.addErrors(errors);
 		}
 	}
 
 	/**
-	 * Adds the match info to AuthStatusInfo.
-	 *
-	 * @param authType          the auth type
-	 * @param matchingStrategy  the matching strategy
-	 * @param matchingThreshold the mt
-	 * @param language          the language
-	 * @return the auth status info builder
-	 */
-	/*
-	 * public AuthStatusInfoBuilder addMatchInfo(String authType, String
-	 * matchingStrategy, Integer matchingThreshold, String language) {
-	 * assertNotBuilt(); if (authStatusInfo.getMatchInfos() == null) {
-	 * authStatusInfo.setMatchInfos(new ArrayList<>()); }
-	 * authStatusInfo.getMatchInfos().add(new MatchInfo(authType, language,
-	 * matchingStrategy, matchingThreshold)); return this; }
-	 */
-
-	/**
-	 * Adds the bio info to AuthStatusInfo.
-	 *
-	 * @param bioType    the bio type
-	 * @param deviceInfo the device info
-	 * @return the auth status info builder
-	 */
-	/*
-	 * public AuthStatusInfoBuilder addBioInfo(String bioType,DeviceInfo deviceInfo)
-	 * { assertNotBuilt(); if (authStatusInfo.getBioInfos() == null) {
-	 * authStatusInfo.setBioInfos(new ArrayList<>()); }
-	 * authStatusInfo.getBioInfos().add(new BioInfo(bioType,deviceInfo)); return
-	 * this; }
-	 */
-
-	/**
-	 * Adds the auth usage data bits to AuthStatusInfo.
-	 *
-	 * @param usageDataBits the usage data bits
-	 * @return the auth status info builder
-	 */
-	/*
-	 * public AuthStatusInfoBuilder addAuthUsageDataBits(AuthUsageDataBit...
-	 * usageDataBits) { assertNotBuilt(); if (authStatusInfo.getUsageDataBits() ==
-	 * null) { authStatusInfo.setUsageDataBits(new ArrayList<>()); }
+	 * Construct Actionable Auth errors.
 	 * 
-	 * authStatusInfo.getUsageDataBits().addAll(Arrays.asList(usageDataBits));
-	 * return this; }
+	 * @param idAuthenticationErrorConstants
+	 * @param paramName
+	 * @return
 	 */
+	private static AuthError createActionableAuthError(IdAuthenticationErrorConstants idAuthenticationErrorConstants,
+			String... params) {
+		return new ActionableAuthError(idAuthenticationErrorConstants.getErrorCode(),
+				String.format(idAuthenticationErrorConstants.getErrorMessage(), params),
+				idAuthenticationErrorConstants.getActionMessage() != null
+						? String.format(idAuthenticationErrorConstants.getActionMessage(), params)
+						: null);
+	}
 
 	/**
 	 * Adds the errors to the AuthStatusInfo.

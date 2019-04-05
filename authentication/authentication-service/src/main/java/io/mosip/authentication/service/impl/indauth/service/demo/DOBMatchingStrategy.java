@@ -17,7 +17,8 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
 
 /**
- * The Enum DOBMatchingStrategy.
+ * The Enum DOBMatchingStrategy - used to compare and
+ * evaluate the DOB value received from the request and entity
  *
  * @author Sanjay Murali
  */

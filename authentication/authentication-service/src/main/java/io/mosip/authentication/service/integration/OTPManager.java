@@ -24,6 +24,7 @@ import io.mosip.authentication.service.factory.RestRequestFactory;
 import io.mosip.authentication.service.helper.RestHelper;
 import io.mosip.authentication.service.integration.dto.OtpGeneratorRequestDto;
 import io.mosip.authentication.service.integration.dto.OtpGeneratorResponseDto;
+import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.logger.spi.Logger;
 
 /**
@@ -34,6 +35,8 @@ import io.mosip.kernel.core.logger.spi.Logger;
  */
 @Component
 public class OTPManager {
+
+	private static final String STATUS = "status";
 
 	private static final String SESSION_ID = "SESSION_ID";
 
@@ -64,17 +67,18 @@ public class OTPManager {
 	 * @throws IdAuthenticationBusinessException the id authentication business
 	 *                                           exception
 	 */
+	@SuppressWarnings("unchecked")
 	public String generateOTP(String otpKey) throws IdAuthenticationBusinessException {
 		OtpGeneratorRequestDto otpGeneratorRequestDto = new OtpGeneratorRequestDto();
 		otpGeneratorRequestDto.setKey(otpKey);
-		OtpGeneratorResponseDto otpGeneratorResponsetDto = null;
+		ResponseWrapper<OtpGeneratorResponseDto> otpGeneratorResponsetDto = new ResponseWrapper<>();
 		RestRequestDTO restRequestDTO = null;
 		String response = null;
 		try {
 			restRequestDTO = restRequestFactory.buildRequest(RestServicesConstants.OTP_GENERATE_SERVICE,
-					otpGeneratorRequestDto, OtpGeneratorResponseDto.class);
+					RestRequestFactory.createRequest(otpGeneratorRequestDto), ResponseWrapper.class);
 			otpGeneratorResponsetDto = restHelper.requestSync(restRequestDTO);
-			response = otpGeneratorResponsetDto.getOtp();
+			response = (String) ((Map<String,Object>)otpGeneratorResponsetDto.getResponse()).get("otp");
 			logger.info(SESSION_ID, this.getClass().getSimpleName(), "generateOTP",
 					"otpGeneratorResponsetDto " + response);
 
@@ -82,9 +86,13 @@ public class OTPManager {
 
 			Optional<Object> responseBody = e.getResponseBody();
 			if (responseBody.isPresent()) {
-				otpGeneratorResponsetDto = (OtpGeneratorResponseDto) responseBody.get();
-				String status = otpGeneratorResponsetDto.getStatus();
-				String message = otpGeneratorResponsetDto.getMessage();
+				Map<String, Object> res = (Map<String, Object>) responseBody.get();
+				String status = res.get("response") instanceof Map
+						? (String) ((Map<String, Object>) res.get("response")).get(STATUS)
+						: null;
+				String message = res.get("response") instanceof Map
+						? (String) ((Map<String, Object>) res.get("response")).get("message")
+						: null;
 				if (status != null && status.equalsIgnoreCase(STATUS_FAILURE)
 						&& message.equalsIgnoreCase(USER_BLOCKED)) {
 					throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.BLOCKED_OTP_GENERATE);
@@ -113,6 +121,7 @@ public class OTPManager {
 	 * @throws IdAuthenticationBusinessException the id authentication business
 	 *                                           exception
 	 */
+	@SuppressWarnings("unchecked")
 	public boolean validateOtp(String pinValue, String otpKey) throws IdAuthenticationBusinessException {
 		boolean isValidOtp = false;
 		try {
@@ -123,8 +132,8 @@ public class OTPManager {
 			params.add("otp", pinValue);
 			restreqdto.setParams(params);
 			Map<String, Object> otpvalidateresponsedto = restHelper.requestSync(restreqdto);
-			isValidOtp = Optional.ofNullable(otpvalidateresponsedto).filter(res -> res.containsKey("status"))
-					.map(res -> String.valueOf(res.get("status")))
+			isValidOtp = Optional.ofNullable((Map<String, Object>)otpvalidateresponsedto.get("response")).filter(res -> res.containsKey(STATUS))
+					.map(res -> String.valueOf(res.get(STATUS)))
 					.filter(status -> status.equalsIgnoreCase(STATUS_SUCCESS)).isPresent();
 		} catch (RestServiceException e) {
 			logger.error(SESSION_ID, this.getClass().getSimpleName(), e.getErrorCode() + e.getErrorText(),
@@ -133,8 +142,8 @@ public class OTPManager {
 			Optional<Object> responseBody = e.getResponseBody();
 			if (responseBody.isPresent()) {
 				Map<String, Object> res = (Map<String, Object>) responseBody.get();
-				Object status = res.get("status");
-				Object message = res.get("message");
+				Object status = res.get("response") instanceof Map ? ((Map<String, Object>) res.get("response")).get(STATUS) : null;
+				Object message = res.get("response") instanceof Map ? ((Map<String, Object>) res.get("response")).get("message") : null;
 				if (status instanceof String && message instanceof String) {
 					if (((String) status).equalsIgnoreCase(STATUS_FAILURE)) {
 						throwOtpException((String) message);
@@ -150,6 +159,12 @@ public class OTPManager {
 		return isValidOtp;
 	}
 
+	/**
+	 * Throws KeyNotFound Exception when otp key is Invalid
+	 * 
+	 * @param e
+	 * @throws IdAuthenticationBusinessException
+	 */
 	private void throwKeyNotFound(RestServiceException e) throws IdAuthenticationBusinessException {
 		Optional<String> errorCode = e.getResponseBodyAsString().flatMap(this::getErrorCode);
 		// Do not throw server error for OTP not generated, throw invalid OTP error
@@ -159,7 +174,7 @@ public class OTPManager {
 				.isPresent()) {
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_OTP);
 		}
-		throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.SERVER_ERROR);
+		throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS);
 	}
 
 	private void throwOtpException(String message) throws IdAuthenticationBusinessException {

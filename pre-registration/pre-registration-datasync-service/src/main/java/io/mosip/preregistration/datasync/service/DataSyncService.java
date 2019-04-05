@@ -3,13 +3,17 @@ package io.mosip.preregistration.datasync.service;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import io.mosip.kernel.auth.adapter.model.AuthUserDetails;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.preregistration.core.code.AuditLogVariables;
 import io.mosip.preregistration.core.code.EventId;
@@ -86,6 +90,17 @@ public class DataSyncService {
 		requiredRequestMap.put("ver", ver);
 	}
 
+	public AuthUserDetails authUserDetails() {
+		return (AuthUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+	}
+
+	public static boolean isValidDate(String d) {
+		String regex = "^(1[0-2]|0[1-9])/(3[01]" + "|[12][0-9]|0[1-9])/[0-9]{4}$";
+		Pattern pattern = Pattern.compile(regex);
+		Matcher matcher = pattern.matcher((CharSequence) d);
+		return matcher.matches();
+	}
+
 	public MainResponseDTO<PreRegistrationIdsDTO> retrieveAllPreRegIds(
 			MainRequestDTO<DataSyncRequestDTO> dataSyncRequest) {
 		PreRegistrationIdsDTO preRegistrationIdsDTO = null;
@@ -96,10 +111,14 @@ public class DataSyncService {
 		try {
 			ValidationUtil.requestValidator(dataSyncRequest);
 			serviceUtil.validateDataSyncRequest(dataSyncRequest.getRequest());
+
 			DataSyncRequestDTO dataSyncRequestDTO = dataSyncRequest.getRequest();
+			if (serviceUtil.isNull(dataSyncRequestDTO.getToDate())) {
+				dataSyncRequestDTO.setToDate(dataSyncRequestDTO.getFromDate());
+			}
 			PreRegIdsByRegCenterIdResponseDTO preRegIdsDTO = serviceUtil
 					.callBookedPreIdsByDateAndRegCenterIdRestService(dataSyncRequestDTO.getFromDate(),
-							dataSyncRequestDTO.getToDate(), dataSyncRequestDTO.getRegClientId());
+							dataSyncRequestDTO.getToDate(), dataSyncRequestDTO.getRegistrationCenterId());
 			PreRegIdsByRegCenterIdDTO byRegCenterIdDTO = new PreRegIdsByRegCenterIdDTO();
 			byRegCenterIdDTO.setPreRegistrationIds(preRegIdsDTO.getPreRegistrationIds());
 			preRegistrationIdsDTO = serviceUtil.getLastUpdateTimeStamp(byRegCenterIdDTO);
@@ -175,7 +194,7 @@ public class DataSyncService {
 			if (ValidationUtil.requestValidator(reverseDataSyncRequest)
 					&& serviceUtil.validateReverseDataSyncRequest(reverseDataSyncRequest.getRequest())) {
 				reverseDatasyncReponse = serviceUtil.reverseDateSyncSave(reverseDataSyncRequest.getRequesttime(),
-						reverseDataSyncRequest.getRequest());
+						reverseDataSyncRequest.getRequest(), "user");
 				responseDto.setResponse(reverseDatasyncReponse);
 				responseDto.setResponsetime(serviceUtil.getCurrentResponseTime());
 				responseDto.setErrors(null);

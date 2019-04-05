@@ -9,31 +9,34 @@ import javax.xml.bind.annotation.XmlValue;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 /**
- * 
+ * The enum for EkycAuthType
  * 
  * @author Prem Kumar
  *
- *The enum for EkycAuthType
+ *
  *
  */
 
 public enum EkycAuthType {
-		
+
+	/** For demo */
 	DEMO("demo", AuthTypeDTO::isDemo),
-	
+
+	/** For bio */
 	BIO("bio", AuthTypeDTO::isBio),
-	
+
 	/** For Pin */
 	PIN("pin", AuthTypeDTO::isPin),
+
 	/** For OTP */
 	OTP("otp", AuthTypeDTO::isOtp);
-	
+
 	/** The EkycAuthType type */
-	private String type; 
-	
+	private String type;
+
 	/** The authTypePredicate */
 	private Predicate<AuthTypeDTO> authTypePredicate;
-	
+
 	/**
 	 * Instantiates a new EkycAuthType.
 	 *
@@ -44,7 +47,7 @@ public enum EkycAuthType {
 		this.type = type;
 		this.authTypePredicate = authTypePredicate;
 	}
-	
+
 	/**
 	 * Gets the type.
 	 *
@@ -66,13 +69,14 @@ public enum EkycAuthType {
 		return Stream.of(values()).filter(t -> t.getType().equals(type)).findAny();
 
 	}
-	
+
 	/**
 	 * Get the predicate to check the auth type
+	 * 
 	 * @return the predicate
 	 */
 	public Predicate<AuthTypeDTO> getAuthTypePredicate() {
 		return authTypePredicate;
 	}
-	
+
 }

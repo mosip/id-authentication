@@ -11,7 +11,7 @@ import javax.persistence.Table;
 import io.mosip.registration.entity.id.TemplateId;
 
 /**
- * Template entity details
+ * The Entity Class for Template details
  * 
  * @author Himaja Dhanyamraju
  * @since 1.0.0

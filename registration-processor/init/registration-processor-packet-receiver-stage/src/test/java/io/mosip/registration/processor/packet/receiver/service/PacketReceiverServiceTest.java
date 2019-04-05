@@ -44,6 +44,7 @@ import io.mosip.registration.processor.core.code.EventName;
 import io.mosip.registration.processor.core.code.EventType;
 import io.mosip.registration.processor.core.http.ResponseWrapper;
 import io.mosip.registration.processor.core.spi.filesystem.manager.FileManager;
+import io.mosip.registration.processor.core.util.RegistrationExceptionMapperUtil;
 import io.mosip.registration.processor.packet.manager.dto.DirectoryPathDto;
 import io.mosip.registration.processor.packet.receiver.exception.DuplicateUploadRequestException;
 import io.mosip.registration.processor.packet.receiver.exception.FileSizeExceedException;
@@ -93,6 +94,11 @@ public class PacketReceiverServiceTest {
 
 	@Mock
 	private RegistrationStatusMapUtil registrationStatusMapUtil;
+
+	@Mock
+	RegistrationExceptionMapperUtil registrationStatusMapperUtil;
+
+	private String stageName = "PacketReceiverStage";
 
 	@InjectMocks
 	private PacketReceiverService<File, MessageDTO> packetReceiverService = new PacketReceiverServiceImpl() {
@@ -183,10 +189,10 @@ public class PacketReceiverServiceTest {
 		/*
 		 * Mockito.doReturn(auditRequestDto).when(auditRequestBuilder).build();
 		 * Mockito.doReturn(true).when(auditHandler).writeAudit(ArgumentMatchers.any());
-		 * 
+		 *
 		 * AuditRequestBuilder auditRequestBuilder = new AuditRequestBuilder();
 		 * AuditRequestDto auditRequest1 = new AuditRequestDto();
-		 * 
+		 *
 		 * Field f
 		 * =CoreAuditRequestBuilder.class.getDeclaredField("auditRequestBuilder");
 		 * f.setAccessible(true); f.set(coreAuditRequestBuilder, auditRequestBuilder);
@@ -204,7 +210,7 @@ public class PacketReceiverServiceTest {
 
 		Mockito.doNothing().when(fileManager).put(anyString(), any(InputStream.class), any(DirectoryPathDto.class));
 
-		MessageDTO successResult = packetReceiverService.storePacket(mockMultipartFile);
+		MessageDTO successResult = packetReceiverService.storePacket(mockMultipartFile, stageName);
 
 		assertEquals(true, successResult.getIsValid());
 	}
@@ -221,7 +227,7 @@ public class PacketReceiverServiceTest {
 
 		Mockito.doReturn(mockDto).when(registrationStatusService).getRegistrationStatus("0000");
 
-		packetReceiverService.storePacket(mockMultipartFile);
+		packetReceiverService.storePacket(mockMultipartFile, stageName);
 
 	}
 
@@ -236,7 +242,7 @@ public class PacketReceiverServiceTest {
 		when(mockAppender.getName()).thenReturn("MOCK");
 		root.addAppender(mockAppender);
 
-		packetReceiverService.storePacket(invalidPacket);
+		packetReceiverService.storePacket(invalidPacket, stageName);
 
 		verify(mockAppender).doAppend(argThat(new ArgumentMatcher<ILoggingEvent>() {
 
@@ -261,7 +267,7 @@ public class PacketReceiverServiceTest {
 		when(mockAppender.getName()).thenReturn("MOCK");
 		root.addAppender(mockAppender);
 
-		packetReceiverService.storePacket(largerFile);
+		packetReceiverService.storePacket(largerFile, stageName);
 
 		verify(mockAppender).doAppend(argThat(new ArgumentMatcher<ILoggingEvent>() {
 
@@ -285,7 +291,7 @@ public class PacketReceiverServiceTest {
 
 		Mockito.when(syncRegistrationService.isPresent(anyString())).thenReturn(false);
 
-		packetReceiverService.storePacket(mockMultipartFile);
+		packetReceiverService.storePacket(mockMultipartFile, stageName);
 
 		verify(mockAppender).doAppend(argThat(new ArgumentMatcher<ILoggingEvent>() {
 
@@ -302,8 +308,8 @@ public class PacketReceiverServiceTest {
 		Mockito.when(syncRegistrationService.findByRegistrationId(anyString())).thenReturn(regEntity);
 		Mockito.doReturn(null).when(registrationStatusService).getRegistrationStatus("0000");
 		Mockito.doThrow(new IOException()).when(fileManager).put(any(), any(), any());
-
-		MessageDTO result = packetReceiverService.storePacket(mockMultipartFile);
+		Mockito.when(registrationStatusMapperUtil.getStatusCode(any())).thenReturn("ERROR");
+		MessageDTO result = packetReceiverService.storePacket(mockMultipartFile, stageName);
 
 		assertFalse(result.getIsValid());
 	}

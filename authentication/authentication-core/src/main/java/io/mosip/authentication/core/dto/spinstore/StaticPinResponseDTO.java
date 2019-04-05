@@ -13,6 +13,7 @@ import lombok.Data;
  */
 @Data
 public class StaticPinResponseDTO {
+	
 	/** Variable to hold id */
 	private String id;
 
@@ -25,6 +26,6 @@ public class StaticPinResponseDTO {
 	/** Variable to hold Response time */
 	private String responseTime;
 
-	/** The error value */
+	/** The List of error values */
 	private List<AuthError> errors;
 }

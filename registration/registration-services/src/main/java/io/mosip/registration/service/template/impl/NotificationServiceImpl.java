@@ -8,7 +8,9 @@ import static io.mosip.registration.constants.RegistrationConstants.NOTIFICATION
 import static io.mosip.registration.constants.RegistrationConstants.SMS_SERVICE;
 
 import java.net.SocketTimeoutException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -22,6 +24,7 @@ import org.springframework.web.client.ResourceAccessException;
 
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.registration.audit.AuditFactory;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.AuditEvent;
@@ -77,10 +80,13 @@ public class NotificationServiceImpl implements NotificationService {
 
 		ResponseDTO responseDTO = new ResponseDTO();
 		NotificationDTO smsdto = new NotificationDTO();
-		smsdto.setMessage(message);
-		smsdto.setNumber(number);
+		Map<String, String> requestMap = new HashMap<>();
+		requestMap.put("message", message);
+		requestMap.put("number", number);
+		smsdto.setRequest(requestMap);
+		smsdto.setRequesttime(DateUtils.formatToISOString(LocalDateTime.now()));
 
-		sendNotification(regId, responseDTO, smsdto, SMS_SERVICE, "success");
+		sendNotification(regId, responseDTO, smsdto, SMS_SERVICE, RegistrationConstants.OTP_VALIDATION_SUCCESS);
 		return responseDTO;
 	}
 
@@ -91,36 +97,39 @@ public class NotificationServiceImpl implements NotificationService {
 	 * @param responseDTO
 	 * @param smsdto
 	 */
+	@SuppressWarnings("unchecked")
 	private void sendNotification(String regId, ResponseDTO responseDTO, Object object, String service,
 			String expectedStatus) {
 		StringBuilder sb;
 		try {
-			@SuppressWarnings("unchecked")
 			Map<String, List<Map<String, String>>> response = (Map<String, List<Map<String, String>>>) serviceDelegateUtil
-					.post(service, object,RegistrationConstants.JOB_TRIGGER_POINT_USER);
-			String res = Optional.ofNullable(String.valueOf(response.get("status"))).orElse("");
-			if (res.equals(expectedStatus)) {
-				sb = new StringBuilder();
-				sb.append(service.toUpperCase()).append(" request submitted successfully");
+					.post(service, object, RegistrationConstants.JOB_TRIGGER_POINT_USER);
+			if (response!= null && response.get(RegistrationConstants.PACKET_STATUS_READER_RESPONSE) != null) {
+				Map<String, Object> resMap = (Map<String, Object>) response
+						.get(RegistrationConstants.PACKET_STATUS_READER_RESPONSE);
+				String res = (String) resMap.get(RegistrationConstants.UPLOAD_STATUS);
+				if (res.contains(expectedStatus)) {					
+					LOGGER.info(NOTIFICATION_SERVICE, APPLICATION_NAME, APPLICATION_ID, resMap.toString());
+					auditFactory.audit(AuditEvent.NOTIFICATION_STATUS, Components.NOTIFICATION_SERVICE,
+							SessionContext.userContext().getUserId(),
+							AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
+					// creating success response
+					SuccessResponseDTO successResponseDTO = new SuccessResponseDTO();
+					successResponseDTO.setMessage(RegistrationConstants.OTP_VALIDATION_SUCCESS);
+					responseDTO.setSuccessResponseDTO(successResponseDTO);
+				}
+			} else if(response!= null) {
+				String errorMessage = Optional.ofNullable(response.get(RegistrationConstants.ERRORS))
+						.filter(list -> !list.isEmpty()).flatMap(list -> list.stream()
+								.filter(map -> map.containsKey(RegistrationConstants.ERROR_MSG)).findAny())
+						.map(map -> map.get(RegistrationConstants.ERROR_MSG)).orElse("");
 
-				LOGGER.info(NOTIFICATION_SERVICE, APPLICATION_NAME, APPLICATION_ID, sb.toString());
-				auditFactory.audit(AuditEvent.NOTIFICATION_STATUS, Components.NOTIFICATION_SERVICE,
-						SessionContext.userContext().getUserId(), AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
-				// creating success response
-				SuccessResponseDTO successResponseDTO = new SuccessResponseDTO();
-				successResponseDTO.setMessage("Success");
-				responseDTO.setSuccessResponseDTO(successResponseDTO);
-			} else {
-				String errorMessage = Optional.ofNullable(response.get("errors")).filter(list -> !list.isEmpty())
-						.flatMap(list -> list.stream().filter(map -> map.containsKey("errorMessage")).findAny())
-						.map(map -> map.get("errorMessage")).orElse("");				
-				
 				ErrorResponseDTO errorResponseDTO = new ErrorResponseDTO();
 				errorResponseDTO.setMessage(errorMessage);
 				List<ErrorResponseDTO> errorResponse = new ArrayList<>();
 				errorResponse.add(errorResponseDTO);
 				responseDTO.setErrorResponseDTOs(errorResponse);
-				
+
 				LOGGER.info(NOTIFICATION_SERVICE, APPLICATION_NAME, APPLICATION_ID, errorMessage);
 				auditFactory.audit(AuditEvent.NOTIFICATION_STATUS, Components.NOTIFICATION_SERVICE,
 						SessionContext.userContext().getUserId(), AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
@@ -131,10 +140,11 @@ public class NotificationServiceImpl implements NotificationService {
 			sb.append("Exception in sending ").append(service.toUpperCase()).append(" Notification - ")
 					.append(exception.getMessage());
 
-			LOGGER.error(NOTIFICATION_SERVICE, APPLICATION_NAME, APPLICATION_ID, exception.getMessage() + ExceptionUtils.getStackTrace(exception));
+			LOGGER.error(NOTIFICATION_SERVICE, APPLICATION_NAME, APPLICATION_ID,
+					exception.getMessage() + ExceptionUtils.getStackTrace(exception));
 			auditFactory.audit(AuditEvent.NOTIFICATION_STATUS, Components.NOTIFICATION_SERVICE,
 					SessionContext.userContext().getUserId(), AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
-			
+
 			// creating error response
 			ErrorResponseDTO errorResponseDTO = new ErrorResponseDTO();
 			errorResponseDTO.setMessage("Unable to send " + service.toUpperCase() + " Notification");
@@ -164,7 +174,7 @@ public class NotificationServiceImpl implements NotificationService {
 		emailDetails.add("mailSubject", EMAIL_SUBJECT);
 		emailDetails.add("mailContent", message);
 
-		sendNotification(regId, responseDTO, emailDetails, EMAIL_SERVICE, "success");
+		sendNotification(regId, responseDTO, emailDetails, EMAIL_SERVICE, RegistrationConstants.OTP_VALIDATION_SUCCESS);
 		return responseDTO;
 	}
 

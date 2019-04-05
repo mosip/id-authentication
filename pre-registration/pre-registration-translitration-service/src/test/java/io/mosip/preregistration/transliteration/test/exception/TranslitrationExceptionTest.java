@@ -61,9 +61,7 @@ public class TranslitrationExceptionTest {
 	public void mandetoryRequestFieldsTest() {
 		TransliterationDTO mandatoryFielddto = new TransliterationDTO();
 		mandatoryFielddto.setFromFieldLang("English");
-		mandatoryFielddto.setFromFieldName("Name1");
 		mandatoryFielddto.setFromFieldValue("Kishan");
-		mandatoryFielddto.setToFieldName("");
 
 		MainRequestDTO<TransliterationDTO> mandatoryFieldRequest = new MainRequestDTO<>();
 		mandatoryFieldRequest.setId("mosip.pre-registration.transliteration.transliterate");
@@ -83,11 +81,9 @@ public class TranslitrationExceptionTest {
 
 		TransliterationDTO mandatoryFielddto = new TransliterationDTO();
 		mandatoryFielddto.setFromFieldLang("");
-		mandatoryFielddto.setFromFieldName("Name1");
 		mandatoryFielddto.setFromFieldValue("Kishan");
 		mandatoryFielddto.setToFieldLang("Arabic");
 		mandatoryFielddto.setToFieldValue("");
-		mandatoryFielddto.setToFieldName("Name2");
 
 		MainRequestDTO<TransliterationDTO> mandatoryFieldRequest = new MainRequestDTO<>();
 		mandatoryFieldRequest.setId("mosip.pre-registration.transliteration.transliterate");
@@ -107,10 +103,8 @@ public class TranslitrationExceptionTest {
 		MissingRequestParameterException ex = new MissingRequestParameterException("MISSING_PARAM");
 		TransliterationDTO mandatoryFielddto = new TransliterationDTO();
 		mandatoryFielddto.setFromFieldLang("");
-		mandatoryFielddto.setFromFieldName("Name1");
 		mandatoryFielddto.setFromFieldValue("Kishan");
 		mandatoryFielddto.setToFieldLang("Arabic");
-		mandatoryFielddto.setToFieldName("");
 		MainRequestDTO<TransliterationDTO> mandatoryFieldRequest = new MainRequestDTO<>();
 		mandatoryFieldRequest.setId("mosip.pre-registration.transliteration.transliterate");
 		Mockito.when(serviceImpl2.translitratorService(mandatoryFieldRequest)).thenThrow(ex);

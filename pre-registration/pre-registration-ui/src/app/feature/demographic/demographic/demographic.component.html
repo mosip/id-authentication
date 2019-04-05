@@ -18,7 +18,7 @@
               (focusout)="onTransliteration(fullName, formControlNames.fullNameSecondary)"
               (change)="onTransliteration(fullName, formControlNames.fullNameSecondary)"
             />
-            <mat-hint align="end">{{ fullName.value.length }} / {{FULLNAME_LENGTH}}</mat-hint>
+            <!-- <mat-hint align="end">{{ fullName.value.length }} / {{FULLNAME_LENGTH}}</mat-hint> -->
             <mat-error *ngIf="!fullName.invalid"> {{ 'demographic.validation.name_required' | translate }} </mat-error>
           </mat-form-field>
 
@@ -162,7 +162,7 @@
               (focusout)="onTransliteration(addressLine1, formControlNames.addressLine1Secondary)"
               (change)="onTransliteration(addressLine1, formControlNames.addressLine1Secondary)"
             />
-            <mat-hint align="end">{{ addressLine1.value.length }} / {{ADDRESS_LENGTH}}</mat-hint>
+            <!-- <mat-hint align="end">{{ addressLine1.value.length }} / {{ADDRESS_LENGTH}}</mat-hint> -->
             <mat-error *ngIf="!addressLine1.invalid">{{
               'demographic.validation.address_required' | translate
             }}</mat-error>
@@ -178,7 +178,7 @@
               (focusout)="onTransliteration(addressLine2, formControlNames.addressLine2Secondary)"
               (change)="onTransliteration(addressLine2, formControlNames.addressLine2Secondary)"
             />
-            <mat-hint align="end">{{ addressLine2.value.length }} / {{ADDRESS_LENGTH}}</mat-hint>
+            <!-- <mat-hint align="end">{{ addressLine2.value.length }} / {{ADDRESS_LENGTH}}</mat-hint> -->
             <mat-error *ngIf="!addressLine2.invalid">{{
               'demographic.validation.address_required' | translate
             }}</mat-error>
@@ -194,7 +194,7 @@
               (focusout)="onTransliteration(addressLine3, formControlNames.addressLine3Secondary)"
               (change)="onTransliteration(addressLine3, formControlNames.addressLine3Secondary)"
             />
-            <mat-hint align="end">{{ addressLine3.value.length }} / {{ADDRESS_LENGTH}}</mat-hint>
+            <!-- <mat-hint align="end">{{ addressLine3.value.length }} / {{ADDRESS_LENGTH}}</mat-hint> -->
             <mat-error *ngIf="!addressLine3.invalid">{{
               'demographic.validation.address_required' | translate
             }}</mat-error>
@@ -276,7 +276,7 @@
                 [formControlName]="formControlNames.postalCode"
                 #postalCode
               />
-              <mat-hint align="end">{{ postalCode.value.length }} / {{POSTALCODE_LENGTH}}</mat-hint>
+              <!-- <mat-hint align="end">{{ postalCode.value.length }} / {{POSTALCODE_LENGTH}}</mat-hint> -->
               <mat-error *ngIf="!postalCode.invalid">{{
                 'demographic.validation.postal_code_required' | translate
               }}</mat-error>
@@ -292,7 +292,7 @@
                 placeholder="{{ 'demographic.label_mob_num' | translate }}"
                 [formControlName]="formControlNames.phone"
               />
-              <mat-hint align="end">{{ mobileNumber.value.length }} / {{MOBILE_LENGTH}}</mat-hint>
+              <!-- <mat-hint align="end">{{ mobileNumber.value.length }} / {{MOBILE_LENGTH}}</mat-hint> -->
               <mat-error *ngIf="!mobileNumber.invalid">{{
                 'demographic.validation.mobile_required' | translate
               }}</mat-error>
@@ -307,7 +307,7 @@
                 placeholder="{{ 'demographic.label_email_id' | translate }}"
                 [formControlName]="formControlNames.email"
               />
-              <mat-hint align="end">{{ email.value.length }} / {{EMAIL_LENGTH}}</mat-hint>
+              <!-- <mat-hint align="end">{{ email.value.length }} / {{EMAIL_LENGTH}}</mat-hint> -->
               <mat-error *ngIf="!email.invalid">{{ 'demographic.validation.email_required' | translate }}</mat-error>
             </mat-form-field>
           </div>
@@ -321,7 +321,7 @@
                 placeholder="{{ 'demographic.label_pin' | translate }}"
                 [formControlName]="formControlNames.CNIENumber"
               />
-              <mat-hint align="end">{{ pin.value.length }} / {{CNIE_LENGTH}}</mat-hint>
+              <!-- <mat-hint align="end">{{ pin.value.length }} / {{CNIE_LENGTH}}</mat-hint> -->
               <mat-error *ngIf="!pin.invalid">{{ 'demographic.validation.pin_required' | translate }}</mat-error>
             </mat-form-field>
           </div>
@@ -340,7 +340,7 @@
               name="t_fullName"
               #t_fullName
             />
-            <mat-hint align="end">{{ t_fullName.value.length }} / {{FULLNAME_LENGTH}}</mat-hint>
+            <!-- <mat-hint align="end">{{ t_fullName.value.length }} / {{FULLNAME_LENGTH}}</mat-hint> -->
             <mat-error *ngIf="!t_fullName.invalid">{{ secondaryLanguagelabels.validation.name_required }}</mat-error>
           </mat-form-field>
 
@@ -462,7 +462,7 @@
               [placeholder]="secondaryLanguagelabels.label_address1"
               [formControlName]="formControlNames.addressLine1Secondary"
             />
-            <mat-hint align="end">{{ t_addressLine1.value.length }} / {{ADDRESS_LENGTH}}</mat-hint>
+            <!-- <mat-hint align="end">{{ t_addressLine1.value.length }} / {{ADDRESS_LENGTH}}</mat-hint> -->
             <mat-error *ngIf="!addressLine1.invalid">{{
               secondaryLanguagelabels.validation.address_required
             }}</mat-error>
@@ -480,7 +480,7 @@
             <mat-error *ngIf="!addressLine1.invalid">{{
               secondaryLanguagelabels.validation.address_required
             }}</mat-error>
-            <mat-hint align="end">{{ t_addressLine2.value.length }} / {{ADDRESS_LENGTH}}</mat-hint>
+            <!-- <mat-hint align="end">{{ t_addressLine2.value.length }} / {{ADDRESS_LENGTH}}</mat-hint> -->
           </mat-form-field>
           <mat-form-field>
             <input
@@ -495,7 +495,7 @@
             <mat-error *ngIf="!addressLine1.invalid">{{
               secondaryLanguagelabels.validation.address_required
             }}</mat-error>
-            <mat-hint align="end">{{ t_addressLine3.value.length }} / {{ADDRESS_LENGTH}}</mat-hint>
+            <!-- <mat-hint align="end">{{ t_addressLine3.value.length }} / {{ADDRESS_LENGTH}}</mat-hint> -->
           </mat-form-field>
 
           <div class="user__dropdown">

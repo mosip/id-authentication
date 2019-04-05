@@ -107,7 +107,7 @@ public class DecryptorTest {
 
 	}
 
-	@Test(expected = PacketDecryptionFailureException.class)
+	@Test(expected = ApisResourceAccessException.class)
 	public void PacketDecryptionFailureExceptionTest()
 			throws FileNotFoundException, ApisResourceAccessException, PacketDecryptionFailureException {
 
@@ -120,13 +120,14 @@ public class DecryptorTest {
 	}
 
 	@Test(expected = PacketDecryptionFailureException.class)
-	public void invalidPacketFormatTest() throws PacketDecryptionFailureException {
+	public void invalidPacketFormatTest() throws PacketDecryptionFailureException, ApisResourceAccessException {
 		InputStream decryptedStream = decryptor.decrypt(inputStream, "019011014");
 
 	}
 
 	@Test(expected = PacketDecryptionFailureException.class)
-	public void invalidPacketFormatParsingDateTimeTest() throws PacketDecryptionFailureException {
+	public void invalidPacketFormatParsingDateTimeTest()
+			throws PacketDecryptionFailureException, ApisResourceAccessException {
 		InputStream decryptedStream = decryptor.decrypt(inputStream, "8407149396000032019T110145452");
 
 	}

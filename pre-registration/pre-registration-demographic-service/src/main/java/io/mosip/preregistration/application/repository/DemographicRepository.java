@@ -68,5 +68,6 @@ public interface DemographicRepository extends BaseRepository<DemographicEntity,
 	 * @param preRegistrationIds
 	 * @return list of preregistration data for list of pre-ids
 	 */
-	public List<DemographicEntity> findByStatusCodeAndPreRegistrationIdIn(String statusCode, List<String> preRegistrationIds);
+	public List<DemographicEntity> findByStatusCodeInAndPreRegistrationIdIn(List<String> statusCode,
+			List<String> preRegistrationIds);
 }

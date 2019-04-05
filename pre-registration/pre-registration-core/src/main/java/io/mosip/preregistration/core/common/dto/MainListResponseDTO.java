@@ -40,7 +40,7 @@ public class MainListResponseDTO<T> implements Serializable {
 	
 	/** The error details. */
 	@ApiModelProperty(value = "error details", position = 1)
-	private ExceptionJSONInfoDTO err;
+	private ExceptionJSONInfoDTO errors;
 
 
 	/**

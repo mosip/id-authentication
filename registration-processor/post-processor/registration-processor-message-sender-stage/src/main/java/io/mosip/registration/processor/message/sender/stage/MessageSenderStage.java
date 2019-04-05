@@ -90,9 +90,9 @@ public class MessageSenderStage extends MosipVerticleManager {
 	private AuditLogRequestBuilder auditLogRequestBuilder;
 
 	/** The notification emails. */
-	//@Value("${registration.processor.notification.emails}")
-	private String notificationEmails = "Alok.Ranjan2@mindtree.com | Sowmya.Banakar@mindtree.com | Rishabh.Keshari@mindtree.com";
-
+	@Value("${registration.processor.notification.emails}")
+	private String notificationEmails;
+	
 	/** The uin generated subject. */
 	@Value("${registration.processor.uin.generated.subject}")
 	private String uinGeneratedSubject;
@@ -352,11 +352,11 @@ public class MessageSenderStage extends MosipVerticleManager {
 	 * @return true, if is template available
 	 * @throws ApisResourceAccessException
 	 *             the apis resource access exception
-	 * @throws JsonProcessingException 
-	 * @throws ParseException 
-	 * @throws IOException 
-	 * @throws JsonMappingException 
-	 * @throws JsonParseException 
+	 * @throws JsonProcessingException
+	 * @throws ParseException
+	 * @throws IOException
+	 * @throws JsonMappingException
+	 * @throws JsonParseException
 	 */
 	private boolean isTemplateAvailable(String templateCode) throws ApisResourceAccessException, IOException{
 
@@ -366,7 +366,7 @@ public class MessageSenderStage extends MosipVerticleManager {
 		TemplateResponseDto templateResponseDto=null;
 		responseWrapper = (ResponseWrapper<?>) restClientService.getApi(ApiName.MASTER, pathSegments, "","", ResponseWrapper.class);
 		templateResponseDto = mapper.readValue(mapper.writeValueAsString(responseWrapper.getResponse()), TemplateResponseDto.class);
-		
+
 		if(responseWrapper.getErrors()==null) {
 			templateResponseDto.getTemplates().forEach(dto -> {
 				if (dto.getTemplateTypeCode().equalsIgnoreCase(templateCode)) {

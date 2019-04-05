@@ -31,6 +31,7 @@ import io.mosip.registration.processor.core.packet.dto.demographicinfo.identify.
 import io.mosip.registration.processor.core.packet.dto.masterdata.StatusResponseDto;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.core.util.JsonUtil;
+import io.mosip.registration.processor.packet.storage.exception.IdentityNotFoundException;
 import io.mosip.registration.processor.packet.storage.utils.Utilities;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 
@@ -119,20 +120,11 @@ public class MasterDataValidationTest {
 
 	}
 
-	@Test
+	@Test(expected = IdentityNotFoundException.class)
 	public void testIOException() throws Exception {
 		PowerMockito.mockStatic(JsonUtil.class);
 		PowerMockito.when(JsonUtil.class, "getJSONObject", any(), any()).thenReturn(null);
-		boolean isMasterDataValidated = masterDataValidation.validateMasterData(jsonString);
-		assertFalse("Test for IOException", isMasterDataValidated);
-
-	}
-
-	@Test
-	public void testException() throws Exception {
-		when(env.getProperty("registration.processor.masterdata.validation.attributes")).thenReturn("gen");
-		boolean isMasterDataValidated = masterDataValidation.validateMasterData(jsonString);
-		assertFalse("Test for IOException", isMasterDataValidated);
+		masterDataValidation.validateMasterData(jsonString);
 
 	}
 

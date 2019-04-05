@@ -44,6 +44,9 @@ public class RegistrationUIConstants {
 	public static final String FACE_MATCH = bundle.getString("FACE_MATCH");
 	public static final String FINGERPRINT = bundle.getString("FINGERPRINT");
 	public static final String RECAPTURE =  bundle.getString("RECAPTURE");
+	
+	//Lost UIN
+	public static final String LOST_UIN_REQUEST_ERROR = bundle.getString("LOST_UIN_REQUEST_ERROR");
 
 	// AUTHORIZATION
 	public static final String ROLES_EMPTY_ERROR = bundle.getString("ROLES_EMPTY_ERROR");
@@ -143,7 +146,10 @@ public class RegistrationUIConstants {
 	public static final String PREVIEW_DOC= bundle.getString("PREVIEW_DOC");
 	public static final String RID_INVALID= bundle.getString("RID_INVALID");
 	public static final String UIN_INVALID= bundle.getString("UIN_INVALID");
-
+	public static final String IS_BLOCKED_WORD= bundle.getString("IS_BLOCKED_WORD");
+	public static final String THRESHOLD = bundle.getString("THRESHOLD");
+	public static final String INVALID_DATE_OF_BIRTH=bundle.getString("INVALID_DATE_OF_BIRTH");
+	public static final String PLACEHOLDER_LABEL=bundle.getString("PLACEHOLDER_LABEL");
 
 
 	// OPT TO REGISTER
@@ -156,6 +162,7 @@ public class RegistrationUIConstants {
 	public static final String OPT_TO_REG_WEAK_GPS = bundle.getString("OPT_TO_REG_WEAK_GPS");
 	public static final String OPT_TO_REG_INSERT_GPS = bundle.getString("OPT_TO_REG_INSERT_GPS");
 	public static final String OPT_TO_REG_GPS_PORT_MISMATCH = bundle.getString("OPT_TO_REG_GPS_PORT_MISMATCH");
+	public static final String OPT_TO_REG_LAST_SOFTWAREUPDATE_CHECK = bundle.getString("OPT_TO_REG_LAST_SOFTWAREUPDATE_CHECK");
 
 	// PACKET EXPORT
 	public static final String PACKET_EXPORT_SUCCESS_MESSAGE = bundle.getString("PACKET_EXPORT_SUCCESS_MESSAGE");
@@ -225,6 +232,8 @@ public class RegistrationUIConstants {
 	public static final String UPDATE_UIN_ENTER_UIN_ALERT = bundle.getString("UPDATE_UIN_ENTER_UIN_ALERT");
 	public static final String UPDATE_UIN_VALIDATION_ALERT = bundle.getString("UPDATE_UIN_VALIDATION_ALERT");
 	public static final String UPDATE_UIN_SELECTION_ALERT = bundle.getString("UPDATE_UIN_SELECTION_ALERT");
+	public static final String UPDATE_UIN_INDIVIDUAL_AND_PARENT_SAME_UIN_ALERT = bundle.getString("UPDATE_UIN_INDIVIDUAL_AND_PARENT_SAME_UIN_ALERT");
+	public static final String UPDATE_UIN_NO_BIOMETRIC_CONFIG_ALERT = bundle.getString("UPDATE_UIN_NO_BIOMETRIC_CONFIG_ALERT");
 
 	// Biometric Exception
 	public static final String BIOMETRIC_EXCEPTION_ALERT = bundle.getString("BIOMETRIC_EXCEPTION_ALERT");
@@ -233,7 +242,8 @@ public class RegistrationUIConstants {
 	public static final String UNABLE_LOAD_USERONBOARD_SCREEN = bundle.getString("UNABLE_LOAD_USERONBOARD_SCREEN");
 	public static final String USER_ONBOARD_SUCCESS = bundle.getString("USER_ONBOARD_SUCCESS");
 	public static final String USER_MACHINE_VALIDATION_MSG = bundle.getString("USER_MACHINE_VALIDATION_MSG");
-
+	public static final String USER_ONBOARD_HI = bundle.getString("USER_ONBOARD_HI");
+	public static final String USER_ONBOARD_NOTONBOARDED = bundle.getString("USER_ONBOARD_NOTONBOARDED");
 	// Supervisor Authentication configuration from global_param
 	public static final String SUPERVISOR_AUTHENTICATION_CONFIGURATION = "mosip.registration.supervisor_authentication_configuration";
 
@@ -281,4 +291,17 @@ public class RegistrationUIConstants {
 	public static final String TIMEOUT_TITLE = bundle.getString("TIMEOUT_TITLE");
 	public static final String TIMEOUT_HEADER = bundle.getString("TIMEOUT_HEADER");
 	public static final String TIMEOUT_CONTENT = bundle.getString("TIMEOUT_CONTENT");
+	
+	//Notification
+	public static final String EMAIL_ERROR_MSG = bundle.getString("EMAIL_ERROR_MSG");
+	public static final String SMS_ERROR_MSG = bundle.getString("SMS_ERROR_MSG");
+	
+	//Application Updates
+	public static final String NO_UPDATES_FOUND = bundle.getString("NO_UPDATES_FOUND");
+	public static final String UNABLE_FIND_UPDATES = bundle.getString("UNABLE_FIND_UPDATES");
+	public static final String NO_INTERNET_CONNECTION = bundle.getString("NO_INTERNET_CONNECTION");
+	public static final String UPDATE_AVAILABLE = bundle.getString("UPDATE_AVAILABLE");
+	public static final String CONFIRM_UPDATE = bundle.getString("CONFIRM_UPDATE");
+	public static final String UPDATE_COMPLETED = bundle.getString("UPDATE_COMPLETED");
+	public static final String UNABLE_TO_UPDATE = bundle.getString("UNABLE_TO_UPDATE");
 }

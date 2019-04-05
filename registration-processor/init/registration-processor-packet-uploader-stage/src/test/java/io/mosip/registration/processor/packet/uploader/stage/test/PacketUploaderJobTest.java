@@ -70,6 +70,7 @@ public class PacketUploaderJobTest {
 		public int getMaxRetryCount() {
 			return maxRetryCount;
 		}
+
 		@Override
 		public MosipEventBus getEventBus(Object verticleName, String url, int instanceNumber) {
 			return null;
@@ -208,25 +209,6 @@ public class PacketUploaderJobTest {
 	}
 
 	@Test
-	public void StatusUpdateExceptionTest() throws Exception {
-
-		listAppender.start();
-		fooLogger.addAppender(listAppender);
-		ClassLoader classLoader = getClass().getClassLoader();
-		File file = new File(classLoader.getResource("1001.zip").getFile());
-		Mockito.doNothing().when(packetArchiver).archivePacket("1001");
-		Mockito.doThrow(TablenotAccessibleException.class).when(registrationStatusService)
-				.updateRegistrationStatus(any());
-		Mockito.when(adapter.storePacket("1001", file)).thenReturn(Boolean.TRUE);
-		Mockito.when(adapter.isPacketPresent("1001")).thenReturn(Boolean.TRUE);
-		Mockito.doNothing().when(adapter).unpackPacket("1001");
-		packetUploaderStage.process(dto);
-		Assertions.assertThat(listAppender.list).extracting(ILoggingEvent::getLevel, ILoggingEvent::getFormattedMessage)
-				.contains(Tuple.tuple(Level.ERROR,
-						"SESSIONID - REGISTRATIONID - 1001 - RPR_RGS_REGISTRATION_TABLE_NOT_ACCESSIBLEnull"));
-	}
-
-	@Test
 	public void SystemExceptionTest() throws Exception {
 
 		listAppender.start();
@@ -234,23 +216,6 @@ public class PacketUploaderJobTest {
 		Mockito.doThrow(Exception.class).when(packetArchiver).archivePacket("1001");
 
 		packetUploaderStage.process(dto);
-	}
-
-	@Test
-	public void IOExceptionTest() throws Exception {
-
-		listAppender.start();
-		fooLogger.addAppender(listAppender);
-
-		Mockito.doNothing().when(packetArchiver).archivePacket(any());
-
-		Mockito.doThrow(IOException.class).when(adapter).unpackPacket(any(String.class));
-
-		packetUploaderStage.process(dto);
-
-		Assertions.assertThat(listAppender.list).extracting(ILoggingEvent::getLevel, ILoggingEvent::getFormattedMessage)
-				.contains(Tuple.tuple(Level.ERROR, "SESSIONID - REGISTRATIONID - 1001 - RPR_SYS_IO_EXCEPTIONnull"));
-
 	}
 
 	@Test

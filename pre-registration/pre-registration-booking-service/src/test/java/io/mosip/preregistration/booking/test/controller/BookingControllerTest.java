@@ -49,6 +49,7 @@ import net.minidev.json.parser.ParseException;
  * Booking Controller Test
  * 
  * @author Kishan Rathore
+ * @since 1.0.0
  *
  */
 @SpringBootTest(classes = { BookingApplicationTest.class })
@@ -86,6 +87,8 @@ public class BookingControllerTest {
 	List<PreRegIdsByRegCenterIdResponseDTO> respList = new ArrayList<>();
 	PreRegIdsByRegCenterIdDTO preRegIdsByRegCenterIdDTO = new PreRegIdsByRegCenterIdDTO();
 
+	String preId="23587986034785";
+	
 	@SuppressWarnings({ "deprecation" })
 	@Before
 	public void setup() throws FileNotFoundException, ParseException, URISyntaxException {
@@ -98,14 +101,10 @@ public class BookingControllerTest {
 		File file = new File(dataSyncUri.getPath());
 		jsonObject = parser.parse(new FileReader(file));
 
-		bookingRequestDTO.setPreRegistrationId("23587986034785");
-		bookingRequestDTO.setNewBookingDetails(new BookingRegistrationDTO());
-		bookingRequestDTO.setOldBookingDetails(new BookingRegistrationDTO());
-		// bookingRequestDTOB.setPre_registration_id("31496715428069");
-		// bookingRequestDTOB.setRegistration_center_id("1");
-		// bookingRequestDTOB.setSlotFromTime("09:00");
-		// bookingRequestDTOB.setSlotToTime("09:13");
-		// bookingRequestDTOB.setReg_date("2018-12-06");
+		 bookingRequestDTO.setRegDate("1");;
+		bookingRequestDTO.setSlotFromTime("09:00");
+		bookingRequestDTO.setSlotToTime("09:13");
+		bookingRequestDTO.setRegDate("2018-12-06");
 
 		bookingDTO.setRequest(bookingList);
 
@@ -116,7 +115,6 @@ public class BookingControllerTest {
 		File file1 = new File(cancelUri.getPath());
 		jsonObject1 = parser.parse(new FileReader(file1));
 
-		cancelbookingDto.setPreRegistrationId("12345");
 		cancelbookingDto.setRegistrationCenterId("2");
 		cancelbookingDto.setSlotFromTime("09:00");
 		cancelbookingDto.setSlotToTime("09:20");
@@ -131,12 +129,12 @@ public class BookingControllerTest {
 		preRegIdsResponseDTO.setPreRegistrationIds(respList);
 	}
 
-	@WithUserDetails("individual")
+	@WithUserDetails("INDIVIDUAL")
 	@Test
 	public void getAvailability() throws Exception {
 		MainResponseDTO<AvailabilityDto> response = new MainResponseDTO<>();
 		Mockito.when(service.getAvailability(Mockito.any())).thenReturn(response);
-		RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/appointment/availability")
+		RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/appointment/availability/{registrationCenterId}","1001")
 				.contentType(MediaType.APPLICATION_JSON_VALUE).characterEncoding("UTF-8")
 				.accept(MediaType.APPLICATION_JSON_VALUE).param("registration_center_id", "1");
 		mockMvc.perform(requestBuilder).andExpect(status().isOk());
@@ -155,7 +153,7 @@ public class BookingControllerTest {
 
 	@SuppressWarnings("unchecked")
 	@Test
-	@WithUserDetails("individual")
+	@WithUserDetails("INDIVIDUAL")
 	public void successBookingTest() throws Exception {
 
 		responseDto.setResponsetime(serviceUtil.getCurrentResponseTime());
@@ -163,9 +161,9 @@ public class BookingControllerTest {
 		respList.add("APPOINTMENT_SUCCESSFULLY_BOOKED");
 		responseDto.setResponse(respList);
 
-		Mockito.when(service.bookAppointment(bookingDTO)).thenReturn(responseDto);
+		Mockito.when(service.bookAppointment(bookingDTO,preId)).thenReturn(responseDto);
 
-		RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/appointment")
+		RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/appointment/{preRegistrationId}",preId)
 				.contentType(MediaType.APPLICATION_JSON_VALUE).characterEncoding("UTF-8")
 				.accept(MediaType.APPLICATION_JSON_VALUE).content(jsonObject.toString());
 
@@ -174,13 +172,13 @@ public class BookingControllerTest {
 
 	@SuppressWarnings("unchecked")
 	@Test
-	@WithUserDetails("individual")
+	@WithUserDetails("INDIVIDUAL")
 	public void failureBookingTest() throws Exception {
 
 		bookingDTO.setRequest(null);
-		Mockito.when(service.bookAppointment(bookingDTO)).thenReturn(responseDto);
+		Mockito.when(service.bookAppointment(bookingDTO,preId)).thenReturn(responseDto);
 
-		RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/appointment")
+		RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/appointment/{preRegistrationId}",preId)
 				.contentType(MediaType.APPLICATION_JSON_VALUE).characterEncoding("UTF-8")
 				.accept(MediaType.APPLICATION_JSON_VALUE).content(jsonObject.toString());
 
@@ -189,7 +187,7 @@ public class BookingControllerTest {
 
 	@SuppressWarnings("unchecked")
 	@Test
-	@WithUserDetails("individual")
+	@WithUserDetails("INDIVIDUAL")
 	public void cancelAppointmentSuccessTest() throws Exception {
 
 		responseDto.setErrors(null);
@@ -198,9 +196,9 @@ public class BookingControllerTest {
 		cancelBookingResponseDTO.setTransactionId("375765");
 		responseDto.setResponse(cancelBookingResponseDTO);
 
-		Mockito.when(service.cancelAppointment(dto)).thenReturn(responseDto);
+		Mockito.when(service.cancelAppointment(dto,preId)).thenReturn(responseDto);
 
-		RequestBuilder requestBuilder = MockMvcRequestBuilders.put("/appointment")
+		RequestBuilder requestBuilder = MockMvcRequestBuilders.put("/appointment/{preRegistrationId}",preId)
 				.contentType(MediaType.APPLICATION_JSON_VALUE).characterEncoding("UTF-8")
 				.accept(MediaType.APPLICATION_JSON_VALUE).content(jsonObject1.toString());
 
@@ -209,13 +207,13 @@ public class BookingControllerTest {
 
 	@SuppressWarnings("unchecked")
 	@Test
-	@WithUserDetails("individual")
+	@WithUserDetails("INDIVIDUAL")
 	public void cancelAppointmentFailureTest() throws Exception {
 
 		dto.setRequest(null);
-		Mockito.when(service.cancelAppointment(dto)).thenReturn(responseDto);
+		Mockito.when(service.cancelAppointment(dto,preId)).thenReturn(responseDto);
 
-		RequestBuilder requestBuilder = MockMvcRequestBuilders.put("/appointment")
+		RequestBuilder requestBuilder = MockMvcRequestBuilders.put("/appointment/{preRegistrationId}",preId)
 				.contentType(MediaType.APPLICATION_JSON_VALUE).characterEncoding("UTF-8")
 				.accept(MediaType.APPLICATION_JSON_VALUE).content(jsonObject1.toString());
 
@@ -223,11 +221,11 @@ public class BookingControllerTest {
 	}
 
 	@Test
-	@WithUserDetails("individual")
+	@WithUserDetails("INDIVIDUAL")
 	public void getAppointmentDetails() throws Exception {
 		MainResponseDTO<BookingRegistrationDTO> response = new MainResponseDTO<>();
 		Mockito.when(service.getAppointmentDetails("12345")).thenReturn(response);
-		RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/appointment")
+		RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/appointment/{preRegistrationId}",preId)
 				.contentType(MediaType.APPLICATION_JSON_VALUE).characterEncoding("UTF-8")
 				.accept(MediaType.APPLICATION_JSON_VALUE).param("pre_registration_id", "12345");
 		mockMvc.perform(requestBuilder).andExpect(status().isOk());
@@ -235,7 +233,7 @@ public class BookingControllerTest {
 
 
 	@Test
-	@WithUserDetails("individual")
+	@WithUserDetails("INDIVIDUAL")
 	public void deleteBookingTest() throws Exception {
 		String preId = "3";
 		MainListResponseDTO<DeleteBookingDTO> response = new MainListResponseDTO<>();
@@ -259,7 +257,7 @@ public class BookingControllerTest {
 	 *             on error
 	 */
 	@Test
-	@WithUserDetails("individual")
+	@WithUserDetails("INDIVIDUAL")
 	public void getAllApplicationByDateTest() throws Exception {
 
 		String fromDate = "2018-12-06";
@@ -275,11 +273,10 @@ public class BookingControllerTest {
 		Mockito.when(service.getBookedPreRegistrationByDate(Mockito.any(), Mockito.any(), Mockito.anyString()))
 				.thenReturn(response);
 
-		RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/appointment/byDateAndRegCenterId/")
+		RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/appointment/preRegistrationId/{registrationCenterId}","1001")
 				.contentType(MediaType.APPLICATION_JSON_VALUE).characterEncoding("UTF-8")
 				.accept(MediaType.APPLICATION_JSON_VALUE).param("from_date", fromDate)
-				.accept(MediaType.APPLICATION_JSON_VALUE).param("to_date", toDate)
-				.accept(MediaType.APPLICATION_JSON_VALUE).param("reg_center_id", "10001");
+				.accept(MediaType.APPLICATION_JSON_VALUE).param("to_date", toDate);
 
 		mockMvc.perform(requestBuilder).andExpect(status().isOk());
 

@@ -5,12 +5,11 @@ import java.beans.PropertyDescriptor;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.Iterator;
 import java.util.List;
 
@@ -19,21 +18,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
-import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
+import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.processor.core.auth.dto.AuthRequestDTO;
 import io.mosip.registration.processor.core.auth.dto.AuthTypeDTO;
 import io.mosip.registration.processor.core.auth.dto.IdentityDTO;
 import io.mosip.registration.processor.core.auth.dto.IdentityInfoDTO;
 import io.mosip.registration.processor.core.auth.dto.RequestDTO;
-import io.mosip.registration.processor.core.constant.PacketFiles;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
+import io.mosip.registration.processor.core.constant.PacketFiles;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.DemographicInfoDto;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
-import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.packet.storage.dao.PacketInfoDao;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 
@@ -59,10 +57,6 @@ public class DemoDedupe {
 	/** The adapter. */
 	@Autowired
 	private FileSystemAdapter adapter;
-
-	/** The rest client service. */
-	@Autowired
-	private RegistrationProcessorRestClientService<Object> restClientService;
 
 	/** The env. */
 	@Autowired
@@ -128,9 +122,13 @@ public class DemoDedupe {
 	 *             the apis resource access exception
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
+	 * @throws IntrospectionException 
+	 * @throws InvocationTargetException 
+	 * @throws IllegalArgumentException 
+	 * @throws IllegalAccessException 
 	 */
 	public boolean authenticateDuplicates(String regId, List<String> duplicateUins)
-			throws ApisResourceAccessException, IOException {
+			throws ApisResourceAccessException, IOException,ParseException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, IntrospectionException {
 
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 				regId, "DemoDedupe::authenticateDuplicates()::entry");
@@ -169,9 +167,14 @@ public class DemoDedupe {
 	 *             the apis resource access exception
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
+	 * @throws ParseException 
+	 * @throws IntrospectionException 
+	 * @throws InvocationTargetException 
+	 * @throws IllegalArgumentException 
+	 * @throws IllegalAccessException 
 	 */
 	private boolean authenticateFingerBiometric(List<String> biometriclist, String type, String duplicateUin,
-			String regId) throws ApisResourceAccessException, IOException {
+			String regId) throws ApisResourceAccessException, IOException, ParseException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, IntrospectionException {
 		for (String biometricName : biometriclist) {
 			String biometric = BIOMETRIC_APPLICANT + biometricName.toUpperCase();
 			if (adapter.checkFileExistence(regId, biometric)) {
@@ -198,15 +201,16 @@ public class DemoDedupe {
 	 *            the field name
 	 * @param value
 	 *            the value
+	 * @throws IntrospectionException 
+	 * @throws InvocationTargetException 
+	 * @throws IllegalArgumentException 
+	 * @throws IllegalAccessException 
 	 */
-	private void setFingerBiometricDto(Object obj, String fieldName, Object value) {
+	private void setFingerBiometricDto(Object obj, String fieldName, Object value) throws  IllegalAccessException, IllegalArgumentException, InvocationTargetException, IntrospectionException {
 		PropertyDescriptor pd;
-		try {
+		if(fieldName != null ) {
 			pd = new PropertyDescriptor(fieldName, obj.getClass());
 			pd.getWriteMethod().invoke(obj, value);
-		} catch (IntrospectionException | IllegalAccessException | IllegalArgumentException
-				| InvocationTargetException e) {
-			e.printStackTrace();
 		}
 	}
 
@@ -217,8 +221,12 @@ public class DemoDedupe {
 	 *            the biometric data
 	 * @param type
 	 *            the type
+	 * @throws IntrospectionException 
+	 * @throws InvocationTargetException 
+	 * @throws IllegalArgumentException 
+	 * @throws IllegalAccessException 
 	 */
-	void setFingerBiometric(List<IdentityInfoDTO> biometricData, String type) {
+	void setFingerBiometric(List<IdentityInfoDTO> biometricData, String type) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, IntrospectionException {
 		String finger = null;
 		String[] fingerType = env.getProperty("fingerType").split(",");
 		List<String> list = new ArrayList<>(Arrays.asList(fingerType));
@@ -249,9 +257,10 @@ public class DemoDedupe {
 	 *             the apis resource access exception
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
+	 * @throws ParseException 
 	 */
 	private boolean authenticateIrisBiometric(List<String> biometriclist, String type, String duplicateUin,
-			String regId) throws ApisResourceAccessException, IOException {
+			String regId) throws ApisResourceAccessException, IOException, ParseException {
 		// authTypeDTO.setIris(true);
 		for (String biometricName : biometriclist) {
 			String biometric = BIOMETRIC_APPLICANT + biometricName.toUpperCase();

@@ -10,6 +10,7 @@ import io.mosip.registration.entity.KeyStore;
 import io.mosip.registration.repositories.PolicySyncRepository;
 
 /**
+ * The implementation class of {@link PolicySyncDAO}
  * 
  * @author Brahmananda Reddy
  * @since 1.0.0

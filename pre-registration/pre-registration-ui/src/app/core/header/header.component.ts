@@ -16,8 +16,20 @@ export class HeaderComponent implements OnInit {
 
   ngOnInit() {}
 
-  onLogout() {
-    console.log('Logging out');
+  // onLogout() {
+  //   console.log('Logging out');
+  // }
+
+  onLogoClick() {
+    if (this.authService.isAuthenticated) {
+      console.log('IF LOGO');
+      this.router.navigate(['dashboard']);
+      // this.doLogout();
+    } else {
+      console.log('ELSE');
+      this.router.navigate(['/']);
+      // window.location.reload();
+    }
   }
 
   onHome() {
@@ -31,18 +43,11 @@ export class HeaderComponent implements OnInit {
     this.router.navigate([homeURL]);
   }
 
-  removeToken() {
-    localStorage.setItem('loggedIn', 'false');
-  }
+  // removeToken() {
+  //   localStorage.setItem('loggedIn', 'false');
+  // }
 
   doLogout() {
-    // localStorage.setItem('loggedIn', 'false');
-    // localStorage.setItem('loggedOut', 'true');
-    // localStorage.setItem('loggedOutLang', localStorage.getItem('langCode'));
-    // this.authService.removeToken();
-    // this.dataStorageService.onLogout().subscribe(res => console.log(res));
-    // console.log('logout', localStorage.getItem('loggedOutLang'));
-    // this.router.navigate(['/']);
     this.authService.onLogout();
   }
 }

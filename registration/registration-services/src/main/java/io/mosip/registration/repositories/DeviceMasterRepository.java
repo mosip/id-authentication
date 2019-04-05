@@ -17,21 +17,20 @@ import io.mosip.registration.entity.id.RegMachineSpecId;
 public interface DeviceMasterRepository extends BaseRepository<RegDeviceMaster, RegMachineSpecId> {
 
 	/**
-	 * Find the device based on serial number
-	 * 
-	 * @param deviceType
-	 * @param serialNo
-	 * @param currentDate
+	 * Find the device based on serial number.
+	 *
+	 * @param serialNo the serial no
+	 * @param deviceType the device type
+	 * @param currentDate the current date
 	 * @return returns the record
 	 */
 	Long countBySerialNumAndNameAndIsActiveTrueAndValidityEndDtimesGreaterThan(String serialNo, String deviceType,
 			Timestamp currentDate);
 
 	/**
-	 * Find all the devices mapped to the registration center by language code
-	 * 
-	 * @param langCode
-	 *            the language code of the device
+	 * Find all the devices mapped to the registration center by language code.
+	 *
+	 * @param langCode            the language code of the device
 	 * @return list of all devices mapped to the registration center in the given
 	 *         language
 	 */

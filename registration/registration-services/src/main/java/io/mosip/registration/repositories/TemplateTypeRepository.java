@@ -17,8 +17,10 @@ public interface TemplateTypeRepository<P> extends BaseRepository<TemplateType, 
 	 * This method returns the list of {@link TemplateType} which are active and
 	 * have specified templateTypeCode and language code
 	 * 
-	 * @param templateTypeCode
-	 *            the combination of templateTypeCode and language code
+	 * @param code
+	 *            the templateTypeCode
+	 * @param langCode
+	 * 				the language code required to generate the template
 	 * @return the list of {@link TemplateType}
 	 */
 	List<TemplateType> findByIsActiveTrueAndPkTmpltCodeCodeAndPkTmpltCodeLangCode(String code, String langCode);

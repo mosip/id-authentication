@@ -25,12 +25,10 @@ local.properties
 /reg/
 /PacketStore/*
 /PreRegPacketStore/*
+/null/*
 
 #not ignore files
 !jfxrt.jar
 !MFS100-1.0.jar
 !rxtxcomm-2.2.jar
 !RXTXcomm.jar
-!89149679063970.zip
-
-!123456789.zip

@@ -65,12 +65,12 @@ public class Decryptor {
 
 	@Autowired
 	private Environment env;
-	
-	
+
+
 	private static final String DECRYPT_SERVICE_ID = "mosip.registration.processor.crypto.decrypt.id";
 	private static final String REG_PROC_APPLICATION_VERSION = "mosip.registration.processor.application.version";
 	private static final String DATETIME_PATTERN = "mosip.registration.processor.datetime.pattern";
-	
+
 	private static final String DECRYPTION_SUCCESS = "Decryption success for RegistrationId : {}";
 	private static final String DECRYPTION_FAILURE = "Virus scan decryption failed for  registrationId ";
 	private static final String IO_EXCEPTION = "Exception Converting encrypted packet inputStream to string";
@@ -89,19 +89,20 @@ public class Decryptor {
 	 * @param registrationId
 	 * @return
 	 * @throws PacketDecryptionFailureException
+	 * @throws ApisResourceAccessException
 	 * @throws ParseException
 	 */
 
 	@SuppressWarnings("unchecked")
 	public InputStream decrypt(InputStream encryptedPacket, String registrationId)
-			throws PacketDecryptionFailureException {
+			throws PacketDecryptionFailureException, ApisResourceAccessException {
 		InputStream outstream = null;
 		boolean isTransactionSuccessful = false;
 		String description = "";
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 				registrationId, "Decryptor::decrypt()::entry");
 		try {
-			ObjectMapper mapper=new ObjectMapper(); 
+			ObjectMapper mapper=new ObjectMapper();
 			String centerId = registrationId.substring(0,centerIdLength);
 			String encryptedPacketString = IOUtils.toString(encryptedPacket, "UTF-8");
 			CryptomanagerRequestDto cryptomanagerRequestDto = new CryptomanagerRequestDto();
@@ -140,7 +141,7 @@ public class Decryptor {
 			request.setVersion(env.getProperty(REG_PROC_APPLICATION_VERSION));
 			response =  (ResponseWrapper<CryptomanagerResponseDto>) restClientService.postApi(
 					ApiName.DMZCRYPTOMANAGERDECRYPT, "", "", request, ResponseWrapper.class);
-			cryptomanagerResponseDto = mapper.readValue(mapper.writeValueAsString(response.getResponse()), CryptomanagerResponseDto.class); 
+			cryptomanagerResponseDto = mapper.readValue(mapper.writeValueAsString(response.getResponse()), CryptomanagerResponseDto.class);
 			byte[] decryptedPacket = CryptoUtil.decodeBase64(cryptomanagerResponseDto.getData());
 			outstream = new ByteArrayInputStream(decryptedPacket);
 			isTransactionSuccessful = true;
@@ -180,10 +181,7 @@ public class Decryptor {
 			} else {
 				description = DECRYPTION_FAILURE + registrationId + "::" + e.getMessage();
 
-				throw new PacketDecryptionFailureException(
-						PacketDecryptionFailureExceptionConstant.MOSIP_PACKET_DECRYPTION_FAILURE_ERROR_CODE
-								.getErrorCode(),
-						e.getMessage());
+				throw e;
 			}
 
 		} catch (ParseException e) {
@@ -208,8 +206,8 @@ public class Decryptor {
 			eventType = eventId.equalsIgnoreCase(EventId.RPR_402.toString()) ? EventType.BUSINESS.toString()
 					: EventType.SYSTEM.toString();
 
-			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
-					registrationId, ApiName.AUDIT);
+			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType, registrationId,
+					ApiName.AUDIT);
 		}
 		regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 				registrationId, DECRYPTION_SUCCESS);

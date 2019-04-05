@@ -63,8 +63,8 @@ public class DocumentNotFoundTest {
 	public void notFoundException() throws FileNotFoundException, IOException {
 
 		DocumentNotFoundException documentNotFoundException = new DocumentNotFoundException(DOCUMENT_Not_FOUND);
-
-		DocumentRequestDTO documentDto = new DocumentRequestDTO("48690172097498", "address", "POA", "ENG");
+		String preRegistrationId ="48690172097498";
+		DocumentRequestDTO documentDto = new DocumentRequestDTO("address", "POA", "ENG");
 
 		ClassLoader classLoader = getClass().getClassLoader();
 
@@ -72,11 +72,11 @@ public class DocumentNotFoundTest {
 
 		this.multiPartFile = new MockMultipartFile("file", "Doc.pdf", "mixed/multipart", new FileInputStream(file));
 
-		Mockito.when(documentUploadService.uploadDocument(multiPartFile, json))
+		Mockito.when(documentUploadService.uploadDocument(multiPartFile, json, preRegistrationId))
 				.thenThrow(documentNotFoundException);
 		try {
 
-			documentUploadService.uploadDocument(multiPartFile, json);
+			documentUploadService.uploadDocument(multiPartFile, json, preRegistrationId);
 			fail();
 
 		} catch (DocumentNotFoundException e) {

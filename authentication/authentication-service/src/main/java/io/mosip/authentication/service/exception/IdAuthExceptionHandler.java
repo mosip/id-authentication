@@ -4,7 +4,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -13,9 +12,7 @@ import javax.servlet.ServletException;
 
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.MessageSource;
 import org.springframework.context.NoSuchMessageException;
-import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,7 +30,7 @@ import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.dto.indauth.ActionableAuthError;
 import io.mosip.authentication.core.dto.indauth.AuthError;
 import io.mosip.authentication.core.dto.indauth.AuthResponseDTO;
-import io.mosip.authentication.core.dto.indauth.BaseAuthResponseDTO;
+import io.mosip.authentication.core.dto.indauth.ResponseDTO;
 import io.mosip.authentication.core.exception.IDAuthenticationUnknownException;
 import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
@@ -55,10 +52,6 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 
 	/** The Constant ID_AUTHENTICATION_APP_EXCEPTION. */
 	private static final String ID_AUTHENTICATION_APP_EXCEPTION = "IdAuthenticationAppException";
-
-	/** The message source. */
-	@Autowired
-	private MessageSource messageSource;
 
 	/** The mapper. */
 	@Autowired
@@ -132,15 +125,9 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 						+ ExceptionUtils.getStackTrace(ex));
 
 		if (ex instanceof ServletException || ex instanceof BeansException
-				|| ex instanceof HttpMessageConversionException) {
+				|| ex instanceof HttpMessageConversionException || ex instanceof AsyncRequestTimeoutException) {
 			ex = new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(),
 					IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorMessage());
-
-			return new ResponseEntity<>(buildExceptionResponse(ex), HttpStatus.OK);
-		} else if (ex instanceof AsyncRequestTimeoutException) {
-			ex = new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(),
-					IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorMessage());
-
 			return new ResponseEntity<>(buildExceptionResponse(ex), HttpStatus.OK);
 		} else {
 			return handleAllExceptions(ex, request);
@@ -183,26 +170,33 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 	private Object buildExceptionResponse(Exception ex) {
 		mosipLogger.debug(DEFAULT_SESSION_ID, "Building exception response", "Entered buildExceptionResponse",
 				PREFIX_HANDLING_EXCEPTION + ex.getClass().toString());
-		BaseAuthResponseDTO authResp = new BaseAuthResponseDTO();
-		authResp.setStatus(Boolean.FALSE);
+		AuthResponseDTO authResp = new AuthResponseDTO();
+		ResponseDTO res = new ResponseDTO();
+		res.setAuthStatus(Boolean.FALSE);
+		authResp.setResponse(res);
 		if (ex instanceof IdAuthenticationBaseException) {
 			IdAuthenticationBaseException baseException = (IdAuthenticationBaseException) ex;
-			Locale locale = LocaleContextHolder.getLocale();
 			List<String> errorCodes = ((BaseCheckedException) ex).getCodes();
+			List<String> errorMessages = ((BaseCheckedException) ex).getErrorTexts();
+
 			Collections.reverse(errorCodes);
 			try {
 				if (ex instanceof IDDataValidationException) {
 					IDDataValidationException validationException = (IDDataValidationException) ex;
 					List<Object[]> args = validationException.getArgs();
+					List<String> actionArgs = validationException.getActionargs();
 					List<AuthError> errors = IntStream.range(0, errorCodes.size())
-							.mapToObj(i -> createAuthError(validationException, errorCodes.get(i),
-									messageSource.getMessage(errorCodes.get(i), args.get(i), locale)))
+							.mapToObj(
+									i -> createAuthError(validationException, errorCodes.get(i),
+											args != null ? String.format(errorMessages.get(i), args)
+													: errorMessages.get(i),
+											actionArgs.get(i)))
 							.distinct().collect(Collectors.toList());
 					authResp.setErrors(errors);
 				} else {
 					List<AuthError> errors = IntStream.range(0, errorCodes.size())
-							.mapToObj(i -> createAuthError(baseException, errorCodes.get(i),
-									messageSource.getMessage(errorCodes.get(i), null, locale)))
+							.mapToObj(
+									i -> createAuthError(baseException, errorCodes.get(i), errorMessages.get(i), null))
 							.distinct().collect(Collectors.toList());
 					authResp.setErrors(errors);
 				}
@@ -211,7 +205,7 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 						"\n" + ExceptionUtils.getStackTrace(e));
 				authResp.setErrors(Arrays.<AuthError>asList(
 						createAuthError(baseException, IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(),
-								IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorMessage())));
+								IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorMessage(), null)));
 			}
 		}
 
@@ -229,19 +223,17 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 	 * @return the auth error
 	 */
 	private AuthError createAuthError(IdAuthenticationBaseException authException, String errorCode,
-			String errorMessage) {
-		String actionCode = authException.getActionCode();
+			String errorMessage, String actionMessage) {
+		String actionMessageEx = authException.getActionMessage();
 		AuthError err;
-		if (actionCode == null || actionCode.isEmpty()) {
+		if (actionMessageEx == null) {
+			actionMessageEx = actionMessage;
+		}
+
+		if (actionMessageEx == null || actionMessageEx.isEmpty()) {
 			err = new AuthError(errorCode, errorMessage);
 		} else {
-			String actionMessage = "";
-			Optional<String> optionalActionMessage = Optional
-					.ofNullable(messageSource.getMessage(actionCode, null, LocaleContextHolder.getLocale()));
-			if (optionalActionMessage.isPresent()) {
-				actionMessage = optionalActionMessage.get();
-			}
-			err = new ActionableAuthError(errorCode, errorMessage, actionMessage);
+			err = new ActionableAuthError(errorCode, errorMessage, actionMessageEx);
 		}
 
 		return err;

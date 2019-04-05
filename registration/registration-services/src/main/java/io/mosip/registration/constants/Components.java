@@ -68,8 +68,10 @@ public enum Components {
 	PACKET_SYNCHED("REG-MOD-142","packet statuses are synched from server to client"),
 	PACKET_STATUS_SYNCHED("REG-MOD-143","packet are synched from client to server"),
 	CLEAN_UP("REG-MOD-144","all the data is cleaned up"),
-	PACKETS_UPLOADED("REG-MOD-145","all the psckets are uploaded");
-	
+	PACKETS_UPLOADED("REG-MOD-145","all the pakets are uploaded"),
+	//Scheduler
+	REFRESH_TIMEOUT("REG-MOD-146","refresh timeout"),
+	SESSION_TIMEOUT("REG-MOD-147","session timeout");
 
 	/**
 	 * The constructor

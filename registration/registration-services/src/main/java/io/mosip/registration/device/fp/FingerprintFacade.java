@@ -7,7 +7,6 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -55,30 +54,49 @@ public class FingerprintFacade {
 
 	/**
 	 * provide the minutia of a finger.
-	 * 
-	 * @return
+	 *
+	 * @return the minutia
 	 */
 	public String getMinutia() {
 		return fingerprintProvider.getMinutia();
 	}
 
+	/**
+	 * Gets the iso template.
+	 *
+	 * @return the iso template
+	 */
 	public byte[] getIsoTemplate() {
 		return fingerprintProvider.getIsoTemplate();
 	}
 
+	/**
+	 * Gets the error message.
+	 *
+	 * @return the error message
+	 */
 	public String getErrorMessage() {
 		return fingerprintProvider.getErrorMessage();
 
 	}
 
 	/**
-	 * 
-	 * @return
+	 * Gets the finger print image.
+	 *
+	 * @return the finger print image
+	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	public WritableImage getFingerPrintImage() throws IOException {
 		return fingerprintProvider.getFingerPrintImage();
 	}
 
+	/**
+	 * Gets the finger print image as DTO.
+	 *
+	 * @param fpDetailsDTO the fp details DTO
+	 * @param fingerType   the finger type
+	 * @throws RegBaseCheckedException the reg base checked exception
+	 */
 	public void getFingerPrintImageAsDTO(FingerprintDetailsDTO fpDetailsDTO, String fingerType)
 			throws RegBaseCheckedException {
 
@@ -96,15 +114,17 @@ public class FingerprintFacade {
 				fingerMap = getFingerPrintScannedImageWithStub(RegistrationConstants.BOTH_THUMBS_FINGERPRINT_PATH);
 			}
 
-			if ((fingerMap != null) && (fpDetailsDTO
-					.getQualityScore() < (double) fingerMap.get(RegistrationConstants.IMAGE_SCORE_KEY))) {
+			if ((fingerMap != null)
+					&& ((boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER) || (fpDetailsDTO.getQualityScore() < (double) fingerMap.get(RegistrationConstants.IMAGE_SCORE_KEY))
+							)) {
 				fpDetailsDTO.setFingerPrint((byte[]) fingerMap.get(RegistrationConstants.IMAGE_BYTE_ARRAY_KEY));
 				fpDetailsDTO.setFingerprintImageName(fingerType.concat(RegistrationConstants.DOT)
 						.concat((String) fingerMap.get(RegistrationConstants.IMAGE_FORMAT_KEY)));
 				fpDetailsDTO.setFingerType(fingerType);
 				fpDetailsDTO.setForceCaptured(false);
-
-				fpDetailsDTO.setQualityScore((double) fingerMap.get(RegistrationConstants.IMAGE_SCORE_KEY));
+				if (!(boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
+					fpDetailsDTO.setQualityScore((double) fingerMap.get(RegistrationConstants.IMAGE_SCORE_KEY));
+				}
 			}
 
 		} finally {
@@ -113,6 +133,13 @@ public class FingerprintFacade {
 		}
 	}
 
+	/**
+	 * Segment finger print image.
+	 *
+	 * @param fingerprintDetailsDTO the fingerprint details DTO
+	 * @param filePath              the file path
+	 * @throws RegBaseCheckedException the reg base checked exception
+	 */
 	public void segmentFingerPrintImage(FingerprintDetailsDTO fingerprintDetailsDTO, String[] filePath)
 			throws RegBaseCheckedException {
 
@@ -123,9 +150,9 @@ public class FingerprintFacade {
 	/**
 	 * Assign all the Fingerprint providers which extends the
 	 * MosipFingerprintProvider to the list.
-	 * 
-	 * @param make
-	 * @return
+	 *
+	 * @param make the make
+	 * @return the fingerprint provider factory
 	 */
 
 	public MosipFingerprintProvider getFingerprintProviderFactory(String make) {
@@ -137,6 +164,11 @@ public class FingerprintFacade {
 		return fingerprintProvider;
 	}
 
+	/**
+	 * Sets the fingerprint providers.
+	 *
+	 * @param fingerprintProviders the new fingerprint providers
+	 */
 	@Autowired
 	public void setFingerprintProviders(List<MosipFingerprintProvider> fingerprintProviders) {
 		this.fingerprintProviders = fingerprintProviders;
@@ -166,12 +198,14 @@ public class FingerprintFacade {
 			Map<String, Object> scannedFingerPrints = new WeakHashMap<>();
 			scannedFingerPrints.put(RegistrationConstants.IMAGE_FORMAT_KEY, "jpg");
 			scannedFingerPrints.put(RegistrationConstants.IMAGE_BYTE_ARRAY_KEY, scannedFingerPrintBytes);
-			if (path.contains(RegistrationConstants.THUMBS)) {
-				scannedFingerPrints.put(RegistrationConstants.IMAGE_SCORE_KEY, 90.0);
-			} else if (path.contains(RegistrationConstants.LEFTPALM)) {
-				scannedFingerPrints.put(RegistrationConstants.IMAGE_SCORE_KEY, 85.0);
-			} else if (path.contains(RegistrationConstants.RIGHTPALM)) {
-				scannedFingerPrints.put(RegistrationConstants.IMAGE_SCORE_KEY, 90.0);
+			if (!(boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
+				if (path.contains(RegistrationConstants.THUMBS)) {
+					scannedFingerPrints.put(RegistrationConstants.IMAGE_SCORE_KEY, 90.0);
+				} else if (path.contains(RegistrationConstants.LEFTPALM)) {
+					scannedFingerPrints.put(RegistrationConstants.IMAGE_SCORE_KEY, 85.0);
+				} else if (path.contains(RegistrationConstants.RIGHTPALM)) {
+					scannedFingerPrints.put(RegistrationConstants.IMAGE_SCORE_KEY, 90.0);
+				}
 			}
 
 			LOGGER.info(LOG_REG_FINGERPRINT_FACADE, APPLICATION_NAME, APPLICATION_ID,
@@ -197,15 +231,14 @@ public class FingerprintFacade {
 
 	/**
 	 * {@code readFingerPrints} is to read the scanned fingerprints.
-	 * 
-	 * @param path
-	 * @throws RegBaseCheckedException
-	 * @throws URISyntaxException
+	 *
+	 * @param fingerprintDetailsDTO the fingerprint details DTO
+	 * @param path                  the path
+	 * @throws RegBaseCheckedException the reg base checked exception
 	 */
 	private void readSegmentedFingerPrintsSTUB(FingerprintDetailsDTO fingerprintDetailsDTO, String[] path)
 			throws RegBaseCheckedException {
-		LOGGER.info(LOG_REG_FINGERPRINT_FACADE, APPLICATION_NAME, APPLICATION_ID,
-				"Reading scanned Finger has started");
+		LOGGER.info(LOG_REG_FINGERPRINT_FACADE, APPLICATION_NAME, APPLICATION_ID, "Reading scanned Finger has started");
 
 		try {
 
@@ -276,17 +309,18 @@ public class FingerprintFacade {
 	}
 
 	/**
-	 * Validate the Input Finger with the finger that is fetched from the Database
-	 * 
-	 * @param fingerprintDetailsDTO
-	 * @param userFingerprintDetails
-	 * @return
+	 * Validate the Input Finger with the finger that is fetched from the Database.
+	 *
+	 * @param fingerprintDetailsDTO  the fingerprint details DTO
+	 * @param userFingerprintDetails the user fingerprint details
+	 * @return true, if successful
 	 */
 	public boolean validateFP(FingerprintDetailsDTO fingerprintDetailsDTO, List<UserBiometric> userFingerprintDetails) {
 		FingerprintTemplate fingerprintTemplate = new FingerprintTemplate()
 				.convert(fingerprintDetailsDTO.getFingerPrint());
 		String minutiae = fingerprintTemplate.serialize();
-		int fingerPrintScore = Integer.parseInt(String.valueOf(ApplicationContext.map().get(RegistrationConstants.FINGER_PRINT_SCORE)));
+		int fingerPrintScore = Integer
+				.parseInt(String.valueOf(ApplicationContext.map().get(RegistrationConstants.FINGER_PRINT_SCORE)));
 		userFingerprintDetails.forEach(fingerPrintTemplateEach -> {
 			if (fingerprintProvider.scoreCalculator(minutiae,
 					fingerPrintTemplateEach.getBioMinutia()) > fingerPrintScore) {

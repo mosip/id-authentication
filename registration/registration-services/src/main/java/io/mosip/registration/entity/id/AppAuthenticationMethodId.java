@@ -5,10 +5,11 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
+import io.mosip.registration.entity.AppAuthenticationMethod;
 import lombok.Data;
 
 /**
- * Composite key for AppAuthenticationMethod entity
+ * Composite key for {@link AppAuthenticationMethod}
  * 
  * @author Sravya Surampalli
  * @since 1.0.0

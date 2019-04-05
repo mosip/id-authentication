@@ -21,6 +21,6 @@
 		<module>registration-processor-bio-dedupe-service</module>
 		<module>registration-processor-manual-verification-stage</module>
 		<module>registration-processor-retry-stage</module>
-		
+		<module>registration-processor-reprocessor-stage</module>
   </modules>
 </project>

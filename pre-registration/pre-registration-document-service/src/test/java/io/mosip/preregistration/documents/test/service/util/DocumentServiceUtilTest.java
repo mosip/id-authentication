@@ -22,7 +22,7 @@ import io.mosip.kernel.core.virusscanner.spi.VirusScanner;
 import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
 import io.mosip.preregistration.documents.dto.DocumentRequestDTO;
 import io.mosip.preregistration.documents.entity.DocumentEntity;
-import io.mosip.preregistration.documents.exception.InvalidDocumnetIdExcepion;
+import io.mosip.preregistration.documents.exception.InvalidDocumentIdExcepion;
 import io.mosip.preregistration.documents.service.util.DocumentServiceUtil;
 
 
@@ -44,7 +44,8 @@ public class DocumentServiceUtilTest {
 	
 	private MockMultipartFile mockMultipartFile;
 	
-	DocumentRequestDTO documentDto = new DocumentRequestDTO("48690172097498", "address", "POA", "ENG");
+	String preRegistrationId="48690172097498";
+	DocumentRequestDTO documentDto = new DocumentRequestDTO("address", "POA", "ENG");
 	File file;
 	
 	@Before
@@ -65,7 +66,7 @@ public class DocumentServiceUtilTest {
 		serviceUtil.parseDocumentId("1234");
 	}
 
-	@Test(expected=InvalidDocumnetIdExcepion.class)
+	@Test(expected=InvalidDocumentIdExcepion.class)
 	public void parseDocumentIdFailureTest() throws Exception {
 		serviceUtil.parseDocumentId("1234!@#$&^$$~~~~~~#@!$^%");
 	}
@@ -77,21 +78,20 @@ public class DocumentServiceUtilTest {
 	
 	@Test(expected=InvalidRequestParameterException.class)
 	public void inValidPreIDTest() throws Exception {
-		documentDto.setPreregId(null);
-		serviceUtil.isValidRequest(documentDto);
+		serviceUtil.isValidRequest(documentDto,null);
 	}
 	
 	
 	@Test(expected=InvalidRequestParameterException.class)
 	public void inValidDocTypeTest() throws Exception {
-		documentDto.setDocTypeCode(null);
-		serviceUtil.isValidRequest(documentDto);
+		documentDto.setDocTypCode(null);
+		serviceUtil.isValidRequest(documentDto,preRegistrationId);
 	}
 	
 	@Test(expected=InvalidRequestParameterException.class)
 	public void inValidLangCodeTest() throws Exception {
 		documentDto.setLangCode(null);
-		serviceUtil.isValidRequest(documentDto);
+		serviceUtil.isValidRequest(documentDto,preRegistrationId);
 	}
 	
 	@Test(expected=VirusScannerException.class)

@@ -5,6 +5,7 @@ import java.util.List;
 import io.mosip.registration.entity.Location;
 
 /**
+ * DAO class for Location
  * 
  * @author Brahmananda Reddy
  *
