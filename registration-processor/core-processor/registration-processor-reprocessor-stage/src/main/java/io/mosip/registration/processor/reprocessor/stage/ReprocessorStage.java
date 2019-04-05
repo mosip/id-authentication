@@ -28,9 +28,11 @@ import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
 import io.mosip.registration.processor.status.exception.TablenotAccessibleException;
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
+import io.vertx.core.AsyncResult;
 import io.vertx.core.Vertx;
 import io.vertx.core.eventbus.EventBus;
 import io.vertx.core.json.JsonObject;
+import io.vertx.ext.auth.VertxContextPRNG;
 
 /**
  * The Reprocessor Stage to deploy the scheduler and implement re-processing
@@ -113,17 +115,19 @@ public class ReprocessorStage extends MosipVerticleManager {
 	 *            the vertx
 	 */
 	private void deployScheduler(Vertx vertx) {
-		vertx.deployVerticle("ceylon:herd.schedule.chime/0.2.0", res -> {
-			if (res.succeeded()) {
-				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
-						LoggerFileConstant.REGISTRATIONID.toString(), "", "ReprocessorStage::schedular()::deployed");
-				cronScheduling(vertx);
-			} else {
-				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
-						LoggerFileConstant.REGISTRATIONID.toString(), "",
-						"ReprocessorStage::schedular()::deploymemnt failure");
-			}
-		});
+		vertx.deployVerticle("ceylon:herd.schedule.chime/0.2.0",this::schedulerResult);
+	}
+	
+	public void schedulerResult(AsyncResult<String> res) {
+		if (res.succeeded()) {
+			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
+					LoggerFileConstant.REGISTRATIONID.toString(), "", "ReprocessorStage::schedular()::deployed");
+			cronScheduling(vertx);
+		} else {
+			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
+					LoggerFileConstant.REGISTRATIONID.toString(), "",
+					"ReprocessorStage::schedular()::deploymemnt failure");
+		}
 	}
 
 	/**
