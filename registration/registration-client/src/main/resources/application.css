@@ -14,6 +14,51 @@
 	-fx-border-width : 0 0 1 0;
 	-fx-border-color : #C9C9C9;
 }
+.scroll-bar:vertical {
+		-fx-background-color : white;
+}
+
+.scroll-bar:vertical > .increment-button > .increment-arrow {
+    -fx-background-color: white;
+    -fx-shape: "";
+}
+
+.scroll-bar:vertical > .decrement-button > .decrement-arrow {
+    -fx-background-color: white;
+    -fx-shape: "";
+}
+
+.scroll-bar:horizontal > .increment-button > .increment-arrow {
+    -fx-background-color: white;
+    -fx-shape: "";
+}
+
+.scroll-bar:horizontal > .decrement-button > .decrement-arrow {
+    -fx-background-color: white;
+    -fx-shape: "";
+}
+
+.scroll-bar:vertical > .thumb {
+    -fx-background-color: white;
+ }
+ 
+.scroll-pane {
+    -fx-background-color: white;
+	-fx-border-width : 0 0 0 0;
+    
+}
+ .scroll-bar:horizontal {
+		-fx-background-color : white;
+}
+
+.scroll-bar:horizontal > .thumb {
+    -fx-background-color: white;
+ }
+ 
+ .scroll-pane > .corner {
+    -fx-background-color: white;
+}
+ 
 
 .toolTip{
 	-fx-font: normal bold 10 Langdon;
