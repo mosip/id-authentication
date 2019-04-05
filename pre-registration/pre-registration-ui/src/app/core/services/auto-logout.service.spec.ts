@@ -1,8 +1,8 @@
 import { TestBed, ComponentFixture } from '@angular/core/testing';
 import { UserIdleService } from 'angular-user-idle';
-// import { AuthService } from 'src/app/auth/auth.service';
 import { MatDialog } from '@angular/material';
 import { AutoLogoutService } from './auto-logout.service';
+import { AuthService } from 'src/app/auth/auth.service';
 
 describe('AutoLogoutService', () => {
   let service: AutoLogoutService;
@@ -20,7 +20,7 @@ describe('AutoLogoutService', () => {
       providers: [
         AutoLogoutService,
         { provide: UserIdleService, useValue: userIdleServiceStub },
-        { provide: authServiceStub, useValue: authServiceStub },
+        { provide: AuthService, useValue: authServiceStub },
         { provide: MatDialog, useValue: matDialogStub }
       ]
     });
