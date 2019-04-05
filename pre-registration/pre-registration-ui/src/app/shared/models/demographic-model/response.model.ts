@@ -7,4 +7,5 @@ export interface ResponseModel {
   updatedDateTime: string;
   langCode: string;
   demographicDetails: DemoIdentityModel;
+  // updatedBy: string;
 }

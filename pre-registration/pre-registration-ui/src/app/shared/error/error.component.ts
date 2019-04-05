@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { AuthService } from "src/app/auth/auth.service";
+import { AuthService } from 'src/app/auth/auth.service';
 
 @Component({
   selector: 'app-error',
@@ -7,9 +7,9 @@ import { AuthService } from "src/app/auth/auth.service";
   styleUrls: ['./error.component.css']
 })
 export class ErrorComponent implements OnInit {
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService) {}
 
   ngOnInit() {
-  if (this.authService.isAuthenticated()) this.authService.onLogout();
+    if (this.authService.isAuthenticated()) this.authService.onLogout();
   }
 }

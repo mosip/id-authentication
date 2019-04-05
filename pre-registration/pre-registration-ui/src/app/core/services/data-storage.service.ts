@@ -24,21 +24,14 @@ export class DataStorageService {
   BASE_URL = this.appConfigService.getConfig()['BASE_URL'];
   PRE_REG_URL = this.appConfigService.getConfig()['PRE_REG_URL'];
 
-  //here
-  getUsers() {
-    // const url = this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.applicants + appConstants.APPENDER + userId;
+  getUsers(userId: string) {
     let url = this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.applicants;
-    // url = this.BASE_URL_LOCAL;
     return this.httpClient.get<Applicant[]>(url);
   }
 
-  //here
   getUser(preRegId: string) {
     let url =
       this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.get_applicant + appConstants.APPENDER + preRegId;
-    // url = this.BASE_URL_LOCAL + appConstants.APPENDER + preRegId;
-    // console.log('URL', url);
-    // const url = this.BASE_URL_LOCAL + this.PRE_REG_URL + appConstants.APPEND_URL.get_applicant;
     return this.httpClient.get(url);
   }
 
@@ -66,16 +59,12 @@ export class DataStorageService {
   addUser(identity: any) {
     const obj = new RequestModel(appConstants.IDS.newUser, identity);
     let url = this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.applicants;
-    // url = this.BASE_URL_LOCAL;
     console.log('data being sent', JSON.stringify(obj));
     return this.httpClient.post(url, obj);
   }
 
-  //here
   updateUser(identity: any, preRegId: string) {
     let url = this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.applicants + appConstants.APPENDER + preRegId;
-    // const url = this.BASE_URL_LOCAL + _URL + appConstants.APPEND_URL.applicants;
-    // url = this.BASE_URL_LOCAL + appConstants.APPENDER + preRegId;
     const obj = new RequestModel(appConstants.IDS.updateUser, identity);
     console.log('data being update', JSON.stringify(obj));
     return this.httpClient.put(url, obj);
@@ -86,7 +75,6 @@ export class DataStorageService {
     // console.log('servvice called', formdata);
   }
 
-  //here
   deleteRegistration(preId: string) {
     // const url = this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.applicants + appConstants.APPENDER + preId;
     return this.httpClient.delete(this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.delete_application + preId );
@@ -144,17 +132,14 @@ export class DataStorageService {
   }
 
   getLocationMetadataHirearchy(value: string) {
-    const url = this.BASE_URL + appConstants.APPEND_URL.locatappConstants.APPEND_URL.location_metadata + value;
-    // const url = this.BASE_URL + appConstants.APPEND_URL.location + appConstants.APPEND_URL.location_metadata + value;
-    return this.httpClient.get(url, {
-      // params: new HttpParams().append(appConstants.PARAMS_KEYS.locationHierarchyName, value)
-    });
+    const url = this.BASE_URL + appConstants.APPEND_URL.location + appConstants.APPEND_URL.location_metadata + value;
+    return this.httpClient.get(url);
   }
 
   getLocationImmediateHierearchy(lang: string, location: string) {
     const url =
       this.BASE_URL +
-     stants.ocation +
+      appConstants.APPEND_URL.location +
       appConstants.APPEND_URL.location_immediate_children +
       location +
       appConstants.APPENDER +
