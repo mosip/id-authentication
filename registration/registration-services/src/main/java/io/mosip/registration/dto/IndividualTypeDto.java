@@ -1,5 +1,11 @@
 package io.mosip.registration.dto;
 
+/**
+ * The DTO Class IndividualTypeDto.
+ * 
+ * @author Sreekar Chukka
+ * @since 1.0.0
+ */
 public class IndividualTypeDto {
 
 	private String code;

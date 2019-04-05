@@ -15,7 +15,7 @@ import org.hibernate.annotations.Type;
 import io.mosip.registration.entity.id.RegMachineSpecId;
 
 /**
- * RegDeviceSpec entity details
+ * The Entity Class for Reg Device Spec details
  * 
  * @author Brahmanada Reddy
  * @since 1.0.0

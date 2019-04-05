@@ -43,7 +43,7 @@ public class ValidDocumentServiceImplTest {
 		validDocumentId.setAppTypeCode("007");
 		validDocumentId.setDocCatCode("POA");
 		validDocumentId.setDocTypeCode("DocType");
-		validDocument.setValidDocumentId(validDocumentId);
+		validDocument.setValidDocument(validDocumentId);
 
 		validDocuments.add(validDocument);
 

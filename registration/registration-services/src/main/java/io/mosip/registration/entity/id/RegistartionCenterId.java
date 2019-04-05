@@ -5,10 +5,11 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
+import io.mosip.registration.entity.RegistrationCenter;
 import lombok.Data;
 
 /**
- * Registration center Id entity details
+ * composite key for {@link RegistrationCenter}
  * 
  * @author Sreekar Chukka
  * @since 1.0.0

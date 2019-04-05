@@ -8,9 +8,10 @@ import javax.persistence.MappedSuperclass;
 import org.hibernate.annotations.Type;
 
 /**
- * 
- * @author Brahmananda Reddy
+ * The Entity Class for MasterCommonFields.
  *
+ * @author Sreekar Chukka
+ * @since 1.0.0
  */
 
 @MappedSuperclass

@@ -22,7 +22,6 @@ import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 
 /**
@@ -68,6 +67,8 @@ public class HomeController extends BaseController implements Initializable {
 					LOGGER.error("REGISTRATION - ONBOARD_USER - HOMECONTROLLER",
 							APPLICATION_NAME, APPLICATION_ID,
 							ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));
+					
+					generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_LOAD_HOME_PAGE);
 				}
 			} else {
 				auditFactory.audit(AuditEvent.NAV_HOME, Components.NAVIGATION, SessionContext.userContext().getUserId(),

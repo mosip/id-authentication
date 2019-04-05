@@ -15,7 +15,7 @@ import javax.persistence.Table;
 import io.mosip.registration.entity.id.RegMachineSpecId;
 
 /**
- * Machine master entity details
+ * The Entity Class for Machine master details
  * 
  * @author Yaswanth S
  * @since 1.0.0

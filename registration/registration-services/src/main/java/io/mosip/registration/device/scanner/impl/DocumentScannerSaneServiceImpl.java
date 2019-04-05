@@ -25,6 +25,7 @@ import io.mosip.registration.context.ApplicationContext;
  * platform through SANE Daemon service
  * 
  * @author balamurugan.ramamoorthy
+ * @since 1.0.0
  *
  */
 @Service
@@ -82,7 +83,9 @@ public class DocumentScannerSaneServiceImpl extends DocumentScannerService {
 	 * @param saneDevice
 	 *            - the scanner device
 	 * @throws IOException
+	 *             - holds the ioexception
 	 * @throws SaneException
+	 *             - holds the sane device exception
 	 */
 	private void setScannerSettings(SaneDevice saneDevice) throws IOException, SaneException {
 		/* setting the resolution in dpi for the quality of the document */

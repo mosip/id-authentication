@@ -6,8 +6,11 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 import java.io.IOException;
 import java.util.TimerTask;
 
+import javax.xml.parsers.ParserConfigurationException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.xml.sax.SAXException;
 
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -30,11 +33,15 @@ import io.mosip.registration.scheduler.SchedulerUtil;
 import io.mosip.registration.service.MasterSyncService;
 import io.mosip.registration.service.config.JobConfigurationService;
 import io.mosip.registration.service.sync.PreRegistrationDataSyncService;
+import io.mosip.registration.update.RegistrationUpdate;
 import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.NodeOrientation;
 import javafx.scene.Node;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
@@ -42,6 +49,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 
 /**
@@ -76,10 +84,10 @@ public class HeaderController extends BaseController {
 	private ImageView availableIcon;
 
 	@FXML
-	private Label online;
+	private GridPane online;
 
 	@FXML
-	private Label offline;
+	private GridPane offline;
 
 	@FXML
 	private Menu homeSelectionMenu;
@@ -98,6 +106,9 @@ public class HeaderController extends BaseController {
 
 	@Autowired
 	private RestartController restartController;
+
+	@Autowired
+	private RegistrationUpdate registrationUpdate;
 
 	/**
 	 * Mapping Registration Officer details
@@ -180,7 +191,8 @@ public class HeaderController extends BaseController {
 	/**
 	 * Sync data through batch jobs.
 	 *
-	 * @param event the event
+	 * @param event
+	 *            the event
 	 */
 	public void syncData(ActionEvent event) {
 
@@ -268,7 +280,8 @@ public class HeaderController extends BaseController {
 	/**
 	 * Redirects to Device On-Boarding UI Page.
 	 * 
-	 * @param actionEvent is an action event
+	 * @param actionEvent
+	 *            is an action event
 	 */
 	public void onBoardDevice(ActionEvent actionEvent) {
 		if (isMachineRemapProcessStarted()) {
@@ -358,6 +371,68 @@ public class HeaderController extends BaseController {
 			generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.REMAP_NOT_APPLICABLE);
 		}
 
+	}
+
+	@FXML
+	public void hasUpdate(ActionEvent event) {
+
+		// Check for updates
+		if (hasUpdate()) {
+
+			// Update the application
+			update();
+		}
+
+	}
+
+	private boolean hasUpdate() {
+		boolean hasUpdate = false;
+		if (RegistrationAppHealthCheckUtil.isNetworkAvailable()) {
+			try {
+				if (registrationUpdate.hasUpdate()) {
+					hasUpdate = true;
+				} else {
+					generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.NO_UPDATES_FOUND);
+
+				}
+
+			} catch (RuntimeException | IOException | ParserConfigurationException | SAXException exception) {
+				LOGGER.error(LoggerConstants.LOG_REG_HEADER, APPLICATION_NAME, APPLICATION_ID,
+						exception.getMessage() + ExceptionUtils.getStackTrace(exception));
+
+				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_FIND_UPDATES);
+			}
+
+		} else {
+			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.NO_INTERNET_CONNECTION);
+		}
+		return hasUpdate;
+	}
+
+	private void update() {
+		try {
+			Alert updateAlert = createAlert(AlertType.CONFIRMATION, RegistrationUIConstants.UPDATE_AVAILABLE,
+					RegistrationConstants.EMPTY, RegistrationUIConstants.CONFIRM_UPDATE);
+
+			updateAlert.showAndWait();
+
+			/* Get Option from user */
+			ButtonType result = updateAlert.getResult();
+			if (result == ButtonType.OK) {
+
+				registrationUpdate.getWithLatestJars();
+
+				// Update completed Re-Launch application
+				generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.UPDATE_COMPLETED);
+
+				System.exit(0);
+			}
+		} catch (RuntimeException | io.mosip.kernel.core.exception.IOException | IOException
+				| ParserConfigurationException | SAXException exception) {
+			LOGGER.error(LoggerConstants.LOG_REG_HEADER, APPLICATION_NAME, APPLICATION_ID,
+					exception.getMessage() + ExceptionUtils.getStackTrace(exception));
+			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_TO_UPDATE);
+		}
 	}
 
 }

@@ -38,7 +38,6 @@ public interface IMosipWebcamService {
 	 * This method captures the image from webcam and return it. Will return image
 	 * object or null if webcam is closed or has been already disposed by JVM.
 	 * 
-	 * @param webcam The on-boarded camera which is open.
 	 * @return BufferedImage returns the image object that is captured from the
 	 *         webcam.
 	 */

@@ -13,7 +13,9 @@ import io.mosip.registration.dto.AuthenticationValidatorDTO;
 import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
 import io.mosip.registration.entity.UserBiometric;
 
-/**
+/** 
+ * This class is for validating Fingerprint Authentication
+ * 
  * @author SaravanaKumar G
  *
  */
@@ -24,7 +26,7 @@ public class FingerprintValidatorImpl extends AuthenticationBaseValidator {
 	private UserDetailDAO userDetailDAO;
 
 	@Autowired
-	FingerprintFacade fingerprintFacade;
+	private FingerprintFacade fingerprintFacade;
 
 	/**
 	 * Validate the Fingerprint with the AuthenticationValidatorDTO as input

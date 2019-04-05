@@ -10,10 +10,10 @@ import javax.persistence.Table;
 import io.mosip.kernel.core.util.DateUtils;
 
 /**
- * 
+ * The Entity Class for KeyStore.
+ *
  * @author Brahmananda Reddy
  * @since 1.0.0
- *
  */
 @Entity
 @Table(name = "key_store", schema = "reg")

@@ -31,16 +31,16 @@ public interface MachineMappingDAO {
 	 * @param MacAddress
 	 *            machine address
 	 * @return station ID
-	 * @throws RegBaseCheckedException
+	 * @throws RegBaseCheckedException Registration Base Checked Exception
 	 */
 	String getStationID(String MacAddress) throws RegBaseCheckedException;
 
 	/**
 	 * Get center ID using stationID
 	 * 
-	 * @param stationID
-	 * @return center ID
-	 * @throws RegBaseCheckedException
+	 * @param stationID station ID
+	 * @return center ID 
+	 * @throws RegBaseCheckedException Registration Base Checked Exception
 	 */
 	String getCenterID(String stationID) throws RegBaseCheckedException;
 
@@ -50,7 +50,7 @@ public interface MachineMappingDAO {
 	 * @param ceneterID
 	 *            center id
 	 * @return List of Users
-	 * @throws RegBaseCheckedException
+	 * @throws RegBaseCheckedException Registration Base Checked Exception
 	 */
 	List<UserDetail> getUsers(String ceneterID) throws RegBaseCheckedException;
 
@@ -58,7 +58,8 @@ public interface MachineMappingDAO {
 	 * save user to UserMachineMapping
 	 * 
 	 * @param user
-	 * @return
+	 *            user machine mapping
+	 * @return created
 	 */
 	String save(UserMachineMapping user);
 
@@ -125,22 +126,24 @@ public interface MachineMappingDAO {
 	 *            the list of devices to be removed from the machine
 	 */
 	void deleteUnMappedDevice(List<RegCentreMachineDevice> regCentreMachineDevices);
-	
+
 	/**
 	 * Method to check the device is valid
 	 * 
 	 * @param deviceType
-	 * @param deviceProvider
-	 * @return
-	 * 		It returns true when record found for the device else false
+	 *            device type
+	 * @param serialNo
+	 *            serial number
+	 * @return It returns true when record found for the device else false
 	 */
-	boolean isValidDevice(DeviceTypes deviceType,String serialNo);
+	boolean isValidDevice(DeviceTypes deviceType, String serialNo);
 
 	/**
 	 * 
 	 * @param machineId
-	 * @return  It returns the list of users against the machine
-	 */       
+	 *            machine ID
+	 * @return It returns the list of users against the machine
+	 */
 	List<UserMachineMapping> getUserMappingDetails(String machineId);
 
 	/**

@@ -15,45 +15,51 @@ import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
+import io.mosip.registration.constants.AuditEvent;
+import io.mosip.registration.constants.AuditReferenceIdTypes;
+import io.mosip.registration.constants.Components;
 import io.mosip.registration.constants.RegistrationUIConstants;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import javafx.application.Platform;
-import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
-import javafx.scene.layout.BorderPane;
 
 /**
- * @author M1047595
+ * The Class SchedulerUtil.
  *
+ * @author Dinesh Ashokan
  */
 @Component
 public class SchedulerUtil extends BaseController {
 
-	/**
-	 * Instance of {@link Logger}
-	 */
+	/** Instance of {@link Logger}. */
 	private static final Logger LOGGER = AppConfig.getLogger(SchedulerUtil.class);
 
+	/** The start time. */
 	private static long startTime = System.currentTimeMillis();
+	
+	/** The refresh time. */
 	private static long refreshTime;
+	
+	/** The session time out. */
 	private static long sessionTimeOut;
+	
+	/** The alert. */
 	private static Alert alert;
+	
+	/** The timer. */
 	private static Timer timer;
+	
+	
 	private static Optional<ButtonType> res = Optional.empty();
 
-	@FXML
-	private static BorderPane content;
-
 	/**
-	 * Constructor to invoke scheduler method once login success
-	 * 
-	 * @throws IDISBaseCheckedException
-	 * 
-	 * @throws RegistrationBaseCheckedException
+	 * Constructor to invoke scheduler method once login success.
+	 *
+	 * @throws RegBaseCheckedException the reg base checked exception
 	 */
 	public void startSchedulerUtil() throws RegBaseCheckedException {
 		LOGGER.info("REGISTRATION - UI", APPLICATION_NAME, APPLICATION_ID,
@@ -66,11 +72,7 @@ public class SchedulerUtil extends BaseController {
 	}
 
 	/**
-	 * Scheduling the task for session timeout
-	 * 
-	 * @throws IDISBaseCheckedException
-	 * 
-	 * @throws RegistrationBaseCheckedException
+	 * Scheduling the task for session timeout.
 	 */
 	private void startTimerForSession() {
 		try {
@@ -83,8 +85,10 @@ public class SchedulerUtil extends BaseController {
 
 						if ((endTime - startTime) >= refreshTime && (endTime - startTime) < sessionTimeOut) {
 							LOGGER.info("REGISTRATION - UI", APPLICATION_NAME, APPLICATION_ID,
-									"The time task alert is called at interval of seconds "
+									"The time task remainder alert is called at interval of seconds "
 											+ TimeUnit.MILLISECONDS.toSeconds(endTime - startTime));
+							auditFactory.audit(AuditEvent.SCHEDULER_REFRESHED_TIMEOUT, Components.REFRESH_TIMEOUT, APPLICATION_NAME,
+									AuditReferenceIdTypes.APPLICATION_ID.getReferenceTypeId());
 							alert();
 							if (res.isPresent())
 								if (res.get().getText().equals("OK")) {
@@ -94,8 +98,10 @@ public class SchedulerUtil extends BaseController {
 								}
 						} else if ((endTime - startTime) >= sessionTimeOut) {
 							LOGGER.info("REGISTRATION - UI", APPLICATION_NAME, APPLICATION_ID,
-									"The time task login called at interval of seconds "
+									"The time task auto logout login called at interval of seconds "
 											+ TimeUnit.MILLISECONDS.toSeconds(endTime - startTime));
+							auditFactory.audit(AuditEvent.SCHEDULER_SESSION_TIMEOUT, Components.SESSION_TIMEOUT, APPLICATION_NAME,
+									AuditReferenceIdTypes.APPLICATION_ID.getReferenceTypeId());
 							alert.close();
 							stopScheduler();
 							// to clear the session object
@@ -106,7 +112,7 @@ public class SchedulerUtil extends BaseController {
 					});
 				}
 			};
-			timer.schedule(task, 1000, findPeriod(refreshTime, sessionTimeOut));
+			timer.schedule(task, 1000, findTimeInterval(refreshTime, sessionTimeOut));
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error("REGISTRATION - UI", APPLICATION_NAME, APPLICATION_ID,
 					runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
@@ -114,22 +120,21 @@ public class SchedulerUtil extends BaseController {
 	}
 
 	/**
-	 * To find the scheduler duration to run the scheduler period
-	 * 
-	 * @param refreshTime
-	 * @param sessionTimeOut
-	 * @return
+	 * To find the scheduler duration to run the scheduler interval.
+	 *
+	 * @param refreshTime the refresh time
+	 * @param sessionTimeOut the session time out
+	 * @return the int
 	 */
-	private static int findPeriod(long refreshTime, long sessionTimeOut) {
+	private static int findTimeInterval(long refreshTime, long sessionTimeOut) {
 		BigInteger b1 = BigInteger.valueOf(refreshTime);
 		BigInteger b2 = BigInteger.valueOf(sessionTimeOut);
 		BigInteger gcd = b1.gcd(b2);
-		int schedulerTime = (int) ((gcd.intValue()) * 0.001);
-		return schedulerTime;
+		return ((int) ((gcd.intValue()) * 0.001));
 	}
 
 	/**
-	 * To show the warning alert to user about session expire
+	 * To show the warning alert to user about session expire.
 	 */
 	private static void alert() {
 		alert.setTitle(RegistrationUIConstants.TIMEOUT_TITLE);
@@ -140,12 +145,15 @@ public class SchedulerUtil extends BaseController {
 		}
 	}
 
+	/**
+	 * Sets the current time to start time when any event triggered to stage.
+	 */
 	public static void setCurrentTimeToStartTime() {
 		startTime = System.currentTimeMillis();
 	}
 
 	/**
-	 * stop the scheduler
+	 * stop the scheduler.
 	 */
 	public static void stopScheduler() {
 		if (timer != null) {

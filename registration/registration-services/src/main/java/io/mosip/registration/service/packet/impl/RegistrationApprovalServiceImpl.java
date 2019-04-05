@@ -71,7 +71,7 @@ public class RegistrationApprovalServiceImpl implements RegistrationApprovalServ
 					SessionContext.userContext().getUserId(), AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
 
 			details.forEach(detail -> list.add(new RegistrationApprovalDTO(detail.getId(), detail.getAckFilename(),
-					RegistrationConstants.PENDING)));
+					RegistrationConstants.EMPTY)));
 		} catch (RuntimeException runtimeException) {
 			throw new RegBaseUncheckedException(RegistrationConstants.PACKET_RETRIVE_STATUS,
 					runtimeException.toString());

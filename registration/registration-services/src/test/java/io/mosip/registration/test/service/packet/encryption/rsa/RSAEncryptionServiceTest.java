@@ -12,11 +12,15 @@ import javax.crypto.SecretKey;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 
 import io.mosip.kernel.core.crypto.spi.Encryptor;
 import io.mosip.registration.constants.RegistrationConstants;
@@ -27,6 +31,8 @@ import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.service.impl.RSAEncryptionServiceImpl;
 
+@RunWith(PowerMockRunner.class)
+@PrepareForTest({ ApplicationContext.class })
 public class RSAEncryptionServiceTest {
 
 	@InjectMocks
@@ -39,10 +45,12 @@ public class RSAEncryptionServiceTest {
 	private Encryptor<PrivateKey, PublicKey, SecretKey> encryptor;
 	
 	@Before
-	public void init() {
+	public void init() throws Exception {
 		Map<String,Object> appMap = new HashMap<>();
 		appMap.put(RegistrationConstants.ASYMMETRIC_ALG_NAME, "RSA");
-		ApplicationContext.getInstance().setApplicationMap(appMap);
+
+		PowerMockito.mockStatic(ApplicationContext.class);
+		PowerMockito.doReturn(appMap).when(ApplicationContext.class, "map");
 	}
 
 	@Test
@@ -53,17 +61,18 @@ public class RSAEncryptionServiceTest {
 		keyStore.setPublicKey(key);
 		byte[] decodedbytes = "e".getBytes();
 		byte[] sessionbytes = "sesseion".getBytes();
+
 		Mockito.when(policySyncDAO.findByMaxExpireTime()).thenReturn(keyStore);
 		when(encryptor.asymmetricPublicEncrypt(Mockito.any(PublicKey.class), Mockito.anyString().getBytes()))
 				.thenReturn(decodedbytes);
 
 		rsaEncryptionServiceImpl.encrypt(sessionbytes);
-
 	}
 
 	@Test(expected = RegBaseUncheckedException.class)
 	public void testNullData() throws RegBaseCheckedException {
 		when(policySyncDAO.findByMaxExpireTime()).thenReturn(null);
+
 		rsaEncryptionServiceImpl.encrypt(null);
 	}
 
@@ -75,6 +84,7 @@ public class RSAEncryptionServiceTest {
 		keyStore.setPublicKey(key);
 		byte[] decodedbytes = "e".getBytes();
 		byte[] sessionbytes = "sesseion".getBytes();
+
 		Mockito.when(policySyncDAO.findByMaxExpireTime()).thenReturn(keyStore);
 		when(encryptor.asymmetricPublicEncrypt(Mockito.any(PublicKey.class), Mockito.anyString().getBytes()))
 				.thenReturn(decodedbytes);
@@ -83,22 +93,24 @@ public class RSAEncryptionServiceTest {
 	}
 
 	@Test(expected = RegBaseCheckedException.class)
-	public void invalidAlgorithmTest() throws RegBaseCheckedException {
+	public void invalidAlgorithmTest() throws Exception {
 		byte[] key = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAgIxusCzIYkOkWjG65eeLGNSXoNghIiH1wj1lxW1ZGqr35gM4od_5MXTmRAVamgFlPko8zfFgli-h0c2yLsPbPC2IGrHLB0FQp_MaCAst2xzQvG73nAr8Fkh-geJJ0KRvZE6TCYXNdRVczHfcxctyS4PGHCrHYv6GURzDlQ5SGmXko-xA92ULxpVrD-mYlZ7uOvr92dRJGR15p-D7cNXdBWwpc812aKTwYpHd719fryXrQ4JDrdeNXsjn7Q9BlehObc_MdAn1q3glsfx_VkuYhctT-vOEHiynkKfPlSMRd041U6pGNKgoqEuyvUlTRT7SgZQgzV9m0MEhWP9peehliQIDAQAB"
 				.getBytes();
 		KeyStore keyStore = new KeyStore();
 		keyStore.setPublicKey(key);
 		byte[] decodedbytes = "e".getBytes();
 		byte[] sessionbytes = "sesseion".getBytes();
-		Mockito.when(policySyncDAO.findByMaxExpireTime()).thenReturn(keyStore);
+
 		Map<String,Object> appMap = new HashMap<>();
 		appMap.put(RegistrationConstants.ASYMMETRIC_ALG_NAME, "AES");
-		ApplicationContext.getInstance().setApplicationMap(appMap);
+
+		PowerMockito.mockStatic(ApplicationContext.class);
+		PowerMockito.doReturn(appMap).when(ApplicationContext.class, "map");
 		when(encryptor.asymmetricPublicEncrypt(Mockito.any(PublicKey.class), Mockito.anyString().getBytes()))
 				.thenReturn(decodedbytes);
+		Mockito.when(policySyncDAO.findByMaxExpireTime()).thenReturn(keyStore);
 
 		rsaEncryptionServiceImpl.encrypt(sessionbytes);
-
 	}
 
 }

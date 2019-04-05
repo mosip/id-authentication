@@ -26,6 +26,7 @@ public interface LocationRepository extends BaseRepository<Location, String> {
 	 * Find master location by parent loc code.
 	 *
 	 * @param parentLocCode the parent loc code
+	 * @param langCode the lang code
 	 * @return the list
 	 */
 	List<Location> findByIsActiveTrueAndParentLocCodeAndLangCode(String parentLocCode, String langCode);

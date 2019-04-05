@@ -2,7 +2,6 @@ package io.mosip.registration.jobs;
 
 import io.mosip.registration.entity.SyncControl;
 import io.mosip.registration.entity.SyncTransaction;
-import io.mosip.registration.exception.RegBaseUncheckedException;
 
 /**
  * This class includes the functionalities of what transaction table needed.,

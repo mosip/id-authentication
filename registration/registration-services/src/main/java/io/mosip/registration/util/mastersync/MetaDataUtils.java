@@ -33,16 +33,16 @@ public class MetaDataUtils {
 
 	/**
 	 * This method takes <code>source</code> object like an DTO and a class which
-	 * must extends {@link BaseEntity} and map all values from DTO object to the
+	 * must extends {@link RegistrationCommonFields} and map all values from DTO object to the
 	 * <code>destination</code> object and return it.
-	 * 
-	 * @param               <S> is a type parameter
-	 * @param               <D> is a type parameter
+	 *
+	 * @param <S> the generic type
+	 * @param <D> the generic type
 	 * @param source        is the source
 	 * @param destination   is the destination
 	 * @param mapNullvalues if marked as false then field inside source which are
 	 *                      null will not be mapped into destination
-	 * @return an entity class which extends {@link BaseEntity}
+	 * @return an entity class which extends {@link RegistrationCommonFields}
 	 * @throws DataAccessLayerException if any error occurs while mapping values
 	 * @see MapperUtils#map(Object, Object, Boolean)
 	 */
@@ -64,14 +64,14 @@ public class MetaDataUtils {
 
 	/**
 	 * This method takes <code>source</code> object like an DTO and a class which
-	 * must extends {@link BaseEntity} and map all values from DTO object to the
+	 * must extends {@link RegistrationCommonFields} and map all values from DTO object to the
 	 * <code>destinationClass</code> object and return it.
 	 * 
 	 * @param                  <T> is a type parameter
 	 * @param                  <D> is a type parameter
 	 * @param source           is the source
 	 * @param destinationClass is the destination class
-	 * @return an entity class which extends {@link BaseEntity}
+	 * @return an entity class which extends {@link RegistrationCommonFields}
 	 * @throws DataAccessLayerException if any error occurs while mapping values
 	 * @see MapperUtils#map(Object, Class)
 	 */
@@ -90,6 +90,15 @@ public class MetaDataUtils {
 		return entity;
 	}
 
+	/**
+	 * Sets the create meta data.
+	 *
+	 * @param <T> the generic type
+	 * @param <D> the generic type
+	 * @param dtoList the dto list
+	 * @param entityClass the entity class
+	 * @return the list
+	 */
 	public static <T, D extends RegistrationCommonFields> List<D> setCreateMetaData(final Collection<T> dtoList,
 			Class<? extends RegistrationCommonFields> entityClass) {
 
@@ -114,11 +123,25 @@ public class MetaDataUtils {
 
 	}
 
+	/**
+	 * Sets the created date time.
+	 *
+	 * @param <D> the generic type
+	 * @param contextUser the context user
+	 * @param entity the entity
+	 */
 	private static <D extends RegistrationCommonFields> void setCreatedDateTime(String contextUser, D entity) {
 		entity.setCrDtime(Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()));
 		entity.setCrBy(contextUser);
 	}
 
+	/**
+	 * Sets the updated date time.
+	 *
+	 * @param <D> the generic type
+	 * @param contextUser the context user
+	 * @param entity the entity
+	 */
 	private static <D extends RegistrationCommonFields> void setUpdatedDateTime(String contextUser, D entity) {
 		entity.setUpdDtimes(Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()));
 		entity.setUpdBy(contextUser);

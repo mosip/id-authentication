@@ -1,7 +1,10 @@
 package io.mosip.registration.test.util.common;
 
 import java.net.SocketTimeoutException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.junit.BeforeClass;
@@ -69,9 +72,10 @@ public class OTPManagerTest {
 		OtpGeneratorRequestDTO otpGeneratorRequestDTO = new OtpGeneratorRequestDTO();
 		otpGeneratorRequestDTO.setKey("mosip");
 
-		HashMap<String, String> responseMap = new HashMap<>();
-		responseMap.put("message", "otp send succesfully");
-
+		Map<String, String> messageMap = new LinkedHashMap<>();
+		HashMap<String, Object> responseMap = new LinkedHashMap<>();
+		messageMap.put("message", "otp send succesfully");
+		responseMap.put("response", messageMap);
 		PowerMockito.mockStatic(RegistrationAppHealthCheckUtil.class);
 		Mockito.when(RegistrationAppHealthCheckUtil.isNetworkAvailable()).thenReturn(true);
 
@@ -85,8 +89,12 @@ public class OTPManagerTest {
 			throws RegBaseCheckedException, HttpClientErrorException, ResourceAccessException, SocketTimeoutException {
 		OtpGeneratorRequestDTO otpGeneratorRequestDTO = new OtpGeneratorRequestDTO();
 		otpGeneratorRequestDTO.setKey("mo");
-		HashMap<String, String> responseMap = new HashMap<>();
-
+		List<Map<String, String>> temp = new ArrayList<>();
+		Map<String, String> map = new LinkedHashMap<>();
+		LinkedHashMap<String, Object> responseMap = new LinkedHashMap<>();
+		map.put("message", "Invalid User Id type");
+		temp.add(map);
+		responseMap.put("errors", temp);
 		PowerMockito.mockStatic(RegistrationAppHealthCheckUtil.class);
 		Mockito.when(RegistrationAppHealthCheckUtil.isNetworkAvailable()).thenReturn(true);
 

@@ -1,5 +1,12 @@
 package io.mosip.registration.constants;
 
+/**
+ * Enum for Process Names
+ *
+ * @author Sravya Surampalli
+ * @since 1.0.0
+ *
+ */
 public enum ProcessNames {
 	LOGIN("login_auth"), 
 	PACKET("packet_auth"),

@@ -1,5 +1,8 @@
 package io.mosip.registration.dto;
 
+/**
+ * The DTO Class PreRegistration.
+ */
 public class PreRegistrationDTO {
 	
 	private String preRegId;
