@@ -180,7 +180,7 @@
                                                                   <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                                                </rowConstraints>
                                                                <children>
-                                                                  <Label fx:id="docPageNumber" prefHeight="${docPageNumberPane.height}" prefWidth="${docPageNumberPane.width}" styleClass="contiuneButton" />
+                                                                  <Label fx:id="docPageNumber" prefHeight="${docPageNumberPane.height}" prefWidth="${docPageNumberPane.width}" />
                                                                </children>
                                                             </GridPane>
                                                             <GridPane fx:id="docPreviewNextPane" GridPane.columnIndex="5" GridPane.rowIndex="1">
