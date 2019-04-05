@@ -1,5 +1,6 @@
 package io.mosip.registration.processor.status.dao;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -49,6 +50,8 @@ public class RegistrationStatusDao {
 
 	/** The Constant ISDELETED_COLON. */
 	public static final String ISDELETED_COLON = ".isDeleted=:";
+
+	public static final String SELECT_COUNT = "SELECT COUNT(*)";
 
 	/**
 	 * Save.
@@ -146,6 +149,61 @@ public class RegistrationStatusDao {
 		params.put(ISDELETED, Boolean.FALSE);
 
 		return registrationStatusRepositary.createQuerySelect(queryStr, params);
+	}
+
+	/**
+	 * Gets the un processed packets.
+	 *
+	 * @param fetchSize
+	 *            the fetch size
+	 * @param elapseTime
+	 *            the elapse time
+	 * @param reprocessCount
+	 *            the reprocess count
+	 * @param status
+	 *            the status
+	 * @return the un processed packets
+	 */
+	public List<RegistrationStatusEntity> getUnProcessedPackets(Integer fetchSize, long elapseTime,
+			Integer reprocessCount, List<String> status) {
+
+		Map<String, Object> params = new HashMap<>();
+		String className = RegistrationStatusEntity.class.getSimpleName();
+		String alias = RegistrationStatusEntity.class.getName().toLowerCase().substring(0, 1);
+		LocalDateTime timeDifference = LocalDateTime.now().minusSeconds(elapseTime);
+
+		String queryStr = SELECT_DISTINCT + alias + FROM + className + EMPTY_STRING + alias + WHERE + alias
+				+ ".latestTransactionStatusCode IN :status" + EMPTY_STRING + AND + EMPTY_STRING + alias
+				+ ".regProcessRetryCount<" + ":reprocessCount" + EMPTY_STRING + AND + EMPTY_STRING + alias
+				+ ".latestTransactionTimes<" + ":timeDifference";
+
+		params.put("status", status);
+		params.put("reprocessCount", reprocessCount);
+		params.put("timeDifference", timeDifference);
+
+		return registrationStatusRepositary.createQuerySelect(queryStr, params, fetchSize);
+	}
+
+	public Integer getUnProcessedPacketsCount(long elapseTime, Integer reprocessCount, List<String> status) {
+
+		Map<String, Object> params = new HashMap<>();
+		String className = RegistrationStatusEntity.class.getSimpleName();
+		String alias = RegistrationStatusEntity.class.getName().toLowerCase().substring(0, 1);
+		LocalDateTime timeDifference = LocalDateTime.now().minusSeconds(elapseTime);
+
+		String queryStr = SELECT_DISTINCT + alias + FROM + className + EMPTY_STRING + alias + WHERE + alias
+				+ ".latestTransactionStatusCode IN :status" + EMPTY_STRING + AND + EMPTY_STRING + alias
+				+ ".regProcessRetryCount<" + ":reprocessCount" + EMPTY_STRING + AND + EMPTY_STRING + alias
+				+ ".latestTransactionTimes<" + ":timeDifference";
+
+		params.put("status", status);
+		params.put("reprocessCount", reprocessCount);
+		params.put("timeDifference", timeDifference);
+		List<RegistrationStatusEntity> unprocessedPackets = registrationStatusRepositary.createQuerySelect(queryStr,
+				params);
+
+		return unprocessedPackets.size();
+
 	}
 
 }

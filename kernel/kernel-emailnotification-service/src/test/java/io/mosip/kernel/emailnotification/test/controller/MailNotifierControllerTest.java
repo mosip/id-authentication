@@ -44,6 +44,6 @@ public class MailNotifierControllerTest {
 		dto.setMessage("");
 		dto.setStatus("");
 		when(service.sendEmail(mailTo, mailCc, mailSubject, mailContent, arr)).thenReturn(dto);
-		assertThat(controller.sendMail(mailTo, mailCc, mailSubject, mailContent, arr), isA(ResponseWrapper.class));
+		assertThat(controller.sendEMail(mailTo, mailCc, mailSubject, mailContent, arr), isA(ResponseWrapper.class));
 	}
 }

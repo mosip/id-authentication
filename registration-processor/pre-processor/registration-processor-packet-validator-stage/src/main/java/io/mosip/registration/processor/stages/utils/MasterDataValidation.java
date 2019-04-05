@@ -88,10 +88,9 @@ public class MasterDataValidation {
 	 * Validate master data.
 	 *
 	 * @param jsonString
-	 *            the json string
-	 * @return the boolean
+	 *            the json string @return the boolean @throws
 	 */
-	public Boolean validateMasterData(String jsonString) {
+	public Boolean validateMasterData(String jsonString) throws ApisResourceAccessException, IOException {
 		boolean isValid = false;
 		String primaryLanguage = env.getProperty(PRIMARY_LANGUAGE);
 		String secondaryLanguage = env.getProperty(SECONDARY_LANGUAGE);
@@ -148,18 +147,12 @@ public class MasterDataValidation {
 			}
 
 		} catch (IdentityNotFoundException | IOException e) {
-			isValid = false;
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					"", PlatformErrorMessages.RPR_PVM_IDENTITY_NOT_FOUND.getMessage() + e.getMessage());
+			throw e;
 
 		}
 
-		catch (Exception e) {
-			isValid = false;
-			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					"", PlatformErrorMessages.STRUCTURAL_VALIDATION_FAILED.getMessage() + e.getMessage());
-
-		}
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), "",
 				"MasterDataValidation::validateMasterData::exit");
 		return isValid;
@@ -174,8 +167,9 @@ public class MasterDataValidation {
 	 * @param value
 	 *            the value
 	 * @return true, if successful
+	 * @throws ApisResourceAccessException
 	 */
-	private boolean validateIdentityValues(String key, String value) {
+	private boolean validateIdentityValues(String key, String value) throws ApisResourceAccessException {
 		StatusResponseDto statusResponseDto;
 		boolean isvalidateIdentity = false;
 		if (value != null) {
@@ -202,6 +196,8 @@ public class MasterDataValidation {
 							LoggerFileConstant.REGISTRATIONID.toString(), "",
 							PlatformErrorMessages.RPR_PVM_API_RESOUCE_ACCESS_FAILED.getMessage() + ex.getMessage());
 
+				} else {
+					throw ex;
 				}
 			}
 		} else {

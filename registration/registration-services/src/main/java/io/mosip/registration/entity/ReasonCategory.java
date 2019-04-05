@@ -16,6 +16,8 @@ import javax.persistence.Table;
 import io.mosip.registration.entity.id.CodeAndLanguageCodeID;
 
 /**
+ * The Entity Class for ReasonCategory.
+ *
  * @author Sreekar chukka
  * @since 1.0.0
  */

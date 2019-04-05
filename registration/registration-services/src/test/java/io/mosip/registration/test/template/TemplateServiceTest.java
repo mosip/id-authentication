@@ -2,6 +2,7 @@
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.when;
 
@@ -21,6 +22,7 @@ import io.mosip.registration.entity.Template;
 import io.mosip.registration.entity.TemplateEmbeddedKeyCommonFields;
 import io.mosip.registration.entity.TemplateFileFormat;
 import io.mosip.registration.entity.TemplateType;
+import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.service.template.impl.TemplateServiceImpl;
 
 public class TemplateServiceTest {
@@ -122,4 +124,16 @@ public class TemplateServiceTest {
 		assertNotNull(ack);
 	}
 
+	@SuppressWarnings("unchecked")
+	@Test(expected = RegBaseUncheckedException.class)
+	public void getHtmlTemplateExceptionTest() {
+		TemplateServiceImpl temp = new TemplateServiceImpl();
+		TemplateServiceImpl spyTemp = Mockito.spy(temp);
+
+		when(spyTemp.getTemplate("ackTemplate", "eng")).thenThrow(RegBaseUncheckedException.class);
+		
+		String ack = spyTemp.getHtmlTemplate("ackTemplate", "eng");
+
+		assertNull(ack);
+	}
 }

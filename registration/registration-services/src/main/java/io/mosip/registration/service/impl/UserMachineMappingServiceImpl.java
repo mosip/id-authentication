@@ -30,7 +30,9 @@ import io.mosip.registration.service.BaseService;
 import io.mosip.registration.service.UserMachineMappingService;
 import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
 import io.mosip.registration.util.restclient.ServiceDelegateUtil;
+
 /**
+ * Implementation for {@link UserMachineMappingService} 
  * 
  * @author Brahmananda Reddy
  *
@@ -46,6 +48,12 @@ public class UserMachineMappingServiceImpl implements UserMachineMappingService 
 
 	private static final Logger LOGGER = AppConfig.getLogger(UserMachineMappingServiceImpl.class);
 
+	/**
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.registration.service.UserMachineMappingService#syncUserDetails()
+	 * 
+	 */
 	public ResponseDTO syncUserDetails() {
 		LOGGER.debug("REGISTRATION-ONBOARDED-USER-DETAILS- SYNC", APPLICATION_NAME, APPLICATION_ID,
 				"sync user details is started");
@@ -79,7 +87,9 @@ public class UserMachineMappingServiceImpl implements UserMachineMappingService 
 				}
 				regCenterMachineUserReqDto.setVer("0.08");
 				regCenterMachineUserReqDto.setRequest(list);
-				serviceDelegateUtil.post("user_machine_mapping", regCenterMachineUserReqDto,RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM);
+
+				serviceDelegateUtil.post("user_machine_mapping", regCenterMachineUserReqDto,
+						RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM);
 				successResponseDTO.setCode(RegistrationConstants.POLICY_SYNC_SUCCESS_CODE);
 				successResponseDTO.setMessage(RegistrationConstants.POLICY_SYNC_SUCCESS_MESSAGE);
 				successResponseDTO.setInfoType(RegistrationConstants.ALERT_INFORMATION);

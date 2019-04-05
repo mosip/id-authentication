@@ -2,6 +2,8 @@ package io.mosip.registration.test.dao.impl;
 
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.anyObject;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.doNothing;
 
 import java.io.File;
 import java.io.IOException;
@@ -28,6 +30,7 @@ import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dao.MachineMappingDAO;
 import io.mosip.registration.dao.impl.UserOnboardDAOImpl;
+import io.mosip.registration.dto.UserDetailResponseDto;
 import io.mosip.registration.dto.biometric.BiometricDTO;
 import io.mosip.registration.dto.biometric.BiometricInfoDTO;
 import io.mosip.registration.dto.biometric.FaceDetailsDTO;
@@ -54,27 +57,27 @@ public class UserOnBoardDAOImlpTest {
 
 	@Rule
 	public MockitoRule mockitoRule = MockitoJUnit.rule();
-	
+
 	@Mock
 	private MachineMappingDAO machineMappingDAO;
-	
+
 	@Mock
 	private UserBiometricRepository userBiometricRepository;
-	
+
 	@Mock
 	private CenterMachineRepository centerMachineRepository;
 
 	@Mock
 	private MachineMasterRepository machineMasterRepository;
-	
+
 	@InjectMocks
 	private UserOnboardDAOImpl userOnboardDAOImpl;
-	
+
 	@BeforeClass
 	public static void beforeClass() throws URISyntaxException {
-		
+
 		SessionContext.getInstance().getUserContext().setUserId("mosip");
-		Map<String,Object> appMap = new HashMap<>();
+		Map<String, Object> appMap = new HashMap<>();
 		appMap.put(RegistrationConstants.USER_STATION_ID, "1947");
 		appMap.put(RegistrationConstants.USER_CENTER_ID, "1947");
 		ApplicationContext.getInstance().setApplicationMap(appMap);
@@ -89,10 +92,8 @@ public class UserOnBoardDAOImlpTest {
 
 		List<FingerprintDetailsDTO> listOfFingerPrints = new ArrayList<>();
 		List<FingerprintDetailsDTO> listOfFingerSegmets = new ArrayList<>();
-		
-		
-		File file = new File(
-				URLDecoder.decode(ClassLoader.getSystemResource("ISOTemplate.iso").getFile(), "UTF-8"));
+
+		File file = new File(URLDecoder.decode(ClassLoader.getSystemResource("ISOTemplate.iso").getFile(), "UTF-8"));
 		byte[] data = FileUtils.readFileToByteArray(file);
 
 		FingerprintDetailsDTO fingerDto = new FingerprintDetailsDTO();
@@ -183,17 +184,17 @@ public class UserOnBoardDAOImlpTest {
 		info.setFaceDetailsDTO(face);
 
 		biometricDTO.setOperatorBiometricDTO(info);
-		
+
 		UserMachineMapping user = new UserMachineMapping();
 
 		Mockito.when(userBiometricRepository.saveAll(bioMetricsList)).thenReturn(bioMetricsList);
+		doNothing().when(userBiometricRepository).deleteByUserBiometricIdUsrId(Mockito.anyString());
 		Mockito.when(machineMappingDAO.save(user)).thenReturn("success");
-		
+
 		assertNotNull(userOnboardDAOImpl.insert(biometricDTO));
-		
 
 	}
-	
+
 	@SuppressWarnings("serial")
 	@Test
 	public void UserOnBoardException() {
@@ -296,12 +297,12 @@ public class UserOnBoardDAOImlpTest {
 			Mockito.when(userBiometricRepository.saveAll(anyObject())).thenThrow(new RuntimeException("...") {
 			});
 			assertNotNull(userOnboardDAOImpl.insert(biometricDTO));
-		}catch(Exception e) {
-			
+		} catch (Exception e) {
+
 		}
 
 	}
-	
+
 	@Test(expected = RegBaseUncheckedException.class)
 	public void getStationIDRunException() throws RegBaseCheckedException {
 		Mockito.when(machineMasterRepository.findByIsActiveTrueAndMacAddress(Mockito.anyString()))
@@ -313,11 +314,12 @@ public class UserOnBoardDAOImlpTest {
 	public void getStationID() throws RegBaseCheckedException {
 		MachineMaster machineMaster = new MachineMaster();
 		machineMaster.setMacAddress("8C-16-45-88-E7-0C");
-		RegMachineSpecId regMachineSpecId=new RegMachineSpecId();
+		RegMachineSpecId regMachineSpecId = new RegMachineSpecId();
 		regMachineSpecId.setId("100311");
 		regMachineSpecId.setLangCode("eng");
 		machineMaster.setRegMachineSpecId(regMachineSpecId);
-		Mockito.when(machineMasterRepository.findByIsActiveTrueAndMacAddress(Mockito.anyString())).thenReturn(machineMaster);
+		Mockito.when(machineMasterRepository.findByIsActiveTrueAndMacAddress(Mockito.anyString()))
+				.thenReturn(machineMaster);
 		String stationId = userOnboardDAOImpl.getStationID("8C-16-45-88-E7-0C");
 		Assert.assertSame("100311", stationId);
 	}
@@ -338,10 +340,10 @@ public class UserOnBoardDAOImlpTest {
 		CenterMachine centerMachine = new CenterMachine();
 		centerMachine.setCenterMachineId(centerMachineId);
 
-		Mockito.when(centerMachineRepository.findByIsActiveTrueAndCenterMachineIdId(Mockito.anyString())).thenReturn(centerMachine);
+		Mockito.when(centerMachineRepository.findByIsActiveTrueAndCenterMachineIdId(Mockito.anyString()))
+				.thenReturn(centerMachine);
 		String stationId = userOnboardDAOImpl.getCenterID("StationID1947");
 		Assert.assertSame("CenterID1947", stationId);
 	}
 
-	
 }

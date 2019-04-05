@@ -24,11 +24,11 @@ import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
 
 /**
- * Class to Audit the events of Registration.
+ * Class to Audit the events of Registration Client.
  * <p>
- * This class creates a wrapper around {@link AuditRequest} class. This class
- * creates a {@link AuditRequest} object for each audit event and persists the
- * same.
+ * This class creates a wrapper around {@link AuditRequestBuilder} class. This class
+ * creates a {@link AuditRequestBuilder} object for each audit event and persists the
+ * same using {@link AuditHandler} .
  * 
  * @author Balaji Sridharan
  * @since 1.0.0

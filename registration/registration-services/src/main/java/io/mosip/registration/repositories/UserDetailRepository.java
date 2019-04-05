@@ -18,23 +18,31 @@ public interface UserDetailRepository extends BaseRepository<UserDetail, String>
 	/**
 	 * This method returns the list of {@link UserDetail} based on id
 	 * 
-	 * @param userid
+	 * @param userId
 	 *            the registration user id
 	 * @return the list of {@link UserDetail}
 	 */
 	List<UserDetail> findByIdIgnoreCaseAndIsActiveTrue(String userId);
-	
-	
+
 	/**
 	 * To get the list of {@link UserDetail} based on the center id
 	 * 
 	 * @param cntrId
+	 *            id of the center
 	 * @param statusCode
-	 * @param id
+	 *            status code
+	 * @param userId
+	 *            id of the user
+	 * 
 	 * @return the list of {@link UserDetail}
-	 */	
-	List<UserDetail> findByRegCenterUserRegCenterUserIdRegcntrIdAndIsActiveTrueAndStatusCodeNotLikeAndIdNotLike(String cntrId, String statusCode,String userId);
-	
-	
+	 */
+	List<UserDetail> findByRegCenterUserRegCenterUserIdRegcntrIdAndIsActiveTrueAndStatusCodeNotLikeAndIdNotLike(
+			String cntrId, String statusCode, String userId);
+
+	/**
+	 * To get the list of {@link UserDetail} based on the isActive statuc
+	 * 
+	 * @return the list of {@link UserDetail}
+	 */
 	List<UserDetail> findByIsActiveTrue();
 }

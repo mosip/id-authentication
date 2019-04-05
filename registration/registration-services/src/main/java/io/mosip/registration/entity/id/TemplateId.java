@@ -5,10 +5,11 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
+import io.mosip.registration.entity.Template;
 import lombok.Data;
 
 /**
- * TemplateId entity details
+ * composite key for {@link Template}
  * 
  * @author Sreekar Chukka
  * @since 1.0.0

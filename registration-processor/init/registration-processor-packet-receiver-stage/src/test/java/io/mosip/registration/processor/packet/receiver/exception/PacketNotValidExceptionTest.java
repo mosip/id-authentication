@@ -18,7 +18,6 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.multipart.MultipartFile;
 
-import io.mosip.registration.processor.core.exception.util.PlatformConstants;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.packet.receiver.service.PacketReceiverService;
 
@@ -26,9 +25,11 @@ import io.mosip.registration.processor.packet.receiver.service.PacketReceiverSer
 public class PacketNotValidExceptionTest {
 
 	private static final Logger log = LoggerFactory.getLogger(PacketNotValidExceptionTest.class);
-	
+
 	@Mock
 	private PacketReceiverService<MultipartFile, Boolean> packetHandlerService;
+
+	private String stageName = "PacketReceiverStage";
 
 	@Test
 	public void TestPacketNotValidException() {
@@ -48,17 +49,17 @@ public class PacketNotValidExceptionTest {
 		}
 		MultipartFile file = new MockMultipartFile(name, originalFileName, contentType, content);
 
-		Mockito.when(packetHandlerService.storePacket(file)).thenThrow(ex);
+		Mockito.when(packetHandlerService.storePacket(file, stageName)).thenThrow(ex);
 		try {
 
-			packetHandlerService.storePacket(file);
+			packetHandlerService.storePacket(file, stageName);
 			fail();
 
 		} catch (PacketNotValidException e) {
 			assertThat("Should throw PacketNotValid Exception with correct error codes",
 					e.getErrorCode().equalsIgnoreCase(PlatformErrorMessages.RPR_PKR_INVALID_PACKET_FORMAT.getCode()));
-			assertThat("Should throw PacketNotValid Exception  with correct messages",
-					e.getErrorText().equalsIgnoreCase(PlatformErrorMessages.RPR_PKR_INVALID_PACKET_FORMAT.getMessage()));
+			assertThat("Should throw PacketNotValid Exception  with correct messages", e.getErrorText()
+					.equalsIgnoreCase(PlatformErrorMessages.RPR_PKR_INVALID_PACKET_FORMAT.getMessage()));
 
 		}
 	}

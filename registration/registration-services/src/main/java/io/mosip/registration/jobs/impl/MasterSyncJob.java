@@ -16,6 +16,7 @@ import io.mosip.registration.jobs.BaseJob;
 import io.mosip.registration.service.MasterSyncService;
 
 /**
+ * This is a job to sync the master data
  * @author Sreekar Chukka
  *
  * @since 1.0.0

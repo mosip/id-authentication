@@ -17,7 +17,6 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.multipart.MultipartFile;
 
-import io.mosip.registration.processor.core.exception.util.PlatformConstants;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.packet.receiver.service.PacketReceiverService;
 
@@ -25,15 +24,18 @@ import io.mosip.registration.processor.packet.receiver.service.PacketReceiverSer
 public class ValidationExceptionTest {
 
 	private static final Logger log = LoggerFactory.getLogger(ValidationExceptionTest.class);
-	
+
 	@Mock
 	private PacketReceiverService<MultipartFile, Boolean> packetHandlerService;
 
+	private String stageName = "PacketReceiverStage";
+
 	@Test
 	public void TestValidationException() {
-		
-		ValidationException ex = new ValidationException(PlatformErrorMessages.RPR_PKR_VALIDATION_EXCEPTION.getMessage());
-		
+
+		ValidationException ex = new ValidationException(
+				PlatformErrorMessages.RPR_PKR_VALIDATION_EXCEPTION.getMessage());
+
 		Path path = Paths.get("src/test/resource/Client.zip");
 		String name = "Client.zip";
 		String originalFileName = "Client.zip";
@@ -46,12 +48,12 @@ public class ValidationExceptionTest {
 		}
 		MultipartFile file = new MockMultipartFile(name, originalFileName, contentType, content);
 
-		Mockito.when(packetHandlerService.storePacket(file)).thenThrow(ex);
+		Mockito.when(packetHandlerService.storePacket(file, stageName)).thenThrow(ex);
 		try {
 
-			packetHandlerService.storePacket(file);
+			packetHandlerService.storePacket(file, stageName);
 
-		}  catch (ValidationException e) {
+		} catch (ValidationException e) {
 			assertThat("Should throw Validation Exception with correct error codes",
 					e.getErrorCode().equalsIgnoreCase(PlatformErrorMessages.RPR_PKR_VALIDATION_EXCEPTION.getCode()));
 			assertThat("Should throw Validation Exception  with correct messages",

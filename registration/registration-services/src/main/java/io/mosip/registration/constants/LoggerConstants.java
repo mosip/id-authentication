@@ -38,6 +38,7 @@ public class LoggerConstants {
 	private static final String AUTH= APP_NAME + "AUTHENTICATION - ";
 	private static final String AUTHZ = APP_NAME + "AUTHORIZATION - ";
 	private static final String SERVICE_DELEGATE_UTIL = APP_NAME + "SERVICE_DELEGATE_UTIL - ";
+	private static final String UI_VALIDATIONS = APP_NAME + "VALIDATION - ";
 	
 
 	// Session IDs' for logging
@@ -121,5 +122,6 @@ public class LoggerConstants {
 	public static final String LOG_SERVICE_DELEGATE_AUTH_DTO = SERVICE_DELEGATE_UTIL + "PREPARE_AUTHN_REQUEST_DTO";
 	public static final String LOG_SERVICE_DELEGATE_GET_TOKEN = SERVICE_DELEGATE_UTIL + "GET_AUTH_TOKEN";
 	public static final String LOG_SERVICE_DELEGATE_VALIDATE_TOKEN = SERVICE_DELEGATE_UTIL + "IS_AUTH_TOKEN_VALID";
+	public static final String DATE_VALIDATION = UI_VALIDATIONS + "DATE_VALIDATIONS";
 
 }

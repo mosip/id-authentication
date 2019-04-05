@@ -54,6 +54,12 @@ import io.mosip.registration.service.external.PreRegZipHandlingService;
 import io.mosip.registration.service.sync.PreRegistrationDataSyncService;
 import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
 
+/**
+ * Implementation for {@link PreRegistrationDataSyncService}
+ * 
+ * @author YASWANTH S
+ * @since 1.0.0
+ */
 @Service
 public class PreRegistrationDataSyncServiceImpl extends BaseService implements PreRegistrationDataSyncService {
 
@@ -118,6 +124,9 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 				/* Get Packets Using pre registration ID's */
 				for (Entry<String, String> preRegDetail : preRegIds.entrySet()) {
 
+					if (!preRegDetail.getValue().contains("Z")) {
+						preRegDetail.setValue(preRegDetail.getValue() + "Z");
+					}
 					getPreRegistration(responseDTO, preRegDetail.getKey(), syncJobId,
 							Timestamp.from(Instant.parse(preRegDetail.getValue())));
 				}
@@ -377,7 +386,7 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 		PreRegistrationDataSyncDTO preRegistrationDataSyncDTO = new PreRegistrationDataSyncDTO();
 
 		Timestamp reqTime = new Timestamp(System.currentTimeMillis());
-		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
 		dateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
 
 		preRegistrationDataSyncDTO.setId(RegistrationConstants.PRE_REGISTRATION_DUMMY_ID);
@@ -413,7 +422,7 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 	}
 
 	private String formatDate(Calendar cal) {
-		SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");// dd/MM/yyyy
+		SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd");// dd/MM/yyyy
 		Date toDate = cal.getTime();
 
 		/** To-Date */

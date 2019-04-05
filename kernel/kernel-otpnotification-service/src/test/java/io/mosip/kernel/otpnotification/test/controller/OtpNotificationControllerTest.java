@@ -14,16 +14,17 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import io.mosip.kernel.otpnotification.OtpNotificationBootApplication;
 import io.mosip.kernel.otpnotification.dto.OtpNotificationRequestDto;
 import io.mosip.kernel.otpnotification.dto.OtpNotificationResponseDto;
 import io.mosip.kernel.otpnotification.service.impl.OtpNotificationServiceImpl;
+import io.mosip.kernel.otpnotification.test.OtpNotificationTestBootApplication;
 
 /**
  * The controller test class for otp notification.
@@ -34,7 +35,7 @@ import io.mosip.kernel.otpnotification.service.impl.OtpNotificationServiceImpl;
 @RunWith(SpringRunner.class)
 @AutoConfigureMockMvc
 @SpringBootTest
-@ContextConfiguration(classes = { OtpNotificationBootApplication.class })
+@ContextConfiguration(classes = { OtpNotificationTestBootApplication.class })
 public class OtpNotificationControllerTest {
 
 	@Autowired
@@ -46,6 +47,7 @@ public class OtpNotificationControllerTest {
 	@MockBean
 	private OtpNotificationServiceImpl service;
 
+	@WithUserDetails("individual")
 	@Test
 	public void sendOtpNotificationTest() throws Exception {
 		List<String> notificationTypes = new ArrayList<>();

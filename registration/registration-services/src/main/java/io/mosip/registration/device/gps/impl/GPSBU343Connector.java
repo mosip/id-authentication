@@ -59,7 +59,7 @@ public class GPSBU343Connector implements MosipGPSProvider, SerialPortEventListe
 	 * @param portNo           the port no
 	 * @param portReadWaitTime the port read wait time
 	 * @return String GPRS details
-	 * @throws RegBaseCheckedException
+	 * @throws RegBaseCheckedException the reg base checked exception
 	 */
 	@Override
 	public String getComPortGPSData(String portNo, int portReadWaitTime) throws RegBaseCheckedException {
@@ -299,7 +299,7 @@ public class GPSBU343Connector implements MosipGPSProvider, SerialPortEventListe
 	/**
 	 * Decimal to longitude.
 	 *
-	 * @param longitudeFromGps the longitudeFromGps
+	 * @param lon the lon
 	 * @param direction        the direction
 	 * @return the float
 	 */
@@ -333,7 +333,7 @@ public class GPSBU343Connector implements MosipGPSProvider, SerialPortEventListe
 	/**
 	 * Decimal to latitude conversion.
 	 *
-	 * @param latitudeFromGps the latitudeFromGps
+	 * @param lat the lat
 	 * @param direction       the direction
 	 * @return the float
 	 */
@@ -377,6 +377,8 @@ public class GPSBU343Connector implements MosipGPSProvider, SerialPortEventListe
 		private String response = "";
 
 		/**
+		 * Gets the lat.
+		 *
 		 * @return the latitudeFromGps
 		 */
 		public double getLat() {
@@ -384,13 +386,17 @@ public class GPSBU343Connector implements MosipGPSProvider, SerialPortEventListe
 		}
 
 		/**
-		 * @param latitudeFromGps the latitudeFromGps to set
+		 * Sets the lat.
+		 *
+		 * @param lat the new lat
 		 */
 		public void setLat(double lat) {
 			this.latitudeFromGps = lat;
 		}
 
 		/**
+		 * Gets the lon.
+		 *
 		 * @return the longitudeFromGps
 		 */
 		public double getLon() {
@@ -398,13 +404,17 @@ public class GPSBU343Connector implements MosipGPSProvider, SerialPortEventListe
 		}
 
 		/**
-		 * @param longitudeFromGps the longitudeFromGps to set
+		 * Sets the lon.
+		 *
+		 * @param lon the new lon
 		 */
 		public void setLon(double lon) {
 			this.longitudeFromGps = lon;
 		}
 
 		/**
+		 * Gets the response.
+		 *
 		 * @return the response
 		 */
 		public String getResponse() {

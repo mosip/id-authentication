@@ -1,5 +1,11 @@
 package io.mosip.registration.dto;
 
+/**
+ * The Class PacketUploadDTO.
+ * 
+ * @author Sreekar Chukka
+ * @since 1.0.0
+ */
 public class PacketUploadDTO {
 	private String userid;
 	private String password;

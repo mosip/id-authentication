@@ -31,12 +31,12 @@ public class HMACGeneration {
 	 * 
 	 * @param registrationDTO
 	 *            has to be hash updation
-	 * @param demographicJsonBytes
-	 *            has to be hash updation
-	 * @param hashSequence
+	 * @param filesGeneratedForPacket
+	 *            map containing the files to be hashed
+	 * @param sequence
 	 *            contains the hash Sequence
 	 * 
-	 * @return hash byte array
+	 * @return hash byte array of HMAC
 	 */
 	public static byte[] generatePacketDTOHash(final RegistrationDTO registrationDTO, final Map<String, byte[]> filesGeneratedForPacket,
 			HashSequence sequence) {

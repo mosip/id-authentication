@@ -35,7 +35,7 @@ import io.mosip.registration.device.scanner.IMosipDocumentScannerService;
  * through Sane Daemon service
  * 
  * @author balamurugan.ramamoorthy
- *
+ * @since 1.0.0
  */
 @Service
 public abstract class DocumentScannerService implements IMosipDocumentScannerService {
@@ -63,7 +63,7 @@ public abstract class DocumentScannerService implements IMosipDocumentScannerSer
 	 * @param bufferedImage
 	 *            - holds the scanned image from the scanner
 	 * @return byte[] - scanned document Content
-	 * @throws IOException
+	 * @throws IOException - holds the ioexcepion
 	 */
 	public byte[] getImageBytesFromBufferedImage(BufferedImage bufferedImage) throws IOException {
 		byte[] imageInByte;
@@ -167,6 +167,15 @@ public abstract class DocumentScannerService implements IMosipDocumentScannerSer
 		return bufferedImages;
 	}
 
+	/**
+	 * converts bytes to BufferedImage
+	 * 
+	 * @param imageBytes
+	 *            - scanned image file in bytes
+	 * @return BufferedImage - image file in bufferedimage format
+	 * @throws IOException
+	 *             - holds the ioexception
+	 */
 	protected BufferedImage getBufferedImageFromBytes(byte[] imageBytes) throws IOException {
 
 		return ImageIO.read(new ByteArrayInputStream(imageBytes));

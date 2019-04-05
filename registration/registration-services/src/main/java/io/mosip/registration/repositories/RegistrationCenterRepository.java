@@ -17,10 +17,10 @@ import io.mosip.registration.entity.id.RegistartionCenterId;
 public interface RegistrationCenterRepository extends BaseRepository<RegistrationCenter, RegistartionCenterId> {
 
 	/**
-	 * This method returns the optional of {@link RegistrationCenter} based on id
-	 * 
-	 * @param id
-	 *            the registration center id
+	 * This method returns the optional of {@link RegistrationCenter} based on id.
+	 *
+	 * @param id            the registration center id
+	 * @param langCode the lang code
 	 * @return the optional of {@link RegistrationCenter}
 	 */
 	Optional<RegistrationCenter> findByIsActiveTrueAndRegistartionCenterIdIdAndRegistartionCenterIdLangCode(String id,String langCode);

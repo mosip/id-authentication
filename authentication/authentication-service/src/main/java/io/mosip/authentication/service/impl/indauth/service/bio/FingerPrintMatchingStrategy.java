@@ -10,7 +10,6 @@ import io.mosip.authentication.core.spi.fingerprintauth.provider.FingerprintProv
 import io.mosip.authentication.core.spi.indauth.match.MatchFunction;
 import io.mosip.authentication.core.spi.indauth.match.MatchingStrategy;
 import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
-import io.mosip.authentication.core.spi.indauth.match.TextMatchingStrategy;
 import io.mosip.kernel.core.logger.spi.Logger;
 
 /**
@@ -28,8 +27,8 @@ public enum FingerPrintMatchingStrategy implements MatchingStrategy {
 				BiFunction<String, String, Double> func = (BiFunction<String, String, Double>) object;
 				return (int) func.apply((String) reqInfoValue, (String) entityInfoValue).doubleValue();
 			} else {
-				logError(IdAuthenticationErrorConstants.INVALID_BIOMETRIC);
-				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_BIOMETRIC);
+				logError(IdAuthenticationErrorConstants.BIO_MISMATCH);
+				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.BIO_MISMATCH);
 			}
 		} else {
 			Object object = props.get(BioAuthType.class.getSimpleName());
@@ -45,12 +44,12 @@ public enum FingerPrintMatchingStrategy implements MatchingStrategy {
 							String.format(IdAuthenticationErrorConstants.BIO_MISMATCH.getErrorMessage(),
 									BioAuthType.FACE_IMG.getType()));
 				} else {
-					logError(IdAuthenticationErrorConstants.INVALID_BIOMETRIC);
-					throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_BIOMETRIC);
+					logError(IdAuthenticationErrorConstants.BIO_MISMATCH);
+					throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.BIO_MISMATCH);
 				}
 			} else {
-				logError(IdAuthenticationErrorConstants.INVALID_BIOMETRIC);
-				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_BIOMETRIC);
+				logError(IdAuthenticationErrorConstants.BIO_MISMATCH);
+				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.BIO_MISMATCH);
 			}
 		}
 	});

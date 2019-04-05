@@ -39,13 +39,12 @@ public class RegistrationPacketVirusScanTest {
 	public void Initialize() {
 		
 		Map<String,Object> appMap = new HashMap<>();
-		appMap.put(RegistrationConstants.PKT_STORE_LOC, "..//PacketStore");
-		appMap.put(RegistrationConstants.CLIENT_PATH, "..//PreRegPacketStore");
-		appMap.put(RegistrationConstants.DB_PATH, "..//PreRegPacketStore");
-		appMap.put(RegistrationConstants.LOGS_PATH, "..//PreRegPacketStore");
+		appMap.put("mosip.registration.registration_packet_store_location", "..//PacketStore");
+		appMap.put("mosip.registration.registration_pre_reg_packet_location", "..//PreRegPacketStore");
+		appMap.put("mosip.registration.database_path", "..//reg");
+		appMap.put("mosip.registration.logs_path", "..//Logs");
 		ApplicationContext.getInstance().setApplicationMap(appMap);
 		
-		ReflectionTestUtils.setField(registrationPacketVirusScanServiceImpl, "preRegPacketLocation", "..//PreRegPacketStore");
 	}
 	
 	@Test
@@ -64,12 +63,6 @@ public class RegistrationPacketVirusScanTest {
 	@Test
 	public void scanPacketVirusScannerException() throws IOException {
 		Mockito.when(virusScanner.scanDocument(Mockito.any(File.class))).thenThrow(new VirusScannerException());
-		assertNotNull(registrationPacketVirusScanServiceImpl.scanPacket().getErrorResponseDTOs().get(0));
-	}
-	
-	@Test
-	public void scanPacketIOException() throws IOException {
-		Mockito.when(virusScanner.scanDocument(Mockito.any(File.class))).thenThrow(new IOException());
-		assertNotNull(registrationPacketVirusScanServiceImpl.scanPacket().getErrorResponseDTOs().get(0));
+		assertNotNull(registrationPacketVirusScanServiceImpl.scanPacket().getSuccessResponseDTO());
 	}
 }

@@ -1,9 +1,18 @@
 package io.mosip.registration.dto;
 
 import java.time.LocalDateTime;
+import java.util.LinkedHashMap;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+/**
+ * The DTO Class PublicKeyResponse.
+ * 
+ * @author Brahmananda reddy
+ *
+ * @param <T> the generic type
+ */
 public class PublicKeyResponse<T> {
 
 	/**
@@ -29,6 +38,106 @@ public class PublicKeyResponse<T> {
 	 */
 	//@ApiModelProperty(notes = "Timestamp of expiry of public key", required = true)
 	private LocalDateTime expiryAt;
+	
+	private String id;
+	
+	private String version;
+	
+	private String responsetime;
+	
+	private String metadata;
+	
+	private List<LinkedHashMap<String, Object>> errors;
+	
+	private LinkedHashMap<String, Object> response;
+	
+	
+	
+	
+
+	/**
+	 * @return the id
+	 */
+	public String getId() {
+		return id;
+	}
+
+	/**
+	 * @param id the id to set
+	 */
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	/**
+	 * @return the version
+	 */
+	public String getVersion() {
+		return version;
+	}
+
+	/**
+	 * @param version the version to set
+	 */
+	public void setVersion(String version) {
+		this.version = version;
+	}
+
+	/**
+	 * @return the responsetime
+	 */
+	public String getResponsetime() {
+		return responsetime;
+	}
+
+	/**
+	 * @param responsetime the responsetime to set
+	 */
+	public void setResponsetime(String responsetime) {
+		this.responsetime = responsetime;
+	}
+
+	/**
+	 * @return the metadata
+	 */
+	public String getMetadata() {
+		return metadata;
+	}
+
+	/**
+	 * @param metadata the metadata to set
+	 */
+	public void setMetadata(String metadata) {
+		this.metadata = metadata;
+	}
+
+	/**
+	 * @return the errors
+	 */
+	public List<LinkedHashMap<String, Object>> getErrors() {
+		return errors;
+	}
+
+	/**
+	 * @param errors the errors to set
+	 */
+	public void setErrors(List<LinkedHashMap<String, Object>> errors) {
+		this.errors = errors;
+	}
+
+	/**
+	 * @return the response
+	 */
+	public LinkedHashMap<String, Object> getResponse() {
+		return response;
+	}
+
+	/**
+	 * @param response the response to set
+	 */
+	public void setResponse(LinkedHashMap<String, Object> response) {
+		this.response = response;
+	}
 
 	/**
 	 * @return the alias

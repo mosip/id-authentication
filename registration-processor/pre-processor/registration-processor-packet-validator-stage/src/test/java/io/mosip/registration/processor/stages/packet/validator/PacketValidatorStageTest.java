@@ -1,6 +1,7 @@
 package io.mosip.registration.processor.stages.packet.validator;
 
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -17,7 +18,7 @@ import io.vertx.core.Vertx;
 @RunWith(MockitoJUnitRunner.class)
 public class PacketValidatorStageTest {
 	MessageDTO dto = new MessageDTO();
-
+	private String stageName = "PacketValidatorStage";
 	@Mock
 	private PacketValidateProcessor packetvalidateprocessor;
 	@InjectMocks
@@ -31,7 +32,8 @@ public class PacketValidatorStageTest {
 		}
 
 		@Override
-		public void consumeAndSend(MosipEventBus eventbus,MessageBusAddress addressbus1,MessageBusAddress addressbus2) {
+		public void consumeAndSend(MosipEventBus eventbus, MessageBusAddress addressbus1,
+				MessageBusAddress addressbus2) {
 		}
 	};
 
@@ -43,12 +45,11 @@ public class PacketValidatorStageTest {
 		packetValidatorStage.deployVerticle();
 	}
 
-
 	@Test
 	public void testProcess() {
 		MessageDTO result = new MessageDTO();
 		result.setIsValid(true);
-		Mockito.when(packetvalidateprocessor.process(dto)).thenReturn(result);
+		Mockito.when(packetvalidateprocessor.process(any(), any())).thenReturn(result);
 		dto = packetValidatorStage.process(dto);
 		assertTrue(dto.getIsValid());
 

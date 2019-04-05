@@ -4,8 +4,9 @@ import io.mosip.registration.dto.biometric.BiometricDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
 
 /**
- * @author Sreekar Chukka
+ * The Interface UserOnboardDAO.
  *
+ * @author Sreekar Chukka
  * @since 1.0.0
  */
 public interface UserOnboardDAO {
@@ -13,27 +14,31 @@ public interface UserOnboardDAO {
 	/**
 	 * Insert.
 	 *
-	 * @param biometricDTO the biometric DTO
+	 * @param biometricDTO 
+	 * 				the biometric DTO
 	 * @return the string
 	 */
 	String insert(BiometricDTO biometricDTO);
 	
 	/**
-	 * Get Station ID by using mac address
-	 * 
+	 * Get Station ID by using mac address.
+	 *
 	 * @param MacAddress
-	 *            machine address
+	 * 				machine address
 	 * @return station ID
-	 * @throws RegBaseCheckedException
+	 * @throws RegBaseCheckedException 
+	 * 				the reg base checked exception
 	 */
 	String getStationID(String MacAddress) throws RegBaseCheckedException;
 	
 	/**
-	 * Get center ID using stationID
-	 * 
-	 * @param stationID
+	 * Get center ID using stationID.
+	 *
+	 * @param stationID 
+	 * 				the station ID
 	 * @return center ID
-	 * @throws RegBaseCheckedException
+	 * @throws RegBaseCheckedException 
+	 * 				the reg base checked exception
 	 */
 	String getCenterID(String stationID) throws RegBaseCheckedException;
 	

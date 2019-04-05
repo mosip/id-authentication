@@ -32,7 +32,6 @@ import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.dto.indauth.IdType;
 import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
 import io.mosip.authentication.core.dto.spinstore.PinRequestDTO;
-import io.mosip.authentication.core.dto.spinstore.StaticPinIdentityDTO;
 import io.mosip.authentication.core.dto.spinstore.StaticPinRequestDTO;
 import io.mosip.authentication.core.dto.vid.VIDResponseDTO;
 import io.mosip.authentication.core.exception.IDDataValidationException;
@@ -45,9 +44,9 @@ import io.mosip.authentication.service.entity.VIDEntity;
 import io.mosip.authentication.service.factory.RestRequestFactory;
 import io.mosip.authentication.service.helper.AuditHelper;
 import io.mosip.authentication.service.helper.RestHelper;
-import io.mosip.authentication.service.impl.id.service.impl.IdRepoManager;
 import io.mosip.authentication.service.impl.id.service.impl.VIDServiceImpl;
 import io.mosip.authentication.service.impl.spin.service.StaticPinServiceImpl;
+import io.mosip.authentication.service.integration.IdRepoManager;
 import io.mosip.authentication.service.repository.StaticPinHistoryRepository;
 import io.mosip.authentication.service.repository.StaticPinRepository;
 import io.mosip.authentication.service.repository.VIDRepository;
@@ -143,8 +142,6 @@ public class StaticPinFacadeImplTest {
 				.toString();
 		staticPinRequestDTO.setRequestTime(reqTime);
 		staticPinRequestDTO.setVersion("1.0");
-		StaticPinIdentityDTO dto = new StaticPinIdentityDTO();
-		dto.setUin(uin);
 		PinRequestDTO pinRequestDTO = new PinRequestDTO();
 		String pin = "123454";
 		pinRequestDTO.setStaticPin(pin);
@@ -196,8 +193,6 @@ public class StaticPinFacadeImplTest {
 				.toString();
 		staticPinRequestDTO.setRequestTime(reqTime);
 		staticPinRequestDTO.setVersion("1.0");
-		StaticPinIdentityDTO dto = new StaticPinIdentityDTO();
-		dto.setVid(vid);
 		PinRequestDTO pinRequestDTO = new PinRequestDTO();
 		String pin = "123454";
 		pinRequestDTO.setStaticPin(pin);
@@ -249,8 +244,6 @@ public class StaticPinFacadeImplTest {
 				.toString();
 		staticPinRequestDTO.setRequestTime(reqTime);
 		staticPinRequestDTO.setVersion("1.0");
-		StaticPinIdentityDTO dto = new StaticPinIdentityDTO();
-		dto.setVid(vid);
 		PinRequestDTO pinRequestDTO = new PinRequestDTO();
 		String pin = "123454";
 		pinRequestDTO.setStaticPin(pin);
@@ -318,7 +311,7 @@ public class StaticPinFacadeImplTest {
 		uinMap.put("uin", "2342342344");
 		Mockito.when(idAuthService.processIdType(Mockito.any(), Mockito.any(), Mockito.anyBoolean()))
 				.thenReturn(uinMap);
-		Mockito.when(vidRepository.findByUIN(Mockito.anyString(), Mockito.any())).thenReturn(Collections.EMPTY_LIST);
+		Mockito.when(vidRepository.findByUIN(Mockito.anyString(), Mockito.any())).thenReturn(Collections.emptyList());
 		VIDResponseDTO vidResponseDTO = vidService.generateVID("2342342344");
 		assertEquals("mosip.identity.vid", vidResponseDTO.getId());
 	}

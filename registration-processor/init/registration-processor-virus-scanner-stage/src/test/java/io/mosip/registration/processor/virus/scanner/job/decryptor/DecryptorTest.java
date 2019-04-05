@@ -18,7 +18,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
@@ -97,7 +96,7 @@ public class DecryptorTest {
 
 	}
 
-	@Test(expected = PacketDecryptionFailureException.class)
+	@Test(expected = ApisResourceAccessException.class)
 	public void PacketDecryptionFailureExceptionTest()
 			throws FileNotFoundException, ApisResourceAccessException, PacketDecryptionFailureException {
 
@@ -108,14 +107,16 @@ public class DecryptorTest {
 		InputStream decryptedStream = decryptor.decrypt(inputStream, "84071493960000320190110145452");
 
 	}
-	
+
 	@Test(expected = PacketDecryptionFailureException.class)
-	public void invalidPacketFormatTest() throws PacketDecryptionFailureException {
+	public void invalidPacketFormatTest() throws PacketDecryptionFailureException, ApisResourceAccessException {
 		InputStream decryptedStream = decryptor.decrypt(inputStream, "019011014");
 
 	}
+
 	@Test(expected = PacketDecryptionFailureException.class)
-	public void invalidPacketFormatParsingDateTimeTest() throws PacketDecryptionFailureException {
+	public void invalidPacketFormatParsingDateTimeTest()
+			throws PacketDecryptionFailureException, ApisResourceAccessException {
 		InputStream decryptedStream = decryptor.decrypt(inputStream, "8407149396000032019T110145452");
 
 	}

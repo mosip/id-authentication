@@ -9,7 +9,6 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
-import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.masterdata.constant.RegistrationCenterDeviceErrorCode;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterDeviceDto;
 import io.mosip.kernel.masterdata.dto.ResponseRegistrationCenterDeviceDto;
@@ -47,10 +46,9 @@ public class RegistrationCenterDeviceServiceImpl implements RegistrationCenterDe
 	@Autowired
 	private RegistrationCenterDeviceHistoryRepository registrationCenterDeviceHistoryRepository;
 	
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see RegistrationCenterDeviceService#createRegistrationCenterAndDevice(RequestWrapper)
+	
+	/* (non-Javadoc)
+	 * @see io.mosip.kernel.masterdata.service.RegistrationCenterDeviceService#createRegistrationCenterAndDevice(io.mosip.kernel.masterdata.dto.RegistrationCenterDeviceDto)
 	 */
 	@Override
 	@Transactional

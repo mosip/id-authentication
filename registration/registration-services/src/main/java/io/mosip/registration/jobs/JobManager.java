@@ -8,6 +8,14 @@ import org.quartz.Trigger;
 
 import io.mosip.registration.entity.SyncJobDef;
 
+/**
+ * This class includes the functionalities of what transaction table needed.,
+ * like getting job details 
+ * 
+ * @author YASWANTH S
+ * @since 1.0.0
+ *
+ */
 public interface JobManager {
 
 	/**

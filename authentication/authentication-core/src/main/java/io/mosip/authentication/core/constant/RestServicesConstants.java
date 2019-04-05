@@ -26,6 +26,8 @@ public enum RestServicesConstants {
 
 	ID_MASTERDATA_TEMPLATE_SERVICE("id-masterdata-template-service"),
 	
+	ID_MASTERDATA_TEMPLATE_SERVICE_MULTILANG("id-masterdata-template-service-multilang"),
+	
 	GENDER_TYPE_SERVICE("id-masterdata-gender-service"),
 
 	DECRYPTION_SERVICE("decrypt-service"),

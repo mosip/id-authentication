@@ -38,4 +38,13 @@ public class DataDTO {
 	/** The Value for time stamp */
 	private String timestamp;
 
+	/** The Value for mosipProcess */
+	private String mosipProcess;
+
+	/** The Value for environment */
+	private String environment;
+
+	/** The Value for version */
+	private String version;
+
 }

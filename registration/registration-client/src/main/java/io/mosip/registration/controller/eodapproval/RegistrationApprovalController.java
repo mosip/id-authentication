@@ -50,7 +50,6 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
@@ -168,6 +167,8 @@ public class RegistrationApprovalController extends BaseController implements In
 						setTextFill(Color.GREEN);
 					} else if (item != null && item.equals(RegistrationUIConstants.REJECTED)) {
 						setTextFill(Color.RED);
+					}else {
+						setTextFill(Color.BLACK);
 					}
 				}
 			};
@@ -246,16 +247,18 @@ public class RegistrationApprovalController extends BaseController implements In
 	private void populateTable() {
 		LOGGER.info(LOG_REG_PENDING_APPROVAL, APPLICATION_NAME, APPLICATION_ID, "table population has been started");
 		List<RegistrationApprovalDTO> listData = null;
-
+		
 		listData = registration.getEnrollmentByStatus(RegistrationClientStatusCode.CREATED.getCode());
 
 		if (!listData.isEmpty()) {
+
+			listData.forEach(approvalDTO -> approvalDTO.setStatusComment(RegistrationUIConstants.PENDING));
 
 			ObservableList<RegistrationApprovalDTO> oList = FXCollections.observableArrayList(listData);
 			table.setItems(oList);
 		} else {
 			approveRegistrationRootSubPane.disableProperty().set(true);
-			table.setPlaceholder(new Label(RegistrationConstants.PLACEHOLDER_LABEL));
+			table.setPlaceholder(new Label(RegistrationUIConstants.PLACEHOLDER_LABEL));
 			table.getItems().clear();
 		}
 

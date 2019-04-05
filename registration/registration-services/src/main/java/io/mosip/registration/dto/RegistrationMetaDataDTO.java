@@ -1,7 +1,7 @@
 package io.mosip.registration.dto;
 
 /**
- * This class contains the meta-information of the Registration
+ * This DTO class contains the meta-information of the Registration
  * 
  * @author Dinesh Asokan
  * @since 1.0.0

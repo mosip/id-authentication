@@ -5,13 +5,15 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
+import io.mosip.registration.entity.CenterMachine;
 import lombok.Data;
 
 
 /**
- * EmbeddedId for {@link CenterMachine}
- * @author Dinesh Ashokan
+ * Composite key for {@link CenterMachine}
  *
+ * @author Dinesh Ashokan
+ * @version 1.0.0
  */
 @Embeddable
 @Data

@@ -23,7 +23,6 @@ public interface JobConfigurationService {
 	 * Start the jobs with sheduled Time
 	 * 
 	 * @return responseDTO for start jobs
-	 * @throws RegBaseCheckedException
 	 */
 	ResponseDTO startScheduler();
 
@@ -46,7 +45,7 @@ public interface JobConfigurationService {
 	 * 
 	 * @param jobId
 	 *            the job id
-	 * @Param triggerPoint where (User/System) the job was triggered
+	 * @param triggerPoint where (User/System) the job was triggered
 	 * @return responseDTO for execute job
 	 */
 	ResponseDTO executeJob(String jobId, String triggerPoint);

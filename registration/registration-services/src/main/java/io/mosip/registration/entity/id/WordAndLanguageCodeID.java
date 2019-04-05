@@ -7,13 +7,12 @@ import javax.persistence.Embeddable;
 
 import lombok.Data;
 
-/*
-**
-* ID class for the columns word and language code.
-* 
-* @author Sreekar Chukka
-* @since 1.0.0
-*/
+/**
+ * ID class for the columns word and language code.
+ * 
+ * @author Sreekar Chukka
+ * @since 1.0.0
+ */
 
 @Embeddable
 @Data

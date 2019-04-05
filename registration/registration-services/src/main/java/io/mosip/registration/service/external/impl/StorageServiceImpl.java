@@ -20,13 +20,14 @@ import io.mosip.kernel.core.util.FileUtils;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.ApplicationContext;
+import io.mosip.registration.entity.Registration;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.service.external.StorageService;
 
 /**
- * Class to store the encrypted packet and acknowledgement receipt of the
- * Registration in local disk
+ * Class to store the encrypted packet of the {@link Registration} in configured
+ * location in local disk
  * 
  * @author Balaji Sridharan
  * @since 1.0.0
@@ -37,14 +38,17 @@ public class StorageServiceImpl implements StorageService {
 
 	private static final Logger LOGGER = AppConfig.getLogger(StorageServiceImpl.class);
 
-	/* (non-Javadoc)
-	 * @see io.mosip.registration.service.StorageService#storeToDisk(java.lang.String, byte[], byte[])
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.registration.service.external.StorageService#storeToDisk(java.lang.
+	 * String, byte[])
 	 */
 	@Override
 	public String storeToDisk(String registrationId, byte[] packet) throws RegBaseCheckedException {
 		try {
-			// Generate the file path for storing the Encrypted Packet and Acknowledgement
-			// Receipt
+			// Generate the file path for storing the Encrypted Packet
 			String seperator="/";
 			String filePath = String.valueOf(ApplicationContext.map().get(RegistrationConstants.PACKET_STORE_LOCATION)).concat(seperator).concat(formatDate(new Date(), String.valueOf(ApplicationContext.map().get(RegistrationConstants.PACKET_STORE_DATE_FORMAT))))
 					.concat(seperator).concat(registrationId);

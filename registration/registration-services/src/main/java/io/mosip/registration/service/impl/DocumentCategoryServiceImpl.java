@@ -15,6 +15,7 @@ import io.mosip.registration.dao.impl.DocumentCategoryDAOImpl;
 import io.mosip.registration.entity.DocumentCategory;
 
 /**
+ * Implementation for {@link DocumentCategoryService} 
  * 
  * @author balamurugan.ramamoorthy
  *

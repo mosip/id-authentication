@@ -74,18 +74,19 @@ public class Decryptor {
 	 * @param registrationId
 	 * @return
 	 * @throws PacketDecryptionFailureException
+	 * @throws ApisResourceAccessException
 	 * @throws ParseException
 	 */
 
 	public InputStream decrypt(InputStream encryptedPacket, String registrationId)
-			throws PacketDecryptionFailureException {
+			throws PacketDecryptionFailureException, ApisResourceAccessException {
 		InputStream outstream = null;
 		boolean isTransactionSuccessful = false;
 		String description = "";
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 				registrationId, "Decryptor::decrypt()::entry");
 		try {
-			String centerId = registrationId.substring(0,centerIdLength);
+			String centerId = registrationId.substring(0, centerIdLength);
 			String encryptedPacketString = IOUtils.toString(encryptedPacket, "UTF-8");
 			CryptomanagerRequestDto cryptomanagerRequestDto = new CryptomanagerRequestDto();
 			cryptomanagerRequestDto.setApplicationId(applicationId);
@@ -153,10 +154,7 @@ public class Decryptor {
 			} else {
 				description = DECRYPTION_FAILURE + registrationId + "::" + e.getMessage();
 
-				throw new PacketDecryptionFailureException(
-						PacketDecryptionFailureExceptionConstant.MOSIP_PACKET_DECRYPTION_FAILURE_ERROR_CODE
-								.getErrorCode(),
-						e.getMessage());
+				throw e;
 			}
 
 		} catch (ParseException e) {
@@ -181,8 +179,8 @@ public class Decryptor {
 			eventType = eventId.equalsIgnoreCase(EventId.RPR_402.toString()) ? EventType.BUSINESS.toString()
 					: EventType.SYSTEM.toString();
 
-			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
-					registrationId, ApiName.AUDIT);
+			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType, registrationId,
+					ApiName.AUDIT);
 		}
 		regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 				registrationId, DECRYPTION_SUCCESS);

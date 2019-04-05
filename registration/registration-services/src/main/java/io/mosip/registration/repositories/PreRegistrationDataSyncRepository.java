@@ -8,21 +8,24 @@ import io.mosip.registration.entity.PreRegistrationList;
 
 /**
  * Pre registration repository to get/save/update and verify pre-reg
+ * 
  * @author YASWANTH S
  * @since 1.0.0
  *
  */
 public interface PreRegistrationDataSyncRepository extends BaseRepository<PreRegistrationList, String> {
-	
+
 	public PreRegistrationList findByPreRegId(String preRegId);
-	
-	
+
 	/**
 	 * Fetch the Pre_Registration Records based on the Appointment Date
+	 * 
 	 * @param startDate
+	 *            - start date
 	 * @param isDeleted
-	 * @return
+	 *            - deleted flag
+	 * @return List - list of pre reg objects
 	 */
 	public List<PreRegistrationList> findByAppointmentDateBeforeAndIsDeleted(Date startDate, Boolean isDeleted);
-	
+
 }

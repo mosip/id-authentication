@@ -5,9 +5,12 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
+import io.mosip.registration.entity.IndividualType;
 import lombok.Data;
 
 /**
+ * Composite key for {@link IndividualType}
+ *
  * @author Sreekar Chukka
  * @since 1.0.0
  */

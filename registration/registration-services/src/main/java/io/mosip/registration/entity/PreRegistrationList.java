@@ -9,10 +9,10 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 /**
- * Pre Registration entity
+ * The Entity Class for Pre Registration entity.
+ *
  * @author YASWANTH S
  * @since 1.0.0
- *
  */
 @Entity
 @Table(name = "pre_registration_list", schema = "reg")

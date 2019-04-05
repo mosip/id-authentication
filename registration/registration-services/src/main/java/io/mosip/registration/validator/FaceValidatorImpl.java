@@ -18,6 +18,8 @@ import io.mosip.registration.dto.AuthenticationValidatorDTO;
 import io.mosip.registration.entity.UserBiometric;
 
 /**
+ * This class is for validating Face Authentication
+ * 
  * @author Sravya Surampalli
  * @since 1.0.0 
  */

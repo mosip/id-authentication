@@ -20,7 +20,6 @@ import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.SessionContext;
-import io.mosip.registration.dao.RegistrationCenterDAO;
 import io.mosip.registration.dao.UserDetailDAO;
 import io.mosip.registration.dto.UserDetailResponseDto;
 import io.mosip.registration.entity.UserBiometric;
@@ -35,7 +34,7 @@ import io.mosip.registration.repositories.UserPwdRepository;
 import io.mosip.registration.repositories.UserRoleRepository;
 
 /**
- * The implementation class of {@link RegistrationCenterDAO}.
+ * The implementation class of {@link UserDetailDAO}.
  *
  * @author Sravya Surampalli
  * @since 1.0.0
@@ -53,14 +52,15 @@ public class UserDetailDAOImpl implements UserDetailDAO {
 	@Autowired
 	private UserDetailRepository userDetailRepository;
 
-	/** The userDetail repository. */
+	/** The userPwd repository. */
 	@Autowired
 	private UserPwdRepository userPwdRepository;
 
-	/** The userDetail repository. */
+	/** The userRole repository. */
 	@Autowired
 	private UserRoleRepository userRoleRepository;
 
+	/** The userBiometric repository. */
 	@Autowired
 	private UserBiometricRepository userBiometricRepository;
 
@@ -102,16 +102,43 @@ public class UserDetailDAOImpl implements UserDetailDAO {
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.mosip.registration.dao.RegistrationUserDetailDAO#getAllActiveUsers(java.
+	 * lang. String)
+	 */
 	public List<UserBiometric> getAllActiveUsers(String attrCode) {
+
+		LOGGER.info("REGISTRATION - ACTIVE_USERS - REGISTRATION_USER_DETAIL_DAO_IMPL", APPLICATION_NAME, APPLICATION_ID,
+				"Fetching all active users");
+
 		return userBiometricRepository.findByUserBiometricIdBioAttributeCodeAndIsActiveTrue(attrCode);
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.mosip.registration.dao.RegistrationUserDetailDAO#
+	 * getUserSpecificBioDetails(java.lang. String, java.lang.String)
+	 */
 	public List<UserBiometric> getUserSpecificBioDetails(String userId, String bioType) {
+
+		LOGGER.info("REGISTRATION - USER_SPECIFIC_BIO - REGISTRATION_USER_DETAIL_DAO_IMPL", APPLICATION_NAME,
+				APPLICATION_ID, "Fetching user specific biometric details");
+
 		return userBiometricRepository
 				.findByUserBiometricIdUsrIdAndIsActiveTrueAndUserBiometricIdBioTypeCodeIgnoreCase(userId, bioType);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.registration.dao.UserDetailDAO#save(io.mosip.registration.dto.
+	 * UserDetailResponseDto)
+	 */
 	public void save(UserDetailResponseDto userDetailsResponse) throws RegBaseUncheckedException {
 
 		LOGGER.info(LOG_REG_USER_DETAIL, APPLICATION_NAME, APPLICATION_ID, "Entering user detail save method...");
@@ -125,11 +152,11 @@ public class UserDetailDAOImpl implements UserDetailDAO {
 				UserDetail userDtls = new UserDetail();
 				UserPassword usrPwd = new UserPassword();
 				// password details
-				usrPwd.setUsrId(userDtals.getName());
+				usrPwd.setUsrId(userDtals.getUserName());
 				usrPwd.setPwd(new String(userDtals.getUserPassword(), StandardCharsets.UTF_8));
 				usrPwd.setStatusCode("00");
 				usrPwd.setIsActive(true);
-				usrPwd.setLangCode("eng");
+				usrPwd.setLangCode(RegistrationConstants.ENGLISH_LANG_CODE);
 				if (SessionContext.isSessionContextAvailable()) {
 					usrPwd.setCrBy(SessionContext.userContext().getUserId());
 				} else {
@@ -138,12 +165,12 @@ public class UserDetailDAOImpl implements UserDetailDAO {
 				usrPwd.setCrDtime(Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()));
 				userPassword.add(usrPwd);
 
-				userDtls.setId(userDtals.getName());
+				userDtls.setId(userDtals.getUserName());
 				userDtls.setUserPassword(usrPwd);
 				userDtls.setEmail(userDtals.getMail());
 				userDtls.setMobile(userDtals.getMobile());
 				userDtls.setName(userDtals.getName());
-				userDtls.setLangCode("eng");
+				userDtls.setLangCode(RegistrationConstants.ENGLISH_LANG_CODE);
 				if (SessionContext.isSessionContextAvailable()) {
 					userDtls.setCrBy(SessionContext.userContext().getUserId());
 				} else {
@@ -156,32 +183,29 @@ public class UserDetailDAOImpl implements UserDetailDAO {
 
 			});
 
-			List<UserRole> userRole = new ArrayList<>();
 			userDetailsResponse.getUserDetails().forEach(role -> {
 
 				UserRole roles = new UserRole();
 				roles.setIsActive(true);
-				roles.setLangCode("eng");
+				roles.setLangCode(RegistrationConstants.ENGLISH_LANG_CODE);
 				if (SessionContext.isSessionContextAvailable()) {
 					roles.setCrBy(SessionContext.userContext().getUserId());
 				} else {
 					roles.setCrBy(RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM);
 				}
 				roles.setCrDtime(Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()));
-				String uName = role.getName();
 				role.getRoles().forEach(rol -> {
 					UserRoleID roleId = new UserRoleID();
 					roleId.setRoleCode(rol);
-					roleId.setUsrId(uName);
+					roleId.setUsrId(role.getUserName());
 					roles.setUserRoleID(roleId);
-					userRole.add(roles);
+					userRoleRepository.save(roles);
 				});
 
 			});
 
 			userDetailRepository.saveAll(userList);
 			userPwdRepository.saveAll(userPassword);
-			userRoleRepository.saveAll(userRole);
 
 			LOGGER.info(LOG_REG_USER_DETAIL, APPLICATION_NAME, APPLICATION_ID, "Leaving user detail save method...");
 

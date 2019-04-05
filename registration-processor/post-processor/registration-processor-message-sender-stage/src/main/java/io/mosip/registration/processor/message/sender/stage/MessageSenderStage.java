@@ -82,8 +82,8 @@ public class MessageSenderStage extends MosipVerticleManager {
 	private AuditLogRequestBuilder auditLogRequestBuilder;
 
 	/** The notification emails. */
-	//@Value("${registration.processor.notification.emails}")
-	private String notificationEmails = "Alok.Ranjan2@mindtree.com | Sowmya.Banakar@mindtree.com";
+	@Value("${registration.processor.notification.emails}")
+	private String notificationEmails;
 	
 	/** The uin generated subject. */
 	@Value("${registration.processor.uin.generated.subject}")

@@ -24,12 +24,16 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import org.springframework.dao.DataAccessException;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dao.MasterSyncDao;
 import io.mosip.registration.dao.impl.MasterSyncDaoImpl;
 import io.mosip.registration.dto.ApplicantValidDocumentDto;
 import io.mosip.registration.dto.IndividualTypeDto;
+import io.mosip.registration.dto.mastersync.AppAuthenticationMethodDto;
+import io.mosip.registration.dto.mastersync.AppDetailDto;
+import io.mosip.registration.dto.mastersync.AppRolePriorityDto;
 import io.mosip.registration.dto.mastersync.ApplicationDto;
 import io.mosip.registration.dto.mastersync.BiometricAttributeDto;
 import io.mosip.registration.dto.mastersync.BiometricTypeDto;
@@ -49,6 +53,7 @@ import io.mosip.registration.dto.mastersync.MachineSpecificationDto;
 import io.mosip.registration.dto.mastersync.MachineTypeDto;
 import io.mosip.registration.dto.mastersync.MasterDataResponseDto;
 import io.mosip.registration.dto.mastersync.PostReasonCategoryDto;
+import io.mosip.registration.dto.mastersync.ProcessListDto;
 import io.mosip.registration.dto.mastersync.ReasonListDto;
 import io.mosip.registration.dto.mastersync.RegistrationCenterDeviceDto;
 import io.mosip.registration.dto.mastersync.RegistrationCenterDto;
@@ -57,10 +62,14 @@ import io.mosip.registration.dto.mastersync.RegistrationCenterMachineDto;
 import io.mosip.registration.dto.mastersync.RegistrationCenterTypeDto;
 import io.mosip.registration.dto.mastersync.RegistrationCenterUserDto;
 import io.mosip.registration.dto.mastersync.RegistrationCenterUserMachineMappingDto;
+import io.mosip.registration.dto.mastersync.ScreenAuthorizationDto;
 import io.mosip.registration.dto.mastersync.TemplateDto;
 import io.mosip.registration.dto.mastersync.TemplateFileFormatDto;
 import io.mosip.registration.dto.mastersync.TemplateTypeDto;
 import io.mosip.registration.dto.mastersync.TitleDto;
+import io.mosip.registration.entity.AppAuthenticationMethod;
+import io.mosip.registration.entity.AppDetail;
+import io.mosip.registration.entity.AppRolePriority;
 import io.mosip.registration.entity.ApplicantValidDocument;
 import io.mosip.registration.entity.Application;
 import io.mosip.registration.entity.BiometricAttribute;
@@ -76,6 +85,7 @@ import io.mosip.registration.entity.Language;
 import io.mosip.registration.entity.Location;
 import io.mosip.registration.entity.MachineMaster;
 import io.mosip.registration.entity.MachineType;
+import io.mosip.registration.entity.ProcessList;
 import io.mosip.registration.entity.ReasonCategory;
 import io.mosip.registration.entity.ReasonList;
 import io.mosip.registration.entity.RegDeviceMaster;
@@ -84,20 +94,28 @@ import io.mosip.registration.entity.RegDeviceType;
 import io.mosip.registration.entity.RegistrationCenter;
 import io.mosip.registration.entity.RegistrationCenterType;
 import io.mosip.registration.entity.RegistrationCommonFields;
+import io.mosip.registration.entity.ScreenAuthorization;
 import io.mosip.registration.entity.SyncControl;
 import io.mosip.registration.entity.Template;
 import io.mosip.registration.entity.TemplateEmbeddedKeyCommonFields;
 import io.mosip.registration.entity.TemplateFileFormat;
 import io.mosip.registration.entity.TemplateType;
 import io.mosip.registration.entity.Title;
+import io.mosip.registration.entity.ValidDocument;
+import io.mosip.registration.entity.id.AppRolePriorityId;
 import io.mosip.registration.entity.id.ApplicantValidDocumentID;
 import io.mosip.registration.entity.id.CodeAndLanguageCodeID;
 import io.mosip.registration.entity.id.HolidayID;
 import io.mosip.registration.entity.id.IndividualTypeId;
 import io.mosip.registration.entity.id.RegDeviceTypeId;
 import io.mosip.registration.entity.id.RegMachineSpecId;
+import io.mosip.registration.entity.id.ValidDocumentID;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
+import io.mosip.registration.repositories.AppAuthenticationRepository;
+import io.mosip.registration.repositories.AppDetailRepository;
+import io.mosip.registration.repositories.AppRolePriorityRepository;
+import io.mosip.registration.repositories.ApplicantValidDocumentRepository;
 import io.mosip.registration.repositories.ApplicationRepository;
 import io.mosip.registration.repositories.BiometricAttributeRepository;
 import io.mosip.registration.repositories.BiometricTypeRepository;
@@ -117,6 +135,7 @@ import io.mosip.registration.repositories.LocationRepository;
 import io.mosip.registration.repositories.MachineMasterRepository;
 import io.mosip.registration.repositories.MachineSpecificationRepository;
 import io.mosip.registration.repositories.MachineTypeRepository;
+import io.mosip.registration.repositories.ProcessListRepository;
 import io.mosip.registration.repositories.ReasonCategoryRepository;
 import io.mosip.registration.repositories.ReasonListRepository;
 import io.mosip.registration.repositories.RegistrationCenterDeviceRepository;
@@ -124,6 +143,7 @@ import io.mosip.registration.repositories.RegistrationCenterMachineDeviceReposit
 import io.mosip.registration.repositories.RegistrationCenterRepository;
 import io.mosip.registration.repositories.RegistrationCenterTypeRepository;
 import io.mosip.registration.repositories.RegistrationCenterUserRepository;
+import io.mosip.registration.repositories.ScreenAuthorizationRepository;
 import io.mosip.registration.repositories.SyncJobControlRepository;
 import io.mosip.registration.repositories.TemplateFileFormatRepository;
 import io.mosip.registration.repositories.TemplateRepository;
@@ -202,9 +222,25 @@ public class MasterSyncDaoImplTest {
 	@Mock
 	private TitleRepository masterSyncTitleRepository;
 	@Mock
-	private ValidDocumentRepository masterSyncValidDocumentRepository;
+	private ApplicantValidDocumentRepository masterSyncValidDocumentRepository;
+	@Mock
+	private ValidDocumentRepository validDocumentRepository;
 	@Mock
 	private IndividualTypeRepository individualTypeRepository;
+	@Mock
+	private AppAuthenticationRepository appAuthenticationRepository;
+
+	@Mock
+	private AppRolePriorityRepository appRolePriorityRepository;
+
+	@Mock
+	private AppDetailRepository appDetailRepository;
+
+	@Mock
+	private ScreenAuthorizationRepository screenAuthorizationRepository;
+
+	@Mock
+	private ProcessListRepository processListRepository;
 
 	/** Object for Sync language Repository. */
 	@Mock
@@ -249,7 +285,7 @@ public class MasterSyncDaoImplTest {
 	public static void beforeClass() {
 
 		ReflectionTestUtils.setField(SessionContext.class, "sessionContext", null);
-		//applicationContext.setApplicationMessagesBundle();
+		// applicationContext.setApplicationMessagesBundle();
 
 		SessionContext.getInstance().userContext().setUserId("mosip");
 
@@ -365,7 +401,7 @@ public class MasterSyncDaoImplTest {
 
 		List<ApplicantValidDocumentDto> masterValidDocumnetsDto = new ArrayList<>();
 		masterSyncDto.setApplicantValidDocuments(masterValidDocumnetsDto);
-		
+
 		List<IndividualTypeDto> individualTypeDtos = new ArrayList<>();
 		masterSyncDto.setIndividualTypes(individualTypeDtos);
 
@@ -542,15 +578,66 @@ public class MasterSyncDaoImplTest {
 		reasonCategoryDto.setName("RC1001");
 		categorie.add(reasonCategoryDto);
 		masterSyncDto.setReasonCategory(categorie);
-		
-		List<IndividualTypeDto> individualTypes=new ArrayList<>();
-		IndividualTypeDto individualType=new IndividualTypeDto();
+
+		List<IndividualTypeDto> individualTypes = new ArrayList<>();
+		IndividualTypeDto individualType = new IndividualTypeDto();
 		individualType.setCode("NFR");
 		individualType.setLangCode("eng");
 		individualType.setName("National");
 		individualType.setIsActive(true);
 		individualTypes.add(individualType);
 		masterSyncDto.setIndividualTypes(individualTypes);
+
+		List<AppAuthenticationMethodDto> appAuthMethods = new ArrayList<>();
+		AppAuthenticationMethodDto appAuth = new AppAuthenticationMethodDto();
+		appAuth.setAppId("10003");
+		appAuth.setAuthMethodCode("OTP");
+		appAuth.setIsActive(true);
+		appAuth.setProcessId("onboard_auth");
+		appAuth.setRoleCode("SUPERVISOR");
+		appAuthMethods.add(appAuth);
+		masterSyncDto.setAppAuthenticationMethods(appAuthMethods);
+
+		List<AppDetailDto> appDetails = new ArrayList<>();
+		AppDetailDto appDetils = new AppDetailDto();
+		appDetils.setId("10003");
+		appDetils.setDescr("OTP");
+		appDetils.setIsActive(true);
+		appDetils.setLangCode("eng");
+		appDetils.setName("SUPERVISOR");
+		appDetails.add(appDetils);
+		masterSyncDto.setAppDetails(appDetails);
+
+		List<AppRolePriorityDto> appRolePriority = new ArrayList<>();
+		AppRolePriorityDto appPriority = new AppRolePriorityDto();
+		appPriority.setAppId("10003");
+		appPriority.setPriority(1);
+		appPriority.setIsActive(true);
+		appPriority.setProcessId("onboard_auth");
+		appPriority.setRoleCode("SUPERVISOR");
+		appRolePriority.add(appPriority);
+		masterSyncDto.setAppRolePriorities(appRolePriority);
+
+		List<ScreenAuthorizationDto> screenAuth = new ArrayList<>();
+
+		ScreenAuthorizationDto screenAuthDto = new ScreenAuthorizationDto();
+		screenAuthDto.setIsPermitted(true);
+		screenAuthDto.setIsActive(true);
+		screenAuthDto.setLangCode("eng");
+		screenAuthDto.setScreenId("approveRegistrationRoot");
+		screenAuthDto.setRoleCode("SUPERADMIN");
+		screenAuth.add(screenAuthDto);
+		masterSyncDto.setScreenAuthorizations(screenAuth);
+
+		List<ProcessListDto> processLst = new ArrayList<>();
+		ProcessListDto processListDto = new ProcessListDto();
+		processListDto.setId("login_auth");
+		processListDto.setDescr("Login authentication");
+		processListDto.setName("Login authentication");
+		processListDto.setLangCode("eng");
+		processListDto.setIsActive(true);
+		processLst.add(processListDto);
+		masterSyncDto.setProcessList(processLst);
 
 		// Code and Land Code
 		CodeAndLanguageCodeID codeaLang = new CodeAndLanguageCodeID();
@@ -569,7 +656,7 @@ public class MasterSyncDaoImplTest {
 		// Machine
 		List<MachineMaster> machines = new ArrayList<>();
 		MachineMaster machine = new MachineMaster();
-		RegMachineSpecId reg=new RegMachineSpecId();
+		RegMachineSpecId reg = new RegMachineSpecId();
 		reg.setId("10031");
 		reg.setLangCode("eng");
 		machine.setRegMachineSpecId(reg);
@@ -582,7 +669,7 @@ public class MasterSyncDaoImplTest {
 		// Machine Specification
 		List<RegDeviceSpec> machineSpecification = new ArrayList<>();
 		RegDeviceSpec machineSpec = new RegDeviceSpec();
-		RegMachineSpecId specId=new RegMachineSpecId();
+		RegMachineSpecId specId = new RegMachineSpecId();
 		specId.setId("1001");
 		machineSpec.setBrand("Lenovo");
 		machineSpec.setModel("T480");
@@ -593,7 +680,7 @@ public class MasterSyncDaoImplTest {
 		// Machine Type
 		List<MachineType> machineType = new ArrayList<>();
 		MachineType MasterMachineType = new MachineType();
-		CodeAndLanguageCodeID id=new CodeAndLanguageCodeID();
+		CodeAndLanguageCodeID id = new CodeAndLanguageCodeID();
 		id.setCode("1001");
 		id.setLangCode("eng");
 		MasterMachineType.setCodeAndLanguageCodeID(id);
@@ -615,7 +702,7 @@ public class MasterSyncDaoImplTest {
 		// Device Specification
 		List<RegDeviceSpec> deviceSpecification = new ArrayList<>();
 		RegDeviceSpec MasterDeviceSpecification = new RegDeviceSpec();
-		RegMachineSpecId specMachineId=new RegMachineSpecId();
+		RegMachineSpecId specMachineId = new RegMachineSpecId();
 		specMachineId.setId("1011");
 		MasterDeviceSpecification.setBrand("Hp Printer");
 		specMachineId.setLangCode("ENG");
@@ -632,15 +719,39 @@ public class MasterSyncDaoImplTest {
 		MasterDeviceType.setName("device");
 		MasterDeviceType.setDescription("deviceDescriptiom");
 		deviceType.add(MasterDeviceType);
-		List<IndividualType> masterIndividualType=new ArrayList<>();
-		IndividualType individualTypeEntity=new IndividualType();
-		IndividualTypeId individualTypeId=new IndividualTypeId();
+		List<IndividualType> masterIndividualType = new ArrayList<>();
+		IndividualType individualTypeEntity = new IndividualType();
+		IndividualTypeId individualTypeId = new IndividualTypeId();
 		individualTypeId.setCode("NFR");
 		individualTypeId.setLangCode("eng");
 		individualTypeEntity.setIndividualTypeId(individualTypeId);
 		individualTypeEntity.setName("National");
 		individualTypeEntity.setIsActive(true);
 		masterIndividualType.add(individualTypeEntity);
+
+		// App role priority
+		List<AppRolePriority> masterAppRolePriority = new ArrayList<>();
+		AppRolePriority appRole = new AppRolePriority();
+		AppRolePriorityId roleId = new AppRolePriorityId();
+		roleId.setAppId("1003");
+		roleId.setProcessId("login_auth");
+		roleId.setRoleCode("ADMIN");
+		appRole.setAppRolePriorityId(roleId);
+		appRole.setCrBy("system");
+		appRole.setCrDtime(Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()));
+		appRole.setIsActive(true);
+		appRole.setPriority(1);
+		appRole.setLangCode("eng");
+		masterAppRolePriority.add(appRole);
+
+		List<AppDetail> masterAppDetails = new ArrayList<>();
+
+		List<ProcessList> masterProcessList = new ArrayList<>();
+
+		List<AppAuthenticationMethod> masterAppLoginMethod = new ArrayList<>();
+
+		List<ScreenAuthorization> masterScreenAuth = new ArrayList<>();
+
 		// Reg Center
 		List<RegistrationCenter> registrationCenters = new ArrayList<>();
 		RegistrationCenter registrationCenter = new RegistrationCenter();
@@ -746,11 +857,11 @@ public class MasterSyncDaoImplTest {
 		// validDocuments
 		List<ApplicantValidDocument> validDocuments = new ArrayList<>();
 		ApplicantValidDocument MasterValidDocuments = new ApplicantValidDocument();
-		ApplicantValidDocumentID validDocumentId=new ApplicantValidDocumentID();
+		ApplicantValidDocumentID validDocumentId = new ApplicantValidDocumentID();
 		validDocumentId.setDocCatCode("D101");
 		validDocumentId.setDocTypeCode("DC101");
 		validDocumentId.setAppTypeCode("007");
-		MasterValidDocuments.setValidDocumentId(validDocumentId);
+		MasterValidDocuments.setValidDocument(validDocumentId);
 		MasterValidDocuments.setLangCode("ENG");
 		validDocuments.add(MasterValidDocuments);
 		// biometric Attributes
@@ -982,7 +1093,7 @@ public class MasterSyncDaoImplTest {
 		// Machine
 		List<MachineMaster> machines = new ArrayList<>();
 		MachineMaster machine = new MachineMaster();
-		RegMachineSpecId specId=new RegMachineSpecId();
+		RegMachineSpecId specId = new RegMachineSpecId();
 		specId.setId("100131");
 		specId.setLangCode("eng");
 		machine.setRegMachineSpecId(specId);
@@ -1165,7 +1276,7 @@ public class MasterSyncDaoImplTest {
 		// Machine
 		List<MachineMaster> machines = new ArrayList<>();
 		MachineMaster machine = new MachineMaster();
-		RegMachineSpecId specId=new RegMachineSpecId();
+		RegMachineSpecId specId = new RegMachineSpecId();
 		specId.setId("100131");
 		specId.setLangCode("eng");
 		machine.setRegMachineSpecId(specId);
@@ -1349,7 +1460,7 @@ public class MasterSyncDaoImplTest {
 		// Machine
 		List<MachineMaster> machines = new ArrayList<>();
 		MachineMaster machine = new MachineMaster();
-		RegMachineSpecId specId=new RegMachineSpecId();
+		RegMachineSpecId specId = new RegMachineSpecId();
 		specId.setId("100131");
 		specId.setLangCode("eng");
 		machine.setRegMachineSpecId(specId);
@@ -1539,7 +1650,7 @@ public class MasterSyncDaoImplTest {
 		// Machine
 		List<MachineMaster> machines = new ArrayList<>();
 		MachineMaster machine = new MachineMaster();
-		RegMachineSpecId specId=new RegMachineSpecId();
+		RegMachineSpecId specId = new RegMachineSpecId();
 		specId.setId("100131");
 		specId.setLangCode("eng");
 		machine.setRegMachineSpecId(specId);
@@ -1630,8 +1741,9 @@ public class MasterSyncDaoImplTest {
 		reasons.setLangCode("FRE");
 		allReason.add(reasons);
 
-		Mockito.when(masterSyncReasonListRepository.findByIsActiveTrueAndLangCodeAndReasonCategoryCodeIn(Mockito.anyString(),
-				Mockito.anyList())).thenReturn(allReason);
+		Mockito.when(masterSyncReasonListRepository
+				.findByIsActiveTrueAndLangCodeAndReasonCategoryCodeIn(Mockito.anyString(), Mockito.anyList()))
+				.thenReturn(allReason);
 
 		masterSyncDaoImpl.getReasonList("FRE", reasonCat);
 
@@ -1701,24 +1813,22 @@ public class MasterSyncDaoImplTest {
 	@Test
 	public void findValidDoc() {
 
-		List<ApplicantValidDocument> docList = new ArrayList<>();
-		ApplicantValidDocument docs = new ApplicantValidDocument();
-		ApplicantValidDocumentID validDocumentId=new ApplicantValidDocumentID();
-		validDocumentId.setDocCatCode("D101");
+		List<ValidDocument> docList = new ArrayList<>();
+		ValidDocument docs = new ValidDocument();
+		ValidDocumentID validDocumentId = new ValidDocumentID();
+		validDocumentId.setDocCategoryCode("D101");
 		validDocumentId.setDocTypeCode("DC101");
-		validDocumentId.setAppTypeCode("007");
-		docs.setValidDocumentId(validDocumentId);
 		docs.setLangCode("eng");
 		docList.add(docs);
 
-		Mockito.when(masterSyncDao.getValidDocumets(Mockito.anyString(), Mockito.anyString())).thenReturn(docList);
+		Mockito.when(masterSyncDao.getValidDocumets(Mockito.anyString())).thenReturn(docList);
 
-		masterSyncDaoImpl.getValidDocumets("POA", "eng");
+		masterSyncDaoImpl.getValidDocumets("POA");
 
 		assertTrue(docList != null);
 
 	}
-	
+
 	@Test
 	public void individualTypes() {
 

@@ -79,6 +79,27 @@ public class RegistrationStatusEntity extends BaseRegistrationEntity {
 	@Column(name = "applicant_type")
 	private String applicantType;
 
+	/** The latest transaction type code. */
+	@Column(name = "latest_trn_type_code")
+	private String latestTransactionTypeCode;
+
+	/** The latest transaction status code. */
+	@Column(name = "latest_trn_status_code")
+	private String latestTransactionStatusCode;
+
+	/** The latest transaction times. */
+	@Column(name = "latest_trn_dtimes")
+	@UpdateTimestamp
+	private LocalDateTime latestTransactionTimes;
+
+	/** The registration stage name. */
+	@Column(name = "reg_stage_name")
+	private String registrationStageName;
+
+	/** The reg process retry count. */
+	@Column(name = "reg_process_retry_count")
+	private Integer regProcessRetryCount;
+
 	/**
 	 * Instantiates a new registration status entity.
 	 */
@@ -370,6 +391,101 @@ public class RegistrationStatusEntity extends BaseRegistrationEntity {
 	 */
 	public void setApplicantType(String applicantType) {
 		this.applicantType = applicantType;
+	}
+
+	/**
+	 * Gets the latest transaction type code.
+	 *
+	 * @return the latest transaction type code
+	 */
+	public String getLatestTransactionTypeCode() {
+		return latestTransactionTypeCode;
+	}
+
+	/**
+	 * Sets the latest transaction type code.
+	 *
+	 * @param latestTransactionTypeCode
+	 *            the new latest transaction type code
+	 */
+	public void setLatestTransactionTypeCode(String latestTransactionTypeCode) {
+		this.latestTransactionTypeCode = latestTransactionTypeCode;
+	}
+
+	/**
+	 * Gets the latest transaction status code.
+	 *
+	 * @return the latest transaction status code
+	 */
+	public String getLatestTransactionStatusCode() {
+		return latestTransactionStatusCode;
+	}
+
+	/**
+	 * Sets the latest transaction status code.
+	 *
+	 * @param latestTransactionStatusCode
+	 *            the new latest transaction status code
+	 */
+	public void setLatestTransactionStatusCode(String latestTransactionStatusCode) {
+		this.latestTransactionStatusCode = latestTransactionStatusCode;
+	}
+
+	/**
+	 * Gets the latest transaction times.
+	 *
+	 * @return the latest transaction times
+	 */
+	public LocalDateTime getLatestTransactionTimes() {
+		return latestTransactionTimes;
+	}
+
+	/**
+	 * Sets the latest transaction times.
+	 *
+	 * @param latestTransactionTimes
+	 *            the new latest transaction times
+	 */
+	public void setLatestTransactionTimes(LocalDateTime latestTransactionTimes) {
+		this.latestTransactionTimes = latestTransactionTimes;
+	}
+
+	/**
+	 * Gets the registration stage name.
+	 *
+	 * @return the registration stage name
+	 */
+	public String getRegistrationStageName() {
+		return registrationStageName;
+	}
+
+	/**
+	 * Sets the registration stage name.
+	 *
+	 * @param registrationStageName
+	 *            the new registration stage name
+	 */
+	public void setRegistrationStageName(String registrationStageName) {
+		this.registrationStageName = registrationStageName;
+	}
+
+	/**
+	 * Gets the reg process retry count.
+	 *
+	 * @return the reg process retry count
+	 */
+	public Integer getRegProcessRetryCount() {
+		return regProcessRetryCount;
+	}
+
+	/**
+	 * Sets the reg process retry count.
+	 *
+	 * @param regProcessRetryCount
+	 *            the new reg process retry count
+	 */
+	public void setRegProcessRetryCount(Integer regProcessRetryCount) {
+		this.regProcessRetryCount = regProcessRetryCount;
 	}
 
 }
