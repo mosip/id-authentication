@@ -219,7 +219,7 @@ public class BiometricExceptionController extends BaseController implements Init
 			}
 			onboardTrackerImg.setVisible(false);
 			registrationTrackerImg.setVisible(true);
-			exceptionDocProof.setVisible(true);
+			exceptionDocProof.setVisible(false);
 			registrationFooter.setVisible(true);
 			registrationExceptionHeader.setVisible(true);
 			spliterLine.setVisible(false);

@@ -1074,7 +1074,7 @@ public class LoginController extends BaseController implements Initializable {
 						LOGGER.info("REGISTRATION - HANDLE_PACKET_UPLOAD_START - PACKET_UPLOAD_CONTROLLER",
 								APPLICATION_NAME, APPLICATION_ID, "Handling all the packet upload activities");
 
-						ResponseDTO responseDTO = getSyncConfigData();
+						/*ResponseDTO responseDTO = getSyncConfigData();
 						if (responseDTO != null) {
 							SuccessResponseDTO successResponseDTO = responseDTO.getSuccessResponseDTO();
 							if (successResponseDTO != null && successResponseDTO.getOtherAttributes() != null) {
@@ -1095,7 +1095,7 @@ public class LoginController extends BaseController implements Initializable {
 							}
 						} else {
 							return RegistrationConstants.FAILURE;
-						}
+						}*/
 
 						return RegistrationConstants.SUCCESS;
 					}
