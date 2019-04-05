@@ -46,33 +46,25 @@ public class AppConfig {
 
 	private static final RollingFileAppender MOSIP_ROLLING_APPENDER = new RollingFileAppender();
 
-	private static final ResourceBundle applicationProperties = ResourceBundle.getBundle("reg_application");
-
 	@Autowired
 	@Qualifier("dataSource")
 	private DataSource datasource;
 
 	static {
 		
-		ResourceBundle resourceBundle = ResourceBundle.getBundle("reg_log4j");
 		MOSIP_ROLLING_APPENDER.setAppend(true);
-		MOSIP_ROLLING_APPENDER.setAppenderName(resourceBundle.getString("log4j.appender.Appender"));
-		MOSIP_ROLLING_APPENDER.setFileName(resourceBundle.getString("log4j.appender.Appender.file"));
-		MOSIP_ROLLING_APPENDER.setFileNamePattern(resourceBundle.getString("log4j.appender.Appender.filePattern"));
-		MOSIP_ROLLING_APPENDER.setMaxFileSize(resourceBundle.getString("log4j.appender.Appender.maxFileSize"));
-		MOSIP_ROLLING_APPENDER.setTotalCap(resourceBundle.getString("log4j.appender.Appender.totalCap"));
-		MOSIP_ROLLING_APPENDER
-				.setMaxHistory(Integer.valueOf(resourceBundle.getString("log4j.appender.Appender.maxBackupIndex")));
+		MOSIP_ROLLING_APPENDER.setAppenderName("org.apache.log4j.RollingFileAppender");
+		MOSIP_ROLLING_APPENDER.setFileName("logs/registration.log");
+		MOSIP_ROLLING_APPENDER.setFileNamePattern("logs/registration-%d{yyyy-MM-dd-HH}-%i.log");
+		MOSIP_ROLLING_APPENDER.setMaxFileSize("5MB");
+		MOSIP_ROLLING_APPENDER.setTotalCap("50MB");
+		MOSIP_ROLLING_APPENDER.setMaxHistory(10);
 		MOSIP_ROLLING_APPENDER.setImmediateFlush(true);
 		MOSIP_ROLLING_APPENDER.setPrudent(true);
 	}
 
 	public static Logger getLogger(Class<?> className) {
 		return Logfactory.getDefaultRollingFileLogger(MOSIP_ROLLING_APPENDER, className);
-	}
-
-	public static String getApplicationProperty(String property) {
-		return applicationProperties.getString(property);
 	}
 
 	@Bean

@@ -1063,7 +1063,7 @@ public class RegistrationConstants {
 	public static final String REGISTRATION_DELETION_BATCH_JOBS_FAILURE = "REGISTRATION_DELETION_BATCH_JOBS_FAILURE";
 
 	// Application Language
-	public static final String APPLICATION_LANUAGE = "application_language";
+	public static final String APPLICATION_LANUAGE = "eng";
 
 	// Global-Config Constants
 	public static final String GET_GLOBAL_CONFIG = "get_registration_center_config";

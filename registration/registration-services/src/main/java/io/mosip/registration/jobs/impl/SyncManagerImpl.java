@@ -63,7 +63,7 @@ public class SyncManagerImpl extends BaseService implements SyncManager {
 			syncControl.setMachineId(syncTransaction.getMachmId());
 
 			syncControl.setRegcntrId(syncTransaction.getCntrId());
-			syncControl.setLangCode(AppConfig.getApplicationProperty(RegistrationConstants.APPLICATION_LANUAGE));
+			syncControl.setLangCode(RegistrationConstants.APPLICATION_LANUAGE);
 
 			syncControl.setCrBy(syncTransaction.getCrBy());
 			syncControl.setCrDtime(Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()));
@@ -119,7 +119,7 @@ public class SyncManagerImpl extends BaseService implements SyncManager {
 
 			syncTransaction.setCntrId(getCenterId());
 
-			syncTransaction.setLangCode(AppConfig.getApplicationProperty(RegistrationConstants.APPLICATION_LANUAGE));
+			syncTransaction.setLangCode(RegistrationConstants.APPLICATION_LANUAGE);
 
 			syncTransaction.setCrBy(RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM.equals(triggerPoint) ? triggerPoint
 					: getUserIdFromSession());

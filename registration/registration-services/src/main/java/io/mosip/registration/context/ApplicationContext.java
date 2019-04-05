@@ -333,7 +333,7 @@ public class ApplicationContext {
 	 */
 	public void setApplicationLanguageBundle() {
 		applicationLanguageBundle = ResourceBundle.getBundle("labels",
-				new Locale(AppConfig.getApplicationProperty("application_language")));
+				new Locale("eng"));
 	}
 	
 	/**
@@ -368,7 +368,7 @@ public class ApplicationContext {
 	 */
 	public void setLocalLanguageProperty() {
 		localLanguageBundle = ResourceBundle.getBundle("labels",
-				new Locale(AppConfig.getApplicationProperty("local_language")));
+				new Locale("ara"));
 	}
 
 	/**
@@ -385,7 +385,7 @@ public class ApplicationContext {
 	 */
 	public void setApplicationMessagesBundle() {
 		applicationMessagesBundle = ResourceBundle.getBundle("messages",
-				new Locale(AppConfig.getApplicationProperty("application_language")));
+				new Locale("eng"));
 	}
 
 	/**
@@ -402,7 +402,7 @@ public class ApplicationContext {
 	 */
 	public void setLocalMessagesBundle() {
 		localMessagesBundle = ResourceBundle.getBundle("messages",
-				new Locale(AppConfig.getApplicationProperty("local_language")));
+				new Locale("ara"));
 	}
 	
 	/**
