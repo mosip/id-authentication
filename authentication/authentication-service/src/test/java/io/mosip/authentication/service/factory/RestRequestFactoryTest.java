@@ -32,6 +32,7 @@ import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.util.dto.AuditRequestDto;
 import io.mosip.authentication.core.util.dto.AuditResponseDto;
 import io.mosip.authentication.core.util.dto.RestRequestDTO;
+import io.mosip.kernel.core.http.RequestWrapper;
 
 /**
  * The Class RestRequestFactoryTest.
@@ -76,9 +77,9 @@ public class RestRequestFactoryTest {
 	 */
 	@Test
 	public void testBuildRequest() throws IDDataValidationException {
-		AuditRequestDto auditRequest = auditFactory.buildRequest(AuditModules.OTP_AUTH,
+		RequestWrapper<AuditRequestDto> auditRequest = auditFactory.buildRequest(AuditModules.OTP_AUTH,
 				AuditEvents.AUTH_REQUEST_RESPONSE, "id", IdType.UIN, "desc");
-		auditRequest.setActionTimeStamp(null);
+		auditRequest.getRequest().setActionTimeStamp(null);
 
 		RestRequestDTO request = restFactory.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditRequest,
 				AuditResponseDto.class);
@@ -119,9 +120,9 @@ public class RestRequestFactoryTest {
 		environment.setProperty("audit.rest.headers.mediaType", "multipart/form-data");
 
 		ReflectionTestUtils.setField(restFactory, "env", environment);
-		AuditRequestDto auditRequest = auditFactory.buildRequest(AuditModules.OTP_AUTH,
+		RequestWrapper<AuditRequestDto> auditRequest = auditFactory.buildRequest(AuditModules.OTP_AUTH,
 				AuditEvents.AUTH_REQUEST_RESPONSE, "id", IdType.UIN, "desc");
-		auditRequest.setActionTimeStamp(null);
+		auditRequest.getRequest().setActionTimeStamp(null);
 
 		restFactory.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditRequest,
 				AuditResponseDto.class);

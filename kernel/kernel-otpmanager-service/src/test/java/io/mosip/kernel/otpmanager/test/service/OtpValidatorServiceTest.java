@@ -73,7 +73,7 @@ public class OtpValidatorServiceTest {
 				.andExpect(status().isOk()).andExpect(jsonPath("$.response.status", is("failure")));
 	}
 
-	@Test
+	//@Test
 	public void testOtpValidatorServiceWhenKeyFreezedPositiveCase() throws Exception {
 		OtpEntity entity = new OtpEntity();
 		entity.setOtp("1234");
