@@ -13,7 +13,7 @@ import { AutoLogoutService } from "src/app/core/services/auto-logout.service";
   styleUrls: ["./app.component.css"]
 })
 export class AppComponent implements OnInit {
-  title = "pre-registration-TEST";
+  title = "pre-registration";
   message: object;
 
   constructor(

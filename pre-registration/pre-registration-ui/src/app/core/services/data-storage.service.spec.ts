@@ -5,6 +5,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { of } from 'rxjs';
 import { BookingModel } from 'src/app/feature/booking/center-selection/booking.model';
 import { BookingModelRequest } from 'src/app/shared/booking-request.model';
+import { RequestModel } from 'src/app/shared/models/request-model/RequestModel';
 
 describe('DataStorageService', () => {
   let service: DataStorageService = null;
@@ -209,7 +210,7 @@ describe('DataStorageService', () => {
   it('makeBooking', () => {
     let response = null;
     const req = new BookingModel('1001', '2019-03-08', '09:00:00', '09:15:00');
-    const request = new BookingModelRequest(req);
+    const request = new RequestModel('aaa', req);
     service.makeBooking(request).subscribe(value => {
       response = value;
     });
@@ -249,8 +250,8 @@ describe('DataStorageService', () => {
   it('cancelAppointment', () => {
     let response = null;
     const req = new BookingModel('1001', '2019-03-08', '09:00:00', '09:15:00');
-    const request = new BookingModelRequest(req);
-    service.cancelAppointment(request).subscribe(value => {
+    const request = new RequestModel('aaa', req);
+    service.cancelAppointment(request, '111').subscribe(value => {
       response = value;
     });
     expect(response).toBe('success');

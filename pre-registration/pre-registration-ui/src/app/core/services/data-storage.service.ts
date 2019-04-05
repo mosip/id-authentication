@@ -1,9 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 
-import { BookingModelRequest } from '../../shared/booking-request.model';
 import * as appConstants from '../../app.constants';
-import Utils from '../../app.util';
 import { AppConfigService } from '../../app-config.service';
 import { Applicant } from '../../shared/models/dashboard-model/dashboard.modal';
 import { ConfigService } from './config.service';
@@ -27,7 +25,7 @@ export class DataStorageService {
   PRE_REG_URL = this.appConfigService.getConfig()['PRE_REG_URL'];
 
   //here
-  getUsers(userId: string) {
+  getUsers() {
     // const url = this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.applicants + appConstants.APPENDER + userId;
     let url = this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.applicants;
     // url = this.BASE_URL_LOCAL;
@@ -76,7 +74,7 @@ export class DataStorageService {
   //here
   updateUser(identity: any, preRegId: string) {
     let url = this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.applicants + appConstants.APPENDER + preRegId;
-    // const url = this.BASE_URL_LOCAL + this.PRE_REG_URL + appConstants.APPEND_URL.applicants;
+    // const url = this.BASE_URL_LOCAL + _URL + appConstants.APPEND_URL.applicants;
     // url = this.BASE_URL_LOCAL + appConstants.APPENDER + preRegId;
     const obj = new RequestModel(appConstants.IDS.updateUser, identity);
     console.log('data being update', JSON.stringify(obj));
@@ -91,17 +89,12 @@ export class DataStorageService {
   //here
   deleteRegistration(preId: string) {
     // const url = this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.applicants + appConstants.APPENDER + preId;
-    const url = this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.applicants;
-    return this.httpClient.delete(url, {
-      observe: 'body',
-      responseType: 'json',
-      params: new HttpParams().append(appConstants.PARAMS_KEYS.deleteUser, preId)
-    });
+    return this.httpClient.delete(this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.delete_application + preId );
   }
 
-  cancelAppointment(data: BookingModelRequest) {
+  cancelAppointment(data: RequestModel, preRegId: string) {
     console.log('cancel appointment data', data);
-    return this.httpClient.put(this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.booking_appointment, data);
+    return this.httpClient.put(this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.booking_appointment + preRegId, data);
   }
 
   getNearbyRegistrationCenters(coords: any) {
@@ -139,23 +132,19 @@ export class DataStorageService {
   }
 
   getAvailabilityData(registrationCenterId) {
-    return this.httpClient.get(this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.booking_availability, {
-      observe: 'body',
-      responseType: 'json',
-      params: new HttpParams().append(appConstants.PARAMS_KEYS.getAvailabilityData, registrationCenterId)
-    });
+    return this.httpClient.get(this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.booking_availability + registrationCenterId );
   }
 
-  makeBooking(request: BookingModelRequest) {
+  makeBooking(request: RequestModel, preId) {
     console.log('request inside service', request);
     return this.httpClient.post(
-      this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.booking_appointment,
+      this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.booking_appointment + preId[0],
       request
     );
   }
 
   getLocationMetadataHirearchy(value: string) {
-    const url = this.BASE_URL + appConstants.APPEND_URL.location + appConstants.APPEND_URL.location_metadata + value;
+    const url = this.BASE_URL + appConstants.APPEND_URL.locatappConstants.APPEND_URL.location_metadata + value;
     // const url = this.BASE_URL + appConstants.APPEND_URL.location + appConstants.APPEND_URL.location_metadata + value;
     return this.httpClient.get(url, {
       // params: new HttpParams().append(appConstants.PARAMS_KEYS.locationHierarchyName, value)
@@ -165,7 +154,7 @@ export class DataStorageService {
   getLocationImmediateHierearchy(lang: string, location: string) {
     const url =
       this.BASE_URL +
-      appConstants.APPEND_URL.location +
+     stants.ocation +
       appConstants.APPEND_URL.location_immediate_children +
       location +
       appConstants.APPENDER +
@@ -185,7 +174,7 @@ export class DataStorageService {
     return this.httpClient.get(`./assets/i18n/${langCode}.json`);
   }
 
-  copyDocument(catCode: string, sourceId: string, destinationId: string) {
+  copyDocument(sourceId: string, destinationId: string) {
     const url =
       this.BASE_URL +
       this.PRE_REG_URL +
@@ -199,23 +188,18 @@ export class DataStorageService {
   }
 
   generateQRCode(data: string) {
-    return this.httpClient.post(this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.qr_code, data);
+    const obj = new RequestModel(appConstants.IDS.qrCode, data)
+    return this.httpClient.post(this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.qr_code, obj);
   }
 
   sendNotification(data: FormData) {
-    // const obj = {
-    //   id: appConstants.IDS.notification,
-    //   requesttime: Utils.getCurrentDate(),
-    //   version: appConstants.VERSION,
-    //   request: data
-    // };
-
+    const obj = new RequestModel(appConstants.IDS.notification, data);
     return this.httpClient.post(
       this.BASE_URL +
         this.PRE_REG_URL +
         appConstants.APPEND_URL.notification +
         appConstants.APPEND_URL.send_notification,
-      data
+      obj
     );
   }
 
@@ -290,12 +274,7 @@ export class DataStorageService {
       userId: userId
     };
 
-    const obj = {
-      id: appConstants.IDS.newUser,
-      version: appConstants.VERSION,
-      requesttime: Utils.getCurrentDate(),
-      request: req
-    };
+    const obj = new RequestModel(appConstants.IDS.sendOtp, req); 
 
     const url = this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.auth + appConstants.APPEND_URL.send_otp;
     return this.httpClient.post(url, obj);
@@ -306,15 +285,11 @@ export class DataStorageService {
       otp: otp,
       userId: userId
     };
-    const requestObj = {
-      id: appConstants.IDS.newUser,
-      version: appConstants.VERSION,
-      requesttime: Utils.getCurrentDate(),
-      request: request
-    };
+
+    const obj = new RequestModel(appConstants.IDS.validateOtp, request); 
 
     const url = this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.auth + appConstants.APPEND_URL.login;
-    return this.httpClient.post(url, requestObj);
+    return this.httpClient.post(url, obj);
   }
 
   onLogout() {
