@@ -23,7 +23,20 @@ public enum AuthErrorCode {
 	/**
 	 * RESPONSE_PARSE_ERROR
 	 */
-	RESPONSE_PARSE_ERROR("KER-ATH-001", "Error occur while parsing error from response");
+	RESPONSE_PARSE_ERROR("KER-ATH-001", "Error occur while parsing error from response"),
+	/**
+	 * RESPONSE_PARSE_ERROR
+	 */
+	REQUEST_VALIDATION_ERROR("KER-ATH-002", "Error while validating the request"),
+	/**
+	 * USER VALIDATION ERROR
+	 */
+	USER_VALIDATION_ERROR("KER-ATH-003", "User Detail doesn't exist"),
+	
+	/**
+	 * USER VALIDATION ERROR
+	 */
+	PASSWORD_VALIDATION_ERROR("KER-ATH-004", "Incorrect Password");
 
 	/**
 	 * The error code

@@ -24,6 +24,7 @@ import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.auth.config.MosipEnvironment;
 import io.mosip.kernel.auth.constant.AuthConstant;
+import io.mosip.kernel.auth.constant.AuthErrorCode;
 import io.mosip.kernel.auth.entities.ClientSecret;
 import io.mosip.kernel.auth.entities.LoginUser;
 import io.mosip.kernel.auth.entities.MosipUserDto;
@@ -32,6 +33,7 @@ import io.mosip.kernel.auth.entities.RoleDto;
 import io.mosip.kernel.auth.entities.RolesListDto;
 import io.mosip.kernel.auth.entities.UserOtp;
 import io.mosip.kernel.auth.entities.otp.OtpUser;
+import io.mosip.kernel.auth.exception.AuthManagerException;
 import io.mosip.kernel.auth.jwtBuilder.TokenGenerator;
 import io.mosip.kernel.auth.jwtBuilder.TokenValidator;
 
@@ -92,34 +94,12 @@ public class ILdapDataStore implements IDataStore {
 		LdapConnection connection = createAnonymousConnection();
 		Dn userdn = createUserDn(otpUser.getUserId());
 		if (!connection.exists(userdn)) {
-			if (otpUser.getOtpChannel().equals(AuthConstant.PHONE)) {
-				Entry userEntry = new DefaultEntry("uid=" + otpUser.getUserId() + ",ou=people,c=morocco",
-						"objectClass: organizationalPerson", "objectClass: person", "objectClass: inetOrgPerson",
-						"objectClass: top", "mobile", otpUser.getUserId(), "uid", otpUser.getUserId(), "sn",
-						otpUser.getUserId(), "cn", otpUser.getUserId());
-				connection.add(userEntry);
-
-				Modification roleModification = new DefaultModification(ModificationOperation.ADD_ATTRIBUTE,
-						"roleOccupant", String.valueOf(userdn));
-				connection.modify("cn=individual,ou=roles,c=morocco", roleModification);
-			} else {
-
-				Entry userEntry = new DefaultEntry("uid=" + otpUser.getUserId() + ",ou=people,c=morocco",
-						"objectClass: organizationalPerson", "objectClass: person", "objectClass: inetOrgPerson",
-						"objectClass: top", "mail", otpUser.getUserId(), "uid", otpUser.getUserId());
-				connection.add(userEntry);
-
-				Modification roleModification = new DefaultModification(ModificationOperation.ADD_ATTRIBUTE,
-						"roleOccupant", String.valueOf(userdn));
-				connection.modify("cn=individual,ou=roles,c=morocco", roleModification);
-
-			}
+			throw new AuthManagerException(AuthErrorCode.USER_VALIDATION_ERROR.getErrorCode(),AuthErrorCode.USER_VALIDATION_ERROR.getErrorMessage());
 
 		}
 		MosipUserDto mosipUserDto = lookupUserDetails(userdn, connection);
 		return mosipUserDto;
 	}
-
 	/*
 	 * (non-Javadoc)
 	 * 

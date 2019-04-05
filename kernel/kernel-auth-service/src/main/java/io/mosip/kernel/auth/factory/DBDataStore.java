@@ -16,6 +16,7 @@ import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.auth.constant.AuthConstant;
+import io.mosip.kernel.auth.constant.AuthErrorCode;
 import io.mosip.kernel.auth.entities.ClientSecret;
 import io.mosip.kernel.auth.entities.LoginUser;
 import io.mosip.kernel.auth.entities.MosipUserDto;
@@ -23,6 +24,7 @@ import io.mosip.kernel.auth.entities.MosipUserListDto;
 import io.mosip.kernel.auth.entities.RolesListDto;
 import io.mosip.kernel.auth.entities.UserOtp;
 import io.mosip.kernel.auth.entities.otp.OtpUser;
+import io.mosip.kernel.auth.exception.AuthManagerException;
 
 /**
  * @author Ramadurai Pandian
@@ -77,7 +79,7 @@ public class DBDataStore implements IDataStore {
 		if (mosipUserDto != null && (Arrays.areEqual(password, test))) {
 			return mosipUserDto;
 		} else {
-			throw new RuntimeException("Incorrect Password");
+			throw new AuthManagerException(AuthErrorCode.PASSWORD_VALIDATION_ERROR.getErrorCode(),AuthErrorCode.PASSWORD_VALIDATION_ERROR.getErrorMessage());
 		}
 	}
 
