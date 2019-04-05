@@ -119,7 +119,7 @@ public class DemodedupeProcessor {
 				demographicInfoStream = adapter.getFile(registrationId,
 						PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR + PacketFiles.ID.name());
 				bytesArray = IOUtils.toByteArray(demographicInfoStream);
-				packetInfoManager.saveDemographicInfoJson(bytesArray, packetMetaInfo.getIdentity().getMetaData());
+				packetInfoManager.saveDemographicInfoJson(bytesArray,registrationId,packetMetaInfo.getIdentity().getMetaData());
 			}
 
 			// Potential Duplicate Ids after performing demo dedupe

@@ -1,20 +1,23 @@
 package io.mosip.registration.processor.core.queue.impl;
 
-import org.apache.activemq.ActiveMQConnectionFactory;
 import javax.jms.BytesMessage;
 import javax.jms.Connection;
 import javax.jms.Destination;
 import javax.jms.JMSException;
 import javax.jms.MessageConsumer;
+import javax.jms.MessageListener;
 import javax.jms.MessageProducer;
 import javax.jms.Session;
 
+import org.apache.activemq.ActiveMQConnectionFactory;
+
 import io.mosip.kernel.core.logger.spi.Logger;
-import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.queue.factory.MosipActiveMq;
 import io.mosip.registration.processor.core.queue.factory.MosipQueue;
+import io.mosip.registration.processor.core.queue.factory.QueueListener;
+import io.mosip.registration.processor.core.queue.factory.QueueListenerFactory;
 import io.mosip.registration.processor.core.queue.impl.exception.ConnectionUnavailableException;
 import io.mosip.registration.processor.core.queue.impl.exception.InvalidConnectionException;
 import io.mosip.registration.processor.core.spi.queue.MosipQueueManager;
@@ -96,7 +99,8 @@ public class MosipActiveMqImpl implements MosipQueueManager<MosipQueue, byte[]> 
 	 * .lang.Object, java.lang.String)
 	 */
 	@Override
-	public byte[] consume(MosipQueue mosipQueue, String address) {
+	public byte[] consume(MosipQueue mosipQueue, String address, QueueListener object) {
+
 		MosipActiveMq mosipActiveMq = (MosipActiveMq) mosipQueue;
 		ActiveMQConnectionFactory activeMQConnectionFactory = mosipActiveMq.getActiveMQConnectionFactory();
 		if (activeMQConnectionFactory == null) {
@@ -109,17 +113,7 @@ public class MosipActiveMqImpl implements MosipQueueManager<MosipQueue, byte[]> 
 		try {
 			destination = session.createQueue(address);
 			consumer = session.createConsumer(destination);
-			BytesMessage message = (BytesMessage) consumer.receive(5000);
-			if (message != null) {
-				byte[] data = new byte[(int) message.getBodyLength()];
-				message.readBytes(data);
-				consumer.close();
-				return data;
-			} else {
-				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
-						LoggerFileConstant.APPLICATIONID.toString(), "failed : ",
-						PlatformErrorMessages.RPR_MQI_NO_FILES_FOUND_IN_QUEUE.getMessage());
-			}
+			consumer.setMessageListener(QueueListenerFactory.getListener(mosipQueue.getQueueName(), object));
 		} catch (JMSException e) {
 			throw new ConnectionUnavailableException(
 					PlatformErrorMessages.RPR_MQI_UNABLE_TO_CONSUME_FROM_QUEUE.getMessage());
