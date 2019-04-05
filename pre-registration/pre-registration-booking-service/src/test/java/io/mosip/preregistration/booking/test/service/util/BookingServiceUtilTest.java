@@ -55,6 +55,7 @@ import io.mosip.preregistration.core.common.dto.ExceptionJSONInfoDTO;
 import io.mosip.preregistration.core.common.dto.MainListResponseDTO;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
 import io.mosip.preregistration.core.common.dto.PreRegistartionStatusDTO;
+import io.mosip.preregistration.core.common.dto.ResponseWrapper;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = { BookingApplicationTest.class })
@@ -272,9 +273,12 @@ public class BookingServiceUtilTest {
 		
 		RegistrationCenterResponseDto preRegResponse= new RegistrationCenterResponseDto();
 		preRegResponse.setRegistrationCenters(null);
-		ResponseEntity<RegistrationCenterResponseDto> res = new ResponseEntity<>(preRegResponse, HttpStatus.OK);
+		ResponseWrapper<RegistrationCenterResponseDto> resp=new ResponseWrapper<>();
+		resp.setResponse(preRegResponse);
+		ResponseEntity<ResponseWrapper<RegistrationCenterResponseDto>> res = new ResponseEntity<>(resp, HttpStatus.OK);
 		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
-				Mockito.eq(RegistrationCenterResponseDto.class))).thenReturn(res);
+				Mockito.eq(new ParameterizedTypeReference<ResponseWrapper<RegistrationCenterResponseDto>>() {
+				}))).thenReturn(res);
 		
 		serviceUtil.callRegCenterDateRestService();
 		
@@ -284,7 +288,8 @@ public class BookingServiceUtilTest {
 	public void HttpClientErrorExceptionTest() {
 		HttpClientErrorException ex = new HttpClientErrorException(HttpStatus.OK);
 		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
-				Mockito.eq(RegistrationCenterResponseDto.class))).thenThrow(ex);
+				Mockito.eq(new ParameterizedTypeReference<ResponseWrapper<RegistrationCenterResponseDto>>() {
+				}))).thenThrow(ex);
 		
 		serviceUtil.callRegCenterDateRestService();
 		

@@ -19,7 +19,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import io.mosip.kernel.auth.adapter.AuthUserDetails;
+import io.mosip.kernel.auth.adapter.model.AuthUserDetails;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.preregistration.booking.codes.RequestCodes;
 import io.mosip.preregistration.booking.dto.AvailabilityDto;

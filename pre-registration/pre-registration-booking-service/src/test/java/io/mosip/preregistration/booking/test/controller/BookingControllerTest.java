@@ -129,7 +129,7 @@ public class BookingControllerTest {
 		preRegIdsResponseDTO.setPreRegistrationIds(respList);
 	}
 
-	@WithUserDetails("individual")
+	@WithUserDetails("INDIVIDUAL")
 	@Test
 	public void getAvailability() throws Exception {
 		MainResponseDTO<AvailabilityDto> response = new MainResponseDTO<>();
@@ -153,7 +153,7 @@ public class BookingControllerTest {
 
 	@SuppressWarnings("unchecked")
 	@Test
-	@WithUserDetails("individual")
+	@WithUserDetails("INDIVIDUAL")
 	public void successBookingTest() throws Exception {
 
 		responseDto.setResponsetime(serviceUtil.getCurrentResponseTime());
@@ -172,7 +172,7 @@ public class BookingControllerTest {
 
 	@SuppressWarnings("unchecked")
 	@Test
-	@WithUserDetails("individual")
+	@WithUserDetails("INDIVIDUAL")
 	public void failureBookingTest() throws Exception {
 
 		bookingDTO.setRequest(null);
@@ -187,7 +187,7 @@ public class BookingControllerTest {
 
 	@SuppressWarnings("unchecked")
 	@Test
-	@WithUserDetails("individual")
+	@WithUserDetails("INDIVIDUAL")
 	public void cancelAppointmentSuccessTest() throws Exception {
 
 		responseDto.setErrors(null);
@@ -207,7 +207,7 @@ public class BookingControllerTest {
 
 	@SuppressWarnings("unchecked")
 	@Test
-	@WithUserDetails("individual")
+	@WithUserDetails("INDIVIDUAL")
 	public void cancelAppointmentFailureTest() throws Exception {
 
 		dto.setRequest(null);
@@ -221,7 +221,7 @@ public class BookingControllerTest {
 	}
 
 	@Test
-	@WithUserDetails("individual")
+	@WithUserDetails("INDIVIDUAL")
 	public void getAppointmentDetails() throws Exception {
 		MainResponseDTO<BookingRegistrationDTO> response = new MainResponseDTO<>();
 		Mockito.when(service.getAppointmentDetails("12345")).thenReturn(response);
@@ -233,7 +233,7 @@ public class BookingControllerTest {
 
 
 	@Test
-	@WithUserDetails("individual")
+	@WithUserDetails("INDIVIDUAL")
 	public void deleteBookingTest() throws Exception {
 		String preId = "3";
 		MainListResponseDTO<DeleteBookingDTO> response = new MainListResponseDTO<>();
@@ -257,7 +257,7 @@ public class BookingControllerTest {
 	 *             on error
 	 */
 	@Test
-	@WithUserDetails("individual")
+	@WithUserDetails("INDIVIDUAL")
 	public void getAllApplicationByDateTest() throws Exception {
 
 		String fromDate = "2018-12-06";

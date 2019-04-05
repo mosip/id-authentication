@@ -34,12 +34,14 @@ import io.mosip.kernel.core.qrcodegenerator.spi.QrCodeGenerator;
 import io.mosip.kernel.core.util.exception.JsonMappingException;
 import io.mosip.kernel.core.util.exception.JsonParseException;
 import io.mosip.kernel.qrcode.generator.zxing.constant.QrVersion;
+import io.mosip.preregistration.core.common.dto.MainListResponseDTO;
 import io.mosip.preregistration.core.common.dto.MainRequestDTO;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
 import io.mosip.preregistration.core.common.dto.NotificationDTO;
 import io.mosip.preregistration.core.common.dto.NotificationResponseDTO;
 import io.mosip.preregistration.core.common.dto.TemplateResponseDTO;
 import io.mosip.preregistration.core.common.dto.TemplateResponseListDTO;
+import io.mosip.preregistration.core.util.NotificationUtil;
 import io.mosip.preregistration.notification.NotificationApplicationTest;
 import io.mosip.preregistration.notification.dto.QRCodeResponseDTO;
 import io.mosip.preregistration.notification.exception.MandatoryFieldException;
@@ -70,11 +72,14 @@ public class NotificationServiceTest {
 
 	@Value("${mosip.utc-datetime-pattern}")
 	private String utcDateTimePattern;
-
+	
+	@MockBean
+   private NotificationUtil NotificationUtil;
 	private NotificationDTO notificationDTO;
 	boolean requestValidatorFlag = false;
 	TemplateResponseDTO templateResponseDTO = new TemplateResponseDTO();
 	MainResponseDTO<NotificationDTO> responseDTO = new MainResponseDTO<>();
+	MainListResponseDTO<NotificationResponseDTO> responselist=new MainListResponseDTO<>();
 	MainResponseDTO<QRCodeResponseDTO> qrCodeResponseDTO = new MainResponseDTO<>();
 	NotificationResponseDTO notificationResponseDTO = new NotificationResponseDTO();
 	MainRequestDTO<NotificationDTO> mainReqDto = new MainRequestDTO<>();
@@ -96,7 +101,7 @@ public class NotificationServiceTest {
 		DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
 		mapper.setDateFormat(df);
 
-		mainReqDto.setRequesttime(df.parse("2019-01-22T07:22:57.186Z"));
+		mainReqDto.setRequesttime(df.parse("2019-04-5T07:22:57.186Z"));
 		mainReqDto.setRequest(notificationDTO);
 		responseDTO = new MainResponseDTO<>();
 		responseDTO.setResponse(notificationDTO);
@@ -116,7 +121,7 @@ public class NotificationServiceTest {
 	 * @throws IOException
 	 * @throws java.io.IOException
 	 */
-//	@Test
+	@Test
 	public void sendNotificationSuccessTest()
 			throws JsonParseException, JsonMappingException, IOException, java.io.IOException {
 		String stringjson = mapper.writeValueAsString(mainReqDto);
@@ -124,10 +129,12 @@ public class NotificationServiceTest {
 		MultipartFile file = new MockMultipartFile("test.txt", "test.txt", null, new byte[1100]);
 		TemplateResponseListDTO templateResponseListDTO = new TemplateResponseListDTO();
 		templateResponseListDTO.setTemplates(tepmlateList);
+		Mockito.when(NotificationUtil.notify("sms", notificationDTO, langCode, file)).thenReturn(responselist);
 		ResponseEntity<TemplateResponseListDTO> res = new ResponseEntity<TemplateResponseListDTO>(
 				templateResponseListDTO, HttpStatus.OK);
 		Mockito.when(restTemplate.getForEntity(Mockito.anyString(), Mockito.eq(TemplateResponseListDTO.class)))
 				.thenReturn(res);
+		
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.MULTIPART_FORM_DATA);
 		ResponseEntity<NotificationResponseDTO> resp = new ResponseEntity<NotificationResponseDTO>(
