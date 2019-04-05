@@ -1,19 +1,19 @@
 {
 	"identity": {
 		"name": {
-			"value": "fullName",
-			"weight": 20
+			"value": "fullName"
 		},
 		"gender": {
-			"value": "gender",
-			"weight": 20
+			"value": "gender"
 		},
 		"dob": {
-			"value": "dateOfBirth",
-			"weight": 20
+			"value": "dateOfBirth"
 		},
-		"pheoniticName": {
-			"weight": 20
+		"parentOrGuardianRID": {
+			"value" : "parentOrGuardianRID"
+		},
+		"parentOrGuardianUIN": {
+			"value" : "parentOrGuardianUIN"
 		},
 		"poa": {
 			"value" : "proofOfAddress"
