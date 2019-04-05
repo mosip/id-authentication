@@ -1071,7 +1071,7 @@ public class RegistrationConstants {
 	public static final String GLOBAL_CONFIG_ERROR_MSG = "please synch the data before starting the application";
 
 	// user on boarding
-	public static final String USER_ON_BOARDING_ERROR_RESPONSE = "failure";
+	public static final String USER_ON_BOARDING_ERROR_RESPONSE = "FAILURE";
 	public static final String USER_ON_BOARDING_EXCEPTION = "USER_ON_BOARDING_EXCEPTION";
 	public static final String USER_ON_BOARDING_EXCEPTION_MSG_CODE = "REG-URE‌-000";
 	public static final String USER_ON_BOARDING_SUCCESS_CODE = "REG-URE‌-002";
