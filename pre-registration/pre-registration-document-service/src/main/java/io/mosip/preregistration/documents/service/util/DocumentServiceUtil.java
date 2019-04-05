@@ -56,7 +56,7 @@ import io.mosip.preregistration.documents.errorcodes.ErrorMessages;
 import io.mosip.preregistration.documents.exception.DemographicGetDetailsException;
 import io.mosip.preregistration.documents.exception.DocumentNotValidException;
 import io.mosip.preregistration.documents.exception.DocumentSizeExceedException;
-import io.mosip.preregistration.documents.exception.InvalidDocumnetIdExcepion;
+import io.mosip.preregistration.documents.exception.InvalidDocumentIdExcepion;
 
 /**
  * This class provides the utility methods for DocumentService
@@ -228,7 +228,7 @@ public class DocumentServiceUtil {
 			log.error("sessionId", "idType", "id",
 					"In parseDocumentId method of document service util- " + ex.getMessage());
 
-			throw new InvalidDocumnetIdExcepion(ErrorCodes.PRG_PAM_DOC_019.toString(),
+			throw new InvalidDocumentIdExcepion(ErrorCodes.PRG_PAM_DOC_019.toString(),
 					ErrorMessages.INVALID_DOCUMENT_ID.getMessage());
 		}
 

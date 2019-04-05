@@ -21,7 +21,8 @@ public enum DocumentStatusMessages {
 	FILE_TYPE_NOT_SUPPORTED("File Type is not supported"),
 	DOCUMENT_INVALID_FORMAT("Document format is invalid"),
 	DOCUMENT_IS_MISSING("Documents is not found for the requested pre-registration id"),
-	DOCUMENT_DELETE_SUCCESSFUL("All documents assosiated with requested pre-registration id deleted sucessfully"),
+	ALL_DOCUMENT_DELETE_SUCCESSFUL("All documents assosiated with requested pre-registration id deleted sucessfully"),
+	DOCUMENT_DELETE_SUCCESSFUL("Document successfully deleted"),
 	DOCUMENT_TABLE_NOTACCESSIBLE("Document table not accessible"),
 	DOCUMENT_NOT_AVAILABLE("Documents is not found for the requested pre-registration id"),
 	DOCUMENT_COPY_SUCCESSFUL("Document copied successfully");

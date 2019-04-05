@@ -15,7 +15,7 @@ import io.mosip.preregistration.documents.errorcodes.ErrorCodes;
  * @since 1.0.0
  * 
  */
-public class InvalidDocumnetIdExcepion extends BaseUncheckedException {
+public class InvalidDocumentIdExcepion extends BaseUncheckedException {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 7303748392658525834L;
@@ -23,7 +23,7 @@ public class InvalidDocumnetIdExcepion extends BaseUncheckedException {
 	/**
 	 * Default constructor
 	 */
-	public InvalidDocumnetIdExcepion() {
+	public InvalidDocumentIdExcepion() {
 		super();
 	}
 
@@ -31,7 +31,7 @@ public class InvalidDocumnetIdExcepion extends BaseUncheckedException {
 	 * @param message
 	 *            pass Error Message
 	 */
-	public InvalidDocumnetIdExcepion(String message) {
+	public InvalidDocumentIdExcepion(String message) {
 		super(ErrorCodes.PRG_PAM_DOC_009.toString(), message);
 	}
 
@@ -41,7 +41,7 @@ public class InvalidDocumnetIdExcepion extends BaseUncheckedException {
 	 * @param cause
 	 *            pass Error cause
 	 */
-	public InvalidDocumnetIdExcepion(String message, Throwable cause) {
+	public InvalidDocumentIdExcepion(String message, Throwable cause) {
 		super(ErrorCodes.PRG_PAM_DOC_009.toString(), message, cause);
 	}
 
@@ -53,7 +53,7 @@ public class InvalidDocumnetIdExcepion extends BaseUncheckedException {
 	 * @param cause
 	 *            pass Error cause
 	 */
-	public InvalidDocumnetIdExcepion(String errorCode, String message, Throwable cause) {
+	public InvalidDocumentIdExcepion(String errorCode, String message, Throwable cause) {
 		super(errorCode, message, cause);
 	}
 
@@ -63,7 +63,7 @@ public class InvalidDocumnetIdExcepion extends BaseUncheckedException {
 	 * @param message
 	 *            pass Error Message
 	 */
-	public InvalidDocumnetIdExcepion(String errorCode, String message) {
+	public InvalidDocumentIdExcepion(String errorCode, String message) {
 		super(errorCode, message);
 	}
 
