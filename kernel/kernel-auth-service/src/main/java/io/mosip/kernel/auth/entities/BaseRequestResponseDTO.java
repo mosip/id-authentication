@@ -11,13 +11,13 @@ import lombok.Data;
  */
 @Data
 public class BaseRequestResponseDTO {
-	
+
 	/** The id. */
 	private String id;
-	
+
 	/** The ver. */
 	private String version;
-	
+
 	/** The timestamp. */
 	private String timestamp;
 }

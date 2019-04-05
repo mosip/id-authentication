@@ -8,10 +8,7 @@ package io.mosip.kernel.auth.constant;
  *
  */
 public enum Application {
-	
-	IDA,
-	PREREGISTRATION,
-	REGISTRATIONCLIENT,
-	REGISTRATIONPROCESSOR
+
+	IDA, PREREGISTRATION, REGISTRATIONCLIENT, REGISTRATIONPROCESSOR
 
 }
