@@ -2,10 +2,10 @@ package io.mosip.kernel.fsadapter.hdfs.util;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.security.PrivilegedExceptionAction;
 
 import org.apache.commons.lang3.SystemUtils;
@@ -181,18 +181,21 @@ public class ConnectionUtils {
 	 *            username with the kdc, eg. test@kdc.example.com
 	 * @param keytabPath
 	 *            path of the keytab file
+	 * @throws IOException
 	 */
-	private void loginWithKeyTab(String user, String keytabPath) {
-		String path = null;
-		URL url = this.getClass().getClassLoader().getResource(keytabPath);
-		if (url != null) {
-			path = url.getPath();
+	private void loginWithKeyTab(String user, String keytabPath) throws IOException {
+		InputStream keytabInputStream = this.getClass().getClassLoader().getResourceAsStream(keytabPath);
+		Path dataPath = Files.createDirectory(Paths.get(hadoopLibPath.toString(), "data"));
+		Path keyPath=null;
+		if (keytabInputStream != null) {
+			keyPath = Paths.get(dataPath.toString(), keytabPath);
+			Files.copy(keytabInputStream, keyPath,StandardCopyOption.REPLACE_EXISTING);
 		} else {
 			throw new FSAdapterException(HDFSAdapterErrorCode.KEYTAB_FILE_NOT_FOUND_EXCEPTION.getErrorCode(),
 					HDFSAdapterErrorCode.KEYTAB_FILE_NOT_FOUND_EXCEPTION.getErrorMessage());
 		}
 		try {
-			UserGroupInformation.loginUserFromKeytab(user, path);
+			UserGroupInformation.loginUserFromKeytab(user, keyPath.toString());
 		} catch (IOException e) {
 			throw new FSAdapterException(HDFSAdapterErrorCode.LOGIN_EXCEPTION.getErrorCode(),
 					HDFSAdapterErrorCode.LOGIN_EXCEPTION.getErrorMessage(), e);
