@@ -29,6 +29,7 @@ import io.swagger.annotations.ApiParam;
  * Rest Controller for Crypto-Manager-Service
  * 
  * @author Urvil Joshi
+ * @author Srinivasan
  *
  * @since 1.0.0
  */
@@ -59,15 +60,15 @@ public class CryptomanagerController {
 		return cryptomanagerService.encrypt(cryptomanagerRequestDto.getRequest());
 	}
 	/**
-	 * 
+	 * Encrypts data with private key
 	 * @param cryptomanagerRequestDto
 	 * @return {@link CryptoEncryptResponseDto }
 	 */
 	@ResponseFilter
-	@ApiOperation(value = "Encrypt the data", response = CryptomanagerResponseDto.class)
+	@ApiOperation(value = "Encrypt the data with private key", response = CryptoEncryptResponseDto.class)
 	@PostMapping(value = "/encrypt/private", produces = "application/json")
 	public CryptoEncryptResponseDto encryptWithPrivate(
-			@ApiParam("Data to encrypt in BASE64 encoding with meta-data") @RequestBody @Valid RequestWrapper<CryptoEncryptRequestDto> cryptomanagerRequestDto) {
+			@ApiParam("Data to encrypt in BASE64 encoding") @RequestBody @Valid RequestWrapper<CryptoEncryptRequestDto> cryptomanagerRequestDto) {
 		return cryptomanagerService.encryptWithPrivate(cryptomanagerRequestDto.getRequest());
 	}
 

@@ -22,7 +22,7 @@ import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.EmptyCheckUtils;
-import io.mosip.kernel.syncdata.utils.HashUtil;
+import io.mosip.kernel.syncdata.utils.SigningUtil;
 
 @RestControllerAdvice
 public class ResponseBodyAdviceConfig implements ResponseBodyAdvice<Object> {
@@ -31,7 +31,7 @@ public class ResponseBodyAdviceConfig implements ResponseBodyAdvice<Object> {
 	private ObjectMapper objectMapper;
 
 	@Autowired
-	private HashUtil hashUtil;
+	private SigningUtil hashUtil;
 
 	@Override
 	public boolean supports(MethodParameter returnType, Class<? extends HttpMessageConverter<?>> converterType) {
@@ -69,7 +69,7 @@ public class ResponseBodyAdviceConfig implements ResponseBodyAdvice<Object> {
 			}
 			responseWrapper.setResponse(body);
 			responseWrapper.setErrors(null);
-			response.getHeaders().add("response-header", hashUtil.hashData(body.toString()));
+			response.getHeaders().add("response-header", hashUtil.signResponseData(body.toString()));
 			return responseWrapper;
 		} catch (Exception e) {
 			Logger mosipLogger = LoggerConfiguration.logConfig(ResponseBodyAdviceConfig.class);

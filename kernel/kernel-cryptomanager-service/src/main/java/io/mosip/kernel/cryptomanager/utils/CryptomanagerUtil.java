@@ -45,7 +45,7 @@ import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.cryptomanager.constant.CryptomanagerErrorCode;
 import io.mosip.kernel.cryptomanager.dto.CryptoEncryptRequestDto;
 import io.mosip.kernel.cryptomanager.dto.CryptomanagerRequestDto;
-import io.mosip.kernel.cryptomanager.dto.KeyManagerEncryptDataRequestDto;
+import io.mosip.kernel.cryptomanager.dto.KeyManagerEncryptRequestDto;
 import io.mosip.kernel.cryptomanager.dto.KeyManagerEncryptResponseDto;
 import io.mosip.kernel.cryptomanager.dto.KeymanagerPublicKeyResponseDto;
 import io.mosip.kernel.cryptomanager.dto.KeymanagerSymmetricKeyRequestDto;
@@ -86,9 +86,9 @@ public class CryptomanagerUtil {
 	private String getPublicKeyUrl;
 
 	/**
-	 * Keymanager URL to Get PublicKey
+	 * Keymanager URL to encryptdata
 	 */
-	@Value("${mosip.kernel.keymanager-service-keypair-url:http://localhost:8088/keymanager/encrypt}")
+	@Value("${mosip.kernel.keymanager-service-encrypt-url:http://localhost:8088/keymanager/encrypt}")
 	private String encryptUrl;
 
 	/**
@@ -220,21 +220,21 @@ public class CryptomanagerUtil {
 	/**
 	 * Gets the encrypted data.
 	 *
-	 * @param cryptomanagerRequestDto
-	 *            the cryptomanager request dto
+	 * @param cryptoEncryptRequestDto
+	 *            the cryptoEncrypt request dto
 	 * @return {@link String} encrypted data
 	 */
-	public String getEncryptedData(CryptoEncryptRequestDto cryptomanagerRequestDto) {
+	public String getEncryptedData(CryptoEncryptRequestDto cryptoEncryptRequestDto) {
 		String encryptedData = null;
-		RequestWrapper<KeyManagerEncryptDataRequestDto> requestWrapper = new RequestWrapper<>();
+		RequestWrapper<KeyManagerEncryptRequestDto> requestWrapper = new RequestWrapper<>();
 		requestWrapper.setId(cryptomanagerRequestID);
 		requestWrapper.setVersion(cryptomanagerRequestVersion);
 
-		KeyManagerEncryptDataRequestDto keyManagerEncryptDataRequestDto = new KeyManagerEncryptDataRequestDto();
-		keyManagerEncryptDataRequestDto.setApplicationId(cryptomanagerRequestDto.getApplicationId());
-		keyManagerEncryptDataRequestDto.setReferenceId(cryptomanagerRequestDto.getReferenceId());
-		keyManagerEncryptDataRequestDto.setHashedData(cryptomanagerRequestDto.getData());
-		keyManagerEncryptDataRequestDto.setTimeStamp(cryptomanagerRequestDto.getTimeStamp());
+		KeyManagerEncryptRequestDto keyManagerEncryptDataRequestDto = new KeyManagerEncryptRequestDto();
+		keyManagerEncryptDataRequestDto.setApplicationId(cryptoEncryptRequestDto.getApplicationId());
+		keyManagerEncryptDataRequestDto.setReferenceId(cryptoEncryptRequestDto.getReferenceId());
+		keyManagerEncryptDataRequestDto.setHashText(cryptoEncryptRequestDto.getData());
+		keyManagerEncryptDataRequestDto.setTimeStamp(cryptoEncryptRequestDto.getTimeStamp());
 		requestWrapper.setRequest(keyManagerEncryptDataRequestDto);
 
 		ResponseEntity<String> response = restTemplate.postForEntity(encryptUrl, requestWrapper, String.class);

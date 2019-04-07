@@ -96,7 +96,7 @@ public class KeymanagerController {
 	/**
 	 *  Encrypt data with private key
 	 * @param encryptDataRequestDto
-	 * @return {@link}
+	 * @return {@link EncryptDataResponseDto}
 	 */
 	@ResponseFilter
 	@ApiOperation(value = "Encrypt data", response = EncryptDataResponseDto.class)

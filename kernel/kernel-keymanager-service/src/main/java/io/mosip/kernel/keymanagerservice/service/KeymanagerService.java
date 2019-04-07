@@ -46,10 +46,10 @@ public interface KeymanagerService {
 	
 	
 	/**
-	 * encrypt the data with private key.
+	 * encrypts the data with private key.
 	 *
 	 * @param encryptDataRequestDto the encrypt data request dto
-	 * @return the encrypt
+	 * @return {@link EncryptDataResponseDto} encrypted data
 	 */
 	public EncryptDataResponseDto encrypt(EncryptDataRequestDto encryptDataRequestDto);
 

@@ -58,6 +58,7 @@ import io.mosip.kernel.keymanagerservice.util.KeymanagerUtil;
  * interface.
  *
  * @author Dharmesh Khandelwal
+ * @author Srinivasan
  * @since 1.0.0
  *
  */
@@ -85,6 +86,9 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 	@Autowired
 	Decryptor<PrivateKey, PublicKey, SecretKey> decryptor;
 
+	/**
+	 * {@link Encryptor} instance to encrypt data
+	 */
 	@Autowired
 	Encryptor<PrivateKey, PublicKey, SecretKey> encryptor;
 
@@ -514,7 +518,7 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 	 * @param encryptDataRequestDto
 	 * @return {@link PrivateKey}
 	 */
-	public PrivateKey getPrivateKeyFromRequestData(String applicationId, String referenceId, LocalDateTime timeStamp) {
+	private PrivateKey getPrivateKeyFromRequestData(String applicationId, String referenceId, LocalDateTime timeStamp) {
 		List<KeyAlias> currentKeyAlias;
 
 		PrivateKey privateKey = null;

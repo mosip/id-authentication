@@ -55,6 +55,7 @@ public enum MasterDataErrorCode {
 	INDIVIDUAL_TYPE_FETCH_EXCEPTION("KER-SNC-147","Error occurred while fetching Individual types"),
 	INVALID_MAC_OR_SERIAL_NUMBER("KER-SNC-148","Mac-Address and/or Serial Number does not exist	"),
 	REG_CENTER_UPDATED("KER-SNC-149","Registration Center has been updated for the received Machine ID");
+	
 	private final String errorCode;
 	private final String errorMessage;
 

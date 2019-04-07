@@ -16,12 +16,12 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class KeyManagerEncryptDataRequestDto {
+public class KeyManagerEncryptRequestDto {
 
 	/**
 	 * The string applicationID
 	 */
-	@ApiModelProperty(notes = "Application id of decrypting module", example = "REGISTRATION", required = true)
+	@ApiModelProperty(notes = "Application id of e module", example = "REGISTRATION", required = true)
 	private String applicationId;
 
 	/**
@@ -42,5 +42,5 @@ public class KeyManagerEncryptDataRequestDto {
 	 * The string encryptedSymmetricKey
 	 */
 	@ApiModelProperty(notes = "Hashed data in BASE64 encoding to encrypt", required = true)
-	private String hashedData;
+	private String hashText;
 }
