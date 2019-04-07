@@ -5,6 +5,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import io.mosip.authentication.common.config.IDAMappingConfig;
+import io.mosip.authentication.common.impl.indauth.service.bio.BioAuthType;
+import io.mosip.authentication.common.impl.indauth.service.demo.DemoAuthType;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.dto.indauth.ActionableAuthError;
 import io.mosip.authentication.core.dto.indauth.AuthError;
@@ -14,10 +17,7 @@ import io.mosip.authentication.core.spi.indauth.match.IdMapping;
 import io.mosip.authentication.core.spi.indauth.match.MatchInput;
 import io.mosip.authentication.core.spi.indauth.match.MatchOutput;
 import io.mosip.authentication.core.spi.indauth.match.MatchType.Category;
-import io.mosip.authentication.service.config.IDAMappingConfig;
 import io.mosip.authentication.service.impl.indauth.match.IdaIdMapping;
-import io.mosip.authentication.service.impl.indauth.service.bio.BioAuthType;
-import io.mosip.authentication.service.impl.indauth.service.demo.DemoAuthType;
 import io.mosip.authentication.service.impl.indauth.service.pin.PinAuthType;
 
 /**

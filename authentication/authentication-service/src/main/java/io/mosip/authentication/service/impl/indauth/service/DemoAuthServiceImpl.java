@@ -7,6 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
+import io.mosip.authentication.common.config.IDAMappingConfig;
+import io.mosip.authentication.common.helper.IdInfoHelper;
+import io.mosip.authentication.common.impl.indauth.service.demo.DemoAuthType;
+import io.mosip.authentication.common.impl.indauth.service.demo.DemoMatchType;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.AuthStatusInfo;
@@ -15,12 +19,8 @@ import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.spi.indauth.match.MatchInput;
 import io.mosip.authentication.core.spi.indauth.match.MatchOutput;
 import io.mosip.authentication.core.spi.indauth.service.DemoAuthService;
-import io.mosip.authentication.service.config.IDAMappingConfig;
-import io.mosip.authentication.service.helper.IdInfoHelper;
 import io.mosip.authentication.service.impl.indauth.builder.AuthStatusInfoBuilder;
 import io.mosip.authentication.service.impl.indauth.builder.MatchInputBuilder;
-import io.mosip.authentication.service.impl.indauth.service.demo.DemoAuthType;
-import io.mosip.authentication.service.impl.indauth.service.demo.DemoMatchType;
 
 /**
  * The implementation of Demographic Authentication service.

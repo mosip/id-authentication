@@ -27,19 +27,7 @@ public interface AuthFacade {
 	 * @throws IdAuthenticationBusinessException the id authentication business
 	 *                                           exception.
 	 */
-	AuthResponseDTO authenticateApplicant(AuthRequestDTO authRequest, boolean request,String partnerId)
+	AuthResponseDTO authenticateApplicant(AuthRequestDTO authRequest, boolean request, String partnerId)
 			throws IdAuthenticationBusinessException, IdAuthenticationDaoException;
-
-	/**
-	 * Process the KycAuthRequestDTO to integrate with KycService.
-	 *
-	 * @param kycAuthRequestDTO is DTO of KycAuthRequestDTO
-	 * @param authResponseDTO   the auth response DTO
-	 * @return the kyc auth response DTO
-	 * @throws IdAuthenticationBusinessException the id authentication business
-	 *                                           exception
-	 */
-	KycAuthResponseDTO processKycAuth(KycAuthRequestDTO kycAuthRequestDTO, AuthResponseDTO authResponseDTO,String partnerId)
-			throws IdAuthenticationBusinessException;
 
 }

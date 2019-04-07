@@ -31,6 +31,10 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.context.WebApplicationContext;
 
+import io.mosip.authentication.common.config.IDAMappingConfig;
+import io.mosip.authentication.common.factory.RestRequestFactory;
+import io.mosip.authentication.common.impl.indauth.service.bio.BioAuthType;
+import io.mosip.authentication.common.impl.indauth.service.demo.DemoMatchType;
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.AuthResponseDTO;
 import io.mosip.authentication.core.dto.indauth.AuthStatusInfo;
@@ -54,16 +58,11 @@ import io.mosip.authentication.core.spi.indauth.service.DemoAuthService;
 import io.mosip.authentication.core.spi.indauth.service.KycService;
 import io.mosip.authentication.core.spi.indauth.service.OTPAuthService;
 import io.mosip.authentication.core.spi.indauth.service.PinAuthService;
-import io.mosip.authentication.service.config.IDAMappingConfig;
 import io.mosip.authentication.service.entity.AutnTxn;
-import io.mosip.authentication.service.factory.RestRequestFactory;
 import io.mosip.authentication.service.helper.AuditHelper;
 import io.mosip.authentication.service.helper.IdInfoHelper;
 import io.mosip.authentication.service.helper.RestHelper;
 import io.mosip.authentication.service.impl.indauth.builder.AuthStatusInfoBuilder;
-import io.mosip.authentication.service.impl.indauth.service.KycServiceImpl;
-import io.mosip.authentication.service.impl.indauth.service.bio.BioAuthType;
-import io.mosip.authentication.service.impl.indauth.service.demo.DemoMatchType;
 import io.mosip.authentication.service.impl.notification.service.NotificationServiceImpl;
 import io.mosip.authentication.service.integration.IdRepoManager;
 import io.mosip.authentication.service.integration.IdTemplateManager;
@@ -72,6 +71,7 @@ import io.mosip.authentication.service.integration.OTPManager;
 import io.mosip.authentication.service.repository.AutnTxnRepository;
 import io.mosip.kernel.core.idgenerator.spi.TokenIdGenerator;
 import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderImpl;
+import io.mosip.kyc.authentication.service.impl.indauth.service.KycServiceImpl;
 
 /**
  * The class validates AuthFacadeImpl.

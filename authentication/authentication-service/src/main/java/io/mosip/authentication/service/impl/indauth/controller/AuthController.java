@@ -24,8 +24,8 @@ import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.indauth.facade.AuthFacade;
 import io.mosip.authentication.core.util.DataValidationUtil;
 import io.mosip.authentication.service.impl.indauth.validator.AuthRequestValidator;
-import io.mosip.authentication.service.impl.indauth.validator.KycAuthRequestValidator;
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kyc.authentication.service.impl.indauth.validator.KycAuthRequestValidator;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
@@ -50,10 +50,6 @@ public class AuthController {
 	@Autowired
 	private AuthRequestValidator authRequestValidator;
 
-	/** The KycAuthRequestValidator */
-	@Autowired
-	private KycAuthRequestValidator kycReqValidator;
-
 	/** The auth facade. */
 	@Autowired
 	private AuthFacade authFacade;
@@ -65,15 +61,6 @@ public class AuthController {
 	@InitBinder("authRequestDTO")
 	private void initAuthRequestBinder(WebDataBinder binder) {
 		binder.setValidator(authRequestValidator);
-	}
-
-	/**
-	 *
-	 * @param binder the binder
-	 */
-	@InitBinder("kycAuthRequestDTO")
-	private void initKycBinder(WebDataBinder binder) {
-		binder.addValidators(kycReqValidator);
 	}
 
 	/**
@@ -96,55 +83,18 @@ public class AuthController {
 
 		try {
 			DataValidationUtil.validate(errors);
-			authResponsedto = authFacade.authenticateApplicant(authrequestdto, true,partnerId);
+			authResponsedto = authFacade.authenticateApplicant(authrequestdto, true, partnerId);
 		} catch (IDDataValidationException e) {
 			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), "authenticateApplication",
 					e.getErrorTexts().isEmpty() ? "" : e.getErrorText());
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.DATA_VALIDATION_FAILED, e);
 		} catch (IdAuthenticationBusinessException e) {
-			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), "authenticateApplication", e.getErrorTexts().isEmpty() ? "" : e.getErrorText());
+			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), "authenticateApplication",
+					e.getErrorTexts().isEmpty() ? "" : e.getErrorText());
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
 		}
 
 		return authResponsedto;
-	}
-
-	/**
-	 * Controller Method to auhtentication for eKyc-Details.
-	 *
-	 * @param kycAuthRequestDTO the kyc auth request DTO
-	 * @param errors            the errors
-	 * @return kycAuthResponseDTO the kyc auth response DTO
-	 * @throws IdAuthenticationBusinessException the id authentication business
-	 *                                           exception
-	 * @throws IdAuthenticationAppException      the id authentication app exception
-	 * @throws IdAuthenticationDaoException      the id authentication dao exception
-	 */
-	@PostMapping(path = "/kyc/{eKYC-Partner-ID}/{MISP-LK}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	@ApiOperation(value = "eKyc Request", response = IdAuthenticationAppException.class)
-	@ApiResponses(value = { @ApiResponse(code = 200, message = "Request authenticated successfully"),
-			@ApiResponse(code = 400, message = "Request authenticated failed") })
-	public KycAuthResponseDTO processKyc(@Validated @RequestBody KycAuthRequestDTO kycAuthRequestDTO,
-			@ApiIgnore Errors errors, @PathVariable("eKYC-Partner-ID") String partnerId,
-			@PathVariable("MISP-LK") String mispLK)
-			throws IdAuthenticationBusinessException, IdAuthenticationAppException, IdAuthenticationDaoException {
-		AuthResponseDTO authResponseDTO = null;
-		KycAuthResponseDTO kycAuthResponseDTO = new KycAuthResponseDTO();
-		try {
-			DataValidationUtil.validate(errors);
-			authResponseDTO = authFacade.authenticateApplicant(kycAuthRequestDTO, true,partnerId);
-			if (authResponseDTO != null) {
-				kycAuthResponseDTO = authFacade.processKycAuth(kycAuthRequestDTO, authResponseDTO,partnerId);
-			}
-		} catch (IDDataValidationException e) {
-			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), "processKyc",
-					e.getErrorTexts().isEmpty() ? "" : e.getErrorText());
-			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.DATA_VALIDATION_FAILED, e);
-		} catch (IdAuthenticationBusinessException e) {
-			mosipLogger.error(SESSION_ID,this.getClass().getSimpleName(),"processKyc", e.getErrorTexts().isEmpty() ? "" : e.getErrorText());
-			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
-		}
-		return kycAuthResponseDTO;
 	}
 
 }

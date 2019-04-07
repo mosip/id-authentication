@@ -21,7 +21,12 @@
 			<artifactId>authentication-core</artifactId>
 			<version>0.10.1</version>
 		</dependency>
-		
+		<dependency>
+			<groupId>io.mosip.authentication</groupId>
+			<artifactId>authentication-common</artifactId>
+			<version>0.10.1</version>
+		</dependency>
+
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-core</artifactId>
@@ -46,11 +51,7 @@
 		</dependency>
 
 
-		<dependency>
-			<groupId>io.mosip.kernel</groupId>
-			<artifactId>kernel-pdfgenerator-itext</artifactId>
-			<version>${kernel.pdfgenerate.version}</version>
-		</dependency>
+
 
 		<!-- Kernel Hibernate Impl -->
 		<dependency>
@@ -147,24 +148,8 @@
 			<version>${project.version}</version>
 		</dependency>
 
-		<dependency>
-			<groupId>org.powermock</groupId>
-			<artifactId>powermock-api-mockito2</artifactId>
-			<version>${powermock.version}</version>
-			<scope>test</scope>
-		</dependency>
 
-		<dependency>
-			<groupId>org.powermock</groupId>
-			<artifactId>powermock-module-junit4</artifactId>
-			<version>${powermock.version}</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.bitbucket.b_c</groupId>
-			<artifactId>jose4j</artifactId>
-			<version>0.6.4</version>
-		</dependency>
+
 	</dependencies>
 
 	<repositories>

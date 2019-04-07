@@ -34,6 +34,12 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.context.WebApplicationContext;
 
+import io.mosip.authentication.common.config.IDAMappingConfig;
+import io.mosip.authentication.common.factory.IDAMappingFactory;
+import io.mosip.authentication.common.impl.indauth.service.IdInfoFetcherImpl;
+import io.mosip.authentication.common.impl.indauth.service.bio.BioAuthType;
+import io.mosip.authentication.common.impl.indauth.service.demo.DOBType;
+import io.mosip.authentication.common.impl.indauth.service.demo.DemoMatchType;
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.AuthStatusInfo;
 import io.mosip.authentication.core.dto.indauth.AuthTypeDTO;
@@ -49,13 +55,8 @@ import io.mosip.authentication.core.spi.id.service.IdAuthService;
 import io.mosip.authentication.core.spi.indauth.match.AuthType;
 import io.mosip.authentication.core.spi.indauth.match.MatchInput;
 import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
-import io.mosip.authentication.service.config.IDAMappingConfig;
-import io.mosip.authentication.service.factory.IDAMappingFactory;
 import io.mosip.authentication.service.helper.IdInfoHelper;
 import io.mosip.authentication.service.impl.indauth.builder.MatchInputBuilder;
-import io.mosip.authentication.service.impl.indauth.service.bio.BioAuthType;
-import io.mosip.authentication.service.impl.indauth.service.demo.DOBType;
-import io.mosip.authentication.service.impl.indauth.service.demo.DemoMatchType;
 import io.mosip.authentication.service.integration.MasterDataManager;
 
 @RunWith(SpringRunner.class)

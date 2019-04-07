@@ -27,6 +27,8 @@ import org.springframework.validation.Errors;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.context.WebApplicationContext;
 
+import io.mosip.authentication.common.factory.AuditRequestFactory;
+import io.mosip.authentication.common.factory.RestRequestFactory;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.AuthResponseDTO;
@@ -41,13 +43,11 @@ import io.mosip.authentication.core.dto.indauth.ResponseDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.IdAuthenticationDaoException;
-import io.mosip.authentication.service.factory.AuditRequestFactory;
-import io.mosip.authentication.service.factory.RestRequestFactory;
 import io.mosip.authentication.service.helper.RestHelper;
 import io.mosip.authentication.service.impl.indauth.facade.AuthFacadeImpl;
-import io.mosip.authentication.service.impl.indauth.service.KycServiceImpl;
 import io.mosip.authentication.service.impl.indauth.validator.AuthRequestValidator;
-import io.mosip.authentication.service.impl.indauth.validator.KycAuthRequestValidator;
+import io.mosip.kyc.authentication.service.impl.indauth.service.KycServiceImpl;
+import io.mosip.kyc.authentication.service.impl.indauth.validator.KycAuthRequestValidator;
 
 /**
  * This code tests the AuthController

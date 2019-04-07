@@ -4,7 +4,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Import;
 
-import io.mosip.authentication.service.config.IDAMappingConfig;
+import io.mosip.authentication.common.config.IDAMappingConfig;
 import io.mosip.kernel.cbeffutil.impl.CbeffImpl;
 import io.mosip.kernel.crypto.jce.impl.DecryptorImpl;
 import io.mosip.kernel.dataaccess.hibernate.config.HibernateDaoConfig;

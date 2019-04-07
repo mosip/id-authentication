@@ -5,8 +5,6 @@ package io.mosip.authentication.service.impl.indauth.facade;
 
 import java.text.SimpleDateFormat;
 import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -19,6 +17,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
+import io.mosip.authentication.common.entity.AutnTxn;
+import io.mosip.authentication.common.helper.AuditHelper;
+import io.mosip.authentication.common.impl.indauth.service.bio.BioAuthType;
 import io.mosip.authentication.core.constant.AuditEvents;
 import io.mosip.authentication.core.constant.AuditModules;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
@@ -29,10 +30,6 @@ import io.mosip.authentication.core.dto.indauth.AuthStatusInfo;
 import io.mosip.authentication.core.dto.indauth.BioIdentityInfoDTO;
 import io.mosip.authentication.core.dto.indauth.IdType;
 import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
-import io.mosip.authentication.core.dto.indauth.KycAuthRequestDTO;
-import io.mosip.authentication.core.dto.indauth.KycAuthResponseDTO;
-import io.mosip.authentication.core.dto.indauth.KycResponseDTO;
-import io.mosip.authentication.core.dto.indauth.ResponseDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.id.service.IdAuthService;
@@ -44,10 +41,7 @@ import io.mosip.authentication.core.spi.indauth.service.KycService;
 import io.mosip.authentication.core.spi.indauth.service.OTPAuthService;
 import io.mosip.authentication.core.spi.indauth.service.PinAuthService;
 import io.mosip.authentication.core.spi.notification.service.NotificationService;
-import io.mosip.authentication.service.entity.AutnTxn;
-import io.mosip.authentication.service.helper.AuditHelper;
 import io.mosip.authentication.service.impl.indauth.builder.AuthResponseBuilder;
-import io.mosip.authentication.service.impl.indauth.service.bio.BioAuthType;
 import io.mosip.kernel.core.exception.ParseException;
 import io.mosip.kernel.core.idgenerator.spi.TokenIdGenerator;
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -469,65 +463,6 @@ public class AuthFacadeImpl implements AuthFacade {
 	 */
 	private AuditEvents getAuditEvent(boolean isAuth) {
 		return isAuth ? AuditEvents.AUTH_REQUEST_RESPONSE : AuditEvents.INTERNAL_REQUEST_RESPONSE;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * io.mosip.authentication.core.spi.indauth.facade.AuthFacade#processKycAuth(io.
-	 * mosip.authentication.core.dto.indauth.KycAuthRequestDTO,
-	 * io.mosip.authentication.core.dto.indauth.AuthResponseDTO, java.lang.String)
-	 */
-	@Override
-	public KycAuthResponseDTO processKycAuth(KycAuthRequestDTO kycAuthRequestDTO, AuthResponseDTO authResponseDTO,
-			String partnerId) throws IdAuthenticationBusinessException {
-		KycAuthResponseDTO kycAuthResponseDTO = new KycAuthResponseDTO();
-		Map<String, Object> idResDTO = null;
-		String resTime = null;
-		IdType idType = null;
-		if (kycAuthRequestDTO != null) {
-			String idvId = null;
-			Optional<String> idvIdOptional = idInfoFetcher.getUinOrVid(kycAuthRequestDTO);
-			if (idvIdOptional.isPresent()) {
-				idvId = idvIdOptional.get();
-			}
-			String idvIdtype = idInfoFetcher.getUinOrVidType(kycAuthRequestDTO).getType();
-			idResDTO = idAuthService.processIdType(idvIdtype, idvId, true);
-
-			if (idvIdtype.equals(IdType.UIN.getType())) {
-				idType = IdType.UIN;
-			} else {
-				idType = IdType.VID;
-			}
-			String dateTimePattern = env.getProperty(DATETIME_PATTERN);
-
-			DateTimeFormatter isoPattern = DateTimeFormatter.ofPattern(dateTimePattern);
-
-			ZonedDateTime zonedDateTime2 = ZonedDateTime.parse(kycAuthRequestDTO.getRequestTime(), isoPattern);
-			ZoneId zone = zonedDateTime2.getZone();
-			resTime = DateUtils.formatDate(new Date(), dateTimePattern, TimeZone.getTimeZone(zone));
-			auditHelper.audit(AuditModules.EKYC_AUTH, AuditEvents.AUTH_REQUEST_RESPONSE,
-					kycAuthRequestDTO.getIndividualId(), idType, AuditModules.EKYC_AUTH.getDesc());
-		}
-		Map<String, List<IdentityInfoDTO>> idInfo = idInfoService.getIdInfo(idResDTO);
-		KycResponseDTO response = null;
-		ResponseDTO authResponse = authResponseDTO.getResponse();
-		if (idResDTO != null && authResponse != null && authResponse.isAuthStatus()) {
-			response = kycService.retrieveKycInfo(String.valueOf(idResDTO.get("uin")),
-					kycAuthRequestDTO.getAllowedKycAttributes(), kycAuthRequestDTO.getSecondaryLangCode(), idInfo);
-			response.setTtl(env.getProperty("ekyc.ttl.hours"));
-
-			response.setKycStatus(authResponse.isAuthStatus());
-			response.setStaticToken(authResponse.getStaticToken());
-			kycAuthResponseDTO.setResponse(response);
-			kycAuthResponseDTO.setId(authResponseDTO.getId());
-			kycAuthResponseDTO.setTransactionID(authResponseDTO.getTransactionID());
-			kycAuthResponseDTO.setVersion(authResponseDTO.getVersion());
-			kycAuthResponseDTO.setErrors(authResponseDTO.getErrors());
-			kycAuthResponseDTO.setResponseTime(resTime);
-		}
-		return kycAuthResponseDTO;
 	}
 
 	/**
