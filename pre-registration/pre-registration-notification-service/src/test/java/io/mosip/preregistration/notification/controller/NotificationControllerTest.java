@@ -26,6 +26,7 @@ import io.mosip.preregistration.core.common.dto.MainResponseDTO;
 import io.mosip.preregistration.core.common.dto.NotificationDTO;
 import io.mosip.preregistration.notification.NotificationApplicationTest;
 import io.mosip.preregistration.notification.service.NotificationService;
+
 import io.mosip.preregistration.notification.service.util.NotificationServiceUtil;
 
 /**

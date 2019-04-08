@@ -38,13 +38,13 @@ export class DemographicComponent implements OnInit, OnDestroy {
   languages = [this.primaryLang, this.secondaryLang];
   keyboardLang = appConstants.virtual_keyboard_languages[this.primaryLang];
   keyboardSecondaryLang = appConstants.virtual_keyboard_languages[this.secondaryLang];
-  numberPattern = appConstants.NUMBER_PATTERN;
   // textPattern = appConstants.TEXT_PATTERN;
 
   YEAR_PATTERN = appConstants.YEAR_PATTERN;
   MONTH_PATTERN = appConstants.MONTH_PATTERN;
   DATE_PATTERN = appConstants.DATE_PATTERN;
 
+  agePattern: string;
   MOBILE_PATTERN: string;
   MOBILE_LENGTH: string;
   CNIE_PATTERN: string;
@@ -157,6 +157,7 @@ export class DemographicComponent implements OnInit, OnDestroy {
   }
 
   async ngOnInit() {
+    console.log('IN DEMOGRAPHIC');
     this.config = this.configService.getConfig();
     this.setConfig();
     this.initForm();
@@ -181,6 +182,7 @@ export class DemographicComponent implements OnInit, OnDestroy {
     this.MOBILE_LENGTH = this.config[appConstants.CONFIG_KEYS.mosip_mobile_length];
     this.ADDRESS_LENGTH = this.config[appConstants.CONFIG_KEYS.preregistration_address_length];
     this.FULLNAME_LENGTH = this.config[appConstants.CONFIG_KEYS.preregistration_fullname_length];
+    this.agePattern = this.config[appConstants.CONFIG_KEYS.mosip_id_validation_identity_age];
   }
 
   private getPrimaryLabels() {
@@ -251,9 +253,7 @@ export class DemographicComponent implements OnInit, OnDestroy {
       ),
       [this.formControlNames.age]: new FormControl(this.formControlValues.age, [
         Validators.required,
-        Validators.max(150),
-        Validators.min(1),
-        Validators.pattern(this.numberPattern)
+        Validators.pattern(this.agePattern)
       ]),
       [this.formControlNames.dateOfBirth]: new FormControl(this.formControlValues.dateOfBirth),
       [this.formControlNames.date]: new FormControl(this.formControlValues.date, [
@@ -760,6 +760,7 @@ export class DemographicComponent implements OnInit, OnDestroy {
     } else {
       url = Utils.getURL(this.router.url, 'file-upload');
     }
+    console.log('OUT DEMOGRAPHIC IN FILE-UPLOAD OR PREVIEW');
     this.router.navigate([url]);
   }
 

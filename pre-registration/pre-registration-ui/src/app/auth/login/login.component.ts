@@ -111,6 +111,11 @@ export class LoginComponent implements OnInit {
   }
 
   loadLanguagesWithConfig() {
+    console.log(
+      'mosip.id.validation.identity.fullName.[*].value',
+      this.configService.getConfigByKey('mosip.id.validation.identity.fullName.[*].value')
+    );
+
     this.primaryLangFromConfig = this.configService.getConfigByKey(appConstants.CONFIG_KEYS.mosip_primary_language);
     this.secondaryLangFromConfig = this.configService.getConfigByKey(appConstants.CONFIG_KEYS.mosip_secondary_language);
 

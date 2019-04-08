@@ -31,8 +31,7 @@ export class DataStorageService {
   }
 
   getUser(preRegId: string) {
-    let url =
-      this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.get_applicant + appConstants.APPENDER + preRegId;
+    let url = this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.applicants + appConstants.APPENDER + preRegId;
     return this.httpClient.get(url);
   }
 
@@ -139,10 +138,10 @@ export class DataStorageService {
     );
   }
 
-  makeBooking(request: RequestModel, preId) {
+  makeBooking(request: RequestModel) {
     console.log('request inside service', request);
     return this.httpClient.post(
-      this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.booking_appointment + preId[0],
+      this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.booking_appointment,
       request
     );
   }
