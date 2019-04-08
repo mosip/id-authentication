@@ -64,7 +64,7 @@ public class SigningUtil {
 		CryptoManagerRequestDto cryptoManagerRequestDto = new CryptoManagerRequestDto();
 		cryptoManagerRequestDto.setApplicationId("KERNEL");
 		cryptoManagerRequestDto.setReferenceId("KER");
-		cryptoManagerRequestDto.setHashText(CryptoUtil.encodeBase64(responseByteArray));
+		cryptoManagerRequestDto.setData(CryptoUtil.encodeBase64(responseByteArray));
 		cryptoManagerRequestDto.setTimeStamp(DateUtils.getUTCCurrentDateTimeString());
 		RequestWrapper<CryptoManagerRequestDto> requestWrapper = new RequestWrapper<>();
 		requestWrapper.setId(syncDataRequestId);
