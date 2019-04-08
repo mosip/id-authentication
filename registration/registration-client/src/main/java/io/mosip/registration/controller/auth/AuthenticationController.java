@@ -407,8 +407,7 @@ public class AuthenticationController extends BaseController implements Initiali
 		LOGGER.info("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
 				"Loading configured modes of authentication");
 
-		Set<String> roleSet = new HashSet<>();
-		roleSet.add("*");
+		Set<String> roleSet = new HashSet<>(SessionContext.userContext().getRoles());
 
 		userAuthenticationTypeList = loginService.getModesOfLogin(authType, roleSet);
 		userAuthenticationTypeListValidation = loginService.getModesOfLogin(authType, roleSet);

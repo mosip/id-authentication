@@ -354,8 +354,7 @@ public class LoginController extends BaseController implements Initializable {
 								sessionContextMap.put(RegistrationConstants.ONBOARD_USER, true);
 								sessionContextMap.put(RegistrationConstants.ONBOARD_USER_UPDATE, false);
 
-								loginList = loginService.getModesOfLogin(ProcessNames.ONBOARD.getType(),
-										RegistrationConstants.getRoles());
+								loginList = loginService.getModesOfLogin(ProcessNames.ONBOARD.getType(),roleList);
 							}
 
 							String fingerprintDisableFlag = String.valueOf(
