@@ -8,7 +8,6 @@ import org.springframework.transaction.annotation.Transactional;
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.masterdata.constant.RegistrationCenterMachineDeviceErrorCode;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterMachineDeviceDto;
-import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.ResponseRegistrationCenterMachineDeviceDto;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterMachineDevice;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterMachineDeviceHistory;
@@ -49,12 +48,12 @@ public class RegistrationCenterMachineDeviceServiceImpl implements RegistrationC
 	@Override
 	@Transactional
 	public ResponseRegistrationCenterMachineDeviceDto createRegistrationCenterMachineAndDevice(
-			RequestDto<RegistrationCenterMachineDeviceDto> requestDto) {
+			RegistrationCenterMachineDeviceDto requestDto) {
 		ResponseRegistrationCenterMachineDeviceDto responseRrgistrationCenterMachineDeviceDto = null;
 
 		try {
 			RegistrationCenterMachineDevice registrationCenterMachineDevice = MetaDataUtils
-					.setCreateMetaData(requestDto.getRequest(), RegistrationCenterMachineDevice.class);
+					.setCreateMetaData(requestDto, RegistrationCenterMachineDevice.class);
 
 			RegistrationCenterMachineDevice savedRegistrationCenterMachineDevice = registrationCenterMachineDeviceRepository
 					.create(registrationCenterMachineDevice);

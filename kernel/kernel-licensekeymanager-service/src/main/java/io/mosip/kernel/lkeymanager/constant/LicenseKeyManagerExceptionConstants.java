@@ -8,7 +8,6 @@ package io.mosip.kernel.lkeymanager.constant;
  *
  */
 public enum LicenseKeyManagerExceptionConstants {
-
 	ILLEGAL_TSP("KER-LKM-001", "TSP entered is null or empty."), 
 	INVALID_GENERATED_LICENSEKEY("KER-LKM-002","The length of license key generated was not of the specified length."),
 	NOT_ACCEPTABLE_PERMISSION("KER-LKM-003", "Permission value entered is not accepted."), 
@@ -16,8 +15,9 @@ public enum LicenseKeyManagerExceptionConstants {
 	LICENSEKEY_EXPIRED("KER-LKM-005", "LicenseKey Expired."),
 	ILLEGAL_LICENSE_KEY("KER-LKM-006", "License Key entered is null or empty."),
 	ILLEGAL_PERMISSION("KER-LKM-007","Permission entered is an empty string."),
-	DATE_EXPIRED("KER-LKM-008","Expiry DateTime should be ahead of current DateTime.");
-
+	DATE_EXPIRED("KER-LKM-008","Expiry DateTime should be ahead of current DateTime."),
+	NO_PERMISSIONS_MAPPED("KER-LKM-009","No Permissions has been mapped to the entered TSP-LicenseKey Pair.");
+	
 	/**
 	 * The error code.
 	 */

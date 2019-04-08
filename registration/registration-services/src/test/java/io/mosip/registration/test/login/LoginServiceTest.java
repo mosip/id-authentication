@@ -87,12 +87,12 @@ public class LoginServiceTest {
 	public void getModesOfLoginTest() {
 
 		List<AppAuthenticationDetails> loginList = new ArrayList<AppAuthenticationDetails>();
-		Mockito.when(appAuthenticationRepository.findByIsActiveTrueAndAppAuthenticationMethodIdProcessIdAndAppAuthenticationMethodIdRoleCodeOrderByMethodSeq(Mockito.anyString(), Mockito.anyString())).thenReturn(loginList);
+		Mockito.when(appAuthenticationRepository.findByIsActiveTrueAndAppAuthenticationMethodIdProcessIdAndAppAuthenticationMethodIdRoleCodeOrderByMethodSequence(Mockito.anyString(), Mockito.anyString())).thenReturn(loginList);
 
 		List<String> modes = new ArrayList<>();
 		loginList.stream().map(loginMethod -> loginMethod.getAppAuthenticationMethodId().getAuthMethodCode()).collect(Collectors.toList());
 
-		Mockito.when(appAuthenticationRepository.findByIsActiveTrueAndAppAuthenticationMethodIdProcessIdAndAppAuthenticationMethodIdRoleCodeOrderByMethodSeq("LOGIN","*")).thenReturn(loginList);
+		Mockito.when(appAuthenticationRepository.findByIsActiveTrueAndAppAuthenticationMethodIdProcessIdAndAppAuthenticationMethodIdRoleCodeOrderByMethodSequence("LOGIN","*")).thenReturn(loginList);
 		
 		Set<String> roleSet = new HashSet<>();
 		roleSet.add("OFFICER");

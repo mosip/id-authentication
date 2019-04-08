@@ -1,0 +1,11 @@
+{
+	"regcenterId":"string",
+	"empty_lastupdated":"string",
+	"macaddress":"string",
+	"serialnumber":"string",
+	"regId_macId":"string",
+	"serialNumber_anotherMachine":"string",
+	"anotherMachine_macId":"string",
+	"regId_serialNumber":"string",
+	"only_regId":"string"
+}

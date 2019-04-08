@@ -144,7 +144,7 @@ public class BiometricPreviewController extends BaseController {
 				.get(RegistrationConstants.REGISTRATION_DATA);
 
 		if (registrationDTOContent.getSelectionListDTO() != null) {
-			registrationNavLabel.setText(RegistrationConstants.UIN_NAV_LABEL);
+			registrationNavLabel.setText(ApplicationContext.applicationLanguageBundle().getString("uinUpdateNavLbl"));
 		}
 		
 		paneVisibility(registrationDTOContent);

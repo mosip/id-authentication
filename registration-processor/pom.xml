@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
 		<groupId>io.mosip</groupId>
 		<artifactId>mosip-parent</artifactId>
-		<version>0.10.0</version>
+		<version>0.10.1</version>
 	</parent>
 
 	<groupId>io.mosip.registrationprocessor</groupId>
@@ -100,17 +99,17 @@
 		<jodatime.version>2.8.1</jodatime.version>
 
 		<!-- local -->
-		<registration.status.service.version>0.9.8</registration.status.service.version>
-		<registration.processor.core.version>0.9.8</registration.processor.core.version>
-		<filesystem.adapter.ceph.version>0.9.8</filesystem.adapter.ceph.version>
-		<packet.manager.version>0.9.8</packet.manager.version>
-		<registration.processor.rest.client.version>0.9.8</registration.processor.rest.client.version>
-		<packet.info.storage.service.version>0.9.8</packet.info.storage.service.version>
-		<packet.bio.dedupe.service.impl.version>0.9.8</packet.bio.dedupe.service.impl.version>
-		<registration.processor.message.sender.version>0.9.8</registration.processor.message.sender.version>
-		<packet.bio.dedupe.api.version>0.9.8</packet.bio.dedupe.api.version>
-		<registration.processor.print.service.version>0.9.8</registration.processor.print.service.version>
-        <registration.processor.print.service.impl.version>0.9.8</registration.processor.print.service.impl.version>
+		<registration.status.service.version>0.10.1</registration.status.service.version>
+		<registration.processor.core.version>0.10.1</registration.processor.core.version>
+		<filesystem.adapter.ceph.version>0.10.1</filesystem.adapter.ceph.version>
+		<packet.manager.version>0.10.1</packet.manager.version>
+		<registration.processor.rest.client.version>0.10.1</registration.processor.rest.client.version>
+		<packet.info.storage.service.version>0.10.1</packet.info.storage.service.version>
+		<packet.bio.dedupe.service.impl.version>0.10.1</packet.bio.dedupe.service.impl.version>
+		<registration.processor.message.sender.version>0.10.1</registration.processor.message.sender.version>
+		<packet.bio.dedupe.api.version>0.10.1</packet.bio.dedupe.api.version>
+		<registration.processor.print.service.version>0.10.1</registration.processor.print.service.version>
+        <registration.processor.print.service.impl.version>0.10.1</registration.processor.print.service.impl.version>
 
 		<!-- Kernel -->
 		<kernel.core.version>0.9.8</kernel.core.version>
@@ -232,21 +231,19 @@
 
 	<modules>
 		<module>registration-processor-core</module>
-		<module>registration-status-service-impl</module>
-		<module>registration-status-service</module>
 		<module>registration-processor-rest-client</module>
-		<module>packet-manager</module>
-		<module>registration-processor-camel-bridge</module>
-		<module>stages</module>
-		<module>packet-info-storage-service</module>
-		<module>quality-checker</module>
-		<module>registration-processor-message-sender</module>
-		<module>packet-bio-dedupe-service-impl</module>
-		<module>registration-processor-abis</module>
-		<module>packet-bio-dedupe-service</module>
+		<module>registration-processor-packet-manager</module>
+		<module>registration-processor-common-camel-bridge</module>
+        <module>registration-processor-bio-dedupe-service-impl</module>
     	<module>registration-processor-print-service-impl</module>
-		<module>registration-processor-print-service</module>
-        <module>registration-processor-packet-generator-service</module>
+		<module>registration-processor-info-storage-service</module>
+		<module>registration-processor-registration-status-service-impl</module>
+		<module>registration-processor-quality-checker</module>
+	    <module>registration-processor-message-sender-impl</module>
+        <module>init</module>
+        <module>pre-processor</module>
+        <module>core-processor</module>
+        <module>post-processor</module>
   </modules>
 
 	<profiles>

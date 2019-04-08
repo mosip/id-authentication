@@ -88,7 +88,7 @@ public class FetchAppointmentDetails extends BaseTestCase implements ITest {
 
 		//testParam="smoke";
 		testParam = context.getCurrentXmlTest().getParameter("testType");
-		switch ("smoke") {
+		switch (testParam) {
 		case "smoke":
 			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
 		case "regression":
@@ -134,8 +134,7 @@ public class FetchAppointmentDetails extends BaseTestCase implements ITest {
 		//Fetch Appointment Details
 		Response fetchAppointmentDetailsResponse = preRegLib.FetchAppointmentDetails(preId);
 		
-		
-		outerKeys.add("resTime");
+		outerKeys.add("responsetime");
 		innerKeys.add("registration_center_id");
 		innerKeys.add("appointment_date");
 		innerKeys.add("time_slot_from");
@@ -218,7 +217,7 @@ public class FetchAppointmentDetails extends BaseTestCase implements ITest {
          * Fetch Appointment Details Resource URI            
          */
         
-        preReg_URI = commonLibrary.fetch_IDRepo("preReg_CopyDocumentsURI");
+        preReg_URI = commonLibrary.fetch_IDRepo().get("preReg_CopyDocumentsURI");
 	}
 
 	@AfterMethod(alwaysRun = true)

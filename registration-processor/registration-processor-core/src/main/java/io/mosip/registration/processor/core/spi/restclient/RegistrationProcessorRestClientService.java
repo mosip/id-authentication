@@ -98,4 +98,19 @@ public interface RegistrationProcessorRestClientService<T> {
 	 */
 	public T patchApi(ApiName apiName, List<String> pathsegments, String queryParam, String queryParamValue,
 			T requestedData, Class<?> responseType) throws ApisResourceAccessException;
+
+	/**
+	 * Put api.
+	 *
+	 * @param apiName the api name
+	 * @param pathsegments the pathsegments
+	 * @param queryParam the query param
+	 * @param queryParamValue the query param value
+	 * @param requestedData the requested data
+	 * @param responseType the response type
+	 * @return the t
+	 * @throws ApisResourceAccessException 
+	 */
+	public T putApi(ApiName apiName, List<String> pathsegments, String queryParam, String queryParamValue,
+			T requestedData, Class<?> responseType) throws ApisResourceAccessException;
 }

@@ -24,7 +24,6 @@ import io.mosip.registration.constants.RegistrationUIConstants;
 import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
-import io.mosip.registration.controller.reg.BiometricExceptionController;
 import io.mosip.registration.controller.reg.RegistrationController;
 import io.mosip.registration.controller.reg.UserOnboardParentController;
 import io.mosip.registration.device.iris.IrisFacade;
@@ -41,6 +40,8 @@ import javafx.scene.control.ProgressBar;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
@@ -76,15 +77,25 @@ public class IrisCaptureController extends BaseController {
 	@FXML
 	private Button scanIris;
 	@FXML
-	private ProgressBar irisProgress;	
+	private ProgressBar irisProgress;
 	@FXML
-	private Label irisQuality;	
+	private Label irisQuality;
 	@FXML
 	private HBox irisRetryBox;
 	@FXML
 	private Label leftIrisAttempts;
 	@FXML
 	private Label rightIrisAttempts;
+	@FXML
+	private ColumnConstraints thresholdPane1;
+	@FXML
+	private ColumnConstraints thresholdPane2;
+	@FXML
+	private Label thresholdLabel;
+	@FXML
+	private AnchorPane rightEyeTrackerImg;
+	@FXML
+	private AnchorPane leftEyeTrackerImg;
 
 	@Autowired
 	private RegistrationController registrationController;
@@ -92,15 +103,13 @@ public class IrisCaptureController extends BaseController {
 	private ScanPopUpViewController scanPopUpViewController;
 	@Autowired
 	private IrisFacade irisFacade;
-	@Autowired
-	private BiometricExceptionController biometricExceptionController;
 
 	@Autowired
 	private UserOnboardParentController userOnboardParentController;
 
 	@Autowired
 	private FaceCaptureController faceCaptureController;
-	
+
 	@FXML
 	private Label registrationNavlabel;
 
@@ -108,10 +117,9 @@ public class IrisCaptureController extends BaseController {
 
 	@FXML
 	private Button continueBtn;
-	
+
 	@FXML
 	private Button backBtn;
-	
 
 	/**
 	 * This method is invoked when IrisCapture FXML page is loaded. This method
@@ -125,30 +133,42 @@ public class IrisCaptureController extends BaseController {
 					"Initializing Iris Capture page for user registration");
 			if (getRegistrationDTOFromSession() != null
 					&& getRegistrationDTOFromSession().getSelectionListDTO() != null) {
-				registrationNavlabel.setText(RegistrationConstants.UIN_NAV_LABEL);
-			}						
+				registrationNavlabel.setText(ApplicationContext.applicationLanguageBundle().getString("uinUpdateNavLbl"));
+			}
+			if (getRegistrationDTOFromSession() != null
+					&& getRegistrationDTOFromSession().getRegistrationMetaDataDTO().getRegistrationCategory() != null
+					&& getRegistrationDTOFromSession().getRegistrationMetaDataDTO().getRegistrationCategory()
+							.equals(RegistrationConstants.PACKET_TYPE_LOST)) {
+				registrationNavlabel.setText(ApplicationContext.applicationLanguageBundle().getString("/lostuin"));
+			}
 			continueBtn.setDisable(true);
 			backBtn.setDisable(true);
-			
-			if(!(boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
-			
-				for(int attempt = 0; attempt <Integer
-						.parseInt(String.valueOf(ApplicationContext.map().get(RegistrationConstants.IRIS_RETRY_COUNT))); attempt++) {
-					Label label = new Label();
-					label.getStyleClass().add("qualityLabelGrey");
-					label.setId("retryAttempt_"+(attempt+1));
-					label.setVisible(true);
-					label.setText(String.valueOf(attempt+1));
-					label.setAlignment(Pos.CENTER);
-					irisRetryBox.getChildren().add(label);
-				}
-				irisProgress.setProgress(0);
-			}
 
 			// Set Threshold
 			String irisThreshold = getValueFromApplicationMap(RegistrationConstants.IRIS_THRESHOLD);
 			leftIrisThreshold.setText(irisThreshold.concat(RegistrationConstants.PERCENTAGE));
 			rightIrisThreshold.setText(irisThreshold.concat(RegistrationConstants.PERCENTAGE));
+
+			if (!(boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
+
+				for (int attempt = 0; attempt < Integer.parseInt(String
+						.valueOf(ApplicationContext.map().get(RegistrationConstants.IRIS_RETRY_COUNT))); attempt++) {
+					Label label = new Label();
+					label.getStyleClass().add("qualityLabelGrey");
+					label.setId("retryAttempt_" + (attempt + 1));
+					label.setVisible(true);
+					label.setText(String.valueOf(attempt + 1));
+					label.setAlignment(Pos.CENTER);
+					irisRetryBox.getChildren().add(label);
+				}
+				irisProgress.setProgress(0);
+
+				thresholdPane1.setPercentWidth(Double.parseDouble(irisThreshold));
+				thresholdPane2.setPercentWidth(100.00 - (Double.parseDouble(irisThreshold)));
+				thresholdLabel.setAlignment(Pos.CENTER);
+				thresholdLabel.setText(thresholdLabel.getText().concat("  ").concat(irisThreshold)
+						.concat(RegistrationConstants.PERCENTAGE));
+			}
 
 			// Disable Scan button
 			scanIris.setDisable(true);
@@ -185,8 +205,7 @@ public class IrisCaptureController extends BaseController {
 	 * This event handler will be invoked when left iris or right iris {@link Pane}
 	 * is clicked.
 	 * 
-	 * @param mouseEvent
-	 *            the triggered {@link MouseEvent} object
+	 * @param mouseEvent the triggered {@link MouseEvent} object
 	 */
 	@FXML
 	private void enableScan(MouseEvent mouseEvent) {
@@ -199,12 +218,21 @@ public class IrisCaptureController extends BaseController {
 			selectedIris = sourcePane;
 			scanIris.setDisable(true);
 			
-			if(!(boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
+			if (!(boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
+				
+				if(getSelectedIris().equals(RegistrationConstants.LEFT)) {
+					leftEyeTrackerImg.setVisible(true);
+					rightEyeTrackerImg.setVisible(false);
+				}else {
+					rightEyeTrackerImg.setVisible(true);
+					leftEyeTrackerImg.setVisible(false);
+				}
 				irisProgress.setProgress(0);
-							
-				for(int attempt = 0; attempt < Integer.parseInt(getValueFromApplicationMap(RegistrationConstants.IRIS_RETRY_COUNT)); attempt++) {
-					irisRetryBox.lookup("#retryAttempt_"+(attempt+1)).getStyleClass().clear();
-					irisRetryBox.lookup("#retryAttempt_"+(attempt+1)).getStyleClass().add("qualityLabelGrey");
+
+				for (int attempt = 0; attempt < Integer
+						.parseInt(getValueFromApplicationMap(RegistrationConstants.IRIS_RETRY_COUNT)); attempt++) {
+					irisRetryBox.lookup("#retryAttempt_" + (attempt + 1)).getStyleClass().clear();
+					irisRetryBox.lookup("#retryAttempt_" + (attempt + 1)).getStyleClass().add("qualityLabelGrey");
 				}
 			}
 			// Get the Iris from RegistrationDTO based on selected Iris Pane
@@ -232,16 +260,18 @@ public class IrisCaptureController extends BaseController {
 							|| irisDetailsDTO.isForceCaptured())) {
 				scanIris.setDisable(false);
 			}
-			if(!(boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
-				irisProgress.setProgress(irisDetailsDTO != null ? irisDetailsDTO.getQualityScore()/100 : 0);
-				irisQuality.setText(irisDetailsDTO != null ? String.valueOf((int)irisDetailsDTO.getQualityScore()).concat(RegistrationConstants.PERCENTAGE) : "");
-				
-				if(irisDetailsDTO != null) {
-					updateRetriesBox(irisDetailsDTO.getQualityScore(), Double.parseDouble(
-							getValueFromApplicationMap(RegistrationConstants.IRIS_THRESHOLD)), irisDetailsDTO.getNumOfIrisRetry());
+			if (!(boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
+				irisProgress.setProgress(irisDetailsDTO != null ? irisDetailsDTO.getQualityScore() / 100 : 0);
+				irisQuality.setText(irisDetailsDTO != null ? String.valueOf((int) irisDetailsDTO.getQualityScore())
+						.concat(RegistrationConstants.PERCENTAGE) : "");
+
+				if (irisDetailsDTO != null) {
+					updateRetriesBox(irisDetailsDTO.getQualityScore(),
+							Double.parseDouble(getValueFromApplicationMap(RegistrationConstants.IRIS_THRESHOLD)),
+							irisDetailsDTO.getNumOfIrisRetry());
 				}
 			}
-			
+
 			LOGGER.info(LOG_REG_IRIS_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 					"Enabling scan button for user registration completed");
 		} catch (RuntimeException runtimeException) {
@@ -253,20 +283,24 @@ public class IrisCaptureController extends BaseController {
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_LOAD_IRIS_SCAN_POPUP);
 		}
 	}
-	
+
 	private void updateRetriesBox(double quality, double threshold, int retries) {
-		if(quality > threshold) {
-			clearAttemptsBox("qualityLabelGreen",retries);
+		if (quality > threshold) {
+			clearAttemptsBox("qualityLabelGreen", retries);
 			irisProgress.getStyleClass().removeAll("progress-barRed");
 			irisProgress.getStyleClass().add("progress-barGreen");
+			irisQuality.getStyleClass().removeAll("labelRed");
+			irisQuality.getStyleClass().add("labelGreen");
 		} else {
-			clearAttemptsBox("qualityLabelRed",retries);
+			clearAttemptsBox("qualityLabelRed", retries);
 			irisProgress.getStyleClass().removeAll("progress-barGreen");
 			irisProgress.getStyleClass().add("progress-barRed");
+			irisQuality.getStyleClass().removeAll("labelGreen");
+			irisQuality.getStyleClass().add("labelRed");
 		}
-		if(retries > 1) {
-			for(int ret = retries; ret > 0; --ret) {
-				clearAttemptsBox("qualityLabelRed",ret);
+		if (retries > 1) {
+			for (int ret = retries; ret > 0; --ret) {
+				clearAttemptsBox("qualityLabelRed", ret);
 			}
 		}
 	}
@@ -347,8 +381,9 @@ public class IrisCaptureController extends BaseController {
 				rightIrisQualityScore.setText(getQualityScoreAsString(irisDetailsDTO.getQualityScore()));
 				rightIrisAttempts.setText(String.valueOf(irisDetailsDTO.getNumOfIrisRetry()));
 			}
-			if(!(boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
-				irisProgress.setProgress(Double.valueOf(getQualityScoreAsString(irisDetailsDTO.getQualityScore()).split("%")[0])/100);
+			if (!(boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
+				irisProgress.setProgress(
+						Double.valueOf(getQualityScoreAsString(irisDetailsDTO.getQualityScore()).split("%")[0]) / 100);
 				irisQuality.setText(getQualityScoreAsString(irisDetailsDTO.getQualityScore()));
 				if (Double.valueOf(getQualityScoreAsString(irisDetailsDTO.getQualityScore())
 						.split(RegistrationConstants.PERCENTAGE)[0]) > Double.valueOf(
@@ -356,20 +391,22 @@ public class IrisCaptureController extends BaseController {
 					clearAttemptsBox("qualityLabelGreen", irisDetailsDTO.getNumOfIrisRetry());
 					irisProgress.getStyleClass().removeAll("progress-barRed");
 					irisProgress.getStyleClass().add("progress-barGreen");
+					irisQuality.getStyleClass().removeAll("labelRed");
+					irisQuality.getStyleClass().add("labelGreen");
 				} else {
 					clearAttemptsBox("qualityLabelRed", irisDetailsDTO.getNumOfIrisRetry());
 					irisProgress.getStyleClass().removeAll("progress-barGreen");
 					irisProgress.getStyleClass().add("progress-barRed");
+					irisQuality.getStyleClass().removeAll("labelGreen");
+					irisQuality.getStyleClass().add("labelRed");
 				}
 			}
 			popupStage.close();
-			
-			
-			if(validateIris() && validateIrisLocalDedup()) {
+
+			if (validateIris() && validateIrisLocalDedup()) {
 				continueBtn.setDisable(false);
 				backBtn.setDisable(false);
 			}
-
 
 			LOGGER.info(LOG_REG_IRIS_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 					"Scanning of iris details for user registration completed");
@@ -410,23 +447,25 @@ public class IrisCaptureController extends BaseController {
 							getOnboardPageDetails(RegistrationConstants.IRIS_CAPTURE, RegistrationConstants.NEXT));
 				}
 			} else {
-					faceCaptureController.disableNextButton();
-					if (getRegistrationDTOFromSession().getSelectionListDTO() != null) {
+				faceCaptureController.disableNextButton();
+				rightEyeTrackerImg.setVisible(false);
+				leftEyeTrackerImg.setVisible(true);
+				if (getRegistrationDTOFromSession().getSelectionListDTO() != null) {
 
-						SessionContext.getInstance().getMapObject().put("irisCapture", false);
+					SessionContext.getInstance().getMapObject().put("irisCapture", false);
 
-						if (!RegistrationConstants.DISABLE.equalsIgnoreCase(String
-								.valueOf(ApplicationContext.map().get(RegistrationConstants.FACE_DISABLE_FLAG)))) {
-							SessionContext.getInstance().getMapObject().put("faceCapture", true);
-						} else {
-							SessionContext.getInstance().getMapObject().put("registrationPreview", true);
-							registrationPreviewController.setUpPreviewContent();
-						}
-						registrationController.showUINUpdateCurrentPage();
+					if (!RegistrationConstants.DISABLE.equalsIgnoreCase(
+							String.valueOf(ApplicationContext.map().get(RegistrationConstants.FACE_DISABLE_FLAG)))) {
+						SessionContext.getInstance().getMapObject().put("faceCapture", true);
 					} else {
-						registrationController.showCurrentPage(RegistrationConstants.IRIS_CAPTURE,
-								getPageDetails(RegistrationConstants.IRIS_CAPTURE, RegistrationConstants.NEXT));
+						SessionContext.getInstance().getMapObject().put("registrationPreview", true);
+						registrationPreviewController.setUpPreviewContent();
 					}
+					registrationController.showUINUpdateCurrentPage();
+				} else {
+					registrationController.showCurrentPage(RegistrationConstants.IRIS_CAPTURE,
+							getPageDetails(RegistrationConstants.IRIS_CAPTURE, RegistrationConstants.NEXT));
+				}
 			}
 
 			LOGGER.info(LOG_REG_IRIS_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
@@ -462,29 +501,18 @@ public class IrisCaptureController extends BaseController {
 			} else {
 				if (getRegistrationDTOFromSession().getSelectionListDTO() != null) {
 
-						long fingerPrintCount = getRegistrationDTOFromSession().getBiometricDTO()
-								.getApplicantBiometricDTO().getBiometricExceptionDTO().stream()
-								.filter(bio -> bio.getBiometricType().equals("fingerprint")).count();
+					SessionContext.map().put("irisCapture", false);
 
-						SessionContext.map().put("irisCapture", false);
-
-						if (getRegistrationDTOFromSession().getSelectionListDTO().isBiometricFingerprint()
-								|| fingerPrintCount > 0) {
-							SessionContext.map().put("fingerPrintCapture", true);
-						} else if (getRegistrationDTOFromSession().getSelectionListDTO().isBiometricException()
-								&& fingerPrintCount == 0) {
-							biometricExceptionController.setExceptionImage();
-							SessionContext.map().put("biometricException", true);
-						} else if (!RegistrationConstants.DISABLE.equalsIgnoreCase(
-								String.valueOf(ApplicationContext.map().get(RegistrationConstants.DOC_DISABLE_FLAG)))) {
-							SessionContext.map().put("documentScan", true);
-						} else {
-							SessionContext.map().put("demographicDetail", true);
-						}
-						registrationController.showUINUpdateCurrentPage();
+					if (RegistrationConstants.ENABLE.equalsIgnoreCase(String
+							.valueOf(ApplicationContext.map().get(RegistrationConstants.FINGERPRINT_DISABLE_FLAG)))) {
+						SessionContext.map().put("fingerPrintCapture", true);
+					} else {
+						SessionContext.map().put("documentScan", true);
+					}
+					registrationController.showUINUpdateCurrentPage();
 				} else {
-						registrationController.showCurrentPage(RegistrationConstants.IRIS_CAPTURE,
-								getPageDetails(RegistrationConstants.IRIS_CAPTURE, RegistrationConstants.PREVIOUS));
+					registrationController.showCurrentPage(RegistrationConstants.IRIS_CAPTURE,
+							getPageDetails(RegistrationConstants.IRIS_CAPTURE, RegistrationConstants.PREVIOUS));
 				}
 			}
 
@@ -526,7 +554,7 @@ public class IrisCaptureController extends BaseController {
 			}
 
 			for (IrisDetailsDTO irisDetailsDTO : getIrises()) {
-				if (validateIrisCapture(irisDetailsDTO)) {
+				if (validateIrisCapture(irisDetailsDTO) || (boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
 					if (irisDetailsDTO.getIrisType()
 							.equalsIgnoreCase(RegistrationConstants.LEFT.concat(RegistrationConstants.EYE))) {
 						isLeftEyeCaptured = true;
@@ -539,8 +567,20 @@ public class IrisCaptureController extends BaseController {
 				}
 			}
 
-			if (isLeftEyeCaptured && isRightEyeCaptured) {
+			if (getRegistrationDTOFromSession() !=null && getRegistrationDTOFromSession().getSelectionListDTO() != null
+
+					&& ((getRegistrationDTOFromSession().getSelectionListDTO().isBiometrics() && isLeftEyeCaptured
+							&& isRightEyeCaptured)
+
+					|| getRegistrationDTOFromSession().getBiometricDTO().getApplicantBiometricDTO()
+							.getFingerprintDetailsDTO().isEmpty()
+							&& !getRegistrationDTOFromSession().getSelectionListDTO().isBiometrics()
+							&& (isLeftEyeCaptured || isRightEyeCaptured))) {
 				isValid = true;
+			} else {
+				if (isLeftEyeCaptured && isRightEyeCaptured) {
+					isValid = true;
+				}
 			}
 
 			LOGGER.info(LOG_REG_IRIS_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
@@ -595,11 +635,13 @@ public class IrisCaptureController extends BaseController {
 	}
 
 	private Stream<IrisDetailsDTO> getIrisBySelectedPane() {
-		return getIrises().stream()
-				.filter(iris -> iris.getIrisType()
-						.contains(StringUtils.containsIgnoreCase(selectedIris.getId(), RegistrationConstants.LEFT)
-								? RegistrationConstants.LEFT
-								: RegistrationConstants.RIGHT));
+		return getIrises().stream().filter(iris -> iris.getIrisType().contains(getSelectedIris()));
+	}
+
+	private String getSelectedIris() {
+		return StringUtils.containsIgnoreCase(selectedIris.getId(), RegistrationConstants.LEFT)
+				? RegistrationConstants.LEFT
+				: RegistrationConstants.RIGHT;
 	}
 
 	private BiometricDTO getBiometricDTOFromSession() {
@@ -619,36 +661,34 @@ public class IrisCaptureController extends BaseController {
 				.setImage(new Image(getClass().getResource(RegistrationConstants.LEFT_IRIS_IMG_PATH).toExternalForm()));
 		leftIrisQualityScore.setText(RegistrationConstants.EMPTY);
 		leftIrisAttempts.setText(RegistrationConstants.EMPTY);
-		
+
 		rightIrisImage.setImage(
 				new Image(getClass().getResource(RegistrationConstants.RIGHT_IRIS_IMG_PATH).toExternalForm()));
 		rightIrisQualityScore.setText(RegistrationConstants.EMPTY);
-		rightIrisAttempts.setText(RegistrationConstants.EMPTY);
-		if(!(boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
-		
+		rightIrisAttempts.setText(RegistrationConstants.EMPTY);	
+		if (!(boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
+
 			irisProgress.setProgress(0);
 			irisProgress.getStyleClass().removeAll("progress-barRed");
 			irisProgress.getStyleClass().remove("progress-barGreen");
-			
+
 			irisQuality.setText(RegistrationConstants.EMPTY);
 			irisQuality.getStyleClass().remove("labelRed");
 			irisQuality.getStyleClass().remove("labelGreen");
-			
-			for(int attempt = 0; attempt < Integer.parseInt(getValueFromApplicationMap(RegistrationConstants.IRIS_RETRY_COUNT)); attempt++) {
-				irisRetryBox.lookup("#retryAttempt_"+(attempt+1)).getStyleClass().clear();
-				irisRetryBox.lookup("#retryAttempt_"+(attempt+1)).getStyleClass().add("qualityLabelGrey");
-			}	
+
+			for (int attempt = 0; attempt < Integer
+					.parseInt(getValueFromApplicationMap(RegistrationConstants.IRIS_RETRY_COUNT)); attempt++) {
+				irisRetryBox.lookup("#retryAttempt_" + (attempt + 1)).getStyleClass().clear();
+				irisRetryBox.lookup("#retryAttempt_" + (attempt + 1)).getStyleClass().add("qualityLabelGrey");
+			}
 		}
-		
+
 		if (getRegistrationDTOFromSession() != null) {
 			getRegistrationDTOFromSession().getBiometricDTO().getApplicantBiometricDTO()
 					.setIrisDetailsDTO(new ArrayList<>());
 		}
-		
-		if (!(validateIris() && validateIrisLocalDedup())) {
-			continueBtn.setDisable(true);
-			backBtn.setDisable(true);
-		}
+
+		singleBiometricCaptureCheck();
 	}
 
 	public void clearIrisBasedOnExceptions() {
@@ -673,14 +713,28 @@ public class IrisCaptureController extends BaseController {
 			continueBtn.setDisable(false);
 			backBtn.setDisable(false);
 		}
+		singleBiometricCaptureCheck();
+	}
+
+	private void singleBiometricCaptureCheck() {
 		if (!(validateIris() && validateIrisLocalDedup())) {
 			continueBtn.setDisable(true);
 			backBtn.setDisable(true);
 		}
+		if (getRegistrationDTOFromSession() != null
+				&& !getRegistrationDTOFromSession().getBiometricDTO().getApplicantBiometricDTO()
+						.getFingerprintDetailsDTO().isEmpty()
+				&& getRegistrationDTOFromSession().getSelectionListDTO() != null
+				&& !getRegistrationDTOFromSession().getSelectionListDTO().isBiometrics()) {
+			continueBtn.setDisable(false);
+			backBtn.setDisable(false);
+		} else if (getRegistrationDTOFromSession() != null
+				&& getRegistrationDTOFromSession().getSelectionListDTO() != null
+				&& !getRegistrationDTOFromSession().getSelectionListDTO().isBiometrics()) {
+			backBtn.setDisable(false);
+		}
 	}
 
-	
-	
 	/**
 	 * Any iris exception.
 	 *
@@ -688,14 +742,12 @@ public class IrisCaptureController extends BaseController {
 	 * @return true, if successful
 	 */
 	private boolean anyIrisException(String iris) {
-		return getIrisExceptions().stream()
-				.anyMatch(exceptionIris -> exceptionIris.isMarkedAsException()
-						&& StringUtils.containsIgnoreCase(exceptionIris.getMissingBiometric(),
-								(iris).concat(RegistrationConstants.EYE)));
+		return getIrisExceptions().stream().anyMatch(exceptionIris -> exceptionIris.isMarkedAsException() && StringUtils
+				.containsIgnoreCase(exceptionIris.getMissingBiometric(), (iris).concat(RegistrationConstants.EYE)));
 	}
-	
+
 	private void clearAttemptsBox(String styleClass, int retries) {
-			irisRetryBox.lookup("#retryAttempt_"+(retries)).getStyleClass().clear();
-			irisRetryBox.lookup("#retryAttempt_"+(retries)).getStyleClass().add(styleClass);
+		irisRetryBox.lookup("#retryAttempt_" + (retries)).getStyleClass().clear();
+		irisRetryBox.lookup("#retryAttempt_" + (retries)).getStyleClass().add(styleClass);
 	}
 }

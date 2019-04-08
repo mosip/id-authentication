@@ -94,7 +94,7 @@ public class LicenseKeyController extends BaseTestCase implements ITest{
 	@DataProvider(name = "LicenseKeyGenerator")
 	public static Object[][] readData1(ITestContext context) throws Exception {
 		 testParam = context.getCurrentXmlTest().getParameter("testType");
-		switch (testParam) {
+		switch ("smoke") {
 		case "smoke":
 			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
 		case "regression":
@@ -186,7 +186,7 @@ public class LicenseKeyController extends BaseTestCase implements ITest{
 	public static Object[][] readData3(ITestContext context) throws Exception {
 	
 		 testParam = context.getCurrentXmlTest().getParameter("testType");
-		switch (testParam) {
+		switch ("smoke") {
 		case "smoke":
 			return ReadFolder.readFolders(folderPath1, outputFile1, requestKeyFile1, "smoke");
 		case "regression":
@@ -271,7 +271,7 @@ public class LicenseKeyController extends BaseTestCase implements ITest{
 	public static Object[][] readData(ITestContext context) throws Exception {
 		
 		 testParam = context.getCurrentXmlTest().getParameter("testType");
-		switch (testParam) {
+		switch ("smoke") {
 		case "smoke":
 			return ReadFolder.readFolders(folderPath2, outputFile2, requestKeyFile2, "smoke");
 		case "regression":

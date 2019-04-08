@@ -11,9 +11,10 @@ import javax.persistence.Table;
 import io.mosip.registration.entity.id.CodeAndLanguageCodeID;
 
 /**
- * 
- * @author Brahmananda Reddy
+ * The Entity Class for Location.
  *
+ * @author Sreekar Chukka
+ * @since 1.0.0
  */
 @Entity
 @Table(schema = "reg", name = "location")

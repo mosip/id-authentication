@@ -29,12 +29,21 @@ import io.mosip.authentication.service.impl.indauth.service.bio.BioMatchType;
 @Service
 public class BioAuthServiceImpl implements BioAuthService {
 
+	/**
+	 * Id Info helper
+	 */
 	@Autowired
 	private IdInfoHelper idInfoHelper;
 
+	/**
+	 * Match Input Builder
+	 */
 	@Autowired
 	private MatchInputBuilder matchInputBuilder;
 
+	/**
+	 * The Ida Mapping Config
+	 */
 	@Autowired
 	private IDAMappingConfig idMappingConfig;
 

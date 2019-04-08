@@ -1,23 +1,17 @@
 package io.mosip.kernel.uingenerator.generator;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.core.idgenerator.spi.UinGenerator;
 import io.mosip.kernel.uingenerator.constant.UinGeneratorConstant;
-import io.mosip.kernel.uingenerator.entity.UinEntity;
 import io.mosip.kernel.uingenerator.repository.UinRepository;
 
 @Component
 public class UinProcesser {
-	private static final Logger LOGGER = LoggerFactory.getLogger(UinProcesser.class);
+	//private static final Logger LOGGER = LoggerFactory.getLogger(UinProcesser.class);
 
 	/**
 	 * Field for uinRepository
@@ -29,7 +23,7 @@ public class UinProcesser {
 	 * Field for uinGeneratorImpl
 	 */
 	@Autowired
-	private UinGenerator<Set<UinEntity>> uinGeneratorImpl;
+	private UinGenerator uinGeneratorImpl;
 
 	/**
 	 * Long field for uin threshold count
@@ -52,11 +46,9 @@ public class UinProcesser {
 
 	/**
 	 * Create list of uins
-	 * 
-	 * @return List of uins
 	 */
-	public List<UinEntity> generateUins() {
-		return new ArrayList<>(uinGeneratorImpl.generateId());
+	public void generateUins() {
+		 uinGeneratorImpl.generateId();
 	}
 
 }

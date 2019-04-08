@@ -2,7 +2,7 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: registration-processor-camel-bridge
+  name: registration-processor-common-camel-bridge
 spec:
   replicas: 1
   minReadySeconds: 10
@@ -14,12 +14,12 @@ spec:
   template:
     metadata:
       labels:
-        app: registration-processor-camel-bridge
+        app: registration-processor-common-camel-bridge
         component: service-hazelcast-server
     spec:
       containers:
-      - name: registration-processor-camel-bridge
-        image: docker-registry.mosip.io:5000/registration-processor-camel-bridge
+      - name: registration-processor-common-camel-bridge
+        image: docker-registry.mosip.io:5000/registration-processor-common-camel-bridge
         ports:
           - name: eventbus-port
             containerPort: 5723

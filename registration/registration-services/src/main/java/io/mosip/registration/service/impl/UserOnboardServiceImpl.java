@@ -28,6 +28,8 @@ import io.mosip.registration.service.UserOnboardService;
 import io.mosip.registration.util.healthcheck.RegistrationSystemPropertiesChecker;
 
 /**
+ * Implementation for {@link UserOnboardService} 
+ * 
  * @author Sreekar Chukka
  *
  * @since 1.0.0

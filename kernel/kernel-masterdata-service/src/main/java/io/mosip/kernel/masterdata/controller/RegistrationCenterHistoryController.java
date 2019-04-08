@@ -5,6 +5,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.mosip.kernel.core.http.ResponseFilter;
+import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.masterdata.dto.getresponse.RegistrationCenterHistoryResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.RegistrationCenterResponseDto;
 import io.mosip.kernel.masterdata.service.RegistrationCenterHistoryService;
@@ -38,13 +40,16 @@ public class RegistrationCenterHistoryController {
 	 *            The effective date
 	 * @return {@link RegistrationCenterResponseDto} instance
 	 */
-	@GetMapping("/v1.0/registrationcentershistory/{registrationCenterId}/{langcode}/{effectiveDate}")
-	public RegistrationCenterHistoryResponseDto getRegistrationCentersHistory(
+	@ResponseFilter
+	@GetMapping("/registrationcentershistory/{registrationCenterId}/{langcode}/{effectiveDate}")
+	public ResponseWrapper<RegistrationCenterHistoryResponseDto> getRegistrationCentersHistory(
 			@PathVariable("registrationCenterId") String registrationCenterId, @PathVariable("langcode") String langCode,
 			@PathVariable("effectiveDate") String effectiveDate) {
 
-		return registrationCenterHistoryService.getRegistrationCenterHistory(registrationCenterId, langCode,
-				effectiveDate);
+		ResponseWrapper<RegistrationCenterHistoryResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(registrationCenterHistoryService.getRegistrationCenterHistory(registrationCenterId, langCode,
+				effectiveDate));
+		return responseWrapper;
 	}
 
 }

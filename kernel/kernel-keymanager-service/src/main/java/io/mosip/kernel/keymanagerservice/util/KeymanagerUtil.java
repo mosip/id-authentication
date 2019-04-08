@@ -34,8 +34,7 @@ import io.mosip.kernel.keymanagerservice.entity.KeyAlias;
 public class KeymanagerUtil {
 
 	private static final String UTC_DATETIME_PATTERN = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
-	
-	
+
 	/**
 	 * KeySplitter for splitting key and data
 	 */
@@ -65,7 +64,7 @@ public class KeymanagerUtil {
 	 */
 	@Value("${mosip.kernel.crypto.symmetric-algorithm-name}")
 	private String symmetricAlgorithmName;
-	
+
 	/**
 	 * Function to check valid timestamp
 	 * 
@@ -113,8 +112,10 @@ public class KeymanagerUtil {
 	/**
 	 * Function to set metadata
 	 * 
+	 * @param <T>
+	 *            is a type parameter
 	 * @param entity
-	 *            entity
+	 *            entity of T type
 	 * @return Entity with metadata
 	 */
 	public <T extends BaseEntity> T setMetaData(T entity) {
@@ -163,8 +164,6 @@ public class KeymanagerUtil {
 				symmetricAlgorithmName);
 		return decryptor.symmetricDecrypt(symmetricKey, encryptedData);
 	}
-	
-	
 
 	/**
 	 * Parse a date string of pattern UTC_DATETIME_PATTERN into
@@ -174,7 +173,7 @@ public class KeymanagerUtil {
 	 *            of type {@link String} of pattern UTC_DATETIME_PATTERN
 	 * @return a {@link LocalDateTime} of given pattern
 	 */
-	public  LocalDateTime parseToLocalDateTime(String dateTime) {
+	public LocalDateTime parseToLocalDateTime(String dateTime) {
 		return LocalDateTime.parse(dateTime, DateTimeFormatter.ofPattern(UTC_DATETIME_PATTERN));
 	}
 

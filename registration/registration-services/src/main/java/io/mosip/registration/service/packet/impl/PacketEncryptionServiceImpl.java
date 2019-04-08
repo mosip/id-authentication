@@ -76,13 +76,13 @@ public class PacketEncryptionServiceImpl implements PacketEncryptionService {
 	 */
 	@Autowired
 	private AuditLogControlDAO auditLogControlDAO;
-	/**
-	 * Encrypts the input data using AES algorithm followed by RSA
+
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @param packetZipData
-	 *            the data to be encrypted
-	 * @return encrypted data as byte array
-	 * @throws RegBaseCheckedException
+	 * @see
+	 * io.mosip.registration.service.packet.PacketEncryptionService#encrypt(io.mosip
+	 * .registration.dto.RegistrationDTO, byte[])
 	 */
 	@Override
 	public ResponseDTO encrypt(final RegistrationDTO registrationDTO, final byte[] packetZipData)

@@ -19,7 +19,7 @@ public interface VidSequenceRepository extends BaseRepository<VidSequence, Strin
 	/**
 	 * This method returns maximum sequence counter from database.
 	 * 
-	 * @return the {@link TokenIdSequence}.
+	 * @return the {@link VidSequence}.
 	 */
 	@Lock(LockModeType.PESSIMISTIC_WRITE)
 	@Query("from VidSequence v WHERE v.sequenceNumber=(select max(vs.sequenceNumber) from VidSequence vs)")

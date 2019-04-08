@@ -26,7 +26,7 @@ import io.mosip.kernel.masterdata.constant.RegistrationCenterErrorCode;
 import io.mosip.kernel.masterdata.dto.HolidayDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterHolidayDto;
-import io.mosip.kernel.masterdata.dto.RequestDto;
+import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.masterdata.dto.getresponse.RegistrationCenterResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.ResgistrationCenterStatusResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
@@ -52,7 +52,7 @@ import io.mosip.kernel.masterdata.repository.RegistrationCenterRepository;
 import io.mosip.kernel.masterdata.service.LocationService;
 import io.mosip.kernel.masterdata.service.RegistrationCenterHistoryService;
 import io.mosip.kernel.masterdata.service.RegistrationCenterService;
-import io.mosip.kernel.masterdata.utils.EmptyCheckUtils;
+import io.mosip.kernel.core.util.EmptyCheckUtils;
 import io.mosip.kernel.masterdata.utils.ExceptionUtils;
 import io.mosip.kernel.masterdata.utils.MapperUtils;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
@@ -340,12 +340,12 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 	 * createRegistrationCenter(io.mosip.kernel.masterdata.dto.RequestDto)
 	 */
 	@Override
-	public IdResponseDto createRegistrationCenter(RequestDto<RegistrationCenterDto> registrationCenterDto) {
+	public IdResponseDto createRegistrationCenter(RegistrationCenterDto registrationCenterDto) {
 		try {
-			if (!EmptyCheckUtils.isNullEmpty(registrationCenterDto.getRequest().getLatitude())
-					&& !EmptyCheckUtils.isNullEmpty(registrationCenterDto.getRequest().getLongitude())) {
-				Float.parseFloat(registrationCenterDto.getRequest().getLatitude());
-				Float.parseFloat(registrationCenterDto.getRequest().getLongitude());
+			if (!EmptyCheckUtils.isNullEmpty(registrationCenterDto.getLatitude())
+					&& !EmptyCheckUtils.isNullEmpty(registrationCenterDto.getLongitude())) {
+				Float.parseFloat(registrationCenterDto.getLatitude());
+				Float.parseFloat(registrationCenterDto.getLongitude());
 			}
 		} catch (NullPointerException | NumberFormatException latLongException) {
 			throw new RequestException(ApplicationErrorCode.APPLICATION_REQUEST_EXCEPTION.getErrorCode(),
@@ -353,9 +353,9 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 							+ ExceptionUtils.parseException(latLongException));
 		}
 		RegistrationCenter entity = new RegistrationCenter();
-		entity = MetaDataUtils.setCreateMetaData(registrationCenterDto.getRequest(), entity.getClass());
+		entity = MetaDataUtils.setCreateMetaData(registrationCenterDto, entity.getClass());
 		RegistrationCenterHistory registrationCenterHistoryEntity = MetaDataUtils
-				.setCreateMetaData(registrationCenterDto.getRequest(), RegistrationCenterHistory.class);
+				.setCreateMetaData(registrationCenterDto, RegistrationCenterHistory.class);
 		registrationCenterHistoryEntity.setEffectivetimes(entity.getCreatedDateTime());
 		registrationCenterHistoryEntity.setCreatedDateTime(entity.getCreatedDateTime());
 		RegistrationCenter registrationCenter;
@@ -432,7 +432,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 	 */
 	@Transactional
 	@Override
-	public IdAndLanguageCodeID updateRegistrationCenter(RequestDto<RegistrationCenterDto> registrationCenter) {
+	public IdAndLanguageCodeID updateRegistrationCenter(RequestWrapper<RegistrationCenterDto> registrationCenter) {
 		RegistrationCenter updRegistrationCenter = null;
 		try {
 
@@ -573,6 +573,8 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 
 	private Set<String> getLocationCode(Map<Short, List<Location>> levelToListOfLocationMap, Short hierarchyLevel,
 			String text) {
+		validateLocationName(levelToListOfLocationMap, hierarchyLevel, text);
+
 		Set<String> uniqueLocCode = new TreeSet<>();
 		boolean isParent = false;
 		for (Entry<Short, List<Location>> data : levelToListOfLocationMap.entrySet()) {
@@ -593,6 +595,23 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 			}
 		}
 		return uniqueLocCode;
+	}
+
+	private void validateLocationName(Map<Short, List<Location>> levelToListOfLocationMap, Short hierarchyLevel,
+			String text) {
+		// bug fix start
+		List<Location> rootLocation = levelToListOfLocationMap.get(hierarchyLevel);
+		boolean isRootLocation = false;
+		for (Location location : rootLocation) {
+			if (location.getName().trim().equalsIgnoreCase(text)) {
+				isRootLocation = true;
+			}
+		}
+		if (!isRootLocation) {
+			throw new DataNotFoundException(RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorCode(),
+					RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorMessage());
+		}
+		// bug fix end
 	}
 
 }

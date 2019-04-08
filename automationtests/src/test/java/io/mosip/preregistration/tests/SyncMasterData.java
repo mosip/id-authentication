@@ -208,7 +208,7 @@ public class SyncMasterData extends BaseTestCase implements ITest {
            * Booking Appointment Resource URI            
            */
           
-          preReg_URI = commonLibrary.fetch_IDRepo("preReg_SyncMasterDataURI");
+          preReg_URI = commonLibrary.fetch_IDRepo().get("preReg_SyncMasterDataURI");
           
           
     }

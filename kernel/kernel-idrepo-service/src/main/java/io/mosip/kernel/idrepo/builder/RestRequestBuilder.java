@@ -68,7 +68,7 @@ public class RestRequestBuilder {
 	 * @param returnType
 	 *            the return type
 	 * @return the rest request DTO
-	 * @throws IDDataValidationException
+	 * @throws IdRepoDataValidationException
 	 *             the ID data validation exception
 	 */
 	public RestRequestDTO buildRequest(RestServicesConstants restService, Object requestBody, Class<?> returnType)
@@ -182,7 +182,7 @@ public class RestRequestBuilder {
 	 *            the return type
 	 * @param request
 	 *            the request
-	 * @throws IDDataValidationException
+	 * @throws IdRepoDataValidationException
 	 *             the ID data validation exception
 	 */
 	private void checkReturnType(Class<?> returnType, RestRequestDTO request) throws IdRepoDataValidationException {
@@ -204,7 +204,7 @@ public class RestRequestBuilder {
 	 *            the request
 	 * @param httpMethod
 	 *            the http method
-	 * @throws IDDataValidationException
+	 * @throws IdRepoDataValidationException
 	 *             the ID data validation exception
 	 */
 	private void checkHttpMethod(RestRequestDTO request, String httpMethod) throws IdRepoDataValidationException {
@@ -225,7 +225,7 @@ public class RestRequestBuilder {
 	 *            the request
 	 * @param uri
 	 *            the uri
-	 * @throws IDDataValidationException
+	 * @throws IdRepoDataValidationException
 	 *             the ID data validation exception
 	 */
 	private void checkUri(RestRequestDTO request, String uri) throws IdRepoDataValidationException {

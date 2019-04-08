@@ -4,7 +4,11 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /**
- * OTP Manager Application
+ * -------------------------------------------------------------------------
+ * OTP-MANAGER-SERVICE APPLICATION
+ * -------------------------------------------------------------------------
+ * This service serves the functionality of OTP Generation, OTP Validation.
+ * -------------------------------------------------------------------------
  * 
  * @author Ritesh Sinha
  * @author Sagar Mahapatra

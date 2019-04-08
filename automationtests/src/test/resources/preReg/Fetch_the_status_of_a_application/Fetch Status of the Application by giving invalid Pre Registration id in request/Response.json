@@ -1,9 +1,10 @@
 {
-  "err": {
-    "errorCode": "PRG_PAM_APP_005",
-    "message": "INVALID_PRE_REGISTRATION_ID"
-  },
-  "status": false,
-  "resTime": "2019-02-05T09:53:08.249Z",
-  "response": null
+    "id": null,
+    "version": null,
+    "err": {
+        "errorCode": "PRG_PAM_APP_005",
+        "message": "UNABLE_TO_FETCH_THE_PRE_REGISTRATION"
+    },
+    "responsetime": "2019-03-29T09:41:16.045Z",
+    "response": null
 }

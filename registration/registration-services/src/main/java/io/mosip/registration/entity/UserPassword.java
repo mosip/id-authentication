@@ -13,7 +13,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * UserPassword entity details
+ * The Entity Class for User Password details
  * 
  * @author Sravya Surampalli
  * @since 1.0.0

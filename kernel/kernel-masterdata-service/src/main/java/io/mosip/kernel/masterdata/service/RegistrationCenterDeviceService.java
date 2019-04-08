@@ -1,7 +1,6 @@
 package io.mosip.kernel.masterdata.service;
 
 import io.mosip.kernel.masterdata.dto.RegistrationCenterDeviceDto;
-import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.ResponseRegistrationCenterDeviceDto;
 import io.mosip.kernel.masterdata.entity.id.RegistrationCenterDeviceID;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
@@ -33,7 +32,7 @@ public interface RegistrationCenterDeviceService {
 	 *             valid or not present in database.
 	 */
 	public ResponseRegistrationCenterDeviceDto createRegistrationCenterAndDevice(
-			RequestDto<RegistrationCenterDeviceDto> requestDto);
+			RegistrationCenterDeviceDto requestDto);
 
 	/**
 	 * Delete the mapping of registration center and device

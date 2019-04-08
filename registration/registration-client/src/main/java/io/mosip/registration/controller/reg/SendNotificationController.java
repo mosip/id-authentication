@@ -105,6 +105,7 @@ public class SendNotificationController extends BaseController implements Initia
 	/**
 	 * To generate email and SMS notification to the user after successful
 	 * registration
+	 * @param event - action to be happened on click of send button
 	 */
 	@FXML
 	public void sendNotification(ActionEvent event) {

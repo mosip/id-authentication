@@ -3,8 +3,6 @@ package io.mosip.kernel.masterdata.controller;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,7 +13,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.kernel.masterdata.dto.LanguageDto;
-import io.mosip.kernel.masterdata.dto.RequestDto;
+import io.mosip.kernel.core.http.RequestWrapper;
+import io.mosip.kernel.core.http.ResponseFilter;
+import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.masterdata.dto.getresponse.LanguageResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
 import io.mosip.kernel.masterdata.service.LanguageService;
@@ -31,7 +31,7 @@ import io.swagger.annotations.ApiResponses;
  * @since 1.0.0
  */
 @RestController
-@RequestMapping("/v1.0/languages")
+@RequestMapping("/languages")
 @Api(tags = { "Language" })
 public class LanguageController {
 
@@ -41,46 +41,54 @@ public class LanguageController {
 	@Autowired
 	private LanguageService languageService;
 
+	@ResponseFilter
 	@GetMapping
-	@ApiOperation(value = "Retrieve all Languages", notes = "Retrieve all Languages", response = LanguageResponseDto.class)
-	@ApiResponses({
-			@ApiResponse(code = 200, message = "When all Language retrieved from database", response = LanguageResponseDto.class),
+	@ApiOperation(value = "Retrieve all Languages", notes = "Retrieve all Languages")
+	@ApiResponses({ @ApiResponse(code = 200, message = "When all Language retrieved from database"),
 			@ApiResponse(code = 404, message = "When No Language found"),
 			@ApiResponse(code = 500, message = "While retrieving Language any error occured") })
-	public LanguageResponseDto getAllLaguages() {
-		return languageService.getAllLaguages();
+	public ResponseWrapper<LanguageResponseDto> getAllLaguages() {
+		ResponseWrapper<LanguageResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(languageService.getAllLaguages());
+		return responseWrapper;
 	}
 
+	@ResponseFilter
 	@PostMapping
-	@ApiOperation(value = "Service to save Language", notes = "Saves Language and return Language code", response = CodeResponseDto.class)
-	@ApiResponses({
-			@ApiResponse(code = 201, message = "When Language successfully created", response = CodeResponseDto.class),
+	@ApiOperation(value = "Service to save Language", notes = "Saves Language and return Language code")
+	@ApiResponses({ @ApiResponse(code = 201, message = "When Language successfully created"),
 			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
 			@ApiResponse(code = 500, message = "While creating Language any error occured") })
-	public ResponseEntity<CodeResponseDto> saveLanguage(@Valid @RequestBody RequestDto<LanguageDto> language) {
-		return new ResponseEntity<>(languageService.saveLanguage(language), HttpStatus.OK);
+	public ResponseWrapper<CodeResponseDto> saveLanguage(@Valid @RequestBody RequestWrapper<LanguageDto> language) {
+		ResponseWrapper<CodeResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(languageService.saveLanguage(language.getRequest()));
+		return responseWrapper;
 	}
 
+	@ResponseFilter
 	@PutMapping
-	@ApiOperation(value = "Service to update Language", notes = "Update Language and return Language code", response = CodeResponseDto.class)
-	@ApiResponses({
-			@ApiResponse(code = 200, message = "When Language successfully updated", response = CodeResponseDto.class),
+	@ApiOperation(value = "Service to update Language", notes = "Update Language and return Language code")
+	@ApiResponses({ @ApiResponse(code = 200, message = "When Language successfully updated"),
 			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
 			@ApiResponse(code = 404, message = "When No Language found"),
 			@ApiResponse(code = 500, message = "While updating Language any error occured") })
-	public ResponseEntity<CodeResponseDto> updateLanguage(@Valid @RequestBody RequestDto<LanguageDto> language) {
-		return new ResponseEntity<>(languageService.updateLanguage(language), HttpStatus.OK);
+	public ResponseWrapper<CodeResponseDto> updateLanguage(@Valid @RequestBody RequestWrapper<LanguageDto> language) {
+		ResponseWrapper<CodeResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(languageService.updateLanguage(language.getRequest()));
+		return responseWrapper;
 	}
 
+	@ResponseFilter
 	@DeleteMapping("/{code}")
-	@ApiOperation(value = "Service to delete Language", notes = "Delete Language and return Language code", response = CodeResponseDto.class)
-	@ApiResponses({
-			@ApiResponse(code = 200, message = "When Language successfully deleted", response = CodeResponseDto.class),
+	@ApiOperation(value = "Service to delete Language", notes = "Delete Language and return Language code")
+	@ApiResponses({ @ApiResponse(code = 200, message = "When Language successfully deleted"),
 			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
 			@ApiResponse(code = 404, message = "When No Language found"),
 			@ApiResponse(code = 500, message = "While deleting Language any error occured") })
-	public ResponseEntity<CodeResponseDto> deleteLanguage(@PathVariable("code") String code) {
-		return new ResponseEntity<>(languageService.deleteLanguage(code), HttpStatus.OK);
+	public ResponseWrapper<CodeResponseDto> deleteLanguage(@PathVariable("code") String code) {
+		ResponseWrapper<CodeResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(languageService.deleteLanguage(code));
+		return responseWrapper;
 	}
 
 }

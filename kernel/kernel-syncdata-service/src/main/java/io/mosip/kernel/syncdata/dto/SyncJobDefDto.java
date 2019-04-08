@@ -5,12 +5,39 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
+// TODO: Auto-generated Javadoc
+/* (non-Javadoc)
+ * @see java.lang.Object#toString()
+ */
 @Data
-@EqualsAndHashCode(callSuper = false)
-@NoArgsConstructor
-@AllArgsConstructor
-public class SyncJobDefDto extends BaseDto {
 
+/* (non-Javadoc)
+ * @see java.lang.Object#hashCode()
+ */
+@EqualsAndHashCode(callSuper = false)
+
+/**
+ * Instantiates a new sync job def dto.
+ */
+@NoArgsConstructor
+
+/**
+ * Instantiates a new sync job def dto.
+ *
+ * @param id the id
+ * @param name the name
+ * @param apiName the api name
+ * @param parentSyncJobId the parent sync job id
+ * @param syncFreq the sync freq
+ * @param lockDuration the lock duration
+ * @param isActive the is active
+ * @param isDeleted the is deleted
+ * @param langCode the lang code
+ */
+@AllArgsConstructor
+public class SyncJobDefDto  {
+
+	/** The id. */
 	private String id;
 
 	/** The name. */
@@ -32,5 +59,14 @@ public class SyncJobDefDto extends BaseDto {
 	/** The lock duration. */
 
 	private String lockDuration;
+	
+	/** The is active. */
+	private Boolean isActive;
+	
+	/** The is deleted. */
+	private Boolean isDeleted;
+	
+	/** The lang code. */
+	private String langCode;
 
 }

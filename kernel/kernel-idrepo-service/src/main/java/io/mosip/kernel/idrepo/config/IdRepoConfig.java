@@ -111,7 +111,7 @@ public class IdRepoConfig implements WebMvcConfigurer {
 	/**
 	 * Sets the allowed bio types.
 	 *
-	 * @param allowedBioTypes
+	 * @param allowedBioAttributes
 	 *            the new allowed bio types
 	 */
 	public void setAllowedBioAttributes(List<String> allowedBioAttributes) {

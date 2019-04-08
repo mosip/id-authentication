@@ -3,15 +3,24 @@
  */
 package io.mosip.kernel.auth.exception;
 
+import java.io.IOException;
+
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.util.ContentCachingRequestWrapper;
 
-import io.mosip.kernel.core.exception.ErrorResponse;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+
 import io.mosip.kernel.core.exception.ServiceError;
+import io.mosip.kernel.core.http.ResponseWrapper;
+import io.mosip.kernel.core.util.EmptyCheckUtils;
 
 /**
  * @author M1049825
@@ -20,30 +29,46 @@ import io.mosip.kernel.core.exception.ServiceError;
 @RestControllerAdvice
 public class AuthManagerExceptionHandler {
 	
+	@Autowired
+	private ObjectMapper objectMapper;
+	
 	@ExceptionHandler(value = { Exception.class, RuntimeException.class })
-	public ResponseEntity<ErrorResponse<ServiceError>> defaultErrorHandler(HttpServletRequest request, Exception e) {
-		ErrorResponse<ServiceError> errorResponse = new ErrorResponse<>();
+	public ResponseEntity<ResponseWrapper<ServiceError>> defaultErrorHandler(HttpServletRequest request, Exception e) throws IOException {
+		ResponseWrapper<ServiceError> responseWrapper = setErrors(request);
 		ServiceError error = new ServiceError("500", e.getMessage());
-		errorResponse.getErrors().add(error);
-		errorResponse.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-		return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+		responseWrapper.getErrors().add(error);
+		return new ResponseEntity<>(responseWrapper, HttpStatus.INTERNAL_SERVER_ERROR);
+	}
+	
+	private ResponseWrapper<ServiceError> setErrors(HttpServletRequest httpServletRequest) throws IOException {
+		ResponseWrapper<ServiceError> responseWrapper = new ResponseWrapper<>();
+		String requestBody = null;
+		if (httpServletRequest instanceof ContentCachingRequestWrapper) {
+			requestBody = new String(((ContentCachingRequestWrapper) httpServletRequest).getContentAsByteArray());
+		}
+		if (EmptyCheckUtils.isNullEmpty(requestBody)) {
+			return responseWrapper;
+		}
+		objectMapper.registerModule(new JavaTimeModule());
+		JsonNode reqNode = objectMapper.readTree(requestBody);
+		responseWrapper.setId(reqNode.path("id").asText());
+		responseWrapper.setVersion(reqNode.path("version").asText());
+		return responseWrapper;
 	}
 	
 	@ExceptionHandler(value = { AuthManagerException.class })
-	public ResponseEntity<ErrorResponse<ServiceError>> customErrorMessage(HttpServletRequest request, AuthManagerException e) {
-		ErrorResponse<ServiceError> errorResponse = new ErrorResponse<>();
+	public ResponseEntity<ResponseWrapper<ServiceError>> customErrorMessage(HttpServletRequest request, AuthManagerException e) throws IOException {
+		ResponseWrapper<ServiceError> responseWrapper = setErrors(request);
 		ServiceError error = new ServiceError(e.getErrorCode(), e.getMessage());
-		errorResponse.getErrors().add(error);
-		errorResponse.setStatus(HttpStatus.OK.value());
-		return new ResponseEntity<>(errorResponse, HttpStatus.OK);
+		responseWrapper.getErrors().add(error);
+		return new ResponseEntity<>(responseWrapper, HttpStatus.OK);
 	}
 	
 	@ExceptionHandler(value = { AuthManagerServiceException.class })
-	public ResponseEntity<ErrorResponse<ServiceError>> customErrorMessageList(HttpServletRequest request, AuthManagerServiceException e) {
-		ErrorResponse<ServiceError> errorResponse = new ErrorResponse<>();
-		errorResponse.getErrors().addAll(e.getList());
-		errorResponse.setStatus(HttpStatus.OK.value());
-		return new ResponseEntity<>(errorResponse, HttpStatus.OK);
+	public ResponseEntity<ResponseWrapper<ServiceError>> customErrorMessageList(HttpServletRequest request, AuthManagerServiceException e) throws IOException {
+		ResponseWrapper<ServiceError> responseWrapper = setErrors(request);
+		responseWrapper.getErrors().addAll(e.getList());
+		return new ResponseEntity<>(responseWrapper, HttpStatus.OK);
 	}
 
 }

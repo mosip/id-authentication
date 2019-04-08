@@ -4,7 +4,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 /**
- * The Class For KycAuthResponseDTO extending BaseAuthResponseDTO
+ * The Class For KycAuthResponseDTO extending {@link AuthResponseDTO}
  * 
  * @author Prem Kumar
  *
@@ -13,7 +13,7 @@ import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode(callSuper=true	)
-public class KycAuthResponseDTO extends AuthResponseDTO {
+public class KycAuthResponseDTO extends BaseAuthResponseDTO {
 	
 	/** The KycResponseDTO */
 	private KycResponseDTO response;

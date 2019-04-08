@@ -17,6 +17,11 @@ import org.apache.http.ssl.TrustStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.core.env.Environment;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
@@ -131,6 +136,45 @@ public class RestApiClient {
 			logger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
 					LoggerFileConstant.APPLICATIONID.toString(), requestType.toString());
 			result = (T) restTemplate.patchForObject(uri, requestType, responseClass);
+		} catch (Exception e) {
+
+			logger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
+					LoggerFileConstant.APPLICATIONID.toString(), e.getMessage() + ExceptionUtils.getStackTrace(e));
+
+			throw e;
+		}
+		return result;
+	}
+	
+	/**
+	 * Put api.
+	 *
+	 * @param <T> the generic type
+	 * @param uri the uri
+	 * @param requestType the request type
+	 * @param responseClass the response class
+	 * @return the t
+	 * @throws Exception the exception
+	 */
+	@SuppressWarnings("unchecked")
+	public <T> T putApi(String uri, Object requestType, Class<?> responseClass) throws Exception {
+
+		RestTemplate restTemplate;
+		T result = null;
+		ResponseEntity<T> response = null;
+		try {
+			restTemplate = getRestTemplate();
+			logger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
+					LoggerFileConstant.APPLICATIONID.toString(), uri);
+			logger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
+					LoggerFileConstant.APPLICATIONID.toString(), requestType.toString());
+			
+			// set headers
+			HttpHeaders headers = new HttpHeaders();
+			headers.setContentType(MediaType.APPLICATION_JSON);
+			 HttpEntity<String> entity = new HttpEntity<String>(requestType.toString(), headers);
+			 response = (ResponseEntity<T>) restTemplate.exchange(uri, HttpMethod.PUT, entity, responseClass);
+			 result = response.getBody();
 		} catch (Exception e) {
 
 			logger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),

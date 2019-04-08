@@ -1,9 +1,11 @@
 {
-   "err": null,
-   "status": true,
-   "resTime": "2019-01-29T07:30:42.464Z",
-   "response":    {
-      "transactionId": "c8a28a0e-2397-11e9-b650-375e6f8467eb",
-      "message": "APPOINTMENT_SUCCESSFULLY_CANCELED"
-   }
+"id":null,
+"version":null,
+"responsetime":"2019-04-01T06:01:01.169Z",
+"response":
+{
+"transactionId":"86bdfa97-5443-11e9-b170-0792e7531b66",
+"message":"APPOINTMENT_SUCCESSFULLY_CANCELED"
+},
+"errors":null
 }

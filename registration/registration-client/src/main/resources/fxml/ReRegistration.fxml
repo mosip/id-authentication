@@ -42,7 +42,7 @@
                 <RowConstraints percentHeight="100.0" vgrow="SOMETIMES" />
               </rowConstraints>
                <children>
-                  <GridPane GridPane.columnIndex="1" GridPane.rowIndex="1">
+                  <GridPane fx:id="tableContainer" GridPane.columnIndex="1" GridPane.rowIndex="1">
                     <columnConstraints>
                       <ColumnConstraints hgrow="SOMETIMES" percentWidth="100.0" />
                     </columnConstraints>
@@ -52,8 +52,8 @@
                      <children>
                         <TableView fx:id="table" styleClass="approvalTable">
                            <columns>
-                              <TableColumn fx:id="id" styleClass="reRegTableId" text="%registrationid" />
-                              <TableColumn fx:id="acknowledgementFormPath" text="%registrtionid" visible="false" />
+                              <TableColumn fx:id="id" prefWidth="${tableContainer.width}" text="%registrationid" />
+                              <TableColumn fx:id="acknowledgementFormPath" prefWidth="${tableContainer.width*40/100}"  text="%registrtionid" visible="false" />
                            </columns>
                         </TableView>
                      </children>

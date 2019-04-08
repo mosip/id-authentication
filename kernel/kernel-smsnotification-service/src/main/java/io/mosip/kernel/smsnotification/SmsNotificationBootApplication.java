@@ -7,7 +7,11 @@ import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
 
 /**
- * Sms notification application.
+ * -------------------------------------------------------------------------
+ * SMS-NOTIFICATION-SERVICE APPLICATION
+ * -------------------------------------------------------------------------
+ * This service serves the functionality of sending SMS.
+ * -------------------------------------------------------------------------
  * 
  * @author Ritesh Sinha
  * @since 1.0.0

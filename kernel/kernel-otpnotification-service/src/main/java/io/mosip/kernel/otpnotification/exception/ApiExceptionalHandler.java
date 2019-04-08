@@ -1,22 +1,30 @@
 package io.mosip.kernel.otpnotification.exception;
 
+import java.io.IOException;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.util.ContentCachingRequestWrapper;
 
-import io.mosip.kernel.core.exception.BaseUncheckedException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+
 import io.mosip.kernel.core.exception.ErrorResponse;
 import io.mosip.kernel.core.exception.ServiceError;
-
+import io.mosip.kernel.core.http.ResponseWrapper;
+import io.mosip.kernel.core.util.EmptyCheckUtils;
 import io.mosip.kernel.otpnotification.constant.OtpNotificationErrorConstant;
 
 /**
@@ -27,147 +35,133 @@ import io.mosip.kernel.otpnotification.constant.OtpNotificationErrorConstant;
  */
 @RestControllerAdvice
 public class ApiExceptionalHandler {
+	@Autowired
+	private ObjectMapper objectMapper;
 
 	public static final String WHITESPACE = " ";
 
 	/**
 	 * This method handles HttpClientErrorException.
 	 * 
-	 * @param e
-	 *            the exception.
+	 * @param e the exception.
 	 * @return the response entity.
+	 * @throws IOException
 	 */
 	@ExceptionHandler(HttpClientErrorException.class)
-	public ResponseEntity<ErrorResponse<ServiceError>> httpClientErrorException(final HttpClientErrorException e) {
-		return new ResponseEntity<>(getErrorResponse(OtpNotificationErrorConstant.NOTIFIER_SERVER_ERROR.getErrorCode(),
-				OtpNotificationErrorConstant.NOTIFIER_SERVER_ERROR.getErrorMessage() + WHITESPACE
-						+ e.getResponseBodyAsString(),
-				HttpStatus.OK), HttpStatus.OK);
+	public ResponseEntity<ResponseWrapper<ServiceError>> httpClientErrorException(
+			final HttpServletRequest httpServletRequest, final HttpClientErrorException e) throws IOException {
+		ResponseWrapper<ServiceError> responseWrapper = setErrors(httpServletRequest);
+		ServiceError error = new ServiceError(OtpNotificationErrorConstant.NOTIFIER_SERVER_ERROR.getErrorCode(),
+				OtpNotificationErrorConstant.NOTIFIER_SERVER_ERROR.getErrorMessage());
+		responseWrapper.getErrors().add(error);
+		return new ResponseEntity<>(responseWrapper, HttpStatus.OK);
 	}
 
 	/**
 	 * This method handles OtpInvalidArgumentException.
 	 * 
-	 * @param exception
-	 *            The exception.
+	 * @param exception The exception.
 	 * @return The response entity.
+	 * @throws IOException
 	 */
 	@ExceptionHandler(OtpNotificationInvalidArgumentException.class)
-	public ResponseEntity<ErrorResponse<ServiceError>> otpValidationArgumentValidity(
-			final OtpNotificationInvalidArgumentException exception) {
-		ErrorResponse<ServiceError> errorResponse = new ErrorResponse<>();
+	public ResponseEntity<ResponseWrapper<ServiceError>> otpValidationArgumentValidity(
+			final HttpServletRequest httpServletRequest, final OtpNotificationInvalidArgumentException exception)
+			throws IOException {
+		ResponseWrapper<ServiceError> errorResponse = setErrors(httpServletRequest);
 		errorResponse.getErrors().addAll(exception.getList());
-		errorResponse.setStatus(HttpStatus.OK.value());
 		return new ResponseEntity<>(errorResponse, HttpStatus.OK);
 	}
 
 	/**
 	 * This method handles MethodArgumentNotValidException.
 	 * 
-	 * @param e
-	 *            The exception.
+	 * @param e The exception.
 	 * @return The response entity.
+	 * @throws IOException
 	 */
 	@ExceptionHandler(MethodArgumentNotValidException.class)
-	public ResponseEntity<ErrorResponse<ServiceError>> methodArgumentNotValidException(
-			final MethodArgumentNotValidException e) {
-		ErrorResponse<ServiceError> errorResponse = new ErrorResponse<>();
-		final List<FieldError> fieldErrors = e.getBindingResult().getFieldErrors();
+	public ResponseEntity<ResponseWrapper<ServiceError>> methodArgumentNotValidException(
+			final HttpServletRequest httpServletRequest, final MethodArgumentNotValidException e) throws IOException {
+
+		ResponseWrapper<ServiceError> responseWrapper = setErrors(httpServletRequest);
+		BindingResult bindingResult = e.getBindingResult();
+		final List<FieldError> fieldErrors = bindingResult.getFieldErrors();
 		fieldErrors.forEach(x -> {
 			ServiceError error = new ServiceError(
 					OtpNotificationErrorConstant.NOTIFIER_INVALID_REQUEST_ERROR.getErrorCode(),
 					x.getField() + ": " + x.getDefaultMessage());
-			errorResponse.getErrors().add(error);
-			errorResponse.setStatus(HttpStatus.OK.value());
+			responseWrapper.getErrors().add(error);
 		});
-		return new ResponseEntity<>(errorResponse, HttpStatus.OK);
+		return new ResponseEntity<>(responseWrapper, HttpStatus.OK);
 	}
 
 	/**
 	 * This method handles OtpNotifierServiceException.
 	 * 
-	 * @param e
-	 *            the exception.
+	 * @param e the exception.
 	 * @return the response entity.
+	 * @throws IOException
 	 */
 	@ExceptionHandler(OtpNotifierServiceException.class)
-	public ResponseEntity<ErrorResponse<ServiceError>> controlDataServiceException(
-			final OtpNotifierServiceException e) {
-		return getErrorResponseEntity(e, HttpStatus.OK);
+	public ResponseEntity<ResponseWrapper<ServiceError>> controlDataServiceException(
+			final HttpServletRequest httpServletRequest, final OtpNotifierServiceException e) throws IOException {
+		ResponseWrapper<ServiceError> responseWrapper = setErrors(httpServletRequest);
+		ServiceError error = new ServiceError(e.getErrorCode(), e.getErrorText());
+		responseWrapper.getErrors().add(error);
+		return new ResponseEntity<>(responseWrapper, HttpStatus.OK);
 	}
-	
+
 	/**
 	 * Method to handle {@link HttpMessageNotReadableException}.
 	 * 
-	 * @param exception
-	 *            the exception.
+	 * @param exception the exception.
 	 * @return {@link ErrorResponse}.
+	 * @throws IOException
 	 */
 	@ExceptionHandler(HttpMessageNotReadableException.class)
-	public ResponseEntity<ErrorResponse<ServiceError>> onHttpMessageNotReadable(
-			final HttpMessageNotReadableException exception) {
-		ErrorResponse<ServiceError> errorResponse = new ErrorResponse<>();
+	public ResponseEntity<ResponseWrapper<ServiceError>> onHttpMessageNotReadable(
+			final HttpServletRequest httpServletRequest, final HttpMessageNotReadableException exception)
+			throws IOException {
+
+		ResponseWrapper<ServiceError> responseWrapper = setErrors(httpServletRequest);
 		ServiceError error = new ServiceError(OtpNotificationErrorConstant.HTTP_MESSAGE_NOT_READABLE.getErrorCode(),
 				exception.getMessage());
-		errorResponse.getErrors().add(error);
-		errorResponse.setStatus(HttpStatus.OK.value());
-		return new ResponseEntity<>(errorResponse, HttpStatus.OK);
+		responseWrapper.getErrors().add(error);
+		return new ResponseEntity<>(responseWrapper, HttpStatus.OK);
 	}
 
 	/**
 	 * Method to handle {@link RuntimeException}.
 	 * 
-	 * @param request
-	 *            the servlet request.
-	 * @param exception
-	 *            the exception.
+	 * @param request   the servlet request.
+	 * @param exception the exception.
 	 * @return {@link ErrorResponse}.
+	 * @throws IOException
 	 */
 	@ExceptionHandler(value = { Exception.class, RuntimeException.class })
-	public ResponseEntity<ErrorResponse<ServiceError>> defaultErrorHandler(HttpServletRequest request,
-			Exception exception) {
-		ErrorResponse<ServiceError> errorResponse = new ErrorResponse<>();
+	public ResponseEntity<ResponseWrapper<ServiceError>> defaultErrorHandler(
+			final HttpServletRequest httpServletRequest, Exception exception) throws IOException {
+		ResponseWrapper<ServiceError> responseWrapper = setErrors(httpServletRequest);
 		ServiceError error = new ServiceError(OtpNotificationErrorConstant.RUNTIME_EXCEPTION.getErrorCode(),
 				exception.getMessage());
-		errorResponse.getErrors().add(error);
-		errorResponse.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-		return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+		responseWrapper.getErrors().add(error);
+		return new ResponseEntity<>(responseWrapper, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
-	/**
-	 * This method provide error response.
-	 * 
-	 * @param errorCode
-	 *            the error code.
-	 * @param errorMessage
-	 *            the error message.
-	 * @param httpStatus
-	 *            the http status of response.
-	 * @return the {@link ErrorResponse}.
-	 */
-	private ErrorResponse<ServiceError> getErrorResponse(String errorCode, String errorMessage, HttpStatus httpStatus) {
-		ServiceError error = new ServiceError(errorCode, errorMessage);
-		ErrorResponse<ServiceError> errorResponse = new ErrorResponse<>();
-		errorResponse.getErrors().add(error);
-		errorResponse.setStatus(httpStatus.value());
-		return errorResponse;
-	}
-
-	/**
-	 * This method provide error response entity.
-	 * 
-	 * @param e
-	 *            the exception of type {@link BaseUncheckedException}.
-	 * @param httpStatus
-	 *            the http status.
-	 * @return the response entity.
-	 */
-	private ResponseEntity<ErrorResponse<ServiceError>> getErrorResponseEntity(BaseUncheckedException e,
-			HttpStatus httpStatus) {
-		ServiceError error = new ServiceError(e.getErrorCode(), e.getErrorText());
-		ErrorResponse<ServiceError> errorResponse = new ErrorResponse<>();
-		errorResponse.getErrors().add(error);
-		errorResponse.setStatus(httpStatus.value());
-		return new ResponseEntity<>(errorResponse, httpStatus);
+	private ResponseWrapper<ServiceError> setErrors(HttpServletRequest httpServletRequest) throws IOException {
+		ResponseWrapper<ServiceError> responseWrapper = new ResponseWrapper<>();
+		String requestBody = null;
+		if (httpServletRequest instanceof ContentCachingRequestWrapper) {
+			requestBody = new String(((ContentCachingRequestWrapper) httpServletRequest).getContentAsByteArray());
+		}
+		if (EmptyCheckUtils.isNullEmpty(requestBody)) {
+			return responseWrapper;
+		}
+		objectMapper.registerModule(new JavaTimeModule());
+		JsonNode reqNode = objectMapper.readTree(requestBody);
+		responseWrapper.setId(reqNode.path("id").asText());
+		responseWrapper.setVersion(reqNode.path("version").asText());
+		return responseWrapper;
 	}
 }

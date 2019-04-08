@@ -1,0 +1,8 @@
+{
+   "timestamp": 1553511700495,
+   "status": 200,
+   "errors": [   {
+      "errorCode": "KER-UIG-001",
+      "errorMessage": "UIN could not be found"
+   }]
+}

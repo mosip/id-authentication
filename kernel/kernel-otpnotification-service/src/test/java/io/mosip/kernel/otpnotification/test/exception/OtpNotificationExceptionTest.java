@@ -20,6 +20,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.client.HttpClientErrorException;
@@ -27,9 +28,9 @@ import org.springframework.web.client.HttpClientErrorException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.core.templatemanager.spi.TemplateManager;
-import io.mosip.kernel.otpnotification.OtpNotificationBootApplication;
 import io.mosip.kernel.otpnotification.dto.OtpNotificationRequestDto;
 import io.mosip.kernel.otpnotification.service.impl.OtpNotificationServiceImpl;
+import io.mosip.kernel.otpnotification.test.OtpNotificationTestBootApplication;
 import io.mosip.kernel.otpnotification.utils.OtpNotificationUtil;
 
 /**
@@ -39,7 +40,7 @@ import io.mosip.kernel.otpnotification.utils.OtpNotificationUtil;
  * @since 1.0.0
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = { OtpNotificationBootApplication.class })
+@SpringBootTest(classes = { OtpNotificationTestBootApplication.class })
 @AutoConfigureMockMvc
 public class OtpNotificationExceptionTest {
 
@@ -58,6 +59,7 @@ public class OtpNotificationExceptionTest {
 	@MockBean
 	private TemplateManager templateManager;
 
+	@WithUserDetails("individual")
 	@Test
 	public void emptyNotificationTypeTest() throws Exception {
 		OtpNotificationRequestDto request = new OtpNotificationRequestDto();
@@ -69,10 +71,11 @@ public class OtpNotificationExceptionTest {
 		request.setMobileNumber("8999898989");
 		request.setSmsTemplate("YOUR LOGIN OTP IS $otp");
 		String json = mapper.writeValueAsString(request);
-		mockMvc.perform(post("/v1.0/otp/send").contentType(MediaType.APPLICATION_JSON).content(json))
+		mockMvc.perform(post("/otp/send").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isOk());
 	}
 
+	@WithUserDetails("individual")
 	@Test
 	public void clientErrorExceptionTest() throws Exception {
 
@@ -88,11 +91,12 @@ public class OtpNotificationExceptionTest {
 		String json = mapper.writeValueAsString(request);
 		when(service.sendOtpNotification(request))
 				.thenThrow(new HttpClientErrorException(HttpStatus.OK, "number cannot be null or blank"));
-		mockMvc.perform(post("/v1.0/otp/send").contentType(MediaType.APPLICATION_JSON).content(json))
+		mockMvc.perform(post("/otp/send").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isOk());
 
 	}
 
+	@WithUserDetails("individual")
 	@Test
 	public void OtpNotifierServiceExceptionTest() throws Exception {
 		List<String> notificationTypes = new ArrayList<>();
@@ -106,7 +110,7 @@ public class OtpNotificationExceptionTest {
 		request.setSmsTemplate("YOUR LOGIN OTP IS $otp");
 		String json = mapper.writeValueAsString(request);
 		when(templateManager.merge(Mockito.any(), Mockito.any())).thenThrow(IOException.class);
-		mockMvc.perform(post("/v1.0/otp/send").contentType(MediaType.APPLICATION_JSON).content(json))
+		mockMvc.perform(post("/otp/send").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isOk());
 	}
 

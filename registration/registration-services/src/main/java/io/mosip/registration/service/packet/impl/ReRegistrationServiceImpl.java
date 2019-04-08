@@ -19,6 +19,12 @@ import io.mosip.registration.dto.PacketStatusDTO;
 import io.mosip.registration.entity.Registration;
 import io.mosip.registration.service.packet.ReRegistrationService;
 
+/**
+ * Implementation class for {@link ReRegistrationService}
+ * 
+ * @author saravanakumar gnanaguru
+ *
+ */
 @Service
 public class ReRegistrationServiceImpl implements ReRegistrationService {
 	

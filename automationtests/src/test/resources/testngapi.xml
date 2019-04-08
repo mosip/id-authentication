@@ -4,21 +4,21 @@
 <suite name="Mosip API Suite">
 	<!-- Passing Group as parmeter unsing "testType" Possible Groups are: smoke 
 		regression smokeAndRegression -->
-	<listeners>
+<!-- 	<listeners>
 		<listener class-name="io.mosip.util.CustomTestNGReporter" />
-	</listeners>
+	</listeners> -->
 
-
-<!--   Passing Group as parmeter unsing "testType"
+<!-- 
+  Passing Group as parmeter unsing "testType"
   Possible Groups are:
   						smoke
   						regression
   						smokeAndRegression -->
  
-                 <test name="Kernel Tests">
+                  <test name="Kernel Tests">
                      <parameter name="testType" value="smokeandregression" />
                      <classes>
-                           <class name="io.mosip.kernel.tests.AuditLog" />
+                         <class name="io.mosip.kernel.tests.AuditLog" />
                            <class name="io.mosip.kernel.tests.CentetMachineUserMappingToMasterData" />
                            <class name="io.mosip.kernel.tests.EmailNotification" />
                            <class name="io.mosip.kernel.tests.EncrptionDecryption" />
@@ -62,7 +62,12 @@
                            <class name="io.mosip.kernel.tests.SyncPublicKeyToRegClient" />
                            <class name="io.mosip.kernel.tests.UINGeneration" />
                            <class name="io.mosip.kernel.tests.ValidateGenderByName" />
-                           <class name="io.mosip.kernel.tests.ValidateLocationByName" />
+                           <class name="io.mosip.kernel.tests.ValidateLocationByName" />  
+                           <class name="io.mosip.kernel.tests.SyncMasterDataWithoutRegID" />
+                           <class name="io.mosip.kernel.tests.SyncMasterDataWithRegID" />
+                           <class name="io.mosip.kernel.tests.UINStatusCheck" />
+                           <class name="io.mosip.kernel.tests.UINStatusUpdate" />
+                           <class name="io.mosip.kernel.tests.GetAllTemplateByTemplateTypeCode" />
                      </classes>
               </test> 
 
@@ -83,7 +88,7 @@
 	
 		
 	
-	 <test name="PreRegistration Tests">
+	  <test name="PreRegistration Tests">
 
 		<parameter name="testType" value="smoke" />
 
@@ -111,22 +116,22 @@
                            <class name="io.mosip.preregistration.tests.ReBookingAnAppointment" />
                            <class name="io.mosip.preregistration.tests.RetriveAllPreRegIdByRegCenterId" />
                            <class name="io.mosip.preregistration.tests.RetrivePreRegistration" />
-                           <class name="io.mosip.preregistration.tests.UpdatePreRegistrationStatus" />
+                        <!--    <class name="io.mosip.preregistration.tests.UpdatePreRegistrationStatus" /> -->
                            
-                         <!--   <class name="io.mosip.preregistration.tests.SyncMasterData" /> -->
+                           <class name="io.mosip.preregistration.tests.SyncMasterData" />
 			
 
 			
 
 		</classes>
 
-	</test>
+	</test> 
+ 
 
 
 
 
-	
-<!-- 	<test name="Authentication Tests">
+	<!-- <test name="Authentication Tests">
 		<parameter name="testType" value="smokeandregression" />
 		<classes>
 		
@@ -190,11 +195,11 @@
 				<class
 				name="io.mosip.authentication.idrepo.tests.UpdateIdentityDetailIDRepoNegativeScenario" />
 		</classes>
-	</test>  -->
-
+	</test> 
+ -->
 	
 
-	
+
 	
 </suite>
 	

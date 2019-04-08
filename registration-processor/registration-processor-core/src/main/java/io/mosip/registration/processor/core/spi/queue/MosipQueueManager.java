@@ -1,5 +1,7 @@
 package io.mosip.registration.processor.core.spi.queue;
 
+import io.mosip.registration.processor.core.queue.factory.QueueListener;
+
 /**
  * @author Pranav Kumar
  * 
@@ -25,6 +27,6 @@ public interface MosipQueueManager<T, V>{
 	 * @param address    The address
 	 * @return the original message
 	 */
-	public V consume(T mosipQueue, String address);
+	public V consume(T mosipQueue, String address, QueueListener object);
 
 }

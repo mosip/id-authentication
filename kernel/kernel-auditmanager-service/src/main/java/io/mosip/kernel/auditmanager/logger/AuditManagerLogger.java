@@ -27,12 +27,11 @@ public class AuditManagerLogger {
 	private static final String FILE_LOGGER_NAME = AuditAsyncExceptionHandler.class.getName().concat("_file_logger");
 
 	private static Logger fileLogger;
-	
+
 	private static Logger consoleLogger;
-	
+
 	@Value("${mosip.kernel.auditmanager-service-logs-location}")
 	private String logFileLocation;
-
 
 	@PostConstruct
 	public void postConsAuditManagerLogger() {
@@ -42,29 +41,44 @@ public class AuditManagerLogger {
 		auditManagerFileAppender.setFileName(logFileLocation);
 		auditManagerFileAppender.setImmediateFlush(true);
 		auditManagerFileAppender.setPrudent(false);
-		fileLogger=Logfactory.getDefaultFileLogger(auditManagerFileAppender, FILE_LOGGER_NAME);
-		
+		fileLogger = Logfactory.getDefaultFileLogger(auditManagerFileAppender, FILE_LOGGER_NAME);
+
 		ConsoleAppender auditManagerConsoleAppender = new ConsoleAppender();
 		auditManagerConsoleAppender.setAppenderName("consoleappender");
 		auditManagerConsoleAppender.setImmediateFlush(true);
-		consoleLogger=Logfactory.getDefaultConsoleLogger(auditManagerConsoleAppender, CONSOLE_LOGGER_NAME);
+		consoleLogger = Logfactory.getDefaultConsoleLogger(auditManagerConsoleAppender, CONSOLE_LOGGER_NAME);
 	}
 
 	/**
 	 * Method to get the file logger for the class provided.
+	 * 
+	 * @param sessionId
+	 *            session id
+	 * @param idType
+	 *            id type
+	 * @param id
+	 *            id
+	 * @param description
+	 *            description
 	 */
 	public static void fileLoggerError(String sessionId, String idType, String id, String description) {
-	fileLogger.error(sessionId, idType, id, description);
+		fileLogger.error(sessionId, idType, id, description);
 	}
 
 	/**
 	 * Method to get the console logger for the class provided.
-	 *
-	 * @param name the name of logger
-	 * @return the logger
+	 * 
+	 * @param sessionId
+	 *            session id
+	 * @param idType
+	 *            id type
+	 * @param id
+	 *            id
+	 * @param description
+	 *            description
 	 */
 	public static void consoleLoggerError(String sessionId, String idType, String id, String description) {
-	consoleLogger.error(sessionId, idType, id, description);	
+		consoleLogger.error(sessionId, idType, id, description);
 	}
 
 }

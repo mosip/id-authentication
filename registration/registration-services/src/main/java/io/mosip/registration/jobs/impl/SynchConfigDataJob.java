@@ -13,6 +13,12 @@ import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.jobs.BaseJob;
 import io.mosip.registration.service.config.GlobalParamService;
 
+/**
+ * This is a job to sync the config data
+ * @author Sreekar Chukka
+ *
+ * @since 1.0.0
+ */
 @Component("synchConfigDataJob")
 public class SynchConfigDataJob extends BaseJob {
 	@Autowired

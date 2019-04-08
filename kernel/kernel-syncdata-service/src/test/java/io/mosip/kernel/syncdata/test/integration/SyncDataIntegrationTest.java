@@ -1,6 +1,10 @@
 package io.mosip.kernel.syncdata.test.integration;
 
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
+import static org.springframework.test.web.client.response.MockRestResponseCreators.withBadRequest;
+import static org.springframework.test.web.client.response.MockRestResponseCreators.withServerError;
+import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -23,7 +27,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.dao.DataRetrievalFailureException;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.util.ReflectionTestUtils;
+import org.springframework.test.web.client.MockRestServiceServer;
+import org.springframework.test.web.client.match.MockRestRequestMatchers;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.client.RestTemplate;
 
@@ -66,6 +71,7 @@ import io.mosip.kernel.syncdata.entity.RegistrationCenterUserHistory;
 import io.mosip.kernel.syncdata.entity.RegistrationCenterUserMachine;
 import io.mosip.kernel.syncdata.entity.RegistrationCenterUserMachineHistory;
 import io.mosip.kernel.syncdata.entity.ScreenAuthorization;
+import io.mosip.kernel.syncdata.entity.ScreenDetail;
 import io.mosip.kernel.syncdata.entity.Template;
 import io.mosip.kernel.syncdata.entity.TemplateFileFormat;
 import io.mosip.kernel.syncdata.entity.TemplateType;
@@ -119,6 +125,7 @@ import io.mosip.kernel.syncdata.repository.RegistrationCenterUserMachineHistoryR
 import io.mosip.kernel.syncdata.repository.RegistrationCenterUserMachineRepository;
 import io.mosip.kernel.syncdata.repository.RegistrationCenterUserRepository;
 import io.mosip.kernel.syncdata.repository.ScreenAuthorizationRepository;
+import io.mosip.kernel.syncdata.repository.ScreenDetailRepository;
 import io.mosip.kernel.syncdata.repository.TemplateFileFormatRepository;
 import io.mosip.kernel.syncdata.repository.TemplateRepository;
 import io.mosip.kernel.syncdata.repository.TemplateTypeRepository;
@@ -134,7 +141,7 @@ public class SyncDataIntegrationTest {
 	@Autowired
 	private MockMvc mockMvc;
 
-	@MockBean
+	@Autowired
 	private RestTemplate restTemplate;
 
 	private List<Application> applications;
@@ -181,6 +188,7 @@ public class SyncDataIntegrationTest {
 	private List<AppRolePriority> appRolePriorities = null;
 	private List<ScreenAuthorization> screenAuthorizations = null;
 	private List<ProcessList> processList = null;
+	private List<ScreenDetail> screenDetailList = null;
 	@MockBean
 	private ApplicationRepository applicationRepository;
 	@MockBean
@@ -264,6 +272,11 @@ public class SyncDataIntegrationTest {
 	private ProcessListRepository processListRepository;
 	@Autowired
 	private SyncConfigDetailsService syncConfigDetailsService;
+	@MockBean
+	private ScreenDetailRepository screenDetailRepo;
+
+	@Value("${mosip.kernel.syncdata.admin-base-url:http://localhost:8095/admin/syncjobdef}")
+	private String baseUri;
 	/*
 	 * @MockBean private RestTemplate restTemplateM;
 	 */
@@ -276,6 +289,7 @@ public class SyncDataIntegrationTest {
 			+ "}";
 	private static final String JSON_REGISTRATION_CONFIG_RESPONSE = "{\"keyValidityPeriodPreRegPack\":\"3\",\"smsNotificationTemplateRegCorrection\":\"OTP for your request is $otp\",\"defaultDOB\":\"1-Jan\",\"smsNotificationTemplateOtp\":\"OTP for your request is $otp\",\"supervisorVerificationRequiredForExceptions\":\"true\",\"keyValidityPeriodRegPack\":\"3\",\"irisRetryAttempts\":\"10\",\"fingerprintQualityThreshold\":\"120\",\"multifactorauthentication\":\"true\",\"smsNotificationTemplateUpdateUIN\":\"OTP for your request is $otp\",\"supervisorAuthType\":\"password\",\"maxDurationRegPermittedWithoutMasterdataSyncInDays\":\"10\",\"modeOfNotifyingIndividual\":\"mobile\",\"emailNotificationTemplateUpdateUIN\":\"Hello $user the OTP is $otp\",\"maxDocSizeInMB\":\"150\",\"emailNotificationTemplateOtp\":\"Hello $user the OTP is $otp\",\"emailNotificationTemplateRegCorrection\":\"Hello $user the OTP is $otp\",\"faceRetry\":\"12\",\"noOfFingerprintAuthToOnboardUser\":\"10\",\"smsNotificationTemplateLostUIN\":\"OTP for your request is $otp\",\"supervisorAuthMode\":\"IRIS\",\"operatorRegSubmissionMode\":\"fingerprint\",\"officerAuthType\":\"password\",\"faceQualityThreshold\":\"25\",\"gpsDistanceRadiusInMeters\":\"3\",\"automaticSyncFreqServerToClient\":\"25\",\"maxDurationWithoutMasterdataSyncInDays\":\"7\",\"loginMode\":\"bootable dongle\",\"irisQualityThreshold\":\"25\",\"retentionPeriodAudit\":\"3\",\"fingerprintRetryAttempts\":\"234\",\"emailNotificationTemplateNewReg\":\"Hello $user the OTP is $otp\",\"passwordExpiryDurationInDays\":\"3\",\"emailNotificationTemplateLostUIN\":\"Hello $user the OTP is $otp\",\"blockRegistrationIfNotSynced\":\"10\",\"noOfIrisAuthToOnboardUser\":\"10\",\"smsNotificationTemplateNewReg\":\"OTP for your request is $otp\"}";
 	private static final String JSON_GLOBAL_CONFIG_RESPONSE = "{\"mosip.kernel.crypto.symmetric-algorithm-name\":\"AES\",\"mosip.kernel.virus-scanner.port\":\"3310\",\"mosip.kernel.email.max-length\":\"50\",\"mosip.kernel.email.domain.ext-max-lenght\":\"7\",\"mosip.kernel.rid.sequence-length\":\"5\",\"mosip.kernel.uin.uin-generation-cron\":\"0 * * * * *\",\"mosip.kernel.rid.centerid-length\":\"5\",\"mosip.kernel.email.special-char\":\"!#$%&'*+-\\/=?^_`{|}~.\",\"mosip.kernel.rid.timestamp-length\":\"14\",\"mosip.kernel.vid.length.sequence-limit\":\"3\",\"mosip.kernel.keygenerator.asymmetric-algorithm-length\":\"2048\",\"mosip.kernel.uin.min-unused-threshold\":\"100000\",\"mosip.kernel.prid.sequence-limit\":\"3\",\"auth.role.prefix\":\"ROLE_\",\"mosip.kernel.email.domain.ext-min-lenght\":\"2\",\"auth.server.validate.url\":\"http:\\/\\/localhost:8091\\/auth\\/validate_token\",\"mosip.kernel.machineid.length\":\"4\",\"mosip.supported-languages\":\"eng,ara,fra\",\"mosip.kernel.prid.length\":\"14\",\"auth.header.name\":\"Authorization\",\"mosip.kernel.crypto.asymmetric-algorithm-name\":\"RSA\",\"mosip.kernel.phone.min-length\":\"9\",\"mosip.kernel.uin.length\":\"10\",\"mosip.kernel.virus-scanner.host\":\"104.211.209.102\",\"mosip.kernel.email.min-length\":\"7\",\"mosip.kernel.rid.machineid-length\":\"5\",\"mosip.kernel.prid.repeating-block-limit\":\"3\",\"mosip.kernel.vid.length.repeating-block-limit\":\"2\",\"mosip.kernel.rid.length\":\"29\",\"mosip.kernel.phone.max-length\":\"15\",\"mosip.kernel.prid.repeating-limit\":\"2\",\"mosip.kernel.uin.restricted-numbers\":\"786,666\",\"mosip.kernel.email.domain.special-char\":\"-\",\"mosip.kernel.vid.length.repeating-limit\":\"2\",\"mosip.kernel.registrationcenterid.length\":\"4\",\"mosip.kernel.phone.special-char\":\"+ -\",\"mosip.kernel.uin.uins-to-generate\":\"200000\",\"mosip.kernel.vid.length\":\"16\",\"mosip.kernel.tokenid.length\":\"36\",\"mosip.kernel.uin.length.repeating-block-limit\":\"2\",\"mosip.kernel.tspid.length\":\"4\",\"mosip.kernel.tokenid.sequence-limit\":\"3\",\"mosip.kernel.uin.length.repeating-limit\":\"2\",\"mosip.kernel.uin.length.sequence-limit\":\"3\",\"mosip.kernel.keygenerator.symmetric-algorithm-length\":\"256\",\"mosip.kernel.data-key-splitter\":\"#KEY_SPLITTER#\"}";
+	private static final String JSON_SYNC_JOB_DEF = "{ \"id\": null, \"version\": null, \"responsetime\": \"2019-04-02T07:49:18.454Z\", \"metadata\": null, \"response\": { \"syncJobDefinitions\": [ { \"id\": \"LCS_J00002\", \"name\": \"Login Credentials Sync\", \"apiName\": null, \"parentSyncJobId\": \"NULL\", \"syncFreq\": \"0 0 11 * * ?\", \"lockDuration\": \"NULL\" } ] }, \"errors\": null } ";
 	// ###########################CONFIG END#########################
 
 	@MockBean
@@ -294,11 +308,11 @@ public class SyncDataIntegrationTest {
 	@Value("${mosip.kernel.syncdata.auth-manager-roles}")
 	private String authAllRolesUri;
 
-	private String syncDataUrlMacAdress = "/v1.0/masterdata?macaddress=e1:01:2b:c2:1d:b0";
-	private String syncDataUrlSerialNum = "/v1.0/masterdata?serialnumber=NM5328114630";
-	private String syncDataUrl = "/v1.0/masterdata?lastupdated=ssserialnumber=NM5328114630&macAddress=e1:01:2b:c2:1d:b0";
-	private String syncDataUrlWithRegId = "/v1.0/masterdata/{regcenterId}?serialnumber=NM532811463";
-	private String syncDataUrlWithoutMacAddressAndSno = "/v1.0/masterdata";
+	private String syncDataUrlMacAdress = "/masterdata?macaddress=e1:01:2b:c2:1d:b0";
+	private String syncDataUrlSerialNum = "/masterdata?serialnumber=NM5328114630";
+	private String syncDataUrl = "/masterdata?lastupdated=ssserialnumber=NM5328114630&macAddress=e1:01:2b:c2:1d:b0";
+	private String syncDataUrlWithRegId = "/masterdata/{regcenterId}?serialnumber=NM532811463";
+	private String syncDataUrlWithoutMacAddressAndSno = "/masterdata";
 
 	@Before
 	public void setup() {
@@ -551,6 +565,14 @@ public class SyncDataIntegrationTest {
 		processListObj.setLangCode("eng");
 		processList = new ArrayList<>();
 		processList.add(processListObj);
+		ScreenDetail screenDetail = new ScreenDetail();
+		screenDetail.setAppId("REGISTRATION");
+		screenDetail.setId("REG");
+		screenDetail.setDescr("registration");
+		screenDetail.setLangCode("eng");
+		screenDetailList = new ArrayList<>();
+		screenDetailList.add(screenDetail);
+
 	}
 
 	private void mockSuccess() {
@@ -685,35 +707,12 @@ public class SyncDataIntegrationTest {
 				.thenReturn(screenAuthorizations);
 		when(processListRepository.findByLastUpdatedTimeAndCurrentTimeStamp(Mockito.any(), Mockito.any()))
 				.thenReturn(processList);
-	}
 
-	@Test
-	public void testGetConfig() throws Exception {
-		ReflectionTestUtils.setField(syncConfigDetailsService, "globalConfigFileName",
-				"mosip.kernel.syncdata.global-config-file");
-		when(restTemplate.getForObject(Mockito.anyString(), Mockito.any()))
-				.thenReturn(JSON_REGISTRATION_CONFIG_RESPONSE);
-		when(restTemplate.getForObject(Mockito.anyString(), Mockito.any())).thenReturn(JSON_GLOBAL_CONFIG_RESPONSE);
-		mockMvc.perform(get("/v1.0/configs")).andExpect(status().isOk());
-	}
+		when(screenDetailRepo.findByLastUpdatedAndCurrentTimeStamp(Mockito.any(), Mockito.any()))
+				.thenReturn(screenDetailList);
+		MockRestServiceServer server = MockRestServiceServer.bindTo(restTemplate).build();
+		server.expect(requestTo(baseUri + "/1970-01-01T00:00")).andRespond(withSuccess().body(JSON_SYNC_JOB_DEF));
 
-	@Test
-	public void testGlobalConfig() throws Exception {
-		ReflectionTestUtils.setField(syncConfigDetailsService, "globalConfigFileName",
-				"mosip.kernel.syncdata.global-config-file");
-		when(restTemplate.getForObject(Mockito.anyString(), Mockito.any()))
-				.thenReturn(JSON_REGISTRATION_CONFIG_RESPONSE);
-		when(restTemplate.getForObject(Mockito.anyString(), Mockito.any())).thenReturn(JSON_GLOBAL_CONFIG_RESPONSE);
-		mockMvc.perform(get("/v1.0/globalconfigs")).andExpect(status().isOk());
-	}
-
-	@Test
-	public void testRegistrationConfig() throws Exception {
-		when(restTemplate.getForObject(Mockito.anyString(), Mockito.any()))
-				.thenReturn(JSON_REGISTRATION_CONFIG_RESPONSE);
-		when(restTemplate.getForObject(Mockito.anyString(), Mockito.any()))
-				.thenReturn(JSON_REGISTRATION_CONFIG_RESPONSE);
-		mockMvc.perform(get("/v1.0/registrationcenterconfig/1")).andExpect(status().isOk());
 	}
 
 	@Test
@@ -731,6 +730,7 @@ public class SyncDataIntegrationTest {
 	@Test
 	public void syncMasterDataSuccessWithMachAddress() throws Exception {
 		mockSuccess();
+
 		mockMvc.perform(get(syncDataUrlMacAdress)).andExpect(status().isOk());
 	}
 
@@ -749,8 +749,8 @@ public class SyncDataIntegrationTest {
 	@Test
 	public void syncMasterDataInvalidTimeStampException() throws Exception {
 		mockSuccess();
-		mockMvc.perform(get(
-				"/v1.0/masterdata/{regcenterId}?lastupdated=2018-11-01T12:101:01.021Z&macaddress=00:11:22:33", "1001"))
+		mockMvc.perform(
+				get("/masterdata/{regcenterId}?lastupdated=2018-11-01T12:101:01.021Z&macaddress=00:11:22:33", "1001"))
 				.andExpect(status().isOk());
 	}
 
@@ -984,7 +984,7 @@ public class SyncDataIntegrationTest {
 		when(registrationCenterDeviceRepository.findAllLatestByRegistrationCenterCreatedUpdatedDeleted(
 				Mockito.anyString(), Mockito.any(), Mockito.any())).thenThrow(DataRetrievalFailureException.class);
 		mockMvc.perform(get(
-				"/v1.0/masterdata/{machineId}?lastupdated=2018-11-01T12:10:01.021Z&macaddress=11:a1:b0:i87&serialnumber=NM123456BT",
+				"/masterdata/{machineId}?lastupdated=2018-11-01T12:10:01.021Z&macaddress=11:a1:b0:i87&serialnumber=NM123456BT",
 				"111")).andExpect(status().isInternalServerError());
 	}
 
@@ -1061,7 +1061,7 @@ public class SyncDataIntegrationTest {
 		when(registrationCenterUserRepository.findByRegistrationCenterUserByRegCenterId(Mockito.anyString()))
 				.thenReturn(new ArrayList<RegistrationCenterUser>());
 
-		mockMvc.perform(get("/v1.0/registrationcenteruser/1")).andExpect(status().isNotFound());
+		mockMvc.perform(get("/registrationcenteruser/1")).andExpect(status().isNotFound());
 	}
 
 	/*
@@ -1156,8 +1156,7 @@ public class SyncDataIntegrationTest {
 		when(appAuthenticationMethodRepository.findByLastUpdatedAndCurrentTimeStamp(Mockito.any(), Mockito.any()))
 				.thenThrow(DataRetrievalFailureException.class);
 
-		mockMvc.perform(get(syncDataUrlMacAdress, "10001"))
-				.andExpect(status().isInternalServerError());
+		mockMvc.perform(get(syncDataUrlMacAdress, "10001")).andExpect(status().isInternalServerError());
 
 	}
 
@@ -1168,8 +1167,7 @@ public class SyncDataIntegrationTest {
 		when(appDetailRepository.findByLastUpdatedTimeAndCurrentTimeStamp(Mockito.any(), Mockito.any()))
 				.thenThrow(DataRetrievalFailureException.class);
 
-		mockMvc.perform(get(syncDataUrlMacAdress, "10001"))
-				.andExpect(status().isInternalServerError());
+		mockMvc.perform(get(syncDataUrlMacAdress, "10001")).andExpect(status().isInternalServerError());
 
 	}
 
@@ -1180,8 +1178,7 @@ public class SyncDataIntegrationTest {
 		when(appRolePriorityRepository.findByLastUpdatedAndCurrentTimeStamp(Mockito.any(), Mockito.any()))
 				.thenThrow(DataRetrievalFailureException.class);
 
-		mockMvc.perform(get(syncDataUrlMacAdress, "10001"))
-				.andExpect(status().isInternalServerError());
+		mockMvc.perform(get(syncDataUrlMacAdress, "10001")).andExpect(status().isInternalServerError());
 
 	}
 
@@ -1192,8 +1189,7 @@ public class SyncDataIntegrationTest {
 		when(screenAuthorizationRepository.findByLastUpdatedAndCurrentTimeStamp(Mockito.any(), Mockito.any()))
 				.thenThrow(DataRetrievalFailureException.class);
 
-		mockMvc.perform(get(syncDataUrlMacAdress, "10001"))
-				.andExpect(status().isInternalServerError());
+		mockMvc.perform(get(syncDataUrlMacAdress, "10001")).andExpect(status().isInternalServerError());
 
 	}
 
@@ -1204,9 +1200,25 @@ public class SyncDataIntegrationTest {
 		when(processListRepository.findByLastUpdatedTimeAndCurrentTimeStamp(Mockito.any(), Mockito.any()))
 				.thenThrow(DataRetrievalFailureException.class);
 
-		mockMvc.perform(get(syncDataUrlMacAdress, "10001"))
-				.andExpect(status().isInternalServerError());
+		mockMvc.perform(get(syncDataUrlMacAdress, "10001")).andExpect(status().isInternalServerError());
 
+	}
+
+	@Test
+	public void screenDetailException() throws Exception {
+		mockSuccess();
+		when(screenDetailRepo.findByLastUpdatedAndCurrentTimeStamp(Mockito.any(), Mockito.any()))
+				.thenThrow(DataRetrievalFailureException.class);
+		mockMvc.perform(get(syncDataUrlMacAdress, "10001")).andExpect(status().isInternalServerError());
+
+	}
+
+	@Test
+	public void syncJobDefException() throws Exception {
+		mockSuccess();
+		MockRestServiceServer server = MockRestServiceServer.bindTo(restTemplate).build();
+		server.expect(requestTo(baseUri + "/1970-01-01T00:00")).andRespond(withServerError().body(JSON_SYNC_JOB_DEF));
+		mockMvc.perform(get(syncDataUrlMacAdress, "10001")).andExpect(status().isInternalServerError());
 	}
 
 }

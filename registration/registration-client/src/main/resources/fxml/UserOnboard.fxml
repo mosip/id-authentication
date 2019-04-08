@@ -8,7 +8,7 @@
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 
-<GridPane fx:id="onboardUser" styleClass="onboardUserParenrPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.reg.UserOnboardController">
+<GridPane fx:id="onboardUser" styleClass="onboardUserParentPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.reg.UserOnboardController">
   <columnConstraints>
     <ColumnConstraints hgrow="ALWAYS" percentWidth="100.0" />
   </columnConstraints>
@@ -33,7 +33,7 @@
                <GridPane.margin>
                   <Insets right="10.0" />
                </GridPane.margin></Label>
-            <GridPane styleClass="onboardUserPaneStyle" onMouseClicked="#initUserOnboard" GridPane.columnIndex="1" GridPane.rowIndex="1">
+            <GridPane onMouseClicked="#initUserOnboard" styleClass="onboardUserPaneStyle" GridPane.columnIndex="1" GridPane.rowIndex="1">
               <columnConstraints>
                 <ColumnConstraints hgrow="SOMETIMES" percentWidth="100.0" />
               </columnConstraints>
@@ -57,7 +57,6 @@
             </GridPane>
          </children>
       </GridPane>
-      <Label text="© 2019, Powered by MOSIP" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
+      <Label styleClass="powerdBy" text="© 2019, Powered by MOSIP" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
    </children>
 </GridPane>
-

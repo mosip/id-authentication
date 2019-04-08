@@ -32,10 +32,10 @@ public class TestDataGenerator {
 			inputStream = new FileInputStream(
 					"src/test/resources/" + modulename + "/" + apiname + "/" + testData + ".yaml");
 			YamlDTO obj = new YamlDTO();
-			obj.setYamlObject((Map<String, List<Object>>) yaml.load(inputStream));
-			List<Object> list = obj.getYamlObject().get(dataParam);
+			//obj.setYamlObject((Map<String, List<Object>>) yaml.load(inputStream));
+			//List<Object> list = obj.getYamlObject().get(dataParam);
 			Random random = new Random();
-			testdata = (String) list.get(random.nextInt(list.size())).toString();
+			//testdata = (String) list.get(random.nextInt(list.size())).toString();
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}

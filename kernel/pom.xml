@@ -7,7 +7,7 @@
 	<parent>
 		<groupId>io.mosip</groupId>
 		<artifactId>mosip-parent</artifactId>
-		<version>0.10.0</version>
+		<version>0.10.1</version>
 	</parent>
 
 
@@ -19,6 +19,8 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+		<!-- maven -->
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
 		<maven.compiler.version>3.7.0</maven.compiler.version>
@@ -29,122 +31,111 @@
 		<maven.sonar.plugin.version>3.2</maven.sonar.plugin.version>
 		<maven.javadoc.version>3.0.1</maven.javadoc.version>
 		<maven-shade-plugin.version>2.3</maven-shade-plugin.version>
-		<javax.interceptor.version>1.2</javax.interceptor.version>
-		<jackson.datatype.version>2.9.8</jackson.datatype.version>
 
-		<!-- Core -->
+		<!-- spring -->
 		<spring.version>5.0.4.RELEASE</spring.version>
 		<spring.boot.version>2.0.2.RELEASE</spring.boot.version>
 		<spring.batch.version>4.0.1.RELEASE</spring.batch.version>
 		<spring-cloud-config.version>2.0.0.RELEASE</spring-cloud-config.version>
 		<spring.data.version>2.0.7.RELEASE</spring.data.version>
 
-		<!-- Miscellaneous -->
 		<vertx.version>3.6.2</vertx.version>
-		<javax.el-api.version>3.0.0</javax.el-api.version>
-		<glassfish.javax.el>2.2.6</glassfish.javax.el>
-		<javax.transaction-api.version>1.2</javax.transaction-api.version>
-		<javax.validation-api.version>2.0.1.Final</javax.validation-api.version>
-		<jackson.version>2.9.5</jackson.version>
-		<hibernate.validator.version>6.0.12.Final</hibernate.validator.version>
-		<modelmapper.version>2.1.1</modelmapper.version>
-		<jcl.to.slf4j.version>1.7.25</jcl.to.slf4j.version>
-		<json.schema.validator.version>2.2.10</json.schema.validator.version>
-		<aws.javasdk.version>1.11.368</aws.javasdk.version>
-
-		<!-- Swagger -->
 		<swagger.version>2.9.2</swagger.version>
 
-		<!-- Data Access -->
-		<hibernate.version>5.2.17.Final</hibernate.version>
-		<eclipselink.version>2.5.0</eclipselink.version>
-		<mysql.connector.version>5.1.46</mysql.connector.version>
+		<!-- javax -->
+		<javax.interceptor.version>1.2</javax.interceptor.version>
+		<javax.el-api.version>3.0.0</javax.el-api.version>
+		<javax.transaction-api.version>1.2</javax.transaction-api.version>
+		<javax.validation-api.version>2.0.1.Final</javax.validation-api.version>
+		<glassfish.javax.el>2.2.6</glassfish.javax.el>
+
+		<!-- data -->
 		<h2.version>1.4.197</h2.version>
+		<mysql.connector.version>5.1.46</mysql.connector.version>
 		<postgresql.version>42.2.2</postgresql.version>
+		<eclipselink.version>2.5.0</eclipselink.version>
+		<hibernate.version>5.2.17.Final</hibernate.version>
+		<hibernate.validator.version>6.0.12.Final</hibernate.validator.version>
 
-		<!-- For Cache -->
-		<ignite.version>2.3.0</ignite.version>
+		<!-- test -->
+		<junit.version>4.12</junit.version>
+		<mockito.version>1.10.19</mockito.version>
+		<powermock.version>1.7.4</powermock.version>
+		<powermock.beta.version>2.0.0-beta.5</powermock.beta.version>
 
-		<!--For Security -->
-		<bouncycastle.version>1.60</bouncycastle.version>
+		<!-- logger -->
+		<logback.version>1.2.3</logback.version>
+		<slf4j.version>1.7.19</slf4j.version>
+		<log4j-over-slf4j>1.7.7</log4j-over-slf4j>
+		<jcl.to.slf4j.version>1.7.25</jcl.to.slf4j.version>
 
-		<!-- Support tools & utilities -->
+		<!-- json -->
+		<jackson.version>2.9.5</jackson.version>
+		<jackson.datatype.version>2.9.8</jackson.datatype.version>
+		<jackson.databind>2.9.6</jackson.databind>
+		<json.utility.version>20180130</json.utility.version>
+		<json.schema.validator.version>2.2.10</json.schema.validator.version>
+
+		<!-- utilities -->
 		<commons-math3>3.6.1</commons-math3>
 		<commons-lang3>3.7</commons-lang3>
 		<commons-io>2.6</commons-io>
 		<commons-codec>1.11</commons-codec>
-		<guava.version>19.0</guava.version>
-		<seventeam-otp.version>1.0.0</seventeam-otp.version>
 		<commons.beanutils.version>1.9.2</commons.beanutils.version>
 		<commons.configuration2.version>2.2</commons.configuration2.version>
-		<jackson.databind>2.9.6</jackson.databind>
-		<json.utility.version>20180130</json.utility.version>
 		<apache.httpcomponents.version>4.5.6</apache.httpcomponents.version>
-
-		<!-- Test & Logging -->
-		<junit.version>4.12</junit.version>
-		<logback.version>1.2.3</logback.version>
-		<slf4j.version>1.7.19</slf4j.version>
-		<mockito.version>1.10.19</mockito.version>
-		<powermock.version>1.7.4</powermock.version>
-		<powermock.beta.version>2.0.0-beta.5</powermock.beta.version>
-		<!-- Lombok -->
+		<guava.version>19.0</guava.version>
 		<lombok.version>1.16.18</lombok.version>
-		<!-- Jsch -->
+
+
+
 		<jsch.version>0.1.54</jsch.version>
-		<!--sshd server -->
 		<sshd.version>1.4.0</sshd.version>
-
-		<!--QR Code -->
-		<google.zxing.version>3.3.3</google.zxing.version>
-		<!-- itext core version -->
 		<itextcore.version>7.1.0</itextcore.version>
-		<!-- itext html2pdf version -->
 		<itexthtml2pdf.version>2.0.0</itexthtml2pdf.version>
-		<!-- itext version -->
 		<itext.version>5.5.13</itext.version>
-
-		<!-- Freemarker -->
 		<freemarker.version>2.3.23</freemarker.version>
-		<!-- Velocity -->
 		<velocity.version>1.7</velocity.version>
 		<velocity.tool.version>2.0</velocity.tool.version>
-		<!-- Orika -->
 		<datamapper.orika>1.5.2</datamapper.orika>
-
-		<!-- HDFS -->
-		<log4j-over-slf4j>1.7.7</log4j-over-slf4j>
+		<modelmapper.version>2.1.1</modelmapper.version>
+		<bouncycastle.version>1.60</bouncycastle.version>
+		<icu4j.version>63.1</icu4j.version>
+		<seventeam-otp.version>1.0.0</seventeam-otp.version>
+		<google.zxing.version>3.3.3</google.zxing.version>
 		<hadoop-client>2.8.1</hadoop-client>
 		<htrace-core4>4.1.0-incubating</htrace-core4>
-
-		<!-- icu4j -->
-		<icu4j.version>63.1</icu4j.version>
-		
-		<!-- s3mock_2.12 -->
+		<aws.javasdk.version>1.11.368</aws.javasdk.version>
 		<s3mock.version>0.2.4</s3mock.version>
-		
+		<ignite.version>2.3.0</ignite.version>
+
+
 		<sonar.coverage.exclusions>**/constant/**,**/config/**,**/httpfilter/**,**/cache/**,**/dto/**,**/entity/**,**/model/**,**/exception/**,**/repository/**,**/security/**,**/*Config.java,**/*BootApplication.java,**/*VertxApplication.java,**/cbeffutil/**</sonar.coverage.exclusions>
 		<sonar.cpd.exclusions>**/dto/**,**/entity/**,**/config/**</sonar.cpd.exclusions>
 	</properties>
 
 	<modules>
 		<module>kernel-core</module>
-		<module>kernel-auth-adapter</module>
-		<module>kernel-auditmanager-api</module>
 		<module>kernel-logger-logback</module>
+		<module>kernel-auth-adapter</module>
 		<module>kernel-dataaccess-hibernate</module>
+		<module>kernel-auditmanager-api</module>
+
 		<module>kernel-idgenerator-prid</module>
 		<module>kernel-idgenerator-vid</module>
 		<module>kernel-idgenerator-tokenid</module>
 		<module>kernel-idgenerator-machineid</module>
 		<module>kernel-idgenerator-regcenterid</module>
-		<module>kernel-idgenerator-tspid</module>
+		<module>kernel-idgenerator-mispid</module>
+		<module>kernel-licensekeygenerator-misp</module>
 		<module>kernel-idgenerator-rid</module>
+		<module>kernel-idgenerator-partnerid</module>
 		<module>kernel-idvalidator-prid</module>
 		<module>kernel-idvalidator-rid</module>
 		<module>kernel-idvalidator-uin</module>
 		<module>kernel-idvalidator-vid</module>
-		<module>kernel-idvalidator-tspid</module>
+		<module>kernel-idvalidator-mispid</module>
+
 		<module>kernel-datavalidator</module>
 		<module>kernel-jsonvalidator</module>
 		<module>kernel-pinvalidator</module>
@@ -166,7 +157,6 @@
 		<module>kernel-masterdata-service</module>
 		<module>kernel-auditmanager-service</module>
 		<module>kernel-otpmanager-service</module>
-		<module>kernel-otpnotification-service</module>
 		<module>kernel-emailnotification-service</module>
 		<module>kernel-smsnotification-service</module>
 		<module>kernel-keymanager-service</module>
@@ -174,21 +164,17 @@
 		<module>kernel-idrepo-service</module>
 		<module>kernel-syncdata-service</module>
 		<module>kernel-auth-service</module>
-		<module>kernel-ldap-service</module>
 		<module>kernel-licensekeymanager-service</module>
 		<module>kernel-applicanttype-service</module>
+		<module>kernel-ridgenerator-service</module>
+		<module>kernel-tokenidgenerator-service</module>
+		<module>kernel-admin-service</module>
 		<module>kernel-config-server</module>
-		
-	
-		<!-- <module>kernel-idvalidator</module> -->
-		<!-- <module>kernel-packetuploader-sftp-jsch</module> -->
-		<!-- <module>kernel-packetserver-http</module> -->
-		<!-- <module>kernel-packetserver-sftp</module> -->
-		<!-- <module>kernel-idgenerator-uin</module> -->
-		<!-- <module>kernel-templatemanager-freemarker</module> -->
-		<!-- <module>kernel-batch-framework</module> -->
-		<!-- <module>kernel-batch-server</module> -->
-		<!--<module>kernel-crypto-bouncycastle</module> -->
+
+		<module>kernel-otpnotification-service</module>
+		<!-- <module>kernel-ldap-service</module> -->
+
+
 	</modules>
 
 	<dependencies>

@@ -1,6 +1,5 @@
 package io.mosip.kernel.masterdata.service;
 
-import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.ValidDocumentDto;
 import io.mosip.kernel.masterdata.dto.postresponse.DocCategoryAndTypeResponseDto;
 import io.mosip.kernel.masterdata.entity.id.ValidDocumentID;
@@ -20,7 +19,7 @@ public interface ValidDocumentService {
 	 *            the dto.
 	 * @return {@link ValidDocumentID}
 	 */
-	public ValidDocumentID createValidDocument(RequestDto<ValidDocumentDto> document);
+	public ValidDocumentID createValidDocument(ValidDocumentDto document);
 
 	/**
 	 * This method delete valid document.

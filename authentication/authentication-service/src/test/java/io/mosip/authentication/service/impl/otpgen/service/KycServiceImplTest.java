@@ -51,7 +51,7 @@ import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderIm
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class, TemplateManagerBuilderImpl.class })
 @WebMvcTest
 @Import(IDAMappingConfig.class)
-@TestPropertySource("classpath:sample-output-test.properties")
+@TestPropertySource("classpath:sample-data-test.properties")
 public class KycServiceImplTest {
 
 	@Autowired

@@ -1,16 +1,12 @@
 package io.mosip.registration.dto;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
 /**
- * PreRegistrationDataSync RequestDTO
+ * The DTO Class PreRegistration Data Sync Request.
+ *
  * @author YASWANTH S
  * @since 1.0.0
  */

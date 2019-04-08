@@ -93,7 +93,7 @@ public class GetAllDocumentForPreRegId extends BaseTestCase implements ITest {
 		
 		
 		String testParam = context.getCurrentXmlTest().getParameter("testType");
-		switch ("smoke") {
+		switch (testParam) {
 		case "smoke":
 			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
 		case "regression":
@@ -123,16 +123,16 @@ public class GetAllDocumentForPreRegId extends BaseTestCase implements ITest {
 		preId=docUploadResponse.jsonPath().get("response[0].preRegistrationId").toString();
 		
 		//Get All Document For PreID
-		Response gelAllDocRes=preRegLib.getAllDocumentForPreId(preId);
+		Response getAllDocRes=preRegLib.getAllDocumentForPreId(preId);
 		
 		
-		outerKeys.add("resTime");
+		outerKeys.add("responsetime");
 		innerKeys.add("prereg_id");
 		innerKeys.add("doc_id");
 		innerKeys.add("multipartFile");
 		
 		
-		status = AssertResponses.assertResponses(gelAllDocRes, Expectedresponse, outerKeys, innerKeys);
+		status = AssertResponses.assertResponses(getAllDocRes, Expectedresponse, outerKeys, innerKeys);
 		if (status) {
 			finalStatus="Pass";		
 		softAssert.assertAll();

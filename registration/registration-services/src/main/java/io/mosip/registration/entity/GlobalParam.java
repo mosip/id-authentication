@@ -12,7 +12,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * Global parame entity details
+ * The Entity Class for Global param
  * 
  * @author Sravya Surampalli
  * @since 1.0.0

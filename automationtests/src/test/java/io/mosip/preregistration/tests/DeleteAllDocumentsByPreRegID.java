@@ -87,7 +87,7 @@ public class DeleteAllDocumentsByPreRegID extends BaseTestCase implements ITest 
 		
 		
 		String testParam = context.getCurrentXmlTest().getParameter("testType");
-		switch ("smokeAndRegression") {
+		switch ("smoke") {
 		case "smoke":
 			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
 		case "regression":
@@ -123,7 +123,10 @@ public class DeleteAllDocumentsByPreRegID extends BaseTestCase implements ITest 
 		//Delete All Document by Pre-Registration Id
 		Response delAllDocByPreId = preRegLib.deleteAllDocumentByPreId(preId);
 		
-		outerKeys.add("resTime");
+		
+	
+		
+		outerKeys.add("responsetime");
 		innerKeys.add("documnet_Id");
 		
 		
@@ -169,7 +172,7 @@ public class DeleteAllDocumentsByPreRegID extends BaseTestCase implements ITest 
          * Document Upload Resource URI            
          */
         
-        preReg_URI = commonLibrary.fetch_IDRepo("preReg_DeleteAllDocumentByPreIdURI");
+        preReg_URI = commonLibrary.fetch_IDRepo().get("preReg_DeleteAllDocumentByPreIdURI");
 		
 	}
 

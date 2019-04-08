@@ -1,0 +1,230 @@
+package io.mosip.kernel.tests;
+
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.log4j.Logger;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.ParseException;
+import org.testng.ITest;
+import org.testng.ITestContext;
+import org.testng.ITestResult;
+import org.testng.Reporter;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.DataProvider;
+import org.testng.annotations.Test;
+import org.testng.asserts.SoftAssert;
+import org.testng.internal.BaseTestMethod;
+import org.testng.internal.TestResult;
+
+import com.google.common.base.Verify;
+
+import io.mosip.dbaccess.KernelMasterDataR;
+import io.mosip.dbentity.UinEntity;
+import io.mosip.service.ApplicationLibrary;
+import io.mosip.service.AssertKernel;
+import io.mosip.service.BaseTestCase;
+import io.mosip.util.ReadFolder;
+import io.mosip.util.ResponseRequestMapper;
+import io.restassured.response.Response;
+
+public class UINStatusUpdate extends BaseTestCase implements ITest {
+
+	public UINStatusUpdate() {
+		// TODO Auto-generated constructor stub
+		super();
+	}
+	/**
+	 *  Declaration of all variables
+	 */
+	private static Logger logger = Logger.getLogger(UINStatusUpdate.class);
+	protected static String testCaseName = "";
+	static SoftAssert softAssert=new SoftAssert();
+	public static JSONArray arr = new JSONArray();
+	boolean status = false;
+	private static ApplicationLibrary applicationLibrary = new ApplicationLibrary();
+	private static AssertKernel assertKernel = new AssertKernel();
+	private static final String updateUIN = "/uingenerator/v1.0/uin";
+	static String dest = "";
+	static String folderPath = "kernel/UINStatusUpdate";
+	static String outputFile = "UINStatusUpdateOutput.json";
+	static String requestKeyFile = "UINStatusUpdateInput.json";
+	static JSONObject Expectedresponse = null;
+	String finalStatus = "";
+	static String testParam="";
+	/*
+	 * Data Providers to read the input json files from the folders
+	 */
+	@BeforeMethod
+	public static void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
+		JSONObject object = (JSONObject) testdata[2];
+		
+		testCaseName = object.get("testCaseName").toString();
+	} 
+	
+	/**
+	 * @return input jsons folders
+	 * @throws Exception
+	 */
+	@DataProvider(name = "UINStatusUpdate")
+	public static Object[][] readData1(ITestContext context) throws Exception {
+		//CommonLibrary.configFileWriter(folderPath,requestKeyFile,"DemographicCreate","smokePreReg");
+		 String testParam = context.getCurrentXmlTest().getParameter("testType");
+		switch ("smokeAndRegression") {
+		case "smoke":
+			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
+		case "regression":
+			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "regression");
+		default:
+			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smokeAndRegression");
+		}
+	}
+	
+	
+	/**
+	 * @throws FileNotFoundException
+	 * @throws IOException
+	 * @throws ParseException
+	 * getRegCenterByID_Timestamp
+	 * Given input Json as per defined folders When GET request is sent to /uingenerator/v1.0/uin
+	 * Then Response is expected as 200 and other responses as per inputs passed in the request
+	 */
+	@Test(dataProvider="UINStatusUpdate")
+	public void getRegCenterByID_Timestamp(String testSuite, Integer i, JSONObject object) throws FileNotFoundException, IOException, ParseException
+    {
+		List<String> outerKeys = new ArrayList<String>();
+		List<String> innerKeys = new ArrayList<String>();
+		JSONObject actualRequest = ResponseRequestMapper.mapRequest(testSuite, object);
+		Expectedresponse = ResponseRequestMapper.mapResponse(testSuite, object);
+		
+		
+		/*
+		 * Calling GET method with path parameters
+		 */
+//		Response res=applicationLibrary.GetRequestNoParameter(updateUIN);
+//		String uin=res.getBody().jsonPath().get("uin");
+//		if(testCaseName.equals("smoke"))
+//		{
+//			actualRequest.put("uin", uin);
+//			Expectedresponse.put("uin", uin);
+//		}
+		
+		
+//		
+//        String query1="select uin_status from kernel.uin where uin='"+uin+"'";
+		
+//		List<String> status_list = KernelMasterDataR.getDataFromDB(UinEntity.class, query1);
+//		String uin_status=status_list.get(0);
+		
+		
+		/*
+		 *  Removing of unstable attributes from response
+		 */
+		
+		outerKeys.add("timestamp");
+		innerKeys.add("errorMessage");
+		Response res=null;
+		String uin="";
+		Response res1=null;
+		String uin1="";
+		switch(testCaseName)
+		{
+		case "smoke_IssuedToUnused": 
+			res=applicationLibrary.GetRequestNoParameter(updateUIN);
+			uin=res.getBody().jsonPath().get("uin");
+			actualRequest.put("uin", uin);
+			Expectedresponse.put("uin", uin);
+			break;
+			
+		case "AssignedToIssued" : 
+			actualRequest.put("uin", uin1);
+			break;
+			
+		case "AssignedToUnused":
+			actualRequest.put("uin", uin1);
+			break;
+			
+		case "IssuedToAssigned" :
+			res1=applicationLibrary.GetRequestNoParameter(updateUIN);
+			uin1=res1.getBody().jsonPath().get("uin");
+			actualRequest.put("uin", uin1);
+			Expectedresponse.put("uin", uin1);
+			break;
+			
+		case "UnusedToAssigned":
+			actualRequest.put("uin", uin);
+			Expectedresponse.put("uin", uin);
+			break;
+		}
+		/*
+		 * Comparing expected and actual response
+		 */
+		Response response=applicationLibrary.putRequest_WithBody(updateUIN, actualRequest);
+		ArrayList<String> listOfElementToRemove=new ArrayList<String>();
+		listOfElementToRemove.add("timestamp");
+		
+		status = assertKernel.assertKernel(res, Expectedresponse,listOfElementToRemove);
+      if (status) {
+						finalStatus ="Pass";
+      }
+					
+				
+		
+		else {
+			finalStatus="Fail";
+			logger.error(res);
+			//softAssert.assertTrue(false);
+		}
+		
+		softAssert.assertAll();
+		object.put("status", finalStatus);
+		arr.add(object);
+		boolean setFinalStatus=false;
+		if(finalStatus.equals("Fail"))
+			setFinalStatus=false;
+		else if(finalStatus.equals("Pass"))
+			setFinalStatus=true;
+		
+}
+		@Override
+		public String getTestName() {
+			return this.testCaseName;
+		} 
+		
+		@AfterMethod(alwaysRun = true)
+		public void setResultTestName(ITestResult result) {
+			
+	try {
+				Field method = TestResult.class.getDeclaredField("m_method");
+				method.setAccessible(true);
+				method.set(result, result.getMethod().clone());
+				BaseTestMethod baseTestMethod = (BaseTestMethod) result.getMethod();
+				Field f = baseTestMethod.getClass().getSuperclass().getDeclaredField("m_methodName");
+				f.setAccessible(true);
+
+				f.set(baseTestMethod, UINStatusUpdate.testCaseName);
+
+				
+			} catch (Exception e) {
+				Reporter.log("Exception : " + e.getMessage());
+			}
+		}  
+		
+		@AfterClass
+		public void updateOutput() throws IOException {
+			String configPath = "src/test/resources/kernel/UINStatusUpdate/UINStatusUpdateOutput.json";
+			try (FileWriter file = new FileWriter(configPath)) {
+				file.write(arr.toString());
+				logger.info("Successfully updated Results to UINStatusUpdateOutput.json file.......................!!");
+			}
+		}
+	
+}

@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
       - name: registration-processor-packet-validator-stage
-        image: docker-registry.mosip.io:5000/packet-validator-stage
+        image: docker-registry.mosip.io:5000/registration-processor-packet-validator-stage
         ports:
           - name: eventbus-port
             containerPort: 5715

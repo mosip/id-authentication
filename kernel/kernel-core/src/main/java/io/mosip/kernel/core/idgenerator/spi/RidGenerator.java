@@ -15,7 +15,7 @@ public interface RidGenerator<T> {
 	 *            input given by user
 	 * @param machineId
 	 *            input by user
-	 * @return  containing generated RID
+	 * @return containing generated RID
 	 */
 	public T generateId(String agentId, String machineId);
 
@@ -34,7 +34,7 @@ public interface RidGenerator<T> {
 	 *            length of the sequence
 	 * @param timestampLength
 	 *            length of the timeStamp
-	 * @return <T> containing generated RID
+	 * @return containing generated RID
 	 */
 	public T generateId(String centreId, String machineId, int centerIdLength, int machineIdLength, int sequenceLength,
 			int timestampLength);

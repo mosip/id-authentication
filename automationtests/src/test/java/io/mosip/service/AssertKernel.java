@@ -1,11 +1,11 @@
 package io.mosip.service;
 
 import java.io.IOException;
-import org.apache.log4j.Logger;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -15,6 +15,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.flipkart.zjsonpatch.JsonDiff;
+
+import io.mosip.kernel.tests.AuditLog;
 import io.restassured.response.Response;
 
 /**
@@ -22,8 +24,8 @@ import io.restassured.response.Response;
  *
  */
 public class AssertKernel {
-	protected static Logger logger = Logger.getLogger(AssertKernel.class);
-
+	
+	private static Logger logger = Logger.getLogger(AssertKernel.class);
 	/**
 	 * this method accepts expected and actual response and return boolean value
 	 * 
@@ -39,36 +41,37 @@ public class AssertKernel {
 			ArrayList<String> listOfElementToRemove) throws JsonProcessingException, IOException, ParseException {
 		JSONObject expectedResponseBody = (JSONObject) new JSONParser().parse(expectedResponse.asString());
 		JSONObject actualResponseBody = actualResponse;
-
-		expectedResponseBody = AssertKernel.removeElementFromBody(expectedResponseBody, listOfElementToRemove);
-		actualResponseBody = AssertKernel.removeElementFromBody(actualResponse, listOfElementToRemove);
-
+		
+			expectedResponseBody = AssertKernel.removeElementFromBody(expectedResponseBody, listOfElementToRemove);
+			actualResponseBody = AssertKernel.removeElementFromBody(actualResponse, listOfElementToRemove);
+		
 		return jsonComparison(expectedResponseBody, actualResponseBody);
 
 	}
-/**
- * @author Arjun chandramohan
- * Created for id repo assertion
- * @param expectedResponse
- * @param actualResponse
- * @param listOfElementToRemove
- * @return
- * @throws JsonProcessingException
- * @throws IOException
- * @throws ParseException
- */
-	public boolean assertIdRepo(Object expectedResponse, Object actualResponse, ArrayList<String> listOfElementToRemove)
-			throws JsonProcessingException, IOException, ParseException {
-		JSONObject expectedResponseBody = (JSONObject) new JSONParser().parse(expectedResponse.toString());
-		JSONObject actualResponseBody = (JSONObject) new JSONParser().parse(actualResponse.toString());
+	
+	
+	/**
+	 * @author Arjun chandramohan
+	 * Created for id repo assertion
+	 * @param expectedResponse
+	 * @param actualResponse
+	 * @param listOfElementToRemove
+	 * @return
+	 * @throws JsonProcessingException
+	 * @throws IOException
+	 * @throws ParseException
+	 */
+		public boolean assertIdRepo(Object expectedResponse, Object actualResponse, ArrayList<String> listOfElementToRemove)
+				throws JsonProcessingException, IOException, ParseException {
+			JSONObject expectedResponseBody = (JSONObject) new JSONParser().parse(expectedResponse.toString());
+			JSONObject actualResponseBody = (JSONObject) new JSONParser().parse(actualResponse.toString());
 
-		expectedResponseBody = AssertKernel.removeElementFromBody(expectedResponseBody, listOfElementToRemove);
-		actualResponseBody = AssertKernel.removeElementFromBody(actualResponseBody, listOfElementToRemove);
+			expectedResponseBody = AssertKernel.removeElementFromBody(expectedResponseBody, listOfElementToRemove);
+			actualResponseBody = AssertKernel.removeElementFromBody(actualResponseBody, listOfElementToRemove);
 
-		return jsonComparison(expectedResponseBody, actualResponseBody);
+			return jsonComparison(expectedResponseBody, actualResponseBody);
 
-	}
-
+		}
 	/**
 	 * this function compare the request and response json and return the boolean
 	 * value
@@ -86,7 +89,7 @@ public class AssertKernel {
 			JsonNode responseJson = mapper.readTree(resObj.toString());
 			JsonNode diffJson = JsonDiff.asJson(requestJson, responseJson);
 
-			logger.info("======" + diffJson + "==========");
+			logger.error("======" + diffJson + "==========");
 			if (diffJson.toString().equals("[]")) {
 				logger.info("equal");
 				return true;
@@ -95,7 +98,7 @@ public class AssertKernel {
 			for (int i = 0; i < diffJson.size(); i++) {
 				JsonNode operation = diffJson.get(i);
 				if (!operation.get("op").toString().equals("\"move\"")) {
-					logger.info("not equal");
+					logger.error("not equal");
 					return false;
 				}
 			}
@@ -116,12 +119,11 @@ public class AssertKernel {
 	 * @return
 	 * @throws ParseException
 	 */
-	public static JSONObject removeElementFromBody(JSONObject responce, ArrayList<String> listOfElementToRemove)
-			throws ParseException {
+	public static JSONObject removeElementFromBody(JSONObject responce, ArrayList<String> listOfElementToRemove) throws ParseException {
 		for (String elementToRemove : listOfElementToRemove) {
 			responce.remove(elementToRemove);
 		}
-
+		
 		return responce;
 	}
 	
@@ -143,7 +145,7 @@ public class AssertKernel {
 					 for(int j=0;j<keys.length;j++) {
 						 if(!passedAttributes.get(keys[j]).equals(object.get(keys[j]).toString()))
 						 {
-							 System.err.println("passed data to fetch does not match with Reponse data");
+							 logger.error("passed data to fetch does not match with Reponse data");
 							 return false;
 						 }
 					 }
@@ -152,7 +154,7 @@ public class AssertKernel {
 					 String key = attributesToValidate.get(j);
 				 if (!object.containsKey(key) || object.get(key)==null) 
 				        {
-					 System.err.println(key+"  is not present in Response data");
+					 logger.error(key+"  is not present in Response data");
 					 		return false;
 				        }
 				 }

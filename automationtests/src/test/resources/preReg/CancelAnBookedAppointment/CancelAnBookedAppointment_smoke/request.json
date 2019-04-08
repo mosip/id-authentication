@@ -1,7 +1,7 @@
 {
+"requesttime": "2019-01-22T07:22:57.086Z",
 "id": "mosip.pre-registration.booking.book",
-"ver" : "1.0",
-"reqTime": "2019-01-16T15:30:45.883Z",
+"version": "1.0",
 "request":
 {
 "pre_registration_id": "65130694261297",

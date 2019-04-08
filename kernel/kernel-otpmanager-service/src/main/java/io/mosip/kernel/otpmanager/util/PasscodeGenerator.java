@@ -104,5 +104,4 @@ public class PasscodeGenerator {
 		}
 		return val;
 	}
-
 }

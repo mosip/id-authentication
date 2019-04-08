@@ -10,7 +10,7 @@ import org.springframework.web.client.RestTemplate;
 
 import io.mosip.kernel.masterdata.constant.ValidLangCodeErrorCode;
 import io.mosip.kernel.masterdata.exception.RequestException;
-import io.mosip.kernel.masterdata.utils.EmptyCheckUtils;
+import io.mosip.kernel.core.util.EmptyCheckUtils;
 import lombok.Data;
 
 /**

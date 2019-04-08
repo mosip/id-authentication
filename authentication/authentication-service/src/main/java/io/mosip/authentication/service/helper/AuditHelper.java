@@ -1,5 +1,7 @@
 package io.mosip.authentication.service.helper;
 
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -9,10 +11,10 @@ import io.mosip.authentication.core.constant.RestServicesConstants;
 import io.mosip.authentication.core.dto.indauth.IdType;
 import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.util.dto.AuditRequestDto;
-import io.mosip.authentication.core.util.dto.AuditResponseDto;
 import io.mosip.authentication.core.util.dto.RestRequestDTO;
 import io.mosip.authentication.service.factory.AuditRequestFactory;
 import io.mosip.authentication.service.factory.RestRequestFactory;
+import io.mosip.kernel.core.http.RequestWrapper;
 
 /**
  * The Class AuditHelper.
@@ -52,9 +54,9 @@ public class AuditHelper {
 	 */
 	public void audit(AuditModules module, AuditEvents event, String id, IdType idType, String desc)
 			throws IDDataValidationException {
-		AuditRequestDto auditRequest = auditFactory.buildRequest(module, event, id, idType, desc);
+		RequestWrapper<AuditRequestDto> auditRequest = auditFactory.buildRequest(module, event, id, idType, desc);
 		RestRequestDTO restRequest = restFactory.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditRequest,
-				AuditResponseDto.class);
+				Map.class);
 		restHelper.requestAsync(restRequest);
 	}
 

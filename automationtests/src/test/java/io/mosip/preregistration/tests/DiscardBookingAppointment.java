@@ -135,14 +135,16 @@ public class DiscardBookingAppointment extends BaseTestCase implements ITest {
 			/*Discard Book Appointment*/
 			Response discardBookAppointmentResponse =preRegLib.discardBooking(preId);
 			
+			
 			preRegLib.compareValues(discardBookAppointmentResponse.jsonPath().get("response[0].preRegistrationId").toString(), preId);
 			
 			/*removing the keys for assertion*/
-			outerKeys.add("resTime");
+			outerKeys.add("responsetime");
 			innerKeys.add("preRegistrationId");
 			innerKeys.add("deletedBy");
 			innerKeys.add("deletedDateTime");
 			status = AssertResponses.assertResponses(discardBookAppointmentResponse, Expectedresponse, outerKeys, innerKeys);
+		
 		}
 		else
 	{
@@ -242,7 +244,7 @@ public class DiscardBookingAppointment extends BaseTestCase implements ITest {
            * Booking Appointment Resource URI            
            */
           
-          preReg_URI = commonLibrary.fetch_IDRepo("preReg_DiscardBookingURI");
+          preReg_URI = commonLibrary.fetch_IDRepo().get("preReg_DiscardBookingURI");
           
           
     }

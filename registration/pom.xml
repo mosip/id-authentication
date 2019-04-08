@@ -6,11 +6,11 @@
 	<parent>
 		<groupId>io.mosip</groupId>
 		<artifactId>mosip-parent</artifactId>
-		<version>0.10.0</version>
+		<version>0.10.1</version>
 	</parent>
 
 	<groupId>io.mosip.registration</groupId>
-	<version>0.10.0</version>
+	<version>0.10.1</version>
 	<artifactId>registration-parent</artifactId>
 	<packaging>pom</packaging>
 	<name>registration</name>
@@ -52,7 +52,7 @@
 		<jackson.version>2.8.8</jackson.version>
 		<jackson.mapper.asl.version>1.7.1</jackson.mapper.asl.version>
 
-		<mosip.core.kernel.version>0.9.4</mosip.core.kernel.version>
+		<mosip.core.kernel.version>0.10.1</mosip.core.kernel.version>
 		<!-- Derby Version -->
 		<apache.derby.version>10.13.1.1</apache.derby.version>
 
@@ -78,7 +78,10 @@
 			src/main/java/io/mosip/registration/exception/**/*,
 			src/main/java/io/mosip/registration/config/**/*,
 			src/main/java/io/mosip/registration/device/**/*,
-			src/main/java/io/mosip/registration/cipher/**/*
+			src/main/java/io/mosip/registration/cipher/**/*,
+			src/main/java/io/mosip/registration/update/**/*,
+			src/main/java/io/mosip/registration/config/**/*
+			
 		</sonar.exclusions>
 	</properties>
 

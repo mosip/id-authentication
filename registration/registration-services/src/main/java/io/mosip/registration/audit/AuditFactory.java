@@ -2,18 +2,25 @@ package io.mosip.registration.audit;
 
 import org.springframework.data.auditing.AuditingHandler;
 
+import io.mosip.kernel.auditmanager.builder.AuditRequestBuilder;
 import io.mosip.registration.constants.AuditEvent;
 import io.mosip.registration.constants.Components;
 
+/**
+ * The wrapper interface to log the audits
+ * 
+ * @author Balaji Sridharan
+ * @since 1.0.0
+ */
 public interface AuditFactory {
 
 	/**
-	 * Static method to audit the events across Registration Processor Module.
+	 * Audits the events across Registration-Client Module.
 	 * <p>
-	 * This method takes {@code AuditEventEnum}, {@link Components}, audit
-	 * description, refId and refIdType as inputs values from Session Context object
+	 * This method takes {@link AuditEvent}, {@link Components}, audit
+	 * description, refId and refIdType as inputs, other values from Session Context object
 	 * namely createdBy, sessionUserId and sessionUserName to build the
-	 * {@link AuditRequest} object. This {@link AuditRequest} object will be passed
+	 * {@link AuditRequestBuilder} object. This {@link AuditRequestBuilder} object will be passed
 	 * to the {@link AuditingHandler} which will persist the audit event in
 	 * database.
 	 * 

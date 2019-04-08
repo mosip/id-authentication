@@ -62,15 +62,19 @@ public class OTPAuthServiceImpl implements OTPAuthService {
 	@Autowired
 	private Environment env;
 
+	/** The IdInfoHelper. */
 	@Autowired
 	private IdInfoHelper idInfoHelper;
 
+	/** The MatchInputBuilder. */
 	@Autowired
 	private MatchInputBuilder matchInputBuilder;
 
+	/** The Vid Repository. */
 	@Autowired
 	private VIDRepository vidrepository;
 
+	/** The IdaMappingconfig. */
 	@Autowired
 	private IDAMappingConfig idaMappingConfig;
 

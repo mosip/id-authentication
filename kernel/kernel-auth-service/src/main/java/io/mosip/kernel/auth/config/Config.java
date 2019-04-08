@@ -16,17 +16,30 @@ import org.springframework.context.annotation.Configuration;
 public class Config {
 
 
-	@Bean
+	@Bean(name="CorsFilter")
 	public FilterRegistrationBean<Filter> registerCORSFilterBean() {
 		FilterRegistrationBean<Filter> corsBean = new FilterRegistrationBean<>();
 		corsBean.setFilter(registerCORSFilter());
 		corsBean.setOrder(0);
 		return corsBean;
 	}
+	
+	@Bean(name="ReqResponseFilter")
+	public FilterRegistrationBean<Filter> registerReqResFilterBean() {
+		FilterRegistrationBean<Filter> corsBean = new FilterRegistrationBean<>();
+		corsBean.setFilter(getReqResFilter());
+		corsBean.setOrder(1);
+		return corsBean;
+	}
 
 	@Bean
 	public Filter registerCORSFilter() {
 		return new CorsFilter();
+	}
+	
+	@Bean
+	public Filter getReqResFilter() {
+		return new ReqResFilter();
 	}
 
 

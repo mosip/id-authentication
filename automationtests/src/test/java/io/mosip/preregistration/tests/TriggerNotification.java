@@ -240,7 +240,7 @@ public class TriggerNotification extends BaseTestCase implements ITest {
            * Document Upload Resource URI            
            */
           
-          preReg_URI = commonLibrary.fetch_IDRepo("preReg_NotifyURI");
+          preReg_URI = commonLibrary.fetch_IDRepo().get("preReg_NotifyURI");
           
     }
 	@Override

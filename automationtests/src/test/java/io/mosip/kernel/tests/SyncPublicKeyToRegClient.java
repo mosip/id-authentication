@@ -168,7 +168,6 @@ import io.mosip.service.ApplicationLibrary;
 	              
 	              if (testcaseName.toLowerCase().contains("smoke"))
 	              {
-	                     System.err.println((response.jsonPath().get("publicKey")).toString());
 	                     String referenceId=(objectData.get("referenceId")).toString();
 	                     String queryStr = "select public_key from kernel.key_store where id = (select id from kernel.key_alias where ref_id = '"+referenceId+"' and app_id='"+applicationId+"')";
 	                     boolean valid = KernelTables.validateDB(queryStr,PublicKeyResponse.class);
@@ -183,12 +182,11 @@ import io.mosip.service.ApplicationLibrary;
 	                           s=s.replace('/', '_');
 	                           s=s.replace('+', '-');
 	                     }
-	                     System.out.println();
-	                     System.err.println("obtained key from db : "+s);
+	                     
+	                     logger.info("obtained key from db : "+s);
 	                     valid = (response.jsonPath().get("publicKey")).toString().equals(s);
 	                     if(valid) {
 	                           finalStatus = "Pass";
-	                           System.out.println("equal");
 	                     }
 	                     else {
 	                           

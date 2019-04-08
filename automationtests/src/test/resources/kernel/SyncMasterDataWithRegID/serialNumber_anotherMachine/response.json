@@ -1,0 +1,10 @@
+{
+  "timestamp": 1553233820248,
+  "status": 200,
+  "errors": [
+    {
+      "errorCode": "KER-SNC-149",
+      "errorMessage": "Registration Center has been updated for the received Machine ID"
+    }
+  ]
+}

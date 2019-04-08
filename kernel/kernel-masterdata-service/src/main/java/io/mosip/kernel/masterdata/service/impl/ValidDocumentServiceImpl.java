@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.masterdata.constant.ApplicationErrorCode;
 import io.mosip.kernel.masterdata.constant.ValidDocumentErrorCode;
-import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.ValidDocumentDto;
 import io.mosip.kernel.masterdata.dto.postresponse.DocCategoryAndTypeResponseDto;
 import io.mosip.kernel.masterdata.entity.ValidDocument;
@@ -49,9 +48,9 @@ public class ValidDocumentServiceImpl implements ValidDocumentService {
 	 * ValidDocumentRequestDto)
 	 */
 	@Override
-	public ValidDocumentID createValidDocument(RequestDto<ValidDocumentDto> document) {
+	public ValidDocumentID createValidDocument(ValidDocumentDto document) {
 
-		ValidDocument validDocument = MetaDataUtils.setCreateMetaData(document.getRequest(), ValidDocument.class);
+		ValidDocument validDocument = MetaDataUtils.setCreateMetaData(document, ValidDocument.class);
 		try {
 			validDocument = documentRepository.create(validDocument);
 		} catch (DataAccessLayerException | DataAccessException e) {

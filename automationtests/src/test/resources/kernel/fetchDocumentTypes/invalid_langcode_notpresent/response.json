@@ -1,10 +1,10 @@
 {
-  "timestamp": 1549455145266,
-  "status": 200,
-  "errors": [
-    {
-      "errorCode": "KER-MSD-014",
-      "errorMessage": "Document Category not found"
-    }
-  ]
+    "timestamp": 1551948156998,
+    "status": 200,
+    "errors": [
+        {
+            "errorCode": "KER-MSD-118",
+            "errorMessage": "Document Type not found"
+        }
+    ]
 }

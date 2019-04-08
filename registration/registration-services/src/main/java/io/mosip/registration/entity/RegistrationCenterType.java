@@ -11,7 +11,7 @@ import javax.persistence.Table;
 import io.mosip.registration.entity.id.CodeAndLanguageCodeID;
 
 /**
- * Entity class for RegistrationCenterType.
+ * The Entity class for Registration CenterType.
  * 
  * @author Sreekar chukka
  * @since 1.0.0

@@ -37,16 +37,15 @@
             <AnchorPane fx:id="userIdPane" layoutX="37.0" layoutY="188.0" styleClass="loginAnchorPaneStyle" visible="true">
                <children>
                <Label layoutX="57.0" layoutY="41.0" styleClass="higlightedLoginLable" text="%registrationlogin" AnchorPane.leftAnchor="57.0" AnchorPane.topAnchor="41.0" />
-                 <Label layoutX="57.0" layoutY="80.0" text="%withusername" />
-      			 <TextField fx:id="userId" layoutX="57.0" layoutY="116.0" promptText="%username" styleClass="loginTextStyle" AnchorPane.leftAnchor="53.0" />
+      			 <TextField fx:id="userId" layoutX="57.0" layoutY="116.0" promptText="%withusername" styleClass="loginTextStyle" AnchorPane.leftAnchor="53.0" />
                   <Button layoutX="52.0" layoutY="171.0" mnemonicParsing="false" onAction="#validateUserId" styleClass="loginSubmitStyle" text="%submit" />
+                  <ProgressIndicator fx:id="progressIndicator" layoutX="130.0" layoutY="50.0" progress="0.0" visible="false" />
                </children>
             </AnchorPane>
             <AnchorPane fx:id="credentialsPane" layoutX="37.0" layoutY="188.0" styleClass="loginAnchorPaneExtendedStyle" visible="false">
                <children>
-                <Label layoutX="57.0" layoutY="41.0" styleClass="higlightedLoginLable" text="%registrationlogin" AnchorPane.leftAnchor="57.0" AnchorPane.topAnchor="41.0" />
-               		<Label layoutX="57.0" layoutY="80.0" text="%withpword" />
-      				<PasswordField fx:id="password" layoutX="57.0" layoutY="116.0" promptText="%password" styleClass="loginTextStyle" AnchorPane.leftAnchor="53.0" />
+                	<Label layoutX="57.0" layoutY="41.0" styleClass="higlightedLoginLable" text="%registrationlogin" AnchorPane.leftAnchor="57.0" AnchorPane.topAnchor="41.0" />
+      				<PasswordField fx:id="password" layoutX="57.0" layoutY="116.0" promptText="%withpword" styleClass="loginTextStyle" AnchorPane.leftAnchor="53.0" />
       				<Button layoutX="52.0" layoutY="171.0" mnemonicParsing="false" onAction="#validateCredentials" styleClass="loginSubmitStyle" text="%submit" />
                   <Button layoutX="52.0" layoutY="222.0" mnemonicParsing="false" styleClass="loginSubmitStyle" text="%resetPassword" />
                </children>
@@ -54,10 +53,9 @@
             <AnchorPane fx:id="otpPane" layoutX="-6.0" layoutY="151.0" prefHeight="297.0" prefWidth="366.0" styleClass="loginAnchorPaneExtendedStyle" visible="false">
                <children>
              	  <Label layoutX="57.0" layoutY="21.0" styleClass="higlightedLoginLable" text="%registrationlogin" AnchorPane.leftAnchor="57.0" AnchorPane.topAnchor="21.0" />
-               	  <Label layoutX="57.0" layoutY="64.0" text="%withotp" />
                	  <PasswordField fx:id="otp" layoutX="57.0" layoutY="96.0" promptText="%enterotp" styleClass="loginTextStyle" AnchorPane.leftAnchor="53.0" />
                   <Button fx:id="getOTP" layoutX="53.0" layoutY="144.0" mnemonicParsing="false" onAction="#generateOtp" styleClass="loginSubmitStyle" text="%getotp" />
-                  <Button fx:id="resend" layoutY="53.0" mnemonicParsing="false" onAction="#generateOtp" styleClass="loginSubmitStyle" text="%resendotp" visible="false" />
+                  <Button fx:id="resend" layoutX="53.0" layoutY="144.0" mnemonicParsing="false" onAction="#generateOtp" styleClass="loginSubmitStyle" text="%resendotp" visible="true" />
                   <Button layoutX="53.0" layoutY="195.0" mnemonicParsing="false" onAction="#validateOTP" styleClass="loginSubmitStyle" text="%submit" />
                   <Label fx:id="otpValidity" layoutX="54.0" layoutY="245.0" styleClass="loginOtpValidStyle" text="%otp_validity_in_mins" />
                </children>
@@ -88,7 +86,7 @@
             </AnchorPane>
             <AnchorPane fx:id="facePane" layoutX="55.0" layoutY="232.0" styleClass="loginAnchorPaneStyle" visible="false"> 
                <children>
-               <Label layoutX="57.0" layoutY="41.0" styleClass="higlightedLoginLable" text="%registrationlogin" AnchorPane.leftAnchor="57.0" AnchorPane.topAnchor="41.0" />
+               <Label layoutX="57.0" layoutY="31.0" styleClass="higlightedLoginLable" text="%registrationlogin" AnchorPane.leftAnchor="57.0" AnchorPane.topAnchor="31.0" />
                   <Label layoutX="57.0" layoutY="75.0" text="%withface" />
                   <Button layoutX="57.0" layoutY="174.0" mnemonicParsing="false" onAction="#validateFace" styleClass="loginSubmitStyle" text="%submit" />
                   <ImageView fitHeight="59.0" fitWidth="53.0" layoutX="180.0" layoutY="102.0" pickOnBounds="true" preserveRatio="true">

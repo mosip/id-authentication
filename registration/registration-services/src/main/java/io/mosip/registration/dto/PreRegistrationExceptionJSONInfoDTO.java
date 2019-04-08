@@ -6,8 +6,9 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * @author M1046129 - Jagadishwari
+ * The DTO Class Pre Registration Exception JSON Info.
  *
+ * @author M1046129 - Jagadishwari
  */
 @Getter
 @Setter

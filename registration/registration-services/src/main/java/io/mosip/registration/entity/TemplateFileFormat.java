@@ -6,7 +6,7 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 /**
- * TemplateFileFormat entity details
+ * The Entity Class for Template FileFormat details
  * 
  * @author Himaja Dhanyamraju
  * @since 1.0.0

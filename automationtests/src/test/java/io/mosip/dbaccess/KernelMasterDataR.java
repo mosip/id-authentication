@@ -34,8 +34,8 @@ public class KernelMasterDataR {
 			/*
 			 * Based on the environemnt configuration file is set
 			 */
-			if(BaseTestCase.environment.equalsIgnoreCase("integration"))
-				factory = new Configuration().configure("masterdatainteg.cfg.xml")
+			if(BaseTestCase.environment.equalsIgnoreCase("dev"))
+				factory = new Configuration().configure("masterdatadev.cfg.xml")
 			.addAnnotatedClass(OtpEntity.class).buildSessionFactory();	
 					else
 					{
@@ -74,14 +74,14 @@ public class KernelMasterDataR {
 	{
 		boolean flag=false;
 
-		if(BaseTestCase.environment.equalsIgnoreCase("integration"))
-			factory = new Configuration().configure("masterdatainteg.cfg.xml")
+		if(BaseTestCase.environment.equalsIgnoreCase("dev"))
+			factory = new Configuration().configure("masterdatadev.cfg.xml")
 		.addAnnotatedClass(OtpEntity.class).buildSessionFactory();	
 				else
 				{
 					if(BaseTestCase.environment.equalsIgnoreCase("qa"))
-						factory = new Configuration().configure("masterdataqa.cfg.xml")
-					.addAnnotatedClass(OtpEntity.class).buildSessionFactory();	
+						factory = new Configuration().configure("masterdatainteg.cfg.xml")
+					.addAnnotatedClass(dtoClass).buildSessionFactory();	
 				}
 		session = factory.getCurrentSession();
 		session.beginTransaction();
@@ -121,13 +121,13 @@ public class KernelMasterDataR {
 		{
 			boolean flag=false;
 
-			if(BaseTestCase.environment.equalsIgnoreCase("integration"))
-				factory = new Configuration().configure("masterdatainteg.cfg.xml")
+			if(BaseTestCase.environment.equalsIgnoreCase("dev"))
+				factory = new Configuration().configure("masterdatadev.cfg.xml")
 			.addAnnotatedClass(OtpEntity.class).buildSessionFactory();	
 					else
 					{
 						if(BaseTestCase.environment.equalsIgnoreCase("qa"))
-							factory = new Configuration().configure("masterdataqa.cfg.xml")
+							factory = new Configuration().configure("masterdatainteg.cfg.xml")
 						.addAnnotatedClass(OtpEntity.class).buildSessionFactory();	
 					}
 			session = factory.getCurrentSession();
@@ -178,8 +178,8 @@ public class KernelMasterDataR {
 		{
 			boolean flag=false;
 			
-			if(BaseTestCase.environment.equalsIgnoreCase("integration"))
-				factory = new Configuration().configure("masterdatainteg.cfg.xml")
+			if(BaseTestCase.environment.equalsIgnoreCase("dev"))
+				factory = new Configuration().configure("masterdatadev.cfg.xml")
 			.addAnnotatedClass(OtpEntity.class).buildSessionFactory();	
 					else
 					{
@@ -233,4 +233,51 @@ public class KernelMasterDataR {
 		    return true;
 			
 		} 
+		
+
+		@SuppressWarnings("deprecation")
+		public static List<String> getDataFromDB(Class dtoClass,String query)
+		{
+			List<String> flag=null;
+
+			if(BaseTestCase.environment.equalsIgnoreCase("dev"))
+				factory = new Configuration().configure("kerneldev.cfg.xml")
+			.addAnnotatedClass(dtoClass).buildSessionFactory();	
+					else
+					{
+						if(BaseTestCase.environment.equalsIgnoreCase("qa"))
+							factory = new Configuration().configure("kernelqa.cfg.xml")
+						.addAnnotatedClass(dtoClass).buildSessionFactory();	
+					}
+			session = factory.getCurrentSession();
+			session.beginTransaction();
+			flag=getData(session, query);
+			//logger.info("flag is : " +flag);
+			return flag;
+			
+			//session.close();
+		}
+		
+		
+
+		@SuppressWarnings("unchecked")
+		private static List<String> getData(Session session, String queryString)
+		{
+		  int size;
+			Query query = session.createSQLQuery(queryString); 
+			
+		
+			List<String> objs = (List<String>) query.list();
+			size=objs.size();
+			logger.info("Size is : " +size);
+				// commit the transaction
+						session.getTransaction().commit();
+							
+							factory.close();
+
+		
+			return objs;
+				
+		}
+
 }

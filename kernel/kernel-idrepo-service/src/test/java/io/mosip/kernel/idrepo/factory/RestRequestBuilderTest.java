@@ -22,6 +22,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.web.context.WebApplicationContext;
 
+import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.idrepo.constant.AuditEvents;
 import io.mosip.kernel.core.idrepo.constant.AuditModules;
 import io.mosip.kernel.core.idrepo.constant.RestServicesConstants;
@@ -58,9 +59,9 @@ public class RestRequestBuilderTest {
 
 	@Test
 	public void testBuildRequest() throws IdRepoDataValidationException {
-		AuditRequestDto auditRequest = auditBuilder.buildRequest(AuditModules.CREATE_IDENTITY,
+		RequestWrapper<AuditRequestDto> auditRequest = auditBuilder.buildRequest(AuditModules.CREATE_IDENTITY,
 				AuditEvents.CREATE_IDENTITY_REQUEST_RESPONSE, "id", "desc");
-		auditRequest.setActionTimeStamp(null);
+		auditRequest.getRequest().setActionTimeStamp(null);
 
 		RestRequestDTO request = restBuilder.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditRequest,
 				AuditResponseDto.class);
@@ -95,9 +96,9 @@ public class RestRequestBuilderTest {
 		environment.setProperty("mosip.kernel.idrepo.audit.rest.uri.pathparam.test", "yes");
 
 		ReflectionTestUtils.setField(restBuilder, "env", environment);
-		AuditRequestDto auditRequest = auditBuilder.buildRequest(AuditModules.CREATE_IDENTITY,
+		RequestWrapper<AuditRequestDto> auditRequest = auditBuilder.buildRequest(AuditModules.CREATE_IDENTITY,
 				AuditEvents.CREATE_IDENTITY_REQUEST_RESPONSE, "id", "desc");
-		auditRequest.setActionTimeStamp(null);
+		auditRequest.getRequest().setActionTimeStamp(null);
 
 		restBuilder.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditRequest,
 				AuditResponseDto.class);

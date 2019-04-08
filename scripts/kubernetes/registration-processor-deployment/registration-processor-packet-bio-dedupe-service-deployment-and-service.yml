@@ -2,7 +2,7 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: registration-processor-packet-bio-dedupe-service
+  name: registration-processor-bio-dedupe-service
 spec:
   replicas: 1
   minReadySeconds: 10
@@ -14,11 +14,11 @@ spec:
   template:
     metadata:
       labels:
-        app: registration-processor-packet-bio-dedupe-service
+        app: registration-processor-bio-dedupe-service
     spec:
       containers:
-      - name: registration-processor-packet-bio-dedupe-service
-        image: docker-registry.mosip.io:5000/packet-bio-dedupe-service
+      - name: registration-processor-bio-dedupe-service
+        image: docker-registry.mosip.io:5000/registration-processor-bio-dedupe-service
         ports:
           - name: verticle-port
             containerPort: 9097
@@ -36,10 +36,10 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: registration-processor-packet-bio-dedupe-service
+  name: registration-processor-bio-dedupe-service
 spec:
   ports:
     - port: 9097
   selector:
-    app: registration-processor-packet-bio-dedupe-service
+    app: registration-processor-bio-dedupe-service
 

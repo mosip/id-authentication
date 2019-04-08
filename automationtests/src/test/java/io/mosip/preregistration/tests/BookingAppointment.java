@@ -134,11 +134,13 @@ public class BookingAppointment extends BaseTestCase implements ITest {
 		/* Book An Appointment for the available data */
 		Response bookAppointmentResponse = preRegLib.BookAppointment(docUploadResponse, fetchCenter, preId.toString());
 
+	
+		
 		switch (testCase) {
 
 		case "BookingAppointment_smoke":
 
-			outerKeys.add("resTime");
+			outerKeys.add("responsetime");
 			innerKeys.add("preRegistrationId");
 			status = AssertResponses.assertResponses(bookAppointmentResponse, Expectedresponse, outerKeys, innerKeys);
 
@@ -283,7 +285,7 @@ public class BookingAppointment extends BaseTestCase implements ITest {
 		 * Booking Appointment Resource URI
 		 */
 
-		preReg_URI = commonLibrary.fetch_IDRepo("preReg_BookingAppointmentURI");
+		preReg_URI = commonLibrary.fetch_IDRepo().get("preReg_BookingAppointmentURI");
 
 	}
 

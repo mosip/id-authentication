@@ -4,7 +4,12 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /**
- * Spring Boot Runner class for LicenseKeyManager.
+ * -------------------------------------------------------------------------
+ * LICENSEKEY-MANAGER-SERVICE APPLICATION
+ * -------------------------------------------------------------------------
+ * This service serves the functionality of License Generation, License
+ * Permission Mapping, Fetching License Permissions.
+ * -------------------------------------------------------------------------
  * 
  * @author Sagar Mahapatra
  * @since 1.0.0

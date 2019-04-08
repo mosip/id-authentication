@@ -3,8 +3,6 @@ package io.mosip.kernel.masterdata.controller;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,7 +11,9 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.mosip.kernel.masterdata.dto.RequestDto;
+import io.mosip.kernel.core.http.RequestWrapper;
+import io.mosip.kernel.core.http.ResponseFilter;
+import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.masterdata.dto.TitleDto;
 import io.mosip.kernel.masterdata.dto.getresponse.TitleResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
@@ -44,9 +44,12 @@ public class TitleController {
 	 * 
 	 * @return list of all titles present in master DB
 	 */
-	@GetMapping(value = "/v1.0/title")
-	public TitleResponseDto getAllTitles() {
-		return titleService.getAllTitles();
+	@ResponseFilter
+	@GetMapping(value = "/title")
+	public ResponseWrapper<TitleResponseDto> getAllTitles() {
+		ResponseWrapper<TitleResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(titleService.getAllTitles());
+		return responseWrapper;
 	}
 
 	/**
@@ -57,9 +60,13 @@ public class TitleController {
 	 *            code
 	 * @return list of all titles for the particular language code
 	 */
-	@GetMapping(value = "/v1.0/title/{langcode}")
-	public TitleResponseDto getTitlesBylangCode(@PathVariable("langcode") String langCode) {
-		return titleService.getByLanguageCode(langCode);
+	@ResponseFilter
+	@GetMapping(value = "/title/{langcode}")
+	public ResponseWrapper<TitleResponseDto> getTitlesBylangCode(@PathVariable("langcode") String langCode) {
+
+		ResponseWrapper<TitleResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(titleService.getByLanguageCode(langCode));
+		return responseWrapper;
 	}
 
 	/**
@@ -69,10 +76,13 @@ public class TitleController {
 	 *            input from user
 	 * @return primary key of entered row
 	 */
-	@PostMapping("/v1.0/title")
-	public ResponseEntity<CodeAndLanguageCodeID> saveTitle(@Valid @RequestBody RequestDto<TitleDto> title) {
-		return new ResponseEntity<>(titleService.saveTitle(title), HttpStatus.OK);
+	@ResponseFilter
+	@PostMapping("/title")
+	public ResponseWrapper<CodeAndLanguageCodeID> saveTitle(@Valid @RequestBody RequestWrapper<TitleDto> title) {
 
+		ResponseWrapper<CodeAndLanguageCodeID> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(titleService.saveTitle(title.getRequest()));
+		return responseWrapper;
 	}
 
 	/**
@@ -82,16 +92,19 @@ public class TitleController {
 	 *            input DTO for updated row
 	 * @return composite primary key of updated row
 	 */
-	@PutMapping("/v1.0/title")
-	@ApiOperation(value = "Service to update title", notes = "Update title and return composite id", response = CodeAndLanguageCodeID.class)
-	@ApiResponses({
-			@ApiResponse(code = 200, message = "When title successfully updated", response = CodeResponseDto.class),
+	@ResponseFilter
+	@PutMapping("/title")
+	@ApiOperation(value = "Service to update title", notes = "Update title and return composite id")
+	@ApiResponses({ @ApiResponse(code = 200, message = "When title successfully updated"),
 			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
 			@ApiResponse(code = 404, message = "When No title found"),
 			@ApiResponse(code = 500, message = "While updating title any error occured") })
-	public ResponseEntity<CodeAndLanguageCodeID> updateTitle(
-			@ApiParam("Title DTO to update") @Valid @RequestBody RequestDto<TitleDto> titles) {
-		return new ResponseEntity<>(titleService.updateTitle(titles), HttpStatus.OK);
+	public ResponseWrapper<CodeAndLanguageCodeID> updateTitle(
+			@ApiParam("Title DTO to update") @Valid @RequestBody RequestWrapper<TitleDto> titles) {
+
+		ResponseWrapper<CodeAndLanguageCodeID> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(titleService.updateTitle(titles.getRequest()));
+		return responseWrapper;
 	}
 
 	/**
@@ -101,15 +114,18 @@ public class TitleController {
 	 *            input from user
 	 * @return composite key of deleted row of data
 	 */
-	@DeleteMapping("/v1.0/title/{code}")
-	@ApiOperation(value = "Service to delete title", notes = "Delete title and return composite id", response = CodeResponseDto.class)
-	@ApiResponses({
-			@ApiResponse(code = 200, message = "When title successfully deleted", response = CodeResponseDto.class),
+	@ResponseFilter
+	@DeleteMapping("/title/{code}")
+	@ApiOperation(value = "Service to delete title", notes = "Delete title and return composite id")
+	@ApiResponses({ @ApiResponse(code = 200, message = "When title successfully deleted"),
 			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
 			@ApiResponse(code = 404, message = "When No title found"),
 			@ApiResponse(code = 500, message = "While deleting title any error occured") })
-	public ResponseEntity<CodeResponseDto> deleteTitle(@PathVariable("code") String code) {
-		return new ResponseEntity<>(titleService.deleteTitle(code), HttpStatus.OK);
+	public ResponseWrapper<CodeResponseDto> deleteTitle(@PathVariable("code") String code) {
+
+		ResponseWrapper<CodeResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(titleService.deleteTitle(code));
+		return responseWrapper;
 	}
 
 }

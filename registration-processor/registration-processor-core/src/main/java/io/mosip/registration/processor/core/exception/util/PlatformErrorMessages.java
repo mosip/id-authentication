@@ -204,13 +204,14 @@ public enum PlatformErrorMessages {
 			"Attribute unAvailable in DemographicInfo Json for Master Data Validation"),
 
 	RPR_PVM_RESOURCE_NOT_FOUND(PlatformConstants.RPR_PACKET_VALIDATOR_MODULE + "004",
-			"Resource not found for the Attribute specified in Msster Data Validation"),
+			"Resource not found for the Attribute specified in Msster Data Validation for key"),
 
 	RPR_PVM_IDENTITY_INVALID(PlatformConstants.RPR_PACKET_VALIDATOR_MODULE + "005",
-			"Attribute Value Invalid in Master Data Validation"),
+			"Attribute Value Invalid in Master Data Validation for"),
 
-	RPR_PVM_API_RESOUCE_ACCESS_FAILED(PlatformConstants.RPR_PACKET_VALIDATOR_MODULE + "005",
-			"Not able to access the API resource"),
+	RPR_PVM_API_RESOUCE_ACCESS_FAILED(PlatformConstants.RPR_PACKET_VALIDATOR_MODULE + "006",
+			"Not able to access the API resource"), RPR_PVM_BASE_UNCHECKED_EXCEPTION(
+					PlatformConstants.RPR_PACKET_VALIDATOR_MODULE + "007", "Schema Validation Failed"),
 
 	/** The unsupported encoding. */
 	// UIN check - JSON file encoding failed.
@@ -223,6 +224,9 @@ public enum PlatformErrorMessages {
 	/** The osi validation packet store not accessible. */
 	OSI_VALIDATION_PACKET_STORE_NOT_ACCESSIBLE(PlatformConstants.RPR_OSI_VALIDATOR_MODULE + "005",
 			"The Packet store set by the System is not accessible"),
+
+	OSI_VALIDATION_PACKE_API_RESOUCE_ACCESS_FAILED(PlatformConstants.RPR_OSI_VALIDATOR_MODULE + "006",
+			"Not able to access the API resource"),
 
 	/** The packet demo dedupe failed. */
 	// Stages - Demo-Dedupe error code and message
@@ -271,6 +275,9 @@ public enum PlatformErrorMessages {
 	/** The rpr psj ftp folder not accessible. */
 	RPR_PSJ_FTP_FOLDER_NOT_ACCESSIBLE(PlatformConstants.RPR_PACKET_SCANNER_JOB_MODULE + "007",
 			"The FTP folder set by the System is not accessible"),
+
+	RPR_PSJ_API_RESOUCE_ACCESS_FAILED(PlatformConstants.RPR_PACKET_SCANNER_JOB_MODULE + "008",
+			"Not able to access the API resource"),
 
 	/** The rpr pdj packet not available. */
 	// packet decryption job Exception error code and message
@@ -501,8 +508,7 @@ public enum PlatformErrorMessages {
 			"Error while getting response from Print and Postal Service Provider"),
 
 	/** The print validation failed. */
-	RPR_PRT_DATA_VALIDATION_FAILED(PlatformConstants.RPR_PRINTING_MODULE + "011",
-			"Error while print data validation"),
+	RPR_PRT_DATA_VALIDATION_FAILED(PlatformConstants.RPR_PRINTING_MODULE + "011", "Error while print data validation"),
 
 	/** The rpr rgs registration connector not accessible. */
 	RPR_RGS_REGISTRATION_CONNECTOR_NOT_ACCESSIBLE("", "Registration connector stage is not accessible "),
@@ -558,7 +564,12 @@ public enum PlatformErrorMessages {
 			"Invalid Input Parameter - %s"),
 	/** The data validation failed. */
 	RPR_PGS_DATA_VALIDATION_FAILED(PlatformConstants.RPR_PACKET_GENERATOR_MODULE + "012",
-			"Input Data Validation Failed");
+			"Input Data Validation Failed"),
+
+	REPROCESSOR_STAGE_FAILED("", "Reprocessor Stage Failed"),
+
+	EXTERNAL_STAGE_FAILED("", "External Stage Failed");
+
 	/** The error message. */
 	private final String errorMessage;
 

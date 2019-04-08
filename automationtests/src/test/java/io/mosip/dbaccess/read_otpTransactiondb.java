@@ -24,8 +24,8 @@ public class read_otpTransactiondb {
 	{
 		boolean flag=false;
 		
-		if(BaseTestCase.environment.equalsIgnoreCase("integration"))		
-			factory = new Configuration().configure("kernelinteg.cfg.xml")                      
+		if(BaseTestCase.environment.equalsIgnoreCase("dev"))		
+			factory = new Configuration().configure("kerneldev.cfg.xml")                      
 		.addAnnotatedClass(OtpEntity.class).buildSessionFactory();	
 			else
 			{
@@ -83,8 +83,8 @@ public class read_otpTransactiondb {
 	{
 		boolean flag=false;
 		
-		if(BaseTestCase.environment.equalsIgnoreCase("integration"))		
-			factory = new Configuration().configure("masterdatainteg.cfg.xml")                      
+		if(BaseTestCase.environment.equalsIgnoreCase("dev"))		
+			factory = new Configuration().configure("masterdatadev.cfg.xml")                      
 		.addAnnotatedClass(OtpEntity.class).buildSessionFactory();	
 			else
 			{

@@ -14,6 +14,12 @@ import io.mosip.registration.jobs.BaseJob;
 import io.mosip.registration.service.UserMachineMappingService;
 import io.mosip.registration.service.impl.UserMachineMappingServiceImpl;
 
+/**
+ * This is a job to sync the user mapping
+ * @author Sreekar Chukka
+ *
+ * @since 1.0.0
+ */
 @Component("regUserMappingSyncJob")
 public class RegUserMappingSyncJob extends BaseJob {
 	@Autowired

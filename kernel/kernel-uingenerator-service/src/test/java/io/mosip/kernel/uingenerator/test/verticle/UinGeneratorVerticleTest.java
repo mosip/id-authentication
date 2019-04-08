@@ -54,7 +54,7 @@ public class UinGeneratorVerticleTest {
 	public void getUinTest(TestContext context) {
 		Async async = context.async();
 		WebClient client = WebClient.create(vertx);
-		client.get(port, "localhost", "/uingenerator/v1.0/uin").send(ar -> {
+		client.get(port, "localhost", "/uingenerator/uin").send(ar -> {
 			if (ar.succeeded()) {
 				HttpResponse<Buffer> response = ar.result();
 				context.assertEquals(200, response.statusCode());

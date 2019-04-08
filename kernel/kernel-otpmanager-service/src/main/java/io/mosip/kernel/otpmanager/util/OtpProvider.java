@@ -35,16 +35,13 @@ public class OtpProvider {
 	 * @return the string OTP.
 	 */
 	public String computeOtp(String key, int otpLength, String macAlgorithm) {
-
 		try {
 			PasscodeGenerator pcg = new PasscodeGenerator(getSigning(key, macAlgorithm), otpLength);
-
 			return pcg.generateResponseCode(System.currentTimeMillis());
 		} catch (Exception e) {
 			throw new CryptoFailureException(OtpErrorConstants.OTP_GEN_CRYPTO_FAILURE.getErrorCode(),
 					OtpErrorConstants.OTP_GEN_CRYPTO_FAILURE.getErrorMessage(), e);
 		}
-
 	}
 
 	/**
@@ -60,14 +57,10 @@ public class OtpProvider {
 		try {
 			final Mac mac = Mac.getInstance(macAlgo);
 			mac.init(new SecretKeySpec(secret.getBytes(), ""));
-
 			return (byte[] data) -> mac.doFinal(data);
-
 		} catch (NoSuchAlgorithmException | InvalidKeyException error) {
 			throw new OtpServiceException(OtpErrorConstants.OTP_GEN_ALGO_FAILURE.getErrorCode(),
 					OtpErrorConstants.OTP_GEN_ALGO_FAILURE.getErrorMessage(), error);
 		}
-
 	}
-
 }

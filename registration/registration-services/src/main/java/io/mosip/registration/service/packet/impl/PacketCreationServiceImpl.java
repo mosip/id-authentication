@@ -78,7 +78,7 @@ import io.mosip.registration.service.packet.PacketCreationService;
 import io.mosip.registration.util.hmac.HMACGeneration;
 
 /**
- * Class for creating the Resident Registration
+ * Class for creating the Resident Registration as zip file
  * 
  * @author Balaji Sridharan
  * @since 1.0.0
@@ -177,7 +177,7 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 
 			// Generating Demographic JSON as byte array
 			String idJsonAsString = javaObjectToJsonString(registrationDTO.getDemographicDTO().getDemographicInfoDTO());
-			jsonValidator.validateJson(idJsonAsString, RegistrationConstants.IDENTITY_JSON_FILE_NAME);
+			jsonValidator.validateJson(idJsonAsString);
 			filesGeneratedForPacket.put(DEMOGRPAHIC_JSON_NAME, idJsonAsString.getBytes());
 
 			LOGGER.info(LOG_PKT_CREATION, APPLICATION_NAME, APPLICATION_ID,

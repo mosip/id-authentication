@@ -1,0 +1,10 @@
+{
+    "timestamp": 1549881217455,
+    "status": 200,
+    "errors": [
+        {
+            "errorCode": "KER-AUD-001",
+            "errorMessage": "Id size must be between 1 and 64"
+        }
+    ]
+}

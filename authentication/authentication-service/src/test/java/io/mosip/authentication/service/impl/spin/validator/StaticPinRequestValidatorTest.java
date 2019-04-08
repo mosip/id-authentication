@@ -1,3 +1,4 @@
+
 package io.mosip.authentication.service.impl.spin.validator;
 
 import static org.junit.Assert.assertFalse;
@@ -24,7 +25,6 @@ import org.springframework.web.context.WebApplicationContext;
 
 import io.mosip.authentication.core.dto.indauth.IdType;
 import io.mosip.authentication.core.dto.spinstore.PinRequestDTO;
-import io.mosip.authentication.core.dto.spinstore.StaticPinIdentityDTO;
 import io.mosip.authentication.core.dto.spinstore.StaticPinRequestDTO;
 import io.mosip.authentication.service.helper.IdInfoHelper;
 import io.mosip.authentication.service.impl.otpgen.validator.OTPRequestValidator;
@@ -38,7 +38,9 @@ import io.mosip.kernel.idvalidator.vid.impl.VidValidatorImpl;
  *
  */
 @RunWith(SpringRunner.class)
+
 @WebMvcTest
+
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
 public class StaticPinRequestValidatorTest {
 
@@ -50,6 +52,7 @@ public class StaticPinRequestValidatorTest {
 
 	@InjectMocks
 	IdInfoHelper idinfoHelper;
+
 	@Mock
 	UinValidatorImpl uinValidator;
 
@@ -83,8 +86,6 @@ public class StaticPinRequestValidatorTest {
 		staticPinRequestDTO.setRequestTime(reqTime);
 		staticPinRequestDTO.setVersion("1.0");
 		staticPinRequestDTO.setIndividualIdType(IdType.UIN.getType());
-		StaticPinIdentityDTO dto = new StaticPinIdentityDTO();
-		dto.setUin(uin);
 		PinRequestDTO pinRequestDTO = new PinRequestDTO();
 		String pin = "123454";
 		pinRequestDTO.setStaticPin(pin);
@@ -103,8 +104,6 @@ public class StaticPinRequestValidatorTest {
 		staticPinRequestDTO.setIndividualIdType(IdType.UIN.getType());
 		staticPinRequestDTO.setRequestTime(reqTime);
 		staticPinRequestDTO.setVersion("1.0");
-		StaticPinIdentityDTO dto = new StaticPinIdentityDTO();
-		dto.setUin(uin);
 		PinRequestDTO pinRequestDTO = new PinRequestDTO();
 		String pin = null;
 		pinRequestDTO.setStaticPin(pin);
@@ -122,8 +121,6 @@ public class StaticPinRequestValidatorTest {
 				.toString();
 		staticPinRequestDTO.setRequestTime(reqTime);
 		staticPinRequestDTO.setVersion("1.0");
-		StaticPinIdentityDTO dto = new StaticPinIdentityDTO();
-		dto.setUin(uin);
 		PinRequestDTO pinRequestDTO = new PinRequestDTO();
 		String pin = "";
 		pinRequestDTO.setStaticPin(pin);
@@ -143,8 +140,6 @@ public class StaticPinRequestValidatorTest {
 				.toString();
 		staticPinRequestDTO.setRequestTime(reqTime);
 		staticPinRequestDTO.setVersion("1.0");
-		StaticPinIdentityDTO dto = new StaticPinIdentityDTO();
-		dto.setUin(uin);
 		PinRequestDTO pinRequestDTO = new PinRequestDTO();
 		String pin = "test656";
 		pinRequestDTO.setStaticPin(pin);
@@ -163,8 +158,6 @@ public class StaticPinRequestValidatorTest {
 				.toString();
 		staticPinRequestDTO.setRequestTime(reqTime);
 		staticPinRequestDTO.setVersion("1.0");
-		StaticPinIdentityDTO dto = new StaticPinIdentityDTO();
-		dto.setVid(vid);
 		PinRequestDTO pinRequestDTO = new PinRequestDTO();
 		String pin = "test656";
 		pinRequestDTO.setStaticPin(pin);

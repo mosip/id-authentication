@@ -15,7 +15,7 @@ import io.mosip.kernel.masterdata.constant.RegistrationCenterMachineUserMappingE
 import io.mosip.kernel.masterdata.dto.RegCenterMachineUserReqDto;
 import io.mosip.kernel.masterdata.dto.RegCenterMachineUserResponseDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterUserMachineMappingDto;
-import io.mosip.kernel.masterdata.dto.RequestDto;
+import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterUserMachine;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterUserMachineHistory;
 import io.mosip.kernel.masterdata.entity.id.RegistrationCenterMachineUserID;
@@ -62,7 +62,7 @@ public class RegistrationCenterMachineUserServiceImpl implements RegistrationCen
 	@Override
 	@Transactional
 	public RegistrationCenterMachineUserID createRegistrationCentersMachineUserMapping(
-			RequestDto<RegistrationCenterUserMachineMappingDto> registrationCenterUserMachineMappingDto) {
+			RequestWrapper<RegistrationCenterUserMachineMappingDto> registrationCenterUserMachineMappingDto) {
 
 		RegistrationCenterUserMachine registrationCenterUserMachine = MetaDataUtils.setCreateMetaData(
 				registrationCenterUserMachineMappingDto.getRequest(), RegistrationCenterUserMachine.class);

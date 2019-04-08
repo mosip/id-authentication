@@ -5,6 +5,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * The DTO Class PreRegArchiveDTO.
+ * 
+ * @author Sreekar Chukka
+ * @since 1.0.0
+ */
 @Getter
 @Setter
 public class PreRegArchiveDTO {

@@ -1,9 +1,10 @@
 {
-  "err": {
-    "errorCode": "PRG_DATA_SYNC_003",
-    "message": "INVALID_USER_ID"
-  },
-  "status": false,
-  "resTime": "2019-01-30T10:11:24.467Z",
-  "response": null
+    "id": null,
+    "version": null,
+    "err": {
+        "errorCode": "PRG_DATA_SYNC_003",
+        "message": "INVALID_USER_ID"
+    },
+    "responsetime": "2019-03-29T07:45:25.929Z",
+    "response": null
 }

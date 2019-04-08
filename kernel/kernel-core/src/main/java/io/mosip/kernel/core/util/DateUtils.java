@@ -27,10 +27,7 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Locale;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.TimeZone;
 
@@ -63,8 +60,6 @@ public final class DateUtils {
 	 * Default UTC pattern.
 	 */
 	private static final String UTC_DATETIME_PATTERN = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
-
-
 
 	private DateUtils() {
 
@@ -862,7 +857,7 @@ public final class DateUtils {
 	 *             If <code>dateString</code> or <code>dateFormat</code> is null.
 	 * @see SimpleDateFormat
 	 */
-	public static Date parseToDate(String dateString, String pattern)  {
+	public static Date parseToDate(String dateString, String pattern) {
 		if (Objects.isNull(dateString) || Objects.isNull(pattern)) {
 			throw new io.mosip.kernel.core.exception.NullPointerException(
 					DateUtilConstants.ILLEGALARGUMENT_ERROR_CODE.getErrorCode(),
@@ -880,6 +875,20 @@ public final class DateUtils {
 					DateUtilConstants.PARSE_EXCEPTION_ERROR_CODE.getErrorCode(),
 					DateUtilConstants.PARSE_EXCEPTION_ERROR_CODE.getEexceptionMessage(), e.getCause());
 		}
+	}
+
+	/**
+	 * This method to convert “java.util.Date” time stamp to UTC date string
+	 * 
+	 * @param date
+	 *            The java.util.Date.
+	 * @return return UTC DateTime format string.
+	 * 
+	 */
+	public static String getUTCTimeFromDate(Date date) {
+		SimpleDateFormat dateFormatter = new SimpleDateFormat(UTC_DATETIME_PATTERN);
+		dateFormatter.setTimeZone(TimeZone.getTimeZone(UTC_ZONE_ID));
+		return dateFormatter.format(date);
 	}
 
 }

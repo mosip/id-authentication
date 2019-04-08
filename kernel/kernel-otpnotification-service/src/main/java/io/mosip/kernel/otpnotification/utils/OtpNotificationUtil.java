@@ -5,8 +5,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -29,6 +31,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.exception.ServiceError;
+import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.templatemanager.spi.TemplateManager;
 import io.mosip.kernel.otpnotification.constant.OtpNotificationErrorConstant;
 import io.mosip.kernel.otpnotification.constant.OtpNotificationPropertyConstant;
@@ -53,6 +56,12 @@ public class OtpNotificationUtil {
 	 */
 	@Value("${mosip.kernel.otpnotification.otp.api}")
 	private String otpServiceApi;
+
+	@Value("${mosip.kernel.otpnotification.request_id}")
+	private String wrapperRequestID;
+
+	@Value("${mosip.kernel.otpnotification.request_version}")
+	private String wrapperRequestVersion;
 
 	/**
 	 * Sms service api.
@@ -87,8 +96,9 @@ public class OtpNotificationUtil {
 	/**
 	 * This method merge template with otp provided.
 	 * 
-	 * @param otp      the otp generated.
-	 * @param template the template provided.
+	 * @param otp              the otp generated.
+	 * @param template         the template provided.
+	 * @param notificationType notification type
 	 * @return the merged template.
 	 */
 	public String templateMerger(String otp, String template, String notificationType) {
@@ -126,6 +136,11 @@ public class OtpNotificationUtil {
 	 * @param smsTemplate the sms template provided.
 	 */
 	public void sendSmsNotification(String number, String smsTemplate) {
+		RequestWrapper<SmsRequestDto> reqWrapper = new RequestWrapper<>();
+		reqWrapper.setId(wrapperRequestID);
+		reqWrapper.setMetadata(null);
+		reqWrapper.setRequesttime(LocalDateTime.now());
+		reqWrapper.setVersion(wrapperRequestVersion);
 
 		SmsRequestDto smsRequest = new SmsRequestDto();
 
@@ -133,10 +148,12 @@ public class OtpNotificationUtil {
 
 		smsRequest.setMessage(smsTemplate);
 
+		reqWrapper.setRequest(smsRequest);
+
 		HttpHeaders smsHeaders = new HttpHeaders();
 		smsHeaders.setContentType(MediaType.APPLICATION_JSON);
 
-		HttpEntity<SmsRequestDto> smsEntity = new HttpEntity<>(smsRequest, smsHeaders);
+		HttpEntity<RequestWrapper<SmsRequestDto>> smsEntity = new HttpEntity<>(reqWrapper, smsHeaders);
 
 		ResponseEntity<String> response = restTemplate.exchange(smsServiceApi, HttpMethod.POST, smsEntity,
 				String.class);
@@ -176,9 +193,8 @@ public class OtpNotificationUtil {
 		String responseBody = response.getBody();
 
 		List<ServiceError> validationErrorsList = null;
-		
-			validationErrorsList = ExceptionUtils.getServiceErrorList(responseBody);
-		
+
+		validationErrorsList = ExceptionUtils.getServiceErrorList(responseBody);
 
 		if (!validationErrorsList.isEmpty()) {
 			throw new OtpNotificationInvalidArgumentException(validationErrorsList);
@@ -191,38 +207,33 @@ public class OtpNotificationUtil {
 	 * @param request the dto with key.
 	 * @return the generated OTP.
 	 */
-	public String generateOtp(OtpRequestDto request) {
-
+	public String generateOtp(RequestWrapper<OtpRequestDto> request) {
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
-
-		HttpEntity<OtpRequestDto> entity = new HttpEntity<>(request, headers);
-
+		HttpEntity<RequestWrapper<OtpRequestDto>> entity = new HttpEntity<>(request, headers);
 		ResponseEntity<String> response = restTemplate.exchange(otpServiceApi, HttpMethod.POST, entity, String.class);
-
 		String responseBody = response.getBody();
-
 		List<ServiceError> validationErrorsList = null;
-
 		validationErrorsList = ExceptionUtils.getServiceErrorList(responseBody);
-
 		if (!validationErrorsList.isEmpty()) {
 			throw new OtpNotificationInvalidArgumentException(validationErrorsList);
 		}
-
 		JsonNode otpResponse = null;
 		String otp = null;
 		try {
 			otpResponse = mapper.readTree(responseBody);
-
-			otp = otpResponse.get(OtpNotificationPropertyConstant.NOTIFICATION_OTP_VALUE.getProperty()).asText();
-
+			Iterator<JsonNode> iter = otpResponse.iterator();
+			while (iter.hasNext()) {
+				JsonNode parameterNode = iter.next();
+				if (parameterNode.get("otp") != null) {
+					otp = parameterNode.get("otp").asText();
+				}
+			}
 		} catch (IOException e) {
 			throw new OtpNotifierServiceException(
 					OtpNotificationErrorConstant.NOTIFIER_OTP_IO_RETRIVAL_ERROR.getErrorCode(),
 					OtpNotificationErrorConstant.NOTIFIER_OTP_IO_RETRIVAL_ERROR.getErrorMessage());
 		}
-
 		return otp;
 	}
 

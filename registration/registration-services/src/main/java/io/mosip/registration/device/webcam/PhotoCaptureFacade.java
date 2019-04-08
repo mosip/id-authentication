@@ -51,6 +51,7 @@ public class PhotoCaptureFacade extends WebcamSarxosServiceImpl {
 	 * @param isExceptionPhoto
 	 *            specifies if exception photo is required
 	 * @throws RegBaseCheckedException
+	 * 				throws exception if there is any error in reading stubbed images
 	 */
 	public void captureStubApplicantPhoto(ApplicantDocumentDTO applicantDocumentDTO, boolean isExceptionPhoto)
 			throws RegBaseCheckedException {

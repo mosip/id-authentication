@@ -1,5 +1,6 @@
 package io.mosip.registration.processor.core.spi.filesystem.manager;
 
+import java.io.File;
 import java.io.IOException;
 
 // TODO: Auto-generated Javadoc
@@ -7,33 +8,38 @@ import java.io.IOException;
  * The Interface FileManager.
  *
  * @author Mukul Puspam
- *
- * @param <T>
- *            Directory path
- * @param <U>
- *            Return type of operations
- * @param <V>
- *            Input file
+ * @param <D>
+ *            the generic type
+ * @param <F>
+ *            the generic type
  */
 public interface FileManager<D, F> {
 
 	/**
 	 * Copy.
 	 *
-	 * @param fileName the file name
-	 * @param sourceWorkingDirectory the source working directory
-	 * @param destinationWorkingDirectory the destination working directory
-	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @param fileName
+	 *            the file name
+	 * @param sourceWorkingDirectory
+	 *            the source working directory
+	 * @param destinationWorkingDirectory
+	 *            the destination working directory
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
 	 */
 	public void copy(String fileName, D sourceWorkingDirectory, D destinationWorkingDirectory) throws IOException;
 
 	/**
 	 * stores file to the specific directory in VM.
 	 *
-	 * @param fileName the file name
-	 * @param file            file to be stored
-	 * @param workingDirectory            working directory
-	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @param fileName
+	 *            the file name
+	 * @param file
+	 *            file to be stored
+	 * @param workingDirectory
+	 *            working directory
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
 	 */
 	public void put(String fileName, F file, D workingDirectory) throws IOException;
 
@@ -99,5 +105,18 @@ public interface FileManager<D, F> {
 	 *             Signals that an I/O exception has occurred.
 	 */
 	public void deleteFolder(D destinationDirectory, String fileName) throws IOException;
+
+	/**
+	 * Gets the file.
+	 *
+	 * @param workingDirectory
+	 *            the working directory
+	 * @param fileName
+	 *            the file name
+	 * @return the file
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
+	 */
+	public File getFile(D workingDirectory, String fileName) throws IOException;
 
 }

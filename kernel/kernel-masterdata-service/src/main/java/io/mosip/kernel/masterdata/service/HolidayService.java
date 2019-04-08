@@ -4,7 +4,7 @@ import io.mosip.kernel.masterdata.dto.HolidayDto;
 import io.mosip.kernel.masterdata.dto.HolidayIDDto;
 import io.mosip.kernel.masterdata.dto.HolidayIdDeleteDto;
 import io.mosip.kernel.masterdata.dto.HolidayUpdateDto;
-import io.mosip.kernel.masterdata.dto.RequestDto;
+import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.masterdata.dto.getresponse.HolidayResponseDto;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
@@ -66,7 +66,7 @@ public interface HolidayService {
 	 * @throws MasterDataServiceException
 	 *             when entered data not created
 	 */
-	public HolidayIDDto saveHoliday(RequestDto<HolidayDto> holidayDto);
+	public HolidayIDDto saveHoliday(HolidayDto holidayDto);
 
 	/**
 	 * Method to update a holiday data
@@ -77,7 +77,7 @@ public interface HolidayService {
 	 * @throws MasterDataServiceException
 	 *             when entered data not updated
 	 */
-	public HolidayIDDto updateHoliday(RequestDto<HolidayUpdateDto> holidayDto);
+	public HolidayIDDto updateHoliday(HolidayUpdateDto holidayDto);
 
 	/**
 	 * Method to delete the holidays
@@ -86,5 +86,5 @@ public interface HolidayService {
 	 *            input holiday id
 	 * @return id of the holiday which been deleted
 	 */
-	public HolidayIdDeleteDto deleteHoliday(RequestDto<HolidayIdDeleteDto> holidayId);
+	public HolidayIdDeleteDto deleteHoliday(RequestWrapper<HolidayIdDeleteDto> holidayId);
 }

@@ -58,7 +58,7 @@ public class AppAuthenticationDAOImpl implements AppAuthenticationDAO {
 		}
 
 		List<AppAuthenticationDetails> loginList = appAuthenticationRepository
-				.findByIsActiveTrueAndAppAuthenticationMethodIdProcessIdAndAppAuthenticationMethodIdRoleCodeOrderByMethodSeq(authType, role);
+				.findByIsActiveTrueAndAppAuthenticationMethodIdProcessIdAndAppAuthenticationMethodIdRoleCodeOrderByMethodSequence(authType, role);
 		
 		LOGGER.info("REGISTRATION - LOGINMODES - REGISTRATION_APP_LOGIN_DAO_IMPL", RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "List of login modes fetched successfully");

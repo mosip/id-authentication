@@ -7,9 +7,12 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
+import io.mosip.authentication.service.impl.indauth.controller.InternalAuthController;
 
 /**
- * The Class InternalAuthFilter.
+ * The Class InternalAuthFilter - used to authenticate the
+ * request received for authenticating internal AUTH request
+ * {@link InternalAuthController}
  * 
  * @author Sanjay Murali
  */
@@ -40,11 +43,17 @@ public class InternalAuthFilter extends BaseAuthFilter {
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see io.mosip.authentication.service.filter.BaseAuthFilter#validateSignature(java.lang.String, byte[])
+	 */
 	@Override
 	protected boolean validateSignature(String signature, byte[] requestAsByte) throws IdAuthenticationAppException {
 		return true;
 	}
 
+	/* (non-Javadoc)
+	 * @see io.mosip.authentication.service.filter.BaseAuthFilter#validateDecipheredRequest(io.mosip.authentication.service.filter.ResettableStreamHttpServletRequest, java.util.Map)
+	 */
 	@Override
 	protected void validateDecipheredRequest(ResettableStreamHttpServletRequest requestWrapper,
 			Map<String, Object> decipherRequest) throws IdAuthenticationAppException {

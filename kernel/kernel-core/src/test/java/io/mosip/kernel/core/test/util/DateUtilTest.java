@@ -7,7 +7,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
-import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -530,5 +529,15 @@ public final class DateUtilTest {
 	@Test(expected = ParseException.class)
 	public void parseToDate() {
 		DateUtils.parseToDate(LocalDateTime.now().toString(), "dd.MM.yyyy", TimeZone.getDefault());
+	}
+
+	@Test
+	public void getUTCTimeFromDateTest() {
+		Date date = new Date();
+		SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+		dateFormatter.setTimeZone(TimeZone.getTimeZone(ZoneId.of("UTC")));
+		String expectedDate = dateFormatter.format(date);
+		String actualDate = DateUtils.getUTCTimeFromDate(date);
+		assertTrue(expectedDate.equals(actualDate));
 	}
 }

@@ -54,7 +54,6 @@ import javafx.fxml.FXML;
 import javafx.scene.Scene;
 import javafx.scene.control.TextArea;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
@@ -62,11 +61,10 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 /**
- * Class for Registration Page Controller
+ * {@code RegistrationController} for  Registration Page Controller
  * 
  * @author Taleev.Aalam
  * @since 1.0.0
- *
  */
 
 @Controller
@@ -83,23 +81,18 @@ public class RegistrationController extends BaseController {
 	private GridPane documentScan;
 	@FXML
 	private GridPane registrationId;
-
 	@Autowired
 	private Validations validation;
-
 	@Autowired
 	private MasterSyncService masterSync;
-
 	@Autowired
 	private DemographicDetailController demographicDetailController;
 	@FXML
 	private GridPane demographicDetail;
 	@FXML
 	private GridPane fingerPrintCapture;
-
 	@FXML
 	private GridPane biometricException;
-
 	@FXML
 	private GridPane faceCapture;
 	@FXML
@@ -108,22 +101,25 @@ public class RegistrationController extends BaseController {
 	private GridPane operatorAuthenticationPane;
 	@FXML
 	public ImageView biometricTracker;
-
 	@FXML
 	private GridPane registrationPreview;
-
 	@Autowired
 	private AuthenticationController authenticationController;
-
 	@Autowired
 	private RidGenerator<String> ridGeneratorImpl;
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see javafx.fxml.Initializable#initialize()
+	 */
 	@FXML
 	private void initialize() {
 		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Entering the LOGIN_CONTROLLER");
 		try {
 			if (getRegistrationDTOFromSession() == null) {
+				validation.updateAsLostUIN(false);
 				createRegistrationDTOObject(RegistrationConstants.PACKET_TYPE_NEW);
 			}
 
@@ -139,18 +135,25 @@ public class RegistrationController extends BaseController {
 		}
 	}
 
+	/**
+	 * This method is prepare the screen for uin update
+	 */
 	private void uinUpdate() {
 		if (getRegistrationDTOFromSession().getSelectionListDTO() != null) {
 			demographicDetailController.uinUpdate();
-			documentScanController.uinUpdate();
 		}
 	}
 
 	public void init(SelectionListDTO selectionListDTO) {
+		validation.updateAsLostUIN(false);
 		createRegistrationDTOObject(RegistrationConstants.PACKET_TYPE_UPDATE);
 		getRegistrationDTOFromSession().setSelectionListDTO(selectionListDTO);
 	}
 
+	protected void initializeLostUIN() {			
+		validation.updateAsLostUIN(true);
+		createRegistrationDTOObject(RegistrationConstants.PACKET_TYPE_LOST);		
+	}
 	/**
 	 * This method is to prepopulate all the values for edit operation
 	 */
@@ -236,6 +239,9 @@ public class RegistrationController extends BaseController {
 		}
 	}
 
+	/**
+	 * This method is save the biometric details
+	 */
 	public void saveBiometricDetails(BufferedImage applicantBufferedImage, BufferedImage exceptionBufferedImage) {
 		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "saving the details of applicant biometrics");
@@ -304,8 +310,9 @@ public class RegistrationController extends BaseController {
 			}
 		}
 	}
-
-	// Operator Authentication
+	/**
+	 * This method is to go to the operator authentication page
+	 */
 	public void goToAuthenticationPage() {
 		try {
 			authenticationController.initData(ProcessNames.PACKET.getType());
@@ -315,12 +322,18 @@ public class RegistrationController extends BaseController {
 		}
 	}
 
+	/**
+	 * This method is to determine if it is edit page
+	 */
 	private Boolean isEditPage() {
 		if (SessionContext.map().get(RegistrationConstants.REGISTRATION_ISEDIT) != null)
 			return (Boolean) SessionContext.map().get(RegistrationConstants.REGISTRATION_ISEDIT);
 		return false;
 	}
-
+	
+	/**
+	 * This method will create registration DTO object
+	 */
 	protected void createRegistrationDTOObject(String registrationCategory) {
 		RegistrationDTO registrationDTO = new RegistrationDTO();
 
@@ -353,7 +366,7 @@ public class RegistrationController extends BaseController {
 		// Create object for RegistrationMetaData DTO
 		RegistrationMetaDataDTO registrationMetaDataDTO = new RegistrationMetaDataDTO();
 		registrationMetaDataDTO.setRegistrationCategory(registrationCategory);
-
+		
 		RegistrationCenterDetailDTO registrationCenter = SessionContext.userContext().getRegistrationCenterDetailDTO();
 
 		if (RegistrationConstants.ENABLE
@@ -375,17 +388,20 @@ public class RegistrationController extends BaseController {
 		registrationDTO.setRegistrationMetaDataDTO(registrationMetaDataDTO);
 
 		// Set RID
-		String registrtaionID = ridGeneratorImpl.generateId(registrationMetaDataDTO.getCenterId(),
+		String registrationID = ridGeneratorImpl.generateId(registrationMetaDataDTO.getCenterId(),
 				registrationMetaDataDTO.getMachineId());
 
 		LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
-				RegistrationConstants.APPLICATION_ID, "Registrtaion Started for RID  : [ " + registrtaionID + " ] ");
+				RegistrationConstants.APPLICATION_ID, "Registration Started for RID  : [ " + registrationID + " ] ");
 
-		registrationDTO.setRegistrationId(registrtaionID);
+		registrationDTO.setRegistrationId(registrationID);
 		// Put the RegistrationDTO object to SessionContext Map
 		SessionContext.map().put(RegistrationConstants.REGISTRATION_DATA, registrationDTO);
 	}
 
+	/**
+	 * This method will create the biometrics info DTO
+	 */
 	protected BiometricInfoDTO createBiometricInfoDTO() {
 		BiometricInfoDTO biometricInfoDTO = new BiometricInfoDTO();
 		biometricInfoDTO.setBiometricExceptionDTO(new ArrayList<>());
@@ -395,6 +411,9 @@ public class RegistrationController extends BaseController {
 		return biometricInfoDTO;
 	}
 	
+	/**
+	 * This method will show uin update current page
+	 */
 	public void showUINUpdateCurrentPage() {
 		demographicDetail.setVisible(getVisiblity("demographicDetail"));
 		documentScan.setVisible(getVisiblity("documentScan"));
@@ -406,6 +425,9 @@ public class RegistrationController extends BaseController {
 		operatorAuthenticationPane.setVisible(getVisiblity("operatorAuthenticationPane"));
 	}
 
+	/**
+	 * This method will determine the visibility of the page
+	 */
 	private boolean getVisiblity(String page) {
 		if (SessionContext.map().get(page) != null) {
 			return (boolean) SessionContext.map().get(page);
@@ -413,6 +435,9 @@ public class RegistrationController extends BaseController {
 		return false;
 	}
 	
+	/**
+	 * This method will determine the current page
+	 */
 	public void showCurrentPage(String notTosShow, String show) {
 		
 		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,

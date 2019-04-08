@@ -24,10 +24,7 @@ public interface JsonValidator {
 	 * 
 	 * @param jsonString
 	 *            JSON as string that has to be Validated against the schema.
-	 * @param schemaName
-	 *            name of the schema file against which JSON needs to be validated,
-	 *            the schema file should be present in your config server storage or
-	 *            local storage, which ever option is selected in properties file.
+	 * 
 	 * @return JsonValidationResponseDto containing 'valid' variable as boolean and
 	 *         'warnings' arraylist
 	 * @throws HttpRequestException

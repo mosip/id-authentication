@@ -20,7 +20,7 @@ public interface PridSequenceRepository extends BaseRepository<PridSequence, Str
 	/**
 	 * This method returns maximum sequence counter from database.
 	 * 
-	 * @return the {@link TokenIdSequence}.
+	 * @return the {@link PridSequence}.
 	 */
 	@Lock(LockModeType.PESSIMISTIC_WRITE)
 	@Query("from PridSequence p WHERE p.sequenceNumber=(select max(ps.sequenceNumber) from PridSequence ps)")

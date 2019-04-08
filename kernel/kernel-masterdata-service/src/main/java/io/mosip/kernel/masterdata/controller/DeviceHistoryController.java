@@ -6,6 +6,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.mosip.kernel.core.http.ResponseFilter;
+import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.masterdata.dto.getresponse.DeviceHistoryResponseDto;
 import io.mosip.kernel.masterdata.service.DeviceHistoryService;
 import io.swagger.annotations.Api;
@@ -23,7 +25,7 @@ import io.swagger.annotations.ApiResponses;
 
 @RestController
 @Api(tags = { "DeviceHistory" })
-@RequestMapping(value = "/v1.0/deviceshistories")
+@RequestMapping(value = "/deviceshistories")
 public class DeviceHistoryController {
 
 	/**
@@ -34,8 +36,8 @@ public class DeviceHistoryController {
 	private DeviceHistoryService devHistoryService;
 
 	/**
-	 * Get api to fetch a device history details based on given Device ID,
-	 * Language code and effective date time
+	 * Get api to fetch a device history details based on given Device ID, Language
+	 * code and effective date time
 	 * 
 	 * @param id
 	 *            input device Id from User
@@ -47,15 +49,18 @@ public class DeviceHistoryController {
 	 * @return DeviceHistoryResponseDto returning device history detail based on
 	 *         given Device ID, Language code and effective date time
 	 */
+	@ResponseFilter
 	@GetMapping(value = "/{id}/{langcode}/{effdatetimes}")
-	@ApiOperation(value = "Retrieve all Device History Details for the given Languge Code, ID and Effective date time", notes = "Retrieve all Device Detail for given Languge Code and ID", response = DeviceHistoryResponseDto.class)
+	@ApiOperation(value = "Retrieve all Device History Details for the given Languge Code, ID and Effective date time", notes = "Retrieve all Device Detail for given Languge Code and ID")
 	@ApiResponses({
-			@ApiResponse(code = 200, message = "When Device History Details retrieved from database for the given Languge Code, ID and Effective date time", response = DeviceHistoryResponseDto.class),
+			@ApiResponse(code = 200, message = "When Device History Details retrieved from database for the given Languge Code, ID and Effective date time"),
 			@ApiResponse(code = 404, message = "When No Device History Details found for the given Languge Code, ID and Effective date time"),
 			@ApiResponse(code = 500, message = "While retrieving Device History Details any error occured") })
-	public DeviceHistoryResponseDto getDeviceHistoryIdLangEff(@PathVariable("id") String id,
+	public ResponseWrapper<DeviceHistoryResponseDto> getDeviceHistoryIdLangEff(@PathVariable("id") String id,
 			@PathVariable("langcode") String langCode, @PathVariable("effdatetimes") String dateAndTime) {
 
-		return devHistoryService.getDeviceHistroyIdLangEffDTime(id, langCode, dateAndTime);
+		ResponseWrapper<DeviceHistoryResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(devHistoryService.getDeviceHistroyIdLangEffDTime(id, langCode, dateAndTime));
+		return responseWrapper;
 	}
 }

@@ -14,7 +14,6 @@ import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.masterdata.constant.ApplicationErrorCode;
 import io.mosip.kernel.masterdata.constant.DocumentTypeErrorCode;
 import io.mosip.kernel.masterdata.dto.DocumentTypeDto;
-import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
 import io.mosip.kernel.masterdata.entity.DocumentType;
 import io.mosip.kernel.masterdata.entity.ValidDocument;
@@ -90,8 +89,8 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
 	 * mosip.kernel.masterdata.dto.RequestDto)
 	 */
 	@Override
-	public CodeAndLanguageCodeID createDocumentType(RequestDto<DocumentTypeDto> documentTypeDto) {
-		DocumentType entity = MetaDataUtils.setCreateMetaData(documentTypeDto.getRequest(), DocumentType.class);
+	public CodeAndLanguageCodeID createDocumentType(DocumentTypeDto documentTypeDto) {
+		DocumentType entity = MetaDataUtils.setCreateMetaData(documentTypeDto, DocumentType.class);
 		DocumentType documentType;
 		try {
 			documentType = documentTypeRepository.create(entity);
@@ -115,12 +114,12 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
 	 * mosip.kernel.masterdata.dto.RequestDto)
 	 */
 	@Override
-	public CodeAndLanguageCodeID updateDocumentType(RequestDto<DocumentTypeDto> documentTypeDto) {
+	public CodeAndLanguageCodeID updateDocumentType(DocumentTypeDto documentTypeDto) {
 		try {
 			DocumentType documentType = documentTypeRepository.findByCodeAndLangCodeAndIsDeletedFalseOrIsDeletedIsNull(
-					documentTypeDto.getRequest().getCode(), documentTypeDto.getRequest().getLangCode());
+					documentTypeDto.getCode(), documentTypeDto.getLangCode());
 			if (documentType != null) {
-				MetaDataUtils.setUpdateMetaData(documentTypeDto.getRequest(), documentType, false);
+				MetaDataUtils.setUpdateMetaData(documentTypeDto, documentType, false);
 			} else {
 				throw new RequestException(DocumentTypeErrorCode.DOCUMENT_TYPE_NOT_FOUND_EXCEPTION.getErrorCode(),
 						DocumentTypeErrorCode.DOCUMENT_TYPE_NOT_FOUND_EXCEPTION.getErrorMessage());
@@ -134,7 +133,7 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
 		}
 		CodeAndLanguageCodeID documentTypeId = new CodeAndLanguageCodeID();
 
-		MapperUtils.mapFieldValues(documentTypeDto.getRequest(), documentTypeId);
+		MapperUtils.mapFieldValues(documentTypeDto, documentTypeId);
 
 		return documentTypeId;
 	}

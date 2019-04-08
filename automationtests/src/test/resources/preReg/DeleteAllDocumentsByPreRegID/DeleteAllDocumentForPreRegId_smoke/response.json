@@ -1,11 +1,12 @@
 {
-  "err": null,
-  "status": true,
-  "resTime": "2019-01-31T07:49:18.399Z",
-  "response": [
-    {
-      "documnet_Id": "2c9180836833c12401689fb188505b5a",
-      "resMsg": "DOCUMENT_DELETE_SUCCESSFUL"
-    }
-  ]
+    "id": "mosip.pre-registration.document.upload",
+    "version": "1.0",
+    "err": null,
+    "responsetime": "2019-03-29T07:29:52.437Z",
+    "response": [
+        {
+            "documnet_Id": "70d15e17-51f4-11e9-8073-8b81a2621c21",
+            "resMsg": "DOCUMENT_DELETE_SUCCESSFUL"
+        }
+    ]
 }

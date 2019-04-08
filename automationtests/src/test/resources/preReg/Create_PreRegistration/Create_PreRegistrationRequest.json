@@ -1,9 +1,4 @@
 {  
-   "Create Pre Registration without passing ID parameter":"",
-   "Create Pre Registration without Version Parameter":"",
-   "Create Pre Registration with invalid ID Parameter":"",
-   "Create Pre Registration with invalid Version Parameter":"",
-   "Create Pre Registration with invalid Request Time Parameter":"",
    "Create Pre Registration with other DOB format":"",
    "Create Pre Registration With invalid Postal Code_5 alpha numeric(A-Z0-9)":"",
    "Create Pre Registration By passing invalid Language Code":"",
@@ -12,6 +7,5 @@
    "Create Pre Registration with invalid phone no_09 digit":"",
    "Create Pre registration With invalid phone no format_^([6-9]{1})([0-9]{9})$" :"",
    "Create Pre Registration with invalid email format":"",
-   "Create Pre Registration By Passing 31 digit CNIENumber":""
-   
+   "Create Pre Registration By Passing 31 digit CNIENumber":""  
 }

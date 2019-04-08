@@ -17,7 +17,6 @@ import io.mosip.kernel.applicanttype.exception.RequestException;
 import io.mosip.kernel.applicanttype.service.ApplicantTypeService;
 import io.mosip.kernel.core.applicanttype.exception.InvalidApplicantArgumentException;
 import io.mosip.kernel.core.applicanttype.spi.ApplicantType;
-import io.mosip.kernel.core.util.DateUtils;
 
 @Service
 public class ApplicantTypeServiceImpl implements ApplicantTypeService {
@@ -35,9 +34,6 @@ public class ApplicantTypeServiceImpl implements ApplicantTypeService {
 	@Override
 	public ResponseDTO getApplicantType(RequestDTO dto) {
 		ResponseDTO response = new ResponseDTO();
-		response.setId(dto.getId());
-		response.setVer(dto.getVer());
-		response.setResponseTime(DateUtils.getUTCCurrentDateTime());
 
 		List<KeyValues<String, Object>> list = dto.getAttributes();
 		Map<String, Object> map = new HashMap<>();
@@ -56,7 +52,7 @@ public class ApplicantTypeServiceImpl implements ApplicantTypeService {
 			throw new DataNotFoundException(ApplicantTypeErrorCode.NO_APPLICANT_FOUND_EXCEPTION.getErrorCode(),
 					ApplicantTypeErrorCode.NO_APPLICANT_FOUND_EXCEPTION.getErrorMessage());
 		}
-		response.setResponse(appDto);
+		response.setApplicantType(appDto);
 		return response;
 	}
 

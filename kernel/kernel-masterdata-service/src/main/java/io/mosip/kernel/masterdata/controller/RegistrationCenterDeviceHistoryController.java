@@ -6,7 +6,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.mosip.kernel.masterdata.dto.RegistrationCenterDeviceHistoryDto;
+import io.mosip.kernel.core.http.ResponseFilter;
+import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.masterdata.dto.getresponse.RegistrationCenterDeviceHistoryResponseDto;
 import io.mosip.kernel.masterdata.service.RegistrationCenterDeviceHistoryService;
 import io.swagger.annotations.Api;
@@ -20,7 +21,7 @@ import io.swagger.annotations.ApiResponses;
  * @since 1.0.0
  */
 @RestController
-@RequestMapping("/v1.0/registrationcenterdevicehistory")
+@RequestMapping("/registrationcenterdevicehistory")
 @Api(tags = { "RegistrationCenterDevicesHistory" })
 public class RegistrationCenterDeviceHistoryController {
 
@@ -46,17 +47,20 @@ public class RegistrationCenterDeviceHistoryController {
 	 *         center device history based on given regCenterId, deviceId and
 	 *         effective date time
 	 */
+	@ResponseFilter
 	@GetMapping(value = "/{regcenterid}/{deviceid}/{effdatetimes}")
-	@ApiOperation(value = "Retrieve Registration Center Device History Details for the given Registration Center Id, Device Id and Effective date time", response = RegistrationCenterDeviceHistoryDto.class)
+	@ApiOperation(value = "Retrieve Registration Center Device History Details for the given Registration Center Id, Device Id and Effective date time")
 	@ApiResponses({
-			@ApiResponse(code = 200, message = "When Registration Center Device History Details retrieved from Registration Center Id, Device Id and Effective date time", response = RegistrationCenterDeviceHistoryDto.class),
+			@ApiResponse(code = 200, message = "When Registration Center Device History Details retrieved from Registration Center Id, Device Id and Effective date time"),
 			@ApiResponse(code = 404, message = "When No Registration Center Device History Details retrieved from Registration Center Id, Device Id and Effective date time"),
 			@ApiResponse(code = 500, message = "While retrieving Registration Center Device History Details any error occured") })
-	public RegistrationCenterDeviceHistoryResponseDto getRegCentDevHistByregCentIdDevIdEffTime(
+	public ResponseWrapper<RegistrationCenterDeviceHistoryResponseDto> getRegCentDevHistByregCentIdDevIdEffTime(
 			@PathVariable("regcenterid") String regCenterId, @PathVariable("deviceid") String deviceId,
 			@PathVariable("effdatetimes") String effectiveTimes) {
 
-		return registrationCenterDeviceHistoryService.getRegCenterDeviceHisByregCenterIdDevIdEffDTime(regCenterId,
-				deviceId, effectiveTimes);
+		ResponseWrapper<RegistrationCenterDeviceHistoryResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(registrationCenterDeviceHistoryService
+				.getRegCenterDeviceHisByregCenterIdDevIdEffDTime(regCenterId, deviceId, effectiveTimes));
+		return responseWrapper;
 	}
 }

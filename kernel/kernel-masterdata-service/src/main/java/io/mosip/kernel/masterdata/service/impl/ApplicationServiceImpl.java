@@ -12,7 +12,6 @@ import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.datamapper.spi.DataMapper;
 import io.mosip.kernel.masterdata.constant.ApplicationErrorCode;
 import io.mosip.kernel.masterdata.dto.ApplicationDto;
-import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.getresponse.ApplicationResponseDto;
 import io.mosip.kernel.masterdata.entity.Application;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
@@ -140,8 +139,8 @@ public class ApplicationServiceImpl implements ApplicationService {
 	 * mosip.kernel.masterdata.dto.RequestDto)
 	 */
 	@Override
-	public CodeAndLanguageCodeID createApplication(RequestDto<ApplicationDto> applicationRequestDto) {
-		Application entity = MetaDataUtils.setCreateMetaData(applicationRequestDto.getRequest(), Application.class);
+	public CodeAndLanguageCodeID createApplication(ApplicationDto applicationRequestDto) {
+		Application entity = MetaDataUtils.setCreateMetaData(applicationRequestDto, Application.class);
 		Application application;
 		try {
 			application = applicationRepository.create(entity);

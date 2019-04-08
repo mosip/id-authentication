@@ -40,6 +40,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
 
 import io.mosip.kernel.core.idrepo.constant.IdRepoErrorConstants;
+import io.mosip.kernel.core.idrepo.dto.IdRequestDTO;
+import io.mosip.kernel.core.idrepo.dto.RequestDTO;
 import io.mosip.kernel.core.idrepo.exception.IdRepoAppException;
 import io.mosip.kernel.core.idvalidator.exception.InvalidIDException;
 import io.mosip.kernel.core.jsonvalidator.exception.ConfigServerConnectionException;
@@ -50,8 +52,7 @@ import io.mosip.kernel.core.jsonvalidator.exception.JsonValidationProcessingExce
 import io.mosip.kernel.core.jsonvalidator.exception.NullJsonSchemaException;
 import io.mosip.kernel.core.jsonvalidator.exception.UnidentifiedJsonException;
 import io.mosip.kernel.core.jsonvalidator.model.ValidationReport;
-import io.mosip.kernel.idrepo.dto.IdRequestDTO;
-import io.mosip.kernel.idrepo.dto.RequestDTO;
+import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.idvalidator.rid.impl.RidValidatorImpl;
 import io.mosip.kernel.idvalidator.uin.impl.UinValidatorImpl;
 import io.mosip.kernel.jsonvalidator.impl.JsonValidatorImpl;
@@ -146,7 +147,7 @@ public class IdRequestValidatorTest {
 			assertEquals(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(), error.getCode());
 			assertEquals(String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), "status"),
 					error.getDefaultMessage());
-			assertEquals("status", ((FieldError) error).getField());
+			assertEquals("request", ((FieldError) error).getField());
 		});
 	}
 
@@ -168,7 +169,7 @@ public class IdRequestValidatorTest {
 			assertEquals(
 					String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), "registrationId"),
 					error.getDefaultMessage());
-			assertEquals("registrationId", ((FieldError) error).getField());
+			assertEquals("request", ((FieldError) error).getField());
 		});
 	}
 
@@ -181,7 +182,7 @@ public class IdRequestValidatorTest {
 			assertEquals(
 					String.format(IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(), "registrationId"),
 					error.getDefaultMessage());
-			assertEquals("registrationId", ((FieldError) error).getField());
+			assertEquals("request", ((FieldError) error).getField());
 		});
 	}
 
@@ -388,33 +389,21 @@ public class IdRequestValidatorTest {
 		assertTrue(errors.hasErrors());
 		errors.getAllErrors().forEach(error -> {
 			assertEquals(IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(), error.getCode());
-			assertEquals(String.format(IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(), "timestamp"),
+			assertEquals(String.format(IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(), "requesttime"),
 					error.getDefaultMessage());
-			assertEquals("timestamp", ((FieldError) error).getField());
-		});
-	}
-
-	@Test
-	public void testValidateReqTimeInvalidReqTime() {
-		ReflectionTestUtils.invokeMethod(validator, "validateReqTime", "1234", errors);
-		assertTrue(errors.hasErrors());
-		errors.getAllErrors().forEach(error -> {
-			assertEquals(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(), error.getCode());
-			assertEquals(String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), "timestamp"),
-					error.getDefaultMessage());
-			assertEquals("timestamp", ((FieldError) error).getField());
+			assertEquals("requesttime", ((FieldError) error).getField());
 		});
 	}
 
 	@Test
 	public void testValidateReqTimeFutureReqTime() {
-		ReflectionTestUtils.invokeMethod(validator, "validateReqTime", "9999-12-31T15:28:28.610", errors);
+		ReflectionTestUtils.invokeMethod(validator, "validateReqTime", DateUtils.parseToLocalDateTime("9999-12-31T15:28:28.610Z"), errors);
 		assertTrue(errors.hasErrors());
 		errors.getAllErrors().forEach(error -> {
 			assertEquals(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(), error.getCode());
-			assertEquals(String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), "timestamp"),
+			assertEquals(String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), "requesttime"),
 					error.getDefaultMessage());
-			assertEquals("timestamp", ((FieldError) error).getField());
+			assertEquals("requesttime", ((FieldError) error).getField());
 		});
 	}
 
@@ -427,9 +416,6 @@ public class IdRequestValidatorTest {
 		Mockito.when(uinValidatorImpl.validateId(Mockito.anyString())).thenReturn(true);
 		IdRequestDTO request = new IdRequestDTO();
 		request.setId("mosip.id.create");
-		request.setRegistrationId("1234");
-		request.setStatus("ACTIVATED");
-		request.setTimestamp("2018-12-15T15:28:43.824Z");
 		request.setVersion("1.0");
 		Object obj = mapper.readValue(
 				"{\"identity\":{\"firstName\":[{\"language\":\"AR\",\"value\":\"Manoj\",\"label\":\"string\"}]}}"
@@ -437,8 +423,11 @@ public class IdRequestValidatorTest {
 				Object.class);
 
 		RequestDTO req = new RequestDTO();
+		req.setRegistrationId("1234");
+		req.setStatus("ACTIVATED");
 		req.setIdentity(obj);
 		request.setRequest(req);
+		request.setRequesttime(DateUtils.getUTCCurrentDateTime());
 		validator.validate(request, errors);
 		assertFalse(errors.hasErrors());
 	}
@@ -452,18 +441,18 @@ public class IdRequestValidatorTest {
 		Mockito.when(uinValidatorImpl.validateId(Mockito.anyString())).thenReturn(true);
 		IdRequestDTO request = new IdRequestDTO();
 		request.setId("mosip.id.update");
-		request.setRegistrationId("1234");
-		request.setStatus("ACTIVATED");
 		request.setVersion("1.0");
-		request.setTimestamp("2018-12-15T15:28:43.824Z");
 		Object obj = mapper.readValue(
 				"{\"identity\":{\"firstName\":[{\"language\":\"AR\",\"value\":\"Manoj\",\"label\":\"string\"}]}}"
 						.getBytes(),
 				Object.class);
 
 		RequestDTO req = new RequestDTO();
+		req.setRegistrationId("1234");
+		req.setStatus("ACTIVATED");
 		req.setIdentity(obj);
 		request.setRequest(req);
+		request.setRequesttime(DateUtils.getUTCCurrentDateTime());
 		validator.validate(request, errors);
 		assertFalse(errors.hasErrors());
 	}

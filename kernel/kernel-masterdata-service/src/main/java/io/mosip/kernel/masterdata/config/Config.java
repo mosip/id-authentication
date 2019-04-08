@@ -20,12 +20,15 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.filter.CommonsRequestLoggingFilter;
 
 import io.mosip.kernel.masterdata.httpfilter.CorsFilter;
+import io.mosip.kernel.masterdata.httpfilter.ReqResFilter;
 
 /**
  * Config class with beans for modelmapper and request logging
  * 
  * @author Dharmesh Khandelwal
- * @author Bal Vikash Sharma
+ * @author Bal Vikash Sharma'
+ * @author Neha Sinha
+ * 
  * @since 1.0.0
  *
  */
@@ -59,6 +62,19 @@ public class Config {
 	@Bean
 	public Filter registerCORSFilter() {
 		return new CorsFilter();
+	}
+	
+	@Bean
+	public FilterRegistrationBean<Filter> registerReqResFilter() {
+		FilterRegistrationBean<Filter> filterRegistrationBean = new FilterRegistrationBean<>();
+		filterRegistrationBean.setFilter(getReqResFilter());
+		filterRegistrationBean.setOrder(2);
+		return filterRegistrationBean;
+	}
+	
+	@Bean
+	public Filter getReqResFilter() {
+		return new ReqResFilter();
 	}
 
 	@Bean

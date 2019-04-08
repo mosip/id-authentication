@@ -6,7 +6,7 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 /**
- * TemplateType entity details
+ * The Entity Class for TemplateType details
  * 
  * @author Himaja Dhanyamraju
  * @since 1.0.0

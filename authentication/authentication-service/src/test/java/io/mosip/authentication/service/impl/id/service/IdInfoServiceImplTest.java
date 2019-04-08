@@ -10,7 +10,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import io.mosip.authentication.core.exception.IdAuthenticationDaoException;
-import io.mosip.authentication.service.impl.id.service.impl.IdRepoManager;
+import io.mosip.authentication.service.integration.IdRepoManager;
 
 //@RunWith(SpringRunner.class)
 

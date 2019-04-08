@@ -10,9 +10,21 @@ import io.mosip.kernel.core.cbeffutil.jaxbclasses.SingleType;
 
 public enum CbeffDocType {
 
+	/**
+	 * Enum for FIR
+	 */
 	FIR(SingleType.FINGER.name(), SingleType.FINGER, CbeffConstant.FORMAT_TYPE_FINGER),
+	/**
+	 * Enum for FMR
+	 */
 	FMR("FMR", SingleType.FINGER, CbeffConstant.FORMAT_TYPE_FINGER_MINUTIAE),
+	/**
+	 * Enum for IRIS
+	 */
 	IRIS(SingleType.IRIS.name(), SingleType.IRIS, CbeffConstant.FORMAT_TYPE_IRIS),
+	/**
+	 * Enum for Face
+	 */
 	FACE(SingleType.FACE.name(), SingleType.FACE, CbeffConstant.FORMAT_TYPE_FACE);
 
 	private String name;
@@ -21,6 +33,7 @@ public enum CbeffDocType {
 
 	/**
 	 * Constructor for Cbeff Doc type
+	 * 
 	 * @param name
 	 * @param type
 	 * @param value

@@ -27,6 +27,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
 /**
@@ -43,7 +44,7 @@ public class WebCameraController extends BaseController implements Initializable
 	private static final Logger LOGGER = AppConfig.getLogger(WebCameraController.class);
 
 	@FXML
-	public AnchorPane webCameraPane;
+	public GridPane webCameraPane;
 
 	@FXML
 	private SwingNode webcamera;

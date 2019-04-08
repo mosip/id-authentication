@@ -1,5 +1,11 @@
 package io.mosip.registration.dto;
 
+/**
+ * The DTO Class SyncRegistrationDTO.
+ * 
+ * @author Sreekar Chukka
+ * @version 1.0.0
+ */
 public class SyncRegistrationDTO {
 	private String langCode;
 	private String parentRegistrationId;

@@ -30,6 +30,7 @@ import com.jayway.jsonpath.Option;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.idrepo.constant.IdRepoConstants;
 import io.mosip.kernel.core.idrepo.constant.IdRepoErrorConstants;
+import io.mosip.kernel.core.idrepo.dto.IdRequestDTO;
 import io.mosip.kernel.core.idrepo.exception.IdRepoAppException;
 import io.mosip.kernel.core.idvalidator.exception.InvalidIDException;
 import io.mosip.kernel.core.idvalidator.spi.RidValidator;
@@ -47,7 +48,6 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.core.util.StringUtils;
 import io.mosip.kernel.idrepo.config.IdRepoLogger;
-import io.mosip.kernel.idrepo.dto.IdRequestDTO;
 import net.minidev.json.JSONArray;
 
 /**
@@ -99,7 +99,7 @@ public class IdRequestValidator implements Validator {
 	private static final String ID_REPO_SERVICE = "IdRepoService";
 
 	/** The Constant TIMESTAMP. */
-	private static final String TIMESTAMP = "timestamp";
+	private static final String REQUEST_TIME = "requesttime";
 
 	/** The Constant REQUEST. */
 	private static final String REQUEST = "request";
@@ -166,7 +166,7 @@ public class IdRequestValidator implements Validator {
 	public void validate(@NonNull Object target, Errors errors) {
 		IdRequestDTO request = (IdRequestDTO) target;
 
-		validateReqTime(request.getTimestamp(), errors);
+		validateReqTime(request.getRequesttime(), errors);
 
 		if (!errors.hasErrors()) {
 			validateVersion(request.getVersion(), errors);
@@ -174,17 +174,17 @@ public class IdRequestValidator implements Validator {
 
 		if (!errors.hasErrors() && Objects.nonNull(request.getId())) {
 			if (request.getId().equals(id.get(CREATE))) {
-				validateStatus(request.getStatus(), errors, CREATE);
+				validateStatus(request.getRequest().getStatus(), errors, CREATE);
 				LocalDateTime startTime = DateUtils.getUTCCurrentDateTime();
 				validateRequest(request.getRequest(), errors, CREATE);
 				mosipLogger.debug(IdRepoLogger.getUin(), "IdRequestValidator", "validateRequest",
 						"Time taken for execution - "
 								+ Duration.between(startTime, DateUtils.getUTCCurrentDateTime()).toMillis());
 			} else if (request.getId().equals(id.get(UPDATE))) {
-				validateStatus(request.getStatus(), errors, UPDATE);
+				validateStatus(request.getRequest().getStatus(), errors, UPDATE);
 				validateRequest(request.getRequest(), errors, UPDATE);
 			}
-			validateRegId(request.getRegistrationId(), errors);
+			validateRegId(request.getRequest().getRegistrationId(), errors);
 		}
 
 	}
@@ -216,7 +216,7 @@ public class IdRequestValidator implements Validator {
 	 */
 	private void validateStatus(String status, Errors errors, String method) {
 		if (Objects.nonNull(status) && (method.equals(UPDATE) && !this.status.contains(status))) {
-			errors.rejectValue(STATUS_FIELD, IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+			errors.rejectValue(REQUEST, IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
 					String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), STATUS_FIELD));
 		}
 	}
@@ -231,7 +231,7 @@ public class IdRequestValidator implements Validator {
 	 */
 	private void validateRegId(String registrationId, Errors errors) {
 		if (Objects.isNull(registrationId)) {
-			errors.rejectValue(REGISTRATION_ID, IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
+			errors.rejectValue(REQUEST, IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
 					String.format(IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(), REGISTRATION_ID));
 		} else {
 			try {
@@ -239,7 +239,7 @@ public class IdRequestValidator implements Validator {
 			} catch (InvalidIDException e) {
 				mosipLogger.error(IdRepoLogger.getUin(), "IdRequestValidator", "validateRegId",
 						"\n" + ExceptionUtils.getStackTrace(e));
-				errors.rejectValue(REGISTRATION_ID, IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+				errors.rejectValue(REQUEST, IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
 						String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), REGISTRATION_ID));
 			}
 		}
@@ -271,6 +271,8 @@ public class IdRequestValidator implements Validator {
 				} else {
 					validateDocuments(requestMap, errors);
 					requestMap.remove(DOCUMENTS);
+					requestMap.remove(REGISTRATION_ID);
+					requestMap.remove(STATUS_FIELD);
 					if (!errors.hasErrors()) {
 						jsonValidator.validateJson(mapper.writeValueAsString(requestMap));
 						validateJsonAttributes(mapper.writeValueAsString(request), errors);
@@ -409,26 +411,19 @@ public class IdRequestValidator implements Validator {
 	/**
 	 * Validate req time.
 	 *
-	 * @param timestamp
+	 * @param reqTime
 	 *            the timestamp
 	 * @param errors
 	 *            the errors
 	 */
-	private void validateReqTime(String timestamp, Errors errors) {
-		if (Objects.isNull(timestamp)) {
-			errors.rejectValue(TIMESTAMP, IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
-					String.format(IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(), TIMESTAMP));
+	private void validateReqTime(LocalDateTime reqTime, Errors errors) {
+		if (Objects.isNull(reqTime)) {
+			errors.rejectValue(REQUEST_TIME, IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
+					String.format(IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(), REQUEST_TIME));
 		} else {
-			try {
-				if (DateUtils.after(DateUtils.parseToLocalDateTime(timestamp), DateUtils.getUTCCurrentDateTime())) {
-					errors.rejectValue(TIMESTAMP, IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
-							String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), TIMESTAMP));
-				}
-			} catch (DateTimeParseException | io.mosip.kernel.core.exception.IllegalArgumentException e) {
-				mosipLogger.error(IdRepoLogger.getUin(), "IdRequestValidator", "validateReqTime",
-						"\n" + ExceptionUtils.getStackTrace(e));
-				errors.rejectValue(TIMESTAMP, IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
-						String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), TIMESTAMP));
+			if (DateUtils.after(reqTime, DateUtils.getUTCCurrentDateTime())) {
+				errors.rejectValue(REQUEST_TIME, IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+						String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), REQUEST_TIME));
 			}
 		}
 	}

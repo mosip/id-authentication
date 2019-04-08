@@ -1,0 +1,10 @@
+{
+  "timestamp": 1553236058194,
+  "status": 200,
+  "errors": [
+    {
+      "errorCode": "KER-SNC-140",
+      "errorMessage": "Mac-Address and Serial Number cannot be empty"
+    }
+  ]
+}

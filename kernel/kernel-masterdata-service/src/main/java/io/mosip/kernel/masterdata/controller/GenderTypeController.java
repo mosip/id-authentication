@@ -3,8 +3,6 @@ package io.mosip.kernel.masterdata.controller;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,7 +13,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.kernel.masterdata.dto.GenderTypeDto;
-import io.mosip.kernel.masterdata.dto.RequestDto;
+import io.mosip.kernel.core.http.RequestWrapper;
+import io.mosip.kernel.core.http.ResponseFilter;
+import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.masterdata.dto.getresponse.GenderTypeResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
@@ -45,9 +45,12 @@ public class GenderTypeController {
 	 * 
 	 * @return list of all gender types
 	 */
-	@GetMapping("/v1.0/gendertypes")
-	public GenderTypeResponseDto getAllGenderType() {
-		return genderTypeService.getAllGenderTypes();
+	@ResponseFilter
+	@GetMapping("/gendertypes")
+	public ResponseWrapper<GenderTypeResponseDto> getAllGenderType() {
+		ResponseWrapper<GenderTypeResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(genderTypeService.getAllGenderTypes());
+		return responseWrapper;
 	}
 
 	/**
@@ -57,9 +60,13 @@ public class GenderTypeController {
 	 *            the language code whose gender is to be returned
 	 * @return list of all gender types for the given language code
 	 */
-	@GetMapping(value = "/v1.0/gendertypes/{langcode}")
-	public GenderTypeResponseDto getGenderBylangCode(@PathVariable("langcode") String langCode) {
-		return genderTypeService.getGenderTypeByLangCode(langCode);
+	@ResponseFilter
+	@GetMapping(value = "/gendertypes/{langcode}")
+	public ResponseWrapper<GenderTypeResponseDto> getGenderBylangCode(@PathVariable("langcode") String langCode) {
+		
+		ResponseWrapper<GenderTypeResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(genderTypeService.getGenderTypeByLangCode(langCode));
+		return responseWrapper;
 	}
 
 	/**
@@ -69,9 +76,12 @@ public class GenderTypeController {
 	 *            input dto to enter a new gender data
 	 * @return primary key of entered row of gender
 	 */
-	@PostMapping("/v1.0/gendertypes")
-	public ResponseEntity<CodeAndLanguageCodeID> saveGenderType(@Valid @RequestBody RequestDto<GenderTypeDto> gender) {
-		return new ResponseEntity<>(genderTypeService.saveGenderType(gender), HttpStatus.OK);
+	@ResponseFilter
+	@PostMapping("/gendertypes")
+	public ResponseWrapper<CodeAndLanguageCodeID> saveGenderType(@Valid @RequestBody RequestWrapper<GenderTypeDto> gender) {
+		ResponseWrapper<CodeAndLanguageCodeID> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(genderTypeService.saveGenderType(gender.getRequest()));
+		return responseWrapper;
 
 	}
 
@@ -82,12 +92,14 @@ public class GenderTypeController {
 	 *            input dto to update a gender data
 	 * @return key of updated row
 	 */
-	@ApiOperation(value = "Update Gender Type", response = CodeAndLanguageCodeID.class)
-	@PutMapping("/v1.0/gendertypes")
-	public ResponseEntity<CodeAndLanguageCodeID> updateGenderType(
-			@ApiParam("Data to update with metadata") @Valid @RequestBody RequestDto<GenderTypeDto> gender) {
-		return new ResponseEntity<>(genderTypeService.updateGenderType(gender), HttpStatus.OK);
-
+	@ResponseFilter
+	@ApiOperation(value = "Update Gender Type")
+	@PutMapping("/gendertypes")
+	public ResponseWrapper<CodeAndLanguageCodeID> updateGenderType(
+			@ApiParam("Data to update with metadata") @Valid @RequestBody RequestWrapper<GenderTypeDto> gender) {
+		ResponseWrapper<CodeAndLanguageCodeID> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(genderTypeService.updateGenderType(gender.getRequest()));
+		return responseWrapper;
 	}
 
 	/**
@@ -97,11 +109,14 @@ public class GenderTypeController {
 	 *            the code whose gender is to be deleted
 	 * @return code of deleted rows
 	 */
-	@ApiOperation(value = "Delete Gender Type", response = CodeAndLanguageCodeID.class)
-	@DeleteMapping("/v1.0/gendertypes/{code}")
-	public ResponseEntity<CodeResponseDto> deleteGenderType(
+	@ResponseFilter
+	@ApiOperation(value = "Delete Gender Type")
+	@DeleteMapping("/gendertypes/{code}")
+	public ResponseWrapper<CodeResponseDto> deleteGenderType(
 			@ApiParam("Gender type Code of gender to be deleted") @PathVariable("code") String code) {
-		return new ResponseEntity<>(genderTypeService.deleteGenderType(code), HttpStatus.OK);
+		ResponseWrapper<CodeResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(genderTypeService.deleteGenderType(code));
+		return responseWrapper;
 	}
 
 	/**
@@ -111,9 +126,12 @@ public class GenderTypeController {
 	 *            gender Name
 	 * @return {@link StatusResponseDto } StatusResponseDto
 	 */
-	@ApiOperation(value = "validate gender name")
-	@GetMapping("/v1.0/gendertypes/validate/{gendername}")
-	public StatusResponseDto valdiateGenderName(@PathVariable("gendername") String genderName) {
-		return genderTypeService.validateGender(genderName);
+	@ResponseFilter
+	@ApiOperation(value="validate gender name")
+	@GetMapping("/gendertypes/validate/{gendername}")
+	public ResponseWrapper<StatusResponseDto> valdiateGenderName(@PathVariable("gendername") String genderName) {
+		ResponseWrapper<StatusResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(genderTypeService.validateGender(genderName));
+		return responseWrapper;
 	}
 }

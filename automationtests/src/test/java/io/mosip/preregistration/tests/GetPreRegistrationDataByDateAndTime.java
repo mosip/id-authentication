@@ -73,7 +73,7 @@ public class GetPreRegistrationDataByDateAndTime extends BaseTestCase implements
 	private static CommonLibrary commonLibrary = new CommonLibrary();
 
 	public GetPreRegistrationDataByDateAndTime() {
-		preReg_URI = commonLibrary.fetch_IDRepo("preReg_FetchPreRegistrationByDateAndTimeURI");
+		preReg_URI = commonLibrary.fetch_IDRepo().get("preReg_FetchPreRegistrationByDateAndTimeURI");
 	}
 
 	/**
@@ -91,7 +91,7 @@ public class GetPreRegistrationDataByDateAndTime extends BaseTestCase implements
 	public Object[][] readData(ITestContext context)
 			throws JsonParseException, JsonMappingException, IOException, ParseException {
 		String testParam = context.getCurrentXmlTest().getParameter("testType");
-		switch ("testParam") {
+		switch ("smoke") {
 		case "smoke":
 			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
 
@@ -124,8 +124,7 @@ public class GetPreRegistrationDataByDateAndTime extends BaseTestCase implements
 		} catch (Exception e) {
 			logger.info(e);
 		}
-		String statusCode = Actualresponse.jsonPath().get("status").toString();
-		outerKeys.add("resTime");
+		outerKeys.add("responsetime");
 		outerKeys.add("response");
 		status = AssertResponses.assertResponses(Actualresponse, Expectedresponse, outerKeys, innerKeys);
 		if (status) {

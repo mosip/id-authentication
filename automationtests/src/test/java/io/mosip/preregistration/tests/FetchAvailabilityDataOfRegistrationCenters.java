@@ -98,7 +98,7 @@ public class FetchAvailabilityDataOfRegistrationCenters extends BaseTestCase imp
 		
 		
 		String testParam = context.getCurrentXmlTest().getParameter("testType");
-		switch ("smoke") {
+		switch (testParam) {
 		case "smoke":
 			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
 		case "regression":
@@ -121,15 +121,17 @@ public class FetchAvailabilityDataOfRegistrationCenters extends BaseTestCase imp
 		List<String> innerKeys = new ArrayList<String>();
 		Expectedresponse = ResponseRequestMapper.mapResponse(testSuite, object);
 		Response fetchCenter = preRegLib.FetchCentre();
-		outerKeys.add("resTime");
-		innerKeys.add("regCenterId");
-		innerKeys.add("date");
-		innerKeys.add("fromTime");
-		innerKeys.add("toTime");
-		innerKeys.add("availability");
 		
-		boolean statuscode = fetchCenter.jsonPath().get("status");
-		if (statuscode) {
+		
+		outerKeys.add("responsetime");
+		innerKeys.add("regCenterId");
+		innerKeys.add("centerDetails");
+		
+		
+		
+		status = AssertResponses.assertResponses(fetchCenter, Expectedresponse, outerKeys, innerKeys);
+		
+		if (status) {
 			finalStatus="Pass";		
 		softAssert.assertAll();
 		object.put("status", finalStatus);
@@ -138,11 +140,11 @@ public class FetchAvailabilityDataOfRegistrationCenters extends BaseTestCase imp
 		else {
 			finalStatus="Fail";
 		}
+		
 		boolean setFinalStatus=false;
-        if(finalStatus.equals("Fail"))
-              setFinalStatus=false;
-        else if(finalStatus.equals("Pass"))
-              setFinalStatus=true;
+		
+		setFinalStatus = finalStatus.equals("Pass") ? true : false ;
+		
         Verify.verify(setFinalStatus);
         softAssert.assertAll();
 	}
@@ -154,7 +156,7 @@ public class FetchAvailabilityDataOfRegistrationCenters extends BaseTestCase imp
 		testCaseName = object.get("testCaseName").toString();
 		
 		
-		preReg_URI = commonLibrary.fetch_IDRepo("preReg_CancelAppointmentURI");
+		preReg_URI = commonLibrary.fetch_IDRepo().get("preReg_CancelAppointmentURI");
 	}
 
 	@AfterMethod(alwaysRun = true)
