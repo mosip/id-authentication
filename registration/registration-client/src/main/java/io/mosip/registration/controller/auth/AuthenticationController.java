@@ -746,10 +746,10 @@ public class AuthenticationController extends BaseController implements Initiali
 				if (fpMatchStatus) {
 					if (isSupervisor) {
 						fingerprintDetailsDTO.setFingerprintImageName(
-								"supervisor".concat(fingerprintDetailsDTO.getFingerType()).concat(".jpg"));
+								RegistrationConstants.SUPERVISOR_AUTH.concat(fingerprintDetailsDTO.getFingerType()).concat(RegistrationConstants.DOT.concat(RegistrationConstants.WEB_CAMERA_IMAGE_TYPE)));
 					} else {
 						fingerprintDetailsDTO.setFingerprintImageName(
-								"officer".concat(fingerprintDetailsDTO.getFingerType()).concat(".jpg"));
+								RegistrationConstants.OFFICER_AUTH.concat(fingerprintDetailsDTO.getFingerType()).concat(RegistrationConstants.DOT.concat(RegistrationConstants.WEB_CAMERA_IMAGE_TYPE)));
 					}
 				}
 			}
@@ -791,8 +791,8 @@ public class AuthenticationController extends BaseController implements Initiali
 
 		if (irisMatchStatus) {
 			irisDetailsDTO
-					.setIrisImageName(isSupervisor ? "supervisor".concat(irisDetailsDTO.getIrisType()).concat(".jpg")
-							: "officer".concat(irisDetailsDTO.getIrisType()).concat(".jpg"));
+					.setIrisImageName(isSupervisor ? RegistrationConstants.SUPERVISOR_AUTH.concat(irisDetailsDTO.getIrisType()).concat(RegistrationConstants.DOT.concat(RegistrationConstants.WEB_CAMERA_IMAGE_TYPE))
+							: RegistrationConstants.OFFICER_AUTH.concat(irisDetailsDTO.getIrisType()).concat(RegistrationConstants.DOT.concat(RegistrationConstants.WEB_CAMERA_IMAGE_TYPE)));
 		}
 		return irisMatchStatus;
 	}
@@ -904,8 +904,8 @@ public class AuthenticationController extends BaseController implements Initiali
 		auditFactory.audit(AuditEvent.REG_PREVIEW_BACK, Components.REG_PREVIEW, SessionContext.userId(),
 				AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
 		if (getRegistrationDTOFromSession().getSelectionListDTO() != null) {
-			SessionContext.map().put("operatorAuthenticationPane", false);
-			SessionContext.map().put("registrationPreview", true);
+			SessionContext.map().put(RegistrationConstants.UIN_UPDATE_OPERATORAUTHENTICATIONPANE, false);
+			SessionContext.map().put(RegistrationConstants.UIN_UPDATE_REGISTRATIONPREVIEW, true);
 			registrationController.showUINUpdateCurrentPage();
 
 		} else {

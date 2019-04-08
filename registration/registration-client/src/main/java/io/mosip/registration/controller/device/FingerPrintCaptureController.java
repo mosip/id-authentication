@@ -244,21 +244,21 @@ public class FingerPrintCaptureController extends BaseController implements Init
 		try {
 			if (getRegistrationDTOFromSession() != null
 					&& getRegistrationDTOFromSession().getSelectionListDTO() != null) {
-				registrationNavlabel.setText(ApplicationContext.applicationLanguageBundle().getString("uinUpdateNavLbl"));
+				registrationNavlabel.setText(ApplicationContext.applicationLanguageBundle().getString(RegistrationConstants.UIN_UPDATE_UINUPDATENAVLBL));
 			}
 			if (getRegistrationDTOFromSession() != null
 					&& getRegistrationDTOFromSession().getRegistrationMetaDataDTO().getRegistrationCategory() != null
 					&& getRegistrationDTOFromSession().getRegistrationMetaDataDTO().getRegistrationCategory()
 							.equals(RegistrationConstants.PACKET_TYPE_LOST)) {
-				registrationNavlabel.setText(ApplicationContext.applicationLanguageBundle().getString("/lostuin"));
+				registrationNavlabel.setText(ApplicationContext.applicationLanguageBundle().getString(RegistrationConstants.LOSTUINLBL));
 			}
 
 			if (!(boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
 				for (int retry = 0; retry < Integer.parseInt(
 						getValueFromApplicationContext(RegistrationConstants.FINGERPRINT_RETRIES_COUNT)); retry++) {
 					Label label = new Label();
-					label.getStyleClass().add("qualityLabelGrey");
-					label.setId("retryAttempt_" + (retry + 1));
+					label.getStyleClass().add(RegistrationConstants.QUALITY_LABEL_GREY);
+					label.setId(RegistrationConstants.RETRY_ATTEMPT_ID + (retry + 1));
 					label.setVisible(true);
 					label.setText(String.valueOf(retry + 1));
 					label.setAlignment(Pos.CENTER);
@@ -291,32 +291,32 @@ public class FingerPrintCaptureController extends BaseController implements Init
 						fpProgress.setProgress(0);
 						for (int attempt = 0; attempt < Integer.parseInt(getValueFromApplicationContext(
 								RegistrationConstants.FINGERPRINT_RETRIES_COUNT)); attempt++) {
-							fpRetryBox.lookup("#retryAttempt_" + (attempt + 1)).getStyleClass().clear();
-							fpRetryBox.lookup("#retryAttempt_" + (attempt + 1)).getStyleClass().add("qualityLabelGrey");
+							fpRetryBox.lookup(RegistrationConstants.RETRY_ATTEMPT + (attempt + 1)).getStyleClass().clear();
+							fpRetryBox.lookup(RegistrationConstants.RETRY_ATTEMPT + (attempt + 1)).getStyleClass().add(RegistrationConstants.QUALITY_LABEL_GREY);
 						}
 
-						String fpThreshold = "";
+						String fpThreshold = RegistrationConstants.EMPTY;
 						if (leftHandPalmPane.getId().equals(selectedPane.getId())) {
 							lefhPalmTrackerImg.setVisible(true);
 							rightPalmTrackerImg.setVisible(false);
 							thumbTrackerImg.setVisible(false);
 							fpThreshold = getValueFromApplicationContext(
 									RegistrationConstants.LEFTSLAP_FINGERPRINT_THRESHOLD);
-							thresholdLabel.setText("");
+							thresholdLabel.setText(RegistrationConstants.EMPTY);
 						} else if (rightHandPalmPane.getId().equals(selectedPane.getId())) {
 							rightPalmTrackerImg.setVisible(true);
 							lefhPalmTrackerImg.setVisible(false);
 							thumbTrackerImg.setVisible(false);
 							fpThreshold = getValueFromApplicationContext(
 									RegistrationConstants.RIGHTSLAP_FINGERPRINT_THRESHOLD);
-							thresholdLabel.setText("");
+							thresholdLabel.setText(RegistrationConstants.EMPTY);
 						} else if (thumbPane.getId().equals(selectedPane.getId())) {
 							thumbTrackerImg.setVisible(true);
 							rightPalmTrackerImg.setVisible(false);
 							lefhPalmTrackerImg.setVisible(false);
 							fpThreshold = getValueFromApplicationContext(
 									RegistrationConstants.THUMBS_FINGERPRINT_THRESHOLD);
-							thresholdLabel.setText("");
+							thresholdLabel.setText(RegistrationConstants.EMPTY);
 						}
 						thresholdPane1.setPercentWidth(Double.parseDouble(fpThreshold));
 						thresholdPane2.setPercentWidth(100.00 - (Double.parseDouble(fpThreshold)));
@@ -345,7 +345,7 @@ public class FingerPrintCaptureController extends BaseController implements Init
 					if (!(boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
 						fpProgress.setProgress(fpDetailsDTO != null ? fpDetailsDTO.getQualityScore() / 100 : 0);
 						qualityText.setText(fpDetailsDTO != null ? String.valueOf((int) fpDetailsDTO.getQualityScore())
-								.concat(RegistrationConstants.PERCENTAGE) : "");
+								.concat(RegistrationConstants.PERCENTAGE) : RegistrationConstants.EMPTY);
 
 						if (fpDetailsDTO != null
 								&& fpDetailsDTO.getFingerType().equals(RegistrationConstants.LEFTPALM)) {
@@ -437,18 +437,18 @@ public class FingerPrintCaptureController extends BaseController implements Init
 	private void updateRetryBox(int retries, double quality, double threshold) {
 		for (int j = 0; j < retries + 1; j++) {
 			if (quality > threshold) {
-				clearAttemptsBox("qualityLabelGreen", retries);
-				fpProgress.getStyleClass().removeAll("progress-barRed");
-				fpProgress.getStyleClass().add("progress-barGreen");
+				clearAttemptsBox(RegistrationConstants.QUALITY_LABEL_GREEN, retries);
+				fpProgress.getStyleClass().removeAll(RegistrationConstants.PROGRESS_BAR_RED);
+				fpProgress.getStyleClass().add(RegistrationConstants.PROGRESS_BAR_GREEN);
 			} else {
-				clearAttemptsBox("qualityLabelRed", retries);
-				fpProgress.getStyleClass().removeAll("progress-barGreen");
-				fpProgress.getStyleClass().add("progress-barRed");
+				clearAttemptsBox(RegistrationConstants.QUALITY_LABEL_RED, retries);
+				fpProgress.getStyleClass().removeAll(RegistrationConstants.PROGRESS_BAR_GREEN);
+				fpProgress.getStyleClass().add(RegistrationConstants.PROGRESS_BAR_RED);
 			}
 		}
 		if (retries > 1) {
 			for (int ret = retries; ret > 0; --ret) {
-				clearAttemptsBox("qualityLabelRed", ret);
+				clearAttemptsBox(RegistrationConstants.QUALITY_LABEL_RED, ret);
 			}
 		}
 	}
@@ -610,17 +610,17 @@ public class FingerPrintCaptureController extends BaseController implements Init
 
 		if (!(boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
 			fpProgress.setProgress(0);
-			fpProgress.getStyleClass().removeAll("progress-barRed");
-			fpProgress.getStyleClass().removeAll("progress-barGreen");
+			fpProgress.getStyleClass().removeAll(RegistrationConstants.PROGRESS_BAR_RED);
+			fpProgress.getStyleClass().removeAll(RegistrationConstants.PROGRESS_BAR_GREEN);
 
 			qualityText.setText(RegistrationConstants.EMPTY);
-			qualityText.getStyleClass().removeAll("labelRed");
-			qualityText.getStyleClass().removeAll("labelGreen");
+			qualityText.getStyleClass().removeAll(RegistrationConstants.LABEL_RED);
+			qualityText.getStyleClass().removeAll(RegistrationConstants.LABEL_GREEN);
 
 			for (int attempt = 0; attempt < Integer.parseInt(
 					getValueFromApplicationContext(RegistrationConstants.FINGERPRINT_RETRIES_COUNT)); attempt++) {
-				fpRetryBox.lookup("#retryAttempt_" + (attempt + 1)).getStyleClass().clear();
-				fpRetryBox.lookup("#retryAttempt_" + (attempt + 1)).getStyleClass().add("qualityLabelGrey");
+				fpRetryBox.lookup(RegistrationConstants.RETRY_ATTEMPT + (attempt + 1)).getStyleClass().clear();
+				fpRetryBox.lookup(RegistrationConstants.RETRY_ATTEMPT + (attempt + 1)).getStyleClass().add(RegistrationConstants.QUALITY_LABEL_GREY);
 			}
 		}
 
@@ -695,7 +695,7 @@ public class FingerPrintCaptureController extends BaseController implements Init
 				rightSlapQualityScore.setText(getQualityScore(item.getQualityScore()));
 			} else if (item.getFingerType().equals(RegistrationConstants.THUMBS)) {
 				thumbImageview.setImage(new Image(new ByteArrayInputStream(item.getFingerPrint())));
-				thumbPane.getStyleClass().add("fingerPrintPanesSelected");
+				thumbPane.getStyleClass().add(RegistrationConstants.FINGERPRINT_PANES_SELECTED);
 				thumbsQualityScore.setText(getQualityScore(item.getQualityScore()));
 			}
 		});
@@ -989,7 +989,7 @@ public class FingerPrintCaptureController extends BaseController implements Init
 		generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.FP_CAPTURE_SUCCESS);
 
 		popupStage.close();
-		parentPane.getStyleClass().add("fingerPrintPanesSelected");
+		parentPane.getStyleClass().add(RegistrationConstants.FINGERPRINT_PANES_SELECTED);
 		imageView.setImage(convertBytesToImage(detailsDTO.getFingerPrint()));
 		qualityScoreLabel.setText(getQualityScore(detailsDTO.getQualityScore()));
 		attemptSlap.setText(String.valueOf(detailsDTO.getNumRetry()));
@@ -999,17 +999,17 @@ public class FingerPrintCaptureController extends BaseController implements Init
 			qualityText.setText(getQualityScore(detailsDTO.getQualityScore()));
 			if (Double.valueOf(getQualityScore(detailsDTO.getQualityScore())
 					.split(RegistrationConstants.PERCENTAGE)[0]) > thresholdValue) {
-				clearAttemptsBox("qualityLabelGreen", detailsDTO.getNumRetry());
-				fpProgress.getStyleClass().removeAll("progress-barRed");
-				fpProgress.getStyleClass().add("progress-barGreen");
-				qualityText.getStyleClass().removeAll("labelRed");
-				qualityText.getStyleClass().add("labelGreen");
+				clearAttemptsBox(RegistrationConstants.QUALITY_LABEL_GREEN, detailsDTO.getNumRetry());
+				fpProgress.getStyleClass().removeAll(RegistrationConstants.PROGRESS_BAR_RED);
+				fpProgress.getStyleClass().add(RegistrationConstants.PROGRESS_BAR_GREEN);
+				qualityText.getStyleClass().removeAll(RegistrationConstants.LABEL_RED);
+				qualityText.getStyleClass().add(RegistrationConstants.LABEL_GREEN);
 			} else {
-				clearAttemptsBox("qualityLabelRed", detailsDTO.getNumRetry());
-				fpProgress.getStyleClass().removeAll("progress-barGreen");
-				fpProgress.getStyleClass().add("progress-barRed");
-				qualityText.getStyleClass().removeAll("labelGreen");
-				qualityText.getStyleClass().add("labelRed");
+				clearAttemptsBox(RegistrationConstants.QUALITY_LABEL_RED, detailsDTO.getNumRetry());
+				fpProgress.getStyleClass().removeAll(RegistrationConstants.PROGRESS_BAR_GREEN);
+				fpProgress.getStyleClass().add(RegistrationConstants.PROGRESS_BAR_RED);
+				qualityText.getStyleClass().removeAll(RegistrationConstants.LABEL_GREEN);
+				qualityText.getStyleClass().add(RegistrationConstants.LABEL_RED);
 			}
 		}
 		scanBtn.setDisable(true);
@@ -1045,16 +1045,16 @@ public class FingerPrintCaptureController extends BaseController implements Init
 				if (getRegistrationDTOFromSession().getSelectionListDTO() != null) {
 					SessionContext.map().remove(RegistrationConstants.DUPLICATE_FINGER);
 
-					SessionContext.map().put("fingerPrintCapture", false);
+					SessionContext.map().put(RegistrationConstants.UIN_UPDATE_FINGERPRINTCAPTURE, false);
 					if (RegistrationConstants.ENABLE.equalsIgnoreCase(
 							String.valueOf(ApplicationContext.map().get(RegistrationConstants.IRIS_DISABLE_FLAG)))) {
 						irisCaptureController.clearIrisBasedOnExceptions();
-						SessionContext.map().put("irisCapture", true);
+						SessionContext.map().put(RegistrationConstants.UIN_UPDATE_IRISCAPTURE, true);
 					} else if (!RegistrationConstants.DISABLE.equalsIgnoreCase(
 							String.valueOf(ApplicationContext.map().get(RegistrationConstants.FACE_DISABLE_FLAG)))) {
-						SessionContext.map().put("faceCapture", true);
+						SessionContext.map().put(RegistrationConstants.UIN_UPDATE_FACECAPTURE, true);
 					} else {
-						SessionContext.map().put("registrationPreview", true);
+						SessionContext.map().put(RegistrationConstants.UIN_UPDATE_REGISTRATIONPREVIEW, true);
 						registrationPreviewController.setUpPreviewContent();
 					}
 					registrationController.showUINUpdateCurrentPage();
@@ -1099,13 +1099,13 @@ public class FingerPrintCaptureController extends BaseController implements Init
 			} else {
 				SessionContext.getInstance().getMapObject().remove(RegistrationConstants.DUPLICATE_FINGER);
 				if (getRegistrationDTOFromSession().getSelectionListDTO() != null) {
-					SessionContext.map().put("fingerPrintCapture", false);
+					SessionContext.map().put(RegistrationConstants.FINGERPRINT_CAPTURE, false);
 
 					if ((boolean) SessionContext.getInstance().getUserContext().getUserMap()
 							.get(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION)) {
-						SessionContext.map().put("biometricException", true);
+						SessionContext.map().put(RegistrationConstants.UIN_UPDATE_BIOMETRICEXCEPTION, true);
 					} else {
-						SessionContext.map().put("documentScan", true);
+						SessionContext.map().put(RegistrationConstants.UIN_UPDATE_DOCUMENTSCAN, true);
 					}
 					registrationController.showUINUpdateCurrentPage();
 
@@ -1378,8 +1378,8 @@ public class FingerPrintCaptureController extends BaseController implements Init
 	 * 				the retries
 	 */
 	private void clearAttemptsBox(String styleClass, int retries) {
-		fpRetryBox.lookup("#retryAttempt_" + retries).getStyleClass().clear();
-		fpRetryBox.lookup("#retryAttempt_" + retries).getStyleClass().add(styleClass);
+		fpRetryBox.lookup(RegistrationConstants.RETRY_ATTEMPT + retries).getStyleClass().clear();
+		fpRetryBox.lookup(RegistrationConstants.RETRY_ATTEMPT + retries).getStyleClass().add(styleClass);
 	}
 	
 	/**

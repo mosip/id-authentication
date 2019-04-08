@@ -183,7 +183,7 @@ public class LoginController extends BaseController implements Initializable {
 	private ProgressIndicator progressIndicator;
 
 	private Service<String> taskService;
-	
+
 	private List<String> loginList = new ArrayList<>();
 	
 	@Override
@@ -192,15 +192,9 @@ public class LoginController extends BaseController implements Initializable {
 		try {
 			// TODO to replace false with registrationUpdate.hasUpdate() method.
 			ResponseDTO responseDTO = globalParamService.updateSoftwareUpdateStatus(false);
-
-			if (responseDTO != null && responseDTO.getSuccessResponseDTO() != null) {
-				LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
+			
+			LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
 						responseDTO.getSuccessResponseDTO().getMessage());
-			} else if (responseDTO != null && responseDTO.getErrorResponseDTOs() != null
-					&& !responseDTO.getErrorResponseDTOs().isEmpty()) {
-				LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
-						responseDTO.getErrorResponseDTOs().get(0).getMessage());
-			}
 
 			otpValidity.setText("Valid for " + Integer.parseInt(
 					((String) applicationContext.getApplicationMap().get(RegistrationConstants.OTP_EXPIRY_TIME)).trim())
@@ -212,11 +206,7 @@ public class LoginController extends BaseController implements Initializable {
 					generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.PWORD_LENGTH);
 				}
 			});
-		} /*
-			 * catch (IOException | ParserConfigurationException | SAXException exception) {
-			 * LOGGER.error(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
-			 * exception.getMessage() + ExceptionUtils.getStackTrace(exception)); }
-			 */ catch (RuntimeException runtimeExceptionexception) {
+		} catch (RuntimeException runtimeExceptionexception) {
 			LOGGER.error(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
 					runtimeExceptionexception.getMessage() + ExceptionUtils.getStackTrace(runtimeExceptionexception));
 		}

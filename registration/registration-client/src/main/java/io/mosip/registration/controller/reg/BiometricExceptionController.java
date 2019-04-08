@@ -37,7 +37,6 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
@@ -45,9 +44,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.VBox;
 
 @Controller
 public class BiometricExceptionController extends BaseController implements Initializable {
@@ -334,21 +331,21 @@ public class BiometricExceptionController extends BaseController implements Init
 			exceptionDTOCreation();
 			if (getRegistrationDTOFromSession().getSelectionListDTO() != null) {
 
-				SessionContext.map().put("biometricException", false);
+				SessionContext.map().put(RegistrationConstants.UIN_UPDATE_BIOMETRICEXCEPTION, false);
 				
 				if(fingerList.size()==10 && irisList.size()==2) {
-					SessionContext.map().put("faceCapture", true);
+					SessionContext.map().put(RegistrationConstants.UIN_UPDATE_FACECAPTURE, true);
 				}else if (RegistrationConstants.ENABLE.equalsIgnoreCase(
 						String.valueOf(ApplicationContext.map().get(RegistrationConstants.FINGERPRINT_DISABLE_FLAG)))) {
-					SessionContext.map().put("fingerPrintCapture", true);
+					SessionContext.map().put(RegistrationConstants.UIN_UPDATE_FINGERPRINTCAPTURE, true);
 				} else if(RegistrationConstants.ENABLE.equalsIgnoreCase(
 						String.valueOf(ApplicationContext.map().get(RegistrationConstants.IRIS_DISABLE_FLAG)))){
-					SessionContext.map().put("irisCapture", true);
+					SessionContext.map().put(RegistrationConstants.UIN_UPDATE_IRISCAPTURE, true);
 				}
 				registrationController.showUINUpdateCurrentPage();
 			} else {
 				registrationController.showCurrentPage(RegistrationConstants.BIOMETRIC_EXCEPTION,
-						getPageDetails("biometricException", RegistrationConstants.NEXT));
+						getPageDetails(RegistrationConstants.UIN_UPDATE_BIOMETRICEXCEPTION, RegistrationConstants.NEXT));
 			}
 			fingerPrintCaptureController.clearImage();
 			irisCaptureController.clearIrisBasedOnExceptions();
@@ -369,10 +366,10 @@ public class BiometricExceptionController extends BaseController implements Init
 			List<BiometricExceptionDTO> biometricExceptionList = new ArrayList<>();
 			bioList.forEach(bioType -> {
 				BiometricExceptionDTO biometricExceptionDTO = new BiometricExceptionDTO();
-				if (bioType.contains("Eye")) {
-					biometricExceptionDTO.setBiometricType("iris");
+				if (bioType.contains(RegistrationConstants.EYE)) {
+					biometricExceptionDTO.setBiometricType(RegistrationConstants.IRIS.toLowerCase());
 				} else {
-					biometricExceptionDTO.setBiometricType("fingerprint");
+					biometricExceptionDTO.setBiometricType(RegistrationConstants.FINGERPRINT);
 				}
 				biometricExceptionDTO.setMissingBiometric(bioType);
 				biometricExceptionDTO.setExceptionType(RegistrationConstants.PERMANENT_EXCEPTION);
@@ -418,8 +415,8 @@ public class BiometricExceptionController extends BaseController implements Init
 		} else {
 			exceptionDTOCreation();
 			if (getRegistrationDTOFromSession().getSelectionListDTO() != null) {
-				SessionContext.map().put("biometricException", false);
-				SessionContext.map().put("documentScan", true);
+				SessionContext.map().put(RegistrationConstants.UIN_UPDATE_BIOMETRICEXCEPTION, false);
+				SessionContext.map().put(RegistrationConstants.UIN_UPDATE_DOCUMENTSCAN, true);
 				registrationController.showUINUpdateCurrentPage();
 			} else {
 				registrationController.showCurrentPage(RegistrationConstants.BIOMETRIC_EXCEPTION,

@@ -236,21 +236,14 @@ public class GlobalParamServiceImpl extends BaseService implements GlobalParamSe
 
 		GlobalParam globalParam = globalParamDAO.updateSoftwareUpdateStatus(isUpdateAvailable);
 
+		SuccessResponseDTO successResponseDTO = new SuccessResponseDTO();
 		if (globalParam.getVal().equalsIgnoreCase(RegistrationConstants.ENABLE)) {
-
-			SuccessResponseDTO successResponseDTO = new SuccessResponseDTO();
 			successResponseDTO.setMessage(RegistrationConstants.SOFTWARE_UPDATE_SUCCESS_MSG);
-			responseDTO.setSuccessResponseDTO(successResponseDTO);
-
 		} else {
-
-			List<ErrorResponseDTO> errorResponseDTOs = new ArrayList<>();
-			ErrorResponseDTO errorResponseDTO = new ErrorResponseDTO();
-			errorResponseDTO.setMessage(RegistrationConstants.SOFTWARE_UPDATE_FAILURE_MSG);
-			errorResponseDTOs.add(errorResponseDTO);
-			responseDTO.setErrorResponseDTOs(errorResponseDTOs);
-
+			successResponseDTO.setMessage(RegistrationConstants.SOFTWARE_UPDATE_FAILURE_MSG);
 		}
+		responseDTO.setSuccessResponseDTO(successResponseDTO);
+
 		LOGGER.info(LoggerConstants.GLOBAL_PARAM_SERVICE_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
 				"Updating the SoftwareUpdate flag ended.");
 		return responseDTO;

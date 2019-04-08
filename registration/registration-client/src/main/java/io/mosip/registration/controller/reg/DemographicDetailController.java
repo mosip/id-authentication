@@ -697,7 +697,7 @@ public class DemographicDetailController extends BaseController {
 	 */
 	protected void lostUIN() {
 		lostUIN = true;
-		registrationNavlabel.setText(ApplicationContext.applicationLanguageBundle().getString("/lostuin"));
+		registrationNavlabel.setText(ApplicationContext.applicationLanguageBundle().getString(RegistrationConstants.LOSTUINLBL));
 	}
 
 	/**
@@ -1870,9 +1870,15 @@ public class DemographicDetailController extends BaseController {
 						AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
 
 				if (getRegistrationDTOFromSession().getSelectionListDTO() != null) {
-						SessionContext.map().put("demographicDetail", false);
-						SessionContext.map().put("documentScan", true);
-						registrationController.showUINUpdateCurrentPage();
+					SessionContext.map().put(RegistrationConstants.UIN_UPDATE_DEMOGRAPHICDETAIL, false);
+					if (updateUINNextPage(RegistrationConstants.DOC_DISABLE_FLAG)
+							|| (updateUINNextPage(RegistrationConstants.FINGERPRINT_DISABLE_FLAG)
+									|| updateUINNextPage(RegistrationConstants.IRIS_DISABLE_FLAG))) {
+						SessionContext.map().put(RegistrationConstants.UIN_UPDATE_DOCUMENTSCAN, true);
+					} else {
+						updateUINMethodFlow();
+					}
+					registrationController.showUINUpdateCurrentPage();
 				} else {
 					registrationController.showCurrentPage(RegistrationConstants.DEMOGRAPHIC_DETAIL,
 							getPageDetails(RegistrationConstants.DEMOGRAPHIC_DETAIL, RegistrationConstants.NEXT));
