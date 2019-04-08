@@ -505,7 +505,7 @@ public class BookingService {
 					serviceUtil.callUpdateStatusRestService(preRegistrationId, StatusCodes.BOOKED.getCode());
 					bookingStatusDTO.setPreRegistrationId(preRegistrationId);
 					bookingStatusDTO.setBookingStatus(StatusCodes.BOOKED.getCode());
-					bookingStatusDTO.setBookingMessage("APPOINTMENT_SUCCESSFULLY_BOOKED");
+					bookingStatusDTO.setBookingMessage("Appointment booked successfully");
 					/* Reduce Availability */
 					availableEntity.setAvailableKiosks(availableEntity.getAvailableKiosks() - 1);
 					bookingDAO.updateAvailibityEntity(availableEntity);

@@ -131,7 +131,7 @@ public class BookingController {
 	 * @throws ParseException
 	 * @throws java.text.ParseException
 	 */
-	@PreAuthorize("hasAnyRole('individual')")
+	@PreAuthorize("hasAnyRole('INDIVIDUAL')")
 	@PostMapping(path = "/appointment/multi", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Booking Appointment")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Appointment Booked Successfully"),
