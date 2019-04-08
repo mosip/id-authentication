@@ -15,7 +15,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
+import io.mosip.authentication.common.entity.AutnTxn;
+import io.mosip.authentication.common.helper.IdInfoHelper;
+import io.mosip.authentication.common.impl.indauth.match.IdaIdMapping;
 import io.mosip.authentication.common.impl.indauth.service.demo.DemoMatchType;
+import io.mosip.authentication.common.integration.NotificationManager;
+import io.mosip.authentication.common.integration.OTPManager;
+import io.mosip.authentication.common.repository.AutnTxnRepository;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.constant.RequestType;
 import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
@@ -30,12 +36,6 @@ import io.mosip.authentication.core.spi.notification.service.NotificationService
 import io.mosip.authentication.core.spi.otpgen.service.OTPService;
 import io.mosip.authentication.core.util.MaskUtil;
 import io.mosip.authentication.core.util.OTPUtil;
-import io.mosip.authentication.service.entity.AutnTxn;
-import io.mosip.authentication.service.helper.IdInfoHelper;
-import io.mosip.authentication.service.impl.indauth.match.IdaIdMapping;
-import io.mosip.authentication.service.integration.NotificationManager;
-import io.mosip.authentication.service.integration.OTPManager;
-import io.mosip.authentication.service.repository.AutnTxnRepository;
 import io.mosip.kernel.core.exception.ParseException;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;

@@ -21,8 +21,8 @@ import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.otpgen.service.OTPService;
 import io.mosip.authentication.core.util.DataValidationUtil;
-import io.mosip.authentication.service.impl.otpgen.validator.OTPRequestValidator;
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.otp.authentication.service.impl.otpgen.validator.OTPRequestValidator;
 import springfox.documentation.annotations.ApiIgnore;
 
 /**

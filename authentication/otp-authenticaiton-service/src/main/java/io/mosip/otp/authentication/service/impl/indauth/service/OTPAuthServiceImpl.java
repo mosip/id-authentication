@@ -12,6 +12,11 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import io.mosip.authentication.common.config.IDAMappingConfig;
+import io.mosip.authentication.common.helper.IdInfoHelper;
+import io.mosip.authentication.common.impl.indauth.service.pin.PinAuthType;
+import io.mosip.authentication.common.impl.indauth.service.pin.PinMatchType;
+import io.mosip.authentication.common.repository.AutnTxnRepository;
+import io.mosip.authentication.common.repository.VIDRepository;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.constant.RequestType;
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
@@ -26,13 +31,8 @@ import io.mosip.authentication.core.spi.indauth.match.MatchInput;
 import io.mosip.authentication.core.spi.indauth.match.MatchOutput;
 import io.mosip.authentication.core.spi.indauth.service.OTPAuthService;
 import io.mosip.authentication.core.util.OTPUtil;
-import io.mosip.authentication.service.helper.IdInfoHelper;
 import io.mosip.authentication.service.impl.indauth.builder.AuthStatusInfoBuilder;
 import io.mosip.authentication.service.impl.indauth.builder.MatchInputBuilder;
-import io.mosip.authentication.service.impl.indauth.service.pin.PinAuthType;
-import io.mosip.authentication.service.impl.indauth.service.pin.PinMatchType;
-import io.mosip.authentication.service.repository.AutnTxnRepository;
-import io.mosip.authentication.service.repository.VIDRepository;
 import io.mosip.kernel.core.logger.spi.Logger;
 import lombok.NoArgsConstructor;
 
