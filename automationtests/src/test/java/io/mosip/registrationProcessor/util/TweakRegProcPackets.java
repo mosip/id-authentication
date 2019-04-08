@@ -449,7 +449,11 @@ public class TweakRegProcPackets {
 		}
 		// e.generatInvalidPacketForDemoDedupe(e.generateRegID("10011",
 		// "10011"),"PotentialMatch");
-		//e.invalidPacketGenerator("packetProperties.properties");
+
+		e.invalidPacketGenerator("packetProperties.properties");
 	//e.readPacketValidatorProperties("packetValidator.properties");
+
+		//e.invalidPacketGenerator("packetProperties.properties");
+	e.readPacketValidatorProperties("packetValidator.properties");
 	}
 }
