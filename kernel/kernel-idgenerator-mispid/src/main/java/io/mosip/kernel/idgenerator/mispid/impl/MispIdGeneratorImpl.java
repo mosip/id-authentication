@@ -69,8 +69,8 @@ public class MispIdGeneratorImpl implements MispIdGenerator<String> {
 				generatedId = entity.getMispId() + 1;
 				Misp mispId = new Misp();
 				mispId.setMispId(generatedId);
-				mispId.setCreatedBy("default@user");
-				mispId.setUpdatedBy("default@user");
+				mispId.setCreatedBy("SYSTEM");
+				mispId.setUpdatedBy("SYSTEM");
 				mispId.setCreatedDateTime(LocalDateTime.now(ZoneId.of("UTC")));
 				mispId.setUpdatedDateTime(LocalDateTime.now(ZoneId.of("UTC")));
 				mispRepository.create(mispId);
@@ -78,8 +78,8 @@ public class MispIdGeneratorImpl implements MispIdGenerator<String> {
 			} else {
 				entity = new Misp();
 				entity.setMispId(initialValue);
-				entity.setCreatedBy("default@user");
-				entity.setUpdatedBy("default@user");
+				entity.setCreatedBy("SYSTEM");
+				entity.setUpdatedBy("SYSTEM");
 				LocalDateTime createdTime = LocalDateTime.now(ZoneId.of("UTC"));
 				entity.setCreatedDateTime(createdTime);
 				entity.setUpdatedDateTime(null);
