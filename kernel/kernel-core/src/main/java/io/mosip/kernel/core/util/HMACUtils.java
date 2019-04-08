@@ -60,6 +60,19 @@ public final class HMACUtils {
 	public static byte[] updatedHash() {
 		return messageDigest.digest();
 	}
+	
+	/**
+	 * Return the digest as a plain text with Salt
+	 * 
+	 * @param bytes digest bytes
+	 * @param salt digest bytes
+	 * @return String converted digest as plain text
+	 */
+	public static synchronized String digestAsPlainTextWithSalt(final byte[] bytes,final byte[] salt) {
+		messageDigest.update(salt);
+		byte[] saltedDigest = messageDigest.digest(bytes);
+		return DatatypeConverter.printHexBinary(saltedDigest).toUpperCase();
+	}
 
 	/**
 	 * Return the digest as a plain text

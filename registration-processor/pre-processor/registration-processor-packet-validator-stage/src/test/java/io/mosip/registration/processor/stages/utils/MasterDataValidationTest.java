@@ -25,6 +25,7 @@ import org.springframework.web.client.HttpClientErrorException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
+import io.mosip.registration.processor.core.http.ResponseWrapper;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.identify.Identity;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.identify.RegistrationProcessorIdentity;
 import io.mosip.registration.processor.core.packet.dto.masterdata.StatusResponseDto;
@@ -81,7 +82,8 @@ public class MasterDataValidationTest {
 
 		statusResponseDto = new StatusResponseDto();
 		statusResponseDto.setStatus("valid");
-
+		ResponseWrapper<StatusResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(statusResponseDto);
 		PowerMockito.mockStatic(Utilities.class);
 
 		Mockito.when(utility.getGetRegProcessorDemographicIdentity()).thenReturn("identity");
@@ -94,7 +96,7 @@ public class MasterDataValidationTest {
 		when(env.getProperty(SECONDARY_LANGUAGE)).thenReturn("ara");
 		when(env.getProperty(ATTRIBUTES)).thenReturn("gender,region,province,city,postalcode");
 		Mockito.when(registrationProcessorRestService.getApi(any(), any(), any(), any(), any()))
-				.thenReturn(statusResponseDto);
+				.thenReturn(responseWrapper);
 		masterDataValidation = new MasterDataValidation(env, registrationProcessorRestService, utility);
 	}
 
@@ -131,8 +133,11 @@ public class MasterDataValidationTest {
 		statusResponseDto = new StatusResponseDto();
 		statusResponseDto.setStatus("invalid");
 
+		ResponseWrapper<StatusResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(statusResponseDto);
+
 		Mockito.when(registrationProcessorRestService.getApi(any(), any(), any(), any(), any()))
-				.thenReturn(statusResponseDto);
+				.thenReturn(responseWrapper);
 
 		boolean isMasterDataValidated = masterDataValidation.validateMasterData(jsonString);
 		assertFalse("Test for Gender name failure", isMasterDataValidated);
@@ -143,9 +148,13 @@ public class MasterDataValidationTest {
 
 		statusResponseDto = new StatusResponseDto();
 		statusResponseDto.setStatus("invalid");
+
+		ResponseWrapper<StatusResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(statusResponseDto);
+
 		when(env.getProperty(ATTRIBUTES)).thenReturn("region,province,city,postalcode");
 		Mockito.when(registrationProcessorRestService.getApi(any(), any(), any(), any(), any()))
-				.thenReturn(statusResponseDto);
+				.thenReturn(responseWrapper);
 
 		boolean isMasterDataValidated = masterDataValidation.validateMasterData(jsonString);
 		assertFalse("Test for Region name failure", isMasterDataValidated);
@@ -153,12 +162,15 @@ public class MasterDataValidationTest {
 
 	@Test
 	public void testMasterDataValidationProvinceFailure() throws Exception {
-
 		statusResponseDto = new StatusResponseDto();
 		statusResponseDto.setStatus("invalid");
+		ResponseWrapper<StatusResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(statusResponseDto);
+
+
 		when(env.getProperty(ATTRIBUTES)).thenReturn("province,city,postalcode");
 		Mockito.when(registrationProcessorRestService.getApi(any(), any(), any(), any(), any()))
-				.thenReturn(statusResponseDto);
+				.thenReturn(responseWrapper);
 
 		boolean isMasterDataValidated = masterDataValidation.validateMasterData(jsonString);
 		assertFalse("Test for Province name failure", isMasterDataValidated);
@@ -168,9 +180,13 @@ public class MasterDataValidationTest {
 	public void testMasterDataValidationCityFailure() throws Exception {
 		statusResponseDto = new StatusResponseDto();
 		statusResponseDto.setStatus("invalid");
+
+		ResponseWrapper<StatusResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(statusResponseDto);
+
 		when(env.getProperty(ATTRIBUTES)).thenReturn("city,postalcode");
 		Mockito.when(registrationProcessorRestService.getApi(any(), any(), any(), any(), any()))
-				.thenReturn(statusResponseDto);
+				.thenReturn(responseWrapper);
 
 		boolean isMasterDataValidated = masterDataValidation.validateMasterData(jsonString);
 		assertFalse("Test for City name failure", isMasterDataValidated);
@@ -180,9 +196,13 @@ public class MasterDataValidationTest {
 	public void testMasterDataValidationPostalCodeFailure() throws Exception {
 		statusResponseDto = new StatusResponseDto();
 		statusResponseDto.setStatus("invalid");
+
+		ResponseWrapper<StatusResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(statusResponseDto);
+
 		when(env.getProperty(ATTRIBUTES)).thenReturn("postalCode");
 		Mockito.when(registrationProcessorRestService.getApi(any(), any(), any(), any(), any()))
-				.thenReturn(statusResponseDto);
+				.thenReturn(responseWrapper);
 
 		boolean isMasterDataValidated = masterDataValidation.validateMasterData(jsonString);
 		assertFalse("Test for Postal code failure", isMasterDataValidated);

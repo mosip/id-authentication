@@ -40,15 +40,20 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import io.mosip.kernel.core.crypto.spi.Decryptor;
+import io.mosip.kernel.core.crypto.spi.Encryptor;
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.keymanager.spi.KeyStore;
+import io.mosip.kernel.keygenerator.bouncycastle.KeyGenerator;
 import io.mosip.kernel.keymanagerservice.constant.KeymanagerConstant;
+import io.mosip.kernel.keymanagerservice.dto.EncryptDataRequestDto;
 import io.mosip.kernel.keymanagerservice.dto.SymmetricKeyRequestDto;
 import io.mosip.kernel.keymanagerservice.entity.KeyAlias;
 import io.mosip.kernel.keymanagerservice.entity.KeyPolicy;
 import io.mosip.kernel.keymanagerservice.repository.KeyAliasRepository;
 import io.mosip.kernel.keymanagerservice.repository.KeyPolicyRepository;
 import io.mosip.kernel.keymanagerservice.repository.KeyStoreRepository;
+import io.mosip.kernel.keymanagerservice.service.KeymanagerService;
+import io.mosip.kernel.keymanagerservice.service.impl.KeymanagerServiceImpl;
 import io.mosip.kernel.keymanagerservice.util.KeymanagerUtil;
 
 /**
@@ -78,6 +83,9 @@ public class KeymanagerIntegrationTest {
 
 	@MockBean
 	private Decryptor<PrivateKey, PublicKey, SecretKey> decryptor;
+
+	@MockBean
+	private Encryptor<PrivateKey, PublicKey, SecretKey> encryptor;
 
 	@Mock
 	private PublicKey publicKey;
@@ -375,6 +383,32 @@ public class KeymanagerIntegrationTest {
 		requestWrapper.setRequest(symmetricKeyRequestDto);
 		String content = mapper.writeValueAsString(requestWrapper);
 		MvcResult result = mockMvc.perform(post("/decrypt").contentType(MediaType.APPLICATION_JSON).content(content))
+				.andExpect(status().is(200)).andReturn();
+		// System.out.println(result.getResponse().getContentAsString());
+	}
+
+	@Test
+	public void encryptWithReferenceId() throws Exception {
+		
+		setupDBKeyStore();
+		
+		getPublicKeyFromDBEmptyAlias();
+		setupSingleKeyAlias();
+		when(keyAliasRepository.findByApplicationIdAndReferenceId(Mockito.any(), Mockito.any())).thenReturn(keyalias);
+		when(encryptor.asymmetricPrivateEncrypt(Mockito.any(), Mockito.any())).thenReturn("".getBytes());
+		doReturn(key.getPrivate().getEncoded()).when(keymanagerUtil).decryptKey(Mockito.any(), Mockito.any());
+		EncryptDataRequestDto encryptDataRequestDto = new EncryptDataRequestDto();
+		encryptDataRequestDto.setApplicationId("applicationId");
+		encryptDataRequestDto.setHashedData("AMert334-edrtda");
+		encryptDataRequestDto.setReferenceId("referenceId");
+		encryptDataRequestDto.setTimeStamp("2010-05-01T12:00:00.00Z");
+		RequestWrapper<EncryptDataRequestDto> encryptRequestWrapper = new RequestWrapper<>();
+		encryptRequestWrapper.setId(ID);
+		encryptRequestWrapper.setVersion(VERSION);
+		encryptRequestWrapper.setRequest(encryptDataRequestDto);
+
+		String content = mapper.writeValueAsString(encryptRequestWrapper);
+		MvcResult result = mockMvc.perform(post("/encrypt").contentType(MediaType.APPLICATION_JSON).content(content))
 				.andExpect(status().is(200)).andReturn();
 		// System.out.println(result.getResponse().getContentAsString());
 	}

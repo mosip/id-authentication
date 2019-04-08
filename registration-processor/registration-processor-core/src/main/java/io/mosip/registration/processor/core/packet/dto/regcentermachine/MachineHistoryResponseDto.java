@@ -28,5 +28,5 @@ public class MachineHistoryResponseDto {
 	/** The machine history details. */
 	private List<MachineHistoryDto> machineHistoryDetails;
 
-	private List<ErrorDTO> errors;
+//	private List<ErrorDTO> errors;
 }

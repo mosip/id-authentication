@@ -27,7 +27,7 @@ public class RegistrationCenterResponseDto {
 
 	/** The registration centers. */
 	private List<RegistrationCenterDto> registrationCentersHistory;
+	
 
-	private List<ErrorDTO> errors;
 
 }

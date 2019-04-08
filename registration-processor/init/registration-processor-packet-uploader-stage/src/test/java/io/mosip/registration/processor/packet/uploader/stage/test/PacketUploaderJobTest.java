@@ -35,6 +35,7 @@ import io.mosip.registration.processor.core.code.ApiName;
 import io.mosip.registration.processor.core.constant.EventId;
 import io.mosip.registration.processor.core.constant.EventName;
 import io.mosip.registration.processor.core.constant.EventType;
+import io.mosip.registration.processor.core.http.ResponseWrapper;
 import io.mosip.registration.processor.core.spi.filesystem.manager.FileManager;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.packet.manager.dto.DirectoryPathDto;
@@ -142,9 +143,10 @@ public class PacketUploaderJobTest {
 		listAppender = new ListAppender<>();
 		doNothing().when(fileManager).deletePacket(any(), any());
 		doNothing().when(fileManager).deleteFolder(any(), any());
-
+		ResponseWrapper<AuditResponseDto> responseWrapper = new ResponseWrapper<>();
 		AuditResponseDto auditResponseDto = new AuditResponseDto();
-		Mockito.doReturn(auditResponseDto).when(auditLogRequestBuilder).createAuditRequestBuilder(
+		responseWrapper.setResponse(auditResponseDto);
+		Mockito.doReturn(responseWrapper).when(auditLogRequestBuilder).createAuditRequestBuilder(
 				"test case description", EventId.RPR_401.toString(), EventName.ADD.toString(),
 				EventType.BUSINESS.toString(), "1234testcase", ApiName.DMZAUDIT);
 	}

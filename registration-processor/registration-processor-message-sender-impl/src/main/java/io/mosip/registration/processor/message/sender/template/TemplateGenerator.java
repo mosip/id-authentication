@@ -18,6 +18,8 @@ import org.apache.velocity.runtime.resource.loader.FileResourceLoader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.templatemanager.exception.TemplateMethodInvocationException;
 import io.mosip.kernel.core.templatemanager.exception.TemplateParsingException;
@@ -29,6 +31,7 @@ import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.exception.TemplateProcessingFailureException;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
+import io.mosip.registration.processor.core.http.ResponseWrapper;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.notification.template.generator.dto.TemplateResponseDto;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
@@ -63,6 +66,8 @@ public class TemplateGenerator {
 	@Autowired
 	private RegistrationProcessorRestClientService<Object> restClientService;
 
+	private ObjectMapper mapper=new ObjectMapper();
+
 	/**
 	 * Gets the template.
 	 *
@@ -81,14 +86,16 @@ public class TemplateGenerator {
 	public InputStream getTemplate(String templateTypeCode, Map<String, Object> attributes, String langCode)
 			throws IOException, ApisResourceAccessException {
 
+		ResponseWrapper<?> responseWrapper;
+		TemplateResponseDto template=null;
+
 		try {
 			List<String> pathSegments = new ArrayList<>();
 			pathSegments.add(TEMPLATES);
 			pathSegments.add(langCode);
 			pathSegments.add(templateTypeCode);
-			TemplateResponseDto template = (TemplateResponseDto) restClientService.getApi(ApiName.MASTER, pathSegments,
-					"", "", TemplateResponseDto.class);
-
+			responseWrapper = (ResponseWrapper<?>) restClientService.getApi(ApiName.MASTER, pathSegments, "","", ResponseWrapper.class);
+			template = mapper.readValue(mapper.writeValueAsString(responseWrapper.getResponse()), TemplateResponseDto.class);
 			InputStream fileTextStream = null;
 			if (template != null) {
 				InputStream stream = new ByteArrayInputStream(

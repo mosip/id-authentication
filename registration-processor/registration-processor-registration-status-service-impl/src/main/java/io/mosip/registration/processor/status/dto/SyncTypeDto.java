@@ -23,10 +23,10 @@ public enum SyncTypeDto {
 	UPDATE_UIN("UPDATE UIN"),
 
 	/** The activate uin. */
-	ACTIVATE_UIN("ACTIVATE UIN"),
+	ACTIVATE_UIN("ACTIVATED"),
 
 	/** The deactivate uin. */
-	DEACTIVATE_UIN("DEACTIVATE UIN");
+	DEACTIVATE_UIN("DEACTIVATED");
 
 	/** The value. */
 	private String value;
