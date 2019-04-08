@@ -25,6 +25,6 @@ public class CryptoManagerRequestDto {
 	private String timeStamp;
 	
 	/** The data. */
-	private String hashText;
+	private String data;
 }
 

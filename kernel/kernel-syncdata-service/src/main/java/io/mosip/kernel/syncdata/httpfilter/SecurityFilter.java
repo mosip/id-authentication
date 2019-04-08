@@ -1,4 +1,4 @@
-package io.mosip.kernel.syncdata.filter;
+package io.mosip.kernel.syncdata.httpfilter;
 
 import java.io.IOException;
 import java.util.List;
