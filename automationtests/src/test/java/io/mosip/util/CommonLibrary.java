@@ -254,7 +254,7 @@ public class CommonLibrary {
 	}
 	
 	
-	public Response post_Request(String url, Object body, String contentHeader, String acceptHeader) {
+	public Response postRequest(String url, Object body, String contentHeader, String acceptHeader) {
 
 		Response postResponse = given().relaxedHTTPSValidation().body(body).contentType(contentHeader)
 				.accept(acceptHeader).log().all().when().post(url).then().log().all().extract().response();
@@ -281,7 +281,7 @@ public class CommonLibrary {
 	 * @param serviceUri
 	 * @return
 	 */
-	public Response post_RequestWithBodyAsMultipartFormData(JSONObject jsonString, String serviceUri) {
+	public Response postRequestWithBodyAsMultipartFormData(JSONObject jsonString, String serviceUri) {
 		Response postResponse=null;
 		if(jsonString.get("attachments").toString().isEmpty()) {
 		postResponse = given().relaxedHTTPSValidation().contentType("multipart/form-data")
@@ -316,7 +316,7 @@ public class CommonLibrary {
 		return postResponse;
 	}
     
-	public Response put_Request(String url, Object body, String contentHeader, String acceptHeader) {
+	public Response putRequest(String url, Object body, String contentHeader, String acceptHeader) {
 
 		Response putResponse = given().relaxedHTTPSValidation().body(body).contentType(contentHeader)
 				.accept(acceptHeader).log().all().when().put(url).then().log().all().extract().response();
@@ -337,7 +337,7 @@ public class CommonLibrary {
 // end GET_REQUEST
 
 
-	public Response Post_File_Encrypt(File file, String url) {
+	public Response postFileEncrypt(File file, String url) {
 		logger.info("REST:ASSURED:Sending a data packet to" + url);
 
 		Response getResponse = given().relaxedHTTPSValidation().multiPart("encryptedFile", file).expect().when().post(url);
@@ -360,7 +360,7 @@ public class CommonLibrary {
     *            destination of the request
     * @return Response object that has the REST response
     */
-    public Response get_Request_Path_queryParam(String url,HashMap<String, String> path_value,HashMap<String, List<String>> query_value) {
+    public Response getRequestPathQueryParam(String url,HashMap<String, String> path_value,HashMap<String, List<String>> query_value) {
           logger.info("REST-ASSURED: Sending a GET request to " + url);
           Response getResponse = given().relaxedHTTPSValidation().pathParameters(path_value).queryParams(query_value)
                       .log().all().when().get(url).then().log().all().extract().response();
@@ -377,7 +377,7 @@ public class CommonLibrary {
      *            destination of the request
      * @return Response object that has the REST response
      */
-     public Response get_Request_queryParam(String url,HashMap<String, String> valueMap) {
+     public Response getRequestQueryParam(String url,HashMap<String, String> valueMap) {
            logger.info("REST-ASSURED: Sending a GET request to " + url);
            Response getResponse = given().relaxedHTTPSValidation().queryParams(valueMap)
                        .log().all().when().get(url).then().log().all().extract().response();
@@ -395,7 +395,7 @@ public class CommonLibrary {
      *            destination of the request
      * @return Response object that has the REST response
      */
-     public Response get_Request_pathParameters(String url,HashMap<String, String> valueMap) {
+     public Response getRequestPathParameters(String url,HashMap<String, String> valueMap) {
            logger.info("REST-ASSURED: Sending a GET request to " + url);
            Response getResponse = given().relaxedHTTPSValidation().pathParams(valueMap)
                        .log().all().when().get(url).then().log().all().extract().response();
@@ -404,7 +404,7 @@ public class CommonLibrary {
            logger.info("REST-ASSURED: The response Time is: " + getResponse.time());
            return getResponse;
      } // end GET_REQUEST
-     public Response GET_REQUEST_withoutParameters(String url) {
+     public Response getRequestWithoutParameters(String url) {
          logger.info("REST-ASSURED: Sending a GET request to " + url);
          Response getResponse = given().relaxedHTTPSValidation()
                      .log().all().when().get(url).then().log().all().extract().response();
@@ -414,7 +414,7 @@ public class CommonLibrary {
          return getResponse;
    } // end GET_REQUEST
     
-    public Response put_Request(String url,String contentHeader,String acceptHeader,HashMap<String, String> valueMap) {
+    public Response putRequest(String url,String contentHeader,String acceptHeader,HashMap<String, String> valueMap) {
     	  logger.info("REST-ASSURED: Sending a PUT request to " + url);
     	  Response getResponse= given().relaxedHTTPSValidation().queryParams(valueMap).log().all().when().put(url).then().log().all().extract().response();
     	  logger.info("REST-ASSURED: The response from the request is: "+getResponse.asString());
@@ -422,21 +422,21 @@ public class CommonLibrary {
     	  return getResponse;
    }
     
-    public Response delete_Request(String url,HashMap<String, String> valueMap) {
+    public Response deleteRequest(String url,HashMap<String, String> valueMap) {
     	logger.info("REST-ASSURED: Sending a DELETE request to   "+ url);
     	Response getResponse=given().relaxedHTTPSValidation().queryParams(valueMap).log().all().when().delete(url).then().log().all().extract().response();
     	logger.info("REST-ASSURED: The response from the request is: "+getResponse.asString());
     	logger.info("REST-ASSURED: the response time is: "+ getResponse.time());
     	return getResponse;
     }
-    public Response delete_RequestPathParameters(String url,HashMap<String, String> valueMap) {
+    public Response deleteRequestPathParameters(String url,HashMap<String, String> valueMap) {
     	logger.info("REST-ASSURED: Sending a DELETE request to   "+ url);
     	Response getResponse=given().relaxedHTTPSValidation().pathParams(valueMap).log().all().when().delete(url).then().log().all().extract().response();
     	logger.info("REST-ASSURED: The response from the request is: "+getResponse.asString());
     	logger.info("REST-ASSURED: the response time is: "+ getResponse.time());
     	return getResponse;
     }
-    public Response Post_DataPacket(File file,String url) {
+    public Response postDataPacket(File file,String url) {
     	logger.info("REST:ASSURED:Sending a data packet to"+url);
     	
     	Response getResponse=given().relaxedHTTPSValidation().multiPart("file",file).expect().when().post(url);
@@ -444,7 +444,7 @@ public class CommonLibrary {
     	logger.info("REST-ASSURED: the response time is: "+ getResponse.time());
     	return getResponse;
     }
-    public Response Post_JSONwithFile(Object body,File file,String url,String contentHeader) {
+    public Response postJsonWithFile(Object body,File file,String url,String contentHeader) {
     	logger.info("REST:ASSURED:Sending a data packet to"+url);
     	logger.info("Request DTO for document upload is"+ body);
     	logger.info("Name of the file is"+file.getName());
@@ -468,7 +468,7 @@ public class CommonLibrary {
      *            destination of the request
      * @return Response object that has the REST response
      */
-     public Response get_Request_queryParam(String url, String contentHeader, String acceptHeader, String urls) {
+     public Response getRequestQueryParam(String url, String contentHeader, String acceptHeader, String urls) {
            logger.info("REST-ASSURED: Sending a GET request to " + url);
            Response getResponse = given().relaxedHTTPSValidation()
                        .log().all().when().get(url+"?"+urls).then().log().all().extract().response();
@@ -498,7 +498,7 @@ public class CommonLibrary {
 		}
     }
     
-    public Response get_request_pathParam(String url,String id,String keyId, java.lang.String timestamp, java.lang.String keytimestamp) {
+    public Response getRequestPathParam(String url,String id,String keyId, java.lang.String timestamp, java.lang.String keytimestamp) {
         logger.info("REST-ASSURED: Sending a GET request to " + url);
         HashMap params= new HashMap();
         params.put(keyId, id);
@@ -511,7 +511,7 @@ public class CommonLibrary {
         return getResponse;
   } // end GET_REQUEST
 
-    public Response put_RequestWithBody(String url,String contentHeader,String acceptHeader,JSONObject valueMap) {
+    public Response putRequestWithBody(String url,String contentHeader,String acceptHeader,JSONObject valueMap) {
     	  logger.info("REST-ASSURED: Sending a PUT request to " + url);
     	  
     	  Response getResponse= given().relaxedHTTPSValidation().contentType(MediaType.APPLICATION_JSON).body(valueMap.toJSONString()).log().all().when().put(url).then().log().all().extract().response();
@@ -522,7 +522,7 @@ public class CommonLibrary {
     
    
       
-    public Response post_Request_WithQueryParams(String url, Object body, String contentHeader, String acceptHeader,HashMap<String, String> valueMap) {
+    public Response postRequestWithQueryParams(String url, Object body, String contentHeader, String acceptHeader,HashMap<String, String> valueMap) {
 
   		Response postResponse = given().relaxedHTTPSValidation().body(body).queryParams(valueMap).contentType(contentHeader)
   				.accept(acceptHeader).log().all().when().post(url).then().log().all().extract().response();
@@ -721,7 +721,7 @@ public class CommonLibrary {
  	 	}
  	 	
  	 	
-	public Response put_RequestWithoutBody(String url,String contentHeader,String acceptHeader) {
+	public Response putRequestWithoutBody(String url,String contentHeader,String acceptHeader) {
   logger.info("REST-ASSURED: Sending a PUT request to " + url);
     	  
     	  Response getResponse= given().relaxedHTTPSValidation().contentType(MediaType.APPLICATION_JSON).log().all().when().put(url).then().log().all().extract().response();
@@ -739,7 +739,7 @@ public class CommonLibrary {
 	 * @param acceptHeader
 	 * @return
 	 */
-	public Response patch_Request(String url, Object body, String contentHeader, String acceptHeader) {
+	public Response patchRequest(String url, Object body, String contentHeader, String acceptHeader) {
 
 		Response putResponse = given().relaxedHTTPSValidation().body(body).contentType(contentHeader)
 				.accept(acceptHeader).log().all().when().patch(url).then().log().all().extract().response();
@@ -769,7 +769,7 @@ public class CommonLibrary {
 	*/
 	
 		 //Notify
-		    public Response Post_JSONwithFileParam(Object body,File file,String url,String contentHeader,String langCodeKey,String value) {
+		    public Response postJsonWithFileParam(Object body,File file,String url,String contentHeader,String langCodeKey,String value) {
 		    	logger.info("REST:ASSURED:Sending a data packet to"+url);
 		    	logger.info("Request DTO for document upload is"+ body);
 		    	logger.info("Name of the file is"+file.getName());
@@ -790,7 +790,7 @@ public class CommonLibrary {
 
 
 
-	public Response get_RequestWithoutBody(String url,String contentHeader,String acceptHeader) {
+	public Response getRequestWithoutBody(String url,String contentHeader,String acceptHeader) {
         logger.info("REST-ASSURED: Sending a Get request to " + url);
                
                Response getResponse= given().relaxedHTTPSValidation().contentType(MediaType.APPLICATION_JSON).log().all().when().get(url).then().log().all().extract().response();

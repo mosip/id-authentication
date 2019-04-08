@@ -104,7 +104,7 @@ public class SyncConfigurations extends BaseTestCase implements ITest {
 		/*
 		 * Calling GET mathod with no parameters
 		 */
-		Response res=applicationLibrary.GetRequestNoParameter(syncConf);
+		Response res=applicationLibrary.getRequestNoParameter(syncConf);
 		
 		 
 		

@@ -110,7 +110,7 @@ public class GetIndividualType extends BaseTestCase implements ITest{
 		/*
 		 * Calling GET method with path parameters
 		 */
-		Response res=applicationLibrary.GetRequestNoParameter(getIndividualType);
+		Response res=applicationLibrary.getRequestNoParameter(getIndividualType);
 		/*
 		 * Removing the unstable attributes from response	
 		 */
