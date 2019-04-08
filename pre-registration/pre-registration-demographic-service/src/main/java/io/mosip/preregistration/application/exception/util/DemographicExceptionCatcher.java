@@ -92,8 +92,8 @@ public class DemographicExceptionCatcher {
 			throw new DocumentFailedToDeleteException(((DocumentFailedToDeleteException) ex).getErrorCode(),
 					((DocumentFailedToDeleteException) ex).getErrorText());
 		} else if (ex instanceof IllegalArgumentException) {
-			throw new SystemIllegalArgumentException(ErrorCodes.PRG_PAM_APP_007.name(),
-					ErrorMessages.UNSUPPORTED_DATE_FORMAT.name());
+			throw new SystemIllegalArgumentException(ErrorCodes.PRG_PAM_APP_007.getCode(),
+					ErrorMessages.UNSUPPORTED_DATE_FORMAT.getMessage());
 		} else if (ex instanceof SystemUnsupportedEncodingException) {
 			throw new SystemUnsupportedEncodingException(((SystemUnsupportedEncodingException) ex).getErrorCode(),
 					((SystemUnsupportedEncodingException) ex).getErrorText());
