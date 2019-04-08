@@ -8,18 +8,18 @@ import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
 import org.springframework.core.env.Environment;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
+
 /**
  * @author Ramadurai Pandian
  *
  */
 @Configuration
 public class OAuthConfig {
-	
+
 	@Autowired
-    private Environment env;
+	private Environment env;
 
 	@Bean
 	public DataSource dataSource() {

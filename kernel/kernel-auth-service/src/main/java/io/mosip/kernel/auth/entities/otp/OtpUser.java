@@ -5,10 +5,10 @@ import java.util.List;
 import lombok.Data;
 
 @Data
-public class OtpUser{
+public class OtpUser {
 	private String userId;
-    private String langCode;
-    private List<String> otpChannel;
-    private String appId;
-    private String useridtype;
+	private String langCode;
+	private List<String> otpChannel;
+	private String appId;
+	private String useridtype;
 }

@@ -11,9 +11,9 @@ import lombok.EqualsAndHashCode;
  *
  */
 @Data
-@EqualsAndHashCode(callSuper=true)
-public class UserOtpDto extends BaseRequestResponseDTO{
-	
+@EqualsAndHashCode(callSuper = true)
+public class UserOtpDto extends BaseRequestResponseDTO {
+
 	private UserOtp request;
 
 }

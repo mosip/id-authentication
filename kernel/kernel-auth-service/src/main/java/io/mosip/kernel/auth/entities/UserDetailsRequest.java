@@ -13,7 +13,7 @@ import lombok.Data;
  */
 @Data
 public class UserDetailsRequest {
-	
+
 	List<String> userDetails;
 
 }

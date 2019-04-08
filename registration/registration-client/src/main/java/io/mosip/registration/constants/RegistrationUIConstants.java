@@ -17,7 +17,8 @@ public class RegistrationUIConstants {
 	//ALERT
 	public static final String ERROR = bundle.getString("ERROR");
 	public static final String INFORMATION = bundle.getString("INFORMATION");
-	public static final String SUCCESS = bundle.getString("SUCCESS");	
+	public static final String SUCCESS = bundle.getString("SUCCESS");
+	public static final String FAILURE = bundle.getString("FAILURE");
 	
 	// LOGIN
 	public static final String UNABLE_LOAD_LOGIN_SCREEN = bundle.getString("UNABLE_LOAD_LOGIN_SCREEN");
