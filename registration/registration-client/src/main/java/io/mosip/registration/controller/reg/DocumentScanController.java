@@ -168,7 +168,7 @@ public class DocumentScanController extends BaseController {
 	@FXML
 	private void initialize() {
 		LOGGER.info(RegistrationConstants.DOCUMNET_SCAN_CONTROLLER, APPLICATION_NAME,
-				RegistrationConstants.APPLICATION_ID, "Entering the LOGIN_CONTROLLER");
+				RegistrationConstants.APPLICATION_ID, "Entering the DOCUMENT_SCAN_CONTROLLER");
 		try {
 			if (getRegistrationDTOFromSession() != null
 					&& getRegistrationDTOFromSession().getSelectionListDTO() != null) {
@@ -206,7 +206,7 @@ public class DocumentScanController extends BaseController {
 
 			// populateDocumentCategories();
 		} catch (RuntimeException exception) {
-			LOGGER.error("REGISTRATION - CONTROLLER", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
+			LOGGER.error("REGISTRATION - DOCUMENT_SCAN_CONTROLLER", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
 					exception.getMessage() + ExceptionUtils.getStackTrace(exception));
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_LOAD_REG_PAGE);
 		}
@@ -280,6 +280,12 @@ public class DocumentScanController extends BaseController {
 	 */
 	@SuppressWarnings("unchecked")
 	private <T> void prepareDocumentScanSection(List<DocumentCategory> documentCategories) {
+		
+		/* show the scan doc info label for format and size */
+		Label fileSizeInfoLabel = new Label();
+		fileSizeInfoLabel.setText(RegistrationUIConstants.SCAN_DOC_INFO);
+		docScanVbox.getChildren().add(fileSizeInfoLabel);
+		
 		for (DocumentCategory documentCategory : documentCategories) {
 
 			String docCategoryCode = documentCategory.getCode();
@@ -299,7 +305,7 @@ public class DocumentScanController extends BaseController {
 
 			if (documentCategoryDtos != null && !documentCategoryDtos.isEmpty()) {
 				HBox hBox = new HBox();
-
+				
 				ComboBox<DocumentCategoryDto> comboBox = new ComboBox<>();
 				ImageView indicatorImage = new ImageView(
 						new Image(this.getClass().getResourceAsStream(RegistrationConstants.CLOSE_IMAGE_PATH), 15, 15,
