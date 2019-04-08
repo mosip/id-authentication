@@ -66,6 +66,7 @@ public class ResponseBodyAdviceConfig implements ResponseBodyAdvice<ResponseWrap
 				body.setVersion(requestWrapper.getVersion());
 			}
 			body.setErrors(null);
+			response.getHeaders().add("Response-Signature", hashUtil.signResponseData(body.toString()));  	
 			return body;
 		} catch (Exception e) {
 			Logger mosipLogger = LoggerConfiguration.logConfig(ResponseBodyAdviceConfig.class);
