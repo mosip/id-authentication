@@ -31,8 +31,7 @@ export class DataStorageService {
   }
 
   getUser(preRegId: string) {
-    let url =
-      this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.get_applicant + appConstants.APPENDER + preRegId;
+    let url = this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.applicants + appConstants.APPENDER + preRegId;
     return this.httpClient.get(url);
   }
 
