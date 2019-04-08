@@ -4,7 +4,6 @@ import { DataStorageService } from './data-storage.service';
 import { HttpClientModule } from '@angular/common/http';
 import { of } from 'rxjs';
 import { BookingModel } from 'src/app/feature/booking/center-selection/booking.model';
-import { BookingModelRequest } from 'src/app/shared/booking-request.model';
 import { RequestModel } from 'src/app/shared/models/request-model/RequestModel';
 
 describe('DataStorageService', () => {
@@ -209,9 +208,9 @@ describe('DataStorageService', () => {
 
   it('makeBooking', () => {
     let response = null;
-    const req = new BookingModel('1001', '2019-03-08', '09:00:00', '09:15:00');
+    const req = new BookingModel('1234', '1001', '2019-03-08', '09:00:00', '09:15:00');
     const request = new RequestModel('aaa', req);
-    service.makeBooking(request, ['1234']).subscribe(value => {
+    service.makeBooking(request).subscribe(value => {
       response = value;
     });
     expect(response).toBe('success');
@@ -249,7 +248,7 @@ describe('DataStorageService', () => {
 
   it('cancelAppointment', () => {
     let response = null;
-    const req = new BookingModel('1001', '2019-03-08', '09:00:00', '09:15:00');
+    const req = new BookingModel('1234', '1001', '2019-03-08', '09:00:00', '09:15:00');
     const request = new RequestModel('aaa', req);
     service.cancelAppointment(request, '111').subscribe(value => {
       response = value;

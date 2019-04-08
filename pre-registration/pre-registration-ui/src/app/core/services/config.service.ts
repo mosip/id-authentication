@@ -1,12 +1,9 @@
-import { Injectable } from "@angular/core";
-import { BehaviorSubject } from "rxjs";
+import { Injectable } from '@angular/core';
 
 @Injectable({
-  providedIn: "root"
+  providedIn: 'root'
 })
 export class ConfigService {
-  isActive;
-
   configs = {};
 
   public setConfig(configJson: any) {
