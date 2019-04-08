@@ -160,12 +160,12 @@ public class ConnectionUtils {
 			configuration.set("dfs.client.use.datanode.hostname", "true");
 			configuration.set("fs.hdfs.impl", DistributedFileSystem.class.getName());
 			hadoopLibPath = Files.createTempDirectory(HADOOP_HOME);
+			System.setProperty("hadoop.home.dir", hadoopLibPath.toString());
 			if (SystemUtils.IS_OS_WINDOWS) {
 				Path binPath = Files.createDirectory(Paths.get(hadoopLibPath.toString(), "bin"));
 				InputStream winUtilsStream = getClass().getClassLoader().getResourceAsStream(WIN_UTIL);
 				Path winUtilsPath = Paths.get(binPath.toString(), WIN_UTIL);
 				Files.copy(winUtilsStream, winUtilsPath);
-				System.setProperty("hadoop.home.dir", hadoopLibPath.toString());
 			}
 		} catch (IOException e) {
 			throw new FSAdapterException(HDFSAdapterErrorCode.HDFS_ADAPTER_EXCEPTION.getErrorCode(),
@@ -186,10 +186,10 @@ public class ConnectionUtils {
 	private void loginWithKeyTab(String user, String keytabPath) throws IOException {
 		InputStream keytabInputStream = this.getClass().getClassLoader().getResourceAsStream(keytabPath);
 		Path dataPath = Files.createDirectory(Paths.get(hadoopLibPath.toString(), "data"));
-		Path keyPath=null;
+		Path keyPath = null;
 		if (keytabInputStream != null) {
 			keyPath = Paths.get(dataPath.toString(), keytabPath);
-			Files.copy(keytabInputStream, keyPath,StandardCopyOption.REPLACE_EXISTING);
+			Files.copy(keytabInputStream, keyPath, StandardCopyOption.REPLACE_EXISTING);
 		} else {
 			throw new FSAdapterException(HDFSAdapterErrorCode.KEYTAB_FILE_NOT_FOUND_EXCEPTION.getErrorCode(),
 					HDFSAdapterErrorCode.KEYTAB_FILE_NOT_FOUND_EXCEPTION.getErrorMessage());
