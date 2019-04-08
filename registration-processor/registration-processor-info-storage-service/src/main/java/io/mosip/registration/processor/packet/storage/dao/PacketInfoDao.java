@@ -1,9 +1,6 @@
 package io.mosip.registration.processor.packet.storage.dao;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -139,30 +136,12 @@ public class PacketInfoDao {
 		regOsiDto.setRegId(regOsiEntity.getId().getRegId());
 		regOsiDto.setPreregId(regOsiEntity.getPreregId());
 		regOsiDto.setOfficerId(regOsiEntity.getOfficerId());
-		regOsiDto.setOfficerIrisImageName(regOsiEntity.getOfficerIrisImageName());
-		regOsiDto.setOfficerfingerType(regOsiEntity.getOfficerfingerType());
-		regOsiDto.setOfficerIrisType(regOsiEntity.getOfficerIrisType());
-		regOsiDto.setOfficerPhotoName(regOsiEntity.getOfficerPhotoName());
 		regOsiDto.setOfficerHashedPin(regOsiEntity.getOfficerHashedPin());
 		regOsiDto.setOfficerHashedPwd(regOsiEntity.getOfficerHashedPwd());
-		regOsiDto.setOfficerFingerpImageName(regOsiEntity.getOfficerFingerpImageName());
 		regOsiDto.setSupervisorId(regOsiEntity.getSupervisorId());
-		regOsiDto.setSupervisorFingerpImageName(regOsiEntity.getSupervisorFingerpImageName());
-		regOsiDto.setSupervisorIrisImageName(regOsiEntity.getSupervisorIrisImageName());
-		regOsiDto.setSupervisorFingerType(regOsiEntity.getSupervisorFingerType());
-		regOsiDto.setSupervisorIrisType(regOsiEntity.getSupervisorIrisType());
 		regOsiDto.setSupervisorHashedPwd(regOsiEntity.getSupervisorHashedPwd());
 		regOsiDto.setSupervisorHashedPin(regOsiEntity.getSupervisorHashedPin());
-		regOsiDto.setSupervisorPhotoName(regOsiEntity.getSupervisorPhotoName());
-		regOsiDto.setIntroducerId(regOsiEntity.getIntroducerId());
 		regOsiDto.setIntroducerTyp(regOsiEntity.getIntroducerTyp());
-		regOsiDto.setIntroducerRegId(regOsiEntity.getIntroducerRegId());
-		regOsiDto.setIntroducerIrisImageName(regOsiEntity.getIntroducerIrisImageName());
-		regOsiDto.setIntroducerFingerpType(regOsiEntity.getIntroducerFingerpType());
-		regOsiDto.setIntroducerIrisType(regOsiEntity.getIntroducerIrisType());
-		regOsiDto.setIntroducerFingerpImageName(regOsiEntity.getIntroducerFingerpImageName());
-		regOsiDto.setIntroducerPhotoName(regOsiEntity.getIntroducerPhotoName());
-		regOsiDto.setIntroducerUin(regOsiEntity.getIntroducerUin());
 		regOsiDto.setIsActive(true);
 		regOsiDto.setIsDeleted(false);
 
