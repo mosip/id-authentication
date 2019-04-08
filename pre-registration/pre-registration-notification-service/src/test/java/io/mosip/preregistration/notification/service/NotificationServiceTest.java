@@ -2,6 +2,7 @@ package io.mosip.preregistration.notification.service;
 
 import static org.junit.Assert.assertEquals;
 
+import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -100,8 +101,9 @@ public class NotificationServiceTest {
 		mainReqDto.setVersion("1.0");
 		DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
 		mapper.setDateFormat(df);
-
+//2019-04-8T07:22:57.186Z
 		mainReqDto.setRequesttime(df.parse("2019-04-5T07:22:57.186Z"));
+		mainReqDto.setRequesttime(new Timestamp(System.currentTimeMillis()));
 		mainReqDto.setRequest(notificationDTO);
 		responseDTO = new MainResponseDTO<>();
 		responseDTO.setResponse(notificationDTO);
