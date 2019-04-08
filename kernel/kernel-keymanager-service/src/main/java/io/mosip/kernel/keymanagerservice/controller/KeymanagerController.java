@@ -104,9 +104,11 @@ public class KeymanagerController {
 	@ResponseFilter
 	@ApiOperation(value = "Encrypt data", response = EncryptDataResponseDto.class)
 	@PostMapping("/encrypt")
-	public ResponseEntity<EncryptDataResponseDto> encrypt(
+	public ResponseWrapper<EncryptDataResponseDto> encrypt(
 			@RequestBody RequestWrapper<EncryptDataRequestDto> encryptDataRequestDto) {
-		return new ResponseEntity<>(keymanagerService.encrypt(encryptDataRequestDto.getRequest()), HttpStatus.OK);
+		ResponseWrapper<EncryptDataResponseDto> response = new ResponseWrapper<>();
+		response.setResponse(keymanagerService.encrypt(encryptDataRequestDto.getRequest()));
+		return response;
 
 	}
 }

@@ -52,17 +52,13 @@ public enum MasterDataErrorCode {
 	SCREEN_AUTHORIZATION_FETCH_EXCEPTION("KER-SNC-146","Error occurred while fetching screen authorizations"),
 	INDIVIDUAL_TYPE_FETCH_EXCEPTION("KER-SNC-147","Error occurred while fetching Individual types"),
 	INVALID_MAC_OR_SERIAL_NUMBER("KER-SNC-148","Mac-Address and/or Serial Number does not exist	"),
-<<<<<<< HEAD
 	REG_CENTER_UPDATED("KER-SNC-149","Registration Center has been updated for the received Machine ID"),
 	SCREEN_DETAIL_FETCH_EXCEPTION("KER-SNC-150","Error occured while fetching screen detail"),
 	APPLICANT_VALID_DOCUMENT_FETCH_EXCEPTION("KER-SNC-151","Error occurred while fetching ApplicantValidDocument"),
 	REG_CENTER_MACHINE_DEVICE_HISTORY_FETCH_EXCEPTION("KER-SNC-152","Error occurred while fetching Registration Center Machine Device History"),
 	SYNC_JOB_DEF_FETCH_EXCEPTION("KER-SNC-153","Error occured while fetching sync job definitons"),
 	SYNC_JOB_DEF_PARSE_EXCEPTION("KER-SNC-154","Error occured while parsing the response");
-=======
-	REG_CENTER_UPDATED("KER-SNC-149","Registration Center has been updated for the received Machine ID");
 	
->>>>>>> refs/heads/0.10.0_MOS-19184_SPRINT10_SRINIVASAN
 	private final String errorCode;
 	private final String errorMessage;
 

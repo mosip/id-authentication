@@ -222,7 +222,7 @@ public class CryptographicServiceIntegrationTest {
 		reqWrapper.setRequesttime(DateUtils.parseToLocalDateTime("2018-12-06T12:07:44.403Z"));
 		reqWrapper.setRequest(cryptoEncryptRequestDto);
 		String requestBody = objectMapper.writeValueAsString(reqWrapper);
-		mockMvc.perform(post("/encrypt/private").contentType(MediaType.APPLICATION_JSON).content(requestBody))
+		mockMvc.perform(post("/private/encrypt").contentType(MediaType.APPLICATION_JSON).content(requestBody))
 				.andExpect(status().isOk()).andReturn();
 
 	}

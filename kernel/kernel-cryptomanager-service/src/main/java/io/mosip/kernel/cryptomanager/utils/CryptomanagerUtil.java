@@ -88,7 +88,7 @@ public class CryptomanagerUtil {
 	/**
 	 * Keymanager URL to encryptdata
 	 */
-	@Value("${mosip.kernel.keymanager-service-encrypt-url:http://localhost:8088/keymanager/encrypt}")
+	@Value("${mosip.kernel.keymanager-service-encrypt-url:http://localhost:8088/v1/keymanager/encrypt}")
 	private String encryptUrl;
 
 	/**

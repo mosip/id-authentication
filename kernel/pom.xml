@@ -168,14 +168,14 @@
 		<module>kernel-tokenidgenerator-service</module>
 		<module>kernel-admin-service</module>
 		<module>kernel-config-server</module>
-<<<<<<< HEAD
+
 
 		<module>kernel-otpnotification-service</module>
 		<!-- <module>kernel-ldap-service</module> -->
 
 
 	</modules>
-=======
+
 		
 	
 		<!-- <module>kernel-idvalidator</module> -->
@@ -187,10 +187,7 @@
 		<!-- <module>kernel-batch-framework</module> -->
 		<!-- <module>kernel-batch-server</module> -->
 		<!--<module>kernel-crypto-bouncycastle</module> -->
-    <module>kernel-responsesignature-api</module>
-  </modules>
->>>>>>> refs/heads/0.10.0_MOS-19184_SPRINT10_SRINIVASAN
-
+   
 	<dependencies>
 		<dependency>
 			<groupId>org.slf4j</groupId>

@@ -65,14 +65,16 @@ public class CryptomanagerController {
 	/**
 	 * Encrypts data with private key
 	 * @param cryptomanagerRequestDto
-	 * @return {@link CryptoEncryptResponseDto }
+	 * @return {@link ResponseWrapper<CryptoEncryptResponseDto> }
 	 */
 	@ResponseFilter
 	@ApiOperation(value = "Encrypt the data with private key", response = CryptoEncryptResponseDto.class)
-	@PostMapping(value = "/encrypt/private", produces = "application/json")
-	public CryptoEncryptResponseDto encryptWithPrivate(
+	@PostMapping(value = "/private/encrypt", produces = "application/json")
+	public ResponseWrapper<CryptoEncryptResponseDto> encryptWithPrivate(
 			@ApiParam("Data to encrypt in BASE64 encoding") @RequestBody @Valid RequestWrapper<CryptoEncryptRequestDto> cryptomanagerRequestDto) {
-		return cryptomanagerService.encryptWithPrivate(cryptomanagerRequestDto.getRequest());
+		ResponseWrapper<CryptoEncryptResponseDto> response = new ResponseWrapper<>();
+		response.setResponse(cryptomanagerService.encryptWithPrivate(cryptomanagerRequestDto.getRequest()));
+		return response;
 	}
 
 	/**
