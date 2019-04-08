@@ -1,4 +1,4 @@
-package io.mosip.authentication.service.validator;
+/*package io.mosip.common.authentication.service.validator;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -26,6 +26,7 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.FieldError;
 import org.springframework.web.context.WebApplicationContext;
 
+import io.mosip.authentication.common.validator.IdAuthValidator;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.otpgen.OtpRequestDTO;
@@ -33,12 +34,12 @@ import io.mosip.kernel.core.idvalidator.exception.InvalidIDException;
 import io.mosip.kernel.idvalidator.uin.impl.UinValidatorImpl;
 import io.mosip.kernel.idvalidator.vid.impl.VidValidatorImpl;
 
-/**
+*//**
  * The Class IdAuthValidatorTest.
  * 
  * @author Manoj SP
  *
- */
+ *//*
 @RunWith(SpringRunner.class)
 @WebMvcTest
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
@@ -52,18 +53,18 @@ public class IdAuthValidatorTest {
 
 	private static final String TRANSACTION_ID = "transactionID";
 
-	/** The uin validator. */
+	*//** The uin validator. *//*
 	@Mock
 	UinValidatorImpl uinValidator;
 
-	/** The vid validator. */
+	*//** The vid validator. *//*
 	@Mock
 	VidValidatorImpl vidValidator;
 
 	@Autowired
 	Environment env;
 	
-	/** The validator. */
+	*//** The validator. *//*
 	IdAuthValidator validator = new IdAuthValidator() {
 		
 		@Override
@@ -79,17 +80,17 @@ public class IdAuthValidatorTest {
 		}
 	};
 
-	/** The errors. */
+	*//** The errors. *//*
 	Errors errors;
 
-	/** The request. */
+	*//** The request. *//*
 	OtpRequestDTO request = new OtpRequestDTO();
 	
 	AuthRequestDTO authReq=new AuthRequestDTO();
 
-	/**
+	*//**
 	 * Setup.
-	 */
+	 *//*
 	@Before
 	public void setup() {
 		ReflectionTestUtils.setField(validator, "env", env);
@@ -98,9 +99,9 @@ public class IdAuthValidatorTest {
 		ReflectionTestUtils.setField(validator, "vidValidator", vidValidator);
 	}
 
-	/**
+	*//**
 	 * Test null id.
-	 */
+	 *//*
 	@Test
 	public void testNullId() {
 		validator.validateId(null, errors);
@@ -111,9 +112,9 @@ public class IdAuthValidatorTest {
 		});
 	}
 
-	/**
+	*//**
 	 * Test null idv id.
-	 */
+	 *//*
 	@Test
 	public void testNullIdvId() {
 		validator.validateIdvId(null, "UIN", errors,INDIVIDUAL_ID);
@@ -125,9 +126,9 @@ public class IdAuthValidatorTest {
 		});
 	}
 
-	/**
+	*//**
 	 * Test null id type.
-	 */
+	 *//*
 	@Test
 	public void testNullIdType() {
 		validator.validateIdvId("1234", null, errors,INDIVIDUAL_ID_TYPE);
@@ -139,9 +140,9 @@ public class IdAuthValidatorTest {
 		});
 	}
 
-	/**
+	*//**
 	 * Test incorrect id type.
-	 */
+	 *//*
 	@Test
 	public void testIncorrectIdType() {
 		validator.validateIdvId("1234", "e", errors,INDIVIDUAL_ID);
@@ -153,9 +154,9 @@ public class IdAuthValidatorTest {
 		});
 	}
 
-	/**
+	*//**
 	 * Test invalid UIN.
-	 */
+	 *//*
 	@Test
 	public void testInvalidUIN() {
 		Mockito.when(uinValidator.validateId(Mockito.anyString())).thenThrow(new InvalidIDException("", ""));
@@ -167,9 +168,9 @@ public class IdAuthValidatorTest {
 		});
 	}
 
-	/**
+	*//**
 	 * Test invalid VID.
-	 */
+	 *//*
 	@Test
 	public void testInvalidVID() {
 		Mockito.when(vidValidator.validateId(Mockito.anyString())).thenThrow(new InvalidIDException("", ""));
@@ -182,9 +183,9 @@ public class IdAuthValidatorTest {
 	}
 
 	
-	/**
+	*//**
 	 * Test null txn id.
-	 */
+	 *//*
 	@Test
 	public void testNullTxnId() {
 		validator.validateTxnId(null, errors,TRANSACTION_ID);
@@ -196,9 +197,9 @@ public class IdAuthValidatorTest {
 		});
 	}
 
-	/**
+	*//**
 	 * Test invalid txn id.
-	 */
+	 *//*
 	@Test
 	public void testInvalidTxnId() {
 		validator.validateTxnId("1234", errors,TRANSACTION_ID);
@@ -210,9 +211,9 @@ public class IdAuthValidatorTest {
 		});
 	}
 
-	/**
+	*//**
 	 * Test null req time.
-	 */
+	 *//*
 	@Test
 	public void testNullReqTime() {
 		validator.validateReqTime(null, errors,REQUEST_TIME);
@@ -223,9 +224,9 @@ public class IdAuthValidatorTest {
 			assertEquals(REQUEST_TIME, ((FieldError) error).getField());
 		});
 	}
-	/**
+	*//**
 	 * test ConsentRequired
-	 */
+	 *//*
 	@Test
 	public void testvalidateConsentReq_True() {
 		
@@ -235,9 +236,9 @@ public class IdAuthValidatorTest {
 		validator.validateConsentReq(authRequestDTO, error);
 		assertFalse(error.hasErrors());
 	}
-	/**
+	*//**
 	 * test ConsentRequired
-	 */
+	 *//*
 	@Test
 	public void testvalidateConsentReq_False() {
 		
@@ -249,9 +250,9 @@ public class IdAuthValidatorTest {
 	}
 	
 	
-	/**
+	*//**
 	 * test Future Time
-	 */
+	 *//*
 	@Test
 	public void testRequestTime_Invalid() {
 		String reqTime=null;
@@ -259,9 +260,9 @@ public class IdAuthValidatorTest {
 		assertTrue(errors.hasErrors());
 	}
 	
-	/**
+	*//**
 	 * test Future Time
-	 */
+	 *//*
 	@Test
 	public void testRequestTime_Valid() {
 		String reqTime=null;
@@ -269,9 +270,9 @@ public class IdAuthValidatorTest {
 		validator.validateReqTime(reqTime, errors, REQUEST_TIME);
 		assertFalse(errors.hasErrors());
 	}
-	/**
+	*//**
 	 * test Future Time
-	 */
+	 *//*
 	@Test
 	public void testRequestTime_Invalid_TimeFormat() {
 		String reqTime = null;
@@ -281,12 +282,13 @@ public class IdAuthValidatorTest {
 		assertTrue(errors.hasErrors());
 	}
 	
-	/**
+	*//**
 	 * test Future Time
-	 */
+	 *//*
 	@Test
 	public void testFutureTime_Invalid() {
 		validator.validateReqTime(Instant.now().plus(Period.ofDays(1)).toString(), errors, REQUEST_TIME);
 		assertTrue(errors.hasErrors());
 	}
 }
+*/

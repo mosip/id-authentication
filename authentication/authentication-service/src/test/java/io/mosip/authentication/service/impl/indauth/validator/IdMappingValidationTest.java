@@ -29,7 +29,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.authentication.common.config.IDAMappingConfig;
 import io.mosip.authentication.common.factory.RestRequestFactory;
+import io.mosip.authentication.common.helper.IdInfoHelper;
+import io.mosip.authentication.common.helper.RestHelper;
 import io.mosip.authentication.common.impl.indauth.service.demo.DOBType;
+import io.mosip.authentication.common.integration.MasterDataManager;
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.AuthTypeDTO;
 import io.mosip.authentication.core.dto.indauth.BioIdentityInfoDTO;
@@ -39,9 +42,6 @@ import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
 import io.mosip.authentication.core.dto.indauth.RequestDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.IdAuthenticationDaoException;
-import io.mosip.authentication.service.helper.IdInfoHelper;
-import io.mosip.authentication.service.helper.RestHelper;
-import io.mosip.authentication.service.integration.MasterDataManager;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest

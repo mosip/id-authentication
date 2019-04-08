@@ -1,6 +1,7 @@
 package io.mosip.internal.authentication.service.impl.indauth.controller;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -20,6 +21,7 @@ import org.springframework.web.context.WebApplicationContext;
 
 import io.mosip.authentication.common.factory.AuditRequestFactory;
 import io.mosip.authentication.common.factory.RestRequestFactory;
+import io.mosip.authentication.common.helper.RestHelper;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.AuthResponseDTO;
@@ -28,11 +30,10 @@ import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.IdAuthenticationDaoException;
 import io.mosip.authentication.core.spi.indauth.service.KycService;
-import io.mosip.authentication.service.helper.RestHelper;
 import io.mosip.authentication.service.impl.indauth.facade.AuthFacadeImpl;
-import io.mosip.internal.authentication.service.impl.indauth.controller.InternalAuthController;
 import io.mosip.internal.authentication.service.impl.indauth.validator.InternalAuthRequestValidator;
 
+@Ignore
 @RunWith(SpringRunner.class)
 @WebMvcTest
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })

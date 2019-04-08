@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -23,19 +24,19 @@ import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.validation.Errors;
 import org.springframework.web.context.WebApplicationContext;
 
+import io.mosip.authentication.common.entity.AutnTxn;
+import io.mosip.authentication.common.entity.StaticPin;
+import io.mosip.authentication.common.entity.StaticPinHistory;
 import io.mosip.authentication.common.factory.RestRequestFactory;
+import io.mosip.authentication.common.helper.AuditHelper;
+import io.mosip.authentication.common.helper.RestHelper;
+import io.mosip.authentication.common.integration.IdRepoManager;
+import io.mosip.authentication.common.repository.StaticPinHistoryRepository;
+import io.mosip.authentication.common.repository.StaticPinRepository;
 import io.mosip.authentication.core.dto.spinstore.PinRequestDTO;
 import io.mosip.authentication.core.dto.spinstore.StaticPinRequestDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.spi.id.service.IdAuthService;
-import io.mosip.authentication.service.entity.AutnTxn;
-import io.mosip.authentication.service.entity.StaticPin;
-import io.mosip.authentication.service.entity.StaticPinHistory;
-import io.mosip.authentication.service.helper.AuditHelper;
-import io.mosip.authentication.service.helper.RestHelper;
-import io.mosip.authentication.service.integration.IdRepoManager;
-import io.mosip.authentication.service.repository.StaticPinHistoryRepository;
-import io.mosip.authentication.service.repository.StaticPinRepository;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderImpl;
 
@@ -45,6 +46,7 @@ import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderIm
  * @author Prem Kumar
  *
  */
+@Ignore
 @RunWith(SpringRunner.class)
 @WebMvcTest
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class, TemplateManagerBuilderImpl.class })

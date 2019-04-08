@@ -19,6 +19,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
+import io.mosip.authentication.common.entity.AutnTxn;
+import io.mosip.authentication.common.helper.AuditHelper;
 import io.mosip.authentication.common.helper.IdInfoHelper;
 import io.mosip.authentication.common.impl.indauth.match.IdaIdMapping;
 import io.mosip.authentication.core.constant.AuditEvents;
@@ -33,6 +35,8 @@ import io.mosip.authentication.core.dto.indauth.KycAuthResponseDTO;
 import io.mosip.authentication.core.dto.indauth.KycResponseDTO;
 import io.mosip.authentication.core.dto.indauth.ResponseDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
+import io.mosip.authentication.core.spi.id.service.IdAuthService;
+import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
 import io.mosip.authentication.core.spi.indauth.match.MappingConfig;
 import io.mosip.authentication.core.spi.indauth.service.KycService;
 import io.mosip.kernel.core.util.DateUtils;
@@ -53,13 +57,34 @@ public class KycServiceImpl implements KycService {
 	/** The Constant MOSIP_PRIMARY_LANG_CODE. */
 	private static final String MOSIP_PRIMARY_LANG_CODE = "mosip.primary-language";
 
+	/** The Constant DATETIME_PATTERN. */
+	private static final String DATETIME_PATTERN = "datetime.pattern";
+
 	/** The env. */
 	@Autowired
 	Environment env;
 
+	/** The Kyc Service */
+	@Autowired
+	private KycService kycService;
+
+	/** The Id Info Service */
+	@Autowired
+	private IdAuthService<AutnTxn> idInfoService;
+
+	/** The AuditHelper */
+	@Autowired
+	private AuditHelper auditHelper;
+
 	/** The demo helper. */
 	@Autowired
 	private IdInfoHelper idInfoHelper;
+
+	@Autowired
+	private IdInfoFetcher idInfoFetcher;
+
+	@Autowired
+	private IdAuthService<AutnTxn> idAuthService;
 
 	/** The mapping config. */
 	@Autowired
@@ -96,7 +121,7 @@ public class KycServiceImpl implements KycService {
 			filteredIdentityInfo.put("biometrics", bioValue);
 		}
 		if (Objects.nonNull(filteredIdentityInfo)) {
-			Map<Object, Object> idMappingIdentityInfo = filteredIdentityInfo.entrySet().stream()
+			Map<String, Object> idMappingIdentityInfo = filteredIdentityInfo.entrySet().stream()
 					.filter(entry -> entry.getKey() != null)
 					.map(entry -> new SimpleEntry<>(
 							IdaIdMapping.getIdNameForMapping(entry.getKey(), mappingConfig).orElse(""),
@@ -114,12 +139,45 @@ public class KycServiceImpl implements KycService {
 		return kycResponseDTO;
 	}
 
+	/**
+	 * Construct identity info - Method to filter the details to be printed.
+	 *
+	 * @param allowedKycType the attributes defined as per policy
+	 * @param identity       the identity information of the resident
+	 * @param secLangCode    the secondary language code to retrieve identity
+	 *                       information detail in secondary language
+	 * @return the map returns filtered information defined as per policy
+	 */
+	private Map<String, Object> constructIdentityInfo(List<String> allowedKycType,
+			Map<String, List<IdentityInfoDTO>> identity, String secLangCode) {
+		Map<String, List<IdentityInfoDTO>> identityInfo = null;
+		Map<String, Object> identityInfos = null;
+		if (Objects.nonNull(allowedKycType)) {
+			identityInfo = identity.entrySet().stream().filter(id -> allowedKycType.contains(id.getKey()))
+					.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+		}
+		if (Objects.nonNull(identityInfo)) {
+			Set<String> allowedLang = idInfoHelper.getAllowedLang();
+			String secondayLangCode = allowedLang.contains(secLangCode) ? env.getProperty(MOSIP_SECONDARY_LANG_CODE)
+					: null;
+			String primaryLanguage = env.getProperty(MOSIP_PRIMARY_LANG_CODE);
+			identityInfos = identityInfo.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, entry -> entry
+					.getValue().stream()
+					.filter((IdentityInfoDTO info) -> Objects.isNull(info.getLanguage())
+							|| info.getLanguage().equalsIgnoreCase("null")
+							|| info.getLanguage().equalsIgnoreCase(primaryLanguage)
+							|| (secondayLangCode != null && info.getLanguage().equalsIgnoreCase(secondayLangCode)))
+					.collect(Collectors.toList())));
+		}
+		return identityInfos;
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * io.mosip.authentication.core.spi.indauth.facade.AuthFacade#processKycAuth(io.
-	 * mosip.authentication.core.dto.indauth.KycAuthRequestDTO,
+	 * io.mosip.authentication.core.spi.indauth.service.KycService#processKycAuth(io
+	 * .mosip.authentication.core.dto.indauth.KycAuthRequestDTO,
 	 * io.mosip.authentication.core.dto.indauth.AuthResponseDTO, java.lang.String)
 	 */
 	@Override
@@ -171,39 +229,6 @@ public class KycServiceImpl implements KycService {
 			kycAuthResponseDTO.setResponseTime(resTime);
 		}
 		return kycAuthResponseDTO;
-	}
-
-	/**
-	 * Construct identity info - Method to filter the details to be printed.
-	 *
-	 * @param allowedKycType the attributes defined as per policy
-	 * @param identity       the identity information of the resident
-	 * @param secLangCode    the secondary language code to retrieve identity
-	 *                       information detail in secondary language
-	 * @return the map returns filtered information defined as per policy
-	 */
-	private Map<String, Object> constructIdentityInfo(List<String> allowedKycType,
-			Map<String, List<IdentityInfoDTO>> identity, String secLangCode) {
-		Map<String, List<IdentityInfoDTO>> identityInfo = null;
-		Map<String, Object> identityInfos = null;
-		if (Objects.nonNull(allowedKycType)) {
-			identityInfo = identity.entrySet().stream().filter(id -> allowedKycType.contains(id.getKey()))
-					.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-		}
-		if (Objects.nonNull(identityInfo)) {
-			Set<String> allowedLang = idInfoHelper.getAllowedLang();
-			String secondayLangCode = allowedLang.contains(secLangCode) ? env.getProperty(MOSIP_SECONDARY_LANG_CODE)
-					: null;
-			String primaryLanguage = env.getProperty(MOSIP_PRIMARY_LANG_CODE);
-			identityInfos = identityInfo.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, entry -> entry
-					.getValue().stream()
-					.filter((IdentityInfoDTO info) -> Objects.isNull(info.getLanguage())
-							|| info.getLanguage().equalsIgnoreCase("null")
-							|| info.getLanguage().equalsIgnoreCase(primaryLanguage)
-							|| (secondayLangCode != null && info.getLanguage().equalsIgnoreCase(secondayLangCode)))
-					.collect(Collectors.toList())));
-		}
-		return identityInfos;
 	}
 
 }

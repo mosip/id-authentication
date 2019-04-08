@@ -1,8 +1,11 @@
 package io.mosip.authentication.service.impl.fingerauth.provider.impl;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 
 import org.junit.Test;
+
+import io.mosip.authentication.common.impl.fingerauth.provider.CogentFingerprintProvider;
 
 /**
  * @author Manoj SP

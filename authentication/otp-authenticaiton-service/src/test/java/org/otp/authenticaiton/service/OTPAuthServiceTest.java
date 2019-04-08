@@ -30,7 +30,12 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.context.WebApplicationContext;
 
+import io.mosip.authentication.common.entity.AutnTxn;
+import io.mosip.authentication.common.helper.IdInfoHelper;
 import io.mosip.authentication.common.impl.indauth.service.IdInfoFetcherImpl;
+import io.mosip.authentication.common.integration.OTPManager;
+import io.mosip.authentication.common.repository.AutnTxnRepository;
+import io.mosip.authentication.common.repository.VIDRepository;
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.AuthStatusInfo;
 import io.mosip.authentication.core.dto.indauth.AuthTypeDTO;
@@ -40,12 +45,7 @@ import io.mosip.authentication.core.dto.indauth.RequestDTO;
 import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.IdValidationFailedException;
-import io.mosip.authentication.service.entity.AutnTxn;
-import io.mosip.authentication.service.helper.IdInfoHelper;
 import io.mosip.authentication.service.impl.indauth.builder.MatchInputBuilder;
-import io.mosip.authentication.service.integration.OTPManager;
-import io.mosip.authentication.service.repository.AutnTxnRepository;
-import io.mosip.authentication.service.repository.VIDRepository;
 import io.mosip.otp.authentication.service.impl.indauth.service.OTPAuthServiceImpl;
 import io.mosip.otp.authentication.service.impl.otpgen.service.OTPServiceImpl;
 import reactor.ipc.netty.http.HttpResources;
@@ -54,6 +54,7 @@ import reactor.ipc.netty.http.HttpResources;
  * 
  * @author Dinesh Karuppiah
  */
+@Ignore
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
 @RunWith(SpringRunner.class)
 @WebMvcTest

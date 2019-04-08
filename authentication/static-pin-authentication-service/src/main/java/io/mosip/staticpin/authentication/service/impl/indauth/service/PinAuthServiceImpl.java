@@ -25,8 +25,7 @@ import io.mosip.authentication.service.impl.indauth.builder.AuthStatusInfoBuilde
 import io.mosip.authentication.service.impl.indauth.builder.MatchInputBuilder;
 
 /**
- * The Class PinAuthServiceImpl - used to perform the service
- * implementation for the PIN based authentication.
+ * builder implementation for the PIN based authentication.
  * 
  * @author Sanjay Murali
  */
@@ -67,8 +66,8 @@ public class PinAuthServiceImpl implements PinAuthService {
 	}
 
 	/**
-	 * constructMatchInput method used to construct the Match
-	 * input for the authentication request {@link AuthRequestDTO}
+	 * constructMatchInput method used to construct the Match input for the
+	 * authentication request {@link AuthRequestDTO}
 	 *
 	 * @param authRequestDTO {@link AuthRequestDTO}
 	 * @return the list
@@ -78,8 +77,8 @@ public class PinAuthServiceImpl implements PinAuthService {
 	}
 
 	/**
-	 * constructMatchOutput method used to construct the Match
-	 * output computing with particular match matching strategy
+	 * constructMatchOutput method used to construct the Match output computing with
+	 * particular match matching strategy
 	 *
 	 * @param authRequestDTO  the auth request DTO
 	 * @param listMatchInputs the list match inputs
@@ -94,8 +93,8 @@ public class PinAuthServiceImpl implements PinAuthService {
 	}
 
 	/**
-	 * getSPin method used to fetch the SPIN value
-	 * of the individual's from the database
+	 * getSPin method used to fetch the SPIN value of the individual's from the
+	 * database
 	 *
 	 * @param uinValue the uin value
 	 * @param authReq  the match type

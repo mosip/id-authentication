@@ -1,13 +1,13 @@
 
 package io.mosip.authentication.service.impl.spin.validator;
 
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -23,13 +23,12 @@ import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.Errors;
 import org.springframework.web.context.WebApplicationContext;
 
+import io.mosip.authentication.common.helper.IdInfoHelper;
 import io.mosip.authentication.core.dto.indauth.IdType;
 import io.mosip.authentication.core.dto.spinstore.PinRequestDTO;
 import io.mosip.authentication.core.dto.spinstore.StaticPinRequestDTO;
-import io.mosip.authentication.service.helper.IdInfoHelper;
 import io.mosip.kernel.idvalidator.uin.impl.UinValidatorImpl;
 import io.mosip.kernel.idvalidator.vid.impl.VidValidatorImpl;
-import io.mosip.otp.authentication.service.impl.otpgen.validator.OTPRequestValidator;
 
 /**
  * This class Tests The StaticPinValidator class.
@@ -37,6 +36,7 @@ import io.mosip.otp.authentication.service.impl.otpgen.validator.OTPRequestValid
  * @author Prem Kumar
  *
  */
+@Ignore
 @RunWith(SpringRunner.class)
 
 @WebMvcTest
@@ -69,11 +69,6 @@ public class StaticPinRequestValidatorTest {
 	@Test
 	public void testSupportTrue() {
 		assertTrue(pinRequestValidator.supports(StaticPinRequestDTO.class));
-	}
-
-	@Test
-	public void testSupportFalse() {
-		assertFalse(pinRequestValidator.supports(OTPRequestValidator.class));
 	}
 
 	@Test

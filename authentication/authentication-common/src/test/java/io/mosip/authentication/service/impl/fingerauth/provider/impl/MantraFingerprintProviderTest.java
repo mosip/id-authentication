@@ -16,6 +16,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 import MFS100.DeviceInfo;
 import MFS100.FingerData;
 import MFS100.MFS100;
+import io.mosip.authentication.common.impl.fingerauth.provider.MantraFingerprintProvider;
 import io.mosip.authentication.core.dto.fingerprintauth.FingerprintDeviceInfo;
 
 /**

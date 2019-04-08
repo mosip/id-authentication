@@ -21,5 +21,10 @@
 			<artifactId>authentication-common</artifactId>
 			<version>0.10.1</version>
 		</dependency>
+		<dependency>
+			<groupId>io.mosip.authentication</groupId>
+			<artifactId>authentication-service</artifactId>
+			<version>0.10.1</version>
+		</dependency>
 	</dependencies>
 </project>

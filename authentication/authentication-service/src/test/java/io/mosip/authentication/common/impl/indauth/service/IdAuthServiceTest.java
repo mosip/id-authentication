@@ -19,8 +19,10 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.context.WebApplicationContext;
 
+import io.mosip.authentication.common.entity.VIDEntity;
 import io.mosip.authentication.common.factory.AuditRequestFactory;
 import io.mosip.authentication.common.factory.RestRequestFactory;
+import io.mosip.authentication.common.helper.RestHelper;
 import io.mosip.authentication.common.impl.id.service.impl.IdAuthServiceImpl;
 import io.mosip.authentication.common.repository.VIDRepository;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
@@ -28,8 +30,6 @@ import io.mosip.authentication.core.constant.RestServicesConstants;
 import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.IdValidationFailedException;
-import io.mosip.authentication.service.entity.VIDEntity;
-import io.mosip.authentication.service.helper.RestHelper;
 
 /**
  * This class tests the IdAuthServiceImpl.java

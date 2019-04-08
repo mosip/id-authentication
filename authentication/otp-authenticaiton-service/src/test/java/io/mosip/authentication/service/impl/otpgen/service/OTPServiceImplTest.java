@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -24,10 +25,17 @@ import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.context.WebApplicationContext;
 
 import io.mosip.authentication.common.config.IDAMappingConfig;
+import io.mosip.authentication.common.entity.AutnTxn;
 import io.mosip.authentication.common.factory.AuditRequestFactory;
 import io.mosip.authentication.common.factory.IDAMappingFactory;
 import io.mosip.authentication.common.factory.RestRequestFactory;
+import io.mosip.authentication.common.helper.IdInfoHelper;
+import io.mosip.authentication.common.helper.RestHelper;
 import io.mosip.authentication.common.impl.indauth.service.IdInfoFetcherImpl;
+import io.mosip.authentication.common.impl.notification.service.NotificationServiceImpl;
+import io.mosip.authentication.common.integration.IdTemplateManager;
+import io.mosip.authentication.common.integration.OTPManager;
+import io.mosip.authentication.common.repository.AutnTxnRepository;
 import io.mosip.authentication.core.dto.indauth.IdType;
 import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
 import io.mosip.authentication.core.dto.otpgen.OtpRequestDTO;
@@ -35,15 +43,8 @@ import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.RestServiceException;
 import io.mosip.authentication.core.spi.id.service.IdAuthService;
 import io.mosip.authentication.core.util.dto.RestRequestDTO;
-import io.mosip.authentication.service.entity.AutnTxn;
-import io.mosip.authentication.service.helper.IdInfoHelper;
-import io.mosip.authentication.service.helper.RestHelper;
-import io.mosip.authentication.service.impl.notification.service.NotificationServiceImpl;
-import io.mosip.authentication.service.integration.IdTemplateManager;
-import io.mosip.authentication.service.integration.OTPManager;
 import io.mosip.authentication.service.integration.dto.OtpGeneratorRequestDto;
 import io.mosip.authentication.service.integration.dto.OtpGeneratorResponseDto;
-import io.mosip.authentication.service.repository.AutnTxnRepository;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.otp.authentication.service.impl.otpgen.service.OTPServiceImpl;
 
@@ -52,6 +53,7 @@ import io.mosip.otp.authentication.service.impl.otpgen.service.OTPServiceImpl;
  *
  * @author Dinesh Karuppiah.T
  */
+@Ignore
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class, IDAMappingConfig.class,
 		IDAMappingFactory.class })

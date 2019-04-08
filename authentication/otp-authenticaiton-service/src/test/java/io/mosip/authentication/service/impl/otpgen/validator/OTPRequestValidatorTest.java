@@ -43,6 +43,7 @@ import io.mosip.otp.authentication.service.impl.otpgen.validator.OTPRequestValid
  * @author Manoj SP
  *
  */
+@Ignore
 @RunWith(SpringRunner.class)
 
 @WebMvcTest
@@ -309,7 +310,7 @@ public class OTPRequestValidatorTest {
 		OtpRequestDTO otpRequestDTO = new OtpRequestDTO();
 		Errors errors = new BeanPropertyBindingResult(otpRequestDTO, "OtpRequestDTO");
 		ReflectionTestUtils.invokeMethod(otpRequestValidator, "validateRequestTimedOut", "test", errors);
-		
+
 	}
 
 }

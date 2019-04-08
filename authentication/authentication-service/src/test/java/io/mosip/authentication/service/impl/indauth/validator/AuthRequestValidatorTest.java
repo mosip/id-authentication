@@ -33,6 +33,8 @@ import org.springframework.validation.beanvalidation.SpringValidatorAdapter;
 import org.springframework.web.context.WebApplicationContext;
 
 import io.mosip.authentication.common.config.IDAMappingConfig;
+import io.mosip.authentication.common.helper.IdInfoHelper;
+import io.mosip.authentication.common.integration.MasterDataManager;
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.AuthTypeDTO;
 import io.mosip.authentication.core.dto.indauth.IdType;
@@ -40,13 +42,10 @@ import io.mosip.authentication.core.dto.indauth.IdentityDTO;
 import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
 import io.mosip.authentication.core.dto.indauth.RequestDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
-import io.mosip.authentication.service.helper.IdInfoHelper;
-import io.mosip.authentication.service.integration.MasterDataManager;
 import io.mosip.kernel.core.idvalidator.exception.InvalidIDException;
 import io.mosip.kernel.idvalidator.uin.impl.UinValidatorImpl;
 import io.mosip.kernel.idvalidator.vid.impl.VidValidatorImpl;
 import io.mosip.kernel.logger.logback.appender.RollingFileAppender;
-import io.mosip.otp.authentication.service.impl.otpgen.validator.OTPRequestValidator;
 
 /**
  * This class validates the AuthRequestValidator
@@ -59,7 +58,6 @@ import io.mosip.otp.authentication.service.impl.otpgen.validator.OTPRequestValid
 @WebMvcTest
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
 public class AuthRequestValidatorTest {
-
 
 	@Mock
 	private SpringValidatorAdapter validator;
@@ -100,11 +98,6 @@ public class AuthRequestValidatorTest {
 	@Test
 	public void testSupportTrue() {
 		assertTrue(authRequestValidator.supports(AuthRequestDTO.class));
-	}
-
-	@Test
-	public void testSupportFalse() {
-		assertFalse(authRequestValidator.supports(OTPRequestValidator.class));
 	}
 
 	@Test
@@ -1050,7 +1043,7 @@ public class AuthRequestValidatorTest {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		authRequestDTO.setId("id");
 		authRequestDTO.setConsentObtained(true);
-		
+
 		authRequestDTO.setTransactionID("1234567890");
 		authRequestDTO.setRequestTime(Instant.now().atOffset(ZoneOffset.of("+0530"))
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());

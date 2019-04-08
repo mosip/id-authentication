@@ -24,23 +24,24 @@ import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.context.WebApplicationContext;
 
 import io.mosip.authentication.common.config.IDAMappingConfig;
+import io.mosip.authentication.common.entity.StaticPin;
 import io.mosip.authentication.common.factory.BiometricProviderFactory;
 import io.mosip.authentication.common.factory.RestRequestFactory;
+import io.mosip.authentication.common.helper.IdInfoHelper;
+import io.mosip.authentication.common.helper.RestHelper;
 import io.mosip.authentication.common.impl.indauth.service.IdInfoFetcherImpl;
+import io.mosip.authentication.common.integration.OTPManager;
+import io.mosip.authentication.common.repository.StaticPinRepository;
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.AuthStatusInfo;
 import io.mosip.authentication.core.dto.indauth.AuthTypeDTO;
 import io.mosip.authentication.core.dto.indauth.RequestDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
-import io.mosip.authentication.service.entity.StaticPin;
-import io.mosip.authentication.service.helper.IdInfoHelper;
-import io.mosip.authentication.service.helper.RestHelper;
 import io.mosip.authentication.service.impl.indauth.builder.MatchInputBuilder;
-import io.mosip.authentication.service.integration.OTPManager;
-import io.mosip.authentication.service.repository.StaticPinRepository;
 import io.mosip.kernel.core.util.HMACUtils;
 import io.mosip.staticpin.authentication.service.impl.indauth.service.PinAuthServiceImpl;
 
+@Ignore
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
 @WebMvcTest

@@ -14,15 +14,15 @@ import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 
+import io.mosip.authentication.common.authentication.filter.IdAuthFilter;
+import io.mosip.authentication.common.policy.AuthPolicy;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
-import io.mosip.authentication.service.policy.AuthPolicy;
-import io.mosip.common.authentication.filter.IdAuthFilter;
 import io.mosip.kernel.core.util.CryptoUtil;
 
 /**
- * The Class KycAuthFilter - used to authenticate the request 
- * and manipulate response received for KYC request
+ * The Class KycAuthFilter - used to authenticate the request and manipulate
+ * response received for KYC request
  * 
  * @author Sanjay Murali
  */
@@ -64,8 +64,7 @@ public class KycAuthFilter extends IdAuthFilter {
 	}
 
 	/**
-	 * encryptKycResponse method is used to encode and encipher the
-	 * response
+	 * encryptKycResponse method is used to encode and encipher the response
 	 *
 	 * @param response the response
 	 * @throws JsonProcessingException the json processing exception
@@ -114,8 +113,8 @@ public class KycAuthFilter extends IdAuthFilter {
 	}
 
 	/**
-	 * setKycParams method used to constructs the KYC response
-	 * and removes null and empty value
+	 * setKycParams method used to constructs the KYC response and removes null and
+	 * empty value
 	 *
 	 * @param response the response
 	 * @return the map
@@ -137,8 +136,8 @@ public class KycAuthFilter extends IdAuthFilter {
 	}
 
 	/**
-	 * constructKycInfo method used to manipulate the
-	 * identity information check null or empty value
+	 * constructKycInfo method used to manipulate the identity information check
+	 * null or empty value
 	 *
 	 * @param identity the identity
 	 * @return the map
@@ -148,27 +147,37 @@ public class KycAuthFilter extends IdAuthFilter {
 		Map<String, Object> responseMap = new HashMap<>();
 		identity.entrySet().stream().forEach(entry -> {
 			List<Map<String, Object>> listOfMap = (List<Map<String, Object>>) entry.getValue();
-			Object value = Objects.isNull(listOfMap) ? listOfMap : listOfMap.stream().map((Map<String, Object> map) -> map.entrySet().stream()
-					.filter(innerEntry -> innerEntry.getValue() != null || !innerEntry.getKey().equals("language"))
-					.collect(
-							Collectors.toMap(Entry::getKey, Entry::getValue, (map1, map2) -> map1, LinkedHashMap::new)))
-					.collect(Collectors.toList());
+			Object value = Objects.isNull(listOfMap) ? listOfMap
+					: listOfMap.stream()
+							.map((Map<String, Object> map) -> map.entrySet().stream()
+									.filter(innerEntry -> innerEntry.getValue() != null
+											|| !innerEntry.getKey().equals("language"))
+									.collect(Collectors.toMap(Entry::getKey, Entry::getValue, (map1, map2) -> map1,
+											LinkedHashMap::new)))
+							.collect(Collectors.toList());
 			responseMap.put(entry.getKey(), value);
 		});
 		return responseMap;
 
 	}
 
-	/* (non-Javadoc)
-	 * @see io.mosip.authentication.service.filter.IdAuthFilter#validateSignature(java.lang.String, byte[])
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.authentication.service.filter.IdAuthFilter#validateSignature(java.
+	 * lang.String, byte[])
 	 */
 	@Override
 	protected boolean validateSignature(String signature, byte[] requestAsByte) throws IdAuthenticationAppException {
 		return true;
 	}
 
-	/* (non-Javadoc)
-	 * @see io.mosip.authentication.service.filter.IdAuthFilter#checkAllowedAuthTypeBasedOnPolicy(java.util.Map, java.util.List)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.authentication.service.filter.IdAuthFilter#
+	 * checkAllowedAuthTypeBasedOnPolicy(java.util.Map, java.util.List)
 	 */
 	@Override
 	protected void checkAllowedAuthTypeBasedOnPolicy(Map<String, Object> requestBody, List<AuthPolicy> authPolicies)

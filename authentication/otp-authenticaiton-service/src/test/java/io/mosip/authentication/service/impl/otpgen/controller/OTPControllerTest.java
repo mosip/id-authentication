@@ -46,6 +46,7 @@ import io.mosip.otp.authentication.service.impl.otpgen.controller.OTPController;
  *
  * @author Rakesh Roshan
  */
+@Ignore
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
