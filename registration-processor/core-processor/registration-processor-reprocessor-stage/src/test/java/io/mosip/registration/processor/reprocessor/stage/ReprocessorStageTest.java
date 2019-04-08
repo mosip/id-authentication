@@ -6,6 +6,7 @@ import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyList;
 import static org.mockito.Matchers.anyLong;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,6 +27,8 @@ import io.mosip.registration.processor.core.code.EventId;
 import io.mosip.registration.processor.core.code.EventName;
 import io.mosip.registration.processor.core.code.EventType;
 import io.mosip.registration.processor.core.code.RegistrationTransactionStatusCode;
+import io.mosip.registration.processor.core.http.ResponseWrapper;
+import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
 import io.mosip.registration.processor.rest.client.audit.dto.AuditResponseDto;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
@@ -61,13 +64,21 @@ public class ReprocessorStageTest {
 
 	@Before
 	public void setup() throws Exception {
-		ReflectionTestUtils.setField(reprocessorStage, "fetchSize", 2);
-		ReflectionTestUtils.setField(reprocessorStage, "elapseTime", 21600);
-		ReflectionTestUtils.setField(reprocessorStage, "reprocessCount", 3);
-		AuditResponseDto auditResponseDto = new AuditResponseDto();
-		Mockito.doReturn(auditResponseDto).when(auditLogRequestBuilder).createAuditRequestBuilder(
-				"test case description", EventId.RPR_405.toString(), EventName.UPDATE.toString(),
-				EventType.BUSINESS.toString(), "1234testcase", ApiName.AUDIT);
+		 ReflectionTestUtils.setField(reprocessorStage, "fetchSize", 2);
+         ReflectionTestUtils.setField(reprocessorStage, "elapseTime", 21600);
+         ReflectionTestUtils.setField(reprocessorStage, "reprocessCount", 3);
+         Field auditLog = AuditLogRequestBuilder.class.getDeclaredField("registrationProcessorRestService");
+         auditLog.setAccessible(true);
+         @SuppressWarnings("unchecked")
+         RegistrationProcessorRestClientService<Object> mockObj = Mockito
+                                     .mock(RegistrationProcessorRestClientService.class);
+         auditLog.set(auditLogRequestBuilder, mockObj);
+         AuditResponseDto auditResponseDto = new AuditResponseDto();
+         ResponseWrapper<AuditResponseDto> responseWrapper = new ResponseWrapper<>();
+         responseWrapper.setResponse(auditResponseDto);
+         Mockito.doReturn(responseWrapper).when(auditLogRequestBuilder).createAuditRequestBuilder(
+                                      "test case description", EventId.RPR_401.toString(), EventName.ADD.toString(),
+                                      EventType.BUSINESS.toString(), "1234testcase", ApiName.AUDIT);
 	}
 
 	@Test

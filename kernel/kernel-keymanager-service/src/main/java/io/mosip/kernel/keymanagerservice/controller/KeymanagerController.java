@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.RestController;
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.core.http.ResponseWrapper;
+import io.mosip.kernel.keymanagerservice.dto.EncryptDataRequestDto;
+import io.mosip.kernel.keymanagerservice.dto.EncryptDataResponseDto;
 import io.mosip.kernel.keymanagerservice.dto.PublicKeyResponse;
 import io.mosip.kernel.keymanagerservice.dto.SymmetricKeyRequestDto;
 import io.mosip.kernel.keymanagerservice.dto.SymmetricKeyResponseDto;
@@ -92,5 +94,21 @@ public class KeymanagerController {
 	@GetMapping(value = "/alias")
 	public ResponseEntity<List<String>> getAllAlias() {
 		return new ResponseEntity<>(keymanagerService.getAllAlias(), HttpStatus.OK);
+	}
+
+	/**
+	 *  Encrypt data with private key
+	 * @param encryptDataRequestDto
+	 * @return {@link EncryptDataResponseDto}
+	 */
+	@ResponseFilter
+	@ApiOperation(value = "Encrypt data", response = EncryptDataResponseDto.class)
+	@PostMapping("/encrypt")
+	public ResponseWrapper<EncryptDataResponseDto> encrypt(
+			@RequestBody RequestWrapper<EncryptDataRequestDto> encryptDataRequestDto) {
+		ResponseWrapper<EncryptDataResponseDto> response = new ResponseWrapper<>();
+		response.setResponse(keymanagerService.encrypt(encryptDataRequestDto.getRequest()));
+		return response;
+
 	}
 }
