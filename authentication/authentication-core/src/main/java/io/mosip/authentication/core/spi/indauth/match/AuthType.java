@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.springframework.core.env.Environment;
@@ -62,7 +63,9 @@ public interface AuthType {
 	 * @param languageInfoFetcher the language info fetcher
 	 * @return the matching strategy
 	 */
-	Optional<String> getMatchingStrategy(AuthRequestDTO authReq, String language);
+	default Optional<String> getMatchingStrategy(AuthRequestDTO authReq, String language){
+		return Optional.of(MatchingStrategyType.EXACT.getType());
+	}
 
 	/**
 	 * Gets the matching threshold.
@@ -113,5 +116,15 @@ public interface AuthType {
 	 */
 	public static Optional<AuthType> getAuthTypeForMatchType(MatchType matchType, AuthType[] authTypes) {
 		return Stream.of(authTypes).filter(at -> at.isAssociatedMatchType(matchType)).findAny();
-	}	
+	}
+	
+	/**
+	 * Returns the set of given match types
+	 *
+	 * @param supportedMatchTypes the supported match types
+	 * @return the sets the
+	 */
+	public static Set<MatchType> setOf(MatchType... supportedMatchTypes) {
+		return Stream.of(supportedMatchTypes).collect(Collectors.toSet());
+	}
 }

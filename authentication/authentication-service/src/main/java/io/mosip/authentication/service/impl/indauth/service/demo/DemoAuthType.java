@@ -6,8 +6,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.springframework.core.env.Environment;
 
@@ -16,7 +14,6 @@ import io.mosip.authentication.core.dto.indauth.AuthTypeDTO;
 import io.mosip.authentication.core.spi.indauth.match.AuthType;
 import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
 import io.mosip.authentication.core.spi.indauth.match.MatchType;
-import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
 
 /**
  * The Enum DemoAuthType.
@@ -28,16 +25,16 @@ public enum DemoAuthType implements AuthType {
 	// @formatter:off
 
 	ADDRESS("address",
-			setOf(DemoMatchType.ADDR_LINE1, DemoMatchType.ADDR_LINE2, DemoMatchType.ADDR_LINE3,
+			AuthType.setOf(DemoMatchType.ADDR_LINE1, DemoMatchType.ADDR_LINE2, DemoMatchType.ADDR_LINE3,
 					DemoMatchType.LOCATION1, DemoMatchType.LOCATION2, DemoMatchType.LOCATION3,
 					DemoMatchType.PINCODE), AuthTypeDTO::isDemo, "Address"),
 
 	/** The pi pri. */
 	PERSONAL_IDENTITY("personalIdentity",
-			setOf(DemoMatchType.NAME, DemoMatchType.DOB, DemoMatchType.DOBTYPE, DemoMatchType.AGE,
+			AuthType.setOf(DemoMatchType.NAME, DemoMatchType.DOB, DemoMatchType.DOBTYPE, DemoMatchType.AGE,
 					DemoMatchType.EMAIL, DemoMatchType.PHONE, DemoMatchType.GENDER), AuthTypeDTO::isDemo, "Personal Identity"),
 	
-	FULL_ADDRESS("fullAddress", setOf(DemoMatchType.ADDR), AuthTypeDTO::isDemo,
+	FULL_ADDRESS("fullAddress", AuthType.setOf(DemoMatchType.ADDR), AuthTypeDTO::isDemo,
 			"Full Address")
 	
 	
@@ -112,20 +109,6 @@ public enum DemoAuthType implements AuthType {
 	 * (non-Javadoc)
 	 * 
 	 * @see io.mosip.authentication.service.impl.indauth.builder.AuthType#
-	 * getMatchingStrategy(io.mosip.authentication.core.dto.indauth.AuthRequestDTO,
-	 * java.util.function.Function)
-	 */
-	@Override
-	public Optional<String> getMatchingStrategy(AuthRequestDTO authReq, String language) {
-//		return getMatchInfo(authReq, language, MatchInfo::getMatchingStrategy);
-		return Optional.of(MatchingStrategyType.EXACT.getType());
-
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see io.mosip.authentication.service.impl.indauth.builder.AuthType#
 	 * getMatchingThreshold(io.mosip.authentication.core.dto.indauth.AuthRequestDTO,
 	 * java.util.function.Function)
 	 */
@@ -168,14 +151,5 @@ public enum DemoAuthType implements AuthType {
 		return false;
 	}
 	
-	/**
-	 * Returns the set of given match types
-	 *
-	 * @param supportedMatchTypes the supported match types
-	 * @return the sets the
-	 */
-	public static Set<MatchType> setOf(MatchType... supportedMatchTypes) {
-		return Stream.of(supportedMatchTypes).collect(Collectors.toSet());
-	}
 
 }

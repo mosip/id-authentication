@@ -7,15 +7,12 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.AuthTypeDTO;
 import io.mosip.authentication.core.spi.indauth.match.AuthType;
 import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
 import io.mosip.authentication.core.spi.indauth.match.MatchType;
-import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
 import io.mosip.authentication.core.spi.indauth.match.ValidateOtpFunction;
 
 /**
@@ -28,7 +25,7 @@ import io.mosip.authentication.core.spi.indauth.match.ValidateOtpFunction;
  */
 public enum PinAuthType implements AuthType {
 
-	SPIN("pin", setOf(PinMatchType.SPIN), AuthTypeDTO::isPin, "PIN") {
+	SPIN("pin", AuthType.setOf(PinMatchType.SPIN), AuthTypeDTO::isPin, "PIN") {
 		/*
 		 * (non-Javadoc)
 		 * 
@@ -41,7 +38,7 @@ public enum PinAuthType implements AuthType {
 			return Objects.nonNull(authRequestDTO.getRequest().getStaticPin());
 		}
 	},
-	OTP("otp", setOf(PinMatchType.OTP), AuthTypeDTO::isOtp, "OTP") {
+	OTP("otp", AuthType.setOf(PinMatchType.OTP), AuthTypeDTO::isOtp, "OTP") {
 		@Override
 		public Map<String, Object> getMatchProperties(AuthRequestDTO authRequestDTO, IdInfoFetcher idInfoFetcher, String language) {
 			Map<String, Object> valueMap = new HashMap<>();
@@ -133,34 +130,10 @@ public enum PinAuthType implements AuthType {
 	 * (non-Javadoc)
 	 * 
 	 * @see io.mosip.authentication.service.impl.indauth.builder.AuthType#
-	 * getMatchingStrategy(io.mosip.authentication.core.dto.indauth.AuthRequestDTO,
-	 * java.util.function.Function)
-	 */
-	@Override
-	public Optional<String> getMatchingStrategy(AuthRequestDTO authReq,
-			String languageInfoFetcher) {
-		return Optional.of(MatchingStrategyType.EXACT.getType());
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see io.mosip.authentication.service.impl.indauth.builder.AuthType#
 	 * getAssociatedMatchTypes()
 	 */
 	@Override
 	public Set<MatchType> getAssociatedMatchTypes() {
 		return Collections.unmodifiableSet(associatedMatchTypes);
-	}
-
-
-	/**
-	 * Returns the set of given match types
-	 *
-	 * @param supportedMatchTypes the supported match types
-	 * @return the sets the
-	 */
-	public static Set<MatchType> setOf(MatchType... supportedMatchTypes) {
-		return Stream.of(supportedMatchTypes).collect(Collectors.toSet());
 	}
 }

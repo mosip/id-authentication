@@ -36,26 +36,39 @@ import io.mosip.kernel.core.logger.spi.Logger;
 @Component
 public class OTPManager {
 
+	/** The Constant RESPONSE. */
+	private static final String RESPONSE = "response";
+
+	/** The Constant STATUS. */
 	private static final String STATUS = "status";
 
+	/** The Constant SESSION_ID. */
 	private static final String SESSION_ID = "SESSION_ID";
 
+	/** The Constant VALIDATION_UNSUCCESSFUL. */
 	private static final String VALIDATION_UNSUCCESSFUL = "VALIDATION_UNSUCCESSFUL";
 
+	/** The Constant OTP_EXPIRED. */
 	private static final String OTP_EXPIRED = "OTP_EXPIRED";
 
+	/** The Constant STATUS_SUCCESS. */
 	private static final String STATUS_SUCCESS = "success";
 
+	/** The Constant STATUS_FAILURE. */
 	private static final String STATUS_FAILURE = "failure";
 
+	/** The Constant USER_BLOCKED. */
 	private static final String USER_BLOCKED = "USER_BLOCKED";
 
+	/** The rest helper. */
 	@Autowired
 	private RestHelper restHelper;
 
+	/** The rest request factory. */
 	@Autowired
 	private RestRequestFactory restRequestFactory;
 
+	/** The logger. */
 	private static Logger logger = IdaLogger.getLogger(OTPManager.class);
 
 	/**
@@ -71,13 +84,12 @@ public class OTPManager {
 	public String generateOTP(String otpKey) throws IdAuthenticationBusinessException {
 		OtpGeneratorRequestDto otpGeneratorRequestDto = new OtpGeneratorRequestDto();
 		otpGeneratorRequestDto.setKey(otpKey);
-		ResponseWrapper<OtpGeneratorResponseDto> otpGeneratorResponsetDto = new ResponseWrapper<>();
 		RestRequestDTO restRequestDTO = null;
 		String response = null;
 		try {
 			restRequestDTO = restRequestFactory.buildRequest(RestServicesConstants.OTP_GENERATE_SERVICE,
 					RestRequestFactory.createRequest(otpGeneratorRequestDto), ResponseWrapper.class);
-			otpGeneratorResponsetDto = restHelper.requestSync(restRequestDTO);
+			ResponseWrapper<OtpGeneratorResponseDto> otpGeneratorResponsetDto = restHelper.requestSync(restRequestDTO);
 			response = (String) ((Map<String,Object>)otpGeneratorResponsetDto.getResponse()).get("otp");
 			logger.info(SESSION_ID, this.getClass().getSimpleName(), "generateOTP",
 					"otpGeneratorResponsetDto " + response);
@@ -87,11 +99,11 @@ public class OTPManager {
 			Optional<Object> responseBody = e.getResponseBody();
 			if (responseBody.isPresent()) {
 				Map<String, Object> res = (Map<String, Object>) responseBody.get();
-				String status = res.get("response") instanceof Map
-						? (String) ((Map<String, Object>) res.get("response")).get(STATUS)
+				String status = res.get(RESPONSE) instanceof Map
+						? (String) ((Map<String, Object>) res.get(RESPONSE)).get(STATUS)
 						: null;
-				String message = res.get("response") instanceof Map
-						? (String) ((Map<String, Object>) res.get("response")).get("message")
+				String message = res.get(RESPONSE) instanceof Map
+						? (String) ((Map<String, Object>) res.get(RESPONSE)).get("message")
 						: null;
 				if (status != null && status.equalsIgnoreCase(STATUS_FAILURE)
 						&& message.equalsIgnoreCase(USER_BLOCKED)) {
@@ -132,7 +144,7 @@ public class OTPManager {
 			params.add("otp", pinValue);
 			restreqdto.setParams(params);
 			Map<String, Object> otpvalidateresponsedto = restHelper.requestSync(restreqdto);
-			isValidOtp = Optional.ofNullable((Map<String, Object>)otpvalidateresponsedto.get("response")).filter(res -> res.containsKey(STATUS))
+			isValidOtp = Optional.ofNullable((Map<String, Object>)otpvalidateresponsedto.get(RESPONSE)).filter(res -> res.containsKey(STATUS))
 					.map(res -> String.valueOf(res.get(STATUS)))
 					.filter(status -> status.equalsIgnoreCase(STATUS_SUCCESS)).isPresent();
 		} catch (RestServiceException e) {
@@ -142,8 +154,8 @@ public class OTPManager {
 			Optional<Object> responseBody = e.getResponseBody();
 			if (responseBody.isPresent()) {
 				Map<String, Object> res = (Map<String, Object>) responseBody.get();
-				Object status = res.get("response") instanceof Map ? ((Map<String, Object>) res.get("response")).get(STATUS) : null;
-				Object message = res.get("response") instanceof Map ? ((Map<String, Object>) res.get("response")).get("message") : null;
+				Object status = res.get(RESPONSE) instanceof Map ? ((Map<String, Object>) res.get(RESPONSE)).get(STATUS) : null;
+				Object message = res.get(RESPONSE) instanceof Map ? ((Map<String, Object>) res.get(RESPONSE)).get("message") : null;
 				if (status instanceof String && message instanceof String) {
 					if (((String) status).equalsIgnoreCase(STATUS_FAILURE)) {
 						throwOtpException((String) message);

@@ -18,6 +18,7 @@ import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
 public enum FaceMatchingStrategy implements MatchingStrategy {
 	/** The Constant idvid. */
 
+	@SuppressWarnings("unchecked")
 	PARTIAL(MatchingStrategyType.PARTIAL, (Object reqInfo, Object entityInfo, Map<String, Object> props) -> {
 
 		if (reqInfo instanceof Map && entityInfo instanceof Map) {

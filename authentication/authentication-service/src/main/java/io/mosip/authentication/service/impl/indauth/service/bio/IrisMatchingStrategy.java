@@ -8,7 +8,6 @@ import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.spi.indauth.match.MatchFunction;
 import io.mosip.authentication.core.spi.indauth.match.MatchingStrategy;
 import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
-import io.mosip.authentication.core.spi.indauth.match.TextMatchingStrategy;
 import io.mosip.authentication.core.spi.irisauth.provider.IrisProvider;
 
 /**
@@ -19,6 +18,7 @@ import io.mosip.authentication.core.spi.irisauth.provider.IrisProvider;
 public enum IrisMatchingStrategy implements MatchingStrategy {
 	/** The Constant idvid. */
 
+	@SuppressWarnings("unchecked")
 	PARTIAL(MatchingStrategyType.PARTIAL, (Object reqInfo, Object entityInfo, Map<String, Object> props) -> {
 
 		if (reqInfo instanceof Map && entityInfo instanceof Map) {
