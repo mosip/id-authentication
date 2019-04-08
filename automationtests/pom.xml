@@ -147,21 +147,7 @@
 			<artifactId>commons-beanutils</artifactId>
 			<version>1.8.2</version>
 		</dependency>
-<<<<<<< Updated upstream
-		<!-- Encryption Decryption Util Jar 
-		<dependency>
-			<groupId>io.mosip</groupId>
-			<artifactId>testing</artifactId>
-			<version>demoApp</version>
-		</dependency>-->
-=======
-		<!-- Encryption Decryption Util Jar -->
-		<!-- <dependency>
-			<groupId>io.mosip</groupId>
-			<artifactId>testing</artifactId>
-			<version>demoApp</version>
-		</dependency> -->
->>>>>>> Stashed changes
+
 		<dependency>
 			<groupId>javax.validation</groupId>
 			<artifactId>validation-api</artifactId>

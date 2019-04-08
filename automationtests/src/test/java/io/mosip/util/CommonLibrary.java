@@ -537,7 +537,6 @@ public class CommonLibrary {
  // GLOBAL CLASS VARIABLES
  	private Properties prop;
  	
-
  	 	public String fetch_IDRepo(String element)
  	 	{
  	 		
@@ -799,7 +798,4 @@ public class CommonLibrary {
                logger.info("REST-ASSURED: the response Time is: "+  getResponse.time());
                return getResponse;
              }
-
-    
-
 }
