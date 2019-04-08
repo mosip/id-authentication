@@ -97,7 +97,7 @@ public class BookingService {
 	@Autowired
 	private BookingDAO bookingDAO;
 
-	@Value("${ver}")
+	@Value("${version}")
 	String versionUrl;
 
 	@Value("${id}")
