@@ -21,14 +21,13 @@ export class HeaderComponent implements OnInit {
   // }
 
   onLogoClick() {
-    if (this.authService.isAuthenticated) {
+    if (this.authService.isAuthenticated()) {
       console.log('IF LOGO');
       this.router.navigate(['dashboard']);
       // this.doLogout();
     } else {
-      console.log('ELSE');
-      this.router.navigate(['/']);
       // window.location.reload();
+      this.router.navigate(['/']);
     }
   }
 
