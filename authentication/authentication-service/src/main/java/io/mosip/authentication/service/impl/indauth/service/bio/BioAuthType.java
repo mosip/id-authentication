@@ -203,7 +203,7 @@ public enum BioAuthType implements AuthType {
 
 		@Override
 		protected Long getBioIdentityValuesCount(AuthRequestDTO reqDTO, IdInfoFetcher helper) {
-			return BioAuthType.getFaceValuesCountInIdentity(reqDTO, helper, BioMatchType.FACE);
+			return BioAuthType.getFaceValuesCountInIdentity(reqDTO, helper);
 		}
 	};
 
@@ -258,13 +258,30 @@ public enum BioAuthType implements AuthType {
 		return (long) helper.getIdentityRequestInfo(fpMultiMatchType, reqDTO.getRequest(), null).size();
 	}
 
+	/**
+	 * Gets the iris values count in identity.
+	 *
+	 * @param reqDTO the req DTO
+	 * @param helper the helper
+	 * @return the iris values count in identity
+	 */
 	private static Long getIrisValuesCountInIdentity(AuthRequestDTO reqDTO, IdInfoFetcher helper) {
 		return (long) helper.getIdentityRequestInfo(BioMatchType.IRIS_COMP, reqDTO.getRequest(), null).size();
 	}
 
-	private static Long getFaceValuesCountInIdentity(AuthRequestDTO reqDTO, IdInfoFetcher helper,
-			MatchType faceMatchType) {
-		return (long) helper.getIdentityRequestInfo(faceMatchType, reqDTO.getRequest(), null).size();
+	/**
+	 * Gets the face values count in identity.
+	 *
+	 * @param reqDTO the req DTO
+	 * @param helper the helper
+	 * @return the face values count in identity
+	 */
+	private static Long getFaceValuesCountInIdentity(AuthRequestDTO reqDTO, IdInfoFetcher helper) {
+		long count = 0;
+		for(MatchType matchType : setOf(BioMatchType.FACE, BioMatchType.FACE_UNKNOWN)) {
+			count += (long) helper.getIdentityRequestInfo(matchType, reqDTO.getRequest(), null).size();
+		}
+		return count;
 	}
 
 	/*
