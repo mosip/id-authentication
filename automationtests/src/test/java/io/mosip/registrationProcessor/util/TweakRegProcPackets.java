@@ -336,7 +336,9 @@ public class TweakRegProcPackets {
 							JSONObject identityObject = (JSONObject) metaInfoBio.get("identity");
 							JSONArray metaData = (JSONArray) identityObject.get("metaData");
 							JSONArray updatedData = updateRegId(metaData, regId);
+							logger.info("updatedData : "+updatedData);
 							metaInfoBio.put("identity", identityObject);
+							logger.info("metaInfoBio : "+metaInfoBio);
 							try (FileWriter updatedFile = new FileWriter(info.getAbsolutePath())) {
 								try {
 									updatedFile.write(metaInfoBio.toString());
@@ -442,12 +444,12 @@ public class TweakRegProcPackets {
 	public static void main(String[] args)
 			throws IOException, ZipException, InterruptedException, java.text.ParseException, ParseException {
 		TweakRegProcPackets e = new TweakRegProcPackets();
-		/*for(int i=0;i<2;i++) {
+		for(int i=0;i<2;i++) {
 		e.demoDedupePropertyFileReader("IDjson.properties");
-		}*/
+		}
 		// e.generatInvalidPacketForDemoDedupe(e.generateRegID("10011",
 		// "10011"),"PotentialMatch");
 		//e.invalidPacketGenerator("packetProperties.properties");
-	e.readPacketValidatorProperties("packetValidator.properties");
+	//e.readPacketValidatorProperties("packetValidator.properties");
 	}
 }

@@ -1,11 +1,7 @@
 package io.mosip.dbaccess;
 
 import java.io.File;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Query;
@@ -16,7 +12,6 @@ import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
 import io.mosip.dbdto.DemoDedupeDto;
-import io.mosip.dbdto.IndividualDemoghraphicDedupeEntity;
 
 /**
  * This class is use for stage validation related data operations 

@@ -1,4 +1,4 @@
-package io.mosip.dbdto;
+package io.mosip.dbentity;
 
 import java.io.Serializable;
 
@@ -6,13 +6,12 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 /**
- * The Class IndividualDemographicDedupePKEntity.
- *
- * @author Girish Yarru
+ * The primary key class for the applicant_demographic database table.
+ * 
  */
 @Embeddable
-public class IndividualDemographicDedupePKEntity implements Serializable {
-	
+public class ApplicantDemographicPKEntity implements Serializable {
+
 	/** The Constant serialVersionUID. */
 	// default serial version id, required for serializable classes.
 	private static final long serialVersionUID = 1L;
@@ -22,13 +21,13 @@ public class IndividualDemographicDedupePKEntity implements Serializable {
 	private String regId;
 
 	/** The lang code. */
-	@Column(name = "lang_code", nullable = false)
+	@Column(name = "lang_code")
 	private String langCode;
 
 	/**
-	 * Instantiates a new individual demographic dedupe PK entity.
+	 * Instantiates a new applicant demographic PK entity.
 	 */
-	public IndividualDemographicDedupePKEntity() {
+	public ApplicantDemographicPKEntity() {
 		super();
 	}
 
@@ -76,10 +75,10 @@ public class IndividualDemographicDedupePKEntity implements Serializable {
 		if (this == other) {
 			return true;
 		}
-		if (!(other instanceof IndividualDemographicDedupePKEntity)) {
+		if (!(other instanceof ApplicantDemographicPKEntity)) {
 			return false;
 		}
-		IndividualDemographicDedupePKEntity castOther = (IndividualDemographicDedupePKEntity) other;
+		ApplicantDemographicPKEntity castOther = (ApplicantDemographicPKEntity) other;
 		return this.regId.equals(castOther.regId) && this.langCode.equals(castOther.langCode);
 	}
 

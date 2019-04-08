@@ -1,4 +1,4 @@
-package io.mosip.dbdto;
+package io.mosip.dbentity;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
