@@ -64,7 +64,7 @@ public class SigningUtilTest {
 		cryptoManagerRequestDto = new CryptoManagerRequestDto();
 		cryptoManagerRequestDto.setApplicationId("KERNEL");
 		cryptoManagerRequestDto.setReferenceId("KER");
-		cryptoManagerRequestDto.setHashText("MOSIP");
+		cryptoManagerRequestDto.setData("MOSIP");
 		cryptoManagerRequestDto.setTimeStamp(DateUtils.getUTCCurrentDateTimeString());
 		requestWrapper = new RequestWrapper<>();
 	}
