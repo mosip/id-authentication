@@ -157,6 +157,7 @@ export class DemographicComponent implements OnInit, OnDestroy {
   }
 
   async ngOnInit() {
+    console.log('IN DEMOGRAPHIC');
     this.config = this.configService.getConfig();
     this.setConfig();
     this.initForm();
@@ -760,6 +761,7 @@ export class DemographicComponent implements OnInit, OnDestroy {
     } else {
       url = Utils.getURL(this.router.url, 'file-upload');
     }
+    console.log('OUT DEMOGRAPHIC IN FILE-UPLOAD OR PREVIEW');
     this.router.navigate([url]);
   }
 
