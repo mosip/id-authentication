@@ -1,7 +1,5 @@
 package io.mosip.kernel.tests;
 
-import static org.testng.Assert.assertTrue;
-
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -179,15 +177,14 @@ public class RIDGenerator extends BaseTestCase implements ITest{
 				}
 				intRidPre = intRidPost;
 			}
+			softAssert.assertTrue(lengthValid, "inValid Length of generated RID");
+			softAssert.assertTrue(centidValid, "generated RID does not contains passed centerID");
+			softAssert.assertTrue(machidValid, "generated RID does not contains passed machineID");
+			softAssert.assertTrue(ridTimestampvalid, "generated RID does not contains valid timeStamp");
+			softAssert.assertTrue(alphabetValid, "generated RID contains Alphabets in sequence");
+			softAssert.assertTrue(sequenceValid, "generated RID does not have inccremental sequence");
 			
-			assertTrue(lengthValid, "inValid Length of generated RID");
-			assertTrue(centidValid, "generated RID does not contains passed centerID");
-			assertTrue(machidValid, "generated RID does not contains passed machineID");
-			assertTrue(ridTimestampvalid, "generated RID does not contains valid timeStamp");
-			assertTrue(alphabetValid, "generated RID contains Alphabets in sequence");
-			assertTrue(sequenceValid, "generated RID does not have inccremental sequence");
-			
-			status = lengthValid&&centidValid&&machidValid&&ridTimestampvalid&&alphabetValid&&sequenceValid;
+			status = lengthValid && centidValid && machidValid && ridTimestampvalid && alphabetValid && sequenceValid;
 		}
 
 		else {
@@ -204,7 +201,6 @@ public class RIDGenerator extends BaseTestCase implements ITest{
 		}
 
 		object.put("status", finalStatus);
-
 		arr.add(object);
 		boolean setFinalStatus = false;
 		if (finalStatus.equals("Fail")) {
@@ -212,6 +208,7 @@ public class RIDGenerator extends BaseTestCase implements ITest{
 			logger.debug(response);
 		} else if (finalStatus.equals("Pass"))
 			setFinalStatus = true;
+		
 		Verify.verify(setFinalStatus);
 		softAssert.assertAll();
 	}
