@@ -2,7 +2,7 @@
 
 #### Background
 
-A TSP ID can be generated for each TSP. There are configurations during the TSP ID generations such as only numeric, length, restricted numbers etc, 
+A MISP ID can be generated for each MISP. There are configurations during the MISP ID generations such as only numeric, length, restricted numbers etc, 
 
 #### Solution
 
@@ -27,10 +27,10 @@ A TSP ID can be generated for each TSP. There are configurations during the TSP 
 
 
 
-![Class Diagram](_images/kernel-idgenerator-cd.png)
+![Class Diagram](_images/kernel-idgenerator-misp.png)
 
 
 ## Implementation
 
 
-**kernel-idgenerator-tspid** [README](../../../kernel/kernel-idgenerator-tspid/README.md)
+**kernel-idgenerator-mispid** [README](../../../kernel/kernel-idgenerator-mispid/README.md)
