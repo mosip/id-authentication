@@ -567,6 +567,8 @@ public class DemographicDetailController extends BaseController {
 	@FXML
 	private VBox applicationFullName;
 	@FXML
+	private GridPane fullNameGridPane;
+	@FXML
 	private ImageView fullNameKeyboardImage;
 	@FXML
 	private ImageView addressLine1KeyboardImage;
@@ -1743,7 +1745,7 @@ public class DemographicDetailController extends BaseController {
 	@FXML
 	private void setFocusonLocalField(MouseEvent event) {
 		try {
-			keyboardNode.setLayoutX(500.00);
+			keyboardNode.setLayoutX(fullNameGridPane.getWidth());
 			Node node = (Node) event.getSource();
 
 			if (node.getId().equals(RegistrationConstants.ADDRESS_LINE1)) {
