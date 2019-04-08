@@ -276,7 +276,9 @@ public class TweakRegProcPackets {
 							JSONObject identityObject = (JSONObject) metaInfoBio.get("identity");
 							JSONArray metaData = (JSONArray) identityObject.get("metaData");
 							JSONArray updatedData = updateRegId(metaData, regId);
+							logger.info("updatedData : "+updatedData);
 							metaInfoBio.put("identity", identityObject);
+							logger.info("metaInfoBio : "+metaInfoBio);
 							try (FileWriter updatedFile = new FileWriter(info.getAbsolutePath())) {
 								try {
 									updatedFile.write(metaInfoBio.toString());
@@ -493,6 +495,7 @@ public class TweakRegProcPackets {
 			throws IOException, ZipException, InterruptedException, java.text.ParseException, ParseException {
 		TweakRegProcPackets e = new TweakRegProcPackets();
 
+
 		Properties property = new Properties();
 		String propertyFilePath = System.getProperty("user.dir") + "/src/config/folderPaths.properties";
 		FileReader reader = new FileReader(new File(propertyFilePath));
@@ -505,5 +508,6 @@ public class TweakRegProcPackets {
 		}
 		e.osiValidatorPropertyFileReader("packetProperties.properties", validPacketPath, invalidPacketFolderPath);
 		reader.close();
-	}
+
+}
 }
