@@ -197,12 +197,12 @@ public class DataSyncServiceUtil {
 		try {
 			Map<String, String> params = new HashMap<>();
 			params.put("preRegistrationId", preId);
-			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(documentResourceUrl + "/documents")
-					.queryParam("pre_registration_id", preId);
+			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(documentResourceUrl + "/documents/");
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
 			HttpEntity<MainListResponseDTO<DocumentMultipartResponseDTO>> httpEntity = new HttpEntity<>(headers);
 			String uriBuilder = builder.build().encode().toUriString();
+			uriBuilder += "{preRegistrationId}";
 			log.info("sessionId", "idType", "id", "In callGetDocRestService method URL- " + uriBuilder);
 			ResponseEntity<MainListResponseDTO<DocumentMultipartResponseDTO>> respEntity = restTemplate.exchange(
 					uriBuilder, HttpMethod.GET, httpEntity,
@@ -275,11 +275,12 @@ public class DataSyncServiceUtil {
 		try {
 			Map<String, String> params = new HashMap<>();
 			params.put("preRegistrationId", preId);
-			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(bookingResourceUrl + "/appointment");
+			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(bookingResourceUrl + "/appointment/");
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
 			HttpEntity<MainResponseDTO<BookingRegistrationDTO>> httpEntity = new HttpEntity<>(headers);
 			String uriBuilder = builder.build().encode().toUriString();
+			uriBuilder += "{preRegistrationId}";
 			log.info("sessionId", "idType", "id", "In callGetAppointmentDetailsRestService method URL- " + uriBuilder);
 			ResponseEntity<MainResponseDTO<BookingRegistrationDTO>> respEntity = restTemplate.exchange(uriBuilder,
 					HttpMethod.GET, httpEntity,
