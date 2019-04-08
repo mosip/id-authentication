@@ -2,14 +2,12 @@ package io.mosip.authentication.service.impl.otpgen.service;
 
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.time.format.DateTimeParseException;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.TimeZone;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
@@ -66,9 +64,6 @@ public class OTPServiceImpl implements OTPService {
 	private static final String SESSION_ID = "SessionID";
 
 	private static final String IDA = "IDA";
-
-	/** The Constant UTC. */
-	private static final String UTC = "UTC";
 
 	/** The id auth service. */
 	@Autowired
@@ -233,7 +228,7 @@ public class OTPServiceImpl implements OTPService {
 			// TODO check
 			autnTxn.setCrBy(IDA);
 			autnTxn.setCrDTimes(DateUtils.getUTCCurrentDateTime());
-			String strUTCDate = getUTCTime(reqTime);
+			String strUTCDate = DateUtils.getUTCTimeFromDate(DateUtils.parseToDate(reqTime, env.getProperty(DATETIME_PATTERN)));;
 			autnTxn.setRequestDTtimes(DateUtils.parseToLocalDateTime(strUTCDate));
 			autnTxn.setResponseDTimes(DateUtils.getUTCCurrentDateTime()); // TODO check this
 			autnTxn.setAuthTypeCode(otpRequest.getRequestType());
@@ -311,14 +306,4 @@ public class OTPServiceImpl implements OTPService {
 		return email != null && !email.isEmpty() && email.trim().length() > 0;
 	}
 
-	/**
-	 * @param reqTime
-	 * @return
-	 */
-	public String getUTCTime(String reqTime) {
-		Date reqDate = DateUtils.parseToDate(reqTime, env.getProperty(DATETIME_PATTERN));
-		SimpleDateFormat dateFormatter = new SimpleDateFormat(env.getProperty(DATETIME_PATTERN));
-		dateFormatter.setTimeZone(TimeZone.getTimeZone(ZoneId.of(UTC)));
-		return dateFormatter.format(reqDate);
-	}
 }
