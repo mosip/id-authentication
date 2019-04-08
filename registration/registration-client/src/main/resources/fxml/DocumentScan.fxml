@@ -169,7 +169,7 @@
                                                                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                                               </rowConstraints>
                                                                <children>
-                                                                  <Button fx:id="docPreviewPrev" disable="true" mnemonicParsing="false" onAction="#previewPrevPage" prefHeight="${docPreviewPrevPane.height}" prefWidth="${docPreviewPrevPane.width}" text="Previous" visible="true" />
+                                                                  <Button fx:id="docPreviewPrev" disable="true" mnemonicParsing="false" onAction="#previewPrevPage" prefHeight="${docPreviewPrevPane.height}" prefWidth="${docPreviewPrevPane.width}" text="%previous" visible="true"  styleClass="contiuneButton"/>
                                                                </children>
                                                             </GridPane>
                                                             <GridPane fx:id="docPageNumberPane" GridPane.columnIndex="3" GridPane.rowIndex="1">
@@ -180,7 +180,7 @@
                                                                   <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                                                </rowConstraints>
                                                                <children>
-                                                                  <Label fx:id="docPageNumber" prefHeight="${docPageNumberPane.height}" prefWidth="${docPageNumberPane.width}" text="Hello" />
+                                                                  <Label fx:id="docPageNumber" prefHeight="${docPageNumberPane.height}" prefWidth="${docPageNumberPane.width}" />
                                                                </children>
                                                             </GridPane>
                                                             <GridPane fx:id="docPreviewNextPane" GridPane.columnIndex="5" GridPane.rowIndex="1">
@@ -191,7 +191,7 @@
                                                                   <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                                                </rowConstraints>
                                                                <children>
-                                                                  <Button fx:id="docPreviewNext" disable="true" mnemonicParsing="false" onAction="#previewNextPage" prefHeight="${docPreviewNextPane.height}" prefWidth="${docPreviewNextPane.width}" text="Next" visible="true" />
+                                                                  <Button fx:id="docPreviewNext" disable="true" mnemonicParsing="false" onAction="#previewNextPage" prefHeight="${docPreviewNextPane.height}" prefWidth="${docPreviewNextPane.width}" text="%next" visible="true" styleClass="contiuneButton" />
                                                                </children>
                                                             </GridPane>
                                                          </children>
@@ -439,7 +439,7 @@
                   </GridPane>
                   <GridPane GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="TOP">
                      <children>
-                        <Button fx:id="continueBtn" minWidth="${backButton.width/2}" mnemonicParsing="false" onAction="#next" styleClass="contiuneButton" text="%continue" GridPane.halignment="RIGHT" GridPane.valignment="TOP" >
+                        <Button fx:id="continueBtn" minWidth="${backButton.width/2}" mnemonicParsing="false" onAction="#next" styleClass="contiuneButton" text="%continue" GridPane.halignment="RIGHT" GridPane.valignment="TOP" disable="true">
                                               <graphic>
                               <ImageView fitHeight="20.0" fitWidth="27.0" pickOnBounds="true" preserveRatio="true">
                                  <image>

@@ -158,7 +158,8 @@ public class DocumentScanController extends BaseController {
 	private int totalDocument;
 	
 	private boolean documentsUploaded;
-
+	
+	private int counter;
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -174,6 +175,7 @@ public class DocumentScanController extends BaseController {
 				registrationNavlabel
 						.setText(ApplicationContext.applicationLanguageBundle().getString("uinUpdateNavLbl"));
 			}
+			counter=0;
 			totalDocument = 0;
 			scannedField = new TextField();
 			scannedField.setVisible(false);
@@ -210,7 +212,6 @@ public class DocumentScanController extends BaseController {
 		}
 	}
 
-	int counter=0;
 	/**
 	 * To populate the document categories
 	 */
@@ -996,5 +997,14 @@ public class DocumentScanController extends BaseController {
 		}
 
 	}
+	
+	public List<BufferedImage> getScannedPages() {
+		return scannedPages;
+	}
+
+	public void setScannedPages(List<BufferedImage> scannedPages) {
+		this.scannedPages = scannedPages;
+	}
+	
 
 }

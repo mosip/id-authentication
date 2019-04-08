@@ -12,7 +12,7 @@ import io.mosip.kernel.core.exception.ServiceError;
  * @author M1049825
  *
  */
-public class AuthManagerServiceException extends RuntimeException{
+public class AuthManagerServiceException extends RuntimeException {
 	/**
 	 * 
 	 */
@@ -23,8 +23,7 @@ public class AuthManagerServiceException extends RuntimeException{
 	private List<ServiceError> list = new ArrayList<>();
 
 	/**
-	 * @param list
-	 *            The error list.
+	 * @param list The error list.
 	 */
 	public AuthManagerServiceException(List<ServiceError> list) {
 		this.list = list;

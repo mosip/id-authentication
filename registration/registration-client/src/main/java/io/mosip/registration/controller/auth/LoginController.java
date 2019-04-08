@@ -78,6 +78,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
@@ -257,9 +258,9 @@ public class LoginController extends BaseController implements Initializable {
 
 			scene = getScene(loginRoot);
 			pageFlow.getInitialPageDetails();
-			// primaryStage.setResizable(true);
-			// primaryStage.setFullScreen(true);
-			// primaryStage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
+			primaryStage.setResizable(true);
+			primaryStage.setFullScreen(true);
+			primaryStage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
 			primaryStage.setScene(scene);
 			primaryStage.show();
 

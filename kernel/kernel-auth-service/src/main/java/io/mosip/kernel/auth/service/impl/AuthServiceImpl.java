@@ -32,6 +32,7 @@ import io.mosip.kernel.auth.service.AuthService;
 import io.mosip.kernel.auth.service.CustomTokenServices;
 import io.mosip.kernel.auth.service.OTPService;
 import io.mosip.kernel.auth.service.UinService;
+import io.mosip.kernel.core.util.HMACUtils;
 
 /**
  * Auth Service for Authentication and Authorization
