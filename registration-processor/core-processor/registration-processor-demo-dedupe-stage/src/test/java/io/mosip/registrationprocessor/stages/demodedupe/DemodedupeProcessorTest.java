@@ -387,5 +387,93 @@ public class DemodedupeProcessorTest {
 		MessageDTO messageDto = demodedupeProcessor.process(dto, stageName);
 		assertEquals(true, messageDto.getInternalError());
 	}
+	
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testIntrospectionException()
+			throws ApisResourceAccessException, IOException, IllegalAccessException, IllegalArgumentException,
+			InvocationTargetException, ParseException, IntrospectionException {
+		Mockito.when(demoDedupe.performDedupe(anyString())).thenReturn(duplicateDtos);
+
+		IntrospectionException exp = new IntrospectionException("errorMessage");
+		Mockito.doThrow(exp).when(demoDedupe).authenticateDuplicates(anyString(), anyList());
+		registrationStatusDto.setRegistrationType("TEST");
+		Mockito.when(registrationStatusService.getRegistrationStatus(anyString())).thenReturn(registrationStatusDto);
+		MessageDTO messageDto = demodedupeProcessor.process(dto, stageName);
+		assertEquals(true, messageDto.getInternalError());
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testInvocationTargetException()
+			throws ApisResourceAccessException, IOException, IllegalAccessException, IllegalArgumentException,
+			InvocationTargetException, ParseException, IntrospectionException {
+		Mockito.when(demoDedupe.performDedupe(anyString())).thenReturn(duplicateDtos);
+		Exception e=new Exception();
+		InvocationTargetException exp = new InvocationTargetException(e,"errorMessage");
+		Mockito.doThrow(exp).when(demoDedupe).authenticateDuplicates(anyString(), anyList());
+		registrationStatusDto.setRegistrationType("TEST");
+		Mockito.when(registrationStatusService.getRegistrationStatus(anyString())).thenReturn(registrationStatusDto);
+		MessageDTO messageDto = demodedupeProcessor.process(dto, stageName);
+		assertEquals(true, messageDto.getInternalError());
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testIllegalAccessException()
+			throws ApisResourceAccessException, IOException, IllegalAccessException, IllegalArgumentException,
+			InvocationTargetException, ParseException, IntrospectionException {
+		Mockito.when(demoDedupe.performDedupe(anyString())).thenReturn(duplicateDtos);
+		IllegalAccessException exp = new IllegalAccessException("errorMessage");
+		Mockito.doThrow(exp).when(demoDedupe).authenticateDuplicates(anyString(), anyList());
+		registrationStatusDto.setRegistrationType("TEST");
+		Mockito.when(registrationStatusService.getRegistrationStatus(anyString())).thenReturn(registrationStatusDto);
+		MessageDTO messageDto = demodedupeProcessor.process(dto, stageName);
+		assertEquals(true, messageDto.getInternalError());
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testParseException()
+			throws ApisResourceAccessException, IOException, IllegalAccessException, IllegalArgumentException,
+			InvocationTargetException, ParseException, IntrospectionException {
+		Mockito.when(demoDedupe.performDedupe(anyString())).thenReturn(duplicateDtos);
+		ParseException exp = new ParseException("errorMessage", 1);
+		Mockito.doThrow(exp).when(demoDedupe).authenticateDuplicates(anyString(), anyList());
+		registrationStatusDto.setRegistrationType("TEST");
+		Mockito.when(registrationStatusService.getRegistrationStatus(anyString())).thenReturn(registrationStatusDto);
+		MessageDTO messageDto = demodedupeProcessor.process(dto, stageName);
+		assertEquals(true, messageDto.getInternalError());
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testIllegalArgumentException()
+			throws ApisResourceAccessException, IOException, IllegalAccessException, IllegalArgumentException,
+			InvocationTargetException, ParseException, IntrospectionException {
+		Mockito.when(demoDedupe.performDedupe(anyString())).thenReturn(duplicateDtos);
+		IllegalArgumentException exp = new IllegalArgumentException("errorMessage");
+		Mockito.doThrow(exp).when(demoDedupe).authenticateDuplicates(anyString(), anyList());
+		registrationStatusDto.setRegistrationType("TEST");
+		Mockito.when(registrationStatusService.getRegistrationStatus(anyString())).thenReturn(registrationStatusDto);
+		MessageDTO messageDto = demodedupeProcessor.process(dto, stageName);
+		assertEquals(true, messageDto.getInternalError());
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testIOException()
+			throws ApisResourceAccessException, IOException, IllegalAccessException, IllegalArgumentException,
+			InvocationTargetException, ParseException, IntrospectionException {
+		Mockito.when(demoDedupe.performDedupe(anyString())).thenReturn(duplicateDtos);
+		IOException exp = new IOException("errorMessage");
+		Mockito.doThrow(exp).when(demoDedupe).authenticateDuplicates(anyString(), anyList());
+		registrationStatusDto.setRegistrationType("TEST");
+		Mockito.when(registrationStatusService.getRegistrationStatus(anyString())).thenReturn(registrationStatusDto);
+		MessageDTO messageDto = demodedupeProcessor.process(dto, stageName);
+		assertEquals(true, messageDto.getInternalError());
+	}
+
+
 
 }
