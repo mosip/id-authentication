@@ -1,11 +1,10 @@
-package io.mosip.service;
+package io.mosip.registrationProcessor.service;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 
@@ -15,9 +14,10 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.testng.Assert;
-import org.testng.annotations.Test;
 
-import io.mosip.util.GetHeader;
+import io.mosip.service.ApplicationLibrary;
+import io.mosip.service.AssertResponses;
+import io.mosip.service.BaseTestCase;
 import io.restassured.response.Response;
 
 

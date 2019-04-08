@@ -1,5 +1,4 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>customlib</groupId>
@@ -87,12 +86,6 @@
 			<scope>test</scope>
 		</dependency>
 
-		<dependency>
-			<groupId>org.apache.httpcomponents</groupId>
-			<artifactId>httpclient</artifactId>
-			<version>4.5.3</version>
-		</dependency>
-
 		<!-- https://mvnrepository.com/artifact/org.projectlombok/lombok -->
 		<dependency>
 			<groupId>org.projectlombok</groupId>
@@ -147,6 +140,7 @@
 			<artifactId>commons-beanutils</artifactId>
 			<version>1.8.2</version>
 		</dependency>
+
 
 		<dependency>
 			<groupId>javax.validation</groupId>
@@ -231,7 +225,7 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-		
+
 
 		<!-- https://mvnrepository.com/artifact/commons-codec/commons-codec -->
 		<dependency>
@@ -261,26 +255,25 @@
 				</configuration>
 			</plugin>
 
-		<!-- 	<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<version>2.19.1</version>
-				<inherited>true</inherited>
-				<configuration>
-					<suiteXmlFiles>
-
-						<suiteXmlFile>src/test/resources/testngapi.xml</suiteXmlFile>
-						<suiteXmlFile>src/test/resources/testngapi.xml</suiteXmlFile>
-					</suiteXmlFiles>
-					<systemPropertyVariables>                         <environment>${env.user}</environment> 
-						                    </systemPropertyVariables>
-
-					<suiteXmlFile>src/test/resources/testngapi.xml</suiteXmlFile>
-
-
-				</configuration>
-
-			</plugin> -->
+			<!-- <plugin> <groupId>org.apache.maven.plugins</groupId> <artifactId>maven-surefire-plugin</artifactId> 
+				<version>2.19.1</version> <inherited>true</inherited> <configuration> <suiteXmlFiles> 
+				<suiteXmlFile>src/test/resources/testngapi.xml</suiteXmlFile> <suiteXmlFile>src/test/resources/testngapi.xml</suiteXmlFile> 
+				</suiteXmlFiles> <systemPropertyVariables>                         <environment>${env.user}</environment> 
+				                    </systemPropertyVariables> <suiteXmlFile>src/test/resources/testngapi.xml</suiteXmlFile> 
+				</configuration> </plugin> -->
+				
+				 <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.14.1</version>
+                <configuration>
+                    <!-- Suite testng xml file to consider for test execution -->
+                    <suiteXmlFiles>
+                        <suiteXmlFile>src\test\resources\testng_regProc.xml</suiteXmlFile>
+                        <!-- <suiteXmlFile>suites-test-testng.xml</suiteXmlFile> -->
+                    </suiteXmlFiles>
+                </configuration>
+            </plugin>
 		</plugins>
 	</build>
 

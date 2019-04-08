@@ -8,17 +8,10 @@
 
         <!-- JDBC Database connection settings -->
         <property name="connection.driver_class">org.postgresql.Driver</property>
-<<<<<<< HEAD:automationtests/src/test/resources/regproc_qa.cfg.xml
         <property name="connection.url">jdbc:postgresql://52.172.54.231:9001/mosip_regprc</property>
         <property name="connection.username">postgres</property>
         <property name="connection.password">QAdbadmin@123</property>
         <property name="hibernate.default_schema">regprc</property>
-=======
-        <property name="connection.url">jdbc:postgresql://52.172.54.231:9001/mosip_master</property>
-        <property name="connection.username">postgres</property>
-        <property name="connection.password">QAdbadmin@123</property>
-        <property name="hibernate.default_schema">master</property>
->>>>>>> 40461e4b8758ee6bdc38e4fa2fe0a6d06a6bc0a3:automationtests/src/test/resources/masterdatainteg.cfg.xml
 
         <!-- JDBC connection pool settings ... using built-in test pool -->
         <property name="connection.pool_size">1</property>

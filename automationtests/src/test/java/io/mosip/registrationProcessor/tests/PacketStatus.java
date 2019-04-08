@@ -2,6 +2,7 @@ package io.mosip.registrationProcessor.tests;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -17,6 +18,7 @@ import java.util.Properties;
 import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.ParseException;
 import org.testng.ITest;
 import org.testng.ITestContext;
 import org.testng.ITestResult;
@@ -44,7 +46,7 @@ import io.mosip.util.ResponseRequestMapper;
 import io.restassured.response.Response;
 
 /**
- * Test script for getting registration id status
+ * This class is use for testing Packet Status API 
  * 
  * @author Sayeri Mishra
  *
@@ -60,14 +62,14 @@ public class PacketStatus extends BaseTestCase implements ITest {
 
 	boolean status = false;
 	String[] regId = null;
-	public static JSONArray arr = new JSONArray();
+	JSONArray arr = new JSONArray();
 	ObjectMapper mapper = new ObjectMapper();
-	static Response actualResponse = null;
-	static JSONObject expectedResponse = null;
-	private static ApplicationLibrary applicationLibrary = new ApplicationLibrary();
+	Response actualResponse = null;
+	JSONObject expectedResponse = null;
+	ApplicationLibrary applicationLibrary = new ApplicationLibrary();
 	String finalStatus = "";
-	static SoftAssert softAssert=new SoftAssert();
-	static 	String regIds="";
+	SoftAssert softAssert=new SoftAssert();
+	String regIds="";
 	static String dest = "";
 	static String folderPath = "regProc/PacketStatus";
 	static String outputFile = "PacketStatusOutput.json";
@@ -75,191 +77,201 @@ public class PacketStatus extends BaseTestCase implements ITest {
 	Properties pro =  new Properties();
 
 	/**
-	 * This method is use for reading data for packet status
+	 * This method is use for reading data for packet status based on test case name
 	 * @param context
-	 * @return
-	 * @throws Exception
+	 * @return Object[][]
 	 */
 	@DataProvider(name = "packetStatus")
-	public static Object[][] readDataForPacketStatus(ITestContext context) throws Exception {
-		//CommonLibrary.configFileWriter(folderPath,requestKeyFile,"DemographicCreate","smokePreReg");
+	public static Object[][] readDataForPacketStatus(ITestContext context) {
 		String testParam = context.getCurrentXmlTest().getParameter("testType");
-		switch (testParam) {
-		case "smoke":
-			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
-		case "regression":
-			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "regression");
-		default:
-			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smokeAndRegression");
+		Object[][] readFolder= null;
+		try {
+			switch (testParam) {
+			case "smoke":
+				readFolder = ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
+			case "regression":
+				readFolder = ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "regression");
+			default:
+				readFolder = ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smokeAndRegression");
+			}
+		} catch (IOException | ParseException e) {
+			logger.error("Exception occurred in PacketStatus class in readDataForPacketStatus method" +e);
+		}
+		return readFolder;
+	}
+
+	/**
+	 * This method is used for generating actual response and comparing it with expected response
+	 * along with db check and audit log check
+	 * @param testSuite
+	 * @param i
+	 * @param object
+	 */
+	@Test(dataProvider = "packetStatus")
+	public void packetStatus(String testSuite, Integer i, JSONObject object){
+
+		List<String> outerKeys = new ArrayList<String>();
+		List<String> innerKeys = new ArrayList<String>();
+		JSONObject actualRequest = new JSONObject();
+		List<Map<String,String>> response = actualResponse.jsonPath().get("response");
+
+		try {
+			actualRequest = ResponseRequestMapper.mapRequest(testSuite, object);
+			expectedResponse = ResponseRequestMapper.mapResponse(testSuite, object);
+			//generation of actual response
+			actualResponse = applicationLibrary.getRequestAsQueryParam(pro.getProperty("packetStatusApi"),actualRequest);
+
+			//outer and inner keys which are dynamic in the actual response
+			outerKeys.add("requesttime");
+			outerKeys.add("responsetime");
+			innerKeys.add("createdDateTime");
+			innerKeys.add("updatedDateTime");
+
+			//Asserting actual and expected response
+			status = AssertResponses.assertResponses(actualResponse, expectedResponse, outerKeys, innerKeys);
+
+			if (status) {
+
+				JSONArray expected = (JSONArray) expectedResponse.get("response");
+				if(expected!=null&& !expected.isEmpty() && actualRequest!=null){
+					List<String> expectedRegIds = new ArrayList<>();
+					String expectedRegId = null;
+					//extracting reg ids from the expected response
+					Iterator<Object> iterator = expected.iterator();
+					while(iterator.hasNext()){
+						JSONObject jsonObject = (JSONObject) iterator.next();
+						expectedRegId = jsonObject.get("registrationId").toString().trim();
+						logger.info("expectedRegId: "+expectedRegId);
+						expectedRegIds.add(expectedRegId);
+
+					}
+					for(Map<String,String> res : response){
+						String statusCode = res.get("statusCode");
+						logger.info("statusCode : "+statusCode);
+
+						regIds=res.get("registrationId").toString();
+						logger.info("Reg Id is : " +regIds);
+
+						//If status code is processing, rsend or processed, reg id is checked in the db tables
+						if(statusCode.matches(".*PROCESSING*.")|| statusCode.matches(".*RESEND*.")||statusCode.matches(".*PROCESSED*.")) {
+							logger.info("inside statuscode loop...................");
+
+							//audit log check(not yet implemented)
+							LocalDateTime logTime = LocalDateTime.of(2019,Month.JANUARY,30,10,15,51,270000000);   //2019-01-30 10:15:51.27					
+							logger.info("log time : "+logTime);
+							AuditRequestDto auditDto = RegProcDataRead.regproc_dbDataInAuditLog(regIds, "REGISTRATION_ID", "REGISTRATION_PROCESSOR", "GET",logTime);
+							logger.info("AUDIT DTO : "+auditDto.getApplicationName());
+							//rest of the validations will be added 
+
+							RegistrationStatusEntity dbDto = RegProcDataRead.regproc_dbDataInRegistration(regIds);	
+							logger.info("dbDto :" +dbDto);
+
+							if(dbDto != null /*&& auditDto != null*/) {
+								//if reg id present in response and reg id fetched from table matches, then it is validated
+								if (expectedRegIds.contains(dbDto.getId())/*&& expectedRegIds.contains(auditDto.getId())*/){
+									Iterator<Object> iteratorNew = ((List) expectedResponse).iterator();
+									while(iterator.hasNext()){
+										JSONObject jsonObject = (JSONObject) iterator.next();
+										logger.info("regidtrationId" + ":" + jsonObject.get("registrationId"));
+										String expectedRegIdNew = jsonObject.get("registrationId").toString().trim();
+										logger.info("expectedRegId: "+expectedRegIdNew);
+
+										if (expectedRegIdNew.matches(dbDto.getId())){							
+
+											logger.info("Validated in DB.......");
+											finalStatus = "Pass";
+										} 
+									}
+								}else {
+									finalStatus="Fail";
+								}
+							}
+						}else {
+							finalStatus="Pass";
+						}
+						softAssert.assertTrue(true);
+					}}else {
+						finalStatus="Fail";
+						//softAssert.assertTrue(false);
+					}
+
+				softAssert.assertAll();
+				object.put("status", finalStatus);
+				arr.add(object);
+			}
+		} catch (IOException | ParseException e) {
+			logger.error("Exception occurred in Packet Status class in packetStatus method "+e);
 		}
 	}
 
 	/**
-	 * This method is use for getting packet status based on registration id
-	 * @param testSuite
-	 * @param i
-	 * @param object
-	 * @throws Exception
+	 * This method is used for reading and loading the property file
 	 */
-	@Test(dataProvider = "packetStatus")
-	public void packetStatus(String testSuite, Integer i, JSONObject object) throws Exception {
-
-		List<String> outerKeys = new ArrayList<String>();
-		List<String> innerKeys = new ArrayList<String>();
-		JSONObject actualRequest = ResponseRequestMapper.mapRequest(testSuite, object);
-		expectedResponse = ResponseRequestMapper.mapResponse(testSuite, object);
-		try {
-
-			actualResponse = applicationLibrary.getRequestAsQueryParam(pro.getProperty("packetStatusApi"),actualRequest);
-
-		} catch (Exception e) {
-			logger.info(e);
-		}
-
-
-		/*if(statusCode.equals("true")) {
-			regId=(Actualresponse.jsonPath().get("response[0].registrationId")).toString();
-		}*/
-		outerKeys.add("resTime");
-		outerKeys.add("requesttime");
-		outerKeys.add("responsetime");
-		innerKeys.add("preRegistrationId");
-		innerKeys.add("updatedBy");
-		innerKeys.add("createdDateTime");
-		innerKeys.add("updatedDateTime");
-
-
-		status = AssertResponses.assertResponses(actualResponse, expectedResponse, outerKeys, innerKeys);
-		List<Map<String,String>> response = actualResponse.jsonPath().get("response");
-
-		if (status) {
-
-			JSONArray expected = (JSONArray) expectedResponse.get("response");
-			if(expected!=null&& !expected.isEmpty() && actualRequest!=null){
-				List<String> expectedRegIds = new ArrayList<>();
-				String expectedRegId = null;
-				logger.info("expected: "+expected);
-				Iterator<Object> iterator = expected.iterator();
-				while(iterator.hasNext()){
-					JSONObject jsonObject = (JSONObject) iterator.next();
-					expectedRegId = jsonObject.get("registrationId").toString().trim();
-					logger.info("expectedRegId: "+expectedRegId);
-					expectedRegIds.add(expectedRegId);
-
-				}
-				for(Map<String,String> res : response){
-					String statusCode = res.get("statusCode");
-					logger.info("statusCode : "+statusCode);
-
-					regIds=res.get("registrationId").toString();
-					logger.info("Reg Id is : " +regIds);
-
-					if(statusCode.matches(".*PROCESSING*.")|| statusCode.matches(".*RESEND*.")||statusCode.matches(".*PROCESSED*.")) {
-						logger.info("inside statuscode loop...................");
-
-						LocalDateTime logTime = LocalDateTime.of(2019,Month.JANUARY,30,10,15,51,270000000);   //2019-01-30 10:15:51.27					
-						logger.info("log time : "+logTime);
-
-						RegistrationStatusEntity dbDto = RegProcDataRead.regproc_dbDataInRegistration(regIds);	
-						AuditRequestDto auditDto = RegProcDataRead.regproc_dbDataInAuditLog(regIds, "REGISTRATION_ID", "REGISTRATION_PROCESSOR", "GET",logTime);
-
-						logger.info("AUDIT DTO : "+auditDto.getApplicationName());
-						//rest of the validations will be added 
-
-						logger.info("dbDto :" +dbDto);
-
-						if(dbDto != null && auditDto != null) {
-							if (expectedRegIds.contains(dbDto.getId())/*&& expectedRegIds.contains(auditDto.getId())*/){
-
-
-						Iterator<Object> iteratorNew = ((List) expectedResponse).iterator();
-						while(iterator.hasNext()){
-							JSONObject jsonObject = (JSONObject) iterator.next();
-							logger.info("regidtrationId" + ":" + jsonObject.get("registrationId"));
-							String expectedRegIdNew = jsonObject.get("registrationId").toString().trim();
-							logger.info("expectedRegId: "+expectedRegIdNew);
-							
-							if (expectedRegIdNew.matches(dbDto.getId())){							
-
-								logger.info("Validated in DB.......");
-								finalStatus = "Pass";
-							} 
-						}
-					}else {
-						finalStatus="Fail";
-					}
-				}
-			}else {
-				finalStatus="Pass";
-			}
-			softAssert.assertTrue(true);
-		}}else {
-			finalStatus="Fail";
-			//softAssert.assertTrue(false);
-		}
-
-		softAssert.assertAll();
-		object.put("status", finalStatus);
-		arr.add(object);
-		}
-	}
-
 	@BeforeClass
-	public void setUp() throws IOException
-	{
-		  // Create  FileInputStream object 
-		  FileInputStream fis=new FileInputStream(new File("src\\config\\registrationProcessorAPI.properties"));
- 
-		  // Load file so we can use into our script 
-		  pro.load(fis);
-		
+	public void setUp() {
+		// Create  FileInputStream object 
+		FileInputStream fis;
+		try {
+			fis = new FileInputStream(new File("src\\config\\registrationProcessorAPI.properties"));
+			// Load file so we can use into our script 
+			pro.load(fis);
+			fis.close();
+		} catch (IOException e) {
+			logger.error("Exceptionm occurred in PacketStatus class in setUp method "+e);
+		}
+
 	}
+
+	/**
+	 * This method is used for fetching test case name
+	 * @param method
+	 * @param testdata
+	 * @param ctx
+	 */
 	@BeforeMethod
-	public static void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
+	public static void getTestCaseName(Method method, Object[] testdata, ITestContext ctx){
 		JSONObject object = (JSONObject) testdata[2];
-		//	testName.set(object.get("testCaseName").toString());
 		testCaseName = object.get("testCaseName").toString();
 	}
 
+	/**
+	 * This method is used for generating report
+	 * 
+	 * @param result
+	 */
 	@AfterMethod(alwaysRun = true)
 	public void setResultTestName(ITestResult result) {
-		boolean flag = false;
-		boolean flag_reg = false;
 
-
-
+		Field method;
 		try {
-		/*	for(String rId : regId){
-				//	flag = RegProcDataRead.regproc_dbDeleteRecordInRegistrationList(rId);
-				logger.info("FLAG INSIDE AFTER METHOD FOR REGISTRATION LIST: "+flag);
-				//	flag_reg = RegProcDataRead.regproc_dbDeleteRecordInRegistration(rId);
-				logger.info("FLAG INSIDE AFTER METHOD FOR REGISTRATION LIST: "+flag_reg);
-
-			}*/
-
-			Field method = TestResult.class.getDeclaredField("m_method");
+			method = TestResult.class.getDeclaredField("m_method");
 			method.setAccessible(true);
 			method.set(result, result.getMethod().clone());
 			BaseTestMethod baseTestMethod = (BaseTestMethod) result.getMethod();
 			Field f = baseTestMethod.getClass().getSuperclass().getDeclaredField("m_methodName");
 			f.setAccessible(true);
 			f.set(baseTestMethod, PacketStatus.testCaseName);
-		} catch (Exception e) {
-			Reporter.log("Exception : " + e.getMessage());
+		} catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException e) {
+			logger.error("Exception occurred in PacketStatus class in setResultTestName "+e);
 		}
+
 	}
 
+	/**
+	 * This method is used for generating output file with the test case result
+	 */
 	@AfterClass
-	public void statusUpdate() throws IOException, NoSuchFieldException, SecurityException, IllegalArgumentException,
-	IllegalAccessException {
+	public void statusUpdate() {
 		String configPath = System.getProperty("user.dir") + "/src/test/resources/" + folderPath + "/"
 				+ outputFile;
 		try (FileWriter file = new FileWriter(configPath)) {
 			file.write(arr.toString());
 			logger.info("Successfully updated Results to " + outputFile);
+			file.close();
+		} catch (IOException e) {
+			logger.error("Exception  occurred in PacketStatus class in statusUpdate method "+e);
 		}
 		String source =  "src/test/resources/" + folderPath + "/";
-		//CommonLibrary.backUpFiles(source, folderPath);
 	}
 
 	@Override

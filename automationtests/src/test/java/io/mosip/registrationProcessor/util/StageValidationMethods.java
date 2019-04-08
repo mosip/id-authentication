@@ -1,4 +1,4 @@
-package io.mosip.util;
+package io.mosip.registrationProcessor.util;
 
 import java.io.File;
 import java.util.LinkedList;
