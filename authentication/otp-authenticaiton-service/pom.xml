@@ -26,5 +26,16 @@
 			<artifactId>authentication-service</artifactId>
 			<version>0.10.1</version>
 		</dependency>
+		<dependency>
+			<groupId>io.mosip.authentication</groupId>
+			<artifactId>authentication-service</artifactId>
+			<version>0.10.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+			<version>${spring.boot.version}</version>
+		</dependency>
 	</dependencies>
 </project>

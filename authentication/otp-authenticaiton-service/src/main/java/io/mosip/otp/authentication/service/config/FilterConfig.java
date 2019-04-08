@@ -1,0 +1,30 @@
+package io.mosip.otp.authentication.config;
+
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+import io.mosip.authentication.service.filter.OTPFilter;
+
+/**
+ * The configuration for adding filters.
+ *
+ * @author Manoj SP
+ */
+@Configuration
+public class FilterConfig {
+
+	/**
+	 * Gets the otp filter.
+	 *
+	 * @return the otp filter
+	 */
+	@Bean
+	public FilterRegistrationBean<OTPFilter> getOtpFilter() {
+		FilterRegistrationBean<OTPFilter> registrationBean = new FilterRegistrationBean<>();
+		registrationBean.setFilter(new OTPFilter());
+		registrationBean.addUrlPatterns("/otp/*");
+		return registrationBean;
+	}
+
+}
