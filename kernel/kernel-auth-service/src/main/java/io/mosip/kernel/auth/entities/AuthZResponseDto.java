@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class AuthZResponseDto {
-	
+
 	private String status;
 	private String message;
 }
