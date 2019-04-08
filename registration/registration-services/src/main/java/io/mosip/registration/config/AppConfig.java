@@ -1,9 +1,5 @@
 package io.mosip.registration.config;
 
-import java.io.IOException;
-import java.util.Properties;
-import java.util.ResourceBundle;
-
 import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
