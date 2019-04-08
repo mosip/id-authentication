@@ -811,6 +811,7 @@ public class RegistrationConstants {
 	public static final String RIGHT = "Right";
 	public static final String EYE = "Eye";
 	public static final String DOT = ".";
+	public static final String FINGER = "finger";
 	public static final String FINGERPRINT = "Fingerprint";
 	public static final String FINGERPRINT_UPPERCASE = "FINGERPRINT";
 	public static final String LEFTPALM = "leftSlap";
@@ -852,6 +853,7 @@ public class RegistrationConstants {
 			"/UserOnboard/rightHand/rightMiddle/", "/UserOnboard/rightHand/rightRing/" };
 	public static final String[] THUMBS_SEGMNTD_FILE_PATHS_USERONBOARD = new String[] { "/UserOnboard/thumb/leftThumb/",
 			"/UserOnboard/thumb/rightThumb/" };
+	public static final String COMMA = ",";
 
 	/** Exception codes **/
 	private static final String REG_SERVICE_CODE = "REG-SER-";

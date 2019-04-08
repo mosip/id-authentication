@@ -1396,31 +1396,40 @@ public class FingerPrintCaptureController extends BaseController implements Init
 
 			getRegistrationDTOFromSession().getBiometricDTO().getApplicantBiometricDTO().getBiometricExceptionDTO()
 					.stream().forEach(bio -> {
-						if (bio.getBiometricType().equalsIgnoreCase("fingerprint")
-								&& bio.getMissingBiometric().contains("left")
-								&& !bio.getMissingBiometric().contains("Thumb")) {
-							String str = (bio.getMissingBiometric()).replace("left", "").concat(",");
-							leftSlapExceptionFingers.append(str);
-						} else if (bio.getBiometricType().equalsIgnoreCase("fingerprint")
-								&& bio.getMissingBiometric().contains("right")
-								&& !bio.getMissingBiometric().contains("Thumb")) {
-							String str = (bio.getMissingBiometric()).replace("right", "").concat(",");
-							rightSlapExceptionFingers.append(str);
-						} else if (bio.getBiometricType().equalsIgnoreCase("fingerprint")
-								&& bio.getMissingBiometric().contains("Thumb")) {
-							String str = (bio.getMissingBiometric()).concat(",");
-							thumbSlapExceptionFingers.append(str);
-
+						if (bio.getBiometricType().equalsIgnoreCase(RegistrationConstants.FINGERPRINT)
+								&& bio.getMissingBiometric().contains(RegistrationConstants.LEFT.toLowerCase())
+								&& !bio.getMissingBiometric().contains(RegistrationConstants.THUMB)) {
+							String str = (bio.getMissingBiometric()).replace(RegistrationConstants.LEFT.toLowerCase(),
+									RegistrationConstants.EMPTY);
+							str = ApplicationContext.applicationLanguageBundle().getString(str);
+							leftSlapExceptionFingers.append(str.concat(RegistrationConstants.COMMA));
+						} else if (bio.getBiometricType().equalsIgnoreCase(RegistrationConstants.FINGERPRINT)
+								&& bio.getMissingBiometric().contains(RegistrationConstants.RIGHT.toLowerCase())
+								&& !bio.getMissingBiometric().contains(RegistrationConstants.THUMB)) {
+							String str = (bio.getMissingBiometric()).replace(RegistrationConstants.RIGHT.toLowerCase(),
+									RegistrationConstants.EMPTY);
+							str = ApplicationContext.applicationLanguageBundle().getString(str);
+							rightSlapExceptionFingers.append(str.concat(RegistrationConstants.COMMA));
+						} else if (bio.getBiometricType().equalsIgnoreCase(RegistrationConstants.FINGERPRINT)
+								&& bio.getMissingBiometric().contains(RegistrationConstants.THUMB)) {
+							String str = (bio.getMissingBiometric());
+							str = (str.contains(RegistrationConstants.LEFT.toLowerCase())
+									? str.replace(RegistrationConstants.LEFT.toLowerCase(), RegistrationConstants.LEFT)
+									: str.replace(RegistrationConstants.RIGHT.toLowerCase(),
+											RegistrationConstants.RIGHT));
+							str = ApplicationContext.applicationLanguageBundle().getString(str);
+							thumbSlapExceptionFingers.append(str.concat(RegistrationConstants.COMMA));
 						}
 					});
 		}
-		leftSlapException.setText(
-				(leftSlapExceptionFingers.deleteCharAt(leftSlapExceptionFingers.length() - 1)).toString() + " finger");
+		leftSlapException
+				.setText((leftSlapExceptionFingers.deleteCharAt(leftSlapExceptionFingers.length() - 1)).toString()
+						+ " " + ApplicationContext.applicationLanguageBundle().getString(RegistrationConstants.FINGER));
 		rightSlapException
 				.setText((rightSlapExceptionFingers.deleteCharAt(rightSlapExceptionFingers.length() - 1)).toString()
-						+ " finger");
+						+ " " + ApplicationContext.applicationLanguageBundle().getString(RegistrationConstants.FINGER));
 		thumbSlapException
 				.setText((thumbSlapExceptionFingers.deleteCharAt(thumbSlapExceptionFingers.length() - 1)).toString()
-						+ " finger");
+						+ " " + ApplicationContext.applicationLanguageBundle().getString(RegistrationConstants.FINGER));
 	}
 }

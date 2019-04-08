@@ -205,17 +205,15 @@ public class IrisCaptureController extends BaseController {
 
 			getRegistrationDTOFromSession().getBiometricDTO().getApplicantBiometricDTO().getBiometricExceptionDTO()
 					.stream().forEach(bio -> {
-						if (bio.getBiometricType().equalsIgnoreCase("iris")
-								&& bio.getMissingBiometric().equalsIgnoreCase("lefteye")) {
-							leftIrisException.setText(bio.getMissingBiometric());
-						} else if (bio.getBiometricType().equalsIgnoreCase("iris")
-								&& bio.getMissingBiometric().equalsIgnoreCase("righteye")) {
-							rightIrisException.setText(bio.getMissingBiometric());
-						}else {
-							leftIrisException.setText("-");
-							rightIrisException.setText("-");
+						if (bio.getBiometricType().equalsIgnoreCase(RegistrationConstants.IRIS.toLowerCase())
+								&& bio.getMissingBiometric().equalsIgnoreCase(RegistrationConstants.LEFT.toLowerCase()
+										.concat(RegistrationConstants.EYE.toLowerCase()))) {
+							leftIrisException.setText(ApplicationContext.applicationLanguageBundle().getString(bio.getMissingBiometric()));
+						} else if (bio.getBiometricType().equalsIgnoreCase(RegistrationConstants.IRIS.toLowerCase())
+								&& bio.getMissingBiometric().equalsIgnoreCase(RegistrationConstants.RIGHT.toLowerCase()
+										.concat(RegistrationConstants.EYE.toLowerCase()))) {
+							rightIrisException.setText(ApplicationContext.applicationLanguageBundle().getString(bio.getMissingBiometric()));
 						}
-
 					});
 		}
 	}
