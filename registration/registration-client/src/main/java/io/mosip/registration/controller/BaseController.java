@@ -487,7 +487,7 @@ public class BaseController extends BaseService {
 
 		((Map<String, Map<String, Boolean>>) ApplicationContext.map().get(RegistrationConstants.REGISTRATION_MAP))
 				.get(RegistrationConstants.BIOMETRIC_EXCEPTION).put(RegistrationConstants.VISIBILITY,
-						(boolean) ApplicationContext.map().get("biometricExceptionFlow"));
+						(boolean) ApplicationContext.map().get(RegistrationConstants.BIOMETRIC_EXCEPTION_FLOW));
 	}
 
 	/**
@@ -1072,18 +1072,18 @@ public class BaseController extends BaseService {
 	protected void updateUINMethodFlow() {
 		if ((Boolean) SessionContext.userContext().getUserMap()
 				.get(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION)) {
-			SessionContext.map().put("biometricException", true);
+			SessionContext.map().put(RegistrationConstants.UIN_UPDATE_BIOMETRICEXCEPTION, true);
 		} else if (updateUINNextPage(RegistrationConstants.FINGERPRINT_DISABLE_FLAG)) {
-			SessionContext.map().put("fingerPrintCapture", true);
+			SessionContext.map().put(RegistrationConstants.UIN_UPDATE_FINGERPRINTCAPTURE, true);
 			fingerPrintCaptureController.clearImage();
 		} else if (updateUINNextPage(RegistrationConstants.IRIS_DISABLE_FLAG)) {
-			SessionContext.map().put("irisCapture", true);
+			SessionContext.map().put(RegistrationConstants.UIN_UPDATE_IRISCAPTURE, true);
 			irisCaptureController.clearIrisBasedOnExceptions();
 		} else if (RegistrationConstants.ENABLE.equalsIgnoreCase(
 				String.valueOf(ApplicationContext.map().get(RegistrationConstants.FACE_DISABLE_FLAG)))) {
-			SessionContext.map().put("faceCapture", true);
+			SessionContext.map().put(RegistrationConstants.UIN_UPDATE_FACECAPTURE, true);
 		} else {
-			SessionContext.map().put("registrationPreview", true);
+			SessionContext.map().put(RegistrationConstants.UIN_UPDATE_REGISTRATIONPREVIEW, true);
 			registrationPreviewController.setUpPreviewContent();
 		}
 	}

@@ -42,5 +42,5 @@ public class KeyManagerEncryptRequestDto {
 	 * The string encryptedSymmetricKey
 	 */
 	@ApiModelProperty(notes = "Hashed data in BASE64 encoding to encrypt", required = true)
-	private String hashText;
+	private String hashedData;
 }

@@ -2,7 +2,6 @@ package io.mosip.kernel.syncdata.test.integration;
 
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
-import static org.springframework.test.web.client.response.MockRestResponseCreators.withBadRequest;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withServerError;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -28,7 +27,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.dao.DataRetrievalFailureException;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.client.MockRestServiceServer;
-import org.springframework.test.web.client.match.MockRestRequestMatchers;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.client.RestTemplate;
 
@@ -132,6 +130,7 @@ import io.mosip.kernel.syncdata.repository.TemplateTypeRepository;
 import io.mosip.kernel.syncdata.repository.TitleRepository;
 import io.mosip.kernel.syncdata.repository.ValidDocumentRepository;
 import io.mosip.kernel.syncdata.service.SyncConfigDetailsService;
+import io.mosip.kernel.syncdata.utils.SigningUtil;
 
 @SpringBootTest
 @RunWith(SpringRunner.class)
@@ -274,6 +273,8 @@ public class SyncDataIntegrationTest {
 	private SyncConfigDetailsService syncConfigDetailsService;
 	@MockBean
 	private ScreenDetailRepository screenDetailRepo;
+	@MockBean
+	private SigningUtil signingUtil;
 
 	@Value("${mosip.kernel.syncdata.admin-base-url:http://localhost:8095/admin/syncjobdef}")
 	private String baseUri;
@@ -712,7 +713,7 @@ public class SyncDataIntegrationTest {
 				.thenReturn(screenDetailList);
 		MockRestServiceServer server = MockRestServiceServer.bindTo(restTemplate).build();
 		server.expect(requestTo(baseUri + "/1970-01-01T00:00")).andRespond(withSuccess().body(JSON_SYNC_JOB_DEF));
-
+		when(signingUtil.signResponseData(Mockito.anyString())).thenReturn("EWQRFDSERDWSRDSRSDF"); 
 	}
 
 	@Test
@@ -721,26 +722,26 @@ public class SyncDataIntegrationTest {
 		mockMvc.perform(get(syncDataUrl)).andExpect(status().isOk());
 	}
 
-	//@Test
+	@Test
 	public void syncMasterDataSuccessWithSerialNum() throws Exception {
 		mockSuccess();
 		mockMvc.perform(get(syncDataUrlSerialNum)).andExpect(status().isOk());
 	}
 
-	//@Test
+	@Test
 	public void syncMasterDataSuccessWithMachAddress() throws Exception {
 		mockSuccess();
 
 		mockMvc.perform(get(syncDataUrlMacAdress)).andExpect(status().isOk());
 	}
 
-	//@Test
+	@Test
 	public void syncMasterDataSuccessWithRegId() throws Exception {
 		mockSuccess();
 		mockMvc.perform(get(syncDataUrlWithRegId, "1001")).andExpect(status().isOk());
 	}
 
-	//@Test
+	@Test
 	public void syncMasterDataSuccessWithlastUpadtedTimestamp() throws Exception {
 		mockSuccess();
 		mockMvc.perform(get(syncDataUrlWithRegId, "1001")).andExpect(status().isOk());

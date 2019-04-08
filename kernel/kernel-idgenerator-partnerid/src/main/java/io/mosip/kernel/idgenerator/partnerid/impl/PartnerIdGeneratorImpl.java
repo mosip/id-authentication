@@ -68,8 +68,8 @@ public class PartnerIdGeneratorImpl implements PartnerIdGenerator<String> {
 				generatedId = entity.getTspId() + 1;
 				Partner partner = new Partner();
 				partner.setTspId(generatedId);
-				partner.setCreatedBy("default@user");
-				partner.setUpdatedBy("default@user");
+				partner.setCreatedBy("SYSTEM");
+				partner.setUpdatedBy("SYSTEM");
 				partner.setCreatedDateTime(LocalDateTime.now(ZoneId.of("UTC")));
 				partner.setUpdatedDateTime(LocalDateTime.now(ZoneId.of("UTC")));
 				partnerRepository.create(partner);
@@ -77,8 +77,8 @@ public class PartnerIdGeneratorImpl implements PartnerIdGenerator<String> {
 			} else {
 				entity = new Partner();
 				entity.setTspId(initialValue);
-				entity.setCreatedBy("default@user");
-				entity.setUpdatedBy("default@user");
+				entity.setCreatedBy("SYSTEM");
+				entity.setUpdatedBy("SYSTEM");
 				LocalDateTime createdTime = LocalDateTime.now(ZoneId.of("UTC"));
 				entity.setCreatedDateTime(createdTime);
 				entity.setUpdatedDateTime(null);

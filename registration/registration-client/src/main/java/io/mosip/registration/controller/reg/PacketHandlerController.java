@@ -108,7 +108,7 @@ public class PacketHandlerController extends BaseController implements Initializ
 
 	@FXML
 	private GridPane lostUINPane;
-	
+
 	@FXML
 	private VBox vHolder;
 
@@ -164,7 +164,7 @@ public class PacketHandlerController extends BaseController implements Initializ
 
 	@Autowired
 	private RegistrationController registrationController;
-	
+
 	@Autowired
 	private DemographicDetailController demographicDetailController;
 
@@ -195,19 +195,20 @@ public class PacketHandlerController extends BaseController implements Initializ
 		if (!(String.valueOf(ApplicationContext.map().get(RegistrationConstants.UIN_UPDATE_CONFIG_FLAG)))
 				.equalsIgnoreCase(RegistrationConstants.ENABLE)
 				|| configuredFieldsfromDB.get(RegistrationConstants.PARAM_ZERO).isEmpty()) {
-			vHolder.getChildren().forEach(btnNode ->{
-				if( btnNode instanceof GridPane && btnNode.getId()!=null && btnNode.getId().equals(uinUpdateGridPane.getId())) {
+			vHolder.getChildren().forEach(btnNode -> {
+				if (btnNode instanceof GridPane && btnNode.getId() != null
+						&& btnNode.getId().equals(uinUpdateGridPane.getId())) {
 					btnNode.setVisible(false);
 					btnNode.setManaged(false);
 				}
 			});
-			
+
 		}
-		
+
 		if (!(String.valueOf(ApplicationContext.map().get(RegistrationConstants.LOST_UIN_CONFIG_FLAG)))
 				.equalsIgnoreCase(RegistrationConstants.ENABLE)) {
 			lostUINPane.setVisible(false);
-			//vHolder.setManaged(false);
+			// vHolder.setManaged(false);
 		}
 
 	}
@@ -299,7 +300,7 @@ public class PacketHandlerController extends BaseController implements Initializ
 
 					/* Mark Registration Category as Lost UIN */
 					registrationController.initializeLostUIN();
-					
+
 					Parent createRoot = BaseController.load(
 							getClass().getResource(RegistrationConstants.CREATE_PACKET_PAGE),
 							applicationContext.getApplicationLanguageBundle());
@@ -318,7 +319,7 @@ public class PacketHandlerController extends BaseController implements Initializ
 								errorMessage.append(errorResponseDTO.getMessage() + "\n\n");
 							}
 							generateAlertLanguageSpecific(RegistrationConstants.ERROR, errorMessage.toString().trim());
-						} else {							
+						} else {
 							getScene(createRoot).setRoot(createRoot);
 							demographicDetailController.lostUIN();
 						}
@@ -679,14 +680,30 @@ public class PacketHandlerController extends BaseController implements Initializ
 			if (registrationDTO.getSelectionListDTO() == null) {
 
 				AddressDTO addressDTO = Builder.build(AddressDTO.class)
-						.with(address -> address.setAddressLine1(moroccoIdentity.getAddressLine1() != null ? moroccoIdentity.getAddressLine1().get(0).getValue() : null))
-						.with(address -> address.setAddressLine2(moroccoIdentity.getAddressLine2() != null ? moroccoIdentity.getAddressLine2().get(0).getValue() : null))
-						.with(address -> address.setLine3(moroccoIdentity.getAddressLine3() != null ? moroccoIdentity.getAddressLine3().get(0).getValue() : null))
-						.with(address -> address.setLocationDTO(Builder.build(LocationDTO.class)
-								.with(location -> location.setCity(moroccoIdentity.getCity() != null ? moroccoIdentity.getCity().get(0).getValue() : null))
-								.with(location -> location.setProvince(moroccoIdentity.getProvince() != null ? moroccoIdentity.getProvince().get(0).getValue() : null))
-								.with(location -> location.setRegion(moroccoIdentity.getRegion() != null ? moroccoIdentity.getRegion().get(0).getValue() : null))
-								.with(location -> location.setPostalCode(moroccoIdentity.getPostalCode() != null ? moroccoIdentity.getPostalCode() : null)).get()))
+						.with(address -> address.setAddressLine1(moroccoIdentity.getAddressLine1() != null
+								? moroccoIdentity.getAddressLine1().get(0).getValue()
+								: null))
+						.with(address -> address.setAddressLine2(moroccoIdentity.getAddressLine2() != null
+								? moroccoIdentity.getAddressLine2().get(0).getValue()
+								: null))
+						.with(address -> address.setLine3(moroccoIdentity.getAddressLine3() != null
+								? moroccoIdentity.getAddressLine3().get(0).getValue()
+								: null))
+						.with(address -> address
+								.setLocationDTO(Builder.build(LocationDTO.class)
+										.with(location -> location.setCity(moroccoIdentity.getCity() != null
+												? moroccoIdentity.getCity().get(0).getValue()
+												: null))
+										.with(location -> location.setProvince(moroccoIdentity.getProvince() != null
+												? moroccoIdentity.getProvince().get(0).getValue()
+												: null))
+										.with(location -> location.setRegion(moroccoIdentity.getRegion() != null
+												? moroccoIdentity.getRegion().get(0).getValue()
+												: null))
+										.with(location -> location.setPostalCode(moroccoIdentity.getPostalCode() != null
+												? moroccoIdentity.getPostalCode()
+												: null))
+										.get()))
 						.get();
 
 				SessionContext.map().put(RegistrationConstants.ADDRESS_KEY, addressDTO);
@@ -773,6 +790,8 @@ public class PacketHandlerController extends BaseController implements Initializ
 
 	private void sendNotification(String email, String mobile, String regID) {
 		try {
+			boolean emailSent = false;
+			boolean smsSent = false;
 			if (RegistrationAppHealthCheckUtil.isNetworkAvailable()) {
 				String notificationServiceName = String.valueOf(
 						applicationContext.getApplicationMap().get(RegistrationConstants.MODE_OF_COMMUNICATION));
@@ -785,7 +804,12 @@ public class PacketHandlerController extends BaseController implements Initializ
 						if (!writeNotificationTemplate.toString().isEmpty()) {
 							notificationResponse = notificationService.sendEmail(writeNotificationTemplate.toString(),
 									email, regID);
-							notificationAlert(notificationResponse, RegistrationUIConstants.EMAIL_ERROR_MSG);
+							if (notificationResponse.getErrorResponseDTOs() != null
+									|| notificationResponse.getSuccessResponseDTO() == null) {
+								emailSent = true;
+							} else {
+								notificationAlert(notificationResponse, RegistrationUIConstants.EMAIL_ERROR_MSG);
+							}
 						}
 					}
 					if (mobile != null && (notificationServiceName.toUpperCase())
@@ -794,10 +818,27 @@ public class PacketHandlerController extends BaseController implements Initializ
 						if (!writeNotificationTemplate.toString().isEmpty()) {
 							notificationResponse = notificationService.sendSMS(writeNotificationTemplate.toString(),
 									mobile, regID);
-							notificationAlert(notificationResponse, RegistrationUIConstants.SMS_ERROR_MSG);
+							if (notificationResponse.getErrorResponseDTOs() != null
+									|| notificationResponse.getSuccessResponseDTO() == null) {
+								smsSent = true;
+							} else {
+								notificationAlert(notificationResponse, RegistrationUIConstants.SMS_ERROR_MSG);
+							}
 						}
 					}
 				}
+			}
+			if (emailSent) {
+				if (smsSent) {
+					generateAlert(RegistrationConstants.ALERT_INFORMATION,
+							RegistrationUIConstants.NOTIFICATION_SUCCESS);
+				} else {
+					generateAlert(RegistrationConstants.ALERT_INFORMATION,
+							RegistrationUIConstants.EMAIL_NOTIFICATION_SUCCESS);
+				}
+			} else if (smsSent) {
+				generateAlert(RegistrationConstants.ALERT_INFORMATION,
+						RegistrationUIConstants.SMS_NOTIFICATION_SUCCESS);
 			}
 		} catch (RegBaseUncheckedException regBaseUncheckedException) {
 			LOGGER.error("REGISTRATION - UI - GENERATE_NOTIFICATION", APPLICATION_NAME, APPLICATION_ID,

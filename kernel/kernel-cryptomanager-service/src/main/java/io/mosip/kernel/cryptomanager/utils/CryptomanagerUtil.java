@@ -233,7 +233,7 @@ public class CryptomanagerUtil {
 		KeyManagerEncryptRequestDto keyManagerEncryptDataRequestDto = new KeyManagerEncryptRequestDto();
 		keyManagerEncryptDataRequestDto.setApplicationId(cryptoEncryptRequestDto.getApplicationId());
 		keyManagerEncryptDataRequestDto.setReferenceId(cryptoEncryptRequestDto.getReferenceId());
-		keyManagerEncryptDataRequestDto.setHashText(cryptoEncryptRequestDto.getData());
+		keyManagerEncryptDataRequestDto.setHashedData(cryptoEncryptRequestDto.getData());
 		keyManagerEncryptDataRequestDto.setTimeStamp(cryptoEncryptRequestDto.getTimeStamp());
 		requestWrapper.setRequest(keyManagerEncryptDataRequestDto);
 

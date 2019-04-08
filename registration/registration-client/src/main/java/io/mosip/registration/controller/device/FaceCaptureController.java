@@ -127,14 +127,14 @@ public class FaceCaptureController extends BaseController implements Initializab
 				"Loading of FaceCapture screen started");
 
 		if (getRegistrationDTOFromSession() != null && getRegistrationDTOFromSession().getSelectionListDTO() != null) {
-			registrationNavlabel.setText(ApplicationContext.applicationLanguageBundle().getString("uinUpdateNavLbl"));
+			registrationNavlabel.setText(ApplicationContext.applicationLanguageBundle().getString(RegistrationConstants.UIN_UPDATE_UINUPDATENAVLBL));
 		}
 
 		if (getRegistrationDTOFromSession() != null
 				&& getRegistrationDTOFromSession().getRegistrationMetaDataDTO().getRegistrationCategory() != null
 				&& getRegistrationDTOFromSession().getRegistrationMetaDataDTO().getRegistrationCategory()
 						.equals(RegistrationConstants.PACKET_TYPE_LOST)) {
-			registrationNavlabel.setText(ApplicationContext.applicationLanguageBundle().getString("/lostuin"));
+			registrationNavlabel.setText(ApplicationContext.applicationLanguageBundle().getString(RegistrationConstants.LOSTUINLBL));
 		}
 
 		disableNextButton();
@@ -153,7 +153,7 @@ public class FaceCaptureController extends BaseController implements Initializab
 				applicantImageCaptured = false;
 			}
 		} else {
-			defaultExceptionImage = new Image(getClass().getResourceAsStream("/images/ExceptionPhoto.png"));
+			defaultExceptionImage = new Image(getClass().getResourceAsStream(RegistrationConstants.DEFAULT_EXCEPTION_IMAGE_PATH));
 			exceptionImage.setImage(defaultExceptionImage);
 			if (getRegistrationDTOFromSession() != null
 					&& getRegistrationDTOFromSession().getDemographicDTO().getApplicantDocumentDTO() != null) {
@@ -269,7 +269,7 @@ public class FaceCaptureController extends BaseController implements Initializab
 
 			try {
 				if (getRegistrationDTOFromSession().getSelectionListDTO() != null) {
-					SessionContext.map().put("faceCapture", false);
+					SessionContext.map().put(RegistrationConstants.UIN_UPDATE_FACECAPTURE, false);
 
 					long fingerPrintCount = getRegistrationDTOFromSession().getBiometricDTO().getApplicantBiometricDTO()
 							.getFingerprintDetailsDTO().stream().count();
@@ -283,14 +283,14 @@ public class FaceCaptureController extends BaseController implements Initializab
 					long irisExceptionCount = biomerticExceptionCount(RegistrationConstants.IRIS);
 
 					if(fingerPrintExceptionCount==10 && irisExceptionCount==2) {
-						SessionContext.map().put("biometricException", true);
+						SessionContext.map().put(RegistrationConstants.UIN_UPDATE_BIOMETRICEXCEPTION, true);
 					} else if (updateUINNextPage(RegistrationConstants.IRIS_DISABLE_FLAG) || irisCount > 0 || irisExceptionCount > 0) {
-						SessionContext.map().put("irisCapture", true);
+						SessionContext.map().put(RegistrationConstants.UIN_UPDATE_IRISCAPTURE, true);
 					} else if (updateUINNextPage(RegistrationConstants.FINGERPRINT_DISABLE_FLAG)
 							|| fingerPrintCount > 0 || fingerPrintExceptionCount > 0) {
-						SessionContext.map().put("fingerPrintCapture", true);
+						SessionContext.map().put(RegistrationConstants.UIN_UPDATE_FINGERPRINTCAPTURE, true);
 					} else {
-						SessionContext.map().put("documentScan", true);
+						SessionContext.map().put(RegistrationConstants.UIN_UPDATE_DOCUMENTSCAN, true);
 					}
 					registrationController.showUINUpdateCurrentPage();
 				} else {
@@ -331,7 +331,7 @@ public class FaceCaptureController extends BaseController implements Initializab
 			applicantImage.setImage(capture);
 			applicantBufferedImage = capturedImage;
 			applicantImageCaptured = true;
-			applicantImagePane.getStyleClass().add("photoCapturePanesSelected");
+			applicantImagePane.getStyleClass().add(RegistrationConstants.PHOTO_CAPTUREPANES_SELECTED);
 			try {
 				if ((boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
 					ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
@@ -349,7 +349,7 @@ public class FaceCaptureController extends BaseController implements Initializab
 		} else if (photoType.equals(RegistrationConstants.EXCEPTION_IMAGE)) {
 			Image capture = SwingFXUtils.toFXImage(capturedImage, null);
 			exceptionImage.setImage(capture);
-			exceptionImagePane.getStyleClass().add("photoCapturePanesSelected");
+			exceptionImagePane.getStyleClass().add(RegistrationConstants.PHOTO_CAPTUREPANES_SELECTED);
 			exceptionBufferedImage = capturedImage;
 			exceptionImageCaptured = true;
 		}
@@ -555,7 +555,7 @@ public class FaceCaptureController extends BaseController implements Initializab
 					if (validateFingerprint(segmentedFinger, leftSlapQualityThreshold, rightSlapQualityThreshold,
 							thumbQualityThreshold, fingerprintRetries)) {
 						hasBiometricException = true;
-						markReasonForException("fingerprint", segmentedFinger.getFingerType());
+						markReasonForException(RegistrationConstants.FINGERPRINT.toLowerCase(), segmentedFinger.getFingerType());
 					}
 				}
 			}
@@ -576,7 +576,7 @@ public class FaceCaptureController extends BaseController implements Initializab
 			for (IrisDetailsDTO capturedIris : capturedIrises) {
 				if (validateIris(capturedIris, irisThreshold, numOfRetries)) {
 					hasBiometricException = true;
-					markReasonForException("iris", capturedIris.getIrisType());
+					markReasonForException(RegistrationConstants.IRIS.toLowerCase(), capturedIris.getIrisType());
 				}
 			}
 		}
