@@ -131,7 +131,6 @@ public class SyncRolesServiceImpl implements SyncRolesService {
 					UserDetailsErrorCode.USER_DETAILS_PARSE_ERROR.getErrorMessage() + exception.getMessage(),
 					exception);
 		}
-
 		return rolesDtos;
 	}
 
