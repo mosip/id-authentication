@@ -87,7 +87,7 @@ public abstract class FaceProvider implements MosipFaceProvider {
 			Map<String, String> reqInfoMap = (Map<String, String>) reqInfo;
 			String uin = reqInfoMap.get(IDVID);
 			String uinType = checkEvenOrOddUIN(uin);
-			if (reqInfoMap.containsKey(FaceProvider.FACE)) {
+			if (reqInfoMap.containsKey(FaceProvider.FACE) || reqInfoMap.containsKey("UNKNOWN1")) {
 				return environment.getProperty(uinType + FACE_MATCH_VALUE, Double.class);
 			}
 		}
