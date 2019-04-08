@@ -3,7 +3,6 @@
  */
 package io.mosip.authentication.service.impl.indauth.facade;
 
-import java.text.SimpleDateFormat;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -71,9 +70,6 @@ public class AuthFacadeImpl implements AuthFacade {
 
 	/** The Constant FAILED. */
 	private static final String FAILED = "N";
-
-	/** The Constant UTC. */
-	private static final String UTC = "UTC";
 
 	/** The Constant MOSIP_PRIMARY_LANG_CODE. */
 	private static final String MOSIP_PRIMARY_LANG_CODE = "mosip.primary-language";
@@ -152,7 +148,7 @@ public class AuthFacadeImpl implements AuthFacade {
 	 * AuthRequestDTO, boolean, java.lang.String)
 	 */
 	@Override
-	public AuthResponseDTO authenticateApplicant(AuthRequestDTO authRequestDTO, boolean isAuth, String partnerId)
+	public AuthResponseDTO authenticateIndividual(AuthRequestDTO authRequestDTO, boolean isAuth, String partnerId)
 			throws IdAuthenticationBusinessException {
 
 		IdType idType = idInfoFetcher.getUinOrVidType(authRequestDTO);
@@ -433,7 +429,7 @@ public class AuthFacadeImpl implements AuthFacade {
 			autnTxn.setCrBy(IDA);
 			autnTxn.setStaticTknId(staticTokenId);
 			autnTxn.setCrDTimes(DateUtils.getUTCCurrentDateTime());
-			String strUTCDate = getUTCTime(reqTime);
+			String strUTCDate = DateUtils.getUTCTimeFromDate(DateUtils.parseToDate(reqTime, env.getProperty(DATETIME_PATTERN)));
 			autnTxn.setRequestDTtimes(DateUtils.parseToLocalDateTime(strUTCDate));
 			autnTxn.setResponseDTimes(DateUtils.getUTCCurrentDateTime()); // TODO check this
 			autnTxn.setAuthTypeCode(requestType.getRequestType());
@@ -528,19 +524,6 @@ public class AuthFacadeImpl implements AuthFacade {
 			kycAuthResponseDTO.setResponseTime(resTime);
 		}
 		return kycAuthResponseDTO;
-	}
-
-	/**
-	 * This method Accepts the time in String and returns utcTime in String.
-	 * 
-	 * @param reqTime
-	 * @return
-	 */
-	public String getUTCTime(String reqTime) {
-		Date reqDate = DateUtils.parseToDate(reqTime, env.getProperty(DATETIME_PATTERN));
-		SimpleDateFormat dateFormatter = new SimpleDateFormat(env.getProperty(DATETIME_PATTERN));
-		dateFormatter.setTimeZone(TimeZone.getTimeZone(ZoneId.of(UTC)));
-		return dateFormatter.format(reqDate);
 	}
 
 }

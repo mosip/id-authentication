@@ -82,7 +82,7 @@ public class InternalAuthController {
 		AuthResponseDTO authResponseDTO = null;
 		try {
 			DataValidationUtil.validate(e);
-			authResponseDTO = authFacade.authenticateApplicant(authRequestDTO, false, partnerId);
+			authResponseDTO = authFacade.authenticateIndividual(authRequestDTO, false, partnerId);
 		} catch (IDDataValidationException e1) {
 			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), "authenticateApplicant",
 					e1.getErrorTexts().isEmpty() ? "" : e1.getErrorText());

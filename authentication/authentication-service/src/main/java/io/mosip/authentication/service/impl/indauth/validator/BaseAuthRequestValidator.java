@@ -468,8 +468,10 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 
 			checkAtleastOneFaceRequestAvailable(authRequestDTO, errors);
 			if (!errors.hasErrors()) {
-			validateFaceBioType(authRequestDTO, errors);
-			validateFaceRequestSubTypeCount(authRequestDTO, errors);
+				validateFaceBioType(authRequestDTO, errors);
+			}
+			if (!errors.hasErrors()) {
+				validateFaceRequestSubTypeCount(authRequestDTO, errors);
 			}
 		}
 	}
@@ -653,14 +655,16 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
     
 	
 	private void validateFaceRequestSubTypeCount(AuthRequestDTO authRequestDTO, Errors errors) {
-		Map<String, Long> faceSubtypeCounts = getBioSubtypeCounts(authRequestDTO, BioAuthType.FACE_IMG.getType());
-		if (faceSubtypeCounts.entrySet().stream()
-				.anyMatch(map -> (map.getKey().equalsIgnoreCase(UNKNOWN) && map.getValue() > 1)
-						|| (!map.getKey().equalsIgnoreCase(UNKNOWN) && map.getValue() > 1))) {
-			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE,
-					"Face : face count is more than 1.");
-			errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.FACE_EXCEEDING.getErrorCode(),
-					new Object[] { FACE }, IdAuthenticationErrorConstants.FACE_EXCEEDING.getErrorMessage());
+		List<BioIdentityInfoDTO> identity = Optional.ofNullable(authRequestDTO.getRequest())
+				.map(RequestDTO::getBiometrics).orElseGet(Collections::emptyList);
+		List<BioIdentityInfoDTO> idendityInfoListWithoutSubtype = identity.stream().filter(Objects::nonNull)
+				.filter(bioId -> bioId.getData().getBioSubType() == null).collect(Collectors.toList());
+		if (!idendityInfoListWithoutSubtype.isEmpty()) {
+			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE, "MISSING---" + BIO_SUB_TYPE);
+			errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
+					new Object[] { BIO_SUB_TYPE + " for " + BioAuthType.FACE_IMG.getType()},
+					IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
+
 		}
 
 	}
