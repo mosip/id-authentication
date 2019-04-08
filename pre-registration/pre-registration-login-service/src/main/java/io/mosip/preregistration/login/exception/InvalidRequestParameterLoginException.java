@@ -1,27 +1,27 @@
-package io.mosip.preregistration.login.exceptions;
+package io.mosip.preregistration.login.exception;
 
 import java.util.List;
 
 import io.mosip.kernel.core.exception.BaseUncheckedException;
 import io.mosip.kernel.core.exception.ServiceError;
+import io.mosip.preregistration.core.common.dto.ExceptionJSONInfoDTO;
 import io.mosip.preregistration.login.dto.MainResponseDTO;
 
-public class LoginServiceException extends BaseUncheckedException {
+public class InvalidRequestParameterLoginException extends BaseUncheckedException{
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	private List<ServiceError> validationErrorList;
-	
+	private List<ExceptionJSONInfoDTO> validationErrorList;
 	private MainResponseDTO<?> mainResposneDTO;
 
-	public List<ServiceError> getValidationErrorList() {
+	public List<ExceptionJSONInfoDTO> getValidationErrorList() {
 		return validationErrorList;
 	}
 
-	public LoginServiceException(List<ServiceError> validationErrorList,MainResponseDTO<?> response) {
+	public InvalidRequestParameterLoginException(List<ExceptionJSONInfoDTO> validationErrorList,MainResponseDTO<?> response) {
 		this.validationErrorList = validationErrorList;
 		this.mainResposneDTO=response;
 	}
@@ -30,4 +30,5 @@ public class LoginServiceException extends BaseUncheckedException {
 		return mainResposneDTO;
 	}	
 	
+
 }
