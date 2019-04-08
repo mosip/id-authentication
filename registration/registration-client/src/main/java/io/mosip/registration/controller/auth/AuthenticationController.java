@@ -95,21 +95,11 @@ public class AuthenticationController extends BaseController implements Initiali
 	@FXML
 	private Label otpValidity;
 	@FXML
-	private Label otpLabel;
-	@FXML
-	private Label fingerPrintLabel;
-	@FXML
-	private Label irisLabel;
-	@FXML
-	private Label faceLabel;
-	@FXML
 	private TextField fpUserId;
 	@FXML
 	private TextField username;
 	@FXML
 	private TextField password;
-	@FXML
-	private Label passwdLabel;
 	@FXML
 	private TextField otpUserId;
 	@FXML
@@ -587,7 +577,6 @@ public class AuthenticationController extends BaseController implements Initiali
 		otpUserId.clear();
 		otpUserId.setEditable(false);
 		if (isSupervisor) {
-			otpLabel.setText(RegistrationUIConstants.SUPERVISOR_VERIFICATION);
 			if (authCount > 1 && !userNameField.isEmpty()) {
 				otpUserId.setText(userNameField);
 			} else {
@@ -610,7 +599,6 @@ public class AuthenticationController extends BaseController implements Initiali
 		password.clear();
 		username.setEditable(false);
 		if (isSupervisor) {
-			passwdLabel.setText(RegistrationUIConstants.SUPERVISOR_VERIFICATION);
 			if (authCount > 1 && !userNameField.isEmpty()) {
 				username.setText(userNameField);
 			} else {
@@ -632,7 +620,6 @@ public class AuthenticationController extends BaseController implements Initiali
 		fpUserId.clear();
 		fpUserId.setEditable(false);
 		if (isSupervisor) {
-			fingerPrintLabel.setText(RegistrationConstants.SUPERVISOR_FINGERPRINT_LOGIN);
 			if (authCount > 1 && !userNameField.isEmpty()) {
 				fpUserId.setText(userNameField);
 			} else {
@@ -654,7 +641,6 @@ public class AuthenticationController extends BaseController implements Initiali
 		fpUserId.clear();
 		fpUserId.setEditable(false);
 		if (isSupervisor) {
-			irisLabel.setText(RegistrationUIConstants.SUPERVISOR_VERIFICATION);
 			if (authCount > 1 && !userNameField.isEmpty()) {
 				fpUserId.setText(userNameField);
 			} else {
@@ -676,7 +662,6 @@ public class AuthenticationController extends BaseController implements Initiali
 		fpUserId.clear();
 		fpUserId.setEditable(false);
 		if (isSupervisor) {
-			faceLabel.setText(RegistrationUIConstants.SUPERVISOR_VERIFICATION);
 			if (authCount > 1 && !userNameField.isEmpty()) {
 				fpUserId.setText(userNameField);
 			} else {
