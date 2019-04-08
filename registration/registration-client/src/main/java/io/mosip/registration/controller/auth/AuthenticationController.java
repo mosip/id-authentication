@@ -95,21 +95,11 @@ public class AuthenticationController extends BaseController implements Initiali
 	@FXML
 	private Label otpValidity;
 	@FXML
-	private Label otpLabel;
-	@FXML
-	private Label fingerPrintLabel;
-	@FXML
-	private Label irisLabel;
-	@FXML
-	private Label faceLabel;
-	@FXML
 	private TextField fpUserId;
 	@FXML
 	private TextField username;
 	@FXML
 	private TextField password;
-	@FXML
-	private Label passwdLabel;
 	@FXML
 	private TextField otpUserId;
 	@FXML
@@ -123,9 +113,6 @@ public class AuthenticationController extends BaseController implements Initiali
 
 	@Autowired
 	private FingerprintFacade fingerprintFacade;
-
-	@Value("${PROVIDER_NAME}")
-	private String providerName;
 
 	@Autowired
 	private PacketHandlerController packetHandlerController;
@@ -587,7 +574,6 @@ public class AuthenticationController extends BaseController implements Initiali
 		otpUserId.clear();
 		otpUserId.setEditable(false);
 		if (isSupervisor) {
-			otpLabel.setText(RegistrationUIConstants.SUPERVISOR_VERIFICATION);
 			if (authCount > 1 && !userNameField.isEmpty()) {
 				otpUserId.setText(userNameField);
 			} else {
@@ -610,7 +596,6 @@ public class AuthenticationController extends BaseController implements Initiali
 		password.clear();
 		username.setEditable(false);
 		if (isSupervisor) {
-			passwdLabel.setText(RegistrationUIConstants.SUPERVISOR_VERIFICATION);
 			if (authCount > 1 && !userNameField.isEmpty()) {
 				username.setText(userNameField);
 			} else {
@@ -632,7 +617,6 @@ public class AuthenticationController extends BaseController implements Initiali
 		fpUserId.clear();
 		fpUserId.setEditable(false);
 		if (isSupervisor) {
-			fingerPrintLabel.setText(RegistrationConstants.SUPERVISOR_FINGERPRINT_LOGIN);
 			if (authCount > 1 && !userNameField.isEmpty()) {
 				fpUserId.setText(userNameField);
 			} else {
@@ -654,7 +638,6 @@ public class AuthenticationController extends BaseController implements Initiali
 		fpUserId.clear();
 		fpUserId.setEditable(false);
 		if (isSupervisor) {
-			irisLabel.setText(RegistrationUIConstants.SUPERVISOR_VERIFICATION);
 			if (authCount > 1 && !userNameField.isEmpty()) {
 				fpUserId.setText(userNameField);
 			} else {
@@ -676,7 +659,6 @@ public class AuthenticationController extends BaseController implements Initiali
 		fpUserId.clear();
 		fpUserId.setEditable(false);
 		if (isSupervisor) {
-			faceLabel.setText(RegistrationUIConstants.SUPERVISOR_VERIFICATION);
 			if (authCount > 1 && !userNameField.isEmpty()) {
 				fpUserId.setText(userNameField);
 			} else {
@@ -720,7 +702,7 @@ public class AuthenticationController extends BaseController implements Initiali
 				"Capturing and Validating Fingerprint");
 
 		boolean fpMatchStatus = false;
-		MosipFingerprintProvider fingerPrintConnector = fingerprintFacade.getFingerprintProviderFactory(providerName);
+		MosipFingerprintProvider fingerPrintConnector = fingerprintFacade.getFingerprintProviderFactory(String.valueOf(ApplicationContext.map().get(RegistrationConstants.PROVIDER_NAME)));
 		int statusCode = fingerPrintConnector.captureFingerprint(
 				Integer.parseInt(String.valueOf(ApplicationContext.map().get(RegistrationConstants.QUALITY_SCORE))),
 				Integer.parseInt(String.valueOf(ApplicationContext.map().get(RegistrationConstants.CAPTURE_TIME_OUT))),
@@ -764,10 +746,10 @@ public class AuthenticationController extends BaseController implements Initiali
 				if (fpMatchStatus) {
 					if (isSupervisor) {
 						fingerprintDetailsDTO.setFingerprintImageName(
-								"supervisor".concat(fingerprintDetailsDTO.getFingerType()).concat(".jpg"));
+								RegistrationConstants.SUPERVISOR_AUTH.concat(fingerprintDetailsDTO.getFingerType()).concat(RegistrationConstants.DOT.concat(RegistrationConstants.WEB_CAMERA_IMAGE_TYPE)));
 					} else {
 						fingerprintDetailsDTO.setFingerprintImageName(
-								"officer".concat(fingerprintDetailsDTO.getFingerType()).concat(".jpg"));
+								RegistrationConstants.OFFICER_AUTH.concat(fingerprintDetailsDTO.getFingerType()).concat(RegistrationConstants.DOT.concat(RegistrationConstants.WEB_CAMERA_IMAGE_TYPE)));
 					}
 				}
 			}
@@ -809,8 +791,8 @@ public class AuthenticationController extends BaseController implements Initiali
 
 		if (irisMatchStatus) {
 			irisDetailsDTO
-					.setIrisImageName(isSupervisor ? "supervisor".concat(irisDetailsDTO.getIrisType()).concat(".jpg")
-							: "officer".concat(irisDetailsDTO.getIrisType()).concat(".jpg"));
+					.setIrisImageName(isSupervisor ? RegistrationConstants.SUPERVISOR_AUTH.concat(irisDetailsDTO.getIrisType()).concat(RegistrationConstants.DOT.concat(RegistrationConstants.WEB_CAMERA_IMAGE_TYPE))
+							: RegistrationConstants.OFFICER_AUTH.concat(irisDetailsDTO.getIrisType()).concat(RegistrationConstants.DOT.concat(RegistrationConstants.WEB_CAMERA_IMAGE_TYPE)));
 		}
 		return irisMatchStatus;
 	}
@@ -922,8 +904,8 @@ public class AuthenticationController extends BaseController implements Initiali
 		auditFactory.audit(AuditEvent.REG_PREVIEW_BACK, Components.REG_PREVIEW, SessionContext.userId(),
 				AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
 		if (getRegistrationDTOFromSession().getSelectionListDTO() != null) {
-			SessionContext.map().put("operatorAuthenticationPane", false);
-			SessionContext.map().put("registrationPreview", true);
+			SessionContext.map().put(RegistrationConstants.UIN_UPDATE_OPERATORAUTHENTICATIONPANE, false);
+			SessionContext.map().put(RegistrationConstants.UIN_UPDATE_REGISTRATIONPREVIEW, true);
 			registrationController.showUINUpdateCurrentPage();
 
 		} else {

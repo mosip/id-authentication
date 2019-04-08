@@ -39,12 +39,13 @@ import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
  * Class for implementing GlobalContextParam service
  * 
  * @author Sravya Surampalli
+ * @author Brahmananda Reddy
  * @since 1.0.0
  *
  */
 @Service
 public class GlobalParamServiceImpl extends BaseService implements GlobalParamService {
-
+ 
 	/**
 	 * Instance of LOGGER
 	 */
@@ -197,7 +198,7 @@ public class GlobalParamServiceImpl extends BaseService implements GlobalParamSe
 	}
 
 	private void updateIsDeleted(GlobalParam globalParam) {
-		globalParam.setIsActive(false);
+		globalParam.setIsActive(true); 
 		globalParam.setIsDeleted(true);
 		globalParam.setDelDtimes(Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()));
 		globalParam.setUpdBy(getUserIdFromSession());
@@ -235,21 +236,14 @@ public class GlobalParamServiceImpl extends BaseService implements GlobalParamSe
 
 		GlobalParam globalParam = globalParamDAO.updateSoftwareUpdateStatus(isUpdateAvailable);
 
+		SuccessResponseDTO successResponseDTO = new SuccessResponseDTO();
 		if (globalParam.getVal().equalsIgnoreCase(RegistrationConstants.ENABLE)) {
-
-			SuccessResponseDTO successResponseDTO = new SuccessResponseDTO();
 			successResponseDTO.setMessage(RegistrationConstants.SOFTWARE_UPDATE_SUCCESS_MSG);
-			responseDTO.setSuccessResponseDTO(successResponseDTO);
-
 		} else {
-
-			List<ErrorResponseDTO> errorResponseDTOs = new ArrayList<>();
-			ErrorResponseDTO errorResponseDTO = new ErrorResponseDTO();
-			errorResponseDTO.setMessage(RegistrationConstants.SOFTWARE_UPDATE_FAILURE_MSG);
-			errorResponseDTOs.add(errorResponseDTO);
-			responseDTO.setErrorResponseDTOs(errorResponseDTOs);
-
+			successResponseDTO.setMessage(RegistrationConstants.SOFTWARE_UPDATE_FAILURE_MSG);
 		}
+		responseDTO.setSuccessResponseDTO(successResponseDTO);
+
 		LOGGER.info(LoggerConstants.GLOBAL_PARAM_SERVICE_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
 				"Updating the SoftwareUpdate flag ended.");
 		return responseDTO;

@@ -567,6 +567,8 @@ public class DemographicDetailController extends BaseController {
 	@FXML
 	private VBox applicationFullName;
 	@FXML
+	private GridPane fullNameGridPane;
+	@FXML
 	private ImageView fullNameKeyboardImage;
 	@FXML
 	private ImageView addressLine1KeyboardImage;
@@ -695,7 +697,7 @@ public class DemographicDetailController extends BaseController {
 	 */
 	protected void lostUIN() {
 		lostUIN = true;
-		registrationNavlabel.setText(ApplicationContext.applicationLanguageBundle().getString("/lostuin"));
+		registrationNavlabel.setText(ApplicationContext.applicationLanguageBundle().getString(RegistrationConstants.LOSTUINLBL));
 	}
 
 	/**
@@ -1105,11 +1107,11 @@ public class DemographicDetailController extends BaseController {
 			vk.changeControlOfKeyboard(addressLine2LocalLanguage);
 			vk.changeControlOfKeyboard(addressLine3LocalLanguage);
 			vk.changeControlOfKeyboard(parentNameLocalLanguage);
-			vk.focusListener(fullNameLocalLanguage, 190.00, keyboardNode);
-			vk.focusListener(addressLine1LocalLanguage, 535.00, keyboardNode);
-			vk.focusListener(addressLine2LocalLanguage, 625.00, keyboardNode);
-			vk.focusListener(addressLine3LocalLanguage, 710.00, keyboardNode);
-			vk.focusListener(parentNameLocalLanguage, 1180.00, keyboardNode);
+			vk.focusListener(fullNameLocalLanguage, 180.00, keyboardNode);
+			vk.focusListener(addressLine1LocalLanguage, 450.00, keyboardNode);
+			vk.focusListener(addressLine2LocalLanguage, 535.00, keyboardNode);
+			vk.focusListener(addressLine3LocalLanguage, 610.00, keyboardNode);
+			vk.focusListener(parentNameLocalLanguage, 1090.00, keyboardNode);
 		} catch (NullPointerException exception) {
 			LOGGER.error("REGISTRATION - CONTROLLER", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
 					exception.getMessage() + ExceptionUtils.getStackTrace(exception));
@@ -1743,32 +1745,32 @@ public class DemographicDetailController extends BaseController {
 	@FXML
 	private void setFocusonLocalField(MouseEvent event) {
 		try {
-			keyboardNode.setLayoutX(500.00);
+			keyboardNode.setLayoutX(fullNameGridPane.getWidth());
 			Node node = (Node) event.getSource();
 
 			if (node.getId().equals(RegistrationConstants.ADDRESS_LINE1)) {
 				addressLine1LocalLanguage.requestFocus();
-				keyboardNode.setLayoutY(535.00);
+				keyboardNode.setLayoutY(450.00);
 			}
 
 			if (node.getId().equals(RegistrationConstants.ADDRESS_LINE2)) {
 				addressLine2LocalLanguage.requestFocus();
-				keyboardNode.setLayoutY(625.00);
+				keyboardNode.setLayoutY(535.00);
 			}
 
 			if (node.getId().equals(RegistrationConstants.ADDRESS_LINE3)) {
 				addressLine3LocalLanguage.requestFocus();
-				keyboardNode.setLayoutY(710.00);
+				keyboardNode.setLayoutY(610.00);
 			}
 
 			if (node.getId().equals(RegistrationConstants.FULL_NAME)) {
 				fullNameLocalLanguage.requestFocus();
-				keyboardNode.setLayoutY(190.00);
+				keyboardNode.setLayoutY(180.00);
 			}
 
 			if (node.getId().equals(RegistrationConstants.PARENT_NAME)) {
 				parentNameLocalLanguage.requestFocus();
-				keyboardNode.setLayoutY(1180.00);
+				keyboardNode.setLayoutY(1090.00);
 			}
 			keyboardNode.setVisible(!keyboardNode.isVisible());
 
@@ -1868,9 +1870,15 @@ public class DemographicDetailController extends BaseController {
 						AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
 
 				if (getRegistrationDTOFromSession().getSelectionListDTO() != null) {
-						SessionContext.map().put("demographicDetail", false);
-						SessionContext.map().put("documentScan", true);
-						registrationController.showUINUpdateCurrentPage();
+					SessionContext.map().put(RegistrationConstants.UIN_UPDATE_DEMOGRAPHICDETAIL, false);
+					if (updateUINNextPage(RegistrationConstants.DOC_DISABLE_FLAG)
+							|| (updateUINNextPage(RegistrationConstants.FINGERPRINT_DISABLE_FLAG)
+									|| updateUINNextPage(RegistrationConstants.IRIS_DISABLE_FLAG))) {
+						SessionContext.map().put(RegistrationConstants.UIN_UPDATE_DOCUMENTSCAN, true);
+					} else {
+						updateUINMethodFlow();
+					}
+					registrationController.showUINUpdateCurrentPage();
 				} else {
 					registrationController.showCurrentPage(RegistrationConstants.DEMOGRAPHIC_DETAIL,
 							getPageDetails(RegistrationConstants.DEMOGRAPHIC_DETAIL, RegistrationConstants.NEXT));

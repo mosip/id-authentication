@@ -18,7 +18,6 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 
 import io.mosip.kernel.core.exception.ExceptionUtils;
@@ -60,12 +59,10 @@ import io.mosip.registration.service.MasterSyncService;
 import io.mosip.registration.service.UserDetailService;
 import io.mosip.registration.service.UserOnboardService;
 import io.mosip.registration.service.config.GlobalParamService;
-import io.mosip.registration.update.RegistrationUpdate;
 import io.mosip.registration.util.common.OTPManager;
 import io.mosip.registration.util.common.PageFlow;
 import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
 import io.mosip.registration.util.healthcheck.RegistrationSystemPropertiesChecker;
-import io.mosip.registration.util.restclient.ServiceDelegateUtil;
 import javafx.application.Platform;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
@@ -139,9 +136,6 @@ public class LoginController extends BaseController implements Initializable {
 	@FXML
 	private Label otpValidity;
 
-	@Value("${PROVIDER_NAME}")
-	private String deviceName;
-
 	@Autowired
 	private LoginService loginService;
 
@@ -178,9 +172,6 @@ public class LoginController extends BaseController implements Initializable {
 	private PageFlow pageFlow;
 
 	@Autowired
-	private ServiceDelegateUtil serviceDelegateUtil;
-
-	@Autowired
 	private MasterSyncService masterSyncService;
 
 	@Autowired
@@ -193,29 +184,21 @@ public class LoginController extends BaseController implements Initializable {
 
 	private Service<String> taskService;
 
-	@Autowired
-	private RegistrationUpdate registrationUpdate;
-
+	private List<String> loginList = new ArrayList<>();
+	
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 
 		try {
 			// TODO to replace false with registrationUpdate.hasUpdate() method.
 			ResponseDTO responseDTO = globalParamService.updateSoftwareUpdateStatus(false);
-
-			if (responseDTO != null && responseDTO.getSuccessResponseDTO() != null) {
-				LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
+			
+			LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
 						responseDTO.getSuccessResponseDTO().getMessage());
-			} else if (responseDTO != null && responseDTO.getErrorResponseDTOs() != null
-					&& !responseDTO.getErrorResponseDTOs().isEmpty()) {
-				LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
-						responseDTO.getErrorResponseDTOs().get(0).getMessage());
-			}
 
 			otpValidity.setText("Valid for " + Integer.parseInt(
 					((String) applicationContext.getApplicationMap().get(RegistrationConstants.OTP_EXPIRY_TIME)).trim())
 					/ 60 + " minutes");
-			stopTimer();
 			stopTimer();
 			password.textProperty().addListener((obsValue, oldValue, newValue) -> {
 				if (newValue.length() > Integer
@@ -223,17 +206,11 @@ public class LoginController extends BaseController implements Initializable {
 					generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.PWORD_LENGTH);
 				}
 			});
-		} /*
-			 * catch (IOException | ParserConfigurationException | SAXException exception) {
-			 * LOGGER.error(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
-			 * exception.getMessage() + ExceptionUtils.getStackTrace(exception)); }
-			 */ catch (RuntimeException runtimeExceptionexception) {
+		} catch (RuntimeException runtimeExceptionexception) {
 			LOGGER.error(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
 					runtimeExceptionexception.getMessage() + ExceptionUtils.getStackTrace(runtimeExceptionexception));
 		}
 	}
-
-	private List<String> loginList = new ArrayList<>();
 
 	/**
 	 * To get the Sequence of which Login screen to be displayed
@@ -266,9 +243,7 @@ public class LoginController extends BaseController implements Initializable {
 
 			executePreLaunchTask(loginRoot);
 
-		} catch (
-
-		IOException ioException) {
+		} catch (IOException ioException) {
 
 			LOGGER.error(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
 					ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));
@@ -366,27 +341,10 @@ public class LoginController extends BaseController implements Initializable {
 
 							LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
 									"Ignoring FingerPrint login if the configuration is off");
-
-							if (loginList.size() > 1
-									&& RegistrationConstants.DISABLE.equalsIgnoreCase(fingerprintDisableFlag)) {
-								loginList.removeIf(login -> login.equalsIgnoreCase(RegistrationConstants.FINGERPRINT));
-							}
-
-							LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
-									"Ignoring Iris login if the configuration is off");
-
-							if (loginList.size() > 1
-									&& RegistrationConstants.DISABLE.equalsIgnoreCase(irisDisableFlag)) {
-								loginList.removeIf(login -> login.equalsIgnoreCase(RegistrationConstants.IRIS));
-							}
-
-							LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
-									"Ignoring Face login if the configuration is off");
-
-							if (loginList.size() > 1
-									&& RegistrationConstants.DISABLE.equalsIgnoreCase(faceDisableFlag)) {
-								loginList.removeIf(login -> login.equalsIgnoreCase(RegistrationConstants.FACE));
-							}
+							
+							removeLoginParam(fingerprintDisableFlag, RegistrationConstants.FINGERPRINT);
+							removeLoginParam(irisDisableFlag, RegistrationConstants.IRIS);
+							removeLoginParam(faceDisableFlag, RegistrationConstants.FINGERPRINT);
 
 							String loginMode = !loginList.isEmpty() ? loginList.get(RegistrationConstants.PARAM_ZERO)
 									: null;
@@ -460,16 +418,16 @@ public class LoginController extends BaseController implements Initializable {
 			}
 		}
 
-		boolean offlineStatus = false;
+		boolean pwdValidationStatus = false;
 		String status = validatePwd(userId.getText().toLowerCase(), password.getText());
 
 		if (RegistrationConstants.SUCCESS.equals(status)) {
-			offlineStatus = validateInvalidLogin(userDetail, "");
+			pwdValidationStatus = validateInvalidLogin(userDetail, "");
 		} else if (RegistrationConstants.FAILURE.equals(status)) {
-			offlineStatus = validateInvalidLogin(userDetail, RegistrationUIConstants.INCORRECT_PWORD);
+			pwdValidationStatus = validateInvalidLogin(userDetail, RegistrationUIConstants.INCORRECT_PWORD);
 		}
 
-		if (offlineStatus) {
+		if (pwdValidationStatus) {
 
 			LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID, "Loading next login screen");
 			credentialsPane.setVisible(false);
@@ -550,7 +508,7 @@ public class LoginController extends BaseController implements Initializable {
 	 * 
 	 * @param event
 	 */
-	public void validateFingerPrint(ActionEvent event) {
+	public void captureFingerPrint(ActionEvent event) {
 
 		auditFactory.audit(AuditEvent.LOGIN_WITH_FINGERPRINT, Components.LOGIN, userId.getText(),
 				AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
@@ -562,7 +520,7 @@ public class LoginController extends BaseController implements Initializable {
 
 		boolean bioLoginStatus = false;
 
-		if (validateBiometricFP()) {
+		if (validateFingerPrint()) {
 			bioLoginStatus = validateInvalidLogin(detail, "");
 		} else {
 			bioLoginStatus = validateInvalidLogin(detail, RegistrationUIConstants.FINGER_PRINT_MATCH);
@@ -584,7 +542,7 @@ public class LoginController extends BaseController implements Initializable {
 	 * 
 	 * @param event
 	 */
-	public void validateIris(ActionEvent event) {
+	public void captureIris(ActionEvent event) {
 
 		auditFactory.audit(AuditEvent.LOGIN_WITH_IRIS, Components.LOGIN, userId.getText(),
 				AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
@@ -596,7 +554,7 @@ public class LoginController extends BaseController implements Initializable {
 
 		boolean irisLoginStatus = false;
 
-		if (validateBiometricIris()) {
+		if (validateIris()) {
 			irisLoginStatus = validateInvalidLogin(detail, "");
 		} else {
 			irisLoginStatus = validateInvalidLogin(detail, RegistrationUIConstants.IRIS_MATCH);
@@ -618,7 +576,7 @@ public class LoginController extends BaseController implements Initializable {
 	 * 
 	 * @param event
 	 */
-	public void validateFace(ActionEvent event) {
+	public void captureFace(ActionEvent event) {
 
 		auditFactory.audit(AuditEvent.LOGIN_WITH_FACE, Components.LOGIN, userId.getText(),
 				AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
@@ -630,7 +588,7 @@ public class LoginController extends BaseController implements Initializable {
 
 		boolean faceLoginStatus = false;
 
-		if (validateBiometricFace()) {
+		if (validateFace()) {
 			faceLoginStatus = validateInvalidLogin(detail, "");
 		} else {
 			faceLoginStatus = validateInvalidLogin(detail, RegistrationUIConstants.FACE_MATCH);
@@ -853,16 +811,16 @@ public class LoginController extends BaseController implements Initializable {
 	 * 
 	 * @return boolean
 	 */
-	private boolean validateBiometricFP() {
+	private boolean validateFingerPrint() {
 
 		LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID, "Initializing FingerPrint device");
 
-		MosipFingerprintProvider fingerPrintConnector = fingerprintFacade.getFingerprintProviderFactory(deviceName);
+		MosipFingerprintProvider fingerPrintConnector = fingerprintFacade.getFingerprintProviderFactory(String.valueOf(ApplicationContext.map().get(RegistrationConstants.PROVIDER_NAME)));
 
 		if (fingerPrintConnector.captureFingerprint(
 				Integer.parseInt(String.valueOf(ApplicationContext.map().get(RegistrationConstants.QUALITY_SCORE))),
 				Integer.parseInt(String.valueOf(ApplicationContext.map().get(RegistrationConstants.CAPTURE_TIME_OUT))),
-				"") != 0) {
+				"") != RegistrationConstants.PARAM_ZERO) {
 
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.DEVICE_FP_NOT_FOUND);
 
@@ -896,7 +854,7 @@ public class LoginController extends BaseController implements Initializable {
 						authenticationValidatorDTO);
 
 			} else if (!RegistrationConstants.EMPTY.equals(fingerprintFacade.getErrorMessage())) {
-				if (fingerprintFacade.getErrorMessage().equals("Timeout")) {
+				if (fingerprintFacade.getErrorMessage().equalsIgnoreCase(RegistrationConstants.FP_TIMEOUT)) {
 					generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.FP_DEVICE_TIMEOUT);
 				} else {
 					generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.FP_DEVICE_ERROR);
@@ -912,7 +870,7 @@ public class LoginController extends BaseController implements Initializable {
 	 * 
 	 * @return boolean
 	 */
-	private boolean validateBiometricIris() {
+	private boolean validateIris() {
 
 		LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID, "Scanning Iris");
 
@@ -934,7 +892,7 @@ public class LoginController extends BaseController implements Initializable {
 	 * 
 	 * @return boolean
 	 */
-	private boolean validateBiometricFace() {
+	private boolean validateFace() {
 
 		LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID, "Scanning Face");
 		AuthenticationValidatorDTO authenticationValidatorDTO = new AuthenticationValidatorDTO();
@@ -963,7 +921,7 @@ public class LoginController extends BaseController implements Initializable {
 
 		int loginCount = userDetail.getUnsuccessfulLoginCount() != null
 				? userDetail.getUnsuccessfulLoginCount().intValue()
-				: 0;
+				: RegistrationConstants.PARAM_ZERO;
 
 		int invalidLoginCount = Integer
 				.parseInt(String.valueOf(ApplicationContext.map().get(RegistrationConstants.INVALID_LOGIN_COUNT)));
@@ -1089,8 +1047,7 @@ public class LoginController extends BaseController implements Initializable {
 
 						
 						ResponseDTO responseDTO = getSyncConfigData();
-						if (responseDTO != null) {
-							SuccessResponseDTO successResponseDTO = responseDTO.getSuccessResponseDTO();
+						SuccessResponseDTO successResponseDTO = responseDTO.getSuccessResponseDTO();
 							if (successResponseDTO != null && successResponseDTO.getOtherAttributes() != null) {
 								return RegistrationConstants.RESTART;
 							} else {
@@ -1101,16 +1058,12 @@ public class LoginController extends BaseController implements Initializable {
 								ResponseDTO userResponseDTO = userDetailService
 										.save(RegistrationConstants.JOB_TRIGGER_POINT_USER);
 
-								if ((null != masterResponseDTO && masterResponseDTO.getErrorResponseDTOs() != null)
+								if (masterResponseDTO.getErrorResponseDTOs() != null
 										|| userResponseDTO.getErrorResponseDTOs() != null) {
 									return RegistrationConstants.FAILURE;
 								}
 
-							}
-						} else {
-							return RegistrationConstants.FAILURE;
-						}
-						 
+							}						 
 
 						return RegistrationConstants.SUCCESS;
 					}
@@ -1138,6 +1091,26 @@ public class LoginController extends BaseController implements Initializable {
 				progressIndicator.setVisible(false);
 			}
 		});
+
+	}
+	
+	/**
+	 * This method will remove the loginmethod from list
+	 * 
+	 * @param disableFlag
+	 *             configuration flag
+	 * @param loginMethod
+	 *             login method
+	 */
+	private void removeLoginParam(String disableFlag, String loginMethod) {
+		
+		if (loginList.size() > 1
+				&& RegistrationConstants.DISABLE.equalsIgnoreCase(disableFlag)) {
+			loginList.removeIf(login -> login.equalsIgnoreCase(loginMethod));
+		}
+		
+		LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
+				"Ignoring login method if the configuration is off");
 
 	}
 

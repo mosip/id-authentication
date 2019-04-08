@@ -113,10 +113,10 @@ public class DocumentScanController extends BaseController {
 	protected ImageView docPreviewImgView;
 
 	@FXML
-	protected Button docPreviewNext;
+	protected Label docPreviewNext;
 
 	@FXML
-	protected Button docPreviewPrev;
+	protected Label docPreviewPrev;
 
 	@FXML
 	protected Label docPageNumber;
@@ -283,6 +283,7 @@ public class DocumentScanController extends BaseController {
 		
 		/* show the scan doc info label for format and size */
 		Label fileSizeInfoLabel = new Label();
+		fileSizeInfoLabel.setWrapText(true);
 		fileSizeInfoLabel.setText(RegistrationUIConstants.SCAN_DOC_INFO);
 		docScanVbox.getChildren().add(fileSizeInfoLabel);
 		
@@ -307,12 +308,15 @@ public class DocumentScanController extends BaseController {
 				HBox hBox = new HBox();
 				
 				ComboBox<DocumentCategoryDto> comboBox = new ComboBox<>();
+				comboBox.setPrefWidth(docScanVbox.getWidth()/2);
 				ImageView indicatorImage = new ImageView(
 						new Image(this.getClass().getResourceAsStream(RegistrationConstants.CLOSE_IMAGE_PATH), 15, 15,
 								true, true));
 				comboBox.setPromptText(docCategoryName);
 				comboBox.getStyleClass().add("documentCombobox");
 				Label documentLabel = new Label(docCategoryName);
+				documentLabel.getStyleClass().add("demoGraphicFieldLabel");
+				documentLabel.setPrefWidth(docScanVbox.getWidth()/2);
 				documentLabel.setVisible(false);
 				comboBox.getSelectionModel().selectedItemProperty().addListener((options, oldValue, newValue) -> {
 					documentLabel.setVisible(true);
@@ -369,7 +373,6 @@ public class DocumentScanController extends BaseController {
 				});
 				hBox.getChildren().addAll(indicatorImage, comboBox, documentVBox, scanButton);
 				docScanVbox.getChildren().addAll(documentLabel, hBox);
-				documentLabel.setPrefWidth(docScanVbox.getWidth() / 2.2);
 				comboBox.getItems().addAll(documentCategoryDtos);
 			}
 
@@ -982,7 +985,7 @@ public class DocumentScanController extends BaseController {
 		biometricExceptionController.disableNextBtn();
 		if (getRegistrationDTOFromSession().getSelectionListDTO() != null) {
 			if (registrationController.validateDemographicPane(documentScanPane)) {
-				SessionContext.map().put("documentScan", false);
+				SessionContext.map().put(RegistrationConstants.UIN_UPDATE_DOCUMENTSCAN, false);
 				updateUINMethodFlow();
 
 				registrationController.showUINUpdateCurrentPage();
