@@ -118,10 +118,12 @@ public class OTPServiceImpl implements OTPService {
 		}
 		if (otpEmailSendResponseDto != null) {
 			authNResponseDto = new AuthNResponseDto();
+			authNResponseDto.setStatus(otpEmailSendResponseDto.getStatus());
 			authNResponseDto.setMessage(otpEmailSendResponseDto.getMessage());
 		}
 		if (otpSmsSendResponseDto != null) {
 			authNResponseDto = new AuthNResponseDto();
+			authNResponseDto.setStatus(otpSmsSendResponseDto.getStatus());
 			authNResponseDto.setMessage(otpSmsSendResponseDto.getMessage());
 		}
 		return authNResponseDto;
@@ -324,13 +326,13 @@ public class OTPServiceImpl implements OTPService {
 				mosipUserDtoToken = new MosipUserDtoToken(mosipUser, basicToken.getAuthToken(),
 						basicToken.getRefreshToken(), basicToken.getExpiryTime(), null,null);
 				mosipUserDtoToken.setMessage(otpResponse.getMessage());
-				mosipUserDtoToken.setStatus(otpResponse.getMessage());
+				mosipUserDtoToken.setStatus(otpResponse.getStatus());
 			}
 			else
 			{
 				mosipUserDtoToken = new MosipUserDtoToken();
 				mosipUserDtoToken.setMessage(otpResponse.getMessage());
-				mosipUserDtoToken.setStatus(otpResponse.getMessage());
+				mosipUserDtoToken.setStatus(otpResponse.getStatus());
 			}
 			
 		}
