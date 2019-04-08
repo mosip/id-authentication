@@ -99,7 +99,7 @@
                         </GridPane>
                         <GridPane styleClass="subMainComponent" GridPane.columnIndex="1">
                            <children>
-                              <GridPane alignment="CENTER" GridPane.rowIndex="1" styleClass="dividerTypeOne">
+                              <GridPane alignment="CENTER" styleClass="dividerTypeOne" GridPane.rowIndex="1">
                                  <children>
                                     <GridPane GridPane.columnIndex="1">
                                       <columnConstraints>
@@ -236,7 +236,7 @@
                                                       <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
                                                          <children>
                                                             <Label styleClass="exceptionLabel" text="%exceptions" />
-                                                            <Label styleClass="exceptionLabel" text="-" />
+                                                            <Label fx:id="leftIrisException" styleClass="exceptionLabel" text="-" />
                                                          </children>
                                                       </VBox>
                                                    </children>
@@ -290,7 +290,7 @@
                                                             <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
                                                                <children>
                                                                   <Label styleClass="exceptionLabel" text="%exceptions" />
-                                                                  <Label styleClass="exceptionLabel" text="-" />
+                                                                  <Label fx:id="rightIrisException" styleClass="exceptionLabel" text="-" />
                                                                </children>
                                                             </VBox>
                                                          </children>

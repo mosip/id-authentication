@@ -32,11 +32,14 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
 import io.mosip.kernel.core.util.JsonUtils;
 import io.mosip.registration.processor.core.code.ApiName;
 import io.mosip.registration.processor.core.constant.IdType;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
+import io.mosip.registration.processor.core.http.ResponseWrapper;
 import io.mosip.registration.processor.core.idrepo.dto.IdResponseDTO;
 import io.mosip.registration.processor.core.idrepo.dto.ResponseDTO;
 import io.mosip.registration.processor.core.notification.template.generator.dto.ResponseDto;
@@ -96,7 +99,10 @@ public class MessageNotificationServiceImplTest {
 	/** The env. */
 	@Mock
 	private Environment env;
-		
+
+	@Mock
+	private ObjectMapper mapper;
+
 	/** The attributes. */
 	private Map<String, Object> attributes = new HashMap<>();
 
@@ -126,13 +132,13 @@ public class MessageNotificationServiceImplTest {
 
 	/** The subject. */
 	String subject = "test";
-	
+
 	/** The id response. */
 	private IdResponseDTO idResponse = new IdResponseDTO();
 
 	/** The response. */
 	private ResponseDTO response = new ResponseDTO();
-	
+
 	/**
 	 * Setup.
 	 *
@@ -180,10 +186,10 @@ public class MessageNotificationServiceImplTest {
 		PowerMockito.when(Utilities.class, "getJson", anyString(), anyString()).thenReturn(value);
 
 		Mockito.when(utility.getGetRegProcessorDemographicIdentity()).thenReturn("identity");
-		
-		InputStream in  = IOUtils.toInputStream("Hi Alok, Your UIN is generated", "UTF-8");
+
+		InputStream in = IOUtils.toInputStream("Hi Alok, Your UIN is generated", "UTF-8");
 		Mockito.when(templateGenerator.getTemplate(any(), any(), any())).thenReturn(in);
-		
+
 		LinkedHashMap<String, Object> identityMap = new LinkedHashMap<>();
 		Map<String, String> map = new HashMap<>();
 		map.put("language", "eng");
@@ -210,13 +216,17 @@ public class MessageNotificationServiceImplTest {
 		identityMap.put("email", "raghavdce@gmail.com");
 		identityMap.put("postalCode", "900900");
 		identityMap.put("proofOfAddress", j2);
-		
+
 		Object identity = identityMap;
 		response.setIdentity(identity);
-		
+
 		idResponse.setResponse(response);
 		Mockito.when(restClientService.getApi(any(), any(), any(), any(), any())).thenReturn(idResponse);
-		
+
+		Mockito.when(env.getProperty("mosip.registration.processor.sms.id")).thenReturn("id");
+		Mockito.when(env.getProperty("mosip.registration.processor.application.version")).thenReturn("v1.0");
+		Mockito.when(env.getProperty("mosip.registration.processor.datetime.pattern"))
+				.thenReturn("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
 	}
 
 	/**
@@ -227,33 +237,45 @@ public class MessageNotificationServiceImplTest {
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
 	 */
+	@SuppressWarnings("unchecked")
 	@Test
 	public void testSendSmsNotificationSuccess() throws ApisResourceAccessException, IOException {
+		ResponseWrapper<SmsResponseDto> wrapper = new ResponseWrapper<>();
 		smsResponseDto = new SmsResponseDto();
 		smsResponseDto.setMessage("Success");
+		wrapper.setResponse(smsResponseDto);
+		wrapper.setErrors(null);
 
 		Mockito.when(restClientService.postApi(any(), anyString(), anyString(), anyString(), any()))
-				.thenReturn(smsResponseDto);
+				.thenReturn(wrapper);
+		Mockito.when(mapper.writeValueAsString(any())).thenReturn(smsResponseDto.toString());
+		Mockito.when(mapper.readValue(anyString(), any(Class.class))).thenReturn(smsResponseDto);
 
 		SmsResponseDto resultResponse = messageNotificationServiceImpl.sendSmsNotification("RPR_UIN_GEN_SMS", "12345",
 				IdType.RID, attributes, RegistrationType.NEW.name());
 		assertEquals("Test for SMS Notification Success", "Success", resultResponse.getMessage());
 	}
-	
+
+	@SuppressWarnings("unchecked")
 	@Test
 	public void testUINTypeMessage() throws ApisResourceAccessException, IOException {
+		ResponseWrapper<SmsResponseDto> wrapper = new ResponseWrapper<>();
 		smsResponseDto = new SmsResponseDto();
 		smsResponseDto.setMessage("Success");
-		
+
 		String uin = "1234567";
 		List<String> uinList = new ArrayList<>();
 		uinList.add(uin);
-		Mockito.when(restClientService.postApi(any(), anyString(), anyString(), anyString(), any()))
-				.thenReturn(smsResponseDto);
+		wrapper.setResponse(smsResponseDto);
+		wrapper.setErrors(null);
 
-		SmsResponseDto resultResponse = messageNotificationServiceImpl.sendSmsNotification("RPR_UIN_GEN_SMS", "27847657360002520181208094056",
-				IdType.UIN, attributes, RegistrationType.ACTIVATED.name());
-		
+		Mockito.when(restClientService.postApi(any(), anyString(), anyString(), anyString(), any()))
+				.thenReturn(wrapper);
+		Mockito.when(mapper.writeValueAsString(any())).thenReturn(smsResponseDto.toString());
+		Mockito.when(mapper.readValue(anyString(), any(Class.class))).thenReturn(smsResponseDto);
+		SmsResponseDto resultResponse = messageNotificationServiceImpl.sendSmsNotification("RPR_UIN_GEN_SMS",
+				"27847657360002520181208094056", IdType.UIN, attributes, RegistrationType.ACTIVATED.name());
+
 		assertEquals("Test for SMS Notification Success", "Success", resultResponse.getMessage());
 	}
 
@@ -263,12 +285,18 @@ public class MessageNotificationServiceImplTest {
 	 * @throws Exception
 	 *             the exception
 	 */
+	@SuppressWarnings("unchecked")
 	@Test
 	public void testSendEmailNotificationSuccess() throws Exception {
+		ResponseWrapper<ResponseDto> wrapper = new ResponseWrapper<>();
 		responseDto = new ResponseDto();
 		responseDto.setStatus("Success");
+		wrapper.setErrors(null);
+		wrapper.setResponse(responseDto);
 
-		Mockito.when(restApiClient.postApi(any(), any(), any())).thenReturn(responseDto);
+		Mockito.when(restApiClient.postApi(any(), any(), any())).thenReturn(wrapper);
+		Mockito.when(mapper.writeValueAsString(any())).thenReturn(responseDto.toString());
+		Mockito.when(mapper.readValue(anyString(), any(Class.class))).thenReturn(responseDto);
 
 		ResponseDto resultResponse = messageNotificationServiceImpl.sendEmailNotification("RPR_UIN_GEN_EMAIL", "12345",
 				IdType.RID, attributes, mailCc, subject, null, RegistrationType.NEW.name());
@@ -290,7 +318,8 @@ public class MessageNotificationServiceImplTest {
 		InputStream inputStream = new FileInputStream(demographicJsonFile);
 		Mockito.when(adapter.getFile(any(), any())).thenReturn(inputStream);
 
-		messageNotificationServiceImpl.sendSmsNotification("RPR_UIN_GEN_SMS", "12345", IdType.RID, attributes, RegistrationType.NEW.name());
+		messageNotificationServiceImpl.sendSmsNotification("RPR_UIN_GEN_SMS", "12345", IdType.RID, attributes,
+				RegistrationType.NEW.name());
 
 	}
 
@@ -324,7 +353,8 @@ public class MessageNotificationServiceImplTest {
 		Mockito.when(templateGenerator.getTemplate("RPR_UIN_GEN_SMS", attributes, "eng"))
 				.thenThrow(new TemplateNotFoundException());
 
-		messageNotificationServiceImpl.sendSmsNotification("RPR_UIN_GEN_SMS", "12345", IdType.RID, attributes, RegistrationType.NEW.name());
+		messageNotificationServiceImpl.sendSmsNotification("RPR_UIN_GEN_SMS", "12345", IdType.RID, attributes,
+				RegistrationType.NEW.name());
 	}
 
 	/**
@@ -341,16 +371,16 @@ public class MessageNotificationServiceImplTest {
 		messageNotificationServiceImpl.sendEmailNotification("RPR_UIN_GEN_EMAIL", "12345", IdType.RID, attributes,
 				mailCc, subject, null, RegistrationType.NEW.name());
 	}
-	
+
 	@Test(expected = IDRepoResponseNull.class)
-	public void testIDResponseNull() throws ApisResourceAccessException, IOException {
+	public void testIDResponseNull() throws Exception {
 		smsResponseDto = new SmsResponseDto();
 		smsResponseDto.setMessage("Success");
-		
+
 		String uin = "1234567";
 		List<String> uinList = new ArrayList<>();
 		uinList.add(uin);
-		
+
 		Mockito.when(restClientService.getApi(any(), any(), any(), any(), any())).thenReturn(null);
 
 		messageNotificationServiceImpl.sendSmsNotification("RPR_UIN_GEN_SMS", "27847657360002520181208094056",

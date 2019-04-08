@@ -28,12 +28,16 @@ import io.mosip.kernel.core.crypto.exception.NullDataException;
 import io.mosip.kernel.core.crypto.exception.NullKeyException;
 import io.mosip.kernel.core.crypto.exception.NullMethodException;
 import io.mosip.kernel.core.crypto.spi.Decryptor;
+import io.mosip.kernel.core.crypto.spi.Encryptor;
 import io.mosip.kernel.core.keymanager.spi.KeyStore;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.CryptoUtil;
+import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.keygenerator.bouncycastle.KeyGenerator;
 import io.mosip.kernel.keymanagerservice.constant.KeymanagerConstant;
 import io.mosip.kernel.keymanagerservice.constant.KeymanagerErrorConstant;
+import io.mosip.kernel.keymanagerservice.dto.EncryptDataRequestDto;
+import io.mosip.kernel.keymanagerservice.dto.EncryptDataResponseDto;
 import io.mosip.kernel.keymanagerservice.dto.PublicKeyResponse;
 import io.mosip.kernel.keymanagerservice.dto.SymmetricKeyRequestDto;
 import io.mosip.kernel.keymanagerservice.dto.SymmetricKeyResponseDto;
@@ -54,6 +58,7 @@ import io.mosip.kernel.keymanagerservice.util.KeymanagerUtil;
  * interface.
  *
  * @author Dharmesh Khandelwal
+ * @author Srinivasan
  * @since 1.0.0
  *
  */
@@ -80,6 +85,12 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 	 */
 	@Autowired
 	Decryptor<PrivateKey, PublicKey, SecretKey> decryptor;
+
+	/**
+	 * {@link Encryptor} instance to encrypt data
+	 */
+	@Autowired
+	Encryptor<PrivateKey, PublicKey, SecretKey> encryptor;
 
 	/**
 	 * {@link KeyAliasRepository} instance
@@ -365,39 +376,14 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 		LOGGER.info(KeymanagerConstant.SESSIONID, KeymanagerConstant.SYMMETRICKEYREQUEST,
 				symmetricKeyRequestDto.toString(), KeymanagerConstant.DECRYPTKEY);
 
-		List<KeyAlias> currentKeyAlias;
-		LocalDateTime timeStamp = symmetricKeyRequestDto.getTimeStamp();
-		String referenceId = symmetricKeyRequestDto.getReferenceId();
-		String applicationId = symmetricKeyRequestDto.getApplicationId();
 		SymmetricKeyResponseDto keyResponseDto = new SymmetricKeyResponseDto();
-
-		if (!keymanagerUtil.isValidReferenceId(referenceId)) {
-			LOGGER.info(KeymanagerConstant.SESSIONID, KeymanagerConstant.EMPTY, KeymanagerConstant.EMPTY,
-					"Not a valid reference Id. Getting key alias without referenceId");
-			currentKeyAlias = getKeyAliases(applicationId, null, timeStamp).get(KeymanagerConstant.CURRENTKEYALIAS);
-		} else {
-			LOGGER.info(KeymanagerConstant.SESSIONID, KeymanagerConstant.EMPTY, KeymanagerConstant.EMPTY,
-					"Valid reference Id. Getting key alias with referenceId");
-			currentKeyAlias = getKeyAliases(applicationId, referenceId, timeStamp)
-					.get(KeymanagerConstant.CURRENTKEYALIAS);
-		}
-
-		if (currentKeyAlias.isEmpty() || currentKeyAlias.size() > 1) {
-			LOGGER.info(KeymanagerConstant.SESSIONID, KeymanagerConstant.CURRENTKEYALIAS,
-					String.valueOf(currentKeyAlias.size()), "CurrentKeyAlias is not unique. Throwing exception");
-			throw new NoUniqueAliasException(KeymanagerErrorConstant.NO_UNIQUE_ALIAS.getErrorCode(),
-					KeymanagerErrorConstant.NO_UNIQUE_ALIAS.getErrorMessage());
-		} else if (currentKeyAlias.size() == 1) {
-			LOGGER.info(KeymanagerConstant.SESSIONID, KeymanagerConstant.CURRENTKEYALIAS,
-					currentKeyAlias.get(0).getAlias(),
-					"CurrentKeyAlias size is one. Will decrypt symmetric key for this alias");
-			KeyAlias fetchedKeyAlias = currentKeyAlias.get(0);
-			PrivateKey privateKey = getPrivateKey(referenceId, fetchedKeyAlias);
-			byte[] decryptedSymmetricKey = decryptor.asymmetricPrivateDecrypt(privateKey,
-					CryptoUtil.decodeBase64(symmetricKeyRequestDto.getEncryptedSymmetricKey()));
-			keyResponseDto.setSymmetricKey(CryptoUtil.encodeBase64(decryptedSymmetricKey));
-		}
+		PrivateKey privateKey = getPrivateKeyFromRequestData(symmetricKeyRequestDto.getApplicationId(),
+				symmetricKeyRequestDto.getReferenceId(), symmetricKeyRequestDto.getTimeStamp());
+		byte[] decryptedSymmetricKey = decryptor.asymmetricPrivateDecrypt(privateKey,
+				CryptoUtil.decodeBase64(symmetricKeyRequestDto.getEncryptedSymmetricKey()));
+		keyResponseDto.setSymmetricKey(CryptoUtil.encodeBase64(decryptedSymmetricKey));
 		return keyResponseDto;
+
 	}
 
 	/**
@@ -498,9 +484,71 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 		keyStoreRepository.save(keymanagerUtil.setMetaData(dbKeyStore));
 	}
 
-	//TODO: To be removed added for debugging
+	// TODO: To be removed added for debugging
 	@Override
 	public List<String> getAllAlias() {
 		return keyStore.getAllAlias();
 	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.kernel.keymanagerservice.service.KeymanagerService#encrypt(io.mosip.
+	 * kernel.keymanagerservice.dto.EncryptDataRequestDto)
+	 */
+	@Override
+	public EncryptDataResponseDto encrypt(EncryptDataRequestDto encryptDataRequestDto) {
+        LocalDateTime timeStamp=DateUtils.parseToLocalDateTime(encryptDataRequestDto.getTimeStamp());
+		getPublicKey(encryptDataRequestDto.getApplicationId(), encryptDataRequestDto.getTimeStamp(),
+				Optional.of(encryptDataRequestDto.getReferenceId()));
+		EncryptDataResponseDto encryptDataResponseDto = new EncryptDataResponseDto();
+		PrivateKey privateKey = getPrivateKeyFromRequestData(encryptDataRequestDto.getApplicationId(),
+				encryptDataRequestDto.getReferenceId(), timeStamp);
+		byte[] encryptedData = encryptor.asymmetricPrivateEncrypt(privateKey,
+				encryptDataRequestDto.getHashedData().getBytes());
+		encryptDataResponseDto.setEncryptedData(CryptoUtil.encodeBase64(encryptedData));
+		return encryptDataResponseDto;
+
+	}
+
+	/**
+	 * get private key base
+	 * 
+	 * @param encryptDataRequestDto
+	 * @return {@link PrivateKey}
+	 */
+	private PrivateKey getPrivateKeyFromRequestData(String applicationId, String referenceId, LocalDateTime timeStamp) {
+		List<KeyAlias> currentKeyAlias;
+
+		PrivateKey privateKey = null;
+
+		if (!keymanagerUtil.isValidReferenceId(referenceId)) {
+			LOGGER.info(KeymanagerConstant.SESSIONID, KeymanagerConstant.EMPTY, KeymanagerConstant.EMPTY,
+					"Not a valid reference Id. Getting key alias without referenceId");
+			currentKeyAlias = getKeyAliases(applicationId, null, timeStamp).get(KeymanagerConstant.CURRENTKEYALIAS);
+		} else {
+			LOGGER.info(KeymanagerConstant.SESSIONID, KeymanagerConstant.EMPTY, KeymanagerConstant.EMPTY,
+					"Valid reference Id. Getting key alias with referenceId");
+			currentKeyAlias = getKeyAliases(applicationId, referenceId, timeStamp)
+					.get(KeymanagerConstant.CURRENTKEYALIAS);
+		}
+
+		if (currentKeyAlias.isEmpty() || currentKeyAlias.size() > 1) {
+			LOGGER.info(KeymanagerConstant.SESSIONID, KeymanagerConstant.CURRENTKEYALIAS,
+					String.valueOf(currentKeyAlias.size()), "CurrentKeyAlias is not unique. Throwing exception");
+			throw new NoUniqueAliasException(KeymanagerErrorConstant.NO_UNIQUE_ALIAS.getErrorCode(),
+					KeymanagerErrorConstant.NO_UNIQUE_ALIAS.getErrorMessage());
+		} else if (currentKeyAlias.size() == 1) {
+			LOGGER.info(KeymanagerConstant.SESSIONID, KeymanagerConstant.CURRENTKEYALIAS,
+					currentKeyAlias.get(0).getAlias(),
+					"CurrentKeyAlias size is one. Will decrypt symmetric key for this alias");
+			KeyAlias fetchedKeyAlias = currentKeyAlias.get(0);
+			privateKey = getPrivateKey(referenceId, fetchedKeyAlias);
+
+		}
+
+		return privateKey;
+	}
+
 }

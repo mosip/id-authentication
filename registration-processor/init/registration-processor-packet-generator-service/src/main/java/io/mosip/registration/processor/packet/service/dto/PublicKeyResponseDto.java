@@ -40,5 +40,8 @@ public class PublicKeyResponseDto implements Serializable {
 		this.issuedAt = issuedAt;
 		this.expiryAt = expiryAt;
 	}
+	public PublicKeyResponseDto() {
+		
+	}
 
 }

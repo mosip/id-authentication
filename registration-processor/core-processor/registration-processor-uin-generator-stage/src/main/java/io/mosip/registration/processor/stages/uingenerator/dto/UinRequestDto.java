@@ -14,8 +14,14 @@ import lombok.ToString;
 @ToString
 public class UinRequestDto {
 	
-	private String uin;
+	private String id;
 	
-	private String status;
+	private String version;
+	
+	private Object metadata;
+	
+	private String requesttime;
+	
+	private UinResponseDto request;
 
 }

@@ -112,6 +112,10 @@ public class IrisCaptureController extends BaseController {
 
 	@FXML
 	private Label registrationNavlabel;
+	@FXML
+	private Label rightIrisException;
+	@FXML
+	private Label leftIrisException;
 
 	private Pane selectedIris;
 
@@ -141,6 +145,7 @@ public class IrisCaptureController extends BaseController {
 							.equals(RegistrationConstants.PACKET_TYPE_LOST)) {
 				registrationNavlabel.setText(ApplicationContext.applicationLanguageBundle().getString("/lostuin"));
 			}
+
 			continueBtn.setDisable(true);
 			backBtn.setDisable(true);
 
@@ -187,6 +192,32 @@ public class IrisCaptureController extends BaseController {
 							ExceptionUtils.getStackTrace(runtimeException)));
 		}
 
+	}
+
+	/**
+	 * Populate exception.
+	 */
+	private void populateException() {
+		if (getRegistrationDTOFromSession() != null && getRegistrationDTOFromSession().getBiometricDTO() != null
+				&& getRegistrationDTOFromSession().getBiometricDTO().getApplicantBiometricDTO() != null
+				&& getRegistrationDTOFromSession().getBiometricDTO().getApplicantBiometricDTO()
+						.getBiometricExceptionDTO() != null) {
+
+			getRegistrationDTOFromSession().getBiometricDTO().getApplicantBiometricDTO().getBiometricExceptionDTO()
+					.stream().forEach(bio -> {
+						if (bio.getBiometricType().equalsIgnoreCase("iris")
+								&& bio.getMissingBiometric().equalsIgnoreCase("lefteye")) {
+							leftIrisException.setText(bio.getMissingBiometric());
+						} else if (bio.getBiometricType().equalsIgnoreCase("iris")
+								&& bio.getMissingBiometric().equalsIgnoreCase("righteye")) {
+							rightIrisException.setText(bio.getMissingBiometric());
+						}else {
+							leftIrisException.setText("-");
+							rightIrisException.setText("-");
+						}
+
+					});
+		}
 	}
 
 	private void displayCapturedIris() {
@@ -402,7 +433,6 @@ public class IrisCaptureController extends BaseController {
 				}
 			}
 			popupStage.close();
-
 			if (validateIris() && validateIrisLocalDedup()) {
 				continueBtn.setDisable(false);
 				backBtn.setDisable(false);
@@ -714,6 +744,7 @@ public class IrisCaptureController extends BaseController {
 			backBtn.setDisable(false);
 		}
 		singleBiometricCaptureCheck();
+		populateException();
 	}
 
 	private void singleBiometricCaptureCheck() {

@@ -32,6 +32,7 @@ import io.mosip.registration.processor.core.code.EventName;
 import io.mosip.registration.processor.core.code.EventType;
 import io.mosip.registration.processor.core.constant.ResponseStatusCode;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
+import io.mosip.registration.processor.core.http.ResponseWrapper;
 import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.spi.biodedupe.BioDedupeService;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
@@ -97,7 +98,9 @@ public class BioDedupeProcessorTest {
 	public void setUp() throws Exception {
 
 		AuditResponseDto auditResponseDto = new AuditResponseDto();
-		Mockito.doReturn(auditResponseDto).when(auditLogRequestBuilder).createAuditRequestBuilder(
+		ResponseWrapper<AuditResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(auditResponseDto);
+		Mockito.doReturn(responseWrapper).when(auditLogRequestBuilder).createAuditRequestBuilder(
 				"test case description", EventId.RPR_405.toString(), EventName.UPDATE.toString(),
 				EventType.BUSINESS.toString(), "1234testcase", ApiName.AUDIT);
 		dto.setRid("reg1234");
