@@ -39,12 +39,13 @@ import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
  * Class for implementing GlobalContextParam service
  * 
  * @author Sravya Surampalli
+ * @author Brahmananda Reddy
  * @since 1.0.0
  *
  */
 @Service
 public class GlobalParamServiceImpl extends BaseService implements GlobalParamService {
-
+ 
 	/**
 	 * Instance of LOGGER
 	 */
@@ -197,7 +198,7 @@ public class GlobalParamServiceImpl extends BaseService implements GlobalParamSe
 	}
 
 	private void updateIsDeleted(GlobalParam globalParam) {
-		globalParam.setIsActive(false);
+		globalParam.setIsActive(true); 
 		globalParam.setIsDeleted(true);
 		globalParam.setDelDtimes(Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()));
 		globalParam.setUpdBy(getUserIdFromSession());
