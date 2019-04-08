@@ -487,7 +487,7 @@ public class BaseController extends BaseService {
 
 		((Map<String, Map<String, Boolean>>) ApplicationContext.map().get(RegistrationConstants.REGISTRATION_MAP))
 				.get(RegistrationConstants.BIOMETRIC_EXCEPTION).put(RegistrationConstants.VISIBILITY,
-						(boolean) ApplicationContext.map().get("biometricExceptionFlow"));
+						(boolean) ApplicationContext.map().get(RegistrationConstants.BIOMETRIC_EXCEPTION_FLOW));
 	}
 
 	/**

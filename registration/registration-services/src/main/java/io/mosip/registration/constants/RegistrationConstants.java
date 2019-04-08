@@ -73,6 +73,7 @@ public class RegistrationConstants {
 	public static final String OPERATOR_AUTHENTICATION = "operatorAuthenticationPane";
 	public static final String ONBOARD_USER_PARENT = "onboardUser";
 	public static final String ONBOARD_USER_SUCCESS = "userOnboardSuccess";
+	public static final String BIOMETRIC_EXCEPTION_FLOW = "biometricExceptionFlow";
 
 	// Page Flow
 	public static final String VISIBILITY = "visibility";
@@ -130,6 +131,7 @@ public class RegistrationConstants {
 	// FingerPrint
 	public static final String FP_DEVICE = "Mantra";
 	public static final String FINGER_TYPE_MINUTIA = "minutia";
+	public static final String FP_TIMEOUT = "TIMEOUT";
 
 	// Authorization Info
 	public static final String ADMIN_ROLE = "REGISTRATION_ADMIN";
@@ -723,6 +725,7 @@ public class RegistrationConstants {
 	public static final String GPS_DEVICE_DISABLE_FLAG = "mosip.registration.gps_device_enable_flag";
 	public static final String PRE_REG_PACKET_LOCATION = "mosip.registration.registration_pre_reg_packet_location";
 	public static final String IS_SOFTWARE_UPDATE_AVAILABLE = "mosip.registration.is_software_update_available";
+	public static final String PROVIDER_NAME = "mosip.registration.provider_name";
 	
 	// Spring Batch-Jobs
 	public static final String JOB_TRIGGER_STARTED = "Trigger started";

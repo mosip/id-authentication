@@ -114,9 +114,6 @@ public class AuthenticationController extends BaseController implements Initiali
 	@Autowired
 	private FingerprintFacade fingerprintFacade;
 
-	@Value("${PROVIDER_NAME}")
-	private String providerName;
-
 	@Autowired
 	private PacketHandlerController packetHandlerController;
 
@@ -705,7 +702,7 @@ public class AuthenticationController extends BaseController implements Initiali
 				"Capturing and Validating Fingerprint");
 
 		boolean fpMatchStatus = false;
-		MosipFingerprintProvider fingerPrintConnector = fingerprintFacade.getFingerprintProviderFactory(providerName);
+		MosipFingerprintProvider fingerPrintConnector = fingerprintFacade.getFingerprintProviderFactory(String.valueOf(ApplicationContext.map().get(RegistrationConstants.PROVIDER_NAME)));
 		int statusCode = fingerPrintConnector.captureFingerprint(
 				Integer.parseInt(String.valueOf(ApplicationContext.map().get(RegistrationConstants.QUALITY_SCORE))),
 				Integer.parseInt(String.valueOf(ApplicationContext.map().get(RegistrationConstants.CAPTURE_TIME_OUT))),
