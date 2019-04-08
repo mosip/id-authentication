@@ -32,29 +32,29 @@ export class FileUploadComponent implements OnInit {
     ],
     preRegistrationId: ''
   };
-  applicantType;
-  sameAsselected = false;
+  applicantType: string;
+  sameAsselected: boolean = false;
   isModify: any;
-  fileName = '';
+  fileName: string = '';
   fileByteArray;
   fileUrl;
-  applicantPreRegId;
+  applicantPreRegId: string;
   userFiles: FileModel = new FileModel();
   formData = new FormData();
   user: UserModel = new UserModel();
   users: UserModel[] = [];
-  documentType;
-  loginId;
-  documentIndex;
+  documentType: string;
+  loginId: string;
+  documentIndex: number;
   LOD: DocumentCategory[];
-  fileIndex = -1;
+  fileIndex: number = -1;
   secondaryLanguagelabels: any;
 
-  sameAs;
-  disableNavigation = false;
+  sameAs: string;
+  disableNavigation: boolean = false;
   // JsonString = appConstants.DOCUMENT_UPLOAD_REQUEST_DTO;
 
-  browseDisabled = true;
+  browseDisabled: boolean = true;
 
   // disabled = true;
   documentUploadRequestBody: DocumentUploadRequestDTO = {
@@ -69,8 +69,8 @@ export class FileUploadComponent implements OnInit {
   };
   documentCategoryrequestDto: DocumentCategoryDTO[];
   documentRequest: RequestModel;
-  step = 0;
-  multipleApplicants = false;
+  step: number = 0;
+  multipleApplicants: boolean = false;
   allApplicants: any[] = [];
   constructor(
     private registration: RegistrationService,
@@ -81,8 +81,7 @@ export class FileUploadComponent implements OnInit {
     private sharedService: SharedService,
     private translate: TranslateService
   ) {
-    console.log('CALIING FILE UPLOAD');
-
+    console.log('IN FILE-UPLOAD');
     this.translate.use(localStorage.getItem('langCode'));
     this.isModify = localStorage.getItem('modifyDocument');
   }
@@ -158,7 +157,6 @@ export class FileUploadComponent implements OnInit {
       attributes: []
     };
     let DOCUMENT_CATEGORY_DTO: RequestModel;
-    let re = /\//g;
     let DOB = this.users[0].request.demographicDetails.identity.dateOfBirth;
 
     requestDTO.attribute = appConstants.APPLICANT_TYPE_ATTRIBUTES.individualTypeCode;
@@ -225,34 +223,17 @@ export class FileUploadComponent implements OnInit {
     );
   }
 
-  sortUserFiles() {
-    let sortedUserFiles;
-    for (let document of this.LOD) {
-      for (let file of this.users[0].files[0]) {
-        if (document.code === file.doc_cat_code) {
-          sortedUserFiles.push(file);
-          break;
-        }
-      }
-    }
-    console.log('sorted file', sortedUserFiles);
-
-    for (let i = 0; i <= this.users[0].files[0]; i++) {
-      this.users[0].files[0][i] = sortedUserFiles[i];
-    }
-  }
-
   viewFirstFile() {
     this.fileIndex = 0;
     this.viewFile(this.users[0].files[0][0]);
   }
 
-  viewFileByIndex(i) {
+  viewFileByIndex(i: number) {
     this.viewFile(this.users[0].files[0][i]);
   }
 
-  viewFile(file) {
-    this.fileName = file.doc_name;
+  viewFile(file: FileModel) {
+    this.fileName = file.docName;
     this.fileByteArray = file.multipartFile;
     let i = 0;
     for (let x of this.users[0].files[0]) {
@@ -468,6 +449,7 @@ export class FileUploadComponent implements OnInit {
     arr.push('summary');
     arr.push('preview');
     const url = arr.join('/');
+    console.log('OUT FILE-UPLOAD IN PREVIEW');
     this.router.navigateByUrl(url);
   }
 

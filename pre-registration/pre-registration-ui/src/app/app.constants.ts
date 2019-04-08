@@ -1,4 +1,4 @@
-export const NUMBER_PATTERN = '^[0-9]+[0-9]*$';
+// export const NUMBER_PATTERN = '^[0-9]+[0-9]*$';
 export const TEXT_PATTERN = '^[a-zA-Z ]*$';
 export const COUNTRY_NAME = 'Morroco';
 export const COUNTRY_HIERARCHY = 'Country';
@@ -49,7 +49,7 @@ export const APPEND_URL = {
   document_copy: 'document/documents/copy',
   nearby_registration_centers: 'getcoordinatespecificregistrationcenters/',
   registration_centers_by_name: 'registrationcenters/',
-  booking_appointment: 'appointment/',
+  booking_appointment: 'appointment/multi',
   booking_availability: 'appointment/availability/',
   delete_application: 'applications/',
   qr_code: 'qrCode/generate',
@@ -100,7 +100,8 @@ export const CONFIG_KEYS = {
   mosip_email_length: 'mosip.id.validation.identity.email.length',
   mosip_mobile_length: 'mosip.id.validation.identity.phone.length',
   preregistration_address_length: 'preregistration.address.length',
-  preregistration_fullname_length: 'preregistration.fullname.length'
+  preregistration_fullname_length: 'preregistration.fullname.length',
+  mosip_id_validation_identity_age: 'mosip.id.validation.identity.age'
   // mosip.kernel.sms.number.length
   // preregistration.max.file.size
   // preregistration.workflow.demographic,

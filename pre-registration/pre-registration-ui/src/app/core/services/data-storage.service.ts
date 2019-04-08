@@ -139,10 +139,10 @@ export class DataStorageService {
     );
   }
 
-  makeBooking(request: RequestModel, preId) {
+  makeBooking(request: RequestModel) {
     console.log('request inside service', request);
     return this.httpClient.post(
-      this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.booking_appointment + preId[0],
+      this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.booking_appointment,
       request
     );
   }
