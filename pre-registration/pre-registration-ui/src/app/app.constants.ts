@@ -49,7 +49,7 @@ export const APPEND_URL = {
   document_copy: 'document/documents/copy',
   nearby_registration_centers: 'getcoordinatespecificregistrationcenters/',
   registration_centers_by_name: 'registrationcenters/',
-  booking_appointment: 'appointment/',
+  booking_appointment: 'appointment/multi',
   booking_availability: 'appointment/availability/',
   delete_application: 'applications/',
   qr_code: 'qrCode/generate',
