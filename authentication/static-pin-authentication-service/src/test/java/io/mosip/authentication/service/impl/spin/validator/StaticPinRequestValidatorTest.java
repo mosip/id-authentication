@@ -29,6 +29,7 @@ import io.mosip.authentication.core.dto.spinstore.PinRequestDTO;
 import io.mosip.authentication.core.dto.spinstore.StaticPinRequestDTO;
 import io.mosip.kernel.idvalidator.uin.impl.UinValidatorImpl;
 import io.mosip.kernel.idvalidator.vid.impl.VidValidatorImpl;
+import io.mosip.spin.authentication.service.impl.validator.StaticPinRequestValidator;
 
 /**
  * This class Tests The StaticPinValidator class.

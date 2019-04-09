@@ -2,7 +2,7 @@ package io.mosip.kyc.authentication.service.filter;
 
 import org.junit.Ignore;
 
-import io.mosip.authentication.service.filter.OTPFilter;
+import io.mosip.otp.authentication.service.filter.OTPFilter;
 
 @Ignore
 public class OTPFilterTest {

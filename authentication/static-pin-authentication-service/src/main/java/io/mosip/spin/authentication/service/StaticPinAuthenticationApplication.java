@@ -1,4 +1,4 @@
-package io.mosip.authentication.service;
+package io.mosip.spin.authentication.service;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -20,16 +20,13 @@ import io.mosip.authentication.common.integration.MasterDataManager;
 import io.mosip.authentication.common.integration.NotificationManager;
 import io.mosip.authentication.common.integration.OTPManager;
 import io.mosip.authentication.common.service.exception.IdAuthExceptionHandler;
-import io.mosip.authentication.service.impl.indauth.service.OTPAuthServiceImpl;
-import io.mosip.authentication.service.impl.indauth.service.PinAuthServiceImpl;
+import io.mosip.authentication.service.impl.id.service.IdAuthServiceImpl;
+import io.mosip.authentication.service.impl.indauth.builder.MatchInputBuilder;
 import io.mosip.kernel.cbeffutil.impl.CbeffImpl;
 import io.mosip.kernel.crypto.jce.impl.DecryptorImpl;
 import io.mosip.kernel.dataaccess.hibernate.config.HibernateDaoConfig;
-import io.mosip.kernel.idgenerator.vid.impl.VidGeneratorImpl;
-import io.mosip.kernel.idgenerator.vid.util.VidFilterUtils;
 import io.mosip.kernel.idvalidator.uin.impl.UinValidatorImpl;
 import io.mosip.kernel.idvalidator.vid.impl.VidValidatorImpl;
-import io.mosip.kernel.pdfgenerator.itext.impl.PDFGeneratorImpl;
 import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderImpl;
 
 /**
@@ -39,14 +36,12 @@ import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderIm
  */
 @SpringBootApplication
 @Import(value = { HibernateDaoConfig.class, UinValidatorImpl.class, VidValidatorImpl.class, IDAMappingConfig.class,
-		PDFGeneratorImpl.class, DecryptorImpl.class, CbeffImpl.class, VidGeneratorImpl.class, VidFilterUtils.class,
-		RestHelper.class, RestRequestFactory.class, AuditRequestFactory.class, AuditRequestFactory.class,
-		IdRepoManager.class, NotificationManager.class, NotificationServiceImpl.class, IdTemplateManager.class,
-		TemplateManagerBuilderImpl.class, IdAuthExceptionHandler.class, IdInfoFetcherImpl.class,
-		BiometricProviderFactory.class, OTPManager.class, MasterDataManager.class, IdInfoHelper.class,
-		OTPAuthServiceImpl.class, AuditHelper.class, PinAuthServiceImpl.class, KeyManager.class })
-
-public class IdAuthenticationApplication {
+		DecryptorImpl.class, KeyManager.class, RestHelper.class, RestRequestFactory.class, IdInfoFetcherImpl.class,
+		BiometricProviderFactory.class, OTPManager.class, CbeffImpl.class, IdInfoHelper.class, MasterDataManager.class,
+		MatchInputBuilder.class, IdAuthServiceImpl.class, AuditRequestFactory.class, IdRepoManager.class,
+		NotificationManager.class, NotificationServiceImpl.class, IdTemplateManager.class,
+		TemplateManagerBuilderImpl.class, IdAuthExceptionHandler.class, AuditHelper.class })
+public class StaticPinAuthenticationApplication {
 
 	/**
 	 * The main method.
@@ -54,7 +49,7 @@ public class IdAuthenticationApplication {
 	 * @param args the arguments
 	 */
 	public static void main(String[] args) {
-		SpringApplication.run(IdAuthenticationApplication.class, args);
+		SpringApplication.run(StaticPinAuthenticationApplication.class, args);
 	}
 
 }

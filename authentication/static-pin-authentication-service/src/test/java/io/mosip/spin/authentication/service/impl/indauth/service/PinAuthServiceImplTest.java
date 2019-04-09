@@ -38,8 +38,8 @@ import io.mosip.authentication.core.dto.indauth.AuthTypeDTO;
 import io.mosip.authentication.core.dto.indauth.RequestDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.service.impl.indauth.builder.MatchInputBuilder;
+import io.mosip.authentication.service.impl.indauth.service.PinAuthServiceImpl;
 import io.mosip.kernel.core.util.HMACUtils;
-import io.mosip.staticpin.authentication.service.impl.indauth.service.PinAuthServiceImpl;
 
 @Ignore
 @RunWith(SpringRunner.class)

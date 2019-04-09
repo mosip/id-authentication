@@ -103,8 +103,6 @@ public class AuthFacadeImplTest {
 	@Mock
 	private IdAuthService<AutnTxn> idAuthService;
 	/** The KycService **/
-	@Mock
-	private KycService kycService;
 	/** The IdInfoHelper **/
 	@Mock
 	private IdInfoHelper idInfoHelper;
@@ -163,7 +161,6 @@ public class AuthFacadeImplTest {
 		ReflectionTestUtils.setField(authFacadeImpl, "otpService", otpAuthServiceImpl);
 		ReflectionTestUtils.setField(authFacadeImpl, "tokenIdGenerator", tokenIdGenerator);
 		ReflectionTestUtils.setField(authFacadeImpl, "pinAuthService", pinAuthService);
-		ReflectionTestUtils.setField(authFacadeImpl, "kycService", kycService);
 		ReflectionTestUtils.setField(authFacadeImpl, "bioAuthService", bioAuthService);
 		ReflectionTestUtils.setField(authFacadeImpl, "auditHelper", auditHelper);
 		ReflectionTestUtils.setField(authFacadeImpl, "env", env);
@@ -507,8 +504,6 @@ public class AuthFacadeImplTest {
 		Optional<String> value = Optional.of("12345678");
 		Mockito.when(idInfoFetcher.getUinOrVid(kycAuthRequestDTO)).thenReturn(value);
 		IdType values = IdType.UIN;
-		Mockito.when(kycService.retrieveKycInfo(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any()))
-				.thenReturn(kycResponseDTO);
 		Mockito.when(idInfoFetcher.getUinOrVidType(kycAuthRequestDTO)).thenReturn(values);
 //		assertNotNull(authFacadeImpl.processKycAuth(kycAuthRequestDTO, authResponseDTO, "123456"));
 
@@ -579,8 +574,6 @@ public class AuthFacadeImplTest {
 		Optional<String> value = Optional.of("12345678");
 		Mockito.when(idInfoFetcher.getUinOrVid(kycAuthRequestDTO)).thenReturn(value);
 		IdType values = IdType.UIN;
-		Mockito.when(kycService.retrieveKycInfo(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any()))
-				.thenReturn(kycResponseDTO);
 		Mockito.when(idInfoFetcher.getUinOrVidType(kycAuthRequestDTO)).thenReturn(values);
 		Map<String, List<IdentityInfoDTO>> entityValue = new HashMap<>();
 		Mockito.when(idInfoService.getIdInfo(Mockito.any())).thenReturn(entityValue);
@@ -653,8 +646,6 @@ public class AuthFacadeImplTest {
 		Optional<String> value = Optional.of("12345678");
 		Mockito.when(idInfoFetcher.getUinOrVid(kycAuthRequestDTO)).thenReturn(value);
 		IdType values = IdType.UIN;
-		Mockito.when(kycService.retrieveKycInfo(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any()))
-				.thenReturn(kycResponseDTO);
 		Mockito.when(idInfoFetcher.getUinOrVidType(kycAuthRequestDTO)).thenReturn(values);
 		Map<String, List<IdentityInfoDTO>> entityValue = new HashMap<>();
 		Mockito.when(idInfoService.getIdInfo(Mockito.any())).thenReturn(entityValue);

@@ -46,7 +46,7 @@ import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.IdValidationFailedException;
 import io.mosip.authentication.service.impl.indauth.builder.MatchInputBuilder;
-import io.mosip.otp.authentication.service.impl.indauth.service.OTPAuthServiceImpl;
+import io.mosip.authentication.service.impl.indauth.service.OTPAuthServiceImpl;
 import io.mosip.otp.authentication.service.impl.otpgen.service.OTPServiceImpl;
 import reactor.ipc.netty.http.HttpResources;
 

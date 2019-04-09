@@ -39,6 +39,7 @@ import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.spi.id.service.IdAuthService;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderImpl;
+import io.mosip.spin.authentication.service.impl.spin.service.StaticPinServiceImpl;
 
 /**
  * This Test Class is for StaticPinServiceImpl

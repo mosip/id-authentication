@@ -23,7 +23,8 @@ import io.mosip.authentication.core.dto.spinstore.StaticPinResponseDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.spi.spin.service.StaticPinService;
-import io.mosip.authentication.service.impl.spin.validator.StaticPinRequestValidator;
+import io.mosip.spin.authentication.service.impl.spin.controller.StaticPinController;
+import io.mosip.spin.authentication.service.impl.validator.StaticPinRequestValidator;
 
 /**
  * 

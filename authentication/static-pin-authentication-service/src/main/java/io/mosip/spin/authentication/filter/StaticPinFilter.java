@@ -1,4 +1,4 @@
-package io.mosip.otp.authentication.service.filter;
+package io.mosip.spin.authentication.filter;
 
 import java.util.AbstractMap.SimpleEntry;
 import java.util.LinkedHashMap;
@@ -21,7 +21,7 @@ import io.mosip.authentication.core.exception.IdAuthenticationAppException;
  * @author Manoj SP
  */
 @Component
-public class OTPFilter extends IdAuthFilter {
+public class StaticPinFilter extends IdAuthFilter {
 
 	private static final String OTP_REQUEST = "otp-request";
 
@@ -59,7 +59,7 @@ public class OTPFilter extends IdAuthFilter {
 				}).collect(Collectors.toMap(Entry<String, Object>::getKey, Entry<String, Object>::getValue,
 						(map1, map2) -> map1, LinkedHashMap<String, Object>::new));
 	}
-
+	
 	@Override
 	protected void checkMandatoryAuthTypeBasedOnPolicy(Map<String, Object> requestBody,
 			List<AuthPolicy> mandatoryAuthPolicies) throws IdAuthenticationAppException {

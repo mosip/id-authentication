@@ -1,10 +1,10 @@
-package io.mosip.otp.authentication.config;
+package io.mosip.otp.authentication.service.config;
 
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import io.mosip.authentication.service.filter.OTPFilter;
+import io.mosip.otp.authentication.service.filter.OTPFilter;
 
 /**
  * The configuration for adding filters.

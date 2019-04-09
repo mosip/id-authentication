@@ -36,7 +36,6 @@ import io.mosip.authentication.common.entity.VIDEntity;
 import io.mosip.authentication.common.factory.AuditRequestFactory;
 import io.mosip.authentication.common.factory.RestRequestFactory;
 import io.mosip.authentication.common.helper.RestHelper;
-import io.mosip.authentication.common.impl.id.service.impl.IdAuthServiceImpl;
 import io.mosip.authentication.common.integration.IdRepoManager;
 import io.mosip.authentication.common.repository.AutnTxnRepository;
 import io.mosip.authentication.common.repository.VIDRepository;
@@ -44,6 +43,7 @@ import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.dto.otpgen.OtpRequestDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.spi.id.service.IdAuthService;
+import io.mosip.authentication.service.impl.id.service.IdAuthServiceImpl;
 
 /**
  * IdAuthServiceImplTest test class.

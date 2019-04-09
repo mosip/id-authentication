@@ -37,7 +37,6 @@ import io.mosip.authentication.core.spi.indauth.facade.AuthFacade;
 import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
 import io.mosip.authentication.core.spi.indauth.service.BioAuthService;
 import io.mosip.authentication.core.spi.indauth.service.DemoAuthService;
-import io.mosip.authentication.core.spi.indauth.service.KycService;
 import io.mosip.authentication.core.spi.indauth.service.OTPAuthService;
 import io.mosip.authentication.core.spi.indauth.service.PinAuthService;
 import io.mosip.authentication.core.spi.notification.service.NotificationService;
@@ -98,9 +97,6 @@ public class AuthFacadeImpl implements AuthFacade {
 	@Autowired
 	private IdAuthService<AutnTxn> idAuthService;
 
-	/** The Kyc Service */
-	@Autowired
-	private KycService kycService;
 
 	/** The Environment */
 	@Autowired
