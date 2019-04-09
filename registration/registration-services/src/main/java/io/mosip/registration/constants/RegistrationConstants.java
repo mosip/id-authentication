@@ -1006,6 +1006,7 @@ public class RegistrationConstants {
 	public static final int FULL_NAME_LENGTH = 50;
 	public static final String ADDRESS_LINE1_REGEX = "^.{1,50}$";
 	public static final String NUMBER_REGEX = "\\d+";
+	public static final String FOUR_NUMBER_REGEX = "\\d{4}";
 	public static final int MOBILE_NUMBER_LENGTH = 9;
 	public static final String EMAIL_ID_REGEX = "^([\\w\\-\\.]+)@((\\[([0-9]{1,3}\\.){3}[0-9]{1,3}\\])|(([\\w\\-]+\\.)+)([a-zA-Z]{2,4}))$";
 	public static final String EMAIL_ID_REGEX_INITIAL = "([a-zA-Z]+\\.?\\-?\\@?(\\d+)?)+";
@@ -1015,6 +1016,8 @@ public class RegistrationConstants {
 	public static final String POSTAL_CODE_REGEX = "\\d{5}";
 	public static final String POSTAL_CODE_REGEX_INITIAL = "\\d{1,5}";
 	public static final String REGEX_ANY = ".*";
+	public static final String ONE = "1";
+
 	
 
 	// master sync
