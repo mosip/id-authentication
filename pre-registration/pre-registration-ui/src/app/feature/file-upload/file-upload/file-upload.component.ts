@@ -152,7 +152,10 @@ export class FileUploadComponent implements OnInit {
   }
   async getApplicantTypeID() {
     // let DOCUMENT_CATEGORY_DTO = appConstants.DOCUMENT_CATEGORY_DTO;
-    let requestDTO: DocumentCategoryDTO;
+    let requestDTO: DocumentCategoryDTO = {
+      attribute: '',
+      value: ''
+    };
     let requestArray = {
       attributes: []
     };
